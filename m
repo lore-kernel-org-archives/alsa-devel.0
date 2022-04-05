@@ -4,65 +4,65 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8AF09C433F5
-	for <alsa-devel@archiver.kernel.org>; Tue,  5 Apr 2022 17:30:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id CA4ADC433EF
+	for <alsa-devel@archiver.kernel.org>; Tue,  5 Apr 2022 17:31:05 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id CA57B18A0;
-	Tue,  5 Apr 2022 19:29:59 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CA57B18A0
+	by alsa0.perex.cz (Postfix) with ESMTPS id 178B0189A;
+	Tue,  5 Apr 2022 19:30:14 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 178B0189A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1649179849;
-	bh=OPvHLNvzji28iCiTbiONGSUXe4tvcqYgKbh4alLzudU=;
+	s=default; t=1649179864;
+	bh=6z1Po8k+I5542sDrkrAYS4D8uyISfHvLOgyChcVo2RM=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=FT+NlMsPPUgsY0xB+0oYsEmDJRxsUDg9LoqqSlmGo/xb4vetffNVSjGsrKFfq9KYw
-	 XOJN7X5P9Fr+Bd1OLFBUQ+luSF9ge5jKxDyb96WYfZ3ousMRNlvIesmKeo5sZROoca
-	 TmvZAt5IVpRcQJkWqAOKXfb7aoiv+CM5OIOMDs7s=
+	b=NQh6Bt+84qyV872lwVDy+2YF2TcdBACB0fmZvX1KVEQwi113Vp7euLEQ6t7fo93sm
+	 3dRmfShmTTo5XJFNtnFDEw6yRk0+UIt55UfD1t/1MWCRkrxEAcvnKIm+M51Y4NClHR
+	 pMKZUQ9sKsRLH6EkCQBuKejU1dgwbKdo5QzOlBFY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 9E1E0F80544;
-	Tue,  5 Apr 2022 19:27:52 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id B2FDDF80549;
+	Tue,  5 Apr 2022 19:27:54 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id DD9DDF8052E; Tue,  5 Apr 2022 19:27:46 +0200 (CEST)
+ id 3B641F80533; Tue,  5 Apr 2022 19:27:48 +0200 (CEST)
 Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 3A80FF8051C
- for <alsa-devel@alsa-project.org>; Tue,  5 Apr 2022 19:27:38 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3A80FF8051C
+ by alsa1.perex.cz (Postfix) with ESMTPS id 66A5BF8014B
+ for <alsa-devel@alsa-project.org>; Tue,  5 Apr 2022 19:27:37 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 66A5BF8014B
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="D0ST6qWg"
+ header.b="LXHi2tnL"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1649179660; x=1680715660;
+ t=1649179658; x=1680715658;
  h=from:to:cc:subject:date:message-id:in-reply-to:
  references:mime-version:content-transfer-encoding;
- bh=OPvHLNvzji28iCiTbiONGSUXe4tvcqYgKbh4alLzudU=;
- b=D0ST6qWgZEv4D1rXVXnfz69COrOxOPRf1tEl9gC+tckuOJ+DUFT+DIcD
- Yvuqr1AIbtLoUbdyjO6/jJifgmITDAHWyAHPA9Rz1ymzJDyBwPXn3FeNK
- pfNEmAywzk5cKg1+MooH5J/ZB7K6Fu9iO1Q+fNDGUk7TPA7nhXc/u3gMY
- +zH5mOCj/ynNpDP/h9zpbo8cOowKBfaNcsWPWI3wLHJyHZlC+eZ/dswJd
- vrYqZjQlQWMu2hIpFezY3Np++NE/65sx9gmsZtQRVvf1xK4azrt+2hw7K
- QBiVX5KhKFhdhnoOH2EUeSC7W5eNmY6eVbyt6KRQDuFdMOcgW6ojJ6wJK w==;
-X-IronPort-AV: E=McAfee;i="6200,9189,10308"; a="323986763"
-X-IronPort-AV: E=Sophos;i="5.90,236,1643702400"; d="scan'208";a="323986763"
+ bh=6z1Po8k+I5542sDrkrAYS4D8uyISfHvLOgyChcVo2RM=;
+ b=LXHi2tnLkTvTx6F933ByLjiii/hX2C2CHnh3Z4QrYmXFPIsAM0dolYQl
+ C/qI8DUeXW6+s4YPKyUojFQsmvQrLxn8kvmsoyRxXlakvDaSZq5N/4zD1
+ yxbFi9gacAa6TgS/ghhAa+7sDVR2gb/cDLuoKsBDeNEUYaGMZW15I6auP
+ og9SEky9/vpoDLJ6gwXJAzkKD+ARf5gIRrmdZtQLalo+TIgqkP1vU8GNG
+ HQVCtcVTnlxxbGK8re/EYLVtSmAnf1FzTyv7MJHI3HDs8+B1G1g8HJWrf
+ NrG0/q185Yu13v1xM7QuGh6TW7f4fOZJTH1F1roLz2ZDpA6+c4Djgs5MH Q==;
+X-IronPort-AV: E=McAfee;i="6200,9189,10308"; a="323986749"
+X-IronPort-AV: E=Sophos;i="5.90,236,1643702400"; d="scan'208";a="323986749"
 Received: from orsmga005.jf.intel.com ([10.7.209.41])
  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 05 Apr 2022 10:27:25 -0700
-X-IronPort-AV: E=Sophos;i="5.90,236,1643702400"; d="scan'208";a="722140989"
+ 05 Apr 2022 10:27:24 -0700
+X-IronPort-AV: E=Sophos;i="5.90,236,1643702400"; d="scan'208";a="722140983"
 Received: from reginari-mobl7.amr.corp.intel.com (HELO
  rsridh2-mobl1.localdomain) ([10.254.28.131])
  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 05 Apr 2022 10:27:25 -0700
+ 05 Apr 2022 10:27:24 -0700
 From: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH 10/15] ASoC: SOF: ipc: Use the get_reply ops in
- snd_sof_ipc_get_reply()
-Date: Tue,  5 Apr 2022 10:27:03 -0700
-Message-Id: <20220405172708.122168-11-ranjani.sridharan@linux.intel.com>
+Subject: [PATCH 08/15] ASoC: SOF: ipc: Separate the ops checks by
+ functions/topics
+Date: Tue,  5 Apr 2022 10:27:01 -0700
+Message-Id: <20220405172708.122168-9-ranjani.sridharan@linux.intel.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20220405172708.122168-1-ranjani.sridharan@linux.intel.com>
 References: <20220405172708.122168-1-ranjani.sridharan@linux.intel.com>
@@ -89,85 +89,49 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 From: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
 
-Use the get_reply ops to allow IPC dependent handling of the reply message.
+Separate the mandatory ops checks by topics (pcm and topology for now) to
+be able to provide intuitive feedback on the possible missing ops and to
+make it easier to add new mandatory ops checks in the future.
 
 Signed-off-by: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
 Reviewed-by: Daniel Baluta <daniel.baluta@nxp.com>
 Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Signed-off-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 ---
- sound/soc/sof/ipc.c | 50 ++-------------------------------------------
- 1 file changed, 2 insertions(+), 48 deletions(-)
+ sound/soc/sof/ipc.c | 12 +++++++++---
+ 1 file changed, 9 insertions(+), 3 deletions(-)
 
 diff --git a/sound/soc/sof/ipc.c b/sound/soc/sof/ipc.c
-index d11c5e6e57fb..39ec4361048a 100644
+index a78b74514438..4966a2a41704 100644
 --- a/sound/soc/sof/ipc.c
 +++ b/sound/soc/sof/ipc.c
-@@ -443,63 +443,17 @@ EXPORT_SYMBOL(sof_ipc_tx_message_no_pm);
- /* Generic helper function to retrieve the reply */
- void snd_sof_ipc_get_reply(struct snd_sof_dev *sdev)
+@@ -1043,6 +1043,7 @@ struct snd_sof_ipc *snd_sof_ipc_init(struct snd_sof_dev *sdev)
  {
--	struct snd_sof_ipc_msg *msg = sdev->msg;
--	struct sof_ipc_reply *reply;
--	int ret = 0;
--
- 	/*
- 	 * Sometimes, there is unexpected reply ipc arriving. The reply
- 	 * ipc belongs to none of the ipcs sent from driver.
- 	 * In this case, the driver must ignore the ipc.
- 	 */
--	if (!msg) {
-+	if (!sdev->msg) {
- 		dev_warn(sdev->dev, "unexpected ipc interrupt raised!\n");
- 		return;
- 	}
+ 	struct snd_sof_ipc *ipc;
+ 	struct snd_sof_ipc_msg *msg;
++	const struct sof_ipc_ops *ops;
  
--	/* get the generic reply */
--	reply = msg->reply_data;
--	snd_sof_dsp_mailbox_read(sdev, sdev->host_box.offset, reply, sizeof(*reply));
--
--	if (reply->error < 0) {
--		ret = reply->error;
--	} else if (!reply->hdr.size) {
--		/* Reply should always be >= sizeof(struct sof_ipc_reply) */
--		if (msg->reply_size)
--			dev_err(sdev->dev,
--				"empty reply received, expected %zu bytes\n",
--				msg->reply_size);
--		else
--			dev_err(sdev->dev, "empty reply received\n");
--
--		ret = -EINVAL;
--	} else if (msg->reply_size > 0) {
--		if (reply->hdr.size == msg->reply_size) {
--			ret = 0;
--		} else if (reply->hdr.size < msg->reply_size) {
--			dev_dbg(sdev->dev,
--				"reply size (%u) is less than expected (%zu)\n",
--				reply->hdr.size, msg->reply_size);
--
--			msg->reply_size = reply->hdr.size;
--			ret = 0;
--		} else {
--			dev_err(sdev->dev,
--				"reply size (%u) exceeds the buffer size (%zu)\n",
--				reply->hdr.size, msg->reply_size);
--			ret = -EINVAL;
--		}
--
--		/*
--		 * get the full message if reply->hdr.size <= msg->reply_size
--		 * and the reply->hdr.size > sizeof(struct sof_ipc_reply)
--		 */
--		if (!ret && msg->reply_size > sizeof(*reply))
--			snd_sof_dsp_mailbox_read(sdev, sdev->host_box.offset,
--						 msg->reply_data, msg->reply_size);
--	}
--
--	msg->reply_error = ret;
-+	sdev->msg->reply_error = sdev->ipc->ops->get_reply(sdev);
- }
- EXPORT_SYMBOL(snd_sof_ipc_get_reply);
+ 	ipc = devm_kzalloc(sdev->dev, sizeof(*ipc), GFP_KERNEL);
+ 	if (!ipc)
+@@ -1062,11 +1063,16 @@ struct snd_sof_ipc *snd_sof_ipc_init(struct snd_sof_dev *sdev)
+ 	 * versions, this will need to be modified to use the selected version at runtime.
+ 	 */
+ 	ipc->ops = &ipc3_ops;
++	ops = ipc->ops;
+ 
+ 	/* check for mandatory ops */
+-	if (!ipc->ops->pcm || !ipc->ops->tplg || !ipc->ops->tplg->widget ||
+-	    !ipc->ops->tplg->control) {
+-		dev_err(sdev->dev, "Invalid IPC ops\n");
++	if (!ops->pcm) {
++		dev_err(sdev->dev, "Missing IPC PCM ops\n");
++		return NULL;
++	}
++
++	if (!ops->tplg || !ops->tplg->widget || !ops->tplg->control) {
++		dev_err(sdev->dev, "Missing IPC topology ops\n");
+ 		return NULL;
+ 	}
  
 -- 
 2.25.1
