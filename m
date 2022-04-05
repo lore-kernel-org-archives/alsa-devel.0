@@ -4,65 +4,65 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D4A22C433EF
-	for <alsa-devel@archiver.kernel.org>; Tue,  5 Apr 2022 17:31:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id EBBDDC433EF
+	for <alsa-devel@archiver.kernel.org>; Tue,  5 Apr 2022 17:32:00 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 2B412187B;
-	Tue,  5 Apr 2022 19:30:48 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2B412187B
+	by alsa0.perex.cz (Postfix) with ESMTPS id 2FD64186C;
+	Tue,  5 Apr 2022 19:31:09 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2FD64186C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1649179898;
-	bh=aHeEdozjzhN10+ojMXxyVSzysrqi+K0GCs4Upy/EeYc=;
+	s=default; t=1649179919;
+	bh=3L/4+UqTFnL/4xNLVbxuDikKwQaKO8BHIpda6aB9C0U=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=qNQJbtEEAyKEnukxqq8wl/0XQX3aQlWjMM50Fz+/Tmjj2X8EfITUvlCGBLdVjuKnr
-	 Y0MmoJ8iE/atgp80BA+zYMyV/Adtp8hsMyMKw/yGq7WZITf9tMz7nLdLBYblkCmF/c
-	 Yr1v5cAKY9QCJHH4YgwFxJS7kdjbTejx/RZpH6Gc=
+	b=NHsHLl8KAzyco0J51SrVogXWH2wVDSacalojfHcSTpKQPJFeQ2M9c6gb3L/qQxUjZ
+	 mj5WjTKw+uE85paIPMcQO85NOrvpYRX/3B9tKwOtU7qahrszLYUBEoa4t8u/lUpQT3
+	 0OToF+BXG0/gxbRjA9tsKpB5TmGEJyIWUlJnD+SA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id E6604F8055C;
-	Tue,  5 Apr 2022 19:27:55 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id E0692F80568;
+	Tue,  5 Apr 2022 19:27:56 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id DEDA0F80536; Tue,  5 Apr 2022 19:27:49 +0200 (CEST)
+ id 86F1FF8054A; Tue,  5 Apr 2022 19:27:53 +0200 (CEST)
 Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 1B228F800D2
- for <alsa-devel@alsa-project.org>; Tue,  5 Apr 2022 19:27:38 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1B228F800D2
+ by alsa1.perex.cz (Postfix) with ESMTPS id 47F10F80526
+ for <alsa-devel@alsa-project.org>; Tue,  5 Apr 2022 19:27:41 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 47F10F80526
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="cNqO3J9p"
+ header.b="jxwgpcvV"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1649179660; x=1680715660;
+ t=1649179662; x=1680715662;
  h=from:to:cc:subject:date:message-id:in-reply-to:
  references:mime-version:content-transfer-encoding;
- bh=aHeEdozjzhN10+ojMXxyVSzysrqi+K0GCs4Upy/EeYc=;
- b=cNqO3J9prlK2VpCBI6mlQe1Vvjtxuq4mXoc6dgA86iNN6vmNtPxwZACE
- hPK7jn+v52DW1zovlkHR0+lINpOMxe4XcgxXAQArF1kH3GMvrINFaiA1X
- aRhwzbcdatAX14KY/hPhSi5Z0YbmTIwNLIPK0V1FO5VoWJtu8r+Y0XYyo
- 5U58CI3GEDGzEZVX52jyAi9J4AU3UfSB7qqiHOFcmN/22olxVQBhjCtBT
- JiPjuKdt+rdyF4IqzpEaz1ZH2CwYhBDvOJLARuF6D2Syd+nyZBZ1tsLRp
- w26FaBnQZuHFeAZg2RjoQgystXUkP7DOHzdNdgWizrdQUfCx/UDxpLwMR A==;
-X-IronPort-AV: E=McAfee;i="6200,9189,10308"; a="323986755"
-X-IronPort-AV: E=Sophos;i="5.90,236,1643702400"; d="scan'208";a="323986755"
+ bh=3L/4+UqTFnL/4xNLVbxuDikKwQaKO8BHIpda6aB9C0U=;
+ b=jxwgpcvVsSCYftPvjWzhf4GnOoWy+ei2IBO9XK5F6NDd5wq3FCrXomZp
+ BBFI3X5xi2vZW/0Pq8SIoYZZYuNX/9WfkbpjEJ+WUswrhbP0cTWp2MggH
+ VqVSeDMQ+avOIF6Ii5VMxntYCX8zZGwI+AKar0/6Q2QMaZ4ZTOuyW7bVa
+ 7c+9R568RJ6g7429VbWyLvKWCOPlr9pVqQ0Q83+gT9FFXCCi0vo7MGgwi
+ 4Q0X+AgMf/AI4dsvtYyKnJecAPlS9OA7pztTyyZvHbZ/Z2TKK0oS6/JX8
+ r5suMuKascS3O/k+q2yqnCsU5D86R80RZ+AdfqHG2oAuUm1vsw2xOs7tp w==;
+X-IronPort-AV: E=McAfee;i="6200,9189,10308"; a="323986781"
+X-IronPort-AV: E=Sophos;i="5.90,236,1643702400"; d="scan'208";a="323986781"
 Received: from orsmga005.jf.intel.com ([10.7.209.41])
  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 05 Apr 2022 10:27:25 -0700
-X-IronPort-AV: E=Sophos;i="5.90,236,1643702400"; d="scan'208";a="722140986"
+ 05 Apr 2022 10:27:26 -0700
+X-IronPort-AV: E=Sophos;i="5.90,236,1643702400"; d="scan'208";a="722141006"
 Received: from reginari-mobl7.amr.corp.intel.com (HELO
  rsridh2-mobl1.localdomain) ([10.254.28.131])
  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 05 Apr 2022 10:27:24 -0700
+ 05 Apr 2022 10:27:26 -0700
 From: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH 09/15] ASoC: SOF: ipc: Add check for mandatory IPC message
- handling ops
-Date: Tue,  5 Apr 2022 10:27:02 -0700
-Message-Id: <20220405172708.122168-10-ranjani.sridharan@linux.intel.com>
+Subject: [PATCH 13/15] ASoC: SOF: Add widget_kcontrol_setup control ops for
+ IPC3
+Date: Tue,  5 Apr 2022 10:27:06 -0700
+Message-Id: <20220405172708.122168-14-ranjani.sridharan@linux.intel.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20220405172708.122168-1-ranjani.sridharan@linux.intel.com>
 References: <20220405172708.122168-1-ranjani.sridharan@linux.intel.com>
@@ -89,33 +89,87 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 From: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
 
-Make sure that the mandatory IPC message handling ops are provided by the
-IPC implementation.
+Define and set the widget_kcontrol_setup control IPC ops for IPC3.
+
+The widget_kcontrol_setup callback can be used to set up all
+kcontrols associated with the swidget.
 
 Signed-off-by: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
 Reviewed-by: Daniel Baluta <daniel.baluta@nxp.com>
 Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Signed-off-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 ---
- sound/soc/sof/ipc.c | 5 +++++
- 1 file changed, 5 insertions(+)
+ sound/soc/sof/ipc3-control.c | 38 ++++++++++++++++++++++++++++++++++++
+ sound/soc/sof/sof-audio.h    |  2 ++
+ 2 files changed, 40 insertions(+)
 
-diff --git a/sound/soc/sof/ipc.c b/sound/soc/sof/ipc.c
-index 4966a2a41704..d11c5e6e57fb 100644
---- a/sound/soc/sof/ipc.c
-+++ b/sound/soc/sof/ipc.c
-@@ -1066,6 +1066,11 @@ struct snd_sof_ipc *snd_sof_ipc_init(struct snd_sof_dev *sdev)
- 	ops = ipc->ops;
+diff --git a/sound/soc/sof/ipc3-control.c b/sound/soc/sof/ipc3-control.c
+index cdd5ad860a94..4e647142dc2b 100644
+--- a/sound/soc/sof/ipc3-control.c
++++ b/sound/soc/sof/ipc3-control.c
+@@ -578,6 +578,43 @@ static void sof_ipc3_control_update(struct snd_sof_dev *sdev, void *ipc_control_
+ 	snd_ctl_notify_one(swidget->scomp->card->snd_card, SNDRV_CTL_EVENT_MASK_VALUE, kc, 0);
+ }
  
- 	/* check for mandatory ops */
-+	if (!ops->tx_msg || !ops->rx_msg || !ops->set_get_data || !ops->get_reply) {
-+		dev_err(sdev->dev, "Missing IPC message handling ops\n");
-+		return NULL;
-+	}
++static int sof_ipc3_widget_kcontrol_setup(struct snd_sof_dev *sdev,
++					  struct snd_sof_widget *swidget)
++{
++	struct snd_sof_control *scontrol;
++	int ret;
 +
- 	if (!ops->pcm) {
- 		dev_err(sdev->dev, "Missing IPC PCM ops\n");
- 		return NULL;
++	/* set up all controls for the widget */
++	list_for_each_entry(scontrol, &sdev->kcontrol_list, list)
++		if (scontrol->comp_id == swidget->comp_id) {
++			/* set kcontrol data in DSP */
++			ret = snd_sof_ipc_set_get_comp_data(scontrol, true);
++			if (ret < 0) {
++				dev_err(sdev->dev,
++					"kcontrol %d set up failed for widget %s\n",
++					scontrol->comp_id, swidget->widget->name);
++				return ret;
++			}
++
++			/*
++			 * Read back the data from the DSP for static widgets.
++			 * This is particularly useful for binary kcontrols
++			 * associated with static pipeline widgets to initialize
++			 * the data size to match that in the DSP.
++			 */
++			if (swidget->dynamic_pipeline_widget)
++				continue;
++
++			ret = snd_sof_ipc_set_get_comp_data(scontrol, false);
++			if (ret < 0)
++				dev_warn(sdev->dev,
++					 "kcontrol %d read failed for widget %s\n",
++					 scontrol->comp_id, swidget->widget->name);
++		}
++
++	return 0;
++}
++
+ const struct sof_ipc_tplg_control_ops tplg_ipc3_control_ops = {
+ 	.volume_put = sof_ipc3_volume_put,
+ 	.volume_get = sof_ipc3_volume_get,
+@@ -591,4 +628,5 @@ const struct sof_ipc_tplg_control_ops tplg_ipc3_control_ops = {
+ 	.bytes_ext_get = sof_ipc3_bytes_ext_get,
+ 	.bytes_ext_volatile_get = sof_ipc3_bytes_ext_volatile_get,
+ 	.update = sof_ipc3_control_update,
++	.widget_kcontrol_setup = sof_ipc3_widget_kcontrol_setup,
+ };
+diff --git a/sound/soc/sof/sof-audio.h b/sound/soc/sof/sof-audio.h
+index 4a8cd7f2a0eb..c85461dbe945 100644
+--- a/sound/soc/sof/sof-audio.h
++++ b/sound/soc/sof/sof-audio.h
+@@ -86,6 +86,8 @@ struct sof_ipc_tplg_control_ops {
+ 			     const unsigned int __user *binary_data, unsigned int size);
+ 	/* update control data based on notification from the DSP */
+ 	void (*update)(struct snd_sof_dev *sdev, void *ipc_control_message);
++	/* Optional callback to setup kcontrols associated with an swidget */
++	int (*widget_kcontrol_setup)(struct snd_sof_dev *sdev, struct snd_sof_widget *swidget);
+ };
+ 
+ /**
 -- 
 2.25.1
 
