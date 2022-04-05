@@ -4,49 +4,75 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id BF584C433F5
-	for <alsa-devel@archiver.kernel.org>; Tue,  5 Apr 2022 12:14:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B75C5C433EF
+	for <alsa-devel@archiver.kernel.org>; Tue,  5 Apr 2022 12:30:37 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 071A717BC;
-	Tue,  5 Apr 2022 14:13:50 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 071A717BC
+	by alsa0.perex.cz (Postfix) with ESMTPS id 2810117CC;
+	Tue,  5 Apr 2022 14:29:45 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2810117CC
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1649160880;
-	bh=+7H+UNtukcqj5+PZFgw3Yc/3Dld7H+mJAp+cwsuTHvg=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=UmyoxFTC5gQ1OYgbAszUF4Kc8vXEu1eI6z/ZGrd1C0j/QI9JNqG+vKvKnZqd8xfNR
-	 nWuncdgAQ1l7nrx6i2CWtFjXBh9ZjSNV/kYn0Ky0vSZXU+TtpueuqD2AdR/s8Vhz9k
-	 kyjnCROD25z0cMa20TlWuyLHi2kpI6psEovH90Fk=
+	s=default; t=1649161835;
+	bh=PzDJiVdqGkC6ovmIFqaGGii2Bxn/LV43DQcE09nx8HU=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=IaLAZiZjHtYur6WXwzmIIQyMfu7t8oj4D4NqmKsbksIgPEWujL/bKp+8C7xRPz/Qu
+	 7xQD0vpe/lSEWm08EIhZCbIP1qRfcK1MyjX0YLnFhm+D6C6GJgKbUMn46L5aASaF6b
+	 AxYZaTgerJmWwtlZ8VG8uox1YvAcul+X/lK4XSxc=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 93E57F8014B;
-	Tue,  5 Apr 2022 14:13:49 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id B87DFF8014B;
+	Tue,  5 Apr 2022 14:29:44 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 1B372F8016A; Tue,  5 Apr 2022 14:13:48 +0200 (CEST)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
- by alsa1.perex.cz (Postfix) with ESMTP id D3F8AF8012C
- for <alsa-devel@alsa-project.org>; Tue,  5 Apr 2022 14:13:40 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D3F8AF8012C
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
- by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 6EB9ED6E;
- Tue,  5 Apr 2022 05:13:37 -0700 (PDT)
-Received: from e121345-lin.cambridge.arm.com (e121345-lin.cambridge.arm.com
- [10.1.196.40])
- by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 9F7643F5A1;
- Tue,  5 Apr 2022 05:13:36 -0700 (PDT)
-From: Robin Murphy <robin.murphy@arm.com>
-To: perex@perex.cz,
-	tiwai@suse.com
-Subject: [PATCH] ALSA: emu10k1: Stop using iommu_present()
-Date: Tue,  5 Apr 2022 13:13:33 +0100
-Message-Id: <5ac9b54285b2189b848da2595408eb3cae8e5e9d.1649160813.git.robin.murphy@arm.com>
-X-Mailer: git-send-email 2.28.0.dirty
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: iommu@lists.linux-foundation.org, alsa-devel@alsa-project.org,
- linux-kernel@vger.kernel.org
+ id 0F1EBF8016A; Tue,  5 Apr 2022 14:29:42 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 73D71F800D2
+ for <alsa-devel@alsa-project.org>; Tue,  5 Apr 2022 14:29:34 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 73D71F800D2
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
+ header.b="LNyuR9n5"; 
+ dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
+ header.b="oNP8ulzX"
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+ by smtp-out1.suse.de (Postfix) with ESMTP id 58AE5210EA;
+ Tue,  5 Apr 2022 12:29:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1649161774; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=LX1Y1wytzXUwD49XoymIggwDFSmAem8nS60r7OHveSY=;
+ b=LNyuR9n5V63kXQ4u02QTDo3+rxmPzzHfTsEsTny+dqeOrCbA9qYZvNqxjVSz0Fc7fOwzGb
+ PrZdpcVSlmlw6KmhOiHINFP3p8YyGzsGgVA7pfLe14Ovd23T3n5CsbagnN0TV4b0uAX+vo
+ PbjWnA3Yq4sN+lJpOk8AiXuMRUYtlIQ=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1649161774;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=LX1Y1wytzXUwD49XoymIggwDFSmAem8nS60r7OHveSY=;
+ b=oNP8ulzXNzBvshg0+gstblohTrD+/4vq7Z30nb/vxaTnUA/koNXeLfV7D+mX7UkCZtBFw2
+ isk2iVy84jtcoPDw==
+Received: from alsa1.suse.de (alsa1.suse.de [10.160.4.42])
+ by relay2.suse.de (Postfix) with ESMTP id 426B3A3B89;
+ Tue,  5 Apr 2022 12:29:34 +0000 (UTC)
+Date: Tue, 05 Apr 2022 14:29:34 +0200
+Message-ID: <s5ha6cz7lxt.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Robin Murphy <robin.murphy@arm.com>
+Subject: Re: [PATCH] ALSA: emu10k1: Stop using iommu_present()
+In-Reply-To: <5ac9b54285b2189b848da2595408eb3cae8e5e9d.1649160813.git.robin.murphy@arm.com>
+References: <5ac9b54285b2189b848da2595408eb3cae8e5e9d.1649160813.git.robin.murphy@arm.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=US-ASCII
+Cc: linux-kernel@vger.kernel.org, iommu@lists.linux-foundation.org,
+ tiwai@suse.com, alsa-devel@alsa-project.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -62,28 +88,41 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-iommu_get_domain_for_dev() is already perfectly happy to return NULL
-if the given device has no IOMMU. Drop the unnecessary check.
+On Tue, 05 Apr 2022 14:13:33 +0200,
+Robin Murphy wrote:
+> 
+> iommu_get_domain_for_dev() is already perfectly happy to return NULL
+> if the given device has no IOMMU. Drop the unnecessary check.
+> 
+> Signed-off-by: Robin Murphy <robin.murphy@arm.com>
 
-Signed-off-by: Robin Murphy <robin.murphy@arm.com>
----
- sound/pci/emu10k1/emu10k1_main.c | 3 ---
- 1 file changed, 3 deletions(-)
+This will change the code behavior.  The current code does nothing if
+no IOMMU is found, but after your removal of the check, the code
+reaches to emu->iommu_workaround = true incorrectly.
 
-diff --git a/sound/pci/emu10k1/emu10k1_main.c b/sound/pci/emu10k1/emu10k1_main.c
-index 86cc1ca025e4..5ffab343b89c 100644
---- a/sound/pci/emu10k1/emu10k1_main.c
-+++ b/sound/pci/emu10k1/emu10k1_main.c
-@@ -1751,9 +1751,6 @@ static void snd_emu10k1_detect_iommu(struct snd_emu10k1 *emu)
- 
- 	emu->iommu_workaround = false;
- 
--	if (!iommu_present(emu->card->dev->bus))
--		return;
--
- 	domain = iommu_get_domain_for_dev(emu->card->dev);
- 	if (domain && domain->type == IOMMU_DOMAIN_IDENTITY)
- 		return;
--- 
-2.28.0.dirty
 
+thanks,
+
+Takashi
+
+> ---
+>  sound/pci/emu10k1/emu10k1_main.c | 3 ---
+>  1 file changed, 3 deletions(-)
+> 
+> diff --git a/sound/pci/emu10k1/emu10k1_main.c b/sound/pci/emu10k1/emu10k1_main.c
+> index 86cc1ca025e4..5ffab343b89c 100644
+> --- a/sound/pci/emu10k1/emu10k1_main.c
+> +++ b/sound/pci/emu10k1/emu10k1_main.c
+> @@ -1751,9 +1751,6 @@ static void snd_emu10k1_detect_iommu(struct snd_emu10k1 *emu)
+>  
+>  	emu->iommu_workaround = false;
+>  
+> -	if (!iommu_present(emu->card->dev->bus))
+> -		return;
+> -
+>  	domain = iommu_get_domain_for_dev(emu->card->dev);
+>  	if (domain && domain->type == IOMMU_DOMAIN_IDENTITY)
+>  		return;
+> -- 
+> 2.28.0.dirty
+> 
