@@ -4,68 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6EEFEC433F5
-	for <alsa-devel@archiver.kernel.org>; Tue,  5 Apr 2022 09:34:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 44011C433F5
+	for <alsa-devel@archiver.kernel.org>; Tue,  5 Apr 2022 09:34:23 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 9F471176C;
-	Tue,  5 Apr 2022 11:33:09 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9F471176C
+	by alsa0.perex.cz (Postfix) with ESMTPS id 967751742;
+	Tue,  5 Apr 2022 11:33:30 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 967751742
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1649151239;
-	bh=IOSYXfJ51+obZ0DPubnnqwWUEVpRPJNuHWU0Ke67zD4=;
+	s=default; t=1649151260;
+	bh=wy56N3GzvYwz3j65YfFa+VXSzdPu9MSFvDzmV75JFcI=;
 	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=lFjF93NOxKLWeSniu+qEI+qOfm0TKPjtqIaP9HXVPY8tPkPJBS5dX1x47+cS0lU91
-	 gg6doRjdijeoYw7Qjv66pVa4G0uY7Jda19rPSwwW7ELmO01ouzY2ByvEoOwO5nUJ/Y
-	 A3RfuPYH0PJJVTiO0BKXwCizi0wzlXPL3cYjplYE=
+	b=fCtHg7FRnM7y7gEhon7m0DJ6SqDi4IMTLnmo+nmUj0JuKCeFk0sqBSW/F+994xp5n
+	 EIM8lyrC61m2fu2Cr4k8w00g/2ZSC3dsxEFJoKdduTLT88CvPYH9BO+bayO40yAHlF
+	 6ER2j42BT6cDjbqqYTNBVACZATii8eTqxUPWhQgk=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 9DA1AF80537;
-	Tue,  5 Apr 2022 11:31:24 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 7D8AFF80539;
+	Tue,  5 Apr 2022 11:31:26 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id F07C7F8052F; Tue,  5 Apr 2022 11:31:22 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org
- [IPv6:2604:1380:4641:c500::1])
+ id 9FA54F80538; Tue,  5 Apr 2022 11:31:24 +0200 (CEST)
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id B454CF8052D
- for <alsa-devel@alsa-project.org>; Tue,  5 Apr 2022 11:31:16 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B454CF8052D
+ by alsa1.perex.cz (Postfix) with ESMTPS id 1D591F80529
+ for <alsa-devel@alsa-project.org>; Tue,  5 Apr 2022 11:31:21 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1D591F80529
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="HFPs++2y"
+ header.b="Uw9NTNC/"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id 463B66165C;
- Tue,  5 Apr 2022 09:31:15 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id F1B0DC385A2;
- Tue,  5 Apr 2022 09:31:12 +0000 (UTC)
+ by ams.source.kernel.org (Postfix) with ESMTPS id 42DA2B81CBA;
+ Tue,  5 Apr 2022 09:31:21 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 46064C385A4;
+ Tue,  5 Apr 2022 09:31:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1649151074;
- bh=IOSYXfJ51+obZ0DPubnnqwWUEVpRPJNuHWU0Ke67zD4=;
+ s=k20201202; t=1649151080;
+ bh=wy56N3GzvYwz3j65YfFa+VXSzdPu9MSFvDzmV75JFcI=;
  h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=HFPs++2yuz+7jArezb8F7EwiXxL5nG/fgaIwrMSS61ULIS9+ExTy5aPAa5ETnObMB
- P4IaxeEgdZPW3/k5T/Nz8P3F8oBsA+unDOOEeRR50R37XM/LwPg/CFm56UKDKxj/f3
- VeiHXUtHnueZq+etK9fyA6UVxhB3oWVdcdW2sE7jzMySQ2OhLlYLFFTn0CLs6LHlfJ
- stH4ng5nN2j5a/mAtrfpenNnsi7Dcs4hXFCDgWwHwhlLcQPzlWh6EJWdQAtjh3rEdW
- IXWf2z+Jidsysk9IuEGMRAzzCgNT64bpo9jziqWMKz9Mvus1eMHLUay7GUgOZROU2e
- LjqyPtWM74vLg==
+ b=Uw9NTNC//zeTxqHZTEt4wLakcW6Vca5oWrRklfwR41ipRkQD1LKGG7M4UAp02aGd3
+ cGdIRa5b6cTKewezf1I9Y0medT9WnPanu8PiTQrk/VtC8ATTFt2pgz4CKGS+gmCrxM
+ Csd12UL4VZTJELkoUiw6KDb4RA7pg8OBIRMN9nRmS/3H8yytd6dRUyFxSqtYL9gWCo
+ h54HRHwAW7L/Pyb3SY1v50Ct+V2TteZDEZbbTQOaIGpOT3HadOvZHRQ+N7N/3yvG8B
+ lGDalUeSuET+N3cxZfsnuSZyLtEc4eG6tT9Vzy6iGmDDrONkzbSDC/FgOL01D8Pz6f
+ 2NDkk0PylUgrw==
 From: Mark Brown <broonie@kernel.org>
-To: lgirdwood@gmail.com, derek.fang@realtek.com
-In-Reply-To: <20220328053338.21441-1-derek.fang@realtek.com>
-References: <20220328053338.21441-1-derek.fang@realtek.com>
-Subject: Re: [PATCH v2] ASoC: rt5682s: Separate the regulator consumer controls
-Message-Id: <164915107270.276574.15918118218792649202.b4-ty@kernel.org>
-Date: Tue, 05 Apr 2022 10:31:12 +0100
+To: xiam0nd.tong@gmail.com, oder_chiou@realtek.com, lgirdwood@gmail.com,
+ tiwai@suse.com, perex@perex.cz
+In-Reply-To: <20220327081002.12684-1-xiam0nd.tong@gmail.com>
+References: <20220327081002.12684-1-xiam0nd.tong@gmail.com>
+Subject: Re: [PATCH] codecs: rt5682: fix an incorrect NULL check on list
+ iterator
+Message-Id: <164915107801.276574.16249779388452959492.b4-ty@kernel.org>
+Date: Tue, 05 Apr 2022 10:31:18 +0100
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: oder_chiou@realtek.com, jack.yu@realtek.com, alsa-devel@alsa-project.org,
- lars@metafoo.de, albertchen@realtek.com, shumingf@realtek.com,
- flove@realtek.com
+Cc: alsa-devel@alsa-project.org, derek.fang@realtek.com,
+ linux-kernel@vger.kernel.org, stable@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -81,13 +81,20 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Mon, 28 Mar 2022 13:33:38 +0800, derek.fang@realtek.com wrote:
-> From: Derek Fang <derek.fang@realtek.com>
+On Sun, 27 Mar 2022 16:10:02 +0800, Xiaomeng Tong wrote:
+> The bug is here:
+> 	if (!dai) {
 > 
-> Control the regulators separately instead of using regulator_bulk to
-> accord to the timing request in the datasheet.
+> The list iterator value 'dai' will *always* be set and non-NULL
+> by for_each_component_dais(), so it is incorrect to assume that
+> the iterator value will be NULL if the list is empty or no element
+> is found (In fact, it will be a bogus pointer to an invalid struct
+> object containing the HEAD). Otherwise it will bypass the check
+> 'if (!dai) {' (never call dev_err() and never return -ENODEV;)
+> and lead to invalid memory access lately when calling
+> 'rt5682_set_bclk1_ratio(dai, factor);'.
 > 
-> 
+> [...]
 
 Applied to
 
@@ -95,8 +102,8 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: rt5682s: Separate the regulator consumer controls
-      commit: bc0505bdfb85fc2eb8767c7eb5aec556e176cb41
+[1/1] codecs: rt5682: fix an incorrect NULL check on list iterator
+      commit: c8618d65007ba68d7891130642d73e89372101e8
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
