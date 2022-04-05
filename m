@@ -4,76 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id CF9EFC433EF
-	for <alsa-devel@archiver.kernel.org>; Tue,  5 Apr 2022 15:38:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id CC713C433EF
+	for <alsa-devel@archiver.kernel.org>; Tue,  5 Apr 2022 16:07:25 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id DE0A61774;
-	Tue,  5 Apr 2022 17:37:19 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DE0A61774
+	by alsa0.perex.cz (Postfix) with ESMTPS id 2043D1785;
+	Tue,  5 Apr 2022 18:06:33 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2043D1785
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1649173089;
-	bh=B71FoNUqZdUne/qe1E9xWKXEEFKXBJjXYedQ6YEnXDg=;
-	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1649174843;
+	bh=z6psD/8cpuwuBPw61RJxzUQDar2E7GB7lXoYU/LcSLs=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=gQ3Ll5QpbcAqaVAFAsvJWlCrOqUvKrSpqShXjbAIL31YrJRH/B10DLemuHksyqwGE
-	 fvQh0cnHZjcReNZ87ajsP9Nlax4827wMPC0hPcaZt/foHp55YdrDbWrHIT+8COvpo9
-	 qfmNGVnKjR4w88DQZolDTZ4fEE18b9RtHU3pDD+M=
+	b=CKT9y8vQtF/AoGS2up1RKPlF3n7QMKHQBGWqt9nrsRGlmiV8fnhi4u/7ywIARbmOJ
+	 +LA3w58bDGf9ug4h5nrtico5Vw6h7GbpAuD86iLWF4HMb4yyvvijfOO/2x2c2k6tLG
+	 5Z60mxzGwfQDZurRGxVDYoYw+yLVMO1hV471U/ew=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 8159BF8014B;
-	Tue,  5 Apr 2022 17:37:19 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id AC54DF800D2;
+	Tue,  5 Apr 2022 18:06:32 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 994E8F8012C; Tue,  5 Apr 2022 17:37:18 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+ id E95B0F8016A; Tue,  5 Apr 2022 18:06:30 +0200 (CEST)
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 4B42AF8012C
- for <alsa-devel@alsa-project.org>; Tue,  5 Apr 2022 17:37:10 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4B42AF8012C
+ by alsa1.perex.cz (Postfix) with ESMTPS id 9C693F800D2
+ for <alsa-devel@alsa-project.org>; Tue,  5 Apr 2022 18:06:26 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9C693F800D2
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="ckGGO2G2"
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+ dkim=pass (1024-bit key) header.d=alien8.de header.i=@alien8.de
+ header.b="gegC6rwL"
+Received: from zn.tnic (p2e55dff8.dip0.t-ipconnect.de [46.85.223.248])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id E78BC6184A;
- Tue,  5 Apr 2022 15:37:07 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 80488C385A0;
- Tue,  5 Apr 2022 15:37:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1649173027;
- bh=B71FoNUqZdUne/qe1E9xWKXEEFKXBJjXYedQ6YEnXDg=;
- h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
- b=ckGGO2G2Mbm4Yc3/yniY9O0/9GsO/TkdzlK1/hwMowWAtPWLGK9oe5WuHXF3KuHEP
- 0mmL8ZQmDPhElerlXQV4l1gXG2CLU7QyMlO4kFzz6To9DeDvIRciNeAH97aycDTfMg
- 1Q5tOjYzaeutYMASko1MjrGd/2SJ+bYqlV3gJKLqGtgUUw8r7XWegyoW69UWcY+kj3
- wfWNLcyf5hoRV3YKvQ3+wno4633847GBEcNlVj6t4P9eyneI8SZu6nvep7D3tOQVp8
- H49zOcY6sbTXYDl9Uod9KKfew3WCCfyn97ZOzNo0HiOdPX2j1RbPZ0js8QmU9I/Sdt
- SBzAZaMGek0LA==
-Date: Tue, 5 Apr 2022 17:37:01 +0200
-From: Mauro Carvalho Chehab <mchehab@kernel.org>
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH v2 1/2] ASoC: Intel: sof_es8336: support a separate gpio
- to control headphone
-Message-ID: <20220405173701.1459b198@coco.lan>
-In-Reply-To: <5df9bb3c-2346-f465-fcae-eb6fe381def3@linux.intel.com>
-References: <cover.1649147890.git.mchehab@kernel.org>
- <0f1e8233fc6744c3d78353e4a20f9669035e693d.1649147890.git.mchehab@kernel.org>
- <5df9bb3c-2346-f465-fcae-eb6fe381def3@linux.intel.com>
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.31; x86_64-redhat-linux-gnu)
+ by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 752E21EC0502;
+ Tue,  5 Apr 2022 18:06:22 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+ t=1649174782;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+ bh=+l8x0npVHQPxXN8Jiw+gTLW632Eoh0dwy+8lcfQVWk8=;
+ b=gegC6rwLvXB2k5OYbibB7lCieya+klwRoI9ayiojrjzhL5+dgOrStUCrd9Zuge5TiWA+qx
+ hqxZKJiVM/6bxN5fLDL7xISUUDmvsibLMFEtFzQRUT65RwM/EvUdZwy97j0+8nhQmrqrwS
+ 9mOhd7Kerbl6Tv7wZS6hITMkaS4j51Y=
+Date: Tue, 5 Apr 2022 18:06:19 +0200
+From: Borislav Petkov <bp@alien8.de>
+To: Takashi Iwai <tiwai@suse.de>
+Subject: Re: [PATCH 02/11] ALSA: usb-audio: Fix undefined behavior due to
+ shift overflowing the constant
+Message-ID: <Ykxo+0p5IeeM7mge@zn.tnic>
+References: <20220405151517.29753-1-bp@alien8.de>
+ <20220405151517.29753-3-bp@alien8.de>
+ <s5hwng35yvz.wl-tiwai@suse.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-Cc: Cezary Rojewski <cezary.rojewski@intel.com>, alsa-devel@alsa-project.org,
- Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
- Bard Liao <yung-chuan.liao@linux.intel.com>,
- Jie Yang <yang.jie@linux.intel.com>, Takashi Iwai <tiwai@suse.com>,
- Liam Girdwood <liam.r.girdwood@linux.intel.com>,
- Hans de Goede <hdegoede@redhat.com>, Mark Brown <broonie@kernel.org>,
- =?UTF-8?B?UMOpdGVy?= Ujfalusi <peter.ujfalusi@linux.intel.com>,
- linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <s5hwng35yvz.wl-tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.com>,
+ LKML <linux-kernel@vger.kernel.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -89,92 +79,18 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Em Tue, 5 Apr 2022 09:57:30 -0500
-Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com> escreveu:
-
-> On 4/5/22 03:44, Mauro Carvalho Chehab wrote:
-> > From: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-> > 
-> > Some devices may use both gpio0 and gpio1 to independently switch
-> > the speaker and the headphone.
-> > 
-> > Add support for that.
-> > 
-> > Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-> > Signed-off-by: Mauro Carvalho Chehab <mchehab@kernel.org>
-> > ---
-> > 
-> > See [PATCH v2 0/2] at: https://lore.kernel.org/all/cover.1649147890.git.mchehab@kernel.org/
-> > 
-> >   sound/soc/intel/boards/sof_es8336.c | 60 ++++++++++++++++++++++++-----
-> >   1 file changed, 50 insertions(+), 10 deletions(-)
-> > 
-> > diff --git a/sound/soc/intel/boards/sof_es8336.c b/sound/soc/intel/boards/sof_es8336.c
-> > index 5e0529aa4f1d..bcd80870d252 100644
-> > --- a/sound/soc/intel/boards/sof_es8336.c
-> > +++ b/sound/soc/intel/boards/sof_es8336.c
-> > @@ -30,6 +30,7 @@
-> >   #define SOF_ES8336_TGL_GPIO_QUIRK		BIT(4)
-> >   #define SOF_ES8336_ENABLE_DMIC			BIT(5)
-> >   #define SOF_ES8336_JD_INVERTED			BIT(6)
-> > +#define SOF_ES8336_HEADPHONE_GPIO		BIT(7)
-> >   
-> >   static unsigned long quirk;
-> >   
-> > @@ -39,7 +40,7 @@ MODULE_PARM_DESC(quirk, "Board-specific quirk override");
-> >   
-> >   struct sof_es8336_private {
-> >   	struct device *codec_dev;
-> > -	struct gpio_desc *gpio_pa;
-> > +	struct gpio_desc *gpio_pa, *gpio_pa_headphone;
-> >   	struct snd_soc_jack jack;
-> >   	struct list_head hdmi_pcm_list;
-> >   	bool speaker_en;
-> > @@ -51,15 +52,28 @@ struct sof_hdmi_pcm {
-> >   	int device;
-> >   };
-> >   
-> > -static const struct acpi_gpio_params pa_enable_gpio = { 0, 0, true };
-> > +static const struct acpi_gpio_params pa_enable_gpio0 = { 0, 0, true };
-> > +static const struct acpi_gpio_params pa_enable_gpio1 = { 1, 0, true };
-> > +
-> >   static const struct acpi_gpio_mapping acpi_es8336_gpios[] = {
-> > -	{ "pa-enable-gpios", &pa_enable_gpio, 1 },
-> > +	{ "pa-enable-gpios", &pa_enable_gpio0, 1 },
-> >   	{ }
-> >   };
-> >   
-> > -static const struct acpi_gpio_params quirk_pa_enable_gpio = { 1, 0, true };
-> >   static const struct acpi_gpio_mapping quirk_acpi_es8336_gpios[] = {
-> > -	{ "pa-enable-gpios", &quirk_pa_enable_gpio, 1 },
-> > +	{ "pa-enable-gpios", &pa_enable_gpio1, 1 },
-> > +	{ }
-> > +};
-> > +
-> > +static const struct acpi_gpio_mapping quirk_acpi_headphone_es8336_gpios[] = {
-> > +	{ "pa-enable-gpios", &pa_enable_gpio0, 1 },
-> > +	{ "pa-enable-headphone-gpios", &pa_enable_gpio1, 1 },
-> > +	{ }
-> > +};
-> > +
-> > +static const struct acpi_gpio_mapping quirk_tgl_acpi_headphone_es8336_gpios[] = {
-> > +	{ "pa-enable-gpios", &pa_enable_gpio1, 1 },
-> > +	{ "pa-enable-headphone-gpios", &pa_enable_gpio0, 1 },
-> >   	{ }  
+On Tue, Apr 05, 2022 at 05:32:48PM +0200, Takashi Iwai wrote:
+> > +#define USB_ID(vendor, product) ((((unsigned int)vendor) << 16) | (product))
 > 
-> This is starting to be a bit messy, the initial gpios were really 
-> intended for speakers and should be clearly referring to speakers now. 
-> the TGL quirk really means gpio1 is used instead of gpio0, and I can't 
-> figure out what the 'pa' prefix is needed for.
-> 
-> Can I suggest the attached cleanup patch be added first? That would make 
-> it clearer and more readable IMHO. Compile-tested only since I don't 
-> have hardware.
+> Parentheses are needed around vendor (as usual for a macro).
+> Could you resubmit with it?
 
-Makes sense. I'll place it before the first patch, rebase them,
-test and re-submit.
+Or you can fix it up while applying. :)
 
-> Thanks!
+Thx.
 
-Thanks!
-Mauro
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
