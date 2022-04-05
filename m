@@ -4,52 +4,56 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8C7D0C433F5
-	for <alsa-devel@archiver.kernel.org>; Tue,  5 Apr 2022 08:06:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4D112C433F5
+	for <alsa-devel@archiver.kernel.org>; Tue,  5 Apr 2022 08:06:49 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B5ADA17A3;
-	Tue,  5 Apr 2022 10:05:47 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B5ADA17A3
+	by alsa0.perex.cz (Postfix) with ESMTPS id 2882B17E8;
+	Tue,  5 Apr 2022 10:05:57 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2882B17E8
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1649145997;
-	bh=fhQwgGKLDx7THpmfvBR9gKy7BceDmuA8ybxTP6mTLdo=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=Qzf39oifAA5wBgIOuexdr8dzAJXPPHFiX/mKLrd4FjCpQjZr4dN7Gaaqfp8gkoKz6
-	 d4IziuCgXaNGtZ+B6FA6TgMNIP5kkmxq6eQEIEucqdJysSlDxHa26UQ28EFfFYr1qK
-	 gM/mlWCLyU2ZKYsyFn7Z8+9bt4Ub8N5RTFbj9g/Q=
+	s=default; t=1649146007;
+	bh=SJylHHYYKVQ9pTVnifn6dmHfjR4zYS2gbUtfLZX/0ow=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=mdtWAm5wDBj4y5TSnF9uLmcs4u/ZwGaQyxH0joTgaXn04GWjLLJMMgA93R1hI+mtq
+	 24lzHvuDXGASHWiR9j6GUBW5PXBXz9yuwG6Kgv5eY5V8he67FS6nKSeqb3pPdX50Ru
+	 FVxwe3HCbfMfVc1S50SjkDuxrXZN/JqOTMnP4BOY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 31588F805BF;
+	by alsa1.perex.cz (Postfix) with ESMTP id BD8EAF805C3;
 	Tue,  5 Apr 2022 10:00:42 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id CDC5CF8055B; Tue,  5 Apr 2022 10:00:34 +0200 (CEST)
+ id ECFADF8055A; Tue,  5 Apr 2022 10:00:34 +0200 (CEST)
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de
  [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 92176F8051B
+ by alsa1.perex.cz (Postfix) with ESMTPS id 480E6F80526
  for <alsa-devel@alsa-project.org>; Tue,  5 Apr 2022 10:00:08 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 92176F8051B
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 480E6F80526
 Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
  by metis.ext.pengutronix.de with esmtps
  (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92)
  (envelope-from <sha@pengutronix.de>)
- id 1nbe6h-0003fK-42; Tue, 05 Apr 2022 10:00:07 +0200
+ id 1nbe6g-0003d4-OV; Tue, 05 Apr 2022 10:00:06 +0200
 Received: from [2a0a:edc0:0:1101:1d::28] (helo=dude02.red.stw.pengutronix.de)
  by drehscheibe.grey.stw.pengutronix.de with esmtp (Exim 4.94.2)
  (envelope-from <sha@pengutronix.de>)
- id 1nbe6g-001BHf-Og; Tue, 05 Apr 2022 10:00:05 +0200
+ id 1nbe6g-001BHK-BE; Tue, 05 Apr 2022 10:00:04 +0200
 Received: from sha by dude02.red.stw.pengutronix.de with local (Exim 4.94.2)
  (envelope-from <sha@pengutronix.de>)
- id 1nbe6a-00BXZc-QE; Tue, 05 Apr 2022 10:00:00 +0200
+ id 1nbe6b-00BXa5-2B; Tue, 05 Apr 2022 10:00:01 +0200
 From: Sascha Hauer <s.hauer@pengutronix.de>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH v3 00/20] ASoC: fsl_micfil: Driver updates
-Date: Tue,  5 Apr 2022 09:59:39 +0200
-Message-Id: <20220405075959.2744803-1-s.hauer@pengutronix.de>
+Subject: [PATCH v3 10/20] dmaengine: imx-sdma: error out on unsupported
+ transfer types
+Date: Tue,  5 Apr 2022 09:59:49 +0200
+Message-Id: <20220405075959.2744803-11-s.hauer@pengutronix.de>
 X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20220405075959.2744803-1-s.hauer@pengutronix.de>
+References: <20220405075959.2744803-1-s.hauer@pengutronix.de>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
@@ -76,70 +80,83 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-This series has a bunch of cleanups for the FSL MICFIL driver. There is
-not much chance for regressions in this series as the driver currently
-can't work at all. The MICFIL needs multififo support in the i.MX SDMA
-engine which is added with this series, see 11/20.
+The i.MX SDMA driver currently silently ignores unsupported transfer
+types. These transfer types are specified in the dma channel description
+in the device tree, so they should really be checked.
+Issue a message and error out when we hit unsupported transfer types.
 
-The multififo support is selected in the dma phandle arguments in the
-device tree, the transfer type must be '25' aka IMX_DMATYPE_MULTI_SAI.
-This is set already to 25 in the upstream i.MX8M[NM] dtsi files, but the
-SDMA driver silently ignores unsupported values instead of throwing an
-error. This is fixed in this series and multififo support is added.
+Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
+---
 
-I think the series should go via the ASoC tree, so I'll need an ack from
-the DMA guys for 9/20, 10/20 and 11/20.
+Notes:
+    Changes since v2:
+    - Use prefix dmaengine:
 
-Chnages since v2:
-- Add forgotten commit log to dmaengine patches
-- Add patch to move include/linux/platform_data/dma-imx.h to include/linux/dma/imx-dma.h
-- Use prefix dmaengine: for dma patches
+ drivers/dma/imx-sdma.c | 17 +++++++++++++----
+ 1 file changed, 13 insertions(+), 4 deletions(-)
 
-Changes since v1:
-- Drop unused variable sw_done_sel
-- Evaluate sdmac->direction directly instead of storing value in n_fifos
-- add missing include linux/bitfield.h
-
-Sascha Hauer (20):
-  ASoC: fsl_micfil: Drop unnecessary register read
-  ASoC: fsl_micfil: Drop unused register read
-  ASoC: fsl_micfil: drop fsl_micfil_set_mclk_rate()
-  ASoC: fsl_micfil: do not define SHIFT/MASK for single bits
-  ASoC: fsl_micfil: use GENMASK to define register bit fields
-  ASoC: fsl_micfil: use clear/set bits
-  ASoC: fsl_micfil: drop error messages from failed register accesses
-  ASoC: fsl_micfil: drop unused variables
-  dmaengine: imx: Move header to include/dma/
-  dmaengine: imx-sdma: error out on unsupported transfer types
-  dmaengine: imx-sdma: Add multi fifo support
-  ASoC: fsl_micfil: add multi fifo support
-  ASoC: fsl_micfil: use define for OSR default value
-  ASoC: fsl_micfil: Drop get_pdm_clk()
-  ASoC: fsl_micfil: simplify clock setting
-  ASoC: fsl_micfil: rework quality setting
-  ASoC: fsl_micfil: drop unused include
-  ASoC: fsl_micfil: drop only once used defines
-  ASoC: fsl_micfil: drop support for undocumented property
-  ASoC: fsl_micfil: fold fsl_set_clock_params() into its only user
-
- drivers/dma/imx-dma.c                         |   2 +-
- drivers/dma/imx-sdma.c                        |  76 +++-
- drivers/mmc/host/mxcmmc.c                     |   2 +-
- drivers/spi/spi-fsl-lpspi.c                   |   2 +-
- drivers/spi/spi-imx.c                         |   2 +-
- drivers/tty/serial/imx.c                      |   2 +-
- drivers/video/fbdev/mx3fb.c                   |   2 +-
- .../dma-imx.h => dma/imx-dma.h}               |  26 +-
- sound/soc/fsl/fsl_asrc.c                      |   2 +-
- sound/soc/fsl/fsl_asrc_dma.c                  |   2 +-
- sound/soc/fsl/fsl_easrc.h                     |   2 +-
- sound/soc/fsl/fsl_micfil.c                    | 369 +++++++-----------
- sound/soc/fsl/fsl_micfil.h                    | 269 +++----------
- sound/soc/fsl/imx-pcm.h                       |   2 +-
- sound/soc/fsl/imx-ssi.h                       |   2 +-
- 15 files changed, 297 insertions(+), 465 deletions(-)
- rename include/linux/{platform_data/dma-imx.h => dma/imx-dma.h} (67%)
-
+diff --git a/drivers/dma/imx-sdma.c b/drivers/dma/imx-sdma.c
+index 80261a905eb5b..0e70843567cef 100644
+--- a/drivers/dma/imx-sdma.c
++++ b/drivers/dma/imx-sdma.c
+@@ -940,7 +940,7 @@ static irqreturn_t sdma_int_handler(int irq, void *dev_id)
+ /*
+  * sets the pc of SDMA script according to the peripheral type
+  */
+-static void sdma_get_pc(struct sdma_channel *sdmac,
++static int sdma_get_pc(struct sdma_channel *sdmac,
+ 		enum sdma_peripheral_type peripheral_type)
+ {
+ 	struct sdma_engine *sdma = sdmac->sdma;
+@@ -1039,13 +1039,17 @@ static void sdma_get_pc(struct sdma_channel *sdmac,
+ 		emi_2_per = sdma->script_addrs->ext_mem_2_ipu_addr;
+ 		break;
+ 	default:
+-		break;
++		dev_err(sdma->dev, "Unsupported transfer type %d\n",
++			peripheral_type);
++		return -EINVAL;
+ 	}
+ 
+ 	sdmac->pc_from_device = per_2_emi;
+ 	sdmac->pc_to_device = emi_2_per;
+ 	sdmac->device_to_device = per_2_per;
+ 	sdmac->pc_to_pc = emi_2_emi;
++
++	return 0;
+ }
+ 
+ static int sdma_load_context(struct sdma_channel *sdmac)
+@@ -1213,6 +1217,7 @@ static void sdma_set_watermarklevel_for_p2p(struct sdma_channel *sdmac)
+ static int sdma_config_channel(struct dma_chan *chan)
+ {
+ 	struct sdma_channel *sdmac = to_sdma_chan(chan);
++	int ret;
+ 
+ 	sdma_disable_channel(chan);
+ 
+@@ -1233,7 +1238,9 @@ static int sdma_config_channel(struct dma_chan *chan)
+ 		break;
+ 	}
+ 
+-	sdma_get_pc(sdmac, sdmac->peripheral_type);
++	ret = sdma_get_pc(sdmac, sdmac->peripheral_type);
++	if (ret)
++		return ret;
+ 
+ 	if ((sdmac->peripheral_type != IMX_DMATYPE_MEMORY) &&
+ 			(sdmac->peripheral_type != IMX_DMATYPE_DSP)) {
+@@ -1349,7 +1356,9 @@ static int sdma_alloc_chan_resources(struct dma_chan *chan)
+ 		mem_data.dma_request2 = 0;
+ 		data = &mem_data;
+ 
+-		sdma_get_pc(sdmac, IMX_DMATYPE_MEMORY);
++		ret = sdma_get_pc(sdmac, IMX_DMATYPE_MEMORY);
++		if (ret)
++			return ret;
+ 	}
+ 
+ 	switch (data->priority) {
 -- 
 2.30.2
 
