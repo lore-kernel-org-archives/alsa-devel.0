@@ -4,84 +4,111 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A8D82C433EF
-	for <alsa-devel@archiver.kernel.org>; Tue,  5 Apr 2022 13:56:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id BC682C433F5
+	for <alsa-devel@archiver.kernel.org>; Tue,  5 Apr 2022 13:57:23 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E18F917EE;
-	Tue,  5 Apr 2022 15:56:04 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E18F917EE
+	by alsa0.perex.cz (Postfix) with ESMTPS id 005B3184C;
+	Tue,  5 Apr 2022 15:56:32 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 005B3184C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1649167015;
-	bh=d0hsk5pSs1MKjclvyuueCzDoAucg0ejXaNCFspxGINM=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1649167042;
+	bh=Bmw8bIGkFmxE694w529D56oHaxOXPcfJ0O16D8LuIHI=;
+	h=Date:Subject:To:References:From:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=MENfGgjwso3TiBk0A5QYxJ8RInumIyZunL1lmSqr/zM5Cxwj3fYeXdkqyR2vXxMFR
-	 yKkXLU0Q9E8dHTzQIThuGKdxFHRruBPEleOmlX4EzhHR5LxSKN4eick7QlCcuO4IV1
-	 QUK0jxbbpHpkoF6adlvyDQnnqHfYKKzIF9BzTLmc=
+	b=kmVFzunLlDGQPCzbz1rMbdLo4ENa6dm1TE0mOiJspok89wFEqSevH+vzulPXAXc50
+	 Tvj/Aq6POtC8A4yvs0lW3kMa72eR7TlEgzGHc13GZyYUE8DIMYN539Qn6N0q31fFj4
+	 QMUsEWzZAY6tHZl7PgbqEG0mMyJwH3cnv8uX65vY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id C3DA0F80538;
-	Tue,  5 Apr 2022 15:54:41 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id D3773F8016A;
+	Tue,  5 Apr 2022 15:56:30 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 9169AF80525; Tue,  5 Apr 2022 15:54:39 +0200 (CEST)
-Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
- [67.231.149.25])
+ id 4C725F8014B; Tue,  5 Apr 2022 15:56:29 +0200 (CEST)
+Received: from us-smtp-delivery-124.mimecast.com
+ (us-smtp-delivery-124.mimecast.com [170.10.129.124])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 95D26F8051C
- for <alsa-devel@alsa-project.org>; Tue,  5 Apr 2022 15:54:28 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 95D26F8051C
+ by alsa1.perex.cz (Postfix) with ESMTPS id A8709F8014B
+ for <alsa-devel@alsa-project.org>; Tue,  5 Apr 2022 15:56:26 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A8709F8014B
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com
- header.b="Mn5mZuyz"
-Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
- by mx0a-001ae601.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 235BpSUD025148;
- Tue, 5 Apr 2022 08:54:26 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
- h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding : content-type; s=PODMain02222019;
- bh=4d6rWR2g05rrvgH9va5u4PzJbivisDzt5rjTsvYag0c=;
- b=Mn5mZuyzXlj2NymzhbFhc00KtzTkkm0ahpwT0N4SH1DqKDIWibBjdTV/uheKL0Cb4wm8
- Wit1TM1nUcKCt6yD+GDGhcazOLnLkP2TTmBNfgiaU5c2I4bzIC1Y/4sgROIwC3exvoNg
- Uum8ftOB0iMBnl6OEMC/vR4G72GZg7krklc+jb77+6sVD09+GLimo9sPEZSBfPgmFLNu
- j+o8Ol09ny6yfspIozkypXKsk0ykIalrYsvNlm0v1Z/6JH0gorbLx4lVGD5KnRFx+AgN
- 1qavsb0GqFFcNLcUXuVxqNkM7ODnzJGEM5hM1E2eHMTqVloBmn6yNh9NMVcYcnmrUp+w PA== 
-Received: from ediex02.ad.cirrus.com ([84.19.233.68])
- by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3f6kw2brwt-2
- (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
- Tue, 05 Apr 2022 08:54:26 -0500
-Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX02.ad.cirrus.com
- (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.24; Tue, 5 Apr
- 2022 14:54:23 +0100
-Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server id 15.1.2375.24 via
- Frontend Transport; Tue, 5 Apr 2022 14:54:23 +0100
-Received: from AUSNPC0LSNW1-debian.cirrus.com (AUSNPC0LSNW1.ad.cirrus.com
- [198.61.65.88])
- by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 9711B475;
- Tue,  5 Apr 2022 13:54:23 +0000 (UTC)
-From: Richard Fitzgerald <rf@opensource.cirrus.com>
-To: <broonie@kernel.org>
-Subject: [PATCH v2 2/5] ASoC: soc-utils: Add helper to calculate BCLK from TDM
- info
-Date: Tue, 5 Apr 2022 14:54:16 +0100
-Message-ID: <20220405135419.1230088-3-rf@opensource.cirrus.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20220405135419.1230088-1-rf@opensource.cirrus.com>
-References: <20220405135419.1230088-1-rf@opensource.cirrus.com>
+ dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com
+ header.b="H6BGGi4l"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+ s=mimecast20190719; t=1649166985;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=cfhShkJ9GGB5NMk/Kf+P1wbpLhxJJWK4mdwN+7tkv6Q=;
+ b=H6BGGi4l9NvhIIIPEwHX0u3PRm8XnbVZjkkcmQw3GFW8leN3E16KTVZkN9fX5k218J0Cbi
+ Y6c4MW732GDgfaqohtJTLiHdaGvGC25XM3Hm+oZi8r6nE1o7+5Lf5b4LQxvqf1sS3rYo0q
+ BYPZinlX629DmGFnHX4kY26yqkn2Kgc=
+Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
+ [209.85.208.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-659-Gq2mh5oaOE-r2pZe31seJg-1; Tue, 05 Apr 2022 09:56:23 -0400
+X-MC-Unique: Gq2mh5oaOE-r2pZe31seJg-1
+Received: by mail-ed1-f72.google.com with SMTP id
+ bc9-20020a056402204900b0041cc2b0bff3so4048851edb.2
+ for <alsa-devel@alsa-project.org>; Tue, 05 Apr 2022 06:56:23 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+ :content-language:to:cc:references:from:in-reply-to
+ :content-transfer-encoding;
+ bh=cfhShkJ9GGB5NMk/Kf+P1wbpLhxJJWK4mdwN+7tkv6Q=;
+ b=SDG+/OHxXcoOzbehaZJU/JgXRSGPLcYLaZgHqsMMfB8j+n2nY9/Y55o8dZt//ptvnf
+ VMnhHDsWCczioxGLjtOdhQg07b0zkdTx71pi2+F53P0K/v/WFCzwDH1xVpYXpVsAeVQd
+ pUTMtSBlMatt5YILJkR/osdbjXyqcu1axkdU3kqzgGQ1fWggJQYYOKtwGf3T/Qypjldp
+ RnKB12LeQn7X/pbpIIr2qT8AnuvOsQxgUDqjF5JiUwtwsrySEs2nulluQt0Ue+GwCy1P
+ mmFyhxjo/sJfwLA1tmjbGFGuhxA/tNcbhNjUJENoxefFkBd84DrEIv0e/sv65jPBWcQb
+ RNaA==
+X-Gm-Message-State: AOAM5333ITiJ2/J1lFekzzF03s9DcjDvWV7fYaox+fIrf2W26gSCfZBB
+ 3GG8DhOyO3hisS5AEr/fEcZDLjdEU/MpLG41I7fYAzH8/jhTPDRZErIonr5rahdpge3mILmDZnA
+ bAz0io/pYJlbbcT0hUO4jK7s=
+X-Received: by 2002:a17:907:3f92:b0:6e7:2ad3:a92b with SMTP id
+ hr18-20020a1709073f9200b006e72ad3a92bmr3830785ejc.239.1649166982498; 
+ Tue, 05 Apr 2022 06:56:22 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJx69MGrYFiX2diEdHGCV1GaeBoAESL3VkLvFfkO+94ucsSVEn/t7bVB93+D7yDW19qjYnxehg==
+X-Received: by 2002:a17:907:3f92:b0:6e7:2ad3:a92b with SMTP id
+ hr18-20020a1709073f9200b006e72ad3a92bmr3830772ejc.239.1649166982285; 
+ Tue, 05 Apr 2022 06:56:22 -0700 (PDT)
+Received: from ?IPV6:2001:1c00:c1e:bf00:1db8:22d3:1bc9:8ca1?
+ (2001-1c00-0c1e-bf00-1db8-22d3-1bc9-8ca1.cable.dynamic.v6.ziggo.nl.
+ [2001:1c00:c1e:bf00:1db8:22d3:1bc9:8ca1])
+ by smtp.gmail.com with ESMTPSA id
+ s4-20020a170906a18400b006db0a78bde8sm5576897ejy.87.2022.04.05.06.56.21
+ (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+ Tue, 05 Apr 2022 06:56:21 -0700 (PDT)
+Message-ID: <6b61410d-ce1e-e84c-4a4e-aa3b22f3dc89@redhat.com>
+Date: Tue, 5 Apr 2022 15:56:21 +0200
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: eT3ZaaXP_DxRzllQcsDM9-C86CHR2txL
-X-Proofpoint-GUID: eT3ZaaXP_DxRzllQcsDM9-C86CHR2txL
-X-Proofpoint-Spam-Reason: safe
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
- patches@opensource.cirrus.com, linux-kernel@vger.kernel.org,
- Richard Fitzgerald <rf@opensource.cirrus.com>, robh+dt@kernel.org
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.7.0
+Subject: Re: [PATCH v2 0/2] Make headphone work on Huawei Matebook D15
+To: Mauro Carvalho Chehab <mchehab@kernel.org>
+References: <cover.1649147890.git.mchehab@kernel.org>
+ <168fe6c3-6a7d-4019-16e3-066caf394b8a@redhat.com>
+ <20220405154816.5cfdc49c@coco.lan>
+From: Hans de Goede <hdegoede@redhat.com>
+In-Reply-To: <20220405154816.5cfdc49c@coco.lan>
+Authentication-Results: relay.mimecast.com;
+ auth=pass smtp.auth=CUSA124A263 smtp.mailfrom=hdegoede@redhat.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: redhat.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+Cc: Cezary Rojewski <cezary.rojewski@intel.com>, alsa-devel@alsa-project.org,
+ =?UTF-8?Q?P=c3=a9ter_Ujfalusi?= <peter.ujfalusi@linux.intel.com>,
+ Takashi Iwai <tiwai@suse.com>, Jie Yang <yang.jie@linux.intel.com>,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ Liam Girdwood <liam.r.girdwood@linux.intel.com>,
+ Mark Brown <broonie@kernel.org>, Bard Liao <yung-chuan.liao@linux.intel.com>,
+ linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -97,105 +124,50 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Add a helper function snd_soc_tdm_params_to_bclk() to calculate
-the bclk from params info and the tdm sots configuration.
+Hi,
 
-When using a TDM frame of N slots of width W bits:
+On 4/5/22 15:48, Mauro Carvalho Chehab wrote:
+> Em Tue, 5 Apr 2022 11:00:44 +0200
+> Hans de Goede <hdegoede@redhat.com> escreveu:
+> 
+>> Hi,
+>>
+>> On 4/5/22 10:44, Mauro Carvalho Chehab wrote:
+>>> At Huawei Matebook D15 two different GPIOs are used to control the output:
+>>> 	- gpio0 controls the speaker output;
+>>> 	- gpio1 controls the headphone output.
+>>>
+>>> Changing both at the same time cause spurious events that are mis-interpreted
+>>> as input events, causing troubles on apps. So, a delay is needed before turning
+>>> on such gpios.
+>>>
+>>> With this patch, plugging a headphone causes a jack event to trigger the speaker
+>>> supply, powering down the speaker and powering up the headphone output.
+>>> Removing the headphone also triggers the power supply, powering up the speaker
+>>> and powering down the headphone.
+>>>
+>>> Mauro Carvalho Chehab (2):
+>>>   ASoC: Intel: sof_es8336: support a separate gpio to control headphone
+>>>   ASoC: Intel: sof_es8336: Huawei Matebook D15 uses a headphone gpio  
+>>
+>> There is something weird with the patches here, at least for me in Thunderbird
+>> both patches show up as nameless attachments to emails with empty bodies.
+> 
+> Weird... I tested here on Thunderbird (Fedora 35), reading it from the ML
+> and they opened ok here.
 
-   bclk = sample_rate * N * W
+Yes I checked lore.kernel.org and they look fine there, so as you
+said: weird.
 
-As a convenience to simplify calling code, if the slot count or
-slot width are 0 a value will be obtained from the params. This
-allows calling code to use this one function to handle cases of
-TDM where only one parameter is fixed, or I2S where the slot width
-is fixed (for example to set a 32-bit slot for 24-bit samples).
+> There *is* an issue on such patches though: they ended using my past
+> e-mail :-) 
+> 
+> I'll re-send those with your ack using the right SoB/From
+> mchehab@kernel.org.
 
-Also as a convenience the slot count can optionally be rounded up
-to a multiple. This is mainly useful for I2S systems, since I2S has
-two phases of LRCLK the number of slots is always a multiple of 2.
+And in the resend they look fine in my Thunderbird too.
 
-Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
----
- include/sound/soc.h   |  2 ++
- sound/soc/soc-utils.c | 45 +++++++++++++++++++++++++++++++++++++++++++
- 2 files changed, 47 insertions(+)
+Regards,
 
-diff --git a/include/sound/soc.h b/include/sound/soc.h
-index 55fb6a6d7d25..2d3261799d2c 100644
---- a/include/sound/soc.h
-+++ b/include/sound/soc.h
-@@ -487,6 +487,8 @@ int snd_soc_calc_frame_size(int sample_size, int channels, int tdm_slots);
- int snd_soc_params_to_frame_size(struct snd_pcm_hw_params *params);
- int snd_soc_calc_bclk(int fs, int sample_size, int channels, int tdm_slots);
- int snd_soc_params_to_bclk(struct snd_pcm_hw_params *parms);
-+int snd_soc_tdm_params_to_bclk(struct snd_pcm_hw_params *params,
-+			       int tdm_width, int tdm_slots, int slot_multiple);
- 
- /* set runtime hw params */
- int snd_soc_set_runtime_hwparams(struct snd_pcm_substream *substream,
-diff --git a/sound/soc/soc-utils.c b/sound/soc/soc-utils.c
-index a4efe7e52a8b..594cb311ff30 100644
---- a/sound/soc/soc-utils.c
-+++ b/sound/soc/soc-utils.c
-@@ -9,6 +9,7 @@
- 
- #include <linux/platform_device.h>
- #include <linux/export.h>
-+#include <linux/math.h>
- #include <sound/core.h>
- #include <sound/pcm.h>
- #include <sound/pcm_params.h>
-@@ -52,6 +53,50 @@ int snd_soc_params_to_bclk(struct snd_pcm_hw_params *params)
- }
- EXPORT_SYMBOL_GPL(snd_soc_params_to_bclk);
- 
-+/**
-+ * snd_soc_tdm_params_to_bclk - calculate bclk from params and tdm slot info.
-+ *
-+ * Calculate the bclk from the params sample rate and the tdm slot count and
-+ * tdm slot width. Either or both of tdm_width and tdm_slots can be 0.
-+ *
-+ * If tdm_width == 0 and tdm_slots > 0:	the params_width will be used.
-+ * If tdm_width > 0 and tdm_slots == 0:	the params_channels will be used
-+ *					as the slot count.
-+ * Both tdm_width and tdm_slots are 0:	this is equivalent to calling
-+ *					snd_soc_params_to_bclk().
-+ *
-+ * If slot_multiple > 1 the slot count (or params_channels if tdm_slots == 0)
-+ * will be rounded up to a multiple of this value. This is mainly useful for
-+ * I2S mode, which has a left and right phase so the number of slots is always
-+ * a multiple of 2.
-+ *
-+ * @params:        Pointer to struct_pcm_hw_params.
-+ * @tdm_width:     Width in bits of the tdm slots.
-+ * @tdm_slots:     Number of tdm slots per frame.
-+ * @slot_multiple: If >1 roundup slot count to a multiple of this value.
-+ *
-+ * Return: bclk frequency in Hz, else a negative error code if params format
-+ *	   is invalid.
-+ */
-+int snd_soc_tdm_params_to_bclk(struct snd_pcm_hw_params *params,
-+			       int tdm_width, int tdm_slots, int slot_multiple)
-+{
-+	if (!tdm_slots)
-+		tdm_slots = params_channels(params);
-+
-+	if (slot_multiple > 1)
-+		tdm_slots = roundup(tdm_slots, slot_multiple);
-+
-+	if (!tdm_width) {
-+		tdm_width = snd_pcm_format_width(params_format(params));
-+		if (tdm_width < 0)
-+			return tdm_width;
-+	}
-+
-+	return snd_soc_calc_bclk(params_rate(params), tdm_width, 1, tdm_slots);
-+}
-+EXPORT_SYMBOL_GPL(snd_soc_tdm_params_to_bclk);
-+
- static const struct snd_pcm_hardware dummy_dma_hardware = {
- 	/* Random values to keep userspace happy when checking constraints */
- 	.info			= SNDRV_PCM_INFO_INTERLEAVED |
--- 
-2.30.2
+Hans
 
