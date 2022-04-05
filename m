@@ -4,64 +4,76 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id CC713C433EF
-	for <alsa-devel@archiver.kernel.org>; Tue,  5 Apr 2022 16:07:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B3EA0C433EF
+	for <alsa-devel@archiver.kernel.org>; Tue,  5 Apr 2022 16:17:14 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 2043D1785;
-	Tue,  5 Apr 2022 18:06:33 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2043D1785
+	by alsa0.perex.cz (Postfix) with ESMTPS id 7330917A7;
+	Tue,  5 Apr 2022 18:16:22 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7330917A7
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1649174843;
-	bh=z6psD/8cpuwuBPw61RJxzUQDar2E7GB7lXoYU/LcSLs=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	s=default; t=1649175432;
+	bh=tXoU3lRqICObNTdg0Sxru3Phlvzb92HnWTbSeLYr604=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=CKT9y8vQtF/AoGS2up1RKPlF3n7QMKHQBGWqt9nrsRGlmiV8fnhi4u/7ywIARbmOJ
-	 +LA3w58bDGf9ug4h5nrtico5Vw6h7GbpAuD86iLWF4HMb4yyvvijfOO/2x2c2k6tLG
-	 5Z60mxzGwfQDZurRGxVDYoYw+yLVMO1hV471U/ew=
+	b=neQ8kp9mWPrOCBvDV6jHmcD6er8jcQiBkuslPcc44oCPJBHQgiJ0CtNqNTpgLhI6C
+	 9ICdmocXLcT+k8KqzN1qHhsJNuJWLxL0uCd/eyYpI72OzMQR3w4GylrVHshNn2prdP
+	 Bz67gxyXuN/6tgeT0xOJSiE7dMjNY8vUJtFIl3yc=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id AC54DF800D2;
-	Tue,  5 Apr 2022 18:06:32 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 168B6F800D1;
+	Tue,  5 Apr 2022 18:16:22 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id E95B0F8016A; Tue,  5 Apr 2022 18:06:30 +0200 (CEST)
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id C9154F8016A; Tue,  5 Apr 2022 18:16:20 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 9C693F800D2
- for <alsa-devel@alsa-project.org>; Tue,  5 Apr 2022 18:06:26 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9C693F800D2
+ by alsa1.perex.cz (Postfix) with ESMTPS id 6CF86F800D1
+ for <alsa-devel@alsa-project.org>; Tue,  5 Apr 2022 18:16:18 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6CF86F800D1
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=alien8.de header.i=@alien8.de
- header.b="gegC6rwL"
-Received: from zn.tnic (p2e55dff8.dip0.t-ipconnect.de [46.85.223.248])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 752E21EC0502;
- Tue,  5 Apr 2022 18:06:22 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
- t=1649174782;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
- bh=+l8x0npVHQPxXN8Jiw+gTLW632Eoh0dwy+8lcfQVWk8=;
- b=gegC6rwLvXB2k5OYbibB7lCieya+klwRoI9ayiojrjzhL5+dgOrStUCrd9Zuge5TiWA+qx
- hqxZKJiVM/6bxN5fLDL7xISUUDmvsibLMFEtFzQRUT65RwM/EvUdZwy97j0+8nhQmrqrwS
- 9mOhd7Kerbl6Tv7wZS6hITMkaS4j51Y=
-Date: Tue, 5 Apr 2022 18:06:19 +0200
-From: Borislav Petkov <bp@alien8.de>
-To: Takashi Iwai <tiwai@suse.de>
+ dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
+ header.b="pM1EpMtm"; 
+ dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
+ header.b="4Tej+bvG"
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+ by smtp-out1.suse.de (Postfix) with ESMTP id EED1C210F1;
+ Tue,  5 Apr 2022 16:16:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1649175377; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=1ZOY9F/5g5PeZhpDl0566aC7WZpwSzJmzpmgZjPPJCs=;
+ b=pM1EpMtmCVxrKZFrB9tLqjrLE/6GD5oYc2vVk5dgZvS3rczpy1QwsGUxs5Ek+3YtY8ypfz
+ tndqeVZDbPxz0CSEDVeYltfZSc705g9k9/oUkNgPkMsIZsu9pYe2B52yB/LAVhQp7mcElm
+ shSt4QJMq65o/v3icBKz/C+vagGCyPQ=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1649175377;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=1ZOY9F/5g5PeZhpDl0566aC7WZpwSzJmzpmgZjPPJCs=;
+ b=4Tej+bvG48jBLEq/iHWdONwEYnh5u0NpMsK9fU3f845V8jHN/awTO0gI5ReSv3mI0p3/Yr
+ e8FE95qhuVdKaOBw==
+Received: from alsa1.suse.de (alsa1.suse.de [10.160.4.42])
+ by relay2.suse.de (Postfix) with ESMTP id CF989A3B83;
+ Tue,  5 Apr 2022 16:16:17 +0000 (UTC)
+Date: Tue, 05 Apr 2022 18:16:17 +0200
+Message-ID: <s5hilrn5wvi.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Borislav Petkov <bp@alien8.de>
 Subject: Re: [PATCH 02/11] ALSA: usb-audio: Fix undefined behavior due to
  shift overflowing the constant
-Message-ID: <Ykxo+0p5IeeM7mge@zn.tnic>
+In-Reply-To: <Ykxo+0p5IeeM7mge@zn.tnic>
 References: <20220405151517.29753-1-bp@alien8.de>
  <20220405151517.29753-3-bp@alien8.de>
- <s5hwng35yvz.wl-tiwai@suse.de>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <s5hwng35yvz.wl-tiwai@suse.de>
+ <s5hwng35yvz.wl-tiwai@suse.de> <Ykxo+0p5IeeM7mge@zn.tnic>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=US-ASCII
 Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.com>,
  LKML <linux-kernel@vger.kernel.org>
 X-BeenThere: alsa-devel@alsa-project.org
@@ -79,18 +91,18 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Tue, Apr 05, 2022 at 05:32:48PM +0200, Takashi Iwai wrote:
-> > +#define USB_ID(vendor, product) ((((unsigned int)vendor) << 16) | (product))
+On Tue, 05 Apr 2022 18:06:19 +0200,
+Borislav Petkov wrote:
 > 
-> Parentheses are needed around vendor (as usual for a macro).
-> Could you resubmit with it?
+> On Tue, Apr 05, 2022 at 05:32:48PM +0200, Takashi Iwai wrote:
+> > > +#define USB_ID(vendor, product) ((((unsigned int)vendor) << 16) | (product))
+> > 
+> > Parentheses are needed around vendor (as usual for a macro).
+> > Could you resubmit with it?
+> 
+> Or you can fix it up while applying. :)
 
-Or you can fix it up while applying. :)
+If you prefer, sure.
 
-Thx.
 
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+Takashi
