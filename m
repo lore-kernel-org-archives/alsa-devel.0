@@ -4,64 +4,65 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C284DC433F5
-	for <alsa-devel@archiver.kernel.org>; Tue,  5 Apr 2022 17:29:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 80F7AC433EF
+	for <alsa-devel@archiver.kernel.org>; Tue,  5 Apr 2022 17:30:01 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 1B1691891;
-	Tue,  5 Apr 2022 19:28:55 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1B1691891
+	by alsa0.perex.cz (Postfix) with ESMTPS id BAC131893;
+	Tue,  5 Apr 2022 19:29:09 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BAC131893
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1649179785;
-	bh=0rHWpX84/YwgX548+7FlRNVCs6IiBjUldIjgakykE+Q=;
+	s=default; t=1649179799;
+	bh=YNKv9+iwUHW0laU8wEcyKLwmD5Puk8ohvQZR9y8ivlQ=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=bY9muH96ZrtRKLmL97KI5pZv4mVY9qrdxPcM20cqpRvsgFNQ5OqVOi6Lq9tTkYxJc
-	 0IQEuLA94F+L3w5paqArGShC6rSWnOlsaY0A3Z/hs8OB9BtYGTIGdRn1+TFA8uFlKW
-	 BJlK9p7KJFiTUXOJRUnXsw9jwmBsNA8cuZqZY5GI=
+	b=KAgToPYt8/dlmKqnFrRFqM1uEXpKR6g5A+ZJmewwLgs3NvGhDMkKpeclP3/txYlkE
+	 fWs6sFjJuxBiOHITBNPpeoMPymsb3iy1S1RtiyzaRc9/B4fJvupeBlJb0iEJUHiOmf
+	 XyCliG/o34dYTWM7vMh2rr3p1OqpY+Oa6Jf3fj9o=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 9EC08F8052D;
-	Tue,  5 Apr 2022 19:27:46 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id A00F2F8052E;
+	Tue,  5 Apr 2022 19:27:48 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 45D9BF8052E; Tue,  5 Apr 2022 19:27:43 +0200 (CEST)
+ id 6D4E8F8016A; Tue,  5 Apr 2022 19:27:43 +0200 (CEST)
 Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id CE327F80516
- for <alsa-devel@alsa-project.org>; Tue,  5 Apr 2022 19:27:36 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CE327F80516
+ by alsa1.perex.cz (Postfix) with ESMTPS id F2FD6F8016A
+ for <alsa-devel@alsa-project.org>; Tue,  5 Apr 2022 19:27:32 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F2FD6F8016A
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="leU5nnIU"
+ header.b="kZb4ZH2c"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1649179658; x=1680715658;
+ t=1649179655; x=1680715655;
  h=from:to:cc:subject:date:message-id:in-reply-to:
  references:mime-version:content-transfer-encoding;
- bh=0rHWpX84/YwgX548+7FlRNVCs6IiBjUldIjgakykE+Q=;
- b=leU5nnIULE0lqv+j7PjEjhuisXuT2I6Z5v/C3Q+3F7q/xCekwfYahjDS
- xBrDaTSGpMg1IE4emYg4nfJbmOnD5Op6RMEh8FTEizrvEah4P0FBMMrDW
- sFJyQBZfxgXOaRrY2IjArS9vzHmWVakxw1V+m89egfLZOt2og9o4EzCo5
- kuVcZ4AVvkjialKV7n8Rc6QPBlSj4yQolc1xDL7hVN4Wa69UHdU2FuT6N
- SEUawmZPL/o0WPvMykJ/Or1ivbqSVbJhxFYMV/Mm58FpvjaO/GJm9mfZq
- yX63+DUcn/VeZ961UOj66H4j9VZ39EPXa0ym+GgByIhgWvREiF4ysYXDE A==;
-X-IronPort-AV: E=McAfee;i="6200,9189,10308"; a="323986740"
-X-IronPort-AV: E=Sophos;i="5.90,236,1643702400"; d="scan'208";a="323986740"
+ bh=YNKv9+iwUHW0laU8wEcyKLwmD5Puk8ohvQZR9y8ivlQ=;
+ b=kZb4ZH2c4/nvsd+3rc8iox1YATAkRmHBtJpIVq57nAarYs8bFMXgEyXS
+ JgBOqrxr5c569eoYaHW84exAvOM8Cy9kWYGdbSVvITImId2JxyA0qoRgw
+ Za5SIT4UglcPYbgIcd/UjFVA03iBmYuCUT24W005isMhKkQ2xB0pJyjId
+ rCI6SpulHfI3nBVmG1V1qZJSwHnn3ZIAQ1owFXfNwD2FrOatHZN/xYFL5
+ b62iT25sFX1MLc4OFP4jsTlXhRfoU6NBpzOts640w4hj8ePa/Cw5yqU6X
+ C4MgBA+pAcbfXtzIWhUII0IBpDFQI0Q8lMCxSFjCALdxUCmFxGOLyhXqs A==;
+X-IronPort-AV: E=McAfee;i="6200,9189,10308"; a="323986734"
+X-IronPort-AV: E=Sophos;i="5.90,236,1643702400"; d="scan'208";a="323986734"
 Received: from orsmga005.jf.intel.com ([10.7.209.41])
  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 05 Apr 2022 10:27:24 -0700
-X-IronPort-AV: E=Sophos;i="5.90,236,1643702400"; d="scan'208";a="722140972"
+ 05 Apr 2022 10:27:23 -0700
+X-IronPort-AV: E=Sophos;i="5.90,236,1643702400"; d="scan'208";a="722140961"
 Received: from reginari-mobl7.amr.corp.intel.com (HELO
  rsridh2-mobl1.localdomain) ([10.254.28.131])
  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 05 Apr 2022 10:27:23 -0700
+ 05 Apr 2022 10:27:22 -0700
 From: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH 06/15] ASoC: SOF: ipc3: Implement the get_reply IPC ops
-Date: Tue,  5 Apr 2022 10:26:59 -0700
-Message-Id: <20220405172708.122168-7-ranjani.sridharan@linux.intel.com>
+Subject: [PATCH 04/15] ASoC: SOF: ipc3: Use sof_ipc3_tx_msg() internally for
+ message sending
+Date: Tue,  5 Apr 2022 10:26:57 -0700
+Message-Id: <20220405172708.122168-5-ranjani.sridharan@linux.intel.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20220405172708.122168-1-ranjani.sridharan@linux.intel.com>
 References: <20220405172708.122168-1-ranjani.sridharan@linux.intel.com>
@@ -88,90 +89,32 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 From: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
 
-Add the implementation for the get_reply callback to copy the reply message
-from mailbox to msg->reply_data buffer.
-
-The implementation is equivalent to the currently used code in ipc.c
+Instead of using sof_ipc_tx_message() for sending message, use the
+sof_ipc3_tx_msg() directly within ipc3.c
 
 Signed-off-by: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
 Reviewed-by: Daniel Baluta <daniel.baluta@nxp.com>
 Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Signed-off-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 ---
- sound/soc/sof/ipc3.c | 55 ++++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 55 insertions(+)
+ sound/soc/sof/ipc3.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/sound/soc/sof/ipc3.c b/sound/soc/sof/ipc3.c
-index 9aa263b4af0a..2ecd3bb061f3 100644
+index 7f80035d3a88..6b59d4d0727f 100644
 --- a/sound/soc/sof/ipc3.c
 +++ b/sound/soc/sof/ipc3.c
-@@ -217,6 +217,60 @@ static inline void ipc3_log_header(struct device *dev, u8 *text, u32 cmd)
+@@ -325,8 +325,8 @@ static int sof_ipc3_ctx_ipc(struct snd_sof_dev *sdev, int cmd)
+ 	struct sof_ipc_reply reply;
+ 
+ 	/* send ctx save ipc to dsp */
+-	return sof_ipc_tx_message(sdev->ipc, &pm_ctx, sizeof(pm_ctx),
+-				  &reply, sizeof(reply));
++	return sof_ipc3_tx_msg(sdev, &pm_ctx, sizeof(pm_ctx),
++			       &reply, sizeof(reply), false);
  }
- #endif
  
-+static int sof_ipc3_get_reply(struct snd_sof_dev *sdev)
-+{
-+	struct snd_sof_ipc_msg *msg = sdev->msg;
-+	struct sof_ipc_reply *reply;
-+	int ret = 0;
-+
-+	/* get the generic reply */
-+	reply = msg->reply_data;
-+	snd_sof_dsp_mailbox_read(sdev, sdev->host_box.offset, reply, sizeof(*reply));
-+
-+	if (reply->error < 0)
-+		return reply->error;
-+
-+	if (!reply->hdr.size) {
-+		/* Reply should always be >= sizeof(struct sof_ipc_reply) */
-+		if (msg->reply_size)
-+			dev_err(sdev->dev,
-+				"empty reply received, expected %zu bytes\n",
-+				msg->reply_size);
-+		else
-+			dev_err(sdev->dev, "empty reply received\n");
-+
-+		return -EINVAL;
-+	}
-+
-+	if (msg->reply_size > 0) {
-+		if (reply->hdr.size == msg->reply_size) {
-+			ret = 0;
-+		} else if (reply->hdr.size < msg->reply_size) {
-+			dev_dbg(sdev->dev,
-+				"reply size (%u) is less than expected (%zu)\n",
-+				reply->hdr.size, msg->reply_size);
-+
-+			msg->reply_size = reply->hdr.size;
-+			ret = 0;
-+		} else {
-+			dev_err(sdev->dev,
-+				"reply size (%u) exceeds the buffer size (%zu)\n",
-+				reply->hdr.size, msg->reply_size);
-+			ret = -EINVAL;
-+		}
-+
-+		/*
-+		 * get the full message if reply->hdr.size <= msg->reply_size
-+		 * and the reply->hdr.size > sizeof(struct sof_ipc_reply)
-+		 */
-+		if (!ret && msg->reply_size > sizeof(*reply))
-+			snd_sof_dsp_mailbox_read(sdev, sdev->host_box.offset,
-+						 msg->reply_data, msg->reply_size);
-+	}
-+
-+	return ret;
-+}
-+
- /* wait for IPC message reply */
- static int ipc3_wait_tx_done(struct snd_sof_ipc *ipc, void *reply_data)
- {
-@@ -453,4 +507,5 @@ const struct sof_ipc_ops ipc3_ops = {
- 
- 	.tx_msg = sof_ipc3_tx_msg,
- 	.set_get_data = sof_ipc3_set_get_data,
-+	.get_reply = sof_ipc3_get_reply,
- };
+ static int sof_ipc3_ctx_save(struct snd_sof_dev *sdev)
 -- 
 2.25.1
 
