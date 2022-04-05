@@ -4,71 +4,71 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 91120C433EF
-	for <alsa-devel@archiver.kernel.org>; Tue,  5 Apr 2022 17:29:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A2ED3C433F5
+	for <alsa-devel@archiver.kernel.org>; Tue,  5 Apr 2022 17:29:26 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id BEE57184D;
-	Tue,  5 Apr 2022 19:28:27 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BEE57184D
+	by alsa0.perex.cz (Postfix) with ESMTPS id EC5AA186C;
+	Tue,  5 Apr 2022 19:28:34 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EC5AA186C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1649179757;
-	bh=w8RuaLcpsLc0lYi4rhENS5/zgdN6D8afkOBg6fn5ifI=;
+	s=default; t=1649179765;
+	bh=SdciIs33RsemgIjjsXoWXuj7GwOuXxj+elaxSgooilg=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=u9zDZLDjX4zuobo7MdBfOLrR2sQdYTF0OhNbNWpV0EnmbaKd6lJWkFGYLT9uIBDfC
-	 l+CCgRB2rPcmLnUdU5egGZFMThJdgTlvV7K2nhipfd8jNpPDsUmkpbq8mCQ1mUidGs
-	 I59yHGct8Y/Rf0meVU35+xfDIFW8kozCsMK8USpY=
+	b=Y6vjX1OajNBQFJrDU1eMSSKmLr1FutJODgRsdqBVbB9ZnBxkrtVn7p2gBxQ+Bwmon
+	 THtvqL+JTVapYlzhW5X3pg545sphrZGwmh2k9ux2Uq9IOiLhDCCVVMibKjbWV1GwtG
+	 jkmunz8tD0wVZpmGGlTV34n4/01OM6Kx8lprcsgk=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id E99E4F8051F;
-	Tue,  5 Apr 2022 19:27:40 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id DBED2F80529;
+	Tue,  5 Apr 2022 19:27:42 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 7101CF8051C; Tue,  5 Apr 2022 19:27:39 +0200 (CEST)
+ id A7F3FF80527; Tue,  5 Apr 2022 19:27:41 +0200 (CEST)
 Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id B5ABBF800D2
- for <alsa-devel@alsa-project.org>; Tue,  5 Apr 2022 19:27:27 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B5ABBF800D2
+ by alsa1.perex.cz (Postfix) with ESMTPS id 23950F8016E
+ for <alsa-devel@alsa-project.org>; Tue,  5 Apr 2022 19:27:32 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 23950F8016E
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="aD0Ag/CM"
+ header.b="dMr8D3Yk"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1649179651; x=1680715651;
+ t=1649179655; x=1680715655;
  h=from:to:cc:subject:date:message-id:in-reply-to:
  references:mime-version:content-transfer-encoding;
- bh=w8RuaLcpsLc0lYi4rhENS5/zgdN6D8afkOBg6fn5ifI=;
- b=aD0Ag/CMvJRSHky8vlMzd4ingVVw2U85q93qrqwNJ6GDQKBLKTeIQX9s
- ad9Jvf4D4G4cIG4Gv2RXN7fSwPVRtCvW/NhXRzPDeY2a/mPff9s9/iURD
- joeVEA7vBNgSZq/hEpYEJLzoYdEQK0MMKl6YPmxs/m3flkxOmao4n+ZdZ
- p2KQ2y33C3dUbyVr9NE7cx89ubh1PM7pNO4dBP6ybpWqrmtQNP5zJQsmu
- 23KgT0ZReOW/ieWR+O3w0UVWFfBxheGK++DS9M5rDnfvHPNt+QuuE7I/x
- oRCxpI7YKXwpdYDHVK5iY2bS7Ahg+xMvyTL2W/G8fmNdBIhJ9AqJO2Fp3 A==;
-X-IronPort-AV: E=McAfee;i="6200,9189,10308"; a="323986719"
-X-IronPort-AV: E=Sophos;i="5.90,236,1643702400"; d="scan'208";a="323986719"
+ bh=SdciIs33RsemgIjjsXoWXuj7GwOuXxj+elaxSgooilg=;
+ b=dMr8D3Yk2OjljjylRU8f0WkqJUFgan+RmEHGeYOf+CFv3q7tm96IMQY2
+ oH/2f7+5oMqtDp/owbzljDqskBVjiNTUwkVoOcMfWL3huXJIXeIjlUL5Z
+ gUeTffELbzUDie6mdRGrAdfKX27EWRLW1bjn3cc7ZL1nZcNFNUJQxpq64
+ D8koxrSQf76n9x4Rlk+i+JA9LujkhU/voTjUsWJT5JEU/mxIejIr9TD9B
+ fL35gMQ1SqP0avDQcl39hIiyeC/t2EUobgnJveE2fMDbsAqErKqDSxGN/
+ t3Yz/X7YptlkYvT78PkgGinorJylzuhMTVWZkNJXMFlw3YNnQOji3Ihyp Q==;
+X-IronPort-AV: E=McAfee;i="6200,9189,10308"; a="323986737"
+X-IronPort-AV: E=Sophos;i="5.90,236,1643702400"; d="scan'208";a="323986737"
 Received: from orsmga005.jf.intel.com ([10.7.209.41])
  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 05 Apr 2022 10:27:22 -0700
-X-IronPort-AV: E=Sophos;i="5.90,236,1643702400"; d="scan'208";a="722140949"
+ 05 Apr 2022 10:27:23 -0700
+X-IronPort-AV: E=Sophos;i="5.90,236,1643702400"; d="scan'208";a="722140967"
 Received: from reginari-mobl7.amr.corp.intel.com (HELO
  rsridh2-mobl1.localdomain) ([10.254.28.131])
  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 05 Apr 2022 10:27:21 -0700
+ 05 Apr 2022 10:27:23 -0700
 From: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH 01/15] ASoC: SOF: Add helper function to prepare and send an
- IPC message
-Date: Tue,  5 Apr 2022 10:26:54 -0700
-Message-Id: <20220405172708.122168-2-ranjani.sridharan@linux.intel.com>
+Subject: [PATCH 05/15] ASoC: SOF: ipc3: Implement the set_get_data IPC ops
+Date: Tue,  5 Apr 2022 10:26:58 -0700
+Message-Id: <20220405172708.122168-6-ranjani.sridharan@linux.intel.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20220405172708.122168-1-ranjani.sridharan@linux.intel.com>
 References: <20220405172708.122168-1-ranjani.sridharan@linux.intel.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: tiwai@suse.de, Peter Ujfalusi <peter.ujfalusi@linux.intel.com>,
+Cc: Bard Liao <yung-chuan.liao@linux.intel.com>, tiwai@suse.de,
+ Peter Ujfalusi <peter.ujfalusi@linux.intel.com>,
  Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
  Ranjani Sridharan <ranjani.sridharan@linux.intel.com>, broonie@kernel.org,
  Daniel Baluta <daniel.baluta@nxp.com>
@@ -89,98 +89,153 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 From: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
 
-The new sof_ipc_send_msg() can be used by IPC dependent code to prepare
-the ipc->msg for a new message transmission and then call in to platform
-code to send the message.
+Add the implementation for the set_get_data callback for handling large
+data set and get.
 
-Higher level code should be handling the completion and reply.
+The set_get_data() in IPC3 can be used only for component messages. The
+function expects the caller to prepare the message behind the data pointer
+for sending/receiving data. The callback only implements the needed code
+to be able to split up a message if needed for transfer.
+
+The set_get_data ops is based on the existing
+snd_sof_ipc_set_get_comp_data() and sof_set_get_large_ctrl_data() but made
+it generic entry point.
 
 Signed-off-by: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
 Reviewed-by: Daniel Baluta <daniel.baluta@nxp.com>
 Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Reviewed-by: Bard Liao <yung-chuan.liao@linux.intel.com>
 Signed-off-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 ---
- sound/soc/sof/ipc.c      | 53 ++++++++++++++++++++++++++++++++++++++++
- sound/soc/sof/sof-priv.h |  2 ++
- 2 files changed, 55 insertions(+)
+ sound/soc/sof/ipc3.c | 103 +++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 103 insertions(+)
 
-diff --git a/sound/soc/sof/ipc.c b/sound/soc/sof/ipc.c
-index 17dd51d342cf..a78b74514438 100644
---- a/sound/soc/sof/ipc.c
-+++ b/sound/soc/sof/ipc.c
-@@ -340,6 +340,59 @@ static int sof_ipc_tx_message_unlocked(struct snd_sof_ipc *ipc,
- 	return tx_wait_done(ipc, msg, reply_data);
+diff --git a/sound/soc/sof/ipc3.c b/sound/soc/sof/ipc3.c
+index 6b59d4d0727f..9aa263b4af0a 100644
+--- a/sound/soc/sof/ipc3.c
++++ b/sound/soc/sof/ipc3.c
+@@ -7,6 +7,8 @@
+ //
+ //
+ 
++#include <sound/sof/stream.h>
++#include <sound/sof/control.h>
+ #include "sof-priv.h"
+ #include "ipc3-ops.h"
+ #include "ops.h"
+@@ -316,6 +318,106 @@ static int sof_ipc3_tx_msg(struct snd_sof_dev *sdev, void *msg_data, size_t msg_
+ 	return ret;
  }
  
-+/**
-+ * sof_ipc_send_msg - generic function to prepare and send one IPC message
-+ * @sdev:		pointer to SOF core device struct
-+ * @msg_data:		pointer to a message to send
-+ * @msg_bytes:		number of bytes in the message
-+ * @reply_bytes:	number of bytes available for the reply.
-+ *			The buffer for the reply data is not passed to this
-+ *			function, the available size is an information for the
-+ *			reply handling functions.
-+ *
-+ * On success the function returns 0, otherwise negative error number.
-+ *
-+ * Note: higher level sdev->ipc->tx_mutex must be held to make sure that
-+ *	 transfers are synchronized.
-+ */
-+int sof_ipc_send_msg(struct snd_sof_dev *sdev, void *msg_data, size_t msg_bytes,
-+		     size_t reply_bytes)
++static int sof_ipc3_set_get_data(struct snd_sof_dev *sdev, void *data, size_t data_bytes,
++				 bool set)
 +{
++	size_t msg_bytes, hdr_bytes, payload_size, send_bytes;
++	struct sof_ipc_ctrl_data *cdata = data;
++	struct sof_ipc_ctrl_data *cdata_chunk;
 +	struct snd_sof_ipc *ipc = sdev->ipc;
-+	struct snd_sof_ipc_msg *msg;
-+	int ret;
++	size_t offset = 0;
++	u8 *src, *dst;
++	u32 num_msg;
++	int ret = 0;
++	int i;
 +
-+	if (ipc->disable_ipc_tx || sdev->fw_state != SOF_FW_BOOT_COMPLETE)
-+		return -ENODEV;
++	if (!cdata || data_bytes < sizeof(*cdata))
++		return -EINVAL;
 +
-+	/*
-+	 * The spin-lock is needed to protect message objects against other
-+	 * atomic contexts.
-+	 */
-+	spin_lock_irq(&sdev->ipc_lock);
++	if ((cdata->rhdr.hdr.cmd & SOF_GLB_TYPE_MASK) != SOF_IPC_GLB_COMP_MSG) {
++		dev_err(sdev->dev, "%s: Not supported message type of %#x\n",
++			__func__, cdata->rhdr.hdr.cmd);
++		return -EINVAL;
++	}
 +
-+	/* initialise the message */
-+	msg = &ipc->msg;
++	/* send normal size ipc in one part */
++	if (cdata->rhdr.hdr.size <= ipc->max_payload_size)
++		return sof_ipc3_tx_msg(sdev, cdata, cdata->rhdr.hdr.size,
++				       cdata, cdata->rhdr.hdr.size, false);
 +
-+	/* attach message data */
-+	msg->msg_data = msg_data;
-+	msg->msg_size = msg_bytes;
++	cdata_chunk = kzalloc(ipc->max_payload_size, GFP_KERNEL);
++	if (!cdata_chunk)
++		return -ENOMEM;
 +
-+	msg->reply_size = reply_bytes;
-+	msg->reply_error = 0;
++	switch (cdata->type) {
++	case SOF_CTRL_TYPE_VALUE_CHAN_GET:
++	case SOF_CTRL_TYPE_VALUE_CHAN_SET:
++		hdr_bytes = sizeof(struct sof_ipc_ctrl_data);
++		if (set) {
++			src = (u8 *)cdata->chanv;
++			dst = (u8 *)cdata_chunk->chanv;
++		} else {
++			src = (u8 *)cdata_chunk->chanv;
++			dst = (u8 *)cdata->chanv;
++		}
++		break;
++	case SOF_CTRL_TYPE_DATA_GET:
++	case SOF_CTRL_TYPE_DATA_SET:
++		hdr_bytes = sizeof(struct sof_ipc_ctrl_data) + sizeof(struct sof_abi_hdr);
++		if (set) {
++			src = (u8 *)cdata->data->data;
++			dst = (u8 *)cdata_chunk->data->data;
++		} else {
++			src = (u8 *)cdata_chunk->data->data;
++			dst = (u8 *)cdata->data->data;
++		}
++		break;
++	default:
++		kfree(cdata_chunk);
++		return -EINVAL;
++	}
 +
-+	sdev->msg = msg;
++	msg_bytes = cdata->rhdr.hdr.size - hdr_bytes;
++	payload_size = ipc->max_payload_size - hdr_bytes;
++	num_msg = DIV_ROUND_UP(msg_bytes, payload_size);
 +
-+	ret = snd_sof_dsp_send_msg(sdev, msg);
-+	/* Next reply that we receive will be related to this message */
-+	if (!ret)
-+		msg->ipc_complete = false;
++	/* copy the header data */
++	memcpy(cdata_chunk, cdata, hdr_bytes);
 +
-+	spin_unlock_irq(&sdev->ipc_lock);
++	/* Serialise IPC TX */
++	mutex_lock(&sdev->ipc->tx_mutex);
++
++	/* copy the payload data in a loop */
++	for (i = 0; i < num_msg; i++) {
++		send_bytes = min(msg_bytes, payload_size);
++		cdata_chunk->num_elems = send_bytes;
++		cdata_chunk->rhdr.hdr.size = hdr_bytes + send_bytes;
++		cdata_chunk->msg_index = i;
++		msg_bytes -= send_bytes;
++		cdata_chunk->elems_remaining = msg_bytes;
++
++		if (set)
++			memcpy(dst, src + offset, send_bytes);
++
++		ret = ipc3_tx_msg_unlocked(sdev->ipc,
++					   cdata_chunk, cdata_chunk->rhdr.hdr.size,
++					   cdata_chunk, cdata_chunk->rhdr.hdr.size);
++		if (ret < 0)
++			break;
++
++		if (!set)
++			memcpy(dst + offset, src, send_bytes);
++
++		offset += payload_size;
++	}
++
++	mutex_unlock(&sdev->ipc->tx_mutex);
++
++	kfree(cdata_chunk);
 +
 +	return ret;
 +}
 +
- /* send IPC message from host to DSP */
- int sof_ipc_tx_message(struct snd_sof_ipc *ipc, void *msg_data, size_t msg_bytes,
- 		       void *reply_data, size_t reply_bytes)
-diff --git a/sound/soc/sof/sof-priv.h b/sound/soc/sof/sof-priv.h
-index df19d58d8894..f6ae28a21482 100644
---- a/sound/soc/sof/sof-priv.h
-+++ b/sound/soc/sof/sof-priv.h
-@@ -588,6 +588,8 @@ int sof_ipc_tx_message(struct snd_sof_ipc *ipc, void *msg_data, size_t msg_bytes
- 		       void *reply_data, size_t reply_bytes);
- int sof_ipc_tx_message_no_pm(struct snd_sof_ipc *ipc, void *msg_data, size_t msg_bytes,
- 			     void *reply_data, size_t reply_bytes);
-+int sof_ipc_send_msg(struct snd_sof_dev *sdev, void *msg_data, size_t msg_bytes,
-+		     size_t reply_bytes);
- int sof_ipc_init_msg_memory(struct snd_sof_dev *sdev);
- static inline void snd_sof_ipc_process_reply(struct snd_sof_dev *sdev, u32 msg_id)
+ static int sof_ipc3_ctx_ipc(struct snd_sof_dev *sdev, int cmd)
  {
+ 	struct sof_ipc_pm_ctx pm_ctx = {
+@@ -350,4 +452,5 @@ const struct sof_ipc_ops ipc3_ops = {
+ 	.pcm = &ipc3_pcm_ops,
+ 
+ 	.tx_msg = sof_ipc3_tx_msg,
++	.set_get_data = sof_ipc3_set_get_data,
+ };
 -- 
 2.25.1
 
