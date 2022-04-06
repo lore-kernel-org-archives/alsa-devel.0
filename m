@@ -4,64 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id DA942C433F5
-	for <alsa-devel@archiver.kernel.org>; Wed,  6 Apr 2022 13:30:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C99B4C433EF
+	for <alsa-devel@archiver.kernel.org>; Wed,  6 Apr 2022 13:30:30 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0BAA71703;
-	Wed,  6 Apr 2022 15:29:20 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0BAA71703
+	by alsa0.perex.cz (Postfix) with ESMTPS id 1E352171D;
+	Wed,  6 Apr 2022 15:29:39 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1E352171D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1649251810;
-	bh=n/JgBGkv76rAadiPYeLsGzGK5LmEb9eNvnNd99U9w1g=;
+	s=default; t=1649251829;
+	bh=SapR/NGS0zHiukVcEi1sjt1o5RguCptFWulxy98tqWA=;
 	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=mZeKksTth4PaKQlbwjiZ743ZDF7qV4ichELG4SjLak7nzQptn8QTjrdDHfqJ136CF
-	 tZ9YaywWojFYz0Xc40wcwZlxgdi25ZKe+KUlSn7N0o/1WcqqF6kem70FfOeoPrBvk/
-	 Eyf054RL8vR7EKu9/V0DhmZJPvk5Rrxy5dZKFL3A=
+	b=PFZ52HHB4yyiKlE7CfdO83bdrXwgHgMIHtYTXEtlfED+nMja4g8zBqDHCyp90ea/N
+	 0NQdLjaT+QVhYcEnQe1kkSjCHya8mtI1WAulg2ebikZeyMGu0h7A9E3qFgBkczJOvd
+	 vJ5EFA255IA4Fnv7U1ab0d2cNU6obVjhHYByjnTI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 610EDF8020C;
-	Wed,  6 Apr 2022 15:28:49 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 7F967F800D2;
+	Wed,  6 Apr 2022 15:28:54 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id A9D27F80516; Wed,  6 Apr 2022 15:28:47 +0200 (CEST)
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+ id 0E97EF8020C; Wed,  6 Apr 2022 15:28:49 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id E9909F800D2
- for <alsa-devel@alsa-project.org>; Wed,  6 Apr 2022 15:28:44 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E9909F800D2
+ by alsa1.perex.cz (Postfix) with ESMTPS id F1068F80475
+ for <alsa-devel@alsa-project.org>; Wed,  6 Apr 2022 15:28:41 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F1068F80475
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="qfzJNddM"
+ header.b="qBE6vy/D"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by ams.source.kernel.org (Postfix) with ESMTPS id 22E41B823BC;
- Wed,  6 Apr 2022 13:28:44 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 80402C385A3;
- Wed,  6 Apr 2022 13:28:41 +0000 (UTC)
+ by dfw.source.kernel.org (Postfix) with ESMTPS id A78D5615AE;
+ Wed,  6 Apr 2022 13:28:40 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BC0FDC385A9;
+ Wed,  6 Apr 2022 13:28:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1649251722;
- bh=n/JgBGkv76rAadiPYeLsGzGK5LmEb9eNvnNd99U9w1g=;
+ s=k20201202; t=1649251720;
+ bh=SapR/NGS0zHiukVcEi1sjt1o5RguCptFWulxy98tqWA=;
  h=From:To:In-Reply-To:References:Subject:Date:From;
- b=qfzJNddMgQFeTdBNzMoi2OmmWw+A0vNEwfyJ8pC7/lh+AwHChiI3qM3gZRvkTric6
- d/u6k/0vFIc0+csVlI8bNUfzsEcD/pvYbFFviln8iQV4py7OH5TK+/QIM/TsirH0bv
- r1afq22WYMBmbefQqcL/nCsSr0kH3Z3G8Y+dIamOlCW9b4JE+XLTqe9Yn9gFzRmsiv
- d728gKV/FivyBeA5zr4AZB7m7wQa63qee8YDyIujufG7xEWfYV6HCb7r5H/9awI4AO
- A80Ga7MYFp8tYQbUefK9E85bXJaHKmKU6/mGlwdzb01YGG9pcuPtZKunFGtK7no2xE
- BInV5rIg3+2og==
+ b=qBE6vy/DKRlrqfk8OWxSirFDZMVqiTSuBzW8DuegVviTNxduBA/czlteRsefSFsju
+ eSrQDuT2Ri3W/8znnOPz1dvd1XS/CKOpYwo+Jhnp6pN7MOLE0pCWzsRAOnBULnwH4e
+ SKuCZe+6Rlj52sdtm7QHPgTA6voOO9HfsmcvwvZZw0s8ngISWe7xCOVHSyXXiram29
+ kvF9DVx4oFqWVMUXaHEcPzoXsU5mrmyxBjjTeXG1zpOuYQ9ArjNN5/M6emcLTRncEd
+ ZCuW/AagOexFfhZQvjMoZfr0PGCR3AoHwup6HCUj9sn/rikJv1ifAcPGA/CLBmo90l
+ XdYzf/YmcFq5w==
 From: Mark Brown <broonie@kernel.org>
-To: linux-kernel@vger.kernel.org, tiwai@suse.com, linmq006@gmail.com,
- lgirdwood@gmail.com, perex@perex.cz, srinivas.kandagatla@linaro.org,
- alsa-devel@alsa-project.org
-In-Reply-To: <20220403115239.30140-1-linmq006@gmail.com>
-References: <20220403115239.30140-1-linmq006@gmail.com>
-Subject: Re: [PATCH] ASoC: msm8916-wcd-digital: Check failure for
- devm_snd_soc_register_component
-Message-Id: <164925172124.83821.13118805516714327451.b4-ty@kernel.org>
-Date: Wed, 06 Apr 2022 14:28:41 +0100
+To: linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ tiwai@suse.com, jiaxin.yu@mediatek.com, linux-mediatek@lists.infradead.org,
+ linmq006@gmail.com, koro.chen@mediatek.com, lgirdwood@gmail.com,
+ matthias.bgg@gmail.com, perex@perex.cz, alsa-devel@alsa-project.org,
+ tzungbi@google.com
+In-Reply-To: <20220404092903.26725-1-linmq006@gmail.com>
+References: <20220404092903.26725-1-linmq006@gmail.com>
+Subject: Re: [PATCH] ASoC: mediatek: Fix error handling in
+ mt8173_max98090_dev_probe
+Message-Id: <164925171747.83821.17392124533479234810.b4-ty@kernel.org>
+Date: Wed, 06 Apr 2022 14:28:37 +0100
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -80,9 +82,9 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Sun, 3 Apr 2022 11:52:39 +0000, Miaoqian Lin wrote:
-> devm_snd_soc_register_component() may fails, we should check the error
-> and do the corresponding error handling.
+On Mon, 4 Apr 2022 09:29:01 +0000, Miaoqian Lin wrote:
+> Call of_node_put(platform_node) to avoid refcount leak in
+> the error path.
 > 
 > 
 
@@ -92,8 +94,8 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: msm8916-wcd-digital: Check failure for devm_snd_soc_register_component
-      commit: e927b05f3cc20de87f6b7d912a5bbe556931caca
+[1/1] ASoC: mediatek: Fix error handling in mt8173_max98090_dev_probe
+      commit: 4f4e0454e226de3bf4efd7e7924d1edc571c52d5
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
