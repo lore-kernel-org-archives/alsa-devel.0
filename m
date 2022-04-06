@@ -4,74 +4,74 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0A3EFC433F5
-	for <alsa-devel@archiver.kernel.org>; Wed,  6 Apr 2022 19:42:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B6162C433EF
+	for <alsa-devel@archiver.kernel.org>; Wed,  6 Apr 2022 19:42:52 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0CF3F170F;
-	Wed,  6 Apr 2022 21:41:43 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0CF3F170F
+	by alsa0.perex.cz (Postfix) with ESMTPS id EAFEA16F3;
+	Wed,  6 Apr 2022 21:42:00 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EAFEA16F3
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1649274153;
-	bh=Ra8i3aAeLdiBy9KCCM/iALU3xF1YYN7lEOa2k15oH2k=;
+	s=default; t=1649274171;
+	bh=JMUwfmeKqzPOF+p5Fn2fUlc0g7MltptKQmzMhy3IwuI=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=cxpENcTk24jQCxObStCqeS/Cu4mtS0S2L9ef5wykwQZXUdZp+z2zgJ51tTL1hyCv1
-	 7pQwcw3KrgJO72c3CnCLJDN+ab5Ad3l250T6sQqVcvvT7s79zKIqEJcCIIapL/5Goj
-	 bcw+SlctmMUZNRr0aeX/NPvaAL6E2F7ScSqdlrMc=
+	b=uRXMJdszeHUy7mDwU5qNX6yH/aUViZbcIe6R/8RBXMUTduc6X2YlO6S5nTnoQPTQ9
+	 b5Km2XdeogpcixwAe7LOg/67cs3SwwCHMDwBdlaiDg5s8kSFcrVXKsCB9qh+t1jTmy
+	 SRJOtc0E2FhsPLO4JBbPANEKcX5T90ZGUeIcOMN4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 5A773F8020C;
-	Wed,  6 Apr 2022 21:41:13 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 1F0BEF80518;
+	Wed,  6 Apr 2022 21:41:15 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id E7144F80516; Wed,  6 Apr 2022 21:41:11 +0200 (CEST)
+ id 6E368F80518; Wed,  6 Apr 2022 21:41:13 +0200 (CEST)
 Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 72E5AF800D1
- for <alsa-devel@alsa-project.org>; Wed,  6 Apr 2022 21:41:04 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 72E5AF800D1
+ by alsa1.perex.cz (Postfix) with ESMTPS id DC373F8019B
+ for <alsa-devel@alsa-project.org>; Wed,  6 Apr 2022 21:41:06 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DC373F8019B
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="RmFf0OVi"
+ header.b="Jd2XeiHu"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1649274066; x=1680810066;
+ t=1649274068; x=1680810068;
  h=from:to:cc:subject:date:message-id:in-reply-to:
  references:mime-version:content-transfer-encoding;
- bh=Ra8i3aAeLdiBy9KCCM/iALU3xF1YYN7lEOa2k15oH2k=;
- b=RmFf0OVirMivqSUaebYSpOQkSFnDOojmyu4IqB4KxCLYYAQy5hzx0kVD
- OsNf1llWgFueOVmrhcx1pbLOrrGOYW8EQzkgTb5PgSY1lDzc9RXGMLcd3
- gqq+PqN+tytNzi6AeGzb1Qp5hGSeBk70QKjlXYoI1duP9DcG5DmwCsAbF
- mrnw0iXCGECxtOvmMBXwj7tkG9GINQsuPG4vN/qRxVprFG3DbxowjRpuO
- Fc+bqtYa8hDaXig0VlAYtAzyHtWQ2JgIQ5lEGE8HBsrwG4UaNt6xkkSpC
- OoNfn1MttUXwfvYIvavy7nKLzmPEbFgX9wYBIKs38uoht6MaM6/3Zej+8 Q==;
-X-IronPort-AV: E=McAfee;i="6200,9189,10309"; a="347582614"
-X-IronPort-AV: E=Sophos;i="5.90,240,1643702400"; d="scan'208";a="347582614"
+ bh=JMUwfmeKqzPOF+p5Fn2fUlc0g7MltptKQmzMhy3IwuI=;
+ b=Jd2XeiHu5Z95p/1rvhfJg7dNSzkgMinte8I4NaLwHvmOAUOKYRnmo1BK
+ W/MjluP9uBUN3hefTuzq8fBu08Hy3RuTvA85jYsb3zukfMZjZfiHmw63l
+ XTNWjdXL7FJvKu6DI55jfaJAzfipSLAktxOX89U4DEHk2OGMw8C5RVx5H
+ 75Wdhh02giMY/bib7xzU647XwMsRweNc2c63WVWaBeUOvkDX399eQmZX/
+ 84U5IXfDYvDFnZGobxQEtQHBvsLHU/8HDZKbOtLB/wLvD6lDNdnm+MD7g
+ eSqs1uochm2eNKnZXH+wvg6vaWy/a0lCnCsujYXO7UQZsvcd0nrcCl2mJ A==;
+X-IronPort-AV: E=McAfee;i="6200,9189,10309"; a="347582620"
+X-IronPort-AV: E=Sophos;i="5.90,240,1643702400"; d="scan'208";a="347582620"
 Received: from orsmga008.jf.intel.com ([10.7.209.65])
  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 06 Apr 2022 12:41:00 -0700
-X-IronPort-AV: E=Sophos;i="5.90,240,1643702400"; d="scan'208";a="570713302"
+ 06 Apr 2022 12:41:01 -0700
+X-IronPort-AV: E=Sophos;i="5.90,240,1643702400"; d="scan'208";a="570713313"
 Received: from cbok-mobl.amr.corp.intel.com (HELO
  pbossart-mobl3.amr.corp.intel.com) ([10.252.137.86])
  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 06 Apr 2022 12:40:59 -0700
+ 06 Apr 2022 12:41:01 -0700
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH 1/4] ASoC: SOF: OF: Add shutdown callback for SOF OF device
-Date: Wed,  6 Apr 2022 14:40:45 -0500
-Message-Id: <20220406194048.289787-2-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH 3/4] ASoC: SOF: amd: Add psp_mbox_ready() and psp_send_cmd()
+ callback
+Date: Wed,  6 Apr 2022 14:40:47 -0500
+Message-Id: <20220406194048.289787-4-pierre-louis.bossart@linux.intel.com>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20220406194048.289787-1-pierre-louis.bossart@linux.intel.com>
 References: <20220406194048.289787-1-pierre-louis.bossart@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-Cc: tiwai@suse.de, Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+Cc: tiwai@suse.de, broonie@kernel.org,
  Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- broonie@kernel.org, YC Hung <yc.hung@mediatek.com>,
- =?UTF-8?q?P=C3=A9ter=20Ujfalusi?= <peter.ujfalusi@linux.intel.com>
+ Ajit Kumar Pandey <AjitKumar.Pandey@amd.com>,
+ Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -87,47 +87,97 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: YC Hung <yc.hung@mediatek.com>
+From: Ajit Kumar Pandey <AjitKumar.Pandey@amd.com>
 
-Add shutdown callback function for SOF OF device and call
-snd_sof_device_shutdown in sof_of_shutdown callback for DSP
-shutdown sequence.
+We need to ensure if PSP is mbox ready before and after sending cmd
+to PSP over SMN interface. Add method to check MBOX_READY bit of PSP
+with some delay over ACP_PSP_TIMEOUT_COUNTER. Replace psp_fw_validate
+with new method psp_send_cmd() to send command via psp mailbox.
 
-Signed-off-by: YC Hung <yc.hung@mediatek.com>
+Signed-off-by: Ajit Kumar Pandey <AjitKumar.Pandey@amd.com>
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-Reviewed-by: Péter Ujfalusi <peter.ujfalusi@linux.intel.com>
 ---
- sound/soc/sof/sof-of-dev.c | 6 ++++++
- sound/soc/sof/sof-of-dev.h | 1 +
- 2 files changed, 7 insertions(+)
+ sound/soc/sof/amd/acp.c | 47 +++++++++++++++++++++++++++++++++++------
+ 1 file changed, 41 insertions(+), 6 deletions(-)
 
-diff --git a/sound/soc/sof/sof-of-dev.c b/sound/soc/sof/sof-of-dev.c
-index e3718638f9ce..18c0f3cd0993 100644
---- a/sound/soc/sof/sof-of-dev.c
-+++ b/sound/soc/sof/sof-of-dev.c
-@@ -95,4 +95,10 @@ int sof_of_remove(struct platform_device *pdev)
+diff --git a/sound/soc/sof/amd/acp.c b/sound/soc/sof/amd/acp.c
+index 71d71c152342..461f9b0ce49e 100644
+--- a/sound/soc/sof/amd/acp.c
++++ b/sound/soc/sof/amd/acp.c
+@@ -138,14 +138,18 @@ int configure_and_run_dma(struct acp_dev_data *adata, unsigned int src_addr,
+ 	return ret;
  }
- EXPORT_SYMBOL(sof_of_remove);
  
-+void sof_of_shutdown(struct platform_device *pdev)
-+{
-+	snd_sof_device_shutdown(&pdev->dev);
-+}
-+EXPORT_SYMBOL(sof_of_shutdown);
+-static int psp_fw_validate(struct acp_dev_data *adata)
++/*
++ * psp_mbox_ready- function to poll ready bit of psp mbox
++ * @adata: acp device data
++ * @ack: bool variable to check ready bit status or psp ack
++ */
 +
- MODULE_LICENSE("Dual BSD/GPL");
-diff --git a/sound/soc/sof/sof-of-dev.h b/sound/soc/sof/sof-of-dev.h
-index 4e0f6588dad9..fd950a222ba4 100644
---- a/sound/soc/sof/sof-of-dev.h
-+++ b/sound/soc/sof/sof-of-dev.h
-@@ -13,5 +13,6 @@ extern const struct dev_pm_ops sof_of_pm;
++static int psp_mbox_ready(struct acp_dev_data *adata, bool ack)
+ {
+ 	struct snd_sof_dev *sdev = adata->dev;
+ 	int timeout;
+ 	u32 data;
  
- int sof_of_probe(struct platform_device *pdev);
- int sof_of_remove(struct platform_device *pdev);
-+void sof_of_shutdown(struct platform_device *pdev);
+-	smn_write(adata->smn_dev, MP0_C2PMSG_26_REG, MBOX_ACP_SHA_DMA_COMMAND);
+-
+ 	for (timeout = ACP_PSP_TIMEOUT_COUNTER; timeout > 0; timeout--) {
+ 		msleep(20);
+ 		smn_read(adata->smn_dev, MP0_C2PMSG_26_REG, &data);
+@@ -153,8 +157,39 @@ static int psp_fw_validate(struct acp_dev_data *adata)
+ 			return 0;
+ 	}
  
- #endif
+-	dev_err(sdev->dev, "FW validation timedout: status %x\n", data & MBOX_STATUS_MASK);
+-	return -ETIMEDOUT;
++	dev_err(sdev->dev, "PSP error status %x\n", data & MBOX_STATUS_MASK);
++
++	if (ack)
++		return -ETIMEDOUT;
++
++	return -EBUSY;
++}
++
++/*
++ * psp_send_cmd - function to send psp command over mbox
++ * @adata: acp device data
++ * @cmd: non zero integer value for command type
++ */
++
++static int psp_send_cmd(struct acp_dev_data *adata, int cmd)
++{
++	struct snd_sof_dev *sdev = adata->dev;
++	int ret;
++
++	if (!cmd)
++		return -EINVAL;
++
++	/* Check if PSP is ready for new command */
++	ret = psp_mbox_ready(adata, 0);
++	if (ret)
++		return ret;
++
++	smn_write(adata->smn_dev, MP0_C2PMSG_26_REG, cmd);
++
++	/* Check MBOX ready as PSP ack */
++	ret = psp_mbox_ready(adata, 1);
++
++	return ret;
+ }
+ 
+ int configure_and_run_sha_dma(struct acp_dev_data *adata, void *image_addr,
+@@ -196,7 +231,7 @@ int configure_and_run_sha_dma(struct acp_dev_data *adata, void *image_addr,
+ 		return ret;
+ 	}
+ 
+-	ret = psp_fw_validate(adata);
++	ret = psp_send_cmd(adata, MBOX_ACP_SHA_DMA_COMMAND);
+ 	if (ret)
+ 		return ret;
+ 
 -- 
 2.30.2
 
