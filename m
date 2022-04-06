@@ -4,77 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B7314C433F5
-	for <alsa-devel@archiver.kernel.org>; Wed,  6 Apr 2022 20:21:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B064DC433F5
+	for <alsa-devel@archiver.kernel.org>; Wed,  6 Apr 2022 21:45:01 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 8A7951720;
-	Wed,  6 Apr 2022 22:20:54 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8A7951720
+	by alsa0.perex.cz (Postfix) with ESMTPS id 43F651715;
+	Wed,  6 Apr 2022 23:44:09 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 43F651715
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1649276504;
-	bh=RtNdJqRZV8HgUIHxnAIh/9MvAQCncAUWPPm40ZR4lxs=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1649281499;
+	bh=Pt9dNZkY47pwmvmzw2l5RPQKmk3rUPiXwLVBiv+3418=;
+	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=icV7avhddGUZyX/SytK5ShkaO92yyT7Kwn55FLmegMoc+hgUT0cqo+7DHL+c9vARr
-	 NLU+wBN+pT06c7mTzvooPNoeI2ko3Nb0TK0X2iW+YVLdmUek8AZL2NN6EX8tCTvvv3
-	 Qyy2vhPhaQXNAvc162gAUA2eI/tUK4ppV4p8Y/ak=
+	b=o3nKAZvn8riNlzNCfqD0tgtyvdxnJn7fxInlwAjalaH3L5PJcPHDj/XtQNj4qeMJD
+	 MsPTMLRqOebYE+nWeEj15YMzVnMdfoRGyw3gvDqsO3gM4ApXZOEuopV2QKATRBzDlu
+	 PdkrL2WP8vknQyeP8A9ik+oV/S19os2f3XcSiJ9I=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 500F2F80527;
-	Wed,  6 Apr 2022 22:19:36 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 52D15F80141;
+	Wed,  6 Apr 2022 23:44:08 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 257C3F80520; Wed,  6 Apr 2022 22:19:35 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org
- [IPv6:2604:1380:4641:c500::1])
+ id 28E15F80161; Wed,  6 Apr 2022 23:44:07 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 9E2FBF80161
- for <alsa-devel@alsa-project.org>; Wed,  6 Apr 2022 22:19:25 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9E2FBF80161
+ by alsa1.perex.cz (Postfix) with ESMTPS id 21146F80054
+ for <alsa-devel@alsa-project.org>; Wed,  6 Apr 2022 23:44:02 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 21146F80054
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="gMaYfjtk"
+ header.b="RKlOfPtc"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id BF835615F4;
- Wed,  6 Apr 2022 20:19:23 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 29AF5C385A7;
- Wed,  6 Apr 2022 20:19:23 +0000 (UTC)
+ by dfw.source.kernel.org (Postfix) with ESMTPS id F13E061B72;
+ Wed,  6 Apr 2022 21:43:59 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EA13EC385A3;
+ Wed,  6 Apr 2022 21:43:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1649276363;
- bh=RtNdJqRZV8HgUIHxnAIh/9MvAQCncAUWPPm40ZR4lxs=;
- h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=gMaYfjtk687ZfG2+n5ZHYW56vsLN6+/6HHCD+ZJjotwKcIVFX1U8mp2UwsMBUMO2c
- WWxD0p7BPvD/1p2fD17WOkVJRldDjWcZajtOAREdtk0bDIVZfk8V5DrtqznwYzMzGj
- 6cVH0UJtJ93sj+bluUCogxe/zCMWI4ffE3OJUI6steh4f7Kjh0nEDS49mDqRFpCxg6
- zxsH8ed33R9L5QmBNrCaeMat8EiAdN8co5yR4Z0LZQ0/rqidSY04wdR6Mw9QCQY5on
- //ssOTvQk+EVPmoiNl+szprHEvycXU9SPXrDttY0cvUOsLZqkOQP0LhDMbSRLh66An
- 6JQ2fPfwMXt0A==
-Received: from mchehab by mail.kernel.org with local (Exim 4.94.2)
- (envelope-from <mchehab@kernel.org>)
- id 1ncC7c-00GGaJ-IN; Wed, 06 Apr 2022 22:19:20 +0200
-From: Mauro Carvalho Chehab <mchehab@kernel.org>
-To: alsa-devel@alsa-project.org
-Subject: [PATCH v4 1/4] ASoC: Intel: sof_es8336: simplify speaker gpio naming
-Date: Wed,  6 Apr 2022 22:19:15 +0200
-Message-Id: <3008c576ca45d5cc99ad4a18d1d30de45a0aff80.1649275618.git.mchehab@kernel.org>
-X-Mailer: git-send-email 2.35.1
-In-Reply-To: <cover.1649275618.git.mchehab@kernel.org>
-References: <cover.1649275618.git.mchehab@kernel.org>
+ s=k20201202; t=1649281439;
+ bh=Pt9dNZkY47pwmvmzw2l5RPQKmk3rUPiXwLVBiv+3418=;
+ h=From:To:In-Reply-To:References:Subject:Date:From;
+ b=RKlOfPtcf9IvG9go3O5eJII31c0SsxFDXJvq6fGyWc+keiTYvDfQ3os+y7+WQ9mCY
+ qIFhNKR15A1Z+eZREmSK5m7hfbEKmxMXP+iBGrXkfluiIKNfOJWZb1cKeIA7KVg8FI
+ w//jGz3eZ+Ll5IpaloVOZ/33lfjzkYM+pEFKJ588rBCMv9uj6c4C6N1GHLKVQ5rS9t
+ fXySDHXuaC4eMZG9KKvtMNjPabjPriMivRG9Zz1xcExYiyk4NuBJk4lLrT9qeP1Ndx
+ mo8dFVACIgjU+et211rDlISGoj4W1pPMXWIh3EWer6jsJOp/g/YpyUqss9Cf4PV7BG
+ 9lHZF0DslL/FA==
+From: Mark Brown <broonie@kernel.org>
+To: alsa-devel@alsa-project.org, agross@kernel.org, dianders@chromium.org,
+ Krzysztof Kozlowski <krzk@kernel.org>, quic_srivasam@quicinc.com,
+ bjorn.andersson@linaro.org, judyhsiao@chromium.org, devicetree@vger.kernel.org,
+ srinivas.kandagatla@linaro.org, linux-kernel@vger.kernel.org,
+ linux-arm-msm@vger.kernel.org, robh+dt@kernel.org, swboyd@chromium.org
+In-Reply-To: <1647852981-27895-1-git-send-email-quic_srivasam@quicinc.com>
+References: <1647852981-27895-1-git-send-email-quic_srivasam@quicinc.com>
+Subject: Re: [PATCH 0/3] Update dt-bindings for sc7280 platform
+Message-Id: <164928143662.571581.13530656297112594722.b4-ty@kernel.org>
+Date: Wed, 06 Apr 2022 22:43:56 +0100
 MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: Cezary Rojewski <cezary.rojewski@intel.com>,
- Bard Liao <yung-chuan.liao@linux.intel.com>, Takashi Iwai <tiwai@suse.com>,
- Jie Yang <yang.jie@linux.intel.com>,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- Liam Girdwood <liam.r.girdwood@linux.intel.com>,
- Hans de Goede <hdegoede@redhat.com>, Mark Brown <broonie@kernel.org>,
- Mauro Carvalho Chehab <mchehab@kernel.org>,
- =?UTF-8?q?P=C3=A9ter=20Ujfalusi?= <peter.ujfalusi@linux.intel.com>,
- linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -90,145 +81,47 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+On Mon, 21 Mar 2022 14:26:18 +0530, Srinivasa Rao Mandadapu wrote:
+> This patch set is to update required clocks, power domain names for sc7280 platforms,
+> and add mic bias supply for wcd938x codec.
+> 
+> Srinivasa Rao Mandadapu (3):
+>   ASoC: qcom: dt-bindings: Update bindings for clocks in lpass digital
+>     codes
+>   ASoC: dt-bindings: wcd938x: Add mic bias supply property
+>   ASoC: dt-bindings: lpass-cpu: Update clocks and power domain names for
+>     sc7280 platform
+> 
+> [...]
 
-In preparation for the support of an additional gpio for headphone
-control, rename GPIOs to make explicit references to speakers and
-gpio0 or gpio1.
+Applied to
 
-No functionality change.
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
 
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Signed-off-by: Mauro Carvalho Chehab <mchehab@kernel.org>
----
+Thanks!
 
-See [PATCH v4 0/4] at: https://lore.kernel.org/all/cover.1649275618.git.mchehab@kernel.org/
+[1/3] ASoC: qcom: dt-bindings: Update bindings for clocks in lpass digital codes
+      commit: 852fda58d99a6c397f8303a8cd8ccec8702d82f5
+[2/3] ASoC: dt-bindings: wcd938x: Add mic bias supply property
+      commit: 9108c3446f6e86146f0d3141b94415eb98c39566
+[3/3] ASoC: dt-bindings: lpass-cpu: Update clocks and power domain names for sc7280 platform
+      commit: 98b7630a583fe970f59742dc855d1c03e258d645
 
- sound/soc/intel/boards/sof_es8336.c | 42 ++++++++++++++---------------
- 1 file changed, 21 insertions(+), 21 deletions(-)
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
 
-diff --git a/sound/soc/intel/boards/sof_es8336.c b/sound/soc/intel/boards/sof_es8336.c
-index 5e0529aa4f1d..e4829a376b79 100644
---- a/sound/soc/intel/boards/sof_es8336.c
-+++ b/sound/soc/intel/boards/sof_es8336.c
-@@ -27,7 +27,7 @@
- #define SOF_ES8336_SSP_CODEC(quirk)		((quirk) & GENMASK(3, 0))
- #define SOF_ES8336_SSP_CODEC_MASK		(GENMASK(3, 0))
- 
--#define SOF_ES8336_TGL_GPIO_QUIRK		BIT(4)
-+#define SOF_ES8336_SPEAKERS_EN_GPIO1_QUIRK	BIT(4)
- #define SOF_ES8336_ENABLE_DMIC			BIT(5)
- #define SOF_ES8336_JD_INVERTED			BIT(6)
- 
-@@ -39,7 +39,7 @@ MODULE_PARM_DESC(quirk, "Board-specific quirk override");
- 
- struct sof_es8336_private {
- 	struct device *codec_dev;
--	struct gpio_desc *gpio_pa;
-+	struct gpio_desc *gpio_speakers;
- 	struct snd_soc_jack jack;
- 	struct list_head hdmi_pcm_list;
- 	bool speaker_en;
-@@ -51,19 +51,19 @@ struct sof_hdmi_pcm {
- 	int device;
- };
- 
--static const struct acpi_gpio_params pa_enable_gpio = { 0, 0, true };
--static const struct acpi_gpio_mapping acpi_es8336_gpios[] = {
--	{ "pa-enable-gpios", &pa_enable_gpio, 1 },
-+static const struct acpi_gpio_params speakers_enable_gpio0 = { 0, 0, true };
-+static const struct acpi_gpio_mapping acpi_speakers_enable_gpio0[] = {
-+	{ "speakers-enable-gpios", &speakers_enable_gpio0, 1 },
- 	{ }
- };
- 
--static const struct acpi_gpio_params quirk_pa_enable_gpio = { 1, 0, true };
--static const struct acpi_gpio_mapping quirk_acpi_es8336_gpios[] = {
--	{ "pa-enable-gpios", &quirk_pa_enable_gpio, 1 },
-+static const struct acpi_gpio_params speakers_enable_gpio1 = { 1, 0, true };
-+static const struct acpi_gpio_mapping acpi_speakers_enable_gpio1[] = {
-+	{ "speakers-enable-gpios", &speakers_enable_gpio1, 1 },
- 	{ }
- };
- 
--static const struct acpi_gpio_mapping *gpio_mapping = acpi_es8336_gpios;
-+static const struct acpi_gpio_mapping *gpio_mapping = acpi_speakers_enable_gpio0;
- 
- static void log_quirks(struct device *dev)
- {
-@@ -71,8 +71,8 @@ static void log_quirks(struct device *dev)
- 	dev_info(dev, "quirk SSP%ld\n",  SOF_ES8336_SSP_CODEC(quirk));
- 	if (quirk & SOF_ES8336_ENABLE_DMIC)
- 		dev_info(dev, "quirk DMIC enabled\n");
--	if (quirk & SOF_ES8336_TGL_GPIO_QUIRK)
--		dev_info(dev, "quirk TGL GPIO enabled\n");
-+	if (quirk & SOF_ES8336_SPEAKERS_EN_GPIO1_QUIRK)
-+		dev_info(dev, "Speakers GPIO1 quirk enabled\n");
- 	if (quirk & SOF_ES8336_JD_INVERTED)
- 		dev_info(dev, "quirk JD inverted enabled\n");
- }
-@@ -88,7 +88,7 @@ static int sof_es8316_speaker_power_event(struct snd_soc_dapm_widget *w,
- 	else
- 		priv->speaker_en = true;
- 
--	gpiod_set_value_cansleep(priv->gpio_pa, priv->speaker_en);
-+	gpiod_set_value_cansleep(priv->gpio_speakers, priv->speaker_en);
- 
- 	return 0;
- }
-@@ -233,8 +233,8 @@ static int sof_es8336_quirk_cb(const struct dmi_system_id *id)
- {
- 	quirk = (unsigned long)id->driver_data;
- 
--	if (quirk & SOF_ES8336_TGL_GPIO_QUIRK)
--		gpio_mapping = quirk_acpi_es8336_gpios;
-+	if (quirk & SOF_ES8336_SPEAKERS_EN_GPIO1_QUIRK)
-+		gpio_mapping = acpi_speakers_enable_gpio1;
- 
- 	return 1;
- }
-@@ -257,7 +257,7 @@ static const struct dmi_system_id sof_es8336_quirk_table[] = {
- 			DMI_MATCH(DMI_SYS_VENDOR, "IP3 tech"),
- 			DMI_MATCH(DMI_BOARD_NAME, "WN1"),
- 		},
--		.driver_data = (void *)(SOF_ES8336_TGL_GPIO_QUIRK)
-+		.driver_data = (void *)(SOF_ES8336_SPEAKERS_EN_GPIO1_QUIRK)
- 	},
- 	{}
- };
-@@ -585,10 +585,10 @@ static int sof_es8336_probe(struct platform_device *pdev)
- 	if (ret)
- 		dev_warn(codec_dev, "unable to add GPIO mapping table\n");
- 
--	priv->gpio_pa = gpiod_get_optional(codec_dev, "pa-enable", GPIOD_OUT_LOW);
--	if (IS_ERR(priv->gpio_pa)) {
--		ret = dev_err_probe(dev, PTR_ERR(priv->gpio_pa),
--				    "could not get pa-enable GPIO\n");
-+	priv->gpio_speakers = gpiod_get_optional(codec_dev, "speakers-enable", GPIOD_OUT_LOW);
-+	if (IS_ERR(priv->gpio_speakers)) {
-+		ret = dev_err_probe(dev, PTR_ERR(priv->gpio_speakers),
-+				    "could not get speakers-enable GPIO\n");
- 		goto err_put_codec;
- 	}
- 
-@@ -604,7 +604,7 @@ static int sof_es8336_probe(struct platform_device *pdev)
- 
- 	ret = devm_snd_soc_register_card(dev, card);
- 	if (ret) {
--		gpiod_put(priv->gpio_pa);
-+		gpiod_put(priv->gpio_speakers);
- 		dev_err(dev, "snd_soc_register_card failed: %d\n", ret);
- 		goto err_put_codec;
- 	}
-@@ -622,7 +622,7 @@ static int sof_es8336_remove(struct platform_device *pdev)
- 	struct snd_soc_card *card = platform_get_drvdata(pdev);
- 	struct sof_es8336_private *priv = snd_soc_card_get_drvdata(card);
- 
--	gpiod_put(priv->gpio_pa);
-+	gpiod_put(priv->gpio_speakers);
- 	device_remove_software_node(priv->codec_dev);
- 	put_device(priv->codec_dev);
- 
--- 
-2.35.1
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
