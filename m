@@ -4,75 +4,70 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 17D7BC433F5
-	for <alsa-devel@archiver.kernel.org>; Wed,  6 Apr 2022 19:03:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B1697C433EF
+	for <alsa-devel@archiver.kernel.org>; Wed,  6 Apr 2022 19:05:37 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 428EA16F8;
-	Wed,  6 Apr 2022 21:02:12 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 428EA16F8
+	by alsa0.perex.cz (Postfix) with ESMTPS id 9761516CE;
+	Wed,  6 Apr 2022 21:04:45 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9761516CE
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1649271782;
-	bh=z46n1V+SALPEkIujB4sbb2f2fZc5Ybo+VbDmf7JWd1g=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=j0mTFJcsoy6ZEf20pZpJa652gPQLrHHNuj6wEgRG6CfvGDbWTEdAg0J4Ch+YaU9Sf
-	 yLwDpnBG5huifHTrQJFn9W2hYWb+K7tR4Oq48H5Hx1Kq4mS9PAIMAmDbcCtSN3emTm
-	 BVbLWAUxUL6x0uq1TVRwXuwWImKAg9x6ABidlNBM=
+	s=default; t=1649271935;
+	bh=p7pxjBOFLlNn+elC8StiiXDcBZ3D/aTyrApfy+X7w3Q=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=Rm4tB+x8/nEJcsdOR6C/SXqQ+09ys5u3mAnFMmB0XLe8L67f8FVhnSbec5Cqj+HY1
+	 KAVGm1nWQ2Wtqjx8QtigiTnA/N+gH6Poy2yhUugLV3P3WzDis1vYaoaJjY1npzAWfE
+	 tCvoNOhM7+Dsm3PuD6nnvF2q541dH/wQ4Q2b6JR8=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 60793F80516;
-	Wed,  6 Apr 2022 21:01:27 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 33FF9F80141;
+	Wed,  6 Apr 2022 21:04:45 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 81A49F80518; Wed,  6 Apr 2022 21:01:26 +0200 (CEST)
-Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
+ id 2923AF80054; Wed,  6 Apr 2022 21:04:44 +0200 (CEST)
+Received: from mga17.intel.com (mga17.intel.com [192.55.52.151])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id D696DF800D1
- for <alsa-devel@alsa-project.org>; Wed,  6 Apr 2022 21:01:19 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D696DF800D1
+ by alsa1.perex.cz (Postfix) with ESMTPS id 6E7E1F80054
+ for <alsa-devel@alsa-project.org>; Wed,  6 Apr 2022 21:04:33 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6E7E1F80054
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="CKhyRq2P"
+ header.b="NbSgZecR"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1649271681; x=1680807681;
- h=from:to:cc:subject:date:message-id:in-reply-to:
- references:mime-version:content-transfer-encoding;
- bh=z46n1V+SALPEkIujB4sbb2f2fZc5Ybo+VbDmf7JWd1g=;
- b=CKhyRq2Pb1p1jd1J9TiAfwfYAjed+VY0XdozSww6AGy79ueN6BsAvqPm
- 78iWNP8XMAtM/MRJIHwmyjZF2CpqkdArnBBnUn4Bd0Nrmf6zWVd6H3e6W
- W5ARqjElzIl+mPjcs9oP4IiuhT5QQ/wS/aJRht96G69Ocd+47Ge8l1WMS
- NqiCby73fS76rcA0JXhGLH+yFd2C2OVxj4llGC4gzPeYU0X8zo+ByTYjQ
- l3MTeVjSwk7XcJ6KnjTxNAuFnSC9S1W5MhYSJYYezX+TLP6HU9vDgRdYf
- +vn1ZlTcJzPGjrcCCO2XUxQQk0qZhG1MYk/I0gmKp/sEgx6EO0X0H9HIf A==;
-X-IronPort-AV: E=McAfee;i="6200,9189,10309"; a="248655786"
-X-IronPort-AV: E=Sophos;i="5.90,240,1643702400"; d="scan'208";a="248655786"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
- by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 06 Apr 2022 12:01:13 -0700
-X-IronPort-AV: E=Sophos;i="5.90,240,1643702400"; d="scan'208";a="570700470"
+ t=1649271878; x=1680807878;
+ h=from:to:cc:subject:date:message-id:mime-version:
+ content-transfer-encoding;
+ bh=p7pxjBOFLlNn+elC8StiiXDcBZ3D/aTyrApfy+X7w3Q=;
+ b=NbSgZecRVmsYvrhRkTrIbmIPYYs9PLBWrqAXw5iJI4kh+DfEAg0D4d2b
+ 7QJ3rj9jEnbzhfiEDKHvwwHm/thTLgfpinui1X4aFE2bOlPGCA/h2sZXg
+ CdYnPMACqPCcHEhUD0b4O37wDZYYNaSONQaLfJB1PkBCXE9tyADONNom+
+ GyzNJ/vrYLMAXaMvDyKTl8Qi+vTr17rrK8yw9E2ZFPF+gMCgfkUroMpwm
+ qel+30GVG3KORd4sA4D+B1Yy5rFRmSt3/fASQ2+c7SEkT2XMapr8XEhC4
+ hQMnhCNsPfKukuifNDx3lTxll5PMKvlGdXrYKyoHI9cclh98LD3GtiRdr Q==;
+X-IronPort-AV: E=McAfee;i="6200,9189,10309"; a="241721510"
+X-IronPort-AV: E=Sophos;i="5.90,240,1643702400"; d="scan'208";a="241721510"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+ by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 06 Apr 2022 12:04:30 -0700
+X-IronPort-AV: E=Sophos;i="5.90,240,1643702400"; d="scan'208";a="697490170"
 Received: from cbok-mobl.amr.corp.intel.com (HELO
  pbossart-mobl3.amr.corp.intel.com) ([10.252.137.86])
- by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 06 Apr 2022 12:01:12 -0700
+ by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 06 Apr 2022 12:04:30 -0700
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH 2/2] ASoC: soc-pcm: improve BE transition for TRIGGER_START
-Date: Wed,  6 Apr 2022 14:00:56 -0500
-Message-Id: <20220406190056.233481-3-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH] ALSA: hda: intel-dsp-config: update AlderLake PCI IDs
+Date: Wed,  6 Apr 2022 14:04:18 -0500
+Message-Id: <20220406190418.245044-1-pierre-louis.bossart@linux.intel.com>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20220406190056.233481-1-pierre-louis.bossart@linux.intel.com>
-References: <20220406190056.233481-1-pierre-louis.bossart@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-Cc: tiwai@suse.de, Bard Liao <yung-chuan.liao@linux.intel.com>,
- Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+Cc: tiwai@suse.de, broonie@kernel.org,
  Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- broonie@kernel.org, Rander Wang <rander.wang@intel.com>,
- =?UTF-8?q?P=C3=A9ter=20Ujfalusi?= <peter.ujfalusi@linux.intel.com>
+ Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+ Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -88,35 +83,59 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-When the BE was in PAUSED state, the correct trigger is PAUSE_RELEASE.
+Add missing AlderLake-PS and RaptorLake-S PCI IDs (already in HDaudio
+and SOF drivers), add comments and regroup by skew.
 
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Reviewed-by: Rander Wang <rander.wang@intel.com>
+Reviewed-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
 Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-Reviewed-by: Péter Ujfalusi <peter.ujfalusi@linux.intel.com>
-Reviewed-by: Bard Liao <yung-chuan.liao@linux.intel.com>
 ---
- sound/soc/soc-pcm.c | 7 +++++++
- 1 file changed, 7 insertions(+)
+ sound/hda/intel-dsp-config.c | 18 ++++++++++++++++--
+ 1 file changed, 16 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
-index e8700dd1839f..6f43db35a5c8 100644
---- a/sound/soc/soc-pcm.c
-+++ b/sound/soc/soc-pcm.c
-@@ -2122,6 +2122,13 @@ int dpcm_be_dai_trigger(struct snd_soc_pcm_runtime *fe, int stream,
- 			if (be->dpcm[stream].be_start != 1)
- 				goto next;
+diff --git a/sound/hda/intel-dsp-config.c b/sound/hda/intel-dsp-config.c
+index 70fd8b13938e..8b0a16ba27d3 100644
+--- a/sound/hda/intel-dsp-config.c
++++ b/sound/hda/intel-dsp-config.c
+@@ -390,22 +390,36 @@ static const struct config_entry config_table[] = {
  
-+			if (be->dpcm[stream].state == SND_SOC_DPCM_STATE_PAUSED)
-+				ret = soc_pcm_trigger(be_substream,
-+						      SNDRV_PCM_TRIGGER_PAUSE_RELEASE);
-+			else
-+				ret = soc_pcm_trigger(be_substream,
-+						      SNDRV_PCM_TRIGGER_START);
-+
- 			ret = soc_pcm_trigger(be_substream, cmd);
- 			if (ret) {
- 				be->dpcm[stream].be_start--;
+ /* Alder Lake */
+ #if IS_ENABLED(CONFIG_SND_SOC_SOF_ALDERLAKE)
++	/* Alderlake-S */
+ 	{
+ 		.flags = FLAG_SOF | FLAG_SOF_ONLY_IF_DMIC_OR_SOUNDWIRE,
+ 		.device = 0x7ad0,
+ 	},
++	/* RaptorLake-S */
+ 	{
+ 		.flags = FLAG_SOF | FLAG_SOF_ONLY_IF_DMIC_OR_SOUNDWIRE,
+-		.device = 0x51c8,
++		.device = 0x7a50,
+ 	},
++	/* Alderlake-P */
+ 	{
+ 		.flags = FLAG_SOF | FLAG_SOF_ONLY_IF_DMIC_OR_SOUNDWIRE,
+-		.device = 0x51cc,
++		.device = 0x51c8,
+ 	},
+ 	{
+ 		.flags = FLAG_SOF | FLAG_SOF_ONLY_IF_DMIC_OR_SOUNDWIRE,
+ 		.device = 0x51cd,
+ 	},
++	/* Alderlake-PS */
++	{
++		.flags = FLAG_SOF | FLAG_SOF_ONLY_IF_DMIC_OR_SOUNDWIRE,
++		.device = 0x51c9,
++	},
++	/* Alderlake-M */
++	{
++		.flags = FLAG_SOF | FLAG_SOF_ONLY_IF_DMIC_OR_SOUNDWIRE,
++		.device = 0x51cc,
++	},
++	/* Alderlake-N */
+ 	{
+ 		.flags = FLAG_SOF | FLAG_SOF_ONLY_IF_DMIC_OR_SOUNDWIRE,
+ 		.device = 0x54c8,
 -- 
 2.30.2
 
