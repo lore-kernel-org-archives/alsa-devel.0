@@ -4,67 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C09F5C433EF
-	for <alsa-devel@archiver.kernel.org>; Wed,  6 Apr 2022 13:31:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C2D30C433F5
+	for <alsa-devel@archiver.kernel.org>; Wed,  6 Apr 2022 13:31:25 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0EB3F170B;
-	Wed,  6 Apr 2022 15:30:24 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0EB3F170B
+	by alsa0.perex.cz (Postfix) with ESMTPS id 052B51728;
+	Wed,  6 Apr 2022 15:30:34 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 052B51728
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1649251874;
-	bh=wrlDarUYr+POHLopISxa2klaErhzsz1GFbTKgE4YGMQ=;
-	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
+	s=default; t=1649251884;
+	bh=ZZeh6zTDcFwtbxD5va/nJQyyLywroM+cwhGSFxHPOY8=;
+	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=t2cHk6YGv/15aiimhIDznCkCj4/FvEA3Eq4NW7sa5bqL6mYWaCKEOEFXYXOQHvbkS
-	 8vqYsWbgNxBen+leuIMkZEl821pNoXhiSj0tn7g/+rrJ9mEjLIQlNM/zT9Pu0oJU8N
-	 BjNYNEQwzo9VXbmfKa6GCyiUgnNEi/oARV/yJsqA=
+	b=H0Rg8hQ5pu4fIk+DehF8FZUCE/h4bK+RagKPulpLWkkT3tNrwAgYizVZ2Za4DjAvY
+	 THQd4zvo3LNR0/MDNKQxz8AcPJMxoqTcrgHgWjPS1aDNYHF2ibDi2h38NKCErITwrx
+	 QYFrjjGQKuEbTw9Z4/SUOEQstjQsyjRnOk16F65I=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id C8B04F80528;
-	Wed,  6 Apr 2022 15:28:58 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 53DF8F80535;
+	Wed,  6 Apr 2022 15:28:59 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 91C64F80520; Wed,  6 Apr 2022 15:28:54 +0200 (CEST)
-Received: from sin.source.kernel.org (sin.source.kernel.org [145.40.73.55])
+ id 6D2C8F80525; Wed,  6 Apr 2022 15:28:55 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 1E853F8051B
- for <alsa-devel@alsa-project.org>; Wed,  6 Apr 2022 15:28:48 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1E853F8051B
+ by alsa1.perex.cz (Postfix) with ESMTPS id 0AE78F8051A
+ for <alsa-devel@alsa-project.org>; Wed,  6 Apr 2022 15:28:52 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0AE78F8051A
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="hptvgCYb"
+ header.b="e68Neh16"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by sin.source.kernel.org (Postfix) with ESMTPS id 43049CE2399;
- Wed,  6 Apr 2022 13:28:47 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 68EC5C385A7;
- Wed,  6 Apr 2022 13:28:43 +0000 (UTC)
+ by dfw.source.kernel.org (Postfix) with ESMTPS id 8C479615B6;
+ Wed,  6 Apr 2022 13:28:50 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BA46DC385A7;
+ Wed,  6 Apr 2022 13:28:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1649251725;
- bh=wrlDarUYr+POHLopISxa2klaErhzsz1GFbTKgE4YGMQ=;
- h=From:To:In-Reply-To:References:Subject:Date:From;
- b=hptvgCYbXfPVMNu4m4jzXX5XKLZ+8spVqUxqesj7+kKljTkTZXRdUMBGSiO4IwHAS
- uev6Ca/DMhcBHB7QvdZW6dTp9SZbU0M6bjfPH3rNgfyFbuBDRJcR/7TEXbIcR08i2B
- tdSQWEGfbUSPwUUZRZa3IcACiZBcvpoUKlf10Gy3jlQzVcVTKktXvyrR/dT0+T17P2
- Vir6B6DzJEfeK6XicRH+xjKF2bGwp1lZVvSqmAJ3YkoIrdtFFczsJ3mm9JUFU24f2w
- 7iYNoZqGzpkcV64hUuo6iFUJBdZC6KpujTdOGIpynnRKqooIOAYTarQQiJfweOy6eF
- RDIalhj67V7EQ==
+ s=k20201202; t=1649251730;
+ bh=ZZeh6zTDcFwtbxD5va/nJQyyLywroM+cwhGSFxHPOY8=;
+ h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+ b=e68Neh16zqsi6ozs7M9q9u+X150Cf/5gO/40+b73FPQow30cPj+GLR2vaPMhC+HTx
+ iR6Phw04NsvKelnF7Qy8GKAJFjM8rpn2YuCxKd/CowT7TlB1fMpHOAqkJNSHmZVbFd
+ bope+12XR2c6psl5Snqe0Ya1gzfeYw7UcKFo2yGyFVkdjkkmY1vwtNsFpil6teSluu
+ B4WCqTprKj9u1ASVzAiAWCL0yUcQpN1JMZe73LSd0A5wj1Zxv/XlETz7e53rUhLzzZ
+ Q0EWM94S1iEiM8IclW/la9cg4u/JySJngzoZctx1zEFMrmnCdt6/0DrEdZQC6whVlO
+ NrG6vRGqbJ3BQ==
 From: Mark Brown <broonie@kernel.org>
-To: linux-kernel@vger.kernel.org, colin.king@intel.com, tiwai@suse.com,
- weiyongjun1@huawei.com, jiapeng.chong@linux.alibaba.com, linmq006@gmail.com,
- frattaroli.nicolas@gmail.com, alsa-devel@alsa-project.org, lgirdwood@gmail.com,
- perex@perex.cz, lee.jones@linaro.org, macromorgan@hotmail.com
-In-Reply-To: <20220404090753.17940-1-linmq006@gmail.com>
-References: <20220404090753.17940-1-linmq006@gmail.com>
-Subject: Re: [PATCH] ASoC: rk817: Use devm_clk_get() in rk817_platform_probe
-Message-Id: <164925172314.83821.3548187523065750918.b4-ty@kernel.org>
-Date: Wed, 06 Apr 2022 14:28:43 +0100
+To: rf@opensource.cirrus.com
+In-Reply-To: <20220405135419.1230088-1-rf@opensource.cirrus.com>
+References: <20220405135419.1230088-1-rf@opensource.cirrus.com>
+Subject: Re: [PATCH v2 0/5] ASoC: Add a driver for the Cirrus Logic CS35L45
+ Smart Amplifier
+Message-Id: <164925172848.83821.10687099289112753993.b4-ty@kernel.org>
+Date: Wed, 06 Apr 2022 14:28:48 +0100
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, robh+dt@kernel.org,
+ linux-kernel@vger.kernel.org, patches@opensource.cirrus.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -80,12 +80,19 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Mon, 4 Apr 2022 09:07:46 +0000, Miaoqian Lin wrote:
-> We need to call clk_put() to undo clk_get() in the error path.
-> Use devm_clk_get() to obtain a reference to the clock, It has
-> the benefit that clk_put() is no longer required.
+On Tue, 5 Apr 2022 14:54:14 +0100, Richard Fitzgerald wrote:
+> This adds basic audio support for the Cirrus Logic CS35L45 amplifier.
 > 
+> The first two patches add two generic helpers to ASoC, and patch 3 is
+> a kunit test for patch 2.
 > 
+> CHANGES SINCE V1:
+> Patch #5:
+>  - spi .remove callback now has void return
+>  - use new I2C .probe_new callback
+>  - force boost-bypass mode as default
+> 
+> [...]
 
 Applied to
 
@@ -93,8 +100,16 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: rk817: Use devm_clk_get() in rk817_platform_probe
-      commit: 8ba08d3a367a70f707b7c5d53ad92b98b960ee88
+[1/5] ASoC: soc.h: Add SOC_SINGLE_S_TLV() macro
+      commit: bc8cb02976cd602b8d7631a6f4a54a9cf305d38c
+[2/5] ASoC: soc-utils: Add helper to calculate BCLK from TDM info
+      commit: 1ef34dd2b90d78a9830398441801658ef86eee9d
+[3/5] ASoC: soc-utils: Add kunit test for snd_soc_tdm_params_to_bclk()
+      commit: 89342fa38bbaade51584f255eee5cd43621f4e10
+[4/5] ASoC: dt-bindings: cs35l45: Cirrus Logic CS35L45 Smart Amp
+      commit: 72661ff7662acc00d51976d4b2d2d13eb5628385
+[5/5] ASoC: cs35l45: Add driver for Cirrus Logic CS35L45 Smart Amp
+      commit: 0d463d016000d68d7e982720b5e4380b2d83409a
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
