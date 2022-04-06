@@ -4,65 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3F7AAC433EF
-	for <alsa-devel@archiver.kernel.org>; Wed,  6 Apr 2022 13:30:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B2F32C433EF
+	for <alsa-devel@archiver.kernel.org>; Wed,  6 Apr 2022 13:31:01 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 2F3B61721;
-	Wed,  6 Apr 2022 15:29:42 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2F3B61721
+	by alsa0.perex.cz (Postfix) with ESMTPS id F2D851712;
+	Wed,  6 Apr 2022 15:30:09 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F2D851712
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1649251832;
-	bh=99t+DKVGBE03u24LsY6EPz001vZnRK9LSjuythay/bA=;
-	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
+	s=default; t=1649251860;
+	bh=l3divZWw+E9A2Yng2WHTTF7Ibc8GkDmAmP9AmSHkIaA=;
+	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=a0OGt0D/JphoDm2O6Lx/Q2ZP2mIP6c7/nNBSa4DEolFEASrjwKCGhznPbZ3JYh/B5
-	 3yq8ffNzVEvyPxrBWq5WuEy3NpZ/I6Ls/2027canO5O6+1UQxoMG0MaQnbzrOS3X90
-	 shzESoxez1hJs0wze7BTmzeO5gkER1NOvwcBaUBU=
+	b=pqpSWR6sI06ltSJ7oKzIAXERBaHlGmvLLkz57aRA3D/4vHbhW6RWY1RnfICmWKr6z
+	 p8dACdYYHJZXzhLXgKtZLsRQk9MUqlAyFnfBHKzLVZCadQT2OOEXAKhN1EHhzSS92W
+	 yNIoMCLNO+siuXMD1uIzlhGFwkoKPFZW+SUNLR6E=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 7E8D5F80520;
-	Wed,  6 Apr 2022 15:28:55 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2E220F80527;
+	Wed,  6 Apr 2022 15:28:58 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 6D940F8051F; Wed,  6 Apr 2022 15:28:52 +0200 (CEST)
-Received: from sin.source.kernel.org (sin.source.kernel.org [145.40.73.55])
+ id 4440BF8051F; Wed,  6 Apr 2022 15:28:53 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id D7D66F802DF
- for <alsa-devel@alsa-project.org>; Wed,  6 Apr 2022 15:28:44 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D7D66F802DF
+ by alsa1.perex.cz (Postfix) with ESMTPS id 8A567F800D2
+ for <alsa-devel@alsa-project.org>; Wed,  6 Apr 2022 15:28:50 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8A567F800D2
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="u86k+M9O"
+ header.b="igR6KWLH"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by sin.source.kernel.org (Postfix) with ESMTPS id 94788CE2399;
- Wed,  6 Apr 2022 13:28:42 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8B122C385A1;
- Wed,  6 Apr 2022 13:28:40 +0000 (UTC)
+ by dfw.source.kernel.org (Postfix) with ESMTPS id DF39E60B86;
+ Wed,  6 Apr 2022 13:28:48 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 32C00C385A3;
+ Wed,  6 Apr 2022 13:28:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1649251721;
- bh=99t+DKVGBE03u24LsY6EPz001vZnRK9LSjuythay/bA=;
- h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=u86k+M9OSXkIM7uVUQwurWMlC+vEx5RNI5xYjD2x31gFgCD0q96H1rP9UgIaoflW1
- d/18TP20jfR6Sa+mID8kLB0qf6XDm+voqw0UagPPtsdAf+Ck/thHSttSgd0s5nqGRU
- exiZ4ri6aIwb5RkxXvQ0p7pGG7HoST4KvLbr7uPNHnNCIY7lZlnYJx87ccMA9THjff
- 4AgvqTVnICgfYSXuBpltzEQmKC7F/YZV3jDbYnMSlcutfMwR3NaPoM/9m1NYCYQ/Cj
- qowO2udViH4Wf4r5SxwAPEshmnZpiP92N0Nn4fI63C/NuLwBcQUnBYrDNGxE1bwJ8g
- 7HBjbM5ikFWAQ==
+ s=k20201202; t=1649251728;
+ bh=l3divZWw+E9A2Yng2WHTTF7Ibc8GkDmAmP9AmSHkIaA=;
+ h=From:To:In-Reply-To:References:Subject:Date:From;
+ b=igR6KWLHQZ2sB82z8sva1vGQ9Rhoj+O/eAap7EEG6bra0gFhrrmoJint3XuTZKfca
+ XkwTf7BnoE/Ona40Y8ZUYAK2aKbbgQiFEd07ySFZl/TUwyne/i0YmNZsavmI0ZbOpQ
+ mI4m/h9IacwI/GJ272sdj/YVcPr+LiD0NTQbgfXw7xGRocrG1o+e3ldH4QgZVSSA4Y
+ jTWS441ZPh7O16YKEp07332UhHHI88kL6eqjmJtOnQLs6sEFTQNBMbh9DuMaYWcVBw
+ WStCOuLC/mtyBFdRFQUoaoSo7bdb/43728TNve3YPOqv810EiZEIQm1IvixtbZ8YLY
+ 4ICQTxx9+j0Tw==
 From: Mark Brown <broonie@kernel.org>
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-In-Reply-To: <87ilropdu9.wl-kuninori.morimoto.gx@renesas.com>
-References: <87ilropdu9.wl-kuninori.morimoto.gx@renesas.com>
-Subject: Re: [PATCH] ASoC: rsnd: use inclusive language for DAIFMT mask
-Message-Id: <164925172028.83821.9698792160366132718.b4-ty@kernel.org>
-Date: Wed, 06 Apr 2022 14:28:40 +0100
+To: linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ tiwai@suse.com, linux-mediatek@lists.infradead.org, linmq006@gmail.com,
+ ryder.lee@mediatek.com, matthias.bgg@gmail.com, lgirdwood@gmail.com,
+ perex@perex.cz, alsa-devel@alsa-project.org, rikard.falkeborn@gmail.com
+In-Reply-To: <20220404093526.30004-1-linmq006@gmail.com>
+References: <20220404093526.30004-1-linmq006@gmail.com>
+Subject: Re: [PATCH] ASoC: mediatek: Fix missing of_node_put in
+ mt2701_wm8960_machine_probe
+Message-Id: <164925172592.83821.12895758301254596551.b4-ty@kernel.org>
+Date: Wed, 06 Apr 2022 14:28:45 +0100
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -78,11 +81,10 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Tue, 5 Apr 2022 00:34:54 +0000, Kuninori Morimoto wrote:
-> From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-> 
-> It is still using discriminatory terms on DAIFMT mask.
-> This patch tidyup it.
+On Mon, 4 Apr 2022 09:35:25 +0000, Miaoqian Lin wrote:
+> This node pointer is returned by of_parse_phandle() with
+> refcount incremented in this function.
+> Calling of_node_put() to avoid the refcount leak.
 > 
 > 
 
@@ -92,8 +94,8 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: rsnd: use inclusive language for DAIFMT mask
-      commit: 7704a82e271ad7bbafd08dac7a5d9dc4c29bc681
+[1/1] ASoC: mediatek: Fix missing of_node_put in mt2701_wm8960_machine_probe
+      commit: 05654431a18fe24e5e46a375d98904134628a102
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
