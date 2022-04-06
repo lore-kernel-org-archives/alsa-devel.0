@@ -4,69 +4,65 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C99B4C433EF
-	for <alsa-devel@archiver.kernel.org>; Wed,  6 Apr 2022 13:30:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3F7AAC433EF
+	for <alsa-devel@archiver.kernel.org>; Wed,  6 Apr 2022 13:30:34 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 1E352171D;
-	Wed,  6 Apr 2022 15:29:39 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1E352171D
+	by alsa0.perex.cz (Postfix) with ESMTPS id 2F3B61721;
+	Wed,  6 Apr 2022 15:29:42 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2F3B61721
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1649251829;
-	bh=SapR/NGS0zHiukVcEi1sjt1o5RguCptFWulxy98tqWA=;
-	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
+	s=default; t=1649251832;
+	bh=99t+DKVGBE03u24LsY6EPz001vZnRK9LSjuythay/bA=;
+	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=PFZ52HHB4yyiKlE7CfdO83bdrXwgHgMIHtYTXEtlfED+nMja4g8zBqDHCyp90ea/N
-	 0NQdLjaT+QVhYcEnQe1kkSjCHya8mtI1WAulg2ebikZeyMGu0h7A9E3qFgBkczJOvd
-	 vJ5EFA255IA4Fnv7U1ab0d2cNU6obVjhHYByjnTI=
+	b=a0OGt0D/JphoDm2O6Lx/Q2ZP2mIP6c7/nNBSa4DEolFEASrjwKCGhznPbZ3JYh/B5
+	 3yq8ffNzVEvyPxrBWq5WuEy3NpZ/I6Ls/2027canO5O6+1UQxoMG0MaQnbzrOS3X90
+	 shzESoxez1hJs0wze7BTmzeO5gkER1NOvwcBaUBU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 7F967F800D2;
-	Wed,  6 Apr 2022 15:28:54 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 7E8D5F80520;
+	Wed,  6 Apr 2022 15:28:55 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 0E97EF8020C; Wed,  6 Apr 2022 15:28:49 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+ id 6D940F8051F; Wed,  6 Apr 2022 15:28:52 +0200 (CEST)
+Received: from sin.source.kernel.org (sin.source.kernel.org [145.40.73.55])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id F1068F80475
- for <alsa-devel@alsa-project.org>; Wed,  6 Apr 2022 15:28:41 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F1068F80475
+ by alsa1.perex.cz (Postfix) with ESMTPS id D7D66F802DF
+ for <alsa-devel@alsa-project.org>; Wed,  6 Apr 2022 15:28:44 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D7D66F802DF
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="qBE6vy/D"
+ header.b="u86k+M9O"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id A78D5615AE;
+ by sin.source.kernel.org (Postfix) with ESMTPS id 94788CE2399;
+ Wed,  6 Apr 2022 13:28:42 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8B122C385A1;
  Wed,  6 Apr 2022 13:28:40 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BC0FDC385A9;
- Wed,  6 Apr 2022 13:28:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1649251720;
- bh=SapR/NGS0zHiukVcEi1sjt1o5RguCptFWulxy98tqWA=;
- h=From:To:In-Reply-To:References:Subject:Date:From;
- b=qBE6vy/DKRlrqfk8OWxSirFDZMVqiTSuBzW8DuegVviTNxduBA/czlteRsefSFsju
- eSrQDuT2Ri3W/8znnOPz1dvd1XS/CKOpYwo+Jhnp6pN7MOLE0pCWzsRAOnBULnwH4e
- SKuCZe+6Rlj52sdtm7QHPgTA6voOO9HfsmcvwvZZw0s8ngISWe7xCOVHSyXXiram29
- kvF9DVx4oFqWVMUXaHEcPzoXsU5mrmyxBjjTeXG1zpOuYQ9ArjNN5/M6emcLTRncEd
- ZCuW/AagOexFfhZQvjMoZfr0PGCR3AoHwup6HCUj9sn/rikJv1ifAcPGA/CLBmo90l
- XdYzf/YmcFq5w==
+ s=k20201202; t=1649251721;
+ bh=99t+DKVGBE03u24LsY6EPz001vZnRK9LSjuythay/bA=;
+ h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+ b=u86k+M9OSXkIM7uVUQwurWMlC+vEx5RNI5xYjD2x31gFgCD0q96H1rP9UgIaoflW1
+ d/18TP20jfR6Sa+mID8kLB0qf6XDm+voqw0UagPPtsdAf+Ck/thHSttSgd0s5nqGRU
+ exiZ4ri6aIwb5RkxXvQ0p7pGG7HoST4KvLbr7uPNHnNCIY7lZlnYJx87ccMA9THjff
+ 4AgvqTVnICgfYSXuBpltzEQmKC7F/YZV3jDbYnMSlcutfMwR3NaPoM/9m1NYCYQ/Cj
+ qowO2udViH4Wf4r5SxwAPEshmnZpiP92N0Nn4fI63C/NuLwBcQUnBYrDNGxE1bwJ8g
+ 7HBjbM5ikFWAQ==
 From: Mark Brown <broonie@kernel.org>
-To: linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- tiwai@suse.com, jiaxin.yu@mediatek.com, linux-mediatek@lists.infradead.org,
- linmq006@gmail.com, koro.chen@mediatek.com, lgirdwood@gmail.com,
- matthias.bgg@gmail.com, perex@perex.cz, alsa-devel@alsa-project.org,
- tzungbi@google.com
-In-Reply-To: <20220404092903.26725-1-linmq006@gmail.com>
-References: <20220404092903.26725-1-linmq006@gmail.com>
-Subject: Re: [PATCH] ASoC: mediatek: Fix error handling in
- mt8173_max98090_dev_probe
-Message-Id: <164925171747.83821.17392124533479234810.b4-ty@kernel.org>
-Date: Wed, 06 Apr 2022 14:28:37 +0100
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+In-Reply-To: <87ilropdu9.wl-kuninori.morimoto.gx@renesas.com>
+References: <87ilropdu9.wl-kuninori.morimoto.gx@renesas.com>
+Subject: Re: [PATCH] ASoC: rsnd: use inclusive language for DAIFMT mask
+Message-Id: <164925172028.83821.9698792160366132718.b4-ty@kernel.org>
+Date: Wed, 06 Apr 2022 14:28:40 +0100
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -82,9 +78,11 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Mon, 4 Apr 2022 09:29:01 +0000, Miaoqian Lin wrote:
-> Call of_node_put(platform_node) to avoid refcount leak in
-> the error path.
+On Tue, 5 Apr 2022 00:34:54 +0000, Kuninori Morimoto wrote:
+> From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+> 
+> It is still using discriminatory terms on DAIFMT mask.
+> This patch tidyup it.
 > 
 > 
 
@@ -94,8 +92,8 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: mediatek: Fix error handling in mt8173_max98090_dev_probe
-      commit: 4f4e0454e226de3bf4efd7e7924d1edc571c52d5
+[1/1] ASoC: rsnd: use inclusive language for DAIFMT mask
+      commit: 7704a82e271ad7bbafd08dac7a5d9dc4c29bc681
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
