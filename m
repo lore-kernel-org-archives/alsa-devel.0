@@ -4,98 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 34EEAC433EF
-	for <alsa-devel@archiver.kernel.org>; Wed,  6 Apr 2022 13:22:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4A7C0C433EF
+	for <alsa-devel@archiver.kernel.org>; Wed,  6 Apr 2022 13:29:39 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A210216DE;
-	Wed,  6 Apr 2022 15:21:58 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A210216DE
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0457316E8;
+	Wed,  6 Apr 2022 15:28:47 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0457316E8
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1649251368;
-	bh=MNcLTJQNfb4WYM7uCPAcSDmLmnbBJ3NgB+QAaL0IHXg=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	s=default; t=1649251777;
+	bh=3TaUT9+vHV4ELLBDNt7fqMxEWQnqlwB843HZYhfTDRA=;
+	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=gbi/56m1Rs1da9RV0nvrVWBtGOVeOaTaVLXBvrKe5cgcPOZDi9MjVHvgy5WfIISDh
-	 J2ZzV2kP+MCdLTrNnuhxAYr0TBb9s7Tv9IG3RBLtNUV7SVCXLrkMYeOXgxPz1pCQ/w
-	 L4PL9iKblIE1kV1KUbqfv7iSGIY6llPyP9fmmz5E=
+	b=K/UsljoLXeQUYrMZjvAMuq0kfcUXfC5s/AaFR3P6E+ja9a7RLN8eeaLR2HVuvVkgK
+	 so8QnVvBfCLvSLj6YP3hHdDMUj9dMc1Va4rvHYybpvj6kiDsB1TD4fY0nQyvBMh+KB
+	 wQ/lTgxhgEFZO3Fripj9WkF4DMQJviSu//iLVNsI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 3B0A7F80141;
-	Wed,  6 Apr 2022 15:21:58 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 6DCFAF80161;
+	Wed,  6 Apr 2022 15:28:46 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 23180F80161; Wed,  6 Apr 2022 15:21:57 +0200 (CEST)
-Received: from lahtoruutu.iki.fi (lahtoruutu.iki.fi [IPv6:2a0b:5c81:1c1::37])
- (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
+ id CA2A6F80161; Wed,  6 Apr 2022 15:28:42 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id A83F5F800D2
- for <alsa-devel@alsa-project.org>; Wed,  6 Apr 2022 15:21:52 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A83F5F800D2
+ by alsa1.perex.cz (Postfix) with ESMTPS id C8382F800D2
+ for <alsa-devel@alsa-project.org>; Wed,  6 Apr 2022 15:28:39 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C8382F800D2
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=iki.fi header.i=@iki.fi header.b="eQ8xzLBJ"
-Received: from darkstar.musicnaut.iki.fi (85-76-76-218-nat.elisa-mobile.fi
- [85.76.76.218])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest
- SHA256) (No client certificate requested)
- (Authenticated sender: aaro.koskinen)
- by lahtoruutu.iki.fi (Postfix) with ESMTPSA id 67FC71B000E0;
- Wed,  6 Apr 2022 16:21:51 +0300 (EEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=iki.fi; s=lahtoruutu; 
- t=1649251312;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=wwR7bU/LqezBbEgTJDf+iEsMymzvGIHgAIteyu5Psh0=;
- b=eQ8xzLBJMgXjtwB7Yzjx/LojJlTidJ/nTLI5pX0s3cY3Zpsn8b7BqqyMs3XT0RDiE5x3gs
- VxYcG9eYTL2ti5Y7V7hFYM+rqV7NikHD3H+p5eERqlQfhhkziGxt5EzkIqEux9pVT/63ct
- 9RZefQzE5i14yPjKv+zCKIJs/eTPZg90LntJxUwFkLpuxJfeJHGC27x/eapHvMw+3QBCfO
- gmU++itRdwNwFQooc8+77js9RrGrUrR+mkDgelpwUoV/wq1kCEziaeZMKg/gpUDKVDqGmb
- sdmlvWnhCTYcYS7NFr9PDY7i6KlEk5IH1VV/If5zeEdFsCEIB7hDvyObaWz3Xw==
-Date: Wed, 6 Apr 2022 16:21:49 +0300
-From: Aaro Koskinen <aaro.koskinen@iki.fi>
-To: Janusz Krzysztofik <jmkrzyszt@gmail.com>
-Subject: Re: [PATCH v2] ARM: OMAP1: Prepare for conversion of OMAP1 clocks to
- CCF
-Message-ID: <20220406132149.GC594699@darkstar.musicnaut.iki.fi>
-References: <20220310233307.99220-3-jmkrzyszt@gmail.com>
- <20220322163646.GD297526@darkstar.musicnaut.iki.fi>
- <20220322190753.GF297526@darkstar.musicnaut.iki.fi>
- <1810824.tdWV9SEqCh@dell>
+ dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="haGlb+m6"
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by dfw.source.kernel.org (Postfix) with ESMTPS id C73446152F;
+ Wed,  6 Apr 2022 13:28:37 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EEBA7C385A1;
+ Wed,  6 Apr 2022 13:28:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1649251717;
+ bh=3TaUT9+vHV4ELLBDNt7fqMxEWQnqlwB843HZYhfTDRA=;
+ h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+ b=haGlb+m6YgipxJXICWTCIYl1FoJLlr8OZtDtWQHpLqBNGZnhi0ngescr0UOO145uV
+ pHFtXDt6/fUB+LZm83p2CKAk2PpepQtoV58737tBb528RF80NjB3xJU6oykPG1WzEY
+ wLwr8SM7O7XG1aYtOPbvD/nzpvc3PsTIo8WEs5mCT4oTlX8P3a2NjHJADCwKNNlzKS
+ Nmf4P4VaOpj5ZZUpxchTS85Ydv1daX7rvGLutAETEals5/83NqNvXqXQcCFeaN80Mj
+ afGodjZJp+w24QgAvaly1854bJy08sc+g0sL3fg9Bl8azzP/XJc7dhUgms/0mTdlq2
+ H+opc/K5wc18A==
+From: Mark Brown <broonie@kernel.org>
+To: robh+dt@kernel.org, rf@opensource.cirrus.com
+In-Reply-To: <20220318162943.1578102-1-rf@opensource.cirrus.com>
+References: <20220318162943.1578102-1-rf@opensource.cirrus.com>
+Subject: Re: [PATCH 0/5] ASoC: Add a driver for the Cirrus Logic CS35L45 Smart
+ Amplifier
+Message-Id: <164925171568.83821.4847181026901086960.b4-ty@kernel.org>
+Date: Wed, 06 Apr 2022 14:28:35 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1810824.tdWV9SEqCh@dell>
-ARC-Seal: i=1; s=lahtoruutu; d=iki.fi; t=1649251312; a=rsa-sha256; cv=none;
- b=G3rkvREcvYSgPILWjB5NXkPEwDB12zuDb/aFmiEvpjUFHoIPAJkYCg4gSvydBuXsCOrASV
- qwVzzbSSEMx9mt98MsnoQGVKzIanrO0nr1oceqozsnLldbYtfYofM5nMCz1ygfNCoiqH+K
- IgUw/j2ZP7FR0vbtq7AE6gODdl7vMQ3Vfs+C4Xr8gfhiKcLrcewjnyFbLJ8VzM6wBTdU7t
- gGydIzbI/MdPmrFnVpcq2dLpYJlLq8V5O5cFhpaQPPezxVpgC6QZLcN3upxt341r2aPWzQ
- DGmnbA4hUe8LZaRUfUkOTNHA0z69SzxLRjRbScNwYpTyKIoK+T6Q5ps5tgqjKw==
-ARC-Authentication-Results: i=1; ORIGINATING;
- auth=pass smtp.auth=aaro.koskinen smtp.mailfrom=aaro.koskinen@iki.fi
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=iki.fi;
- s=lahtoruutu; t=1649251312;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=wwR7bU/LqezBbEgTJDf+iEsMymzvGIHgAIteyu5Psh0=;
- b=vWn818AHWtvsq5cDnlrJUnWE79qMNnj8xFj19jFSqwBPLeAtdZ43oHVi70bcMK+nMmLrSK
- egs3u5wrj9LuerZbuMRnIpytvyvxIRPPV7q5I7a2AsQUHhbykzAHVVpq/9fp7ydLJC4BkE
- /j7PyMCSQ8gsrfNhsiwPPt7loNA6QMRRlDk5Z6QZ2s9NdMXLpTvDXdFyETUiIH9yQ6N8ZV
- UA7Ohf8mDgm8uV/Dx1bNcCT7oIamV8mar/PlKoL+fP1XJy/PNu3ZxCz87uc5NkMQwotWIp
- I92ppcKhR83XiGqTSWPAjd1EkDpGjMI2CtDXW+kr0FIUmivOhk5Ny7zCGfDavA==
-Cc: alsa-devel@alsa-project.org, Felipe Balbi <balbi@kernel.org>,
- Paul Walmsley <paul@pwsan.com>, Arnd Bergmann <arnd@arndb.de>,
- Liam Girdwood <lgirdwood@gmail.com>, Tony Lindgren <tony@atomide.com>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Helge Deller <deller@gmx.de>,
- linux-usb@vger.kernel.org, linux-mmc@vger.kernel.org,
- linux-fbdev@vger.kernel.org, linux-kernel@vger.kernel.org,
- Mark Brown <broonie@kernel.org>, Alan Stern <stern@rowland.harvard.edu>,
- Ulf Hansson <ulf.hansson@linaro.org>, linux-omap@vger.kernel.org,
- Peter Ujfalusi <peter.ujfalusi@gmail.com>,
- linux-arm-kernel@lists.infradead.org
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+Cc: patches@opensource.cirrus.com, alsa-devel@alsa-project.org,
+ linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -111,36 +80,49 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Hi,
-
-On Sat, Mar 26, 2022 at 10:17:49PM +0100, Janusz Krzysztofik wrote:
-> Dnia wtorek, 22 marca 2022 20:07:53 CET Aaro Koskinen pisze:
-> > On Tue, Mar 22, 2022 at 06:36:48PM +0200, Aaro Koskinen wrote:
-> > > Something is still broken. When doing kexec (using CCF kernel), the
-> > > kexec'ed kernel now hangs early (on 770):
-> > [...]
-> > > [    0.928863] calling  omap1_init_devices+0x0/0x2c @ 1
-> > 
-> > It hangs in omap_sram_reprogram_clock() (<- omap1_select_table_rate()
-> > <- omap1_clk_late_init()).
+On Fri, 18 Mar 2022 16:29:38 +0000, Richard Fitzgerald wrote:
+> This adds basic audio support for the Cirrus Logic CS35L45 amplifier.
 > 
-> I've reviewed my changes but haven't found anything suspicious.
+> The first two patches add two generic helpers to ASoC, and patch 3 is
+> a kunit test for patch 2.
+> 
+> James Schulman (1):
+>   ASoC: cs35l45: Add driver for Cirrus Logic CS35L45 Smart Amp
+> 
+> [...]
 
-The below change is fixing the kexec boot. Based on the comment in the
-code, it seems this clock is needed for the SRAM to work.
+Applied to
 
-diff --git a/arch/arm/mach-omap1/clock_data.c b/arch/arm/mach-omap1/clock_data.c
-index e33e11f826af..b8b4876ff935 100644
---- a/arch/arm/mach-omap1/clock_data.c
-+++ b/arch/arm/mach-omap1/clock_data.c
-@@ -285,7 +285,7 @@ static struct omap1_clk tc1_ck = {
-  */
- 
- static struct omap1_clk tc2_ck = {
--	.hw.init	= CLK_HW_INIT("tc2_ck", "tc_ck", &omap1_clk_gate_ops, 0),
-+	.hw.init	= CLK_HW_INIT("tc2_ck", "tc_ck", &omap1_clk_gate_ops, CLK_IS_CRITICAL),
- 	.ops		= &clkops_generic,
- 	.enable_reg	= OMAP1_IO_ADDRESS(ARM_IDLECT3),
- 	.enable_bit	= EN_TC2_CK,
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
 
-A.
+Thanks!
+
+[1/5] ASoC: soc.h: Add SOC_SINGLE_S_TLV() macro
+      commit: bc8cb02976cd602b8d7631a6f4a54a9cf305d38c
+[2/5] ASoC: soc-utils: Add helper to calculate BCLK from TDM info
+      commit: 1ef34dd2b90d78a9830398441801658ef86eee9d
+[3/5] ASoC: soc-utils: Add kunit test for snd_soc_tdm_params_to_bclk()
+      commit: 89342fa38bbaade51584f255eee5cd43621f4e10
+[4/5] ASoC: dt-bindings: cs35l45: Cirrus Logic CS35L45 Smart Amp
+      commit: 72661ff7662acc00d51976d4b2d2d13eb5628385
+[5/5] ASoC: cs35l45: Add driver for Cirrus Logic CS35L45 Smart Amp
+      commit: 0d463d016000d68d7e982720b5e4380b2d83409a
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
