@@ -4,73 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id AA516C433EF
-	for <alsa-devel@archiver.kernel.org>; Thu,  7 Apr 2022 09:39:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E9FD2C433EF
+	for <alsa-devel@archiver.kernel.org>; Thu,  7 Apr 2022 09:39:58 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id BE88417F2;
-	Thu,  7 Apr 2022 11:38:45 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BE88417F2
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3A26C1852;
+	Thu,  7 Apr 2022 11:39:07 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3A26C1852
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1649324375;
-	bh=DBVPDeXzBmVGG7sCJooAh/+/TXjuIyVnZzS709sXv0k=;
+	s=default; t=1649324397;
+	bh=TNEhWEcbjVm0jSKmKL51ANFFVzUTdaJeILNY7yjz2wE=;
 	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=ax5onh7n0rYe+7JaBz6/+1wqsAA3jKROmVyHjS6/ZyZeTKNT/BK1KdmwMstGwiIvX
-	 NEvmU+2tRsjsgOQyRWNd35sdSSGGoKobVHYL985WG6NpquXJ1sxqYkNibVpznBpyIp
-	 88L4xeC+Mf/PKgT+wfF5L9ekYuWBJx//wgcTUsV4=
+	b=uNtwQtDl9SUqyZHKQbDKGaunaKwTBrueykH9FgEnaplEcA6PnKtqBXWNHFaSLo6zA
+	 967YceOsqex5yoRQf8q/pr2EgqWz0iLwzWkvkibJVOh+mgAguyZ0nOGEknVKvE6cfm
+	 6irVMIl/zr+c0n4AKllddfxWmZnRQXUHES9+1tUg=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id C124CF8026A;
-	Thu,  7 Apr 2022 11:38:25 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 8F92FF80519;
+	Thu,  7 Apr 2022 11:38:30 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 75A1DF8012A; Thu,  7 Apr 2022 11:38:24 +0200 (CEST)
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+ id 23700F80524; Thu,  7 Apr 2022 11:38:29 +0200 (CEST)
+Received: from ams.source.kernel.org (ams.source.kernel.org
+ [IPv6:2604:1380:4601:e00::1])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id F35DAF8012A;
- Thu,  7 Apr 2022 11:38:20 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F35DAF8012A
+ by alsa1.perex.cz (Postfix) with ESMTPS id 8B194F8051C
+ for <alsa-devel@alsa-project.org>; Thu,  7 Apr 2022 11:38:24 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8B194F8051C
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="FC8EznJV"
+ header.b="AkNzu5jV"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by ams.source.kernel.org (Postfix) with ESMTPS id B3E62B826EB;
- Thu,  7 Apr 2022 09:38:19 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DF752C385A6;
- Thu,  7 Apr 2022 09:38:14 +0000 (UTC)
+ by ams.source.kernel.org (Postfix) with ESMTPS id 34D83B826ED;
+ Thu,  7 Apr 2022 09:38:24 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C42B3C385A0;
+ Thu,  7 Apr 2022 09:38:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1649324298;
- bh=DBVPDeXzBmVGG7sCJooAh/+/TXjuIyVnZzS709sXv0k=;
+ s=k20201202; t=1649324302;
+ bh=TNEhWEcbjVm0jSKmKL51ANFFVzUTdaJeILNY7yjz2wE=;
  h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=FC8EznJV7DIJKY83ZM9tbkumPwbYbTlynB0GwArqrleGuh+m/lerRYg1N8NhKVClG
- Pb0JWJFdQ+R2ak82F2gAvUqUoKGSui66C98vofau+fhHyA33s/A0YmvyvuaO4liTKj
- u/w7L080zELv3f/4A0/7FCRpSf64HXByC3X49PbrpNy2h0ktMcXXl41hR7Y5kSG9lW
- 6uf6kjyfvEcoJpoJJ0mphVQ/R/UKjydf0aK7yd3yeGzLCu4ggO4ssc06IPUqLbJNKP
- Vl8YErfjIvl/bcrYua0iYPpP7Sy0kDxRcO61+z6gse5BuF4mmyAsrA2klIyyzVIXo/
- CyDVx8C8ZmeQA==
+ b=AkNzu5jVfmFLbY73qSLFCkKgbC5mQU8ox5OhjQrnqsajckQcDygHtwot08RpbpgV7
+ WdwNcZ3dihjkVHkjvPYc/QK0QmTtunaR+o65UT1rmyElyIzdEjw9WnzNRMFT2BmXcP
+ zHqVyIhcj6c+PJuWzfYvuiO2AEaSP6+U6KS0SFcL7t9ZYG4GCvNQ7V/v2svMEb/Fw9
+ qRsBxnn0LhfDx1KgGQJH7vdYJx38aXOeAvFIOj6fFBBZAcI2ghlpZQM/l1fL9hro+L
+ gTFPrLhYsZKA3NKeolatR8eo4NioBX6IpUbwfN0tw9hgPn62aLFLnNEllnPV1bzDhd
+ GBehfKplDTV0Q==
 From: Mark Brown <broonie@kernel.org>
-To: ajye.huang@gmail.com, linux-kernel@vger.kernel.org
-In-Reply-To: <20220324084708.2009375-1-ajye_huang@compal.corp-partner.google.com>
-References: <20220324084708.2009375-1-ajye_huang@compal.corp-partner.google.com>
-Subject: Re: [PATCH v1] ASoC: Intel: sof_rt5682: Add support for max98360a
- speaker amp on SSP2
-Message-Id: <164932429462.3844153.4809967512345990079.b4-ty@kernel.org>
-Date: Thu, 07 Apr 2022 10:38:14 +0100
+To: tiwai@suse.com, perex@perex.cz, nizhen@uniontech.com
+In-Reply-To: <20220314054621.14694-1-nizhen@uniontech.com>
+References: <20220314054621.14694-1-nizhen@uniontech.com>
+Subject: Re: [PATCH v2] ASoC: Intel: boards: Use temporary variable for struct
+ device
+Message-Id: <164932430152.3844153.10230903353373172658.b4-ty@kernel.org>
+Date: Thu, 07 Apr 2022 10:38:21 +0100
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: pierre-louis.bossart@linux.intel.com, alsa-devel@alsa-project.org,
- ajye_huang@compal.corp-partner.google.com, kai.vehmanen@linux.intel.com,
- daniel.baluta@nxp.com, cezary.rojewski@intel.com,
- Takashi Iwai <tiwai@suse.com>, yang.jie@linux.intel.com,
- ranjani.sridharan@linux.intel.com, liam.r.girdwood@linux.intel.com,
- mac.chiang@intel.com, yong.zhi@intel.com, yung-chuan.liao@linux.intel.com,
- brent.lu@intel.com, vamshi.krishna.gopal@intel.com,
- sound-open-firmware@alsa-project.org
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -86,10 +80,8 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Thu, 24 Mar 2022 16:47:08 +0800, Ajye Huang wrote:
-> Follow Intel's design to replace max98360a amp SSP2 reather than SSP1
-> by judging DMI_OEM_STRING in sof_rt5682_quirk_table struct.
-> And reusing max98357's topology since DAI setting could be leveraged.
+On Mon, 14 Mar 2022 13:46:21 +0800, Zhen Ni wrote:
+> Use temporary variable for struct device to make code neater.
 > 
 > 
 
@@ -99,8 +91,8 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: Intel: sof_rt5682: Add support for max98360a speaker amp on SSP2
-      commit: fcd1e39cca6e3a262f2badfcd5edd76c910ad3bc
+[1/1] ASoC: Intel: boards: Use temporary variable for struct device
+      commit: 8b3520f7f6f6b54bb6b6e50b88f707a6b8113887
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
