@@ -4,52 +4,55 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0A12EC433F5
-	for <alsa-devel@archiver.kernel.org>; Thu,  7 Apr 2022 08:51:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B4EA6C433EF
+	for <alsa-devel@archiver.kernel.org>; Thu,  7 Apr 2022 08:51:39 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E896017EE;
-	Thu,  7 Apr 2022 10:50:28 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E896017EE
+	by alsa0.perex.cz (Postfix) with ESMTPS id DFA5817B6;
+	Thu,  7 Apr 2022 10:50:47 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DFA5817B6
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1649321479;
-	bh=y//iCs8apNfn9JzyLf4AAfG0PL8HYlrJBCkBvMyj2S0=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=QUn3mxlefde2DsiSidynLa/Xm7b92MsHaS9aMAHwK8kI8+RMs4gFSDIfKS20OEQT6
-	 Mu26kyykts+2nfvcRBlhlsJ3z/za03kCcfMrSLr/torgC4GJv81avfGLqni4fy9FYK
-	 /vx2xw7z/9r8nwLbvTy0YJa4tD0jdpeeOhoGqMhE=
+	s=default; t=1649321498;
+	bh=lRTqvL/+NH0thgrrYBa2+oH9wLh8us2IjT9UTEaGrQA=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=POzMn+m47zPRMBjHrMOkG6BR8871ievNc7tdCkNUAUOFytSdDJrYxazhEL24GKZ09
+	 hy2iQIVK4LrCwDUSOYkZirIYkLBydFRi46PQTxD+b0A5rZGuW72FD+Ku8Zyg4m+Wxl
+	 qAT4mRkJdnt8DIf+yXHLscVNu6D4gXgW87J2yaRU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 4E9FCF8052E;
-	Thu,  7 Apr 2022 10:49:57 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id D678DF80054;
+	Thu,  7 Apr 2022 10:50:03 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 39187F80527; Thu,  7 Apr 2022 10:49:54 +0200 (CEST)
+ id 8B684F80534; Thu,  7 Apr 2022 10:49:59 +0200 (CEST)
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de
  [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id B69E9F8024C
+ by alsa1.perex.cz (Postfix) with ESMTPS id B2217F80141
  for <alsa-devel@alsa-project.org>; Thu,  7 Apr 2022 10:49:47 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B69E9F8024C
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B2217F80141
 Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
  by metis.ext.pengutronix.de with esmtps
  (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92)
  (envelope-from <sha@pengutronix.de>)
- id 1ncNpp-0003cs-Sj; Thu, 07 Apr 2022 10:49:45 +0200
+ id 1ncNpp-0003cw-Sm; Thu, 07 Apr 2022 10:49:45 +0200
 Received: from [2a0a:edc0:0:1101:1d::28] (helo=dude02.red.stw.pengutronix.de)
  by drehscheibe.grey.stw.pengutronix.de with esmtp (Exim 4.94.2)
  (envelope-from <sha@pengutronix.de>)
- id 1ncNpp-001Zqg-PS; Thu, 07 Apr 2022 10:49:44 +0200
+ id 1ncNpq-001Zqq-DO; Thu, 07 Apr 2022 10:49:44 +0200
 Received: from sha by dude02.red.stw.pengutronix.de with local (Exim 4.94.2)
  (envelope-from <sha@pengutronix.de>)
- id 1ncNpm-000w3y-Gb; Thu, 07 Apr 2022 10:49:42 +0200
+ id 1ncNpm-000w4g-Rf; Thu, 07 Apr 2022 10:49:42 +0200
 From: Sascha Hauer <s.hauer@pengutronix.de>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH v4 00/21] ASoC: fsl_micfil: Driver updates
-Date: Thu,  7 Apr 2022 10:49:15 +0200
-Message-Id: <20220407084936.223075-1-s.hauer@pengutronix.de>
+Subject: [PATCH v4 15/21] ASoC: fsl_micfil: simplify clock setting
+Date: Thu,  7 Apr 2022 10:49:30 +0200
+Message-Id: <20220407084936.223075-16-s.hauer@pengutronix.de>
 X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20220407084936.223075-1-s.hauer@pengutronix.de>
+References: <20220407084936.223075-1-s.hauer@pengutronix.de>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
@@ -76,79 +79,115 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-This series has a bunch of cleanups for the FSL MICFIL driver. There is
-not much chance for regressions in this series as the driver currently
-can't work at all. The MICFIL needs multififo support in the i.MX SDMA
-engine which is added with this series, see 11/20.
+The reference manual has this for calculating the micfil internal clock
+divider:
 
-The multififo support is selected in the dma phandle arguments in the
-device tree, the transfer type must be '25' aka IMX_DMATYPE_MULTI_SAI.
-This is set already to 25 in the upstream i.MX8M[NM] dtsi files, but the
-SDMA driver silently ignores unsupported values instead of throwing an
-error. This is fixed in this series and multififo support is added.
+         MICFIL Clock rate
+clkdiv = -----------------
+         8 * OSR * outrate
 
-The dmaengine patches have acks from Vinod, so the series is free to
-go through the ASoC tree.
+(with OSR == Oversampling Rate, outrate == output sample rate)
 
-Changes since v3:
-- Add commit log to "ASoC: fsl_micfil: drop unused variables"
-- Fix include name in "ASoC: fsl_micfil: add multi fifo support"
-- Drop unnecessary temporary adding of struct fsl_micfil::osr
-- Leave default quality setting at 'medium'
-- Drop debugging message printed at error level
-- collect acks from Shengjiu Wang and Vinod Koul
+The driver first sets the MICFIL Clock rate to (outrate * 1024) and then
+calculates back the clkdiv value from the above calculation.
 
-Changes since v2:
-- Add forgotten commit log to dmaengine patches
-- Add patch to move include/linux/platform_data/dma-imx.h to include/linux/dma/imx-dma.h
-- Use prefix dmaengine: for dma patches
+Simplify this by using a fixed clkdiv value of 8 and set the MICFIL
+Clock rate to (outrate * clkdiv * OSR * 8).
 
-Changes since v1:
-- Drop unused variable sw_done_sel
-- Evaluate sdmac->direction directly instead of storing value in n_fifos
-- add missing include linux/bitfield.h
+While at it drop disabling the clock before setting its rate. The MICFIL
+module is disabled when the rate is changed and it is also resetted
+before it is started again, so I doubt it's necessary to disable the
+clock.
 
-Sascha Hauer (21):
-  ASoC: fsl_micfil: Drop unnecessary register read
-  ASoC: fsl_micfil: Drop unused register read
-  ASoC: fsl_micfil: drop fsl_micfil_set_mclk_rate()
-  ASoC: fsl_micfil: do not define SHIFT/MASK for single bits
-  ASoC: fsl_micfil: use GENMASK to define register bit fields
-  ASoC: fsl_micfil: use clear/set bits
-  ASoC: fsl_micfil: drop error messages from failed register accesses
-  ASoC: fsl_micfil: drop unused variables
-  dmaengine: imx: Move header to include/dma/
-  dmaengine: imx-sdma: error out on unsupported transfer types
-  dmaengine: imx-sdma: Add multi fifo support
-  ASoC: fsl_micfil: add multi fifo support
-  ASoC: fsl_micfil: use define for OSR default value
-  ASoC: fsl_micfil: Drop get_pdm_clk()
-  ASoC: fsl_micfil: simplify clock setting
-  ASoC: fsl_micfil: rework quality setting
-  ASoC: fsl_micfil: drop unused include
-  ASoC: fsl_micfil: drop only once used defines
-  ASoC: fsl_micfil: drop support for undocumented property
-  ASoC: fsl_micfil: fold fsl_set_clock_params() into its only user
-  ASoC: fsl_micfil: Remove debug message
+Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
+---
 
- drivers/dma/imx-dma.c                         |   2 +-
- drivers/dma/imx-sdma.c                        |  76 +++-
- drivers/mmc/host/mxcmmc.c                     |   2 +-
- drivers/spi/spi-fsl-lpspi.c                   |   2 +-
- drivers/spi/spi-imx.c                         |   2 +-
- drivers/tty/serial/imx.c                      |   2 +-
- drivers/video/fbdev/mx3fb.c                   |   2 +-
- .../dma-imx.h => dma/imx-dma.h}               |  26 +-
- sound/soc/fsl/fsl_asrc.c                      |   2 +-
- sound/soc/fsl/fsl_asrc_dma.c                  |   2 +-
- sound/soc/fsl/fsl_easrc.h                     |   2 +-
- sound/soc/fsl/fsl_micfil.c                    | 369 +++++++-----------
- sound/soc/fsl/fsl_micfil.h                    | 269 +++----------
- sound/soc/fsl/imx-pcm.h                       |   2 +-
- sound/soc/fsl/imx-ssi.h                       |   2 +-
- 15 files changed, 297 insertions(+), 465 deletions(-)
- rename include/linux/{platform_data/dma-imx.h => dma/imx-dma.h} (67%)
+Notes:
+    Changes since v3:
+    - Don't use uninitialized and no longer present struct fsl_micfil::osr
 
+ sound/soc/fsl/fsl_micfil.c | 45 ++++----------------------------------
+ 1 file changed, 4 insertions(+), 41 deletions(-)
+
+diff --git a/sound/soc/fsl/fsl_micfil.c b/sound/soc/fsl/fsl_micfil.c
+index 3ddc988b4fe65..4d8dfb2c22290 100644
+--- a/sound/soc/fsl/fsl_micfil.c
++++ b/sound/soc/fsl/fsl_micfil.c
+@@ -110,19 +110,6 @@ static const struct snd_kcontrol_new fsl_micfil_snd_controls[] = {
+ 		     snd_soc_get_enum_double, snd_soc_put_enum_double),
+ };
+ 
+-static inline int get_clk_div(struct fsl_micfil *micfil,
+-			      unsigned int rate)
+-{
+-	long mclk_rate;
+-	int clk_div;
+-
+-	mclk_rate = clk_get_rate(micfil->mclk);
+-
+-	clk_div = mclk_rate / (rate * MICFIL_OSR_DEFAULT * 8);
+-
+-	return clk_div;
+-}
+-
+ /* The SRES is a self-negated bit which provides the CPU with the
+  * capability to initialize the PDM Interface module through the
+  * slave-bus interface. This bit always reads as zero, and this
+@@ -146,24 +133,6 @@ static int fsl_micfil_reset(struct device *dev)
+ 	return 0;
+ }
+ 
+-static int fsl_micfil_set_mclk_rate(struct fsl_micfil *micfil,
+-				    unsigned int freq)
+-{
+-	struct device *dev = &micfil->pdev->dev;
+-	int ret;
+-
+-	clk_disable_unprepare(micfil->mclk);
+-
+-	ret = clk_set_rate(micfil->mclk, freq * 1024);
+-	if (ret)
+-		dev_warn(dev, "failed to set rate (%u): %d\n",
+-			 freq * 1024, ret);
+-
+-	clk_prepare_enable(micfil->mclk);
+-
+-	return ret;
+-}
+-
+ static int fsl_micfil_startup(struct snd_pcm_substream *substream,
+ 			      struct snd_soc_dai *dai)
+ {
+@@ -237,13 +206,12 @@ static int fsl_micfil_trigger(struct snd_pcm_substream *substream, int cmd,
+ static int fsl_set_clock_params(struct device *dev, unsigned int rate)
+ {
+ 	struct fsl_micfil *micfil = dev_get_drvdata(dev);
+-	int clk_div;
++	int clk_div = 8;
+ 	int ret;
+ 
+-	ret = fsl_micfil_set_mclk_rate(micfil, rate);
+-	if (ret < 0)
+-		dev_err(dev, "failed to set mclk[%lu] to rate %u\n",
+-			clk_get_rate(micfil->mclk), rate);
++	ret = clk_set_rate(micfil->mclk, rate * clk_div * MICFIL_OSR_DEFAULT * 8);
++	if (ret)
++		return ret;
+ 
+ 	/* set CICOSR */
+ 	ret = regmap_update_bits(micfil->regmap, REG_MICFIL_CTRL2,
+@@ -252,11 +220,6 @@ static int fsl_set_clock_params(struct device *dev, unsigned int rate)
+ 	if (ret)
+ 		return ret;
+ 
+-	/* set CLK_DIV */
+-	clk_div = get_clk_div(micfil, rate);
+-	if (clk_div < 0)
+-		ret = -EINVAL;
+-
+ 	ret = regmap_update_bits(micfil->regmap, REG_MICFIL_CTRL2,
+ 				 MICFIL_CTRL2_CLKDIV,
+ 				 FIELD_PREP(MICFIL_CTRL2_CLKDIV, clk_div));
 -- 
 2.30.2
 
