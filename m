@@ -4,74 +4,75 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 35D0BC433EF
-	for <alsa-devel@archiver.kernel.org>; Thu,  7 Apr 2022 02:17:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 28245C433EF
+	for <alsa-devel@archiver.kernel.org>; Thu,  7 Apr 2022 02:19:37 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 112DB171D;
-	Thu,  7 Apr 2022 04:16:15 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 112DB171D
+	by alsa0.perex.cz (Postfix) with ESMTPS id 5068D1728;
+	Thu,  7 Apr 2022 04:18:45 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5068D1728
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1649297825;
-	bh=DlGp5qC39B4rpsGYBkWZWOM5anGaCEwtsuob+XyH6Zk=;
+	s=default; t=1649297975;
+	bh=mzvoUo+v2rKL+8W2idg404vyuA0ShwYHjPeogc26Gcs=;
 	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=f1QxMQj9nTysK3yLKUiHA/GJF5CEduWcSmsqgKFZWYY/GECCBkBmrz0XBSW/ePChG
-	 rElwcT/ODHX2eJOjgSgtFBIosSlfU1rfD7MRGAqF7EKel1PhBZ+Fk2n2ecAyXhxFJP
-	 DtprUWlWnoeq5crXszkgw+y38KwxijH7Ym/n+M5M=
+	b=GU7DTjo3Sou3Y1I5gV5vPNK8dPTGzbCjSZY/ngiijt4o8SfQGxXPvW7+mQLKhTero
+	 bOekcyOfY+JZcFVDWdqor3FZ5DEl+USpPgP+rEGLfRYrfw2PWfwa6UVYpTDKeLZ2Jw
+	 G03b3GMLaUjVMpDSXhE0opshLHbnzrRHE5jCFL7g=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 8FD12F80141;
-	Thu,  7 Apr 2022 04:16:14 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id C289FF80141;
+	Thu,  7 Apr 2022 04:18:44 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 3F682F8024C; Thu,  7 Apr 2022 04:16:13 +0200 (CEST)
-Received: from mail-qk1-x732.google.com (mail-qk1-x732.google.com
- [IPv6:2607:f8b0:4864:20::732])
+ id AB1F1F8024C; Thu,  7 Apr 2022 04:18:42 +0200 (CEST)
+Received: from mail-qv1-xf36.google.com (mail-qv1-xf36.google.com
+ [IPv6:2607:f8b0:4864:20::f36])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id BE2B0F8012A
- for <alsa-devel@alsa-project.org>; Thu,  7 Apr 2022 04:16:06 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BE2B0F8012A
+ by alsa1.perex.cz (Postfix) with ESMTPS id 09CCBF8012A
+ for <alsa-devel@alsa-project.org>; Thu,  7 Apr 2022 04:18:35 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 09CCBF8012A
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="RI9gKrdQ"
-Received: by mail-qk1-x732.google.com with SMTP id s4so1142820qkh.0
- for <alsa-devel@alsa-project.org>; Wed, 06 Apr 2022 19:16:06 -0700 (PDT)
+ header.b="NG/PZDSM"
+Received: by mail-qv1-xf36.google.com with SMTP id hu11so3970610qvb.7
+ for <alsa-devel@alsa-project.org>; Wed, 06 Apr 2022 19:18:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
  h=mime-version:references:in-reply-to:from:date:message-id:subject:to
- :cc; bh=m4qEuK7ia3e8DdrCGLK2zYZJP2MvjYTMDD02xzT4C5c=;
- b=RI9gKrdQ2BILEfX3j3OcXhiOgNLl1LPWwWOn+p0Ff8RC9kqiUjuUQMiftoWZnGs1g1
- eE5UsMvrGzIpQeaolQksHJBl8qNAizyRsRMHu6Jt+G3QN71yHiizeM1IGE2DXMAZwCVa
- JdkTJuxWyFkiab/u0Ne9ciLf6Qtbik+O7jFuyxaMa5aGV6HDtdE4l1/JRHuCRvdCaK9s
- 1cdhMvnIvmDf/z1k6LwrbO2zMzz8mqTYRq+TRTP+8omUAAIdqHyjL810ts1ZpQ1J8ggb
- YjxspUn7J3iLSEpIa4t2quMp0YzS0xAio/QjrharlGXGxJhG6OnGx9YdDL55Nb6Y5rUm
- 5QuQ==
+ :cc; bh=6VycrkwgPqSy7xA4AolZeeSAbOFIETBtmZE0/S/AoLg=;
+ b=NG/PZDSMR3zYIZNku+MTYGrL8nt33hOo2XNB56rri572BmzcT6Vgt1+Qp4JiW79kuS
+ ClUb9aVysIOkbg2IKPwgNfGPtmyYnFyXKyXz9DMQHpoA9849IWqaqIS10zQt/l6a1idW
+ Clw+nMK0szwwA+IN3nBVTvya5lyDVtJ9RSyDW99VuVmUyFVVlV8p62G/O4KKFWCi3sd1
+ wvdHV5sZW2YVvnrow7OQQkSKNDUXVlSqtSykYB0/8i00yBhjNzA2Kjv1F6OQqezrYE5i
+ Ecmt3AyXSk4e6hDcNTXm3wwtYEF5J5x5lHGFCAf92K50v9v7ZUl337BTUqYmwRw2xc4G
+ OvrA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
  h=x-gm-message-state:mime-version:references:in-reply-to:from:date
  :message-id:subject:to:cc;
- bh=m4qEuK7ia3e8DdrCGLK2zYZJP2MvjYTMDD02xzT4C5c=;
- b=2FmX85SWlMUMdE/rWg+uv0ifxCJ6rtHm+b8EoUQcsOe5pd1Z7sCBHrwFnFeRtBmbqR
- aY7yIbN01PJL7GZEFKuxnl9nO/XiMgrGZikI5D00mKTZHHYC43wghE1rtuVCRMB1LvZy
- gR2ylJV1iN5B0B6jRWGdIXzkRDzRW6Dpbk9a+9HgoK1PyZ5tvctpT3Rwe4BhLPGqHPGE
- NCBzUgBqYHj9f0sJu66kInw/L6iJ56Yy95uWoVb4yotpv7Lzo+fpLvbS+Ipunh5+Kx8w
- ESnajs5zB9lRtxPJhlySDvNlwZBJg+d7tFYDxEd4FfJ7P2x9VfkKMSY0xgMDWqBT6aQi
- uo9A==
-X-Gm-Message-State: AOAM530T8tUS9ZkUcTiKXUgpbpxHAy2S1oc/7MemYuEH9+zBrFqKpVTp
- n8CdZRN0FZl58K6mjdRz+LhlC1no/ke5YhcxmAk=
-X-Google-Smtp-Source: ABdhPJw0Tc7nDzEPCAKhl8PIt6OFSp89iEueZmFE6qBSBg1ezjkeQq2AJlOdKUXmvpeZKS5N3xKG79Z6lqNW+U1IbHs=
-X-Received: by 2002:a05:620a:178f:b0:699:90a7:ffdf with SMTP id
- ay15-20020a05620a178f00b0069990a7ffdfmr7439079qkb.523.1649297764713; Wed, 06
- Apr 2022 19:16:04 -0700 (PDT)
+ bh=6VycrkwgPqSy7xA4AolZeeSAbOFIETBtmZE0/S/AoLg=;
+ b=R+PqaxjqjfDU3d02qGtOOGbidIjNH9YLamiQJxZcoR1VGiZblZdppDgntNoj51i15N
+ 7JMp4wezCSNuLqrEpCXaGB036MqyCepyny8xoe3GipDCHHLpq27DiIXKJRImRsxZ7vHJ
+ mSZdRexKdeCSAQIlxLX0F6VFRwVaxAIgg/0xor82zG06PtRPQGaTCwyWoYdHJM0Tuj3i
+ 16mjgKh21UAvNnfFvIhb3oqiN9FTCxJr7MgrVP6wNSa5hnAPBzkcHhBGh89fd1lx0KD8
+ N+VVs1mH8pO6tPCb3xl9ynvs8NfjVVI4FPeAGi1iUibt7DDuiQ1RUD5Fr83Ib07t6pKh
+ xz+A==
+X-Gm-Message-State: AOAM531wAfMx2ohwormgfKBLOWfHe6JJxhwmb/g/EUAG+StmyafZU8Tj
+ By3r3ZSsOSAjenRVvi8u2wSBASYnR1GKtuBNdQQ=
+X-Google-Smtp-Source: ABdhPJx5cwMrPuLvsp8CCqybMuJEAkfI/px4N6fHILU2IJQi72tXKamJokIutmWDLF1jq0INUFk/hcXh5c7rNPjJVOU=
+X-Received: by 2002:a05:6214:4112:b0:441:720:8434 with SMTP id
+ kc18-20020a056214411200b0044107208434mr10142378qvb.23.1649297913920; Wed, 06
+ Apr 2022 19:18:33 -0700 (PDT)
 MIME-Version: 1.0
 References: <20220405075959.2744803-1-s.hauer@pengutronix.de>
- <20220405075959.2744803-7-s.hauer@pengutronix.de>
-In-Reply-To: <20220405075959.2744803-7-s.hauer@pengutronix.de>
+ <20220405075959.2744803-8-s.hauer@pengutronix.de>
+In-Reply-To: <20220405075959.2744803-8-s.hauer@pengutronix.de>
 From: Shengjiu Wang <shengjiu.wang@gmail.com>
-Date: Thu, 7 Apr 2022 10:15:54 +0800
-Message-ID: <CAA+D8AOoq+X1qkQzysa13F6ktZr3J_GsBYV=dm_HWdEn_3=wzA@mail.gmail.com>
-Subject: Re: [PATCH v3 06/20] ASoC: fsl_micfil: use clear/set bits
+Date: Thu, 7 Apr 2022 10:18:23 +0800
+Message-ID: <CAA+D8AMQEgUD8VW_O1H3y6+khPpDpmLZ6EVh2vt0BoROUPXJrA@mail.gmail.com>
+Subject: Re: [PATCH v3 07/20] ASoC: fsl_micfil: drop error messages from
+ failed register accesses
 To: Sascha Hauer <s.hauer@pengutronix.de>
 Content-Type: text/plain; charset="UTF-8"
 X-Content-Filtered-By: Mailman/MimeDel 2.1.15
@@ -96,85 +97,187 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 On Tue, Apr 5, 2022 at 4:00 PM Sascha Hauer <s.hauer@pengutronix.de> wrote:
 
-> Instead regmap_update_bits() use the simpler variants
-> regmap_[set|clear]_bits() where appropriate.
+> Failed register accesses are really not expected in memory mapped
+> registers. When it fails then the register access itself is likely not
+> the reason, so no need to have extra error messages for each regmap
+> access. Just drop the error messages. This also fixes some places where
+> a return value is concatenated using 'ret |=' and then returned as
+> error value.
 >
 > Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
+>
+
+Acked-by: Shengjiu Wang <shengjiu.wang@gmail.com>
+
+Best regards
+Wang shengjiu
+
 > ---
->  sound/soc/fsl/fsl_micfil.c | 26 ++++++++++----------------
->  1 file changed, 10 insertions(+), 16 deletions(-)
+>  sound/soc/fsl/fsl_micfil.c | 53 ++++++++++----------------------------
+>  1 file changed, 13 insertions(+), 40 deletions(-)
 >
 > diff --git a/sound/soc/fsl/fsl_micfil.c b/sound/soc/fsl/fsl_micfil.c
-> index cfa8af668d921..70185f75d8a04 100644
+> index 70185f75d8a04..b88ece31437ab 100644
 > --- a/sound/soc/fsl/fsl_micfil.c
 > +++ b/sound/soc/fsl/fsl_micfil.c
-> @@ -168,19 +168,15 @@ static int fsl_micfil_reset(struct device *dev)
->         struct fsl_micfil *micfil = dev_get_drvdata(dev);
->         int ret;
+> @@ -170,17 +170,13 @@ static int fsl_micfil_reset(struct device *dev)
 >
-> -       ret = regmap_update_bits(micfil->regmap,
-> -                                REG_MICFIL_CTRL1,
-> -                                MICFIL_CTRL1_MDIS,
-> -                                0);
-> +       ret = regmap_clear_bits(micfil->regmap, REG_MICFIL_CTRL1,
-> +                               MICFIL_CTRL1_MDIS);
->         if (ret) {
->                 dev_err(dev, "failed to clear MDIS bit %d\n", ret);
+>         ret = regmap_clear_bits(micfil->regmap, REG_MICFIL_CTRL1,
+>                                 MICFIL_CTRL1_MDIS);
+> -       if (ret) {
+> -               dev_err(dev, "failed to clear MDIS bit %d\n", ret);
+> +       if (ret)
 >                 return ret;
->         }
+> -       }
 >
-> -       ret = regmap_update_bits(micfil->regmap,
-> -                                REG_MICFIL_CTRL1,
-> -                                MICFIL_CTRL1_SRES,
-> -                                MICFIL_CTRL1_SRES);
-> +       ret = regmap_set_bits(micfil->regmap, REG_MICFIL_CTRL1,
-> +                             MICFIL_CTRL1_SRES);
->         if (ret) {
->                 dev_err(dev, "failed to reset MICFIL: %d\n", ret);
+>         ret = regmap_set_bits(micfil->regmap, REG_MICFIL_CTRL1,
+>                               MICFIL_CTRL1_SRES);
+> -       if (ret) {
+> -               dev_err(dev, "failed to reset MICFIL: %d\n", ret);
+> +       if (ret)
 >                 return ret;
-> @@ -252,9 +248,8 @@ static int fsl_micfil_trigger(struct snd_pcm_substream
-> *substream, int cmd,
->                 }
+> -       }
+>
+>         return 0;
+>  }
+> @@ -242,18 +238,14 @@ static int fsl_micfil_trigger(struct
+> snd_pcm_substream *substream, int cmd,
+>                 ret = regmap_update_bits(micfil->regmap, REG_MICFIL_CTRL1,
+>                                 MICFIL_CTRL1_DISEL,
+>                                 FIELD_PREP(MICFIL_CTRL1_DISEL,
+> MICFIL_CTRL1_DISEL_DMA));
+> -               if (ret) {
+> -                       dev_err(dev, "failed to update DISEL bits\n");
+> +               if (ret)
+>                         return ret;
+> -               }
 >
 >                 /* Enable the module */
-> -               ret = regmap_update_bits(micfil->regmap, REG_MICFIL_CTRL1,
-> -                                        MICFIL_CTRL1_PDMIEN,
-> -                                        MICFIL_CTRL1_PDMIEN);
-> +               ret = regmap_set_bits(micfil->regmap, REG_MICFIL_CTRL1,
-> +                                     MICFIL_CTRL1_PDMIEN);
->                 if (ret) {
->                         dev_err(dev, "failed to enable the module\n");
+>                 ret = regmap_set_bits(micfil->regmap, REG_MICFIL_CTRL1,
+>                                       MICFIL_CTRL1_PDMIEN);
+> -               if (ret) {
+> -                       dev_err(dev, "failed to enable the module\n");
+> +               if (ret)
 >                         return ret;
-> @@ -265,9 +260,8 @@ static int fsl_micfil_trigger(struct snd_pcm_substream
-> *substream, int cmd,
->         case SNDRV_PCM_TRIGGER_SUSPEND:
->         case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
+> -               }
+>
+>                 break;
+>         case SNDRV_PCM_TRIGGER_STOP:
+> @@ -262,18 +254,14 @@ static int fsl_micfil_trigger(struct
+> snd_pcm_substream *substream, int cmd,
 >                 /* Disable the module */
-> -               ret = regmap_update_bits(micfil->regmap, REG_MICFIL_CTRL1,
-> -                                        MICFIL_CTRL1_PDMIEN,
-> -                                        0);
-> +               ret = regmap_clear_bits(micfil->regmap, REG_MICFIL_CTRL1,
-> +                                       MICFIL_CTRL1_PDMIEN);
->                 if (ret) {
->                         dev_err(dev, "failed to enable the module\n");
+>                 ret = regmap_clear_bits(micfil->regmap, REG_MICFIL_CTRL1,
+>                                         MICFIL_CTRL1_PDMIEN);
+> -               if (ret) {
+> -                       dev_err(dev, "failed to enable the module\n");
+> +               if (ret)
 >                         return ret;
-> @@ -332,8 +326,8 @@ static int fsl_micfil_hw_params(struct
+> -               }
+>
+>                 ret = regmap_update_bits(micfil->regmap, REG_MICFIL_CTRL1,
+>                                 MICFIL_CTRL1_DISEL,
+>                                 FIELD_PREP(MICFIL_CTRL1_DISEL,
+> MICFIL_CTRL1_DISEL_DISABLE));
+> -               if (ret) {
+> -                       dev_err(dev, "failed to update DISEL bits\n");
+> +               if (ret)
+>                         return ret;
+> -               }
+>                 break;
+>         default:
+>                 return -EINVAL;
+> @@ -293,24 +281,20 @@ static int fsl_set_clock_params(struct device *dev,
+> unsigned int rate)
+>                         clk_get_rate(micfil->mclk), rate);
+>
+>         /* set CICOSR */
+> -       ret |= regmap_update_bits(micfil->regmap, REG_MICFIL_CTRL2,
+> +       ret = regmap_update_bits(micfil->regmap, REG_MICFIL_CTRL2,
+>                                  MICFIL_CTRL2_CICOSR,
+>                                  FIELD_PREP(MICFIL_CTRL2_CICOSR,
+> MICFIL_CTRL2_CICOSR_DEFAULT));
+>         if (ret)
+> -               dev_err(dev, "failed to set CICOSR in reg 0x%X\n",
+> -                       REG_MICFIL_CTRL2);
+> +               return ret;
+>
+>         /* set CLK_DIV */
+>         clk_div = get_clk_div(micfil, rate);
+>         if (clk_div < 0)
+>                 ret = -EINVAL;
+>
+> -       ret |= regmap_update_bits(micfil->regmap, REG_MICFIL_CTRL2,
+> +       ret = regmap_update_bits(micfil->regmap, REG_MICFIL_CTRL2,
+>                                  MICFIL_CTRL2_CLKDIV,
+>                                  FIELD_PREP(MICFIL_CTRL2_CLKDIV, clk_div));
+> -       if (ret)
+> -               dev_err(dev, "failed to set CLKDIV in reg 0x%X\n",
+> -                       REG_MICFIL_CTRL2);
+>
+>         return ret;
+>  }
+> @@ -328,19 +312,14 @@ static int fsl_micfil_hw_params(struct
 > snd_pcm_substream *substream,
->         int ret;
->
 >         /* 1. Disable the module */
-> -       ret = regmap_update_bits(micfil->regmap, REG_MICFIL_CTRL1,
-> -                                MICFIL_CTRL1_PDMIEN, 0);
-> +       ret = regmap_clear_bits(micfil->regmap, REG_MICFIL_CTRL1,
-> +                                MICFIL_CTRL1_PDMIEN);
->
-
-Alignment should match open parenthesis?
-
-
->         if (ret) {
->                 dev_err(dev, "failed to disable the module\n");
+>         ret = regmap_clear_bits(micfil->regmap, REG_MICFIL_CTRL1,
+>                                  MICFIL_CTRL1_PDMIEN);
+> -       if (ret) {
+> -               dev_err(dev, "failed to disable the module\n");
+> +       if (ret)
 >                 return ret;
+> -       }
+>
+>         /* enable channels */
+>         ret = regmap_update_bits(micfil->regmap, REG_MICFIL_CTRL1,
+>                                  0xFF, ((1 << channels) - 1));
+> -       if (ret) {
+> -               dev_err(dev, "failed to enable channels %d, reg 0x%X\n",
+> ret,
+> -                       REG_MICFIL_CTRL1);
+> +       if (ret)
+>                 return ret;
+> -       }
+>
+>         ret = fsl_set_clock_params(dev, rate);
+>         if (ret < 0) {
+> @@ -362,7 +341,6 @@ static const struct snd_soc_dai_ops fsl_micfil_dai_ops
+> = {
+>  static int fsl_micfil_dai_probe(struct snd_soc_dai *cpu_dai)
+>  {
+>         struct fsl_micfil *micfil = dev_get_drvdata(cpu_dai->dev);
+> -       struct device *dev = cpu_dai->dev;
+>         int ret;
+>         int i;
+>
+> @@ -370,11 +348,8 @@ static int fsl_micfil_dai_probe(struct snd_soc_dai
+> *cpu_dai)
+>         ret = regmap_update_bits(micfil->regmap, REG_MICFIL_CTRL2,
+>                         MICFIL_CTRL2_QSEL,
+>                         FIELD_PREP(MICFIL_CTRL2_QSEL,
+> MICFIL_QSEL_MEDIUM_QUALITY));
+> -       if (ret) {
+> -               dev_err(dev, "failed to set quality mode bits, reg 0x%X\n",
+> -                       REG_MICFIL_CTRL2);
+> +       if (ret)
+>                 return ret;
+> -       }
+>
+>         /* set default gain to max_gain */
+>         regmap_write(micfil->regmap, REG_MICFIL_OUT_CTRL, 0x77777777);
+> @@ -388,10 +363,8 @@ static int fsl_micfil_dai_probe(struct snd_soc_dai
+> *cpu_dai)
+>         ret = regmap_update_bits(micfil->regmap, REG_MICFIL_FIFO_CTRL,
+>                         MICFIL_FIFO_CTRL_FIFOWMK,
+>                         FIELD_PREP(MICFIL_FIFO_CTRL_FIFOWMK,
+> micfil->soc->fifo_depth - 1));
+> -       if (ret) {
+> -               dev_err(dev, "failed to set FIFOWMK\n");
+> +       if (ret)
+>                 return ret;
+> -       }
+>
+>         return 0;
+>  }
 > --
 > 2.30.2
 >
