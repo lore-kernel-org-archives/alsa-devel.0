@@ -4,66 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C3971C433EF
-	for <alsa-devel@archiver.kernel.org>; Thu,  7 Apr 2022 08:56:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8036FC433EF
+	for <alsa-devel@archiver.kernel.org>; Thu,  7 Apr 2022 09:39:05 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 145BF18B8;
-	Thu,  7 Apr 2022 10:55:51 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 145BF18B8
+	by alsa0.perex.cz (Postfix) with ESMTPS id B37E716CB;
+	Thu,  7 Apr 2022 11:38:12 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B37E716CB
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1649321801;
-	bh=6tohrwVX6vXV48ploRJWk8SNHLU3pbw8d4KFO3+sfbo=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1649324342;
+	bh=YcV0evLf+R2U300KOktMd4Hf1IaExnGql5B24JONj8c=;
+	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=SxbJ95yzxLzsE1AV8CUuBZVbo3xiG+MK0k8Pz6KXXxa0MCEnrz9CA+li9cmHzNk52
-	 LyxoAxxH7B/7LeE6IrpMm0X1mUL/lhGiakwmHl2NqbCzyNcoj9QmuUCLgSvgEJFdGL
-	 7lPW6yvUTkDoDUB56gZJN3ieT4dnSd20CnWbNsZ4=
+	b=Av9KLbWTa5rbeYhn6jvi9QDKB/JPoiMbX5ffdZgj7daTb+i4xwwVu3sTnSklqLEGK
+	 EAY/WQS5bTFs+gSv2ZWNad0aDgfB1bCtW3rdT+Tog+10s/OSs9vY4aW5u5jdG3SojG
+	 Z0R70LtPMMtE17fh3pVeeJeHF/VsLWVxOZ9w6WZM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 43934F805C7;
-	Thu,  7 Apr 2022 10:50:26 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 1628FF80141;
+	Thu,  7 Apr 2022 11:38:12 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id A3331F80520; Thu,  7 Apr 2022 10:50:18 +0200 (CEST)
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de
- [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+ id 4FB1BF8024C; Thu,  7 Apr 2022 11:38:10 +0200 (CEST)
+Received: from ams.source.kernel.org (ams.source.kernel.org
+ [IPv6:2604:1380:4601:e00::1])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id BA678F8012A
+ for <alsa-devel@alsa-project.org>; Thu,  7 Apr 2022 11:38:05 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BA678F8012A
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="dmVt+wmB"
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id C8F45F80528
- for <alsa-devel@alsa-project.org>; Thu,  7 Apr 2022 10:49:55 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C8F45F80528
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
- by metis.ext.pengutronix.de with esmtps
- (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92)
- (envelope-from <sha@pengutronix.de>)
- id 1ncNpq-0003dj-Vo; Thu, 07 Apr 2022 10:49:47 +0200
-Received: from [2a0a:edc0:0:1101:1d::28] (helo=dude02.red.stw.pengutronix.de)
- by drehscheibe.grey.stw.pengutronix.de with esmtp (Exim 4.94.2)
- (envelope-from <sha@pengutronix.de>)
- id 1ncNpr-001Zr8-3z; Thu, 07 Apr 2022 10:49:45 +0200
-Received: from sha by dude02.red.stw.pengutronix.de with local (Exim 4.94.2)
- (envelope-from <sha@pengutronix.de>)
- id 1ncNpm-000w4X-Pp; Thu, 07 Apr 2022 10:49:42 +0200
-From: Sascha Hauer <s.hauer@pengutronix.de>
-To: alsa-devel@alsa-project.org
-Subject: [PATCH v4 12/21] ASoC: fsl_micfil: add multi fifo support
-Date: Thu,  7 Apr 2022 10:49:27 +0200
-Message-Id: <20220407084936.223075-13-s.hauer@pengutronix.de>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20220407084936.223075-1-s.hauer@pengutronix.de>
-References: <20220407084936.223075-1-s.hauer@pengutronix.de>
+ by ams.source.kernel.org (Postfix) with ESMTPS id 060F0B826E7;
+ Thu,  7 Apr 2022 09:38:05 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B2EA1C385A0;
+ Thu,  7 Apr 2022 09:38:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1649324283;
+ bh=YcV0evLf+R2U300KOktMd4Hf1IaExnGql5B24JONj8c=;
+ h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+ b=dmVt+wmB5GFyh77APZAqJOfAJ6ZzPTtEdXt8zZTVefYGipNY3fWLpxmdKf/0u28wl
+ w1YBGnyMrCMjPG0Ox1DdIjzI+RXTsN3FmxdNW0MzfDFp+UOEH2URcerY0ovnAAgbLK
+ FArBG1ajD+mk2LNzAcQmKFxtrTOajj1k9EjB+RWDwTpJr74liiuhn3JvOjiD7I8ihn
+ sfBbh7vvRGGXAIWtNxSA2jBMBrxj/C6kbSo77v06wWo4/0OAAOR6d33NcVvnPL6BSG
+ lURiY4eTMWNrfeutrB9e2OvHJZpj/KDYupQ9fmUtvTptkUACvg4CQbB8d7V2Ichb9Q
+ 8g7Pc2U6wZ5Sw==
+From: Mark Brown <broonie@kernel.org>
+To: tiwai@suse.com, perex@perex.cz, nizhen@uniontech.com
+In-Reply-To: <20220310065354.14493-1-nizhen@uniontech.com>
+References: <20220310065354.14493-1-nizhen@uniontech.com>
+Subject: Re: [PATCH] ASoC: Intel: boards: Use temporary variable for struct
+ device
+Message-Id: <164932428242.3844153.12708508204017781920.b4-ty@kernel.org>
+Date: Thu, 07 Apr 2022 10:38:02 +0100
 MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: sha@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de);
- SAEximRunCond expanded to false
-X-PTX-Original-Recipient: alsa-devel@alsa-project.org
-Cc: Xiubo Li <Xiubo.Lee@gmail.com>, Fabio Estevam <festevam@gmail.com>,
- Sascha Hauer <s.hauer@pengutronix.de>, Vinod Koul <vkoul@kernel.org>,
- NXP Linux Team <linux-imx@nxp.com>, kernel@pengutronix.de,
- dmaengine@vger.kernel.org, Shengjiu Wang <shengjiu.wang@gmail.com>
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -79,56 +80,35 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The micfil hardware provides the microphone data on multiple successive
-FIFO registers, one register per stereo pair. Also to work properly the
-SDMA_DONE0_CONFIG_DONE_SEL bit in the SDMA engines SDMA_DONE0_CONFIG
-register must be set. This patch provides the necessary information to
-the SDMA engine driver.
+On Thu, 10 Mar 2022 14:53:54 +0800, Zhen Ni wrote:
+> Use temporary variable for struct device to make code neater.
+> 
+> 
 
-Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
----
+Applied to
 
-Notes:
-    Changes since v3:
-    - Fix include name
-    
-    Changes since v2:
-    - Add forgotten commit message
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
 
- sound/soc/fsl/fsl_micfil.c | 6 ++++++
- 1 file changed, 6 insertions(+)
+Thanks!
 
-diff --git a/sound/soc/fsl/fsl_micfil.c b/sound/soc/fsl/fsl_micfil.c
-index 4656a18a03e45..56df916ad55f2 100644
---- a/sound/soc/fsl/fsl_micfil.c
-+++ b/sound/soc/fsl/fsl_micfil.c
-@@ -16,6 +16,7 @@
- #include <linux/regmap.h>
- #include <linux/sysfs.h>
- #include <linux/types.h>
-+#include <linux/dma/imx-dma.h>
- #include <sound/dmaengine_pcm.h>
- #include <sound/pcm.h>
- #include <sound/soc.h>
-@@ -35,6 +36,7 @@ struct fsl_micfil {
- 	struct clk *busclk;
- 	struct clk *mclk;
- 	struct snd_dmaengine_dai_dma_data dma_params_rx;
-+	struct sdma_peripheral_config sdmacfg;
- 	unsigned int dataline;
- 	char name[32];
- 	int irq[MICFIL_IRQ_LINES];
-@@ -324,6 +326,10 @@ static int fsl_micfil_hw_params(struct snd_pcm_substream *substream,
- 		return ret;
- 	}
- 
-+	micfil->dma_params_rx.peripheral_config = &micfil->sdmacfg;
-+	micfil->dma_params_rx.peripheral_size = sizeof(micfil->sdmacfg);
-+	micfil->sdmacfg.n_fifos_src = channels;
-+	micfil->sdmacfg.sw_done = true;
- 	micfil->dma_params_rx.maxburst = channels * MICFIL_DMA_MAXBURST_RX;
- 
- 	return 0;
--- 
-2.30.2
+[1/1] ASoC: Intel: boards: Use temporary variable for struct device
+      commit: 8b3520f7f6f6b54bb6b6e50b88f707a6b8113887
 
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
