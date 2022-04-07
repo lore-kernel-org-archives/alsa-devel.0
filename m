@@ -4,70 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 578FEC433EF
-	for <alsa-devel@archiver.kernel.org>; Thu,  7 Apr 2022 08:32:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 43E90C433F5
+	for <alsa-devel@archiver.kernel.org>; Thu,  7 Apr 2022 08:50:48 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 8915F17B2;
-	Thu,  7 Apr 2022 10:31:58 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8915F17B2
+	by alsa0.perex.cz (Postfix) with ESMTPS id F0A211741;
+	Thu,  7 Apr 2022 10:49:56 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F0A211741
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1649320368;
-	bh=3XImbs9tYxaOBQMtogypa7KJuCYfykCfRlkZqbJCaJA=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	s=default; t=1649321447;
+	bh=bGUP+Jz8G2n47QSyMhmnYll4GGoiqMaiNoOkRjbUb20=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=lZBI9TapSt0qmGLdCA1K1TDBQhE9h7GzNUoXI6WjobtoNNuRQUXisN3J9J2Ai6J4W
-	 0p4v6DNz01fr/be4sivHynL1GFTK9uxUaflkIZ13RK4y+7/jJB27ypQ2JNAeIu9mzD
-	 YKP5EZ1LvBpqOrY4co3x5ns/uL97tmKHlkPvVl7U=
+	b=quQ5FL6GGi8gfx3p4osPpgXBpkjXA435ga9rDJ8qJEHzfOhPLgEHQm/E5yqe+KSUo
+	 5btJp0cyolGTDekJQt4IJ+sgFUwISuzNItnchVLFZnw5yLZEYvVVKTFlnUGf96fu3I
+	 ZQMda+mWJxgh/lnkbvt5RF/PUQHUrU0nFydxswXY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 328F6F8024C;
-	Thu,  7 Apr 2022 10:31:58 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 4364FF80525;
+	Thu,  7 Apr 2022 10:49:56 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 7AE08F804DA; Thu,  7 Apr 2022 10:31:56 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org
- [IPv6:2604:1380:4641:c500::1])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 31BE4F8024C
- for <alsa-devel@alsa-project.org>; Thu,  7 Apr 2022 10:31:50 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 31BE4F8024C
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="SEVdm7I3"
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+ id DECE2F80528; Thu,  7 Apr 2022 10:49:53 +0200 (CEST)
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de
+ [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id DE11E6190C;
- Thu,  7 Apr 2022 08:31:48 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6A202C385A0;
- Thu,  7 Apr 2022 08:31:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1649320308;
- bh=3XImbs9tYxaOBQMtogypa7KJuCYfykCfRlkZqbJCaJA=;
- h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=SEVdm7I3h4PQUGOwBmgWIUlzdS5ov5DTIERt225MvujqOny0VHzL+Yb5zsscHbH1z
- SBpGzSks+E8vLVhVXPHbT7ajI7L379w4p4f7ONZVHbiHFzUOhXnb2MLOBOuem+4000
- Y6oy2hYjnqftMl+EYRRTMXKCD1VGITplB2Y+b/DXTVJKtikb2e4eQXKve+S0rXTzN2
- DuS8JJKn0aVeP4e7NmzLAsBA+ui6tIcnbdWcORbLFuF1geLDMSoE0SEBkkeJneGkzw
- 2x4Ttz0FtPjP+idJtz/IcWpT5l8PAK6MzK/SXgSsxt2WamHGaf7O34s0euanib5Ov0
- D+wAl1ihqscRw==
-Date: Thu, 7 Apr 2022 14:01:43 +0530
-From: Vinod Koul <vkoul@kernel.org>
-To: Sascha Hauer <s.hauer@pengutronix.de>
-Subject: Re: [PATCH v3 11/20] dmaengine: imx-sdma: Add multi fifo support
-Message-ID: <Yk6hb+vcI95eCshj@matsya>
-References: <20220405075959.2744803-1-s.hauer@pengutronix.de>
- <20220405075959.2744803-12-s.hauer@pengutronix.de>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 857F1F8012A
+ for <alsa-devel@alsa-project.org>; Thu,  7 Apr 2022 10:49:47 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 857F1F8012A
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+ by metis.ext.pengutronix.de with esmtps
+ (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92)
+ (envelope-from <sha@pengutronix.de>)
+ id 1ncNpq-0003d7-A3; Thu, 07 Apr 2022 10:49:46 +0200
+Received: from [2a0a:edc0:0:1101:1d::28] (helo=dude02.red.stw.pengutronix.de)
+ by drehscheibe.grey.stw.pengutronix.de with esmtp (Exim 4.94.2)
+ (envelope-from <sha@pengutronix.de>)
+ id 1ncNpq-001Zqz-Oa; Thu, 07 Apr 2022 10:49:45 +0200
+Received: from sha by dude02.red.stw.pengutronix.de with local (Exim 4.94.2)
+ (envelope-from <sha@pengutronix.de>)
+ id 1ncNpm-000w4L-N7; Thu, 07 Apr 2022 10:49:42 +0200
+From: Sascha Hauer <s.hauer@pengutronix.de>
+To: alsa-devel@alsa-project.org
+Subject: [PATCH v4 08/21] ASoC: fsl_micfil: drop unused variables
+Date: Thu,  7 Apr 2022 10:49:23 +0200
+Message-Id: <20220407084936.223075-9-s.hauer@pengutronix.de>
+X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20220407084936.223075-1-s.hauer@pengutronix.de>
+References: <20220407084936.223075-1-s.hauer@pengutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220405075959.2744803-12-s.hauer@pengutronix.de>
-Cc: alsa-devel@alsa-project.org, Xiubo Li <Xiubo.Lee@gmail.com>,
- Fabio Estevam <festevam@gmail.com>, NXP Linux Team <linux-imx@nxp.com>,
- kernel@pengutronix.de, dmaengine@vger.kernel.org,
- Shengjiu Wang <shengjiu.wang@gmail.com>
+Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: sha@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de);
+ SAEximRunCond expanded to false
+X-PTX-Original-Recipient: alsa-devel@alsa-project.org
+Cc: Xiubo Li <Xiubo.Lee@gmail.com>, Fabio Estevam <festevam@gmail.com>,
+ Sascha Hauer <s.hauer@pengutronix.de>, Vinod Koul <vkoul@kernel.org>,
+ NXP Linux Team <linux-imx@nxp.com>, kernel@pengutronix.de,
+ dmaengine@vger.kernel.org, Shengjiu Wang <shengjiu.wang@gmail.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -83,17 +79,50 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On 05-04-22, 09:59, Sascha Hauer wrote:
-> The i.MX SDMA engine can read from / write to multiple successive
-> hardware FIFO registers, referred to as "Multi FIFO support". This is
-> needed for the micfil driver and certain configurations of the SAI
-> driver. This patch adds support for this feature.
-> 
-> The number of FIFOs to read from / write to must be communicated from
-> the client driver to the SDMA engine. For this the struct
-> dma_slave_config::peripheral_config field is used.
+struct fsl_micfil has unused fields, remove them.
 
-Acked-By: Vinod Koul <vkoul@kernel.org>
+Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
+---
 
+Notes:
+    Changes since v3:
+    - Add commit log
+
+ sound/soc/fsl/fsl_micfil.c | 6 ------
+ 1 file changed, 6 deletions(-)
+
+diff --git a/sound/soc/fsl/fsl_micfil.c b/sound/soc/fsl/fsl_micfil.c
+index 619e013cf272d..4656a18a03e45 100644
+--- a/sound/soc/fsl/fsl_micfil.c
++++ b/sound/soc/fsl/fsl_micfil.c
+@@ -38,10 +38,7 @@ struct fsl_micfil {
+ 	unsigned int dataline;
+ 	char name[32];
+ 	int irq[MICFIL_IRQ_LINES];
+-	unsigned int mclk_streams;
+ 	int quality;	/*QUALITY 2-0 bits */
+-	bool slave_mode;
+-	int channel_gain[8];
+ };
+ 
+ struct fsl_micfil_soc_data {
+@@ -342,7 +339,6 @@ static int fsl_micfil_dai_probe(struct snd_soc_dai *cpu_dai)
+ {
+ 	struct fsl_micfil *micfil = dev_get_drvdata(cpu_dai->dev);
+ 	int ret;
+-	int i;
+ 
+ 	/* set qsel to medium */
+ 	ret = regmap_update_bits(micfil->regmap, REG_MICFIL_CTRL2,
+@@ -353,8 +349,6 @@ static int fsl_micfil_dai_probe(struct snd_soc_dai *cpu_dai)
+ 
+ 	/* set default gain to max_gain */
+ 	regmap_write(micfil->regmap, REG_MICFIL_OUT_CTRL, 0x77777777);
+-	for (i = 0; i < 8; i++)
+-		micfil->channel_gain[i] = 0xF;
+ 
+ 	snd_soc_dai_init_dma_data(cpu_dai, NULL,
+ 				  &micfil->dma_params_rx);
 -- 
-~Vinod
+2.30.2
+
