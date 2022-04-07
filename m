@@ -4,42 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A99EBC433FE
-	for <alsa-devel@archiver.kernel.org>; Thu,  7 Apr 2022 15:08:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C66C8C433F5
+	for <alsa-devel@archiver.kernel.org>; Thu,  7 Apr 2022 15:10:06 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 8521616FD;
-	Thu,  7 Apr 2022 17:07:53 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8521616FD
+	by alsa0.perex.cz (Postfix) with ESMTPS id 2715A17F2;
+	Thu,  7 Apr 2022 17:09:14 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2715A17F2
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1649344123;
-	bh=VIqBtihNVEhTQ521N6isPwqtqp9UpqcTvFwMZBbkst8=;
-	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
+	s=default; t=1649344204;
+	bh=m+NDwwT5mnD5vEmEl6tEcP3rbdAB2sPSt8NXHIlxqW0=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=tnROARPiIydN5QJFoY9zLXDH8yLZRZ1wqzuZw12QdI4xlKPjfaeAwth77189PT+gV
-	 pPCmFBttMbKTLLgIZMM7cUU+pqjZlDGNdz86TmN7/vR2t0BZzK2DJn3PVRqKmFl7YN
-	 2fG1NiL0i1ihrfQhx3fBJfJ2qIFSSsW3816aRMiE=
+	b=J2ebzIoP2Xf3VWBPy9zQV6k+R4aGCvn9adil/7JhBB5apatjBctegS0DjYb5sUubD
+	 TCY6H3mypN/WR28Yf+tHSdPvTfhzwfzLJr7CA2IJ8nJiDnQXfqrK4IHTR/HdGZTkcW
+	 D7GLKssC+8ax9UuSZiGWgHPJoD/E4ofTPSxh7W1Q=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 1966BF80054;
-	Thu,  7 Apr 2022 17:07:53 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id CA55FF80141;
+	Thu,  7 Apr 2022 17:09:13 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 240F4F8024C; Thu,  7 Apr 2022 17:07:52 +0200 (CEST)
-Received: from webhooks-bot.alsa-project.org (gate.perex.cz [77.48.224.242])
- by alsa1.perex.cz (Postfix) with ESMTP id AD1A0F80054
- for <alsa-devel@alsa-project.org>; Thu,  7 Apr 2022 17:07:45 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AD1A0F80054
+ id DB0D3F8024C; Thu,  7 Apr 2022 17:09:12 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 7CAEAF80085
+ for <alsa-devel@alsa-project.org>; Thu,  7 Apr 2022 17:09:09 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7CAEAF80085
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="R2wZaPyS"
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by dfw.source.kernel.org (Postfix) with ESMTPS id 1B26B61DE3;
+ Thu,  7 Apr 2022 15:09:08 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id ADDB7C385A4;
+ Thu,  7 Apr 2022 15:09:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1649344147;
+ bh=m+NDwwT5mnD5vEmEl6tEcP3rbdAB2sPSt8NXHIlxqW0=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=R2wZaPySvONmMrEegrR3cpKkl5c3i6zGNE0KwyoAV8inLlfJV50AdFw5NRke2dh7l
+ EUpHdxALNtPKCj5aOCmbZuBb0mOCg4ZQWTasZBgGgvYb9hzcv/UyW7eBjBYEuBFrll
+ ieWx7eM2wC9EyUtgW4QcKekzrfratW3/1ZFR+tOZAq1K4QLYjLcm02mnoIbIzebJht
+ L79XQFZSWS5fzMJRlfJpaN+4N3f/U6ojFibVvrlj6j9rhPrbtJlZl0ft+s3t4DmMdL
+ OA3qOLr/TH0RNbC0AttiqQ1aLy5bfyUCujyH9cs+sOAVa5YGtxWZRd0Db3dh8UZdu6
+ yzabws6cp8p1Q==
+Date: Thu, 7 Apr 2022 16:09:01 +0100
+From: Mark Brown <broonie@kernel.org>
+To: Akihiko Odaki <akihiko.odaki@gmail.com>
+Subject: Re: [PATCH] ASoC: rt5682: Add jack kcontrol
+Message-ID: <Yk7+jbQ0KBM0zVh9@sirena.org.uk>
+References: <20220407141316.5099-1-akihiko.odaki@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-From: GitHub issues - opened <github@alsa-project.org>
-To: alsa-devel@alsa-project.org
-In-Reply-To: <1649344065101376057-webhooks-bot@alsa-project.org>
-References: <1649344065101376057-webhooks-bot@alsa-project.org>
-Subject: HDSPMixerOutput.cxx:96: possible typo ?
-Message-Id: <20220407150752.240F4F8024C@alsa1.perex.cz>
-Date: Thu,  7 Apr 2022 17:07:52 +0200 (CEST)
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature"; boundary="dSCykcoLsRMrrTF1"
+Content-Disposition: inline
+In-Reply-To: <20220407141316.5099-1-akihiko.odaki@gmail.com>
+X-Cookie: Look ere ye leap.
+Cc: Oder Chiou <oder_chiou@realtek.com>, Liam Girdwood <lgirdwood@gmail.com>,
+ alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -55,19 +81,33 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-alsa-project/alsa-tools issue #10 was opened from dcb314:
 
-clang says:
+--dSCykcoLsRMrrTF1
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-HDSPMixerOutput.cxx:96:30: warning: suspicious concatenation of string literals in an array initialization; did you mean to separate the elements with a comma? [-Wstring-concatenation]
+On Thu, Apr 07, 2022 at 11:13:16PM +0900, Akihiko Odaki wrote:
 
-Source code is
+> Create a jack kcontrol manually as rt5682 does not use DAPM pins
+> for jack and will not have kcontrols for them.
 
-  "AEB 1", "AEB 2", "AEB 3," "AEB 4"
+Why not use DAPM for the jack?  Note that normally the jack is part of
+the machine driver not the CODEC - there's no way the CODEC can know how
+it's been wired in on any given system.
 
-Maybe better code
+--dSCykcoLsRMrrTF1
+Content-Type: application/pgp-signature; name="signature.asc"
 
-  "AEB 1", "AEB 2", "AEB 3", "AEB 4"
+-----BEGIN PGP SIGNATURE-----
 
-Issue URL     : https://github.com/alsa-project/alsa-tools/issues/10
-Repository URL: https://github.com/alsa-project/alsa-tools
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmJO/owACgkQJNaLcl1U
+h9AEGgf/W3/sjKKCepOxRaMvpQ7VN2uIOJlDIBnK1XFdb4T1ujEE53raK3EDDf7g
+a9FFb5FmG1ejbqW1XRe0OHqjuhUNWWu60gao+FhVFB0gdqhJo39i3IQ3Az1lwMDD
+/rqeJtfWQMu01WQHkQkPY6Uw2pN2EaJlDQEd5g9r7RoU9GBqnY/+9ksFzFzdt6Cq
+zhfjTEWqoVhCcY+ia3PM+BNGAcEl49mLoDyKn8TskVKSatVSEfqA+vq3SbmcnBXD
+LwroN3WEfoD5g47ynxxLZIQ44E0lai1QQvpn8+Vuop01UE7Y5AnHwY+0vQ25mLE9
+kAI5EKh7qZgRDm+SupMnx2KZ2KOb3w==
+=q2D7
+-----END PGP SIGNATURE-----
+
+--dSCykcoLsRMrrTF1--
