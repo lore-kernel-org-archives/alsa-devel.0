@@ -4,71 +4,70 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 28357C433F5
-	for <alsa-devel@archiver.kernel.org>; Thu,  7 Apr 2022 09:40:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 68022C433EF
+	for <alsa-devel@archiver.kernel.org>; Thu,  7 Apr 2022 09:40:29 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 5351717A8;
-	Thu,  7 Apr 2022 11:39:22 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5351717A8
+	by alsa0.perex.cz (Postfix) with ESMTPS id 98FAA185C;
+	Thu,  7 Apr 2022 11:39:37 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 98FAA185C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1649324412;
-	bh=uIwgR3pVWQ2tLhHj07s4Etx3NDjbjW6eqYEftcbaJ9w=;
+	s=default; t=1649324427;
+	bh=q6HaN3d0Wc4BX8ScAWKhh8emcIaugeEwIsXTjJpawCQ=;
 	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=hSeTZkQBihCQ7ts/KuBFCkjiPeSfTY+ZoBpeI9+VFjJeSKoO+cDXYcIgProWDBOq0
-	 ssC9KvDs77YEpKE+OzRz8QBRQJPjLWg09joCHfjxUAuighKAZ1k//Fs3jta48s22z6
-	 Jt7Jaox0K3O5XCl4ALVJsOvI5AoBEx6in2wPWMis=
+	b=uihRbeJyd4Z3u4p0JEItnHJp7DzauvuFU+WLZQ8f5zOIeOz8dxRpU+YS1spnZERdr
+	 mFtUxi7CvTHkN2gSoThdjfreQ1etxD1k18CX0SK2u634S3DUmiycqkK7OMbqs1rl+e
+	 gwGWERVyiJyTHJnBo/3b8ReT18mgfqeVAGPXxAlQ=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 5C49FF80529;
-	Thu,  7 Apr 2022 11:38:32 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 1F418F80533;
+	Thu,  7 Apr 2022 11:38:35 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id AE96DF80520; Thu,  7 Apr 2022 11:38:29 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org
- [IPv6:2604:1380:4641:c500::1])
+ id 3D778F8052D; Thu,  7 Apr 2022 11:38:32 +0200 (CEST)
+Received: from ams.source.kernel.org (ams.source.kernel.org
+ [IPv6:2604:1380:4601:e00::1])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 02895F80519;
- Thu,  7 Apr 2022 11:38:24 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 02895F80519
+ by alsa1.perex.cz (Postfix) with ESMTPS id D005AF80524
+ for <alsa-devel@alsa-project.org>; Thu,  7 Apr 2022 11:38:29 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D005AF80524
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="ewszGuCn"
+ header.b="jDs25bbn"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id 86FEF61B77;
- Thu,  7 Apr 2022 09:38:21 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 00DF9C385A9;
- Thu,  7 Apr 2022 09:38:18 +0000 (UTC)
+ by ams.source.kernel.org (Postfix) with ESMTPS id CCCF2B826EB;
+ Thu,  7 Apr 2022 09:38:28 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DB1C8C385A8;
+ Thu,  7 Apr 2022 09:38:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1649324301;
- bh=uIwgR3pVWQ2tLhHj07s4Etx3NDjbjW6eqYEftcbaJ9w=;
+ s=k20201202; t=1649324307;
+ bh=q6HaN3d0Wc4BX8ScAWKhh8emcIaugeEwIsXTjJpawCQ=;
  h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=ewszGuCnjWBBxeWe2aGzoWNNNNMjuHKnmxSX+XWKgZNRjVicp+Ep0zw9knfu4lVdC
- flciZcPQ8r1QqzTVPlfDRekWIPuEd2P1cR6ldDpo4Ve3dLeXr2ITVmLt/gMGrexJMf
- Ssa4x1iRBOPlHg21pxLfbxk5xxyN8+CFAYz5TI5wek43ZpehMNNWfyO68rhXWj0bXi
- 7KjYlpMqFhyMFMBMLloAOTVgG+EWWZ8DTFij3snbVsi12vbwMDblHlsmLf1aJhUvXb
- Al+EWZ3ASFhSoy6VhYA44n9D66mrSacxhgOc3WFp8B1ulSwVWVbn97H5hbMpgLp0dT
- ovGl2UlfDlaFA==
+ b=jDs25bbn3/0QsT4YpXsLyKfbVWolN6z7t2NW5wae9Xx7AbvyoCskY4Gki2pAChFJh
+ fxrPJTgP2NS2nU1lm9L+pHXj39Qf4lOZ9N7ohio9BBUbZpE7fInyEkJGOGbp/7L88v
+ F9dRCwftYPgfY5XFZGfNOLUaV0ZJ9ACI1+3s6uTvEqnt3ld5/xMbmhvbRIuyVH+vnC
+ ocUdo9UYJztl6mtBhYhhLtxSgNiKRjC+JSpDz/i8AalrcdBH2Nge4JvGcZqzeZzRUt
+ 3CVTb/XNaOEUrj1OHBDXgYaxVyw/ZiWzIP3bOsTvqJookhEHQwYE9bJictLCSj2Heg
+ VN2Be9RiddtWg==
 From: Mark Brown <broonie@kernel.org>
-To: daniel.baluta@nxp.com, Jaroslav Kysela <perex@perex.cz>,
- lgirdwood@gmail.com, christophe.jaillet@wanadoo.fr,
- Takashi Iwai <tiwai@suse.com>, pierre-louis.bossart@linux.intel.com,
- ranjani.sridharan@linux.intel.com, kai.vehmanen@linux.intel.com
-In-Reply-To: <3bbf03cfd1966bc6fb6dd0939e039fc161078a61.1647757329.git.christophe.jaillet@wanadoo.fr>
-References: <3bbf03cfd1966bc6fb6dd0939e039fc161078a61.1647757329.git.christophe.jaillet@wanadoo.fr>
-Subject: Re: [PATCH] ASoC: SOF: topology: Avoid open coded arithmetic in
- memory allocation
-Message-Id: <164932429871.3844153.12183120087286124160.b4-ty@kernel.org>
-Date: Thu, 07 Apr 2022 10:38:18 +0100
+To: viorel.suman@nxp.com, shengjiu.wang@gmail.com, nicoleotsuka@gmail.com,
+ lgirdwood@gmail.com, Sascha Hauer <s.hauer@pengutronix.de>,
+ a.fatoum@pengutronix.de, Xiubo.Lee@gmail.com, festevam@gmail.com
+In-Reply-To: <20220405155731.745413-1-a.fatoum@pengutronix.de>
+References: <20220405155731.745413-1-a.fatoum@pengutronix.de>
+Subject: Re: [PATCH] ASoC: fsl_sai: fix 1:1 bclk:mclk ratio support
+Message-Id: <164932430460.3844153.13561902931852849107.b4-ty@kernel.org>
+Date: Thu, 07 Apr 2022 10:38:24 +0100
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: alsa-devel@alsa-project.org, kernel-janitors@vger.kernel.org,
- linux-kernel@vger.kernel.org, sound-open-firmware@alsa-project.org
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+ Takashi Iwai <tiwai@suse.com>, kernel@pengutronix.de,
+ linuxppc-dev@lists.ozlabs.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -84,11 +83,17 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Sun, 20 Mar 2022 07:22:26 +0100, Christophe JAILLET wrote:
-> Use kcalloc() instead of kzalloc()+open coded multiplication.
-> This is safer and saves a few lines of code.
+On Tue, 5 Apr 2022 17:57:31 +0200, Ahmad Fatoum wrote:
+> Refactoring in commit a50b7926d015 ("ASoC: fsl_sai: implement 1:1
+> bclk:mclk ratio support") led to the bypass never happening
+> as (ratio = 1) was caught in the existing if (ratio & 1) continue;
+> check. The correct check sequence instead is:
 > 
+>  - skip all ratios lower than one and higher than 512
+>  - skip all odd ratios except for 1:1
+>  - skip 1:1 ratio if and only if !support_1_1_ratio
 > 
+> [...]
 
 Applied to
 
@@ -96,8 +101,8 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: SOF: topology: Avoid open coded arithmetic in memory allocation
-      commit: 0a480df0b87a75b315cc6eef62bfb597111ee630
+[1/1] ASoC: fsl_sai: fix 1:1 bclk:mclk ratio support
+      commit: d00887c106dac47b9af6ed70e8d5c45b69c4bd52
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
