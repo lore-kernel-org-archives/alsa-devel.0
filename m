@@ -4,82 +4,70 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 014CBC433EF
-	for <alsa-devel@archiver.kernel.org>; Thu,  7 Apr 2022 15:39:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9B34DC433F5
+	for <alsa-devel@archiver.kernel.org>; Thu,  7 Apr 2022 16:02:01 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 53DE8179B;
-	Thu,  7 Apr 2022 17:38:31 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 53DE8179B
+	by alsa0.perex.cz (Postfix) with ESMTPS id 85BFB1825;
+	Thu,  7 Apr 2022 18:01:08 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 85BFB1825
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1649345961;
-	bh=Eyy9KS+6oagqRdODfolLXx+eJPFtFdYNTi7J2Gy7WEs=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=eTyzs9WIpAMsB8vIQuTz8FzfPtlR/3zBelxe1QcSx3bRaYeMhS/31/k5QU7As0eCm
-	 sqne3qS4+/pKpXQleH2Z8yqkz4n/ngkjArKCqCbOwXSVmDqXULJiITFlJqLBX5QBCe
-	 ur4VGSfStAIvqamb+UctTw3IJFmmfeTbFiUrrQ6U=
+	s=default; t=1649347318;
+	bh=mbr3tWvPXS+7oc88iMgsYe6AtOVAw2C4CiflUG3/xUM=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=Dxcm2qcifBvniyosmsdLlVrGvYdROM3ViC/oZ9R/pmaQwpBEF6OIx9v8mE8cBvpft
+	 Ud52AWLi4PXib/PCyxAuR6589lSRGfUk4nmkjGuwlLxMez5Gzzvme5cfIeSa4FeuKN
+	 UpJIgEU5Wb8VQlSQ8gZ9VNnq1gX+uSwe1KoSvf14=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id CF901F80141;
-	Thu,  7 Apr 2022 17:38:30 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 1D9E7F80141;
+	Thu,  7 Apr 2022 18:01:08 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id F0B61F8024C; Thu,  7 Apr 2022 17:38:28 +0200 (CEST)
-Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
- [67.231.152.168])
+ id 49026F8024C; Thu,  7 Apr 2022 18:01:07 +0200 (CEST)
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id EF961F80085
+ for <alsa-devel@alsa-project.org>; Thu,  7 Apr 2022 18:01:02 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EF961F80085
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="bMga4QKm"
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 8D40EF80085;
- Thu,  7 Apr 2022 17:38:21 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8D40EF80085
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com
- header.b="fRJvXqN8"
-Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
- by mx0b-001ae601.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 237FGtj7010987;
- Thu, 7 Apr 2022 10:38:19 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
- h=from : to : cc :
- subject : date : message-id : mime-version : content-transfer-encoding :
- content-type; s=PODMain02222019;
- bh=UjykvzUh2yttPVC3FFI1GJ+d5P2prlyxQC8ykG4n7sQ=;
- b=fRJvXqN8Wu6nZ+GIXmhS2fn10nWnylZl+cv9hyK0piv+ipqkZrkMii2sGEsr4uvzOscn
- 9GxXTJjLSg+5++q0vdWEkpBWdDUD2jYdhVTdSAm8rlGGCh5Fnwd3W9SFAPGv0O6wQQBf
- CEd4BAsssW0L6I5JuF3FykaZgXyilMn4suGFYrBYFqwIhCM5BhLRMjzzDSozrXvxUEBn
- oDcSHnFZtsdCOajRfZdy7BBqwqxw5UgL2rNxkrCr8g/eRAPyTgV50ZmO6Br/3WIvgzfZ
- iPCbf8ARAraeU3uoG9w0K2avvZP1AIU5wzxdcIGTl84i/JOqRhMblepvZQGWe20gvn6+ 4Q== 
-Received: from ediex02.ad.cirrus.com ([84.19.233.68])
- by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3f6jwnxnvm-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
- Thu, 07 Apr 2022 10:38:18 -0500
-Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX02.ad.cirrus.com
- (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.24; Thu, 7 Apr
- 2022 16:38:17 +0100
-Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server id 15.1.2375.24 via
- Frontend Transport; Thu, 7 Apr 2022 16:38:17 +0100
-Received: from AUSNPC0LSNW1-debian.cirrus.com (AUSNPC0LSNW1.ad.cirrus.com
- [198.61.65.88])
- by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 1230946A;
- Thu,  7 Apr 2022 15:38:16 +0000 (UTC)
-From: Richard Fitzgerald <rf@opensource.cirrus.com>
-To: <pierre-louis.bossart@linux.intel.com>, <lgirdwood@gmail.com>,
- <broonie@kernel.org>, <peter.ujfalusi@linux.intel.com>,
- <kai.vehmanen@linux.intel.com>, <ranjani.sridharan@linux.intel.com>
-Subject: [PATCH] ASoC: SOF: Kconfig: Make SND_SOC_SOF_HDA_PROBES tristate
-Date: Thu, 7 Apr 2022 16:38:13 +0100
-Message-ID: <20220407153813.1231866-1-rf@opensource.cirrus.com>
-X-Mailer: git-send-email 2.30.2
+ by ams.source.kernel.org (Postfix) with ESMTPS id 0C91BB826CB;
+ Thu,  7 Apr 2022 16:01:02 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6067AC385A4;
+ Thu,  7 Apr 2022 16:00:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1649347260;
+ bh=mbr3tWvPXS+7oc88iMgsYe6AtOVAw2C4CiflUG3/xUM=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=bMga4QKmJ1LUTPMP+vjb2fbuJfIVFrhIocSnkYmNw90qxt1AxJhgRJmJvsUVERHfT
+ pkQLtGuYL+nPxTHy37QfE2LNLIaDPB0rCArhW9RF/vGc53Uy1TiO65Q3b7Gbg7MKPE
+ pNMg5uplzmYVhy3AUb/lq0qQk95DFZBEs6fufii9AB3cAom5l6t4uLb0DO+YABGexn
+ Y+XXJ244SwKEnwGgQOkeLgSdiQyPLHW+bMKgexkevwKINm1f2SZe60PsfO7HWuXW5+
+ op6mIRRgWGrjju/k/WItloVn93t4Vud8fXq3UIoMMp+t6iNF3ipcsYJID/ygcYNp4/
+ u97uqcrT6fjGg==
+Date: Thu, 7 Apr 2022 17:00:55 +0100
+From: Mark Brown <broonie@kernel.org>
+To: Akihiko Odaki <akihiko.odaki@gmail.com>
+Subject: Re: [PATCH] ASoC: rt5682: Add jack kcontrol
+Message-ID: <Yk8Ktyyt0veW4g+j@sirena.org.uk>
+References: <20220407141316.5099-1-akihiko.odaki@gmail.com>
+ <Yk7+jbQ0KBM0zVh9@sirena.org.uk>
+ <96dae189-c0ff-4054-3d00-41c3b44c2cd6@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: B4yOzWpazVgc6L5sHf2qOyFj5y7r6tbT
-X-Proofpoint-GUID: B4yOzWpazVgc6L5sHf2qOyFj5y7r6tbT
-X-Proofpoint-Spam-Reason: safe
-Cc: patches@opensource.cirrus.com, alsa-devel@alsa-project.org,
- Richard Fitzgerald <rf@opensource.cirrus.com>, linux-kernel@vger.kernel.org,
- sound-open-firmware@alsa-project.org
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature"; boundary="8xcL5lOc7SqbwO08"
+Content-Disposition: inline
+In-Reply-To: <96dae189-c0ff-4054-3d00-41c3b44c2cd6@gmail.com>
+X-Cookie: Look ere ye leap.
+Cc: Oder Chiou <oder_chiou@realtek.com>, Liam Girdwood <lgirdwood@gmail.com>,
+ alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -95,43 +83,43 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-SND_SOC_SOF_HDA_PROBES must be tristate because the code it builds
-depends on code that is tristate.
 
-If SND_SOC_SOF_HDA_PROBES is bool it leads to the following build
-inconsistency:
+--8xcL5lOc7SqbwO08
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-SND_SOC_SOF_HDA_COMMON=m
-  which selects SND_SOC_SOF_HDA_PROBES
-    but since this is a bool SND_SOC_SOF_HDA_PROBES=y
+On Fri, Apr 08, 2022 at 12:46:04AM +0900, Akihiko Odaki wrote:
+> On 2022/04/08 0:09, Mark Brown wrote:
 
-SND_SOC_SOF_HDA_PROBES=y
-  selects SND_SOC_SOF_DEBUG_PROBES=y
-    so sof-client-probes.c is built into the kernel.
+> > Why not use DAPM for the jack?  Note that normally the jack is part of
+> > the machine driver not the CODEC - there's no way the CODEC can know how
+> > it's been wired in on any given system.
 
-sof-client-probes.c calls functions in sof-client.c, but
+> It seems it is an unsual case where the codec knows the source of the jack.
+> RT5682 has interrupts and registers for the jack; see e.g.
+> rt5682_button_detect in sound/soc/codecs/rt5682.c for details.
 
-SND_SOC_SOF=m
-  sof-client.c is built into a loadable module.
+That bit is very common but there's still machine specific aspects - is
+the required hardware wired up, if it is wired up how exactly are things
+wired (separate microphone jack, headset jack, one of many jacks?).  A
+lot of the machine driver part of things is about labeling things so
+that it can be displayed in a way that's easy to connect to the physical
+system.  Generally the machine driver would define a jack and then
+connect the CODEC to it.
 
-Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
----
- sound/soc/sof/intel/Kconfig | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+--8xcL5lOc7SqbwO08
+Content-Type: application/pgp-signature; name="signature.asc"
 
-diff --git a/sound/soc/sof/intel/Kconfig b/sound/soc/sof/intel/Kconfig
-index 172419392b33..0def2aa5581d 100644
---- a/sound/soc/sof/intel/Kconfig
-+++ b/sound/soc/sof/intel/Kconfig
-@@ -260,7 +260,7 @@ config SND_SOC_SOF_HDA
- 	  'select' statements at a higher level.
- 
- config SND_SOC_SOF_HDA_PROBES
--	bool
-+	tristate
- 	select SND_SOC_SOF_DEBUG_PROBES
- 	help
- 	  The option enables the data probing for Intel(R) Skylake and newer
--- 
-2.30.2
+-----BEGIN PGP SIGNATURE-----
 
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmJPCrYACgkQJNaLcl1U
+h9B83Qf+NEFoAdBE+er4vf/cVC387DUBcJVgFBUYuzcHoWp6kYb1ldpbXWV9l3u/
+hnAyX4s/YzH7Eiw6D8Ws9KNmhUSUz02gPeSm8wr4r1diSSSYnSxoFuCjzcTZr465
+/pvLVzfuYXjFiA0DF+FAjZknY4xdorErZtg0iTh3nRPo0cbl7SPlsa99mdrKtzQO
+5tW53mM3uRCcie+j4B73D1tFnBALby3bcOjsb8OMss5wttOg9X1fT67LhszzY6Mc
+XLD5OcGD1/esuJXBydM5A8Xqt4P6kuyoR63uFcZMpMZrXDUQ3eQFbz0SaU0g9Pia
++xNp4Lv55FQgnksYvtPlhPThgdHkmg==
+=cC3L
+-----END PGP SIGNATURE-----
+
+--8xcL5lOc7SqbwO08--
