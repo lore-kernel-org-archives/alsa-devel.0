@@ -4,53 +4,52 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id CA596C433F5
-	for <alsa-devel@archiver.kernel.org>; Thu,  7 Apr 2022 08:53:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 034DDC433EF
+	for <alsa-devel@archiver.kernel.org>; Thu,  7 Apr 2022 08:53:12 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 1FD891825;
-	Thu,  7 Apr 2022 10:52:09 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1FD891825
+	by alsa0.perex.cz (Postfix) with ESMTPS id 4562F17B6;
+	Thu,  7 Apr 2022 10:52:20 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4562F17B6
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1649321579;
-	bh=RH2LZ8AZzLTHfR/M2LvpZ4LdbS0VbdeEwixca5iCM2o=;
+	s=default; t=1649321590;
+	bh=klc6jPY4mRAoZhCKOf+YB55IThXF65srhX8iSPwKjgE=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=qHZ5E7lAIJKMrrOFcXfVCaFxYL1ceP41mGOO/TEfxcaaj0QvY4t2rIobg5yBHWw/g
-	 jefHEUhKsoUmHnYeSP0D2zEs/wIjv/cZGpU4T3XmYjnyWRKp6wfskQ+z+GvXFKDEkw
-	 k5BmzMVTGkkmOKBPxAVS/akUv48oTr4+879G+Y+Y=
+	b=d9opks4KQFj03cyZQA4G01YuJFgnG9jibL7VF0qLsEQkM2XCx5lYQsXptTOchlOBE
+	 hlK+NrYNla2HDPt/FR+DrTafB38wS4nhB0myzsU+OUuWslRo4iz3m830P2lF1cpZoI
+	 k8IqRYynEL01NSblu2yDPbLrkGZUY6Mc1EcY8Ydc=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 412DCF8051C;
-	Thu,  7 Apr 2022 10:50:15 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2F9B8F80544;
+	Thu,  7 Apr 2022 10:50:16 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 19931F80536; Thu,  7 Apr 2022 10:50:05 +0200 (CEST)
+ id 491C8F80537; Thu,  7 Apr 2022 10:50:05 +0200 (CEST)
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de
  [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 62957F8047B
+ by alsa1.perex.cz (Postfix) with ESMTPS id 676E4F80516
  for <alsa-devel@alsa-project.org>; Thu,  7 Apr 2022 10:49:48 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 62957F8047B
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 676E4F80516
 Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
  by metis.ext.pengutronix.de with esmtps
  (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92)
  (envelope-from <sha@pengutronix.de>)
- id 1ncNpr-0003eT-2n; Thu, 07 Apr 2022 10:49:47 +0200
+ id 1ncNpr-0003ez-7l; Thu, 07 Apr 2022 10:49:47 +0200
 Received: from [2a0a:edc0:0:1101:1d::28] (helo=dude02.red.stw.pengutronix.de)
  by drehscheibe.grey.stw.pengutronix.de with esmtp (Exim 4.94.2)
  (envelope-from <sha@pengutronix.de>)
- id 1ncNpr-001ZrD-8e; Thu, 07 Apr 2022 10:49:45 +0200
+ id 1ncNpr-001ZrP-HW; Thu, 07 Apr 2022 10:49:46 +0200
 Received: from sha by dude02.red.stw.pengutronix.de with local (Exim 4.94.2)
  (envelope-from <sha@pengutronix.de>)
- id 1ncNpm-000w4v-Uy; Thu, 07 Apr 2022 10:49:42 +0200
+ id 1ncNpm-000w4O-Ns; Thu, 07 Apr 2022 10:49:42 +0200
 From: Sascha Hauer <s.hauer@pengutronix.de>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH v4 20/21] ASoC: fsl_micfil: fold fsl_set_clock_params() into
- its only user
-Date: Thu,  7 Apr 2022 10:49:35 +0200
-Message-Id: <20220407084936.223075-21-s.hauer@pengutronix.de>
+Subject: [PATCH v4 09/21] dmaengine: imx: Move header to include/dma/
+Date: Thu,  7 Apr 2022 10:49:24 +0200
+Message-Id: <20220407084936.223075-10-s.hauer@pengutronix.de>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20220407084936.223075-1-s.hauer@pengutronix.de>
 References: <20220407084936.223075-1-s.hauer@pengutronix.de>
@@ -80,82 +79,214 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-fsl_set_clock_params() is used only once and easily be folded into its
-caller, do so.
+The i.MX DMA drivers are device tree only, nothing in
+include/linux/platform_data/dma-imx.h has platform_data in it, so move
+the file to include/linux/dma/imx-dma.h.
 
 Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
-Acked-by: Shengjiu Wang <shengjiu.wang@gmail.com>
+Acked-By: Vinod Koul <vkoul@kernel.org>
 ---
- sound/soc/fsl/fsl_micfil.c | 41 ++++++++++++--------------------------
- 1 file changed, 13 insertions(+), 28 deletions(-)
 
-diff --git a/sound/soc/fsl/fsl_micfil.c b/sound/soc/fsl/fsl_micfil.c
-index 7afe6ea42b817..8f0ab61fd1b07 100644
---- a/sound/soc/fsl/fsl_micfil.c
-+++ b/sound/soc/fsl/fsl_micfil.c
-@@ -252,29 +252,6 @@ static int fsl_micfil_trigger(struct snd_pcm_substream *substream, int cmd,
- 	return 0;
+Notes:
+    Changes since v2:
+    - new patch
+
+ drivers/dma/imx-dma.c                                    | 2 +-
+ drivers/dma/imx-sdma.c                                   | 2 +-
+ drivers/mmc/host/mxcmmc.c                                | 2 +-
+ drivers/spi/spi-fsl-lpspi.c                              | 2 +-
+ drivers/spi/spi-imx.c                                    | 2 +-
+ drivers/tty/serial/imx.c                                 | 2 +-
+ drivers/video/fbdev/mx3fb.c                              | 2 +-
+ include/linux/{platform_data/dma-imx.h => dma/imx-dma.h} | 6 +++---
+ sound/soc/fsl/fsl_asrc.c                                 | 2 +-
+ sound/soc/fsl/fsl_asrc_dma.c                             | 2 +-
+ sound/soc/fsl/fsl_easrc.h                                | 2 +-
+ sound/soc/fsl/imx-pcm.h                                  | 2 +-
+ sound/soc/fsl/imx-ssi.h                                  | 2 +-
+ 13 files changed, 15 insertions(+), 15 deletions(-)
+ rename include/linux/{platform_data/dma-imx.h => dma/imx-dma.h} (95%)
+
+diff --git a/drivers/dma/imx-dma.c b/drivers/dma/imx-dma.c
+index 2ddc31e64db03..3bffe3ecbd1b6 100644
+--- a/drivers/dma/imx-dma.c
++++ b/drivers/dma/imx-dma.c
+@@ -25,7 +25,7 @@
+ #include <linux/of_dma.h>
+ 
+ #include <asm/irq.h>
+-#include <linux/platform_data/dma-imx.h>
++#include <linux/dma/imx-dma.h>
+ 
+ #include "dmaengine.h"
+ #define IMXDMA_MAX_CHAN_DESCRIPTORS	16
+diff --git a/drivers/dma/imx-sdma.c b/drivers/dma/imx-sdma.c
+index 70c0aa931ddf4..80261a905eb5b 100644
+--- a/drivers/dma/imx-sdma.c
++++ b/drivers/dma/imx-sdma.c
+@@ -35,7 +35,7 @@
+ #include <linux/workqueue.h>
+ 
+ #include <asm/irq.h>
+-#include <linux/platform_data/dma-imx.h>
++#include <linux/dma/imx-dma.h>
+ #include <linux/regmap.h>
+ #include <linux/mfd/syscon.h>
+ #include <linux/mfd/syscon/imx6q-iomuxc-gpr.h>
+diff --git a/drivers/mmc/host/mxcmmc.c b/drivers/mmc/host/mxcmmc.c
+index 40b6878bea6cb..de04b5afef2e8 100644
+--- a/drivers/mmc/host/mxcmmc.c
++++ b/drivers/mmc/host/mxcmmc.c
+@@ -39,7 +39,7 @@
+ #include <asm/irq.h>
+ #include <linux/platform_data/mmc-mxcmmc.h>
+ 
+-#include <linux/platform_data/dma-imx.h>
++#include <linux/dma/imx-dma.h>
+ 
+ #define DRIVER_NAME "mxc-mmc"
+ #define MXCMCI_TIMEOUT_MS 10000
+diff --git a/drivers/spi/spi-fsl-lpspi.c b/drivers/spi/spi-fsl-lpspi.c
+index 4c601294f8fab..19b1f3d881b08 100644
+--- a/drivers/spi/spi-fsl-lpspi.c
++++ b/drivers/spi/spi-fsl-lpspi.c
+@@ -20,7 +20,7 @@
+ #include <linux/of_device.h>
+ #include <linux/pinctrl/consumer.h>
+ #include <linux/platform_device.h>
+-#include <linux/platform_data/dma-imx.h>
++#include <linux/dma/imx-dma.h>
+ #include <linux/pm_runtime.h>
+ #include <linux/slab.h>
+ #include <linux/spi/spi.h>
+diff --git a/drivers/spi/spi-imx.c b/drivers/spi/spi-imx.c
+index b2dd0a4d24462..a944c787f53f3 100644
+--- a/drivers/spi/spi-imx.c
++++ b/drivers/spi/spi-imx.c
+@@ -24,7 +24,7 @@
+ #include <linux/of_device.h>
+ #include <linux/property.h>
+ 
+-#include <linux/platform_data/dma-imx.h>
++#include <linux/dma/imx-dma.h>
+ 
+ #define DRIVER_NAME "spi_imx"
+ 
+diff --git a/drivers/tty/serial/imx.c b/drivers/tty/serial/imx.c
+index fd38e6ed4fdab..f8b5400e62672 100644
+--- a/drivers/tty/serial/imx.c
++++ b/drivers/tty/serial/imx.c
+@@ -30,7 +30,7 @@
+ #include <linux/dma-mapping.h>
+ 
+ #include <asm/irq.h>
+-#include <linux/platform_data/dma-imx.h>
++#include <linux/dma/imx-dma.h>
+ 
+ #include "serial_mctrl_gpio.h"
+ 
+diff --git a/drivers/video/fbdev/mx3fb.c b/drivers/video/fbdev/mx3fb.c
+index fabb271337ed2..b945b68984b97 100644
+--- a/drivers/video/fbdev/mx3fb.c
++++ b/drivers/video/fbdev/mx3fb.c
+@@ -26,7 +26,7 @@
+ #include <linux/dma/ipu-dma.h>
+ #include <linux/backlight.h>
+ 
+-#include <linux/platform_data/dma-imx.h>
++#include <linux/dma/imx-dma.h>
+ #include <linux/platform_data/video-mx3fb.h>
+ 
+ #include <asm/io.h>
+diff --git a/include/linux/platform_data/dma-imx.h b/include/linux/dma/imx-dma.h
+similarity index 95%
+rename from include/linux/platform_data/dma-imx.h
+rename to include/linux/dma/imx-dma.h
+index 281adbb26e6bd..b06cba85a6d46 100644
+--- a/include/linux/platform_data/dma-imx.h
++++ b/include/linux/dma/imx-dma.h
+@@ -3,8 +3,8 @@
+  * Copyright 2004-2009 Freescale Semiconductor, Inc. All Rights Reserved.
+  */
+ 
+-#ifndef __ASM_ARCH_MXC_DMA_H__
+-#define __ASM_ARCH_MXC_DMA_H__
++#ifndef __LINUX_DMA_IMX_H
++#define __LINUX_DMA_IMX_H
+ 
+ #include <linux/scatterlist.h>
+ #include <linux/device.h>
+@@ -65,4 +65,4 @@ static inline int imx_dma_is_general_purpose(struct dma_chan *chan)
+ 		!strcmp(chan->device->dev->driver->name, "imx-dma");
  }
  
--static int fsl_set_clock_params(struct device *dev, unsigned int rate)
--{
--	struct fsl_micfil *micfil = dev_get_drvdata(dev);
--	int clk_div = 8;
--	int osr = MICFIL_OSR_DEFAULT;
--	int ret;
--
--	ret = clk_set_rate(micfil->mclk, rate * clk_div * osr * 8);
--	if (ret)
--		return ret;
--
--	ret = micfil_set_quality(micfil);
--	if (ret)
--		return ret;
--
--	ret = regmap_update_bits(micfil->regmap, REG_MICFIL_CTRL2,
--				 MICFIL_CTRL2_CLKDIV | MICFIL_CTRL2_CICOSR,
--				 FIELD_PREP(MICFIL_CTRL2_CLKDIV, clk_div) |
--				 FIELD_PREP(MICFIL_CTRL2_CICOSR, 16 - osr));
--
--	return ret;
--}
--
- static int fsl_micfil_hw_params(struct snd_pcm_substream *substream,
- 				struct snd_pcm_hw_params *params,
- 				struct snd_soc_dai *dai)
-@@ -282,7 +259,8 @@ static int fsl_micfil_hw_params(struct snd_pcm_substream *substream,
- 	struct fsl_micfil *micfil = snd_soc_dai_get_drvdata(dai);
- 	unsigned int channels = params_channels(params);
- 	unsigned int rate = params_rate(params);
--	struct device *dev = &micfil->pdev->dev;
-+	int clk_div = 8;
-+	int osr = MICFIL_OSR_DEFAULT;
- 	int ret;
+-#endif
++#endif /* __LINUX_DMA_IMX_H */
+diff --git a/sound/soc/fsl/fsl_asrc.c b/sound/soc/fsl/fsl_asrc.c
+index d7d1536a4f377..ad4e6747b8391 100644
+--- a/sound/soc/fsl/fsl_asrc.c
++++ b/sound/soc/fsl/fsl_asrc.c
+@@ -11,7 +11,7 @@
+ #include <linux/dma-mapping.h>
+ #include <linux/module.h>
+ #include <linux/of_platform.h>
+-#include <linux/platform_data/dma-imx.h>
++#include <linux/dma/imx-dma.h>
+ #include <linux/pm_runtime.h>
+ #include <sound/dmaengine_pcm.h>
+ #include <sound/pcm_params.h>
+diff --git a/sound/soc/fsl/fsl_asrc_dma.c b/sound/soc/fsl/fsl_asrc_dma.c
+index cd9b36ec0ecb9..5038faf035cba 100644
+--- a/sound/soc/fsl/fsl_asrc_dma.c
++++ b/sound/soc/fsl/fsl_asrc_dma.c
+@@ -8,7 +8,7 @@
  
- 	/* 1. Disable the module */
-@@ -297,11 +275,18 @@ static int fsl_micfil_hw_params(struct snd_pcm_substream *substream,
- 	if (ret)
- 		return ret;
+ #include <linux/dma-mapping.h>
+ #include <linux/module.h>
+-#include <linux/platform_data/dma-imx.h>
++#include <linux/dma/imx-dma.h>
+ #include <sound/dmaengine_pcm.h>
+ #include <sound/pcm_params.h>
  
--	ret = fsl_set_clock_params(dev, rate);
--	if (ret < 0) {
--		dev_err(dev, "Failed to set clock parameters [%d]\n", ret);
-+	ret = clk_set_rate(micfil->mclk, rate * clk_div * osr * 8);
-+	if (ret)
- 		return ret;
--	}
-+
-+	ret = micfil_set_quality(micfil);
-+	if (ret)
-+		return ret;
-+
-+	ret = regmap_update_bits(micfil->regmap, REG_MICFIL_CTRL2,
-+				 MICFIL_CTRL2_CLKDIV | MICFIL_CTRL2_CICOSR,
-+				 FIELD_PREP(MICFIL_CTRL2_CLKDIV, clk_div) |
-+				 FIELD_PREP(MICFIL_CTRL2_CICOSR, 16 - osr));
+diff --git a/sound/soc/fsl/fsl_easrc.h b/sound/soc/fsl/fsl_easrc.h
+index 30620d56252cc..86d5c360d4f53 100644
+--- a/sound/soc/fsl/fsl_easrc.h
++++ b/sound/soc/fsl/fsl_easrc.h
+@@ -7,7 +7,7 @@
+ #define _FSL_EASRC_H
  
- 	micfil->dma_params_rx.peripheral_config = &micfil->sdmacfg;
- 	micfil->dma_params_rx.peripheral_size = sizeof(micfil->sdmacfg);
+ #include <sound/asound.h>
+-#include <linux/platform_data/dma-imx.h>
++#include <linux/dma/imx-dma.h>
+ 
+ #include "fsl_asrc_common.h"
+ 
+diff --git a/sound/soc/fsl/imx-pcm.h b/sound/soc/fsl/imx-pcm.h
+index 5c6cf1ca8c8ab..06b25f4b26b6f 100644
+--- a/sound/soc/fsl/imx-pcm.h
++++ b/sound/soc/fsl/imx-pcm.h
+@@ -9,7 +9,7 @@
+ #ifndef _IMX_PCM_H
+ #define _IMX_PCM_H
+ 
+-#include <linux/platform_data/dma-imx.h>
++#include <linux/dma/imx-dma.h>
+ 
+ /*
+  * Do not change this as the FIQ handler depends on this size
+diff --git a/sound/soc/fsl/imx-ssi.h b/sound/soc/fsl/imx-ssi.h
+index 19cd0937e740a..2d30d822451a3 100644
+--- a/sound/soc/fsl/imx-ssi.h
++++ b/sound/soc/fsl/imx-ssi.h
+@@ -182,7 +182,7 @@
+ #define DRV_NAME "imx-ssi"
+ 
+ #include <linux/dmaengine.h>
+-#include <linux/platform_data/dma-imx.h>
++#include <linux/dma/imx-dma.h>
+ #include <sound/dmaengine_pcm.h>
+ #include "imx-pcm.h"
+ 
 -- 
 2.30.2
 
