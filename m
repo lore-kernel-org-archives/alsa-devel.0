@@ -4,77 +4,74 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4A0EBC433F5
-	for <alsa-devel@archiver.kernel.org>; Thu,  7 Apr 2022 08:25:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A89EEC433F5
+	for <alsa-devel@archiver.kernel.org>; Thu,  7 Apr 2022 08:28:32 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id AC3411741;
-	Thu,  7 Apr 2022 10:25:04 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AC3411741
+	by alsa0.perex.cz (Postfix) with ESMTPS id 95A7C1741;
+	Thu,  7 Apr 2022 10:27:40 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 95A7C1741
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1649319954;
-	bh=qVvyD06f7exeCUwg2j7yJ0z4Yoj5k+acjFw7qGUwvCM=;
+	s=default; t=1649320110;
+	bh=r5TBjc8UZm1lKY7awcUPWUy8IL44d39ZrcsY06gBI6g=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=qyOh6EY8nsyiEWqwwckVAbUo25rPOFqxe1i3eQ62K28ntvqKq6M97imdzlqjl6tQf
-	 PhOnJjZm4k6NVd3qMv9ZHc0Lw5pEElpHT1t+mPDo0DLLYlCwJfy/OdgBW13GfuXV44
-	 VcxdbeeTI0hc+50Tsnl7s7GKTKcASXBM7GZUS/5c=
+	b=SvwtwUi9WhSWZyhd8dWR26yNF0eXsY5AXAC/U1bCJ6MdtJIFdXs9WMGRZqY1bjcAZ
+	 O6TAIS8u3uvj61KLf/t9GBZShZayYYKpaUQ8JphuaBh++6NObIRTNC2BBt85TMfy8k
+	 U/vU8dYZkg0Y/7A98k8M6jDLBa5ix0xNzv3FU+CA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 45382F80141;
-	Thu,  7 Apr 2022 10:25:04 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2E427F80141;
+	Thu,  7 Apr 2022 10:27:40 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id E9307F8024C; Thu,  7 Apr 2022 10:25:02 +0200 (CEST)
+ id 9D731F8024C; Thu,  7 Apr 2022 10:27:38 +0200 (CEST)
 Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 36657F8012A
- for <alsa-devel@alsa-project.org>; Thu,  7 Apr 2022 10:24:58 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 36657F8012A
+ by alsa1.perex.cz (Postfix) with ESMTPS id 95291F8012A
+ for <alsa-devel@alsa-project.org>; Thu,  7 Apr 2022 10:27:32 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 95291F8012A
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="nXsD505F"; 
+ header.b="1HnAJ+20"; 
  dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="LF0MbqAZ"
+ header.b="B3Y/QPnf"
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out1.suse.de (Postfix) with ESMTP id E8A40212B7;
- Thu,  7 Apr 2022 08:24:57 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTP id 5A6E121117;
+ Thu,  7 Apr 2022 08:27:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1649319897; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1649320052; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=vz+zjO41JcpEEg8bvLB/A6dUIYES58CiNK+NcEr/9Kg=;
- b=nXsD505FyQllydvVPUPNL/WT6QFSQy2H5kVv5dQJC7VX8FXVi07/LyOqVgcayH3DKzH0N+
- hNAokCOAm61RFa30ZSNavWtprzS5TjB90Ofianh1gJChdJCIL4r5SNrP2CMt3O7UM9R8m/
- Pm0V5Z7j/u5G4xcdAkhZ9et0sRDtVr8=
+ bh=dEL12L9EoYZbvztXCgNjCR53/UxE2hnXvAuiH7/2KS4=;
+ b=1HnAJ+20VfMWMBZfeiuhk3/k1ZRnzCg2bDqOaF/F+15lRUPyJYRCq6rRUPF1F2IuUl+Z4z
+ T3LBGtWAN953z2ThCPQbTjEdUIWQUc+bVaWlSO146aNvoQTDtVyG+rHOvB1G8xwAqSGRms
+ Nu9wNKA7w4FLrxjUdrHoeZt29ef7fcw=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1649319897;
+ s=susede2_ed25519; t=1649320052;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=vz+zjO41JcpEEg8bvLB/A6dUIYES58CiNK+NcEr/9Kg=;
- b=LF0MbqAZLfLSkTNmPpVCvQdg0U7bwCYoO7YmNTHN84a7DGjH5RvJ8BstvmoYV1QVT1pejz
- s7Sthlra1eiHJHAQ==
+ bh=dEL12L9EoYZbvztXCgNjCR53/UxE2hnXvAuiH7/2KS4=;
+ b=B3Y/QPnf+ssee0OMBCkzoyekHONlUrqYb6UXoRsPssGWvYtM3gMig1V4bkMHG4ixeTAt2x
+ 9Qp9ONoNe7sKEgAg==
 Received: from alsa1.suse.de (alsa1.suse.de [10.160.4.42])
- by relay2.suse.de (Postfix) with ESMTP id 7F7DCA3B99;
- Thu,  7 Apr 2022 08:24:53 +0000 (UTC)
-Date: Thu, 07 Apr 2022 10:24:57 +0200
-Message-ID: <s5hk0c12td2.wl-tiwai@suse.de>
+ by relay2.suse.de (Postfix) with ESMTP id E3C89A3B96;
+ Thu,  7 Apr 2022 08:27:27 +0000 (UTC)
+Date: Thu, 07 Apr 2022 10:27:32 +0200
+Message-ID: <s5hh7752t8r.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
-To: Amadeusz =?UTF-8?B?U8WCYXdpxYRza2k=?= <amadeuszx.slawinski@linux.intel.com>
-Subject: Re: [PATCH] ALSA: jack: Access input_dev under mutex
-In-Reply-To: <20220401122931.4181700-1-amadeuszx.slawinski@linux.intel.com>
-References: <20220401122931.4181700-1-amadeuszx.slawinski@linux.intel.com>
+To: Tim Crawford <tcrawford@system76.com>
+Subject: Re: [PATCH] ALSA: hda/realtek: Add quirk for Clevo PD50PNT
+In-Reply-To: <20220405182029.27431-1-tcrawford@system76.com>
+References: <20220405182029.27431-1-tcrawford@system76.com>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
  FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
  (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
 MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.com>
+Content-Type: text/plain; charset=US-ASCII
+Cc: productdev@system76.com, alsa-devel@alsa-project.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -90,66 +87,14 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Fri, 01 Apr 2022 14:29:31 +0200,
-Amadeusz Sławiński wrote:
+On Tue, 05 Apr 2022 20:20:29 +0200,
+Tim Crawford wrote:
 > 
-> @@ -517,11 +525,15 @@ int snd_jack_new(struct snd_card *card, const char *id, int type,
->  		return -ENOMEM;
->  	}
->  
-> -	/* don't creat input device for phantom jack */
-> -	if (!phantom_jack) {
->  #ifdef CONFIG_SND_JACK_INPUT_DEV
-> +	mutex_init(&jack->input_dev_lock);
-> +
-> +	/* don't create input device for phantom jack */
-> +	if (!phantom_jack) {
->  		int i;
->  
-> +		mutex_lock(&jack->input_dev_lock);
-> +
+> Fixes speaker output and headset detection on Clevo PD50PNT.
+> 
+> Signed-off-by: Tim Crawford <tcrawford@system76.com>
 
-This lock is superfluous.  The object is being created here and isn't
-registered anywhere, so no one else can use it yet.
-And moreover ....
+Thanks, applied now.
 
->  		jack->input_dev = input_allocate_device();
->  		if (jack->input_dev == NULL) {
->  			err = -ENOMEM;
-
-... you forgot unlock here, and this error path will lead to a
-deadlock.
-
-
-> @@ -537,8 +549,9 @@ int snd_jack_new(struct snd_card *card, const char *id, int type,
->  				input_set_capability(jack->input_dev, EV_SW,
->  						     jack_switch_types[i]);
->  
-> -#endif /* CONFIG_SND_JACK_INPUT_DEV */
-> +		mutex_unlock(&jack->input_dev_lock);
->  	}
-> +#endif /* CONFIG_SND_JACK_INPUT_DEV */
->  
->  	err = snd_device_new(card, SNDRV_DEV_JACK, jack, &ops);
->  	if (err < 0)
-> @@ -556,7 +569,9 @@ int snd_jack_new(struct snd_card *card, const char *id, int type,
->  
->  fail_input:
->  #ifdef CONFIG_SND_JACK_INPUT_DEV
-> +	mutex_lock(&jack->input_dev_lock);
->  	input_free_device(jack->input_dev);
-> +	mutex_unlock(&jack->input_dev_lock);
-
-Ditto, no need for mutex lock yet.
-
-One thing I'm not sure is whether it's good to use mutex.
-Basically snd_jack_report() is considered to be callable from
-non-atomic context, too, so far, and we don't need to prohibit it.
-OTOH, all current calls are in the sleepable context, so it's likely
-no big problem.  But if we use mutex, it should be documented in
-snd_jack_report() function, too.
-
-
-thanks,
 
 Takashi
