@@ -4,49 +4,46 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3B7DDC433F5
-	for <alsa-devel@archiver.kernel.org>; Fri,  8 Apr 2022 14:12:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D250EC433F5
+	for <alsa-devel@archiver.kernel.org>; Fri,  8 Apr 2022 14:13:27 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B65F5194A;
-	Fri,  8 Apr 2022 16:12:03 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B65F5194A
+	by alsa0.perex.cz (Postfix) with ESMTPS id AF8451A29;
+	Fri,  8 Apr 2022 16:12:35 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AF8451A29
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1649427173;
-	bh=C1G265Eaie6a4nvHnDU4l4Dxvu50vZh0e8lbjCp1q7I=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=B4+I8O0ZjsHcuRZhgVkx3dbSHOUsHVE2uPouXrAkH/pVcbbBFTJ9vUggr5WgfSL3V
-	 xJ5X8lPjE9jTr9w0q00aL6G4GiMToScypqIZHOq7u8zUsQF9VJUbJbsblNCe+OBBxX
-	 FsHoTAhh8eoOmAR2tHL6CbDNzrOcqxd50oKOHYBA=
+	s=default; t=1649427205;
+	bh=0q+IaaUoHpY9M31qHkIJPOSI6zMbZOTod5BoLUgD7rE=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=snxhZRRadVn0Jk6eNkVThEZF0DkReLMM+YSlC7O+htjQjSgL9iefWNrEdazgY/cXX
+	 RZmR6LTCZATcLpNHBkAqyV/1se6+K9bLwBla02u5OxF/iq3LdnPVwqaSOqWbr2iTeH
+	 jQNKWn5MreAeUb8oKL0IAs4JMqE0HoQaTxvSva+A=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 4E5B4F80128;
-	Fri,  8 Apr 2022 16:12:03 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2DE1DF804B0;
+	Fri,  8 Apr 2022 16:12:04 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 7AC36F8012A; Fri,  8 Apr 2022 16:12:01 +0200 (CEST)
+ id 17983F80128; Fri,  8 Apr 2022 16:12:01 +0200 (CEST)
 Received: from n169-110.mail.139.com (n169-110.mail.139.com [120.232.169.110])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256
  bits)) (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id CBDE9F8012A
- for <alsa-devel@alsa-project.org>; Fri,  8 Apr 2022 16:11:54 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CBDE9F8012A
+ by alsa1.perex.cz (Postfix) with ESMTPS id E0FF4F80128
+ for <alsa-devel@alsa-project.org>; Fri,  8 Apr 2022 16:11:53 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E0FF4F80128
 X-RM-TagInfo: emlType=0                                       
 X-RM-SPAM: 
 X-RM-SPAM-FLAG: 00000000
 Received: from LAPTOP-39QA2GAC.localdomain (unknown[120.231.214.12])
- by rmsmtp-lg-appmail-04-12082 (RichMail) with SMTP id 2f326250428c9b2-6bbb4;
- Fri, 08 Apr 2022 22:11:51 +0800 (CST)
-X-RM-TRANSID: 2f326250428c9b2-6bbb4
+ by rmsmtp-lg-appmail-04-12082 (RichMail) with SMTP id 2f326250428c9b2-6bba5;
+ Fri, 08 Apr 2022 22:11:47 +0800 (CST)
+X-RM-TRANSID: 2f326250428c9b2-6bba5
 From: Raphael-Xu <13691752556@139.com>
 To: broonie@kernel.org
-Subject: [PATCH v1 2/2] update to support either TAS2764 or TAS2780
-Date: Fri,  8 Apr 2022 22:11:19 +0800
-Message-Id: <20220408141119.958-2-13691752556@139.com>
+Subject: [PATCH v1 1/2] rename tas2764 to tas27xx
+Date: Fri,  8 Apr 2022 22:11:18 +0800
+Message-Id: <20220408141119.958-1-13691752556@139.com>
 X-Mailer: git-send-email 2.35.1
-In-Reply-To: <20220408141119.958-1-13691752556@139.com>
-References: <20220408141119.958-1-13691752556@139.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Cc: navada@ti.com, alsa-devel@alsa-project.org, shenghao-ding@ti.com,
@@ -66,53 +63,18 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-update tas27xx.yaml to support either TAS2764 or TAS2780
+rename tas2764.yaml to tas27xx.yaml
 
 Signed-off-by: Raphael-Xu <13691752556@139.com>
 ---
- .../devicetree/bindings/sound/tas27xx.yaml     | 18 ++++++++++--------
- 1 file changed, 10 insertions(+), 8 deletions(-)
+ .../devicetree/bindings/sound/{tas2764.yaml => tas27xx.yaml}      | 0
+ 1 file changed, 0 insertions(+), 0 deletions(-)
+ rename Documentation/devicetree/bindings/sound/{tas2764.yaml => tas27xx.yaml} (100%)
 
-diff --git a/Documentation/devicetree/bindings/sound/tas27xx.yaml b/Documentation/devicetree/bindings/sound/tas27xx.yaml
-index 5bf8c76ecda1..191f4bceb4ee 100644
---- a/Documentation/devicetree/bindings/sound/tas27xx.yaml
-+++ b/Documentation/devicetree/bindings/sound/tas27xx.yaml
-@@ -1,25 +1,27 @@
- # SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
--# Copyright (C) 2020 Texas Instruments Incorporated
-+# Copyright (C) 2020-2022 Texas Instruments Incorporated
- %YAML 1.2
- ---
--$id: "http://devicetree.org/schemas/sound/tas2764.yaml#"
-+$id: "http://devicetree.org/schemas/sound/tas27xx.yaml#"
- $schema: "http://devicetree.org/meta-schemas/core.yaml#"
- 
--title: Texas Instruments TAS2764 Smart PA
-+title: Texas Instruments TAS2764/TAS2780 Smart PA
- 
- maintainers:
--  - Dan Murphy <dmurphy@ti.com>
-+  - Shenghao Ding <shenghao-ding@ti.com>
- 
- description: |
--  The TAS2764 is a mono, digital input Class-D audio amplifier optimized for
--  efficiently driving high peak power into small loudspeakers.
--  Integrated speaker voltage and current sense provides for
--  real time monitoring of loudspeaker behavior.
-+  The TAS2764/TAS2780 is a mono, digital input Class-D audio amplifier
-+  optimized for efficiently driving high peak power into small
-+  loudspeakers. Integrated speaker voltage and current sense provides
-+  for real time monitoring of loudspeaker behavior.
- 
- properties:
-   compatible:
-     enum:
-       - ti,tas2764
-+      or
-+      - ti,tas2780
- 
-   reg:
-     maxItems: 1
+diff --git a/Documentation/devicetree/bindings/sound/tas2764.yaml b/Documentation/devicetree/bindings/sound/tas27xx.yaml
+similarity index 100%
+rename from Documentation/devicetree/bindings/sound/tas2764.yaml
+rename to Documentation/devicetree/bindings/sound/tas27xx.yaml
 -- 
 2.35.1
 
