@@ -4,50 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D250EC433F5
-	for <alsa-devel@archiver.kernel.org>; Fri,  8 Apr 2022 14:13:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 29953C433F5
+	for <alsa-devel@archiver.kernel.org>; Fri,  8 Apr 2022 14:18:49 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id AF8451A29;
-	Fri,  8 Apr 2022 16:12:35 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AF8451A29
+	by alsa0.perex.cz (Postfix) with ESMTPS id EE4C71A2D;
+	Fri,  8 Apr 2022 16:17:56 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EE4C71A2D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1649427205;
-	bh=0q+IaaUoHpY9M31qHkIJPOSI6zMbZOTod5BoLUgD7rE=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=snxhZRRadVn0Jk6eNkVThEZF0DkReLMM+YSlC7O+htjQjSgL9iefWNrEdazgY/cXX
-	 RZmR6LTCZATcLpNHBkAqyV/1se6+K9bLwBla02u5OxF/iq3LdnPVwqaSOqWbr2iTeH
-	 jQNKWn5MreAeUb8oKL0IAs4JMqE0HoQaTxvSva+A=
+	s=default; t=1649427527;
+	bh=4kkFk4FeV2cQUpezVSuLmn1tArjBSTTIFKN+BJyZrqI=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=iwTe9ykj5ey5eCHx6ypcNoyv94qgglvGNp4cL909p7mBNB2DhnGK6IsXuIFz3k1lN
+	 S8Up0PnxTWEWT576SWFv152G0kL3iWSf/1uj0+V6o7z/OcwUNI93tckuS086ZjXAsi
+	 IK/piejPcQmvUK4an7PT+9hlfIdjq7pijz19Z780=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 2DE1DF804B0;
-	Fri,  8 Apr 2022 16:12:04 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 8342CF8012A;
+	Fri,  8 Apr 2022 16:17:56 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 17983F80128; Fri,  8 Apr 2022 16:12:01 +0200 (CEST)
-Received: from n169-110.mail.139.com (n169-110.mail.139.com [120.232.169.110])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256
- bits)) (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id E0FF4F80128
- for <alsa-devel@alsa-project.org>; Fri,  8 Apr 2022 16:11:53 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E0FF4F80128
-X-RM-TagInfo: emlType=0                                       
-X-RM-SPAM: 
-X-RM-SPAM-FLAG: 00000000
-Received: from LAPTOP-39QA2GAC.localdomain (unknown[120.231.214.12])
- by rmsmtp-lg-appmail-04-12082 (RichMail) with SMTP id 2f326250428c9b2-6bba5;
- Fri, 08 Apr 2022 22:11:47 +0800 (CST)
-X-RM-TRANSID: 2f326250428c9b2-6bba5
-From: Raphael-Xu <13691752556@139.com>
-To: broonie@kernel.org
-Subject: [PATCH v1 1/2] rename tas2764 to tas27xx
-Date: Fri,  8 Apr 2022 22:11:18 +0800
-Message-Id: <20220408141119.958-1-13691752556@139.com>
-X-Mailer: git-send-email 2.35.1
+ id D1141F80054; Fri,  8 Apr 2022 16:17:54 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 8DD9EF80054
+ for <alsa-devel@alsa-project.org>; Fri,  8 Apr 2022 16:17:48 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8DD9EF80054
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="cBMJWas3"
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by dfw.source.kernel.org (Postfix) with ESMTPS id EEC7D61B77;
+ Fri,  8 Apr 2022 14:17:45 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2B94EC385A3;
+ Fri,  8 Apr 2022 14:17:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1649427465;
+ bh=4kkFk4FeV2cQUpezVSuLmn1tArjBSTTIFKN+BJyZrqI=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=cBMJWas3QpUB/Buc5jr2T1frwGqmiUUqY2DMnRpnLr4GI1o/inVZffrvUcc8MLOFP
+ wLn9UD5RuE3YGKJ/a03LNLlkD4lUDl8RR2w18I9zC6ZboearxGL0L1ddPDV5YDKDBM
+ 0lOx4Hg8XK+kKxs+9TCY3IBo3gaTJW7gTM0HMGT6bur5adN8F7bYqg/Cqj4vRGsudU
+ 0SImlQVnVaqOqb5pZk0szNKI1sQolSh9emKcjT8GsCgTJ/QChJh/BnD5IQ3eOVd5tb
+ 9aEwrO0wmEYVPvfxIbI1z3oMhrq6x/9vOWsX/v2+kR9XktTH54PLWsiX+0p7hPPLaK
+ puG+BaIjifs8A==
+Date: Fri, 8 Apr 2022 15:17:40 +0100
+From: Mark Brown <broonie@kernel.org>
+To: Raphael-Xu <13691752556@139.com>
+Subject: Re: [PATCH v1 1/2] rename tas2764 to tas27xx
+Message-ID: <YlBEBO5BFk7+txRU@sirena.org.uk>
+References: <20220408141119.958-1-13691752556@139.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature"; boundary="Uch6/VU9xlo2MkT3"
+Content-Disposition: inline
+In-Reply-To: <20220408141119.958-1-13691752556@139.com>
+X-Cookie: Look ere ye leap.
 Cc: navada@ti.com, alsa-devel@alsa-project.org, shenghao-ding@ti.com,
- raphael-xu@ti.com, Raphael-Xu <13691752556@139.com>
+ raphael-xu@ti.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -63,19 +81,32 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-rename tas2764.yaml to tas27xx.yaml
 
-Signed-off-by: Raphael-Xu <13691752556@139.com>
----
- .../devicetree/bindings/sound/{tas2764.yaml => tas27xx.yaml}      | 0
- 1 file changed, 0 insertions(+), 0 deletions(-)
- rename Documentation/devicetree/bindings/sound/{tas2764.yaml => tas27xx.yaml} (100%)
+--Uch6/VU9xlo2MkT3
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-diff --git a/Documentation/devicetree/bindings/sound/tas2764.yaml b/Documentation/devicetree/bindings/sound/tas27xx.yaml
-similarity index 100%
-rename from Documentation/devicetree/bindings/sound/tas2764.yaml
-rename to Documentation/devicetree/bindings/sound/tas27xx.yaml
--- 
-2.35.1
+On Fri, Apr 08, 2022 at 10:11:18PM +0800, Raphael-Xu wrote:
+> rename tas2764.yaml to tas27xx.yaml
+>=20
+> Signed-off-by: Raphael-Xu <13691752556@139.com>
 
+This is fine but it's just the binding updates?
 
+--Uch6/VU9xlo2MkT3
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmJQRAQACgkQJNaLcl1U
+h9DgxQf/aZa9fef8khP4NM+WYZe5tf3BBow4usDvmWfTQkK55yZO+KkNyU8IhEww
+vbdRgMclUk7xhaIeQgmtzrSxG8jE4KTt13ui+JOAiHI25cU2EyEPad6qkuEUCsd2
+mKsTjb7lKS5jUe8C6M/zwisMdNnS3GPc2QZosdAy6VtPEQghQai7PdYFzGerWsHH
+XjiKeZmZ9CQHi82s9RR30mAR5l2rzZi1x37szvCUgn1c/AWhfIPfWusealyQEBiA
+zw+nyU7L7fh5WirgCIm+ueS/ZPTtksKIA0gqytgfDze0pgvR/0CkLvFHUA5EO1Ej
+jrr5r1Ky4leq3Cy55VDopDncm7I/kA==
+=sjuV
+-----END PGP SIGNATURE-----
+
+--Uch6/VU9xlo2MkT3--
