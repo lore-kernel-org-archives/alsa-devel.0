@@ -4,52 +4,52 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A4A1DC433EF
-	for <alsa-devel@archiver.kernel.org>; Fri,  8 Apr 2022 11:32:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 58E59C433EF
+	for <alsa-devel@archiver.kernel.org>; Fri,  8 Apr 2022 11:32:56 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id ECF601A2C;
-	Fri,  8 Apr 2022 13:31:41 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz ECF601A2C
+	by alsa0.perex.cz (Postfix) with ESMTPS id 9E48C193D;
+	Fri,  8 Apr 2022 13:32:04 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9E48C193D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1649417552;
-	bh=2osZ0qKwhyjATQTw+26K1qXffw2FSwRbWZHAIqos8c0=;
+	s=default; t=1649417574;
+	bh=ZXeUnm831jL3Euac9SfwMLVcjIFTvdFtCcb3srrf1GM=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=tGKluirn0wvD2+wDVKj6HJ/0ffkloIS4/xhLWlwMw7r/9oARLS34DAZX0vczeUBHR
-	 CXC32q8lUIMDJOS5Yago705jKIHRw6/UbGm66u8x1x8uy7JvMJv1VgMW8mr+ZP8H5O
-	 vLhJkNzY796nuJ5wjVl2a9RyEojW1QibIOJ6cwGk=
+	b=Zqh+YDJ9w8nOq5poZHxI+1XaiiXM69pHFtog5X/AZQ+DXY9aAe9rfCgdB5C0cBUy4
+	 iwqLdJ9NEfrhj8M4YtQP5QaBLTQ+nt9Z/UZ+JABLlUF6SUKJAzAxem33721tpzC0+6
+	 D9Z30931N2Idw5+1oLkHnUmL3gRnTHQNiv0kVQ6E=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 960C4F80519;
-	Fri,  8 Apr 2022 13:30:00 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 31165F80543;
+	Fri,  8 Apr 2022 13:30:06 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id E02CDF80311; Fri,  8 Apr 2022 13:29:53 +0200 (CEST)
+ id 71B20F80536; Fri,  8 Apr 2022 13:29:58 +0200 (CEST)
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de
  [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 560C9F8012A
- for <alsa-devel@alsa-project.org>; Fri,  8 Apr 2022 13:29:39 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 560C9F8012A
+ by alsa1.perex.cz (Postfix) with ESMTPS id 67DEFF8050F
+ for <alsa-devel@alsa-project.org>; Fri,  8 Apr 2022 13:29:42 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 67DEFF8050F
 Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
  by metis.ext.pengutronix.de with esmtps
  (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92)
  (envelope-from <sha@pengutronix.de>)
- id 1ncmo6-0004ts-Vb; Fri, 08 Apr 2022 13:29:39 +0200
+ id 1ncmo8-0004wS-4F; Fri, 08 Apr 2022 13:29:40 +0200
 Received: from [2a0a:edc0:0:1101:1d::28] (helo=dude02.red.stw.pengutronix.de)
  by drehscheibe.grey.stw.pengutronix.de with esmtp (Exim 4.94.2)
  (envelope-from <sha@pengutronix.de>)
- id 1ncmo7-001n6S-DL; Fri, 08 Apr 2022 13:29:37 +0200
+ id 1ncmo8-001n6o-Fy; Fri, 08 Apr 2022 13:29:39 +0200
 Received: from sha by dude02.red.stw.pengutronix.de with local (Exim 4.94.2)
  (envelope-from <sha@pengutronix.de>)
- id 1ncmo2-005ZAx-Rs; Fri, 08 Apr 2022 13:29:34 +0200
+ id 1ncmo3-005ZBL-1m; Fri, 08 Apr 2022 13:29:35 +0200
 From: Sascha Hauer <s.hauer@pengutronix.de>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH v5 06/21] ASoC: fsl_micfil: use clear/set bits
-Date: Fri,  8 Apr 2022 13:29:13 +0200
-Message-Id: <20220408112928.1326755-7-s.hauer@pengutronix.de>
+Subject: [PATCH v5 14/21] ASoC: fsl_micfil: Drop get_pdm_clk()
+Date: Fri,  8 Apr 2022 13:29:21 +0200
+Message-Id: <20220408112928.1326755-15-s.hauer@pengutronix.de>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20220408112928.1326755-1-s.hauer@pengutronix.de>
 References: <20220408112928.1326755-1-s.hauer@pengutronix.de>
@@ -79,78 +79,78 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Instead regmap_update_bits() use the simpler variants
-regmap_[set|clear]_bits() where appropriate.
+get_pdm_clk() calculates the PDM clock based on the quality setting,
+but really the PDM clock is independent of the quality, it's always
+rate * 4 * micfil->osr. Just drop the function and do the calculation
+in the caller.
 
 Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
 Acked-by: Shengjiu Wang <shengjiu.wang@gmail.com>
 ---
- sound/soc/fsl/fsl_micfil.c | 26 ++++++++++----------------
- 1 file changed, 10 insertions(+), 16 deletions(-)
+
+Notes:
+    Changes since v3:
+    - Don't use uninitialized and no longer present struct fsl_micfil::osr
+
+ sound/soc/fsl/fsl_micfil.c | 38 +-------------------------------------
+ 1 file changed, 1 insertion(+), 37 deletions(-)
 
 diff --git a/sound/soc/fsl/fsl_micfil.c b/sound/soc/fsl/fsl_micfil.c
-index cfa8af668d921..da4c245c35e62 100644
+index a35c1c580dbc1..3ddc988b4fe65 100644
 --- a/sound/soc/fsl/fsl_micfil.c
 +++ b/sound/soc/fsl/fsl_micfil.c
-@@ -168,19 +168,15 @@ static int fsl_micfil_reset(struct device *dev)
- 	struct fsl_micfil *micfil = dev_get_drvdata(dev);
- 	int ret;
+@@ -110,42 +110,6 @@ static const struct snd_kcontrol_new fsl_micfil_snd_controls[] = {
+ 		     snd_soc_get_enum_double, snd_soc_put_enum_double),
+ };
  
--	ret = regmap_update_bits(micfil->regmap,
--				 REG_MICFIL_CTRL1,
--				 MICFIL_CTRL1_MDIS,
--				 0);
-+	ret = regmap_clear_bits(micfil->regmap, REG_MICFIL_CTRL1,
-+				MICFIL_CTRL1_MDIS);
- 	if (ret) {
- 		dev_err(dev, "failed to clear MDIS bit %d\n", ret);
- 		return ret;
- 	}
+-static inline int get_pdm_clk(struct fsl_micfil *micfil,
+-			      unsigned int rate)
+-{
+-	u32 ctrl2_reg;
+-	int qsel;
+-	int bclk;
+-	int osr = MICFIL_OSR_DEFAULT;
+-
+-	regmap_read(micfil->regmap, REG_MICFIL_CTRL2, &ctrl2_reg);
+-	qsel = FIELD_GET(MICFIL_CTRL2_QSEL, ctrl2_reg);
+-
+-	switch (qsel) {
+-	case MICFIL_QSEL_HIGH_QUALITY:
+-		bclk = rate * 8 * osr / 2; /* kfactor = 0.5 */
+-		break;
+-	case MICFIL_QSEL_MEDIUM_QUALITY:
+-	case MICFIL_QSEL_VLOW0_QUALITY:
+-		bclk = rate * 4 * osr * 1; /* kfactor = 1 */
+-		break;
+-	case MICFIL_QSEL_LOW_QUALITY:
+-	case MICFIL_QSEL_VLOW1_QUALITY:
+-		bclk = rate * 2 * osr * 2; /* kfactor = 2 */
+-		break;
+-	case MICFIL_QSEL_VLOW2_QUALITY:
+-		bclk = rate * osr * 4; /* kfactor = 4 */
+-		break;
+-	default:
+-		dev_err(&micfil->pdev->dev,
+-			"Please make sure you select a valid quality.\n");
+-		bclk = -1;
+-		break;
+-	}
+-
+-	return bclk;
+-}
+-
+ static inline int get_clk_div(struct fsl_micfil *micfil,
+ 			      unsigned int rate)
+ {
+@@ -154,7 +118,7 @@ static inline int get_clk_div(struct fsl_micfil *micfil,
  
--	ret = regmap_update_bits(micfil->regmap,
--				 REG_MICFIL_CTRL1,
--				 MICFIL_CTRL1_SRES,
--				 MICFIL_CTRL1_SRES);
-+	ret = regmap_set_bits(micfil->regmap, REG_MICFIL_CTRL1,
-+			      MICFIL_CTRL1_SRES);
- 	if (ret) {
- 		dev_err(dev, "failed to reset MICFIL: %d\n", ret);
- 		return ret;
-@@ -252,9 +248,8 @@ static int fsl_micfil_trigger(struct snd_pcm_substream *substream, int cmd,
- 		}
+ 	mclk_rate = clk_get_rate(micfil->mclk);
  
- 		/* Enable the module */
--		ret = regmap_update_bits(micfil->regmap, REG_MICFIL_CTRL1,
--					 MICFIL_CTRL1_PDMIEN,
--					 MICFIL_CTRL1_PDMIEN);
-+		ret = regmap_set_bits(micfil->regmap, REG_MICFIL_CTRL1,
-+				      MICFIL_CTRL1_PDMIEN);
- 		if (ret) {
- 			dev_err(dev, "failed to enable the module\n");
- 			return ret;
-@@ -265,9 +260,8 @@ static int fsl_micfil_trigger(struct snd_pcm_substream *substream, int cmd,
- 	case SNDRV_PCM_TRIGGER_SUSPEND:
- 	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
- 		/* Disable the module */
--		ret = regmap_update_bits(micfil->regmap, REG_MICFIL_CTRL1,
--					 MICFIL_CTRL1_PDMIEN,
--					 0);
-+		ret = regmap_clear_bits(micfil->regmap, REG_MICFIL_CTRL1,
-+					MICFIL_CTRL1_PDMIEN);
- 		if (ret) {
- 			dev_err(dev, "failed to enable the module\n");
- 			return ret;
-@@ -332,8 +326,8 @@ static int fsl_micfil_hw_params(struct snd_pcm_substream *substream,
- 	int ret;
+-	clk_div = mclk_rate / (get_pdm_clk(micfil, rate) * 2);
++	clk_div = mclk_rate / (rate * MICFIL_OSR_DEFAULT * 8);
  
- 	/* 1. Disable the module */
--	ret = regmap_update_bits(micfil->regmap, REG_MICFIL_CTRL1,
--				 MICFIL_CTRL1_PDMIEN, 0);
-+	ret = regmap_clear_bits(micfil->regmap, REG_MICFIL_CTRL1,
-+				MICFIL_CTRL1_PDMIEN);
- 	if (ret) {
- 		dev_err(dev, "failed to disable the module\n");
- 		return ret;
+ 	return clk_div;
+ }
 -- 
 2.30.2
 
