@@ -4,72 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D9AF1C433EF
-	for <alsa-devel@archiver.kernel.org>; Fri,  8 Apr 2022 11:18:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id BBFEBC433F5
+	for <alsa-devel@archiver.kernel.org>; Fri,  8 Apr 2022 11:25:10 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id F09FE1925;
-	Fri,  8 Apr 2022 13:17:10 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F09FE1925
+	by alsa0.perex.cz (Postfix) with ESMTPS id A36AC190C;
+	Fri,  8 Apr 2022 13:24:18 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A36AC190C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1649416681;
-	bh=XjK6FPW7Vc8NpPd20O6mbJ9q6qAq8yXw2kBKcolbZJk=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	s=default; t=1649417108;
+	bh=9PcRN1KVHKzxtFwa+szuQRyy7nvnR2Tc4v2DTfZkrvc=;
+	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=WDOd1myOFvXmwIr38D7PzhgmflK0wRGQLXrnVA3KYhZwVHldfNrfjS4QhBG55nuQU
-	 guK6rNfXD4dQnyxX0xAi49jb/ofAmGLYjs0ybwXsBhYPZoe/rrN9KsLHi9CZC6X2S5
-	 gk3fnYPawoz/dKFEkh5NmNfoNvTJaW8+mVAL7MhQ=
+	b=khVnIh8gPkCphPyQd0KRSuk20y3lNkQZgPQfNjkHjtsFXLiJuwj90OHkIHToJW6K/
+	 A0X0ARf/eOkJsV9UfFLWjgL7dp4wWTjJsZQMPIeT2i+BneGgijnFhnF+zHYoTNxM/6
+	 qkpDv0vS8l9+cf4eKdyICrxzpwjPiUq4ueJXtzlo=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 8FEF1F8012A;
-	Fri,  8 Apr 2022 13:17:10 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 1B745F8012A;
+	Fri,  8 Apr 2022 13:24:18 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id BA808F80311; Fri,  8 Apr 2022 13:17:08 +0200 (CEST)
+ id 33FDCF80128; Fri,  8 Apr 2022 13:24:17 +0200 (CEST)
 Received: from ams.source.kernel.org (ams.source.kernel.org
  [IPv6:2604:1380:4601:e00::1])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 5C7BBF80128
- for <alsa-devel@alsa-project.org>; Fri,  8 Apr 2022 13:17:04 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5C7BBF80128
+ by alsa1.perex.cz (Postfix) with ESMTPS id 92FE2F80128
+ for <alsa-devel@alsa-project.org>; Fri,  8 Apr 2022 13:24:14 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 92FE2F80128
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="QuCxh3M/"
+ header.b="PSXXQnMS"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by ams.source.kernel.org (Postfix) with ESMTPS id 5349BB82A26;
- Fri,  8 Apr 2022 11:17:03 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7EFF5C385A3;
- Fri,  8 Apr 2022 11:16:59 +0000 (UTC)
+ by ams.source.kernel.org (Postfix) with ESMTPS id 87007B82A63;
+ Fri,  8 Apr 2022 11:24:13 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id F1A62C385A8;
+ Fri,  8 Apr 2022 11:24:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1649416622;
- bh=XjK6FPW7Vc8NpPd20O6mbJ9q6qAq8yXw2kBKcolbZJk=;
- h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=QuCxh3M/xC87SmDX834tHwuwAnd9hwPduk15Afq4eCgQJ8SjB6M5AIdac6GEo2ppG
- TZ569RXr/+DO2NqC44USCtxZKZCpksM73vhVd7JcenKqwQ1lxOMiq/IKy+fUm+9/14
- aV8Q7G+pb3xlgQDwY8uiNgEdw1BT8LSXQWtWxK/B2KK2ySxBZuPt4rNsXzI28iXE8X
- efpIGn2sRhnppoUTVNH6vm+exiW/TXbNfn9mXSCEfdA6AqjE0cMu3AaIOGUUrkLl+Z
- 2ALpOZY2tsJBgjTShog87s7NfFLucoIOXyWxTcEbw5ZVYApdn+MmyDA7YYL+dAy4Qw
- yEwmzvnQRNXVw==
-Date: Fri, 8 Apr 2022 12:16:56 +0100
+ s=k20201202; t=1649417052;
+ bh=9PcRN1KVHKzxtFwa+szuQRyy7nvnR2Tc4v2DTfZkrvc=;
+ h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+ b=PSXXQnMSjzyNsP9cirEzffzqPrnZjsf6iVxxKrwqW3JAl6L6Gr1oxFulYR4pSbCVD
+ j/oY6k0Fj1/9ZAd+fxdhRNReE6wyXauHCC/1hOoGw0KMjoDQUjS6CrvGiBMIni2BcI
+ lnK6yDc6ezB9blZDTSQt3t1yFdw1FMXSQ0IaYgRH2PQzXv3z5srSmyJSzDyPRSauzO
+ i2ermbXzubEoxiU9++WDMvAEtpVe7+oKmX6oqEr5Q9FHh2clAQpdIoi3W5/674zEJz
+ KRSGU/CqjXsHVRdJib5a3J/afu+y6KbValRTpgBp84YrdbOpROVTiG25P1zAg/Alvd
+ 2GcbiEG3gZ3bA==
 From: Mark Brown <broonie@kernel.org>
-To: Cezary Rojewski <cezary.rojewski@intel.com>
-Subject: Re: [PATCH v2 00/14] ASoC: Intel: avs: Topology and path management
-Message-ID: <YlAZqC4TQTn2xYRY@sirena.org.uk>
-References: <20220331135246.993089-1-cezary.rojewski@intel.com>
- <6d7a64b4-9b5f-2fc9-e53b-603cdda6cecf@intel.com>
+To: pierre-louis.bossart@linux.intel.com, alsa-devel@alsa-project.org
+In-Reply-To: <20220406192005.262996-1-pierre-louis.bossart@linux.intel.com>
+References: <20220406192005.262996-1-pierre-louis.bossart@linux.intel.com>
+Subject: Re: [PATCH] ASoC: rt711/5682: check if bus is active before deferred
+ jack detection
+Message-Id: <164941705051.1295287.125293907055326530.b4-ty@kernel.org>
+Date: Fri, 08 Apr 2022 12:24:10 +0100
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature"; boundary="M7vTjtv3RgO4IF9L"
-Content-Disposition: inline
-In-Reply-To: <6d7a64b4-9b5f-2fc9-e53b-603cdda6cecf@intel.com>
-X-Cookie: Look ere ye leap.
-Cc: alsa-devel@alsa-project.org, upstream@semihalf.com, harshapriya.n@intel.com,
- rad@semihalf.com, pierre-louis.bossart@linux.intel.com, tiwai@suse.com,
- hdegoede@redhat.com, amadeuszx.slawinski@linux.intel.com,
- cujomalainey@chromium.org, lma@semihalf.com
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+Cc: tiwai@suse.de, yung-chuan.liao@linux.intel.com, rander.wang@intel.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -85,32 +80,41 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+On Wed, 6 Apr 2022 14:20:05 -0500, Pierre-Louis Bossart wrote:
+> This patch takes a defensive programming and paranoid approach in case
+> the parent device (SoundWire) is pm_runtime resumed but the rt711
+> device is not. In that case, during the attachment and initialization,
+> a jack detection workqueue can be scheduled. Since the pm_runtime
+> suspend routines will not be invoked, the sequence to cancel all
+> deferred work is not executed, and the jack detection could happen
+> after the bus stops operating, leading to a timeout.
+> 
+> [...]
 
---M7vTjtv3RgO4IF9L
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Applied to
 
-On Fri, Apr 08, 2022 at 12:54:11PM +0200, Cezary Rojewski wrote:
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
 
-> Should I resend this one? Would like to move forward with the follow up
-> series so the skylake-driver can be finally replaced :)
+Thanks!
 
-No need to resend but let's wait a bit more in case there's some review
-comments from people.
+[1/1] ASoC: rt711/5682: check if bus is active before deferred jack detection
+      commit: 770f3d992a3f7330f801dfeee98429b2885c9fdb
 
---M7vTjtv3RgO4IF9L
-Content-Type: application/pgp-signature; name="signature.asc"
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
 
------BEGIN PGP SIGNATURE-----
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmJQGacACgkQJNaLcl1U
-h9Daegf/baKpqbr8ML4CG+h4B1SA0lmtmxyECr1AfEOXxf+/hBd1dIHJZlW7pniT
-yEogrFvAGvP5CH3rCWkfyRURyMroufXswS/1jp2lFE0bohfNap+VB16fNfFJTegM
-loqt9KzROkLjd2F8O7HQZEIayYWo65QnDWHmjPBbudNTR3uaWT4m2duxx3HmQpV0
-2Rkew1MCCnwnE7Mii/YUd2esicwzk7QoseMIKr8ngURyFVyUiPRM0v3wJ1Y7Na43
-3g2S0uUCp14Q44stLKEzlhC1vPVxdoVzRCVaASK/01iRVa3L/bA02tDuSNqvWWDr
-G+lxBhVqq/WGZZJ5QP6T7KEu1JfPKg==
-=DjVe
------END PGP SIGNATURE-----
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
---M7vTjtv3RgO4IF9L--
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
