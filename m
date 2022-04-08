@@ -4,69 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id CF448C4332F
-	for <alsa-devel@archiver.kernel.org>; Fri,  8 Apr 2022 11:26:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D64A4C433F5
+	for <alsa-devel@archiver.kernel.org>; Fri,  8 Apr 2022 11:26:51 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 11F6A1943;
-	Fri,  8 Apr 2022 13:25:36 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 11F6A1943
+	by alsa0.perex.cz (Postfix) with ESMTPS id 1CFC51682;
+	Fri,  8 Apr 2022 13:26:00 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1CFC51682
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1649417186;
-	bh=NbBmhmOEh0jvqB0emglK41o3wKsbI3NM+mo49ZJS+ss=;
+	s=default; t=1649417210;
+	bh=lWoMPg39uyTP/hr0yF/yCGHxTt9syuOEe++UUP9kO2Q=;
 	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=PLAxPfmN4RwJ3Of/gE4czvnjTv+HZRyO3E0hFoLWOQOikSNaBHaeZaBeqhxtqHRm6
-	 6talRy2MgOTw0bA3JwA0GpIK5ETJJ4qlwYdFRq60/RodtCG/GpnCnb9uE3R0XU1Cj9
-	 1QJbJ+2RF/4ZoIYRgr0uhCZvmQvnQaBmR+OzEjgU=
+	b=Cxe/NkLxMwp67CC3iv4WZDurWz8agulfmYrhlCMF8SwYqlrV/9SjOhPjEtoYYu/X4
+	 w52yNlBp20Tot2SisZDP++zV527lh/XBSnYvMHaQhW7DNL/ER63Jtz/SrYRBK+XxLu
+	 OKjEgNRvpk4rRDB0J7oLhNa85R4X1LsRW0EuKzp4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 1E7B5F80520;
-	Fri,  8 Apr 2022 13:24:27 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2AF98F80529;
+	Fri,  8 Apr 2022 13:24:28 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id B25DFF80520; Fri,  8 Apr 2022 13:24:25 +0200 (CEST)
-Received: from ams.source.kernel.org (ams.source.kernel.org
- [IPv6:2604:1380:4601:e00::1])
+ id 320F2F80520; Fri,  8 Apr 2022 13:24:26 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org
+ [IPv6:2604:1380:4641:c500::1])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id ADB32F80518
- for <alsa-devel@alsa-project.org>; Fri,  8 Apr 2022 13:24:22 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz ADB32F80518
+ by alsa1.perex.cz (Postfix) with ESMTPS id 1CCBEF8051A
+ for <alsa-devel@alsa-project.org>; Fri,  8 Apr 2022 13:24:18 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1CCBEF8051A
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="exWJsFiX"
+ header.b="l92riz3A"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by ams.source.kernel.org (Postfix) with ESMTPS id 9C358B82A16;
- Fri,  8 Apr 2022 11:24:21 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CC52CC385A3;
- Fri,  8 Apr 2022 11:24:18 +0000 (UTC)
+ by dfw.source.kernel.org (Postfix) with ESMTPS id 91C4B61FBC;
+ Fri,  8 Apr 2022 11:24:17 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8BB0AC385A3;
+ Fri,  8 Apr 2022 11:24:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1649417060;
- bh=NbBmhmOEh0jvqB0emglK41o3wKsbI3NM+mo49ZJS+ss=;
+ s=k20201202; t=1649417057;
+ bh=lWoMPg39uyTP/hr0yF/yCGHxTt9syuOEe++UUP9kO2Q=;
  h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=exWJsFiXBcf/WaNq/JWzLHOoZsHl7rlXepjq7PqZAD0v9b28PpI8tJbqiKN7eP27Z
- COzsKAxwyhccmHsWgeR4A7I6w2skRBGa6xYQTRSIVBLrpx+iz2X2oBm6EGkKB9ZnV5
- OUtnEhuWOGdNE7EbPFDXf//+7hCvlKsZGoW8aAlpEp7mU/TdVtSl6Ta2m3fik1PZ1X
- mtaYi13UcZVIQLfYeJho6Fj2T8Ieglwr4XGkZUbOVE0JvT8rgNtAvG0UsaIW0mdLxk
- pxse0XeqHVhfnmrpe+5vv+lzwxy6UjcOU1dk3X+CfIf3t1KuAYBIUcJhIZfRQykdk4
- rxqyEQ992gf5g==
+ b=l92riz3AuGpmwoYbqUhTX6nRH1rXoz0p/H708Lsgm0Cl1Ie5BO1AJtuVGAQ+2eYsx
+ LPRxdLnnEOtvFdBlxGDzNx55rgv2bbm4oeL/zlnmnuHCC2xIe9r7eR8GMnl//RyEDu
+ cb3Lrhw9AuKlr24uy2t1up8pC32MqC3QUR2ehWGJjA7tcNpXv3p9kjKcZOalmns6NR
+ Wo9sZp+DHUqlg4OMU/zU0myu/gVdqqvnExYwtOS6f4JC3bz7doBvDFCsTY29iltYrq
+ fd2qPvheOXW13ACGhRG6PqX4/E15QCCVQf9EVMQg8RXaPcWT36dB10xmmP2db6mu+3
+ 24oAKPbvDnAdw==
 From: Mark Brown <broonie@kernel.org>
-To: srinivas.kandagatla@linaro.org
-In-Reply-To: <20220407094313.2880-1-srinivas.kandagatla@linaro.org>
-References: <20220407094313.2880-1-srinivas.kandagatla@linaro.org>
-Subject: Re: [PATCH] ASoC: codecs: wcd934x: do not switch off SIDO Buck when
- codec is in use
-Message-Id: <164941705855.1295287.1090953205506531438.b4-ty@kernel.org>
-Date: Fri, 08 Apr 2022 12:24:18 +0100
+To: perex@perex.cz, zheyuma97@gmail.com, tiwai@suse.com, lgirdwood@gmail.com
+In-Reply-To: <20220405121038.4094051-1-zheyuma97@gmail.com>
+References: <20220405121038.4094051-1-zheyuma97@gmail.com>
+Subject: Re: [PATCH] ASoC: wm8731: Disable the regulator when probing fails
+Message-Id: <164941705528.1295287.5270437045199279011.b4-ty@kernel.org>
+Date: Fri, 08 Apr 2022 12:24:15 +0100
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: amit.pundir@linaro.org, alsa-devel@alsa-project.org, lgirdwood@gmail.com,
- linux-kernel@vger.kernel.org, pierre-louis.bossart@linux.intel.com,
- tiwai@suse.com
+Cc: patches@opensource.cirrus.com, alsa-devel@alsa-project.org,
+ linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -82,16 +80,20 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Thu, 7 Apr 2022 10:43:13 +0100, Srinivas Kandagatla wrote:
-> SIDO(Single-Inductor Dual-Ouput) Buck powers up both analog and digital
-> circuits along with internal memory, powering off this is the last thing
-> that codec should do when going to very low power.
+On Tue, 5 Apr 2022 20:10:38 +0800, Zheyu Ma wrote:
+> When the driver fails during probing, the driver should disable the
+> regulator, not just handle it in wm8731_hw_init().
 > 
-> Current code was powering off this Buck if there are no users of sysclk,
-> which is not correct. Powering off this buck will result in no register access.
-> This code path was never tested until recently after adding pm support
-> in SoundWire controller. Fix this by removing the buck poweroff when the
-> codec is active and also the code that is not used.
+> The following log reveals it:
+> 
+> [   17.812483] WARNING: CPU: 1 PID: 364 at drivers/regulator/core.c:2257 _regulator_put+0x3ec/0x4e0
+> [   17.815958] RIP: 0010:_regulator_put+0x3ec/0x4e0
+> [   17.824467] Call Trace:
+> [   17.824774]  <TASK>
+> [   17.825040]  regulator_bulk_free+0x82/0xe0
+> [   17.825514]  devres_release_group+0x319/0x3d0
+> [   17.825882]  i2c_device_probe+0x766/0x940
+> [   17.829198]  i2c_register_driver+0xb5/0x130
 > 
 > [...]
 
@@ -101,8 +103,8 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: codecs: wcd934x: do not switch off SIDO Buck when codec is in use
-      commit: db6dd1bee63d1d88fbddfe07af800af5948ac28e
+[1/1] ASoC: wm8731: Disable the regulator when probing fails
+      commit: 92ccbf17eeacf510cf1eed9c252d9332ca24f02d
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
