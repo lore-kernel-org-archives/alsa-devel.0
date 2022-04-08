@@ -4,81 +4,63 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 992E9C433EF
-	for <alsa-devel@archiver.kernel.org>; Fri,  8 Apr 2022 05:22:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 32992C433EF
+	for <alsa-devel@archiver.kernel.org>; Fri,  8 Apr 2022 06:07:02 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id CBB0C18B6;
-	Fri,  8 Apr 2022 07:22:02 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CBB0C18B6
+	by alsa0.perex.cz (Postfix) with ESMTPS id AC2921707;
+	Fri,  8 Apr 2022 08:06:10 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AC2921707
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1649395372;
-	bh=Y5pv8+7ikNfTIXLZAqGMEW3iSKcbdVZYBTiAlpVt048=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=lK0ZuK46B2kjlG2Eu2PM2vFEKbAESALYQ9DlzmN1N/IpnCf8ZDqCau1KGTvtLNSNf
-	 fRQIoWc3TD5D0F2YYjUdwkCOKq5OAy12tM+3vzjE+EPnB6CRgp6l7Oj+c7uXWGIEjL
-	 4bKAZH9iT6NM6XHlnAvqXwWjs0thLMLJZeEBUNS8=
+	s=default; t=1649398020;
+	bh=nkelpOaU9b/omq5xkJP0/LnT8GcVVqmYf5idPWoggf0=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=E2masuugnK78xVRZJW/GxBC8ZAkST+97fUC+ncarX1pFfSodym27YvwRJoCWHpo5i
+	 evC/t2mpagnwsXQdhfApaaeUjFGHzxtRM0kT7/66j0EI3yFoQWnTzYbuOgFsArDJFW
+	 yex0xnX0pLM+Sy5pKVc6eMXeFHyCV5gWDOeDoJA0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 7B362F8012A;
-	Fri,  8 Apr 2022 07:22:02 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 30AE1F804B1;
+	Fri,  8 Apr 2022 08:06:10 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 27743F80054; Fri,  8 Apr 2022 07:22:01 +0200 (CEST)
-Received: from mail-qk1-x72d.google.com (mail-qk1-x72d.google.com
- [IPv6:2607:f8b0:4864:20::72d])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id E43CBF80311; Fri,  8 Apr 2022 08:06:08 +0200 (CEST)
+Received: from mailgw01.mediatek.com (unknown [60.244.123.138])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 929ABF80116
- for <alsa-devel@alsa-project.org>; Fri,  8 Apr 2022 07:21:54 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 929ABF80116
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="moVOEtYQ"
-Received: by mail-qk1-x72d.google.com with SMTP id g11so2909913qke.1
- for <alsa-devel@alsa-project.org>; Thu, 07 Apr 2022 22:21:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
- h=mime-version:references:in-reply-to:from:date:message-id:subject:to
- :cc; bh=sYfQrPlhLET9K9SvOt5kEjocjbrXnvlOh/+z1rrjrS4=;
- b=moVOEtYQFLoRUnSiCubV74bLiht9ogEiuN4mxXlRc4Sog9hYTQ08qkOBgEB+blH0PR
- 3/tU0f4IcnaCBiO0w6KW+wLnTPz6W6QdjJbO99HSD3nhQKfNJysl8l4zO42gPEQxJd+c
- D0Uyl28IYSjNzhgLJif8JVmFh8aeirevGPvIgCQYOs3sKH0pzaa0oAVGAZEWCHAM/zeP
- VsK2K4WgkFLJF/11uiwLr2gbeE7ShVPInlECFOen8nrBmyESZEMYK/PC7x10smztJD7L
- yvVc3t/8K2WC2Z9eXgAilGkPHitQbUtnT7XZ1TqncmY2Ju3NcoJrCuc22bjzZnIfRRsq
- z1Uw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc;
- bh=sYfQrPlhLET9K9SvOt5kEjocjbrXnvlOh/+z1rrjrS4=;
- b=aGG8UNabyyptSktC8fam3d5Tfy/xKBQzPl9+v2PlgDMf3IbYzr5VQ0tyXmRlOWFNFg
- e069Fic49GrP9YQb5PLuLj0oKwWastltUj9cJFx5WmWpcDekQtHiddvxlicpjxrKqTSN
- yiJh5Jq98f5Z46CUVfvgvVr0r0oGve7bZhAva8LNExj323ZNQ4S9GueYDqVPV+eDMS6l
- 8kjpZsBMkKi9gbDJuVnZClFXFlT2PkVlIO0o0KYjEydQc8xB+JMFxrE91jCe1UA8SjGC
- zmUlfYhc5gcZqNzBqGo6gAhtTNyyxksdfZI4MGcxfB/sRDZqmcw63P0XMjtr2uckiVFd
- 2YIQ==
-X-Gm-Message-State: AOAM533jsVB/qe9YxT+iQCNTwBrtrRVEIk4Q081ySc13bwRbtT6p7tXR
- T+kZHP5RfiQmxfA1otzmuIlLCTHUn4hFtpmWi/Q=
-X-Google-Smtp-Source: ABdhPJyl36VQvkEgxmxm4fsD+7rBtB4JX93JirXFg8Hbpsi5weJGYH5dT9gy8yyjKfwwImerZZQXfd7LcaMjfnipCCM=
-X-Received: by 2002:a05:620a:4592:b0:67d:8ed9:8c37 with SMTP id
- bp18-20020a05620a459200b0067d8ed98c37mr11854001qkb.150.1649395312839; Thu, 07
- Apr 2022 22:21:52 -0700 (PDT)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 00E2CF8012A
+ for <alsa-devel@alsa-project.org>; Fri,  8 Apr 2022 08:06:03 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 00E2CF8012A
+X-UUID: 0bf2b9a3ab0944e3b5f4daafc4e73dd5-20220408
+X-UUID: 0bf2b9a3ab0944e3b5f4daafc4e73dd5-20220408
+Received: from mtkcas10.mediatek.inc [(172.21.101.39)] by mailgw01.mediatek.com
+ (envelope-from <jiaxin.yu@mediatek.com>)
+ (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+ with ESMTP id 143315572; Fri, 08 Apr 2022 14:05:56 +0800
+Received: from mtkcas11.mediatek.inc (172.21.101.40) by
+ mtkmbs10n1.mediatek.inc (172.21.101.34) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ 15.2.792.15; Fri, 8 Apr 2022 14:05:54 +0800
+Received: from localhost.localdomain (10.17.3.154) by mtkcas11.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Fri, 8 Apr 2022 14:05:53 +0800
+From: Jiaxin Yu <jiaxin.yu@mediatek.com>
+To: <broonie@kernel.org>, <robh+dt@kernel.org>, <nfraprado@collabora.com>,
+ <tzungbi@google.com>
+Subject: [v10 0/4] ASoC: mediatek: mt8192: support rt1015p_rt5682s
+Date: Fri, 8 Apr 2022 14:05:48 +0800
+Message-ID: <20220408060552.26607-1-jiaxin.yu@mediatek.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <20220407084936.223075-1-s.hauer@pengutronix.de>
- <20220407084936.223075-22-s.hauer@pengutronix.de>
-In-Reply-To: <20220407084936.223075-22-s.hauer@pengutronix.de>
-From: Shengjiu Wang <shengjiu.wang@gmail.com>
-Date: Fri, 8 Apr 2022 13:21:41 +0800
-Message-ID: <CAA+D8AMyvOpy9x0sAok6z=wRVhTScJ0xeFOHuCHK_fEWzxYwbA@mail.gmail.com>
-Subject: Re: [PATCH v4 21/21] ASoC: fsl_micfil: Remove debug message
-To: Sascha Hauer <s.hauer@pengutronix.de>
 Content-Type: text/plain; charset="UTF-8"
-X-Content-Filtered-By: Mailman/MimeDel 2.1.15
-Cc: alsa-devel@alsa-project.org, Xiubo Li <Xiubo.Lee@gmail.com>,
- Vinod Koul <vkoul@kernel.org>, NXP Linux Team <linux-imx@nxp.com>,
- Sascha Hauer <kernel@pengutronix.de>, dmaengine@vger.kernel.org,
- Fabio Estevam <festevam@gmail.com>
+Content-Transfer-Encoding: 8bit
+X-MTK: N
+Cc: devicetree@vger.kernel.org, linmq006@gmail.com, alsa-devel@alsa-project.org,
+ Jiaxin Yu <jiaxin.yu@mediatek.com>, linux-kernel@vger.kernel.org,
+ Project_Global_Chrome_Upstream_Group@mediatek.com,
+ linux-mediatek@lists.infradead.org, trevor.wu@mediatek.com,
+ matthias.bgg@gmail.com, aaronyu@google.com,
+ linux-arm-kernel@lists.infradead.org, angelogioacchino.delregno@collabora.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -94,40 +76,55 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Thu, Apr 7, 2022 at 4:49 PM Sascha Hauer <s.hauer@pengutronix.de> wrote:
+The series reuses mt8192-mt6359-rt1015-rt5682.c for supporting machine
+driver with rt1015p speaker amplifier and rt5682s headset codec.
 
-> The micfil driver prints out the IRQ numbers for each interrupt at error
-> level. This information is useful for debugging at best, remove it.
->
-> Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
-> ---
->
-> Notes:
->     Changes since v3:
->     - new patch
->
->  sound/soc/fsl/fsl_micfil.c | 1 -
->  1 file changed, 1 deletion(-)
->
-> diff --git a/sound/soc/fsl/fsl_micfil.c b/sound/soc/fsl/fsl_micfil.c
-> index 8f0ab61fd1b07..be669523a4bf7 100644
-> --- a/sound/soc/fsl/fsl_micfil.c
-> +++ b/sound/soc/fsl/fsl_micfil.c
-> @@ -597,7 +597,6 @@ static int fsl_micfil_probe(struct platform_device
-> *pdev)
->         /* get IRQs */
->         for (i = 0; i < MICFIL_IRQ_LINES; i++) {
->                 micfil->irq[i] = platform_get_irq(pdev, i);
-> -               dev_err(&pdev->dev, "GET IRQ: %d\n", micfil->irq[i]);
->
+Changes from v9:
+  - Modify the commit messages to make them more clear.
 
-dev_err to dev_dbg, is it better?
+Changes from v8:
+  - fix typos.
 
+Changes from v7:
+  - "mediatek,hdmi-codec" is an optional property, the code and the
+    binding document should match.
 
->                 if (micfil->irq[i] < 0)
->                         return micfil->irq[i];
->         }
-> --
-> 2.30.2
->
->
+Changes from v6:
+  - "speaker-codec" changes to "speaker-codecs" due to there may be two
+    speaker codec.
+
+Changes from v5:
+  - "mediatek,headset-codec" and "mediatek,speaker-codec" drop prefix
+    and move to properties from patternProperties.
+
+Changes form v4:
+  - split a large patch into three small patches for easy reviewing
+  - correct coding style
+
+Changes from v3:
+  - fix build error: too many arguments for format
+    [-Werror-format-extra-args]
+
+Changes from v2:
+  - fix build warnings such as "data argument not used by format string"
+
+Changes from v1:
+  - uses the snd_soc_of_get_dai_link_codecs to complete the
+  configuration of dai_link's codecs
+  - uses definitions to simplifies card name and compatible name
+
+Jiaxin Yu (4):
+  ASoC: dt-bindings: mt8192-mt6359: add new compatible and new
+    properties
+  ASoC: mediatek: mt8192: refactor for I2S3 DAI link of speaker
+  ASoC: mediatek: mt8192: refactor for I2S8/I2S9 DAI links of headset
+  ASoC: mediatek: mt8192: support rt1015p_rt5682s
+
+ .../sound/mt8192-mt6359-rt1015-rt5682.yaml    |  32 +++
+ sound/soc/mediatek/Kconfig                    |   1 +
+ .../mt8192/mt8192-mt6359-rt1015-rt5682.c      | 199 +++++++++++-------
+ 3 files changed, 153 insertions(+), 79 deletions(-)
+
+-- 
+2.25.1
+
