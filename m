@@ -4,67 +4,70 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D64A4C433F5
-	for <alsa-devel@archiver.kernel.org>; Fri,  8 Apr 2022 11:26:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7B180C433F5
+	for <alsa-devel@archiver.kernel.org>; Fri,  8 Apr 2022 11:27:02 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 1CFC51682;
-	Fri,  8 Apr 2022 13:26:00 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1CFC51682
+	by alsa0.perex.cz (Postfix) with ESMTPS id B7C8CD8;
+	Fri,  8 Apr 2022 13:26:10 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B7C8CD8
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1649417210;
-	bh=lWoMPg39uyTP/hr0yF/yCGHxTt9syuOEe++UUP9kO2Q=;
+	s=default; t=1649417220;
+	bh=HD2LcDKvmyG1fX0S/usHPsdJIssyypdemdstvg2vvdw=;
 	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Cxe/NkLxMwp67CC3iv4WZDurWz8agulfmYrhlCMF8SwYqlrV/9SjOhPjEtoYYu/X4
-	 w52yNlBp20Tot2SisZDP++zV527lh/XBSnYvMHaQhW7DNL/ER63Jtz/SrYRBK+XxLu
-	 OKjEgNRvpk4rRDB0J7oLhNa85R4X1LsRW0EuKzp4=
+	b=fw7sYj0oP+zEWIDMKtQN3Kj+osz92/TJA0LDjoZgwIMtENB5Ex4xcaRyJ2LK0Awrl
+	 N07d/CRNmlbJPqmKg56R0nR7a6GexF33CoSIiaO7vs0EIiUARE/XjrekL5lqSntkYa
+	 nDo8QXjR0krm1WTqrYxZrO+zSd/y55bn7KhxcUEA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 2AF98F80529;
-	Fri,  8 Apr 2022 13:24:28 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id B6C9AF80535;
+	Fri,  8 Apr 2022 13:24:29 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 320F2F80520; Fri,  8 Apr 2022 13:24:26 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org
- [IPv6:2604:1380:4641:c500::1])
+ id 74E12F80526; Fri,  8 Apr 2022 13:24:27 +0200 (CEST)
+Received: from ams.source.kernel.org (ams.source.kernel.org
+ [IPv6:2604:1380:4601:e00::1])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 1CCBEF8051A
- for <alsa-devel@alsa-project.org>; Fri,  8 Apr 2022 13:24:18 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1CCBEF8051A
+ by alsa1.perex.cz (Postfix) with ESMTPS id EB6C1F8051E
+ for <alsa-devel@alsa-project.org>; Fri,  8 Apr 2022 13:24:24 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EB6C1F8051E
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="l92riz3A"
+ header.b="TTc4iqZs"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id 91C4B61FBC;
- Fri,  8 Apr 2022 11:24:17 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8BB0AC385A3;
- Fri,  8 Apr 2022 11:24:15 +0000 (UTC)
+ by ams.source.kernel.org (Postfix) with ESMTPS id 8283BB82A6F;
+ Fri,  8 Apr 2022 11:24:24 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E5421C385A1;
+ Fri,  8 Apr 2022 11:24:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1649417057;
- bh=lWoMPg39uyTP/hr0yF/yCGHxTt9syuOEe++UUP9kO2Q=;
+ s=k20201202; t=1649417063;
+ bh=HD2LcDKvmyG1fX0S/usHPsdJIssyypdemdstvg2vvdw=;
  h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=l92riz3AuGpmwoYbqUhTX6nRH1rXoz0p/H708Lsgm0Cl1Ie5BO1AJtuVGAQ+2eYsx
- LPRxdLnnEOtvFdBlxGDzNx55rgv2bbm4oeL/zlnmnuHCC2xIe9r7eR8GMnl//RyEDu
- cb3Lrhw9AuKlr24uy2t1up8pC32MqC3QUR2ehWGJjA7tcNpXv3p9kjKcZOalmns6NR
- Wo9sZp+DHUqlg4OMU/zU0myu/gVdqqvnExYwtOS6f4JC3bz7doBvDFCsTY29iltYrq
- fd2qPvheOXW13ACGhRG6PqX4/E15QCCVQf9EVMQg8RXaPcWT36dB10xmmP2db6mu+3
- 24oAKPbvDnAdw==
+ b=TTc4iqZsmw76TPVZAhs/N6k8UGhng0ic7zNL8SIQdiX7+RlQneGvUl7rVFqIp+vG8
+ TKnViVdPqyQSx0wUPRlG6xxYqiONWmHQ9ZSnO2gCXJhjRUZ5+5RAjK0x2AOV4Osyqo
+ cF3jc3PMjqUR9Atm0lnd5cJKyoJnAA1ruQbHfxS1lD2Fn7Y2YXxkUdswimHbu9ayD8
+ XkNMUjOIdSVravNeTstKhO8pz9N5+94wu44Yv6myEvOaF82WMTh2OPGydisGEony6e
+ /KgLROw6N8RsZgWt3JnYzMqUEoYmfUM17pdbiYmcJF0uBc+bdjHt3jQOkz1vuNd22y
+ ZNX8TtrgxDr+Q==
 From: Mark Brown <broonie@kernel.org>
-To: perex@perex.cz, zheyuma97@gmail.com, tiwai@suse.com, lgirdwood@gmail.com
-In-Reply-To: <20220405121038.4094051-1-zheyuma97@gmail.com>
-References: <20220405121038.4094051-1-zheyuma97@gmail.com>
-Subject: Re: [PATCH] ASoC: wm8731: Disable the regulator when probing fails
-Message-Id: <164941705528.1295287.5270437045199279011.b4-ty@kernel.org>
-Date: Fri, 08 Apr 2022 12:24:15 +0100
+To: mchehab@kernel.org, alsa-devel@alsa-project.org
+In-Reply-To: <cover.1649357263.git.mchehab@kernel.org>
+References: <cover.1649357263.git.mchehab@kernel.org>
+Subject: Re: [PATCH v5 0/4] Make headphone work on Huawei Matebook D15
+Message-Id: <164941706065.1295287.8387779207290913522.b4-ty@kernel.org>
+Date: Fri, 08 Apr 2022 12:24:20 +0100
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: patches@opensource.cirrus.com, alsa-devel@alsa-project.org,
- linux-kernel@vger.kernel.org
+Cc: pierre-louis.bossart@linux.intel.com, cezary.rojewski@intel.com,
+ yung-chuan.liao@linux.intel.com, Takashi Iwai <tiwai@suse.com>,
+ yang.jie@linux.intel.com, linux-kernel@vger.kernel.org,
+ liam.r.girdwood@linux.intel.com, hdegoede@redhat.com,
+ peter.ujfalusi@linux.intel.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -80,20 +83,15 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Tue, 5 Apr 2022 20:10:38 +0800, Zheyu Ma wrote:
-> When the driver fails during probing, the driver should disable the
-> regulator, not just handle it in wm8731_hw_init().
+On Thu, 7 Apr 2022 20:49:55 +0200, Mauro Carvalho Chehab wrote:
+> Huawei Matebook D15 uses two different GPIOs are used to control the output:
 > 
-> The following log reveals it:
+> 	- gpio0 controls the speaker output;
+> 	- gpio1 controls the headphone output.
 > 
-> [   17.812483] WARNING: CPU: 1 PID: 364 at drivers/regulator/core.c:2257 _regulator_put+0x3ec/0x4e0
-> [   17.815958] RIP: 0010:_regulator_put+0x3ec/0x4e0
-> [   17.824467] Call Trace:
-> [   17.824774]  <TASK>
-> [   17.825040]  regulator_bulk_free+0x82/0xe0
-> [   17.825514]  devres_release_group+0x319/0x3d0
-> [   17.825882]  i2c_device_probe+0x766/0x940
-> [   17.829198]  i2c_register_driver+0xb5/0x130
+> Changing both at the same time cause spurious events that are mis-interpreted
+> as input events, causing troubles on apps. So, a delay is needed before turning
+> on such gpios.
 > 
 > [...]
 
@@ -103,8 +101,14 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: wm8731: Disable the regulator when probing fails
-      commit: 92ccbf17eeacf510cf1eed9c252d9332ca24f02d
+[1/4] ASoC: Intel: sof_es8336: simplify speaker gpio naming
+      commit: 890a4087a6c2045911b5002566d1528f710cd723
+[2/4] ASoC: Intel: sof_es8336: support a separate gpio to control headphone
+      commit: 6e1ff1459e0086312e61c2d1ff8b74395a082fcb
+[3/4] ASoC: Intel: sof_es8336: add a quirk for headset at mic1 port
+      commit: 7c7bb2a059b226ebadb14ce07460f6357023d56c
+[4/4] ASoC: Intel: sof_es8336: Add a quirk for Huawei Matebook D15
+      commit: c7cb4717f641db68e8117635bfcf62a9c27dc8d3
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
