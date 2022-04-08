@@ -4,67 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id BBFEBC433F5
-	for <alsa-devel@archiver.kernel.org>; Fri,  8 Apr 2022 11:25:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 66BF2C433EF
+	for <alsa-devel@archiver.kernel.org>; Fri,  8 Apr 2022 11:25:42 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A36AC190C;
-	Fri,  8 Apr 2022 13:24:18 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A36AC190C
+	by alsa0.perex.cz (Postfix) with ESMTPS id 7285B1931;
+	Fri,  8 Apr 2022 13:24:50 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7285B1931
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1649417108;
-	bh=9PcRN1KVHKzxtFwa+szuQRyy7nvnR2Tc4v2DTfZkrvc=;
+	s=default; t=1649417140;
+	bh=zoxU2hf0Wy8EncLKeCucJJOdIN0RECLbrZ8cjg0PWc4=;
 	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=khVnIh8gPkCphPyQd0KRSuk20y3lNkQZgPQfNjkHjtsFXLiJuwj90OHkIHToJW6K/
-	 A0X0ARf/eOkJsV9UfFLWjgL7dp4wWTjJsZQMPIeT2i+BneGgijnFhnF+zHYoTNxM/6
-	 qkpDv0vS8l9+cf4eKdyICrxzpwjPiUq4ueJXtzlo=
+	b=HoR9CCI1nOmF0WWE3nJnwW20WD9IgkTDl+jSCnff65h0JtJ8dosEpT+h8FEZXhzUr
+	 vwYruG3sd6QJQVXbjuawGsp7yoVx3l4WkPVuHzuOdz/gruDITRaB24u48VfFMH7Jxm
+	 3IDAfb6eiOS4A+DYYsIldrSD2R/Ku8YLaNjEpGKs=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 1B745F8012A;
-	Fri,  8 Apr 2022 13:24:18 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id E278FF804B1;
+	Fri,  8 Apr 2022 13:24:22 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 33FDCF80128; Fri,  8 Apr 2022 13:24:17 +0200 (CEST)
-Received: from ams.source.kernel.org (ams.source.kernel.org
- [IPv6:2604:1380:4601:e00::1])
+ id 35B1CF80516; Fri,  8 Apr 2022 13:24:19 +0200 (CEST)
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 92FE2F80128
- for <alsa-devel@alsa-project.org>; Fri,  8 Apr 2022 13:24:14 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 92FE2F80128
+ by alsa1.perex.cz (Postfix) with ESMTPS id 295DFF8014E
+ for <alsa-devel@alsa-project.org>; Fri,  8 Apr 2022 13:24:11 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 295DFF8014E
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="PSXXQnMS"
+ header.b="bLuN/llH"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by ams.source.kernel.org (Postfix) with ESMTPS id 87007B82A63;
- Fri,  8 Apr 2022 11:24:13 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id F1A62C385A8;
- Fri,  8 Apr 2022 11:24:10 +0000 (UTC)
+ by ams.source.kernel.org (Postfix) with ESMTPS id 75D20B82A16;
+ Fri,  8 Apr 2022 11:24:11 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 79C0AC385A3;
+ Fri,  8 Apr 2022 11:24:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1649417052;
- bh=9PcRN1KVHKzxtFwa+szuQRyy7nvnR2Tc4v2DTfZkrvc=;
+ s=k20201202; t=1649417050;
+ bh=zoxU2hf0Wy8EncLKeCucJJOdIN0RECLbrZ8cjg0PWc4=;
  h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=PSXXQnMSjzyNsP9cirEzffzqPrnZjsf6iVxxKrwqW3JAl6L6Gr1oxFulYR4pSbCVD
- j/oY6k0Fj1/9ZAd+fxdhRNReE6wyXauHCC/1hOoGw0KMjoDQUjS6CrvGiBMIni2BcI
- lnK6yDc6ezB9blZDTSQt3t1yFdw1FMXSQ0IaYgRH2PQzXv3z5srSmyJSzDyPRSauzO
- i2ermbXzubEoxiU9++WDMvAEtpVe7+oKmX6oqEr5Q9FHh2clAQpdIoi3W5/674zEJz
- KRSGU/CqjXsHVRdJib5a3J/afu+y6KbValRTpgBp84YrdbOpROVTiG25P1zAg/Alvd
- 2GcbiEG3gZ3bA==
+ b=bLuN/llHP4LqL8ba/Ivq4dPjNRZ3tLlvpDIAQnM6EDftQi2xsl35qDuMVdMAffjhJ
+ 2EYPHqmpY7uCcC/+rxJnXe7Ng44ZH7Tn/gDvmRcC2wHfXGRHUVDNT6ZoMtuIDOzQiu
+ D21D2W8Hj8PfcFM7BVKvO3CR4yQAys2UYpZf9iRnp8rRUSnWziCdXMk/uyuVmzATZL
+ MKD8qgcIG9YALNzk0hgUs8h72o0bp6A59xaWa40VKJqgU+kG6DIJfMnAEyAlpdMYOz
+ UcL6BH08P7jVm5uVvv4X5GJVWIkWB6s74Vck2C92JoY/C1mP9WxJRBmmYVw8oh/LHa
+ c5Dk+ksYRwdxA==
 From: Mark Brown <broonie@kernel.org>
 To: pierre-louis.bossart@linux.intel.com, alsa-devel@alsa-project.org
-In-Reply-To: <20220406192005.262996-1-pierre-louis.bossart@linux.intel.com>
-References: <20220406192005.262996-1-pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH] ASoC: rt711/5682: check if bus is active before deferred
- jack detection
-Message-Id: <164941705051.1295287.125293907055326530.b4-ty@kernel.org>
-Date: Fri, 08 Apr 2022 12:24:10 +0100
+In-Reply-To: <20220406191606.254576-1-pierre-louis.bossart@linux.intel.com>
+References: <20220406191606.254576-1-pierre-louis.bossart@linux.intel.com>
+Subject: Re: [PATCH] ASoC: SOF: topology: cleanup dailinks on widget unload
+Message-Id: <164941704820.1295287.16407013179365130768.b4-ty@kernel.org>
+Date: Fri, 08 Apr 2022 12:24:08 +0100
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: tiwai@suse.de, yung-chuan.liao@linux.intel.com, rander.wang@intel.com
+Cc: tiwai@suse.de, yung-chuan.liao@linux.intel.com,
+ peter.ujfalusi@linux.intel.com, ranjani.sridharan@linux.intel.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -80,16 +79,12 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, 6 Apr 2022 14:20:05 -0500, Pierre-Louis Bossart wrote:
-> This patch takes a defensive programming and paranoid approach in case
-> the parent device (SoundWire) is pm_runtime resumed but the rt711
-> device is not. In that case, during the attachment and initialization,
-> a jack detection workqueue can be scheduled. Since the pm_runtime
-> suspend routines will not be invoked, the sequence to cancel all
-> deferred work is not executed, and the jack detection could happen
-> after the bus stops operating, leading to a timeout.
+On Wed, 6 Apr 2022 14:16:06 -0500, Pierre-Louis Bossart wrote:
+> We set the cpu_dai capture_ or playback_widget on widget_ready but
+> never clear them, which leads to failures when unloading/reloading a
+> topology in modprobe/rmmod tests
 > 
-> [...]
+> 
 
 Applied to
 
@@ -97,8 +92,8 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: rt711/5682: check if bus is active before deferred jack detection
-      commit: 770f3d992a3f7330f801dfeee98429b2885c9fdb
+[1/1] ASoC: SOF: topology: cleanup dailinks on widget unload
+      commit: 20744617bdbafe2e7fb7bf5401f616e24bde4471
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
