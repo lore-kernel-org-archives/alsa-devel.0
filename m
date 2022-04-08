@@ -4,66 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9E811C433F5
-	for <alsa-devel@archiver.kernel.org>; Fri,  8 Apr 2022 11:26:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8E7FCC433EF
+	for <alsa-devel@archiver.kernel.org>; Fri,  8 Apr 2022 11:26:10 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 7D1291935;
-	Fri,  8 Apr 2022 13:25:09 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7D1291935
+	by alsa0.perex.cz (Postfix) with ESMTPS id BDE9B193E;
+	Fri,  8 Apr 2022 13:25:18 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BDE9B193E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1649417159;
-	bh=8ar2IE7U2OBV0yRQQxBe+rTaTCjfYbb87WhMyA2tAE0=;
+	s=default; t=1649417168;
+	bh=xeM8rY564xTTiRsahpqEs06K4aRbXxyrdVvwU0Ozc3g=;
 	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=T1k9WoDR9y/Ye+akJHEU1Z+ZcADJDjMZ41apIx40CI19QWl5TIChuOLvDj8PfmXUP
-	 8QvIFL+2bKFV1Vwz6EwBv9Gkj9ev5dEaI/7lg+5nfsRwrZO5yc1tkSyTg85yQkd0IB
-	 jXw+zBWR1vMWL0VDtJDXablrGJ01WY06CppWy1no=
+	b=O0F7UO3OzzYwtJ0Bpe1ksEj8CAShX1xIG3gg9DzQB9Pgo4ebd4tLQCq8o84jnNpBt
+	 WavZZ9OoJyrHtDQxQq0DkwnkbL8uX5VMKRSyhHFexwaoPCbe2g3W823bl9XJGTg7fh
+	 4Jai9dBxh5irX7odLmVWZdbXy3u0mYxOB5RyuyZA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 99A34F8050F;
-	Fri,  8 Apr 2022 13:24:23 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 374B6F8051D;
+	Fri,  8 Apr 2022 13:24:25 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 695E9F804CC; Fri,  8 Apr 2022 13:24:20 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org
- [IPv6:2604:1380:4641:c500::1])
+ id 2D042F80516; Fri,  8 Apr 2022 13:24:23 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 67D6EF804B1
- for <alsa-devel@alsa-project.org>; Fri,  8 Apr 2022 13:24:17 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 67D6EF804B1
+ by alsa1.perex.cz (Postfix) with ESMTPS id 6B7B7F80128
+ for <alsa-devel@alsa-project.org>; Fri,  8 Apr 2022 13:24:15 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6B7B7F80128
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="lTMBAPEO"
+ header.b="cGkM/Nyh"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id A1B3F61FB6;
- Fri,  8 Apr 2022 11:24:15 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 52C13C385A1;
+ by dfw.source.kernel.org (Postfix) with ESMTPS id 6743761FA9;
  Fri,  8 Apr 2022 11:24:14 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E68CCC385A3;
+ Fri,  8 Apr 2022 11:24:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1649417055;
- bh=8ar2IE7U2OBV0yRQQxBe+rTaTCjfYbb87WhMyA2tAE0=;
+ s=k20201202; t=1649417053;
+ bh=xeM8rY564xTTiRsahpqEs06K4aRbXxyrdVvwU0Ozc3g=;
  h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=lTMBAPEOSvUG10LrIcBdDDSZeOaHwTeWslLiWKyC3awhCb6fVzqJwqI39ms0qUoCb
- eGEa4BowvpbheCFeB67OVBdyBDNGs2v0FapP2xQPDZUI5j5CzDnS8fdY24iT+unDuG
- YQt6dmX7x38BM1OKWHaAtAMtzIfcr90Wd+IqoniHq8YFUwFOufp6YIsGWIWKoivj7k
- b8BmtYGgRLPPRY8CS3DK6uL8mHxBVq31LnD/PQM2+omdcOnAS3H5ck8C0EPH/mM09T
- jnz4F447UEGKbQQ1gLzXBvD7rjbnRSQRV9wY3McvOX8lLd+zGeKGwhiE7j7Rh56lCO
- 5zJwXy3oSLWIw==
+ b=cGkM/NyhMcWj2Hxsj9NJTb3DOJU0oGdxb0juog+Gphhfn1/+5ki6Nh5Z3B0AMsIrV
+ We8Dds1zrAhSCzs7H3uecZc8rssS2Z2SUqlDVarsohlMzXbKPSIXwsgnkm9nhJa7FH
+ 2PURsJGsDM5IjFd0/KWO3EW6auV9spzcvVQ7G+vNKtO1l1bJSb3U39F2zDEH21RSJp
+ V+El4Zx1poEe/NVbF/XyGHp/kkJWhbMPO6OrAAGSP2Xxb5xGmc4fcXDdCT0wulf20f
+ 9kraYzrlr9fr+svBSyn3OomRt0uk9u982jMx5KZ3/chhAdSL8zHMjReG7KxHG7nytl
+ Ood626rlGh1qg==
 From: Mark Brown <broonie@kernel.org>
 To: pierre-louis.bossart@linux.intel.com, alsa-devel@alsa-project.org
-In-Reply-To: <20220406194048.289787-1-pierre-louis.bossart@linux.intel.com>
-References: <20220406194048.289787-1-pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH 0/4] ASoC: SOF: AMD/Mediatek updates
-Message-Id: <164941705399.1295287.2437326201795619166.b4-ty@kernel.org>
-Date: Fri, 08 Apr 2022 12:24:13 +0100
+In-Reply-To: <20220406192341.271465-1-pierre-louis.bossart@linux.intel.com>
+References: <20220406192341.271465-1-pierre-louis.bossart@linux.intel.com>
+Subject: Re: [PATCH] ASoC: Intel: soc-acpi: correct device endpoints for
+ max98373
+Message-Id: <164941705255.1295287.16867133780409002608.b4-ty@kernel.org>
+Date: Fri, 08 Apr 2022 12:24:12 +0100
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: tiwai@suse.de
+Cc: tiwai@suse.de, chao.song@linux.intel.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -79,16 +79,13 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, 6 Apr 2022 14:40:44 -0500, Pierre-Louis Bossart wrote:
-> Hardware/IPC updates for AMD and shutdown support for Mediatek.
+On Wed, 6 Apr 2022 14:23:41 -0500, Pierre-Louis Bossart wrote:
+> From: Chao Song <chao.song@linux.intel.com>
 > 
-> Ajit Kumar Pandey (2):
->   ASoC: SOF: amd: Add psp_mbox_ready() and psp_send_cmd() callback
->   ASoC: SOF: amd: Use dedicated MBOX for ACP and PSP communication
+> The left speaker of max98373 uses spk_r_endpoint, and right
+> speaker uses spk_l_endpoint, this is obviously wrong.
 > 
-> YC Hung (2):
->   ASoC: SOF: OF: Add shutdown callback for SOF OF device
->   ASoC: SOF: mediatek: mt8195 add shutdown callback
+> This patch corrects the endpoints for max98373 codec.
 > 
 > [...]
 
@@ -98,14 +95,8 @@ Applied to
 
 Thanks!
 
-[1/4] ASoC: SOF: OF: Add shutdown callback for SOF OF device
-      commit: fe70300c70baa82fd3024af9a1d2838610a35005
-[2/4] ASoC: SOF: mediatek: mt8195 add shutdown callback
-      commit: 5cfe477f6a3f9a4d9b2906d442964f2115b0403f
-[3/4] ASoC: SOF: amd: Add psp_mbox_ready() and psp_send_cmd() callback
-      (no commit info)
-[4/4] ASoC: SOF: amd: Use dedicated MBOX for ACP and PSP communication
-      (no commit info)
+[1/1] ASoC: Intel: soc-acpi: correct device endpoints for max98373
+      commit: 97326be14df7bacc6ba5c62c0556298c27ea0432
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
