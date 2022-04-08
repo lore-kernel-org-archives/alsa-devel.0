@@ -4,70 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7B180C433F5
-	for <alsa-devel@archiver.kernel.org>; Fri,  8 Apr 2022 11:27:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 76CA5C433EF
+	for <alsa-devel@archiver.kernel.org>; Fri,  8 Apr 2022 11:30:44 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B7C8CD8;
-	Fri,  8 Apr 2022 13:26:10 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B7C8CD8
+	by alsa0.perex.cz (Postfix) with ESMTPS id 2D6D9192B;
+	Fri,  8 Apr 2022 13:29:52 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2D6D9192B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1649417220;
-	bh=HD2LcDKvmyG1fX0S/usHPsdJIssyypdemdstvg2vvdw=;
-	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
+	s=default; t=1649417442;
+	bh=+ZtfsK7HcUIxhfSq1wkWabS4qkYkZHpNM2MrP0U+TpE=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=fw7sYj0oP+zEWIDMKtQN3Kj+osz92/TJA0LDjoZgwIMtENB5Ex4xcaRyJ2LK0Awrl
-	 N07d/CRNmlbJPqmKg56R0nR7a6GexF33CoSIiaO7vs0EIiUARE/XjrekL5lqSntkYa
-	 nDo8QXjR0krm1WTqrYxZrO+zSd/y55bn7KhxcUEA=
+	b=BZ3i8mw1jGPBUaYYzvIaDxvjXEBaoq98fhLQjMkq3uUWbha7NzGEIjNO6LIbpxKHZ
+	 ClIFofgb61Tk8qUHfFGnDJXeiL9Z9lUMLajxSNcSywj4jCnLoLoCe8lUi/tXpv4B1n
+	 4kFmoAnXXiTznwCkpQEWMTUZq15spdk6jkde/rw8=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id B6C9AF80535;
-	Fri,  8 Apr 2022 13:24:29 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id BE0B1F80526;
+	Fri,  8 Apr 2022 13:29:51 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 74E12F80526; Fri,  8 Apr 2022 13:24:27 +0200 (CEST)
-Received: from ams.source.kernel.org (ams.source.kernel.org
- [IPv6:2604:1380:4601:e00::1])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id EB6C1F8051E
- for <alsa-devel@alsa-project.org>; Fri,  8 Apr 2022 13:24:24 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EB6C1F8051E
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="TTc4iqZs"
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+ id AC49AF8052D; Fri,  8 Apr 2022 13:29:46 +0200 (CEST)
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de
+ [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by ams.source.kernel.org (Postfix) with ESMTPS id 8283BB82A6F;
- Fri,  8 Apr 2022 11:24:24 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E5421C385A1;
- Fri,  8 Apr 2022 11:24:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1649417063;
- bh=HD2LcDKvmyG1fX0S/usHPsdJIssyypdemdstvg2vvdw=;
- h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=TTc4iqZsmw76TPVZAhs/N6k8UGhng0ic7zNL8SIQdiX7+RlQneGvUl7rVFqIp+vG8
- TKnViVdPqyQSx0wUPRlG6xxYqiONWmHQ9ZSnO2gCXJhjRUZ5+5RAjK0x2AOV4Osyqo
- cF3jc3PMjqUR9Atm0lnd5cJKyoJnAA1ruQbHfxS1lD2Fn7Y2YXxkUdswimHbu9ayD8
- XkNMUjOIdSVravNeTstKhO8pz9N5+94wu44Yv6myEvOaF82WMTh2OPGydisGEony6e
- /KgLROw6N8RsZgWt3JnYzMqUEoYmfUM17pdbiYmcJF0uBc+bdjHt3jQOkz1vuNd22y
- ZNX8TtrgxDr+Q==
-From: Mark Brown <broonie@kernel.org>
-To: mchehab@kernel.org, alsa-devel@alsa-project.org
-In-Reply-To: <cover.1649357263.git.mchehab@kernel.org>
-References: <cover.1649357263.git.mchehab@kernel.org>
-Subject: Re: [PATCH v5 0/4] Make headphone work on Huawei Matebook D15
-Message-Id: <164941706065.1295287.8387779207290913522.b4-ty@kernel.org>
-Date: Fri, 08 Apr 2022 12:24:20 +0100
+ by alsa1.perex.cz (Postfix) with ESMTPS id 07FAEF80128
+ for <alsa-devel@alsa-project.org>; Fri,  8 Apr 2022 13:29:39 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 07FAEF80128
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+ by metis.ext.pengutronix.de with esmtps
+ (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92)
+ (envelope-from <sha@pengutronix.de>)
+ id 1ncmo6-0004tO-6g; Fri, 08 Apr 2022 13:29:38 +0200
+Received: from [2a0a:edc0:0:1101:1d::28] (helo=dude02.red.stw.pengutronix.de)
+ by drehscheibe.grey.stw.pengutronix.de with esmtp (Exim 4.94.2)
+ (envelope-from <sha@pengutronix.de>)
+ id 1ncmo6-001n67-2G; Fri, 08 Apr 2022 13:29:36 +0200
+Received: from sha by dude02.red.stw.pengutronix.de with local (Exim 4.94.2)
+ (envelope-from <sha@pengutronix.de>)
+ id 1ncmo2-005ZBC-Vg; Fri, 08 Apr 2022 13:29:34 +0200
+From: Sascha Hauer <s.hauer@pengutronix.de>
+To: alsa-devel@alsa-project.org
+Subject: [PATCH v5 11/21] dmaengine: imx-sdma: Add multi fifo support
+Date: Fri,  8 Apr 2022 13:29:18 +0200
+Message-Id: <20220408112928.1326755-12-s.hauer@pengutronix.de>
+X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20220408112928.1326755-1-s.hauer@pengutronix.de>
+References: <20220408112928.1326755-1-s.hauer@pengutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: pierre-louis.bossart@linux.intel.com, cezary.rojewski@intel.com,
- yung-chuan.liao@linux.intel.com, Takashi Iwai <tiwai@suse.com>,
- yang.jie@linux.intel.com, linux-kernel@vger.kernel.org,
- liam.r.girdwood@linux.intel.com, hdegoede@redhat.com,
- peter.ujfalusi@linux.intel.com
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: sha@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de);
+ SAEximRunCond expanded to false
+X-PTX-Original-Recipient: alsa-devel@alsa-project.org
+Cc: Xiubo Li <Xiubo.Lee@gmail.com>, Fabio Estevam <festevam@gmail.com>,
+ Sascha Hauer <s.hauer@pengutronix.de>, Vinod Koul <vkoul@kernel.org>,
+ NXP Linux Team <linux-imx@nxp.com>, kernel@pengutronix.de,
+ dmaengine@vger.kernel.org, Shengjiu Wang <shengjiu.wang@gmail.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -83,48 +79,196 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Thu, 7 Apr 2022 20:49:55 +0200, Mauro Carvalho Chehab wrote:
-> Huawei Matebook D15 uses two different GPIOs are used to control the output:
-> 
-> 	- gpio0 controls the speaker output;
-> 	- gpio1 controls the headphone output.
-> 
-> Changing both at the same time cause spurious events that are mis-interpreted
-> as input events, causing troubles on apps. So, a delay is needed before turning
-> on such gpios.
-> 
-> [...]
+The i.MX SDMA engine can read from / write to multiple successive
+hardware FIFO registers, referred to as "Multi FIFO support". This is
+needed for the micfil driver and certain configurations of the SAI
+driver. This patch adds support for this feature.
 
-Applied to
+The number of FIFOs to read from / write to must be communicated from
+the client driver to the SDMA engine. For this the struct
+dma_slave_config::peripheral_config field is used.
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
+Acked-By: Vinod Koul <vkoul@kernel.org>
+---
 
-Thanks!
+Notes:
+    Changes since v2:
+    - Use prefix dmaengine:
+    - document struct sdma_peripheral_config
+    - add forgotten commit message
+    
+    Changes since v1:
+    - Drop unused variable sw_done_sel
+    - Evaluate sdmac->direction directly instead of storing value in n_fifos
 
-[1/4] ASoC: Intel: sof_es8336: simplify speaker gpio naming
-      commit: 890a4087a6c2045911b5002566d1528f710cd723
-[2/4] ASoC: Intel: sof_es8336: support a separate gpio to control headphone
-      commit: 6e1ff1459e0086312e61c2d1ff8b74395a082fcb
-[3/4] ASoC: Intel: sof_es8336: add a quirk for headset at mic1 port
-      commit: 7c7bb2a059b226ebadb14ce07460f6357023d56c
-[4/4] ASoC: Intel: sof_es8336: Add a quirk for Huawei Matebook D15
-      commit: c7cb4717f641db68e8117635bfcf62a9c27dc8d3
+ drivers/dma/imx-sdma.c      | 57 +++++++++++++++++++++++++++++++++++++
+ include/linux/dma/imx-dma.h | 20 +++++++++++++
+ 2 files changed, 77 insertions(+)
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
+diff --git a/drivers/dma/imx-sdma.c b/drivers/dma/imx-sdma.c
+index 0e70843567cef..95367a8a81a51 100644
+--- a/drivers/dma/imx-sdma.c
++++ b/drivers/dma/imx-sdma.c
+@@ -14,6 +14,7 @@
+ #include <linux/iopoll.h>
+ #include <linux/module.h>
+ #include <linux/types.h>
++#include <linux/bitfield.h>
+ #include <linux/bitops.h>
+ #include <linux/mm.h>
+ #include <linux/interrupt.h>
+@@ -73,6 +74,7 @@
+ #define SDMA_CHNENBL0_IMX35	0x200
+ #define SDMA_CHNENBL0_IMX31	0x080
+ #define SDMA_CHNPRI_0		0x100
++#define SDMA_DONE0_CONFIG	0x1000
+ 
+ /*
+  * Buffer descriptor status values.
+@@ -180,6 +182,12 @@
+ 				 BIT(DMA_MEM_TO_DEV) | \
+ 				 BIT(DMA_DEV_TO_DEV))
+ 
++#define SDMA_WATERMARK_LEVEL_N_FIFOS	GENMASK(15, 12)
++#define SDMA_WATERMARK_LEVEL_SW_DONE	BIT(23)
++
++#define SDMA_DONE0_CONFIG_DONE_SEL	BIT(7)
++#define SDMA_DONE0_CONFIG_DONE_DIS	BIT(6)
++
+ /**
+  * struct sdma_script_start_addrs - SDMA script start pointers
+  *
+@@ -441,6 +449,9 @@ struct sdma_channel {
+ 	struct work_struct		terminate_worker;
+ 	struct list_head                terminated;
+ 	bool				is_ram_script;
++	unsigned int			n_fifos_src;
++	unsigned int			n_fifos_dst;
++	bool				sw_done;
+ };
+ 
+ #define IMX_DMA_SG_LOOP		BIT(0)
+@@ -778,6 +789,14 @@ static void sdma_event_enable(struct sdma_channel *sdmac, unsigned int event)
+ 	val = readl_relaxed(sdma->regs + chnenbl);
+ 	__set_bit(channel, &val);
+ 	writel_relaxed(val, sdma->regs + chnenbl);
++
++	/* Set SDMA_DONEx_CONFIG is sw_done enabled */
++	if (sdmac->sw_done) {
++		val = readl_relaxed(sdma->regs + SDMA_DONE0_CONFIG);
++		val |= SDMA_DONE0_CONFIG_DONE_SEL;
++		val &= ~SDMA_DONE0_CONFIG_DONE_DIS;
++		writel_relaxed(val, sdma->regs + SDMA_DONE0_CONFIG);
++	}
+ }
+ 
+ static void sdma_event_disable(struct sdma_channel *sdmac, unsigned int event)
+@@ -1038,6 +1057,10 @@ static int sdma_get_pc(struct sdma_channel *sdmac,
+ 	case IMX_DMATYPE_IPU_MEMORY:
+ 		emi_2_per = sdma->script_addrs->ext_mem_2_ipu_addr;
+ 		break;
++	case IMX_DMATYPE_MULTI_SAI:
++		per_2_emi = sdma->script_addrs->sai_2_mcu_addr;
++		emi_2_per = sdma->script_addrs->mcu_2_sai_addr;
++		break;
+ 	default:
+ 		dev_err(sdma->dev, "Unsupported transfer type %d\n",
+ 			peripheral_type);
+@@ -1214,6 +1237,22 @@ static void sdma_set_watermarklevel_for_p2p(struct sdma_channel *sdmac)
+ 	sdmac->watermark_level |= SDMA_WATERMARK_LEVEL_CONT;
+ }
+ 
++static void sdma_set_watermarklevel_for_sais(struct sdma_channel *sdmac)
++{
++	unsigned int n_fifos;
++
++	if (sdmac->sw_done)
++		sdmac->watermark_level |= SDMA_WATERMARK_LEVEL_SW_DONE;
++
++	if (sdmac->direction == DMA_DEV_TO_MEM)
++		n_fifos = sdmac->n_fifos_src;
++	else
++		n_fifos = sdmac->n_fifos_dst;
++
++	sdmac->watermark_level |=
++			FIELD_PREP(SDMA_WATERMARK_LEVEL_N_FIFOS, n_fifos);
++}
++
+ static int sdma_config_channel(struct dma_chan *chan)
+ {
+ 	struct sdma_channel *sdmac = to_sdma_chan(chan);
+@@ -1250,6 +1289,10 @@ static int sdma_config_channel(struct dma_chan *chan)
+ 			    sdmac->peripheral_type == IMX_DMATYPE_ASRC)
+ 				sdma_set_watermarklevel_for_p2p(sdmac);
+ 		} else {
++			if (sdmac->peripheral_type ==
++					IMX_DMATYPE_MULTI_SAI)
++				sdma_set_watermarklevel_for_sais(sdmac);
++
+ 			__set_bit(sdmac->event_id0, sdmac->event_mask);
+ 		}
+ 
+@@ -1707,9 +1750,23 @@ static int sdma_config(struct dma_chan *chan,
+ 		       struct dma_slave_config *dmaengine_cfg)
+ {
+ 	struct sdma_channel *sdmac = to_sdma_chan(chan);
++	struct sdma_engine *sdma = sdmac->sdma;
+ 
+ 	memcpy(&sdmac->slave_config, dmaengine_cfg, sizeof(*dmaengine_cfg));
+ 
++	if (dmaengine_cfg->peripheral_config) {
++		struct sdma_peripheral_config *sdmacfg = dmaengine_cfg->peripheral_config;
++		if (dmaengine_cfg->peripheral_size != sizeof(struct sdma_peripheral_config)) {
++			dev_err(sdma->dev, "Invalid peripheral size %zu, expected %zu\n",
++				dmaengine_cfg->peripheral_size,
++				sizeof(struct sdma_peripheral_config));
++			return -EINVAL;
++		}
++		sdmac->n_fifos_src = sdmacfg->n_fifos_src;
++		sdmac->n_fifos_dst = sdmacfg->n_fifos_dst;
++		sdmac->sw_done = sdmacfg->sw_done;
++	}
++
+ 	/* Set ENBLn earlier to make sure dma request triggered after that */
+ 	if (sdmac->event_id0 >= sdmac->sdma->drvdata->num_events)
+ 		return -EINVAL;
+diff --git a/include/linux/dma/imx-dma.h b/include/linux/dma/imx-dma.h
+index b06cba85a6d46..8887762360d40 100644
+--- a/include/linux/dma/imx-dma.h
++++ b/include/linux/dma/imx-dma.h
+@@ -39,6 +39,7 @@ enum sdma_peripheral_type {
+ 	IMX_DMATYPE_SSI_DUAL,	/* SSI Dual FIFO */
+ 	IMX_DMATYPE_ASRC_SP,	/* Shared ASRC */
+ 	IMX_DMATYPE_SAI,	/* SAI */
++	IMX_DMATYPE_MULTI_SAI,	/* MULTI FIFOs For Audio */
+ };
+ 
+ enum imx_dma_prio {
+@@ -65,4 +66,23 @@ static inline int imx_dma_is_general_purpose(struct dma_chan *chan)
+ 		!strcmp(chan->device->dev->driver->name, "imx-dma");
+ }
+ 
++/**
++ * struct sdma_peripheral_config - SDMA config for audio
++ * @n_fifos_src: Number of FIFOs for recording
++ * @n_fifos_dst: Number of FIFOs for playback
++ * @sw_done: Use software done. Needed for PDM (micfil)
++ *
++ * Some i.MX Audio devices (SAI, micfil) have multiple successive FIFO
++ * registers. For multichannel recording/playback the SAI/micfil have
++ * one FIFO register per channel and the SDMA engine has to read/write
++ * the next channel from/to the next register and wrap around to the
++ * first register when all channels are handled. The number of active
++ * channels must be communicated to the SDMA engine using this struct.
++ */
++struct sdma_peripheral_config {
++	int n_fifos_src;
++	int n_fifos_dst;
++	bool sw_done;
++};
++
+ #endif /* __LINUX_DMA_IMX_H */
+-- 
+2.30.2
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
