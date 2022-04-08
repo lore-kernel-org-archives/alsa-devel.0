@@ -4,63 +4,62 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id CD087C433F5
-	for <alsa-devel@archiver.kernel.org>; Fri,  8 Apr 2022 14:48:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 03D9AC433F5
+	for <alsa-devel@archiver.kernel.org>; Fri,  8 Apr 2022 14:48:57 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 7E9C51948;
-	Fri,  8 Apr 2022 16:47:47 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7E9C51948
+	by alsa0.perex.cz (Postfix) with ESMTPS id 2CBD51A40;
+	Fri,  8 Apr 2022 16:48:06 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2CBD51A40
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1649429317;
-	bh=IwyesdrCp1niEjDWDNUAqbKnkJMKAvXX2yXj5TkCb5U=;
+	s=default; t=1649429336;
+	bh=6UAy6vwa9qNgF6GIFreKzgcGTOebGNa25UsFFF9iOHw=;
 	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=n4N0b/O2q8MAZCCJyCSYdf+R/w7Zn0FpW5F2aMmT18dNRtrVAcdowKZtyFdOY7TMK
-	 tAimvkX9qU62v8c/U9zvx7I6kUOGRyFYBJN5AOuK/OM0wGu+P1i32aj0KovuOTlpMQ
-	 HcKEqCBULhGt9NL30o9eEIkO8fRbsTYWqVum7o1k=
+	b=CsjOCHQuAI8VbgsJpenOu4OmhDhG+dUgJ0KEiKY7GQYz6H9mQzwZQOdvYQNBMRhkr
+	 jUmAsysYDrvxMv5vVAgfHfiVZO5m+EPuDSxvB44AGKqi0Q6mo7n9DLd/F1FohLr0n2
+	 mq66xsOIHwJmzz7jRLe2CZBYoJskVAiE3kbdMRVk=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id BC740F804B0;
-	Fri,  8 Apr 2022 16:47:19 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id AC801F80516;
+	Fri,  8 Apr 2022 16:47:22 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 3C435F804CC; Fri,  8 Apr 2022 16:47:16 +0200 (CEST)
-Received: from ams.source.kernel.org (ams.source.kernel.org
- [IPv6:2604:1380:4601:e00::1])
+ id B705FF80518; Fri,  8 Apr 2022 16:47:21 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 25DE9F80128
- for <alsa-devel@alsa-project.org>; Fri,  8 Apr 2022 16:47:11 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 25DE9F80128
+ by alsa1.perex.cz (Postfix) with ESMTPS id 3FAB3F8050F
+ for <alsa-devel@alsa-project.org>; Fri,  8 Apr 2022 16:47:16 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3FAB3F8050F
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="jBhtWnLc"
+ header.b="GNsF6pDX"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by ams.source.kernel.org (Postfix) with ESMTPS id F30FDB82BA2;
+ by dfw.source.kernel.org (Postfix) with ESMTPS id 0A6D161E87;
+ Fri,  8 Apr 2022 14:47:14 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 37655C385A8;
  Fri,  8 Apr 2022 14:47:10 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E70E6C385A3;
- Fri,  8 Apr 2022 14:47:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1649429229;
- bh=IwyesdrCp1niEjDWDNUAqbKnkJMKAvXX2yXj5TkCb5U=;
+ s=k20201202; t=1649429233;
+ bh=6UAy6vwa9qNgF6GIFreKzgcGTOebGNa25UsFFF9iOHw=;
  h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=jBhtWnLcFL+4IX3ZZTGAVNw1bNVCXHpqkx6yx54N4/PRy24zrnvvbtaiJbmRqfxXa
- RrmrOFf1HgmW1oWzxDGiGNyvp4W7TUH/DThIJOPV6uPcW7Y67gGHD9HokjcTn7Yqod
- s8oFqNiED6ufEOrvibZQYUTjooA/b178HSY/a0/r8pZrtrIzGrdLHB79Aivi59oJvh
- FPggIXpKFyvbzBE9aZb15rxhtzRqDgZuBJ61X50Ifl7/ZG2qRJgxbcymOp+bZH1pox
- iCgKBNgJ2dWymFacuT6u1MrWyYfb7/Y6UAJYdiDFSkxHuOrl9LRBJmxUAcptd3Dmfb
- TC9nJg6Unh+Ig==
+ b=GNsF6pDXrgnU84AB89bG6z8gC2Cqfueje8sDfg6VZIHVELT3aZpBrW83/h+TzNRU1
+ +HOib9Djh1UWy1FXxcf5vlKMCBr0Y984nAVX2Zid9VcnGjvf9jXakgXlFBjP/HbUPC
+ 6rbsYHQj+Qg1I9ZpcSMPbhB4o7+GFfUqAQxFwof0Yn++oNdsESMKYhEPsCpEiIRaOs
+ Nf4VcYQBlrYkKneakat1KYW2nRSLACsX5fR6i7Ll6PcQlQAcJEQg4XHcDvUntKAp4Y
+ TmIJd349vXbssjDOJfkK6OVy05oRsf9kfkafxCi9CDcY/aaj7Dv30U4B/PSjlVSP7G
+ rsGHas/pYKhKA==
 From: Mark Brown <broonie@kernel.org>
 To: tzungbi@google.com, robh+dt@kernel.org, jiaxin.yu@mediatek.com,
  nfraprado@collabora.com
-In-Reply-To: <20220406100514.11269-1-jiaxin.yu@mediatek.com>
-References: <20220406100514.11269-1-jiaxin.yu@mediatek.com>
-Subject: Re: [v9 0/4] ASoC: mediatek: mt8192: support rt1015p_rt5682s
-Message-Id: <164942922666.1424253.184773384356622992.b4-ty@kernel.org>
-Date: Fri, 08 Apr 2022 15:47:06 +0100
+In-Reply-To: <20220408060552.26607-1-jiaxin.yu@mediatek.com>
+References: <20220408060552.26607-1-jiaxin.yu@mediatek.com>
+Subject: Re: [v10 0/4] ASoC: mediatek: mt8192: support rt1015p_rt5682s
+Message-Id: <164942922994.1424253.17635473999849755848.b4-ty@kernel.org>
+Date: Fri, 08 Apr 2022 15:47:09 +0100
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -85,16 +84,15 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, 6 Apr 2022 18:05:10 +0800, Jiaxin Yu wrote:
+On Fri, 8 Apr 2022 14:05:48 +0800, Jiaxin Yu wrote:
 > The series reuses mt8192-mt6359-rt1015-rt5682.c for supporting machine
 > driver with rt1015p speaker amplifier and rt5682s headset codec.
 > 
+> Changes from v9:
+>   - Modify the commit messages to make them more clear.
+> 
 > Changes from v8:
 >   - fix typos.
-> 
-> Changes from v7:
->   - "mediatek,hdmi-codec" is an optional property, the code and the
->     binding document should match.
 > 
 > [...]
 
