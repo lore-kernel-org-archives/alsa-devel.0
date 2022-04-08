@@ -4,66 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 66BF2C433EF
-	for <alsa-devel@archiver.kernel.org>; Fri,  8 Apr 2022 11:25:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9E811C433F5
+	for <alsa-devel@archiver.kernel.org>; Fri,  8 Apr 2022 11:26:01 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 7285B1931;
-	Fri,  8 Apr 2022 13:24:50 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7285B1931
+	by alsa0.perex.cz (Postfix) with ESMTPS id 7D1291935;
+	Fri,  8 Apr 2022 13:25:09 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7D1291935
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1649417140;
-	bh=zoxU2hf0Wy8EncLKeCucJJOdIN0RECLbrZ8cjg0PWc4=;
+	s=default; t=1649417159;
+	bh=8ar2IE7U2OBV0yRQQxBe+rTaTCjfYbb87WhMyA2tAE0=;
 	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=HoR9CCI1nOmF0WWE3nJnwW20WD9IgkTDl+jSCnff65h0JtJ8dosEpT+h8FEZXhzUr
-	 vwYruG3sd6QJQVXbjuawGsp7yoVx3l4WkPVuHzuOdz/gruDITRaB24u48VfFMH7Jxm
-	 3IDAfb6eiOS4A+DYYsIldrSD2R/Ku8YLaNjEpGKs=
+	b=T1k9WoDR9y/Ye+akJHEU1Z+ZcADJDjMZ41apIx40CI19QWl5TIChuOLvDj8PfmXUP
+	 8QvIFL+2bKFV1Vwz6EwBv9Gkj9ev5dEaI/7lg+5nfsRwrZO5yc1tkSyTg85yQkd0IB
+	 jXw+zBWR1vMWL0VDtJDXablrGJ01WY06CppWy1no=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id E278FF804B1;
-	Fri,  8 Apr 2022 13:24:22 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 99A34F8050F;
+	Fri,  8 Apr 2022 13:24:23 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 35B1CF80516; Fri,  8 Apr 2022 13:24:19 +0200 (CEST)
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+ id 695E9F804CC; Fri,  8 Apr 2022 13:24:20 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org
+ [IPv6:2604:1380:4641:c500::1])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 295DFF8014E
- for <alsa-devel@alsa-project.org>; Fri,  8 Apr 2022 13:24:11 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 295DFF8014E
+ by alsa1.perex.cz (Postfix) with ESMTPS id 67D6EF804B1
+ for <alsa-devel@alsa-project.org>; Fri,  8 Apr 2022 13:24:17 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 67D6EF804B1
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="bLuN/llH"
+ header.b="lTMBAPEO"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by ams.source.kernel.org (Postfix) with ESMTPS id 75D20B82A16;
- Fri,  8 Apr 2022 11:24:11 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 79C0AC385A3;
- Fri,  8 Apr 2022 11:24:08 +0000 (UTC)
+ by dfw.source.kernel.org (Postfix) with ESMTPS id A1B3F61FB6;
+ Fri,  8 Apr 2022 11:24:15 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 52C13C385A1;
+ Fri,  8 Apr 2022 11:24:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1649417050;
- bh=zoxU2hf0Wy8EncLKeCucJJOdIN0RECLbrZ8cjg0PWc4=;
+ s=k20201202; t=1649417055;
+ bh=8ar2IE7U2OBV0yRQQxBe+rTaTCjfYbb87WhMyA2tAE0=;
  h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=bLuN/llHP4LqL8ba/Ivq4dPjNRZ3tLlvpDIAQnM6EDftQi2xsl35qDuMVdMAffjhJ
- 2EYPHqmpY7uCcC/+rxJnXe7Ng44ZH7Tn/gDvmRcC2wHfXGRHUVDNT6ZoMtuIDOzQiu
- D21D2W8Hj8PfcFM7BVKvO3CR4yQAys2UYpZf9iRnp8rRUSnWziCdXMk/uyuVmzATZL
- MKD8qgcIG9YALNzk0hgUs8h72o0bp6A59xaWa40VKJqgU+kG6DIJfMnAEyAlpdMYOz
- UcL6BH08P7jVm5uVvv4X5GJVWIkWB6s74Vck2C92JoY/C1mP9WxJRBmmYVw8oh/LHa
- c5Dk+ksYRwdxA==
+ b=lTMBAPEOSvUG10LrIcBdDDSZeOaHwTeWslLiWKyC3awhCb6fVzqJwqI39ms0qUoCb
+ eGEa4BowvpbheCFeB67OVBdyBDNGs2v0FapP2xQPDZUI5j5CzDnS8fdY24iT+unDuG
+ YQt6dmX7x38BM1OKWHaAtAMtzIfcr90Wd+IqoniHq8YFUwFOufp6YIsGWIWKoivj7k
+ b8BmtYGgRLPPRY8CS3DK6uL8mHxBVq31LnD/PQM2+omdcOnAS3H5ck8C0EPH/mM09T
+ jnz4F447UEGKbQQ1gLzXBvD7rjbnRSQRV9wY3McvOX8lLd+zGeKGwhiE7j7Rh56lCO
+ 5zJwXy3oSLWIw==
 From: Mark Brown <broonie@kernel.org>
 To: pierre-louis.bossart@linux.intel.com, alsa-devel@alsa-project.org
-In-Reply-To: <20220406191606.254576-1-pierre-louis.bossart@linux.intel.com>
-References: <20220406191606.254576-1-pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH] ASoC: SOF: topology: cleanup dailinks on widget unload
-Message-Id: <164941704820.1295287.16407013179365130768.b4-ty@kernel.org>
-Date: Fri, 08 Apr 2022 12:24:08 +0100
+In-Reply-To: <20220406194048.289787-1-pierre-louis.bossart@linux.intel.com>
+References: <20220406194048.289787-1-pierre-louis.bossart@linux.intel.com>
+Subject: Re: [PATCH 0/4] ASoC: SOF: AMD/Mediatek updates
+Message-Id: <164941705399.1295287.2437326201795619166.b4-ty@kernel.org>
+Date: Fri, 08 Apr 2022 12:24:13 +0100
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: tiwai@suse.de, yung-chuan.liao@linux.intel.com,
- peter.ujfalusi@linux.intel.com, ranjani.sridharan@linux.intel.com
+Cc: tiwai@suse.de
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -79,12 +79,18 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, 6 Apr 2022 14:16:06 -0500, Pierre-Louis Bossart wrote:
-> We set the cpu_dai capture_ or playback_widget on widget_ready but
-> never clear them, which leads to failures when unloading/reloading a
-> topology in modprobe/rmmod tests
+On Wed, 6 Apr 2022 14:40:44 -0500, Pierre-Louis Bossart wrote:
+> Hardware/IPC updates for AMD and shutdown support for Mediatek.
 > 
+> Ajit Kumar Pandey (2):
+>   ASoC: SOF: amd: Add psp_mbox_ready() and psp_send_cmd() callback
+>   ASoC: SOF: amd: Use dedicated MBOX for ACP and PSP communication
 > 
+> YC Hung (2):
+>   ASoC: SOF: OF: Add shutdown callback for SOF OF device
+>   ASoC: SOF: mediatek: mt8195 add shutdown callback
+> 
+> [...]
 
 Applied to
 
@@ -92,8 +98,14 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: SOF: topology: cleanup dailinks on widget unload
-      commit: 20744617bdbafe2e7fb7bf5401f616e24bde4471
+[1/4] ASoC: SOF: OF: Add shutdown callback for SOF OF device
+      commit: fe70300c70baa82fd3024af9a1d2838610a35005
+[2/4] ASoC: SOF: mediatek: mt8195 add shutdown callback
+      commit: 5cfe477f6a3f9a4d9b2906d442964f2115b0403f
+[3/4] ASoC: SOF: amd: Add psp_mbox_ready() and psp_send_cmd() callback
+      (no commit info)
+[4/4] ASoC: SOF: amd: Use dedicated MBOX for ACP and PSP communication
+      (no commit info)
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
