@@ -4,66 +4,81 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C5C77C433EF
-	for <alsa-devel@archiver.kernel.org>; Fri,  8 Apr 2022 11:36:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 250C9C433EF
+	for <alsa-devel@archiver.kernel.org>; Fri,  8 Apr 2022 12:48:29 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 09A8842;
-	Fri,  8 Apr 2022 13:35:59 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 09A8842
+	by alsa0.perex.cz (Postfix) with ESMTPS id 9E3241A22;
+	Fri,  8 Apr 2022 14:47:37 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9E3241A22
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1649417809;
-	bh=USl5M95XsFDgFlVl/R87KE+ih7joYD5oFCQHmkrb/oY=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1649422107;
+	bh=OBOqwCeW+R9WTvT9Qn5l5K5n/lmqk8NoSNmWVUd0oSc=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=uNu95vG4dtYdiCrGa8yNDYU6vcGk2i6jSmRWJ4BsVMpfUtRjA0dde7DS50BuzNBSV
-	 DQa1chm1qE883p3atUiW9vs7gClTXBQ8s2B5bmEmbsqhecwmVgS8zme0Y7/KAlAqNw
-	 ESHKllw6em8sK+7aHO8tKSD4NiKpnz1PA30bBGD4=
+	b=uQ/jIdgCjquxgcUF9nTnhq67pwA34gbKVeqyRDWg2vRkbdikv7sUfU1ozvweX51CZ
+	 LaWAbQgJ72uQwMJgvxtb0gyaZwNBZrpws6ZvXc8uUU+kBYgldaf5K07wzDbMii+QCB
+	 hgA0mexu4FpO8n56/f8vXmcI/lI54a6yVgPpYNKg=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 9AD1FF805D5;
-	Fri,  8 Apr 2022 13:30:19 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2A1AFF80054;
+	Fri,  8 Apr 2022 14:47:37 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 7199CF805A9; Fri,  8 Apr 2022 13:30:15 +0200 (CEST)
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de
- [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 8057CF8014E; Fri,  8 Apr 2022 14:47:35 +0200 (CEST)
+Received: from mail-qv1-xf36.google.com (mail-qv1-xf36.google.com
+ [IPv6:2607:f8b0:4864:20::f36])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 2FA46F80527
- for <alsa-devel@alsa-project.org>; Fri,  8 Apr 2022 13:29:43 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2FA46F80527
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
- by metis.ext.pengutronix.de with esmtps
- (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92)
- (envelope-from <sha@pengutronix.de>)
- id 1ncmo9-0004xn-Rh; Fri, 08 Apr 2022 13:29:41 +0200
-Received: from [2a0a:edc0:0:1101:1d::28] (helo=dude02.red.stw.pengutronix.de)
- by drehscheibe.grey.stw.pengutronix.de with esmtp (Exim 4.94.2)
- (envelope-from <sha@pengutronix.de>)
- id 1ncmo9-001n77-1J; Fri, 08 Apr 2022 13:29:39 +0200
-Received: from sha by dude02.red.stw.pengutronix.de with local (Exim 4.94.2)
- (envelope-from <sha@pengutronix.de>)
- id 1ncmo3-005ZBg-6W; Fri, 08 Apr 2022 13:29:35 +0200
-From: Sascha Hauer <s.hauer@pengutronix.de>
-To: alsa-devel@alsa-project.org
-Subject: [PATCH v5 21/21] ASoC: fsl_micfil: Remove debug message
-Date: Fri,  8 Apr 2022 13:29:28 +0200
-Message-Id: <20220408112928.1326755-22-s.hauer@pengutronix.de>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20220408112928.1326755-1-s.hauer@pengutronix.de>
-References: <20220408112928.1326755-1-s.hauer@pengutronix.de>
+ by alsa1.perex.cz (Postfix) with ESMTPS id DA851F80054
+ for <alsa-devel@alsa-project.org>; Fri,  8 Apr 2022 14:47:26 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DA851F80054
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
+ header.b="anHD87O2"
+Received: by mail-qv1-xf36.google.com with SMTP id i15so7410699qvh.0
+ for <alsa-devel@alsa-project.org>; Fri, 08 Apr 2022 05:47:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
+ h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+ :cc; bh=S9mZxyx2Ja3/vA9arJ2HTYvGHrjBoWxHHKb3cuLZW84=;
+ b=anHD87O2xKuGIT1Fgj2k0O9kf2BlLX05R/WSHs3GglHHtNMJi4lSJhLoyydTiGf33T
+ 4kCA+cEAkQbif6Qf/Husd1V16s6Jurm3ot/guajJnk0CUL3UqI/xcELhIjIb/B1UM53t
+ c52C7Ao0OYIrTmWhF8ltuvxiy/AE8Mvxn6TFHUqp9gVpkEpSfNFryI1UbEcnvdcsgGIB
+ pkAzs2a0mTVbToihRY+EDszdp5c/oTjlyIWh7aeLAUz7rCGQKJ5qwEQxS/zhARBCjraJ
+ oQidZDSOCyaKvgg1Cgyev4lsr7+GSmp9KEvmZqHlkUdh4h7LAsSEGsn68g1SlzauJnrO
+ AKew==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc;
+ bh=S9mZxyx2Ja3/vA9arJ2HTYvGHrjBoWxHHKb3cuLZW84=;
+ b=ERGxHu1EmmBOcLbT3luB1aOzeT1VeyYQ72sMmc1jkZ4Yq4/d8H7izlKgLQ5ZEBsb+e
+ U1J6o2SHlgiDpL42JKLin7FMsAJAGXE6GYllvgvc1y5nmwDzDB17GpbVam/0ymyEBO7C
+ v6kZRXP04tfzu1/npS+W1F+ivMNqhZPkIMyn/cbSJ4FiAP9IcN3ymakk+zqJ3FyTTOUW
+ mRsRh+TkWY0svvDiyXtq2EjvzoRRssnHjk/o6sUMXQJm5ZYQIVVvmsiWj9LpOL0SRIZh
+ BKQIa5VMImgMvcatghh/NjivQY8cwSW9xfKeLXISa/vOvhOY6Q5oxzemAJLGmW3Fqzkf
+ QGlw==
+X-Gm-Message-State: AOAM532n0VGxEDDcZnWBX+/jjMtotw9bft+phm8GQJeyXcsJKZziHg1u
+ BDY0XmzztU7VLTVbQBDZ2uD52LKE0t4cD9jqwVc=
+X-Google-Smtp-Source: ABdhPJyVyZiVMSVNyupiifrBTU0XBSfb7HgeZJRvo9BLQ9z1jY6fKhUjZwpC6g8GFcFfy9XgQjVB+Q2wYRYPch9qLcI=
+X-Received: by 2002:a05:6214:c85:b0:441:2bb9:92fa with SMTP id
+ r5-20020a0562140c8500b004412bb992famr15710063qvr.21.1649422044866; Fri, 08
+ Apr 2022 05:47:24 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: sha@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de);
- SAEximRunCond expanded to false
-X-PTX-Original-Recipient: alsa-devel@alsa-project.org
-Cc: Xiubo Li <Xiubo.Lee@gmail.com>, Fabio Estevam <festevam@gmail.com>,
- Sascha Hauer <s.hauer@pengutronix.de>, Vinod Koul <vkoul@kernel.org>,
- NXP Linux Team <linux-imx@nxp.com>, kernel@pengutronix.de,
- dmaengine@vger.kernel.org, Shengjiu Wang <shengjiu.wang@gmail.com>
+References: <20220408112928.1326755-1-s.hauer@pengutronix.de>
+ <20220408112928.1326755-17-s.hauer@pengutronix.de>
+In-Reply-To: <20220408112928.1326755-17-s.hauer@pengutronix.de>
+From: Shengjiu Wang <shengjiu.wang@gmail.com>
+Date: Fri, 8 Apr 2022 20:47:14 +0800
+Message-ID: <CAA+D8AMJzV3tN584otxMVZ1AkA8Jjr2qAumT_a436Lp2iDo1tA@mail.gmail.com>
+Subject: Re: [PATCH v5 16/21] ASoC: fsl_micfil: rework quality setting
+To: Sascha Hauer <s.hauer@pengutronix.de>
+Content-Type: text/plain; charset="UTF-8"
+X-Content-Filtered-By: Mailman/MimeDel 2.1.15
+Cc: alsa-devel@alsa-project.org, Xiubo Li <Xiubo.Lee@gmail.com>,
+ Vinod Koul <vkoul@kernel.org>, NXP Linux Team <linux-imx@nxp.com>,
+ Sascha Hauer <kernel@pengutronix.de>, dmaengine@vger.kernel.org,
+ Fabio Estevam <festevam@gmail.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -79,32 +94,216 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The micfil driver prints out the IRQ numbers for each interrupt at error
-level. This information is useful for debugging at best, remove it.
+On Fri, Apr 8, 2022 at 7:29 PM Sascha Hauer <s.hauer@pengutronix.de> wrote:
 
-Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
+> For the quality setting the quality setting register values are directly
+> exposed to the kcontrol and thus to userspace. This is unfortunate
+> because the register settings contains invalid bit combinations marked
+> as "N/A". For userspace it doesn't make much sense to be able to set
+> these just to see that the driver responds with "Please make sure you
+> select a valid quality." in the kernel log.
+>
+> Work around this by adding get/set functions for the quality setting.
+>
+> Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
+>
+
 Acked-by: Shengjiu Wang <shengjiu.wang@gmail.com>
----
 
-Notes:
-    Changes since v3:
-    - new patch
+Best regards
+wang shengjiu
 
- sound/soc/fsl/fsl_micfil.c | 1 -
- 1 file changed, 1 deletion(-)
-
-diff --git a/sound/soc/fsl/fsl_micfil.c b/sound/soc/fsl/fsl_micfil.c
-index 8c7b15dbd1d45..cd85c8714f970 100644
---- a/sound/soc/fsl/fsl_micfil.c
-+++ b/sound/soc/fsl/fsl_micfil.c
-@@ -597,7 +597,6 @@ static int fsl_micfil_probe(struct platform_device *pdev)
- 	/* get IRQs */
- 	for (i = 0; i < MICFIL_IRQ_LINES; i++) {
- 		micfil->irq[i] = platform_get_irq(pdev, i);
--		dev_err(&pdev->dev, "GET IRQ: %d\n", micfil->irq[i]);
- 		if (micfil->irq[i] < 0)
- 			return micfil->irq[i];
- 	}
--- 
-2.30.2
-
+> ---
+>
+> Notes:
+>     Changes since v3:
+>     - Leave default quality setting at 'medium'
+>
+>  sound/soc/fsl/fsl_micfil.c | 109 ++++++++++++++++++++++++++-----------
+>  1 file changed, 78 insertions(+), 31 deletions(-)
+>
+> diff --git a/sound/soc/fsl/fsl_micfil.c b/sound/soc/fsl/fsl_micfil.c
+> index 4d8dfb2c22290..aecc8a1bcfcd8 100644
+> --- a/sound/soc/fsl/fsl_micfil.c
+> +++ b/sound/soc/fsl/fsl_micfil.c
+> @@ -31,6 +31,15 @@
+>
+>  #define MICFIL_OSR_DEFAULT     16
+>
+> +enum quality {
+> +       QUALITY_HIGH,
+> +       QUALITY_MEDIUM,
+> +       QUALITY_LOW,
+> +       QUALITY_VLOW0,
+> +       QUALITY_VLOW1,
+> +       QUALITY_VLOW2,
+> +};
+> +
+>  struct fsl_micfil {
+>         struct platform_device *pdev;
+>         struct regmap *regmap;
+> @@ -42,7 +51,7 @@ struct fsl_micfil {
+>         unsigned int dataline;
+>         char name[32];
+>         int irq[MICFIL_IRQ_LINES];
+> -       int quality;    /*QUALITY 2-0 bits */
+> +       enum quality quality;
+>  };
+>
+>  struct fsl_micfil_soc_data {
+> @@ -65,29 +74,73 @@ static const struct of_device_id fsl_micfil_dt_ids[] =
+> {
+>  };
+>  MODULE_DEVICE_TABLE(of, fsl_micfil_dt_ids);
+>
+> -/* Table 5. Quality Modes
+> - * Medium      0 0 0
+> - * High                0 0 1
+> - * Very Low 2  1 0 0
+> - * Very Low 1  1 0 1
+> - * Very Low 0  1 1 0
+> - * Low         1 1 1
+> - */
+>  static const char * const micfil_quality_select_texts[] = {
+> -       "Medium", "High",
+> -       "N/A", "N/A",
+> -       "VLow2", "VLow1",
+> -       "VLow0", "Low",
+> +       [QUALITY_HIGH] = "High",
+> +       [QUALITY_MEDIUM] = "Medium",
+> +       [QUALITY_LOW] = "Low",
+> +       [QUALITY_VLOW0] = "VLow0",
+> +       [QUALITY_VLOW1] = "Vlow1",
+> +       [QUALITY_VLOW2] = "Vlow2",
+>  };
+>
+>  static const struct soc_enum fsl_micfil_quality_enum =
+> -       SOC_ENUM_SINGLE(REG_MICFIL_CTRL2,
+> -                       MICFIL_CTRL2_QSEL_SHIFT,
+> -                       ARRAY_SIZE(micfil_quality_select_texts),
+> -                       micfil_quality_select_texts);
+> +       SOC_ENUM_SINGLE_EXT(ARRAY_SIZE(micfil_quality_select_texts),
+> +                           micfil_quality_select_texts);
+>
+>  static DECLARE_TLV_DB_SCALE(gain_tlv, 0, 100, 0);
+>
+> +static int micfil_set_quality(struct fsl_micfil *micfil)
+> +{
+> +       u32 qsel;
+> +
+> +       switch (micfil->quality) {
+> +       case QUALITY_HIGH:
+> +               qsel = MICFIL_QSEL_HIGH_QUALITY;
+> +               break;
+> +       case QUALITY_MEDIUM:
+> +               qsel = MICFIL_QSEL_MEDIUM_QUALITY;
+> +               break;
+> +       case QUALITY_LOW:
+> +               qsel = MICFIL_QSEL_LOW_QUALITY;
+> +               break;
+> +       case QUALITY_VLOW0:
+> +               qsel = MICFIL_QSEL_VLOW0_QUALITY;
+> +               break;
+> +       case QUALITY_VLOW1:
+> +               qsel = MICFIL_QSEL_VLOW1_QUALITY;
+> +               break;
+> +       case QUALITY_VLOW2:
+> +               qsel = MICFIL_QSEL_VLOW2_QUALITY;
+> +               break;
+> +       }
+> +
+> +       return regmap_update_bits(micfil->regmap, REG_MICFIL_CTRL2,
+> +                                 MICFIL_CTRL2_QSEL,
+> +                                 FIELD_PREP(MICFIL_CTRL2_QSEL, qsel));
+> +}
+> +
+> +static int micfil_quality_get(struct snd_kcontrol *kcontrol,
+> +                             struct snd_ctl_elem_value *ucontrol)
+> +{
+> +       struct snd_soc_component *cmpnt =
+> snd_soc_kcontrol_component(kcontrol);
+> +       struct fsl_micfil *micfil = snd_soc_component_get_drvdata(cmpnt);
+> +
+> +       ucontrol->value.integer.value[0] = micfil->quality;
+> +
+> +       return 0;
+> +}
+> +
+> +static int micfil_quality_set(struct snd_kcontrol *kcontrol,
+> +                             struct snd_ctl_elem_value *ucontrol)
+> +{
+> +       struct snd_soc_component *cmpnt =
+> snd_soc_kcontrol_component(kcontrol);
+> +       struct fsl_micfil *micfil = snd_soc_component_get_drvdata(cmpnt);
+> +
+> +       micfil->quality = ucontrol->value.integer.value[0];
+> +
+> +       return micfil_set_quality(micfil);
+> +}
+> +
+>  static const struct snd_kcontrol_new fsl_micfil_snd_controls[] = {
+>         SOC_SINGLE_SX_TLV("CH0 Volume", REG_MICFIL_OUT_CTRL,
+>                           MICFIL_OUTGAIN_CHX_SHIFT(0), 0xF, 0x7, gain_tlv),
+> @@ -107,7 +160,7 @@ static const struct snd_kcontrol_new
+> fsl_micfil_snd_controls[] = {
+>                           MICFIL_OUTGAIN_CHX_SHIFT(7), 0xF, 0x7, gain_tlv),
+>         SOC_ENUM_EXT("MICFIL Quality Select",
+>                      fsl_micfil_quality_enum,
+> -                    snd_soc_get_enum_double, snd_soc_put_enum_double),
+> +                    micfil_quality_get, micfil_quality_set),
+>  };
+>
+>  /* The SRES is a self-negated bit which provides the CPU with the
+> @@ -207,22 +260,21 @@ static int fsl_set_clock_params(struct device *dev,
+> unsigned int rate)
+>  {
+>         struct fsl_micfil *micfil = dev_get_drvdata(dev);
+>         int clk_div = 8;
+> +       int osr = MICFIL_OSR_DEFAULT;
+>         int ret;
+>
+> -       ret = clk_set_rate(micfil->mclk, rate * clk_div *
+> MICFIL_OSR_DEFAULT * 8);
+> +       ret = clk_set_rate(micfil->mclk, rate * clk_div * osr * 8);
+>         if (ret)
+>                 return ret;
+>
+> -       /* set CICOSR */
+> -       ret = regmap_update_bits(micfil->regmap, REG_MICFIL_CTRL2,
+> -                                MICFIL_CTRL2_CICOSR,
+> -                                FIELD_PREP(MICFIL_CTRL2_CICOSR, 16 -
+> MICFIL_OSR_DEFAULT));
+> +       ret = micfil_set_quality(micfil);
+>         if (ret)
+>                 return ret;
+>
+>         ret = regmap_update_bits(micfil->regmap, REG_MICFIL_CTRL2,
+> -                                MICFIL_CTRL2_CLKDIV,
+> -                                FIELD_PREP(MICFIL_CTRL2_CLKDIV, clk_div));
+> +                                MICFIL_CTRL2_CLKDIV | MICFIL_CTRL2_CICOSR,
+> +                                FIELD_PREP(MICFIL_CTRL2_CLKDIV, clk_div) |
+> +                                FIELD_PREP(MICFIL_CTRL2_CICOSR, 16 -
+> osr));
+>
+>         return ret;
+>  }
+> @@ -275,12 +327,7 @@ static int fsl_micfil_dai_probe(struct snd_soc_dai
+> *cpu_dai)
+>         struct fsl_micfil *micfil = dev_get_drvdata(cpu_dai->dev);
+>         int ret;
+>
+> -       /* set qsel to medium */
+> -       ret = regmap_update_bits(micfil->regmap, REG_MICFIL_CTRL2,
+> -                       MICFIL_CTRL2_QSEL,
+> -                       FIELD_PREP(MICFIL_CTRL2_QSEL,
+> MICFIL_QSEL_MEDIUM_QUALITY));
+> -       if (ret)
+> -               return ret;
+> +       micfil->quality = QUALITY_MEDIUM;
+>
+>         /* set default gain to max_gain */
+>         regmap_write(micfil->regmap, REG_MICFIL_OUT_CTRL, 0x77777777);
+> --
+> 2.30.2
+>
+>
