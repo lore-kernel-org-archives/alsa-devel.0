@@ -4,52 +4,52 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4B9FEC433F5
-	for <alsa-devel@archiver.kernel.org>; Fri,  8 Apr 2022 11:36:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C5C77C433EF
+	for <alsa-devel@archiver.kernel.org>; Fri,  8 Apr 2022 11:36:50 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 84B741AA3;
-	Fri,  8 Apr 2022 13:35:36 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 84B741AA3
+	by alsa0.perex.cz (Postfix) with ESMTPS id 09A8842;
+	Fri,  8 Apr 2022 13:35:59 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 09A8842
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1649417786;
-	bh=O0S5Hnj9KiEz4pA9LRQVFNY4urthCBVOtRXT8VUS2tE=;
+	s=default; t=1649417809;
+	bh=USl5M95XsFDgFlVl/R87KE+ih7joYD5oFCQHmkrb/oY=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=ak8g/OjFWGLu5REbFq4yDkBONpv/JhLQvtImH0KwU2WD55KgMZM+wkorKteSBHPjN
-	 ByqhSFaoW6QC39snBcuHNjJzQF+fKkEHLBN6jJd2gOtDCtkgfMB9QtSat5CQrEWlex
-	 PXWyQcH4pkzl0/Zkyy8rWj8v4NshNND0KURad/t8=
+	b=uNu95vG4dtYdiCrGa8yNDYU6vcGk2i6jSmRWJ4BsVMpfUtRjA0dde7DS50BuzNBSV
+	 DQa1chm1qE883p3atUiW9vs7gClTXBQ8s2B5bmEmbsqhecwmVgS8zme0Y7/KAlAqNw
+	 ESHKllw6em8sK+7aHO8tKSD4NiKpnz1PA30bBGD4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id A019AF805C3;
-	Fri,  8 Apr 2022 13:30:18 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 9AD1FF805D5;
+	Fri,  8 Apr 2022 13:30:19 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 245D5F80524; Fri,  8 Apr 2022 13:30:12 +0200 (CEST)
+ id 7199CF805A9; Fri,  8 Apr 2022 13:30:15 +0200 (CEST)
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de
  [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 10118F80524
+ by alsa1.perex.cz (Postfix) with ESMTPS id 2FA46F80527
  for <alsa-devel@alsa-project.org>; Fri,  8 Apr 2022 13:29:43 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 10118F80524
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2FA46F80527
 Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
  by metis.ext.pengutronix.de with esmtps
  (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92)
  (envelope-from <sha@pengutronix.de>)
- id 1ncmoA-0004yx-2b; Fri, 08 Apr 2022 13:29:42 +0200
+ id 1ncmo9-0004xn-Rh; Fri, 08 Apr 2022 13:29:41 +0200
 Received: from [2a0a:edc0:0:1101:1d::28] (helo=dude02.red.stw.pengutronix.de)
  by drehscheibe.grey.stw.pengutronix.de with esmtp (Exim 4.94.2)
  (envelope-from <sha@pengutronix.de>)
- id 1ncmo9-001n7K-8p; Fri, 08 Apr 2022 13:29:39 +0200
+ id 1ncmo9-001n77-1J; Fri, 08 Apr 2022 13:29:39 +0200
 Received: from sha by dude02.red.stw.pengutronix.de with local (Exim 4.94.2)
  (envelope-from <sha@pengutronix.de>)
- id 1ncmo3-005ZBO-2V; Fri, 08 Apr 2022 13:29:35 +0200
+ id 1ncmo3-005ZBg-6W; Fri, 08 Apr 2022 13:29:35 +0200
 From: Sascha Hauer <s.hauer@pengutronix.de>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH v5 15/21] ASoC: fsl_micfil: simplify clock setting
-Date: Fri,  8 Apr 2022 13:29:22 +0200
-Message-Id: <20220408112928.1326755-16-s.hauer@pengutronix.de>
+Subject: [PATCH v5 21/21] ASoC: fsl_micfil: Remove debug message
+Date: Fri,  8 Apr 2022 13:29:28 +0200
+Message-Id: <20220408112928.1326755-22-s.hauer@pengutronix.de>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20220408112928.1326755-1-s.hauer@pengutronix.de>
 References: <20220408112928.1326755-1-s.hauer@pengutronix.de>
@@ -79,25 +79,8 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The reference manual has this for calculating the micfil internal clock
-divider:
-
-         MICFIL Clock rate
-clkdiv = -----------------
-         8 * OSR * outrate
-
-(with OSR == Oversampling Rate, outrate == output sample rate)
-
-The driver first sets the MICFIL Clock rate to (outrate * 1024) and then
-calculates back the clkdiv value from the above calculation.
-
-Simplify this by using a fixed clkdiv value of 8 and set the MICFIL
-Clock rate to (outrate * clkdiv * OSR * 8).
-
-While at it drop disabling the clock before setting its rate. The MICFIL
-module is disabled when the rate is changed and it is also resetted
-before it is started again, so I doubt it's necessary to disable the
-clock.
+The micfil driver prints out the IRQ numbers for each interrupt at error
+level. This information is useful for debugging at best, remove it.
 
 Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
 Acked-by: Shengjiu Wang <shengjiu.wang@gmail.com>
@@ -105,90 +88,23 @@ Acked-by: Shengjiu Wang <shengjiu.wang@gmail.com>
 
 Notes:
     Changes since v3:
-    - Don't use uninitialized and no longer present struct fsl_micfil::osr
+    - new patch
 
- sound/soc/fsl/fsl_micfil.c | 45 ++++----------------------------------
- 1 file changed, 4 insertions(+), 41 deletions(-)
+ sound/soc/fsl/fsl_micfil.c | 1 -
+ 1 file changed, 1 deletion(-)
 
 diff --git a/sound/soc/fsl/fsl_micfil.c b/sound/soc/fsl/fsl_micfil.c
-index 3ddc988b4fe65..4d8dfb2c22290 100644
+index 8c7b15dbd1d45..cd85c8714f970 100644
 --- a/sound/soc/fsl/fsl_micfil.c
 +++ b/sound/soc/fsl/fsl_micfil.c
-@@ -110,19 +110,6 @@ static const struct snd_kcontrol_new fsl_micfil_snd_controls[] = {
- 		     snd_soc_get_enum_double, snd_soc_put_enum_double),
- };
- 
--static inline int get_clk_div(struct fsl_micfil *micfil,
--			      unsigned int rate)
--{
--	long mclk_rate;
--	int clk_div;
--
--	mclk_rate = clk_get_rate(micfil->mclk);
--
--	clk_div = mclk_rate / (rate * MICFIL_OSR_DEFAULT * 8);
--
--	return clk_div;
--}
--
- /* The SRES is a self-negated bit which provides the CPU with the
-  * capability to initialize the PDM Interface module through the
-  * slave-bus interface. This bit always reads as zero, and this
-@@ -146,24 +133,6 @@ static int fsl_micfil_reset(struct device *dev)
- 	return 0;
- }
- 
--static int fsl_micfil_set_mclk_rate(struct fsl_micfil *micfil,
--				    unsigned int freq)
--{
--	struct device *dev = &micfil->pdev->dev;
--	int ret;
--
--	clk_disable_unprepare(micfil->mclk);
--
--	ret = clk_set_rate(micfil->mclk, freq * 1024);
--	if (ret)
--		dev_warn(dev, "failed to set rate (%u): %d\n",
--			 freq * 1024, ret);
--
--	clk_prepare_enable(micfil->mclk);
--
--	return ret;
--}
--
- static int fsl_micfil_startup(struct snd_pcm_substream *substream,
- 			      struct snd_soc_dai *dai)
- {
-@@ -237,13 +206,12 @@ static int fsl_micfil_trigger(struct snd_pcm_substream *substream, int cmd,
- static int fsl_set_clock_params(struct device *dev, unsigned int rate)
- {
- 	struct fsl_micfil *micfil = dev_get_drvdata(dev);
--	int clk_div;
-+	int clk_div = 8;
- 	int ret;
- 
--	ret = fsl_micfil_set_mclk_rate(micfil, rate);
--	if (ret < 0)
--		dev_err(dev, "failed to set mclk[%lu] to rate %u\n",
--			clk_get_rate(micfil->mclk), rate);
-+	ret = clk_set_rate(micfil->mclk, rate * clk_div * MICFIL_OSR_DEFAULT * 8);
-+	if (ret)
-+		return ret;
- 
- 	/* set CICOSR */
- 	ret = regmap_update_bits(micfil->regmap, REG_MICFIL_CTRL2,
-@@ -252,11 +220,6 @@ static int fsl_set_clock_params(struct device *dev, unsigned int rate)
- 	if (ret)
- 		return ret;
- 
--	/* set CLK_DIV */
--	clk_div = get_clk_div(micfil, rate);
--	if (clk_div < 0)
--		ret = -EINVAL;
--
- 	ret = regmap_update_bits(micfil->regmap, REG_MICFIL_CTRL2,
- 				 MICFIL_CTRL2_CLKDIV,
- 				 FIELD_PREP(MICFIL_CTRL2_CLKDIV, clk_div));
+@@ -597,7 +597,6 @@ static int fsl_micfil_probe(struct platform_device *pdev)
+ 	/* get IRQs */
+ 	for (i = 0; i < MICFIL_IRQ_LINES; i++) {
+ 		micfil->irq[i] = platform_get_irq(pdev, i);
+-		dev_err(&pdev->dev, "GET IRQ: %d\n", micfil->irq[i]);
+ 		if (micfil->irq[i] < 0)
+ 			return micfil->irq[i];
+ 	}
 -- 
 2.30.2
 
