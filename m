@@ -4,53 +4,52 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C54AAC433EF
-	for <alsa-devel@archiver.kernel.org>; Fri,  8 Apr 2022 11:35:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id CFB5AC433EF
+	for <alsa-devel@archiver.kernel.org>; Fri,  8 Apr 2022 11:36:09 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0FE621AA5;
-	Fri,  8 Apr 2022 13:35:02 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0FE621AA5
+	by alsa0.perex.cz (Postfix) with ESMTPS id 1A4D31ABC;
+	Fri,  8 Apr 2022 13:35:18 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1A4D31ABC
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1649417752;
-	bh=a7yzLwIQjibdtUh5N6GklfhrKmEjI6CIY3x/Op11pDs=;
+	s=default; t=1649417768;
+	bh=Uym6PRgiT5Tx11jV+YwCJQDjdHdaW6p0RUzCV+Q5yD8=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=EEPpdXAHm92bw8/uA4ILGXlE1qbC1XUllHMPGbn5aqC9T6VQc21hV6ji4GP9qJr6k
-	 P9ueJuK8WcBq0CK62jpdndEa0zm2VHjJA2b96e/sS6ao8s696XGjV+w3mxLk/Dpc0B
-	 ykinN8cIBZBOeEJ5Scqdm54XrfDKI6WNtrE6MX3c=
+	b=ugZUA8fQM2PqZTjZp1Erc6qW0SC5V3FOQ2BHSct0gP88ixs3XQNySZZNncMJACLYe
+	 vmMPk6BN1cowq+pOISWxxBOMQIs+qxvI1T2Zk3XZDnyAn/8mr53dogJFMwb37myJD7
+	 36c5aFKQPpBymZ0gHkJbE9OMZWaVYZ7xC5FNJV44=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 6F9D2F805BA;
-	Fri,  8 Apr 2022 13:30:17 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 02456F805BF;
+	Fri,  8 Apr 2022 13:30:18 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id E62B2F8055B; Fri,  8 Apr 2022 13:30:10 +0200 (CEST)
+ id 09EADF80566; Fri,  8 Apr 2022 13:30:12 +0200 (CEST)
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de
  [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 00F9FF80525
+ by alsa1.perex.cz (Postfix) with ESMTPS id 00BDBF8051D
  for <alsa-devel@alsa-project.org>; Fri,  8 Apr 2022 13:29:39 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 00F9FF80525
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 00BDBF8051D
 Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
  by metis.ext.pengutronix.de with esmtps
  (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92)
  (envelope-from <sha@pengutronix.de>)
- id 1ncmo6-0004tV-6g; Fri, 08 Apr 2022 13:29:38 +0200
+ id 1ncmo6-0004tY-I4; Fri, 08 Apr 2022 13:29:38 +0200
 Received: from [2a0a:edc0:0:1101:1d::28] (helo=dude02.red.stw.pengutronix.de)
  by drehscheibe.grey.stw.pengutronix.de with esmtp (Exim 4.94.2)
  (envelope-from <sha@pengutronix.de>)
- id 1ncmo6-001n6B-IT; Fri, 08 Apr 2022 13:29:37 +0200
+ id 1ncmo7-001n6J-2M; Fri, 08 Apr 2022 13:29:37 +0200
 Received: from sha by dude02.red.stw.pengutronix.de with local (Exim 4.94.2)
  (envelope-from <sha@pengutronix.de>)
- id 1ncmo3-005ZBa-5J; Fri, 08 Apr 2022 13:29:35 +0200
+ id 1ncmo3-005ZBR-3I; Fri, 08 Apr 2022 13:29:35 +0200
 From: Sascha Hauer <s.hauer@pengutronix.de>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH v5 19/21] ASoC: fsl_micfil: drop support for undocumented
- property
-Date: Fri,  8 Apr 2022 13:29:26 +0200
-Message-Id: <20220408112928.1326755-20-s.hauer@pengutronix.de>
+Subject: [PATCH v5 16/21] ASoC: fsl_micfil: rework quality setting
+Date: Fri,  8 Apr 2022 13:29:23 +0200
+Message-Id: <20220408112928.1326755-17-s.hauer@pengutronix.de>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20220408112928.1326755-1-s.hauer@pengutronix.de>
 References: <20220408112928.1326755-1-s.hauer@pengutronix.de>
@@ -80,50 +79,196 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The "fsl,shared-interrupt" property is undocumented and unnecessary.
-Just pass IRQF_SHARED unconditionally.
+For the quality setting the quality setting register values are directly
+exposed to the kcontrol and thus to userspace. This is unfortunate
+because the register settings contains invalid bit combinations marked
+as "N/A". For userspace it doesn't make much sense to be able to set
+these just to see that the driver responds with "Please make sure you
+select a valid quality." in the kernel log.
+
+Work around this by adding get/set functions for the quality setting.
 
 Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
-Acked-by: Shengjiu Wang <shengjiu.wang@gmail.com>
 ---
- sound/soc/fsl/fsl_micfil.c | 8 ++------
- 1 file changed, 2 insertions(+), 6 deletions(-)
+
+Notes:
+    Changes since v3:
+    - Leave default quality setting at 'medium'
+
+ sound/soc/fsl/fsl_micfil.c | 109 ++++++++++++++++++++++++++-----------
+ 1 file changed, 78 insertions(+), 31 deletions(-)
 
 diff --git a/sound/soc/fsl/fsl_micfil.c b/sound/soc/fsl/fsl_micfil.c
-index 89af6cfe24e69..a603033daed69 100644
+index 4d8dfb2c22290..aecc8a1bcfcd8 100644
 --- a/sound/soc/fsl/fsl_micfil.c
 +++ b/sound/soc/fsl/fsl_micfil.c
-@@ -554,7 +554,6 @@ static int fsl_micfil_probe(struct platform_device *pdev)
- 	struct resource *res;
- 	void __iomem *regs;
- 	int ret, i;
--	unsigned long irqflag = 0;
+@@ -31,6 +31,15 @@
  
- 	micfil = devm_kzalloc(&pdev->dev, sizeof(*micfil), GFP_KERNEL);
- 	if (!micfil)
-@@ -618,12 +617,9 @@ static int fsl_micfil_probe(struct platform_device *pdev)
- 			return micfil->irq[i];
- 	}
+ #define MICFIL_OSR_DEFAULT	16
  
--	if (of_property_read_bool(np, "fsl,shared-interrupt"))
--		irqflag = IRQF_SHARED;
--
- 	/* Digital Microphone interface interrupt */
- 	ret = devm_request_irq(&pdev->dev, micfil->irq[0],
--			       micfil_isr, irqflag,
-+			       micfil_isr, IRQF_SHARED,
- 			       micfil->name, micfil);
- 	if (ret) {
- 		dev_err(&pdev->dev, "failed to claim mic interface irq %u\n",
-@@ -633,7 +629,7 @@ static int fsl_micfil_probe(struct platform_device *pdev)
++enum quality {
++	QUALITY_HIGH,
++	QUALITY_MEDIUM,
++	QUALITY_LOW,
++	QUALITY_VLOW0,
++	QUALITY_VLOW1,
++	QUALITY_VLOW2,
++};
++
+ struct fsl_micfil {
+ 	struct platform_device *pdev;
+ 	struct regmap *regmap;
+@@ -42,7 +51,7 @@ struct fsl_micfil {
+ 	unsigned int dataline;
+ 	char name[32];
+ 	int irq[MICFIL_IRQ_LINES];
+-	int quality;	/*QUALITY 2-0 bits */
++	enum quality quality;
+ };
  
- 	/* Digital Microphone interface error interrupt */
- 	ret = devm_request_irq(&pdev->dev, micfil->irq[1],
--			       micfil_err_isr, irqflag,
-+			       micfil_err_isr, IRQF_SHARED,
- 			       micfil->name, micfil);
- 	if (ret) {
- 		dev_err(&pdev->dev, "failed to claim mic interface error irq %u\n",
+ struct fsl_micfil_soc_data {
+@@ -65,29 +74,73 @@ static const struct of_device_id fsl_micfil_dt_ids[] = {
+ };
+ MODULE_DEVICE_TABLE(of, fsl_micfil_dt_ids);
+ 
+-/* Table 5. Quality Modes
+- * Medium	0 0 0
+- * High		0 0 1
+- * Very Low 2	1 0 0
+- * Very Low 1	1 0 1
+- * Very Low 0	1 1 0
+- * Low		1 1 1
+- */
+ static const char * const micfil_quality_select_texts[] = {
+-	"Medium", "High",
+-	"N/A", "N/A",
+-	"VLow2", "VLow1",
+-	"VLow0", "Low",
++	[QUALITY_HIGH] = "High",
++	[QUALITY_MEDIUM] = "Medium",
++	[QUALITY_LOW] = "Low",
++	[QUALITY_VLOW0] = "VLow0",
++	[QUALITY_VLOW1] = "Vlow1",
++	[QUALITY_VLOW2] = "Vlow2",
+ };
+ 
+ static const struct soc_enum fsl_micfil_quality_enum =
+-	SOC_ENUM_SINGLE(REG_MICFIL_CTRL2,
+-			MICFIL_CTRL2_QSEL_SHIFT,
+-			ARRAY_SIZE(micfil_quality_select_texts),
+-			micfil_quality_select_texts);
++	SOC_ENUM_SINGLE_EXT(ARRAY_SIZE(micfil_quality_select_texts),
++			    micfil_quality_select_texts);
+ 
+ static DECLARE_TLV_DB_SCALE(gain_tlv, 0, 100, 0);
+ 
++static int micfil_set_quality(struct fsl_micfil *micfil)
++{
++	u32 qsel;
++
++	switch (micfil->quality) {
++	case QUALITY_HIGH:
++		qsel = MICFIL_QSEL_HIGH_QUALITY;
++		break;
++	case QUALITY_MEDIUM:
++		qsel = MICFIL_QSEL_MEDIUM_QUALITY;
++		break;
++	case QUALITY_LOW:
++		qsel = MICFIL_QSEL_LOW_QUALITY;
++		break;
++	case QUALITY_VLOW0:
++		qsel = MICFIL_QSEL_VLOW0_QUALITY;
++		break;
++	case QUALITY_VLOW1:
++		qsel = MICFIL_QSEL_VLOW1_QUALITY;
++		break;
++	case QUALITY_VLOW2:
++		qsel = MICFIL_QSEL_VLOW2_QUALITY;
++		break;
++	}
++
++	return regmap_update_bits(micfil->regmap, REG_MICFIL_CTRL2,
++				  MICFIL_CTRL2_QSEL,
++				  FIELD_PREP(MICFIL_CTRL2_QSEL, qsel));
++}
++
++static int micfil_quality_get(struct snd_kcontrol *kcontrol,
++			      struct snd_ctl_elem_value *ucontrol)
++{
++	struct snd_soc_component *cmpnt = snd_soc_kcontrol_component(kcontrol);
++	struct fsl_micfil *micfil = snd_soc_component_get_drvdata(cmpnt);
++
++	ucontrol->value.integer.value[0] = micfil->quality;
++
++	return 0;
++}
++
++static int micfil_quality_set(struct snd_kcontrol *kcontrol,
++			      struct snd_ctl_elem_value *ucontrol)
++{
++	struct snd_soc_component *cmpnt = snd_soc_kcontrol_component(kcontrol);
++	struct fsl_micfil *micfil = snd_soc_component_get_drvdata(cmpnt);
++
++	micfil->quality = ucontrol->value.integer.value[0];
++
++	return micfil_set_quality(micfil);
++}
++
+ static const struct snd_kcontrol_new fsl_micfil_snd_controls[] = {
+ 	SOC_SINGLE_SX_TLV("CH0 Volume", REG_MICFIL_OUT_CTRL,
+ 			  MICFIL_OUTGAIN_CHX_SHIFT(0), 0xF, 0x7, gain_tlv),
+@@ -107,7 +160,7 @@ static const struct snd_kcontrol_new fsl_micfil_snd_controls[] = {
+ 			  MICFIL_OUTGAIN_CHX_SHIFT(7), 0xF, 0x7, gain_tlv),
+ 	SOC_ENUM_EXT("MICFIL Quality Select",
+ 		     fsl_micfil_quality_enum,
+-		     snd_soc_get_enum_double, snd_soc_put_enum_double),
++		     micfil_quality_get, micfil_quality_set),
+ };
+ 
+ /* The SRES is a self-negated bit which provides the CPU with the
+@@ -207,22 +260,21 @@ static int fsl_set_clock_params(struct device *dev, unsigned int rate)
+ {
+ 	struct fsl_micfil *micfil = dev_get_drvdata(dev);
+ 	int clk_div = 8;
++	int osr = MICFIL_OSR_DEFAULT;
+ 	int ret;
+ 
+-	ret = clk_set_rate(micfil->mclk, rate * clk_div * MICFIL_OSR_DEFAULT * 8);
++	ret = clk_set_rate(micfil->mclk, rate * clk_div * osr * 8);
+ 	if (ret)
+ 		return ret;
+ 
+-	/* set CICOSR */
+-	ret = regmap_update_bits(micfil->regmap, REG_MICFIL_CTRL2,
+-				 MICFIL_CTRL2_CICOSR,
+-				 FIELD_PREP(MICFIL_CTRL2_CICOSR, 16 - MICFIL_OSR_DEFAULT));
++	ret = micfil_set_quality(micfil);
+ 	if (ret)
+ 		return ret;
+ 
+ 	ret = regmap_update_bits(micfil->regmap, REG_MICFIL_CTRL2,
+-				 MICFIL_CTRL2_CLKDIV,
+-				 FIELD_PREP(MICFIL_CTRL2_CLKDIV, clk_div));
++				 MICFIL_CTRL2_CLKDIV | MICFIL_CTRL2_CICOSR,
++				 FIELD_PREP(MICFIL_CTRL2_CLKDIV, clk_div) |
++				 FIELD_PREP(MICFIL_CTRL2_CICOSR, 16 - osr));
+ 
+ 	return ret;
+ }
+@@ -275,12 +327,7 @@ static int fsl_micfil_dai_probe(struct snd_soc_dai *cpu_dai)
+ 	struct fsl_micfil *micfil = dev_get_drvdata(cpu_dai->dev);
+ 	int ret;
+ 
+-	/* set qsel to medium */
+-	ret = regmap_update_bits(micfil->regmap, REG_MICFIL_CTRL2,
+-			MICFIL_CTRL2_QSEL,
+-			FIELD_PREP(MICFIL_CTRL2_QSEL, MICFIL_QSEL_MEDIUM_QUALITY));
+-	if (ret)
+-		return ret;
++	micfil->quality = QUALITY_MEDIUM;
+ 
+ 	/* set default gain to max_gain */
+ 	regmap_write(micfil->regmap, REG_MICFIL_OUT_CTRL, 0x77777777);
 -- 
 2.30.2
 
