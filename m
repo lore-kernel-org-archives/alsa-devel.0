@@ -4,70 +4,72 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E2750C433EF
-	for <alsa-devel@archiver.kernel.org>; Fri,  8 Apr 2022 06:08:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id F38B4C433EF
+	for <alsa-devel@archiver.kernel.org>; Fri,  8 Apr 2022 06:41:58 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id BBECA18B0;
-	Fri,  8 Apr 2022 08:07:32 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BBECA18B0
+	by alsa0.perex.cz (Postfix) with ESMTPS id 499FB17E5;
+	Fri,  8 Apr 2022 08:41:06 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 499FB17E5
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1649398102;
-	bh=P4AXBnUDjchz1+DRSGx6IpCty0njraSAngVxNdqDuVg=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1649400116;
+	bh=jErAkC91mXqXRNw55bI2zPATMO3AnLXcNNZvW18W1KA=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=bjQfip8l943Oc2Jc1uIU0VXisnAwDPJclyg6kfrTrJRnyr8XY15HWqWdrSLFuXXGP
-	 NElYJYqSXX1s6L/y+sBkmyxmPnCasCXL0kdUAN+ne95wA1rWimM4n8XVQstcRq9oRb
-	 8gY8MLGkbT3pfRRTGXLv+yb6vQ4yglGJQgFCq/Bs=
+	b=C1UTHtqK9kYSoTHKOTM8wCLfLp0XDINs6awqnkRLEYv6it55xoimaDENrh4GHzIpD
+	 VM8jYV5REYNCaJ+402pDZN9PZu1E12hcG051P1NCkDSQKckwJY9J6dJVHLlRHQouys
+	 3dn2SK9eI6KY4j0AJ1za+sccXNL8TcHULAavs9LA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 5F027F80527;
-	Fri,  8 Apr 2022 08:06:27 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id CC4D6F8012A;
+	Fri,  8 Apr 2022 08:41:05 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id A057BF80528; Fri,  8 Apr 2022 08:06:26 +0200 (CEST)
-Received: from mailgw02.mediatek.com (unknown [210.61.82.184])
+ id 44893F8014E; Fri,  8 Apr 2022 08:41:03 +0200 (CEST)
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de
+ [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 6E4FFF8014E
- for <alsa-devel@alsa-project.org>; Fri,  8 Apr 2022 08:06:07 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6E4FFF8014E
-X-UUID: bfbcc3fa30bd43429af1d8dd72a6b18a-20220408
-X-UUID: bfbcc3fa30bd43429af1d8dd72a6b18a-20220408
-Received: from mtkexhb01.mediatek.inc [(172.21.101.102)] by
- mailgw02.mediatek.com (envelope-from <jiaxin.yu@mediatek.com>)
- (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
- with ESMTP id 297700657; Fri, 08 Apr 2022 14:05:58 +0800
-Received: from mtkexhb02.mediatek.inc (172.21.101.103) by
- mtkmbs10n2.mediatek.inc (172.21.101.183) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id 15.2.792.3; 
- Fri, 8 Apr 2022 14:05:58 +0800
-Received: from mtkcas11.mediatek.inc (172.21.101.40) by mtkexhb02.mediatek.inc
- (172.21.101.103) with Microsoft SMTP Server (TLS) id 15.0.1497.2;
- Fri, 8 Apr 2022 14:05:58 +0800
-Received: from localhost.localdomain (10.17.3.154) by mtkcas11.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Fri, 8 Apr 2022 14:05:57 +0800
-From: Jiaxin Yu <jiaxin.yu@mediatek.com>
-To: <broonie@kernel.org>, <robh+dt@kernel.org>, <nfraprado@collabora.com>,
- <tzungbi@google.com>
-Subject: [v10 3/4] ASoC: mediatek: mt8192: refactor for I2S8/I2S9 DAI links of
- headset
-Date: Fri, 8 Apr 2022 14:05:51 +0800
-Message-ID: <20220408060552.26607-4-jiaxin.yu@mediatek.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20220408060552.26607-1-jiaxin.yu@mediatek.com>
-References: <20220408060552.26607-1-jiaxin.yu@mediatek.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 4C626F80054
+ for <alsa-devel@alsa-project.org>; Fri,  8 Apr 2022 08:40:52 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4C626F80054
+Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
+ by metis.ext.pengutronix.de with esmtps
+ (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92)
+ (envelope-from <sha@pengutronix.de>)
+ id 1nciId-00037y-2D; Fri, 08 Apr 2022 08:40:51 +0200
+Received: from sha by ptx.hi.pengutronix.de with local (Exim 4.92)
+ (envelope-from <sha@pengutronix.de>)
+ id 1nciIb-0004Cp-Hy; Fri, 08 Apr 2022 08:40:49 +0200
+Date: Fri, 8 Apr 2022 08:40:49 +0200
+From: Sascha Hauer <s.hauer@pengutronix.de>
+To: Shengjiu Wang <shengjiu.wang@gmail.com>
+Subject: Re: [PATCH v4 21/21] ASoC: fsl_micfil: Remove debug message
+Message-ID: <20220408064049.GM4012@pengutronix.de>
+References: <20220407084936.223075-1-s.hauer@pengutronix.de>
+ <20220407084936.223075-22-s.hauer@pengutronix.de>
+ <CAA+D8AMyvOpy9x0sAok6z=wRVhTScJ0xeFOHuCHK_fEWzxYwbA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=iso-8859-15
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-MTK: N
-Cc: devicetree@vger.kernel.org, linmq006@gmail.com, alsa-devel@alsa-project.org,
- Jiaxin Yu <jiaxin.yu@mediatek.com>, linux-kernel@vger.kernel.org,
- Project_Global_Chrome_Upstream_Group@mediatek.com,
- linux-mediatek@lists.infradead.org, trevor.wu@mediatek.com,
- Tzung-Bi Shih <tzungbi@kernel.org>, matthias.bgg@gmail.com, aaronyu@google.com,
- linux-arm-kernel@lists.infradead.org, angelogioacchino.delregno@collabora.com
+In-Reply-To: <CAA+D8AMyvOpy9x0sAok6z=wRVhTScJ0xeFOHuCHK_fEWzxYwbA@mail.gmail.com>
+X-Sent-From: Pengutronix Hildesheim
+X-URL: http://www.pengutronix.de/
+X-IRC: #ptxdist @freenode
+X-Accept-Language: de,en
+X-Accept-Content-Type: text/plain
+X-Uptime: 08:38:51 up 8 days, 19:08, 50 users, load average: 0.06, 0.11, 0.15
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
+X-SA-Exim-Mail-From: sha@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de);
+ SAEximRunCond expanded to false
+X-PTX-Original-Recipient: alsa-devel@alsa-project.org
+Cc: alsa-devel@alsa-project.org, Xiubo Li <Xiubo.Lee@gmail.com>,
+ Vinod Koul <vkoul@kernel.org>, NXP Linux Team <linux-imx@nxp.com>,
+ Sascha Hauer <kernel@pengutronix.de>, dmaengine@vger.kernel.org,
+ Fabio Estevam <festevam@gmail.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -83,103 +85,43 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-As part of the refactoring to allow the same machine driver to be used for
-the rt1015(p) and rt5682(s) codecs on the MT8192 platform, parse the
-rt5682(s) codec from the headset-codec property in the devicetree and wire
-it to the I2S8 and I2S9 backends.
+On Fri, Apr 08, 2022 at 01:21:41PM +0800, Shengjiu Wang wrote:
+>    On Thu, Apr 7, 2022 at 4:49 PM Sascha Hauer <[1]s.hauer@pengutronix.de>
+>    wrote:
+> 
+>      The micfil driver prints out the IRQ numbers for each interrupt at error
+>      level. This information is useful for debugging at best, remove it.
+> 
+>      Signed-off-by: Sascha Hauer <[2]s.hauer@pengutronix.de>
+>      ---
+> 
+>      Notes:
+>          Changes since v3:
+>          - new patch
+> 
+>       sound/soc/fsl/fsl_micfil.c | 1 -
+>       1 file changed, 1 deletion(-)
+> 
+>      diff --git a/sound/soc/fsl/fsl_micfil.c b/sound/soc/fsl/fsl_micfil.c
+>      index 8f0ab61fd1b07..be669523a4bf7 100644
+>      --- a/sound/soc/fsl/fsl_micfil.c
+>      +++ b/sound/soc/fsl/fsl_micfil.c
+>      @@ -597,7 +597,6 @@ static int fsl_micfil_probe(struct platform_device
+>      *pdev)
+>              /* get IRQs */
+>              for (i = 0; i < MICFIL_IRQ_LINES; i++) {
+>                      micfil->irq[i] = platform_get_irq(pdev, i);
+>      -               dev_err(&pdev->dev, "GET IRQ: %d\n", micfil->irq[i]);
+> 
+>    dev_err to dev_dbg, is it better?
 
-Signed-off-by: Jiaxin Yu <jiaxin.yu@mediatek.com>
-Reviewed-by: Tzung-Bi Shih <tzungbi@kernel.org>
-Reviewed-by: NÃ­colas F. R. A. Prado <nfraprado@collabora.com>
-Tested-by: NÃ­colas F. R. A. Prado <nfraprado@collabora.com>
----
- .../mt8192/mt8192-mt6359-rt1015-rt5682.c      | 34 ++++++++++++++-----
- 1 file changed, 26 insertions(+), 8 deletions(-)
+I don't think so. You can see the interrupts in /proc/interrupts and
+currently the interrupts are not even used in the driver.
 
-diff --git a/sound/soc/mediatek/mt8192/mt8192-mt6359-rt1015-rt5682.c b/sound/soc/mediatek/mt8192/mt8192-mt6359-rt1015-rt5682.c
-index 15711448d259..4a11f687d416 100644
---- a/sound/soc/mediatek/mt8192/mt8192-mt6359-rt1015-rt5682.c
-+++ b/sound/soc/mediatek/mt8192/mt8192-mt6359-rt1015-rt5682.c
-@@ -28,9 +28,6 @@
- #define RT1015_DEV0_NAME	"rt1015.1-0028"
- #define RT1015_DEV1_NAME	"rt1015.1-0029"
- 
--#define RT5682_CODEC_DAI	"rt5682-aif1"
--#define RT5682_DEV0_NAME	"rt5682.1-001a"
--
- struct mt8192_mt6359_priv {
- 	struct snd_soc_jack headset_jack;
- 	struct snd_soc_jack hdmi_jack;
-@@ -626,14 +623,12 @@ SND_SOC_DAILINK_DEFS(i2s7,
- 
- SND_SOC_DAILINK_DEFS(i2s8,
- 		     DAILINK_COMP_ARRAY(COMP_CPU("I2S8")),
--		     DAILINK_COMP_ARRAY(COMP_CODEC(RT5682_DEV0_NAME,
--						   RT5682_CODEC_DAI)),
-+		     DAILINK_COMP_ARRAY(COMP_EMPTY()),
- 		     DAILINK_COMP_ARRAY(COMP_EMPTY()));
- 
- SND_SOC_DAILINK_DEFS(i2s9,
- 		     DAILINK_COMP_ARRAY(COMP_CPU("I2S9")),
--		     DAILINK_COMP_ARRAY(COMP_CODEC(RT5682_DEV0_NAME,
--						   RT5682_CODEC_DAI)),
-+		     DAILINK_COMP_ARRAY(COMP_EMPTY()),
- 		     DAILINK_COMP_ARRAY(COMP_EMPTY()));
- 
- SND_SOC_DAILINK_DEFS(connsys_i2s,
-@@ -1114,7 +1109,7 @@ static int mt8192_mt6359_card_set_be_link(struct snd_soc_card *card,
- static int mt8192_mt6359_dev_probe(struct platform_device *pdev)
- {
- 	struct snd_soc_card *card;
--	struct device_node *platform_node, *hdmi_codec, *speaker_codec;
-+	struct device_node *platform_node, *hdmi_codec, *headset_codec, *speaker_codec;
- 	int ret, i;
- 	struct snd_soc_dai_link *dai_link;
- 	struct mt8192_mt6359_priv *priv;
-@@ -1142,6 +1137,13 @@ static int mt8192_mt6359_dev_probe(struct platform_device *pdev)
- 		goto err_speaker_codec;
- 	}
- 
-+	headset_codec = of_get_child_by_name(pdev->dev.of_node, "headset-codec");
-+	if (!headset_codec) {
-+		ret = -EINVAL;
-+		dev_err_probe(&pdev->dev, ret, "Property 'headset-codec' missing or invalid\n");
-+		goto err_headset_codec;
-+	}
-+
- 	for_each_card_prelinks(card, i, dai_link) {
- 		ret = mt8192_mt6359_card_set_be_link(card, dai_link, speaker_codec, "I2S3");
- 		if (ret) {
-@@ -1150,6 +1152,20 @@ static int mt8192_mt6359_dev_probe(struct platform_device *pdev)
- 			goto err_probe;
- 		}
- 
-+		ret = mt8192_mt6359_card_set_be_link(card, dai_link, headset_codec, "I2S8");
-+		if (ret) {
-+			dev_err_probe(&pdev->dev, ret, "%s set headset_codec fail\n",
-+				      dai_link->name);
-+			goto err_probe;
-+		}
-+
-+		ret = mt8192_mt6359_card_set_be_link(card, dai_link, headset_codec, "I2S9");
-+		if (ret) {
-+			dev_err_probe(&pdev->dev, ret, "%s set headset_codec fail\n",
-+				      dai_link->name);
-+			goto err_probe;
-+		}
-+
- 		if (hdmi_codec && strcmp(dai_link->name, "TDM") == 0) {
- 			dai_link->codecs->of_node = hdmi_codec;
- 			dai_link->ignore = 0;
-@@ -1180,6 +1196,8 @@ static int mt8192_mt6359_dev_probe(struct platform_device *pdev)
- 		dev_err_probe(&pdev->dev, ret, "%s snd_soc_register_card fail\n", __func__);
- 
- err_probe:
-+	of_node_put(headset_codec);
-+err_headset_codec:
- 	of_node_put(speaker_codec);
- err_speaker_codec:
- 	of_node_put(platform_node);
+Sascha
+
 -- 
-2.25.1
-
+Pengutronix e.K.                           |                             |
+Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
+31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
