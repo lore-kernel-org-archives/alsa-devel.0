@@ -4,86 +4,82 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A627EC433EF
-	for <alsa-devel@archiver.kernel.org>; Sat,  9 Apr 2022 09:18:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id CE941C433F5
+	for <alsa-devel@archiver.kernel.org>; Sat,  9 Apr 2022 09:18:37 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id CFB4C18B4;
-	Sat,  9 Apr 2022 11:17:28 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CFB4C18B4
+	by alsa0.perex.cz (Postfix) with ESMTPS id 22BA918B0;
+	Sat,  9 Apr 2022 11:17:46 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 22BA918B0
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1649495898;
-	bh=M9rgLme5j5izX0J1jeFFUpf0oWwBBFeL+rBkhF8Tz00=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=fSZFdJh/D87HLLLyVR1lceTb2hG8fN/6MhNMngxXKoDy9OEkttkgOe3EnyhXAD3Kn
-	 SElZ7y5CW9dJdAVffdsp6D3+6Jng3Ghi6IhVI82igXP8RB1C1sHJ43ZuIEnOk02CNL
-	 dwoGLT+ZWFo9/wvLrIucpNaK6QZgUFSJSkUHevoc=
+	s=default; t=1649495916;
+	bh=hooX7gIDSL00ikklc80G6i0mudnKZXmxybpESJ81kjI=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=NqlFZMqFJ99J7SDAMK+xI+NnMKpc6RhZqgo5VRA2AnBMU8NzwqXu4SA7CLG7JDdnZ
+	 cw5rBi9NW3YWXgWwsxOEYUpVJOtnyuSK7XNyS7QJRspzQlKsrmmqi7pKiTlOf1eQzC
+	 jN75J/YEWi/6wKXAjQ8P3p7DOl5lol4qTzmpbxLs=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 34905F805A1;
-	Sat,  9 Apr 2022 11:13:57 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id C72A1F80254;
+	Sat,  9 Apr 2022 11:14:29 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 1658EF80587; Sat,  9 Apr 2022 11:13:55 +0200 (CEST)
+ id E3552F80528; Sat,  9 Apr 2022 11:14:27 +0200 (CEST)
 Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
  [67.231.152.168])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 7E1C3F8051F
- for <alsa-devel@alsa-project.org>; Sat,  9 Apr 2022 11:13:26 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7E1C3F8051F
+ by alsa1.perex.cz (Postfix) with ESMTPS id 93F00F80425
+ for <alsa-devel@alsa-project.org>; Sat,  9 Apr 2022 11:13:21 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 93F00F80425
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com
- header.b="hjxC1nzy"
+ header.b="Kn5OSOgg"
 Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
- by mx0b-001ae601.pphosted.com (8.17.1.5/8.16.1.2) with ESMTP id 2399CL53024715;
- Sat, 9 Apr 2022 04:13:25 -0500
+ by mx0b-001ae601.pphosted.com (8.17.1.5/8.16.1.2) with ESMTP id 239919oq003576;
+ Sat, 9 Apr 2022 04:13:19 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
  h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding : content-type; s=PODMain02222019;
- bh=hBQinX7DMbnXea5pWZLMBcryrlxjmtsbaxuSMa/QdYc=;
- b=hjxC1nzy80KlLcJN/X0dm3V8e1DmMqFbDIvuFIDUX24hJPCTvOwzwK8nQrFTGzO4RQrY
- WsF755GrfWHR3fQuuxMWcC/TX0zJbO+cRBCq0brs6n2BGPOFZwXpE+8sh1bDeh8EcPQH
- GdGOgYl6WEgc8+vUtAk/b7bW8+P2iH3gaMAcJYQdv7Fs9wOJGD3ZYiwxZ2JUp/PY02e2
- T7WgU+cKA7Oun3PqiQjSQ4z4o1Byvvs6DWZivCvbMU3pW3zvRg8YLG2956z7GWMSWxjy
- P9NMmGlwVBO5sI9kV2y3vbnGCRpVFX6+qv6V784gAozGfGIhmF0SujqbvoMZnw/3Uu34 Ig== 
-Received: from ediex02.ad.cirrus.com ([84.19.233.68])
- by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3fb6py80ws-8
+ subject : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=PODMain02222019;
+ bh=2zrPeVnQaFOXlm/jv03XU7bKCTdOrm2Yr3ZzYzeZkb8=;
+ b=Kn5OSOggyPOAA8MMr8m4r6zDm1Eo+RQaecBEtpeVI9SsgxbIYS3328gmMv7jBYXTrnjM
+ Adhknkkoxht1sAPnUgmONzW3Sz33SxkM2sJ79NN8IBoh9mcERs6yJbSTJIG3scuL8PMk
+ O1ya1qYTcdhw3SgdyqQettQDDumvE7mKuBO0giFybtdXR9Nz47vCs1oudeJutNL0Y7ZT
+ ceeQj2XNjiHOQOTQlLCl42/ps7R+QGU4cyJNoXQqbTk23Gk8Xg2eSgfPGnxmDPJ61iFY
+ vlnlWPu9bSmnwj+9Sgl6Nda7DkDoYPVTjZBrnv9/p+pBgIXuYLYUb5yvHVnv2JnJvvpM Jg== 
+Received: from ediex01.ad.cirrus.com ([84.19.233.68])
+ by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3fb6py80wr-1
  (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
- Sat, 09 Apr 2022 04:13:24 -0500
-Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX02.ad.cirrus.com
- (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
+ Sat, 09 Apr 2022 04:13:19 -0500
+Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.24; Sat, 9 Apr
- 2022 10:13:22 +0100
+ 2022 10:13:17 +0100
 Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
  (198.61.84.80) with Microsoft SMTP Server id 15.1.2375.24 via
- Frontend Transport; Sat, 9 Apr 2022 10:13:22 +0100
+ Frontend Transport; Sat, 9 Apr 2022 10:13:17 +0100
 Received: from aryzen.ad.cirrus.com (unknown [198.61.64.156])
- by ediswmail.ad.cirrus.com (Postfix) with ESMTP id F26E0B16;
- Sat,  9 Apr 2022 09:13:21 +0000 (UTC)
+ by ediswmail.ad.cirrus.com (Postfix) with ESMTP id C57CE46C;
+ Sat,  9 Apr 2022 09:13:16 +0000 (UTC)
 From: Lucas Tanure <tanureal@opensource.cirrus.com>
 To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Rob
  Herring <robh+dt@kernel.org>, Krzysztof Kozlowski
  <krzysztof.kozlowski+dt@linaro.org>,
  Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
-Subject: [PATCH v6 15/16] ASoC: cs35l41: Document CS35l41 External Boost
-Date: Sat, 9 Apr 2022 10:13:14 +0100
-Message-ID: <20220409091315.1663410-16-tanureal@opensource.cirrus.com>
+Subject: [PATCH v6 00/16] Support external boost at CS35l41 ASoC driver
+Date: Sat, 9 Apr 2022 10:12:59 +0100
+Message-ID: <20220409091315.1663410-1-tanureal@opensource.cirrus.com>
 X-Mailer: git-send-email 2.35.1
-In-Reply-To: <20220409091315.1663410-1-tanureal@opensource.cirrus.com>
-References: <20220409091315.1663410-1-tanureal@opensource.cirrus.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: iC9gRbWi1UlkFxvVFS9aUBKexi6-AeVp
-X-Proofpoint-GUID: iC9gRbWi1UlkFxvVFS9aUBKexi6-AeVp
+X-Proofpoint-ORIG-GUID: B0mRQ6hi-hPJfcd3N6eq01RL185Zovp7
+X-Proofpoint-GUID: B0mRQ6hi-hPJfcd3N6eq01RL185Zovp7
 X-Proofpoint-Spam-Reason: safe
-Cc: David Rhodes <drhodes@opensource.cirrus.com>, devicetree@vger.kernel.org,
- alsa-devel@alsa-project.org, Charles Keepax <ckeepax@opensource.cirrus.com>,
- Lucas Tanure <tanureal@opensource.cirrus.com>, Rob Herring <robh@kernel.org>,
- patches@opensource.cirrus.com, linux-kernel@vger.kernel.org
+Cc: patches@opensource.cirrus.com, alsa-devel@alsa-project.org,
+ linux-kernel@vger.kernel.org, Lucas Tanure <tanureal@opensource.cirrus.com>,
+ devicetree@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -99,96 +95,75 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: David Rhodes <drhodes@opensource.cirrus.com>
+Move the support for CS35L41 external boost to its shared library
+for ASoC use.
+This move resulted in cs35l41_hda_reg_sequence being removed,
+and its steps were broken down into regmap writes or functions
+from the library. And hardware configuration struct was unified
+for its use in the shared lib.
+While at it, some minor bugs were found and fixed it.
 
-Document internal and external boost feature for ASoC CS35L41.
-For internal boost the following properties are required:
-- cirrus,boost-peak-milliamp
-- cirrus,boost-ind-nanohenry
-- cirrus,boost-cap-microfarad
+v6 changelog:
+ - Rebased on top of Linux Next with community patches for CS35L41
+ - Document patch acked by Charles Keepax
 
-For external boost, the GPIO1 must be configured as output,
-so the following properties are required:
-- cirrus,gpio1-src-select = <1>
-- cirrus,gpio1-output-enable
+v5 changelog:
+ - Fixed wrong indentation at Documentation patch
+ - Use of consistent prefix
 
-Signed-off-by: David Rhodes <drhodes@opensource.cirrus.com>
-Signed-off-by: Lucas Tanure <tanureal@opensource.cirrus.com>
-Acked-by: Charles Keepax <ckeepax@opensource.cirrus.com>
-Reviewed-by: Rob Herring <robh@kernel.org>
----
- .../bindings/sound/cirrus,cs35l41.yaml        | 44 +++++++++++++++++--
- 1 file changed, 41 insertions(+), 3 deletions(-)
+v4 changelog:
+ - Separated GPIO 1 and 2 function enums
 
-diff --git a/Documentation/devicetree/bindings/sound/cirrus,cs35l41.yaml b/Documentation/devicetree/bindings/sound/cirrus,cs35l41.yaml
-index 3235702ce402..51d815d0c696 100644
---- a/Documentation/devicetree/bindings/sound/cirrus,cs35l41.yaml
-+++ b/Documentation/devicetree/bindings/sound/cirrus,cs35l41.yaml
-@@ -75,6 +75,19 @@ properties:
-     maximum: 3
-     default: 2
- 
-+  cirrus,boost-type:
-+    description:
-+      Configures the type of Boost being used.
-+      Internal boost requires boost-peak-milliamp, boost-ind-nanohenry and
-+      boost-cap-microfarad.
-+      External Boost must have GPIO1 as GPIO output. GPIO1 will be set high to
-+      enable boost voltage.
-+      0 = Internal Boost
-+      1 = External Boost
-+    $ref: "/schemas/types.yaml#/definitions/uint32"
-+    minimum: 0
-+    maximum: 1
-+
-   cirrus,gpio1-polarity-invert:
-     description:
-       Boolean which specifies whether the GPIO1
-@@ -131,9 +144,32 @@ required:
-   - compatible
-   - reg
-   - "#sound-dai-cells"
--  - cirrus,boost-peak-milliamp
--  - cirrus,boost-ind-nanohenry
--  - cirrus,boost-cap-microfarad
-+
-+allOf:
-+  - if:
-+      properties:
-+        cirrus,boost-type:
-+          const: 0
-+    then:
-+      required:
-+        - cirrus,boost-peak-milliamp
-+        - cirrus,boost-ind-nanohenry
-+        - cirrus,boost-cap-microfarad
-+    else:
-+      if:
-+        properties:
-+          cirrus,boost-type:
-+            const: 1
-+      then:
-+        required:
-+          - cirrus,gpio1-output-enable
-+          - cirrus,gpio1-src-select
-+        properties:
-+          cirrus,boost-peak-milliamp: false
-+          cirrus,boost-ind-nanohenry: false
-+          cirrus,boost-cap-microfarad: false
-+          cirrus,gpio1-src-select:
-+            enum: [1]
- 
- additionalProperties: false
- 
-@@ -150,6 +186,8 @@ examples:
-           VA-supply = <&dummy_vreg>;
-           VP-supply = <&dummy_vreg>;
-           reset-gpios = <&gpio 110 0>;
-+
-+          cirrus,boost-type = <0>;
-           cirrus,boost-peak-milliamp = <4500>;
-           cirrus,boost-ind-nanohenry = <1000>;
-           cirrus,boost-cap-microfarad = <15>;
+v3 changelog:
+ - Remove patches already accepted
+ - Improved logic in documentation patch
+ - Documentation patch goes before its code
+ - Fixed missing Signed-off-by
+ - Fixed subject for HDA patches
+
+v2 changelog:
+ - Instead of removing the log, playback actions will log the last regmap access.
+ - Documentation patch with the correct subject line and fixed bug reported by Rob Herring on the
+ provided example.
+
+Previous versions:
+ v1: https://lkml.org/lkml/2022/3/3/759
+ v2: https://lkml.org/lkml/2022/3/4/743
+ v3: https://lkml.org/lkml/2022/3/8/975
+ v4: https://lkml.org/lkml/2022/3/17/267
+ v5: https://lkml.org/lkml/2022/3/22/696
+
+David Rhodes (1):
+  ASoC: cs35l41: Document CS35l41 External Boost
+
+Lucas Tanure (15):
+  ALSA: cs35l41: Unify hardware configuration
+  ALSA: cs35l41: Check hw_config before using it
+  ALSA: cs35l41: Move cs35l41_gpio_config to shared lib
+  ALSA: hda: cs35l41: Fix I2S params comments
+  ALSA: hda: cs35l41: Always configure the DAI
+  ALSA: hda: cs35l41: Add Boost type flag
+  ALSA: hda: cs35l41: Put the device into safe mode for external boost
+  ALSA: hda: cs35l41: Mute the device before shutdown
+  ALSA: cs35l41: Enable Internal Boost in shared lib
+  ALSA: hda: cs35l41: Move boost config to initialization code
+  ALSA: hda: cs35l41: Remove cs35l41_hda_reg_sequence struct
+  ALSA: hda: cs35l41: Reorganize log for playback actions
+  ALSA: hda: cs35l41: Handle all external boost setups the same way
+  ALSA: hda: cs35l41: Move external boost handling to lib for ASoC use
+  ASoC: cs35l41: Support external boost
+
+ .../bindings/sound/cirrus,cs35l41.yaml        |  44 ++-
+ include/sound/cs35l41.h                       |  59 +++-
+ sound/pci/hda/cs35l41_hda.c                   | 295 ++++++------------
+ sound/pci/hda/cs35l41_hda.h                   |  27 +-
+ sound/soc/codecs/cs35l41-i2c.c                |   4 +-
+ sound/soc/codecs/cs35l41-lib.c                | 190 ++++++++++-
+ sound/soc/codecs/cs35l41-spi.c                |   4 +-
+ sound/soc/codecs/cs35l41.c                    | 166 +++++-----
+ sound/soc/codecs/cs35l41.h                    |   5 +-
+ 9 files changed, 443 insertions(+), 351 deletions(-)
+
 -- 
 2.35.1
 
