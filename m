@@ -4,62 +4,86 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8AFA2C433FE
-	for <alsa-devel@archiver.kernel.org>; Sat,  9 Apr 2022 05:22:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3A537C433F5
+	for <alsa-devel@archiver.kernel.org>; Sat,  9 Apr 2022 09:14:24 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D75E917A3;
-	Sat,  9 Apr 2022 07:21:50 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D75E917A3
+	by alsa0.perex.cz (Postfix) with ESMTPS id 782D217B5;
+	Sat,  9 Apr 2022 11:13:32 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 782D217B5
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1649481760;
-	bh=94n3ChKsG6yMLO5A1Hqs4TmFHcSD7tKRKyuvhfQ6sOo=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=cN96IW936k4jiNDD4XS+R4vSx5pk4Vq57HiZ7pm6m5vuve8/BwpTmRC11YUjEV6ma
-	 Ca2UWoifxlqSXyK8fbgoto+4ygQfloe2A2Q1lpMTPzLlcJCV154uaPJ3fZ2tRBGSmH
-	 W9VvIj1phYGHFstZLQdG2Po3VKUUBfsfSVl6S+9I=
+	s=default; t=1649495662;
+	bh=XMdkJk+NHARkPhxIfRmnRqAS2njegJYKbyB0ajdMwZQ=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=ZBuqxxOQkPGpNGbvgDKwK29h0HwPYDHL39DNP1Slbrq0nVICljC1WFoe9/g/LyC/G
+	 Nr7AmWnEHvk7uwuQksyPwpi5we430oRPkWgdykwruSh4fbw74K9IU7CN0RqxjjJgj8
+	 rHM8Lueb8LnkCO62+vEoSOqRNuzC7HZw/3GjMfkE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 69065F8011C;
-	Sat,  9 Apr 2022 07:21:50 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id CECC9F8051B;
+	Sat,  9 Apr 2022 11:13:31 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id EF376F80253; Sat,  9 Apr 2022 07:21:47 +0200 (CEST)
-Received: from bombadil.infradead.org (bombadil.infradead.org
- [IPv6:2607:7c80:54:e::133])
+ id F29EAF80128; Sat,  9 Apr 2022 11:13:29 +0200 (CEST)
+Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
+ [67.231.152.168])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id A6499F8011C
- for <alsa-devel@alsa-project.org>; Sat,  9 Apr 2022 07:21:41 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A6499F8011C
+ by alsa1.perex.cz (Postfix) with ESMTPS id 43945F80128
+ for <alsa-devel@alsa-project.org>; Sat,  9 Apr 2022 11:13:23 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 43945F80128
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org
- header.b="iotYhzG6"
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
- d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
- MIME-Version:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
- Content-ID:Content-Description:In-Reply-To:References;
- bh=L0vleVIlE534qVbDB+2q/IG8Y66YuIRD+ClxjHh9uKs=; b=iotYhzG6/ErQMr3KAc//VLH0KZ
- 8bHeTQ62XL8KfU+yNWbCONpi67LMEiJzi5exzXfGhOqyOwuyT3jLET1oHI9nLvKXXvfcdNORHgkFo
- AMQjG9nNoTsEuDp6O7dn6Osq0L0DfPDAY1/mdKmzeqjMy1cpNdBiRGhTRgB6flOBqUEYXfq0ncaTW
- arnNwHeFc1TzOCD3+tN7LHGmdPORaoyIRcCyE5CVqIsjQq9om5G+IJymzBrn5XIS3MbtM7r0ky/h1
- bIF4HcVPYa64RWpThlipfH+DK5ukO0jXTcJGqdWu31eOi0t3Kbi8MUBh4WN1RXp1t8HAK8bSQUTIc
- 01aqiMSg==;
-Received: from [2601:1c0:6280:3f0::aa0b] (helo=bombadil.infradead.org)
- by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nd3XF-002FZ1-QK; Sat, 09 Apr 2022 05:21:25 +0000
-From: Randy Dunlap <rdunlap@infradead.org>
-To: linux-kernel@vger.kernel.org
-Subject: [PATCH] sound: soc/codecs: tlv320adc3xxx: needs GPIOLIB
-Date: Fri,  8 Apr 2022 22:21:20 -0700
-Message-Id: <20220409052120.3780-1-rdunlap@infradead.org>
-X-Mailer: git-send-email 2.34.1
+ dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com
+ header.b="dbY5TQMH"
+Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
+ by mx0b-001ae601.pphosted.com (8.17.1.5/8.16.1.2) with ESMTP id 2399CL4w024715;
+ Sat, 9 Apr 2022 04:13:21 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
+ h=from : to : cc :
+ subject : date : message-id : in-reply-to : references : mime-version :
+ content-transfer-encoding : content-type; s=PODMain02222019;
+ bh=tHvVnOC+9G3Hu8w41fGXZGEdPqMVugcJ/G91GRLrkXY=;
+ b=dbY5TQMHf5M8ZhzwgVJ4RsHHSCWtuIHi1I59fdzI34wG6mxOI/BZRlAG6wq3xI4W1Q/Y
+ 5U18kGEYMucrgYtKK/81m1zg1VQ5t/r4kHYn84O4/sFrg3WCAWH3B90/Dvc6SsKvsyjT
+ WAoLPZ4hYY8dGlDEi/Izn1gOapTOL4jsj4gr5VpszoCN2B0xtRlusgrzquTyNinjEXsA
+ zD87hcXRmxzmFD2ywVOUsMlFqZlARGWVdZrC2//FIOpu38pVwKHJrUdoitbSNu9gWi44
+ JqLHJTi3hGhZqIwPwOKK26tW3TbXRerd3VAFOo+vNihlS9BfXaCaDfXRWIXJhqcwcOwM SA== 
+Received: from ediex02.ad.cirrus.com ([84.19.233.68])
+ by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3fb6py80ws-3
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+ Sat, 09 Apr 2022 04:13:21 -0500
+Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX02.ad.cirrus.com
+ (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.24; Sat, 9 Apr
+ 2022 10:13:19 +0100
+Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server id 15.1.2375.24 via
+ Frontend Transport; Sat, 9 Apr 2022 10:13:19 +0100
+Received: from aryzen.ad.cirrus.com (unknown [198.61.64.156])
+ by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 4C6BCB16;
+ Sat,  9 Apr 2022 09:13:19 +0000 (UTC)
+From: Lucas Tanure <tanureal@opensource.cirrus.com>
+To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Rob
+ Herring <robh+dt@kernel.org>, Krzysztof Kozlowski
+ <krzysztof.kozlowski+dt@linaro.org>,
+ Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
+Subject: [PATCH v6 07/16] ALSA: hda: cs35l41: Put the device into safe mode
+ for external boost
+Date: Sat, 9 Apr 2022 10:13:06 +0100
+Message-ID: <20220409091315.1663410-8-tanureal@opensource.cirrus.com>
+X-Mailer: git-send-email 2.35.1
+In-Reply-To: <20220409091315.1663410-1-tanureal@opensource.cirrus.com>
+References: <20220409091315.1663410-1-tanureal@opensource.cirrus.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: alsa-devel@alsa-project.org, kernel test robot <lkp@intel.com>,
- Randy Dunlap <rdunlap@infradead.org>, Liam Girdwood <lgirdwood@gmail.com>,
- Ricard Wanderlof <ricardw@axis.com>, Mark Brown <broonie@kernel.org>,
- Takashi Iwai <tiwai@suse.com>
+Content-Type: text/plain
+X-Proofpoint-ORIG-GUID: oUPaFHuiI6hYW5z1IDi4CeeQowgdK8Qj
+X-Proofpoint-GUID: oUPaFHuiI6hYW5z1IDi4CeeQowgdK8Qj
+X-Proofpoint-Spam-Reason: safe
+Cc: patches@opensource.cirrus.com, alsa-devel@alsa-project.org,
+ linux-kernel@vger.kernel.org, Lucas Tanure <tanureal@opensource.cirrus.com>,
+ devicetree@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -75,37 +99,48 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Fix build errors when CONFIG_GPIOLIB is not enabled:
+To facilitate the configuration of external boost devices, put all
+devices, with or without VSPK switch, into safe mode from the start.
+That allows the following parts of the driver to handle all external
+boost devices in the same way.
 
-../sound/soc/codecs/tlv320adc3xxx.c: In function 'adc3xxx_i2c_probe':
-../sound/soc/codecs/tlv320adc3xxx.c:1352:28: error: implicit declaration of function 'devm_gpiod_get'; did you mean 'devm_gpio_free'? [-Werror=implicit-function-declaration]
- 1352 |         adc3xxx->rst_pin = devm_gpiod_get(dev, "reset", GPIOD_OUT_LOW);
-../sound/soc/codecs/tlv320adc3xxx.c:1352:57: error: 'GPIOD_OUT_LOW' undeclared (first use in this function); did you mean 'GPIOF_INIT_LOW'?
- 1352 |         adc3xxx->rst_pin = devm_gpiod_get(dev, "reset", GPIOD_OUT_LOW);
-  CC      lib/dynamic_debug.o
-../sound/soc/codecs/tlv320adc3xxx.c:1400:9: error: implicit declaration of function 'gpiod_set_value_cansleep'; did you mean 'gpio_set_value_cansleep'? [-Werror=implicit-function-declaration]
- 1400 |         gpiod_set_value_cansleep(adc3xxx->rst_pin, 1);
-
-Fixes: e9a3b57efd28 ("ASoC: codec: tlv320adc3xxx: New codec driver")
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Reported-by: kernel test robot <lkp@intel.com>
-Cc: Mark Brown <broonie@kernel.org>
-Cc: Liam Girdwood <lgirdwood@gmail.com>
-Cc: Ricard Wanderlof <ricardw@axis.com>
-Cc: Jaroslav Kysela <perex@perex.cz>
-Cc: Takashi Iwai <tiwai@suse.com>
-Cc: alsa-devel@alsa-project.org
+Signed-off-by: Lucas Tanure <tanureal@opensource.cirrus.com>
 ---
- sound/soc/codecs/Kconfig |    1 +
- 1 file changed, 1 insertion(+)
+ sound/pci/hda/cs35l41_hda.c | 13 ++++++++-----
+ 1 file changed, 8 insertions(+), 5 deletions(-)
 
---- a/sound/soc/codecs/Kconfig
-+++ b/sound/soc/codecs/Kconfig
-@@ -1567,6 +1567,7 @@ config SND_SOC_TFA989X
- config SND_SOC_TLV320ADC3XXX
- 	tristate "Texas Instruments TLV320ADC3001/3101 audio ADC"
- 	depends on I2C
-+	depends on GPIOLIB
- 	help
- 	 Enable support for Texas Instruments TLV320ADC3001 and TLV320ADC3101
- 	 ADCs.
+diff --git a/sound/pci/hda/cs35l41_hda.c b/sound/pci/hda/cs35l41_hda.c
+index 0dac622805c4..46e920ec3000 100644
+--- a/sound/pci/hda/cs35l41_hda.c
++++ b/sound/pci/hda/cs35l41_hda.c
+@@ -109,8 +109,6 @@ static const struct reg_sequence cs35l41_reset_to_safe[] = {
+ };
+ 
+ static const struct cs35l41_hda_reg_sequence cs35l41_hda_reg_seq_no_bst = {
+-	.probe		= cs35l41_reset_to_safe,
+-	.num_probe	= ARRAY_SIZE(cs35l41_reset_to_safe),
+ 	.prepare	= cs35l41_safe_to_active,
+ 	.num_prepare	= ARRAY_SIZE(cs35l41_safe_to_active),
+ 	.cleanup	= cs35l41_active_to_safe,
+@@ -224,10 +222,15 @@ static int cs35l41_hda_apply_properties(struct cs35l41_hda *cs35l41)
+ 			return ret;
+ 		break;
+ 	case CS35L41_EXT_BOOST:
+-		cs35l41->reg_seq = &cs35l41_hda_reg_seq_ext_bst;
+-		break;
+ 	case CS35L41_EXT_BOOST_NO_VSPK_SWITCH:
+-		cs35l41->reg_seq = &cs35l41_hda_reg_seq_no_bst;
++		if (hw_cfg->bst_type == CS35L41_EXT_BOOST)
++			cs35l41->reg_seq = &cs35l41_hda_reg_seq_ext_bst;
++		else
++			cs35l41->reg_seq = &cs35l41_hda_reg_seq_no_bst;
++		ret = regmap_multi_reg_write(cs35l41->regmap, cs35l41_reset_to_safe,
++					     ARRAY_SIZE(cs35l41_reset_to_safe));
++		if (ret)
++			return ret;
+ 		break;
+ 	default:
+ 		dev_err(cs35l41->dev, "Boost type %d not supported\n", hw_cfg->bst_type);
+-- 
+2.35.1
+
