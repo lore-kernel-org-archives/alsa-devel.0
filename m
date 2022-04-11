@@ -4,74 +4,76 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1DBB6C433F5
-	for <alsa-devel@archiver.kernel.org>; Mon, 11 Apr 2022 20:19:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E4F70C433F5
+	for <alsa-devel@archiver.kernel.org>; Mon, 11 Apr 2022 20:20:10 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 1ACF71730;
-	Mon, 11 Apr 2022 22:19:02 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1ACF71730
+	by alsa0.perex.cz (Postfix) with ESMTPS id B4DF9173B;
+	Mon, 11 Apr 2022 22:19:18 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B4DF9173B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1649708392;
-	bh=CUq86NvWtqGMf6yYJGEOHLJSHq8rBRBRjshJop61m2o=;
+	s=default; t=1649708408;
+	bh=q7s9ESShOKhjo63kEE17W++rmi2d2CYKe+cnM5oWdpI=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=DTs2wN6WrMGMJ2Fc+yXgEJStRMW2mIEm95ylDOqLQo5yeCVxpJql94mbBoW1E5Uqd
-	 UbgdhemUuV1g79+fejSBkrfs9Sofx98f11RZz7frclZq0CpA33aatHRJnLfD2VuWPz
-	 bGhpz0H1QVajDmR9QEbzNxMVgxDrJsP1NT4SkLZo=
+	b=VhGBVhtS4O7g/QOXuIoOXm1u2kMe5s38LxzoyT8dHmrYvDvqGiodGgeJ128c88ins
+	 pfYXQVv9Fc+f+gWTZvPTSz4QZJDIRw9+VgBL6eXsxuGbYXSD4YXQfLhW5q5+I7rM33
+	 B5yQFuSC73kGPP7DGRwUvnPJOAUcA6x2gAEoR5Rw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id ABA80F804C1;
-	Mon, 11 Apr 2022 22:18:11 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 8983CF80539;
+	Mon, 11 Apr 2022 22:18:12 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id C1888F80539; Mon, 11 Apr 2022 22:18:09 +0200 (CEST)
+ id 153DEF80538; Mon, 11 Apr 2022 22:18:10 +0200 (CEST)
 Received: from mga18.intel.com (mga18.intel.com [134.134.136.126])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id E8627F800E8
- for <alsa-devel@alsa-project.org>; Mon, 11 Apr 2022 22:17:57 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E8627F800E8
+ by alsa1.perex.cz (Postfix) with ESMTPS id 37F0FF804E6
+ for <alsa-devel@alsa-project.org>; Mon, 11 Apr 2022 22:17:59 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 37F0FF804E6
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="RSzQfecP"
+ header.b="kKxLhyda"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1649708279; x=1681244279;
+ t=1649708281; x=1681244281;
  h=from:to:cc:subject:date:message-id:in-reply-to:
  references:mime-version:content-transfer-encoding;
- bh=CUq86NvWtqGMf6yYJGEOHLJSHq8rBRBRjshJop61m2o=;
- b=RSzQfecP4DQuE5AyKdwTeM+Xi0ZfSlSJURSiRwxUiPAyjV1m2bjJlTvm
- 56wc98zCK94UkPMhd+Gv2CIF7fq4Q3pWKrsJ7oArOM+ZHrs4hiCOlwaew
- tgD52dThVQv63IS/6KWzTwWOGnICZMN4LHwmPVUNfvpZ0ywBiWmuiWRdL
- ZhItH42j/3WiMFaotEip8GioxnVlUaQRQ7fKbxcL4RP4dTXP3RubDPePk
- TLC71jCL7D4laEkyZwVnhXtcI+ufdLlaMRtyFJ14FDS3Zi4ueHSOtS+9y
- S0AKU2G1OygoTV03w8+Lllw4r/rpbpl9rUN0beedzbdBvdL30MZwRcCaj Q==;
-X-IronPort-AV: E=McAfee;i="6400,9594,10314"; a="244090827"
-X-IronPort-AV: E=Sophos;i="5.90,252,1643702400"; d="scan'208";a="244090827"
+ bh=q7s9ESShOKhjo63kEE17W++rmi2d2CYKe+cnM5oWdpI=;
+ b=kKxLhydaFTLu4qpYXgWt5c3syRVzaLMtFEja63/BzrMXOWPFvRf1FgYC
+ Mb03xXt2vN0xTZ6KMLwrtFSz3ufJPFcvvqYAd4kan10M7PzYaic8svl+Q
+ P5KZMhY9QNNX3dyu9F2+2vPiKN+6GRybzc1REJQawnefjDQtOsCqsSq0U
+ IeEl0Z/IJwERgmSx+QkhuEyIqD475FQhSFIM9OUg+b8uy+x9nPRROOKLO
+ C/j5XXr0M/XbdgFbZDAEz0lgISJ53mxUJnE4w22l/8GnWRgHfe68OUPBr
+ 9llLkZiF7ePBDnyZK55ljY1Bni+3QjQAzb8cU7E9dStCAU0Dv5DQt/MTY g==;
+X-IronPort-AV: E=McAfee;i="6400,9594,10314"; a="244090835"
+X-IronPort-AV: E=Sophos;i="5.90,252,1643702400"; d="scan'208";a="244090835"
 Received: from orsmga006.jf.intel.com ([10.7.209.51])
  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 11 Apr 2022 13:17:51 -0700
-X-IronPort-AV: E=Sophos;i="5.90,252,1643702400"; d="scan'208";a="526135656"
+ 11 Apr 2022 13:17:53 -0700
+X-IronPort-AV: E=Sophos;i="5.90,252,1643702400"; d="scan'208";a="526135666"
 Received: from prposam-mobl.amr.corp.intel.com (HELO
  pbossart-mobl3.amr.corp.intel.com) ([10.212.162.151])
  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 11 Apr 2022 13:17:51 -0700
+ 11 Apr 2022 13:17:53 -0700
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH 03/16] ASoC: SOF: add default IPC capability and file paths
-Date: Mon, 11 Apr 2022 15:17:14 -0500
-Message-Id: <20220411201727.77971-4-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH 06/16] ASoC: SOF: sof-pci-dev: add parameter to override
+ topology filename
+Date: Mon, 11 Apr 2022 15:17:17 -0500
+Message-Id: <20220411201727.77971-7-pierre-louis.bossart@linux.intel.com>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20220411201727.77971-1-pierre-louis.bossart@linux.intel.com>
 References: <20220411201727.77971-1-pierre-louis.bossart@linux.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-Cc: tiwai@suse.de, Bard Liao <yung-chuan.liao@linux.intel.com>,
+Cc: tiwai@suse.de,
+ =?UTF-8?q?P=C3=A9ter=20Ujfalusi?= <peter.ujfalusi@linux.intel.com>,
  Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- Rander Wang <rander.wang@intel.com>, broonie@kernel.org,
- =?UTF-8?q?P=C3=A9ter=20Ujfalusi?= <peter.ujfalusi@linux.intel.com>
+ Ranjani Sridharan <ranjani.sridharan@linux.intel.com>, broonie@kernel.org,
+ Paul Olaru <paul.olaru@oss.nxp.com>, Daniel Baluta <daniel.baluta@nxp.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -87,376 +89,79 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-This patch adds a default IPC type for each platform, along with file
-paths to be used for each IPC type. To make reviews simpler, we only
-modify platform descriptors in this table, the information will be
-used in the next patch.
+The existing 'tplg_path' module parameter can be used to load
+alternate firmware files, be it for development or to handle
+OEM-specific or board-specific releases. However the topology filename
+is either hard-coded in machine descriptors or modified by specific
+DMI-quirks.
 
-The Intel IPCv4 is only supported on Intel platforms after APL, and
-not by default. In follow-up patches, support for SKL and KBL will be
-added, and in those two cases the IPCv4 will be the default (and only
-supported mode).
+For additional flexibility, this patch adds the 'tplg_filename' module
+parameter to override topology names.
+
+To avoid any confusion between DMI- and parameter-override, a variable
+rename is added.
 
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Reviewed-by: Bard Liao <yung-chuan.liao@linux.intel.com>
-Reviewed-by: Rander Wang <rander.wang@intel.com>
+Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+Reviewed-by: Daniel Baluta <daniel.baluta@nxp.com>
+Reviewed-by: Paul Olaru <paul.olaru@oss.nxp.com>
 Reviewed-by: Péter Ujfalusi <peter.ujfalusi@linux.intel.com>
 ---
- include/sound/sof.h                    |  4 ++++
- sound/soc/sof/amd/pci-rn.c             |  2 ++
- sound/soc/sof/imx/imx8.c               |  4 ++++
- sound/soc/sof/imx/imx8m.c              |  2 ++
- sound/soc/sof/intel/bdw.c              |  2 ++
- sound/soc/sof/intel/byt.c              |  6 ++++++
- sound/soc/sof/intel/pci-apl.c          |  8 ++++++++
- sound/soc/sof/intel/pci-cnl.c          | 12 ++++++++++++
- sound/soc/sof/intel/pci-icl.c          |  8 ++++++++
- sound/soc/sof/intel/pci-tgl.c          | 20 ++++++++++++++++++++
- sound/soc/sof/intel/pci-tng.c          |  2 ++
- sound/soc/sof/mediatek/mt8195/mt8195.c |  2 ++
- 12 files changed, 72 insertions(+)
+ sound/soc/sof/sof-pci-dev.c | 25 ++++++++++++++++++++-----
+ 1 file changed, 20 insertions(+), 5 deletions(-)
 
-diff --git a/include/sound/sof.h b/include/sound/sof.h
-index 69066fe064da..a65af85a4074 100644
---- a/include/sound/sof.h
-+++ b/include/sound/sof.h
-@@ -124,6 +124,10 @@ struct sof_dev_desc {
- 	/* defaults for no codec mode */
- 	const char *nocodec_tplg_filename;
+diff --git a/sound/soc/sof/sof-pci-dev.c b/sound/soc/sof/sof-pci-dev.c
+index 15fffcdf6907..4d1b7e4ccd3d 100644
+--- a/sound/soc/sof/sof-pci-dev.c
++++ b/sound/soc/sof/sof-pci-dev.c
+@@ -31,17 +31,21 @@ static char *tplg_path;
+ module_param(tplg_path, charp, 0444);
+ MODULE_PARM_DESC(tplg_path, "alternate path for SOF topology.");
  
-+	/* information on supported IPCs */
-+	unsigned int ipc_supported_mask;
-+	enum sof_ipc_type ipc_default;
++static char *tplg_filename;
++module_param(tplg_filename, charp, 0444);
++MODULE_PARM_DESC(tplg_filename, "alternate filename for SOF topology.");
 +
- 	/* defaults paths for firmware and topology files */
- 	const char *default_fw_path[SOF_IPC_TYPE_COUNT];
- 	const char *default_tplg_path[SOF_IPC_TYPE_COUNT];
-diff --git a/sound/soc/sof/amd/pci-rn.c b/sound/soc/sof/amd/pci-rn.c
-index e2dfe606d3e8..34b153f5cbd8 100644
---- a/sound/soc/sof/amd/pci-rn.c
-+++ b/sound/soc/sof/amd/pci-rn.c
-@@ -54,6 +54,8 @@ static const struct sof_dev_desc renoir_desc = {
- 	.resindex_imr_base	= -1,
- 	.irqindex_host_ipc	= -1,
- 	.chip_info		= &renoir_chip_info,
-+	.ipc_supported_mask	= BIT(SOF_IPC),
-+	.ipc_default		= SOF_IPC,
- 	.default_fw_path = {
- 		[SOF_IPC] = "amd/sof",
- 	},
-diff --git a/sound/soc/sof/imx/imx8.c b/sound/soc/sof/imx/imx8.c
-index d2c9e6d45b1b..cdbbd20c95db 100644
---- a/sound/soc/sof/imx/imx8.c
-+++ b/sound/soc/sof/imx/imx8.c
-@@ -613,6 +613,8 @@ static const struct snd_sof_dsp_ops sof_imx8x_ops = {
- };
+ static int sof_pci_debug;
+ module_param_named(sof_pci_debug, sof_pci_debug, int, 0444);
+ MODULE_PARM_DESC(sof_pci_debug, "SOF PCI debug options (0x0 all off)");
  
- static struct sof_dev_desc sof_of_imx8qxp_desc = {
-+	.ipc_supported_mask	= BIT(SOF_IPC),
-+	.ipc_default		= SOF_IPC,
- 	.default_fw_path = {
- 		[SOF_IPC] = "imx/sof",
- 	},
-@@ -625,6 +627,8 @@ static struct sof_dev_desc sof_of_imx8qxp_desc = {
- };
+-static const char *sof_override_tplg_name;
++static const char *sof_dmi_override_tplg_name;
  
- static struct sof_dev_desc sof_of_imx8qm_desc = {
-+	.ipc_supported_mask	= BIT(SOF_IPC),
-+	.ipc_default		= SOF_IPC,
- 	.default_fw_path = {
- 		[SOF_IPC] = "imx/sof",
- 	},
-diff --git a/sound/soc/sof/imx/imx8m.c b/sound/soc/sof/imx/imx8m.c
-index 7aa695aa9837..cbee484e6a15 100644
---- a/sound/soc/sof/imx/imx8m.c
-+++ b/sound/soc/sof/imx/imx8m.c
-@@ -473,6 +473,8 @@ static const struct snd_sof_dsp_ops sof_imx8m_ops = {
- };
+ #define SOF_PCI_DISABLE_PM_RUNTIME BIT(0)
  
- static struct sof_dev_desc sof_of_imx8mp_desc = {
-+	.ipc_supported_mask	= BIT(SOF_IPC),
-+	.ipc_default		= SOF_IPC,
- 	.default_fw_path = {
- 		[SOF_IPC] = "imx/sof",
- 	},
-diff --git a/sound/soc/sof/intel/bdw.c b/sound/soc/sof/intel/bdw.c
-index bc06f187cb2e..a0f22b13e6a5 100644
---- a/sound/soc/sof/intel/bdw.c
-+++ b/sound/soc/sof/intel/bdw.c
-@@ -646,6 +646,8 @@ static const struct sof_dev_desc sof_acpi_broadwell_desc = {
- 	.resindex_imr_base = -1,
- 	.irqindex_host_ipc = 0,
- 	.chip_info = &bdw_chip_info,
-+	.ipc_supported_mask = BIT(SOF_IPC),
-+	.ipc_default = SOF_IPC,
- 	.default_fw_path = {
- 		[SOF_IPC] = "intel/sof",
- 	},
-diff --git a/sound/soc/sof/intel/byt.c b/sound/soc/sof/intel/byt.c
-index 52815094fcf6..427b5c50bb98 100644
---- a/sound/soc/sof/intel/byt.c
-+++ b/sound/soc/sof/intel/byt.c
-@@ -388,6 +388,8 @@ static const struct sof_dev_desc sof_acpi_baytrailcr_desc = {
- 	.resindex_imr_base = 2,
- 	.irqindex_host_ipc = 0,
- 	.chip_info = &byt_chip_info,
-+	.ipc_supported_mask = BIT(SOF_IPC),
-+	.ipc_default = SOF_IPC,
- 	.default_fw_path = {
- 		[SOF_IPC] = "intel/sof",
- 	},
-@@ -406,6 +408,8 @@ static const struct sof_dev_desc sof_acpi_baytrail_desc = {
- 	.resindex_imr_base = 2,
- 	.irqindex_host_ipc = 5,
- 	.chip_info = &byt_chip_info,
-+	.ipc_supported_mask = BIT(SOF_IPC),
-+	.ipc_default = SOF_IPC,
- 	.default_fw_path = {
- 		[SOF_IPC] = "intel/sof",
- 	},
-@@ -424,6 +428,8 @@ static const struct sof_dev_desc sof_acpi_cherrytrail_desc = {
- 	.resindex_imr_base = 2,
- 	.irqindex_host_ipc = 5,
- 	.chip_info = &cht_chip_info,
-+	.ipc_supported_mask = BIT(SOF_IPC),
-+	.ipc_default = SOF_IPC,
- 	.default_fw_path = {
- 		[SOF_IPC] = "intel/sof",
- 	},
-diff --git a/sound/soc/sof/intel/pci-apl.c b/sound/soc/sof/intel/pci-apl.c
-index 802480a7a4e2..c173f2093b8d 100644
---- a/sound/soc/sof/intel/pci-apl.c
-+++ b/sound/soc/sof/intel/pci-apl.c
-@@ -27,11 +27,15 @@ static const struct sof_dev_desc bxt_desc = {
- 	.resindex_imr_base	= -1,
- 	.irqindex_host_ipc	= -1,
- 	.chip_info = &apl_chip_info,
-+	.ipc_supported_mask	= BIT(SOF_IPC) | BIT(SOF_INTEL_IPC4),
-+	.ipc_default		= SOF_IPC,
- 	.default_fw_path = {
- 		[SOF_IPC] = "intel/sof",
-+		[SOF_INTEL_IPC4] = "intel/avs/apl",
- 	},
- 	.default_tplg_path = {
- 		[SOF_IPC] = "intel/sof-tplg",
-+		[SOF_INTEL_IPC4] = "intel/avs-tplg",
- 	},
- 	.default_fw_filename = "sof-apl.ri",
- 	.nocodec_tplg_filename = "sof-apl-nocodec.tplg",
-@@ -46,11 +50,15 @@ static const struct sof_dev_desc glk_desc = {
- 	.resindex_imr_base	= -1,
- 	.irqindex_host_ipc	= -1,
- 	.chip_info = &apl_chip_info,
-+	.ipc_supported_mask	= BIT(SOF_IPC) | BIT(SOF_INTEL_IPC4),
-+	.ipc_default		= SOF_IPC,
- 	.default_fw_path = {
- 		[SOF_IPC] = "intel/sof",
-+		[SOF_INTEL_IPC4] = "intel/avs/glk",
- 	},
- 	.default_tplg_path = {
- 		[SOF_IPC] = "intel/sof-tplg",
-+		[SOF_INTEL_IPC4] = "intel/avs-tplg",
- 	},
- 	.default_fw_filename = "sof-glk.ri",
- 	.nocodec_tplg_filename = "sof-glk-nocodec.tplg",
-diff --git a/sound/soc/sof/intel/pci-cnl.c b/sound/soc/sof/intel/pci-cnl.c
-index b8206a93d1f9..b52193929c99 100644
---- a/sound/soc/sof/intel/pci-cnl.c
-+++ b/sound/soc/sof/intel/pci-cnl.c
-@@ -28,11 +28,15 @@ static const struct sof_dev_desc cnl_desc = {
- 	.resindex_imr_base	= -1,
- 	.irqindex_host_ipc	= -1,
- 	.chip_info = &cnl_chip_info,
-+	.ipc_supported_mask	= BIT(SOF_IPC) | BIT(SOF_INTEL_IPC4),
-+	.ipc_default		= SOF_IPC,
- 	.default_fw_path = {
- 		[SOF_IPC] = "intel/sof",
-+		[SOF_INTEL_IPC4] = "intel/avs/cnl",
- 	},
- 	.default_tplg_path = {
- 		[SOF_IPC] = "intel/sof-tplg",
-+		[SOF_INTEL_IPC4] = "intel/avs-tplg",
- 	},
- 	.default_fw_filename = "sof-cnl.ri",
- 	.nocodec_tplg_filename = "sof-cnl-nocodec.tplg",
-@@ -48,11 +52,15 @@ static const struct sof_dev_desc cfl_desc = {
- 	.resindex_imr_base	= -1,
- 	.irqindex_host_ipc	= -1,
- 	.chip_info = &cnl_chip_info,
-+	.ipc_supported_mask	= BIT(SOF_IPC) | BIT(SOF_INTEL_IPC4),
-+	.ipc_default		= SOF_IPC,
- 	.default_fw_path = {
- 		[SOF_IPC] = "intel/sof",
-+		[SOF_INTEL_IPC4] = "intel/avs/cnl",
- 	},
- 	.default_tplg_path = {
- 		[SOF_IPC] = "intel/sof-tplg",
-+		[SOF_INTEL_IPC4] = "intel/avs-tplg",
- 	},
- 	.default_fw_filename = "sof-cfl.ri",
- 	.nocodec_tplg_filename = "sof-cnl-nocodec.tplg",
-@@ -68,11 +76,15 @@ static const struct sof_dev_desc cml_desc = {
- 	.resindex_imr_base	= -1,
- 	.irqindex_host_ipc	= -1,
- 	.chip_info = &cnl_chip_info,
-+	.ipc_supported_mask	= BIT(SOF_IPC) | BIT(SOF_INTEL_IPC4),
-+	.ipc_default		= SOF_IPC,
- 	.default_fw_path = {
- 		[SOF_IPC] = "intel/sof",
-+		[SOF_INTEL_IPC4] = "intel/avs/cnl",
- 	},
- 	.default_tplg_path = {
- 		[SOF_IPC] = "intel/sof-tplg",
-+		[SOF_INTEL_IPC4] = "intel/avs-tplg",
- 	},
- 	.default_fw_filename = "sof-cml.ri",
- 	.nocodec_tplg_filename = "sof-cnl-nocodec.tplg",
-diff --git a/sound/soc/sof/intel/pci-icl.c b/sound/soc/sof/intel/pci-icl.c
-index a27cd4f8ce0c..c1ed81ba08bb 100644
---- a/sound/soc/sof/intel/pci-icl.c
-+++ b/sound/soc/sof/intel/pci-icl.c
-@@ -28,11 +28,15 @@ static const struct sof_dev_desc icl_desc = {
- 	.resindex_imr_base      = -1,
- 	.irqindex_host_ipc      = -1,
- 	.chip_info = &icl_chip_info,
-+	.ipc_supported_mask	= BIT(SOF_IPC) | BIT(SOF_INTEL_IPC4),
-+	.ipc_default		= SOF_IPC,
- 	.default_fw_path = {
- 		[SOF_IPC] = "intel/sof",
-+		[SOF_INTEL_IPC4] = "intel/avs/icl",
- 	},
- 	.default_tplg_path = {
- 		[SOF_IPC] = "intel/sof-tplg",
-+		[SOF_INTEL_IPC4] = "intel/avs-tplg",
- 	},
- 	.default_fw_filename = "sof-icl.ri",
- 	.nocodec_tplg_filename = "sof-icl-nocodec.tplg",
-@@ -47,11 +51,15 @@ static const struct sof_dev_desc jsl_desc = {
- 	.resindex_imr_base      = -1,
- 	.irqindex_host_ipc      = -1,
- 	.chip_info = &jsl_chip_info,
-+	.ipc_supported_mask	= BIT(SOF_IPC) | BIT(SOF_INTEL_IPC4),
-+	.ipc_default		= SOF_IPC,
- 	.default_fw_path = {
- 		[SOF_IPC] = "intel/sof",
-+		[SOF_INTEL_IPC4] = "intel/avs/jsl",
- 	},
- 	.default_tplg_path = {
- 		[SOF_IPC] = "intel/sof-tplg",
-+		[SOF_INTEL_IPC4] = "intel/avs-tplg",
- 	},
- 	.default_fw_filename = "sof-jsl.ri",
- 	.nocodec_tplg_filename = "sof-jsl-nocodec.tplg",
-diff --git a/sound/soc/sof/intel/pci-tgl.c b/sound/soc/sof/intel/pci-tgl.c
-index 49d165fdd353..6a4414325041 100644
---- a/sound/soc/sof/intel/pci-tgl.c
-+++ b/sound/soc/sof/intel/pci-tgl.c
-@@ -28,11 +28,15 @@ static const struct sof_dev_desc tgl_desc = {
- 	.resindex_imr_base      = -1,
- 	.irqindex_host_ipc      = -1,
- 	.chip_info = &tgl_chip_info,
-+	.ipc_supported_mask	= BIT(SOF_IPC) | BIT(SOF_INTEL_IPC4),
-+	.ipc_default		= SOF_IPC,
- 	.default_fw_path = {
- 		[SOF_IPC] = "intel/sof",
-+		[SOF_INTEL_IPC4] = "intel/avs/tgl",
- 	},
- 	.default_tplg_path = {
- 		[SOF_IPC] = "intel/sof-tplg",
-+		[SOF_INTEL_IPC4] = "intel/avs-tplg",
- 	},
- 	.default_fw_filename = "sof-tgl.ri",
- 	.nocodec_tplg_filename = "sof-tgl-nocodec.tplg",
-@@ -48,11 +52,15 @@ static const struct sof_dev_desc tglh_desc = {
- 	.resindex_imr_base      = -1,
- 	.irqindex_host_ipc      = -1,
- 	.chip_info = &tglh_chip_info,
-+	.ipc_supported_mask	= BIT(SOF_IPC) | BIT(SOF_INTEL_IPC4),
-+	.ipc_default		= SOF_IPC,
- 	.default_fw_path = {
- 		[SOF_IPC] = "intel/sof",
-+		[SOF_INTEL_IPC4] = "intel/avs/tgl-h",
- 	},
- 	.default_tplg_path = {
- 		[SOF_IPC] = "intel/sof-tplg",
-+		[SOF_INTEL_IPC4] = "intel/avs-tplg",
- 	},
- 	.default_fw_filename = "sof-tgl-h.ri",
- 	.nocodec_tplg_filename = "sof-tgl-nocodec.tplg",
-@@ -67,11 +75,15 @@ static const struct sof_dev_desc ehl_desc = {
- 	.resindex_imr_base      = -1,
- 	.irqindex_host_ipc      = -1,
- 	.chip_info = &ehl_chip_info,
-+	.ipc_supported_mask	= BIT(SOF_IPC) | BIT(SOF_INTEL_IPC4),
-+	.ipc_default		= SOF_IPC,
- 	.default_fw_path = {
- 		[SOF_IPC] = "intel/sof",
-+		[SOF_INTEL_IPC4] = "intel/avs/ehl",
- 	},
- 	.default_tplg_path = {
- 		[SOF_IPC] = "intel/sof-tplg",
-+		[SOF_INTEL_IPC4] = "intel/avs-tplg",
- 	},
- 	.default_fw_filename = "sof-ehl.ri",
- 	.nocodec_tplg_filename = "sof-ehl-nocodec.tplg",
-@@ -87,11 +99,15 @@ static const struct sof_dev_desc adls_desc = {
- 	.resindex_imr_base      = -1,
- 	.irqindex_host_ipc      = -1,
- 	.chip_info = &adls_chip_info,
-+	.ipc_supported_mask	= BIT(SOF_IPC) | BIT(SOF_INTEL_IPC4),
-+	.ipc_default		= SOF_IPC,
- 	.default_fw_path = {
- 		[SOF_IPC] = "intel/sof",
-+		[SOF_INTEL_IPC4] = "intel/avs/adl-s",
- 	},
- 	.default_tplg_path = {
- 		[SOF_IPC] = "intel/sof-tplg",
-+		[SOF_INTEL_IPC4] = "intel/avs-tplg",
- 	},
- 	.default_fw_filename = "sof-adl-s.ri",
- 	.nocodec_tplg_filename = "sof-adl-nocodec.tplg",
-@@ -107,11 +123,15 @@ static const struct sof_dev_desc adl_desc = {
- 	.resindex_imr_base      = -1,
- 	.irqindex_host_ipc      = -1,
- 	.chip_info = &tgl_chip_info,
-+	.ipc_supported_mask	= BIT(SOF_IPC) | BIT(SOF_INTEL_IPC4),
-+	.ipc_default		= SOF_IPC,
- 	.default_fw_path = {
- 		[SOF_IPC] = "intel/sof",
-+		[SOF_INTEL_IPC4] = "intel/avs/adl",
- 	},
- 	.default_tplg_path = {
- 		[SOF_IPC] = "intel/sof-tplg",
-+		[SOF_INTEL_IPC4] = "intel/avs-tplg",
- 	},
- 	.default_fw_filename = "sof-adl.ri",
- 	.nocodec_tplg_filename = "sof-adl-nocodec.tplg",
-diff --git a/sound/soc/sof/intel/pci-tng.c b/sound/soc/sof/intel/pci-tng.c
-index b558bab0d839..5137600672fe 100644
---- a/sound/soc/sof/intel/pci-tng.c
-+++ b/sound/soc/sof/intel/pci-tng.c
-@@ -215,6 +215,8 @@ static const struct sof_dev_desc tng_desc = {
- 	.resindex_imr_base	= 0,
- 	.irqindex_host_ipc	= -1,
- 	.chip_info = &tng_chip_info,
-+	.ipc_supported_mask	= BIT(SOF_IPC),
-+	.ipc_default		= SOF_IPC,
- 	.default_fw_path = {
- 		[SOF_IPC] = "intel/sof",
- 	},
-diff --git a/sound/soc/sof/mediatek/mt8195/mt8195.c b/sound/soc/sof/mediatek/mt8195/mt8195.c
-index 0982bf158e86..7291538f41ab 100644
---- a/sound/soc/sof/mediatek/mt8195/mt8195.c
-+++ b/sound/soc/sof/mediatek/mt8195/mt8195.c
-@@ -440,6 +440,8 @@ static const struct snd_sof_dsp_ops sof_mt8195_ops = {
- };
+ static int sof_tplg_cb(const struct dmi_system_id *id)
+ {
+-	sof_override_tplg_name = id->driver_data;
++	sof_dmi_override_tplg_name = id->driver_data;
+ 	return 1;
+ }
  
- static const struct sof_dev_desc sof_of_mt8195_desc = {
-+	.ipc_supported_mask	= BIT(SOF_IPC),
-+	.ipc_default		= SOF_IPC,
- 	.default_fw_path = {
- 		[SOF_IPC] = "mediatek/sof",
- 	},
+@@ -224,9 +228,20 @@ int sof_pci_probe(struct pci_dev *pci, const struct pci_device_id *pci_id)
+ 		sof_pdata->tplg_filename_prefix =
+ 			sof_pdata->desc->default_tplg_path[sof_pdata->ipc_type];
+ 
+-	dmi_check_system(sof_tplg_table);
+-	if (sof_override_tplg_name)
+-		sof_pdata->tplg_filename = sof_override_tplg_name;
++	/*
++	 * the topology filename will be provided in the machine descriptor, unless
++	 * it is overridden by a module parameter or DMI quirk.
++	 */
++	if (tplg_filename) {
++		sof_pdata->tplg_filename = tplg_filename;
++
++		dev_dbg(dev, "Module parameter used, changed tplg filename to %s\n",
++			sof_pdata->tplg_filename);
++	} else {
++		dmi_check_system(sof_tplg_table);
++		if (sof_dmi_override_tplg_name)
++			sof_pdata->tplg_filename = sof_dmi_override_tplg_name;
++	}
+ 
+ 	/* set callback to be called on successful device probe to enable runtime_pm */
+ 	sof_pdata->sof_probe_complete = sof_pci_probe_complete;
 -- 
 2.30.2
 
