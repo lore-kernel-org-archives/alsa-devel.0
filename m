@@ -4,64 +4,64 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C7AEAC433EF
-	for <alsa-devel@archiver.kernel.org>; Mon, 11 Apr 2022 20:23:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5FE57C433EF
+	for <alsa-devel@archiver.kernel.org>; Mon, 11 Apr 2022 20:23:37 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 10D5E179F;
-	Mon, 11 Apr 2022 22:22:31 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 10D5E179F
+	by alsa0.perex.cz (Postfix) with ESMTPS id 9A33A17B5;
+	Mon, 11 Apr 2022 22:22:45 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9A33A17B5
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1649708601;
-	bh=tNj5+vFUUsmLuKVILgUlnzSovGjCTwnHD7BRNmGgYTc=;
+	s=default; t=1649708615;
+	bh=0p4MVDCujJhpUBXsCLojHP3nDnSM/F2N1GUJHFk9dH0=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=cZYk1UhVSRADo1Op/PdfT6lMhuxAEzqLMco7MEWYENeEjZ/Q7BW+JYYADeXf6uFwo
-	 HkRbjsVg0aUm5MlGrwihAe0rOZF+qcSaEC9S5V3FuxIp2vcVROFhJYMKrVa61z7nPt
-	 /cHnp4AcJUQ8WyGu3Ne1xsngtYtJmbjKLnh0nlRE=
+	b=J6aZ1bq95sDpV24vDzaGYNz+jzd01pZxGOERI7ASiP/37kF83T5EIRCea6EZwUXWL
+	 NWVYncOwWNodkPmzNu4AV4FzFLWKa2GCAxIXkT2AiATmTagBq0f/0NjfJ16qds1dac
+	 M4VjGJF7JFHRcPi79D694PaPy00pgN8ZPZjOeUM8=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id E3F56F805BA;
-	Mon, 11 Apr 2022 22:18:28 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 6FA6CF805BF;
+	Mon, 11 Apr 2022 22:18:29 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 0AC0DF80564; Mon, 11 Apr 2022 22:18:24 +0200 (CEST)
+ id 1532DF8052D; Mon, 11 Apr 2022 22:18:24 +0200 (CEST)
 Received: from mga18.intel.com (mga18.intel.com [134.134.136.126])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id CE5B7F8051A
- for <alsa-devel@alsa-project.org>; Mon, 11 Apr 2022 22:18:04 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CE5B7F8051A
+ by alsa1.perex.cz (Postfix) with ESMTPS id 8A243F8052D
+ for <alsa-devel@alsa-project.org>; Mon, 11 Apr 2022 22:18:06 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8A243F8052D
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="PZDv36ho"
+ header.b="O2TQJMe6"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1649708286; x=1681244286;
+ t=1649708287; x=1681244287;
  h=from:to:cc:subject:date:message-id:in-reply-to:
  references:mime-version:content-transfer-encoding;
- bh=tNj5+vFUUsmLuKVILgUlnzSovGjCTwnHD7BRNmGgYTc=;
- b=PZDv36hos/DBCJRhoWfDYT3WV2k/Vkr3Uh4KxVla85K58dcEATbu4Wob
- i6Nn0TftOLpiywyrzWrdeR1Lcf6AJx53FqO0MRFLr4FY/i3WwmsxedcQ0
- Q1N34g+L77Ng17L3J+4R/YKWbjDVId2+Q2uRJBDOd0+dHhMRdjXvSXhms
- Q1Ge+tLUi6AGokWu7yXeRpRZ7bYB2Dq0xMnJj5TKaT+8QkdTCwjlkcxu3
- omiH1JsPyCiUPboWRgKyCHiRHTMcPzSSstLI6Fe1ncTcdi8N0KMwWLOBk
- TQ0DM+sL6qkAhJ0b/DQqWCFCVV6SMBSgnYrxbnAPk88mAhQbshARKU4Tt w==;
-X-IronPort-AV: E=McAfee;i="6400,9594,10314"; a="244090848"
-X-IronPort-AV: E=Sophos;i="5.90,252,1643702400"; d="scan'208";a="244090848"
+ bh=0p4MVDCujJhpUBXsCLojHP3nDnSM/F2N1GUJHFk9dH0=;
+ b=O2TQJMe61Xm8zoMO3oUnMb45le34HQzPgsZ9GCWqkYsBiicMug5cYICZ
+ eX9hbWlYt3m+YdWF/3ES4gBzsotFtHKYJeUqCe+WAt6CnndnXPULIE2Px
+ Tcj1r4wgTE3+c3y830QkE5XktBin0Pd5bqu0OjTfgDyTcsgCNXCBfRDZ9
+ m/Ydb0HWBh7zWhLMFnfxFI98IHtpltT29o67c+UJX6Jls+VZ9TIR9dTIW
+ 5Yq33R1HHtxyko3su1jufawX1TlBWUfqDzX/AwRR8SuTC0p8TtODyFLua
+ dfpucF8U7tg3eKrMXrOLhkFzue5ugjFqLy+mlQhfsndBnin6AczMNbQ7c g==;
+X-IronPort-AV: E=McAfee;i="6400,9594,10314"; a="244090856"
+X-IronPort-AV: E=Sophos;i="5.90,252,1643702400"; d="scan'208";a="244090856"
 Received: from orsmga006.jf.intel.com ([10.7.209.51])
  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 11 Apr 2022 13:17:59 -0700
-X-IronPort-AV: E=Sophos;i="5.90,252,1643702400"; d="scan'208";a="526135703"
+ 11 Apr 2022 13:18:00 -0700
+X-IronPort-AV: E=Sophos;i="5.90,252,1643702400"; d="scan'208";a="526135720"
 Received: from prposam-mobl.amr.corp.intel.com (HELO
  pbossart-mobl3.amr.corp.intel.com) ([10.212.162.151])
  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 11 Apr 2022 13:17:58 -0700
+ 11 Apr 2022 13:17:59 -0700
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH 14/16] ASoC: SOF: Intel: hda: expose some codeloader functions
-Date: Mon, 11 Apr 2022 15:17:25 -0500
-Message-Id: <20220411201727.77971-15-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH 16/16] ASoC: SOF: Intel: add IP identifier
+Date: Mon, 11 Apr 2022 15:17:27 -0500
+Message-Id: <20220411201727.77971-17-pierre-louis.bossart@linux.intel.com>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20220411201727.77971-1-pierre-louis.bossart@linux.intel.com>
 References: <20220411201727.77971-1-pierre-louis.bossart@linux.intel.com>
@@ -70,8 +70,8 @@ Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Cc: tiwai@suse.de, broonie@kernel.org,
  =?UTF-8?q?P=C3=A9ter=20Ujfalusi?= <peter.ujfalusi@linux.intel.com>,
- Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -87,122 +87,186 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+This patch adds an IP identifier for each Intel platform. The
+identifier will be used to select different code branches or
+constants.
 
-Expose the code loader functions for re-use in new platforms
-
-Signed-off-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Reviewed-by: Péter Ujfalusi <peter.ujfalusi@linux.intel.com>
+Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 ---
- sound/soc/sof/intel/hda-loader.c | 27 ++++++++++++++-------------
- sound/soc/sof/intel/hda.h        |  6 ++++++
- 2 files changed, 20 insertions(+), 13 deletions(-)
+ sound/soc/sof/intel/apl.c     |  1 +
+ sound/soc/sof/intel/bdw.c     |  1 +
+ sound/soc/sof/intel/byt.c     |  2 ++
+ sound/soc/sof/intel/cnl.c     |  2 ++
+ sound/soc/sof/intel/icl.c     |  1 +
+ sound/soc/sof/intel/pci-tng.c |  1 +
+ sound/soc/sof/intel/shim.h    | 12 ++++++++++++
+ sound/soc/sof/intel/skl.c     |  1 +
+ sound/soc/sof/intel/tgl.c     |  4 ++++
+ 9 files changed, 25 insertions(+)
 
-diff --git a/sound/soc/sof/intel/hda-loader.c b/sound/soc/sof/intel/hda-loader.c
-index f6c50ee526fa..78ceb5a2cbc0 100644
---- a/sound/soc/sof/intel/hda-loader.c
-+++ b/sound/soc/sof/intel/hda-loader.c
-@@ -41,9 +41,9 @@ static void hda_ssp_set_cbp_cfp(struct snd_sof_dev *sdev)
- 	}
- }
+diff --git a/sound/soc/sof/intel/apl.c b/sound/soc/sof/intel/apl.c
+index 4762846d8a33..cb499f3905ce 100644
+--- a/sound/soc/sof/intel/apl.c
++++ b/sound/soc/sof/intel/apl.c
+@@ -77,5 +77,6 @@ const struct sof_intel_dsp_desc apl_chip_info = {
+ 	.ssp_base_offset = APL_SSP_BASE_OFFSET,
+ 	.quirks = SOF_INTEL_PROCEN_FMT_QUIRK,
+ 	.check_ipc_irq	= hda_dsp_check_ipc_irq,
++	.hw_ip_version = SOF_INTEL_CAVS_1_5_PLUS,
+ };
+ EXPORT_SYMBOL_NS(apl_chip_info, SND_SOC_SOF_INTEL_HDA_COMMON);
+diff --git a/sound/soc/sof/intel/bdw.c b/sound/soc/sof/intel/bdw.c
+index 3449eeccd9e8..73a20172bf77 100644
+--- a/sound/soc/sof/intel/bdw.c
++++ b/sound/soc/sof/intel/bdw.c
+@@ -637,6 +637,7 @@ static struct snd_sof_dsp_ops sof_bdw_ops = {
+ static const struct sof_intel_dsp_desc bdw_chip_info = {
+ 	.cores_num = 1,
+ 	.host_managed_cores_mask = 1,
++	.hw_ip_version = SOF_INTEL_BROADWELL,
+ };
  
--static struct hdac_ext_stream *cl_stream_prepare(struct snd_sof_dev *sdev, unsigned int format,
--						 unsigned int size, struct snd_dma_buffer *dmab,
--						 int direction)
-+struct hdac_ext_stream *hda_cl_stream_prepare(struct snd_sof_dev *sdev, unsigned int format,
-+					      unsigned int size, struct snd_dma_buffer *dmab,
-+					      int direction)
- {
- 	struct hdac_ext_stream *hext_stream;
- 	struct hdac_stream *hstream;
-@@ -234,8 +234,8 @@ static int cl_trigger(struct snd_sof_dev *sdev,
- 	}
- }
+ static const struct sof_dev_desc sof_acpi_broadwell_desc = {
+diff --git a/sound/soc/sof/intel/byt.c b/sound/soc/sof/intel/byt.c
+index 3db125d82a1e..08376e8fdc61 100644
+--- a/sound/soc/sof/intel/byt.c
++++ b/sound/soc/sof/intel/byt.c
+@@ -295,6 +295,7 @@ static struct snd_sof_dsp_ops sof_byt_ops = {
+ static const struct sof_intel_dsp_desc byt_chip_info = {
+ 	.cores_num = 1,
+ 	.host_managed_cores_mask = 1,
++	.hw_ip_version = SOF_INTEL_BAYTRAIL,
+ };
  
--static int cl_cleanup(struct snd_sof_dev *sdev, struct snd_dma_buffer *dmab,
--		      struct hdac_ext_stream *hext_stream)
-+int hda_cl_cleanup(struct snd_sof_dev *sdev, struct snd_dma_buffer *dmab,
-+		   struct hdac_ext_stream *hext_stream)
- {
- 	struct hdac_stream *hstream = &hext_stream->hstream;
- 	int sd_offset = SOF_STREAM_SD_OFFSET(hstream);
-@@ -266,7 +266,7 @@ static int cl_cleanup(struct snd_sof_dev *sdev, struct snd_dma_buffer *dmab,
- 	return ret;
- }
+ /* cherrytrail and braswell ops */
+@@ -378,6 +379,7 @@ static struct snd_sof_dsp_ops sof_cht_ops = {
+ static const struct sof_intel_dsp_desc cht_chip_info = {
+ 	.cores_num = 1,
+ 	.host_managed_cores_mask = 1,
++	.hw_ip_version = SOF_INTEL_BAYTRAIL,
+ };
  
--static int cl_copy_fw(struct snd_sof_dev *sdev, struct hdac_ext_stream *hext_stream)
-+int hda_cl_copy_fw(struct snd_sof_dev *sdev, struct hdac_ext_stream *hext_stream)
- {
- 	struct sof_intel_hda_dev *hda = sdev->pdata->hw_pdata;
- 	const struct sof_intel_dsp_desc *chip = hda->desc;
-@@ -328,8 +328,8 @@ int hda_dsp_cl_boot_firmware_iccmax(struct snd_sof_dev *sdev)
- 	stripped_firmware.size = plat_data->fw->size - plat_data->fw_offset;
+ /* BYTCR uses different IRQ index */
+diff --git a/sound/soc/sof/intel/cnl.c b/sound/soc/sof/intel/cnl.c
+index 86b683486f06..f5bac91c335b 100644
+--- a/sound/soc/sof/intel/cnl.c
++++ b/sound/soc/sof/intel/cnl.c
+@@ -297,6 +297,7 @@ const struct sof_intel_dsp_desc cnl_chip_info = {
+ 	.sdw_alh_base = SDW_ALH_BASE,
+ 	.check_sdw_irq	= hda_common_check_sdw_irq,
+ 	.check_ipc_irq	= hda_dsp_check_ipc_irq,
++	.hw_ip_version = SOF_INTEL_CAVS_1_8,
+ };
+ EXPORT_SYMBOL_NS(cnl_chip_info, SND_SOC_SOF_INTEL_HDA_COMMON);
  
- 	/* prepare capture stream for ICCMAX */
--	iccmax_stream = cl_stream_prepare(sdev, HDA_CL_STREAM_FORMAT, stripped_firmware.size,
--					  &dmab_bdl, SNDRV_PCM_STREAM_CAPTURE);
-+	iccmax_stream = hda_cl_stream_prepare(sdev, HDA_CL_STREAM_FORMAT, stripped_firmware.size,
-+					      &dmab_bdl, SNDRV_PCM_STREAM_CAPTURE);
- 	if (IS_ERR(iccmax_stream)) {
- 		dev_err(sdev->dev, "error: dma prepare for ICCMAX stream failed\n");
- 		return PTR_ERR(iccmax_stream);
-@@ -341,7 +341,7 @@ int hda_dsp_cl_boot_firmware_iccmax(struct snd_sof_dev *sdev)
- 	 * Perform iccmax stream cleanup. This should be done even if firmware loading fails.
- 	 * If the cleanup also fails, we return the initial error
- 	 */
--	ret1 = cl_cleanup(sdev, &dmab_bdl, iccmax_stream);
-+	ret1 = hda_cl_cleanup(sdev, &dmab_bdl, iccmax_stream);
- 	if (ret1 < 0) {
- 		dev_err(sdev->dev, "error: ICCMAX stream cleanup failed\n");
+@@ -325,5 +326,6 @@ const struct sof_intel_dsp_desc jsl_chip_info = {
+ 	.sdw_alh_base = SDW_ALH_BASE,
+ 	.check_sdw_irq	= hda_common_check_sdw_irq,
+ 	.check_ipc_irq	= hda_dsp_check_ipc_irq,
++	.hw_ip_version = SOF_INTEL_CAVS_2_0,
+ };
+ EXPORT_SYMBOL_NS(jsl_chip_info, SND_SOC_SOF_INTEL_HDA_COMMON);
+diff --git a/sound/soc/sof/intel/icl.c b/sound/soc/sof/intel/icl.c
+index 2e4d371f7860..8dd562696934 100644
+--- a/sound/soc/sof/intel/icl.c
++++ b/sound/soc/sof/intel/icl.c
+@@ -142,5 +142,6 @@ const struct sof_intel_dsp_desc icl_chip_info = {
+ 	.sdw_alh_base = SDW_ALH_BASE,
+ 	.check_sdw_irq	= hda_common_check_sdw_irq,
+ 	.check_ipc_irq	= hda_dsp_check_ipc_irq,
++	.hw_ip_version = SOF_INTEL_CAVS_2_0,
+ };
+ EXPORT_SYMBOL_NS(icl_chip_info, SND_SOC_SOF_INTEL_HDA_COMMON);
+diff --git a/sound/soc/sof/intel/pci-tng.c b/sound/soc/sof/intel/pci-tng.c
+index 8ef027a1fde8..6b4e4b7583eb 100644
+--- a/sound/soc/sof/intel/pci-tng.c
++++ b/sound/soc/sof/intel/pci-tng.c
+@@ -206,6 +206,7 @@ struct snd_sof_dsp_ops sof_tng_ops = {
+ const struct sof_intel_dsp_desc tng_chip_info = {
+ 	.cores_num = 1,
+ 	.host_managed_cores_mask = 1,
++	.hw_ip_version = SOF_INTEL_TANGIER,
+ };
  
-@@ -420,8 +420,9 @@ int hda_dsp_cl_boot_firmware(struct snd_sof_dev *sdev)
- 	init_waitqueue_head(&sdev->boot_wait);
+ static const struct sof_dev_desc tng_desc = {
+diff --git a/sound/soc/sof/intel/shim.h b/sound/soc/sof/intel/shim.h
+index 3eb09941ae6e..1fd7b485d821 100644
+--- a/sound/soc/sof/intel/shim.h
++++ b/sound/soc/sof/intel/shim.h
+@@ -11,6 +11,17 @@
+ #ifndef __SOF_INTEL_SHIM_H
+ #define __SOF_INTEL_SHIM_H
  
- 	/* prepare DMA for code loader stream */
--	hext_stream = cl_stream_prepare(sdev, HDA_CL_STREAM_FORMAT, stripped_firmware.size,
--					&dmab, SNDRV_PCM_STREAM_PLAYBACK);
-+	hext_stream = hda_cl_stream_prepare(sdev, HDA_CL_STREAM_FORMAT,
-+					    stripped_firmware.size,
-+					    &dmab, SNDRV_PCM_STREAM_PLAYBACK);
- 	if (IS_ERR(hext_stream)) {
- 		dev_err(sdev->dev, "error: dma prepare for fw loading failed\n");
- 		return PTR_ERR(hext_stream);
-@@ -475,7 +476,7 @@ int hda_dsp_cl_boot_firmware(struct snd_sof_dev *sdev)
- 	 * Continue with code loading and firmware boot
- 	 */
- 	hda->boot_iteration = HDA_FW_BOOT_ATTEMPTS;
--	ret = cl_copy_fw(sdev, hext_stream);
-+	ret = hda_cl_copy_fw(sdev, hext_stream);
- 	if (!ret)
- 		dev_dbg(sdev->dev, "Firmware download successful, booting...\n");
- 	else
-@@ -488,7 +489,7 @@ int hda_dsp_cl_boot_firmware(struct snd_sof_dev *sdev)
- 	 * This should be done even if firmware loading fails.
- 	 * If the cleanup also fails, we return the initial error
- 	 */
--	ret1 = cl_cleanup(sdev, &dmab, hext_stream);
-+	ret1 = hda_cl_cleanup(sdev, &dmab, hext_stream);
- 	if (ret1 < 0) {
- 		dev_err(sdev->dev, "error: Code loader DSP cleanup failed\n");
- 
-diff --git a/sound/soc/sof/intel/hda.h b/sound/soc/sof/intel/hda.h
-index f7a93012b811..36445482a122 100644
---- a/sound/soc/sof/intel/hda.h
-+++ b/sound/soc/sof/intel/hda.h
-@@ -588,6 +588,12 @@ int hda_dsp_ipc_cmd_done(struct snd_sof_dev *sdev, int dir);
++enum sof_intel_hw_ip_version {
++	SOF_INTEL_TANGIER,
++	SOF_INTEL_BAYTRAIL,
++	SOF_INTEL_BROADWELL,
++	SOF_INTEL_CAVS_1_5,	/* SkyLake, KabyLake, AmberLake */
++	SOF_INTEL_CAVS_1_5_PLUS,/* ApolloLake, GeminiLake */
++	SOF_INTEL_CAVS_1_8,	/* CannonLake, CometLake, CoffeeLake */
++	SOF_INTEL_CAVS_2_0,	/* IceLake, JasperLake */
++	SOF_INTEL_CAVS_2_5,	/* TigerLake, AlderLake */
++};
++
+ /*
+  * SHIM registers for BYT, BSW, CHT, BDW
   */
- int hda_dsp_cl_boot_firmware(struct snd_sof_dev *sdev);
- int hda_dsp_cl_boot_firmware_iccmax(struct snd_sof_dev *sdev);
-+int hda_cl_copy_fw(struct snd_sof_dev *sdev, struct hdac_ext_stream *hext_stream);
-+struct hdac_ext_stream *hda_cl_stream_prepare(struct snd_sof_dev *sdev, unsigned int format,
-+					      unsigned int size, struct snd_dma_buffer *dmab,
-+					      int direction);
-+int hda_cl_cleanup(struct snd_sof_dev *sdev, struct snd_dma_buffer *dmab,
-+		   struct hdac_ext_stream *hext_stream);
- #define HDA_CL_STREAM_FORMAT 0x40
+@@ -171,6 +182,7 @@ struct sof_intel_dsp_desc {
+ 	u32 sdw_shim_base;
+ 	u32 sdw_alh_base;
+ 	u32 quirks;
++	enum sof_intel_hw_ip_version hw_ip_version;
+ 	bool (*check_sdw_irq)(struct snd_sof_dev *sdev);
+ 	bool (*check_ipc_irq)(struct snd_sof_dev *sdev);
+ };
+diff --git a/sound/soc/sof/intel/skl.c b/sound/soc/sof/intel/skl.c
+index e13c8a4b4634..446a7afddfdb 100644
+--- a/sound/soc/sof/intel/skl.c
++++ b/sound/soc/sof/intel/skl.c
+@@ -65,5 +65,6 @@ const struct sof_intel_dsp_desc skl_chip_info = {
+ 	.rom_status_reg = HDA_DSP_SRAM_REG_ROM_STATUS_SKL,
+ 	.rom_init_timeout	= 300,
+ 	.check_ipc_irq	= hda_dsp_check_ipc_irq,
++	.hw_ip_version = SOF_INTEL_CAVS_1_5,
+ };
+ EXPORT_SYMBOL_NS(skl_chip_info, SND_SOC_SOF_INTEL_HDA_COMMON);
+diff --git a/sound/soc/sof/intel/tgl.c b/sound/soc/sof/intel/tgl.c
+index 32d7e15126c2..816571305f24 100644
+--- a/sound/soc/sof/intel/tgl.c
++++ b/sound/soc/sof/intel/tgl.c
+@@ -113,6 +113,7 @@ const struct sof_intel_dsp_desc tgl_chip_info = {
+ 	.sdw_alh_base = SDW_ALH_BASE,
+ 	.check_sdw_irq	= hda_common_check_sdw_irq,
+ 	.check_ipc_irq	= hda_dsp_check_ipc_irq,
++	.hw_ip_version = SOF_INTEL_CAVS_2_5,
+ };
+ EXPORT_SYMBOL_NS(tgl_chip_info, SND_SOC_SOF_INTEL_HDA_COMMON);
  
- /* pre and post fw run ops */
+@@ -134,6 +135,7 @@ const struct sof_intel_dsp_desc tglh_chip_info = {
+ 	.sdw_alh_base = SDW_ALH_BASE,
+ 	.check_sdw_irq	= hda_common_check_sdw_irq,
+ 	.check_ipc_irq	= hda_dsp_check_ipc_irq,
++	.hw_ip_version = SOF_INTEL_CAVS_2_5,
+ };
+ EXPORT_SYMBOL_NS(tglh_chip_info, SND_SOC_SOF_INTEL_HDA_COMMON);
+ 
+@@ -155,6 +157,7 @@ const struct sof_intel_dsp_desc ehl_chip_info = {
+ 	.sdw_alh_base = SDW_ALH_BASE,
+ 	.check_sdw_irq	= hda_common_check_sdw_irq,
+ 	.check_ipc_irq	= hda_dsp_check_ipc_irq,
++	.hw_ip_version = SOF_INTEL_CAVS_2_5,
+ };
+ EXPORT_SYMBOL_NS(ehl_chip_info, SND_SOC_SOF_INTEL_HDA_COMMON);
+ 
+@@ -176,5 +179,6 @@ const struct sof_intel_dsp_desc adls_chip_info = {
+ 	.sdw_alh_base = SDW_ALH_BASE,
+ 	.check_sdw_irq	= hda_common_check_sdw_irq,
+ 	.check_ipc_irq	= hda_dsp_check_ipc_irq,
++	.hw_ip_version = SOF_INTEL_CAVS_2_5,
+ };
+ EXPORT_SYMBOL_NS(adls_chip_info, SND_SOC_SOF_INTEL_HDA_COMMON);
 -- 
 2.30.2
 
