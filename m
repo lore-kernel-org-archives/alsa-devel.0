@@ -4,69 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A6610C433F5
-	for <alsa-devel@archiver.kernel.org>; Tue, 12 Apr 2022 10:30:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6A5AAC433EF
+	for <alsa-devel@archiver.kernel.org>; Tue, 12 Apr 2022 10:30:51 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id ECB131872;
-	Tue, 12 Apr 2022 12:29:43 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz ECB131872
+	by alsa0.perex.cz (Postfix) with ESMTPS id 9C81A18B6;
+	Tue, 12 Apr 2022 12:29:59 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9C81A18B6
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1649759434;
-	bh=JSFV2SpXRbzWgeObP66fU8qa68VU5atl8sCmozSxEwI=;
+	s=default; t=1649759449;
+	bh=iqh48JKpIai8r6FEqZ5erUd42kU8XJHco8YUTKTZOF0=;
 	h=From:To:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=qOfvMVHOu3EYNhJ8wCqnEvGDfjM1upO9bhNpvTFQLvQwSA/fcypVjGEQypReiM2vU
-	 NwKzHxWER3gXU66cijc0+tLMLpF9WDu8Q0/iVY5NdtCeYqZr8OluydA8TysKPEhC+q
-	 wfEUd07kxtcYeNrTsUl8qKA7QZyRMbcA/7uJFIcg=
+	b=mXMULfJdH3G+b7nrMIgLHdKYs9XIaFXuFZYixge4j8ZLkuhh4JQr4QSMMFAbv7S81
+	 bkCCQhHL/Jn6Q+fah6ofzlwtPFfz4aCa+VQGtVdykuKsL/ZVRivot/bqlJOrYNndwF
+	 tF6k1yYHbm+jfXdWH6e9HdMZg3QGuRnAVOFyyli0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 9D6DCF8057D;
-	Tue, 12 Apr 2022 12:27:15 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id AB4CFF80507;
+	Tue, 12 Apr 2022 12:27:16 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 36457F80570; Tue, 12 Apr 2022 12:27:08 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+ id 652E8F8056F; Tue, 12 Apr 2022 12:27:09 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 918F9F804FA
- for <alsa-devel@alsa-project.org>; Tue, 12 Apr 2022 12:26:44 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 918F9F804FA
+ by alsa1.perex.cz (Postfix) with ESMTPS id 36872F80506
+ for <alsa-devel@alsa-project.org>; Tue, 12 Apr 2022 12:26:46 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 36872F80506
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="OncZ5Rp4"; 
+ header.b="etaZ5viv"; 
  dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="U5G+ze1+"
+ header.b="1eLsLsle"
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out1.suse.de (Postfix) with ESMTP id 41F08210E3
+ by smtp-out2.suse.de (Postfix) with ESMTP id 66FCF1FD02
  for <alsa-devel@alsa-project.org>; Tue, 12 Apr 2022 10:26:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
  t=1649759204; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=GXd+obmk+Uj+MUcS/d+rMx14+WSBkHNjMqA+mb14fHM=;
- b=OncZ5Rp4R5SYCD8xW+Bhq1PJD9YP6qXdbJRnCayjPlqgjq+MJDJdpd998VbukZYGhs+bwQ
- ssTGpqFhORATcCQskVni8Vr3tSPWBpicTeMdSV46x0KgmWAAsvf0DkGFfuAN7naihkhMk5
- 7z13wOsUeZTCAOT9cu7APU5sgeEd+aU=
+ bh=qVAYNsL7ePHzsADD4iBWp9Y0yaUujcJib3/ATtFcymE=;
+ b=etaZ5vivRTvWDtN5TcorckSnikFww9GMidzEMkY8jzvIIkqsz4PogLDQ/1MfCxWzL7H/G6
+ GjrknLqIYzZ7h43HRwlofCNq+BHpufN3Sh9bPlNufsZl4u7d4vfZckjq5aT/WUt/xe7TMd
+ YmHuJ4I52xRQWyiJfSxlcT0HNPskLac=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
  s=susede2_ed25519; t=1649759204;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=GXd+obmk+Uj+MUcS/d+rMx14+WSBkHNjMqA+mb14fHM=;
- b=U5G+ze1+SflTf8q0DuMVyA6k6XsYAk/T9OfG756owgH7kMwy+M3u+5dSKWA3DCvF9SUzyS
- C++ZN1+bdc0rQVBQ==
+ bh=qVAYNsL7ePHzsADD4iBWp9Y0yaUujcJib3/ATtFcymE=;
+ b=1eLsLslemUQjVCU9+KHghiZX6xs5IJu3nJBq2IK+k0BG8R+9sejV5soA4+o8zxDiyH+CmA
+ COLeo0LU+zN74rDQ==
 Received: from alsa1.nue.suse.com (alsa1.suse.de [10.160.4.42])
- by relay2.suse.de (Postfix) with ESMTP id 3C8ACA3B83;
+ by relay2.suse.de (Postfix) with ESMTP id 62FCAA3B83;
  Tue, 12 Apr 2022 10:26:44 +0000 (UTC)
 From: Takashi Iwai <tiwai@suse.de>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH 01/39] ALSA: galaxy: Fix the missing snd_card_free() call at
- probe error
-Date: Tue, 12 Apr 2022 12:25:58 +0200
-Message-Id: <20220412102636.16000-2-tiwai@suse.de>
+Subject: [PATCH 11/39] ALSA: cs5535audio: Fix the missing snd_card_free() call
+ at probe error
+Date: Tue, 12 Apr 2022 12:26:08 +0200
+Message-Id: <20220412102636.16000-12-tiwai@suse.de>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20220412102636.16000-1-tiwai@suse.de>
 References: <20220412102636.16000-1-tiwai@suse.de>
@@ -93,41 +93,41 @@ we register the card, snd_card_free() has to be called at first for
 releasing the stuff properly when the driver tries to manage and
 release the stuff via card->private_free().
 
-This patch fixes it by calling snd_card_free() on the error from the
-probe callback using a new helper function.
-
-Fixes: 35a245ec0619 ("ALSA: galaxy: Allocate resources with device-managed APIs")
+Fixes: 5eba4c646dfe ("ALSA: cs5535audio: Allocate resources with device-managed APIs")
 Cc: <stable@vger.kernel.org>
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/isa/galaxy/galaxy.c | 7 ++++++-
- 1 file changed, 6 insertions(+), 1 deletion(-)
+ sound/pci/cs5535audio/cs5535audio.c | 10 ++++++++--
+ 1 file changed, 8 insertions(+), 2 deletions(-)
 
-diff --git a/sound/isa/galaxy/galaxy.c b/sound/isa/galaxy/galaxy.c
-index ea001c80149d..3164eb8510fa 100644
---- a/sound/isa/galaxy/galaxy.c
-+++ b/sound/isa/galaxy/galaxy.c
-@@ -478,7 +478,7 @@ static void snd_galaxy_free(struct snd_card *card)
- 		galaxy_set_config(galaxy, galaxy->config);
- }
- 
--static int snd_galaxy_probe(struct device *dev, unsigned int n)
-+static int __snd_galaxy_probe(struct device *dev, unsigned int n)
- {
- 	struct snd_galaxy *galaxy;
- 	struct snd_wss *chip;
-@@ -598,6 +598,11 @@ static int snd_galaxy_probe(struct device *dev, unsigned int n)
+diff --git a/sound/pci/cs5535audio/cs5535audio.c b/sound/pci/cs5535audio/cs5535audio.c
+index 499fa0148f9a..440b8f9b40c9 100644
+--- a/sound/pci/cs5535audio/cs5535audio.c
++++ b/sound/pci/cs5535audio/cs5535audio.c
+@@ -281,8 +281,8 @@ static int snd_cs5535audio_create(struct snd_card *card,
  	return 0;
  }
  
-+static int snd_galaxy_probe(struct device *dev, unsigned int n)
+-static int snd_cs5535audio_probe(struct pci_dev *pci,
+-				 const struct pci_device_id *pci_id)
++static int __snd_cs5535audio_probe(struct pci_dev *pci,
++				   const struct pci_device_id *pci_id)
+ {
+ 	static int dev;
+ 	struct snd_card *card;
+@@ -331,6 +331,12 @@ static int snd_cs5535audio_probe(struct pci_dev *pci,
+ 	return 0;
+ }
+ 
++static int snd_cs5535audio_probe(struct pci_dev *pci,
++				 const struct pci_device_id *pci_id)
 +{
-+	return snd_card_free_on_error(dev, __snd_galaxy_probe(dev, n));
++	return snd_card_free_on_error(&pci->dev, __snd_cs5535audio_probe(pci, pci_id));
 +}
 +
- static struct isa_driver snd_galaxy_driver = {
- 	.match		= snd_galaxy_match,
- 	.probe		= snd_galaxy_probe,
+ static struct pci_driver cs5535audio_driver = {
+ 	.name = KBUILD_MODNAME,
+ 	.id_table = snd_cs5535audio_ids,
 -- 
 2.31.1
 
