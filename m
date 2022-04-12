@@ -4,69 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 12CFAC433F5
-	for <alsa-devel@archiver.kernel.org>; Tue, 12 Apr 2022 10:28:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 01650C433EF
+	for <alsa-devel@archiver.kernel.org>; Tue, 12 Apr 2022 10:28:45 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 4B1121831;
-	Tue, 12 Apr 2022 12:27:45 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4B1121831
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3B2081868;
+	Tue, 12 Apr 2022 12:27:54 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3B2081868
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1649759315;
-	bh=MWcVV1iW7QzzIRuGok5yDD2fRZRZbuFBw882eM5UPWI=;
+	s=default; t=1649759324;
+	bh=njAoagun8JDqCoy9wCTL9urIYtZlSomJ+5b4yeU8SR8=;
 	h=From:To:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=OhPTTPDAZqFTnp/f8nXwjMDcZpGzGGuY1LXGOZ4RFdE8ahGBVfytTHPrHx8GEba3V
-	 69bnA2UJ2mQH3uZQNuN55d2udvo+RMQXySfZZ3et1UADozdvVEEocrRVfYCMpJNV0h
-	 7Kgt2uyI1oWgsRFQ78Z1yTtZxPrEnZQkzYVxB5Jk=
+	b=MYp9lyp7LfpyEXjdH7FBmixRTlv12cWkeX9l/nsCnr7biLvRVv8nvKF9ZOfGugtKg
+	 Sw9/8thCQ2L8/t40QvJwh6edaKERhVhfFMv1XYdwci+YZsuac8Z7xaU/yl5cF6VPsf
+	 EYTuWC6FddhMPl5NOcsPTVvDaZtJjak4grf8FWU0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 5BD4DF80109;
-	Tue, 12 Apr 2022 12:26:58 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 19583F80245;
+	Tue, 12 Apr 2022 12:27:02 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 09667F80557; Tue, 12 Apr 2022 12:26:56 +0200 (CEST)
+ id 99BF6F80559; Tue, 12 Apr 2022 12:26:59 +0200 (CEST)
 Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 152A6F804BD
+ by alsa1.perex.cz (Postfix) with ESMTPS id D9720F80134
  for <alsa-devel@alsa-project.org>; Tue, 12 Apr 2022 12:26:44 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 152A6F804BD
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D9720F80134
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="Y75jpFmh"; 
+ header.b="KPMHiHgU"; 
  dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="Waz79E6f"
+ header.b="UZYL9lrN"
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out1.suse.de (Postfix) with ESMTP id 784A92160A
+ by smtp-out1.suse.de (Postfix) with ESMTP id 8602B2160B
  for <alsa-devel@alsa-project.org>; Tue, 12 Apr 2022 10:26:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
  t=1649759204; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=59Wdmg+mEJVHHk9RjGjKA7T+5t6Jft2vj18iZEJ62CI=;
- b=Y75jpFmhoAA6RUXOXxORNlNjjj12J1AXg1uXcSTDsYJMFMMNBccYxHPwRhQZvZEKljIuY6
- zqNXIrP0yMcKnhsdT1hgBnQEcuZ1mjjrl8w9Ax/gKBljMBHaik+exjem1a87uVlWe/a00n
- 9hFGuhuIFeP+o0pBZkx4KPoj+J9dLzQ=
+ bh=xTh4slqrdHVfRLdHGuV2xKtzClg1VRRWXHIGxbCMQtw=;
+ b=KPMHiHgUtNZIEx9KaVxDK9fBOk4bz68SlOeTQbMad0lSV7LS/JM5rHLZk67LulcBd+AwXn
+ k56VvfE57uDCOaM3JHZsm4X/Jh/LBjdScCfUaM1V4fgwCNuv8L/h3eVpFDJcLCXHv3nY/n
+ oVj97sGJP/yobS9gPAXkwP72ZrrGNJ0=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
  s=susede2_ed25519; t=1649759204;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=59Wdmg+mEJVHHk9RjGjKA7T+5t6Jft2vj18iZEJ62CI=;
- b=Waz79E6fIofmdJby9/2059a1FUsv7vSs3Okl60C8Um50NAQnVdaejz2dK309v/NtTNPfUN
- c4C6PjtBNTjxC6Ag==
+ bh=xTh4slqrdHVfRLdHGuV2xKtzClg1VRRWXHIGxbCMQtw=;
+ b=UZYL9lrNF9CL42OhPa0sr5paZiBrnwGb2EpxeiBxhyBmycSXeiRfFJOOYEWSwuiAIIPwTy
+ rU8n19kIFzYJXHCQ==
 Received: from alsa1.nue.suse.com (alsa1.suse.de [10.160.4.42])
- by relay2.suse.de (Postfix) with ESMTP id 73529A3B83;
+ by relay2.suse.de (Postfix) with ESMTP id 75E6FA3B8A;
  Tue, 12 Apr 2022 10:26:44 +0000 (UTC)
 From: Takashi Iwai <tiwai@suse.de>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH 17/39] ALSA: ice1724: Fix the missing snd_card_free() call at
+Subject: [PATCH 18/39] ALSA: intel8x0: Fix the missing snd_card_free() call at
  probe error
-Date: Tue, 12 Apr 2022 12:26:14 +0200
-Message-Id: <20220412102636.16000-18-tiwai@suse.de>
+Date: Tue, 12 Apr 2022 12:26:15 +0200
+Message-Id: <20220412102636.16000-19-tiwai@suse.de>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20220412102636.16000-1-tiwai@suse.de>
 References: <20220412102636.16000-1-tiwai@suse.de>
@@ -96,41 +96,70 @@ release the stuff via card->private_free().
 This patch fixes it by calling snd_card_free() on the error from the
 probe callback using a new helper function.
 
-Fixes: 314f6dbb1f33 ("ALSA: ice1724: Allocate resources with device-managed APIs")
+Fixes: 7835e0901e24 ("ALSA: intel8x0: Allocate resources with device-managed APIs")
 Cc: <stable@vger.kernel.org>
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/pci/ice1712/ice1724.c | 10 ++++++++--
- 1 file changed, 8 insertions(+), 2 deletions(-)
+ sound/pci/intel8x0.c  | 10 ++++++++--
+ sound/pci/intel8x0m.c | 10 ++++++++--
+ 2 files changed, 16 insertions(+), 4 deletions(-)
 
-diff --git a/sound/pci/ice1712/ice1724.c b/sound/pci/ice1712/ice1724.c
-index f6275868877a..6fab2ad85bbe 100644
---- a/sound/pci/ice1712/ice1724.c
-+++ b/sound/pci/ice1712/ice1724.c
-@@ -2519,8 +2519,8 @@ static int snd_vt1724_create(struct snd_card *card,
-  *
-  */
- 
--static int snd_vt1724_probe(struct pci_dev *pci,
--			    const struct pci_device_id *pci_id)
-+static int __snd_vt1724_probe(struct pci_dev *pci,
-+			      const struct pci_device_id *pci_id)
- {
- 	static int dev;
- 	struct snd_card *card;
-@@ -2662,6 +2662,12 @@ static int snd_vt1724_probe(struct pci_dev *pci,
+diff --git a/sound/pci/intel8x0.c b/sound/pci/intel8x0.c
+index a51032b3ac4d..ae285c0a629c 100644
+--- a/sound/pci/intel8x0.c
++++ b/sound/pci/intel8x0.c
+@@ -3109,8 +3109,8 @@ static int check_default_spdif_aclink(struct pci_dev *pci)
  	return 0;
  }
  
-+static int snd_vt1724_probe(struct pci_dev *pci,
-+			    const struct pci_device_id *pci_id)
+-static int snd_intel8x0_probe(struct pci_dev *pci,
+-			      const struct pci_device_id *pci_id)
++static int __snd_intel8x0_probe(struct pci_dev *pci,
++				const struct pci_device_id *pci_id)
+ {
+ 	struct snd_card *card;
+ 	struct intel8x0 *chip;
+@@ -3189,6 +3189,12 @@ static int snd_intel8x0_probe(struct pci_dev *pci,
+ 	return 0;
+ }
+ 
++static int snd_intel8x0_probe(struct pci_dev *pci,
++			      const struct pci_device_id *pci_id)
 +{
-+	return snd_card_free_on_error(&pci->dev, __snd_vt1724_probe(pci, pci_id));
++	return snd_card_free_on_error(&pci->dev, __snd_intel8x0_probe(pci, pci_id));
 +}
 +
- #ifdef CONFIG_PM_SLEEP
- static int snd_vt1724_suspend(struct device *dev)
+ static struct pci_driver intel8x0_driver = {
+ 	.name = KBUILD_MODNAME,
+ 	.id_table = snd_intel8x0_ids,
+diff --git a/sound/pci/intel8x0m.c b/sound/pci/intel8x0m.c
+index 7de3cb2f17b5..2845cc006d0c 100644
+--- a/sound/pci/intel8x0m.c
++++ b/sound/pci/intel8x0m.c
+@@ -1178,8 +1178,8 @@ static struct shortname_table {
+ 	{ 0 },
+ };
+ 
+-static int snd_intel8x0m_probe(struct pci_dev *pci,
+-			       const struct pci_device_id *pci_id)
++static int __snd_intel8x0m_probe(struct pci_dev *pci,
++				 const struct pci_device_id *pci_id)
  {
+ 	struct snd_card *card;
+ 	struct intel8x0m *chip;
+@@ -1225,6 +1225,12 @@ static int snd_intel8x0m_probe(struct pci_dev *pci,
+ 	return 0;
+ }
+ 
++static int snd_intel8x0m_probe(struct pci_dev *pci,
++			       const struct pci_device_id *pci_id)
++{
++	return snd_card_free_on_error(&pci->dev, __snd_intel8x0m_probe(pci, pci_id));
++}
++
+ static struct pci_driver intel8x0m_driver = {
+ 	.name = KBUILD_MODNAME,
+ 	.id_table = snd_intel8x0m_ids,
 -- 
 2.31.1
 
