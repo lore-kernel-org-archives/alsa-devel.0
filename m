@@ -4,69 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4BDA3C433F5
-	for <alsa-devel@archiver.kernel.org>; Tue, 12 Apr 2022 10:33:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id CE5B2C433F5
+	for <alsa-devel@archiver.kernel.org>; Tue, 12 Apr 2022 10:33:47 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 9B1C91910;
-	Tue, 12 Apr 2022 12:32:27 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9B1C91910
+	by alsa0.perex.cz (Postfix) with ESMTPS id 17DD0191E;
+	Tue, 12 Apr 2022 12:32:56 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 17DD0191E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1649759597;
-	bh=KgnKYQN1NBErWZfx8oulLJCih2HJ5OxRfnqTpYRLhxw=;
+	s=default; t=1649759626;
+	bh=MwyBHd5ko2CVUfdBZdKImVThC22dzsyuB2f7HuTZFeU=;
 	h=From:To:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=cNDiGGN6F7Yji/259HHqWr0LeiaTSn86GCKDBL8SZHt8Mu5R90VC3u8CLBMjFKzZn
-	 9zvRkSEECrsYwRpwxs0f3FMmBHHiMmxPDm0v+twnEaLtkRUZR1r6wGzfpopVtse6SD
-	 bGr9cFLtOfhn+SSty2mxgHeOO1+ShsxsM5RwxmFg=
+	b=LOQeJ4YkkJmUHTMPu16iXJTfW7ftobv9LJglSRyyxpjdme0T4IJ7ojTFvfsWfshw7
+	 M2clw+d2BF09wGMfpDOWi7UiVnz8cuffmZEtzhsgpPFYE3ygK26DE4AFlesBquMMeF
+	 LGBaQxsaz7r5Ci/wUkygPBsNQIziSTGcHHl4jmQQ=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 363F3F805C7;
-	Tue, 12 Apr 2022 12:27:32 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 5BC43F805D8;
+	Tue, 12 Apr 2022 12:27:38 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id DDC52F805B5; Tue, 12 Apr 2022 12:27:23 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+ id 69EF4F805B2; Tue, 12 Apr 2022 12:27:25 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id A3C43F80527
+ by alsa1.perex.cz (Postfix) with ESMTPS id ABC9DF80526
  for <alsa-devel@alsa-project.org>; Tue, 12 Apr 2022 12:26:46 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A3C43F80527
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz ABC9DF80526
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="oFToAMZB"; 
+ header.b="QrfAFAAA"; 
  dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="bviP9ZGs"
+ header.b="jBwT05GV"
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out2.suse.de (Postfix) with ESMTP id 743D21FD06
- for <alsa-devel@alsa-project.org>; Tue, 12 Apr 2022 10:26:44 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTP id 0C58121611
+ for <alsa-devel@alsa-project.org>; Tue, 12 Apr 2022 10:26:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1649759204; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ t=1649759205; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=XuhCRLRYjLB3evYOFD8r7tVwyNZ3T1P/oUtkHvEqbjE=;
- b=oFToAMZBMNEoDvP9/15ndNXz+mfeygQgNDELTImM4cfBuyfgE6H5oN/X71uwQJgGs1w1yh
- I1I/f4weKw/przVaQLoSm5ao6Itcdzo7wejINEiW7eEcifPqcCw8oRWSwPPowRF91VEtrS
- Vz0rHqV7dL+1yO00fQVlTCsNYxBmzTU=
+ bh=5LzHnZb/RPia00zKlb5KDq/JXdna9EYMtLb6ycagHow=;
+ b=QrfAFAAA1vffYwTJCWopRjsXy6I1p9q58s5YPwBytg6Bm5ky5CV3/P8UJ9ScgTkVGiuL8J
+ Ngti1yRwYIq6hwFCVSltmCHLJ7KoiA9/F+hw+3JXdbHVfcLJmb8Ij55rXioRL2blRlXxim
+ ojgV4MwmfZdN1Ht79MRbeSPbZQV4bQs=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1649759204;
+ s=susede2_ed25519; t=1649759205;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=XuhCRLRYjLB3evYOFD8r7tVwyNZ3T1P/oUtkHvEqbjE=;
- b=bviP9ZGsiYCWe27jtoPHc30DAOiuNNMD/Dci4v7PMbDWflhgEn4zWzyp9QLY9+RHOMm114
- 11EK8CxEX6FIDZDg==
+ bh=5LzHnZb/RPia00zKlb5KDq/JXdna9EYMtLb6ycagHow=;
+ b=jBwT05GVrd8UuI+whEP2hjjuV/uuRuryc5ERxX4UtGcHFtZ6MWYYfaDxF2tj6HX+bGq2uL
+ qyllSNGmO1xi5zDA==
 Received: from alsa1.nue.suse.com (alsa1.suse.de [10.160.4.42])
- by relay2.suse.de (Postfix) with ESMTP id 70E05A3B89;
- Tue, 12 Apr 2022 10:26:44 +0000 (UTC)
+ by relay2.suse.de (Postfix) with ESMTP id 07600A3B87;
+ Tue, 12 Apr 2022 10:26:45 +0000 (UTC)
 From: Takashi Iwai <tiwai@suse.de>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH 16/39] ALSA: fm801: Fix the missing snd_card_free() call at
+Subject: [PATCH 37/39] ALSA: rme9652: Fix the missing snd_card_free() call at
  probe error
-Date: Tue, 12 Apr 2022 12:26:13 +0200
-Message-Id: <20220412102636.16000-17-tiwai@suse.de>
+Date: Tue, 12 Apr 2022 12:26:34 +0200
+Message-Id: <20220412102636.16000-38-tiwai@suse.de>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20220412102636.16000-1-tiwai@suse.de>
 References: <20220412102636.16000-1-tiwai@suse.de>
@@ -93,44 +93,45 @@ we register the card, snd_card_free() has to be called at first for
 releasing the stuff properly when the driver tries to manage and
 release the stuff via card->private_free().
 
-This patch fixes it by calling snd_card_free() on the error from the
-probe callback using a new helper function.
+This patch fixes it by calling snd_card_free() manually on the error
+from the probe callback.
 
-Fixes: 47c413395376 ("ALSA: fm801: Allocate resources with device-managed APIs")
+Fixes: b1002b2d41c5 ("ALSA: rme9652: Allocate resources with device-managed APIs")
 Cc: <stable@vger.kernel.org>
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/pci/fm801.c | 10 ++++++++--
- 1 file changed, 8 insertions(+), 2 deletions(-)
+ sound/pci/rme9652/rme9652.c | 8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
 
-diff --git a/sound/pci/fm801.c b/sound/pci/fm801.c
-index 9c22ff19e56d..62b3cb126c6d 100644
---- a/sound/pci/fm801.c
-+++ b/sound/pci/fm801.c
-@@ -1268,8 +1268,8 @@ static int snd_fm801_create(struct snd_card *card,
- 	return 0;
- }
+diff --git a/sound/pci/rme9652/rme9652.c b/sound/pci/rme9652/rme9652.c
+index 7755e19aa776..1d614fe89a6a 100644
+--- a/sound/pci/rme9652/rme9652.c
++++ b/sound/pci/rme9652/rme9652.c
+@@ -2572,7 +2572,7 @@ static int snd_rme9652_probe(struct pci_dev *pci,
+ 	rme9652->pci = pci;
+ 	err = snd_rme9652_create(card, rme9652, precise_ptr[dev]);
+ 	if (err)
+-		return err;
++		goto error;
  
--static int snd_card_fm801_probe(struct pci_dev *pci,
--				const struct pci_device_id *pci_id)
-+static int __snd_card_fm801_probe(struct pci_dev *pci,
-+				  const struct pci_device_id *pci_id)
- {
- 	static int dev;
- 	struct snd_card *card;
-@@ -1333,6 +1333,12 @@ static int snd_card_fm801_probe(struct pci_dev *pci,
- 	return 0;
- }
+ 	strcpy(card->shortname, rme9652->card_name);
  
-+static int snd_card_fm801_probe(struct pci_dev *pci,
-+				const struct pci_device_id *pci_id)
-+{
-+	return snd_card_free_on_error(&pci->dev, __snd_card_fm801_probe(pci, pci_id));
-+}
+@@ -2580,10 +2580,14 @@ static int snd_rme9652_probe(struct pci_dev *pci,
+ 		card->shortname, rme9652->port, rme9652->irq);
+ 	err = snd_card_register(card);
+ 	if (err)
+-		return err;
++		goto error;
+ 	pci_set_drvdata(pci, card);
+ 	dev++;
+ 	return 0;
 +
- #ifdef CONFIG_PM_SLEEP
- static const unsigned char saved_regs[] = {
- 	FM801_PCM_VOL, FM801_I2S_VOL, FM801_FM_VOL, FM801_REC_SRC,
++ error:
++	snd_card_free(card);
++	return err;
+ }
+ 
+ static struct pci_driver rme9652_driver = {
 -- 
 2.31.1
 
