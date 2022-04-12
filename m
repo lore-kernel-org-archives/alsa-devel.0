@@ -4,69 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 35D7FC433EF
-	for <alsa-devel@archiver.kernel.org>; Tue, 12 Apr 2022 10:31:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1FF17C433FE
+	for <alsa-devel@archiver.kernel.org>; Tue, 12 Apr 2022 10:32:04 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 8331018B3;
-	Tue, 12 Apr 2022 12:30:51 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8331018B3
+	by alsa0.perex.cz (Postfix) with ESMTPS id 5CF9316B4;
+	Tue, 12 Apr 2022 12:31:12 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5CF9316B4
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1649759501;
-	bh=nd9fTPihYsjWrR2mAE30uKjRkV3oTTEApD6etrwITfk=;
+	s=default; t=1649759522;
+	bh=4V4OaMc4XUimb70Z/tKW7wils5+dSwNUDQqeTlOefJc=;
 	h=From:To:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=irB7VW37SMTd78QlaMW17aBDzOfU4c/Cn20J8yX/uJz0huviSHcQIQ0ajjeRGjmP+
-	 fu7v+ISNuLIiSegdW8xTcQyyBgQ/wZCJjsISNSVk9r6l7OAQsR8TwQ+J3hSxIHWeLg
-	 qyfZ5uuEy1z30qEjE1l0LtU+JyQ2mZs61ezrZBco=
+	b=t6wWcukKyGOImCf3BOZEXV9zypAKFs+zJscLbhUbftM4EHxwZlQIF3AR8RQENA85Y
+	 +pMfS7KyZeML9iA2N5bR7AVUm54dYgNHXv6KJhodPfYp64Qu6d5d1+Eo+JeQCTDRwW
+	 oCLUlzbFZ8zq/KDNVZI2KnTCkGT13PrIyXCqQRHI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 39F52F805B1;
+	by alsa1.perex.cz (Postfix) with ESMTP id E9505F805BB;
 	Tue, 12 Apr 2022 12:27:25 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id CB557F80578; Tue, 12 Apr 2022 12:27:13 +0200 (CEST)
+ id 8A31CF8051A; Tue, 12 Apr 2022 12:27:16 +0200 (CEST)
 Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 6CC4CF8050F
+ by alsa1.perex.cz (Postfix) with ESMTPS id 71CC4F80507
  for <alsa-devel@alsa-project.org>; Tue, 12 Apr 2022 12:26:46 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6CC4CF8050F
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 71CC4F80507
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="dXHuenfS"; 
+ header.b="Tin/s4L9"; 
  dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="CFkZ8rt2"
+ header.b="C8Hi9AUQ"
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out2.suse.de (Postfix) with ESMTP id 5F5A01FCFF
+ by smtp-out2.suse.de (Postfix) with ESMTP id 703E01FD05
  for <alsa-devel@alsa-project.org>; Tue, 12 Apr 2022 10:26:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
  t=1649759204; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=5n8z4NUNMUz8Es9sbDUg7xURhoYIB3rkSPT0CmMoZHU=;
- b=dXHuenfSDpAW4/XyBkov+5OUFDIgcvAeV+HnZiHNtwicuFbRyLoO4zW8WM7TUKm0JstPeP
- C5YFjA7RO9rXazFf1leE3bfT2K5neXbvbUHb+4Jm6OAxlTsmlb7gbU3n5oitrVPjE1UgzB
- 4W4niemcWJJKL9zqnc2gepSkH/xKcHc=
+ bh=mP5YzvHhQusfxGH4trPRuyh4X0ylXt+ZURJV6km1EGg=;
+ b=Tin/s4L9sHs9rvmJfpNSR6nXYUN7ErEKalzHYToxXy7UejVAq2ifcdnx/K/nVGm4idBE6g
+ ikzFPatgoBhT6ZK9xhMLELZQdrNBdFbK4oeDM0pzrgpG+Cz7qVV0IyOU6V3AnydnhqCyGh
+ WYxd7M+GUUe8Ga0RRnswbzekJ1aO4NI=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
  s=susede2_ed25519; t=1649759204;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=5n8z4NUNMUz8Es9sbDUg7xURhoYIB3rkSPT0CmMoZHU=;
- b=CFkZ8rt2qD9/3FHP8VJE++eN8Cvgp/ZLMYd/vDS3P5IehfL1GhYzdjL7om4PB7b8eWkyYV
- Mdd8cdyv4JYFwkDA==
+ bh=mP5YzvHhQusfxGH4trPRuyh4X0ylXt+ZURJV6km1EGg=;
+ b=C8Hi9AUQZOzaTnnPqb1WwXvLMtAjJOKlHlI1GDgeXhycLDQ0gCjPqE7s6XAQx0cDUQBiJL
+ agPSVvpDNnQ7q5Dg==
 Received: from alsa1.nue.suse.com (alsa1.suse.de [10.160.4.42])
- by relay2.suse.de (Postfix) with ESMTP id 5B01DA3B83;
+ by relay2.suse.de (Postfix) with ESMTP id 6B973A3B83;
  Tue, 12 Apr 2022 10:26:44 +0000 (UTC)
 From: Takashi Iwai <tiwai@suse.de>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH 08/39] ALSA: azt3328: Fix the missing snd_card_free() call at
+Subject: [PATCH 14/39] ALSA: es1938: Fix the missing snd_card_free() call at
  probe error
-Date: Tue, 12 Apr 2022 12:26:05 +0200
-Message-Id: <20220412102636.16000-9-tiwai@suse.de>
+Date: Tue, 12 Apr 2022 12:26:11 +0200
+Message-Id: <20220412102636.16000-15-tiwai@suse.de>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20220412102636.16000-1-tiwai@suse.de>
 References: <20220412102636.16000-1-tiwai@suse.de>
@@ -96,39 +96,41 @@ release the stuff via card->private_free().
 This patch fixes it by calling snd_card_free() on the error from the
 probe callback using a new helper function.
 
-Fixes: 8c5823ef31e1 ("ALSA: azt3328: Allocate resources with device-managed APIs")
+Fixes: 08e9d3ab4cc1 ("ALSA: es1938: Allocate resources with device-managed APIs")
 Cc: <stable@vger.kernel.org>
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/pci/azt3328.c | 8 +++++++-
- 1 file changed, 7 insertions(+), 1 deletion(-)
+ sound/pci/es1938.c | 10 ++++++++--
+ 1 file changed, 8 insertions(+), 2 deletions(-)
 
-diff --git a/sound/pci/azt3328.c b/sound/pci/azt3328.c
-index 089050470ff2..7f329dfc5404 100644
---- a/sound/pci/azt3328.c
-+++ b/sound/pci/azt3328.c
-@@ -2427,7 +2427,7 @@ snd_azf3328_create(struct snd_card *card,
+diff --git a/sound/pci/es1938.c b/sound/pci/es1938.c
+index 00b976f42a3d..e34ec6f89e7e 100644
+--- a/sound/pci/es1938.c
++++ b/sound/pci/es1938.c
+@@ -1716,8 +1716,8 @@ static int snd_es1938_mixer(struct es1938 *chip)
  }
+        
  
- static int
--snd_azf3328_probe(struct pci_dev *pci, const struct pci_device_id *pci_id)
-+__snd_azf3328_probe(struct pci_dev *pci, const struct pci_device_id *pci_id)
+-static int snd_es1938_probe(struct pci_dev *pci,
+-			    const struct pci_device_id *pci_id)
++static int __snd_es1938_probe(struct pci_dev *pci,
++			      const struct pci_device_id *pci_id)
  {
  	static int dev;
  	struct snd_card *card;
-@@ -2520,6 +2520,12 @@ snd_azf3328_probe(struct pci_dev *pci, const struct pci_device_id *pci_id)
+@@ -1796,6 +1796,12 @@ static int snd_es1938_probe(struct pci_dev *pci,
  	return 0;
  }
  
-+static int
-+snd_azf3328_probe(struct pci_dev *pci, const struct pci_device_id *pci_id)
++static int snd_es1938_probe(struct pci_dev *pci,
++			    const struct pci_device_id *pci_id)
 +{
-+	return snd_card_free_on_error(&pci->dev, __snd_azf3328_probe(pci, pci_id));
++	return snd_card_free_on_error(&pci->dev, __snd_es1938_probe(pci, pci_id));
 +}
 +
- #ifdef CONFIG_PM_SLEEP
- static inline void
- snd_azf3328_suspend_regs(const struct snd_azf3328 *chip,
+ static struct pci_driver es1938_driver = {
+ 	.name = KBUILD_MODNAME,
+ 	.id_table = snd_es1938_ids,
 -- 
 2.31.1
 
