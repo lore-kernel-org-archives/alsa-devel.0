@@ -4,69 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C4701C433EF
-	for <alsa-devel@archiver.kernel.org>; Tue, 12 Apr 2022 10:37:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 31A73C433EF
+	for <alsa-devel@archiver.kernel.org>; Tue, 12 Apr 2022 10:38:07 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 1D9BF1A2B;
-	Tue, 12 Apr 2022 12:36:58 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1D9BF1A2B
+	by alsa0.perex.cz (Postfix) with ESMTPS id 6C5A418A6;
+	Tue, 12 Apr 2022 12:37:15 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6C5A418A6
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1649759868;
-	bh=AEyH57MTvawtOAsuxfkiQnYX2LLzgkZJ+rZekPT2MEY=;
+	s=default; t=1649759885;
+	bh=8jYI0Gkx1Yn1CXTFDdfwh0QVY/c8OF5rp1hDk4UTAfg=;
 	h=From:To:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=dkAzfoo7MdCryHfpbhHnyqsYpKWl6h9H1TAlz3eI6PQmbZRW5/5YjaACk0KomrnJT
-	 YjEhOKXhAgVGdb+CN+kQbmLWAhR640t8UrfEGGkeb0HpnBpwxyyFTTQvLPrae+DX6T
-	 qsq/AYrmeCwExszfSviErSZp/dse7B0GHyew3qho=
+	b=QT/0d61QreFsvjmzJSi+y1yJLGE4l7Ch5VurEytB40fzTJizvXP43V5xVg5itQiBx
+	 9R7vWS28wdpDu0d0Yv57ROaShFRN/run9tKEGMm3O/bgZPX90CCStUf8/+tJHnqoaG
+	 0qUcu3uXCkBBCCgBqM9mOfUVhwtwKmv1PPr0yYiQ=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 23C82F80617;
+	by alsa1.perex.cz (Postfix) with ESMTP id C89ECF8061A;
 	Tue, 12 Apr 2022 12:27:55 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 1D6ECF805FD; Tue, 12 Apr 2022 12:27:45 +0200 (CEST)
+ id 3C833F8053B; Tue, 12 Apr 2022 12:27:45 +0200 (CEST)
 Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id DA1EEF80544
+ by alsa1.perex.cz (Postfix) with ESMTPS id 1B3B5F8053B
  for <alsa-devel@alsa-project.org>; Tue, 12 Apr 2022 12:26:48 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DA1EEF80544
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1B3B5F8053B
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="BalL5WZU"; 
+ header.b="mD5VYwoF"; 
  dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="2R7rtcF0"
+ header.b="SgyDoGHr"
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out2.suse.de (Postfix) with ESMTP id ED1981FD14
+ by smtp-out2.suse.de (Postfix) with ESMTP id CE8BE1FD13
  for <alsa-devel@alsa-project.org>; Tue, 12 Apr 2022 10:26:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
  t=1649759204; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=RY+tXWqTR+Y2vaa7wS1mAczc6CBJykwGe9+uumAbI7Q=;
- b=BalL5WZUz7kyXNdB0it+eEdJZfT6j8LJbk8dm4/EW3TE+4q7L4psfLbPKkuLCbdb1tB7LR
- YtrODhs8qbWsrB/XN7UXJMskNAHmDQxbq8SyZFMcBUeVHPpKmXUkCQB/K0sHz/YIjYHgul
- avCbJfk3uUPZdFjrpfw9OWxlj8aYUAU=
+ bh=UNCIGc1sJeHlIJHS+R/Ew+Y+LPENgWBoxqnO2oUY00E=;
+ b=mD5VYwoFsugmMhNKGN6qaIgMYBjMUTYFZLSJ4jT0P+xtsxr1CWy4U552OW70BS8fg03fHl
+ mYhvfYX7LJdSyYF3hB7sA9fKAlWxy6rcMJRwm/KTAvEVQClFhBYz9IzJtIPKKbCYW66Lu+
+ qEybnjbn+eg+EEOuUdHmymMtM9JnQno=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
  s=susede2_ed25519; t=1649759204;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=RY+tXWqTR+Y2vaa7wS1mAczc6CBJykwGe9+uumAbI7Q=;
- b=2R7rtcF0Jt907YRNiVyOFU/vXXKeN0FsA0cg/lnY1OadkKV2bifbdL3SmhlygK1sv8+qRX
- YODR7uKbY5fYUvAQ==
+ bh=UNCIGc1sJeHlIJHS+R/Ew+Y+LPENgWBoxqnO2oUY00E=;
+ b=SgyDoGHr9bOm9reS8OJZ3AK1/0pR8rRaFkH4zW1CZgHOkL3WnMRVqJS2oYxT2PaO5BBRPO
+ WuPWLdJrRt7OMfBg==
 Received: from alsa1.nue.suse.com (alsa1.suse.de [10.160.4.42])
- by relay2.suse.de (Postfix) with ESMTP id DCB9AA3B87;
+ by relay2.suse.de (Postfix) with ESMTP id C8745A3B82;
  Tue, 12 Apr 2022 10:26:44 +0000 (UTC)
 From: Takashi Iwai <tiwai@suse.de>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH 34/39] ALSA: oxygen: Fix the missing snd_card_free() call at
+Subject: [PATCH 31/39] ALSA: aw2: Fix the missing snd_card_free() call at
  probe error
-Date: Tue, 12 Apr 2022 12:26:31 +0200
-Message-Id: <20220412102636.16000-35-tiwai@suse.de>
+Date: Tue, 12 Apr 2022 12:26:28 +0200
+Message-Id: <20220412102636.16000-32-tiwai@suse.de>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20220412102636.16000-1-tiwai@suse.de>
 References: <20220412102636.16000-1-tiwai@suse.de>
@@ -93,46 +93,48 @@ we register the card, snd_card_free() has to be called at first for
 releasing the stuff properly when the driver tries to manage and
 release the stuff via card->private_free().
 
-This patch fixes it by calling snd_card_free() on the error from the
-probe callback using a new helper function.
+This patch fixes it by calling snd_card_free() manually on the error
+from the probe callback.
 
-Fixes: 596ae97ab0ce ("ALSA: oxygen: Allocate resources with device-managed APIs")
+Fixes: 33631012cd06 ("ALSA: aw2: Allocate resources with device-managed APIs")
 Cc: <stable@vger.kernel.org>
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/pci/oxygen/oxygen_lib.c | 12 +++++++++++-
- 1 file changed, 11 insertions(+), 1 deletion(-)
+ sound/pci/aw2/aw2-alsa.c | 8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
 
-diff --git a/sound/pci/oxygen/oxygen_lib.c b/sound/pci/oxygen/oxygen_lib.c
-index 4fb3f2484fdb..92ffe9dc20c5 100644
---- a/sound/pci/oxygen/oxygen_lib.c
-+++ b/sound/pci/oxygen/oxygen_lib.c
-@@ -576,7 +576,7 @@ static void oxygen_card_free(struct snd_card *card)
- 	mutex_destroy(&chip->mutex);
- }
+diff --git a/sound/pci/aw2/aw2-alsa.c b/sound/pci/aw2/aw2-alsa.c
+index d56f126d6fdd..29a4bcdec237 100644
+--- a/sound/pci/aw2/aw2-alsa.c
++++ b/sound/pci/aw2/aw2-alsa.c
+@@ -275,7 +275,7 @@ static int snd_aw2_probe(struct pci_dev *pci,
+ 	/* (3) Create main component */
+ 	err = snd_aw2_create(card, pci);
+ 	if (err < 0)
+-		return err;
++		goto error;
  
--int oxygen_pci_probe(struct pci_dev *pci, int index, char *id,
-+static int __oxygen_pci_probe(struct pci_dev *pci, int index, char *id,
- 		     struct module *owner,
- 		     const struct pci_device_id *ids,
- 		     int (*get_model)(struct oxygen *chip,
-@@ -701,6 +701,16 @@ int oxygen_pci_probe(struct pci_dev *pci, int index, char *id,
+ 	/* initialize mutex */
+ 	mutex_init(&chip->mtx);
+@@ -294,13 +294,17 @@ static int snd_aw2_probe(struct pci_dev *pci,
+ 	/* (6) Register card instance */
+ 	err = snd_card_register(card);
+ 	if (err < 0)
+-		return err;
++		goto error;
+ 
+ 	/* (7) Set PCI driver data */
  	pci_set_drvdata(pci, card);
- 	return 0;
- }
-+
-+int oxygen_pci_probe(struct pci_dev *pci, int index, char *id,
-+		     struct module *owner,
-+		     const struct pci_device_id *ids,
-+		     int (*get_model)(struct oxygen *chip,
-+				      const struct pci_device_id *id))
-+{
-+	return snd_card_free_on_error(&pci->dev,
-+				      __oxygen_pci_probe(pci, index, id, owner, ids, get_model));
-+}
- EXPORT_SYMBOL(oxygen_pci_probe);
  
- #ifdef CONFIG_PM_SLEEP
+ 	dev++;
+ 	return 0;
++
++ error:
++	snd_card_free(card);
++	return err;
+ }
+ 
+ /* open callback */
 -- 
 2.31.1
 
