@@ -4,93 +4,85 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2145AC433EF
-	for <alsa-devel@archiver.kernel.org>; Tue, 12 Apr 2022 15:02:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 909EAC433F5
+	for <alsa-devel@archiver.kernel.org>; Tue, 12 Apr 2022 15:06:07 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C117718BF;
-	Tue, 12 Apr 2022 17:01:17 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C117718BF
+	by alsa0.perex.cz (Postfix) with ESMTPS id 9EE5A18B8;
+	Tue, 12 Apr 2022 17:05:15 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9EE5A18B8
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1649775727;
-	bh=makjnG246G3e9hn7HA9S30zgnNabrwvQfJwonsz13bc=;
-	h=Date:Subject:To:References:From:In-Reply-To:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=KMc5GOuxZchRcOQc2ITVmJhzTz9yXqoR64E1zzsstYt2StZpfuMKwAKspXGuwe225
-	 aUMSj9xmPmbfZclz0NprdBZdq7Vu9dBrlo/NX2x/dtzxBHi13egaeW4aurD7TgPJmw
-	 Wwxz7sKw5KwUBWoVvw0Zd8bTFLQ2HCaSlPr77DIQ=
+	s=default; t=1649775965;
+	bh=ZPXNsQhBlY5X7mvV2wpDPubtYGw02FRf8N/D8DsT7fs=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=bwq56d1fLpA1w4oaVavP3Y5L0UZHoXdfynVrHJclFEZHNM0Ys4zHGw7OBKkNd2XET
+	 UHSZEV1ieJf9qniZ0LjM2kdskrLCHM9mmwh1IjuT1RxwSBHG9vWlicdbqrYgY1VO5w
+	 BTV/5JViVMoubwXBchmEBy1ojKq3rLZUoYQyiV7Q=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 32D5EF80095;
-	Tue, 12 Apr 2022 17:01:17 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 34168F80134;
+	Tue, 12 Apr 2022 17:05:15 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 248A8F80154; Tue, 12 Apr 2022 17:01:15 +0200 (CEST)
-Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com
- [IPv6:2a00:1450:4864:20::32a])
+ id 4D040F80154; Tue, 12 Apr 2022 17:05:13 +0200 (CEST)
+Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com
+ [IPv6:2a00:1450:4864:20::435])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id A4330F8011C
- for <alsa-devel@alsa-project.org>; Tue, 12 Apr 2022 17:01:08 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A4330F8011C
+ by alsa1.perex.cz (Postfix) with ESMTPS id EF152F8011C
+ for <alsa-devel@alsa-project.org>; Tue, 12 Apr 2022 17:05:05 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EF152F8011C
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org
- header.b="Z2uChZtZ"
-Received: by mail-wm1-x32a.google.com with SMTP id
- l62-20020a1c2541000000b0038e4570af2fso1792379wml.5
- for <alsa-devel@alsa-project.org>; Tue, 12 Apr 2022 08:01:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
- h=message-id:date:mime-version:user-agent:subject:content-language:to
- :cc:references:from:in-reply-to:content-transfer-encoding;
- bh=7js1UH2M/H4XFdT/VYX4By9FNV4HBtwbQGAItNp0olE=;
- b=Z2uChZtZEb6EjRK0LBefZZB3/73zZjLJyUy8NLxgtpVI8sZBEOsYczIsK4qz/vKXJ7
- aIVS5OagmaNmz88LDX3kaGrIHNEFQIzGWFrXQGANXHDw4f+tpS1ZaMQODYuPNa4ydUvY
- 9sJgUVa+aiKi1IJRtNeUo/6XnEXk8MbKk4UBCqlppIa6VCzsUJ1whX2kDlya7CKYbWSJ
- gLEMs2t5ZjVtEYCNI4r192x3vgHR4I0f+LaLnjL37RV6SsqR2ubRQfQvhRoeoD+gSqYA
- AjZflTeIBr/wXKUKDnQGKNo4p57EA/cb2Wo55A7mbjr7WDk2yhtAlX/gKPqiMd8Kdela
- RDUg==
+ dkim=pass (2048-bit key) header.d=baylibre-com.20210112.gappssmtp.com
+ header.i=@baylibre-com.20210112.gappssmtp.com header.b="FLvdqRwx"
+Received: by mail-wr1-x435.google.com with SMTP id c10so7031943wrb.1
+ for <alsa-devel@alsa-project.org>; Tue, 12 Apr 2022 08:05:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=baylibre-com.20210112.gappssmtp.com; s=20210112;
+ h=from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=AU2XsmDlDNlX0BEIJLBYiWWgvTto/3B9fgEktWGlYes=;
+ b=FLvdqRwxsxx8Xo/stue2ji1qIfkqVdTAjxTS4EXVFaBypzDQTGplbAch/Ak2V+kLAO
+ 1VSMTefrGAQ8MwRJM9lsr/J1AZ5q7x33iM3UKBRn63jlvQSSyuLOCPbubYe8xOPzCY0S
+ CZAfT9NJWSAKvXuIZlHOsKDY7zua6SrVtoyS42Ymh5XNMQiUYasLIjio4vYF3T6FUmf+
+ DXC7rNP1FKqVsxUMzPoJE3mIANYsQp4U2hnDwClCb0ezUCJSlojSetiiznwCkfsPLoi8
+ BQQE+P3W4xSrSR0p7HD4UOCeshOvLd6Yz2oLZqKUZppDnJV3WGLPTPJm7nNzIcMS3piu
+ bPkw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
- h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
- :content-language:to:cc:references:from:in-reply-to
+ h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
  :content-transfer-encoding;
- bh=7js1UH2M/H4XFdT/VYX4By9FNV4HBtwbQGAItNp0olE=;
- b=xkS/bYVmBEy0AogxbKEBWowVugPoyY8YuoLy4Vod44zDr/8Kds0q8vnG+PEdWt3XBv
- 5PB0cC9IYNtlJmg1adu78q5v337nuQx6lp7kTTVLtx/KVL2f92P0KuiqKySkmt6x2Ujv
- ajQp0QyjG1HdGKYZDlAIe3Ndjf5OAY+U/O4bQ7jeRFOBhUGcwIgsR3emwiyE7H0snH4M
- ixSQsYxv5WxLqksY9AkPNANhXr5o7ReKNwEo+cWTmOkFCCrxOY33qSyMaf+S96901QqL
- tcF5zPfpWBFFjkO/Ve+aNeS3ATx/u4ACpBaCNp/JV+NXTVhr1ralZYvv04cvnkIq4gKJ
- r52A==
-X-Gm-Message-State: AOAM533hTDSp/av1DPD61EQ+ZWVINuVNeOP6I0t8BsxgmeMR0TdSAM6f
- R809MYwj7dFv/F7XHe6OZpKdtQ==
-X-Google-Smtp-Source: ABdhPJzTSHSfyrwau3xW+AehkcTP+X4MnzJII/oAmUKEdfBGnGP6TA25S/PTwJfKeSYbm/uhBORLsw==
-X-Received: by 2002:a1c:44c5:0:b0:38e:abd1:d894 with SMTP id
- r188-20020a1c44c5000000b0038eabd1d894mr4561539wma.40.1649775667018; 
- Tue, 12 Apr 2022 08:01:07 -0700 (PDT)
-Received: from [192.168.86.34]
- (cpc90716-aztw32-2-0-cust825.18-1.cable.virginm.net. [86.26.103.58])
+ bh=AU2XsmDlDNlX0BEIJLBYiWWgvTto/3B9fgEktWGlYes=;
+ b=3VL8m65IK9F6hthSmpOkHU7CbyMR8r0/5RzVhNoAwIe4GdP28rd5jLDPrYGxHf06Qq
+ o2+eFceYRv7BKu/deew4NODCp6vH9pYtTtVGPX37YKLVdH5GXxXM3nI/I6GexZg9C8vU
+ WjthHwRQuN9PUOeiljdk5+Py7/f/TtAWKl0iwBUOCqr3qKuJYBii3Yf/HS+vchSJ4Ano
+ T0cp5REMwYCicvVYqsdQanHGmPZeh7FzIZIHD0idxUJbUDWMg0ybQSY5VAZgipF4SzCO
+ nJ0ydq5p+FxAOjX0Ma3awBqo2JpwVntyCibjDKhLct/iTl611RVr6OdbLzXtnkG6eOZv
+ X3Mw==
+X-Gm-Message-State: AOAM532u9iH0VNOKHxcIvlB6H9NaIMhU7RauMjaoV30iEJ22deEchCJj
+ RIrC41tv1U3TX1JYhVmIPv6E/g==
+X-Google-Smtp-Source: ABdhPJxd7WjJ9ssivqQBFFzu00/JymmKh7NNpLeijb6Bysb443KvBJi9evGO+J3pEkJBE/id0C1F5Q==
+X-Received: by 2002:adf:ee81:0:b0:206:1b32:d6f2 with SMTP id
+ b1-20020adfee81000000b002061b32d6f2mr28536137wro.144.1649775903583; 
+ Tue, 12 Apr 2022 08:05:03 -0700 (PDT)
+Received: from localhost.localdomain
+ (laubervilliers-658-1-213-31.w90-63.abo.wanadoo.fr. [90.63.244.31])
  by smtp.googlemail.com with ESMTPSA id
- n23-20020a05600c3b9700b0038b7c4c0803sm3026900wms.30.2022.04.12.08.01.05
- (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Tue, 12 Apr 2022 08:01:06 -0700 (PDT)
-Message-ID: <149e3140-1b9d-b864-c14c-4d2cb098ec9a@linaro.org>
-Date: Tue, 12 Apr 2022 16:01:04 +0100
+ 61-20020adf8143000000b002061d8d807esm19685371wrm.87.2022.04.12.08.05.02
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Tue, 12 Apr 2022 08:05:03 -0700 (PDT)
+From: Corentin Labbe <clabbe@baylibre.com>
+To: broonie@kernel.org, krzysztof.kozlowski+dt@linaro.org, lgirdwood@gmail.com,
+ robh+dt@kernel.org
+Subject: [PATCH v2] ASoC: dt-bindings: tas27xx: fix invalid yaml
+Date: Tue, 12 Apr 2022 15:04:44 +0000
+Message-Id: <20220412150444.3918829-1-clabbe@baylibre.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.7.0
-Subject: Re: [PATCH] slimbus: qcom: fix error check return value of
- platform_get_irq()
-Content-Language: en-US
-To: cgel.zte@gmail.com, agross@kernel.org, bjorn.andersson@linaro.org
-References: <20220412090259.2533316-1-lv.ruyi@zte.com.cn>
-From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-In-Reply-To: <20220412090259.2533316-1-lv.ruyi@zte.com.cn>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: alsa-devel@alsa-project.org, gregkh@linuxfoundation.org,
- Lv Ruyi <lv.ruyi@zte.com.cn>, Zeal Robot <zealci@zte.com.cn>,
- linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
- sdharia@codeaurora.org
+Content-Transfer-Encoding: 8bit
+Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+ devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
+ linux-kernel@vger.kernel.org, Corentin Labbe <clabbe@baylibre.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -106,39 +98,30 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+The word "or" is useless and breaks yaml validation.
 
+Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Signed-off-by: Corentin Labbe <clabbe@baylibre.com>
+---
+Change since v1:
+- Added reviewed-by
+- Fixed subject
 
-On 12/04/2022 10:02, cgel.zte@gmail.com wrote:
-> From: Lv Ruyi <lv.ruyi@zte.com.cn>
-> 
-> platform_get_irq() return negative value on failure, so null check of
-> ctrl->irq is incorrect. Fix it by comparing whether it is less than zero.
-> 
-> Fixes: ad7fcbc308b0 ("slimbus: qcom: Add Qualcomm Slimbus controller driver")
-> Reported-by: Zeal Robot <zealci@zte.com.cn>
-> Signed-off-by: Lv Ruyi <lv.ruyi@zte.com.cn>
+ Documentation/devicetree/bindings/sound/tas27xx.yaml | 1 -
+ 1 file changed, 1 deletion(-)
 
-
-There was already a patch posted to fix this
-
+diff --git a/Documentation/devicetree/bindings/sound/tas27xx.yaml b/Documentation/devicetree/bindings/sound/tas27xx.yaml
+index 191f4bceb4ee..66a0df8850ea 100644
+--- a/Documentation/devicetree/bindings/sound/tas27xx.yaml
++++ b/Documentation/devicetree/bindings/sound/tas27xx.yaml
+@@ -20,7 +20,6 @@ properties:
+   compatible:
+     enum:
+       - ti,tas2764
+-      or
+       - ti,tas2780
  
-https://git.kernel.org/pub/scm/linux/kernel/git/srini/slimbus.git/commit/?h=for-next&id=54bf672111eef18819fa6e562f68b2d6c449b05d
+   reg:
+-- 
+2.35.1
 
---srini
-> ---
->   drivers/slimbus/qcom-ctrl.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/slimbus/qcom-ctrl.c b/drivers/slimbus/qcom-ctrl.c
-> index f04b961b96cd..b2f01e155d77 100644
-> --- a/drivers/slimbus/qcom-ctrl.c
-> +++ b/drivers/slimbus/qcom-ctrl.c
-> @@ -510,7 +510,7 @@ static int qcom_slim_probe(struct platform_device *pdev)
->   	}
->   
->   	ctrl->irq = platform_get_irq(pdev, 0);
-> -	if (!ctrl->irq) {
-> +	if (ctrl->irq < 0) {
->   		dev_err(&pdev->dev, "no slimbus IRQ\n");
->   		return -ENODEV;
->   	}
