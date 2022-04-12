@@ -4,84 +4,102 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 98FAFC433EF
-	for <alsa-devel@archiver.kernel.org>; Tue, 12 Apr 2022 11:18:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2224FC433EF
+	for <alsa-devel@archiver.kernel.org>; Tue, 12 Apr 2022 11:23:08 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 4091117E5;
-	Tue, 12 Apr 2022 13:17:50 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4091117E5
+	by alsa0.perex.cz (Postfix) with ESMTPS id 561DE1786;
+	Tue, 12 Apr 2022 13:22:16 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 561DE1786
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1649762320;
-	bh=AJw4Kr6M6W+kl6GiejSecd0j5INGSnFmc7IhsTQHvf8=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=jgEuoolt6lM4p9lbtStzFA9AJJ+A1lLaWe4jJ/X2ySaXKGFDtyyEQALVCJwp/rA7u
-	 AUrbUj6psxdbX7cOSvZJd4+kB7GBmtasS4Ekt/yItWHJKaunE8r+RDeHoDLrQSvaz1
-	 oyNwFmEUgwOp1sedO3Nb1l+5erDfikaoZ0i5lmv8=
+	s=default; t=1649762586;
+	bh=r7fBuTvFYRdPFrmzD+7U7RqUHTF1PPbEMSRC3WYKj3s=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=VHT94J+hoEV2VTRVrqPdjtnFGag5jbD9Q41x2wvzyD4VAG96lG8/nrWljKmGUdCFB
+	 3gG6H7sm3mj2PJuvbq1o1MprIlZrExmpM2eQwfO5L0uJGkHQw/KeuVYNV+bs3k9jlR
+	 Kq+fczxM16LM37jrvAjGsgDk+f3rv2hHC3TwJD10=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id B8B42F80134;
-	Tue, 12 Apr 2022 13:17:49 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id DFBF5F80095;
+	Tue, 12 Apr 2022 13:22:15 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 0B956F80095; Tue, 12 Apr 2022 13:17:48 +0200 (CEST)
-Received: from mx07-00178001.pphosted.com (mx07-00178001.pphosted.com
- [185.132.182.106])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 96787F80154; Tue, 12 Apr 2022 13:22:13 +0200 (CEST)
+Received: from out2-smtp.messagingengine.com (out2-smtp.messagingengine.com
+ [66.111.4.26])
+ (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 5D4F3F80095
- for <alsa-devel@alsa-project.org>; Tue, 12 Apr 2022 13:17:39 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5D4F3F80095
+ by alsa1.perex.cz (Postfix) with ESMTPS id 406A8F80095
+ for <alsa-devel@alsa-project.org>; Tue, 12 Apr 2022 13:22:08 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 406A8F80095
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=foss.st.com header.i=@foss.st.com
- header.b="6FN2LhEw"
-Received: from pps.filterd (m0288072.ppops.net [127.0.0.1])
- by mx07-00178001.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 23C7YTD1013409;
- Tue, 12 Apr 2022 13:17:39 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com;
- h=from : to : cc :
- subject : date : message-id : mime-version : content-type; s=selector1;
- bh=dSIQyPfmboxOcHNgx6j2T/JIKfq8ga3OyOJlZJqwlsM=;
- b=6FN2LhEwrivHRHyOAOAgOIDHXlSf6VSQUrRJvEPmZpQ+FuZkn0x/p/S0bSIdvIo15ftc
- eEjb83Nd1wbdajhLYTZrcJN0JL/SDYoUBOAuHPz9qj+xkGebUcTr+sCFYaUfyrEKCj9G
- oRjUq87q4YvCqOzkd5Y+QcACc4aMN+rjLPvuS6JxggPmRVLM4BfV5dozAMc9+vYM3k/Z
- 17E6VuqhxnKJ/Mob28ipdhox6lye9fczaRghVLHk32AHVyF2dGA4z/LX9MAU2eaBdr/d
- 1E28mLFFX6XVVhR78W+ZDK2Ei98S1t62BFU5ObVDA6XBnVciNQ2/yp7djJnZo5uMVuS2 qg== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
- by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3fb74q7107-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
- Tue, 12 Apr 2022 13:17:39 +0200
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
- by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 53ADA10002A;
- Tue, 12 Apr 2022 13:17:37 +0200 (CEST)
-Received: from Webmail-eu.st.com (sfhdag2node2.st.com [10.75.127.5])
- by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 2C76221A21B;
- Tue, 12 Apr 2022 13:17:37 +0200 (CEST)
-Received: from localhost (10.75.127.45) by SFHDAG2NODE2.st.com (10.75.127.5)
- with Microsoft SMTP Server (TLS) id 15.0.1497.26; Tue, 12 Apr 2022 13:17:36
- +0200
-From: Olivier Moysan <olivier.moysan@foss.st.com>
-To: Jaroslav Kysela <perex@perex.cz>, Kuninori Morimoto
- <kuninori.morimoto.gx@renesas.com>,
- Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
- Richard Fitzgerald <rf@opensource.cirrus.com>,
- Robert Hancock <robert.hancock@calian.com>,
- Sameer Pujar <spujar@nvidia.com>, Samuel Holland <samuel@sholland.org>,
- Stephan Gerhold <stephan@gerhold.net>, Takashi Iwai <tiwai@suse.com>
-Subject: [PATCH] ASoC: simple-card-utils: fix sysclk shutdown
-Date: Tue, 12 Apr 2022 13:16:58 +0200
-Message-ID: <20220412111658.11015-1-olivier.moysan@foss.st.com>
-X-Mailer: git-send-email 2.17.1
+ dkim=pass (2048-bit key) header.d=sakamocchi.jp header.i=@sakamocchi.jp
+ header.b="pX+4232Q"; 
+ dkim=pass (2048-bit key) header.d=messagingengine.com
+ header.i=@messagingengine.com header.b="Y9uncMXn"
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+ by mailout.nyi.internal (Postfix) with ESMTP id 5710C5C0269;
+ Tue, 12 Apr 2022 07:22:07 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+ by compute4.internal (MEProxy); Tue, 12 Apr 2022 07:22:07 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sakamocchi.jp;
+ h=cc:cc:content-type:date:date:from:from:in-reply-to
+ :in-reply-to:message-id:mime-version:references:reply-to:sender
+ :subject:subject:to:to; s=fm1; t=1649762527; x=1649848927; bh=KP
+ ZFl+zUr69t/646Egboka8UL5M06q8AkE3vXXNQoBs=; b=pX+4232Q9TXW4yP/a1
+ R1BxNARz4dR7D5YCwTYdaxr8INFIhb6PIbl04Xt5SNCHXNRHrZRnpT2dvlHbGwOU
+ I6AILER+nvsN0bABWf9bKj6a4yiOvXJC9a14I1RxUmCStSqRgpOTbcLdTeygZdly
+ m2pWlOMsLVsXx2AWtJKdnVkL3nZQo1yRuTLpKeKmrrFY+DZiSq0/QC6aHJ+R7aM3
+ 8EwXfSAckZ7NQZrtA0cwzB912d+SriEG+XbkA4TBmmOBxVuWIr9tdnEnYoAgGk0m
+ xcNAru2x8O+lppc6f8XeJDA1R0PoFMJswevoGuDDPqAVC+828OlJGsrIR9w7DwB9
+ 2/2g==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+ messagingengine.com; h=cc:cc:content-type:date:date:from:from
+ :in-reply-to:in-reply-to:message-id:mime-version:references
+ :reply-to:sender:subject:subject:to:to:x-me-proxy:x-me-proxy
+ :x-me-sender:x-me-sender:x-sasl-enc; s=fm3; t=1649762527; x=
+ 1649848927; bh=KPZFl+zUr69t/646Egboka8UL5M06q8AkE3vXXNQoBs=; b=Y
+ 9uncMXn45ChqGDxw2b0yQ2I94QzNXR7JpqEVynwVDzS2+cpO+udMiLWZ/xckC/iq
+ CMXKS33zrHvkxDQuDEgphtKEI+h8rEFw+v4UTZbtic2/mmDRm+Wf9qYkbblVtP85
+ 3f7uJU1cTxpM5pmTKRw72vkKFLywOGaLMhDThlUswG9nj9iCzoKJSt9muDpGALnj
+ MAZbH1oKBjF7p2gJJYXFGJ6GmtM1iIjppOGXxFWdO6CPMwAREY4/OJY9bOq3sxyd
+ yKbh4q88tMV/QVqC3Z8/4pjZyrd/JrQgWTDGmuhQVMSC068YvuxONAJsW8f13B72
+ 5wMgyJQX8fdBPmArOua6A==
+X-ME-Sender: <xms:32BVYlCrjQaPzYvPv4vqKOcGH9ZCUAXn2ZN1i1bTuPVPyWj0TPhQQw>
+ <xme:32BVYjjt8aeiWoaD4luldVl5THVoqekv3B1Z__LNnnhVN0pUOFP2hCXLjJzA4q5Hk
+ ovptberySGlFxm_wOY>
+X-ME-Received: <xmr:32BVYgmpIhT0s0u6Lhz4qfmwtPwfF05PNdc0zbxz5U2-f_rgpR-a0G3V2nHix00KU6MplkTWqSNZthBLXnjyOHpaSzLV8wQA>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvvddrudekkedgfeekucetufdoteggodetrfdotf
+ fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+ uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+ cujfgurhepfffhvffukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpefvrghkrghs
+ hhhiucfurghkrghmohhtohcuoehoqdhtrghkrghshhhisehsrghkrghmohgttghhihdrjh
+ hpqeenucggtffrrghtthgvrhhnpeelhfeugedvjefgjefgudekfedutedvtddutdeuieev
+ tddtgeetjeekvdefgeefhfenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmh
+ grihhlfhhrohhmpehoqdhtrghkrghshhhisehsrghkrghmohgttghhihdrjhhp
+X-ME-Proxy: <xmx:32BVYvx6z53PZlSYybX2_mafXMos7XQZvTr45aetqSXm2kUwUny-rQ>
+ <xmx:32BVYqSJab63oi5Z4eGeu2vcxLWABnZLnOhe2YJwGpT_6fSRt2pWTQ>
+ <xmx:32BVYiaPr4CXRM0Tvvlu0qw4e3ytFHvpvmbFoL9q40H4uRLISXcUxg>
+ <xmx:32BVYlenlpUsI2pcOriw7JETAvYNGXr5178WFBhJLV19DeeFR2IqiA>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
+ 12 Apr 2022 07:22:05 -0400 (EDT)
+Date: Tue, 12 Apr 2022 20:22:04 +0900
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+To: Dan Carpenter <dan.carpenter@oracle.com>
+Subject: Re: [bug report] firewire: add kernel API to access CYCLE_TIME
+ register
+Message-ID: <YlVg3I8kLIcBLZAE@workstation>
+Mail-Followup-To: Dan Carpenter <dan.carpenter@oracle.com>,
+ alsa-devel@alsa-project.org, linux1394-devel@lists.sourceforge.net,
+ linux-kernel@vger.kernel.org
+References: <20220411070124.GA12881@kili>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.75.127.45]
-X-ClientProxiedBy: SFHDAG2NODE2.st.com (10.75.127.5) To SFHDAG2NODE2.st.com
- (10.75.127.5)
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.858,Hydra:6.0.486,FMLib:17.11.64.514
- definitions=2022-04-12_03,2022-04-12_02,2022-02-23_01
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
- Olivier Moysan <olivier.moysan@foss.st.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220411070124.GA12881@kili>
+Cc: alsa-devel@alsa-project.org, linux1394-devel@lists.sourceforge.net,
+ linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -97,30 +115,57 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-In asoc_simple_shutdown() the snd_soc_dai_set_sysclk() function
-is called twice with input direction SND_SOC_CLOCK_IN.
-Restore one call with output direction SND_SOC_CLOCK_OUT.
+Hi,
 
-Fixes: 5ca2ab459817 ("ASoC: simple-card-utils: Add new system-clock-fixed flag")
+On Mon, Apr 11, 2022 at 10:01:25AM +0300, Dan Carpenter wrote:
+> Hello Takashi Sakamoto,
+> 
+> The patch baa914cd81f5: "firewire: add kernel API to access
+> CYCLE_TIME register" from Apr 5, 2022, leads to the following Smatch
+> static checker warning:
+> 
+> 	drivers/firewire/core-cdev.c:1235 ioctl_get_cycle_timer2()
+> 	error: uninitialized symbol 'cycle_time'.
+> 
+> drivers/firewire/core-cdev.c
+>     1209 static int ioctl_get_cycle_timer2(struct client *client, union ioctl_arg *arg)
+>     1210 {
+>     1211         struct fw_cdev_get_cycle_timer2 *a = &arg->get_cycle_timer2;
+>     1212         struct fw_card *card = client->device->card;
+>     1213         struct timespec64 ts = {0, 0};
+>     1214         u32 cycle_time;
+>     1215         int ret = 0;
+>     1216 
+>     1217         local_irq_disable();
+>     1218 
+>     1219         ret = fw_card_read_cycle_time(card, &cycle_time);
+>     1220         if (ret < 0)
+>     1221                 goto end;
+>                          ^^^^^^^^
+> "cycle_time" not initialized on error path.
+> 
+>     1222 
+>     1223         switch (a->clk_id) {
+>     1224         case CLOCK_REALTIME:      ktime_get_real_ts64(&ts);        break;
+>     1225         case CLOCK_MONOTONIC:     ktime_get_ts64(&ts);                break;
+>     1226         case CLOCK_MONOTONIC_RAW: ktime_get_raw_ts64(&ts);        break;
+>     1227         default:
+>     1228                 ret = -EINVAL;
+>     1229         }
+>     1230 end:
+>     1231         local_irq_enable();
+>     1232 
+>     1233         a->tv_sec      = ts.tv_sec;
+>     1234         a->tv_nsec     = ts.tv_nsec;
+> --> 1235         a->cycle_timer = cycle_time;
+>     1236 
+>     1237         return ret;
+>     1238 }
 
-Signed-off-by: Olivier Moysan <olivier.moysan@foss.st.com>
----
- sound/soc/generic/simple-card-utils.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Thanks for the report. Indeed, it leaks the unidentified value on kernel
+stack to userspace. I'll post fix later.
 
-diff --git a/sound/soc/generic/simple-card-utils.c b/sound/soc/generic/simple-card-utils.c
-index f2157944247f..da0c27828ce6 100644
---- a/sound/soc/generic/simple-card-utils.c
-+++ b/sound/soc/generic/simple-card-utils.c
-@@ -322,7 +322,7 @@ void asoc_simple_shutdown(struct snd_pcm_substream *substream)
- 
- 		if (props->mclk_fs && !dai->clk_fixed && !snd_soc_dai_active(cpu_dai))
- 			snd_soc_dai_set_sysclk(cpu_dai,
--					       0, 0, SND_SOC_CLOCK_IN);
-+					       0, 0, SND_SOC_CLOCK_OUT);
- 
- 		asoc_simple_clk_disable(dai);
- 	}
--- 
-2.17.1
 
+Regards
+
+Takashi Sakamoto
