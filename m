@@ -4,53 +4,82 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 97635C433EF
-	for <alsa-devel@archiver.kernel.org>; Tue, 12 Apr 2022 09:25:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0C106C433EF
+	for <alsa-devel@archiver.kernel.org>; Tue, 12 Apr 2022 09:30:04 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 8105316BC;
-	Tue, 12 Apr 2022 11:24:41 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8105316BC
+	by alsa0.perex.cz (Postfix) with ESMTPS id EF025166C;
+	Tue, 12 Apr 2022 11:29:11 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EF025166C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1649755531;
-	bh=tCv+TZZEXlITvJtCJSNByaXqwkKfoOuZ9PAYE3feey4=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=vOLMHSTZAtvTudmPAJD9y/Vk9zKpK58GV4maBU9uxuJM33pwWEaI1FsX75yn9WaZG
-	 2xGQRJiJAYMAp1h8+/Diy3KjDC441YFsMgSKLvZgvfldD7pDH7GMtcimqVHY0KMWrQ
-	 rm7j5tHIgmnG5emUAusUQr5B3q8d8TRP3vd6MTWE=
+	s=default; t=1649755802;
+	bh=YSDFdHLKQcmtc6U9K43kxaObvC32MpST+iY7XoAYgA4=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=cqTCkkz5xc2EWHJdEbvyS6dmTntvzdS7eysLuViYDU27XSS07RfH0I34vYnSgOLmG
+	 QKRDnc8Lf4xVgxaZgCv+DoziioDgkg2YahkUBe0G3C5RF9cPn+P0ryJgLVWoNPl70J
+	 OKUTIzqWAdW4Xo75o7QgOyqFNMQkm83WZgTjLbXE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 15889F80134;
-	Tue, 12 Apr 2022 11:24:41 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 5BCE8F8011C;
+	Tue, 12 Apr 2022 11:29:11 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 3A32FF8011C; Tue, 12 Apr 2022 11:24:40 +0200 (CEST)
-Received: from inva020.nxp.com (inva020.nxp.com [92.121.34.13])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 4BC15F80154; Tue, 12 Apr 2022 11:29:05 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 55945F8011C
- for <alsa-devel@alsa-project.org>; Tue, 12 Apr 2022 11:24:33 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 55945F8011C
-Received: from inva020.nxp.com (localhost [127.0.0.1])
- by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 2FD681A227D;
- Tue, 12 Apr 2022 11:24:33 +0200 (CEST)
-Received: from aprdc01srsp001v.ap-rdc01.nxp.com
- (aprdc01srsp001v.ap-rdc01.nxp.com [165.114.16.16])
- by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id EE26E1A224E;
- Tue, 12 Apr 2022 11:24:32 +0200 (CEST)
-Received: from localhost.localdomain (shlinux2.ap.freescale.net
- [10.192.224.44])
- by aprdc01srsp001v.ap-rdc01.nxp.com (Postfix) with ESMTP id AF84E184BDC5;
- Tue, 12 Apr 2022 17:24:31 +0800 (+08)
-From: Shengjiu Wang <shengjiu.wang@nxp.com>
-To: lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com,
- patches@opensource.cirrus.com, alsa-devel@alsa-project.org
-Subject: [PATCH] ASoC: wm8524: remove rate constraint for FE-BE case
-Date: Tue, 12 Apr 2022 17:13:46 +0800
-Message-Id: <1649754826-2651-1-git-send-email-shengjiu.wang@nxp.com>
-X-Mailer: git-send-email 2.7.4
-X-Virus-Scanned: ClamAV using ClamSMTP
-Cc: shengjiu.wang@gmail.com, linux-kernel@vger.kernel.org
+ by alsa1.perex.cz (Postfix) with ESMTPS id 85C78F8011C
+ for <alsa-devel@alsa-project.org>; Tue, 12 Apr 2022 11:28:54 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 85C78F8011C
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
+ header.b="DpakoTOJ"; 
+ dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
+ header.b="Yua83Tc8"
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+ by smtp-out1.suse.de (Postfix) with ESMTP id 1ACEA21607;
+ Tue, 12 Apr 2022 09:28:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1649755734; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=T2Rx21k8VxcsRpmbn7I5LQ0UCXULFAyPawiB+5E+i2k=;
+ b=DpakoTOJZFatp1oV8Xjm5wVfwHPScVHlCSyxWF5vgexTUzQzYV93wSF1w5xJ04Pbw0AoS2
+ tIM7gQ9ULVoh5T7tTbjnKrIYcJwo7Hjyq4K/99c4KuCZcp+SgorTGDmWoZOT66W0yqsKjl
+ rVRKZL8e5x43nC+bA23PUeOhLEWvPu4=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1649755734;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=T2Rx21k8VxcsRpmbn7I5LQ0UCXULFAyPawiB+5E+i2k=;
+ b=Yua83Tc8tRMQk6PJJ4AjeA//lKRqOKzUPnZfaYGeHdNLIw1d7yBByT0DYcmxnDcCrDvblx
+ BUp1z4TQJTuJi0Dw==
+Received: from alsa1.suse.de (alsa1.suse.de [10.160.4.42])
+ by relay2.suse.de (Postfix) with ESMTP id 07EFAA3B82;
+ Tue, 12 Apr 2022 09:28:54 +0000 (UTC)
+Date: Tue, 12 Apr 2022 11:28:54 +0200
+Message-ID: <s5h4k2ybqg9.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Zheyu Ma <zheyuma97@gmail.com>
+Subject: Re: [BUG] ALSA: echoaudio: warning when the driver fails to probe
+In-Reply-To: <CAMhUBjno-2qCe5FDF0ftuy5aoq=735N4_SeQyQRpDEsurAsU+w@mail.gmail.com>
+References: <CAMhUBjm2AdyEZ_-EgexdNDN7SvY4f89=4=FwAL+c0Mg0O+X50A@mail.gmail.com>
+ <s5hk0bwcbjh.wl-tiwai@suse.de>
+ <CAMhUBjmr_mHcz2G0tQ2qktGFw6XDLJiDTAHvM1yoRWzvtA6MYg@mail.gmail.com>
+ <s5ha6csc7lq.wl-tiwai@suse.de> <s5h7d7wc75u.wl-tiwai@suse.de>
+ <s5h35ijdiab.wl-tiwai@suse.de>
+ <CAMhUBj=yiAtbYmGDuaBrSxNMrxz6S8DJotwTLihcs64JSOQuVg@mail.gmail.com>
+ <s5hsfqjbqk7.wl-tiwai@suse.de>
+ <CAMhUBjno-2qCe5FDF0ftuy5aoq=735N4_SeQyQRpDEsurAsU+w@mail.gmail.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=US-ASCII
+Cc: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+ alsa-devel@alsa-project.org, tiwai@suse.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -66,44 +95,81 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The constraint is propagate to Front End Bitstream
-for Front End and Back End share same snd_soc_pcm_runtime.
+On Tue, 12 Apr 2022 03:36:27 +0200,
+Zheyu Ma wrote:
+> 
+> On Mon, Apr 11, 2022 at 11:14 PM Takashi Iwai <tiwai@suse.de> wrote:
+> >
+> > On Mon, 11 Apr 2022 12:34:56 +0200,
+> > Zheyu Ma wrote:
+> > >
+> > > On Mon, Apr 11, 2022 at 6:30 PM Takashi Iwai <tiwai@suse.de> wrote:
+> > > >
+> > > > On Mon, 11 Apr 2022 11:15:41 +0200,
+> > > > Takashi Iwai wrote:
+> > > > >
+> > > > > On Mon, 11 Apr 2022 11:06:09 +0200,
+> > > > > Takashi Iwai wrote:
+> > > > > >
+> > > > > > On Mon, 11 Apr 2022 10:49:53 +0200,
+> > > > > > Zheyu Ma wrote:
+> > > > > > >
+> > > > > > > On Mon, Apr 11, 2022 at 3:41 PM Takashi Iwai <tiwai@suse.de> wrote:
+> > > > > > > >
+> > > > > > > > On Sun, 10 Apr 2022 11:13:55 +0200,
+> > > > > > > > Zheyu Ma wrote:
+> > > > > > > > >
+> > > > > > > > > Hello,
+> > > > > > > > >
+> > > > > > > > > I found a bug in echoaudio.c.
+> > > > > > > > > When the driver fails at the function snd_echo_create(), it should
+> > > > > > > > > release resources requested before, otherwise we will get the
+> > > > > > > > > following warning:
+> > > > > > > > >
+> > > > > > > > > [    3.262866] remove_proc_entry: removing non-empty directory
+> > > > > > > > > 'irq/21', leaking at least 'snd_indigodj'
+> > > > > > > > > [    3.263577] WARNING: CPU: 3 PID: 261 at fs/proc/generic.c:717
+> > > > > > > > > remove_proc_entry+0x389/0x3f0
+> > > > > > > > > [    3.267098] RIP: 0010:remove_proc_entry+0x389/0x3f0
+> > > > > > > > > [    3.269976] Call Trace:
+> > > > > > > > > [    3.269979]  <TASK>
+> > > > > > > > > [    3.269988]  unregister_irq_proc+0x14c/0x170
+> > > > > > > > > [    3.269997]  irq_free_descs+0x94/0xe0
+> > > > > > > > > [    3.270004]  mp_unmap_irq+0xb6/0x100
+> > > > > > > > > [    3.270011]  acpi_unregister_gsi_ioapic+0x27/0x40
+> > > > > > > > > [    3.270017]  acpi_pci_irq_disable+0x1d3/0x320
+> > > > > > > > > [    3.270025]  pci_disable_device+0x1ad/0x380
+> > > > > > > > > [    3.270034]  pcim_release+0x566/0x6d0
+> > > > > > > > > [    3.270046]  devres_release_all+0x1f1/0x2c0
+> > > > > > > > > [    3.270057]  really_probe+0xe0/0x920
+> > > > > > > >
+> > > > > > > > Could you try the patch below?
+> > > > > > >
+> > > > > > > The following patch works for me, the previous warning disappears, thank you.
+> > > > > > > But I got another error, I have no idea about it.
+> > > > > >
+> > > > > > OK, that's bad, it's basically the destructor order problem.
+> > > > > > Could you try the patch below instead of the previous one?
+> > > > >
+> > > > > Sorry, the below one instead.
+> > > >
+> > > > Err, scratch this one, too.  It's a deeper problem than I thought.
+> > > > Will post a revised patch later.
+> > >
+> > > Yeah, you are right, these two patches do not work, I got the same
+> > > error message.
+> > > Thanks for your effort.
+> >
+> > Here we go, a revised patch.  Basically it enforces the call of
+> > snd_card_free() at the error path during probe.
+> 
+> Thanks for your patch, it works for me :)
+> 
+> Tested-by: Zheyu Ma <zheyuma97@gmail.com>
 
-The constraint is not needed for Back End Bitstream
-when there is be_hw_params_fixup() defined.
+Great, I'm going to submit a proper patch set.
 
-Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
-Tested-by: Fabio Estevam <festevam@denx.de>
----
- sound/soc/codecs/wm8524.c | 8 +++++---
- 1 file changed, 5 insertions(+), 3 deletions(-)
 
-diff --git a/sound/soc/codecs/wm8524.c b/sound/soc/codecs/wm8524.c
-index 81f858f6bd67..442a59857875 100644
---- a/sound/soc/codecs/wm8524.c
-+++ b/sound/soc/codecs/wm8524.c
-@@ -61,6 +61,7 @@ static int wm8524_startup(struct snd_pcm_substream *substream,
- {
- 	struct snd_soc_component *component = dai->component;
- 	struct wm8524_priv *wm8524 = snd_soc_component_get_drvdata(component);
-+	struct snd_soc_pcm_runtime *rtd = substream->private_data;
- 
- 	/* The set of sample rates that can be supported depends on the
- 	 * MCLK supplied to the CODEC - enforce this.
-@@ -71,9 +72,10 @@ static int wm8524_startup(struct snd_pcm_substream *substream,
- 		return -EINVAL;
- 	}
- 
--	snd_pcm_hw_constraint_list(substream->runtime, 0,
--				   SNDRV_PCM_HW_PARAM_RATE,
--				   &wm8524->rate_constraint);
-+	if (!rtd->dai_link->be_hw_params_fixup)
-+		snd_pcm_hw_constraint_list(substream->runtime, 0,
-+					   SNDRV_PCM_HW_PARAM_RATE,
-+					   &wm8524->rate_constraint);
- 
- 	gpiod_set_value_cansleep(wm8524->mute, 1);
- 
--- 
-2.17.1
+Thanks!
 
+Takashi
