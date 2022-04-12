@@ -4,69 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 405C0C433EF
-	for <alsa-devel@archiver.kernel.org>; Tue, 12 Apr 2022 10:36:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D41FCC4321E
+	for <alsa-devel@archiver.kernel.org>; Tue, 12 Apr 2022 10:36:35 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 84F6D1A23;
-	Tue, 12 Apr 2022 12:35:29 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 84F6D1A23
+	by alsa0.perex.cz (Postfix) with ESMTPS id 29EF41A3B;
+	Tue, 12 Apr 2022 12:35:44 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 29EF41A3B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1649759779;
-	bh=xdv3UulaSh0VJ6lnjc6r/xgs2OwWsJ/jTY92CpelV98=;
+	s=default; t=1649759794;
+	bh=MsY1aGfooyq3028Mm7Y+OwSl9586oxokQLZ9hQSyoFM=;
 	h=From:To:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=tPoQsUKsHEg3Jmadcs2ZIrhBXfYRwIi6uJI7S536Vp3m//2SDGybIKeq2ZZgobkQP
-	 76Otky5MiW8VnQLF7knWW6ERk3LCYySwxV72KyfVhAKrxFcTEGbrhu9Fs3I2AHnOmH
-	 sVs+3smU9B6DLYOn7wF6RuKN5X0U45hken+ge+wc=
+	b=tgxUgTplgiicmtQsUWXD4M3zm3MxT/G3uEO+cKRpaJCIMVDXB/Rr8U11+E7aatWj/
+	 58egUvWO1YxJaPNSMdI9ZopwUIR2ptTQiFVUFLpP8HsWtbeBSt8zj7XH7r3nzGfwMo
+	 xRxwQtHqG2Z5vrQQvkfTN2Pz9x+itLuQ3wl7DAhk=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id CFE2FF805F8;
-	Tue, 12 Apr 2022 12:27:46 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 6BE81F805FE;
+	Tue, 12 Apr 2022 12:27:47 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id D382BF80539; Tue, 12 Apr 2022 12:27:36 +0200 (CEST)
+ id 5625EF805C9; Tue, 12 Apr 2022 12:27:37 +0200 (CEST)
 Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 6F3BEF80536
+ by alsa1.perex.cz (Postfix) with ESMTPS id D484FF80538
  for <alsa-devel@alsa-project.org>; Tue, 12 Apr 2022 12:26:47 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6F3BEF80536
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D484FF80538
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="ZxE97iFF"; 
+ header.b="N+By8BmN"; 
  dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="R0zvCYMe"
+ header.b="eotnhOee"
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out2.suse.de (Postfix) with ESMTP id 9029A1FD0C
+ by smtp-out2.suse.de (Postfix) with ESMTP id A655B1FD10
  for <alsa-devel@alsa-project.org>; Tue, 12 Apr 2022 10:26:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
  t=1649759204; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=EOUXjo6Ac9NmInUspviFoMlTTSwXxyGlBvnZBLBywYY=;
- b=ZxE97iFFCNMRCptk2RvjmEpIMcyivJhsJcZ27mbSP3vn28F0/5j5BxWORqz1U+FqZyrLu6
- IjAQiblw2l8d82AzieWilGnx1BR+jQExkyA+5W91suFXVSavXyfCRps3WFasQZ1itXtw6Z
- KpDX6feyYfVd0x2jakvxqu8fXJP+Wwg=
+ bh=Ds/OLCQRsKzgyeWzoj0D/srGcquzUMGCV9IFeD2ReEc=;
+ b=N+By8BmNXyaY0M3g0IOMGWyth6majiU7HlJQrNIoT/nuhdU+k7I5dW4lQugsW13AUIXW5H
+ N5nLPMHR6CpQ5H6LL+ZShr65hz3ThOURvYhUK6qx/oI6csszFh+tjtck1tbx0eoJx0XVrw
+ 4PhXJxLG3kJk569n3O6OKqBiAcrseIo=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
  s=susede2_ed25519; t=1649759204;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=EOUXjo6Ac9NmInUspviFoMlTTSwXxyGlBvnZBLBywYY=;
- b=R0zvCYMeAB8jEx37ERM3pIBGy1aGB9/z6gpJnrrfujjPUBrF0J5UW5quoq1J3p6+xe99K9
- X1ePKzYkpIs4kiDQ==
+ bh=Ds/OLCQRsKzgyeWzoj0D/srGcquzUMGCV9IFeD2ReEc=;
+ b=eotnhOeeXcyqqACO6IlQUquqtfXa6PT2Jjo0fCBUfEDV31bIfmBd3JzxuFfZz5NNwa7WPJ
+ Jise2LKNyuwbtLCA==
 Received: from alsa1.nue.suse.com (alsa1.suse.de [10.160.4.42])
- by relay2.suse.de (Postfix) with ESMTP id 8C8D8A3B82;
+ by relay2.suse.de (Postfix) with ESMTP id A2A51A3B83;
  Tue, 12 Apr 2022 10:26:44 +0000 (UTC)
 From: Takashi Iwai <tiwai@suse.de>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH 22/39] ALSA: rme32: Fix the missing snd_card_free() call at
- probe error
-Date: Tue, 12 Apr 2022 12:26:19 +0200
-Message-Id: <20220412102636.16000-23-tiwai@suse.de>
+Subject: [PATCH 26/39] ALSA: intel_hdmi: Fix the missing snd_card_free() call
+ at probe error
+Date: Tue, 12 Apr 2022 12:26:23 +0200
+Message-Id: <20220412102636.16000-27-tiwai@suse.de>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20220412102636.16000-1-tiwai@suse.de>
 References: <20220412102636.16000-1-tiwai@suse.de>
@@ -96,39 +96,38 @@ release the stuff via card->private_free().
 This patch fixes it by calling snd_card_free() on the error from the
 probe callback using a new helper function.
 
-Fixes: 102e6156ded2 ("ALSA: rme32: Allocate resources with device-managed APIs")
+Fixes: 854577ac2aea ("ALSA: x86: Allocate resources with device-managed APIs")
 Cc: <stable@vger.kernel.org>
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/pci/rme32.c | 8 +++++++-
- 1 file changed, 7 insertions(+), 1 deletion(-)
+ sound/x86/intel_hdmi_audio.c | 7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
 
-diff --git a/sound/pci/rme32.c b/sound/pci/rme32.c
-index 5b6bd9f0b2f7..9c0ac025e143 100644
---- a/sound/pci/rme32.c
-+++ b/sound/pci/rme32.c
-@@ -1875,7 +1875,7 @@ static void snd_rme32_card_free(struct snd_card *card)
- }
- 
- static int
--snd_rme32_probe(struct pci_dev *pci, const struct pci_device_id *pci_id)
-+__snd_rme32_probe(struct pci_dev *pci, const struct pci_device_id *pci_id)
+diff --git a/sound/x86/intel_hdmi_audio.c b/sound/x86/intel_hdmi_audio.c
+index b00634663346..0d828e35b401 100644
+--- a/sound/x86/intel_hdmi_audio.c
++++ b/sound/x86/intel_hdmi_audio.c
+@@ -1652,7 +1652,7 @@ static void hdmi_lpe_audio_free(struct snd_card *card)
+  * This function is called when the i915 driver creates the
+  * hdmi-lpe-audio platform device.
+  */
+-static int hdmi_lpe_audio_probe(struct platform_device *pdev)
++static int __hdmi_lpe_audio_probe(struct platform_device *pdev)
  {
- 	static int dev;
- 	struct rme32 *rme32;
-@@ -1927,6 +1927,12 @@ snd_rme32_probe(struct pci_dev *pci, const struct pci_device_id *pci_id)
+ 	struct snd_card *card;
+ 	struct snd_intelhad_card *card_ctx;
+@@ -1815,6 +1815,11 @@ static int hdmi_lpe_audio_probe(struct platform_device *pdev)
  	return 0;
  }
  
-+static int
-+snd_rme32_probe(struct pci_dev *pci, const struct pci_device_id *pci_id)
++static int hdmi_lpe_audio_probe(struct platform_device *pdev)
 +{
-+	return snd_card_free_on_error(&pci->dev, __snd_rme32_probe(pci, pci_id));
++	return snd_card_free_on_error(&pdev->dev, __hdmi_lpe_audio_probe(pdev));
 +}
 +
- static struct pci_driver rme32_driver = {
- 	.name =		KBUILD_MODNAME,
- 	.id_table =	snd_rme32_ids,
+ static const struct dev_pm_ops hdmi_lpe_audio_pm = {
+ 	SET_SYSTEM_SLEEP_PM_OPS(hdmi_lpe_audio_suspend, hdmi_lpe_audio_resume)
+ };
 -- 
 2.31.1
 
