@@ -4,92 +4,70 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 62666C433EF
-	for <alsa-devel@archiver.kernel.org>; Tue, 12 Apr 2022 09:07:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 40DF7C433F5
+	for <alsa-devel@archiver.kernel.org>; Tue, 12 Apr 2022 09:17:31 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 4A7661710;
-	Tue, 12 Apr 2022 11:06:23 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4A7661710
+	by alsa0.perex.cz (Postfix) with ESMTPS id 4673A1712;
+	Tue, 12 Apr 2022 11:16:39 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4673A1712
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1649754433;
-	bh=rnjInkowutSj7ol4v7/eQcXu6pBnwptMUKosAtXfGwo=;
-	h=Date:Subject:To:References:From:In-Reply-To:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=HOg2l7p+DMaBs8cMumtZwuUS+FeFw3gPgM8Uy7W097cc1L9jVZjhStgiwIYqcHwgV
-	 WQB1UT9ZzhB2AA7dtTVFFdbypfl0BnQ65l8SlNLvLvefJyKKoH53SEaqYX4y6AG2wU
-	 UFcWBHwJQPhmQEhFTbnCmJjDuZqs0B/+u/P4KlwM=
+	s=default; t=1649755049;
+	bh=/xDxbIG5fwapg9sVV5GxgapCMbdv6bbINA6bS0/HPps=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=CAnN3s1Tg/waA1tUn1h99YUJNpJylKIno6MN9utquac76kP8bKkQV8i0rX8f1kjWD
+	 /SvCewCQZGapdFBw16jLbjRof6Ng4yQ/e4nXCfaQ7lxNemchZOUJbFpXdLLvwKIcf3
+	 23vx1A0MVjNHvZTiEy7LVgNXOFSpT2jy649Wss7Q=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id D904BF8011C;
-	Tue, 12 Apr 2022 11:06:22 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id D3892F80134;
+	Tue, 12 Apr 2022 11:16:38 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id B3178F8011C; Tue, 12 Apr 2022 11:06:21 +0200 (CEST)
-Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com
- [IPv6:2a00:1450:4864:20::436])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id 459B4F80095; Tue, 12 Apr 2022 11:16:37 +0200 (CEST)
+Received: from mga17.intel.com (mga17.intel.com [192.55.52.151])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 186A7F8011C
- for <alsa-devel@alsa-project.org>; Tue, 12 Apr 2022 11:06:17 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 186A7F8011C
+ by alsa1.perex.cz (Postfix) with ESMTPS id 765C0F80095
+ for <alsa-devel@alsa-project.org>; Tue, 12 Apr 2022 11:16:29 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 765C0F80095
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org
- header.b="FgvDw1Ru"
-Received: by mail-wr1-x436.google.com with SMTP id w4so26657569wrg.12
- for <alsa-devel@alsa-project.org>; Tue, 12 Apr 2022 02:06:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
- h=message-id:date:mime-version:user-agent:subject:content-language:to
- :references:from:in-reply-to:content-transfer-encoding;
- bh=TcbQOnznNM38vbqn4dzf7jYEVnEO7TEqfVzrcEANZdA=;
- b=FgvDw1RuIAKPJbLmdUWuxbejU3TEbMwippcIC3e1RZFiwuTdqSXegk6DO/0S184zN7
- ZxetjPdw7QvHIknfHNJr2DbQF/5AKkurjIiaLA/fopymwMVH6cBTgTxXnRYIEFlUlSYs
- XEufP/K2/jtm9Crs/8dSJgPW7vvhW62UuvBxa5XJ4EU4OOG7EdAR+nbROACZb9/jHyIg
- gxRp8kZS9xsMf5edPWC4xWfakFXLV0HOIa179FqG0PzcAe3hYo7i/eXMeebGVruCb6o+
- iAte2FpSwgaF2oZCDVqZ5knjPR2wvtk1VihxMiPl9advkhXBl3JVxGVQKGg39s8ECZTw
- Quaw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
- :content-language:to:references:from:in-reply-to
- :content-transfer-encoding;
- bh=TcbQOnznNM38vbqn4dzf7jYEVnEO7TEqfVzrcEANZdA=;
- b=Lmzdt8+0EU4/gPKQ1s4/ksOrWmf5XtGQf0uxrj8scOKDEegwPiu4ePL6bz0fljm81H
- VBvA8tWthDAx/Ldyzx8sotMaFXFSVlZoOojR5dV9BK1N8JLNXzhMG8SOBX8RCo/P2x3G
- xICMTGA6Nj4UTsIt17I0lw7v2wkR4Riq7sNaVDFNG7PGjZfsIfykTvk3LD3F4ll59dXr
- QIFAjlXPO5l68oARZsIOHJTaIFeo6P2+q5ShXgZBCk9wP1iQXHl+J3pii5idwCslSFRs
- +6GZI4JLpPDjgQXSP/O3AMzz4GtM4Udtq/gEnf5zKcqfr9wwZg/5bWDP6tOpq9O16sNL
- LjYQ==
-X-Gm-Message-State: AOAM533gRE9GxN3kvE6x9oTDYPTHkSXHPowaFAMtkqCTyWbX8bfrZgJ/
- BtP7b5KwrUYxMouiL9gCAHeEuQ==
-X-Google-Smtp-Source: ABdhPJyCsICMMt55JJuqse75adWYa2k+xDavBtU14NQhFbciHUBoB8+E7linJ/Ua3r5xirDa71f7Aw==
-X-Received: by 2002:a05:6000:15cb:b0:207:9f9e:547e with SMTP id
- y11-20020a05600015cb00b002079f9e547emr11653325wry.549.1649754375837; 
- Tue, 12 Apr 2022 02:06:15 -0700 (PDT)
-Received: from [192.168.86.34]
- (cpc90716-aztw32-2-0-cust825.18-1.cable.virginm.net. [86.26.103.58])
- by smtp.googlemail.com with ESMTPSA id
- g17-20020a05600c4ed100b0038ca32d0f26sm2000647wmq.17.2022.04.12.02.06.14
- (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Tue, 12 Apr 2022 02:06:15 -0700 (PDT)
-Message-ID: <4d3a73bd-4048-2cef-0682-0823e29a6514@linaro.org>
-Date: Tue, 12 Apr 2022 10:06:13 +0100
+ dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
+ header.b="fq+VRfVj"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+ d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+ t=1649754991; x=1681290991;
+ h=from:to:cc:subject:date:message-id:mime-version:
+ content-transfer-encoding;
+ bh=/xDxbIG5fwapg9sVV5GxgapCMbdv6bbINA6bS0/HPps=;
+ b=fq+VRfVjyzGkewFu+hHxUAnq67EP/+i6ky1ssvieJXuZa4xX5kMhLtRI
+ ema5k7FZQTVNv+RjS08CJ7adNCiMzqwVNcC0M+s+YWtSo37p4EQhd6IEC
+ T7WoLATZ7fi++V9MkGlr3leKYB3Qq/x0lkwVmuCEAJh3vH8c7+l1A7HIF
+ U/Ej3lQ0ldoHHcEsB2X58VwetE9ObVySM8oeLLEYF1mDjN/fDyHGxXfsU
+ fAvlQd4/gqmiYe14Nv8J8ZJjYAY8EbGGDYrgN3Vbh+o/ADOs+qR/TtjDN
+ r183TOXTN3QsPgoB8MExc/YUJtjJzVlPtH2ePgmjZ1Kz4V+oO9aMEpJeH g==;
+X-IronPort-AV: E=McAfee;i="6400,9594,10314"; a="242912113"
+X-IronPort-AV: E=Sophos;i="5.90,253,1643702400"; d="scan'208";a="242912113"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+ by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 12 Apr 2022 02:16:26 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.90,253,1643702400"; d="scan'208";a="724366262"
+Received: from dev2.igk.intel.com ([10.237.148.94])
+ by orsmga005.jf.intel.com with ESMTP; 12 Apr 2022 02:16:24 -0700
+From: =?UTF-8?q?Amadeusz=20S=C5=82awi=C5=84ski?=
+ <amadeuszx.slawinski@linux.intel.com>
+To: Takashi Iwai <tiwai@suse.com>
+Subject: [PATCH v2] ALSA: jack: Access input_dev under mutex
+Date: Tue, 12 Apr 2022 11:16:28 +0200
+Message-Id: <20220412091628.3056922-1-amadeuszx.slawinski@linux.intel.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.7.0
-Subject: Re: [PATCH v2] slimbus: qcom: Fix IRQ check in qcom_slim_probe
-Content-Language: en-US
-To: Miaoqian Lin <linmq006@gmail.com>, Andy Gross <agross@kernel.org>,
- Bjorn Andersson <bjorn.andersson@linaro.org>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- Sagar Dharia <sdharia@codeaurora.org>, linux-arm-msm@vger.kernel.org,
- alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
-References: <239c3b32-6754-02ba-6bfd-7f05fa2adfed@linux.intel.com>
- <20220301061421.14366-1-linmq006@gmail.com>
-From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-In-Reply-To: <20220301061421.14366-1-linmq006@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+Cc: alsa-devel@alsa-project.org, =?UTF-8?q?Amadeusz=20S=C5=82awi=C5=84ski?=
+ <amadeuszx.slawinski@linux.intel.com>,
+ Cezary Rojewski <cezary.rojewski@intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -105,45 +83,152 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+It is possible when using ASoC that input_dev is unregistered while
+calling snd_jack_report, which causes NULL pointer dereference.
+In order to prevent this serialize access to input_dev using mutex lock.
 
+Signed-off-by: Amadeusz Sławiński <amadeuszx.slawinski@linux.intel.com>
+---
 
-On 01/03/2022 06:14, Miaoqian Lin wrote:
-> platform_get_irq() returns non-zero IRQ number on success,
-> negative error number on failure.
-> And the doc of platform_get_irq() provides a usage example:
-> 
->      int irq = platform_get_irq(pdev, 0);
->      if (irq < 0)
->          return irq;
-> 
-> Fix the check of return value to catch errors correctly.
-> 
-> Fixes: ad7fcbc308b0 ("slimbus: qcom: Add Qualcomm Slimbus controller driver")
-> Signed-off-by: Miaoqian Lin <linmq006@gmail.com>
+Changes:
+v2:
+ - drop mutex in snd_jack_new
+ - add comment that snd_jack_report() should be called in context where
+   it can sleep
 
-Applied thanks,
+---
+ include/sound/jack.h |  1 +
+ sound/core/jack.c    | 34 +++++++++++++++++++++++++++-------
+ 2 files changed, 28 insertions(+), 7 deletions(-)
 
---srini
-> ---
-> changes in v2:
-> - use more precise expression in commit message.
-> ---
->   drivers/slimbus/qcom-ctrl.c | 4 ++--
->   1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/slimbus/qcom-ctrl.c b/drivers/slimbus/qcom-ctrl.c
-> index f04b961b96cd..ec58091fc948 100644
-> --- a/drivers/slimbus/qcom-ctrl.c
-> +++ b/drivers/slimbus/qcom-ctrl.c
-> @@ -510,9 +510,9 @@ static int qcom_slim_probe(struct platform_device *pdev)
->   	}
->   
->   	ctrl->irq = platform_get_irq(pdev, 0);
-> -	if (!ctrl->irq) {
-> +	if (ctrl->irq < 0) {
->   		dev_err(&pdev->dev, "no slimbus IRQ\n");
-> -		return -ENODEV;
-> +		return ctrl->irq;
->   	}
->   
->   	sctrl = &ctrl->ctrl;
+diff --git a/include/sound/jack.h b/include/sound/jack.h
+index 1181f536557e..1ed90e2109e9 100644
+--- a/include/sound/jack.h
++++ b/include/sound/jack.h
+@@ -62,6 +62,7 @@ struct snd_jack {
+ 	const char *id;
+ #ifdef CONFIG_SND_JACK_INPUT_DEV
+ 	struct input_dev *input_dev;
++	struct mutex input_dev_lock;
+ 	int registered;
+ 	int type;
+ 	char name[100];
+diff --git a/sound/core/jack.c b/sound/core/jack.c
+index d1e3055f2b6a..88493cc31914 100644
+--- a/sound/core/jack.c
++++ b/sound/core/jack.c
+@@ -42,8 +42,11 @@ static int snd_jack_dev_disconnect(struct snd_device *device)
+ #ifdef CONFIG_SND_JACK_INPUT_DEV
+ 	struct snd_jack *jack = device->device_data;
+ 
+-	if (!jack->input_dev)
++	mutex_lock(&jack->input_dev_lock);
++	if (!jack->input_dev) {
++		mutex_unlock(&jack->input_dev_lock);
+ 		return 0;
++	}
+ 
+ 	/* If the input device is registered with the input subsystem
+ 	 * then we need to use a different deallocator. */
+@@ -52,6 +55,7 @@ static int snd_jack_dev_disconnect(struct snd_device *device)
+ 	else
+ 		input_free_device(jack->input_dev);
+ 	jack->input_dev = NULL;
++	mutex_unlock(&jack->input_dev_lock);
+ #endif /* CONFIG_SND_JACK_INPUT_DEV */
+ 	return 0;
+ }
+@@ -90,8 +94,11 @@ static int snd_jack_dev_register(struct snd_device *device)
+ 	snprintf(jack->name, sizeof(jack->name), "%s %s",
+ 		 card->shortname, jack->id);
+ 
+-	if (!jack->input_dev)
++	mutex_lock(&jack->input_dev_lock);
++	if (!jack->input_dev) {
++		mutex_unlock(&jack->input_dev_lock);
+ 		return 0;
++	}
+ 
+ 	jack->input_dev->name = jack->name;
+ 
+@@ -116,6 +123,7 @@ static int snd_jack_dev_register(struct snd_device *device)
+ 	if (err == 0)
+ 		jack->registered = 1;
+ 
++	mutex_unlock(&jack->input_dev_lock);
+ 	return err;
+ }
+ #endif /* CONFIG_SND_JACK_INPUT_DEV */
+@@ -517,9 +525,11 @@ int snd_jack_new(struct snd_card *card, const char *id, int type,
+ 		return -ENOMEM;
+ 	}
+ 
+-	/* don't creat input device for phantom jack */
+-	if (!phantom_jack) {
+ #ifdef CONFIG_SND_JACK_INPUT_DEV
++	mutex_init(&jack->input_dev_lock);
++
++	/* don't create input device for phantom jack */
++	if (!phantom_jack) {
+ 		int i;
+ 
+ 		jack->input_dev = input_allocate_device();
+@@ -537,8 +547,8 @@ int snd_jack_new(struct snd_card *card, const char *id, int type,
+ 				input_set_capability(jack->input_dev, EV_SW,
+ 						     jack_switch_types[i]);
+ 
+-#endif /* CONFIG_SND_JACK_INPUT_DEV */
+ 	}
++#endif /* CONFIG_SND_JACK_INPUT_DEV */
+ 
+ 	err = snd_device_new(card, SNDRV_DEV_JACK, jack, &ops);
+ 	if (err < 0)
+@@ -578,10 +588,14 @@ EXPORT_SYMBOL(snd_jack_new);
+ void snd_jack_set_parent(struct snd_jack *jack, struct device *parent)
+ {
+ 	WARN_ON(jack->registered);
+-	if (!jack->input_dev)
++	mutex_lock(&jack->input_dev_lock);
++	if (!jack->input_dev) {
++		mutex_unlock(&jack->input_dev_lock);
+ 		return;
++	}
+ 
+ 	jack->input_dev->dev.parent = parent;
++	mutex_unlock(&jack->input_dev_lock);
+ }
+ EXPORT_SYMBOL(snd_jack_set_parent);
+ 
+@@ -629,6 +643,8 @@ EXPORT_SYMBOL(snd_jack_set_key);
+ 
+ /**
+  * snd_jack_report - Report the current status of a jack
++ * Note: This function uses mutexes and should be called from a
++ * context which can sleep (such as a workqueue).
+  *
+  * @jack:   The jack to report status for
+  * @status: The current status of the jack
+@@ -654,8 +670,11 @@ void snd_jack_report(struct snd_jack *jack, int status)
+ 					     status & jack_kctl->mask_bits);
+ 
+ #ifdef CONFIG_SND_JACK_INPUT_DEV
+-	if (!jack->input_dev)
++	mutex_lock(&jack->input_dev_lock);
++	if (!jack->input_dev) {
++		mutex_unlock(&jack->input_dev_lock);
+ 		return;
++	}
+ 
+ 	for (i = 0; i < ARRAY_SIZE(jack->key); i++) {
+ 		int testbit = ((SND_JACK_BTN_0 >> i) & ~mask_bits);
+@@ -675,6 +694,7 @@ void snd_jack_report(struct snd_jack *jack, int status)
+ 	}
+ 
+ 	input_sync(jack->input_dev);
++	mutex_unlock(&jack->input_dev_lock);
+ #endif /* CONFIG_SND_JACK_INPUT_DEV */
+ }
+ EXPORT_SYMBOL(snd_jack_report);
+-- 
+2.25.1
+
