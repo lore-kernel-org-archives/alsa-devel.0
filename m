@@ -4,76 +4,78 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 406A5C433F5
-	for <alsa-devel@archiver.kernel.org>; Tue, 12 Apr 2022 09:41:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2B4B5C433EF
+	for <alsa-devel@archiver.kernel.org>; Tue, 12 Apr 2022 09:45:15 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id F0A961742;
-	Tue, 12 Apr 2022 11:40:53 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F0A961742
+	by alsa0.perex.cz (Postfix) with ESMTPS id B3C3F175F;
+	Tue, 12 Apr 2022 11:44:23 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B3C3F175F
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1649756504;
-	bh=VjOfsQjS0mVuy8d6V7P2mX33Oi6r84VrvESTdWGqNBI=;
+	s=default; t=1649756713;
+	bh=CIIlc8f7vUPgkEwWcsy2dIl57zin2qbQbdM8dA+/l+w=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=vgzJFda1G2pEgqk44AtEgc4xr62oejIEnCVtpJ7AsCJfLkWb2gStcnrtrdRKYAZVE
-	 rBKcTupuu7ewwKcPSS9uiWqGlb2ZTewyH2dZt3LrA6YtKnBeHfvwxqv+lvg61rLqpo
-	 MMoIWjXiuXHO7ISN5I/Nk3pNXDhbaBNg5UkYB1jM=
+	b=AwAuqI5NQGRcflMm3D3R2yS15l1dRRjqEN4iLNdkVGbGyrfaUYzbAhIeBt+4tAs3r
+	 yWN3TDqoQNIhlCUaPUrLlRCgrDBlkWBH6Vj6e5Up1oYM++rubWmDeTKDvU6+BVSBys
+	 Hl8fBymdg9QYVz0skS3WfgrmeluZjR3wqkkHHO4Y=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 8091CF80095;
-	Tue, 12 Apr 2022 11:40:53 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 551B8F80134;
+	Tue, 12 Apr 2022 11:44:23 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 88538F80154; Tue, 12 Apr 2022 11:40:52 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+ id 84A5CF8011C; Tue, 12 Apr 2022 11:44:21 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 3AFF4F80095
- for <alsa-devel@alsa-project.org>; Tue, 12 Apr 2022 11:40:48 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3AFF4F80095
+ by alsa1.perex.cz (Postfix) with ESMTPS id 5690AF8011C
+ for <alsa-devel@alsa-project.org>; Tue, 12 Apr 2022 11:44:15 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5690AF8011C
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="p3E/JOgF"; 
+ header.b="0rPJ1bo4"; 
  dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="NKqzGjti"
+ header.b="UmeVgtzn"
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out1.suse.de (Postfix) with ESMTP id 9786421607;
- Tue, 12 Apr 2022 09:40:47 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTP id D7FEA1F856;
+ Tue, 12 Apr 2022 09:44:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1649756447; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1649756654; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=bkguOHS25qrPH4cy023xw9DKfBQ51MXemolrey7zUVE=;
- b=p3E/JOgFkR8lcey6pyrqWXeoGEztC05amRlArwKjrdHSPmYwPAK54CVRoFq+DehzHA3L+4
- NF4dDxB1+Ye8EaOXLdlLH4snPR+0b2qNlWyw4/GXHMzY3yO9Dkj1BFdik3xW018+NRiwJ4
- yres96qnadKKMJDFoETDB2nIy56VaCQ=
+ bh=dLptHK6KtYX6UZvI/elziZLSvz95fWcFPoAEGowc2Uo=;
+ b=0rPJ1bo42dEqTeD7PHM5bjmB3YHG75DUMmsRGiMujdzN1l5YFArlYWX6aE0DcaQTwno3dh
+ z5+DrLdqB7iVL+h+YgXSIYK1FBMYo6Rni7u/OukE0AK9tWQnTBCqcN9PwQgkN6BVEjcmfZ
+ sAsKdqtAiGSTmntkog4uxAl5oRoE7sA=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1649756447;
+ s=susede2_ed25519; t=1649756654;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=bkguOHS25qrPH4cy023xw9DKfBQ51MXemolrey7zUVE=;
- b=NKqzGjtiX/MC1SFgVyoyx7szkUm5t9FdJsYIjxmyHwpohqhusQJ/oJrQKPx9fVV+Uo+d7n
- X4/3t39nqNJMlYDA==
+ bh=dLptHK6KtYX6UZvI/elziZLSvz95fWcFPoAEGowc2Uo=;
+ b=UmeVgtzndfC+stJgNgN0wthoK3jF5pDjAnS5SPxidSZ9UbyaqjtZFPK2OEX8RRp121y6vJ
+ 5f6zLjiHSjetJACA==
 Received: from alsa1.suse.de (alsa1.suse.de [10.160.4.42])
- by relay2.suse.de (Postfix) with ESMTP id 75292A3B97;
- Tue, 12 Apr 2022 09:40:47 +0000 (UTC)
-Date: Tue, 12 Apr 2022 11:40:47 +0200
-Message-ID: <s5hzgkqabc0.wl-tiwai@suse.de>
+ by relay2.suse.de (Postfix) with ESMTP id C2FA0A3B87;
+ Tue, 12 Apr 2022 09:44:14 +0000 (UTC)
+Date: Tue, 12 Apr 2022 11:44:14 +0200
+Message-ID: <s5hwnfuab69.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
-To: Mohan Kumar <mkumard@nvidia.com>
-Subject: Re: [PATCH 0/2] Add support for HDA Jack poll in suspend state
-In-Reply-To: <20220411073210.23445-1-mkumard@nvidia.com>
-References: <20220411073210.23445-1-mkumard@nvidia.com>
+To: Amadeusz =?UTF-8?B?U8WCYXdpxYRza2k=?= <amadeuszx.slawinski@linux.intel.com>
+Subject: Re: [PATCH v2] ALSA: jack: Access input_dev under mutex
+In-Reply-To: <20220412091628.3056922-1-amadeuszx.slawinski@linux.intel.com>
+References: <20220412091628.3056922-1-amadeuszx.slawinski@linux.intel.com>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
  FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
  (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
 MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
-Content-Type: text/plain; charset=US-ASCII
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
- spujar@nvidia.com, tiwai@suse.com, jonathanh@nvidia.com,
- thierry.reding@gmail.com, linux-tegra@vger.kernel.org
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+Cc: Cezary Rojewski <cezary.rojewski@intel.com>, alsa-devel@alsa-project.org,
+ Takashi Iwai <tiwai@suse.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -89,20 +91,23 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Mon, 11 Apr 2022 09:32:08 +0200,
-Mohan Kumar wrote:
+On Tue, 12 Apr 2022 11:16:28 +0200,
+Amadeusz Sławiński wrote:
 > 
-> This series is to add HDA jack polling support to update the Jack mixer control
-> status properly even during runtime suspended state, as unsol event won't be
-> triggered during D3 state.
+> It is possible when using ASoC that input_dev is unregistered while
+> calling snd_jack_report, which causes NULL pointer dereference.
+> In order to prevent this serialize access to input_dev using mutex lock.
 > 
-> Mohan Kumar (2):
->   ALSA: hda: Jack detection poll in suspend state
->   ALSA: hda/tegra: Enable Jack poll for tegra
+> Signed-off-by: Amadeusz Sławiński <amadeuszx.slawinski@linux.intel.com>
+> ---
+> 
+> Changes:
+> v2:
+>  - drop mutex in snd_jack_new
+>  - add comment that snd_jack_report() should be called in context where
+>    it can sleep
 
-Applied both patches now to for-next branch.
+Thanks, applied now.
 
-
-thanks,
 
 Takashi
