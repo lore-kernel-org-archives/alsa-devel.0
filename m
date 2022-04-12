@@ -4,68 +4,89 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2543FC433F5
-	for <alsa-devel@archiver.kernel.org>; Tue, 12 Apr 2022 11:35:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A4312C433EF
+	for <alsa-devel@archiver.kernel.org>; Tue, 12 Apr 2022 12:01:48 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 9DEC71AA2;
-	Tue, 12 Apr 2022 13:35:04 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9DEC71AA2
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0BB7C179B;
+	Tue, 12 Apr 2022 14:00:56 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0BB7C179B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1649763354;
-	bh=XZbcNy7PMuMXlSXvm+CTHS5PZZ7TEShvnd9kXW/cWtI=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	s=default; t=1649764906;
+	bh=L6//NAf79OVqIR55TudHhn198rcH9dh9Z2KUZ94aECY=;
+	h=Date:Subject:To:References:From:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=L1SAH5zUV7p6fEHoAhDDcr6HBzGtUWxZK943Yr6EOn0Q5n0VkVDbt3Nz6KGAdCY83
-	 WrYYAypwMACCZ74FMcEfRGTv5A7WG+EI0hsyTfzxConQCDeLtyvFyRlHoDWzJFL/fA
-	 IT2DnCr4aohtm+LXSqLyNdAwQbzT6TmHAx0OAFXs=
+	b=HSLsJGJk8GLo2zpMO+m7kulpXp/pWHR+GDwrUmkSL8iG9m9Si/TkhcaiZLQ11xFHi
+	 kVbQXx0pWKF9+VE4Gw8QwnaDU53/oXo3WLdX7KimdCRop06op8AA+uqe+4zy8DpXua
+	 UY8chsRrhFyZWUg8To93MqxTjJjxlf5deNGlFwQ0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 287FBF80095;
-	Tue, 12 Apr 2022 13:35:04 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 96910F80134;
+	Tue, 12 Apr 2022 14:00:55 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 9EF6AF80154; Tue, 12 Apr 2022 13:35:01 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id 58A50F80154; Tue, 12 Apr 2022 14:00:53 +0200 (CEST)
+Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com
+ [IPv6:2a00:1450:4864:20::630])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 330DBF8011C
- for <alsa-devel@alsa-project.org>; Tue, 12 Apr 2022 13:34:54 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 330DBF8011C
+ by alsa1.perex.cz (Postfix) with ESMTPS id 224FBF80095
+ for <alsa-devel@alsa-project.org>; Tue, 12 Apr 2022 14:00:46 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 224FBF80095
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="F/DcrA9t"
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id 9307B61A21;
- Tue, 12 Apr 2022 11:34:53 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 917B7C385AB;
- Tue, 12 Apr 2022 11:34:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1649763293;
- bh=XZbcNy7PMuMXlSXvm+CTHS5PZZ7TEShvnd9kXW/cWtI=;
- h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=F/DcrA9t/aCLMMn24qpzUpjYwEKgsbHiyv1lb8g/y7cw0S1iu7o7e8fXndY6gkRw1
- rUnKw3+rSFXes3vvtT7MYl7bCK65J+2eJcxPMqk6/wSSU8WqN+jU90kEpRcRmyYzhH
- te1GAX/Z3qCTjjyxN1AO1+oz5LFdrsvxeaCho+CwmU3YUMLrqihhp/+E3Quw0If+SU
- 6y0tPwkkOSXzc/zcgb6edoXLckhxo4AbfneoDBM8ZID8UCBNvh+eU4xsWi1nbgCgqq
- amZdYCrkGC+ss39Poqn8jFI7COTl2Pfkw3t7jTDrmZ5WFfXD7cIPDxUA09t0mOnzhG
- PdIbqH3WujGKQ==
-Date: Tue, 12 Apr 2022 12:34:48 +0100
-From: Mark Brown <broonie@kernel.org>
-To: Raphael-Xu <13691752556@139.com>
-Subject: Re: [PATCH v2 1/2] rename tas2764 to tas27xx
-Message-ID: <YlVj2H1+b75IKHpZ@sirena.org.uk>
-References: <20220412070621.4513-1-13691752556@139.com>
+ dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org
+ header.b="PjTkhyxG"
+Received: by mail-ej1-x630.google.com with SMTP id ks6so12210822ejb.1
+ for <alsa-devel@alsa-project.org>; Tue, 12 Apr 2022 05:00:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
+ h=message-id:date:mime-version:user-agent:subject:content-language:to
+ :cc:references:from:in-reply-to:content-transfer-encoding;
+ bh=4XT57RJ2zR0pUw59EDpBr/xnn0uf45XYMH4qW2Nnhag=;
+ b=PjTkhyxG9YnT/WRgCigk6dnjQLEqvWLBnqJI2oxk5GEFzh065/3zJ6/VA5+CQBLpKU
+ ljnXnp3/rV4PlaXn22l0r6QtObTkHsit4HWew6uxkt95zQF27zPcfeMrGu1zLQxT067i
+ Vnb36PyoD+EwmuEiS0iLt+ph45Vo5xXTIjcLOg4tzTp2rpSSH9dOf/ofFNfk6B6Siigc
+ /BSb05fegwqITJVh7KcYQaq4ovOkCP93LqIZR+8XpYs87wTg2nwjn1wsEOoy9EVhzdf5
+ MCoUdVSyTzcG0bX89zamHIuTF1qRxE7G+9cKyrOte0dGyY2UgpMeINiTXpG9D9Ce5usj
+ zdCg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+ :content-language:to:cc:references:from:in-reply-to
+ :content-transfer-encoding;
+ bh=4XT57RJ2zR0pUw59EDpBr/xnn0uf45XYMH4qW2Nnhag=;
+ b=S6WrCjksqntdCUGU4DbUfjQvrQzt4gEHu8vlp3c8GnnQme/nzAnSlSNGBNx3KoZvRI
+ k0Uwl44/2pq3b7cnEPzMIWXMRGDaZUwGMGjL6X7WQ6NHj2z1CgmOkLDIdluFVXaThRyf
+ 5CUvT5qVPBlUevyc0Di0CwnbKvuSXAzpOmycBDLyasl7VK0O6LKhOuR83zbLHgAjUpFp
+ hIx2PWPqC/6AENBSUtqGpe2rnaMW7p4Ip4MjkKpqKhcHRRU06zuoIrAA0NTYw8ZiOA8+
+ wrUiOTZgm82MEejUQZIjX01pGiRcloTZyPktUGHm9X38o5DJyp+nSBTa+7A4ZaJeiKyw
+ W+VQ==
+X-Gm-Message-State: AOAM532x4txfdQm1wUu2jHPT3S/HS/nbkoGRBxIcrzMc88xrPvvI4on/
+ 0wjXPg7u5ADOkWzVW1v4MNOFmg==
+X-Google-Smtp-Source: ABdhPJz5Rcv2dy4vHSQGWUoNuyDX38ldlJdyBOsnSd7fJARXObJEOMnlXSoDY/87s+k5IVcc4n2vbQ==
+X-Received: by 2002:a17:906:3082:b0:6e0:111f:8986 with SMTP id
+ 2-20020a170906308200b006e0111f8986mr33086544ejv.677.1649764845598; 
+ Tue, 12 Apr 2022 05:00:45 -0700 (PDT)
+Received: from [192.168.0.195] (xdsl-188-155-201-27.adslplus.ch.
+ [188.155.201.27]) by smtp.gmail.com with ESMTPSA id
+ l14-20020a170906644e00b006e4dae79576sm12802578ejn.14.2022.04.12.05.00.44
+ (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+ Tue, 12 Apr 2022 05:00:45 -0700 (PDT)
+Message-ID: <54abc3c6-959f-58df-337b-dc847e9d7b1d@linaro.org>
+Date: Tue, 12 Apr 2022 14:00:44 +0200
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature"; boundary="We0CF1PvHvKO+Ork"
-Content-Disposition: inline
-In-Reply-To: <20220412070621.4513-1-13691752556@139.com>
-X-Cookie: Approved for veterans.
-Cc: navada@ti.com, robh@kernel.org, alsa-devel@alsa-project.org,
- shenghao-ding@ti.com, raphael-xu@ti.com
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.7.0
+Subject: Re: [PATCH] dt-bindings: ASoC: fix invalid yaml
+Content-Language: en-US
+To: Corentin Labbe <clabbe@baylibre.com>, broonie@kernel.org,
+ krzysztof.kozlowski+dt@linaro.org, lgirdwood@gmail.com, robh+dt@kernel.org
+References: <20220411194409.3390002-1-clabbe@baylibre.com>
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <20220411194409.3390002-1-clabbe@baylibre.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
+ linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -81,36 +102,20 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+On 11/04/2022 21:44, Corentin Labbe wrote:
+> The word "or" is useless and breaks yaml validation.
+> 
+> Signed-off-by: Corentin Labbe <clabbe@baylibre.com>
+> ---
+>  Documentation/devicetree/bindings/sound/tas27xx.yaml | 1 -
+>  1 file changed, 1 deletion(-)
+> 
 
---We0CF1PvHvKO+Ork
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Subject should be reversed for this subsystem, so:
+"ASoC; dt-bindings: tas27xx:"
 
-On Tue, Apr 12, 2022 at 03:06:20PM +0800, Raphael-Xu wrote:
-> rename tas2764.yaml to tas27xx.yaml
->=20
-> Signed-off-by: Raphael-Xu <13691752556@139.com>
+Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 
-Please do not submit new versions of already applied patches, please
-submit incremental updates to the existing code.  Modifying existing
-commits creates problems for other users building on top of those
-commits so it's best practice to only change pubished git commits if
-absolutely essential.
 
---We0CF1PvHvKO+Ork
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmJVY9cACgkQJNaLcl1U
-h9AkUgf+OFuLf3alvzaoNxdjhi9QPVr4S/V8u5yUv9gr0OHgpzdY37vaBY8NEg9a
-kGczssACLD0/TiPSF9JlHRQWbo/NmV6dXKAU478AzRy6BHZABSIXDql2Niv9gd0Y
-pLPkuBPzxj8BeaEPYGRz6GtUhRpfYv+JrjeLWKClnTb9XQVhfU2ibFS5K+e2HMgk
-EfnybxbiowSpu46q+/XDUXwmbzWRmAWtBV7+nXCdZ5XoDikexUdQ5SkMMisJh8UX
-MCMkrFoNBzaVOXqUCL2knJ/mb3wmUlt4JdnI/iDY46ZC+XsgaZesDU+sGEq3DTgH
-MM2Bfy4nImVQQDJJ9bFInJ3tvhc60A==
-=ZazT
------END PGP SIGNATURE-----
-
---We0CF1PvHvKO+Ork--
+Best regards,
+Krzysztof
