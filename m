@@ -4,69 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5297AC433EF
-	for <alsa-devel@archiver.kernel.org>; Tue, 12 Apr 2022 19:52:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3E040C433F5
+	for <alsa-devel@archiver.kernel.org>; Tue, 12 Apr 2022 22:27:30 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 89CBF188A;
-	Tue, 12 Apr 2022 21:51:30 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 89CBF188A
+	by alsa0.perex.cz (Postfix) with ESMTPS id 7626517E2;
+	Wed, 13 Apr 2022 00:26:38 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7626517E2
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1649793140;
-	bh=aBRM9sG0Z1BLiszeFEO4ei/zQqmpiKFPvY0NHwUIN+c=;
+	s=default; t=1649802448;
+	bh=MBNtZA6rXGXC12n4TUDLgxmGOvEAdEkXm7T+0dFTi00=;
 	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=PBYmztrzjWyqDjpCPjkBs7xUczqVy7H39Ghgy/j+uChh3PaLTDibYN8Hsw6cwOjL7
-	 /qn/UxoaXH2yk5v6oSREye7Ok6X5K4iNTDfT86+eafl8rlByuChlU4DEs/kmPUWUfm
-	 ySLaeylhJaIX+rfRhHha34HJLvurt84OSuCPiDxg=
+	b=htOaM/F+QhmFH+HmlxGkgLkZR6ofu6+x8cAj3JRhfcnNEegYWBjVLyPndCR2DhRKK
+	 LZKZOqQQEiwduNsv47N6j1S9XtOLNb8UjkUlJMSNKDqpeVXrWdZ+7uPeBxOmSJINzX
+	 d3oZ6Eq4Hz2vPyoVegLNbFm/7wbMmpP/B4g1KOvE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 4449AF8050F;
-	Tue, 12 Apr 2022 21:50:44 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id E266DF80095;
+	Wed, 13 Apr 2022 00:26:37 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 7C23CF80511; Tue, 12 Apr 2022 21:50:42 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org
- [IPv6:2604:1380:4641:c500::1])
+ id 47EE2F80109; Wed, 13 Apr 2022 00:26:36 +0200 (CEST)
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id F36EFF80095
- for <alsa-devel@alsa-project.org>; Tue, 12 Apr 2022 21:50:33 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F36EFF80095
+ by alsa1.perex.cz (Postfix) with ESMTPS id C1D2BF80109
+ for <alsa-devel@alsa-project.org>; Wed, 13 Apr 2022 00:26:31 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C1D2BF80109
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="blgB7Bvq"
+ header.b="oZ/hfLIh"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id 3038861B96;
- Tue, 12 Apr 2022 19:50:31 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 81FBFC385A6;
- Tue, 12 Apr 2022 19:50:28 +0000 (UTC)
+ by ams.source.kernel.org (Postfix) with ESMTPS id DE707B8206D;
+ Tue, 12 Apr 2022 22:26:30 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 81FD1C385A1;
+ Tue, 12 Apr 2022 22:26:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1649793030;
- bh=aBRM9sG0Z1BLiszeFEO4ei/zQqmpiKFPvY0NHwUIN+c=;
+ s=k20201202; t=1649802389;
+ bh=MBNtZA6rXGXC12n4TUDLgxmGOvEAdEkXm7T+0dFTi00=;
  h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=blgB7BvqvEnC87M+Fs1165CJSFVuZayx+JdjdPn20o5vOfGgfDCF3kmR3Ldr26gVm
- +YfHynIspRgj9LS/t1IsaJIX8E5JB9bgINEjfLE0HFjOgekwCt6DFBCQvJzZyDJUcg
- UAlz6508+yLZpmSAKKLowVjeH5HPCTfko5SbCwfFrItbQdl9Q1W5Pcyu9+nmS717S0
- mNygbCXNHfc02tnYQh9z2TMhLIsU1Tw+Exv6OFci/xD+gpsBmfCUtzSKncxCFcH9Jg
- sjcITaBrMrpRhRa3uBPh37w919hSHO98WA8RgngC6w6GIAjPCdB2PKcV+YZ+f1KmUD
- P/L5fKAXOpeOw==
+ b=oZ/hfLIh0qXWOlbk/WYctNIyOey7eD/79V1sZ5ZcT/+vngPoL1ZENQWoe8BZz0inm
+ iMUtjggXRDv8Gv0DHcT8uqZ3KbKnQDf9VT1qvADZ9Tjgip2z1LOCNW2ndPHl8WcOTM
+ qNnXwmvyVmAmgntZU5JJn6u4v1o/KdyOyMJooMJLJUwy9JtwEl3XLL4H2Fn8S4VB2E
+ TzO74IzSJEDXnZdcNYuydCWy4L3DnYWg7BqaHLHD1y65Q0FKCSXLUf5+MpRxABbmqq
+ FXQJloMRUPIv3SQFiebN5WnSnrfL/UPVaK4k+/+LJOk/kGGZy0zqAr6r8ZsgZ24oCO
+ ob5I0ADaZJwPg==
 From: Mark Brown <broonie@kernel.org>
-To: cgel.zte@gmail.com, shengjiu.wang@gmail.com
-In-Reply-To: <20220412083000.2532711-1-chi.minghao@zte.com.cn>
-References: <20220412083000.2532711-1-chi.minghao@zte.com.cn>
-Subject: Re: [PATCH] ASoC: fsl: using pm_runtime_resume_and_get instead of
- pm_runtime_get_sync
-Message-Id: <164979302826.449327.17327555437837608042.b4-ty@kernel.org>
-Date: Tue, 12 Apr 2022 20:50:28 +0100
+To: jmkrzyszt@gmail.com
+In-Reply-To: <20220402120106.131118-1-jmkrzyszt@gmail.com>
+References: <20220402120106.131118-1-jmkrzyszt@gmail.com>
+Subject: Re: [PATCH] ASoC: ti: osk5912: Make it CCF clk API compatible
+Message-Id: <164980238824.480306.8135927048445454022.b4-ty@kernel.org>
+Date: Tue, 12 Apr 2022 23:26:28 +0100
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: alsa-devel@alsa-project.org, Xiubo.Lee@gmail.com, festevam@gmail.com,
- zealci@zte.com.cn, linux-kernel@vger.kernel.org, chi.minghao@zte.com.cn,
- lgirdwood@gmail.com, nicoleotsuka@gmail.com, linuxppc-dev@lists.ozlabs.org
+Cc: alsa-devel@alsa-project.org, linux-omap@vger.kernel.org,
+ peter.ujfalusi@gmail.com, lgirdwood@gmail.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -82,13 +79,15 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Tue, 12 Apr 2022 08:30:00 +0000, cgel.zte@gmail.com wrote:
-> From: Minghao Chi <chi.minghao@zte.com.cn>
+On Sat, 2 Apr 2022 14:01:06 +0200, Janusz Krzysztofik wrote:
+> The driver, OMAP1 specific, now omits clk_prepare/unprepare() steps, not
+> supported by OMAP1 custom implementation of clock API.  However, non-CCF
+> stubs of those functions exist for use on such platforms until converted
+> to CCF.
 > 
-> Using pm_runtime_resume_and_get is more appropriate
-> for simplifing code
+> Update the driver to be compatible with CCF implementation of clock API.
 > 
-> 
+> [...]
 
 Applied to
 
@@ -96,8 +95,8 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: fsl: using pm_runtime_resume_and_get instead of pm_runtime_get_sync
-      commit: c721905c54d913db0102973dbcdfb48d91146a2d
+[1/1] ASoC: ti: osk5912: Make it CCF clk API compatible
+      commit: 90b76a3cb9bf208286851560cfc70830c91c1d3f
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
