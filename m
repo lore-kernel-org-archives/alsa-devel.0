@@ -4,75 +4,80 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id F21C8C433F5
-	for <alsa-devel@archiver.kernel.org>; Wed, 13 Apr 2022 14:21:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 81CF2C433F5
+	for <alsa-devel@archiver.kernel.org>; Wed, 13 Apr 2022 15:05:59 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 8646417D1;
-	Wed, 13 Apr 2022 16:20:16 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8646417D1
+	by alsa0.perex.cz (Postfix) with ESMTPS id E54031765;
+	Wed, 13 Apr 2022 17:05:06 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E54031765
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1649859666;
-	bh=06jUexXEXIPcXuMnv6oN4HswWmYRPTr9ZYD3lGJiT4c=;
-	h=Subject:From:To:Date:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1649862357;
+	bh=VjQY5nrpmgcSuXTK7yu3ew0bxgkZKQoSqOgDwl0n0qs=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=mfgMKw2eGmlIChiYZIIZsnPCgBU7Qcjf/nbZvgeQ92U/dfNsD12nX9vaYrha1r+zV
-	 6e+FGLHIjbk5eOe7mDsDbZ/DeyIX2vxh8bb4Amxhdeh/WxBMau5ZZN66NfhETwR420
-	 cTnTaXWLgnTBp+8tSURAoJsI74gXUse9cGK5VFG4=
+	b=F6ljcbc2x3UqDfweKjZh0nm7nZt0ivir37YyslVjEIsNTfQE44hufXhT19MDSCxeu
+	 UCLK1N3MYYyyWkEMAnizbAW7Dbsz7qKUGGZ6n1EQh44IfQ7vOsEHSmTu0P3MIOmhhB
+	 fOkSISwXhrhZEdX2MK1NNDEH09pGW/aolmtYlYQQ=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 0747BF80095;
-	Wed, 13 Apr 2022 16:20:16 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 769F7F8013F;
+	Wed, 13 Apr 2022 17:05:06 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 09040F80248; Wed, 13 Apr 2022 16:20:15 +0200 (CEST)
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de
- [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+ id EB4DFF80095; Wed, 13 Apr 2022 17:05:04 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org
+ [IPv6:2604:1380:4641:c500::1])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 87488F80095
+ for <alsa-devel@alsa-project.org>; Wed, 13 Apr 2022 17:05:00 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 87488F80095
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="XPlaH6Uw"
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id A7657F80124
- for <alsa-devel@alsa-project.org>; Wed, 13 Apr 2022 16:20:09 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A7657F80124
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
- by metis.ext.pengutronix.de with esmtps
- (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92)
- (envelope-from <p.zabel@pengutronix.de>)
- id 1nedqK-00064F-1C; Wed, 13 Apr 2022 16:19:36 +0200
-Received: from [2a0a:edc0:0:900:1d::4e] (helo=lupine)
- by drehscheibe.grey.stw.pengutronix.de with esmtp (Exim 4.94.2)
- (envelope-from <p.zabel@pengutronix.de>)
- id 1nedqH-002nds-0d; Wed, 13 Apr 2022 16:19:31 +0200
-Received: from pza by lupine with local (Exim 4.94.2)
- (envelope-from <p.zabel@pengutronix.de>)
- id 1nedqE-000Bdk-Kr; Wed, 13 Apr 2022 16:19:30 +0200
-Message-ID: <03af79f89d80d985ebf9adacb77af7c128248d27.camel@pengutronix.de>
+ by dfw.source.kernel.org (Postfix) with ESMTPS id 3FDD761D1C;
+ Wed, 13 Apr 2022 15:04:58 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D66F2C385A6;
+ Wed, 13 Apr 2022 15:04:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1649862297;
+ bh=VjQY5nrpmgcSuXTK7yu3ew0bxgkZKQoSqOgDwl0n0qs=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=XPlaH6Uwu0ASIIeC4tABPUXxD+o5rD0bVVjxiaGSaGJzSnoa7pEbwYOJVPzdwxBr8
+ gjmVBL3QASH7L3+kPUTYd3ATwDf+Ww0FtHN/+gbvrLwirjJnoM+Ox8JGAveDN8iQhi
+ SdaVZOW03yWFbj2CcXTV4aWWL0XDafDczT09RCDSqlvv7X+Rl5IVzmVger+t9Iy9eH
+ jThrWoEVjusVit/qemkFT1q2MPHcWZwM9WuBMXMhtyTzr35msxMUgJEUao4rjg/dAk
+ 2SM9lnWA7c1kD7cKtP8brJcgyKbwO3srdZROYmi951/rZzD5QjgTYtIODfsI9TJUc5
+ LmilSMYDd1Pwg==
+Date: Wed, 13 Apr 2022 16:04:49 +0100
+From: Mark Brown <broonie@kernel.org>
+To: Rob Herring <robh@kernel.org>
 Subject: Re: [PATCH] dt-bindings: Fix array constraints on scalar properties
-From: Philipp Zabel <p.zabel@pengutronix.de>
-To: Rob Herring <robh@kernel.org>, devicetree@vger.kernel.org
-Date: Wed, 13 Apr 2022 16:19:30 +0200
-In-Reply-To: <20220413140121.3132837-1-robh@kernel.org>
+Message-ID: <YlbmkSFqY34UuVzN@sirena.org.uk>
 References: <20220413140121.3132837-1-robh@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.38.3-1 
 MIME-Version: 1.0
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: p.zabel@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de);
- SAEximRunCond expanded to false
-X-PTX-Original-Recipient: alsa-devel@alsa-project.org
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature"; boundary="VekwRPP0COgtFOIs"
+Content-Disposition: inline
+In-Reply-To: <20220413140121.3132837-1-robh@kernel.org>
+X-Cookie: The horror... the horror!
 Cc: alsa-devel@alsa-project.org, Geert Uytterhoeven <geert+renesas@glider.be>,
  linux-iio@vger.kernel.org, Yunfei Dong <yunfei.dong@mediatek.com>,
  linux-remoteproc@vger.kernel.org, Bjorn Andersson <bjorn.andersson@linaro.org>,
- Fabrice Gasnier <fabrice.gasnier@foss.st.com>,
  Lars-Peter Clausen <lars@metafoo.de>,
  Olivier Moysan <olivier.moysan@foss.st.com>,
  Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>,
  Guenter Roeck <linux@roeck-us.net>, linux-media@vger.kernel.org,
- Jean Delvare <jdelvare@suse.com>, Mark Brown <broonie@kernel.org>,
+ devicetree@vger.kernel.org, Jean Delvare <jdelvare@suse.com>,
+ Agathe Porte <agathe.porte@nokia.com>,
  Mauro Carvalho Chehab <mchehab@kernel.org>, linux-hwmon@vger.kernel.org,
  Mathieu Poirier <mathieu.poirier@linaro.org>, linux-kernel@vger.kernel.org,
- linux-spi@vger.kernel.org, Agathe Porte <agathe.porte@nokia.com>,
+ linux-spi@vger.kernel.org, Fabrice Gasnier <fabrice.gasnier@foss.st.com>,
+ Philipp Zabel <p.zabel@pengutronix.de>,
  Krzysztof Kozlowski <krzk+dt@kernel.org>, Jonathan Cameron <jic23@kernel.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
@@ -89,64 +94,31 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Mi, 2022-04-13 at 09:01 -0500, Rob Herring wrote:
+
+--VekwRPP0COgtFOIs
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Wed, Apr 13, 2022 at 09:01:21AM -0500, Rob Herring wrote:
 > Scalar properties shouldn't have array constraints (minItems, maxItems,
-> items). These constraints can simply be dropped with any constraints unde=
-r
+> items). These constraints can simply be dropped with any constraints under
 > 'items' moved up a level.
->
-> Cc: Agathe Porte <agathe.porte@nokia.com>
-> Cc: Guenter Roeck <linux@roeck-us.net>
-> Cc: Jean Delvare <jdelvare@suse.com>
-> Cc: Krzysztof Kozlowski <krzk+dt@kernel.org>
-> Cc: Olivier Moysan <olivier.moysan@foss.st.com>
-> Cc: Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
-> Cc: Jonathan Cameron <jic23@kernel.org>
-> Cc: Lars-Peter Clausen <lars@metafoo.de>
-> Cc: Philipp Zabel <p.zabel@pengutronix.de>
-> Cc: Mauro Carvalho Chehab <mchehab@kernel.org>
-> Cc: Bjorn Andersson <bjorn.andersson@linaro.org>
-> Cc: Mathieu Poirier <mathieu.poirier@linaro.org>
-> Cc: Mark Brown <broonie@kernel.org>
-> Cc: Fabrice Gasnier <fabrice.gasnier@foss.st.com>
-> Cc: Yunfei Dong <yunfei.dong@mediatek.com>
-> Cc: Geert Uytterhoeven <geert+renesas@glider.be>
-> Cc: linux-hwmon@vger.kernel.org
-> Cc: alsa-devel@alsa-project.org
-> Cc: linux-iio@vger.kernel.org
-> Cc: linux-media@vger.kernel.org
-> Cc: linux-remoteproc@vger.kernel.org
-> Cc: linux-spi@vger.kernel.org
-> Signed-off-by: Rob Herring <robh@kernel.org>
-> ---
-> =C2=A0Documentation/devicetree/bindings/hwmon/ti,tmp464.yaml       | 5 ++=
----
-> =C2=A0.../devicetree/bindings/iio/adc/st,stm32-dfsdm-adc.yaml      | 4 +-=
---
-> =C2=A0Documentation/devicetree/bindings/media/coda.yaml            | 1 -
-> =C2=A0.../devicetree/bindings/media/mediatek,vcodec-decoder.yaml   | 2 --
-> =C2=A0.../devicetree/bindings/media/mediatek,vcodec-encoder.yaml   | 2 --
-> =C2=A0.../bindings/media/mediatek,vcodec-subdev-decoder.yaml       | 1 -
-> =C2=A0.../devicetree/bindings/remoteproc/qcom,sc7280-wpss-pil.yaml | 4 +-=
---
-> =C2=A0Documentation/devicetree/bindings/spi/renesas,sh-msiof.yaml  | 2 --
-> =C2=A08 files changed, 4 insertions(+), 17 deletions(-)
->=20
-[...]
-> diff --git a/Documentation/devicetree/bindings/media/coda.yaml b/Document=
-ation/devicetree/bindings/media/coda.yaml
-> index 36781ee4617f..c9d5adbc8c4a 100644
-> --- a/Documentation/devicetree/bindings/media/coda.yaml
-> +++ b/Documentation/devicetree/bindings/media/coda.yaml
-> @@ -65,7 +65,6 @@ properties:
-> =C2=A0=C2=A0=C2=A0iram:
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0$ref: /schemas/types.yaml#/definitions/phan=
-dle
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0description: phandle pointing to the SRAM d=
-evice node
-> -    maxItems: 1
 
-Reviewed-by: Philipp Zabel <p.zabel@pengutronix.de>
+Acked-by: Mark Brown <broonie@kernel.org>
 
-regards
-Philipp
+--VekwRPP0COgtFOIs
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmJW5pAACgkQJNaLcl1U
+h9DmlQf+J09i7xHNBLa9qVJkVXaOe/HVJYPPltu9GIpREcAJsawEZ8ZgDKwby26+
++O8wcS47jwyM2wZ375w8CG/0FcziZRNk6g7yndlWyV64CN/Df4tje+K9ZC9Gdo4n
+OQrfdNzqXLPs7KxCpSYGQUhDaEKBAd0bUY/L+lszBvk1MzWBaDVeexfjwLGy+YVL
+4M+OkSQ++mNAsRvPNgyOqID8nPkKlrnkXL5dm/GG8SHl39P3GxGKl4Cag+Gd1/R9
+yIrjCokgS3AhWjKGygEYh1AFNJZqueydevyr6s4e1JRm/Fi6lYL0xRlPPx5aPsGZ
+xfaeAjTvT59WiM8RA/ZX4aZX46zCXg==
+=O1L2
+-----END PGP SIGNATURE-----
+
+--VekwRPP0COgtFOIs--
