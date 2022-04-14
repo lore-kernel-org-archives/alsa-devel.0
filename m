@@ -4,53 +4,53 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D54F9C433F5
-	for <alsa-devel@archiver.kernel.org>; Thu, 14 Apr 2022 16:24:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 36678C433EF
+	for <alsa-devel@archiver.kernel.org>; Thu, 14 Apr 2022 16:25:16 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0E8021733;
-	Thu, 14 Apr 2022 18:24:07 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0E8021733
+	by alsa0.perex.cz (Postfix) with ESMTPS id 70B591740;
+	Thu, 14 Apr 2022 18:24:24 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 70B591740
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1649953497;
-	bh=Qm+UCnf2ehrHnyB/Q/aVWd7YST1uUQc7iS2HAQ8TtJo=;
+	s=default; t=1649953514;
+	bh=L83iw92Jk+f9PLoigzNtezRjSKBNjf0HhRXPHK+x2zU=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=h7f8qE+ileT6Xmqmw5r+Sj5/Y99lQS0gCUH0TvvIHSHGIxoW8+D2vsU4DurIoQlfD
-	 +hBKu9dwkMOdmHZc2dm/Nvqr/pT3XOAL0th1e1h3l1X3sYM82XyuaHripLmH6WBbOX
-	 0Ag19M7fhdv3rqIA+EBEPh0GmJjroLrYQOKBvOOk=
+	b=ek0zrMXMMXR5iF6SAy3WMYC3oEfLVM62NZCA6N1ojGZZjrrZ7eTy/uLyqfb2ZzkWa
+	 I+Mmx5W1tpP/TDlR6n4qY53nqHCOqnjycakYk5WzScbSx21zoMPaPDONwsowb9IKkE
+	 jTbiv6vx8QP/W/yoJxARJ+I2J9xXIggLEMYgksR4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id E6A87F8053A;
-	Thu, 14 Apr 2022 18:23:12 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id F2C7BF80535;
+	Thu, 14 Apr 2022 18:23:13 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 239FDF80535; Thu, 14 Apr 2022 18:23:08 +0200 (CEST)
+ id B3C79F80162; Thu, 14 Apr 2022 18:23:08 +0200 (CEST)
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de
  [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 65C96F8012E
- for <alsa-devel@alsa-project.org>; Thu, 14 Apr 2022 18:22:55 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 65C96F8012E
+ by alsa1.perex.cz (Postfix) with ESMTPS id B1539F80431
+ for <alsa-devel@alsa-project.org>; Thu, 14 Apr 2022 18:22:56 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B1539F80431
 Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
  by metis.ext.pengutronix.de with esmtps
  (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92)
  (envelope-from <sha@pengutronix.de>)
- id 1nf2FC-0007P6-C9; Thu, 14 Apr 2022 18:22:54 +0200
+ id 1nf2FC-0007Pr-Ps; Thu, 14 Apr 2022 18:22:54 +0200
 Received: from [2a0a:edc0:0:1101:1d::28] (helo=dude02.red.stw.pengutronix.de)
  by drehscheibe.grey.stw.pengutronix.de with esmtp (Exim 4.94.2)
  (envelope-from <sha@pengutronix.de>)
- id 1nf2FC-00312c-UX; Thu, 14 Apr 2022 18:22:53 +0200
+ id 1nf2FD-00312i-93; Thu, 14 Apr 2022 18:22:53 +0200
 Received: from sha by dude02.red.stw.pengutronix.de with local (Exim 4.94.2)
  (envelope-from <sha@pengutronix.de>)
- id 1nf2F9-00GuAJ-E8; Thu, 14 Apr 2022 18:22:51 +0200
+ id 1nf2F9-00Gu8l-AA; Thu, 14 Apr 2022 18:22:51 +0200
 From: Sascha Hauer <s.hauer@pengutronix.de>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH v6 10/21] dmaengine: imx-sdma: error out on unsupported
- transfer types
-Date: Thu, 14 Apr 2022 18:22:38 +0200
-Message-Id: <20220414162249.3934543-11-s.hauer@pengutronix.de>
+Subject: [PATCH v6 07/21] ASoC: fsl_micfil: drop error messages from failed
+ register accesses
+Date: Thu, 14 Apr 2022 18:22:35 +0200
+Message-Id: <20220414162249.3934543-8-s.hauer@pengutronix.de>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20220414162249.3934543-1-s.hauer@pengutronix.de>
 References: <20220414162249.3934543-1-s.hauer@pengutronix.de>
@@ -81,84 +81,168 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The i.MX SDMA driver currently silently ignores unsupported transfer
-types. These transfer types are specified in the dma channel description
-in the device tree, so they should really be checked.
-Issue a message and error out when we hit unsupported transfer types.
+Failed register accesses are really not expected in memory mapped
+registers. When it fails then the register access itself is likely not
+the reason, so no need to have extra error messages for each regmap
+access. Just drop the error messages. This also fixes some places where
+a return value is concatenated using 'ret |=' and then returned as
+error value.
 
 Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
-Acked-By: Vinod Koul <vkoul@kernel.org>
+Acked-by: Shengjiu Wang <shengjiu.wang@gmail.com>
 ---
+ sound/soc/fsl/fsl_micfil.c | 53 ++++++++++----------------------------
+ 1 file changed, 13 insertions(+), 40 deletions(-)
 
-Notes:
-    Changes since v2:
-    - Use prefix dmaengine:
-
- drivers/dma/imx-sdma.c | 17 +++++++++++++----
- 1 file changed, 13 insertions(+), 4 deletions(-)
-
-diff --git a/drivers/dma/imx-sdma.c b/drivers/dma/imx-sdma.c
-index 80261a905eb5b..0e70843567cef 100644
---- a/drivers/dma/imx-sdma.c
-+++ b/drivers/dma/imx-sdma.c
-@@ -940,7 +940,7 @@ static irqreturn_t sdma_int_handler(int irq, void *dev_id)
- /*
-  * sets the pc of SDMA script according to the peripheral type
-  */
--static void sdma_get_pc(struct sdma_channel *sdmac,
-+static int sdma_get_pc(struct sdma_channel *sdmac,
- 		enum sdma_peripheral_type peripheral_type)
- {
- 	struct sdma_engine *sdma = sdmac->sdma;
-@@ -1039,13 +1039,17 @@ static void sdma_get_pc(struct sdma_channel *sdmac,
- 		emi_2_per = sdma->script_addrs->ext_mem_2_ipu_addr;
+diff --git a/sound/soc/fsl/fsl_micfil.c b/sound/soc/fsl/fsl_micfil.c
+index da4c245c35e62..619e013cf272d 100644
+--- a/sound/soc/fsl/fsl_micfil.c
++++ b/sound/soc/fsl/fsl_micfil.c
+@@ -170,17 +170,13 @@ static int fsl_micfil_reset(struct device *dev)
+ 
+ 	ret = regmap_clear_bits(micfil->regmap, REG_MICFIL_CTRL1,
+ 				MICFIL_CTRL1_MDIS);
+-	if (ret) {
+-		dev_err(dev, "failed to clear MDIS bit %d\n", ret);
++	if (ret)
+ 		return ret;
+-	}
+ 
+ 	ret = regmap_set_bits(micfil->regmap, REG_MICFIL_CTRL1,
+ 			      MICFIL_CTRL1_SRES);
+-	if (ret) {
+-		dev_err(dev, "failed to reset MICFIL: %d\n", ret);
++	if (ret)
+ 		return ret;
+-	}
+ 
+ 	return 0;
+ }
+@@ -242,18 +238,14 @@ static int fsl_micfil_trigger(struct snd_pcm_substream *substream, int cmd,
+ 		ret = regmap_update_bits(micfil->regmap, REG_MICFIL_CTRL1,
+ 				MICFIL_CTRL1_DISEL,
+ 				FIELD_PREP(MICFIL_CTRL1_DISEL, MICFIL_CTRL1_DISEL_DMA));
+-		if (ret) {
+-			dev_err(dev, "failed to update DISEL bits\n");
++		if (ret)
+ 			return ret;
+-		}
+ 
+ 		/* Enable the module */
+ 		ret = regmap_set_bits(micfil->regmap, REG_MICFIL_CTRL1,
+ 				      MICFIL_CTRL1_PDMIEN);
+-		if (ret) {
+-			dev_err(dev, "failed to enable the module\n");
++		if (ret)
+ 			return ret;
+-		}
+ 
+ 		break;
+ 	case SNDRV_PCM_TRIGGER_STOP:
+@@ -262,18 +254,14 @@ static int fsl_micfil_trigger(struct snd_pcm_substream *substream, int cmd,
+ 		/* Disable the module */
+ 		ret = regmap_clear_bits(micfil->regmap, REG_MICFIL_CTRL1,
+ 					MICFIL_CTRL1_PDMIEN);
+-		if (ret) {
+-			dev_err(dev, "failed to enable the module\n");
++		if (ret)
+ 			return ret;
+-		}
+ 
+ 		ret = regmap_update_bits(micfil->regmap, REG_MICFIL_CTRL1,
+ 				MICFIL_CTRL1_DISEL,
+ 				FIELD_PREP(MICFIL_CTRL1_DISEL, MICFIL_CTRL1_DISEL_DISABLE));
+-		if (ret) {
+-			dev_err(dev, "failed to update DISEL bits\n");
++		if (ret)
+ 			return ret;
+-		}
  		break;
  	default:
--		break;
-+		dev_err(sdma->dev, "Unsupported transfer type %d\n",
-+			peripheral_type);
-+		return -EINVAL;
- 	}
+ 		return -EINVAL;
+@@ -293,24 +281,20 @@ static int fsl_set_clock_params(struct device *dev, unsigned int rate)
+ 			clk_get_rate(micfil->mclk), rate);
  
- 	sdmac->pc_from_device = per_2_emi;
- 	sdmac->pc_to_device = emi_2_per;
- 	sdmac->device_to_device = per_2_per;
- 	sdmac->pc_to_pc = emi_2_emi;
-+
-+	return 0;
- }
- 
- static int sdma_load_context(struct sdma_channel *sdmac)
-@@ -1213,6 +1217,7 @@ static void sdma_set_watermarklevel_for_p2p(struct sdma_channel *sdmac)
- static int sdma_config_channel(struct dma_chan *chan)
- {
- 	struct sdma_channel *sdmac = to_sdma_chan(chan);
-+	int ret;
- 
- 	sdma_disable_channel(chan);
- 
-@@ -1233,7 +1238,9 @@ static int sdma_config_channel(struct dma_chan *chan)
- 		break;
- 	}
- 
--	sdma_get_pc(sdmac, sdmac->peripheral_type);
-+	ret = sdma_get_pc(sdmac, sdmac->peripheral_type);
-+	if (ret)
+ 	/* set CICOSR */
+-	ret |= regmap_update_bits(micfil->regmap, REG_MICFIL_CTRL2,
++	ret = regmap_update_bits(micfil->regmap, REG_MICFIL_CTRL2,
+ 				 MICFIL_CTRL2_CICOSR,
+ 				 FIELD_PREP(MICFIL_CTRL2_CICOSR, MICFIL_CTRL2_CICOSR_DEFAULT));
+ 	if (ret)
+-		dev_err(dev, "failed to set CICOSR in reg 0x%X\n",
+-			REG_MICFIL_CTRL2);
 +		return ret;
  
- 	if ((sdmac->peripheral_type != IMX_DMATYPE_MEMORY) &&
- 			(sdmac->peripheral_type != IMX_DMATYPE_DSP)) {
-@@ -1349,7 +1356,9 @@ static int sdma_alloc_chan_resources(struct dma_chan *chan)
- 		mem_data.dma_request2 = 0;
- 		data = &mem_data;
+ 	/* set CLK_DIV */
+ 	clk_div = get_clk_div(micfil, rate);
+ 	if (clk_div < 0)
+ 		ret = -EINVAL;
  
--		sdma_get_pc(sdmac, IMX_DMATYPE_MEMORY);
-+		ret = sdma_get_pc(sdmac, IMX_DMATYPE_MEMORY);
-+		if (ret)
-+			return ret;
- 	}
+-	ret |= regmap_update_bits(micfil->regmap, REG_MICFIL_CTRL2,
++	ret = regmap_update_bits(micfil->regmap, REG_MICFIL_CTRL2,
+ 				 MICFIL_CTRL2_CLKDIV,
+ 				 FIELD_PREP(MICFIL_CTRL2_CLKDIV, clk_div));
+-	if (ret)
+-		dev_err(dev, "failed to set CLKDIV in reg 0x%X\n",
+-			REG_MICFIL_CTRL2);
  
- 	switch (data->priority) {
+ 	return ret;
+ }
+@@ -328,19 +312,14 @@ static int fsl_micfil_hw_params(struct snd_pcm_substream *substream,
+ 	/* 1. Disable the module */
+ 	ret = regmap_clear_bits(micfil->regmap, REG_MICFIL_CTRL1,
+ 				MICFIL_CTRL1_PDMIEN);
+-	if (ret) {
+-		dev_err(dev, "failed to disable the module\n");
++	if (ret)
+ 		return ret;
+-	}
+ 
+ 	/* enable channels */
+ 	ret = regmap_update_bits(micfil->regmap, REG_MICFIL_CTRL1,
+ 				 0xFF, ((1 << channels) - 1));
+-	if (ret) {
+-		dev_err(dev, "failed to enable channels %d, reg 0x%X\n", ret,
+-			REG_MICFIL_CTRL1);
++	if (ret)
+ 		return ret;
+-	}
+ 
+ 	ret = fsl_set_clock_params(dev, rate);
+ 	if (ret < 0) {
+@@ -362,7 +341,6 @@ static const struct snd_soc_dai_ops fsl_micfil_dai_ops = {
+ static int fsl_micfil_dai_probe(struct snd_soc_dai *cpu_dai)
+ {
+ 	struct fsl_micfil *micfil = dev_get_drvdata(cpu_dai->dev);
+-	struct device *dev = cpu_dai->dev;
+ 	int ret;
+ 	int i;
+ 
+@@ -370,11 +348,8 @@ static int fsl_micfil_dai_probe(struct snd_soc_dai *cpu_dai)
+ 	ret = regmap_update_bits(micfil->regmap, REG_MICFIL_CTRL2,
+ 			MICFIL_CTRL2_QSEL,
+ 			FIELD_PREP(MICFIL_CTRL2_QSEL, MICFIL_QSEL_MEDIUM_QUALITY));
+-	if (ret) {
+-		dev_err(dev, "failed to set quality mode bits, reg 0x%X\n",
+-			REG_MICFIL_CTRL2);
++	if (ret)
+ 		return ret;
+-	}
+ 
+ 	/* set default gain to max_gain */
+ 	regmap_write(micfil->regmap, REG_MICFIL_OUT_CTRL, 0x77777777);
+@@ -388,10 +363,8 @@ static int fsl_micfil_dai_probe(struct snd_soc_dai *cpu_dai)
+ 	ret = regmap_update_bits(micfil->regmap, REG_MICFIL_FIFO_CTRL,
+ 			MICFIL_FIFO_CTRL_FIFOWMK,
+ 			FIELD_PREP(MICFIL_FIFO_CTRL_FIFOWMK, micfil->soc->fifo_depth - 1));
+-	if (ret) {
+-		dev_err(dev, "failed to set FIFOWMK\n");
++	if (ret)
+ 		return ret;
+-	}
+ 
+ 	return 0;
+ }
 -- 
 2.30.2
 
