@@ -4,65 +4,65 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9754BC433F5
-	for <alsa-devel@archiver.kernel.org>; Thu, 14 Apr 2022 18:53:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id BA1F5C433F5
+	for <alsa-devel@archiver.kernel.org>; Thu, 14 Apr 2022 18:53:27 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D4C2F191E;
-	Thu, 14 Apr 2022 20:52:18 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D4C2F191E
+	by alsa0.perex.cz (Postfix) with ESMTPS id F411718FE;
+	Thu, 14 Apr 2022 20:52:35 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F411718FE
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1649962388;
-	bh=iO/oV/XAQw/WOIOFY2DdfwfKnxTAu0Lc+seRw6IAvIU=;
+	s=default; t=1649962406;
+	bh=tNj5+vFUUsmLuKVILgUlnzSovGjCTwnHD7BRNmGgYTc=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=tZuDTkoQPHJc81uu0A0QCQImaiXSOXZ2vSfR07Eff9Z+rKu826Z2P2SPwSZNpcN17
-	 nWyP5YvsVvyCV8EthUfwOYlDpH+D7LeIv1jCEKqI1ucUIG/h4aAQyqYg34IEJTsHs8
-	 U1f1vlyuyab/ELqVXMpe7wPVQQ5tmikAvVYUQ4IE=
+	b=Lwm/rrg88WN3Tx9P8eef3jCDLZSvBohrIbx0l/1rBOM/seCO/1v6welm7EcmARICg
+	 Q/P4SQjoSa2gxGy7tRUrso7TddaRwQtudSU9w4dt/06QO/owLkaQuzMqK8j3BMv3kc
+	 9xFkLygHzLrnSD6kh6SEuB5GmYahQ6clZC/b0HO8=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id B2542F8057A;
-	Thu, 14 Apr 2022 20:49:17 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 42FD4F80587;
+	Thu, 14 Apr 2022 20:49:18 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id BAD47F80557; Thu, 14 Apr 2022 20:49:10 +0200 (CEST)
+ id 85144F80559; Thu, 14 Apr 2022 20:49:12 +0200 (CEST)
 Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 6A081F80535
- for <alsa-devel@alsa-project.org>; Thu, 14 Apr 2022 20:48:59 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6A081F80535
+ by alsa1.perex.cz (Postfix) with ESMTPS id 5933BF8051A
+ for <alsa-devel@alsa-project.org>; Thu, 14 Apr 2022 20:49:01 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5933BF8051A
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="RJ/nPowh"
+ header.b="OGVpBseR"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1649962140; x=1681498140;
+ t=1649962142; x=1681498142;
  h=from:to:cc:subject:date:message-id:in-reply-to:
  references:mime-version:content-transfer-encoding;
- bh=iO/oV/XAQw/WOIOFY2DdfwfKnxTAu0Lc+seRw6IAvIU=;
- b=RJ/nPowht0ZRMBcvillQS+YS47WuLXhq+oBbo814BgRShQ2rqZs2ZYnO
- Ac/binlL08UAFABWs8vH+ITnZ7TGLslGlj8N7LlGv77UtCgniB1/cIn8h
- ncui8ExvwiedVeiwD5elywyptOzyoXp887M9XDdevQWZXf8k0JpRyDmiD
- vEcALvmc4FoztL7RTQ3KPKVBrRvDB6eYeRVV0Z5nRF9Kuu3G5K5hy9p9g
- O1pye1w/MsUV63O36yr2afh4xcBY1Px1avB2tmrj4qxORsEv6pEpycSiB
- iW6gM4UDyS02PDi3yRe6Yx9ktUQJnXj0FXTe15xZGm+HB2XpNHKeFfqpB w==;
-X-IronPort-AV: E=McAfee;i="6400,9594,10317"; a="349442357"
-X-IronPort-AV: E=Sophos;i="5.90,260,1643702400"; d="scan'208";a="349442357"
+ bh=tNj5+vFUUsmLuKVILgUlnzSovGjCTwnHD7BRNmGgYTc=;
+ b=OGVpBseRykqJfpggXbrfLyISHuHYueqfsIrHadoBUJwBVQQ/t2UP0iUV
+ lJ5i8pVmaUj7K7HO7GmdLB8p8PhPmKVNvhtT8s57OO5a/N8SJhekK7/qd
+ os2kTiXN0bkl7JIN7hfMBZaTJxn7dFBiWLE19j0jLBqvqdvReKY5Ac5Ic
+ xMoKvWJ/iwNcQzVeRwjC1skzTAw6TBJuvk0WdmeaFfLF+E2POHyF5ylLC
+ WKyLd8bnfFkA9vqFXej9x49EvvCUzKgN5RVMnzNl8g9/0yVAnSbRheHKs
+ gwj4KY3W/bq5SMzSdK7rFw0bfchq6q2ToRYUh7S/dAJWvX4q+6g0F9Cvo w==;
+X-IronPort-AV: E=McAfee;i="6400,9594,10317"; a="349442365"
+X-IronPort-AV: E=Sophos;i="5.90,260,1643702400"; d="scan'208";a="349442365"
 Received: from fmsmga007.fm.intel.com ([10.253.24.52])
  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 14 Apr 2022 11:48:43 -0700
-X-IronPort-AV: E=Sophos;i="5.90,260,1643702400"; d="scan'208";a="560304649"
+ 14 Apr 2022 11:48:45 -0700
+X-IronPort-AV: E=Sophos;i="5.90,260,1643702400"; d="scan'208";a="560304655"
 Received: from rrsolima-mobl.amr.corp.intel.com (HELO
  pbossart-mobl3.amr.corp.intel.com) ([10.252.130.212])
  by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 14 Apr 2022 11:48:42 -0700
+ 14 Apr 2022 11:48:45 -0700
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH v2 11/15] ASoC: SOF: Intel: hda: use BIT() macros for
- consistency
-Date: Thu, 14 Apr 2022 13:48:13 -0500
-Message-Id: <20220414184817.362215-12-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH v2 14/15] ASoC: SOF: Intel: hda: expose some codeloader
+ functions
+Date: Thu, 14 Apr 2022 13:48:16 -0500
+Message-Id: <20220414184817.362215-15-pierre-louis.bossart@linux.intel.com>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20220414184817.362215-1-pierre-louis.bossart@linux.intel.com>
 References: <20220414184817.362215-1-pierre-louis.bossart@linux.intel.com>
@@ -71,8 +71,8 @@ Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Cc: tiwai@suse.de, broonie@kernel.org,
  =?UTF-8?q?P=C3=A9ter=20Ujfalusi?= <peter.ujfalusi@linux.intel.com>,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+ Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -88,41 +88,122 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-BIT() macros should be used for all ADSPIC/IS registers.
+From: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 
+Expose the code loader functions for re-use in new platforms
+
+Signed-off-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Reviewed-by: Péter Ujfalusi <peter.ujfalusi@linux.intel.com>
-Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 ---
- sound/soc/sof/intel/hda.h | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ sound/soc/sof/intel/hda-loader.c | 27 ++++++++++++++-------------
+ sound/soc/sof/intel/hda.h        |  6 ++++++
+ 2 files changed, 20 insertions(+), 13 deletions(-)
 
+diff --git a/sound/soc/sof/intel/hda-loader.c b/sound/soc/sof/intel/hda-loader.c
+index f6c50ee526fa..78ceb5a2cbc0 100644
+--- a/sound/soc/sof/intel/hda-loader.c
++++ b/sound/soc/sof/intel/hda-loader.c
+@@ -41,9 +41,9 @@ static void hda_ssp_set_cbp_cfp(struct snd_sof_dev *sdev)
+ 	}
+ }
+ 
+-static struct hdac_ext_stream *cl_stream_prepare(struct snd_sof_dev *sdev, unsigned int format,
+-						 unsigned int size, struct snd_dma_buffer *dmab,
+-						 int direction)
++struct hdac_ext_stream *hda_cl_stream_prepare(struct snd_sof_dev *sdev, unsigned int format,
++					      unsigned int size, struct snd_dma_buffer *dmab,
++					      int direction)
+ {
+ 	struct hdac_ext_stream *hext_stream;
+ 	struct hdac_stream *hstream;
+@@ -234,8 +234,8 @@ static int cl_trigger(struct snd_sof_dev *sdev,
+ 	}
+ }
+ 
+-static int cl_cleanup(struct snd_sof_dev *sdev, struct snd_dma_buffer *dmab,
+-		      struct hdac_ext_stream *hext_stream)
++int hda_cl_cleanup(struct snd_sof_dev *sdev, struct snd_dma_buffer *dmab,
++		   struct hdac_ext_stream *hext_stream)
+ {
+ 	struct hdac_stream *hstream = &hext_stream->hstream;
+ 	int sd_offset = SOF_STREAM_SD_OFFSET(hstream);
+@@ -266,7 +266,7 @@ static int cl_cleanup(struct snd_sof_dev *sdev, struct snd_dma_buffer *dmab,
+ 	return ret;
+ }
+ 
+-static int cl_copy_fw(struct snd_sof_dev *sdev, struct hdac_ext_stream *hext_stream)
++int hda_cl_copy_fw(struct snd_sof_dev *sdev, struct hdac_ext_stream *hext_stream)
+ {
+ 	struct sof_intel_hda_dev *hda = sdev->pdata->hw_pdata;
+ 	const struct sof_intel_dsp_desc *chip = hda->desc;
+@@ -328,8 +328,8 @@ int hda_dsp_cl_boot_firmware_iccmax(struct snd_sof_dev *sdev)
+ 	stripped_firmware.size = plat_data->fw->size - plat_data->fw_offset;
+ 
+ 	/* prepare capture stream for ICCMAX */
+-	iccmax_stream = cl_stream_prepare(sdev, HDA_CL_STREAM_FORMAT, stripped_firmware.size,
+-					  &dmab_bdl, SNDRV_PCM_STREAM_CAPTURE);
++	iccmax_stream = hda_cl_stream_prepare(sdev, HDA_CL_STREAM_FORMAT, stripped_firmware.size,
++					      &dmab_bdl, SNDRV_PCM_STREAM_CAPTURE);
+ 	if (IS_ERR(iccmax_stream)) {
+ 		dev_err(sdev->dev, "error: dma prepare for ICCMAX stream failed\n");
+ 		return PTR_ERR(iccmax_stream);
+@@ -341,7 +341,7 @@ int hda_dsp_cl_boot_firmware_iccmax(struct snd_sof_dev *sdev)
+ 	 * Perform iccmax stream cleanup. This should be done even if firmware loading fails.
+ 	 * If the cleanup also fails, we return the initial error
+ 	 */
+-	ret1 = cl_cleanup(sdev, &dmab_bdl, iccmax_stream);
++	ret1 = hda_cl_cleanup(sdev, &dmab_bdl, iccmax_stream);
+ 	if (ret1 < 0) {
+ 		dev_err(sdev->dev, "error: ICCMAX stream cleanup failed\n");
+ 
+@@ -420,8 +420,9 @@ int hda_dsp_cl_boot_firmware(struct snd_sof_dev *sdev)
+ 	init_waitqueue_head(&sdev->boot_wait);
+ 
+ 	/* prepare DMA for code loader stream */
+-	hext_stream = cl_stream_prepare(sdev, HDA_CL_STREAM_FORMAT, stripped_firmware.size,
+-					&dmab, SNDRV_PCM_STREAM_PLAYBACK);
++	hext_stream = hda_cl_stream_prepare(sdev, HDA_CL_STREAM_FORMAT,
++					    stripped_firmware.size,
++					    &dmab, SNDRV_PCM_STREAM_PLAYBACK);
+ 	if (IS_ERR(hext_stream)) {
+ 		dev_err(sdev->dev, "error: dma prepare for fw loading failed\n");
+ 		return PTR_ERR(hext_stream);
+@@ -475,7 +476,7 @@ int hda_dsp_cl_boot_firmware(struct snd_sof_dev *sdev)
+ 	 * Continue with code loading and firmware boot
+ 	 */
+ 	hda->boot_iteration = HDA_FW_BOOT_ATTEMPTS;
+-	ret = cl_copy_fw(sdev, hext_stream);
++	ret = hda_cl_copy_fw(sdev, hext_stream);
+ 	if (!ret)
+ 		dev_dbg(sdev->dev, "Firmware download successful, booting...\n");
+ 	else
+@@ -488,7 +489,7 @@ int hda_dsp_cl_boot_firmware(struct snd_sof_dev *sdev)
+ 	 * This should be done even if firmware loading fails.
+ 	 * If the cleanup also fails, we return the initial error
+ 	 */
+-	ret1 = cl_cleanup(sdev, &dmab, hext_stream);
++	ret1 = hda_cl_cleanup(sdev, &dmab, hext_stream);
+ 	if (ret1 < 0) {
+ 		dev_err(sdev->dev, "error: Code loader DSP cleanup failed\n");
+ 
 diff --git a/sound/soc/sof/intel/hda.h b/sound/soc/sof/intel/hda.h
-index cc55439ab187..f7a93012b811 100644
+index f7a93012b811..36445482a122 100644
 --- a/sound/soc/sof/intel/hda.h
 +++ b/sound/soc/sof/intel/hda.h
-@@ -223,8 +223,8 @@
- #define HDA_DSP_REG_POLL_INTERVAL_US		500	/* 0.5 msec */
- #define HDA_DSP_REG_POLL_RETRY_COUNT		50
+@@ -588,6 +588,12 @@ int hda_dsp_ipc_cmd_done(struct snd_sof_dev *sdev, int dir);
+  */
+ int hda_dsp_cl_boot_firmware(struct snd_sof_dev *sdev);
+ int hda_dsp_cl_boot_firmware_iccmax(struct snd_sof_dev *sdev);
++int hda_cl_copy_fw(struct snd_sof_dev *sdev, struct hdac_ext_stream *hext_stream);
++struct hdac_ext_stream *hda_cl_stream_prepare(struct snd_sof_dev *sdev, unsigned int format,
++					      unsigned int size, struct snd_dma_buffer *dmab,
++					      int direction);
++int hda_cl_cleanup(struct snd_sof_dev *sdev, struct snd_dma_buffer *dmab,
++		   struct hdac_ext_stream *hext_stream);
+ #define HDA_CL_STREAM_FORMAT 0x40
  
--#define HDA_DSP_ADSPIC_IPC			1
--#define HDA_DSP_ADSPIS_IPC			1
-+#define HDA_DSP_ADSPIC_IPC			BIT(0)
-+#define HDA_DSP_ADSPIS_IPC			BIT(0)
- 
- /* Intel HD Audio General DSP Registers */
- #define HDA_DSP_GEN_BASE		0x0
-@@ -268,8 +268,8 @@
- /* HIPCTE */
- #define HDA_DSP_REG_HIPCTE_MSG_MASK	0x3FFFFFFF
- 
--#define HDA_DSP_ADSPIC_CL_DMA		0x2
--#define HDA_DSP_ADSPIS_CL_DMA		0x2
-+#define HDA_DSP_ADSPIC_CL_DMA		BIT(1)
-+#define HDA_DSP_ADSPIS_CL_DMA		BIT(1)
- 
- /* Delay before scheduling D0i3 entry */
- #define BXT_D0I3_DELAY 5000
+ /* pre and post fw run ops */
 -- 
 2.30.2
 
