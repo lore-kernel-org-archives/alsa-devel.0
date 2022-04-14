@@ -4,68 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 31F48C433EF
-	for <alsa-devel@archiver.kernel.org>; Thu, 14 Apr 2022 16:29:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B735AC433EF
+	for <alsa-devel@archiver.kernel.org>; Thu, 14 Apr 2022 17:38:53 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 543C018BC;
-	Thu, 14 Apr 2022 18:28:57 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 543C018BC
+	by alsa0.perex.cz (Postfix) with ESMTPS id B7368181F;
+	Thu, 14 Apr 2022 19:38:00 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B7368181F
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1649953787;
-	bh=aE61C61GUeWZuOW6PreFNTnOYXmMO1FD7/gI0p8OoGg=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1649957930;
+	bh=6dOv01az04T/z1BTO+IT24inw8nsBFbY540g2cn/Fkk=;
+	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=fXyXTUvjq7mabICuoXv5l4P+qwiD5Fm3OygEVhmsYEWn1QBIVPB+9STbEkwBzgoHy
-	 TdhBHWSE7JL1DoIhzrNd7C6LWSyMbRj9fym3KWt4hQW50yA0OysqT5dAKQK0KWs4SR
-	 Wuw72tM7wIR/HD3aRgFt+1jXFDjjoC/8uk/Bx7uc=
+	b=dgCjaM48fxUXzMbj/ZE3+eN2BhGW7XUUJRRa1NSntjqYiYQbp2LuaJwhLenQdSx1/
+	 jRnXTrEtzTIrpOwoeFeOWSj3N7d8L5vkf271P2aqib7mkP//9iBbYEpbGUv9y1I2Bo
+	 r6e+LW4GL9vrkcoH+fiEVkOVQjXg/EYY147Nud38=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id DE2D4F805C9;
-	Thu, 14 Apr 2022 18:23:35 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 12320F8012E;
+	Thu, 14 Apr 2022 19:38:00 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 82B3AF80589; Thu, 14 Apr 2022 18:23:29 +0200 (CEST)
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de
- [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+ id 27D48F80162; Thu, 14 Apr 2022 19:37:58 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id EA5DDF80114
+ for <alsa-devel@alsa-project.org>; Thu, 14 Apr 2022 19:37:54 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EA5DDF80114
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="LG79QvOu"
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id C8624F80527
- for <alsa-devel@alsa-project.org>; Thu, 14 Apr 2022 18:22:58 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C8624F80527
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
- by metis.ext.pengutronix.de with esmtps
- (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92)
- (envelope-from <sha@pengutronix.de>)
- id 1nf2FE-0007RL-BR; Thu, 14 Apr 2022 18:22:56 +0200
-Received: from [2a0a:edc0:0:1101:1d::28] (helo=dude02.red.stw.pengutronix.de)
- by drehscheibe.grey.stw.pengutronix.de with esmtp (Exim 4.94.2)
- (envelope-from <sha@pengutronix.de>)
- id 1nf2FE-00313H-2Y; Thu, 14 Apr 2022 18:22:54 +0200
-Received: from sha by dude02.red.stw.pengutronix.de with local (Exim 4.94.2)
- (envelope-from <sha@pengutronix.de>)
- id 1nf2F9-00GuEk-Rm; Thu, 14 Apr 2022 18:22:51 +0200
-From: Sascha Hauer <s.hauer@pengutronix.de>
-To: alsa-devel@alsa-project.org
-Subject: [PATCH v6 20/21] ASoC: fsl_micfil: fold fsl_set_clock_params() into
- its only user
-Date: Thu, 14 Apr 2022 18:22:48 +0200
-Message-Id: <20220414162249.3934543-21-s.hauer@pengutronix.de>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20220414162249.3934543-1-s.hauer@pengutronix.de>
-References: <20220414162249.3934543-1-s.hauer@pengutronix.de>
+ by dfw.source.kernel.org (Postfix) with ESMTPS id D54F562153;
+ Thu, 14 Apr 2022 17:37:51 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 05A2BC385A1;
+ Thu, 14 Apr 2022 17:37:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1649957871;
+ bh=6dOv01az04T/z1BTO+IT24inw8nsBFbY540g2cn/Fkk=;
+ h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+ b=LG79QvOujphjFiE7awNBuY5vBsXnGOqY8CuaLQGHgNFC8sxXWS4augbLnrwQSiGXN
+ sWfBXgNvPE4fK0z14guRsmx5qUgzswleIXrh2bwMK+VH8O03uGVO/2qG0AJlrq2x6I
+ DDnlf/cVe1/hlyQSIPoXvQBD5zTzZ3yaE2bDOYue5Vlt56TvOD1ACXIzALl72ZkGm4
+ Frwq69xH+JjXB+VhgABOdoa1znAHoIa4ksH6IOxV6yEYBYMbMzo+aeneB0enNmJYvR
+ cVpFnW9zwbDMM4OMuoDK/UrpCY+qmI5GkodTRS7pOeoRYhNwbyYkdiIs0sO3+d1IJq
+ RZn+UtyJiau7g==
+From: Mark Brown <broonie@kernel.org>
+To: akihiko.odaki@gmail.com
+In-Reply-To: <20220408041114.6024-1-akihiko.odaki@gmail.com>
+References: <20220408041114.6024-1-akihiko.odaki@gmail.com>
+Subject: Re: [PATCH] ASoC: soc-card: Create jack kcontrol without pins
+Message-Id: <164995786974.2810970.8441162989456904692.b4-ty@kernel.org>
+Date: Thu, 14 Apr 2022 18:37:49 +0100
 MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: sha@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de);
- SAEximRunCond expanded to false
-X-PTX-Original-Recipient: alsa-devel@alsa-project.org
-Cc: Xiubo Li <Xiubo.Lee@gmail.com>, Fabio Estevam <festevam@gmail.com>,
- Sascha Hauer <s.hauer@pengutronix.de>, Vinod Koul <vkoul@kernel.org>,
- Mark Brown <broonie@kernel.org>, NXP Linux Team <linux-imx@nxp.com>,
- kernel@pengutronix.de, dmaengine@vger.kernel.org,
- Shengjiu Wang <shengjiu.wang@gmail.com>
+Cc: oder_chiou@realtek.com, lgirdwood@gmail.com, alsa-devel@alsa-project.org,
+ linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -81,82 +79,42 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-fsl_set_clock_params() is used only once and easily be folded into its
-caller, do so.
+On Fri, 8 Apr 2022 13:11:14 +0900, Akihiko Odaki wrote:
+> snd_soc_card_jack_new() allowed to create jack kcontrol without pins,
+> but did not create kcontrols. The jack would not have kcontrols if pins
+> were not going to be added.
+> 
+> This renames the old snd_soc_card_jack_new() to
+> snd_soc_card_jack_new_pins() for use when pins are provided or will be
+> added later. The new snd_soc_card_jack_new() appropriately creates a
+> jack for use without pins and adds a kcontrol.
+> 
+> [...]
 
-Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
-Acked-by: Shengjiu Wang <shengjiu.wang@gmail.com>
----
- sound/soc/fsl/fsl_micfil.c | 41 ++++++++++++--------------------------
- 1 file changed, 13 insertions(+), 28 deletions(-)
+Applied to
 
-diff --git a/sound/soc/fsl/fsl_micfil.c b/sound/soc/fsl/fsl_micfil.c
-index a603033daed69..8c7b15dbd1d45 100644
---- a/sound/soc/fsl/fsl_micfil.c
-+++ b/sound/soc/fsl/fsl_micfil.c
-@@ -252,29 +252,6 @@ static int fsl_micfil_trigger(struct snd_pcm_substream *substream, int cmd,
- 	return 0;
- }
- 
--static int fsl_set_clock_params(struct device *dev, unsigned int rate)
--{
--	struct fsl_micfil *micfil = dev_get_drvdata(dev);
--	int clk_div = 8;
--	int osr = MICFIL_OSR_DEFAULT;
--	int ret;
--
--	ret = clk_set_rate(micfil->mclk, rate * clk_div * osr * 8);
--	if (ret)
--		return ret;
--
--	ret = micfil_set_quality(micfil);
--	if (ret)
--		return ret;
--
--	ret = regmap_update_bits(micfil->regmap, REG_MICFIL_CTRL2,
--				 MICFIL_CTRL2_CLKDIV | MICFIL_CTRL2_CICOSR,
--				 FIELD_PREP(MICFIL_CTRL2_CLKDIV, clk_div) |
--				 FIELD_PREP(MICFIL_CTRL2_CICOSR, 16 - osr));
--
--	return ret;
--}
--
- static int fsl_micfil_hw_params(struct snd_pcm_substream *substream,
- 				struct snd_pcm_hw_params *params,
- 				struct snd_soc_dai *dai)
-@@ -282,7 +259,8 @@ static int fsl_micfil_hw_params(struct snd_pcm_substream *substream,
- 	struct fsl_micfil *micfil = snd_soc_dai_get_drvdata(dai);
- 	unsigned int channels = params_channels(params);
- 	unsigned int rate = params_rate(params);
--	struct device *dev = &micfil->pdev->dev;
-+	int clk_div = 8;
-+	int osr = MICFIL_OSR_DEFAULT;
- 	int ret;
- 
- 	/* 1. Disable the module */
-@@ -297,11 +275,18 @@ static int fsl_micfil_hw_params(struct snd_pcm_substream *substream,
- 	if (ret)
- 		return ret;
- 
--	ret = fsl_set_clock_params(dev, rate);
--	if (ret < 0) {
--		dev_err(dev, "Failed to set clock parameters [%d]\n", ret);
-+	ret = clk_set_rate(micfil->mclk, rate * clk_div * osr * 8);
-+	if (ret)
- 		return ret;
--	}
-+
-+	ret = micfil_set_quality(micfil);
-+	if (ret)
-+		return ret;
-+
-+	ret = regmap_update_bits(micfil->regmap, REG_MICFIL_CTRL2,
-+				 MICFIL_CTRL2_CLKDIV | MICFIL_CTRL2_CICOSR,
-+				 FIELD_PREP(MICFIL_CTRL2_CLKDIV, clk_div) |
-+				 FIELD_PREP(MICFIL_CTRL2_CICOSR, 16 - osr));
- 
- 	micfil->dma_params_rx.peripheral_config = &micfil->sdmacfg;
- 	micfil->dma_params_rx.peripheral_size = sizeof(micfil->sdmacfg);
--- 
-2.30.2
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
 
+Thanks!
+
+[1/1] ASoC: soc-card: Create jack kcontrol without pins
+      commit: 19aed2d6cdb72a7c92909832b9480d9cadebeef9
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
