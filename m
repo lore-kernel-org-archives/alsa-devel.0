@@ -4,55 +4,52 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4EAFAC433F5
-	for <alsa-devel@archiver.kernel.org>; Thu, 14 Apr 2022 16:24:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5223EC433EF
+	for <alsa-devel@archiver.kernel.org>; Thu, 14 Apr 2022 16:24:48 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 92AE81728;
-	Thu, 14 Apr 2022 18:23:35 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 92AE81728
+	by alsa0.perex.cz (Postfix) with ESMTPS id 71CE71719;
+	Thu, 14 Apr 2022 18:23:56 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 71CE71719
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1649953465;
-	bh=2osZ0qKwhyjATQTw+26K1qXffw2FSwRbWZHAIqos8c0=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=pvH8li53pZqfCSznqlWVmsAY9QcgdLXn7xaJIozhRuX5Qoyt5ke/N5NE8z5nuDTee
-	 7vD4adVqDEohEvtPZ7YwtJx7jk2jkKFxuzrT6f84CngfTdfkymutZgEOhsNcLTW7Bw
-	 Vhf2OTaYVrX7UKDJFzW1LR9tNAqOwSrvsl3ZHTFw=
+	s=default; t=1649953486;
+	bh=Zq8r/U4o14JjGe32uuXqzQfs0Cno8OuQ23bJBVbOcm0=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=HDz0w9TsV4eOzv0YG7NEeBYOD/K5QU3d6vzZmWEtiL9MStYPTMEY2XhemaPhG49Dd
+	 jdH+7snqBIZA7rCCGsZJvKq7s+VadONgWtVusHc4liR4BW0MsqAPEB9k6Ayxy5af8T
+	 lSyzTZ/aw4igr9ehA2aF32q6UXGRp4Mce4eXpJXg=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id E5655F80533;
-	Thu, 14 Apr 2022 18:23:05 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id D3887F80431;
+	Thu, 14 Apr 2022 18:23:08 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id D2323F8052D; Thu, 14 Apr 2022 18:23:01 +0200 (CEST)
+ id C57F4F80536; Thu, 14 Apr 2022 18:23:06 +0200 (CEST)
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de
  [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 6B9ACF80114
- for <alsa-devel@alsa-project.org>; Thu, 14 Apr 2022 18:22:55 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6B9ACF80114
+ by alsa1.perex.cz (Postfix) with ESMTPS id 62F39F80162
+ for <alsa-devel@alsa-project.org>; Thu, 14 Apr 2022 18:22:56 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 62F39F80162
 Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
  by metis.ext.pengutronix.de with esmtps
  (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92)
  (envelope-from <sha@pengutronix.de>)
- id 1nf2FC-0007Ox-2I; Thu, 14 Apr 2022 18:22:54 +0200
+ id 1nf2FC-0007P5-5X; Thu, 14 Apr 2022 18:22:54 +0200
 Received: from [2a0a:edc0:0:1101:1d::28] (helo=dude02.red.stw.pengutronix.de)
  by drehscheibe.grey.stw.pengutronix.de with esmtp (Exim 4.94.2)
  (envelope-from <sha@pengutronix.de>)
- id 1nf2FC-00312S-HA; Thu, 14 Apr 2022 18:22:53 +0200
+ id 1nf2FC-00312W-Lx; Thu, 14 Apr 2022 18:22:53 +0200
 Received: from sha by dude02.red.stw.pengutronix.de with local (Exim 4.94.2)
  (envelope-from <sha@pengutronix.de>)
- id 1nf2F9-00Gu8P-8q; Thu, 14 Apr 2022 18:22:51 +0200
+ id 1nf2F8-00Gu51-Uk; Thu, 14 Apr 2022 18:22:50 +0200
 From: Sascha Hauer <s.hauer@pengutronix.de>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH v6 06/21] ASoC: fsl_micfil: use clear/set bits
-Date: Thu, 14 Apr 2022 18:22:34 +0200
-Message-Id: <20220414162249.3934543-7-s.hauer@pengutronix.de>
+Subject: [PATCH v6 00/21] ASoC: fsl_micfil: Driver updates
+Date: Thu, 14 Apr 2022 18:22:28 +0200
+Message-Id: <20220414162249.3934543-1-s.hauer@pengutronix.de>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20220414162249.3934543-1-s.hauer@pengutronix.de>
-References: <20220414162249.3934543-1-s.hauer@pengutronix.de>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
@@ -80,78 +77,77 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Instead regmap_update_bits() use the simpler variants
-regmap_[set|clear]_bits() where appropriate.
+I added one more ack from Shengjiu Wang, but other than that it's just a
+resend with +Cc: Mark Brown
 
-Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
-Acked-by: Shengjiu Wang <shengjiu.wang@gmail.com>
----
- sound/soc/fsl/fsl_micfil.c | 26 ++++++++++----------------
- 1 file changed, 10 insertions(+), 16 deletions(-)
+Sascha
 
-diff --git a/sound/soc/fsl/fsl_micfil.c b/sound/soc/fsl/fsl_micfil.c
-index cfa8af668d921..da4c245c35e62 100644
---- a/sound/soc/fsl/fsl_micfil.c
-+++ b/sound/soc/fsl/fsl_micfil.c
-@@ -168,19 +168,15 @@ static int fsl_micfil_reset(struct device *dev)
- 	struct fsl_micfil *micfil = dev_get_drvdata(dev);
- 	int ret;
- 
--	ret = regmap_update_bits(micfil->regmap,
--				 REG_MICFIL_CTRL1,
--				 MICFIL_CTRL1_MDIS,
--				 0);
-+	ret = regmap_clear_bits(micfil->regmap, REG_MICFIL_CTRL1,
-+				MICFIL_CTRL1_MDIS);
- 	if (ret) {
- 		dev_err(dev, "failed to clear MDIS bit %d\n", ret);
- 		return ret;
- 	}
- 
--	ret = regmap_update_bits(micfil->regmap,
--				 REG_MICFIL_CTRL1,
--				 MICFIL_CTRL1_SRES,
--				 MICFIL_CTRL1_SRES);
-+	ret = regmap_set_bits(micfil->regmap, REG_MICFIL_CTRL1,
-+			      MICFIL_CTRL1_SRES);
- 	if (ret) {
- 		dev_err(dev, "failed to reset MICFIL: %d\n", ret);
- 		return ret;
-@@ -252,9 +248,8 @@ static int fsl_micfil_trigger(struct snd_pcm_substream *substream, int cmd,
- 		}
- 
- 		/* Enable the module */
--		ret = regmap_update_bits(micfil->regmap, REG_MICFIL_CTRL1,
--					 MICFIL_CTRL1_PDMIEN,
--					 MICFIL_CTRL1_PDMIEN);
-+		ret = regmap_set_bits(micfil->regmap, REG_MICFIL_CTRL1,
-+				      MICFIL_CTRL1_PDMIEN);
- 		if (ret) {
- 			dev_err(dev, "failed to enable the module\n");
- 			return ret;
-@@ -265,9 +260,8 @@ static int fsl_micfil_trigger(struct snd_pcm_substream *substream, int cmd,
- 	case SNDRV_PCM_TRIGGER_SUSPEND:
- 	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
- 		/* Disable the module */
--		ret = regmap_update_bits(micfil->regmap, REG_MICFIL_CTRL1,
--					 MICFIL_CTRL1_PDMIEN,
--					 0);
-+		ret = regmap_clear_bits(micfil->regmap, REG_MICFIL_CTRL1,
-+					MICFIL_CTRL1_PDMIEN);
- 		if (ret) {
- 			dev_err(dev, "failed to enable the module\n");
- 			return ret;
-@@ -332,8 +326,8 @@ static int fsl_micfil_hw_params(struct snd_pcm_substream *substream,
- 	int ret;
- 
- 	/* 1. Disable the module */
--	ret = regmap_update_bits(micfil->regmap, REG_MICFIL_CTRL1,
--				 MICFIL_CTRL1_PDMIEN, 0);
-+	ret = regmap_clear_bits(micfil->regmap, REG_MICFIL_CTRL1,
-+				MICFIL_CTRL1_PDMIEN);
- 	if (ret) {
- 		dev_err(dev, "failed to disable the module\n");
- 		return ret;
+Changes since v5:
+- Add one more ack from Shengjiu Wang
+
+Changes since v4:
+- collect more acks
+- whitespace cleanup in 16/21
+
+Changes since v3:
+- Add commit log to "ASoC: fsl_micfil: drop unused variables"
+- Fix include name in "ASoC: fsl_micfil: add multi fifo support"
+- Drop unnecessary temporary adding of struct fsl_micfil::osr
+- Leave default quality setting at 'medium'
+- Drop debugging message printed at error level
+- collect acks from Shengjiu Wang and Vinod Koul
+
+Changes since v2:
+- Add forgotten commit log to dmaengine patches
+- Add patch to move include/linux/platform_data/dma-imx.h to include/linux/dma/imx-dma.h
+- Use prefix dmaengine: for dma patches
+
+Changes since v1:
+- Drop unused variable sw_done_sel
+- Evaluate sdmac->direction directly instead of storing value in n_fifos
+- add missing include linux/bitfield.h
+
+Sascha Hauer (21):
+  ASoC: fsl_micfil: Drop unnecessary register read
+  ASoC: fsl_micfil: Drop unused register read
+  ASoC: fsl_micfil: drop fsl_micfil_set_mclk_rate()
+  ASoC: fsl_micfil: do not define SHIFT/MASK for single bits
+  ASoC: fsl_micfil: use GENMASK to define register bit fields
+  ASoC: fsl_micfil: use clear/set bits
+  ASoC: fsl_micfil: drop error messages from failed register accesses
+  ASoC: fsl_micfil: drop unused variables
+  dmaengine: imx: Move header to include/dma/
+  dmaengine: imx-sdma: error out on unsupported transfer types
+  dmaengine: imx-sdma: Add multi fifo support
+  ASoC: fsl_micfil: add multi fifo support
+  ASoC: fsl_micfil: use define for OSR default value
+  ASoC: fsl_micfil: Drop get_pdm_clk()
+  ASoC: fsl_micfil: simplify clock setting
+  ASoC: fsl_micfil: rework quality setting
+  ASoC: fsl_micfil: drop unused include
+  ASoC: fsl_micfil: drop only once used defines
+  ASoC: fsl_micfil: drop support for undocumented property
+  ASoC: fsl_micfil: fold fsl_set_clock_params() into its only user
+  ASoC: fsl_micfil: Remove debug message
+
+ drivers/dma/imx-dma.c                         |   2 +-
+ drivers/dma/imx-sdma.c                        |  76 +++-
+ drivers/mmc/host/mxcmmc.c                     |   2 +-
+ drivers/spi/spi-fsl-lpspi.c                   |   2 +-
+ drivers/spi/spi-imx.c                         |   2 +-
+ drivers/tty/serial/imx.c                      |   2 +-
+ drivers/video/fbdev/mx3fb.c                   |   2 +-
+ .../dma-imx.h => dma/imx-dma.h}               |  26 +-
+ sound/soc/fsl/fsl_asrc.c                      |   2 +-
+ sound/soc/fsl/fsl_asrc_dma.c                  |   2 +-
+ sound/soc/fsl/fsl_easrc.h                     |   2 +-
+ sound/soc/fsl/fsl_micfil.c                    | 369 +++++++-----------
+ sound/soc/fsl/fsl_micfil.h                    | 269 +++----------
+ sound/soc/fsl/imx-pcm.h                       |   2 +-
+ sound/soc/fsl/imx-ssi.h                       |   2 +-
+ 15 files changed, 297 insertions(+), 465 deletions(-)
+ rename include/linux/{platform_data/dma-imx.h => dma/imx-dma.h} (67%)
+
 -- 
 2.30.2
 
