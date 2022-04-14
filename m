@@ -4,52 +4,52 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6A2E4C433F5
-	for <alsa-devel@archiver.kernel.org>; Thu, 14 Apr 2022 16:27:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C493EC433F5
+	for <alsa-devel@archiver.kernel.org>; Thu, 14 Apr 2022 16:27:21 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 9E283180F;
-	Thu, 14 Apr 2022 18:26:12 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9E283180F
+	by alsa0.perex.cz (Postfix) with ESMTPS id 8C224182B;
+	Thu, 14 Apr 2022 18:26:29 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8C224182B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1649953622;
-	bh=klc6jPY4mRAoZhCKOf+YB55IThXF65srhX8iSPwKjgE=;
+	s=default; t=1649953639;
+	bh=+ZtfsK7HcUIxhfSq1wkWabS4qkYkZHpNM2MrP0U+TpE=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=o+c7cPmhejqbXwq2e9iDIkKLy1Mm/5+j2StqEiKsxXCDkMAXpBQEzODGHSHIQfWhK
-	 /5YiRMvZilr8nJtG6ypWdxjOinpZHpmjoslBR77/vCbsA1cHkvvfYT5tr58qMoA7De
-	 +mtfo0vPzGi2o1vdjG94wnj6UjlENAj8wxs6fEd0=
+	b=XNwkSNvsi6LQHdEQObAFPqz5FSlW6Rgyv69s/AQgGkJdacRRQ+Iw91GcwUkiO7bd/
+	 fw4o0r13To8e+HYBkTDit0UTfV8menWj41rsz1+Hl6afi8PoYm81i15UD/TkkslPMi
+	 m7YLMpbC+mVDWeJpkphU3g9w3lrnSwrBRFqgyi/Q=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 035EEF8050F;
+	by alsa1.perex.cz (Postfix) with ESMTP id DA7EAF80568;
 	Thu, 14 Apr 2022 18:23:27 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 5DF2FF80548; Thu, 14 Apr 2022 18:23:17 +0200 (CEST)
+ id 6EFC4F804FD; Thu, 14 Apr 2022 18:23:19 +0200 (CEST)
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de
  [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 44FC9F80506
+ by alsa1.perex.cz (Postfix) with ESMTPS id 58CEEF80511
  for <alsa-devel@alsa-project.org>; Thu, 14 Apr 2022 18:22:58 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 44FC9F80506
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 58CEEF80511
 Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
  by metis.ext.pengutronix.de with esmtps
  (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92)
  (envelope-from <sha@pengutronix.de>)
- id 1nf2FE-0007Qt-Gd; Thu, 14 Apr 2022 18:22:56 +0200
+ id 1nf2FE-0007R4-AX; Thu, 14 Apr 2022 18:22:56 +0200
 Received: from [2a0a:edc0:0:1101:1d::28] (helo=dude02.red.stw.pengutronix.de)
  by drehscheibe.grey.stw.pengutronix.de with esmtp (Exim 4.94.2)
  (envelope-from <sha@pengutronix.de>)
- id 1nf2FD-003132-QY; Thu, 14 Apr 2022 18:22:54 +0200
+ id 1nf2FD-00313B-VT; Thu, 14 Apr 2022 18:22:54 +0200
 Received: from sha by dude02.red.stw.pengutronix.de with local (Exim 4.94.2)
  (envelope-from <sha@pengutronix.de>)
- id 1nf2F9-00GuA3-Co; Thu, 14 Apr 2022 18:22:51 +0200
+ id 1nf2F9-00GuAx-Fc; Thu, 14 Apr 2022 18:22:51 +0200
 From: Sascha Hauer <s.hauer@pengutronix.de>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH v6 09/21] dmaengine: imx: Move header to include/dma/
-Date: Thu, 14 Apr 2022 18:22:37 +0200
-Message-Id: <20220414162249.3934543-10-s.hauer@pengutronix.de>
+Subject: [PATCH v6 11/21] dmaengine: imx-sdma: Add multi fifo support
+Date: Thu, 14 Apr 2022 18:22:39 +0200
+Message-Id: <20220414162249.3934543-12-s.hauer@pengutronix.de>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20220414162249.3934543-1-s.hauer@pengutronix.de>
 References: <20220414162249.3934543-1-s.hauer@pengutronix.de>
@@ -80,9 +80,14 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The i.MX DMA drivers are device tree only, nothing in
-include/linux/platform_data/dma-imx.h has platform_data in it, so move
-the file to include/linux/dma/imx-dma.h.
+The i.MX SDMA engine can read from / write to multiple successive
+hardware FIFO registers, referred to as "Multi FIFO support". This is
+needed for the micfil driver and certain configurations of the SAI
+driver. This patch adds support for this feature.
+
+The number of FIFOs to read from / write to must be communicated from
+the client driver to the SDMA engine. For this the struct
+dma_slave_config::peripheral_config field is used.
 
 Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
 Acked-By: Vinod Koul <vkoul@kernel.org>
@@ -90,204 +95,181 @@ Acked-By: Vinod Koul <vkoul@kernel.org>
 
 Notes:
     Changes since v2:
-    - new patch
+    - Use prefix dmaengine:
+    - document struct sdma_peripheral_config
+    - add forgotten commit message
+    
+    Changes since v1:
+    - Drop unused variable sw_done_sel
+    - Evaluate sdmac->direction directly instead of storing value in n_fifos
 
- drivers/dma/imx-dma.c                                    | 2 +-
- drivers/dma/imx-sdma.c                                   | 2 +-
- drivers/mmc/host/mxcmmc.c                                | 2 +-
- drivers/spi/spi-fsl-lpspi.c                              | 2 +-
- drivers/spi/spi-imx.c                                    | 2 +-
- drivers/tty/serial/imx.c                                 | 2 +-
- drivers/video/fbdev/mx3fb.c                              | 2 +-
- include/linux/{platform_data/dma-imx.h => dma/imx-dma.h} | 6 +++---
- sound/soc/fsl/fsl_asrc.c                                 | 2 +-
- sound/soc/fsl/fsl_asrc_dma.c                             | 2 +-
- sound/soc/fsl/fsl_easrc.h                                | 2 +-
- sound/soc/fsl/imx-pcm.h                                  | 2 +-
- sound/soc/fsl/imx-ssi.h                                  | 2 +-
- 13 files changed, 15 insertions(+), 15 deletions(-)
- rename include/linux/{platform_data/dma-imx.h => dma/imx-dma.h} (95%)
+ drivers/dma/imx-sdma.c      | 57 +++++++++++++++++++++++++++++++++++++
+ include/linux/dma/imx-dma.h | 20 +++++++++++++
+ 2 files changed, 77 insertions(+)
 
-diff --git a/drivers/dma/imx-dma.c b/drivers/dma/imx-dma.c
-index 2ddc31e64db03..3bffe3ecbd1b6 100644
---- a/drivers/dma/imx-dma.c
-+++ b/drivers/dma/imx-dma.c
-@@ -25,7 +25,7 @@
- #include <linux/of_dma.h>
- 
- #include <asm/irq.h>
--#include <linux/platform_data/dma-imx.h>
-+#include <linux/dma/imx-dma.h>
- 
- #include "dmaengine.h"
- #define IMXDMA_MAX_CHAN_DESCRIPTORS	16
 diff --git a/drivers/dma/imx-sdma.c b/drivers/dma/imx-sdma.c
-index 70c0aa931ddf4..80261a905eb5b 100644
+index 0e70843567cef..95367a8a81a51 100644
 --- a/drivers/dma/imx-sdma.c
 +++ b/drivers/dma/imx-sdma.c
-@@ -35,7 +35,7 @@
- #include <linux/workqueue.h>
+@@ -14,6 +14,7 @@
+ #include <linux/iopoll.h>
+ #include <linux/module.h>
+ #include <linux/types.h>
++#include <linux/bitfield.h>
+ #include <linux/bitops.h>
+ #include <linux/mm.h>
+ #include <linux/interrupt.h>
+@@ -73,6 +74,7 @@
+ #define SDMA_CHNENBL0_IMX35	0x200
+ #define SDMA_CHNENBL0_IMX31	0x080
+ #define SDMA_CHNPRI_0		0x100
++#define SDMA_DONE0_CONFIG	0x1000
  
- #include <asm/irq.h>
--#include <linux/platform_data/dma-imx.h>
-+#include <linux/dma/imx-dma.h>
- #include <linux/regmap.h>
- #include <linux/mfd/syscon.h>
- #include <linux/mfd/syscon/imx6q-iomuxc-gpr.h>
-diff --git a/drivers/mmc/host/mxcmmc.c b/drivers/mmc/host/mxcmmc.c
-index 40b6878bea6cb..de04b5afef2e8 100644
---- a/drivers/mmc/host/mxcmmc.c
-+++ b/drivers/mmc/host/mxcmmc.c
-@@ -39,7 +39,7 @@
- #include <asm/irq.h>
- #include <linux/platform_data/mmc-mxcmmc.h>
+ /*
+  * Buffer descriptor status values.
+@@ -180,6 +182,12 @@
+ 				 BIT(DMA_MEM_TO_DEV) | \
+ 				 BIT(DMA_DEV_TO_DEV))
  
--#include <linux/platform_data/dma-imx.h>
-+#include <linux/dma/imx-dma.h>
++#define SDMA_WATERMARK_LEVEL_N_FIFOS	GENMASK(15, 12)
++#define SDMA_WATERMARK_LEVEL_SW_DONE	BIT(23)
++
++#define SDMA_DONE0_CONFIG_DONE_SEL	BIT(7)
++#define SDMA_DONE0_CONFIG_DONE_DIS	BIT(6)
++
+ /**
+  * struct sdma_script_start_addrs - SDMA script start pointers
+  *
+@@ -441,6 +449,9 @@ struct sdma_channel {
+ 	struct work_struct		terminate_worker;
+ 	struct list_head                terminated;
+ 	bool				is_ram_script;
++	unsigned int			n_fifos_src;
++	unsigned int			n_fifos_dst;
++	bool				sw_done;
+ };
  
- #define DRIVER_NAME "mxc-mmc"
- #define MXCMCI_TIMEOUT_MS 10000
-diff --git a/drivers/spi/spi-fsl-lpspi.c b/drivers/spi/spi-fsl-lpspi.c
-index 4c601294f8fab..19b1f3d881b08 100644
---- a/drivers/spi/spi-fsl-lpspi.c
-+++ b/drivers/spi/spi-fsl-lpspi.c
-@@ -20,7 +20,7 @@
- #include <linux/of_device.h>
- #include <linux/pinctrl/consumer.h>
- #include <linux/platform_device.h>
--#include <linux/platform_data/dma-imx.h>
-+#include <linux/dma/imx-dma.h>
- #include <linux/pm_runtime.h>
- #include <linux/slab.h>
- #include <linux/spi/spi.h>
-diff --git a/drivers/spi/spi-imx.c b/drivers/spi/spi-imx.c
-index b2dd0a4d24462..a944c787f53f3 100644
---- a/drivers/spi/spi-imx.c
-+++ b/drivers/spi/spi-imx.c
-@@ -24,7 +24,7 @@
- #include <linux/of_device.h>
- #include <linux/property.h>
+ #define IMX_DMA_SG_LOOP		BIT(0)
+@@ -778,6 +789,14 @@ static void sdma_event_enable(struct sdma_channel *sdmac, unsigned int event)
+ 	val = readl_relaxed(sdma->regs + chnenbl);
+ 	__set_bit(channel, &val);
+ 	writel_relaxed(val, sdma->regs + chnenbl);
++
++	/* Set SDMA_DONEx_CONFIG is sw_done enabled */
++	if (sdmac->sw_done) {
++		val = readl_relaxed(sdma->regs + SDMA_DONE0_CONFIG);
++		val |= SDMA_DONE0_CONFIG_DONE_SEL;
++		val &= ~SDMA_DONE0_CONFIG_DONE_DIS;
++		writel_relaxed(val, sdma->regs + SDMA_DONE0_CONFIG);
++	}
+ }
  
--#include <linux/platform_data/dma-imx.h>
-+#include <linux/dma/imx-dma.h>
+ static void sdma_event_disable(struct sdma_channel *sdmac, unsigned int event)
+@@ -1038,6 +1057,10 @@ static int sdma_get_pc(struct sdma_channel *sdmac,
+ 	case IMX_DMATYPE_IPU_MEMORY:
+ 		emi_2_per = sdma->script_addrs->ext_mem_2_ipu_addr;
+ 		break;
++	case IMX_DMATYPE_MULTI_SAI:
++		per_2_emi = sdma->script_addrs->sai_2_mcu_addr;
++		emi_2_per = sdma->script_addrs->mcu_2_sai_addr;
++		break;
+ 	default:
+ 		dev_err(sdma->dev, "Unsupported transfer type %d\n",
+ 			peripheral_type);
+@@ -1214,6 +1237,22 @@ static void sdma_set_watermarklevel_for_p2p(struct sdma_channel *sdmac)
+ 	sdmac->watermark_level |= SDMA_WATERMARK_LEVEL_CONT;
+ }
  
- #define DRIVER_NAME "spi_imx"
++static void sdma_set_watermarklevel_for_sais(struct sdma_channel *sdmac)
++{
++	unsigned int n_fifos;
++
++	if (sdmac->sw_done)
++		sdmac->watermark_level |= SDMA_WATERMARK_LEVEL_SW_DONE;
++
++	if (sdmac->direction == DMA_DEV_TO_MEM)
++		n_fifos = sdmac->n_fifos_src;
++	else
++		n_fifos = sdmac->n_fifos_dst;
++
++	sdmac->watermark_level |=
++			FIELD_PREP(SDMA_WATERMARK_LEVEL_N_FIFOS, n_fifos);
++}
++
+ static int sdma_config_channel(struct dma_chan *chan)
+ {
+ 	struct sdma_channel *sdmac = to_sdma_chan(chan);
+@@ -1250,6 +1289,10 @@ static int sdma_config_channel(struct dma_chan *chan)
+ 			    sdmac->peripheral_type == IMX_DMATYPE_ASRC)
+ 				sdma_set_watermarklevel_for_p2p(sdmac);
+ 		} else {
++			if (sdmac->peripheral_type ==
++					IMX_DMATYPE_MULTI_SAI)
++				sdma_set_watermarklevel_for_sais(sdmac);
++
+ 			__set_bit(sdmac->event_id0, sdmac->event_mask);
+ 		}
  
-diff --git a/drivers/tty/serial/imx.c b/drivers/tty/serial/imx.c
-index fd38e6ed4fdab..f8b5400e62672 100644
---- a/drivers/tty/serial/imx.c
-+++ b/drivers/tty/serial/imx.c
-@@ -30,7 +30,7 @@
- #include <linux/dma-mapping.h>
+@@ -1707,9 +1750,23 @@ static int sdma_config(struct dma_chan *chan,
+ 		       struct dma_slave_config *dmaengine_cfg)
+ {
+ 	struct sdma_channel *sdmac = to_sdma_chan(chan);
++	struct sdma_engine *sdma = sdmac->sdma;
  
- #include <asm/irq.h>
--#include <linux/platform_data/dma-imx.h>
-+#include <linux/dma/imx-dma.h>
+ 	memcpy(&sdmac->slave_config, dmaengine_cfg, sizeof(*dmaengine_cfg));
  
- #include "serial_mctrl_gpio.h"
- 
-diff --git a/drivers/video/fbdev/mx3fb.c b/drivers/video/fbdev/mx3fb.c
-index fabb271337ed2..b945b68984b97 100644
---- a/drivers/video/fbdev/mx3fb.c
-+++ b/drivers/video/fbdev/mx3fb.c
-@@ -26,7 +26,7 @@
- #include <linux/dma/ipu-dma.h>
- #include <linux/backlight.h>
- 
--#include <linux/platform_data/dma-imx.h>
-+#include <linux/dma/imx-dma.h>
- #include <linux/platform_data/video-mx3fb.h>
- 
- #include <asm/io.h>
-diff --git a/include/linux/platform_data/dma-imx.h b/include/linux/dma/imx-dma.h
-similarity index 95%
-rename from include/linux/platform_data/dma-imx.h
-rename to include/linux/dma/imx-dma.h
-index 281adbb26e6bd..b06cba85a6d46 100644
---- a/include/linux/platform_data/dma-imx.h
++	if (dmaengine_cfg->peripheral_config) {
++		struct sdma_peripheral_config *sdmacfg = dmaengine_cfg->peripheral_config;
++		if (dmaengine_cfg->peripheral_size != sizeof(struct sdma_peripheral_config)) {
++			dev_err(sdma->dev, "Invalid peripheral size %zu, expected %zu\n",
++				dmaengine_cfg->peripheral_size,
++				sizeof(struct sdma_peripheral_config));
++			return -EINVAL;
++		}
++		sdmac->n_fifos_src = sdmacfg->n_fifos_src;
++		sdmac->n_fifos_dst = sdmacfg->n_fifos_dst;
++		sdmac->sw_done = sdmacfg->sw_done;
++	}
++
+ 	/* Set ENBLn earlier to make sure dma request triggered after that */
+ 	if (sdmac->event_id0 >= sdmac->sdma->drvdata->num_events)
+ 		return -EINVAL;
+diff --git a/include/linux/dma/imx-dma.h b/include/linux/dma/imx-dma.h
+index b06cba85a6d46..8887762360d40 100644
+--- a/include/linux/dma/imx-dma.h
 +++ b/include/linux/dma/imx-dma.h
-@@ -3,8 +3,8 @@
-  * Copyright 2004-2009 Freescale Semiconductor, Inc. All Rights Reserved.
-  */
+@@ -39,6 +39,7 @@ enum sdma_peripheral_type {
+ 	IMX_DMATYPE_SSI_DUAL,	/* SSI Dual FIFO */
+ 	IMX_DMATYPE_ASRC_SP,	/* Shared ASRC */
+ 	IMX_DMATYPE_SAI,	/* SAI */
++	IMX_DMATYPE_MULTI_SAI,	/* MULTI FIFOs For Audio */
+ };
  
--#ifndef __ASM_ARCH_MXC_DMA_H__
--#define __ASM_ARCH_MXC_DMA_H__
-+#ifndef __LINUX_DMA_IMX_H
-+#define __LINUX_DMA_IMX_H
- 
- #include <linux/scatterlist.h>
- #include <linux/device.h>
-@@ -65,4 +65,4 @@ static inline int imx_dma_is_general_purpose(struct dma_chan *chan)
+ enum imx_dma_prio {
+@@ -65,4 +66,23 @@ static inline int imx_dma_is_general_purpose(struct dma_chan *chan)
  		!strcmp(chan->device->dev->driver->name, "imx-dma");
  }
  
--#endif
-+#endif /* __LINUX_DMA_IMX_H */
-diff --git a/sound/soc/fsl/fsl_asrc.c b/sound/soc/fsl/fsl_asrc.c
-index d7d1536a4f377..ad4e6747b8391 100644
---- a/sound/soc/fsl/fsl_asrc.c
-+++ b/sound/soc/fsl/fsl_asrc.c
-@@ -11,7 +11,7 @@
- #include <linux/dma-mapping.h>
- #include <linux/module.h>
- #include <linux/of_platform.h>
--#include <linux/platform_data/dma-imx.h>
-+#include <linux/dma/imx-dma.h>
- #include <linux/pm_runtime.h>
- #include <sound/dmaengine_pcm.h>
- #include <sound/pcm_params.h>
-diff --git a/sound/soc/fsl/fsl_asrc_dma.c b/sound/soc/fsl/fsl_asrc_dma.c
-index cd9b36ec0ecb9..5038faf035cba 100644
---- a/sound/soc/fsl/fsl_asrc_dma.c
-+++ b/sound/soc/fsl/fsl_asrc_dma.c
-@@ -8,7 +8,7 @@
- 
- #include <linux/dma-mapping.h>
- #include <linux/module.h>
--#include <linux/platform_data/dma-imx.h>
-+#include <linux/dma/imx-dma.h>
- #include <sound/dmaengine_pcm.h>
- #include <sound/pcm_params.h>
- 
-diff --git a/sound/soc/fsl/fsl_easrc.h b/sound/soc/fsl/fsl_easrc.h
-index 30620d56252cc..86d5c360d4f53 100644
---- a/sound/soc/fsl/fsl_easrc.h
-+++ b/sound/soc/fsl/fsl_easrc.h
-@@ -7,7 +7,7 @@
- #define _FSL_EASRC_H
- 
- #include <sound/asound.h>
--#include <linux/platform_data/dma-imx.h>
-+#include <linux/dma/imx-dma.h>
- 
- #include "fsl_asrc_common.h"
- 
-diff --git a/sound/soc/fsl/imx-pcm.h b/sound/soc/fsl/imx-pcm.h
-index 5c6cf1ca8c8ab..06b25f4b26b6f 100644
---- a/sound/soc/fsl/imx-pcm.h
-+++ b/sound/soc/fsl/imx-pcm.h
-@@ -9,7 +9,7 @@
- #ifndef _IMX_PCM_H
- #define _IMX_PCM_H
- 
--#include <linux/platform_data/dma-imx.h>
-+#include <linux/dma/imx-dma.h>
- 
- /*
-  * Do not change this as the FIQ handler depends on this size
-diff --git a/sound/soc/fsl/imx-ssi.h b/sound/soc/fsl/imx-ssi.h
-index 19cd0937e740a..2d30d822451a3 100644
---- a/sound/soc/fsl/imx-ssi.h
-+++ b/sound/soc/fsl/imx-ssi.h
-@@ -182,7 +182,7 @@
- #define DRV_NAME "imx-ssi"
- 
- #include <linux/dmaengine.h>
--#include <linux/platform_data/dma-imx.h>
-+#include <linux/dma/imx-dma.h>
- #include <sound/dmaengine_pcm.h>
- #include "imx-pcm.h"
- 
++/**
++ * struct sdma_peripheral_config - SDMA config for audio
++ * @n_fifos_src: Number of FIFOs for recording
++ * @n_fifos_dst: Number of FIFOs for playback
++ * @sw_done: Use software done. Needed for PDM (micfil)
++ *
++ * Some i.MX Audio devices (SAI, micfil) have multiple successive FIFO
++ * registers. For multichannel recording/playback the SAI/micfil have
++ * one FIFO register per channel and the SDMA engine has to read/write
++ * the next channel from/to the next register and wrap around to the
++ * first register when all channels are handled. The number of active
++ * channels must be communicated to the SDMA engine using this struct.
++ */
++struct sdma_peripheral_config {
++	int n_fifos_src;
++	int n_fifos_dst;
++	bool sw_done;
++};
++
+ #endif /* __LINUX_DMA_IMX_H */
 -- 
 2.30.2
 
