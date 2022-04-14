@@ -4,65 +4,64 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7C08BC433EF
-	for <alsa-devel@archiver.kernel.org>; Thu, 14 Apr 2022 18:52:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id AE271C433EF
+	for <alsa-devel@archiver.kernel.org>; Thu, 14 Apr 2022 18:52:53 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A1A071910;
-	Thu, 14 Apr 2022 20:51:48 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A1A071910
+	by alsa0.perex.cz (Postfix) with ESMTPS id DB6DB1916;
+	Thu, 14 Apr 2022 20:52:01 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DB6DB1916
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1649962358;
-	bh=pkDFQnRzO9fgCTtOmq6hYf8ZlS+WZ987021bDWO1fts=;
+	s=default; t=1649962371;
+	bh=pWo17U9Y3pAhwuPn2joJ8CpP54ulDCjd9WOoRmvR0i8=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=oycfR9IcJuK09Vkh1jVvjVwHLzMEYqzfjLHdG/chHIu52o08AA3aoHpbc+rtzgNhK
-	 9yopMtWNBJqkSydnsk4XG8Tpudj4ttgd0EHcBPrN1lLcAsQW+WfCDN4UmPgTWt+c8f
-	 pvgbobP6seiUMpMLH7nAN17oX4VHgrkAIpU+vAas=
+	b=WAuloeFa98D37JAFqysHAJ3wMkno4g6HhJh7TGc/6ejE2yHthrLtcDRFDoejbjyZO
+	 O8+c/T2D3bOLSE0lDp7SbhkWhwgT7yK3/mXWkURVBFtRq0CePTFBcjcE3bBObDPgUF
+	 nhbjHg8xx0X2vtVekBCwxj/fOJrY+v5y73/RquZo=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 8451BF80566;
-	Thu, 14 Apr 2022 20:49:16 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 226EEF80570;
+	Thu, 14 Apr 2022 20:49:17 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 79C2FF80551; Thu, 14 Apr 2022 20:49:09 +0200 (CEST)
+ id C5B15F8054A; Thu, 14 Apr 2022 20:49:09 +0200 (CEST)
 Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 85AC4F80534
- for <alsa-devel@alsa-project.org>; Thu, 14 Apr 2022 20:48:58 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 85AC4F80534
+ by alsa1.perex.cz (Postfix) with ESMTPS id BC478F80533
+ for <alsa-devel@alsa-project.org>; Thu, 14 Apr 2022 20:48:59 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BC478F80533
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="ayOei94n"
+ header.b="PhjxVlJV"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1649962139; x=1681498139;
+ t=1649962140; x=1681498140;
  h=from:to:cc:subject:date:message-id:in-reply-to:
  references:mime-version:content-transfer-encoding;
- bh=pkDFQnRzO9fgCTtOmq6hYf8ZlS+WZ987021bDWO1fts=;
- b=ayOei94nBYtqHyvuzsRLiXtKkeyam/361zyCuDe4XOA2YWW+B/uxqTND
- 0uM/DEaYvnMT1CuOU1v4c3uB5AgsIaLsizM4rnntkRqQFjveS7wfC7Ljl
- zJcfOYjr1KdEvugRv9CZql3Bc3S9gLstyF0p70UFI/tAM3+LB7hco2aYo
- mO3TUzV5GHqKVq3sqjMwpu6FeTeIQz/euiyWQ4izgIasznb7RGLC4DsxA
- VCJNWEMVHJzwQ1H3SOFTEjDFnDVn8T4KSOny+ibWFRv/+YpfCj2ldCtdd
- Zukn6O9e+4rrRlfVkXZDBey8SP9SKINOealyzCYNB/7GfmtjLPwqDwa66 w==;
-X-IronPort-AV: E=McAfee;i="6400,9594,10317"; a="349442355"
-X-IronPort-AV: E=Sophos;i="5.90,260,1643702400"; d="scan'208";a="349442355"
+ bh=pWo17U9Y3pAhwuPn2joJ8CpP54ulDCjd9WOoRmvR0i8=;
+ b=PhjxVlJVyJHfenwyF/+uCb5sWbKBEfyIAwup3MyrBzX4MerE9j/cEVPy
+ Vzfa0CGr9efOsP3RHH8GfOT0h0u7M3zzSxp5XjmX0Gyfwua2htzFkRkfS
+ 1vxfq6id+kV41x1CiBIOQwu+xdRrtqfbF8Shue5alF9lq1xrN3WvUNe4Y
+ L/XO/wykMhqG738CFRle5Zbd664r4qpqfBL9iPpKuO4IsqBiwAm5UhNHE
+ wdaj7zt5DkT/Qqhb2bf94XaGUM9BAezd23NEKih9hy8hqtv77/5kARxXa
+ lh2joqhlW3g/kinh9GGTHG/9EGP/etLoSvpe2Lpeeh9Xjhn0frNd3CtCL A==;
+X-IronPort-AV: E=McAfee;i="6400,9594,10317"; a="349442361"
+X-IronPort-AV: E=Sophos;i="5.90,260,1643702400"; d="scan'208";a="349442361"
 Received: from fmsmga007.fm.intel.com ([10.253.24.52])
  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 14 Apr 2022 11:48:42 -0700
-X-IronPort-AV: E=Sophos;i="5.90,260,1643702400"; d="scan'208";a="560304648"
+ 14 Apr 2022 11:48:44 -0700
+X-IronPort-AV: E=Sophos;i="5.90,260,1643702400"; d="scan'208";a="560304650"
 Received: from rrsolima-mobl.amr.corp.intel.com (HELO
  pbossart-mobl3.amr.corp.intel.com) ([10.252.130.212])
  by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 14 Apr 2022 11:48:41 -0700
+ 14 Apr 2022 11:48:43 -0700
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH v2 10/15] ASoC: SOF: Intel: move HDA_CL_STREAM_FORMAT
- definition to header
-Date: Thu, 14 Apr 2022 13:48:12 -0500
-Message-Id: <20220414184817.362215-11-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH v2 12/15] ASoC: SOF: Intel: hda: define check_ipc_irq op
+Date: Thu, 14 Apr 2022 13:48:14 -0500
+Message-Id: <20220414184817.362215-13-pierre-louis.bossart@linux.intel.com>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20220414184817.362215-1-pierre-louis.bossart@linux.intel.com>
 References: <20220414184817.362215-1-pierre-louis.bossart@linux.intel.com>
@@ -90,42 +89,140 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 From: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 
-Use the definition of the HDA_CL_STREAM_FORMAT macro from the header
-file.
+Define the check_ipc_irq op for HDA platforms and use it
+when checking if it is an IPC IRQ.
 
 Signed-off-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Reviewed-by: Péter Ujfalusi <peter.ujfalusi@linux.intel.com>
 ---
- sound/soc/sof/intel/hda-loader.c | 2 --
- sound/soc/sof/intel/hda.h        | 1 +
- 2 files changed, 1 insertion(+), 2 deletions(-)
+ sound/soc/sof/intel/apl.c  |  1 +
+ sound/soc/sof/intel/cnl.c  |  2 ++
+ sound/soc/sof/intel/hda.c  | 13 ++++++++++++-
+ sound/soc/sof/intel/icl.c  |  1 +
+ sound/soc/sof/intel/shim.h |  1 +
+ sound/soc/sof/intel/tgl.c  |  4 ++++
+ 6 files changed, 21 insertions(+), 1 deletion(-)
 
-diff --git a/sound/soc/sof/intel/hda-loader.c b/sound/soc/sof/intel/hda-loader.c
-index 697d18a41a6e..625bc1e67f1e 100644
---- a/sound/soc/sof/intel/hda-loader.c
-+++ b/sound/soc/sof/intel/hda-loader.c
-@@ -24,8 +24,6 @@
- #include "../sof-priv.h"
- #include "hda.h"
+diff --git a/sound/soc/sof/intel/apl.c b/sound/soc/sof/intel/apl.c
+index eb471602dae7..b3e3f2494c74 100644
+--- a/sound/soc/sof/intel/apl.c
++++ b/sound/soc/sof/intel/apl.c
+@@ -75,5 +75,6 @@ const struct sof_intel_dsp_desc apl_chip_info = {
+ 	.ssp_count = APL_SSP_COUNT,
+ 	.ssp_base_offset = APL_SSP_BASE_OFFSET,
+ 	.quirks = SOF_INTEL_PROCEN_FMT_QUIRK,
++	.check_ipc_irq	= hda_dsp_check_ipc_irq,
+ };
+ EXPORT_SYMBOL_NS(apl_chip_info, SND_SOC_SOF_INTEL_HDA_COMMON);
+diff --git a/sound/soc/sof/intel/cnl.c b/sound/soc/sof/intel/cnl.c
+index 21168ebc02cc..ab1f45bfc83b 100644
+--- a/sound/soc/sof/intel/cnl.c
++++ b/sound/soc/sof/intel/cnl.c
+@@ -295,6 +295,7 @@ const struct sof_intel_dsp_desc cnl_chip_info = {
+ 	.sdw_shim_base = SDW_SHIM_BASE,
+ 	.sdw_alh_base = SDW_ALH_BASE,
+ 	.check_sdw_irq	= hda_common_check_sdw_irq,
++	.check_ipc_irq	= hda_dsp_check_ipc_irq,
+ };
+ EXPORT_SYMBOL_NS(cnl_chip_info, SND_SOC_SOF_INTEL_HDA_COMMON);
  
--#define HDA_CL_STREAM_FORMAT 0x40
--
- static void hda_ssp_set_cbp_cfp(struct snd_sof_dev *sdev)
+@@ -321,5 +322,6 @@ const struct sof_intel_dsp_desc jsl_chip_info = {
+ 	.sdw_shim_base = SDW_SHIM_BASE,
+ 	.sdw_alh_base = SDW_ALH_BASE,
+ 	.check_sdw_irq	= hda_common_check_sdw_irq,
++	.check_ipc_irq	= hda_dsp_check_ipc_irq,
+ };
+ EXPORT_SYMBOL_NS(jsl_chip_info, SND_SOC_SOF_INTEL_HDA_COMMON);
+diff --git a/sound/soc/sof/intel/hda.c b/sound/soc/sof/intel/hda.c
+index da665d15302e..af3693d820fd 100644
+--- a/sound/soc/sof/intel/hda.c
++++ b/sound/soc/sof/intel/hda.c
+@@ -493,6 +493,17 @@ void hda_dsp_dump(struct snd_sof_dev *sdev, u32 flags)
+ 	}
+ }
+ 
++static bool hda_check_ipc_irq(struct snd_sof_dev *sdev)
++{
++	const struct sof_intel_dsp_desc *chip;
++
++	chip = get_chip_info(sdev->pdata);
++	if (chip && chip->check_ipc_irq)
++		return chip->check_ipc_irq(sdev);
++
++	return false;
++}
++
+ void hda_ipc_irq_dump(struct snd_sof_dev *sdev)
  {
- 	struct sof_intel_hda_dev *hda = sdev->pdata->hw_pdata;
-diff --git a/sound/soc/sof/intel/hda.h b/sound/soc/sof/intel/hda.h
-index 5d083ebbb886..cc55439ab187 100644
---- a/sound/soc/sof/intel/hda.h
-+++ b/sound/soc/sof/intel/hda.h
-@@ -588,6 +588,7 @@ int hda_dsp_ipc_cmd_done(struct snd_sof_dev *sdev, int dir);
-  */
- int hda_dsp_cl_boot_firmware(struct snd_sof_dev *sdev);
- int hda_dsp_cl_boot_firmware_iccmax(struct snd_sof_dev *sdev);
-+#define HDA_CL_STREAM_FORMAT 0x40
+ 	struct hdac_bus *bus = sof_to_bus(sdev);
+@@ -816,7 +827,7 @@ static irqreturn_t hda_dsp_interrupt_thread(int irq, void *context)
+ 	if (hda_dsp_check_stream_irq(sdev))
+ 		hda_dsp_stream_threaded_handler(irq, sdev);
  
- /* pre and post fw run ops */
- int hda_dsp_pre_fw_run(struct snd_sof_dev *sdev);
+-	if (hda_dsp_check_ipc_irq(sdev))
++	if (hda_check_ipc_irq(sdev))
+ 		sof_ops(sdev)->irq_thread(irq, sdev);
+ 
+ 	if (hda_dsp_check_sdw_irq(sdev))
+diff --git a/sound/soc/sof/intel/icl.c b/sound/soc/sof/intel/icl.c
+index 148d03f4164b..964014239afd 100644
+--- a/sound/soc/sof/intel/icl.c
++++ b/sound/soc/sof/intel/icl.c
+@@ -140,5 +140,6 @@ const struct sof_intel_dsp_desc icl_chip_info = {
+ 	.sdw_shim_base = SDW_SHIM_BASE,
+ 	.sdw_alh_base = SDW_ALH_BASE,
+ 	.check_sdw_irq	= hda_common_check_sdw_irq,
++	.check_ipc_irq	= hda_dsp_check_ipc_irq,
+ };
+ EXPORT_SYMBOL_NS(icl_chip_info, SND_SOC_SOF_INTEL_HDA_COMMON);
+diff --git a/sound/soc/sof/intel/shim.h b/sound/soc/sof/intel/shim.h
+index 80c61a7cedf6..fd64377de9a0 100644
+--- a/sound/soc/sof/intel/shim.h
++++ b/sound/soc/sof/intel/shim.h
+@@ -171,6 +171,7 @@ struct sof_intel_dsp_desc {
+ 	u32 sdw_alh_base;
+ 	u32 quirks;
+ 	bool (*check_sdw_irq)(struct snd_sof_dev *sdev);
++	bool (*check_ipc_irq)(struct snd_sof_dev *sdev);
+ };
+ 
+ extern struct snd_sof_dsp_ops sof_tng_ops;
+diff --git a/sound/soc/sof/intel/tgl.c b/sound/soc/sof/intel/tgl.c
+index 18e01db882f3..d0f805c67d5b 100644
+--- a/sound/soc/sof/intel/tgl.c
++++ b/sound/soc/sof/intel/tgl.c
+@@ -111,6 +111,7 @@ const struct sof_intel_dsp_desc tgl_chip_info = {
+ 	.sdw_shim_base = SDW_SHIM_BASE,
+ 	.sdw_alh_base = SDW_ALH_BASE,
+ 	.check_sdw_irq	= hda_common_check_sdw_irq,
++	.check_ipc_irq	= hda_dsp_check_ipc_irq,
+ };
+ EXPORT_SYMBOL_NS(tgl_chip_info, SND_SOC_SOF_INTEL_HDA_COMMON);
+ 
+@@ -130,6 +131,7 @@ const struct sof_intel_dsp_desc tglh_chip_info = {
+ 	.sdw_shim_base = SDW_SHIM_BASE,
+ 	.sdw_alh_base = SDW_ALH_BASE,
+ 	.check_sdw_irq	= hda_common_check_sdw_irq,
++	.check_ipc_irq	= hda_dsp_check_ipc_irq,
+ };
+ EXPORT_SYMBOL_NS(tglh_chip_info, SND_SOC_SOF_INTEL_HDA_COMMON);
+ 
+@@ -149,6 +151,7 @@ const struct sof_intel_dsp_desc ehl_chip_info = {
+ 	.sdw_shim_base = SDW_SHIM_BASE,
+ 	.sdw_alh_base = SDW_ALH_BASE,
+ 	.check_sdw_irq	= hda_common_check_sdw_irq,
++	.check_ipc_irq	= hda_dsp_check_ipc_irq,
+ };
+ EXPORT_SYMBOL_NS(ehl_chip_info, SND_SOC_SOF_INTEL_HDA_COMMON);
+ 
+@@ -168,5 +171,6 @@ const struct sof_intel_dsp_desc adls_chip_info = {
+ 	.sdw_shim_base = SDW_SHIM_BASE,
+ 	.sdw_alh_base = SDW_ALH_BASE,
+ 	.check_sdw_irq	= hda_common_check_sdw_irq,
++	.check_ipc_irq	= hda_dsp_check_ipc_irq,
+ };
+ EXPORT_SYMBOL_NS(adls_chip_info, SND_SOC_SOF_INTEL_HDA_COMMON);
 -- 
 2.30.2
 
