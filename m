@@ -4,52 +4,52 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6B61EC433EF
-	for <alsa-devel@archiver.kernel.org>; Thu, 14 Apr 2022 16:23:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4EAFAC433F5
+	for <alsa-devel@archiver.kernel.org>; Thu, 14 Apr 2022 16:24:27 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 6CFF716F4;
-	Thu, 14 Apr 2022 18:23:05 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6CFF716F4
+	by alsa0.perex.cz (Postfix) with ESMTPS id 92AE81728;
+	Thu, 14 Apr 2022 18:23:35 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 92AE81728
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1649953435;
-	bh=JYw7WLuuV/ymzI9K33foFR5rW5thgDf3Q9jQHJq8QD4=;
+	s=default; t=1649953465;
+	bh=2osZ0qKwhyjATQTw+26K1qXffw2FSwRbWZHAIqos8c0=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=b+VASDW5cMQqrGmXnP47NqHmKJ7Rqv34iQR/eIFhOSHtU966BIwH3gkhPCJEdA2em
-	 fc/t7cMWxukzJ2NjgLAsoWP6s0MFmCU6666CsuJc7G24DGVKoz29y1yx6m7icnishT
-	 6ho8ZSLX3uwmcTlga9iXyc5dVHugUtQ9AP/aX4Hg=
+	b=pvH8li53pZqfCSznqlWVmsAY9QcgdLXn7xaJIozhRuX5Qoyt5ke/N5NE8z5nuDTee
+	 7vD4adVqDEohEvtPZ7YwtJx7jk2jkKFxuzrT6f84CngfTdfkymutZgEOhsNcLTW7Bw
+	 Vhf2OTaYVrX7UKDJFzW1LR9tNAqOwSrvsl3ZHTFw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id ACA8DF80529;
-	Thu, 14 Apr 2022 18:23:04 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id E5655F80533;
+	Thu, 14 Apr 2022 18:23:05 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 9BD22F8052E; Thu, 14 Apr 2022 18:23:01 +0200 (CEST)
+ id D2323F8052D; Thu, 14 Apr 2022 18:23:01 +0200 (CEST)
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de
  [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 4EE6FF80124
- for <alsa-devel@alsa-project.org>; Thu, 14 Apr 2022 18:22:54 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4EE6FF80124
+ by alsa1.perex.cz (Postfix) with ESMTPS id 6B9ACF80114
+ for <alsa-devel@alsa-project.org>; Thu, 14 Apr 2022 18:22:55 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6B9ACF80114
 Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
  by metis.ext.pengutronix.de with esmtps
  (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92)
  (envelope-from <sha@pengutronix.de>)
- id 1nf2FB-0007Ot-V6; Thu, 14 Apr 2022 18:22:54 +0200
+ id 1nf2FC-0007Ox-2I; Thu, 14 Apr 2022 18:22:54 +0200
 Received: from [2a0a:edc0:0:1101:1d::28] (helo=dude02.red.stw.pengutronix.de)
  by drehscheibe.grey.stw.pengutronix.de with esmtp (Exim 4.94.2)
  (envelope-from <sha@pengutronix.de>)
- id 1nf2FC-00312P-CM; Thu, 14 Apr 2022 18:22:52 +0200
+ id 1nf2FC-00312S-HA; Thu, 14 Apr 2022 18:22:53 +0200
 Received: from sha by dude02.red.stw.pengutronix.de with local (Exim 4.94.2)
  (envelope-from <sha@pengutronix.de>)
- id 1nf2F9-00Gu9Y-BU; Thu, 14 Apr 2022 18:22:51 +0200
+ id 1nf2F9-00Gu8P-8q; Thu, 14 Apr 2022 18:22:51 +0200
 From: Sascha Hauer <s.hauer@pengutronix.de>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH v6 08/21] ASoC: fsl_micfil: drop unused variables
-Date: Thu, 14 Apr 2022 18:22:36 +0200
-Message-Id: <20220414162249.3934543-9-s.hauer@pengutronix.de>
+Subject: [PATCH v6 06/21] ASoC: fsl_micfil: use clear/set bits
+Date: Thu, 14 Apr 2022 18:22:34 +0200
+Message-Id: <20220414162249.3934543-7-s.hauer@pengutronix.de>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20220414162249.3934543-1-s.hauer@pengutronix.de>
 References: <20220414162249.3934543-1-s.hauer@pengutronix.de>
@@ -80,51 +80,78 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-struct fsl_micfil has unused fields, remove them.
+Instead regmap_update_bits() use the simpler variants
+regmap_[set|clear]_bits() where appropriate.
 
 Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
 Acked-by: Shengjiu Wang <shengjiu.wang@gmail.com>
 ---
-
-Notes:
-    Changes since v3:
-    - Add commit log
-
- sound/soc/fsl/fsl_micfil.c | 6 ------
- 1 file changed, 6 deletions(-)
+ sound/soc/fsl/fsl_micfil.c | 26 ++++++++++----------------
+ 1 file changed, 10 insertions(+), 16 deletions(-)
 
 diff --git a/sound/soc/fsl/fsl_micfil.c b/sound/soc/fsl/fsl_micfil.c
-index 619e013cf272d..4656a18a03e45 100644
+index cfa8af668d921..da4c245c35e62 100644
 --- a/sound/soc/fsl/fsl_micfil.c
 +++ b/sound/soc/fsl/fsl_micfil.c
-@@ -38,10 +38,7 @@ struct fsl_micfil {
- 	unsigned int dataline;
- 	char name[32];
- 	int irq[MICFIL_IRQ_LINES];
--	unsigned int mclk_streams;
- 	int quality;	/*QUALITY 2-0 bits */
--	bool slave_mode;
--	int channel_gain[8];
- };
- 
- struct fsl_micfil_soc_data {
-@@ -342,7 +339,6 @@ static int fsl_micfil_dai_probe(struct snd_soc_dai *cpu_dai)
- {
- 	struct fsl_micfil *micfil = dev_get_drvdata(cpu_dai->dev);
+@@ -168,19 +168,15 @@ static int fsl_micfil_reset(struct device *dev)
+ 	struct fsl_micfil *micfil = dev_get_drvdata(dev);
  	int ret;
--	int i;
  
- 	/* set qsel to medium */
- 	ret = regmap_update_bits(micfil->regmap, REG_MICFIL_CTRL2,
-@@ -353,8 +349,6 @@ static int fsl_micfil_dai_probe(struct snd_soc_dai *cpu_dai)
+-	ret = regmap_update_bits(micfil->regmap,
+-				 REG_MICFIL_CTRL1,
+-				 MICFIL_CTRL1_MDIS,
+-				 0);
++	ret = regmap_clear_bits(micfil->regmap, REG_MICFIL_CTRL1,
++				MICFIL_CTRL1_MDIS);
+ 	if (ret) {
+ 		dev_err(dev, "failed to clear MDIS bit %d\n", ret);
+ 		return ret;
+ 	}
  
- 	/* set default gain to max_gain */
- 	regmap_write(micfil->regmap, REG_MICFIL_OUT_CTRL, 0x77777777);
--	for (i = 0; i < 8; i++)
--		micfil->channel_gain[i] = 0xF;
+-	ret = regmap_update_bits(micfil->regmap,
+-				 REG_MICFIL_CTRL1,
+-				 MICFIL_CTRL1_SRES,
+-				 MICFIL_CTRL1_SRES);
++	ret = regmap_set_bits(micfil->regmap, REG_MICFIL_CTRL1,
++			      MICFIL_CTRL1_SRES);
+ 	if (ret) {
+ 		dev_err(dev, "failed to reset MICFIL: %d\n", ret);
+ 		return ret;
+@@ -252,9 +248,8 @@ static int fsl_micfil_trigger(struct snd_pcm_substream *substream, int cmd,
+ 		}
  
- 	snd_soc_dai_init_dma_data(cpu_dai, NULL,
- 				  &micfil->dma_params_rx);
+ 		/* Enable the module */
+-		ret = regmap_update_bits(micfil->regmap, REG_MICFIL_CTRL1,
+-					 MICFIL_CTRL1_PDMIEN,
+-					 MICFIL_CTRL1_PDMIEN);
++		ret = regmap_set_bits(micfil->regmap, REG_MICFIL_CTRL1,
++				      MICFIL_CTRL1_PDMIEN);
+ 		if (ret) {
+ 			dev_err(dev, "failed to enable the module\n");
+ 			return ret;
+@@ -265,9 +260,8 @@ static int fsl_micfil_trigger(struct snd_pcm_substream *substream, int cmd,
+ 	case SNDRV_PCM_TRIGGER_SUSPEND:
+ 	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
+ 		/* Disable the module */
+-		ret = regmap_update_bits(micfil->regmap, REG_MICFIL_CTRL1,
+-					 MICFIL_CTRL1_PDMIEN,
+-					 0);
++		ret = regmap_clear_bits(micfil->regmap, REG_MICFIL_CTRL1,
++					MICFIL_CTRL1_PDMIEN);
+ 		if (ret) {
+ 			dev_err(dev, "failed to enable the module\n");
+ 			return ret;
+@@ -332,8 +326,8 @@ static int fsl_micfil_hw_params(struct snd_pcm_substream *substream,
+ 	int ret;
+ 
+ 	/* 1. Disable the module */
+-	ret = regmap_update_bits(micfil->regmap, REG_MICFIL_CTRL1,
+-				 MICFIL_CTRL1_PDMIEN, 0);
++	ret = regmap_clear_bits(micfil->regmap, REG_MICFIL_CTRL1,
++				MICFIL_CTRL1_PDMIEN);
+ 	if (ret) {
+ 		dev_err(dev, "failed to disable the module\n");
+ 		return ret;
 -- 
 2.30.2
 
