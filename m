@@ -4,52 +4,52 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 578AFC433EF
-	for <alsa-devel@archiver.kernel.org>; Thu, 14 Apr 2022 16:26:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2DCBCC433EF
+	for <alsa-devel@archiver.kernel.org>; Thu, 14 Apr 2022 16:26:18 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 8763617A3;
-	Thu, 14 Apr 2022 18:25:09 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8763617A3
+	by alsa0.perex.cz (Postfix) with ESMTPS id 61CDA171E;
+	Thu, 14 Apr 2022 18:25:26 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 61CDA171E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1649953559;
-	bh=ZXeUnm831jL3Euac9SfwMLVcjIFTvdFtCcb3srrf1GM=;
+	s=default; t=1649953576;
+	bh=wbR/FZ2eGw04T8M7hyFkYjybTbihC5iCRDg/4YDBL5I=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=mR4TXXQxcNIDQoNeyAeaG3TVDEZkKjrjwXYVh4884c8l1Wyn6zlarR6O+SPpwYXrT
-	 gb7xHG2rNDOHnJbE+KX+fTg2kpR3Sg24nwrnkgDbQ/eBUjc9dCIw3D2isWMva1rxCk
-	 4Ac6MTNPHlibCkWYf84w3+IKtug31H/dkjBhymRk=
+	b=Ha+5KYdtkBfkZSe/llVawxwVznnA7skFokpgIv4jQhMQZ/sBPelUZab7q5VJiRxwR
+	 9Lr3C0UhYtBjshzma9B789Gq+lvRXCdec0Iy18E+Jz78VF4QP0owy2bx8MEfOSNKHy
+	 XrqWK79ZRdXUTDtyZKKFj0LSZeOYvac66iJ61Ma8=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 4623BF80552;
-	Thu, 14 Apr 2022 18:23:20 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id D7B5EF80551;
+	Thu, 14 Apr 2022 18:23:21 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 71703F80535; Thu, 14 Apr 2022 18:23:12 +0200 (CEST)
+ id 731F3F8053E; Thu, 14 Apr 2022 18:23:14 +0200 (CEST)
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de
  [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 9EB33F804B4
+ by alsa1.perex.cz (Postfix) with ESMTPS id C5671F804CB
  for <alsa-devel@alsa-project.org>; Thu, 14 Apr 2022 18:22:57 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9EB33F804B4
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C5671F804CB
 Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
  by metis.ext.pengutronix.de with esmtps
  (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92)
  (envelope-from <sha@pengutronix.de>)
- id 1nf2FC-0007Q3-TN; Thu, 14 Apr 2022 18:22:54 +0200
+ id 1nf2FD-0007Qr-VJ; Thu, 14 Apr 2022 18:22:56 +0200
 Received: from [2a0a:edc0:0:1101:1d::28] (helo=dude02.red.stw.pengutronix.de)
  by drehscheibe.grey.stw.pengutronix.de with esmtp (Exim 4.94.2)
  (envelope-from <sha@pengutronix.de>)
- id 1nf2FD-00312m-Da; Thu, 14 Apr 2022 18:22:53 +0200
+ id 1nf2FD-00312w-O3; Thu, 14 Apr 2022 18:22:54 +0200
 Received: from sha by dude02.red.stw.pengutronix.de with local (Exim 4.94.2)
  (envelope-from <sha@pengutronix.de>)
- id 1nf2F9-00GuBt-JV; Thu, 14 Apr 2022 18:22:51 +0200
+ id 1nf2F9-00GuDa-PI; Thu, 14 Apr 2022 18:22:51 +0200
 From: Sascha Hauer <s.hauer@pengutronix.de>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH v6 14/21] ASoC: fsl_micfil: Drop get_pdm_clk()
-Date: Thu, 14 Apr 2022 18:22:42 +0200
-Message-Id: <20220414162249.3934543-15-s.hauer@pengutronix.de>
+Subject: [PATCH v6 18/21] ASoC: fsl_micfil: drop only once used defines
+Date: Thu, 14 Apr 2022 18:22:46 +0200
+Message-Id: <20220414162249.3934543-19-s.hauer@pengutronix.de>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20220414162249.3934543-1-s.hauer@pengutronix.de>
 References: <20220414162249.3934543-1-s.hauer@pengutronix.de>
@@ -80,78 +80,41 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-get_pdm_clk() calculates the PDM clock based on the quality setting,
-but really the PDM clock is independent of the quality, it's always
-rate * 4 * micfil->osr. Just drop the function and do the calculation
-in the caller.
+FSL_MICFIL_RATES and FSL_MICFIL_FORMATS is only used once. Drop
+the unnecesary indirection and use SNDRV_PCM_RATE_8000_48000 and
+SNDRV_PCM_FMTBIT_S16_LE directly.
 
 Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
 Acked-by: Shengjiu Wang <shengjiu.wang@gmail.com>
 ---
-
-Notes:
-    Changes since v3:
-    - Don't use uninitialized and no longer present struct fsl_micfil::osr
-
- sound/soc/fsl/fsl_micfil.c | 38 +-------------------------------------
- 1 file changed, 1 insertion(+), 37 deletions(-)
+ sound/soc/fsl/fsl_micfil.c | 7 ++-----
+ 1 file changed, 2 insertions(+), 5 deletions(-)
 
 diff --git a/sound/soc/fsl/fsl_micfil.c b/sound/soc/fsl/fsl_micfil.c
-index a35c1c580dbc1..3ddc988b4fe65 100644
+index 821beca9b4bf1..89af6cfe24e69 100644
 --- a/sound/soc/fsl/fsl_micfil.c
 +++ b/sound/soc/fsl/fsl_micfil.c
-@@ -110,42 +110,6 @@ static const struct snd_kcontrol_new fsl_micfil_snd_controls[] = {
- 		     snd_soc_get_enum_double, snd_soc_put_enum_double),
+@@ -25,9 +25,6 @@
+ 
+ #include "fsl_micfil.h"
+ 
+-#define FSL_MICFIL_RATES		SNDRV_PCM_RATE_8000_48000
+-#define FSL_MICFIL_FORMATS		(SNDRV_PCM_FMTBIT_S16_LE)
+-
+ #define MICFIL_OSR_DEFAULT	16
+ 
+ enum quality {
+@@ -350,8 +347,8 @@ static struct snd_soc_dai_driver fsl_micfil_dai = {
+ 		.stream_name = "CPU-Capture",
+ 		.channels_min = 1,
+ 		.channels_max = 8,
+-		.rates = FSL_MICFIL_RATES,
+-		.formats = FSL_MICFIL_FORMATS,
++		.rates = SNDRV_PCM_RATE_8000_48000,
++		.formats = SNDRV_PCM_FMTBIT_S16_LE,
+ 	},
+ 	.ops = &fsl_micfil_dai_ops,
  };
- 
--static inline int get_pdm_clk(struct fsl_micfil *micfil,
--			      unsigned int rate)
--{
--	u32 ctrl2_reg;
--	int qsel;
--	int bclk;
--	int osr = MICFIL_OSR_DEFAULT;
--
--	regmap_read(micfil->regmap, REG_MICFIL_CTRL2, &ctrl2_reg);
--	qsel = FIELD_GET(MICFIL_CTRL2_QSEL, ctrl2_reg);
--
--	switch (qsel) {
--	case MICFIL_QSEL_HIGH_QUALITY:
--		bclk = rate * 8 * osr / 2; /* kfactor = 0.5 */
--		break;
--	case MICFIL_QSEL_MEDIUM_QUALITY:
--	case MICFIL_QSEL_VLOW0_QUALITY:
--		bclk = rate * 4 * osr * 1; /* kfactor = 1 */
--		break;
--	case MICFIL_QSEL_LOW_QUALITY:
--	case MICFIL_QSEL_VLOW1_QUALITY:
--		bclk = rate * 2 * osr * 2; /* kfactor = 2 */
--		break;
--	case MICFIL_QSEL_VLOW2_QUALITY:
--		bclk = rate * osr * 4; /* kfactor = 4 */
--		break;
--	default:
--		dev_err(&micfil->pdev->dev,
--			"Please make sure you select a valid quality.\n");
--		bclk = -1;
--		break;
--	}
--
--	return bclk;
--}
--
- static inline int get_clk_div(struct fsl_micfil *micfil,
- 			      unsigned int rate)
- {
-@@ -154,7 +118,7 @@ static inline int get_clk_div(struct fsl_micfil *micfil,
- 
- 	mclk_rate = clk_get_rate(micfil->mclk);
- 
--	clk_div = mclk_rate / (get_pdm_clk(micfil, rate) * 2);
-+	clk_div = mclk_rate / (rate * MICFIL_OSR_DEFAULT * 8);
- 
- 	return clk_div;
- }
 -- 
 2.30.2
 
