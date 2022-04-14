@@ -4,77 +4,62 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7152FC433F5
-	for <alsa-devel@archiver.kernel.org>; Thu, 14 Apr 2022 08:23:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2D271C433FE
+	for <alsa-devel@archiver.kernel.org>; Thu, 14 Apr 2022 08:39:06 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 8E57916D3;
-	Thu, 14 Apr 2022 10:22:58 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8E57916D3
+	by alsa0.perex.cz (Postfix) with ESMTPS id C631116F9;
+	Thu, 14 Apr 2022 10:38:14 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C631116F9
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1649924628;
-	bh=fNMKs5HqdPrp1UiRhZusKJifO5vSUwr3a+PHAvrc2w8=;
-	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1649925544;
+	bh=5K5PBCjw++wR7vZ/ZFFzD2BNbcB1Pi8tfcNLTFjOH2o=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=sBPLCdoEDPwsmRJZeLOwzg5NzqX8qSpWb72Ki+zFh7826+xrfeUUUfGpZAEPdzakR
-	 Y7m1FA4nC3FkK7DPzWdzxWmbLHzAuS2Ik2qeLtuyRqDFpb7FfW0gySxm1fGrmiSu5f
-	 rvG/sMqh4Vv27WphYhkk9kfIQEJmiH/8rGtL5CfU=
+	b=g//HW7O95lRr5+DS39gNfx4c/zXI6NfAJUwDDinD35i27Sz2tklZH4N+c5KVveAv8
+	 8BSEYrmBF9BD2zVaedQ2of91O723UsUDfftnQOv4R7srUouo473PEKeOw9lkwzsjlf
+	 OEt7VAKAbuGCcTTkwZUd575zTmWP2dngrKYCin1E=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 2DB1BF8012E;
-	Thu, 14 Apr 2022 10:22:58 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 46068F8012E;
+	Thu, 14 Apr 2022 10:38:14 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 57082F80124; Thu, 14 Apr 2022 10:22:56 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id 6CE75F80162; Thu, 14 Apr 2022 10:38:12 +0200 (CEST)
+Received: from mailgw02.mediatek.com (unknown [210.61.82.184])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 4494FF80124
- for <alsa-devel@alsa-project.org>; Thu, 14 Apr 2022 10:22:46 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4494FF80124
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="YG04xhPZ"; 
- dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="hQ+/dbdy"
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out1.suse.de (Postfix) with ESMTP id 2B04D21618;
- Thu, 14 Apr 2022 08:22:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1649924566; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=Kf3xjl8BrBTKoBEu0VHViWW2bRtYjZmKOwW94FdVGl4=;
- b=YG04xhPZFFb6cki2AIm2z59dtlpDfhUKNVmJZtW3TMVbAurFZlh7k/LujsHpphCNYOR+d0
- j+9hNXH1GiyjpKs8t3BsCMRdhECCsr59rrOEz4wIXxj/a2Qpx/pDaOybpm3f3pUbFr64SI
- qJSBcbuH59IlmhRXdkONArlcBtG1kLk=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1649924566;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=Kf3xjl8BrBTKoBEu0VHViWW2bRtYjZmKOwW94FdVGl4=;
- b=hQ+/dbdyVTyV5bsMi5SqXnDGhNLfy8rUlq/T63z59AN+DRZnTAn5jIziZf77zHq+Y6l+ey
- RG/kw661SaWR5uCg==
-Received: from alsa1.suse.de (alsa1.suse.de [10.160.4.42])
- by relay2.suse.de (Postfix) with ESMTP id 163CDA3B87;
- Thu, 14 Apr 2022 08:22:46 +0000 (UTC)
-Date: Thu, 14 Apr 2022 10:22:46 +0200
-Message-ID: <s5hzgko3wh5.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Miles Chen <miles.chen@mediatek.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 6F617F80124
+ for <alsa-devel@alsa-project.org>; Thu, 14 Apr 2022 10:38:07 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6F617F80124
+X-UUID: 8cce995ca1594bbd84835c6af7d68581-20220414
+X-UUID: 8cce995ca1594bbd84835c6af7d68581-20220414
+Received: from mtkexhb01.mediatek.inc [(172.21.101.102)] by
+ mailgw02.mediatek.com (envelope-from <miles.chen@mediatek.com>)
+ (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+ with ESMTP id 956665497; Thu, 14 Apr 2022 16:37:59 +0800
+Received: from mtkcas11.mediatek.inc (172.21.101.40) by
+ mtkmbs10n2.mediatek.inc (172.21.101.183) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id 15.2.792.3; 
+ Thu, 14 Apr 2022 16:37:58 +0800
+Received: from mtksdccf07.mediatek.inc (172.21.84.99) by mtkcas11.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via
+ Frontend Transport; Thu, 14 Apr 2022 16:37:58 +0800
+From: Miles Chen <miles.chen@mediatek.com>
+To: <tiwai@suse.de>
 Subject: Re: [PATCH -next] sound/oss/dmasound: fix 'dmasound_setup' defined
  but not used
-In-Reply-To: <20220414081119.30851-1-miles.chen@mediatek.com>
-References: <20220414081119.30851-1-miles.chen@mediatek.com>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
- FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
- (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
-MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
-Content-Type: text/plain; charset=US-ASCII
-Cc: alsa-devel@alsa-project.org, Randy Dunlap <rdunlap@infradead.org>,
- linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>,
- linux-mediatek@lists.infradead.org, Matthias Brugger <matthias.bgg@gmail.com>,
+Date: Thu, 14 Apr 2022 16:37:58 +0800
+Message-ID: <20220414083758.32396-1-miles.chen@mediatek.com>
+X-Mailer: git-send-email 2.18.0
+In-Reply-To: <s5hzgko3wh5.wl-tiwai@suse.de>
+References: <s5hzgko3wh5.wl-tiwai@suse.de>
+MIME-Version: 1.0
+Content-Type: text/plain
+X-MTK: N
+Cc: alsa-devel@alsa-project.org, rdunlap@infradead.org,
+ linux-kernel@vger.kernel.org, miles.chen@mediatek.com,
+ linux-mediatek@lists.infradead.org, matthias.bgg@gmail.com, tiwai@suse.com,
  linux-arm-kernel@lists.infradead.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
@@ -91,56 +76,22 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Thu, 14 Apr 2022 10:11:18 +0200,
-Miles Chen wrote:
-> 
-> We observed: 'dmasound_setup' defined but not used error with
-> COMPILER=gcc ARCH=m68k DEFCONFIG=allmodconfig build.
-> 
-> __setup() does not work if MODULE is defined.
-> Fix it by warpping dmasound_setup with #ifndef MODULES.
-> 
-> Error(s):
-> sound/oss/dmasound/dmasound_core.c:1431:12: error: 'dmasound_setup' defined but not used [-Werror=unused-function]
-> 
-> Signed-off-by: Miles Chen <miles.chen@mediatek.com>
+Hi Takashi,
 
-This must be a side-effect of the recent fix 9dd7c46346ca
-("sound/oss/dmasound: fix build when drivers are mixed =y/=m").
-Adding Randy to Cc.
-
-IMO, a less uglier way would be to add __maybe_unused to that
-function.  But it's a matter of taste.
-
-
-thanks,
-
-Takashi
-
-> ---
->  sound/oss/dmasound/dmasound_core.c | 2 ++
->  1 file changed, 2 insertions(+)
+> This must be a side-effect of the recent fix 9dd7c46346ca
+> ("sound/oss/dmasound: fix build when drivers are mixed =y/=m").
+> Adding Randy to Cc.
 > 
-> diff --git a/sound/oss/dmasound/dmasound_core.c b/sound/oss/dmasound/dmasound_core.c
-> index 9c48f3a9e3d1..a1b3e71beadf 100644
-> --- a/sound/oss/dmasound/dmasound_core.c
-> +++ b/sound/oss/dmasound/dmasound_core.c
-> @@ -1428,6 +1428,7 @@ void dmasound_deinit(void)
->  		unregister_sound_dsp(sq_unit);
->  }
->  
-> +#ifndef MODULE
->  static int dmasound_setup(char *str)
->  {
->  	int ints[6], size;
-> @@ -1470,6 +1471,7 @@ static int dmasound_setup(char *str)
->  }
->  
->  __setup("dmasound=", dmasound_setup);
-> +#endif
->  
->      /*
->       *  Conversion tables
-> -- 
-> 2.18.0
+> IMO, a less uglier way would be to add __maybe_unused to that
+> function.  But it's a matter of taste.
+
+thanks, I will use __maybe_unused and the fix tag in v2.
+
+Thanks,
+Miles
+
 > 
+> 
+> thanks,
+> 
+> Takashi
