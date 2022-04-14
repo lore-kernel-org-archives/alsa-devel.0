@@ -4,52 +4,52 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D449DC433F5
-	for <alsa-devel@archiver.kernel.org>; Thu, 14 Apr 2022 16:27:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 79951C433F5
+	for <alsa-devel@archiver.kernel.org>; Thu, 14 Apr 2022 16:28:17 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0B5351866;
-	Thu, 14 Apr 2022 18:27:08 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0B5351866
+	by alsa0.perex.cz (Postfix) with ESMTPS id A451B171F;
+	Thu, 14 Apr 2022 18:27:25 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A451B171F
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1649953678;
-	bh=XPI52egTqfb9mQKIoH/CG9CCRHL9wF2xtY0UcraIXic=;
+	s=default; t=1649953695;
+	bh=bP6Om5vFYPs2vTCjVrWq/oo0UlaWXSrY0iedRtHSMEs=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=RRud1thzBolcFj6G2Y2A5ONoWG5nJOtrgll0GkklwfNqR70RP3DIOfEFv2+kIJqpv
-	 wSuiCIhE01fe0xEc9V4LpnpwpODkc7E69tOuR41KfqkVY3Hfxerd/PAJQuAyypqpSd
-	 cF+xH+dFgL0e8aMq1Fuzp+OO0lmtAjHyKk5TRZLU=
+	b=RNwuOCKFE4do4gU0k/hxZe5b/Zpzvz12Nl7UoiNdnK/n5HSWWPW+XFI24Quxa2iTx
+	 SwbOWDtsNt4iMd8r/ZcXQgfTzm3kb65nnok4RHb3PH01In+nyVUexaHwWHsuiUarlA
+	 F6QOX6W0j24yKqQgQoOfQrMSR4LlBFekLKaNPzJE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 16C61F805A0;
+	by alsa1.perex.cz (Postfix) with ESMTP id A8046F805AB;
 	Thu, 14 Apr 2022 18:23:31 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 4C79CF80553; Thu, 14 Apr 2022 18:23:21 +0200 (CEST)
+ id 44C0FF80557; Thu, 14 Apr 2022 18:23:22 +0200 (CEST)
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de
  [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 5BED5F80516
+ by alsa1.perex.cz (Postfix) with ESMTPS id 54211F804FC
  for <alsa-devel@alsa-project.org>; Thu, 14 Apr 2022 18:22:58 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5BED5F80516
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 54211F804FC
 Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
  by metis.ext.pengutronix.de with esmtps
  (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92)
  (envelope-from <sha@pengutronix.de>)
- id 1nf2FD-0007Qu-VE; Thu, 14 Apr 2022 18:22:56 +0200
+ id 1nf2FE-0007Qd-1P; Thu, 14 Apr 2022 18:22:56 +0200
 Received: from [2a0a:edc0:0:1101:1d::28] (helo=dude02.red.stw.pengutronix.de)
  by drehscheibe.grey.stw.pengutronix.de with esmtp (Exim 4.94.2)
  (envelope-from <sha@pengutronix.de>)
- id 1nf2FD-003131-QX; Thu, 14 Apr 2022 18:22:54 +0200
+ id 1nf2FD-00312t-Lp; Thu, 14 Apr 2022 18:22:54 +0200
 Received: from sha by dude02.red.stw.pengutronix.de with local (Exim 4.94.2)
  (envelope-from <sha@pengutronix.de>)
- id 1nf2F8-00Gu5I-W3; Thu, 14 Apr 2022 18:22:50 +0200
+ id 1nf2F9-00GuD8-Ne; Thu, 14 Apr 2022 18:22:51 +0200
 From: Sascha Hauer <s.hauer@pengutronix.de>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH v6 01/21] ASoC: fsl_micfil: Drop unnecessary register read
-Date: Thu, 14 Apr 2022 18:22:29 +0200
-Message-Id: <20220414162249.3934543-2-s.hauer@pengutronix.de>
+Subject: [PATCH v6 17/21] ASoC: fsl_micfil: drop unused include
+Date: Thu, 14 Apr 2022 18:22:45 +0200
+Message-Id: <20220414162249.3934543-18-s.hauer@pengutronix.de>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20220414162249.3934543-1-s.hauer@pengutronix.de>
 References: <20220414162249.3934543-1-s.hauer@pengutronix.de>
@@ -80,27 +80,27 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-in get_pdm_clk() REG_MICFIL_CTRL2 is read twice. Drop second read.
+The micfil driver doesn't use anything from imx-pcm.h. Drop its
+inclusion.
 
 Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
 Acked-by: Shengjiu Wang <shengjiu.wang@gmail.com>
 ---
- sound/soc/fsl/fsl_micfil.c | 2 --
- 1 file changed, 2 deletions(-)
+ sound/soc/fsl/fsl_micfil.c | 1 -
+ 1 file changed, 1 deletion(-)
 
 diff --git a/sound/soc/fsl/fsl_micfil.c b/sound/soc/fsl/fsl_micfil.c
-index 9f90989ac59a6..64019d003784b 100644
+index aecc8a1bcfcd8..821beca9b4bf1 100644
 --- a/sound/soc/fsl/fsl_micfil.c
 +++ b/sound/soc/fsl/fsl_micfil.c
-@@ -118,8 +118,6 @@ static inline int get_pdm_clk(struct fsl_micfil *micfil,
- 	regmap_read(micfil->regmap, REG_MICFIL_CTRL2, &ctrl2_reg);
- 	osr = 16 - ((ctrl2_reg & MICFIL_CTRL2_CICOSR_MASK)
- 		    >> MICFIL_CTRL2_CICOSR_SHIFT);
--
--	regmap_read(micfil->regmap, REG_MICFIL_CTRL2, &ctrl2_reg);
- 	qsel = ctrl2_reg & MICFIL_CTRL2_QSEL_MASK;
+@@ -24,7 +24,6 @@
+ #include <sound/core.h>
  
- 	switch (qsel) {
+ #include "fsl_micfil.h"
+-#include "imx-pcm.h"
+ 
+ #define FSL_MICFIL_RATES		SNDRV_PCM_RATE_8000_48000
+ #define FSL_MICFIL_FORMATS		(SNDRV_PCM_FMTBIT_S16_LE)
 -- 
 2.30.2
 
