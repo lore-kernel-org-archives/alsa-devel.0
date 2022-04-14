@@ -4,67 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6C611C433F5
-	for <alsa-devel@archiver.kernel.org>; Thu, 14 Apr 2022 16:12:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6B61EC433EF
+	for <alsa-devel@archiver.kernel.org>; Thu, 14 Apr 2022 16:23:57 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 9CA0A168A;
-	Thu, 14 Apr 2022 18:11:23 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9CA0A168A
+	by alsa0.perex.cz (Postfix) with ESMTPS id 6CFF716F4;
+	Thu, 14 Apr 2022 18:23:05 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6CFF716F4
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1649952733;
-	bh=JHRqMz4gAhqXCZ0oOD51j0XWL2JY+ezYae/a6d6QvJE=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=nxo+rmQyzDy6unIJxtnq/XVxtx+TKdX6DdqveWnRnPGk//tVfZSGmAr2psK5hFZj+
-	 L7zzXf+UjEcnRm/Lseba2iijNJd8Akg0HJ9Rrcp/yaJoW1cLtQMokYqwmGyoKdNlD5
-	 u8CzFRWqYvzcvMbmB+hFz24Ec6GigN8oOhRARECE=
+	s=default; t=1649953435;
+	bh=JYw7WLuuV/ymzI9K33foFR5rW5thgDf3Q9jQHJq8QD4=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=b+VASDW5cMQqrGmXnP47NqHmKJ7Rqv34iQR/eIFhOSHtU966BIwH3gkhPCJEdA2em
+	 fc/t7cMWxukzJ2NjgLAsoWP6s0MFmCU6666CsuJc7G24DGVKoz29y1yx6m7icnishT
+	 6ho8ZSLX3uwmcTlga9iXyc5dVHugUtQ9AP/aX4Hg=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id D5625F80114;
-	Thu, 14 Apr 2022 18:11:22 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id ACA8DF80529;
+	Thu, 14 Apr 2022 18:23:04 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 37C1FF80162; Thu, 14 Apr 2022 18:11:21 +0200 (CEST)
-Received: from mga12.intel.com (mga12.intel.com [192.55.52.136])
+ id 9BD22F8052E; Thu, 14 Apr 2022 18:23:01 +0200 (CEST)
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de
+ [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 4142EF80114
- for <alsa-devel@alsa-project.org>; Thu, 14 Apr 2022 18:11:13 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4142EF80114
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="XMiTHxFO"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
- d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1649952675; x=1681488675;
- h=from:to:cc:subject:date:message-id:mime-version:
- content-transfer-encoding;
- bh=JHRqMz4gAhqXCZ0oOD51j0XWL2JY+ezYae/a6d6QvJE=;
- b=XMiTHxFO8/XSx7nEglvxm79xkfDEFwUw+GGhKVhJ2cwXPotu6b7XN+7B
- xY+VEY54v94NQKNljU196BR+J6Akvm2FunEHuyjOp39tncFsyg3lpucnR
- 8dU3nhreVvOs1ft2mrR1olJW3ssqdbaBXwlWZGMzWHoqR7j4GKxK6NIMo
- 9KWLnUaqw/54Vm+gxpZ5WLKtPw3Ls1S+jjtUXXYpVaNs+zREZc69TqJbY
- lCwgZlvxieMlzw/fbi2QJk0av7JNymLc6UwOiaeSSVoB/1kzU3nNTvV0B
- DT1QlCp2wrZSK2wwaa0oj2aTaMw01/EzrX/mQUqwWnRK+C6/GDWNrtR3L w==;
-X-IronPort-AV: E=McAfee;i="6400,9594,10317"; a="242899740"
-X-IronPort-AV: E=Sophos;i="5.90,260,1643702400"; d="scan'208";a="242899740"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
- by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 14 Apr 2022 09:11:10 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.90,260,1643702400"; d="scan'208";a="700730868"
-Received: from eliteleevi.tm.intel.com ([10.237.54.20])
- by fmsmga001.fm.intel.com with ESMTP; 14 Apr 2022 09:11:09 -0700
-From: Kai Vehmanen <kai.vehmanen@linux.intel.com>
-To: alsa-devel@alsa-project.org,
-	tiwai@suse.de
-Subject: [PATCH] ALSA: hda/hdmi: add HDMI codec VID for Raptorlake-P
-Date: Thu, 14 Apr 2022 19:01:29 +0300
-Message-Id: <20220414160129.3641411-1-kai.vehmanen@linux.intel.com>
-X-Mailer: git-send-email 2.35.1
+ by alsa1.perex.cz (Postfix) with ESMTPS id 4EE6FF80124
+ for <alsa-devel@alsa-project.org>; Thu, 14 Apr 2022 18:22:54 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4EE6FF80124
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+ by metis.ext.pengutronix.de with esmtps
+ (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92)
+ (envelope-from <sha@pengutronix.de>)
+ id 1nf2FB-0007Ot-V6; Thu, 14 Apr 2022 18:22:54 +0200
+Received: from [2a0a:edc0:0:1101:1d::28] (helo=dude02.red.stw.pengutronix.de)
+ by drehscheibe.grey.stw.pengutronix.de with esmtp (Exim 4.94.2)
+ (envelope-from <sha@pengutronix.de>)
+ id 1nf2FC-00312P-CM; Thu, 14 Apr 2022 18:22:52 +0200
+Received: from sha by dude02.red.stw.pengutronix.de with local (Exim 4.94.2)
+ (envelope-from <sha@pengutronix.de>)
+ id 1nf2F9-00Gu9Y-BU; Thu, 14 Apr 2022 18:22:51 +0200
+From: Sascha Hauer <s.hauer@pengutronix.de>
+To: alsa-devel@alsa-project.org
+Subject: [PATCH v6 08/21] ASoC: fsl_micfil: drop unused variables
+Date: Thu, 14 Apr 2022 18:22:36 +0200
+Message-Id: <20220414162249.3934543-9-s.hauer@pengutronix.de>
+X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20220414162249.3934543-1-s.hauer@pengutronix.de>
+References: <20220414162249.3934543-1-s.hauer@pengutronix.de>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: kai.vehmanen@linux.intel.com
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: sha@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de);
+ SAEximRunCond expanded to false
+X-PTX-Original-Recipient: alsa-devel@alsa-project.org
+Cc: Xiubo Li <Xiubo.Lee@gmail.com>, Fabio Estevam <festevam@gmail.com>,
+ Sascha Hauer <s.hauer@pengutronix.de>, Vinod Koul <vkoul@kernel.org>,
+ Mark Brown <broonie@kernel.org>, NXP Linux Team <linux-imx@nxp.com>,
+ kernel@pengutronix.de, dmaengine@vger.kernel.org,
+ Shengjiu Wang <shengjiu.wang@gmail.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -80,27 +80,51 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Add HDMI codec VID for Intel Raptorlake-P platform.
+struct fsl_micfil has unused fields, remove them.
 
-Signed-off-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
+Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
+Acked-by: Shengjiu Wang <shengjiu.wang@gmail.com>
 ---
- sound/pci/hda/patch_hdmi.c | 1 +
- 1 file changed, 1 insertion(+)
 
-diff --git a/sound/pci/hda/patch_hdmi.c b/sound/pci/hda/patch_hdmi.c
-index 3e086eebf88d..9f9784e93db2 100644
---- a/sound/pci/hda/patch_hdmi.c
-+++ b/sound/pci/hda/patch_hdmi.c
-@@ -4551,6 +4551,7 @@ HDA_CODEC_ENTRY(0x80862819, "DG2 HDMI",	patch_i915_adlp_hdmi),
- HDA_CODEC_ENTRY(0x8086281a, "Jasperlake HDMI",	patch_i915_icl_hdmi),
- HDA_CODEC_ENTRY(0x8086281b, "Elkhartlake HDMI",	patch_i915_icl_hdmi),
- HDA_CODEC_ENTRY(0x8086281c, "Alderlake-P HDMI", patch_i915_adlp_hdmi),
-+HDA_CODEC_ENTRY(0x8086281f, "Raptorlake-P HDMI",	patch_i915_adlp_hdmi),
- HDA_CODEC_ENTRY(0x80862880, "CedarTrail HDMI",	patch_generic_hdmi),
- HDA_CODEC_ENTRY(0x80862882, "Valleyview2 HDMI",	patch_i915_byt_hdmi),
- HDA_CODEC_ENTRY(0x80862883, "Braswell HDMI",	patch_i915_byt_hdmi),
+Notes:
+    Changes since v3:
+    - Add commit log
 
-base-commit: 4516d04608b40d9ad150df6c2faef4a12d038ff6
+ sound/soc/fsl/fsl_micfil.c | 6 ------
+ 1 file changed, 6 deletions(-)
+
+diff --git a/sound/soc/fsl/fsl_micfil.c b/sound/soc/fsl/fsl_micfil.c
+index 619e013cf272d..4656a18a03e45 100644
+--- a/sound/soc/fsl/fsl_micfil.c
++++ b/sound/soc/fsl/fsl_micfil.c
+@@ -38,10 +38,7 @@ struct fsl_micfil {
+ 	unsigned int dataline;
+ 	char name[32];
+ 	int irq[MICFIL_IRQ_LINES];
+-	unsigned int mclk_streams;
+ 	int quality;	/*QUALITY 2-0 bits */
+-	bool slave_mode;
+-	int channel_gain[8];
+ };
+ 
+ struct fsl_micfil_soc_data {
+@@ -342,7 +339,6 @@ static int fsl_micfil_dai_probe(struct snd_soc_dai *cpu_dai)
+ {
+ 	struct fsl_micfil *micfil = dev_get_drvdata(cpu_dai->dev);
+ 	int ret;
+-	int i;
+ 
+ 	/* set qsel to medium */
+ 	ret = regmap_update_bits(micfil->regmap, REG_MICFIL_CTRL2,
+@@ -353,8 +349,6 @@ static int fsl_micfil_dai_probe(struct snd_soc_dai *cpu_dai)
+ 
+ 	/* set default gain to max_gain */
+ 	regmap_write(micfil->regmap, REG_MICFIL_OUT_CTRL, 0x77777777);
+-	for (i = 0; i < 8; i++)
+-		micfil->channel_gain[i] = 0xF;
+ 
+ 	snd_soc_dai_init_dma_data(cpu_dai, NULL,
+ 				  &micfil->dma_params_rx);
 -- 
-2.35.1
+2.30.2
 
