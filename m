@@ -4,75 +4,76 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 17930C433EF
-	for <alsa-devel@archiver.kernel.org>; Sat, 16 Apr 2022 12:55:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C48B9C433EF
+	for <alsa-devel@archiver.kernel.org>; Sat, 16 Apr 2022 22:18:47 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D1BB91707;
-	Sat, 16 Apr 2022 14:54:29 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D1BB91707
+	by alsa0.perex.cz (Postfix) with ESMTPS id B9EE316DE;
+	Sun, 17 Apr 2022 00:17:54 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B9EE316DE
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1650113719;
-	bh=vAQgtJeb7+OIweYBHbnV8mzchpWFHuDxrbNsxaDJ9s0=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=NPgsyWwjF2wt4ye29RSPuXYgk6loT9+tjY3hLFclJWbNGvIVWJ9ujHeEPEZPzbTss
-	 wsgE3PxBPc7NkhD9Ckg6MVWVjnNt1cmqgoRAlpIXUs5Hohoyx7Miaxt0nEu7s68+vK
-	 nQT1hLoDqOnM1HSH5lRE7AJk0GA2JMTjMO8+d0BA=
+	s=default; t=1650147524;
+	bh=h5kYpRXW9JER7VD1Iw37OOpJiTZlhgQVvL05Qdg9vw4=;
+	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=BFa+qziivs4fr6KYkdpH/TtwrSWcNGWWO6JizEkPzwrTPyEyum2CVUT0cPh5AWE1a
+	 TN6OGpooSTRH2VhXyuZwAPgqvTOjHDCQg7TNrVIYRSRDaHoTd6/8gmoBDLHNUV6zkk
+	 nDBnp4YxLdnQ+TZ+Qc3psrJJ6kpY3Oa4VOlwN1e4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 73659F8012C;
-	Sat, 16 Apr 2022 14:54:29 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 4D1B2F8012E;
+	Sun, 17 Apr 2022 00:17:54 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 4DA0CF80161; Sat, 16 Apr 2022 14:54:28 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org
- [IPv6:2604:1380:4641:c500::1])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id 99B11F800FB; Sun, 17 Apr 2022 00:17:51 +0200 (CEST)
+Received: from mail-oi1-f177.google.com (mail-oi1-f177.google.com
+ [209.85.167.177])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id B4479F80095
- for <alsa-devel@alsa-project.org>; Sat, 16 Apr 2022 14:54:23 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B4479F80095
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="kXCgS75G"
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id 2DE4460F0E;
- Sat, 16 Apr 2022 12:54:22 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8130CC385A3;
- Sat, 16 Apr 2022 12:54:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1650113661;
- bh=vAQgtJeb7+OIweYBHbnV8mzchpWFHuDxrbNsxaDJ9s0=;
- h=From:To:Cc:Subject:Date:From;
- b=kXCgS75Gu8SYMrogzL4tpqVf4XuIHtdcgnN+HDRahovgJBfsfIV10eXHZvG8jznc3
- +6q3HmKUTy2caxNvmrO77e0A6tR6osqVDrAA62M7KdLEm2ZBFOGzauPb17uAu8xC7R
- blUZzeghh7J0iB1utMFZ26wLnc1878fDt7brxLHxhGNY7Xmi9q+ULLc4nDnDUpb0iv
- aQH+NV/cdSeMUpY/bt1tdIV/CcKxReWltFYbdjX2KiHYr3bh0oVAUhhLTx9DQ8i4ox
- f8a+cyQBCxvg0ROpCyQvG9Ocqf6YczEPf4Yezmxz6TAUCMKKeRH1AIgZX1zj6X1kv/
- 9SvD89A4lFXzg==
-From: Mark Brown <broonie@kernel.org>
-To: Liam Girdwood <lgirdwood@gmail.com>,
-	patches@opensource.cirrus.com
-Subject: [PATCH] ASoC: wm8958: Fix change notifications for DSP controls
-Date: Sat, 16 Apr 2022 13:54:08 +0100
-Message-Id: <20220416125408.197440-1-broonie@kernel.org>
-X-Mailer: git-send-email 2.30.2
-MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1526; h=from:subject;
- bh=vAQgtJeb7+OIweYBHbnV8mzchpWFHuDxrbNsxaDJ9s0=;
- b=owEBbQGS/pANAwAKASTWi3JdVIfQAcsmYgBiWrxFquVGEG4qukE43PbX+CkeM8LMEga8rYZE/Bn+
- Sbf1kg+JATMEAAEKAB0WIQSt5miqZ1cYtZ/in+ok1otyXVSH0AUCYlq8RQAKCRAk1otyXVSH0HakB/
- kBEcXlL8gXn69rBg+t/sNxenbpT/uPB67HAzt1vss6WYOr4G9FYq8iu3nF5fET9POp+75oFBNP2rlf
- ebJxPb5MuLGBnnKSh8mb4tzGai7nOIfeMNXYmmUwyqT6wRNssgDCEyElPtsLr9T3WywDJWLy6CwJeD
- IUTux5ncLE2SCTsvqOm//4KeAwCcDrV2PjPZmXc8DjTQzOZ408iOoCyfovUMUlbfRMgLwBStgX4T+8
- qOIclwL8nJyAakkrfVeJqtu1zuxqAZpxPCKNkl5neEL5GPpiGD8FuTL555hDmwp6bncGPeRMWtE5th
- /xIZMIDmXV2ugPjPRIo3j9ujASSfcU
-X-Developer-Key: i=broonie@kernel.org; a=openpgp;
- fpr=3F2568AAC26998F9E813A1C5C3F436CA30F5D8EB
-Content-Transfer-Encoding: 8bit
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 90E56F800FB
+ for <alsa-devel@alsa-project.org>; Sun, 17 Apr 2022 00:17:43 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 90E56F800FB
+Received: by mail-oi1-f177.google.com with SMTP id z8so11492868oix.3
+ for <alsa-devel@alsa-project.org>; Sat, 16 Apr 2022 15:17:43 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=x-gm-message-state:from:to:cc:in-reply-to:references:subject:date
+ :message-id;
+ bh=2JYEwuCKMkvFE9bkQV/NNaX/hW3Szh4RVLF5Mm1ed8o=;
+ b=JrBi4f+PmfRuLTKPlAN07Z0uGFW5i652WebRdLZ/VHZ9a41Ft3N7g8vpcsRXuV0nES
+ uESEUYlbEaCEkF2CEiA7UuZ8TjM5vynq+bW940Cq4U0rmlETDjdzvSRmjYrEkx1Splaa
+ 3einbOlLyIn+VtlwMznd5zlVqoRgEQ3pohywE2NE9C1k28MzcvmBSCBU8Q+wstbH9Rax
+ tfNW6ABu+TegGGsEJs59r9jOiXEiQT8LtxPDAxw5eFCHYH/DPhTWn7y8veBYZfk5aF9C
+ nzL6xtJmRcoYLT1K91SzSeEEwvc+6JnPZ18JuFLfzmcy+ufdhFvmyrvyWyBaSzCT4EEh
+ jkaw==
+X-Gm-Message-State: AOAM531F+f99+uMYJijKEHQwY+r3xZ6wZq3XnjCftfxPf/VSaCRyLvQV
+ WT2qFw6ouAA7ZSTHkDSJkA==
+X-Google-Smtp-Source: ABdhPJz4+/8mYxiNK3mwYOHKuPzb6694BbLOqA73ZnWVlKMwCgLmz169CflDFMxVO4+zStw4dfiEKw==
+X-Received: by 2002:a05:6808:13d0:b0:2fa:72dc:6159 with SMTP id
+ d16-20020a05680813d000b002fa72dc6159mr2248703oiw.224.1650147461895; 
+ Sat, 16 Apr 2022 15:17:41 -0700 (PDT)
+Received: from robh.at.kernel.org (66-90-144-107.dyn.grandenetworks.net.
+ [66.90.144.107]) by smtp.gmail.com with ESMTPSA id
+ o7-20020a056871078700b000e29ff467dcsm2875635oap.50.2022.04.16.15.17.40
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Sat, 16 Apr 2022 15:17:41 -0700 (PDT)
+Received: (nullmailer pid 3544949 invoked by uid 1000);
+ Sat, 16 Apr 2022 22:17:39 -0000
+From: Rob Herring <robh@kernel.org>
+To: Ryan Lee <ryan.lee.analog@gmail.com>
+In-Reply-To: <20220416004024.210418-1-ryan.lee.analog@gmail.com>
+References: <20220416004024.210418-1-ryan.lee.analog@gmail.com>
+Subject: Re: [PATCH 1/2] ASoC: dt-bindings: max98396: add amplifier driver
+Date: Sat, 16 Apr 2022 17:17:39 -0500
+Message-Id: <1650147459.157752.3544948.nullmailer@robh.at.kernel.org>
+Cc: drhodes@opensource.cirrus.com, devicetree@vger.kernel.org,
+ alsa-devel@alsa-project.org, lgirdwood@gmail.com,
+ ckeepax@opensource.cirrus.com, stephan@gerhold.net,
+ tanureal@opensource.cirrus.com, hdegoede@redhat.com, ryans.lee@analog.com,
+ tiwai@suse.com, linux-kernel@vger.kernel.org, robh+dt@kernel.org,
+ pierre-louis.bossart@linux.intel.com, cy_huang@richtek.com, broonie@kernel.org,
+ srinivas.kandagatla@linaro.org, pbrobinson@gmail.com, lukas.bulwahn@gmail.com,
+ krzk+dt@kernel.org, arnd@arndb.de
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -88,56 +89,110 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The WM8958 DSP controls all return 0 on successful write, not a boolean
-value indicating if the write changed the value of the control. Fix this
-by returning 1 after a change, there is already a check at the start of
-each put() that skips the function in the case that there is no change.
+On Fri, 15 Apr 2022 17:40:23 -0700, Ryan Lee wrote:
+> From: Ryan Lee <ryans.lee@analog.com>
+> 
+> This patch adds dt-bindings information for Analog Devices MAX98396
+> and MAX98397 Smart Amplifier.
+> 
+> Signed-off-by: Ryan Lee <ryans.lee@analog.com>
+> ---
+>  .../bindings/sound/adi,max98396.yaml          | 84 +++++++++++++++++++
+>  1 file changed, 84 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/sound/adi,max98396.yaml
+> 
 
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/codecs/wm8958-dsp2.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
+on your patch (DT_CHECKER_FLAGS is new in v5.13):
 
-diff --git a/sound/soc/codecs/wm8958-dsp2.c b/sound/soc/codecs/wm8958-dsp2.c
-index e4018ba3b19a..7878c7a58ff1 100644
---- a/sound/soc/codecs/wm8958-dsp2.c
-+++ b/sound/soc/codecs/wm8958-dsp2.c
-@@ -530,7 +530,7 @@ static int wm8958_mbc_put(struct snd_kcontrol *kcontrol,
- 
- 	wm8958_dsp_apply(component, mbc, wm8994->mbc_ena[mbc]);
- 
--	return 0;
-+	return 1;
- }
- 
- #define WM8958_MBC_SWITCH(xname, xval) {\
-@@ -656,7 +656,7 @@ static int wm8958_vss_put(struct snd_kcontrol *kcontrol,
- 
- 	wm8958_dsp_apply(component, vss, wm8994->vss_ena[vss]);
- 
--	return 0;
-+	return 1;
- }
- 
- 
-@@ -730,7 +730,7 @@ static int wm8958_hpf_put(struct snd_kcontrol *kcontrol,
- 
- 	wm8958_dsp_apply(component, hpf % 3, ucontrol->value.integer.value[0]);
- 
--	return 0;
-+	return 1;
- }
- 
- #define WM8958_HPF_SWITCH(xname, xval) {\
-@@ -824,7 +824,7 @@ static int wm8958_enh_eq_put(struct snd_kcontrol *kcontrol,
- 
- 	wm8958_dsp_apply(component, eq, ucontrol->value.integer.value[0]);
- 
--	return 0;
-+	return 1;
- }
- 
- #define WM8958_ENH_EQ_SWITCH(xname, xval) {\
--- 
-2.30.2
+yamllint warnings/errors:
+./Documentation/devicetree/bindings/sound/adi,max98396.yaml:49:111: [warning] line too long (121 > 110 characters) (line-length)
+
+dtschema/dtc warnings/errors:
+/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/sound/adi,max98396.yaml: properties:adi,spkfb-slot-no: 'oneOf' conditional failed, one must be fixed:
+	'type' is a required property
+		hint: A vendor boolean property can use "type: boolean"
+	Additional properties are not allowed ('maximum', 'default', 'minimum' were unexpected)
+		hint: A vendor boolean property can use "type: boolean"
+	/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/sound/adi,max98396.yaml: properties:adi,spkfb-slot-no: 'oneOf' conditional failed, one must be fixed:
+		'enum' is a required property
+		'const' is a required property
+		hint: A vendor string property with exact values has an implicit type
+		from schema $id: http://devicetree.org/meta-schemas/vendor-props.yaml#
+	/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/sound/adi,max98396.yaml: properties:adi,spkfb-slot-no: 'oneOf' conditional failed, one must be fixed:
+		'$ref' is a required property
+		'allOf' is a required property
+		hint: A vendor property needs a $ref to types.yaml
+		from schema $id: http://devicetree.org/meta-schemas/vendor-props.yaml#
+	hint: Vendor specific properties must have a type and description unless they have a defined, common suffix.
+	from schema $id: http://devicetree.org/meta-schemas/vendor-props.yaml#
+/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/sound/adi,max98396.yaml: properties:adi,interleave-mode: 'oneOf' conditional failed, one must be fixed:
+	Additional properties are not allowed ('default' was unexpected)
+		hint: A vendor boolean property can use "type: boolean"
+	/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/sound/adi,max98396.yaml: properties:adi,interleave-mode: 'oneOf' conditional failed, one must be fixed:
+		'enum' is a required property
+		'const' is a required property
+		hint: A vendor string property with exact values has an implicit type
+		from schema $id: http://devicetree.org/meta-schemas/vendor-props.yaml#
+	Additional properties are not allowed ('type', 'default' were unexpected)
+		hint: A vendor string property with exact values has an implicit type
+	/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/sound/adi,max98396.yaml: properties:adi,interleave-mode: 'oneOf' conditional failed, one must be fixed:
+		'$ref' is a required property
+		'allOf' is a required property
+		hint: A vendor property needs a $ref to types.yaml
+		from schema $id: http://devicetree.org/meta-schemas/vendor-props.yaml#
+	hint: Vendor specific properties must have a type and description unless they have a defined, common suffix.
+	from schema $id: http://devicetree.org/meta-schemas/vendor-props.yaml#
+/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/sound/adi,max98396.yaml: properties:adi,vmon-slot-no: 'oneOf' conditional failed, one must be fixed:
+	'type' is a required property
+		hint: A vendor boolean property can use "type: boolean"
+	Additional properties are not allowed ('maximum', 'default', 'minimum' were unexpected)
+		hint: A vendor boolean property can use "type: boolean"
+	/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/sound/adi,max98396.yaml: properties:adi,vmon-slot-no: 'oneOf' conditional failed, one must be fixed:
+		'enum' is a required property
+		'const' is a required property
+		hint: A vendor string property with exact values has an implicit type
+		from schema $id: http://devicetree.org/meta-schemas/vendor-props.yaml#
+	/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/sound/adi,max98396.yaml: properties:adi,vmon-slot-no: 'oneOf' conditional failed, one must be fixed:
+		'$ref' is a required property
+		'allOf' is a required property
+		hint: A vendor property needs a $ref to types.yaml
+		from schema $id: http://devicetree.org/meta-schemas/vendor-props.yaml#
+	hint: Vendor specific properties must have a type and description unless they have a defined, common suffix.
+	from schema $id: http://devicetree.org/meta-schemas/vendor-props.yaml#
+/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/sound/adi,max98396.yaml: properties:adi,imon-slot-no: 'oneOf' conditional failed, one must be fixed:
+	'type' is a required property
+		hint: A vendor boolean property can use "type: boolean"
+	Additional properties are not allowed ('maximum', 'default', 'minimum' were unexpected)
+		hint: A vendor boolean property can use "type: boolean"
+	/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/sound/adi,max98396.yaml: properties:adi,imon-slot-no: 'oneOf' conditional failed, one must be fixed:
+		'enum' is a required property
+		'const' is a required property
+		hint: A vendor string property with exact values has an implicit type
+		from schema $id: http://devicetree.org/meta-schemas/vendor-props.yaml#
+	/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/sound/adi,max98396.yaml: properties:adi,imon-slot-no: 'oneOf' conditional failed, one must be fixed:
+		'$ref' is a required property
+		'allOf' is a required property
+		hint: A vendor property needs a $ref to types.yaml
+		from schema $id: http://devicetree.org/meta-schemas/vendor-props.yaml#
+	hint: Vendor specific properties must have a type and description unless they have a defined, common suffix.
+	from schema $id: http://devicetree.org/meta-schemas/vendor-props.yaml#
+/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/sound/adi,max98396.yaml: ignoring, error in schema: properties: adi,spkfb-slot-no
+Documentation/devicetree/bindings/sound/adi,max98396.example.dtb:0:0: /example-0/i2c/amplifier@39: failed to match any schema with compatible: ['adi,max98396']
+Documentation/devicetree/bindings/sound/adi,max98396.example.dtb:0:0: /example-0/i2c/amplifier@3c: failed to match any schema with compatible: ['adi,max98397']
+
+doc reference errors (make refcheckdocs):
+
+See https://patchwork.ozlabs.org/patch/
+
+This check can fail if there are any dependencies. The base for a patch
+series is generally the most recent rc1.
+
+If you already ran 'make dt_binding_check' and didn't see the above
+error(s), then make sure 'yamllint' is installed and dt-schema is up to
+date:
+
+pip3 install dtschema --upgrade
+
+Please check and re-submit.
 
