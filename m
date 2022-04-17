@@ -4,92 +4,83 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5FDE3C433EF
-	for <alsa-devel@archiver.kernel.org>; Tue, 19 Apr 2022 11:57:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 63B3CC433EF
+	for <alsa-devel@archiver.kernel.org>; Tue, 19 Apr 2022 11:57:22 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 821B41895;
-	Tue, 19 Apr 2022 13:56:17 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 821B41895
+	by alsa0.perex.cz (Postfix) with ESMTPS id 63037189C;
+	Tue, 19 Apr 2022 13:56:30 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 63037189C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1650369427;
-	bh=SQypqxnuOIyVz3N35k1qozA5MkUBn5ImKy8qrc3IRcQ=;
-	h=From:To:Subject:Date:In-Reply-To:References:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=AtIX3pvliyLXmiG1mPX0ftmum/0OwWt3k7iU76ofucXAyxuQy5imd5Pewev//ONmp
-	 XKfXaMfL5/a3eLkq/n0XuxCmXsiJg5/EGeX/rCXxzxsscE+ravg++gV3ROo9jPinDX
-	 Xx90gYI/LCoV5veKeaGvPAmWNbvK6pqQHoty1Pts=
+	s=default; t=1650369440;
+	bh=j03/hNu6IscpUPbdQ+8Bcs+PiImMb44Izuhbs8FWLKY=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=hAypXYiJXDEotnrdLHVWfFnHFK3BG9xF//X0SXc2d35n3nNmgg25OcjMwg3snC9mD
+	 T8yrltf5mWNMq/r1eD2cnNkSLm22KE6PDY0OFaWRcCK1T0k1LwQ69NrPCu3o32FrpM
+	 mxMl7uNKBvhNtMDEmYDZnJsVEzAeLMgjF8W5Mj6Q=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id D4206F80566;
-	Tue, 19 Apr 2022 13:52:32 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 765DEF80568;
+	Tue, 19 Apr 2022 13:52:33 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id B64A7F8016A; Sat, 16 Apr 2022 02:40:57 +0200 (CEST)
-Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com
- [IPv6:2607:f8b0:4864:20::1041])
+ id EEC9FF80256; Sun, 17 Apr 2022 04:55:14 +0200 (CEST)
+Received: from mail-qk1-x72b.google.com (mail-qk1-x72b.google.com
+ [IPv6:2607:f8b0:4864:20::72b])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id CF356F800AE
- for <alsa-devel@alsa-project.org>; Sat, 16 Apr 2022 02:40:49 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CF356F800AE
+ by alsa1.perex.cz (Postfix) with ESMTPS id E0AE0F80121
+ for <alsa-devel@alsa-project.org>; Sun, 17 Apr 2022 04:55:06 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E0AE0F80121
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="q49Yyck0"
-Received: by mail-pj1-x1041.google.com with SMTP id
- j8-20020a17090a060800b001cd4fb60dccso9477935pjj.2
- for <alsa-devel@alsa-project.org>; Fri, 15 Apr 2022 17:40:48 -0700 (PDT)
+ header.b="eC8UJIOG"
+Received: by mail-qk1-x72b.google.com with SMTP id q75so495942qke.6
+ for <alsa-devel@alsa-project.org>; Sat, 16 Apr 2022 19:55:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
- h=from:to:subject:date:message-id:in-reply-to:references:mime-version
+ h=from:to:cc:subject:date:message-id:mime-version
  :content-transfer-encoding;
- bh=8AXvCzwdlw2UpDmrCLpS7MaVjcRpGBxGBH11kojocLY=;
- b=q49Yyck00V6Ptxfibn23TGVK+G4tzvWvgjXAhLvFe3JgsgnX6ySiFa8STMXZP+mNB4
- XiuGdb0s8QkWqPPFzQc4VEGLz+SSei4fB2XfXyzWPLy2zMHqau6zwNHi2BbtkN7zuNaL
- LlAtcT7E0hqxr0hynj6kA45pc5TW+DY8ZuwgBZueuY2yAN4FcYKdreO+ydcCZNxpV7Mc
- VVIjIJqFrUCEiOQvS3rBaibkcZeMUjZNsSqYDOOlbLmsuRt5m/HxFTTCLZu3dGkg8wIc
- hSE9X6hxsNLULqEiz8nzF2yya3V9Vf802CYnH+UIR2Urtbn9IXEWyHb/GgkGhcSYFODj
- NvTg==
+ bh=odnxlpuvUf/6Wu77uSAdJad2VLvjV47EEhSGda1cAn8=;
+ b=eC8UJIOGlEI3Ge6l5GKPEv/CwIN/K96KwA1tqCw1IaIw+f/4trsoxZPwrh4ZOuGulJ
+ W2n83hYDgdFD99kq+tMcHCdnes1xjq/Kd1FEL/YKu9l4ZydEzRzYZyJ7/djOmP9bVRoI
+ 1CW5RT2hdKW8nSVzZcZTD1n5zGigSXqZYjC/V2MUSFbrmhTDFlQTG6stAHgMBTISw7Ly
+ FICWU9FBz/VrNOnrcxZT3XIYO4MY/dlV8aIDYGC475XwkBOQAlLaOOluZPIZ8F5wJ+A1
+ cQ9f7TRCAkrAy1mwG/8ICLYUgWDWyQ2YQpYr4Zmz+sCG3Cklt1mvcrVi5hiVyW+R/VrL
+ joJQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
- h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
- :references:mime-version:content-transfer-encoding;
- bh=8AXvCzwdlw2UpDmrCLpS7MaVjcRpGBxGBH11kojocLY=;
- b=SdH8cIqS1s2yx2C8aAFFpvrUhBsmgqpQRjTHHrSWgfM0c+XlpO571eIDzO2qQW7OMq
- 0uWoTNdJx67YN4LNxOYBidLfDvUdfZ4cpQVCbG6zlSs54Wsjjgeay4hcIM0l5/D/pBlz
- XAbKakT5I8OqoMKVkzQq2r/ebthrR/Mu6zmOg2ZBhNUs5zKezby/9PAbju9Pf8yYy6Up
- 1GGTqVMk3uKgVq9e9aoMrHHRevQlkTApSX5wH7nsW/NKMAB5vTB+A/ym44oR17JJKjDw
- HbNgS+LfVd7rnu3SLMZ5+iCpdsZH00AleMWkKy6ZvXqDB0e4nIVpFsjBj6pSzvBgV2nd
- dHAg==
-X-Gm-Message-State: AOAM530SDs375/IUqdlQcp2FTEx7lM5Du1EnEYs1POtOWlzSXsYPBYCa
- fkPMzh3D4Fey3CRRpKa574c=
-X-Google-Smtp-Source: ABdhPJx2CJp6mOlooax0mp3oVVXoUq84RS37AH7FKCkSQH6amfO9Dv1Tc6sLx0iUMbTnwqEJWdzFMQ==
-X-Received: by 2002:a17:90a:a78c:b0:1b8:b769:62d0 with SMTP id
- f12-20020a17090aa78c00b001b8b76962d0mr1467289pjq.227.1650069646763; 
- Fri, 15 Apr 2022 17:40:46 -0700 (PDT)
-Received: from localhost.localdomain (c-73-241-94-58.hsd1.ca.comcast.net.
- [73.241.94.58]) by smtp.gmail.com with ESMTPSA id
- b10-20020a056a00114a00b004f784ba5e6asm4222482pfm.17.2022.04.15.17.40.44
+ h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=odnxlpuvUf/6Wu77uSAdJad2VLvjV47EEhSGda1cAn8=;
+ b=6zh3hT3L+U8K7pMEiZe2ErtrAilXIWDLouSiwX3I6i/k8NBpKyNHE0kuZKZrxVE3tV
+ csbXIgtcPQO5/20/n6yRvL7rTPmsHk7QUKC/Iyp6tONYF3NGBgY5I7o0gRz0bed5kbo3
+ 4AOlbPrA5Wm6qKeCRQsPwcd5FaLnpDPIwRv3xVQ9aKY0WhLcCfT+zdh5on7/wCkDV5+t
+ Kt6KGAosOLsDlxGBIAjl/d4Aq3FAzc6aoeeeCIZjmGgM0cyLAovHiHc5cLXoGxXVcjoA
+ EyGcluBAYTSAmvxQAxB1/Xzy8v9hErJ79WV+Aeji849uB3iXk+0g6HAezKG3TvBrLePd
+ hxxg==
+X-Gm-Message-State: AOAM532J2LFdbFOp4pL8o2u/XTr4AcvkcrNvn825omj0G50WOHmjYwmk
+ DKK4uGwGGVrHzxvdeXVmPVs=
+X-Google-Smtp-Source: ABdhPJwI+L1urR2KWHTzS4+dKUF5ZBPFckgnomwkUraqS5tyFbBcZb2YQl0878c/p6EFfPpt4bY0jw==
+X-Received: by 2002:a05:620a:2682:b0:67e:1a58:c947 with SMTP id
+ c2-20020a05620a268200b0067e1a58c947mr3228586qkp.650.1650164103743; 
+ Sat, 16 Apr 2022 19:55:03 -0700 (PDT)
+Received: from archlinux.localdomain (cpe-74-140-176-199.cinci.res.rr.com.
+ [74.140.176.199]) by smtp.gmail.com with ESMTPSA id
+ z8-20020ac87f88000000b002e1cecad0e4sm5505800qtj.33.2022.04.16.19.55.03
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Fri, 15 Apr 2022 17:40:46 -0700 (PDT)
-From: Ryan Lee <ryan.lee.analog@gmail.com>
-To: lgirdwood@gmail.com, broonie@kernel.org, robh+dt@kernel.org,
- krzk+dt@kernel.org, perex@perex.cz, tiwai@suse.com,
- srinivas.kandagatla@linaro.org, ckeepax@opensource.cirrus.com,
- tanureal@opensource.cirrus.com, cy_huang@richtek.com,
- pierre-louis.bossart@linux.intel.com, drhodes@opensource.cirrus.com,
- pbrobinson@gmail.com, hdegoede@redhat.com, lukas.bulwahn@gmail.com,
- stephan@gerhold.net, arnd@arndb.de, ryan.lee.analog@gmail.com,
- alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, ryans.lee@analog.com
-Subject: [PATCH 2/2] ASoC: max98396: add amplifier driver
-Date: Fri, 15 Apr 2022 17:40:24 -0700
-Message-Id: <20220416004024.210418-2-ryan.lee.analog@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20220416004024.210418-1-ryan.lee.analog@gmail.com>
-References: <20220416004024.210418-1-ryan.lee.analog@gmail.com>
+ Sat, 16 Apr 2022 19:55:03 -0700 (PDT)
+From: connerknoxpublic@gmail.com
+To: perex@perex.cz,
+	tiwai@suse.com,
+	alsa-devel@alsa-project.org
+Subject: [PATCH] Add quirk to enable Avid Mbox 3 support
+Date: Sat, 16 Apr 2022 22:54:59 -0400
+Message-Id: <20220417025459.8105-1-connerknoxpublic@gmail.com>
+X-Mailer: git-send-email 2.35.3
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Mailman-Approved-At: Tue, 19 Apr 2022 13:52:22 +0200
+X-Mailman-Approved-At: Tue, 19 Apr 2022 13:52:23 +0200
+Cc: Conner Knox <connerknoxpublic@gmail.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -105,2008 +96,441 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-This series of patches adds support for Analog Devices MAX98396
-mono amplifier with IV sense. The device provides a PCM interface
-for audio data and a standard I2C interface for control data
-communication. This driver also supports MAX98397 which is
-a variant of MAX98396 with wide input supply range.
+From: Conner Knox <connerknoxpublic@gmail.com>
 
-Signed-off-by: Ryan Lee <ryan.lee.analog@gmail.com>
+Hi all,
+
+I believe these are the right emails to send this patch to,
+but if I've missed something please let me know.
+
+This patch enables the Avid Mbox 3 audio interface to
+be used through ALSA.  It locks the device at a 48khz sample rate.
+Then it mutes and raises the appropriate channels/inputs to allow
+for expected functionality.
+
+Thanks for your time.
+
 ---
- sound/soc/codecs/Kconfig    |   10 +
- sound/soc/codecs/Makefile   |    2 +
- sound/soc/codecs/max98396.c | 1623 +++++++++++++++++++++++++++++++++++
- sound/soc/codecs/max98396.h |  303 +++++++
- 4 files changed, 1938 insertions(+)
- create mode 100644 sound/soc/codecs/max98396.c
- create mode 100644 sound/soc/codecs/max98396.h
+ sound/usb/quirks-table.h |  76 ++++++++++
+ sound/usb/quirks.c       | 311 +++++++++++++++++++++++++++++++++++++++
+ 2 files changed, 387 insertions(+)
 
-diff --git a/sound/soc/codecs/Kconfig b/sound/soc/codecs/Kconfig
-index f46a22660103..7881e6120dea 100644
---- a/sound/soc/codecs/Kconfig
-+++ b/sound/soc/codecs/Kconfig
-@@ -127,6 +127,7 @@ config SND_SOC_ALL_CODECS
- 	imply SND_SOC_MAX98373_I2C
- 	imply SND_SOC_MAX98373_SDW
- 	imply SND_SOC_MAX98390
-+	imply SND_SOC_MAX98396
- 	imply SND_SOC_MAX9850
- 	imply SND_SOC_MAX9860
- 	imply SND_SOC_MAX9759
-@@ -1015,6 +1016,15 @@ config SND_SOC_MAX98390
- 	tristate "Maxim Integrated MAX98390 Speaker Amplifier"
- 	depends on I2C
+diff --git a/sound/usb/quirks-table.h b/sound/usb/quirks-table.h
+index 0ea39565e623..5f43863e5a5f 100644
+--- a/sound/usb/quirks-table.h
++++ b/sound/usb/quirks-table.h
+@@ -2978,6 +2978,82 @@ YAMAHA_DEVICE(0x7010, "UB99"),
+ 		}
+ 	}
+ },
++/* DIGIDESIGN MBOX 3 */
++{
++	USB_DEVICE(0x0dba, 0x5000),
++	.driver_info = (unsigned long) &(const struct snd_usb_audio_quirk) {
++		.vendor_name = "Digidesign",
++		.product_name = "Mbox 3",
++		.ifnum = QUIRK_ANY_INTERFACE,
++		.type = QUIRK_COMPOSITE,
++		.data = (const struct snd_usb_audio_quirk[]) {
++			{
++				.ifnum = 0,
++				.type = QUIRK_IGNORE_INTERFACE
++			},
++			{
++				.ifnum = 1,
++				.type = QUIRK_IGNORE_INTERFACE
++			},
++			{
++				.ifnum = 2,
++				.type = QUIRK_AUDIO_FIXED_ENDPOINT,
++				.data = &(const struct audioformat) {
++					.formats = SNDRV_PCM_FMTBIT_S24_3LE,
++					.channels = 4,
++					.iface = 2,
++					.altsetting = 1,
++					.altset_idx = 1,
++					.attributes = 0x00,
++					.endpoint = 0x01,
++					.ep_attr = USB_ENDPOINT_XFER_ISOC |
++						USB_ENDPOINT_SYNC_ASYNC,
++					.rates = SNDRV_PCM_RATE_48000,
++					.rate_min = 48000,
++					.rate_max = 48000,
++					.nr_rates = 1,
++					.rate_table = (unsigned int[]) {
++						48000
++					}
++				}
++			},
++			{
++				.ifnum = 3,
++				.type = QUIRK_AUDIO_FIXED_ENDPOINT,
++				.data = &(const struct audioformat) {
++					.formats = SNDRV_PCM_FMTBIT_S24_3LE,
++					.channels = 4,
++					.iface = 3,
++					.altsetting = 1,
++					.altset_idx = 1,
++					.endpoint = 0x81,
++					.attributes = 0x00,
++					.ep_attr = USB_ENDPOINT_XFER_ISOC |
++						USB_ENDPOINT_SYNC_ASYNC,
++					.maxpacksize = 0x009c,
++					.rates = SNDRV_PCM_RATE_48000,
++					.rate_min = 48000,
++					.rate_max = 48000,
++					.nr_rates = 1,
++					.rate_table = (unsigned int[]) {
++						48000
++					}
++				}
++			},
++			{
++				.ifnum = 4,
++				.type = QUIRK_MIDI_FIXED_ENDPOINT,
++				.data = & (const struct snd_usb_midi_endpoint_info) {
++					.out_cables = 0x0001,
++					.in_cables  = 0x0001
++				}
++			},
++			{
++				.ifnum = -1
++			}
++		}
++	}
++},
+ {
+ 	/* Tascam US122 MKII - playback-only support */
+ 	USB_DEVICE_VENDOR_SPEC(0x0644, 0x8021),
+diff --git a/sound/usb/quirks.c b/sound/usb/quirks.c
+index ab9f3da49941..e7caa7eeb955 100644
+--- a/sound/usb/quirks.c
++++ b/sound/usb/quirks.c
+@@ -1020,6 +1020,313 @@ static int snd_usb_axefx3_boot_quirk(struct usb_device *dev)
+ 	return 0;
+ }
  
-+config SND_SOC_MAX98396
-+	tristate "Analog Devices MAX98396 Speaker Amplifier"
-+	depends on I2C
-+	help
-+	  Enable support for Analog Devices MAX98396 audio
-+	  amplifier. The device provides a PCM interface for
-+	  audio data and a standard I2C interface for control
-+	  data communication.
-+
- config SND_SOC_MAX9850
- 	tristate
- 	depends on I2C
-diff --git a/sound/soc/codecs/Makefile b/sound/soc/codecs/Makefile
-index 8637e9e869e3..8bfe32cbcb06 100644
---- a/sound/soc/codecs/Makefile
-+++ b/sound/soc/codecs/Makefile
-@@ -135,6 +135,7 @@ snd-soc-max98373-objs := max98373.o
- snd-soc-max98373-i2c-objs := max98373-i2c.o
- snd-soc-max98373-sdw-objs := max98373-sdw.o
- snd-soc-max98390-objs := max98390.o
-+snd-soc-max98396-objs := max98396.o
- snd-soc-max9850-objs := max9850.o
- snd-soc-max9860-objs := max9860.o
- snd-soc-mc13783-objs := mc13783.o
-@@ -474,6 +475,7 @@ obj-$(CONFIG_SND_SOC_MAX98373)	+= snd-soc-max98373.o
- obj-$(CONFIG_SND_SOC_MAX98373_I2C)   += snd-soc-max98373-i2c.o
- obj-$(CONFIG_SND_SOC_MAX98373_SDW)   += snd-soc-max98373-sdw.o
- obj-$(CONFIG_SND_SOC_MAX98390)	+= snd-soc-max98390.o
-+obj-$(CONFIG_SND_SOC_MAX98396)	+= snd-soc-max98396.o
- obj-$(CONFIG_SND_SOC_MAX9850)	+= snd-soc-max9850.o
- obj-$(CONFIG_SND_SOC_MAX9860)	+= snd-soc-max9860.o
- obj-$(CONFIG_SND_SOC_MC13783)	+= snd-soc-mc13783.o
-diff --git a/sound/soc/codecs/max98396.c b/sound/soc/codecs/max98396.c
-new file mode 100644
-index 000000000000..306536b9a988
---- /dev/null
-+++ b/sound/soc/codecs/max98396.c
-@@ -0,0 +1,1623 @@
-+// SPDX-License-Identifier: GPL-2.0
-+// Copyright (c) 2022, Analog Devices Inc.
-+
-+#include <linux/i2c.h>
-+#include <linux/module.h>
-+#include <sound/pcm_params.h>
-+#include <sound/soc.h>
-+#include <linux/gpio.h>
-+#include <sound/tlv.h>
-+#include "max98396.h"
-+
-+static struct reg_default max98396_reg[] = {
-+	{MAX98396_R2000_SW_RESET, 0x00},
-+	{MAX98396_R2001_INT_RAW1, 0x00},
-+	{MAX98396_R2002_INT_RAW2, 0x00},
-+	{MAX98396_R2003_INT_RAW3, 0x00},
-+	{MAX98396_R2004_INT_RAW4, 0x00},
-+	{MAX98396_R2006_INT_STATE1, 0x00},
-+	{MAX98396_R2007_INT_STATE2, 0x00},
-+	{MAX98396_R2008_INT_STATE3, 0x00},
-+	{MAX98396_R2009_INT_STATE4, 0x00},
-+	{MAX98396_R200B_INT_FLAG1, 0x00},
-+	{MAX98396_R200C_INT_FLAG2, 0x00},
-+	{MAX98396_R200D_INT_FLAG3, 0x00},
-+	{MAX98396_R200E_INT_FLAG4, 0x00},
-+	{MAX98396_R2010_INT_EN1, 0x02},
-+	{MAX98396_R2011_INT_EN2, 0x00},
-+	{MAX98396_R2012_INT_EN3, 0x00},
-+	{MAX98396_R2013_INT_EN4, 0x00},
-+	{MAX98396_R2015_INT_FLAG_CLR1, 0x00},
-+	{MAX98396_R2016_INT_FLAG_CLR2, 0x00},
-+	{MAX98396_R2017_INT_FLAG_CLR3, 0x00},
-+	{MAX98396_R2018_INT_FLAG_CLR4, 0x00},
-+	{MAX98396_R201F_IRQ_CTRL, 0x00},
-+	{MAX98396_R2020_THERM_WARN_THRESH, 0x46},
-+	{MAX98396_R2021_THERM_WARN_THRESH2, 0x46},
-+	{MAX98396_R2022_THERM_SHDN_THRESH, 0x64},
-+	{MAX98396_R2023_THERM_HYSTERESIS, 0x02},
-+	{MAX98396_R2024_THERM_FOLDBACK_SET, 0xC5},
-+	{MAX98396_R2027_THERM_FOLDBACK_EN, 0x01},
-+	{MAX98396_R2030_NOISEGATE_MODE_CTRL, 0x32},
-+	{MAX98396_R2033_NOISEGATE_MODE_EN, 0x00},
-+	{MAX98396_R2038_CLK_MON_CTRL, 0x00},
-+	{MAX98396_R2039_DATA_MON_CTRL, 0x00},
-+	{MAX98396_R203F_ENABLE_CTRLS, 0x0F},
-+	{MAX98396_R2040_PIN_CFG, 0x55},
-+	{MAX98396_R2041_PCM_MODE_CFG, 0xC0},
-+	{MAX98396_R2042_PCM_CLK_SETUP, 0x04},
-+	{MAX98396_R2043_PCM_SR_SETUP, 0x88},
-+	{MAX98396_R2044_PCM_TX_CTRL_1, 0x00},
-+	{MAX98396_R2045_PCM_TX_CTRL_2, 0x00},
-+	{MAX98396_R2046_PCM_TX_CTRL_3, 0x00},
-+	{MAX98396_R2047_PCM_TX_CTRL_4, 0x00},
-+	{MAX98396_R2048_PCM_TX_CTRL_5, 0x00},
-+	{MAX98396_R2049_PCM_TX_CTRL_6, 0x00},
-+	{MAX98396_R204A_PCM_TX_CTRL_7, 0x00},
-+	{MAX98396_R204B_PCM_TX_CTRL_8, 0x00},
-+	{MAX98396_R204C_PCM_TX_HIZ_CTRL_1, 0xFF},
-+	{MAX98396_R204D_PCM_TX_HIZ_CTRL_2, 0xFF},
-+	{MAX98396_R204E_PCM_TX_HIZ_CTRL_3, 0xFF},
-+	{MAX98396_R204F_PCM_TX_HIZ_CTRL_4, 0xFF},
-+	{MAX98396_R2050_PCM_TX_HIZ_CTRL_5, 0xFF},
-+	{MAX98396_R2051_PCM_TX_HIZ_CTRL_6, 0xFF},
-+	{MAX98396_R2052_PCM_TX_HIZ_CTRL_7, 0xFF},
-+	{MAX98396_R2053_PCM_TX_HIZ_CTRL_8, 0xFF},
-+	{MAX98396_R2055_PCM_RX_SRC1, 0x00},
-+	{MAX98396_R2056_PCM_RX_SRC2, 0x00},
-+	{MAX98396_R2058_PCM_BYPASS_SRC, 0x00},
-+	{MAX98396_R205D_PCM_TX_SRC_EN, 0x00},
-+	{MAX98396_R205E_PCM_RX_EN, 0x00},
-+	{MAX98396_R205F_PCM_TX_EN, 0x00},
-+	{MAX98396_R2070_ICC_RX_EN_A, 0x00},
-+	{MAX98396_R2071_ICC_RX_EN_B, 0x00},
-+	{MAX98396_R2072_ICC_TX_CTRL, 0x00},
-+	{MAX98396_R207F_ICC_EN, 0x00},
-+	{MAX98396_R2083_TONE_GEN_DC_CFG, 0x04},
-+	{MAX98396_R2084_TONE_GEN_DC_LVL1, 0x00},
-+	{MAX98396_R2085_TONE_GEN_DC_LVL2, 0x00},
-+	{MAX98396_R2086_TONE_GEN_DC_LVL3, 0x00},
-+	{MAX98396_R208F_TONE_GEN_EN, 0x00},
-+	{MAX98396_R2090_AMP_VOL_CTRL, 0x00},
-+	{MAX98396_R2091_AMP_PATH_GAIN, 0x12},
-+	{MAX98396_R2092_AMP_DSP_CFG, 0x22},
-+	{MAX98396_R2093_SSM_CFG, 0x0D},
-+	{MAX98396_R2094_SPK_CLS_DG_THRESH, 0x12},
-+	{MAX98396_R2095_SPK_CLS_DG_HDR, 0x17},
-+	{MAX98396_R2096_SPK_CLS_DG_HOLD_TIME, 0x17},
-+	{MAX98396_R2097_SPK_CLS_DG_DELAY, 0x00},
-+	{MAX98396_R2098_SPK_CLS_DG_MODE, 0x00},
-+	{MAX98396_R2099_SPK_CLS_DG_VBAT_LVL, 0x03},
-+	{MAX98396_R209A_SPK_EDGE_CTRL, 0x00},
-+	{MAX98396_R209C_SPK_EDGE_CTRL1, 0x0A},
-+	{MAX98396_R209D_SPK_EDGE_CTRL2, 0xAA},
-+	{MAX98396_R209E_AMP_CLIP_GAIN, 0x00},
-+	{MAX98396_R209F_BYPASS_PATH_CFG, 0x00},
-+	{MAX98396_R20A0_AMP_SUPPLY_CTL, 0x00},
-+	{MAX98396_R20AF_AMP_EN, 0x00},
-+	{MAX98396_R20B0_ADC_SR, 0x30},
-+	{MAX98396_R20B1_ADC_PVDD_CFG, 0x00},
-+	{MAX98396_R20B2_ADC_VBAT_CFG, 0x00},
-+	{MAX98396_R20B3_ADC_THERMAL_CFG, 0x00},
-+	{MAX98396_R20B4_ADC_READBACK_CTRL1, 0x00},
-+	{MAX98396_R20B5_ADC_READBACK_CTRL2, 0x00},
-+	{MAX98396_R20B6_ADC_PVDD_READBACK_MSB, 0x00},
-+	{MAX98396_R20B7_ADC_PVDD_READBACK_LSB, 0x00},
-+	{MAX98396_R20B8_ADC_VBAT_READBACK_MSB, 0x00},
-+	{MAX98396_R20B9_ADC_VBAT_READBACK_LSB, 0x00},
-+	{MAX98396_R20BA_ADC_TEMP_READBACK_MSB, 0x00},
-+	{MAX98396_R20BB_ADC_TEMP_READBACK_LSB, 0x00},
-+	{MAX98396_R20BC_ADC_LO_PVDD_READBACK_MSB, 0x00},
-+	{MAX98396_R20BD_ADC_LO_PVDD_READBACK_LSB, 0x00},
-+	{MAX98396_R20BE_ADC_LO_VBAT_READBACK_MSB, 0x00},
-+	{MAX98396_R20BF_ADC_LO_VBAT_READBACK_LSB, 0x00},
-+	{MAX98396_R20C7_ADC_CFG, 0x00},
-+	{MAX98396_R20D0_DHT_CFG1, 0x00},
-+	{MAX98396_R20D1_LIMITER_CFG1, 0x08},
-+	{MAX98396_R20D2_LIMITER_CFG2, 0x00},
-+	{MAX98396_R20D3_DHT_CFG2, 0x14},
-+	{MAX98396_R20D4_DHT_CFG3, 0x02},
-+	{MAX98396_R20D5_DHT_CFG4, 0x04},
-+	{MAX98396_R20D6_DHT_HYSTERESIS_CFG, 0x07},
-+	{MAX98396_R20DF_DHT_EN, 0x00},
-+	{MAX98396_R20E0_IV_SENSE_PATH_CFG, 0x04},
-+	{MAX98396_R20E4_IV_SENSE_PATH_EN, 0x00},
-+	{MAX98396_R20E5_BPE_STATE, 0x00},
-+	{MAX98396_R20E6_BPE_L3_THRESH_MSB, 0x00},
-+	{MAX98396_R20E7_BPE_L3_THRESH_LSB, 0x00},
-+	{MAX98396_R20E8_BPE_L2_THRESH_MSB, 0x00},
-+	{MAX98396_R20E9_BPE_L2_THRESH_LSB, 0x00},
-+	{MAX98396_R20EA_BPE_L1_THRESH_MSB, 0x00},
-+	{MAX98396_R20EB_BPE_L1_THRESH_LSB, 0x00},
-+	{MAX98396_R20EC_BPE_L0_THRESH_MSB, 0x00},
-+	{MAX98396_R20ED_BPE_L0_THRESH_LSB, 0x00},
-+	{MAX98396_R20EE_BPE_L3_DWELL_HOLD_TIME, 0x00},
-+	{MAX98396_R20EF_BPE_L2_DWELL_HOLD_TIME, 0x00},
-+	{MAX98396_R20F0_BPE_L1_DWELL_HOLD_TIME, 0x00},
-+	{MAX98396_R20F1_BPE_L0_HOLD_TIME, 0x00},
-+	{MAX98396_R20F2_BPE_L3_ATTACK_REL_STEP, 0x00},
-+	{MAX98396_R20F3_BPE_L2_ATTACK_REL_STEP, 0x00},
-+	{MAX98396_R20F4_BPE_L1_ATTACK_REL_STEP, 0x00},
-+	{MAX98396_R20F5_BPE_L0_ATTACK_REL_STEP, 0x00},
-+	{MAX98396_R20F6_BPE_L3_MAX_GAIN_ATTN, 0x00},
-+	{MAX98396_R20F7_BPE_L2_MAX_GAIN_ATTN, 0x00},
-+	{MAX98396_R20F8_BPE_L1_MAX_GAIN_ATTN, 0x00},
-+	{MAX98396_R20F9_BPE_L0_MAX_GAIN_ATTN, 0x00},
-+	{MAX98396_R20FA_BPE_L3_ATT_REL_RATE, 0x00},
-+	{MAX98396_R20FB_BPE_L2_ATT_REL_RATE, 0x00},
-+	{MAX98396_R20FC_BPE_L1_ATT_REL_RATE, 0x00},
-+	{MAX98396_R20FD_BPE_L0_ATT_REL_RATE, 0x00},
-+	{MAX98396_R20FE_BPE_L3_LIMITER_CFG, 0x00},
-+	{MAX98396_R20FF_BPE_L2_LIMITER_CFG, 0x00},
-+	{MAX98396_R2100_BPE_L1_LIMITER_CFG, 0x00},
-+	{MAX98396_R2101_BPE_L0_LIMITER_CFG, 0x00},
-+	{MAX98396_R2102_BPE_L3_LIM_ATT_REL_RATE, 0x00},
-+	{MAX98396_R2103_BPE_L2_LIM_ATT_REL_RATE, 0x00},
-+	{MAX98396_R2104_BPE_L1_LIM_ATT_REL_RATE, 0x00},
-+	{MAX98396_R2105_BPE_L0_LIM_ATT_REL_RATE, 0x00},
-+	{MAX98396_R2106_BPE_THRESH_HYSTERESIS, 0x00},
-+	{MAX98396_R2107_BPE_INFINITE_HOLD_CLR, 0x00},
-+	{MAX98396_R2108_BPE_SUPPLY_SRC, 0x00},
-+	{MAX98396_R2109_BPE_LOW_STATE, 0x00},
-+	{MAX98396_R210A_BPE_LOW_GAIN, 0x00},
-+	{MAX98396_R210B_BPE_LOW_LIMITER, 0x00},
-+	{MAX98396_R210D_BPE_EN, 0x00},
-+	{MAX98396_R210E_AUTO_RESTART, 0x00},
-+	{MAX98396_R210F_GLOBAL_EN, 0x00},
-+	{MAX98396_R21FF_REVISION_ID, 0x00},
-+};
-+
-+static struct reg_default max98397_reg[] = {
-+	{MAX98396_R2000_SW_RESET, 0x00},
-+	{MAX98396_R2001_INT_RAW1, 0x00},
-+	{MAX98396_R2002_INT_RAW2, 0x00},
-+	{MAX98396_R2003_INT_RAW3, 0x00},
-+	{MAX98396_R2004_INT_RAW4, 0x00},
-+	{MAX98396_R2006_INT_STATE1, 0x00},
-+	{MAX98396_R2007_INT_STATE2, 0x00},
-+	{MAX98396_R2008_INT_STATE3, 0x00},
-+	{MAX98396_R2009_INT_STATE4, 0x00},
-+	{MAX98396_R200B_INT_FLAG1, 0x00},
-+	{MAX98396_R200C_INT_FLAG2, 0x00},
-+	{MAX98396_R200D_INT_FLAG3, 0x00},
-+	{MAX98396_R200E_INT_FLAG4, 0x00},
-+	{MAX98396_R2010_INT_EN1, 0x02},
-+	{MAX98396_R2011_INT_EN2, 0x00},
-+	{MAX98396_R2012_INT_EN3, 0x00},
-+	{MAX98396_R2013_INT_EN4, 0x00},
-+	{MAX98396_R2015_INT_FLAG_CLR1, 0x00},
-+	{MAX98396_R2016_INT_FLAG_CLR2, 0x00},
-+	{MAX98396_R2017_INT_FLAG_CLR3, 0x00},
-+	{MAX98396_R2018_INT_FLAG_CLR4, 0x00},
-+	{MAX98396_R201F_IRQ_CTRL, 0x00},
-+	{MAX98396_R2020_THERM_WARN_THRESH, 0x46},
-+	{MAX98396_R2021_THERM_WARN_THRESH2, 0x46},
-+	{MAX98396_R2022_THERM_SHDN_THRESH, 0x64},
-+	{MAX98396_R2023_THERM_HYSTERESIS, 0x02},
-+	{MAX98396_R2024_THERM_FOLDBACK_SET, 0xC5},
-+	{MAX98396_R2027_THERM_FOLDBACK_EN, 0x01},
-+	{MAX98396_R2030_NOISEGATE_MODE_CTRL, 0x32},
-+	{MAX98396_R2033_NOISEGATE_MODE_EN, 0x00},
-+	{MAX98396_R2038_CLK_MON_CTRL, 0x00},
-+	{MAX98396_R2039_DATA_MON_CTRL, 0x00},
-+	{MAX98397_R203A_SPK_MON_THRESH, 0x03},
-+	{MAX98396_R203F_ENABLE_CTRLS, 0x0F},
-+	{MAX98396_R2040_PIN_CFG, 0x55},
-+	{MAX98396_R2041_PCM_MODE_CFG, 0xC0},
-+	{MAX98396_R2042_PCM_CLK_SETUP, 0x04},
-+	{MAX98396_R2043_PCM_SR_SETUP, 0x88},
-+	{MAX98396_R2044_PCM_TX_CTRL_1, 0x00},
-+	{MAX98396_R2045_PCM_TX_CTRL_2, 0x00},
-+	{MAX98396_R2046_PCM_TX_CTRL_3, 0x00},
-+	{MAX98396_R2047_PCM_TX_CTRL_4, 0x00},
-+	{MAX98396_R2048_PCM_TX_CTRL_5, 0x00},
-+	{MAX98396_R2049_PCM_TX_CTRL_6, 0x00},
-+	{MAX98396_R204A_PCM_TX_CTRL_7, 0x00},
-+	{MAX98396_R204B_PCM_TX_CTRL_8, 0x00},
-+	{MAX98397_R204C_PCM_TX_CTRL_9, 0x00},
-+	{MAX98397_R204D_PCM_TX_HIZ_CTRL_1, 0xFF},
-+	{MAX98397_R204E_PCM_TX_HIZ_CTRL_2, 0xFF},
-+	{MAX98397_R204F_PCM_TX_HIZ_CTRL_3, 0xFF},
-+	{MAX98397_R2050_PCM_TX_HIZ_CTRL_4, 0xFF},
-+	{MAX98397_R2051_PCM_TX_HIZ_CTRL_5, 0xFF},
-+	{MAX98397_R2052_PCM_TX_HIZ_CTRL_6, 0xFF},
-+	{MAX98397_R2053_PCM_TX_HIZ_CTRL_7, 0xFF},
-+	{MAX98397_R2054_PCM_TX_HIZ_CTRL_8, 0xFF},
-+	{MAX98397_R2056_PCM_RX_SRC1, 0x00},
-+	{MAX98397_R2057_PCM_RX_SRC2, 0x00},
-+	{MAX98396_R2058_PCM_BYPASS_SRC, 0x00},
-+	{MAX98396_R205D_PCM_TX_SRC_EN, 0x00},
-+	{MAX98396_R205E_PCM_RX_EN, 0x00},
-+	{MAX98396_R205F_PCM_TX_EN, 0x00},
-+	{MAX98397_R2060_PCM_TX_SUPPLY_SEL, 0x00},
-+	{MAX98396_R2070_ICC_RX_EN_A, 0x00},
-+	{MAX98396_R2071_ICC_RX_EN_B, 0x00},
-+	{MAX98396_R2072_ICC_TX_CTRL, 0x00},
-+	{MAX98396_R207F_ICC_EN, 0x00},
-+	{MAX98396_R2083_TONE_GEN_DC_CFG, 0x04},
-+	{MAX98396_R2084_TONE_GEN_DC_LVL1, 0x00},
-+	{MAX98396_R2085_TONE_GEN_DC_LVL2, 0x00},
-+	{MAX98396_R2086_TONE_GEN_DC_LVL3, 0x00},
-+	{MAX98396_R208F_TONE_GEN_EN, 0x00},
-+	{MAX98396_R2090_AMP_VOL_CTRL, 0x00},
-+	{MAX98396_R2091_AMP_PATH_GAIN, 0x12},
-+	{MAX98396_R2092_AMP_DSP_CFG, 0x22},
-+	{MAX98396_R2093_SSM_CFG, 0x08},
-+	{MAX98396_R2094_SPK_CLS_DG_THRESH, 0x12},
-+	{MAX98396_R2095_SPK_CLS_DG_HDR, 0x17},
-+	{MAX98396_R2096_SPK_CLS_DG_HOLD_TIME, 0x17},
-+	{MAX98396_R2097_SPK_CLS_DG_DELAY, 0x00},
-+	{MAX98396_R2098_SPK_CLS_DG_MODE, 0x00},
-+	{MAX98396_R2099_SPK_CLS_DG_VBAT_LVL, 0x03},
-+	{MAX98396_R209A_SPK_EDGE_CTRL, 0x00},
-+	{MAX98397_R209B_SPK_PATH_WB_ONLY, 0x00},
-+	{MAX98396_R209C_SPK_EDGE_CTRL1, 0x03},
-+	{MAX98396_R209D_SPK_EDGE_CTRL2, 0xFC},
-+	{MAX98396_R209E_AMP_CLIP_GAIN, 0x00},
-+	{MAX98396_R209F_BYPASS_PATH_CFG, 0x00},
-+	{MAX98396_R20AF_AMP_EN, 0x00},
-+	{MAX98396_R20B0_ADC_SR, 0x30},
-+	{MAX98396_R20B1_ADC_PVDD_CFG, 0x00},
-+	{MAX98396_R20B2_ADC_VBAT_CFG, 0x00},
-+	{MAX98396_R20B3_ADC_THERMAL_CFG, 0x00},
-+	{MAX98397_R20B4_ADC_VDDH_CFG, 0x00},
-+	{MAX98397_R20B5_ADC_READBACK_CTRL1, 0x00},
-+	{MAX98397_R20B6_ADC_READBACK_CTRL2, 0x00},
-+	{MAX98397_R20B7_ADC_PVDD_READBACK_MSB, 0x00},
-+	{MAX98397_R20B8_ADC_PVDD_READBACK_LSB, 0x00},
-+	{MAX98397_R20B9_ADC_VBAT_READBACK_MSB, 0x00},
-+	{MAX98397_R20BA_ADC_VBAT_READBACK_LSB, 0x00},
-+	{MAX98397_R20BB_ADC_TEMP_READBACK_MSB, 0x00},
-+	{MAX98397_R20BC_ADC_TEMP_READBACK_LSB, 0x00},
-+	{MAX98397_R20BD_ADC_VDDH__READBACK_MSB, 0x00},
-+	{MAX98397_R20BE_ADC_VDDH_READBACK_LSB, 0x00},
-+	{MAX98396_R20BF_ADC_LO_VBAT_READBACK_LSB, 0x00},
-+	{MAX98397_R20C3_ADC_LO_VDDH_READBACK_MSB, 0x00},
-+	{MAX98397_R20C4_ADC_LO_VDDH_READBACK_LSB, 0x00},
-+	{MAX98397_R20C5_MEAS_ADC_OPTIMAL_MODE, 0x04},
-+	{MAX98396_R20C7_ADC_CFG, 0x00},
-+	{MAX98396_R20D0_DHT_CFG1, 0x00},
-+	{MAX98396_R20D1_LIMITER_CFG1, 0x08},
-+	{MAX98396_R20D2_LIMITER_CFG2, 0x00},
-+	{MAX98396_R20D3_DHT_CFG2, 0x14},
-+	{MAX98396_R20D4_DHT_CFG3, 0x02},
-+	{MAX98396_R20D5_DHT_CFG4, 0x04},
-+	{MAX98396_R20D6_DHT_HYSTERESIS_CFG, 0x07},
-+	{MAX98396_R20DF_DHT_EN, 0x00},
-+	{MAX98396_R20E0_IV_SENSE_PATH_CFG, 0x04},
-+	{MAX98396_R20E4_IV_SENSE_PATH_EN, 0x00},
-+	{MAX98396_R20E5_BPE_STATE, 0x00},
-+	{MAX98396_R20E6_BPE_L3_THRESH_MSB, 0x00},
-+	{MAX98396_R20E7_BPE_L3_THRESH_LSB, 0x00},
-+	{MAX98396_R20E8_BPE_L2_THRESH_MSB, 0x00},
-+	{MAX98396_R20E9_BPE_L2_THRESH_LSB, 0x00},
-+	{MAX98396_R20EA_BPE_L1_THRESH_MSB, 0x00},
-+	{MAX98396_R20EB_BPE_L1_THRESH_LSB, 0x00},
-+	{MAX98396_R20EC_BPE_L0_THRESH_MSB, 0x00},
-+	{MAX98396_R20ED_BPE_L0_THRESH_LSB, 0x00},
-+	{MAX98396_R20EE_BPE_L3_DWELL_HOLD_TIME, 0x00},
-+	{MAX98396_R20EF_BPE_L2_DWELL_HOLD_TIME, 0x00},
-+	{MAX98396_R20F0_BPE_L1_DWELL_HOLD_TIME, 0x00},
-+	{MAX98396_R20F1_BPE_L0_HOLD_TIME, 0x00},
-+	{MAX98396_R20F2_BPE_L3_ATTACK_REL_STEP, 0x00},
-+	{MAX98396_R20F3_BPE_L2_ATTACK_REL_STEP, 0x00},
-+	{MAX98396_R20F4_BPE_L1_ATTACK_REL_STEP, 0x00},
-+	{MAX98396_R20F5_BPE_L0_ATTACK_REL_STEP, 0x00},
-+	{MAX98396_R20F6_BPE_L3_MAX_GAIN_ATTN, 0x00},
-+	{MAX98396_R20F7_BPE_L2_MAX_GAIN_ATTN, 0x00},
-+	{MAX98396_R20F8_BPE_L1_MAX_GAIN_ATTN, 0x00},
-+	{MAX98396_R20F9_BPE_L0_MAX_GAIN_ATTN, 0x00},
-+	{MAX98396_R20FA_BPE_L3_ATT_REL_RATE, 0x00},
-+	{MAX98396_R20FB_BPE_L2_ATT_REL_RATE, 0x00},
-+	{MAX98396_R20FC_BPE_L1_ATT_REL_RATE, 0x00},
-+	{MAX98396_R20FD_BPE_L0_ATT_REL_RATE, 0x00},
-+	{MAX98396_R20FE_BPE_L3_LIMITER_CFG, 0x00},
-+	{MAX98396_R20FF_BPE_L2_LIMITER_CFG, 0x00},
-+	{MAX98396_R2100_BPE_L1_LIMITER_CFG, 0x00},
-+	{MAX98396_R2101_BPE_L0_LIMITER_CFG, 0x00},
-+	{MAX98396_R2102_BPE_L3_LIM_ATT_REL_RATE, 0x00},
-+	{MAX98396_R2103_BPE_L2_LIM_ATT_REL_RATE, 0x00},
-+	{MAX98396_R2104_BPE_L1_LIM_ATT_REL_RATE, 0x00},
-+	{MAX98396_R2105_BPE_L0_LIM_ATT_REL_RATE, 0x00},
-+	{MAX98396_R2106_BPE_THRESH_HYSTERESIS, 0x00},
-+	{MAX98396_R2107_BPE_INFINITE_HOLD_CLR, 0x00},
-+	{MAX98396_R2108_BPE_SUPPLY_SRC, 0x00},
-+	{MAX98396_R2109_BPE_LOW_STATE, 0x00},
-+	{MAX98396_R210A_BPE_LOW_GAIN, 0x00},
-+	{MAX98396_R210B_BPE_LOW_LIMITER, 0x00},
-+	{MAX98396_R210D_BPE_EN, 0x00},
-+	{MAX98396_R210E_AUTO_RESTART, 0x00},
-+	{MAX98396_R210F_GLOBAL_EN, 0x00},
-+	{MAX98397_R22FF_REVISION_ID, 0x00},
-+};
-+
-+static void max98396_global_enable_onoff(struct regmap *regmap, bool onoff)
++static void mbox3_setup_48_24_magic(struct usb_device *dev)
 +{
-+	regmap_write(regmap, MAX98396_R210F_GLOBAL_EN, onoff ? 1 : 0);
-+	usleep_range(11000, 12000);
++	u8 com_buff[4];
++
++	/* Load 48000Hz rate into buffer */
++	com_buff[0] = 0x80;
++	com_buff[1] = 0xbb;
++	com_buff[2] = 0x00;
++	com_buff[3] = 0x00;
++
++	/* Set 48000Hz sample rate */
++	snd_usb_ctl_msg(dev, usb_sndctrlpipe(dev, 0),
++			0x01, 0x21, 0x0100, 0x0001, &com_buff, 0x0004);
++	snd_usb_ctl_msg(dev, usb_sndctrlpipe(dev, 0),
++			0x01, 0x21, 0x0100, 0x8101, &com_buff, 0x0004);
++
++	/* Set clock source to Internal (as opposed to S/PDIF) */
++	memset(com_buff, 0x00, 4);
++	com_buff[0] = 0x01;
++	com_buff[1] = 0x00;
++	com_buff[2] = 0x00;
++	com_buff[3] = 0x00;
++	snd_usb_ctl_msg(dev, usb_sndctrlpipe(dev, 0),
++			1, 0x21, 0x0100, 0x8001, &com_buff, 1);
++
++	/* Mute the hardware loopbacks to start the device in a known state.
++	 * The Mbox 3 is little endian and
++	 * the data written here seems a bit odd.
++	 * 0x8000 (shown in big endian form) is muted
++	 * and volume increases to 0xffff it seems.
++	 * I've yet to observe 0xffff being sent.
++	 * Instead, full volume seems to be 0x0000.
++	 * Per my understanding of 16 bit integers, this is seems strange, but maybe I'm missing something
++	 */
++	memset(com_buff, 0x00, 4);
++	com_buff[0] = 0x00;
++	com_buff[1] = 0x80;
++	com_buff[2] = 0x00;
++	com_buff[3] = 0x00;
++	/* Analogue input 1 left channel: */
++	snd_usb_ctl_msg(dev, usb_sndctrlpipe(dev, 0),
++			1, 0x21, 0x0110, 0x4001, &com_buff, 2);
++	/* Analogue input 1 right channel: */
++	snd_usb_ctl_msg(dev, usb_sndctrlpipe(dev, 0),
++			1, 0x21, 0x0111, 0x4001, &com_buff, 2);
++	/* Analogue input 2 left channel: */
++	snd_usb_ctl_msg(dev, usb_sndctrlpipe(dev, 0),
++			1, 0x21, 0x0114, 0x4001, &com_buff, 2);
++	/* Analogue input 2 right channel: */
++	snd_usb_ctl_msg(dev, usb_sndctrlpipe(dev, 0),
++			1, 0x21, 0x0115, 0x4001, &com_buff, 2);
++	/* Analogue input 3 left channel: */
++	snd_usb_ctl_msg(dev, usb_sndctrlpipe(dev, 0),
++			1, 0x21, 0x0118, 0x4001, &com_buff, 2);
++	/* Analogue input 3 right channel: */
++	snd_usb_ctl_msg(dev, usb_sndctrlpipe(dev, 0),
++			1, 0x21, 0x0119, 0x4001, &com_buff, 2);
++	/* Analogue input 4 left channel: */
++	snd_usb_ctl_msg(dev, usb_sndctrlpipe(dev, 0),
++			1, 0x21, 0x011c, 0x4001, &com_buff, 2);
++	/* Analogue input 4 right channel: */
++	snd_usb_ctl_msg(dev, usb_sndctrlpipe(dev, 0),
++			1, 0x21, 0x011d, 0x4001, &com_buff, 2);
++
++	/* Set software sends to output */
++	memset(com_buff, 0x00, 4);
++	com_buff[0] = 0x00;
++	com_buff[1] = 0x00;
++	com_buff[2] = 0x00;
++	com_buff[3] = 0x00;
++	/* Analogue software return 1 left channel: */
++	snd_usb_ctl_msg(dev, usb_sndctrlpipe(dev, 0),
++			1, 0x21, 0x0100, 0x4001, &com_buff, 2);
++	/* Analogue software return 1 right channel: */
++	snd_usb_ctl_msg(dev, usb_sndctrlpipe(dev, 0),
++			1, 0x21, 0x0101, 0x4001, &com_buff, 2);
++	/* Analogue software return 2 left channel: */
++	snd_usb_ctl_msg(dev, usb_sndctrlpipe(dev, 0),
++			1, 0x21, 0x0104, 0x4001, &com_buff, 2);
++	/* Analogue software return 2 right channel: */
++	snd_usb_ctl_msg(dev, usb_sndctrlpipe(dev, 0),
++			1, 0x21, 0x0105, 0x4001, &com_buff, 2);
++	/* Analogue software return 3 left channel: */
++	snd_usb_ctl_msg(dev, usb_sndctrlpipe(dev, 0),
++			1, 0x21, 0x0108, 0x4001, &com_buff, 2);
++	/* Analogue software return 3 right channel: */
++	snd_usb_ctl_msg(dev, usb_sndctrlpipe(dev, 0),
++			1, 0x21, 0x0109, 0x4001, &com_buff, 2);
++	/* Analogue software return 4 left channel: */
++	snd_usb_ctl_msg(dev, usb_sndctrlpipe(dev, 0),
++			1, 0x21, 0x010c, 0x4001, &com_buff, 2);
++	/* Analogue software return 4 right channel: */
++	snd_usb_ctl_msg(dev, usb_sndctrlpipe(dev, 0),
++			1, 0x21, 0x010d, 0x4001, &com_buff, 2);
++
++	/* Return to muting sends */
++	memset(com_buff, 0x00, 4);
++	com_buff[0] = 0x00;
++	com_buff[1] = 0x80;
++	com_buff[2] = 0x00;
++	com_buff[3] = 0x00;
++	/* Analogue fx return left channel: */
++	snd_usb_ctl_msg(dev, usb_sndctrlpipe(dev, 0),
++			1, 0x21, 0x0120, 0x4001, &com_buff, 2);
++	/* Analogue fx return right channel: */
++	snd_usb_ctl_msg(dev, usb_sndctrlpipe(dev, 0),
++			1, 0x21, 0x0121, 0x4001, &com_buff, 2);
++
++	/* Analogue software input 1 fx send: */
++	snd_usb_ctl_msg(dev, usb_sndctrlpipe(dev, 0),
++			1, 0x21, 0x0100, 0x4201, &com_buff, 2);
++	/* Analogue software input 2 fx send: */
++	snd_usb_ctl_msg(dev, usb_sndctrlpipe(dev, 0),
++			1, 0x21, 0x0101, 0x4201, &com_buff, 2);
++	/* Analogue software input 3 fx send: */
++	snd_usb_ctl_msg(dev, usb_sndctrlpipe(dev, 0),
++			1, 0x21, 0x0102, 0x4201, &com_buff, 2);
++	/* Analogue software input 4 fx send: */
++	snd_usb_ctl_msg(dev, usb_sndctrlpipe(dev, 0),
++			1, 0x21, 0x0103, 0x4201, &com_buff, 2);
++	/* Analogue input 1 fx send: */
++	snd_usb_ctl_msg(dev, usb_sndctrlpipe(dev, 0),
++			1, 0x21, 0x0104, 0x4201, &com_buff, 2);
++	/* Analogue input 2 fx send: */
++	snd_usb_ctl_msg(dev, usb_sndctrlpipe(dev, 0),
++			1, 0x21, 0x0105, 0x4201, &com_buff, 2);
++	/* Analogue input 3 fx send: */
++	snd_usb_ctl_msg(dev, usb_sndctrlpipe(dev, 0),
++			1, 0x21, 0x0106, 0x4201, &com_buff, 2);
++	/* Analogue input 4 fx send: */
++	snd_usb_ctl_msg(dev, usb_sndctrlpipe(dev, 0),
++			1, 0x21, 0x0107, 0x4201, &com_buff, 2);
++
++	/* Toggle allowing host control */
++	memset(com_buff, 0x00, 4);
++	com_buff[0] = 0x02;
++	com_buff[1] = 0x00;
++	com_buff[2] = 0x00;
++	com_buff[3] = 0x00;
++	snd_usb_ctl_msg(dev, usb_sndctrlpipe(dev, 0),
++			3, 0x21, 0x0000, 0x2001, &com_buff, 1);
++
++	/* Do not dim fx returns */
++	memset(com_buff, 0x00, 4);
++	com_buff[0] = 0x00;
++	com_buff[1] = 0x00;
++	com_buff[2] = 0x00;
++	com_buff[3] = 0x00;
++	snd_usb_ctl_msg(dev, usb_sndctrlpipe(dev, 0), 3, 0x21, 0x0002, 0x2001, &com_buff, 1);
++
++	/* Do not set fx returns to mono */
++	memset(com_buff, 0x00, 4);
++	com_buff[0] = 0x00;
++	com_buff[1] = 0x00;
++	com_buff[2] = 0x00;
++	com_buff[3] = 0x00;
++	snd_usb_ctl_msg(dev, usb_sndctrlpipe(dev, 0), 3, 0x21, 0x0001, 0x2001, &com_buff, 1);
++
++	/* Mute the S/PDIF hardware loopback
++	 * same odd volume logic here as above
++	 */
++	memset(com_buff, 0x00, 4);
++	com_buff[0] = 0x00;
++	com_buff[1] = 0x80;
++	com_buff[2] = 0x00;
++	com_buff[3] = 0x00;
++	/* S/PDIF hardware input 1 left channel */
++	snd_usb_ctl_msg(dev, usb_sndctrlpipe(dev, 0),
++			1, 0x21, 0x0112, 0x4001, &com_buff, 2);
++	/* S/PDIF hardware input 1 right channel */
++	snd_usb_ctl_msg(dev, usb_sndctrlpipe(dev, 0),
++			1, 0x21, 0x0113, 0x4001, &com_buff, 2);
++	/* S/PDIF hardware input 2 left channel */
++	snd_usb_ctl_msg(dev, usb_sndctrlpipe(dev, 0),
++			1, 0x21, 0x0116, 0x4001, &com_buff, 2);
++	/* S/PDIF hardware input 2 right channel */
++	snd_usb_ctl_msg(dev, usb_sndctrlpipe(dev, 0),
++			1, 0x21, 0x0117, 0x4001, &com_buff, 2);
++	/* S/PDIF hardware input 3 left channel */
++	snd_usb_ctl_msg(dev, usb_sndctrlpipe(dev, 0),
++			1, 0x21, 0x011a, 0x4001, &com_buff, 2);
++	/* S/PDIF hardware input 3 right channel */
++	snd_usb_ctl_msg(dev, usb_sndctrlpipe(dev, 0),
++			1, 0x21, 0x011b, 0x4001, &com_buff, 2);
++	/* S/PDIF hardware input 4 left channel */
++	snd_usb_ctl_msg(dev, usb_sndctrlpipe(dev, 0),
++			1, 0x21, 0x011e, 0x4001, &com_buff, 2);
++	/* S/PDIF hardware input 4 right channel */
++	snd_usb_ctl_msg(dev, usb_sndctrlpipe(dev, 0),
++			1, 0x21, 0x011f, 0x4001, &com_buff, 2);
++	/* S/PDIF software return 1 left channel */
++	snd_usb_ctl_msg(dev, usb_sndctrlpipe(dev, 0),
++			1, 0x21, 0x0102, 0x4001, &com_buff, 2);
++	/* S/PDIF software return 1 right channel */
++	snd_usb_ctl_msg(dev, usb_sndctrlpipe(dev, 0),
++			1, 0x21, 0x0103, 0x4001, &com_buff, 2);
++	/* S/PDIF software return 2 left channel */
++	snd_usb_ctl_msg(dev, usb_sndctrlpipe(dev, 0),
++			1, 0x21, 0x0106, 0x4001, &com_buff, 2);
++	/* S/PDIF software return 2 right channel */
++	snd_usb_ctl_msg(dev, usb_sndctrlpipe(dev, 0),
++			1, 0x21, 0x0107, 0x4001, &com_buff, 2);
++	/* S/PDIF software return 3 left channel */
++	snd_usb_ctl_msg(dev, usb_sndctrlpipe(dev, 0),
++			1, 0x21, 0x010a, 0x4001, &com_buff, 2);
++	/* S/PDIF software return 3 right channel */
++	snd_usb_ctl_msg(dev, usb_sndctrlpipe(dev, 0),
++			1, 0x21, 0x010b, 0x4001, &com_buff, 2);
++	/* S/PDIF software return 4 left channel */
++	snd_usb_ctl_msg(dev, usb_sndctrlpipe(dev, 0),
++			1, 0x21, 0x010e, 0x4001, &com_buff, 2);
++	/* S/PDIF software return 4 right channel */
++	snd_usb_ctl_msg(dev, usb_sndctrlpipe(dev, 0),
++			1, 0x21, 0x010f, 0x4001, &com_buff, 2);
++	/* S/PDIF fx returns left channel */
++	snd_usb_ctl_msg(dev, usb_sndctrlpipe(dev, 0),
++			1, 0x21, 0x0122, 0x4001, &com_buff, 2);
++	/* S/PDIF fx returns right channel */
++	snd_usb_ctl_msg(dev, usb_sndctrlpipe(dev, 0),
++			1, 0x21, 0x0123, 0x4001, &com_buff, 2);
++
++	/* Set the dropdown "Effect" to the first option */
++	memset(com_buff, 0x00, 4);
++	com_buff[0] = 0x00;
++	com_buff[1] = 0x00;
++	com_buff[2] = 0x00;
++	com_buff[3] = 0x00;
++	snd_usb_ctl_msg(dev, usb_sndctrlpipe(dev, 0),
++			1, 0x21, 0x0200, 0x4301, &com_buff, 1);
++
++	/* Set the effect duration to 0 */
++	memset(com_buff, 0x00, 4);
++	com_buff[0] = 0x00;
++	com_buff[1] = 0x00;
++	com_buff[2] = 0x00;
++	com_buff[3] = 0x00;
++	snd_usb_ctl_msg(dev, usb_sndctrlpipe(dev, 0),
++			1, 0x21, 0x0400, 0x4301, &com_buff, 2);
++
++	/* Set the effect volume and feedback to 0 */
++	memset(com_buff, 0x00, 4);
++	com_buff[0] = 0x00;
++	com_buff[1] = 0x00;
++	com_buff[2] = 0x00;
++	com_buff[3] = 0x00;
++	/* feedback: */
++	snd_usb_ctl_msg(dev, usb_sndctrlpipe(dev, 0),
++			1, 0x21, 0x0500, 0x4301, &com_buff, 1);
++	/* volume: */
++	snd_usb_ctl_msg(dev, usb_sndctrlpipe(dev, 0),
++			1, 0x21, 0x0300, 0x4301, &com_buff, 1);
++
++	/* Set soft button hold duration */
++	memset(com_buff, 0x00, 4);
++	com_buff[0] = 0x05;
++	com_buff[1] = 0x00;
++	com_buff[2] = 0x00;
++	com_buff[3] = 0x00;
++	snd_usb_ctl_msg(dev, usb_sndctrlpipe(dev, 0),
++			3, 0x21, 0x0005, 0x2001, &com_buff, 1);
++
++	/* Use dim LEDs for button of state */
++	memset(com_buff, 0x00, 4);
++	com_buff[0] = 0x00;
++	com_buff[1] = 0x00;
++	com_buff[2] = 0x00;
++	com_buff[3] = 0x00;
++	snd_usb_ctl_msg(dev, usb_sndctrlpipe(dev, 0),
++			3, 0x21, 0x0004, 0x2001, &com_buff, 1);
++
++	return;
 +}
 +
-+static int max98396_dai_set_fmt(struct snd_soc_dai *codec_dai, unsigned int fmt)
++#define MBOX3_DESCRIPTOR_SIZE	464
++
++static int snd_usb_mbox3_boot_quirk(struct usb_device *dev)
 +{
-+	struct snd_soc_component *component = codec_dai->component;
-+	struct max98396_priv *max98396 = snd_soc_component_get_drvdata(component);
-+	unsigned int format;
-+	unsigned int invert = 0;
-+	int ret, status;
-+	int reg;
-+	bool update;
++	struct usb_host_config *config = dev->actconfig;
++	int err;
++	int descriptor_size;
 +
-+	dev_dbg(component->dev, "%s: fmt 0x%08X\n", __func__, fmt);
++	descriptor_size = le16_to_cpu(get_cfg_desc(config)->wTotalLength);
 +
-+	switch (fmt & SND_SOC_DAIFMT_INV_MASK) {
-+	case SND_SOC_DAIFMT_NB_NF:
-+	case SND_SOC_DAIFMT_NB_IF:
-+		break;
-+	case SND_SOC_DAIFMT_IB_NF:
-+		invert = MAX98396_PCM_MODE_CFG_PCM_BCLKEDGE;
-+		break;
-+	default:
-+		dev_err(component->dev, "DAI invert mode unsupported\n");
-+		return -EINVAL;
++	if (descriptor_size != MBOX3_DESCRIPTOR_SIZE) {
++		dev_err(&dev->dev, "Invalid descriptor size=%d.\n", descriptor_size);
++		return -ENODEV;
 +	}
 +
-+	regmap_update_bits(max98396->regmap,
-+			   MAX98396_R2042_PCM_CLK_SETUP,
-+			   MAX98396_PCM_MODE_CFG_PCM_BCLKEDGE,
-+			   invert);
++	dev_dbg(&dev->dev, "device initialised!\n");
 +
-+	/* interface format */
-+	switch (fmt & SND_SOC_DAIFMT_FORMAT_MASK) {
-+	case SND_SOC_DAIFMT_I2S:
-+		format = MAX98396_PCM_FORMAT_I2S;
-+		break;
-+	case SND_SOC_DAIFMT_LEFT_J:
-+		format = MAX98396_PCM_FORMAT_LJ;
-+		break;
-+	case SND_SOC_DAIFMT_DSP_A:
-+		format = MAX98396_PCM_FORMAT_TDM_MODE1;
-+		break;
-+	case SND_SOC_DAIFMT_DSP_B:
-+		format = MAX98396_PCM_FORMAT_TDM_MODE0;
-+		break;
-+	default:
-+		return -EINVAL;
-+	}
++	err = usb_get_descriptor(dev, USB_DT_DEVICE, 0,
++		&dev->descriptor, sizeof(dev->descriptor));
++	config = dev->actconfig;
++	if (err < 0)
++		dev_dbg(&dev->dev, "error usb_get_descriptor: %d\n", err);
 +
-+	ret = regmap_read(max98396->regmap, MAX98396_R210F_GLOBAL_EN, &status);
-+	if (ret < 0)
-+		return -EINVAL;
++	err = usb_reset_configuration(dev);
++	if (err < 0)
++		dev_dbg(&dev->dev, "error usb_reset_configuration: %d\n", err);
++	dev_dbg(&dev->dev, "mbox3_boot: new boot length = %d\n",
++		le16_to_cpu(get_cfg_desc(config)->wTotalLength));
 +
-+	if (status) {
-+		ret = regmap_read(max98396->regmap, MAX98396_R2041_PCM_MODE_CFG, &reg);
-+		if (ret < 0)
-+			return -EINVAL;
-+		if (format != (reg & MAX98396_PCM_MODE_CFG_FORMAT_MASK))
-+			update = true;
-+		/* GLOBAL_EN OFF prior to pcm mode change */
-+		if (update)
-+			max98396_global_enable_onoff(max98396->regmap, false);
-+	}
++	mbox3_setup_48_24_magic(dev);
++	dev_info(&dev->dev, "Digidesign Mbox 3: 24bit 48kHz");
 +
-+	regmap_update_bits(max98396->regmap,
-+			   MAX98396_R2041_PCM_MODE_CFG,
-+			   MAX98396_PCM_MODE_CFG_FORMAT_MASK,
-+			   format);
-+
-+	if (status && update)
-+		max98396_global_enable_onoff(max98396->regmap, true);
-+
-+	return 0;
++	return 0; /* Successful boot */
 +}
-+
-+/* BCLKs per LRCLK */
-+static const int bclk_sel_table[] = {
-+	32, 48, 64, 96, 128, 192, 256, 384, 512, 320,
-+};
-+
-+static int max98396_get_bclk_sel(int bclk)
-+{
-+	int i;
-+	/* match BCLKs per LRCLK */
-+	for (i = 0; i < ARRAY_SIZE(bclk_sel_table); i++) {
-+		if (bclk_sel_table[i] == bclk)
-+			return i + 2;
-+	}
-+	return 0;
-+}
-+
-+static int max98396_set_clock(struct snd_soc_component *component,
-+			      struct snd_pcm_hw_params *params)
-+{
-+	struct max98396_priv *max98396 = snd_soc_component_get_drvdata(component);
-+	/* BCLK/LRCLK ratio calculation */
-+	int blr_clk_ratio = params_channels(params) * max98396->ch_size;
-+	int value;
-+
-+	if (!max98396->tdm_mode) {
-+		/* BCLK configuration */
-+		value = max98396_get_bclk_sel(blr_clk_ratio);
-+		if (!value) {
-+			dev_err(component->dev, "format unsupported %d\n",
-+				params_format(params));
-+			return -EINVAL;
-+		}
-+
-+		regmap_update_bits(max98396->regmap,
-+				   MAX98396_R2042_PCM_CLK_SETUP,
-+				   MAX98396_PCM_CLK_SETUP_BSEL_MASK,
-+				   value);
-+	}
-+
-+	return 0;
-+}
-+
-+static int max98396_dai_hw_params(struct snd_pcm_substream *substream,
-+				  struct snd_pcm_hw_params *params,
-+				  struct snd_soc_dai *dai)
-+{
-+	struct snd_soc_component *component = dai->component;
-+	struct max98396_priv *max98396 = snd_soc_component_get_drvdata(component);
-+	unsigned int sampling_rate = 0;
-+	unsigned int chan_sz = 0;
-+	int ret, reg;
-+	int status;
-+	bool update;
-+
-+	/* pcm mode configuration */
-+	switch (snd_pcm_format_width(params_format(params))) {
-+	case 16:
-+		chan_sz = MAX98396_PCM_MODE_CFG_CHANSZ_16;
-+		break;
-+	case 24:
-+		chan_sz = MAX98396_PCM_MODE_CFG_CHANSZ_24;
-+		break;
-+	case 32:
-+		chan_sz = MAX98396_PCM_MODE_CFG_CHANSZ_32;
-+		break;
-+	default:
-+		dev_err(component->dev, "format unsupported %d\n",
-+			params_format(params));
-+		goto err;
-+	}
-+
-+	max98396->ch_size = snd_pcm_format_width(params_format(params));
-+
-+	dev_dbg(component->dev, "format supported %d",
-+		params_format(params));
-+
-+	/* sampling rate configuration */
-+	switch (params_rate(params)) {
-+	case 8000:
-+		sampling_rate = MAX98396_PCM_SR_8000;
-+		break;
-+	case 11025:
-+		sampling_rate = MAX98396_PCM_SR_11025;
-+		break;
-+	case 12000:
-+		sampling_rate = MAX98396_PCM_SR_12000;
-+		break;
-+	case 16000:
-+		sampling_rate = MAX98396_PCM_SR_16000;
-+		break;
-+	case 22050:
-+		sampling_rate = MAX98396_PCM_SR_22050;
-+		break;
-+	case 24000:
-+		sampling_rate = MAX98396_PCM_SR_24000;
-+		break;
-+	case 32000:
-+		sampling_rate = MAX98396_PCM_SR_32000;
-+		break;
-+	case 44100:
-+		sampling_rate = MAX98396_PCM_SR_44100;
-+		break;
-+	case 48000:
-+		sampling_rate = MAX98396_PCM_SR_48000;
-+		break;
-+	case 88200:
-+		sampling_rate = MAX98396_PCM_SR_88200;
-+		break;
-+	case 96000:
-+		sampling_rate = MAX98396_PCM_SR_96000;
-+		break;
-+	case 192000:
-+		sampling_rate = MAX98396_PCM_SR_192000;
-+		break;
-+	default:
-+		dev_err(component->dev, "rate %d not supported\n",
-+			params_rate(params));
-+		goto err;
-+	}
-+
-+	ret = regmap_read(max98396->regmap, MAX98396_R210F_GLOBAL_EN, &status);
-+	if (ret < 0)
-+		goto err;
-+
-+	if (status) {
-+		ret = regmap_read(max98396->regmap, MAX98396_R2041_PCM_MODE_CFG, &reg);
-+		if (ret < 0)
-+			goto err;
-+		if (chan_sz != (reg & MAX98396_PCM_MODE_CFG_CHANSZ_MASK))
-+			update = true;
-+		else
-+			update = false;
-+
-+		if (!update) {
-+			ret = regmap_read(max98396->regmap, MAX98396_R2043_PCM_SR_SETUP, &reg);
-+			if (ret < 0)
-+				goto err;
-+			if (sampling_rate != (reg & MAX98396_PCM_SR_MASK))
-+				update = true;
-+		}
-+
-+		/* GLOBAL_EN OFF prior to channel size and sampling rate change */
-+		if (update)
-+			max98396_global_enable_onoff(max98396->regmap, false);
-+	}
-+
-+	/* set channel size */
-+	regmap_update_bits(max98396->regmap, MAX98396_R2041_PCM_MODE_CFG,
-+			   MAX98396_PCM_MODE_CFG_CHANSZ_MASK, chan_sz);
-+
-+	/* set DAI_SR to correct LRCLK frequency */
-+	regmap_update_bits(max98396->regmap, MAX98396_R2043_PCM_SR_SETUP,
-+			   MAX98396_PCM_SR_MASK, sampling_rate);
-+
-+	/* set sampling rate of IV */
-+	if (max98396->interleave_mode &&
-+	    sampling_rate > MAX98396_PCM_SR_16000)
-+		regmap_update_bits(max98396->regmap,
-+				   MAX98396_R2043_PCM_SR_SETUP,
-+				   MAX98396_IVADC_SR_MASK,
-+				   (sampling_rate - 3)
-+				   << MAX98396_IVADC_SR_SHIFT);
-+	else
-+		regmap_update_bits(max98396->regmap,
-+				   MAX98396_R2043_PCM_SR_SETUP,
-+				   MAX98396_IVADC_SR_MASK,
-+				   sampling_rate << MAX98396_IVADC_SR_SHIFT);
-+
-+	ret = max98396_set_clock(component, params);
-+
-+	if (status && update)
-+		max98396_global_enable_onoff(max98396->regmap, true);
-+
-+	return ret;
-+
-+err:
-+	return -EINVAL;
-+}
-+
-+static int max98396_dai_tdm_slot(struct snd_soc_dai *dai,
-+				 unsigned int tx_mask, unsigned int rx_mask,
-+				 int slots, int slot_width)
-+{
-+	struct snd_soc_component *component = dai->component;
-+	struct max98396_priv *max98396 =
-+		snd_soc_component_get_drvdata(component);
-+	int bsel;
-+	unsigned int chan_sz = 0;
-+	int ret, status;
-+	int reg;
-+	bool update;
-+
-+	if (!tx_mask && !rx_mask && !slots && !slot_width)
-+		max98396->tdm_mode = false;
-+	else
-+		max98396->tdm_mode = true;
-+
-+	/* BCLK configuration */
-+	bsel = max98396_get_bclk_sel(slots * slot_width);
-+	if (bsel == 0) {
-+		dev_err(component->dev, "BCLK %d not supported\n",
-+			slots * slot_width);
-+		return -EINVAL;
-+	}
-+
-+	/* Channel size configuration */
-+	switch (slot_width) {
-+	case 16:
-+		chan_sz = MAX98396_PCM_MODE_CFG_CHANSZ_16;
-+		break;
-+	case 24:
-+		chan_sz = MAX98396_PCM_MODE_CFG_CHANSZ_24;
-+		break;
-+	case 32:
-+		chan_sz = MAX98396_PCM_MODE_CFG_CHANSZ_32;
-+		break;
-+	default:
-+		dev_err(component->dev, "format unsupported %d\n",
-+			slot_width);
-+		return -EINVAL;
-+	}
-+
-+	ret = regmap_read(max98396->regmap, MAX98396_R210F_GLOBAL_EN, &status);
-+	if (ret < 0)
-+		return -EINVAL;
-+
-+	if (status) {
-+		ret = regmap_read(max98396->regmap, MAX98396_R2042_PCM_CLK_SETUP, &reg);
-+		if (ret < 0)
-+			return -EINVAL;
-+		if (bsel != (reg & MAX98396_PCM_CLK_SETUP_BSEL_MASK))
-+			update = true;
-+		else
-+			update = false;
-+
-+		if (!update) {
-+			ret = regmap_read(max98396->regmap, MAX98396_R2041_PCM_MODE_CFG, &reg);
-+			if (ret < 0)
-+				return -EINVAL;
-+			if (chan_sz != (reg & MAX98396_PCM_MODE_CFG_CHANSZ_MASK))
-+				update = true;
-+		}
-+
-+		/* GLOBAL_EN OFF prior to channel size and BCLK per LRCLK change */
-+		if (update)
-+			max98396_global_enable_onoff(max98396->regmap, false);
-+	}
-+
-+	regmap_update_bits(max98396->regmap,
-+			   MAX98396_R2042_PCM_CLK_SETUP,
-+			   MAX98396_PCM_CLK_SETUP_BSEL_MASK,
-+			   bsel);
-+
-+	regmap_update_bits(max98396->regmap,
-+			   MAX98396_R2041_PCM_MODE_CFG,
-+			   MAX98396_PCM_MODE_CFG_CHANSZ_MASK, chan_sz);
-+
-+	/* Rx slot configuration */
-+	if (max98396->device_id == CODEC_TYPE_MAX98396) {
-+		regmap_update_bits(max98396->regmap,
-+				   MAX98396_R2056_PCM_RX_SRC2,
-+				   MAX98396_PCM_DMIX_CH0_SRC_MASK,
-+				   rx_mask);
-+		regmap_update_bits(max98396->regmap,
-+				   MAX98396_R2056_PCM_RX_SRC2,
-+				   MAX98396_PCM_DMIX_CH1_SRC_MASK,
-+				   rx_mask << MAX98396_PCM_DMIX_CH1_SHIFT);
-+	} else {
-+		regmap_update_bits(max98396->regmap,
-+				   MAX98397_R2057_PCM_RX_SRC2,
-+				   MAX98396_PCM_DMIX_CH0_SRC_MASK,
-+				   rx_mask);
-+		regmap_update_bits(max98396->regmap,
-+				   MAX98397_R2057_PCM_RX_SRC2,
-+				   MAX98396_PCM_DMIX_CH1_SRC_MASK,
-+				   rx_mask << MAX98396_PCM_DMIX_CH1_SHIFT);
-+	}
-+
-+	/* Tx slot Hi-Z configuration */
-+	if (max98396->device_id == CODEC_TYPE_MAX98396) {
-+		regmap_write(max98396->regmap,
-+			     MAX98396_R2053_PCM_TX_HIZ_CTRL_8,
-+			     ~tx_mask & 0xFF);
-+		regmap_write(max98396->regmap,
-+			     MAX98396_R2052_PCM_TX_HIZ_CTRL_7,
-+			     (~tx_mask & 0xFF00) >> 8);
-+	} else {
-+		regmap_write(max98396->regmap,
-+			     MAX98397_R2054_PCM_TX_HIZ_CTRL_8,
-+			     ~tx_mask & 0xFF);
-+		regmap_write(max98396->regmap,
-+			     MAX98397_R2053_PCM_TX_HIZ_CTRL_7,
-+			     (~tx_mask & 0xFF00) >> 8);
-+	}
-+
-+	if (status && update)
-+		max98396_global_enable_onoff(max98396->regmap, true);
-+
-+	return 0;
-+}
-+
-+#define MAX98396_RATES SNDRV_PCM_RATE_8000_192000
-+
-+#define MAX98396_FORMATS (SNDRV_PCM_FMTBIT_S16_LE | \
-+	SNDRV_PCM_FMTBIT_S24_LE | SNDRV_PCM_FMTBIT_S32_LE)
-+
-+static const struct snd_soc_dai_ops max98396_dai_ops = {
-+	.set_fmt = max98396_dai_set_fmt,
-+	.hw_params = max98396_dai_hw_params,
-+	.set_tdm_slot = max98396_dai_tdm_slot,
-+};
-+
-+static int max98396_dac_event(struct snd_soc_dapm_widget *w,
-+			      struct snd_kcontrol *kcontrol, int event)
-+{
-+	struct snd_soc_component *component =
-+		snd_soc_dapm_to_component(w->dapm);
-+	struct max98396_priv *max98396 =
-+		snd_soc_component_get_drvdata(component);
-+
-+	switch (event) {
-+	case SND_SOC_DAPM_POST_PMU:
-+		max98396_global_enable_onoff(max98396->regmap, true);
-+		break;
-+	case SND_SOC_DAPM_PRE_PMD:
-+		max98396_global_enable_onoff(max98396->regmap, false);
-+
-+		max98396->tdm_mode = false;
-+		break;
-+	default:
-+		return 0;
-+	}
-+	return 0;
-+}
-+
-+static bool max98396_readable_register(struct device *dev, unsigned int reg)
-+{
-+	switch (reg) {
-+	case MAX98396_R2001_INT_RAW1 ... MAX98396_R2004_INT_RAW4:
-+	case MAX98396_R2006_INT_STATE1 ... MAX98396_R2009_INT_STATE4:
-+	case MAX98396_R200B_INT_FLAG1 ... MAX98396_R200E_INT_FLAG4:
-+	case MAX98396_R2010_INT_EN1 ... MAX98396_R2013_INT_EN4:
-+	case MAX98396_R2015_INT_FLAG_CLR1 ... MAX98396_R2018_INT_FLAG_CLR4:
-+	case MAX98396_R201F_IRQ_CTRL ... MAX98396_R2024_THERM_FOLDBACK_SET:
-+	case MAX98396_R2027_THERM_FOLDBACK_EN:
-+	case MAX98396_R2030_NOISEGATE_MODE_CTRL:
-+	case MAX98396_R2033_NOISEGATE_MODE_EN:
-+	case MAX98396_R2038_CLK_MON_CTRL ... MAX98396_R2039_DATA_MON_CTRL:
-+	case MAX98396_R203F_ENABLE_CTRLS ... MAX98396_R2053_PCM_TX_HIZ_CTRL_8:
-+	case MAX98396_R2055_PCM_RX_SRC1 ... MAX98396_R2056_PCM_RX_SRC2:
-+	case MAX98396_R2058_PCM_BYPASS_SRC:
-+	case MAX98396_R205D_PCM_TX_SRC_EN ... MAX98396_R205F_PCM_TX_EN:
-+	case MAX98396_R2070_ICC_RX_EN_A... MAX98396_R2072_ICC_TX_CTRL:
-+	case MAX98396_R207F_ICC_EN:
-+	case MAX98396_R2083_TONE_GEN_DC_CFG ... MAX98396_R2086_TONE_GEN_DC_LVL3:
-+	case MAX98396_R208F_TONE_GEN_EN ... MAX98396_R209A_SPK_EDGE_CTRL:
-+	case MAX98396_R209C_SPK_EDGE_CTRL1 ... MAX98396_R20A0_AMP_SUPPLY_CTL:
-+	case MAX98396_R20AF_AMP_EN ... MAX98396_R20BF_ADC_LO_VBAT_READBACK_LSB:
-+	case MAX98396_R20C7_ADC_CFG:
-+	case MAX98396_R20D0_DHT_CFG1 ... MAX98396_R20D6_DHT_HYSTERESIS_CFG:
-+	case MAX98396_R20DF_DHT_EN:
-+	case MAX98396_R20E0_IV_SENSE_PATH_CFG:
-+	case MAX98396_R20E4_IV_SENSE_PATH_EN
-+		... MAX98396_R2106_BPE_THRESH_HYSTERESIS:
-+	case MAX98396_R2108_BPE_SUPPLY_SRC ... MAX98396_R210B_BPE_LOW_LIMITER:
-+	case MAX98396_R210D_BPE_EN ... MAX98396_R210F_GLOBAL_EN:
-+	case MAX98396_R21FF_REVISION_ID:
-+		return true;
-+	default:
-+		return false;
-+	}
-+};
-+
-+static bool max98396_volatile_reg(struct device *dev, unsigned int reg)
-+{
-+	switch (reg) {
-+	case MAX98396_R2000_SW_RESET:
-+	case MAX98396_R2001_INT_RAW1 ... MAX98396_R200E_INT_FLAG4:
-+	case MAX98396_R2041_PCM_MODE_CFG:
-+	case MAX98396_R20B6_ADC_PVDD_READBACK_MSB
-+		... MAX98396_R20BF_ADC_LO_VBAT_READBACK_LSB:
-+	case MAX98396_R20E5_BPE_STATE:
-+	case MAX98396_R2109_BPE_LOW_STATE
-+		... MAX98396_R210B_BPE_LOW_LIMITER:
-+	case MAX98396_R210F_GLOBAL_EN:
-+	case MAX98396_R21FF_REVISION_ID:
-+		return true;
-+	default:
-+		return false;
-+	}
-+}
-+
-+static bool max98397_readable_register(struct device *dev, unsigned int reg)
-+{
-+	switch (reg) {
-+	case MAX98396_R2001_INT_RAW1 ... MAX98396_R2004_INT_RAW4:
-+	case MAX98396_R2006_INT_STATE1 ... MAX98396_R2009_INT_STATE4:
-+	case MAX98396_R200B_INT_FLAG1 ... MAX98396_R200E_INT_FLAG4:
-+	case MAX98396_R2010_INT_EN1 ... MAX98396_R2013_INT_EN4:
-+	case MAX98396_R2015_INT_FLAG_CLR1 ... MAX98396_R2018_INT_FLAG_CLR4:
-+	case MAX98396_R201F_IRQ_CTRL ... MAX98396_R2024_THERM_FOLDBACK_SET:
-+	case MAX98396_R2027_THERM_FOLDBACK_EN:
-+	case MAX98396_R2030_NOISEGATE_MODE_CTRL:
-+	case MAX98396_R2033_NOISEGATE_MODE_EN:
-+	case MAX98396_R2038_CLK_MON_CTRL ... MAX98397_R203A_SPK_MON_THRESH:
-+	case MAX98396_R203F_ENABLE_CTRLS ... MAX98397_R2054_PCM_TX_HIZ_CTRL_8:
-+	case MAX98397_R2056_PCM_RX_SRC1... MAX98396_R2058_PCM_BYPASS_SRC:
-+	case MAX98396_R205D_PCM_TX_SRC_EN ... MAX98397_R2060_PCM_TX_SUPPLY_SEL:
-+	case MAX98396_R2070_ICC_RX_EN_A... MAX98396_R2072_ICC_TX_CTRL:
-+	case MAX98396_R207F_ICC_EN:
-+	case MAX98396_R2083_TONE_GEN_DC_CFG ... MAX98396_R2086_TONE_GEN_DC_LVL3:
-+	case MAX98396_R208F_TONE_GEN_EN ... MAX98396_R209F_BYPASS_PATH_CFG:
-+	case MAX98396_R20AF_AMP_EN ... MAX98397_R20C5_MEAS_ADC_OPTIMAL_MODE:
-+	case MAX98396_R20C7_ADC_CFG:
-+	case MAX98396_R20D0_DHT_CFG1 ... MAX98396_R20D6_DHT_HYSTERESIS_CFG:
-+	case MAX98396_R20DF_DHT_EN:
-+	case MAX98396_R20E0_IV_SENSE_PATH_CFG:
-+	case MAX98396_R20E4_IV_SENSE_PATH_EN
-+		... MAX98396_R2106_BPE_THRESH_HYSTERESIS:
-+	case MAX98396_R2108_BPE_SUPPLY_SRC ... MAX98396_R210B_BPE_LOW_LIMITER:
-+	case MAX98396_R210D_BPE_EN ... MAX98396_R210F_GLOBAL_EN:
-+	case MAX98397_R22FF_REVISION_ID:
-+		return true;
-+	default:
-+		return false;
-+	}
-+};
-+
-+static bool max98397_volatile_reg(struct device *dev, unsigned int reg)
-+{
-+	switch (reg) {
-+	case MAX98396_R2001_INT_RAW1 ... MAX98396_R200E_INT_FLAG4:
-+	case MAX98396_R2041_PCM_MODE_CFG:
-+	case MAX98397_R20B7_ADC_PVDD_READBACK_MSB
-+		... MAX98397_R20C4_ADC_LO_VDDH_READBACK_LSB:
-+	case MAX98396_R20E5_BPE_STATE:
-+	case MAX98396_R2109_BPE_LOW_STATE
-+		... MAX98396_R210B_BPE_LOW_LIMITER:
-+	case MAX98396_R210F_GLOBAL_EN:
-+	case MAX98397_R22FF_REVISION_ID:
-+		return true;
-+	default:
-+		return false;
-+	}
-+}
-+
-+static const char * const max98396_op_mod_text[] = {
-+	"DG", "PVDD", "VBAT",
-+};
-+
-+static SOC_ENUM_SINGLE_DECL(max98396_op_mod_enum,
-+			    MAX98396_R2098_SPK_CLS_DG_MODE,
-+			    0, max98396_op_mod_text);
-+
-+static DECLARE_TLV_DB_SCALE(max98396_digital_tlv, -6350, 50, 1);
-+static const DECLARE_TLV_DB_RANGE(max98396_spk_tlv,
-+	0, 0x11, TLV_DB_SCALE_ITEM(400, 100, 0),
-+);
-+static DECLARE_TLV_DB_RANGE(max98397_digital_tlv,
-+	0, 0x4A, TLV_DB_SCALE_ITEM(TLV_DB_GAIN_MUTE, 0, 1),
-+	0x4B, 0xFF, TLV_DB_SCALE_ITEM(-9000, 50, 0),
-+);
-+static const DECLARE_TLV_DB_RANGE(max98397_spk_tlv,
-+	0, 0x15, TLV_DB_SCALE_ITEM(600, 100, 0),
-+);
-+
-+static int max98396_mux_get(struct snd_kcontrol *kcontrol,
-+			    struct snd_ctl_elem_value *ucontrol)
-+{
-+	struct snd_soc_component *component =
-+		snd_soc_dapm_kcontrol_component(kcontrol);
-+	struct max98396_priv *max98396 = snd_soc_component_get_drvdata(component);
-+	int reg, val;
-+
-+	if (max98396->device_id == CODEC_TYPE_MAX98396)
-+		reg = MAX98396_R2055_PCM_RX_SRC1;
-+	else
-+		reg = MAX98397_R2056_PCM_RX_SRC1;
-+
-+	regmap_read(max98396->regmap, reg, &val);
-+
-+	ucontrol->value.enumerated.item[0] = val;
-+
-+	return 0;
-+}
-+
-+static int max98396_mux_put(struct snd_kcontrol *kcontrol,
-+			    struct snd_ctl_elem_value *ucontrol)
-+{
-+	struct snd_soc_component *component =
-+		snd_soc_dapm_kcontrol_component(kcontrol);
-+	struct snd_soc_dapm_context *dapm = snd_soc_dapm_kcontrol_dapm(kcontrol);
-+	struct max98396_priv *max98396 = snd_soc_component_get_drvdata(component);
-+	struct soc_enum *e = (struct soc_enum *)kcontrol->private_value;
-+	unsigned int *item = ucontrol->value.enumerated.item;
-+	int reg, val;
-+
-+	if (item[0] >= e->items)
-+		return -EINVAL;
-+
-+	val = snd_soc_enum_item_to_val(e, item[0]) << e->shift_l;
-+
-+	if (max98396->device_id == CODEC_TYPE_MAX98396)
-+		reg = MAX98396_R2055_PCM_RX_SRC1;
-+	else
-+		reg = MAX98397_R2056_PCM_RX_SRC1;
-+
-+	regmap_update_bits(max98396->regmap, reg,
-+			   MAX98396_PCM_RX_MASK, val);
-+
-+	snd_soc_dapm_mux_update_power(dapm, kcontrol, item[0], e, NULL);
-+
-+	return 0;
-+}
-+
-+static const char * const max98396_switch_text[] = {
-+	"Left", "Right", "LeftRight"};
-+
-+static SOC_ENUM_SINGLE_DECL(dai_sel_enum, SND_SOC_NOPM, 0,
-+			    max98396_switch_text);
-+
-+static const struct snd_kcontrol_new max98396_dai_mux =
-+	SOC_DAPM_ENUM_EXT("DAI Sel Mux", dai_sel_enum,
-+			  max98396_mux_get, max98396_mux_put);
-+
-+static const struct snd_kcontrol_new max98396_vi_control =
-+	SOC_DAPM_SINGLE("Switch", MAX98396_R205F_PCM_TX_EN, 0, 1, 0);
-+
-+static const struct snd_soc_dapm_widget max98396_dapm_widgets[] = {
-+	SND_SOC_DAPM_DAC_E("Amp Enable", "HiFi Playback",
-+			   MAX98396_R20AF_AMP_EN, 0, 0, max98396_dac_event,
-+			   SND_SOC_DAPM_POST_PMU | SND_SOC_DAPM_PRE_PMD),
-+	SND_SOC_DAPM_MUX("DAI Sel Mux", SND_SOC_NOPM, 0, 0,
-+			 &max98396_dai_mux),
-+	SND_SOC_DAPM_OUTPUT("BE_OUT"),
-+	SND_SOC_DAPM_AIF_OUT("Voltage Sense", "HiFi Capture", 0,
-+			     MAX98396_R20E4_IV_SENSE_PATH_EN, 0, 0),
-+	SND_SOC_DAPM_AIF_OUT("Current Sense", "HiFi Capture", 0,
-+			     MAX98396_R20E4_IV_SENSE_PATH_EN, 1, 0),
-+	SND_SOC_DAPM_SWITCH("VI Sense", SND_SOC_NOPM, 0, 0,
-+			    &max98396_vi_control),
-+	SND_SOC_DAPM_SIGGEN("VMON"),
-+	SND_SOC_DAPM_SIGGEN("IMON"),
-+	SND_SOC_DAPM_SIGGEN("FBMON"),
-+};
-+
-+static const char * const max98396_thermal_thresh_text[] = {
-+	"50C", "51C", "52C", "53C", "54C", "55C", "56C", "57C",
-+	"58C", "59C", "60C", "61C", "62C", "63C", "64C", "65C",
-+	"66C", "67C", "68C", "69C", "70C", "71C", "72C", "73C",
-+	"74C", "75C", "76C", "77C", "78C", "79C", "80C", "81C",
-+	"82C", "83C", "84C", "85C", "86C", "87C", "88C", "89C",
-+	"90C", "91C", "92C", "93C", "94C", "95C", "96C", "97C",
-+	"98C", "99C", "100C", "101C", "102C", "103C", "104C", "105C",
-+	"106C", "107C", "108C", "109C", "110C", "111C", "112C", "113C",
-+	"114C", "115C", "116C", "117C", "118C", "119C", "120C", "121C",
-+	"122C", "123C", "124C", "125C", "126C", "127C", "128C", "129C",
-+	"130C", "131C", "132C", "133C", "134C", "135C", "136C", "137C",
-+	"138C", "139C", "140C", "141C", "142C", "143C", "144C", "145C",
-+	"146C", "147C", "148C", "149C", "150C"
-+};
-+
-+static SOC_ENUM_SINGLE_DECL(max98396_thermal_warn_thresh1_enum,
-+			    MAX98396_R2020_THERM_WARN_THRESH, 0,
-+			    max98396_thermal_thresh_text);
-+
-+static SOC_ENUM_SINGLE_DECL(max98396_thermal_warn_thresh2_enum,
-+			    MAX98396_R2021_THERM_WARN_THRESH2, 0,
-+			    max98396_thermal_thresh_text);
-+
-+static SOC_ENUM_SINGLE_DECL(max98396_thermal_shdn_thresh_enum,
-+			    MAX98396_R2022_THERM_SHDN_THRESH, 0,
-+			    max98396_thermal_thresh_text);
-+
-+static const char * const max98396_thermal_hyteresis_text[] = {
-+	"2C", "5C", "7C", "10C"
-+};
-+
-+static SOC_ENUM_SINGLE_DECL(max98396_thermal_hysteresis_enum,
-+			    MAX98396_R2023_THERM_HYSTERESIS, 0,
-+			    max98396_thermal_hyteresis_text);
-+
-+static const char * const max98396_foldback_slope_text[] = {
-+	"0.25", "0.5", "1.0", "2.0"
-+};
-+
-+static SOC_ENUM_SINGLE_DECL(max98396_thermal_fb_slope1_enum,
-+			    MAX98396_R2024_THERM_FOLDBACK_SET,
-+			    MAX98396_THERM_FB_SLOPE1_SHIFT,
-+			    max98396_foldback_slope_text);
-+
-+static SOC_ENUM_SINGLE_DECL(max98396_thermal_fb_slope2_enum,
-+			    MAX98396_R2024_THERM_FOLDBACK_SET,
-+			    MAX98396_THERM_FB_SLOPE2_SHIFT,
-+			    max98396_foldback_slope_text);
-+
-+static const char * const max98396_foldback_reltime_text[] = {
-+	"3ms", "10ms", "100ms", "300ms"
-+};
-+
-+static SOC_ENUM_SINGLE_DECL(max98396_thermal_fb_reltime_enum,
-+			    MAX98396_R2024_THERM_FOLDBACK_SET,
-+			    MAX98396_THERM_FB_REL_SHIFT,
-+			    max98396_foldback_reltime_text);
-+
-+static const char * const max98396_foldback_holdtime_text[] = {
-+	"0ms", "20ms", "40ms", "80ms"
-+};
-+
-+static SOC_ENUM_SINGLE_DECL(max98396_thermal_fb_holdtime_enum,
-+			    MAX98396_R2024_THERM_FOLDBACK_SET,
-+			    MAX98396_THERM_FB_HOLD_SHIFT,
-+			    max98396_foldback_holdtime_text);
-+
-+static int max98396_adc_value_get(struct snd_kcontrol *kcontrol,
-+				  struct snd_ctl_elem_value *ucontrol)
-+{
-+	struct snd_soc_component *component = snd_kcontrol_chip(kcontrol);
-+	struct soc_mixer_control *mc =
-+		(struct soc_mixer_control *)kcontrol->private_value;
-+	struct max98396_priv *max98396 = snd_soc_component_get_drvdata(component);
-+	int ret;
-+	u8 val[2];
-+	int reg = mc->reg;
-+
-+	/* ADC value is not available if the device is powered down */
-+	if (snd_soc_component_get_bias_level(component) == SND_SOC_BIAS_OFF)
-+		goto exit;
-+
-+	if (max98396->device_id == CODEC_TYPE_MAX98397) {
-+		switch (mc->reg) {
-+		case MAX98396_R20B6_ADC_PVDD_READBACK_MSB:
-+			reg = MAX98397_R20B7_ADC_PVDD_READBACK_MSB;
-+			break;
-+		case MAX98396_R20B8_ADC_VBAT_READBACK_MSB:
-+			reg = MAX98397_R20B9_ADC_VBAT_READBACK_MSB;
-+			break;
-+		case MAX98396_R20BA_ADC_TEMP_READBACK_MSB:
-+			reg = MAX98397_R20BB_ADC_TEMP_READBACK_MSB;
-+			break;
-+		default:
-+			goto exit;
-+		}
-+	}
-+
-+	ret = regmap_raw_read(max98396->regmap, reg, &val, 2);
-+	if (ret)
-+		goto exit;
-+
-+	/* ADC readback bits[8:0] rearrangement */
-+	ucontrol->value.integer.value[0] = (val[0] << 1) | (val[1] & 1);
-+	return 0;
-+
-+exit:
-+	ucontrol->value.integer.value[0] = 0;
-+	return 0;
-+}
-+
-+static const struct snd_kcontrol_new max98396_snd_controls[] = {
-+	/* Volume */
-+	SOC_SINGLE_TLV("Digital Volume", MAX98396_R2090_AMP_VOL_CTRL,
-+		       0, 0x7F, 1, max98396_digital_tlv),
-+	SOC_SINGLE_TLV("Speaker Volume", MAX98396_R2091_AMP_PATH_GAIN,
-+		       0, 0x11, 0, max98396_spk_tlv),
-+	/* Volume Ramp Up/Down Enable*/
-+	SOC_SINGLE("Ramp Up Switch", MAX98396_R2092_AMP_DSP_CFG,
-+		   MAX98396_DSP_SPK_VOL_RMPUP_SHIFT, 1, 0),
-+	SOC_SINGLE("Ramp Down Switch", MAX98396_R2092_AMP_DSP_CFG,
-+		   MAX98396_DSP_SPK_VOL_RMPDN_SHIFT, 1, 0),
-+	/* Clock Monitor Enable */
-+	SOC_SINGLE("CLK Monitor Switch", MAX98396_R203F_ENABLE_CTRLS,
-+		   MAX98396_CTRL_CMON_EN_SHIFT, 1, 0),
-+	/* Dither Enable */
-+	SOC_SINGLE("Dither Switch", MAX98396_R2092_AMP_DSP_CFG,
-+		   MAX98396_DSP_SPK_DITH_EN_SHIFT, 1, 0),
-+	SOC_SINGLE("IV Dither Switch", MAX98396_R20E0_IV_SENSE_PATH_CFG,
-+		   MAX98396_IV_SENSE_DITH_EN_SHIFT, 1, 0),
-+	/* DC Blocker Enable */
-+	SOC_SINGLE("DC Blocker Switch", MAX98396_R2092_AMP_DSP_CFG,
-+		   MAX98396_DSP_SPK_DCBLK_EN_SHIFT, 1, 0),
-+	SOC_SINGLE("IV DC Blocker Switch", MAX98396_R20E0_IV_SENSE_PATH_CFG,
-+		   MAX98396_IV_SENSE_DCBLK_EN_SHIFT, 3, 0),
-+	/* Speaker Safe Mode Enable */
-+	SOC_SINGLE("Safe Mode Switch", MAX98396_R2092_AMP_DSP_CFG,
-+		   MAX98396_DSP_SPK_SAFE_EN_SHIFT, 1, 0),
-+	/* Wideband Filter Enable */
-+	SOC_SINGLE("WB Filter Switch", MAX98396_R2092_AMP_DSP_CFG,
-+		   MAX98396_DSP_SPK_WB_FLT_EN_SHIFT, 1, 0),
-+	SOC_SINGLE("IV WB Filter Switch", MAX98396_R20E0_IV_SENSE_PATH_CFG,
-+		   MAX98396_IV_SENSE_WB_FLT_EN_SHIFT, 1, 0),
-+	/* Dynamic Headroom Tracking */
-+	SOC_SINGLE("DHT Switch", MAX98396_R20DF_DHT_EN, 0, 1, 0),
-+	/* Brownout Protection Engine */
-+	SOC_SINGLE("BPE Switch", MAX98396_R210D_BPE_EN, 0, 1, 0),
-+	SOC_SINGLE("BPE Limiter Switch", MAX98396_R210D_BPE_EN, 1, 1, 0),
-+	/* Bypass Path Enable */
-+	SOC_SINGLE("Bypass Path Switch",
-+		   MAX98396_R205E_PCM_RX_EN, 1, 1, 0),
-+	/* Speaker Operation Mode */
-+	SOC_ENUM("OP Mode", max98396_op_mod_enum),
-+	/* Auto Restart functions */
-+	SOC_SINGLE("CMON Auto Restart Switch", MAX98396_R2038_CLK_MON_CTRL,
-+		   MAX98396_CLK_MON_AUTO_RESTART_SHIFT, 1, 0),
-+	SOC_SINGLE("PVDD Auto Restart Switch", MAX98396_R210E_AUTO_RESTART,
-+		   MAX98396_PVDD_UVLO_RESTART_SHFT, 1, 0),
-+	SOC_SINGLE("VBAT Auto Restart Switch", MAX98396_R210E_AUTO_RESTART,
-+		   MAX98396_VBAT_UVLO_RESTART_SHFT, 1, 0),
-+	SOC_SINGLE("THERM Auto Restart Switch", MAX98396_R210E_AUTO_RESTART,
-+		   MAX98396_THEM_SHDN_RESTART_SHFT, 1, 0),
-+	SOC_SINGLE("OVC Auto Restart Switch", MAX98396_R210E_AUTO_RESTART,
-+		   MAX98396_OVC_RESTART_SHFT, 1, 0),
-+	/* Thermal Threshold */
-+	SOC_ENUM("THERM Thresh1", max98396_thermal_warn_thresh1_enum),
-+	SOC_ENUM("THERM Thresh2", max98396_thermal_warn_thresh2_enum),
-+	SOC_ENUM("THERM SHDN Thresh", max98396_thermal_shdn_thresh_enum),
-+	SOC_ENUM("THERM Hysteresis", max98396_thermal_hysteresis_enum),
-+	SOC_SINGLE("THERM Foldback Switch",
-+		   MAX98396_R2027_THERM_FOLDBACK_EN, 0, 1, 0),
-+	SOC_ENUM("THERM Slope1", max98396_thermal_fb_slope1_enum),
-+	SOC_ENUM("THERM Slope2", max98396_thermal_fb_slope2_enum),
-+	SOC_ENUM("THERM Release", max98396_thermal_fb_reltime_enum),
-+	SOC_ENUM("THERM Hold", max98396_thermal_fb_holdtime_enum),
-+	/* ADC */
-+	SOC_SINGLE_EXT("ADC PVDD", MAX98396_R20B6_ADC_PVDD_READBACK_MSB, 0, 0x1FF, 0,
-+		       max98396_adc_value_get, NULL),
-+	SOC_SINGLE_EXT("ADC VBAT", MAX98396_R20B8_ADC_VBAT_READBACK_MSB, 0, 0x1FF, 0,
-+		       max98396_adc_value_get, NULL),
-+	SOC_SINGLE_EXT("ADC TEMP", MAX98396_R20BA_ADC_TEMP_READBACK_MSB, 0, 0x1FF, 0,
-+		       max98396_adc_value_get, NULL),
-+};
-+
-+static const struct snd_kcontrol_new max98397_snd_controls[] = {
-+	/* Volume */
-+	SOC_SINGLE_TLV("Digital Volume", MAX98396_R2090_AMP_VOL_CTRL,
-+		       0, 0xFF, 1, max98397_digital_tlv),
-+	SOC_SINGLE_TLV("Speaker Volume", MAX98396_R2091_AMP_PATH_GAIN,
-+		       0, 0x15, 0, max98397_spk_tlv),
-+	/* Volume Ramp Up/Down Enable*/
-+	SOC_SINGLE("Ramp Up Switch", MAX98396_R2092_AMP_DSP_CFG,
-+		   MAX98396_DSP_SPK_VOL_RMPUP_SHIFT, 1, 0),
-+	SOC_SINGLE("Ramp Down Switch", MAX98396_R2092_AMP_DSP_CFG,
-+		   MAX98396_DSP_SPK_VOL_RMPDN_SHIFT, 1, 0),
-+	/* Clock Monitor Enable */
-+	SOC_SINGLE("CLK Monitor Switch", MAX98396_R203F_ENABLE_CTRLS,
-+		   MAX98396_CTRL_CMON_EN_SHIFT, 1, 0),
-+	/* Dither Enable */
-+	SOC_SINGLE("Dither Switch", MAX98396_R2092_AMP_DSP_CFG,
-+		   MAX98396_DSP_SPK_DITH_EN_SHIFT, 1, 0),
-+	SOC_SINGLE("IV Dither Switch", MAX98396_R20E0_IV_SENSE_PATH_CFG,
-+		   MAX98396_IV_SENSE_DITH_EN_SHIFT, 1, 0),
-+	/* DC Blocker Enable */
-+	SOC_SINGLE("DC Blocker Switch", MAX98396_R2092_AMP_DSP_CFG,
-+		   MAX98396_DSP_SPK_DCBLK_EN_SHIFT, 1, 0),
-+	SOC_SINGLE("IV DC Blocker Switch", MAX98396_R20E0_IV_SENSE_PATH_CFG,
-+		   MAX98396_IV_SENSE_DCBLK_EN_SHIFT, 3, 0),
-+	/* Speaker Safe Mode Enable */
-+	SOC_SINGLE("Safe Mode Switch", MAX98396_R2092_AMP_DSP_CFG,
-+		   MAX98396_DSP_SPK_SAFE_EN_SHIFT, 1, 0),
-+	/* Wideband Filter Enable */
-+	SOC_SINGLE("WB Filter Switch", MAX98396_R2092_AMP_DSP_CFG,
-+		   MAX98396_DSP_SPK_WB_FLT_EN_SHIFT, 1, 0),
-+	SOC_SINGLE("IV WB Filter Switch", MAX98396_R20E0_IV_SENSE_PATH_CFG,
-+		   MAX98396_IV_SENSE_WB_FLT_EN_SHIFT, 1, 0),
-+	/* Dynamic Headroom Tracking */
-+	SOC_SINGLE("DHT Switch", MAX98396_R20DF_DHT_EN, 0, 1, 0),
-+	/* Brownout Protection Engine */
-+	SOC_SINGLE("BPE Switch", MAX98396_R210D_BPE_EN, 0, 1, 0),
-+	SOC_SINGLE("BPE Limiter Switch", MAX98396_R210D_BPE_EN, 1, 1, 0),
-+	/* Bypass Path Enable */
-+	SOC_SINGLE("Bypass Path Switch",
-+		   MAX98396_R205E_PCM_RX_EN, 1, 1, 0),
-+	/* Speaker Operation Mode */
-+	SOC_ENUM("OP Mode", max98396_op_mod_enum),
-+	/* Auto Restart functions */
-+	SOC_SINGLE("CMON Auto Restart Switch", MAX98396_R2038_CLK_MON_CTRL,
-+		   MAX98396_CLK_MON_AUTO_RESTART_SHIFT, 1, 0),
-+	SOC_SINGLE("PVDD Auto Restart Switch", MAX98396_R210E_AUTO_RESTART,
-+		   MAX98396_PVDD_UVLO_RESTART_SHFT, 1, 0),
-+	SOC_SINGLE("VBAT Auto Restart Switch", MAX98396_R210E_AUTO_RESTART,
-+		   MAX98396_VBAT_UVLO_RESTART_SHFT, 1, 0),
-+	SOC_SINGLE("THERM Auto Restart Switch", MAX98396_R210E_AUTO_RESTART,
-+		   MAX98396_THEM_SHDN_RESTART_SHFT, 1, 0),
-+	SOC_SINGLE("OVC Auto Restart Switch", MAX98396_R210E_AUTO_RESTART,
-+		   MAX98396_OVC_RESTART_SHFT, 1, 0),
-+	/* Thermal Threshold */
-+	SOC_ENUM("THERM Thresh1", max98396_thermal_warn_thresh1_enum),
-+	SOC_ENUM("THERM Thresh2", max98396_thermal_warn_thresh2_enum),
-+	SOC_ENUM("THERM SHDN Thresh", max98396_thermal_shdn_thresh_enum),
-+	SOC_ENUM("THERM Hysteresis", max98396_thermal_hysteresis_enum),
-+	SOC_SINGLE("THERM Foldback Switch",
-+		   MAX98396_R2027_THERM_FOLDBACK_EN, 0, 1, 0),
-+	SOC_ENUM("THERM Slope1", max98396_thermal_fb_slope1_enum),
-+	SOC_ENUM("THERM Slope2", max98396_thermal_fb_slope2_enum),
-+	SOC_ENUM("THERM Release", max98396_thermal_fb_reltime_enum),
-+	SOC_ENUM("THERM Hold", max98396_thermal_fb_holdtime_enum),
-+	/* ADC */
-+	SOC_SINGLE_EXT("ADC PVDD", MAX98396_R20B6_ADC_PVDD_READBACK_MSB, 0, 0x1FF, 0,
-+		       max98396_adc_value_get, NULL),
-+	SOC_SINGLE_EXT("ADC VBAT", MAX98396_R20B8_ADC_VBAT_READBACK_MSB, 0, 0x1FF, 0,
-+		       max98396_adc_value_get, NULL),
-+	SOC_SINGLE_EXT("ADC TEMP", MAX98396_R20BA_ADC_TEMP_READBACK_MSB, 0, 0x1FF, 0,
-+		       max98396_adc_value_get, NULL),
-+};
-+
-+static const struct snd_soc_dapm_route max98396_audio_map[] = {
-+	/* Plabyack */
-+	{"DAI Sel Mux", "Left", "Amp Enable"},
-+	{"DAI Sel Mux", "Right", "Amp Enable"},
-+	{"DAI Sel Mux", "LeftRight", "Amp Enable"},
-+	{"BE_OUT", NULL, "DAI Sel Mux"},
-+	/* Capture */
-+	{ "VI Sense", "Switch", "VMON" },
-+	{ "VI Sense", "Switch", "IMON" },
-+	{ "Voltage Sense", NULL, "VI Sense" },
-+	{ "Current Sense", NULL, "VI Sense" },
-+};
-+
-+static struct snd_soc_dai_driver max98396_dai[] = {
-+	{
-+		.name = "max98396-aif1",
-+		.playback = {
-+			.stream_name = "HiFi Playback",
-+			.channels_min = 1,
-+			.channels_max = 2,
-+			.rates = MAX98396_RATES,
-+			.formats = MAX98396_FORMATS,
-+		},
-+		.capture = {
-+			.stream_name = "HiFi Capture",
-+			.channels_min = 1,
-+			.channels_max = 2,
-+			.rates = MAX98396_RATES,
-+			.formats = MAX98396_FORMATS,
-+		},
-+		.ops = &max98396_dai_ops,
-+	}
-+};
-+
-+static struct snd_soc_dai_driver max98397_dai[] = {
-+	{
-+		.name = "max98397-aif1",
-+		.playback = {
-+			.stream_name = "HiFi Playback",
-+			.channels_min = 1,
-+			.channels_max = 2,
-+			.rates = MAX98396_RATES,
-+			.formats = MAX98396_FORMATS,
-+		},
-+		.capture = {
-+			.stream_name = "HiFi Capture",
-+			.channels_min = 1,
-+			.channels_max = 2,
-+			.rates = MAX98396_RATES,
-+			.formats = MAX98396_FORMATS,
-+		},
-+		.ops = &max98396_dai_ops,
-+	}
-+};
-+
-+static void max98396_reset(struct max98396_priv *max98396, struct device *dev)
-+{
-+	int ret, reg, count;
-+
-+	/* Software Reset */
-+	ret = regmap_write(max98396->regmap,
-+			   MAX98396_R2000_SW_RESET, 1);
-+	if (ret)
-+		dev_err(dev, "Reset command failed. (ret:%d)\n", ret);
-+
-+	count = 0;
-+	while (count < 3) {
-+		usleep_range(5000, 6000);
-+		/* Software Reset Verification */
-+		ret = regmap_read(max98396->regmap,
-+				  GET_REG_ADDR_REV_ID(max98396->device_id), &reg);
-+		if (!ret) {
-+			dev_info(dev, "Reset completed (retry:%d)\n", count);
-+			return;
-+		}
-+		count++;
-+	}
-+	dev_err(dev, "Reset failed. (ret:%d)\n", ret);
-+}
-+
-+static int max98396_probe(struct snd_soc_component *component)
-+{
-+	struct max98396_priv *max98396 =
-+		snd_soc_component_get_drvdata(component);
-+
-+	/* Software Reset */
-+	max98396_reset(max98396, component->dev);
-+
-+	/* L/R mix configuration */
-+	if (max98396->device_id == CODEC_TYPE_MAX98396) {
-+		regmap_write(max98396->regmap,
-+			     MAX98396_R2055_PCM_RX_SRC1, 0x02);
-+		regmap_write(max98396->regmap,
-+			     MAX98396_R2056_PCM_RX_SRC2, 0x10);
-+	} else {
-+		regmap_write(max98396->regmap,
-+			     MAX98397_R2056_PCM_RX_SRC1, 0x02);
-+		regmap_write(max98396->regmap,
-+			     MAX98397_R2057_PCM_RX_SRC2, 0x10);
-+	}
-+	/* Enable DC blocker */
-+	regmap_update_bits(max98396->regmap,
-+			   MAX98396_R2092_AMP_DSP_CFG, 1, 1);
-+	/* Enable IV Monitor DC blocker */
-+	regmap_update_bits(max98396->regmap,
-+			   MAX98396_R20E0_IV_SENSE_PATH_CFG,
-+			   MAX98396_IV_SENSE_DCBLK_EN_MASK,
-+			   MAX98396_IV_SENSE_DCBLK_EN_MASK);
-+	/* Configure default data output sources */
-+	regmap_write(max98396->regmap,
-+		     MAX98396_R205D_PCM_TX_SRC_EN, 3);
-+	/* Enable Wideband Filter */
-+	regmap_update_bits(max98396->regmap,
-+			   MAX98396_R2092_AMP_DSP_CFG, 0x40, 0x40);
-+	/* Enable IV Wideband Filter */
-+	regmap_update_bits(max98396->regmap,
-+			   MAX98396_R20E0_IV_SENSE_PATH_CFG, 8, 8);
-+
-+	/* Enable Bypass Source */
-+	regmap_write(max98396->regmap,
-+		     MAX98396_R2058_PCM_BYPASS_SRC,
-+		     max98396->bypass_slot);
-+	/* Voltage, current slot configuration */
-+	regmap_write(max98396->regmap,
-+		     MAX98396_R2044_PCM_TX_CTRL_1,
-+		     max98396->v_slot);
-+	regmap_write(max98396->regmap,
-+		     MAX98396_R2045_PCM_TX_CTRL_2,
-+		     max98396->i_slot);
-+
-+	if (max98396->v_slot < 8)
-+		if (max98396->device_id == CODEC_TYPE_MAX98396)
-+			regmap_update_bits(max98396->regmap,
-+					   MAX98396_R2053_PCM_TX_HIZ_CTRL_8,
-+					   1 << max98396->v_slot, 0);
-+		else
-+			regmap_update_bits(max98396->regmap,
-+					   MAX98397_R2054_PCM_TX_HIZ_CTRL_8,
-+					   1 << max98396->v_slot, 0);
-+	else
-+		if (max98396->device_id == CODEC_TYPE_MAX98396)
-+			regmap_update_bits(max98396->regmap,
-+					   MAX98396_R2052_PCM_TX_HIZ_CTRL_7,
-+					   1 << (max98396->v_slot - 8), 0);
-+		else
-+			regmap_update_bits(max98396->regmap,
-+					   MAX98397_R2053_PCM_TX_HIZ_CTRL_7,
-+					   1 << (max98396->v_slot - 8), 0);
-+
-+	if (max98396->i_slot < 8)
-+		if (max98396->device_id == CODEC_TYPE_MAX98396)
-+			regmap_update_bits(max98396->regmap,
-+					   MAX98396_R2053_PCM_TX_HIZ_CTRL_8,
-+					   1 << max98396->i_slot, 0);
-+		else
-+			regmap_update_bits(max98396->regmap,
-+					   MAX98397_R2054_PCM_TX_HIZ_CTRL_8,
-+					   1 << max98396->i_slot, 0);
-+	else
-+		if (max98396->device_id == CODEC_TYPE_MAX98396)
-+			regmap_update_bits(max98396->regmap,
-+					   MAX98396_R2052_PCM_TX_HIZ_CTRL_7,
-+					   1 << (max98396->i_slot - 8), 0);
-+		else
-+			regmap_update_bits(max98396->regmap,
-+					   MAX98397_R2053_PCM_TX_HIZ_CTRL_7,
-+					   1 << (max98396->i_slot - 8), 0);
-+
-+	/* Set interleave mode */
-+	if (max98396->interleave_mode)
-+		regmap_update_bits(max98396->regmap,
-+				   MAX98396_R2041_PCM_MODE_CFG,
-+				   MAX98396_PCM_TX_CH_INTERLEAVE_MASK,
-+				   MAX98396_PCM_TX_CH_INTERLEAVE_MASK);
-+
-+	regmap_update_bits(max98396->regmap,
-+			   MAX98396_R2038_CLK_MON_CTRL,
-+			   MAX98396_CLK_MON_AUTO_RESTART_MASK,
-+			   MAX98396_CLK_MON_AUTO_RESTART_MASK);
-+
-+	/* Speaker Amplifier PCM RX Enable by default */
-+	regmap_update_bits(max98396->regmap,
-+			   MAX98396_R205E_PCM_RX_EN,
-+			   MAX98396_PCM_RX_EN_MASK, 1);
-+
-+	return 0;
-+}
-+
-+#ifdef CONFIG_PM_SLEEP
-+static int max98396_suspend(struct device *dev)
-+{
-+	struct max98396_priv *max98396 = dev_get_drvdata(dev);
-+
-+	regcache_cache_only(max98396->regmap, true);
-+	regcache_mark_dirty(max98396->regmap);
-+	return 0;
-+}
-+
-+static int max98396_resume(struct device *dev)
-+{
-+	struct max98396_priv *max98396 = dev_get_drvdata(dev);
-+
-+	regcache_cache_only(max98396->regmap, false);
-+	max98396_reset(max98396, dev);
-+	regcache_sync(max98396->regmap);
-+	return 0;
-+}
-+#endif
-+
-+static const struct dev_pm_ops max98396_pm = {
-+	SET_SYSTEM_SLEEP_PM_OPS(max98396_suspend, max98396_resume)
-+};
-+
-+static const struct snd_soc_component_driver soc_codec_dev_max98396 = {
-+	.probe			= max98396_probe,
-+	.controls		= max98396_snd_controls,
-+	.num_controls		= ARRAY_SIZE(max98396_snd_controls),
-+	.dapm_widgets		= max98396_dapm_widgets,
-+	.num_dapm_widgets	= ARRAY_SIZE(max98396_dapm_widgets),
-+	.dapm_routes		= max98396_audio_map,
-+	.num_dapm_routes	= ARRAY_SIZE(max98396_audio_map),
-+	.idle_bias_on		= 1,
-+	.use_pmdown_time	= 1,
-+	.endianness		= 1,
-+	.non_legacy_dai_naming	= 1,
-+};
-+
-+static const struct snd_soc_component_driver soc_codec_dev_max98397 = {
-+	.probe			= max98396_probe,
-+	.controls		= max98397_snd_controls,
-+	.num_controls		= ARRAY_SIZE(max98397_snd_controls),
-+	.dapm_widgets		= max98396_dapm_widgets,
-+	.num_dapm_widgets	= ARRAY_SIZE(max98396_dapm_widgets),
-+	.dapm_routes		= max98396_audio_map,
-+	.num_dapm_routes	= ARRAY_SIZE(max98396_audio_map),
-+	.idle_bias_on		= 1,
-+	.use_pmdown_time	= 1,
-+	.endianness		= 1,
-+	.non_legacy_dai_naming	= 1,
-+};
-+
-+static const struct regmap_config max98396_regmap = {
-+	.reg_bits = 16,
-+	.val_bits = 8,
-+	.max_register = MAX98396_R21FF_REVISION_ID,
-+	.reg_defaults  = max98396_reg,
-+	.num_reg_defaults = ARRAY_SIZE(max98396_reg),
-+	.readable_reg = max98396_readable_register,
-+	.volatile_reg = max98396_volatile_reg,
-+	.cache_type = REGCACHE_RBTREE,
-+};
-+
-+static const struct regmap_config max98397_regmap = {
-+	.reg_bits = 16,
-+	.val_bits = 8,
-+	.max_register = MAX98397_R22FF_REVISION_ID,
-+	.reg_defaults  = max98397_reg,
-+	.num_reg_defaults = ARRAY_SIZE(max98397_reg),
-+	.readable_reg = max98397_readable_register,
-+	.volatile_reg = max98397_volatile_reg,
-+	.cache_type = REGCACHE_RBTREE,
-+};
-+
-+static void max98396_read_device_property(struct device *dev,
-+					  struct max98396_priv *max98396)
-+{
-+	int value;
-+
-+	if (!device_property_read_u32(dev, "adi,vmon-slot-no", &value))
-+		max98396->v_slot = value & 0xF;
-+	else
-+		max98396->v_slot = 0;
-+
-+	if (!device_property_read_u32(dev, "adi,imon-slot-no", &value))
-+		max98396->i_slot = value & 0xF;
-+	else
-+		max98396->i_slot = 1;
-+
-+	if (!device_property_read_u32(dev, "adi,bypass-slot-no", &value))
-+		max98396->bypass_slot = value & 0xF;
-+	else
-+		max98396->bypass_slot = 0;
-+}
-+
-+static int max98396_i2c_probe(struct i2c_client *i2c,
-+			      const struct i2c_device_id *id)
-+{
-+	struct max98396_priv *max98396 = NULL;
-+	int ret, reg;
-+
-+	max98396 = devm_kzalloc(&i2c->dev, sizeof(*max98396), GFP_KERNEL);
-+
-+	if (!max98396) {
-+		ret = -ENOMEM;
-+		return ret;
-+	}
-+	i2c_set_clientdata(i2c, max98396);
-+
-+	max98396->device_id =  id->driver_data;
-+
-+	/* regmap initialization */
-+	if (max98396->device_id == CODEC_TYPE_MAX98396)
-+		max98396->regmap = devm_regmap_init_i2c(i2c, &max98396_regmap);
-+
-+	else
-+		max98396->regmap = devm_regmap_init_i2c(i2c, &max98397_regmap);
-+
-+	if (IS_ERR(max98396->regmap)) {
-+		ret = PTR_ERR(max98396->regmap);
-+		dev_err(&i2c->dev,
-+			"Failed to allocate regmap: %d\n", ret);
-+		return ret;
-+	}
-+
-+	/* update interleave mode info */
-+	if (device_property_read_bool(&i2c->dev, "adi,interleave_mode"))
-+		max98396->interleave_mode = true;
-+	else
-+		max98396->interleave_mode = false;
-+
-+	/* voltage/current slot & gpio configuration */
-+	max98396_read_device_property(&i2c->dev, max98396);
-+
-+	/* Reset the Device */
-+	max98396->reset_gpio = devm_gpiod_get_optional(&i2c->dev,
-+						       "reset", GPIOD_OUT_HIGH);
-+	if (IS_ERR(max98396->reset_gpio)) {
-+		ret = PTR_ERR(max98396->reset_gpio);
-+		dev_err(&i2c->dev, "Unable to request GPIO pin: %d.\n", ret);
-+		return ret;
-+	}
-+
-+	if (max98396->reset_gpio) {
-+		usleep_range(5000, 6000);
-+		gpiod_set_value_cansleep(max98396->reset_gpio, 0);
-+		/* Wait for the hw reset done */
-+		usleep_range(5000, 6000);
-+	}
-+
-+	ret = regmap_read(max98396->regmap,
-+			  GET_REG_ADDR_REV_ID(max98396->device_id), &reg);
-+	if (ret < 0) {
-+		dev_err(&i2c->dev, "%s: failed to read revision of the device.\n",  id->name);
-+		return ret;
-+	}
-+	dev_info(&i2c->dev, "%s revision ID: 0x%02X\n", id->name, reg);
-+
-+	/* codec registration */
-+	if (max98396->device_id == CODEC_TYPE_MAX98396)
-+		ret = devm_snd_soc_register_component(&i2c->dev,
-+						      &soc_codec_dev_max98396,
-+						      max98396_dai,
-+						      ARRAY_SIZE(max98396_dai));
-+	else
-+		ret = devm_snd_soc_register_component(&i2c->dev,
-+						      &soc_codec_dev_max98397,
-+						      max98397_dai,
-+						      ARRAY_SIZE(max98397_dai));
-+	if (ret < 0)
-+		dev_err(&i2c->dev, "Failed to register codec: %d\n", ret);
-+
-+	return ret;
-+}
-+
-+static const struct i2c_device_id max98396_i2c_id[] = {
-+	{ "max98396", CODEC_TYPE_MAX98396},
-+	{ "max98397", CODEC_TYPE_MAX98397},
-+	{ },
-+};
-+
-+MODULE_DEVICE_TABLE(i2c, max98396_i2c_id);
-+
-+#if defined(CONFIG_OF)
-+static const struct of_device_id max98396_of_match[] = {
-+	{ .compatible = "adi,max98396", },
-+	{ .compatible = "adi,max98397", },
-+	{ }
-+};
-+MODULE_DEVICE_TABLE(of, max98396_of_match);
-+#endif
-+
-+#ifdef CONFIG_ACPI
-+static const struct acpi_device_id max98396_acpi_match[] = {
-+	{ "ADS8396", 0 },
-+	{ "ADS8397", 0 },
-+	{},
-+};
-+MODULE_DEVICE_TABLE(acpi, max98396_acpi_match);
-+#endif
-+
-+static struct i2c_driver max98396_i2c_driver = {
-+	.driver = {
-+		.name = "max98396",
-+		.of_match_table = of_match_ptr(max98396_of_match),
-+		.acpi_match_table = ACPI_PTR(max98396_acpi_match),
-+		.pm = &max98396_pm,
-+	},
-+	.probe = max98396_i2c_probe,
-+	.id_table = max98396_i2c_id,
-+};
-+
-+module_i2c_driver(max98396_i2c_driver)
-+
-+MODULE_DESCRIPTION("ALSA SoC MAX98396 driver");
-+MODULE_AUTHOR("Ryan Lee <ryans.lee@analog.com>");
-+MODULE_LICENSE("GPL");
-+
-diff --git a/sound/soc/codecs/max98396.h b/sound/soc/codecs/max98396.h
-new file mode 100644
-index 000000000000..3bc77ec1d065
---- /dev/null
-+++ b/sound/soc/codecs/max98396.h
-@@ -0,0 +1,303 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+/*
-+ * max98396.h -- MAX98396 ALSA SoC audio driver header
-+ *
-+ * Copyright(c) 2022, Analog Devices Inc.
-+ */
-+
-+#ifndef _MAX98396_H
-+#define _MAX98396_H
-+
-+#define MAX98396_R2000_SW_RESET			0x2000
-+#define MAX98396_R2001_INT_RAW1			0x2001
-+#define MAX98396_R2002_INT_RAW2			0x2002
-+#define MAX98396_R2003_INT_RAW3			0x2003
-+#define MAX98396_R2004_INT_RAW4			0x2004
-+#define MAX98396_R2006_INT_STATE1		0x2006
-+#define MAX98396_R2007_INT_STATE2		0x2007
-+#define MAX98396_R2008_INT_STATE3		0x2008
-+#define MAX98396_R2009_INT_STATE4		0x2009
-+#define MAX98396_R200B_INT_FLAG1		0x200B
-+#define MAX98396_R200C_INT_FLAG2		0x200C
-+#define MAX98396_R200D_INT_FLAG3		0x200D
-+#define MAX98396_R200E_INT_FLAG4		0x200E
-+#define MAX98396_R2010_INT_EN1			0x2010
-+#define MAX98396_R2011_INT_EN2			0x2011
-+#define MAX98396_R2012_INT_EN3			0x2012
-+#define MAX98396_R2013_INT_EN4			0x2013
-+#define MAX98396_R2015_INT_FLAG_CLR1		0x2015
-+#define MAX98396_R2016_INT_FLAG_CLR2		0x2016
-+#define MAX98396_R2017_INT_FLAG_CLR3		0x2017
-+#define MAX98396_R2018_INT_FLAG_CLR4		0x2018
-+#define MAX98396_R201F_IRQ_CTRL			0x201F
-+#define MAX98396_R2020_THERM_WARN_THRESH	0x2020
-+#define MAX98396_R2021_THERM_WARN_THRESH2	0x2021
-+#define MAX98396_R2022_THERM_SHDN_THRESH	0x2022
-+#define MAX98396_R2023_THERM_HYSTERESIS		0x2023
-+#define MAX98396_R2024_THERM_FOLDBACK_SET	0x2024
-+#define MAX98396_R2027_THERM_FOLDBACK_EN	0x2027
-+#define MAX98396_R2030_NOISEGATE_MODE_CTRL	0x2030
-+#define MAX98396_R2033_NOISEGATE_MODE_EN	0x2033
-+#define MAX98396_R2038_CLK_MON_CTRL		0x2038
-+#define MAX98396_R2039_DATA_MON_CTRL		0x2039
-+#define MAX98396_R203F_ENABLE_CTRLS		0x203F
-+#define MAX98396_R2040_PIN_CFG			0x2040
-+#define MAX98396_R2041_PCM_MODE_CFG		0x2041
-+#define MAX98396_R2042_PCM_CLK_SETUP		0x2042
-+#define MAX98396_R2043_PCM_SR_SETUP		0x2043
-+#define MAX98396_R2044_PCM_TX_CTRL_1		0x2044
-+#define MAX98396_R2045_PCM_TX_CTRL_2		0x2045
-+#define MAX98396_R2046_PCM_TX_CTRL_3		0x2046
-+#define MAX98396_R2047_PCM_TX_CTRL_4		0x2047
-+#define MAX98396_R2048_PCM_TX_CTRL_5		0x2048
-+#define MAX98396_R2049_PCM_TX_CTRL_6		0x2049
-+#define MAX98396_R204A_PCM_TX_CTRL_7		0x204A
-+#define MAX98396_R204B_PCM_TX_CTRL_8		0x204B
-+#define MAX98396_R204C_PCM_TX_HIZ_CTRL_1	0x204C
-+#define MAX98396_R204D_PCM_TX_HIZ_CTRL_2	0x204D
-+#define MAX98396_R204E_PCM_TX_HIZ_CTRL_3	0x204E
-+#define MAX98396_R204F_PCM_TX_HIZ_CTRL_4	0x204F
-+#define MAX98396_R2050_PCM_TX_HIZ_CTRL_5	0x2050
-+#define MAX98396_R2051_PCM_TX_HIZ_CTRL_6	0x2051
-+#define MAX98396_R2052_PCM_TX_HIZ_CTRL_7	0x2052
-+#define MAX98396_R2053_PCM_TX_HIZ_CTRL_8	0x2053
-+#define MAX98396_R2055_PCM_RX_SRC1		0x2055
-+#define MAX98396_R2056_PCM_RX_SRC2		0x2056
-+#define MAX98396_R2058_PCM_BYPASS_SRC		0x2058
-+#define MAX98396_R205D_PCM_TX_SRC_EN		0x205D
-+#define MAX98396_R205E_PCM_RX_EN		0x205E
-+#define MAX98396_R205F_PCM_TX_EN		0x205F
-+#define MAX98396_R2070_ICC_RX_EN_A		0x2070
-+#define MAX98396_R2071_ICC_RX_EN_B		0x2071
-+#define MAX98396_R2072_ICC_TX_CTRL		0x2072
-+#define MAX98396_R207F_ICC_EN			0x207F
-+#define MAX98396_R2083_TONE_GEN_DC_CFG		0x2083
-+#define MAX98396_R2084_TONE_GEN_DC_LVL1		0x2084
-+#define MAX98396_R2085_TONE_GEN_DC_LVL2		0x2085
-+#define MAX98396_R2086_TONE_GEN_DC_LVL3		0x2086
-+#define MAX98396_R208F_TONE_GEN_EN		0x208F
-+#define MAX98396_R2090_AMP_VOL_CTRL		0x2090
-+#define MAX98396_R2091_AMP_PATH_GAIN		0x2091
-+#define MAX98396_R2092_AMP_DSP_CFG		0x2092
-+#define MAX98396_R2093_SSM_CFG			0x2093
-+#define MAX98396_R2094_SPK_CLS_DG_THRESH	0x2094
-+#define MAX98396_R2095_SPK_CLS_DG_HDR		0x2095
-+#define MAX98396_R2096_SPK_CLS_DG_HOLD_TIME	0x2096
-+#define MAX98396_R2097_SPK_CLS_DG_DELAY		0x2097
-+#define MAX98396_R2098_SPK_CLS_DG_MODE		0x2098
-+#define MAX98396_R2099_SPK_CLS_DG_VBAT_LVL	0x2099
-+#define MAX98396_R209A_SPK_EDGE_CTRL		0x209A
-+#define MAX98396_R209C_SPK_EDGE_CTRL1		0x209C
-+#define MAX98396_R209D_SPK_EDGE_CTRL2		0x209D
-+#define MAX98396_R209E_AMP_CLIP_GAIN		0x209E
-+#define MAX98396_R209F_BYPASS_PATH_CFG		0x209F
-+#define MAX98396_R20A0_AMP_SUPPLY_CTL		0x20A0
-+#define MAX98396_R20AF_AMP_EN			0x20AF
-+#define MAX98396_R20B0_ADC_SR			0x20B0
-+#define MAX98396_R20B1_ADC_PVDD_CFG		0x20B1
-+#define MAX98396_R20B2_ADC_VBAT_CFG		0x20B2
-+#define MAX98396_R20B3_ADC_THERMAL_CFG		0x20B3
-+#define MAX98396_R20B4_ADC_READBACK_CTRL1	0x20B4
-+#define MAX98396_R20B5_ADC_READBACK_CTRL2	0x20B5
-+#define MAX98396_R20B6_ADC_PVDD_READBACK_MSB	0x20B6
-+#define MAX98396_R20B7_ADC_PVDD_READBACK_LSB	0x20B7
-+#define MAX98396_R20B8_ADC_VBAT_READBACK_MSB	0x20B8
-+#define MAX98396_R20B9_ADC_VBAT_READBACK_LSB	0x20B9
-+#define MAX98396_R20BA_ADC_TEMP_READBACK_MSB	0x20BA
-+#define MAX98396_R20BB_ADC_TEMP_READBACK_LSB	0x20BB
-+#define MAX98396_R20BC_ADC_LO_PVDD_READBACK_MSB	0x20BC
-+#define MAX98396_R20BD_ADC_LO_PVDD_READBACK_LSB	0x20BD
-+#define MAX98396_R20BE_ADC_LO_VBAT_READBACK_MSB	0x20BE
-+#define MAX98396_R20BF_ADC_LO_VBAT_READBACK_LSB	0x20BF
-+#define MAX98396_R20C7_ADC_CFG			0x20C7
-+#define MAX98396_R20D0_DHT_CFG1			0x20D0
-+#define MAX98396_R20D1_LIMITER_CFG1		0x20D1
-+#define MAX98396_R20D2_LIMITER_CFG2		0x20D2
-+#define MAX98396_R20D3_DHT_CFG2			0x20D3
-+#define MAX98396_R20D4_DHT_CFG3			0x20D4
-+#define MAX98396_R20D5_DHT_CFG4			0x20D5
-+#define MAX98396_R20D6_DHT_HYSTERESIS_CFG	0x20D6
-+#define MAX98396_R20DF_DHT_EN			0x20DF
-+#define MAX98396_R20E0_IV_SENSE_PATH_CFG	0x20E0
-+#define MAX98396_R20E4_IV_SENSE_PATH_EN		0x20E4
-+#define MAX98396_R20E5_BPE_STATE		0x20E5
-+#define MAX98396_R20E6_BPE_L3_THRESH_MSB	0x20E6
-+#define MAX98396_R20E7_BPE_L3_THRESH_LSB	0x20E7
-+#define MAX98396_R20E8_BPE_L2_THRESH_MSB	0x20E8
-+#define MAX98396_R20E9_BPE_L2_THRESH_LSB	0x20E9
-+#define MAX98396_R20EA_BPE_L1_THRESH_MSB	0x20EA
-+#define MAX98396_R20EB_BPE_L1_THRESH_LSB	0x20EB
-+#define MAX98396_R20EC_BPE_L0_THRESH_MSB	0x20EC
-+#define MAX98396_R20ED_BPE_L0_THRESH_LSB	0x20ED
-+#define MAX98396_R20EE_BPE_L3_DWELL_HOLD_TIME	0x20EE
-+#define MAX98396_R20EF_BPE_L2_DWELL_HOLD_TIME	0x20EF
-+#define MAX98396_R20F0_BPE_L1_DWELL_HOLD_TIME	0x20F0
-+#define MAX98396_R20F1_BPE_L0_HOLD_TIME		0x20F1
-+#define MAX98396_R20F2_BPE_L3_ATTACK_REL_STEP	0x20F2
-+#define MAX98396_R20F3_BPE_L2_ATTACK_REL_STEP	0x20F3
-+#define MAX98396_R20F4_BPE_L1_ATTACK_REL_STEP	0x20F4
-+#define MAX98396_R20F5_BPE_L0_ATTACK_REL_STEP	0x20F5
-+#define MAX98396_R20F6_BPE_L3_MAX_GAIN_ATTN	0x20F6
-+#define MAX98396_R20F7_BPE_L2_MAX_GAIN_ATTN	0x20F7
-+#define MAX98396_R20F8_BPE_L1_MAX_GAIN_ATTN	0x20F8
-+#define MAX98396_R20F9_BPE_L0_MAX_GAIN_ATTN	0x20F9
-+#define MAX98396_R20FA_BPE_L3_ATT_REL_RATE	0x20FA
-+#define MAX98396_R20FB_BPE_L2_ATT_REL_RATE	0x20FB
-+#define MAX98396_R20FC_BPE_L1_ATT_REL_RATE	0x20FC
-+#define MAX98396_R20FD_BPE_L0_ATT_REL_RATE	0x20FD
-+#define MAX98396_R20FE_BPE_L3_LIMITER_CFG	0x20FE
-+#define MAX98396_R20FF_BPE_L2_LIMITER_CFG	0x20FF
-+#define MAX98396_R2100_BPE_L1_LIMITER_CFG	0x2100
-+#define MAX98396_R2101_BPE_L0_LIMITER_CFG	0x2101
-+#define MAX98396_R2102_BPE_L3_LIM_ATT_REL_RATE	0x2102
-+#define MAX98396_R2103_BPE_L2_LIM_ATT_REL_RATE	0x2103
-+#define MAX98396_R2104_BPE_L1_LIM_ATT_REL_RATE	0x2104
-+#define MAX98396_R2105_BPE_L0_LIM_ATT_REL_RATE	0x2105
-+#define MAX98396_R2106_BPE_THRESH_HYSTERESIS	0x2106
-+#define MAX98396_R2107_BPE_INFINITE_HOLD_CLR	0x2107
-+#define MAX98396_R2108_BPE_SUPPLY_SRC		0x2108
-+#define MAX98396_R2109_BPE_LOW_STATE		0x2109
-+#define MAX98396_R210A_BPE_LOW_GAIN		0x210A
-+#define MAX98396_R210B_BPE_LOW_LIMITER		0x210B
-+#define MAX98396_R210D_BPE_EN			0x210D
-+#define MAX98396_R210E_AUTO_RESTART		0x210E
-+#define MAX98396_R210F_GLOBAL_EN		0x210F
-+#define MAX98396_R21FF_REVISION_ID		0x21FF
-+
-+/* MAX98927 Registers */
-+#define MAX98397_R203A_SPK_MON_THRESH		0x203A
-+#define MAX98397_R204C_PCM_TX_CTRL_9		0x204C
-+#define MAX98397_R204D_PCM_TX_HIZ_CTRL_1	0x204D
-+#define MAX98397_R204E_PCM_TX_HIZ_CTRL_2	0x204E
-+#define MAX98397_R204F_PCM_TX_HIZ_CTRL_3	0x204F
-+#define MAX98397_R2050_PCM_TX_HIZ_CTRL_4	0x2050
-+#define MAX98397_R2051_PCM_TX_HIZ_CTRL_5	0x2051
-+#define MAX98397_R2052_PCM_TX_HIZ_CTRL_6	0x2052
-+#define MAX98397_R2053_PCM_TX_HIZ_CTRL_7	0x2053
-+#define MAX98397_R2054_PCM_TX_HIZ_CTRL_8	0x2054
-+#define MAX98397_R2056_PCM_RX_SRC1		0x2056
-+#define MAX98397_R2057_PCM_RX_SRC2		0x2057
-+#define MAX98397_R2060_PCM_TX_SUPPLY_SEL	0x2060
-+#define MAX98397_R209B_SPK_PATH_WB_ONLY		0x209B
-+#define MAX98397_R20B4_ADC_VDDH_CFG		0x20B4
-+#define MAX98397_R20B5_ADC_READBACK_CTRL1	0x20B5
-+#define MAX98397_R20B6_ADC_READBACK_CTRL2	0x20B6
-+#define MAX98397_R20B7_ADC_PVDD_READBACK_MSB	0x20B7
-+#define MAX98397_R20B8_ADC_PVDD_READBACK_LSB	0x20B8
-+#define MAX98397_R20B9_ADC_VBAT_READBACK_MSB	0x20B9
-+#define MAX98397_R20BA_ADC_VBAT_READBACK_LSB	0x20BA
-+#define MAX98397_R20BB_ADC_TEMP_READBACK_MSB	0x20BB
-+#define MAX98397_R20BC_ADC_TEMP_READBACK_LSB	0x20BC
-+#define MAX98397_R20BD_ADC_VDDH__READBACK_MSB	0x20BD
-+#define MAX98397_R20BE_ADC_VDDH_READBACK_LSB	0x20BE
-+#define MAX98397_R20BF_ADC_LO_PVDD_READBACK_MSB	0x20BF
-+#define MAX98397_R20C0_ADC_LO_PVDD_READBACK_LSB	0x20C0
-+#define MAX98397_R20C1_ADC_LO_VBAT_READBACK_MSB	0x20C1
-+#define MAX98397_R20C2_ADC_LO_VBAT_READBACK_LSB	0x20C2
-+#define MAX98397_R20C3_ADC_LO_VDDH_READBACK_MSB	0x20C3
-+#define MAX98397_R20C4_ADC_LO_VDDH_READBACK_LSB	0x20C4
-+#define MAX98397_R20C5_MEAS_ADC_OPTIMAL_MODE	0x20C5
-+#define MAX98397_R22FF_REVISION_ID		0x22FF
-+
-+#define GET_REG_ADDR_REV_ID(x)\
-+	((x) > 0 ? MAX98397_R22FF_REVISION_ID : MAX98396_R21FF_REVISION_ID)
-+
-+/* MAX98396_R2024_THERM_FOLDBACK_SET */
-+#define MAX98396_THERM_FB_SLOPE1_SHIFT		(0)
-+#define MAX98396_THERM_FB_SLOPE2_SHIFT		(2)
-+#define MAX98396_THERM_FB_REL_SHIFT		(4)
-+#define MAX98396_THERM_FB_HOLD_SHIFT		(6)
-+
-+/* MAX98396_R2038_CLK_MON_CTRL */
-+#define MAX98396_CLK_MON_AUTO_RESTART_MASK	(0x1 << 0)
-+#define MAX98396_CLK_MON_AUTO_RESTART_SHIFT	(0)
-+
-+/* MAX98396_R203F_ENABLE_CTRLS */
-+#define MAX98396_CTRL_CMON_EN_SHIFT		(0)
-+
-+/* MAX98396_R2041_PCM_MODE_CFG */
-+#define MAX98396_PCM_MODE_CFG_FORMAT_MASK	(0x7 << 3)
-+#define MAX98396_PCM_TX_CH_INTERLEAVE_MASK	(0x1 << 2)
-+#define MAX98396_PCM_FORMAT_I2S			(0x0 << 3)
-+#define MAX98396_PCM_FORMAT_LJ			(0x1 << 3)
-+#define MAX98396_PCM_FORMAT_TDM_MODE0		(0x3 << 3)
-+#define MAX98396_PCM_FORMAT_TDM_MODE1		(0x4 << 3)
-+#define MAX98396_PCM_FORMAT_TDM_MODE2		(0x5 << 3)
-+#define MAX98396_PCM_MODE_CFG_CHANSZ_MASK	(0x3 << 6)
-+#define MAX98396_PCM_MODE_CFG_CHANSZ_16		(0x1 << 6)
-+#define MAX98396_PCM_MODE_CFG_CHANSZ_24		(0x2 << 6)
-+#define MAX98396_PCM_MODE_CFG_CHANSZ_32		(0x3 << 6)
-+
-+/* MAX98396_R2042_PCM_CLK_SETUP */
-+#define MAX98396_PCM_MODE_CFG_PCM_BCLKEDGE	(0x1 << 4)
-+#define MAX98396_PCM_CLK_SETUP_BSEL_MASK	(0xF << 0)
-+
-+/* MAX98396_R2043_PCM_SR_SETUP */
-+#define MAX98396_PCM_SR_SHIFT			(0)
-+#define MAX98396_IVADC_SR_SHIFT			(4)
-+#define MAX98396_PCM_SR_MASK			(0xF << MAX98396_PCM_SR_SHIFT)
-+#define MAX98396_IVADC_SR_MASK			(0xF << MAX98396_IVADC_SR_SHIFT)
-+#define MAX98396_PCM_SR_8000			(0)
-+#define MAX98396_PCM_SR_11025			(1)
-+#define MAX98396_PCM_SR_12000			(2)
-+#define MAX98396_PCM_SR_16000			(3)
-+#define MAX98396_PCM_SR_22050			(4)
-+#define MAX98396_PCM_SR_24000			(5)
-+#define MAX98396_PCM_SR_32000			(6)
-+#define MAX98396_PCM_SR_44100			(7)
-+#define MAX98396_PCM_SR_48000			(8)
-+#define MAX98396_PCM_SR_88200			(9)
-+#define MAX98396_PCM_SR_96000			(10)
-+#define MAX98396_PCM_SR_176400			(11)
-+#define MAX98396_PCM_SR_192000			(12)
-+
-+/* MAX98396_R2055_PCM_RX_SRC1 */
-+#define MAX98396_PCM_RX_MASK			(0x3 << 0)
-+
-+/* MAX98396_R2056_PCM_RX_SRC2 */
-+#define MAX98396_PCM_DMIX_CH1_SHIFT		(0xF << 0)
-+#define MAX98396_PCM_DMIX_CH0_SRC_MASK		(0xF << 0)
-+#define MAX98396_PCM_DMIX_CH1_SRC_MASK		(0xF << MAX98396_PCM_DMIX_CH1_SHIFT)
-+
-+/* MAX98396_R205E_PCM_RX_EN */
-+#define MAX98396_PCM_RX_EN_MASK			(0x1 << 0)
-+#define MAX98396_PCM_RX_BYP_EN_MASK		(0x1 << 1)
-+
-+/* MAX98396_R2092_AMP_DSP_CFG */
-+#define MAX98396_DSP_SPK_DCBLK_EN_SHIFT		(0)
-+#define MAX98396_DSP_SPK_DITH_EN_SHIFT		(1)
-+#define MAX98396_DSP_SPK_INVERT_SHIFT		(2)
-+#define MAX98396_DSP_SPK_VOL_RMPUP_SHIFT	(3)
-+#define MAX98396_DSP_SPK_VOL_RMPDN_SHIFT	(4)
-+#define MAX98396_DSP_SPK_SAFE_EN_SHIFT		(5)
-+#define MAX98396_DSP_SPK_WB_FLT_EN_SHIFT	(6)
-+
-+/* MAX98396_R20E0_IV_SENSE_PATH_CFG */
-+#define MAX98396_IV_SENSE_DCBLK_EN_MASK		(0x3 << 0)
-+#define MAX98396_IV_SENSE_DCBLK_EN_SHIFT	(0)
-+#define MAX98396_IV_SENSE_DITH_EN_SHIFT		(2)
-+#define MAX98396_IV_SENSE_WB_FLT_EN_SHIFT	(3)
-+
-+/* MAX98396_R210E_AUTO_RESTART_BEHAVIOR */
-+#define MAX98396_PVDD_UVLO_RESTART_SHFT		(0)
-+#define MAX98396_VBAT_UVLO_RESTART_SHFT		(1)
-+#define MAX98396_THEM_SHDN_RESTART_SHFT		(2)
-+#define MAX98396_OVC_RESTART_SHFT		(3)
-+
-+enum {
-+	CODEC_TYPE_MAX98396,
-+	CODEC_TYPE_MAX98397,
-+};
-+
-+struct max98396_priv {
-+	struct regmap *regmap;
-+	struct gpio_desc *reset_gpio;
-+	unsigned int v_slot;
-+	unsigned int i_slot;
-+	unsigned int bypass_slot;
-+	bool interleave_mode;
-+	unsigned int ch_size;
-+	bool tdm_mode;
-+	int device_id;
-+};
-+#endif
+ 
+ #define MICROBOOK_BUF_SIZE 128
+ 
+@@ -1324,6 +1631,10 @@ int snd_usb_apply_boot_quirk(struct usb_device *dev,
+ 	case USB_ID(0x0dba, 0x3000):
+ 		/* Digidesign Mbox 2 */
+ 		return snd_usb_mbox2_boot_quirk(dev);
++	case USB_ID(0x0dba, 0x5000):
++		/* Digidesign Mbox 3 */
++		return snd_usb_mbox3_boot_quirk(dev);
++
+ 
+ 	case USB_ID(0x1235, 0x0010): /* Focusrite Novation Saffire 6 USB */
+ 	case USB_ID(0x1235, 0x0018): /* Focusrite Novation Twitch */
 -- 
-2.25.1
+2.35.1
 
