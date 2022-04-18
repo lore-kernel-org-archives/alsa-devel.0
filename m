@@ -4,88 +4,84 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E2F74C433EF
-	for <alsa-devel@archiver.kernel.org>; Mon, 18 Apr 2022 10:23:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id F3462C433F5
+	for <alsa-devel@archiver.kernel.org>; Mon, 18 Apr 2022 11:04:08 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 17FCB1672;
-	Mon, 18 Apr 2022 12:22:58 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 17FCB1672
+	by alsa0.perex.cz (Postfix) with ESMTPS id 56F101678;
+	Mon, 18 Apr 2022 13:03:16 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 56F101678
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1650277428;
-	bh=yoVudKljwdK/PGMzPgjOQdLKdgcWdHj+ek76FWJ9tis=;
-	h=Date:Subject:To:References:From:In-Reply-To:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=HoStgUBJz6IQllFdySmWS0MRtACdpebZgZfWn1dF31T/0UwsRfPQcEuONEIYvvUyC
-	 QqkJoixAfS8ds5rOH3jtSZm5jZNI+AgHsGJJ+BKgLKdE4TuscF8LB+/Slq19KcaP5D
-	 IPNhEgsaGmUe1kpMgCgYCzs6WSkgSUCRtL3pE9HM=
+	s=default; t=1650279846;
+	bh=fs5SyUJeKwIvMsCHhw9UB0VcQ9OsDFsXcyH/wHwpR3E=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=a0/r8PZW5aBzwQJA1M7hJJGPOfhVY7Mih66aSO7Iu4EBsx1fAITPCy7tfqkFIMM/S
+	 kXWiNQvCIPuLmSsFHKNHddktcGThzvx7U8VJo7VqKTd8FhsO7xMlQ0UIc0pkV4O8Bt
+	 ki7xI2jmvLcS+tdgC7UcdBUkw6OnhxgfyVefVSIM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id B37DFF8012A;
-	Mon, 18 Apr 2022 12:22:57 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id D1E07F80121;
+	Mon, 18 Apr 2022 13:03:15 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id E0824F8014E; Mon, 18 Apr 2022 12:22:56 +0200 (CEST)
-Received: from alexa-out-sd-02.qualcomm.com (alexa-out-sd-02.qualcomm.com
- [199.106.114.39])
- (using TLSv1.2 with cipher AES256-SHA (256/256 bits))
+ id 6FD93F8014E; Mon, 18 Apr 2022 13:03:13 +0200 (CEST)
+Received: from mail-qt1-x831.google.com (mail-qt1-x831.google.com
+ [IPv6:2607:f8b0:4864:20::831])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 5C197F800F5
- for <alsa-devel@alsa-project.org>; Mon, 18 Apr 2022 12:22:49 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5C197F800F5
+ by alsa1.perex.cz (Postfix) with ESMTPS id 1D2D9F80121
+ for <alsa-devel@alsa-project.org>; Mon, 18 Apr 2022 13:03:06 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1D2D9F80121
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=quicinc.com header.i=@quicinc.com
- header.b="HnoKMVQS"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=quicinc.com; i=@quicinc.com; q=dns/txt; s=qcdkim;
- t=1650277371; x=1681813371;
- h=message-id:date:mime-version:subject:to:cc:references:
- from:in-reply-to:content-transfer-encoding;
- bh=rB+m8JZE7AYNY8EyI4x/rhw3euV04Ab2K5l6+kXn58I=;
- b=HnoKMVQSstChwkCHErkeRl7pAgTx6L5JAg70bapTOq8pLN7GIB7gWzbg
- ah68QxC3iFTgpDeCYDXTUUlwQMLyfZJGE4spxsQrgRN/5ad8KNmN2saPm
- LEKXUB9yqGF6mN6EG6osvabxjYF4KtG/Lt33HQLuaC0MYOYCXg70eRG53 I=;
-Received: from unknown (HELO ironmsg03-sd.qualcomm.com) ([10.53.140.143])
- by alexa-out-sd-02.qualcomm.com with ESMTP; 18 Apr 2022 03:22:47 -0700
-X-QCInternal: smtphost
-Received: from nasanex01c.na.qualcomm.com ([10.47.97.222])
- by ironmsg03-sd.qualcomm.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 18 Apr 2022 03:22:46 -0700
-Received: from nalasex01a.na.qualcomm.com (10.47.209.196) by
- nasanex01c.na.qualcomm.com (10.47.97.222) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.986.22; Mon, 18 Apr 2022 03:22:45 -0700
-Received: from [10.216.27.177] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.22; Mon, 18 Apr
- 2022 03:22:39 -0700
-Message-ID: <24d7180f-dd97-3329-93ad-700bf2dcf0fc@quicinc.com>
-Date: Mon, 18 Apr 2022 15:52:36 +0530
+ dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
+ header.b="ML7YQLQY"
+Received: by mail-qt1-x831.google.com with SMTP id o18so9768167qtk.7
+ for <alsa-devel@alsa-project.org>; Mon, 18 Apr 2022 04:03:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
+ h=from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=9uTmuIN0GlNXXY/94zNDu7yDIPOZyDJN9QkEI2mlu4M=;
+ b=ML7YQLQYLo1Dj4jfwiljD/Rekx6c5rxBTwLIXSQ1h7gbRcHk1gxsZFi9XqkkN39V7i
+ UVSFPbjACp274XdCF9D58o7ZAJmS4fUC91E2sQcZYNzYizNSKAjEsqw19vSrABzPoStF
+ BEG0uJOuipXZGI34TgRY8mrJWdYvwTwiYk/a4gCXq64OtbzMAXP+3m0dUpGlkb5A0343
+ ovHk0PYf92JZkmaqg8oAdgICygU8OiXaLfkybwvUln+TaIzN/8QUE/k4t3K1zd4d8P5M
+ +FVTOI+7Xi1NwWp+FK+/i0ZSZhvPJR9AFN2BciI1v/ih0HM1oY/FQQBysuoJcNPjK2a7
+ c60Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=9uTmuIN0GlNXXY/94zNDu7yDIPOZyDJN9QkEI2mlu4M=;
+ b=XFLR/Z0lvMfj2km+JtudJd3eoIFcm49RBIP30LK/xAdkpIWhV9PHS6+Xw5260RhIXy
+ 0TVyySCV55Xs0fFJCAOp6ibQFLonZAwUmhE2cqePKZUTswdjo7or+W58M7eUWxuAZqAP
+ JBBGj2Pgbbb7KZp/icrmZCgaieJ/3OaJnbiIh1dUwDFPUrhxtljG/CtBD9TVy8GgZZ04
+ 7YVxIzgXSBtPdrxeb1bW62pQba3HG2ohOdQEouLDmCL+5/RQxDbsmGOu7TDl6LPqUfY4
+ 7fMJ9ZfQ7sWq2BVvKFOx7z3NeqVowZ0m/0jBC3G5er0QQeKH/SKyZ38un7awoTwvsejs
+ wGTQ==
+X-Gm-Message-State: AOAM532UPyef7HCPGloMNHgEW8XmrBjaJJx4x4EYaMZKsNCpwcX8vmKJ
+ nZYETBKCMOAUo0ibP70TDxU=
+X-Google-Smtp-Source: ABdhPJxKhXQVaAvyNvVCH2UEO9ZuO7fvvlhPS2H/BF6eBn2Ammys6oZGbOC4QM/WYjW10au931GC+Q==
+X-Received: by 2002:a05:622a:4ce:b0:2e1:e18f:5b33 with SMTP id
+ q14-20020a05622a04ce00b002e1e18f5b33mr6579274qtx.565.1650279784936; 
+ Mon, 18 Apr 2022 04:03:04 -0700 (PDT)
+Received: from localhost.localdomain ([193.203.214.57])
+ by smtp.gmail.com with ESMTPSA id
+ w3-20020a376203000000b0069e9a4568f9sm1588004qkb.125.2022.04.18.04.03.02
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Mon, 18 Apr 2022 04:03:04 -0700 (PDT)
+From: cgel.zte@gmail.com
+X-Google-Original-From: chi.minghao@zte.com.cn
+To: lgirdwood@gmail.com
+Subject: [PATCH] ASoC: codecs: wm8962: using pm_runtime_resume_and_get instead
+ of pm_runtime_get_sync
+Date: Mon, 18 Apr 2022 11:02:59 +0000
+Message-Id: <20220418110259.2559144-1-chi.minghao@zte.com.cn>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.6.1
-Subject: Re: [PATCH v12 6/7] pinctrl: qcom: Add SC7280 lpass pin configuration
-Content-Language: en-US
-To: Matthias Kaehlcke <mka@chromium.org>
-References: <1647447426-23425-1-git-send-email-quic_srivasam@quicinc.com>
- <1647447426-23425-7-git-send-email-quic_srivasam@quicinc.com>
- <YloAMeEdb2kGvDSY@google.com>
-From: Srinivasa Rao Mandadapu <quic_srivasam@quicinc.com>
-Organization: Qualcomm
-In-Reply-To: <YloAMeEdb2kGvDSY@google.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
- bgoswami@codeaurora.org, Venkata Prasad Potturu <quic_potturu@quicinc.com>,
- linux-arm-msm@vger.kernel.org, swboyd@chromium.org, tiwai@suse.com,
- agross@kernel.org, robh+dt@kernel.org, lgirdwood@gmail.com,
- linux-gpio@vger.kernel.org, broonie@kernel.org, srinivas.kandagatla@linaro.org,
- quic_rohkumar@quicinc.com, quic_plai@quicinc.com, bjorn.andersson@linaro.org,
- judyhsiao@chromium.org, Linus Walleij <linus.walleij@linaro.org>,
- linux-kernel@vger.kernel.org
+Content-Transfer-Encoding: 8bit
+Cc: alsa-devel@alsa-project.org, patches@opensource.cirrus.com,
+ Zeal Robot <zealci@zte.com.cn>, linux-kernel@vger.kernel.org,
+ Minghao Chi <chi.minghao@zte.com.cn>, broonie@kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -101,44 +97,44 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+From: Minghao Chi <chi.minghao@zte.com.cn>
 
-On 4/16/2022 5:00 AM, Matthias Kaehlcke wrote:
-Thanks for your time Matthias!!!
-> On Wed, Mar 16, 2022 at 09:47:05PM +0530, Srinivasa Rao Mandadapu wrote:
->> Add pin control support for SC7280 LPASS LPI.
->>
->> Signed-off-by: Srinivasa Rao Mandadapu <quic_srivasam@quicinc.com>
->> Co-developed-by: Venkata Prasad Potturu <quic_potturu@quicinc.com>
->> Signed-off-by: Venkata Prasad Potturu <quic_potturu@quicinc.com>
->> ...
->>
->> diff --git a/drivers/pinctrl/qcom/pinctrl-sc7280-lpass-lpi.c b/drivers/pinctrl/qcom/pinctrl-sc7280-lpass-lpi.c
->> new file mode 100644
->> index 0000000..d67ff25
->> --- /dev/null
->> +++ b/drivers/pinctrl/qcom/pinctrl-sc7280-lpass-lpi.c
->>
->> ...
->> +/* sc7280 variant specific data */
-> nit: the comment is a bit redundant in a sc7280 specific driver
-Okay. will remove it.
->
->> +static const struct pinctrl_pin_desc sc7280_lpi_pins[] = {
->> +	PINCTRL_PIN(0, "gpio0"),
->> +	PINCTRL_PIN(1, "gpio1"),
->> +	PINCTRL_PIN(2, "gpio2"),
->> +	PINCTRL_PIN(3, "gpio3"),
->> +	PINCTRL_PIN(4, "gpio4"),
->> +	PINCTRL_PIN(5, "gpio5"),
->> +	PINCTRL_PIN(6, "gpio6"),
->> +	PINCTRL_PIN(7, "gpio7"),
->> +	PINCTRL_PIN(8, "gpio8"),
->> +	PINCTRL_PIN(9, "gpio9"),
->> +	PINCTRL_PIN(10, "gpio10"),
->> +	PINCTRL_PIN(11, "gpio11"),
->> +	PINCTRL_PIN(12, "gpio12"),
->> +	PINCTRL_PIN(13, "gpio13"),
->> +	PINCTRL_PIN(14, "gpio14"),
->> +};
->> +
-> Reviewed-by: Matthias Kaehlcke <mka@chromium.org>
+Using pm_runtime_resume_and_get is more appropriate
+for simplifing code
+
+Reported-by: Zeal Robot <zealci@zte.com.cn>
+Signed-off-by: Minghao Chi <chi.minghao@zte.com.cn>
+---
+ sound/soc/codecs/wm8962.c | 6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
+
+diff --git a/sound/soc/codecs/wm8962.c b/sound/soc/codecs/wm8962.c
+index 2c41d31956aa..f679cf0ddbc1 100644
+--- a/sound/soc/codecs/wm8962.c
++++ b/sound/soc/codecs/wm8962.c
+@@ -2896,9 +2896,8 @@ static int wm8962_set_fll(struct snd_soc_component *component, int fll_id, int s
+ 
+ 	reinit_completion(&wm8962->fll_lock);
+ 
+-	ret = pm_runtime_get_sync(component->dev);
++	ret = pm_runtime_resume_and_get(component->dev);
+ 	if (ret < 0) {
+-		pm_runtime_put_noidle(component->dev);
+ 		dev_err(component->dev, "Failed to resume device: %d\n", ret);
+ 		return ret;
+ 	}
+@@ -3030,9 +3029,8 @@ static irqreturn_t wm8962_irq(int irq, void *data)
+ 	unsigned int active;
+ 	int reg, ret;
+ 
+-	ret = pm_runtime_get_sync(dev);
++	ret = pm_runtime_resume_and_get(dev);
+ 	if (ret < 0) {
+-		pm_runtime_put_noidle(dev);
+ 		dev_err(dev, "Failed to resume: %d\n", ret);
+ 		return IRQ_NONE;
+ 	}
+-- 
+2.25.1
+
+
