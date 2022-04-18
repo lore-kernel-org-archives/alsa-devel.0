@@ -4,87 +4,75 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E997AC433EF
-	for <alsa-devel@archiver.kernel.org>; Mon, 18 Apr 2022 19:21:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D44C1C433F5
+	for <alsa-devel@archiver.kernel.org>; Mon, 18 Apr 2022 21:34:43 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0B13316BE;
-	Mon, 18 Apr 2022 21:20:49 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0B13316BE
+	by alsa0.perex.cz (Postfix) with ESMTPS id EC5D016B4;
+	Mon, 18 Apr 2022 23:33:50 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EC5D016B4
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1650309699;
-	bh=cV6+6Ey7LaeWZPNbriTRkorx1rxnHKeq4jFNbHhfmco=;
-	h=In-Reply-To:References:From:Date:Subject:To:Cc:List-Id:
+	s=default; t=1650317681;
+	bh=Zn+NXcLyI1ueXup+QlRSkgZFGbo5MELKDMfnPmqO124=;
+	h=Date:Subject:To:References:From:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=YL6d5Xv/RZt7yiyfyyUCs/CbkUsfJ6rEP6eP8x+/zOwP3gWmbrbQUUFdTiQNlXuhu
-	 L2fEPxjNQ/F59e4H034hcUjaIEHuV4ofkMGU52vcn7V5z96MfNN5SCfGBO91anCsL5
-	 mT2i66aWE+6CXBX/rN3wGcs3tvE23YPBvpBmd8lA=
+	b=nwXimqooiXX4OQxKPu8sJzk34MPonDdY3FcqyjtC4FE+y8rwiMbT/ydL1AaSSU7lE
+	 rLLl4Zc0OK/T29+wORFLHLhJZ3lJ1NkThBysmgGeT/2jynQXibQjP0AYfWRsI7CVit
+	 MLaWZdcEtGE+ep8gmzbgUEQjHesyqM0ATHU9AY84=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 75D1BF8012A;
-	Mon, 18 Apr 2022 21:20:48 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 815FCF8012A;
+	Mon, 18 Apr 2022 23:33:50 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id CA926F8014E; Mon, 18 Apr 2022 21:20:45 +0200 (CEST)
-Received: from mail-oa1-x31.google.com (mail-oa1-x31.google.com
- [IPv6:2001:4860:4864:20::31])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id 0627CF8014E; Mon, 18 Apr 2022 23:33:48 +0200 (CEST)
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 3DBE4F800D8
- for <alsa-devel@alsa-project.org>; Mon, 18 Apr 2022 21:20:38 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3DBE4F800D8
+ by alsa1.perex.cz (Postfix) with ESMTPS id 0A6C2F800F5
+ for <alsa-devel@alsa-project.org>; Mon, 18 Apr 2022 23:33:41 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0A6C2F800F5
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org
- header.b="RfDcx726"
-Received: by mail-oa1-x31.google.com with SMTP id
- 586e51a60fabf-e5bdd14b59so5662243fac.11
- for <alsa-devel@alsa-project.org>; Mon, 18 Apr 2022 12:20:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=chromium.org; s=google;
- h=mime-version:in-reply-to:references:from:user-agent:date:message-id
- :subject:to:cc;
- bh=cV6+6Ey7LaeWZPNbriTRkorx1rxnHKeq4jFNbHhfmco=;
- b=RfDcx726fSOkgilqjNNFdffOGia7ENNZq4jw6/IpNvYS2X96nsaU6+CizR0R0lVpip
- 8XykJfQitz8Tf+qkrUP2a8h38iE5MNquXTF+M+ZfjDZxGruX0RF3tzwfYMTFDUujup9v
- vn+q0L54b59gb0Tdjc5oAILmSZnZrXXSh+Oi8=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=x-gm-message-state:mime-version:in-reply-to:references:from
- :user-agent:date:message-id:subject:to:cc;
- bh=cV6+6Ey7LaeWZPNbriTRkorx1rxnHKeq4jFNbHhfmco=;
- b=7W9jIGBORjP82h6aBCX6W/sYVoxt6gLho588pNqg9i/JBuOPRz6JkIIoO0B08e49/U
- yK04OHbkww3GBlkwjOUwP0PzfNa3Wi8yLH/dtPcMC9HXYV9Vtup6OQohw7kVP8UbDRlm
- avtzBkjgCH/NmV2WCMAf73pDzKOkmFik2ItQoh7SeJSCPQrjIH3ZeUy1DFBwB+eSUrNA
- sfSmvlF7fHJTLuYKK65WxVpB9P7gez9rFcEG94VmHb2T+rhLgRvNXtGoSr3oLIVPlfTP
- vBtPc2h0lbv/bicNGNALAU21dQzkG43b5ob+LwCnn9SNlvbLeyDeRpmLaWO3EpS4gXhl
- f6DQ==
-X-Gm-Message-State: AOAM531LiOrt/jTcyzDyBiltPO0pQ5kQ0Qp35QD45ZQ0RIuceKAMvaEG
- ISm+nxoO1XtIHtqZfaYdeF/X8EviwfsDU/S4X0bfmQ==
-X-Google-Smtp-Source: ABdhPJzNf95/lk0150+WJSd18uvW1W5pdHmDXYK3zhdw8hZZpUZtdsFX7flLJWCbzkVJnlE9bwIuyJ0EGf7AjX1fhe8=
-X-Received: by 2002:a05:6870:3907:b0:e5:a6fd:4047 with SMTP id
- b7-20020a056870390700b000e5a6fd4047mr4742504oap.193.1650309637020; Mon, 18
- Apr 2022 12:20:37 -0700 (PDT)
-Received: from 753933720722 named unknown by gmailapi.google.com with
- HTTPREST; Mon, 18 Apr 2022 12:20:36 -0700
+ dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
+ header.b="morQv7JC"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+ d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+ t=1650317625; x=1681853625;
+ h=message-id:date:mime-version:subject:to:cc:references:
+ from:in-reply-to:content-transfer-encoding;
+ bh=Zn+NXcLyI1ueXup+QlRSkgZFGbo5MELKDMfnPmqO124=;
+ b=morQv7JCvsFi+jQwZs76ZFFi4/WMzVbiOykYKVKL7bzMusB3RIhSdLOQ
+ dNeN4pn35oAySZzrP7mitF145agMsN7ioBkonFuFbUf8bhIZ1FNe1ny9X
+ Wl93uNMeT5VZ92hVwfEk7cvIRJe4WSwdhVyRfTTiknLdv3VO2JhYG/jBv
+ pHO7e+vF8/7SL7QvtHTw1fRpway5Q2pm5mcyu8emdk+3V4ihisGL6aMCg
+ PqguWYpGrVTKOsqilzkDgsbw4MwGbNjGohoTLvovCa9yZN1BXxiQe6v4D
+ 6TX4roJbnYntTW9WHMKPZf7Z5usMxAMpxn83arWEAeLIXp/TKW6e/mEzb w==;
+X-IronPort-AV: E=McAfee;i="6400,9594,10321"; a="263077428"
+X-IronPort-AV: E=Sophos;i="5.90,270,1643702400"; d="scan'208";a="263077428"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+ by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 18 Apr 2022 14:33:22 -0700
+X-IronPort-AV: E=Sophos;i="5.90,270,1643702400"; d="scan'208";a="665535405"
+Received: from tsahu-mobl.amr.corp.intel.com (HELO [10.251.20.74])
+ ([10.251.20.74])
+ by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 18 Apr 2022 14:33:22 -0700
+Message-ID: <c77d892f-4ff3-f7ad-482f-c9673a3cd86f@linux.intel.com>
+Date: Mon, 18 Apr 2022 16:33:21 -0500
 MIME-Version: 1.0
-In-Reply-To: <1650285427-19752-8-git-send-email-quic_srivasam@quicinc.com>
-References: <1650285427-19752-1-git-send-email-quic_srivasam@quicinc.com>
- <1650285427-19752-8-git-send-email-quic_srivasam@quicinc.com>
-From: Stephen Boyd <swboyd@chromium.org>
-User-Agent: alot/0.10
-Date: Mon, 18 Apr 2022 12:20:36 -0700
-Message-ID: <CAE-0n523c+X__wJwy=7e7WXGY3Crimne1-yUHM3Txf81n+bBVA@mail.gmail.com>
-Subject: Re: [PATCH v13 7/7] pinctrl: qcom: Update clock voting as optional
-To: Linus Walleij <linus.walleij@linaro.org>, 
- Srinivasa Rao Mandadapu <quic_srivasam@quicinc.com>, agross@kernel.org,
- alsa-devel@alsa-project.org, 
- bgoswami@quicinc.com, bjorn.andersson@linaro.org, broonie@kernel.org, 
- devicetree@vger.kernel.org, judyhsiao@chromium.org, lgirdwood@gmail.com, 
- linux-arm-msm@vger.kernel.org, linux-gpio@vger.kernel.org, 
- linux-kernel@vger.kernel.org, perex@perex.cz, quic_plai@quicinc.com, 
- quic_rohkumar@quicinc.com, robh+dt@kernel.org, srinivas.kandagatla@linaro.org, 
- tiwai@suse.com
-Content-Type: text/plain; charset="UTF-8"
-Cc: Venkata Prasad Potturu <quic_potturu@quicinc.com>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Firefox/91.0 Thunderbird/91.5.0
+Subject: Re: [PATCH v1 2/4] ASoC: ops: Fix stereo change notifications in
+ snd_soc_put_volsw_sx()
+Content-Language: en-US
+To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
+References: <20220201155629.120510-1-broonie@kernel.org>
+ <20220201155629.120510-3-broonie@kernel.org>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+In-Reply-To: <20220201155629.120510-3-broonie@kernel.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+Cc: alsa-devel@alsa-project.org, stable@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -100,15 +88,53 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Quoting Srinivasa Rao Mandadapu (2022-04-18 05:37:07)
-> Update bulk clock voting to optional voting as ADSP bypass platform doesn't
-> need macro and decodec clocks, as these macro and dcodec GDSC switches are
-> maintained as power domains and operated from lpass clock drivers.
->
-> Signed-off-by: Srinivasa Rao Mandadapu <quic_srivasam@quicinc.com>
-> Co-developed-by: Venkata Prasad Potturu <quic_potturu@quicinc.com>
-> Signed-off-by: Venkata Prasad Potturu <quic_potturu@quicinc.com>
-> Reviewed-by: Matthias Kaehlcke <mka@chromium.org>
-> ---
 
-Reviewed-by: Stephen Boyd <swboyd@chromium.org>
+
+On 2/1/22 09:56, Mark Brown wrote:
+> When writing out a stereo control we discard the change notification from
+> the first channel, meaning that events are only generated based on changes
+> to the second channel. Ensure that we report a change if either channel
+> has changed.
+> 
+> Signed-off-by: Mark Brown <broonie@kernel.org>
+> Cc: stable@vger.kernel.org
+> ---
+>  sound/soc/soc-ops.c | 7 +++++++
+>  1 file changed, 7 insertions(+)
+> 
+> diff --git a/sound/soc/soc-ops.c b/sound/soc/soc-ops.c
+> index 73c9d53de25b..f0d1aeb38346 100644
+> --- a/sound/soc/soc-ops.c
+> +++ b/sound/soc/soc-ops.c
+> @@ -413,6 +413,7 @@ int snd_soc_put_volsw_sx(struct snd_kcontrol *kcontrol,
+>  	int min = mc->min;
+>  	unsigned int mask = (1U << (fls(min + max) - 1)) - 1;
+>  	int err = 0;
+> +	int ret;
+>  	unsigned int val, val_mask;
+>  
+>  	val_mask = mask << shift;
+> @@ -422,6 +423,7 @@ int snd_soc_put_volsw_sx(struct snd_kcontrol *kcontrol,
+>  	err = snd_soc_component_update_bits(component, reg, val_mask, val);
+>  	if (err < 0)
+>  		return err;
+> +	ret = err;
+>  
+>  	if (snd_soc_volsw_is_stereo(mc)) {
+>  		unsigned int val2;
+> @@ -432,6 +434,11 @@ int snd_soc_put_volsw_sx(struct snd_kcontrol *kcontrol,
+>  
+>  		err = snd_soc_component_update_bits(component, reg2, val_mask,
+>  			val2);
+> +
+> +		/* Don't discard any error code or drop change flag */
+> +		if (ret == 0 || err < 0) {
+> +			ret = err;
+> +		}
+>  	}
+>  	return err;
+
+cppcheck flags a warning on this patch, I believe we should use "return ret;" here, as done in the other patches of this series?
+
+https://github.com/thesofproject/linux/pull/3597/commits/85b667d190953231ef314ac429019a011596f6d7
+
