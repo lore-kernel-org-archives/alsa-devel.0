@@ -4,142 +4,65 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E8085C433EF
-	for <alsa-devel@archiver.kernel.org>; Tue, 19 Apr 2022 11:53:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id EB6D7C433EF
+	for <alsa-devel@archiver.kernel.org>; Tue, 19 Apr 2022 11:53:46 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 22D3217CC;
-	Tue, 19 Apr 2022 13:52:25 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 22D3217CC
+	by alsa0.perex.cz (Postfix) with ESMTPS id 064F71820;
+	Tue, 19 Apr 2022 13:52:55 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 064F71820
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1650369195;
-	bh=FcBo7z+xTubfawNtuF5MSqeAA6GgSCJVkLic0CQVjIw=;
-	h=From:To:Subject:Date:References:In-Reply-To:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=a+T4tbFv+WRYHTj/8biwgH4RcAbuwHaJO/4Sv5eBwGJAmgKrzi0HGCNqOvHowkcaE
-	 mxFgegm5rb+oABJoqx2JwbeAKrWCoEWfBw4zR+Mqjl5q162Nv37Ye1vEyoHYVw+x22
-	 N8Qy4J8lzGgFskpjXRcyf2kkdzQLDzxejTWH3ZPk=
+	s=default; t=1650369225;
+	bh=XXUnh6QBBj/gCu/mUxV7aU6hPyvMtaIxJ53JaCjRYJg=;
+	h=Date:Subject:From:To:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=FVJWJQGwzbZmr01YsytBwI08rONV2jPkaUcE84GuD9z1stoC50uozOWFGXJWEOIf2
+	 yj4EHLaL9Po+kGib71VwQKYseV6FeF3hv8rzIqno+PNj2MV0a/YrMlBxnPlUJRLL2b
+	 Z6LJmZNIeBNXRJfP7KFP25WiwBDQxceAVjMMD2q8=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id C03E7F80237;
-	Tue, 19 Apr 2022 13:52:24 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 59EB7F80269;
+	Tue, 19 Apr 2022 13:52:25 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 43A5AF80161; Sat, 16 Apr 2022 21:25:29 +0200 (CEST)
-Received: from EUR04-DB3-obe.outbound.protection.outlook.com
- (mail-db3eur04on062a.outbound.protection.outlook.com
- [IPv6:2a01:111:f400:fe0c::62a])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id A20C8F800D8; Mon, 18 Apr 2022 12:12:28 +0200 (CEST)
+Received: from mail-il1-f200.google.com (mail-il1-f200.google.com
+ [209.85.166.200])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id CE4B3F80095
- for <alsa-devel@alsa-project.org>; Sat, 16 Apr 2022 21:25:26 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CE4B3F80095
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=dialogsemiconductor.onmicrosoft.com
- header.i=@dialogsemiconductor.onmicrosoft.com header.b="Yx0bawEg"
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=UrkpmEdrGMBgf50nLQlZ0WfQ9umaCfoPzfum1XqCjWPKMaSsOzMYT1HOx81xZ5jPvij4fZdohds3fCu3OLYIHqrhh2FGbjjaDHP2Sl0Lay9Og8euAIXVWETR4zRUqkGIk0UwpJhAXh4OOHCgD4FlTNNKoDxT3Izjw2DSBMiJrdWJtKNemJ1XDYPbChE51Jdw70/oTfuxWu2AySqCvl7j6i5/sH5d4VGubqgIWBsOX52gSCoVq6p9VIvWTIAkfeaqF7WbFPN7diegQrnHHFCIfDf81nB8KzzX8jafePNJMFLm9xCZ5nvd5PJnGwQ3duIBpoCDpqnGZvdcPWR01Dda9g==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=RcHpDGe12xMQNmHrZbW91VEZr91yAmA+G/YoSTi5P5Y=;
- b=m65FL6kDLgeDo5bRRKLdSii1fyi5yreScZjgTIgX0FusRd+nVLY3sSNAcn/PdF+6LRNQlSC2rUF/8uDSa4Co1/KR0mr1qRzGrVNnX5kB2mJSsw4W42rZcF+UVMjQiCZ4ZKvWKlMMhSlNZrdBJl3WirzRSQOEVkMByCDCLU47BypkBgSQKaDjIbWiOsEY3EM8rw8bvWN143Ngk9MPMY9AAz7J7pahzFCva5xFHcPZHwC0x/pfEZtOB2Nz4O76m3noDMxRNHH30YPNtUwQqkNQPTf0bFhCv35G4OLoQYO9luX++Y8g+HoMB6OsvKDct8z+reT7Ik1CHQndM5bxXlAPYg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=diasemi.com; dmarc=pass action=none header.from=diasemi.com;
- dkim=pass header.d=diasemi.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=dialogsemiconductor.onmicrosoft.com;
- s=selector1-dialogsemiconductor-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=RcHpDGe12xMQNmHrZbW91VEZr91yAmA+G/YoSTi5P5Y=;
- b=Yx0bawEgYiOfxR31kduqwgb9loUsb+SnEMSNh4xPirrkXSaYcSqFEzB7Q/RX9LzlMGXvAMZdgSmnDCQr3HNlrDTmYi2ga3V1QgfYOuLJf1LIZgATV7VE2Q8ReFtfa6LEdDboUmX8r4tsOb3n+S6NoI4fSUnEI07lL/H/RxxO72w=
-Received: from VI1PR10MB3167.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:803:12d::15)
- by PAXPR10MB4703.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:102:152::14)
- with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5164.18; Sat, 16 Apr
- 2022 19:25:21 +0000
-Received: from VI1PR10MB3167.EURPRD10.PROD.OUTLOOK.COM
- ([fe80::a93d:d07b:d790:d485]) by VI1PR10MB3167.EURPRD10.PROD.OUTLOOK.COM
- ([fe80::a93d:d07b:d790:d485%8]) with mapi id 15.20.5164.025; Sat, 16 Apr 2022
- 19:25:20 +0000
-From: Adam Ward <Adam.Ward.opensource@diasemi.com>
-To: Mark Brown <broonie@kernel.org>, Support Opensource
- <Support.Opensource@diasemi.com>, Liam Girdwood <lgirdwood@gmail.com>
-Subject: RE: [PATCH] ASoC: da7219: Fix change notifications for tone generator
- frequency
-Thread-Topic: [PATCH] ASoC: da7219: Fix change notifications for tone
- generator frequency
-Thread-Index: AQHYUZDqMlPtR+AMP0GbgPBcQycY36zy6e1w
-Date: Sat, 16 Apr 2022 19:25:20 +0000
-Message-ID: <VI1PR10MB316749E7B1C0F429EA486E56ECF19@VI1PR10MB3167.EURPRD10.PROD.OUTLOOK.COM>
-References: <20220416125257.197348-1-broonie@kernel.org>
-In-Reply-To: <20220416125257.197348-1-broonie@kernel.org>
-Accept-Language: en-GB, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=diasemi.com;
-x-ms-exchange-messagesentrepresentingtype: 1
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 4aae39b7-4d3a-4ca0-3fad-08da1fded8f3
-x-ms-traffictypediagnostic: PAXPR10MB4703:EE_
-x-ms-exchange-sharedmailbox-routingagent-processed: True
-x-microsoft-antispam-prvs: <PAXPR10MB470324ED8FFCE0CC4E987826CBF19@PAXPR10MB4703.EURPRD10.PROD.OUTLOOK.COM>
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 836gSZv9GnQkzo+nQh6jwGu7yxawTgA+LLDDscksXAvxuY00LW0zosLddEl7GhiJR2oS+fB2QU3hvjb4mXj1PdKkY6zBMSrPFqVOscoIOLIeA5ikLnPbdGB05SGQTtBNeAY3BBvPnqIH/ai1UFBU6WYMPSQ+0nO7BMIipR5KF8Fe2gdnxPoyRottS3rHhswbePP3QfiLgcmieAkWPod0FllQ/Un2/S7kWcwy+FOb3ugn4J53sSjN9BajqSNtUjuQp4qZtzN/Acyk7oYW4XbG7tUSSHg0/q/u0udzss2nTn6oi4063Ce+wQUy43LHJsFjxQuzaK+IIJs1Mtz0mR63j+zyFBpv4f9XV0az7fW6+nB4yVoAyR0/q/NRRF9+LfF8nXjBUtbFhffe+iECMqOjFQeEjDdmDFvvISwPRipqXeaM3G7Jhl/HtSh5k3pmFUg/J4WeA5kZLII8opwlnQ2do0XhCd3tlbqik8Ioj/rfA1qybHsiYjj6oJrKeprxTkIL7DU/PTCN/AsqHc0xds/OZYq4azxdcg5PCS9kmiDFLWzQvMHYtLwicqwkIp7XHgph9jz/vZlFqVjvPYKpTBcuTC14FhdXDC0YqIwxs6TmZcwwJk80WtLhY3YI1KImhAVOKeeTbwi4JdgOv9ZcOQfcRC8CV5sfkURflqeAiUZ+aMt7eRzd5K6ZF5A1md7O7k+GhNpg3PSPkSNleKWBsRSDeQ==
-x-forefront-antispam-report: CIP:255.255.255.255; CTRY:; LANG:en; SCL:1; SRV:;
- IPV:NLI; SFV:NSPM; H:VI1PR10MB3167.EURPRD10.PROD.OUTLOOK.COM; PTR:; CAT:NONE;
- SFS:(13230001)(4636009)(366004)(2906002)(9686003)(52536014)(110136005)(8936002)(38100700002)(316002)(71200400001)(122000001)(38070700005)(7696005)(6506007)(55016003)(83380400001)(4326008)(186003)(66476007)(66556008)(76116006)(66946007)(4744005)(53546011)(66446008)(8676002)(86362001)(64756008)(26005)(33656002)(508600001)(5660300002);
- DIR:OUT; SFP:1101; 
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?OgPgwcqc9JMnZn4hCak7UcmXYJyJNS48kaq6oedUNg19El93SKN1pNfX+YK/?=
- =?us-ascii?Q?45svtNg+4CfEl+l7cR0Q86g8tcU1ZyrmkEEiriXJFzdkXKRcfsG1Sotwx7vJ?=
- =?us-ascii?Q?Dsbylh98wIsd7nALuychHB+4WyWB4S0l4mzXvj8wBxnm72LYtZ61JlVCXvi3?=
- =?us-ascii?Q?II93I1WFhZ2n09i5mQOqdJIWhqv72CdBMfgdiC0Kj3eLRHLB9IvoT2FhNj3d?=
- =?us-ascii?Q?SxgbVA/C/jxBY/nzAqoqDpwQgzYU90f2jcYvX/eNxX6Yb/KyYfyXc6/uLQD2?=
- =?us-ascii?Q?36pRxjJRHyS+pRheaBy6tVmCFD1f3ynJFLZKRd/7RCR6vDygiWHRKyCHs5yG?=
- =?us-ascii?Q?IS1TUVSwPvgFbsUm4RuAPueCJD/0GonIIrHDpoCwQb+32cxIqVbnTVVXnPiZ?=
- =?us-ascii?Q?V2N9mOxZt0xfVWxq9VqwLn8vqbXwB9W3VCUrouZdR6jm+2FDj6QE0WU1h/C1?=
- =?us-ascii?Q?2IhZ19pfEsyUYHlAz6cJFz7P67SClYHu1HTfj7elEDHKNkd0wZoHndPjQ208?=
- =?us-ascii?Q?p5rMo9u/5L4FkY43+VH5x4vbsDGnxUwrS1ijmrCp/4DPgabRJLYj0yJ5Tb4L?=
- =?us-ascii?Q?opzSUTH8+J5wUg1SeVDHgREHSqwgVDXZM8L637GmlrDZssaLeWipEmywKBaj?=
- =?us-ascii?Q?drGeQND7T0mawOcrmqWMtU8cSpE324QllSvT9tyOfvBAQ0p9w1/ayplb6yFu?=
- =?us-ascii?Q?LJJykDGHXnAiB7xmz9XlqRbwJrTYjYrqXv/AhP3YRS+ul1vzBSE5oiAP6lBV?=
- =?us-ascii?Q?Cek/2Nvai4gvPUI+3sLrEk4Z6dSBtDHf1TLg0rJDnuKObNF9zjpaOWp/t5b4?=
- =?us-ascii?Q?g9APBTucuVZtZPtW6N4w54vWoDqsrwLHM89XsTMsqKsps9Rr+h54umBvohNU?=
- =?us-ascii?Q?lXWYLbcQ5fkSz5nrUsN+nhyUlz8JRsENT6tfkrN15SFPIf0mbeL1uNCSoywS?=
- =?us-ascii?Q?OT4YxZx6mKHqDyzzTk6Q+xuvUySOGz+iM26O8Bb/IYzu+0KZXK8XR3A5MaaO?=
- =?us-ascii?Q?WaLihyMIRh8UiCDhA0qQIv3x3+WXW7k5P6JK9ZfObhda2bwt8Sv5U2X2Csfg?=
- =?us-ascii?Q?LJlzO6j6j9PzQppbsjIYhklouhNxueNNAqNJSl4B7maSKPDg2g8FxYUMZbfW?=
- =?us-ascii?Q?mAEYdmgdexlIhhZfLeSg7Nhhfa2KjVnoHqJRJaJzb6ThihzXEMgWEUCCn4Rs?=
- =?us-ascii?Q?gkt343Ul4TQbcMkqdv81SK64UVGNFl85JaQqmtt+bzksyVMzTV2QkZO5QS6s?=
- =?us-ascii?Q?sAZXiPS2Mw/knZE3mSzQXj4ySsbtPKTsJAJDoppWJ9G9TF/tN5E9uO581pYF?=
- =?us-ascii?Q?JI2yTboUpzR1j2jkzdwNMAc9GX5g1jg8lTEQMneaAApT7bRE6pJvZb9/7uK8?=
- =?us-ascii?Q?FseyzwXcS27o+YDSA7RX/jiddLJjJgycGrvralZ4fGG1UwfkMqn+Vnvdb3VV?=
- =?us-ascii?Q?WTWmGtw8g94Gh58AlStGqoYbYlJ3wrjYcdblgjkId5DzAA85yVssfv528lQZ?=
- =?us-ascii?Q?Ek9cq5ZhLjg6iQrt2F8PJoY8Xdg/eOolG5BekVVnZlPu2DszYReQWqGWo6Ih?=
- =?us-ascii?Q?19KK5EZGeFT/eAGKHCs9jF9Xqihz05JfbrrKg8FClA5XKvsI123gIJA8bH1v?=
- =?us-ascii?Q?pywAdj+jp72QsIf1oYpARPmbeCWoGKuEC2zDc84qPwoyO6FftnkLqLfb4Tb8?=
- =?us-ascii?Q?nvrC1tP1inYZBGhpxeCf35TVhFQFw/eG7QomxFRZXmgbfYDw9RYPPSZb207H?=
- =?us-ascii?Q?+CDkyUynjvA7SMkLHamstdDXEozHhJo=3D?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+ by alsa1.perex.cz (Postfix) with ESMTPS id 6FA8AF800D8
+ for <alsa-devel@alsa-project.org>; Mon, 18 Apr 2022 12:12:25 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6FA8AF800D8
+Received: by mail-il1-f200.google.com with SMTP id
+ r20-20020a056e02109400b002cc174742c9so1775423ilj.5
+ for <alsa-devel@alsa-project.org>; Mon, 18 Apr 2022 03:12:25 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+ bh=b3gHZlywNI1/W84NKsMn8/CEmdK4U5QuxkrPxRysdcM=;
+ b=5SyqqoJBWkP2evOIK7h0X/Z+CgHrb57BHMTliHrujefAfvvstSfi8vDpHS/U73HpvC
+ dsH/w4jkaPPmPCSH8AiKUfFegKUz5eZ2fvzFBojE0nxeOBL0v9Eh3rL3oK3VM2Xc06uO
+ uIX9Nr0auiMzhj8MQNU0PdA94SJDVyliszotxXAb66pcl7PO9E6uPuJkRB5brE1jWluF
+ ldtj0Y3MYyv5rJskXrKMe49lGU6/iBG9T5wJ5CEBeOrMWNC6XmYIf138QvLNuB7amlL2
+ Vumnq+dv4Q3X8y9zBIZNs93GjYgPRun6joxqWmFDPYYfwgXFWR+1l0XxEQnUeOW7xubi
+ PaeA==
+X-Gm-Message-State: AOAM532pikeXR1w1ViaDJ84+iGYi52BWvZQ6K+CNcjk0tHGG6dhNMJ2q
+ m3fGJg14bJioj3YQzesBQOVLQK+paq9zZPC6tVQQ6YV27KX0
+X-Google-Smtp-Source: ABdhPJxUtJ19U32+3b1m1d/bYpjAejY2WcJpArwXMKR0aDB95BmPsDzddNd55pkaLueE5/brSM5yIzgKQiX6YnLOKPFZLIeIoymc
 MIME-Version: 1.0
-X-OriginatorOrg: diasemi.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: VI1PR10MB3167.EURPRD10.PROD.OUTLOOK.COM
-X-MS-Exchange-CrossTenant-Network-Message-Id: 4aae39b7-4d3a-4ca0-3fad-08da1fded8f3
-X-MS-Exchange-CrossTenant-originalarrivaltime: 16 Apr 2022 19:25:20.7180 (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 511e3c0e-ee96-486e-a2ec-e272ffa37b7c
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: cQ2oczkRBEKTPW3zb6MosdhTpGQ+D1hJn5ILS2GG5wkIHN9vvbSD9E6NqOCToaPCPus9spJfB3xOOhds4xhckw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PAXPR10MB4703
+X-Received: by 2002:a05:6e02:1485:b0:2cb:d7ce:bf36 with SMTP id
+ n5-20020a056e02148500b002cbd7cebf36mr4263955ilk.255.1650276743335; Mon, 18
+ Apr 2022 03:12:23 -0700 (PDT)
+Date: Mon, 18 Apr 2022 03:12:23 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000011555605dceaff03@google.com>
+Subject: [syzbot] KASAN: use-after-free Read in __snd_rawmidi_transmit_peek
+From: syzbot <syzbot+70e777a39907d6d5fd0a@syzkaller.appspotmail.com>
+To: alsa-devel@alsa-project.org, coding@diwic.se, colin.king@intel.com, 
+ linux-kernel@vger.kernel.org, perex@perex.cz, syzkaller-bugs@googlegroups.com, 
+ tiwai@suse.com
+Content-Type: text/plain; charset="UTF-8"
 X-Mailman-Approved-At: Tue, 19 Apr 2022 13:52:22 +0200
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -155,15 +78,206 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On 16 April 2022 13:53, Mark Brown wrote:
->  	mutex_lock(&da7219->ctrl_lock);
-> -	ret =3D regmap_raw_write(da7219->regmap, reg, &val, sizeof(val));
-> +	ret =3D regmap_raw_read(da7219->regmap, reg, &val_old,
-> sizeof(val_old));
-> +	if (ret !=3D 0)
-I think you may have intended to confirm success here
+Hello,
 
-> +		ret =3D regmap_raw_write(da7219->regmap, reg,
-> +				&val_new, sizeof(val_new));
->  	mutex_unlock(&da7219->ctrl_lock);
+syzbot found the following issue on:
 
+HEAD commit:    a19944809fe9 Merge tag 'hardening-v5.18-rc3' of git://git...
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=16a40ae0f00000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=eb177500e563582f
+dashboard link: https://syzkaller.appspot.com/bug?extid=70e777a39907d6d5fd0a
+compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1590dfa8f00000
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+70e777a39907d6d5fd0a@syzkaller.appspotmail.com
+
+==================================================================
+BUG: KASAN: use-after-free in __snd_rawmidi_transmit_peek+0x261/0x360 sound/core/rawmidi.c:1286
+Read of size 1 at addr ffff88807eac2072 by task kworker/1:1H/51
+
+CPU: 1 PID: 51 Comm: kworker/1:1H Not tainted 5.18.0-rc2-syzkaller-00050-ga19944809fe9 #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Workqueue: events_highpri snd_usbmidi_out_work
+Call Trace:
+ <TASK>
+ __dump_stack lib/dump_stack.c:88 [inline]
+ dump_stack_lvl+0xcd/0x134 lib/dump_stack.c:106
+ print_address_description.constprop.0.cold+0xeb/0x495 mm/kasan/report.c:313
+ print_report mm/kasan/report.c:429 [inline]
+ kasan_report.cold+0xf4/0x1c6 mm/kasan/report.c:491
+ __snd_rawmidi_transmit_peek+0x261/0x360 sound/core/rawmidi.c:1286
+ snd_rawmidi_transmit+0x8d/0xf0 sound/core/rawmidi.c:1411
+ snd_usbmidi_standard_output+0x264/0xc10 sound/usb/midi.c:650
+ snd_usbmidi_do_output+0x200/0x510 sound/usb/midi.c:311
+ process_one_work+0x996/0x1610 kernel/workqueue.c:2289
+ worker_thread+0x665/0x1080 kernel/workqueue.c:2436
+ kthread+0x2e9/0x3a0 kernel/kthread.c:376
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:298
+ </TASK>
+
+Allocated by task 5812:
+ kasan_save_stack+0x1e/0x40 mm/kasan/common.c:38
+ kasan_set_track mm/kasan/common.c:45 [inline]
+ set_alloc_info mm/kasan/common.c:436 [inline]
+ ____kasan_kmalloc mm/kasan/common.c:515 [inline]
+ ____kasan_kmalloc mm/kasan/common.c:474 [inline]
+ __kasan_kmalloc+0xa9/0xd0 mm/kasan/common.c:524
+ kmalloc_node include/linux/slab.h:604 [inline]
+ kvmalloc_node+0x3e/0x130 mm/util.c:580
+ kvmalloc include/linux/slab.h:731 [inline]
+ kvzalloc include/linux/slab.h:739 [inline]
+ snd_rawmidi_runtime_create sound/core/rawmidi.c:162 [inline]
+ open_substream+0x340/0x8b0 sound/core/rawmidi.c:306
+ rawmidi_open_priv+0x591/0x6f0 sound/core/rawmidi.c:357
+ snd_rawmidi_kernel_open+0x1b5/0x270 sound/core/rawmidi.c:392
+ midisynth_use+0xee/0x270 sound/core/seq/seq_midi.c:215
+ subscribe_port sound/core/seq/seq_ports.c:412 [inline]
+ check_and_subscribe_port+0x89a/0xb80 sound/core/seq/seq_ports.c:495
+ snd_seq_port_connect+0x382/0x540 sound/core/seq/seq_ports.c:581
+ snd_seq_ioctl_subscribe_port+0x1fc/0x400 sound/core/seq/seq_clientmgr.c:1492
+ snd_seq_kernel_client_ctl+0x102/0x1e0 sound/core/seq/seq_clientmgr.c:2369
+ snd_seq_oss_midi_open+0x582/0x6e0 sound/core/seq/oss/seq_oss_midi.c:359
+ snd_seq_oss_synth_setup_midi+0x12d/0x530 sound/core/seq/oss/seq_oss_synth.c:269
+ snd_seq_oss_open+0x8c3/0xa80 sound/core/seq/oss/seq_oss_init.c:260
+ odev_open+0x6c/0x90 sound/core/seq/oss/seq_oss.c:128
+ soundcore_open+0x44e/0x620 sound/sound_core.c:593
+ chrdev_open+0x266/0x770 fs/char_dev.c:414
+ do_dentry_open+0x4a1/0x11e0 fs/open.c:824
+ do_open fs/namei.c:3476 [inline]
+ path_openat+0x1c71/0x2910 fs/namei.c:3609
+ do_filp_open+0x1aa/0x400 fs/namei.c:3636
+ do_sys_openat2+0x16d/0x4c0 fs/open.c:1213
+ do_sys_open fs/open.c:1229 [inline]
+ __do_sys_openat fs/open.c:1245 [inline]
+ __se_sys_openat fs/open.c:1240 [inline]
+ __x64_sys_openat+0x13f/0x1f0 fs/open.c:1240
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+
+Freed by task 5811:
+ kasan_save_stack+0x1e/0x40 mm/kasan/common.c:38
+ kasan_set_track+0x21/0x30 mm/kasan/common.c:45
+ kasan_set_free_info+0x20/0x30 mm/kasan/generic.c:370
+ ____kasan_slab_free mm/kasan/common.c:366 [inline]
+ ____kasan_slab_free+0x166/0x1a0 mm/kasan/common.c:328
+ kasan_slab_free include/linux/kasan.h:200 [inline]
+ slab_free_hook mm/slub.c:1728 [inline]
+ slab_free_freelist_hook+0x8b/0x1c0 mm/slub.c:1754
+ slab_free mm/slub.c:3510 [inline]
+ kfree+0xd6/0x4d0 mm/slub.c:4552
+ kvfree+0x42/0x50 mm/util.c:615
+ snd_rawmidi_runtime_free sound/core/rawmidi.c:176 [inline]
+ close_substream.part.0+0x185/0x720 sound/core/rawmidi.c:528
+ close_substream sound/core/rawmidi.c:507 [inline]
+ rawmidi_release_priv+0x192/0x270 sound/core/rawmidi.c:547
+ snd_rawmidi_kernel_release+0x39/0xd0 sound/core/rawmidi.c:564
+ midisynth_unuse+0x45/0x80 sound/core/seq/seq_midi.c:244
+ unsubscribe_port sound/core/seq/seq_ports.c:437 [inline]
+ __delete_and_unsubscribe_port+0x270/0x4c0 sound/core/seq/seq_ports.c:537
+ snd_seq_port_disconnect+0x41c/0x5d0 sound/core/seq/seq_ports.c:616
+ snd_seq_ioctl_unsubscribe_port+0x1fc/0x400 sound/core/seq/seq_clientmgr.c:1537
+ snd_seq_kernel_client_ctl+0x102/0x1e0 sound/core/seq/seq_clientmgr.c:2369
+ snd_seq_oss_midi_close+0x44f/0x4d0 sound/core/seq/oss/seq_oss_midi.c:404
+ snd_seq_oss_synth_reset+0x422/0x880 sound/core/seq/oss/seq_oss_synth.c:406
+ snd_seq_oss_reset+0x6f/0x290 sound/core/seq/oss/seq_oss_init.c:435
+ snd_seq_oss_release+0x78/0x1a0 sound/core/seq/oss/seq_oss_init.c:412
+ odev_release+0x4f/0x70 sound/core/seq/oss/seq_oss.c:144
+ __fput+0x277/0x9d0 fs/file_table.c:317
+ task_work_run+0xdd/0x1a0 kernel/task_work.c:164
+ resume_user_mode_work include/linux/resume_user_mode.h:49 [inline]
+ exit_to_user_mode_loop kernel/entry/common.c:169 [inline]
+ exit_to_user_mode_prepare+0x23c/0x250 kernel/entry/common.c:201
+ __syscall_exit_to_user_mode_work kernel/entry/common.c:283 [inline]
+ syscall_exit_to_user_mode+0x19/0x60 kernel/entry/common.c:294
+ do_syscall_64+0x42/0xb0 arch/x86/entry/common.c:86
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+
+The buggy address belongs to the object at ffff88807eac2000
+ which belongs to the cache kmalloc-4k of size 4096
+The buggy address is located 114 bytes inside of
+ 4096-byte region [ffff88807eac2000, ffff88807eac3000)
+
+The buggy address belongs to the physical page:
+page:ffffea0001fab000 refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x7eac0
+head:ffffea0001fab000 order:3 compound_mapcount:0 compound_pincount:0
+flags: 0xfff00000010200(slab|head|node=0|zone=1|lastcpupid=0x7ff)
+raw: 00fff00000010200 ffffea0001d2a000 dead000000000002 ffff888010c42140
+raw: 0000000000000000 0000000000040004 00000001ffffffff 0000000000000000
+page dumped because: kasan: bad access detected
+page_owner tracks the page as allocated
+page last allocated via order 3, migratetype Unmovable, gfp_mask 0xd20c0(__GFP_IO|__GFP_FS|__GFP_NOWARN|__GFP_NORETRY|__GFP_COMP|__GFP_NOMEMALLOC), pid 3703, tgid 3703 (syz-executor.4), ts 1615766892626, free_ts 34515408626
+ prep_new_page mm/page_alloc.c:2441 [inline]
+ get_page_from_freelist+0xba2/0x3e00 mm/page_alloc.c:4182
+ __alloc_pages+0x1b2/0x500 mm/page_alloc.c:5408
+ alloc_pages+0x1aa/0x310 mm/mempolicy.c:2272
+ alloc_slab_page mm/slub.c:1799 [inline]
+ allocate_slab+0x26c/0x3c0 mm/slub.c:1944
+ new_slab mm/slub.c:2004 [inline]
+ ___slab_alloc+0x8df/0xf20 mm/slub.c:3005
+ __slab_alloc.constprop.0+0x4d/0xa0 mm/slub.c:3092
+ slab_alloc_node mm/slub.c:3183 [inline]
+ slab_alloc mm/slub.c:3225 [inline]
+ kmem_cache_alloc_trace+0x310/0x3f0 mm/slub.c:3256
+ kmalloc include/linux/slab.h:581 [inline]
+ kzalloc include/linux/slab.h:714 [inline]
+ kobject_uevent_env+0x235/0x1660 lib/kobject_uevent.c:524
+ device_add+0xb20/0x1e20 drivers/base/core.c:3386
+ netdev_register_kobject+0x181/0x430 net/core/net-sysfs.c:2008
+ register_netdevice+0xd9d/0x15b0 net/core/dev.c:9961
+ __rtnl_newlink+0x1555/0x1760 net/core/rtnetlink.c:3485
+ rtnl_newlink+0x64/0xa0 net/core/rtnetlink.c:3531
+ rtnetlink_rcv_msg+0x413/0xb80 net/core/rtnetlink.c:5990
+ netlink_rcv_skb+0x153/0x420 net/netlink/af_netlink.c:2496
+ netlink_unicast_kernel net/netlink/af_netlink.c:1319 [inline]
+ netlink_unicast+0x543/0x7f0 net/netlink/af_netlink.c:1345
+page last free stack trace:
+ reset_page_owner include/linux/page_owner.h:24 [inline]
+ free_pages_prepare mm/page_alloc.c:1356 [inline]
+ free_pcp_prepare+0x549/0xd20 mm/page_alloc.c:1406
+ free_unref_page_prepare mm/page_alloc.c:3328 [inline]
+ free_unref_page+0x19/0x6a0 mm/page_alloc.c:3423
+ qlink_free mm/kasan/quarantine.c:157 [inline]
+ qlist_free_all+0x6a/0x170 mm/kasan/quarantine.c:176
+ kasan_quarantine_reduce+0x180/0x200 mm/kasan/quarantine.c:283
+ __kasan_slab_alloc+0xa2/0xc0 mm/kasan/common.c:446
+ kasan_slab_alloc include/linux/kasan.h:224 [inline]
+ slab_post_alloc_hook mm/slab.h:749 [inline]
+ slab_alloc_node mm/slub.c:3217 [inline]
+ kmem_cache_alloc_node+0x255/0x3f0 mm/slub.c:3267
+ __alloc_skb+0x215/0x340 net/core/skbuff.c:414
+ alloc_skb include/linux/skbuff.h:1300 [inline]
+ alloc_skb_with_frags+0x93/0x730 net/core/skbuff.c:5995
+ sock_alloc_send_pskb+0x793/0x920 net/core/sock.c:2600
+ unix_dgram_sendmsg+0x414/0x1a90 net/unix/af_unix.c:1896
+ sock_sendmsg_nosec net/socket.c:705 [inline]
+ sock_sendmsg+0xcf/0x120 net/socket.c:725
+ __sys_sendto+0x216/0x310 net/socket.c:2040
+ __do_sys_sendto net/socket.c:2052 [inline]
+ __se_sys_sendto net/socket.c:2048 [inline]
+ __x64_sys_sendto+0xdd/0x1b0 net/socket.c:2048
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+
+Memory state around the buggy address:
+ ffff88807eac1f00: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
+ ffff88807eac1f80: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
+>ffff88807eac2000: fa fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+                                                             ^
+ ffff88807eac2080: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+ ffff88807eac2100: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+==================================================================
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+syzbot can test patches for this issue, for details see:
+https://goo.gl/tpsmEJ#testing-patches
