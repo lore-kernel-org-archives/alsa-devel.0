@@ -4,66 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8937DC433F5
-	for <alsa-devel@archiver.kernel.org>; Tue, 19 Apr 2022 13:51:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C7B70C433EF
+	for <alsa-devel@archiver.kernel.org>; Tue, 19 Apr 2022 13:52:11 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id BE06E192C;
-	Tue, 19 Apr 2022 15:51:04 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BE06E192C
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0D3A01B03;
+	Tue, 19 Apr 2022 15:51:20 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0D3A01B03
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1650376314;
-	bh=0G3cWV48CpbBHTE2pnfpd8IteUQx33zVzk5I5jOHq28=;
+	s=default; t=1650376330;
+	bh=UESTNhRpqCdmOp1XFvzi39fpM7sULzK7+yHauqukJgM=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=DJ37tk/+f/q/jbAabOyycVeOlWwki7vOeC6KHJt7eLOk0QKktHk7IkMSN/ALniER8
-	 C7/CpZ8Udj9XaPXs8ZA389U5suAkVI9tyI/V+gHwQE+wWFu7cPlxVYBeXTPgnWEhHE
-	 JSVGHuNBoECNxv6mQJRm1XwVvJfiisJFuMfzfBn0=
+	b=h2z2ckebLY8z+HbHg3iXtJi5mhbUPPU4GA80D3ULvsGqinlAxMJiTr9uBY8/rn5d1
+	 P0Kb0isVDqS1LifmVqxyHDnToOKjqiLM/9LcYO5AN4nEgZO59ksDiRADwODQ8TV0Ad
+	 Q/390rUkvezFfvofoJP05b2R1pblKU66/fN5boVk=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 4F886F805E6;
-	Tue, 19 Apr 2022 15:43:35 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id A727EF805EA;
+	Tue, 19 Apr 2022 15:43:36 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 17CB2F80269; Tue, 19 Apr 2022 15:41:34 +0200 (CEST)
+ id 1A9EDF80506; Tue, 19 Apr 2022 15:41:44 +0200 (CEST)
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 50D4AF80121
- for <alsa-devel@alsa-project.org>; Tue, 19 Apr 2022 15:41:31 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 50D4AF80121
+ by alsa1.perex.cz (Postfix) with ESMTPS id 850E3F804F1
+ for <alsa-devel@alsa-project.org>; Tue, 19 Apr 2022 15:41:41 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 850E3F804F1
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="tcaHuW+q"
+ header.b="qN9Y+eXI"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id 4275761693;
- Tue, 19 Apr 2022 13:41:00 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1808EC385A5;
- Tue, 19 Apr 2022 13:40:52 +0000 (UTC)
+ by dfw.source.kernel.org (Postfix) with ESMTPS id 6EC4D616D3;
+ Tue, 19 Apr 2022 13:41:40 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 85ADEC385B0;
+ Tue, 19 Apr 2022 13:41:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1650375659;
- bh=0G3cWV48CpbBHTE2pnfpd8IteUQx33zVzk5I5jOHq28=;
+ s=k20201202; t=1650375699;
+ bh=UESTNhRpqCdmOp1XFvzi39fpM7sULzK7+yHauqukJgM=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=tcaHuW+qziDrvzUpHuEMFKwFU24gmYLLaVW/lH4YSmvt7xGUnfF0sNVHp802pMZbG
- K6J/uNMNn5vL9mXzi8X3zRI/z8lzVEB3EuRwjjxKiFdSM+arUaoowF1MoiFyyH8XVV
- /v4R5gyMXGZMU1ta0p9hOmph2xXY8RLU5gpqA4zETCrSrM5Xh09D1z+ACK4EbozYv5
- 9Sive/zvlpYwCeQ4lV4Bn/MYQu9361EX6fnn4oEfAgmr8UYhW5oVkAM1jX9gnVVYhJ
- ZhuIwaJaHXeGR4SyNhWN+K44rhkpWMXYC38ShwJwl87he4xwz0XOvHfjHqz/624Ycs
- 325kt1woDgtcA==
+ b=qN9Y+eXIXoBe7y4TGwmSZZVExIPvDiGiWQet4fH81EnPncUzwHNWtwJGsY0JYakO5
+ ieE4QfHwXAynpvZYZ8I/rORqxFxxcrHC8uhh9dPC5cMy5EFTa1VMfxpra8+tJNdEGG
+ y/nxkofQTm0FspP0LVUYlssfbUKsMywSyPappcPTyOe/CcTltiL0WCa18tUiJ5htqe
+ P7yjD5xk7TGFmi/cCP8q3ujCRWlK/rt27yUduttq75nsmlB26koCVmVI39ToEeDgJ3
+ 4QYMXy9PKlQiS9e/fHPi6ZUa8bAMf16ReuxZRt8ni4Y+YGTV+WxebK/v6W2sjZcyA9
+ IDq9aNHMe6VJg==
 From: Arnd Bergmann <arnd@kernel.org>
 To: linux-omap@vger.kernel.org, tony@atomide.com, aaro.koskinen@iki.fi,
  jmkrzyszt@gmail.com
-Subject: [PATCH 27/41] ARM: omap1: use pci_remap_iospace() for omap_cf
-Date: Tue, 19 Apr 2022 15:37:09 +0200
-Message-Id: <20220419133723.1394715-28-arnd@kernel.org>
+Subject: [PATCH 32/41] ARM: OMAP1: clock: Fix UART rate reporting algorithm
+Date: Tue, 19 Apr 2022 15:37:14 +0200
+Message-Id: <20220419133723.1394715-33-arnd@kernel.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20220419133723.1394715-1-arnd@kernel.org>
 References: <20220419133723.1394715-1-arnd@kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Mailman-Approved-At: Tue, 19 Apr 2022 15:43:16 +0200
+X-Mailman-Approved-At: Tue, 19 Apr 2022 15:43:17 +0200
 Cc: Ulf Hansson <ulf.hansson@linaro.org>,
  Dmitry Torokhov <dmitry.torokhov@gmail.com>,
  Linus Walleij <linus.walleij@linaro.org>, linux-fbdev@vger.kernel.org,
@@ -95,136 +95,31 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Arnd Bergmann <arnd@arndb.de>
+From: Janusz Krzysztofik <jmkrzyszt@gmail.com>
 
-The ISA I/O space handling in omap_cf is incompatible with
-PCI drivers in a multiplatform kernel, and requires a custom
-mach/io.h.
+Since its introduction to the mainline kernel, omap1_uart_recalc() helper
+makes incorrect use of clk->enable_bit as a ready to use bitmap mask while
+it only provides the bit number.  Fix it.
 
-Change the driver to use pci_remap_iospace() like PCI drivers do,
-so the generic ioport access can work across platforms.
-
-To actually use that code, we have to select CONFIG_PCI
-here.
-
+Signed-off-by: Janusz Krzysztofik <jmkrzyszt@gmail.com>
 Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 ---
- arch/arm/Kconfig                      |  2 +-
- arch/arm/mach-omap1/include/mach/io.h | 45 ---------------------------
- drivers/pcmcia/omap_cf.c              | 10 +++---
- 3 files changed, 5 insertions(+), 52 deletions(-)
- delete mode 100644 arch/arm/mach-omap1/include/mach/io.h
+ arch/arm/mach-omap1/clock.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/arm/Kconfig b/arch/arm/Kconfig
-index 700655e31b04..a57ad0928edc 100644
---- a/arch/arm/Kconfig
-+++ b/arch/arm/Kconfig
-@@ -487,11 +487,11 @@ config ARCH_OMAP1
- 	bool "TI OMAP1"
- 	select ARCH_OMAP
- 	select CLKSRC_MMIO
-+	select FORCE_PCI if PCCARD
- 	select GENERIC_IRQ_CHIP
- 	select GPIOLIB
- 	select HAVE_LEGACY_CLK
- 	select IRQ_DOMAIN
--	select NEED_MACH_IO_H if PCCARD
- 	select NEED_MACH_MEMORY_H
- 	select SPARSE_IRQ
- 	help
-diff --git a/arch/arm/mach-omap1/include/mach/io.h b/arch/arm/mach-omap1/include/mach/io.h
-deleted file mode 100644
-index ce4f8005b26f..000000000000
---- a/arch/arm/mach-omap1/include/mach/io.h
-+++ /dev/null
-@@ -1,45 +0,0 @@
--/*
-- * arch/arm/mach-omap1/include/mach/io.h
-- *
-- * IO definitions for TI OMAP processors and boards
-- *
-- * Copied from arch/arm/mach-sa1100/include/mach/io.h
-- * Copyright (C) 1997-1999 Russell King
-- *
-- * This program is free software; you can redistribute it and/or modify it
-- * under the terms of the GNU General Public License as published by the
-- * Free Software Foundation; either version 2 of the License, or (at your
-- * option) any later version.
-- *
-- * THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED
-- * WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
-- * MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN
-- * NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT,
-- * INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
-- * NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF
-- * USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
-- * ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
-- * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
-- * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-- *
-- * You should have received a copy of the GNU General Public License along
-- * with this program; if not, write to the Free Software Foundation, Inc.,
-- * 675 Mass Ave, Cambridge, MA 02139, USA.
-- *
-- * Modifications:
-- *  06-12-1997	RMK	Created.
-- *  07-04-1999	RMK	Major cleanup
-- */
--
--#ifndef __ASM_ARM_ARCH_IO_H
--#define __ASM_ARM_ARCH_IO_H
--
--#define IO_SPACE_LIMIT 0xffffffff
--
--/*
-- * We don't actually have real ISA nor PCI buses, but there is so many
-- * drivers out there that might just work if we fake them...
-- */
--#define __io(a)		__typesafe_io(a)
--
--#endif
-diff --git a/drivers/pcmcia/omap_cf.c b/drivers/pcmcia/omap_cf.c
-index 093022ce7d91..1972a8f6fa8e 100644
---- a/drivers/pcmcia/omap_cf.c
-+++ b/drivers/pcmcia/omap_cf.c
-@@ -205,6 +205,7 @@ static int __init omap_cf_probe(struct platform_device *pdev)
- 	int			irq;
- 	int			status;
- 	struct resource		*res;
-+	struct resource		iospace = DEFINE_RES_IO(SZ_64, SZ_4K);
+diff --git a/arch/arm/mach-omap1/clock.c b/arch/arm/mach-omap1/clock.c
+index 44877554eb41..42e094e781ce 100644
+--- a/arch/arm/mach-omap1/clock.c
++++ b/arch/arm/mach-omap1/clock.c
+@@ -41,7 +41,7 @@ static DEFINE_SPINLOCK(clockfw_lock);
+ unsigned long omap1_uart_recalc(struct clk *clk)
+ {
+ 	unsigned int val = __raw_readl(clk->enable_reg);
+-	return val & clk->enable_bit ? 48000000 : 12000000;
++	return val & 1 << clk->enable_bit ? 48000000 : 12000000;
+ }
  
- 	seg = (int) pdev->dev.platform_data;
- 	if (seg == 0 || seg > 3)
-@@ -235,9 +236,9 @@ static int __init omap_cf_probe(struct platform_device *pdev)
- 	cf->phys_cf = res->start;
- 
- 	/* pcmcia layer only remaps "real" memory */
--	cf->socket.io_offset = (unsigned long)
--			ioremap(cf->phys_cf + SZ_4K, SZ_2K);
--	if (!cf->socket.io_offset) {
-+	cf->socket.io_offset = iospace.start;
-+	status = pci_remap_iospace(&iospace, cf->phys_cf + SZ_4K);
-+	if (status) {
- 		status = -ENOMEM;
- 		goto fail1;
- 	}
-@@ -285,8 +286,6 @@ static int __init omap_cf_probe(struct platform_device *pdev)
- fail2:
- 	release_mem_region(cf->phys_cf, SZ_8K);
- fail1:
--	if (cf->socket.io_offset)
--		iounmap((void __iomem *) cf->socket.io_offset);
- 	free_irq(irq, cf);
- fail0:
- 	kfree(cf);
-@@ -300,7 +299,6 @@ static int __exit omap_cf_remove(struct platform_device *pdev)
- 	cf->active = 0;
- 	pcmcia_unregister_socket(&cf->socket);
- 	del_timer_sync(&cf->timer);
--	iounmap((void __iomem *) cf->socket.io_offset);
- 	release_mem_region(cf->phys_cf, SZ_8K);
- 	free_irq(cf->irq, cf);
- 	kfree(cf);
+ unsigned long omap1_sossi_recalc(struct clk *clk)
 -- 
 2.29.2
 
