@@ -4,60 +4,61 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B376FC433EF
-	for <alsa-devel@archiver.kernel.org>; Tue, 19 Apr 2022 13:54:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 27DFCC433EF
+	for <alsa-devel@archiver.kernel.org>; Tue, 19 Apr 2022 13:54:19 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 012761B30;
-	Tue, 19 Apr 2022 15:53:10 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 012761B30
+	by alsa0.perex.cz (Postfix) with ESMTPS id A8D851B48;
+	Tue, 19 Apr 2022 15:53:26 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A8D851B48
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1650376440;
-	bh=8SjzAPUXuyYdBuZeXZuWD8MKomlpKInJxereWCjPZ2I=;
+	s=default; t=1650376456;
+	bh=ICLjpcLGmyRuFirMful6PPWmOkZPtiGZzfFqAVH/t+Q=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=KRpqoZLjGWoAhKWm2TKNVgDwB4979/vPcP3nTT7JnJWoCmTNwJe6kz7xlT6w0dSJ2
-	 JmGvrG5v7ddGfBPEUZ7NQs67gVCF/oV2Eu6yl3caexhtBa1C79+mpuGl6vLAyHJlB6
-	 Ap+n/Wl4lDKoE5+c4u8SoG/rKsrkdUxmbhTDklGw=
+	b=RYhJ/RU/wAGBy0o8YWxBtBmhBODsK1qiB5rx6M5hLRJsqIMwzgySt5qAZtZepQqGT
+	 N98rZWp+VDw6eOzhKoxULDn2JYtBeDZ1TSOtcvxsYmQ7nEyP+8lAXA6esmbWMULpGQ
+	 tHhKBKFOT9XYDy/PhJk6s52uTuM7mnHDM5G6jW78=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 16346F80605;
+	by alsa1.perex.cz (Postfix) with ESMTP id D25CCF80607;
 	Tue, 19 Apr 2022 15:43:42 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 935CDF8025D; Tue, 19 Apr 2022 15:42:50 +0200 (CEST)
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+ id 6A488F80269; Tue, 19 Apr 2022 15:42:51 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 94EDAF80121
- for <alsa-devel@alsa-project.org>; Tue, 19 Apr 2022 15:42:47 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 94EDAF80121
+ by alsa1.perex.cz (Postfix) with ESMTPS id 97B08F80116
+ for <alsa-devel@alsa-project.org>; Tue, 19 Apr 2022 15:42:48 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 97B08F80116
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="Bj8mAfqJ"
+ header.b="hvhVwA0N"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by ams.source.kernel.org (Postfix) with ESMTPS id 36F90B81986;
- Tue, 19 Apr 2022 13:42:47 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EFC2AC385A8;
- Tue, 19 Apr 2022 13:42:38 +0000 (UTC)
+ by dfw.source.kernel.org (Postfix) with ESMTPS id 6D7E261708;
+ Tue, 19 Apr 2022 13:42:17 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E8E3AC385B2;
+ Tue, 19 Apr 2022 13:42:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1650375765;
- bh=8SjzAPUXuyYdBuZeXZuWD8MKomlpKInJxereWCjPZ2I=;
+ s=k20201202; t=1650375736;
+ bh=ICLjpcLGmyRuFirMful6PPWmOkZPtiGZzfFqAVH/t+Q=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=Bj8mAfqJbG9f8Tobba/toXaBDXDawlf39Zvj89ZdO7BT9DK41wGfqz76jTefdrSEI
- 5fvlfnruKntbjDgqHcKXFufc4Snzc7dab3DhYtrv1nLsbCXUbZu8wF7NzSJWMV5g9z
- AxX8EDmfEpWS0NSFAcK/h1N2dYbjZouOPvfBrRp8Yku0+eXnmTkJ0HgkOMpCkCFQVp
- RtpYkkA3hWaBy4EpijHEnvBQJhZIibL9D6mWCbs59B0bEmpOItzdFj3W5Xp78MvQ4S
- iDAJ8RELJYOIwSYN+G2TH4AZ+tiI+GOUOR2OqcabCyrQ6runsc7yurMih4Uk4KdqJr
- uD0LTru/eQVkw==
+ b=hvhVwA0NzLazBIGSe0oT0p3Um3CHpAVWQS3Ak93wRIZbI7fSuj4m8N5nOBDcUeqPR
+ gg6oecruNrCF+lKyJ22gDsDgeD4f58TkcrVcOJhpEfQKq0l9fXJUZDysrlPaAYrYdy
+ HM2+bS3l9baDro+/uv1y7gBVl8ayYnO98JhJ4qhRzGc7g0eh0bUu4K1jPLqmuVD72I
+ Tta1ve3oS40cpTyjsSDol1Hce510U2JEw+ghqj9X7GZYYmv/pk7FjMOMYyKc88H2iq
+ raBSAsmMH65yZss3CrvJXSegF1I1GYazdtvupzXRVR7szoVBxpQBB73wWmN7W1YYGv
+ JDzzUYpxD+HAw==
 From: Arnd Bergmann <arnd@kernel.org>
 To: linux-omap@vger.kernel.org, tony@atomide.com, aaro.koskinen@iki.fi,
  jmkrzyszt@gmail.com
-Subject: [PATCH 41/41] [TO BE REBASED] ARM: omap1: enable multiplatform
-Date: Tue, 19 Apr 2022 15:37:23 +0200
-Message-Id: <20220419133723.1394715-42-arnd@kernel.org>
+Subject: [PATCH 37/41] [MERGED] video: fbdev: omap: Make it CCF clk API
+ compatible
+Date: Tue, 19 Apr 2022 15:37:19 +0200
+Message-Id: <20220419133723.1394715-38-arnd@kernel.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20220419133723.1394715-1-arnd@kernel.org>
 References: <20220419133723.1394715-1-arnd@kernel.org>
@@ -95,268 +96,114 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Arnd Bergmann <arnd@arndb.de>
+From: Janusz Krzysztofik <jmkrzyszt@gmail.com>
 
-With all the header files out of the way, and the clock driver
-converted to the common framework, nothing stops us from building
-OMAP together with the other platforms.
+OMAP1 LCDC drivers now omit clk_prepare/unprepare() steps, not supported
+by OMAP1 custom implementation of clock API.  However, non-CCF stubs of
+those functions exist for use on such platforms until converted to CCF.
 
-As usual, the decompressor support is a victim here, and is
-only available when CONFIG_DEBUG_LL is configured for the
-particular board.
+Update the drivers to be compatible with CCF implementation of clock API.
 
+Signed-off-by: Janusz Krzysztofik <jmkrzyszt@gmail.com>
 Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 ---
- arch/arm/Kconfig                              |  12 --
- arch/arm/configs/omap1_defconfig              |   3 +
- arch/arm/mach-omap1/Kconfig                   |  15 +++
- arch/arm/mach-omap1/hardware.h                |   2 +-
- arch/arm/mach-omap1/include/mach/uncompress.h | 117 ------------------
- arch/arm/mach-omap1/serial.c                  |   3 +-
- .../mach-omap1/{include/mach => }/serial.h    |   0
- 7 files changed, 20 insertions(+), 132 deletions(-)
- delete mode 100644 arch/arm/mach-omap1/include/mach/uncompress.h
- rename arch/arm/mach-omap1/{include/mach => }/serial.h (100%)
+ drivers/video/fbdev/omap/hwa742.c | 6 +++---
+ drivers/video/fbdev/omap/lcdc.c   | 6 +++---
+ drivers/video/fbdev/omap/sossi.c  | 5 +++--
+ 3 files changed, 9 insertions(+), 8 deletions(-)
 
-diff --git a/arch/arm/Kconfig b/arch/arm/Kconfig
-index a65f2c05f01c..8794c6bee29b 100644
---- a/arch/arm/Kconfig
-+++ b/arch/arm/Kconfig
-@@ -483,18 +483,6 @@ config ARCH_S3C24XX
- 	  (<http://www.simtec.co.uk/products/EB110ITX/>), the IPAQ 1940 or the
- 	  Samsung SMDK2410 development board (and derivatives).
+diff --git a/drivers/video/fbdev/omap/hwa742.c b/drivers/video/fbdev/omap/hwa742.c
+index b191bef22d98..9d9fe5c3a7a1 100644
+--- a/drivers/video/fbdev/omap/hwa742.c
++++ b/drivers/video/fbdev/omap/hwa742.c
+@@ -964,7 +964,7 @@ static int hwa742_init(struct omapfb_device *fbdev, int ext_mode,
+ 	if ((r = calc_extif_timings(ext_clk, &extif_mem_div)) < 0)
+ 		goto err3;
+ 	hwa742.extif->set_timings(&hwa742.reg_timings);
+-	clk_enable(hwa742.sys_ck);
++	clk_prepare_enable(hwa742.sys_ck);
  
--config ARCH_OMAP1
--	bool "TI OMAP1"
--	select CLKSRC_MMIO
--	select FORCE_PCI if PCCARD
--	select GENERIC_IRQ_CHIP
--	select GPIOLIB
--	select HAVE_LEGACY_CLK
--	select IRQ_DOMAIN
--	select SPARSE_IRQ
--	help
--	  Support for older TI OMAP1 (omap7xx, omap15xx or omap16xx)
--
- endchoice
+ 	calc_hwa742_clk_rates(ext_clk, &sys_clk, &pix_clk);
+ 	if ((r = calc_extif_timings(sys_clk, &extif_mem_div)) < 0)
+@@ -1023,7 +1023,7 @@ static int hwa742_init(struct omapfb_device *fbdev, int ext_mode,
  
- menu "Multiple platform selection"
-diff --git a/arch/arm/configs/omap1_defconfig b/arch/arm/configs/omap1_defconfig
-index 3148567b66b6..14c17a218ec5 100644
---- a/arch/arm/configs/omap1_defconfig
-+++ b/arch/arm/configs/omap1_defconfig
-@@ -17,6 +17,9 @@ CONFIG_MODULES=y
- CONFIG_MODULE_UNLOAD=y
- CONFIG_MODULE_FORCE_UNLOAD=y
- # CONFIG_BLK_DEV_BSG is not set
-+CONFIG_ARCH_MULTI_V4T=y
-+CONFIG_ARCH_MULTI_V5=y
-+# CONFIG_ARCH_MULTI_V7 is not set
- CONFIG_ARCH_OMAP=y
- CONFIG_ARCH_OMAP1=y
- CONFIG_OMAP_RESET_CLOCKS=y
-diff --git a/arch/arm/mach-omap1/Kconfig b/arch/arm/mach-omap1/Kconfig
-index d4b0cd91a4f9..9a7e5460b36a 100644
---- a/arch/arm/mach-omap1/Kconfig
-+++ b/arch/arm/mach-omap1/Kconfig
-@@ -1,4 +1,15 @@
- # SPDX-License-Identifier: GPL-2.0-only
-+menuconfig ARCH_OMAP1
-+	bool "TI OMAP1"
-+	depends on ARCH_MULTI_V4T || ARCH_MULTI_V5
-+	select ARCH_HAS_HOLES_MEMORYMODEL
-+	select ARCH_OMAP
-+	select CLKSRC_MMIO
-+	select FORCE_PCI if PCCARD
-+	select GPIOLIB
-+	help
-+	  Support for older TI OMAP1 (omap7xx, omap15xx or omap16xx)
-+
- if ARCH_OMAP1
+ 	return 0;
+ err4:
+-	clk_disable(hwa742.sys_ck);
++	clk_disable_unprepare(hwa742.sys_ck);
+ err3:
+ 	hwa742.extif->cleanup();
+ err2:
+@@ -1037,7 +1037,7 @@ static void hwa742_cleanup(void)
+ 	hwa742_set_update_mode(OMAPFB_UPDATE_DISABLED);
+ 	hwa742.extif->cleanup();
+ 	hwa742.int_ctrl->cleanup();
+-	clk_disable(hwa742.sys_ck);
++	clk_disable_unprepare(hwa742.sys_ck);
+ }
  
- menu "TI OMAP1 specific features"
-@@ -6,23 +17,27 @@ menu "TI OMAP1 specific features"
- comment "OMAP Core Type"
+ struct lcd_ctrl hwa742_ctrl = {
+diff --git a/drivers/video/fbdev/omap/lcdc.c b/drivers/video/fbdev/omap/lcdc.c
+index 4c9091bd936d..e7ce783e5215 100644
+--- a/drivers/video/fbdev/omap/lcdc.c
++++ b/drivers/video/fbdev/omap/lcdc.c
+@@ -713,7 +713,7 @@ static int omap_lcdc_init(struct omapfb_device *fbdev, int ext_mode,
+ 		dev_err(fbdev->dev, "failed to adjust LCD rate\n");
+ 		goto fail1;
+ 	}
+-	clk_enable(lcdc.lcd_ck);
++	clk_prepare_enable(lcdc.lcd_ck);
  
- config ARCH_OMAP730
-+	depends on ARCH_MULTI_V5
- 	bool "OMAP730 Based System"
- 	select ARCH_OMAP_OTG
- 	select CPU_ARM926T
- 	select OMAP_MPU_TIMER
+ 	r = request_irq(fbdev->int_irq, lcdc_irq_handler, 0, MODULE_NAME, fbdev);
+ 	if (r) {
+@@ -748,7 +748,7 @@ static int omap_lcdc_init(struct omapfb_device *fbdev, int ext_mode,
+ fail3:
+ 	free_irq(fbdev->int_irq, lcdc.fbdev);
+ fail2:
+-	clk_disable(lcdc.lcd_ck);
++	clk_disable_unprepare(lcdc.lcd_ck);
+ fail1:
+ 	clk_put(lcdc.lcd_ck);
+ fail0:
+@@ -762,7 +762,7 @@ static void omap_lcdc_cleanup(void)
+ 	free_fbmem();
+ 	omap_free_lcd_dma();
+ 	free_irq(lcdc.fbdev->int_irq, lcdc.fbdev);
+-	clk_disable(lcdc.lcd_ck);
++	clk_disable_unprepare(lcdc.lcd_ck);
+ 	clk_put(lcdc.lcd_ck);
+ }
  
- config ARCH_OMAP850
-+	depends on ARCH_MULTI_V5
- 	bool "OMAP850 Based System"
- 	select ARCH_OMAP_OTG
- 	select CPU_ARM926T
+diff --git a/drivers/video/fbdev/omap/sossi.c b/drivers/video/fbdev/omap/sossi.c
+index 6b99d89fbe6e..c90eb8ca58af 100644
+--- a/drivers/video/fbdev/omap/sossi.c
++++ b/drivers/video/fbdev/omap/sossi.c
+@@ -600,7 +600,7 @@ static int sossi_init(struct omapfb_device *fbdev)
+ 	l &= ~CONF_SOSSI_RESET_R;
+ 	omap_writel(l, MOD_CONF_CTRL_1);
  
- config ARCH_OMAP15XX
-+	depends on ARCH_MULTI_V4T
- 	default y
- 	bool "OMAP15xx Based System"
- 	select CPU_ARM925T
- 	select OMAP_MPU_TIMER
+-	clk_enable(sossi.fck);
++	clk_prepare_enable(sossi.fck);
+ 	l = omap_readl(ARM_IDLECT2);
+ 	l &= ~(1 << 8);			/* DMACK_REQ */
+ 	omap_writel(l, ARM_IDLECT2);
+@@ -651,7 +651,7 @@ static int sossi_init(struct omapfb_device *fbdev)
+ 	return 0;
  
- config ARCH_OMAP16XX
-+	depends on ARCH_MULTI_V5
- 	bool "OMAP16xx Based System"
- 	select ARCH_OMAP_OTG
- 	select CPU_ARM926T
-diff --git a/arch/arm/mach-omap1/hardware.h b/arch/arm/mach-omap1/hardware.h
-index 1af0238f8c05..4c3920ba83e3 100644
---- a/arch/arm/mach-omap1/hardware.h
-+++ b/arch/arm/mach-omap1/hardware.h
-@@ -64,7 +64,7 @@ static inline u32 omap_cs3_phys(void)
- #define OMAP1_IO_OFFSET		0x00fb0000	/* Virtual IO = 0xff000000 */
- #define OMAP1_IO_ADDRESS(pa)	IOMEM((pa) - OMAP1_IO_OFFSET)
- 
--#include <mach/serial.h>
-+#include "serial.h"
- 
- /*
-  * ---------------------------------------------------------------------------
-diff --git a/arch/arm/mach-omap1/include/mach/uncompress.h b/arch/arm/mach-omap1/include/mach/uncompress.h
-deleted file mode 100644
-index 9cca6a56788f..000000000000
---- a/arch/arm/mach-omap1/include/mach/uncompress.h
-+++ /dev/null
-@@ -1,117 +0,0 @@
--/*
-- * arch/arm/plat-omap/include/mach/uncompress.h
-- *
-- * Serial port stubs for kernel decompress status messages
-- *
-- * Initially based on:
-- * linux-2.4.15-rmk1-dsplinux1.6/arch/arm/plat-omap/include/mach1510/uncompress.h
-- * Copyright (C) 2000 RidgeRun, Inc.
-- * Author: Greg Lonnon <glonnon@ridgerun.com>
-- *
-- * Rewritten by:
-- * Author: <source@mvista.com>
-- * 2004 (c) MontaVista Software, Inc.
-- *
-- * This file is licensed under the terms of the GNU General Public License
-- * version 2. This program is licensed "as is" without any warranty of any
-- * kind, whether express or implied.
-- */
--
--#include <linux/types.h>
--#include <linux/serial_reg.h>
--
--#include <asm/memory.h>
--#include <asm/mach-types.h>
--
--#include "serial.h"
--
--#define MDR1_MODE_MASK			0x07
--
--volatile u8 *uart_base;
--int uart_shift;
--
--/*
-- * Store the DEBUG_LL uart number into memory.
-- * See also debug-macro.S, and serial.c for related code.
-- */
--static void set_omap_uart_info(unsigned char port)
--{
--	/*
--	 * Get address of some.bss variable and round it down
--	 * a la CONFIG_AUTO_ZRELADDR.
--	 */
--	u32 ram_start = (u32)&uart_shift & 0xf8000000;
--	u32 *uart_info = (u32 *)(ram_start + OMAP_UART_INFO_OFS);
--	*uart_info = port;
--}
--
--static inline void putc(int c)
--{
--	if (!uart_base)
--		return;
--
--	/* Check for UART 16x mode */
--	if ((uart_base[UART_OMAP_MDR1 << uart_shift] & MDR1_MODE_MASK) != 0)
--		return;
--
--	while (!(uart_base[UART_LSR << uart_shift] & UART_LSR_THRE))
--		barrier();
--	uart_base[UART_TX << uart_shift] = c;
--}
--
--static inline void flush(void)
--{
--}
--
--/*
-- * Macros to configure UART1 and debug UART
-- */
--#define _DEBUG_LL_ENTRY(mach, dbg_uart, dbg_shft, dbg_id)		\
--	if (machine_is_##mach()) {					\
--		uart_base = (volatile u8 *)(dbg_uart);			\
--		uart_shift = (dbg_shft);				\
--		port = (dbg_id);					\
--		set_omap_uart_info(port);				\
--		break;							\
--	}
--
--#define DEBUG_LL_OMAP7XX(p, mach)					\
--	_DEBUG_LL_ENTRY(mach, OMAP1_UART##p##_BASE, OMAP7XX_PORT_SHIFT,	\
--		OMAP1UART##p)
--
--#define DEBUG_LL_OMAP1(p, mach)						\
--	_DEBUG_LL_ENTRY(mach, OMAP1_UART##p##_BASE, OMAP_PORT_SHIFT,	\
--		OMAP1UART##p)
--
--static inline void arch_decomp_setup(void)
--{
--	int port = 0;
--
--	/*
--	 * Initialize the port based on the machine ID from the bootloader.
--	 * Note that we're using macros here instead of switch statement
--	 * as machine_is functions are optimized out for the boards that
--	 * are not selected.
--	 */
--	do {
--		/* omap7xx/8xx based boards using UART1 with shift 0 */
--		DEBUG_LL_OMAP7XX(1, herald);
--		DEBUG_LL_OMAP7XX(1, omap_perseus2);
--
--		/* omap15xx/16xx based boards using UART1 */
--		DEBUG_LL_OMAP1(1, ams_delta);
--		DEBUG_LL_OMAP1(1, nokia770);
--		DEBUG_LL_OMAP1(1, omap_h2);
--		DEBUG_LL_OMAP1(1, omap_h3);
--		DEBUG_LL_OMAP1(1, omap_innovator);
--		DEBUG_LL_OMAP1(1, omap_osk);
--		DEBUG_LL_OMAP1(1, omap_palmte);
--		DEBUG_LL_OMAP1(1, omap_palmz71);
--
--		/* omap15xx/16xx based boards using UART2 */
--		DEBUG_LL_OMAP1(2, omap_palmtt);
--
--		/* omap15xx/16xx based boards using UART3 */
--		DEBUG_LL_OMAP1(3, sx1);
--	} while (0);
--}
-diff --git a/arch/arm/mach-omap1/serial.c b/arch/arm/mach-omap1/serial.c
-index 299ae1106187..88928fc33b2e 100644
---- a/arch/arm/mach-omap1/serial.c
-+++ b/arch/arm/mach-omap1/serial.c
-@@ -19,8 +19,7 @@
- 
- #include <asm/mach-types.h>
- 
--#include <mach/serial.h>
--
-+#include "serial.h"
- #include "mux.h"
- #include "pm.h"
- #include "soc.h"
-diff --git a/arch/arm/mach-omap1/include/mach/serial.h b/arch/arm/mach-omap1/serial.h
-similarity index 100%
-rename from arch/arm/mach-omap1/include/mach/serial.h
-rename to arch/arm/mach-omap1/serial.h
+ err:
+-	clk_disable(sossi.fck);
++	clk_disable_unprepare(sossi.fck);
+ 	clk_put(sossi.fck);
+ 	return r;
+ }
+@@ -659,6 +659,7 @@ static int sossi_init(struct omapfb_device *fbdev)
+ static void sossi_cleanup(void)
+ {
+ 	omap_lcdc_free_dma_callback();
++	clk_unprepare(sossi.fck);
+ 	clk_put(sossi.fck);
+ 	iounmap(sossi.base);
+ }
 -- 
 2.29.2
 
