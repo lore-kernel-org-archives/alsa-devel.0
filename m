@@ -4,72 +4,76 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 436EBC433FE
-	for <alsa-devel@archiver.kernel.org>; Tue, 19 Apr 2022 18:12:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 71A9FC433F5
+	for <alsa-devel@archiver.kernel.org>; Tue, 19 Apr 2022 18:13:01 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 4F65F18CA;
-	Tue, 19 Apr 2022 20:11:36 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4F65F18CA
+	by alsa0.perex.cz (Postfix) with ESMTPS id 6BB0B192E;
+	Tue, 19 Apr 2022 20:12:09 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6BB0B192E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1650391946;
-	bh=Bzgv5WqWQfy17psL16EYWYKGoHPWRb79U3suFi4PhDg=;
+	s=default; t=1650391979;
+	bh=LvnkFNrz/vSm7u8FmLhD5GqqbL3/DLWRoe48drE1qRE=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=eqmARS4RsdNXTL374pNyeYxx5hTn5AK/3Mj6MHKy7dTQKxeVWxCMEeHl9S8uabsPs
-	 mbI8pUO1DNBXXygzkWzOxo0Fz6UxEDVOHe75aJZxeLXt/P/wDFkA+dMb6BPSnMzR25
-	 u9DQi3o7CaPKwcOf/zSEIPjDKGw/62ne2Z40CpT8=
+	b=CeOYvAlTxxcOO4oJzLdK4UOk2s0C77w8mzdLe4cbVWkqjBTsparxdRDixQQXK6VXT
+	 ZCexQlPq+nBnoLcxQrYfvBj/TB+5edsw3KTPeS1EF7ax380/6GHeDiA/Yq+hAtEzqW
+	 Unud1OStrCRSkGXQWuGayPmIBwOnEEGhU5WvT4yI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id C8829F80121;
-	Tue, 19 Apr 2022 20:11:35 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 1B41DF804FB;
+	Tue, 19 Apr 2022 20:11:47 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id BBBDEF80116; Tue, 19 Apr 2022 20:11:34 +0200 (CEST)
+ id 16168F804FD; Tue, 19 Apr 2022 20:11:46 +0200 (CEST)
 Received: from dfw.source.kernel.org (dfw.source.kernel.org
  [IPv6:2604:1380:4641:c500::1])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 924BBF80116
- for <alsa-devel@alsa-project.org>; Tue, 19 Apr 2022 20:11:28 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 924BBF80116
+ by alsa1.perex.cz (Postfix) with ESMTPS id A0352F80116
+ for <alsa-devel@alsa-project.org>; Tue, 19 Apr 2022 20:11:40 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A0352F80116
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="IEa70tJs"
+ header.b="a1vKQfiu"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id A586A60DCB;
- Tue, 19 Apr 2022 18:11:26 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6E044C385A5;
- Tue, 19 Apr 2022 18:11:24 +0000 (UTC)
+ by dfw.source.kernel.org (Postfix) with ESMTPS id 4B47160C92;
+ Tue, 19 Apr 2022 18:11:39 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 18B01C385A5;
+ Tue, 19 Apr 2022 18:11:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1650391885;
- bh=Bzgv5WqWQfy17psL16EYWYKGoHPWRb79U3suFi4PhDg=;
+ s=k20201202; t=1650391898;
+ bh=LvnkFNrz/vSm7u8FmLhD5GqqbL3/DLWRoe48drE1qRE=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=IEa70tJsnPhJ1hOvVU9ww6YdC70RPI6549b5Izl+oQ5dY19mcoOr3W4kuynNer5dq
- u6N8pX/OLN48v/OaY1FTSoxdTifL+n2vbVdnGQz+zd5yuks1/n3TD3opc9e96kVm2s
- 9fElzikW95JmLxGAcX6omEWGvR+4BJphPDox09woiHMFHkoOX3Hp59jMofi22RK8LK
- 2Zc63GFUiBcTBBcjVZdtg5wbDoM/XaiE+7xwLLMfR6MknEIm458zvo7EL19FwOeZNQ
- b+1dkmXZu7y+0T6d6I22OGNSN89kAkLXUbLAaKBjENZ5zsdapFxigj+XbsrwMBmzOt
- N7CGAIYj3+Kww==
+ b=a1vKQfiuSx/gNqc5wgReRPCZCHnNubXSC3tYuvy1DVtWocGintRGjUek0rbuuhnvp
+ ZaACVtbIa+tQ6fFX6pxw7CV9yt6tGVN/Jp3yoBFyUT/11luu81utQapqQmCHmRUF+F
+ QnhTeYGo6TxTViJbhTQk3l4C5TLNNWpuGaiQdURjyWdgaBr/r9dwO4aWYu1CyYlm4z
+ Xc8s79XBZdY7qF2mcU1N3mZAH9F7BGhZhEJy3+s6l4PyjCFcD7DzJdOCzlaVdOP+Bm
+ D0p2td3k5e4A4t4ioM/Fmt5WxoT473jPFe9Jjt9Mfw3mQt2jPO7FKfwKqp0pyHzKki
+ QnU7RlM7lPCeQ==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.17 07/34] ALSA: usb-audio: Fix undefined behavior
- due to shift overflowing the constant
-Date: Tue, 19 Apr 2022 14:10:34 -0400
-Message-Id: <20220419181104.484667-7-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.17 10/34] ALSA: hda: intel-dsp-config: update
+ AlderLake PCI IDs
+Date: Tue, 19 Apr 2022 14:10:37 -0400
+Message-Id: <20220419181104.484667-10-sashal@kernel.org>
 X-Mailer: git-send-email 2.35.1
 In-Reply-To: <20220419181104.484667-1-sashal@kernel.org>
 References: <20220419181104.484667-1-sashal@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 Cc: Sasha Levin <sashal@kernel.org>, alsa-devel@alsa-project.org,
- Takashi Iwai <tiwai@suse.de>, tiwai@suse.com, Borislav Petkov <bp@suse.de>
+ Kai Vehmanen <kai.vehmanen@linux.intel.com>, Takashi Iwai <tiwai@suse.de>,
+ yung-chuan.liao@linux.intel.com, tiwai@suse.com,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+ amadeuszx.slawinski@linux.intel.com, peter.ujfalusi@linux.intel.com,
+ brent.lu@intel.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -85,43 +89,66 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Borislav Petkov <bp@suse.de>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 
-[ Upstream commit 1ef8715975de8bd481abbd0839ed4f49d9e5b0ff ]
+[ Upstream commit d52eee988597ac2a2c5d17d842946616d7d41070 ]
 
-Fix:
+Add missing AlderLake-PS and RaptorLake-S PCI IDs (already in HDaudio
+and SOF drivers), add comments and regroup by skew.
 
-  sound/usb/midi.c: In function ‘snd_usbmidi_out_endpoint_create’:
-  sound/usb/midi.c:1389:2: error: case label does not reduce to an integer constant
-    case USB_ID(0xfc08, 0x0101): /* Unknown vendor Cable */
-    ^~~~
-
-See https://lore.kernel.org/r/YkwQ6%2BtIH8GQpuct@zn.tnic for the gory
-details as to why it triggers with older gccs only.
-
-[ A slight correction with parentheses around the argument by tiwai ]
-
-Signed-off-by: Borislav Petkov <bp@suse.de>
-Link: https://lore.kernel.org/r/20220405151517.29753-3-bp@alien8.de
+Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Reviewed-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
+Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+Link: https://lore.kernel.org/r/20220406190418.245044-1-pierre-louis.bossart@linux.intel.com
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/usb/usbaudio.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/hda/intel-dsp-config.c | 18 ++++++++++++++++--
+ 1 file changed, 16 insertions(+), 2 deletions(-)
 
-diff --git a/sound/usb/usbaudio.h b/sound/usb/usbaudio.h
-index 167834133b9b..b8359a0aa008 100644
---- a/sound/usb/usbaudio.h
-+++ b/sound/usb/usbaudio.h
-@@ -8,7 +8,7 @@
-  */
+diff --git a/sound/hda/intel-dsp-config.c b/sound/hda/intel-dsp-config.c
+index 70fd8b13938e..8b0a16ba27d3 100644
+--- a/sound/hda/intel-dsp-config.c
++++ b/sound/hda/intel-dsp-config.c
+@@ -390,22 +390,36 @@ static const struct config_entry config_table[] = {
  
- /* handling of USB vendor/product ID pairs as 32-bit numbers */
--#define USB_ID(vendor, product) (((vendor) << 16) | (product))
-+#define USB_ID(vendor, product) (((unsigned int)(vendor) << 16) | (product))
- #define USB_ID_VENDOR(id) ((id) >> 16)
- #define USB_ID_PRODUCT(id) ((u16)(id))
- 
+ /* Alder Lake */
+ #if IS_ENABLED(CONFIG_SND_SOC_SOF_ALDERLAKE)
++	/* Alderlake-S */
+ 	{
+ 		.flags = FLAG_SOF | FLAG_SOF_ONLY_IF_DMIC_OR_SOUNDWIRE,
+ 		.device = 0x7ad0,
+ 	},
++	/* RaptorLake-S */
+ 	{
+ 		.flags = FLAG_SOF | FLAG_SOF_ONLY_IF_DMIC_OR_SOUNDWIRE,
+-		.device = 0x51c8,
++		.device = 0x7a50,
+ 	},
++	/* Alderlake-P */
+ 	{
+ 		.flags = FLAG_SOF | FLAG_SOF_ONLY_IF_DMIC_OR_SOUNDWIRE,
+-		.device = 0x51cc,
++		.device = 0x51c8,
+ 	},
+ 	{
+ 		.flags = FLAG_SOF | FLAG_SOF_ONLY_IF_DMIC_OR_SOUNDWIRE,
+ 		.device = 0x51cd,
+ 	},
++	/* Alderlake-PS */
++	{
++		.flags = FLAG_SOF | FLAG_SOF_ONLY_IF_DMIC_OR_SOUNDWIRE,
++		.device = 0x51c9,
++	},
++	/* Alderlake-M */
++	{
++		.flags = FLAG_SOF | FLAG_SOF_ONLY_IF_DMIC_OR_SOUNDWIRE,
++		.device = 0x51cc,
++	},
++	/* Alderlake-N */
+ 	{
+ 		.flags = FLAG_SOF | FLAG_SOF_ONLY_IF_DMIC_OR_SOUNDWIRE,
+ 		.device = 0x54c8,
 -- 
 2.35.1
 
