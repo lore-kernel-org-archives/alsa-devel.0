@@ -4,108 +4,83 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0E61EC433FE
-	for <alsa-devel@archiver.kernel.org>; Tue, 19 Apr 2022 12:00:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id DA62CC433EF
+	for <alsa-devel@archiver.kernel.org>; Tue, 19 Apr 2022 13:09:06 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 4D2BB18FD;
-	Tue, 19 Apr 2022 13:59:54 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4D2BB18FD
+	by alsa0.perex.cz (Postfix) with ESMTPS id C6FF61895;
+	Tue, 19 Apr 2022 15:08:14 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C6FF61895
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1650369644;
-	bh=hc2FbnY9HN5RqEuuFp4GQXU2PrSRYYbAqLt1y7QBLDk=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1650373744;
+	bh=i7kopf3YArKvjboCT3liagNNqNzvCwqxIhyPrNCjFeU=;
+	h=Date:Subject:To:References:From:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=e/d1UhvP3sDzRPuDKZlDgCbB1K2aR2CHYrpmECrFVjJulV9T4jXnpgTRtl96TXjPa
-	 PnxuL0w2a8mwuKaHU4KVyqL5SMniiUrhabv0sIom1CMUepiflXasLabi2wc0CpbyQX
-	 oUCbriJrDXa2RCbZPwXlCz94uXJefMFup7WnNPNg=
+	b=l/tyfpj3cFy6xoSNgF4aT61r1O03MiqJmdeKMcyLPq7oBEYxJjig3bSHRsVZUKPQq
+	 5ONgA81R1eOnRFxpzK7MHBw+cuaefCaK93L/gSunpxUqkTXH+h2+8vc+Gqx8NH9Iya
+	 ML+JrmA1hrN75hwpzuPyuI9/9ziPAjlhGu7NKnD8=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id D71B4F805E1;
-	Tue, 19 Apr 2022 13:52:40 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 55CD0F80237;
+	Tue, 19 Apr 2022 15:08:14 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 764DCF802E3; Tue, 19 Apr 2022 13:35:14 +0200 (CEST)
-Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com
- [IPv6:2a00:1450:4864:20::635])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id DF326F80121; Tue, 19 Apr 2022 15:08:12 +0200 (CEST)
+Received: from mga17.intel.com (mga17.intel.com [192.55.52.151])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 4EC52F80116
- for <alsa-devel@alsa-project.org>; Tue, 19 Apr 2022 13:35:07 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4EC52F80116
+ by alsa1.perex.cz (Postfix) with ESMTPS id 2E73FF80121;
+ Tue, 19 Apr 2022 15:08:02 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2E73FF80121
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org
- header.b="XlljyOHm"
-Received: by mail-ej1-x635.google.com with SMTP id l7so32304001ejn.2
- for <alsa-devel@alsa-project.org>; Tue, 19 Apr 2022 04:35:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
- h=from:to:cc:subject:date:message-id:in-reply-to:references
- :mime-version:content-transfer-encoding;
- bh=UwLGUJQAZu8tm+UQoJYCs5oKFaC5fjFp/CrbwYVYGAs=;
- b=XlljyOHmTcscdqBWmPBOI8AfWFx4TggVcCp+6uyVChnQ+WGk8mtq+fEcwShNGW08il
- lOLzSU+K3zcZB032Hnv54rhhlTlcPi2eFhxxSZGZvkSawzRfSYvuBQyfrZ9U4HwKa6vC
- W5/n6YfIqbfdVOI2M03His3wtDWS2bEY+io1c+tyENx+HrvgGa8n6ZQ5b6PKUMhPaVGk
- NCcNq8WnDbIN5ZyKu2QsvaL5jRyR/jbG5zPg+qaJnkbrslSz3SHZ7ktQ0WBdgQTQeJZo
- mV0sCT7TIUq04vGyS3ePdO1EkIm+asNAlQSTKImgOOPPrcOo48+KiwXcgtPk0OD8FYkl
- JSSw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
- :references:mime-version:content-transfer-encoding;
- bh=UwLGUJQAZu8tm+UQoJYCs5oKFaC5fjFp/CrbwYVYGAs=;
- b=fdrFqKvkurPYMhXTaPZKRRVbqkzKXz2udppw8tT2vk9YTOehaW4pkFWd5HFD7ouhHN
- 1cGwlHsefhV6bVuC4P+qeNCLs5jiV+CLKn1T+P/5Z89oKeM3vVUaUbbb6ooGfLmYoReI
- 2JE5NXWXW1WbwObTN1a2vPu4K6lcsFjs69XUy86GPGplHeG8M9hS5kD99zenz19hPkA2
- EVlP1SeZ5ClmTzpPnzsgRElJIN+yASqvwcqInhTykUjlp3lZgYG1HN+F4ua0q6BiQjRB
- AlBL1TnmKx42PjjvQBBYk/pzb6Yr0l6QgPUx0bqgBTkmul9R9kRyXnrcilFM5YuaSXtn
- OVAQ==
-X-Gm-Message-State: AOAM531SeHDVgLnKL3GKN4h9gndSBfRfF99flXof8Sxn+Bnqy0mwwiIP
- y8tOhHxm0dCVDwoFzydxqDrbVQ==
-X-Google-Smtp-Source: ABdhPJx8tcnPYaGc8C5tAvMnuMsZn8WITX7ufy4zQY5Wy3JO1EjadD8vNnIeM27ITcIjSIpfnPLoVA==
-X-Received: by 2002:a17:907:6e90:b0:6ef:ef41:ac10 with SMTP id
- sh16-20020a1709076e9000b006efef41ac10mr752171ejc.187.1650368106359; 
- Tue, 19 Apr 2022 04:35:06 -0700 (PDT)
-Received: from localhost.localdomain (xdsl-188-155-176-92.adslplus.ch.
- [188.155.176.92]) by smtp.gmail.com with ESMTPSA id
- ce21-20020a170906b25500b006e89869cbf9sm5608802ejb.105.2022.04.19.04.35.04
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Tue, 19 Apr 2022 04:35:05 -0700 (PDT)
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- "Rafael J. Wysocki" <rafael@kernel.org>
-Subject: [PATCH v7 12/12] rpmsg: Fix kfree() of static memory on setting
- driver_override
-Date: Tue, 19 Apr 2022 13:34:35 +0200
-Message-Id: <20220419113435.246203-13-krzysztof.kozlowski@linaro.org>
-X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20220419113435.246203-1-krzysztof.kozlowski@linaro.org>
-References: <20220419113435.246203-1-krzysztof.kozlowski@linaro.org>
+ dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
+ header.b="FaYZh2eD"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+ d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+ t=1650373689; x=1681909689;
+ h=message-id:date:mime-version:subject:to:cc:references:
+ from:in-reply-to:content-transfer-encoding;
+ bh=i7kopf3YArKvjboCT3liagNNqNzvCwqxIhyPrNCjFeU=;
+ b=FaYZh2eDDA3zMpaEA0dbxW2Q1SsFUjCfKvas4N+hPuQD/6deolzBXzqX
+ jewqKGpX6T8frpEz7Eb/qmTqdnUYPOoZNNNJOmH7v8bt/1dGhGqGWIw6l
+ PwGnoZUyFfZKyNqZ7xWYgGS/yOoa9tYwvRnNS5zbXvWwPTB9zZ8XOHbqS
+ pMzxZd7dxCTIWdtnbCZi63WoRci/5QahT87J/vncWmvMjHz9j/m0EK3o9
+ xRZpAbZOrY3vRwGrCh+dwZm6KRa1K8nvJgFJea7nHmDog1976ymgw4sQs
+ 39lLXdpmFs+kWBXsi0yiQVzjwhMaXOAadkdYwG0QeqnyFyFGKMFC31nxh g==;
+X-IronPort-AV: E=McAfee;i="6400,9594,10321"; a="244344489"
+X-IronPort-AV: E=Sophos;i="5.90,272,1643702400"; d="scan'208";a="244344489"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+ by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 19 Apr 2022 06:08:00 -0700
+X-IronPort-AV: E=Sophos;i="5.90,272,1643702400"; d="scan'208";a="554720563"
+Received: from kkho1-mobl3.amr.corp.intel.com (HELO [10.209.54.209])
+ ([10.209.54.209])
+ by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 19 Apr 2022 06:07:59 -0700
+Message-ID: <e31ff7c4-7cdc-fdaf-b12c-fc1e51798a1b@linux.intel.com>
+Date: Tue, 19 Apr 2022 08:07:58 -0500
 MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Firefox/91.0 Thunderbird/91.5.0
+Subject: Re: out-of-bounds access in sound/soc/sof/topology.c
+Content-Language: en-US
+To: =?UTF-8?Q?P=c3=a9ter_Ujfalusi?= <peter.ujfalusi@linux.intel.com>,
+ Sergey Senozhatsky <senozhatsky@chromium.org>,
+ Liam Girdwood <liam.r.girdwood@linux.intel.com>,
+ Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+ Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+ Jaska Uimonen <jaska.uimonen@linux.intel.com>
+References: <Ylk5o3EC/hyX5UQ0@google.com>
+ <8eeb08ec-4836-cf7d-2285-8ed74ccfc1cb@linux.intel.com>
+ <8986a1c6-b546-7a66-a778-048487624c95@linux.intel.com>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+In-Reply-To: <8986a1c6-b546-7a66-a778-048487624c95@linux.intel.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Mailman-Approved-At: Tue, 19 Apr 2022 13:52:23 +0200
-Cc: linux-hyperv@vger.kernel.org, Stuart Yoder <stuyoder@gmail.com>,
- linux-pci@vger.kernel.org, linux-remoteproc@vger.kernel.org,
- alsa-devel@alsa-project.org, Peter Oberparleiter <oberpar@linux.ibm.com>,
- Vineeth Vijayan <vneethv@linux.ibm.com>,
- Alexander Gordeev <agordeev@linux.ibm.com>,
- "K. Y. Srinivasan" <kys@microsoft.com>, linux-clk@vger.kernel.org,
- linux-s390@vger.kernel.org, Wei Liu <wei.liu@kernel.org>,
- Stephen Hemminger <sthemmin@microsoft.com>, Dexuan Cui <decui@microsoft.com>,
- Andy Shevchenko <andy.shevchenko@gmail.com>, Andy Gross <agross@kernel.org>,
- NXP Linux Team <linux-imx@nxp.com>,
- Christian Borntraeger <borntraeger@linux.ibm.com>,
- virtualization@lists.linux-foundation.org, Heiko Carstens <hca@linux.ibm.com>,
- Vasily Gorbik <gor@linux.ibm.com>, linux-arm-msm@vger.kernel.org,
- Haiyang Zhang <haiyangz@microsoft.com>,
- Rasmus Villemoes <linux@rasmusvillemoes.dk>,
- Bjorn Helgaas <bhelgaas@google.com>,
- Bjorn Andersson <bjorn.andersson@linaro.org>,
- linux-arm-kernel@lists.infradead.org,
- Mathieu Poirier <mathieu.poirier@linaro.org>, linux-kernel@vger.kernel.org,
- linux-spi@vger.kernel.org,
- Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
- Sven Schnelle <svens@linux.ibm.com>,
- Linus Torvalds <torvalds@linux-foundation.org>
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+ Takashi Iwai <tiwai@suse.com>, Tomasz Figa <tfiga@chromium.org>,
+ Mark Brown <broonie@kernel.org>, Ricardo Ribalda <ribalda@chromium.org>,
+ sound-open-firmware@alsa-project.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -121,101 +96,119 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The driver_override field from platform driver should not be initialized
-from static memory (string literal) because the core later kfree() it,
-for example when driver_override is set via sysfs.
 
-Use dedicated helper to set driver_override properly.
 
-Fixes: 950a7388f02b ("rpmsg: Turn name service into a stand alone driver")
-Fixes: c0cdc19f84a4 ("rpmsg: Driver for user space endpoint interface")
-Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
----
- drivers/rpmsg/rpmsg_internal.h | 13 +++++++++++--
- drivers/rpmsg/rpmsg_ns.c       | 14 ++++++++++++--
- include/linux/rpmsg.h          |  6 ++++--
- 3 files changed, 27 insertions(+), 6 deletions(-)
+On 4/19/22 06:50, Péter Ujfalusi wrote:
+> Hi Sergey, Pierre,
+> 
+> On 15/04/2022 19:00, Pierre-Louis Bossart wrote:
+>> Thanks Sergey for this email.
+>>
+>> On 4/15/22 04:23, Sergey Senozhatsky wrote:
+>>> Hi,
+>>>
+>>> I'm running 5.10.111 LTS, so if this has been fixed already then we definitely
+>>> want to cherry pick the fix for -stable.
+> 
+> I'm afraid, that this is still valid as of today, but in real life I
+> don't think it can happen.
+> 
+>>> Anonymous union in this struct is of zero size
+>>>
+>>> /* generic control data */
+>>> struct sof_ipc_ctrl_data {
+>>>         struct sof_ipc_reply rhdr;
+>>>         uint32_t comp_id;
+>>>
+>>>         /* control access and data type */
+>>>         uint32_t type;          /**< enum sof_ipc_ctrl_type */
+>>>         uint32_t cmd;           /**< enum sof_ipc_ctrl_cmd */
+>>>         uint32_t index;         /**< control index for comps > 1 control */
+>>>
+>>>         /* control data - can either be appended or DMAed from host */
+>>>         struct sof_ipc_host_buffer buffer;
+>>>         uint32_t num_elems;     /**< in array elems or bytes for data type */
+>>>         uint32_t elems_remaining;       /**< elems remaining if sent in parts */
+>>>
+>>>         uint32_t msg_index;     /**< for large messages sent in parts */
+>>>
+>>>         /* reserved for future use */
+>>>         uint32_t reserved[6];
+>>>
+>>>         /* control data - add new types if needed */
+>>>         union {
+>>>                 /* channel values can be used by volume type controls */
+>>>                 struct sof_ipc_ctrl_value_chan chanv[0];
+>>>                 /* component values used by routing controls like mux, mixer */
+>>>                 struct sof_ipc_ctrl_value_comp compv[0];
+>>>                 /* data can be used by binary controls */
+>>>                 struct sof_abi_hdr data[0];
+>>>         };
+>>> } __packed;
+>>>
+>>> sof_ipc_ctrl_value_chan and sof_ipc_ctrl_value_comp are of the same
+>>> size - 8 bytes, while sof_abi_hdr is much larger - _at least_ 32 bytes
+>>> (`__u32 data[0]` in sof_abi_hdr suggest that there should be more
+>>> payload after header). But they all contribute 0 to sizeof(sof_ipc_ctrl_data).
+>>>
+>>> Now control data allocations looks as follows
+>>>
+>>> 	scontrol->size = struct_size(scontrol->control_data, chanv,
+>>> 				     le32_to_cpu(mc->num_channels));
+>>> 	scontrol->control_data = kzalloc(scontrol->size, GFP_KERNEL);
+>>>
+>>> Which is sizeof(sof_ipc_ctrl_data) + mc->num_channels * sizeof(sof_ipc_ctrl_value_chan)
+>>>
+>>> For some reason it uses sizeof(sof_ipc_ctrl_value_chan), which is not
+>>> the largest member of the union.
+>>>
+>>> And this is where the problem is: in order to make control->data.FOO loads
+>>> and stores legal we need mc->num_channels to be of at least 4. So that
+>>>
+>>>    sizeof(sof_ipc_ctrl_data) + mc->num_channels * sizeof(sof_ipc_ctrl_value_chan)
+>>>
+>>>                 92           +        4         *            8
+>>>
+>>> will be the same as
+>>>
+>>>    sizeof(sof_ipc_ctrl_data) + sizeof(sof_abi_hdr).
+>>>
+>>>                 92           +           32
+>>>
+>>> Otherwise scontrol->control_data->data.FOO will access nearby/foreign
+>>> slab object.
+>>>
+>>> And there is at least one such memory access. In sof_get_control_data().
+>>>
+>>> 	wdata[i].pdata = wdata[i].control->control_data->data;
+>>> 	*size += wdata[i].pdata->size;
+>>>
+>>>
+>>> pdata->size is at offset 8, but if, say, mc->num_channels == 1 then
+>>> we allocate only 8 bytes for pdata, so pdata->size is 4 bytes outside
+>>> of allocated slab object.
+>>>
+>>> Thoughts?
+> 
+> Your analyzes are spot on, unfortunately. But...
+> 
+> As of today, the sof_get_control_data() is in the call path of
+> (ipc3-topology.c):
+> 
+> sof_widget_update_ipc_comp_process() -> sof_process_load() ->
+> sof_get_control_data()
+> 
+> sof_widget_update_ipc_comp_process() is the ipc_setup callback for
+> snd_soc_dapm_effect. If I'm not mistaken these only carries bin payload
+> and never MIXER/ENUM/SWITCH/VOLUME.
+> This means that the sof_get_control_data() is only called with
+> SND_SOC_TPLG_TYPE_BYTES and for that the allocated data area is correct.
+> 
+> This can explain why we have not seen any issues so far. This does not
+> renders the code right, as how it is written atm is wrong.
 
-diff --git a/drivers/rpmsg/rpmsg_internal.h b/drivers/rpmsg/rpmsg_internal.h
-index d4b23fd019a8..3e81642238d2 100644
---- a/drivers/rpmsg/rpmsg_internal.h
-+++ b/drivers/rpmsg/rpmsg_internal.h
-@@ -94,10 +94,19 @@ int rpmsg_release_channel(struct rpmsg_device *rpdev,
-  */
- static inline int rpmsg_ctrldev_register_device(struct rpmsg_device *rpdev)
- {
-+	int ret;
-+
- 	strcpy(rpdev->id.name, "rpmsg_ctrl");
--	rpdev->driver_override = "rpmsg_ctrl";
-+	ret = driver_set_override(&rpdev->dev, &rpdev->driver_override,
-+				  rpdev->id.name, strlen(rpdev->id.name));
-+	if (ret)
-+		return ret;
-+
-+	ret = rpmsg_register_device(rpdev);
-+	if (ret)
-+		kfree(rpdev->driver_override);
- 
--	return rpmsg_register_device(rpdev);
-+	return ret;
- }
- 
- #endif
-diff --git a/drivers/rpmsg/rpmsg_ns.c b/drivers/rpmsg/rpmsg_ns.c
-index 762ff1ae279f..8eb8f328237e 100644
---- a/drivers/rpmsg/rpmsg_ns.c
-+++ b/drivers/rpmsg/rpmsg_ns.c
-@@ -20,12 +20,22 @@
-  */
- int rpmsg_ns_register_device(struct rpmsg_device *rpdev)
- {
-+	int ret;
-+
- 	strcpy(rpdev->id.name, "rpmsg_ns");
--	rpdev->driver_override = "rpmsg_ns";
-+	ret = driver_set_override(&rpdev->dev, &rpdev->driver_override,
-+				  rpdev->id.name, strlen(rpdev->id.name));
-+	if (ret)
-+		return ret;
-+
- 	rpdev->src = RPMSG_NS_ADDR;
- 	rpdev->dst = RPMSG_NS_ADDR;
- 
--	return rpmsg_register_device(rpdev);
-+	ret = rpmsg_register_device(rpdev);
-+	if (ret)
-+		kfree(rpdev->driver_override);
-+
-+	return ret;
- }
- EXPORT_SYMBOL(rpmsg_ns_register_device);
- 
-diff --git a/include/linux/rpmsg.h b/include/linux/rpmsg.h
-index 02fa9116cd60..20c8cd1cde21 100644
---- a/include/linux/rpmsg.h
-+++ b/include/linux/rpmsg.h
-@@ -41,7 +41,9 @@ struct rpmsg_channel_info {
-  * rpmsg_device - device that belong to the rpmsg bus
-  * @dev: the device struct
-  * @id: device id (used to match between rpmsg drivers and devices)
-- * @driver_override: driver name to force a match
-+ * @driver_override: driver name to force a match; do not set directly,
-+ *                   because core frees it; use driver_set_override() to
-+ *                   set or clear it.
-  * @src: local address
-  * @dst: destination address
-  * @ept: the rpmsg endpoint of this channel
-@@ -51,7 +53,7 @@ struct rpmsg_channel_info {
- struct rpmsg_device {
- 	struct device dev;
- 	struct rpmsg_device_id id;
--	char *driver_override;
-+	const char *driver_override;
- 	u32 src;
- 	u32 dst;
- 	struct rpmsg_endpoint *ept;
--- 
-2.32.0
+
+Sergey's results with KASAN show that there's a real-life problem though. I also don't understand how that might happen.
+
+Could it be that these results are with a specific topology where our assumptions are incorrect?
 
