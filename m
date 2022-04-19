@@ -4,60 +4,60 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 88433C433EF
-	for <alsa-devel@archiver.kernel.org>; Tue, 19 Apr 2022 13:48:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 014B7C433EF
+	for <alsa-devel@archiver.kernel.org>; Tue, 19 Apr 2022 13:48:48 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 167E21A9C;
-	Tue, 19 Apr 2022 15:47:40 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 167E21A9C
+	by alsa0.perex.cz (Postfix) with ESMTPS id 7BCF11A9D;
+	Tue, 19 Apr 2022 15:47:56 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7BCF11A9D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1650376110;
-	bh=B7GGzQK0KIjiwCxoEg1dXjX6/oLgtetrXN0VV1GNBGs=;
+	s=default; t=1650376126;
+	bh=zW9EXgIwrT6e9se5HepqxV0X/iuSevgZPTTCehW8dB0=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=uqcSUX1B+U61UrWAtolpWRIAc6FSLILAazSHGIn3+oj5CxUSlXA+GFSO+hUbJ7+YS
-	 H1M6Vhj7fU1XHovRpqOhvg8lTUWAg71hEB9VqAutiK3JGmWU5utB76k228q+XnoOgi
-	 kcdlfUm6HV8nic21dbQxhinB2mzNHSUN02SfodEg=
+	b=f5gXdQHxtw8uB6+hxWOsxryJVfAw59N9GbQ5rtPQC2x4mW6jkTWaKezmMwvutQm/u
+	 CQosLCqHYRuA+tLUUdJY67qLRoBkMjfjmbKrk7JoZmflvDJ+88PRH+TH/p5CoKEDYF
+	 V4RCVWMeWXA9FUon9K2iABy3hfOb7dWGce/9c/E4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 7EDE0F8057A;
-	Tue, 19 Apr 2022 15:43:27 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 1581CF8057B;
+	Tue, 19 Apr 2022 15:43:28 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 1AA80F80269; Tue, 19 Apr 2022 15:40:06 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+ id C8AB8F8025D; Tue, 19 Apr 2022 15:40:08 +0200 (CEST)
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id AE516F80121
- for <alsa-devel@alsa-project.org>; Tue, 19 Apr 2022 15:40:03 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AE516F80121
+ by alsa1.perex.cz (Postfix) with ESMTPS id B5B05F80116
+ for <alsa-devel@alsa-project.org>; Tue, 19 Apr 2022 15:40:02 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B5B05F80116
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="TOpp36+r"
+ header.b="vHI0qQBy"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id 96373616C6;
- Tue, 19 Apr 2022 13:39:32 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E6057C385A7;
- Tue, 19 Apr 2022 13:39:23 +0000 (UTC)
+ by ams.source.kernel.org (Postfix) with ESMTPS id 71C44B81983;
+ Tue, 19 Apr 2022 13:40:01 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EC917C385AE;
+ Tue, 19 Apr 2022 13:39:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1650375570;
- bh=B7GGzQK0KIjiwCxoEg1dXjX6/oLgtetrXN0VV1GNBGs=;
+ s=k20201202; t=1650375600;
+ bh=zW9EXgIwrT6e9se5HepqxV0X/iuSevgZPTTCehW8dB0=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=TOpp36+rC0pDLis7adjFpLtRxKwHifzqT8ATqBoHM3otXvUperBtVcs1FifHc5yyB
- rqLPC7rYbjq0Cf9Ys1ZbJ2P/GGpYZjaZv29gcfAMIMSQP3xSrwfLAML/qNNhmU/GVd
- gH/ywtlMj8E5lIgxWXQ0d1WKgZnNBdasQLQRmukrsvNWTS1WfVWbNuYArE2MVzLjOQ
- 7HngWtMC/2cYvIPEoUHdURPi61wEmycHnijfRFxP36EiMPOyusZ0YufgRWJ+JHp9ci
- tnu1W78uOh80vxB8EvHIbeFZxxM2wIE9VFANNL583gMp6zk/BtWTAHQhAPI0pKoXd2
- RNXWpAmIMsrlg==
+ b=vHI0qQByX+c/7bvvFxsJDZg8Rk3Tmicri/PsugtdLSnLPggMHo6v2ctc+djyVus3N
+ ui0ORHPtKfuy3WL0CumRMeBMzGHFm0UT+AP+rOrkATXgVT5fIgx6GErLIT2RrsL1Ec
+ IZnzmJ8Dnh78euRrjLA7zfaPZJirZjn2+Ns06Fju3HP4p2eONLIleIC49bfNsZO5hd
+ z5fjeKu5u4euWVq8Y01KsxQPT+uo12m/zcR2VMTIGaMdkSl1elVAK6Ja0/bpG1+umE
+ 1lBMBmTCxncgj2s+VWFf/59RsmLfL2r5TKijMH37jw/Ys1Zb+TJYoC5rYrhTKbwaRm
+ wVS3j8bExN97Q==
 From: Arnd Bergmann <arnd@kernel.org>
 To: linux-omap@vger.kernel.org, tony@atomide.com, aaro.koskinen@iki.fi,
  jmkrzyszt@gmail.com
-Subject: [PATCH 15/41] input: omap: void using mach/*.h headers
-Date: Tue, 19 Apr 2022 15:36:57 +0200
-Message-Id: <20220419133723.1394715-16-arnd@kernel.org>
+Subject: [PATCH 19/41] ARM: omap: dma: make usb support optional
+Date: Tue, 19 Apr 2022 15:37:01 +0200
+Message-Id: <20220419133723.1394715-20-arnd@kernel.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20220419133723.1394715-1-arnd@kernel.org>
 References: <20220419133723.1394715-1-arnd@kernel.org>
@@ -97,28 +97,154 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 From: Arnd Bergmann <arnd@arndb.de>
 
-The omap-keypad driver currently relies on including mach/memory.h
-implicitly, but that won't happen once omap1 is converted to
-CONFIG_ARCH_MULTIPLATFORM. Include the required header
-explicitly.
+Most of the plat-omap/dma.c code is specific to the USB
+driver. Hide that code when it is not in use, to make it
+clearer which parts are actually still required.
 
 Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 ---
- drivers/input/keyboard/omap-keypad.c | 1 +
- 1 file changed, 1 insertion(+)
+ arch/arm/plat-omap/dma.c       | 45 +++++++++++++++++-----------------
+ drivers/usb/gadget/udc/Kconfig |  2 +-
+ include/linux/omap-dma.h       |  5 +++-
+ 3 files changed, 27 insertions(+), 25 deletions(-)
 
-diff --git a/drivers/input/keyboard/omap-keypad.c b/drivers/input/keyboard/omap-keypad.c
-index eb3a687796e7..57447d6c9007 100644
---- a/drivers/input/keyboard/omap-keypad.c
-+++ b/drivers/input/keyboard/omap-keypad.c
-@@ -24,6 +24,7 @@
- #include <linux/gpio.h>
- #include <linux/platform_data/gpio-omap.h>
- #include <linux/platform_data/keypad-omap.h>
-+#include <linux/soc/ti/omap1-io.h>
+diff --git a/arch/arm/plat-omap/dma.c b/arch/arm/plat-omap/dma.c
+index 700ba9b600e7..b7757864d0aa 100644
+--- a/arch/arm/plat-omap/dma.c
++++ b/arch/arm/plat-omap/dma.c
+@@ -66,7 +66,6 @@ enum { DMA_CHAIN_STARTED, DMA_CHAIN_NOTSTARTED };
  
- #undef NEW_BOARD_LEARNING_MODE
+ static struct omap_system_dma_plat_info *p;
+ static struct omap_dma_dev_attr *d;
+-static void omap_clear_dma(int lch);
+ static int enable_1510_mode;
+ static u32 errata;
  
+@@ -90,19 +89,16 @@ static int omap_dma_reserve_channels;
+ static DEFINE_SPINLOCK(dma_chan_lock);
+ static struct omap_dma_lch *dma_chan;
+ 
+-static inline void disable_lnk(int lch);
+-static void omap_disable_channel_irq(int lch);
+-static inline void omap_enable_channel_irq(int lch);
+-
+-#ifdef CONFIG_ARCH_OMAP15XX
+-/* Returns 1 if the DMA module is in OMAP1510-compatible mode, 0 otherwise */
+-static int omap_dma_in_1510_mode(void)
++static inline void omap_disable_channel_irq(int lch)
+ {
+-	return enable_1510_mode;
++	/* disable channel interrupts */
++	p->dma_write(0, CICR, lch);
++	/* Clear CSR */
++	if (dma_omap1())
++		p->dma_read(CSR, lch);
++	else
++		p->dma_write(OMAP2_DMA_CSR_CLEAR_MASK, CSR, lch);
+ }
+-#else
+-#define omap_dma_in_1510_mode()		0
+-#endif
+ 
+ #ifdef CONFIG_ARCH_OMAP1
+ static inline void set_gdma_dev(int req, int dev)
+@@ -169,6 +165,17 @@ void omap_set_dma_priority(int lch, int dst_port, int priority)
+ #endif
+ EXPORT_SYMBOL(omap_set_dma_priority);
+ 
++#if IS_ENABLED(CONFIG_USB_OMAP)
++#ifdef CONFIG_ARCH_OMAP15XX
++/* Returns 1 if the DMA module is in OMAP1510-compatible mode, 0 otherwise */
++static int omap_dma_in_1510_mode(void)
++{
++	return enable_1510_mode;
++}
++#else
++#define omap_dma_in_1510_mode()		0
++#endif
++
+ void omap_set_dma_transfer_params(int lch, int data_type, int elem_count,
+ 				  int frame_count, int sync_mode,
+ 				  int dma_trigger, int src_or_dst_synch)
+@@ -418,17 +425,6 @@ static inline void omap_enable_channel_irq(int lch)
+ 	p->dma_write(dma_chan[lch].enabled_irqs, CICR, lch);
+ }
+ 
+-static inline void omap_disable_channel_irq(int lch)
+-{
+-	/* disable channel interrupts */
+-	p->dma_write(0, CICR, lch);
+-	/* Clear CSR */
+-	if (dma_omap1())
+-		p->dma_read(CSR, lch);
+-	else
+-		p->dma_write(OMAP2_DMA_CSR_CLEAR_MASK, CSR, lch);
+-}
+-
+ void omap_disable_dma_irq(int lch, u16 bits)
+ {
+ 	dma_chan[lch].enabled_irqs &= ~bits;
+@@ -473,6 +469,7 @@ static inline void disable_lnk(int lch)
+ 	p->dma_write(l, CLNK_CTRL, lch);
+ 	dma_chan[lch].flags &= ~OMAP_DMA_ACTIVE;
+ }
++#endif
+ 
+ int omap_request_dma(int dev_id, const char *dev_name,
+ 		     void (*callback)(int lch, u16 ch_status, void *data),
+@@ -572,6 +569,7 @@ static void omap_clear_dma(int lch)
+ 	local_irq_restore(flags);
+ }
+ 
++#if IS_ENABLED(CONFIG_USB_OMAP)
+ void omap_start_dma(int lch)
+ {
+ 	u32 l;
+@@ -792,6 +790,7 @@ int omap_get_dma_active_status(int lch)
+ 	return (p->dma_read(CCR, lch) & OMAP_DMA_CCR_EN) != 0;
+ }
+ EXPORT_SYMBOL(omap_get_dma_active_status);
++#endif
+ 
+ int omap_dma_running(void)
+ {
+diff --git a/drivers/usb/gadget/udc/Kconfig b/drivers/usb/gadget/udc/Kconfig
+index cee934dce4f0..69394dc1cdfb 100644
+--- a/drivers/usb/gadget/udc/Kconfig
++++ b/drivers/usb/gadget/udc/Kconfig
+@@ -128,7 +128,7 @@ config USB_GR_UDC
+ 
+ config USB_OMAP
+ 	tristate "OMAP USB Device Controller"
+-	depends on ARCH_OMAP1 || (ARCH_OMAP && COMPILE_TEST)
++	depends on ARCH_OMAP1
+ 	depends on ISP1301_OMAP || !(MACH_OMAP_H2 || MACH_OMAP_H3)
+ 	help
+ 	   Many Texas Instruments OMAP processors have flexible full
+diff --git a/include/linux/omap-dma.h b/include/linux/omap-dma.h
+index 5e228428fda1..07fa58ae9902 100644
+--- a/include/linux/omap-dma.h
++++ b/include/linux/omap-dma.h
+@@ -299,8 +299,9 @@ extern void omap_set_dma_priority(int lch, int dst_port, int priority);
+ extern int omap_request_dma(int dev_id, const char *dev_name,
+ 			void (*callback)(int lch, u16 ch_status, void *data),
+ 			void *data, int *dma_ch);
+-extern void omap_disable_dma_irq(int ch, u16 irq_bits);
+ extern void omap_free_dma(int ch);
++#if IS_ENABLED(CONFIG_USB_OMAP)
++extern void omap_disable_dma_irq(int ch, u16 irq_bits);
+ extern void omap_start_dma(int lch);
+ extern void omap_stop_dma(int lch);
+ extern void omap_set_dma_transfer_params(int lch, int data_type,
+@@ -326,6 +327,8 @@ extern void omap_set_dma_dest_burst_mode(int lch,
+ extern dma_addr_t omap_get_dma_src_pos(int lch);
+ extern dma_addr_t omap_get_dma_dst_pos(int lch);
+ extern int omap_get_dma_active_status(int lch);
++#endif
++
+ extern int omap_dma_running(void);
+ 
+ #if IS_ENABLED(CONFIG_FB_OMAP)
 -- 
 2.29.2
 
