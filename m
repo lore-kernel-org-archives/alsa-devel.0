@@ -4,64 +4,64 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B2A30C433F5
-	for <alsa-devel@archiver.kernel.org>; Tue, 19 Apr 2022 18:15:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 66F3FC433F5
+	for <alsa-devel@archiver.kernel.org>; Tue, 19 Apr 2022 18:15:57 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id DBD6D1939;
-	Tue, 19 Apr 2022 20:14:13 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DBD6D1939
+	by alsa0.perex.cz (Postfix) with ESMTPS id 8DA1E195A;
+	Tue, 19 Apr 2022 20:15:05 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8DA1E195A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1650392103;
-	bh=mI5uF3rn4LcSnNyEYRFVfpxL+mGAsmineE+zYsy/SWM=;
+	s=default; t=1650392155;
+	bh=cX1TogmjffYuRvjQ4kdQaH9bhy7dD4rK6n7EXly9OUI=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=rieIlMXBZiSdoQ8i+LMMo1uFnIwaex1kcRtQEJdVpkMzPdvC6bwH82JsEaURWqaEq
-	 0k0w4giS1aS3/7GBNMEhgm2vau6KtQj5iEGdIluRt+iG6UxSYW/FYZ4+eE8w5lkwNa
-	 zwFi/EzkWbZiWWXauIa46MXG2nljmBlVIsqzDyB4=
+	b=V5y+PS3ferEgb/+ypp6JOs2/hK6ZONX3elSCoHt2jvpECj7/2uPILY1QTAnHzqvq4
+	 IBy8MrBuZ+FpJnh2Rajsq2X6M6mYau9gYhp3gv44bXgXFTU9+ZZ1xgTAt6pGVr6y3W
+	 GMKHtNb0wwCvFAAaW9pVBEgF+CBnyAtNvyGz8t4g=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 81F68F80116;
-	Tue, 19 Apr 2022 20:14:13 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 36CA4F80121;
+	Tue, 19 Apr 2022 20:15:05 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 50A6BF8025D; Tue, 19 Apr 2022 20:14:12 +0200 (CEST)
+ id 9F40AF804A9; Tue, 19 Apr 2022 20:15:03 +0200 (CEST)
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 1CD1AF80237
- for <alsa-devel@alsa-project.org>; Tue, 19 Apr 2022 20:14:05 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1CD1AF80237
+ by alsa1.perex.cz (Postfix) with ESMTPS id AA66BF802E3
+ for <alsa-devel@alsa-project.org>; Tue, 19 Apr 2022 20:14:57 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AA66BF802E3
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="I6U7+zl9"
+ header.b="CijdQU8G"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id 8B3E360FED;
- Tue, 19 Apr 2022 18:14:04 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5FF54C385A7;
- Tue, 19 Apr 2022 18:14:03 +0000 (UTC)
+ by dfw.source.kernel.org (Postfix) with ESMTPS id 4BC8D611A9;
+ Tue, 19 Apr 2022 18:14:56 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id ACE3EC385A5;
+ Tue, 19 Apr 2022 18:14:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1650392044;
- bh=mI5uF3rn4LcSnNyEYRFVfpxL+mGAsmineE+zYsy/SWM=;
+ s=k20201202; t=1650392095;
+ bh=cX1TogmjffYuRvjQ4kdQaH9bhy7dD4rK6n7EXly9OUI=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=I6U7+zl9aTdn024LaC3xYwwpu3yi/pJvNqKzR+mhe7Qvl8m0Y+P0IeVzeYUD+DzC/
- coQJiqjt5e2pXFMNi8AoagQfwchYxG9PDwnhjLC+lYrITd96xFZXS6yaDbx5rK88W8
- Jvg1aLt8Padz33NIOWH+mOksUnBtV+zXx65GuZJUohC/YGiWdo6FKy3HFIPwrXBTkb
- RPQ2aZuRZa7qxNArZU53IYz2vX0RyvgahsP5mi7NjEJQPdDEjn/o4eGQYGQ4Lqu2PG
- nk/peN5+KndwWDVbQKMHLLWyLj2RSG8ycqWnOiuWBJEwcYNr6olRxKEIypft9HccoK
- T8+TXPjynIf4A==
+ b=CijdQU8Gae4qlyOdhfYIZ7f4kSAeVrKREp+8d/pthRmSeanUsUNe/F0u3RGbHrhC1
+ vaZlvqONeIOyu/I86xj0x2yeLS5u0HcJEQClU3iNzwRJvnbwosJ8s2PfRwvKs4W4y7
+ b05bVQ+EP/pp67GXHRi4Q4YtZk3A+RuFm66DmjcYMJ/dXCNunMLdn6q3cFUOjW8wJY
+ g2XpQ1CfgdmLE2puIq8c4Vf0JsE3AMsRtL0CfxyU3r0KFLyjudYpKYD6hylvlRQaiV
+ JauFVMZEGg+vQ6EdNDoUtU5PdFhI8ihye2k4e6KdAl1JPCcz/hUjvZ9juxpOC2CSqr
+ XATk4l59Qs67A==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.10 04/18] ALSA: usb-audio: Fix undefined behavior
- due to shift overflowing the constant
-Date: Tue, 19 Apr 2022 14:13:38 -0400
-Message-Id: <20220419181353.485719-4-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.4 04/14] ALSA: usb-audio: Fix undefined behavior due
+ to shift overflowing the constant
+Date: Tue, 19 Apr 2022 14:14:33 -0400
+Message-Id: <20220419181444.485959-4-sashal@kernel.org>
 X-Mailer: git-send-email 2.35.1
-In-Reply-To: <20220419181353.485719-1-sashal@kernel.org>
-References: <20220419181353.485719-1-sashal@kernel.org>
+In-Reply-To: <20220419181444.485959-1-sashal@kernel.org>
+References: <20220419181444.485959-1-sashal@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 X-stable: review
@@ -109,7 +109,7 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/sound/usb/usbaudio.h b/sound/usb/usbaudio.h
-index e54a98f46549..d8e31ee03b9d 100644
+index ff97fdcf63bd..b1959e04cbb1 100644
 --- a/sound/usb/usbaudio.h
 +++ b/sound/usb/usbaudio.h
 @@ -8,7 +8,7 @@
