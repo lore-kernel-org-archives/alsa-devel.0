@@ -4,83 +4,105 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 63B3CC433EF
-	for <alsa-devel@archiver.kernel.org>; Tue, 19 Apr 2022 11:57:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 95B4FC433EF
+	for <alsa-devel@archiver.kernel.org>; Tue, 19 Apr 2022 11:57:38 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 63037189C;
-	Tue, 19 Apr 2022 13:56:30 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 63037189C
+	by alsa0.perex.cz (Postfix) with ESMTPS id D3ABB18A5;
+	Tue, 19 Apr 2022 13:56:46 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D3ABB18A5
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1650369440;
-	bh=j03/hNu6IscpUPbdQ+8Bcs+PiImMb44Izuhbs8FWLKY=;
+	s=default; t=1650369456;
+	bh=aIpHw022MxQOLGxVe4Y35f6DVEHj4y5sX2WfiRG84XQ=;
 	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
 	 List-Post:List-Help:List-Subscribe:From;
-	b=hAypXYiJXDEotnrdLHVWfFnHFK3BG9xF//X0SXc2d35n3nNmgg25OcjMwg3snC9mD
-	 T8yrltf5mWNMq/r1eD2cnNkSLm22KE6PDY0OFaWRcCK1T0k1LwQ69NrPCu3o32FrpM
-	 mxMl7uNKBvhNtMDEmYDZnJsVEzAeLMgjF8W5Mj6Q=
+	b=jS5Y73obR38Z1KbniQ2hNQFqXECN89bsXdAiONh08nyhiwSizmIhlpvsIFSNowu1V
+	 6wdhn1Y7iBkiRauFJxCI0ET3m4/XFTgjYtRNELP3pB70rRzWXRkq8FCwBPbomolAKY
+	 +G/gsNrUoM1sOgIz9yRkv849LdHn6vGk4Lv8nBHY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 765DEF80568;
-	Tue, 19 Apr 2022 13:52:33 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 18307F8057A;
+	Tue, 19 Apr 2022 13:52:34 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id EEC9FF80256; Sun, 17 Apr 2022 04:55:14 +0200 (CEST)
-Received: from mail-qk1-x72b.google.com (mail-qk1-x72b.google.com
- [IPv6:2607:f8b0:4864:20::72b])
+ id 693C9F80121; Tue, 19 Apr 2022 13:34:52 +0200 (CEST)
+Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com
+ [IPv6:2a00:1450:4864:20::62e])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id E0AE0F80121
- for <alsa-devel@alsa-project.org>; Sun, 17 Apr 2022 04:55:06 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E0AE0F80121
+ by alsa1.perex.cz (Postfix) with ESMTPS id 46A99F80121
+ for <alsa-devel@alsa-project.org>; Tue, 19 Apr 2022 13:34:49 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 46A99F80121
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="eC8UJIOG"
-Received: by mail-qk1-x72b.google.com with SMTP id q75so495942qke.6
- for <alsa-devel@alsa-project.org>; Sat, 16 Apr 2022 19:55:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
+ dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org
+ header.b="KQats4yW"
+Received: by mail-ej1-x62e.google.com with SMTP id lc2so32211146ejb.12
+ for <alsa-devel@alsa-project.org>; Tue, 19 Apr 2022 04:34:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
  h=from:to:cc:subject:date:message-id:mime-version
  :content-transfer-encoding;
- bh=odnxlpuvUf/6Wu77uSAdJad2VLvjV47EEhSGda1cAn8=;
- b=eC8UJIOGlEI3Ge6l5GKPEv/CwIN/K96KwA1tqCw1IaIw+f/4trsoxZPwrh4ZOuGulJ
- W2n83hYDgdFD99kq+tMcHCdnes1xjq/Kd1FEL/YKu9l4ZydEzRzYZyJ7/djOmP9bVRoI
- 1CW5RT2hdKW8nSVzZcZTD1n5zGigSXqZYjC/V2MUSFbrmhTDFlQTG6stAHgMBTISw7Ly
- FICWU9FBz/VrNOnrcxZT3XIYO4MY/dlV8aIDYGC475XwkBOQAlLaOOluZPIZ8F5wJ+A1
- cQ9f7TRCAkrAy1mwG/8ICLYUgWDWyQ2YQpYr4Zmz+sCG3Cklt1mvcrVi5hiVyW+R/VrL
- joJQ==
+ bh=+RS2KaOerzQuwGLCJlNRvQqdlqz9kGKXmmE/o8hIMxc=;
+ b=KQats4yWut+GAInZpgo6wlkPKVDagbM3R0tOSjC/tXzsGfNp7h99Zs58vCptEscTpK
+ mbbyQT/so7ThPQX6ZBwVgU/6/OMYPhZ3b8NWVo58v/AWgjGj/c13IinU0JZUxgsLmUbX
+ wtYV4iKZ7ZxkIIXJYr27Z/OtYMBaCbJnYhLBGRpddVl1U1LTnJSB6NA88CzMeSaiqqqr
+ 2PHKBRlsALK1YRRnJegN2W7zECiyg6PKkD33wHtut9O6mBuGtDG4eNOOmh7evJgldNFD
+ daON6jPbeCRx5RgbYuUVlqa5xdPtHbcMYVioGRHSRAffliIvrFMlh5w4Z4HpNMVbB8RB
+ CtMw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
  h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
  :content-transfer-encoding;
- bh=odnxlpuvUf/6Wu77uSAdJad2VLvjV47EEhSGda1cAn8=;
- b=6zh3hT3L+U8K7pMEiZe2ErtrAilXIWDLouSiwX3I6i/k8NBpKyNHE0kuZKZrxVE3tV
- csbXIgtcPQO5/20/n6yRvL7rTPmsHk7QUKC/Iyp6tONYF3NGBgY5I7o0gRz0bed5kbo3
- 4AOlbPrA5Wm6qKeCRQsPwcd5FaLnpDPIwRv3xVQ9aKY0WhLcCfT+zdh5on7/wCkDV5+t
- Kt6KGAosOLsDlxGBIAjl/d4Aq3FAzc6aoeeeCIZjmGgM0cyLAovHiHc5cLXoGxXVcjoA
- EyGcluBAYTSAmvxQAxB1/Xzy8v9hErJ79WV+Aeji849uB3iXk+0g6HAezKG3TvBrLePd
- hxxg==
-X-Gm-Message-State: AOAM532J2LFdbFOp4pL8o2u/XTr4AcvkcrNvn825omj0G50WOHmjYwmk
- DKK4uGwGGVrHzxvdeXVmPVs=
-X-Google-Smtp-Source: ABdhPJwI+L1urR2KWHTzS4+dKUF5ZBPFckgnomwkUraqS5tyFbBcZb2YQl0878c/p6EFfPpt4bY0jw==
-X-Received: by 2002:a05:620a:2682:b0:67e:1a58:c947 with SMTP id
- c2-20020a05620a268200b0067e1a58c947mr3228586qkp.650.1650164103743; 
- Sat, 16 Apr 2022 19:55:03 -0700 (PDT)
-Received: from archlinux.localdomain (cpe-74-140-176-199.cinci.res.rr.com.
- [74.140.176.199]) by smtp.gmail.com with ESMTPSA id
- z8-20020ac87f88000000b002e1cecad0e4sm5505800qtj.33.2022.04.16.19.55.03
+ bh=+RS2KaOerzQuwGLCJlNRvQqdlqz9kGKXmmE/o8hIMxc=;
+ b=YUo1V3CxMhcINqxGQuEyBAZGUZaH+KMNGODeZcS9tZXYWNUPCYxL3XViBAUm/p6CNU
+ kos+kfeT+J/MWTJ8G1KD8FcZYYw1vwV9LtU8X0BQRRzFXvADS6puzMZhKVPrm8fr1ftH
+ tftQyCx6qzxA8xYnsOEeim0RfA5y2JVvIDiCI3xCP/KGRwnAa/DRNFPX6ZHEDqbct7k7
+ QG/IgbzzeYY5A96GvnR/RdvJK9v/DHCVD91LQNeaFnECp2KMFDxZtwTijPXljvrGtaWG
+ CacyiFdbqvL/qy5Ttlx4ZwIHuyBBJfFJZFP685rEhbedAK4dFg9+FQh/NAiqt9gJVMwM
+ goqw==
+X-Gm-Message-State: AOAM532I0ge+Wohw5fr3RbmoB9sVHXD+nceQqHpuI9N4IXCn0Q33haim
+ MJbnyLbX9gr1fLNZiukF36hzGw==
+X-Google-Smtp-Source: ABdhPJzqToh0YQRiewe8EqLT6PK01CMGRMmUim2jYYjkDbBJ++z/iu7RXEodKQaWchfKBfcBWKLKsQ==
+X-Received: by 2002:a17:907:6e90:b0:6ef:ef41:ac10 with SMTP id
+ sh16-20020a1709076e9000b006efef41ac10mr750787ejc.187.1650368087470; 
+ Tue, 19 Apr 2022 04:34:47 -0700 (PDT)
+Received: from localhost.localdomain (xdsl-188-155-176-92.adslplus.ch.
+ [188.155.176.92]) by smtp.gmail.com with ESMTPSA id
+ ce21-20020a170906b25500b006e89869cbf9sm5608802ejb.105.2022.04.19.04.34.45
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Sat, 16 Apr 2022 19:55:03 -0700 (PDT)
-From: connerknoxpublic@gmail.com
-To: perex@perex.cz,
-	tiwai@suse.com,
-	alsa-devel@alsa-project.org
-Subject: [PATCH] Add quirk to enable Avid Mbox 3 support
-Date: Sat, 16 Apr 2022 22:54:59 -0400
-Message-Id: <20220417025459.8105-1-connerknoxpublic@gmail.com>
-X-Mailer: git-send-email 2.35.3
+ Tue, 19 Apr 2022 04:34:46 -0700 (PDT)
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ "Rafael J. Wysocki" <rafael@kernel.org>
+Subject: [PATCH v7 00/12] Fix broken usage of driver_override (and kfree of
+ static memory)
+Date: Tue, 19 Apr 2022 13:34:23 +0200
+Message-Id: <20220419113435.246203-1-krzysztof.kozlowski@linaro.org>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Mailman-Approved-At: Tue, 19 Apr 2022 13:52:23 +0200
-Cc: Conner Knox <connerknoxpublic@gmail.com>
+Cc: linux-hyperv@vger.kernel.org, Stuart Yoder <stuyoder@gmail.com>,
+ linux-pci@vger.kernel.org, linux-remoteproc@vger.kernel.org,
+ alsa-devel@alsa-project.org, Peter Oberparleiter <oberpar@linux.ibm.com>,
+ Vineeth Vijayan <vneethv@linux.ibm.com>,
+ Alexander Gordeev <agordeev@linux.ibm.com>,
+ "K. Y. Srinivasan" <kys@microsoft.com>, linux-clk@vger.kernel.org,
+ linux-s390@vger.kernel.org, Wei Liu <wei.liu@kernel.org>,
+ Stephen Hemminger <sthemmin@microsoft.com>, Dexuan Cui <decui@microsoft.com>,
+ Andy Shevchenko <andy.shevchenko@gmail.com>, Andy Gross <agross@kernel.org>,
+ NXP Linux Team <linux-imx@nxp.com>,
+ Christian Borntraeger <borntraeger@linux.ibm.com>,
+ virtualization@lists.linux-foundation.org, Heiko Carstens <hca@linux.ibm.com>,
+ Vasily Gorbik <gor@linux.ibm.com>, linux-arm-msm@vger.kernel.org,
+ Haiyang Zhang <haiyangz@microsoft.com>,
+ Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+ Bjorn Helgaas <bhelgaas@google.com>,
+ Bjorn Andersson <bjorn.andersson@linaro.org>,
+ linux-arm-kernel@lists.infradead.org,
+ Mathieu Poirier <mathieu.poirier@linaro.org>, linux-kernel@vger.kernel.org,
+ linux-spi@vger.kernel.org,
+ Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+ Sven Schnelle <svens@linux.ibm.com>,
+ Linus Torvalds <torvalds@linux-foundation.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -96,441 +118,115 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Conner Knox <connerknoxpublic@gmail.com>
+Hi,
 
-Hi all,
+This is a continuation of my old patchset from 2019. [1]
+Back then, few drivers set driver_override wrong. I fixed Exynos
+in a different way after discussions. QCOM NGD was not fixed
+and a new user appeared - IMX SCU.
 
-I believe these are the right emails to send this patch to,
-but if I've missed something please let me know.
+It seems "char *" in driver_override looks too consty, so we
+tend to make a mistake of storing there string literals.
 
-This patch enables the Avid Mbox 3 audio interface to
-be used through ALSA.  It locks the device at a 48khz sample rate.
-Then it mutes and raises the appropriate channels/inputs to allow
-for expected functionality.
+Changes since latest v7
+=======================
+1. Patch #1: remove out_free label, document clearing override in kerneldoc and
+   in code-comments (Andy).
+2. Patch #12 (rpmsg): do not duplicate string (Biju).
 
-Thanks for your time.
+Changes since latest v6
+=======================
+1. Patch #1: Don't check for !dev and handle len==0 (Andy).
+2. New patch #11 (rpmsg): split constifying of local variable to a new patch.
 
----
- sound/usb/quirks-table.h |  76 ++++++++++
- sound/usb/quirks.c       | 311 +++++++++++++++++++++++++++++++++++++++
- 2 files changed, 387 insertions(+)
+Changes since latest v5
+=======================
+1. Patch #11 (rpmsg): split from previous patch 11 - easier to understand the
+   need of it.
+2. Fix build issue in patch 12 (rpmsg).
 
-diff --git a/sound/usb/quirks-table.h b/sound/usb/quirks-table.h
-index 0ea39565e623..5f43863e5a5f 100644
---- a/sound/usb/quirks-table.h
-+++ b/sound/usb/quirks-table.h
-@@ -2978,6 +2978,82 @@ YAMAHA_DEVICE(0x7010, "UB99"),
- 		}
- 	}
- },
-+/* DIGIDESIGN MBOX 3 */
-+{
-+	USB_DEVICE(0x0dba, 0x5000),
-+	.driver_info = (unsigned long) &(const struct snd_usb_audio_quirk) {
-+		.vendor_name = "Digidesign",
-+		.product_name = "Mbox 3",
-+		.ifnum = QUIRK_ANY_INTERFACE,
-+		.type = QUIRK_COMPOSITE,
-+		.data = (const struct snd_usb_audio_quirk[]) {
-+			{
-+				.ifnum = 0,
-+				.type = QUIRK_IGNORE_INTERFACE
-+			},
-+			{
-+				.ifnum = 1,
-+				.type = QUIRK_IGNORE_INTERFACE
-+			},
-+			{
-+				.ifnum = 2,
-+				.type = QUIRK_AUDIO_FIXED_ENDPOINT,
-+				.data = &(const struct audioformat) {
-+					.formats = SNDRV_PCM_FMTBIT_S24_3LE,
-+					.channels = 4,
-+					.iface = 2,
-+					.altsetting = 1,
-+					.altset_idx = 1,
-+					.attributes = 0x00,
-+					.endpoint = 0x01,
-+					.ep_attr = USB_ENDPOINT_XFER_ISOC |
-+						USB_ENDPOINT_SYNC_ASYNC,
-+					.rates = SNDRV_PCM_RATE_48000,
-+					.rate_min = 48000,
-+					.rate_max = 48000,
-+					.nr_rates = 1,
-+					.rate_table = (unsigned int[]) {
-+						48000
-+					}
-+				}
-+			},
-+			{
-+				.ifnum = 3,
-+				.type = QUIRK_AUDIO_FIXED_ENDPOINT,
-+				.data = &(const struct audioformat) {
-+					.formats = SNDRV_PCM_FMTBIT_S24_3LE,
-+					.channels = 4,
-+					.iface = 3,
-+					.altsetting = 1,
-+					.altset_idx = 1,
-+					.endpoint = 0x81,
-+					.attributes = 0x00,
-+					.ep_attr = USB_ENDPOINT_XFER_ISOC |
-+						USB_ENDPOINT_SYNC_ASYNC,
-+					.maxpacksize = 0x009c,
-+					.rates = SNDRV_PCM_RATE_48000,
-+					.rate_min = 48000,
-+					.rate_max = 48000,
-+					.nr_rates = 1,
-+					.rate_table = (unsigned int[]) {
-+						48000
-+					}
-+				}
-+			},
-+			{
-+				.ifnum = 4,
-+				.type = QUIRK_MIDI_FIXED_ENDPOINT,
-+				.data = & (const struct snd_usb_midi_endpoint_info) {
-+					.out_cables = 0x0001,
-+					.in_cables  = 0x0001
-+				}
-+			},
-+			{
-+				.ifnum = -1
-+			}
-+		}
-+	}
-+},
- {
- 	/* Tascam US122 MKII - playback-only support */
- 	USB_DEVICE_VENDOR_SPEC(0x0644, 0x8021),
-diff --git a/sound/usb/quirks.c b/sound/usb/quirks.c
-index ab9f3da49941..e7caa7eeb955 100644
---- a/sound/usb/quirks.c
-+++ b/sound/usb/quirks.c
-@@ -1020,6 +1020,313 @@ static int snd_usb_axefx3_boot_quirk(struct usb_device *dev)
- 	return 0;
- }
- 
-+static void mbox3_setup_48_24_magic(struct usb_device *dev)
-+{
-+	u8 com_buff[4];
-+
-+	/* Load 48000Hz rate into buffer */
-+	com_buff[0] = 0x80;
-+	com_buff[1] = 0xbb;
-+	com_buff[2] = 0x00;
-+	com_buff[3] = 0x00;
-+
-+	/* Set 48000Hz sample rate */
-+	snd_usb_ctl_msg(dev, usb_sndctrlpipe(dev, 0),
-+			0x01, 0x21, 0x0100, 0x0001, &com_buff, 0x0004);
-+	snd_usb_ctl_msg(dev, usb_sndctrlpipe(dev, 0),
-+			0x01, 0x21, 0x0100, 0x8101, &com_buff, 0x0004);
-+
-+	/* Set clock source to Internal (as opposed to S/PDIF) */
-+	memset(com_buff, 0x00, 4);
-+	com_buff[0] = 0x01;
-+	com_buff[1] = 0x00;
-+	com_buff[2] = 0x00;
-+	com_buff[3] = 0x00;
-+	snd_usb_ctl_msg(dev, usb_sndctrlpipe(dev, 0),
-+			1, 0x21, 0x0100, 0x8001, &com_buff, 1);
-+
-+	/* Mute the hardware loopbacks to start the device in a known state.
-+	 * The Mbox 3 is little endian and
-+	 * the data written here seems a bit odd.
-+	 * 0x8000 (shown in big endian form) is muted
-+	 * and volume increases to 0xffff it seems.
-+	 * I've yet to observe 0xffff being sent.
-+	 * Instead, full volume seems to be 0x0000.
-+	 * Per my understanding of 16 bit integers, this is seems strange, but maybe I'm missing something
-+	 */
-+	memset(com_buff, 0x00, 4);
-+	com_buff[0] = 0x00;
-+	com_buff[1] = 0x80;
-+	com_buff[2] = 0x00;
-+	com_buff[3] = 0x00;
-+	/* Analogue input 1 left channel: */
-+	snd_usb_ctl_msg(dev, usb_sndctrlpipe(dev, 0),
-+			1, 0x21, 0x0110, 0x4001, &com_buff, 2);
-+	/* Analogue input 1 right channel: */
-+	snd_usb_ctl_msg(dev, usb_sndctrlpipe(dev, 0),
-+			1, 0x21, 0x0111, 0x4001, &com_buff, 2);
-+	/* Analogue input 2 left channel: */
-+	snd_usb_ctl_msg(dev, usb_sndctrlpipe(dev, 0),
-+			1, 0x21, 0x0114, 0x4001, &com_buff, 2);
-+	/* Analogue input 2 right channel: */
-+	snd_usb_ctl_msg(dev, usb_sndctrlpipe(dev, 0),
-+			1, 0x21, 0x0115, 0x4001, &com_buff, 2);
-+	/* Analogue input 3 left channel: */
-+	snd_usb_ctl_msg(dev, usb_sndctrlpipe(dev, 0),
-+			1, 0x21, 0x0118, 0x4001, &com_buff, 2);
-+	/* Analogue input 3 right channel: */
-+	snd_usb_ctl_msg(dev, usb_sndctrlpipe(dev, 0),
-+			1, 0x21, 0x0119, 0x4001, &com_buff, 2);
-+	/* Analogue input 4 left channel: */
-+	snd_usb_ctl_msg(dev, usb_sndctrlpipe(dev, 0),
-+			1, 0x21, 0x011c, 0x4001, &com_buff, 2);
-+	/* Analogue input 4 right channel: */
-+	snd_usb_ctl_msg(dev, usb_sndctrlpipe(dev, 0),
-+			1, 0x21, 0x011d, 0x4001, &com_buff, 2);
-+
-+	/* Set software sends to output */
-+	memset(com_buff, 0x00, 4);
-+	com_buff[0] = 0x00;
-+	com_buff[1] = 0x00;
-+	com_buff[2] = 0x00;
-+	com_buff[3] = 0x00;
-+	/* Analogue software return 1 left channel: */
-+	snd_usb_ctl_msg(dev, usb_sndctrlpipe(dev, 0),
-+			1, 0x21, 0x0100, 0x4001, &com_buff, 2);
-+	/* Analogue software return 1 right channel: */
-+	snd_usb_ctl_msg(dev, usb_sndctrlpipe(dev, 0),
-+			1, 0x21, 0x0101, 0x4001, &com_buff, 2);
-+	/* Analogue software return 2 left channel: */
-+	snd_usb_ctl_msg(dev, usb_sndctrlpipe(dev, 0),
-+			1, 0x21, 0x0104, 0x4001, &com_buff, 2);
-+	/* Analogue software return 2 right channel: */
-+	snd_usb_ctl_msg(dev, usb_sndctrlpipe(dev, 0),
-+			1, 0x21, 0x0105, 0x4001, &com_buff, 2);
-+	/* Analogue software return 3 left channel: */
-+	snd_usb_ctl_msg(dev, usb_sndctrlpipe(dev, 0),
-+			1, 0x21, 0x0108, 0x4001, &com_buff, 2);
-+	/* Analogue software return 3 right channel: */
-+	snd_usb_ctl_msg(dev, usb_sndctrlpipe(dev, 0),
-+			1, 0x21, 0x0109, 0x4001, &com_buff, 2);
-+	/* Analogue software return 4 left channel: */
-+	snd_usb_ctl_msg(dev, usb_sndctrlpipe(dev, 0),
-+			1, 0x21, 0x010c, 0x4001, &com_buff, 2);
-+	/* Analogue software return 4 right channel: */
-+	snd_usb_ctl_msg(dev, usb_sndctrlpipe(dev, 0),
-+			1, 0x21, 0x010d, 0x4001, &com_buff, 2);
-+
-+	/* Return to muting sends */
-+	memset(com_buff, 0x00, 4);
-+	com_buff[0] = 0x00;
-+	com_buff[1] = 0x80;
-+	com_buff[2] = 0x00;
-+	com_buff[3] = 0x00;
-+	/* Analogue fx return left channel: */
-+	snd_usb_ctl_msg(dev, usb_sndctrlpipe(dev, 0),
-+			1, 0x21, 0x0120, 0x4001, &com_buff, 2);
-+	/* Analogue fx return right channel: */
-+	snd_usb_ctl_msg(dev, usb_sndctrlpipe(dev, 0),
-+			1, 0x21, 0x0121, 0x4001, &com_buff, 2);
-+
-+	/* Analogue software input 1 fx send: */
-+	snd_usb_ctl_msg(dev, usb_sndctrlpipe(dev, 0),
-+			1, 0x21, 0x0100, 0x4201, &com_buff, 2);
-+	/* Analogue software input 2 fx send: */
-+	snd_usb_ctl_msg(dev, usb_sndctrlpipe(dev, 0),
-+			1, 0x21, 0x0101, 0x4201, &com_buff, 2);
-+	/* Analogue software input 3 fx send: */
-+	snd_usb_ctl_msg(dev, usb_sndctrlpipe(dev, 0),
-+			1, 0x21, 0x0102, 0x4201, &com_buff, 2);
-+	/* Analogue software input 4 fx send: */
-+	snd_usb_ctl_msg(dev, usb_sndctrlpipe(dev, 0),
-+			1, 0x21, 0x0103, 0x4201, &com_buff, 2);
-+	/* Analogue input 1 fx send: */
-+	snd_usb_ctl_msg(dev, usb_sndctrlpipe(dev, 0),
-+			1, 0x21, 0x0104, 0x4201, &com_buff, 2);
-+	/* Analogue input 2 fx send: */
-+	snd_usb_ctl_msg(dev, usb_sndctrlpipe(dev, 0),
-+			1, 0x21, 0x0105, 0x4201, &com_buff, 2);
-+	/* Analogue input 3 fx send: */
-+	snd_usb_ctl_msg(dev, usb_sndctrlpipe(dev, 0),
-+			1, 0x21, 0x0106, 0x4201, &com_buff, 2);
-+	/* Analogue input 4 fx send: */
-+	snd_usb_ctl_msg(dev, usb_sndctrlpipe(dev, 0),
-+			1, 0x21, 0x0107, 0x4201, &com_buff, 2);
-+
-+	/* Toggle allowing host control */
-+	memset(com_buff, 0x00, 4);
-+	com_buff[0] = 0x02;
-+	com_buff[1] = 0x00;
-+	com_buff[2] = 0x00;
-+	com_buff[3] = 0x00;
-+	snd_usb_ctl_msg(dev, usb_sndctrlpipe(dev, 0),
-+			3, 0x21, 0x0000, 0x2001, &com_buff, 1);
-+
-+	/* Do not dim fx returns */
-+	memset(com_buff, 0x00, 4);
-+	com_buff[0] = 0x00;
-+	com_buff[1] = 0x00;
-+	com_buff[2] = 0x00;
-+	com_buff[3] = 0x00;
-+	snd_usb_ctl_msg(dev, usb_sndctrlpipe(dev, 0), 3, 0x21, 0x0002, 0x2001, &com_buff, 1);
-+
-+	/* Do not set fx returns to mono */
-+	memset(com_buff, 0x00, 4);
-+	com_buff[0] = 0x00;
-+	com_buff[1] = 0x00;
-+	com_buff[2] = 0x00;
-+	com_buff[3] = 0x00;
-+	snd_usb_ctl_msg(dev, usb_sndctrlpipe(dev, 0), 3, 0x21, 0x0001, 0x2001, &com_buff, 1);
-+
-+	/* Mute the S/PDIF hardware loopback
-+	 * same odd volume logic here as above
-+	 */
-+	memset(com_buff, 0x00, 4);
-+	com_buff[0] = 0x00;
-+	com_buff[1] = 0x80;
-+	com_buff[2] = 0x00;
-+	com_buff[3] = 0x00;
-+	/* S/PDIF hardware input 1 left channel */
-+	snd_usb_ctl_msg(dev, usb_sndctrlpipe(dev, 0),
-+			1, 0x21, 0x0112, 0x4001, &com_buff, 2);
-+	/* S/PDIF hardware input 1 right channel */
-+	snd_usb_ctl_msg(dev, usb_sndctrlpipe(dev, 0),
-+			1, 0x21, 0x0113, 0x4001, &com_buff, 2);
-+	/* S/PDIF hardware input 2 left channel */
-+	snd_usb_ctl_msg(dev, usb_sndctrlpipe(dev, 0),
-+			1, 0x21, 0x0116, 0x4001, &com_buff, 2);
-+	/* S/PDIF hardware input 2 right channel */
-+	snd_usb_ctl_msg(dev, usb_sndctrlpipe(dev, 0),
-+			1, 0x21, 0x0117, 0x4001, &com_buff, 2);
-+	/* S/PDIF hardware input 3 left channel */
-+	snd_usb_ctl_msg(dev, usb_sndctrlpipe(dev, 0),
-+			1, 0x21, 0x011a, 0x4001, &com_buff, 2);
-+	/* S/PDIF hardware input 3 right channel */
-+	snd_usb_ctl_msg(dev, usb_sndctrlpipe(dev, 0),
-+			1, 0x21, 0x011b, 0x4001, &com_buff, 2);
-+	/* S/PDIF hardware input 4 left channel */
-+	snd_usb_ctl_msg(dev, usb_sndctrlpipe(dev, 0),
-+			1, 0x21, 0x011e, 0x4001, &com_buff, 2);
-+	/* S/PDIF hardware input 4 right channel */
-+	snd_usb_ctl_msg(dev, usb_sndctrlpipe(dev, 0),
-+			1, 0x21, 0x011f, 0x4001, &com_buff, 2);
-+	/* S/PDIF software return 1 left channel */
-+	snd_usb_ctl_msg(dev, usb_sndctrlpipe(dev, 0),
-+			1, 0x21, 0x0102, 0x4001, &com_buff, 2);
-+	/* S/PDIF software return 1 right channel */
-+	snd_usb_ctl_msg(dev, usb_sndctrlpipe(dev, 0),
-+			1, 0x21, 0x0103, 0x4001, &com_buff, 2);
-+	/* S/PDIF software return 2 left channel */
-+	snd_usb_ctl_msg(dev, usb_sndctrlpipe(dev, 0),
-+			1, 0x21, 0x0106, 0x4001, &com_buff, 2);
-+	/* S/PDIF software return 2 right channel */
-+	snd_usb_ctl_msg(dev, usb_sndctrlpipe(dev, 0),
-+			1, 0x21, 0x0107, 0x4001, &com_buff, 2);
-+	/* S/PDIF software return 3 left channel */
-+	snd_usb_ctl_msg(dev, usb_sndctrlpipe(dev, 0),
-+			1, 0x21, 0x010a, 0x4001, &com_buff, 2);
-+	/* S/PDIF software return 3 right channel */
-+	snd_usb_ctl_msg(dev, usb_sndctrlpipe(dev, 0),
-+			1, 0x21, 0x010b, 0x4001, &com_buff, 2);
-+	/* S/PDIF software return 4 left channel */
-+	snd_usb_ctl_msg(dev, usb_sndctrlpipe(dev, 0),
-+			1, 0x21, 0x010e, 0x4001, &com_buff, 2);
-+	/* S/PDIF software return 4 right channel */
-+	snd_usb_ctl_msg(dev, usb_sndctrlpipe(dev, 0),
-+			1, 0x21, 0x010f, 0x4001, &com_buff, 2);
-+	/* S/PDIF fx returns left channel */
-+	snd_usb_ctl_msg(dev, usb_sndctrlpipe(dev, 0),
-+			1, 0x21, 0x0122, 0x4001, &com_buff, 2);
-+	/* S/PDIF fx returns right channel */
-+	snd_usb_ctl_msg(dev, usb_sndctrlpipe(dev, 0),
-+			1, 0x21, 0x0123, 0x4001, &com_buff, 2);
-+
-+	/* Set the dropdown "Effect" to the first option */
-+	memset(com_buff, 0x00, 4);
-+	com_buff[0] = 0x00;
-+	com_buff[1] = 0x00;
-+	com_buff[2] = 0x00;
-+	com_buff[3] = 0x00;
-+	snd_usb_ctl_msg(dev, usb_sndctrlpipe(dev, 0),
-+			1, 0x21, 0x0200, 0x4301, &com_buff, 1);
-+
-+	/* Set the effect duration to 0 */
-+	memset(com_buff, 0x00, 4);
-+	com_buff[0] = 0x00;
-+	com_buff[1] = 0x00;
-+	com_buff[2] = 0x00;
-+	com_buff[3] = 0x00;
-+	snd_usb_ctl_msg(dev, usb_sndctrlpipe(dev, 0),
-+			1, 0x21, 0x0400, 0x4301, &com_buff, 2);
-+
-+	/* Set the effect volume and feedback to 0 */
-+	memset(com_buff, 0x00, 4);
-+	com_buff[0] = 0x00;
-+	com_buff[1] = 0x00;
-+	com_buff[2] = 0x00;
-+	com_buff[3] = 0x00;
-+	/* feedback: */
-+	snd_usb_ctl_msg(dev, usb_sndctrlpipe(dev, 0),
-+			1, 0x21, 0x0500, 0x4301, &com_buff, 1);
-+	/* volume: */
-+	snd_usb_ctl_msg(dev, usb_sndctrlpipe(dev, 0),
-+			1, 0x21, 0x0300, 0x4301, &com_buff, 1);
-+
-+	/* Set soft button hold duration */
-+	memset(com_buff, 0x00, 4);
-+	com_buff[0] = 0x05;
-+	com_buff[1] = 0x00;
-+	com_buff[2] = 0x00;
-+	com_buff[3] = 0x00;
-+	snd_usb_ctl_msg(dev, usb_sndctrlpipe(dev, 0),
-+			3, 0x21, 0x0005, 0x2001, &com_buff, 1);
-+
-+	/* Use dim LEDs for button of state */
-+	memset(com_buff, 0x00, 4);
-+	com_buff[0] = 0x00;
-+	com_buff[1] = 0x00;
-+	com_buff[2] = 0x00;
-+	com_buff[3] = 0x00;
-+	snd_usb_ctl_msg(dev, usb_sndctrlpipe(dev, 0),
-+			3, 0x21, 0x0004, 0x2001, &com_buff, 1);
-+
-+	return;
-+}
-+
-+#define MBOX3_DESCRIPTOR_SIZE	464
-+
-+static int snd_usb_mbox3_boot_quirk(struct usb_device *dev)
-+{
-+	struct usb_host_config *config = dev->actconfig;
-+	int err;
-+	int descriptor_size;
-+
-+	descriptor_size = le16_to_cpu(get_cfg_desc(config)->wTotalLength);
-+
-+	if (descriptor_size != MBOX3_DESCRIPTOR_SIZE) {
-+		dev_err(&dev->dev, "Invalid descriptor size=%d.\n", descriptor_size);
-+		return -ENODEV;
-+	}
-+
-+	dev_dbg(&dev->dev, "device initialised!\n");
-+
-+	err = usb_get_descriptor(dev, USB_DT_DEVICE, 0,
-+		&dev->descriptor, sizeof(dev->descriptor));
-+	config = dev->actconfig;
-+	if (err < 0)
-+		dev_dbg(&dev->dev, "error usb_get_descriptor: %d\n", err);
-+
-+	err = usb_reset_configuration(dev);
-+	if (err < 0)
-+		dev_dbg(&dev->dev, "error usb_reset_configuration: %d\n", err);
-+	dev_dbg(&dev->dev, "mbox3_boot: new boot length = %d\n",
-+		le16_to_cpu(get_cfg_desc(config)->wTotalLength));
-+
-+	mbox3_setup_48_24_magic(dev);
-+	dev_info(&dev->dev, "Digidesign Mbox 3: 24bit 48kHz");
-+
-+	return 0; /* Successful boot */
-+}
- 
- #define MICROBOOK_BUF_SIZE 128
- 
-@@ -1324,6 +1631,10 @@ int snd_usb_apply_boot_quirk(struct usb_device *dev,
- 	case USB_ID(0x0dba, 0x3000):
- 		/* Digidesign Mbox 2 */
- 		return snd_usb_mbox2_boot_quirk(dev);
-+	case USB_ID(0x0dba, 0x5000):
-+		/* Digidesign Mbox 3 */
-+		return snd_usb_mbox3_boot_quirk(dev);
-+
- 
- 	case USB_ID(0x1235, 0x0010): /* Focusrite Novation Saffire 6 USB */
- 	case USB_ID(0x1235, 0x0018): /* Focusrite Novation Twitch */
+Changes since latest v4
+=======================
+1. Correct commit msgs and comments after Andy's review.
+2. Re-order code in new helper (patch #1) (Andy).
+3. Add tags.
+
+Changes since latest v3
+=======================
+1. Wrap comments, extend comment in driver_set_override() about newline.
+2. Minor commit msg fixes.
+3. Add tags.
+
+Changes since latest v2
+=======================
+1. Make all driver_override fields as "const char *", just like SPI
+   and VDPA. (Mark)
+2. Move "count" check to the new helper and add "count" argument. (Michael)
+3. Fix typos in docs, patch subject. Extend doc. (Michael, Bjorn)
+4. Compare pointers to reduce number of string readings in the helper.
+5. Fix clk-imx return value.
+
+Changes since latest v1 (not the old 2019 solution):
+====================================================
+https://lore.kernel.org/all/708eabb1-7b35-d525-d4c3-451d4a3de84f@rasmusvillemoes.dk/
+1. Add helper for setting driver_override.
+2. Use the helper.
+
+Dependencies (and stable):
+==========================
+1. All patches, including last three fixes, depend on the first patch
+   introducing the helper.
+2. The last three commits - fixes - are probably not backportable
+   directly, because of this dependency. I don't know how to express
+   this dependency here, since stable-kernel-rules.rst mentions only commits as
+   possible dependencies.
+
+[1] https://lore.kernel.org/all/1550484960-2392-3-git-send-email-krzk@kernel.org/
+
+Best regards,
+Krzysztof
+
+Krzysztof Kozlowski (12):
+  driver: platform: Add helper for safer setting of driver_override
+  amba: Use driver_set_override() instead of open-coding
+  fsl-mc: Use driver_set_override() instead of open-coding
+  hv: Use driver_set_override() instead of open-coding
+  PCI: Use driver_set_override() instead of open-coding
+  s390/cio: Use driver_set_override() instead of open-coding
+  spi: Use helper for safer setting of driver_override
+  vdpa: Use helper for safer setting of driver_override
+  clk: imx: scu: Fix kfree() of static memory on setting driver_override
+  slimbus: qcom-ngd: Fix kfree() of static memory on setting
+    driver_override
+  rpmsg: Constify local variable in field store macro
+  rpmsg: Fix kfree() of static memory on setting driver_override
+
+ drivers/amba/bus.c              | 28 ++-----------
+ drivers/base/driver.c           | 69 +++++++++++++++++++++++++++++++++
+ drivers/base/platform.c         | 28 ++-----------
+ drivers/bus/fsl-mc/fsl-mc-bus.c | 25 ++----------
+ drivers/clk/imx/clk-scu.c       |  7 +++-
+ drivers/hv/vmbus_drv.c          | 28 ++-----------
+ drivers/pci/pci-sysfs.c         | 28 ++-----------
+ drivers/rpmsg/rpmsg_core.c      |  3 +-
+ drivers/rpmsg/rpmsg_internal.h  | 13 ++++++-
+ drivers/rpmsg/rpmsg_ns.c        | 14 ++++++-
+ drivers/s390/cio/cio.h          |  6 ++-
+ drivers/s390/cio/css.c          | 28 ++-----------
+ drivers/slimbus/qcom-ngd-ctrl.c | 13 ++++++-
+ drivers/spi/spi.c               | 26 ++-----------
+ drivers/vdpa/vdpa.c             | 29 ++------------
+ include/linux/amba/bus.h        |  6 ++-
+ include/linux/device/driver.h   |  2 +
+ include/linux/fsl/mc.h          |  6 ++-
+ include/linux/hyperv.h          |  6 ++-
+ include/linux/pci.h             |  6 ++-
+ include/linux/platform_device.h |  6 ++-
+ include/linux/rpmsg.h           |  6 ++-
+ include/linux/spi/spi.h         |  2 +
+ include/linux/vdpa.h            |  4 +-
+ 24 files changed, 184 insertions(+), 205 deletions(-)
+
 -- 
-2.35.1
+2.32.0
 
