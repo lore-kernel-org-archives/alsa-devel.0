@@ -4,66 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id ECC91C433EF
-	for <alsa-devel@archiver.kernel.org>; Tue, 19 Apr 2022 15:31:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 51B9CC433EF
+	for <alsa-devel@archiver.kernel.org>; Tue, 19 Apr 2022 15:31:36 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E4B811AEE;
-	Tue, 19 Apr 2022 17:30:23 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E4B811AEE
+	by alsa0.perex.cz (Postfix) with ESMTPS id 6B0C21B0B;
+	Tue, 19 Apr 2022 17:30:44 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6B0C21B0B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1650382274;
-	bh=xr4+GRv6uRv/fbQhe5BhSVrxCf6BcMHd+siZ/yc4BXI=;
+	s=default; t=1650382294;
+	bh=jeuAQBpU0IHUM+HhJwHhOHne7mMnnHWM5rRI0BeHijg=;
 	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=XE9vB0o++sm9y/c1eyevtBWeb8aE8/hR9WNjAnRAvPkQjoShhP9EH3vN81YxeIKpE
-	 VRmpAuzISsLR8Ulg2EaTyZqJibgiUHXAdAKubmboJoq8lhKV8udXe8agE+OgBxISmn
-	 nlUoqJW7gWIMTcghQAF90xNkiTyna0c5rw2L8t+I=
+	b=CMB8pLmNGNvYqH/gYYwizHYz7fAsZXzjh0WZ0t3DvViO6ZSDmVn6jyRFK2VNG0h6o
+	 73X5fM97hJhycSoJCSSyHbVyquEWNZ2jl32WYHj8ZFGi88rrY8xCpSUSRpA0AnU1Ei
+	 paEegyxVduqpmHR4IRv1GbIVm3uzGrRS3ffydQ1w=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id EB139F80237;
-	Tue, 19 Apr 2022 17:29:56 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id E211EF804CB;
+	Tue, 19 Apr 2022 17:29:58 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id D28F2F80269; Tue, 19 Apr 2022 17:29:52 +0200 (CEST)
+ id 9B0D7F80269; Tue, 19 Apr 2022 17:29:56 +0200 (CEST)
 Received: from sin.source.kernel.org (sin.source.kernel.org [145.40.73.55])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 833D5F80237
+ by alsa1.perex.cz (Postfix) with ESMTPS id 4D303F800C1
  for <alsa-devel@alsa-project.org>; Tue, 19 Apr 2022 17:29:49 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 833D5F80237
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4D303F800C1
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="dQ+zPpGy"
+ header.b="cyR57D2I"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by sin.source.kernel.org (Postfix) with ESMTPS id B0EB3CE19AE;
- Tue, 19 Apr 2022 15:29:47 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2F96CC385A7;
- Tue, 19 Apr 2022 15:29:45 +0000 (UTC)
+ by sin.source.kernel.org (Postfix) with ESMTPS id 6352CCE19C7;
+ Tue, 19 Apr 2022 15:29:46 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4FC0EC385AC;
+ Tue, 19 Apr 2022 15:29:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1650382186;
- bh=xr4+GRv6uRv/fbQhe5BhSVrxCf6BcMHd+siZ/yc4BXI=;
+ s=k20201202; t=1650382184;
+ bh=jeuAQBpU0IHUM+HhJwHhOHne7mMnnHWM5rRI0BeHijg=;
  h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=dQ+zPpGy7WHc/HYs1aqLbzGB2sT86nFs/Kspn61Rcnerrb1n8fjPnwaA9GnxKhgLJ
- BiP/GGLfYWauPUphdkw5+/test+0g6d4/Rrfeeq8kqBuane6h/O6F5CFUQS1aA5Ze3
- HSRZ9fNmdHvThnN43iwgzqZ7OYHzmZ+vlMhTm7i3eOfrxkRXlT1v/C9M6uhmoY+2jD
- /+KNb0Bx9SvHUbpcFfjm6JJaQamajy3/csb9SpfCU4q/03InmizQI0G3fwHMmcTAJw
- zmp+aDO3hy/4S7iiJUtY90Lk1OFnUNZ14oK2OEDvG5CR2WDnU/0PPGBYVdO90ZtKDw
- 4ujXMEZ/xtegQ==
+ b=cyR57D2ICWHJ/NMVxwPTme78WwAyiGmCp6E1vMcQLNezlDTTMo4Qi+NCx3ByGkdHm
+ 8onsLupf7HSN5GlA9sxsO6ltkXc3CaxajXtN5b14mzhIw7DmFK6FTPrMagLY/8eRPX
+ OLxy69BEW/PNM3pwHW0wykCV/J3zdmLZiGFnKCXDtCcSvqVtc5e33UWHpQUGHywpL0
+ sw1B/5Th0+O9UtAkJJqIbAoKSRcFLmYVyls53zQ3RNrZC5yB7/Ix/XQ2ZvCwCkHk2Y
+ j1LcAD3HCj+Yhg01CgPadYViGxZXjNdqDXEpiAPh+zaIZAczcEGXd3n9Wx113zbBya
+ b0IbYQUGcu1ZA==
 From: Mark Brown <broonie@kernel.org>
-To: patches@opensource.cirrus.com, broonie@kernel.org,
- Liam Girdwood <lgirdwood@gmail.com>
-In-Reply-To: <20220416125408.197440-1-broonie@kernel.org>
-References: <20220416125408.197440-1-broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: wm8958: Fix change notifications for DSP controls
-Message-Id: <165038218491.995461.7141441522433059070.b4-ty@kernel.org>
-Date: Tue, 19 Apr 2022 16:29:44 +0100
+To: cgel.zte@gmail.com, lgirdwood@gmail.com
+In-Reply-To: <20220418110259.2559144-1-chi.minghao@zte.com.cn>
+References: <20220418110259.2559144-1-chi.minghao@zte.com.cn>
+Subject: Re: [PATCH] ASoC: codecs: wm8962: using pm_runtime_resume_and_get
+ instead of pm_runtime_get_sync
+Message-Id: <165038218304.995461.12975238868778224251.b4-ty@kernel.org>
+Date: Tue, 19 Apr 2022 16:29:43 +0100
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: alsa-devel@alsa-project.org
+Cc: patches@opensource.cirrus.com, zealci@zte.com.cn,
+ alsa-devel@alsa-project.org, chi.minghao@zte.com.cn,
+ linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -79,11 +81,11 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Sat, 16 Apr 2022 13:54:08 +0100, Mark Brown wrote:
-> The WM8958 DSP controls all return 0 on successful write, not a boolean
-> value indicating if the write changed the value of the control. Fix this
-> by returning 1 after a change, there is already a check at the start of
-> each put() that skips the function in the case that there is no change.
+On Mon, 18 Apr 2022 11:02:59 +0000, cgel.zte@gmail.com wrote:
+> From: Minghao Chi <chi.minghao@zte.com.cn>
+> 
+> Using pm_runtime_resume_and_get is more appropriate
+> for simplifing code
 > 
 > 
 
@@ -93,8 +95,8 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: wm8958: Fix change notifications for DSP controls
-      commit: b4f5c6b2e52b27462c0599e64e96e53b58438de1
+[1/1] ASoC: codecs: wm8962: using pm_runtime_resume_and_get instead of pm_runtime_get_sync
+      commit: e65f2fce08fc708e65b544131999bdd933d09164
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
