@@ -4,60 +4,60 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A0389C433F5
-	for <alsa-devel@archiver.kernel.org>; Tue, 19 Apr 2022 13:45:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id DEC10C433EF
+	for <alsa-devel@archiver.kernel.org>; Tue, 19 Apr 2022 13:45:40 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id EBE411945;
-	Tue, 19 Apr 2022 15:44:34 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EBE411945
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0AAA1195A;
+	Tue, 19 Apr 2022 15:44:49 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0AAA1195A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1650375925;
-	bh=Np8s2Gyq1pdxV543cfr46FIWCXKZK9Cd/nCYrVx5ojg=;
+	s=default; t=1650375939;
+	bh=Cy+wwzOaVgtjDqQCWI06PLYznih6Y2ND7QxFqe4Xpd0=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=qO5QN2Ix2obO25mqEP/QSycrJaZwqNqfWssgrzP8BXMTL1/svKsiF1wsiZCrXyDB3
-	 k3VgfRCrBuK6WbX2pM8nxxdhEh6cUKSy3mSD6Nad0qKcG6UAFaVjM9PCun7EPZHue/
-	 PKZgV/OWpmnWUmUiutPhfbEk/Kd7ERRKUAXgVwqI=
+	b=JcbikevioX6J85CFzIi36bOMkjEZ+9Ale9LRLzMI3AjdWHsWmcoAuKgE+Y02h5mnc
+	 IQVja08c0ecTEFklciSjyOes61rFgrv6VzsCVd1P6GmbfMeX8IPwV+t9cPmVx27h6z
+	 wrrqsx95lJ/Smo7Ut9aY3yQpigPh22Qfb0RNQQk0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 37709F80511;
+	by alsa1.perex.cz (Postfix) with ESMTP id DC0C6F80519;
 	Tue, 19 Apr 2022 15:43:20 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 78FDCF80269; Tue, 19 Apr 2022 15:38:39 +0200 (CEST)
+ id 742BAF8025D; Tue, 19 Apr 2022 15:38:40 +0200 (CEST)
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 5D033F80116
+ by alsa1.perex.cz (Postfix) with ESMTPS id 7D2BEF80121
  for <alsa-devel@alsa-project.org>; Tue, 19 Apr 2022 15:38:33 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5D033F80116
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7D2BEF80121
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="u5Gaksw3"
+ header.b="cTxet9qA"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id 3F24B616B4;
- Tue, 19 Apr 2022 13:38:32 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 34216C385AF;
- Tue, 19 Apr 2022 13:38:23 +0000 (UTC)
+ by dfw.source.kernel.org (Postfix) with ESMTPS id 0CC0361699;
+ Tue, 19 Apr 2022 13:38:02 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 626C6C385B4;
+ Tue, 19 Apr 2022 13:37:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1650375511;
- bh=Np8s2Gyq1pdxV543cfr46FIWCXKZK9Cd/nCYrVx5ojg=;
+ s=k20201202; t=1650375481;
+ bh=Cy+wwzOaVgtjDqQCWI06PLYznih6Y2ND7QxFqe4Xpd0=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=u5Gaksw3FT9LBCaZ1FZNe8UJOhDf4P4PqbufxWi5GEe7OYntcB42H8c3bgHyO62oB
- YAdwuypnRsFBzvZg/CQTzl0wpdrX8smgAmy4Xvzmeeb+gSSG7VJHhtngUJtirQ4aQE
- kwOJRGQhqx1bnHTdmxQ9qWFSM1cfG749KVfrvCdIABwperZeQJ/HBUXbNskkLz5tWu
- HhZFFoyzK0SPPg2WPkbJsQ35m2A5fj9NvteJg7sZ7/2EkTy16rcBdWSylBLHQPT42w
- 3ZiJ+HedXTHY49GMokr8k6po2meO2DCSaIcFBOZ4tfeeJFIP4Xetmxwter86nvYge4
- 1E6rtQNCe70CQ==
+ b=cTxet9qASIyT4pT7/bXgoG7K+343ypyZ3dk2jesY6LllhVU667bteRuuDsMlY1+38
+ MpXUOXEEZJ1GFmvK1Wx6WWHwUEkzBncehUftqSKvdHbmu1mZlvF9uk/QSI3ydWScQY
+ 9164an8c0Bq2tcooKmOSSORP4/BqxFTRLl0RwGOSPJ/f8XnzC+knL6+AWXbOqxXrO9
+ jT2WrNqUQlrcLED9/1qX0uSI65WM5jAAklzubs7u45qvte+7LIosfAKSCdPdO+U+yK
+ aa3n07UtWnFgQdNlFXT8HmdCFVXag+AgGjv8BrQWmXVQUtFozHDJ7jeNiH6wjN8YAr
+ +oetnkGXMv64A==
 From: Arnd Bergmann <arnd@kernel.org>
 To: linux-omap@vger.kernel.org, tony@atomide.com, aaro.koskinen@iki.fi,
  jmkrzyszt@gmail.com
-Subject: [PATCH 07/41] ARM: omap1: move mach/usb.h to include/linux/soc
-Date: Tue, 19 Apr 2022 15:36:49 +0200
-Message-Id: <20220419133723.1394715-8-arnd@kernel.org>
+Subject: [PATCH 03/41] ARM: omap1: move lcd_dma code into omapfb driver
+Date: Tue, 19 Apr 2022 15:36:45 +0200
+Message-Id: <20220419133723.1394715-4-arnd@kernel.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20220419133723.1394715-1-arnd@kernel.org>
 References: <20220419133723.1394715-1-arnd@kernel.org>
@@ -69,11 +69,12 @@ Cc: Ulf Hansson <ulf.hansson@linaro.org>,
  Linus Walleij <linus.walleij@linaro.org>, linux-fbdev@vger.kernel.org,
  Dominik Brodowski <linux@dominikbrodowski.net>,
  Lee Jones <lee.jones@linaro.org>, Daniel Thompson <daniel.thompson@linaro.org>,
- Felipe Balbi <felipe.balbi@linux.intel.com>, Kevin Hilman <khilman@kernel.org>,
- Peter Ujfalusi <peter.ujfalusi@gmail.com>, Helge Deller <deller@gmx.de>,
- Russell King <linux@armlinux.org.uk>, Krzysztof Kozlowski <krzk@kernel.org>,
- Alan Stern <stern@rowland.harvard.edu>, linux-serial@vger.kernel.org,
- linux-input@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
+ Kevin Hilman <khilman@kernel.org>, Peter Ujfalusi <peter.ujfalusi@gmail.com>,
+ Helge Deller <deller@gmx.de>, Russell King <linux@armlinux.org.uk>,
+ Krzysztof Kozlowski <krzk@kernel.org>, Alan Stern <stern@rowland.harvard.edu>,
+ linux-serial@vger.kernel.org, linux-input@vger.kernel.org,
+ Arnd Bergmann <arnd@arndb.de>,
+ Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
  Mark Brown <broonie@kernel.org>, dri-devel@lists.freedesktop.org,
  linux-arm-kernel@lists.infradead.org, Felipe Balbi <balbi@kernel.org>,
  Paul Walmsley <paul@pwsan.com>, Jingoo Han <jingoohan1@gmail.com>,
@@ -97,356 +98,250 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 From: Arnd Bergmann <arnd@arndb.de>
 
-The register definitions in this header are used in at least four
-different places, with little hope of completely cleaning that up.
+The omapfb driver is split into platform specific code for omap1, and
+driver code that is also specific to omap1.
 
-Split up the file into a portion that becomes a linux-wide header
-under include/linux/soc/ti/, and the parts that are actually only
-needed by board files.
+Moving both parts into the driver directory simplifies the structure
+and avoids the dependency on certain omap machine header files.
 
-Acked-by: Felipe Balbi <felipe.balbi@linux.intel.com>
+As mach/lcd_dma.h can not be included from include/linux/omap-dma.h
+any more now, move the omap_lcd_dma_running() declaration into the
+omap-dma header, which matches where it is defined.
+
+Acked-by: Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
 Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 ---
- arch/arm/mach-omap1/board-ams-delta.c         |  2 +-
- arch/arm/mach-omap1/board-generic.c           |  2 +-
- arch/arm/mach-omap1/board-h2.c                |  2 +-
- arch/arm/mach-omap1/board-h3.c                |  2 +-
- arch/arm/mach-omap1/board-htcherald.c         |  2 +-
- arch/arm/mach-omap1/board-innovator.c         |  2 +-
- arch/arm/mach-omap1/board-nokia770.c          |  2 +-
- arch/arm/mach-omap1/board-osk.c               |  2 +-
- arch/arm/mach-omap1/board-palmte.c            |  2 +-
- arch/arm/mach-omap1/board-palmtt.c            |  2 +-
- arch/arm/mach-omap1/board-palmz71.c           |  2 +-
- arch/arm/mach-omap1/board-sx1.c               |  2 +-
- arch/arm/mach-omap1/clock_data.c              |  2 +-
- arch/arm/mach-omap1/usb.c                     |  2 +-
- arch/arm/mach-omap1/usb.h                     | 25 +++++++++++++++++
- drivers/usb/gadget/udc/omap_udc.c             |  3 +-
- drivers/usb/host/ohci-omap.c                  |  4 +--
- drivers/usb/phy/phy-isp1301-omap.c            |  2 +-
- .../usb.h => include/linux/soc/ti/omap1-usb.h | 28 ++++++-------------
- 19 files changed, 52 insertions(+), 38 deletions(-)
- create mode 100644 arch/arm/mach-omap1/usb.h
- rename arch/arm/mach-omap1/include/mach/usb.h => include/linux/soc/ti/omap1-usb.h (86%)
+ arch/arm/mach-omap1/Makefile                  |  4 --
+ arch/arm/mach-omap1/include/mach/lcdc.h       | 44 -------------------
+ drivers/video/fbdev/Makefile                  |  2 +-
+ drivers/video/fbdev/omap/Makefile             |  5 +++
+ .../video/fbdev/omap}/lcd_dma.c               |  4 +-
+ .../video/fbdev/omap}/lcd_dma.h               |  2 -
+ drivers/video/fbdev/omap/lcdc.c               |  2 +-
+ drivers/video/fbdev/omap/lcdc.h               | 35 +++++++++++++++
+ drivers/video/fbdev/omap/sossi.c              |  1 +
+ include/linux/omap-dma.h                      |  4 +-
+ 10 files changed, 48 insertions(+), 55 deletions(-)
+ delete mode 100644 arch/arm/mach-omap1/include/mach/lcdc.h
+ rename {arch/arm/mach-omap1 => drivers/video/fbdev/omap}/lcd_dma.c (99%)
+ rename {arch/arm/mach-omap1/include/mach => drivers/video/fbdev/omap}/lcd_dma.h (98%)
 
-diff --git a/arch/arm/mach-omap1/board-ams-delta.c b/arch/arm/mach-omap1/board-ams-delta.c
-index 12d61ad98395..5b0e99319990 100644
---- a/arch/arm/mach-omap1/board-ams-delta.c
-+++ b/arch/arm/mach-omap1/board-ams-delta.c
-@@ -38,7 +38,7 @@
- #include <mach/mux.h>
+diff --git a/arch/arm/mach-omap1/Makefile b/arch/arm/mach-omap1/Makefile
+index c757a52d0801..450bbf552b57 100644
+--- a/arch/arm/mach-omap1/Makefile
++++ b/arch/arm/mach-omap1/Makefile
+@@ -57,7 +57,3 @@ obj-$(CONFIG_ARCH_OMAP730)		+= gpio7xx.o
+ obj-$(CONFIG_ARCH_OMAP850)		+= gpio7xx.o
+ obj-$(CONFIG_ARCH_OMAP15XX)		+= gpio15xx.o
+ obj-$(CONFIG_ARCH_OMAP16XX)		+= gpio16xx.o
+-
+-ifneq ($(CONFIG_FB_OMAP),)
+-obj-y += lcd_dma.o
+-endif
+diff --git a/arch/arm/mach-omap1/include/mach/lcdc.h b/arch/arm/mach-omap1/include/mach/lcdc.h
+deleted file mode 100644
+index 7152db1f5361..000000000000
+--- a/arch/arm/mach-omap1/include/mach/lcdc.h
++++ /dev/null
+@@ -1,44 +0,0 @@
+-/* SPDX-License-Identifier: GPL-2.0-or-later */
+-/*
+- * arch/arm/mach-omap1/include/mach/lcdc.h
+- *
+- * Extracted from drivers/video/omap/lcdc.c
+- * Copyright (C) 2004 Nokia Corporation
+- * Author: Imre Deak <imre.deak@nokia.com>
+- */
+-#ifndef __MACH_LCDC_H__
+-#define __MACH_LCDC_H__
+-
+-#define OMAP_LCDC_BASE			0xfffec000
+-#define OMAP_LCDC_SIZE			256
+-#define OMAP_LCDC_IRQ			INT_LCD_CTRL
+-
+-#define OMAP_LCDC_CONTROL		(OMAP_LCDC_BASE + 0x00)
+-#define OMAP_LCDC_TIMING0		(OMAP_LCDC_BASE + 0x04)
+-#define OMAP_LCDC_TIMING1		(OMAP_LCDC_BASE + 0x08)
+-#define OMAP_LCDC_TIMING2		(OMAP_LCDC_BASE + 0x0c)
+-#define OMAP_LCDC_STATUS		(OMAP_LCDC_BASE + 0x10)
+-#define OMAP_LCDC_SUBPANEL		(OMAP_LCDC_BASE + 0x14)
+-#define OMAP_LCDC_LINE_INT		(OMAP_LCDC_BASE + 0x18)
+-#define OMAP_LCDC_DISPLAY_STATUS	(OMAP_LCDC_BASE + 0x1c)
+-
+-#define OMAP_LCDC_STAT_DONE		(1 << 0)
+-#define OMAP_LCDC_STAT_VSYNC		(1 << 1)
+-#define OMAP_LCDC_STAT_SYNC_LOST	(1 << 2)
+-#define OMAP_LCDC_STAT_ABC		(1 << 3)
+-#define OMAP_LCDC_STAT_LINE_INT		(1 << 4)
+-#define OMAP_LCDC_STAT_FUF		(1 << 5)
+-#define OMAP_LCDC_STAT_LOADED_PALETTE	(1 << 6)
+-
+-#define OMAP_LCDC_CTRL_LCD_EN		(1 << 0)
+-#define OMAP_LCDC_CTRL_LCD_TFT		(1 << 7)
+-#define OMAP_LCDC_CTRL_LINE_IRQ_CLR_SEL	(1 << 10)
+-
+-#define OMAP_LCDC_IRQ_VSYNC		(1 << 2)
+-#define OMAP_LCDC_IRQ_DONE		(1 << 3)
+-#define OMAP_LCDC_IRQ_LOADED_PALETTE	(1 << 4)
+-#define OMAP_LCDC_IRQ_LINE_NIRQ		(1 << 5)
+-#define OMAP_LCDC_IRQ_LINE		(1 << 6)
+-#define OMAP_LCDC_IRQ_MASK		(((1 << 5) - 1) << 2)
+-
+-#endif /* __MACH_LCDC_H__ */
+diff --git a/drivers/video/fbdev/Makefile b/drivers/video/fbdev/Makefile
+index 477b9624b703..7795c4126706 100644
+--- a/drivers/video/fbdev/Makefile
++++ b/drivers/video/fbdev/Makefile
+@@ -110,7 +110,7 @@ obj-$(CONFIG_FB_UDL)		  += udlfb.o
+ obj-$(CONFIG_FB_SMSCUFX)	  += smscufx.o
+ obj-$(CONFIG_FB_XILINX)           += xilinxfb.o
+ obj-$(CONFIG_FB_SH_MOBILE_LCDC)	  += sh_mobile_lcdcfb.o
+-obj-$(CONFIG_FB_OMAP)             += omap/
++obj-y				  += omap/
+ obj-y                             += omap2/
+ obj-$(CONFIG_XEN_FBDEV_FRONTEND)  += xen-fbfront.o
+ obj-$(CONFIG_FB_CARMINE)          += carminefb.o
+diff --git a/drivers/video/fbdev/omap/Makefile b/drivers/video/fbdev/omap/Makefile
+index daaa73a94e7f..b88e02f5cb1f 100644
+--- a/drivers/video/fbdev/omap/Makefile
++++ b/drivers/video/fbdev/omap/Makefile
+@@ -5,6 +5,11 @@
  
- #include <mach/hardware.h>
--#include <mach/usb.h>
-+#include "usb.h"
+ obj-$(CONFIG_FB_OMAP) += omapfb.o
  
- #include "ams-delta-fiq.h"
- #include "board-ams-delta.h"
-diff --git a/arch/arm/mach-omap1/board-generic.c b/arch/arm/mach-omap1/board-generic.c
-index c62554990115..8ef0a9b17e92 100644
---- a/arch/arm/mach-omap1/board-generic.c
-+++ b/arch/arm/mach-omap1/board-generic.c
-@@ -21,7 +21,7 @@
- 
- #include <mach/mux.h>
- 
--#include <mach/usb.h>
-+#include "usb.h"
- 
- #include "common.h"
- 
-diff --git a/arch/arm/mach-omap1/board-h2.c b/arch/arm/mach-omap1/board-h2.c
-index 977b0b744c22..b8cf0d84f8ab 100644
---- a/arch/arm/mach-omap1/board-h2.c
-+++ b/arch/arm/mach-omap1/board-h2.c
-@@ -42,7 +42,7 @@
- #include "flash.h"
- 
- #include <mach/hardware.h>
--#include <mach/usb.h>
-+#include "usb.h"
- 
- #include "common.h"
- #include "board-h2.h"
-diff --git a/arch/arm/mach-omap1/board-h3.c b/arch/arm/mach-omap1/board-h3.c
-index 4249984f9c30..86260498c344 100644
---- a/arch/arm/mach-omap1/board-h3.c
-+++ b/arch/arm/mach-omap1/board-h3.c
-@@ -45,7 +45,7 @@
- 
- #include <mach/hardware.h>
- #include <mach/irqs.h>
--#include <mach/usb.h>
-+#include "usb.h"
- 
- #include "common.h"
- #include "board-h3.h"
-diff --git a/arch/arm/mach-omap1/board-htcherald.c b/arch/arm/mach-omap1/board-htcherald.c
-index 258304edf23e..f7220b60eb61 100644
---- a/arch/arm/mach-omap1/board-htcherald.c
-+++ b/arch/arm/mach-omap1/board-htcherald.c
-@@ -31,7 +31,7 @@
- #include "mmc.h"
- 
- #include <mach/irqs.h>
--#include <mach/usb.h>
-+#include "usb.h"
- 
- #include "common.h"
- 
-diff --git a/arch/arm/mach-omap1/board-innovator.c b/arch/arm/mach-omap1/board-innovator.c
-index 2425f1bacb33..e7d6735d4701 100644
---- a/arch/arm/mach-omap1/board-innovator.c
-+++ b/arch/arm/mach-omap1/board-innovator.c
-@@ -34,7 +34,7 @@
- #include <linux/platform_data/keypad-omap.h>
- 
- #include <mach/hardware.h>
--#include <mach/usb.h>
-+#include "usb.h"
- 
- #include "iomap.h"
- #include "common.h"
-diff --git a/arch/arm/mach-omap1/board-nokia770.c b/arch/arm/mach-omap1/board-nokia770.c
-index 11511ae2e0a2..e43c852103f5 100644
---- a/arch/arm/mach-omap1/board-nokia770.c
-+++ b/arch/arm/mach-omap1/board-nokia770.c
-@@ -31,7 +31,7 @@
- #include <mach/mux.h>
- 
- #include <mach/hardware.h>
--#include <mach/usb.h>
-+#include "usb.h"
- 
- #include "common.h"
- #include "clock.h"
-diff --git a/arch/arm/mach-omap1/board-osk.c b/arch/arm/mach-omap1/board-osk.c
-index e18b6f13300e..b627a4351cf0 100644
---- a/arch/arm/mach-omap1/board-osk.c
-+++ b/arch/arm/mach-omap1/board-osk.c
-@@ -52,7 +52,7 @@
- #include <mach/tc.h>
- 
- #include <mach/hardware.h>
--#include <mach/usb.h>
-+#include "usb.h"
- 
- #include "common.h"
- 
-diff --git a/arch/arm/mach-omap1/board-palmte.c b/arch/arm/mach-omap1/board-palmte.c
-index ce6f0fcd9d12..4ac981c5cf74 100644
---- a/arch/arm/mach-omap1/board-palmte.c
-+++ b/arch/arm/mach-omap1/board-palmte.c
-@@ -38,7 +38,7 @@
- #include <linux/platform_data/keypad-omap.h>
- 
- #include <mach/hardware.h>
--#include <mach/usb.h>
-+#include "usb.h"
- 
- #include "mmc.h"
- #include "common.h"
-diff --git a/arch/arm/mach-omap1/board-palmtt.c b/arch/arm/mach-omap1/board-palmtt.c
-index 8a08311c4e05..e48ae5fbe1b1 100644
---- a/arch/arm/mach-omap1/board-palmtt.c
-+++ b/arch/arm/mach-omap1/board-palmtt.c
-@@ -38,7 +38,7 @@
- #include <linux/platform_data/keypad-omap.h>
- 
- #include <mach/hardware.h>
--#include <mach/usb.h>
-+#include "usb.h"
- 
- #include "common.h"
- 
-diff --git a/arch/arm/mach-omap1/board-palmz71.c b/arch/arm/mach-omap1/board-palmz71.c
-index 034e5bc6a029..37db0ab31528 100644
---- a/arch/arm/mach-omap1/board-palmz71.c
-+++ b/arch/arm/mach-omap1/board-palmz71.c
-@@ -40,7 +40,7 @@
- #include <linux/platform_data/keypad-omap.h>
- 
- #include <mach/hardware.h>
--#include <mach/usb.h>
-+#include "usb.h"
- 
- #include "common.h"
- 
-diff --git a/arch/arm/mach-omap1/board-sx1.c b/arch/arm/mach-omap1/board-sx1.c
-index bb9ec345e204..0965b1b689ec 100644
---- a/arch/arm/mach-omap1/board-sx1.c
-+++ b/arch/arm/mach-omap1/board-sx1.c
-@@ -38,7 +38,7 @@
- #include "board-sx1.h"
- 
- #include <mach/hardware.h>
--#include <mach/usb.h>
-+#include "usb.h"
- 
- #include "common.h"
- 
-diff --git a/arch/arm/mach-omap1/clock_data.c b/arch/arm/mach-omap1/clock_data.c
-index 3ebcd96efbff..ef46c5f67cf9 100644
---- a/arch/arm/mach-omap1/clock_data.c
-+++ b/arch/arm/mach-omap1/clock_data.c
-@@ -22,7 +22,7 @@
- #include "soc.h"
- 
- #include <mach/hardware.h>
--#include <mach/usb.h>   /* for OTG_BASE */
-+#include "usb.h"   /* for OTG_BASE */
- 
- #include "iomap.h"
- #include "clock.h"
-diff --git a/arch/arm/mach-omap1/usb.c b/arch/arm/mach-omap1/usb.c
-index e60831c82b78..fa658054fc57 100644
---- a/arch/arm/mach-omap1/usb.c
-+++ b/arch/arm/mach-omap1/usb.c
-@@ -17,7 +17,7 @@
- 
- #include <mach/mux.h>
- 
--#include <mach/usb.h>
-+#include "usb.h"
- 
- #include "common.h"
- 
-diff --git a/arch/arm/mach-omap1/usb.h b/arch/arm/mach-omap1/usb.h
-new file mode 100644
-index 000000000000..08c9344c46e3
---- /dev/null
-+++ b/arch/arm/mach-omap1/usb.h
-@@ -0,0 +1,25 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+/*
-+ * fixme correct answer depends on hmc_mode,
-+ * as does (on omap1) any nonzero value for config->otg port number
-+ */
-+#include <linux/platform_data/usb-omap1.h>
-+#include <linux/soc/ti/omap1-usb.h>
++ifdef CONFIG_FB_OMAP
++# must be built-in
++obj-y += lcd_dma.o
++endif
 +
-+#if IS_ENABLED(CONFIG_USB_OMAP)
-+#define	is_usb0_device(config)	1
-+#else
-+#define	is_usb0_device(config)	0
-+#endif
-+
-+#if IS_ENABLED(CONFIG_USB_SUPPORT)
-+void omap1_usb_init(struct omap_usb_config *pdata);
-+#else
-+static inline void omap1_usb_init(struct omap_usb_config *pdata)
-+{
-+}
-+#endif
-+
-+#define OMAP1_OHCI_BASE			0xfffba000
-+#define OMAP2_OHCI_BASE			0x4805e000
-+#define OMAP_OHCI_BASE			OMAP1_OHCI_BASE
-diff --git a/drivers/usb/gadget/udc/omap_udc.c b/drivers/usb/gadget/udc/omap_udc.c
-index 2d9815dad2ff..b1da584585cf 100644
---- a/drivers/usb/gadget/udc/omap_udc.c
-+++ b/drivers/usb/gadget/udc/omap_udc.c
-@@ -40,8 +40,9 @@
- #include <asm/mach-types.h>
+ objs-yy := omapfb_main.o lcdc.o
  
+ objs-y$(CONFIG_FB_OMAP_LCDC_EXTERNAL) += sossi.o
+diff --git a/arch/arm/mach-omap1/lcd_dma.c b/drivers/video/fbdev/omap/lcd_dma.c
+similarity index 99%
+rename from arch/arm/mach-omap1/lcd_dma.c
+rename to drivers/video/fbdev/omap/lcd_dma.c
+index a72ac0c02b4f..867a63c06f42 100644
+--- a/arch/arm/mach-omap1/lcd_dma.c
++++ b/drivers/video/fbdev/omap/lcd_dma.c
+@@ -26,7 +26,9 @@
  #include <linux/omap-dma.h>
-+#include <linux/platform_data/usb-omap1.h>
- 
--#include <mach/usb.h>
-+#include <linux/soc/ti/omap1-usb.h>
- 
- #include "omap_udc.h"
- 
-diff --git a/drivers/usb/host/ohci-omap.c b/drivers/usb/host/ohci-omap.c
-index 45dcf8292072..7be1ffefc40e 100644
---- a/drivers/usb/host/ohci-omap.c
-+++ b/drivers/usb/host/ohci-omap.c
-@@ -25,6 +25,8 @@
- #include <linux/module.h>
- #include <linux/usb/otg.h>
- #include <linux/platform_device.h>
-+#include <linux/platform_data/usb-omap1.h>
-+#include <linux/soc/ti/omap1-usb.h>
- #include <linux/signal.h>
- #include <linux/usb.h>
- #include <linux/usb/hcd.h>
-@@ -37,8 +39,6 @@
- #include <mach/mux.h>
  
  #include <mach/hardware.h>
--#include <mach/usb.h>
--
- 
- #define DRIVER_DESC "OHCI OMAP driver"
- 
-diff --git a/drivers/usb/phy/phy-isp1301-omap.c b/drivers/usb/phy/phy-isp1301-omap.c
-index 190699b38b41..88aade82b82b 100644
---- a/drivers/usb/phy/phy-isp1301-omap.c
-+++ b/drivers/usb/phy/phy-isp1301-omap.c
-@@ -25,7 +25,7 @@
- 
- #include <mach/mux.h>
- 
--#include <mach/usb.h>
-+#include <linux/soc/ti/omap1-usb.h>
- 
- #undef VERBOSE
- 
-diff --git a/arch/arm/mach-omap1/include/mach/usb.h b/include/linux/soc/ti/omap1-usb.h
-similarity index 86%
-rename from arch/arm/mach-omap1/include/mach/usb.h
-rename to include/linux/soc/ti/omap1-usb.h
-index 5429d86c7190..67488698601a 100644
---- a/arch/arm/mach-omap1/include/mach/usb.h
-+++ b/include/linux/soc/ti/omap1-usb.h
-@@ -1,34 +1,20 @@
- /* SPDX-License-Identifier: GPL-2.0 */
-+#ifndef __SOC_TI_OMAP1_USB
-+#define __SOC_TI_OMAP1_USB
- /*
-- * FIXME correct answer depends on hmc_mode,
-- * as does (on omap1) any nonzero value for config->otg port number
-+ * Constants in this file are used all over the place, in platform
-+ * code, as well as the udc, phy and ohci drivers.
-+ * This is not a great design, but unlikely to get fixed after
-+ * such a long time. Don't do this elsewhere.
-  */
--#if IS_ENABLED(CONFIG_USB_OMAP)
--#define	is_usb0_device(config)	1
--#else
--#define	is_usb0_device(config)	0
--#endif
--
--#include <linux/platform_data/usb-omap1.h>
--
--#if IS_ENABLED(CONFIG_USB_SUPPORT)
--void omap1_usb_init(struct omap_usb_config *pdata);
--#else
--static inline void omap1_usb_init(struct omap_usb_config *pdata)
--{
--}
--#endif
- 
- #define OMAP1_OTG_BASE			0xfffb0400
- #define OMAP1_UDC_BASE			0xfffb4000
--#define OMAP1_OHCI_BASE			0xfffba000
- 
--#define OMAP2_OHCI_BASE			0x4805e000
- #define OMAP2_UDC_BASE			0x4805e200
- #define OMAP2_OTG_BASE			0x4805e300
- #define OTG_BASE			OMAP1_OTG_BASE
- #define UDC_BASE			OMAP1_UDC_BASE
--#define OMAP_OHCI_BASE			OMAP1_OHCI_BASE
- 
- /*
-  * OTG and transceiver registers, for OMAPs starting with ARM926
-@@ -126,3 +112,5 @@ static inline void omap1_usb_init(struct omap_usb_config *pdata)
- #	define	CONF_USB0_ISOLATE_R	(1 << 3)
- #	define	CONF_USB_PWRDN_DM_R	(1 << 2)
- #	define	CONF_USB_PWRDN_DP_R	(1 << 1)
+-#include <mach/lcdc.h>
 +
-+#endif
++#include "lcdc.h"
++#include "lcd_dma.h"
+ 
+ int omap_lcd_dma_running(void)
+ {
+diff --git a/arch/arm/mach-omap1/include/mach/lcd_dma.h b/drivers/video/fbdev/omap/lcd_dma.h
+similarity index 98%
+rename from arch/arm/mach-omap1/include/mach/lcd_dma.h
+rename to drivers/video/fbdev/omap/lcd_dma.h
+index 1a3c0cf17899..1b4780197381 100644
+--- a/arch/arm/mach-omap1/include/mach/lcd_dma.h
++++ b/drivers/video/fbdev/omap/lcd_dma.h
+@@ -60,6 +60,4 @@ extern void omap_set_lcd_dma_b1_vxres(unsigned long vxres);
+ extern void omap_set_lcd_dma_b1_mirror(int mirror);
+ extern void omap_set_lcd_dma_b1_scale(unsigned int xscale, unsigned int yscale);
+ 
+-extern int omap_lcd_dma_running(void);
+-
+ #endif /* __MACH_OMAP1_LCD_DMA_H__ */
+diff --git a/drivers/video/fbdev/omap/lcdc.c b/drivers/video/fbdev/omap/lcdc.c
+index 7317c9aad677..d9a23f6cf7fc 100644
+--- a/drivers/video/fbdev/omap/lcdc.c
++++ b/drivers/video/fbdev/omap/lcdc.c
+@@ -17,7 +17,6 @@
+ #include <linux/clk.h>
+ #include <linux/gfp.h>
+ 
+-#include <mach/lcdc.h>
+ #include <linux/omap-dma.h>
+ 
+ #include <asm/mach-types.h>
+@@ -25,6 +24,7 @@
+ #include "omapfb.h"
+ 
+ #include "lcdc.h"
++#include "lcd_dma.h"
+ 
+ #define MODULE_NAME			"lcdc"
+ 
+diff --git a/drivers/video/fbdev/omap/lcdc.h b/drivers/video/fbdev/omap/lcdc.h
+index 8a7607d861c1..cbbfd9b9e949 100644
+--- a/drivers/video/fbdev/omap/lcdc.h
++++ b/drivers/video/fbdev/omap/lcdc.h
+@@ -1,6 +1,41 @@
+ /* SPDX-License-Identifier: GPL-2.0 */
+ #ifndef LCDC_H
+ #define LCDC_H
++/*
++ * Copyright (C) 2004 Nokia Corporation
++ * Author: Imre Deak <imre.deak@nokia.com>
++ */
++#define OMAP_LCDC_BASE			0xfffec000
++#define OMAP_LCDC_SIZE			256
++#define OMAP_LCDC_IRQ			INT_LCD_CTRL
++
++#define OMAP_LCDC_CONTROL		(OMAP_LCDC_BASE + 0x00)
++#define OMAP_LCDC_TIMING0		(OMAP_LCDC_BASE + 0x04)
++#define OMAP_LCDC_TIMING1		(OMAP_LCDC_BASE + 0x08)
++#define OMAP_LCDC_TIMING2		(OMAP_LCDC_BASE + 0x0c)
++#define OMAP_LCDC_STATUS		(OMAP_LCDC_BASE + 0x10)
++#define OMAP_LCDC_SUBPANEL		(OMAP_LCDC_BASE + 0x14)
++#define OMAP_LCDC_LINE_INT		(OMAP_LCDC_BASE + 0x18)
++#define OMAP_LCDC_DISPLAY_STATUS	(OMAP_LCDC_BASE + 0x1c)
++
++#define OMAP_LCDC_STAT_DONE		(1 << 0)
++#define OMAP_LCDC_STAT_VSYNC		(1 << 1)
++#define OMAP_LCDC_STAT_SYNC_LOST	(1 << 2)
++#define OMAP_LCDC_STAT_ABC		(1 << 3)
++#define OMAP_LCDC_STAT_LINE_INT		(1 << 4)
++#define OMAP_LCDC_STAT_FUF		(1 << 5)
++#define OMAP_LCDC_STAT_LOADED_PALETTE	(1 << 6)
++
++#define OMAP_LCDC_CTRL_LCD_EN		(1 << 0)
++#define OMAP_LCDC_CTRL_LCD_TFT		(1 << 7)
++#define OMAP_LCDC_CTRL_LINE_IRQ_CLR_SEL	(1 << 10)
++
++#define OMAP_LCDC_IRQ_VSYNC		(1 << 2)
++#define OMAP_LCDC_IRQ_DONE		(1 << 3)
++#define OMAP_LCDC_IRQ_LOADED_PALETTE	(1 << 4)
++#define OMAP_LCDC_IRQ_LINE_NIRQ		(1 << 5)
++#define OMAP_LCDC_IRQ_LINE		(1 << 6)
++#define OMAP_LCDC_IRQ_MASK		(((1 << 5) - 1) << 2)
+ 
+ int omap_lcdc_set_dma_callback(void (*callback)(void *data), void *data);
+ void omap_lcdc_free_dma_callback(void);
+diff --git a/drivers/video/fbdev/omap/sossi.c b/drivers/video/fbdev/omap/sossi.c
+index 80ac67f27f0d..d3c755b293ea 100644
+--- a/drivers/video/fbdev/omap/sossi.c
++++ b/drivers/video/fbdev/omap/sossi.c
+@@ -15,6 +15,7 @@
+ #include <linux/omap-dma.h>
+ 
+ #include "omapfb.h"
++#include "lcd_dma.h"
+ #include "lcdc.h"
+ 
+ #define MODULE_NAME		"omapfb-sossi"
+diff --git a/include/linux/omap-dma.h b/include/linux/omap-dma.h
+index 5c5c93ad6b50..441f5f0919c6 100644
+--- a/include/linux/omap-dma.h
++++ b/include/linux/omap-dma.h
+@@ -328,8 +328,8 @@ extern dma_addr_t omap_get_dma_dst_pos(int lch);
+ extern int omap_get_dma_active_status(int lch);
+ extern int omap_dma_running(void);
+ 
+-#if defined(CONFIG_ARCH_OMAP1) && IS_ENABLED(CONFIG_FB_OMAP)
+-#include <mach/lcd_dma.h>
++#if IS_ENABLED(CONFIG_FB_OMAP)
++extern int omap_lcd_dma_running(void);
+ #else
+ static inline int omap_lcd_dma_running(void)
+ {
 -- 
 2.29.2
 
