@@ -4,60 +4,61 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8161BC433EF
-	for <alsa-devel@archiver.kernel.org>; Fri, 22 Apr 2022 13:42:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0FBEBC433EF
+	for <alsa-devel@archiver.kernel.org>; Fri, 22 Apr 2022 13:42:55 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id F29AD16C7;
-	Fri, 22 Apr 2022 15:41:45 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F29AD16C7
+	by alsa0.perex.cz (Postfix) with ESMTPS id 5010B16EE;
+	Fri, 22 Apr 2022 15:42:03 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5010B16EE
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1650634956;
-	bh=pMXP3tiz+pXmptnDBsvlTEJvLY7a6WjIQlAUDseVC7c=;
+	s=default; t=1650634973;
+	bh=+H1+foy7TUNvzKw9IPZ9qQkuYfuC23E40xmiZHmyw8Y=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=dYDGbtjagx7cFTJ/QpF1AVw/pTbgXVJpIJITyYCHxQe8HSZT1UcmwrjqsLInSeTM9
-	 +5Qww7dQ7o+81b2xQQbkR7JA0l0KaO8qIi2IbzYyFRrIe8M2yjx3mjcMIMozUuve7C
-	 M76GET9Al8dDoJNJzrMrDIHX98l3gJppGfgfhq7o=
+	b=efbTcwwGq12aelLawBrtqrah/c/ZpgpJLqRE0081Kxq2IKQtqAl8x638x3R6pq+X0
+	 QKDShWYn2KWYUjzOsGcQgEvWtGKM6hJvUp/zqVuUHnSw38dVfaj742626FyrA8Gd0y
+	 WaA/bAds9qKKBgdR2yng+zob52gQsGsiXF2lqFo8=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 32B13F80616;
+	by alsa1.perex.cz (Postfix) with ESMTP id AFA62F8061A;
 	Fri, 22 Apr 2022 15:32:11 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 29039F8025D; Tue, 19 Apr 2022 18:42:16 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+ id B363AF80269; Tue, 19 Apr 2022 18:42:19 +0200 (CEST)
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id F156FF80116
- for <alsa-devel@alsa-project.org>; Tue, 19 Apr 2022 18:42:09 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F156FF80116
+ by alsa1.perex.cz (Postfix) with ESMTPS id 79C4DF80121
+ for <alsa-devel@alsa-project.org>; Tue, 19 Apr 2022 18:42:17 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 79C4DF80121
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="WNtq6L7k"
+ header.b="bgydP6yE"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id 8045761868;
+ by ams.source.kernel.org (Postfix) with ESMTPS id 21AC3B81AC8;
+ Tue, 19 Apr 2022 16:42:17 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8C2B5C385AB;
  Tue, 19 Apr 2022 16:42:08 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C61CCC385AC;
- Tue, 19 Apr 2022 16:42:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1650386528;
- bh=pMXP3tiz+pXmptnDBsvlTEJvLY7a6WjIQlAUDseVC7c=;
+ s=k20201202; t=1650386535;
+ bh=+H1+foy7TUNvzKw9IPZ9qQkuYfuC23E40xmiZHmyw8Y=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=WNtq6L7kYzLqPo1CgDnRfCSkhbU40rWot44wiH0w7KY5q5PTaeX6yBsSjejpCMIO5
- 7YyF6BGgXkj9KCnK6hk1vKyGqJQqYGi0k986h/js2Dhzln1p0JAC3zoc9J0QoVPOEL
- TweRk/7T+kSDIDXkf8Ls1dRyo2LMdJPLhNkThXg9d52y29Ru+lYVKiNP2G3UFkn5vQ
- cGC7cmPNtQJ2U0GFsNug3uLKlp06uWSZX6uTKLJ1lTu+kvNpDykOw9NqOoWZtYj2UY
- ruEFGMjX0RkqbWcX1HOwB0ciYaSwKKyyeA+rysBsucYttmfP/kQc1miV4a16y8Cds+
- GVXQTXNlRlmpA==
+ b=bgydP6yEicIIy/M8QwJCJbhglFA8foOzULMKyltFmXik239VsGUTgzFUAL5wLF9vR
+ yMxOF9N17d8Gm13CkVHGOLvN9CkP3A9XaFnJ0xREaPP+arGnEFt4ixw3igMl35EqXV
+ yxBPns0uK7j+Cic3VAPSr0NWnY/Kss2HLt0dOUCUdopKPuayIfSMRO8b8Yj/pflE6d
+ OgZPFC3CPPvEmh9bxKnVBRiwj34m6rBrBxkiq/Ht4gtHbcdwAztw59OZASONXWI66Q
+ OniZDp9F3QNfXA1+UztViTDb9rtV9YEMtE7mjC9f5RB2LhtOcy2aBCYHme+bCs4eAF
+ KcmwBn+/vfrjA==
 From: Arnd Bergmann <arnd@kernel.org>
 To: robert.jarzmik@free.fr,
 	linux-arm-kernel@lists.infradead.org
-Subject: [PATCH 25/48] ARM: pxa: zylonite: use gpio lookup instead mfp header
-Date: Tue, 19 Apr 2022 18:37:47 +0200
-Message-Id: <20220419163810.2118169-26-arnd@kernel.org>
+Subject: [PATCH 26/48] input: touchscreen: mainstone: fix pxa2xx+pxa3xx
+ configuration
+Date: Tue, 19 Apr 2022 18:37:48 +0200
+Message-Id: <20220419163810.2118169-27-arnd@kernel.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20220419163810.2118169-1-arnd@kernel.org>
 References: <20220419163810.2118169-1-arnd@kernel.org>
@@ -100,121 +101,57 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 From: Arnd Bergmann <arnd@arndb.de>
 
-The mach/mfp.h header is only used by this one driver
-for hardcoded gpio numbers. Change that to use a lookup
-table instead.
+There are two different ways of flushing the ac97 queue
+in this driver, selected by a compile time option.
 
-Cc: Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Cc: linux-input@vger.kernel.org
+Change this to a runtime selection to make it work when both
+are enabled.
+
+Acked-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
 Acked-by: Robert Jarzmik <robert.jarzmik@free.fr>
-Acked-by: Linus Walleij <linus.walleij@linaro.org>
+Cc: linux-input@vger.kernel.org
 Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 ---
- arch/arm/mach-pxa/zylonite.c                | 31 +++++++++++++++++++++
- drivers/input/touchscreen/zylonite-wm97xx.c | 20 +++++++------
- 2 files changed, 42 insertions(+), 9 deletions(-)
+ drivers/input/touchscreen/mainstone-wm97xx.c | 19 +++++++------------
+ 1 file changed, 7 insertions(+), 12 deletions(-)
 
-diff --git a/arch/arm/mach-pxa/zylonite.c b/arch/arm/mach-pxa/zylonite.c
-index c48dd6d03df9..ba6dc86da855 100644
---- a/arch/arm/mach-pxa/zylonite.c
-+++ b/arch/arm/mach-pxa/zylonite.c
-@@ -32,6 +32,7 @@
- #include <linux/platform_data/usb-ohci-pxa27x.h>
- #include <linux/platform_data/keypad-pxa27x.h>
- #include <linux/platform_data/mtd-nand-pxa3xx.h>
-+#include <mach/mfp.h>
+diff --git a/drivers/input/touchscreen/mainstone-wm97xx.c b/drivers/input/touchscreen/mainstone-wm97xx.c
+index 87655105ef3a..618c80847d9f 100644
+--- a/drivers/input/touchscreen/mainstone-wm97xx.c
++++ b/drivers/input/touchscreen/mainstone-wm97xx.c
+@@ -98,25 +98,20 @@ MODULE_PARM_DESC(ac97_touch_slot, "Touch screen data slot AC97 number");
  
- #include "devices.h"
- #include "generic.h"
-@@ -425,6 +426,35 @@ static void __init zylonite_init_ohci(void)
- static inline void zylonite_init_ohci(void) {}
- #endif /* CONFIG_USB_OHCI_HCD || CONFIG_USB_OHCI_HCD_MODULE */
  
-+static struct gpiod_lookup_table zylonite_wm97xx_touch_gpio15_table = {
-+	.dev_id = "wm97xx-touch.0",
-+	.table = {
-+		GPIO_LOOKUP("gpio-pxa", mfp_to_gpio(MFP_PIN_GPIO15),
-+			    "touch", GPIO_ACTIVE_LOW),
-+		{ },
-+	},
-+};
-+
-+static struct gpiod_lookup_table zylonite_wm97xx_touch_gpio26_table = {
-+	.dev_id = "wm97xx-touch.0",
-+	.table = {
-+		GPIO_LOOKUP("gpio-pxa", mfp_to_gpio(MFP_PIN_GPIO26),
-+			    "touch", GPIO_ACTIVE_LOW),
-+		{ },
-+	},
-+};
-+
-+static void __init zylonite_init_wm97xx_touch(void)
-+{
-+	if (!IS_ENABLED(CONFIG_TOUCHSCREEN_WM97XX_ZYLONITE))
-+		return;
-+
-+	if (cpu_is_pxa320())
-+		gpiod_add_lookup_table(&zylonite_wm97xx_touch_gpio15_table);
-+	else
-+		gpiod_add_lookup_table(&zylonite_wm97xx_touch_gpio26_table);
-+}
-+
- static void __init zylonite_init(void)
- {
- 	pxa_set_ffuart_info(NULL);
-@@ -450,6 +480,7 @@ static void __init zylonite_init(void)
- 	zylonite_init_nand();
- 	zylonite_init_leds();
- 	zylonite_init_ohci();
-+	zylonite_init_wm97xx_touch();
- }
- 
- MACHINE_START(ZYLONITE, "PXA3xx Platform Development Kit (aka Zylonite)")
-diff --git a/drivers/input/touchscreen/zylonite-wm97xx.c b/drivers/input/touchscreen/zylonite-wm97xx.c
-index f57bdf083188..cabdd6e3c6f8 100644
---- a/drivers/input/touchscreen/zylonite-wm97xx.c
-+++ b/drivers/input/touchscreen/zylonite-wm97xx.c
-@@ -17,14 +17,13 @@
- #include <linux/moduleparam.h>
- #include <linux/kernel.h>
- #include <linux/delay.h>
--#include <linux/gpio.h>
-+#include <linux/gpio/consumer.h>
- #include <linux/irq.h>
- #include <linux/interrupt.h>
- #include <linux/io.h>
- #include <linux/soc/pxa/cpu.h>
- #include <linux/wm97xx.h>
- 
--#include <mach/mfp.h>
- #include <mach/regs-ac97.h>
- 
- struct continuous {
-@@ -181,14 +180,17 @@ static struct wm97xx_mach_ops zylonite_mach_ops = {
- static int zylonite_wm97xx_probe(struct platform_device *pdev)
- {
- 	struct wm97xx *wm = platform_get_drvdata(pdev);
--	int gpio_touch_irq;
+ /* flush AC97 slot 5 FIFO on pxa machines */
+-#ifdef CONFIG_PXA27x
+-static void wm97xx_acc_pen_up(struct wm97xx *wm)
+-{
+-	schedule_timeout_uninterruptible(1);
 -
--	if (cpu_is_pxa320())
--		gpio_touch_irq = mfp_to_gpio(MFP_PIN_GPIO15);
--	else
--		gpio_touch_irq = mfp_to_gpio(MFP_PIN_GPIO26);
-+	struct gpio_desc *gpio_touch_irq;
-+	int err;
-+
-+	gpio_touch_irq = devm_gpiod_get(&pdev->dev, "touch", GPIOD_IN);
-+	err = PTR_ERR_OR_ZERO(gpio_touch_irq);
-+	if (err) {
-+		dev_err(&pdev->dev, "Cannot get irq gpio: %d\n", err);
-+		return err;
+-	while (MISR & (1 << 2))
+-		MODR;
+-}
+-#else
+ static void wm97xx_acc_pen_up(struct wm97xx *wm)
+ {
+ 	unsigned int count;
+ 
+ 	schedule_timeout_uninterruptible(1);
+ 
+-	for (count = 0; count < 16; count++)
+-		MODR;
++	if (cpu_is_pxa27x()) {
++		while (MISR & (1 << 2))
++			MODR;
++	} else if (cpu_is_pxa3xx()) {
++		for (count = 0; count < 16; count++)
++			MODR;
 +	}
+ }
+-#endif
  
--	wm->pen_irq = gpio_to_irq(gpio_touch_irq);
-+	wm->pen_irq = gpiod_to_irq(gpio_touch_irq);
- 	irq_set_irq_type(wm->pen_irq, IRQ_TYPE_EDGE_BOTH);
- 
- 	wm97xx_config_gpio(wm, WM97XX_GPIO_13, WM97XX_GPIO_IN,
+ static int wm97xx_acc_pen_down(struct wm97xx *wm)
+ {
 -- 
 2.29.2
 
