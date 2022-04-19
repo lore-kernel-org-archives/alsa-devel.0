@@ -4,60 +4,60 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9D695C433EF
-	for <alsa-devel@archiver.kernel.org>; Tue, 19 Apr 2022 13:49:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id F2356C433EF
+	for <alsa-devel@archiver.kernel.org>; Tue, 19 Apr 2022 13:49:33 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D9CAC1AC2;
-	Tue, 19 Apr 2022 15:48:28 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D9CAC1AC2
+	by alsa0.perex.cz (Postfix) with ESMTPS id 38BD81ACD;
+	Tue, 19 Apr 2022 15:48:42 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 38BD81ACD
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1650376158;
-	bh=1fFZ/OaS6ZClv/BpTxI65DDId5sPYXRbQkpa111wNoQ=;
+	s=default; t=1650376172;
+	bh=8q6Kcm45o4hfMaS4KO2xUUwlzHF/dRLSCx2ycbmM2jM=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=rZ58s6CW4hbgNtg7vNm1BAqct5JYASSjHx/WwSaxSdjG1W7Q6zbcnilIXAy4AFB3m
-	 5AfGx463lhdwklUK94QmKTB1sJxJVfpJ9+ei1cLRzAQ4p5IzHwlFDl7B1q5Oyr27h+
-	 9sw7nFH3W/ceG9TNLZQfoClkOQl7X+3lfe9a0nKo=
+	b=WOCL1ZbNzoTWJxXfkHnUYHejLdibuj50kGevvsEWCIohgttdWX2bflKVwjXM2tOju
+	 J7l1hOKx9FGsMSdbgzaSAM8lHVOjI3DONhYnc+nA8YEZaW3v2MZ809IlYl2OOQi6Kf
+	 eaWoUtbirdZsGpanpxU2oJmxpbZcBvZq1N/ByrZg=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 59CA2F805A9;
-	Tue, 19 Apr 2022 15:43:29 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 05A1DF805AE;
+	Tue, 19 Apr 2022 15:43:30 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 5E3D5F8025D; Tue, 19 Apr 2022 15:40:23 +0200 (CEST)
+ id 204DAF80116; Tue, 19 Apr 2022 15:40:30 +0200 (CEST)
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 25647F80237
- for <alsa-devel@alsa-project.org>; Tue, 19 Apr 2022 15:40:17 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 25647F80237
+ by alsa1.perex.cz (Postfix) with ESMTPS id 5680EF80116
+ for <alsa-devel@alsa-project.org>; Tue, 19 Apr 2022 15:40:24 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5680EF80116
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="SBrvXLW2"
+ header.b="OgmmYGrm"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id CBB7361693;
- Tue, 19 Apr 2022 13:40:15 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7CC1DC385A7;
- Tue, 19 Apr 2022 13:40:08 +0000 (UTC)
+ by dfw.source.kernel.org (Postfix) with ESMTPS id 0C647616A3;
+ Tue, 19 Apr 2022 13:39:53 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 356D1C385B0;
+ Tue, 19 Apr 2022 13:39:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1650375615;
- bh=1fFZ/OaS6ZClv/BpTxI65DDId5sPYXRbQkpa111wNoQ=;
+ s=k20201202; t=1650375592;
+ bh=8q6Kcm45o4hfMaS4KO2xUUwlzHF/dRLSCx2ycbmM2jM=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=SBrvXLW2zVcL4oM2JTZy14QIztOs2NeSPSDRvDSB3PuiYhuyfupqTrAe+sUpRjYJq
- C/GKYP7Rr9OBPx8TOivj54uZ/4cXN37y81WRHLpyqeduJN/AM1rmWK3+dm/5sDrwI9
- e3AxiT/oXlEkctIWbmZCggqIVuL8YwyCPnAoJx7rwxuppFXSO2ULPPBCiTLjkiOoCg
- S/UwEjtXMKx8ZQN9AOp41OaXzVVEqbYRCJZmKXTbrmszKg/NpZ+SET8KE+jVSLFVb+
- DFVTEAALkLMldn2MDi+hmjX7hK5Y3kLvxKHS8N/zSEh0KKiqkmrzORHtQInIHNThua
- RAvesC2+gnbAA==
+ b=OgmmYGrmtBNTwP0hCIY2RRe2mYaIftLuJ9OAVdYZvDleZcdZ/6LPlvQThD8t4drPE
+ e4GTt4uIWh8cT6kZaI5XpPeUyLnOtfrJOYRguM9hj4PAws3Nw6EJsErSkHU1o96SDp
+ CJK1ClRy1PNIBDwJEdrTaAupJfBbsWzoUyxDI/TgIMrsKD8viQ8fdfp8EJGbT+yU0/
+ 8XgF5eboJCt8z5/M3YL3N4OJjP2al4MR7iSjKD4PDfsLgdyuBVPNvGv/0iJ/g176J+
+ GpCXmp/q9iOjw7VrGYG72DN9pQVr66GHwhD+MR1FtySUnjMsgDitc2xmLrwnqX0sN8
+ yniK00Bea96aQ==
 From: Arnd Bergmann <arnd@kernel.org>
 To: linux-omap@vger.kernel.org, tony@atomide.com, aaro.koskinen@iki.fi,
  jmkrzyszt@gmail.com
-Subject: [PATCH 21/41] ARM: omap1: dma: remove omap2 specific bits
-Date: Tue, 19 Apr 2022 15:37:03 +0200
-Message-Id: <20220419133723.1394715-22-arnd@kernel.org>
+Subject: [PATCH 18/41] ARM: omap: remove debug-leds driver
+Date: Tue, 19 Apr 2022 15:37:00 +0200
+Message-Id: <20220419133723.1394715-19-arnd@kernel.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20220419133723.1394715-1-arnd@kernel.org>
 References: <20220419133723.1394715-1-arnd@kernel.org>
@@ -97,416 +97,228 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 From: Arnd Bergmann <arnd@arndb.de>
 
-No part of plat-omap/dma.c is called on omap2 any more, so
-anything omap2 specific in here can simply be removed.
+It has been impossible to select this driver for six years
+without anyone noticing, so just kill it completely.
 
+Fixes: 54ea18e8866a ("ARM: OMAP2+: Remove board file for H4")
 Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 ---
- arch/arm/plat-omap/dma.c | 217 ++++++++++-----------------------------
- 1 file changed, 55 insertions(+), 162 deletions(-)
+ arch/arm/plat-omap/Kconfig      |  10 --
+ arch/arm/plat-omap/Makefile     |   4 -
+ arch/arm/plat-omap/debug-leds.c | 171 --------------------------------
+ 3 files changed, 185 deletions(-)
+ delete mode 100644 arch/arm/plat-omap/debug-leds.c
 
-diff --git a/arch/arm/plat-omap/dma.c b/arch/arm/plat-omap/dma.c
-index b7757864d0aa..eb14528f133c 100644
---- a/arch/arm/plat-omap/dma.c
-+++ b/arch/arm/plat-omap/dma.c
-@@ -34,11 +34,9 @@
+diff --git a/arch/arm/plat-omap/Kconfig b/arch/arm/plat-omap/Kconfig
+index dfa19d5030e3..dc53ea8e5bbb 100644
+--- a/arch/arm/plat-omap/Kconfig
++++ b/arch/arm/plat-omap/Kconfig
+@@ -11,16 +11,6 @@ config ARCH_OMAP_OTG
  
- #include <linux/omap-dma.h>
+ comment "OMAP Feature Selections"
  
--#ifdef CONFIG_ARCH_OMAP1
- #include <mach/hardware.h>
- #include <linux/soc/ti/omap1-io.h>
- #include <linux/soc/ti/omap1-soc.h>
--#endif
+-config OMAP_DEBUG_DEVICES
+-	bool
+-	help
+-	  For debug cards on TI reference boards.
+-
+-config OMAP_DEBUG_LEDS
+-	def_bool y if NEW_LEDS
+-	depends on OMAP_DEBUG_DEVICES
+-	select LEDS_CLASS
+-
+ config POWER_AVS_OMAP
+ 	bool "AVS(Adaptive Voltage Scaling) support for OMAP IP versions 1&2"
+ 	depends on (ARCH_OMAP3 || ARCH_OMAP4) && PM
+diff --git a/arch/arm/plat-omap/Makefile b/arch/arm/plat-omap/Makefile
+index 98a7b607873a..68ccec9de106 100644
+--- a/arch/arm/plat-omap/Makefile
++++ b/arch/arm/plat-omap/Makefile
+@@ -7,7 +7,3 @@ ccflags-$(CONFIG_ARCH_MULTIPLATFORM) := -I$(srctree)/arch/arm/plat-omap/include
  
- /*
-  * MAX_LOGICAL_DMA_CH_COUNT: the maximum number of logical DMA
-@@ -51,16 +49,7 @@
- 
- #undef DEBUG
- 
--#ifndef CONFIG_ARCH_OMAP1
--enum { DMA_CH_ALLOC_DONE, DMA_CH_PARAMS_SET_DONE, DMA_CH_STARTED,
--	DMA_CH_QUEUED, DMA_CH_NOTSTARTED, DMA_CH_PAUSED, DMA_CH_LINK_ENABLED
+ # Common support
+ obj-y := sram.o dma.o
+-
+-# omap_device support (OMAP2+ only at the moment)
+-
+-obj-$(CONFIG_OMAP_DEBUG_LEDS) += debug-leds.o
+diff --git a/arch/arm/plat-omap/debug-leds.c b/arch/arm/plat-omap/debug-leds.c
+deleted file mode 100644
+index 2b698d074874..000000000000
+--- a/arch/arm/plat-omap/debug-leds.c
++++ /dev/null
+@@ -1,171 +0,0 @@
+-// SPDX-License-Identifier: GPL-2.0-only
+-/*
+- * linux/arch/arm/plat-omap/debug-leds.c
+- *
+- * Copyright 2011 by Bryan Wu <bryan.wu@canonical.com>
+- * Copyright 2003 by Texas Instruments Incorporated
+- */
+-
+-#include <linux/kernel.h>
+-#include <linux/init.h>
+-#include <linux/platform_device.h>
+-#include <linux/leds.h>
+-#include <linux/io.h>
+-#include <linux/platform_data/gpio-omap.h>
+-#include <linux/slab.h>
+-
+-#include <asm/mach-types.h>
+-
+-/* Many OMAP development platforms reuse the same "debug board"; these
+- * platforms include H2, H3, H4, and Perseus2.  There are 16 LEDs on the
+- * debug board (all green), accessed through FPGA registers.
+- */
+-
+-/* NOTE:  most boards don't have a static mapping for the FPGA ... */
+-struct h2p2_dbg_fpga {
+-	/* offset 0x00 */
+-	u16		smc91x[8];
+-	/* offset 0x10 */
+-	u16		fpga_rev;
+-	u16		board_rev;
+-	u16		gpio_outputs;
+-	u16		leds;
+-	/* offset 0x18 */
+-	u16		misc_inputs;
+-	u16		lan_status;
+-	u16		lan_reset;
+-	u16		reserved0;
+-	/* offset 0x20 */
+-	u16		ps2_data;
+-	u16		ps2_ctrl;
+-	/* plus also 4 rs232 ports ... */
 -};
 -
--enum { DMA_CHAIN_STARTED, DMA_CHAIN_NOTSTARTED };
--#endif
+-static struct h2p2_dbg_fpga __iomem *fpga;
 -
- #define OMAP_DMA_ACTIVE			0x01
--#define OMAP2_DMA_CSR_CLEAR_MASK	0xffffffff
- 
- #define OMAP_FUNC_MUX_ARM_BASE		(0xfffe1000 + 0xec)
- 
-@@ -94,13 +83,9 @@ static inline void omap_disable_channel_irq(int lch)
- 	/* disable channel interrupts */
- 	p->dma_write(0, CICR, lch);
- 	/* Clear CSR */
--	if (dma_omap1())
--		p->dma_read(CSR, lch);
+-static u16 fpga_led_state;
+-
+-struct dbg_led {
+-	struct led_classdev	cdev;
+-	u16			mask;
+-};
+-
+-static const struct {
+-	const char *name;
+-	const char *trigger;
+-} dbg_leds[] = {
+-	{ "dbg:d4", "heartbeat", },
+-	{ "dbg:d5", "cpu0", },
+-	{ "dbg:d6", "default-on", },
+-	{ "dbg:d7", },
+-	{ "dbg:d8", },
+-	{ "dbg:d9", },
+-	{ "dbg:d10", },
+-	{ "dbg:d11", },
+-	{ "dbg:d12", },
+-	{ "dbg:d13", },
+-	{ "dbg:d14", },
+-	{ "dbg:d15", },
+-	{ "dbg:d16", },
+-	{ "dbg:d17", },
+-	{ "dbg:d18", },
+-	{ "dbg:d19", },
+-};
+-
+-/*
+- * The triggers lines up below will only be used if the
+- * LED triggers are compiled in.
+- */
+-static void dbg_led_set(struct led_classdev *cdev,
+-			      enum led_brightness b)
+-{
+-	struct dbg_led *led = container_of(cdev, struct dbg_led, cdev);
+-	u16 reg;
+-
+-	reg = readw_relaxed(&fpga->leds);
+-	if (b != LED_OFF)
+-		reg |= led->mask;
 -	else
--		p->dma_write(OMAP2_DMA_CSR_CLEAR_MASK, CSR, lch);
-+	p->dma_read(CSR, lch);
- }
- 
--#ifdef CONFIG_ARCH_OMAP1
- static inline void set_gdma_dev(int req, int dev)
- {
- 	u32 reg = OMAP_FUNC_MUX_ARM_BASE + ((req - 1) / 5) * 4;
-@@ -112,11 +97,6 @@ static inline void set_gdma_dev(int req, int dev)
- 	l |= (dev - 1) << shift;
- 	omap_writel(l, reg);
- }
--#else
--#define set_gdma_dev(req, dev)	do {} while (0)
--#define omap_readl(reg)		0
--#define omap_writel(val, reg)	do {} while (0)
--#endif
- 
- #ifdef CONFIG_ARCH_OMAP1
- void omap_set_dma_priority(int lch, int dst_port, int priority)
-@@ -181,59 +161,24 @@ void omap_set_dma_transfer_params(int lch, int data_type, int elem_count,
- 				  int dma_trigger, int src_or_dst_synch)
- {
- 	u32 l;
-+	u16 ccr;
- 
- 	l = p->dma_read(CSDP, lch);
- 	l &= ~0x03;
- 	l |= data_type;
- 	p->dma_write(l, CSDP, lch);
- 
--	if (dma_omap1()) {
--		u16 ccr;
+-		reg &= ~led->mask;
+-	writew_relaxed(reg, &fpga->leds);
+-}
 -
--		ccr = p->dma_read(CCR, lch);
--		ccr &= ~(1 << 5);
--		if (sync_mode == OMAP_DMA_SYNC_FRAME)
--			ccr |= 1 << 5;
--		p->dma_write(ccr, CCR, lch);
+-static enum led_brightness dbg_led_get(struct led_classdev *cdev)
+-{
+-	struct dbg_led *led = container_of(cdev, struct dbg_led, cdev);
+-	u16 reg;
 -
--		ccr = p->dma_read(CCR2, lch);
--		ccr &= ~(1 << 2);
--		if (sync_mode == OMAP_DMA_SYNC_BLOCK)
--			ccr |= 1 << 2;
--		p->dma_write(ccr, CCR2, lch);
--	}
+-	reg = readw_relaxed(&fpga->leds);
+-	return (reg & led->mask) ? LED_FULL : LED_OFF;
+-}
 -
--	if (dma_omap2plus() && dma_trigger) {
--		u32 val;
+-static int fpga_probe(struct platform_device *pdev)
+-{
+-	struct resource	*iomem;
+-	int i;
 -
--		val = p->dma_read(CCR, lch);
+-	iomem = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+-	if (!iomem)
+-		return -ENODEV;
 -
--		/* DMA_SYNCHRO_CONTROL_UPPER depends on the channel number */
--		val &= ~((1 << 23) | (3 << 19) | 0x1f);
--		val |= (dma_trigger & ~0x1f) << 14;
--		val |= dma_trigger & 0x1f;
+-	fpga = ioremap(iomem->start, resource_size(iomem));
+-	writew_relaxed(0xff, &fpga->leds);
 -
--		if (sync_mode & OMAP_DMA_SYNC_FRAME)
--			val |= 1 << 5;
--		else
--			val &= ~(1 << 5);
+-	for (i = 0; i < ARRAY_SIZE(dbg_leds); i++) {
+-		struct dbg_led *led;
 -
--		if (sync_mode & OMAP_DMA_SYNC_BLOCK)
--			val |= 1 << 18;
--		else
--			val &= ~(1 << 18);
+-		led = kzalloc(sizeof(*led), GFP_KERNEL);
+-		if (!led)
+-			break;
 -
--		if (src_or_dst_synch == OMAP_DMA_DST_SYNC_PREFETCH) {
--			val &= ~(1 << 24);	/* dest synch */
--			val |= (1 << 23);	/* Prefetch */
--		} else if (src_or_dst_synch) {
--			val |= 1 << 24;		/* source synch */
--		} else {
--			val &= ~(1 << 24);	/* dest synch */
--		}
--		p->dma_write(val, CCR, lch);
--	}
-+	ccr = p->dma_read(CCR, lch);
-+	ccr &= ~(1 << 5);
-+	if (sync_mode == OMAP_DMA_SYNC_FRAME)
-+		ccr |= 1 << 5;
-+	p->dma_write(ccr, CCR, lch);
- 
-+	ccr = p->dma_read(CCR2, lch);
-+	ccr &= ~(1 << 2);
-+	if (sync_mode == OMAP_DMA_SYNC_BLOCK)
-+		ccr |= 1 << 2;
-+	p->dma_write(ccr, CCR2, lch);
- 	p->dma_write(elem_count, CEN, lch);
- 	p->dma_write(frame_count, CFN, lch);
- }
-@@ -241,7 +186,7 @@ EXPORT_SYMBOL(omap_set_dma_transfer_params);
- 
- void omap_set_dma_channel_mode(int lch, enum omap_dma_channel_mode mode)
- {
--	if (dma_omap1() && !dma_omap15xx()) {
-+	if (!dma_omap15xx()) {
- 		u32 l;
- 
- 		l = p->dma_read(LCH_CTRL, lch);
-@@ -258,15 +203,12 @@ void omap_set_dma_src_params(int lch, int src_port, int src_amode,
- 			     int src_ei, int src_fi)
- {
- 	u32 l;
-+	u16 w;
- 
--	if (dma_omap1()) {
--		u16 w;
+-		led->cdev.name = dbg_leds[i].name;
+-		led->cdev.brightness_set = dbg_led_set;
+-		led->cdev.brightness_get = dbg_led_get;
+-		led->cdev.default_trigger = dbg_leds[i].trigger;
+-		led->mask = BIT(i);
 -
--		w = p->dma_read(CSDP, lch);
--		w &= ~(0x1f << 2);
--		w |= src_port << 2;
--		p->dma_write(w, CSDP, lch);
--	}
-+	w = p->dma_read(CSDP, lch);
-+	w &= ~(0x1f << 2);
-+	w |= src_port << 2;
-+	p->dma_write(w, CSDP, lch);
- 
- 	l = p->dma_read(CCR, lch);
- 	l &= ~(0x03 << 12);
-@@ -304,26 +246,15 @@ void omap_set_dma_src_burst_mode(int lch, enum omap_dma_burst_mode burst_mode)
- 	case OMAP_DMA_DATA_BURST_DIS:
- 		break;
- 	case OMAP_DMA_DATA_BURST_4:
--		if (dma_omap2plus())
--			burst = 0x1;
--		else
--			burst = 0x2;
-+		burst = 0x2;
- 		break;
- 	case OMAP_DMA_DATA_BURST_8:
--		if (dma_omap2plus()) {
--			burst = 0x2;
+-		if (led_classdev_register(NULL, &led->cdev) < 0) {
+-			kfree(led);
 -			break;
 -		}
- 		/*
- 		 * not supported by current hardware on OMAP1
- 		 * w |= (0x03 << 7);
- 		 */
- 		fallthrough;
- 	case OMAP_DMA_DATA_BURST_16:
--		if (dma_omap2plus()) {
--			burst = 0x3;
--			break;
--		}
- 		/* OMAP1 don't support burst 16 */
- 		fallthrough;
- 	default:
-@@ -342,12 +273,10 @@ void omap_set_dma_dest_params(int lch, int dest_port, int dest_amode,
- {
- 	u32 l;
- 
--	if (dma_omap1()) {
--		l = p->dma_read(CSDP, lch);
--		l &= ~(0x1f << 9);
--		l |= dest_port << 9;
--		p->dma_write(l, CSDP, lch);
--	}
-+	l = p->dma_read(CSDP, lch);
-+	l &= ~(0x1f << 9);
-+	l |= dest_port << 9;
-+	p->dma_write(l, CSDP, lch);
- 
- 	l = p->dma_read(CCR, lch);
- 	l &= ~(0x03 << 14);
-@@ -385,22 +314,12 @@ void omap_set_dma_dest_burst_mode(int lch, enum omap_dma_burst_mode burst_mode)
- 	case OMAP_DMA_DATA_BURST_DIS:
- 		break;
- 	case OMAP_DMA_DATA_BURST_4:
--		if (dma_omap2plus())
--			burst = 0x1;
--		else
--			burst = 0x2;
-+		burst = 0x2;
- 		break;
- 	case OMAP_DMA_DATA_BURST_8:
--		if (dma_omap2plus())
--			burst = 0x2;
--		else
--			burst = 0x3;
-+		burst = 0x3;
- 		break;
- 	case OMAP_DMA_DATA_BURST_16:
--		if (dma_omap2plus()) {
--			burst = 0x3;
--			break;
--		}
- 		/* OMAP1 don't support burst 16 */
- 		fallthrough;
- 	default:
-@@ -416,10 +335,7 @@ EXPORT_SYMBOL(omap_set_dma_dest_burst_mode);
- static inline void omap_enable_channel_irq(int lch)
- {
- 	/* Clear CSR */
--	if (dma_omap1())
--		p->dma_read(CSR, lch);
--	else
--		p->dma_write(OMAP2_DMA_CSR_CLEAR_MASK, CSR, lch);
-+	p->dma_read(CSR, lch);
- 
- 	/* Enable some nice interrupts. */
- 	p->dma_write(dma_chan[lch].enabled_irqs, CICR, lch);
-@@ -437,8 +353,7 @@ static inline void enable_lnk(int lch)
- 
- 	l = p->dma_read(CLNK_CTRL, lch);
- 
--	if (dma_omap1())
--		l &= ~(1 << 14);
-+	l &= ~(1 << 14);
- 
- 	/* Set the ENABLE_LNK bits */
- 	if (dma_chan[lch].next_lch != -1)
-@@ -456,15 +371,8 @@ static inline void disable_lnk(int lch)
- 	/* Disable interrupts */
- 	omap_disable_channel_irq(lch);
- 
--	if (dma_omap1()) {
--		/* Set the STOP_LNK bit */
--		l |= 1 << 14;
 -	}
 -
--	if (dma_omap2plus()) {
--		/* Clear the ENABLE_LNK bit */
--		l &= ~(1 << 15);
--	}
-+	/* Set the STOP_LNK bit */
-+	l |= 1 << 14;
- 
- 	p->dma_write(l, CLNK_CTRL, lch);
- 	dma_chan[lch].flags &= ~OMAP_DMA_ACTIVE;
-@@ -508,8 +416,7 @@ int omap_request_dma(int dev_id, const char *dev_name,
- 
- 	chan->enabled_irqs = OMAP_DMA_DROP_IRQ | OMAP_DMA_BLOCK_IRQ;
- 
--	if (dma_omap1())
--		chan->enabled_irqs |= OMAP1_DMA_TOUT_IRQ;
-+	chan->enabled_irqs |= OMAP1_DMA_TOUT_IRQ;
- 
- 	if (dma_omap16xx()) {
- 		/* If the sync device is set, configure it dynamically. */
-@@ -522,7 +429,7 @@ int omap_request_dma(int dev_id, const char *dev_name,
- 		 * id.
- 		 */
- 		p->dma_write(dev_id | (1 << 10), CCR, free_ch);
--	} else if (dma_omap1()) {
-+	} else {
- 		p->dma_write(dev_id, CCR, free_ch);
- 	}
- 
-@@ -739,8 +646,7 @@ dma_addr_t omap_get_dma_src_pos(int lch)
- 			offset = p->dma_read(CSSA, lch);
- 	}
- 
--	if (dma_omap1())
--		offset |= (p->dma_read(CSSA, lch) & 0xFFFF0000);
-+	offset |= (p->dma_read(CSSA, lch) & 0xFFFF0000);
- 
- 	return offset;
- }
-@@ -778,8 +684,7 @@ dma_addr_t omap_get_dma_dst_pos(int lch)
- 			offset = p->dma_read(CDSA, lch);
- 	}
- 
--	if (dma_omap1())
--		offset |= (p->dma_read(CDSA, lch) & 0xFFFF0000);
-+	offset |= (p->dma_read(CDSA, lch) & 0xFFFF0000);
- 
- 	return offset;
- }
-@@ -796,9 +701,8 @@ int omap_dma_running(void)
- {
- 	int lch;
- 
--	if (dma_omap1())
--		if (omap_lcd_dma_running())
--			return 1;
-+	if (omap_lcd_dma_running())
-+		return 1;
- 
- 	for (lch = 0; lch < dma_chan_count; lch++)
- 		if (p->dma_read(CCR, lch) & OMAP_DMA_CCR_EN)
-@@ -809,8 +713,6 @@ int omap_dma_running(void)
- 
- /*----------------------------------------------------------------------------*/
- 
--#ifdef CONFIG_ARCH_OMAP1
+-	return 0;
+-}
 -
- static int omap1_dma_handle_ch(int ch)
- {
- 	u32 csr;
-@@ -863,10 +765,6 @@ static irqreturn_t omap1_dma_irq_handler(int irq, void *dev_id)
- 	return handled ? IRQ_HANDLED : IRQ_NONE;
- }
- 
--#else
--#define omap1_dma_irq_handler	NULL
--#endif
+-static int fpga_suspend_noirq(struct device *dev)
+-{
+-	fpga_led_state = readw_relaxed(&fpga->leds);
+-	writew_relaxed(0xff, &fpga->leds);
 -
- struct omap_system_dma_plat_info *omap_get_plat_info(void)
- {
- 	return p;
-@@ -912,29 +810,27 @@ static int omap_system_dma_probe(struct platform_device *pdev)
- 		if (ch >= 6 && enable_1510_mode)
- 			continue;
- 
--		if (dma_omap1()) {
--			/*
--			 * request_irq() doesn't like dev_id (ie. ch) being
--			 * zero, so we have to kludge around this.
--			 */
--			sprintf(&irq_name[0], "%d", ch);
--			dma_irq = platform_get_irq_byname(pdev, irq_name);
+-	return 0;
+-}
 -
--			if (dma_irq < 0) {
--				ret = dma_irq;
--				goto exit_dma_irq_fail;
--			}
+-static int fpga_resume_noirq(struct device *dev)
+-{
+-	writew_relaxed(~fpga_led_state, &fpga->leds);
+-	return 0;
+-}
 -
--			/* INT_DMA_LCD is handled in lcd_dma.c */
--			if (dma_irq == INT_DMA_LCD)
--				continue;
+-static const struct dev_pm_ops fpga_dev_pm_ops = {
+-	.suspend_noirq = fpga_suspend_noirq,
+-	.resume_noirq = fpga_resume_noirq,
+-};
 -
--			ret = request_irq(dma_irq,
--					omap1_dma_irq_handler, 0, "DMA",
--					(void *) (ch + 1));
--			if (ret != 0)
--				goto exit_dma_irq_fail;
-+		/*
-+		 * request_irq() doesn't like dev_id (ie. ch) being
-+		 * zero, so we have to kludge around this.
-+		 */
-+		sprintf(&irq_name[0], "%d", ch);
-+		dma_irq = platform_get_irq_byname(pdev, irq_name);
-+
-+		if (dma_irq < 0) {
-+			ret = dma_irq;
-+			goto exit_dma_irq_fail;
- 		}
-+
-+		/* INT_DMA_LCD is handled in lcd_dma.c */
-+		if (dma_irq == INT_DMA_LCD)
-+			continue;
-+
-+		ret = request_irq(dma_irq,
-+				omap1_dma_irq_handler, 0, "DMA",
-+				(void *) (ch + 1));
-+		if (ret != 0)
-+			goto exit_dma_irq_fail;
- 	}
- 
- 	/* reserve dma channels 0 and 1 in high security devices on 34xx */
-@@ -954,9 +850,6 @@ static int omap_system_dma_remove(struct platform_device *pdev)
- {
- 	int dma_irq, irq_rel = 0;
- 
--	if (dma_omap2plus())
--		return 0;
+-static struct platform_driver led_driver = {
+-	.driver.name	= "omap_dbg_led",
+-	.driver.pm	= &fpga_dev_pm_ops,
+-	.probe		= fpga_probe,
+-};
 -
- 	for ( ; irq_rel < dma_chan_count; irq_rel++) {
- 		dma_irq = platform_get_irq(pdev, irq_rel);
- 		free_irq(dma_irq, (void *)(irq_rel + 1));
+-static int __init fpga_init(void)
+-{
+-	if (machine_is_omap_h4()
+-			|| machine_is_omap_h3()
+-			|| machine_is_omap_h2()
+-			|| machine_is_omap_perseus2()
+-			)
+-		return platform_driver_register(&led_driver);
+-	return 0;
+-}
+-fs_initcall(fpga_init);
 -- 
 2.29.2
 
