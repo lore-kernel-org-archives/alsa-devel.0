@@ -4,60 +4,60 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7EAA9C433F5
-	for <alsa-devel@archiver.kernel.org>; Tue, 19 Apr 2022 13:45:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 21A47C433EF
+	for <alsa-devel@archiver.kernel.org>; Tue, 19 Apr 2022 13:45:08 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 12EAD1929;
-	Tue, 19 Apr 2022 15:44:09 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 12EAD1929
+	by alsa0.perex.cz (Postfix) with ESMTPS id 4AC861921;
+	Tue, 19 Apr 2022 15:44:16 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4AC861921
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1650375899;
-	bh=t86HMs480nJ81wDi3aXmoHW9AjEzd927cpvY7iUPkRA=;
+	s=default; t=1650375906;
+	bh=L4gg5quKavJfZpB1KmVyym3/k9syW52kKGL3fWcWNjg=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=pQzsWG8dxLg1EFhcMVYJeVcDHjpO4nlGRAq8rNQQDSVBUMqyFlC7E7w1J9jQ6JCZ6
-	 7srpdXwWVnQA8OizIv8YSBKbnGuNkpkqxnvoYgAqzgcgYgyYzxQsDojvpZOJZ9k9ag
-	 iIYfbgbZj8ugkud5yFLkYJoNM/0ah0mIadaQ8gNQ=
+	b=QOUA9xyrhA9Db/5ywDihep4eQ/u6+QuO4cFFnxhQg2WCJpVRlms0hem7Jl+1nXri3
+	 Vy5ouRVw+OCgOlvlG+498uVtx18Elwq3QPHJTtwOZLcsFJXtMC22uOzq9bl8Ga1Pqr
+	 6iN47W4bt4Ta5Sr6bwmEZq/Gzb5WV+RgvOOFgmjU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 1329DF804FB;
+	by alsa1.perex.cz (Postfix) with ESMTP id 9F440F80506;
 	Tue, 19 Apr 2022 15:43:19 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 4396AF80121; Tue, 19 Apr 2022 15:37:58 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+ id 8BD1DF8025D; Tue, 19 Apr 2022 15:38:31 +0200 (CEST)
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id A0DC7F80121
- for <alsa-devel@alsa-project.org>; Tue, 19 Apr 2022 15:37:55 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A0DC7F80121
+ by alsa1.perex.cz (Postfix) with ESMTPS id 77AC4F80116
+ for <alsa-devel@alsa-project.org>; Tue, 19 Apr 2022 15:38:25 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 77AC4F80116
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="q1oWQPoZ"
+ header.b="Kw5XRrHA"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id 1F6F06169F;
- Tue, 19 Apr 2022 13:37:54 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 39DE8C385A8;
- Tue, 19 Apr 2022 13:37:47 +0000 (UTC)
+ by ams.source.kernel.org (Postfix) with ESMTPS id DDBD2B81983;
+ Tue, 19 Apr 2022 13:38:24 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 67FABC385A7;
+ Tue, 19 Apr 2022 13:38:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1650375473;
- bh=t86HMs480nJ81wDi3aXmoHW9AjEzd927cpvY7iUPkRA=;
+ s=k20201202; t=1650375503;
+ bh=L4gg5quKavJfZpB1KmVyym3/k9syW52kKGL3fWcWNjg=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=q1oWQPoZS7/CENhb5OPLC7YJ2sk5BX0Sd+TR7Ne2RbCX+e8cAKq8cwuskbrP54N8y
- stQZ598/GBeuriRAogXLbe7l2++zRj9NvvKdunSnGmHIycGC7BrO0A6CdtSklsrDOc
- hCpSAcyylOign9vUpLxEd7s3xbU8j0GLafaS11OmXeTYCHwfoODc14V2+61/hy14jV
- V3DE6MU1MIbRw0VhLnmngnMuv5cH7WF6tiE/ouBgQn9Bq49QmvAKcXEu8Yo+jYH8JT
- k3XjmyW8CWF3oBmp9Ft52/Ap2qUIjZrTYHUIc5Ot7q4x0/rQS5znuTVT5ci9wr0C6Y
- uHZkXXfi0EBrQ==
+ b=Kw5XRrHAn4pHn0I0JSh0pW57bNvPPurtShwMxO/ul/PIS9ZWV7guEzF9xGWK75yRC
+ bzffgZZd8BPpYtn0JabaPloCpm1tz/ceomP3Qs/F5g/4nJxDb9p53CYK8dY+lp094q
+ 5wSTJkSY6xX7kul1bEQDyh2BoaPj9LNbGhLQVEKS74JWheELzUKJZJGWNDB6nIy4sR
+ xnLBt7RWn0x8glJbzXe3XEizJ0lyMha7r/xgEfcpwSpe8ncBfbEVc8L7vt/yccyzep
+ Gv9WCtCyMSH2+NDbePmeginBmFfZtvvfUXLljK5KzX4lbjo/agNMuMUcCA3OAl3QVI
+ ZFJk0s9vx/QYQ==
 From: Arnd Bergmann <arnd@kernel.org>
 To: linux-omap@vger.kernel.org, tony@atomide.com, aaro.koskinen@iki.fi,
  jmkrzyszt@gmail.com
-Subject: [PATCH 02/41] ARM: omap1: innovator: pass lcd control address as pdata
-Date: Tue, 19 Apr 2022 15:36:44 +0200
-Message-Id: <20220419133723.1394715-3-arnd@kernel.org>
+Subject: [PATCH 06/41] ARM: omap1: ams-delta: remove camera leftovers
+Date: Tue, 19 Apr 2022 15:36:48 +0200
+Message-Id: <20220419133723.1394715-7-arnd@kernel.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20220419133723.1394715-1-arnd@kernel.org>
 References: <20220419133723.1394715-1-arnd@kernel.org>
@@ -73,14 +73,13 @@ Cc: Ulf Hansson <ulf.hansson@linaro.org>,
  Helge Deller <deller@gmx.de>, Russell King <linux@armlinux.org.uk>,
  Krzysztof Kozlowski <krzk@kernel.org>, Alan Stern <stern@rowland.harvard.edu>,
  linux-serial@vger.kernel.org, linux-input@vger.kernel.org,
- Arnd Bergmann <arnd@arndb.de>,
- Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
- Mark Brown <broonie@kernel.org>, dri-devel@lists.freedesktop.org,
- linux-arm-kernel@lists.infradead.org, Felipe Balbi <balbi@kernel.org>,
- Paul Walmsley <paul@pwsan.com>, Jingoo Han <jingoohan1@gmail.com>,
- linux-usb@vger.kernel.org, linux-mmc@vger.kernel.org,
- linux-kernel@vger.kernel.org, Vinod Koul <vkoul@kernel.org>,
- dmaengine@vger.kernel.org, alsa-devel@alsa-project.org
+ Arnd Bergmann <arnd@arndb.de>, Mark Brown <broonie@kernel.org>,
+ dri-devel@lists.freedesktop.org, linux-arm-kernel@lists.infradead.org,
+ Felipe Balbi <balbi@kernel.org>, Paul Walmsley <paul@pwsan.com>,
+ Jingoo Han <jingoohan1@gmail.com>, linux-usb@vger.kernel.org,
+ linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
+ Vinod Koul <vkoul@kernel.org>, dmaengine@vger.kernel.org,
+ alsa-devel@alsa-project.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -98,62 +97,56 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 From: Arnd Bergmann <arnd@arndb.de>
 
-To avoid using the mach/omap1510.h header file, pass the correct
-address as platform data.
+The obsolete camera support was removed, but a few lines remain in this
+file and cause a warning:
 
-Acked-by: Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
+arch/arm/mach-omap1/board-ams-delta.c:462:12: warning: 'ams_delta_camera_power' defined but not used [-Wunused-function]
+  462 | static int ams_delta_camera_power(struct device *dev, int power)
+
+Remove this and all related lines as well.
+
+Fixes: ce548396a433 ("media: mach-omap1: board-ams-delta.c: remove soc_camera dependencies")
 Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 ---
- arch/arm/mach-omap1/board-innovator.c  | 3 +++
- drivers/video/fbdev/omap/lcd_inn1510.c | 7 +++++--
- 2 files changed, 8 insertions(+), 2 deletions(-)
+ arch/arm/mach-omap1/board-ams-delta.c | 11 -----------
+ 1 file changed, 11 deletions(-)
 
-diff --git a/arch/arm/mach-omap1/board-innovator.c b/arch/arm/mach-omap1/board-innovator.c
-index cbe093f969d5..2425f1bacb33 100644
---- a/arch/arm/mach-omap1/board-innovator.c
-+++ b/arch/arm/mach-omap1/board-innovator.c
-@@ -194,6 +194,9 @@ static struct platform_device innovator1510_smc91x_device = {
- static struct platform_device innovator1510_lcd_device = {
- 	.name		= "lcd_inn1510",
- 	.id		= -1,
-+	.dev	= {
-+		.platform_data = (void __force *)OMAP1510_FPGA_LCD_PANEL_CONTROL,
-+	}
+diff --git a/arch/arm/mach-omap1/board-ams-delta.c b/arch/arm/mach-omap1/board-ams-delta.c
+index 1026a816dcc0..12d61ad98395 100644
+--- a/arch/arm/mach-omap1/board-ams-delta.c
++++ b/arch/arm/mach-omap1/board-ams-delta.c
+@@ -407,9 +407,6 @@ static struct gpio_led gpio_leds[] __initdata = {
+ 	[LATCH1_PIN_LED_CAMERA] = {
+ 		.name		 = "camera",
+ 		.default_state	 = LEDS_GPIO_DEFSTATE_OFF,
+-#ifdef CONFIG_LEDS_TRIGGERS
+-		.default_trigger = "ams_delta_camera",
+-#endif
+ 	},
+ 	[LATCH1_PIN_LED_ADVERT] = {
+ 		.name		 = "advert",
+@@ -456,10 +453,6 @@ static struct gpiod_lookup_table leds_gpio_table = {
+ 	},
  };
  
- static struct platform_device innovator1510_spi_device = {
-diff --git a/drivers/video/fbdev/omap/lcd_inn1510.c b/drivers/video/fbdev/omap/lcd_inn1510.c
-index 776e7f8d656e..37ed0c14aa5a 100644
---- a/drivers/video/fbdev/omap/lcd_inn1510.c
-+++ b/drivers/video/fbdev/omap/lcd_inn1510.c
-@@ -14,15 +14,17 @@
+-#ifdef CONFIG_LEDS_TRIGGERS
+-DEFINE_LED_TRIGGER(ams_delta_camera_led_trigger);
+-#endif
+-
+ static struct platform_device ams_delta_audio_device = {
+ 	.name   = "ams-delta-audio",
+ 	.id     = -1,
+@@ -705,10 +698,6 @@ static void __init ams_delta_init(void)
+ 	omap_register_i2c_bus(1, 100, NULL, 0);
  
- #include "omapfb.h"
+ 	omap1_usb_init(&ams_delta_usb_config);
+-#ifdef CONFIG_LEDS_TRIGGERS
+-	led_trigger_register_simple("ams_delta_camera",
+-			&ams_delta_camera_led_trigger);
+-#endif
+ 	platform_add_devices(ams_delta_devices, ARRAY_SIZE(ams_delta_devices));
  
-+static void __iomem *omap1510_fpga_lcd_panel_control;
-+
- static int innovator1510_panel_enable(struct lcd_panel *panel)
- {
--	__raw_writeb(0x7, OMAP1510_FPGA_LCD_PANEL_CONTROL);
-+	__raw_writeb(0x7, omap1510_fpga_lcd_panel_control);
- 	return 0;
- }
- 
- static void innovator1510_panel_disable(struct lcd_panel *panel)
- {
--	__raw_writeb(0x0, OMAP1510_FPGA_LCD_PANEL_CONTROL);
-+	__raw_writeb(0x0, omap1510_fpga_lcd_panel_control);
- }
- 
- static struct lcd_panel innovator1510_panel = {
-@@ -48,6 +50,7 @@ static struct lcd_panel innovator1510_panel = {
- 
- static int innovator1510_panel_probe(struct platform_device *pdev)
- {
-+	omap1510_fpga_lcd_panel_control = (void __iomem *)pdev->dev.platform_data;
- 	omapfb_register_panel(&innovator1510_panel);
- 	return 0;
- }
+ 	/*
 -- 
 2.29.2
 
