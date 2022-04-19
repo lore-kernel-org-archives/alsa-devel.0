@@ -4,60 +4,60 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 65A1AC433F5
-	for <alsa-devel@archiver.kernel.org>; Tue, 19 Apr 2022 13:47:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1B136C433F5
+	for <alsa-devel@archiver.kernel.org>; Tue, 19 Apr 2022 13:47:43 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E084519E7;
-	Tue, 19 Apr 2022 15:46:39 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E084519E7
+	by alsa0.perex.cz (Postfix) with ESMTPS id 4A9F11A9A;
+	Tue, 19 Apr 2022 15:46:51 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4A9F11A9A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1650376050;
-	bh=4iDu1ZR93Hpdk0ePDMtItzf+hxINHA/lI2UqgUNvzAk=;
+	s=default; t=1650376061;
+	bh=f9Y/96hrDNAN/+YDT6y/IETuuHURcMDkd3mR04iG5MY=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=dzvDruzOckhjcpQMRYr9awn5iWrsTpYJBPIvzxgGq+DQzvaOYt0O5vL75cq28RjyM
-	 90p5/k4Tks63nh55W+44srqC9yEsT7zujq2v2fYKFf8leBC/T/5ch7cBil7MtEQfxj
-	 TXWHyrvuUBRll+BHKoQZH5DRGgXM7xr/YbpC1qKo=
+	b=UYztcZq3Q5Frlthwqr0cXpo8stKhD3QQX/t1wDjMKaLUOXVjV26EICVRiHKOGHA6q
+	 7VYvNWnf5FL1F1yyasK/pgjTvLW0nNKyV1nHy2loJIViO15opgP+PvY5SCB0TD4d8S
+	 bYXVFALicXQ9mZc6F8WZ0SWd+jgakw5G/vwMen4U=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 172C9F80552;
+	by alsa1.perex.cz (Postfix) with ESMTP id 9D7C0F8055B;
 	Tue, 19 Apr 2022 15:43:25 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 4F356F8025D; Tue, 19 Apr 2022 15:39:32 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+ id 7267EF8025D; Tue, 19 Apr 2022 15:39:50 +0200 (CEST)
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 10857F80121
- for <alsa-devel@alsa-project.org>; Tue, 19 Apr 2022 15:39:26 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 10857F80121
+ by alsa1.perex.cz (Postfix) with ESMTPS id 1ABF5F80116
+ for <alsa-devel@alsa-project.org>; Tue, 19 Apr 2022 15:39:48 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1ABF5F80116
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="iYu4XDHn"
+ header.b="ebr5utca"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id EABA5616A3;
- Tue, 19 Apr 2022 13:38:54 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2F1F3C385B0;
- Tue, 19 Apr 2022 13:38:46 +0000 (UTC)
+ by ams.source.kernel.org (Postfix) with ESMTPS id 9C180B81986;
+ Tue, 19 Apr 2022 13:39:17 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A81EFC385AC;
+ Tue, 19 Apr 2022 13:39:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1650375534;
- bh=4iDu1ZR93Hpdk0ePDMtItzf+hxINHA/lI2UqgUNvzAk=;
+ s=k20201202; t=1650375556;
+ bh=f9Y/96hrDNAN/+YDT6y/IETuuHURcMDkd3mR04iG5MY=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=iYu4XDHn5LNc7q3bp0MnU+38E/Ct276pZyBclM70B5U7U15YheXM7tnLSDrpUiUFQ
- LOdrjAjpzyttsvLOqFC2b7tDcSoaZFMybnxyY5aUJrfJtURup3vbi2iY75ltYnDLuS
- R0BLoJT+6r95ZIXxT2lNCWCFV7jGVZ7Sde1XjlYMf9LdvnqvV4unQN9PnYwj+Xjx8X
- 7eBiNtO4k2iiNvODCKeMIIYXlu+l9Iz92DSuTWievPEejspI9ZHnElvJr2WOS2dbqw
- lFRLt6aXKxLOfia2VmyXNyqNDgSTrk89Sgbp424LQiBRKM9tKYyKriV+ZzqFh6k3u5
- x1pStxY//K6Sg==
+ b=ebr5utca6XgjB3tSpUqlgAxa1J/VO+5Up3W225Ck2Y1KV0kHl25WxqiLaxQnTrrDP
+ o4ZMRT5uiqJlbasFReJEEjIucMAj0DIkjrh7yNwei7KTqUAxhrCrbIU9vS1MWfztjT
+ pnZZDXwYX8Bp58oIwWuMxVkm3t1lAwr40PquGM25WMYWoQU4zuhNhfylYnCyYIm7KS
+ AxbhGnhgw8s8/7Sp0BNcsDkI0IMc9J8IbULGpS4rd/U42TIh6dRRUrDsawrsOWc7ZZ
+ Lnc4CsAY2Xr00xDadJHWFy5+sqJIjPU+QvQwa5Q0tAKRS7Lo54LfD5qNiWFtBeJuUY
+ ATdlp/KQHWVdA==
 From: Arnd Bergmann <arnd@kernel.org>
 To: linux-omap@vger.kernel.org, tony@atomide.com, aaro.koskinen@iki.fi,
  jmkrzyszt@gmail.com
-Subject: [PATCH 10/41] ARM: omap1: move CF chipselect setup to board file
-Date: Tue, 19 Apr 2022 15:36:52 +0200
-Message-Id: <20220419133723.1394715-11-arnd@kernel.org>
+Subject: [PATCH 13/41] clocksource: ti-dmtimer: avoid using mach/hardware.h
+Date: Tue, 19 Apr 2022 15:36:55 +0200
+Message-Id: <20220419133723.1394715-14-arnd@kernel.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20220419133723.1394715-1-arnd@kernel.org>
 References: <20220419133723.1394715-1-arnd@kernel.org>
@@ -70,16 +70,16 @@ Cc: Ulf Hansson <ulf.hansson@linaro.org>,
  Dominik Brodowski <linux@dominikbrodowski.net>,
  Lee Jones <lee.jones@linaro.org>, Daniel Thompson <daniel.thompson@linaro.org>,
  Kevin Hilman <khilman@kernel.org>, Peter Ujfalusi <peter.ujfalusi@gmail.com>,
- Helge Deller <deller@gmx.de>, Russell King <linux@armlinux.org.uk>,
- Krzysztof Kozlowski <krzk@kernel.org>, Alan Stern <stern@rowland.harvard.edu>,
- linux-serial@vger.kernel.org, linux-input@vger.kernel.org,
- Arnd Bergmann <arnd@arndb.de>, Mark Brown <broonie@kernel.org>,
- dri-devel@lists.freedesktop.org, linux-arm-kernel@lists.infradead.org,
- Felipe Balbi <balbi@kernel.org>, Paul Walmsley <paul@pwsan.com>,
- Jingoo Han <jingoohan1@gmail.com>, linux-usb@vger.kernel.org,
- linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
- Vinod Koul <vkoul@kernel.org>, dmaengine@vger.kernel.org,
- alsa-devel@alsa-project.org
+ Helge Deller <deller@gmx.de>, Daniel Lezcano <daniel.lezcano@linaro.org>,
+ Russell King <linux@armlinux.org.uk>, Krzysztof Kozlowski <krzk@kernel.org>,
+ Alan Stern <stern@rowland.harvard.edu>, linux-serial@vger.kernel.org,
+ linux-input@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
+ Mark Brown <broonie@kernel.org>, dri-devel@lists.freedesktop.org,
+ linux-arm-kernel@lists.infradead.org, Felipe Balbi <balbi@kernel.org>,
+ Paul Walmsley <paul@pwsan.com>, Jingoo Han <jingoohan1@gmail.com>,
+ linux-usb@vger.kernel.org, linux-mmc@vger.kernel.org,
+ linux-kernel@vger.kernel.org, Vinod Koul <vkoul@kernel.org>,
+ dmaengine@vger.kernel.org, alsa-devel@alsa-project.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -97,186 +97,29 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 From: Arnd Bergmann <arnd@arndb.de>
 
-There is only one board that uses the omap_cf driver, so
-moving the chipselect configuration there does not lead
-to code duplication but avoids the use of mach/tc.h
-in drivers.
+As a preparation for future omap1 multiplatform support, stop
+using mach/hardware.h and instead include the omap1-io.h
+for low-level register access to MOD_CONF_CTRL_1.
 
+Acked-by: Daniel Lezcano <daniel.lezcano@linaro.org>
 Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 ---
- arch/arm/mach-omap1/board-osk.c | 38 ++++++++++++++++++++++++++++-----
- drivers/pcmcia/Kconfig          |  3 ++-
- drivers/pcmcia/omap_cf.c        | 38 ++++++---------------------------
- 3 files changed, 42 insertions(+), 37 deletions(-)
+ drivers/clocksource/timer-ti-dm.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/arm/mach-omap1/board-osk.c b/arch/arm/mach-omap1/board-osk.c
-index b627a4351cf0..5dbc8f109aa7 100644
---- a/arch/arm/mach-omap1/board-osk.c
-+++ b/arch/arm/mach-omap1/board-osk.c
-@@ -153,14 +153,14 @@ static struct resource osk5912_cf_resources[] = {
- 	[0] = {
- 		.flags	= IORESOURCE_IRQ,
- 	},
-+	[1] = {
-+		.flags = IORESOURCE_MEM,
-+	},
- };
- 
- static struct platform_device osk5912_cf_device = {
- 	.name		= "omap_cf",
- 	.id		= -1,
--	.dev = {
--		.platform_data	= (void *) 2 /* CS2 */,
--	},
- 	.num_resources	= ARRAY_SIZE(osk5912_cf_resources),
- 	.resource	= osk5912_cf_resources,
- };
-@@ -275,13 +275,41 @@ static void __init osk_init_smc91x(void)
- 	omap_writel(l, EMIFS_CCS(1));
+diff --git a/drivers/clocksource/timer-ti-dm.c b/drivers/clocksource/timer-ti-dm.c
+index 3e52c5226c4d..df4a73ea6651 100644
+--- a/drivers/clocksource/timer-ti-dm.c
++++ b/drivers/clocksource/timer-ti-dm.c
+@@ -433,7 +433,7 @@ int omap_dm_timer_get_irq(struct omap_dm_timer *timer)
  }
  
--static void __init osk_init_cf(void)
-+static void __init osk_init_cf(int seg)
- {
-+	struct resource *res = &osk5912_cf_resources[1];
-+
- 	omap_cfg_reg(M7_1610_GPIO62);
- 	if ((gpio_request(62, "cf_irq")) < 0) {
- 		printk("Error requesting gpio 62 for CF irq\n");
- 		return;
- 	}
-+
-+	switch (seg) {
-+	/* NOTE: CS0 could be configured too ... */
-+	case 1:
-+		res->start = OMAP_CS1_PHYS;
-+		break;
-+	case 2:
-+		res->start = OMAP_CS2_PHYS;
-+		break;
-+	case 3:
-+		res->start = omap_cs3_phys();
-+		break;
-+	}
-+
-+	res->end = res->start + SZ_8K - 1;
-+	osk5912_cf_device.dev.platform_data = (void *)(uintptr_t)seg;
-+
-+	/* NOTE:  better EMIFS setup might support more cards; but the
-+	 * TRM only shows how to affect regular flash signals, not their
-+	 * CF/PCMCIA variants...
-+	 */
-+	pr_debug("%s: cs%d, previous ccs %08x acs %08x\n", __func__,
-+		seg, omap_readl(EMIFS_CCS(seg)), omap_readl(EMIFS_ACS(seg)));
-+	omap_writel(0x0004a1b3, EMIFS_CCS(seg));	/* synch mode 4 etc */
-+	omap_writel(0x00000000, EMIFS_ACS(seg));	/* OE hold/setup */
-+
- 	/* the CF I/O IRQ is really active-low */
- 	irq_set_irq_type(gpio_to_irq(62), IRQ_TYPE_EDGE_FALLING);
- }
-@@ -580,7 +608,7 @@ static void __init osk_init(void)
- 	u32 l;
- 
- 	osk_init_smc91x();
--	osk_init_cf();
-+	osk_init_cf(2); /* CS2 */
- 
- 	/* Workaround for wrong CS3 (NOR flash) timing
- 	 * There are some U-Boot versions out there which configure
-diff --git a/drivers/pcmcia/Kconfig b/drivers/pcmcia/Kconfig
-index 2ce261cfff8e..ec977f031bc2 100644
---- a/drivers/pcmcia/Kconfig
-+++ b/drivers/pcmcia/Kconfig
-@@ -246,7 +246,8 @@ config PCMCIA_VRC4171
- 
- config OMAP_CF
- 	tristate "OMAP CompactFlash Controller"
--	depends on PCMCIA && ARCH_OMAP16XX
-+	depends on PCMCIA
-+	depends on ARCH_OMAP16XX || (ARM && COMPILE_TEST)
- 	help
- 	  Say Y here to support the CompactFlash controller on OMAP.
- 	  Note that this doesn't support "True IDE" mode.
-diff --git a/drivers/pcmcia/omap_cf.c b/drivers/pcmcia/omap_cf.c
-index f0b2c2d03469..093022ce7d91 100644
---- a/drivers/pcmcia/omap_cf.c
-+++ b/drivers/pcmcia/omap_cf.c
-@@ -16,13 +16,12 @@
- 
- #include <pcmcia/ss.h>
- 
+ #if defined(CONFIG_ARCH_OMAP1)
 -#include <mach/hardware.h>
- #include <asm/io.h>
- #include <linux/sizes.h>
- 
--#include <mach/mux.h>
--#include <mach/tc.h>
--
 +#include <linux/soc/ti/omap1-io.h>
-+#include <linux/soc/ti/omap1-soc.h>
-+#include <linux/soc/ti/omap1-mux.h>
  
- /* NOTE:  don't expect this to support many I/O cards.  The 16xx chips have
-  * hard-wired timings to support Compact Flash memory cards; they won't work
-@@ -205,6 +204,7 @@ static int __init omap_cf_probe(struct platform_device *pdev)
- 	struct omap_cf_socket	*cf;
- 	int			irq;
- 	int			status;
-+	struct resource		*res;
- 
- 	seg = (int) pdev->dev.platform_data;
- 	if (seg == 0 || seg > 3)
-@@ -215,6 +215,8 @@ static int __init omap_cf_probe(struct platform_device *pdev)
- 	if (irq < 0)
- 		return -EINVAL;
- 
-+	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
-+
- 	cf = kzalloc(sizeof *cf, GFP_KERNEL);
- 	if (!cf)
- 		return -ENOMEM;
-@@ -230,24 +232,7 @@ static int __init omap_cf_probe(struct platform_device *pdev)
- 		goto fail0;
- 	cf->irq = irq;
- 	cf->socket.pci_irq = irq;
--
--	switch (seg) {
--	/* NOTE: CS0 could be configured too ... */
--	case 1:
--		cf->phys_cf = OMAP_CS1_PHYS;
--		break;
--	case 2:
--		cf->phys_cf = OMAP_CS2_PHYS;
--		break;
--	case 3:
--		cf->phys_cf = omap_cs3_phys();
--		break;
--	default:
--		goto  fail1;
--	}
--	cf->iomem.start = cf->phys_cf;
--	cf->iomem.end = cf->iomem.end + SZ_8K - 1;
--	cf->iomem.flags = IORESOURCE_MEM;
-+	cf->phys_cf = res->start;
- 
- 	/* pcmcia layer only remaps "real" memory */
- 	cf->socket.io_offset = (unsigned long)
-@@ -273,15 +258,6 @@ static int __init omap_cf_probe(struct platform_device *pdev)
- 
- 	pr_info("%s: cs%d on irq %d\n", driver_name, seg, irq);
- 
--	/* NOTE:  better EMIFS setup might support more cards; but the
--	 * TRM only shows how to affect regular flash signals, not their
--	 * CF/PCMCIA variants...
--	 */
--	pr_debug("%s: cs%d, previous ccs %08x acs %08x\n", driver_name,
--		seg, omap_readl(EMIFS_CCS(seg)), omap_readl(EMIFS_ACS(seg)));
--	omap_writel(0x0004a1b3, EMIFS_CCS(seg));	/* synch mode 4 etc */
--	omap_writel(0x00000000, EMIFS_ACS(seg));	/* OE hold/setup */
--
- 	/* CF uses armxor_ck, which is "always" available */
- 
- 	pr_debug("%s: sts %04x cfg %04x control %04x %s\n", driver_name,
+ static struct clk *omap_dm_timer_get_fclk(struct omap_dm_timer *timer)
+ {
 -- 
 2.29.2
 
