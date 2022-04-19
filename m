@@ -4,61 +4,60 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 79F4AC433FE
-	for <alsa-devel@archiver.kernel.org>; Tue, 19 Apr 2022 13:49:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9D695C433EF
+	for <alsa-devel@archiver.kernel.org>; Tue, 19 Apr 2022 13:49:20 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B05651ABD;
-	Tue, 19 Apr 2022 15:48:11 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B05651ABD
+	by alsa0.perex.cz (Postfix) with ESMTPS id D9CAC1AC2;
+	Tue, 19 Apr 2022 15:48:28 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D9CAC1AC2
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1650376141;
-	bh=/1rRcvDuoUNuJnmYPxOkUtRPrNjTWfgWCQQLuGK0bF0=;
+	s=default; t=1650376158;
+	bh=1fFZ/OaS6ZClv/BpTxI65DDId5sPYXRbQkpa111wNoQ=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=QHRBbICXeDHrjvaoRIpAFmkq+9RNHH/kSxdZixn5H4Fk6NFiGpTUDw+EZQDz40ut6
-	 KXrMYTdLn0bH/aO8dbsPTeLrU2OWX4Gk2MBMJqmYBIJw9mCX4Un5cI+v4aI+3hVsx9
-	 s9EoP179jJxn3O4aKk4zKuHYM8v5fdte9sqLR9jc=
+	b=rZ58s6CW4hbgNtg7vNm1BAqct5JYASSjHx/WwSaxSdjG1W7Q6zbcnilIXAy4AFB3m
+	 5AfGx463lhdwklUK94QmKTB1sJxJVfpJ9+ei1cLRzAQ4p5IzHwlFDl7B1q5Oyr27h+
+	 9sw7nFH3W/ceG9TNLZQfoClkOQl7X+3lfe9a0nKo=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id A4197F8059F;
-	Tue, 19 Apr 2022 15:43:28 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 59CA2F805A9;
+	Tue, 19 Apr 2022 15:43:29 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id F12FBF80237; Tue, 19 Apr 2022 15:40:14 +0200 (CEST)
+ id 5E3D5F8025D; Tue, 19 Apr 2022 15:40:23 +0200 (CEST)
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id D2A9DF80237
- for <alsa-devel@alsa-project.org>; Tue, 19 Apr 2022 15:40:08 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D2A9DF80237
+ by alsa1.perex.cz (Postfix) with ESMTPS id 25647F80237
+ for <alsa-devel@alsa-project.org>; Tue, 19 Apr 2022 15:40:17 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 25647F80237
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="HzTn7rZS"
+ header.b="SBrvXLW2"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id C299F616BF;
- Tue, 19 Apr 2022 13:39:37 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E95D2C385B7;
- Tue, 19 Apr 2022 13:39:30 +0000 (UTC)
+ by dfw.source.kernel.org (Postfix) with ESMTPS id CBB7361693;
+ Tue, 19 Apr 2022 13:40:15 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7CC1DC385A7;
+ Tue, 19 Apr 2022 13:40:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1650375577;
- bh=/1rRcvDuoUNuJnmYPxOkUtRPrNjTWfgWCQQLuGK0bF0=;
+ s=k20201202; t=1650375615;
+ bh=1fFZ/OaS6ZClv/BpTxI65DDId5sPYXRbQkpa111wNoQ=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=HzTn7rZS28K28plwPgCJQ1ghRASliQgI+2FNpVIvzNFzUi1UMK5PsDjZfQF3E1zqt
- mnS9gOUBto2VoRVRCx4Yuj8lbyW2OmCu+xl6Yg/lQSI7z3yCggGhd8SZLzhUTKkV0G
- 4ogMF4OyTC9vLOk3qkrtZxw01Hx1kngOU7CkWOkrZ7irrMS32QrmiusUzBa73hEit/
- zPGdRbq5Q5uW64+CqYtjA3PCCVDipYSV0x3AONDo7ffgU5sraeCgGnABr+zWsns3bI
- fd00kWQV003loXXb9YePqTFuhXdVkfreFhqu2YPTGCtBIjFiNHdyrGAFpEfaT8V4vz
- PhMvBlCy/tvnA==
+ b=SBrvXLW2zVcL4oM2JTZy14QIztOs2NeSPSDRvDSB3PuiYhuyfupqTrAe+sUpRjYJq
+ C/GKYP7Rr9OBPx8TOivj54uZ/4cXN37y81WRHLpyqeduJN/AM1rmWK3+dm/5sDrwI9
+ e3AxiT/oXlEkctIWbmZCggqIVuL8YwyCPnAoJx7rwxuppFXSO2ULPPBCiTLjkiOoCg
+ S/UwEjtXMKx8ZQN9AOp41OaXzVVEqbYRCJZmKXTbrmszKg/NpZ+SET8KE+jVSLFVb+
+ DFVTEAALkLMldn2MDi+hmjX7hK5Y3kLvxKHS8N/zSEh0KKiqkmrzORHtQInIHNThua
+ RAvesC2+gnbAA==
 From: Arnd Bergmann <arnd@kernel.org>
 To: linux-omap@vger.kernel.org, tony@atomide.com, aaro.koskinen@iki.fi,
  jmkrzyszt@gmail.com
-Subject: [PATCH 16/41] ARM: omap1: innovator: move ohci phy power handling to
- board file
-Date: Tue, 19 Apr 2022 15:36:58 +0200
-Message-Id: <20220419133723.1394715-17-arnd@kernel.org>
+Subject: [PATCH 21/41] ARM: omap1: dma: remove omap2 specific bits
+Date: Tue, 19 Apr 2022 15:37:03 +0200
+Message-Id: <20220419133723.1394715-22-arnd@kernel.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20220419133723.1394715-1-arnd@kernel.org>
 References: <20220419133723.1394715-1-arnd@kernel.org>
@@ -70,17 +69,17 @@ Cc: Ulf Hansson <ulf.hansson@linaro.org>,
  Linus Walleij <linus.walleij@linaro.org>, linux-fbdev@vger.kernel.org,
  Dominik Brodowski <linux@dominikbrodowski.net>,
  Lee Jones <lee.jones@linaro.org>, Daniel Thompson <daniel.thompson@linaro.org>,
- Felipe Balbi <felipe.balbi@linux.intel.com>, Kevin Hilman <khilman@kernel.org>,
- Peter Ujfalusi <peter.ujfalusi@gmail.com>, Helge Deller <deller@gmx.de>,
- Russell King <linux@armlinux.org.uk>, Krzysztof Kozlowski <krzk@kernel.org>,
- Alan Stern <stern@rowland.harvard.edu>, linux-serial@vger.kernel.org,
- linux-input@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
- Mark Brown <broonie@kernel.org>, dri-devel@lists.freedesktop.org,
- linux-arm-kernel@lists.infradead.org, Felipe Balbi <balbi@kernel.org>,
- Paul Walmsley <paul@pwsan.com>, Jingoo Han <jingoohan1@gmail.com>,
- linux-usb@vger.kernel.org, linux-mmc@vger.kernel.org,
- linux-kernel@vger.kernel.org, Vinod Koul <vkoul@kernel.org>,
- dmaengine@vger.kernel.org, alsa-devel@alsa-project.org
+ Kevin Hilman <khilman@kernel.org>, Peter Ujfalusi <peter.ujfalusi@gmail.com>,
+ Helge Deller <deller@gmx.de>, Russell King <linux@armlinux.org.uk>,
+ Krzysztof Kozlowski <krzk@kernel.org>, Alan Stern <stern@rowland.harvard.edu>,
+ linux-serial@vger.kernel.org, linux-input@vger.kernel.org,
+ Arnd Bergmann <arnd@arndb.de>, Mark Brown <broonie@kernel.org>,
+ dri-devel@lists.freedesktop.org, linux-arm-kernel@lists.infradead.org,
+ Felipe Balbi <balbi@kernel.org>, Paul Walmsley <paul@pwsan.com>,
+ Jingoo Han <jingoohan1@gmail.com>, linux-usb@vger.kernel.org,
+ linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
+ Vinod Koul <vkoul@kernel.org>, dmaengine@vger.kernel.org,
+ alsa-devel@alsa-project.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -98,118 +97,416 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 From: Arnd Bergmann <arnd@arndb.de>
 
-The innovator board needs a special case for its phy control.
+No part of plat-omap/dma.c is called on omap2 any more, so
+anything omap2 specific in here can simply be removed.
 
-Move the corresponding code into the board file and out of the
-common code by adding another callback.
-
-Acked-by: Felipe Balbi <felipe.balbi@linux.intel.com>
 Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 ---
- arch/arm/mach-omap1/board-innovator.c   | 19 +++++++++++++++
- drivers/usb/host/ohci-omap.c            | 31 ++++---------------------
- include/linux/platform_data/usb-omap1.h |  2 ++
- 3 files changed, 26 insertions(+), 26 deletions(-)
+ arch/arm/plat-omap/dma.c | 217 ++++++++++-----------------------------
+ 1 file changed, 55 insertions(+), 162 deletions(-)
 
-diff --git a/arch/arm/mach-omap1/board-innovator.c b/arch/arm/mach-omap1/board-innovator.c
-index e7d6735d4701..f169e172421d 100644
---- a/arch/arm/mach-omap1/board-innovator.c
-+++ b/arch/arm/mach-omap1/board-innovator.c
-@@ -290,6 +290,23 @@ static void __init innovator_init_smc91x(void)
+diff --git a/arch/arm/plat-omap/dma.c b/arch/arm/plat-omap/dma.c
+index b7757864d0aa..eb14528f133c 100644
+--- a/arch/arm/plat-omap/dma.c
++++ b/arch/arm/plat-omap/dma.c
+@@ -34,11 +34,9 @@
+ 
+ #include <linux/omap-dma.h>
+ 
+-#ifdef CONFIG_ARCH_OMAP1
+ #include <mach/hardware.h>
+ #include <linux/soc/ti/omap1-io.h>
+ #include <linux/soc/ti/omap1-soc.h>
+-#endif
+ 
+ /*
+  * MAX_LOGICAL_DMA_CH_COUNT: the maximum number of logical DMA
+@@ -51,16 +49,7 @@
+ 
+ #undef DEBUG
+ 
+-#ifndef CONFIG_ARCH_OMAP1
+-enum { DMA_CH_ALLOC_DONE, DMA_CH_PARAMS_SET_DONE, DMA_CH_STARTED,
+-	DMA_CH_QUEUED, DMA_CH_NOTSTARTED, DMA_CH_PAUSED, DMA_CH_LINK_ENABLED
+-};
+-
+-enum { DMA_CHAIN_STARTED, DMA_CHAIN_NOTSTARTED };
+-#endif
+-
+ #define OMAP_DMA_ACTIVE			0x01
+-#define OMAP2_DMA_CSR_CLEAR_MASK	0xffffffff
+ 
+ #define OMAP_FUNC_MUX_ARM_BASE		(0xfffe1000 + 0xec)
+ 
+@@ -94,13 +83,9 @@ static inline void omap_disable_channel_irq(int lch)
+ 	/* disable channel interrupts */
+ 	p->dma_write(0, CICR, lch);
+ 	/* Clear CSR */
+-	if (dma_omap1())
+-		p->dma_read(CSR, lch);
+-	else
+-		p->dma_write(OMAP2_DMA_CSR_CLEAR_MASK, CSR, lch);
++	p->dma_read(CSR, lch);
  }
  
- #ifdef CONFIG_ARCH_OMAP15XX
-+/*
-+ * Board specific gang-switched transceiver power on/off.
-+ */
-+static int innovator_omap_ohci_transceiver_power(int on)
-+{
-+	if (on)
-+		__raw_writeb(__raw_readb(INNOVATOR_FPGA_CAM_USB_CONTROL)
-+				| ((1 << 5/*usb1*/) | (1 << 3/*usb2*/)),
-+			       INNOVATOR_FPGA_CAM_USB_CONTROL);
-+	else
-+		__raw_writeb(__raw_readb(INNOVATOR_FPGA_CAM_USB_CONTROL)
-+				& ~((1 << 5/*usb1*/) | (1 << 3/*usb2*/)),
-+			       INNOVATOR_FPGA_CAM_USB_CONTROL);
-+
-+	return 0;
-+}
-+
- static struct omap_usb_config innovator1510_usb_config __initdata = {
- 	/* for bundled non-standard host and peripheral cables */
- 	.hmc_mode	= 4,
-@@ -300,6 +317,8 @@ static struct omap_usb_config innovator1510_usb_config __initdata = {
- 
- 	.register_dev	= 1,
- 	.pins[0]	= 2,
-+
-+	.transceiver_power = innovator_omap_ohci_transceiver_power,
- };
- 
- static const struct omap_lcd_config innovator1510_lcd_config __initconst = {
-diff --git a/drivers/usb/host/ohci-omap.c b/drivers/usb/host/ohci-omap.c
-index 750a90c41a0a..069791d25abb 100644
---- a/drivers/usb/host/ohci-omap.c
-+++ b/drivers/usb/host/ohci-omap.c
-@@ -67,31 +67,6 @@ static void omap_ohci_clock_power(struct ohci_omap_priv *priv, int on)
- 	}
+-#ifdef CONFIG_ARCH_OMAP1
+ static inline void set_gdma_dev(int req, int dev)
+ {
+ 	u32 reg = OMAP_FUNC_MUX_ARM_BASE + ((req - 1) / 5) * 4;
+@@ -112,11 +97,6 @@ static inline void set_gdma_dev(int req, int dev)
+ 	l |= (dev - 1) << shift;
+ 	omap_writel(l, reg);
  }
+-#else
+-#define set_gdma_dev(req, dev)	do {} while (0)
+-#define omap_readl(reg)		0
+-#define omap_writel(val, reg)	do {} while (0)
+-#endif
  
--/*
-- * Board specific gang-switched transceiver power on/off.
-- * NOTE:  OSK supplies power from DC, not battery.
-- */
--static int omap_ohci_transceiver_power(struct ohci_omap_priv *priv, int on)
--{
--	if (on) {
--		if (machine_is_omap_innovator() && cpu_is_omap1510())
--			__raw_writeb(__raw_readb(INNOVATOR_FPGA_CAM_USB_CONTROL)
--				| ((1 << 5/*usb1*/) | (1 << 3/*usb2*/)),
--			       INNOVATOR_FPGA_CAM_USB_CONTROL);
--		else if (priv->power)
--			gpiod_set_value_cansleep(priv->power, 0);
--	} else {
--		if (machine_is_omap_innovator() && cpu_is_omap1510())
--			__raw_writeb(__raw_readb(INNOVATOR_FPGA_CAM_USB_CONTROL)
--				& ~((1 << 5/*usb1*/) | (1 << 3/*usb2*/)),
--			       INNOVATOR_FPGA_CAM_USB_CONTROL);
--		else if (priv->power)
--			gpiod_set_value_cansleep(priv->power, 1);
+ #ifdef CONFIG_ARCH_OMAP1
+ void omap_set_dma_priority(int lch, int dst_port, int priority)
+@@ -181,59 +161,24 @@ void omap_set_dma_transfer_params(int lch, int data_type, int elem_count,
+ 				  int dma_trigger, int src_or_dst_synch)
+ {
+ 	u32 l;
++	u16 ccr;
+ 
+ 	l = p->dma_read(CSDP, lch);
+ 	l &= ~0x03;
+ 	l |= data_type;
+ 	p->dma_write(l, CSDP, lch);
+ 
+-	if (dma_omap1()) {
+-		u16 ccr;
+-
+-		ccr = p->dma_read(CCR, lch);
+-		ccr &= ~(1 << 5);
+-		if (sync_mode == OMAP_DMA_SYNC_FRAME)
+-			ccr |= 1 << 5;
+-		p->dma_write(ccr, CCR, lch);
+-
+-		ccr = p->dma_read(CCR2, lch);
+-		ccr &= ~(1 << 2);
+-		if (sync_mode == OMAP_DMA_SYNC_BLOCK)
+-			ccr |= 1 << 2;
+-		p->dma_write(ccr, CCR2, lch);
 -	}
 -
--	return 0;
--}
+-	if (dma_omap2plus() && dma_trigger) {
+-		u32 val;
 -
- #ifdef	CONFIG_USB_OTG
+-		val = p->dma_read(CCR, lch);
+-
+-		/* DMA_SYNCHRO_CONTROL_UPPER depends on the channel number */
+-		val &= ~((1 << 23) | (3 << 19) | 0x1f);
+-		val |= (dma_trigger & ~0x1f) << 14;
+-		val |= dma_trigger & 0x1f;
+-
+-		if (sync_mode & OMAP_DMA_SYNC_FRAME)
+-			val |= 1 << 5;
+-		else
+-			val &= ~(1 << 5);
+-
+-		if (sync_mode & OMAP_DMA_SYNC_BLOCK)
+-			val |= 1 << 18;
+-		else
+-			val &= ~(1 << 18);
+-
+-		if (src_or_dst_synch == OMAP_DMA_DST_SYNC_PREFETCH) {
+-			val &= ~(1 << 24);	/* dest synch */
+-			val |= (1 << 23);	/* Prefetch */
+-		} else if (src_or_dst_synch) {
+-			val |= 1 << 24;		/* source synch */
+-		} else {
+-			val &= ~(1 << 24);	/* dest synch */
+-		}
+-		p->dma_write(val, CCR, lch);
+-	}
++	ccr = p->dma_read(CCR, lch);
++	ccr &= ~(1 << 5);
++	if (sync_mode == OMAP_DMA_SYNC_FRAME)
++		ccr |= 1 << 5;
++	p->dma_write(ccr, CCR, lch);
  
- static void start_hnp(struct ohci_hcd *ohci)
-@@ -202,7 +177,11 @@ static int ohci_omap_reset(struct usb_hcd *hcd)
++	ccr = p->dma_read(CCR2, lch);
++	ccr &= ~(1 << 2);
++	if (sync_mode == OMAP_DMA_SYNC_BLOCK)
++		ccr |= 1 << 2;
++	p->dma_write(ccr, CCR2, lch);
+ 	p->dma_write(elem_count, CEN, lch);
+ 	p->dma_write(frame_count, CFN, lch);
+ }
+@@ -241,7 +186,7 @@ EXPORT_SYMBOL(omap_set_dma_transfer_params);
+ 
+ void omap_set_dma_channel_mode(int lch, enum omap_dma_channel_mode mode)
+ {
+-	if (dma_omap1() && !dma_omap15xx()) {
++	if (!dma_omap15xx()) {
+ 		u32 l;
+ 
+ 		l = p->dma_read(LCH_CTRL, lch);
+@@ -258,15 +203,12 @@ void omap_set_dma_src_params(int lch, int src_port, int src_amode,
+ 			     int src_ei, int src_fi)
+ {
+ 	u32 l;
++	u16 w;
+ 
+-	if (dma_omap1()) {
+-		u16 w;
+-
+-		w = p->dma_read(CSDP, lch);
+-		w &= ~(0x1f << 2);
+-		w |= src_port << 2;
+-		p->dma_write(w, CSDP, lch);
+-	}
++	w = p->dma_read(CSDP, lch);
++	w &= ~(0x1f << 2);
++	w |= src_port << 2;
++	p->dma_write(w, CSDP, lch);
+ 
+ 	l = p->dma_read(CCR, lch);
+ 	l &= ~(0x03 << 12);
+@@ -304,26 +246,15 @@ void omap_set_dma_src_burst_mode(int lch, enum omap_dma_burst_mode burst_mode)
+ 	case OMAP_DMA_DATA_BURST_DIS:
+ 		break;
+ 	case OMAP_DMA_DATA_BURST_4:
+-		if (dma_omap2plus())
+-			burst = 0x1;
+-		else
+-			burst = 0x2;
++		burst = 0x2;
+ 		break;
+ 	case OMAP_DMA_DATA_BURST_8:
+-		if (dma_omap2plus()) {
+-			burst = 0x2;
+-			break;
+-		}
+ 		/*
+ 		 * not supported by current hardware on OMAP1
+ 		 * w |= (0x03 << 7);
+ 		 */
+ 		fallthrough;
+ 	case OMAP_DMA_DATA_BURST_16:
+-		if (dma_omap2plus()) {
+-			burst = 0x3;
+-			break;
+-		}
+ 		/* OMAP1 don't support burst 16 */
+ 		fallthrough;
+ 	default:
+@@ -342,12 +273,10 @@ void omap_set_dma_dest_params(int lch, int dest_port, int dest_amode,
+ {
+ 	u32 l;
+ 
+-	if (dma_omap1()) {
+-		l = p->dma_read(CSDP, lch);
+-		l &= ~(0x1f << 9);
+-		l |= dest_port << 9;
+-		p->dma_write(l, CSDP, lch);
+-	}
++	l = p->dma_read(CSDP, lch);
++	l &= ~(0x1f << 9);
++	l |= dest_port << 9;
++	p->dma_write(l, CSDP, lch);
+ 
+ 	l = p->dma_read(CCR, lch);
+ 	l &= ~(0x03 << 14);
+@@ -385,22 +314,12 @@ void omap_set_dma_dest_burst_mode(int lch, enum omap_dma_burst_mode burst_mode)
+ 	case OMAP_DMA_DATA_BURST_DIS:
+ 		break;
+ 	case OMAP_DMA_DATA_BURST_4:
+-		if (dma_omap2plus())
+-			burst = 0x1;
+-		else
+-			burst = 0x2;
++		burst = 0x2;
+ 		break;
+ 	case OMAP_DMA_DATA_BURST_8:
+-		if (dma_omap2plus())
+-			burst = 0x2;
+-		else
+-			burst = 0x3;
++		burst = 0x3;
+ 		break;
+ 	case OMAP_DMA_DATA_BURST_16:
+-		if (dma_omap2plus()) {
+-			burst = 0x3;
+-			break;
+-		}
+ 		/* OMAP1 don't support burst 16 */
+ 		fallthrough;
+ 	default:
+@@ -416,10 +335,7 @@ EXPORT_SYMBOL(omap_set_dma_dest_burst_mode);
+ static inline void omap_enable_channel_irq(int lch)
+ {
+ 	/* Clear CSR */
+-	if (dma_omap1())
+-		p->dma_read(CSR, lch);
+-	else
+-		p->dma_write(OMAP2_DMA_CSR_CLEAR_MASK, CSR, lch);
++	p->dma_read(CSR, lch);
+ 
+ 	/* Enable some nice interrupts. */
+ 	p->dma_write(dma_chan[lch].enabled_irqs, CICR, lch);
+@@ -437,8 +353,7 @@ static inline void enable_lnk(int lch)
+ 
+ 	l = p->dma_read(CLNK_CTRL, lch);
+ 
+-	if (dma_omap1())
+-		l &= ~(1 << 14);
++	l &= ~(1 << 14);
+ 
+ 	/* Set the ENABLE_LNK bits */
+ 	if (dma_chan[lch].next_lch != -1)
+@@ -456,15 +371,8 @@ static inline void disable_lnk(int lch)
+ 	/* Disable interrupts */
+ 	omap_disable_channel_irq(lch);
+ 
+-	if (dma_omap1()) {
+-		/* Set the STOP_LNK bit */
+-		l |= 1 << 14;
+-	}
+-
+-	if (dma_omap2plus()) {
+-		/* Clear the ENABLE_LNK bit */
+-		l &= ~(1 << 15);
+-	}
++	/* Set the STOP_LNK bit */
++	l |= 1 << 14;
+ 
+ 	p->dma_write(l, CLNK_CTRL, lch);
+ 	dma_chan[lch].flags &= ~OMAP_DMA_ACTIVE;
+@@ -508,8 +416,7 @@ int omap_request_dma(int dev_id, const char *dev_name,
+ 
+ 	chan->enabled_irqs = OMAP_DMA_DROP_IRQ | OMAP_DMA_BLOCK_IRQ;
+ 
+-	if (dma_omap1())
+-		chan->enabled_irqs |= OMAP1_DMA_TOUT_IRQ;
++	chan->enabled_irqs |= OMAP1_DMA_TOUT_IRQ;
+ 
+ 	if (dma_omap16xx()) {
+ 		/* If the sync device is set, configure it dynamically. */
+@@ -522,7 +429,7 @@ int omap_request_dma(int dev_id, const char *dev_name,
+ 		 * id.
+ 		 */
+ 		p->dma_write(dev_id | (1 << 10), CCR, free_ch);
+-	} else if (dma_omap1()) {
++	} else {
+ 		p->dma_write(dev_id, CCR, free_ch);
  	}
  
- 	/* FIXME hub_wq hub requests should manage power switching */
--	omap_ohci_transceiver_power(priv, 1);
-+	if (config->transceiver_power)
-+		return config->transceiver_power(1);
+@@ -739,8 +646,7 @@ dma_addr_t omap_get_dma_src_pos(int lch)
+ 			offset = p->dma_read(CSSA, lch);
+ 	}
+ 
+-	if (dma_omap1())
+-		offset |= (p->dma_read(CSSA, lch) & 0xFFFF0000);
++	offset |= (p->dma_read(CSSA, lch) & 0xFFFF0000);
+ 
+ 	return offset;
+ }
+@@ -778,8 +684,7 @@ dma_addr_t omap_get_dma_dst_pos(int lch)
+ 			offset = p->dma_read(CDSA, lch);
+ 	}
+ 
+-	if (dma_omap1())
+-		offset |= (p->dma_read(CDSA, lch) & 0xFFFF0000);
++	offset |= (p->dma_read(CDSA, lch) & 0xFFFF0000);
+ 
+ 	return offset;
+ }
+@@ -796,9 +701,8 @@ int omap_dma_running(void)
+ {
+ 	int lch;
+ 
+-	if (dma_omap1())
+-		if (omap_lcd_dma_running())
+-			return 1;
++	if (omap_lcd_dma_running())
++		return 1;
+ 
+ 	for (lch = 0; lch < dma_chan_count; lch++)
+ 		if (p->dma_read(CCR, lch) & OMAP_DMA_CCR_EN)
+@@ -809,8 +713,6 @@ int omap_dma_running(void)
+ 
+ /*----------------------------------------------------------------------------*/
+ 
+-#ifdef CONFIG_ARCH_OMAP1
+-
+ static int omap1_dma_handle_ch(int ch)
+ {
+ 	u32 csr;
+@@ -863,10 +765,6 @@ static irqreturn_t omap1_dma_irq_handler(int irq, void *dev_id)
+ 	return handled ? IRQ_HANDLED : IRQ_NONE;
+ }
+ 
+-#else
+-#define omap1_dma_irq_handler	NULL
+-#endif
+-
+ struct omap_system_dma_plat_info *omap_get_plat_info(void)
+ {
+ 	return p;
+@@ -912,29 +810,27 @@ static int omap_system_dma_probe(struct platform_device *pdev)
+ 		if (ch >= 6 && enable_1510_mode)
+ 			continue;
+ 
+-		if (dma_omap1()) {
+-			/*
+-			 * request_irq() doesn't like dev_id (ie. ch) being
+-			 * zero, so we have to kludge around this.
+-			 */
+-			sprintf(&irq_name[0], "%d", ch);
+-			dma_irq = platform_get_irq_byname(pdev, irq_name);
+-
+-			if (dma_irq < 0) {
+-				ret = dma_irq;
+-				goto exit_dma_irq_fail;
+-			}
+-
+-			/* INT_DMA_LCD is handled in lcd_dma.c */
+-			if (dma_irq == INT_DMA_LCD)
+-				continue;
+-
+-			ret = request_irq(dma_irq,
+-					omap1_dma_irq_handler, 0, "DMA",
+-					(void *) (ch + 1));
+-			if (ret != 0)
+-				goto exit_dma_irq_fail;
++		/*
++		 * request_irq() doesn't like dev_id (ie. ch) being
++		 * zero, so we have to kludge around this.
++		 */
++		sprintf(&irq_name[0], "%d", ch);
++		dma_irq = platform_get_irq_byname(pdev, irq_name);
 +
-+	if (priv->power)
-+		gpiod_set_value_cansleep(priv->power, 0);
- 
- 	/* board init will have already handled HMC and mux setup.
- 	 * any external transceiver should already be initialized
-diff --git a/include/linux/platform_data/usb-omap1.h b/include/linux/platform_data/usb-omap1.h
-index 878e572a78bf..e7b8dc92a269 100644
---- a/include/linux/platform_data/usb-omap1.h
-+++ b/include/linux/platform_data/usb-omap1.h
-@@ -50,6 +50,8 @@ struct omap_usb_config {
- 	int (*ocpi_enable)(void);
- 
- 	void (*lb_reset)(void);
++		if (dma_irq < 0) {
++			ret = dma_irq;
++			goto exit_dma_irq_fail;
+ 		}
 +
-+	int (*transceiver_power)(int on);
- };
++		/* INT_DMA_LCD is handled in lcd_dma.c */
++		if (dma_irq == INT_DMA_LCD)
++			continue;
++
++		ret = request_irq(dma_irq,
++				omap1_dma_irq_handler, 0, "DMA",
++				(void *) (ch + 1));
++		if (ret != 0)
++			goto exit_dma_irq_fail;
+ 	}
  
- #endif /* __LINUX_USB_OMAP1_H */
+ 	/* reserve dma channels 0 and 1 in high security devices on 34xx */
+@@ -954,9 +850,6 @@ static int omap_system_dma_remove(struct platform_device *pdev)
+ {
+ 	int dma_irq, irq_rel = 0;
+ 
+-	if (dma_omap2plus())
+-		return 0;
+-
+ 	for ( ; irq_rel < dma_chan_count; irq_rel++) {
+ 		dma_irq = platform_get_irq(pdev, irq_rel);
+ 		free_irq(dma_irq, (void *)(irq_rel + 1));
 -- 
 2.29.2
 
