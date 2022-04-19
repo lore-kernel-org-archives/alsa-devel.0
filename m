@@ -4,61 +4,61 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9D7D2C433F5
-	for <alsa-devel@archiver.kernel.org>; Fri, 22 Apr 2022 13:37:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D6B14C433EF
+	for <alsa-devel@archiver.kernel.org>; Fri, 22 Apr 2022 13:37:41 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D9D84161E;
-	Fri, 22 Apr 2022 15:36:10 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D9D84161E
+	by alsa0.perex.cz (Postfix) with ESMTPS id 2963C84D;
+	Fri, 22 Apr 2022 15:36:50 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2963C84D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1650634620;
-	bh=8eNcQvPL/qwAHe1cyIDldIcvo4EcdfaIYnGqLI1GMk8=;
+	s=default; t=1650634660;
+	bh=7xEnZ0JSPWZhTH940v/NcGNAbOyRIyfBWQe+0s0khHM=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=p0B59Sntr0YB4EOi9KjfgyoTBhny7xfK/cH/mMSaQBjn8fKGIZnwieRXQkRqYWwph
-	 4I0AnlXfnjbKQBznP14OS3BxocJi4Uxh/We8pzty/H6PM4Tnm86fMc0Se+vCFTeBsI
-	 3L6j6T57e8tChDe3SEedXfzKskBZZDKac2hJ2IDw=
+	b=krL8ujX3hw5edW67Z8pcDiXkpJq0FA8ALK+xkhO9DyyztaZZ47PWAkJLUdl1oFMMe
+	 zIjaiRIWlAVhQfFsZrGyjD9fWDk9FUs/JWJfzeRdn0pRhANYOjavRHm5gel31fVmLB
+	 qPwkwpjFIPJsKiTbCEAZTWdMKrQRx1sSv6xujb5A=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 1B8E8F8057B;
-	Fri, 22 Apr 2022 15:31:55 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 7E98CF805BD;
+	Fri, 22 Apr 2022 15:31:59 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id EF85AF8025D; Tue, 19 Apr 2022 18:39:28 +0200 (CEST)
-Received: from ams.source.kernel.org (ams.source.kernel.org
- [IPv6:2604:1380:4601:e00::1])
+ id 78CB3F80237; Tue, 19 Apr 2022 18:39:46 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org
+ [IPv6:2604:1380:4641:c500::1])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 9309CF80116
- for <alsa-devel@alsa-project.org>; Tue, 19 Apr 2022 18:39:23 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9309CF80116
+ by alsa1.perex.cz (Postfix) with ESMTPS id 8E5AEF80116
+ for <alsa-devel@alsa-project.org>; Tue, 19 Apr 2022 18:39:40 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8E5AEF80116
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="LVWCBec3"
+ header.b="U2+iU6c8"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by ams.source.kernel.org (Postfix) with ESMTPS id D27C9B81BE7;
- Tue, 19 Apr 2022 16:39:22 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7FBC5C385A7;
- Tue, 19 Apr 2022 16:39:14 +0000 (UTC)
+ by dfw.source.kernel.org (Postfix) with ESMTPS id 58B956182F;
+ Tue, 19 Apr 2022 16:39:39 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 50CD1C385AF;
+ Tue, 19 Apr 2022 16:39:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1650386361;
- bh=8eNcQvPL/qwAHe1cyIDldIcvo4EcdfaIYnGqLI1GMk8=;
+ s=k20201202; t=1650386378;
+ bh=7xEnZ0JSPWZhTH940v/NcGNAbOyRIyfBWQe+0s0khHM=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=LVWCBec3TOUY0aiyOISATFg6pS9jumUzky+Ehfz7G3cgxF1rj0HVil0+pa2jkeAex
- +I/kMAz7NPdj5SvpkunSAFKIAEk8QSgdWx+SIEumBcrPnXonnU4eEXHczTJyAamIGW
- Fqx5TRqKxYXqZIi3auuy03GYtQb1udlODQ45EdRJtZzlua4YntfSSfjlKnwxqVPTK7
- Sam1zQZYtyCqFeU+De7N+gO0nzM6BEX233RRdS5AuCXB25Nncz35spe45uNkA9vaey
- log5jNFTz3afoWInaxRTj1U0qhJDCMqiOZM7huV6OxJSkNIfGwYjRhB8fCNmUgag4C
- qK0Gc9ZA81juQ==
+ b=U2+iU6c8bjeJ3b4/hWR8738LXyw2qX/PeoFQkQee06q/vC7ddu3A5paCnfw9cViZ0
+ 1fBHsL7duftcUL7G4nuM2IRlQk2KY6lsgVtQuDj/pHPyjLxqHD/8dTXiqD3xm3lzOw
+ 3zqMMyS3sa9kuU55H0WPkrepH99Qln75vsXp46325cju4AxH9JOASF64ejSwaYDiQW
+ XK4cjQPK/vvSqzAbE/RPMy1oHrXG/vxp89TInVKBQwrtCc6W5mnrs/h8bNfSFxEhEX
+ cWCDK6zl1DWuudpeHuSJIn2jTIsuGmr5kz5m3ceIgi2uQGIuHn5uclCDYzNllRUsoG
+ VX9+70vTRthWw==
 From: Arnd Bergmann <arnd@kernel.org>
 To: robert.jarzmik@free.fr,
 	linux-arm-kernel@lists.infradead.org
-Subject: [PATCH 04/48] ARM: pxa: remove mach/dma.h
-Date: Tue, 19 Apr 2022 18:37:26 +0200
-Message-Id: <20220419163810.2118169-5-arnd@kernel.org>
+Subject: [PATCH 06/48] ARM: pxa: stop using mach/bitfield.h
+Date: Tue, 19 Apr 2022 18:37:28 +0200
+Message-Id: <20220419163810.2118169-7-arnd@kernel.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20220419163810.2118169-1-arnd@kernel.org>
 References: <20220419163810.2118169-1-arnd@kernel.org>
@@ -74,6 +74,7 @@ Cc: Ulf Hansson <ulf.hansson@linaro.org>, linux-usb@vger.kernel.org,
  linux-mtd@lists.infradead.org, Tomas Cech <sleep_walker@suse.com>,
  linux-clk@vger.kernel.org, linux-leds@vger.kernel.org,
  linux-rtc@vger.kernel.org, Helge Deller <deller@gmx.de>,
+ Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
  Marek Vasut <marek.vasut@gmail.com>, Paul Parsons <lost.distance@yahoo.com>,
  Linus Walleij <linus.walleij@linaro.org>, Arnd Bergmann <arnd@arndb.de>,
  linux-pm@vger.kernel.org, linux-input@vger.kernel.org,
@@ -101,77 +102,82 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 From: Arnd Bergmann <arnd@arndb.de>
 
-The file no longer contains anything useful, so remove it.
+There are two identical copies of mach/bitfield.h, one for
+mach-sa1100 and one for mach-pxa. The pxafb driver only
+makes use of two macros, which can be trivially open-coded
+in the header.
 
+Cc: dri-devel@lists.freedesktop.org
+Acked-by: Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
 Acked-by: Robert Jarzmik <robert.jarzmik@free.fr>
 Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 ---
- arch/arm/mach-pxa/include/mach/dma.h | 17 -----------------
- arch/arm/mach-pxa/pxa25x.c           |  1 -
- arch/arm/mach-pxa/pxa27x.c           |  1 -
- arch/arm/mach-pxa/pxa3xx.c           |  1 -
- 4 files changed, 20 deletions(-)
- delete mode 100644 arch/arm/mach-pxa/include/mach/dma.h
+ arch/arm/mach-pxa/idp.c                   | 1 -
+ arch/arm/mach-pxa/include/mach/regs-lcd.h | 5 +++--
+ arch/arm/mach-pxa/regs-u2d.h              | 2 --
+ drivers/video/fbdev/pxafb.c               | 1 -
+ 4 files changed, 3 insertions(+), 6 deletions(-)
 
-diff --git a/arch/arm/mach-pxa/include/mach/dma.h b/arch/arm/mach-pxa/include/mach/dma.h
-deleted file mode 100644
-index 79f9842a7e1c..000000000000
---- a/arch/arm/mach-pxa/include/mach/dma.h
-+++ /dev/null
-@@ -1,17 +0,0 @@
--/* SPDX-License-Identifier: GPL-2.0-only */
--/*
-- *  arch/arm/mach-pxa/include/mach/dma.h
-- *
-- *  Author:	Nicolas Pitre
-- *  Created:	Jun 15, 2001
-- *  Copyright:	MontaVista Software, Inc.
-- */
--#ifndef __ASM_ARCH_DMA_H
--#define __ASM_ARCH_DMA_H
--
--#include <mach/hardware.h>
--
--/* DMA Controller Registers Definitions */
--#define DMAC_REGS_VIRT	io_p2v(0x40000000)
--
--#endif /* _ASM_ARCH_DMA_H */
-diff --git a/arch/arm/mach-pxa/pxa25x.c b/arch/arm/mach-pxa/pxa25x.c
-index 678641ab46e5..0d25cc45f825 100644
---- a/arch/arm/mach-pxa/pxa25x.c
-+++ b/arch/arm/mach-pxa/pxa25x.c
-@@ -34,7 +34,6 @@
+diff --git a/arch/arm/mach-pxa/idp.c b/arch/arm/mach-pxa/idp.c
+index 57c0511472bc..525d01ddfbbb 100644
+--- a/arch/arm/mach-pxa/idp.c
++++ b/arch/arm/mach-pxa/idp.c
+@@ -30,7 +30,6 @@
  #include "pxa25x.h"
- #include <mach/reset.h>
- #include "pm.h"
--#include <mach/dma.h>
- #include <mach/smemc.h>
+ #include "idp.h"
+ #include <linux/platform_data/video-pxafb.h>
+-#include <mach/bitfield.h>
+ #include <linux/platform_data/mmc-pxamci.h>
+ #include <linux/smc91x.h>
  
- #include "generic.h"
-diff --git a/arch/arm/mach-pxa/pxa27x.c b/arch/arm/mach-pxa/pxa27x.c
-index f0ba7ed24cb6..f7e89831e85b 100644
---- a/arch/arm/mach-pxa/pxa27x.c
-+++ b/arch/arm/mach-pxa/pxa27x.c
-@@ -33,7 +33,6 @@
- #include <mach/reset.h>
- #include <linux/platform_data/usb-ohci-pxa27x.h>
- #include "pm.h"
--#include <mach/dma.h>
- #include <mach/smemc.h>
+diff --git a/arch/arm/mach-pxa/include/mach/regs-lcd.h b/arch/arm/mach-pxa/include/mach/regs-lcd.h
+index e2b6e3d1f625..6a434675f84a 100644
+--- a/arch/arm/mach-pxa/include/mach/regs-lcd.h
++++ b/arch/arm/mach-pxa/include/mach/regs-lcd.h
+@@ -2,8 +2,6 @@
+ #ifndef __ASM_ARCH_REGS_LCD_H
+ #define __ASM_ARCH_REGS_LCD_H
  
- #include "generic.h"
-diff --git a/arch/arm/mach-pxa/pxa3xx.c b/arch/arm/mach-pxa/pxa3xx.c
-index 560160682df6..6eb1c24d7395 100644
---- a/arch/arm/mach-pxa/pxa3xx.c
-+++ b/arch/arm/mach-pxa/pxa3xx.c
-@@ -32,7 +32,6 @@
- #include <mach/reset.h>
- #include <linux/platform_data/usb-ohci-pxa27x.h>
- #include "pm.h"
--#include <mach/dma.h>
- #include <mach/smemc.h>
- #include <mach/irqs.h>
+-#include <mach/bitfield.h>
+-
+ /*
+  * LCD Controller Registers and Bits Definitions
+  */
+@@ -86,6 +84,9 @@
+ #define LCCR0_OUC	(1 << 25)	/* Overlay Underlay control bit */
+ #define LCCR0_LDDALT	(1 << 26)	/* LDD alternate mapping control */
  
++#define Fld(Size, Shft)	(((Size) << 16) + (Shft))
++#define FShft(Field)	((Field) & 0x0000FFFF)
++
+ #define LCCR1_PPL	Fld (10, 0)	/* Pixels Per Line - 1 */
+ #define LCCR1_DisWdth(Pixel)	(((Pixel) - 1) << FShft (LCCR1_PPL))
+ 
+diff --git a/arch/arm/mach-pxa/regs-u2d.h b/arch/arm/mach-pxa/regs-u2d.h
+index fe4c80ad87ec..ab517ba62c9a 100644
+--- a/arch/arm/mach-pxa/regs-u2d.h
++++ b/arch/arm/mach-pxa/regs-u2d.h
+@@ -2,8 +2,6 @@
+ #ifndef __ASM_ARCH_PXA3xx_U2D_H
+ #define __ASM_ARCH_PXA3xx_U2D_H
+ 
+-#include <mach/bitfield.h>
+-
+ /*
+  * USB2 device controller registers and bits definitions
+  */
+diff --git a/drivers/video/fbdev/pxafb.c b/drivers/video/fbdev/pxafb.c
+index e3d1a184d2be..edf080f64a8c 100644
+--- a/drivers/video/fbdev/pxafb.c
++++ b/drivers/video/fbdev/pxafb.c
+@@ -64,7 +64,6 @@
+ #include <asm/io.h>
+ #include <asm/irq.h>
+ #include <asm/div64.h>
+-#include <mach/bitfield.h>
+ #include <linux/platform_data/video-pxafb.h>
+ 
+ /*
 -- 
 2.29.2
 
