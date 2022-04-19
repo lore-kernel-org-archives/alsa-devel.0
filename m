@@ -4,77 +4,72 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 19CB4C433F5
-	for <alsa-devel@archiver.kernel.org>; Tue, 19 Apr 2022 10:01:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 68433C433F5
+	for <alsa-devel@archiver.kernel.org>; Tue, 19 Apr 2022 10:58:33 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 94041174D;
-	Tue, 19 Apr 2022 12:00:28 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 94041174D
+	by alsa0.perex.cz (Postfix) with ESMTPS id 180AD172F;
+	Tue, 19 Apr 2022 12:57:41 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 180AD172F
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1650362478;
-	bh=Von0m/IYoiL/cbw17uPyAdNRjoVjJgZ43AX1dyTUl1o=;
-	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1650365911;
+	bh=QmakAlgYzbO33E8PQxxvJSmaiTWpTxz1j5RJWtgWLQg=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=JVWWXg1YnoUaYBQDyPlrFYOdrW7+tb7Jqitq3EBXqxtHpUVXBHp7bfCBNmfGV6K1d
-	 VNb7ImfltZiRDsDjWRM0ND7R2P2n6agU3g7fmk2xntLDltRBvslBH5IvUffwr55kUs
-	 y11BXZZNJnETPDDkSTnDo487Y74vTLMDLIqA2rLg=
+	b=oYV0y1zxvDjump51uZkGx6PWJ2wWlYHM9O0qOtBQ+/U5bfms4jaQgEsCKEBNoTuOl
+	 B6cvupdQlGsmzBEp4sTEtW0DkyNkh8l2nvkiSDJGkhum9fiROY5fpT3yK5Dwk5g/to
+	 gbcDem2QCkN614O5ypaZ9shsjkQua4uyD7QNVNKA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 3675DF8025D;
-	Tue, 19 Apr 2022 12:00:28 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 99922F80237;
+	Tue, 19 Apr 2022 12:57:40 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 5B526F80269; Tue, 19 Apr 2022 12:00:26 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id 83595F8025D; Tue, 19 Apr 2022 12:57:38 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org
+ [IPv6:2604:1380:4641:c500::1])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 34219F80237
- for <alsa-devel@alsa-project.org>; Tue, 19 Apr 2022 12:00:19 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 34219F80237
+ by alsa1.perex.cz (Postfix) with ESMTPS id 20D95F800C1
+ for <alsa-devel@alsa-project.org>; Tue, 19 Apr 2022 12:57:33 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 20D95F800C1
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="NxuByR3i"; 
- dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="1s07dcO7"
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out2.suse.de (Postfix) with ESMTP id 861A01F74D;
- Tue, 19 Apr 2022 10:00:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1650362419; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=JFQwrU2hFb4VPzzetH0Da+TO97GCBAM9wcZD3DZvdts=;
- b=NxuByR3iL0REQSwYvutp0rBCshkXiyJZ/QF4YoQv2O5J4y6RiOqhiF/Gxa2L6pE9XVdcxl
- CfYTCiE8xfo8El787gXrutmxKKNVd+jZnmnZ7emxCHb9hWKfjYV2fpdBS+dbokAhiyj/4O
- HozU7hWpE7zGRHkYwx+4zLIuROQKl1Q=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1650362419;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=JFQwrU2hFb4VPzzetH0Da+TO97GCBAM9wcZD3DZvdts=;
- b=1s07dcO7q5RJV0Hrz1dzDIu/zQAaZRLdetxqUN0kTOPbs+kCyvMw8QIAULDf0T+v/8r9sf
- lOqILb7AqFMW8UAA==
-Received: from alsa1.suse.de (alsa1.suse.de [10.160.4.42])
- by relay2.suse.de (Postfix) with ESMTP id 6BF7B2C14E;
- Tue, 19 Apr 2022 10:00:19 +0000 (UTC)
-Date: Tue, 19 Apr 2022 12:00:19 +0200
-Message-ID: <s5hee1t1jgs.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: syzbot <syzbot+70e777a39907d6d5fd0a@syzkaller.appspotmail.com>
-Subject: Re: [syzbot] KASAN: use-after-free Read in __snd_rawmidi_transmit_peek
-In-Reply-To: <s5hk0bl1m6c.wl-tiwai@suse.de>
-References: <00000000000011555605dceaff03@google.com>
- <s5hk0bl1m6c.wl-tiwai@suse.de>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
- FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
- (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
-MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
-Content-Type: text/plain; charset=US-ASCII
-Cc: alsa-devel@alsa-project.org, coding@diwic.se, tiwai@suse.com,
- syzkaller-bugs@googlegroups.com, linux-kernel@vger.kernel.org,
- colin.king@intel.com
+ dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="qcFDjroV"
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by dfw.source.kernel.org (Postfix) with ESMTPS id 0DC60610F4;
+ Tue, 19 Apr 2022 10:57:31 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 65DC1C385A7;
+ Tue, 19 Apr 2022 10:57:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1650365850;
+ bh=QmakAlgYzbO33E8PQxxvJSmaiTWpTxz1j5RJWtgWLQg=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=qcFDjroVvHeZZmkbtARE/ecx1DXyR8QO9D0FkEqLdTk4k6y7xr9Ad1w9PnKBTet1q
+ odluExfEUJQvVLAlvujaXsn1OjMvtFz07481rACegvBs9y+gjAtruLZfORvMwXmdx+
+ JmjFh5icBU5G7auIypsCkxdQwXR7L8rb9iR+cTB6x4EZ69hGykHjPBLtzObr4wJXJ2
+ 4jRiZNFOiWe7W9SaEzZ6Xq95bw50eloRoocTdJGVF7G0zQoaR+jaA3xCaJB9ujfN7L
+ 6kEWIurCYGReyholrAcx9X92f0N8JxaqjF5hxkj/m+3kC7rfamrzI+MZJJ2JTAS8Fy
+ pAlCWMhKrubEA==
+Date: Tue, 19 Apr 2022 11:57:26 +0100
+From: Mark Brown <broonie@kernel.org>
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: Re: [PATCH v1 2/4] ASoC: ops: Fix stereo change notifications in
+ snd_soc_put_volsw_sx()
+Message-ID: <Yl6Vljzvc9nTowEq@sirena.org.uk>
+References: <20220201155629.120510-1-broonie@kernel.org>
+ <20220201155629.120510-3-broonie@kernel.org>
+ <c77d892f-4ff3-f7ad-482f-c9673a3cd86f@linux.intel.com>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature"; boundary="yqWp3QezW/osOzvz"
+Content-Disposition: inline
+In-Reply-To: <c77d892f-4ff3-f7ad-482f-c9673a3cd86f@linux.intel.com>
+X-Cookie: That's what she said.
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>,
+ stable@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -90,75 +85,35 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Tue, 19 Apr 2022 11:01:47 +0200,
-Takashi Iwai wrote:
-> 
-> On Mon, 18 Apr 2022 12:12:23 +0200,
-> syzbot wrote:
-> > 
-> > Hello,
-> > 
-> > syzbot found the following issue on:
-> > 
-> > HEAD commit:    a19944809fe9 Merge tag 'hardening-v5.18-rc3' of git://git...
-> > git tree:       upstream
-> > console output: https://syzkaller.appspot.com/x/log.txt?x=16a40ae0f00000
-> > kernel config:  https://syzkaller.appspot.com/x/.config?x=eb177500e563582f
-> > dashboard link: https://syzkaller.appspot.com/bug?extid=70e777a39907d6d5fd0a
-> > compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
-> > syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1590dfa8f00000
-> > 
-> > IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> > Reported-by: syzbot+70e777a39907d6d5fd0a@syzkaller.appspotmail.com
-> > 
-> > ==================================================================
-> > BUG: KASAN: use-after-free in __snd_rawmidi_transmit_peek+0x261/0x360 sound/core/rawmidi.c:1286
-> 
-> Looks like a leftover work.  The fix patch is below.
 
-On the second thought, this would be rather in a different code path,
-and the fix should be smaller like below.  Let's see.
+--yqWp3QezW/osOzvz
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
+On Mon, Apr 18, 2022 at 04:33:21PM -0500, Pierre-Louis Bossart wrote:
+> > +		if (ret == 0 || err < 0) {
+> > +			ret = err;
+> > +		}
+> >  	}
+> >  	return err;
 
-Takashi
+> cppcheck flags a warning on this patch, I believe we should use "return ret;" here, as done in the other patches of this series?
 
--- 8< --
-From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH] ALSA: usb-audio: Clear MIDI port active flag after draining
+Yes, I think so.
 
-When a rawmidi output stream is closed, it calls the drain at first,
-then does trigger-off only when the drain returns -ERESTARTSYS as a
-fallback.  It implies that each driver should turn off the stream
-properly after the drain.  Meanwhile, USB-audio MIDI interface didn't
-change the port->active flag after the drain.  This may leave the
-output work picking up the port that is closed right now, which
-eventually leads to a use-after-free for the already released rawmidi
-object.
+--yqWp3QezW/osOzvz
+Content-Type: application/pgp-signature; name="signature.asc"
 
-This patch fixes the bug by properly clearing the port->active flag
-after the output drain.
+-----BEGIN PGP SIGNATURE-----
 
-Reported-by: syzbot+70e777a39907d6d5fd0a@syzkaller.appspotmail.com
-Cc: <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/00000000000011555605dceaff03@google.com
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
----
- sound/usb/midi.c | 1 +
- 1 file changed, 1 insertion(+)
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmJelZUACgkQJNaLcl1U
+h9BXRwf/fz+Hu2QOnKw7xwTmsNMx/E9uc9Q7hkK+Hhbe1/ZBMPhZac8Eo0Pvrlc8
+h9jFg+SjlhxEuBYLpgHNCOOO9+ZJFx7nBLkz91SEV8w90CqBMG2tUvi4qz0P0pnd
+0BvLTNh0+IJD2p5ADe5ZkTlRn015ZEwh8dyJY1HJ4SXKY5UXlrINJu7lg3BjS5mb
+ziNj4ZibTTdubwpOk7uTPb2fWby2jGOcmpNJ5RbmVgQxMoMwRX57rCBMLpZnDgCn
+qb1vxhvhAsSz/I6kWC5bZndLIT4dXaCniyXGSmr7PwkobjEldm+PVa/vhUYrYTGK
+3Ban5PJZg1l7LOsOaBJAZDNKmNbFNA==
+=80pR
+-----END PGP SIGNATURE-----
 
-diff --git a/sound/usb/midi.c b/sound/usb/midi.c
-index 2c01649c70f6..7c6ca2b433a5 100644
---- a/sound/usb/midi.c
-+++ b/sound/usb/midi.c
-@@ -1194,6 +1194,7 @@ static void snd_usbmidi_output_drain(struct snd_rawmidi_substream *substream)
- 		} while (drain_urbs && timeout);
- 		finish_wait(&ep->drain_wait, &wait);
- 	}
-+	port->active = 0;
- 	spin_unlock_irq(&ep->buffer_lock);
- }
- 
--- 
-2.34.1
-
-
+--yqWp3QezW/osOzvz--
