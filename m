@@ -4,78 +4,78 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 65C81C433EF
-	for <alsa-devel@archiver.kernel.org>; Tue, 19 Apr 2022 07:05:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 674E7C433EF
+	for <alsa-devel@archiver.kernel.org>; Tue, 19 Apr 2022 07:18:35 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 9163C16C0;
-	Tue, 19 Apr 2022 09:04:22 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9163C16C0
+	by alsa0.perex.cz (Postfix) with ESMTPS id 59FA91705;
+	Tue, 19 Apr 2022 09:17:43 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 59FA91705
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1650351912;
-	bh=sSsV7w3ctD13/+8mUG+fqew5+AfkQfxw2NxPWh2JLPY=;
-	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=BRxBsUEg1u0A5TjfyxDGqgnV73mUMTOM+KmzHkse9tjRg3OP5CwjU+RQHi88RQUOy
-	 0lC3+canKnDBsW2Y1QmFbftwfPfcG65RxOOWjDHbm9DNrgbBmatPgfoDXYywXH0S8/
-	 cU+iLMpJaLqdrD8NtHRaQunvMypO8yeW94UXRLCw=
+	s=default; t=1650352713;
+	bh=JiKCT0nGEKCG+z3j9d+ewSHxtMjN1XJMmxA26L4Qbro=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=W4nzGsV583X1Rm3OgOUh4BQpYKeObXUMyThP4+6dCYeF0bBqyLHtaS209OpB/g9Nc
+	 7Gw2bf/laGIpxuoeUwrLOSfBw2BFpyYXdzao81xPnvpaa7BBkA9uT+ybZEH82gyb/k
+	 oslN+qk8IQ/cpXIvUvYT5Gm2HmIJw6Rc7ilNMPpQ=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 328A6F80237;
-	Tue, 19 Apr 2022 09:04:22 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id D26B2F80237;
+	Tue, 19 Apr 2022 09:17:42 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id CEDEBF80116; Tue, 19 Apr 2022 09:04:20 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id B1129F8025D; Tue, 19 Apr 2022 09:17:40 +0200 (CEST)
+Received: from alexa-out.qualcomm.com (alexa-out.qualcomm.com [129.46.98.28])
+ (using TLSv1.2 with cipher AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 76688F80116
- for <alsa-devel@alsa-project.org>; Tue, 19 Apr 2022 09:04:18 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 76688F80116
+ by alsa1.perex.cz (Postfix) with ESMTPS id 094B6F80121
+ for <alsa-devel@alsa-project.org>; Tue, 19 Apr 2022 09:17:31 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 094B6F80121
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="MbIIDIL6"; 
- dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="OTdxFv1M"
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out2.suse.de (Postfix) with ESMTP id 253C01F383;
- Tue, 19 Apr 2022 07:04:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1650351858; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=knXt9XhDx+Ap4kWvY6X4tC4+Razra9ND3kEQxWBDW6U=;
- b=MbIIDIL6lZnG7DVSWX6iT2/67zJF9/+NDaEgjHFAgcyt3kYk2ITJk+IRVa9LpWqRMrJxRX
- 6+QGwFHPWDG1m1bhGMfu6CSs/O5lZQuvssSDjeUnk7WxLwwifI6nmTSsE4DVnFmdOhl41p
- NCbW9IvV9vAZ5njM5XLrXZQ3D1HLHRI=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1650351858;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=knXt9XhDx+Ap4kWvY6X4tC4+Razra9ND3kEQxWBDW6U=;
- b=OTdxFv1MTo4i5DahevWO5/0TpW+W0YEIATHZn0hCTsrLJdhPMLLRTbfs3LyMDKCxoEAtr6
- 0hJMSp0IHAFkaoDw==
-Received: from alsa1.suse.de (alsa1.suse.de [10.160.4.42])
- by relay2.suse.de (Postfix) with ESMTP id 18426A3B83;
- Tue, 19 Apr 2022 07:04:18 +0000 (UTC)
-Date: Tue, 19 Apr 2022 09:04:18 +0200
-Message-ID: <s5hzgkh1rm5.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Maurizio Avogadro <mavoga@gmail.com>
-Subject: Re: [PATCH] ALSA: usb-audio: add mapping for MSI MAG X570S Torpedo
- MAX.
-In-Reply-To: <Yl1ykPaGgsFf3SnW@ryzen>
-References: <Yl1nXcsAKWrFOMbY@ryzen>
-	<Yl1ykPaGgsFf3SnW@ryzen>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
- FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
- (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
-MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
-Content-Type: text/plain; charset=US-ASCII
-Cc: Andrea Fagiani <andfagiani@gmail.com>, alsa-devel@alsa-project.org,
- Takashi Iwai <tiwai@suse.com>, linux-kernel@vger.kernel.org,
- Timo Gurr <timo.gurr@gmail.com>
+ dkim=pass (1024-bit key) header.d=quicinc.com header.i=@quicinc.com
+ header.b="lFFcij7V"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=quicinc.com; i=@quicinc.com; q=dns/txt; s=qcdkim;
+ t=1650352655; x=1681888655;
+ h=from:to:cc:subject:date:message-id:mime-version;
+ bh=O7ltANC2Z4ZUrUzcxO7rd/MTdeXiJHIdWVuveYrHpkE=;
+ b=lFFcij7Vm7t1va5e6nD3th45NphqfgDFmoqvjQNUkgjJK/Aoe+SGArMR
+ IdAyQMccZ35EPaXimgqR8REKNHWbZVKWhh0XyTvN2huU2kPiSBDissnSk
+ a0FgHN4G5ZUWFlyZioRBfQIpTkfUzI+2ryvN7JPbQQblWDdETAjqx/1s3 g=;
+Received: from ironmsg09-lv.qualcomm.com ([10.47.202.153])
+ by alexa-out.qualcomm.com with ESMTP; 19 Apr 2022 00:17:29 -0700
+X-QCInternal: smtphost
+Received: from nasanex01c.na.qualcomm.com ([10.47.97.222])
+ by ironmsg09-lv.qualcomm.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 19 Apr 2022 00:17:28 -0700
+Received: from nalasex01a.na.qualcomm.com (10.47.209.196) by
+ nasanex01c.na.qualcomm.com (10.47.97.222) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.986.22; Tue, 19 Apr 2022 00:17:27 -0700
+Received: from hu-srivasam-hyd.qualcomm.com (10.80.80.8) by
+ nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.986.22; Tue, 19 Apr 2022 00:17:21 -0700
+From: Srinivasa Rao Mandadapu <quic_srivasam@quicinc.com>
+To: <agross@kernel.org>, <bjorn.andersson@linaro.org>, <lgirdwood@gmail.com>, 
+ <broonie@kernel.org>, <robh+dt@kernel.org>, <quic_plai@quicinc.com>,
+ <bgoswami@quicinc.com>, <perex@perex.cz>, <tiwai@suse.com>,
+ <srinivas.kandagatla@linaro.org>, <quic_rohkumar@quicinc.com>,
+ <linux-arm-msm@vger.kernel.org>, <alsa-devel@alsa-project.org>,
+ <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+ <swboyd@chromium.org>, <judyhsiao@chromium.org>
+Subject: [PATCH] ASoC: qcom: SC7280: Update machine driver startup,
+ shutdown callbacks
+Date: Tue, 19 Apr 2022 12:46:59 +0530
+Message-ID: <1650352619-17370-1-git-send-email-quic_srivasam@quicinc.com>
+X-Mailer: git-send-email 2.7.4
+MIME-Version: 1.0
+Content-Type: text/plain
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+Cc: Venkata Prasad Potturu <quic_potturu@quicinc.com>,
+ Srinivasa Rao Mandadapu <quic_srivasam@quicinc.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -91,24 +91,43 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Mon, 18 Apr 2022 16:15:44 +0200,
-Maurizio Avogadro wrote:
-> 
-> Fixed description, sorry.
-> >From c49119b1dcfcca1fcefadd92e095463e6245d4e1 Mon Sep 17 00:00:00 2001
-> From: Maurizio Avogadro <mavoga@gmail.com>
-> Date: Mon, 18 Apr 2022 15:16:12 +0200
-> Subject: [PATCH] ALSA: usb-audio: add mapping for MSI MAG X570S Torpedo MAX.
-> 
-> The USB audio device 0db0:a073 based on the Realtek ALC4080 chipset
-> exposes all playback volume controls as "PCM". This makes
-> distinguishing the individual functions hard.
-> The mapping already adopted for device 0db0:419c based on the same
-> chipset fixes the issue, apply it for this device too.
-> 
-> Signed-off-by: Maurizio Avogadro <mavoga@gmail.com>
+Update machine driver startup, shutdown callback functions to support
+codec DMA paths. Without this change, platforms with WCD codec is failing
+to register sound card.
 
-Applied now.  Thanks.
+Signed-off-by: Srinivasa Rao Mandadapu <quic_srivasam@quicinc.com>
+Co-developed-by: Venkata Prasad Potturu <quic_potturu@quicinc.com>
+Signed-off-by: Venkata Prasad Potturu <quic_potturu@quicinc.com>
+---
+ sound/soc/qcom/sc7280.c | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
+diff --git a/sound/soc/qcom/sc7280.c b/sound/soc/qcom/sc7280.c
+index 4ef4034..d64df11 100644
+--- a/sound/soc/qcom/sc7280.c
++++ b/sound/soc/qcom/sc7280.c
+@@ -295,6 +295,10 @@ static void sc7280_snd_shutdown(struct snd_pcm_substream *substream)
+ 		break;
+ 	case LPASS_DP_RX:
+ 		break;
++	case LPASS_CDC_DMA_RX0 ... LPASS_CDC_DMA_RX9:
++	case LPASS_CDC_DMA_TX0 ... LPASS_CDC_DMA_TX8:
++	case LPASS_CDC_DMA_VA_TX0 ... LPASS_CDC_DMA_VA_TX8:
++		break;
+ 	default:
+ 		dev_err(rtd->dev, "%s: invalid dai id 0x%x\n", __func__,
+ 			cpu_dai->id);
+@@ -316,6 +320,10 @@ static int sc7280_snd_startup(struct snd_pcm_substream *substream)
+ 		break;
+ 	case LPASS_DP_RX:
+ 		break;
++	case LPASS_CDC_DMA_RX0 ... LPASS_CDC_DMA_RX9:
++	case LPASS_CDC_DMA_TX0 ... LPASS_CDC_DMA_TX8:
++	case LPASS_CDC_DMA_VA_TX0 ... LPASS_CDC_DMA_VA_TX8:
++		break;
+ 	default:
+ 		dev_err(rtd->dev, "%s: invalid dai id 0x%x\n", __func__,
+ 			cpu_dai->id);
+-- 
+2.7.4
 
-Takashi
