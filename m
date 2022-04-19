@@ -4,60 +4,60 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B292FC433EF
-	for <alsa-devel@archiver.kernel.org>; Tue, 19 Apr 2022 13:49:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0EDC5C433EF
+	for <alsa-devel@archiver.kernel.org>; Tue, 19 Apr 2022 13:50:06 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E7D561AD5;
-	Tue, 19 Apr 2022 15:48:58 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E7D561AD5
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3AE001ADD;
+	Tue, 19 Apr 2022 15:49:14 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3AE001ADD
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1650376189;
-	bh=oS0YRuMwauHV77a/RWwiH3yEgHRO8x+QFp2K7j65xos=;
+	s=default; t=1650376204;
+	bh=9+ljq5dQueH2G15TUC+ZLkwgSkKDWfTDa0M3UxfDvzI=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=pHkla8dFblhBRVXBduqt8JEk3Zy18cKKf+ul/JR3sv2egX9B9sXoANoV4SCOmw0sn
-	 m8jJHd9jYJsZlgM2QjMS+SL1BEcjhw27cN5kZqCsBHzni4RBMfFFdo684lFhRq4P5C
-	 FD95mlwTgTqJZcaCrMGGmEe0U05UJqEiLIRWtmE0=
+	b=EeraXwcTXjtLjAqgy0KpP+ZeEc0AA21PywofHkaa1antNxSP0LKmOlQeR7Ay01Tq1
+	 dKupbtwvkTku27umWiygaNTcTULk8ZAgyD53G1UtbjOi9iZHM7mP1KgFlQd3CiA4VA
+	 uyP5esVDqBF1uk/9+MFrBRrPgujWvRWnSOES5Zt8=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 8AEC2F805B4;
-	Tue, 19 Apr 2022 15:43:30 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 1C8C7F805B5;
+	Tue, 19 Apr 2022 15:43:31 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 24AA8F80269; Tue, 19 Apr 2022 15:40:46 +0200 (CEST)
+ id 3BF3BF8025D; Tue, 19 Apr 2022 15:40:46 +0200 (CEST)
 Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id CB6B4F80116
+ by alsa1.perex.cz (Postfix) with ESMTPS id A7587F80121
  for <alsa-devel@alsa-project.org>; Tue, 19 Apr 2022 15:40:39 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CB6B4F80116
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A7587F80121
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="QunDt7eW"
+ header.b="UZEWjobJ"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by ams.source.kernel.org (Postfix) with ESMTPS id 4F61EB81983;
- Tue, 19 Apr 2022 13:40:39 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DF713C385A7;
- Tue, 19 Apr 2022 13:40:30 +0000 (UTC)
+ by ams.source.kernel.org (Postfix) with ESMTPS id 3746DB81982;
+ Tue, 19 Apr 2022 13:40:09 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9990AC385AF;
+ Tue, 19 Apr 2022 13:40:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1650375638;
- bh=oS0YRuMwauHV77a/RWwiH3yEgHRO8x+QFp2K7j65xos=;
+ s=k20201202; t=1650375608;
+ bh=9+ljq5dQueH2G15TUC+ZLkwgSkKDWfTDa0M3UxfDvzI=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=QunDt7eWVmo28eUVZu9UHc5suCYpMGj+4JLni2IARp821nSt8uFbgl939uUCYSRpA
- PxsB7GMbCapGsEMRTY921XMHJlFjFiFC5XgxN/yTQcpLOG0T87+wsAMhlPoTxVCTdy
- qMkSm/O4UHq8I2m2twis5Ar3U2NmjNf8p78YGeW4zCXxTcTHqMO9dUCsp6/B4xUer2
- xNwUIzAoowxi9QKFChZTh5g3bQExsAJAL9slz/9O+8JnLrPHq0BKOznGXx9LOrTTt1
- nQc43BQvq0/NVCoUERTHShP9hv98faBOm1I2DUm8je01yVkrpUlWYNIDo6Kd2KpLqE
- kN8JkbmkVLH9g==
+ b=UZEWjobJJdf/97+RsHjNB+jMk4tP3Pl4vgk6cxlQnhU41tj2I/yINK+gRoMdoNOUR
+ Y7MRcUEAGnlNliwHS5DlBG2gtVRR+NX39wFuq/IGF0bnCo9HD4/Ko6wpnFF46X1ylv
+ iALan+QzhQpH4nbYopoyAajxQA2oBzcqItCFMpy/SY9vH4HlIcvpT8NRLMP54afeyx
+ u1+GxMJCkZOQYlBflCn6XehmD8eQEUOxgT0Tgy+CE5qdUt9iLLhEzYm8twoL8sueZd
+ +tmqfAeeno42q0iwsr0p6BakCbrKJuvbO2sq+/dI7pXW42969rnsk5HKJ4ZbkYUR14
+ LrA6BeSwSde3w==
 From: Arnd Bergmann <arnd@kernel.org>
 To: linux-omap@vger.kernel.org, tony@atomide.com, aaro.koskinen@iki.fi,
  jmkrzyszt@gmail.com
-Subject: [PATCH 24/41] ARM: omap: un-merge plat/sram.c
-Date: Tue, 19 Apr 2022 15:37:06 +0200
-Message-Id: <20220419133723.1394715-25-arnd@kernel.org>
+Subject: [PATCH 20/41] dma: omap: hide legacy interface
+Date: Tue, 19 Apr 2022 15:37:02 +0200
+Message-Id: <20220419133723.1394715-21-arnd@kernel.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20220419133723.1394715-1-arnd@kernel.org>
 References: <20220419133723.1394715-1-arnd@kernel.org>
@@ -97,492 +97,134 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 From: Arnd Bergmann <arnd@arndb.de>
 
-The sram initialization code is the only shared omap1/2 code that
-is not a standalone driver, but it is very short. Having two copies
-of this code means some duplication of the sources, but actually
-saves object code size as it can be inlined better.
+The legacy interface for omap-dma is only used on OMAP1, and the
+same is true for the non-DT case. Make both of these conditional on
+CONFIG_ARCH_OMAP1 being set to simplify the dependency.
+
+The non-OMAP stub functions in include/linux/omap-dma.h are note needed
+any more either now, because they are only called on OMAP1.
 
 Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 ---
- arch/arm/mach-omap1/devices.c          |   2 +-
- arch/arm/mach-omap1/sram-init.c        |  91 +++++++++++++++--
- arch/arm/mach-omap1/sram.h             |   4 +-
- arch/arm/mach-omap2/sram.c             |  91 ++++++++++++++++-
- arch/arm/mach-omap2/sram.h             |   5 +-
- arch/arm/plat-omap/Makefile            |   2 +-
- arch/arm/plat-omap/include/plat/sram.h |   8 --
- arch/arm/plat-omap/sram.c              | 129 -------------------------
- 8 files changed, 182 insertions(+), 150 deletions(-)
- delete mode 100644 arch/arm/plat-omap/include/plat/sram.h
- delete mode 100644 arch/arm/plat-omap/sram.c
+ drivers/dma/ti/omap-dma.c | 19 +++++++++++++------
+ include/linux/omap-dma.h  | 22 ----------------------
+ 2 files changed, 13 insertions(+), 28 deletions(-)
 
-diff --git a/arch/arm/mach-omap1/devices.c b/arch/arm/mach-omap1/devices.c
-index eb0f09edb3d1..6bc32ebda7a7 100644
---- a/arch/arm/mach-omap1/devices.c
-+++ b/arch/arm/mach-omap1/devices.c
-@@ -356,7 +356,7 @@ static int __init omap1_init_devices(void)
- 	if (!cpu_class_is_omap1())
- 		return -ENODEV;
+diff --git a/drivers/dma/ti/omap-dma.c b/drivers/dma/ti/omap-dma.c
+index 8e52a0dc1f78..27f5019bdc1e 100644
+--- a/drivers/dma/ti/omap-dma.c
++++ b/drivers/dma/ti/omap-dma.c
+@@ -699,6 +699,11 @@ static void omap_dma_put_lch(struct omap_dmadev *od, int lch)
+ 	mutex_unlock(&od->lch_lock);
+ }
  
--	omap_sram_init();
-+	omap1_sram_init();
- 	omap1_clk_late_init();
- 
- 	/* please keep these calls, and their implementations above,
-diff --git a/arch/arm/mach-omap1/sram-init.c b/arch/arm/mach-omap1/sram-init.c
-index 3bd60708c345..0e3ec32a008e 100644
---- a/arch/arm/mach-omap1/sram-init.c
-+++ b/arch/arm/mach-omap1/sram-init.c
-@@ -14,6 +14,7 @@
- #include <asm/fncpy.h>
- #include <asm/tlb.h>
- #include <asm/cacheflush.h>
-+#include <asm/set_memory.h>
- 
- #include <asm/mach/map.h>
- 
-@@ -22,18 +23,77 @@
- 
- #define OMAP1_SRAM_PA		0x20000000
- #define SRAM_BOOTLOADER_SZ	0x80
-+#define ROUND_DOWN(value,boundary)	((value) & (~((boundary)-1)))
-+
-+static void __iomem *omap_sram_base;
-+static unsigned long omap_sram_start;
-+static unsigned long omap_sram_skip;
-+static unsigned long omap_sram_size;
-+static void __iomem *omap_sram_ceil;
-+
-+/*
-+ * Memory allocator for SRAM: calculates the new ceiling address
-+ * for pushing a function using the fncpy API.
-+ *
-+ * Note that fncpy requires the returned address to be aligned
-+ * to an 8-byte boundary.
-+ */
-+static void *omap_sram_push_address(unsigned long size)
++static inline bool omap_dma_legacy(struct omap_dmadev *od)
 +{
-+	unsigned long available, new_ceil = (unsigned long)omap_sram_ceil;
-+
-+	available = omap_sram_ceil - (omap_sram_base + omap_sram_skip);
-+
-+	if (size > available) {
-+		pr_err("Not enough space in SRAM\n");
-+		return NULL;
-+	}
-+
-+	new_ceil -= size;
-+	new_ceil = ROUND_DOWN(new_ceil, FNCPY_ALIGN);
-+	omap_sram_ceil = IOMEM(new_ceil);
-+
-+	return (void *)omap_sram_ceil;
++	return IS_ENABLED(CONFIG_ARCH_OMAP1) && od->legacy;
 +}
 +
-+void *omap_sram_push(void *funcp, unsigned long size)
-+{
-+	void *sram;
-+	unsigned long base;
-+	int pages;
-+	void *dst = NULL;
-+
-+	sram = omap_sram_push_address(size);
-+	if (!sram)
-+		return NULL;
-+
-+	base = (unsigned long)sram & PAGE_MASK;
-+	pages = PAGE_ALIGN(size) / PAGE_SIZE;
-+
-+	set_memory_rw(base, pages);
-+
-+	dst = fncpy(sram, funcp, size);
-+
-+	set_memory_ro(base, pages);
-+	set_memory_x(base, pages);
-+
-+	return dst;
-+}
- 
- /*
-  * The amount of SRAM depends on the core type.
-  * Note that we cannot try to test for SRAM here because writes
-  * to secure SRAM will hang the system. Also the SRAM is not
-  * yet mapped at this point.
-+ * Note that we cannot use ioremap for SRAM, as clock init needs SRAM early.
-  */
- static void __init omap_detect_and_map_sram(void)
+ static int omap_dma_alloc_chan_resources(struct dma_chan *chan)
  {
--	unsigned long omap_sram_skip = SRAM_BOOTLOADER_SZ;
--	unsigned long omap_sram_start = OMAP1_SRAM_PA;
--	unsigned long omap_sram_size;
-+	unsigned long base;
-+	int pages;
-+
-+	omap_sram_skip = SRAM_BOOTLOADER_SZ;
-+	omap_sram_start = OMAP1_SRAM_PA;
+ 	struct omap_dmadev *od = to_omap_dma_dev(chan->device);
+@@ -706,7 +711,7 @@ static int omap_dma_alloc_chan_resources(struct dma_chan *chan)
+ 	struct device *dev = od->ddev.dev;
+ 	int ret;
  
- 	if (cpu_is_omap7xx())
- 		omap_sram_size = 0x32000;	/* 200K */
-@@ -47,8 +107,27 @@ static void __init omap_detect_and_map_sram(void)
- 		omap_sram_size = 0x4000;
+-	if (od->legacy) {
++	if (omap_dma_legacy(od)) {
+ 		ret = omap_request_dma(c->dma_sig, "DMA engine",
+ 				       omap_dma_callback, c, &c->dma_ch);
+ 	} else {
+@@ -718,7 +723,7 @@ static int omap_dma_alloc_chan_resources(struct dma_chan *chan)
+ 	if (ret >= 0) {
+ 		omap_dma_assign(od, c, c->dma_ch);
+ 
+-		if (!od->legacy) {
++		if (!omap_dma_legacy(od)) {
+ 			unsigned val;
+ 
+ 			spin_lock_irq(&od->irq_lock);
+@@ -757,7 +762,7 @@ static void omap_dma_free_chan_resources(struct dma_chan *chan)
+ 	struct omap_dmadev *od = to_omap_dma_dev(chan->device);
+ 	struct omap_chan *c = to_omap_dma_chan(chan);
+ 
+-	if (!od->legacy) {
++	if (!omap_dma_legacy(od)) {
+ 		spin_lock_irq(&od->irq_lock);
+ 		od->irq_enable_mask &= ~BIT(c->dma_ch);
+ 		omap_dma_glbl_write(od, IRQENABLE_L1, od->irq_enable_mask);
+@@ -768,7 +773,7 @@ static void omap_dma_free_chan_resources(struct dma_chan *chan)
+ 	od->lch_map[c->dma_ch] = NULL;
+ 	vchan_free_chan_resources(&c->vc);
+ 
+-	if (od->legacy)
++	if (omap_dma_legacy(od))
+ 		omap_free_dma(c->dma_ch);
+ 	else
+ 		omap_dma_put_lch(od, c->dma_ch);
+@@ -1674,12 +1679,14 @@ static int omap_dma_probe(struct platform_device *pdev)
+ 			dev_err(&pdev->dev, "omap_system_dma_plat_info is missing");
+ 			return -ENODEV;
+ 		}
+-	} else {
++	} else if (IS_ENABLED(CONFIG_ARCH_OMAP1)) {
+ 		od->cfg = &default_cfg;
+ 
+ 		od->plat = omap_get_plat_info();
+ 		if (!od->plat)
+ 			return -EPROBE_DEFER;
++	} else {
++		return -ENODEV;
  	}
  
--	omap_map_sram(omap_sram_start, omap_sram_size,
--		omap_sram_skip, 1);
-+	omap_sram_start = ROUND_DOWN(omap_sram_start, PAGE_SIZE);
-+	omap_sram_base = __arm_ioremap_exec(omap_sram_start, omap_sram_size, 1);
-+	if (!omap_sram_base) {
-+		pr_err("SRAM: Could not map\n");
-+		return;
-+	}
-+
-+	omap_sram_ceil = omap_sram_base + omap_sram_size;
-+
-+	/*
-+	 * Looks like we need to preserve some bootloader code at the
-+	 * beginning of SRAM for jumping to flash for reboot to work...
-+	 */
-+	memset_io(omap_sram_base + omap_sram_skip, 0,
-+		  omap_sram_size - omap_sram_skip);
-+
-+	base = (unsigned long)omap_sram_base;
-+	pages = PAGE_ALIGN(omap_sram_size) / PAGE_SIZE;
-+
-+	set_memory_ro(base, pages);
-+	set_memory_x(base, pages);
- }
+ 	od->reg_map = od->plat->reg_map;
+@@ -1855,7 +1862,7 @@ static int omap_dma_remove(struct platform_device *pdev)
  
- static void (*_omap_sram_reprogram_clock)(u32 dpllctl, u32 ckctl);
-@@ -62,7 +141,7 @@ void omap_sram_reprogram_clock(u32 dpllctl, u32 ckctl)
- 	_omap_sram_reprogram_clock(dpllctl, ckctl);
- }
+ 	dma_async_device_unregister(&od->ddev);
  
--int __init omap_sram_init(void)
-+int __init omap1_sram_init(void)
- {
- 	omap_detect_and_map_sram();
- 	_omap_sram_reprogram_clock =
-diff --git a/arch/arm/mach-omap1/sram.h b/arch/arm/mach-omap1/sram.h
-index 73efabd119e8..f45e6dd6d7e5 100644
---- a/arch/arm/mach-omap1/sram.h
-+++ b/arch/arm/mach-omap1/sram.h
-@@ -1,8 +1,10 @@
- /* SPDX-License-Identifier: GPL-2.0 */
--#include <plat/sram.h>
- 
- extern void omap_sram_reprogram_clock(u32 dpllctl, u32 ckctl);
- 
-+int omap1_sram_init(void);
-+void *omap_sram_push(void *funcp, unsigned long size);
-+
- /* Do not use these */
- extern void omap1_sram_reprogram_clock(u32 ckctl, u32 dpllctl);
- extern unsigned long omap1_sram_reprogram_clock_sz;
-diff --git a/arch/arm/mach-omap2/sram.c b/arch/arm/mach-omap2/sram.c
-index c98855f5594b..c685afb8bd03 100644
---- a/arch/arm/mach-omap2/sram.c
-+++ b/arch/arm/mach-omap2/sram.c
-@@ -18,6 +18,7 @@
- #include <asm/fncpy.h>
- #include <asm/tlb.h>
- #include <asm/cacheflush.h>
-+#include <asm/set_memory.h>
- 
- #include <asm/mach/map.h>
- 
-@@ -47,8 +48,68 @@
- #define ROUND_DOWN(value,boundary)	((value) & (~((boundary)-1)))
- 
- static unsigned long omap_sram_start;
--static unsigned long omap_sram_skip;
- static unsigned long omap_sram_size;
-+static void __iomem *omap_sram_base;
-+static unsigned long omap_sram_skip;
-+static void __iomem *omap_sram_ceil;
-+
-+/*
-+ * Memory allocator for SRAM: calculates the new ceiling address
-+ * for pushing a function using the fncpy API.
-+ *
-+ * Note that fncpy requires the returned address to be aligned
-+ * to an 8-byte boundary.
-+ */
-+static void *omap_sram_push_address(unsigned long size)
-+{
-+	unsigned long available, new_ceil = (unsigned long)omap_sram_ceil;
-+
-+	available = omap_sram_ceil - (omap_sram_base + omap_sram_skip);
-+
-+	if (size > available) {
-+		pr_err("Not enough space in SRAM\n");
-+		return NULL;
-+	}
-+
-+	new_ceil -= size;
-+	new_ceil = ROUND_DOWN(new_ceil, FNCPY_ALIGN);
-+	omap_sram_ceil = IOMEM(new_ceil);
-+
-+	return (void *)omap_sram_ceil;
-+}
-+
-+void *omap_sram_push(void *funcp, unsigned long size)
-+{
-+	void *sram;
-+	unsigned long base;
-+	int pages;
-+	void *dst = NULL;
-+
-+	sram = omap_sram_push_address(size);
-+	if (!sram)
-+		return NULL;
-+
-+	base = (unsigned long)sram & PAGE_MASK;
-+	pages = PAGE_ALIGN(size) / PAGE_SIZE;
-+
-+	set_memory_rw(base, pages);
-+
-+	dst = fncpy(sram, funcp, size);
-+
-+	set_memory_ro(base, pages);
-+	set_memory_x(base, pages);
-+
-+	return dst;
-+}
-+
-+/*
-+ * The SRAM context is lost during off-idle and stack
-+ * needs to be reset.
-+ */
-+static void omap_sram_reset(void)
-+{
-+	omap_sram_ceil = omap_sram_base + omap_sram_size;
-+}
- 
- /*
-  * Depending on the target RAMFS firewall setup, the public usable amount of
-@@ -119,6 +180,8 @@ static void __init omap_detect_sram(void)
-  */
- static void __init omap2_map_sram(void)
- {
-+	unsigned long base;
-+	int pages;
- 	int cached = 1;
- 
- 	if (cpu_is_omap34xx()) {
-@@ -132,8 +195,30 @@ static void __init omap2_map_sram(void)
- 		cached = 0;
+-	if (!od->legacy) {
++	if (!omap_dma_legacy(od)) {
+ 		/* Disable all interrupts */
+ 		omap_dma_glbl_write(od, IRQENABLE_L0, 0);
  	}
+diff --git a/include/linux/omap-dma.h b/include/linux/omap-dma.h
+index 07fa58ae9902..254b4e10511b 100644
+--- a/include/linux/omap-dma.h
++++ b/include/linux/omap-dma.h
+@@ -292,7 +292,6 @@ struct omap_system_dma_plat_info {
+ #define dma_omap15xx()	__dma_omap15xx(d)
+ #define dma_omap16xx()	__dma_omap16xx(d)
  
--	omap_map_sram(omap_sram_start, omap_sram_size,
--			omap_sram_skip, cached);
-+	if (omap_sram_size == 0)
-+		return;
-+
-+	omap_sram_start = ROUND_DOWN(omap_sram_start, PAGE_SIZE);
-+	omap_sram_base = __arm_ioremap_exec(omap_sram_start, omap_sram_size, cached);
-+	if (!omap_sram_base) {
-+		pr_err("SRAM: Could not map\n");
-+		return;
-+	}
-+
-+	omap_sram_reset();
-+
-+	/*
-+	 * Looks like we need to preserve some bootloader code at the
-+	 * beginning of SRAM for jumping to flash for reboot to work...
-+	 */
-+	memset_io(omap_sram_base + omap_sram_skip, 0,
-+		  omap_sram_size - omap_sram_skip);
-+
-+	base = (unsigned long)omap_sram_base;
-+	pages = PAGE_ALIGN(omap_sram_size) / PAGE_SIZE;
-+
-+	set_memory_ro(base, pages);
-+	set_memory_x(base, pages);
+-#if defined(CONFIG_ARCH_OMAP)
+ extern struct omap_system_dma_plat_info *omap_get_plat_info(void);
+ 
+ extern void omap_set_dma_priority(int lch, int dst_port, int priority);
+@@ -340,25 +339,4 @@ static inline int omap_lcd_dma_running(void)
  }
+ #endif
  
- static void (*_omap2_sram_ddr_init)(u32 *slow_dll_ctrl, u32 fast_dll_ctrl,
-diff --git a/arch/arm/mach-omap2/sram.h b/arch/arm/mach-omap2/sram.h
-index 447bd3eed0fd..271062f23482 100644
---- a/arch/arm/mach-omap2/sram.h
-+++ b/arch/arm/mach-omap2/sram.h
-@@ -4,7 +4,6 @@
-  */
- 
- #ifndef __ASSEMBLY__
--#include <plat/sram.h>
- 
- extern void omap2_sram_ddr_init(u32 *slow_dll_ctrl, u32 fast_dll_ctrl,
- 				u32 base_cs, u32 force_unlock);
-@@ -14,6 +13,10 @@ extern u32 omap2_set_prcm(u32 dpll_ctrl_val, u32 sdrc_rfr_val, int bypass);
- 
- extern void omap3_sram_restore_context(void);
- 
-+extern int __init omap_sram_init(void);
-+
-+extern void *omap_sram_push(void *funcp, unsigned long size);
-+
- /* Do not use these */
- extern void omap24xx_sram_reprogram_clock(u32 ckctl, u32 dpllctl);
- extern unsigned long omap24xx_sram_reprogram_clock_sz;
-diff --git a/arch/arm/plat-omap/Makefile b/arch/arm/plat-omap/Makefile
-index 5d55295a14ee..fefce2e1eaf3 100644
---- a/arch/arm/plat-omap/Makefile
-+++ b/arch/arm/plat-omap/Makefile
-@@ -6,4 +6,4 @@
- ccflags-$(CONFIG_ARCH_MULTIPLATFORM) := -I$(srctree)/arch/arm/plat-omap/include
- 
- # Common support
--obj-y := sram.o
-+obj-y :=
-diff --git a/arch/arm/plat-omap/include/plat/sram.h b/arch/arm/plat-omap/include/plat/sram.h
-deleted file mode 100644
-index 30a07730807a..000000000000
---- a/arch/arm/plat-omap/include/plat/sram.h
-+++ /dev/null
-@@ -1,8 +0,0 @@
--/* SPDX-License-Identifier: GPL-2.0 */
--int omap_sram_init(void);
--
--void omap_map_sram(unsigned long start, unsigned long size,
--			unsigned long skip, int cached);
--void omap_sram_reset(void);
--
--extern void *omap_sram_push(void *funcp, unsigned long size);
-diff --git a/arch/arm/plat-omap/sram.c b/arch/arm/plat-omap/sram.c
-deleted file mode 100644
-index 0f1eacad7fe3..000000000000
---- a/arch/arm/plat-omap/sram.c
-+++ /dev/null
-@@ -1,129 +0,0 @@
--// SPDX-License-Identifier: GPL-2.0-only
--/*
-- * linux/arch/arm/plat-omap/sram.c
-- *
-- * OMAP SRAM detection and management
-- *
-- * Copyright (C) 2005 Nokia Corporation
-- * Written by Tony Lindgren <tony@atomide.com>
-- *
-- * Copyright (C) 2009-2012 Texas Instruments
-- * Added OMAP4/5 support - Santosh Shilimkar <santosh.shilimkar@ti.com>
-- */
--#undef DEBUG
--
--#include <linux/module.h>
--#include <linux/kernel.h>
--#include <linux/init.h>
--#include <linux/io.h>
--
--#include <asm/fncpy.h>
--#include <asm/tlb.h>
--#include <asm/cacheflush.h>
--#include <asm/set_memory.h>
--
--#include <asm/mach/map.h>
--
--#include <plat/sram.h>
--
--#define ROUND_DOWN(value,boundary)	((value) & (~((boundary)-1)))
--
--static void __iomem *omap_sram_base;
--static unsigned long omap_sram_skip;
--static unsigned long omap_sram_size;
--static void __iomem *omap_sram_ceil;
--
--/*
-- * Memory allocator for SRAM: calculates the new ceiling address
-- * for pushing a function using the fncpy API.
-- *
-- * Note that fncpy requires the returned address to be aligned
-- * to an 8-byte boundary.
-- */
--static void *omap_sram_push_address(unsigned long size)
+-#else /* CONFIG_ARCH_OMAP */
+-static inline void omap_set_dma_priority(int lch, int dst_port, int priority)
 -{
--	unsigned long available, new_ceil = (unsigned long)omap_sram_ceil;
--
--	available = omap_sram_ceil - (omap_sram_base + omap_sram_skip);
--
--	if (size > available) {
--		pr_err("Not enough space in SRAM\n");
--		return NULL;
--	}
--
--	new_ceil -= size;
--	new_ceil = ROUND_DOWN(new_ceil, FNCPY_ALIGN);
--	omap_sram_ceil = IOMEM(new_ceil);
--
--	return (void *)omap_sram_ceil;
 -}
 -
--void *omap_sram_push(void *funcp, unsigned long size)
+-static inline struct omap_system_dma_plat_info *omap_get_plat_info(void)
 -{
--	void *sram;
--	unsigned long base;
--	int pages;
--	void *dst = NULL;
--
--	sram = omap_sram_push_address(size);
--	if (!sram)
--		return NULL;
--
--	base = (unsigned long)sram & PAGE_MASK;
--	pages = PAGE_ALIGN(size) / PAGE_SIZE;
--
--	set_memory_rw(base, pages);
--
--	dst = fncpy(sram, funcp, size);
--
--	set_memory_ro(base, pages);
--	set_memory_x(base, pages);
--
--	return dst;
+-	return NULL;
 -}
 -
--/*
-- * The SRAM context is lost during off-idle and stack
-- * needs to be reset.
-- */
--void omap_sram_reset(void)
+-static inline int omap_request_dma(int dev_id, const char *dev_name,
+-			void (*callback)(int lch, u16 ch_status, void *data),
+-			void *data, int *dma_ch)
 -{
--	omap_sram_ceil = omap_sram_base + omap_sram_size;
+-	return -ENODEV;
 -}
 -
--/*
-- * Note that we cannot use ioremap for SRAM, as clock init needs SRAM early.
-- */
--void __init omap_map_sram(unsigned long start, unsigned long size,
--				 unsigned long skip, int cached)
--{
--	unsigned long base;
--	int pages;
+-static inline void omap_free_dma(int ch) { }
 -
--	if (size == 0)
--		return;
+-#endif /* CONFIG_ARCH_OMAP */
 -
--	start = ROUND_DOWN(start, PAGE_SIZE);
--	omap_sram_size = size;
--	omap_sram_skip = skip;
--	omap_sram_base = __arm_ioremap_exec(start, size, cached);
--	if (!omap_sram_base) {
--		pr_err("SRAM: Could not map\n");
--		return;
--	}
--
--	omap_sram_reset();
--
--	/*
--	 * Looks like we need to preserve some bootloader code at the
--	 * beginning of SRAM for jumping to flash for reboot to work...
--	 */
--	memset_io(omap_sram_base + omap_sram_skip, 0,
--		  omap_sram_size - omap_sram_skip);
--
--	base = (unsigned long)omap_sram_base;
--	pages = PAGE_ALIGN(omap_sram_size) / PAGE_SIZE;
--
--	set_memory_ro(base, pages);
--	set_memory_x(base, pages);
--}
+ #endif /* __LINUX_OMAP_DMA_H */
 -- 
 2.29.2
 
