@@ -4,60 +4,60 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 542FEC433EF
-	for <alsa-devel@archiver.kernel.org>; Tue, 19 Apr 2022 13:50:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2FDF4C433EF
+	for <alsa-devel@archiver.kernel.org>; Tue, 19 Apr 2022 13:50:54 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 8CAE71AEB;
-	Tue, 19 Apr 2022 15:49:46 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8CAE71AEB
+	by alsa0.perex.cz (Postfix) with ESMTPS id C218F1AF1;
+	Tue, 19 Apr 2022 15:50:01 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C218F1AF1
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1650376236;
-	bh=++wgzzP18IgZjv9gq3IHjeFk3mw3AxMESGKM1bss8GE=;
+	s=default; t=1650376251;
+	bh=R5zRvKa0SoyT3N6cs+9ATf3vspiQLolbMLlEiLA/7fA=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=IkPT01+HfLKkPlwD90zwL2qktavArbh1S9o6m1V5E13iUS8j8N2pXowAGop51qu+S
-	 9ySxxSO4ASEdnjNBWamxbhZPddW5IfH7/AWQEIWthkGMM8Ect7wEHlrg0v5CH+CUlc
-	 NfrXYZoUwkCQy+5nejL3fvJ90eMNCgOFm9dhwik8=
+	b=BZLlFw6BVMdezdNXPWk2KQAKGlyarXpCtJ7I1Q4vYcXa8reUZmryNW/04ffhBwecb
+	 xMeo4cyzb77l4meuhi0CLAs5wwrsyxEZGsiaS3rQHEGj8n+N0p9ysIcC8leZYzoVmo
+	 ek05OtCyzO/vNozcCBXUUy4eb3GfwQbD0w8prMwA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 3E3A6F805C4;
+	by alsa1.perex.cz (Postfix) with ESMTP id DE03FF805C6;
 	Tue, 19 Apr 2022 15:43:32 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id BBADDF8025D; Tue, 19 Apr 2022 15:41:00 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+ id C27B0F8025D; Tue, 19 Apr 2022 15:41:03 +0200 (CEST)
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 67BC1F80116
+ by alsa1.perex.cz (Postfix) with ESMTPS id ED09DF80269
  for <alsa-devel@alsa-project.org>; Tue, 19 Apr 2022 15:40:54 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 67BC1F80116
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz ED09DF80269
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="t77plAsS"
+ header.b="h4qvsRlC"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id 2A52F616A7;
- Tue, 19 Apr 2022 13:40:53 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CD49CC385AA;
- Tue, 19 Apr 2022 13:40:45 +0000 (UTC)
+ by ams.source.kernel.org (Postfix) with ESMTPS id 8302BB81986;
+ Tue, 19 Apr 2022 13:40:24 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B32FFC385A5;
+ Tue, 19 Apr 2022 13:40:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1650375652;
- bh=++wgzzP18IgZjv9gq3IHjeFk3mw3AxMESGKM1bss8GE=;
+ s=k20201202; t=1650375623;
+ bh=R5zRvKa0SoyT3N6cs+9ATf3vspiQLolbMLlEiLA/7fA=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=t77plAsS6dzi52zALntxTrIsGvlZ7TVWnBbbBL6BHh9HDB22Vsg+GSU1TUGr/L7yo
- 4VED/jnUp/m/iprQbhEzkF/oCLBhn5mjye8/COB4ccOhKBk+sJixyUn/j4z5hhYvAS
- fOMPXYC1p6lswgiO83CT8qRkpbcih1isQSb5qwxzvrTQT+MaBaR+iH3FJlzRpZeFL+
- xLv4MH8XhKivg2WwM9SJ6+BOtF2fIbLSMuGDS0PC2ZNc4r0d6HSPSj40prxX3RgJXN
- wDqi6ESmFTYAF/uvoZWrHFUtV7uChc7cszyCFCMHFQ8dub8SswJUKqRzrKaa1+D2F9
- cs9GhVWEGvR5A==
+ b=h4qvsRlCqc1+D/Un3T++kg9XOlylFj9tu57mNt8nm00hUNQ6OKBJwfaNIy8CUc5b/
+ qlJ5Qll9E9CFFYZxtIhDJzmK+qDlqq4+ArAd2BBXudLqHYrCpKgbUoCnwsfLaR2pgk
+ Q7EkW4bPFi3bk0l1eRnod+7F8TcxdVYbp1x3X1kd6GHmuGnsuLz3ITS24UVsnNzXdg
+ x/K6BdB+SIi+C9NttQpeR53oMsrljIEQWrLP8CdiwfvAVwJt/CIv2ZT1IB0hwp9ZMU
+ YhjJTR86Ah4hamcr5wDfPSVrUyclrlzsHDyDQ4lgL5SrWli+rzKao8UrzltowcxyNH
+ vWiGzLOvfg/Eg==
 From: Arnd Bergmann <arnd@kernel.org>
 To: linux-omap@vger.kernel.org, tony@atomide.com, aaro.koskinen@iki.fi,
  jmkrzyszt@gmail.com
-Subject: [PATCH 26/41] ARM: omap1: relocate static I/O mapping
-Date: Tue, 19 Apr 2022 15:37:08 +0200
-Message-Id: <20220419133723.1394715-27-arnd@kernel.org>
+Subject: [PATCH 22/41] ARM: omap1: move plat/dma.c to mach/omap-dma.c
+Date: Tue, 19 Apr 2022 15:37:04 +0200
+Message-Id: <20220419133723.1394715-23-arnd@kernel.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20220419133723.1394715-1-arnd@kernel.org>
 References: <20220419133723.1394715-1-arnd@kernel.org>
@@ -97,49 +97,48 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 From: Arnd Bergmann <arnd@arndb.de>
 
-The address range 0xfee00000-0xfeffffff is used for PCI and
-PCMCIA I/O port mappings, but OMAP1 has its static mappings
-there as well.
+Most of the interface functions in plat/dma.c are only used from the
+USB driver, which is practically OMAP1 specific, except for compile
+testing.
 
-Move the OMAP1 addresses a little higher to avoid crashing
-at boot.
+The omap_get_plat_info(), omap_request_dma() and omap_free_dma()
+functions are never called on omap2 because of runtime checks.
 
 Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 ---
- arch/arm/Kconfig.debug                      | 6 +++---
- arch/arm/mach-omap1/include/mach/hardware.h | 2 +-
- 2 files changed, 4 insertions(+), 4 deletions(-)
+ arch/arm/mach-omap1/Makefile                        | 2 +-
+ arch/arm/{plat-omap/dma.c => mach-omap1/omap-dma.c} | 0
+ arch/arm/plat-omap/Makefile                         | 2 +-
+ 3 files changed, 2 insertions(+), 2 deletions(-)
+ rename arch/arm/{plat-omap/dma.c => mach-omap1/omap-dma.c} (100%)
 
-diff --git a/arch/arm/Kconfig.debug b/arch/arm/Kconfig.debug
-index 0c9497d549e3..f57b449000f7 100644
---- a/arch/arm/Kconfig.debug
-+++ b/arch/arm/Kconfig.debug
-@@ -1837,9 +1837,9 @@ config DEBUG_UART_VIRT
- 	default 0xfec00000 if ARCH_IXP4XX && !CPU_BIG_ENDIAN
- 	default 0xfec00003 if ARCH_IXP4XX && CPU_BIG_ENDIAN
- 	default 0xfef36000 if DEBUG_HIGHBANK_UART
--	default 0xfefb0000 if DEBUG_OMAP1UART1 || DEBUG_OMAP7XXUART1
--	default 0xfefb0800 if DEBUG_OMAP1UART2 || DEBUG_OMAP7XXUART2
--	default 0xfefb9800 if DEBUG_OMAP1UART3 || DEBUG_OMAP7XXUART3
-+	default 0xff000000 if DEBUG_OMAP1UART1 || DEBUG_OMAP7XXUART1
-+	default 0xff000800 if DEBUG_OMAP1UART2 || DEBUG_OMAP7XXUART2
-+	default 0xff009800 if DEBUG_OMAP1UART3 || DEBUG_OMAP7XXUART3
- 	default 0xffd01000 if DEBUG_HIP01_UART
- 	default DEBUG_UART_PHYS if !MMU
- 	depends on DEBUG_LL_UART_8250 || DEBUG_LL_UART_PL01X || \
-diff --git a/arch/arm/mach-omap1/include/mach/hardware.h b/arch/arm/mach-omap1/include/mach/hardware.h
-index 05c5cd3e95f4..e3522e601ccd 100644
---- a/arch/arm/mach-omap1/include/mach/hardware.h
-+++ b/arch/arm/mach-omap1/include/mach/hardware.h
-@@ -63,7 +63,7 @@ static inline u32 omap_cs3_phys(void)
+diff --git a/arch/arm/mach-omap1/Makefile b/arch/arm/mach-omap1/Makefile
+index 450bbf552b57..0615cb0ba580 100644
+--- a/arch/arm/mach-omap1/Makefile
++++ b/arch/arm/mach-omap1/Makefile
+@@ -5,7 +5,7 @@
  
- #endif	/* ifndef __ASSEMBLER__ */
+ # Common support
+ obj-y := io.o id.o sram-init.o sram.o time.o irq.o mux.o flash.o \
+-	 serial.o devices.o dma.o fb.o
++	 serial.o devices.o dma.o omap-dma.o fb.o
+ obj-y += clock.o clock_data.o opp_data.o reset.o pm_bus.o timer.o
  
--#define OMAP1_IO_OFFSET		0x01000000	/* Virtual IO = 0xfefb0000 */
-+#define OMAP1_IO_OFFSET		0x00fb0000	/* Virtual IO = 0xff000000 */
- #define OMAP1_IO_ADDRESS(pa)	IOMEM((pa) - OMAP1_IO_OFFSET)
+ ifneq ($(CONFIG_SND_SOC_OMAP_MCBSP),)
+diff --git a/arch/arm/plat-omap/dma.c b/arch/arm/mach-omap1/omap-dma.c
+similarity index 100%
+rename from arch/arm/plat-omap/dma.c
+rename to arch/arm/mach-omap1/omap-dma.c
+diff --git a/arch/arm/plat-omap/Makefile b/arch/arm/plat-omap/Makefile
+index 68ccec9de106..5d55295a14ee 100644
+--- a/arch/arm/plat-omap/Makefile
++++ b/arch/arm/plat-omap/Makefile
+@@ -6,4 +6,4 @@
+ ccflags-$(CONFIG_ARCH_MULTIPLATFORM) := -I$(srctree)/arch/arm/plat-omap/include
  
- #include <mach/serial.h>
+ # Common support
+-obj-y := sram.o dma.o
++obj-y := sram.o
 -- 
 2.29.2
 
