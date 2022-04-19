@@ -4,60 +4,60 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 87BABC433EF
-	for <alsa-devel@archiver.kernel.org>; Tue, 19 Apr 2022 13:46:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4A311C433F5
+	for <alsa-devel@archiver.kernel.org>; Tue, 19 Apr 2022 13:46:44 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id EA14D1A41;
-	Tue, 19 Apr 2022 15:45:33 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EA14D1A41
+	by alsa0.perex.cz (Postfix) with ESMTPS id C1CED1A46;
+	Tue, 19 Apr 2022 15:45:51 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C1CED1A46
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1650375984;
-	bh=RR8FHUt8/oVOHCndemgdv0yQ+gJWVi08oSUPSCA8r+A=;
+	s=default; t=1650376001;
+	bh=Tabda3W6PeTGMPAu0M9QQqvhYHycL4TemoWy40qzXKo=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=R/AX76cPzxCBl1r/0QlpkAaHtMi8GS+JhDZAyS6/mYHFaiFMc44DSzndtKnOaWZ0W
-	 59mkzPQvJy32bFuEGnX2P3PIbycfpyk62XrVOoYEpiOvT7SWCdjYdFgAKKeiuwRzjX
-	 ff/YdfWeUwwBE+cDGdnwRVGA8uq5u1BP6als5myQ=
+	b=iUtnipfRj1nUhxc1/Pn2J6xeJbJ9uampICYifgaquuqiLwWM0mWneYjioDOmh6Cww
+	 +7yuymVqkANUy5tsGGASuEgct6/x308BvcRfllMJZpXznn/+uWRTivJfLUwL8BbIo9
+	 UhylLkJjDtSW77NdYAmMnDRetIotdx/QNa1ufqWQ=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 975FAF80538;
-	Tue, 19 Apr 2022 15:43:22 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 59CBBF8053C;
+	Tue, 19 Apr 2022 15:43:23 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 1F8CAF80121; Tue, 19 Apr 2022 15:38:51 +0200 (CEST)
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+ id 391D9F8025D; Tue, 19 Apr 2022 15:39:06 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id A41E2F80121
- for <alsa-devel@alsa-project.org>; Tue, 19 Apr 2022 15:38:48 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A41E2F80121
+ by alsa1.perex.cz (Postfix) with ESMTPS id 47FA0F80116
+ for <alsa-devel@alsa-project.org>; Tue, 19 Apr 2022 15:39:03 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 47FA0F80116
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="FjyAQX1V"
+ header.b="LW0UoBnX"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by ams.source.kernel.org (Postfix) with ESMTPS id 0E099B8197D;
- Tue, 19 Apr 2022 13:38:48 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BFE78C385A5;
- Tue, 19 Apr 2022 13:38:39 +0000 (UTC)
+ by dfw.source.kernel.org (Postfix) with ESMTPS id F0639616B4;
+ Tue, 19 Apr 2022 13:39:01 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D3AC2C385AE;
+ Tue, 19 Apr 2022 13:38:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1650375526;
- bh=RR8FHUt8/oVOHCndemgdv0yQ+gJWVi08oSUPSCA8r+A=;
+ s=k20201202; t=1650375541;
+ bh=Tabda3W6PeTGMPAu0M9QQqvhYHycL4TemoWy40qzXKo=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=FjyAQX1V1Mtq5rmgyreMTZhE3/aJBxgkMqWfV0riRO23vuyzYq/zn4LgLEsRpPY/l
- DQmmsn9xT0+qY3/PXuyKKsFDGMgZhu8Ddawg3jVOO+PbTKZTwvJLooQWJOrl+HaB/O
- AN85kED9oV3T2m4YPSPzkaicNd85/MKhtRTpzOZrR1O1IwS5AGlDoe22qvgRvyYVmp
- 0q0Z8oey3GPFsFg0mzWOUndrW5ruI9D+QP02L6mUJV+H5efX4UhX5GpUaq3ZRQjLzt
- xg9dQpFAlmTyoWXkYs+Cvc8YFJt1I6n7of27SYxlG1Q2NZgRo7lBZYbAsDvPq2cz0n
- ZD+j1qthwTwyg==
+ b=LW0UoBnX9Hzd86LCuPcO6M26sjgPOlXq6jYIKYaqHJXq5bcL1DEHz6T4LiTtbxQ5V
+ rNq+KpgWJcQ+v3qqv0Osu2Bn1grzaUydyONyZK25cqWeeQyp6iiruSwB9jDhNJQi1H
+ rgGCt2NBVy+QTsRCYLzUIrmIhsPCty3jBIuS1+h2vprkrocgwhSJnxqWFEGI1m9XWb
+ Ra28W18ndsOK4QP3CQrCAQqyI2jbSWeW0BeZ7olszsizmclogqzyomgTeXxeiBgofD
+ EAYelDZWulsqVtmdDnpD9qbRdAr1E4/1sb4ACF1iwKSPghV+dWtF/UoVae683yoGUy
+ p4lP1qqtWoMfA==
 From: Arnd Bergmann <arnd@kernel.org>
 To: linux-omap@vger.kernel.org, tony@atomide.com, aaro.koskinen@iki.fi,
  jmkrzyszt@gmail.com
-Subject: [PATCH 09/41] ARM: omap1: move perseus spi pinconf to board file
-Date: Tue, 19 Apr 2022 15:36:51 +0200
-Message-Id: <20220419133723.1394715-10-arnd@kernel.org>
+Subject: [PATCH 11/41] fbdev: omap: avoid using mach/*.h files
+Date: Tue, 19 Apr 2022 15:36:53 +0200
+Message-Id: <20220419133723.1394715-12-arnd@kernel.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20220419133723.1394715-1-arnd@kernel.org>
 References: <20220419133723.1394715-1-arnd@kernel.org>
@@ -73,13 +73,14 @@ Cc: Ulf Hansson <ulf.hansson@linaro.org>,
  Helge Deller <deller@gmx.de>, Russell King <linux@armlinux.org.uk>,
  Krzysztof Kozlowski <krzk@kernel.org>, Alan Stern <stern@rowland.harvard.edu>,
  linux-serial@vger.kernel.org, linux-input@vger.kernel.org,
- Arnd Bergmann <arnd@arndb.de>, Mark Brown <broonie@kernel.org>,
- dri-devel@lists.freedesktop.org, linux-arm-kernel@lists.infradead.org,
- Felipe Balbi <balbi@kernel.org>, Paul Walmsley <paul@pwsan.com>,
- Jingoo Han <jingoohan1@gmail.com>, linux-usb@vger.kernel.org,
- linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
- Vinod Koul <vkoul@kernel.org>, dmaengine@vger.kernel.org,
- alsa-devel@alsa-project.org
+ Arnd Bergmann <arnd@arndb.de>,
+ Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+ Mark Brown <broonie@kernel.org>, dri-devel@lists.freedesktop.org,
+ linux-arm-kernel@lists.infradead.org, Felipe Balbi <balbi@kernel.org>,
+ Paul Walmsley <paul@pwsan.com>, Jingoo Han <jingoohan1@gmail.com>,
+ linux-usb@vger.kernel.org, linux-mmc@vger.kernel.org,
+ linux-kernel@vger.kernel.org, Vinod Koul <vkoul@kernel.org>,
+ dmaengine@vger.kernel.org, alsa-devel@alsa-project.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -97,86 +98,171 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 From: Arnd Bergmann <arnd@arndb.de>
 
-The driver has always had a FIXME about this, and it seems
-like this trivial code move avoids a mach header inclusion,
-so just do it.
+All the headers we actually need are now in include/linux/soc,
+so use those versions instead and allow compile-testing on
+other architectures.
 
-With that out of the way, and the header file inclusions
-changed to global files, the driver can also be compile-tested
-on other platforms.
-
-Acked-by: Mark Brown <broonie@kernel.org>
+Acked-by: Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
 Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 ---
- arch/arm/mach-omap1/board-perseus2.c |  6 ++++++
- drivers/spi/Kconfig                  |  2 +-
- drivers/spi/spi-omap-uwire.c         | 15 +++------------
- 3 files changed, 10 insertions(+), 13 deletions(-)
+ drivers/video/backlight/Kconfig          | 4 ++--
+ drivers/video/backlight/omap1_bl.c       | 4 ++--
+ drivers/video/fbdev/omap/Kconfig         | 4 ++--
+ drivers/video/fbdev/omap/lcd_ams_delta.c | 2 +-
+ drivers/video/fbdev/omap/lcd_dma.c       | 3 ++-
+ drivers/video/fbdev/omap/lcd_inn1510.c   | 2 +-
+ drivers/video/fbdev/omap/lcd_osk.c       | 4 ++--
+ drivers/video/fbdev/omap/lcdc.c          | 2 ++
+ drivers/video/fbdev/omap/omapfb_main.c   | 3 +--
+ drivers/video/fbdev/omap/sossi.c         | 1 +
+ 10 files changed, 16 insertions(+), 13 deletions(-)
 
-diff --git a/arch/arm/mach-omap1/board-perseus2.c b/arch/arm/mach-omap1/board-perseus2.c
-index 1aeeb7337d29..da0155107d85 100644
---- a/arch/arm/mach-omap1/board-perseus2.c
-+++ b/arch/arm/mach-omap1/board-perseus2.c
-@@ -289,6 +289,12 @@ static void __init omap_perseus2_init(void)
- 	omap_cfg_reg(F4_7XX_KBC3);
- 	omap_cfg_reg(E3_7XX_KBC4);
+diff --git a/drivers/video/backlight/Kconfig b/drivers/video/backlight/Kconfig
+index e32694c13da5..a003e02e13ce 100644
+--- a/drivers/video/backlight/Kconfig
++++ b/drivers/video/backlight/Kconfig
+@@ -211,8 +211,8 @@ config BACKLIGHT_LOCOMO
  
-+	if (IS_ENABLED(CONFIG_SPI_OMAP_UWIRE)) {
-+		/* configure pins: MPU_UW_nSCS1, MPU_UW_SDO, MPU_UW_SCLK */
-+		int val = omap_readl(OMAP7XX_IO_CONF_9) & ~0x00EEE000;
-+		omap_writel(val | 0x00AAA000, OMAP7XX_IO_CONF_9);
-+	}
-+
- 	platform_add_devices(devices, ARRAY_SIZE(devices));
+ config BACKLIGHT_OMAP1
+ 	tristate "OMAP1 PWL-based LCD Backlight"
+-	depends on ARCH_OMAP1
+-	default y
++	depends on ARCH_OMAP1 || COMPILE_TEST
++	default ARCH_OMAP1
+ 	help
+ 	  This driver controls the LCD backlight level and power for
+ 	  the PWL module of OMAP1 processors.  Say Y if your board
+diff --git a/drivers/video/backlight/omap1_bl.c b/drivers/video/backlight/omap1_bl.c
+index 74263021b1b3..69a49384b3de 100644
+--- a/drivers/video/backlight/omap1_bl.c
++++ b/drivers/video/backlight/omap1_bl.c
+@@ -14,8 +14,8 @@
+ #include <linux/slab.h>
+ #include <linux/platform_data/omap1_bl.h>
  
- 	omap_serial_init();
-diff --git a/drivers/spi/Kconfig b/drivers/spi/Kconfig
-index d2815eb361c0..6c28ca232444 100644
---- a/drivers/spi/Kconfig
-+++ b/drivers/spi/Kconfig
-@@ -631,7 +631,7 @@ config SPI_OCTEON
+-#include <mach/hardware.h>
+-#include <mach/mux.h>
++#include <linux/soc/ti/omap1-io.h>
++#include <linux/soc/ti/omap1-mux.h>
  
- config SPI_OMAP_UWIRE
- 	tristate "OMAP1 MicroWire"
+ #define OMAPBL_MAX_INTENSITY		0xff
+ 
+diff --git a/drivers/video/fbdev/omap/Kconfig b/drivers/video/fbdev/omap/Kconfig
+index df2a5d0d4aa2..b1786cf1b486 100644
+--- a/drivers/video/fbdev/omap/Kconfig
++++ b/drivers/video/fbdev/omap/Kconfig
+@@ -2,7 +2,7 @@
+ config FB_OMAP
+ 	tristate "OMAP frame buffer support"
+ 	depends on FB
 -	depends on ARCH_OMAP1
 +	depends on ARCH_OMAP1 || (ARM && COMPILE_TEST)
- 	select SPI_BITBANG
+ 	select FB_CFB_FILLRECT
+ 	select FB_CFB_COPYAREA
+ 	select FB_CFB_IMAGEBLIT
+@@ -42,7 +42,7 @@ config FB_OMAP_LCD_MIPID
+ 
+ config FB_OMAP_LCD_H3
+ 	bool "TPS65010 LCD controller on OMAP-H3"
+-	depends on MACH_OMAP_H3
++	depends on MACH_OMAP_H3 || COMPILE_TEST
+ 	depends on TPS65010=y
+ 	default y
  	help
- 	  This hooks up to the MicroWire controller on OMAP1 chips.
-diff --git a/drivers/spi/spi-omap-uwire.c b/drivers/spi/spi-omap-uwire.c
-index 087172a193fa..29198e6815b2 100644
---- a/drivers/spi/spi-omap-uwire.c
-+++ b/drivers/spi/spi-omap-uwire.c
-@@ -44,13 +44,10 @@
- #include <linux/module.h>
+diff --git a/drivers/video/fbdev/omap/lcd_ams_delta.c b/drivers/video/fbdev/omap/lcd_ams_delta.c
+index 01944ce46aa1..414d0f074306 100644
+--- a/drivers/video/fbdev/omap/lcd_ams_delta.c
++++ b/drivers/video/fbdev/omap/lcd_ams_delta.c
+@@ -14,7 +14,7 @@
+ #include <linux/gpio/consumer.h>
+ #include <linux/lcd.h>
+ 
+-#include <mach/hardware.h>
++#include <linux/soc/ti/omap1-io.h>
+ 
+ #include "omapfb.h"
+ 
+diff --git a/drivers/video/fbdev/omap/lcd_dma.c b/drivers/video/fbdev/omap/lcd_dma.c
+index 867a63c06f42..f85817635a8c 100644
+--- a/drivers/video/fbdev/omap/lcd_dma.c
++++ b/drivers/video/fbdev/omap/lcd_dma.c
+@@ -25,7 +25,8 @@
+ 
+ #include <linux/omap-dma.h>
+ 
+-#include <mach/hardware.h>
++#include <linux/soc/ti/omap1-soc.h>
++#include <linux/soc/ti/omap1-io.h>
+ 
+ #include "lcdc.h"
+ #include "lcd_dma.h"
+diff --git a/drivers/video/fbdev/omap/lcd_inn1510.c b/drivers/video/fbdev/omap/lcd_inn1510.c
+index 37ed0c14aa5a..bb915637e9b6 100644
+--- a/drivers/video/fbdev/omap/lcd_inn1510.c
++++ b/drivers/video/fbdev/omap/lcd_inn1510.c
+@@ -10,7 +10,7 @@
+ #include <linux/platform_device.h>
  #include <linux/io.h>
  
 -#include <mach/hardware.h>
- #include <asm/mach-types.h>
--
--#include <mach/mux.h>
--
--#include <mach/omap7xx.h>	/* OMAP7XX_IO_CONF registers */
--
-+#include <linux/soc/ti/omap1-io.h>
 +#include <linux/soc/ti/omap1-soc.h>
+ 
+ #include "omapfb.h"
+ 
+diff --git a/drivers/video/fbdev/omap/lcd_osk.c b/drivers/video/fbdev/omap/lcd_osk.c
+index 5d5762128c8d..8168ba0d47fd 100644
+--- a/drivers/video/fbdev/omap/lcd_osk.c
++++ b/drivers/video/fbdev/omap/lcd_osk.c
+@@ -11,8 +11,8 @@
+ #include <linux/platform_device.h>
+ #include <linux/gpio.h>
+ 
+-#include <mach/hardware.h>
+-#include <mach/mux.h>
++#include <linux/soc/ti/omap1-io.h>
 +#include <linux/soc/ti/omap1-mux.h>
  
- /* FIXME address is now a platform device resource,
-  * and irqs should show there too...
-@@ -548,12 +545,6 @@ static int __init omap_uwire_init(void)
- 		omap_cfg_reg(N14_1610_UWIRE_CS0);
- 		omap_cfg_reg(N15_1610_UWIRE_CS1);
- 	}
--	if (machine_is_omap_perseus2()) {
--		/* configure pins: MPU_UW_nSCS1, MPU_UW_SDO, MPU_UW_SCLK */
--		int val = omap_readl(OMAP7XX_IO_CONF_9) & ~0x00EEE000;
--		omap_writel(val | 0x00AAA000, OMAP7XX_IO_CONF_9);
--	}
--
- 	return platform_driver_register(&uwire_driver);
- }
+ #include "omapfb.h"
  
+diff --git a/drivers/video/fbdev/omap/lcdc.c b/drivers/video/fbdev/omap/lcdc.c
+index d9731d12bd72..4c9091bd936d 100644
+--- a/drivers/video/fbdev/omap/lcdc.c
++++ b/drivers/video/fbdev/omap/lcdc.c
+@@ -17,6 +17,8 @@
+ #include <linux/clk.h>
+ #include <linux/gfp.h>
+ 
++#include <linux/soc/ti/omap1-io.h>
++#include <linux/soc/ti/omap1-soc.h>
+ #include <linux/omap-dma.h>
+ 
+ #include <asm/mach-types.h>
+diff --git a/drivers/video/fbdev/omap/omapfb_main.c b/drivers/video/fbdev/omap/omapfb_main.c
+index b8fd509f11e4..292fcb0a24fc 100644
+--- a/drivers/video/fbdev/omap/omapfb_main.c
++++ b/drivers/video/fbdev/omap/omapfb_main.c
+@@ -20,8 +20,7 @@
+ 
+ #include <linux/omap-dma.h>
+ 
+-#include <mach/hardware.h>
+-
++#include <linux/soc/ti/omap1-soc.h>
+ #include "omapfb.h"
+ #include "lcdc.h"
+ 
+diff --git a/drivers/video/fbdev/omap/sossi.c b/drivers/video/fbdev/omap/sossi.c
+index ade9d452254c..6b99d89fbe6e 100644
+--- a/drivers/video/fbdev/omap/sossi.c
++++ b/drivers/video/fbdev/omap/sossi.c
+@@ -13,6 +13,7 @@
+ #include <linux/interrupt.h>
+ 
+ #include <linux/omap-dma.h>
++#include <linux/soc/ti/omap1-io.h>
+ 
+ #include "omapfb.h"
+ #include "lcd_dma.h"
 -- 
 2.29.2
 
