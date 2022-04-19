@@ -4,83 +4,73 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B8811C433F5
-	for <alsa-devel@archiver.kernel.org>; Tue, 19 Apr 2022 13:55:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id DCB83C433F5
+	for <alsa-devel@archiver.kernel.org>; Tue, 19 Apr 2022 15:08:19 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 387261B4F;
-	Tue, 19 Apr 2022 15:54:42 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 387261B4F
+	by alsa0.perex.cz (Postfix) with ESMTPS id 4BFA21A95;
+	Tue, 19 Apr 2022 17:07:27 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4BFA21A95
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1650376532;
-	bh=VizbppVwzPYdQPDTL7NxrAMjSGA3HHnCFb6Pzlcg7cg=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1650380897;
+	bh=HntouFN5ejtrkvYerLJGVSQw239dqMRIJBPq+igg9rI=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=LmpJfMtp43WET78tgYdQyJHOL9QRA00wnY6PfXf8xi3YzVBhAxxOChWLydZRCCaVp
-	 fL87i7eXgFlZXGlsZvFHGo/Bv2RxjfbWrwrdYHyB6BLdTBBk4D/Zo42mPPcPhQJQkm
-	 ZGIAEjie/Lsz3I1qsEkVZg+Xc8K8n+yOPvVhI9CM=
+	b=NWd57Hi/RjLk2pYD344rgZvsJxRkq2i1WkCx3YZMTti3jp46RJ5snZF/kDVxXn6AZ
+	 1daQs6OkuNd8E7vW6Ps6LSxRF1509JBjGpy9BE32S+QM2s0meLWsNAs+Ks4Jjmtc75
+	 xl9cw+ZJUCaylfIeHC2s1c4LJASpOnocTDY5Dkb0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id A4B2DF80675;
-	Tue, 19 Apr 2022 15:43:55 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id DF71FF80237;
+	Tue, 19 Apr 2022 17:07:26 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id B7DEEF8025D; Tue, 19 Apr 2022 15:43:08 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id B685FF80121
- for <alsa-devel@alsa-project.org>; Tue, 19 Apr 2022 15:43:02 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B685FF80121
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="ewcomR5Y"
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+ id A51BBF8025D; Tue, 19 Apr 2022 17:07:25 +0200 (CEST)
+Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id A6221616D0;
- Tue, 19 Apr 2022 13:42:31 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 82131C385AF;
- Tue, 19 Apr 2022 13:42:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1650375751;
- bh=VizbppVwzPYdQPDTL7NxrAMjSGA3HHnCFb6Pzlcg7cg=;
- h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=ewcomR5Y+ebhEER2jEsmmEKS/5FV86pDTEgeOQLxiozH7E0tm578fLHS1YYtVXf6Y
- D9fxFVuX1bjJa3WJD1rU9pxOwPFHjkiSj0XoD3GwlA9L252sd9q8N/PHPkjkvFCtAn
- k9k7I3mGsf29zuf2FaLzo9lrKBip8FJn5AMZkfh+pAPB7jcGBApFAL7YRSSvm96zlr
- UUQxLcM59kgkggbLPetkP6H/llR+WY7zHgb6OvzSaqxVdVRU74hWZ02nmqay1W/nN0
- Z36YNnqN7DBeFOPhQT8ZAba7fOItSy31B3qvefulS0ykv74DV92yrMGAp61HVmMz42
- +DpY44FhKTZZA==
-From: Arnd Bergmann <arnd@kernel.org>
-To: linux-omap@vger.kernel.org, tony@atomide.com, aaro.koskinen@iki.fi,
- jmkrzyszt@gmail.com
-Subject: [PATCH 39/41] [MERGED] ASoC: ti: osk5912: Make it CCF clk API
- compatible
-Date: Tue, 19 Apr 2022 15:37:21 +0200
-Message-Id: <20220419133723.1394715-40-arnd@kernel.org>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20220419133723.1394715-1-arnd@kernel.org>
-References: <20220419133723.1394715-1-arnd@kernel.org>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 26137F800C1
+ for <alsa-devel@alsa-project.org>; Tue, 19 Apr 2022 17:07:18 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 26137F800C1
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
+ header.b="fr+XU4H5"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+ d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+ t=1650380840; x=1681916840;
+ h=date:from:to:cc:subject:message-id:references:
+ mime-version:in-reply-to;
+ bh=HntouFN5ejtrkvYerLJGVSQw239dqMRIJBPq+igg9rI=;
+ b=fr+XU4H5kHH3+D29tC5Zy1y5HeQL9FsH2rNEm50/dEbdcreViO9K/aYe
+ qnzvD/Sb6KzS6I7ZH7bpS/JK/7Q+cOdTy2mSrFSeeFX3etlgNa+U1Hv+m
+ lsgd9kYApNqu3HxRjjMGeAjAQ11r3uy6dw3yNb346wkko4lhb7k9eAqlk
+ AygM8sYEixWKGqJhjqYS2dUVYUaadvrgWOv0o1MdWiw9jC6MKVkroXaw8
+ hFVctr99Vui0h7hgMr/Ms0U1vVuERQHc9cO590DEKya6VIC2HDNsmyxde
+ 8zOVaYLpHxQ3fugDGJuA0urUM+i4kFLD89ZTTdUdrSt3ibk2bi5znqKgK g==;
+X-IronPort-AV: E=McAfee;i="6400,9594,10322"; a="263547410"
+X-IronPort-AV: E=Sophos;i="5.90,273,1643702400"; d="scan'208";a="263547410"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+ by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 19 Apr 2022 08:05:27 -0700
+X-IronPort-AV: E=Sophos;i="5.90,273,1643702400"; d="scan'208";a="666368195"
+Received: from ahfarrel-mobl1.amr.corp.intel.com (HELO ldmartin-desk2)
+ ([10.212.228.159])
+ by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 19 Apr 2022 08:05:27 -0700
+Date: Tue, 19 Apr 2022 08:05:27 -0700
+From: Lucas De Marchi <lucas.demarchi@intel.com>
+To: Takashi Iwai <tiwai@suse.de>
+Subject: Re: [PATCH] ALSA: hda/i915: Fix one too many pci_dev_put()
+Message-ID: <20220419150527.tcdxf6gzxq3m75si@ldmartin-desk2>
+X-Patchwork-Hint: comment
+References: <20220416064418.2364582-1-lucas.demarchi@intel.com>
+ <s5h35i936b5.wl-tiwai@suse.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Mailman-Approved-At: Tue, 19 Apr 2022 15:43:51 +0200
-Cc: Ulf Hansson <ulf.hansson@linaro.org>,
- Dmitry Torokhov <dmitry.torokhov@gmail.com>,
- Linus Walleij <linus.walleij@linaro.org>, linux-fbdev@vger.kernel.org,
- Dominik Brodowski <linux@dominikbrodowski.net>,
- Lee Jones <lee.jones@linaro.org>, Daniel Thompson <daniel.thompson@linaro.org>,
- Kevin Hilman <khilman@kernel.org>, Peter Ujfalusi <peter.ujfalusi@gmail.com>,
- Helge Deller <deller@gmx.de>, Russell King <linux@armlinux.org.uk>,
- Krzysztof Kozlowski <krzk@kernel.org>, Alan Stern <stern@rowland.harvard.edu>,
- linux-serial@vger.kernel.org, linux-input@vger.kernel.org,
- Arnd Bergmann <arnd@arndb.de>, Mark Brown <broonie@kernel.org>,
- dri-devel@lists.freedesktop.org, linux-arm-kernel@lists.infradead.org,
- Felipe Balbi <balbi@kernel.org>, Paul Walmsley <paul@pwsan.com>,
- Jingoo Han <jingoohan1@gmail.com>, linux-usb@vger.kernel.org,
- linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
- Vinod Koul <vkoul@kernel.org>, dmaengine@vger.kernel.org,
- alsa-devel@alsa-project.org
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <s5h35i936b5.wl-tiwai@suse.de>
+Cc: intel-gfx@lists.freedesktop.org, alsa-devel@alsa-project.org,
+ Kai Vehmanen <kai.vehmanen@linux.intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -96,42 +86,25 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Janusz Krzysztofik <jmkrzyszt@gmail.com>
+On Tue, Apr 19, 2022 at 09:01:34AM +0200, Takashi Iwai wrote:
+>On Sat, 16 Apr 2022 08:44:18 +0200,
+>Lucas De Marchi wrote:
+>>
+>> pci_get_class() will already unref the pci device passed as argument.
+>> So if it's unconditionally unref'ed, even if the loop is not stopped,
+>> there will be one too many unref for each device not matched.
+>>
+>> Cc: Kai Vehmanen <kai.vehmanen@linux.intel.com>
+>> Cc: Takashi Iwai <tiwai@suse.de>
+>> Closes: https://gitlab.freedesktop.org/drm/intel/-/issues/5701
+>> Fixes: 0dc2696a4623 ("ALSA: hda/i915 - skip acomp init if no matching display")
+>> Signed-off-by: Lucas De Marchi <lucas.demarchi@intel.com>
+>
+>Thanks, applied now.
+>But the Fixes commit id was wrong.  I corrected to the right upstream
+>one, c9db8a30d9f0.
 
-The driver, OMAP1 specific, now omits clk_prepare/unprepare() steps, not
-supported by OMAP1 custom implementation of clock API.  However, non-CCF
-stubs of those functions exist for use on such platforms until converted
-to CCF.
+indeed, I messed that up, using the hash from our local tree.
 
-Update the driver to be compatible with CCF implementation of clock API.
-
-v2: use clk_prepare_enable/clk_disable_unprepare() (Peter)
-
-Signed-off-by: Janusz Krzysztofik <jmkrzyszt@gmail.com>
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
----
- sound/soc/ti/osk5912.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/sound/soc/ti/osk5912.c b/sound/soc/ti/osk5912.c
-index 40e29dda7e7a..2790c8915f55 100644
---- a/sound/soc/ti/osk5912.c
-+++ b/sound/soc/ti/osk5912.c
-@@ -27,12 +27,12 @@ static struct clk *tlv320aic23_mclk;
- 
- static int osk_startup(struct snd_pcm_substream *substream)
- {
--	return clk_enable(tlv320aic23_mclk);
-+	return clk_prepare_enable(tlv320aic23_mclk);
- }
- 
- static void osk_shutdown(struct snd_pcm_substream *substream)
- {
--	clk_disable(tlv320aic23_mclk);
-+	clk_disable_unprepare(tlv320aic23_mclk);
- }
- 
- static int osk_hw_params(struct snd_pcm_substream *substream,
--- 
-2.29.2
-
+thanks
+Lucas De Marchi
