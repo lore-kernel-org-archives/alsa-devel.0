@@ -4,48 +4,75 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 19DFFC433F5
-	for <alsa-devel@archiver.kernel.org>; Wed, 20 Apr 2022 13:26:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6342FC433EF
+	for <alsa-devel@archiver.kernel.org>; Wed, 20 Apr 2022 13:35:43 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 80E461A9F;
-	Wed, 20 Apr 2022 15:25:56 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 80E461A9F
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0163A1AA4;
+	Wed, 20 Apr 2022 15:34:50 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0163A1AA4
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1650461206;
-	bh=Q3G8MZbnhCZ7U7nZqwaP+5HDyPc9tOB0ufaszvUGBrQ=;
-	h=From:To:Date:Subject:List-Id:List-Unsubscribe:List-Archive:
+	s=default; t=1650461741;
+	bh=GHrFOdpg6TspBSfnDAG+ZUkqiO+u514wMfcPZJ/f39M=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
 	 List-Post:List-Help:List-Subscribe:From;
-	b=WQ5+h/RpFq2eIitNQBM93V+JFtHZl5ayK7Kh4rC03X0us1NPv0OeU/zlX3pRHRQf7
-	 s+W8if1JmriFWjnEKa/Y+c/IV1VNyGa9HTCHZxy/iGcniOGK6+mXJpISK/aFp+xNTN
-	 CcVeQ0u70fEcmK2wDVSnVIk8r35Tz9/28bWYBUIw=
+	b=YjS3TvUpdWyefTkI0nOtal/NUCzhyZYYWoBv3O3o4WpTlX4V6CokpUM7bnzkJyJ9Q
+	 e0WIwtsS/GAjc5TFiC2P4Bjbk7b/MMH/8gt3jqGD0udaRWUsuXkiA/bqpxWjjZuQPx
+	 ZhoLzXLvCZVvfGMhYmpHy0x28pZvpjtHMyaIUeBs=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 1CF7AF80116;
-	Wed, 20 Apr 2022 15:25:56 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 88B79F80116;
+	Wed, 20 Apr 2022 15:34:50 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 9501DF80125; Wed, 20 Apr 2022 15:25:54 +0200 (CEST)
-Received: from relay1-d.mail.gandi.net (relay1-d.mail.gandi.net
- [217.70.183.193])
- (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
+ id 6695DF80125; Wed, 20 Apr 2022 15:34:48 +0200 (CEST)
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 69498F800C1
- for <alsa-devel@alsa-project.org>; Wed, 20 Apr 2022 15:25:47 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 69498F800C1
-Received: (Authenticated sender: lumis@xulepth.fr)
- by mail.gandi.net (Postfix) with ESMTPSA id 5D824240012
- for <alsa-devel@alsa-project.org>; Wed, 20 Apr 2022 13:25:44 +0000 (UTC)
-From: "Simon Larcher" <lumis@xulepth.fr>
-To: alsa-devel@alsa-project.org
-User-Agent: SOGoMail 5.5.0
+ by alsa1.perex.cz (Postfix) with ESMTPS id 77699F800F8
+ for <alsa-devel@alsa-project.org>; Wed, 20 Apr 2022 15:34:43 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 77699F800F8
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="F8uPJlns"
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by ams.source.kernel.org (Postfix) with ESMTPS id 30ECAB81D6E;
+ Wed, 20 Apr 2022 13:34:43 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E35C3C385A1;
+ Wed, 20 Apr 2022 13:34:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1650461682;
+ bh=GHrFOdpg6TspBSfnDAG+ZUkqiO+u514wMfcPZJ/f39M=;
+ h=From:To:Cc:Subject:Date:From;
+ b=F8uPJlnsHpqEmINv3CBOCJD294sm5dfqM6MWCjtoXfgNxbLLetavt/FNbLRyMuQkh
+ Hkn3jm2LzTcat6dlALOfmQyV6ZJZRsOxD1L1YZwSGYRNAgh/SWEbP+pXoNeNYKAVX/
+ n4ZFIcTCEAgeX89auYRVHWN6nahbpr4s11y/3iOxW0HFbFFraSl+T3gCFeSPApUB33
+ 5z/B4VYWUOlyaC05SkRCVC5RAgYwktcCCrwTVJTvaPRNpAYDbhcDvLOaNZ/SrvML2M
+ bzrDvUJ4DgapZvFADTXSOlkTTcqDBMBRBi8ZWh0G0bWornbP6+HfmbD367Vrg3MAQx
+ mLhsfGpvoXJ8g==
+From: Mark Brown <broonie@kernel.org>
+To: Support Opensource <support.opensource@diasemi.com>,
+ Liam Girdwood <lgirdwood@gmail.com>
+Subject: [PATCH v3] ASoC: da7219: Fix change notifications for tone generator
+ frequency
+Date: Wed, 20 Apr 2022 14:34:37 +0100
+Message-Id: <20220420133437.569229-1-broonie@kernel.org>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Date: Wed, 20 Apr 2022 15:25:44 +0200
-Subject: =?utf-8?q?Proposal=3A?= MIDI instead of input device for Caiaq devices
-Message-ID: <612e-62600a00-645-76afc200@261763543>
-X-Forward: 127.0.0.1
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Content-Filtered-By: Mailman/MimeDel 2.1.15
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1648; h=from:subject;
+ bh=GHrFOdpg6TspBSfnDAG+ZUkqiO+u514wMfcPZJ/f39M=;
+ b=owEBbQGS/pANAwAKASTWi3JdVIfQAcsmYgBiYAu12WDnBuqOCA/FrEsGT7yCDwHQQAjNv1YLGsRe
+ 0Pbb2oqJATMEAAEKAB0WIQSt5miqZ1cYtZ/in+ok1otyXVSH0AUCYmALtQAKCRAk1otyXVSH0G96B/
+ 40Kki0Bf/4vX06GlBzuuwjPr0P4xvKUJSlFeZ7pS8P+tL6KGzOKOqACGAWOHETVnbJSApq3S3vOXNm
+ dvxUcmJJtWocGY7MGh4pRz7EsQzj025Kox59BxKWUC2c15sj5i8D8OtyB5rVX5nKs8esgKZi5h/VVq
+ FSqE6Saj2eDNdO2DJA0xcLgiAzKdUrJoN3iuMCSqilziwxtxE0QtF/1eg5+THHHB7eYS3Kagt9/0Tf
+ dxAJxZdAOSa11x2T4RfDUHXMF0XH0ljP7SbDvwjX+4VY1mN2R/Z8EFPihSjY8dQ9N8N81ELPvdUFPd
+ 2CtY11A5STWbb6bqnpcewrZnEaYjuo
+X-Developer-Key: i=broonie@kernel.org; a=openpgp;
+ fpr=3F2568AAC26998F9E813A1C5C3F436CA30F5D8EB
+Content-Transfer-Encoding: 8bit
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -61,41 +88,52 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+The tone generator frequency control just returns 0 on successful write,
+not a boolean value indicating if there was a change or not.  Compare
+what was written with the value that was there previously so that
+notifications are generated appropriately when the value changes.
 
-Hi,
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/codecs/da7219.c | 14 ++++++++++----
+ 1 file changed, 10 insertions(+), 4 deletions(-)
 
-I'd like to suggest changing the snd-usb-caiaq driver module to send MI=
-DI messages instead of emulating an input device. This proposal more pr=
-ecisely refers to the Native Instruments Rig Kontrol 3 which I personal=
-ly own. It's a 2in/2out USB sound card in a pedalboard housing with 8 f=
-ootswitches and an expression pedal.
+diff --git a/sound/soc/codecs/da7219.c b/sound/soc/codecs/da7219.c
+index a28d3601b932..7fdef38ed8cd 100644
+--- a/sound/soc/codecs/da7219.c
++++ b/sound/soc/codecs/da7219.c
+@@ -446,7 +446,7 @@ static int da7219_tonegen_freq_put(struct snd_kcontrol *kcontrol,
+ 	struct soc_mixer_control *mixer_ctrl =
+ 		(struct soc_mixer_control *) kcontrol->private_value;
+ 	unsigned int reg = mixer_ctrl->reg;
+-	__le16 val;
++	__le16 val_new, val_old;
+ 	int ret;
+ 
+ 	/*
+@@ -454,13 +454,19 @@ static int da7219_tonegen_freq_put(struct snd_kcontrol *kcontrol,
+ 	 * Therefore we need to convert to little endian here to align with
+ 	 * HW registers.
+ 	 */
+-	val = cpu_to_le16(ucontrol->value.integer.value[0]);
++	val_new = cpu_to_le16(ucontrol->value.integer.value[0]);
+ 
+ 	mutex_lock(&da7219->ctrl_lock);
+-	ret = regmap_raw_write(da7219->regmap, reg, &val, sizeof(val));
++	ret = regmap_raw_read(da7219->regmap, reg, &val_old, sizeof(val_old));
++	if (ret == 0 && (val_old != val_new))
++		ret = regmap_raw_write(da7219->regmap, reg,
++				&val_new, sizeof(val_new));
+ 	mutex_unlock(&da7219->ctrl_lock);
+ 
+-	return ret;
++	if (ret < 0)
++		return ret;
++
++	return val_old != val_new;
+ }
+ 
+ 
+-- 
+2.30.2
 
-To me it makes more sense to use MIDI as the device is built for that p=
-urpose. The configuration software provided by the manufacturer obvious=
-ly doesn't work on Linux; but what it does is mapping the physical swit=
-ches to MIDI messages.
-On linux, as is the device emulates an input device that sends 1-9 keys=
-trokes for the footswitches and reports a 3 axis joystick for the onboa=
-rd pedal + the 2 external pedal inputs.
-The onboard leds and 4 digits 7-segments display are available as contr=
-ols (as listed by eg. amixer -c0 controls), this could also be changed =
-to using MIDI as well.
-
-I am hoping for this to be approved and am open to suggestions regardin=
-g the implementation details.
-More specifically if it makes more sense to use Note On/Off messages or=
- Controller Change messages, as well as the naming for the rawmidi inpu=
-ts. The device will have two pairs of MIDI ports, one for the external =
-I/O MIDI connectors and one for the "virtual" input reporting the butto=
-n presses.
-
-I have already started working on it and I have a very rough POC of thi=
-s proposal, adding an extra MIDI device and sending a CC message when t=
-he switches are pressed. It is available here: https://framagit.org/Sim=
-on-L/snd-usb-caiaq
-This has been discussed on #lad @ Libera.chat, I am registered as Fergu=
-sL there.
-
-Thanks!
-
-SL
