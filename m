@@ -4,74 +4,78 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 79D66C433EF
-	for <alsa-devel@archiver.kernel.org>; Wed, 20 Apr 2022 18:01:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E27C6C433F5
+	for <alsa-devel@archiver.kernel.org>; Wed, 20 Apr 2022 19:40:30 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 492801B1C;
-	Wed, 20 Apr 2022 20:00:32 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 492801B1C
+	by alsa0.perex.cz (Postfix) with ESMTPS id 264D71B15;
+	Wed, 20 Apr 2022 21:39:38 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 264D71B15
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1650477682;
-	bh=ZPYh6ii3d6sit1IsGVPNN+fvydkX/ToCt0Ocqq0aUxE=;
-	h=Date:Subject:To:References:From:In-Reply-To:Cc:List-Id:
+	s=default; t=1650483628;
+	bh=sqNgD2MXHoQ8IBpAkTanik6at2YkEYuRV3llPRaXE2Y=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=lVuzAV9Wsq2Y3HHtXCa44YAQCM42ee/tT30iSIVg9bG6qEygzaTC1o7Iz2+CpNyA7
-	 p8syGlB0T/9GfGt42fgFR36AFcxerxaMIphJPAiBP6S+GysslP1/9Q2H3OPn60tm2b
-	 riP91dC9XZYMeEOAQ0yF9Aq55DHJf9IP1o5JdlvY=
+	b=FHYN9M0q3Q/fjd7F4KlVb4MDJHCzYpENfJngRlYHDMEs+Cm4DuIjV75JcORwXVqb0
+	 6oC01DTTmTJSSdGyL8SL4zKX2MmYK6FkjthTjB4+5Ea5J/0AkT+sXclRG0iHgANLqn
+	 byr3E3FIcV4M6cn2IWHxC/8Sj5toY5QUp7ZNvzr0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 6F703F80254;
-	Wed, 20 Apr 2022 20:00:00 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 83BEDF80116;
+	Wed, 20 Apr 2022 21:39:37 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id BE286F80125; Wed, 20 Apr 2022 19:59:57 +0200 (CEST)
-Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
+ id D1BC3F80217; Wed, 20 Apr 2022 21:39:35 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 94F87F80116
+ for <alsa-devel@alsa-project.org>; Wed, 20 Apr 2022 21:39:32 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 94F87F80116
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="l9WZUnoL"
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 5219EF800F8
- for <alsa-devel@alsa-project.org>; Wed, 20 Apr 2022 19:59:53 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5219EF800F8
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="XD5oBf0x"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
- d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1650477595; x=1682013595;
- h=message-id:date:mime-version:subject:to:cc:references:
- from:in-reply-to:content-transfer-encoding;
- bh=ZPYh6ii3d6sit1IsGVPNN+fvydkX/ToCt0Ocqq0aUxE=;
- b=XD5oBf0xZ9XXmOCU9nP9jXb1axyt/Vk/o/1pEKFS4kOQfthsitejE4EM
- MhkahgoZlJCwGhjQHG9SfqqrKI+dYWiau8FwbgA7vfGAidC8Wr3BlzY1X
- pyHbp/JByNzgUKOqfysaViqf+SklWeHvj67NFDB5VHlB+9uAb69zrbgbs
- P8EP3t1rhe34fHV74HiyHUJMUiibfjrdTyNJbYWOgbLCZCiML6lv/0IkX
- xnhFAhHvy9UzYF7FEthDmcT4r3QT9jG4bKQwTcsAu9VB2TpD9DXXHGIgJ
- zxZJ14JLBFmOtbrGXL9BGjvFF74KtJ3UI657g9SvO9F5IOo7yqJ+K0ZBf w==;
-X-IronPort-AV: E=McAfee;i="6400,9594,10323"; a="263875246"
-X-IronPort-AV: E=Sophos;i="5.90,276,1643702400"; d="scan'208";a="263875246"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
- by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 20 Apr 2022 10:59:47 -0700
-X-IronPort-AV: E=Sophos;i="5.90,276,1643702400"; d="scan'208";a="576721826"
-Received: from sbidasar-mobl.amr.corp.intel.com (HELO [10.209.100.171])
- ([10.209.100.171])
- by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 20 Apr 2022 10:59:46 -0700
-Message-ID: <b1b0a8b9-5fc2-bfe1-dfde-692a0a7ac34a@linux.intel.com>
-Date: Wed, 20 Apr 2022 12:59:12 -0500
+ by dfw.source.kernel.org (Postfix) with ESMTPS id C2C2B6126E;
+ Wed, 20 Apr 2022 19:39:30 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 54855C385A1;
+ Wed, 20 Apr 2022 19:39:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1650483570;
+ bh=sqNgD2MXHoQ8IBpAkTanik6at2YkEYuRV3llPRaXE2Y=;
+ h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+ b=l9WZUnoLha85T8hpJJCWcMbt42ELnorAvSiBHdcxqEI4SAL6byMI6Jq2zUOEtvpRP
+ XYw9BLdykByjP3EFTC4bN+BSL9sMKfUybGkm/uXp1wBzfflT0PnpnXa/5hYhRYOcAh
+ ujXRNAqgPoiwQNSIRNIOHZ2ZxnRq/M3Xts1A+OGPT2bbMOFJ4E+kbtWhVx7vdReZv0
+ l6DvEvt1WsdbytMQIkZS82RhsY6Y12NPZZCWg6HhvBH29EkDjHB1bXDOPmNw5J7LEr
+ oi8roa40I4Tlt8p/vSQPqRcr2TFjg0m/aBRVBH0sVmhBeerQ+XH4Xg1O2RBh2+eMco
+ s8yB78y6sNK1g==
+From: Mark Brown <broonie@kernel.org>
+To: Mark Brown <broonie@kernel.org>,
+	Liam Girdwood <lgirdwood@gmail.com>
+Subject: [PATCH 2/2] ASoC: max98090: Generate notifications on changes for
+ custom control
+Date: Wed, 20 Apr 2022 20:34:54 +0100
+Message-Id: <20220420193454.2647908-2-broonie@kernel.org>
+X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20220420193454.2647908-1-broonie@kernel.org>
+References: <20220420193454.2647908-1-broonie@kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Firefox/91.0 Thunderbird/91.5.0
-Subject: Re: [PATCH v4] ASoC: codecs: wsa881x: add runtime pm support
-Content-Language: en-US
-To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, broonie@kernel.org
-References: <20220228144235.24208-1-srinivas.kandagatla@linaro.org>
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-In-Reply-To: <20220228144235.24208-1-srinivas.kandagatla@linaro.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-Cc: alsa-devel@alsa-project.org, tiwai@suse.com, lgirdwood@gmail.com,
- quic_srivasam@quicinc.com, linux-kernel@vger.kernel.org
+X-Developer-Signature: v=1; a=openpgp-sha256; l=748; h=from:subject;
+ bh=sqNgD2MXHoQ8IBpAkTanik6at2YkEYuRV3llPRaXE2Y=;
+ b=owEBbQGS/pANAwAKASTWi3JdVIfQAcsmYgBiYGA+3fRaSeyfAF+zeMr1rkz2tnnBED9m5uZxlswJ
+ Jwrg/2iJATMEAAEKAB0WIQSt5miqZ1cYtZ/in+ok1otyXVSH0AUCYmBgPgAKCRAk1otyXVSH0CJ0B/
+ 98VsCP4EEh45ozL0eI2S9BOOtSVF6R0eAnzAQn36cee+aMxXI72vowTFJMO3FFsv0PGU9GV6Qsg7zr
+ uvk7Npv51beDVa2iVsUn3MfizKEBIkCpJt8OVz6sNANdWMkJ8uLtVJPKMo00wZPAlYWVjtIG5if33s
+ u0oAaY4gNqBNWSieNCemjS8ipQHqYhZC83bt7cH9ESx5NVHN/SQXiRi9tMn+x4PGfF6zgtpnQ4laph
+ ImFfStShavb5th6mHxftQAgOhIf2S19tOWFzAyFZbbTICqs8lCr7/wUjD0NvJRlLbLWf+lE7bTt/VZ
+ HYjPtScsWpFH4ErnsLlHUWkz1VawIw
+X-Developer-Key: i=broonie@kernel.org; a=openpgp;
+ fpr=3F2568AAC26998F9E813A1C5C3F436CA30F5D8EB
+Content-Transfer-Encoding: 8bit
+Cc: alsa-devel@alsa-project.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -87,47 +91,28 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Hi Srini,
+The max98090 driver has some custom controls which share a put() function
+which returns 0 unconditionally, meaning that events are not generated
+when the value changes. Fix that.
 
-> +static int __maybe_unused wsa881x_runtime_resume(struct device *dev)
-> +{
-> +	struct sdw_slave *slave = dev_to_sdw_dev(dev);
-> +	struct regmap *regmap = dev_get_regmap(dev, NULL);
-> +	struct wsa881x_priv *wsa881x = dev_get_drvdata(dev);
-> +
-> +	gpiod_direction_output(wsa881x->sd_n, 1);
-> +
-> +	wait_for_completion_timeout(&slave->initialization_complete,
-> +				    msecs_to_jiffies(WSA881X_PROBE_TIMEOUT));
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/codecs/max98090.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-while I was revisiting pm_runtime support, I also saw that this codec driver is the only one that doesn't check for errors
+diff --git a/sound/soc/codecs/max98090.c b/sound/soc/codecs/max98090.c
+index 6d9261346842..62b41ca050a2 100644
+--- a/sound/soc/codecs/max98090.c
++++ b/sound/soc/codecs/max98090.c
+@@ -430,7 +430,7 @@ static int max98090_put_enab_tlv(struct snd_kcontrol *kcontrol,
+ 		mask << mc->shift,
+ 		sel << mc->shift);
+ 
+-	return 0;
++	return *select != val;
+ }
+ 
+ static const char *max98090_perf_pwr_text[] =
+-- 
+2.30.2
 
-max98373-sdw.c: time = wait_for_completion_timeout(&slave->initialization_complete,
-
-rt1308-sdw.c:   time = wait_for_completion_timeout(&slave->initialization_complete,
-
-rt1316-sdw.c:   time = wait_for_completion_timeout(&slave->initialization_complete,
-
-rt5682-sdw.c:   time = wait_for_completion_timeout(&slave->initialization_complete,
-
-rt5682.c:                       &slave->initialization_complete,
-
-rt700-sdw.c:    time = wait_for_completion_timeout(&slave->initialization_complete,
-
-rt711-sdca-sdw.c:       time = wait_for_completion_timeout(&slave->initialization_complete,
-
-rt711-sdw.c:    time = wait_for_completion_timeout(&slave->initialization_complete,
-
-rt715-sdw.c:    time = wait_for_completion_timeout(&slave->initialization_complete,
-
-wsa881x.c:      wait_for_completion_timeout(&slave->initialization_complete,
-
-
-If the attachment fails for some reason, you probably want to avoid starting regmap syncs that will fail by construction, no?
-
-> +
-> +	regcache_cache_only(regmap, false);
-> +	regcache_sync(regmap);
-> +
-> +	return 0;
-> +}
