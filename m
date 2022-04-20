@@ -4,76 +4,78 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id BDADCC433EF
-	for <alsa-devel@archiver.kernel.org>; Wed, 20 Apr 2022 16:24:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E507CC433EF
+	for <alsa-devel@archiver.kernel.org>; Wed, 20 Apr 2022 17:42:56 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C73DF17EF;
-	Wed, 20 Apr 2022 18:23:38 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C73DF17EF
+	by alsa0.perex.cz (Postfix) with ESMTPS id 19E8F1AC2;
+	Wed, 20 Apr 2022 19:42:04 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 19E8F1AC2
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1650471868;
-	bh=SBnyZwALtyPYeKnG3vPDUEjUDcPRsFRW6H4/3UQsehI=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	s=default; t=1650476574;
+	bh=3CtKJu86H4ZmVWLsuoKje6DsnJeg0MUXUxRcD9E3dzM=;
+	h=Date:Subject:From:To:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=gCjWTHuX6QnpI6TmnVbj/Lo8wtxrQRalLQHOB3AWzW+mu1qX6dABQqEwscqPDohNK
-	 E7gnO4YIZbYJ8Ym4gPKak24Lvx954IlxTXE9My2C/hZyHQaKhEuJjqrrT5Kqy3HW2m
-	 YAOhxHS2YV7Z/zrTpFge9ZTYfzyfsLV+986g6zwo=
+	b=Ji49MuPG/ZMO9+lWkAAAs43+k6STOi+SV4B7496ot9+XZXSfb/qCVxsyWGnIKjQln
+	 oYrSSvZT4l/K9q4mIvv0TvJ65//eTqRymJN57hwc2Sd3t0neB9A3DXEmJgNOFSisNh
+	 KxfeRG7LfVVheyVRhpTg3sDnA9Oe7BAkJmNwBI88=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 6D855F80116;
-	Wed, 20 Apr 2022 18:23:38 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id A5E24F80125;
+	Wed, 20 Apr 2022 19:42:03 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id A5F27F80125; Wed, 20 Apr 2022 18:23:37 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org
- [IPv6:2604:1380:4641:c500::1])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 57BCEF800C1;
- Wed, 20 Apr 2022 18:23:33 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 57BCEF800C1
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="JjtEy44t"
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+ id EF034F80125; Wed, 20 Apr 2022 19:42:01 +0200 (CEST)
+Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id 2AA1F6193B;
- Wed, 20 Apr 2022 16:23:32 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2886CC385A1;
- Wed, 20 Apr 2022 16:23:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1650471811;
- bh=SBnyZwALtyPYeKnG3vPDUEjUDcPRsFRW6H4/3UQsehI=;
- h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=JjtEy44tAZJMG/MPWmRPct3HexSkYWqmoasVTFPZ0uDJo4SfOND2yhrgLZrbiom4E
- mAGZAKGNCF60K4HILY+oQR1dyXxr4n/3mH3rfA7VOBsYl1mujCzegSxvutbkcuH0dU
- zGS9YqNNGBQkE9j9glelr4mQpowsUk1hD//UDzaPtn3AFPs7VNGhbJGgT2gudlmy+7
- hxEq/KBeXcuts/XtmA3+D1MCzJXMMxaAxoC1ClyIv2nlOfmZ8V4JP1HJJR51dvjDl/
- vmkVJsVvyG5oY7wufmwSGblpizL0tpauqJBzYmyq5iNkjO4pWNOYYSZZoZunBmFrF2
- UOFmw635NmDog==
-Date: Wed, 20 Apr 2022 17:23:25 +0100
-From: Mark Brown <broonie@kernel.org>
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH] ASoC: SOF: using pm_runtime_resume_and_get to simplify
- the code
-Message-ID: <YmAzfTlr9VauoyLu@sirena.org.uk>
-References: <20220420030315.2575691-1-chi.minghao@zte.com.cn>
- <78c7edc3-f431-9735-238d-9aa2b45ec45e@linux.intel.com>
- <YmAljQjpLCoBv+nj@sirena.org.uk>
- <2572220e-57d0-4f10-1695-bfeab54de38d@linux.intel.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 685B1F800F8
+ for <alsa-devel@alsa-project.org>; Wed, 20 Apr 2022 19:41:57 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 685B1F800F8
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
+ header.b="MGKWmdX/"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+ d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+ t=1650476519; x=1682012519;
+ h=message-id:date:mime-version:subject:from:to:cc:
+ references:in-reply-to:content-transfer-encoding;
+ bh=3CtKJu86H4ZmVWLsuoKje6DsnJeg0MUXUxRcD9E3dzM=;
+ b=MGKWmdX/Uo6QegZ4f4Jfy0VxwGz4dvyA0PESNLyvshANDUrDE/gjOEtA
+ 2L6heY4o4S+HG4gibKSAPWxAr06B7SZeKicFlVwGD/G3+cqSjXN7Vh4av
+ UmxeeTnAjxcskbsgBsZFN6QpMJY3CRUHOBZetNuReaGF5wdVhW7pmHrYJ
+ hyjqF6ZVyCobj0fMHyscNDTMB3YYrajuhSq4p1VOGk6npNO1Bpmk5XHMB
+ SLD6PQGaZQHNOoqNkg6lhpOvCl569AD1NPc1OxrcyMa+pmv9Wntjo/c2I
+ qLdSL7mF6eg3K/jYbIkxqpIXtT4lxnGGfs24KjBFlXb9/M/jijLjXxVEb A==;
+X-IronPort-AV: E=McAfee;i="6400,9594,10323"; a="327006931"
+X-IronPort-AV: E=Sophos;i="5.90,276,1643702400"; d="scan'208";a="327006931"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+ by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 20 Apr 2022 10:40:59 -0700
+X-IronPort-AV: E=Sophos;i="5.90,276,1643702400"; d="scan'208";a="576712409"
+Received: from sbidasar-mobl.amr.corp.intel.com (HELO [10.209.100.171])
+ ([10.209.100.171])
+ by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 20 Apr 2022 10:40:58 -0700
+Message-ID: <217a59f8-86fb-5508-bdd9-25c553052a48@linux.intel.com>
+Date: Wed, 20 Apr 2022 12:40:11 -0500
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature"; boundary="pPSA/PyGUaMRPFlK"
-Content-Disposition: inline
-In-Reply-To: <2572220e-57d0-4f10-1695-bfeab54de38d@linux.intel.com>
-X-Cookie: Will it improve my CASH FLOW?
-Cc: alsa-devel@alsa-project.org, kai.vehmanen@linux.intel.com,
- cgel.zte@gmail.com, Zeal Robot <zealci@zte.com.cn>, lgirdwood@gmail.com,
- Minghao Chi <chi.minghao@zte.com.cn>, ranjani.sridharan@linux.intel.com,
- daniel.baluta@nxp.com, linux-kernel@vger.kernel.org,
- sound-open-firmware@alsa-project.org
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Firefox/91.0 Thunderbird/91.5.0
+Subject: Re: [PATCH v3 3/3] soundwire: qcom: add in-band wake up interrupt
+ support
+Content-Language: en-US
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, robh+dt@kernel.org, 
+ vkoul@kernel.org, yung-chuan.liao@linux.intel.com
+References: <20220228172528.3489-1-srinivas.kandagatla@linaro.org>
+ <20220228172528.3489-4-srinivas.kandagatla@linaro.org>
+ <a3240a03-2e14-35e6-4915-41f994e365fc@linux.intel.com>
+In-Reply-To: <a3240a03-2e14-35e6-4915-41f994e365fc@linux.intel.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
+ linux-kernel@vger.kernel.org, quic_srivasam@quicinc.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -90,29 +92,31 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
---pPSA/PyGUaMRPFlK
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+>> +static irqreturn_t qcom_swrm_wake_irq_handler(int irq, void *dev_id)
+>> +{
+>> +	struct qcom_swrm_ctrl *swrm = dev_id;
+>> +	int ret;
+>> +
+>> +	ret = pm_runtime_get_sync(swrm->dev);
+>> +	if (ret < 0 && ret != -EACCES) {
+>> +		dev_err_ratelimited(swrm->dev,
+>> +				    "pm_runtime_get_sync failed in %s, ret %d\n",
+>> +				    __func__, ret);
+>> +		pm_runtime_put_noidle(swrm->dev);
 
-On Wed, Apr 20, 2022 at 11:11:03AM -0500, Pierre-Louis Bossart wrote:
+missing 'return ret' here as well, is this intentional?
 
-> ok, I'll send follow-up patches for the remaining code.
+Fix at https://github.com/thesofproject/linux/pull/3602/commits/6353eec8dc971c5f0fda0166ae1777f71784ea32 ready to go, but not sure what the intent was.
 
-Thanks, like you say there's a lot to get through here!
-
---pPSA/PyGUaMRPFlK
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmJgM3wACgkQJNaLcl1U
-h9CQJgf/fmHmEvmSkw+o5cwa89eqRnsRjl0W9UEoY268KcH7oP1YF3/DZCS5KkLi
-fkv2zMjTMNU96KRgcX7T0LQ1nqatX4hkWZXfYmTfPTT03sVzJ1q9FXT4IEERV587
-Y+R0wsTgHWV2e4/n3GNsYcq3dgfeDt1c2LrcLnhpClO8SMTl0Qjdv2ci0NCBdmqe
-ISS9aCBtP2e2zAu8MOqwFBR0BVwaPu8euKJiVtpu7y6cXuh3awKaqOQYnGCUm/dD
-cqYtMnQwLh3WzAoyKUrK5Pohu/AtQBkssGiS/n3c9JMjU7utg/K5x2+t2tZrBh88
-fvVmR2Mo8H18gUzxmZ6rybDj0TM1BA==
-=XETb
------END PGP SIGNATURE-----
-
---pPSA/PyGUaMRPFlK--
+>> +	}
+>> +
+>> +	if (swrm->wake_irq > 0) {
+>> +		if (!irqd_irq_disabled(irq_get_irq_data(swrm->wake_irq)))
+>> +			disable_irq_nosync(swrm->wake_irq);
+>> +	}
+>> +
+>> +	pm_runtime_mark_last_busy(swrm->dev);
+>> +	pm_runtime_put_autosuspend(swrm->dev);
+>> +
+>> +	return IRQ_HANDLED;
+>> +}
