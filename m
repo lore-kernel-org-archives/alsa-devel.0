@@ -4,63 +4,62 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4BAB5C433EF
-	for <alsa-devel@archiver.kernel.org>; Wed, 20 Apr 2022 22:56:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D82C8C433F5
+	for <alsa-devel@archiver.kernel.org>; Wed, 20 Apr 2022 22:57:15 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3991E1E7F;
-	Thu, 21 Apr 2022 00:56:04 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3991E1E7F
+	by alsa0.perex.cz (Postfix) with ESMTPS id 060271ED5;
+	Thu, 21 Apr 2022 00:56:24 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 060271ED5
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1650495414;
-	bh=IrDGMfnjqSQWsTuA0WmqnuXGuuh54umLIYAKrQ7VKz4=;
+	s=default; t=1650495434;
+	bh=ligFTScOpOu+ExXz5anJi7tUO5jeU+g/DTY8gStt/ck=;
 	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=pWgBTXrBLsYfxKBTK3CcZp7nwL7/qwL5jI6nbr2uPB/Ezce2uwpBaPxpufe0a/86S
-	 hQvqnKg9hzXZRwX95e/XC5cFNrGqnrmqp2tte8/6CYa4mwBPnx4PyVv0B5YZPCSXaa
-	 dpm8aFpPGli/IEJAP7GrBU4q4QKzMWYfhPhwUPvs=
+	b=SvKtG4zX5E4UTCfNELIQumlZ7eXt43Z+jlclnDEl8/pr4GOEvECbTaQ6XIPg/rWMK
+	 J8D/POkpgkGJq+DCCVdt1rd0L0DAIVb9xWXzAy5WjtNlnwRWS4YyLVuIUnolqbClrZ
+	 k+QIiJdsT8regReHxxS8lCsC7vtrJRF1Y9avOATc=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 6546CF80217;
-	Thu, 21 Apr 2022 00:55:36 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id EDB11F80254;
+	Thu, 21 Apr 2022 00:55:39 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id B326EF80217; Thu, 21 Apr 2022 00:55:32 +0200 (CEST)
-Received: from ams.source.kernel.org (ams.source.kernel.org
- [IPv6:2604:1380:4601:e00::1])
+ id E9912F800F8; Thu, 21 Apr 2022 00:55:34 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 0B2ECF80116
- for <alsa-devel@alsa-project.org>; Thu, 21 Apr 2022 00:55:29 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0B2ECF80116
+ by alsa1.perex.cz (Postfix) with ESMTPS id 5574DF80217
+ for <alsa-devel@alsa-project.org>; Thu, 21 Apr 2022 00:55:32 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5574DF80217
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="kjzGKgBq"
+ header.b="Hbt8cry6"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by ams.source.kernel.org (Postfix) with ESMTPS id 46D96B821CD;
+ by dfw.source.kernel.org (Postfix) with ESMTPS id BC6B661AB0;
  Wed, 20 Apr 2022 22:55:29 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0A732C385A9;
- Wed, 20 Apr 2022 22:55:26 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 51630C385A0;
+ Wed, 20 Apr 2022 22:55:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1650495327;
- bh=IrDGMfnjqSQWsTuA0WmqnuXGuuh54umLIYAKrQ7VKz4=;
+ s=k20201202; t=1650495329;
+ bh=ligFTScOpOu+ExXz5anJi7tUO5jeU+g/DTY8gStt/ck=;
  h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=kjzGKgBqf62Cu378Vd9SIn5bbIpqrHAOT0BmBWrrrTxCSlEij45DAD3hFXf25cUUC
- bAyRtyplpYS1e1xFJJmyxPQbGryU1oylFnUbgyofGAXrqp8exVr/PBov2z6ZnRrCnu
- xKaAOSC8lCjAZA/ylxB0ZzzEXKlL+yrsGqmZwTnYUVxCx50azqw5jj/awFJv6UCUkg
- eFmhNvHuEFwv7fv8HvvelDvPvdH4xsx2sAqkZ2cPoDJoRLirjjOrH+NGn06t7fzubu
- HtBNECIwGVDKKOlqlidZ784aa9DnLzPCz4wrf8DRG3G+DNjSfIhLTHdxgkDWVhZMDr
- /iV1WLz71ci5g==
+ b=Hbt8cry69do58jDh9JX1GdtsG0Iw0i24aCHGEFpLhVEKBHtBFaZdi+i5Ldpmk13T/
+ OUdsCu+sHoB7HLrg098mq3VLn0+pzNiqB3FkMI3bYCedlCCkGwKTOnC8NI57XtGfXB
+ ZOTFFcb13IVQ0CmEJed57ya8u+2jwWTXQ08ZzIKw94O8AQMS05YT52MMLKQwGYsLwR
+ rTs7ScbB9/PG4Htrpd+ddwuJdZN34iUyXwFTzfvquvrEUKhRTggM7MyfJZZ20UE5ky
+ 5xtyOmYrWozDJmepRp7DrApb2R56I28c4/qyYfW1GshlG8YW0e7/45JmRXDfsN0rrx
+ RADoUUqr6hTsQ==
 From: Mark Brown <broonie@kernel.org>
 To: lgirdwood@gmail.com, support.opensource@diasemi.com, broonie@kernel.org
-In-Reply-To: <20220417192733.7382-1-broonie@kernel.org>
-References: <20220417192733.7382-1-broonie@kernel.org>
-Subject: Re: [PATCH v2] ASoC: da7219: Fix change notifications for tone
+In-Reply-To: <20220420133437.569229-1-broonie@kernel.org>
+References: <20220420133437.569229-1-broonie@kernel.org>
+Subject: Re: [PATCH v3] ASoC: da7219: Fix change notifications for tone
  generator frequency
-Message-Id: <165049532676.1351794.3721813083034530090.b4-ty@kernel.org>
-Date: Wed, 20 Apr 2022 23:55:26 +0100
+Message-Id: <165049532805.1351794.1027239970918696592.b4-ty@kernel.org>
+Date: Wed, 20 Apr 2022 23:55:28 +0100
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -80,11 +79,11 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Sun, 17 Apr 2022 20:27:33 +0100, Mark Brown wrote:
+On Wed, 20 Apr 2022 14:34:37 +0100, Mark Brown wrote:
 > The tone generator frequency control just returns 0 on successful write,
 > not a boolean value indicating if there was a change or not.  Compare
 > what was written with the value that was there previously so that
-> notifications are generated appropraitely when the value changes.
+> notifications are generated appropriately when the value changes.
 > 
 > 
 
