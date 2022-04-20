@@ -4,73 +4,90 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 603F2C433EF
-	for <alsa-devel@archiver.kernel.org>; Wed, 20 Apr 2022 17:43:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A8B99C4332F
+	for <alsa-devel@archiver.kernel.org>; Wed, 20 Apr 2022 17:47:46 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 7F0CA1AFE;
-	Wed, 20 Apr 2022 19:42:35 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7F0CA1AFE
+	by alsa0.perex.cz (Postfix) with ESMTPS id 73B121AFF;
+	Wed, 20 Apr 2022 19:46:53 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 73B121AFF
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1650476605;
-	bh=rbZu7eWEid6dNs7PEy4WsbHQMUyRtvOvvbZT7aD6MhU=;
+	s=default; t=1650476863;
+	bh=uelMA2is0TJSf4aWs60eU7cODJVK+lIWWgcRC+Gr+TM=;
 	h=Date:Subject:To:References:From:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=jNA2M112XN5YNcIfKsFlPSv/32RSXIFRoNd2WCdnxnEliSEuF/Y3EZu44E3sDWsNj
-	 4L3mN1lTHu3bDA0afWpKCjk7EERhkxVuQGiYErSR02CIGYTFX0lXaop1V7VkE8mWQK
-	 ZcFGCDEqvmVhfWwm+i8bifbewQQg+u1ypu/kKQIs=
+	b=Wad7Rhmb31iQN7/GRsRU/kVfzjCOGXsklbLFMzmREADYOY3oYSOo+gmjngyvJMIT8
+	 XSlYEhMHF2/VQzHItgFMdo1Px2Je2CTqU0kfd/DW1N2p1wDj/UL4/Um7l8l/w5rN6y
+	 e0F3u2S2rxAFW6rWPM0hI38EPh4OubbZFFDhIDbg=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id C5754F80217;
-	Wed, 20 Apr 2022 19:42:06 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 119B5F80116;
+	Wed, 20 Apr 2022 19:46:53 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 67AE4F80254; Wed, 20 Apr 2022 19:42:04 +0200 (CEST)
-Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 0F90BF80125; Wed, 20 Apr 2022 19:46:51 +0200 (CEST)
+Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com
+ [IPv6:2a00:1450:4864:20::32f])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 0603AF800F8
- for <alsa-devel@alsa-project.org>; Wed, 20 Apr 2022 19:42:00 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0603AF800F8
+ by alsa1.perex.cz (Postfix) with ESMTPS id 4E235F800F8
+ for <alsa-devel@alsa-project.org>; Wed, 20 Apr 2022 19:46:46 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4E235F800F8
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="AePhtwM4"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
- d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1650476522; x=1682012522;
- h=message-id:date:mime-version:subject:to:cc:references:
- from:in-reply-to:content-transfer-encoding;
- bh=rbZu7eWEid6dNs7PEy4WsbHQMUyRtvOvvbZT7aD6MhU=;
- b=AePhtwM4/eSG3KDauBXk6rdC8lT5QcresEowFmNLwu8UlYRlTxgtjyxr
- L+WpnUTNh2PgzkmSVSy8LCnYEIF1AmKIxEHeK+S2dKA9QwfYueDlCJtYL
- Z8oE/+7rbjeU97CoNbE89wZYCzTS92LL1eB5d4H11br7qxjm3HJ5itdw/
- 8i8Wo+AG3DybiUKC/iGWtTdizdodBQsUjvEBspYx8FbaliSAcXWcy3yL9
- mdBJT8kmv4yaGPOs0HbZbqc8yFrrGpwgC+B2R5lCgsinbN7ymsO1qxg0s
- stz7fcxem1+VgHK5tOMEkaVO01rlq5Dn8sPWa4sCj9IUS9mwLhVQTtyTl g==;
-X-IronPort-AV: E=McAfee;i="6400,9594,10323"; a="327006923"
-X-IronPort-AV: E=Sophos;i="5.90,276,1643702400"; d="scan'208";a="327006923"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
- by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 20 Apr 2022 10:40:57 -0700
-X-IronPort-AV: E=Sophos;i="5.90,276,1643702400"; d="scan'208";a="576712395"
-Received: from sbidasar-mobl.amr.corp.intel.com (HELO [10.209.100.171])
- ([10.209.100.171])
- by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 20 Apr 2022 10:40:56 -0700
-Message-ID: <10eb3973-03c4-74cd-d28a-014fc280cdf8@linux.intel.com>
-Date: Wed, 20 Apr 2022 12:39:26 -0500
+ dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org
+ header.b="K754ebAi"
+Received: by mail-wm1-x32f.google.com with SMTP id
+ r187-20020a1c44c4000000b0038ccb70e239so4212275wma.3
+ for <alsa-devel@alsa-project.org>; Wed, 20 Apr 2022 10:46:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
+ h=message-id:date:mime-version:user-agent:subject:content-language:to
+ :cc:references:from:in-reply-to:content-transfer-encoding;
+ bh=Y0o19LlMLuvTnI/xl7SjhLZ4yjEbM01KZ2JzTFRO+wU=;
+ b=K754ebAivn6X/9ER/aJ29m5lYECSX3zg3dPY0WZsEgvffqb2iEvH54j1KHGcZi6m9t
+ +pL4xSL615v1HrTsFT1E1+lvfuarpSgBeQEnr+o6EqnmG12SfLJ1vHv0UROE7PuMVDZS
+ lasMp/amHfMMIxKOkHpccnI9KAZhwOF73jpA2AeNJWN4uMaducamqBbDZ+9V518/B2gJ
+ AO0QEWc5oRm8n8ddLvJ5j7AQQbugOPoh236ac29n990DqasvW9lYY5DK0FqOMAmcc1yy
+ Nzr9ButMWwAgM3WhD1fuPrvSBcRwDp1HUQd1XT8wvmYNE3dD4I4lQheoFwg1+lhwatAV
+ pj2A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+ :content-language:to:cc:references:from:in-reply-to
+ :content-transfer-encoding;
+ bh=Y0o19LlMLuvTnI/xl7SjhLZ4yjEbM01KZ2JzTFRO+wU=;
+ b=umXjbz57EXZsqm9pZcdFH9PQy813TV03vGl/E7452QZ0yemhEevT11+zaN6NecffAV
+ +3J5LAnDY9wvkQRC7TjUHzRs66FvbyLbp0qko8WVn1yD98qhmH21xLqEaE0c04/mZx8k
+ +9Sx/F6HqE1MWjsioXwe3JyKJaWMMJsFgADRmsL4RhzD7EXLTf2c8V8+3OoZVSgCDMAR
+ rRvazlpUHU8CPEToHnzeqicpe/1ci9fvYw3QMsyHbrhGkvPsydrSzzqY/yeAdzRwjsQ+
+ HUMh6qmYG6DSSYjwHb/CWJFNs7yBvNQaxKDW8LFb5syxxFIFI+AiXGLuyyXepGkFnsi2
+ GVVA==
+X-Gm-Message-State: AOAM531SUHG5NE5AVSYhGLbiXXeTiXAADV+6dbTQpCvuGZuW0WlQtog/
+ 7/TuOSsOy9SWHddsHKkPvE5X+YwN5DSQYA==
+X-Google-Smtp-Source: ABdhPJy4aiKqzcNlk3U2xq0/sZJ8FBAJfPZTjiM9up9l4jWht1pw6P6GPr9hofMGDUjHCxjRXhT7Uw==
+X-Received: by 2002:a1c:7416:0:b0:38e:b8b7:e271 with SMTP id
+ p22-20020a1c7416000000b0038eb8b7e271mr4705827wmc.7.1650476805039; 
+ Wed, 20 Apr 2022 10:46:45 -0700 (PDT)
+Received: from [192.168.86.34]
+ (cpc90716-aztw32-2-0-cust825.18-1.cable.virginm.net. [86.26.103.58])
+ by smtp.googlemail.com with ESMTPSA id
+ z6-20020a056000110600b00207aa9eec98sm374297wrw.30.2022.04.20.10.46.44
+ (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+ Wed, 20 Apr 2022 10:46:44 -0700 (PDT)
+Message-ID: <e8ac9fab-85af-8f3c-eb68-c2d4d2f7f046@linaro.org>
+Date: Wed, 20 Apr 2022 18:46:43 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Firefox/91.0 Thunderbird/91.5.0
+ Thunderbird/91.7.0
 Subject: Re: [PATCH v3 1/3] soundwire: qcom: add runtime pm support
 Content-Language: en-US
-To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, robh+dt@kernel.org, 
- vkoul@kernel.org, yung-chuan.liao@linux.intel.com
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ robh+dt@kernel.org, vkoul@kernel.org, yung-chuan.liao@linux.intel.com
 References: <20220228172528.3489-1-srinivas.kandagatla@linaro.org>
  <20220228172528.3489-2-srinivas.kandagatla@linaro.org>
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-In-Reply-To: <20220228172528.3489-2-srinivas.kandagatla@linaro.org>
-Content-Type: text/plain; charset=UTF-8
+ <10eb3973-03c4-74cd-d28a-014fc280cdf8@linux.intel.com>
+From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+In-Reply-To: <10eb3973-03c4-74cd-d28a-014fc280cdf8@linux.intel.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
  linux-kernel@vger.kernel.org, quic_srivasam@quicinc.com
@@ -91,63 +108,31 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
 
-> @@ -1017,6 +1032,15 @@ static int qcom_swrm_startup(struct snd_pcm_substream *substream,
->  	struct snd_soc_dai *codec_dai;
->  	int ret, i;
->  
-> +	ret = pm_runtime_get_sync(ctrl->dev);
-> +	if (ret < 0 && ret != -EACCES) {
-> +		dev_err_ratelimited(ctrl->dev,
-> +				    "pm_runtime_get_sync failed in %s, ret %d\n",
-> +				    __func__, ret);
-> +		pm_runtime_put_noidle(ctrl->dev);
-> +		return ret;
+On 20/04/2022 18:39, Pierre-Louis Bossart wrote:
+>> @@ -1197,12 +1224,23 @@ static int qcom_swrm_get_port_config(struct qcom_swrm_ctrl *ctrl)
+>>   static int swrm_reg_show(struct seq_file *s_file, void *data)
+>>   {
+>>   	struct qcom_swrm_ctrl *swrm = s_file->private;
+>> -	int reg, reg_val;
+>> +	int reg, reg_val, ret;
+>> +
+>> +	ret = pm_runtime_get_sync(swrm->dev);
+>> +	if (ret < 0 && ret != -EACCES) {
+>> +		dev_err_ratelimited(swrm->dev,
+>> +				    "pm_runtime_get_sync failed in %s, ret %d\n",
+>> +				    __func__, ret);
+>> +		pm_runtime_put_noidle(swrm->dev);
+> ... here it's missing?
+> 
+> I have a fix ready but thought I would check first if this was intentional
 
-here there's an error handling, but ...
+Its not intentional.
 
-> +	}
-> +
->  	sruntime = sdw_alloc_stream(dai->name);
->  	if (!sruntime)
->  		return -ENOMEM;
-> @@ -1044,6 +1068,9 @@ static void qcom_swrm_shutdown(struct snd_pcm_substream *substream,
->  
->  	sdw_release_stream(ctrl->sruntime[dai->id]);
->  	ctrl->sruntime[dai->id] = NULL;
-> +	pm_runtime_mark_last_busy(ctrl->dev);
-> +	pm_runtime_put_autosuspend(ctrl->dev);
-> +
->  }
->  
->  static const struct snd_soc_dai_ops qcom_swrm_pdm_dai_ops = {
-> @@ -1197,12 +1224,23 @@ static int qcom_swrm_get_port_config(struct qcom_swrm_ctrl *ctrl)
->  static int swrm_reg_show(struct seq_file *s_file, void *data)
->  {
->  	struct qcom_swrm_ctrl *swrm = s_file->private;
-> -	int reg, reg_val;
-> +	int reg, reg_val, ret;
-> +
-> +	ret = pm_runtime_get_sync(swrm->dev);
-> +	if (ret < 0 && ret != -EACCES) {
-> +		dev_err_ratelimited(swrm->dev,
-> +				    "pm_runtime_get_sync failed in %s, ret %d\n",
-> +				    __func__, ret);
-> +		pm_runtime_put_noidle(swrm->dev);
 
-... here it's missing?
+> 
+> https://github.com/thesofproject/linux/pull/3602/commits/6353eec8dc971c5f0fda0166ae1777f71784ea32
 
-I have a fix ready but thought I would check first if this was intentional
+Fix looks good.
 
-https://github.com/thesofproject/linux/pull/3602/commits/6353eec8dc971c5f0fda0166ae1777f71784ea32
-
-> +	}
->  
->  	for (reg = 0; reg <= SWR_MSTR_MAX_REG_ADDR; reg += 4) {
->  		swrm->reg_read(swrm, reg, &reg_val);
->  		seq_printf(s_file, "0x%.3x: 0x%.2x\n", reg, reg_val);
->  	}
-> +	pm_runtime_mark_last_busy(swrm->dev);
-> +	pm_runtime_put_autosuspend(swrm->dev);
-> +
->  
->  	return 0;
+--srini
+> 
