@@ -4,101 +4,96 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A8B23C433EF
-	for <alsa-devel@archiver.kernel.org>; Fri, 22 Apr 2022 13:52:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 81E07C433EF
+	for <alsa-devel@archiver.kernel.org>; Fri, 22 Apr 2022 13:53:13 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id EBCDC823;
-	Fri, 22 Apr 2022 15:52:01 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EBCDC823
+	by alsa0.perex.cz (Postfix) with ESMTPS id C20B8163D;
+	Fri, 22 Apr 2022 15:52:21 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C20B8163D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1650635572;
-	bh=0xiJARz6YR5iBXyf6sFgKaEQfsOcHtnafpjzW3tn43w=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	s=default; t=1650635591;
+	bh=+PgOfT87QXZRKpM2v9ZNowWskAsreLZEe6RAZERVuxs=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Yvc6LtQQ0QajMy3DVUficJCUc12un3g1POQCsub2IAveN6CLfz6G868BeCGcY706p
-	 x4p4gCXv6y52Oq7FAqvHywctF9njZxQhKnyoa8CmP9UaI53F+FEN30hFqnO7Vg3HQX
-	 Ri1RpBWGEGyFpzlFCF+FLOQQev1lx50NGgJhLZ9Y=
+	b=kY7JkMMb+LAiCUmH+bp6+hmrQOp5CF6tpGgnwr5sO6uEj6DVzVkHfkt6FmHwzAdGT
+	 MBnObhYh1WnATBkH0479DgX6tqbOr2wob9dMmxB6cbFzXotyCfhDxdybglMZu8M4KP
+	 1rqm9CV2GeX4YosPoRMdCQRPwXOw3LzI+LMobV3Q=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 682BCF8086D;
+	by alsa1.perex.cz (Postfix) with ESMTP id E2A4EF8087B;
 	Fri, 22 Apr 2022 15:32:42 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 45489F800F8; Wed, 20 Apr 2022 19:08:49 +0200 (CEST)
-Received: from lahtoruutu.iki.fi (lahtoruutu.iki.fi [IPv6:2a0b:5c81:1c1::37])
- (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
+ id 4FCD7F80125; Wed, 20 Apr 2022 21:21:13 +0200 (CEST)
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 2481AF8010B
- for <alsa-devel@alsa-project.org>; Wed, 20 Apr 2022 19:08:41 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2481AF8010B
+ by alsa1.perex.cz (Postfix) with ESMTPS id E6BDFF800F8
+ for <alsa-devel@alsa-project.org>; Wed, 20 Apr 2022 21:21:06 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E6BDFF800F8
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=iki.fi header.i=@iki.fi header.b="kTa4PeKc"
-Received: from darkstar.musicnaut.iki.fi (85-76-69-216-nat.elisa-mobile.fi
- [85.76.69.216])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest
- SHA256) (No client certificate requested)
- (Authenticated sender: aaro.koskinen)
- by lahtoruutu.iki.fi (Postfix) with ESMTPSA id 75C061B00220;
- Wed, 20 Apr 2022 20:08:38 +0300 (EEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=iki.fi; s=lahtoruutu; 
- t=1650474519;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=B5msNSogp8zw4YAcAsDj6Qc4zdyDGRTVYmRgqRI/0Bk=;
- b=kTa4PeKcYbiz8v0d1bG/DaDfDPW+JW/Y5caY8AdpKOUIvDM5o36RCvYnTBodU8x4tUxuiF
- ktxA1VDWnp4JhwdnVZN87iQgFWmYig18OVXRM8AVMhj39aWpQH20CPI4avqgLCd+YIg1Qy
- idcTWI4UYPweIAjRUudXT1Zf+FbV1KFQ6CsP671o0mcoZYtmGXBa6OtYrK6P6K3jtGr5MZ
- EHOyrIqm3R/nP1YaqVIW53HsDJDowGirtgtowbqAHter8eYPWisaRosyEAvgWd8N5xDazf
- MEVSDjkPCt3ICTrqoO34GRh7hV71rJoxKjbq4SJKV8lZ4881URlm0+K8k78LMA==
-Date: Wed, 20 Apr 2022 20:08:36 +0300
-From: Aaro Koskinen <aaro.koskinen@iki.fi>
-To: Arnd Bergmann <arnd@kernel.org>
-Subject: Re: [PATCH 00/41] OMAP1 full multiplatform conversion
-Message-ID: <20220420170836.GB1947@darkstar.musicnaut.iki.fi>
-References: <20220419133723.1394715-1-arnd@kernel.org>
+ dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="LWkg8+P3"
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by ams.source.kernel.org (Postfix) with ESMTPS id 19B04B8215C
+ for <alsa-devel@alsa-project.org>; Wed, 20 Apr 2022 19:21:06 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B3A41C385A9
+ for <alsa-devel@alsa-project.org>; Wed, 20 Apr 2022 19:21:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1650482464;
+ bh=+PgOfT87QXZRKpM2v9ZNowWskAsreLZEe6RAZERVuxs=;
+ h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+ b=LWkg8+P3Xly8sjIxoqjEgUnQ8BqoLngtqGiQEPZggl4dkK1DiOpgHHwSwn56ifoYf
+ 0jYMBC2y9oudEQNk98zILpE9CQilgE7tkJqFfirwGiPaSzGz60rXyG7LagSrWPhQem
+ gbXXIArHrbaEUbVwFKFsMGfZw+kiVhQTkNWJBmFatyWcBtF+i4qgINtXXuldo7Vx0G
+ RpToCuYAP6mrwt+aiH/IjOOBsTv71f5Oi3+i5AJ3tiOTaMEh/815Em+H9EnYveGtMX
+ wgIyjIS3nQS3pxspnrQ1f27FpB7+Y6rOGSmBE7zDDiBd809M2ZhAxpsXP8A+8SQw2R
+ w9+fnlrAhUS+g==
+Received: by mail-wr1-f52.google.com with SMTP id s29so516939wrb.8
+ for <alsa-devel@alsa-project.org>; Wed, 20 Apr 2022 12:21:04 -0700 (PDT)
+X-Gm-Message-State: AOAM531Z1RsAeiudB7KmLdvc3doWUNeYLzetxuNcKQAhmBiEYfHw/hQR
+ 1LswgHesguKxSYkFFCQ52EBTVaTPQUPTqqiIJh4=
+X-Google-Smtp-Source: ABdhPJznf39uJYDI3N62QzlkS6buptTPqwk86KhjNzbLbHyB/jaRCmYyra2UZ9f1wUtI0joZyTmyxGE4xOIYt2PeYqA=
+X-Received: by 2002:a5d:64a3:0:b0:20a:7931:5b84 with SMTP id
+ m3-20020a5d64a3000000b0020a79315b84mr17397786wrp.407.1650482462896; Wed, 20
+ Apr 2022 12:21:02 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220419133723.1394715-1-arnd@kernel.org>
-ARC-Seal: i=1; s=lahtoruutu; d=iki.fi; t=1650474519; a=rsa-sha256; cv=none;
- b=fUP5y+/XQ6zNbth6dMfmG2kN9cICXfnwRNYbkGoVeRNsnY+v6znhO5ch2i5vR5slzPAUec
- Sztc4GVEZyZOwSwkjLWA4eNpQZV5fEBKgPV4PA0N+8DX6z5GrX6hFbFsM5SltaEfdOE+4X
- UDuk5UOcv8jYUvEeGfo5RBPyqhwpuA6b4fVpMKqPEFiwGDCvSZdERPOuJX+KlmiYWEjjRQ
- bzFS2MgkL1ik8EAGHbfrB4YVK4K3DZYBDGcMAmDesHi8ybCiB4PqONwfrj/O7/GLX4DLwE
- F7s5Eze8miwVNtjGjumlbsWMr0sA8n2Asp4QdugmIsfg6AnQuJaXDQ3ZfwifVA==
-ARC-Authentication-Results: i=1; ORIGINATING;
- auth=pass smtp.auth=aaro.koskinen smtp.mailfrom=aaro.koskinen@iki.fi
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=iki.fi;
- s=lahtoruutu; t=1650474519;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=B5msNSogp8zw4YAcAsDj6Qc4zdyDGRTVYmRgqRI/0Bk=;
- b=uAZuJDKZ7bj4MVqgI3bbcZAOIBMgL+TVcCp9+D4Bx6tcZMUwn0Yukw4zw8doMpCzXb5WaN
- pJVbadhIweA9yGpQNueUVV9vr1H4bIPdTLnUt9sq85H8sbrTY3WHbuj7hKBBvCPd9hNdLm
- 1ukZgRh1UpuRnt4Qyg6muAqbGwQyb+0ufFu2ZZFIwmdViYeENLfMfCKbIoMvRNyQt/3O2K
- fLMvlRgaN2w7kyqhajE30yj5vD3Ir8o/PY21vwX9mxyhgmVGkpxJMIAtFXlT8CRNLmGomp
- hDjQyLXElaOcP4BTszvgdBbpo30Bae+K5TvQUlGAai/EzsAchzF8OdhdOWxG2A==
-X-Mailman-Approved-At: Fri, 22 Apr 2022 15:31:40 +0200
-Cc: Ulf Hansson <ulf.hansson@linaro.org>, linux-usb@vger.kernel.org,
- tony@atomide.com, Linus Walleij <linus.walleij@linaro.org>,
- linux-fbdev@vger.kernel.org, Dominik Brodowski <linux@dominikbrodowski.net>,
+References: <20220419133723.1394715-1-arnd@kernel.org>
+ <20220419133723.1394715-27-arnd@kernel.org>
+ <20220420134615.GA1947@darkstar.musicnaut.iki.fi>
+In-Reply-To: <20220420134615.GA1947@darkstar.musicnaut.iki.fi>
+From: Arnd Bergmann <arnd@kernel.org>
+Date: Wed, 20 Apr 2022 21:20:46 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a00DgKYdzTZFiBfKDF_zwaJjL6Duw8aOOJ-gVkz4L1ZwQ@mail.gmail.com>
+Message-ID: <CAK8P3a00DgKYdzTZFiBfKDF_zwaJjL6Duw8aOOJ-gVkz4L1ZwQ@mail.gmail.com>
+Subject: Re: [PATCH 26/41] ARM: omap1: relocate static I/O mapping
+To: Aaro Koskinen <aaro.koskinen@iki.fi>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailman-Approved-At: Fri, 22 Apr 2022 15:31:42 +0200
+Cc: Ulf Hansson <ulf.hansson@linaro.org>, USB list <linux-usb@vger.kernel.org>,
+ Tony Lindgren <tony@atomide.com>, Linus Walleij <linus.walleij@linaro.org>,
+ Linux Fbdev development list <linux-fbdev@vger.kernel.org>,
+ Dominik Brodowski <linux@dominikbrodowski.net>,
  Lee Jones <lee.jones@linaro.org>, Daniel Thompson <daniel.thompson@linaro.org>,
  Kevin Hilman <khilman@kernel.org>, Peter Ujfalusi <peter.ujfalusi@gmail.com>,
- Helge Deller <deller@gmx.de>, jmkrzyszt@gmail.com,
+ Helge Deller <deller@gmx.de>, Janusz Krzysztofik <jmkrzyszt@gmail.com>,
  Russell King <linux@armlinux.org.uk>, Krzysztof Kozlowski <krzk@kernel.org>,
- Alan Stern <stern@rowland.harvard.edu>, linux-serial@vger.kernel.org,
- linux-input@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
- Mark Brown <broonie@kernel.org>, dri-devel@lists.freedesktop.org,
- linux-omap@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ Alan Stern <stern@rowland.harvard.edu>,
+ "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>,
+ "open list:HID CORE LAYER" <linux-input@vger.kernel.org>,
+ Arnd Bergmann <arnd@arndb.de>, Mark Brown <broonie@kernel.org>,
+ dri-devel <dri-devel@lists.freedesktop.org>,
+ linux-omap <linux-omap@vger.kernel.org>,
+ Linux ARM <linux-arm-kernel@lists.infradead.org>,
  Felipe Balbi <balbi@kernel.org>, Paul Walmsley <paul@pwsan.com>,
  Jingoo Han <jingoohan1@gmail.com>, Dmitry Torokhov <dmitry.torokhov@gmail.com>,
- linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-mmc <linux-mmc@vger.kernel.org>,
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
  Vinod Koul <vkoul@kernel.org>, dmaengine@vger.kernel.org,
- alsa-devel@alsa-project.org
+ ALSA Development Mailing List <alsa-devel@alsa-project.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -114,28 +109,34 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Hi,
+On Wed, Apr 20, 2022 at 3:46 PM Aaro Koskinen <aaro.koskinen@iki.fi> wrote:
+>
+> Hi,
+>
+> On Tue, Apr 19, 2022 at 03:37:08PM +0200, Arnd Bergmann wrote:
+> > From: Arnd Bergmann <arnd@arndb.de>
+> >
+> > The address range 0xfee00000-0xfeffffff is used for PCI and
+> > PCMCIA I/O port mappings, but OMAP1 has its static mappings
+> > there as well.
+> >
+> > Move the OMAP1 addresses a little higher to avoid crashing
+> > at boot.
+>
+> This has the same problem I reported in 2019, with earlyprintk the
+> system no longer boots:
+>
+>         https://marc.info/?t=156530014200005&r=1&w=2
+>
+> Tested on OSK and SX1/qemu.
 
-On Tue, Apr 19, 2022 at 03:36:42PM +0200, Arnd Bergmann wrote:
-> From: Arnd Bergmann <arnd@arndb.de>
-> 
-> This is the full series for converting OMAP1 to multiplatform, rebased
-> from my 2019 attempt to do the same thing. The soc tree contains simpler
-> patches to do the same for iop32x, ixp4xx, ep93xx and s3c24xx, which
-> means we are getting closer to completing this for all ARMv5 platforms
-> (I have patches for PXA, which is the last one remaining).
-> 
-> Janusz already tested the branch separately and did the missing work
-> for the common-clk conversion after my previous approach was broken.
+Thanks a lot for testing!
 
-I tested the full series on the following OMAP1 boards: ams-delta,
-nokia770, osk, palmte and sx1 (QEMU only).
+I managed to get to the bottom of this after just a few hours, and
+it turned out to be a simple math error on my end, as I got
+the alignment wrong, the offset has to be 0x00f00000
+instead of 0x00fb0000 be section aligned. I made sure the
+kernel boots up (to the point of missing a rootfs) and uploaded
+the fixed branch.
 
-Apart from the earlyprintk breakage, everything seemed to work OK.
-
-A minor note, zImage grows about 50 KB with a minimal kernel config. This
-is not yet critical, there's still about 7% headroom on 770 to the 2 MB
-bootloader limit on my setup. Also the decompression time is approaching
-the hardcoded watchdog timeout...
-
-A.
+      Arnd
