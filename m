@@ -4,67 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B2C16C433EF
-	for <alsa-devel@archiver.kernel.org>; Wed, 20 Apr 2022 21:41:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C3592C433F5
+	for <alsa-devel@archiver.kernel.org>; Wed, 20 Apr 2022 21:42:18 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D94521B0A;
-	Wed, 20 Apr 2022 23:40:55 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D94521B0A
+	by alsa0.perex.cz (Postfix) with ESMTPS id E0F9D1B43;
+	Wed, 20 Apr 2022 23:41:26 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E0F9D1B43
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1650490905;
-	bh=cN5C6kBnA9q3AVkoDZmadgbTxwLugiJnY3aMJJPNdhc=;
+	s=default; t=1650490937;
+	bh=KsMvdME4XDrshuTxLf+7wXfZz1rrGdfPnQhfWj9JPSI=;
 	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=ZqkM2CaS2Oc4n4HN57Y0XXeuEyybhDmi/nZb7jHK6mt1idn1Ksnmh7YBVZW3d+ihS
-	 QtFkMDlFwYG4XnOIrKdE9uk9Nnjf5UVPizVvuuJ0scvaDS2T+vJWKyPJ+SilEA/dXY
-	 kIL520vPw5jpT17mFuNVKjnjoBPa++aK0BP26S5A=
+	b=qajuFIWwWbf1hx6VLIyX/KevxR7OlYRx7CmaPktKlz+LY2tmIvLYCN28h+G5uFB7m
+	 y01oP+kqUJfraKg3JVCoPVncAVDHBzSienxOGLEbhsW1S1VkOfXzDkoiMbxiKdLlcC
+	 caB5W9YsEdxKGcM5TtHEtqJxHRi86TeQlB2RKxuQ=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 59649F80125;
-	Wed, 20 Apr 2022 23:40:55 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 0AB8AF80254;
+	Wed, 20 Apr 2022 23:40:56 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id A7374F80128; Wed, 20 Apr 2022 23:40:53 +0200 (CEST)
+ id C56ABF80125; Wed, 20 Apr 2022 23:40:53 +0200 (CEST)
 Received: from ams.source.kernel.org (ams.source.kernel.org
  [IPv6:2604:1380:4601:e00::1])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id B1EA0F800C1
- for <alsa-devel@alsa-project.org>; Wed, 20 Apr 2022 23:40:50 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B1EA0F800C1
+ by alsa1.perex.cz (Postfix) with ESMTPS id CEA51F80116
+ for <alsa-devel@alsa-project.org>; Wed, 20 Apr 2022 23:40:49 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CEA51F80116
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="QlHNU0GR"
+ header.b="MFWFHg1f"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by ams.source.kernel.org (Postfix) with ESMTPS id 52208B821A0;
- Wed, 20 Apr 2022 21:40:49 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 50495C385A1;
- Wed, 20 Apr 2022 21:40:47 +0000 (UTC)
+ by ams.source.kernel.org (Postfix) with ESMTPS id 15690B82194;
+ Wed, 20 Apr 2022 21:40:48 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B585AC385A0;
+ Wed, 20 Apr 2022 21:40:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1650490848;
- bh=cN5C6kBnA9q3AVkoDZmadgbTxwLugiJnY3aMJJPNdhc=;
+ s=k20201202; t=1650490846;
+ bh=KsMvdME4XDrshuTxLf+7wXfZz1rrGdfPnQhfWj9JPSI=;
  h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=QlHNU0GRSrjYRtFMwScZrCK4Fd7uTbh1wg3SBXNUch2vlAXL4729P4iyKI5sm+KeH
- jgbFCrJKoTORPpvJwdtveSMf4OxgFzL7yM3M97sSMs63xOk8sQ3uOA3ivdeuUKsMkH
- 22+F/YeJH1FpJ5f68lcmERIQn05W9qfcHlHlylf7HmtFyxqor7rkQuhOW92Ik2LLSU
- upV2FNLXlquWe5P+bm1hE3jbwtaxmaiMIElW3QggdZCRCPNMuvgIhudHEU0QpsYWx/
- c81GOSUKUDLYGEyBmxLmLo8O6SAGdZySWPXAe3L6/Roh/b7yoRVI5IbZzFCmse0lEo
- GFKV9SOl8fuww==
+ b=MFWFHg1fhGAsw7+oGMYk+DskaYZwS88eBsaLFL8I3wj4rAN6raKm+xl8FvS3790dn
+ tdqPxcMQUY+GFJ9Pq5LQ9qu5lcaIZCf1/Lwp1xs8iEFGSfYP6gWHD3nu9aWoxycpOe
+ GU/hByXp1n+avAUekSV/Gg/t0ehkiA55FrK4i0nw3W++qIP5y7kpcHFKHTUx6At2RY
+ o6zrztIWyD100YfSicXV5alImCtZyPWQGdePs+nWN6ME7t1X70C3TFKRh90+AstGdW
+ dnFldCOtAFStrtJgxu7kYJbcDB6S/YNxXI0b1NKyP55eO1JB1qZypG5T9La1CIZkwb
+ m9AB4Xe3G6+wg==
 From: Mark Brown <broonie@kernel.org>
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- alsa-devel@alsa-project.org
-In-Reply-To: <20220414184817.362215-1-pierre-louis.bossart@linux.intel.com>
-References: <20220414184817.362215-1-pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH v2 00/15] ASoC: SOF: add INTEL_IPC4 plumbing
-Message-Id: <165049084704.138067.12438562399515265141.b4-ty@kernel.org>
-Date: Wed, 20 Apr 2022 22:40:47 +0100
+To: cezary.rojewski@intel.com, alsa-devel@alsa-project.org
+In-Reply-To: <20220331135246.993089-1-cezary.rojewski@intel.com>
+References: <20220331135246.993089-1-cezary.rojewski@intel.com>
+Subject: Re: [PATCH v2 00/14] ASoC: Intel: avs: Topology and path management
+Message-Id: <165049084428.138067.13288505967667485632.b4-ty@kernel.org>
+Date: Wed, 20 Apr 2022 22:40:44 +0100
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: tiwai@suse.de
+Cc: upstream@semihalf.com, harshapriya.n@intel.com, rad@semihalf.com,
+ tiwai@suse.com, pierre-louis.bossart@linux.intel.com, hdegoede@redhat.com,
+ amadeuszx.slawinski@linux.intel.com, cujomalainey@chromium.org,
+ lma@semihalf.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -80,18 +82,15 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Thu, 14 Apr 2022 13:48:02 -0500, Pierre-Louis Bossart wrote:
-> The INTEL_IPC4 protocol and firmware architecture will rely on
-> different sets of firmware binary and topology files. Some platforms
-> will only support INTEL_IPC4, some will support both INTEL_IPC4 and
-> SOF_IPC for development, and some will stay with the existing SOF_IPC.
+On Thu, 31 Mar 2022 15:52:32 +0200, Cezary Rojewski wrote:
+> A continuation of avs-driver initial series [1]. This chapter covers
+> path management and topology parsing part which was ealier path of the
+> main series. The two patches that represented these two subjects in the
+> initial series, have been split into many to allow for easier review and
+> discussion.
 > 
-> This patchset adds new IPC definitions, and search paths for firmware
-> and topology files, along with means to override the default IPC type
-> and search paths for development. The firmware binary names are
-> aligned with those used by the Intel AVS driver to avoid duplicate
-> firmware installs, but the topology will have to differ due to driver
-> architecture differences.
+> AVS topology is split into two major parts: dictionaries - found within
+> ASoC topology manifest - and path templates.
 > 
 > [...]
 
@@ -101,36 +100,34 @@ Applied to
 
 Thanks!
 
-[01/15] ASoC: SOF: add definitions for different IPC types
-        commit: 15527fee767f592d894d954d78cf8af3685cda6d
-[02/15] ASoC: SOF: add path indirection to each IPC type
-        commit: a375791512254c154fd0d3e4091c78f4b92a5c66
-[03/15] ASoC: SOF: add default IPC capability and file paths
-        commit: 0cf8ff05e5d2b94b3ccf8a1fbfc633ecb0be56b0
-[04/15] ASoC: SOF: add IPC-dependent file names
-        commit: a97abb3cae31b4e2420da96b95e54756333f2cc3
-[05/15] ASoC: SOF: sof-pci-dev: add parameter to override firmware filename
-        commit: 58c520e2dad7c0abc52ce6b41b0793236398dc94
-[06/15] ASoC: SOF: sof-pci-dev: add parameter to override topology filename
-        commit: 772627acfeb0e670ede534b7d5502dae9668d3ee
-[07/15] ASoC: SOF: sof-audio: preserve topology filename override in nocodec mode
-        commit: 53fe24c2c76383712bedee6a9e4ebe2ec595345b
-[08/15] ASoC: SOF: remove const qualifier for 'struct snd_sof_dsp_ops'
-        commit: 856601e5a7ebe69b1c07adef7be80f9a03884329
-[09/15] ASoC: SOF: Intel: hda: use common ops across platforms
-        commit: 37e809d5f8a7bfbf0abbd4666d0b8ad499f12b7f
-[10/15] ASoC: SOF: Intel: move HDA_CL_STREAM_FORMAT definition to header
-        commit: 406fed8092d96e3cd565d6041dc381d630039fe0
-[11/15] ASoC: SOF: Intel: hda: use BIT() macros for consistency
-        commit: 9d201b69d04b89369240c1a7e279fda85cc94720
-[12/15] ASoC: SOF: Intel: hda: define check_ipc_irq op
-        commit: 3dee239e02747a5d1447249ffb4a3c4425b9e302
-[13/15] ASoC: SOF: Intel: hda: Define rom_status_reg in sof_intel_dsp_desc
-        commit: 71778f7940f0b496aa1ca1134f3b70b425a59bab
-[14/15] ASoC: SOF: Intel: hda: expose some codeloader functions
-        commit: b4e4c0b963c85072326222d7ea89078060aa824c
-[15/15] ASoC: SOF: Intel: add IP identifier
-        commit: 03cf7262076f08601108cc896416fc1d66671994
+[01/14] ASoC: Intel: avs: Declare vendor tokens
+        commit: 99a15348d5842b3c1f95220dc9b119ee0fe0d81b
+[02/14] ASoC: Intel: avs: Add topology parsing infrastructure
+        commit: 34ae2cd536738affaa2c2f32be23aea229b3c309
+[03/14] ASoC: Intel: avs: Parse module-extension tuples
+        commit: 9e85ec401d038b43d9d6ad8e3f488f865404bab5
+[04/14] ASoC: Intel: avs: Parse pplcfg and binding tuples
+        commit: 1fba20364318819ecedab2d0f6a68a038f4f47c3
+[05/14] ASoC: Intel: avs: Parse pipeline and module tuples
+        commit: 276b83c807a2bc2a8d9874a92b7fb7811c2df8b2
+[06/14] ASoC: Intel: avs: Parse path and path templates tuples
+        commit: eee475bb1ca71e963a51c20cc0f3e7c7b1cd2ba0
+[07/14] ASoC: Intel: avs: Add topology loading operations
+        commit: d73d1b67ff71e39bb3a04596744fc83047e68a94
+[08/14] ASoC: Intel: avs: Support link_mask formatted string
+        commit: d48c1ada577588e769b26c3dea0a45e8856bc343
+[09/14] ASoC: Intel: avs: Declare path and its components
+        commit: f61ad1e9568c854ea49a2f58cf2a0b2877cfad33
+[10/14] ASoC: Intel: avs: Path creation and freeing
+        commit: 0ef882074eb1fee25083387ea6bc6669d0e24a85
+[11/14] ASoC: Intel: avs: Path state management
+        commit: c96059993f939fe04427164fb99a32ace8d97f4e
+[12/14] ASoC: Intel: avs: Arm paths after creating them
+        commit: 84a99908fc7b988067e927834575df42707ec024
+[13/14] ASoC: Intel: avs: Prepare modules before bindings them
+        commit: 435e25730fe7b3a4e4a8e66028e39597b2524f0c
+[14/14] ASoC: Intel: avs: Configure modules according to their type
+        commit: 274d79e5187558078fcf107445fe56ab2fbe4c97
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
