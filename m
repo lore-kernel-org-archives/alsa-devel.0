@@ -4,69 +4,83 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 29BD0C433F5
-	for <alsa-devel@archiver.kernel.org>; Wed, 20 Apr 2022 02:35:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4B990C433F5
+	for <alsa-devel@archiver.kernel.org>; Wed, 20 Apr 2022 03:03:58 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 65B83190A;
-	Wed, 20 Apr 2022 04:34:10 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 65B83190A
+	by alsa0.perex.cz (Postfix) with ESMTPS id CDC2418B2;
+	Wed, 20 Apr 2022 05:03:06 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CDC2418B2
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1650422100;
-	bh=de3CW2NHaO3Zlt6dACJu87GE5nxvTHKkn6BThHigbYQ=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=gm2biT4RbmadbG4w/MrGsJMmq4Bg6uMge8idq2QWfDtXaPi2V62obHrC3roul1pBH
-	 eyFubYutc/EYLoQz3a7LVGl/oWsuFngvGmwSC2Sp7alM0SHnjjxAXQsffnGBcvgpA2
-	 pqaUamtKlbPzI9ziub6U7mLWzlZ8+rGDveMierWw=
+	s=default; t=1650423836;
+	bh=3DXyNJ1byi1f4osx0olkC4NL+junC/MXUEnFugeJ+FI=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=orXO4J2wK7FUgVmMhne9QBR5RgdBNQqN8SeU9CNxWGEs9mVZJILuhFfVuk8K85F6/
+	 ZUMS3i8KAa0pfUIZqNg3dl437bfMHc4PKHXyitwpQOoF5RsAOKDXaS+WADZnw2yE9P
+	 dvJdCS3eJpxTnSM2LNXtJu/PhPPxNdQbrfv64miw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 68470F80516;
-	Wed, 20 Apr 2022 04:33:16 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 53B49F800C1;
+	Wed, 20 Apr 2022 05:03:06 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 16EC1F80511; Wed, 20 Apr 2022 04:33:15 +0200 (CEST)
-Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 0FA26F80125; Wed, 20 Apr 2022 05:03:05 +0200 (CEST)
+Received: from mail-qk1-x72f.google.com (mail-qk1-x72f.google.com
+ [IPv6:2607:f8b0:4864:20::72f])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id DC468F80254
- for <alsa-devel@alsa-project.org>; Wed, 20 Apr 2022 04:33:04 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DC468F80254
+ by alsa1.perex.cz (Postfix) with ESMTPS id 4E076F800C1
+ for <alsa-devel@alsa-project.org>; Wed, 20 Apr 2022 05:02:54 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4E076F800C1
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="RYRNdYA9"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
- d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1650421989; x=1681957989;
- h=from:to:cc:subject:date:message-id:in-reply-to: references;
- bh=de3CW2NHaO3Zlt6dACJu87GE5nxvTHKkn6BThHigbYQ=;
- b=RYRNdYA9VpIYvfeaIcpSC70rsz5n5EMIPXQaj4jODRizroE30RL6DjjF
- cPw9AyPFZTWL419WmL/7NjlvglMV0OVktNTQgICy5XtN035JsSus9aDTj
- HAGsVjm4fh1t6ppVOSfTTb/5Siz/vVAK+kV57dt4W8hXnba44H8Z5Pk7A
- NuR/rUHNhO6emWGhp6ZguCfpz5LuT/tC7MY0/aL4ao1/iI7sdO8Pnz6DJ
- H8uz6SciMbwJJUeh7vD3Pc8GXVEySIYAIANDCoqOD889WRNVEo3S8E8En
- 1bdU10VDuO0HM8eYTlbsWn2br7wpZvK0i256XBSLgVA2Y+tYp5RNN3mSw Q==;
-X-IronPort-AV: E=McAfee;i="6400,9594,10322"; a="263384320"
-X-IronPort-AV: E=Sophos;i="5.90,274,1643702400"; d="scan'208";a="263384320"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
- by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 19 Apr 2022 19:33:03 -0700
-X-IronPort-AV: E=Sophos;i="5.90,274,1643702400"; d="scan'208";a="529554573"
-Received: from bard-ubuntu.sh.intel.com ([10.239.185.57])
- by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 19 Apr 2022 19:33:00 -0700
-From: Bard Liao <yung-chuan.liao@linux.intel.com>
-To: alsa-devel@alsa-project.org,
-	vkoul@kernel.org
-Subject: [PATCH 2/3] soundwire: intel: disable WAKEEN in pm_runtime resume
-Date: Wed, 20 Apr 2022 10:32:40 +0800
-Message-Id: <20220420023241.14335-3-yung-chuan.liao@linux.intel.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20220420023241.14335-1-yung-chuan.liao@linux.intel.com>
-References: <20220420023241.14335-1-yung-chuan.liao@linux.intel.com>
-Cc: vinod.koul@linaro.org, gregkh@linuxfoundation.org,
- pierre-louis.bossart@linux.intel.com, linux-kernel@vger.kernel.org,
- srinivas.kandagatla@linaro.org, sanyog.r.kale@intel.com, bard.liao@intel.com
+ dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
+ header.b="lN1gvCms"
+Received: by mail-qk1-x72f.google.com with SMTP id c1so338540qkf.13
+ for <alsa-devel@alsa-project.org>; Tue, 19 Apr 2022 20:02:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
+ h=from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=q0fji8Nu54ZhqBHvvYgDr+3hwosEUpxW6x/vEKV84Pk=;
+ b=lN1gvCms+NB3UyWtqtN2kTKNax/+AmWYxHLcez/Y3M1D0LFnSF8jnFnk/VGvEnD17l
+ BpGDV0SHpABDq4i/bcfGPyMA+dwKy8AYC9VGF+fQQcksG417qs+B+fykyZn8NIxHqg+X
+ FphCqPUQ6jlwNahtEdBHW7YRn8JDo5OUxaQSeFmkQ+a1T6xrF9plg3z3VXR9Rlrh/tBJ
+ VvVGdeWrNiZ2xyH/EIgwZ8LrU0w6LNmhX0QESIx/CqFLr+ime3DIlBTkvQnh1P0Lbtbf
+ 5cA1ZEopnZrB5llABp047hRQ8I0YyF8tA1Spa/bhhs8VgSzrVgRgeQde/7f5G5RlwJ2t
+ 19YA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=q0fji8Nu54ZhqBHvvYgDr+3hwosEUpxW6x/vEKV84Pk=;
+ b=E2w5MMqq0CQdxPfFXULooIOQDOvAI4aGCnefI1VQ10LY9HZrfIKSOj22EeeXlXNvIU
+ Wn4zm3/qfIzxt42DGIRasY1l2Otoyc1uDPQlrAWy/NaMlaSL4IUV+t6rz+yGLR1whIue
+ kU8DmYMZnZxpAIQVZyHi1v1VOFIG0eLgQAtmdL9EqnA1ZDPozFO7ZBjLlx95y4H5/0r8
+ M9/hw9fVGsYwvdEW/ERHS+HM8h7pI+10Abyfv46rhm7aa4zAHH01GbiwliP5k1ZLDLZB
+ 2lM3JUHNtogYtqAKHgOF6YijKGjCqWhqO26exB80Ucv7FVJUI0ys5FIMrumVpzDw7Iya
+ vsTA==
+X-Gm-Message-State: AOAM531JGgYdjTNuSIFK45/W0doMyuWTAY+rAgXDr+C0pJv0u5nYY0PV
+ QEYfvsL2uljv60HlsRK0IaU=
+X-Google-Smtp-Source: ABdhPJzsqmUYOtxkgpjJqXtaXnMb2+DfExa54Oup5JnqEb+chOJlTlEwzijLijF4Kkj18hqinJpF3g==
+X-Received: by 2002:a05:620a:40c6:b0:69c:269b:65cd with SMTP id
+ g6-20020a05620a40c600b0069c269b65cdmr11267725qko.429.1650423772237; 
+ Tue, 19 Apr 2022 20:02:52 -0700 (PDT)
+Received: from localhost.localdomain ([193.203.214.57])
+ by smtp.gmail.com with ESMTPSA id
+ n8-20020ac85a08000000b002f1fc230725sm1094460qta.31.2022.04.19.20.02.49
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Tue, 19 Apr 2022 20:02:51 -0700 (PDT)
+From: cgel.zte@gmail.com
+X-Google-Original-From: chi.minghao@zte.com.cn
+To: lgirdwood@gmail.com
+Subject: [PATCH] ASoC: img-parallel-out: using pm_runtime_resume_and_get
+Date: Wed, 20 Apr 2022 03:02:46 +0000
+Message-Id: <20220420030246.2575629-1-chi.minghao@zte.com.cn>
+X-Mailer: git-send-email 2.25.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Cc: alsa-devel@alsa-project.org, broonie@kernel.org,
+ linux-kernel@vger.kernel.org, Minghao Chi <chi.minghao@zte.com.cn>,
+ Zeal Robot <zealci@zte.com.cn>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -82,53 +96,37 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+From: Minghao Chi <chi.minghao@zte.com.cn>
 
-When the manager device is pm_runtime resumed, we see a series of
-spurious wakes and attempts to resume the same device:
+Using pm_runtime_resume_and_get() to replace pm_runtime_get_sync and
+pm_runtime_put_noidle. This change is just to simplify the code, no
+actual functional changes.
 
-soundwire_intel.link.0: intel_resume_runtime: start
-soundwire_intel.link.0: intel_link_power_up: powering up all links
-soundwire_intel.link.0: intel_link_power_up: first link up, programming SYNCPRD
-soundwire_intel.link.0: intel_shim_wake: WAKEEN disabled for link 0
-soundwire_intel.link.0: intel_link_process_wakeen_event: pm_request_resume start
-soundwire_intel.link.0: intel_link_process_wakeen_event: pm_request_resume done
-soundwire_intel.link.0: intel_shim_wake: WAKEEN disabled for link 0
-soundwire_intel.link.0: intel_link_process_wakeen_event: pm_request_resume start
-soundwire_intel.link.0: intel_link_process_wakeen_event: pm_request_resume done
-
-This sequence does not break anything but is totally unnecessary.
-
-Currently the wakes are only disabled after the peripheral generates a
-wake, e.g. for jack detection.
-
-If the resume is initiated by the host drivers as a result of
-userspace actions (play/record typically), we need to disable wake
-detection as well. Doing so prevents the spurious wakes and calls to
-pm_request_resume().
-
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-Reviewed-by: Rander Wang <rander.wang@intel.com>
-Signed-off-by: Bard Liao <yung-chuan.liao@linux.intel.com>
+Reported-by: Zeal Robot <zealci@zte.com.cn>
+Signed-off-by: Minghao Chi <chi.minghao@zte.com.cn>
 ---
- drivers/soundwire/intel.c | 3 +++
- 1 file changed, 3 insertions(+)
+ sound/soc/img/img-parallel-out.c | 6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/soundwire/intel.c b/drivers/soundwire/intel.c
-index 32e5fdb823c4..4b458e5e7336 100644
---- a/drivers/soundwire/intel.c
-+++ b/drivers/soundwire/intel.c
-@@ -1831,6 +1831,9 @@ static int __maybe_unused intel_resume_runtime(struct device *dev)
- 		return 0;
+diff --git a/sound/soc/img/img-parallel-out.c b/sound/soc/img/img-parallel-out.c
+index 800f247283cd..cd6a6a825741 100644
+--- a/sound/soc/img/img-parallel-out.c
++++ b/sound/soc/img/img-parallel-out.c
+@@ -162,11 +162,9 @@ static int img_prl_out_set_fmt(struct snd_soc_dai *dai, unsigned int fmt)
+ 		return -EINVAL;
  	}
  
-+	/* unconditionally disable WAKEEN interrupt */
-+	intel_shim_wake(sdw, false);
-+
- 	link_flags = md_flags >> (bus->link_id * 8);
- 	multi_link = !(link_flags & SDW_INTEL_MASTER_DISABLE_MULTI_LINK);
+-	ret = pm_runtime_get_sync(prl->dev);
+-	if (ret < 0) {
+-		pm_runtime_put_noidle(prl->dev);
++	ret = pm_runtime_resume_and_get(prl->dev);
++	if (ret < 0)
+ 		return ret;
+-	}
  
+ 	reg = img_prl_out_readl(prl, IMG_PRL_OUT_CTL);
+ 	reg = (reg & ~IMG_PRL_OUT_CTL_EDGE_MASK) | control_set;
 -- 
-2.17.1
+2.25.1
+
 
