@@ -4,81 +4,96 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D85A4C433F5
-	for <alsa-devel@archiver.kernel.org>; Fri, 22 Apr 2022 13:53:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2B9BAC433F5
+	for <alsa-devel@archiver.kernel.org>; Fri, 22 Apr 2022 13:54:16 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D807B1765;
-	Fri, 22 Apr 2022 15:53:05 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D807B1765
+	by alsa0.perex.cz (Postfix) with ESMTPS id 511B515C2;
+	Fri, 22 Apr 2022 15:53:24 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 511B515C2
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1650635635;
-	bh=lCiWPMaDezP5ie64gGAdDFgP4aUK/bnxH/Cihxjm0j4=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=pSFIrQOVHQnPbNXKv7as923A+ORuFfad0J8WEjRzd/vvEovC1HACUUNqmhyUOQdXE
-	 goiT3MJZsklFVK04eGbllERO3umucE8cBI4/6LfKRuC7+YhQGBz2hGHD5i4M+Fzrx1
-	 7UQf+tSfLef5JM695DSUF6mVsZSWpD8sBd2KCIX0=
+	s=default; t=1650635654;
+	bh=6LaU3F/jCQfZw6zxuK9X0ySvN6qUfHqEJ6lGydnop44=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=qGxhgklFUb26HZoib9XCj6d4ZL601cnLPOOJNzxPxd/WNI8pOhEdEnmVrXhbWyvCd
+	 ch3HSXbaCF91OHy21ngYLWSiVgXWpNqfV5GQPAJjXMU3Nvj+Of373R2moXVvNsWAMQ
+	 g2ztQ3NPdbELQGLDPKZZmgGG6FTVbwn8xArmCWXs=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id AF402F808C7;
-	Fri, 22 Apr 2022 15:32:45 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 78CE9F808CA;
+	Fri, 22 Apr 2022 15:32:46 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 9012DF80116; Wed, 20 Apr 2022 21:47:59 +0200 (CEST)
-Received: from mail-il1-x134.google.com (mail-il1-x134.google.com
- [IPv6:2607:f8b0:4864:20::134])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id DF722F80125; Wed, 20 Apr 2022 22:00:38 +0200 (CEST)
+Received: from ams.source.kernel.org (ams.source.kernel.org
+ [IPv6:2604:1380:4601:e00::1])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 8A761F80116
- for <alsa-devel@alsa-project.org>; Wed, 20 Apr 2022 21:47:50 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8A761F80116
+ by alsa1.perex.cz (Postfix) with ESMTPS id AF7C3F800C1
+ for <alsa-devel@alsa-project.org>; Wed, 20 Apr 2022 22:00:32 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AF7C3F800C1
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="p/2M81gm"
-Received: by mail-il1-x134.google.com with SMTP id b5so1707062ile.0
- for <alsa-devel@alsa-project.org>; Wed, 20 Apr 2022 12:47:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
- h=from:to:cc:subject:date:message-id:mime-version
- :content-transfer-encoding;
- bh=p5AjxI0G1gBGMYopoaiK/5dXT49fJw45rF40i5u4bhg=;
- b=p/2M81gmVmpvDYAtzwatNur49/NieFajzFYaaeTfzb+9UHgFjjVcazFa5g3ORcw+gw
- K1sH2ROALzlWMzxL2HWYlj1S4KsDn3ue4TDOt2OzCw1nIJ5oag7U8KvzzPwSzAAIDn62
- J0woW4+gfMjkhtMGFFC9OLWEdF4DDlcUiTCwZnrmX6xZoTYMAZ4tIBeu+b16PyxfrhEd
- qh9dCWBVxSUTnVz57EJXup6KxPM6+dZSbwBAd18mFY0YyKAuCuMfX8cvMiUZ96vZTJZ5
- vfV8YZGNh5q622Hgxl3Iw73HOah9OEGBoQ+MoFYHOcJIh8YrQSPGm4S4CXxEEVETAXpc
- wcLA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
- :content-transfer-encoding;
- bh=p5AjxI0G1gBGMYopoaiK/5dXT49fJw45rF40i5u4bhg=;
- b=mjPOCGR+ZKFNofGT8RvDuohW8TmsTYu9G5Uf9n6a0lC62pJ4ZYs8JACV4HSCAgrlsg
- kfY87vg26gf7dJBBkuv3CZIauykqktrcSfMIHbGReNs9VZACSjMpNMGkPNQqFtWMJNSc
- K6UiI4lzvjOMhgQdvGt+bwyoZJXtU+oBgdwA+CvpnIZPVDM43c+ecDOSN8z6txZ4LeLi
- UAkbcg24PxJjIgDlb9uIb8pwZd6YTSVKU3dcMLj90D19LfCeYNhO8sxKa3TSluuzT2AB
- Wb1iV49X7ARp5azRuQ9Gr2wlBZfGKEFf8Px31hcwpRVZb7Fr1Vn+trNd8QzdMjnEmlnX
- ssjw==
-X-Gm-Message-State: AOAM531Q+BsG6LU/KKvUnglreZoEWXGKlVzdGI4L/gYKXsLtK5UAmi61
- UkDu+MD+44OrIA8i5OCr/r4=
-X-Google-Smtp-Source: ABdhPJxbq1hSXk7/0hqoHGrYkVe5aPqV/ueWxsculml7LwUebiebpAoYfgb3Zv2D4dTDln4ZxAk2MA==
-X-Received: by 2002:a05:6e02:1566:b0:2cc:e08c:f347 with SMTP id
- k6-20020a056e02156600b002cce08cf347mr1799715ilu.47.1650484068881; 
- Wed, 20 Apr 2022 12:47:48 -0700 (PDT)
-Received: from fedora.. (cpe-65-29-252-111.wi.res.rr.com. [65.29.252.111])
- by smtp.gmail.com with ESMTPSA id
- t18-20020a056e02011200b002cbe6ce18e5sm10680977ilm.40.2022.04.20.12.47.48
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Wed, 20 Apr 2022 12:47:48 -0700 (PDT)
-From: Daniel Kaehn <kaehndan@gmail.com>
-To: tiwai@suse.com
-Subject: [PATCH 0/2] Add generic serial MIDI driver using serial bus API
-Date: Wed, 20 Apr 2022 14:47:45 -0500
-Message-Id: <20220420194747.490542-1-kaehndan@gmail.com>
-X-Mailer: git-send-email 2.32.0
+ dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="tTTSInI8"
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by ams.source.kernel.org (Postfix) with ESMTPS id DC866B8216C
+ for <alsa-devel@alsa-project.org>; Wed, 20 Apr 2022 20:00:31 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 17C86C385AA
+ for <alsa-devel@alsa-project.org>; Wed, 20 Apr 2022 20:00:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1650484831;
+ bh=6LaU3F/jCQfZw6zxuK9X0ySvN6qUfHqEJ6lGydnop44=;
+ h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+ b=tTTSInI8F99rxgu1B0qJWLeIul55SHmcfk2XoOQ90GefTf3tYCCewlSGv0XDMfDh7
+ Z0gfO8BUWwpRe7vFNr0stA2fvpU+veeqGj8X4dtAAMP+71o6mJUg/sPSqUxlu+ULuo
+ oT0S6xjq4cbwogY8eYCb+x8No/lm+/RcuSLbCGjk19uugO+JINpbLTFeEWyaEopW/x
+ lweTuMOOUBVuFVg4/k2kXIP8mpZn+WouT6CWBwWGzqmjZqAjIfMK2WcT4xN9+P5OGu
+ 53fTbKDiRNLPpY+ZJg9cT17Ibl1y8hQ/1xJAqK44EW7UAoTFJbIP4klfgcYI29A7th
+ eAbyB39usRP9w==
+Received: by mail-wr1-f47.google.com with SMTP id q3so3720433wrj.7
+ for <alsa-devel@alsa-project.org>; Wed, 20 Apr 2022 13:00:31 -0700 (PDT)
+X-Gm-Message-State: AOAM533wTmdYniYSvd2BMrSpd+qaVGHP4q7junBtpnuI6jZk7UCuG/S/
+ Wvn3xqmXCJEcXh4yYEiNZLvLhGq8sDybU6aZPdY=
+X-Google-Smtp-Source: ABdhPJwLyvz/ceR9rvvT4XHyqR02gbMMBhrAsRpzGtmhlle4bD/ec4+YXpGg4bc2rqdxlPo8PGopdbH+2zzsbpztAUk=
+X-Received: by 2002:a5d:6da5:0:b0:20a:8805:6988 with SMTP id
+ u5-20020a5d6da5000000b0020a88056988mr15481338wrs.317.1650484829308; Wed, 20
+ Apr 2022 13:00:29 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Mailman-Approved-At: Fri, 22 Apr 2022 15:31:40 +0200
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org
+References: <20220419133723.1394715-1-arnd@kernel.org>
+ <20220420170836.GB1947@darkstar.musicnaut.iki.fi>
+In-Reply-To: <20220420170836.GB1947@darkstar.musicnaut.iki.fi>
+From: Arnd Bergmann <arnd@kernel.org>
+Date: Wed, 20 Apr 2022 22:00:13 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a1+sOrn8BWPVc7f+QFZ5=7fE6=MLsMYV9t+HJcG2aRCXA@mail.gmail.com>
+Message-ID: <CAK8P3a1+sOrn8BWPVc7f+QFZ5=7fE6=MLsMYV9t+HJcG2aRCXA@mail.gmail.com>
+Subject: Re: [PATCH 00/41] OMAP1 full multiplatform conversion
+To: Aaro Koskinen <aaro.koskinen@iki.fi>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailman-Approved-At: Fri, 22 Apr 2022 15:31:42 +0200
+Cc: Ulf Hansson <ulf.hansson@linaro.org>, USB list <linux-usb@vger.kernel.org>,
+ Tony Lindgren <tony@atomide.com>, Linus Walleij <linus.walleij@linaro.org>,
+ Linux Fbdev development list <linux-fbdev@vger.kernel.org>,
+ Dominik Brodowski <linux@dominikbrodowski.net>,
+ Lee Jones <lee.jones@linaro.org>, Daniel Thompson <daniel.thompson@linaro.org>,
+ Kevin Hilman <khilman@kernel.org>, Peter Ujfalusi <peter.ujfalusi@gmail.com>,
+ Helge Deller <deller@gmx.de>, Janusz Krzysztofik <jmkrzyszt@gmail.com>,
+ Russell King <linux@armlinux.org.uk>, Krzysztof Kozlowski <krzk@kernel.org>,
+ Alan Stern <stern@rowland.harvard.edu>,
+ "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>,
+ "open list:HID CORE LAYER" <linux-input@vger.kernel.org>,
+ Arnd Bergmann <arnd@arndb.de>, Mark Brown <broonie@kernel.org>,
+ dri-devel <dri-devel@lists.freedesktop.org>,
+ linux-omap <linux-omap@vger.kernel.org>,
+ Linux ARM <linux-arm-kernel@lists.infradead.org>,
+ Felipe Balbi <balbi@kernel.org>, Paul Walmsley <paul@pwsan.com>,
+ Jingoo Han <jingoohan1@gmail.com>, Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+ linux-mmc <linux-mmc@vger.kernel.org>,
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+ Vinod Koul <vkoul@kernel.org>, dmaengine@vger.kernel.org,
+ ALSA Development Mailing List <alsa-devel@alsa-project.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -94,42 +109,35 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+On Wed, Apr 20, 2022 at 7:08 PM Aaro Koskinen <aaro.koskinen@iki.fi> wrote:
+> On Tue, Apr 19, 2022 at 03:36:42PM +0200, Arnd Bergmann wrote:
+> > From: Arnd Bergmann <arnd@arndb.de>
+> >
+> > This is the full series for converting OMAP1 to multiplatform, rebased
+> > from my 2019 attempt to do the same thing. The soc tree contains simpler
+> > patches to do the same for iop32x, ixp4xx, ep93xx and s3c24xx, which
+> > means we are getting closer to completing this for all ARMv5 platforms
+> > (I have patches for PXA, which is the last one remaining).
+> >
+> > Janusz already tested the branch separately and did the missing work
+> > for the common-clk conversion after my previous approach was broken.
+>
+> I tested the full series on the following OMAP1 boards: ams-delta,
+> nokia770, osk, palmte and sx1 (QEMU only).
+>
+> Apart from the earlyprintk breakage, everything seemed to work OK.
 
-Generic serial MIDI driver adding support for using serial devices
-compatible with the serial bus as raw MIDI devices, allowing using
-additional serial devices not compatible with the existing
-serial-u16550 driver. Supports only setting standard serial baudrates on
-the underlying serial device; however, the underlying serial device can
-be configured so that a requested 38.4 kBaud is actually the standard MIDI
-3.125 kBaud. Supports DeviceTree configuration.
+Nice, thanks a lot for testing!
 
-The need for this driver arose from a project using a Raspberry Pi4 which
-needed to receive and send raw MIDI with low latency. The pl011 UART
-used is not compatible with the existing serial MIDI driver made for
-u16550-style devices. Using a userspace program such as ttymidi to feed
-input from the TTY device to a virtual ALSA MIDI device was functional,
-but not ideal.
+> A minor note, zImage grows about 50 KB with a minimal kernel config. This
+> is not yet critical, there's still about 7% headroom on 770 to the 2 MB
+> bootloader limit on my setup. Also the decompression time is approaching
+> the hardcoded watchdog timeout...
 
-I am not sure if a MIDI driver needing the mentioned 'hack' to clock
-38.4 kBaud down to the standard MIDI baud is permissible in the mainline
-kernel, but am submitting nevertheless in case it is useful. To my knowledge,
-it doesn't seem that there would be any way for this driver to manually
-configure a serial port to 3.125 kBaud using the serial bus API (please 
-correct me f I'm wrong). In my use case, I am actually configuring one port
-to run at 115.2 kBaud for faster communication with a custom onboard MIDI controller.
+I suspect that most of this is for the added devicetree code, and some
+more for the common-clk layer. For the omap1_defconfig, there is some
+hope to get part of the overhead back eventually by replacing board files
+with dts descriptions that are not part of the zImage itself, but it's unlikely
+to ever get smaller than it was.
 
-Daniel Kaehn (2):
-  dt-bindings: sound: Add generic serial MIDI device
-  Add generic serial MIDI driver using serial bus API
-
- .../devicetree/bindings/sound/serialmidi.yaml |  41 +++
- sound/drivers/Kconfig                         |  17 +
- sound/drivers/Makefile                        |   2 +
- sound/drivers/serial-generic.c                | 344 ++++++++++++++++++
- 4 files changed, 404 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/sound/serialmidi.yaml
- create mode 100644 sound/drivers/serial-generic.c
-
--- 
-2.32.0
-
+       Arnd
