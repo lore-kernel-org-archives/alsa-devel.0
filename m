@@ -4,75 +4,71 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A4FEFC433EF
-	for <alsa-devel@archiver.kernel.org>; Wed, 20 Apr 2022 16:19:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id BDADCC433EF
+	for <alsa-devel@archiver.kernel.org>; Wed, 20 Apr 2022 16:24:30 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C69791AF5;
-	Wed, 20 Apr 2022 18:18:44 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C69791AF5
+	by alsa0.perex.cz (Postfix) with ESMTPS id C73DF17EF;
+	Wed, 20 Apr 2022 18:23:38 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C73DF17EF
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1650471574;
-	bh=Y1a4pcTqymAWKcsqfTocRlg43sp5JlsqbUEBLfk5npw=;
-	h=Date:Subject:To:References:From:In-Reply-To:Cc:List-Id:
+	s=default; t=1650471868;
+	bh=SBnyZwALtyPYeKnG3vPDUEjUDcPRsFRW6H4/3UQsehI=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=OdskShXOZNXWp87PRyBSfvDG7cAIfhkiU5TgOAGFxJ7ieRMcu9K+Bjz7ed64AINdC
-	 5nSlgR7/uimI2sBrgMkN7x/eS1TTQol1gUR1ppoudZu706dPhEkCxMXaCZqylpwVnE
-	 whryCbRbKEtneFod7LWtDsqYzPgcJ060N9L3HXNE=
+	b=gCjWTHuX6QnpI6TmnVbj/Lo8wtxrQRalLQHOB3AWzW+mu1qX6dABQqEwscqPDohNK
+	 E7gnO4YIZbYJ8Ym4gPKak24Lvx954IlxTXE9My2C/hZyHQaKhEuJjqrrT5Kqy3HW2m
+	 YAOhxHS2YV7Z/zrTpFge9ZTYfzyfsLV+986g6zwo=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 1B41DF804FB;
-	Wed, 20 Apr 2022 18:18:36 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 6D855F80116;
+	Wed, 20 Apr 2022 18:23:38 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 8C1ABF804FD; Wed, 20 Apr 2022 18:18:34 +0200 (CEST)
-Received: from mga18.intel.com (mga18.intel.com [134.134.136.126])
+ id A5F27F80125; Wed, 20 Apr 2022 18:23:37 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org
+ [IPv6:2604:1380:4641:c500::1])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 57BCEF800C1;
+ Wed, 20 Apr 2022 18:23:33 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 57BCEF800C1
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="JjtEy44t"
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 8562AF804F1;
- Wed, 20 Apr 2022 18:18:23 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8562AF804F1
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="bNGcxRtq"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
- d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1650471509; x=1682007509;
- h=message-id:date:mime-version:subject:to:cc:references:
- from:in-reply-to:content-transfer-encoding;
- bh=Y1a4pcTqymAWKcsqfTocRlg43sp5JlsqbUEBLfk5npw=;
- b=bNGcxRtqp4XBYbAoc0H+vvwuAx2B3T3hh4fUZLqs/wG3pTMJ15kBsxBk
- hPonHA0U7aOSe1e2RzhQcmx3b+zZgvir6ZVQH+eMQ1O4AqsNB7lH4O5UR
- Q02hnx7NFJjShdexir7f8wwfIR85Vte0Vv6CCe5xYqf7wbKnjy+54PMgn
- L/F0H2RjBHINlnQDq+V1OY0Ji/72c97YNEsDtLi2KnehibUMYVjdoDf/U
- oc21dayjJM4roXIt9j7ZWnEz43jQVndbMOyGJOufFXvq/oSDpfmQ8Hp4D
- W/AIAPNffXUX32owPmHdtX/9brgj4kCuDMQDigOoZSqPyzhf3pprw5foQ Q==;
-X-IronPort-AV: E=McAfee;i="6400,9594,10323"; a="245968831"
-X-IronPort-AV: E=Sophos;i="5.90,276,1643702400"; d="scan'208";a="245968831"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
- by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 20 Apr 2022 09:11:08 -0700
-X-IronPort-AV: E=Sophos;i="5.90,276,1643702400"; d="scan'208";a="576661339"
-Received: from sbidasar-mobl.amr.corp.intel.com (HELO [10.209.100.171])
- ([10.209.100.171])
- by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 20 Apr 2022 09:11:04 -0700
-Message-ID: <2572220e-57d0-4f10-1695-bfeab54de38d@linux.intel.com>
-Date: Wed, 20 Apr 2022 11:11:03 -0500
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Firefox/91.0 Thunderbird/91.5.0
+ by dfw.source.kernel.org (Postfix) with ESMTPS id 2AA1F6193B;
+ Wed, 20 Apr 2022 16:23:32 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2886CC385A1;
+ Wed, 20 Apr 2022 16:23:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1650471811;
+ bh=SBnyZwALtyPYeKnG3vPDUEjUDcPRsFRW6H4/3UQsehI=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=JjtEy44tAZJMG/MPWmRPct3HexSkYWqmoasVTFPZ0uDJo4SfOND2yhrgLZrbiom4E
+ mAGZAKGNCF60K4HILY+oQR1dyXxr4n/3mH3rfA7VOBsYl1mujCzegSxvutbkcuH0dU
+ zGS9YqNNGBQkE9j9glelr4mQpowsUk1hD//UDzaPtn3AFPs7VNGhbJGgT2gudlmy+7
+ hxEq/KBeXcuts/XtmA3+D1MCzJXMMxaAxoC1ClyIv2nlOfmZ8V4JP1HJJR51dvjDl/
+ vmkVJsVvyG5oY7wufmwSGblpizL0tpauqJBzYmyq5iNkjO4pWNOYYSZZoZunBmFrF2
+ UOFmw635NmDog==
+Date: Wed, 20 Apr 2022 17:23:25 +0100
+From: Mark Brown <broonie@kernel.org>
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Subject: Re: [PATCH] ASoC: SOF: using pm_runtime_resume_and_get to simplify
  the code
-Content-Language: en-US
-To: Mark Brown <broonie@kernel.org>
+Message-ID: <YmAzfTlr9VauoyLu@sirena.org.uk>
 References: <20220420030315.2575691-1-chi.minghao@zte.com.cn>
  <78c7edc3-f431-9735-238d-9aa2b45ec45e@linux.intel.com>
  <YmAljQjpLCoBv+nj@sirena.org.uk>
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-In-Reply-To: <YmAljQjpLCoBv+nj@sirena.org.uk>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+ <2572220e-57d0-4f10-1695-bfeab54de38d@linux.intel.com>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature"; boundary="pPSA/PyGUaMRPFlK"
+Content-Disposition: inline
+In-Reply-To: <2572220e-57d0-4f10-1695-bfeab54de38d@linux.intel.com>
+X-Cookie: Will it improve my CASH FLOW?
 Cc: alsa-devel@alsa-project.org, kai.vehmanen@linux.intel.com,
  cgel.zte@gmail.com, Zeal Robot <zealci@zte.com.cn>, lgirdwood@gmail.com,
  Minghao Chi <chi.minghao@zte.com.cn>, ranjani.sridharan@linux.intel.com,
@@ -94,30 +90,29 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
+--pPSA/PyGUaMRPFlK
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-On 4/20/22 10:23, Mark Brown wrote:
-> On Wed, Apr 20, 2022 at 08:28:31AM -0500, Pierre-Louis Bossart wrote:
->> On 4/19/22 22:03, cgel.zte@gmail.com wrote:
->>> From: Minghao Chi <chi.minghao@zte.com.cn>
-> 
->>> Using pm_runtime_resume_and_get() to replace pm_runtime_get_sync and
->>> pm_runtime_put_noidle. This change is just to simplify the code, no
->>> actual functional changes.
-> 
->> Well, maybe that's a simplification, but we've been using the same pattern for years now.
-> 
->> Is there really a clear direction to use this new function?
-> 
-> It seems like a much better pattern and there's been a steady stream of
-> conversion patches.  The whole get/idle thing is pretty much just sharp
-> edges.
-> 
->> the overwhelming majority of drivers in sound/soc still rely on the pm_runtime_get_sync (111 v. 7).
-> 
-> We'll get there I'm sure.
+On Wed, Apr 20, 2022 at 11:11:03AM -0500, Pierre-Louis Bossart wrote:
 
-ok, I'll send follow-up patches for the remaining code.
+> ok, I'll send follow-up patches for the remaining code.
 
-For this patch: 
+Thanks, like you say there's a lot to get through here!
 
-Acked-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+--pPSA/PyGUaMRPFlK
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmJgM3wACgkQJNaLcl1U
+h9CQJgf/fmHmEvmSkw+o5cwa89eqRnsRjl0W9UEoY268KcH7oP1YF3/DZCS5KkLi
+fkv2zMjTMNU96KRgcX7T0LQ1nqatX4hkWZXfYmTfPTT03sVzJ1q9FXT4IEERV587
+Y+R0wsTgHWV2e4/n3GNsYcq3dgfeDt1c2LrcLnhpClO8SMTl0Qjdv2ci0NCBdmqe
+ISS9aCBtP2e2zAu8MOqwFBR0BVwaPu8euKJiVtpu7y6cXuh3awKaqOQYnGCUm/dD
+cqYtMnQwLh3WzAoyKUrK5Pohu/AtQBkssGiS/n3c9JMjU7utg/K5x2+t2tZrBh88
+fvVmR2Mo8H18gUzxmZ6rybDj0TM1BA==
+=XETb
+-----END PGP SIGNATURE-----
+
+--pPSA/PyGUaMRPFlK--
