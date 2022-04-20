@@ -4,71 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id BE749C433EF
-	for <alsa-devel@archiver.kernel.org>; Wed, 20 Apr 2022 21:43:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id DC433C433EF
+	for <alsa-devel@archiver.kernel.org>; Wed, 20 Apr 2022 21:44:00 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id EF5061DE4;
-	Wed, 20 Apr 2022 23:42:47 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EF5061DE4
+	by alsa0.perex.cz (Postfix) with ESMTPS id 330E91B4B;
+	Wed, 20 Apr 2022 23:43:09 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 330E91B4B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1650491018;
-	bh=6jaiM5EEkZokoyNt2f05Dgwu++Zj3+Z8+mfjrNupSEI=;
+	s=default; t=1650491039;
+	bh=8X2QEt2lhi2nHtjk6Rs3WVQZYib5Iw0DT7J8jUnG10I=;
 	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=hXWhO/KAvGwtxm1d/8bRNwz+qJ4i6IUWaPHLeqK+xVZwh3/P4aBNLo+urkNIWvEom
-	 x7DCHu3LUTeShQcrV5/CXOXPNBbpo5dinjHXlC3MTsXwIo4Rr5mCP5N1aHllwFPwbt
-	 cV38VgLkvGbAthMk91r1PhmK5kYLAUmW0Hr+/bvE=
+	b=fn2PivS88CyDgnUkYids3u0hvqb70jrZTKepYjHI4tvx2fN3PPoEQwuNVyOFZafqB
+	 rXlCcyI8n7lhXRFYwiNO4aVHQYtoYsqEaGKiFfXSEpXzWplpy+KBh5EldzLoIQd6EN
+	 clmHkH0RsSf1a2/O1CuNwpiPqWjJ8kO82hZyBYnE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 4982BF80539;
+	by alsa1.perex.cz (Postfix) with ESMTP id D661AF8053D;
 	Wed, 20 Apr 2022 23:41:11 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 2A46EF80529; Wed, 20 Apr 2022 23:41:04 +0200 (CEST)
+ id 196C3F80539; Wed, 20 Apr 2022 23:41:06 +0200 (CEST)
 Received: from ams.source.kernel.org (ams.source.kernel.org
  [IPv6:2604:1380:4601:e00::1])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 55E66F804FE
- for <alsa-devel@alsa-project.org>; Wed, 20 Apr 2022 23:41:01 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 55E66F804FE
+ by alsa1.perex.cz (Postfix) with ESMTPS id 49408F804FE
+ for <alsa-devel@alsa-project.org>; Wed, 20 Apr 2022 23:41:03 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 49408F804FE
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="OeUkZbOD"
+ header.b="ZeE1O5Ep"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by ams.source.kernel.org (Postfix) with ESMTPS id 670A2B82194;
- Wed, 20 Apr 2022 21:41:00 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5D897C385A0;
- Wed, 20 Apr 2022 21:40:56 +0000 (UTC)
+ by ams.source.kernel.org (Postfix) with ESMTPS id 8858AB81104;
+ Wed, 20 Apr 2022 21:41:02 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 321CBC385A1;
+ Wed, 20 Apr 2022 21:40:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1650490858;
- bh=6jaiM5EEkZokoyNt2f05Dgwu++Zj3+Z8+mfjrNupSEI=;
+ s=k20201202; t=1650490861;
+ bh=8X2QEt2lhi2nHtjk6Rs3WVQZYib5Iw0DT7J8jUnG10I=;
  h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=OeUkZbODgwjPKvS1nHtnuZlnoQvT041gNVtxebkD7ofNZOZnQbM4vvhfET+1DfEHN
- babP+yod5/7sLDCUDQTG9mgtqtoQKpC+/HlA+ytRbPnyUxKkbBdcThRzufTdk8tVfD
- wvZFsJyZg9M8KM+yetLt6cZmYCpmNcoiu2k2vZhV+tTV9hfs3OOrSiNvgb3NNMsXCb
- Gnf0k3QUIY0fOuHSEId6pO/pF55QR9R8B6bO+1pGr91U1lK18XrCBc2oZopUiOK8vS
- Gd1Jt9WRIQ+COAmIrPZjzb5PzWuGmoui0SLUGgVa56wQLkOwZo+ZhH1m4alZI9NOsp
- jvD7uOtrKWkxQ==
+ b=ZeE1O5EpvOwXFbK6lO1RpwVY4KTk0d+yzNGNW47alh9PFEi6TKVJabMSeAlPawhkz
+ PibaSiyJsufJmgusHMEPpvL38T2XcqXTj8Y/Ftt5hd4m4cGsAvUr0px5kBkCe8qtrc
+ S/rB0k+UHp6zS3TyvLVIQO+R24U6Yn7lR4+IbIZ1Qjkpf3U92P+ZHehH+RthulPy4k
+ TAHLP68rMA06V+SqNbHfMjBzayGJpdO+AqE/7n8IyTd8wBt7a3bkVgBlwiEv9GgzIz
+ KUI66IxVvvsnzwJ8n6lqmXx4owvaqqfEBut1GfqVkibrdQPSCM4APPaClwuzTHsUI7
+ InTyrTC7K2Jfg==
 From: Mark Brown <broonie@kernel.org>
-To: samuel@sholland.org, rf@opensource.cirrus.com,
- Takashi Iwai <tiwai@suse.com>, robert.hancock@calian.com, spujar@nvidia.com,
- olivier.moysan@foss.st.com,
- Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
- Liam Girdwood <lgirdwood@gmail.com>, stephan@gerhold.net,
- Jaroslav Kysela <perex@perex.cz>
-In-Reply-To: <20220412111658.11015-1-olivier.moysan@foss.st.com>
-References: <20220412111658.11015-1-olivier.moysan@foss.st.com>
-Subject: Re: [PATCH] ASoC: simple-card-utils: fix sysclk shutdown
-Message-Id: <165049085609.138067.16736006063801162834.b4-ty@kernel.org>
-Date: Wed, 20 Apr 2022 22:40:56 +0100
+To: AjitKumar.Pandey@amd.com, alsa-devel@alsa-project.org
+In-Reply-To: <20220420094442.1352717-1-AjitKumar.Pandey@amd.com>
+References: <20220420094442.1352717-1-AjitKumar.Pandey@amd.com>
+Subject: Re: [PATCH] ASoC: amd: acp: Add pm ops callback in machine driver
+Message-Id: <165049085891.138067.2699474360256184999.b4-ty@kernel.org>
+Date: Wed, 20 Apr 2022 22:40:58 +0100
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Cc: Sunil-kumar.Dommati@amd.com, Liam Girdwood <lgirdwood@gmail.com>,
+ Basavaraj.Hiregoudar@amd.com, open list <linux-kernel@vger.kernel.org>,
+ Takashi Iwai <tiwai@suse.com>, Alexander.Deucher@amd.com,
+ Vijendar.Mukunda@amd.com, vsujithkumar.reddy@amd.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -84,15 +82,11 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Tue, 12 Apr 2022 13:16:58 +0200, Olivier Moysan wrote:
-> In asoc_simple_shutdown() the snd_soc_dai_set_sysclk() function
-> is called twice with input direction SND_SOC_CLOCK_IN.
-> Restore one call with output direction SND_SOC_CLOCK_OUT.
-> 
-> Fixes: 5ca2ab459817 ("ASoC: simple-card-utils: Add new system-clock-fixed flag")
+On Wed, 20 Apr 2022 15:14:36 +0530, Ajit Kumar Pandey wrote:
+> Add alsa snd_soc_pm_ops callback in ACP machine driver to support
+> suspend and resume operation of sound card components
 > 
 > 
-> [...]
 
 Applied to
 
@@ -100,8 +94,8 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: simple-card-utils: fix sysclk shutdown
-      commit: 3756aa16fadaef2873cfbd2659dfa1978a7e1859
+[1/1] ASoC: amd: acp: Add pm ops callback in machine driver
+      commit: fbae863de87bf50c7b13b40e3b4dc4b479335020
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
