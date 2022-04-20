@@ -4,67 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4611FC433F5
-	for <alsa-devel@archiver.kernel.org>; Wed, 20 Apr 2022 21:43:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4C631C433EF
+	for <alsa-devel@archiver.kernel.org>; Wed, 20 Apr 2022 21:43:31 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 637ED1B46;
-	Wed, 20 Apr 2022 23:42:17 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 637ED1B46
+	by alsa0.perex.cz (Postfix) with ESMTPS id 8119B1B37;
+	Wed, 20 Apr 2022 23:42:39 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8119B1B37
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1650490987;
-	bh=pF71VMayyryoyp9jgJoRbg+bg0B2Uk3dltg/2exZUhg=;
+	s=default; t=1650491009;
+	bh=7QRfVrCEKqRJBhIOT39b+us9XDpvDmsvc9P5y3uEIgQ=;
 	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=dLothM3F/VzLtiMe3MOE5MMpzfmbu7z0kUmSPPxDcMtt1lVu2sDH+HsAS2MkdWAyb
-	 Gd59F2aXwGJ02soUKTLzswmVFTRHIPf/TdRMUV0QaI5kXEeTvlWo8WAr890L98WRQD
-	 fC7aEjRJZ6zuhctDiSYNOyp0l8m8L6VCpzLQi990=
+	b=lyOem34HT8ZXaDzxhymXTVRMCnYRxws99nOcrMf9ps0GbkUXDpJXVN+BCOlZw0rxz
+	 RnAXqHuGQDb6FfyWEvv/Qi/6ENG9Gr16N4qL0kc59j8yWfBhbKQF8LS3U50Qd4CIAx
+	 iddAKxQPNkpe/g0IkIUXTTrHSUATiR0NxRs2uhys=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 06047F80528;
-	Wed, 20 Apr 2022 23:41:04 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 4D257F80535;
+	Wed, 20 Apr 2022 23:41:05 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 2C15CF8050F; Wed, 20 Apr 2022 23:41:00 +0200 (CEST)
+ id BC764F80508; Wed, 20 Apr 2022 23:41:01 +0200 (CEST)
 Received: from dfw.source.kernel.org (dfw.source.kernel.org
  [IPv6:2604:1380:4641:c500::1])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id A566DF804FE
- for <alsa-devel@alsa-project.org>; Wed, 20 Apr 2022 23:40:57 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A566DF804FE
+ by alsa1.perex.cz (Postfix) with ESMTPS id 03AF0F80506;
+ Wed, 20 Apr 2022 23:40:58 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 03AF0F80506
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="lFc7x9Rx"
+ header.b="Dw4PX0/Q"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id 10B566197F;
+ by dfw.source.kernel.org (Postfix) with ESMTPS id 6E9E761972;
  Wed, 20 Apr 2022 21:40:56 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2F134C385A0;
- Wed, 20 Apr 2022 21:40:55 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C055AC385A1;
+ Wed, 20 Apr 2022 21:40:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1650490855;
- bh=pF71VMayyryoyp9jgJoRbg+bg0B2Uk3dltg/2exZUhg=;
+ s=k20201202; t=1650490854;
+ bh=7QRfVrCEKqRJBhIOT39b+us9XDpvDmsvc9P5y3uEIgQ=;
  h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=lFc7x9RxqD9kGfP1oRev4q76orJwO381Wzk/d1jX9L0HqgUZSWASk9LDTWMO/AodR
- tTsA8ZAl77TllPQS1ASdWhQ6wvJoqA69NTYcP0EL5HtVS8eDg6rnPdhMJLe2T8YAPR
- MRwb9pFDZvr5xw9LoDCmvtVoimNm2OtmFzya/X55cw4qIiILZvKYV5+o3TYZnXSsXJ
- 4QeWe1ygLVoUSWa6fCda7pHLBvRZvyzOoTx7K5aN9yn1dFNAWlrmd3FkaE7AzWt42g
- yejpM0ncjwH0IAK6zWFgg7V8wyQRkTbxj+F9wkBome20U43hurrhUEB/l2meF7KL/X
- W9s+1mc8jddsA==
+ b=Dw4PX0/QOfCA9Axml6+wtRwf0dWzIhjobeBWuNexSWb2iCB43+dVAzPmkLJzmQ9N9
+ 2V+iDC2pfywqVMyhv607Obsj4sjZYJE9AeVyZIOMZ2R8ESmL+90w+kYqV8ZSvfs38l
+ uymh9PFzC/Kdtmg581d2skPwxUu8Ui8oLhLTsazTxRw3pNFIlCNmkGkno9Ite8YNJQ
+ QkjSVHofmBRP58Y/eEAoReOzW/fRBH/+2mxzqItUijuU68A5hOYyhYKlzpDOEPXVPp
+ ftoyuq9Ii2ZNJPOs0zo5lF2oITuiNPbXAh23tQNDVfZiF5v+3eHr7Yc9ElOOMecSgM
+ Xn35nEO9gdzmA==
 From: Mark Brown <broonie@kernel.org>
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- alsa-devel@alsa-project.org
-In-Reply-To: <20220406190056.233481-1-pierre-louis.bossart@linux.intel.com>
-References: <20220406190056.233481-1-pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH 0/2] ASoC: soc-pcm: improve BE state transitions
-Message-Id: <165049085490.138067.16905252029264883162.b4-ty@kernel.org>
-Date: Wed, 20 Apr 2022 22:40:54 +0100
+To: rf@opensource.cirrus.com, ranjani.sridharan@linux.intel.com,
+ kai.vehmanen@linux.intel.com, peter.ujfalusi@linux.intel.com,
+ lgirdwood@gmail.com, pierre-louis.bossart@linux.intel.com
+In-Reply-To: <20220407153813.1231866-1-rf@opensource.cirrus.com>
+References: <20220407153813.1231866-1-rf@opensource.cirrus.com>
+Subject: Re: [PATCH] ASoC: SOF: Kconfig: Make SND_SOC_SOF_HDA_PROBES tristate
+Message-Id: <165049085249.138067.17008390714250645371.b4-ty@kernel.org>
+Date: Wed, 20 Apr 2022 22:40:52 +0100
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: tiwai@suse.de
+Cc: patches@opensource.cirrus.com, alsa-devel@alsa-project.org,
+ linux-kernel@vger.kernel.org, sound-open-firmware@alsa-project.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -80,13 +82,16 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, 6 Apr 2022 14:00:54 -0500, Pierre-Louis Bossart wrote:
-> With additional tests with the introduction of a 'deep-buffer' PCM
-> device mixed with the regular low-latency path, we came up with two
-> improvements in the BE state machine and transitions. The short
-> explanation is that the BE cannot directly use the trigger commands
-> provided by the FE, and a translation is needed to deal with paused
-> states.
+On Thu, 7 Apr 2022 16:38:13 +0100, Richard Fitzgerald wrote:
+> SND_SOC_SOF_HDA_PROBES must be tristate because the code it builds
+> depends on code that is tristate.
+> 
+> If SND_SOC_SOF_HDA_PROBES is bool it leads to the following build
+> inconsistency:
+> 
+> SND_SOC_SOF_HDA_COMMON=m
+>   which selects SND_SOC_SOF_HDA_PROBES
+>     but since this is a bool SND_SOC_SOF_HDA_PROBES=y
 > 
 > [...]
 
@@ -96,10 +101,8 @@ Applied to
 
 Thanks!
 
-[1/2] ASoC: soc-pcm: improve BE transition for PAUSE_RELEASE
-      commit: 9995c1d096c8ab1b5f1edc4141257719f6a53524
-[2/2] ASoC: soc-pcm: improve BE transition for TRIGGER_START
-      commit: 374b50e234a3e2f92bb881a814218f9740e85dcc
+[1/1] ASoC: SOF: Kconfig: Make SND_SOC_SOF_HDA_PROBES tristate
+      commit: e18610eaa66a1849aaa00ca43d605fb1a6fed800
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
