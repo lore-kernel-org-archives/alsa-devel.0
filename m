@@ -4,63 +4,62 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4003CC433EF
-	for <alsa-devel@archiver.kernel.org>; Wed, 20 Apr 2022 02:31:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9ACB2C433F5
+	for <alsa-devel@archiver.kernel.org>; Wed, 20 Apr 2022 02:34:00 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D4CBE18C6;
-	Wed, 20 Apr 2022 04:31:02 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D4CBE18C6
+	by alsa0.perex.cz (Postfix) with ESMTPS id C1D5518C7;
+	Wed, 20 Apr 2022 04:33:08 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C1D5518C7
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1650421912;
-	bh=2x5p0qshyNJJblwHIKzMWnvRCa7FvV22Ri0Wm88vg/s=;
+	s=default; t=1650422038;
+	bh=P/LF63BZojFF1TydFmx94mDoFedoUAjUhNq7cH5d2nc=;
 	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
 	 List-Post:List-Help:List-Subscribe:From;
-	b=Dt8GCQjqPDYGvQ50kXvJKBSHBD/wNpqkYyI+0CeqBMDLvdUL7Pj3hYkG/Dn51m8FD
-	 DVuyhlMFKuFrDI5IRAp4n2uRLqgeCxTayoz6teec5jORL7XhYW9s6jFWSkPHVbbBFh
-	 TzCoEE/kioqpOM1R6lZpd7mKTxu+zJS7Y1EYW64k=
+	b=SIQ5tEsNkrSEnhSPtApPKzWtWHsOGcwBEYQqqejqRbSu11GsZHIjMC89iDB8hj74m
+	 FcVSp4xELGYYaVGwuXRphZonbDh4DiMWsNCFzV4/k6E0vO9oOZHCSYMo4EEBj3m90r
+	 yEF28VXgg6TdLF81AMjcc0w1MhyCXr6csx9uoJ3o=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 531ABF80116;
-	Wed, 20 Apr 2022 04:31:02 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 426CAF80217;
+	Wed, 20 Apr 2022 04:33:08 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 942D0F80125; Wed, 20 Apr 2022 04:30:59 +0200 (CEST)
-Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
+ id 4D900F800F8; Wed, 20 Apr 2022 04:33:06 +0200 (CEST)
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 3CF4DF800C1
- for <alsa-devel@alsa-project.org>; Wed, 20 Apr 2022 04:30:51 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3CF4DF800C1
+ by alsa1.perex.cz (Postfix) with ESMTPS id 97DAFF800F8
+ for <alsa-devel@alsa-project.org>; Wed, 20 Apr 2022 04:33:00 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 97DAFF800F8
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="I6p+QkaZ"
+ header.b="FNvfq8lz"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1650421853; x=1681957853;
+ t=1650421983; x=1681957983;
  h=from:to:cc:subject:date:message-id;
- bh=2x5p0qshyNJJblwHIKzMWnvRCa7FvV22Ri0Wm88vg/s=;
- b=I6p+QkaZjgUsGwoUULBMDvVzqqcRRORNGRAiDWNgwejGFZ8dajmO1m1E
- OBVsMiDBaBeCCouypEKYLfHztfi+GxJ//Cl5q2D5iOrxS6gmKmgf/ZAEa
- mZvzo1QqnnzgFPSpPO3f/X9f3xtBBjBBIT4g412X8m8z4qcpB7x4uPFKu
- jFioUTN5dewNnzqP3tS44gOKgzt+hzkwJT8ddZUqMtdlST5jnUYnc/1MI
- cZ4fZUHiu3gdkeChj+D2cFVAvpM+k6yKj/9bwKfpx4Gdid5TkwBE0nQQR
- 3W/a5I7DPQDaysoYspf2DfZgTLuL9KaemRhNlUkh3XO2fQkpOWpWo562b g==;
-X-IronPort-AV: E=McAfee;i="6400,9594,10322"; a="262778139"
-X-IronPort-AV: E=Sophos;i="5.90,274,1643702400"; d="scan'208";a="262778139"
+ bh=P/LF63BZojFF1TydFmx94mDoFedoUAjUhNq7cH5d2nc=;
+ b=FNvfq8lziaieFQwz+Q4YoW7p0i0GtnRcj3cLXxx3NjRfxxsVkqyZWPTO
+ jpolVWt3TKGQ4jzv7Hyr/17o1MEHbqpbf2UqtwLHu4tCWNQAVzxHh8Qab
+ usuRIYmhanyd3GTY7aI/J9+dbdOpGbAzedVz8CBvNo9ecx0asVbq125gU
+ mVqBFn/ydS0gZqXUka3rQcsnNrPZ10iG1FxwekHiwTegoC85h7lxAff3B
+ HEBTKrr/Ig82womJc9vqo1i5BcC9LlmHiyx4UTJQipL+TkDDGgGanfDnU
+ GuzhbfN8bdyp3NPFW8vkHpTb9498Noo8e0dO2AaSUS9gpuBEtP02aGrqx g==;
+X-IronPort-AV: E=McAfee;i="6400,9594,10322"; a="263384308"
+X-IronPort-AV: E=Sophos;i="5.90,274,1643702400"; d="scan'208";a="263384308"
 Received: from orsmga006.jf.intel.com ([10.7.209.51])
- by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 19 Apr 2022 19:30:49 -0700
-X-IronPort-AV: E=Sophos;i="5.90,274,1643702400"; d="scan'208";a="529554083"
+ by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 19 Apr 2022 19:32:58 -0700
+X-IronPort-AV: E=Sophos;i="5.90,274,1643702400"; d="scan'208";a="529554550"
 Received: from bard-ubuntu.sh.intel.com ([10.239.185.57])
  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 19 Apr 2022 19:30:46 -0700
+ 19 Apr 2022 19:32:55 -0700
 From: Bard Liao <yung-chuan.liao@linux.intel.com>
 To: alsa-devel@alsa-project.org,
 	vkoul@kernel.org
-Subject: [PATCH] soundwire: cadence: recheck device0 attachment after status
- change
-Date: Wed, 20 Apr 2022 10:30:39 +0800
-Message-Id: <20220420023039.14144-1-yung-chuan.liao@linux.intel.com>
+Subject: [PATCH 0/3] soundwire: pm runtime improvements
+Date: Wed, 20 Apr 2022 10:32:38 +0800
+Message-Id: <20220420023241.14335-1-yung-chuan.liao@linux.intel.com>
 X-Mailer: git-send-email 2.17.1
 Cc: vinod.koul@linaro.org, gregkh@linuxfoundation.org,
  pierre-louis.bossart@linux.intel.com, linux-kernel@vger.kernel.org,
@@ -80,103 +79,24 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+This series provides a solution to solve a corner case issue where the
+manager device may become pm_runtime active, but without ALSA/ASoC
+requesting any functionality from the peripherals. In this case, the
+hardware peripheral device will report as ATTACHED and its initialization
+routine will be executed. If this initialization routine initiates any
+sort of deferred processing, there is a possibility that the manager could
+suspend without the peripheral suspend sequence being invoked: from the
+pm_runtime framework perspective, the peripheral is *already* suspended.
 
-This patch adds a status check after device0 attachment to solve race
-conditions observed during attachment with multiple devices per link
+Pierre-Louis Bossart (3):
+  soundwire: intel: prevent pm_runtime resume prior to system suspend
+  soundwire: intel: disable WAKEEN in pm_runtime resume
+  soundwire: bus: pm_runtime_request_resume on peripheral attachment
 
-The sequence is the following
+ drivers/soundwire/bus.c   | 12 ++++++++++++
+ drivers/soundwire/intel.c |  6 ++++++
+ 2 files changed, 18 insertions(+)
 
-1) deviceA attaches as device0
-
-2) the hardware detects a device0 status change and throws an
- interrupt.
-
-3) the interrupt handler schedules the work function
-
-4) the workqueue starts, we read the status
-slave0 = cdns_readl(cdns, CDNS_MCP_SLAVE_INTSTAT0);
-slave1 = cdns_readl(cdns, CDNS_MCP_SLAVE_INTSTAT1);
-
-we deal with the status change and program deviceA device number to a
-non-zero value.
-
-5) deviceB attaches as device0, the device0 status seen by the
-hardware does not change.
-
-6) we clear the CDNS_MCP_SLAVE_INTSTAT0/1 registers -> we will never detect
-deviceB!
-
-This patch suggest re-checking in a loop the device0 status with a
-PING frame, i.e. using the real device0 status instead of information
-on status changes.
-
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Reviewed-by: Rander Wang <rander.wang@intel.com>
-Signed-off-by: Bard Liao <yung-chuan.liao@linux.intel.com>
----
- drivers/soundwire/cadence_master.c | 37 ++++++++++++++++++++++++++++++
- 1 file changed, 37 insertions(+)
-
-diff --git a/drivers/soundwire/cadence_master.c b/drivers/soundwire/cadence_master.c
-index 558390af44b6..47d59190a96e 100644
---- a/drivers/soundwire/cadence_master.c
-+++ b/drivers/soundwire/cadence_master.c
-@@ -959,6 +959,8 @@ static void cdns_update_slave_status_work(struct work_struct *work)
- 		container_of(work, struct sdw_cdns, work);
- 	u32 slave0, slave1;
- 	u64 slave_intstat;
-+	u32 device0_status;
-+	int retry_count = 0;
- 
- 	slave0 = cdns_readl(cdns, CDNS_MCP_SLAVE_INTSTAT0);
- 	slave1 = cdns_readl(cdns, CDNS_MCP_SLAVE_INTSTAT1);
-@@ -968,10 +970,45 @@ static void cdns_update_slave_status_work(struct work_struct *work)
- 
- 	dev_dbg_ratelimited(cdns->dev, "Slave status change: 0x%llx\n", slave_intstat);
- 
-+update_status:
- 	cdns_update_slave_status(cdns, slave_intstat);
- 	cdns_writel(cdns, CDNS_MCP_SLAVE_INTSTAT0, slave0);
- 	cdns_writel(cdns, CDNS_MCP_SLAVE_INTSTAT1, slave1);
- 
-+	/*
-+	 * When there is more than one peripheral per link, it's
-+	 * possible that a deviceB becomes attached after we deal with
-+	 * the attachment of deviceA. Since the hardware does a
-+	 * logical AND, the attachment of the second device does not
-+	 * change the status seen by the driver.
-+	 *
-+	 * In that case, clearing the registers above would result in
-+	 * the deviceB never being detected - until a change of status
-+	 * is observed on the bus.
-+	 *
-+	 * To avoid this race condition, re-check if any device0 needs
-+	 * attention with PING commands. There is no need to check for
-+	 * ALERTS since they are not allowed until a non-zero
-+	 * device_number is assigned.
-+	 */
-+
-+	device0_status = cdns_readl(cdns, CDNS_MCP_SLAVE_STAT);
-+	device0_status &= 3;
-+
-+	if (device0_status == SDW_SLAVE_ATTACHED) {
-+		if (retry_count++ < SDW_MAX_DEVICES) {
-+			dev_dbg_ratelimited(cdns->dev,
-+					    "Device0 detected after clearing status, iteration %d\n",
-+					    retry_count);
-+			slave_intstat = CDNS_MCP_SLAVE_INTSTAT_ATTACHED;
-+			goto update_status;
-+		} else {
-+			dev_err_ratelimited(cdns->dev,
-+					    "Device0 detected after %d iterations\n",
-+					    retry_count);
-+		}
-+	}
-+
- 	/* clear and unmask Slave interrupt now */
- 	cdns_writel(cdns, CDNS_MCP_INTSTAT, CDNS_MCP_INT_SLAVE_MASK);
- 	cdns_updatel(cdns, CDNS_MCP_INTMASK,
 -- 
 2.17.1
 
