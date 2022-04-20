@@ -4,74 +4,74 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8ABE3C433F5
-	for <alsa-devel@archiver.kernel.org>; Wed, 20 Apr 2022 15:25:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A84A5C433EF
+	for <alsa-devel@archiver.kernel.org>; Wed, 20 Apr 2022 16:19:02 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 8DD211ADF;
-	Wed, 20 Apr 2022 17:24:16 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8DD211ADF
+	by alsa0.perex.cz (Postfix) with ESMTPS id 516101AA7;
+	Wed, 20 Apr 2022 18:18:10 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 516101AA7
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1650468306;
-	bh=pTegFcEzPPzXHOlhThQwB50tWAx2IuniG5QgJSoNRBw=;
+	s=default; t=1650471540;
+	bh=EhDbwrptE+6g/UNMyxZeY6Wpjo5hANx3givZ6qDu5eU=;
 	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=F9/WeiDJGep0fI+B8vsELhemkXwgPNoHPbCw2o+VhJxKuFemSGIuUpL7ZPk4HzT6H
-	 kyZFYK13MZGF83lKhVbkg2UysO60vSVkg7N78HhA5qVNiUe0gdkh5G5EE5d+wkCMr4
-	 Pg99cXanO35ji1Sa2qj7qc4IVGrq07LUCh4XvVNw=
+	b=JTaoa1RorX7b9QswgXcIfn0WzpIrXY7pwCm30lyAnsZTvM0WIQUmqarst33LJc2oA
+	 T+vRCUxiEeTAdLDuipLHW71K/sCJaQnf2KfapvLAE68hFKOse95LjJKwCRe1W5qANX
+	 EhTa04j9S71zTs6N6Ej7WI/k9Ym3noKViX1xlpeg=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 1AAD6F800F8;
-	Wed, 20 Apr 2022 17:24:16 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id D8E10F80116;
+	Wed, 20 Apr 2022 18:18:09 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 36250F8010B; Wed, 20 Apr 2022 17:24:15 +0200 (CEST)
-Received: from ams.source.kernel.org (ams.source.kernel.org
- [IPv6:2604:1380:4601:e00::1])
+ id 45342F80125; Wed, 20 Apr 2022 18:18:08 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 0ED10F8010B;
- Wed, 20 Apr 2022 17:24:07 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0ED10F8010B
+ by alsa1.perex.cz (Postfix) with ESMTPS id 9B753F800C1
+ for <alsa-devel@alsa-project.org>; Wed, 20 Apr 2022 18:18:01 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9B753F800C1
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="vDjy4Cei"
+ header.b="BjuwlbUy"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by ams.source.kernel.org (Postfix) with ESMTPS id EBE43B81F95;
- Wed, 20 Apr 2022 15:24:06 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 79B52C385A1;
- Wed, 20 Apr 2022 15:24:02 +0000 (UTC)
+ by dfw.source.kernel.org (Postfix) with ESMTPS id 26426617F2;
+ Wed, 20 Apr 2022 16:17:59 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5BA40C385A1;
+ Wed, 20 Apr 2022 16:17:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1650468245;
- bh=pTegFcEzPPzXHOlhThQwB50tWAx2IuniG5QgJSoNRBw=;
+ s=k20201202; t=1650471478;
+ bh=EhDbwrptE+6g/UNMyxZeY6Wpjo5hANx3givZ6qDu5eU=;
  h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=vDjy4CeioT1M/pnJcfekxFqW5ZiVgGgJ4riZPiFjYyv5YRgdNXA2FU5IwW7dEsm10
- KuO08g4r4BCEqyGP6W7+e87bzcnrszXjrjMuR+G9AAU+x2gwKyN7acwx7C+giY7iYK
- McjEEGACHuMZboB671mbAjyvYrhWbTh98YCJI9RepNSU2DO4qyAnO8m0VQQ/C/CSQz
- VUWuFYZC0KLt5+oI9olTL2IL0dLsnFSXvHuKv1cHnCMZGYXkEhesEcoOv6cFHwgruA
- Zng0osQR/cnHAQ857cuBLQ3XEggOsvi0r0GkucgosS6A1yYXgfpFeV2l2p+0FQTY6U
- PiicTLOhar3CQ==
-Date: Wed, 20 Apr 2022 16:23:57 +0100
+ b=BjuwlbUya/ODyQ+lJKPf48cAPLfu1TguU7l3LDcpoOZRrnDe0LBLc5NFEOhG3X6Gx
+ 2JmIjdUp8RecbbS1p7MaTTvG9vWmTMuUT02waChGYWVbgRHveDCZPc0nTvdMqIV8qw
+ LOVRmJWoiKJ629an68VeBXQe02lYhXh9DcgZgKpbBLl+SAISA9QGmTuVkCKZ59vMrY
+ UrSS82gbB4IFUm/7hVrgB9O2W50hSb+UNQ5UhOLIE3CE5nCDXEGNAqtY+sATJZINqp
+ 5Dv3+O3JQFnwr2qYE6vAzMGpbphWAPeUNi6s8FRwb8BK5rLRzCbViL48xbmaQVakPU
+ D+hwhq9Qa8TEQ==
+Date: Wed, 20 Apr 2022 17:17:50 +0100
 From: Mark Brown <broonie@kernel.org>
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH] ASoC: SOF: using pm_runtime_resume_and_get to simplify
- the code
-Message-ID: <YmAljQjpLCoBv+nj@sirena.org.uk>
-References: <20220420030315.2575691-1-chi.minghao@zte.com.cn>
- <78c7edc3-f431-9735-238d-9aa2b45ec45e@linux.intel.com>
+To: Ryan Lee <ryan.lee.analog@gmail.com>
+Subject: Re: [PATCH 2/2] ASoC: max98396: add amplifier driver
+Message-ID: <YmAyLuZIT1zYfNeA@sirena.org.uk>
+References: <20220416004024.210418-1-ryan.lee.analog@gmail.com>
+ <20220416004024.210418-2-ryan.lee.analog@gmail.com>
 MIME-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature"; boundary="zeKpAx+TuuUhkCBw"
+ protocol="application/pgp-signature"; boundary="XSbHXvA7G1nFF4+/"
 Content-Disposition: inline
-In-Reply-To: <78c7edc3-f431-9735-238d-9aa2b45ec45e@linux.intel.com>
+In-Reply-To: <20220416004024.210418-2-ryan.lee.analog@gmail.com>
 X-Cookie: Will it improve my CASH FLOW?
-Cc: alsa-devel@alsa-project.org, kai.vehmanen@linux.intel.com,
- cgel.zte@gmail.com, Zeal Robot <zealci@zte.com.cn>, lgirdwood@gmail.com,
- Minghao Chi <chi.minghao@zte.com.cn>, ranjani.sridharan@linux.intel.com,
- daniel.baluta@nxp.com, linux-kernel@vger.kernel.org,
- sound-open-firmware@alsa-project.org
+Cc: drhodes@opensource.cirrus.com, pierre-louis.bossart@linux.intel.com,
+ alsa-devel@alsa-project.org, ckeepax@opensource.cirrus.com,
+ stephan@gerhold.net, tanureal@opensource.cirrus.com, hdegoede@redhat.com,
+ linux-kernel@vger.kernel.org, tiwai@suse.com, ryans.lee@analog.com,
+ lgirdwood@gmail.com, cy_huang@richtek.com, devicetree@vger.kernel.org,
+ robh+dt@kernel.org, srinivas.kandagatla@linaro.org, pbrobinson@gmail.com,
+ lukas.bulwahn@gmail.com, krzk+dt@kernel.org, arnd@arndb.de
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -88,43 +88,87 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
---zeKpAx+TuuUhkCBw
+--XSbHXvA7G1nFF4+/
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On Wed, Apr 20, 2022 at 08:28:31AM -0500, Pierre-Louis Bossart wrote:
-> On 4/19/22 22:03, cgel.zte@gmail.com wrote:
-> > From: Minghao Chi <chi.minghao@zte.com.cn>
+On Fri, Apr 15, 2022 at 05:40:24PM -0700, Ryan Lee wrote:
 
-> > Using pm_runtime_resume_and_get() to replace pm_runtime_get_sync and
-> > pm_runtime_put_noidle. This change is just to simplify the code, no
-> > actual functional changes.
+This looks mostly good - some issues below but nothing structural.
 
-> Well, maybe that's a simplification, but we've been using the same pattern for years now.
+> +	switch (fmt & SND_SOC_DAIFMT_INV_MASK) {
+> +	case SND_SOC_DAIFMT_NB_NF:
+> +	case SND_SOC_DAIFMT_NB_IF:
+> +		break;
 
-> Is there really a clear direction to use this new function?
+One of these must be wrong - the device needs to know if it's handling a
+normal or inverted frame clock, otherwise the audio will be corrupted. =20
 
-It seems like a much better pattern and there's been a steady stream of
-conversion patches.  The whole get/idle thing is pretty much just sharp
-edges.
+> +static int max98396_mux_put(struct snd_kcontrol *kcontrol,
+> +			    struct snd_ctl_elem_value *ucontrol)
+> +{
+> +	struct snd_soc_component *component =3D
+> +		snd_soc_dapm_kcontrol_component(kcontrol);
+> +	struct snd_soc_dapm_context *dapm =3D snd_soc_dapm_kcontrol_dapm(kcontr=
+ol);
+> +	struct max98396_priv *max98396 =3D snd_soc_component_get_drvdata(compon=
+ent);
+> +	struct soc_enum *e =3D (struct soc_enum *)kcontrol->private_value;
+> +	unsigned int *item =3D ucontrol->value.enumerated.item;
+> +	int reg, val;
+> +
+> +	if (item[0] >=3D e->items)
+> +		return -EINVAL;
+> +
+> +	val =3D snd_soc_enum_item_to_val(e, item[0]) << e->shift_l;
+> +
+> +	if (max98396->device_id =3D=3D CODEC_TYPE_MAX98396)
+> +		reg =3D MAX98396_R2055_PCM_RX_SRC1;
+> +	else
+> +		reg =3D MAX98397_R2056_PCM_RX_SRC1;
+> +
+> +	regmap_update_bits(max98396->regmap, reg,
+> +			   MAX98396_PCM_RX_MASK, val);
+> +
+> +	snd_soc_dapm_mux_update_power(dapm, kcontrol, item[0], e, NULL);
+> +
+> +	return 0;
+> +}
 
-> the overwhelming majority of drivers in sound/soc still rely on the pm_runtime_get_sync (111 v. 7).
+This should return 1 if the value changed - you should get an error
+reported by mixer-test from selftests if you run them on a sound card
+with the driver.
 
-We'll get there I'm sure.
+> +	/* L/R mix configuration */
+> +	if (max98396->device_id =3D=3D CODEC_TYPE_MAX98396) {
+> +		regmap_write(max98396->regmap,
+> +			     MAX98396_R2055_PCM_RX_SRC1, 0x02);
+> +		regmap_write(max98396->regmap,
+> +			     MAX98396_R2056_PCM_RX_SRC2, 0x10);
+> +	} else {
+> +		regmap_write(max98396->regmap,
+> +			     MAX98397_R2056_PCM_RX_SRC1, 0x02);
+> +		regmap_write(max98396->regmap,
+> +			     MAX98397_R2057_PCM_RX_SRC2, 0x10);
+> +	}
 
---zeKpAx+TuuUhkCBw
+Shouldn't these be user controllable?  Most of the setup being done here
+looks system specific, especially the routing stuff.
+
+--XSbHXvA7G1nFF4+/
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmJgJYwACgkQJNaLcl1U
-h9ByVAf8DXE7lOFokxmahlu7hkfvPBsSrIveu11ngt9J9BUWxMgtsaM8uX7VcAEl
-7si3QcSbzKxs4nTCChbLWU8ok7JZ06ArH2cKnKlDyeEC4u4nvUchV5CV3BkxrnKR
-y/afCq90x9JXGnBD3UzdYDR33Myi6EQZ/mjIB3bM7Mgvf1O5ELCHruTkBdQADnTJ
-gOgYg3AEGyQQCeDNJfLN4Ss8h0ofay9PGoYs9ibb0jnMP/qCfL9Z0Upo/KmfivHn
-Zr9U4JasNeArdoGexSCe0Z0jyZlInbX2xqQBa03XFo6lzI2NAZzsyPSj6wprDgXR
-h1QIOFvzTsQWTKbcXYd6wEIgbgI0Rw==
-=qioF
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmJgMi4ACgkQJNaLcl1U
+h9DICQf/bKSmtrhcu8wSY0tnSjL1Lf/Ayrnni4M6IW2WY3KTpURARCts6AIN1ScG
+tt/uv2U+YP2eoQuGJY+Ou4qgMe7IHLOfV8Ymg5MMJLPrbpgEuzDVoMQj6ZwjoKDz
+iw6Ig0TfsjJ/3OLbHbKe4Oz7qWaGZzZXWWGQeQflYc7enuSO6cyUG/Wd19Gl3476
+/DZ4m/IR944lGU0nHrmX17Bdo1sT/8Psfe1ZLJG7VC6Pp73OhQRWG66yNICgx+VE
+iqlVHjti/NNMRRdCjWtbSRwTL8bMzjavUSti96yWhEpsSEuZpOH9w09D3PIRf7N1
+VNSreXJzFQH7U60iPsQjKtdqvNRBOQ==
+=reW6
 -----END PGP SIGNATURE-----
 
---zeKpAx+TuuUhkCBw--
+--XSbHXvA7G1nFF4+/--
