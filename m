@@ -4,69 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C3592C433F5
-	for <alsa-devel@archiver.kernel.org>; Wed, 20 Apr 2022 21:42:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 015C1C433EF
+	for <alsa-devel@archiver.kernel.org>; Wed, 20 Apr 2022 21:42:39 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E0F9D1B43;
-	Wed, 20 Apr 2022 23:41:26 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E0F9D1B43
+	by alsa0.perex.cz (Postfix) with ESMTPS id E8FB41B4D;
+	Wed, 20 Apr 2022 23:41:47 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E8FB41B4D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1650490937;
-	bh=KsMvdME4XDrshuTxLf+7wXfZz1rrGdfPnQhfWj9JPSI=;
+	s=default; t=1650490958;
+	bh=gvn5BSmC9Jsd1/qMym3y+oaL74DaveOcfZLSgIjczxs=;
 	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=qajuFIWwWbf1hx6VLIyX/KevxR7OlYRx7CmaPktKlz+LY2tmIvLYCN28h+G5uFB7m
-	 y01oP+kqUJfraKg3JVCoPVncAVDHBzSienxOGLEbhsW1S1VkOfXzDkoiMbxiKdLlcC
-	 caB5W9YsEdxKGcM5TtHEtqJxHRi86TeQlB2RKxuQ=
+	b=T6ctF9joUb0A5FkYFpZPUSdrB5TeX8tE4A0QA0XIEL9CNRhmdG/tVDknV9HGlcgM1
+	 dyAkev3JbT85sYvelIXKb+nH4q6D9EWEy7Ta54bI8X2YRep/Ps2IqAhj/vv48XeHwF
+	 fOmT+W8NavoTEwlICtiwio16aLuGnM6o9ybgujb4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 0AB8AF80254;
-	Wed, 20 Apr 2022 23:40:56 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 91F5AF80508;
+	Wed, 20 Apr 2022 23:41:02 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id C56ABF80125; Wed, 20 Apr 2022 23:40:53 +0200 (CEST)
-Received: from ams.source.kernel.org (ams.source.kernel.org
- [IPv6:2604:1380:4601:e00::1])
+ id 4DCBAF80506; Wed, 20 Apr 2022 23:40:57 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org
+ [IPv6:2604:1380:4641:c500::1])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id CEA51F80116
- for <alsa-devel@alsa-project.org>; Wed, 20 Apr 2022 23:40:49 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CEA51F80116
+ by alsa1.perex.cz (Postfix) with ESMTPS id E5A95F800C1
+ for <alsa-devel@alsa-project.org>; Wed, 20 Apr 2022 23:40:53 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E5A95F800C1
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="MFWFHg1f"
+ header.b="cif8fJwX"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by ams.source.kernel.org (Postfix) with ESMTPS id 15690B82194;
+ by dfw.source.kernel.org (Postfix) with ESMTPS id E153B61856;
+ Wed, 20 Apr 2022 21:40:50 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 80299C385A0;
  Wed, 20 Apr 2022 21:40:48 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B585AC385A0;
- Wed, 20 Apr 2022 21:40:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1650490846;
- bh=KsMvdME4XDrshuTxLf+7wXfZz1rrGdfPnQhfWj9JPSI=;
+ s=k20201202; t=1650490850;
+ bh=gvn5BSmC9Jsd1/qMym3y+oaL74DaveOcfZLSgIjczxs=;
  h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=MFWFHg1fhGAsw7+oGMYk+DskaYZwS88eBsaLFL8I3wj4rAN6raKm+xl8FvS3790dn
- tdqPxcMQUY+GFJ9Pq5LQ9qu5lcaIZCf1/Lwp1xs8iEFGSfYP6gWHD3nu9aWoxycpOe
- GU/hByXp1n+avAUekSV/Gg/t0ehkiA55FrK4i0nw3W++qIP5y7kpcHFKHTUx6At2RY
- o6zrztIWyD100YfSicXV5alImCtZyPWQGdePs+nWN6ME7t1X70C3TFKRh90+AstGdW
- dnFldCOtAFStrtJgxu7kYJbcDB6S/YNxXI0b1NKyP55eO1JB1qZypG5T9La1CIZkwb
- m9AB4Xe3G6+wg==
+ b=cif8fJwXIv+c+0lzRiwin91dbAUesYiiL3gDZCK6bJttroQMK6hwk/okrzEpqfk7a
+ QQKxFs/2a9mqroRCMrkXKCEN6Y/uC2Kh0xLL39zhvr2CJf/qUhd5diAUtuuonu0xnP
+ 9FfMZZL+TUTT1/xx7JPjM8vtl5LK/LgCE4X2xYAMVeu2AYCj/nlrgEMVT2ijYJ8gDF
+ WH/pGVgE9nKct/GlBXw6jyXs50LCfUlSS3CNUex9XY9GKcWECiO3rfk/ZH0s53Ev6t
+ YsSXTPSLhFmqYcvJt4GKFGBzrIktgwvEfUFbNimZE3EfWnFToRnyVKs1lVnlNalOWJ
+ pOY6Wl16WC/dA==
 From: Mark Brown <broonie@kernel.org>
-To: cezary.rojewski@intel.com, alsa-devel@alsa-project.org
-In-Reply-To: <20220331135246.993089-1-cezary.rojewski@intel.com>
-References: <20220331135246.993089-1-cezary.rojewski@intel.com>
-Subject: Re: [PATCH v2 00/14] ASoC: Intel: avs: Topology and path management
-Message-Id: <165049084428.138067.13288505967667485632.b4-ty@kernel.org>
-Date: Wed, 20 Apr 2022 22:40:44 +0100
+To: Sascha Hauer <s.hauer@pengutronix.de>, alsa-devel@alsa-project.org
+In-Reply-To: <20220414162249.3934543-1-s.hauer@pengutronix.de>
+References: <20220414162249.3934543-1-s.hauer@pengutronix.de>
+Subject: Re: [PATCH v6 00/21] ASoC: fsl_micfil: Driver updates
+Message-Id: <165049084823.138067.11607241649692641258.b4-ty@kernel.org>
+Date: Wed, 20 Apr 2022 22:40:48 +0100
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: upstream@semihalf.com, harshapriya.n@intel.com, rad@semihalf.com,
- tiwai@suse.com, pierre-louis.bossart@linux.intel.com, hdegoede@redhat.com,
- amadeuszx.slawinski@linux.intel.com, cujomalainey@chromium.org,
- lma@semihalf.com
+Cc: Xiubo.Lee@gmail.com, festevam@gmail.com, vkoul@kernel.org,
+ linux-imx@nxp.com, kernel@pengutronix.de, dmaengine@vger.kernel.org,
+ shengjiu.wang@gmail.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -82,15 +81,14 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Thu, 31 Mar 2022 15:52:32 +0200, Cezary Rojewski wrote:
-> A continuation of avs-driver initial series [1]. This chapter covers
-> path management and topology parsing part which was ealier path of the
-> main series. The two patches that represented these two subjects in the
-> initial series, have been split into many to allow for easier review and
-> discussion.
+On Thu, 14 Apr 2022 18:22:28 +0200, Sascha Hauer wrote:
+> I added one more ack from Shengjiu Wang, but other than that it's just a
+> resend with +Cc: Mark Brown
 > 
-> AVS topology is split into two major parts: dictionaries - found within
-> ASoC topology manifest - and path templates.
+> Sascha
+> 
+> Changes since v5:
+> - Add one more ack from Shengjiu Wang
 > 
 > [...]
 
@@ -100,34 +98,48 @@ Applied to
 
 Thanks!
 
-[01/14] ASoC: Intel: avs: Declare vendor tokens
-        commit: 99a15348d5842b3c1f95220dc9b119ee0fe0d81b
-[02/14] ASoC: Intel: avs: Add topology parsing infrastructure
-        commit: 34ae2cd536738affaa2c2f32be23aea229b3c309
-[03/14] ASoC: Intel: avs: Parse module-extension tuples
-        commit: 9e85ec401d038b43d9d6ad8e3f488f865404bab5
-[04/14] ASoC: Intel: avs: Parse pplcfg and binding tuples
-        commit: 1fba20364318819ecedab2d0f6a68a038f4f47c3
-[05/14] ASoC: Intel: avs: Parse pipeline and module tuples
-        commit: 276b83c807a2bc2a8d9874a92b7fb7811c2df8b2
-[06/14] ASoC: Intel: avs: Parse path and path templates tuples
-        commit: eee475bb1ca71e963a51c20cc0f3e7c7b1cd2ba0
-[07/14] ASoC: Intel: avs: Add topology loading operations
-        commit: d73d1b67ff71e39bb3a04596744fc83047e68a94
-[08/14] ASoC: Intel: avs: Support link_mask formatted string
-        commit: d48c1ada577588e769b26c3dea0a45e8856bc343
-[09/14] ASoC: Intel: avs: Declare path and its components
-        commit: f61ad1e9568c854ea49a2f58cf2a0b2877cfad33
-[10/14] ASoC: Intel: avs: Path creation and freeing
-        commit: 0ef882074eb1fee25083387ea6bc6669d0e24a85
-[11/14] ASoC: Intel: avs: Path state management
-        commit: c96059993f939fe04427164fb99a32ace8d97f4e
-[12/14] ASoC: Intel: avs: Arm paths after creating them
-        commit: 84a99908fc7b988067e927834575df42707ec024
-[13/14] ASoC: Intel: avs: Prepare modules before bindings them
-        commit: 435e25730fe7b3a4e4a8e66028e39597b2524f0c
-[14/14] ASoC: Intel: avs: Configure modules according to their type
-        commit: 274d79e5187558078fcf107445fe56ab2fbe4c97
+[01/21] ASoC: fsl_micfil: Drop unnecessary register read
+        commit: c808e277bcdfce37aed80a443be305ac1aec1623
+[02/21] ASoC: fsl_micfil: Drop unused register read
+        commit: 384672e3b7af65aaebb794a6d1a77bb975a10678
+[03/21] ASoC: fsl_micfil: drop fsl_micfil_set_mclk_rate()
+        commit: 3ff84e3dd180c368981b2d58ed50f17a47471828
+[04/21] ASoC: fsl_micfil: do not define SHIFT/MASK for single bits
+        commit: bd2cffd10d79eb9280cb8f5b7cb441f206c1e6ac
+[05/21] ASoC: fsl_micfil: use GENMASK to define register bit fields
+        commit: 17f2142bae4b6f2e27f19ce57d79fc42ba5ef659
+[06/21] ASoC: fsl_micfil: use clear/set bits
+        commit: d46c2127ae8e10378213f71abe4fe88adb17549c
+[07/21] ASoC: fsl_micfil: drop error messages from failed register accesses
+        commit: 2c602c7ef9ef08835f2e3e0c438d10b7142d6959
+[08/21] ASoC: fsl_micfil: drop unused variables
+        commit: 819dc38b93e7e0606d71dde80896c139afe7ce48
+[09/21] dmaengine: imx: Move header to include/dma/
+        commit: c6547c2ed0e1487c91983faccad841611ab6a783
+[10/21] dmaengine: imx-sdma: error out on unsupported transfer types
+        commit: 625d8936c3378016ec8c480a00432034bcb813c9
+[11/21] dmaengine: imx-sdma: Add multi fifo support
+        commit: 824a0a02cd74776461aaa30d792b1ed9111c9aa5
+[12/21] ASoC: fsl_micfil: add multi fifo support
+        commit: 2495ba26e838176c3b572b2b1592d75b4b963692
+[13/21] ASoC: fsl_micfil: use define for OSR default value
+        commit: fb855b8d46a17c9bb5562e315158de52b18b7e62
+[14/21] ASoC: fsl_micfil: Drop get_pdm_clk()
+        commit: be6aeee2eb82e5ae57f8cc613c0b6cc3e8d33664
+[15/21] ASoC: fsl_micfil: simplify clock setting
+        commit: e8936f6925c1174242e643e0aa0646359c192fe2
+[16/21] ASoC: fsl_micfil: rework quality setting
+        commit: bea1d61d5892083551f92818e964801baabd95a9
+[17/21] ASoC: fsl_micfil: drop unused include
+        commit: dcc4301584abcf692fbe4836b01303c4b4cdef46
+[18/21] ASoC: fsl_micfil: drop only once used defines
+        commit: 99c08cdb6d51347ef3a56b8c8ec03e2d855b10c3
+[19/21] ASoC: fsl_micfil: drop support for undocumented property
+        commit: cbd090fa1fbf021e286f83d602e01ff3f0b726fd
+[20/21] ASoC: fsl_micfil: fold fsl_set_clock_params() into its only user
+        commit: cc5ef57d130d78c8c30062eef140c01ee47f346e
+[21/21] ASoC: fsl_micfil: Remove debug message
+        commit: a69d7f1bd373205bf539b9762423c8d526b9b9cb
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
