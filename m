@@ -4,67 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id AD8D8C433F5
-	for <alsa-devel@archiver.kernel.org>; Thu, 21 Apr 2022 17:25:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9B46BC433F5
+	for <alsa-devel@archiver.kernel.org>; Thu, 21 Apr 2022 17:26:20 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C5A3F1DA;
-	Thu, 21 Apr 2022 19:24:57 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C5A3F1DA
+	by alsa0.perex.cz (Postfix) with ESMTPS id EC77816B4;
+	Thu, 21 Apr 2022 19:25:28 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EC77816B4
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1650561947;
-	bh=5INB3gN/SAkPNZQ5UM6mylptmqZsyfxjKbIbVC01LrI=;
+	s=default; t=1650561979;
+	bh=Hm+I89eVrNyoJRbqZk91HLSchEvg3AO8RSEtWGOLKoo=;
 	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=VLRa+dCneR6T1sDbad2gPowlQ8Z9CD4zimaIa3RtbNL8j+8vaKPdnpdZA/xd+pQ6U
-	 BSkn1mqd9dQDZIYn/aESVK7RhW7aRbcgkhOTdckb2QYizus5X9vMTO1P/Vbx748kRs
-	 Q5AWrsqYDzGTIuD1/6BVDbYA/lMefksgfR4KKzFI=
+	b=DZpbGLMrTzF+r+U1sLzqScG31LH14NDTuK4ViG8ALuQh4/tQLWhY47G57pn5oK/uP
+	 k8w6dxg/ZPsg5Nv9nGWdnOAcQ12MNnZOQEdmD/NNtGQImP0he6dqKEfRaw5gk07wrI
+	 jrFDY3lwqtMM05Y3U6wQrtZhxFrGRWQxYFtvBolU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 5AD89F8047D;
-	Thu, 21 Apr 2022 19:24:57 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 3E57FF80279;
+	Thu, 21 Apr 2022 19:25:00 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 2BAD9F804C1; Thu, 21 Apr 2022 19:24:56 +0200 (CEST)
+ id 2B37BF804FB; Thu, 21 Apr 2022 19:24:59 +0200 (CEST)
 Received: from dfw.source.kernel.org (dfw.source.kernel.org
  [IPv6:2604:1380:4641:c500::1])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 8FED4F80125
- for <alsa-devel@alsa-project.org>; Thu, 21 Apr 2022 19:24:50 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8FED4F80125
+ by alsa1.perex.cz (Postfix) with ESMTPS id 45420F80279
+ for <alsa-devel@alsa-project.org>; Thu, 21 Apr 2022 19:24:56 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 45420F80279
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="WPluND3R"
+ header.b="Dfp6quhO"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id 1B7CD61D19;
- Thu, 21 Apr 2022 17:24:49 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 82287C385A5;
- Thu, 21 Apr 2022 17:24:47 +0000 (UTC)
+ by dfw.source.kernel.org (Postfix) with ESMTPS id EC82A61E08;
+ Thu, 21 Apr 2022 17:24:54 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9D343C385A9;
+ Thu, 21 Apr 2022 17:24:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1650561888;
- bh=5INB3gN/SAkPNZQ5UM6mylptmqZsyfxjKbIbVC01LrI=;
+ s=k20201202; t=1650561894;
+ bh=Hm+I89eVrNyoJRbqZk91HLSchEvg3AO8RSEtWGOLKoo=;
  h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=WPluND3RRWmNFYki8i0haBuoDbhRSwkLhpi0SBbKFVTEbEGu8TDF5smKJ1O+R3De1
- kbA3y25fHEhnDkgjIfmIq5FqmQI8M8qf4eHLS6dxI7uVkPMvd5PPoIKRpBUKKJTKLb
- 1G/a+rgqbrfME/0gluBI6SOMgxacAEBmM2F8WuotRi+ZsK5q2QI3QM38dpXMEMlAdv
- /6KAe2IVvjW4LOCgsZR2AV9bAPJCJLLOA7e+VWYxhAv3I3W3h1H5M6O0D3kFsFAnad
- vgnm/zHnj2GnDwMASKt1ShZn77gqEHH6yx7YU820rRUuOWm8/iSl3BSILjUMy8AJNa
- 1Pb4mYK/78eJg==
+ b=Dfp6quhOYeuRtwn65OAUcbicpbFm9dCk/TRcoYo3F2AnU2dZ2xMcu/vrHPR1FxTlJ
+ rtsb+fxjit/c3C5VK/dqYk2/pjhX65t/mS55HIwkK1u5a+0+lx6WK7Yv0JBvvNBM4+
+ c7mh25GPsHFghTYwivjBKjq4+ab/sge/cR2osOb2Mo8q6GvwFdm6s8vkrYzoKznHw3
+ zXM8li55buc9pBP9m/7f3M/GxdwfMUZf1nJr4iTVctng5j2MM9JXZILo1AxCUyYIl/
+ PHEgPldmTCzr6duwXjf0g2EubiHqh+z8sShkX3M/W8Hga4oYgE7QC+INs+rdaFYW2p
+ iHYWjRFV2zPRA==
 From: Mark Brown <broonie@kernel.org>
-To: robh+dt@kernel.org, steve.lee.analog@gmail.com, lgirdwood@gmail.com
-In-Reply-To: <20220311132906.32292-1-steve.lee.analog@gmail.com>
-References: <20220311132906.32292-1-steve.lee.analog@gmail.com>
-Subject: Re: [V2 1/2] ASoC: max98390: Add reset gpio control
-Message-Id: <165056188725.376935.1518021217219450490.b4-ty@kernel.org>
-Date: Thu, 21 Apr 2022 18:24:47 +0100
+To: steve.lee.analog@gmail.com, lgirdwood@gmail.com, tiwai@suse.com,
+ linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, perex@perex.cz
+In-Reply-To: <20220420044900.2989-1-steve.lee.analog@gmail.com>
+References: <20220420044900.2989-1-steve.lee.analog@gmail.com>
+Subject: Re: [V4 1/2] ASoC: max98390: Add reset gpio control
+Message-Id: <165056189236.376935.16493956574599176087.b4-ty@kernel.org>
+Date: Thu, 21 Apr 2022 18:24:52 +0100
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
- linux-kernel@vger.kernel.org, ryans.lee@maximintegrated.com
+Cc: ryans.lee@analog.com, krzk@kernel.org, nuno.sa@analog.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -80,7 +80,7 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Fri, 11 Mar 2022 22:29:05 +0900, Steve Lee wrote:
+On Wed, 20 Apr 2022 13:48:59 +0900, Steve Lee wrote:
 >  Add reset gpio control to support RESET PIN connected to gpio.
 > 
 > 
