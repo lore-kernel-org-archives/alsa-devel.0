@@ -4,69 +4,87 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4892CC433F5
-	for <alsa-devel@archiver.kernel.org>; Thu, 21 Apr 2022 16:28:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3F4F1C433EF
+	for <alsa-devel@archiver.kernel.org>; Thu, 21 Apr 2022 16:30:14 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 7F7E81654;
-	Thu, 21 Apr 2022 18:27:18 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7F7E81654
+	by alsa0.perex.cz (Postfix) with ESMTPS id DB4751654;
+	Thu, 21 Apr 2022 18:29:21 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DB4751654
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1650558488;
-	bh=2zeSKabTRnMbxVgX4GI47xdJqfIOfUZjFYCbLwHBUQs=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=uQj8Fh4BhOQRxWcRMapBIjCrQMMUW5NLY68BiYS/rLtHVpqQKVawlcrWfKclFLlGS
-	 nLWSm/tJ3dN7e2OTQV8OwIW4t6igZpYNeuifUNLWd/MMly1nYi/ieSOWOOVQDQvJnN
-	 g4PUPc0c7hp/Q/2SxnIblOeKO+E5sJD5fEgX7qlg=
+	s=default; t=1650558611;
+	bh=GPA2eJSOAsJuxgsx3hYopaNOvAXCHZuUwk5FjjilgpI=;
+	h=References:From:To:Subject:Date:In-reply-to:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=m/IUpXs+zQQV39FB1K/DA8+8kDkhR/kPnothS4ly+acaNrapbWIGbSFdUOtBmbQxF
+	 fyz/i7DGVOMeAcnBd4omdLlNsZbzReHXB5Yl187XkkqtWSY1ZOjqztPKIMypqqiMPa
+	 Q9XJsirhjysnwHxwf+8KgLJ1SEh6TxD7ihp0gNJo=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 089E8F804C1;
-	Thu, 21 Apr 2022 18:27:02 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 7D686F80125;
+	Thu, 21 Apr 2022 18:29:21 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 4548EF804DA; Thu, 21 Apr 2022 18:27:00 +0200 (CEST)
-Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 187DDF8032D; Thu, 21 Apr 2022 18:29:20 +0200 (CEST)
+Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com
+ [IPv6:2a00:1450:4864:20::332])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 4B754F8032D
- for <alsa-devel@alsa-project.org>; Thu, 21 Apr 2022 18:26:52 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4B754F8032D
+ by alsa1.perex.cz (Postfix) with ESMTPS id 6E283F80125
+ for <alsa-devel@alsa-project.org>; Thu, 21 Apr 2022 18:29:11 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6E283F80125
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="TzGOM0Ku"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
- d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1650558414; x=1682094414;
- h=from:to:cc:subject:date:message-id:mime-version:
- content-transfer-encoding;
- bh=2zeSKabTRnMbxVgX4GI47xdJqfIOfUZjFYCbLwHBUQs=;
- b=TzGOM0Ku8hmkUdWoZUiVLQFLrT0MYMTbsj/L43/iGIsNkivTxsFW9C6x
- x1ANCgz+Zx0JcOpczgQhC9NQM1UhI+EeVPVjSXPFEbn9OFG0mpCVs14qz
- QKN7uUuLnTBPZVScu7V2Z0xSQs/4/37vAxX0/QGMxQV108B6VIWaFlkFe
- AN36ierouTmQRaH/nEcOP6gkEy7+xTrYKR4xYNRQVd5C3X9fOgXchzNoP
- er/6M57f/4LMspt8LlhKZP9JjHuwGC46V7ZXMB4ihkSmn7NIusNkoEN2T
- pjZGV38ZRMBzBGkaQeyWDRgo54v7K5+ybzGKwr83h7G+UEU3YViQwCJDd A==;
-X-IronPort-AV: E=McAfee;i="6400,9594,10324"; a="263874455"
-X-IronPort-AV: E=Sophos;i="5.90,279,1643702400"; d="scan'208";a="263874455"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
- by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 21 Apr 2022 09:26:50 -0700
-X-IronPort-AV: E=Sophos;i="5.90,279,1643702400"; d="scan'208";a="511144619"
-Received: from qingsu-mobl.amr.corp.intel.com (HELO
- pbossart-mobl3.amr.corp.intel.com) ([10.212.148.250])
- by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 21 Apr 2022 09:26:50 -0700
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-To: alsa-devel@alsa-project.org
-Subject: [PATCH] ASoC: SOF: bump SOF_ABI_MINOR
-Date: Thu, 21 Apr 2022 11:26:40 -0500
-Message-Id: <20220421162640.302311-1-pierre-louis.bossart@linux.intel.com>
-X-Mailer: git-send-email 2.30.2
+ dkim=pass (2048-bit key) header.d=baylibre-com.20210112.gappssmtp.com
+ header.i=@baylibre-com.20210112.gappssmtp.com header.b="kiRnNazc"
+Received: by mail-wm1-x332.google.com with SMTP id bg25so2819171wmb.4
+ for <alsa-devel@alsa-project.org>; Thu, 21 Apr 2022 09:29:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=baylibre-com.20210112.gappssmtp.com; s=20210112;
+ h=references:user-agent:from:to:cc:subject:date:in-reply-to
+ :message-id:mime-version;
+ bh=vrEs/2pEILP9d1ISDp34/8wtCsJViJ6D/+Hs3vTnWsI=;
+ b=kiRnNazcdTuefZZxff/Lv7MqYKxC82ka2qvvv0JcQaQ5eXgb3C1Td1A6Yjqd9oSHjW
+ cMbnQC3KtAdteb6sdIvj+QXOwx4ornXjnKbeU5vSxw0jCC17VrGZfmOrM4sXwlVVndEH
+ JPAKQS8ZxSqC6VQv1Z9KYKx9e6oAIIg3+US9C7QWCuam4Z+S244I7ecKXVgyO9+PsZvW
+ esjoVzMxM+KA87KPOtThU5FRSN9h4WqEZXzc7y2IlFAi9oejv6HKiIsgCkuGcnDbUzeV
+ qWmJ6gqtGwT9I3hN8m64D4R4cyImSkG161BjeGoRFRYFJOzDk+XHe3yAisQDlDb7PhdY
+ Xa9g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=x-gm-message-state:references:user-agent:from:to:cc:subject:date
+ :in-reply-to:message-id:mime-version;
+ bh=vrEs/2pEILP9d1ISDp34/8wtCsJViJ6D/+Hs3vTnWsI=;
+ b=Nz3+fdleVabpTaD/04hISTeip0keFemoN9EeUykOrIkYGxdxgVnksRiI6E9b7+GIp5
+ BK+wUOIFeDojyiCZ6NUm7/yDk6dyHXmTp7bVu9u0Xi0g12mMUfrlGRhPueZr0+t3xJGb
+ cBwC1jokrRvpLPmMtX3IaB/bFr2qf87+n138OdJ8GTD8R1ve44E3qjhcMHeS0Kt65lqq
+ 7IAxGECfHLmTfesONcsVJBHLARpaFUkM3c5oPYaw2O4NHxSYhN5NI8ysgSRlTyINFKsh
+ ynOBNI/gAqPqWUmaApIgxqoONYjK+xePmB0iVxIgiMdTDeH3gcUHHsEpzXE36iEFp8+p
+ SgMw==
+X-Gm-Message-State: AOAM531LS8YQP7Ouk62ZgfzRy97KsKdABVbNW+W8JFoIveVkZpbznqUy
+ SyhOjd5vzch8kHIFSqEdvzJ8GA==
+X-Google-Smtp-Source: ABdhPJyQaNKtS9rLLBu7H6jeDjbWV36SMhQuTvDDlstfthSmDE74vKvCmC4ESH0lxl25edccn/nitw==
+X-Received: by 2002:a05:600c:a06:b0:37b:fdd8:4f8 with SMTP id
+ z6-20020a05600c0a0600b0037bfdd804f8mr9664089wmp.41.1650558550287; 
+ Thu, 21 Apr 2022 09:29:10 -0700 (PDT)
+Received: from localhost (laubervilliers-658-1-213-31.w90-63.abo.wanadoo.fr.
+ [90.63.244.31]) by smtp.gmail.com with ESMTPSA id
+ bg20-20020a05600c3c9400b0037fa5c422c8sm2576235wmb.48.2022.04.21.09.29.09
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Thu, 21 Apr 2022 09:29:09 -0700 (PDT)
+References: <20220421155725.2589089-1-narmstrong@baylibre.com>
+User-agent: mu4e 1.6.10; emacs 27.1
+From: Jerome Brunet <jbrunet@baylibre.com>
+To: Neil Armstrong <narmstrong@baylibre.com>, broonie@kernel.org
+Subject: Re: [PATCH 1/2] Revert "ASoC: meson: axg-tdm-interface: manage
+ formatters in trigger"
+Date: Thu, 21 Apr 2022 18:17:02 +0200
+In-reply-to: <20220421155725.2589089-1-narmstrong@baylibre.com>
+Message-ID: <1jwnfixuwc.fsf@starbuckisacylon.baylibre.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: tiwai@suse.de, broonie@kernel.org, Daniel Baluta <daniel.baluta@nxp.com>,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- Kai Vehmanen <kai.vehmanen@linux.intel.com>
+Content-Type: text/plain
+Cc: linux-amlogic@lists.infradead.org, alsa-devel@alsa-project.org,
+ linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ Dmitry Shmidt <dimitrysh@google.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -82,30 +100,33 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Commit a0f84dfb3f6d9 ("ASoC: SOF: IPC: dai: Expand DAI_CONFIG IPC flags")
-did not update the SOF_ABI_MINOR, bump to version 20 before new
-changes are added.
 
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Reviewed-by: Daniel Baluta <daniel.baluta@nxp.com>
-Reviewed-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
----
- include/uapi/sound/sof/abi.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+On Thu 21 Apr 2022 at 17:57, Neil Armstrong <narmstrong@baylibre.com> wrote:
 
-diff --git a/include/uapi/sound/sof/abi.h b/include/uapi/sound/sof/abi.h
-index e052653a6e4cc..42227d4cb92c5 100644
---- a/include/uapi/sound/sof/abi.h
-+++ b/include/uapi/sound/sof/abi.h
-@@ -26,7 +26,7 @@
- 
- /* SOF ABI version major, minor and patch numbers */
- #define SOF_ABI_MAJOR 3
--#define SOF_ABI_MINOR 19
-+#define SOF_ABI_MINOR 20
- #define SOF_ABI_PATCH 1
- 
- /* SOF ABI version number. Format within 32bit word is MMmmmppp */
--- 
-2.30.2
+> This reverts commit bf5e4887eeddb48480568466536aa08ec7f179a5 because
+> the following and required commit e138233e56e9829e65b6293887063a1a3ccb2d68
+> causes the following system crash when using audio:
+>  BUG: sleeping function called from invalid context at kernel/locking/mutex.c:282
+>
+> Reported-by: Dmitry Shmidt <dimitrysh@google.com>
+> Signed-off-by: Neil Armstrong <narmstrong@baylibre.com>
+
+For both:
+Acked-by: Jerome Brunet <jbrunet@baylibre.com>
+
+The main reason for the this was to be able to configure the start order
+between the DPCM Backend and Frontend. Only the trigger() callback has
+that capability for now.
+
+This HW require the BE to start before FE, otherwise channels get randomly
+shifted in the output stream if there is more than 2 slots on the link,
+mainly on the capture path.
+
+This HW require mutexes to handle the TDM formatters (because it uses
+the CCF API). This why I moved to non-atomic to use trigger(),
+forgetting that doing so would make period_elapsed() take a mutex from
+the IRQ ... :/
+
+To properly fix this, I'll need to extend ASoC so the prepare() callback
+BE/FE call order can also be configured.
 
