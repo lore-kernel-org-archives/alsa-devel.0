@@ -4,66 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 845E8C433F5
-	for <alsa-devel@archiver.kernel.org>; Thu, 21 Apr 2022 18:40:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0DF18C433F5
+	for <alsa-devel@archiver.kernel.org>; Thu, 21 Apr 2022 19:19:21 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0372E1616;
-	Thu, 21 Apr 2022 20:39:11 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0372E1616
+	by alsa0.perex.cz (Postfix) with ESMTPS id 62E3216A6;
+	Thu, 21 Apr 2022 21:18:29 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 62E3216A6
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1650566401;
-	bh=eZRFyMDmeIvRWEyQlHw0jVTUfhNriCOuiHUr3UhliUg=;
+	s=default; t=1650568759;
+	bh=Tiaf1YrjHFbQ7idZ8f26mXSY8SNXGAs2qrWKgJcjzFk=;
 	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=IcmiTaw1VTaTBtMLixrfQTbEavhrWIzY+PWh5fcmDlPX9C0l2k8Z5VNtYpojGxaGl
-	 WAq7tbgtUVbsvsjzijrtAFDAie+eGzw1N1KYUeU6IqA5NJJ80ll+t1okxN9H3i6UBL
-	 RMqW8EiYFI2dSDcLj6OWKSH0Q4zfir4FiJAsC4tQ=
+	b=s9Cglwnba4j2sRADz/1uoqQ0PnF9So61vOFtoLIvFXAQ7/v53OSy+TJavnWfc2HU0
+	 /FPB4zqg6MGcJeJ25XrBmZnhsgDH+8AEyMy2YVBCNXmwufWKmvwQPgwJrEATKNsHkt
+	 cN8NcQxR1UJwVIkzyxFml4/e2QPk0A3l5GLhImvA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 7E414F80279;
-	Thu, 21 Apr 2022 20:39:10 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id D217FF80279;
+	Thu, 21 Apr 2022 21:18:28 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 9B56BF8032D; Thu, 21 Apr 2022 20:39:08 +0200 (CEST)
-Received: from sin.source.kernel.org (sin.source.kernel.org
- [IPv6:2604:1380:40e1:4800::1])
+ id B03A6F800C1; Thu, 21 Apr 2022 21:18:25 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org
+ [IPv6:2604:1380:4641:c500::1])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id D4136F80125
- for <alsa-devel@alsa-project.org>; Thu, 21 Apr 2022 20:39:05 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D4136F80125
+ by alsa1.perex.cz (Postfix) with ESMTPS id 1F434F800C1
+ for <alsa-devel@alsa-project.org>; Thu, 21 Apr 2022 21:18:18 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1F434F800C1
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="A2kKhyPN"
+ header.b="M9AA9Wa1"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by sin.source.kernel.org (Postfix) with ESMTPS id DFF0FCE21D6;
- Thu, 21 Apr 2022 18:39:01 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 88601C385A5;
- Thu, 21 Apr 2022 18:38:59 +0000 (UTC)
+ by dfw.source.kernel.org (Postfix) with ESMTPS id D100661B86;
+ Thu, 21 Apr 2022 19:18:16 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 10275C385A1;
+ Thu, 21 Apr 2022 19:18:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1650566340;
- bh=eZRFyMDmeIvRWEyQlHw0jVTUfhNriCOuiHUr3UhliUg=;
+ s=k20201202; t=1650568696;
+ bh=Tiaf1YrjHFbQ7idZ8f26mXSY8SNXGAs2qrWKgJcjzFk=;
  h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=A2kKhyPN5zyu7ohqBffvwGzEDLlmArb5Y19O113IAqf7Vy0nhOUlkJ6Hk6dEB1ccf
- IWAAQMRBJJ1C+YzJj1LB31mQfpt4wiesLYNiPZH3cnBuMyDFzcSLhoG+5/ZDlOggDo
- gvI4faWycB8U3gDystpKN5GXFPG3WcNfaN4ujUR17+t3jSO3Ob8eukn5fRU+3sZ4f+
- 1tzzeY7zNjMdOgs/QB4XLNzb2/D4PrZN58BvvyKPmEBtfe+PPU2mqWg5EUwUIm0V6u
- nH0WAtKEpXkQyyVruhS4C5LWsTpjAR4tSzNg3VKpDjA5YCvZas7ep07w0iS4HfQ0ss
- dFQZYLe+9OO1A==
+ b=M9AA9Wa1Me31A1v5SFcA9HxsX2WvXFU3NKMWqk7TDfuJyC7cPqE/Y67Bdot+WTskU
+ M7wEtwyYlKHr83vx555ELy7fdGP4IMtVUc3+jrOLTjl9UnEaLvXU528Gcl1CLpzZuW
+ bGX1wgyJeeE68BeyjhdUSCSsw/DuPkajVefVdKst0764pccDkJqHhvNydXBu9wY79V
+ AmNZk073N9elOxz5l7BQvoYlwAxnBnVxR9k8ubTDqh2SzRLlhGyfljVImZ9p6ALBYy
+ 5/y0Twf1TWnMYwClB/iycgu13ptUitGf/u0bneDhVzDHee6gg6bO61Uor/u25lWMtr
+ 3mlwciihaMKag==
 From: Mark Brown <broonie@kernel.org>
-To: alsa-devel@alsa-project.org, pierre-louis.bossart@linux.intel.com
-In-Reply-To: <20220421165820.337207-1-pierre-louis.bossart@linux.intel.com>
-References: <20220421165820.337207-1-pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH v2 0/2] ASoC: SOF: AMD updates
-Message-Id: <165056633924.400654.15859497123792696051.b4-ty@kernel.org>
-Date: Thu, 21 Apr 2022 19:38:59 +0100
+To: pierre-louis.bossart@linux.intel.com, alsa-devel@alsa-project.org
+In-Reply-To: <20220421162328.302017-1-pierre-louis.bossart@linux.intel.com>
+References: <20220421162328.302017-1-pierre-louis.bossart@linux.intel.com>
+Subject: Re: [PATCH] ASoC: soc-ops: fix error handling
+Message-Id: <165056869476.409171.4830526217284820143.b4-ty@kernel.org>
+Date: Thu, 21 Apr 2022 20:18:14 +0100
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: tiwai@suse.de
+Cc: tiwai@suse.de, peter.ujfalusi@linux.intel.com,
+ yung-chuan.liao@linux.intel.com, rander.wang@intel.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -79,13 +80,13 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Thu, 21 Apr 2022 11:58:18 -0500, Pierre-Louis Bossart wrote:
-> these patches were originally submitted in the "ASoC: SOF:
-> AMD/Mediatek updates" series, but there was a bisect
-> issue on the first patch.
+On Thu, 21 Apr 2022 11:23:28 -0500, Pierre-Louis Bossart wrote:
+> cppcheck throws the following warning:
 > 
-> sound/soc/sof/amd/acp.c:176:29: error: unused variable ‘sdev’
-> [-Werror=unused-variable]
+> sound/soc/soc-ops.c:461:8: style: Variable 'ret' is assigned a value
+> that is never used. [unreadVariable]
+>    ret = err;
+>        ^
 > 
 > [...]
 
@@ -95,10 +96,8 @@ Applied to
 
 Thanks!
 
-[1/2] ASoC: SOF: amd: Add psp_mbox_ready() and psp_send_cmd() callback
-      commit: bbdcd3d590cad744db46cb94649833db3575df49
-[2/2] ASoC: SOF: amd: Use dedicated MBOX for ACP and PSP communication
-      commit: d2be77b382328b46a79635bfd9e959a96bb6ac29
+[1/1] ASoC: soc-ops: fix error handling
+      commit: eb5773201b1c5d603424bd21f161c8c2d1075b42
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
