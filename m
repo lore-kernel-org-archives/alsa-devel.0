@@ -4,66 +4,65 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9A802C433EF
-	for <alsa-devel@archiver.kernel.org>; Thu, 21 Apr 2022 17:26:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 13B53C433F5
+	for <alsa-devel@archiver.kernel.org>; Thu, 21 Apr 2022 17:27:07 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D52E316C1;
-	Thu, 21 Apr 2022 19:25:56 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D52E316C1
+	by alsa0.perex.cz (Postfix) with ESMTPS id 291E216A5;
+	Thu, 21 Apr 2022 19:26:15 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 291E216A5
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1650562006;
-	bh=vhR5HU9aDcrDAbJOy52MenOQ+cdKq7yEMCDh5DXsr34=;
+	s=default; t=1650562025;
+	bh=lrtzbEuKpZHOKWZb69274w108tG5SW6js9bDqJhKMWk=;
 	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=nj+xikhRSL6RD1OKpEtnt0rpsb4rNiqJQ32HB2dYDBVEIl6TvwnFHSCG6bTLDTbOh
-	 Isr5P4p2d6s3P5839Zw6bgXKkNO3tKRcLDnPmUrSMXopBjJMOgi/UCbqvIQ3A1R8mj
-	 Mi+iO+0fpCppWgL8LDeu0S9Nz5o/XHfAWQabNwNM=
+	b=dbxMAUb7O5Fw7sWRWO2BG2AE+PyGVL4k82BDp/HY/qEtkxwNzWE2o8gOy1uIWAko6
+	 K+Gy5YBpnD0FjK7hDzjBSi9prRC5K5XpjoMCLOOhtRIikB8tqebrN0R2bFQmxCtiLo
+	 YaQXWmopZFGBNvY3D902fkxDgRecEKKSW+blqe8o=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 27016F80507;
+	by alsa1.perex.cz (Postfix) with ESMTP id A2915F80516;
 	Thu, 21 Apr 2022 19:25:03 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 48C64F804FE; Thu, 21 Apr 2022 19:25:00 +0200 (CEST)
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+ id 5C508F804FE; Thu, 21 Apr 2022 19:25:01 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id ED7F7F8032D
- for <alsa-devel@alsa-project.org>; Thu, 21 Apr 2022 19:24:53 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz ED7F7F8032D
+ by alsa1.perex.cz (Postfix) with ESMTPS id D5E32F804F3
+ for <alsa-devel@alsa-project.org>; Thu, 21 Apr 2022 19:24:52 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D5E32F804F3
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="rsxKBatq"
+ header.b="ahCLEQeE"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by ams.source.kernel.org (Postfix) with ESMTPS id 7C13AB82874;
- Thu, 21 Apr 2022 17:24:53 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9F7B2C385A1;
+ by dfw.source.kernel.org (Postfix) with ESMTPS id BCD1D61E02;
  Thu, 21 Apr 2022 17:24:51 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 81C8BC385AA;
+ Thu, 21 Apr 2022 17:24:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1650561892;
- bh=vhR5HU9aDcrDAbJOy52MenOQ+cdKq7yEMCDh5DXsr34=;
+ s=k20201202; t=1650561891;
+ bh=lrtzbEuKpZHOKWZb69274w108tG5SW6js9bDqJhKMWk=;
  h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=rsxKBatq1SQC8IaLsZVTjolPqueHDxIYiS9p8peMJWhcSzVrg1eWvdOJqxFr/mrYS
- /QzmTHKsfjXXme75xCYIeQ0Xd+sUJh4HTrg8v9ljZp5dqO+T4b+T8UiAedz9LOXhnr
- K9nQDsFFcbzBJZ5r0lzEqD3FwLqnkZgefUzLicPMHLnkGbWGOKSyr1Vfezx315/+P1
- loctP5ZUljfAkQgjiONWuAx7SLDDoJTUPppC2Ix6sq2s1TBWZ78ys2RwMVidYD9iw0
- ypOLv+y8GmO7Zqw6yyFL7TbYTvZeRcqdbzaRnHLyAndVjssd1rQW5WGRDkwf5r9m5o
- wlNs0/K2wEi/w==
+ b=ahCLEQeEWecdDppJyN4yX4wzXGXPOnN2qh0BWfIV01vTSLRmk4Rsu+s4vULf60rWt
+ UG4Mien4mqL5K4eIMCqHKun7sNB0J0xoGfw+YlGUf9qQAnpGg4H8i8Y13qLwwIq/QU
+ ILvMrcqeRb8l9pW48N+5xhwzGgDOTOkzqNCeyERRHLK+M+PcYQD/KbAjfXs8KbNCrv
+ baOmOZJ3CovIQMzbqegMz42jt39a4NbbO2YXDhz0VZ3FO8904DXHQNTBRY5HkcS5tB
+ yWpZ/gP+T/ZBIHv1Jg0DJzOXqJdPzS8/3R4lw97BRekBXg6FG9Vqvm8vQVQvNBAQho
+ /T7p/Vj/qpsHQ==
 From: Mark Brown <broonie@kernel.org>
 To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-In-Reply-To: <87o80vgn5a.wl-kuninori.morimoto.gx@renesas.com>
-References: <87o80vgn5a.wl-kuninori.morimoto.gx@renesas.com>
-Subject: Re: [PATCH] ASoC: audio-graph-card2: indicate "Experimental stage"
- warning only when successed
-Message-Id: <165056189137.376935.16441068280224296214.b4-ty@kernel.org>
-Date: Thu, 21 Apr 2022 18:24:51 +0100
+In-Reply-To: <87pmlbgn5t.wl-kuninori.morimoto.gx@renesas.com>
+References: <87pmlbgn5t.wl-kuninori.morimoto.gx@renesas.com>
+Subject: Re: [PATCH] ASoC: rsnd: care return value from rsnd_node_fixed_index()
+Message-Id: <165056189024.376935.2442606345335558453.b4-ty@kernel.org>
+Date: Thu, 21 Apr 2022 18:24:50 +0100
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>, dan.carpenter@oracle.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -79,14 +78,14 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Thu, 21 Apr 2022 02:56:17 +0000, Kuninori Morimoto wrote:
+On Thu, 21 Apr 2022 02:55:58 +0000, Kuninori Morimoto wrote:
 > From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 > 
-> Because Sound Card needs many drivers to probe, current audio-graph-card2
-> will indicate "Experimental stage" at top of probe function even though
-> in case it gets -EPROBE_DEFER, thus it will be indicated many times.
+> Renesas Sound is very complex, and thus it needs to use
+> rsnd_node_fixed_index() to know enabled pin index.
 > 
-> This patch indicates it when probe was succeeded.
+> It returns error if strange pin was selected,
+> but some codes didn't check it.
 > 
 > [...]
 
@@ -96,8 +95,8 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: audio-graph-card2: indicate "Experimental stage" warning only when successed
-      commit: c1d97b866100f354c3381c756e8ea7c4d8f0ccbe
+[1/1] ASoC: rsnd: care return value from rsnd_node_fixed_index()
+      commit: d09a7db431c65aaa8303eb456439d1831ca2e6b4
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
