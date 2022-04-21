@@ -4,70 +4,73 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 61FF2C433F5
-	for <alsa-devel@archiver.kernel.org>; Thu, 21 Apr 2022 12:40:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3F2AFC433EF
+	for <alsa-devel@archiver.kernel.org>; Thu, 21 Apr 2022 12:40:20 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 6784518CE;
-	Thu, 21 Apr 2022 14:39:09 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6784518CE
+	by alsa0.perex.cz (Postfix) with ESMTPS id 1C16C18D0;
+	Thu, 21 Apr 2022 14:39:29 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1C16C18D0
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1650544799;
-	bh=mZV6jg/l9v3a4DV8qZCxa9Z/+AAEjmuRRW5FWEfYYuo=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=AdNz+96uvFin8m9KpANrQXsK+9GaszdIwq48ldYW8lh7Nsjq5mfbYfttr5OeTyaLc
-	 k8tOuBk/LNauQBAtq5oeJrtHtJ1O2bRa7FkwfPAYA8Mu4bX5ntmOOZgBXpKM48uSm6
-	 nq2sMxIXMPNkcsCtv5daOji3WB9HtgWf1UAb6/C4=
+	s=default; t=1650544819;
+	bh=9gG00Iz3mqrENTaoa8y0Hwexr4oltLYzXVcfADEk/Ik=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=sMpo05RVIBWnclxb7x1p1JhgqgnBwjqcd049TUB//dNGwdvZzZ7qgXzpNHNbGecCe
+	 baK9LTqUHXaINNFKpJFwFyx+KTqSm2sbmBlHJSomra4AVskuerS4dwq+SwKr30ryMR
+	 +Ar/X2sPEWuWPUMypjwsGV33NbJeMXYPh1TJQ9hI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id CEABAF804DA;
-	Thu, 21 Apr 2022 14:38:38 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 90A25F804FB;
+	Thu, 21 Apr 2022 14:38:41 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id C1D36F80279; Thu, 21 Apr 2022 14:38:35 +0200 (CEST)
+ id 57E08F8047D; Thu, 21 Apr 2022 14:38:37 +0200 (CEST)
 Received: from dfw.source.kernel.org (dfw.source.kernel.org
  [IPv6:2604:1380:4641:c500::1])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 06AECF80279
- for <alsa-devel@alsa-project.org>; Thu, 21 Apr 2022 14:38:30 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 06AECF80279
+ by alsa1.perex.cz (Postfix) with ESMTPS id A3719F800F4
+ for <alsa-devel@alsa-project.org>; Thu, 21 Apr 2022 14:38:34 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A3719F800F4
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="m1fxiOYI"
+ header.b="fnvSsUIK"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id 0A9D161C19;
- Thu, 21 Apr 2022 12:38:28 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AF961C385A5;
- Thu, 21 Apr 2022 12:38:25 +0000 (UTC)
+ by dfw.source.kernel.org (Postfix) with ESMTPS id 6BB4161C52;
+ Thu, 21 Apr 2022 12:38:32 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1C8FCC385AA;
+ Thu, 21 Apr 2022 12:38:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1650544707;
- bh=mZV6jg/l9v3a4DV8qZCxa9Z/+AAEjmuRRW5FWEfYYuo=;
- h=From:To:Cc:Subject:Date:From;
- b=m1fxiOYIbqXSg5JhWQRv+nkjjXTs8A8YqaBY8AWR1I7yZIuxUQY3OYDlzCwHIai0B
- wo0Mc21vewiFVEm6g+R5dG4GW4VBGYjo+lr4XN9VLNlSeW3bY3JMDH1z98OoznCafY
- 0knIwrKT8xI5Zwt5c2Se3TEowvo+2AOAofr7osuMvcwW9NWySTsP6oHYr22cDxLukZ
- KMk4nA8UBaX4lcG/D1X22+m50jultOsh3uY4t6JHVY8pT5p9W8i9Yjf6DV9CqE2T2H
- RzuVuADjy6aSrFPhAGSMpngksXqDFDU11LhdciSAEa1jP+o1CXvaSvvKOa3pY6HPyK
- cIGYIkJ6Aowzw==
+ s=k20201202; t=1650544711;
+ bh=9gG00Iz3mqrENTaoa8y0Hwexr4oltLYzXVcfADEk/Ik=;
+ h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+ b=fnvSsUIKfsyGCNerlTj3QWr2p6hVZj6P5fSUUv6NR2sevztCHZ02st4XIUv1A7huf
+ tjOqAqHFC2mRySTU2PzKUKSWeFwX4F+nK5wgcysM5g79n/hY/Rrn+QqWoMirBAzilr
+ D9WfH6uPHqeiaotbrcJhwOO8Bl0glqJaXNkstQrhOBMdHU3p8Lc4rSNO0xkM8Apqze
+ a0UjkQobVqprRe/a06chOX/SJBbNKc3FlUn2yF4R09DD0h/rvcKyulqB6uAmGC1qz1
+ dBuSyNKy6aVzV85EuTTsTd4MbVF/Er2V3ZthNO36nGU5w/QSHPau8HOD0m832EQQME
+ n7og+pc/jC8BA==
 From: Mark Brown <broonie@kernel.org>
 To: Jerome Brunet <jbrunet@baylibre.com>, Liam Girdwood <lgirdwood@gmail.com>
-Subject: [PATCH v1 0/3] ASoC: meson: Fix mixer-test issues
-Date: Thu, 21 Apr 2022 13:38:00 +0100
-Message-Id: <20220421123803.292063-1-broonie@kernel.org>
+Subject: [PATCH v1 2/3] ASoC: meson: Fix event generation for AUI CODEC mux
+Date: Thu, 21 Apr 2022 13:38:02 +0100
+Message-Id: <20220421123803.292063-3-broonie@kernel.org>
 X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20220421123803.292063-1-broonie@kernel.org>
+References: <20220421123803.292063-1-broonie@kernel.org>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=934; h=from:subject;
- bh=mZV6jg/l9v3a4DV8qZCxa9Z/+AAEjmuRRW5FWEfYYuo=;
- b=owEBbQGS/pANAwAKASTWi3JdVIfQAcsmYgBiYVAnEt659yX5Ay9+sUz1/yC8FsbRHmNSuHpg+85+
- 4jQbB5qJATMEAAEKAB0WIQSt5miqZ1cYtZ/in+ok1otyXVSH0AUCYmFQJwAKCRAk1otyXVSH0LgtB/
- 93r+28bvi6Qui21dUjq6Yq4usblNMvsL7Uc381POf8kjT0nGv+NHBL1ubIRBPJ6YguTap4PZTtXz7s
- mYbWEJmE2wiPXOokdlV3oHSQDFlzDkK4uIw6SEhDkS2o1vLlTWXuVksRSpX1I/RvwmAGc6W9kP3lMT
- ulZeeU+fWPZ1jhO4QhT55wmS0Vga/PGsYKSo3dsCIwffRr9xQrGeBMqM98VOz6YGoHYxDV1jqsY3kQ
- HYdBgt6HzfODUQ2rrxFKifd+xB5NsGRZIk/rFez93BL9vyj8KUZwy9iURogb67hvKkKF9WI8fHYZbB
- OOsb7L66jCnDLOKMoADG/Q9IH1uZGk
+X-Developer-Signature: v=1; a=openpgp-sha256; l=882; h=from:subject;
+ bh=9gG00Iz3mqrENTaoa8y0Hwexr4oltLYzXVcfADEk/Ik=;
+ b=owEBbQGS/pANAwAKASTWi3JdVIfQAcsmYgBiYVApr1wxoy72crF0ib0G+aPDqqU1bdbsIAyVBhhP
+ +mnhnfKJATMEAAEKAB0WIQSt5miqZ1cYtZ/in+ok1otyXVSH0AUCYmFQKQAKCRAk1otyXVSH0GXgB/
+ 4w6oXHaBHrqC0AwyuE6hLaIx8oM7InBIWuBxen2KO1BfHYIQZOT0EMRGa5YVO92HlZH9kCmRZ092eA
+ 1tpCJyeDW3+i38hGi6Mma9VyN6nMZPgjallrvc4u8+p7hUk4LbOdh3Yyg2Pu5bJILTKpk1SYwZvCky
+ uH5vmmgW+iYeMSZHCNFvD0Gs/gyRn4doiSN9T22qcgP/vYwT7W2QjC9YD09TURzhqFXACYTbLM7Pb/
+ JZJ714tx2Z0g6QaMuiZocMcL2P/olpLhRq1i6cvOfL6wQo0gyfZ9aoSfF/d3dx1Esc8+vWm+aOO+3g
+ rmLZlfiEgn3N5gwumqOGURp3Tvuj3j
 X-Developer-Key: i=broonie@kernel.org; a=openpgp;
  fpr=3F2568AAC26998F9E813A1C5C3F436CA30F5D8EB
 Content-Transfer-Encoding: 8bit
@@ -90,29 +93,29 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-These patches fix event generation issues in the custom controls in the
-Meson drivers detected by mixer-test and by inspection once I saw the
-pattern in these drivers. I'm also seeing other failures due to these
-controls having invalid values, eg:
+The AIU CODEC has a custom put() operation which returns 0 when the value
+of the mux changes, meaning that events are not generated for userspace.
+Change to return 1 in this case, the function returns early in the case
+where there is no change.
 
-# # AIU ACODEC SRC.0 value 3 more than item count 3
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/meson/aiu-codec-ctrl.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-but without documentation I'm not sure how to interpret/fix these -
-either the value should be fixed up on startup or there should be an
-extra value there (disconnected possibly?).
-
-Mark Brown (3):
-  ASoC: meson: Fix event generation for AUI ACODEC mux
-  ASoC: meson: Fix event generation for AUI CODEC mux
-  ASoC: meson: Fix event generation for G12A tohdmi mux
-
- sound/soc/meson/aiu-acodec-ctrl.c | 2 +-
- sound/soc/meson/aiu-codec-ctrl.c  | 2 +-
- sound/soc/meson/g12a-tohdmitx.c   | 2 +-
- 3 files changed, 3 insertions(+), 3 deletions(-)
-
-
-base-commit: 3123109284176b1532874591f7c81f3837bbdc17
+diff --git a/sound/soc/meson/aiu-codec-ctrl.c b/sound/soc/meson/aiu-codec-ctrl.c
+index c3ea733fce91..c966fc60dc73 100644
+--- a/sound/soc/meson/aiu-codec-ctrl.c
++++ b/sound/soc/meson/aiu-codec-ctrl.c
+@@ -57,7 +57,7 @@ static int aiu_codec_ctrl_mux_put_enum(struct snd_kcontrol *kcontrol,
+ 
+ 	snd_soc_dapm_mux_update_power(dapm, kcontrol, mux, e, NULL);
+ 
+-	return 0;
++	return 1;
+ }
+ 
+ static SOC_ENUM_SINGLE_DECL(aiu_hdmi_ctrl_mux_enum, AIU_HDMI_CLK_DATA_CTRL,
 -- 
 2.30.2
 
