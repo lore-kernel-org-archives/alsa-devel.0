@@ -4,80 +4,70 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 76984C433F5
-	for <alsa-devel@archiver.kernel.org>; Thu, 21 Apr 2022 08:05:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 52E36C433FE
+	for <alsa-devel@archiver.kernel.org>; Thu, 21 Apr 2022 08:08:15 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3C26C16B4;
-	Thu, 21 Apr 2022 10:04:37 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3C26C16B4
+	by alsa0.perex.cz (Postfix) with ESMTPS id 34C5516AB;
+	Thu, 21 Apr 2022 10:07:23 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 34C5516AB
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1650528327;
-	bh=xBLVtKBkxhA7vUTGkLo2Qk7NED6rChp778MQVSEaTUg=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=echzQrJ2SJyHO5broUHZ1YvazEToX694RcKKjexpe9QoaZy3QLfjtUAu5eguzS3v+
-	 T2puQGYitKuEdjimXtXBGY9IT0aynUzZTVpz8NUnxSb4ZRcsNKdYiIxL4f74VeAApp
-	 nj6psYZqwvQRAIyGifaidv8Yhv+Ubq3+kgoor5PQ=
+	s=default; t=1650528493;
+	bh=YIhG42N133uPAmB2DX/zeexG6KuJo/mGBNXmfxPLQ6U=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=CloVwZazvXhQv5kjAWJS8VvALax186kk7xF6W5ijjCz96wmak32Ic6HZwuAaEtusD
+	 PzM903GjfRXBvdpBLtJkxDflpcX3gLEb/snyqU0iPqcjuvQ1aNP3hSanyI95GAzosk
+	 o4cLFitQNeIymF7gGRKWYSbxcq5IXeUlE8aPxByE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id C8943F800F4;
-	Thu, 21 Apr 2022 10:04:36 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id BDD74F8047D;
+	Thu, 21 Apr 2022 10:07:22 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 5CE76F8032D; Thu, 21 Apr 2022 10:04:35 +0200 (CEST)
-Received: from mail-oa1-x30.google.com (mail-oa1-x30.google.com
- [IPv6:2001:4860:4864:20::30])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id 3F131F80125; Thu, 21 Apr 2022 10:07:21 +0200 (CEST)
+Received: from mga06.intel.com (mga06b.intel.com [134.134.136.31])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 02545F800F4
- for <alsa-devel@alsa-project.org>; Thu, 21 Apr 2022 10:04:28 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 02545F800F4
+ by alsa1.perex.cz (Postfix) with ESMTPS id 23681F80125
+ for <alsa-devel@alsa-project.org>; Thu, 21 Apr 2022 10:07:15 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 23681F80125
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=google.com header.i=@google.com
- header.b="DW5A8Nyr"
-Received: by mail-oa1-x30.google.com with SMTP id
- 586e51a60fabf-e2442907a1so4631529fac.8
- for <alsa-devel@alsa-project.org>; Thu, 21 Apr 2022 01:04:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=20210112;
- h=mime-version:references:in-reply-to:from:date:message-id:subject:to
- :cc; bh=5BVjlGwH06cTyu6muXsNBsyVK6oxj3UYMa0frNggqds=;
- b=DW5A8NyrPu5kmtG6ZlwJsLfXNpG7VuBOeXgRhetvMBOfIpBJZ74ru8E03tjXxmvd+X
- aTPl5MB8ba9gBc2hX7NQogMvyWug9swFGeE6el5EXsMuiVASFXiATSgRsneQ7tant1Ny
- VsMSqP+yIbaMr8wWKqnDkjIRglGy/D6RQRzmmF08jDIB2uxobioRu0OouR6mGKOfmxAx
- 3T7JXsBZoaBjSw70q6iUm5umC9UUyMIY+Rbo5405g77+oTYcx1d62W7AtAWgp2as7pnp
- htTdHxQt54wmw5KjhS2D6TVan8zS24RfO1Bf5JTZAqX3LhusLoz4k/SaUvktAw7xycvG
- p0eA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc;
- bh=5BVjlGwH06cTyu6muXsNBsyVK6oxj3UYMa0frNggqds=;
- b=FEz/q4qYulE4BrNHw0d4jaTgdt75ehsYxl1hi3vbNAOEzn3L0T5reCp9ijwwwYFesM
- jRlqrlI+HVZB/M049jeDkjOOQwz26pFmMd79a3EewGeoyZ2wzKr0cUzhq419cX6SrSZU
- C+td3wlIaNVLCjUYFMBs+TrQyQSWDyzAF0scNdezZrqAh06YRL5NK81TeUFe6rkS05bB
- W4TrYXXPPzrWK74bqO/y/lOn1PszBgWLsQuUZGnrykM5R8AUpwPEw+Ey29gbRIOTl0tZ
- nfBMo/kxk6aZfCJgu63JMwAK9fwQYOW1MBQaRCOnJxQv1IGHapMyElTftz3yvPiN1VFB
- RGNg==
-X-Gm-Message-State: AOAM530Mazxz09ReY6KHg6qe9iUPgT+dZgGj7SK0jF20EjuarrqeuE/t
- FxUlp+6ZW8QoOwdXQCtzO7QLxoAMx1pL4bxIUuH2vw==
-X-Google-Smtp-Source: ABdhPJxWY3/xQrMA/LGLDcUbYJsNHYAuaDCQ0ZZwkR5qeQGTshY+L+HBii+8hjXoK0Sn1TiQp41iyOWJUdQus1maen8=
-X-Received: by 2002:a05:6870:d254:b0:db:12b5:da3 with SMTP id
- h20-20020a056870d25400b000db12b50da3mr3327530oac.211.1650528266235; Thu, 21
- Apr 2022 01:04:26 -0700 (PDT)
+ dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
+ header.b="GyCtZjsW"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+ d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+ t=1650528437; x=1682064437;
+ h=from:to:cc:subject:date:message-id:mime-version:
+ content-transfer-encoding;
+ bh=YIhG42N133uPAmB2DX/zeexG6KuJo/mGBNXmfxPLQ6U=;
+ b=GyCtZjsWbfSDHE6iWJUxl7D+mF/PRehxu2V1pg4gS+dsE0bePLwFBhrr
+ RrbzowHMbcU4BTu26+/JO8dWjzCRRtVInMhia4JgUX2sGu6J9+eFhlpFJ
+ KNI99iwiF811bcjVlVJ08+bdxJc0Tn3xoPi60GIfUwN75QnfMLkQAG3La
+ 1nMNShPr0ke1CcLVftX6GMPPqQP+rCWQjBaSJLSZapkfA2MGK17hftvjO
+ WzA4oWDW8cOs4eyx84/KxqvRrRobulRL9+84hAV8oS8ZZxVSwIPyY1xlR
+ eO15NbAzZJN4L0vDReOqxq0YI/frW1SsgTv72cGSN3A+0GGhERDpI/rmD A==;
+X-IronPort-AV: E=McAfee;i="6400,9594,10323"; a="324718764"
+X-IronPort-AV: E=Sophos;i="5.90,278,1643702400"; d="scan'208";a="324718764"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+ by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 21 Apr 2022 01:07:13 -0700
+X-IronPort-AV: E=Sophos;i="5.90,278,1643702400"; d="scan'208";a="577086924"
+Received: from dchirca-mobl4.ger.corp.intel.com (HELO
+ pujfalus-desk.ger.corp.intel.com) ([10.251.215.207])
+ by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 21 Apr 2022 01:07:11 -0700
+From: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
+To: lgirdwood@gmail.com, broonie@kernel.org,
+ pierre-louis.bossart@linux.intel.com, AjitKumar.Pandey@amd.com,
+ daniel.baluta@nxp.com
+Subject: [PATCH 0/6] ASoC: SOF: Rework the firmware ready message handling
+Date: Thu, 21 Apr 2022 11:07:29 +0300
+Message-Id: <20220421080735.31698-1-peter.ujfalusi@linux.intel.com>
+X-Mailer: git-send-email 2.35.3
 MIME-Version: 1.0
-References: <0000000000004ecea505c28504b9@google.com>
- <0000000000007b1cbd05dd1cab5a@google.com>
-In-Reply-To: <0000000000007b1cbd05dd1cab5a@google.com>
-From: Dmitry Vyukov <dvyukov@google.com>
-Date: Thu, 21 Apr 2022 10:04:15 +0200
-Message-ID: <CACT4Y+ZWAFKBCnj18n8g8KsrQL9bxO7uCMmcQjk8-24G_caZHw@mail.gmail.com>
-Subject: Re: [syzbot] general protection fault in pm_qos_update_target
-To: syzbot <syzbot+f7d9295d2565ee819d21@syzkaller.appspotmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Cc: len.brown@intel.com, alsa-devel@alsa-project.org, linux-pm@vger.kernel.org,
- tiwai@suse.de, syzkaller-bugs@googlegroups.com, tiwai@suse.com,
- rjw@rjwysocki.net, linux-kernel@vger.kernel.org, pavel@ucw.cz
+Content-Transfer-Encoding: 8bit
+Cc: alsa-devel@alsa-project.org, ranjani.sridharan@linux.intel.com,
+ kai.vehmanen@linux.intel.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -93,32 +83,46 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, 20 Apr 2022 at 23:28, syzbot
-<syzbot+f7d9295d2565ee819d21@syzkaller.appspotmail.com> wrote:
->
-> syzbot suspects this issue was fixed by commit:
->
-> commit 3c3201f8c7bb77eb53b08a3ca8d9a4ddc500b4c0
-> Author: Takashi Iwai <tiwai@suse.de>
-> Date:   Tue Mar 22 17:07:19 2022 +0000
->
->     ALSA: pcm: Fix races among concurrent prepare and hw_params/hw_free calls
->
-> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=104e3034f00000
-> start commit:   dbb5afad100a ptrace: make ptrace() fail if the tracee chan..
-> git tree:       upstream
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=91ff0467ce169bc
-> dashboard link: https://syzkaller.appspot.com/bug?extid=f7d9295d2565ee819d21
-> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=16c75e73d00000
->
-> If the result looks correct, please mark the issue as fixed by replying with:
->
-> #syz fix: ALSA: pcm: Fix races among concurrent prepare and hw_params/hw_free calls
->
-> For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+Hi,
 
+The firmware ready (fw_ready) message is sent by the firmware to notify the host
+that it has been booted up and caries additional information about it's
+configuration.
+All of this is IPC specific, the message itself is IPC version specific and the
+information itself also.
 
-Looks legit, that code is in the stack trace:
+Move the code to handle the fw_ready message under ipc3.c since the parsing and
+interpretation is IPC specific.
 
-#syz fix:
-ALSA: pcm: Fix races among concurrent prepare and hw_params/hw_free calls
+A followup series is going to take care of the rest of the loader.c to make it
+IPC agnostic.
+
+Regards,
+Peter
+---
+Peter Ujfalusi (6):
+  ASoC: SOF: ipc3: Add local implementation for handling fw_ready
+    message
+  ASoC: SOF: Do not check for the fw_ready callback
+  ASoC: SOF: amd: Do not set fw_ready callback
+  ASoC: SOF: imx: Do not set fw_ready callback
+  ASoC: SOF: Intel: Do not set fw_ready callback
+  ASoC: SOF: loader: Remove the old fw_ready related code
+
+ sound/soc/sof/amd/renoir.c           |   1 -
+ sound/soc/sof/core.c                 |   2 +-
+ sound/soc/sof/imx/imx8.c             |   2 -
+ sound/soc/sof/imx/imx8m.c            |   1 -
+ sound/soc/sof/intel/bdw.c            |   1 -
+ sound/soc/sof/intel/byt.c            |   2 -
+ sound/soc/sof/intel/hda-common-ops.c |   1 -
+ sound/soc/sof/intel/pci-tng.c        |   1 -
+ sound/soc/sof/ipc.c                  |  15 --
+ sound/soc/sof/ipc3.c                 | 306 ++++++++++++++++++++++++++-
+ sound/soc/sof/loader.c               | 227 --------------------
+ sound/soc/sof/sof-priv.h             |   9 +-
+ 12 files changed, 307 insertions(+), 261 deletions(-)
+
+-- 
+2.35.3
+
