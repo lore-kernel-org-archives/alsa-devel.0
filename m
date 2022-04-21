@@ -4,74 +4,73 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 43D8FC433F5
-	for <alsa-devel@archiver.kernel.org>; Thu, 21 Apr 2022 16:36:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1E9E2C433F5
+	for <alsa-devel@archiver.kernel.org>; Thu, 21 Apr 2022 16:36:13 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 10F17167B;
-	Thu, 21 Apr 2022 18:35:12 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 10F17167B
+	by alsa0.perex.cz (Postfix) with ESMTPS id 1A4A6168B;
+	Thu, 21 Apr 2022 18:35:20 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1A4A6168B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1650558962;
-	bh=+eCpKmAzHZJpLltZlJ6ot5uHkJJKkG/ryxcxLBp7PDg=;
+	s=default; t=1650558970;
+	bh=ZORpNS0w/y5IYoLKx4aBrIVAWfB5EAJlbjC5Lfs6TNs=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=CjV8NgFV2zHshf9tm08s20VXlYBfthZdduIGc4ZoDc8441YTOg7A70W874KTXdxxK
-	 dTxvQuEPcHo27cZ2dt3WKy7ND7jOSMk0kTWM6VrkavcZX7X/pTXnVFm0OAejEIP4tT
-	 weaDVyDv5hZlFvNy2cXBJB5ySAenvQWW7EXtz0Zs=
+	b=AJjlJhvo1XpXd+SLBB2igzbCi8VqOp9c3h8s3XO60wf+df7dSgCmM7F92fhezvieh
+	 iMpXxDBHtPL+S+H53Z+oiNgmvZSYg7bhxN4fcerrTGGPFEA8hdqz+OqtYK2oiqoy19
+	 wvTABxuwIXzSsFy4hbk1bB/O0p8xXj4/q41c1OBU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 0691EF804FD;
+	by alsa1.perex.cz (Postfix) with ESMTP id C1475F80506;
 	Thu, 21 Apr 2022 18:34:28 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 0A257F804FE; Thu, 21 Apr 2022 18:34:26 +0200 (CEST)
+ id BEE41F804FE; Thu, 21 Apr 2022 18:34:26 +0200 (CEST)
 Received: from mga18.intel.com (mga18.intel.com [134.134.136.126])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id EFD28F80125
- for <alsa-devel@alsa-project.org>; Thu, 21 Apr 2022 18:34:18 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EFD28F80125
+ by alsa1.perex.cz (Postfix) with ESMTPS id BC1A1F804DA
+ for <alsa-devel@alsa-project.org>; Thu, 21 Apr 2022 18:34:21 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BC1A1F804DA
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="fuNdWWqj"
+ header.b="Cj68gFkd"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1650558860; x=1682094860;
+ t=1650558863; x=1682094863;
  h=from:to:cc:subject:date:message-id:in-reply-to:
  references:mime-version:content-transfer-encoding;
- bh=+eCpKmAzHZJpLltZlJ6ot5uHkJJKkG/ryxcxLBp7PDg=;
- b=fuNdWWqjCpF23F0evc6Dejf70jcYD+10taCZQWZNuFpX7rjWkU8X94Hd
- CoBGJQfQkXDTGLqMJHdfRG7Ort0vVAonyBaiv0BLh00AnoAtTWLvYGlRE
- zra1H71tFjNSUeoaoc1Tt2LQ3mg0xPmvtjnl1Z8ZFsZAQHkclaD8qcRfI
- wH82agSxnF6cGA65bLS995i0/LeM4Li/AiVPtLcZyqzr5oGyH3LRU8z54
- hmN3Izvsf4Ypy0vCq9ctRymrg6XuI+JLTQweg1GfCKZw6bdbHOe+QsR3b
- 2zQHH1saiMo0iiWPdHsQ4CZJEwYqlQPwyZIkMh3dugjWwVFqkrcKVHHeb A==;
-X-IronPort-AV: E=McAfee;i="6400,9594,10324"; a="246310250"
-X-IronPort-AV: E=Sophos;i="5.90,279,1643702400"; d="scan'208";a="246310250"
+ bh=ZORpNS0w/y5IYoLKx4aBrIVAWfB5EAJlbjC5Lfs6TNs=;
+ b=Cj68gFkda6xjJHGKvKoPKfQ/Uv5j3CbjgkOvb3qs9RY30Sm2DtjMn3QK
+ Sx1KcM1PRlGeIxf2lF193h1ptMgLm5TFf8A/Ccl6fLAnQD+Pme5i0sxld
+ pXBIC8kc1II9xip5DA8Bf5ek89FayOmCyZkanmh7a8cx3nb0H3I3mNHq2
+ t+0D8YF3kh/6ZFP4lvWA3eKFhgwEHDqrDnSPz22mtua4CzbFqOIhU91X0
+ RSvRkuNkQP2/cICrukPYoP/CS9msaLIpRPn8ZZsZ2SYBx8JnNdfELwnx1
+ vabGOQqQa4+42wM5tYU/ix7AQmYW+Xep1cyvMorrit3hURDHgZPG68oTr w==;
+X-IronPort-AV: E=McAfee;i="6400,9594,10324"; a="246310273"
+X-IronPort-AV: E=Sophos;i="5.90,279,1643702400"; d="scan'208";a="246310273"
 Received: from fmsmga008.fm.intel.com ([10.253.24.58])
  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 21 Apr 2022 09:34:09 -0700
-X-IronPort-AV: E=Sophos;i="5.90,279,1643702400"; d="scan'208";a="614980738"
+ 21 Apr 2022 09:34:11 -0700
+X-IronPort-AV: E=Sophos;i="5.90,279,1643702400"; d="scan'208";a="614980755"
 Received: from qingsu-mobl.amr.corp.intel.com (HELO
  pbossart-mobl3.amr.corp.intel.com) ([10.212.148.250])
  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 21 Apr 2022 09:34:08 -0700
+ 21 Apr 2022 09:34:10 -0700
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH 1/4] ASoC: SOF: sof-pci-dev: don't use the community key on
- APL Chromebooks
-Date: Thu, 21 Apr 2022 11:33:55 -0500
-Message-Id: <20220421163358.319489-2-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH 3/4] ASoC: SOF: Intel: pci-tgl: add ADL-PS support
+Date: Thu, 21 Apr 2022 11:33:57 -0500
+Message-Id: <20220421163358.319489-4-pierre-louis.bossart@linux.intel.com>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20220421163358.319489-1-pierre-louis.bossart@linux.intel.com>
 References: <20220421163358.319489-1-pierre-louis.bossart@linux.intel.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Cc: tiwai@suse.de, broonie@kernel.org,
- Bard Liao <yung-chuan.liao@linux.intel.com>,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+ Muralidhar Reddy <muralidhar.reddy@intel.com>,
+ Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -87,88 +86,30 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-As suggested by MrChromebox, the SOF driver can be used with the SOF
-firmware binary signed with the production key. This patch adds an
-additional check for the ApolloLake SoC before modifying the default
-firmware path.
+From: Muralidhar Reddy <muralidhar.reddy@intel.com>
 
-Note that ApolloLake Chromebooks officially ship with the Skylake
-driver, so to use SOF the users have to explicitly opt-in with
-'options intel-dspcfg dsp_driver=3'. There is no plan to change the
-default selection.
+Add PCI DID for Intel Alder Lake PS.
 
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Reviewed-by: Bard Liao <yung-chuan.liao@linux.intel.com>
 Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+Signed-off-by: Muralidhar Reddy <muralidhar.reddy@intel.com>
+Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- sound/soc/sof/sof-pci-dev.c | 24 +++++++++++++++++++++++-
- 1 file changed, 23 insertions(+), 1 deletion(-)
+ sound/soc/sof/intel/pci-tgl.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/sound/soc/sof/sof-pci-dev.c b/sound/soc/sof/sof-pci-dev.c
-index 4d1b7e4ccd3d8..003120721779f 100644
---- a/sound/soc/sof/sof-pci-dev.c
-+++ b/sound/soc/sof/sof-pci-dev.c
-@@ -12,6 +12,7 @@
- #include <linux/dmi.h>
- #include <linux/module.h>
- #include <linux/pci.h>
-+#include <linux/platform_data/x86/soc.h>
- #include <linux/pm_runtime.h>
- #include <sound/soc-acpi.h>
- #include <sound/soc-acpi-intel-match.h>
-@@ -40,6 +41,7 @@ module_param_named(sof_pci_debug, sof_pci_debug, int, 0444);
- MODULE_PARM_DESC(sof_pci_debug, "SOF PCI debug options (0x0 all off)");
- 
- static const char *sof_dmi_override_tplg_name;
-+static bool sof_dmi_use_community_key;
- 
- #define SOF_PCI_DISABLE_PM_RUNTIME BIT(0)
- 
-@@ -102,15 +104,35 @@ static const struct dmi_system_id sof_tplg_table[] = {
- 	{}
- };
- 
-+/* all Up boards use the community key */
-+static int up_use_community_key(const struct dmi_system_id *id)
-+{
-+	sof_dmi_use_community_key = true;
-+	return 1;
-+}
-+
-+/*
-+ * For ApolloLake Chromebooks we want to force the use of the Intel production key.
-+ * All newer platforms use the community key
-+ */
-+static int chromebook_use_community_key(const struct dmi_system_id *id)
-+{
-+	if (!soc_intel_is_apl())
-+		sof_dmi_use_community_key = true;
-+	return 1;
-+}
-+
- static const struct dmi_system_id community_key_platforms[] = {
- 	{
- 		.ident = "Up boards",
-+		.callback = up_use_community_key,
- 		.matches = {
- 			DMI_MATCH(DMI_SYS_VENDOR, "AAEON"),
- 		}
- 	},
- 	{
- 		.ident = "Google Chromebooks",
-+		.callback = chromebook_use_community_key,
- 		.matches = {
- 			DMI_MATCH(DMI_SYS_VENDOR, "Google"),
- 		}
-@@ -208,7 +230,7 @@ int sof_pci_probe(struct pci_dev *pci, const struct pci_device_id *pci_id)
- 			"Module parameter used, changed fw path to %s\n",
- 			sof_pdata->fw_filename_prefix);
- 
--	} else if (dmi_check_system(community_key_platforms)) {
-+	} else if (dmi_check_system(community_key_platforms) && sof_dmi_use_community_key) {
- 		sof_pdata->fw_filename_prefix =
- 			devm_kasprintf(dev, GFP_KERNEL, "%s/%s",
- 				       sof_pdata->desc->default_fw_path[sof_pdata->ipc_type],
+diff --git a/sound/soc/sof/intel/pci-tgl.c b/sound/soc/sof/intel/pci-tgl.c
+index 478f9d051c4c5..f6a76dcf28fd6 100644
+--- a/sound/soc/sof/intel/pci-tgl.c
++++ b/sound/soc/sof/intel/pci-tgl.c
+@@ -176,6 +176,8 @@ static const struct pci_device_id sof_pci_ids[] = {
+ 		.driver_data = (unsigned long)&adl_desc},
+ 	{ PCI_DEVICE(0x8086, 0x51cd), /* ADL-P */
+ 		.driver_data = (unsigned long)&adl_desc},
++	{ PCI_DEVICE(0x8086, 0x51c9), /* ADL-PS */
++		.driver_data = (unsigned long)&adl_desc},
+ 	{ PCI_DEVICE(0x8086, 0x51cc), /* ADL-M */
+ 		.driver_data = (unsigned long)&adl_desc},
+ 	{ PCI_DEVICE(0x8086, 0x54c8), /* ADL-N */
 -- 
 2.30.2
 
