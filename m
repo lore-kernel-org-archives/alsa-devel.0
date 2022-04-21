@@ -4,63 +4,63 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2E3DBC43219
-	for <alsa-devel@archiver.kernel.org>; Thu, 21 Apr 2022 16:24:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5B2C6C433F5
+	for <alsa-devel@archiver.kernel.org>; Thu, 21 Apr 2022 16:26:20 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id BCEC5164E;
-	Thu, 21 Apr 2022 18:24:03 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BCEC5164E
+	by alsa0.perex.cz (Postfix) with ESMTPS id E6B9D1654;
+	Thu, 21 Apr 2022 18:25:27 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E6B9D1654
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1650558293;
-	bh=Ev5XW/hFAU2G7hEDOc8XRChJVIkYPecoTCVxax3VuEI=;
+	s=default; t=1650558378;
+	bh=9eDQSFAxLTGimAioClhm9WZdxabXWzodBnbtzrryzbo=;
 	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
 	 List-Post:List-Help:List-Subscribe:From;
-	b=WJXLXo4CUsxWFtI49mERpTtrFmST6bY940FE1RC4ok55EZN1W54SgOPHYqIQ4t5Ux
-	 eRgd0DauL+f04+YOEC2Wov1/YAcWrDXVX1vIWU+r019c10t/8rcFtZUbSQmglFrURd
-	 5Ln1Mw/4BUdGFydZf88sfoO+YHZ4u5I5FWzOoAjY=
+	b=uzq4W5rqav+PMqPhpYcmF6d1Lslic3cjsiDPzw8338ZJoKHffRmRMbh2SDI/PBEEE
+	 beWZY4jHd1vR4p8dxc8eqmMC683FHTVnO6fZSojAV3vt1uzEcZRWo0D7GDlwuXXLvu
+	 kDuKR+ybBpbsx15lJr6oj30Q/lusIQJ5YHC4u78k=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 32B09F80279;
-	Thu, 21 Apr 2022 18:24:03 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 73478F80279;
+	Thu, 21 Apr 2022 18:25:27 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 53BEEF8032D; Thu, 21 Apr 2022 18:24:01 +0200 (CEST)
-Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
+ id D1B70F800C1; Thu, 21 Apr 2022 18:25:25 +0200 (CEST)
+Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 6D918F80125
- for <alsa-devel@alsa-project.org>; Thu, 21 Apr 2022 18:23:53 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6D918F80125
+ by alsa1.perex.cz (Postfix) with ESMTPS id 53F8CF800C1
+ for <alsa-devel@alsa-project.org>; Thu, 21 Apr 2022 18:25:18 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 53F8CF800C1
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="ZIvpccF0"
+ header.b="ngrM3nj/"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1650558235; x=1682094235;
+ t=1650558320; x=1682094320;
  h=from:to:cc:subject:date:message-id:mime-version:
  content-transfer-encoding;
- bh=Ev5XW/hFAU2G7hEDOc8XRChJVIkYPecoTCVxax3VuEI=;
- b=ZIvpccF0ZxmG3rU5HQ/WFFYODwyoGM7F7vKkzOwx9ztSmyML932QHUHh
- 1/x2lkvGMatfVpCp+ycGb5msx2RZoCUNVYE/cfYiXs0SdB2gX3BDLmnDh
- iLuGwqgsZqFA8y5UP20pekFjvZ98LR0mQrO6hWw8lzrnqyjHaOeqqu+xS
- ScTWelj9QxKpIQLcLL0lXMBQ/+0xV7xAYMM9Ph+vfbgHm6nxuAPCRXdDZ
- oshnZzrH9fmyBfHs5Ryvu1zAxyi7xSO8u5pZzDUxHFK0pjeIf6bqatorG
- 1ifBfuml/JqeiIxnEtgxn89oI8rQoa3ZgMNGOqdQTYk4Cx+657OgZpW66 w==;
-X-IronPort-AV: E=McAfee;i="6400,9594,10324"; a="264176427"
-X-IronPort-AV: E=Sophos;i="5.90,279,1643702400"; d="scan'208";a="264176427"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
- by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 21 Apr 2022 09:23:50 -0700
-X-IronPort-AV: E=Sophos;i="5.90,279,1643702400"; d="scan'208";a="533414777"
+ bh=9eDQSFAxLTGimAioClhm9WZdxabXWzodBnbtzrryzbo=;
+ b=ngrM3nj/UPVWBZqmAa8n/9wPommzwXyPwDFn/dVPbcIhknv9Pnl+uUco
+ 2YJVorSNTWCdUjbnG+doe1QG79ZJpEoXiFLwRwXP8+IcjMgWT7C8ChY1k
+ 4GjebBu/R4eMEVKn2meZbfeigdDZYMp+ejXcKoXx1254yNnCE5odGZCv6
+ BtLmvv/4ORbn+i0ybwcK4KIcRfY8Ma4N3xXyKwBl81g6If2qafUXc5nST
+ 8EWUKwIWY2tbtOine0MbNcq0urOSi8Ym067S1vxQ/2GanhayLxb0GauES
+ 1CpeHBixoFtKR4nyzmdExmjOjddXDvr/fR32+OTADFu9K6V0CZDjOkACF A==;
+X-IronPort-AV: E=McAfee;i="6400,9594,10324"; a="289522008"
+X-IronPort-AV: E=Sophos;i="5.90,279,1643702400"; d="scan'208";a="289522008"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+ by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 21 Apr 2022 09:25:15 -0700
+X-IronPort-AV: E=Sophos;i="5.90,279,1643702400"; d="scan'208";a="511144031"
 Received: from qingsu-mobl.amr.corp.intel.com (HELO
  pbossart-mobl3.amr.corp.intel.com) ([10.212.148.250])
- by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 21 Apr 2022 09:23:49 -0700
+ by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 21 Apr 2022 09:25:15 -0700
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH] ASoC: soc-ops: fix error handling
-Date: Thu, 21 Apr 2022 11:23:28 -0500
-Message-Id: <20220421162328.302017-1-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH] ASoC: soc-core: remove always-false path
+Date: Thu, 21 Apr 2022 11:25:05 -0500
+Message-Id: <20220421162505.302132-1-pierre-louis.bossart@linux.intel.com>
 X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -86,35 +86,61 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 cppcheck throws the following warning:
 
-sound/soc/soc-ops.c:461:8: style: Variable 'ret' is assigned a value
-that is never used. [unreadVariable]
-   ret = err;
-       ^
+sound/soc/soc-core.c:2773:6: style: Condition '!num_widgets' is always
+false [knownConditionTrueFalse]
+ if (!num_widgets) {
+     ^
 
-This seems to be a missing change in the return value.
+sound/soc/soc-core.c:2761:18: note: Assuming that condition
+'num_widgets<0' is not redundant
+ if (num_widgets < 0) {
+                 ^
+sound/soc/soc-core.c:2766:18: note: Assuming condition is false
+ if (num_widgets & 1) {
+                 ^
+sound/soc/soc-core.c:2772:2: note: Compound assignment '/=', assigned
+value is 0
+ num_widgets /= 2;
+ ^
 
-Fixes: 7f3d90a351968 ("ASoC: ops: Fix stereo change notifications in snd_soc_put_volsw_sx()")
+We should check upfront all error conditions.
+
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Reviewed-by: Bard Liao <yung-chuan.liao@linux.intel.com>
 Reviewed-by: Rander Wang <rander.wang@intel.com>
 Reviewed-by: Péter Ujfalusi <peter.ujfalusi@linux.intel.com>
 ---
- sound/soc/soc-ops.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/soc-core.c | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
-diff --git a/sound/soc/soc-ops.c b/sound/soc/soc-ops.c
-index a0ca58ba16273..58347eadd219b 100644
---- a/sound/soc/soc-ops.c
-+++ b/sound/soc/soc-ops.c
-@@ -461,7 +461,7 @@ int snd_soc_put_volsw_sx(struct snd_kcontrol *kcontrol,
- 			ret = err;
- 		}
+diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
+index aa687fd126db2..d68e64b73eea7 100644
+--- a/sound/soc/soc-core.c
++++ b/sound/soc/soc-core.c
+@@ -2763,6 +2763,11 @@ int snd_soc_of_parse_audio_simple_widgets(struct snd_soc_card *card,
+ 			"ASoC: Property '%s' does not exist\n",	propname);
+ 		return -EINVAL;
  	}
--	return err;
-+	return ret;
- }
- EXPORT_SYMBOL_GPL(snd_soc_put_volsw_sx);
++	if (!num_widgets) {
++		dev_err(card->dev, "ASoC: Property '%s's length is zero\n",
++			propname);
++		return -EINVAL;
++	}
+ 	if (num_widgets & 1) {
+ 		dev_err(card->dev,
+ 			"ASoC: Property '%s' length is not even\n", propname);
+@@ -2770,11 +2775,6 @@ int snd_soc_of_parse_audio_simple_widgets(struct snd_soc_card *card,
+ 	}
  
+ 	num_widgets /= 2;
+-	if (!num_widgets) {
+-		dev_err(card->dev, "ASoC: Property '%s's length is zero\n",
+-			propname);
+-		return -EINVAL;
+-	}
+ 
+ 	widgets = devm_kcalloc(card->dev, num_widgets, sizeof(*widgets),
+ 			       GFP_KERNEL);
 -- 
 2.30.2
 
