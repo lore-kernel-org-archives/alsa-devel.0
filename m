@@ -4,131 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 41E7BC433EF
-	for <alsa-devel@archiver.kernel.org>; Thu, 21 Apr 2022 05:24:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 17551C433EF
+	for <alsa-devel@archiver.kernel.org>; Thu, 21 Apr 2022 06:39:55 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 812211EE2;
-	Thu, 21 Apr 2022 07:23:30 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 812211EE2
+	by alsa0.perex.cz (Postfix) with ESMTPS id 933F41AA0;
+	Thu, 21 Apr 2022 08:39:03 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 933F41AA0
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1650518660;
-	bh=h/5k3qbgOJbPDo42Xu97U91a7abmg+S0fT0kgG4DAYU=;
-	h=From:Subject:To:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	s=default; t=1650523193;
+	bh=Zx/1OwYjJhrbUMOBXUW3QvqiIsqeqcXZARRhWe9H0/s=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
 	 List-Post:List-Help:List-Subscribe:From;
-	b=Es+/yjT8AEfKgTdjNzt1GqzIImjzhqCfVlIzYnJbs7rlcI15wRnT9NlSnssS9YkwZ
-	 vpbYvS5LFQJ/oG17PG35OMQ6Dy20U16YDrWhvADv+QQV0JTYqyrO9IPizDfEC4k9yX
-	 7eM62FJgXxtAd07X+fGygJ5KlkJNmnPrwpS1+2kQ=
+	b=Xw3bvwHkuyhq1KGULxCWc8UHeEUKA2tnNYa+FhasOGSWvIDCw78kGY64WWk2Ud7u4
+	 3vGukXLLVo5gv9F2m6Edn8vQV4pjJbtg7IuU5txlrravLeGyjXs7B6k/xUQsdC/ucq
+	 I3QaNODwvJk5pLY86+oRpcd0n+WBGcFVz3n1rHOk=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id B3B8FF804FB;
-	Thu, 21 Apr 2022 04:55:45 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 3077BF80125;
+	Thu, 21 Apr 2022 08:39:03 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 17E6FF804FE; Thu, 21 Apr 2022 04:55:44 +0200 (CEST)
-Received: from JPN01-TYC-obe.outbound.protection.outlook.com
- (mail-tycjpn01on20711.outbound.protection.outlook.com
- [IPv6:2a01:111:f403:7010::711])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id AF7A8F80279; Thu, 21 Apr 2022 08:39:01 +0200 (CEST)
+Received: from smtp-relay-canonical-0.canonical.com
+ (smtp-relay-canonical-0.canonical.com [185.125.188.120])
+ (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 6AE87F804FB
- for <alsa-devel@alsa-project.org>; Thu, 21 Apr 2022 04:55:34 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6AE87F804FB
+ by alsa1.perex.cz (Postfix) with ESMTPS id 46012F800F4
+ for <alsa-devel@alsa-project.org>; Thu, 21 Apr 2022 08:38:54 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 46012F800F4
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=renesas.com header.i=@renesas.com
- header.b="G84womgV"
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=hyPb8RorgmVF5yhUYZrlEYCTXDjoFCfm2VE9Ec5ydSCoSB5K59b/b1npX5Dzx9rGF6KWDTxhLwlzFRYIEqKiZqI2Rwi98BMFuk9rhlNGMqeLRjgY4NDIB0ha6Raeho+DGGpwhlEuaNvokimHI+V6CwZGv4+WwUlBOTllaV72HUuiehMFbFbYhliVPfXAHH2iWCkgSsgDrUwwuXtsIPvbQi1h6LdB2V5SxEmCsamjVVaJMUuY9Ts+Fkzn92Pk3Z0f1hqPbmISQob7CoPylbFcF3y2ZpUZvvFnH9ydvD+Gv0AnUHbfGFh0FmO+m1oBb1py0GDh/zwVMy4iGO7rcYeleQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=d1uMoVNpbzG8fCdJ7jOJ2GBexQK5A28SqxY2aMgaGI4=;
- b=c5SBBtu6h/zbcGosa0fvoYrpwldxPQf0Y4YtiqzNuVbA3i9FKLWlCepHDFgxpvSXRp6KAVF7RgwSpNrLVuGlmMYEABmW0nR2Q7ZTlPmn6pggRPE7dBrUea1OSCJNTGyTcEUi2iUIDywnaUdofwssaM+SYp4JjRCE11O5ezCkDakdI2J94MUPEDfTa/XYAN5hyXsYiLhWK5afIEN3lVcxAiZt4YAmjsYoa1YksUst1+PGhTpDH2rrswjyZorWGB7Nm5L7GuFtUw+FqaTPyz60QEQl6LfSYPQ6y+94ox8cWjsjgBonY/ScQ7wd4GrrBHccdGuRLxGnysV6zu3qPW5FhA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=renesas.com; dmarc=pass action=none header.from=renesas.com;
- dkim=pass header.d=renesas.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=renesas.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=d1uMoVNpbzG8fCdJ7jOJ2GBexQK5A28SqxY2aMgaGI4=;
- b=G84womgVqOGOumpFRn593IZTSxkNSO1rVkDXBK7pMkt1FGmkAiMGbdNxKy6FvNR++UkNWmnyGmm0x/VMG/4o/kWTDAnyp99d/skjERV7Ttx1hZdaW7ZidS83NDOzYWAwczKchS7+/cb1O21jerAD38Dw/rifyCyrDoexLpL3yYI=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=renesas.com;
-Received: from OS3PR01MB8426.jpnprd01.prod.outlook.com (2603:1096:604:194::10)
- by TY2PR01MB2314.jpnprd01.prod.outlook.com (2603:1096:404:10::19)
- with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5164.25; Thu, 21 Apr
- 2022 02:55:27 +0000
-Received: from OS3PR01MB8426.jpnprd01.prod.outlook.com
- ([fe80::697c:9b30:7de5:706f]) by OS3PR01MB8426.jpnprd01.prod.outlook.com
- ([fe80::697c:9b30:7de5:706f%5]) with mapi id 15.20.5186.014; Thu, 21 Apr 2022
- 02:55:27 +0000
-Message-ID: <87r15rgn6p.wl-kuninori.morimoto.gx@renesas.com>
-From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Subject: [PATCH] ASoC: rsnd: care default case on
- rsnd_ssiu_busif_err_status_clear()
-User-Agent: Wanderlust/2.15.9 Emacs/26.3 Mule/6.0
-To: Mark Brown <broonie@kernel.org>
-Content-Type: text/plain; charset=US-ASCII
-Date: Thu, 21 Apr 2022 02:55:27 +0000
-X-ClientProxiedBy: TYCPR01CA0027.jpnprd01.prod.outlook.com
- (2603:1096:405:1::15) To OS3PR01MB8426.jpnprd01.prod.outlook.com
- (2603:1096:604:194::10)
+ dkim=pass (2048-bit key) header.d=canonical.com header.i=@canonical.com
+ header.b="AK+XnMcv"
+Received: from localhost.localdomain (unknown [10.101.197.31])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ (No client certificate requested)
+ by smtp-relay-canonical-0.canonical.com (Postfix) with ESMTPSA id 672DE3F7E2; 
+ Thu, 21 Apr 2022 06:38:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+ s=20210705; t=1650523131;
+ bh=7E8gP7qXCjJXg+TBnr+pJ+eIzE0s+bO3ojbZKNQi4lA=;
+ h=From:To:Cc:Subject:Date:Message-Id:MIME-Version;
+ b=AK+XnMcvK/oZd2uPp/2LK66Jd1zNAK2fGQB2y0Cxgdz/MkEjNrX03bc0eGsjY847/
+ LIAX3MtDaFdlJ7oX0/B3/kewNnTNRt6KWSfXNsle40CscwFmVohFVnsTqJBuSY4hbD
+ QCDyVsFrSaVIIFxgosDmIWkH07WProVWvu7b+kRzVaHYvIgHUdDO9zEp2M509KPjxF
+ c/XQOTMkpGqil6dl6c4T2c29Yl3Oo6XON9CdG3wyS+jctnwqPFV2vcXJ86y028Ttbu
+ P3oG3mqwHH92MGIA0ErGQw17RNQfWKBB+E3Gts+ikLyvLnvqjCyBVb9INu3kq+1dj3
+ lZR3XbxN7sHcQ==
+From: Andy Chi <andy.chi@canonical.com>
+To: 
+Subject: [PATCH] ALSA: hda/realtek: Enable mute/micmute LEDs and limit mic
+ boost on EliteBook 845/865 G9
+Date: Thu, 21 Apr 2022 14:36:04 +0800
+Message-Id: <20220421063606.39772-1-andy.chi@canonical.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 84dd8665-eb2c-4ad4-968d-08da234263a3
-X-MS-TrafficTypeDiagnostic: TY2PR01MB2314:EE_
-X-Microsoft-Antispam-PRVS: <TY2PR01MB2314BDDDA7556B206B238A31D4F49@TY2PR01MB2314.jpnprd01.prod.outlook.com>
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 63DXbgfuOtQinmHczeriJ6vLnUTUL1yKuDQOrJewy/6yqo4O5xG8VJqrfgwIK45BZfBsy/c+qemfncdWU9t8zgwRO7jHlYHIaucH++G8XdAwswLAjN4MXLQBgzldo9E8QhQoD67uFP3EafHZUgfvxrF3cV0y/UiSSn0fkHymq4J+K0EhcG8nA6kfI+grHpm2QCFnVUNnxDkfFmIhGokbkA30S6oaexo3ABR2r3FfBy/Fe8Af+V3ntYzBCG9XJhVq99bNBpLPycZF8oscnDrw4F+qjclsgWWtceRc9VAZ4EGuG4qEbiwc02a+hVUsnBLyu9g+i5ZWVcl+48aCtbYqQ6xYCapSq55bpssrSG487YauXGSkHqy2X8W1i8V1z22s7cdeuZcK6a9iiA/31+INFS3sZZiL1FiwlMjdVKSc1wBPoGpENVgKM4A+CFOFFqGwh0y9AaC9sGUGPSz6CAbzOYbZ+mNGtIgM6zRcoCyfOy4HQaqksBZmH67ir4CNKnVeonxL1xfs2tcEE557kIg7z8sr5oDfHhRhVL/K3GouQCBJx225mvAeYagXLkgBWfWZ/0a/KJx/lfBp/hpTZCUxg9WVDhhf1FkmyrB0PTDQ0NGGXAarhXprRLLd72hXhZQubc5NWe8voQd9Ub5zCLUrrzcKNT9cRBhvNO/bY3we9Dd2LX8dYQjNLxGqbWKbKk6L1VOapV1drtloPIVtYekJrw==
-X-Forefront-Antispam-Report: CIP:255.255.255.255; CTRY:; LANG:en; SCL:1; SRV:;
- IPV:NLI; SFV:NSPM; H:OS3PR01MB8426.jpnprd01.prod.outlook.com; PTR:; CAT:NONE;
- SFS:(13230001)(4636009)(366004)(6506007)(6512007)(508600001)(6486002)(4326008)(86362001)(52116002)(54906003)(38100700002)(38350700002)(6916009)(66556008)(316002)(66946007)(2616005)(8676002)(66476007)(26005)(83380400001)(36756003)(8936002)(2906002)(5660300002)(186003);
- DIR:OUT; SFP:1102; 
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?SAXdNOUfy2gan4jVaavNvmOzAT98blckRebaEWqOlwWVEF7vRsZ9OK4Snn05?=
- =?us-ascii?Q?ywpAniNX4/8yWnfLe21AUYb7aDvFVMiFib6/8E9Id9UY9wlekQ+bu9GLhsWZ?=
- =?us-ascii?Q?g9A+Od8lwWJ5/UlSxHhSxAQvwatq3HHQpZBdj6f3ip47b969vOEQfeO/Zg4q?=
- =?us-ascii?Q?ennMQPvkUCETNpHP/xvuiYoRAzTrZE40gKiba3U8UGuVaJc/Ty/V3T6qWyKL?=
- =?us-ascii?Q?8svby7/OKUOyf8n8PzZVjeFsWfR3HomjqnpeDx+jKePOjZ+HaonUYTUkWUtC?=
- =?us-ascii?Q?y8M8Uy/Xs7WQzWt0Ey0oL292kKdWwzRvX41df3ADpQIqiXZCSNyrvzbQQE+f?=
- =?us-ascii?Q?5UBkuljzb8OeoVRJ2zsho5AnrPXNDlLALdkiXf4UFw1ymucUHgGbbXbmUPEJ?=
- =?us-ascii?Q?pvFNnojkqFcHrajFxzL2Gg2z0eEbOGDb1J/b1W19RboT9GIc4/bgCZczKLS4?=
- =?us-ascii?Q?PjrPDg0iQ80gCt8UZ6l5nyakrwpubYiYilrtp66lr1CyrjV42UNU+YhsSGNs?=
- =?us-ascii?Q?JZA4weSpP03icCw0fd35IZKuC2qvZZQSXMs5nJhqhnP4GUU7QzNzahwPXeok?=
- =?us-ascii?Q?gTtUR9MqA6fuPrFMxCEeRhIfpqD3RiagOF07sVLBsp4qWqvamEcGrGxhzD5W?=
- =?us-ascii?Q?zRV1wztOS9VBJb4qgDIfgwZ3ihWskl8+T/nQhox/5Oonh51+AQlY+MfV9gHx?=
- =?us-ascii?Q?WTpvxS6m/0RPLVoDCva6WR+f4bWJXlL5ak9vDyPIrGg29aeegA+JrDU25kCx?=
- =?us-ascii?Q?bjielWmNx2ofMI/IllWN5Lc1DkEWZC5q+albG+LGzhbT3GRH+/bmAzhxoGzg?=
- =?us-ascii?Q?9r7UAS4lCKsuzcpJeD8D02hL3eypQ1nzmSZDl39gRJJge8Q0CZW5nAjKkuDq?=
- =?us-ascii?Q?FZrG/Ur7DgLpKzkkWDM67mCfZNNEbgKD9uYLfGCsY/zPAFHNKmja3aqvw4zS?=
- =?us-ascii?Q?lsgCOBJ7E0EfirTgjGoSWljieZNqXppg+oRsWYPQubZD83/kxWRLm8PyeNeW?=
- =?us-ascii?Q?PSipqu8ahCeXQXwk6quNKZd+wNxel8V0m7BzYonNA6MQBw8jp0A7ET42mhD2?=
- =?us-ascii?Q?+/xXCZZCiWGcuG6IiKv9Tyo/wQc485BO9ltQZl3LckyjcNtG6MYbzdrD1EvN?=
- =?us-ascii?Q?SDoNiHUyj5suyK42AtcsXYZ2JjUPWbKowvC/uyGyvr7i3XDy/1SMS9Egav8t?=
- =?us-ascii?Q?NirE2Lr87ag7yflmsdE6zKYLYTIwIfdLEqAn0O7Ws3GAUkWXw7FZno9Bo4uz?=
- =?us-ascii?Q?KrtfzfSyWQt6bM1ogiAHwugPgk4+esuihEH7OU48AGGF4GXwO4tljHpfj0l6?=
- =?us-ascii?Q?lApQklPZlgU/chOetAZ2TJ/AV6TAXs0qewzUXwSDNcjWlS1PFm5sIerIuTwD?=
- =?us-ascii?Q?l1GyO3tlRRK0q+oxZsfPeAKXn5/bnza2cc8vpzywWNoRy92AZOUrCHThT4vh?=
- =?us-ascii?Q?8fx68MuELc5BuHgMjqJcWETc4HMGJT+fxXRoidV+eC0bmSuOAGHDQi7gVloK?=
- =?us-ascii?Q?xFaprLXUB74ptozy/xfu3aaEEEVFMX+2zOF+hf5vRcpZQuOWhqF2lsTZRQMv?=
- =?us-ascii?Q?MoRIwWHT4hvwTwDavl1ixqCYbAqB23wIiaquljoo/FQWVHUkyLrvpET0z45C?=
- =?us-ascii?Q?Fk3WlZj9BwyMOzeIa7VzTCS6+CUeyM2rBTgGLS3xMMGQsXKCtp1TwZmXe73n?=
- =?us-ascii?Q?4yIwuir9AK9UW/v1TsLIo3DbjkqDk61mNa6Bsu1O5c+n9qzDq29Si30CzeT+?=
- =?us-ascii?Q?kS6zRR9ERHXOA8h+Goi/ugzLT4o5PePi3584ozEK/0wETBKAtABp?=
-X-OriginatorOrg: renesas.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 84dd8665-eb2c-4ad4-968d-08da234263a3
-X-MS-Exchange-CrossTenant-AuthSource: OS3PR01MB8426.jpnprd01.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Apr 2022 02:55:27.5325 (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 53d82571-da19-47e4-9cb4-625a166a4a2a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: OOV5dyuNW/RXfiPNI1rbdKtv3dtR6+0nT4BCevv1t5OK0Yv5sJ0OlLvwMNBZWHzZvwaESMUu9LiTLXX+C0YUhXhIUFIL96sfGtM9GAP5M1RO6e5cEvrbJQ9bse/qI5+/
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: TY2PR01MB2314
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>,
- Dan Carpenter <dan.carpenter@oracle.com>
+Content-Transfer-Encoding: 8bit
+Cc: alsa-devel@alsa-project.org, Kailang Yang <kailang@realtek.com>,
+ Lucas Tanure <tanureal@opensource.cirrus.com>,
+ Jeremy Szu <jeremy.szu@canonical.com>, linux-kernel@vger.kernel.org,
+ Takashi Iwai <tiwai@suse.com>, Werner Sembach <wse@tuxedocomputers.com>,
+ Hui Wang <hui.wang@canonical.com>, Kai-Heng Feng <kai.heng.feng@canonical.com>,
+ andy.chi@canonical.com, Cameron Berkenpas <cam@neo-zeon.de>,
+ Sami Loone <sami@loone.fi>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -144,49 +82,51 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+On HP EliteBook 845 G9 and EliteBook 865 G9, the audio LEDs can be enabled by
+ALC285_FIXUP_HP_MUTE_LED. So use it accordingly.
 
-commit cfb7b8bf1e2d66 ("ASoC: rsnd: tidyup
-rsnd_ssiu_busif_err_status_clear()") merged duplicate code, but it didn't
-care about default case, and causes smatch warnings.
-
-smatch warnings:
-sound/soc/sh/rcar/ssiu.c:112 rsnd_ssiu_busif_err_status_clear() \
-	error: uninitialized symbol 'offset'.
-sound/soc/sh/rcar/ssiu.c:114 rsnd_ssiu_busif_err_status_clear() \
-	error: uninitialized symbol 'shift'.
-
-This patch cares it.
-
-Reported-by: kernel test robot <lkp@intel.com>
-Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
-Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Signed-off-by: Andy Chi <andy.chi@canonical.com>
 ---
- sound/soc/sh/rcar/ssiu.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ sound/pci/hda/patch_realtek.c | 11 +++++++++--
+ 1 file changed, 9 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/sh/rcar/ssiu.c b/sound/soc/sh/rcar/ssiu.c
-index 0d8f97633dd2..138f95dd9f4a 100644
---- a/sound/soc/sh/rcar/ssiu.c
-+++ b/sound/soc/sh/rcar/ssiu.c
-@@ -102,6 +102,8 @@ bool rsnd_ssiu_busif_err_status_clear(struct rsnd_mod *mod)
- 		shift  = 1;
- 		offset = 1;
- 		break;
-+	default:
-+		goto out;
- 	}
- 
- 	for (i = 0; i < 4; i++) {
-@@ -120,7 +122,7 @@ bool rsnd_ssiu_busif_err_status_clear(struct rsnd_mod *mod)
- 		}
- 		rsnd_mod_write(mod, reg, val);
- 	}
--
-+out:
- 	return error;
- }
- 
+diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+index 62fbf3772b41..0cba2f19a772 100644
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -7006,6 +7006,7 @@ enum {
+ 	ALC285_FIXUP_LEGION_Y9000X_AUTOMUTE,
+ 	ALC287_FIXUP_LEGION_16ACHG6,
+ 	ALC287_FIXUP_CS35L41_I2C_2,
++	ALC287_FIXUP_CS35L41_I2C_2_HP_GPIO_LED,
+ 	ALC245_FIXUP_CS35L41_SPI_2,
+ 	ALC245_FIXUP_CS35L41_SPI_2_HP_GPIO_LED,
+ 	ALC245_FIXUP_CS35L41_SPI_4,
+@@ -8769,6 +8770,12 @@ static const struct hda_fixup alc269_fixups[] = {
+ 		.type = HDA_FIXUP_FUNC,
+ 		.v.func = cs35l41_fixup_i2c_two,
+ 	},
++	[ALC287_FIXUP_CS35L41_I2C_2_HP_GPIO_LED] = {
++		.type = HDA_FIXUP_FUNC,
++		.v.func = cs35l41_fixup_i2c_two,
++		.chained = true,
++		.chain_id = ALC285_FIXUP_HP_MUTE_LED,
++	},
+ 	[ALC245_FIXUP_CS35L41_SPI_2] = {
+ 		.type = HDA_FIXUP_FUNC,
+ 		.v.func = cs35l41_fixup_spi_two,
+@@ -9025,9 +9032,9 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
+ 	SND_PCI_QUIRK(0x103c, 0x8981, "HP Elite Dragonfly G3", ALC245_FIXUP_CS35L41_SPI_4),
+ 	SND_PCI_QUIRK(0x103c, 0x898e, "HP EliteBook 835 G9", ALC287_FIXUP_CS35L41_I2C_2),
+ 	SND_PCI_QUIRK(0x103c, 0x898f, "HP EliteBook 835 G9", ALC287_FIXUP_CS35L41_I2C_2),
+-	SND_PCI_QUIRK(0x103c, 0x8991, "HP EliteBook 845 G9", ALC287_FIXUP_CS35L41_I2C_2),
++	SND_PCI_QUIRK(0x103c, 0x8991, "HP EliteBook 845 G9", ALC287_FIXUP_CS35L41_I2C_2_HP_GPIO_LED),
+ 	SND_PCI_QUIRK(0x103c, 0x8992, "HP EliteBook 845 G9", ALC287_FIXUP_CS35L41_I2C_2),
+-	SND_PCI_QUIRK(0x103c, 0x8994, "HP EliteBook 855 G9", ALC287_FIXUP_CS35L41_I2C_2),
++	SND_PCI_QUIRK(0x103c, 0x8994, "HP EliteBook 855 G9", ALC287_FIXUP_CS35L41_I2C_2_HP_GPIO_LED),
+ 	SND_PCI_QUIRK(0x103c, 0x8995, "HP EliteBook 855 G9", ALC287_FIXUP_CS35L41_I2C_2),
+ 	SND_PCI_QUIRK(0x103c, 0x89a4, "HP ProBook 440 G9", ALC236_FIXUP_HP_GPIO_LED),
+ 	SND_PCI_QUIRK(0x103c, 0x89a6, "HP ProBook 450 G9", ALC236_FIXUP_HP_GPIO_LED),
 -- 
 2.25.1
 
