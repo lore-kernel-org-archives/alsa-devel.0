@@ -4,69 +4,74 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3503BC433F5
-	for <alsa-devel@archiver.kernel.org>; Thu, 21 Apr 2022 19:19:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 704E1C433F5
+	for <alsa-devel@archiver.kernel.org>; Thu, 21 Apr 2022 19:25:32 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 6109416C0;
-	Thu, 21 Apr 2022 21:19:00 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6109416C0
+	by alsa0.perex.cz (Postfix) with ESMTPS id 9A6E316A6;
+	Thu, 21 Apr 2022 21:24:40 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9A6E316A6
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1650568790;
-	bh=HOdy8VUWf3kV6Iqxji46w9RRT+an7kD/+0PjvVrebC4=;
-	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
+	s=default; t=1650569130;
+	bh=FTR+sYhyC4WhehBea2cs9+Yc//XXo1/hs6Ulvba8Jyk=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=OBQG3acUZsT4iTH774Upnr/6ArTPRCzauxxK8liDxIg0Lyupp8Y5euyB3Jlctjyfo
-	 nhivy3J4vRUSGNBKpAGjHvLruppLvlkdHc6PdHudMN4u82zRcI1pNGgbGahqmE0iyJ
-	 fAC18YQxupTNvCXRUTsUnGiSlIRATROvCXa/THNU=
+	b=aa0u+jCdnH4DDLl1FSRG6JTkRPWojDpeksnZmX22aYQ8n6Xfhfqcc9aIF9tzY2JRU
+	 SRAUP+Lfof9LAOhnyUvvOk8iYGoiBGWphanCOeD91+eRsRMPRwgHLOLn7NlqrljK+f
+	 s5QokmOgdnB9NF8+G6wWOEkZs8+jOkpym14rcAXY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 7C0C2F800F4;
-	Thu, 21 Apr 2022 21:18:30 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 445A4F80279;
+	Thu, 21 Apr 2022 21:24:40 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id EE015F8032D; Thu, 21 Apr 2022 21:18:22 +0200 (CEST)
-Received: from ams.source.kernel.org (ams.source.kernel.org
- [IPv6:2604:1380:4601:e00::1])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id 76DEDF800F4; Thu, 21 Apr 2022 21:24:39 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 86160F800F4
- for <alsa-devel@alsa-project.org>; Thu, 21 Apr 2022 21:18:20 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 86160F800F4
+ by alsa1.perex.cz (Postfix) with ESMTPS id 6DA64F800F4
+ for <alsa-devel@alsa-project.org>; Thu, 21 Apr 2022 21:24:29 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6DA64F800F4
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="jgiChYOt"
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by ams.source.kernel.org (Postfix) with ESMTPS id 83B03B823F3;
- Thu, 21 Apr 2022 19:18:19 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BEAAEC385A7;
- Thu, 21 Apr 2022 19:18:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1650568698;
- bh=HOdy8VUWf3kV6Iqxji46w9RRT+an7kD/+0PjvVrebC4=;
- h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=jgiChYOtfVG+bjOC1HbHAqw8uFBBlouq3zey0JPnHtMBGX77EGYggPfBdRx4ye+wB
- zAqaZI7cmPrEdaX1d9gwMM5oEk4K4vCTWHOJLj4SjyaitBPMuUNJ5XigQ08cYmzrD+
- WgWVFOsSUzGEv1UTqitLwEvy+8qQ4Akog/+lvRV1gDwpmX6ixAvbZ6Gk+O14CCqS/8
- 4MfP/DoDYqLE3rCEZyDSN2+iNhfO7T7H6zeErp5WDY+yjDMEZIS+L6X0Z78Md1TJIJ
- 97GJgz7YtYk5/Au9gt/dDybGqrD2OFQ2gxzyZULJg8ut4ZYkidolE/CnjN3Fn71pJl
- Ye2oJZmiR8+Mg==
-From: Mark Brown <broonie@kernel.org>
-To: narmstrong@baylibre.com, jbrunet@baylibre.com
-In-Reply-To: <20220421155725.2589089-1-narmstrong@baylibre.com>
-References: <20220421155725.2589089-1-narmstrong@baylibre.com>
-Subject: Re: [PATCH 1/2] Revert "ASoC: meson: axg-tdm-interface: manage
- formatters in trigger"
-Message-Id: <165056869649.409171.13055364117592401974.b4-ty@kernel.org>
-Date: Thu, 21 Apr 2022 20:18:16 +0100
-MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-Cc: linux-amlogic@lists.infradead.org, alsa-devel@alsa-project.org,
- linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- dimitrysh@google.com
+ dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
+ header.b="QNOkxTdk"; 
+ dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
+ header.b="0arhRVAK"
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+ by smtp-out2.suse.de (Postfix) with ESMTP id D828E1F388;
+ Thu, 21 Apr 2022 19:24:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1650569068; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=8b0hZN7Q+FgzVFi6P/1phChmw1uu9xQWT0IWCWuybH8=;
+ b=QNOkxTdkHjMYDZQQl7aKRJXGKQWwYTW9W0xk8tJ3ZW8dtJA+rhDfo+ot25/ogUCxbpi1nO
+ xnx4HRUH1apjsjjYSjJk9wzdbj6tYS6xZV/J5EJvQUEsCQn0lek5CrxqKpZm0dgoEU47pw
+ zs2Z1924CgApsWsG2vpIxVnSu1uA/nU=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1650569068;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=8b0hZN7Q+FgzVFi6P/1phChmw1uu9xQWT0IWCWuybH8=;
+ b=0arhRVAKDVXjdiGFHi1XYH73WaGArSVKOH3mduRdm45ZWdS84N/kcMS1ZliYzjEB5gNZmG
+ LtZYhtopstc5oADg==
+Received: from alsa1.suse.de (alsa1.suse.de [10.160.4.42])
+ by relay2.suse.de (Postfix) with ESMTP id C5FED2C14B;
+ Thu, 21 Apr 2022 19:24:28 +0000 (UTC)
+Date: Thu, 21 Apr 2022 21:24:28 +0200
+Message-ID: <s5h8rryutn7.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Tim Crawford <tcrawford@system76.com>
+Subject: Re: [PATCH] ALSA: hda/realtek: Add quirk for Clevo NP70PNP
+In-Reply-To: <20220421170412.3697-1-tcrawford@system76.com>
+References: <20220421170412.3697-1-tcrawford@system76.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=US-ASCII
+Cc: productdev@system76.com, alsa-devel@alsa-project.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -82,40 +87,14 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Thu, 21 Apr 2022 17:57:24 +0200, Neil Armstrong wrote:
-> This reverts commit bf5e4887eeddb48480568466536aa08ec7f179a5 because
-> the following and required commit e138233e56e9829e65b6293887063a1a3ccb2d68
-> causes the following system crash when using audio:
->  BUG: sleeping function called from invalid context at kernel/locking/mutex.c:282
+On Thu, 21 Apr 2022 19:04:12 +0200,
+Tim Crawford wrote:
 > 
+> Fixes headset detection on Clevo NP70PNP.
 > 
+> Signed-off-by: Tim Crawford <tcrawford@system76.com>
 
-Applied to
+Thanks, applied.
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
 
-Thanks!
-
-[1/2] Revert "ASoC: meson: axg-tdm-interface: manage formatters in trigger"
-      commit: c26830b6c5c534d273ce007eb33d5a2d2ad4e969
-[2/2] Revert "ASoC: meson: axg-card: make links nonatomic"
-      commit: 0c9b152c72e53016e96593bdbb8cffe2176694b9
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
+Takashi
