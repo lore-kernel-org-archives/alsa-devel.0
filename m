@@ -4,67 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9B46BC433F5
-	for <alsa-devel@archiver.kernel.org>; Thu, 21 Apr 2022 17:26:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 87D42C433EF
+	for <alsa-devel@archiver.kernel.org>; Thu, 21 Apr 2022 17:26:40 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id EC77816B4;
-	Thu, 21 Apr 2022 19:25:28 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EC77816B4
+	by alsa0.perex.cz (Postfix) with ESMTPS id A045016A3;
+	Thu, 21 Apr 2022 19:25:48 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A045016A3
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1650561979;
-	bh=Hm+I89eVrNyoJRbqZk91HLSchEvg3AO8RSEtWGOLKoo=;
+	s=default; t=1650561998;
+	bh=vXEGXWcmpcw7VUExikq08Oq9kTSCp/UR4BOeeyQTPwc=;
 	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=DZpbGLMrTzF+r+U1sLzqScG31LH14NDTuK4ViG8ALuQh4/tQLWhY47G57pn5oK/uP
-	 k8w6dxg/ZPsg5Nv9nGWdnOAcQ12MNnZOQEdmD/NNtGQImP0he6dqKEfRaw5gk07wrI
-	 jrFDY3lwqtMM05Y3U6wQrtZhxFrGRWQxYFtvBolU=
+	b=npwQOBfwu2QOhYHkBXyzlLkOdVnE2JukfJIlLGP/fjXIAM9qIgqW+U/LhyJHMJfbr
+	 PVZSOideWK9cUf4uJd982UHA5O3anu9b5NVgYpGsUYw4WBkLgJkzOEgbLHTTtsQ6Ya
+	 qP5K2yabkd9B1NKXeJnUZWG8VqkL0Qy1wlG6CrI8=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 3E57FF80279;
-	Thu, 21 Apr 2022 19:25:00 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id AA51DF804F3;
+	Thu, 21 Apr 2022 19:25:02 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 2B37BF804FB; Thu, 21 Apr 2022 19:24:59 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org
- [IPv6:2604:1380:4641:c500::1])
+ id 1B3E8F804FD; Thu, 21 Apr 2022 19:25:00 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 45420F80279
- for <alsa-devel@alsa-project.org>; Thu, 21 Apr 2022 19:24:56 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 45420F80279
+ by alsa1.perex.cz (Postfix) with ESMTPS id CA7D1F800F4
+ for <alsa-devel@alsa-project.org>; Thu, 21 Apr 2022 19:24:51 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CA7D1F800F4
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="Dfp6quhO"
+ header.b="CdJeZKLF"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id EC82A61E08;
- Thu, 21 Apr 2022 17:24:54 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9D343C385A9;
- Thu, 21 Apr 2022 17:24:52 +0000 (UTC)
+ by dfw.source.kernel.org (Postfix) with ESMTPS id A574861E01;
+ Thu, 21 Apr 2022 17:24:50 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 60F6EC385A1;
+ Thu, 21 Apr 2022 17:24:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1650561894;
- bh=Hm+I89eVrNyoJRbqZk91HLSchEvg3AO8RSEtWGOLKoo=;
+ s=k20201202; t=1650561890;
+ bh=vXEGXWcmpcw7VUExikq08Oq9kTSCp/UR4BOeeyQTPwc=;
  h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=Dfp6quhOYeuRtwn65OAUcbicpbFm9dCk/TRcoYo3F2AnU2dZ2xMcu/vrHPR1FxTlJ
- rtsb+fxjit/c3C5VK/dqYk2/pjhX65t/mS55HIwkK1u5a+0+lx6WK7Yv0JBvvNBM4+
- c7mh25GPsHFghTYwivjBKjq4+ab/sge/cR2osOb2Mo8q6GvwFdm6s8vkrYzoKznHw3
- zXM8li55buc9pBP9m/7f3M/GxdwfMUZf1nJr4iTVctng5j2MM9JXZILo1AxCUyYIl/
- PHEgPldmTCzr6duwXjf0g2EubiHqh+z8sShkX3M/W8Hga4oYgE7QC+INs+rdaFYW2p
- iHYWjRFV2zPRA==
+ b=CdJeZKLFthqIu+m19LEqdRKF7/2K4j86ux4SNyWq+lyR7XrsNG1+ApxSZTr1ZPMpW
+ iWO9TJd64QF8z94U/km2EorKEnkXRXEnkQhlJaZkNmkON0uhVHzgVo9nhUVRU6IUXB
+ xlX4HVxk5MMYk2xeqNAajuC2gJZKqXk+sfN0bIqmI+vi1tLH7QY5UGVqkB5YTInD/U
+ Kulltzj8efvBaZV7481sxIzQIg1/7FyApr0KBUDUlDTy7w4tjWQiNHwBHVLKnCwcbo
+ ikBmmZ2rVSDcqI5Q1ZOxW6bKebM64Z4x7uNGEiDTVfOiQwiHoNDRJ+zXRdh+LIwVmz
+ VFce3Ro8pgCzQ==
 From: Mark Brown <broonie@kernel.org>
-To: steve.lee.analog@gmail.com, lgirdwood@gmail.com, tiwai@suse.com,
- linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, perex@perex.cz
-In-Reply-To: <20220420044900.2989-1-steve.lee.analog@gmail.com>
-References: <20220420044900.2989-1-steve.lee.analog@gmail.com>
-Subject: Re: [V4 1/2] ASoC: max98390: Add reset gpio control
-Message-Id: <165056189236.376935.16493956574599176087.b4-ty@kernel.org>
-Date: Thu, 21 Apr 2022 18:24:52 +0100
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+In-Reply-To: <87r15rgn6p.wl-kuninori.morimoto.gx@renesas.com>
+References: <87r15rgn6p.wl-kuninori.morimoto.gx@renesas.com>
+Subject: Re: [PATCH] ASoC: rsnd: care default case on
+ rsnd_ssiu_busif_err_status_clear()
+Message-Id: <165056188911.376935.15892463506853395145.b4-ty@kernel.org>
+Date: Thu, 21 Apr 2022 18:24:49 +0100
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: ryans.lee@analog.com, krzk@kernel.org, nuno.sa@analog.com
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>, dan.carpenter@oracle.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -80,10 +79,20 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, 20 Apr 2022 13:48:59 +0900, Steve Lee wrote:
->  Add reset gpio control to support RESET PIN connected to gpio.
+On Thu, 21 Apr 2022 02:55:27 +0000, Kuninori Morimoto wrote:
+> From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 > 
+> commit cfb7b8bf1e2d66 ("ASoC: rsnd: tidyup
+> rsnd_ssiu_busif_err_status_clear()") merged duplicate code, but it didn't
+> care about default case, and causes smatch warnings.
 > 
+> smatch warnings:
+> sound/soc/sh/rcar/ssiu.c:112 rsnd_ssiu_busif_err_status_clear() \
+> 	error: uninitialized symbol 'offset'.
+> sound/soc/sh/rcar/ssiu.c:114 rsnd_ssiu_busif_err_status_clear() \
+> 	error: uninitialized symbol 'shift'.
+> 
+> [...]
 
 Applied to
 
@@ -91,10 +100,8 @@ Applied to
 
 Thanks!
 
-[1/2] ASoC: max98390: Add reset gpio control
-      commit: 397ff024960634962af93e9e2775fc0e4fe7de92
-[2/2] ASoC: dt-bindings: max98390: add reset gpio bindings
-      commit: 68514c9f6aa676f98328844336fc4400244a8479
+[1/1] ASoC: rsnd: care default case on rsnd_ssiu_busif_err_status_clear()
+      commit: b1384d4c95088d01f4266237faabf165d3d605fc
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
