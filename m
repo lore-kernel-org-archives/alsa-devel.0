@@ -4,66 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 87D42C433EF
-	for <alsa-devel@archiver.kernel.org>; Thu, 21 Apr 2022 17:26:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9A802C433EF
+	for <alsa-devel@archiver.kernel.org>; Thu, 21 Apr 2022 17:26:48 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A045016A3;
-	Thu, 21 Apr 2022 19:25:48 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A045016A3
+	by alsa0.perex.cz (Postfix) with ESMTPS id D52E316C1;
+	Thu, 21 Apr 2022 19:25:56 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D52E316C1
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1650561998;
-	bh=vXEGXWcmpcw7VUExikq08Oq9kTSCp/UR4BOeeyQTPwc=;
+	s=default; t=1650562006;
+	bh=vhR5HU9aDcrDAbJOy52MenOQ+cdKq7yEMCDh5DXsr34=;
 	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=npwQOBfwu2QOhYHkBXyzlLkOdVnE2JukfJIlLGP/fjXIAM9qIgqW+U/LhyJHMJfbr
-	 PVZSOideWK9cUf4uJd982UHA5O3anu9b5NVgYpGsUYw4WBkLgJkzOEgbLHTTtsQ6Ya
-	 qP5K2yabkd9B1NKXeJnUZWG8VqkL0Qy1wlG6CrI8=
+	b=nj+xikhRSL6RD1OKpEtnt0rpsb4rNiqJQ32HB2dYDBVEIl6TvwnFHSCG6bTLDTbOh
+	 Isr5P4p2d6s3P5839Zw6bgXKkNO3tKRcLDnPmUrSMXopBjJMOgi/UCbqvIQ3A1R8mj
+	 Mi+iO+0fpCppWgL8LDeu0S9Nz5o/XHfAWQabNwNM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id AA51DF804F3;
-	Thu, 21 Apr 2022 19:25:02 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 27016F80507;
+	Thu, 21 Apr 2022 19:25:03 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 1B3E8F804FD; Thu, 21 Apr 2022 19:25:00 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+ id 48C64F804FE; Thu, 21 Apr 2022 19:25:00 +0200 (CEST)
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id CA7D1F800F4
- for <alsa-devel@alsa-project.org>; Thu, 21 Apr 2022 19:24:51 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CA7D1F800F4
+ by alsa1.perex.cz (Postfix) with ESMTPS id ED7F7F8032D
+ for <alsa-devel@alsa-project.org>; Thu, 21 Apr 2022 19:24:53 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz ED7F7F8032D
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="CdJeZKLF"
+ header.b="rsxKBatq"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id A574861E01;
- Thu, 21 Apr 2022 17:24:50 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 60F6EC385A1;
- Thu, 21 Apr 2022 17:24:49 +0000 (UTC)
+ by ams.source.kernel.org (Postfix) with ESMTPS id 7C13AB82874;
+ Thu, 21 Apr 2022 17:24:53 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9F7B2C385A1;
+ Thu, 21 Apr 2022 17:24:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1650561890;
- bh=vXEGXWcmpcw7VUExikq08Oq9kTSCp/UR4BOeeyQTPwc=;
+ s=k20201202; t=1650561892;
+ bh=vhR5HU9aDcrDAbJOy52MenOQ+cdKq7yEMCDh5DXsr34=;
  h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=CdJeZKLFthqIu+m19LEqdRKF7/2K4j86ux4SNyWq+lyR7XrsNG1+ApxSZTr1ZPMpW
- iWO9TJd64QF8z94U/km2EorKEnkXRXEnkQhlJaZkNmkON0uhVHzgVo9nhUVRU6IUXB
- xlX4HVxk5MMYk2xeqNAajuC2gJZKqXk+sfN0bIqmI+vi1tLH7QY5UGVqkB5YTInD/U
- Kulltzj8efvBaZV7481sxIzQIg1/7FyApr0KBUDUlDTy7w4tjWQiNHwBHVLKnCwcbo
- ikBmmZ2rVSDcqI5Q1ZOxW6bKebM64Z4x7uNGEiDTVfOiQwiHoNDRJ+zXRdh+LIwVmz
- VFce3Ro8pgCzQ==
+ b=rsxKBatq1SQC8IaLsZVTjolPqueHDxIYiS9p8peMJWhcSzVrg1eWvdOJqxFr/mrYS
+ /QzmTHKsfjXXme75xCYIeQ0Xd+sUJh4HTrg8v9ljZp5dqO+T4b+T8UiAedz9LOXhnr
+ K9nQDsFFcbzBJZ5r0lzEqD3FwLqnkZgefUzLicPMHLnkGbWGOKSyr1Vfezx315/+P1
+ loctP5ZUljfAkQgjiONWuAx7SLDDoJTUPppC2Ix6sq2s1TBWZ78ys2RwMVidYD9iw0
+ ypOLv+y8GmO7Zqw6yyFL7TbYTvZeRcqdbzaRnHLyAndVjssd1rQW5WGRDkwf5r9m5o
+ wlNs0/K2wEi/w==
 From: Mark Brown <broonie@kernel.org>
 To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-In-Reply-To: <87r15rgn6p.wl-kuninori.morimoto.gx@renesas.com>
-References: <87r15rgn6p.wl-kuninori.morimoto.gx@renesas.com>
-Subject: Re: [PATCH] ASoC: rsnd: care default case on
- rsnd_ssiu_busif_err_status_clear()
-Message-Id: <165056188911.376935.15892463506853395145.b4-ty@kernel.org>
-Date: Thu, 21 Apr 2022 18:24:49 +0100
+In-Reply-To: <87o80vgn5a.wl-kuninori.morimoto.gx@renesas.com>
+References: <87o80vgn5a.wl-kuninori.morimoto.gx@renesas.com>
+Subject: Re: [PATCH] ASoC: audio-graph-card2: indicate "Experimental stage"
+ warning only when successed
+Message-Id: <165056189137.376935.16441068280224296214.b4-ty@kernel.org>
+Date: Thu, 21 Apr 2022 18:24:51 +0100
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>, dan.carpenter@oracle.com
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -79,18 +79,14 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Thu, 21 Apr 2022 02:55:27 +0000, Kuninori Morimoto wrote:
+On Thu, 21 Apr 2022 02:56:17 +0000, Kuninori Morimoto wrote:
 > From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 > 
-> commit cfb7b8bf1e2d66 ("ASoC: rsnd: tidyup
-> rsnd_ssiu_busif_err_status_clear()") merged duplicate code, but it didn't
-> care about default case, and causes smatch warnings.
+> Because Sound Card needs many drivers to probe, current audio-graph-card2
+> will indicate "Experimental stage" at top of probe function even though
+> in case it gets -EPROBE_DEFER, thus it will be indicated many times.
 > 
-> smatch warnings:
-> sound/soc/sh/rcar/ssiu.c:112 rsnd_ssiu_busif_err_status_clear() \
-> 	error: uninitialized symbol 'offset'.
-> sound/soc/sh/rcar/ssiu.c:114 rsnd_ssiu_busif_err_status_clear() \
-> 	error: uninitialized symbol 'shift'.
+> This patch indicates it when probe was succeeded.
 > 
 > [...]
 
@@ -100,8 +96,8 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: rsnd: care default case on rsnd_ssiu_busif_err_status_clear()
-      commit: b1384d4c95088d01f4266237faabf165d3d605fc
+[1/1] ASoC: audio-graph-card2: indicate "Experimental stage" warning only when successed
+      commit: c1d97b866100f354c3381c756e8ea7c4d8f0ccbe
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
