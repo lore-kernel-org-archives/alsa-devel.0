@@ -4,68 +4,63 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6926EC433F5
-	for <alsa-devel@archiver.kernel.org>; Fri, 22 Apr 2022 13:54:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id CB319C433EF
+	for <alsa-devel@archiver.kernel.org>; Fri, 22 Apr 2022 13:55:01 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id AE42D16F6;
-	Fri, 22 Apr 2022 15:53:53 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AE42D16F6
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0E26917F8;
+	Fri, 22 Apr 2022 15:54:10 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0E26917F8
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1650635683;
-	bh=bk1RzOmWO6+F8HELlpkoiR1AiCW8egI0XWv7ebz23vU=;
-	h=Date:In-Reply-To:Subject:From:To:List-Id:List-Unsubscribe:
-	 List-Archive:List-Post:List-Help:List-Subscribe:From;
-	b=Ac1MYUZrobNe2YGQmxD9y2/yhPSNkb+TALt9NI6gVPp+jWrWO+7UcQtwAqWCXkifd
-	 t2AZffvdzy7G6y9DAEemYRMwIEQ8xqEM+1lI6TEDnzApuTSfo2FXdS6GOM/sTNhu6U
-	 XM/+KnaPCICsvhLdD/jVZZ8oH+JiO2wkP1Elpg6U=
+	s=default; t=1650635700;
+	bh=0vRCxKznfsUI9hIjj5OVe1z6+xofAFlPjoFe7uzz/UM=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=CJAT12bFjmvvtsgqxksv7mmVPMCiUB5fGnS3yb4pKATet6X3+3fcK6HnADQv2jzlE
+	 wP8HnEGJI/UBU/w9r0qXoBxyTKoc2I2DnjWhhAnyJsR9Rot/vRxrN+qAEvZx09R8Aw
+	 xSd5Y5zKgodoBiZ7V1WHKgQi7+pMeZR2vPXMX39k=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 41BE1F80C07;
+	by alsa1.perex.cz (Postfix) with ESMTP id C567CF80C15;
 	Fri, 22 Apr 2022 15:32:48 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 7145BF80125; Wed, 20 Apr 2022 23:28:18 +0200 (CEST)
-Received: from mail-il1-f200.google.com (mail-il1-f200.google.com
- [209.85.166.200])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id D8614F800F8
- for <alsa-devel@alsa-project.org>; Wed, 20 Apr 2022 23:28:11 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D8614F800F8
-Received: by mail-il1-f200.google.com with SMTP id
- l2-20020a056e0212e200b002cc235e7488so1606396iln.21
- for <alsa-devel@alsa-project.org>; Wed, 20 Apr 2022 14:28:11 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
- :from:to;
- bh=6orOFsy74rNN5Tn6BrnH+g4zIxPrQE5SyUBi8riN0xM=;
- b=I4F1krMOibpKaTH9PnqZWCI0Aj/Ad+w7diYRgnPZU4WC1ft68HQLCz18Zej0S22iqk
- RJqlw48502A5fjRUMmFU2MNcs2RrwP7MYECxuX+r9j/ztibWC8J+TUSLTBRKtyomHSXZ
- m5pk6hj3T82pNJX0wrhUmiHZZit05dKNSf7/XIFypxLp58/k56pes8u/yWYdUjSj6XAS
- ryz6Qaq4UT5/jvkSWHA5TgTRdyfVcAPTTZmTvH/A5jbqv1efi2YH/TMtJtGC0h+eWriI
- 3T+h8BOHc/uG9o3DnGP14+rgSKtQ2bFCZ5mrNvOnGcpLD+Ppfgr8Wkw7woilAxE4j7VX
- CLww==
-X-Gm-Message-State: AOAM532fuEGDr/OWKZU2Xuy/5jAL+QvIkqwK/ZMJj2LL0atYJyUPWN6S
- UvA4cuZXPO9MsSn6s+ZFKfDvQ4gWjK7mFnZq/UNa6hHKZ6aC
-X-Google-Smtp-Source: ABdhPJzgN+9LkncxNGek29FEzvDqYn7T+0paLfjRepDM958YF10ope2I5QGSX4+kSi2/D4KHU/1JAYks7qeWBzSeF0qDXlyP38dc
+ id 70A4CF80279; Thu, 21 Apr 2022 08:24:46 +0200 (CEST)
+Received: from muru.com (muru.com [72.249.23.125])
+ by alsa1.perex.cz (Postfix) with ESMTP id 40F6FF800C1
+ for <alsa-devel@alsa-project.org>; Thu, 21 Apr 2022 08:24:42 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 40F6FF800C1
+Received: from localhost (localhost [127.0.0.1])
+ by muru.com (Postfix) with ESMTPS id 53E33811B;
+ Thu, 21 Apr 2022 06:21:49 +0000 (UTC)
+Date: Thu, 21 Apr 2022 09:24:39 +0300
+From: Tony Lindgren <tony@atomide.com>
+To: Arnd Bergmann <arnd@kernel.org>
+Subject: Re: [PATCH 40/41] [TO BE REBASED] ARM: OMAP1: clock: Convert to CCF
+Message-ID: <YmD4p+09B/dq54XL@atomide.com>
+References: <20220419133723.1394715-1-arnd@kernel.org>
+ <20220419133723.1394715-41-arnd@kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6638:19c8:b0:328:6a22:8258 with SMTP id
- bi8-20020a05663819c800b003286a228258mr9997908jab.103.1650490089346; Wed, 20
- Apr 2022 14:28:09 -0700 (PDT)
-Date: Wed, 20 Apr 2022 14:28:09 -0700
-In-Reply-To: <0000000000004ecea505c28504b9@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000007b1cbd05dd1cab5a@google.com>
-Subject: Re: [syzbot] general protection fault in pm_qos_update_target
-From: syzbot <syzbot+f7d9295d2565ee819d21@syzkaller.appspotmail.com>
-To: alsa-devel@alsa-project.org, len.brown@intel.com, 
- linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org, pavel@ucw.cz, 
- perex@perex.cz, rjw@rjwysocki.net, syzkaller-bugs@googlegroups.com, 
- tiwai@suse.com, tiwai@suse.de
-Content-Type: text/plain; charset="UTF-8"
-X-Mailman-Approved-At: Fri, 22 Apr 2022 15:31:42 +0200
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220419133723.1394715-41-arnd@kernel.org>
+X-Mailman-Approved-At: Fri, 22 Apr 2022 15:31:40 +0200
+Cc: Ulf Hansson <ulf.hansson@linaro.org>, linux-usb@vger.kernel.org,
+ Linus Walleij <linus.walleij@linaro.org>, linux-fbdev@vger.kernel.org,
+ Dominik Brodowski <linux@dominikbrodowski.net>,
+ Lee Jones <lee.jones@linaro.org>, Daniel Thompson <daniel.thompson@linaro.org>,
+ aaro.koskinen@iki.fi, Peter Ujfalusi <peter.ujfalusi@gmail.com>,
+ Helge Deller <deller@gmx.de>, jmkrzyszt@gmail.com,
+ Russell King <linux@armlinux.org.uk>, Krzysztof Kozlowski <krzk@kernel.org>,
+ Alan Stern <stern@rowland.harvard.edu>, linux-serial@vger.kernel.org,
+ linux-input@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
+ Mark Brown <broonie@kernel.org>, dri-devel@lists.freedesktop.org,
+ linux-omap@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ Felipe Balbi <balbi@kernel.org>, Paul Walmsley <paul@pwsan.com>,
+ Jingoo Han <jingoohan1@gmail.com>, Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+ linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
+ Kevin Hilman <khilman@kernel.org>, Vinod Koul <vkoul@kernel.org>,
+ dmaengine@vger.kernel.org, alsa-devel@alsa-project.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -81,23 +76,26 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-syzbot suspects this issue was fixed by commit:
+* Arnd Bergmann <arnd@kernel.org> [220419 13:39]:
+> From: Janusz Krzysztofik <jmkrzyszt@gmail.com>
+> +	/* protect clk->enable_reg from concurrent access via clk_set_rate() */
+> +	if (clk->enable_reg == OMAP1_IO_ADDRESS(ARM_CKCTL))
+> +		spin_lock_irqsave(&arm_ckctl_lock, flags);
+> +	else if (clk->enable_reg == OMAP1_IO_ADDRESS(ARM_IDLECT2))
+> +		spin_lock_irqsave(&arm_idlect2_lock, flags);
+> +	else if (clk->enable_reg == OMAP1_IO_ADDRESS(MOD_CONF_CTRL_0))
+> +		spin_lock_irqsave(&mod_conf_ctrl_0_lock, flags);
+> +	else if (clk->enable_reg == OMAP1_IO_ADDRESS(MOD_CONF_CTRL_1))
+> +		spin_lock_irqsave(&mod_conf_ctrl_1_lock, flags);
+> +	else if (clk->enable_reg == OMAP1_IO_ADDRESS(SWD_CLK_DIV_CTRL_SEL))
+> +		spin_lock_irqsave(&swd_clk_div_ctrl_sel_lock, flags);
+> +
 
-commit 3c3201f8c7bb77eb53b08a3ca8d9a4ddc500b4c0
-Author: Takashi Iwai <tiwai@suse.de>
-Date:   Tue Mar 22 17:07:19 2022 +0000
+Eventually there should be just separate clock controller instances for
+the clock registers banks, and then this should all disappear as the
+lock is instance specific. Anyways, that's probably best done as a separate
+changes later on.
 
-    ALSA: pcm: Fix races among concurrent prepare and hw_params/hw_free calls
+Regards,
 
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=104e3034f00000
-start commit:   dbb5afad100a ptrace: make ptrace() fail if the tracee chan..
-git tree:       upstream
-kernel config:  https://syzkaller.appspot.com/x/.config?x=91ff0467ce169bc
-dashboard link: https://syzkaller.appspot.com/bug?extid=f7d9295d2565ee819d21
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=16c75e73d00000
-
-If the result looks correct, please mark the issue as fixed by replying with:
-
-#syz fix: ALSA: pcm: Fix races among concurrent prepare and hw_params/hw_free calls
-
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+Tony
