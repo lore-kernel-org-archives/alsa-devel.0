@@ -4,63 +4,63 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5B2C6C433F5
-	for <alsa-devel@archiver.kernel.org>; Thu, 21 Apr 2022 16:26:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id AA1FDC433EF
+	for <alsa-devel@archiver.kernel.org>; Thu, 21 Apr 2022 16:27:39 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E6B9D1654;
-	Thu, 21 Apr 2022 18:25:27 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E6B9D1654
+	by alsa0.perex.cz (Postfix) with ESMTPS id C3B69165E;
+	Thu, 21 Apr 2022 18:26:47 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C3B69165E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1650558378;
-	bh=9eDQSFAxLTGimAioClhm9WZdxabXWzodBnbtzrryzbo=;
+	s=default; t=1650558457;
+	bh=31qebvS+eu2WieqWNzfbBF8k6AsSIQmfDm0pDdSskTM=;
 	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
 	 List-Post:List-Help:List-Subscribe:From;
-	b=uzq4W5rqav+PMqPhpYcmF6d1Lslic3cjsiDPzw8338ZJoKHffRmRMbh2SDI/PBEEE
-	 beWZY4jHd1vR4p8dxc8eqmMC683FHTVnO6fZSojAV3vt1uzEcZRWo0D7GDlwuXXLvu
-	 kDuKR+ybBpbsx15lJr6oj30Q/lusIQJ5YHC4u78k=
+	b=lZDZTW1GBmjwM45QUgxQ8/VwBd1jRUJpIkWQM7dyVJsE47YGaQYmWGRFbATxPGdqh
+	 d4lU1+tj11lrhgtaRTRzSKyZ2mLqZnYwjMPgv04utiqDUJcvzl+tGL4ucOjBD4Bj1x
+	 DUiTfuKeJLcNj0I92JZ92bGJtIyw29rYdrQ43Gpk=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 73478F80279;
-	Thu, 21 Apr 2022 18:25:27 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 6FCA9F80125;
+	Thu, 21 Apr 2022 18:26:47 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id D1B70F800C1; Thu, 21 Apr 2022 18:25:25 +0200 (CEST)
-Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
+ id 6B525F800C1; Thu, 21 Apr 2022 18:26:45 +0200 (CEST)
+Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 53F8CF800C1
- for <alsa-devel@alsa-project.org>; Thu, 21 Apr 2022 18:25:18 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 53F8CF800C1
+ by alsa1.perex.cz (Postfix) with ESMTPS id E1485F800C1
+ for <alsa-devel@alsa-project.org>; Thu, 21 Apr 2022 18:26:38 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E1485F800C1
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="ngrM3nj/"
+ header.b="a3o9guU1"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1650558320; x=1682094320;
+ t=1650558400; x=1682094400;
  h=from:to:cc:subject:date:message-id:mime-version:
  content-transfer-encoding;
- bh=9eDQSFAxLTGimAioClhm9WZdxabXWzodBnbtzrryzbo=;
- b=ngrM3nj/UPVWBZqmAa8n/9wPommzwXyPwDFn/dVPbcIhknv9Pnl+uUco
- 2YJVorSNTWCdUjbnG+doe1QG79ZJpEoXiFLwRwXP8+IcjMgWT7C8ChY1k
- 4GjebBu/R4eMEVKn2meZbfeigdDZYMp+ejXcKoXx1254yNnCE5odGZCv6
- BtLmvv/4ORbn+i0ybwcK4KIcRfY8Ma4N3xXyKwBl81g6If2qafUXc5nST
- 8EWUKwIWY2tbtOine0MbNcq0urOSi8Ym067S1vxQ/2GanhayLxb0GauES
- 1CpeHBixoFtKR4nyzmdExmjOjddXDvr/fR32+OTADFu9K6V0CZDjOkACF A==;
-X-IronPort-AV: E=McAfee;i="6400,9594,10324"; a="289522008"
-X-IronPort-AV: E=Sophos;i="5.90,279,1643702400"; d="scan'208";a="289522008"
+ bh=31qebvS+eu2WieqWNzfbBF8k6AsSIQmfDm0pDdSskTM=;
+ b=a3o9guU1Ibbs1raB01nl1o4bAoFjan2sE3uS8UGIqyoJqvwEU4ewn6oY
+ nMaWl/KoYe3TxtJWGZuIx85cpvDXDUWvJ7CZla63ZcOLORGpgto5rUyq8
+ yQRJYwCFLRISlxCYo4ACbGA/m6oHRAb500SuSWlOk+8hwXnrNXf3uaTIe
+ JhX5vYUbONtaA/B4szxRTLs/2/zPfo/6XwNROL6NWpJp54qNnnSdtqED2
+ YowkD+WDbWW2n3doJ7juDMssCsN2kAMfoLSez9zcrwrAY7owbtO7tQReA
+ vDD/pD/x3o00VM1H7nwD05PT0l3krj3qnL9t66HdLqW+/JXWOzLbd3G1z g==;
+X-IronPort-AV: E=McAfee;i="6400,9594,10324"; a="264575231"
+X-IronPort-AV: E=Sophos;i="5.90,279,1643702400"; d="scan'208";a="264575231"
 Received: from orsmga003.jf.intel.com ([10.7.209.27])
- by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 21 Apr 2022 09:25:15 -0700
-X-IronPort-AV: E=Sophos;i="5.90,279,1643702400"; d="scan'208";a="511144031"
+ by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 21 Apr 2022 09:26:14 -0700
+X-IronPort-AV: E=Sophos;i="5.90,279,1643702400"; d="scan'208";a="511144357"
 Received: from qingsu-mobl.amr.corp.intel.com (HELO
  pbossart-mobl3.amr.corp.intel.com) ([10.212.148.250])
  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 21 Apr 2022 09:25:15 -0700
+ 21 Apr 2022 09:26:13 -0700
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH] ASoC: soc-core: remove always-false path
-Date: Thu, 21 Apr 2022 11:25:05 -0500
-Message-Id: <20220421162505.302132-1-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH] ASoC: SOF: sof-audio: remove useless assignment
+Date: Thu, 21 Apr 2022 11:26:00 -0500
+Message-Id: <20220421162600.302230-1-pierre-louis.bossart@linux.intel.com>
 X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -84,63 +84,31 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-cppcheck throws the following warning:
-
-sound/soc/soc-core.c:2773:6: style: Condition '!num_widgets' is always
-false [knownConditionTrueFalse]
- if (!num_widgets) {
-     ^
-
-sound/soc/soc-core.c:2761:18: note: Assuming that condition
-'num_widgets<0' is not redundant
- if (num_widgets < 0) {
-                 ^
-sound/soc/soc-core.c:2766:18: note: Assuming condition is false
- if (num_widgets & 1) {
-                 ^
-sound/soc/soc-core.c:2772:2: note: Compound assignment '/=', assigned
-value is 0
- num_widgets /= 2;
- ^
-
-We should check upfront all error conditions.
+There is no need to assign spcm to NULL. Removing this assignment also
+removes a false alarm reported by cppcheck.
 
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Reviewed-by: Bard Liao <yung-chuan.liao@linux.intel.com>
 Reviewed-by: Rander Wang <rander.wang@intel.com>
 Reviewed-by: Péter Ujfalusi <peter.ujfalusi@linux.intel.com>
 ---
- sound/soc/soc-core.c | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+ sound/soc/sof/sof-audio.h | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index aa687fd126db2..d68e64b73eea7 100644
---- a/sound/soc/soc-core.c
-+++ b/sound/soc/soc-core.c
-@@ -2763,6 +2763,11 @@ int snd_soc_of_parse_audio_simple_widgets(struct snd_soc_card *card,
- 			"ASoC: Property '%s' does not exist\n",	propname);
- 		return -EINVAL;
- 	}
-+	if (!num_widgets) {
-+		dev_err(card->dev, "ASoC: Property '%s's length is zero\n",
-+			propname);
-+		return -EINVAL;
-+	}
- 	if (num_widgets & 1) {
- 		dev_err(card->dev,
- 			"ASoC: Property '%s' length is not even\n", propname);
-@@ -2770,11 +2775,6 @@ int snd_soc_of_parse_audio_simple_widgets(struct snd_soc_card *card,
- 	}
+diff --git a/sound/soc/sof/sof-audio.h b/sound/soc/sof/sof-audio.h
+index 0898f4dbe29f8..a0af7c421fd9b 100644
+--- a/sound/soc/sof/sof-audio.h
++++ b/sound/soc/sof/sof-audio.h
+@@ -404,8 +404,7 @@ struct snd_sof_pcm *snd_sof_find_spcm_dai(struct snd_soc_component *scomp,
+ 					  struct snd_soc_pcm_runtime *rtd)
+ {
+ 	struct snd_sof_dev *sdev = snd_soc_component_get_drvdata(scomp);
+-
+-	struct snd_sof_pcm *spcm = NULL;
++	struct snd_sof_pcm *spcm;
  
- 	num_widgets /= 2;
--	if (!num_widgets) {
--		dev_err(card->dev, "ASoC: Property '%s's length is zero\n",
--			propname);
--		return -EINVAL;
--	}
- 
- 	widgets = devm_kcalloc(card->dev, num_widgets, sizeof(*widgets),
- 			       GFP_KERNEL);
+ 	list_for_each_entry(spcm, &sdev->pcm_list, list) {
+ 		if (le32_to_cpu(spcm->pcm.dai_id) == rtd->dai_link->id)
 -- 
 2.30.2
 
