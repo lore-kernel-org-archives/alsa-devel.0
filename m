@@ -4,74 +4,75 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0BE3DC433F5
-	for <alsa-devel@archiver.kernel.org>; Thu, 21 Apr 2022 20:34:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 898A1C433EF
+	for <alsa-devel@archiver.kernel.org>; Thu, 21 Apr 2022 20:34:54 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3F6AF16FF;
-	Thu, 21 Apr 2022 22:33:51 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3F6AF16FF
+	by alsa0.perex.cz (Postfix) with ESMTPS id CC0681702;
+	Thu, 21 Apr 2022 22:34:02 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CC0681702
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1650573281;
-	bh=hfeTTXYzka8o+ST9SNTz3ATDmXhEHOA7ZXGlKn5D1NQ=;
+	s=default; t=1650573292;
+	bh=5kkMMwe2u4pR9/gEZGRHZzX++/oq1lXHkwrXU7hnNgQ=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=tJ99s1C0WStJ+hluIRVYIHZx+DezeZwEREg7pCzU55j7Lcm/lGXZ9ezMC1dMRNm/5
-	 gocJdFXaK98eQDPEnvgi+uZHUqKPD0I3Fz37e1FJHILMbWSkXjlGutvJQsFbhs/ynu
-	 Zp+STBM8eBANrY72qXr1eys/EXbjlaEuYrdf83L8=
+	b=O1TZNqdWl8nYCYJwwpZ89M4gUDykaASjMFYykOBKtNR5UoIUlUuJa8tA2lmHcn1RK
+	 YP41WyX46pj9S7X9tWaPxJzUEfQrMo7Vu4/KZ92DLJyAbNkV4fBiG7EhBkBZVhy9Gu
+	 gq1NCGqYPyTfxSMZCCUIjmP1OYHqYwgHAJUGMC18=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 5A034F80537;
-	Thu, 21 Apr 2022 22:32:56 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 6F37DF804FD;
+	Thu, 21 Apr 2022 22:33:02 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id F08E4F80535; Thu, 21 Apr 2022 22:32:51 +0200 (CEST)
+ id B925CF8053C; Thu, 21 Apr 2022 22:32:57 +0200 (CEST)
 Received: from mga17.intel.com (mga17.intel.com [192.55.52.151])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 6ECC9F804FB
- for <alsa-devel@alsa-project.org>; Thu, 21 Apr 2022 22:32:39 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6ECC9F804FB
+ by alsa1.perex.cz (Postfix) with ESMTPS id 5EA1EF80508
+ for <alsa-devel@alsa-project.org>; Thu, 21 Apr 2022 22:32:43 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5EA1EF80508
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="hZ0xVGVG"
+ header.b="eiuktKLL"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1650573162; x=1682109162;
+ t=1650573164; x=1682109164;
  h=from:to:cc:subject:date:message-id:in-reply-to:
  references:mime-version:content-transfer-encoding;
- bh=hfeTTXYzka8o+ST9SNTz3ATDmXhEHOA7ZXGlKn5D1NQ=;
- b=hZ0xVGVGlZYU82qsxPuNVMKVNVA8l7i7RcBRSXi6ZDQ64u4Q29cL9VkD
- KcHv4omb/Wy3f8HCTT3igsJD5ip/5RtLXcApQqSaIo5/m4S4nWHtufnHe
- izu7G9g1kVGjGH9I0KQPlR3+ck2YPRlyOq+YxnCpjMueJrAL/S1bRtJ0j
- 1P9czox0Wn3TbbSzHGY6bwsXSHf3waUAcOgZwaPs1HUdUJfoloQKFAu/y
- 4RwUuoIWWdpQFhE+RMVOKlxmss3nf09KkBWL2BPlYG/PD+PMAFFn0xBAD
- OLKT3SGI4GHgXR9p5Lj929ziICcxnoA+Z8d+lfPB90YBrWMfzdt55HHBE w==;
-X-IronPort-AV: E=McAfee;i="6400,9594,10324"; a="245047599"
-X-IronPort-AV: E=Sophos;i="5.90,279,1643702400"; d="scan'208";a="245047599"
+ bh=5kkMMwe2u4pR9/gEZGRHZzX++/oq1lXHkwrXU7hnNgQ=;
+ b=eiuktKLLVuDtj27yq9qO0ndx5+25qb4kQJdVdAd9DGs0ARLZqdHh9FId
+ XF6Cibj/+wxiwNMyU3A0O2jxL+eXvjm4Wum85JL7F3ORUxCoNul4lmUJ0
+ iea/qDNMo5eId6RynexxQppz5O/rsLZ3tILmJfKrCCX63yPzR93/fNkch
+ 4pz5R6BhYFK4Si86qIbwsbBsMiqdsNl21jD2vNYoTlOQsAlKpHo7SfGBp
+ N3LE7tuQp0+EWrQVRNn70VE3rlsQVio9oCe+1031ek8eL9ciulO3IDCUK
+ HxJR5yPwzsmPnM8kyG/dxnSHGq6ALz9zZx7TyYlm1WnQ+3rouvf/PJk80 g==;
+X-IronPort-AV: E=McAfee;i="6400,9594,10324"; a="245047614"
+X-IronPort-AV: E=Sophos;i="5.90,279,1643702400"; d="scan'208";a="245047614"
 Received: from orsmga008.jf.intel.com ([10.7.209.65])
  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 21 Apr 2022 13:32:12 -0700
-X-IronPort-AV: E=Sophos;i="5.90,279,1643702400"; d="scan'208";a="577455757"
+ 21 Apr 2022 13:32:15 -0700
+X-IronPort-AV: E=Sophos;i="5.90,279,1643702400"; d="scan'208";a="577455777"
 Received: from qingsu-mobl.amr.corp.intel.com (HELO
  pbossart-mobl3.amr.corp.intel.com) ([10.212.148.250])
  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 21 Apr 2022 13:32:11 -0700
+ 21 Apr 2022 13:32:14 -0700
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH 02/14] ASoC: SOF: Intel: Add IPC-specific dai ops for IPC3
-Date: Thu, 21 Apr 2022 15:31:49 -0500
-Message-Id: <20220421203201.1550328-3-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH 06/14] ASoC: SOF: Intel: hda-dai: split link DMA and dai
+ operations
+Date: Thu, 21 Apr 2022 15:31:53 -0500
+Message-Id: <20220421203201.1550328-7-pierre-louis.bossart@linux.intel.com>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20220421203201.1550328-1-pierre-louis.bossart@linux.intel.com>
 References: <20220421203201.1550328-1-pierre-louis.bossart@linux.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, tiwai@suse.de,
- Bard Liao <yung-chuan.liao@linux.intel.com>,
+Cc: tiwai@suse.de, Bard Liao <yung-chuan.liao@linux.intel.com>,
  Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
- Rander Wang <rander.wang@intel.com>, broonie@kernel.org,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ broonie@kernel.org, Rander Wang <rander.wang@intel.com>,
  =?UTF-8?q?P=C3=A9ter=20Ujfalusi?= <peter.ujfalusi@linux.intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
@@ -88,280 +89,345 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+The link DMA state management is handled completely on the host side,
+while the DAI operations require an IPC. Split the first part in
+dedicated helpers.
 
-The BE DAI driver ops involve operations that are IPC-specific. For ex:
-for the HDA DAI, the trigger op involves sending the DAI_CONFIG IPC to
-the DSP to stop the DMA for the stop/pause commands. This sequence is
-different for IPC3 and IPC4. So, make the dai driver ops IPC-specific
-and set the IPC3-specific ops during the ops_init() callback.
-
-Reviewed-by: Rander Wang <rander.wang@intel.com>
-Reviewed-by: Bard Liao <yung-chuan.liao@linux.intel.com>
-Reviewed-by: Péter Ujfalusi <peter.ujfalusi@linux.intel.com>
-Signed-off-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Reviewed-by: Rander Wang <rander.wang@intel.com>
+Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+Reviewed-by: Péter Ujfalusi <peter.ujfalusi@linux.intel.com>
+Reviewed-by: Bard Liao <yung-chuan.liao@linux.intel.com>
 ---
- sound/soc/sof/intel/apl.c     |  3 ++
- sound/soc/sof/intel/cnl.c     |  3 ++
- sound/soc/sof/intel/hda-dai.c | 53 +++++++++++++++++++++--------------
- sound/soc/sof/intel/hda.h     |  2 ++
- sound/soc/sof/intel/icl.c     |  3 ++
- sound/soc/sof/intel/tgl.c     |  3 ++
- 6 files changed, 46 insertions(+), 21 deletions(-)
+ sound/soc/sof/intel/hda-dai.c | 220 +++++++++++++++++++++-------------
+ 1 file changed, 138 insertions(+), 82 deletions(-)
 
-diff --git a/sound/soc/sof/intel/apl.c b/sound/soc/sof/intel/apl.c
-index cb499f3905cec..b7839fd04dfb7 100644
---- a/sound/soc/sof/intel/apl.c
-+++ b/sound/soc/sof/intel/apl.c
-@@ -43,6 +43,9 @@ int sof_apl_ops_init(struct snd_sof_dev *sdev)
- 	/* ipc */
- 	sof_apl_ops.send_msg	= hda_dsp_ipc_send_msg;
- 
-+	/* set DAI driver ops */
-+	hda_set_dai_drv_ops(sdev, &sof_apl_ops);
-+
- 	/* debug */
- 	sof_apl_ops.debug_map	= apl_dsp_debugfs;
- 	sof_apl_ops.debug_map_count	= ARRAY_SIZE(apl_dsp_debugfs);
-diff --git a/sound/soc/sof/intel/cnl.c b/sound/soc/sof/intel/cnl.c
-index f5bac91c335ba..98c4e4f61e7c4 100644
---- a/sound/soc/sof/intel/cnl.c
-+++ b/sound/soc/sof/intel/cnl.c
-@@ -261,6 +261,9 @@ int sof_cnl_ops_init(struct snd_sof_dev *sdev)
- 	/* ipc */
- 	sof_cnl_ops.send_msg	= cnl_ipc_send_msg;
- 
-+	/* set DAI driver ops */
-+	hda_set_dai_drv_ops(sdev, &sof_cnl_ops);
-+
- 	/* debug */
- 	sof_cnl_ops.debug_map	= cnl_dsp_debugfs;
- 	sof_cnl_ops.debug_map_count	= ARRAY_SIZE(cnl_dsp_debugfs);
 diff --git a/sound/soc/sof/intel/hda-dai.c b/sound/soc/sof/intel/hda-dai.c
-index f9cb9f1f0237b..8891077d8d8c3 100644
+index 245009809894b..d5ca5b1fefe67 100644
 --- a/sound/soc/sof/intel/hda-dai.c
 +++ b/sound/soc/sof/intel/hda-dai.c
-@@ -276,8 +276,8 @@ static int hda_link_dai_config_pause_push_ipc(struct snd_soc_dapm_widget *w)
+@@ -176,40 +176,28 @@ static int hda_dai_widget_update(struct snd_soc_dapm_widget *w,
+ 	return hda_ctrl_dai_widget_free(w, SOF_DAI_CONFIG_FLAGS_NONE, &data);
+ }
+ 
+-static int hda_dai_hw_params(struct snd_pcm_substream *substream,
+-			     struct snd_pcm_hw_params *params,
+-			     struct snd_soc_dai *dai)
++static int hda_link_dma_hw_params(struct snd_pcm_substream *substream,
++				  struct snd_pcm_hw_params *params)
+ {
+ 	struct hdac_stream *hstream = substream->runtime->private_data;
+-	struct hdac_bus *bus = hstream->bus;
+ 	struct hdac_ext_stream *hext_stream;
+ 	struct snd_soc_pcm_runtime *rtd = asoc_substream_to_rtd(substream);
++	struct snd_soc_dai *cpu_dai = asoc_rtd_to_cpu(rtd, 0);
+ 	struct snd_soc_dai *codec_dai = asoc_rtd_to_codec(rtd, 0);
+ 	struct hda_pipe_params p_params = {0};
+-	struct snd_soc_dapm_widget *w;
++	struct hdac_bus *bus = hstream->bus;
+ 	struct hdac_ext_link *link;
+-	int stream_tag;
+-	int ret;
+ 
+ 	/* get stored dma data if resuming from system suspend */
+-	hext_stream = snd_soc_dai_get_dma_data(dai, substream);
++	hext_stream = snd_soc_dai_get_dma_data(cpu_dai, substream);
+ 	if (!hext_stream) {
+ 		hext_stream = hda_link_stream_assign(bus, substream);
+ 		if (!hext_stream)
+ 			return -EBUSY;
+ 
+-		snd_soc_dai_set_dma_data(dai, substream, (void *)hext_stream);
++		snd_soc_dai_set_dma_data(cpu_dai, substream, (void *)hext_stream);
+ 	}
+ 
+-	stream_tag = hdac_stream(hext_stream)->stream_tag;
+-
+-	w = snd_soc_dai_get_widget(dai, substream->stream);
+-
+-	/* set up the DAI widget and send the DAI_CONFIG with the new tag */
+-	ret = hda_dai_widget_update(w, stream_tag - 1, true);
+-	if (ret < 0)
+-		return ret;
+-
+ 	link = snd_hdac_ext_bus_get_link(bus, codec_dai->component->name);
+ 	if (!link)
+ 		return -EINVAL;
+@@ -232,23 +220,45 @@ static int hda_dai_hw_params(struct snd_pcm_substream *substream,
+ 	return hda_link_dma_params(hext_stream, &p_params);
+ }
+ 
+-static int hda_dai_prepare(struct snd_pcm_substream *substream,
+-			   struct snd_soc_dai *dai)
++static int hda_dai_hw_params_update(struct snd_pcm_substream *substream,
++				    struct snd_pcm_hw_params *params,
++				    struct snd_soc_dai *dai)
+ {
+-	struct hdac_ext_stream *hext_stream =
+-				snd_soc_dai_get_dma_data(dai, substream);
+-	struct snd_sof_dev *sdev =
+-				snd_soc_component_get_drvdata(dai->component);
+-	struct snd_soc_pcm_runtime *rtd = asoc_substream_to_rtd(substream);
+-	int stream = substream->stream;
++	struct hdac_ext_stream *hext_stream;
++	struct snd_soc_dapm_widget *w;
++	int stream_tag;
+ 
+-	if (hext_stream->link_prepared)
+-		return 0;
++	hext_stream = snd_soc_dai_get_dma_data(dai, substream);
++	if (!hext_stream)
++		return -EINVAL;
++
++	stream_tag = hdac_stream(hext_stream)->stream_tag;
+ 
+-	dev_dbg(sdev->dev, "hda: prepare stream dir %d\n", substream->stream);
++	w = snd_soc_dai_get_widget(dai, substream->stream);
+ 
+-	return hda_dai_hw_params(substream, &rtd->dpcm[stream].hw_params,
+-				  dai);
++	/* set up the DAI widget and send the DAI_CONFIG with the new tag */
++	return hda_dai_widget_update(w, stream_tag - 1, true);
++}
++
++static int hda_dai_hw_params(struct snd_pcm_substream *substream,
++			     struct snd_pcm_hw_params *params,
++			     struct snd_soc_dai *dai)
++{
++	int ret;
++
++	ret = hda_link_dma_hw_params(substream, params);
++	if (ret < 0)
++		return ret;
++
++	return hda_dai_hw_params_update(substream, params, dai);
++}
++
++static int hda_link_dma_prepare(struct snd_pcm_substream *substream)
++{
++	struct snd_soc_pcm_runtime *rtd = asoc_substream_to_rtd(substream);
++	int stream = substream->stream;
++
++	return hda_link_dma_hw_params(substream, &rtd->dpcm[stream].hw_params);
+ }
+ 
+ static int hda_dai_config_pause_push_ipc(struct snd_soc_dapm_widget *w)
+@@ -269,31 +279,44 @@ static int hda_dai_config_pause_push_ipc(struct snd_soc_dapm_widget *w)
  	return ret;
  }
  
--static int hda_link_pcm_trigger(struct snd_pcm_substream *substream,
+-static int ipc3_hda_dai_trigger(struct snd_pcm_substream *substream,
 -				int cmd, struct snd_soc_dai *dai)
-+static int ipc3_hda_link_pcm_trigger(struct snd_pcm_substream *substream,
-+				     int cmd, struct snd_soc_dai *dai)
++static int ipc3_hda_dai_prepare(struct snd_pcm_substream *substream,
++				struct snd_soc_dai *dai)
  {
  	struct hdac_ext_stream *hext_stream =
  				snd_soc_dai_get_dma_data(dai, substream);
-@@ -395,10 +395,10 @@ static int hda_link_hw_free(struct snd_pcm_substream *substream,
- 	return 0;
- }
+-	struct snd_soc_pcm_runtime *rtd;
+-	struct snd_soc_dapm_widget *w;
+-	struct hdac_ext_link *link;
+-	struct hdac_stream *hstream;
+-	struct hdac_bus *bus;
+-	int stream_tag;
++	struct snd_sof_dev *sdev = snd_soc_component_get_drvdata(dai->component);
++	struct snd_soc_pcm_runtime *rtd = asoc_substream_to_rtd(substream);
++	int stream = substream->stream;
+ 	int ret;
  
--static const struct snd_soc_dai_ops hda_link_dai_ops = {
-+static const struct snd_soc_dai_ops ipc3_hda_link_dai_ops = {
- 	.hw_params = hda_link_hw_params,
- 	.hw_free = hda_link_hw_free,
--	.trigger = hda_link_pcm_trigger,
-+	.trigger = ipc3_hda_link_pcm_trigger,
- 	.prepare = hda_link_pcm_prepare,
- };
+-	hstream = substream->runtime->private_data;
+-	bus = hstream->bus;
+-	rtd = asoc_substream_to_rtd(substream);
++	if (hext_stream->link_prepared)
++		return 0;
  
-@@ -478,8 +478,8 @@ static int ssp_dai_prepare(struct snd_pcm_substream *substream,
- 	return ssp_dai_setup(substream, dai, true);
- }
+-	link = snd_hdac_ext_bus_get_link(bus, asoc_rtd_to_codec(rtd, 0)->component->name);
+-	if (!link)
+-		return -EINVAL;
++	dev_dbg(sdev->dev, "%s: prepare stream dir %d\n", __func__, substream->stream);
  
--static int ssp_dai_trigger(struct snd_pcm_substream *substream,
--			   int cmd, struct snd_soc_dai *dai)
-+static int ipc3_ssp_dai_trigger(struct snd_pcm_substream *substream,
-+				int cmd, struct snd_soc_dai *dai)
- {
- 	if (cmd != SNDRV_PCM_TRIGGER_SUSPEND)
- 		return 0;
-@@ -507,15 +507,39 @@ static void ssp_dai_shutdown(struct snd_pcm_substream *substream,
- 	kfree(dma_data);
- }
+-	dev_dbg(dai->dev, "In %s cmd=%d\n", __func__, cmd);
++	ret = hda_link_dma_prepare(substream);
++	if (ret < 0)
++		return ret;
  
--static const struct snd_soc_dai_ops ssp_dai_ops = {
-+static const struct snd_soc_dai_ops ipc3_ssp_dai_ops = {
- 	.startup = ssp_dai_startup,
- 	.hw_params = ssp_dai_hw_params,
- 	.prepare = ssp_dai_prepare,
--	.trigger = ssp_dai_trigger,
-+	.trigger = ipc3_ssp_dai_trigger,
- 	.hw_free = ssp_dai_hw_free,
- 	.shutdown = ssp_dai_shutdown,
- };
- 
-+void hda_set_dai_drv_ops(struct snd_sof_dev *sdev, struct snd_sof_dsp_ops *ops)
-+{
-+	int i;
-+
-+	switch (sdev->pdata->ipc_type) {
-+	case SOF_IPC:
-+		for (i = 0; i < ops->num_drv; i++) {
-+			if (strstr(ops->drv[i].name, "SSP")) {
-+				ops->drv[i].ops = &ipc3_ssp_dai_ops;
-+				continue;
-+			}
-+#if IS_ENABLED(CONFIG_SND_SOC_SOF_HDA)
-+			if (strstr(ops->drv[i].name, "iDisp") ||
-+			    strstr(ops->drv[i].name, "Analog") ||
-+			    strstr(ops->drv[i].name, "Digital"))
-+				ops->drv[i].ops = &ipc3_hda_link_dai_ops;
-+#endif
-+		}
-+		break;
-+	default:
-+		break;
-+	}
+-	w = snd_soc_dai_get_widget(dai, substream->stream);
++	return hda_dai_hw_params_update(substream, &rtd->dpcm[stream].hw_params, dai);
 +}
 +
- /*
-  * common dai driver for skl+ platforms.
-  * some products who use this DAI array only physically have a subset of
-@@ -524,7 +548,6 @@ static const struct snd_soc_dai_ops ssp_dai_ops = {
- struct snd_soc_dai_driver skl_dai[] = {
- {
- 	.name = "SSP0 Pin",
--	.ops = &ssp_dai_ops,
- 	.playback = {
- 		.channels_min = 1,
- 		.channels_max = 8,
-@@ -536,7 +559,6 @@ struct snd_soc_dai_driver skl_dai[] = {
- },
- {
- 	.name = "SSP1 Pin",
--	.ops = &ssp_dai_ops,
- 	.playback = {
- 		.channels_min = 1,
- 		.channels_max = 8,
-@@ -548,7 +570,6 @@ struct snd_soc_dai_driver skl_dai[] = {
- },
- {
- 	.name = "SSP2 Pin",
--	.ops = &ssp_dai_ops,
- 	.playback = {
- 		.channels_min = 1,
- 		.channels_max = 8,
-@@ -560,7 +581,6 @@ struct snd_soc_dai_driver skl_dai[] = {
- },
- {
- 	.name = "SSP3 Pin",
--	.ops = &ssp_dai_ops,
- 	.playback = {
- 		.channels_min = 1,
- 		.channels_max = 8,
-@@ -572,7 +592,6 @@ struct snd_soc_dai_driver skl_dai[] = {
- },
- {
- 	.name = "SSP4 Pin",
--	.ops = &ssp_dai_ops,
- 	.playback = {
- 		.channels_min = 1,
- 		.channels_max = 8,
-@@ -584,7 +603,6 @@ struct snd_soc_dai_driver skl_dai[] = {
- },
- {
- 	.name = "SSP5 Pin",
--	.ops = &ssp_dai_ops,
- 	.playback = {
- 		.channels_min = 1,
- 		.channels_max = 8,
-@@ -611,7 +629,6 @@ struct snd_soc_dai_driver skl_dai[] = {
- #if IS_ENABLED(CONFIG_SND_SOC_SOF_HDA)
- {
- 	.name = "iDisp1 Pin",
--	.ops = &hda_link_dai_ops,
- 	.playback = {
- 		.channels_min = 1,
- 		.channels_max = 8,
-@@ -619,7 +636,6 @@ struct snd_soc_dai_driver skl_dai[] = {
- },
- {
- 	.name = "iDisp2 Pin",
--	.ops = &hda_link_dai_ops,
- 	.playback = {
- 		.channels_min = 1,
- 		.channels_max = 8,
-@@ -627,7 +643,6 @@ struct snd_soc_dai_driver skl_dai[] = {
- },
- {
- 	.name = "iDisp3 Pin",
--	.ops = &hda_link_dai_ops,
- 	.playback = {
- 		.channels_min = 1,
- 		.channels_max = 8,
-@@ -635,7 +650,6 @@ struct snd_soc_dai_driver skl_dai[] = {
- },
- {
- 	.name = "iDisp4 Pin",
--	.ops = &hda_link_dai_ops,
- 	.playback = {
- 		.channels_min = 1,
- 		.channels_max = 8,
-@@ -643,7 +657,6 @@ struct snd_soc_dai_driver skl_dai[] = {
- },
- {
- 	.name = "Analog CPU DAI",
--	.ops = &hda_link_dai_ops,
- 	.playback = {
- 		.channels_min = 1,
- 		.channels_max = 16,
-@@ -655,7 +668,6 @@ struct snd_soc_dai_driver skl_dai[] = {
- },
- {
- 	.name = "Digital CPU DAI",
--	.ops = &hda_link_dai_ops,
- 	.playback = {
- 		.channels_min = 1,
- 		.channels_max = 16,
-@@ -667,7 +679,6 @@ struct snd_soc_dai_driver skl_dai[] = {
- },
- {
- 	.name = "Alt Analog CPU DAI",
--	.ops = &hda_link_dai_ops,
- 	.playback = {
- 		.channels_min = 1,
- 		.channels_max = 16,
-diff --git a/sound/soc/sof/intel/hda.h b/sound/soc/sof/intel/hda.h
-index 6e05c77594809..f520d1cf70c90 100644
---- a/sound/soc/sof/intel/hda.h
-+++ b/sound/soc/sof/intel/hda.h
-@@ -761,4 +761,6 @@ int hda_ctrl_dai_widget_free(struct snd_soc_dapm_widget *w, unsigned int quirk_f
- 
- extern int sof_hda_position_quirk;
- 
-+void hda_set_dai_drv_ops(struct snd_sof_dev *sdev, struct snd_sof_dsp_ops *ops);
++static int hda_link_dma_trigger(struct snd_pcm_substream *substream, int cmd)
++{
++	struct hdac_stream *hstream = substream->runtime->private_data;
++	struct snd_soc_pcm_runtime *rtd = asoc_substream_to_rtd(substream);
++	struct snd_soc_dai *cpu_dai = asoc_rtd_to_cpu(rtd, 0);
++	struct snd_soc_dai *codec_dai = asoc_rtd_to_codec(rtd, 0);
++	struct hdac_ext_stream *hext_stream = snd_soc_dai_get_dma_data(cpu_dai, substream);
++	struct hdac_ext_link *link;
++	struct hdac_bus *bus = hstream->bus;
++	int stream_tag;
 +
- #endif
-diff --git a/sound/soc/sof/intel/icl.c b/sound/soc/sof/intel/icl.c
-index f845064c3589a..f19517dffd624 100644
---- a/sound/soc/sof/intel/icl.c
-+++ b/sound/soc/sof/intel/icl.c
-@@ -127,6 +127,9 @@ int sof_icl_ops_init(struct snd_sof_dev *sdev)
- 	/* dsp core get/put */
- 	sof_icl_ops.core_get = hda_dsp_core_get;
++	link = snd_hdac_ext_bus_get_link(bus, codec_dai->component->name);
++	if (!link)
++		return -EINVAL;
  
-+	/* set DAI driver ops */
-+	hda_set_dai_drv_ops(sdev, &sof_icl_ops);
++	dev_dbg(cpu_dai->dev, "%s: cmd=%d\n", __func__, cmd);
+ 	switch (cmd) {
+ 	case SNDRV_PCM_TRIGGER_START:
+ 	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
+@@ -303,13 +326,6 @@ static int ipc3_hda_dai_trigger(struct snd_pcm_substream *substream,
+ 	case SNDRV_PCM_TRIGGER_STOP:
+ 		snd_hdac_ext_link_stream_clear(hext_stream);
+ 
+-		/*
+-		 * free DAI widget during stop/suspend to keep widget use_count's balanced.
+-		 */
+-		ret = hda_dai_widget_update(w, DMA_CHAN_INVALID, false);
+-		if (ret < 0)
+-			return ret;
+-
+ 		if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
+ 			stream_tag = hdac_stream(hext_stream)->stream_tag;
+ 			snd_hdac_ext_link_clear_stream_id(link, stream_tag);
+@@ -320,50 +336,69 @@ static int ipc3_hda_dai_trigger(struct snd_pcm_substream *substream,
+ 	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
+ 		snd_hdac_ext_link_stream_clear(hext_stream);
+ 
++		break;
++	default:
++		return -EINVAL;
++	}
++	return 0;
++}
 +
++static int ipc3_hda_dai_trigger(struct snd_pcm_substream *substream,
++				int cmd, struct snd_soc_dai *dai)
++{
++	struct snd_soc_dapm_widget *w;
++	int ret;
++
++	ret = hda_link_dma_trigger(substream, cmd);
++	if (ret < 0)
++		return ret;
++
++	w = snd_soc_dai_get_widget(dai, substream->stream);
++
++	dev_dbg(dai->dev, "%s: cmd=%d\n", __func__, cmd);
++	switch (cmd) {
++	case SNDRV_PCM_TRIGGER_SUSPEND:
++	case SNDRV_PCM_TRIGGER_STOP:
++		/*
++		 * free DAI widget during stop/suspend to keep widget use_count's balanced.
++		 */
++		ret = hda_dai_widget_update(w, DMA_CHAN_INVALID, false);
++		if (ret < 0)
++			return ret;
++
++		break;
++	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
+ 		ret = hda_dai_config_pause_push_ipc(w);
+ 		if (ret < 0)
+ 			return ret;
+ 		break;
++
+ 	default:
+-		return -EINVAL;
++		break;
+ 	}
  	return 0;
- };
- EXPORT_SYMBOL_NS(sof_icl_ops_init, SND_SOC_SOF_INTEL_HDA_COMMON);
-diff --git a/sound/soc/sof/intel/tgl.c b/sound/soc/sof/intel/tgl.c
-index 816571305f247..ed76f736afb46 100644
---- a/sound/soc/sof/intel/tgl.c
-+++ b/sound/soc/sof/intel/tgl.c
-@@ -76,6 +76,9 @@ int sof_tgl_ops_init(struct snd_sof_dev *sdev)
- 	/* ipc */
- 	sof_tgl_ops.send_msg	= cnl_ipc_send_msg;
+ }
  
-+	/* set DAI driver ops */
-+	hda_set_dai_drv_ops(sdev, &sof_tgl_ops);
+-static int hda_dai_hw_free(struct snd_pcm_substream *substream,
+-			   struct snd_soc_dai *dai)
++static int hda_link_dma_hw_free(struct snd_pcm_substream *substream)
+ {
+-	unsigned int stream_tag;
++	struct hdac_stream *hstream = substream->runtime->private_data;
++	struct snd_soc_pcm_runtime *rtd = asoc_substream_to_rtd(substream);
++	struct snd_soc_dai *cpu_dai = asoc_rtd_to_cpu(rtd, 0);
++	struct snd_soc_dai *codec_dai = asoc_rtd_to_codec(rtd, 0);
+ 	struct sof_intel_hda_stream *hda_stream;
+-	struct hdac_bus *bus;
+-	struct hdac_ext_link *link;
+-	struct hdac_stream *hstream;
+-	struct snd_soc_pcm_runtime *rtd;
++	struct hdac_bus *bus = hstream->bus;
+ 	struct hdac_ext_stream *hext_stream;
+-	struct snd_soc_dapm_widget *w;
+-	int ret;
+-
+-	hstream = substream->runtime->private_data;
+-	bus = hstream->bus;
+-	rtd = asoc_substream_to_rtd(substream);
+-	hext_stream = snd_soc_dai_get_dma_data(dai, substream);
++	struct hdac_ext_link *link;
++	int stream_tag;
+ 
++	hext_stream = snd_soc_dai_get_dma_data(cpu_dai, substream);
+ 	if (!hext_stream) {
+-		dev_dbg(dai->dev,
++		dev_dbg(cpu_dai->dev,
+ 			"%s: hext_stream is not assigned\n", __func__);
+ 		return -EINVAL;
+ 	}
+ 
+-	hda_stream = hstream_to_sof_hda_stream(hext_stream);
+-
+-	w = snd_soc_dai_get_widget(dai, substream->stream);
+-
+-	/* free the link DMA channel in the FW and the DAI widget */
+-	ret = hda_dai_widget_update(w, DMA_CHAN_INVALID, false);
+-	if (ret < 0)
+-		return ret;
+-
+-	link = snd_hdac_ext_bus_get_link(bus, asoc_rtd_to_codec(rtd, 0)->component->name);
++	link = snd_hdac_ext_bus_get_link(bus, codec_dai->component->name);
+ 	if (!link)
+ 		return -EINVAL;
+ 
+@@ -372,21 +407,42 @@ static int hda_dai_hw_free(struct snd_pcm_substream *substream,
+ 		snd_hdac_ext_link_clear_stream_id(link, stream_tag);
+ 	}
+ 
+-	snd_soc_dai_set_dma_data(dai, substream, NULL);
++	snd_soc_dai_set_dma_data(cpu_dai, substream, NULL);
+ 	snd_hdac_ext_stream_release(hext_stream, HDAC_EXT_STREAM_TYPE_LINK);
+ 	hext_stream->link_prepared = 0;
+ 
+ 	/* free the host DMA channel reserved by hostless streams */
++	hda_stream = hstream_to_sof_hda_stream(hext_stream);
+ 	hda_stream->host_reserved = 0;
+ 
+ 	return 0;
+ }
+ 
++static int hda_dai_hw_free(struct snd_pcm_substream *substream,
++			   struct snd_soc_dai *dai)
++{
++	struct snd_soc_dapm_widget *w;
++	int ret;
 +
- 	/* debug */
- 	sof_tgl_ops.debug_map	= tgl_dsp_debugfs;
- 	sof_tgl_ops.debug_map_count	= ARRAY_SIZE(tgl_dsp_debugfs);
++	ret = hda_link_dma_hw_free(substream);
++	if (ret < 0)
++		return ret;
++
++	w = snd_soc_dai_get_widget(dai, substream->stream);
++
++	/* free the link DMA channel in the FW and the DAI widget */
++	ret = hda_dai_widget_update(w, DMA_CHAN_INVALID, false);
++	if (ret < 0)
++		return ret;
++
++	return 0;
++}
++
+ static const struct snd_soc_dai_ops ipc3_hda_dai_ops = {
+ 	.hw_params = hda_dai_hw_params,
+ 	.hw_free = hda_dai_hw_free,
+ 	.trigger = ipc3_hda_dai_trigger,
+-	.prepare = hda_dai_prepare,
++	.prepare = ipc3_hda_dai_prepare,
+ };
+ 
+ #endif
 -- 
 2.30.2
 
