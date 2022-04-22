@@ -4,75 +4,80 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9D7BDC433F5
-	for <alsa-devel@archiver.kernel.org>; Fri, 22 Apr 2022 09:21:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 073F8C433EF
+	for <alsa-devel@archiver.kernel.org>; Fri, 22 Apr 2022 09:22:28 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0A94F172A;
-	Fri, 22 Apr 2022 11:21:05 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0A94F172A
+	by alsa0.perex.cz (Postfix) with ESMTPS id D329E1725;
+	Fri, 22 Apr 2022 11:21:36 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D329E1725
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1650619315;
-	bh=lQdoxIdZLcqwaLptGxTY7R2QW92WCCAAoRVcAYi7mlQ=;
+	s=default; t=1650619346;
+	bh=QYZDwze3WGzi3POVroKH5iW25NKiZgjAu2uSM7YAZKg=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=te/0j8LknXuG52eREOv8JaEl9yhivgC0qcKoZeGOPj/CeNZDiLR2F1gq+3C/kGlyq
-	 mB1All5IFgm7HZcGQ36xmuGlw5X/R7WdECr3R8NnpKt9tWpPziWgzAcmvKTY9/AYVb
-	 F7te1dPEkiwusxwPI5488gGRCDUfE50Xd2Kv34O8=
+	b=WLPEMjK6UNJqUXXijOxKXaHsuTt9I/yslJ7tShrdHUB68MoZgZWhYJ3gqIxkaO9Bx
+	 9ToZcN9T3lfeL70Dmu9Kzdbz+GYJgX3sNRuP8+QYWERyo4zzgrSkFdcwFDxJIdELbc
+	 /HgIoSSX182oLgEcnvxKV4Az+U9rCSmp+5AD4lgE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 79B9BF80154;
-	Fri, 22 Apr 2022 11:21:04 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 1BBC2F8027C;
+	Fri, 22 Apr 2022 11:21:14 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 4CC3BF80245; Fri, 22 Apr 2022 11:21:02 +0200 (CEST)
+ id A9C59F8032B; Fri, 22 Apr 2022 11:21:12 +0200 (CEST)
 Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 2CD7DF800D1
- for <alsa-devel@alsa-project.org>; Fri, 22 Apr 2022 11:20:55 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2CD7DF800D1
+ by alsa1.perex.cz (Postfix) with ESMTPS id 8F7E5F80245
+ for <alsa-devel@alsa-project.org>; Fri, 22 Apr 2022 11:21:06 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8F7E5F80245
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="gBhSQ1Ud"; 
+ header.b="FqF9W+za"; 
  dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="BGxVE3lW"
+ header.b="LIV9j79q"
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out1.suse.de (Postfix) with ESMTP id 8785D21107;
- Fri, 22 Apr 2022 09:20:55 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTP id 5136C21107;
+ Fri, 22 Apr 2022 09:21:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1650619255; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1650619266; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=f1Xj9y3mX6CPWoTOgsY2Vb87V/KMOgEj45t6lns6K8Y=;
- b=gBhSQ1UdWPRcs1YClxP5uoxEvBard4nrnlp04mdd1BocEnID855ftzWAY9LRBVNqaoHILd
- oLa/8ADg/L+2LUZedudXHjePLXt8i3VUOkBjinD84L7agfx05PmTa/2QPPbo7qspYoZrHh
- LIc1Km/If2QzabnC2O4vZd9vdOK+RDc=
+ bh=VcHdzxgim8xExk9i67eoD14TcGca5bRrmp2cE7tgzOc=;
+ b=FqF9W+zam1Rr14dYt3p2IB6x1MIoZ40QsIIVR3PZzEG65UoJMXhh15jWRsBnIG659OnRLL
+ LxHfTw9hoR0UplkhNP4i8HyT7Xc/jgqx4YXB91JAAhqvPHBi+RZUYNyCSXb6OzozoWZT03
+ 8dXo5QERI3njLk2GAt4R/ezgy7RSZGw=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1650619255;
+ s=susede2_ed25519; t=1650619266;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=f1Xj9y3mX6CPWoTOgsY2Vb87V/KMOgEj45t6lns6K8Y=;
- b=BGxVE3lWB7CpQwv+iC3gRE5iY894MAN5jdbJmxQauuTquCnFtMkJtiD+gO5tWTP5VYOlbq
- AW00oygyAk3x6mAA==
+ bh=VcHdzxgim8xExk9i67eoD14TcGca5bRrmp2cE7tgzOc=;
+ b=LIV9j79qlV7h2Uatk9u96N36db3bV2B95997OZYk0kRSmUIwORApkR5UOc1g9gAUwGM0qj
+ +PVNzuh7w1BvA5BA==
 Received: from alsa1.suse.de (alsa1.suse.de [10.160.4.42])
- by relay2.suse.de (Postfix) with ESMTP id 6BD512C142;
- Fri, 22 Apr 2022 09:20:55 +0000 (UTC)
-Date: Fri, 22 Apr 2022 11:20:55 +0200
-Message-ID: <s5hfsm5tqx4.wl-tiwai@suse.de>
+ by relay2.suse.de (Postfix) with ESMTP id CC02A2C146;
+ Fri, 22 Apr 2022 09:21:05 +0000 (UTC)
+Date: Fri, 22 Apr 2022 11:21:05 +0200
+Message-ID: <s5hee1ptqwu.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
-To: Hui Wang <hui.wang@canonical.com>
-Subject: Re: [PATCH] ALSA: hda/realtek: Fix mute led issue on thinkpad with
- cs35l41 s-codec
-In-Reply-To: <20220422073937.10073-1-hui.wang@canonical.com>
-References: <20220422073937.10073-1-hui.wang@canonical.com>
+To: Andy Chi <andy.chi@canonical.com>
+Subject: Re: [PATCH] ALSA: hda/realtek: Enable mute/micmute LEDs support for
+ HP Laptops
+In-Reply-To: <20220422090845.230071-1-andy.chi@canonical.com>
+References: <20220422090845.230071-1-andy.chi@canonical.com>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
  FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
  (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
 MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
 Content-Type: text/plain; charset=US-ASCII
-Cc: alsa-devel@alsa-project.org
+Cc: alsa-devel@alsa-project.org, Kailang Yang <kailang@realtek.com>,
+ Lucas Tanure <tanureal@opensource.cirrus.com>,
+ Jeremy Szu <jeremy.szu@canonical.com>, linux-kernel@vger.kernel.org,
+ Takashi Iwai <tiwai@suse.com>, Werner Sembach <wse@tuxedocomputers.com>,
+ Hui Wang <hui.wang@canonical.com>, Kai-Heng Feng <kai.heng.feng@canonical.com>,
+ Sami Loone <sami@loone.fi>, Cameron Berkenpas <cam@neo-zeon.de>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -88,18 +93,15 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Fri, 22 Apr 2022 09:39:37 +0200,
-Hui Wang wrote:
+On Fri, 22 Apr 2022 11:08:43 +0200,
+Andy Chi wrote:
 > 
-> The quirk ALC287_FIXUP_CS35L41_I2C_2 needs to chain the quirk
-> ALC269_FIXUP_THINKPAD_ACPI, otherwise the mute led will not work if a
-> thinkpad machine applies that quirk.
+> On HP Laptops, requires the same ALC285_FIXUP_HP_GPIO_LED quirk to
+> make its audio LEDs work.
 > 
-> And it will be safe if non-thinkpad machines apply that quirk since
-> hda_fixup_thinkpad_acpi() will check and return in this case.
+> So apply the quirk, and make it the last one since it's an LED quirk.
 > 
-> Fixes: ae7abe36e352e ("ALSA: hda/realtek: Add CS35L41 support for Thinkpad laptops")
-> Signed-off-by: Hui Wang <hui.wang@canonical.com>
+> Signed-off-by: Andy Chi <andy.chi@canonical.com>
 
 Thanks, applied.
 
