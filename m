@@ -4,55 +4,53 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C1AADC433EF
-	for <alsa-devel@archiver.kernel.org>; Fri, 22 Apr 2022 13:35:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 219A7C433EF
+	for <alsa-devel@archiver.kernel.org>; Fri, 22 Apr 2022 13:35:27 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 1A8D716FE;
-	Fri, 22 Apr 2022 15:34:21 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1A8D716FE
+	by alsa0.perex.cz (Postfix) with ESMTPS id 5D6C016A0;
+	Fri, 22 Apr 2022 15:34:35 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5D6C016A0
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1650634511;
-	bh=BdyZ8YeqA+uO9dlIG1OSAi1gBzb7JByVPXLl1gFdTvE=;
+	s=default; t=1650634525;
+	bh=hB673zEhKX/YgTu10f1wMsEI4VFm40G+uae9StlKzig=;
 	h=Subject:From:In-Reply-To:Date:References:To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=APmSOS8MvD1N+uYTwNVdVMxBk7rzD+zNCu+42AjqFPfYwE+jcqYy9J+4h7GzO6S4G
-	 1WgKZo2Wf/iJHNyCwGOtjW8YikYeWxSYq+f4w7bP5SkuDGCADdOQe+mY/OHXlwGsjT
-	 3MWUYm5DTreKuALic7iyIaFBp9YqCCd+CeW4QEAE=
+	b=RXsXF7COh048JEMA92CR9hZfV9AUMJ0/1t0miDIFHHLSocJ9kBz0sWhmaTW3z1oy3
+	 8XzTo2XnoNBdEo4kxbE9H196tcERb+3JWyKzOEd/G9JWaJwg3kDi7EstKxKz5E8lgh
+	 zoxbSHfod+ok6UAlLXz756CTZKIDNeH4y+LpjZgU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id D0E0CF8053D;
-	Fri, 22 Apr 2022 15:31:50 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 653CFF80544;
+	Fri, 22 Apr 2022 15:31:51 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id A66FCF80245; Fri, 22 Apr 2022 14:36:11 +0200 (CEST)
+ id 6FDF2F8032B; Fri, 22 Apr 2022 14:54:01 +0200 (CEST)
 Received: from hutie.ust.cz (unknown [IPv6:2a03:3b40:fe:f0::1])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id D8237F80125
- for <alsa-devel@alsa-project.org>; Fri, 22 Apr 2022 14:36:05 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D8237F80125
+ by alsa1.perex.cz (Postfix) with ESMTPS id BA9ECF80125
+ for <alsa-devel@alsa-project.org>; Fri, 22 Apr 2022 14:53:57 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BA9ECF80125
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=cutebit.org header.i=@cutebit.org
- header.b="KOTSsrVY"
+ header.b="S2seNKR6"
 Content-Type: text/plain;
 	charset=utf-8
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cutebit.org; s=mail;
- t=1650630964; bh=OSdl6aaUeic9SF9BLtfTgFqL689pyLDLZc4/GdJKq8o=;
+ t=1650632035; bh=Rr2b05NP3wGMyQRhBvV1IUry/zX4H2Dk7P7NRyvj4Tc=;
  h=Subject:From:In-Reply-To:Date:Cc:References:To;
- b=KOTSsrVYpbp9H5eGEznDOrhNsmP3WRoz8CT6HguROZySCUrsZqVTT44KHKkohBvsd
- e+qME5tm+XjxZ4vuL1KYQmlgCHruAzaW6CvVg1UJa3itnrutntNc5vnK3SEYU/nmJ3
- tQziBxksfZFdSSzcb3CTR1FRn4UKO1OQJamlKnM0=
+ b=S2seNKR6yDu5lByMYBXtbttAJdb1b0jPUip8DgWFAkRfkxD3ictQ41YsHmflWx7Jt
+ ZD8Gqu1wZkLj4wbBUECqLWYLgwPXkly6M/+vFY+k4B81Erg0Fdt7CREtFGbIoACJlI
+ LHvoYzn8dmLlHQFq0Wf1Gr97+ZrFIpCXzoHBcxCs=
 Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3696.80.82.1.1\))
 Subject: Re: [RFC PATCH 0/5] Apple Macs machine-level ASoC driver
 From: =?utf-8?Q?Martin_Povi=C5=A1er?= <povik@cutebit.org>
-In-Reply-To: <YmKeEKa0w2xLM9cL@sirena.org.uk>
-Date: Fri, 22 Apr 2022 14:36:03 +0200
+In-Reply-To: <YmKjL9bOtOmsFWTs@sirena.org.uk>
+Date: Fri, 22 Apr 2022 14:53:54 +0200
 Content-Transfer-Encoding: quoted-printable
-Message-Id: <6F6130F3-381C-4AB7-B618-CDC4C4A37C9B@cutebit.org>
-References: <YkWfziQzprEsWL72@sirena.org.uk>
- <CCE4A06E-6D6F-457D-B3C5-C36209BF38D3@cutebit.org>
- <YkW4MPh8VWc8eSGg@sirena.org.uk>
+Message-Id: <3CD969AD-7316-4D83-AD92-CC85ED817125@cutebit.org>
+References: <YkW4MPh8VWc8eSGg@sirena.org.uk>
  <6D199EAB-FE14-4030-96A7-2E0E89D25FAB@cutebit.org>
  <YkXKmxJ0R3qpUoH4@sirena.org.uk>
  <DB0255C3-C9EC-4EFA-A377-C4BB1073D9B3@cutebit.org>
@@ -61,6 +59,8 @@ References: <YkWfziQzprEsWL72@sirena.org.uk>
  <YmKSgHrbb/7koM36@sirena.org.uk>
  <A1574F30-62D2-467D-A40B-8FD7C6B8BCFA@cutebit.org>
  <YmKeEKa0w2xLM9cL@sirena.org.uk>
+ <6F6130F3-381C-4AB7-B618-CDC4C4A37C9B@cutebit.org>
+ <YmKjL9bOtOmsFWTs@sirena.org.uk>
 To: Mark Brown <broonie@kernel.org>
 X-Mailman-Approved-At: Fri, 22 Apr 2022 15:31:40 +0200
 Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
@@ -86,39 +86,38 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
-> On 22. 4. 2022, at 14:22, Mark Brown <broonie@kernel.org> wrote:
+
+> On 22. 4. 2022, at 14:44, Mark Brown <broonie@kernel.org> wrote:
 >=20
-> On Fri, Apr 22, 2022 at 01:44:06PM +0200, Martin Povi=C5=A1er wrote:
+> On Fri, Apr 22, 2022 at 02:36:03PM +0200, Martin Povi=C5=A1er wrote:
 >=20
->>> So previously each speaker would get two slots but now it just gets =
-one?
+>>> Ah, I think the confusion here is that I'm using slot and channel
+>>> interchangably whereas you're saying that previously the driver =
+would
+>>> allocate two channels to each speaker with duplicate data?
 >=20
->> No the other way around. Previously (with the driver as it is RFCed),
->> each speaker gets a single slot, and 'Left', 'Right' and =
-=E2=80=98LeftRight'
->> values of the routing control don't do anything different from each
->> other (well except maybe 'LeftRight' lessens the volume due to how
->> the chip handles the edge case of mixing down two channels from the
->> same slot).
->=20
->> With the new arrangement I am proposing, the two speakers in a =
-left-right
->> pair get both the same two slots, meaning they get to choose one of =
+>> I guess you could say that. Not that there=E2=80=99s duplicate data =
+on the I2S
+>> bus, but the speaker amp would previously be configured to look for =
 the
->> two slots based on the 'Left' 'Right' value of their routing control.
+>> left and right channel in the same TDM slot (see e.g. set_tdm_slot of
+>> tas2770 [0]).  (Each speaker amp drives a single speaker, but it =
+still
+>> has a notion of left and right channel.)
 >=20
-> Ah, I think the confusion here is that I'm using slot and channel
-> interchangably whereas you're saying that previously the driver would
-> allocate two channels to each speaker with duplicate data?
+> Oh, I see - the speaker actually allows configuration of the slots
+> independently.  Usually the left/right thing on mono devices only does
+> something for I2S where the bus clocking enforces that there be both
+> left and right channels.  Either configuration is fine by me TBH, if =
+you
+> can do that then you could just keep them mapped to the same channel
+> then mark the control as disabled since it should have no effect.
 
-I guess you could say that. Not that there=E2=80=99s duplicate data on =
-the I2S
-bus, but the speaker amp would previously be configured to look for the
-left and right channel in the same TDM slot (see e.g. set_tdm_slot of
-tas2770 [0]).  (Each speaker amp drives a single speaker, but it still
-has a notion of left and right channel.)
+Well but is there some established way to mark a control as disabled?
 
-[0] =
-https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/so=
-und/soc/codecs/tas2770.c#n416
+Another issue here is that if I disable it I can=E2=80=99t leave the =
+routing
+control in it=E2=80=99s default value, which is =E2=80=98I2C Offset=E2=80=99=
+ and makes the speaker
+amp ignore the slot mapping.
 
