@@ -4,66 +4,82 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0A887C433EF
-	for <alsa-devel@archiver.kernel.org>; Fri, 22 Apr 2022 12:54:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6C0F1C433F5
+	for <alsa-devel@archiver.kernel.org>; Fri, 22 Apr 2022 13:07:44 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D9D9A172D;
-	Fri, 22 Apr 2022 14:53:32 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D9D9A172D
+	by alsa0.perex.cz (Postfix) with ESMTPS id E5C1B1F7;
+	Fri, 22 Apr 2022 15:06:51 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E5C1B1F7
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1650632062;
-	bh=jMqFxIuoT1cqZV1l+rV7YI1X5VmlIyBbAJyV8buDTA0=;
-	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
+	s=default; t=1650632862;
+	bh=hDIXGys28YU1AgFgBUhJKgfBRTj9j4CvWUnRGcwIekE=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=cjqZamZdGblfV1HWwyju045oCAq9YWBtWAQ3dy9GHSAEIFN0lA6cUGI85Tq8Pqccc
-	 FXwZJQjzkThzQzjkC0oDz7EoL1D7/uTLc875omX4tPNv76oJw5DwyE/iAwV5o2WHiO
-	 l0mW0RjImkBXo1ZPzqEG8SOZD6hOr7Tz5GpVnyes=
+	b=X7quak48hIW9xs3bN6P0zEwvOiYugsJPlJze9Qc4BuHtjAK0egDeJpsJAucaQPM8K
+	 eQ94nJoefXAl3XaPM2ySQPB3zmJnk5NM7YG6uHojuBOMxTWhvXdFjU/z5McemYoZem
+	 g4qdynfUzhW9arbo6RC+19PmRSA42FReneB+18CE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 75D54F80134;
-	Fri, 22 Apr 2022 14:53:32 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 83FB3F80125;
+	Fri, 22 Apr 2022 15:06:51 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id D1743F80245; Fri, 22 Apr 2022 14:53:31 +0200 (CEST)
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+ id 5F260F80245; Fri, 22 Apr 2022 15:06:50 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id C1DE9F80134
- for <alsa-devel@alsa-project.org>; Fri, 22 Apr 2022 14:53:25 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C1DE9F80134
+ by alsa1.perex.cz (Postfix) with ESMTPS id D8516F80125
+ for <alsa-devel@alsa-project.org>; Fri, 22 Apr 2022 15:06:45 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D8516F80125
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="mR1i20to"
+ header.b="GDVYCD4S"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by ams.source.kernel.org (Postfix) with ESMTPS id 5EE07B82D1F;
- Fri, 22 Apr 2022 12:53:24 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 81C01C385A4;
- Fri, 22 Apr 2022 12:53:21 +0000 (UTC)
+ by dfw.source.kernel.org (Postfix) with ESMTPS id E4BEC62068;
+ Fri, 22 Apr 2022 13:06:43 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 99B50C385A4;
+ Fri, 22 Apr 2022 13:06:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1650632003;
- bh=jMqFxIuoT1cqZV1l+rV7YI1X5VmlIyBbAJyV8buDTA0=;
- h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=mR1i20toR3c2UQojmDZbvNBd1EwwCYW7BwW9VImL8FL7TPfZBy7BHbwbdsX1WT6Nc
- ZfQYSljjNaQx6vuHBFmA+m+/LZAPY8LnJ6S8WZ+gfGLfVd1+gkLx7ZQ+K0GJkvr5FY
- PoKpqLmD1MNRomsnXKff+3pBlIX08WsfW0YNjjvZYGar+Zf34iwUswOOk24v6NmQ+s
- MqTUhFnYW0jxT7ZPZJ9uJUjdqBQJievC2qpRdsEaqgoFI/7iGP1pq3nUVCaKT+AX6+
- M/923tscIaMDTp+U2RttxeWGyAT44PQDANDJSuoLGb6/GKBdpdLvXCtGX3S3v3HgXU
- yW044RGV9LcsA==
+ s=k20201202; t=1650632803;
+ bh=hDIXGys28YU1AgFgBUhJKgfBRTj9j4CvWUnRGcwIekE=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=GDVYCD4SK6NLWfa+RGm24cWgtClaJixuJEYfnuky3gUNwzOfdD0CGXZO8Eu/sY+j1
+ ZVC92Jrn8r2HESDlKi3bCxMxW5eKidgN/pXmpI2z2xOz1dU5cRx55slt3VyedgM2/A
+ M+AL4OFN4MsUVYb53/Hp55PLCflOuaV4AylLzVKmgZQfWe58+xa8KNcHAGmegzsIOP
+ +IWFHNFUMKBg79uVOZOznzEwT1+8z/vDxqgSAVLq6pAqw561qXm9LJd6gXsB/bFQLr
+ LoZ8cI+qF5MpFp1om5KR9PnEJlffpw1x/NCG43Xz5qsd2L2vEw8IsPmnEDUhWb0pU+
+ LZb3bg00ZPS4w==
+Date: Fri, 22 Apr 2022 14:06:37 +0100
 From: Mark Brown <broonie@kernel.org>
-To: u0084500@gmail.com, perex@perex.cz, tiwai@suse.com
-In-Reply-To: <1650608810-3829-1-git-send-email-u0084500@gmail.com>
-References: <1650608810-3829-1-git-send-email-u0084500@gmail.com>
-Subject: Re: [PATCH] ASoC: rt9120: Correct the reg 0x09 size to one byte
-Message-Id: <165063200120.312964.8713966369243201308.b4-ty@kernel.org>
-Date: Fri, 22 Apr 2022 13:53:21 +0100
+To: Martin =?utf-8?Q?Povi=C5=A1er?= <povik@cutebit.org>
+Subject: Re: [RFC PATCH 0/5] Apple Macs machine-level ASoC driver
+Message-ID: <YmKoXbh04ZEs3dSZ@sirena.org.uk>
+References: <YkXKmxJ0R3qpUoH4@sirena.org.uk>
+ <DB0255C3-C9EC-4EFA-A377-C4BB1073D9B3@cutebit.org>
+ <YmKPQ6kLCPz+2XTJ@sirena.org.uk>
+ <B68302F2-3D77-4065-8A16-A9CC690AE10B@cutebit.org>
+ <YmKSgHrbb/7koM36@sirena.org.uk>
+ <A1574F30-62D2-467D-A40B-8FD7C6B8BCFA@cutebit.org>
+ <YmKeEKa0w2xLM9cL@sirena.org.uk>
+ <6F6130F3-381C-4AB7-B618-CDC4C4A37C9B@cutebit.org>
+ <YmKjL9bOtOmsFWTs@sirena.org.uk>
+ <3CD969AD-7316-4D83-AD92-CC85ED817125@cutebit.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-Cc: oder_chiou@realtek.com, cy_huang@richtek.com, alsa-devel@alsa-project.org,
- linux-kernel@vger.kernel.org, lgirdwood@gmail.com
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature"; boundary="h//nqm2TleJK+t0c"
+Content-Disposition: inline
+In-Reply-To: <3CD969AD-7316-4D83-AD92-CC85ED817125@cutebit.org>
+X-Cookie: Whoever dies with the most toys wins.
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
+ Sven Peter <sven@svenpeter.dev>, linux-kernel@vger.kernel.org,
+ Hector Martin <marcan@marcan.st>, Takashi Iwai <tiwai@suse.com>,
+ Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <robh+dt@kernel.org>,
+ Mark Kettenis <kettenis@openbsd.org>,
+ Martin =?utf-8?Q?Povi=C5=A1er?= <povik+lin@cutebit.org>,
+ Krzysztof Kozlowski <krzk+dt@kernel.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -79,37 +95,48 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Fri, 22 Apr 2022 14:26:50 +0800, cy_huang wrote:
-> From: ChiYuan Huang <cy_huang@richtek.com>
-> 
-> Correct the reg 0x09 size to one byte.
-> 
-> 
 
-Applied to
+--h//nqm2TleJK+t0c
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+On Fri, Apr 22, 2022 at 02:53:54PM +0200, Martin Povi=C5=A1er wrote:
 
-Thanks!
+> > Oh, I see - the speaker actually allows configuration of the slots
+> > independently.  Usually the left/right thing on mono devices only does
+> > something for I2S where the bus clocking enforces that there be both
+> > left and right channels.  Either configuration is fine by me TBH, if you
+> > can do that then you could just keep them mapped to the same channel
+> > then mark the control as disabled since it should have no effect.
 
-[1/1] ASoC: rt9120: Correct the reg 0x09 size to one byte
-      commit: 87c18514bb8477563a61f50b4285da156296edc4
+> Well but is there some established way to mark a control as disabled?
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
+snd_ctl_activate_id().
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+> Another issue here is that if I disable it I can=E2=80=99t leave the rout=
+ing
+> control in it=E2=80=99s default value, which is =E2=80=98I2C Offset=E2=80=
+=99 and makes the speaker
+> amp ignore the slot mapping.
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
+Sure, that's fine - if a control genuinely has no effect it's fine to
+hide it from userspace.  The issue is where it's just that you don't see
+the use, if the control demonstrably does nothing then that's fine.
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
+--h//nqm2TleJK+t0c
+Content-Type: application/pgp-signature; name="signature.asc"
 
-Thanks,
-Mark
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmJiqFwACgkQJNaLcl1U
+h9AV8gf9GwzHMBap1p3cUin8nTIQKJwTl9QCbOmThnWJbuYKWeALxn2lKmviBaj9
+cK6oSVKCxCZlda0aKQSesJ4okIAQLbk1o4567sntkbBp6CuktSmlTOir7R6xVydZ
+IP/+pe8VGfqKFgLN+IHvNPMwOOA22UfsGhAA5M3A7i4B4qApwIVJlQicJ4TwD7y1
+jCZABx6q6DJoq7nclV1aSGvFZOZqGy2YxtAkHBs9vACqznwKchY7Z2lqZC7e0ys4
+Yl571RGhhMUWViVPe1xg65Jg/GOWHnzggLuPEk7M7ZGnriQF5KvEVVLpAaW8Wt0c
+F1qXhhnmhgJzm6oJkzV/zd7+paTaRg==
+=qSEG
+-----END PGP SIGNATURE-----
+
+--h//nqm2TleJK+t0c--
