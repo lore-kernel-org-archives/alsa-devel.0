@@ -4,73 +4,71 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 10169C433EF
-	for <alsa-devel@archiver.kernel.org>; Fri, 22 Apr 2022 14:00:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E9BA1C433F5
+	for <alsa-devel@archiver.kernel.org>; Fri, 22 Apr 2022 14:00:51 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id EDF3718A1;
-	Fri, 22 Apr 2022 15:59:18 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EDF3718A1
+	by alsa0.perex.cz (Postfix) with ESMTPS id 342E31860;
+	Fri, 22 Apr 2022 16:00:00 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 342E31860
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1650636009;
-	bh=LHjYlWVCwRLavC996Hlwz4+YYNWJwANRGuhcIgmi7nE=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=WXCf6ZLE0FQIWXIh7wnA2w5L/yEDas3TfCWbyqmMQjMFnbnrwEUE40YGAnL761Szd
-	 idXbr98hoVcQQSc+/lnCaU/KegzIcmOxiCMZuZcvN7E+zBN9OHz+2UMCTLIyVxuCtV
-	 jdt2/vTZROGAQFoxFzH+T/9h+bmWcSR783crvJjo=
+	s=default; t=1650636050;
+	bh=um3cX8X3FK3GmwalKpugJZTOOkvuwxWimL7NKw9nTZo=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=UQuMarN97PDpsh59CjRD/+KzwLSSy+hToADG7ZC2IqVUnu5tM1PClfGjQuRbFjI0x
+	 Fd1aYVuxFki3Pvs9IkIK85SY/dMPRbm/uJIqdIMO+R5Og9kWqRqRnazc9fF83NE103
+	 ZRSKtii7LcSdlts6FKJfKxynj3SBT4Dc7jQY5JxM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 34290F8051A;
-	Fri, 22 Apr 2022 15:34:19 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2C4B3F804FD;
+	Fri, 22 Apr 2022 15:54:18 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 9B983F80538; Fri, 22 Apr 2022 15:34:17 +0200 (CEST)
-Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
+ id 159CAF80249; Fri, 22 Apr 2022 15:54:17 +0200 (CEST)
+Received: from ams.source.kernel.org (ams.source.kernel.org
+ [IPv6:2604:1380:4601:e00::1])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id E11E9F80249
+ for <alsa-devel@alsa-project.org>; Fri, 22 Apr 2022 15:54:14 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E11E9F80249
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="PsFB4SeR"
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id E005EF80527
- for <alsa-devel@alsa-project.org>; Fri, 22 Apr 2022 15:34:10 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E005EF80527
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="eSJQNaBN"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
- d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1650634452; x=1682170452;
- h=from:to:cc:subject:date:message-id:mime-version:
- content-transfer-encoding;
- bh=LHjYlWVCwRLavC996Hlwz4+YYNWJwANRGuhcIgmi7nE=;
- b=eSJQNaBNHVgj/MA6s6MkZDRCT3IGNir+E17b63FkVztXXWSO3Vn1vSXG
- GouXe2qnnWhu2V1XQZGmRHDF2fD/JsQ/gx6J0qUpu148Xi11FHbvm+YAb
- qg11VMhR+SprE503thOw1GrDa3SEaPXPt1h5PunxxtJf9EimIQJTDBwI4
- 71KyLMfJQmZmzX4pg3H8y56PPpnqjzbhVXZ88wGkCfK+ZJ2TqMzXpwyiJ
- MPzIOLmlwSx7WFqpkYJt9fKEcDQnNkDRuGD1Pb9K3VazEaRtRCxhO7W6v
- WJuJDB+NMcef0u+An7Nz5bXO29sQrYglM7A0c2YyLagdibb9Hw2l320JY Q==;
-X-IronPort-AV: E=McAfee;i="6400,9594,10324"; a="351113893"
-X-IronPort-AV: E=Sophos;i="5.90,281,1643702400"; d="scan'208";a="351113893"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
- by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 22 Apr 2022 06:34:08 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.90,281,1643702400"; d="scan'208";a="594146008"
-Received: from dev2 (HELO DEV2.igk.intel.com) ([10.237.148.94])
- by orsmga001.jf.intel.com with ESMTP; 22 Apr 2022 06:34:06 -0700
-From: =?UTF-8?q?Amadeusz=20S=C5=82awi=C5=84ski?=
- <amadeuszx.slawinski@linux.intel.com>
-To: Liam Girdwood <lgirdwood@gmail.com>,
-	Mark Brown <broonie@kernel.org>
-Subject: [PATCH] ASoC: Intel: avs: Enable AVS driver only on x86 platforms
-Date: Fri, 22 Apr 2022 15:34:11 +0200
-Message-Id: <20220422133411.169007-1-amadeuszx.slawinski@linux.intel.com>
-X-Mailer: git-send-email 2.25.1
+ by ams.source.kernel.org (Postfix) with ESMTPS id 64E5EB82CE2;
+ Fri, 22 Apr 2022 13:54:14 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 331FFC385A0;
+ Fri, 22 Apr 2022 13:54:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1650635653;
+ bh=um3cX8X3FK3GmwalKpugJZTOOkvuwxWimL7NKw9nTZo=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=PsFB4SeR6NUwyNxZCKT6xeFBnCzvndxX8DJ3BipNuRlPKvmQwBBKeXQUMP6kjwcKz
+ aiphnnDasv9zeDMEYP4IWPxKKf4NeHIau44edFWwqsjR/S2+kjd/923dXYA597Lzka
+ T6S42bHkQrSTKLRJ8ZSCG7z7UX7rd/6vy5L5XUfO+MNt/oeerYAVpojZLGW3t7af5V
+ KisoI4QePyKfGiY5L8P5AeRzx69zmtC1bV8ZgobzAgDTxi7xuAqv3JqXy0rvUtsSvI
+ 0+2T/oYn17YWwMRyCspqIeK+jRnf7Etre06AXgUs/py/BTbSmr47tF86qq687ffWEa
+ 6iyZeiuoVwkqg==
+Date: Fri, 22 Apr 2022 14:54:06 +0100
+From: Mark Brown <broonie@kernel.org>
+To: Amadeusz =?utf-8?B?U8WCYXdpxYRza2k=?= <amadeuszx.slawinski@linux.intel.com>
+Subject: Re: [PATCH] ASoC: Intel: avs: Enable AVS driver only on x86 platforms
+Message-ID: <YmKzfv61wSrutVP5@sirena.org.uk>
+References: <20220422133411.169007-1-amadeuszx.slawinski@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- Cezary Rojewski <cezary.rojewski@intel.com>, kernel test robot <lkp@intel.com>,
- alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.com>,
- =?UTF-8?q?Amadeusz=20S=C5=82awi=C5=84ski?=
- <amadeuszx.slawinski@linux.intel.com>
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature"; boundary="MFbSE2Fy02l+QP1G"
+Content-Disposition: inline
+In-Reply-To: <20220422133411.169007-1-amadeuszx.slawinski@linux.intel.com>
+X-Cookie: Whoever dies with the most toys wins.
+Cc: Cezary Rojewski <cezary.rojewski@intel.com>,
+ kernel test robot <lkp@intel.com>, alsa-devel@alsa-project.org,
+ Liam Girdwood <lgirdwood@gmail.com>, Takashi Iwai <tiwai@suse.com>,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -86,30 +84,40 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Only supported platform for AVS are x86 machines, so there is no reason
-for it to build on other architectures.
 
-Fixes: 274d79e51875 ("ASoC: Intel: avs: Configure modules according to their type")
-Reported-by: kernel test robot <lkp@intel.com>
-Reviewed-by: Cezary Rojewski <cezary.rojewski@intel.com>
-Signed-off-by: Amadeusz Sławiński <amadeuszx.slawinski@linux.intel.com>
----
- sound/soc/intel/Kconfig | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+--MFbSE2Fy02l+QP1G
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-diff --git a/sound/soc/intel/Kconfig b/sound/soc/intel/Kconfig
-index c364ddf22267..5dc075673b97 100644
---- a/sound/soc/intel/Kconfig
-+++ b/sound/soc/intel/Kconfig
-@@ -211,7 +211,7 @@ config SND_SOC_INTEL_KEEMBAY
- 
- config SND_SOC_INTEL_AVS
- 	tristate "Intel AVS driver"
--	depends on PCI && ACPI
-+	depends on X86 && PCI && ACPI
- 	depends on COMMON_CLK
- 	select SND_SOC_ACPI
- 	select SND_SOC_TOPOLOGY
--- 
-2.25.1
+On Fri, Apr 22, 2022 at 03:34:11PM +0200, Amadeusz S=C5=82awi=C5=84ski wrot=
+e:
+> Only supported platform for AVS are x86 machines, so there is no reason
+> for it to build on other architectures.
 
+>  config SND_SOC_INTEL_AVS
+>  	tristate "Intel AVS driver"
+> -	depends on PCI && ACPI
+> +	depends on X86 && PCI && ACPI
+
+If it actually builds please add an || COMPILE_TEST in there so people
+doing framework updates have to cover fewer build configurations for
+testing (this might make sense for the PCI and ACPI bits as well if
+those will compile out).
+
+--MFbSE2Fy02l+QP1G
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmJis34ACgkQJNaLcl1U
+h9ACNAf/UyMUcfGoDkvSAdWT2hZmOa8AtjymR5Xctr33kg0ok/o21rWmD4xENFCE
+eAiWNUp22NaA4dAKYR1XWEx8LMnppTPAGcFwtw5TMOkmcdy7Vm2lpslHRQgFIXsP
+1deBmgcBrp1EBcVE3XAAz1z2FffbxyebXLlWFRPn51VmBZE1c24xGH8JQSM5CW66
+QrdVhwBFPym1FFjleplI6jBsglWE5iM2U6ZibmF7SX1ogBICGAMZSK+ee7KUXR6K
+S3iHb2cQJME5CO2gUiJ8wtoJtRLbHJGYsb1LDCBr1uPERWoYKnZZb9yHVIAaFFvW
+jjEjRNXX3OrLQDNMBcrv152K0VJNNg==
+=8+SN
+-----END PGP SIGNATURE-----
+
+--MFbSE2Fy02l+QP1G--
