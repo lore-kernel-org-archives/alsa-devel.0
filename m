@@ -4,66 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9ABA7C433F5
-	for <alsa-devel@archiver.kernel.org>; Fri, 22 Apr 2022 23:19:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C87D6C433EF
+	for <alsa-devel@archiver.kernel.org>; Fri, 22 Apr 2022 23:19:22 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A325E172E;
-	Sat, 23 Apr 2022 01:18:22 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A325E172E
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0A2F61745;
+	Sat, 23 Apr 2022 01:18:31 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0A2F61745
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1650669552;
-	bh=N8mMOYgvRIc+xlA4Iq4/K7jL6q9OmPW524Yfd8ZIn+g=;
+	s=default; t=1650669561;
+	bh=wZE6G3X0/fzbB+TWxVsGdH67kMHDaZYQkJjTvctnxao=;
 	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=qQu7fd4YSLLSI15OZ8TL/aKJnBZ3jKnlr2mcJbWnXtBOq4ochWYekutlEXcvIx1y/
-	 QL+/yWmZ6nSwKrNRJ+BSFk+RH3uGezBgI5Ex1g1snsrxqNohCgCKMBTxXbPrWhmUdb
-	 LMwX+UUBVNHjgnmpjllxZAUY9hgeCxHc19qftD4Q=
+	b=Mv9wpemsT2e9Bp9VDB6Eorwt8DZex6lTYC28J/qOMZmmVDcBtTsyzcSiE+mcNXQIZ
+	 EmOvxF+RWhMrCCYmEUrFpZfMHp4F27Kyf4dgL2ZCQJ6Uwe4BHp1iWg9YlSh03SWnDi
+	 /zj2Q7xM/3GgF5lgE+hztFqD+zpLwWxHhliCGKGA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 2D6BCF804FE;
-	Sat, 23 Apr 2022 01:17:38 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id F1497F80249;
+	Sat, 23 Apr 2022 01:17:40 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 0DAB8F804FE; Sat, 23 Apr 2022 01:17:35 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+ id 05C68F80506; Sat, 23 Apr 2022 01:17:37 +0200 (CEST)
+Received: from ams.source.kernel.org (ams.source.kernel.org
+ [IPv6:2604:1380:4601:e00::1])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id EA221F8027C
- for <alsa-devel@alsa-project.org>; Sat, 23 Apr 2022 01:17:29 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EA221F8027C
+ by alsa1.perex.cz (Postfix) with ESMTPS id C3E3BF804FB
+ for <alsa-devel@alsa-project.org>; Sat, 23 Apr 2022 01:17:32 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C3E3BF804FB
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="LidYdUnY"
+ header.b="CIiGUzqj"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id 2CD5F61802;
- Fri, 22 Apr 2022 23:17:28 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5A228C385A4;
- Fri, 22 Apr 2022 23:17:26 +0000 (UTC)
+ by ams.source.kernel.org (Postfix) with ESMTPS id 01404B832FD;
+ Fri, 22 Apr 2022 23:17:32 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8C01FC385A0;
+ Fri, 22 Apr 2022 23:17:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1650669447;
- bh=N8mMOYgvRIc+xlA4Iq4/K7jL6q9OmPW524Yfd8ZIn+g=;
+ s=k20201202; t=1650669450;
+ bh=wZE6G3X0/fzbB+TWxVsGdH67kMHDaZYQkJjTvctnxao=;
  h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=LidYdUnYRs8NjOj54/gg4QkJ6uc+aJOajB5adT1DmSRDAhkqfdLDXKbp0X2R23IX3
- skjGO/DNTyt5IwXHQEIZ2p1YqQY1+PRcSGS/gbq11nLAm457DSzaAZXzt4MlsaaPZE
- XEgCnbwq/ATepXCSB39hS57uWiCZZvz/ZVGk+1GeYUF80CGGSZXnghGFTVyL97QUua
- Kpu/vJgubCsNxWtczTGM2V6Z3RKtjZUYYO38aJ85Cv+24zygJyXZXZkO8ZZRM1tYQR
- Od9uzpnNEX/6153PrQDHuqRBEUACZN2SCQrzrmgJoZOeLvKvGVYg6wn2+L7naypY4a
- EynIkra/xT8ug==
+ b=CIiGUzqjrleg7W6kB2q6ItGTtfp/+K/Xm5ICuLg9gJv3Z86Djx7JSg6hscAb3ZnCg
+ GkD/lFHfjv73na7Hez5ig0gcBW2E9RjlEFd9T3ATFBVj4/FLoWiUWlfgwD113zF/52
+ Mh+/PRzpZypzFmaSaISsCy4wh8QAXMV7TpiLKG0Fm+Zi66arzBYYefAXKR2olpprub
+ 2lzCY8hsvu/DZCUZWFUz5lr/NXBzo0mqaLF3X4r3yiTS+SSHqs/2MDPGGIFsVNC5tH
+ /yMZUpn3rpgZuXtK/eORoFyHxDXFNGrsBxTOOMcxlArutKpCLMHCaWJy1YpBMVx+He
+ V0xXB4IGqYqGw==
 From: Mark Brown <broonie@kernel.org>
 To: alsa-devel@alsa-project.org, pierre-louis.bossart@linux.intel.com
-In-Reply-To: <20220421162505.302132-1-pierre-louis.bossart@linux.intel.com>
-References: <20220421162505.302132-1-pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH] ASoC: soc-core: remove always-false path
-Message-Id: <165066944608.12937.10047682660069113499.b4-ty@kernel.org>
-Date: Sat, 23 Apr 2022 00:17:26 +0100
+In-Reply-To: <20220421201946.1547041-1-pierre-louis.bossart@linux.intel.com>
+References: <20220421201946.1547041-1-pierre-louis.bossart@linux.intel.com>
+Subject: Re: [PATCH] ASoC: SOF: Intel: hda: simplify NHLT handling
+Message-Id: <165066944928.12937.4385704923446794140.b4-ty@kernel.org>
+Date: Sat, 23 Apr 2022 00:17:29 +0100
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 Cc: tiwai@suse.de, peter.ujfalusi@linux.intel.com,
- yung-chuan.liao@linux.intel.com, rander.wang@intel.com
+ ranjani.sridharan@linux.intel.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -79,15 +80,12 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Thu, 21 Apr 2022 11:25:05 -0500, Pierre-Louis Bossart wrote:
-> cppcheck throws the following warning:
+On Thu, 21 Apr 2022 15:19:46 -0500, Pierre-Louis Bossart wrote:
+> The existing code does an init/free for each piece of information
+> needed. We can instead initialize the NHLT table in the .probe() and
+> free it in the .remove() callback.
 > 
-> sound/soc/soc-core.c:2773:6: style: Condition '!num_widgets' is always
-> false [knownConditionTrueFalse]
->  if (!num_widgets) {
->      ^
 > 
-> [...]
 
 Applied to
 
@@ -95,8 +93,8 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: soc-core: remove always-false path
-      commit: 8ad0b83e0079564989ccbe5b864cc265a0f5a14d
+[1/1] ASoC: SOF: Intel: hda: simplify NHLT handling
+      commit: 95fa7a62e164630981c5f10d36c2967004f74237
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
