@@ -4,94 +4,87 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 87B9AC433EF
-	for <alsa-devel@archiver.kernel.org>; Mon, 25 Apr 2022 13:21:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5E040C433EF
+	for <alsa-devel@archiver.kernel.org>; Mon, 25 Apr 2022 13:28:37 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B7B6E1745;
-	Mon, 25 Apr 2022 15:20:27 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B7B6E1745
+	by alsa0.perex.cz (Postfix) with ESMTPS id AE3531750;
+	Mon, 25 Apr 2022 15:27:45 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AE3531750
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1650892877;
-	bh=fNoozj+D+TwT8eVVmwwulueFCnpOzyWI75BV/CZpwnA=;
-	h=Date:From:To:Subject:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=Si+kt1vpKYbTHz9/eJqROXAKDZ1U9zkPlWkxxGwFwHSzJ8Udnpyrpet4qAReDruWr
-	 AAUIu4ZkrlJuXZSInJQkzUf1M0cQxwSgMiD2PN2FDY69XIbAFWAF5FiI6wgZw/njhR
-	 O5wkM7UNw+SFhqEvH+9F7xLuJLZCjD9n2ZdEJnow=
+	s=default; t=1650893315;
+	bh=c/tlEA8ZlzdxmIQcMOOwVpEn66NWm3rRj8+jDgV6xxc=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=Xns1J1awZLzCNOSTb8YUTGVkr1cXPQ8JSXuJKMzSGoYZeASRmCwW7fohcfdfD7HRU
+	 NbjlQEFy5SBBf+1tY3MmKynLfwS5qybrvfD6LyKScan/Eun1GvQ28kR9+m3dh3k6OE
+	 XwqUCo5Isqf/Uh68B/MYbA6Xjhm0HzE5dVxsXA64=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 45EBCF800CB;
-	Mon, 25 Apr 2022 15:20:27 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 48243F8014B;
+	Mon, 25 Apr 2022 15:27:45 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id A14E6F8016A; Mon, 25 Apr 2022 15:20:25 +0200 (CEST)
-Received: from wout4-smtp.messagingengine.com (wout4-smtp.messagingengine.com
- [64.147.123.20])
- (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
+ id 04A95F80245; Fri, 22 Apr 2022 16:54:10 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org
+ [IPv6:2604:1380:4641:c500::1])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 150CDF800FA
- for <alsa-devel@alsa-project.org>; Mon, 25 Apr 2022 15:20:19 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 150CDF800FA
+ by alsa1.perex.cz (Postfix) with ESMTPS id 8833EF800D1
+ for <alsa-devel@alsa-project.org>; Fri, 22 Apr 2022 16:54:07 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8833EF800D1
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=sakamocchi.jp header.i=@sakamocchi.jp
- header.b="vFlzQKYn"; 
- dkim=pass (2048-bit key) header.d=messagingengine.com
- header.i=@messagingengine.com header.b="PKNMptAm"
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
- by mailout.west.internal (Postfix) with ESMTP id B8EB33202069;
- Mon, 25 Apr 2022 09:20:16 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
- by compute5.internal (MEProxy); Mon, 25 Apr 2022 09:20:17 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sakamocchi.jp;
- h=cc:cc:content-type:date:date:from:from:in-reply-to:message-id
- :mime-version:reply-to:sender:subject:subject:to:to; s=fm1; t=
- 1650892816; x=1650979216; bh=fNoozj+D+TwT8eVVmwwulueFCnpOzyWI75B
- V/CZpwnA=; b=vFlzQKYnabdmoXVzIe7OD6OBvYylWfnOdNEQe+mzkXOgnjKEXO3
- TO3KZ/RayBNXo7q563vV0iFWFKac8K5WTFHHl0Vir11Ckjr9ldND7qz2L2qBbSt5
- MBKV9XmoXg94VSNtkPIv6v1IzG4qqIXb2P5fhnrqpM/4IjsN+L0t4hBy1/gjTutj
- g5Jm1z9u1U+QkQLQR54MUwaP4Sarm4YpIrcN5NmE0gOsvqGUwCWYGRoK0MsiFjOg
- MCSzPwPdxrLnoEiSbD6FNYhMD8vpCl25HUCNTT4lockH1d7XklpFnDHRqYJycKE8
- TvoRO+pPrPXEZbyKida+8780+WdIRCjmjCw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
- messagingengine.com; h=cc:cc:content-type:date:date:from:from
- :in-reply-to:message-id:mime-version:reply-to:sender:subject
- :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
- :x-sasl-enc; s=fm1; t=1650892816; x=1650979216; bh=fNoozj+D+TwT8
- eVVmwwulueFCnpOzyWI75BV/CZpwnA=; b=PKNMptAm+Vihd+oA8vmCUCVLEWFBJ
- yicYbXSmMdyQsQPhlgStmdUoDYK96EgxQliVVZGcOyAVakwObWNrW78NVoqL6b+s
- WA80cd2Ug7XcKOZUXUQNcum/xce7rAUz92bbp0hUQq+5xxhEeVFzT2uYsfysaeE0
- 4w1NrFrDfQ8TGQDccvcNsRZ7qUMQu2obTAjLmLzoOfcSc4miiSZ25NnOk091JBJH
- W1ZTYX3COniUCzdycnFCIZbmP/mAcg5J95P65zsFjG3WyvTWS3E/jqksoD4p2Spq
- tE1Sfb8d5/kmRxT6wH8oUTp9UQni77uHngcqijRTk9CujyO7jzD8+XQsw==
-X-ME-Sender: <xms:D6BmYoQ5_yyMiQgSbZeVvXIqXNY4PDXN_K7n7W3ngipkzLI4PHeWXw>
- <xme:D6BmYlwx_jvUp-3f7DgTzLnS5p2BJdq9t7LulHLA_rPfZ0o0RFETPzIxY8JBZyocm
- aVioVDyjx2nZ4eqjnM>
-X-ME-Received: <xmr:D6BmYl0ExCsxIZ2012Z8T_SOuN_gLvP7gaum2yAsQcx0iAndQsJ3T5U83nxeUMr-8q1RbrqB8VD8vgKA46g0PI4aXDgKU6As>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvfedruddugdeiudcutefuodetggdotefrodftvf
- curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
- uegrihhlohhuthemuceftddtnecunecujfgurhepfffhvfevuffkgggtugesthdtredttd
- dtvdenucfhrhhomhepvfgrkhgrshhhihcuufgrkhgrmhhothhouceoohdqthgrkhgrshhh
- ihesshgrkhgrmhhotggthhhirdhjpheqnecuggftrfgrthhtvghrnhephfelueeuueefie
- dujefhueevgeekffefvedvjeeguddtjeefueelhedvtdevtdevnecuffhomhgrihhnpehg
- ihhthhhusgdrtghomhenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrih
- hlfhhrohhmpehoqdhtrghkrghshhhisehsrghkrghmohgttghhihdrjhhp
-X-ME-Proxy: <xmx:D6BmYsDVAK8cbkgX75UG2fHhAbuFiS0DyXt3cauppSQ5VttvH3D3mg>
- <xmx:D6BmYhhHqQxnuP_DOelSx4i7jPCXqjr4eiTVBrfmsk-QxBMyx0QH0A>
- <xmx:D6BmYopx-VTab1lXiqOtcfo01PQgwPvKDmo9agtRc1spMCw5eh7ttQ>
- <xmx:EKBmYhbZ9FPQ5mdkTHuDkNMkJHV8OB0ZWz9v3-q2y86ahtOP9PiZ7g>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
- 25 Apr 2022 09:20:14 -0400 (EDT)
-Date: Mon, 25 Apr 2022 22:20:11 +0900
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-To: perex@perex.cz, tiwai@suse.de
-Subject: Request for setup of new repositories
-Message-ID: <YmagC3V3t0k84k9A@workstation>
-Mail-Followup-To: perex@perex.cz, tiwai@suse.de,
-	alsa-devel@alsa-project.org
+ dkim=pass (1024-bit key) header.d=linuxfoundation.org
+ header.i=@linuxfoundation.org header.b="gqA0vzwF"
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by dfw.source.kernel.org (Postfix) with ESMTPS id BDD8F60C6E;
+ Fri, 22 Apr 2022 14:54:04 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0DC7EC385AB;
+ Fri, 22 Apr 2022 14:54:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+ s=korg; t=1650639244;
+ bh=c/tlEA8ZlzdxmIQcMOOwVpEn66NWm3rRj8+jDgV6xxc=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=gqA0vzwFNzldjsjjRmYleh3zBQQsf2csoe8Klhv/3GjBm4DNaPy55KzSHN+92OUFG
+ m3GNyJl25wnUK7V/vD5eogrGZ+M/bqPHb977EwGlbc3JNLGzmYWVnypL9eTSt5TC+O
+ s80RQTbQw2OrYCwnCnsa3LtgR6qLawgvnYBRHp1Q=
+Date: Fri, 22 Apr 2022 16:54:01 +0200
+From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Subject: Re: [PATCH v7 00/12] Fix broken usage of driver_override (and kfree
+ of static memory)
+Message-ID: <YmLBiQjyKhFZsPlG@kroah.com>
+References: <20220419113435.246203-1-krzysztof.kozlowski@linaro.org>
+ <529de1fd-7e98-1634-c61e-0e69ddcd9e73@linaro.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Cc: alsa-devel@alsa-project.org
+In-Reply-To: <529de1fd-7e98-1634-c61e-0e69ddcd9e73@linaro.org>
+X-Mailman-Approved-At: Mon, 25 Apr 2022 15:27:43 +0200
+Cc: linux-hyperv@vger.kernel.org, Stuart Yoder <stuyoder@gmail.com>,
+ "Rafael J. Wysocki" <rafael@kernel.org>, linux-pci@vger.kernel.org,
+ linux-remoteproc@vger.kernel.org, alsa-devel@alsa-project.org,
+ Peter Oberparleiter <oberpar@linux.ibm.com>,
+ Vineeth Vijayan <vneethv@linux.ibm.com>,
+ Alexander Gordeev <agordeev@linux.ibm.com>,
+ "K. Y. Srinivasan" <kys@microsoft.com>, linux-clk@vger.kernel.org,
+ linux-s390@vger.kernel.org, Wei Liu <wei.liu@kernel.org>,
+ Stephen Hemminger <sthemmin@microsoft.com>, Dexuan Cui <decui@microsoft.com>,
+ Andy Shevchenko <andy.shevchenko@gmail.com>, Andy Gross <agross@kernel.org>,
+ NXP Linux Team <linux-imx@nxp.com>,
+ Christian Borntraeger <borntraeger@linux.ibm.com>,
+ virtualization@lists.linux-foundation.org, Heiko Carstens <hca@linux.ibm.com>,
+ Vasily Gorbik <gor@linux.ibm.com>, linux-arm-msm@vger.kernel.org,
+ Haiyang Zhang <haiyangz@microsoft.com>,
+ Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+ Bjorn Helgaas <bhelgaas@google.com>,
+ Bjorn Andersson <bjorn.andersson@linaro.org>,
+ linux-arm-kernel@lists.infradead.org,
+ Mathieu Poirier <mathieu.poirier@linaro.org>, linux-kernel@vger.kernel.org,
+ linux-spi@vger.kernel.org, Sven Schnelle <svens@linux.ibm.com>,
+ Linus Torvalds <torvalds@linux-foundation.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -107,32 +100,17 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Hi Jaroslav, Iwai-san,
+On Wed, Apr 20, 2022 at 11:20:06AM +0200, Krzysztof Kozlowski wrote:
+> On 19/04/2022 13:34, Krzysztof Kozlowski wrote:
+> 
+> Hi Greg, Rafael,
+> 
+> The patchset was for some time on the lists, got some reviews, some
+> changes/feedback which I hope I applied/responded.
+> 
+> Entire set depends on the driver core changes, so maybe you could pick
+> up everything via drivers core tree?
 
-Thanks for your maintenance for alsa-project organization in github.com.
-Currently I'd like to add new three repositories under the organization
-as a part of my work for ALSA firewire stack.
+Ok, will do, thanks.
 
-I've been maintaining libhinawa since 2014 and recently realized that
-current design is not necessarily convenient since it includes two
-functions; operation to Linux FireWire cdev, and operation of ALSA HwDep
-cdev. Currently I'm working for new library to split the latter operation.
-Then I'd like you to setup below repositories:
-
- * 'libhitaki'
- * 'libhitaki-doc'
- * 'hitaki-rs'
-
-The library itself and its Rust binding are utilized by
-'snd-firewire-ctl-services'[2], thus it's preferable to register them under
-'GObject Introspection' Team.
-
-Thanks for your assist for my work.
-
-[1] https://github.com/alsa-project/libhinawa
-[2] https://github.com/alsa-project/snd-firewire-ctl-services
-
-
-Regards
-
-Takashi Sakamoto
+greg k-h
