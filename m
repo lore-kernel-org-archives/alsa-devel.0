@@ -4,63 +4,62 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id ABAB9C433FE
-	for <alsa-devel@archiver.kernel.org>; Mon, 25 Apr 2022 17:25:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3043FC433EF
+	for <alsa-devel@archiver.kernel.org>; Mon, 25 Apr 2022 17:26:03 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 5E65917E5;
-	Mon, 25 Apr 2022 19:24:54 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5E65917E5
+	by alsa0.perex.cz (Postfix) with ESMTPS id 38D5317A9;
+	Mon, 25 Apr 2022 19:25:11 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 38D5317A9
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1650907544;
-	bh=s9MBnllajfacTuJ2LFd7tcHg09U6GQd9u2Gz1hjsecc=;
+	s=default; t=1650907561;
+	bh=zDTFfsXP5TQsh6QxZ0lZ30NVKp51Bfdj/1GB7CjYytc=;
 	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=tyg/z7SQh4h4H5C2O1aCuYTN3MSLFz1EV9RtBaa0X28XE2sjINxsZMdQwAFsXVJCt
-	 4MT5G5/sNFEELWredqtxxnXmotD14PBC3IocEnGTtv1h+bu2Cq5lxDBjJ3OwcDatwL
-	 Q/wLKgnMqSP/JSfQfmfLW4y6LKTwZcbwg4cBkivY=
+	b=f3u3Z29LJUtgfZ2PY6VXkBpmExmrfEaYjTqIUA7ub3SYX7jRIhqkgnnRQyPp6g3fs
+	 L5LI6+/Ol8NV4xQqLCfgIEs0Ysppv8lCiXUAd4izPX7IDFiRGEWZTTSDoWfxtOYQ3/
+	 maMtb0Tw9VX87FpHjTn0tJtYQzvPEhNK6oWjXlUs=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id B028BF80152;
-	Mon, 25 Apr 2022 19:24:25 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 34DD7F804FE;
+	Mon, 25 Apr 2022 19:24:27 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id A4776F800CB; Mon, 25 Apr 2022 19:24:19 +0200 (CEST)
+ id C199BF80152; Mon, 25 Apr 2022 19:24:19 +0200 (CEST)
 Received: from dfw.source.kernel.org (dfw.source.kernel.org
  [IPv6:2604:1380:4641:c500::1])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 586E7F80152
- for <alsa-devel@alsa-project.org>; Mon, 25 Apr 2022 19:24:11 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 586E7F80152
+ by alsa1.perex.cz (Postfix) with ESMTPS id 121E7F8016A
+ for <alsa-devel@alsa-project.org>; Mon, 25 Apr 2022 19:24:14 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 121E7F8016A
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="qZ7F4TLr"
+ header.b="PlpUOGdi"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id 31B716157A;
- Mon, 25 Apr 2022 17:24:08 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5B87AC385AD;
- Mon, 25 Apr 2022 17:24:06 +0000 (UTC)
+ by dfw.source.kernel.org (Postfix) with ESMTPS id C3F3D61583;
+ Mon, 25 Apr 2022 17:24:12 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 646ECC385A4;
+ Mon, 25 Apr 2022 17:24:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1650907447;
- bh=s9MBnllajfacTuJ2LFd7tcHg09U6GQd9u2Gz1hjsecc=;
+ s=k20201202; t=1650907452;
+ bh=zDTFfsXP5TQsh6QxZ0lZ30NVKp51Bfdj/1GB7CjYytc=;
  h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=qZ7F4TLrdKnGBYfWTsWpQF3a4QoSZqUOdwclJrLRDj59B6EmQhRA7mWmRICZ+3na5
- fMIm9Y/HkZvPgUBg2Bm16Ggu5pb5SW2bWpINVryOGIeYMNpCWYGmCZHoYx6na/qBBv
- Vv6e2TKWUM6/jpWD0fTn3uo0DTO69NtUA4DFJYypYsbG3Nt6RtYNWGNefPLUuobwpb
- nSGJWRWOrh9mUQAfIiX6fgmTViFeZiCNUtap+urfjjoxEVprDDVyurPlNRThdc0Vxc
- dS59nyDGhnOOiUGexmY8z34fmQUvbMayjMMkAy4qQ04iUviRMhitoQmys+EBrnj9M8
- FyYmeNyYf8Mzw==
+ b=PlpUOGdi5gYZ5GIuSwhftkR5FLmJPochry0pyq0b0XhANVZ3fyhEIPnGGuw60F5Cy
+ leWUg0kyaDIC58lkBgU3KvclV3lbHm5MHa4nbamHUwkysRAU62NkSmDzPbe1lZzuMi
+ PACUoCd/zz+lqjUkPpxPBeUAXOxTN4t0agl1O+NvCcAxV93y6RLhr52t8Bm1lqDMEe
+ i3WQ8587OGevsszm2WNYX/UipUHZzz3q/n8/FwVptlAUMknBpdiKNwEI4JqgYpxaRm
+ MmCJ0X4K372biIi5ju1jj8b7QvGn9EoyCyhOlYJ3wUsUzcNUrKcD4eUo/3txW94dGI
+ 98Vwn8XLU3DhA==
 From: Mark Brown <broonie@kernel.org>
 To: lgirdwood@gmail.com, cgel.zte@gmail.com
-In-Reply-To: <20220419110718.2574674-1-chi.minghao@zte.com.cn>
-References: <20220419110718.2574674-1-chi.minghao@zte.com.cn>
-Subject: Re: [PATCH] ASoC: img-spdif-in: using pm_runtime_resume_and_get
- instead of pm_runtime_get_sync
-Message-Id: <165090744607.583823.4175599379103783503.b4-ty@kernel.org>
-Date: Mon, 25 Apr 2022 18:24:06 +0100
+In-Reply-To: <20220420030246.2575629-1-chi.minghao@zte.com.cn>
+References: <20220420030246.2575629-1-chi.minghao@zte.com.cn>
+Subject: Re: [PATCH] ASoC: img-parallel-out: using pm_runtime_resume_and_get
+Message-Id: <165090744992.583823.8247124310315131790.b4-ty@kernel.org>
+Date: Mon, 25 Apr 2022 18:24:09 +0100
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -81,7 +80,7 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Tue, 19 Apr 2022 11:07:18 +0000, cgel.zte@gmail.com wrote:
+On Wed, 20 Apr 2022 03:02:46 +0000, cgel.zte@gmail.com wrote:
 > From: Minghao Chi <chi.minghao@zte.com.cn>
 > 
 > Using pm_runtime_resume_and_get() to replace pm_runtime_get_sync and
@@ -97,8 +96,8 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: img-spdif-in: using pm_runtime_resume_and_get instead of pm_runtime_get_sync
-      commit: 6eaaf9bd9b4e3125779b292abd1c00b5baea67dc
+[1/1] ASoC: img-parallel-out: using pm_runtime_resume_and_get
+      commit: 9470aa1c46098587270ff34c112d670b58ff5d34
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
