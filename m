@@ -4,76 +4,75 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A1126C433F5
-	for <alsa-devel@archiver.kernel.org>; Mon, 25 Apr 2022 05:54:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9510CC433EF
+	for <alsa-devel@archiver.kernel.org>; Mon, 25 Apr 2022 06:04:17 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id EE36A16CC;
-	Mon, 25 Apr 2022 07:53:41 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EE36A16CC
+	by alsa0.perex.cz (Postfix) with ESMTPS id 8838A16CC;
+	Mon, 25 Apr 2022 08:03:25 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8838A16CC
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1650866072;
-	bh=yqvECeo/LjV0opRYcVjCxqoRUEuDbNgFaq8Bgtzm8CM=;
+	s=default; t=1650866655;
+	bh=TMHFciROxLsZtv0KZ5kW1nTTsxbiKNtH1TXfsIJ0Ajg=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Bi0vTi9hQ8bIpCxVf57Imy1SvpJ1GRtZwBFqFoLCoL3O9/snVegdaCpmdT/xJQpXZ
-	 1cuAwKQB0OKHcNA5TQeqhaEBwnZ1x5gxcvtgkjaA/qa7IPorhtM57Z40ijYzIfMB6I
-	 ChockSMM+Xaung/G/uyVg5kAfNsC/9ztuXGrFHhg=
+	b=S3FZ2CmQFi8a3DdGs2J2fREJ6Ysv8T8A/3UDr5RpCxmvIHoI2YoojkQZZDvzpDEyt
+	 LbJ0w42BBhPgqjiHsYATdyHLLqkfNrV+ITJzKSwB0UKc+3W6+/MtXhz0vvsIUeV+uJ
+	 8B4jZG/0XGvAkSZi2j9aTrqUo66mLQKTl7Zn7Nas=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 873B7F80152;
-	Mon, 25 Apr 2022 07:53:41 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 06303F80152;
+	Mon, 25 Apr 2022 08:03:25 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id CF91BF8014B; Mon, 25 Apr 2022 07:53:39 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+ id B6448F8016A; Mon, 25 Apr 2022 08:03:23 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 66D14F8014B
- for <alsa-devel@alsa-project.org>; Mon, 25 Apr 2022 07:53:37 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 66D14F8014B
+ by alsa1.perex.cz (Postfix) with ESMTPS id 1EB36F8014B
+ for <alsa-devel@alsa-project.org>; Mon, 25 Apr 2022 08:03:14 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1EB36F8014B
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="gS17fxWy"; 
+ header.b="iTzzTCRd"; 
  dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="46f5r/Yw"
+ header.b="mgGwfDOT"
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out2.suse.de (Postfix) with ESMTP id 2ECC41F383;
- Mon, 25 Apr 2022 05:53:37 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTP id 2B9F0210E7;
+ Mon, 25 Apr 2022 06:03:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1650866017; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1650866594; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=kQc2TW6G4lsVFje2tMGtWR0dZm0cfWAopQn4O15nPTY=;
- b=gS17fxWyHqo1KZGBv5lbFoplErMX/2BdAXSAfKsQHLfkHigKJm+0m/GRfYhTE1ovvT0g+7
- O56hsDn2JBG57HOSFxvTj9KmGaUb8RvRLVaJZzQ05Z8FanR2CxxOt+aLMwH7vT40jSIAJt
- owPwLLHayMSthoXfy6VRJgizziDecXc=
+ bh=9H9ZL7oHmPBo7AQ4AEZL3WXM7rYm4K8x791kG6T7UQ0=;
+ b=iTzzTCRd2PvO+tgUNotuDt8C9PuSfATcNre/V0+jsuyfh29p50/dFUwg2czWIW3pfvTMPk
+ qwZccelxQMXk7iEpCKqeSQYh2ClIO6ATfcT8wpSzDLg1rEWm0mWlivp/MBO7wcY5EHlSwb
+ iH2WC2sMbajhVhNDiUcsrGXKXufQP10=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1650866017;
+ s=susede2_ed25519; t=1650866594;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=kQc2TW6G4lsVFje2tMGtWR0dZm0cfWAopQn4O15nPTY=;
- b=46f5r/YwNCNqtHzdymA3kZPQv/9OxXZ06lmg9tjYqwih/NRX03bdEtqfRdwndMO8aAHddy
- 2mDxb0Kgm2BSvFAA==
+ bh=9H9ZL7oHmPBo7AQ4AEZL3WXM7rYm4K8x791kG6T7UQ0=;
+ b=mgGwfDOTuKr4Ioc1O0ku1pZ7dvtEUFmRic5JRY+lW+eM7+ala4IdHDEzEtnnjwpsxqxy5i
+ 7PSAYjw8rxNXqYDg==
 Received: from alsa1.suse.de (alsa1.suse.de [10.160.4.42])
- by relay2.suse.de (Postfix) with ESMTP id 1B3DD2C141;
- Mon, 25 Apr 2022 05:53:37 +0000 (UTC)
-Date: Mon, 25 Apr 2022 07:53:37 +0200
-Message-ID: <s5h4k2hso7y.wl-tiwai@suse.de>
+ by relay2.suse.de (Postfix) with ESMTP id 1B2D22C16B;
+ Mon, 25 Apr 2022 06:03:13 +0000 (UTC)
+Date: Mon, 25 Apr 2022 08:03:13 +0200
+Message-ID: <s5h1qxlsnry.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
-To: Colin Ian King <colin.i.king@gmail.com>
-Subject: Re: [PATCH] ALSA: pcm: Check for null pointer of pointer substream
- before dereferencing it
-In-Reply-To: <20220424205945.1372247-1-colin.i.king@gmail.com>
-References: <20220424205945.1372247-1-colin.i.king@gmail.com>
+To: Zihao Wang <wzhd@ustc.edu>
+Subject: Re: [PATCH] ALSA: hda/realtek: Add quirk for Yoga Duet 7 13ITL6
+ speakers
+In-Reply-To: <20220424084120.74125-1-wzhd@ustc.edu>
+References: <20220424084120.74125-1-wzhd@ustc.edu>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
  FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
  (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
 MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
 Content-Type: text/plain; charset=US-ASCII
-Cc: alsa-devel@alsa-project.org, kernel-janitors@vger.kernel.org,
- Takashi Iwai <tiwai@suse.com>, linux-kernel@vger.kernel.org
+Cc: alsa-devel@alsa-project.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -89,19 +88,16 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Sun, 24 Apr 2022 22:59:45 +0200,
-Colin Ian King wrote:
+On Sun, 24 Apr 2022 10:41:20 +0200,
+Zihao Wang wrote:
 > 
-> Pointer substream is being dereferenced on the assignment of pointer card
-> before substream is being null checked with the macro PCM_RUNTIME_CHECK.
-> Although PCM_RUNTIME_CHECK calls BUG_ON, it still is useful to perform the
-> the pointer check before card is assigned.
+> Lenovo Yoga Duet 7 13ITL6 has Realtek ALC287 and built-in
+> speakers do not work out of the box. The fix developed for
+> Yoga 7i 14ITL5 also enables speaker output for this model.
 > 
-> Fixes: commit d4cfb30fce03 ("ALSA: pcm: Set per-card upper limit of PCM buffer allocations")
-> 
-> Signed-off-by: Colin Ian King <colin.i.king@gmail.com>
+> Signed-off-by: Zihao Wang <wzhd@ustc.edu>
 
-Thanks, applied with the correction of Fixes tag.
+Thanks, applied with Cc to stable.
 
 
 Takashi
