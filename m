@@ -4,85 +4,84 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id ADF01C433F5
-	for <alsa-devel@archiver.kernel.org>; Mon, 25 Apr 2022 12:41:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D455AC433F5
+	for <alsa-devel@archiver.kernel.org>; Mon, 25 Apr 2022 12:50:26 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 8A3AB1707;
-	Mon, 25 Apr 2022 14:41:04 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8A3AB1707
+	by alsa0.perex.cz (Postfix) with ESMTPS id BE28816FA;
+	Mon, 25 Apr 2022 14:49:34 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BE28816FA
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1650890514;
-	bh=1wUHLemCnkAnFy1DzCNWqFL0dJjOdsvpTqnDgpQ2HWg=;
-	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
+	s=default; t=1650891024;
+	bh=ebYFm1guNAABOJu9yjeKh0wO4lMatsMjHyqhVsgncnI=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=dOLohbuRbu7q4ZKRVxnmtkX65IKvFUYw/qffyLgbe4TZVD1G0s4pHpuMvsaX5SHuA
-	 VQ0uuF4geuonPQqb5s8CrR2WA3Lf4H+mghea3UTQ6m0ta1m+f+NITW4E+UqoXS6pvG
-	 Q4dk67QRJDuSs+R2wwxJMZHPdpc5J62yojK/ixac=
+	b=m35fhnxeNBZR/81fOgMFC2hJiFXgkKAXWCJeaSvSU/EhSZeG2PSoFt4lCRrrYMaWK
+	 6dr9H7+k5M8NnQ+lEIhjQe8DxoH9YHmG73BPVnVmEW2106arFyaxn5OzsxAQ08gl6T
+	 p4YkXm9/EsNqWAqdPOdtbdULtjPWUFr/OgNvJaWY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 1D036F800CB;
-	Mon, 25 Apr 2022 14:41:04 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 515C5F8014B;
+	Mon, 25 Apr 2022 14:49:34 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 7FC20F8016A; Mon, 25 Apr 2022 14:41:02 +0200 (CEST)
-Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
- [67.231.149.25])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 85B1CF8016A; Mon, 25 Apr 2022 14:49:33 +0200 (CEST)
+Received: from mail-qv1-f51.google.com (mail-qv1-f51.google.com
+ [209.85.219.51])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 5CEFCF800CB
- for <alsa-devel@alsa-project.org>; Mon, 25 Apr 2022 14:40:55 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5CEFCF800CB
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com
- header.b="EVV/WeXa"
-Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
- by mx0a-001ae601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 23PBDYfe013133;
- Mon, 25 Apr 2022 07:40:53 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
- h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=PODMain02222019;
- bh=nlr38uaIfr5f4RWN8hQmBrW8tEdm1U6DpwhcPJKbjIk=;
- b=EVV/WeXa1NA0Mz7s/6i5X/Nv3Zt9wSsdvDGGKuaXIYGH1qUwKGntX+d7HrwGv9whgfOu
- 3TI8mapVZTLF+lwCQRk0Sn50IW+PMCsNJyp3HJp76JPHIV7134JVEsLTsq1/eHFptxq7
- VEo07JjQ8H28GtHmBX66dMeWxnmejiThx4zmEbv97qEtGQzqFvw14Ln4xAskpJIbbR/2
- 9JWJ9RcjxrD4Cf7+27RHBLa2drQh0veId8rOkI8O7H+1Bq7n6til6Qc7tgfOFb59wh2u
- lIJHRjef/b4cW5hIurWg6xWJ5ZNB3k0JiAVp3Lsu2vuZfRxKKvc+S66DTvwW/cwHmrCS 3A== 
-Received: from ediex01.ad.cirrus.com ([84.19.233.68])
- by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3fmev31wvx-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
- Mon, 25 Apr 2022 07:40:53 -0500
-Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.24; Mon, 25 Apr
- 2022 13:40:51 +0100
-Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server id 15.1.2375.24 via
- Frontend Transport; Mon, 25 Apr 2022 13:40:51 +0100
-Received: from [10.0.2.15] (AUSNPC0LSNW1.ad.cirrus.com [198.90.251.45])
- by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 215C7478;
- Mon, 25 Apr 2022 12:40:50 +0000 (UTC)
-Subject: Re: [PATCH 1/2] ASoC: soc.h: Introduce SOC_DOUBLE_R_S_EXT_TLV() macro
-To: Mark Brown <broonie@kernel.org>
-References: <20220422160112.3026542-1-rf@opensource.cirrus.com>
- <20220422160112.3026542-2-rf@opensource.cirrus.com>
- <YmaTZEnMAsqtg2FO@sirena.org.uk>
-From: Richard Fitzgerald <rf@opensource.cirrus.com>
-Message-ID: <b8881338-ae93-7255-6c3f-06e14c61cda7@opensource.cirrus.com>
-Date: Mon, 25 Apr 2022 13:40:50 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
+ by alsa1.perex.cz (Postfix) with ESMTPS id A6E0EF800CB
+ for <alsa-devel@alsa-project.org>; Mon, 25 Apr 2022 14:49:27 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A6E0EF800CB
+Received: by mail-qv1-f51.google.com with SMTP id r8so3746510qvx.10
+ for <alsa-devel@alsa-project.org>; Mon, 25 Apr 2022 05:49:27 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc;
+ bh=NPorSfLzynlTTFLcIqwhfwbS6R4JDxHEiU+bfxItonI=;
+ b=27d1Ud85OF4BYUzfIVaAcGn75456IRtKnWjqX0W4CZpGJZREdNSCBf7tJCGeOsWkw6
+ bm8kgoPOsZR4LH9cMqvGFKDg8Me7enklpXQCyU9Zqrmody2Enr8vGVVivGrTFYVw+POx
+ sBZ66rP9ys6Gt7kLxAmbmIT2OzK5uxmOJRgUzJ/gVWPLMSaK6IGK22sq6ibZAXjyesuK
+ oF1aeBOjHL9GrnYQBJeZFCvdHk68DK+ea9EvY/gV9TKzcx4XpygnCZIQabCa9aIptvIr
+ l0QqGQLhf6t0/174pYahd8fPTBcRk9z4LNEdw1dljSyTi8V9mcYuyhMfuixGQTaTuBIt
+ 4VFA==
+X-Gm-Message-State: AOAM5327yA4+aNd162nDeTJlUrN7rBGqcoGlj1NXbIAQdKvlH2xn4fkg
+ HiakW6dOUXckQrkVKOIXKV+q5EPPVNaqKA==
+X-Google-Smtp-Source: ABdhPJwDHJVvXkuJtLMhnJA/FR22IpcwqBO5Jzvgld/gH2VzfmS5bWOJdsbQ/ez/KDO+n9MZ8tSfOQ==
+X-Received: by 2002:ad4:5ded:0:b0:446:3df5:b10 with SMTP id
+ jn13-20020ad45ded000000b004463df50b10mr12220147qvb.102.1650890965394; 
+ Mon, 25 Apr 2022 05:49:25 -0700 (PDT)
+Received: from mail-yb1-f176.google.com (mail-yb1-f176.google.com.
+ [209.85.219.176]) by smtp.gmail.com with ESMTPSA id
+ h1-20020a05620a244100b0069f4fe763aasm2000312qkn.78.2022.04.25.05.49.24
+ for <alsa-devel@alsa-project.org>
+ (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+ Mon, 25 Apr 2022 05:49:24 -0700 (PDT)
+Received: by mail-yb1-f176.google.com with SMTP id w187so17422115ybe.2
+ for <alsa-devel@alsa-project.org>; Mon, 25 Apr 2022 05:49:24 -0700 (PDT)
+X-Received: by 2002:a25:8087:0:b0:641:dd06:577d with SMTP id
+ n7-20020a258087000000b00641dd06577dmr15589591ybk.207.1650890964362; Mon, 25
+ Apr 2022 05:49:24 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <YmaTZEnMAsqtg2FO@sirena.org.uk>
-Content-Type: text/plain; charset="windows-1252"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-ORIG-GUID: aYKhTGTQ6zBMc2_AKG8TiGQcx1mIIHMV
-X-Proofpoint-GUID: aYKhTGTQ6zBMc2_AKG8TiGQcx1mIIHMV
-X-Proofpoint-Spam-Reason: safe
-Cc: patches@opensource.cirrus.com, alsa-devel@alsa-project.org,
- Simon Trimmer <simont@opensource.cirrus.com>, linux-kernel@vger.kernel.org
+References: <20220421203555.29011-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+ <20220421203555.29011-2-prabhakar.mahadev-lad.rj@bp.renesas.com>
+In-Reply-To: <20220421203555.29011-2-prabhakar.mahadev-lad.rj@bp.renesas.com>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Date: Mon, 25 Apr 2022 14:49:12 +0200
+X-Gmail-Original-Message-ID: <CAMuHMdX4_PKsGGRj6yGhDGfaRD-6PqiJeCnKq0yUicfMutOP4g@mail.gmail.com>
+Message-ID: <CAMuHMdX4_PKsGGRj6yGhDGfaRD-6PqiJeCnKq0yUicfMutOP4g@mail.gmail.com>
+Subject: Re: [PATCH 1/3] ASoC: sh: rz-ssi: Drop unused macros
+To: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+Content-Type: text/plain; charset="UTF-8"
+Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>,
+ Pavel Machek <pavel@denx.de>, Takashi Iwai <tiwai@suse.com>,
+ Liam Girdwood <lgirdwood@gmail.com>,
+ Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+ Prabhakar <prabhakar.csengg@gmail.com>, Mark Brown <broonie@kernel.org>,
+ Biju Das <biju.das.jz@bp.renesas.com>,
+ Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>,
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -98,19 +97,41 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+Hi Prabhakar,
 
-On 25/04/2022 13:26, Mark Brown wrote:
-> On Fri, Apr 22, 2022 at 05:01:11PM +0100, Richard Fitzgerald wrote:
->> From: Simon Trimmer <simont@opensource.cirrus.com>
->>
->> A straightforward extension of the SOC_DOUBLE_R_S_TLV() macro that
->> allows the get and put functions to be customised.
->>
->> Signed-off-by: Simon Trimmer <simont@opensource.cirrus.com>
->> ---
-> 
-> You've not provided a Signed-off-by for this so I can't do anything with
-> it, please see Documentation/process/submitting-patches.rst for details
-> on what this is and why it's important.
-> 
-Damn, sorry. Would be nice if checkpatch warned about that.
+On Fri, Apr 22, 2022 at 7:32 PM Lad Prabhakar
+<prabhakar.mahadev-lad.rj@bp.renesas.com> wrote:
+> Drop unused macros SSIFSR_TDC and SSIFSR_RDC.
+>
+> Reported-by: Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>
+> Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+
+Thanks for your patch!
+
+What does this fix?
+Is the real issue that there are 32 FIFO entries, and the TDC and RDC
+fields are 6 bits wide, while the mask uses 0x1f instead of 0x3f?
+
+> --- a/sound/soc/sh/rz-ssi.c
+> +++ b/sound/soc/sh/rz-ssi.c
+> @@ -59,9 +59,7 @@
+>  #define SSIFSR_RDC_MASK                0x3f
+>  #define SSIFSR_RDC_SHIFT       8
+>
+> -#define SSIFSR_TDC(x)          (((x) & 0x1f) << 24)
+>  #define SSIFSR_TDE             BIT(16)
+> -#define SSIFSR_RDC(x)          (((x) & 0x1f) << 8)
+>  #define SSIFSR_RDF             BIT(0)
+>
+>  #define SSIOFR_LRCONT          BIT(8)
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
