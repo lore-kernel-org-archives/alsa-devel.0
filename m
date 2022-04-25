@@ -4,109 +4,81 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C64B5C433EF
-	for <alsa-devel@archiver.kernel.org>; Mon, 25 Apr 2022 13:33:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 316D4C433EF
+	for <alsa-devel@archiver.kernel.org>; Mon, 25 Apr 2022 13:47:58 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 085721811;
-	Mon, 25 Apr 2022 15:32:11 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 085721811
+	by alsa0.perex.cz (Postfix) with ESMTPS id AB80C178D;
+	Mon, 25 Apr 2022 15:47:06 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AB80C178D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1650893581;
-	bh=ipl3oSa3DODJXFqNROBx1CoqGwslciyjMuC+i+Saf6s=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
+	s=default; t=1650894476;
+	bh=cnaPGcH4wGvOkYGwNrD3V8c2ZplgPQyr3KVOqiR+sJ8=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=JnfZOz8L74TR8yWLlchBu1lL4gB9FZPXt9E91nPbgNMi/sI8mVq9yC/3D1pPshpmn
-	 OEUtaIKL+F3PZiuiXqUIUJybHiW3uYvu932hLukGUwd9pTOfWihN78AMEnjoRsQDB2
-	 Vs4Vsyu8LA2kZOty8wAI2dj4ESkIiVoDYg9hFmZg=
+	b=FL6N0zOyypG9DyIvb6pjw8u4xmJT+dInXAqMrLORKYupB2dGGDQG2GSVMXJdUdal9
+	 RoVYuzwoqfiHFbwxeIRiTbNf4bHs+8gySMeoL0YYH5I6v3yQX3pOPqSDWrUdVemSMR
+	 187ec7kE2xH3H+sknEMOzSnkNQJYZ53OWRp4eY68=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 50F7CF80578;
-	Mon, 25 Apr 2022 15:28:00 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 41131F8014B;
+	Mon, 25 Apr 2022 15:47:06 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id BC29EF80163; Sun, 24 Apr 2022 20:49:09 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+ id B86C2F8016A; Mon, 25 Apr 2022 15:47:03 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org
+ [IPv6:2604:1380:4641:c500::1])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 4CC96F800CB
- for <alsa-devel@alsa-project.org>; Sun, 24 Apr 2022 20:49:01 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4CC96F800CB
+ by alsa1.perex.cz (Postfix) with ESMTPS id 2CD4EF8014B
+ for <alsa-devel@alsa-project.org>; Mon, 25 Apr 2022 15:46:59 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2CD4EF8014B
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="BOkM82fI"
+ header.b="jA1s0kuS"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id DA8CD61260
- for <alsa-devel@alsa-project.org>; Sun, 24 Apr 2022 18:48:58 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 59193C385BD
- for <alsa-devel@alsa-project.org>; Sun, 24 Apr 2022 18:48:57 +0000 (UTC)
+ by dfw.source.kernel.org (Postfix) with ESMTPS id 7C95361531;
+ Mon, 25 Apr 2022 13:46:56 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 35886C385A4;
+ Mon, 25 Apr 2022 13:46:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1650826137;
- bh=ipl3oSa3DODJXFqNROBx1CoqGwslciyjMuC+i+Saf6s=;
- h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
- b=BOkM82fII90m6hiFZrsM+S6NoOx/9JSXO645uDox3wouyvV5cDVRWJxz7xq/cB9au
- LYrBwqxSBkhIKBzBNs0hwtCBHRO1gixAqGnRtxVTd+01UzyFfxHSDne9WN6ttlm+rb
- jcQBniXrkaKqn2jBmZOb15DeGZFcd9PAC8aU0sErmt9X3VJ12+DgM2/0JBOHnN/nNw
- G4IIFddQ3lsrPoLfBPfhYi7wy7+MEYhHtnQkavlIidm5fb5N3XrXiQ6swPnyQws0/W
- CtU43okgiFy2OpjRFiWX3gSYz6BOM2afEEdzeBOnonvAaXEfnmyinRGY3cRVziG/FD
- TihvS5WssHAGA==
-Received: by mail-wm1-f41.google.com with SMTP id
- 17-20020a05600c021100b00393a19f8f98so5322822wmi.4
- for <alsa-devel@alsa-project.org>; Sun, 24 Apr 2022 11:48:57 -0700 (PDT)
-X-Gm-Message-State: AOAM533j17C4k+5cJbrOQhTXdjPrZztLGdox6f4IbR1ctvEBEVFaiu3w
- ebU99+JNsfpEob0GIePyf+W0+DcV8LwcgpCfatc=
-X-Google-Smtp-Source: ABdhPJy0bXzhrJhOMZ1X8kbnkslFxEyAGa0Ih/9fgvnO3mTuzgN7/0kU+dSPN2u/9dZRAXnrV+Nc5ftINsUw3V0d/rc=
-X-Received: by 2002:a05:600c:4e4a:b0:392:88e1:74a7 with SMTP id
- e10-20020a05600c4e4a00b0039288e174a7mr22771106wmq.174.1650826135238; Sun, 24
- Apr 2022 11:48:55 -0700 (PDT)
+ s=k20201202; t=1650894415;
+ bh=cnaPGcH4wGvOkYGwNrD3V8c2ZplgPQyr3KVOqiR+sJ8=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=jA1s0kuSSuLQE2bT8lYq2PPV04y02D7wZ8T7PdJUl0+pIvcQzNQnEkHrKO/VLIdgb
+ 2m1RDD1iU6fclgB2yt1Cje9fNi0pxMXo9Afs/v7KguWBId5ui/5gXhFdyMHHH8XIRQ
+ bOftIFstCxWmSjJHS3lBhWNxeu4gXmX0XXBJbCx4vqu2bqlpY3wW9SyWSPVIMDLzeT
+ BX2eE8JH6eajiA+UVHxwl22jmU3zQixvCowQ3xKibegjrsmrkShuAPa1Y4rNBOa55o
+ S2JjJmmeYwllM2K1/vcfweK03kM9wQnTiueeD9g3slFnmadjGloilFczuOGhiju7TU
+ mzZXT8lv+7Cdw==
+Date: Mon, 25 Apr 2022 14:46:49 +0100
+From: Mark Brown <broonie@kernel.org>
+To: Martin =?utf-8?Q?Povi=C5=A1er?= <povik@cutebit.org>
+Subject: Re: [RFC PATCH 3/5] HACK: ASoC: Tolerate N-cpus-to-M-codecs links
+Message-ID: <YmamSZKNtNai7KyM@sirena.org.uk>
+References: <20220331000449.41062-1-povik+lin@cutebit.org>
+ <20220331000449.41062-4-povik+lin@cutebit.org>
+ <YkrkbBNYULLgeS5w@sirena.org.uk>
+ <904EB8A1-5561-4555-8030-B85703E24F2E@cutebit.org>
+ <YmaTHTKWAfM7FCcY@sirena.org.uk>
+ <9F8BCBA8-5EE3-4F87-9518-91CB7AB4E077@cutebit.org>
+ <YmaaPa8A03rWV7HE@sirena.org.uk>
+ <4CF6B0A7-F218-4798-BB21-18D563309D5C@cutebit.org>
 MIME-Version: 1.0
-References: <20220419163810.2118169-1-arnd@kernel.org>
- <20220422170530.GA2338209@roeck-us.net>
- <CAK8P3a3V=qxUqYT3Yt=dpXVv58-Y+HVi952wO6D4LPN5NNphGA@mail.gmail.com>
- <8b36d3a4-ec85-2f9f-e4b7-734d8ddd3d8f@roeck-us.net>
- <CAK8P3a0R9cpEb1d2=e9KnGSbi_uRv48RWfCu_J4DDak_cGZSuw@mail.gmail.com>
- <20220422234150.GA3442771@roeck-us.net>
- <CAK8P3a3qZdEqnJ2nTOKwDMossngOgCpEvZq4cQMPQjSsUoU=6g@mail.gmail.com>
- <3b4046ed-fd75-13ea-fac3-06469172806c@roeck-us.net>
- <CAK8P3a1LzEG1vo+5nMrnL3TOMcbSKJ3u=StcfY8dajV2raUBjA@mail.gmail.com>
- <3df135a2-17f5-d6c6-b4a8-e1a60e254297@roeck-us.net>
-In-Reply-To: <3df135a2-17f5-d6c6-b4a8-e1a60e254297@roeck-us.net>
-From: Arnd Bergmann <arnd@kernel.org>
-Date: Sun, 24 Apr 2022 20:48:39 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a2EHMQPN4ny9sXXuReFG0jN0hyRV7h9v_AR_0pqpOU41w@mail.gmail.com>
-Message-ID: <CAK8P3a2EHMQPN4ny9sXXuReFG0jN0hyRV7h9v_AR_0pqpOU41w@mail.gmail.com>
-Subject: Re: [PATCH v2 00/48] ARM: PXA multiplatform support
-To: Guenter Roeck <linux@roeck-us.net>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailman-Approved-At: Mon, 25 Apr 2022 15:27:43 +0200
-Cc: Ulf Hansson <ulf.hansson@linaro.org>, USB list <linux-usb@vger.kernel.org>,
- Philipp Zabel <philipp.zabel@gmail.com>,
- "Rafael J. Wysocki" <rafael@kernel.org>,
- Viresh Kumar <viresh.kumar@linaro.org>, Sergey Lapin <slapin@ossfans.org>,
- Linux Fbdev development list <linux-fbdev@vger.kernel.org>,
- Dominik Brodowski <linux@dominikbrodowski.net>,
- "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>,
- IDE-ML <linux-ide@vger.kernel.org>, linux-mtd <linux-mtd@lists.infradead.org>,
- Tomas Cech <sleep_walker@suse.com>, Robert Jarzmik <robert.jarzmik@free.fr>,
- linux-clk <linux-clk@vger.kernel.org>, linux-leds@vger.kernel.org,
- linux-rtc@vger.kernel.org, Linus Walleij <linus.walleij@linaro.org>,
- Helge Deller <deller@gmx.de>, Marek Vasut <marek.vasut@gmail.com>,
- Paul Parsons <lost.distance@yahoo.com>,
- Michael Turquette <mturquette@baylibre.com>, Arnd Bergmann <arnd@arndb.de>,
- Linux PM list <linux-pm@vger.kernel.org>,
- "open list:HID CORE LAYER" <linux-input@vger.kernel.org>,
- Haojian Zhuang <haojian.zhuang@gmail.com>, Lubomir Rintel <lkundrak@v3.sk>,
- Mark Brown <broonie@kernel.org>, dri-devel <dri-devel@lists.freedesktop.org>,
- Linux ARM <linux-arm-kernel@lists.infradead.org>,
- Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
- Stephen Boyd <sboyd@kernel.org>, patches@opensource.cirrus.com,
- Dmitry Torokhov <dmitry.torokhov@gmail.com>,
- linux-mmc <linux-mmc@vger.kernel.org>,
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
- ALSA Development Mailing List <alsa-devel@alsa-project.org>,
- Daniel Mack <daniel@zonque.org>
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature"; boundary="V5YMDCcjWGsw/lIg"
+Content-Disposition: inline
+In-Reply-To: <4CF6B0A7-F218-4798-BB21-18D563309D5C@cutebit.org>
+X-Cookie: An apple a day makes 365 apples a year.
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
+ Sven Peter <sven@svenpeter.dev>, linux-kernel@vger.kernel.org,
+ Hector Martin <marcan@marcan.st>, Takashi Iwai <tiwai@suse.com>,
+ Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <robh+dt@kernel.org>,
+ Mark Kettenis <kettenis@openbsd.org>,
+ Martin =?utf-8?Q?Povi=C5=A1er?= <povik+lin@cutebit.org>,
+ Krzysztof Kozlowski <krzk+dt@kernel.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -122,52 +94,49 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Sun, Apr 24, 2022 at 5:28 PM Guenter Roeck <linux@roeck-us.net> wrote:
-> On 4/24/22 01:52, Arnd Bergmann wrote:
-> > On Sun, Apr 24, 2022 at 4:09 AM Guenter Roeck <linux@roeck-us.net> wrote:
-> > into the defconfig file, otherwise the multiplatform target defaults to
-> > an ARMv7 instead of ARMv5 build. For an OMAP15xx as in the SX1,
-> > you also need to enable CONFIG_ARCH_MULTI_V4T.
-> >
-> > This is slightly unfortunate, but I don't see any way to avoid it, and the
-> > modified defconfig will still work fine with older kernel trees.
-> >
->
-> Yes, that works. I changed it in my configuration.
 
-Ok, great!. I managed to boot the z2 machine with PCMCIA support
-and it gets around the issue with my patch, correctly detecting the
-CF card.
+--V5YMDCcjWGsw/lIg
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> >>> One thing I keep having to apply myself is this snippet:
-> >>>
-> >>> diff --git a/arch/arm/mm/proc-arm925.S b/arch/arm/mm/proc-arm925.S
-> >>> index 0bfad62ea858..87c695703580 100644
-> >>> --- a/arch/arm/mm/proc-arm925.S
-> >>> +++ b/arch/arm/mm/proc-arm925.S
-> >>> @@ -441,7 +441,6 @@ __arm925_setup:
-> >>>
-> >>>    #ifdef CONFIG_CPU_DCACHE_WRITETHROUGH
-> >>>           mov     r0, #4                          @ disable write-back
-> >>> on caches explicitly
-> >>> -       mcr     p15, 7, r0, c15, c0, 0
-> >>>    #endif
-> >>
-> >> it does not have CONFIG_CPU_DCACHE_WRITETHROUGH enabled.
-> >
-> > Maybe it was disabled explicitly for the sx1_defconfig because of this
-> > bug. I would think that this is required for actual sx1 hardware because the
-> > option is default-enabled for ARM925T, and that CPU core is exclusively
-> > used in OMAP15xx.
-> >
->
-> That looks like a bug in qemu. ARM925T instruction support is limited to V4T
-> instructions. qemu doesn't have explicit 5T support. It is either V4T
-> or V5.
+On Mon, Apr 25, 2022 at 03:11:14PM +0200, Martin Povi=C5=A1er wrote:
+> > On 25. 4. 2022, at 14:55, Mark Brown <broonie@kernel.org> wrote:
 
-I'm not entirely sure what instructions the CPU supports, but Linux
-treats it as ARMv4T as well, and qemu supports some of the 925t
-specific instructions as "ti925t" in target/arm/cpu_tcg.c, it just seems
-it's missing some others.
+> > I am surprised that doesn't otherwise explode TBH - at the very least
+> > I'd expect it to show two PCMs to userspace which if I'm understanding
+> > your description correctly isn't really what's going on.
 
-      Arnd
+> I fill in a single snd_soc_dai_link, it exposes a single PCM and works
+> like a charm. That is as long as I patch the playback/capture check in
+> question.
+
+> I read that to be the clear intention of ASoC code: a DAI link becomes
+> one snd_soc_pcm_runtime.
+
+Yes, so long as you boil it down to a single link it works fine but the
+bit on top of the binding where you tie the two CPU DAIs to what is
+actually exposed is all in code.  The reason this stuff isn't filled in
+is that connecting the thing that applications see to the physical links
+isn't at all obvious and needs at least some driver sitting in the
+middle to make the links - I'd imagine there's a DSP sitting there which
+probably has quite a bit of flexability about how the various hardware
+components available are actually related.  This makes figuring out what
+to do with the relationship between the multiple CPU DAIs hard.
+
+--V5YMDCcjWGsw/lIg
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmJmpkkACgkQJNaLcl1U
+h9C/GQf+OjJGWvlH5dhjAe5s8YfzoSM40Z2KmKGWDIcK8eWx0PFyUNUbga/WyQfu
+/DZp541i+iDNis3n38axj/4MJkr6Fv79zkvqkXcDoJRwvHPN4pUnWuayW4R9dzOD
+RCziMyqgTtA4L9aCBI3OW6j6iDy5giYhk1ZGom2XGghdavCGptkPmXnWebvjTP1u
+86P8dTNBR5iyhFdxG6ZQXgGOoj+HDKc7wd8GeKmUErNfgDPJhLKe4+2CPyX/l8cp
+7yO9I0+h4S/GIOyCjybXqlEfCKLSYk6S7rf+grBcXOfQlb+AUo27WCSS1E2AvH/P
+/5nrS6m379X9QqI4rhcsEJOfwZo+1w==
+=/H/Q
+-----END PGP SIGNATURE-----
+
+--V5YMDCcjWGsw/lIg--
