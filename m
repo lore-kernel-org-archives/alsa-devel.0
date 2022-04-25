@@ -4,68 +4,74 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B46C7C433EF
-	for <alsa-devel@archiver.kernel.org>; Mon, 25 Apr 2022 12:28:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B0D24C433F5
+	for <alsa-devel@archiver.kernel.org>; Mon, 25 Apr 2022 12:32:02 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E18C316F8;
-	Mon, 25 Apr 2022 14:28:03 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E18C316F8
+	by alsa0.perex.cz (Postfix) with ESMTPS id E06D816FA;
+	Mon, 25 Apr 2022 14:31:10 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E06D816FA
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1650889734;
-	bh=WKhcnxQ8X38lAKqCeWDogDZnUATsgztYcQbAfONXp30=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=gbK8Sk1D96M2rTsA4/71jyQCwSoMuaC+OWAM9MQHK1P94E4feR84293uoTlXRxPhe
-	 8KYUOkc4+QABQS0pNrZjwlS2Ta6zeqC+l6nWFrFQ9l4co2HwSDSBpPRx10FP5E/BnS
-	 5EIBUitRC0OeyXbDVoeifve7ExUJBdMrOHPjz+3w=
+	s=default; t=1650889921;
+	bh=N0EPdIugLassIihiD8xp49ZT5dPSUmJIgdJqAlE+nSE=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=Wh2OJ1x+xbJ3Xrkv1xpO4VbjPncfUIDuIVYz0iMoKzlxFotVzkLtuk+5pEVPFQndJ
+	 uub5UkO/mTRoDgcLjvwRaGSfZG9IB5dc4/8yDXV5y86IXyRyMGEYRBK6mpPYOfGiSM
+	 fciFiY8oMWoaYiEhvo8kqIYlbxNI1M90RBNh9/Ik=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 55B26F80152;
-	Mon, 25 Apr 2022 14:28:03 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 7545EF8014B;
+	Mon, 25 Apr 2022 14:31:10 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 2FEB7F8016A; Mon, 25 Apr 2022 14:28:00 +0200 (CEST)
-Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
+ id 2A516F8016A; Mon, 25 Apr 2022 14:31:08 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id B511AF8014B
+ for <alsa-devel@alsa-project.org>; Mon, 25 Apr 2022 14:31:03 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B511AF8014B
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="Z/yuTpra"
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 0D460F800CB
- for <alsa-devel@alsa-project.org>; Mon, 25 Apr 2022 14:27:54 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0D460F800CB
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="V6S9Anz5"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
- d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1650889678; x=1682425678;
- h=from:to:cc:subject:date:message-id:mime-version:
- content-transfer-encoding;
- bh=WKhcnxQ8X38lAKqCeWDogDZnUATsgztYcQbAfONXp30=;
- b=V6S9Anz5QGjcOxV/cb9d94C2VxEYnQ3aDABUG8nc6Z4Vw6c+9Tkz43zP
- w19OV4UbKkxrKjI9zHRjKBTGhXKF9zHphkZGH/xuRb/t+PRkg1SRZfuQv
- qBetAP/JLnDSRIzaKi0hTUKwgjlCIBARzTm8nhi7if7o6U6RJCmqOwep3
- qo002wVcfKuOdQ+5si/dlIt5vAmT5AJ1+KZzLFUzH+K2Iah7tDTF3G8BG
- 96zj5nHOCNlQVYHw57IC+vKYwDUMzmZCppHPnbL1g0d26l6FeA9F03yAU
- zGxBCodcvHomU56w2YbHxScne8he0qlB9RFEK2P9DVWK2kC2gNcXyfhYa A==;
-X-IronPort-AV: E=McAfee;i="6400,9594,10327"; a="265397560"
-X-IronPort-AV: E=Sophos;i="5.90,288,1643702400"; d="scan'208";a="265397560"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
- by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 25 Apr 2022 05:27:52 -0700
-X-IronPort-AV: E=Sophos;i="5.90,288,1643702400"; d="scan'208";a="557706729"
-Received: from mylinen-mobl1.ger.corp.intel.com (HELO
- pujfalus-desk.ger.corp.intel.com) ([10.252.32.111])
- by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 25 Apr 2022 05:27:50 -0700
-From: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
-To: tiwai@suse.de
-Subject: [PATCH] ALSA: memalloc: Add fallback SG-buffer free if fallback is
- used for noncontig
-Date: Mon, 25 Apr 2022 15:28:14 +0300
-Message-Id: <20220425122814.751-1-peter.ujfalusi@linux.intel.com>
-X-Mailer: git-send-email 2.36.0
+ by dfw.source.kernel.org (Postfix) with ESMTPS id 209CE613CA;
+ Mon, 25 Apr 2022 12:31:02 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3B728C385A7;
+ Mon, 25 Apr 2022 12:30:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1650889861;
+ bh=N0EPdIugLassIihiD8xp49ZT5dPSUmJIgdJqAlE+nSE=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=Z/yuTpraSYCgI0XxlJDCsizFMfmjirMAtKX4Y1wt7s9LdG4YGyGgc84912JNJ8JjN
+ T4vNJwTVGfWLG1aPhxej5T8tjcPU+wGTPRO90URvR4LCJCQDKi+dOxDSNRUmTCVtrK
+ Y+vieWmMQPB1oe9xczsqo0kQ7KWJv+LRM6Ks/3Wm0OCeCJKFuXBoVnU+mvwMESXPio
+ 36iSjDG1FYJlLE7c+wNeN0R3TJ5uUrWD8Rj0q8oLPBLV2zhRq1ggKHHtlB1ER1ApUp
+ jufUFMZsfFplUoevdVHPeluIdm6iuFsSIOpyVZC3CqCtzmuJArkGz+P8KwqVMa1rhc
+ Ep3wwEYs/48Ag==
+Date: Mon, 25 Apr 2022 13:30:54 +0100
+From: Mark Brown <broonie@kernel.org>
+To: Ryan Lee <ryan.lee.analog@gmail.com>
+Subject: Re: [PATCH V3 2/2] ASoC: max98396: add amplifier driver
+Message-ID: <YmaUfkvy7YKCSLST@sirena.org.uk>
+References: <20220423021558.1773598-1-ryan.lee.analog@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: alsa-devel@alsa-project.org, pierre-louis.bossart@linux.intel.com
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature"; boundary="2viRuOuJVnHOO/9B"
+Content-Disposition: inline
+In-Reply-To: <20220423021558.1773598-1-ryan.lee.analog@gmail.com>
+X-Cookie: An apple a day makes 365 apples a year.
+Cc: drhodes@opensource.cirrus.com, pierre-louis.bossart@linux.intel.com,
+ alsa-devel@alsa-project.org, ckeepax@opensource.cirrus.com,
+ stephan@gerhold.net, tanureal@opensource.cirrus.com, hdegoede@redhat.com,
+ linux-kernel@vger.kernel.org, tiwai@suse.com, ryans.lee@analog.com,
+ lgirdwood@gmail.com, cy_huang@richtek.com, devicetree@vger.kernel.org,
+ robh+dt@kernel.org, srinivas.kandagatla@linaro.org, pbrobinson@gmail.com,
+ lukas.bulwahn@gmail.com, krzk+dt@kernel.org, arnd@arndb.de,
+ kernel test robot <lkp@intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -81,51 +87,33 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Peter Ujfalusi <peter.ujfalusi@gmail.com>
 
-If the dma_alloc_noncontiguous() fails in snd_dma_noncontig_alloc() we are
-taking a fallback path which should be taken into account on the free path
-since the way to free the two type of allocations are not the same.
+--2viRuOuJVnHOO/9B
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Fixes: 925ca893b4a6 ("ALSA: memalloc: Add fallback SG-buffer allocations for x86")
-Signed-off-by: Peter Ujfalusi <peter.ujfalusi@gmail.com>
----
-Hi Takashi,
+On Fri, Apr 22, 2022 at 07:15:58PM -0700, Ryan Lee wrote:
+> This series of patches adds support for Analog Devices MAX98396
+> mono amplifier with IV sense. The device provides a PCM interface
+> for audio data and a standard I2C interface for control data
+> communication. This driver also supports MAX98397 which is
+> a variant of MAX98396 with wide input supply range.
 
-I'm not sure about thisa as I can not get my systems to use the fallback, but in
-theory this shiuld be done, no?
+I'm missing patch 1 with the DT bindings?
 
-Since you have introduced the fallback, I believe there are cases when it is
-taken and it might be related to some strange memory allocation errors happening
-in SOF during firmware loading, like:
-https://github.com/thesofproject/linux/issues/3609
-https://github.com/thesofproject/linux/issues/3584
-https://github.com/thesofproject/linux/issues/3530
+--2viRuOuJVnHOO/9B
+Content-Type: application/pgp-signature; name="signature.asc"
 
-Regards,
-Peter
+-----BEGIN PGP SIGNATURE-----
 
- sound/core/memalloc.c | 7 +++++++
- 1 file changed, 7 insertions(+)
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmJmlH0ACgkQJNaLcl1U
+h9Au7wf+LPH2wys4lkiylSgsOXYqnmceMt/19R5Cc7v3Z19l8s2kwrklNBSav+U9
+ckbIb9YbZ37YFCy74pHh2xZvWkxVXDIVsqoOIP2cLN04FKahUI7ENAwpjlfDSYZ5
+cTkHjfQYhD7s1viNKzbsVrH/G0rXHmBXmS8Pzimf5ycTngeel0RJ1mZY6ydMSjwR
+hpEzx5ZUGUnnQ1ukNtwdFcCmnh3eAXgKmhq+fLy1MYkDuiCKvNGGHK5a5pEVEvSa
+1g7CFjB8Sxb+WXYXa2d2hjLmfLlb1taU9p64va0uS4ritLofg+vNnwJCV5nZWx/5
+JOcQi7nrDP94gooyMGwjc5iVP6byqw==
+=R52l
+-----END PGP SIGNATURE-----
 
-diff --git a/sound/core/memalloc.c b/sound/core/memalloc.c
-index 15dc7160ba34..475fd38a4a48 100644
---- a/sound/core/memalloc.c
-+++ b/sound/core/memalloc.c
-@@ -537,6 +537,13 @@ static void *snd_dma_noncontig_alloc(struct snd_dma_buffer *dmab, size_t size)
- 
- static void snd_dma_noncontig_free(struct snd_dma_buffer *dmab)
- {
-+	if (dmab->dev.type == SNDRV_DMA_TYPE_DEV_WC_SG_FALLBACK ||
-+	    dmab->dev.type == SNDRV_DMA_TYPE_DEV_SG_FALLBACK) {
-+		/* The allocation is done with a fallback, use the matching free */
-+		snd_dma_sg_fallback_free(dmab);
-+		return;
-+	}
-+
- 	dma_vunmap_noncontiguous(dmab->dev.dev, dmab->area);
- 	dma_free_noncontiguous(dmab->dev.dev, dmab->bytes, dmab->private_data,
- 			       dmab->dev.dir);
--- 
-2.36.0
-
+--2viRuOuJVnHOO/9B--
