@@ -4,74 +4,74 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 200E0C433EF
-	for <alsa-devel@archiver.kernel.org>; Mon, 25 Apr 2022 22:15:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E7315C433EF
+	for <alsa-devel@archiver.kernel.org>; Mon, 25 Apr 2022 22:17:33 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 5242B185A;
-	Tue, 26 Apr 2022 00:14:52 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5242B185A
+	by alsa0.perex.cz (Postfix) with ESMTPS id 28C0D1853;
+	Tue, 26 Apr 2022 00:16:42 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 28C0D1853
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1650924942;
-	bh=ywGkecL1Y25hiaWF4MAgk0qYwBpRI+gukYhgNm3EREw=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1650925052;
+	bh=OGI3yIo69MD3uToKo6qDkJGp8r8e4eKqTD3NvuRMJZw=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=eok5P/gTxANpaCIytlPLnwg7OeELfGg3Y5zcvY1SjtAgH4eIROz6vH1eb8S73LagP
-	 gz3c5NdJ+bFGBbnW8fB7nrOKHLD4N03+H67a5VG+TKV8ljYyy9rEH3b/I0+jQMLD3+
-	 auVXkREc/O7uWRtCNqIjFPbdwZXw1D7i99/uPIhg=
+	b=JPix1SsezsPVbMl+ok4SqhNH5PCHMNsGdNUGrtIfQF7eof9YCyFK0Z1M5mGMkPzuw
+	 0ydMnfeW/wtyLA2ulQuHTBtZpWgdCU9fSZfbLRvZzfbl+iEBQ4F9e0zrerTAP87Dsr
+	 LqIN4z1jHsuvlDWqB1WaMFgvWR2tIjBCspOxL0sU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id C89A7F8055C;
-	Tue, 26 Apr 2022 00:12:09 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id BCEB9F80152;
+	Tue, 26 Apr 2022 00:16:41 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 9D3FCF80543; Tue, 26 Apr 2022 00:12:06 +0200 (CEST)
-Received: from mga17.intel.com (mga17.intel.com [192.55.52.151])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 59892F8016A; Tue, 26 Apr 2022 00:16:40 +0200 (CEST)
+Received: from mail-ot1-f42.google.com (mail-ot1-f42.google.com
+ [209.85.210.42])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id F192AF80519
- for <alsa-devel@alsa-project.org>; Tue, 26 Apr 2022 00:11:57 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F192AF80519
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="HxGDExL0"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
- d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1650924719; x=1682460719;
- h=from:to:cc:subject:date:message-id:in-reply-to:
- references:mime-version:content-transfer-encoding;
- bh=ywGkecL1Y25hiaWF4MAgk0qYwBpRI+gukYhgNm3EREw=;
- b=HxGDExL08xqUIXMVdN2iN17IKtyQ98aZRO4npqNu9PiTKysroQaQyHGO
- 1YcNQYNuDNcvDo/gNDXovrJnhl80ZngN6D9QrjFSb6R16XZ6PCXoDxX+8
- VIP9tTxE7++8AVbCEXr9U9G40grtIsF1PjXqBU9NF5dXkr4WOEVRiKQWD
- 18oodZkPhL4iwzXUmUbnlr1x8jgXtAfEJiDWgVwK6eS9pT/wH4pKnJUBC
- jMaL2GTVdMHcLYXffgUPkL04Zg9AKUDc6lcqxQF7fea9EFxN2a/SSMtxW
- LTwodZA+Vc7QSFpPAkT11KYUbqdrzVw8IQZV6gDqqcHarbfvfEwCWp5ko w==;
-X-IronPort-AV: E=McAfee;i="6400,9594,10328"; a="245942142"
-X-IronPort-AV: E=Sophos;i="5.90,289,1643702400"; d="scan'208";a="245942142"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
- by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 25 Apr 2022 15:11:37 -0700
-X-IronPort-AV: E=Sophos;i="5.90,289,1643702400"; d="scan'208";a="729939924"
-Received: from shivakax-mobl.amr.corp.intel.com (HELO
- rsridh2-mobl1.localdomain) ([10.254.59.189])
- by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 25 Apr 2022 15:11:36 -0700
-From: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-To: alsa-devel@alsa-project.org
-Subject: [PATCH 04/10] ASoC: SOF: loader: Switch to use the fw_loader ops
-Date: Mon, 25 Apr 2022 15:11:23 -0700
-Message-Id: <20220425221129.124615-5-ranjani.sridharan@linux.intel.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20220425221129.124615-1-ranjani.sridharan@linux.intel.com>
-References: <20220425221129.124615-1-ranjani.sridharan@linux.intel.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 0DA75F800FA
+ for <alsa-devel@alsa-project.org>; Tue, 26 Apr 2022 00:16:31 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0DA75F800FA
+Received: by mail-ot1-f42.google.com with SMTP id
+ u17-20020a9d4d91000000b00605a73abac1so3797143otk.7
+ for <alsa-devel@alsa-project.org>; Mon, 25 Apr 2022 15:16:31 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+ :mime-version:content-disposition:in-reply-to;
+ bh=pAnndawtmkUnKaymvAUKIHFVUO7wxjO7614Lrfui7b0=;
+ b=JaIS/xmQ5NIK3soTPrtRjzXd7I2dTgK9pelCzT5NoEa05KDPdYu7g9eSKPDYQujwr3
+ bHjPkMkupeZ897hV77pqFWwrKGFykynNZVx4ObdM3NFQMA7bjqY8cfNZMUNVUXn3+ElF
+ wGPyWQdpM6ZrAHhqQdFgR+rVqu5hhUHfbvOwWrwyZVCfoigFEOqEL4b67fQotyDnkGR1
+ gDktDjQfjqJerbrvDIkfY7QtGyonm+qOT+piSSWcjPigucTZ+NBu+yzN855IcjpOGEuF
+ 44tperMCJgzXegOLmXTyS22g3L9JEW4gozjD0etmAStDlM3AqN+MEuiu4C6nXDV5xxaz
+ KvNA==
+X-Gm-Message-State: AOAM532WUXk55e+B6aaG1qNkuLjLAEAkVbnujjswtQGpc5f8IK2P9Lok
+ qm8hQvEtCdKDOOtd5xQV6g==
+X-Google-Smtp-Source: ABdhPJyQC2EAtFQwZlhXb35X7/Amyr5Weeamh1E8SL8vFCDlnn2KP1B26/VAhdtzlqdwSbMI9hGkHQ==
+X-Received: by 2002:a9d:6503:0:b0:5e6:d8b6:f684 with SMTP id
+ i3-20020a9d6503000000b005e6d8b6f684mr7263746otl.289.1650924990039; 
+ Mon, 25 Apr 2022 15:16:30 -0700 (PDT)
+Received: from robh.at.kernel.org (66-90-144-107.dyn.grandenetworks.net.
+ [66.90.144.107]) by smtp.gmail.com with ESMTPSA id
+ t22-20020a056870e75600b000e915a9121csm168977oak.52.2022.04.25.15.16.29
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Mon, 25 Apr 2022 15:16:29 -0700 (PDT)
+Received: (nullmailer pid 396470 invoked by uid 1000);
+ Mon, 25 Apr 2022 22:16:29 -0000
+Date: Mon, 25 Apr 2022 17:16:29 -0500
+From: Rob Herring <robh@kernel.org>
+To: Daniel Kaehn <kaehndan@gmail.com>
+Subject: Re: [PATCH v4 1/2] dt-bindings: sound: Add generic serial MIDI device
+Message-ID: <YmcdvcyeJJBB1pqW@robh.at.kernel.org>
+References: <20220425191602.770932-1-kaehndan@gmail.com>
+ <20220425191602.770932-2-kaehndan@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- Peter Ujfalusi <peter.ujfalusi@linux.intel.com>, tiwai@suse.com,
- Rander Wang <rander.wang@intel.com>, broonie@kernel.org,
- Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
- Bard Liao <yung-chuan.liao@linux.intel.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220425191602.770932-2-kaehndan@gmail.com>
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, tiwai@suse.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -87,518 +87,74 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
+On Mon, Apr 25, 2022 at 02:16:02PM -0500, Daniel Kaehn wrote:
+> Adds dt-binding for snd-serial-generic serial MIDI driver
 
-Since we have the fw_loader ops implementation for IPC3, we can start
-using it and remove most of the IPC dependent code from the file.
+Bindings are for h/w and there's no such thing as generic h/w. There are 
+some exceptions but you'll have to justify why this is special.
 
-Signed-off-by: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
-Reviewed-by: Bard Liao <yung-chuan.liao@linux.intel.com>
-Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Reviewed-by: Rander Wang <rander.wang@intel.com>
-Signed-off-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
----
- sound/soc/sof/ipc.c      |  51 ------
- sound/soc/sof/loader.c   | 383 +--------------------------------------
- sound/soc/sof/sof-priv.h |   1 -
- 3 files changed, 8 insertions(+), 427 deletions(-)
 
-diff --git a/sound/soc/sof/ipc.c b/sound/soc/sof/ipc.c
-index 8fbd72c40359..a6ec4b5a4923 100644
---- a/sound/soc/sof/ipc.c
-+++ b/sound/soc/sof/ipc.c
-@@ -137,57 +137,6 @@ void snd_sof_ipc_reply(struct snd_sof_dev *sdev, u32 msg_id)
- }
- EXPORT_SYMBOL(snd_sof_ipc_reply);
- 
--int snd_sof_ipc_valid(struct snd_sof_dev *sdev)
--{
--	struct sof_ipc_fw_ready *ready = &sdev->fw_ready;
--	struct sof_ipc_fw_version *v = &ready->version;
--
--	dev_info(sdev->dev,
--		 "Firmware info: version %d:%d:%d-%s\n",  v->major, v->minor,
--		 v->micro, v->tag);
--	dev_info(sdev->dev,
--		 "Firmware: ABI %d:%d:%d Kernel ABI %d:%d:%d\n",
--		 SOF_ABI_VERSION_MAJOR(v->abi_version),
--		 SOF_ABI_VERSION_MINOR(v->abi_version),
--		 SOF_ABI_VERSION_PATCH(v->abi_version),
--		 SOF_ABI_MAJOR, SOF_ABI_MINOR, SOF_ABI_PATCH);
--
--	if (SOF_ABI_VERSION_INCOMPATIBLE(SOF_ABI_VERSION, v->abi_version)) {
--		dev_err(sdev->dev, "error: incompatible FW ABI version\n");
--		return -EINVAL;
--	}
--
--	if (SOF_ABI_VERSION_MINOR(v->abi_version) > SOF_ABI_MINOR) {
--		if (!IS_ENABLED(CONFIG_SND_SOC_SOF_STRICT_ABI_CHECKS)) {
--			dev_warn(sdev->dev, "warn: FW ABI is more recent than kernel\n");
--		} else {
--			dev_err(sdev->dev, "error: FW ABI is more recent than kernel\n");
--			return -EINVAL;
--		}
--	}
--
--	if (ready->flags & SOF_IPC_INFO_BUILD) {
--		dev_info(sdev->dev,
--			 "Firmware debug build %d on %s-%s - options:\n"
--			 " GDB: %s\n"
--			 " lock debug: %s\n"
--			 " lock vdebug: %s\n",
--			 v->build, v->date, v->time,
--			 (ready->flags & SOF_IPC_INFO_GDB) ?
--				"enabled" : "disabled",
--			 (ready->flags & SOF_IPC_INFO_LOCKS) ?
--				"enabled" : "disabled",
--			 (ready->flags & SOF_IPC_INFO_LOCKSV) ?
--				"enabled" : "disabled");
--	}
--
--	/* copy the fw_version into debugfs at first boot */
--	memcpy(&sdev->fw_version, v, sizeof(*v));
--
--	return 0;
--}
--EXPORT_SYMBOL(snd_sof_ipc_valid);
--
- struct snd_sof_ipc *snd_sof_ipc_init(struct snd_sof_dev *sdev)
- {
- 	struct snd_sof_ipc *ipc;
-diff --git a/sound/soc/sof/loader.c b/sound/soc/sof/loader.c
-index b0d192749734..478c3a22dfca 100644
---- a/sound/soc/sof/loader.c
-+++ b/sound/soc/sof/loader.c
-@@ -16,285 +16,6 @@
- #include "sof-priv.h"
- #include "ops.h"
- 
--static int get_ext_windows(struct snd_sof_dev *sdev,
--			   const struct sof_ipc_ext_data_hdr *ext_hdr)
--{
--	const struct sof_ipc_window *w =
--		container_of(ext_hdr, struct sof_ipc_window, ext_hdr);
--
--	if (w->num_windows == 0 || w->num_windows > SOF_IPC_MAX_ELEMS)
--		return -EINVAL;
--
--	if (sdev->info_window) {
--		if (memcmp(sdev->info_window, w, ext_hdr->hdr.size)) {
--			dev_err(sdev->dev, "error: mismatch between window descriptor from extended manifest and mailbox");
--			return -EINVAL;
--		}
--		return 0;
--	}
--
--	/* keep a local copy of the data */
--	sdev->info_window = devm_kmemdup(sdev->dev, w, ext_hdr->hdr.size,
--					 GFP_KERNEL);
--	if (!sdev->info_window)
--		return -ENOMEM;
--
--	return 0;
--}
--
--static int get_cc_info(struct snd_sof_dev *sdev,
--		       const struct sof_ipc_ext_data_hdr *ext_hdr)
--{
--	int ret;
--
--	const struct sof_ipc_cc_version *cc =
--		container_of(ext_hdr, struct sof_ipc_cc_version, ext_hdr);
--
--	if (sdev->cc_version) {
--		if (memcmp(sdev->cc_version, cc, cc->ext_hdr.hdr.size)) {
--			dev_err(sdev->dev, "error: receive diverged cc_version descriptions");
--			return -EINVAL;
--		}
--		return 0;
--	}
--
--	dev_dbg(sdev->dev, "Firmware info: used compiler %s %d:%d:%d%s used optimization flags %s\n",
--		cc->name, cc->major, cc->minor, cc->micro, cc->desc,
--		cc->optim);
--
--	/* create read-only cc_version debugfs to store compiler version info */
--	/* use local copy of the cc_version to prevent data corruption */
--	if (sdev->first_boot) {
--		sdev->cc_version = devm_kmalloc(sdev->dev, cc->ext_hdr.hdr.size,
--						GFP_KERNEL);
--
--		if (!sdev->cc_version)
--			return -ENOMEM;
--
--		memcpy(sdev->cc_version, cc, cc->ext_hdr.hdr.size);
--		ret = snd_sof_debugfs_buf_item(sdev, sdev->cc_version,
--					       cc->ext_hdr.hdr.size,
--					       "cc_version", 0444);
--
--		/* errors are only due to memory allocation, not debugfs */
--		if (ret < 0) {
--			dev_err(sdev->dev, "error: snd_sof_debugfs_buf_item failed\n");
--			return ret;
--		}
--	}
--
--	return 0;
--}
--
--static int ext_man_get_fw_version(struct snd_sof_dev *sdev,
--				  const struct sof_ext_man_elem_header *hdr)
--{
--	const struct sof_ext_man_fw_version *v =
--		container_of(hdr, struct sof_ext_man_fw_version, hdr);
--
--	memcpy(&sdev->fw_ready.version, &v->version, sizeof(v->version));
--	sdev->fw_ready.flags = v->flags;
--
--	/* log ABI versions and check FW compatibility */
--	return snd_sof_ipc_valid(sdev);
--}
--
--static int ext_man_get_windows(struct snd_sof_dev *sdev,
--			       const struct sof_ext_man_elem_header *hdr)
--{
--	const struct sof_ext_man_window *w;
--
--	w = container_of(hdr, struct sof_ext_man_window, hdr);
--
--	return get_ext_windows(sdev, &w->ipc_window.ext_hdr);
--}
--
--static int ext_man_get_cc_info(struct snd_sof_dev *sdev,
--			       const struct sof_ext_man_elem_header *hdr)
--{
--	const struct sof_ext_man_cc_version *cc;
--
--	cc = container_of(hdr, struct sof_ext_man_cc_version, hdr);
--
--	return get_cc_info(sdev, &cc->cc_version.ext_hdr);
--}
--
--static int ext_man_get_dbg_abi_info(struct snd_sof_dev *sdev,
--				    const struct sof_ext_man_elem_header *hdr)
--{
--	const struct ext_man_dbg_abi *dbg_abi =
--		container_of(hdr, struct ext_man_dbg_abi, hdr);
--
--	if (sdev->first_boot)
--		dev_dbg(sdev->dev,
--			"Firmware: DBG_ABI %d:%d:%d\n",
--			SOF_ABI_VERSION_MAJOR(dbg_abi->dbg_abi.abi_dbg_version),
--			SOF_ABI_VERSION_MINOR(dbg_abi->dbg_abi.abi_dbg_version),
--			SOF_ABI_VERSION_PATCH(dbg_abi->dbg_abi.abi_dbg_version));
--
--	return 0;
--}
--
--static int ext_man_get_config_data(struct snd_sof_dev *sdev,
--				   const struct sof_ext_man_elem_header *hdr)
--{
--	const struct sof_ext_man_config_data *config =
--		container_of(hdr, struct sof_ext_man_config_data, hdr);
--	const struct sof_config_elem *elem;
--	int elems_counter;
--	int elems_size;
--	int ret = 0;
--	int i;
--
--	/* calculate elements counter */
--	elems_size = config->hdr.size - sizeof(struct sof_ext_man_elem_header);
--	elems_counter = elems_size / sizeof(struct sof_config_elem);
--
--	dev_dbg(sdev->dev, "%s can hold up to %d config elements\n",
--		__func__, elems_counter);
--
--	for (i = 0; i < elems_counter; ++i) {
--		elem = &config->elems[i];
--		dev_dbg(sdev->dev, "%s get index %d token %d val %d\n",
--			__func__, i, elem->token, elem->value);
--		switch (elem->token) {
--		case SOF_EXT_MAN_CONFIG_EMPTY:
--			/* unused memory space is zero filled - mapped to EMPTY elements */
--			break;
--		case SOF_EXT_MAN_CONFIG_IPC_MSG_SIZE:
--			/* TODO: use ipc msg size from config data */
--			break;
--		case SOF_EXT_MAN_CONFIG_MEMORY_USAGE_SCAN:
--			if (sdev->first_boot && elem->value)
--				ret = snd_sof_dbg_memory_info_init(sdev);
--			break;
--		default:
--			dev_info(sdev->dev, "Unknown firmware configuration token %d value %d",
--				 elem->token, elem->value);
--			break;
--		}
--		if (ret < 0) {
--			dev_err(sdev->dev, "error: processing sof_ext_man_config_data failed for token %d value 0x%x, %d\n",
--				elem->token, elem->value, ret);
--			return ret;
--		}
--	}
--
--	return 0;
--}
--
--static ssize_t snd_sof_ext_man_size(const struct firmware *fw)
--{
--	const struct sof_ext_man_header *head;
--
--	head = (struct sof_ext_man_header *)fw->data;
--
--	/*
--	 * assert fw size is big enough to contain extended manifest header,
--	 * it prevents from reading unallocated memory from `head` in following
--	 * step.
--	 */
--	if (fw->size < sizeof(*head))
--		return -EINVAL;
--
--	/*
--	 * When fw points to extended manifest,
--	 * then first u32 must be equal SOF_EXT_MAN_MAGIC_NUMBER.
--	 */
--	if (head->magic == SOF_EXT_MAN_MAGIC_NUMBER)
--		return head->full_size;
--
--	/* otherwise given fw don't have an extended manifest */
--	return 0;
--}
--
--/* parse extended FW manifest data structures */
--static int snd_sof_fw_ext_man_parse(struct snd_sof_dev *sdev,
--				    const struct firmware *fw)
--{
--	const struct sof_ext_man_elem_header *elem_hdr;
--	const struct sof_ext_man_header *head;
--	ssize_t ext_man_size;
--	ssize_t remaining;
--	uintptr_t iptr;
--	int ret = 0;
--
--	head = (struct sof_ext_man_header *)fw->data;
--	remaining = head->full_size - head->header_size;
--	ext_man_size = snd_sof_ext_man_size(fw);
--
--	/* Assert firmware starts with extended manifest */
--	if (ext_man_size <= 0)
--		return ext_man_size;
--
--	/* incompatible version */
--	if (SOF_EXT_MAN_VERSION_INCOMPATIBLE(SOF_EXT_MAN_VERSION,
--					     head->header_version)) {
--		dev_err(sdev->dev, "error: extended manifest version 0x%X differ from used 0x%X\n",
--			head->header_version, SOF_EXT_MAN_VERSION);
--		return -EINVAL;
--	}
--
--	/* get first extended manifest element header */
--	iptr = (uintptr_t)fw->data + head->header_size;
--
--	while (remaining > sizeof(*elem_hdr)) {
--		elem_hdr = (struct sof_ext_man_elem_header *)iptr;
--
--		dev_dbg(sdev->dev, "found sof_ext_man header type %d size 0x%X\n",
--			elem_hdr->type, elem_hdr->size);
--
--		if (elem_hdr->size < sizeof(*elem_hdr) ||
--		    elem_hdr->size > remaining) {
--			dev_err(sdev->dev, "error: invalid sof_ext_man header size, type %d size 0x%X\n",
--				elem_hdr->type, elem_hdr->size);
--			return -EINVAL;
--		}
--
--		/* process structure data */
--		switch (elem_hdr->type) {
--		case SOF_EXT_MAN_ELEM_FW_VERSION:
--			ret = ext_man_get_fw_version(sdev, elem_hdr);
--			break;
--		case SOF_EXT_MAN_ELEM_WINDOW:
--			ret = ext_man_get_windows(sdev, elem_hdr);
--			break;
--		case SOF_EXT_MAN_ELEM_CC_VERSION:
--			ret = ext_man_get_cc_info(sdev, elem_hdr);
--			break;
--		case SOF_EXT_MAN_ELEM_DBG_ABI:
--			ret = ext_man_get_dbg_abi_info(sdev, elem_hdr);
--			break;
--		case SOF_EXT_MAN_ELEM_CONFIG_DATA:
--			ret = ext_man_get_config_data(sdev, elem_hdr);
--			break;
--		case SOF_EXT_MAN_ELEM_PLATFORM_CONFIG_DATA:
--			ret = snd_sof_dsp_parse_platform_ext_manifest(sdev, elem_hdr);
--			break;
--		default:
--			dev_info(sdev->dev, "unknown sof_ext_man header type %d size 0x%X\n",
--				 elem_hdr->type, elem_hdr->size);
--			break;
--		}
--
--		if (ret < 0) {
--			dev_err(sdev->dev, "error: failed to parse sof_ext_man header type %d size 0x%X\n",
--				elem_hdr->type, elem_hdr->size);
--			return ret;
--		}
--
--		remaining -= elem_hdr->size;
--		iptr += elem_hdr->size;
--	}
--
--	if (remaining) {
--		dev_err(sdev->dev, "error: sof_ext_man header is inconsistent\n");
--		return -EINVAL;
--	}
--
--	return ext_man_size;
--}
--
- /* generic module parser for mmaped DSPs */
- int snd_sof_parse_module_memcpy(struct snd_sof_dev *sdev,
- 				struct snd_sof_mod_hdr *module)
-@@ -378,96 +99,6 @@ int snd_sof_parse_module_memcpy(struct snd_sof_dev *sdev,
- }
- EXPORT_SYMBOL(snd_sof_parse_module_memcpy);
- 
--static int check_header(struct snd_sof_dev *sdev, const struct firmware *fw,
--			size_t fw_offset)
--{
--	struct snd_sof_fw_header *header;
--	size_t fw_size = fw->size - fw_offset;
--
--	if (fw->size <= fw_offset) {
--		dev_err(sdev->dev, "error: firmware size must be greater than firmware offset\n");
--		return -EINVAL;
--	}
--
--	/* Read the header information from the data pointer */
--	header = (struct snd_sof_fw_header *)(fw->data + fw_offset);
--
--	/* verify FW sig */
--	if (strncmp(header->sig, SND_SOF_FW_SIG, SND_SOF_FW_SIG_SIZE) != 0) {
--		dev_err(sdev->dev, "error: invalid firmware signature\n");
--		return -EINVAL;
--	}
--
--	/* check size is valid */
--	if (fw_size != header->file_size + sizeof(*header)) {
--		dev_err(sdev->dev, "error: invalid filesize mismatch got 0x%zx expected 0x%zx\n",
--			fw_size, header->file_size + sizeof(*header));
--		return -EINVAL;
--	}
--
--	dev_dbg(sdev->dev, "header size=0x%x modules=0x%x abi=0x%x size=%zu\n",
--		header->file_size, header->num_modules,
--		header->abi, sizeof(*header));
--
--	return 0;
--}
--
--static int load_modules(struct snd_sof_dev *sdev, const struct firmware *fw,
--			size_t fw_offset)
--{
--	struct snd_sof_fw_header *header;
--	struct snd_sof_mod_hdr *module;
--	int (*load_module)(struct snd_sof_dev *sof_dev,
--			   struct snd_sof_mod_hdr *hdr);
--	int ret, count;
--	size_t remaining;
--
--	header = (struct snd_sof_fw_header *)(fw->data + fw_offset);
--	load_module = sof_ops(sdev)->load_module;
--	if (!load_module)
--		return -EINVAL;
--
--	/* parse each module */
--	module = (struct snd_sof_mod_hdr *)(fw->data + fw_offset +
--					    sizeof(*header));
--	remaining = fw->size - sizeof(*header) - fw_offset;
--	/* check for wrap */
--	if (remaining > fw->size) {
--		dev_err(sdev->dev, "error: fw size smaller than header size\n");
--		return -EINVAL;
--	}
--
--	for (count = 0; count < header->num_modules; count++) {
--		/* check for wrap */
--		if (remaining < sizeof(*module)) {
--			dev_err(sdev->dev, "error: not enough data remaining\n");
--			return -EINVAL;
--		}
--
--		/* minus header size of module */
--		remaining -= sizeof(*module);
--
--		/* module */
--		ret = load_module(sdev, module);
--		if (ret < 0) {
--			dev_err(sdev->dev, "error: invalid module %d\n", count);
--			return ret;
--		}
--
--		if (remaining < module->size) {
--			dev_err(sdev->dev, "error: not enough data remaining\n");
--			return -EINVAL;
--		}
--
--		/* minus body size of module */
--		remaining -=  module->size;
--		module = (struct snd_sof_mod_hdr *)((u8 *)module
--			+ sizeof(*module) + module->size);
--	}
--
--	return 0;
--}
--
- int snd_sof_load_firmware_raw(struct snd_sof_dev *sdev)
- {
- 	struct snd_sof_pdata *plat_data = sdev->pdata;
-@@ -499,7 +130,7 @@ int snd_sof_load_firmware_raw(struct snd_sof_dev *sdev)
- 	}
- 
- 	/* check for extended manifest */
--	ext_man_size = snd_sof_fw_ext_man_parse(sdev, plat_data->fw);
-+	ext_man_size = sdev->ipc->ops->fw_loader->parse_ext_manifest(sdev);
- 	if (ext_man_size > 0) {
- 		/* when no error occurred, drop extended manifest */
- 		plat_data->fw_offset = ext_man_size;
-@@ -529,7 +160,7 @@ int snd_sof_load_firmware_memcpy(struct snd_sof_dev *sdev)
- 		return ret;
- 
- 	/* make sure the FW header and file is valid */
--	ret = check_header(sdev, plat_data->fw, plat_data->fw_offset);
-+	ret = sdev->ipc->ops->fw_loader->validate(sdev);
- 	if (ret < 0) {
- 		dev_err(sdev->dev, "error: invalid FW header\n");
- 		goto error;
-@@ -543,10 +174,12 @@ int snd_sof_load_firmware_memcpy(struct snd_sof_dev *sdev)
- 	}
- 
- 	/* parse and load firmware modules to DSP */
--	ret = load_modules(sdev, plat_data->fw, plat_data->fw_offset);
--	if (ret < 0) {
--		dev_err(sdev->dev, "error: invalid FW modules\n");
--		goto error;
-+	if (sdev->ipc->ops->fw_loader->load_fw_to_dsp) {
-+		ret = sdev->ipc->ops->fw_loader->load_fw_to_dsp(sdev);
-+		if (ret < 0) {
-+			dev_err(sdev->dev, "Firmware loading failed\n");
-+			goto error;
-+		}
- 	}
- 
- 	return 0;
-diff --git a/sound/soc/sof/sof-priv.h b/sound/soc/sof/sof-priv.h
-index 1df0b1473661..38cdca6a10fd 100644
---- a/sound/soc/sof/sof-priv.h
-+++ b/sound/soc/sof/sof-priv.h
-@@ -623,7 +623,6 @@ static inline void snd_sof_ipc_msgs_rx(struct snd_sof_dev *sdev)
- {
- 	sdev->ipc->ops->rx_msg(sdev);
- }
--int snd_sof_ipc_valid(struct snd_sof_dev *sdev);
- int sof_ipc_tx_message(struct snd_sof_ipc *ipc, void *msg_data, size_t msg_bytes,
- 		       void *reply_data, size_t reply_bytes);
- int sof_ipc_tx_message_no_pm(struct snd_sof_ipc *ipc, void *msg_data, size_t msg_bytes,
--- 
-2.25.1
+> Signed-off-by: Daniel Kaehn <kaehndan@gmail.com>
+> ---
+>  .../devicetree/bindings/sound/serialmidi.yaml | 41 +++++++++++++++++++
+>  1 file changed, 41 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/sound/serialmidi.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/sound/serialmidi.yaml b/Documentation/devicetree/bindings/sound/serialmidi.yaml
+> new file mode 100644
+> index 000000000000..38ef49a0c2f9
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/sound/serialmidi.yaml
+> @@ -0,0 +1,41 @@
+> +# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
+> +
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/sound/serialmidi.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Generic Serial MIDI Device
+> +
+> +maintainers:
+> +  - Daniel Kaehn <kaehndan@gmail.com>
+> +
+> +description: |
 
+Don't need '|' unless there is formatting to preserve.
+
+> +  Generic MIDI interface using a serial device. Can only be set to use standard speeds
+> +  corresponding to supported baud rates of the underlying serial device. If standard MIDI
+> +  speed of 31.25 kBaud is needed, configure the clocks of the underlying serial device
+> +  so that a requested speed of 38.4 kBaud resuts in the standard MIDI baud rate.
+> +
+> +properties:
+> +  compatible:
+> +    const: serialmidi
+> +
+> +  speed:
+
+Not a standard property and we already have 2 of them concerning baud 
+rate.
+
+> +    maxItems: 1
+> +    description: |
+> +      Speed to set the serial port to when the MIDI device is opened.
+> +      If not specified, the underlying serial device is allowed to use its configured default speed.
+> +
+> +required:
+> +  - compatible
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +    serial {
+> +        midi {
+> +            compatible = "serialmidi";
+> +            speed = <38400>;
+> +        };
+> +    };
+> -- 
+> 2.33.0
+> 
+> 
