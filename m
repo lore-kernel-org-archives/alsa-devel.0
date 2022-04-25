@@ -4,74 +4,75 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 389A7C433EF
-	for <alsa-devel@archiver.kernel.org>; Mon, 25 Apr 2022 19:33:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E4185C433EF
+	for <alsa-devel@archiver.kernel.org>; Mon, 25 Apr 2022 22:12:44 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 1DF491853;
-	Mon, 25 Apr 2022 21:32:34 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1DF491853
+	by alsa0.perex.cz (Postfix) with ESMTPS id 1E426184D;
+	Tue, 26 Apr 2022 00:11:52 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1E426184D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1650915204;
-	bh=aytEzzqd8p70MXAQzzm9XPRgY38S6phcaT5Su2FugZY=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=CX2rDsEtt9XnmROwDp0xwD+M3U7puFpu4dX4h8p3QHKEl+77VDfKuDanBNFVRWdEJ
-	 hayqVSIHyXde65wN93EYNUibzJQZWEW1li2ctK2hV0hQ1kXW/oIWkaIwJh6nKf8HU5
-	 n9gq1tSFU4x1TYfMJr1AW4nib538/i+mj6Fi3y6I=
+	s=default; t=1650924762;
+	bh=aIMBwOX3Cp8Ri7mtJowwjOOMLN0IdSeAQ7qPiU3TNQ4=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=Yz+dhYaAq/cDWztb9eetNO70VVCCS/e1i0SdQkvhn+YvGHipSKI327XbvkwKr+Izv
+	 sMYerodVrS37OxgWcW03XYz/u7mCmFsE0DzMRy4EnDFUOPVC+s4Wy9XErZcKfCK2Hu
+	 KC+JgFQSa491ZzDD9ksXELfnONwJkPw3Pj1iOE6o=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id BB00EF80152;
-	Mon, 25 Apr 2022 21:32:33 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 98630F8014B;
+	Tue, 26 Apr 2022 00:11:51 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 99C21F8016A; Mon, 25 Apr 2022 21:32:32 +0200 (CEST)
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de
- [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+ id B6916F800FA; Tue, 26 Apr 2022 00:11:49 +0200 (CEST)
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 68C9BF800FA
- for <alsa-devel@alsa-project.org>; Mon, 25 Apr 2022 21:32:26 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 68C9BF800FA
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
- by metis.ext.pengutronix.de with esmtps
- (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92)
- (envelope-from <ukl@pengutronix.de>)
- id 1nj4RY-0004gr-GL; Mon, 25 Apr 2022 21:32:20 +0200
-Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
- by drehscheibe.grey.stw.pengutronix.de with esmtp (Exim 4.94.2)
- (envelope-from <ukl@pengutronix.de>)
- id 1nj4RZ-005CoH-6h; Mon, 25 Apr 2022 21:32:19 +0200
-Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.94.2)
- (envelope-from <ukl@pengutronix.de>)
- id 1nj4RX-005aWg-4k; Mon, 25 Apr 2022 21:32:19 +0200
-From: =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To: Liam Girdwood <lgirdwood@gmail.com>,
-	Mark Brown <broonie@kernel.org>
-Subject: [PATCH] ASoC: tas6424: Return zero in remove callback
-Date: Mon, 25 Apr 2022 21:32:06 +0200
-Message-Id: <20220425193206.61710-1-u.kleine-koenig@pengutronix.de>
-X-Mailer: git-send-email 2.35.1
+ by alsa1.perex.cz (Postfix) with ESMTPS id 296D2F800FA
+ for <alsa-devel@alsa-project.org>; Tue, 26 Apr 2022 00:11:42 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 296D2F800FA
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
+ header.b="QTUwZYi5"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+ d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+ t=1650924704; x=1682460704;
+ h=from:to:cc:subject:date:message-id:in-reply-to:
+ references:mime-version:content-transfer-encoding;
+ bh=aIMBwOX3Cp8Ri7mtJowwjOOMLN0IdSeAQ7qPiU3TNQ4=;
+ b=QTUwZYi5xwiq1VT1b/eOAtMBHhJA/7TpRfr836ywI1nltK+DG5FO0y97
+ B6XOP3Jy5xHPfBX0+3z5HCizsNr7uPWBQDoKPNnIhnPID6paMoTa7UFIt
+ 2+WKL9dTO6xT9sLJirAmdLKi/FSs70LMAwCb4IsDga6uaE9+ldgiAtNhS
+ PwwIJhopCACYB0kuWbWTbM/aM+FNMtB/YAGfEChxcaIpfgwRL8W58D9wr
+ EKfLrdIzJF5rvo9OYAb4pJcooMsn61NzPNHlCzT5X9PojxbWfEEvEWS2I
+ SN3m4q7nqmHdhNEui6G2yQb+uKdx1vqo4goAeNHoYwo8qG1218k2fK7Qr w==;
+X-IronPort-AV: E=McAfee;i="6400,9594,10328"; a="264897779"
+X-IronPort-AV: E=Sophos;i="5.90,289,1643702400"; d="scan'208";a="264897779"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+ by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 25 Apr 2022 15:11:39 -0700
+X-IronPort-AV: E=Sophos;i="5.90,289,1643702400"; d="scan'208";a="729939947"
+Received: from shivakax-mobl.amr.corp.intel.com (HELO
+ rsridh2-mobl1.localdomain) ([10.254.59.189])
+ by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 25 Apr 2022 15:11:38 -0700
+From: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+To: alsa-devel@alsa-project.org
+Subject: [PATCH 08/10] ASoC: SOF: mediatek: mt8195: Do not set the load_module
+ ops
+Date: Mon, 25 Apr 2022 15:11:27 -0700
+Message-Id: <20220425221129.124615-9-ranjani.sridharan@linux.intel.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20220425221129.124615-1-ranjani.sridharan@linux.intel.com>
+References: <20220425221129.124615-1-ranjani.sridharan@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1118; h=from:subject;
- bh=aytEzzqd8p70MXAQzzm9XPRgY38S6phcaT5Su2FugZY=;
- b=owEBbQGS/pANAwAKAcH8FHityuwJAcsmYgBiZvcxik2BTuAMjWHAHx5958IP/xbntI1PCszznqdi
- r/BneWiJATMEAAEKAB0WIQR+cioWkBis/z50pAvB/BR4rcrsCQUCYmb3MQAKCRDB/BR4rcrsCaCcB/
- wIUQjD/AqXRkHwIOPT9stOnUsiGLTKKwu17GMnlNfmbjpoT/AxqsEZi0uGRjAv1u9N5V0C1x3NMEnl
- 7iK/VBpDg1IsxcVTRNJ1M0gkIOBX9wR5MRYP/WaVo92/cu2RsGmGLG5BtY9d2TKaxEboD86DVs4aPD
- ufqCoCwdlpM3mjx4y/tVk8ZzytWdu7AgzAJfZdjvJuVDel/wiRsDnoAfbw4pXcftZA7ouNQzTuntUj
- ObQSilhhb4PigSrVF8UyIS+i/N4aHgQHflob123SLklWwBFgNmMmnANZAy7pZsGji20QZ1sn2Ecyj/
- L0PZ1liYxDsaI2BS0QhLYAszXXcMa0
-X-Developer-Key: i=u.kleine-koenig@pengutronix.de; a=openpgp;
- fpr=0D2511F322BFAB1C1580266BE2DCDD9132669BD6
 Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de);
- SAEximRunCond expanded to false
-X-PTX-Original-Recipient: alsa-devel@alsa-project.org
-Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.com>,
- kernel@pengutronix.de
+Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ Peter Ujfalusi <peter.ujfalusi@linux.intel.com>, tiwai@suse.com,
+ Rander Wang <rander.wang@intel.com>, broonie@kernel.org,
+ Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+ Bard Liao <yung-chuan.liao@linux.intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -87,38 +88,36 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The only effect of returning an error code in an i2c remove callback
-(compared to returning zero) is that the i2c core emits a generic
-warning. The device is still removed.
+From: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
 
-So even if disabling the regulators fails it's sensible to return zero
-to suppress the additional generic and little helpful error message.
+The used firmware loader (snd_sof_load_firmware_memcpy) can use the generic
+module loading, which is by default uses the same implementation as the
+snd_sof_parse_module_memcpy.
 
-This patch is a preparation for making i2c remove callbacks return void.
+No need to set the callback for this platform.
 
-Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
+Signed-off-by: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
+Reviewed-by: Bard Liao <yung-chuan.liao@linux.intel.com>
+Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Reviewed-by: Rander Wang <rander.wang@intel.com>
+Signed-off-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 ---
- sound/soc/codecs/tas6424.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+ sound/soc/sof/mediatek/mt8195/mt8195.c | 2 --
+ 1 file changed, 2 deletions(-)
 
-diff --git a/sound/soc/codecs/tas6424.c b/sound/soc/codecs/tas6424.c
-index 59543d392110..8b587c4e6c97 100644
---- a/sound/soc/codecs/tas6424.c
-+++ b/sound/soc/codecs/tas6424.c
-@@ -786,10 +786,8 @@ static int tas6424_i2c_remove(struct i2c_client *client)
+diff --git a/sound/soc/sof/mediatek/mt8195/mt8195.c b/sound/soc/sof/mediatek/mt8195/mt8195.c
+index 90ec7b14823b..1766050e39f5 100644
+--- a/sound/soc/sof/mediatek/mt8195/mt8195.c
++++ b/sound/soc/sof/mediatek/mt8195/mt8195.c
+@@ -415,8 +415,6 @@ static struct snd_sof_dsp_ops sof_mt8195_ops = {
+ 	/* misc */
+ 	.get_bar_index	= mt8195_get_bar_index,
  
- 	ret = regulator_bulk_disable(ARRAY_SIZE(tas6424->supplies),
- 				     tas6424->supplies);
--	if (ret < 0) {
-+	if (ret < 0)
- 		dev_err(dev, "unable to disable supplies: %d\n", ret);
--		return ret;
--	}
+-	/* module loading */
+-	.load_module	= snd_sof_parse_module_memcpy,
+ 	/* firmware loading */
+ 	.load_firmware	= snd_sof_load_firmware_memcpy,
  
- 	return 0;
- }
-
-base-commit: 3123109284176b1532874591f7c81f3837bbdc17
 -- 
-2.35.1
+2.25.1
 
