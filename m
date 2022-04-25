@@ -4,87 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id CC8FAC433EF
-	for <alsa-devel@archiver.kernel.org>; Mon, 25 Apr 2022 16:57:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id EA33CC4332F
+	for <alsa-devel@archiver.kernel.org>; Mon, 25 Apr 2022 17:25:12 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 7A8AC161E;
-	Mon, 25 Apr 2022 18:56:33 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7A8AC161E
+	by alsa0.perex.cz (Postfix) with ESMTPS id 6A63F17A2;
+	Mon, 25 Apr 2022 19:24:20 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6A63F17A2
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1650905843;
-	bh=FZ03P9rSuvGw9MwQAl3eR+tRDxsAWBsguuX9Kn7uHpU=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
+	s=default; t=1650907510;
+	bh=igC0ln6z4ICo6ruvrsN2YbYFK79LIxKWX9Rvb44n6u8=;
+	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=hyJ7m+HUKXw6RVLL1NT1AzEQm331vKzagpHD4b0wcT6F+iB8Xo5BwF2Cs53y1l0Or
-	 WGv0Dlugj0SC3Rr0tJdtuDyLgFZtzhvUX1B8ZwHmWUvI0k9IbfIBzF3mpGkTlMsMex
-	 sXpQHidOXOOWADTYDVLVClVp6+bI1KfhK/dAGYPk=
+	b=OwleOe3ms0ieDeHwzXq+beU7Nf697gqvb8ajkwK3IOuR07cCZhlUKJv+VMjC8c6Sa
+	 vub90/8CDml5hO+Kgp9bJIhEbWZuUFlvkvOQmYVJeHXa7UFoLYf5gQDyHnWEWnnc+v
+	 uJtz7A3LfO+ykiuIKWRfDodHWqEDOzvgPebvDYpE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id EC1BAF8014B;
-	Mon, 25 Apr 2022 18:56:32 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id CEB55F8016A;
+	Mon, 25 Apr 2022 19:24:19 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 3F9C1F800FA; Mon, 25 Apr 2022 18:56:30 +0200 (CEST)
-Received: from mail-yb1-xb2f.google.com (mail-yb1-xb2f.google.com
- [IPv6:2607:f8b0:4864:20::b2f])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id 3A666F8016B; Mon, 25 Apr 2022 19:24:18 +0200 (CEST)
+Received: from ams.source.kernel.org (ams.source.kernel.org
+ [IPv6:2604:1380:4601:e00::1])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 2D4C8F800FA
- for <alsa-devel@alsa-project.org>; Mon, 25 Apr 2022 18:56:23 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2D4C8F800FA
+ by alsa1.perex.cz (Postfix) with ESMTPS id 00AE4F800CB
+ for <alsa-devel@alsa-project.org>; Mon, 25 Apr 2022 19:24:11 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 00AE4F800CB
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="TNxzFJ8s"
-Received: by mail-yb1-xb2f.google.com with SMTP id r189so28168115ybr.6
- for <alsa-devel@alsa-project.org>; Mon, 25 Apr 2022 09:56:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
- h=mime-version:references:in-reply-to:from:date:message-id:subject:to
- :cc; bh=3nHqpeRMqi5ydu/1+qACR0gpSXJ+684PjSvA8TxDFDQ=;
- b=TNxzFJ8skf6JzWlQLq0qfcPcp7scN5ongV1p4rF70j/cQMSIwM3xmHdr80cGpfnQ8t
- bwU+6TOYcj9nf/oQV2ZDfEAdjpln2UkrxwU/0EGj0iOaLrsX4/cm/hZEEALcXe5VrY6/
- epw0T6c0XF4XjmANfKc5Ro97ve1Wni1Yb4QjwuoQ0ic9X4aaAhzZ3QkwzFRrCGZEw+9F
- 4DxdR8elStD1ojHmhL/sxWsFJ1pSQ3sm5tHtwLFQtbLxEz9Au5fk5Y/8i2DZIhaNnmNy
- Lnr3yoHg7X4I2WDsUGxjIcgC/MW+iUyyipAXDluVM+TRG+++tnVEarotaTD+ex+NJAu4
- gtaQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc;
- bh=3nHqpeRMqi5ydu/1+qACR0gpSXJ+684PjSvA8TxDFDQ=;
- b=EoOHUeTej6jVfx1Li08EHRfvw4t4V+zdVkXK9+KXqseR7rQ5Dxf/5qOlebOaCMuSuh
- DIoeDJayJRUm/jlSP7SpLM8yI7RXLky87IyMP5acFFQK0QXWuX8piTYzRx7sSH5l9KEP
- L6vNYopKPuigptvnzNs6lS2+4ofAyRAy2p2uqe9im/NjILxJUAE0znKEKssFBzX8ZOa9
- NTv6DyynYJasrckVfDvbvHc7VOxodIye5CxGzfXWuVRJ27yagTfDt+Fx+vXALUayNmNg
- 5i/f4CSn2izg+tvsLLlXm+eMrO/PMXE8699LP5EOkEcsKe8JdwauuTYzr+4lla0wmKHQ
- 2Oqw==
-X-Gm-Message-State: AOAM531gOAX0SCLh9PCfiSK/9HB7BtkNuQMLgafNtSz5WZID6SxmbQuM
- Ikq1U9a0D++zgYOpGktXfr5e2e/nSuvQE4ZdSNw=
-X-Google-Smtp-Source: ABdhPJyWZiXKSCBdfFrt30g49h5Yv7uJinQN6d/QX58gjVXXpGO8EFW+Kr8l2GgSAyg0gVQdgXt/gqLoy+hS947pohI=
-X-Received: by 2002:a25:42cd:0:b0:645:d805:4fcb with SMTP id
- p196-20020a2542cd000000b00645d8054fcbmr13531376yba.182.1650905782127; Mon, 25
- Apr 2022 09:56:22 -0700 (PDT)
+ dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="KViDhhEV"
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by ams.source.kernel.org (Postfix) with ESMTPS id 073E0B8191A;
+ Mon, 25 Apr 2022 17:24:11 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1491EC385A7;
+ Mon, 25 Apr 2022 17:24:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1650907449;
+ bh=igC0ln6z4ICo6ruvrsN2YbYFK79LIxKWX9Rvb44n6u8=;
+ h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+ b=KViDhhEVNj1ZMJuVPkbgL6JTA7Y1qc5POj9NALGnayCO0s7fKQL4glnXOovcs0KN0
+ 0Hj/GramaJewFU0IOqKsIhkXU1sMHpe9LW55Qe5R4+VxAosw2uU0lH+2FK9g7AZ3v+
+ etbUTLjcbaH0rwO+lYpt9X0kmYNx1qpGyhEU1yDB2NMSd3AfMYBOQbeoEcy2PAJX+W
+ Tr27uWkBvrKxGtU48QU9+11jRGcqzZa8GecRNdJBFMNVVgtjl/7RmyGlHnCs9UZsfr
+ YoDsuWHkXGwiCsemLxpjIQ7vcdqLt854THYdm0xpIAJ2ErE8Z2BcbFnkRYenfcigP3
+ glA8kuQIjNDjg==
+From: Mark Brown <broonie@kernel.org>
+To: lgirdwood@gmail.com, cgel.zte@gmail.com
+In-Reply-To: <20220414085310.2541546-1-chi.minghao@zte.com.cn>
+References: <20220414085310.2541546-1-chi.minghao@zte.com.cn>
+Subject: Re: [PATCH] ASoC: img-i2s-in: using pm_runtime_resume_and_get instead
+ of pm_runtime_get_sync
+Message-Id: <165090744779.583823.15729249408440513217.b4-ty@kernel.org>
+Date: Mon, 25 Apr 2022 18:24:07 +0100
 MIME-Version: 1.0
-References: <20220421203555.29011-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
- <20220421203555.29011-2-prabhakar.mahadev-lad.rj@bp.renesas.com>
- <CAMuHMdX4_PKsGGRj6yGhDGfaRD-6PqiJeCnKq0yUicfMutOP4g@mail.gmail.com>
- <CA+V-a8uJM0etygB-v+rs0+EKY6_tz90wH_ZOVH8Zbc8dQPmQGw@mail.gmail.com>
- <CAMuHMdXHqn5_segVMhn_biEXnOSyaLpPfv4jkFp2uxv-=bfqew@mail.gmail.com>
-In-Reply-To: <CAMuHMdXHqn5_segVMhn_biEXnOSyaLpPfv4jkFp2uxv-=bfqew@mail.gmail.com>
-From: "Lad, Prabhakar" <prabhakar.csengg@gmail.com>
-Date: Mon, 25 Apr 2022 17:55:55 +0100
-Message-ID: <CA+V-a8sYWv+K8_QRFFzEupWMD3i4Y9MCta-FfM2_Qv37dHNsAg@mail.gmail.com>
-Subject: Re: [PATCH 1/3] ASoC: sh: rz-ssi: Drop unused macros
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Content-Type: text/plain; charset="UTF-8"
-Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>,
- Liam Girdwood <lgirdwood@gmail.com>, Pavel Machek <pavel@denx.de>,
- Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
- Takashi Iwai <tiwai@suse.com>,
- Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
- Mark Brown <broonie@kernel.org>, Biju Das <biju.das.jz@bp.renesas.com>,
- Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>,
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+Cc: alsa-devel@alsa-project.org, zealci@zte.com.cn, chi.minghao@zte.com.cn,
+ linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -100,52 +81,40 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Hi Geert,
+On Thu, 14 Apr 2022 08:53:10 +0000, cgel.zte@gmail.com wrote:
+> From: Minghao Chi <chi.minghao@zte.com.cn>
+> 
+> Using pm_runtime_resume_and_get() to replace pm_runtime_get_sync and
+> pm_runtime_put_noidle. This change is just to simplify the code, no
+> actual functional changes.
+> 
+> 
+> [...]
 
-On Mon, Apr 25, 2022 at 5:14 PM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
->
-> Hi Prabhakar,
->
-> On Mon, Apr 25, 2022 at 6:09 PM Lad, Prabhakar
-> <prabhakar.csengg@gmail.com> wrote:
-> > On Mon, Apr 25, 2022 at 1:49 PM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
-> > > On Fri, Apr 22, 2022 at 7:32 PM Lad Prabhakar
-> > > <prabhakar.mahadev-lad.rj@bp.renesas.com> wrote:
-> > > > Drop unused macros SSIFSR_TDC and SSIFSR_RDC.
-> > > >
-> > > > Reported-by: Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>
-> > > > Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-> > >
-> > > Thanks for your patch!
-> > >
-> > > What does this fix?
-> > > Is the real issue that there are 32 FIFO entries, and the TDC and RDC
-> > > fields are 6 bits wide, while the mask uses 0x1f instead of 0x3f?
-> > >
-> > I was in two minds here as you have already spotted the masks are
-> > incorrect, instead of fixing the masks I choose to drop the macros
-> > itself as they were not used. Let me know what are your thoughts on
-> > this.
->
-> IC.
->
-> I don't have a preference.
-> So please either remove them, and make it clear they were wrong,
-> so no one is tempted to just revert the removal to start using the
-> definitions, or either keep them, and fix the definitions.
->
-I'll go with dropping them and make it clear they were wrong.
+Applied to
 
-Cheers,
-Prabhakar
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
 
-> Gr{oetje,eeting}s,
->
->                         Geert
->
-> --
-> Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
->
-> In personal conversations with technical people, I call myself a hacker. But
-> when I'm talking to journalists I just say "programmer" or something like that.
->                                 -- Linus Torvalds
+Thanks!
+
+[1/1] ASoC: img-i2s-in: using pm_runtime_resume_and_get instead of pm_runtime_get_sync
+      commit: e5737cceeee5c085f6f4ea76ae99e67e4ca1bdd5
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
