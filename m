@@ -4,65 +4,85 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D0222C433EF
-	for <alsa-devel@archiver.kernel.org>; Mon, 25 Apr 2022 12:35:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id ADF01C433F5
+	for <alsa-devel@archiver.kernel.org>; Mon, 25 Apr 2022 12:41:56 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A58771706;
-	Mon, 25 Apr 2022 14:34:41 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A58771706
+	by alsa0.perex.cz (Postfix) with ESMTPS id 8A3AB1707;
+	Mon, 25 Apr 2022 14:41:04 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8A3AB1707
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1650890131;
-	bh=8jlUvCY20CgI0xaxYkAzO/KkCNyumkMC4FrSmDFIx20=;
-	h=Subject:From:In-Reply-To:Date:References:To:Cc:List-Id:
+	s=default; t=1650890514;
+	bh=1wUHLemCnkAnFy1DzCNWqFL0dJjOdsvpTqnDgpQ2HWg=;
+	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Pv0CU9qNkcofqU0sf1ZVGPKtMTiV50PTxJr7A2eE7gF1Q5ARjz+wDNKt8XCR57Zh8
-	 GGJi4tO4BoS77NmBT/RO8OlvQhd5rNxvhfpk4JB4zxFvUnsXj3tuJa4MpOvtAEt9wA
-	 1ZSiS5GJ5sCUSnvQLLekKq6wSgtCE/k2OxN7P16g=
+	b=dOLohbuRbu7q4ZKRVxnmtkX65IKvFUYw/qffyLgbe4TZVD1G0s4pHpuMvsaX5SHuA
+	 VQ0uuF4geuonPQqb5s8CrR2WA3Lf4H+mghea3UTQ6m0ta1m+f+NITW4E+UqoXS6pvG
+	 Q4dk67QRJDuSs+R2wwxJMZHPdpc5J62yojK/ixac=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 4805CF800FA;
-	Mon, 25 Apr 2022 14:34:41 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 1D036F800CB;
+	Mon, 25 Apr 2022 14:41:04 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id BA4A2F8016A; Mon, 25 Apr 2022 14:34:38 +0200 (CEST)
-Received: from hutie.ust.cz (hutie.ust.cz [185.8.165.127])
+ id 7FC20F8016A; Mon, 25 Apr 2022 14:41:02 +0200 (CEST)
+Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
+ [67.231.149.25])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id E6B58F800FA
- for <alsa-devel@alsa-project.org>; Mon, 25 Apr 2022 14:34:35 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E6B58F800FA
+ by alsa1.perex.cz (Postfix) with ESMTPS id 5CEFCF800CB
+ for <alsa-devel@alsa-project.org>; Mon, 25 Apr 2022 14:40:55 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5CEFCF800CB
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=cutebit.org header.i=@cutebit.org
- header.b="qzxfZ3Vn"
-Content-Type: text/plain;
-	charset=utf-8
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cutebit.org; s=mail;
- t=1650890074; bh=sn38mP3GRcYFS204SS01F9po0IjaiD5EuJVQTsfix0c=;
- h=Subject:From:In-Reply-To:Date:Cc:References:To;
- b=qzxfZ3Vnf6IGzTPAEIKZUigZLKF+DgDhUpHC6GbPhg8VP+3Se4CCdtWbiDqK5s2Xm
- K29Pj7BPaWZedmssU+FSgBeA5FqUPAlItY4SuEb+MGyi4q8mz/gn0A9Uz2NKw1Q39n
- 6v8X9tfBGgqVMS2EswXnoy7z992EBMZFhoG8EZB8=
-Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3696.80.82.1.1\))
-Subject: Re: [RFC PATCH 3/5] HACK: ASoC: Tolerate N-cpus-to-M-codecs links
-From: =?utf-8?Q?Martin_Povi=C5=A1er?= <povik@cutebit.org>
-In-Reply-To: <YmaTHTKWAfM7FCcY@sirena.org.uk>
-Date: Mon, 25 Apr 2022 14:34:33 +0200
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <9F8BCBA8-5EE3-4F87-9518-91CB7AB4E077@cutebit.org>
-References: <20220331000449.41062-1-povik+lin@cutebit.org>
- <20220331000449.41062-4-povik+lin@cutebit.org>
- <YkrkbBNYULLgeS5w@sirena.org.uk>
- <904EB8A1-5561-4555-8030-B85703E24F2E@cutebit.org>
- <YmaTHTKWAfM7FCcY@sirena.org.uk>
+ dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com
+ header.b="EVV/WeXa"
+Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
+ by mx0a-001ae601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 23PBDYfe013133;
+ Mon, 25 Apr 2022 07:40:53 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
+ h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=PODMain02222019;
+ bh=nlr38uaIfr5f4RWN8hQmBrW8tEdm1U6DpwhcPJKbjIk=;
+ b=EVV/WeXa1NA0Mz7s/6i5X/Nv3Zt9wSsdvDGGKuaXIYGH1qUwKGntX+d7HrwGv9whgfOu
+ 3TI8mapVZTLF+lwCQRk0Sn50IW+PMCsNJyp3HJp76JPHIV7134JVEsLTsq1/eHFptxq7
+ VEo07JjQ8H28GtHmBX66dMeWxnmejiThx4zmEbv97qEtGQzqFvw14Ln4xAskpJIbbR/2
+ 9JWJ9RcjxrD4Cf7+27RHBLa2drQh0veId8rOkI8O7H+1Bq7n6til6Qc7tgfOFb59wh2u
+ lIJHRjef/b4cW5hIurWg6xWJ5ZNB3k0JiAVp3Lsu2vuZfRxKKvc+S66DTvwW/cwHmrCS 3A== 
+Received: from ediex01.ad.cirrus.com ([84.19.233.68])
+ by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3fmev31wvx-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+ Mon, 25 Apr 2022 07:40:53 -0500
+Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.24; Mon, 25 Apr
+ 2022 13:40:51 +0100
+Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server id 15.1.2375.24 via
+ Frontend Transport; Mon, 25 Apr 2022 13:40:51 +0100
+Received: from [10.0.2.15] (AUSNPC0LSNW1.ad.cirrus.com [198.90.251.45])
+ by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 215C7478;
+ Mon, 25 Apr 2022 12:40:50 +0000 (UTC)
+Subject: Re: [PATCH 1/2] ASoC: soc.h: Introduce SOC_DOUBLE_R_S_EXT_TLV() macro
 To: Mark Brown <broonie@kernel.org>
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
- Sven Peter <sven@svenpeter.dev>, linux-kernel@vger.kernel.org,
- Hector Martin <marcan@marcan.st>, Takashi Iwai <tiwai@suse.com>,
- Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <robh+dt@kernel.org>,
- Mark Kettenis <kettenis@openbsd.org>,
- =?utf-8?Q?Martin_Povi=C5=A1er?= <povik+lin@cutebit.org>,
- Krzysztof Kozlowski <krzk+dt@kernel.org>
+References: <20220422160112.3026542-1-rf@opensource.cirrus.com>
+ <20220422160112.3026542-2-rf@opensource.cirrus.com>
+ <YmaTZEnMAsqtg2FO@sirena.org.uk>
+From: Richard Fitzgerald <rf@opensource.cirrus.com>
+Message-ID: <b8881338-ae93-7255-6c3f-06e14c61cda7@opensource.cirrus.com>
+Date: Mon, 25 Apr 2022 13:40:50 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
+MIME-Version: 1.0
+In-Reply-To: <YmaTZEnMAsqtg2FO@sirena.org.uk>
+Content-Type: text/plain; charset="windows-1252"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-ORIG-GUID: aYKhTGTQ6zBMc2_AKG8TiGQcx1mIIHMV
+X-Proofpoint-GUID: aYKhTGTQ6zBMc2_AKG8TiGQcx1mIIHMV
+X-Proofpoint-Spam-Reason: safe
+Cc: patches@opensource.cirrus.com, alsa-devel@alsa-project.org,
+ Simon Trimmer <simont@opensource.cirrus.com>, linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -79,76 +99,18 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
-> On 25. 4. 2022, at 14:25, Mark Brown <broonie@kernel.org> wrote:
->=20
-> On Fri, Apr 22, 2022 at 04:06:06PM +0200, Martin Povi=C5=A1er wrote:
->>> On 4. 4. 2022, at 14:28, Mark Brown <broonie@kernel.org> wrote:
->=20
->>> We need to figure out an interface for describing which CODEC/CPU
->>> combinations are connected to each other.  I'm not seeing a great =
-way to
->>> do that right now, probably some side data table is going to be =
-needed,
->>> or perhaps the CPU DAI drivers can be persuaded to only have one DAI
->>> actually register and claim to support more channels?  I'm not sure =
-how
->>> a configuraiton like this is going to work at userspace level if the
->>> multiple CPU DAIs end up being visible...
->=20
->> To understand the issue better: How could the multiple CPU DAIs be
->> visible from userspace?
->=20
-> If you register two separate DAIs (well, links) with the API without
-> doing anything else the API will just expose them to userspace as two
-> separate things with no indication that they're related.
-
-Sure, but what I am addressing here is a single DAI link with multiple
-CPU DAIs, invoked in DT like this:
-
-	dai-link@0 {
-		link-name =3D "Speakers";
-		mclk-fs =3D <256>;
-
-		cpu {
-			sound-dai =3D <&mca 0>, <&mca 1>;
-		};
-		codec {
-			sound-dai =3D <&speaker_left_woof1>,
-				<&speaker_right_woof1>,
-				<&speaker_left_tweet>,
-				<&speaker_right_tweet>,
-				<&speaker_left_woof2>,
-				<&speaker_right_woof2>;
-		};
-	};
-
->> What about this interim solution: In case of N-to-M links we put in
->> the most restrictive condition for checking capture/playback stream
->> validity: we check all of the CPU DAIs. Whatever ends up being the
->> proper solution later can only be less restrictive than this.
->=20
-> That's not the issue here?
-
-Well to me it looks like it is. Because if I invoke the DAI link like
-I quoted above, and the platform driver supports it, the =
-playback/capture
-stream validity check is the only place it breaks down. Notwithstanding
-this may be the wrong API as you wrote.
-
->> As a reminder what happens on the Macs: the platform driver drives
->> all the CPU-side I2S ports that belong to the link with the same =
-data,
->> so the particular CPU/CODEC wiring doesn=E2=80=99t matter.
->=20
-> Oh, that's not something I was aware of.  In that case this is the =
-wrong
-> API - you should be using DPCM to map one front end onto multiple back
-> ends (Kirkwood does something similar IIRC, there will be other =
-examples
-> but that's probably the simplest).  The back ends probably don't =
-really
-> need to know that they're on the same physical bus (if indeed they =
-are).
-
-I guess I need to look into that.
-
+On 25/04/2022 13:26, Mark Brown wrote:
+> On Fri, Apr 22, 2022 at 05:01:11PM +0100, Richard Fitzgerald wrote:
+>> From: Simon Trimmer <simont@opensource.cirrus.com>
+>>
+>> A straightforward extension of the SOC_DOUBLE_R_S_TLV() macro that
+>> allows the get and put functions to be customised.
+>>
+>> Signed-off-by: Simon Trimmer <simont@opensource.cirrus.com>
+>> ---
+> 
+> You've not provided a Signed-off-by for this so I can't do anything with
+> it, please see Documentation/process/submitting-patches.rst for details
+> on what this is and why it's important.
+> 
+Damn, sorry. Would be nice if checkpatch warned about that.
