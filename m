@@ -4,75 +4,75 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9510CC433EF
-	for <alsa-devel@archiver.kernel.org>; Mon, 25 Apr 2022 06:04:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 22740C433F5
+	for <alsa-devel@archiver.kernel.org>; Mon, 25 Apr 2022 06:05:01 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 8838A16CC;
-	Mon, 25 Apr 2022 08:03:25 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8838A16CC
+	by alsa0.perex.cz (Postfix) with ESMTPS id 669EC16CE;
+	Mon, 25 Apr 2022 08:04:09 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 669EC16CE
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1650866655;
-	bh=TMHFciROxLsZtv0KZ5kW1nTTsxbiKNtH1TXfsIJ0Ajg=;
+	s=default; t=1650866699;
+	bh=q5h7AnTHB3/rUD6Y9RVrhawst7LHm1wH2PPLPbIsTNQ=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=S3FZ2CmQFi8a3DdGs2J2fREJ6Ysv8T8A/3UDr5RpCxmvIHoI2YoojkQZZDvzpDEyt
-	 LbJ0w42BBhPgqjiHsYATdyHLLqkfNrV+ITJzKSwB0UKc+3W6+/MtXhz0vvsIUeV+uJ
-	 8B4jZG/0XGvAkSZi2j9aTrqUo66mLQKTl7Zn7Nas=
+	b=omw1Sv3QAwpPNpSPrFad1PpBD+uGCJD/+yvf2pHps/QQUXE18MJqbx5OM8EU7wBDf
+	 yzXjVVhbgpzWjJK77EhKWM8Dqc0NDmW9c+HKNWMHbuRUVBJ+iitOIMVkh1El3nKB7h
+	 aimqb5eiBqlDHbNv1F3HsTea6H1aXVdBTxkmhqOc=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 06303F80152;
-	Mon, 25 Apr 2022 08:03:25 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 143B1F8016E;
+	Mon, 25 Apr 2022 08:04:09 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id B6448F8016A; Mon, 25 Apr 2022 08:03:23 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+ id A56ACF8049C; Mon, 25 Apr 2022 08:04:07 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 1EB36F8014B
- for <alsa-devel@alsa-project.org>; Mon, 25 Apr 2022 08:03:14 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1EB36F8014B
+ by alsa1.perex.cz (Postfix) with ESMTPS id C4C98F800CB
+ for <alsa-devel@alsa-project.org>; Mon, 25 Apr 2022 08:04:00 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C4C98F800CB
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="iTzzTCRd"; 
+ header.b="PlXIdPcc"; 
  dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="mgGwfDOT"
+ header.b="ZfAKyonp"
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out1.suse.de (Postfix) with ESMTP id 2B9F0210E7;
- Mon, 25 Apr 2022 06:03:14 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTP id 7570A1F381;
+ Mon, 25 Apr 2022 06:04:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1650866594; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1650866640; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=9H9ZL7oHmPBo7AQ4AEZL3WXM7rYm4K8x791kG6T7UQ0=;
- b=iTzzTCRd2PvO+tgUNotuDt8C9PuSfATcNre/V0+jsuyfh29p50/dFUwg2czWIW3pfvTMPk
- qwZccelxQMXk7iEpCKqeSQYh2ClIO6ATfcT8wpSzDLg1rEWm0mWlivp/MBO7wcY5EHlSwb
- iH2WC2sMbajhVhNDiUcsrGXKXufQP10=
+ bh=dIyadkM8lLOGTrNVFa5kguptrHG3TI+AiOTO/mZ0e7g=;
+ b=PlXIdPccGKRdL5my/G9Rk+eJJJ1RWqO235BWiLm38Sc/gg/iInAHMhnYvRlegyC3GAYxbd
+ 2qKEB8fVEfPjlXRPNtbFesYVLV2v1LT0mqSqpmui3BQ37PkEpsgC1Mb53kU4IHy3qPK/gJ
+ pFbYSJJar5Woh6FSUElxrPHLNLikft8=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1650866594;
+ s=susede2_ed25519; t=1650866640;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=9H9ZL7oHmPBo7AQ4AEZL3WXM7rYm4K8x791kG6T7UQ0=;
- b=mgGwfDOTuKr4Ioc1O0ku1pZ7dvtEUFmRic5JRY+lW+eM7+ala4IdHDEzEtnnjwpsxqxy5i
- 7PSAYjw8rxNXqYDg==
+ bh=dIyadkM8lLOGTrNVFa5kguptrHG3TI+AiOTO/mZ0e7g=;
+ b=ZfAKyonp4xsRdVDO7RUEHyNj0q9mL2AwsuSKhkxf0eqbeL+p/6uac3V9HzNivecGohegRt
+ OMDwhZDKsWwBivCQ==
 Received: from alsa1.suse.de (alsa1.suse.de [10.160.4.42])
- by relay2.suse.de (Postfix) with ESMTP id 1B2D22C16B;
- Mon, 25 Apr 2022 06:03:13 +0000 (UTC)
-Date: Mon, 25 Apr 2022 08:03:13 +0200
-Message-ID: <s5h1qxlsnry.wl-tiwai@suse.de>
+ by relay2.suse.de (Postfix) with ESMTP id 5E8812C1B4;
+ Mon, 25 Apr 2022 06:04:00 +0000 (UTC)
+Date: Mon, 25 Apr 2022 08:04:00 +0200
+Message-ID: <s5hzgk9r967.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
-To: Zihao Wang <wzhd@ustc.edu>
-Subject: Re: [PATCH] ALSA: hda/realtek: Add quirk for Yoga Duet 7 13ITL6
- speakers
-In-Reply-To: <20220424084120.74125-1-wzhd@ustc.edu>
-References: <20220424084120.74125-1-wzhd@ustc.edu>
+To: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Subject: Re: [PATCH] ALSA: fireworks: fix wrong return count shorter than
+ expected by 4 bytes
+In-Reply-To: <20220424102428.21109-1-o-takashi@sakamocchi.jp>
+References: <20220424102428.21109-1-o-takashi@sakamocchi.jp>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
  FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
  (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
 MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
 Content-Type: text/plain; charset=US-ASCII
-Cc: alsa-devel@alsa-project.org
+Cc: alsa-devel@alsa-project.org, clemens@ladisch.de, stable@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -88,16 +88,19 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Sun, 24 Apr 2022 10:41:20 +0200,
-Zihao Wang wrote:
+On Sun, 24 Apr 2022 12:24:28 +0200,
+Takashi Sakamoto wrote:
 > 
-> Lenovo Yoga Duet 7 13ITL6 has Realtek ALC287 and built-in
-> speakers do not work out of the box. The fix developed for
-> Yoga 7i 14ITL5 also enables speaker output for this model.
+> ALSA fireworks driver has a bug in its initial state to return count
+> shorter than expected by 4 bytes to userspace applications when handling
+> response frame for Echo Audio Fireworks transaction. It's due to missing
+> addition of the size for the type of event in ALSA firewire stack.
 > 
-> Signed-off-by: Zihao Wang <wzhd@ustc.edu>
+> Fixes: 555e8a8f7f14 ("ALSA: fireworks: Add command/response functionality into hwdep interface")
+> Cc: <stable@vger.kernel.org>
+> Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 
-Thanks, applied with Cc to stable.
+Thanks, applied.
 
 
 Takashi
