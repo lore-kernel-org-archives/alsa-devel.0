@@ -4,65 +4,65 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 23879C433F5
-	for <alsa-devel@archiver.kernel.org>; Mon, 25 Apr 2022 22:13:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 934FAC433EF
+	for <alsa-devel@archiver.kernel.org>; Mon, 25 Apr 2022 22:14:01 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3D2761891;
-	Tue, 26 Apr 2022 00:12:51 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3D2761891
+	by alsa0.perex.cz (Postfix) with ESMTPS id B9FCB187D;
+	Tue, 26 Apr 2022 00:13:09 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B9FCB187D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1650924821;
-	bh=AMRW5eziPeO4ski4QQbDsenTkp3kwPEgBjvxBfvtOIY=;
+	s=default; t=1650924839;
+	bh=eeUHy03QHwaaRueSuGxqhwbBJPJbgC1lxYmXvAgzn8c=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=SSZ7ZQFiz+V4JCPsH3437SO/4zq6LFOHrC0yi7/S48autVdDG0Eil25xplRmSKVi9
-	 gY62EYq64CSTG7HYJdzUhFwYCMhacnRYjTOAZFbnW3dxuqazD06a/5kf+sQpnoGkoN
-	 v3FIi+DJTkAQcetXHwKV/3D6h4M2IxMZ9t2p/a4k=
+	b=lMlXGor3Mr/N/cJzcUS3hzLlfcgmyEQvCNgI36qt3hMx6HIdKzMJ0Uvn7jnfVU8RK
+	 DF7UkNq3uKaKTL82QtHWoIGyQ3PQSaS/1sOQD/0tZkdyjR1T7kdSql1TNp5aF0MVGW
+	 nvRdR69erZeWExyLYxfiYenKn+ZV13D5euAIInwI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id AF191F8050F;
-	Tue, 26 Apr 2022 00:11:58 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 6E090F80527;
+	Tue, 26 Apr 2022 00:12:01 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 8D918F8016B; Tue, 26 Apr 2022 00:11:52 +0200 (CEST)
+ id 87A54F804FD; Tue, 26 Apr 2022 00:11:55 +0200 (CEST)
 Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 03793F8016B
- for <alsa-devel@alsa-project.org>; Tue, 26 Apr 2022 00:11:47 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 03793F8016B
+ by alsa1.perex.cz (Postfix) with ESMTPS id 2DACDF80152
+ for <alsa-devel@alsa-project.org>; Tue, 26 Apr 2022 00:11:41 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2DACDF80152
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="SKTLmCmT"
+ header.b="COTucqtm"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1650924709; x=1682460709;
+ t=1650924707; x=1682460707;
  h=from:to:cc:subject:date:message-id:in-reply-to:
  references:mime-version:content-transfer-encoding;
- bh=AMRW5eziPeO4ski4QQbDsenTkp3kwPEgBjvxBfvtOIY=;
- b=SKTLmCmTNgPIC6f8MmVJyosYpjsWZqazwRQhkluWKIsS/2wUDMy5Tmza
- ZPpQ0sY4oQ56uW8yMQefp+S6oZpcFa02DbiHi3qPn1EqF5/M2EsAYMzxs
- KtoWkKr5O6O1WLyO1MH+SE7eexjjmeHk7Q6qKKTxTxFcM9IvV52kI62t+
- y/RVTn+VM51lUNXSGKv9SYMbetL5cGSBkVVmRIbAJr9KSUzQ7Vtf+F5pq
- QiD9KmgfwP75GBFxk34yRcxAjGwrUbF2uTWasJY5dRXDl5JGr19p5OGEA
- 2D/sVnpKJWS40BUy6fzIeCzl3Ik+DUquayVU1j3PDQA4tKmwp1oY5tnMh A==;
-X-IronPort-AV: E=McAfee;i="6400,9594,10328"; a="264897782"
-X-IronPort-AV: E=Sophos;i="5.90,289,1643702400"; d="scan'208";a="264897782"
+ bh=eeUHy03QHwaaRueSuGxqhwbBJPJbgC1lxYmXvAgzn8c=;
+ b=COTucqtmSGt8gtsOEQxKBo4j76rGEMnJsZDDPIAPWbjNdiKUZK+v5VFK
+ 3pdjaKWF+MIKzOQ3Pn5GPjtHwlZRqGBrBcnw3I8EXiAquf1leSlkJloY/
+ C6GT/qTq+Jg3dxUmhUCZWJ4RgJYwju5AjKjHPWdr32h5fa0GuP6Icqkp3
+ sfUHEkawb9qEGIHnZnqpCWQcL7RKPOiSdI+UxI+c7AB8KWxGeaHDRdUal
+ xxkklU2L8rOHXoA0iJI0uoLPvydzfxVIHpQWwHlHd7l6OU2CiOVl/te7d
+ ykb7eQGjXysxw78VS67zQ18BBy9shvjGYNYMSXa6CYHQJcXaS4i5mCKtD Q==;
+X-IronPort-AV: E=McAfee;i="6400,9594,10328"; a="264897776"
+X-IronPort-AV: E=Sophos;i="5.90,289,1643702400"; d="scan'208";a="264897776"
 Received: from orsmga005.jf.intel.com ([10.7.209.41])
  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 25 Apr 2022 15:11:40 -0700
-X-IronPort-AV: E=Sophos;i="5.90,289,1643702400"; d="scan'208";a="729939964"
+ 25 Apr 2022 15:11:38 -0700
+X-IronPort-AV: E=Sophos;i="5.90,289,1643702400"; d="scan'208";a="729939943"
 Received: from shivakax-mobl.amr.corp.intel.com (HELO
  rsridh2-mobl1.localdomain) ([10.254.59.189])
  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 25 Apr 2022 15:11:39 -0700
+ 25 Apr 2022 15:11:38 -0700
 From: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH 10/10] ASoC: SOF: loader: Call optional query_fw_configuration
- on first boot
-Date: Mon, 25 Apr 2022 15:11:29 -0700
-Message-Id: <20220425221129.124615-11-ranjani.sridharan@linux.intel.com>
+Subject: [PATCH 07/10] ASoC: SOF: Intel: bdw/byt/pci-tng: Do not set the
+ load_module ops
+Date: Mon, 25 Apr 2022 15:11:26 -0700
+Message-Id: <20220425221129.124615-8-ranjani.sridharan@linux.intel.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20220425221129.124615-1-ranjani.sridharan@linux.intel.com>
 References: <20220425221129.124615-1-ranjani.sridharan@linux.intel.com>
@@ -90,8 +90,11 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 From: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
 
-Execute the firmware information query on the first boot if it is
-available.
+The used firmware loader (snd_sof_load_firmware_memcpy) can use the generic
+module loading, which is by default uses the same implementation as the
+snd_sof_parse_module_memcpy.
+
+No need to set the callback for these platforms.
 
 Signed-off-by: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
 Reviewed-by: Bard Liao <yung-chuan.liao@linux.intel.com>
@@ -99,23 +102,63 @@ Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Reviewed-by: Rander Wang <rander.wang@intel.com>
 Signed-off-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 ---
- sound/soc/sof/loader.c | 3 +++
- 1 file changed, 3 insertions(+)
+ sound/soc/sof/intel/bdw.c     | 3 ---
+ sound/soc/sof/intel/byt.c     | 6 ------
+ sound/soc/sof/intel/pci-tng.c | 3 ---
+ 3 files changed, 12 deletions(-)
 
-diff --git a/sound/soc/sof/loader.c b/sound/soc/sof/loader.c
-index 8672dcc9cc1e..5f51d936b306 100644
---- a/sound/soc/sof/loader.c
-+++ b/sound/soc/sof/loader.c
-@@ -175,6 +175,9 @@ int snd_sof_run_firmware(struct snd_sof_dev *sdev)
- 	dev_dbg(sdev->dev, "firmware boot complete\n");
- 	sof_set_fw_state(sdev, SOF_FW_BOOT_COMPLETE);
+diff --git a/sound/soc/sof/intel/bdw.c b/sound/soc/sof/intel/bdw.c
+index c0a1d4ae8c68..26df780c702e 100644
+--- a/sound/soc/sof/intel/bdw.c
++++ b/sound/soc/sof/intel/bdw.c
+@@ -613,9 +613,6 @@ static struct snd_sof_dsp_ops sof_bdw_ops = {
+ 	.pcm_open	= sof_stream_pcm_open,
+ 	.pcm_close	= sof_stream_pcm_close,
  
-+	if (sdev->first_boot && sdev->ipc->ops->fw_loader->query_fw_configuration)
-+		return sdev->ipc->ops->fw_loader->query_fw_configuration(sdev);
-+
- 	return 0;
- }
- EXPORT_SYMBOL(snd_sof_run_firmware);
+-	/* Module loading */
+-	.load_module    = snd_sof_parse_module_memcpy,
+-
+ 	/*Firmware loading */
+ 	.load_firmware	= snd_sof_load_firmware_memcpy,
+ 
+diff --git a/sound/soc/sof/intel/byt.c b/sound/soc/sof/intel/byt.c
+index 0fd5edb1bdbc..4ed8381eceda 100644
+--- a/sound/soc/sof/intel/byt.c
++++ b/sound/soc/sof/intel/byt.c
+@@ -267,9 +267,6 @@ static struct snd_sof_dsp_ops sof_byt_ops = {
+ 	.pcm_open	= sof_stream_pcm_open,
+ 	.pcm_close	= sof_stream_pcm_close,
+ 
+-	/* module loading */
+-	.load_module	= snd_sof_parse_module_memcpy,
+-
+ 	/*Firmware loading */
+ 	.load_firmware	= snd_sof_load_firmware_memcpy,
+ 
+@@ -349,9 +346,6 @@ static struct snd_sof_dsp_ops sof_cht_ops = {
+ 	.pcm_open	= sof_stream_pcm_open,
+ 	.pcm_close	= sof_stream_pcm_close,
+ 
+-	/* module loading */
+-	.load_module	= snd_sof_parse_module_memcpy,
+-
+ 	/*Firmware loading */
+ 	.load_firmware	= snd_sof_load_firmware_memcpy,
+ 
+diff --git a/sound/soc/sof/intel/pci-tng.c b/sound/soc/sof/intel/pci-tng.c
+index f1aae9667834..f0f6d9ba8803 100644
+--- a/sound/soc/sof/intel/pci-tng.c
++++ b/sound/soc/sof/intel/pci-tng.c
+@@ -186,9 +186,6 @@ struct snd_sof_dsp_ops sof_tng_ops = {
+ 	.pcm_open	= sof_stream_pcm_open,
+ 	.pcm_close	= sof_stream_pcm_close,
+ 
+-	/* module loading */
+-	.load_module	= snd_sof_parse_module_memcpy,
+-
+ 	/*Firmware loading */
+ 	.load_firmware	= snd_sof_load_firmware_memcpy,
+ 
 -- 
 2.25.1
 
