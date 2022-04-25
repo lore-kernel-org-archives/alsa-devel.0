@@ -4,82 +4,77 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0680BC433F5
-	for <alsa-devel@archiver.kernel.org>; Mon, 25 Apr 2022 10:03:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 69418C433F5
+	for <alsa-devel@archiver.kernel.org>; Mon, 25 Apr 2022 12:26:11 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 25BE816E5;
-	Mon, 25 Apr 2022 12:02:43 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 25BE816E5
+	by alsa0.perex.cz (Postfix) with ESMTPS id BD31C16F3;
+	Mon, 25 Apr 2022 14:25:18 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BD31C16F3
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1650881013;
-	bh=Xib/67yb+a4Rz4/JC94WVq7A+4YYYt9tcF1g9kkZv1Y=;
+	s=default; t=1650889568;
+	bh=6GrE4NWT57K7czTKp7ru4wzIZWD6o9ArIieCTvXxaTE=;
 	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=GfZ04LzB1K+qMq4kSnfiMIapZKpAdLVmREglnpCMHVshB/V7lJvYqjGD1m7YtQIUT
-	 sR+9Fbu9O5oEQitTf+WZaXRPtGVcB8XGguOREByzmrXVLwivM5v7JBx/QMfRUcTu31
-	 EYO3afhdCgAqwnGe1xs5hVmk10K3DstFhUCPIGEU=
+	b=YSHr8O/Y2hxtuAPPMdKDxO9ziay/UaC4ULhyo2Sdo/CF6MlcNUSe7emfScy4Pij3z
+	 W0LfdAmhIR5zwlhiv4COFjSlHMbGptZc3Sn0pMd/kfU0qeqrBl/6Qi+MGdFtUv0c5I
+	 9uQgNV47qgDso7Wc4ErPGQKYPzWzUmwXo6eN4fN8=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id A4D34F80152;
-	Mon, 25 Apr 2022 12:02:42 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 50297F80152;
+	Mon, 25 Apr 2022 14:25:18 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 47DFBF8016A; Mon, 25 Apr 2022 12:02:41 +0200 (CEST)
-Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
- [67.231.149.25])
+ id 79767F8016A; Mon, 25 Apr 2022 14:25:16 +0200 (CEST)
+Received: from ams.source.kernel.org (ams.source.kernel.org
+ [IPv6:2604:1380:4601:e00::1])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 32D40F800CB
+ for <alsa-devel@alsa-project.org>; Mon, 25 Apr 2022 14:25:09 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 32D40F800CB
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="gz1V7yk8"
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 07200F8014B
- for <alsa-devel@alsa-project.org>; Mon, 25 Apr 2022 12:02:34 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 07200F8014B
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com
- header.b="l4OG3GyW"
-Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
- by mx0a-001ae601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 23P6KC6N031455;
- Mon, 25 Apr 2022 05:02:32 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
- h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=PODMain02222019;
- bh=Z5YuVtU3yeCHJFHuOFw1Fh1OHZ3/W3ElUfaHLr4h05s=;
- b=l4OG3GyWOl/B6u5h5xayNavv2H4ks7yNFVIJbeEK025Ym8trfsJHEmOzgnPEocHHapth
- GOoFMazIiFFq7AMPSeWWw2afLJZzSXvHXGWZl0Pw4wqCmXiiMrCI5NohyuSK4jV+cx26
- u0N9WXuxFiIX6xCSbBdc7dOcjn3wqL6O9Ckmh9qyviyd83fBSmZNIcCBblhcSWfwR5WG
- oRqdgIbYx0qwp2hYp0yISRYaOAcqSp74Uim9FAdwrMS73Uh9xu9curbP/MoI1n+o0C3z
- GYaNfq5Xu7uyRsEYDgmLO1L4aL43jzLwA+MzYSDSURvbfEUqyKiJI0Kmoy6KurDQzmoT 7A== 
-Received: from ediex02.ad.cirrus.com ([84.19.233.68])
- by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3fmev31rnd-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
- Mon, 25 Apr 2022 05:02:32 -0500
-Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX02.ad.cirrus.com
- (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.24; Mon, 25 Apr
- 2022 11:02:30 +0100
-Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server id 15.1.2375.24 via
- Frontend Transport; Mon, 25 Apr 2022 11:02:30 +0100
-Received: from ediswmail.ad.cirrus.com (ediswmail.ad.cirrus.com [198.61.86.93])
- by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 577A7B16;
- Mon, 25 Apr 2022 10:02:29 +0000 (UTC)
-Date: Mon, 25 Apr 2022 10:02:29 +0000
-From: Charles Keepax <ckeepax@opensource.cirrus.com>
-To: Richard Fitzgerald <rf@opensource.cirrus.com>
-Subject: Re: [PATCH] firmware: cirrus: cs_dsp: Avoid padding bytes in
- cs_dsp_coeff_ctl
-Message-ID: <20220425100229.GU38351@ediswmail.ad.cirrus.com>
-References: <20220425095159.3044527-1-rf@opensource.cirrus.com>
+ by ams.source.kernel.org (Postfix) with ESMTPS id 302B8B8160E;
+ Mon, 25 Apr 2022 12:25:09 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1CF4DC385A4;
+ Mon, 25 Apr 2022 12:25:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1650889507;
+ bh=6GrE4NWT57K7czTKp7ru4wzIZWD6o9ArIieCTvXxaTE=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=gz1V7yk8c6K7MiFjBSSxV6qtIy6DDMy+HAPCGj9Ixxl8JOX44rM2EQF8KscugLMyJ
+ BD2rViz7o/zR649dKviwIwUSg1U+hg84qvs0L4abD3hHR+AFZtZzipCD1+oKeIRTdi
+ h6L8q97SxDCW0Hj7Jrpj0CswJcXt+9DBtQ0mtDZllWjmgrsH669j5+GzW8F6Q4q7N4
+ nyeHoDGjle1jNO3OLOTdHYEym9AWzvJy/Ohsi6Hw8mB/0aTRmGaRT9LPK3ZJJrI3Mx
+ 6dDyVYCUd+gC8tggiYxlH4q3GkRg42btwhdC3j524PNnSUv8aftrrZjDZKsIsim8Hv
+ zIw/NsAm+2mVQ==
+Date: Mon, 25 Apr 2022 13:25:01 +0100
+From: Mark Brown <broonie@kernel.org>
+To: Martin =?utf-8?Q?Povi=C5=A1er?= <povik@cutebit.org>
+Subject: Re: [RFC PATCH 3/5] HACK: ASoC: Tolerate N-cpus-to-M-codecs links
+Message-ID: <YmaTHTKWAfM7FCcY@sirena.org.uk>
+References: <20220331000449.41062-1-povik+lin@cutebit.org>
+ <20220331000449.41062-4-povik+lin@cutebit.org>
+ <YkrkbBNYULLgeS5w@sirena.org.uk>
+ <904EB8A1-5561-4555-8030-B85703E24F2E@cutebit.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature"; boundary="b1F3yj0YVHTi5nws"
 Content-Disposition: inline
-In-Reply-To: <20220425095159.3044527-1-rf@opensource.cirrus.com>
-User-Agent: Mutt/1.5.21 (2010-09-15)
-X-Proofpoint-ORIG-GUID: FCrVFt3F1McrOxYFLs5iWCdjsCw45OTB
-X-Proofpoint-GUID: FCrVFt3F1McrOxYFLs5iWCdjsCw45OTB
-X-Proofpoint-Spam-Reason: safe
-Cc: patches@opensource.cirrus.com, alsa-devel@alsa-project.org,
- broonie@kernel.org, linux-kernel@vger.kernel.org
+In-Reply-To: <904EB8A1-5561-4555-8030-B85703E24F2E@cutebit.org>
+X-Cookie: An apple a day makes 365 apples a year.
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
+ Sven Peter <sven@svenpeter.dev>, linux-kernel@vger.kernel.org,
+ Hector Martin <marcan@marcan.st>, Takashi Iwai <tiwai@suse.com>,
+ Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <robh+dt@kernel.org>,
+ Mark Kettenis <kettenis@openbsd.org>,
+ Martin =?utf-8?Q?Povi=C5=A1er?= <povik+lin@cutebit.org>,
+ Krzysztof Kozlowski <krzk+dt@kernel.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -95,25 +90,60 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Mon, Apr 25, 2022 at 10:51:59AM +0100, Richard Fitzgerald wrote:
-> Change the order of members in struct cs_dsp_coeff_ctl to avoid
-> the compiler having to insert alignment padding bytes. On a x86_64
-> build this saves 16 bytes per control.
-> 
-> - Pointers are collected to the top of the struct (with the exception of
->   priv, as noted below), so that they are inherently aligned.
-> - The set and enable bitflags are placed together so they can be merged.
-> - priv is placed at the end of the struct - it is for use by the
->   client so it is helpful to make it stand out, and since the compiler
->   will always pad the struct size to an alignment multiple putting a
->   pointer last won't introduce any more padding.
-> - struct cs_dsp_alg_region is placed at the end, right before priv, for
->   the same reasoning as priv.
-> 
-> Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
-> ---
 
-Reviewed-by: Charles Keepax <ckeepax@opensource.cirrus.com>
+--b1F3yj0YVHTi5nws
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Thanks,
-Charles
+On Fri, Apr 22, 2022 at 04:06:06PM +0200, Martin Povi=C5=A1er wrote:
+> > On 4. 4. 2022, at 14:28, Mark Brown <broonie@kernel.org> wrote:
+
+> > We need to figure out an interface for describing which CODEC/CPU
+> > combinations are connected to each other.  I'm not seeing a great way to
+> > do that right now, probably some side data table is going to be needed,
+> > or perhaps the CPU DAI drivers can be persuaded to only have one DAI
+> > actually register and claim to support more channels?  I'm not sure how
+> > a configuraiton like this is going to work at userspace level if the
+> > multiple CPU DAIs end up being visible...
+
+> To understand the issue better: How could the multiple CPU DAIs be
+> visible from userspace?
+
+If you register two separate DAIs (well, links) with the API without
+doing anything else the API will just expose them to userspace as two
+separate things with no indication that they're related.
+
+> What about this interim solution: In case of N-to-M links we put in
+> the most restrictive condition for checking capture/playback stream
+> validity: we check all of the CPU DAIs. Whatever ends up being the
+> proper solution later can only be less restrictive than this.
+
+That's not the issue here? =20
+
+> As a reminder what happens on the Macs: the platform driver drives
+> all the CPU-side I2S ports that belong to the link with the same data,
+> so the particular CPU/CODEC wiring doesn=E2=80=99t matter.
+
+Oh, that's not something I was aware of.  In that case this is the wrong
+API - you should be using DPCM to map one front end onto multiple back
+ends (Kirkwood does something similar IIRC, there will be other examples
+but that's probably the simplest).  The back ends probably don't really
+need to know that they're on the same physical bus (if indeed they are).
+
+--b1F3yj0YVHTi5nws
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmJmkx0ACgkQJNaLcl1U
+h9AXZQf/TTU2DnW1ZuWYtCiYoQytNm53DGhJatv03n1CX5CEQnTpF2SqtDQXWV7P
+FFaj07c+6IYGLOqLmA6TrABjGUoF5YgAmHBesHfS7uLK1pT/dz3c2wB8Dz3agqh5
+qSh562UKa7k6eXV17jANpgVJSBoWf/XjQTc031lOcsV1SPT6Z+if6WTBuXu+JGRt
+IBk9JY4WLK+c2eQUXKeaV2sPISK9CQObtHXr8CVBlgYuUIGnNTUarF19Vdoyq+2y
+QUsZDshFnfBtx/ArsyDMfgX9wO84Ids6rjPSe4pQ0WdRp+TsUiUk1useAx87UMd1
+JkINblZc68f3bqMDmN1HJoVYVFHa1g==
+=9iG+
+-----END PGP SIGNATURE-----
+
+--b1F3yj0YVHTi5nws--
