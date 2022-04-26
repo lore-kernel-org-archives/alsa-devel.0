@@ -4,64 +4,64 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6F0DFC433F5
-	for <alsa-devel@archiver.kernel.org>; Tue, 26 Apr 2022 17:16:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D2AFAC433EF
+	for <alsa-devel@archiver.kernel.org>; Tue, 26 Apr 2022 17:16:39 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id BDD431891;
-	Tue, 26 Apr 2022 19:15:40 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BDD431891
+	by alsa0.perex.cz (Postfix) with ESMTPS id 07347189C;
+	Tue, 26 Apr 2022 19:15:48 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 07347189C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1650993390;
-	bh=Q0n9EYwVz8i+aFrNKL2lwEofbZofFT+cmG1lXM8DX88=;
+	s=default; t=1650993398;
+	bh=ShDCe2qwf1SEE7EMxUFYXwZfRgY4shTycmpzWgTg9YY=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=KZ3Twh+kPmpcI6syLhw5SPpS88mwXZQF+NuDl6eBfXPbqsnLOptWeX+N/Eo5Gte6P
-	 wFvot+RZBCRNotAKCe2ltertzKKCYKu7tpVlbCZ8mySBwwrS1eWmw5B67nEleyxzkB
-	 xV05veD70dyY1JEZbccF3aYaYQGL82j3t1XGGedQ=
+	b=YBhpwhVfJru1OuYFsILaESVPtF97dMjqludqPFxgLVcGAUQ/y6NOSDWGoHSnxfdlH
+	 OVoSgSBgzu72pwNWkTUVyeD08T5B5mDck1I7sFR5A6mznIQ6gmKmzYH9reuf8ZkF2i
+	 2O9cjPLT/vaqFax7ovK1+bGLwghRPAVwebrGSwnU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id D3A8BF8014B;
-	Tue, 26 Apr 2022 19:15:02 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 74F35F8051A;
+	Tue, 26 Apr 2022 19:15:08 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 1C44DF8051A; Tue, 26 Apr 2022 19:14:59 +0200 (CEST)
+ id 1E62FF80171; Tue, 26 Apr 2022 19:15:00 +0200 (CEST)
 Received: from mga06.intel.com (mga06b.intel.com [134.134.136.31])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 68A67F80171
- for <alsa-devel@alsa-project.org>; Tue, 26 Apr 2022 19:14:51 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 68A67F80171
+ by alsa1.perex.cz (Postfix) with ESMTPS id 39BADF8014B
+ for <alsa-devel@alsa-project.org>; Tue, 26 Apr 2022 19:14:49 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 39BADF8014B
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="PSoiT71T"
+ header.b="A4GE3Veu"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1650993292; x=1682529292;
+ t=1650993290; x=1682529290;
  h=from:to:cc:subject:date:message-id:in-reply-to:
  references:mime-version:content-transfer-encoding;
- bh=Q0n9EYwVz8i+aFrNKL2lwEofbZofFT+cmG1lXM8DX88=;
- b=PSoiT71TXqTTWW8sxisYWBZfImL/Y6XKMyngcDYA4TsR9yPyzbhA4gFz
- I88Rf8eKzfXn8o2unym8/eZEl72VVWduc+8P9jxGuFO+g+rphiCh34DFM
- 2uT6b3U8iVQDw8KxJ5sO8uFBQdoqAAxs5CBpyca+vnc3nG3SrntHf20p9
- zShRDoqgsHuBMJr7L3v1Lr/tKTLqwan5OPHW5cFsF2hcCSJBBYZYpMU4U
- 56HtanrUVgsSZ1NmE15E9Kvleph2PqGdM5Zd2UxBVhbActjzj3x/CltB/
- SMgRsxNXJVkmd2c76+gu+EgaKBXcrTHCURz0nrawNKYHWB+wfrAYx7VWK w==;
-X-IronPort-AV: E=McAfee;i="6400,9594,10329"; a="326149038"
-X-IronPort-AV: E=Sophos;i="5.90,291,1643702400"; d="scan'208";a="326149038"
+ bh=ShDCe2qwf1SEE7EMxUFYXwZfRgY4shTycmpzWgTg9YY=;
+ b=A4GE3Veu7n/tnqGaoVs6cJNott/ZZFYgglt74qAOh6Ay1fza9/ijKh8B
+ HQAYhR2H7soWcHPbrmmv9MCCSR1yIMT6o2D3koV2O3SvSg59UVixTH/ON
+ zcMkNZGxSoRdaQ/UMhU0AoRUX2Ee3YRNWbulbRw0wvttFR2Dx/G6C0P9t
+ u9IONxcagviBxULSdX85vMC3ntHk/ELYrRycVVy+qopey0uIYIIRhp97+
+ ieKbHvvuml/cAIbS12Q1ld8cA40fhdHo4Pz50WSp+/AcEc7ThB4WXEoSb
+ NZF2cWswDRyNELfjv3sLRCnY0b0BmDqdeAtN1A46eLu1KKcdME/8Jot6C A==;
+X-IronPort-AV: E=McAfee;i="6400,9594,10329"; a="326149008"
+X-IronPort-AV: E=Sophos;i="5.90,291,1643702400"; d="scan'208";a="326149008"
 Received: from fmsmga003.fm.intel.com ([10.253.24.29])
  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 26 Apr 2022 10:14:48 -0700
+ 26 Apr 2022 10:14:42 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.90,291,1643702400"; d="scan'208";a="650305281"
+X-IronPort-AV: E=Sophos;i="5.90,291,1643702400"; d="scan'208";a="650305146"
 Received: from crojewsk-ctrl.igk.intel.com ([10.102.9.28])
- by FMSMGA003.fm.intel.com with ESMTP; 26 Apr 2022 10:14:45 -0700
+ by FMSMGA003.fm.intel.com with ESMTP; 26 Apr 2022 10:14:38 -0700
 From: Cezary Rojewski <cezary.rojewski@intel.com>
 To: alsa-devel@alsa-project.org,
 	broonie@kernel.org
-Subject: [PATCH 04/14] ASoC: Intel: avs: non-HDA PCM BE operations
-Date: Tue, 26 Apr 2022 19:23:36 +0200
-Message-Id: <20220426172346.3508411-5-cezary.rojewski@intel.com>
+Subject: [PATCH 02/14] ASoC: Intel: avs: Generic soc component driver
+Date: Tue, 26 Apr 2022 19:23:34 +0200
+Message-Id: <20220426172346.3508411-3-cezary.rojewski@intel.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20220426172346.3508411-1-cezary.rojewski@intel.com>
 References: <20220426172346.3508411-1-cezary.rojewski@intel.com>
@@ -88,284 +88,334 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-DMIC and I2S interfaces differ in DMA operations from the HDAudio
-interface. With that in mind, implement all DAI operations to handle
-non-HDA BE interfaces.
-
-To prevent code duplication in newly added code, I2S platform
-registering is dynamic - makes use of specified port_mask and TDMs
-array to populate as many DAIs as required.
+Prepare for concrete PCM operations over HDA, DMIC and I2S interfaces by
+providing generic soc component implementation. Interface-specific
+components re-use this code as majority of flow is shared.
 
 Signed-off-by: Amadeusz Sławiński <amadeuszx.slawinski@linux.intel.com>
 Signed-off-by: Cezary Rojewski <cezary.rojewski@intel.com>
 ---
- sound/soc/intel/avs/avs.h |   4 +
- sound/soc/intel/avs/pcm.c | 222 +++++++++++++++++++++++++++++++++++++-
- 2 files changed, 225 insertions(+), 1 deletion(-)
+ include/sound/soc-acpi.h     |   2 +
+ sound/soc/intel/avs/Makefile |   2 +-
+ sound/soc/intel/avs/pcm.c    | 277 +++++++++++++++++++++++++++++++++++
+ 3 files changed, 280 insertions(+), 1 deletion(-)
+ create mode 100644 sound/soc/intel/avs/pcm.c
 
-diff --git a/sound/soc/intel/avs/avs.h b/sound/soc/intel/avs/avs.h
-index 14b4a780a91c..b4fd67fac17d 100644
---- a/sound/soc/intel/avs/avs.h
-+++ b/sound/soc/intel/avs/avs.h
-@@ -270,4 +270,8 @@ struct avs_soc_component {
+diff --git a/include/sound/soc-acpi.h b/include/sound/soc-acpi.h
+index d33cf8df14b1..b38fd25c5729 100644
+--- a/include/sound/soc-acpi.h
++++ b/include/sound/soc-acpi.h
+@@ -156,6 +156,7 @@ struct snd_soc_acpi_link_adr {
+  * @links: array of link _ADR descriptors, null terminated.
+  * @drv_name: machine driver name
+  * @fw_filename: firmware file name. Used when SOF is not enabled.
++ * @tplg_filename: topology file name. Used when SOF is not enabled.
+  * @board: board name
+  * @machine_quirk: pointer to quirk, usually based on DMI information when
+  * ACPI ID alone is not sufficient, wrong or misleading
+@@ -174,6 +175,7 @@ struct snd_soc_acpi_mach {
+ 	const struct snd_soc_acpi_link_adr *links;
+ 	const char *drv_name;
+ 	const char *fw_filename;
++	const char *tplg_filename;
+ 	const char *board;
+ 	struct snd_soc_acpi_mach * (*machine_quirk)(void *arg);
+ 	const void *quirk_data;
+diff --git a/sound/soc/intel/avs/Makefile b/sound/soc/intel/avs/Makefile
+index 952f51977656..62b3581d6cdb 100644
+--- a/sound/soc/intel/avs/Makefile
++++ b/sound/soc/intel/avs/Makefile
+@@ -1,7 +1,7 @@
+ # SPDX-License-Identifier: GPL-2.0-only
  
- extern const struct snd_soc_dai_ops avs_dai_fe_ops;
+ snd-soc-avs-objs := dsp.o ipc.o messages.o utils.o core.o loader.o \
+-		    topology.o path.o
++		    topology.o path.o pcm.o
+ snd-soc-avs-objs += cldma.o
  
-+int avs_dmic_platform_register(struct avs_dev *adev, const char *name);
-+int avs_i2s_platform_register(struct avs_dev *adev, const char *name, unsigned long port_mask,
-+			      unsigned long *tdms);
-+
- #endif /* __SOUND_SOC_INTEL_AVS_H */
+ obj-$(CONFIG_SND_SOC_INTEL_AVS) += snd-soc-avs.o
 diff --git a/sound/soc/intel/avs/pcm.c b/sound/soc/intel/avs/pcm.c
-index 725caab7cf28..0132305dbb29 100644
---- a/sound/soc/intel/avs/pcm.c
+new file mode 100644
+index 000000000000..29a02f058540
+--- /dev/null
 +++ b/sound/soc/intel/avs/pcm.c
-@@ -112,6 +112,23 @@ static int avs_dai_hw_params(struct snd_pcm_substream *substream,
- 	return 0;
- }
- 
-+static int avs_dai_be_hw_params(struct snd_pcm_substream *substream,
-+				struct snd_pcm_hw_params *be_hw_params, struct snd_soc_dai *dai,
-+				int dma_id)
+@@ -0,0 +1,277 @@
++// SPDX-License-Identifier: GPL-2.0-only
++//
++// Copyright(c) 2021-2022 Intel Corporation. All rights reserved.
++//
++// Authors: Cezary Rojewski <cezary.rojewski@intel.com>
++//          Amadeusz Slawinski <amadeuszx.slawinski@linux.intel.com>
++//
++
++#include <linux/debugfs.h>
++#include <linux/device.h>
++#include <sound/hda_register.h>
++#include <sound/hdaudio_ext.h>
++#include <sound/soc-acpi.h>
++#include <sound/soc-acpi-intel-match.h>
++#include <sound/soc-component.h>
++#include "avs.h"
++#include "path.h"
++#include "topology.h"
++
++struct avs_dma_data {
++	struct avs_tplg_path_template *template;
++	struct avs_path *path;
++	/*
++	 * link stream is stored within substream's runtime
++	 * private_data to fulfill the needs of codec BE path
++	 *
++	 * host stream assigned
++	 */
++	struct hdac_ext_stream *host_stream;
++};
++
++static ssize_t topology_name_read(struct file *file, char __user *user_buf, size_t count,
++				  loff_t *ppos)
 +{
-+	struct snd_pcm_hw_params *fe_hw_params = NULL;
-+	struct snd_soc_pcm_runtime *fe, *be;
-+	struct snd_soc_dpcm *dpcm;
++	struct snd_soc_component *component = file->private_data;
++	struct snd_soc_card *card = component->card;
++	struct snd_soc_acpi_mach *mach = dev_get_platdata(card->dev);
++	char buf[64];
++	size_t len;
 +
-+	be = asoc_substream_to_rtd(substream);
-+	for_each_dpcm_fe(be, substream->stream, dpcm) {
-+		fe = dpcm->fe;
-+		fe_hw_params = &fe->dpcm[substream->stream].hw_params;
-+	}
++	len = snprintf(buf, sizeof(buf), "%s/%s\n", component->driver->topology_name_prefix,
++		       mach->tplg_filename);
 +
-+	return avs_dai_hw_params(substream, fe_hw_params, be_hw_params, dai, dma_id);
++	return simple_read_from_buffer(user_buf, count, ppos, buf, len);
 +}
 +
- static int avs_dai_prepare(struct avs_dev *adev, struct snd_pcm_substream *substream,
- 			   struct snd_soc_dai *dai)
- {
-@@ -134,6 +151,100 @@ static int avs_dai_prepare(struct avs_dev *adev, struct snd_pcm_substream *subst
- 	return ret;
- }
- 
-+static int avs_dai_nonhda_be_startup(struct snd_pcm_substream *substream, struct snd_soc_dai *dai)
++static const struct file_operations topology_name_fops = {
++	.open = simple_open,
++	.read = topology_name_read,
++	.llseek = default_llseek,
++};
++
++static int avs_component_load_libraries(struct avs_soc_component *acomp)
 +{
-+	return avs_dai_startup(substream, dai, false);
-+}
++	struct avs_tplg *tplg = acomp->tplg;
++	struct avs_dev *adev = to_avs_dev(acomp->base.dev);
++	int ret;
 +
-+static void avs_dai_nonhda_be_shutdown(struct snd_pcm_substream *substream, struct snd_soc_dai *dai)
-+{
-+	struct avs_dma_data *data;
-+
-+	data = snd_soc_dai_get_dma_data(dai, substream);
-+
-+	snd_soc_dai_set_dma_data(dai, substream, NULL);
-+	kfree(data);
-+}
-+
-+static int avs_dai_nonhda_be_hw_params(struct snd_pcm_substream *substream,
-+				       struct snd_pcm_hw_params *hw_params, struct snd_soc_dai *dai)
-+{
-+	struct avs_dma_data *data;
-+
-+	data = snd_soc_dai_get_dma_data(dai, substream);
-+	if (data->path)
++	if (!tplg->num_libs)
 +		return 0;
 +
-+	/* Actual port-id comes from topology. */
-+	return avs_dai_be_hw_params(substream, hw_params, dai, 0);
-+}
-+
-+static int avs_dai_nonhda_be_hw_free(struct snd_pcm_substream *substream, struct snd_soc_dai *dai)
-+{
-+	struct avs_dma_data *data;
-+
-+	dev_dbg(dai->dev, "%s: %s\n", __func__, dai->name);
-+
-+	data = snd_soc_dai_get_dma_data(dai, substream);
-+	if (data->path) {
-+		avs_path_free(data->path);
-+		data->path = NULL;
++	/* Parent device may be asleep and library loading involves IPCs. */
++	ret = pm_runtime_get_sync(adev->dev);
++	if (ret < 0 && ret != -EACCES) {
++		pm_runtime_put_noidle(adev->dev);
++		return ret;
 +	}
 +
-+	return 0;
-+}
++	avs_hda_clock_gating_enable(adev, false);
++	avs_hda_l1sen_enable(adev, false);
 +
-+static int avs_dai_nonhda_be_prepare(struct snd_pcm_substream *substream, struct snd_soc_dai *dai)
-+{
-+	return avs_dai_prepare(to_avs_dev(dai->dev), substream, dai);
-+}
++	ret = avs_dsp_load_libraries(adev, tplg->libs, tplg->num_libs);
 +
-+static int avs_dai_nonhda_be_trigger(struct snd_pcm_substream *substream, int cmd,
-+				     struct snd_soc_dai *dai)
-+{
-+	struct avs_dma_data *data;
-+	int ret = 0;
++	avs_hda_l1sen_enable(adev, true);
++	avs_hda_clock_gating_enable(adev, true);
 +
-+	data = snd_soc_dai_get_dma_data(dai, substream);
++	if (!ret)
++		ret = avs_module_info_init(adev, false);
 +
-+	switch (cmd) {
-+	case SNDRV_PCM_TRIGGER_START:
-+	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
-+		ret = avs_path_run(data->path, AVS_TPLG_TRIGGER_AUTO);
-+		if (ret < 0)
-+			dev_err(dai->dev, "run BE path failed: %d\n", ret);
-+		break;
-+
-+	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
-+	case SNDRV_PCM_TRIGGER_STOP:
-+		ret = avs_path_pause(data->path);
-+		if (ret < 0)
-+			dev_err(dai->dev, "pause BE path failed: %d\n", ret);
-+
-+		if (cmd == SNDRV_PCM_TRIGGER_STOP) {
-+			ret = avs_path_reset(data->path);
-+			if (ret < 0)
-+				dev_err(dai->dev, "reset BE path failed: %d\n", ret);
-+		}
-+		break;
-+
-+	default:
-+		ret = -EINVAL;
-+		break;
-+	}
++	pm_runtime_mark_last_busy(adev->dev);
++	pm_runtime_put_autosuspend(adev->dev);
 +
 +	return ret;
 +}
 +
-+static const struct snd_soc_dai_ops avs_dai_nonhda_be_ops = {
-+	.startup = avs_dai_nonhda_be_startup,
-+	.shutdown = avs_dai_nonhda_be_shutdown,
-+	.hw_params = avs_dai_nonhda_be_hw_params,
-+	.hw_free = avs_dai_nonhda_be_hw_free,
-+	.prepare = avs_dai_nonhda_be_prepare,
-+	.trigger = avs_dai_nonhda_be_trigger,
-+};
-+
- static const unsigned int rates[] = {
- 	8000, 11025, 12000, 16000,
- 	22050, 24000, 32000, 44100,
-@@ -589,7 +700,6 @@ static const struct snd_soc_component_driver avs_component_driver = {
- 	.non_legacy_dai_naming	= true,
- };
- 
--__maybe_unused
- static int avs_soc_component_register(struct device *dev, const char *name,
- 				      const struct snd_soc_component_driver *drv,
- 				      struct snd_soc_dai_driver *cpu_dais, int num_cpu_dais)
-@@ -611,3 +721,113 @@ static int avs_soc_component_register(struct device *dev, const char *name,
- 
- 	return snd_soc_add_component(&acomp->base, cpu_dais, num_cpu_dais);
- }
-+
-+static struct snd_soc_dai_driver dmic_cpu_dais[] = {
++static int avs_component_probe(struct snd_soc_component *component)
 +{
-+	.name = "DMIC Pin",
-+	.ops = &avs_dai_nonhda_be_ops,
-+	.capture = {
-+		.stream_name	= "DMIC Rx",
-+		.channels_min	= 1,
-+		.channels_max	= 4,
-+		.rates		= SNDRV_PCM_RATE_16000 | SNDRV_PCM_RATE_48000,
-+		.formats	= SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S24_LE,
-+	},
-+},
-+{
-+	.name = "DMIC WoV Pin",
-+	.ops = &avs_dai_nonhda_be_ops,
-+	.capture = {
-+		.stream_name	= "DMIC WoV Rx",
-+		.channels_min	= 1,
-+		.channels_max	= 4,
-+		.rates		= SNDRV_PCM_RATE_16000,
-+		.formats	= SNDRV_PCM_FMTBIT_S16_LE,
-+	},
-+},
-+};
++	struct snd_soc_card *card = component->card;
++	struct snd_soc_acpi_mach *mach;
++	struct avs_soc_component *acomp;
++	struct avs_dev *adev;
++	char *filename;
++	int ret;
 +
-+int avs_dmic_platform_register(struct avs_dev *adev, const char *name)
-+{
-+	return avs_soc_component_register(adev->dev, name, &avs_component_driver, dmic_cpu_dais,
-+					  ARRAY_SIZE(dmic_cpu_dais));
-+}
++	dev_dbg(card->dev, "probing %s card %s\n", component->name, card->name);
++	mach = dev_get_platdata(card->dev);
++	acomp = to_avs_soc_component(component);
++	adev = to_avs_dev(component->dev);
 +
-+static const struct snd_soc_dai_driver i2s_dai_template = {
-+	.ops = &avs_dai_nonhda_be_ops,
-+	.playback = {
-+		.channels_min	= 1,
-+		.channels_max	= 8,
-+		.rates		= SNDRV_PCM_RATE_8000_192000 |
-+				  SNDRV_PCM_RATE_KNOT,
-+		.formats	= SNDRV_PCM_FMTBIT_S16_LE |
-+				  SNDRV_PCM_FMTBIT_S24_LE |
-+				  SNDRV_PCM_FMTBIT_S32_LE,
-+	},
-+	.capture = {
-+		.channels_min	= 1,
-+		.channels_max	= 8,
-+		.rates		= SNDRV_PCM_RATE_8000_192000 |
-+				  SNDRV_PCM_RATE_KNOT,
-+		.formats	= SNDRV_PCM_FMTBIT_S16_LE |
-+				  SNDRV_PCM_FMTBIT_S24_LE |
-+				  SNDRV_PCM_FMTBIT_S32_LE,
-+	},
-+};
-+
-+int avs_i2s_platform_register(struct avs_dev *adev, const char *name, unsigned long port_mask,
-+			      unsigned long *tdms)
-+{
-+	struct snd_soc_dai_driver *cpus, *dai;
-+	size_t ssp_count, cpu_count;
-+	int i, j;
-+
-+	ssp_count = adev->hw_cfg.i2s_caps.ctrl_count;
-+	cpu_count = hweight_long(port_mask);
-+	if (tdms)
-+		for_each_set_bit(i, &port_mask, ssp_count)
-+			cpu_count += hweight_long(tdms[i]);
-+
-+	cpus = devm_kzalloc(adev->dev, sizeof(*cpus) * cpu_count, GFP_KERNEL);
-+	if (!cpus)
++	acomp->tplg = avs_tplg_new(component);
++	if (!acomp->tplg)
 +		return -ENOMEM;
 +
-+	dai = cpus;
-+	for_each_set_bit(i, &port_mask, ssp_count) {
-+		memcpy(dai, &i2s_dai_template, sizeof(*dai));
++	if (!mach->tplg_filename)
++		goto finalize;
 +
-+		dai->name =
-+			devm_kasprintf(adev->dev, GFP_KERNEL, "SSP%d Pin", i);
-+		dai->playback.stream_name =
-+			devm_kasprintf(adev->dev, GFP_KERNEL, "ssp%d Tx", i);
-+		dai->capture.stream_name =
-+			devm_kasprintf(adev->dev, GFP_KERNEL, "ssp%d Rx", i);
++	/* Load specified topology and create sysfs for it. */
++	filename = kasprintf(GFP_KERNEL, "%s/%s", component->driver->topology_name_prefix,
++			     mach->tplg_filename);
++	if (!filename)
++		return -ENOMEM;
 +
-+		if (!dai->name || !dai->playback.stream_name || !dai->capture.stream_name)
-+			return -ENOMEM;
-+		dai++;
++	ret = avs_load_topology(component, filename);
++	kfree(filename);
++	if (ret < 0)
++		return ret;
++
++	ret = avs_component_load_libraries(acomp);
++	if (ret < 0) {
++		dev_err(card->dev, "libraries loading failed: %d\n", ret);
++		goto err_load_libs;
 +	}
 +
-+	if (!tdms)
-+		goto plat_register;
++finalize:
++	debugfs_create_file("topology_name", 0444, component->debugfs_root, component,
++			    &topology_name_fops);
 +
-+	for_each_set_bit(i, &port_mask, ssp_count) {
-+		for_each_set_bit(j, &tdms[i], ssp_count) {
-+			memcpy(dai, &i2s_dai_template, sizeof(*dai));
++	mutex_lock(&adev->comp_list_mutex);
++	list_add_tail(&acomp->node, &adev->comp_list);
++	mutex_unlock(&adev->comp_list_mutex);
 +
-+			dai->name =
-+				devm_kasprintf(adev->dev, GFP_KERNEL, "SSP%d:%d Pin", i, j);
-+			dai->playback.stream_name =
-+				devm_kasprintf(adev->dev, GFP_KERNEL, "ssp%d:%d Tx", i, j);
-+			dai->capture.stream_name =
-+				devm_kasprintf(adev->dev, GFP_KERNEL, "ssp%d:%d Rx", i, j);
++	return 0;
 +
-+			if (!dai->name || !dai->playback.stream_name || !dai->capture.stream_name)
-+				return -ENOMEM;
-+			dai++;
-+		}
++err_load_libs:
++	avs_remove_topology(component);
++	return ret;
++}
++
++static void avs_component_remove(struct snd_soc_component *component)
++{
++	struct avs_soc_component *acomp = to_avs_soc_component(component);
++	struct snd_soc_acpi_mach *mach;
++	struct avs_dev *adev = to_avs_dev(component->dev);
++	int ret;
++
++	mach = dev_get_platdata(component->card->dev);
++
++	mutex_lock(&adev->comp_list_mutex);
++	list_del(&acomp->node);
++	mutex_unlock(&adev->comp_list_mutex);
++
++	if (mach->tplg_filename) {
++		ret = avs_remove_topology(component);
++		if (ret < 0)
++			dev_err(component->dev, "unload topology failed: %d\n", ret);
 +	}
++}
 +
-+plat_register:
-+	return avs_soc_component_register(adev->dev, name, &avs_component_driver, cpus, cpu_count);
++static int avs_component_open(struct snd_soc_component *component,
++			      struct snd_pcm_substream *substream)
++{
++	struct snd_soc_pcm_runtime *rtd = snd_pcm_substream_chip(substream);
++	struct snd_pcm_hardware hwparams;
++
++	/* only FE DAI links are handled here */
++	if (rtd->dai_link->no_pcm)
++		return 0;
++
++	hwparams.info = SNDRV_PCM_INFO_MMAP |
++			SNDRV_PCM_INFO_MMAP_VALID |
++			SNDRV_PCM_INFO_INTERLEAVED |
++			SNDRV_PCM_INFO_PAUSE |
++			SNDRV_PCM_INFO_NO_PERIOD_WAKEUP;
++
++	hwparams.formats = SNDRV_PCM_FMTBIT_S16_LE |
++			   SNDRV_PCM_FMTBIT_S24_LE |
++			   SNDRV_PCM_FMTBIT_S32_LE;
++	hwparams.period_bytes_min = 128;
++	hwparams.period_bytes_max = AZX_MAX_BUF_SIZE / 2;
++	hwparams.periods_min = 2;
++	hwparams.periods_max = AZX_MAX_FRAG;
++	hwparams.buffer_bytes_max = AZX_MAX_BUF_SIZE;
++	hwparams.fifo_size = 0;
++
++	return snd_soc_set_runtime_hwparams(substream, &hwparams);
++}
++
++static unsigned int avs_hstream_dpib_read(struct hdac_stream *hstream)
++{
++	return readl(hstream->bus->remap_addr + AZX_REG_VS_SDXDPIB_XBASE +
++		     (AZX_REG_VS_SDXDPIB_XINTERVAL * hstream->index));
++}
++
++static snd_pcm_uframes_t
++avs_component_pointer(struct snd_soc_component *component, struct snd_pcm_substream *substream)
++{
++	struct snd_soc_pcm_runtime *rtd = snd_pcm_substream_chip(substream);
++	struct avs_dma_data *data;
++	struct hdac_stream *hstream;
++	unsigned int pos;
++
++	data = snd_soc_dai_get_dma_data(asoc_rtd_to_cpu(rtd, 0), substream);
++	if (!data->host_stream)
++		return 0;
++
++	hstream = hdac_stream(data->host_stream);
++	pos = avs_hstream_dpib_read(hstream);
++
++	if (pos >= hstream->bufsize)
++		pos = 0;
++
++	return bytes_to_frames(substream->runtime, pos);
++}
++
++static int avs_component_mmap(struct snd_soc_component *component,
++			      struct snd_pcm_substream *substream,
++			      struct vm_area_struct *vma)
++{
++	return snd_pcm_lib_default_mmap(substream, vma);
++}
++
++#define MAX_PREALLOC_SIZE	(32 * 1024 * 1024)
++
++static int avs_component_construct(struct snd_soc_component *component,
++				   struct snd_soc_pcm_runtime *rtd)
++{
++	struct snd_soc_dai *dai = asoc_rtd_to_cpu(rtd, 0);
++	struct snd_pcm *pcm = rtd->pcm;
++
++	if (dai->driver->playback.channels_min)
++		snd_pcm_set_managed_buffer(pcm->streams[SNDRV_PCM_STREAM_PLAYBACK].substream,
++					   SNDRV_DMA_TYPE_DEV_SG, component->dev, 0,
++					   MAX_PREALLOC_SIZE);
++
++	if (dai->driver->capture.channels_min)
++		snd_pcm_set_managed_buffer(pcm->streams[SNDRV_PCM_STREAM_CAPTURE].substream,
++					   SNDRV_DMA_TYPE_DEV_SG, component->dev, 0,
++					   MAX_PREALLOC_SIZE);
++
++	return 0;
++}
++
++static const struct snd_soc_component_driver avs_component_driver = {
++	.name			= "avs-pcm",
++	.probe			= avs_component_probe,
++	.remove			= avs_component_remove,
++	.open			= avs_component_open,
++	.pointer		= avs_component_pointer,
++	.mmap			= avs_component_mmap,
++	.pcm_construct		= avs_component_construct,
++	.module_get_upon_open	= 1, /* increment refcount when a pcm is opened */
++	.topology_name_prefix	= "intel/avs",
++	.non_legacy_dai_naming	= true,
++};
++
++__maybe_unused
++static int avs_soc_component_register(struct device *dev, const char *name,
++				      const struct snd_soc_component_driver *drv,
++				      struct snd_soc_dai_driver *cpu_dais, int num_cpu_dais)
++{
++	struct avs_soc_component *acomp;
++	int ret;
++
++	acomp = devm_kzalloc(dev, sizeof(*acomp), GFP_KERNEL);
++	if (!acomp)
++		return -ENOMEM;
++
++	ret = snd_soc_component_initialize(&acomp->base, drv, dev);
++	if (ret < 0)
++		return ret;
++
++	/* force name change after ASoC is done with its init */
++	acomp->base.name = name;
++	INIT_LIST_HEAD(&acomp->node);
++
++	return snd_soc_add_component(&acomp->base, cpu_dais, num_cpu_dais);
 +}
 -- 
 2.25.1
