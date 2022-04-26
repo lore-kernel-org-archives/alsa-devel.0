@@ -4,65 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7739CC433EF
-	for <alsa-devel@archiver.kernel.org>; Tue, 26 Apr 2022 23:57:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A6806C433F5
+	for <alsa-devel@archiver.kernel.org>; Tue, 26 Apr 2022 23:58:08 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E4F0C17BF;
-	Wed, 27 Apr 2022 01:56:43 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E4F0C17BF
+	by alsa0.perex.cz (Postfix) with ESMTPS id E37C117F9;
+	Wed, 27 Apr 2022 01:57:16 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E37C117F9
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1651017454;
-	bh=eIHvaM/jF1FT9l+KeJTLO1Jd1NhIocqtHenQEupdkBw=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=nV+v9KO5imBuf1iUL9lh60JpCA3gJ0Ti9hSq87rMlZZjSgvq3++kRHWhyBovkW1E8
-	 yLGpsuYGxcwyQoMaNmQeBXA60ITMz3H0pIwJhvHAGiEkpl2aOYXwLSoGorVuWPZ/vv
-	 k0CPCCXGlU7hVkAqZberUKLzCcHQIMcL1cT2B9YQ=
+	s=default; t=1651017487;
+	bh=7EUtCKwJmlibbavHY3Ddf0LnLTbd6D1YbMdZzySp9tA=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=DgKo4FHTam2s1XGiegPc3QINFnOw4b0InTamzzy41qtLclmw09VXH7jG+wo2N8iix
+	 3LTrNq8C0bwsenQvFoTsJmEUD0WOLkOlmTTN8GBpEQw1q2V/moKkSHC1gQL5cxSjo3
+	 Npd6CRZwQjNilUIdTFI3d4noTjFoXktCQip0+E8w=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 53E92F8025C;
-	Wed, 27 Apr 2022 01:56:43 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id AFA75F8014B;
+	Wed, 27 Apr 2022 01:56:49 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id C809BF80171; Wed, 27 Apr 2022 01:56:40 +0200 (CEST)
+ id A22E8F804FE; Wed, 27 Apr 2022 01:56:46 +0200 (CEST)
 Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 537C0F800AE
- for <alsa-devel@alsa-project.org>; Wed, 27 Apr 2022 01:56:35 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 537C0F800AE
+ by alsa1.perex.cz (Postfix) with ESMTPS id AC4C2F8014B
+ for <alsa-devel@alsa-project.org>; Wed, 27 Apr 2022 01:56:39 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AC4C2F8014B
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="EdTXnItr"
+ header.b="bWkMOeLw"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1651017398; x=1682553398;
- h=from:to:cc:subject:date:message-id:mime-version:
- content-transfer-encoding;
- bh=eIHvaM/jF1FT9l+KeJTLO1Jd1NhIocqtHenQEupdkBw=;
- b=EdTXnItrgmSg21XQLj8mO3FkSnVhNsI5pUap7m6KMgehEsZjDbS3FvV6
- d5IO8Zm6o0TcqwJSuPU/lMFTQbhtf+M0gmt39rU1M03Kdx98ADI1WfMpA
- 9EdwYZrLBnZfr02UuksyzBdJ19KfShFrrK9GHMFIyw4ys5YZx2ZRzKCfR
- e3Rz5qoo10rvHfqSF0qEpg1uMzSmjZjY6KtJCUYYCNyAu5SvSjRTFVeYl
- dqSMjypniDgesDdp9LbjfLQUjMeHwep//DIYUaDWHEGW1DlG70PAPIPno
- dmZwdgCx1CYaGF6Onp868phA7xEJ+IUn+1WGxtTS2Y3Rs/ghei8QDrWB4 Q==;
-X-IronPort-AV: E=McAfee;i="6400,9594,10329"; a="290908840"
-X-IronPort-AV: E=Sophos;i="5.90,292,1643702400"; d="scan'208";a="290908840"
+ t=1651017401; x=1682553401;
+ h=from:to:cc:subject:date:message-id:in-reply-to:
+ references:mime-version:content-transfer-encoding;
+ bh=7EUtCKwJmlibbavHY3Ddf0LnLTbd6D1YbMdZzySp9tA=;
+ b=bWkMOeLw8KoR/NcUEE2zX6W8u5K/fxS7AnFfH7K9qdRhBvCrMw00aXi7
+ xDOFTbALzR2XsBveaeXAM37xBkD50H0ncYhDyCJdP9bdBhQRqO6QE5kJj
+ XMdc7Huy/F7FT1CtyBzbcSsOPT0ssUctekN87J+1t/xIudo/DQSR3LOTh
+ Z0aOpxGbJRAd0NiTyXlqQf+0ntD1OyAo6vhUcGnRlsyhVL65I5v1b5W93
+ Gt5GGhE9MCW9y+Xpv57DILy3uSZ7ozvdjPpu+ad+W9Em+5r3CmbbeylB1
+ 5kUNAaRAQIBZVOyh+npqsknCbuD12dUepKMwQaF11yN4x0tYVKZ2pu+z+ A==;
+X-IronPort-AV: E=McAfee;i="6400,9594,10329"; a="290908845"
+X-IronPort-AV: E=Sophos;i="5.90,292,1643702400"; d="scan'208";a="290908845"
 Received: from orsmga005.jf.intel.com ([10.7.209.41])
  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 26 Apr 2022 16:56:32 -0700
-X-IronPort-AV: E=Sophos;i="5.90,292,1643702400"; d="scan'208";a="730515003"
+ 26 Apr 2022 16:56:35 -0700
+X-IronPort-AV: E=Sophos;i="5.90,292,1643702400"; d="scan'208";a="730515030"
 Received: from htamura-mobl2.gar.corp.intel.com (HELO bard-pc.domain.name)
  ([10.252.185.30])
  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 26 Apr 2022 16:56:29 -0700
+ 26 Apr 2022 16:56:34 -0700
 From: Bard Liao <yung-chuan.liao@linux.intel.com>
 To: alsa-devel@alsa-project.org,
 	vkoul@kernel.org
-Subject: [PATCH 0/5] soundwire: use pm_runtime_resume_and_get()
-Date: Wed, 27 Apr 2022 07:56:18 +0800
-Message-Id: <20220426235623.4253-1-yung-chuan.liao@linux.intel.com>
+Subject: [PATCH 2/5] soundwire: bus: use pm_runtime_resume_and_get()
+Date: Wed, 27 Apr 2022 07:56:20 +0800
+Message-Id: <20220426235623.4253-3-yung-chuan.liao@linux.intel.com>
 X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20220426235623.4253-1-yung-chuan.liao@linux.intel.com>
+References: <20220426235623.4253-1-yung-chuan.liao@linux.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -84,22 +87,64 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+
 Use pm_runtime_resume_and_get() to replace the pm_runtime_get_sync() and
 pm_runtime_put_noidle() pattern.
 
-Pierre-Louis Bossart (5):
-  soundwire: qcom: return error when pm_runtime_get_sync fails
-  soundwire: bus: use pm_runtime_resume_and_get()
-  soundwire: cadence: use pm_runtime_resume_and_get()
-  soundwire: intel: use pm_runtime_resume_and_get()
-  soundwire: qcom: use pm_runtime_resume_and_get()
+No functional changes.
 
- drivers/soundwire/bus.c            | 15 +++++----------
- drivers/soundwire/cadence_master.c |  5 ++---
- drivers/soundwire/intel.c          |  5 ++---
- drivers/soundwire/qcom.c           | 17 ++++++++---------
- 4 files changed, 17 insertions(+), 25 deletions(-)
+Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Reviewed-by: Péter Ujfalusi <peter.ujfalusi@linux.intel.com>
+Signed-off-by: Bard Liao <yung-chuan.liao@linux.intel.com>
+---
+ drivers/soundwire/bus.c | 15 +++++----------
+ 1 file changed, 5 insertions(+), 10 deletions(-)
 
+diff --git a/drivers/soundwire/bus.c b/drivers/soundwire/bus.c
+index 354d3f89366f..193bf87866f6 100644
+--- a/drivers/soundwire/bus.c
++++ b/drivers/soundwire/bus.c
+@@ -536,11 +536,9 @@ int sdw_nread(struct sdw_slave *slave, u32 addr, size_t count, u8 *val)
+ {
+ 	int ret;
+ 
+-	ret = pm_runtime_get_sync(&slave->dev);
+-	if (ret < 0 && ret != -EACCES) {
+-		pm_runtime_put_noidle(&slave->dev);
++	ret = pm_runtime_resume_and_get(&slave->dev);
++	if (ret < 0 && ret != -EACCES)
+ 		return ret;
+-	}
+ 
+ 	ret = sdw_nread_no_pm(slave, addr, count, val);
+ 
+@@ -562,11 +560,9 @@ int sdw_nwrite(struct sdw_slave *slave, u32 addr, size_t count, const u8 *val)
+ {
+ 	int ret;
+ 
+-	ret = pm_runtime_get_sync(&slave->dev);
+-	if (ret < 0 && ret != -EACCES) {
+-		pm_runtime_put_noidle(&slave->dev);
++	ret = pm_runtime_resume_and_get(&slave->dev);
++	if (ret < 0 && ret != -EACCES)
+ 		return ret;
+-	}
+ 
+ 	ret = sdw_nwrite_no_pm(slave, addr, count, val);
+ 
+@@ -1506,10 +1502,9 @@ static int sdw_handle_slave_alerts(struct sdw_slave *slave)
+ 
+ 	sdw_modify_slave_status(slave, SDW_SLAVE_ALERT);
+ 
+-	ret = pm_runtime_get_sync(&slave->dev);
++	ret = pm_runtime_resume_and_get(&slave->dev);
+ 	if (ret < 0 && ret != -EACCES) {
+ 		dev_err(&slave->dev, "Failed to resume device: %d\n", ret);
+-		pm_runtime_put_noidle(&slave->dev);
+ 		return ret;
+ 	}
+ 
 -- 
 2.25.1
 
