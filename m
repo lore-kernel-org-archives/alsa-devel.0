@@ -4,73 +4,72 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5E470C433EF
-	for <alsa-devel@archiver.kernel.org>; Tue, 26 Apr 2022 22:25:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 652EBC433EF
+	for <alsa-devel@archiver.kernel.org>; Tue, 26 Apr 2022 22:25:16 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 701BB1799;
-	Wed, 27 Apr 2022 00:24:16 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 701BB1799
+	by alsa0.perex.cz (Postfix) with ESMTPS id 7168C184C;
+	Wed, 27 Apr 2022 00:24:24 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7168C184C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1651011906;
-	bh=b3BQ1wKTjQRhfACrX1mPyrOU5bEd9mMG8twKfvDzcAU=;
+	s=default; t=1651011914;
+	bh=ZC+rWVco4h1TUebSuX8goG46kPfzxg8n4ok5yfFgCZY=;
 	h=Date:Subject:To:References:From:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=PRahbOGKWxrGSrrGRDwedBnn47QJMbRWeEAqx6QDFu56LgoClsnfqJokWskkwnYnL
-	 tW0eMPeg48+QZFguR8xDFiYCb5vFI+HaBtLqzOKtvuWGYLJ7wGctAH0cQMyO+MHcVY
-	 c+Oh0GFgulJMLl/dsqiMRjpDCEjrSkPkeNDCISOc=
+	b=SCjQTXF+P4X0IzczB9qCultL2Czvu7N3qYO6gZhomZ+nDVfpwB3D+vYEu3mof3j8U
+	 pj8zf0TOVqKYxMkWwUUY3mpViHDKlRH6Rhtdq6riJJK3tn5VwEo7rLXdBVtb1P0whL
+	 0YbyYP5AUUvJ0C7Ka8ojk2T9n+Ky2LmZTS3MSmY0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 15C04F8025C;
+	by alsa1.perex.cz (Postfix) with ESMTP id 9A1D2F8050F;
 	Wed, 27 Apr 2022 00:23:31 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 590D9F80507; Wed, 27 Apr 2022 00:23:26 +0200 (CEST)
+ id D1BDBF804AC; Wed, 27 Apr 2022 00:23:26 +0200 (CEST)
 Received: from mga12.intel.com (mga12.intel.com [192.55.52.136])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 73E23F80105
- for <alsa-devel@alsa-project.org>; Wed, 27 Apr 2022 00:23:15 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 73E23F80105
+ by alsa1.perex.cz (Postfix) with ESMTPS id 6811FF80152
+ for <alsa-devel@alsa-project.org>; Wed, 27 Apr 2022 00:23:21 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6811FF80152
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="mTqGMDlI"
+ header.b="mA582/FX"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1651011800; x=1682547800;
+ t=1651011802; x=1682547802;
  h=message-id:date:mime-version:subject:to:cc:references:
  from:in-reply-to:content-transfer-encoding;
- bh=b3BQ1wKTjQRhfACrX1mPyrOU5bEd9mMG8twKfvDzcAU=;
- b=mTqGMDlIxiBJN8dP9Z3vuihvkS13temepVQFY4JftXaVT10YAMBC7doC
- jeVuByRpViJceMFLmA5R+mnnlNfbxXA+dcmP6/5BhxEOiDv9NWsmEcnq9
- bbxQkd8DaFm+eDL8942ouag2kvIt/LOLtpIQ9P1KyuoQFSOri6Wtvy3LE
- pEaUCuRICidbn+KMkaeP/yfnSa1dGscAI3+jjFl5eRvjI6fWdarQI3EFe
- +f91wamyviRGG71NdeqlG9cwndVdId2PpsyB8w+SiDWG56gUbV82R4YIW
- aqsaltUG9kLuRQEcDwWc3F/eF8bfTbh8QSoGyVVAAG1ghXGApcEatxYtT A==;
-X-IronPort-AV: E=McAfee;i="6400,9594,10329"; a="245660705"
-X-IronPort-AV: E=Sophos;i="5.90,292,1643702400"; d="scan'208";a="245660705"
+ bh=ZC+rWVco4h1TUebSuX8goG46kPfzxg8n4ok5yfFgCZY=;
+ b=mA582/FX4Nuj/pNPF2ROW833cIii3nRgl3bpNm/1C8ngecDiGgjKAazA
+ xJM0IS/r4nWC4aMIxrf18akObrFRBUNisYjMrTjSkzU7uoDPsCFJ8I131
+ a/hyYrRDwoHCTDVDmlWx4lw+oCInq+/yIG08KZJhVMsY39RSObkWGcdy4
+ 4B4sC327DkOFI4YJtsCUav5jX+2uxIPBGiXvV2kdpCZ6JP38zXeEX2+Kt
+ eZQFMRvFDBcDKOSkV41z+UFUi9LlLMQ18DhUUKqq5Pa+V8VCm0vKTj1SK
+ mmZ2cCEUtdbGDv2bas1OHkY2n05+AWFs/JWAo6s8Me0JBsuXmQwudnWIO w==;
+X-IronPort-AV: E=McAfee;i="6400,9594,10329"; a="245660717"
+X-IronPort-AV: E=Sophos;i="5.90,292,1643702400"; d="scan'208";a="245660717"
 Received: from orsmga006.jf.intel.com ([10.7.209.51])
  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 26 Apr 2022 15:23:11 -0700
-X-IronPort-AV: E=Sophos;i="5.90,292,1643702400"; d="scan'208";a="532888590"
+ 26 Apr 2022 15:23:15 -0700
+X-IronPort-AV: E=Sophos;i="5.90,292,1643702400"; d="scan'208";a="532888605"
 Received: from gkanakas-mobl.amr.corp.intel.com (HELO [10.212.152.229])
  ([10.212.152.229])
  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 26 Apr 2022 15:23:10 -0700
-Message-ID: <9854d2e1-63da-2377-3fd1-120adfb4d381@linux.intel.com>
-Date: Tue, 26 Apr 2022 16:21:19 -0500
+ 26 Apr 2022 15:23:14 -0700
+Message-ID: <6331fe1d-3bbf-8ba9-bb81-c670093d41c9@linux.intel.com>
+Date: Tue, 26 Apr 2022 16:45:16 -0500
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
  Firefox/91.0 Thunderbird/91.5.0
-Subject: Re: [PATCH 01/14] ASoC: Intel: avs: Account for libraries when
- booting basefw
+Subject: Re: [PATCH 05/14] ASoC: Intel: avs: HDA PCM BE operations
 Content-Language: en-US
 To: Cezary Rojewski <cezary.rojewski@intel.com>, alsa-devel@alsa-project.org, 
  broonie@kernel.org
 References: <20220426172346.3508411-1-cezary.rojewski@intel.com>
- <20220426172346.3508411-2-cezary.rojewski@intel.com>
+ <20220426172346.3508411-6-cezary.rojewski@intel.com>
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-In-Reply-To: <20220426172346.3508411-2-cezary.rojewski@intel.com>
+In-Reply-To: <20220426172346.3508411-6-cezary.rojewski@intel.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 Cc: upstream@semihalf.com, harshapriya.n@intel.com, rad@semihalf.com,
@@ -93,162 +92,114 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
 
-On 4/26/22 12:23, Cezary Rojewski wrote:
-> Not all modules are part of base firmware. Some are part of loadable
-> libraries. These need to be loaded after base firmware reports ready
-> status through FW_READY notification.
-> 
-> Their loading process is similar to the base firmware's one. Request the
-> binary file, verify and strip the manifest and load the actual code into
-> DSP memory with help of CLDMA or HD-Audio render stream, depending on
-> audio device generation.
-> 
-> List of libraries needed for loading is obtained through the topology -
-> vendor sections specifying the name of firmware files to request.
-> 
-> Signed-off-by: Cezary Rojewski <cezary.rojewski@intel.com>
-> ---
->  sound/soc/intel/avs/avs.h    |  3 ++
->  sound/soc/intel/avs/loader.c | 79 ++++++++++++++++++++++++++++++++++++
->  2 files changed, 82 insertions(+)
-> 
-> diff --git a/sound/soc/intel/avs/avs.h b/sound/soc/intel/avs/avs.h
-> index c57a07a18d8e..14b4a780a91c 100644
-> --- a/sound/soc/intel/avs/avs.h
-> +++ b/sound/soc/intel/avs/avs.h
-> @@ -19,6 +19,8 @@
->  
->  struct avs_dev;
->  struct avs_tplg;
-> +struct avs_tplg_library;
-> +struct avs_soc_component;
->  
->  /*
->   * struct avs_dsp_ops - Platform-specific DSP operations
-> @@ -241,6 +243,7 @@ void avs_hda_clock_gating_enable(struct avs_dev *adev, bool enable);
->  void avs_hda_power_gating_enable(struct avs_dev *adev, bool enable);
->  void avs_hda_l1sen_enable(struct avs_dev *adev, bool enable);
->  
-> +int avs_dsp_load_libraries(struct avs_dev *adev, struct avs_tplg_library *libs, u32 num_libs);
->  int avs_dsp_boot_firmware(struct avs_dev *adev, bool purge);
->  int avs_dsp_first_boot_firmware(struct avs_dev *adev);
->  
-> diff --git a/sound/soc/intel/avs/loader.c b/sound/soc/intel/avs/loader.c
-> index c47f85161d95..de98f4c3adf8 100644
-> --- a/sound/soc/intel/avs/loader.c
-> +++ b/sound/soc/intel/avs/loader.c
-> @@ -15,6 +15,7 @@
->  #include "cldma.h"
->  #include "messages.h"
->  #include "registers.h"
-> +#include "topology.h"
->  
->  #define AVS_ROM_STS_MASK		0xFF
->  #define AVS_ROM_INIT_DONE		0x1
-> @@ -466,6 +467,70 @@ int avs_hda_transfer_modules(struct avs_dev *adev, bool load,
->  	return 0;
->  }
->  
-> +int avs_dsp_load_libraries(struct avs_dev *adev, struct avs_tplg_library *libs, u32 num_libs)
+> +static int avs_dai_hda_be_hw_free(struct snd_pcm_substream *substream, struct snd_soc_dai *dai)
 > +{
-> +	int start, id, i = 0;
-> +	int ret;
+> +	struct avs_dma_data *data;
+> +	struct snd_soc_pcm_runtime *rtd = snd_pcm_substream_chip(substream);
+> +	struct hdac_ext_stream *estream;
+
+host_stream, estream, there seems to be multiple naming conventions for the same thing?
+
+> +	struct hdac_ext_link *link;
+> +	struct hda_codec *codec;
 > +
-> +	/* Calculate the id to assign for the next lib. */
-> +	for (id = 0; id < adev->fw_cfg.max_libs_count; id++)
-> +		if (adev->lib_names[id][0] == '\0')
-> +			break;
-> +	if (id + num_libs >= adev->fw_cfg.max_libs_count)
+> +	dev_dbg(dai->dev, "%s: %s\n", __func__, dai->name);
+> +
+> +	data = snd_soc_dai_get_dma_data(dai, substream);
+> +	if (!data->path)
+> +		return 0;
+> +
+> +	estream = substream->runtime->private_data;
+> +	estream->link_prepared = false;
+> +	avs_path_free(data->path);
+> +	data->path = NULL;
+> +
+> +	/* clear link <-> stream mapping */
+> +	codec = dev_to_hda_codec(asoc_rtd_to_codec(rtd, 0)->dev);
+> +	link = snd_hdac_ext_bus_link_at(&codec->bus->core, codec->core.addr);
+> +	if (!link)
 > +		return -EINVAL;
+> +
+> +	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
+> +		snd_hdac_ext_link_clear_stream_id(link, estream->hstream.stream_tag);
+> +
+> +	return 0;
+> +}
 
-use ida_alloc_max() ?
-
+> +static int avs_dai_hda_be_trigger(struct snd_pcm_substream *substream, int cmd,
+> +				  struct snd_soc_dai *dai)
+> +{
+> +	struct hdac_ext_stream *estream;
+> +	struct avs_dma_data *data;
+> +	int ret = 0;
 > +
-> +	start = id;
-> +	while (i < num_libs) {
-> +		struct avs_fw_manifest *man;
-> +		const struct firmware *fw;
-> +		struct firmware stripped_fw;
-> +		char *filename;
-> +		int j;
+> +	dev_dbg(dai->dev, "entry %s cmd=%d\n", __func__, cmd);
 > +
-> +		filename = kasprintf(GFP_KERNEL, "%s/%s/%s", AVS_ROOT_DIR, adev->spec->name,
-> +				     libs[i].name);
-> +		if (!filename)
-> +			return -ENOMEM;
+> +	data = snd_soc_dai_get_dma_data(dai, substream);
+> +	estream = substream->runtime->private_data;
 > +
-> +		ret = avs_request_firmware(adev, &fw, filename);
-> +		kfree(filename);
+> +	switch (cmd) {
+> +	case SNDRV_PCM_TRIGGER_START:
+> +	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
+> +		snd_hdac_ext_link_stream_start(estream);
+> +
+> +		ret = avs_path_run(data->path, AVS_TPLG_TRIGGER_AUTO);
 > +		if (ret < 0)
-> +			return ret;
+> +			dev_err(dai->dev, "run BE path failed: %d\n", ret);
+> +		break;
 > +
-> +		stripped_fw = *fw;
-> +		ret = avs_fw_manifest_strip_verify(adev, &stripped_fw, NULL);
-> +		if (ret) {
-> +			dev_err(adev->dev, "invalid library data: %d\n", ret);
-> +			goto release_fw;
+> +	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
+> +	case SNDRV_PCM_TRIGGER_STOP:
+> +		ret = avs_path_pause(data->path);
+> +		if (ret < 0)
+> +			dev_err(dai->dev, "pause BE path failed: %d\n", ret);
+> +
+> +		snd_hdac_ext_link_stream_clear(estream);
+> +
+> +		if (cmd == SNDRV_PCM_TRIGGER_STOP) {
+> +			ret = avs_path_reset(data->path);
+> +			if (ret < 0)
+> +				dev_err(dai->dev, "reset BE path failed: %d\n", ret);
 > +		}
+> +		break;
 > +
-> +		ret = avs_fw_manifest_offset(&stripped_fw);
-> +		if (ret < 0)
-> +			goto release_fw;
-> +		man = (struct avs_fw_manifest *)(stripped_fw.data + ret);
-> +
-> +		/* Don't load anything that's already in DSP memory. */
-> +		for (j = 0; j < id; j++)
-> +			if (!strncmp(adev->lib_names[j], man->name, AVS_LIB_NAME_SIZE))
-> +				goto next_lib;
-> +
-> +		ret = avs_dsp_op(adev, load_lib, &stripped_fw, id);
-> +		if (ret)
-> +			goto release_fw;
-> +
-> +		strncpy(adev->lib_names[id], man->name, AVS_LIB_NAME_SIZE);
-> +		id++;
-> +next_lib:
-> +		i++;
+> +	default:
+> +		ret = -EINVAL;
+
+TRIGGER_SUSPEND?
+
+> +		break;
 > +	}
 > +
-> +	return start == id ? 1 : 0;
-> +
-> +release_fw:
-> +	avs_release_last_firmware(adev);
-
-why release only the last library and not all the ones that were previous loaded?
-or why bother to even release the last since at this point you probably need to restart completely?
-
 > +	return ret;
 > +}
+
+> +static const struct snd_soc_component_driver avs_hda_component_driver = {
+> +	.name			= "avs-hda-pcm",
+> +	.probe			= avs_component_hda_probe,
+> +	.remove			= avs_component_hda_remove,
+> +	.open			= avs_component_hda_open,
+> +	.close			= avs_component_hda_close,
+> +	.pointer		= avs_component_pointer,
+> +	.mmap			= avs_component_mmap,
+> +	.pcm_construct		= avs_component_construct,
+> +	/*
+> +	 * hda platform component's probe() is dependent on
+> +	 * codec->pcm_list_head, it needs to be initialized after codec
+> +	 * component. remove_order is here for completeness sake
+> +	 */
+> +	.probe_order		= SND_SOC_COMP_ORDER_LATE,
+> +	.remove_order		= SND_SOC_COMP_ORDER_EARLY,
+> +	.module_get_upon_open	= 1,
+> +	.topology_name_prefix	= "intel/avs",
+> +	.non_legacy_dai_naming	= true,
+
+needed?
+
+> +};
 > +
->  static int avs_dsp_load_basefw(struct avs_dev *adev)
->  {
->  	const struct avs_fw_version *min_req;
-> @@ -519,6 +584,7 @@ static int avs_dsp_load_basefw(struct avs_dev *adev)
->  
->  int avs_dsp_boot_firmware(struct avs_dev *adev, bool purge)
->  {
-> +	struct avs_soc_component *acomp;
->  	int ret, i;
->  
->  	/* Forgo full boot if flash from IMR succeeds. */
-> @@ -538,7 +604,20 @@ int avs_dsp_boot_firmware(struct avs_dev *adev, bool purge)
->  	avs_hda_l1sen_enable(adev, false);
->  
->  	ret = avs_dsp_load_basefw(adev);
-> +	if (ret)
-> +		goto reenable_gating;
-> +
-> +	mutex_lock(&adev->comp_list_mutex);
-> +	list_for_each_entry(acomp, &adev->comp_list, node) {
-> +		struct avs_tplg *tplg = acomp->tplg;
-> +
-> +		ret = avs_dsp_load_libraries(adev, tplg->libs, tplg->num_libs);
-> +		if (ret < 0)
-> +			break;
-> +	}
-> +	mutex_unlock(&adev->comp_list_mutex);
->  
-> +reenable_gating:
->  	avs_hda_l1sen_enable(adev, true);
->  	avs_hda_clock_gating_enable(adev, true);
->  
+> +int avs_hda_platform_register(struct avs_dev *adev, const char *name)
+> +{
+> +	return avs_soc_component_register(adev->dev, name,
+> +					  &avs_hda_component_driver, NULL, 0);
+> +}
