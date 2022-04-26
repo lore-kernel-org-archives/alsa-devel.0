@@ -4,61 +4,61 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 25B52C433F5
-	for <alsa-devel@archiver.kernel.org>; Tue, 26 Apr 2022 17:09:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 41BFAC433EF
+	for <alsa-devel@archiver.kernel.org>; Tue, 26 Apr 2022 17:09:36 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 54D7D186B;
-	Tue, 26 Apr 2022 19:08:33 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 54D7D186B
+	by alsa0.perex.cz (Postfix) with ESMTPS id 763BF1856;
+	Tue, 26 Apr 2022 19:08:44 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 763BF1856
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1650992963;
-	bh=aaBawI33NbfAGFpgHbLl1Dslz5ZFBG98N9c+G0KtajE=;
+	s=default; t=1650992974;
+	bh=+9z73QY1tSXjGZlSMe8gRpW+oZ+tKb0Nxc66fcrc0dI=;
 	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=WcVddymmBMwrY4qetvuiUanXrhn8ZO9lp4t/1j79N2SMDUP+ejFL1O4k3zhYfzX8F
-	 0Rp8hSwB2YzjjM0GT/iGBOx2NloW01YnQtOod6Kw2m0bzbjxFDbAzJQX1JdFCBl5t1
-	 XAdgrRaTo/P7HAxysLZXNaG+lAEN1VGhrV70VQHw=
+	b=XPoB7KT9SaM9pclVYCIEPGlDyIlmrvCXDqvzM+jBIh4rHeRpQzxcVmyyoZe9cVcMX
+	 g3SotIGTeKdF8KZUaWHvf4h8IXwF5OfNqLEoIGktKErpN6a1gQU9kpUtd9neDprdEf
+	 H2SVJQMgvb9djFRi72NcZm4SPbL2iZa4FeIKRSM0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 3502FF80508;
-	Tue, 26 Apr 2022 19:08:03 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 13AEBF80516;
+	Tue, 26 Apr 2022 19:08:05 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id A9557F8050F; Tue, 26 Apr 2022 19:08:01 +0200 (CEST)
+ id 29E4AF80516; Tue, 26 Apr 2022 19:08:04 +0200 (CEST)
 Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 27A63F800FA
- for <alsa-devel@alsa-project.org>; Tue, 26 Apr 2022 19:07:53 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 27A63F800FA
+ by alsa1.perex.cz (Postfix) with ESMTPS id 8CD68F80507
+ for <alsa-devel@alsa-project.org>; Tue, 26 Apr 2022 19:07:54 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8CD68F80507
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="AOdq2uw6"
+ header.b="HGr4J02X"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by ams.source.kernel.org (Postfix) with ESMTPS id 5F8C4B8210A;
- Tue, 26 Apr 2022 17:07:52 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 12FD2C385AA;
- Tue, 26 Apr 2022 17:07:49 +0000 (UTC)
+ by ams.source.kernel.org (Postfix) with ESMTPS id E07C5B81FE5;
+ Tue, 26 Apr 2022 17:07:53 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8A48BC385A0;
+ Tue, 26 Apr 2022 17:07:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1650992871;
- bh=aaBawI33NbfAGFpgHbLl1Dslz5ZFBG98N9c+G0KtajE=;
+ s=k20201202; t=1650992872;
+ bh=+9z73QY1tSXjGZlSMe8gRpW+oZ+tKb0Nxc66fcrc0dI=;
  h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=AOdq2uw62zzWiXpXg5cPtPj91ZK68OtswauVWFKecjbmYw/TT91x/GavnlxI5aj+h
- vo+Mb7Yz93VjCJz+TSvrPyffDQfedk+mk5h3HYYjhD5CVK3gRn7c5q7XrFBTrQSrIr
- NONhKDK4uxyCRprlFKokdcPJuIND6Z5YQ7LMyV2l+jgASLeZ8doJPTJbHSF9WNECXF
- 4Y/Hw5Y3KjMLKpp8vp96+49WO+Bkc18ibN30kHac/ZMnVPkPSCvTV6YLDUYeE1xwEA
- 6NZ0PV7dJKdYJIHGuTcCIBPRImoyVRRFGdSgFRBOG7QPNHLuXsHpYBq5+KPJcZNKrU
- IiewgXqVdPbRg==
+ b=HGr4J02XWt0VcoQk4zhdtMsMDQYuSb5fSlbKBf/OvZLvt3WhppP2/900DuCZJu8t1
+ PDMlKvhvAYjJO1PwhtT/o2DtzLH3q8s6QZbQJcuYt/6x3xtpuUzBJKDfmI8TRqUwCZ
+ xSDQbp1pZbPqdvehnN9d0z8S6G8bJf6rdROrn3MTfSRKi8AIQMQqQ8rYpKg49YyWs1
+ zTuLn6VAMZn3pjqQkswCjUfXFlxUvci7bp24Iy+jCKt5c7AaQ5L1JViXvBUxkqc164
+ 7U6AljWv3Iiu5UziCYqZdp9cbPIKlq+VRxQgTdkU53aHB2uQhgCjY4ah5KHjLsOs4k
+ 8X0L3T2Pu0kqQ==
 From: Mark Brown <broonie@kernel.org>
 To: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>, Liam Girdwood <lgirdwood@gmail.com>
-In-Reply-To: <20220425193023.61046-1-u.kleine-koenig@pengutronix.de>
-References: <20220425193023.61046-1-u.kleine-koenig@pengutronix.de>
-Subject: Re: [PATCH] ASoC: pcm1789: Make pcm1789_common_exit() return void
-Message-Id: <165099286979.2323572.8803042675528868354.b4-ty@kernel.org>
-Date: Tue, 26 Apr 2022 18:07:49 +0100
+In-Reply-To: <20220425193206.61710-1-u.kleine-koenig@pengutronix.de>
+References: <20220425193206.61710-1-u.kleine-koenig@pengutronix.de>
+Subject: Re: [PATCH] ASoC: tas6424: Return zero in remove callback
+Message-Id: <165099287128.2323572.11976051626827246932.b4-ty@kernel.org>
+Date: Tue, 26 Apr 2022 18:07:51 +0100
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -79,13 +79,13 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Mon, 25 Apr 2022 21:30:23 +0200, Uwe Kleine-König wrote:
-> This function returns zero unconditionally, so there isn't any benefit
-> of returning a value. Make it return void to be able to see at a glance
-> that the return value of pcm1789_i2c_remove() is always zero.
+On Mon, 25 Apr 2022 21:32:06 +0200, Uwe Kleine-König wrote:
+> The only effect of returning an error code in an i2c remove callback
+> (compared to returning zero) is that the i2c core emits a generic
+> warning. The device is still removed.
 > 
-> This patch is a preparation for making i2c remove callbacks return void.
-> 
+> So even if disabling the regulators fails it's sensible to return zero
+> to suppress the additional generic and little helpful error message.
 > 
 > [...]
 
@@ -95,8 +95,8 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: pcm1789: Make pcm1789_common_exit() return void
-      commit: 6cefb6264277c073030a3b2d91ba6b28593b4c89
+[1/1] ASoC: tas6424: Return zero in remove callback
+      commit: 0e631e065bcb92cc97b38a82e41695952145751d
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
