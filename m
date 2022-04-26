@@ -4,69 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 01CBFC433F5
-	for <alsa-devel@archiver.kernel.org>; Tue, 26 Apr 2022 17:16:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6F0DFC433F5
+	for <alsa-devel@archiver.kernel.org>; Tue, 26 Apr 2022 17:16:32 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 2D54F1877;
-	Tue, 26 Apr 2022 19:15:32 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2D54F1877
+	by alsa0.perex.cz (Postfix) with ESMTPS id BDD431891;
+	Tue, 26 Apr 2022 19:15:40 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BDD431891
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1650993382;
-	bh=bkgpaPQukYsor4ghq2i4MkGab/Wobe/8+diMD9ozCYI=;
+	s=default; t=1650993390;
+	bh=Q0n9EYwVz8i+aFrNKL2lwEofbZofFT+cmG1lXM8DX88=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=k5adIzyTjH1FWmHDtGqtDtO3ZTgIN6+7HxKD4JLJoMEVpfGKX6TAeT0HRaAHM63mu
-	 pf5XZw/Sgjv/ErZl0gV4AePFHW5qtjBuwwSvMqjwV4nkwGbvvJYbOI2mWM5jLTqIte
-	 nM8lOKTbHkWfKrX2qly1CwwBxLAd1sMuce9i11SA=
+	b=KZ3Twh+kPmpcI6syLhw5SPpS88mwXZQF+NuDl6eBfXPbqsnLOptWeX+N/Eo5Gte6P
+	 wFvot+RZBCRNotAKCe2ltertzKKCYKu7tpVlbCZ8mySBwwrS1eWmw5B67nEleyxzkB
+	 xV05veD70dyY1JEZbccF3aYaYQGL82j3t1XGGedQ=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id C5EBFF80105;
-	Tue, 26 Apr 2022 19:14:57 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id D3A8BF8014B;
+	Tue, 26 Apr 2022 19:15:02 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 172A9F8027D; Tue, 26 Apr 2022 19:14:55 +0200 (CEST)
+ id 1C44DF8051A; Tue, 26 Apr 2022 19:14:59 +0200 (CEST)
 Received: from mga06.intel.com (mga06b.intel.com [134.134.136.31])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 2DF84F800FA
- for <alsa-devel@alsa-project.org>; Tue, 26 Apr 2022 19:14:47 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2DF84F800FA
+ by alsa1.perex.cz (Postfix) with ESMTPS id 68A67F80171
+ for <alsa-devel@alsa-project.org>; Tue, 26 Apr 2022 19:14:51 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 68A67F80171
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="Bn3+Eihz"
+ header.b="PSoiT71T"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1650993289; x=1682529289;
+ t=1650993292; x=1682529292;
  h=from:to:cc:subject:date:message-id:in-reply-to:
  references:mime-version:content-transfer-encoding;
- bh=bkgpaPQukYsor4ghq2i4MkGab/Wobe/8+diMD9ozCYI=;
- b=Bn3+EihzOwRcZYHM2H7CcHXGVYCduEUt+6A4IAu4cxvp9VHesRAYjRJA
- ryvY1xF7gHzM85xLYD5PJ79izv/H0RlpXCh7QLeBz2yaA82T/lZok4JvA
- PxQ9/iLPFttloIt9Tmrs5kDq0JeL5fyJufr1QQixrOEu8Gv0XbjPRH3au
- FGL+1N7F+GmAFNe3HkPdYDTBLx2AnaKnlyYSW82Z+wDZ0Kmn7TDoon25L
- 4APRuN9Z0pfqiVd5dfxklZ71UcUJs6VmzFxEGHr49uJM6DikozDGc1KGg
- KSkj2JuleEvcVwzDZyneCLR2ypCHpJ+PKRVjwemf0993qavh1X1++ZTTC Q==;
-X-IronPort-AV: E=McAfee;i="6400,9594,10329"; a="326148995"
-X-IronPort-AV: E=Sophos;i="5.90,291,1643702400"; d="scan'208";a="326148995"
+ bh=Q0n9EYwVz8i+aFrNKL2lwEofbZofFT+cmG1lXM8DX88=;
+ b=PSoiT71TXqTTWW8sxisYWBZfImL/Y6XKMyngcDYA4TsR9yPyzbhA4gFz
+ I88Rf8eKzfXn8o2unym8/eZEl72VVWduc+8P9jxGuFO+g+rphiCh34DFM
+ 2uT6b3U8iVQDw8KxJ5sO8uFBQdoqAAxs5CBpyca+vnc3nG3SrntHf20p9
+ zShRDoqgsHuBMJr7L3v1Lr/tKTLqwan5OPHW5cFsF2hcCSJBBYZYpMU4U
+ 56HtanrUVgsSZ1NmE15E9Kvleph2PqGdM5Zd2UxBVhbActjzj3x/CltB/
+ SMgRsxNXJVkmd2c76+gu+EgaKBXcrTHCURz0nrawNKYHWB+wfrAYx7VWK w==;
+X-IronPort-AV: E=McAfee;i="6400,9594,10329"; a="326149038"
+X-IronPort-AV: E=Sophos;i="5.90,291,1643702400"; d="scan'208";a="326149038"
 Received: from fmsmga003.fm.intel.com ([10.253.24.29])
  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 26 Apr 2022 10:14:38 -0700
+ 26 Apr 2022 10:14:48 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.90,291,1643702400"; d="scan'208";a="650305110"
+X-IronPort-AV: E=Sophos;i="5.90,291,1643702400"; d="scan'208";a="650305281"
 Received: from crojewsk-ctrl.igk.intel.com ([10.102.9.28])
- by FMSMGA003.fm.intel.com with ESMTP; 26 Apr 2022 10:14:35 -0700
+ by FMSMGA003.fm.intel.com with ESMTP; 26 Apr 2022 10:14:45 -0700
 From: Cezary Rojewski <cezary.rojewski@intel.com>
 To: alsa-devel@alsa-project.org,
 	broonie@kernel.org
-Subject: [PATCH 01/14] ASoC: Intel: avs: Account for libraries when booting
- basefw
-Date: Tue, 26 Apr 2022 19:23:33 +0200
-Message-Id: <20220426172346.3508411-2-cezary.rojewski@intel.com>
+Subject: [PATCH 04/14] ASoC: Intel: avs: non-HDA PCM BE operations
+Date: Tue, 26 Apr 2022 19:23:36 +0200
+Message-Id: <20220426172346.3508411-5-cezary.rojewski@intel.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20220426172346.3508411-1-cezary.rojewski@intel.com>
 References: <20220426172346.3508411-1-cezary.rojewski@intel.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Cc: Cezary Rojewski <cezary.rojewski@intel.com>, upstream@semihalf.com,
  harshapriya.n@intel.com, rad@semihalf.com,
@@ -88,157 +88,285 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Not all modules are part of base firmware. Some are part of loadable
-libraries. These need to be loaded after base firmware reports ready
-status through FW_READY notification.
+DMIC and I2S interfaces differ in DMA operations from the HDAudio
+interface. With that in mind, implement all DAI operations to handle
+non-HDA BE interfaces.
 
-Their loading process is similar to the base firmware's one. Request the
-binary file, verify and strip the manifest and load the actual code into
-DSP memory with help of CLDMA or HD-Audio render stream, depending on
-audio device generation.
+To prevent code duplication in newly added code, I2S platform
+registering is dynamic - makes use of specified port_mask and TDMs
+array to populate as many DAIs as required.
 
-List of libraries needed for loading is obtained through the topology -
-vendor sections specifying the name of firmware files to request.
-
+Signed-off-by: Amadeusz Sławiński <amadeuszx.slawinski@linux.intel.com>
 Signed-off-by: Cezary Rojewski <cezary.rojewski@intel.com>
 ---
- sound/soc/intel/avs/avs.h    |  3 ++
- sound/soc/intel/avs/loader.c | 79 ++++++++++++++++++++++++++++++++++++
- 2 files changed, 82 insertions(+)
+ sound/soc/intel/avs/avs.h |   4 +
+ sound/soc/intel/avs/pcm.c | 222 +++++++++++++++++++++++++++++++++++++-
+ 2 files changed, 225 insertions(+), 1 deletion(-)
 
 diff --git a/sound/soc/intel/avs/avs.h b/sound/soc/intel/avs/avs.h
-index c57a07a18d8e..14b4a780a91c 100644
+index 14b4a780a91c..b4fd67fac17d 100644
 --- a/sound/soc/intel/avs/avs.h
 +++ b/sound/soc/intel/avs/avs.h
-@@ -19,6 +19,8 @@
+@@ -270,4 +270,8 @@ struct avs_soc_component {
  
- struct avs_dev;
- struct avs_tplg;
-+struct avs_tplg_library;
-+struct avs_soc_component;
+ extern const struct snd_soc_dai_ops avs_dai_fe_ops;
  
- /*
-  * struct avs_dsp_ops - Platform-specific DSP operations
-@@ -241,6 +243,7 @@ void avs_hda_clock_gating_enable(struct avs_dev *adev, bool enable);
- void avs_hda_power_gating_enable(struct avs_dev *adev, bool enable);
- void avs_hda_l1sen_enable(struct avs_dev *adev, bool enable);
- 
-+int avs_dsp_load_libraries(struct avs_dev *adev, struct avs_tplg_library *libs, u32 num_libs);
- int avs_dsp_boot_firmware(struct avs_dev *adev, bool purge);
- int avs_dsp_first_boot_firmware(struct avs_dev *adev);
- 
-diff --git a/sound/soc/intel/avs/loader.c b/sound/soc/intel/avs/loader.c
-index c47f85161d95..de98f4c3adf8 100644
---- a/sound/soc/intel/avs/loader.c
-+++ b/sound/soc/intel/avs/loader.c
-@@ -15,6 +15,7 @@
- #include "cldma.h"
- #include "messages.h"
- #include "registers.h"
-+#include "topology.h"
- 
- #define AVS_ROM_STS_MASK		0xFF
- #define AVS_ROM_INIT_DONE		0x1
-@@ -466,6 +467,70 @@ int avs_hda_transfer_modules(struct avs_dev *adev, bool load,
++int avs_dmic_platform_register(struct avs_dev *adev, const char *name);
++int avs_i2s_platform_register(struct avs_dev *adev, const char *name, unsigned long port_mask,
++			      unsigned long *tdms);
++
+ #endif /* __SOUND_SOC_INTEL_AVS_H */
+diff --git a/sound/soc/intel/avs/pcm.c b/sound/soc/intel/avs/pcm.c
+index 725caab7cf28..0132305dbb29 100644
+--- a/sound/soc/intel/avs/pcm.c
++++ b/sound/soc/intel/avs/pcm.c
+@@ -112,6 +112,23 @@ static int avs_dai_hw_params(struct snd_pcm_substream *substream,
  	return 0;
  }
  
-+int avs_dsp_load_libraries(struct avs_dev *adev, struct avs_tplg_library *libs, u32 num_libs)
++static int avs_dai_be_hw_params(struct snd_pcm_substream *substream,
++				struct snd_pcm_hw_params *be_hw_params, struct snd_soc_dai *dai,
++				int dma_id)
 +{
-+	int start, id, i = 0;
-+	int ret;
++	struct snd_pcm_hw_params *fe_hw_params = NULL;
++	struct snd_soc_pcm_runtime *fe, *be;
++	struct snd_soc_dpcm *dpcm;
 +
-+	/* Calculate the id to assign for the next lib. */
-+	for (id = 0; id < adev->fw_cfg.max_libs_count; id++)
-+		if (adev->lib_names[id][0] == '\0')
-+			break;
-+	if (id + num_libs >= adev->fw_cfg.max_libs_count)
-+		return -EINVAL;
-+
-+	start = id;
-+	while (i < num_libs) {
-+		struct avs_fw_manifest *man;
-+		const struct firmware *fw;
-+		struct firmware stripped_fw;
-+		char *filename;
-+		int j;
-+
-+		filename = kasprintf(GFP_KERNEL, "%s/%s/%s", AVS_ROOT_DIR, adev->spec->name,
-+				     libs[i].name);
-+		if (!filename)
-+			return -ENOMEM;
-+
-+		ret = avs_request_firmware(adev, &fw, filename);
-+		kfree(filename);
-+		if (ret < 0)
-+			return ret;
-+
-+		stripped_fw = *fw;
-+		ret = avs_fw_manifest_strip_verify(adev, &stripped_fw, NULL);
-+		if (ret) {
-+			dev_err(adev->dev, "invalid library data: %d\n", ret);
-+			goto release_fw;
-+		}
-+
-+		ret = avs_fw_manifest_offset(&stripped_fw);
-+		if (ret < 0)
-+			goto release_fw;
-+		man = (struct avs_fw_manifest *)(stripped_fw.data + ret);
-+
-+		/* Don't load anything that's already in DSP memory. */
-+		for (j = 0; j < id; j++)
-+			if (!strncmp(adev->lib_names[j], man->name, AVS_LIB_NAME_SIZE))
-+				goto next_lib;
-+
-+		ret = avs_dsp_op(adev, load_lib, &stripped_fw, id);
-+		if (ret)
-+			goto release_fw;
-+
-+		strncpy(adev->lib_names[id], man->name, AVS_LIB_NAME_SIZE);
-+		id++;
-+next_lib:
-+		i++;
++	be = asoc_substream_to_rtd(substream);
++	for_each_dpcm_fe(be, substream->stream, dpcm) {
++		fe = dpcm->fe;
++		fe_hw_params = &fe->dpcm[substream->stream].hw_params;
 +	}
 +
-+	return start == id ? 1 : 0;
++	return avs_dai_hw_params(substream, fe_hw_params, be_hw_params, dai, dma_id);
++}
 +
-+release_fw:
-+	avs_release_last_firmware(adev);
+ static int avs_dai_prepare(struct avs_dev *adev, struct snd_pcm_substream *substream,
+ 			   struct snd_soc_dai *dai)
+ {
+@@ -134,6 +151,100 @@ static int avs_dai_prepare(struct avs_dev *adev, struct snd_pcm_substream *subst
+ 	return ret;
+ }
+ 
++static int avs_dai_nonhda_be_startup(struct snd_pcm_substream *substream, struct snd_soc_dai *dai)
++{
++	return avs_dai_startup(substream, dai, false);
++}
++
++static void avs_dai_nonhda_be_shutdown(struct snd_pcm_substream *substream, struct snd_soc_dai *dai)
++{
++	struct avs_dma_data *data;
++
++	data = snd_soc_dai_get_dma_data(dai, substream);
++
++	snd_soc_dai_set_dma_data(dai, substream, NULL);
++	kfree(data);
++}
++
++static int avs_dai_nonhda_be_hw_params(struct snd_pcm_substream *substream,
++				       struct snd_pcm_hw_params *hw_params, struct snd_soc_dai *dai)
++{
++	struct avs_dma_data *data;
++
++	data = snd_soc_dai_get_dma_data(dai, substream);
++	if (data->path)
++		return 0;
++
++	/* Actual port-id comes from topology. */
++	return avs_dai_be_hw_params(substream, hw_params, dai, 0);
++}
++
++static int avs_dai_nonhda_be_hw_free(struct snd_pcm_substream *substream, struct snd_soc_dai *dai)
++{
++	struct avs_dma_data *data;
++
++	dev_dbg(dai->dev, "%s: %s\n", __func__, dai->name);
++
++	data = snd_soc_dai_get_dma_data(dai, substream);
++	if (data->path) {
++		avs_path_free(data->path);
++		data->path = NULL;
++	}
++
++	return 0;
++}
++
++static int avs_dai_nonhda_be_prepare(struct snd_pcm_substream *substream, struct snd_soc_dai *dai)
++{
++	return avs_dai_prepare(to_avs_dev(dai->dev), substream, dai);
++}
++
++static int avs_dai_nonhda_be_trigger(struct snd_pcm_substream *substream, int cmd,
++				     struct snd_soc_dai *dai)
++{
++	struct avs_dma_data *data;
++	int ret = 0;
++
++	data = snd_soc_dai_get_dma_data(dai, substream);
++
++	switch (cmd) {
++	case SNDRV_PCM_TRIGGER_START:
++	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
++		ret = avs_path_run(data->path, AVS_TPLG_TRIGGER_AUTO);
++		if (ret < 0)
++			dev_err(dai->dev, "run BE path failed: %d\n", ret);
++		break;
++
++	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
++	case SNDRV_PCM_TRIGGER_STOP:
++		ret = avs_path_pause(data->path);
++		if (ret < 0)
++			dev_err(dai->dev, "pause BE path failed: %d\n", ret);
++
++		if (cmd == SNDRV_PCM_TRIGGER_STOP) {
++			ret = avs_path_reset(data->path);
++			if (ret < 0)
++				dev_err(dai->dev, "reset BE path failed: %d\n", ret);
++		}
++		break;
++
++	default:
++		ret = -EINVAL;
++		break;
++	}
++
 +	return ret;
 +}
 +
- static int avs_dsp_load_basefw(struct avs_dev *adev)
- {
- 	const struct avs_fw_version *min_req;
-@@ -519,6 +584,7 @@ static int avs_dsp_load_basefw(struct avs_dev *adev)
- 
- int avs_dsp_boot_firmware(struct avs_dev *adev, bool purge)
- {
-+	struct avs_soc_component *acomp;
- 	int ret, i;
- 
- 	/* Forgo full boot if flash from IMR succeeds. */
-@@ -538,7 +604,20 @@ int avs_dsp_boot_firmware(struct avs_dev *adev, bool purge)
- 	avs_hda_l1sen_enable(adev, false);
- 
- 	ret = avs_dsp_load_basefw(adev);
-+	if (ret)
-+		goto reenable_gating;
++static const struct snd_soc_dai_ops avs_dai_nonhda_be_ops = {
++	.startup = avs_dai_nonhda_be_startup,
++	.shutdown = avs_dai_nonhda_be_shutdown,
++	.hw_params = avs_dai_nonhda_be_hw_params,
++	.hw_free = avs_dai_nonhda_be_hw_free,
++	.prepare = avs_dai_nonhda_be_prepare,
++	.trigger = avs_dai_nonhda_be_trigger,
++};
 +
-+	mutex_lock(&adev->comp_list_mutex);
-+	list_for_each_entry(acomp, &adev->comp_list, node) {
-+		struct avs_tplg *tplg = acomp->tplg;
+ static const unsigned int rates[] = {
+ 	8000, 11025, 12000, 16000,
+ 	22050, 24000, 32000, 44100,
+@@ -589,7 +700,6 @@ static const struct snd_soc_component_driver avs_component_driver = {
+ 	.non_legacy_dai_naming	= true,
+ };
+ 
+-__maybe_unused
+ static int avs_soc_component_register(struct device *dev, const char *name,
+ 				      const struct snd_soc_component_driver *drv,
+ 				      struct snd_soc_dai_driver *cpu_dais, int num_cpu_dais)
+@@ -611,3 +721,113 @@ static int avs_soc_component_register(struct device *dev, const char *name,
+ 
+ 	return snd_soc_add_component(&acomp->base, cpu_dais, num_cpu_dais);
+ }
 +
-+		ret = avs_dsp_load_libraries(adev, tplg->libs, tplg->num_libs);
-+		if (ret < 0)
-+			break;
++static struct snd_soc_dai_driver dmic_cpu_dais[] = {
++{
++	.name = "DMIC Pin",
++	.ops = &avs_dai_nonhda_be_ops,
++	.capture = {
++		.stream_name	= "DMIC Rx",
++		.channels_min	= 1,
++		.channels_max	= 4,
++		.rates		= SNDRV_PCM_RATE_16000 | SNDRV_PCM_RATE_48000,
++		.formats	= SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S24_LE,
++	},
++},
++{
++	.name = "DMIC WoV Pin",
++	.ops = &avs_dai_nonhda_be_ops,
++	.capture = {
++		.stream_name	= "DMIC WoV Rx",
++		.channels_min	= 1,
++		.channels_max	= 4,
++		.rates		= SNDRV_PCM_RATE_16000,
++		.formats	= SNDRV_PCM_FMTBIT_S16_LE,
++	},
++},
++};
++
++int avs_dmic_platform_register(struct avs_dev *adev, const char *name)
++{
++	return avs_soc_component_register(adev->dev, name, &avs_component_driver, dmic_cpu_dais,
++					  ARRAY_SIZE(dmic_cpu_dais));
++}
++
++static const struct snd_soc_dai_driver i2s_dai_template = {
++	.ops = &avs_dai_nonhda_be_ops,
++	.playback = {
++		.channels_min	= 1,
++		.channels_max	= 8,
++		.rates		= SNDRV_PCM_RATE_8000_192000 |
++				  SNDRV_PCM_RATE_KNOT,
++		.formats	= SNDRV_PCM_FMTBIT_S16_LE |
++				  SNDRV_PCM_FMTBIT_S24_LE |
++				  SNDRV_PCM_FMTBIT_S32_LE,
++	},
++	.capture = {
++		.channels_min	= 1,
++		.channels_max	= 8,
++		.rates		= SNDRV_PCM_RATE_8000_192000 |
++				  SNDRV_PCM_RATE_KNOT,
++		.formats	= SNDRV_PCM_FMTBIT_S16_LE |
++				  SNDRV_PCM_FMTBIT_S24_LE |
++				  SNDRV_PCM_FMTBIT_S32_LE,
++	},
++};
++
++int avs_i2s_platform_register(struct avs_dev *adev, const char *name, unsigned long port_mask,
++			      unsigned long *tdms)
++{
++	struct snd_soc_dai_driver *cpus, *dai;
++	size_t ssp_count, cpu_count;
++	int i, j;
++
++	ssp_count = adev->hw_cfg.i2s_caps.ctrl_count;
++	cpu_count = hweight_long(port_mask);
++	if (tdms)
++		for_each_set_bit(i, &port_mask, ssp_count)
++			cpu_count += hweight_long(tdms[i]);
++
++	cpus = devm_kzalloc(adev->dev, sizeof(*cpus) * cpu_count, GFP_KERNEL);
++	if (!cpus)
++		return -ENOMEM;
++
++	dai = cpus;
++	for_each_set_bit(i, &port_mask, ssp_count) {
++		memcpy(dai, &i2s_dai_template, sizeof(*dai));
++
++		dai->name =
++			devm_kasprintf(adev->dev, GFP_KERNEL, "SSP%d Pin", i);
++		dai->playback.stream_name =
++			devm_kasprintf(adev->dev, GFP_KERNEL, "ssp%d Tx", i);
++		dai->capture.stream_name =
++			devm_kasprintf(adev->dev, GFP_KERNEL, "ssp%d Rx", i);
++
++		if (!dai->name || !dai->playback.stream_name || !dai->capture.stream_name)
++			return -ENOMEM;
++		dai++;
 +	}
-+	mutex_unlock(&adev->comp_list_mutex);
- 
-+reenable_gating:
- 	avs_hda_l1sen_enable(adev, true);
- 	avs_hda_clock_gating_enable(adev, true);
- 
++
++	if (!tdms)
++		goto plat_register;
++
++	for_each_set_bit(i, &port_mask, ssp_count) {
++		for_each_set_bit(j, &tdms[i], ssp_count) {
++			memcpy(dai, &i2s_dai_template, sizeof(*dai));
++
++			dai->name =
++				devm_kasprintf(adev->dev, GFP_KERNEL, "SSP%d:%d Pin", i, j);
++			dai->playback.stream_name =
++				devm_kasprintf(adev->dev, GFP_KERNEL, "ssp%d:%d Tx", i, j);
++			dai->capture.stream_name =
++				devm_kasprintf(adev->dev, GFP_KERNEL, "ssp%d:%d Rx", i, j);
++
++			if (!dai->name || !dai->playback.stream_name || !dai->capture.stream_name)
++				return -ENOMEM;
++			dai++;
++		}
++	}
++
++plat_register:
++	return avs_soc_component_register(adev->dev, name, &avs_component_driver, cpus, cpu_count);
++}
 -- 
 2.25.1
 
