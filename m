@@ -4,72 +4,71 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id F3F4AC433F5
-	for <alsa-devel@archiver.kernel.org>; Tue, 26 Apr 2022 17:10:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1C2D7C433EF
+	for <alsa-devel@archiver.kernel.org>; Tue, 26 Apr 2022 17:10:22 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3C97018A6;
-	Tue, 26 Apr 2022 19:09:14 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3C97018A6
+	by alsa0.perex.cz (Postfix) with ESMTPS id 5373D187A;
+	Tue, 26 Apr 2022 19:09:30 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5373D187A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1650993004;
-	bh=z8XjpnqOvJUbja+qK9jiBSvWbNGD8GrNw7y0G33iHfU=;
-	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
+	s=default; t=1650993020;
+	bh=sRC3kHarVWSDdySC4waYtizt8h7NpqOtylmmmXgk/fA=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=UMil3z16zhcOQvI3D6r0mPs/if4vkIqak24vXjdMfByZdjO4th3HAqm3JNAmyqRmp
-	 JKsYNDAbxARHQAb7oJi5ZnCDjBYX7upQFCilD9+38YYfCz1TNumEoR5FSzv5ZWNzGk
-	 XSe89hqF1Ryzagypp2xWZFWZQXcRUFRiZrSGYjIQ=
+	b=ZpdX3AzlkbLHnr9/ASgIjiPXlcmGPXbWMZ0rDy+Zg5wXu0CH1DzTuv9YyZGbVCTuJ
+	 1HYx85xNiZ+/1UH3YxUKgjY+LUdhURa4Gkd1LVsGkkBWYPl+6hkd/TCQjwfGjBRglG
+	 Xv9YRBUshbfkD1L4lKQHcIXYfcgvP8o3Y2ZRoRng=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 49F5EF80529;
-	Tue, 26 Apr 2022 19:08:10 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id DD4EAF80152;
+	Tue, 26 Apr 2022 19:08:51 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id C40A1F80529; Tue, 26 Apr 2022 19:08:08 +0200 (CEST)
+ id 7E1DCF800FA; Tue, 26 Apr 2022 19:08:50 +0200 (CEST)
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id C3E4EF8014B
- for <alsa-devel@alsa-project.org>; Tue, 26 Apr 2022 19:07:58 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C3E4EF8014B
+ by alsa1.perex.cz (Postfix) with ESMTPS id 21A83F800FA
+ for <alsa-devel@alsa-project.org>; Tue, 26 Apr 2022 19:08:42 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 21A83F800FA
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="MwKZLLU4"
+ header.b="Zaku8Lgi"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id A511A615CD;
- Tue, 26 Apr 2022 17:07:57 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 27C6AC385AA;
- Tue, 26 Apr 2022 17:07:52 +0000 (UTC)
+ by dfw.source.kernel.org (Postfix) with ESMTPS id 93CA461372;
+ Tue, 26 Apr 2022 17:08:41 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 391E8C385A4;
+ Tue, 26 Apr 2022 17:08:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1650992877;
- bh=z8XjpnqOvJUbja+qK9jiBSvWbNGD8GrNw7y0G33iHfU=;
- h=From:To:In-Reply-To:References:Subject:Date:From;
- b=MwKZLLU4pGdM68uuQVPsV8JrCw8WG/PWkfeqfkCgzdGQVUO1puSRaa7fB5xuk9wDw
- JhxdAAM0CFsfR2MySPyYz9Q1Tr8pY6q+dx5DsHSTdDtjuOze3TTrOjL7wUNx4hAV3V
- sK9mu/saDwpFXJ80r787Hc1TsGt6fnw4u87fUvkr8nC/Dd2l0OffAMTwz6MvThRE6e
- PrIroClFFi2gg8CRXVZU2U+Zq1/9OHyHDKDkLgC4Rtcs08NjcNM2KB7Aws7NxArZJu
- VXWGMETP+Kj8LjcNivkdk/ou05iyqamCmCWRcRR2bKiyq9qXfoa6GHW+33XRnmubs2
- y1mO8Z7kDt+9Q==
+ s=k20201202; t=1650992921;
+ bh=sRC3kHarVWSDdySC4waYtizt8h7NpqOtylmmmXgk/fA=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=Zaku8LgiNBdPBUrepDUviotybjI5K1GtcTKtibYWDeZNpIqJoZa76COt3rrWJv45V
+ lsBUavONRqTdgnhvKXwCWBXc007yOzUQga25spIMZZgQJV6IPmtepJT1PafJEwyCr5
+ 4lkXTjTMX/x/yURWhGVYa7oDlENTKHrik1lx8M9kLTDRTtkX0AYJqagQJovRd5suGS
+ vqSwh9lFYYvJAkJ9gbRVMCziPiG2LWOfGeLbA5ybUwskDUYW5HcDbi3sUQuWFdndRr
+ 1SxRPM31jEKQwPiZhrKfGkQ9gxZPYehCskPT461Pyxl3hwdXGLZwXxWnoodUQXTln0
+ 9E+zCAxLSTKAA==
+Date: Tue, 26 Apr 2022 18:08:35 +0100
 From: Mark Brown <broonie@kernel.org>
-To: stephan@gerhold.net, devicetree@vger.kernel.org, perex@perex.cz,
- tiwai@suse.com, lgirdwood@gmail.com, ckeepax@opensource.cirrus.com,
- pbrobinson@gmail.com, lukas.bulwahn@gmail.com, krzk+dt@kernel.org,
- cy_huang@richtek.com, ryan.lee.analog@gmail.com,
- pierre-louis.bossart@linux.intel.com, srinivas.kandagatla@linaro.org,
- hdegoede@redhat.com, drhodes@opensource.cirrus.com,
- tanureal@opensource.cirrus.com, linux-kernel@vger.kernel.org,
- ryans.lee@analog.com, Arnd Bergmann <arnd@arndb.de>, robh+dt@kernel.org,
- alsa-devel@alsa-project.org
-In-Reply-To: <20220425173715.1827706-1-ryan.lee.analog@gmail.com>
-References: <20220425173715.1827706-1-ryan.lee.analog@gmail.com>
-Subject: Re: [PATCH V3 1/2] ASoC: dt-bindings: max98396: add amplifier driver
-Message-Id: <165099287287.2323572.11051414352040587552.b4-ty@kernel.org>
-Date: Tue, 26 Apr 2022 18:07:52 +0100
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: Re: [PATCH] ASoC: Intel: avs: Depend on CONFIG_ACPI
+Message-ID: <YmgnE/HKNmI+agNs@sirena.org.uk>
+References: <20220426115454.685787-1-amadeuszx.slawinski@linux.intel.com>
+ <eab567f0-73a4-bf23-76bf-8d576fa942f0@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature"; boundary="X92sW5LjGepWlM5S"
+Content-Disposition: inline
+In-Reply-To: <eab567f0-73a4-bf23-76bf-8d576fa942f0@linux.intel.com>
+X-Cookie: I'm a Lisp variable -- bind me!
+Cc: Cezary Rojewski <cezary.rojewski@intel.com>,
+ kernel test robot <lkp@intel.com>, alsa-devel@alsa-project.org,
+ Liam Girdwood <lgirdwood@gmail.com>, Takashi Iwai <tiwai@suse.com>,
+ Amadeusz =?utf-8?B?U8WCYXdpxYRza2k=?= <amadeuszx.slawinski@linux.intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -85,38 +84,41 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Mon, 25 Apr 2022 10:37:15 -0700, Ryan Lee wrote:
-> From: Ryan Lee <ryans.lee@analog.com>
-> 
-> This patch adds dt-bindings information for Analog Devices MAX98396
-> and MAX98397 Smart Amplifier.
-> 
-> 
 
-Applied to
+--X92sW5LjGepWlM5S
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+On Tue, Apr 26, 2022 at 08:33:57AM -0500, Pierre-Louis Bossart wrote:
+> On 4/26/22 06:54, Amadeusz S=C5=82awi=C5=84ski wrote:
 
-Thanks!
+> > -	depends on (X86 && ACPI) || COMPILE_TEST
+> > -	depends on PCI
+> > +	depends on X86 || COMPILE_TEST
+> > +	depends on PCI && ACPI
+> >  	depends on COMMON_CLK
+> >  	select SND_SOC_ACPI
 
-[1/2] ASoC: dt-bindings: max98396: add amplifier driver
-      commit: 3a2c9a553f4785555408b32d59ebfe125d8b9f09
+> select SND_SOC_ACPI if ACPI should work, that's what we do for SOF.
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
+That also looks sensible - it's probably good if both users do the same
+thing here so can someone send a patch for that please?  Sorry for not
+noticing that earlier Amadeusz.
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+--X92sW5LjGepWlM5S
+Content-Type: application/pgp-signature; name="signature.asc"
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
+-----BEGIN PGP SIGNATURE-----
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmJoJxMACgkQJNaLcl1U
+h9BXrQf9HFXGjnIpbtQHE4n+zHDFuoknMAO34BXv0ioS8sXqjnic07HbyqcJBQO0
+fNVanKXMfFtAKCOqWg4Zzyl7h57xHXWL74snc5HxKAgB6nJ26tTDTnPIxKbANNNc
+JS0/SPiYBZa1bnflshcCnT9TIR9viPTyvdF3gXshP5cnDsB6CwmgWm2u0libIysY
+WsfDB+YblnkwCWTytKGn5xNNNzedvG7Chz7wVVjH6YgtJyGVs6QjEbfFEjf2OeWX
+/wywECZx3AugeoMBFaHPvl4WBPQyBmyLd+QpHpuQbyNszw+KD6oVCMpgEz6TSMRA
+FCFQwUcWnLrU1Q6BUUtmo/uvydkcJQ==
+=Ejb6
+-----END PGP SIGNATURE-----
 
-Thanks,
-Mark
+--X92sW5LjGepWlM5S--
