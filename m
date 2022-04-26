@@ -4,65 +4,64 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 735F0C433F5
-	for <alsa-devel@archiver.kernel.org>; Tue, 26 Apr 2022 17:22:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 59392C433F5
+	for <alsa-devel@archiver.kernel.org>; Tue, 26 Apr 2022 17:22:56 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id BD0031906;
-	Tue, 26 Apr 2022 19:21:48 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BD0031906
+	by alsa0.perex.cz (Postfix) with ESMTPS id 9987F190D;
+	Tue, 26 Apr 2022 19:22:04 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9987F190D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1650993758;
-	bh=QSYk3YRRBgeJFO4e8u2ivNlK/k6SwlubtQU9W63iYIU=;
+	s=default; t=1650993774;
+	bh=Xz0gUl4Bx5u4Y+l9HHNVcc6d0AlKgK/y89n3CH1QWWI=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=rlywezJKTlw7+jYIGTM9rpXkc0hpR+QUeq7gNjB1jpbVHV3+eieP0hclKWlqrQVUg
-	 T0d+jGrLK4u/85zcH0hb3cHltJdxRH5KBx52eFhp98/b7AUL4IZEOptRoBsRH62oqX
-	 TPa3V7I0eQlgcuo40NKBxhMbwHhidn3UqNFB97CQ=
+	b=C6sFgrBoV5jwZxMxFxcSQ+wuiiYzVkzqZ4x/9H+ZprV9xBNKbu4yCE6P2CYXwTzbW
+	 79+vdO2+5BEjyzA9nVf1T2hUZ7pB2U4GEMH2qdjUwJIZnrIAgogGETKPMr9MskU5OE
+	 KSpRarGW2ZRwzdUXxHeO+YDmJQAFM9kg9+arDwII=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 12EFDF80549;
+	by alsa1.perex.cz (Postfix) with ESMTP id 93A31F80563;
 	Tue, 26 Apr 2022 19:18:21 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 49408F80538; Tue, 26 Apr 2022 19:18:10 +0200 (CEST)
+ id 5989DF80534; Tue, 26 Apr 2022 19:18:10 +0200 (CEST)
 Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id A4029F80534
- for <alsa-devel@alsa-project.org>; Tue, 26 Apr 2022 19:18:01 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A4029F80534
+ by alsa1.perex.cz (Postfix) with ESMTPS id E387FF80527
+ for <alsa-devel@alsa-project.org>; Tue, 26 Apr 2022 19:17:59 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E387FF80527
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="WE7U+ebQ"
+ header.b="SGOMp5hg"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1650993484; x=1682529484;
+ t=1650993481; x=1682529481;
  h=from:to:cc:subject:date:message-id:in-reply-to:
  references:mime-version:content-transfer-encoding;
- bh=QSYk3YRRBgeJFO4e8u2ivNlK/k6SwlubtQU9W63iYIU=;
- b=WE7U+ebQ+ns0BmyyfuUYg1cXJ2D6DwuOzIKgOacTFtk36Pv4AMCOapHP
- 92z8U0/df1qaQxdtFjlQs1O8B4WF9N5YIgwU7xcLXgfb5w+/BGWHmZdBf
- 2lqp8ZncrwJEZYIHsA8StvuyGQUbmnMA9rf+jsu8762RHWAdAtofYCm8o
- 6FD1nYZXEW/7KfRFBmEUq9x8BAaK6iVhQspikeY1I7cK50AnJTSBGPbm3
- 7Z4b1L8QwLNfVA0o6FoaHw85fr8lHSlouVZbwLZWLB/jAhk6RSA6W1pqK
- prm+CUgPPEAj0R7qRCyEGEIRYAmCM2GwLCj8epc14qQkjDONGX/YCwaP9 Q==;
-X-IronPort-AV: E=McAfee;i="6400,9594,10329"; a="290807978"
-X-IronPort-AV: E=Sophos;i="5.90,291,1643702400"; d="scan'208";a="290807978"
+ bh=Xz0gUl4Bx5u4Y+l9HHNVcc6d0AlKgK/y89n3CH1QWWI=;
+ b=SGOMp5hgk+ERMEWc/iifOatWj9XlQb5stn12VENAS/5JBBy10hbfTcdP
+ 9jhTuD6YM5QLHb3sD/0chNuZAUFkiR+fMpyG0Jd7225QdcrwHXzRhf5qS
+ uo/FtzgvAyjXYMwXNke2BjPg2MpLD2bfuX2ULyxYihvbp47UNu3fiKzpF
+ hrmDwNQKJFigqrKo3mKe+/eLu3O7danIg/u0c0YFfM9hG/vCdDFhYQ8sD
+ EjulXQZQ75J4AnKiwfAb/i6SLugug3eDV0VQPqnRZiyEE807V7NuGlgjq
+ Glro0fVKAn11qqi0wvrkJFVl2LPhVcw7nf6py/hzESFOz+zHqi1ikz58l Q==;
+X-IronPort-AV: E=McAfee;i="6400,9594,10329"; a="290807976"
+X-IronPort-AV: E=Sophos;i="5.90,291,1643702400"; d="scan'208";a="290807976"
 Received: from orsmga007.jf.intel.com ([10.7.209.58])
  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
  26 Apr 2022 10:17:51 -0700
-X-IronPort-AV: E=Sophos;i="5.90,291,1643702400"; d="scan'208";a="558431220"
+X-IronPort-AV: E=Sophos;i="5.90,291,1643702400"; d="scan'208";a="558431216"
 Received: from shashinx-mobl.gar.corp.intel.com (HELO
  rsridh2-mobl1.localdomain) ([10.254.0.53])
  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 26 Apr 2022 10:17:51 -0700
+ 26 Apr 2022 10:17:50 -0700
 From: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH 09/11] ASoC: SOF: topology: Skip parsing DAI link tokens if
- not needed
-Date: Tue, 26 Apr 2022 10:17:41 -0700
-Message-Id: <20220426171743.171061-10-ranjani.sridharan@linux.intel.com>
+Subject: [PATCH 08/11] ASoC: SOF: pcm: remove unnecessary function declaration
+Date: Tue, 26 Apr 2022 10:17:40 -0700
+Message-Id: <20220426171743.171061-9-ranjani.sridharan@linux.intel.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20220426171743.171061-1-ranjani.sridharan@linux.intel.com>
 References: <20220426171743.171061-1-ranjani.sridharan@linux.intel.com>
@@ -88,47 +87,46 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Do not parse these tokens if they are not defined in the IPC version
-specific token list. In the case of IPC4 with HDA topologies for
-example, no DAI link specific tokens need to be added in topology.
+sof_pcm_setup_connected_widgets() can be a static function in pcm.c. No
+need to declare it in the header.
 
 Signed-off-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Reviewed-by: Bard Liao <yung-chuan.liao@linux.intel.com>
 Reviewed-by: Péter Ujfalusi <peter.ujfalusi@linux.intel.com>
 ---
- sound/soc/sof/topology.c | 18 ++++++++++--------
- 1 file changed, 10 insertions(+), 8 deletions(-)
+ sound/soc/sof/pcm.c       | 5 +++--
+ sound/soc/sof/sof-audio.h | 2 --
+ 2 files changed, 3 insertions(+), 4 deletions(-)
 
-diff --git a/sound/soc/sof/topology.c b/sound/soc/sof/topology.c
-index 739f343010fc..b1fcab7ce48e 100644
---- a/sound/soc/sof/topology.c
-+++ b/sound/soc/sof/topology.c
-@@ -1721,14 +1721,16 @@ static int sof_link_load(struct snd_soc_component *scomp, int index, struct snd_
- 		return -ENOMEM;
- 	}
+diff --git a/sound/soc/sof/pcm.c b/sound/soc/sof/pcm.c
+index 2d21e531ac4f..095ca0d9d5ae 100644
+--- a/sound/soc/sof/pcm.c
++++ b/sound/soc/sof/pcm.c
+@@ -82,8 +82,9 @@ void snd_sof_pcm_period_elapsed(struct snd_pcm_substream *substream)
+ }
+ EXPORT_SYMBOL(snd_sof_pcm_period_elapsed);
  
--	/* parse one set of DAI link tokens */
--	ret = sof_copy_tuples(sdev, private->array, le32_to_cpu(private->size),
--			      SOF_DAI_LINK_TOKENS, 1, slink->tuples,
--			      num_tuples, &slink->num_tuples);
--	if (ret < 0) {
--		dev_err(scomp->dev, "failed to parse %s for dai link %s\n",
--			token_list[SOF_DAI_LINK_TOKENS].name, link->name);
--		goto err;
-+	if (token_list[SOF_DAI_LINK_TOKENS].tokens) {
-+		/* parse one set of DAI link tokens */
-+		ret = sof_copy_tuples(sdev, private->array, le32_to_cpu(private->size),
-+				      SOF_DAI_LINK_TOKENS, 1, slink->tuples,
-+				      num_tuples, &slink->num_tuples);
-+		if (ret < 0) {
-+			dev_err(scomp->dev, "failed to parse %s for dai link %s\n",
-+				token_list[SOF_DAI_LINK_TOKENS].name, link->name);
-+			goto err;
-+		}
- 	}
- 
- 	/* nothing more to do if there are no DAI type-specific tokens defined */
+-int sof_pcm_setup_connected_widgets(struct snd_sof_dev *sdev, struct snd_soc_pcm_runtime *rtd,
+-				    struct snd_sof_pcm *spcm, int dir)
++static int
++sof_pcm_setup_connected_widgets(struct snd_sof_dev *sdev, struct snd_soc_pcm_runtime *rtd,
++				struct snd_sof_pcm *spcm, int dir)
+ {
+ 	struct snd_soc_dai *dai;
+ 	int ret, j;
+diff --git a/sound/soc/sof/sof-audio.h b/sound/soc/sof/sof-audio.h
+index 4deab3ded8a5..5967d034188a 100644
+--- a/sound/soc/sof/sof-audio.h
++++ b/sound/soc/sof/sof-audio.h
+@@ -502,7 +502,5 @@ int get_token_uuid(void *elem, void *object, u32 offset);
+ int sof_update_ipc_object(struct snd_soc_component *scomp, void *object, enum sof_tokens token_id,
+ 			  struct snd_sof_tuple *tuples, int num_tuples,
+ 			  size_t object_size, int token_instance_num);
+-int sof_pcm_setup_connected_widgets(struct snd_sof_dev *sdev, struct snd_soc_pcm_runtime *rtd,
+-				    struct snd_sof_pcm *spcm, int dir);
+ u32 vol_compute_gain(u32 value, int *tlv);
+ #endif
 -- 
 2.25.1
 
