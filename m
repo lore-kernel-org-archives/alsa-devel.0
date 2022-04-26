@@ -4,60 +4,60 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 79EB7C433EF
-	for <alsa-devel@archiver.kernel.org>; Tue, 26 Apr 2022 19:05:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 46372C433F5
+	for <alsa-devel@archiver.kernel.org>; Tue, 26 Apr 2022 19:06:08 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B12DD18A2;
-	Tue, 26 Apr 2022 21:05:04 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B12DD18A2
+	by alsa0.perex.cz (Postfix) with ESMTPS id 841961891;
+	Tue, 26 Apr 2022 21:05:16 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 841961891
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1650999954;
-	bh=Yi/VZKwBWFltSoUl2IA96DoXBsbE40ytjiMP4EHVQC8=;
+	s=default; t=1650999966;
+	bh=kP8vkEbi7l6zQ+HStJBxrehrXF5ycY+sgq3il3p6mlc=;
 	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
 	 List-Post:List-Help:List-Subscribe:From;
-	b=O3a9SxWv55XZhwjJAGK7C16Ylz1Uf0kQry+6kq0Z33dpjo8mqyMrh/BRFr/T9cQp3
-	 kMBw4DCN3zIS+L7rJwH4PHo4Nx/KH2o1is2RFRNFWtzGS7PwGF/4fFbm5TqLprR91C
-	 gCdIcT/VEaZeocbuG10qM3J/KlfJz8RbJnCrO5H8=
+	b=ZCFayhXlC8FvshjZs3CXLSu8gAwZYe+7N9rOcNWpQIpyHtXVvVFvDUyFVG9pxzyQF
+	 kaJak7rtJ3n55AIP2f5U037ivbQbNiYpZh1GhR1s7Yc2TV3mjWsJqYJCGD5gYnCjRS
+	 9GDN838hm5R5XKjyH1Wa3QDLzado4W0YnjYxh9h8=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 8EA12F80152;
-	Tue, 26 Apr 2022 21:02:51 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 3CB8FF80559;
+	Tue, 26 Apr 2022 21:03:01 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 9D0B0F80557; Tue, 26 Apr 2022 21:02:50 +0200 (CEST)
+ id 04969F80559; Tue, 26 Apr 2022 21:03:00 +0200 (CEST)
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 01852F8050F
- for <alsa-devel@alsa-project.org>; Tue, 26 Apr 2022 21:02:47 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 01852F8050F
+ by alsa1.perex.cz (Postfix) with ESMTPS id BECF1F8055A
+ for <alsa-devel@alsa-project.org>; Tue, 26 Apr 2022 21:02:53 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BECF1F8055A
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="rn4k2rOT"
+ header.b="pv4jE7oz"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id 7E278619B5;
- Tue, 26 Apr 2022 19:02:46 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C6F66C385A4;
- Tue, 26 Apr 2022 19:02:44 +0000 (UTC)
+ by dfw.source.kernel.org (Postfix) with ESMTPS id DA273619C2;
+ Tue, 26 Apr 2022 19:02:52 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 220CDC385A4;
+ Tue, 26 Apr 2022 19:02:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1650999765;
- bh=Yi/VZKwBWFltSoUl2IA96DoXBsbE40ytjiMP4EHVQC8=;
+ s=k20201202; t=1650999772;
+ bh=kP8vkEbi7l6zQ+HStJBxrehrXF5ycY+sgq3il3p6mlc=;
  h=From:To:Cc:Subject:Date:From;
- b=rn4k2rOTfz0/roH7CmN+b5VvBIURxqAtl/tgMmuQpprSu3X/N51GS4vJrdq4Gdlds
- 7wjWwbNISLkhZXgBiJp85p6BQBPKyAzmyu5cUY8t6ueKTRLa/j9WCndHRiL7sLCb1h
- v0BvhuyhxG0wKjvXYadqXVOZ40+hsUgm3nt8iNQAX9zQDfRw7XucjLI5ze8MdQ58dR
- 1xekYEcBS6D6p8pEUIU9wOgqaUPQQ3nehvHS56J7RQ+qOGMjbG4HRZKVeZyIsIPZrS
- p/0/C76OyczFLfV2X2ABFJKrew/8b3CWQE5bARiB4Ly4mp5+LDdxqX9mhxXi340r0u
- VQqc2fo2kCspg==
+ b=pv4jE7oz4cREnzsC9jWLHwd8bKJWSFKuA0PCanCVAtztxNAPhMenjPqkQOSYnpx2w
+ 3KUax3XwOyZFlh8oJ+ZE3zm75A4k4MXR9M4RRLeQo9mn0qKoz71AZ0H/moTvahAkBu
+ j9LBdJI6MCCGGn8KJHot5QlVhQN15LAvlIVoKgcWndPSLRXma64EcHLnbgKv8qzmg7
+ Ev1AOuoIX5ixSRuxub2KDtMy7lkvYQpPB0+BlGBic3YI9SHeBUmNevbhup9x74T5Rq
+ obNflKBVs0XEJQlMLxjImWT9KE7sW61OXU0ZE5p31yyt3YvDrGsKkp+kcudBWAX5L6
+ Yyi8ACmQ5VW+A==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.4 1/6] ASoC: wm8731: Disable the regulator when
+Subject: [PATCH AUTOSEL 4.19 1/6] ASoC: wm8731: Disable the regulator when
  probing fails
-Date: Tue, 26 Apr 2022 15:02:37 -0400
-Message-Id: <20220426190243.2351733-1-sashal@kernel.org>
+Date: Tue, 26 Apr 2022 15:02:44 -0400
+Message-Id: <20220426190251.2351817-1-sashal@kernel.org>
 X-Mailer: git-send-email 2.35.1
 MIME-Version: 1.0
 X-stable: review
@@ -109,10 +109,10 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 11 insertions(+), 8 deletions(-)
 
 diff --git a/sound/soc/codecs/wm8731.c b/sound/soc/codecs/wm8731.c
-index 6fd1bef848ed..fa55d79b39b6 100644
+index 7c8fad865d6b..3c5c02b034a9 100644
 --- a/sound/soc/codecs/wm8731.c
 +++ b/sound/soc/codecs/wm8731.c
-@@ -601,7 +601,7 @@ static int wm8731_hw_init(struct device *dev, struct wm8731_priv *wm8731)
+@@ -604,7 +604,7 @@ static int wm8731_hw_init(struct device *dev, struct wm8731_priv *wm8731)
  	ret = wm8731_reset(wm8731->regmap);
  	if (ret < 0) {
  		dev_err(dev, "Failed to issue reset: %d\n", ret);
@@ -121,7 +121,7 @@ index 6fd1bef848ed..fa55d79b39b6 100644
  	}
  
  	/* Clear POWEROFF, keep everything else disabled */
-@@ -618,10 +618,7 @@ static int wm8731_hw_init(struct device *dev, struct wm8731_priv *wm8731)
+@@ -621,10 +621,7 @@ static int wm8731_hw_init(struct device *dev, struct wm8731_priv *wm8731)
  
  	regcache_mark_dirty(wm8731->regmap);
  
@@ -133,7 +133,7 @@ index 6fd1bef848ed..fa55d79b39b6 100644
  	return ret;
  }
  
-@@ -765,21 +762,27 @@ static int wm8731_i2c_probe(struct i2c_client *i2c,
+@@ -768,21 +765,27 @@ static int wm8731_i2c_probe(struct i2c_client *i2c,
  		ret = PTR_ERR(wm8731->regmap);
  		dev_err(&i2c->dev, "Failed to allocate register map: %d\n",
  			ret);
