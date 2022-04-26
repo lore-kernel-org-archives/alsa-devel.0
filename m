@@ -4,76 +4,77 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 45F59C433F5
-	for <alsa-devel@archiver.kernel.org>; Tue, 26 Apr 2022 20:07:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2390EC433F5
+	for <alsa-devel@archiver.kernel.org>; Tue, 26 Apr 2022 22:24:17 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0E121182B;
-	Tue, 26 Apr 2022 22:06:23 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0E121182B
+	by alsa0.perex.cz (Postfix) with ESMTPS id 7B5F0173C;
+	Wed, 27 Apr 2022 00:23:25 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7B5F0173C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1651003633;
-	bh=NzK314Nib1aAhTnYubOE8y+ivu+PU2RrCUv42tj8wBc=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1651011855;
+	bh=7odo1T722brDyNoPu9I864P2TIN8Ihqu+JwlUWJ8BSI=;
+	h=Date:Subject:To:References:From:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=lx3yUSbrLY1xm1p6LCC7d54lMxymVNbRymbnoUcxwI9UMW8rdM3wFTszekKlE3w+G
-	 za92BxAyVBykstueymYfvf+qt2l/RFc4lMPVCH7GVGYr34hHOHoF4j0x+oOHnCJL3A
-	 McRt5HH0+75Myu348qOr6QPkzAPzWX/2Kny+CK3U=
+	b=P/TgqtHj8i11z4IJ+3aS5QibZ3uWMy4GRbwEivkb9UKaVBBaxrIj+28e0tU51mGCI
+	 boQANK+TzevPDv+gnmjgjOMSXpug7+58OUAAv+dcJ9mJlaUzdXl4C6Inp1s2EtoG4s
+	 ypE14OmRoBxUMbY5Fbka4LNi1sb4pwyIgfWzxgGo=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 53514F80171;
-	Tue, 26 Apr 2022 22:05:52 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id EB8C7F804B4;
+	Wed, 27 Apr 2022 00:23:24 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 8B72FF80152; Tue, 26 Apr 2022 22:05:48 +0200 (CEST)
-Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+ id 327D9F804AC; Wed, 27 Apr 2022 00:23:23 +0200 (CEST)
+Received: from mga12.intel.com (mga12.intel.com [192.55.52.136])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 9D072F80105
- for <alsa-devel@alsa-project.org>; Tue, 26 Apr 2022 22:05:41 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9D072F80105
+ by alsa1.perex.cz (Postfix) with ESMTPS id CBCD7F8014B
+ for <alsa-devel@alsa-project.org>; Wed, 27 Apr 2022 00:23:19 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CBCD7F8014B
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="j7955WHx"
+ header.b="cTIGZqoL"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1651003542; x=1682539542;
- h=from:to:cc:subject:date:message-id:in-reply-to:
- references:mime-version:content-transfer-encoding;
- bh=NzK314Nib1aAhTnYubOE8y+ivu+PU2RrCUv42tj8wBc=;
- b=j7955WHxbhCqiEwDSqBhewpGJnFcdf+Fmu6GXiJ+M77KC3/c65BNSkjk
- qwoccg/y6H37QQnqDM0ZK3fDREe/NoBQ9qBDVKkM+AtHIDi3AxVNtX++Z
- syVdWzeF2hnpPNO74AKxAL8TeJaTBUBLS4KMsX4K64hszXzHc8gCW18xW
- WRPI1w3PzApQKuVNhTMTaCNjeIJtmhX5Tx1yP6hDKmBsfZ9LDK1qbNL4J
- pl/aj7RMMi9M4HqBfCJelBfdbNYuRiXaTM9c45lpklz+e6PnRqkWMCtbW
- fKaEFQqTsW0KTDcow8tn7jm9/vMFm09UOX4yaQ67vfPblLiamM1OwOBpR A==;
-X-IronPort-AV: E=McAfee;i="6400,9594,10329"; a="265230435"
-X-IronPort-AV: E=Sophos;i="5.90,291,1643702400"; d="scan'208";a="265230435"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
- by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 26 Apr 2022 13:05:38 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.90,291,1643702400"; d="scan'208";a="679173597"
-Received: from dev2 (HELO DEV2.igk.intel.com) ([10.237.148.94])
- by orsmga004.jf.intel.com with ESMTP; 26 Apr 2022 13:05:35 -0700
-From: =?UTF-8?q?Amadeusz=20S=C5=82awi=C5=84ski?=
- <amadeuszx.slawinski@linux.intel.com>
-To: Liam Girdwood <lgirdwood@gmail.com>,
-	Mark Brown <broonie@kernel.org>
-Subject: [PATCH v2 2/2] ASoC: Intel: avs: Drop direct ACPI dependency
-Date: Tue, 26 Apr 2022 22:05:39 +0200
-Message-Id: <20220426200539.894010-2-amadeuszx.slawinski@linux.intel.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20220426200539.894010-1-amadeuszx.slawinski@linux.intel.com>
-References: <20220426200539.894010-1-amadeuszx.slawinski@linux.intel.com>
+ t=1651011801; x=1682547801;
+ h=message-id:date:mime-version:subject:to:cc:references:
+ from:in-reply-to:content-transfer-encoding;
+ bh=7odo1T722brDyNoPu9I864P2TIN8Ihqu+JwlUWJ8BSI=;
+ b=cTIGZqoLscwPGsEn+nvL0DqgW0EbMYVHTA7yZ55CotX2gkEipcozAD5I
+ Ic1CqTekFdcyAmTrLZTuctuR586L1E7zPwkuH6TPpbtPGqHWZRvq5BtFN
+ 4RssL3H0EwSuBsawilkqDaLDOHYw4aF4uy/kW4waosBT4AgLTwg8tYkBw
+ QBqpLB1wkOnCNz8vs4lLF0NB9+y7lVCdnTFMeW319wYMeoGe+20m/jjVs
+ MgBMH4u7hMR94CRFj8lVl2+QOAommvaCL//bdtjBuRsOl0vaGHSVPzUv8
+ C+c7Z6QSnmgtpIgC7xOpmTmvHGeSUgy4YggpbKpSg/FFG4UjoVEgZ+vT7 A==;
+X-IronPort-AV: E=McAfee;i="6400,9594,10329"; a="245660714"
+X-IronPort-AV: E=Sophos;i="5.90,292,1643702400"; d="scan'208";a="245660714"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+ by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 26 Apr 2022 15:23:14 -0700
+X-IronPort-AV: E=Sophos;i="5.90,292,1643702400"; d="scan'208";a="532888600"
+Received: from gkanakas-mobl.amr.corp.intel.com (HELO [10.212.152.229])
+ ([10.212.152.229])
+ by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 26 Apr 2022 15:23:13 -0700
+Message-ID: <ed73bdff-f671-e8b3-923a-5760763e944a@linux.intel.com>
+Date: Tue, 26 Apr 2022 16:40:44 -0500
 MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Firefox/91.0 Thunderbird/91.5.0
+Subject: Re: [PATCH 04/14] ASoC: Intel: avs: non-HDA PCM BE operations
+Content-Language: en-US
+To: Cezary Rojewski <cezary.rojewski@intel.com>, alsa-devel@alsa-project.org, 
+ broonie@kernel.org
+References: <20220426172346.3508411-1-cezary.rojewski@intel.com>
+ <20220426172346.3508411-5-cezary.rojewski@intel.com>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+In-Reply-To: <20220426172346.3508411-5-cezary.rojewski@intel.com>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- Cezary Rojewski <cezary.rojewski@intel.com>, kernel test robot <lkp@intel.com>,
- alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.com>,
- =?UTF-8?q?Amadeusz=20S=C5=82awi=C5=84ski?=
- <amadeuszx.slawinski@linux.intel.com>
+Content-Transfer-Encoding: 7bit
+Cc: upstream@semihalf.com, harshapriya.n@intel.com, rad@semihalf.com,
+ tiwai@suse.com, hdegoede@redhat.com, amadeuszx.slawinski@linux.intel.com,
+ cujomalainey@chromium.org, lma@semihalf.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -89,34 +90,45 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-With previous patch this allows for building driver on architectures
-without ACPI support present, when building with COMPILE_TEST enabled.
 
-Fixes: 47a1886a610a ("ASoC: Intel: avs: Enable AVS driver only on x86 platforms")
-Reported-by: kernel test robot <lkp@intel.com>
-Reviewed-by: Cezary Rojewski <cezary.rojewski@intel.com>
-Signed-off-by: Amadeusz Sławiński <amadeuszx.slawinski@linux.intel.com>
----
- sound/soc/intel/Kconfig | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+> +static int avs_dai_nonhda_be_trigger(struct snd_pcm_substream *substream, int cmd,
+> +				     struct snd_soc_dai *dai)
+> +{
+> +	struct avs_dma_data *data;
+> +	int ret = 0;
+> +
+> +	data = snd_soc_dai_get_dma_data(dai, substream);
+> +
+> +	switch (cmd) {
+> +	case SNDRV_PCM_TRIGGER_START:
+> +	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
+> +		ret = avs_path_run(data->path, AVS_TPLG_TRIGGER_AUTO);
+> +		if (ret < 0)
+> +			dev_err(dai->dev, "run BE path failed: %d\n", ret);
+> +		break;
+> +
+> +	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
+> +	case SNDRV_PCM_TRIGGER_STOP:
+> +		ret = avs_path_pause(data->path);
+> +		if (ret < 0)
+> +			dev_err(dai->dev, "pause BE path failed: %d\n", ret);
+> +
+> +		if (cmd == SNDRV_PCM_TRIGGER_STOP) {
+> +			ret = avs_path_reset(data->path);
+> +			if (ret < 0)
+> +				dev_err(dai->dev, "reset BE path failed: %d\n", ret);
+> +		}
+> +		break;
+> +
+> +	default:
+> +		ret = -EINVAL;
+> +		break;
 
-diff --git a/sound/soc/intel/Kconfig b/sound/soc/intel/Kconfig
-index be42c4eff165..039b45a4a799 100644
---- a/sound/soc/intel/Kconfig
-+++ b/sound/soc/intel/Kconfig
-@@ -211,10 +211,10 @@ config SND_SOC_INTEL_KEEMBAY
- 
- config SND_SOC_INTEL_AVS
- 	tristate "Intel AVS driver"
--	depends on (X86 && ACPI) || COMPILE_TEST
-+	depends on X86 || COMPILE_TEST
- 	depends on PCI
- 	depends on COMMON_CLK
--	select SND_SOC_ACPI
-+	select SND_SOC_ACPI if ACPI
- 	select SND_SOC_TOPOLOGY
- 	select SND_HDA_EXT_CORE
- 	select SND_HDA_DSP_LOADER
--- 
-2.25.1
+TRIGGER_SUSPEND will result in -EINVAL?
 
+Have you tried suspend-resume while playing audio?
+
+> +	}
+> +
+> +	return ret;
+> +}
