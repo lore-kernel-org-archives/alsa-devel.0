@@ -4,75 +4,74 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4E5BEC433EF
-	for <alsa-devel@archiver.kernel.org>; Tue, 26 Apr 2022 17:21:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6B7C7C433EF
+	for <alsa-devel@archiver.kernel.org>; Tue, 26 Apr 2022 17:22:09 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 8656C18EA;
-	Tue, 26 Apr 2022 19:21:02 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8656C18EA
+	by alsa0.perex.cz (Postfix) with ESMTPS id A05951900;
+	Tue, 26 Apr 2022 19:21:17 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A05951900
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1650993712;
-	bh=UTQU6BdBg7+Z5lLAa9KNocLNRL6+9S0jp1rVPX++10U=;
+	s=default; t=1650993727;
+	bh=S5TCk5iAP8pphguCkQe/S/PP4bRqIuV5H3/5nB54mpM=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=XAOldeOUCIOvGhOJUbh3sth5kcyNyWPyA1praqVMdSZB8b7Z78lWMEYZTi5BLv+/D
-	 Xc7/43ryFRE8+w/OnYQKdnDFf6oMUkxy/e/qd+DkKYlf0Paz8UF7NfzsCoD/MPrjmc
-	 U9kEo4LRmbA5tMP1pLewV126NdSfEzfLQX1cuRKI=
+	b=lrxAYS48YPlhXIuac82tvXAYv2pFsY8yg32cdx2Wa7NW/guBTZ50Qk5b8UV+rVANz
+	 Hh1BJH/PrKLdqw24ZCHn2kt0tH1RVvse5NmwMznswWk3vUaw4ikcVaDnmablC8BX2C
+	 jTYOjOnCBMJS25Xwq6FslX3r9O6IhnXFhiGZJiAE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 46308F8053C;
-	Tue, 26 Apr 2022 19:18:13 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 83E91F80535;
+	Tue, 26 Apr 2022 19:18:19 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 94E2EF80536; Tue, 26 Apr 2022 19:18:05 +0200 (CEST)
-Received: from mga06.intel.com (mga06b.intel.com [134.134.136.31])
+ id CFDA7F80508; Tue, 26 Apr 2022 19:18:07 +0200 (CEST)
+Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id F2E82F80516
- for <alsa-devel@alsa-project.org>; Tue, 26 Apr 2022 19:17:54 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F2E82F80516
+ by alsa1.perex.cz (Postfix) with ESMTPS id A452CF8052D
+ for <alsa-devel@alsa-project.org>; Tue, 26 Apr 2022 19:17:59 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A452CF8052D
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="NiNjfO4S"
+ header.b="klG5K4V2"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1650993480; x=1682529480;
+ t=1650993481; x=1682529481;
  h=from:to:cc:subject:date:message-id:in-reply-to:
  references:mime-version:content-transfer-encoding;
- bh=UTQU6BdBg7+Z5lLAa9KNocLNRL6+9S0jp1rVPX++10U=;
- b=NiNjfO4S9MD73PcD1qHkpe7oSmvqEGLn/nUsTKLeRdt8vRduuJ4ZGoBu
- ItL8YoeI+xmJz+gJtxQBOuNcWzjbYO9Jo4g1rE9NoyX8ZesH4/XsLPw9I
- YHP7YPRzcOpvLNnRTYx+ic1cP2uxhyq0vNkGI2HWHaGkWfMZ7Tmq9Erax
- QLZGCR3lF0jbJVVcJFR056PGpYx7dr3ip+eB5Cn76xlH+cqyUl3qMVQJ1
- JBqmMBY2o7WLiTLTI/KuchSFIG23VXKeB/rmUi78L1GMhh9Vq/hsWxaxR
- EQb2I7F1KvS0z86itapNytBfenUW0B/tLVgdiFr1dz3hswpt5WBZIxXhb A==;
-X-IronPort-AV: E=McAfee;i="6400,9594,10329"; a="326150585"
-X-IronPort-AV: E=Sophos;i="5.90,291,1643702400"; d="scan'208";a="326150585"
+ bh=S5TCk5iAP8pphguCkQe/S/PP4bRqIuV5H3/5nB54mpM=;
+ b=klG5K4V2+9jsGjSwbEo/njPX7Y30zerE5Eh0HHIBbslg4v2AFKVA1egj
+ yJ2D3EVIgDuP4cl2u6eTtQsj38hFMYtBs4fJrKiunEdPA569xPOkoHtwP
+ 1Q+DxLNj1d7l5OvRoZuyOVCEi34NgNGAbw34FXomNxwxI5IH80e+B91mg
+ EJhdOFVv/zrg5p4VN85urnYq26dfGE/+4N+bkKW3QlWGCAKTsfHZC1Gzj
+ 5KUe7aiVyDHTaMCWHwoOnmx9LT5euD39fQlmh10N2HO8a+o221HKvipHK
+ mLrbesQBybC5+SEYN/a1+W9aooloKEjmNmL3G76qyN3bDdpk2r9af3iwq w==;
+X-IronPort-AV: E=McAfee;i="6400,9594,10329"; a="290807974"
+X-IronPort-AV: E=Sophos;i="5.90,291,1643702400"; d="scan'208";a="290807974"
 Received: from orsmga007.jf.intel.com ([10.7.209.58])
- by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 26 Apr 2022 10:17:49 -0700
-X-IronPort-AV: E=Sophos;i="5.90,291,1643702400"; d="scan'208";a="558431189"
+ by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 26 Apr 2022 10:17:51 -0700
+X-IronPort-AV: E=Sophos;i="5.90,291,1643702400"; d="scan'208";a="558431208"
 Received: from shashinx-mobl.gar.corp.intel.com (HELO
  rsridh2-mobl1.localdomain) ([10.254.0.53])
  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 26 Apr 2022 10:17:48 -0700
+ 26 Apr 2022 10:17:50 -0700
 From: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH 02/11] ASoC: SOF: sof-audio: reset route status before freeing
- widget
-Date: Tue, 26 Apr 2022 10:17:34 -0700
-Message-Id: <20220426171743.171061-3-ranjani.sridharan@linux.intel.com>
+Subject: [PATCH 07/11] ASoC: SOF: Add two new fields to struct snd_sof_widget
+Date: Tue, 26 Apr 2022 10:17:39 -0700
+Message-Id: <20220426171743.171061-8-ranjani.sridharan@linux.intel.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20220426171743.171061-1-ranjani.sridharan@linux.intel.com>
 References: <20220426171743.171061-1-ranjani.sridharan@linux.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-Cc: =?UTF-8?q?P=C3=A9ter=20Ujfalusi?= <peter.ujfalusi@linux.intel.com>,
+Cc: Bard Liao <yung-chuan.liao@linux.intel.com>,
  Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, tiwai@suse.com,
  broonie@kernel.org, Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
- Bard Liao <yung-chuan.liao@linux.intel.com>
+ =?UTF-8?q?P=C3=A9ter=20Ujfalusi?= <peter.ujfalusi@linux.intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -88,42 +87,46 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-This is in preparation for IPC4 which requires that the route be reset
-before the widget is freed. For IPC3, there is nothing more to be done
-other than setting the route status. So it is OK to be moved before the
-widget is freed.
+Add two new fields, instance_id and module_info to struct
+snd_sof_widget. instance_id for widgets will be assigned when they are
+set up in the DSP and reset when the widgets are freed. module_info is
+used to save information the firmware provides about each module in its
+manifest.
 
 Signed-off-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-Reviewed-by: Péter Ujfalusi <peter.ujfalusi@linux.intel.com>
-Reviewed-by: Bard Liao <yung-chuan.liao@linux.intel.com>
 Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Reviewed-by: Bard Liao <yung-chuan.liao@linux.intel.com>
+Reviewed-by: Péter Ujfalusi <peter.ujfalusi@linux.intel.com>
 ---
- sound/soc/sof/sof-audio.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+ sound/soc/sof/sof-audio.h | 8 +++++++-
+ 1 file changed, 7 insertions(+), 1 deletion(-)
 
-diff --git a/sound/soc/sof/sof-audio.c b/sound/soc/sof/sof-audio.c
-index e2ec60887568..1180d6bab33e 100644
---- a/sound/soc/sof/sof-audio.c
-+++ b/sound/soc/sof/sof-audio.c
-@@ -34,6 +34,9 @@ int sof_widget_free(struct snd_sof_dev *sdev, struct snd_sof_widget *swidget)
- 	if (--swidget->use_count)
- 		return 0;
- 
-+	/* reset route setup status for all routes that contain this widget */
-+	sof_reset_route_setup_status(sdev, swidget);
-+
- 	/* continue to disable core even if IPC fails */
- 	if (tplg_ops->widget_free)
- 		err = tplg_ops->widget_free(sdev, swidget);
-@@ -50,8 +53,6 @@ int sof_widget_free(struct snd_sof_dev *sdev, struct snd_sof_widget *swidget)
- 			err = ret;
- 	}
- 
--	/* reset route setup status for all routes that contain this widget */
--	sof_reset_route_setup_status(sdev, swidget);
- 	swidget->complete = 0;
+diff --git a/sound/soc/sof/sof-audio.h b/sound/soc/sof/sof-audio.h
+index 7ca87056b106..4deab3ded8a5 100644
+--- a/sound/soc/sof/sof-audio.h
++++ b/sound/soc/sof/sof-audio.h
+@@ -330,7 +330,12 @@ struct snd_sof_widget {
+ 	int complete;
+ 	int use_count; /* use_count will be protected by the PCM mutex held by the core */
+ 	int core;
+-	int id;
++	int id; /* id is the DAPM widget type */
++	/*
++	 * Instance ID is set dynamically when the widget gets set up in the FW. It should be
++	 * unique for each module type across all pipelines. This will not be used in SOF_IPC.
++	 */
++	int instance_id;
  
  	/*
+ 	 * Flag indicating if the widget should be set up dynamically when a PCM is opened.
+@@ -345,6 +350,7 @@ struct snd_sof_widget {
+ 	struct snd_soc_dapm_widget *widget;
+ 	struct list_head list;	/* list in sdev widget list */
+ 	struct snd_sof_widget *pipe_widget;
++	void *module_info;
+ 
+ 	const guid_t uuid;
+ 
 -- 
 2.25.1
 
