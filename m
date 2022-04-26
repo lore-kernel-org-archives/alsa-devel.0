@@ -4,64 +4,65 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C17D1C433EF
-	for <alsa-devel@archiver.kernel.org>; Tue, 26 Apr 2022 17:20:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id EB7D3C433EF
+	for <alsa-devel@archiver.kernel.org>; Tue, 26 Apr 2022 17:21:08 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0EEAC18D1;
-	Tue, 26 Apr 2022 19:20:02 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0EEAC18D1
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3BFF018EE;
+	Tue, 26 Apr 2022 19:20:17 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3BFF018EE
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1650993652;
-	bh=jAEt/GTuRp/ujPuvv18LQoose9kd1V8mLb+LGWnMNMc=;
+	s=default; t=1650993667;
+	bh=XbGHb/dGxszVsrBHBtRsx10GCI9VTtP5ir7j5jTetuo=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=EBzFXjYhTpQrRCqouE6tUYh4uNemg3G7TP9/zxrMZCYxe8KsCcRSyX2F1kdkR+84K
-	 +PQKg7pJeWMNun+mqZ92mrw6JFb5B+T7SbyJeyp1urMYdQZsneNh8jZ0JSnIhPh+fm
-	 7ti0LP0L8o9UrY31Rt8GGayb5SigUVfPuBAoJKDE=
+	b=t/cOjOgun5S6DkldgiO9IeZB4Ges5xqmkNJGBJhIWWgjhzgWP/4wmxzHMMRxDa02C
+	 cA4SumicLzLRmFENPasmiILUYpQwihC8BsbfgsYqAiaUHwTEDcSieSeZcsV9ohJikm
+	 OB2Vq2Z9B7jFRmzKw/qRxTR+oChrv3w+Ix6xS5cc=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 9F568F80528;
-	Tue, 26 Apr 2022 19:18:00 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 9F758F80508;
+	Tue, 26 Apr 2022 19:18:08 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 91D12F80516; Tue, 26 Apr 2022 19:17:58 +0200 (CEST)
-Received: from mga06.intel.com (mga06b.intel.com [134.134.136.31])
+ id 5F01CF80533; Tue, 26 Apr 2022 19:18:01 +0200 (CEST)
+Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 21D0AF80171
- for <alsa-devel@alsa-project.org>; Tue, 26 Apr 2022 19:17:51 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 21D0AF80171
+ by alsa1.perex.cz (Postfix) with ESMTPS id A838DF8050F
+ for <alsa-devel@alsa-project.org>; Tue, 26 Apr 2022 19:17:53 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A838DF8050F
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="A/x7Atpt"
+ header.b="cu9vH3KJ"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1650993475; x=1682529475;
+ t=1650993476; x=1682529476;
  h=from:to:cc:subject:date:message-id:in-reply-to:
  references:mime-version:content-transfer-encoding;
- bh=jAEt/GTuRp/ujPuvv18LQoose9kd1V8mLb+LGWnMNMc=;
- b=A/x7AtptZ9vGZ0Dn+1dS2ixSUjcpG4QdORCAzV8XHpAMsaNXzTgOZLSH
- ASZGVaWywgXJb8QkLrqFbh5s4zF2fKTPrkH1QzTinVBZlQcAYj/1NzXyM
- zYxP4Ym49YkqLdBjMlGNL8Mxhwg9mhAUI6JCiM52gvIEMYXjTV0R5ZdgZ
- oZVlhqXvSJhrYBmJSlVUGDiN0WEzvz3ZX2JeeUkFSR+seU2UDhO3yuMT6
- J5ADS3HP18an+ctT7Qf69kot+qQPBxW5plv9iWtWD8C5zF/LPbovXDmG/
- Szaj1UemuVsAMJBnmld8hd8f0Z2ZM10uXTWwyT2wCvuhizWLyHD9PInSs w==;
-X-IronPort-AV: E=McAfee;i="6400,9594,10329"; a="326150582"
-X-IronPort-AV: E=Sophos;i="5.90,291,1643702400"; d="scan'208";a="326150582"
+ bh=XbGHb/dGxszVsrBHBtRsx10GCI9VTtP5ir7j5jTetuo=;
+ b=cu9vH3KJq/dx4KVOwx+h+Af8HrIG7U6b9ao7Pj56fwQSPklImHM+xucj
+ +DtLGw1OMVaIOmKjLxfiM5CKS1ftp9MYUn4yvyqnepYj7zGhJnczL3ypW
+ 6/lTQJI2Bo6GfYN2o42xQDbZgO4Hja39Ee90BKEenMzbpM7kGmmvCQKau
+ whCwwpc8EKSgsKCK1RG8ASAZTGAQhbO8ad9cNL/NgCfIfQMV96Q2nVIZg
+ SSVpnak/erEwdWRj5YX2/9Nvkc3M2IBYm8A5eRGVievBxnfOiwZNJHL9B
+ p04UD5Ow/VvBOS2olCerM8EiRUq/XjpYrpYTfGMNgrzBucyF6zCJKQGy7 w==;
+X-IronPort-AV: E=McAfee;i="6400,9594,10329"; a="290807972"
+X-IronPort-AV: E=Sophos;i="5.90,291,1643702400"; d="scan'208";a="290807972"
 Received: from orsmga007.jf.intel.com ([10.7.209.58])
- by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 26 Apr 2022 10:17:48 -0700
-X-IronPort-AV: E=Sophos;i="5.90,291,1643702400"; d="scan'208";a="558431187"
+ by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 26 Apr 2022 10:17:50 -0700
+X-IronPort-AV: E=Sophos;i="5.90,291,1643702400"; d="scan'208";a="558431201"
 Received: from shashinx-mobl.gar.corp.intel.com (HELO
  rsridh2-mobl1.localdomain) ([10.254.0.53])
  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 26 Apr 2022 10:17:48 -0700
+ 26 Apr 2022 10:17:50 -0700
 From: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH 01/11] ASoC: SOF: Add a new op to set up volume table
-Date: Tue, 26 Apr 2022 10:17:33 -0700
-Message-Id: <20220426171743.171061-2-ranjani.sridharan@linux.intel.com>
+Subject: [PATCH 06/11] ASoC: SOF: Add a route_free op in struct
+ sof_ipc_tplg_ops
+Date: Tue, 26 Apr 2022 10:17:38 -0700
+Message-Id: <20220426171743.171061-7-ranjani.sridharan@linux.intel.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20220426171743.171061-1-ranjani.sridharan@linux.intel.com>
 References: <20220426171743.171061-1-ranjani.sridharan@linux.intel.com>
@@ -87,150 +88,61 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Add a new op set_up_volume_table for control IPC ops. Define and set
-the op for IPC3.
+IPC4 requires that the widgets be unbound in the firmware before they
+are freed. So add a new op in struct sof_ipc_tplg_ops that will be used
+to send the IPC to the firmware to unbind widgets.
 
 Signed-off-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Reviewed-by: Bard Liao <yung-chuan.liao@linux.intel.com>
 Reviewed-by: Péter Ujfalusi <peter.ujfalusi@linux.intel.com>
 ---
- sound/soc/sof/ipc3-control.c | 18 ++++++++++++++++++
- sound/soc/sof/sof-audio.h    |  6 ++++++
- sound/soc/sof/topology.c     | 26 +++++++++++---------------
- 3 files changed, 35 insertions(+), 15 deletions(-)
+ sound/soc/sof/sof-audio.c | 7 ++++++-
+ sound/soc/sof/sof-audio.h | 2 ++
+ 2 files changed, 8 insertions(+), 1 deletion(-)
 
-diff --git a/sound/soc/sof/ipc3-control.c b/sound/soc/sof/ipc3-control.c
-index cde9e481f7f2..bea26e73a741 100644
---- a/sound/soc/sof/ipc3-control.c
-+++ b/sound/soc/sof/ipc3-control.c
-@@ -694,6 +694,23 @@ static int sof_ipc3_widget_kcontrol_setup(struct snd_sof_dev *sdev,
- 	return 0;
+diff --git a/sound/soc/sof/sof-audio.c b/sound/soc/sof/sof-audio.c
+index 0bc6c3ef0cd4..07576ed3c4fa 100644
+--- a/sound/soc/sof/sof-audio.c
++++ b/sound/soc/sof/sof-audio.c
+@@ -14,11 +14,16 @@
+ 
+ static void sof_reset_route_setup_status(struct snd_sof_dev *sdev, struct snd_sof_widget *widget)
+ {
++	const struct sof_ipc_tplg_ops *tplg_ops = sdev->ipc->ops->tplg;
+ 	struct snd_sof_route *sroute;
+ 
+ 	list_for_each_entry(sroute, &sdev->route_list, list)
+-		if (sroute->src_widget == widget || sroute->sink_widget == widget)
++		if (sroute->src_widget == widget || sroute->sink_widget == widget) {
++			if (sroute->setup && tplg_ops->route_free)
++				tplg_ops->route_free(sdev, sroute);
++
+ 			sroute->setup = false;
++		}
  }
  
-+static int
-+sof_ipc3_set_up_volume_table(struct snd_sof_control *scontrol, int tlv[SOF_TLV_ITEMS], int size)
-+{
-+	int i;
-+
-+	/* init the volume table */
-+	scontrol->volume_table = kcalloc(size, sizeof(u32), GFP_KERNEL);
-+	if (!scontrol->volume_table)
-+		return -ENOMEM;
-+
-+	/* populate the volume table */
-+	for (i = 0; i < size ; i++)
-+		scontrol->volume_table[i] = vol_compute_gain(i, tlv);
-+
-+	return 0;
-+}
-+
- const struct sof_ipc_tplg_control_ops tplg_ipc3_control_ops = {
- 	.volume_put = sof_ipc3_volume_put,
- 	.volume_get = sof_ipc3_volume_get,
-@@ -708,4 +725,5 @@ const struct sof_ipc_tplg_control_ops tplg_ipc3_control_ops = {
- 	.bytes_ext_volatile_get = sof_ipc3_bytes_ext_volatile_get,
- 	.update = sof_ipc3_control_update,
- 	.widget_kcontrol_setup = sof_ipc3_widget_kcontrol_setup,
-+	.set_up_volume_table = sof_ipc3_set_up_volume_table,
- };
+ int sof_widget_free(struct snd_sof_dev *sdev, struct snd_sof_widget *swidget)
 diff --git a/sound/soc/sof/sof-audio.h b/sound/soc/sof/sof-audio.h
-index a0af7c421fd9..e254b22ea8a9 100644
+index e3cfc813975b..7ca87056b106 100644
 --- a/sound/soc/sof/sof-audio.h
 +++ b/sound/soc/sof/sof-audio.h
-@@ -39,6 +39,8 @@
-  */
- #define VOLUME_FWL	16
- 
-+#define SOF_TLV_ITEMS 3
-+
- struct snd_sof_widget;
- struct snd_sof_route;
- struct snd_sof_control;
-@@ -88,6 +90,9 @@ struct sof_ipc_tplg_control_ops {
- 	void (*update)(struct snd_sof_dev *sdev, void *ipc_control_message);
- 	/* Optional callback to setup kcontrols associated with an swidget */
- 	int (*widget_kcontrol_setup)(struct snd_sof_dev *sdev, struct snd_sof_widget *swidget);
-+	/* mandatory callback to set up volume table for volume kcontrols */
-+	int (*set_up_volume_table)(struct snd_sof_control *scontrol, int tlv[SOF_TLV_ITEMS],
-+				   int size);
- };
- 
- /**
-@@ -464,4 +469,5 @@ int sof_update_ipc_object(struct snd_soc_component *scomp, void *object, enum so
- 			  size_t object_size, int token_instance_num);
- int sof_pcm_setup_connected_widgets(struct snd_sof_dev *sdev, struct snd_soc_pcm_runtime *rtd,
- 				    struct snd_sof_pcm *spcm, int dir);
-+u32 vol_compute_gain(u32 value, int *tlv);
- #endif
-diff --git a/sound/soc/sof/topology.c b/sound/soc/sof/topology.c
-index 5e959f8c4cb9..739f343010fc 100644
---- a/sound/soc/sof/topology.c
-+++ b/sound/soc/sof/topology.c
-@@ -32,7 +32,6 @@
- #define VOL_HALF_DB_STEP	50
- 
- /* TLV data items */
--#define TLV_ITEMS	3
- #define TLV_MIN		0
- #define TLV_STEP	1
- #define TLV_MUTE	2
-@@ -134,7 +133,7 @@ int sof_update_ipc_object(struct snd_soc_component *scomp, void *object, enum so
- 	return 0;
- }
- 
--static inline int get_tlv_data(const int *p, int tlv[TLV_ITEMS])
-+static inline int get_tlv_data(const int *p, int tlv[SOF_TLV_ITEMS])
- {
- 	/* we only support dB scale TLV type at the moment */
- 	if ((int)p[SNDRV_CTL_TLVO_TYPE] != SNDRV_CTL_TLVT_DB_SCALE)
-@@ -224,7 +223,7 @@ static u32 vol_pow32(u32 a, int exp, u32 fwl)
-  * Function to calculate volume gain from TLV data.
-  * This function can only handle gain steps that are multiples of 0.5 dB
-  */
--static u32 vol_compute_gain(u32 value, int *tlv)
-+u32 vol_compute_gain(u32 value, int *tlv)
- {
- 	int dB_gain;
- 	u32 linear_gain;
-@@ -263,20 +262,17 @@ static u32 vol_compute_gain(u32 value, int *tlv)
-  * "size" specifies the number of entries in the table
-  */
- static int set_up_volume_table(struct snd_sof_control *scontrol,
--			       int tlv[TLV_ITEMS], int size)
-+			       int tlv[SOF_TLV_ITEMS], int size)
- {
--	int j;
--
--	/* init the volume table */
--	scontrol->volume_table = kcalloc(size, sizeof(u32), GFP_KERNEL);
--	if (!scontrol->volume_table)
--		return -ENOMEM;
-+	struct snd_soc_component *scomp = scontrol->scomp;
-+	struct snd_sof_dev *sdev = snd_soc_component_get_drvdata(scomp);
-+	const struct sof_ipc_tplg_ops *tplg_ops = sdev->ipc->ops->tplg;
- 
--	/* populate the volume table */
--	for (j = 0; j < size ; j++)
--		scontrol->volume_table[j] = vol_compute_gain(j, tlv);
-+	if (tplg_ops->control->set_up_volume_table)
-+		return tplg_ops->control->set_up_volume_table(scontrol, tlv, size);
- 
--	return 0;
-+	dev_err(scomp->dev, "Mandatory op %s not set\n", __func__);
-+	return -EINVAL;
- }
- 
- struct sof_dai_types {
-@@ -772,7 +768,7 @@ static int sof_control_load_volume(struct snd_soc_component *scomp,
- 	struct snd_sof_dev *sdev = snd_soc_component_get_drvdata(scomp);
- 	struct snd_soc_tplg_mixer_control *mc =
- 		container_of(hdr, struct snd_soc_tplg_mixer_control, hdr);
--	int tlv[TLV_ITEMS];
-+	int tlv[SOF_TLV_ITEMS];
- 	unsigned int mask;
- 	int ret;
- 
+@@ -146,6 +146,7 @@ struct sof_ipc_tplg_widget_ops {
+  *	    initialized to 0.
+  * @control: Pointer to the IPC-specific ops for topology kcontrol IO
+  * @route_setup: Function pointer for setting up pipeline connections
++ * @route_free: Optional op for freeing pipeline connections.
+  * @token_list: List of all tokens supported by the IPC version. The size of the token_list
+  *		array should be SOF_TOKEN_COUNT. The unused elements in the array will be
+  *		initialized to 0.
+@@ -163,6 +164,7 @@ struct sof_ipc_tplg_ops {
+ 	const struct sof_ipc_tplg_widget_ops *widget;
+ 	const struct sof_ipc_tplg_control_ops *control;
+ 	int (*route_setup)(struct snd_sof_dev *sdev, struct snd_sof_route *sroute);
++	int (*route_free)(struct snd_sof_dev *sdev, struct snd_sof_route *sroute);
+ 	const struct sof_token_info *token_list;
+ 	int (*control_setup)(struct snd_sof_dev *sdev, struct snd_sof_control *scontrol);
+ 	int (*control_free)(struct snd_sof_dev *sdev, struct snd_sof_control *scontrol);
 -- 
 2.25.1
 
