@@ -4,64 +4,64 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6B7C7C433EF
-	for <alsa-devel@archiver.kernel.org>; Tue, 26 Apr 2022 17:22:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 65F93C433F5
+	for <alsa-devel@archiver.kernel.org>; Tue, 26 Apr 2022 17:22:25 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A05951900;
-	Tue, 26 Apr 2022 19:21:17 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A05951900
+	by alsa0.perex.cz (Postfix) with ESMTPS id AAF391902;
+	Tue, 26 Apr 2022 19:21:33 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AAF391902
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1650993727;
-	bh=S5TCk5iAP8pphguCkQe/S/PP4bRqIuV5H3/5nB54mpM=;
+	s=default; t=1650993743;
+	bh=WLpR/HI9DAjs+N1BxJ17Z/L9VZqZDFPhv2mjbErXWhI=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=lrxAYS48YPlhXIuac82tvXAYv2pFsY8yg32cdx2Wa7NW/guBTZ50Qk5b8UV+rVANz
-	 Hh1BJH/PrKLdqw24ZCHn2kt0tH1RVvse5NmwMznswWk3vUaw4ikcVaDnmablC8BX2C
-	 jTYOjOnCBMJS25Xwq6FslX3r9O6IhnXFhiGZJiAE=
+	b=Y3qPowJkRkuWrn/0OkdwaZEvkTkO4783ZbkVT2X9S9OEeeG9Z/dXFJWuVsSbHeNqE
+	 EYKynhwajyIsF27knLGmlBQkQkD0+IsjrhSFpMoQzuWe3bKdhuU+tMMaiEyXsbdYpg
+	 fd0MYxh+mKBGPxtGCHDeh5xjiXb4aVjunDwulpEQ=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 83E91F80535;
-	Tue, 26 Apr 2022 19:18:19 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 7407EF80544;
+	Tue, 26 Apr 2022 19:18:20 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id CFDA7F80508; Tue, 26 Apr 2022 19:18:07 +0200 (CEST)
+ id 99397F80536; Tue, 26 Apr 2022 19:18:09 +0200 (CEST)
 Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id A452CF8052D
- for <alsa-devel@alsa-project.org>; Tue, 26 Apr 2022 19:17:59 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A452CF8052D
+ by alsa1.perex.cz (Postfix) with ESMTPS id 0F0A5F8050F
+ for <alsa-devel@alsa-project.org>; Tue, 26 Apr 2022 19:18:01 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0F0A5F8050F
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="klG5K4V2"
+ header.b="lgYbPHRj"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1650993481; x=1682529481;
+ t=1650993483; x=1682529483;
  h=from:to:cc:subject:date:message-id:in-reply-to:
  references:mime-version:content-transfer-encoding;
- bh=S5TCk5iAP8pphguCkQe/S/PP4bRqIuV5H3/5nB54mpM=;
- b=klG5K4V2+9jsGjSwbEo/njPX7Y30zerE5Eh0HHIBbslg4v2AFKVA1egj
- yJ2D3EVIgDuP4cl2u6eTtQsj38hFMYtBs4fJrKiunEdPA569xPOkoHtwP
- 1Q+DxLNj1d7l5OvRoZuyOVCEi34NgNGAbw34FXomNxwxI5IH80e+B91mg
- EJhdOFVv/zrg5p4VN85urnYq26dfGE/+4N+bkKW3QlWGCAKTsfHZC1Gzj
- 5KUe7aiVyDHTaMCWHwoOnmx9LT5euD39fQlmh10N2HO8a+o221HKvipHK
- mLrbesQBybC5+SEYN/a1+W9aooloKEjmNmL3G76qyN3bDdpk2r9af3iwq w==;
-X-IronPort-AV: E=McAfee;i="6400,9594,10329"; a="290807974"
-X-IronPort-AV: E=Sophos;i="5.90,291,1643702400"; d="scan'208";a="290807974"
+ bh=WLpR/HI9DAjs+N1BxJ17Z/L9VZqZDFPhv2mjbErXWhI=;
+ b=lgYbPHRjgD6WegLNoqB7x2WUao8blv+TNWv+F0NZh/8rfynVGknZoVda
+ KxJiQLA4GoqWkvlijUH7Lr08smPDFaqQ7138wbr07q3i3QI4tVnpQNO13
+ ghLddVxhIdtHTE2aDW6vlsrqdJUN+KHvQ9e4BER5tuOOfETMRlJOrk+oH
+ Rx8J8t8a7K5PXqqhMNUXRFKLqEIMeUiiZraZbDP7cNqMbE8n8YRitWnIT
+ wNKF+36O+XUbDHJ9NmajhHRkfbraPoRZjiu30ECRYCvslTTzlXgzKIuuF
+ iZuANKWKUWdtVLUOOzKHhq0ykwig1UJjXYErBiXBtnKH5EvefQb0QdHoJ w==;
+X-IronPort-AV: E=McAfee;i="6400,9594,10329"; a="290807981"
+X-IronPort-AV: E=Sophos;i="5.90,291,1643702400"; d="scan'208";a="290807981"
 Received: from orsmga007.jf.intel.com ([10.7.209.58])
  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
  26 Apr 2022 10:17:51 -0700
-X-IronPort-AV: E=Sophos;i="5.90,291,1643702400"; d="scan'208";a="558431208"
+X-IronPort-AV: E=Sophos;i="5.90,291,1643702400"; d="scan'208";a="558431224"
 Received: from shashinx-mobl.gar.corp.intel.com (HELO
  rsridh2-mobl1.localdomain) ([10.254.0.53])
  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 26 Apr 2022 10:17:50 -0700
+ 26 Apr 2022 10:17:51 -0700
 From: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH 07/11] ASoC: SOF: Add two new fields to struct snd_sof_widget
-Date: Tue, 26 Apr 2022 10:17:39 -0700
-Message-Id: <20220426171743.171061-8-ranjani.sridharan@linux.intel.com>
+Subject: [PATCH 10/11] ASoC: SOF: clarify use of widget complete flag
+Date: Tue, 26 Apr 2022 10:17:42 -0700
+Message-Id: <20220426171743.171061-11-ranjani.sridharan@linux.intel.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20220426171743.171061-1-ranjani.sridharan@linux.intel.com>
 References: <20220426171743.171061-1-ranjani.sridharan@linux.intel.com>
@@ -87,46 +87,57 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Add two new fields, instance_id and module_info to struct
-snd_sof_widget. instance_id for widgets will be assigned when they are
-set up in the DSP and reset when the widgets are freed. module_info is
-used to save information the firmware provides about each module in its
-manifest.
+Currently, the complete flag is used only for the snd_soc_dapm_scheduler
+type widgets to indicate that the pipeline has been set up. All other
+widgets do not need it. Add a comment to clarify its usage and set the
+complete flag to false only for the scheduler widget in
+sof_widget_free().
 
 Signed-off-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Reviewed-by: Bard Liao <yung-chuan.liao@linux.intel.com>
 Reviewed-by: Péter Ujfalusi <peter.ujfalusi@linux.intel.com>
+Reviewed-by: Bard Liao <yung-chuan.liao@linux.intel.com>
 ---
- sound/soc/sof/sof-audio.h | 8 +++++++-
- 1 file changed, 7 insertions(+), 1 deletion(-)
+ sound/soc/sof/sof-audio.c | 3 +--
+ sound/soc/sof/sof-audio.h | 4 ++++
+ 2 files changed, 5 insertions(+), 2 deletions(-)
 
+diff --git a/sound/soc/sof/sof-audio.c b/sound/soc/sof/sof-audio.c
+index 07576ed3c4fa..f7c9e5db3d9e 100644
+--- a/sound/soc/sof/sof-audio.c
++++ b/sound/soc/sof/sof-audio.c
+@@ -58,8 +58,6 @@ int sof_widget_free(struct snd_sof_dev *sdev, struct snd_sof_widget *swidget)
+ 			err = ret;
+ 	}
+ 
+-	swidget->complete = 0;
+-
+ 	/*
+ 	 * free the scheduler widget (same as pipe_widget) associated with the current swidget.
+ 	 * skip for static pipelines
+@@ -68,6 +66,7 @@ int sof_widget_free(struct snd_sof_dev *sdev, struct snd_sof_widget *swidget)
+ 		ret = sof_widget_free(sdev, swidget->pipe_widget);
+ 		if (ret < 0 && !err)
+ 			err = ret;
++		swidget->pipe_widget->complete = 0;
+ 	}
+ 
+ 	if (!err)
 diff --git a/sound/soc/sof/sof-audio.h b/sound/soc/sof/sof-audio.h
-index 7ca87056b106..4deab3ded8a5 100644
+index 5967d034188a..2db4eb5edcf5 100644
 --- a/sound/soc/sof/sof-audio.h
 +++ b/sound/soc/sof/sof-audio.h
-@@ -330,7 +330,12 @@ struct snd_sof_widget {
+@@ -327,6 +327,10 @@ struct snd_sof_widget {
+ 	struct snd_soc_component *scomp;
+ 	int comp_id;
+ 	int pipeline_id;
++	/*
++	 * complete flag is used to indicate that pipeline set up is complete for scheduler type
++	 * widgets. It is unused for all other widget types.
++	 */
  	int complete;
  	int use_count; /* use_count will be protected by the PCM mutex held by the core */
  	int core;
--	int id;
-+	int id; /* id is the DAPM widget type */
-+	/*
-+	 * Instance ID is set dynamically when the widget gets set up in the FW. It should be
-+	 * unique for each module type across all pipelines. This will not be used in SOF_IPC.
-+	 */
-+	int instance_id;
- 
- 	/*
- 	 * Flag indicating if the widget should be set up dynamically when a PCM is opened.
-@@ -345,6 +350,7 @@ struct snd_sof_widget {
- 	struct snd_soc_dapm_widget *widget;
- 	struct list_head list;	/* list in sdev widget list */
- 	struct snd_sof_widget *pipe_widget;
-+	void *module_info;
- 
- 	const guid_t uuid;
- 
 -- 
 2.25.1
 
