@@ -4,65 +4,64 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 15D1CC433F5
-	for <alsa-devel@archiver.kernel.org>; Tue, 26 Apr 2022 17:20:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C17D1C433EF
+	for <alsa-devel@archiver.kernel.org>; Tue, 26 Apr 2022 17:20:53 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 4675218C4;
-	Tue, 26 Apr 2022 19:19:44 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4675218C4
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0EEAC18D1;
+	Tue, 26 Apr 2022 19:20:02 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0EEAC18D1
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1650993634;
-	bh=gWHKP9vbd7Vc6UOcR5R3yu+nUGcHtwMYZhreRpwKxBE=;
+	s=default; t=1650993652;
+	bh=jAEt/GTuRp/ujPuvv18LQoose9kd1V8mLb+LGWnMNMc=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=FEzE/Hs75GHJFvXRr/v4Yn9vGhdivgyB55DEb9g7MVACPIdYRJBWZIlpMGiHkEnCe
-	 LXZ6gMM9BCTm+Ucp6abQDMns9xi4blZYwlJDuPHE+7M2CmHNrdEnRSn4eH9OWh9ZzL
-	 gWfE358uo/xF/8Bnj2clQ5eabtGquxDj1l8ug7yE=
+	b=EBzFXjYhTpQrRCqouE6tUYh4uNemg3G7TP9/zxrMZCYxe8KsCcRSyX2F1kdkR+84K
+	 +PQKg7pJeWMNun+mqZ92mrw6JFb5B+T7SbyJeyp1urMYdQZsneNh8jZ0JSnIhPh+fm
+	 7ti0LP0L8o9UrY31Rt8GGayb5SigUVfPuBAoJKDE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 3B9F0F80511;
-	Tue, 26 Apr 2022 19:17:59 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 9F568F80528;
+	Tue, 26 Apr 2022 19:18:00 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 515BEF80516; Tue, 26 Apr 2022 19:17:57 +0200 (CEST)
+ id 91D12F80516; Tue, 26 Apr 2022 19:17:58 +0200 (CEST)
 Received: from mga06.intel.com (mga06b.intel.com [134.134.136.31])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 77A62F80105
- for <alsa-devel@alsa-project.org>; Tue, 26 Apr 2022 19:17:53 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 77A62F80105
+ by alsa1.perex.cz (Postfix) with ESMTPS id 21D0AF80171
+ for <alsa-devel@alsa-project.org>; Tue, 26 Apr 2022 19:17:51 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 21D0AF80171
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="RUeFRZSQ"
+ header.b="A/x7Atpt"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1650993474; x=1682529474;
+ t=1650993475; x=1682529475;
  h=from:to:cc:subject:date:message-id:in-reply-to:
  references:mime-version:content-transfer-encoding;
- bh=gWHKP9vbd7Vc6UOcR5R3yu+nUGcHtwMYZhreRpwKxBE=;
- b=RUeFRZSQByLXsIz+HcKQR79uyxayKUgEyHN+Jaq/y17a4ta0LA3YU6G0
- ir+4xb8yEQV7WYsBtuBs1BdSHNtLuPEU2WOVcvB3teBYnqTgoeF8123z3
- KFOxIBvFYxAjCve2+bEssvvEa41YcxuQSpa5BwWiDD/7ZwSL5gPrSin8B
- 0y0EVjOwhMsQihRcaMysdM9xdPris7wVIj9mVur12p4BciFp5SOhyLhAr
- 1DgGS9zGQcC8pVuYKtuym/C+Acw1jksyARLcqiXrH1Hd1okmiIhY+FWHh
- j/zukfvGb7zgQgfbXEgD+Kcc0LRjEybzIqz6K7ejv2oXy2NZI+xTfQ4wn w==;
-X-IronPort-AV: E=McAfee;i="6400,9594,10329"; a="326150595"
-X-IronPort-AV: E=Sophos;i="5.90,291,1643702400"; d="scan'208";a="326150595"
+ bh=jAEt/GTuRp/ujPuvv18LQoose9kd1V8mLb+LGWnMNMc=;
+ b=A/x7AtptZ9vGZ0Dn+1dS2ixSUjcpG4QdORCAzV8XHpAMsaNXzTgOZLSH
+ ASZGVaWywgXJb8QkLrqFbh5s4zF2fKTPrkH1QzTinVBZlQcAYj/1NzXyM
+ zYxP4Ym49YkqLdBjMlGNL8Mxhwg9mhAUI6JCiM52gvIEMYXjTV0R5ZdgZ
+ oZVlhqXvSJhrYBmJSlVUGDiN0WEzvz3ZX2JeeUkFSR+seU2UDhO3yuMT6
+ J5ADS3HP18an+ctT7Qf69kot+qQPBxW5plv9iWtWD8C5zF/LPbovXDmG/
+ Szaj1UemuVsAMJBnmld8hd8f0Z2ZM10uXTWwyT2wCvuhizWLyHD9PInSs w==;
+X-IronPort-AV: E=McAfee;i="6400,9594,10329"; a="326150582"
+X-IronPort-AV: E=Sophos;i="5.90,291,1643702400"; d="scan'208";a="326150582"
 Received: from orsmga007.jf.intel.com ([10.7.209.58])
  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 26 Apr 2022 10:17:49 -0700
-X-IronPort-AV: E=Sophos;i="5.90,291,1643702400"; d="scan'208";a="558431194"
+ 26 Apr 2022 10:17:48 -0700
+X-IronPort-AV: E=Sophos;i="5.90,291,1643702400"; d="scan'208";a="558431187"
 Received: from shashinx-mobl.gar.corp.intel.com (HELO
  rsridh2-mobl1.localdomain) ([10.254.0.53])
  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 26 Apr 2022 10:17:49 -0700
+ 26 Apr 2022 10:17:48 -0700
 From: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH 04/11] ASoC: SOF: pcm: Move the call to
- snd_sof_pcm_platform_hw_params()
-Date: Tue, 26 Apr 2022 10:17:36 -0700
-Message-Id: <20220426171743.171061-5-ranjani.sridharan@linux.intel.com>
+Subject: [PATCH 01/11] ASoC: SOF: Add a new op to set up volume table
+Date: Tue, 26 Apr 2022 10:17:33 -0700
+Message-Id: <20220426171743.171061-2-ranjani.sridharan@linux.intel.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20220426171743.171061-1-ranjani.sridharan@linux.intel.com>
 References: <20220426171743.171061-1-ranjani.sridharan@linux.intel.com>
@@ -88,52 +87,150 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-IPC4 requires the platform_params be passed when invoking
-sof_pcm_setup_connected_widgets(). So move the call to
-snd_sof_pcm_platform_hw_params() before calling
-sof_pcm_setup_connected_widgets(). This has no functional impact.
-
-sof_pcm_setup_connected_widgets will be modified in the follow up
-patches to accept the platform params as an argument.
+Add a new op set_up_volume_table for control IPC ops. Define and set
+the op for IPC3.
 
 Signed-off-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Reviewed-by: Bard Liao <yung-chuan.liao@linux.intel.com>
 Reviewed-by: Péter Ujfalusi <peter.ujfalusi@linux.intel.com>
 ---
- sound/soc/sof/pcm.c | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
+ sound/soc/sof/ipc3-control.c | 18 ++++++++++++++++++
+ sound/soc/sof/sof-audio.h    |  6 ++++++
+ sound/soc/sof/topology.c     | 26 +++++++++++---------------
+ 3 files changed, 35 insertions(+), 15 deletions(-)
 
-diff --git a/sound/soc/sof/pcm.c b/sound/soc/sof/pcm.c
-index 6242327e663e..2d21e531ac4f 100644
---- a/sound/soc/sof/pcm.c
-+++ b/sound/soc/sof/pcm.c
-@@ -150,6 +150,12 @@ static int sof_pcm_hw_params(struct snd_soc_component *component,
- 	dev_dbg(component->dev, "pcm: hw params stream %d dir %d\n",
- 		spcm->pcm.pcm_id, substream->stream);
+diff --git a/sound/soc/sof/ipc3-control.c b/sound/soc/sof/ipc3-control.c
+index cde9e481f7f2..bea26e73a741 100644
+--- a/sound/soc/sof/ipc3-control.c
++++ b/sound/soc/sof/ipc3-control.c
+@@ -694,6 +694,23 @@ static int sof_ipc3_widget_kcontrol_setup(struct snd_sof_dev *sdev,
+ 	return 0;
+ }
  
-+	ret = snd_sof_pcm_platform_hw_params(sdev, substream, params, &platform_params);
-+	if (ret < 0) {
-+		dev_err(component->dev, "platform hw params failed\n");
-+		return ret;
-+	}
++static int
++sof_ipc3_set_up_volume_table(struct snd_sof_control *scontrol, int tlv[SOF_TLV_ITEMS], int size)
++{
++	int i;
 +
- 	/* if this is a repeated hw_params without hw_free, skip setting up widgets */
- 	if (!spcm->stream[substream->stream].list) {
- 		ret = sof_pcm_setup_connected_widgets(sdev, rtd, spcm, substream->stream);
-@@ -166,12 +172,6 @@ static int sof_pcm_hw_params(struct snd_soc_component *component,
- 			return ret;
- 	}
++	/* init the volume table */
++	scontrol->volume_table = kcalloc(size, sizeof(u32), GFP_KERNEL);
++	if (!scontrol->volume_table)
++		return -ENOMEM;
++
++	/* populate the volume table */
++	for (i = 0; i < size ; i++)
++		scontrol->volume_table[i] = vol_compute_gain(i, tlv);
++
++	return 0;
++}
++
+ const struct sof_ipc_tplg_control_ops tplg_ipc3_control_ops = {
+ 	.volume_put = sof_ipc3_volume_put,
+ 	.volume_get = sof_ipc3_volume_get,
+@@ -708,4 +725,5 @@ const struct sof_ipc_tplg_control_ops tplg_ipc3_control_ops = {
+ 	.bytes_ext_volatile_get = sof_ipc3_bytes_ext_volatile_get,
+ 	.update = sof_ipc3_control_update,
+ 	.widget_kcontrol_setup = sof_ipc3_widget_kcontrol_setup,
++	.set_up_volume_table = sof_ipc3_set_up_volume_table,
+ };
+diff --git a/sound/soc/sof/sof-audio.h b/sound/soc/sof/sof-audio.h
+index a0af7c421fd9..e254b22ea8a9 100644
+--- a/sound/soc/sof/sof-audio.h
++++ b/sound/soc/sof/sof-audio.h
+@@ -39,6 +39,8 @@
+  */
+ #define VOLUME_FWL	16
  
--	ret = snd_sof_pcm_platform_hw_params(sdev, substream, params, &platform_params);
--	if (ret < 0) {
--		dev_err(component->dev, "platform hw params failed\n");
--		return ret;
--	}
++#define SOF_TLV_ITEMS 3
++
+ struct snd_sof_widget;
+ struct snd_sof_route;
+ struct snd_sof_control;
+@@ -88,6 +90,9 @@ struct sof_ipc_tplg_control_ops {
+ 	void (*update)(struct snd_sof_dev *sdev, void *ipc_control_message);
+ 	/* Optional callback to setup kcontrols associated with an swidget */
+ 	int (*widget_kcontrol_setup)(struct snd_sof_dev *sdev, struct snd_sof_widget *swidget);
++	/* mandatory callback to set up volume table for volume kcontrols */
++	int (*set_up_volume_table)(struct snd_sof_control *scontrol, int tlv[SOF_TLV_ITEMS],
++				   int size);
+ };
+ 
+ /**
+@@ -464,4 +469,5 @@ int sof_update_ipc_object(struct snd_soc_component *scomp, void *object, enum so
+ 			  size_t object_size, int token_instance_num);
+ int sof_pcm_setup_connected_widgets(struct snd_sof_dev *sdev, struct snd_soc_pcm_runtime *rtd,
+ 				    struct snd_sof_pcm *spcm, int dir);
++u32 vol_compute_gain(u32 value, int *tlv);
+ #endif
+diff --git a/sound/soc/sof/topology.c b/sound/soc/sof/topology.c
+index 5e959f8c4cb9..739f343010fc 100644
+--- a/sound/soc/sof/topology.c
++++ b/sound/soc/sof/topology.c
+@@ -32,7 +32,6 @@
+ #define VOL_HALF_DB_STEP	50
+ 
+ /* TLV data items */
+-#define TLV_ITEMS	3
+ #define TLV_MIN		0
+ #define TLV_STEP	1
+ #define TLV_MUTE	2
+@@ -134,7 +133,7 @@ int sof_update_ipc_object(struct snd_soc_component *scomp, void *object, enum so
+ 	return 0;
+ }
+ 
+-static inline int get_tlv_data(const int *p, int tlv[TLV_ITEMS])
++static inline int get_tlv_data(const int *p, int tlv[SOF_TLV_ITEMS])
+ {
+ 	/* we only support dB scale TLV type at the moment */
+ 	if ((int)p[SNDRV_CTL_TLVO_TYPE] != SNDRV_CTL_TLVT_DB_SCALE)
+@@ -224,7 +223,7 @@ static u32 vol_pow32(u32 a, int exp, u32 fwl)
+  * Function to calculate volume gain from TLV data.
+  * This function can only handle gain steps that are multiples of 0.5 dB
+  */
+-static u32 vol_compute_gain(u32 value, int *tlv)
++u32 vol_compute_gain(u32 value, int *tlv)
+ {
+ 	int dB_gain;
+ 	u32 linear_gain;
+@@ -263,20 +262,17 @@ static u32 vol_compute_gain(u32 value, int *tlv)
+  * "size" specifies the number of entries in the table
+  */
+ static int set_up_volume_table(struct snd_sof_control *scontrol,
+-			       int tlv[TLV_ITEMS], int size)
++			       int tlv[SOF_TLV_ITEMS], int size)
+ {
+-	int j;
 -
- 	if (pcm_ops->hw_params) {
- 		ret = pcm_ops->hw_params(component, substream, params, &platform_params);
- 		if (ret < 0)
+-	/* init the volume table */
+-	scontrol->volume_table = kcalloc(size, sizeof(u32), GFP_KERNEL);
+-	if (!scontrol->volume_table)
+-		return -ENOMEM;
++	struct snd_soc_component *scomp = scontrol->scomp;
++	struct snd_sof_dev *sdev = snd_soc_component_get_drvdata(scomp);
++	const struct sof_ipc_tplg_ops *tplg_ops = sdev->ipc->ops->tplg;
+ 
+-	/* populate the volume table */
+-	for (j = 0; j < size ; j++)
+-		scontrol->volume_table[j] = vol_compute_gain(j, tlv);
++	if (tplg_ops->control->set_up_volume_table)
++		return tplg_ops->control->set_up_volume_table(scontrol, tlv, size);
+ 
+-	return 0;
++	dev_err(scomp->dev, "Mandatory op %s not set\n", __func__);
++	return -EINVAL;
+ }
+ 
+ struct sof_dai_types {
+@@ -772,7 +768,7 @@ static int sof_control_load_volume(struct snd_soc_component *scomp,
+ 	struct snd_sof_dev *sdev = snd_soc_component_get_drvdata(scomp);
+ 	struct snd_soc_tplg_mixer_control *mc =
+ 		container_of(hdr, struct snd_soc_tplg_mixer_control, hdr);
+-	int tlv[TLV_ITEMS];
++	int tlv[SOF_TLV_ITEMS];
+ 	unsigned int mask;
+ 	int ret;
+ 
 -- 
 2.25.1
 
