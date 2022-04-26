@@ -4,60 +4,61 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id ECA2DC433F5
-	for <alsa-devel@archiver.kernel.org>; Tue, 26 Apr 2022 19:06:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 62FAFC4332F
+	for <alsa-devel@archiver.kernel.org>; Tue, 26 Apr 2022 19:06:46 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3AC181866;
-	Tue, 26 Apr 2022 21:05:43 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3AC181866
+	by alsa0.perex.cz (Postfix) with ESMTPS id 851DB17DE;
+	Tue, 26 Apr 2022 21:05:54 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 851DB17DE
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1650999993;
+	s=default; t=1651000004;
 	bh=IahD/UGbAtp5D8KEjlB7ZHxiAoNcd+ZHPnhmK08V4LI=;
 	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
 	 List-Post:List-Help:List-Subscribe:From;
-	b=pwG7Mow5q7uU6CbAfa4HpaT8iHwCgw4mgPzI5UASrdlAzYsWZPOtVl0YwnZENfbOG
-	 ldC+AiK7EJ/GfNEqEy1NvoacbESfy9OdPLxzPCV3HMSJ1UeaeBH1kvNbx0K63mlM1a
-	 EeOiwRB4u9C97WpIPH6KOGhyP0eyyKZApwz5TYLg=
+	b=spQ5ZETEPp0aPUGELo/PZwMttVzCc+51n5ybyTla/lt8+SsD0VlUjyBn5fhhLr2W0
+	 S255KNVvv2cVcBOAUbHDyqawZJ3UnR9BrUzarXoTjcOWvLjzdWYP/QIi3a/BARQRX4
+	 O1G95iDusqb4rRHgbuxM8bSU6ZZ8c0hZkdY/8Q50=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 59F9DF8056F;
-	Tue, 26 Apr 2022 21:03:11 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 0C2C1F80510;
+	Tue, 26 Apr 2022 21:03:28 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id A93FCF80570; Tue, 26 Apr 2022 21:03:10 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+ id 27065F80510; Tue, 26 Apr 2022 21:03:26 +0200 (CEST)
+Received: from ams.source.kernel.org (ams.source.kernel.org
+ [IPv6:2604:1380:4601:e00::1])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 2694CF80564
- for <alsa-devel@alsa-project.org>; Tue, 26 Apr 2022 21:03:08 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2694CF80564
+ by alsa1.perex.cz (Postfix) with ESMTPS id B2255F804AC
+ for <alsa-devel@alsa-project.org>; Tue, 26 Apr 2022 21:03:01 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B2255F804AC
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="mpN08wHH"
+ header.b="URFRHNES"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id D7F6961A00;
- Tue, 26 Apr 2022 19:03:06 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CF0F0C385AA;
- Tue, 26 Apr 2022 19:03:05 +0000 (UTC)
+ by ams.source.kernel.org (Postfix) with ESMTPS id BC553B8224C;
+ Tue, 26 Apr 2022 19:03:00 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 56750C385A0;
+ Tue, 26 Apr 2022 19:02:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1650999786;
+ s=k20201202; t=1650999779;
  bh=IahD/UGbAtp5D8KEjlB7ZHxiAoNcd+ZHPnhmK08V4LI=;
  h=From:To:Cc:Subject:Date:From;
- b=mpN08wHHX0pvtH8ZJHsVKngKNRnLy9eYQ4TWteVVN6hBMXtJoSxYSps7YyNibZ9aC
- l1IsePvFjEp8qOc9owPDmFleX5atvYOxfY7Psm+9L8e3aJa2zHwK9Tzr3jVZfEX1lc
- J+tjrubbSSASxphBqDrbvAlO1fuYN34HTv7kqdmsdAc3NtX+vL/Y44MbGUjBiG59gC
- mY8Phx5u3neNE25BG+bwzJ+8Gy8gPVmN45R2zcg452LKe+d7S9GHlExkVEeRkrDPAa
- gNlIhM/vF0wPDFqVJDQxjJ+86m2oED3OJEVtEwx2Socq7AkmJMpuMZskGVQduqGLym
- cdasWvhz5EyAA==
+ b=URFRHNESFL5/TWAsJPZv2mzFgObA4TCmpdF04ifwTtJMn2u0mffWR2Ggc6gz+WUEQ
+ RQeseiukQNba5N88kR0krx4HhQaxNopknmWOlWyoaQpuR/kuCQil52UmYKtKoSVZq8
+ AeUZxzqTIK2bBUTsWatxxvncD2uCMhTKAwrBX/PLYHNHVJ4wVOOXH8iG2FBD8CTC7s
+ JzTfw/V58WLfuJwE/5WJWzgLFOX80JKgk8hb2JL1c3ntRP1vrG+si+7bkgvOCZwneK
+ K6nEhZ8kLnoNVGQ7G+av0GE52SegaJlRg8ytK+drprTcufYXM4UWj1itL1y/bVe846
+ ofdPD9dy2bNFg==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.9 1/3] ASoC: wm8731: Disable the regulator when
+Subject: [PATCH AUTOSEL 4.14 1/5] ASoC: wm8731: Disable the regulator when
  probing fails
-Date: Tue, 26 Apr 2022 15:03:01 -0400
-Message-Id: <20220426190304.2351976-1-sashal@kernel.org>
+Date: Tue, 26 Apr 2022 15:02:52 -0400
+Message-Id: <20220426190258.2351902-1-sashal@kernel.org>
 X-Mailer: git-send-email 2.35.1
 MIME-Version: 1.0
 X-stable: review
