@@ -4,60 +4,60 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 46372C433F5
-	for <alsa-devel@archiver.kernel.org>; Tue, 26 Apr 2022 19:06:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id ECA2DC433F5
+	for <alsa-devel@archiver.kernel.org>; Tue, 26 Apr 2022 19:06:34 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 841961891;
-	Tue, 26 Apr 2022 21:05:16 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 841961891
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3AC181866;
+	Tue, 26 Apr 2022 21:05:43 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3AC181866
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1650999966;
-	bh=kP8vkEbi7l6zQ+HStJBxrehrXF5ycY+sgq3il3p6mlc=;
+	s=default; t=1650999993;
+	bh=IahD/UGbAtp5D8KEjlB7ZHxiAoNcd+ZHPnhmK08V4LI=;
 	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
 	 List-Post:List-Help:List-Subscribe:From;
-	b=ZCFayhXlC8FvshjZs3CXLSu8gAwZYe+7N9rOcNWpQIpyHtXVvVFvDUyFVG9pxzyQF
-	 kaJak7rtJ3n55AIP2f5U037ivbQbNiYpZh1GhR1s7Yc2TV3mjWsJqYJCGD5gYnCjRS
-	 9GDN838hm5R5XKjyH1Wa3QDLzado4W0YnjYxh9h8=
+	b=pwG7Mow5q7uU6CbAfa4HpaT8iHwCgw4mgPzI5UASrdlAzYsWZPOtVl0YwnZENfbOG
+	 ldC+AiK7EJ/GfNEqEy1NvoacbESfy9OdPLxzPCV3HMSJ1UeaeBH1kvNbx0K63mlM1a
+	 EeOiwRB4u9C97WpIPH6KOGhyP0eyyKZApwz5TYLg=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 3CB8FF80559;
-	Tue, 26 Apr 2022 21:03:01 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 59F9DF8056F;
+	Tue, 26 Apr 2022 21:03:11 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 04969F80559; Tue, 26 Apr 2022 21:03:00 +0200 (CEST)
+ id A93FCF80570; Tue, 26 Apr 2022 21:03:10 +0200 (CEST)
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id BECF1F8055A
- for <alsa-devel@alsa-project.org>; Tue, 26 Apr 2022 21:02:53 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BECF1F8055A
+ by alsa1.perex.cz (Postfix) with ESMTPS id 2694CF80564
+ for <alsa-devel@alsa-project.org>; Tue, 26 Apr 2022 21:03:08 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2694CF80564
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="pv4jE7oz"
+ header.b="mpN08wHH"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id DA273619C2;
- Tue, 26 Apr 2022 19:02:52 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 220CDC385A4;
- Tue, 26 Apr 2022 19:02:52 +0000 (UTC)
+ by dfw.source.kernel.org (Postfix) with ESMTPS id D7F6961A00;
+ Tue, 26 Apr 2022 19:03:06 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CF0F0C385AA;
+ Tue, 26 Apr 2022 19:03:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1650999772;
- bh=kP8vkEbi7l6zQ+HStJBxrehrXF5ycY+sgq3il3p6mlc=;
+ s=k20201202; t=1650999786;
+ bh=IahD/UGbAtp5D8KEjlB7ZHxiAoNcd+ZHPnhmK08V4LI=;
  h=From:To:Cc:Subject:Date:From;
- b=pv4jE7oz4cREnzsC9jWLHwd8bKJWSFKuA0PCanCVAtztxNAPhMenjPqkQOSYnpx2w
- 3KUax3XwOyZFlh8oJ+ZE3zm75A4k4MXR9M4RRLeQo9mn0qKoz71AZ0H/moTvahAkBu
- j9LBdJI6MCCGGn8KJHot5QlVhQN15LAvlIVoKgcWndPSLRXma64EcHLnbgKv8qzmg7
- Ev1AOuoIX5ixSRuxub2KDtMy7lkvYQpPB0+BlGBic3YI9SHeBUmNevbhup9x74T5Rq
- obNflKBVs0XEJQlMLxjImWT9KE7sW61OXU0ZE5p31yyt3YvDrGsKkp+kcudBWAX5L6
- Yyi8ACmQ5VW+A==
+ b=mpN08wHHX0pvtH8ZJHsVKngKNRnLy9eYQ4TWteVVN6hBMXtJoSxYSps7YyNibZ9aC
+ l1IsePvFjEp8qOc9owPDmFleX5atvYOxfY7Psm+9L8e3aJa2zHwK9Tzr3jVZfEX1lc
+ J+tjrubbSSASxphBqDrbvAlO1fuYN34HTv7kqdmsdAc3NtX+vL/Y44MbGUjBiG59gC
+ mY8Phx5u3neNE25BG+bwzJ+8Gy8gPVmN45R2zcg452LKe+d7S9GHlExkVEeRkrDPAa
+ gNlIhM/vF0wPDFqVJDQxjJ+86m2oED3OJEVtEwx2Socq7AkmJMpuMZskGVQduqGLym
+ cdasWvhz5EyAA==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.19 1/6] ASoC: wm8731: Disable the regulator when
+Subject: [PATCH AUTOSEL 4.9 1/3] ASoC: wm8731: Disable the regulator when
  probing fails
-Date: Tue, 26 Apr 2022 15:02:44 -0400
-Message-Id: <20220426190251.2351817-1-sashal@kernel.org>
+Date: Tue, 26 Apr 2022 15:03:01 -0400
+Message-Id: <20220426190304.2351976-1-sashal@kernel.org>
 X-Mailer: git-send-email 2.35.1
 MIME-Version: 1.0
 X-stable: review
@@ -109,7 +109,7 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 11 insertions(+), 8 deletions(-)
 
 diff --git a/sound/soc/codecs/wm8731.c b/sound/soc/codecs/wm8731.c
-index 7c8fad865d6b..3c5c02b034a9 100644
+index 4f9a1eb28120..abe5e77ba171 100644
 --- a/sound/soc/codecs/wm8731.c
 +++ b/sound/soc/codecs/wm8731.c
 @@ -604,7 +604,7 @@ static int wm8731_hw_init(struct device *dev, struct wm8731_priv *wm8731)
@@ -146,8 +146,8 @@ index 7c8fad865d6b..3c5c02b034a9 100644
 -		return ret;
 +		goto err_regulator_enable;
  
- 	ret = devm_snd_soc_register_component(&i2c->dev,
- 			&soc_component_dev_wm8731, &wm8731_dai, 1);
+ 	ret = snd_soc_register_codec(&i2c->dev,
+ 			&soc_codec_dev_wm8731, &wm8731_dai, 1);
  	if (ret != 0) {
  		dev_err(&i2c->dev, "Failed to register CODEC: %d\n", ret);
 -		return ret;
