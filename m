@@ -4,75 +4,82 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 39FD2C433F5
-	for <alsa-devel@archiver.kernel.org>; Tue, 26 Apr 2022 18:43:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1C01CC433F5
+	for <alsa-devel@archiver.kernel.org>; Tue, 26 Apr 2022 18:43:49 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 76A8017F9;
-	Tue, 26 Apr 2022 20:42:39 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 76A8017F9
+	by alsa0.perex.cz (Postfix) with ESMTPS id 5AA391751;
+	Tue, 26 Apr 2022 20:42:57 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5AA391751
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1650998609;
-	bh=oKB1JwqWJCspvSyekgrBBnROEI3SHyZa6u2AwJbSLvc=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1650998627;
+	bh=9+KFtjL6DqziZHflCdlupEuWBC+Qd2ZkQ6uM8Aute1k=;
+	h=Date:Subject:To:References:From:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=ZvRRtcTs/lbtUu7AlQwo5oQISp1PjOhacDes8iGy5pktZmjbrZ47YPsAqoiMFT+Cm
-	 6TaeEhyc2adw7BRs57Pa4wr53hJc/UZ/LMbErwrqQoASdOS2DtxAbNTcrmLjIKez4t
-	 LIC4py5PreI7CZfOUsOyvUcuWT87H1Qee/Jac6Tg=
+	b=q4beuJEc4kowZj3ird4Cvel4jnEmpI5vSjtAqJx/ayMuYFg08gboWd77pmgL47quj
+	 zc2n4Lcso0jy92cpVU1/MlpTsR82Uy5SuLibJ4c/72mPitIrsDSDPKbNGfzT5HoLMd
+	 uc7t8Ky1bpMMd4IOR5ylZB43FJtHwWkpT/Md406g=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 18D7BF80510;
-	Tue, 26 Apr 2022 20:41:32 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id BFF62F80105;
+	Tue, 26 Apr 2022 20:42:52 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 054E6F8014B; Tue, 26 Apr 2022 20:41:28 +0200 (CEST)
-Received: from mga06.intel.com (mga06b.intel.com [134.134.136.31])
+ id 77378F80171; Tue, 26 Apr 2022 20:42:51 +0200 (CEST)
+Received: from mga12.intel.com (mga12.intel.com [192.55.52.136])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 26CB2F8027D
- for <alsa-devel@alsa-project.org>; Tue, 26 Apr 2022 20:41:21 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 26CB2F8027D
+ by alsa1.perex.cz (Postfix) with ESMTPS id 6A1D8F80105
+ for <alsa-devel@alsa-project.org>; Tue, 26 Apr 2022 20:42:48 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6A1D8F80105
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="fJoMaVWs"
+ header.b="T01BHBRR"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1650998484; x=1682534484;
- h=from:to:cc:subject:date:message-id:in-reply-to:
- references:mime-version:content-transfer-encoding;
- bh=oKB1JwqWJCspvSyekgrBBnROEI3SHyZa6u2AwJbSLvc=;
- b=fJoMaVWsI4U7QZIqq/1KiINicpqNkrgupO7JIu8dxAEs/HfXd/e9xdh2
- KdxX57oK0fdq9JJanErZN7hnXQnlhtO72Oq56tge6O9sDSZBgzojUnCSs
- DModncEe4zF2HgygerMthuBPJ9XT6oVHaDKQAvwfpr8unjiiVVO23yVE0
- EczaUH3fJ3oU3WDaTnStM+rlJtBYqSDz/8dtY1c+nf99j/clJSk/7pdtp
- dihHS/Vw7RmjsaxxXlPjHN4Pb1G3s18tqC0mTESpdimo3SlKBs+xgNLni
- txz+xFV4dH5ubhvAiUzK0dS5Q12NflUZauSoN/zNe6+xYT5aHreAWp1N8 g==;
-X-IronPort-AV: E=McAfee;i="6400,9594,10329"; a="326176834"
-X-IronPort-AV: E=Sophos;i="5.90,291,1643702400"; d="scan'208";a="326176834"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
- by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 26 Apr 2022 11:41:18 -0700
-X-IronPort-AV: E=Sophos;i="5.90,291,1643702400"; d="scan'208";a="513300139"
-Received: from jzhang96-mobl.amr.corp.intel.com (HELO
- pbossart-mobl3.amr.corp.intel.com) ([10.212.151.202])
- by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 26 Apr 2022 11:41:17 -0700
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-To: alsa-devel@alsa-project.org
-Subject: [PATCH 3/4] ASoC: SOF: sof-client-ipc-flood-test: use
- pm_runtime_resume_and_get()
-Date: Tue, 26 Apr 2022 13:41:05 -0500
-Message-Id: <20220426184106.102636-4-pierre-louis.bossart@linux.intel.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20220426184106.102636-1-pierre-louis.bossart@linux.intel.com>
-References: <20220426184106.102636-1-pierre-louis.bossart@linux.intel.com>
+ t=1650998569; x=1682534569;
+ h=message-id:date:mime-version:subject:to:cc:references:
+ from:in-reply-to:content-transfer-encoding;
+ bh=9+KFtjL6DqziZHflCdlupEuWBC+Qd2ZkQ6uM8Aute1k=;
+ b=T01BHBRRsNGPtogPOMk9X7L4y4+uI1SensJEw1Pzc+OZc2YoltcmtGYj
+ Zw6w8S5TXgQqvLkJG+hNpvGXJitPZLJCL9eK8IyomfMohrvS61R1iYxn4
+ WUNd1tWlww5DSiQkaLHiHslgx3aqoRfh/v7QzLmHMCCfgUslLSAdLs2TL
+ gxESeYiRFw82ClLSj9awLpWf+0gA+WlIb7OPd4vAw4SkSpuMqvht4IN7U
+ nFoVlldFTl5mCPCpKElsFwa/PkhVfBDc7YXnXxZGVpDpvZm7zVAt3HtK3
+ jyjvO0OVyGm50jTJbJMZ+INbcUDYrQdKGMHuw4iQgzgcGZywddu8DbrJi Q==;
+X-IronPort-AV: E=McAfee;i="6400,9594,10329"; a="245609334"
+X-IronPort-AV: E=Sophos;i="5.90,291,1643702400"; d="scan'208";a="245609334"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+ by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 26 Apr 2022 11:42:46 -0700
+X-IronPort-AV: E=Sophos;i="5.90,291,1643702400"; d="scan'208";a="628658829"
+Received: from jzhang96-mobl.amr.corp.intel.com (HELO [10.212.151.202])
+ ([10.212.151.202])
+ by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 26 Apr 2022 11:42:45 -0700
+Message-ID: <a318a2f3-6381-515f-9c0a-4936315cfc1f@linux.intel.com>
+Date: Tue, 26 Apr 2022 13:42:44 -0500
 MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Firefox/91.0 Thunderbird/91.5.0
+Subject: Re: [PATCH] ASoC: Intel: avs: Depend on CONFIG_ACPI
+Content-Language: en-US
+To: Mark Brown <broonie@kernel.org>
+References: <20220426115454.685787-1-amadeuszx.slawinski@linux.intel.com>
+ <eab567f0-73a4-bf23-76bf-8d576fa942f0@linux.intel.com>
+ <YmgnE/HKNmI+agNs@sirena.org.uk>
+ <726c58e5-241d-053f-8b4c-d56a5a228f0f@intel.com>
+ <Ymg5CAbwf/UxUOff@sirena.org.uk>
+ <ba9e90de-94ad-d6c9-b6df-1fe6f802e9d6@linux.intel.com>
+ <Ymg8HTcdxprUZBjH@sirena.org.uk>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+In-Reply-To: <Ymg8HTcdxprUZBjH@sirena.org.uk>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-Cc: tiwai@suse.de, Bard Liao <yung-chuan.liao@linux.intel.com>,
- broonie@kernel.org,
- =?UTF-8?q?P=C3=A9ter=20Ujfalusi?= <peter.ujfalusi@linux.intel.com>,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Content-Transfer-Encoding: 7bit
+Cc: Cezary Rojewski <cezary.rojewski@intel.com>,
+ kernel test robot <lkp@intel.com>, alsa-devel@alsa-project.org,
+ Liam Girdwood <lgirdwood@gmail.com>, Takashi Iwai <tiwai@suse.com>,
+ =?UTF-8?Q?Amadeusz_S=c5=82awi=c5=84ski?= <amadeuszx.slawinski@linux.intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -88,34 +95,20 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Use pm_runtime_resume_and_get() to replace the pm_runtime_get_sync() and
-pm_runtime_put_noidle() pattern.
 
-No functional changes.
 
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Reviewed-by: Péter Ujfalusi <peter.ujfalusi@linux.intel.com>
-Reviewed-by: Bard Liao <yung-chuan.liao@linux.intel.com>
----
- sound/soc/sof/sof-client-ipc-flood-test.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+On 4/26/22 13:38, Mark Brown wrote:
+> On Tue, Apr 26, 2022 at 01:26:08PM -0500, Pierre-Louis Bossart wrote:
+> 
+>> my suggestion was the following:
+> 
+>> depends on PCI
+>> depends on COMMON_CLK
+>> select SND_SOC_ACPI if ACPI
+> 
+> The X86 || COMPILE_TEST that's there currently is also sensible given
+> that this can only actually be used on x86 hardware.
 
-diff --git a/sound/soc/sof/sof-client-ipc-flood-test.c b/sound/soc/sof/sof-client-ipc-flood-test.c
-index db3a052c5dd2b..4bdecd80248ac 100644
---- a/sound/soc/sof/sof-client-ipc-flood-test.c
-+++ b/sound/soc/sof/sof-client-ipc-flood-test.c
-@@ -217,10 +217,9 @@ static ssize_t sof_ipc_flood_dfs_write(struct file *file, const char __user *buf
- 			ipc_count = MAX_IPC_FLOOD_COUNT;
- 	}
- 
--	ret = pm_runtime_get_sync(dev);
-+	ret = pm_runtime_resume_and_get(dev);
- 	if (ret < 0 && ret != -EACCES) {
- 		dev_err_ratelimited(dev, "debugfs write failed to resume %d\n", ret);
--		pm_runtime_put_noidle(dev);
- 		goto out;
- 	}
- 
--- 
-2.30.2
+right, I only commented on the ACPI dependency. 
 
+X86 || COMPILE_TEST is also what we use for SOF.
