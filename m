@@ -4,64 +4,64 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 25D28C433F5
-	for <alsa-devel@archiver.kernel.org>; Tue, 26 Apr 2022 17:17:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 05716C433F5
+	for <alsa-devel@archiver.kernel.org>; Tue, 26 Apr 2022 17:17:37 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 43B7617AA;
-	Tue, 26 Apr 2022 19:16:31 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 43B7617AA
+	by alsa0.perex.cz (Postfix) with ESMTPS id 2ADF618BF;
+	Tue, 26 Apr 2022 19:16:46 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2ADF618BF
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1650993441;
-	bh=3SntihcxZB92cUcH0j168bZMuHbA7lPrJWTcKqVf+G8=;
+	s=default; t=1650993456;
+	bh=SDBS54z/0Zpp8UWzpdRFU/Tj5+UdFgEMUtmlrJXCkMk=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=iFtNA0sEFTLA+pBqwjJTHxWy99Uc6U4Qw4oEAnTP6BnFyAiRXJK6ZzjU0PRJ7DL/7
-	 nuBeGf3YxXvXLTgQm1bNJDWvilQz0ah3YtBizVkbsbkrdebip2dbE9OlV6NLeCtWrp
-	 qpwg74kV1LmbhBsQP7xtfOusZAyKGkRoU8g84adc=
+	b=OgAkGp/3n+DglUOirzdTDvOaoz2kgGGVmGZtZfgFfAVVIHZQoQZ7DPTAGkbTPVCYE
+	 YUktpUxWNDdbLQgoTjyAcRH7ywzMON5Ng0gZsOf4aGS1w4GP/nzb3wsKSfAJyYWAW4
+	 32WiGneFQHyMiRSzCczLZDQwnJno+1xphBreu/2A=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 79E0EF80534;
-	Tue, 26 Apr 2022 19:15:14 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 967FBF80536;
+	Tue, 26 Apr 2022 19:15:18 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 84FFBF80152; Tue, 26 Apr 2022 19:15:01 +0200 (CEST)
-Received: from mga06.intel.com (mga06b.intel.com [134.134.136.31])
+ id F3F11F80542; Tue, 26 Apr 2022 19:15:16 +0200 (CEST)
+Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 453A3F80152
- for <alsa-devel@alsa-project.org>; Tue, 26 Apr 2022 19:14:50 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 453A3F80152
+ by alsa1.perex.cz (Postfix) with ESMTPS id A976FF80536
+ for <alsa-devel@alsa-project.org>; Tue, 26 Apr 2022 19:15:13 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A976FF80536
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="BYgXdYAV"
+ header.b="i3kBlKed"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1650993291; x=1682529291;
+ t=1650993314; x=1682529314;
  h=from:to:cc:subject:date:message-id:in-reply-to:
  references:mime-version:content-transfer-encoding;
- bh=3SntihcxZB92cUcH0j168bZMuHbA7lPrJWTcKqVf+G8=;
- b=BYgXdYAVs7qW/RTJEUwnOk5jiEKy+4fxmRlCbhyBl2utC/skeoC1OAca
- tJUsycao+Nnff7Pisz9ASJPzARBgYpYi7zvVAld3kFzU5x0ugFjDjxzSX
- PO7R1TbgOXTeVFTBrNVCQEACPP3G4o2uK/Lp8TMwqlJtBxO+MjAq2CO3I
- c5v1xZvX09c1kWd+EOrJ3TP6XTJ2h3YbRSLKC8w4ndrc475HfgKsWryKb
- M8NKPNFyYo/Dgo3TmHHjaEbqcyX9xgooGd7y2nG4nH+2JLra3No+ORhMY
- XDbZwo5rW2IwVBhdrwm4iQAWFo3hQBJVqDBhzw1W/EHNNbFxUgiJiB983 w==;
-X-IronPort-AV: E=McAfee;i="6400,9594,10329"; a="326149020"
-X-IronPort-AV: E=Sophos;i="5.90,291,1643702400"; d="scan'208";a="326149020"
+ bh=SDBS54z/0Zpp8UWzpdRFU/Tj5+UdFgEMUtmlrJXCkMk=;
+ b=i3kBlKedlVspo8Po8/rNs0RZiAhOqQ9vndOVqt7wZ850/9/ocbhhcHg8
+ 4j1BrgLDp+JWH+F9ZKUUkMASx1RIKENcpBh1zD8ymEt7er/EP6QJ9bl/5
+ V5rNdqtJmPNKxTYMXCuHGr8v/zAjRIWhEHaZRoIOoNFFqW9EWqNFFhxtS
+ uNMtFTyW+sLMOF6cm0Y3Ita2NW4L0MzGLWesRUW97IFpzO1hKXa8ekxeL
+ PDImhE9QS30pkFJI7FQo+ggkKP858bWQCQioeUf8zJcbW1JWszUU03loQ
+ UUWyT+dzaKrgplEw2Wt8eKI69MswiJ9ixqgwBDFhCovKRFHIFcg+vi/Qk A==;
+X-IronPort-AV: E=McAfee;i="6400,9594,10329"; a="264507986"
+X-IronPort-AV: E=Sophos;i="5.90,291,1643702400"; d="scan'208";a="264507986"
 Received: from fmsmga003.fm.intel.com ([10.253.24.29])
- by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 26 Apr 2022 10:14:45 -0700
+ by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 26 Apr 2022 10:15:06 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.90,291,1643702400"; d="scan'208";a="650305200"
+X-IronPort-AV: E=Sophos;i="5.90,291,1643702400"; d="scan'208";a="650305533"
 Received: from crojewsk-ctrl.igk.intel.com ([10.102.9.28])
- by FMSMGA003.fm.intel.com with ESMTP; 26 Apr 2022 10:14:42 -0700
+ by FMSMGA003.fm.intel.com with ESMTP; 26 Apr 2022 10:15:02 -0700
 From: Cezary Rojewski <cezary.rojewski@intel.com>
 To: alsa-devel@alsa-project.org,
 	broonie@kernel.org
-Subject: [PATCH 03/14] ASoC: Intel: avs: Generic PCM FE operations
-Date: Tue, 26 Apr 2022 19:23:35 +0200
-Message-Id: <20220426172346.3508411-4-cezary.rojewski@intel.com>
+Subject: [PATCH 07/14] ASoC: Intel: avs: Prepare for firmware tracing
+Date: Tue, 26 Apr 2022 19:23:39 +0200
+Message-Id: <20220426172346.3508411-8-cezary.rojewski@intel.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20220426172346.3508411-1-cezary.rojewski@intel.com>
 References: <20220426172346.3508411-1-cezary.rojewski@intel.com>
@@ -88,385 +88,269 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Each stream in AVS is represented by FE and BE domain. FE path stands
-for HOST part of the stream while BE stands for LINK (hardware) one.
-While BE portion is interface specific, FE is not. Handle all standard
-DAI operations to implement FE part of the stream.
+Firmware provides its own debug functionality. While coredump is one of
+these, traces are the main area of interest. kfifo is enlisted to cache
+log data that is being pumped to driver through SRAM. Separate DSP
+operations are declared as actual feature implementation differs between
+firmware generations.
+
+As log gathering involves usage of IPCs, add all necessary: ENABLE_LOGS
+and SYSTEM_TIME.
 
 Signed-off-by: Amadeusz Sławiński <amadeuszx.slawinski@linux.intel.com>
 Signed-off-by: Cezary Rojewski <cezary.rojewski@intel.com>
 ---
- sound/soc/intel/avs/pcm.c      | 336 +++++++++++++++++++++++++++++++++
- sound/soc/intel/avs/topology.c |   2 -
- 2 files changed, 336 insertions(+), 2 deletions(-)
+ sound/soc/intel/avs/avs.h       | 32 ++++++++++++++++++++++++++++++++
+ sound/soc/intel/avs/ipc.c       |  5 +++++
+ sound/soc/intel/avs/messages.c  | 31 +++++++++++++++++++++++++++++++
+ sound/soc/intel/avs/messages.h  | 21 +++++++++++++++++++++
+ sound/soc/intel/avs/registers.h |  1 +
+ sound/soc/intel/avs/utils.c     | 23 +++++++++++++++++++++++
+ 6 files changed, 113 insertions(+)
 
-diff --git a/sound/soc/intel/avs/pcm.c b/sound/soc/intel/avs/pcm.c
-index 29a02f058540..725caab7cf28 100644
---- a/sound/soc/intel/avs/pcm.c
-+++ b/sound/soc/intel/avs/pcm.c
-@@ -10,6 +10,7 @@
+diff --git a/sound/soc/intel/avs/avs.h b/sound/soc/intel/avs/avs.h
+index 02c2aa1bcd5c..917a8b06cace 100644
+--- a/sound/soc/intel/avs/avs.h
++++ b/sound/soc/intel/avs/avs.h
+@@ -11,6 +11,7 @@
+ 
  #include <linux/device.h>
+ #include <linux/firmware.h>
++#include <linux/kfifo.h>
+ #include <sound/hda_codec.h>
  #include <sound/hda_register.h>
- #include <sound/hdaudio_ext.h>
-+#include <sound/pcm_params.h>
- #include <sound/soc-acpi.h>
- #include <sound/soc-acpi-intel-match.h>
  #include <sound/soc-component.h>
-@@ -29,6 +30,341 @@ struct avs_dma_data {
- 	struct hdac_ext_stream *host_stream;
+@@ -42,6 +43,10 @@ struct avs_dsp_ops {
+ 	int (* const load_basefw)(struct avs_dev *, struct firmware *);
+ 	int (* const load_lib)(struct avs_dev *, struct firmware *, u32);
+ 	int (* const transfer_mods)(struct avs_dev *, bool, struct avs_module_entry *, u32);
++	int (* const enable_logs)(struct avs_dev *, enum avs_log_enable, u32, u32, unsigned long,
++				  u32 *);
++	int (* const log_buffer_offset)(struct avs_dev *, u32);
++	int (* const log_buffer_status)(struct avs_dev *, union avs_notify_msg *);
+ 	int (* const coredump)(struct avs_dev *, union avs_notify_msg *);
  };
  
-+static struct avs_tplg_path_template *
-+avs_dai_find_path_template(struct snd_soc_dai *dai, bool is_fe, int direction)
-+{
-+	struct snd_soc_dapm_widget *dw;
-+	struct snd_soc_dapm_path *dp;
-+	enum snd_soc_dapm_direction dir;
-+
-+	if (direction == SNDRV_PCM_STREAM_CAPTURE) {
-+		dw = dai->capture_widget;
-+		dir = is_fe ? SND_SOC_DAPM_DIR_OUT : SND_SOC_DAPM_DIR_IN;
-+	} else {
-+		dw = dai->playback_widget;
-+		dir = is_fe ? SND_SOC_DAPM_DIR_IN : SND_SOC_DAPM_DIR_OUT;
-+	}
-+
-+	dp = list_first_entry_or_null(&dw->edges[dir], typeof(*dp), list_node[dir]);
-+	if (!dp)
-+		return NULL;
-+
-+	/* Get the other widget, with actual path template data */
-+	dw = (dp->source == dw) ? dp->sink : dp->source;
-+
-+	return dw->priv;
-+}
-+
-+static int avs_dai_startup(struct snd_pcm_substream *substream, struct snd_soc_dai *dai, bool is_fe)
-+{
-+	struct avs_tplg_path_template *template;
-+	struct avs_dma_data *data;
-+
-+	template = avs_dai_find_path_template(dai, is_fe, substream->stream);
-+	if (!template) {
-+		dev_err(dai->dev, "no %s path for dai %s, invalid tplg?\n",
-+			snd_pcm_stream_str(substream), dai->name);
-+		return -EINVAL;
-+	}
-+
-+	data = kzalloc(sizeof(*data), GFP_KERNEL);
-+	if (!data)
-+		return -ENOMEM;
-+
-+	data->template = template;
-+	snd_soc_dai_set_dma_data(dai, substream, data);
-+
-+	return 0;
-+}
-+
-+static int avs_dai_hw_params(struct snd_pcm_substream *substream,
-+			     struct snd_pcm_hw_params *fe_hw_params,
-+			     struct snd_pcm_hw_params *be_hw_params, struct snd_soc_dai *dai,
-+			     int dma_id)
-+{
-+	struct avs_dma_data *data;
-+	struct avs_path *path;
-+	struct avs_dev *adev = to_avs_dev(dai->dev);
-+	int ret;
-+
-+	data = snd_soc_dai_get_dma_data(dai, substream);
-+
-+	dev_dbg(dai->dev, "%s FE hw_params str %p rtd %p",
-+		__func__, substream, substream->runtime);
-+	dev_dbg(dai->dev, "rate %d chn %d vbd %d bd %d\n",
-+		params_rate(fe_hw_params), params_channels(fe_hw_params),
-+		params_width(fe_hw_params), params_physical_width(fe_hw_params));
-+
-+	dev_dbg(dai->dev, "%s BE hw_params str %p rtd %p",
-+		__func__, substream, substream->runtime);
-+	dev_dbg(dai->dev, "rate %d chn %d vbd %d bd %d\n",
-+		params_rate(be_hw_params), params_channels(be_hw_params),
-+		params_width(be_hw_params), params_physical_width(be_hw_params));
-+
-+	path = avs_path_create(adev, dma_id, data->template, fe_hw_params, be_hw_params);
-+	if (IS_ERR(path)) {
-+		ret = PTR_ERR(path);
-+		dev_err(dai->dev, "create path failed: %d\n", ret);
-+		return ret;
-+	}
-+
-+	data->path = path;
-+	return 0;
-+}
-+
-+static int avs_dai_prepare(struct avs_dev *adev, struct snd_pcm_substream *substream,
-+			   struct snd_soc_dai *dai)
-+{
-+	struct avs_dma_data *data;
-+	int ret;
-+
-+	data = snd_soc_dai_get_dma_data(dai, substream);
-+	if (!data->path)
-+		return 0;
-+
-+	ret = avs_path_reset(data->path);
-+	if (ret < 0) {
-+		dev_err(dai->dev, "reset path failed: %d\n", ret);
-+		return ret;
-+	}
-+
-+	ret = avs_path_pause(data->path);
-+	if (ret < 0)
-+		dev_err(dai->dev, "pause path failed: %d\n", ret);
-+	return ret;
-+}
-+
-+static const unsigned int rates[] = {
-+	8000, 11025, 12000, 16000,
-+	22050, 24000, 32000, 44100,
-+	48000, 64000, 88200, 96000,
-+	128000, 176400, 192000,
-+};
-+
-+static const struct snd_pcm_hw_constraint_list hw_rates = {
-+	.count = ARRAY_SIZE(rates),
-+	.list = rates,
-+	.mask = 0,
-+};
-+
-+static int avs_dai_fe_startup(struct snd_pcm_substream *substream, struct snd_soc_dai *dai)
-+{
-+	struct snd_pcm_runtime *runtime = substream->runtime;
-+	struct avs_dma_data *data;
-+	struct avs_dev *adev = to_avs_dev(dai->dev);
-+	struct hdac_bus *bus = &adev->base.core;
-+	struct hdac_ext_stream *estream;
-+	int ret;
-+
-+	ret = avs_dai_startup(substream, dai, true);
-+	if (ret)
-+		return ret;
-+
-+	data = snd_soc_dai_get_dma_data(dai, substream);
-+
-+	estream = snd_hdac_ext_stream_assign(bus, substream, HDAC_EXT_STREAM_TYPE_HOST);
-+	if (!estream) {
-+		kfree(data);
-+		return -EBUSY;
-+	}
-+
-+	data->host_stream = estream;
-+	snd_pcm_hw_constraint_integer(runtime, SNDRV_PCM_HW_PARAM_PERIODS);
-+	/* avoid wrap-around with wall-clock */
-+	snd_pcm_hw_constraint_minmax(runtime, SNDRV_PCM_HW_PARAM_BUFFER_TIME, 20, 178000000);
-+	snd_pcm_hw_constraint_list(runtime, 0, SNDRV_PCM_HW_PARAM_RATE, &hw_rates);
-+	snd_pcm_set_sync(substream);
-+
-+	dev_dbg(dai->dev, "%s fe STARTUP tag %d str %p",
-+		__func__, hdac_stream(estream)->stream_tag, substream);
-+
-+	return 0;
-+}
-+
-+static void avs_dai_fe_shutdown(struct snd_pcm_substream *substream, struct snd_soc_dai *dai)
-+{
-+	struct avs_dma_data *data;
-+
-+	data = snd_soc_dai_get_dma_data(dai, substream);
-+
-+	snd_soc_dai_set_dma_data(dai, substream, NULL);
-+	snd_hdac_ext_stream_release(data->host_stream, HDAC_EXT_STREAM_TYPE_HOST);
-+	kfree(data);
-+}
-+
-+static int avs_dai_fe_hw_params(struct snd_pcm_substream *substream,
-+				struct snd_pcm_hw_params *hw_params, struct snd_soc_dai *dai)
-+{
-+	struct snd_pcm_hw_params *be_hw_params = NULL;
-+	struct snd_soc_pcm_runtime *fe, *be;
-+	struct snd_soc_dpcm *dpcm;
-+	struct avs_dma_data *data;
-+	struct hdac_stream *hstream;
-+	int ret;
-+
-+	data = snd_soc_dai_get_dma_data(dai, substream);
-+	if (data->path)
-+		return 0;
-+
-+	hstream = hdac_stream(data->host_stream);
-+	hstream->bufsize = 0;
-+	hstream->period_bytes = 0;
-+	hstream->format_val = 0;
-+
-+	fe = asoc_substream_to_rtd(substream);
-+	for_each_dpcm_be(fe, substream->stream, dpcm) {
-+		be = dpcm->be;
-+		be_hw_params = &be->dpcm[substream->stream].hw_params;
-+	}
-+
-+	ret = avs_dai_hw_params(substream, hw_params, be_hw_params, dai, hstream->stream_tag - 1);
-+	if (ret)
-+		goto create_err;
-+
-+	ret = avs_path_bind(data->path);
-+	if (ret < 0) {
-+		dev_err(dai->dev, "bind FE <-> BE failed: %d\n", ret);
-+		goto bind_err;
-+	}
-+
-+	return 0;
-+
-+bind_err:
-+	avs_path_free(data->path);
-+	data->path = NULL;
-+create_err:
-+	snd_pcm_lib_free_pages(substream);
-+	return ret;
-+}
-+
-+static int avs_dai_fe_hw_free(struct snd_pcm_substream *substream, struct snd_soc_dai *dai)
-+{
-+	struct avs_dma_data *data;
-+	struct hdac_stream *hstream;
-+	int ret;
-+
-+	dev_dbg(dai->dev, "%s fe HW_FREE str %p rtd %p",
-+		__func__, substream, substream->runtime);
-+
-+	data = snd_soc_dai_get_dma_data(dai, substream);
-+	if (!data->path)
-+		return 0;
-+
-+	hstream = hdac_stream(data->host_stream);
-+
-+	ret = avs_path_unbind(data->path);
-+	if (ret < 0)
-+		dev_err(dai->dev, "unbind FE <-> BE failed: %d\n", ret);
-+
-+	avs_path_free(data->path);
-+	data->path = NULL;
-+	snd_hdac_stream_cleanup(hstream);
-+	hstream->prepared = false;
-+
-+	ret = snd_pcm_lib_free_pages(substream);
-+	if (ret < 0)
-+		dev_dbg(dai->dev, "Failed to free pages!\n");
-+
-+	return ret;
-+}
-+
-+static int avs_dai_fe_prepare(struct snd_pcm_substream *substream, struct snd_soc_dai *dai)
-+{
-+	struct snd_pcm_runtime *runtime = substream->runtime;
-+	struct avs_dma_data *data;
-+	struct avs_dev *adev = to_avs_dev(dai->dev);
-+	struct hdac_stream *hstream;
-+	struct hdac_bus *bus;
-+	unsigned int format_val;
-+	int ret;
-+
-+	data = snd_soc_dai_get_dma_data(dai, substream);
-+	hstream = hdac_stream(data->host_stream);
-+
-+	if (hstream->prepared)
-+		return 0;
-+
-+	bus = hstream->bus;
-+	snd_hdac_ext_stream_decouple(bus, data->host_stream, true);
-+	snd_hdac_stream_reset(hstream);
-+
-+	format_val = snd_hdac_calc_stream_format(runtime->rate, runtime->channels, runtime->format,
-+						 runtime->sample_bits, 0);
-+
-+	ret = snd_hdac_stream_set_params(hstream, format_val);
-+	if (ret < 0)
-+		return ret;
-+
-+	ret = snd_hdac_stream_setup(hstream);
-+	if (ret < 0)
-+		return ret;
-+
-+	ret = avs_dai_prepare(adev, substream, dai);
-+	if (ret)
-+		return ret;
-+
-+	hstream->prepared = true;
-+	return 0;
-+}
-+
-+static int avs_dai_fe_trigger(struct snd_pcm_substream *substream, int cmd, struct snd_soc_dai *dai)
-+{
-+	struct avs_dma_data *data;
-+	struct hdac_stream *hstream;
-+	struct hdac_bus *bus;
-+	unsigned long flags;
-+	int ret = 0;
-+
-+	data = snd_soc_dai_get_dma_data(dai, substream);
-+	hstream = hdac_stream(data->host_stream);
-+	bus = hstream->bus;
-+
-+	switch (cmd) {
-+	case SNDRV_PCM_TRIGGER_START:
-+	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
-+		spin_lock_irqsave(&bus->reg_lock, flags);
-+		snd_hdac_stream_start(hstream, true);
-+		spin_unlock_irqrestore(&bus->reg_lock, flags);
-+
-+		ret = avs_path_run(data->path, AVS_TPLG_TRIGGER_AUTO);
-+		if (ret < 0)
-+			dev_err(dai->dev, "run FE path failed: %d\n", ret);
-+		break;
-+
-+	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
-+	case SNDRV_PCM_TRIGGER_STOP:
-+		ret = avs_path_pause(data->path);
-+		if (ret < 0)
-+			dev_err(dai->dev, "pause FE path failed: %d\n", ret);
-+
-+		spin_lock_irqsave(&bus->reg_lock, flags);
-+		snd_hdac_stream_stop(hstream);
-+		spin_unlock_irqrestore(&bus->reg_lock, flags);
-+
-+		if (cmd == SNDRV_PCM_TRIGGER_STOP) {
-+			ret = avs_path_reset(data->path);
-+			if (ret < 0)
-+				dev_err(dai->dev, "reset FE path failed: %d\n", ret);
-+		}
-+		break;
-+
-+	default:
-+		ret = -EINVAL;
-+		break;
-+	}
-+
-+	return ret;
-+}
-+
-+const struct snd_soc_dai_ops avs_dai_fe_ops = {
-+	.startup = avs_dai_fe_startup,
-+	.shutdown = avs_dai_fe_shutdown,
-+	.hw_params = avs_dai_fe_hw_params,
-+	.hw_free = avs_dai_fe_hw_free,
-+	.prepare = avs_dai_fe_prepare,
-+	.trigger = avs_dai_fe_trigger,
-+};
-+
- static ssize_t topology_name_read(struct file *file, char __user *user_buf, size_t count,
- 				  loff_t *ppos)
- {
-diff --git a/sound/soc/intel/avs/topology.c b/sound/soc/intel/avs/topology.c
-index d3fd5e145ee1..4ea799658ed9 100644
---- a/sound/soc/intel/avs/topology.c
-+++ b/sound/soc/intel/avs/topology.c
-@@ -15,8 +15,6 @@
- #include "avs.h"
- #include "topology.h"
+@@ -75,6 +80,16 @@ struct avs_fw_entry {
+ 	struct list_head node;
+ };
  
--const struct snd_soc_dai_ops avs_dai_fe_ops;
--
- /* Get pointer to vendor array at the specified offset. */
- #define avs_tplg_vendor_array_at(array, offset) \
- 	((struct snd_soc_tplg_vendor_array *)((u8 *)array + offset))
++struct avs_debug {
++	struct kfifo trace_fifo;
++	spinlock_t fifo_lock;	/* serialize I/O for trace_fifo */
++	spinlock_t trace_lock;	/* serialize debug window I/O between each LOG_BUFFER_STATUS */
++	wait_queue_head_t trace_waitq;
++	u32 aging_timer_period;
++	u32 fifo_full_timer_period;
++	u32 logged_resources;	/* context dependent: core or library */
++};
++
+ /*
+  * struct avs_dev - Intel HD-Audio driver data
+  *
+@@ -115,6 +130,8 @@ struct avs_dev {
+ 	struct list_head path_list;
+ 	spinlock_t path_list_lock;
+ 	struct mutex path_mutex;
++
++	struct avs_debug dbg;
+ };
+ 
+ /* from hda_bus to avs_dev */
+@@ -279,4 +296,19 @@ int avs_i2s_platform_register(struct avs_dev *adev, const char *name, unsigned l
+ 			      unsigned long *tdms);
+ int avs_hda_platform_register(struct avs_dev *adev, const char *name);
+ 
++/* Firmware tracing helpers */
++
++unsigned int __kfifo_fromio_locked(struct kfifo *fifo, const void __iomem *src, unsigned int len,
++				   spinlock_t *lock);
++
++#define avs_log_buffer_size(adev) \
++	((adev)->fw_cfg.trace_log_bytes / (adev)->hw_cfg.dsp_cores)
++
++#define avs_log_buffer_addr(adev, core) \
++({ \
++	s32 __offset = avs_dsp_op(adev, log_buffer_offset, core); \
++	(__offset < 0) ? NULL : \
++			 (avs_sram_addr(adev, AVS_DEBUG_WINDOW) + __offset); \
++})
++
+ #endif /* __SOUND_SOC_INTEL_AVS_H */
+diff --git a/sound/soc/intel/avs/ipc.c b/sound/soc/intel/avs/ipc.c
+index 84cb411c82fa..b535bbb5953a 100644
+--- a/sound/soc/intel/avs/ipc.c
++++ b/sound/soc/intel/avs/ipc.c
+@@ -138,6 +138,7 @@ static void avs_dsp_process_notification(struct avs_dev *adev, u64 header)
+ 		data_size = sizeof(struct avs_notify_res_data);
+ 		break;
+ 
++	case AVS_NOTIFY_LOG_BUFFER_STATUS:
+ 	case AVS_NOTIFY_EXCEPTION_CAUGHT:
+ 		break;
+ 
+@@ -168,6 +169,10 @@ static void avs_dsp_process_notification(struct avs_dev *adev, u64 header)
+ 		complete(&adev->fw_ready);
+ 		break;
+ 
++	case AVS_NOTIFY_LOG_BUFFER_STATUS:
++		avs_dsp_op(adev, log_buffer_status, &msg);
++		break;
++
+ 	case AVS_NOTIFY_EXCEPTION_CAUGHT:
+ 		avs_dsp_exception_caught(adev, &msg);
+ 		break;
+diff --git a/sound/soc/intel/avs/messages.c b/sound/soc/intel/avs/messages.c
+index 004da166a943..3da33150aabf 100644
+--- a/sound/soc/intel/avs/messages.c
++++ b/sound/soc/intel/avs/messages.c
+@@ -677,6 +677,37 @@ int avs_ipc_get_modules_info(struct avs_dev *adev, struct avs_mods_info **info)
+ 	return 0;
+ }
+ 
++int avs_ipc_set_enable_logs(struct avs_dev *adev, u8 *log_info, size_t size)
++{
++	int ret;
++
++	ret = avs_ipc_set_large_config(adev, AVS_BASEFW_MOD_ID, AVS_BASEFW_INST_ID,
++				       AVS_BASEFW_ENABLE_LOGS, log_info, size);
++	if (ret)
++		dev_err(adev->dev, "enable logs failed: %d\n", ret);
++
++	return ret;
++}
++
++int avs_ipc_set_system_time(struct avs_dev *adev)
++{
++	struct avs_sys_time sys_time;
++	int ret;
++	u64 us;
++
++	/* firmware expects UTC time in micro seconds */
++	us = ktime_to_us(ktime_get());
++	sys_time.val_l = us & UINT_MAX;
++	sys_time.val_u = us >> 32;
++
++	ret = avs_ipc_set_large_config(adev, AVS_BASEFW_MOD_ID, AVS_BASEFW_INST_ID,
++				       AVS_BASEFW_SYSTEM_TIME, (u8 *)&sys_time, sizeof(sys_time));
++	if (ret)
++		dev_err(adev->dev, "set system time failed: %d\n", ret);
++
++	return ret;
++}
++
+ int avs_ipc_copier_set_sink_format(struct avs_dev *adev, u16 module_id,
+ 				   u8 instance_id, u32 sink_id,
+ 				   const struct avs_audio_format *src_fmt,
+diff --git a/sound/soc/intel/avs/messages.h b/sound/soc/intel/avs/messages.h
+index 94875a153124..257482e160bc 100644
+--- a/sound/soc/intel/avs/messages.h
++++ b/sound/soc/intel/avs/messages.h
+@@ -186,6 +186,7 @@ union avs_reply_msg {
+ enum avs_notify_msg_type {
+ 	AVS_NOTIFY_PHRASE_DETECTED = 4,
+ 	AVS_NOTIFY_RESOURCE_EVENT = 5,
++	AVS_NOTIFY_LOG_BUFFER_STATUS = 6,
+ 	AVS_NOTIFY_FW_READY = 8,
+ 	AVS_NOTIFY_EXCEPTION_CAUGHT = 10,
+ 	AVS_NOTIFY_MODULE_EVENT = 12,
+@@ -203,6 +204,10 @@ union avs_notify_msg {
+ 				u32 msg_direction:1;
+ 				u32 msg_target:1;
+ 			};
++			struct {
++				u16 rsvd:12;
++				u16 core:4;
++			} log;
+ 		};
+ 		union {
+ 			u32 val;
+@@ -329,12 +334,21 @@ int avs_ipc_set_d0ix(struct avs_dev *adev, bool enable_pg, bool streaming);
+ #define AVS_BASEFW_INST_ID	0
+ 
+ enum avs_basefw_runtime_param {
++	AVS_BASEFW_ENABLE_LOGS = 6,
+ 	AVS_BASEFW_FIRMWARE_CONFIG = 7,
+ 	AVS_BASEFW_HARDWARE_CONFIG = 8,
+ 	AVS_BASEFW_MODULES_INFO = 9,
+ 	AVS_BASEFW_LIBRARIES_INFO = 16,
++	AVS_BASEFW_SYSTEM_TIME = 20,
++};
++
++enum avs_log_enable {
++	AVS_LOG_DISABLE = 0,
++	AVS_LOG_ENABLE = 1
+ };
+ 
++int avs_ipc_set_enable_logs(struct avs_dev *adev, u8 *log_info, size_t size);
++
+ struct avs_fw_version {
+ 	u16 major;
+ 	u16 minor;
+@@ -502,6 +516,13 @@ static inline bool avs_module_entry_is_loaded(struct avs_module_entry *mentry)
+ 
+ int avs_ipc_get_modules_info(struct avs_dev *adev, struct avs_mods_info **info);
+ 
++struct avs_sys_time {
++	u32 val_l;
++	u32 val_u;
++} __packed;
++
++int avs_ipc_set_system_time(struct avs_dev *adev);
++
+ /* Module configuration */
+ 
+ #define AVS_MIXIN_MOD_UUID \
+diff --git a/sound/soc/intel/avs/registers.h b/sound/soc/intel/avs/registers.h
+index 3fd02389ed2b..f951d3441cdf 100644
+--- a/sound/soc/intel/avs/registers.h
++++ b/sound/soc/intel/avs/registers.h
+@@ -58,6 +58,7 @@
+ #define AVS_UPLINK_WINDOW		AVS_FW_REGS_WINDOW
+ /* HOST -> DSP communication window */
+ #define AVS_DOWNLINK_WINDOW		1
++#define AVS_DEBUG_WINDOW		2
+ 
+ /* registry I/O helpers */
+ #define avs_sram_offset(adev, window_idx) \
+diff --git a/sound/soc/intel/avs/utils.c b/sound/soc/intel/avs/utils.c
+index 6473e3ae4c6e..13611dee9787 100644
+--- a/sound/soc/intel/avs/utils.c
++++ b/sound/soc/intel/avs/utils.c
+@@ -7,6 +7,7 @@
+ //
+ 
+ #include <linux/firmware.h>
++#include <linux/kfifo.h>
+ #include <linux/slab.h>
+ #include "avs.h"
+ #include "messages.h"
+@@ -299,3 +300,25 @@ void avs_release_firmwares(struct avs_dev *adev)
+ 		kfree(entry);
+ 	}
+ }
++
++unsigned int __kfifo_fromio_locked(struct kfifo *fifo, const void __iomem *src, unsigned int len,
++				   spinlock_t *lock)
++{
++	struct __kfifo *__fifo = &fifo->kfifo;
++	unsigned long flags;
++	unsigned int l, off;
++
++	spin_lock_irqsave(lock, flags);
++	len = min(len, kfifo_avail(fifo));
++	off = __fifo->in & __fifo->mask;
++	l = min(len, kfifo_size(fifo) - off);
++
++	memcpy_fromio(__fifo->data + off, src, l);
++	memcpy_fromio(__fifo->data, src + l, len - l);
++	/* Make sure data copied from SRAM is visible to all CPUs. */
++	smp_mb();
++	__fifo->in += len;
++	spin_unlock_irqrestore(lock, flags);
++
++	return len;
++}
 -- 
 2.25.1
 
