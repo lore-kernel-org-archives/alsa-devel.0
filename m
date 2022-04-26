@@ -4,74 +4,74 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 31280C433EF
-	for <alsa-devel@archiver.kernel.org>; Tue, 26 Apr 2022 22:26:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id EE748C433EF
+	for <alsa-devel@archiver.kernel.org>; Tue, 26 Apr 2022 22:26:27 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 72341173B;
-	Wed, 27 Apr 2022 00:25:15 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 72341173B
+	by alsa0.perex.cz (Postfix) with ESMTPS id 33DFC17EB;
+	Wed, 27 Apr 2022 00:25:36 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 33DFC17EB
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1651011965;
-	bh=eTvev1d58wOvWQoOgItkMM5OwULU9yJjY5KS6chB3CI=;
+	s=default; t=1651011986;
+	bh=TKY9X7lbadFhOIRyrV6C418dGVeuSUE9wG7Li4lnF/c=;
 	h=Date:Subject:To:References:From:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=p3p9gZj7zXO2mU94a5TcVPrqDgBJdr2bFhiULiyKBeAkTG1OvnSTS4LnvoGkY3FDh
-	 nq8CmqSg3dQz54Z1es0XMLLuFOMyyIRTFdd/ePR/Th0jm4jFBqqB0dfi5NISu7tn6D
-	 n3FXF8V9K4bHL+hpVEfLhpO5CXF7l1eSgGLdiK+s=
+	b=U8fbaUz2rSpV5rdSbbB7NWZFX4N4thO3Gd7lrI4zyWYO5lQ2as4fxfITcUANwcyyc
+	 DV6JJ8hqfeq4tdlqUgAYNS2q2Z/9R7DPRCo0/28y6aSpme49LawkPFN6YozCzjREmm
+	 BTzEe9bXmDKkbdCJNyEARsB5AC8MI18/82i1LNdg=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id C95F8F80535;
-	Wed, 27 Apr 2022 00:23:38 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 5F45FF8053B;
+	Wed, 27 Apr 2022 00:23:39 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id D026FF80506; Wed, 27 Apr 2022 00:23:30 +0200 (CEST)
+ id 3E0BFF80533; Wed, 27 Apr 2022 00:23:33 +0200 (CEST)
 Received: from mga12.intel.com (mga12.intel.com [192.55.52.136])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 0AAB2F8025C
- for <alsa-devel@alsa-project.org>; Wed, 27 Apr 2022 00:23:21 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0AAB2F8025C
+ by alsa1.perex.cz (Postfix) with ESMTPS id B7048F8027D
+ for <alsa-devel@alsa-project.org>; Wed, 27 Apr 2022 00:23:23 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B7048F8027D
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="jzd1T+HD"
+ header.b="lpSKz5ol"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1651011803; x=1682547803;
+ t=1651011804; x=1682547804;
  h=message-id:date:mime-version:subject:to:cc:references:
  from:in-reply-to:content-transfer-encoding;
- bh=eTvev1d58wOvWQoOgItkMM5OwULU9yJjY5KS6chB3CI=;
- b=jzd1T+HDrru50ZheXC/0kvd5GV6e0p53f8NBRwG1rbYwbfyM8KtUBkwH
- EGyWAPphE9FDA7Xu8Qb1TTn2vLorBMviXwusdrXAIVWJdMK2zloTbT5ZV
- DTia0M2jY2HF23+eXzl1gpmUYdJ1m47oqMqpphUL1sUJQJ55K2fVlxYcD
- bv6aDcfOxeNFNLUey2yK1jdLWvux1PGrWSsBb/YQKi1epgRk/HMm4QMNi
- w59bSj2THLBHUNtnDfmnYwT/4vINMgiaML5cOcJccTPjyFixP1kos5eKr
- uIbzFHvH0FMvcaUkRc0jeH8jZJXwxvpMdK2TAmZhoKOvuSa8py5u+GD0j Q==;
-X-IronPort-AV: E=McAfee;i="6400,9594,10329"; a="245660725"
-X-IronPort-AV: E=Sophos;i="5.90,292,1643702400"; d="scan'208";a="245660725"
+ bh=TKY9X7lbadFhOIRyrV6C418dGVeuSUE9wG7Li4lnF/c=;
+ b=lpSKz5olXk+Ms+vbE9Ys9bpShW/W2y5Wu+uMWPUkzXzzNHJAHiQqDAet
+ b/7gyyliCjQtqAmV6xhSVFzANWglnVISqHR3Y7hTy65CjRCfS37r9b6CB
+ rpee9WnwYK2BCdvilo1GJXSfIBBzAoUpoD3IoXlVAiPYJvaz4ChbBmQ4z
+ 2ppV1Amr1kFBbALCXVLXGCVbvibrufxdXlkJt+/xLc1q7LeL3dw3QpXp/
+ bG03Yf4Y/FaUbG9UNBLJDEvX5Pkn4MJVWuWMTXFoHTMJywLeSJyfzl6i6
+ qaIxLmqxZCx18V/3dAKHpaPpexerkaM667HBRjqrIBxVfb6ClN3U+ppvQ Q==;
+X-IronPort-AV: E=McAfee;i="6400,9594,10329"; a="245660735"
+X-IronPort-AV: E=Sophos;i="5.90,292,1643702400"; d="scan'208";a="245660735"
 Received: from orsmga006.jf.intel.com ([10.7.209.51])
  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 26 Apr 2022 15:23:18 -0700
-X-IronPort-AV: E=Sophos;i="5.90,292,1643702400"; d="scan'208";a="532888623"
+ 26 Apr 2022 15:23:21 -0700
+X-IronPort-AV: E=Sophos;i="5.90,292,1643702400"; d="scan'208";a="532888636"
 Received: from gkanakas-mobl.amr.corp.intel.com (HELO [10.212.152.229])
  ([10.212.152.229])
  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 26 Apr 2022 15:23:17 -0700
-Message-ID: <c62f108e-6887-a4e2-a155-e0d18b142ee3@linux.intel.com>
-Date: Tue, 26 Apr 2022 16:58:30 -0500
+ 26 Apr 2022 15:23:20 -0700
+Message-ID: <da55736f-61a8-dbbc-7253-7e3da70931d1@linux.intel.com>
+Date: Tue, 26 Apr 2022 17:18:31 -0500
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
  Firefox/91.0 Thunderbird/91.5.0
-Subject: Re: [PATCH 08/14] ASoC: Intel: avs: D0ix power state support
+Subject: Re: [PATCH 12/14] ASoC: Intel: avs: Power management
 Content-Language: en-US
 To: Cezary Rojewski <cezary.rojewski@intel.com>, alsa-devel@alsa-project.org, 
  broonie@kernel.org
 References: <20220426172346.3508411-1-cezary.rojewski@intel.com>
- <20220426172346.3508411-9-cezary.rojewski@intel.com>
+ <20220426172346.3508411-13-cezary.rojewski@intel.com>
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-In-Reply-To: <20220426172346.3508411-9-cezary.rojewski@intel.com>
+In-Reply-To: <20220426172346.3508411-13-cezary.rojewski@intel.com>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Cc: upstream@semihalf.com, harshapriya.n@intel.com, rad@semihalf.com,
  tiwai@suse.com, hdegoede@redhat.com, amadeuszx.slawinski@linux.intel.com,
  cujomalainey@chromium.org, lma@semihalf.com
@@ -93,216 +93,168 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
 On 4/26/22 12:23, Cezary Rojewski wrote:
-> Audio DSP device supports D0 substates in form of D0ix, allowing for
-> preserving more power even when device is still considered active (D0).
-> When entered, certain domains which are not being currently used become
-> power gated. Entering and leaving D0ix is a complex process and differs
-> between firmware generations.
+> To preserve power during sleep operations, handle suspend (S3),
+> hibernation (S4) and runtime (RTD3) transitions. As flow for all of
+> is shared, define common handlers to reduce code size.
 > 
-> Conditions that disallow D0i3 and require immediate D0i0 transition
-> include but may not be limited to: IPC traffic, firmware tracing and
-> SRAM I/O. To make D0ix toggling sane, delay D0i3 transition and refresh
-> the timer each time an IPC is requrested.
-
-typo: requested.
-
-I find it odd to list all kinds of criteria but only handle one in the end. Do the other matter, is this a TODO, unclear what you are trying to say.
-
->  int avs_get_module_entry(struct avs_dev *adev, const guid_t *uuid, struct avs_module_entry *entry);
-> diff --git a/sound/soc/intel/avs/dsp.c b/sound/soc/intel/avs/dsp.c
-> index 3ff17bd22a5a..2f18b137ff42 100644
-> --- a/sound/soc/intel/avs/dsp.c
-> +++ b/sound/soc/intel/avs/dsp.c
-> @@ -152,6 +152,15 @@ static int avs_dsp_get_core(struct avs_dev *adev, u32 core_id)
+> Signed-off-by: Amadeusz Sławiński <amadeuszx.slawinski@linux.intel.com>
+> Signed-off-by: Cezary Rojewski <cezary.rojewski@intel.com>
+> ---
+>  sound/soc/intel/avs/core.c | 125 +++++++++++++++++++++++++++++++++++++
+>  1 file changed, 125 insertions(+)
+> 
+> diff --git a/sound/soc/intel/avs/core.c b/sound/soc/intel/avs/core.c
+> index 93180c22032d..c2f8fb87cfc2 100644
+> --- a/sound/soc/intel/avs/core.c
+> +++ b/sound/soc/intel/avs/core.c
+> @@ -536,6 +536,128 @@ static void avs_pci_remove(struct pci_dev *pci)
+>  	pm_runtime_get_noresume(&pci->dev);
+>  }
 >  
->  	adev->core_refs[core_id]++;
->  	if (adev->core_refs[core_id] == 1) {
-> +		/*
-> +		 * No cores other than main-core can be running for DSP
-> +		 * to achieve d0ix. Conscious SET_D0IX IPC failure is permitted,
+> +static int __maybe_unused avs_suspend_common(struct avs_dev *adev, bool low_power)
 
-conscious failure? what's that?
+low_power is not used so....
 
-> +		 * simply d0ix power state will no longer be attempted.
-> +		 */
-> +		ret = avs_dsp_disable_d0ix(adev);
-> +		if (ret && ret != -AVS_EIPC)
-> +			goto err_disable_d0ix;
-> +
->  		ret = avs_dsp_enable(adev, mask);
->  		if (ret)
->  			goto err_enable_dsp;
-tatic int
-> +avs_dsp_set_d0ix(struct avs_dev *adev, bool enable)
 > +{
-> +	struct avs_ipc *ipc = adev->ipc;
+> +	struct hdac_bus *bus = &adev->base.core;
 > +	int ret;
 > +
-> +	/* Is transition required? */
-> +	if (ipc->in_d0ix == enable)
-> +		return 0;
+> +	flush_work(&adev->probe_work);
 > +
-> +	ret = avs_dsp_op(adev, set_d0ix, enable);
-> +	if (ret) {
-> +		/* Prevent further d0ix attempts on conscious IPC failure. */
-
-??
-
-> +		if (ret == -AVS_EIPC)
-> +			atomic_inc(&ipc->d0ix_disable_depth);
+> +	snd_hdac_ext_bus_link_power_down_all(bus);
 > +
-> +		ipc->in_d0ix = false;
+> +	ret = avs_ipc_set_dx(adev, AVS_MAIN_CORE_MASK, false);
+> +	/*
+> +	 * pm_runtime is blocked on DSP failure but system-wide suspend is not.
+> +	 * Do not block entire system from suspending if that's the case.
+> +	 */
+> +	if (ret && ret != -EPERM) {
+> +		dev_err(adev->dev, "set dx failed: %d\n", ret);
+> +		return AVS_IPC_RET(ret);
+> +	}
+> +
+> +	avs_dsp_op(adev, int_control, false);
+> +	snd_hdac_ext_bus_ppcap_int_enable(bus, false);
+> +
+> +	ret = avs_dsp_core_disable(adev, AVS_MAIN_CORE_MASK);
+> +	if (ret < 0) {
+> +		dev_err(adev->dev, "core_mask %ld disable failed: %d\n", AVS_MAIN_CORE_MASK, ret);
 > +		return ret;
 > +	}
 > +
-> +	ipc->in_d0ix = enable;
-> +	return 0;
-> +}
+> +	snd_hdac_ext_bus_ppcap_enable(bus, false);
+> +	/* disable LP SRAM retention */
+> +	avs_hda_power_gating_enable(adev, false);
+> +	snd_hdac_bus_stop_chip(bus);
+> +	/* disable CG when putting controller to reset */
+> +	avs_hdac_clock_gating_enable(bus, false);
+> +	snd_hdac_bus_enter_link_reset(bus);
+> +	avs_hdac_clock_gating_enable(bus, true);
 > +
-> +static void avs_dsp_schedule_d0ix(struct avs_dev *adev, struct avs_ipc_msg *tx)
-> +{
-> +	if (atomic_read(&adev->ipc->d0ix_disable_depth))
-> +		return;
-> +
-> +	mod_delayed_work(system_power_efficient_wq, &adev->ipc->d0ix_work,
-> +			 msecs_to_jiffies(AVS_D0IX_DELAY_MS));
-> +}
-> +
-> +static void avs_dsp_d0ix_work(struct work_struct *work)
-> +{
-> +	struct avs_ipc *ipc = container_of(work, struct avs_ipc, d0ix_work.work);
-> +
-> +	avs_dsp_set_d0ix(to_avs_dev(ipc->dev), true);
-> +}
-> +
-> +static int avs_dsp_wake_d0i0(struct avs_dev *adev, struct avs_ipc_msg *tx)
-> +{
-> +	struct avs_ipc *ipc = adev->ipc;
-> +
-> +	if (!atomic_read(&ipc->d0ix_disable_depth)) {
-> +		cancel_delayed_work_sync(&ipc->d0ix_work);
-> +		return avs_dsp_set_d0ix(adev, false);
-> +	}
+> +	snd_hdac_display_power(bus, HDA_CODEC_IDX_CONTROLLER, false);
 > +
 > +	return 0;
 > +}
 > +
-> +int avs_dsp_disable_d0ix(struct avs_dev *adev)
+> +static int __maybe_unused avs_resume_common(struct avs_dev *adev, bool low_power, bool purge)
 > +{
-> +	struct avs_ipc *ipc = adev->ipc;
-> +
-> +	/* Prevent PG only on the first disable. */
-> +	if (atomic_add_return(1, &ipc->d0ix_disable_depth) == 1) {
-> +		cancel_delayed_work_sync(&ipc->d0ix_work);
-> +		return avs_dsp_set_d0ix(adev, false);
-> +	}
-> +
-> +	return 0;
-> +}
-> +
-> +int avs_dsp_enable_d0ix(struct avs_dev *adev)
-> +{
-> +	struct avs_ipc *ipc = adev->ipc;
-> +
-> +	if (atomic_dec_and_test(&ipc->d0ix_disable_depth))
-> +		queue_delayed_work(system_power_efficient_wq, &ipc->d0ix_work,
-> +				   msecs_to_jiffies(AVS_D0IX_DELAY_MS));
-> +	return 0;
-> +}
->  
->  static void avs_dsp_recovery(struct avs_dev *adev)
->  {
-> @@ -391,10 +467,35 @@ static int avs_dsp_do_send_msg(struct avs_dev *adev, struct avs_ipc_msg *request
->  	return ret;
->  }
->  
-> +static int avs_dsp_send_msg_sequence(struct avs_dev *adev, struct avs_ipc_msg *request,
-> +				     struct avs_ipc_msg *reply, int timeout, bool wake_d0i0,
-> +				     bool schedule_d0ix)
-> +{
+> +	struct hdac_bus *bus = &adev->base.core;
+> +	struct hdac_ext_link *hlink;
 > +	int ret;
 > +
-> +	if (wake_d0i0) {
-> +		ret = avs_dsp_wake_d0i0(adev, request);
-> +		if (ret)
-> +			return ret;
+> +	snd_hdac_display_power(bus, HDA_CODEC_IDX_CONTROLLER, true);
+> +	avs_hdac_bus_init_chip(bus, true);
+> +
+> +	snd_hdac_ext_bus_ppcap_enable(bus, true);
+> +	snd_hdac_ext_bus_ppcap_int_enable(bus, true);
+> +
+> +	ret = avs_dsp_boot_firmware(adev, purge);
+> +	if (ret < 0) {
+> +		dev_err(adev->dev, "firmware boot failed: %d\n", ret);
+> +		return ret;
 > +	}
 > +
-> +	ret = avs_dsp_do_send_msg(adev, request, reply, timeout);
-> +	if (ret)
-> +		return ret;
+> +	/* turn off the links that were off before suspend */
+> +	list_for_each_entry(hlink, &bus->hlink_list, list) {
+> +		if (!hlink->ref_count)
+> +			snd_hdac_ext_bus_link_power_down(hlink);
+> +	}
 > +
-> +	if (schedule_d0ix)
-> +		avs_dsp_schedule_d0ix(adev, request);
+> +	/* check dma status and clean up CORB/RIRB buffers */
+> +	if (!bus->cmd_dma_state)
+> +		snd_hdac_bus_stop_cmd_io(bus);
 > +
 > +	return 0;
 > +}
 > +
->  int avs_dsp_send_msg_timeout(struct avs_dev *adev, struct avs_ipc_msg *request,
->  			     struct avs_ipc_msg *reply, int timeout)
->  {
-> -	return avs_dsp_do_send_msg(adev, request, reply, timeout);
-> +	bool wake_d0i0 = avs_dsp_op(adev, d0ix_toggle, request, true);
-> +	bool schedule_d0ix = avs_dsp_op(adev, d0ix_toggle, request, false);
-> +
-> +	return avs_dsp_send_msg_sequence(adev, request, reply, timeout, wake_d0i0, schedule_d0ix);
->  }
->  
->  int avs_dsp_send_msg(struct avs_dev *adev, struct avs_ipc_msg *request,
-> @@ -403,6 +504,19 @@ int avs_dsp_send_msg(struct avs_dev *adev, struct avs_ipc_msg *request,
->  	return avs_dsp_send_msg_timeout(adev, request, reply, adev->ipc->default_timeout_ms);
->  }
->  
-> +int avs_dsp_send_pm_msg_timeout(struct avs_dev *adev, struct avs_ipc_msg *request,
-> +				struct avs_ipc_msg *reply, int timeout, bool wake_d0i0)
+> +static int __maybe_unused avs_suspend(struct device *dev)
 > +{
-> +	return avs_dsp_send_msg_sequence(adev, request, reply, timeout, wake_d0i0, false);
+> +	return avs_suspend_common(to_avs_dev(dev), true);
 > +}
 > +
-> +int avs_dsp_send_pm_msg(struct avs_dev *adev, struct avs_ipc_msg *request,
-> +			struct avs_ipc_msg *reply, bool wake_d0i0)
+> +static int __maybe_unused avs_resume(struct device *dev)
 > +{
-> +	return avs_dsp_send_pm_msg_timeout(adev, request, reply, adev->ipc->default_timeout_ms,
-> +					   wake_d0i0);
+> +	return avs_resume_common(to_avs_dev(dev), true, true);
 > +}
 > +
->  static int avs_dsp_do_send_rom_msg(struct avs_dev *adev, struct avs_ipc_msg *request, int timeout)
->  {
->  	struct avs_ipc *ipc = adev->ipc;
-> @@ -463,6 +577,7 @@ int avs_ipc_init(struct avs_ipc *ipc, struct device *dev)
->  	ipc->ready = false;
->  	ipc->default_timeout_ms = AVS_IPC_TIMEOUT_MS;
->  	INIT_WORK(&ipc->recovery_work, avs_dsp_recovery_work);
-> +	INIT_DELAYED_WORK(&ipc->d0ix_work, avs_dsp_d0ix_work);
->  	init_completion(&ipc->done_completion);
->  	init_completion(&ipc->busy_completion);
->  	spin_lock_init(&ipc->rx_lock);
-> @@ -475,4 +590,6 @@ void avs_ipc_block(struct avs_ipc *ipc)
->  {
->  	ipc->ready = false;
->  	cancel_work_sync(&ipc->recovery_work);
-> +	cancel_delayed_work_sync(&ipc->d0ix_work);
-> +	ipc->in_d0ix = false;
->  }
-> diff --git a/sound/soc/intel/avs/messages.c b/sound/soc/intel/avs/messages.c
-> index 3da33150aabf..6404fce8cde4 100644
-> --- a/sound/soc/intel/avs/messages.c
-> +++ b/sound/soc/intel/avs/messages.c
-> @@ -432,7 +432,7 @@ int avs_ipc_set_dx(struct avs_dev *adev, u32 core_mask, bool powerup)
->  	request.data = &dx;
->  	request.size = sizeof(dx);
->  
-> -	ret = avs_dsp_send_msg(adev, &request, NULL);
-> +	ret = avs_dsp_send_pm_msg(adev, &request, NULL, true);
->  	if (ret)
->  		avs_ipc_err(adev, &request, "set dx", ret);
->  
-> @@ -456,7 +456,7 @@ int avs_ipc_set_d0ix(struct avs_dev *adev, bool enable_pg, bool streaming)
->  
->  	request.header = msg.val;
->  
-> -	ret = avs_dsp_send_msg(adev, &request, NULL);
-> +	ret = avs_dsp_send_pm_msg(adev, &request, NULL, false);
->  	if (ret)
->  		avs_ipc_err(adev, &request, "set d0ix", ret);
+> +static int __maybe_unused avs_runtime_suspend(struct device *dev)
+> +{
+> +	return avs_suspend_common(to_avs_dev(dev), true);
+> +}
+> +
+> +static int __maybe_unused avs_runtime_resume(struct device *dev)
+> +{
+> +	return avs_resume_common(to_avs_dev(dev), true, false);
+> +}
+> +
+> +static int __maybe_unused avs_freeze(struct device *dev)
+> +{
+> +	return avs_suspend_common(to_avs_dev(dev), false);
+> +}
+> +static int __maybe_unused avs_thaw(struct device *dev)
+> +{
+> +	return avs_resume_common(to_avs_dev(dev), false, true);
+> +}
+> +
+> +static int __maybe_unused avs_poweroff(struct device *dev)
+> +{
+> +	return avs_suspend_common(to_avs_dev(dev), false);
+> +}
+> +
+> +static int __maybe_unused avs_restore(struct device *dev)
+> +{
+> +	return avs_resume_common(to_avs_dev(dev), false, true);
+> +}
+> +
+> +static const struct dev_pm_ops avs_dev_pm = {
+> +	.suspend = avs_suspend,
+> +	.resume = avs_resume,
+
+... all the 4 functions below seem unnecessary?
+
+> +	.freeze = avs_freeze,
+> +	.thaw = avs_thaw,
+> +	.poweroff = avs_poweroff,
+> +	.restore = avs_restore,
+
+we've historically never used those, what drives this new usage?
+
+on the SOF side, we've used prepare and complete, along with idle...
+
+
+> +	SET_RUNTIME_PM_OPS(avs_runtime_suspend, avs_runtime_resume, NULL)
+> +};
+> +
+>  static const struct pci_device_id avs_ids[] = {
+>  	{ 0 }
+>  };
+> @@ -546,6 +668,9 @@ static struct pci_driver avs_pci_driver = {
+>  	.id_table = avs_ids,
+>  	.probe = avs_pci_probe,
+>  	.remove = avs_pci_remove,
+> +	.driver = {
+> +		.pm = &avs_dev_pm,
+> +	},
+>  };
+>  module_pci_driver(avs_pci_driver);
 >  
