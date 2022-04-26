@@ -4,64 +4,65 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 398DEC433F5
-	for <alsa-devel@archiver.kernel.org>; Tue, 26 Apr 2022 18:42:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id BB842C433EF
+	for <alsa-devel@archiver.kernel.org>; Tue, 26 Apr 2022 18:43:05 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 2883F1752;
-	Tue, 26 Apr 2022 20:41:56 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2883F1752
+	by alsa0.perex.cz (Postfix) with ESMTPS id 00BFF16FB;
+	Tue, 26 Apr 2022 20:42:14 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 00BFF16FB
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1650998566;
-	bh=rwol6x/SfjecZsFCcc8LN8zJ5AJPw1o+5OE89dSPITk=;
+	s=default; t=1650998584;
+	bh=tBERO57s5gS7HXxW/4Kv6JmqI/w4v+iPzhv6H7vrRtM=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=M7cq9YPl+z5SL9uJGu3iU6GV49OceF65978jfYfsaZZLcxQRn2h8wGkUhFVVHJCqH
-	 aJdQdR/LKVu4Tn4w3olZ5Erxg9UaNFBNnmkfX5KeJ9GHzzKuZyEdFhJQE1OIXKrZUf
-	 /+hqDpt1hBc3TQYqituGZGde8W8L62MYQbM8euRc=
+	b=i2DWjs8EzgWFG/y2xJtUDHN+QjIoq9oqMWtB2sXwPGhQxWtqnKCt3R6Sae8JRJEL5
+	 dgUzXbx5sufc/7pvbajYv+ynzDpyidUbxIud8C8IpUYABoXyKfBe4UjvF7I5AsuZ7j
+	 ldlYM05kudYENFw5Z2nDju9+FQmXbOlL6vK/O5Ug=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 86B0EF80171;
-	Tue, 26 Apr 2022 20:41:26 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 06027F80506;
+	Tue, 26 Apr 2022 20:41:27 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 214E1F804B4; Tue, 26 Apr 2022 20:41:24 +0200 (CEST)
+ id 79C14F804AC; Tue, 26 Apr 2022 20:41:25 +0200 (CEST)
 Received: from mga06.intel.com (mga06b.intel.com [134.134.136.31])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 4890EF800AE
- for <alsa-devel@alsa-project.org>; Tue, 26 Apr 2022 20:41:19 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4890EF800AE
+ by alsa1.perex.cz (Postfix) with ESMTPS id 30218F80171
+ for <alsa-devel@alsa-project.org>; Tue, 26 Apr 2022 20:41:22 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 30218F80171
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="FJ4hnMlk"
+ header.b="a5c0X2Hs"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1650998481; x=1682534481;
+ t=1650998483; x=1682534483;
  h=from:to:cc:subject:date:message-id:in-reply-to:
  references:mime-version:content-transfer-encoding;
- bh=rwol6x/SfjecZsFCcc8LN8zJ5AJPw1o+5OE89dSPITk=;
- b=FJ4hnMlkB7eFs/N0VMOgvAnXOzGoyg6sHODXRiyg3jkyGPKaCmRIGG06
- iR8gtRms/guao5JAJunX6KpMpCW4ixWj3/HeYkgT+3gW1Td5t1KqIfwVR
- OqB8/5sC4pdZkeW9rW2N1XiNvicdp98xVVW78gHhSbOwAm+DRfIDXDPBb
- Y9fHzQZT7Kbje59om+d78Mm//0M//q9m0k6E4N8j0LEK/xSRhdYV1mczG
- 0Ov5A8mvnMHBAjX6qsVjegeLIOWhlqO+U+a6U0KI/PukCPtnJm6Rbu0WK
- 7bTQ6YOF7AulTTQJrr0ZSl5+OzKteshf7MgfmTDANzWI6dXnTqpPniu2U g==;
-X-IronPort-AV: E=McAfee;i="6400,9594,10329"; a="326176830"
-X-IronPort-AV: E=Sophos;i="5.90,291,1643702400"; d="scan'208";a="326176830"
+ bh=tBERO57s5gS7HXxW/4Kv6JmqI/w4v+iPzhv6H7vrRtM=;
+ b=a5c0X2HsDKO9y2e12Wn2TCVEwb0JmoW3Rctz4VC1ASx1ahUNjJiTe0SK
+ iJHtnyFyYvt6PN1min5hgaQr209acvQ51+HvTrO2t1YNC9t18IAMHD4PC
+ xmdtsIaqfIr1RixOnjfqbTDF2EkEhIsNk0YmEmSmu8wK1lSRwd+xRftDJ
+ yKQKtvSxumus2oTShHAO85OZoUXOIykbD3TiudaYPZ7GGIwHIbjuo5my1
+ ygBDOdXlE3wD24W5harHM6oytX1F+CLci/5M4/ermEkA7QtLkz6v2DYaX
+ Vz8pdW7lopvN3JEtusnJ0pvlmCmyyYSB0LwMD7EOEvCtL8HxKdpq/m6st g==;
+X-IronPort-AV: E=McAfee;i="6400,9594,10329"; a="326176836"
+X-IronPort-AV: E=Sophos;i="5.90,291,1643702400"; d="scan'208";a="326176836"
 Received: from orsmga003.jf.intel.com ([10.7.209.27])
  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 26 Apr 2022 11:41:16 -0700
-X-IronPort-AV: E=Sophos;i="5.90,291,1643702400"; d="scan'208";a="513300133"
+ 26 Apr 2022 11:41:18 -0700
+X-IronPort-AV: E=Sophos;i="5.90,291,1643702400"; d="scan'208";a="513300141"
 Received: from jzhang96-mobl.amr.corp.intel.com (HELO
  pbossart-mobl3.amr.corp.intel.com) ([10.212.151.202])
  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 26 Apr 2022 11:41:16 -0700
+ 26 Apr 2022 11:41:18 -0700
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH 1/4] ASoC: SOF: control: use pm_runtime_resume_and_get()
-Date: Tue, 26 Apr 2022 13:41:03 -0500
-Message-Id: <20220426184106.102636-2-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH 4/4] ASoC: SOF: sof-client-ipc-msg-injector: use
+ pm_runtime_resume_and_get()
+Date: Tue, 26 Apr 2022 13:41:06 -0500
+Message-Id: <20220426184106.102636-5-pierre-louis.bossart@linux.intel.com>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20220426184106.102636-1-pierre-louis.bossart@linux.intel.com>
 References: <20220426184106.102636-1-pierre-louis.bossart@linux.intel.com>
@@ -96,22 +97,22 @@ Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Reviewed-by: Péter Ujfalusi <peter.ujfalusi@linux.intel.com>
 Reviewed-by: Bard Liao <yung-chuan.liao@linux.intel.com>
 ---
- sound/soc/sof/control.c | 3 +--
+ sound/soc/sof/sof-client-ipc-msg-injector.c | 3 +--
  1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/sound/soc/sof/control.c b/sound/soc/sof/control.c
-index 3b5718a3516de..e0e9efd25d34e 100644
---- a/sound/soc/sof/control.c
-+++ b/sound/soc/sof/control.c
-@@ -187,10 +187,9 @@ int snd_sof_bytes_ext_volatile_get(struct snd_kcontrol *kcontrol, unsigned int _
- 	const struct sof_ipc_tplg_ops *tplg_ops = sdev->ipc->ops->tplg;
- 	int ret, err;
+diff --git a/sound/soc/sof/sof-client-ipc-msg-injector.c b/sound/soc/sof/sof-client-ipc-msg-injector.c
+index dba6cfd7db092..c711981187aac 100644
+--- a/sound/soc/sof/sof-client-ipc-msg-injector.c
++++ b/sound/soc/sof/sof-client-ipc-msg-injector.c
+@@ -83,10 +83,9 @@ static ssize_t sof_msg_inject_dfs_write(struct file *file, const char __user *bu
+ 	if (size != count)
+ 		return size > 0 ? -EFAULT : size;
  
--	ret = pm_runtime_get_sync(scomp->dev);
-+	ret = pm_runtime_resume_and_get(scomp->dev);
+-	ret = pm_runtime_get_sync(dev);
++	ret = pm_runtime_resume_and_get(dev);
  	if (ret < 0 && ret != -EACCES) {
- 		dev_err_ratelimited(scomp->dev, "%s: failed to resume %d\n", __func__, ret);
--		pm_runtime_put_noidle(scomp->dev);
+ 		dev_err_ratelimited(dev, "debugfs write failed to resume %d\n", ret);
+-		pm_runtime_put_noidle(dev);
  		return ret;
  	}
  
