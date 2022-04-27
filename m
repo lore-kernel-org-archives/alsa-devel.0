@@ -4,82 +4,72 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6196CC433F5
-	for <alsa-devel@archiver.kernel.org>; Wed, 27 Apr 2022 15:15:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B3AFBC433F5
+	for <alsa-devel@archiver.kernel.org>; Wed, 27 Apr 2022 15:25:34 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 929C51765;
-	Wed, 27 Apr 2022 17:14:55 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 929C51765
+	by alsa0.perex.cz (Postfix) with ESMTPS id 7A54316BF;
+	Wed, 27 Apr 2022 17:24:42 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7A54316BF
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1651072545;
-	bh=TGI031VObWI4ayIDSkCw886Z6i8lvwf0WozMGM/cuZ4=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1651073132;
+	bh=JlPHMZjtz41n9jQFrgK3+bd+ZcmQpyjMl/Qk9pCRLtw=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=MkdQbl1tNPy6Llye0sATUmkLEiqB/7qdzqXcTV1kBra2E7Ly74RYDkUiZj5BB6eKN
-	 vtaZsRrDgZa541GALtq96JmTdrvnMKmLOc41xAx5vP3tm47zvxF0y1CK1W00u1m494
-	 PDM8H7alo4UJt7sMJ4yuAxxopDUSiUsP5HcAGv4g=
+	b=RbVFk6kHq08RVDLFRIGEUxwkYg+Go1JtqGfXzhjse8I1+dhI2ogHLvJKPLMXiopgL
+	 uxx3FipHSaHB+H6R/7NVmx88g/X0GlKmOwSvRxyisAuLfH+pTD0ijynZ2Skv4TPqjO
+	 EZcM7P97DrnC3D3H1qMkU/ERJs1w6QEZbO6By240=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 5FEFDF805EE;
-	Wed, 27 Apr 2022 17:08:24 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 0C831F80155;
+	Wed, 27 Apr 2022 17:24:42 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 4B841F80535; Wed, 27 Apr 2022 17:08:10 +0200 (CEST)
-Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
- [67.231.152.168])
+ id B7C31F8016E; Wed, 27 Apr 2022 17:24:40 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 4381FF800AE
+ for <alsa-devel@alsa-project.org>; Wed, 27 Apr 2022 17:24:38 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4381FF800AE
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="G6cdi3mV"
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 86ED6F8053B
- for <alsa-devel@alsa-project.org>; Wed, 27 Apr 2022 17:07:43 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 86ED6F8053B
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com
- header.b="PnUFOemd"
-Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
- by mx0b-001ae601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 23RBg6qK022428;
- Wed, 27 Apr 2022 10:07:42 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
- h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding : content-type; s=PODMain02222019;
- bh=uAW5W49MK2PvqxczWLn7lRsgK1Eta9jaQncSm39yqLY=;
- b=PnUFOemd6/q/1YZqhAanZeTPYWBNqzmvNHGUPYHGyPU8pWKNVbTd6FunNJTaATegNOyx
- uwC74++SVzOF8kJ8XWf9emu0O873WZyFZB5t9L1d8y+FYa8if4oUvQylEBlMSIn+01gk
- fPIkSGh/ycAi7rNfg5BkWQgi9uiX8qd5hdXgI3ohLl5mmzwoVgDfnFdp2Mtd1vmWyygo
- J/XMAXi/UxVGHoFRAn72aZkbj8U7MPQC1NWWqUD7GIEt7gXU7n2JFt55/swWN1grEZjL
- XOxwXcF2LiWQazz0LuOinsh7TRRpFpLRGs4EYBMHOjdZzHKHk3484qVgfzsjTogc9uBa Xg== 
-Received: from ediex01.ad.cirrus.com ([84.19.233.68])
- by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3fprt60xte-13
- (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
- Wed, 27 Apr 2022 10:07:41 -0500
-Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.24; Wed, 27 Apr
- 2022 16:07:32 +0100
-Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server id 15.1.2375.24 via
- Frontend Transport; Wed, 27 Apr 2022 16:07:32 +0100
-Received: from vitaly-Legion-7-16ACHg6.ad.cirrus.com (unknown [198.90.238.170])
- by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 7780846C;
- Wed, 27 Apr 2022 15:07:32 +0000 (UTC)
-From: Vitaly Rodionov <vitalyr@opensource.cirrus.com>
-To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Mark
- Brown <broonie@kernel.org>
-Subject: [PATCH 23/26] ALSA: hda: hda_cs_dsp_ctl: Add fw id strings
-Date: Wed, 27 Apr 2022 16:07:17 +0100
-Message-ID: <20220427150720.9194-24-vitalyr@opensource.cirrus.com>
-X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20220427150720.9194-1-vitalyr@opensource.cirrus.com>
-References: <20220427150720.9194-1-vitalyr@opensource.cirrus.com>
+ by dfw.source.kernel.org (Postfix) with ESMTPS id E8E806119C;
+ Wed, 27 Apr 2022 15:24:36 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C4287C385A9;
+ Wed, 27 Apr 2022 15:24:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1651073076;
+ bh=JlPHMZjtz41n9jQFrgK3+bd+ZcmQpyjMl/Qk9pCRLtw=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=G6cdi3mV8Wm7lwMwZlMJhJyM6oiN1wulMwe7jiMaUq8uDGRwAITcPJLnd/sEmoxhr
+ LkUl+DAILm7hRI0sIqGwt7Okr+B66+2SHF9sHFCkK0LwFbblmrOKrMMpL4bVQYDDTA
+ V2KRIDTzz+2V4OLuxMkL8FZAME5HHj+fq0RhPx50K/ryV6V5a3t+mVxk2jlNI/MLeZ
+ G0wCmpwVYwCEmNyhY8PU6FeJzKVIbBpp1LRFdvRFZX7kE0SBYTM6reZ/khAN3OKks3
+ EZGiXwlE6ZIuIvNUR7dqrdsATOi8BfL3YkfEipv/NR4xczvN8I64ZDIiTuET4Jo3Y8
+ HAxZ+5RQj9wOQ==
+Date: Wed, 27 Apr 2022 16:24:31 +0100
+From: Mark Brown <broonie@kernel.org>
+To: Charles Keepax <ckeepax@opensource.cirrus.com>
+Subject: Re: WM8962 crashing on suspend
+Message-ID: <YmlgL+Ur6BeWiUtr@sirena.org.uk>
+References: <CAHCN7xJuAuGmSQsmBfg-C6jOdJmf1Li=YWp7Jdi29nU3kk1GcA@mail.gmail.com>
+ <20220426174150.GZ38351@ediswmail.ad.cirrus.com>
+ <CAHCN7xLqixKxM_L7P9T2BqLpyHoGTYpMODKJotCneXZK+wUEMg@mail.gmail.com>
+ <20220427145730.GE38351@ediswmail.ad.cirrus.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Proofpoint-GUID: 7Gm9bWgJTbUUqqxjXe7okHmC8mIhZwd4
-X-Proofpoint-ORIG-GUID: 7Gm9bWgJTbUUqqxjXe7okHmC8mIhZwd4
-X-Proofpoint-Spam-Reason: safe
-Cc: patches@opensource.cirrus.com, alsa-devel@alsa-project.org,
- linux-kernel@vger.kernel.org, Stefan Binding <sbinding@opensource.cirrus.com>
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature"; boundary="p1Fdl8n0WgrD8w9s"
+Content-Disposition: inline
+In-Reply-To: <20220427145730.GE38351@ediswmail.ad.cirrus.com>
+X-Cookie: Buckle up!
+Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>,
+ patches@opensource.cirrus.com, Takashi Iwai <tiwai@suse.com>,
+ Liam Girdwood <lgirdwood@gmail.com>, Adam Ford <aford173@gmail.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -95,49 +85,44 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Stefan Binding <sbinding@opensource.cirrus.com>
 
-This will be used to define the firmware names.
+--p1Fdl8n0WgrD8w9s
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Signed-off-by: Stefan Binding <sbinding@opensource.cirrus.com>
-Signed-off-by: Vitaly Rodionov <vitalyr@opensource.cirrus.com>
----
- sound/pci/hda/hda_cs_dsp_ctl.c | 8 ++++++++
- sound/pci/hda/hda_cs_dsp_ctl.h | 2 ++
- 2 files changed, 10 insertions(+)
+On Wed, Apr 27, 2022 at 02:57:30PM +0000, Charles Keepax wrote:
+> On Wed, Apr 27, 2022 at 08:12:56AM -0500, Adam Ford wrote:
 
-diff --git a/sound/pci/hda/hda_cs_dsp_ctl.c b/sound/pci/hda/hda_cs_dsp_ctl.c
-index 4b4446043356..b1fbccc56efa 100644
---- a/sound/pci/hda/hda_cs_dsp_ctl.c
-+++ b/sound/pci/hda/hda_cs_dsp_ctl.c
-@@ -28,6 +28,14 @@ static const char * const hda_cs_dsp_fw_text[HDA_CS_DSP_NUM_FW] = {
- 	[HDA_CS_DSP_FW_MISC] =     "Misc",
- };
- 
-+const char * const hda_cs_dsp_fw_ids[HDA_CS_DSP_NUM_FW] = {
-+	[HDA_CS_DSP_FW_SPK_PROT] = "spk-prot",
-+	[HDA_CS_DSP_FW_SPK_CALI] = "spk-cali",
-+	[HDA_CS_DSP_FW_SPK_DIAG] = "spk-diag",
-+	[HDA_CS_DSP_FW_MISC] =     "misc",
-+};
-+EXPORT_SYMBOL_NS_GPL(hda_cs_dsp_fw_ids, SND_HDA_CS_DSP_CONTROLS);
-+
- static inline struct hda_cs_dsp_coeff_ctl *bytes_ext_to_ctl(struct soc_bytes_ext *ext)
- {
- 	return container_of(ext, struct hda_cs_dsp_coeff_ctl, bytes_ext);
-diff --git a/sound/pci/hda/hda_cs_dsp_ctl.h b/sound/pci/hda/hda_cs_dsp_ctl.h
-index 65b9c5c68957..265d8024eec9 100644
---- a/sound/pci/hda/hda_cs_dsp_ctl.h
-+++ b/sound/pci/hda/hda_cs_dsp_ctl.h
-@@ -27,6 +27,8 @@ struct hda_cs_dsp_ctl_info {
- 	const char *amp_name;
- };
- 
-+extern const char * const hda_cs_dsp_fw_ids[HDA_CS_DSP_NUM_FW];
-+
- int hda_cs_dsp_control_add(struct cs_dsp_coeff_ctl *cs_ctl, struct hda_cs_dsp_ctl_info *info);
- void hda_cs_dsp_control_remove(struct cs_dsp_coeff_ctl *cs_ctl);
- int hda_cs_dsp_remove_kcontrol(struct snd_card *card, const char *name);
--- 
-2.32.0
+> > static const struct dev_pm_ops wm8962_pm = {
+> > + SET_SYSTEM_SLEEP_PM_OPS(pm_runtime_force_suspend, pm_runtime_force_resume)
+> > SET_RUNTIME_PM_OPS(wm8962_runtime_suspend, wm8962_runtime_resume, NULL)
+> > };
 
+> > I applied this, and it appears to make the issue go away on a 5.15
+> > kernel.  I haven't tried it on a 5.18 yet.  If this fixes the issue,
+> > would that be an acceptable solution to push upstream?
+
+> Feels like those operations should be runtime PM, like there is
+> no reason to keep the CODEC in a high power state than necessary.
+
+The issue Adam reported was suspending during playback - if you suspend
+during playback or capture the device is not idle at the point where we
+start trying to suspend so it shouldn't be in runtime suspend and won't
+by default be runtime suspended by the PM core.
+
+--p1Fdl8n0WgrD8w9s
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmJpYC4ACgkQJNaLcl1U
+h9DpZAf/YusXgpjpzUXMZissqpoREXI0H8AwYtfEQSiRGiXunq8LiypyC9YpKXhD
+B16WNV3+HqQ5ZmC2M1ojVdmBBsQvKwFEDlqzPJTZ6O/0IuNsjtcBerSXrLQXSrTN
+2v6AlqqHLHEiLRtY4LkGtkiNsatBcsnG8rvA8S/aKjBnRVMV8qzK/kRjUWMosTnW
+DOY27vdFcGtPJQsUDVOHBHg+6bGKtsAARRT3B5zoo233iANkyxkKehx8B9DZ5sg+
+cMSX3a4PGyOv4m5ZJWBNkOqRtzThnyb3k2EcDEc6o2zWuF9uRPebgRZgyGtO2zD4
+Wh737VW9OEdyzKhU+6rOORXf5EibNA==
+=16bs
+-----END PGP SIGNATURE-----
+
+--p1Fdl8n0WgrD8w9s--
