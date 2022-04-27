@@ -4,69 +4,72 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 52235C433EF
-	for <alsa-devel@archiver.kernel.org>; Wed, 27 Apr 2022 22:05:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id EEFB0C433F5
+	for <alsa-devel@archiver.kernel.org>; Wed, 27 Apr 2022 22:06:03 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 7397A15CC;
-	Thu, 28 Apr 2022 00:04:46 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7397A15CC
+	by alsa0.perex.cz (Postfix) with ESMTPS id 2502E1616;
+	Thu, 28 Apr 2022 00:05:12 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2502E1616
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1651097136;
-	bh=779XAAml1P7LYYjmSE8qDzdFvoLhDHfypjKmhQlkb18=;
+	s=default; t=1651097162;
+	bh=jGR3MtKiwYyR+lUnJSaAaDsNLiw4lH+yX1MtYnOs/i4=;
 	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=nqADxJlfRfZKYBWhywPB3AWCzhkCG4bWCYmBjfMbZownLwll6MmVKYxOm/QWXWy+9
-	 G4pMuueRjttXdGCSl3LkjbhN44j1A6e3n4J1/YNuP5dA7ns/XjKgU2U+XrOaGCeUkl
-	 gkCAOjeYdeHnCFuKM26rcSLlazChvlyey8aJXruw=
+	b=sgITwZBJVOyFIf2geAqccEFSOoa3HToZ67FuY6Cr96CkQhXMUY5PNsF8ewjPWJwVf
+	 nIUj5fdiBJg0GIvRkmrOF1RVN4NZdmGt18ShTp+UwwSymRhoxAXKBe9d84ZMnhTnNL
+	 fWE88bl2zE/tQnVKtCf9gjdE2oSi7xYkRf435sA0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id DB22EF80535;
-	Thu, 28 Apr 2022 00:02:56 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 08A7DF8053B;
+	Thu, 28 Apr 2022 00:03:03 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 1CFA1F80526; Thu, 28 Apr 2022 00:02:55 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org
- [IPv6:2604:1380:4641:c500::1])
+ id 76E85F80542; Thu, 28 Apr 2022 00:03:02 +0200 (CEST)
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 5EC22F80526
- for <alsa-devel@alsa-project.org>; Thu, 28 Apr 2022 00:02:52 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5EC22F80526
+ by alsa1.perex.cz (Postfix) with ESMTPS id 3411EF80536;
+ Thu, 28 Apr 2022 00:02:44 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3411EF80536
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="Nvj3vMOy"
+ header.b="KYAsSER2"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id 2442F61E13;
- Wed, 27 Apr 2022 22:02:51 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D2BB7C385AE;
- Wed, 27 Apr 2022 22:02:46 +0000 (UTC)
+ by ams.source.kernel.org (Postfix) with ESMTPS id E24D0B82B06;
+ Wed, 27 Apr 2022 22:02:43 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 374A9C385A7;
+ Wed, 27 Apr 2022 22:02:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1651096969;
- bh=779XAAml1P7LYYjmSE8qDzdFvoLhDHfypjKmhQlkb18=;
+ s=k20201202; t=1651096962;
+ bh=jGR3MtKiwYyR+lUnJSaAaDsNLiw4lH+yX1MtYnOs/i4=;
  h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=Nvj3vMOyHdOu/t8NlZgWt1JFNpHE3hwPq1nCzT3c4ctQNsJzomK2FAkGdWqOQGjfr
- ITdn56I/7ckabcgWlh6/2VpyhGLkkhFu/jcf+JiIb0NIgrQjkdDDyVJarEfZ42cdFG
- bCxA7sdHb2uYmPKkQhJQE2+hF+FA0af3acLY4rY4kbUk7UALAkK+vqLM8G+r48t7DN
- 5luglzoKJ7gpX1jn3hWZzvhCn6DSgj7P1hJzKKK4f+8notzGtSIsHsY3jwAh5d7Eg/
- XPXPRf6a6H9oEkiDCADuP+ghyVcez75cPtmNRdfBCy/cxpY7VsDOwXfs61fMrNkiBA
- z78srTySqhZMg==
+ b=KYAsSER2fa68mS9DGuKJMxkz2YSD++pSrMvoxGWqBZ5FXe3TlAtwgsOqiA4aJk+7P
+ FuC7iZnPgJiRFtfG+2TqFhKDB+aB4DF9nCvdnEZwf4nt1QKW3etyqCmmBh3DpTgIZm
+ wFPwoKtcIqCFyYKxr8vgd+ej8mL9eM5Kz0ftgvB0h+bNI2N9rWu6XiD0pSWSBp8lS9
+ Op3mySF/PDzwazx7lnmoYQibcQyvh6ZJbp9xQeZHubDMvGDQRgM7Q+s+BQWXFdt8b1
+ gp5kEKwMNBA4bHkInGCJQiEozfrj5VYJpiGnY2D0C6L4paMmJuzSHS2r9Cdic0GlUW
+ 1mFKxLwcqiTVg==
 From: Mark Brown <broonie@kernel.org>
-To: tiwai@suse.com, perex@perex.cz, prabhakar.mahadev-lad.rj@bp.renesas.com,
- lgirdwood@gmail.com, alsa-devel@alsa-project.org
-In-Reply-To: <20220426074922.13319-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
-References: <20220426074922.13319-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
-Subject: Re: [PATCH v2 0/3] ASoC: sh: rz-ssi: Trivial fixes
-Message-Id: <165109696658.498174.4698247588451201645.b4-ty@kernel.org>
-Date: Wed, 27 Apr 2022 23:02:46 +0100
+To: yc.hung@mediatek.com, tiwai@suse.com, matthias.bgg@gmail.com,
+ perex@perex.cz, allen-kh.cheng@mediatek.com, ranjani.sridharan@linux.intel.com,
+ yangyingliang@huawei.com, daniel.baluta@nxp.com, kai.vehmanen@linux.intel.com,
+ pierre-louis.bossart@linux.intel.com, tinghan.shen@mediatek.com,
+ lgirdwood@gmail.com
+In-Reply-To: <20220427071030.10172-1-tinghan.shen@mediatek.com>
+References: <20220427071030.10172-1-tinghan.shen@mediatek.com>
+Subject: Re: [PATCH v2] ASoC: SOF: mediatek: Fix allyesconfig build error
+Message-Id: <165109695894.498174.15533470381534539256.b4-ty@kernel.org>
+Date: Wed, 27 Apr 2022 23:02:38 +0100
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: geert+renesas@glider.be, pavel@denx.de, linux-kernel@vger.kernel.org,
- linux-renesas-soc@vger.kernel.org, prabhakar.csengg@gmail.com,
- biju.das.jz@bp.renesas.com, nobuhiro1.iwamatsu@toshiba.co.jp
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+ Project_Global_Chrome_Upstream_Group@mediatek.com,
+ linux-mediatek@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
+ sound-open-firmware@alsa-project.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -82,17 +85,13 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Tue, 26 Apr 2022 08:49:19 +0100, Lad Prabhakar wrote:
-> This patch series aims to fix trivial issues found in rz-ssi driver.
-> 
-> Cheers,
-> Prabhakar
-> 
-> v1->v2:
-> * Updated patch description for patch 1/3
-> * Patch 2/3 unchanged
-> * For patch 3/3 dropped devers action and instead called
->   rz_ssi_release_dma_channels() in the error path.
+On Wed, 27 Apr 2022 15:10:30 +0800, Tinghan Shen wrote:
+> ld: sound/soc/sof/mediatek/mt8186/mt8186-clk.o:(.opd+0x18): multiple
+> definition of `adsp_clock_on';
+> sound/soc/sof/mediatek/mt8195/mt8195-clk.o:(.opd+0x60): first defined
+> here
+> ld: sound/soc/sof/mediatek/mt8186/mt8186-clk.o: in function
+> `.adsp_clock_on':
 > 
 > [...]
 
@@ -102,12 +101,8 @@ Applied to
 
 Thanks!
 
-[1/3] ASoC: sh: rz-ssi: Drop SSIFSR_TDC and SSIFSR_RDC macros
-      commit: 17a1fef58c65ec9c9a15dd60386712567ff28d45
-[2/3] ASoC: sh: rz-ssi: Propagate error codes returned from platform_get_irq_byname()
-      commit: 91686a3984f34df0ab844cdbaa7e4d9621129f5d
-[3/3] ASoC: sh: rz-ssi: Release the DMA channels in rz_ssi_probe() error path
-      commit: 767e6f26204d3f5406630e86b720d01818b8616d
+[1/1] ASoC: SOF: mediatek: Fix allyesconfig build error
+      commit: 9ce170dc9c08895846c5828addb724e42bf98484
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
