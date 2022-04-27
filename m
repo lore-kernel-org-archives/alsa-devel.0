@@ -4,85 +4,77 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1BFA7C433F5
-	for <alsa-devel@archiver.kernel.org>; Wed, 27 Apr 2022 16:03:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 35CDCC43217
+	for <alsa-devel@archiver.kernel.org>; Wed, 27 Apr 2022 16:03:24 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 15861E0F;
-	Wed, 27 Apr 2022 18:02:16 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 15861E0F
+	by alsa0.perex.cz (Postfix) with ESMTPS id 33AD815E0;
+	Wed, 27 Apr 2022 18:02:32 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 33AD815E0
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1651075386;
-	bh=rXX+rT71J5egDkFCr0XNgCNM2Ip7kcs7C+TCy0oaa2o=;
+	s=default; t=1651075402;
+	bh=fqVdjaz6qlAuF6lixzxQYIJp8RiyZt6+dszD4kg0WRU=;
 	h=Date:Subject:To:References:From:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=m+HMlpA+jD7SU3XRyFrkTGGyusB6bfD9y3uGOYcfSG8kNw5qXECxK7TY+mR8+2pVN
-	 RDgR46gE1/ygd4nloF4ep5L9mhj9eDwgGo9LB/IEBAy3ZLHvI0JHeJguw6UIULK5Th
-	 7U8BYiET+rI/qgpPcEEILk4iQrJW6P5hBOKUgojI=
+	b=vvVZUkLnTI/IgC7eWXYkMDPcgkOEq0PAumjid1BT68DwC3lZ8OUUpbQFdtzfftI6N
+	 Wuptgzx90Pg7Vvgi35pZJJWp59Ci1uShLNNhCxvehdmdm8ZNfwOqqIQYwH6myB/J75
+	 aiMj6rqv3VehoR0Yk4H1rX0whxNPn//odMJ6xw5o=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 84B8BF8016E;
-	Wed, 27 Apr 2022 18:02:14 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 1DB63F8030F;
+	Wed, 27 Apr 2022 18:02:15 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id B72EBF800AE; Wed, 27 Apr 2022 18:02:07 +0200 (CEST)
+ id CA288F80253; Wed, 27 Apr 2022 18:02:09 +0200 (CEST)
 Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id CBE95F800AE;
- Wed, 27 Apr 2022 18:01:58 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CBE95F800AE
+ by alsa1.perex.cz (Postfix) with ESMTPS id 42122F8016E
+ for <alsa-devel@alsa-project.org>; Wed, 27 Apr 2022 18:02:04 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 42122F8016E
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="CHQhxdeN"
+ header.b="ddkGAJnR"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1651075322; x=1682611322;
+ t=1651075327; x=1682611327;
  h=message-id:date:mime-version:subject:to:cc:references:
  from:in-reply-to:content-transfer-encoding;
- bh=rXX+rT71J5egDkFCr0XNgCNM2Ip7kcs7C+TCy0oaa2o=;
- b=CHQhxdeNQdGNuJ/p8Iwm9kwZ7yt57XsBwRrlSaZPJyyCGwZcZ/fjNa2B
- /kwTBfk/T6yoJwSwL31eEUXZ6sloIxYkViSpOX0qLqUIzQxa+gwhoVEdm
- QbqfJasU4YbpVLoaUNHUEy9F3ZEHwgwrM+tqurEoWoa/wQlNNJm5esaF/
- Oe/jW7h8g9IG1FxYIuKonxLlZSgTUmDs8Hbh/TV/3fJ23M2mpt00C7e2x
- L3/mQ9YW/JmOBOmIO4yyAuJXl3N7w529jgBmFsacyyITx+RV4QTlNclYa
- UfJML25Cr4VfS1GkuKPY3TF8KsaXoexep6YO8Kb9+rGXZ9+5rQBxKQFCt Q==;
-X-IronPort-AV: E=McAfee;i="6400,9594,10330"; a="352414798"
-X-IronPort-AV: E=Sophos;i="5.90,293,1643702400"; d="scan'208";a="352414798"
+ bh=fqVdjaz6qlAuF6lixzxQYIJp8RiyZt6+dszD4kg0WRU=;
+ b=ddkGAJnRifQKcgDdHV0cvG/8l5XHCo3X2EZVisc/F4sJR8BexHbjuQ57
+ bPJk9p+5zNAEo2Q390lsFFbXPA6dsNA1+WQL7QpXSwQw8un7b21XQ2Is4
+ op1dHnhfGmDSfhlBypiF7udSnwVNDF60YkF/7LiZpwzLbvD+VHNEVXa+T
+ DOFTvRwwkB5VCLts7PtD+hugTGbgg2cWcw3XwHRFF0j9BZLowObXeEPeL
+ enNa+8pQIRX6oXrnlOl4kmP4OFrhsrt7901zJnMnVp0BlEcwwwpAlWVQu
+ 4TzEwNihOaChBuAKYH9/WldsspjRZmTsFDGe3bnjiyDpXaIsPKZZdmU7D g==;
+X-IronPort-AV: E=McAfee;i="6400,9594,10330"; a="352414810"
+X-IronPort-AV: E=Sophos;i="5.90,293,1643702400"; d="scan'208";a="352414810"
 Received: from orsmga007.jf.intel.com ([10.7.209.58])
  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 27 Apr 2022 08:56:36 -0700
-X-IronPort-AV: E=Sophos;i="5.90,293,1643702400"; d="scan'208";a="559008157"
+ 27 Apr 2022 08:56:38 -0700
+X-IronPort-AV: E=Sophos;i="5.90,293,1643702400"; d="scan'208";a="559008211"
 Received: from dktowns1-mobl2.amr.corp.intel.com (HELO [10.209.20.44])
  ([10.209.20.44])
  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 27 Apr 2022 08:56:34 -0700
-Message-ID: <7213fec3-6844-6913-b63e-2be8fc6df626@linux.intel.com>
-Date: Wed, 27 Apr 2022 10:39:15 -0500
+ 27 Apr 2022 08:56:38 -0700
+Message-ID: <ec01bea7-3757-b891-00d4-2ad6520e2ab5@linux.intel.com>
+Date: Wed, 27 Apr 2022 10:52:59 -0500
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
  Firefox/91.0 Thunderbird/91.5.0
-Subject: Re: [PATCH v2] ASoC: SOF: mediatek: Fix allyesconfig build error
+Subject: Re: [PATCH] ASoC: Intel: bytcr_rt5640: Add quirk for the HP Pro
+ Tablet 408
 Content-Language: en-US
-To: Tinghan Shen <tinghan.shen@mediatek.com>,
- Liam Girdwood <lgirdwood@gmail.com>,
- Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
- Kai Vehmanen <kai.vehmanen@linux.intel.com>,
- Daniel Baluta <daniel.baluta@nxp.com>, Mark Brown <broonie@kernel.org>,
- Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
- Matthias Brugger <matthias.bgg@gmail.com>,
- Yaochun Hung <yc.hung@mediatek.com>,
- Allen-KH Cheng <allen-kh.cheng@mediatek.com>,
- Yang Yingliang <yangyingliang@huawei.com>
-References: <20220427071030.10172-1-tinghan.shen@mediatek.com>
+To: Hans de Goede <hdegoede@redhat.com>,
+ Cezary Rojewski <cezary.rojewski@intel.com>,
+ Liam Girdwood <lgirdwood@gmail.com>, Jie Yang <yang.jie@linux.intel.com>,
+ Mark Brown <broonie@kernel.org>
+References: <20220427134918.527381-1-hdegoede@redhat.com>
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-In-Reply-To: <20220427071030.10172-1-tinghan.shen@mediatek.com>
+In-Reply-To: <20220427134918.527381-1-hdegoede@redhat.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
- Project_Global_Chrome_Upstream_Group@mediatek.com,
- linux-mediatek@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
- sound-open-firmware@alsa-project.org
+Cc: alsa-devel@alsa-project.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -100,52 +92,45 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
 
-On 4/27/22 02:10, Tinghan Shen wrote:
-> ld: sound/soc/sof/mediatek/mt8186/mt8186-clk.o:(.opd+0x18): multiple
-> definition of `adsp_clock_on';
-> sound/soc/sof/mediatek/mt8195/mt8195-clk.o:(.opd+0x60): first defined
-> here
-> ld: sound/soc/sof/mediatek/mt8186/mt8186-clk.o: in function
-> `.adsp_clock_on':
+On 4/27/22 08:49, Hans de Goede wrote:
+> Add a quirk for the HP Pro Tablet 408, this BYTCR tablet has no CHAN
+> package in its ACPI tables and uses SSP0-AIF1 rather then SSP0-AIF2 which
+> is the default for BYTCR devices.
 > 
-> ld: sound/soc/sof/mediatek/mt8186/mt8186-clk.o:(.opd+0x30): multiple
-> definition of `adsp_clock_off';
-> sound/soc/sof/mediatek/mt8195/mt8195-clk.o:(.opd+0x78): first defined
-> here
-> ld: sound/soc/sof/mediatek/mt8186/mt8186-clk.o: in function
-> `.adsp_clock_off':
+> It also uses DMIC1 for the internal mic rather then the default IN3
+> and it uses JD2 rather then the default JD1 for jack-detect.
 > 
-> ld: sound/soc/sof/mediatek/mt8186/mt8186-loader.o:(.opd+0x0): multiple
-> definition of `sof_hifixdsp_boot_sequence';
-> sound/soc/sof/mediatek/mt8195/mt8195-loader.o:(.opd+0x0): first defined
-> here
-> ld: sound/soc/sof/mediatek/mt8186/mt8186-loader.o: in function
-> `.sof_hifixdsp_boot_sequence':
-> 
-> ld: sound/soc/sof/mediatek/mt8186/mt8186-loader.o:(.opd+0x18): multiple
-> definition of `sof_hifixdsp_shutdown';
->  sound/soc/sof/mediatek/mt8195/mt8195-loader.o:(.opd+0x18): first defined
-> here
-> ld: sound/soc/sof/mediatek/mt8186/mt8186-loader.o: in function
-> `.sof_hifixdsp_shutdown':
-> 
-> Fixes: 570c14dc92d5 ("ASoC: SOF: mediatek: Add mt8186 sof fw loader and
-> dsp ops")
-> Fixes: 210b3ab932f7 ("ASoC: SOF: mediatek: Add mt8186 dsp clock support")
-> 
-> Signed-off-by: Tinghan Shen <tinghan.shen@mediatek.com>
+> BugLink: https://bugzilla.kernel.org/show_bug.cgi?id=211485
+> Signed-off-by: Hans de Goede <hdegoede@redhat.com>
 
-Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Acked-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+
+Thanks Hans!
 
 > ---
+>  sound/soc/intel/boards/bytcr_rt5640.c | 12 ++++++++++++
+>  1 file changed, 12 insertions(+)
 > 
-> Changes since v1:
-> Rebase on Mark's for-next and update "Fixes" commit id
-> 
-> ---
->  sound/soc/sof/mediatek/mt8186/mt8186-clk.c    |  4 ++--
->  sound/soc/sof/mediatek/mt8186/mt8186-clk.h    |  4 ++--
->  sound/soc/sof/mediatek/mt8186/mt8186-loader.c |  4 ++--
->  sound/soc/sof/mediatek/mt8186/mt8186.c        | 18 +++++++++---------
->  sound/soc/sof/mediatek/mt8186/mt8186.h        |  4 ++--
->  5 files changed, 17 insertions(+), 17 deletions(-)
+> diff --git a/sound/soc/intel/boards/bytcr_rt5640.c b/sound/soc/intel/boards/bytcr_rt5640.c
+> index d76a505052fb..f81ae742faa7 100644
+> --- a/sound/soc/intel/boards/bytcr_rt5640.c
+> +++ b/sound/soc/intel/boards/bytcr_rt5640.c
+> @@ -773,6 +773,18 @@ static const struct dmi_system_id byt_rt5640_quirk_table[] = {
+>  					BYT_RT5640_OVCD_SF_0P75 |
+>  					BYT_RT5640_MCLK_EN),
+>  	},
+> +	{	/* HP Pro Tablet 408 */
+> +		.matches = {
+> +			DMI_MATCH(DMI_SYS_VENDOR, "Hewlett-Packard"),
+> +			DMI_MATCH(DMI_PRODUCT_NAME, "HP Pro Tablet 408"),
+> +		},
+> +		.driver_data = (void *)(BYT_RT5640_DMIC1_MAP |
+> +					BYT_RT5640_JD_SRC_JD2_IN4N |
+> +					BYT_RT5640_OVCD_TH_1500UA |
+> +					BYT_RT5640_OVCD_SF_0P75 |
+> +					BYT_RT5640_SSP0_AIF1 |
+> +					BYT_RT5640_MCLK_EN),
+> +	},
+>  	{	/* HP Stream 7 */
+>  		.matches = {
+>  			DMI_EXACT_MATCH(DMI_SYS_VENDOR, "Hewlett-Packard"),
