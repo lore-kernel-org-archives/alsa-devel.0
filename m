@@ -4,178 +4,70 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id DB099C433F5
-	for <alsa-devel@archiver.kernel.org>; Wed, 27 Apr 2022 08:16:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C8489C433F5
+	for <alsa-devel@archiver.kernel.org>; Wed, 27 Apr 2022 08:50:55 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 1B23917D1;
-	Wed, 27 Apr 2022 10:15:49 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1B23917D1
+	by alsa0.perex.cz (Postfix) with ESMTPS id 772EF16EE;
+	Wed, 27 Apr 2022 10:50:03 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 772EF16EE
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1651047399;
-	bh=fBlGQ4XyOD10Fl5S12wiFI3/yBssMtUMwWfNcp2qWRQ=;
-	h=Date:Subject:To:References:From:In-Reply-To:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=tSeqsOipmC2zG6LA1bks3PAFAtc6rxniCUJXn5UCGpqOCPdG2ssbzK1gOSiW4wwd5
-	 tvlzvMFDBfoznxkuVX3cYBIhevm7mapfB7PBAMCXfIchTTd/LZiKAKhZccPKWndaJY
-	 UBz3IGdiL5onljJAh6/5w1O+Ac7oh/akfepuVUYQ=
+	s=default; t=1651049453;
+	bh=sbHu40pZpen0VSdlUtzSwDAran4O8UrTshTDDHdNOhE=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=He1utf4X9zAEJIah9ekmcx+GcWZQ1LOuHEsBXgcvPH5GcxZflcLe3Hpu8kblleVFs
+	 B3CgyY4qqfIW8/pRrNMZRf1n0xnMq0yZLBQu2fK5u2Z9q2/GpOGO7OVIqnp1ANLke8
+	 3mWnFeh/QzDybnq3B5t9F06727r7f9kC8JqbeDIk=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id AE5F8F80155;
-	Wed, 27 Apr 2022 10:15:48 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id EEC06F80155;
+	Wed, 27 Apr 2022 10:50:02 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id A602FF8016E; Wed, 27 Apr 2022 10:15:47 +0200 (CEST)
-Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
+ id DF344F8016E; Wed, 27 Apr 2022 10:50:00 +0200 (CEST)
+Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 85F9EF800AE
- for <alsa-devel@alsa-project.org>; Wed, 27 Apr 2022 10:15:44 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 85F9EF800AE
+ by alsa1.perex.cz (Postfix) with ESMTPS id F3DFAF800AE
+ for <alsa-devel@alsa-project.org>; Wed, 27 Apr 2022 10:49:53 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F3DFAF800AE
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="SKrB1Goq"
+ header.b="Uqzv6LS4"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1651047345; x=1682583345;
- h=message-id:date:subject:to:cc:references:from:
- in-reply-to:content-transfer-encoding:mime-version;
- bh=fBlGQ4XyOD10Fl5S12wiFI3/yBssMtUMwWfNcp2qWRQ=;
- b=SKrB1Goqyr7AliRhIzej/cj98bU+5pQC6Gkim4b886HAVtYJo+tXtqpH
- I7IBok8hG0+BBgDoroBS/w7vyV2Jw5A2iAI43kmXaB50/gZA/YUyHfRmy
- M3HxZ68ShBC1DK9gmctZY2k8wv3SQH33jHs9sNY9YJufXNz6xjFl26uvN
- pqVbVlXaqVemngmBl9R+J2r9ngBQvm8Ec94vinLqEXBxWKxHcTcS/JT66
- n24d9BxJ6u1nHKerq9vqlaFAPUTSUGEM/t4WJXuNLGUlAo+7gJrXD/KqL
- +0npIq/tkYTs61Uka4xtAtHCHJsBG0nZj4yrawrNvMd9KNmums+Zmg2LZ Q==;
-X-IronPort-AV: E=McAfee;i="6400,9594,10329"; a="266019603"
-X-IronPort-AV: E=Sophos;i="5.90,292,1643702400"; d="scan'208";a="266019603"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
- by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 27 Apr 2022 01:15:42 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.90,292,1643702400"; d="scan'208";a="661105247"
-Received: from fmsmsx601.amr.corp.intel.com ([10.18.126.81])
- by fmsmga002.fm.intel.com with ESMTP; 27 Apr 2022 01:15:42 -0700
-Received: from fmsmsx611.amr.corp.intel.com (10.18.126.91) by
- fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.27; Wed, 27 Apr 2022 01:15:42 -0700
-Received: from fmsmsx608.amr.corp.intel.com (10.18.126.88) by
- fmsmsx611.amr.corp.intel.com (10.18.126.91) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.27; Wed, 27 Apr 2022 01:15:41 -0700
-Received: from fmsedg601.ED.cps.intel.com (10.1.192.135) by
- fmsmsx608.amr.corp.intel.com (10.18.126.88) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.27 via Frontend Transport; Wed, 27 Apr 2022 01:15:41 -0700
-Received: from NAM12-MW2-obe.outbound.protection.outlook.com (104.47.66.46) by
- edgegateway.intel.com (192.55.55.70) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2308.27; Wed, 27 Apr 2022 01:15:41 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=PAB5kYQLzLV3UbhjeWuKr9KCQYle3orpMplNDL7DSpEEphT9ZU4FCp8+a7FB1tYewsgpyRUgU4J4o+j1Joov1TpiIcIOEYQ2RNJ/ZrqcBExkaZn2Urv3SoLzNDcBIBgai/raZIW+nTTygYcPPJPDk4ZDu1FDTOqk3LHrV1g6MM2HbOXtiDEj7xYDCTqCT7vh63UTABw7PeQuCHJdRqp/2oVzwI1+PbyhOdwwv12wpHlqHRdQRM8SKlm2YDiFmBwK/LhBr33k7TimHTl9+pkJb0EIOQdHqXCM1i3zVzbaeBlJuNPk+jsC3In4axDcLmCH27ThE8HhjGngoA2yGJP6jQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=PYgnDAp8BbKcuffSXuPNjVo1SQ1DAw5wkeU/ZcIbjP8=;
- b=Y5tFFlBKemBjp2g/8hsLpDxdmFeVhcdT3viW3YyO2liqCj3RMh7/rKXlrd2cKQSUzr3Ya9bYZ9KAOSXW/+o6d4XVWxkA5eIQcZMp8VMOaPTXYDT7uK5vsbKSzad5sOJGKUx+vurG5NqL3e8d4loAWwz4bjutf3Wz8UpJRpRm151V66LGfF7Duj24WCdxjPFL7npTmvDBXvBfMWY/uGDyHjrNb3rXX798mDLQbDFrAe4hWLnPfNzH4FuscDuVybb4Eud35uIDvCIo69ktabFdeWe7IRTdsHKPf52LC5jomMuSEVujEVKPYYt2T2Krs6pMorxX8qNPHTOm9QRDLicwEQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from MWHPR1101MB2157.namprd11.prod.outlook.com
- (2603:10b6:301:51::10) by BYAPR11MB3063.namprd11.prod.outlook.com
- (2603:10b6:a03:89::11) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5186.21; Wed, 27 Apr
- 2022 08:15:38 +0000
-Received: from MWHPR1101MB2157.namprd11.prod.outlook.com
- ([fe80::b1bc:45f3:e805:6942]) by MWHPR1101MB2157.namprd11.prod.outlook.com
- ([fe80::b1bc:45f3:e805:6942%10]) with mapi id 15.20.5186.021; Wed, 27 Apr
- 2022 08:15:37 +0000
-Message-ID: <f13b4d03-a51a-b4b1-5005-0694acc154ac@intel.com>
-Date: Wed, 27 Apr 2022 10:15:29 +0200
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Firefox/91.0 Thunderbird/91.7.0
-Subject: Re: [PATCH 00/14] ASoC: Intel: avs: Driver core and PCM operations
-Content-Language: en-US
-To: <alsa-devel@alsa-project.org>, <broonie@kernel.org>
-References: <20220426172346.3508411-1-cezary.rojewski@intel.com>
-From: Cezary Rojewski <cezary.rojewski@intel.com>
-In-Reply-To: <20220426172346.3508411-1-cezary.rojewski@intel.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: LO4P123CA0247.GBRP123.PROD.OUTLOOK.COM
- (2603:10a6:600:1a7::18) To MWHPR1101MB2157.namprd11.prod.outlook.com
- (2603:10b6:301:51::10)
+ t=1651049395; x=1682585395;
+ h=from:to:cc:subject:date:message-id:mime-version:
+ content-transfer-encoding;
+ bh=sbHu40pZpen0VSdlUtzSwDAran4O8UrTshTDDHdNOhE=;
+ b=Uqzv6LS4rPGGNEpTO+lN8wQ4WZdoeo3uz2zuC0UXLHvrjTGrEEZ30iQ4
+ 9p20CpxiNi/fblSdA4IuUpjX07Ls9AL9h6k7lGyAxg7vdjDqnuxrzGm4q
+ s4PC9MOX9V9kzWhcU8YuzI40n/VXh5LaFSHjFWO7D2EBnIVJlW1qL2fWi
+ wwfke5+Jxx1S1qG1xZMF2WuYuE5mX4OPEz1rXnTUux/y+aFr/Eoz7qInM
+ skHjvPbAs27PN+Icq/g/Qhbg/aZZQWWJ6y+iQmoRL57hdGGRbNdvd1oc7
+ kvcsntkRhaGQ2lTJhmRW+/FA+O5kiFcd4S5hYJJEtDrfDwnrtSBpRYT30 w==;
+X-IronPort-AV: E=McAfee;i="6400,9594,10329"; a="352302310"
+X-IronPort-AV: E=Sophos;i="5.90,292,1643702400"; d="scan'208";a="352302310"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+ by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 27 Apr 2022 01:49:50 -0700
+X-IronPort-AV: E=Sophos;i="5.90,292,1643702400"; d="scan'208";a="580475367"
+Received: from rdegreef-mobl1.ger.corp.intel.com (HELO
+ pujfalus-desk.ger.corp.intel.com) ([10.252.32.27])
+ by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 27 Apr 2022 01:49:47 -0700
+From: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
+To: lgirdwood@gmail.com, broonie@kernel.org,
+ pierre-louis.bossart@linux.intel.com, senozhatsky@chromium.org
+Subject: [PATCH] ASoC: SOF: ipc3-topology: Correct get_control_data for non
+ bytes payload
+Date: Wed, 27 Apr 2022 11:50:11 +0300
+Message-Id: <20220427085011.21805-1-peter.ujfalusi@linux.intel.com>
+X-Mailer: git-send-email 2.36.0
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 4e084043-2930-4e3c-ef03-08da28261c60
-X-MS-TrafficTypeDiagnostic: BYAPR11MB3063:EE_
-X-Microsoft-Antispam-PRVS: <BYAPR11MB306306E53F8ACED091E3CEFDE3FA9@BYAPR11MB3063.namprd11.prod.outlook.com>
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 398ED0fxfNXKqISh74zNpHZkdbmLF9xgxxOr45AUZ/R+y2HMDgZfpnfnVrshx1DrDVTENMTR1xhYP+Ou57LMBDxkl5kvKtLX5ZYsXfgFh2Nc6VOL4DGO4s/icj9OXCXdb8GJBvTDQtYWxjfNtSLGU6Afh9Oje9YzhDHVlFoPsWZiSCyLqqD52U6JdIaImaFZQ6GSOlikUjC0N/tH8NojJrAeWEb6W7OT4ZL5zvewuTdk227/KH79U/lZNpv2nu1GeYXNMPJ/omLtbFGYBRHYn7o7jlXsDReg75wg2PLfUUSmWFJiy7zSvWKWNkLla6f1yzyYba2wKL5q5l9O8svm9n695P2nZTWpHFivmwguQ1wQNBES/D4tTFmc36pWJJiF844PG6m/0O7Wbi5+LbNjTNhX1HjFhXH9//9bO0GR/6OZmL+lgBdWPjClp1qCAi0E/wHGMPhvzwfxb96QYTBnGM5m+pjR8IniN/r5i+zkmV11X6ZUe4FWyf8dcbQ8ippzdEHUedjd1PwL9cDi1upaB6PdiNSgNPJHpXpHJMEpd7nc/Lv5KE2CUulwTSLnZb9GXkwe9QDc2bJXHWdaHMPqQde72T/Dfkw9SZrh0b4BqGkJ+IYlW8PgNd/uZg2zYQCPTtLX/Qj+n0bpRdeupmE9T3KogbEj8ja+TKCzhQe/eYPNvH8vwC4BnVv9W0YT33U2lnFBWnmuIstK33ibeqkrYb/sctZFWuA2QX+GaZI5cKtQwArTW7/M74d9Ga/hrUH0
-X-Forefront-Antispam-Report: CIP:255.255.255.255; CTRY:; LANG:en; SCL:1; SRV:;
- IPV:NLI; SFV:NSPM; H:MWHPR1101MB2157.namprd11.prod.outlook.com; PTR:; CAT:NONE;
- SFS:(13230001)(366004)(66556008)(66946007)(38100700002)(66476007)(4326008)(8676002)(2906002)(6666004)(316002)(36756003)(31686004)(6506007)(508600001)(53546011)(6486002)(5660300002)(4744005)(2616005)(31696002)(7416002)(86362001)(186003)(26005)(6512007)(82960400001)(8936002)(44832011)(45980500001)(43740500002);
- DIR:OUT; SFP:1102; 
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?M3RRNE9WeUhSVDlEY3NCUW5hQ0VubURFcWRjcE5nWFl6QU5HRk9nV2pkRTZv?=
- =?utf-8?B?dDdrZHViWFREWVpNT1BnZThDWmpMU0pIWGtEMGFEa2hNRHY0cjlLenhFSlJK?=
- =?utf-8?B?UFgyQXlUeE8yUitMK0kvcnNuSWtIaHhUb3g2V3BQdXplTEdWVTNHR3RGWUNC?=
- =?utf-8?B?U0pxam1DNDdMeDFiUG1neFliYi9TMFFhL0FlZE1nL2x6SnkyK211T0t1amJD?=
- =?utf-8?B?VUVJSHg4Ykc0SHZEdTVKN3pQakhUQmJDM0d2dzd5NHR4MmlNc1A3NGxVQ1F4?=
- =?utf-8?B?djJnU3B0K29uN01CNnBPczZmZVVhMzlXNE12aHkzWjNSb0luWGdVaGtkVXIv?=
- =?utf-8?B?VS9iamRySXVvWU1kbDhVem9JbnQwNTlOMWY3bW95T3dSZlc1azFTQm41NzF2?=
- =?utf-8?B?K0xsVXR1QlNVY2J2ZldodjlPQnJma0kraFFUakFrN0YvVE16TmhaNTVLYll6?=
- =?utf-8?B?ejF3MlJTaUxZSFI0TmdnSzBhWlU3LzlzWkliSU45OHg1UGtaNnJReDhsbkdD?=
- =?utf-8?B?SVp3NS81UHJqcXkyQzVOcW1KWDFoNFVXSEVLaGt1REJ5L2pRa3lHZDhnSlJG?=
- =?utf-8?B?ZHBaWVl3eDlaK0p5L0hvYzZ4MEZpaEwrb2U3R3hVNXlRTmxUb1RBbEcyQUVV?=
- =?utf-8?B?dEVHRElUbWVGa2dFelZJU0Y1bWpRWGhvTUVQNk53S0NPeVk1N0dSSlJnUjZ4?=
- =?utf-8?B?Zm1XK0ZqSXh3K1NZVGthUzUzUnJ6c2ZldjU2Z3lQNTRVSm9MUE04cnBVU1Nx?=
- =?utf-8?B?Q1JkK2tLZ3FidkcyNE4vNDRsdGJRNmE5alVqNVNZQmlqNm4zeFk5aW1xQlUz?=
- =?utf-8?B?WnVSY1BmTCtqMlREM3czZVhhdFB5RDRiQUc5dWtraGNaSmI4YU9IOGlxaGxZ?=
- =?utf-8?B?TFV0Qk8yKzdmTzhFVzgyTkxuUWlQM3ExNDY0WUg2bVNsVERhOXFvWXlsTFRS?=
- =?utf-8?B?ZUtRcTVKQnQwdm05bzlPN05vdGhCUW04OU1DZE5jVFlsSERNVUYwSnhGNEF5?=
- =?utf-8?B?MWdOOWtUNjBudVFoR1pjRzRjU0NReHUvSktNVE5UaWo2elp6Q0RoK1ZWQmV2?=
- =?utf-8?B?Z1I1L1lqdXE4NHY0TWtFeEZkMGpTczRGMkJoQ2QzeWhKUUNuRzVnYnZPb3BC?=
- =?utf-8?B?VmNjaVg2Z21pa0hnVlhaVUFGV0plcEkyd3lJc3RhYjNOZkVUQno0QXNDT0Np?=
- =?utf-8?B?VG43a3pWalNxZVBFRExPQS83c3lLMUVEMlZJZmk5bEp1MkFCTzdFMWdPcmRZ?=
- =?utf-8?B?cHIxTWVxR1E1VWkwZklkMU0wZ2pidE5UUk1vQnFMOG9pNlYvV2N2clRNWXBX?=
- =?utf-8?B?bE5PVGJPdjl5VTlXUnl1aXNyODdjVDZ5OW9sUjNvL0Q3YjBQd2tCSGt0WVJn?=
- =?utf-8?B?enVWbisrTmo0ZFdnNWZ6Z0dMZXAzZjFSaER5enVoT0dYSnkralNoZHV4RlpB?=
- =?utf-8?B?QWU5K1cySXRiRUE4RElTZjlzYlJsSGhyNDZEY3NBTjJDWW5TWC94eGdCcDFm?=
- =?utf-8?B?NGsxenpLblJ4VW80czJHUGIybFdqWGltWWNRMUd3L0E3eENQK3UvaEUxSll2?=
- =?utf-8?B?blVraEtWZElOUHlzeFZQRjNKYkpReWRIYXBYTHdIZEZmcm9jSW8xVTJWK1dn?=
- =?utf-8?B?UVJxTk9nTFU5NDZMcFQ2dm5hN21pZkFVUzBBZSsxQTZlSHN0VTdOeHpJQjRh?=
- =?utf-8?B?a2xiaGEvTEY5dmxycDJrU1ZiSm1PYUtIM2tKRnFLV2pObzdRKzU2aHp0Y3dp?=
- =?utf-8?B?ak91dWl4T0szbFZEREIvMzJjRXhJMXFqWXlQd1RwazNKRWNDTUtiVG0vZFc2?=
- =?utf-8?B?akgyRHBIWEhsRjF0VHFLS2gvdVJBMzFFeEhSSjQrMEFaZTRBUjl5dlFOYW5z?=
- =?utf-8?B?NDhCSDcyU3RuYWlzbzVxSDh5QUFuMTB1cTA3Z1R2YjJLK0U1Zjd0cXViSC91?=
- =?utf-8?B?V1ZiMmpnOTN5cS80Mjg1S1RjRmFDMk1ZUFV2cXV0TnV1Wm8xNktWZjN4bkZF?=
- =?utf-8?B?dWR6V01uZHZSRmVKek03cC9rTUdGOGl2ZXY1ditwY1hlUHc0ck5wb1lGekYy?=
- =?utf-8?B?MHJSd3crQmJ6amttd1g2cnVWTGFpTFR5T2h5YmxuQkhzWnRJbFpaSlEzSi9B?=
- =?utf-8?B?OS9FMXdXT01CbG11L0EwZ2l0di9qZXNWQS85MFlReWVRanZFUDhrdkpuUVdI?=
- =?utf-8?B?RWRhaEdZZVNtcWh6N0RSeU9CeWhvNyt6eG1uR2RYZy9MdTMvMTB1Y3grMlIy?=
- =?utf-8?B?bE8yZFRyQXI2SnFQNTlVaHBDZ1VSSSs4elFIT2hTQkkvaUNIOVRUOXRYbGNG?=
- =?utf-8?B?VUdHTER0N3o0UnZTWXR5N2VFMEVXenZsdlJydTdIZXY2VUhCVUovUkRFTVY2?=
- =?utf-8?Q?YyZbe2ygghkX0pSs=3D?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 4e084043-2930-4e3c-ef03-08da28261c60
-X-MS-Exchange-CrossTenant-AuthSource: MWHPR1101MB2157.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 27 Apr 2022 08:15:37.8673 (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: Y23LI6oVFgsBFKPzdDONAfXAD7+FbwdIn9GFqUGub/utmF2SNAqr1h3/Bx3hQUHP4MhhpZzIAIe5owpQZwHRbm3KGcSZlrsVcwBhD+4s4GU=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR11MB3063
-X-OriginatorOrg: intel.com
-Cc: upstream@semihalf.com, harshapriya.n@intel.com, rad@semihalf.com,
- pierre-louis.bossart@linux.intel.com, tiwai@suse.com, hdegoede@redhat.com,
- amadeuszx.slawinski@linux.intel.com, cujomalainey@chromium.org,
- lma@semihalf.com
+Content-Transfer-Encoding: 8bit
+Cc: cujomalainey@google.com, alsa-devel@alsa-project.org,
+ ranjani.sridharan@linux.intel.com, kai.vehmanen@linux.intel.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -191,22 +83,101 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On 2022-04-26 7:23 PM, Cezary Rojewski wrote:
-> Part three of main AVS driver series. This series was originally part of
-> the initial series which was later divided [1] into smaller,
-> easier-to-review chunks. Thus, many patches found here were already
-> present on the list.
+It is possible to craft a topology where sof_get_control_data() would do
+out of bounds access because it expects that it is only called when the
+payload is bytes type.
+Confusingly it also handles other types of controls, but the payload
+parsing implementation is only valid for bytes.
 
+Fix the code to count the non bytes controls and instead of storing a
+pointer to sof_abi_hdr in sof_widget_data (which is only valid for bytes),
+store the pointer to the data itself and add a new member to save the size
+of the data.
 
-I'm aware that series generates conflicts due to recent changes in 
-sound/soc/intel/Kconfig but I believe it's better to leave as is, let 
-people provide comments without sending immediate v2 just for the sake 
-of it building.
+In case of non bytes controls we store the pointer to the chanv itself,
+which is just an array of values at the end.
 
-Given that we already received good feedback from Pierre the decision 
-seems to be the right one. Fixes addressing the conflict will be part of 
-v2 along with all other necessary changes given the review.
+Reported-by: Sergey Senozhatsky <senozhatsky@chromium.org>
+Signed-off-by: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
+---
+Hi,
 
+This should fix the out of bounds access, but I'm not sure what would be
+expected in case of non bytes type of controls, so this patch will consider their
+size(s) into the counting and copying.
+
+Sergey, can you check if it is easy to backport for 5.10.111? There were changes
+around this (code move to ipc3-topology.c and renames) but the logic remained the
+same.
 
 Regards,
-Czarek
+Peter
+
+ sound/soc/sof/ipc3-topology.c | 34 ++++++++++++++++++++++------------
+ 1 file changed, 22 insertions(+), 12 deletions(-)
+
+diff --git a/sound/soc/sof/ipc3-topology.c b/sound/soc/sof/ipc3-topology.c
+index 572bcbfdb356..8a083fd547ba 100644
+--- a/sound/soc/sof/ipc3-topology.c
++++ b/sound/soc/sof/ipc3-topology.c
+@@ -20,7 +20,8 @@
+ struct sof_widget_data {
+ 	int ctrl_type;
+ 	int ipc_cmd;
+-	struct sof_abi_hdr *pdata;
++	void *pdata;
++	size_t pdata_size;
+ 	struct snd_sof_control *control;
+ };
+ 
+@@ -784,16 +785,23 @@ static int sof_get_control_data(struct snd_soc_component *scomp,
+ 		}
+ 
+ 		cdata = wdata[i].control->ipc_control_data;
+-		wdata[i].pdata = cdata->data;
+-		if (!wdata[i].pdata)
+-			return -EINVAL;
+ 
+ 		/* make sure data is valid - data can be updated at runtime */
+-		if (widget->dobj.widget.kcontrol_type[i] == SND_SOC_TPLG_TYPE_BYTES &&
+-		    wdata[i].pdata->magic != SOF_ABI_MAGIC)
+-			return -EINVAL;
++		if (widget->dobj.widget.kcontrol_type[i] == SND_SOC_TPLG_TYPE_BYTES) {
++			if (!cdata->data)
++				return -EINVAL;
++
++			if (cdata->data->magic != SOF_ABI_MAGIC)
++				return -EINVAL;
++
++			wdata[i].pdata = cdata->data->data;
++			wdata[i].pdata_size = cdata->data->size;
++		} else {
++			wdata[i].pdata = cdata->chanv; /* points to the control data union */
++			wdata[i].pdata_size = wdata[i].control->size;
++		}
+ 
+-		*size += wdata[i].pdata->size;
++		*size += wdata[i].pdata_size;
+ 
+ 		/* get data type */
+ 		switch (cdata->cmd) {
+@@ -876,10 +884,12 @@ static int sof_process_load(struct snd_soc_component *scomp,
+ 	 */
+ 	if (ipc_data_size) {
+ 		for (i = 0; i < widget->num_kcontrols; i++) {
+-			memcpy(&process->data[offset],
+-			       wdata[i].pdata->data,
+-			       wdata[i].pdata->size);
+-			offset += wdata[i].pdata->size;
++			if (!wdata[i].pdata_size)
++				continue;
++
++			memcpy(&process->data[offset], wdata[i].pdata,
++			       wdata[i].pdata_size);
++			offset += wdata[i].pdata_size;
+ 		}
+ 	}
+ 
+-- 
+2.36.0
+
