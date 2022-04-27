@@ -4,64 +4,64 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8A677C433F5
-	for <alsa-devel@archiver.kernel.org>; Wed, 27 Apr 2022 08:13:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 45C67C433EF
+	for <alsa-devel@archiver.kernel.org>; Wed, 27 Apr 2022 08:14:16 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C8B421813;
-	Wed, 27 Apr 2022 10:13:07 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C8B421813
+	by alsa0.perex.cz (Postfix) with ESMTPS id 8107E1799;
+	Wed, 27 Apr 2022 10:13:24 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8107E1799
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1651047237;
-	bh=SKPvMMp83+TFxEoKHzxsGXKex/gujK2e6E7WMN+G2VY=;
+	s=default; t=1651047254;
+	bh=8YvNAC1rsPhICtGgS5AZuFFvu7TWZxMLTZxU3elVtFc=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=XqGDKzXA5tHHo/JB840gF+5iai6btbfo3Soat9UTwlyEC3uhl9HNKonV03wNmiV6k
-	 mKEz/75vnXWXgR7hMArIYrmmqcpEXE9yykMxnyZtDpSzufQcSot/kGA9ii5moMJXnL
-	 va7/VtfM0ihhUwSP5Svc20Rk4S+mpq4e+LijvK9g=
+	b=TsUD0K3T/zDeoJBi43LPJ+/6xl/JWXi122StbDw4TdAbLKV4U5dhbVsdkvyeOppNm
+	 9x8SGQmgyrMpZts2hzt7eaQlcgShieWxPr+01Z1AXhXuYwmQi2Efz8bQ872IMv6p0a
+	 8WX8bLA+v1i2X8N8CSe2our+PMhLt6lq3myr4STY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 3F04CF80508;
-	Wed, 27 Apr 2022 10:10:23 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2492BF8058C;
+	Wed, 27 Apr 2022 10:10:24 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 023B8F80253; Wed, 27 Apr 2022 10:10:20 +0200 (CEST)
+ id 0491DF80155; Wed, 27 Apr 2022 10:10:20 +0200 (CEST)
 Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 80346F8052D
- for <alsa-devel@alsa-project.org>; Wed, 27 Apr 2022 10:09:40 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 80346F8052D
+ by alsa1.perex.cz (Postfix) with ESMTPS id DB2AEF80253
+ for <alsa-devel@alsa-project.org>; Wed, 27 Apr 2022 10:09:11 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DB2AEF80253
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="LKMXOtN5"
+ header.b="YXjGYdZy"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1651046981; x=1682582981;
+ t=1651046953; x=1682582953;
  h=from:to:cc:subject:date:message-id:in-reply-to:
  references:mime-version:content-transfer-encoding;
- bh=SKPvMMp83+TFxEoKHzxsGXKex/gujK2e6E7WMN+G2VY=;
- b=LKMXOtN5EYJ2rBZMXo+rPWc3YGgTYc1c/Sb5KSiznWhD7slMGH6ALJyv
- Jz94v2Wb9ioocDkniD3qE/wlrYB6CkhR6mJpYF0RX8X3v0L4UdR4HtoFc
- /Ztrywr/fKj1288mIak8kVsc4NnXOvKOWARXnmYS/+1W7Og5lCPE2Fjkb
- LjtNYFSwibdbKSq+REpLOjMRcmljM7BvXI/mq25oY52cEFMqog8aDuBLB
- xIFpU06JSCZwugCRoBNQdYtZmslOW7Nz+Mx4pCovOHpzXGzVqUDM5nV92
- E5pVWERiPhV42OADPUiV0N0DEpogtRmTYfShDd0Gyu0m9jDLE/1m3ZzW+ Q==;
-X-IronPort-AV: E=McAfee;i="6400,9594,10329"; a="291006240"
-X-IronPort-AV: E=Sophos;i="5.90,292,1643702400"; d="scan'208";a="291006240"
+ bh=8YvNAC1rsPhICtGgS5AZuFFvu7TWZxMLTZxU3elVtFc=;
+ b=YXjGYdZyK/EendIHibrdOmoDQKZOOB0HcrhYeIp/RIbebzqTdyEm3tKR
+ IBC/2PfcaImfZJ3T7li+A9Cm93/vf/xLqUKcT5bFsPcXsFEPwVRRlTlCn
+ ersr8klfpOyis7HZB/RXX12w2RDeiGs5/saiiGk9Qit0iB9KsKwdGbwvZ
+ L7gWt+HClBeMtvd82D53Bk3Gi9e2tojpIgsNwGppUuaADhiPxyxto+7Lc
+ BN7YqA9gRA/JEr6ks8tgSyoQVnPcBJSjPCVd2HNWDzKLBC21s6BU7qb3P
+ xmECQNKB7/KQgw0SdMm1MuMhQU3y+JW4AngDAB408T1ouq/vr1np32CV2 Q==;
+X-IronPort-AV: E=McAfee;i="6400,9594,10329"; a="291006200"
+X-IronPort-AV: E=Sophos;i="5.90,292,1643702400"; d="scan'208";a="291006200"
 Received: from fmsmga001.fm.intel.com ([10.253.24.23])
  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 27 Apr 2022 01:09:21 -0700
+ 27 Apr 2022 01:09:11 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.90,292,1643702400"; d="scan'208";a="705437515"
+X-IronPort-AV: E=Sophos;i="5.90,292,1643702400"; d="scan'208";a="705437380"
 Received: from crojewsk-ctrl.igk.intel.com ([10.102.9.28])
- by fmsmga001.fm.intel.com with ESMTP; 27 Apr 2022 01:09:18 -0700
+ by fmsmga001.fm.intel.com with ESMTP; 27 Apr 2022 01:09:08 -0700
 From: Cezary Rojewski <cezary.rojewski@intel.com>
 To: alsa-devel@alsa-project.org,
 	broonie@kernel.org
-Subject: [PATCH 07/14] ASoC: Intel: avs: Add rt286 machine board
-Date: Wed, 27 Apr 2022 10:18:55 +0200
-Message-Id: <20220427081902.3525183-8-cezary.rojewski@intel.com>
+Subject: [PATCH 04/14] ASoC: Intel: avs: Add DMIC machine board
+Date: Wed, 27 Apr 2022 10:18:52 +0200
+Message-Id: <20220427081902.3525183-5-cezary.rojewski@intel.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20220427081902.3525183-1-cezary.rojewski@intel.com>
 References: <20220427081902.3525183-1-cezary.rojewski@intel.com>
@@ -88,61 +88,55 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-To support AVS-rt286 configuration add machine board connecting AVS
-platform component driver with rt286 codec one.
+Support AVS-DMIC configuration by implementing board connecting AVS
+platform component with DMIC codec one.
 
 Signed-off-by: Amadeusz Sławiński <amadeuszx.slawinski@linux.intel.com>
 Signed-off-by: Cezary Rojewski <cezary.rojewski@intel.com>
 ---
- sound/soc/intel/avs/boards/Kconfig  |  10 +
- sound/soc/intel/avs/boards/Makefile |   2 +
- sound/soc/intel/avs/boards/rt286.c  | 280 ++++++++++++++++++++++++++++
- 3 files changed, 292 insertions(+)
- create mode 100644 sound/soc/intel/avs/boards/rt286.c
+ sound/soc/intel/avs/boards/Kconfig  |  8 +++
+ sound/soc/intel/avs/boards/Makefile |  2 +
+ sound/soc/intel/avs/boards/dmic.c   | 93 +++++++++++++++++++++++++++++
+ 3 files changed, 103 insertions(+)
+ create mode 100644 sound/soc/intel/avs/boards/dmic.c
 
 diff --git a/sound/soc/intel/avs/boards/Kconfig b/sound/soc/intel/avs/boards/Kconfig
-index a8f598247548..7c29eb8cee70 100644
+index de62c0437f6e..1d4597fa9814 100644
 --- a/sound/soc/intel/avs/boards/Kconfig
 +++ b/sound/soc/intel/avs/boards/Kconfig
-@@ -30,6 +30,16 @@ config SND_SOC_INTEL_AVS_MACH_RT274
- 	   Say Y or m if you have such a device. This is a recommended option.
- 	   If unsure select "N".
+@@ -4,6 +4,14 @@ menu "Intel AVS Machine drivers"
  
-+config SND_SOC_INTEL_AVS_MACH_RT286
-+	tristate "rt286 in I2S mode"
-+	depends on I2C
-+	depends on MFD_INTEL_LPSS || COMPILE_TEST
-+	select SND_SOC_RT286
+ comment "Available DSP configurations"
+ 
++config SND_SOC_INTEL_AVS_MACH_DMIC
++	tristate "DMIC generic board"
++	select SND_SOC_DMIC
 +	help
-+	   This adds support for ASoC machine driver with RT286 I2S audio codec.
-+	   Say Y or m if you have such a device. This is a recommended option.
-+	   If unsure select "N".
++	  This adds support for AVS with Digital Mic array configuration.
++	  Say Y or m if you have such a device. This is a recommended option.
++	  If unsure select "N".
 +
- config SND_SOC_INTEL_AVS_MACH_SSP_TEST
- 	tristate "SSP test board"
- 	help
+ config SND_SOC_INTEL_AVS_MACH_HDAUDIO
+ 	tristate "HD-Audio generic board"
+ 	select SND_SOC_HDA
 diff --git a/sound/soc/intel/avs/boards/Makefile b/sound/soc/intel/avs/boards/Makefile
-index dbefc519e1e0..25631c03ffec 100644
+index e5281148e5d4..2ff35d4d97d8 100644
 --- a/sound/soc/intel/avs/boards/Makefile
 +++ b/sound/soc/intel/avs/boards/Makefile
-@@ -3,9 +3,11 @@
- snd-soc-avs-dmic-objs := dmic.o
- snd-soc-avs-hdaudio-objs := hdaudio.o
- snd-soc-avs-rt274-objs := rt274.o
-+snd-soc-avs-rt286-objs := rt286.o
- snd-soc-avs-ssp-test-objs := ssp_test.o
+@@ -1,5 +1,7 @@
+ # SPDX-License-Identifier: GPL-2.0-only
  
- obj-$(CONFIG_SND_SOC_INTEL_AVS_MACH_DMIC) += snd-soc-avs-dmic.o
++snd-soc-avs-dmic-objs := dmic.o
+ snd-soc-avs-hdaudio-objs := hdaudio.o
+ 
++obj-$(CONFIG_SND_SOC_INTEL_AVS_MACH_DMIC) += snd-soc-avs-dmic.o
  obj-$(CONFIG_SND_SOC_INTEL_AVS_MACH_HDAUDIO) += snd-soc-avs-hdaudio.o
- obj-$(CONFIG_SND_SOC_INTEL_AVS_MACH_RT274) += snd-soc-avs-rt274.o
-+obj-$(CONFIG_SND_SOC_INTEL_AVS_MACH_RT286) += snd-soc-avs-rt286.o
- obj-$(CONFIG_SND_SOC_INTEL_AVS_MACH_SSP_TEST) += snd-soc-avs-ssp-test.o
-diff --git a/sound/soc/intel/avs/boards/rt286.c b/sound/soc/intel/avs/boards/rt286.c
+diff --git a/sound/soc/intel/avs/boards/dmic.c b/sound/soc/intel/avs/boards/dmic.c
 new file mode 100644
-index 000000000000..58863cdcefd5
+index 000000000000..90a921638572
 --- /dev/null
-+++ b/sound/soc/intel/avs/boards/rt286.c
-@@ -0,0 +1,280 @@
++++ b/sound/soc/intel/avs/boards/dmic.c
+@@ -0,0 +1,93 @@
 +// SPDX-License-Identifier: GPL-2.0-only
 +//
 +// Copyright(c) 2021-2022 Intel Corporation. All rights reserved.
@@ -151,278 +145,91 @@ index 000000000000..58863cdcefd5
 +//          Amadeusz Slawinski <amadeuszx.slawinski@linux.intel.com>
 +//
 +
++#include <linux/device.h>
 +#include <linux/module.h>
-+#include <sound/jack.h>
-+#include <sound/pcm.h>
-+#include <sound/pcm_params.h>
 +#include <sound/soc.h>
 +#include <sound/soc-acpi.h>
-+#include "../../../codecs/rt286.h"
 +
-+static const struct snd_kcontrol_new card_controls[] = {
-+	SOC_DAPM_PIN_SWITCH("Headphone Jack"),
-+	SOC_DAPM_PIN_SWITCH("Mic Jack"),
-+	SOC_DAPM_PIN_SWITCH("Speaker"),
++SND_SOC_DAILINK_DEF(dmic_pin, DAILINK_COMP_ARRAY(COMP_CPU("DMIC Pin")));
++SND_SOC_DAILINK_DEF(dmic_wov_pin, DAILINK_COMP_ARRAY(COMP_CPU("DMIC WoV Pin")));
++SND_SOC_DAILINK_DEF(dmic_codec, DAILINK_COMP_ARRAY(COMP_CODEC("dmic-codec", "dmic-hifi")));
++/* Name overridden on probe */
++SND_SOC_DAILINK_DEF(platform, DAILINK_COMP_ARRAY(COMP_PLATFORM("")));
++
++static struct snd_soc_dai_link card_dai_links[] = {
++	/* Back ends */
++	{
++		.name = "DMIC",
++		.id = 0,
++		.dpcm_capture = 1,
++		.nonatomic = 1,
++		.no_pcm = 1,
++		SND_SOC_DAILINK_REG(dmic_pin, dmic_codec, platform),
++	},
++	{
++		.name = "DMIC WoV",
++		.id = 1,
++		.dpcm_capture = 1,
++		.nonatomic = 1,
++		.no_pcm = 1,
++		.ignore_suspend = 1,
++		SND_SOC_DAILINK_REG(dmic_wov_pin, dmic_codec, platform),
++	},
 +};
 +
 +static const struct snd_soc_dapm_widget card_widgets[] = {
-+	SND_SOC_DAPM_HP("Headphone Jack", NULL),
-+	SND_SOC_DAPM_MIC("Mic Jack", NULL),
-+	SND_SOC_DAPM_SPK("Speaker", NULL),
++	SND_SOC_DAPM_MIC("SoC DMIC", NULL),
 +};
 +
-+static const struct snd_soc_dapm_route card_base_routes[] = {
-+	/* HP jack connectors - unknown if we have jack detect */
-+	{"Headphone Jack", NULL, "HPO Pin"},
-+	{"MIC1", NULL, "Mic Jack"},
-+
-+	{"Speaker", NULL, "SPOR"},
-+	{"Speaker", NULL, "SPOL"},
++static const struct snd_soc_dapm_route card_routes[] = {
++	{"DMic", NULL, "SoC DMIC"},
++	{"DMIC Rx", NULL, "Capture"},
++	{"DMIC WoV Rx", NULL, "Capture"},
 +};
 +
-+static struct snd_soc_jack_pin card_headset_pins[] = {
-+	{
-+		.pin = "Headphone Jack",
-+		.mask = SND_JACK_HEADPHONE,
-+	},
-+	{
-+		.pin = "Mic Jack",
-+		.mask = SND_JACK_MICROPHONE,
-+	},
-+};
-+
-+static int avs_rt286_codec_init(struct snd_soc_pcm_runtime *runtime)
++static int avs_dmic_probe(struct platform_device *pdev)
 +{
-+	struct snd_soc_component *component = asoc_rtd_to_codec(runtime, 0)->component;
-+	struct snd_soc_jack_pin *pins;
-+	struct snd_soc_jack *jack;
-+	struct snd_soc_card *card = runtime->card;
-+	int num_pins, ret;
-+
-+	jack = snd_soc_card_get_drvdata(card);
-+	num_pins = ARRAY_SIZE(card_headset_pins);
-+
-+	pins = devm_kmemdup(card->dev, card_headset_pins, sizeof(*pins) * num_pins, GFP_KERNEL);
-+	if (!pins)
-+		return -ENOMEM;
-+
-+	ret = snd_soc_card_jack_new_pins(card, "Headset", SND_JACK_HEADSET | SND_JACK_BTN_0, jack,
-+					 pins, num_pins);
-+	if (ret)
-+		return ret;
-+
-+	snd_soc_component_set_jack(component, jack, NULL);
-+
-+	return 0;
-+}
-+
-+static int avs_rt286_be_fixup(struct snd_soc_pcm_runtime *runtime, struct snd_pcm_hw_params *params)
-+{
-+	struct snd_interval *rate, *channels;
-+	struct snd_mask *fmt;
-+
-+	rate = hw_param_interval(params, SNDRV_PCM_HW_PARAM_RATE);
-+	channels = hw_param_interval(params, SNDRV_PCM_HW_PARAM_CHANNELS);
-+	fmt = hw_param_mask(params, SNDRV_PCM_HW_PARAM_FORMAT);
-+
-+	/* The ADSP will convert the FE rate to 48k, stereo */
-+	rate->min = rate->max = 48000;
-+	channels->min = channels->max = 2;
-+
-+	/* set SSP0 to 24 bit */
-+	snd_mask_none(fmt);
-+	snd_mask_set_format(fmt, SNDRV_PCM_FORMAT_S24_LE);
-+
-+	return 0;
-+}
-+
-+static int
-+avs_rt286_hw_params(struct snd_pcm_substream *substream, struct snd_pcm_hw_params *params)
-+{
-+	struct snd_soc_pcm_runtime *runtime = substream->private_data;
-+	struct snd_soc_dai *codec_dai = asoc_rtd_to_codec(runtime, 0);
-+	int ret;
-+
-+	ret = snd_soc_dai_set_sysclk(codec_dai, RT286_SCLK_S_PLL, 24000000, SND_SOC_CLOCK_IN);
-+	if (ret < 0)
-+		dev_err(runtime->dev, "Set codec sysclk failed: %d\n", ret);
-+
-+	return ret;
-+}
-+
-+static const struct snd_soc_ops avs_rt286_ops = {
-+	.hw_params = avs_rt286_hw_params,
-+};
-+
-+static int avs_create_dai_link(struct device *dev, const char *platform_name, int ssp_port,
-+			       struct snd_soc_dai_link **dai_link)
-+{
-+	struct snd_soc_dai_link_component *platform;
-+	struct snd_soc_dai_link *dl;
-+
-+	dl = devm_kzalloc(dev, sizeof(*dl), GFP_KERNEL);
-+	platform = devm_kzalloc(dev, sizeof(*platform), GFP_KERNEL);
-+	if (!dl || !platform)
-+		return -ENOMEM;
-+
-+	platform->name = platform_name;
-+
-+	dl->name = devm_kasprintf(dev, GFP_KERNEL, "SSP%d-Codec", ssp_port);
-+	dl->cpus = devm_kzalloc(dev, sizeof(*dl->cpus), GFP_KERNEL);
-+	dl->codecs = devm_kzalloc(dev, sizeof(*dl->codecs), GFP_KERNEL);
-+	if (!dl->name || !dl->cpus || !dl->codecs)
-+		return -ENOMEM;
-+
-+	dl->cpus->dai_name = devm_kasprintf(dev, GFP_KERNEL, "SSP%d Pin", ssp_port);
-+	dl->codecs->name = devm_kasprintf(dev, GFP_KERNEL, "i2c-INT343A:00");
-+	dl->codecs->dai_name = devm_kasprintf(dev, GFP_KERNEL, "rt286-aif1");
-+	if (!dl->cpus->dai_name || !dl->codecs->name || !dl->codecs->dai_name)
-+		return -ENOMEM;
-+
-+	dl->num_cpus = 1;
-+	dl->num_codecs = 1;
-+	dl->platforms = platform;
-+	dl->num_platforms = 1;
-+	dl->id = 0;
-+	dl->dai_fmt = SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF | SND_SOC_DAIFMT_CBS_CFS;
-+	dl->init = avs_rt286_codec_init;
-+	dl->be_hw_params_fixup = avs_rt286_be_fixup;
-+	dl->ops = &avs_rt286_ops;
-+	dl->nonatomic = 1;
-+	dl->no_pcm = 1;
-+	dl->dpcm_capture = 1;
-+	dl->dpcm_playback = 1;
-+
-+	*dai_link = dl;
-+
-+	return 0;
-+}
-+
-+static int avs_create_dapm_routes(struct device *dev, int ssp_port,
-+				  struct snd_soc_dapm_route **routes, int *num_routes)
-+{
-+	struct snd_soc_dapm_route *dr;
-+	const int num_base = ARRAY_SIZE(card_base_routes);
-+	const int num_dr = num_base + 2;
-+	int idx;
-+
-+	dr = devm_kcalloc(dev, num_dr, sizeof(*dr), GFP_KERNEL);
-+	if (!dr)
-+		return -ENOMEM;
-+
-+	memcpy(dr, card_base_routes, num_base * sizeof(*dr));
-+
-+	idx = num_base;
-+	dr[idx].sink = devm_kasprintf(dev, GFP_KERNEL, "AIF1 Playback");
-+	dr[idx].source = devm_kasprintf(dev, GFP_KERNEL, "ssp%d Tx", ssp_port);
-+	if (!dr[idx].sink || !dr[idx].source)
-+		return -ENOMEM;
-+
-+	idx++;
-+	dr[idx].sink = devm_kasprintf(dev, GFP_KERNEL, "ssp%d Rx", ssp_port);
-+	dr[idx].source = devm_kasprintf(dev, GFP_KERNEL, "AIF1 Capture");
-+	if (!dr[idx].sink || !dr[idx].source)
-+		return -ENOMEM;
-+
-+	*routes = dr;
-+	*num_routes = num_dr;
-+
-+	return 0;
-+}
-+
-+static int avs_card_set_jack(struct snd_soc_card *card, struct snd_soc_jack *jack)
-+{
-+	struct snd_soc_component *component;
-+
-+	for_each_card_components(card, component)
-+		snd_soc_component_set_jack(component, jack, NULL);
-+	return 0;
-+}
-+
-+static int avs_card_remove(struct snd_soc_card *card)
-+{
-+	return avs_card_set_jack(card, NULL);
-+}
-+
-+static int avs_card_suspend_pre(struct snd_soc_card *card)
-+{
-+	return avs_card_set_jack(card, NULL);
-+}
-+
-+static int avs_card_resume_post(struct snd_soc_card *card)
-+{
-+	struct snd_soc_jack *jack = snd_soc_card_get_drvdata(card);
-+
-+	return avs_card_set_jack(card, jack);
-+}
-+
-+static int avs_rt286_probe(struct platform_device *pdev)
-+{
-+	struct snd_soc_dapm_route *routes;
-+	struct snd_soc_dai_link *dai_link;
 +	struct snd_soc_acpi_mach *mach;
 +	struct snd_soc_card *card;
-+	struct snd_soc_jack *jack;
 +	struct device *dev = &pdev->dev;
-+	const char *pname;
-+	int ret, num_routes;
++	int ret;
 +
 +	mach = dev_get_platdata(dev);
-+	pname = mach->mach_params.platform;
 +
-+	ret = avs_create_dai_link(dev, pname, __ffs(mach->link_mask), &dai_link);
-+	if (ret) {
-+		dev_err(dev, "Failed to create dai link: %d", ret);
-+		return ret;
-+	}
-+
-+	ret = avs_create_dapm_routes(dev, __ffs(mach->link_mask), &routes, &num_routes);
-+	if (ret) {
-+		dev_err(dev, "Failed to create dapm routes: %d", ret);
-+		return ret;
-+	}
-+
-+	jack = devm_kzalloc(dev, sizeof(*jack), GFP_KERNEL);
 +	card = devm_kzalloc(dev, sizeof(*card), GFP_KERNEL);
-+	if (!jack || !card)
++	if (!card)
 +		return -ENOMEM;
 +
-+	card->name = "avs_rt286";
++	card->name = "avs_dmic";
 +	card->dev = dev;
 +	card->owner = THIS_MODULE;
-+	card->remove = avs_card_remove;
-+	card->suspend_pre = avs_card_suspend_pre;
-+	card->resume_post = avs_card_resume_post;
-+	card->dai_link = dai_link;
-+	card->num_links = 1;
-+	card->controls = card_controls;
-+	card->num_controls = ARRAY_SIZE(card_controls);
++	card->dai_link = card_dai_links;
++	card->num_links = ARRAY_SIZE(card_dai_links);
 +	card->dapm_widgets = card_widgets;
 +	card->num_dapm_widgets = ARRAY_SIZE(card_widgets);
-+	card->dapm_routes = routes;
-+	card->num_dapm_routes = num_routes;
++	card->dapm_routes = card_routes;
++	card->num_dapm_routes = ARRAY_SIZE(card_routes);
 +	card->fully_routed = true;
-+	snd_soc_card_set_drvdata(card, jack);
 +
-+	ret = snd_soc_fixup_dai_links_platform_name(card, pname);
++	ret = snd_soc_fixup_dai_links_platform_name(card, mach->mach_params.platform);
 +	if (ret)
 +		return ret;
 +
 +	return devm_snd_soc_register_card(dev, card);
 +}
 +
-+static struct platform_driver avs_rt286_driver = {
-+	.probe = avs_rt286_probe,
++static struct platform_driver avs_dmic_driver = {
++	.probe = avs_dmic_probe,
 +	.driver = {
-+		.name = "avs_rt286",
++		.name = "avs_dmic",
 +		.pm = &snd_soc_pm_ops,
 +	},
 +};
 +
-+module_platform_driver(avs_rt286_driver);
++module_platform_driver(avs_dmic_driver);
 +
 +MODULE_LICENSE("GPL");
-+MODULE_ALIAS("platform:avs_rt286");
++MODULE_ALIAS("platform:avs_dmic");
 -- 
 2.25.1
 
