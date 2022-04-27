@@ -4,65 +4,65 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6F7BBC433FE
-	for <alsa-devel@archiver.kernel.org>; Wed, 27 Apr 2022 22:04:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 47CD5C433EF
+	for <alsa-devel@archiver.kernel.org>; Wed, 27 Apr 2022 22:04:29 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 65A34886;
-	Thu, 28 Apr 2022 00:03:19 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 65A34886
+	by alsa0.perex.cz (Postfix) with ESMTPS id 7886C857;
+	Thu, 28 Apr 2022 00:03:37 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7886C857
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1651097049;
-	bh=3VTVy7BD7HhwARhisohD9wMc13WwJ0bC1kJP5Yjvv6A=;
+	s=default; t=1651097067;
+	bh=vOvUWLj1hOSCmQyloq9ZBqf7B2AGhnapjeyVbc+ogW8=;
 	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=nlA8cLLtiKztsHLpIpaO0iOiLNCzosnV1zZ9cYmYorABX8Y/vlNvbMUJkZ3eZtlAZ
-	 hlUyqIqSYqgPX2przXr2kra1t9jEFW+1BVmK1ScuRPwIwrAAEI9wvIzpQ/ZX9/OJt9
-	 WYmP42W31ef3CiWBgr4R3Bhw6EDMUqkhb4/185wg=
+	b=I761x0v+QI9LzCbTW3O8cp8YKGLRK+BxhxJjbTwlDmbhRuCeD5yheoKJlIzY2I138
+	 N+WXWD283yg86kd8ql4Qe3PF+I17l18OsV+wlK5ahYs2ztcRGAzS3G4Sud5zMhQjmk
+	 Fpv10B92CLv6jSuoXGNWhHtFANCxksG6It9wFrV4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 0C445F8016E;
+	by alsa1.perex.cz (Postfix) with ESMTP id BC9DEF804D8;
 	Thu, 28 Apr 2022 00:02:48 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 92D7EF80256; Thu, 28 Apr 2022 00:02:44 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+ id 2E182F80256; Thu, 28 Apr 2022 00:02:45 +0200 (CEST)
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id EAB8FF80152
- for <alsa-devel@alsa-project.org>; Thu, 28 Apr 2022 00:02:40 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EAB8FF80152
+ by alsa1.perex.cz (Postfix) with ESMTPS id EC62CF8016E
+ for <alsa-devel@alsa-project.org>; Thu, 28 Apr 2022 00:02:33 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EC62CF8016E
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="ukW6pGJl"
+ header.b="Y6y8nqz0"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id 79B8B61E12;
- Wed, 27 Apr 2022 22:02:39 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id F2590C385AA;
- Wed, 27 Apr 2022 22:02:37 +0000 (UTC)
+ by ams.source.kernel.org (Postfix) with ESMTPS id 6DB3DB82AD2;
+ Wed, 27 Apr 2022 22:02:32 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1B848C385A9;
+ Wed, 27 Apr 2022 22:02:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1651096958;
- bh=3VTVy7BD7HhwARhisohD9wMc13WwJ0bC1kJP5Yjvv6A=;
+ s=k20201202; t=1651096951;
+ bh=vOvUWLj1hOSCmQyloq9ZBqf7B2AGhnapjeyVbc+ogW8=;
  h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=ukW6pGJlG+mVz8z1ujb6fqX5UMuk00Fp1Y+JAk0s7Oe4cTLh16adVhO07YPlMB1Nh
- DmNgaUp2/bY4Bz3REYfdwTNKsYr77/Sv5hMcNnb9AycvBvHcAadXSTEdA9dUAeALr1
- NrquHai+rYMP+ZgQk2JwBcdT6U/IS4GE+0WU6BmSYtJRVAjAjxXkY6mfI6VdDYv8Y+
- L/xDzF8YnY+M9ruPcE3rwNhewbY95xKrCoQrmvecY5SeJRyTNd20v4aKIV+KKkt/RE
- YUQLshLQU2DNzibWNRNYVa2H+vBCy9IPhS/nQZFJu+MOo3vuaMKSyaj6waAcgaj6aE
- u+CxIHq7HjJXA==
+ b=Y6y8nqz0dIahmgg7YPdcLTkyxhz3oJUsuPAwkfn70+rjOppDZFIm2DQ2K/FbO7PU7
+ 2+FXEHWtT8mOPnXiDQbSmyDNg/O2KTCraDuZ9dSKnXfNNTai+P51ZAk8Md6HQVpsfD
+ w157DTas+fn2V0Su8xhJznzHOVKfFWa93RsGZpFLmzITRZy2C76t6dQL7hYUeHOA8x
+ qGS6DpzwQYfV5E3uClSaJZWFmf6aL203xrbc9GwUiOVNRlpOGHoydU3Av87ihB9v0q
+ jcXhn2FY0D+SfeOahXSpTYF9QOgMyBJZrLwJ3+o/1shtiYa5120oNIINJ/AcX/TkIp
+ SVn61fOztOdZA==
 From: Mark Brown <broonie@kernel.org>
 To: pierre-louis.bossart@linux.intel.com, alsa-devel@alsa-project.org
-In-Reply-To: <20220426184106.102636-1-pierre-louis.bossart@linux.intel.com>
-References: <20220426184106.102636-1-pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH 0/4] ASoC: SOF: use pm_runtime_resume_and_get()
-Message-Id: <165109695770.498174.4051368408785191728.b4-ty@kernel.org>
-Date: Wed, 27 Apr 2022 23:02:37 +0100
+In-Reply-To: <20220421162640.302311-1-pierre-louis.bossart@linux.intel.com>
+References: <20220421162640.302311-1-pierre-louis.bossart@linux.intel.com>
+Subject: Re: [PATCH] ASoC: SOF: bump SOF_ABI_MINOR
+Message-Id: <165109694982.498174.10424071829594478684.b4-ty@kernel.org>
+Date: Wed, 27 Apr 2022 23:02:29 +0100
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: tiwai@suse.de
+Cc: tiwai@suse.de, daniel.baluta@nxp.com, kai.vehmanen@linux.intel.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -78,17 +78,12 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Tue, 26 Apr 2022 13:41:02 -0500, Pierre-Louis Bossart wrote:
-> simplify code pattern as recommended by Mark Brown.
+On Thu, 21 Apr 2022 11:26:40 -0500, Pierre-Louis Bossart wrote:
+> Commit a0f84dfb3f6d9 ("ASoC: SOF: IPC: dai: Expand DAI_CONFIG IPC flags")
+> did not update the SOF_ABI_MINOR, bump to version 20 before new
+> changes are added.
 > 
-> Pierre-Louis Bossart (4):
->   ASoC: SOF: control: use pm_runtime_resume_and_get()
->   ASoC: SOF: debug: use pm_runtime_resume_and_get()
->   ASoC: SOF: sof-client-ipc-flood-test: use pm_runtime_resume_and_get()
->   ASoC: SOF: sof-client-ipc-msg-injector: use
->     pm_runtime_resume_and_get()
 > 
-> [...]
 
 Applied to
 
@@ -96,12 +91,8 @@ Applied to
 
 Thanks!
 
-[1/4] ASoC: SOF: control: use pm_runtime_resume_and_get()
-      commit: bf0736e5d4644eb9238a1136625e09126721d2e3
-[2/4] ASoC: SOF: debug: use pm_runtime_resume_and_get()
-      commit: c106f46e83fd15c34cfa0a68e8218f5cb4844dd3
-[4/4] ASoC: SOF: sof-client-ipc-msg-injector: use pm_runtime_resume_and_get()
-      commit: 02885dd831c043d4804dfc1d2942f2f4ec5fdc18
+[1/1] ASoC: SOF: bump SOF_ABI_MINOR
+      commit: afe57ecab58b976c54fcbc31d718f936a0cc98cc
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
