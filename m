@@ -4,72 +4,65 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id EEFB0C433F5
-	for <alsa-devel@archiver.kernel.org>; Wed, 27 Apr 2022 22:06:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9064DC433EF
+	for <alsa-devel@archiver.kernel.org>; Wed, 27 Apr 2022 22:06:19 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 2502E1616;
-	Thu, 28 Apr 2022 00:05:12 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2502E1616
+	by alsa0.perex.cz (Postfix) with ESMTPS id BD7621638;
+	Thu, 28 Apr 2022 00:05:27 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BD7621638
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1651097162;
-	bh=jGR3MtKiwYyR+lUnJSaAaDsNLiw4lH+yX1MtYnOs/i4=;
+	s=default; t=1651097177;
+	bh=mx9enblSzngFpWZSZhZN/dFa8Z+1RwTxIf4k6U7d4LE=;
 	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=sgITwZBJVOyFIf2geAqccEFSOoa3HToZ67FuY6Cr96CkQhXMUY5PNsF8ewjPWJwVf
-	 nIUj5fdiBJg0GIvRkmrOF1RVN4NZdmGt18ShTp+UwwSymRhoxAXKBe9d84ZMnhTnNL
-	 fWE88bl2zE/tQnVKtCf9gjdE2oSi7xYkRf435sA0=
+	b=mx5FtTcXyFIl7oYHQo4IPMWQtj52fYuIBnMS5rRzKpzxWELEF9ksVasg/di6ZK4qZ
+	 MAyHkG1ji8fKfEHo+4eqjPBYzczJvAWD61ecKWp2KfYbRaA8NxgO53GaR6KeCYumCA
+	 EM/+Vj1mGL+hpRicFg+UHiY8n5I4W41X50URcNL4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 08A7DF8053B;
-	Thu, 28 Apr 2022 00:03:03 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id D767EF80551;
+	Thu, 28 Apr 2022 00:03:06 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 76E85F80542; Thu, 28 Apr 2022 00:03:02 +0200 (CEST)
+ id E28F7F80543; Thu, 28 Apr 2022 00:03:04 +0200 (CEST)
 Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 3411EF80536;
- Thu, 28 Apr 2022 00:02:44 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3411EF80536
+ by alsa1.perex.cz (Postfix) with ESMTPS id 20E75F80543
+ for <alsa-devel@alsa-project.org>; Thu, 28 Apr 2022 00:02:37 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 20E75F80543
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="KYAsSER2"
+ header.b="CAae6sm1"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by ams.source.kernel.org (Postfix) with ESMTPS id E24D0B82B06;
- Wed, 27 Apr 2022 22:02:43 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 374A9C385A7;
- Wed, 27 Apr 2022 22:02:39 +0000 (UTC)
+ by ams.source.kernel.org (Postfix) with ESMTPS id 37338B82B00;
+ Wed, 27 Apr 2022 22:02:37 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id F234BC385A7;
+ Wed, 27 Apr 2022 22:02:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1651096962;
- bh=jGR3MtKiwYyR+lUnJSaAaDsNLiw4lH+yX1MtYnOs/i4=;
+ s=k20201202; t=1651096956;
+ bh=mx9enblSzngFpWZSZhZN/dFa8Z+1RwTxIf4k6U7d4LE=;
  h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=KYAsSER2fa68mS9DGuKJMxkz2YSD++pSrMvoxGWqBZ5FXe3TlAtwgsOqiA4aJk+7P
- FuC7iZnPgJiRFtfG+2TqFhKDB+aB4DF9nCvdnEZwf4nt1QKW3etyqCmmBh3DpTgIZm
- wFPwoKtcIqCFyYKxr8vgd+ej8mL9eM5Kz0ftgvB0h+bNI2N9rWu6XiD0pSWSBp8lS9
- Op3mySF/PDzwazx7lnmoYQibcQyvh6ZJbp9xQeZHubDMvGDQRgM7Q+s+BQWXFdt8b1
- gp5kEKwMNBA4bHkInGCJQiEozfrj5VYJpiGnY2D0C6L4paMmJuzSHS2r9Cdic0GlUW
- 1mFKxLwcqiTVg==
+ b=CAae6sm1gzdPHirKGeA43ZlClnftGqpK/u9BFryLJoAY1SpywQ5WGTUgRsaKQwtab
+ wODvNLhRH/paGYl5N9xKXQYzgfgUvaejdBuaHWLZGRY55lYkr2jeASKu3FxtPOXcnn
+ w+OFLPAhWTuZkkWdQ1T06oV3STIwJ8TKpEttcoYOiwDLWs3J4kk7xlsZqXu58cFl8X
+ SJh2wFYLkvNyJAn3u2XWi5veD1uo2UrvYHkgJWJ34KNyWvcRiERp6uyTZ07af98lQP
+ xKrxPVDCzfHVxZpoeE/jeyxLLWe3TZJidZXBthJM5dzyaEOFmSE29XcHnRbgbSFJSe
+ bjEbHSwL/jpdg==
 From: Mark Brown <broonie@kernel.org>
-To: yc.hung@mediatek.com, tiwai@suse.com, matthias.bgg@gmail.com,
- perex@perex.cz, allen-kh.cheng@mediatek.com, ranjani.sridharan@linux.intel.com,
- yangyingliang@huawei.com, daniel.baluta@nxp.com, kai.vehmanen@linux.intel.com,
- pierre-louis.bossart@linux.intel.com, tinghan.shen@mediatek.com,
- lgirdwood@gmail.com
-In-Reply-To: <20220427071030.10172-1-tinghan.shen@mediatek.com>
-References: <20220427071030.10172-1-tinghan.shen@mediatek.com>
-Subject: Re: [PATCH v2] ASoC: SOF: mediatek: Fix allyesconfig build error
-Message-Id: <165109695894.498174.15533470381534539256.b4-ty@kernel.org>
-Date: Wed, 27 Apr 2022 23:02:38 +0100
+To: pierre-louis.bossart@linux.intel.com, alsa-devel@alsa-project.org
+In-Reply-To: <20220426183631.102356-1-pierre-louis.bossart@linux.intel.com>
+References: <20220426183631.102356-1-pierre-louis.bossart@linux.intel.com>
+Subject: Re: [PATCH v2] ASoC: SOF: bump SOF_ABI_MINOR
+Message-Id: <165109695470.498174.8686717828880991544.b4-ty@kernel.org>
+Date: Wed, 27 Apr 2022 23:02:34 +0100
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
- Project_Global_Chrome_Upstream_Group@mediatek.com,
- linux-mediatek@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
- sound-open-firmware@alsa-project.org
+Cc: tiwai@suse.de, daniel.baluta@nxp.com, kai.vehmanen@linux.intel.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -85,15 +78,12 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, 27 Apr 2022 15:10:30 +0800, Tinghan Shen wrote:
-> ld: sound/soc/sof/mediatek/mt8186/mt8186-clk.o:(.opd+0x18): multiple
-> definition of `adsp_clock_on';
-> sound/soc/sof/mediatek/mt8195/mt8195-clk.o:(.opd+0x60): first defined
-> here
-> ld: sound/soc/sof/mediatek/mt8186/mt8186-clk.o: in function
-> `.adsp_clock_on':
+On Tue, 26 Apr 2022 13:36:31 -0500, Pierre-Louis Bossart wrote:
+> Commit a0f84dfb3f6d9 ("ASoC: SOF: IPC: dai: Expand DAI_CONFIG IPC flags")
+> did not update the SOF_ABI_MINOR, bump to version 20 before new
+> changes are added.
 > 
-> [...]
+> 
 
 Applied to
 
@@ -101,8 +91,8 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: SOF: mediatek: Fix allyesconfig build error
-      commit: 9ce170dc9c08895846c5828addb724e42bf98484
+[1/1] ASoC: SOF: bump SOF_ABI_MINOR
+      commit: afe57ecab58b976c54fcbc31d718f936a0cc98cc
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
