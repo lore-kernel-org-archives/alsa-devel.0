@@ -4,84 +4,77 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5EB8AC433EF
-	for <alsa-devel@archiver.kernel.org>; Wed, 27 Apr 2022 17:25:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E6992C433FE
+	for <alsa-devel@archiver.kernel.org>; Wed, 27 Apr 2022 18:48:36 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3C28484A;
-	Wed, 27 Apr 2022 19:25:04 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3C28484A
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0FED684B;
+	Wed, 27 Apr 2022 20:47:44 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0FED684B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1651080354;
-	bh=UL5tO6G6Xlp8JFEGHOzSEIwWu4Ognv9CHk6wK1s0ldU=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=vSVkgJ1Jv6cugA0ZBCa+Z+DopD9zXrl6XSaBgkana1UsVXZn6qEuvtMruV9tnkFMF
-	 BuGdHQJD2ZtAq6WZ5OInvgVEfh7BHnsum9Afm1HJXmip8nw3z5G1LoCHlo62DZECac
-	 o9ssZwFvnQ3npTgBt44Lhh2HXnDdWyrNa+BuiePQ=
+	s=default; t=1651085314;
+	bh=oQdgX6Kb2ZWEaM7RC23nOxdzQZGJbiTSxWzy621oJuE=;
+	h=Date:Subject:To:References:From:In-Reply-To:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=amSmV3vMBkd6ALKc0pLszmi7prabYSFrTKQWSYbzLLqBY0jZHIf2tTK5Fa2FxTut6
+	 qkYBLp63pdKTMd4gEtZNrRgMqa7yhxZ61Rrptz1ebQ0Tmbo4eZZLsMwXux62C5AGWH
+	 1ma0BgtiCPUVOmIelxA1A5CGFrnkOEnr2ed2AObU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id DB546F80100;
-	Wed, 27 Apr 2022 19:25:03 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 7DC8CF80155;
+	Wed, 27 Apr 2022 20:47:43 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 4ADFFF80100; Wed, 27 Apr 2022 19:25:03 +0200 (CEST)
-Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com
- [IPv6:2a00:1450:4864:20::629])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id 85B67F8016E; Wed, 27 Apr 2022 20:47:41 +0200 (CEST)
+Received: from mga17.intel.com (mga17.intel.com [192.55.52.151])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 675B9F80100
- for <alsa-devel@alsa-project.org>; Wed, 27 Apr 2022 19:25:00 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 675B9F80100
+ by alsa1.perex.cz (Postfix) with ESMTPS id 20553F80100
+ for <alsa-devel@alsa-project.org>; Wed, 27 Apr 2022 20:47:34 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 20553F80100
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="EYyIJudD"
-Received: by mail-ej1-x629.google.com with SMTP id kq17so4792315ejb.4
- for <alsa-devel@alsa-project.org>; Wed, 27 Apr 2022 10:25:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
- h=from:to:cc:subject:date:message-id:mime-version
- :content-transfer-encoding;
- bh=P52XUlnvWCDbdpSO0eow56ta8BYIoktLvffWsEefpbg=;
- b=EYyIJudDhVOE7nkfQP1R77baA7wbkc6ve+j0cW06+oPnAeLrfHkIPvjhM8VSs9RP54
- WUrZl2qV8Hp9WrdgrHudUuNOmQAsSwugxTKF0zdZhb98lU01+kJ0uTZZHDnfHo23KF8f
- 7vJtUWbeJBZ48O+Rcz70/expiyA/HgPVGjOqzUyb1HzVmRkKPtKel1pAC8TrwJeDHSMa
- FR7WouWdsXS4BTgy5cayvj6E92lge1vx0YVkzM6lujQbbz75L2BvdPJnKRJVjEZyZTx5
- j8y1AT6+O7co6I6cll+Za0mbqMSTkEYbhG2ewGuphRI4UjAVKzM2+G71/z2L2pwD7pCt
- Lhrw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
- :content-transfer-encoding;
- bh=P52XUlnvWCDbdpSO0eow56ta8BYIoktLvffWsEefpbg=;
- b=EnYfLVzQm8kpIxdQ+fr1hOXZACC6dyGG+yKT/16SK2qQEePkyIqbSeADtGJJ+G16B1
- Qt+CGNmR/lsrXiCDuEWRwbfm7u7TFuZtT1OwDsCb1zfKS0Up6h1SVqpgnbedrHu53hb1
- OZ7cu/eBG1B2yJWhXaZp7Nl90ozgVELNvq8gihCxBEGx+iRPBwicCUNsmnyuDHcifIx7
- XWuVE+QppZtYhhRQoj2fu9WfHND5HdUlE7u83BuGNVoJDIstaqeRijCVpr8KhRdLbwov
- G7Dpw2FGmbojEloNfJHErLYOk7ElpJWxyUBDhskJBXRRRE1u5TIAGAn5gPVxtfHpYdYJ
- 91rA==
-X-Gm-Message-State: AOAM532Via5Eotk3uOcfIbzxTzN3TkO/wD0xYcpSjnMOYNxXJYGniAJO
- wy2CKejcSyY6W+A9KrEKRWI=
-X-Google-Smtp-Source: ABdhPJwtWnz45yI608lXspTGLXjHmcLI45v3raOCKlRDG2j3PHMzL3wk9KyjzWEraDNpDJY3BuR5sg==
-X-Received: by 2002:a17:907:97c9:b0:6db:ab53:1fdf with SMTP id
- js9-20020a17090797c900b006dbab531fdfmr27725391ejc.406.1651080298559; 
- Wed, 27 Apr 2022 10:24:58 -0700 (PDT)
-Received: from localhost.localdomain (84-72-105-84.dclient.hispeed.ch.
- [84.72.105.84]) by smtp.gmail.com with ESMTPSA id
- z2-20020a05640235c200b00425fff78dbbsm3328443edc.49.2022.04.27.10.24.57
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Wed, 27 Apr 2022 10:24:57 -0700 (PDT)
-From: Nicolas Frattaroli <frattaroli.nicolas@gmail.com>
-To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
- Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
- Katsuhiro Suzuki <katsuhiro@katsuster.net>
-Subject: [PATCH] ASoC: rk3328: fix disabling mclk on pclk probe failure
-Date: Wed, 27 Apr 2022 19:23:11 +0200
-Message-Id: <20220427172310.138638-1-frattaroli.nicolas@gmail.com>
-X-Mailer: git-send-email 2.36.0
+ dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
+ header.b="G4uQfp+/"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+ d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+ t=1651085256; x=1682621256;
+ h=message-id:date:mime-version:subject:to:cc:references:
+ from:in-reply-to:content-transfer-encoding;
+ bh=oQdgX6Kb2ZWEaM7RC23nOxdzQZGJbiTSxWzy621oJuE=;
+ b=G4uQfp+/ndt05VC1DXvWiLQZYZnv6QaP6CTkOVHWP07oXX9UvHAL0so4
+ P5yRXj/G24hcCbTul1JGvbRBIiq/vIqqIyQ8UzbTfMBmKMpAVANhZrD46
+ 3DpONNaWR398nIeOwUFygyQCo32ZBqFRUG5XwiEZuAjDlETn8YQIAcbdd
+ hweD1/CCl/1p4mYASCklrAnuuj+pzBXqVsYJOBZBEgYQKcoOn13CQ736s
+ ieImEs8xyq4vjlN7Pany1IlZeLT79OhpY+yn23AHns6JdhTBQAwHRn8Wa
+ H22Na476lwlC17/Fbn3Ocz9Ls7EifFVWt74xoVxXXH19dC9k7TmaZYcZN A==;
+X-IronPort-AV: E=McAfee;i="6400,9594,10330"; a="246595556"
+X-IronPort-AV: E=Sophos;i="5.90,293,1643702400"; d="scan'208";a="246595556"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+ by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 27 Apr 2022 11:47:29 -0700
+X-IronPort-AV: E=Sophos;i="5.90,293,1643702400"; d="scan'208";a="705683362"
+Received: from rajamsri-mobl2.gar.corp.intel.com (HELO [10.252.58.132])
+ ([10.252.58.132])
+ by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 27 Apr 2022 11:47:27 -0700
+Message-ID: <2592d293-1423-d1a7-f404-d89bb474aeb7@linux.intel.com>
+Date: Wed, 27 Apr 2022 21:47:52 +0300
 MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.8.1
+Subject: Re: [PATCH v3] ASoC: SOF: ipc3-topology: Correct get_control_data for
+ non bytes payload
+Content-Language: en-US
+To: Sergey Senozhatsky <senozhatsky@chromium.org>
+References: <20220427124025.14615-1-peter.ujfalusi@linux.intel.com>
+ <YmlBgsQtrayqK0P6@google.com> <YmlDEY960ypq/QHH@google.com>
+From: =?UTF-8?Q?P=c3=a9ter_Ujfalusi?= <peter.ujfalusi@linux.intel.com>
+In-Reply-To: <YmlDEY960ypq/QHH@google.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-Cc: Nicolas Frattaroli <frattaroli.nicolas@gmail.com>,
- linux-rockchip@lists.infradead.org, alsa-devel@alsa-project.org,
- linux-kernel@vger.kernel.org
+Cc: pierre-louis.bossart@linux.intel.com, alsa-devel@alsa-project.org,
+ kai.vehmanen@linux.intel.com, cujomalainey@google.com,
+ ranjani.sridharan@linux.intel.com, lgirdwood@gmail.com, broonie@kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -97,29 +90,40 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-If preparing/enabling the pclk fails, the probe function should
-unprepare and disable the previously prepared and enabled mclk,
-which it doesn't do. This commit rectifies this.
 
-Fixes: c32759035ad2 ("ASoC: rockchip: support ACODEC for rk3328")
-Signed-off-by: Nicolas Frattaroli <frattaroli.nicolas@gmail.com>
----
- sound/soc/codecs/rk3328_codec.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/codecs/rk3328_codec.c b/sound/soc/codecs/rk3328_codec.c
-index 758d439e8c7a..86b679cf7aef 100644
---- a/sound/soc/codecs/rk3328_codec.c
-+++ b/sound/soc/codecs/rk3328_codec.c
-@@ -481,7 +481,7 @@ static int rk3328_platform_probe(struct platform_device *pdev)
- 	ret = clk_prepare_enable(rk3328->pclk);
- 	if (ret < 0) {
- 		dev_err(&pdev->dev, "failed to enable acodec pclk\n");
--		return ret;
-+		goto err_unprepare_mclk;
- 	}
- 
- 	base = devm_platform_ioremap_resource(pdev, 0);
+On 27/04/2022 16:20, Sergey Senozhatsky wrote:
+> On (22/04/27 22:13), Sergey Senozhatsky wrote:
+>>> @@ -784,16 +785,26 @@ static int sof_get_control_data(struct snd_soc_component *scomp,
+>>>  		}
+>>>  
+>>>  		cdata = wdata[i].control->ipc_control_data;
+>>> -		wdata[i].pdata = cdata->data;
+>>> -		if (!wdata[i].pdata)
+>>> -			return -EINVAL;
+>>>  
+>>>  		/* make sure data is valid - data can be updated at runtime */
+>>
+>> A silly nit: does this comment belong to SOF_ABI_MAGIC check below?
+> 
+> I mean something like this?
+
+yes, makes sense. Although I also played with the idea of dropping the
+ABI magic check as well, but let's keep it for now.
+> 
+> ---
+>  
+>  		cdata = wdata[i].control->ipc_control_data;
+>  
+> -		/* make sure data is valid - data can be updated at runtime */
+>  		if (widget->dobj.widget.kcontrol_type[i] == SND_SOC_TPLG_TYPE_BYTES) {
+> +			/*
+> +			 * make sure data is valid - data can be updated at
+> +			 * runtime
+> +			 */
+>  			if (cdata->data->magic != SOF_ABI_MAGIC)
+>  				return -EINVAL;
+>  
+
 -- 
-2.36.0
-
+Péter
