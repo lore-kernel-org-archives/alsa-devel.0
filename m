@@ -4,80 +4,80 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 66790C433EF
-	for <alsa-devel@archiver.kernel.org>; Wed, 27 Apr 2022 15:11:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 427D8C433EF
+	for <alsa-devel@archiver.kernel.org>; Wed, 27 Apr 2022 15:12:19 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A349F16D7;
-	Wed, 27 Apr 2022 17:10:59 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A349F16D7
+	by alsa0.perex.cz (Postfix) with ESMTPS id 64C4D1614;
+	Wed, 27 Apr 2022 17:11:27 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 64C4D1614
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1651072309;
-	bh=xQQDq9LZL8DnxCEmG9YOnWa2/sb1wVicI1hDlg+KGrE=;
+	s=default; t=1651072337;
+	bh=WNILvPVHh3K08oLveDYD2KkDKrHGQf084AUIohn3VmI=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=aijWAZXcttmffawC2wkSsj8KId0ZsFTK8O5igSiKS8Sm0m+p1TzotEOQCp+jWIh4D
-	 ZXZCsn8/OyJBEDWJQ70IGAvWniyTlrxIVdLBDKgTKYseG+ZOsCvcBePCelOFwTl+e9
-	 r7w4KThRipKlxkCHKpbEuB3JIiTT7P9whDMA4aWc=
+	b=IEBqdAsjlofxjAaxRLi7J8Qi2A1BARFWb+NG6N6rnoczfvoH3oSlv5neXx/QY5+ep
+	 6c0VUmsfg9twSO0WnUsGwXZK/IDfwNwHwAdmsoy1dNbhX9MiBI1YBSH1ajNth9fJlm
+	 yGQ4af0hdu/brX1UxdEdCJTO2DbOJQr4t0eNpJ3w=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 8EA3EF80568;
-	Wed, 27 Apr 2022 17:08:05 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 60F08F8057C;
+	Wed, 27 Apr 2022 17:08:07 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 76E0FF8050F; Wed, 27 Apr 2022 17:07:49 +0200 (CEST)
+ id 682AFF80557; Wed, 27 Apr 2022 17:07:55 +0200 (CEST)
 Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
  [67.231.152.168])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 52E4CF80507
- for <alsa-devel@alsa-project.org>; Wed, 27 Apr 2022 17:07:37 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 52E4CF80507
+ by alsa1.perex.cz (Postfix) with ESMTPS id 56F41F80516
+ for <alsa-devel@alsa-project.org>; Wed, 27 Apr 2022 17:07:39 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 56F41F80516
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com
- header.b="fFCsMXu/"
+ header.b="HnIRAmBH"
 Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
- by mx0b-001ae601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 23RBg6qD022428;
- Wed, 27 Apr 2022 10:07:35 -0500
+ by mx0b-001ae601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 23R6M8vp014103;
+ Wed, 27 Apr 2022 10:07:37 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
  h=from : to : cc :
  subject : date : message-id : in-reply-to : references : mime-version :
  content-transfer-encoding : content-type; s=PODMain02222019;
- bh=xUFf/tHEB9c65AsWJmwCDUemoEDqn+aYh1RJ+ogl2xY=;
- b=fFCsMXu/6kIrK/YkJFxWnY6eyJcFujxnOnjpElRS+XLzEJgUm9aP8D7G+LVZqaNtw6fi
- Qxi3XUn0eG3qUZGdUY7ODJ/w8/edsaBG4xsCRFC6DnwR7kGAfxY45jIZbLOO6tBp8F36
- NCB9IMgUiw/Slx3DiknlVXiRZmZoFaxrAcTjscpiASD5HlNY2me8lcQHNqHaxsc1XJuU
- den7Fe6rbDcJndFAZqT1+jNcdFhwVZtsWF7ziPcvKTuCTyBNK780u/7BS7uSn3E3TMMl
- MNQJTVuYLWoGsGLWTpk58xUuuooWZs79WsTFYUGSxluVF7gGIypIj7uWhftRLMdAo3OU VQ== 
-Received: from ediex01.ad.cirrus.com ([84.19.233.68])
- by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3fprt60xte-6
+ bh=L+sp1duDGs2feT5hFVgcKLtco7zkrHRPmi250a7EfqE=;
+ b=HnIRAmBHDZ/AlJn7IHoezhTxWaUeRdllWgA3yLTc3qs0qYla1nh6RcnsqmoS3ze1DVQf
+ 9puyxWrwp6R/SsGMD4sK5/KV7ERASCbysS9EmxJ58DgJvhKZyt/SNGZhgeZq04Hek3hH
+ 9/DghuL64ab5vcEWwtn6kmTfpIiHfPBeCiHL5KSxwyhpie7nTa+CzKcDniGzqdoIicP1
+ FCOreJXyoV/XZiBELOUZtmeWbta0vy0gyvVw6BWPnlC2KzIVZ4YeoX/GqJ/MaP7HEixc
+ M3znWA4j2oVwyT+bqKmyF1Q4m55H+UiVbnLsGQQf1TmCCy08tXb1p29zxAkL23XjH+Wn og== 
+Received: from ediex02.ad.cirrus.com ([84.19.233.68])
+ by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3fprt60xth-9
  (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
- Wed, 27 Apr 2022 10:07:35 -0500
-Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
+ Wed, 27 Apr 2022 10:07:37 -0500
+Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX02.ad.cirrus.com
+ (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.24; Wed, 27 Apr
- 2022 16:07:24 +0100
+ 2022 16:07:31 +0100
 Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
  (198.61.84.80) with Microsoft SMTP Server id 15.1.2375.24 via
- Frontend Transport; Wed, 27 Apr 2022 16:07:24 +0100
+ Frontend Transport; Wed, 27 Apr 2022 16:07:31 +0100
 Received: from vitaly-Legion-7-16ACHg6.ad.cirrus.com (unknown [198.90.238.170])
- by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 267FC46C;
- Wed, 27 Apr 2022 15:07:24 +0000 (UTC)
+ by ediswmail.ad.cirrus.com (Postfix) with ESMTP id F3DE3478;
+ Wed, 27 Apr 2022 15:07:30 +0000 (UTC)
 From: Vitaly Rodionov <vitalyr@opensource.cirrus.com>
 To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Mark
  Brown <broonie@kernel.org>
-Subject: [PATCH 06/26] ASoC: cs35l41: Move cs35l41_set_cspl_mbox_cmd to shared
- code
-Date: Wed, 27 Apr 2022 16:07:00 +0100
-Message-ID: <20220427150720.9194-7-vitalyr@opensource.cirrus.com>
+Subject: [PATCH 20/26] ASoC: cs35l41: Add common cs35l41 enter hibernate
+ function
+Date: Wed, 27 Apr 2022 16:07:14 +0100
+Message-ID: <20220427150720.9194-21-vitalyr@opensource.cirrus.com>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20220427150720.9194-1-vitalyr@opensource.cirrus.com>
 References: <20220427150720.9194-1-vitalyr@opensource.cirrus.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-Proofpoint-GUID: xfJ8G3Cz57CCrLbMaEgXK0pHFlNDxw5f
-X-Proofpoint-ORIG-GUID: xfJ8G3Cz57CCrLbMaEgXK0pHFlNDxw5f
+X-Proofpoint-GUID: hBSu2twEVgPIw_hFh-Pn_Iv3czqHmBAX
+X-Proofpoint-ORIG-GUID: hBSu2twEVgPIw_hFh-Pn_Iv3czqHmBAX
 X-Proofpoint-Spam-Reason: safe
 Cc: patches@opensource.cirrus.com, alsa-devel@alsa-project.org,
  linux-kernel@vger.kernel.org, Stefan Binding <sbinding@opensource.cirrus.com>
@@ -98,249 +98,87 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 From: Stefan Binding <sbinding@opensource.cirrus.com>
 
-This function is used to control the DSP Firmware for cs35l41,
-and will be needed by the cs35l41 hda driver, when firmware
-support is added.
+Since the CS35L41 HDA driver also support hibernation, it
+makes sense to move code from the ASoC driver to enter
+hibernation into common code.
+
+Since HDA must support laptops which do not support hibernation
+due to lack of external boost GPIO it is necessary to
+ensure the function returns an error when an unsupported
+boost type is in use.
 
 Signed-off-by: Stefan Binding <sbinding@opensource.cirrus.com>
 Signed-off-by: Vitaly Rodionov <vitalyr@opensource.cirrus.com>
 ---
- include/sound/cs35l41.h        | 20 ++++++++++
- sound/soc/codecs/cs35l41-lib.c | 57 ++++++++++++++++++++++++++++
- sound/soc/codecs/cs35l41.c     | 69 +++-------------------------------
- sound/soc/codecs/cs35l41.h     | 18 ---------
- 4 files changed, 82 insertions(+), 82 deletions(-)
+ include/sound/cs35l41.h        |  2 ++
+ sound/soc/codecs/cs35l41-lib.c | 19 +++++++++++++++++++
+ sound/soc/codecs/cs35l41.c     | 10 +---------
+ 3 files changed, 22 insertions(+), 9 deletions(-)
 
 diff --git a/include/sound/cs35l41.h b/include/sound/cs35l41.h
-index 8e4b125c81c8..2271471225b1 100644
+index 938f5846e4d4..7affe6cfc823 100644
 --- a/include/sound/cs35l41.h
 +++ b/include/sound/cs35l41.h
-@@ -801,6 +801,24 @@ struct cs35l41_otp_map_element_t {
- 	u32 word_offset;
- };
- 
-+enum cs35l41_cspl_mbox_status {
-+	CSPL_MBOX_STS_RUNNING = 0,
-+	CSPL_MBOX_STS_PAUSED = 1,
-+	CSPL_MBOX_STS_RDY_FOR_REINIT = 2,
-+};
-+
-+enum cs35l41_cspl_mbox_cmd {
-+	CSPL_MBOX_CMD_NONE = 0,
-+	CSPL_MBOX_CMD_PAUSE = 1,
-+	CSPL_MBOX_CMD_RESUME = 2,
-+	CSPL_MBOX_CMD_REINIT = 3,
-+	CSPL_MBOX_CMD_STOP_PRE_REINIT = 4,
-+	CSPL_MBOX_CMD_HIBERNATE = 5,
-+	CSPL_MBOX_CMD_OUT_OF_HIBERNATE = 6,
-+	CSPL_MBOX_CMD_UNKNOWN_CMD = -1,
-+	CSPL_MBOX_CMD_INVALID_SEQUENCE = -2,
-+};
-+
- /*
-  * IRQs
-  */
-@@ -859,6 +877,8 @@ int cs35l41_set_channels(struct device *dev, struct regmap *reg,
- 			 unsigned int tx_num, unsigned int *tx_slot,
- 			 unsigned int rx_num, unsigned int *rx_slot);
- int cs35l41_gpio_config(struct regmap *regmap, struct cs35l41_hw_cfg *hw_cfg);
-+int cs35l41_set_cspl_mbox_cmd(struct device *dev, struct regmap *regmap,
-+			      enum cs35l41_cspl_mbox_cmd cmd);
+@@ -886,6 +886,8 @@ void cs35l41_configure_cs_dsp(struct device *dev, struct regmap *reg, struct cs_
+ int cs35l41_set_cspl_mbox_cmd(struct device *dev, struct regmap *regmap,
+ 			      enum cs35l41_cspl_mbox_cmd cmd);
+ int cs35l41_write_fs_errata(struct device *dev, struct regmap *regmap);
++int cs35l41_enter_hibernate(struct device *dev, struct regmap *regmap,
++			    enum cs35l41_boost_type b_type);
+ int cs35l41_exit_hibernate(struct device *dev, struct regmap *regmap);
  int cs35l41_init_boost(struct device *dev, struct regmap *regmap,
  		       struct cs35l41_hw_cfg *hw_cfg);
- bool cs35l41_safe_reset(struct regmap *regmap, enum cs35l41_boost_type b_type);
 diff --git a/sound/soc/codecs/cs35l41-lib.c b/sound/soc/codecs/cs35l41-lib.c
-index 491616c7c5c7..451d3be37157 100644
+index 8a796dbe0718..34899a127d05 100644
 --- a/sound/soc/codecs/cs35l41-lib.c
 +++ b/sound/soc/codecs/cs35l41-lib.c
-@@ -1206,6 +1206,63 @@ int cs35l41_gpio_config(struct regmap *regmap, struct cs35l41_hw_cfg *hw_cfg)
+@@ -1320,6 +1320,25 @@ int cs35l41_write_fs_errata(struct device *dev, struct regmap *regmap)
  }
- EXPORT_SYMBOL_GPL(cs35l41_gpio_config);
+ EXPORT_SYMBOL_GPL(cs35l41_write_fs_errata);
  
-+static bool cs35l41_check_cspl_mbox_sts(enum cs35l41_cspl_mbox_cmd cmd,
-+					enum cs35l41_cspl_mbox_status sts)
++int cs35l41_enter_hibernate(struct device *dev, struct regmap *regmap,
++			    enum cs35l41_boost_type b_type)
 +{
-+	switch (cmd) {
-+	case CSPL_MBOX_CMD_NONE:
-+	case CSPL_MBOX_CMD_UNKNOWN_CMD:
-+		return true;
-+	case CSPL_MBOX_CMD_PAUSE:
-+	case CSPL_MBOX_CMD_OUT_OF_HIBERNATE:
-+		return (sts == CSPL_MBOX_STS_PAUSED);
-+	case CSPL_MBOX_CMD_RESUME:
-+		return (sts == CSPL_MBOX_STS_RUNNING);
-+	case CSPL_MBOX_CMD_REINIT:
-+		return (sts == CSPL_MBOX_STS_RUNNING);
-+	case CSPL_MBOX_CMD_STOP_PRE_REINIT:
-+		return (sts == CSPL_MBOX_STS_RDY_FOR_REINIT);
-+	default:
-+		return false;
++	if (!cs35l41_safe_reset(regmap, b_type)) {
++		dev_dbg(dev, "System does not support Suspend\n");
++		return -EINVAL;
 +	}
++
++	dev_dbg(dev, "Enter hibernate\n");
++	regmap_write(regmap, CS35L41_WAKESRC_CTL, 0x0088);
++	regmap_write(regmap, CS35L41_WAKESRC_CTL, 0x0188);
++
++	// Don't wait for ACK since bus activity would wake the device
++	regmap_write(regmap, CS35L41_DSP_VIRT1_MBOX_1, CSPL_MBOX_CMD_HIBERNATE);
++
++	return 0;
 +}
++EXPORT_SYMBOL_GPL(cs35l41_enter_hibernate);
 +
-+int cs35l41_set_cspl_mbox_cmd(struct device *dev, struct regmap *regmap,
-+			      enum cs35l41_cspl_mbox_cmd cmd)
-+{
-+	unsigned int sts = 0, i;
-+	int ret;
-+
-+	// Set mailbox cmd
-+	ret = regmap_write(regmap, CS35L41_DSP_VIRT1_MBOX_1, cmd);
-+	if (ret < 0) {
-+		if (cmd != CSPL_MBOX_CMD_OUT_OF_HIBERNATE)
-+			dev_err(dev, "Failed to write MBOX: %d\n", ret);
-+		return ret;
-+	}
-+
-+	// Read mailbox status and verify it is appropriate for the given cmd
-+	for (i = 0; i < 5; i++) {
-+		usleep_range(1000, 1100);
-+
-+		ret = regmap_read(regmap, CS35L41_DSP_MBOX_2, &sts);
-+		if (ret < 0) {
-+			dev_err(dev, "Failed to read MBOX STS: %d\n", ret);
-+			continue;
-+		}
-+
-+		if (!cs35l41_check_cspl_mbox_sts(cmd, sts))
-+			dev_dbg(dev, "[%u] cmd %u returned invalid sts %u", i, cmd, sts);
-+		else
-+			return 0;
-+	}
-+
-+	dev_err(dev, "Failed to set mailbox cmd %u (status %u)\n", cmd, sts);
-+
-+	return -ENOMSG;
-+}
-+EXPORT_SYMBOL_GPL(cs35l41_set_cspl_mbox_cmd);
-+
- MODULE_DESCRIPTION("CS35L41 library");
- MODULE_AUTHOR("David Rhodes, Cirrus Logic Inc, <david.rhodes@cirrus.com>");
- MODULE_AUTHOR("Lucas Tanure, Cirrus Logic Inc, <tanureal@opensource.cirrus.com>");
+ static void cs35l41_wait_for_pwrmgt_sts(struct device *dev, struct regmap *regmap)
+ {
+ 	const int pwrmgt_retries = 10;
 diff --git a/sound/soc/codecs/cs35l41.c b/sound/soc/codecs/cs35l41.c
-index 912196f45648..0285946688f7 100644
+index 0400c6e091d5..ca8310a77092 100644
 --- a/sound/soc/codecs/cs35l41.c
 +++ b/sound/soc/codecs/cs35l41.c
-@@ -208,67 +208,6 @@ static int cs35l41_dsp_preload_ev(struct snd_soc_dapm_widget *w,
- 	}
- }
- 
--static bool cs35l41_check_cspl_mbox_sts(enum cs35l41_cspl_mbox_cmd cmd,
--					enum cs35l41_cspl_mbox_status sts)
--{
--	switch (cmd) {
--	case CSPL_MBOX_CMD_NONE:
--	case CSPL_MBOX_CMD_UNKNOWN_CMD:
--		return true;
--	case CSPL_MBOX_CMD_PAUSE:
--	case CSPL_MBOX_CMD_OUT_OF_HIBERNATE:
--		return (sts == CSPL_MBOX_STS_PAUSED);
--	case CSPL_MBOX_CMD_RESUME:
--		return (sts == CSPL_MBOX_STS_RUNNING);
--	case CSPL_MBOX_CMD_REINIT:
--		return (sts == CSPL_MBOX_STS_RUNNING);
--	case CSPL_MBOX_CMD_STOP_PRE_REINIT:
--		return (sts == CSPL_MBOX_STS_RDY_FOR_REINIT);
--	default:
--		return false;
--	}
--}
--
--static int cs35l41_set_cspl_mbox_cmd(struct cs35l41_private *cs35l41,
--				     enum cs35l41_cspl_mbox_cmd cmd)
--{
--	unsigned int sts = 0, i;
--	int ret;
--
--	// Set mailbox cmd
--	ret = regmap_write(cs35l41->regmap, CS35L41_DSP_VIRT1_MBOX_1, cmd);
--	if (ret < 0) {
--		if (cmd != CSPL_MBOX_CMD_OUT_OF_HIBERNATE)
--			dev_err(cs35l41->dev, "Failed to write MBOX: %d\n", ret);
--		return ret;
--	}
--
--	// Read mailbox status and verify it is appropriate for the given cmd
--	for (i = 0; i < 5; i++) {
--		usleep_range(1000, 1100);
--
--		ret = regmap_read(cs35l41->regmap, CS35L41_DSP_MBOX_2, &sts);
--		if (ret < 0) {
--			dev_err(cs35l41->dev, "Failed to read MBOX STS: %d\n", ret);
--			continue;
--		}
--
--		if (!cs35l41_check_cspl_mbox_sts(cmd, sts)) {
--			dev_dbg(cs35l41->dev,
--				"[%u] cmd %u returned invalid sts %u",
--				i, cmd, sts);
--		} else {
--			return 0;
--		}
--	}
--
--	dev_err(cs35l41->dev,
--		"Failed to set mailbox cmd %u (status %u)\n",
--		cmd, sts);
--
--	return -ENOMSG;
--}
--
- static int cs35l41_dsp_audio_ev(struct snd_soc_dapm_widget *w,
- 				struct snd_kcontrol *kcontrol, int event)
- {
-@@ -299,9 +238,11 @@ static int cs35l41_dsp_audio_ev(struct snd_soc_dapm_widget *w,
- 			return -EINVAL;
- 		}
- 
--		return cs35l41_set_cspl_mbox_cmd(cs35l41, CSPL_MBOX_CMD_RESUME);
-+		return cs35l41_set_cspl_mbox_cmd(cs35l41->dev, cs35l41->regmap,
-+						 CSPL_MBOX_CMD_RESUME);
- 	case SND_SOC_DAPM_PRE_PMD:
--		return cs35l41_set_cspl_mbox_cmd(cs35l41, CSPL_MBOX_CMD_PAUSE);
-+		return cs35l41_set_cspl_mbox_cmd(cs35l41->dev, cs35l41->regmap,
-+						 CSPL_MBOX_CMD_PAUSE);
- 	default:
+@@ -1333,15 +1333,7 @@ static int __maybe_unused cs35l41_runtime_suspend(struct device *dev)
+ 	if (!cs35l41->dsp.preloaded || !cs35l41->dsp.cs_dsp.running)
  		return 0;
- 	}
-@@ -1475,7 +1416,7 @@ static int cs35l41_exit_hibernate(struct cs35l41_private *cs35l41)
- 		dev_dbg(cs35l41->dev, "Exit hibernate\n");
  
- 		for (j = 0; j < wake_retries; j++) {
--			ret = cs35l41_set_cspl_mbox_cmd(cs35l41,
-+			ret = cs35l41_set_cspl_mbox_cmd(cs35l41->dev, cs35l41->regmap,
- 							CSPL_MBOX_CMD_OUT_OF_HIBERNATE);
- 			if (!ret)
- 				break;
-diff --git a/sound/soc/codecs/cs35l41.h b/sound/soc/codecs/cs35l41.h
-index e3369e0aa89f..c85cbc1dd333 100644
---- a/sound/soc/codecs/cs35l41.h
-+++ b/sound/soc/codecs/cs35l41.h
-@@ -23,24 +23,6 @@
- 
- extern const struct dev_pm_ops cs35l41_pm_ops;
- 
--enum cs35l41_cspl_mbox_status {
--	CSPL_MBOX_STS_RUNNING = 0,
--	CSPL_MBOX_STS_PAUSED = 1,
--	CSPL_MBOX_STS_RDY_FOR_REINIT = 2,
--};
+-	dev_dbg(cs35l41->dev, "Enter hibernate\n");
 -
--enum cs35l41_cspl_mbox_cmd {
--	CSPL_MBOX_CMD_NONE = 0,
--	CSPL_MBOX_CMD_PAUSE = 1,
--	CSPL_MBOX_CMD_RESUME = 2,
--	CSPL_MBOX_CMD_REINIT = 3,
--	CSPL_MBOX_CMD_STOP_PRE_REINIT = 4,
--	CSPL_MBOX_CMD_HIBERNATE = 5,
--	CSPL_MBOX_CMD_OUT_OF_HIBERNATE = 6,
--	CSPL_MBOX_CMD_UNKNOWN_CMD = -1,
--	CSPL_MBOX_CMD_INVALID_SEQUENCE = -2,
--};
+-	cs35l41_safe_reset(cs35l41->regmap, cs35l41->hw_cfg.bst_type);
+-	regmap_write(cs35l41->regmap, CS35L41_WAKESRC_CTL, 0x0088);
+-	regmap_write(cs35l41->regmap, CS35L41_WAKESRC_CTL, 0x0188);
 -
- struct cs35l41_private {
- 	struct wm_adsp dsp; /* needs to be first member */
- 	struct snd_soc_codec *codec;
+-	// Don't wait for ACK since bus activity would wake the device
+-	regmap_write(cs35l41->regmap, CS35L41_DSP_VIRT1_MBOX_1,
+-		     CSPL_MBOX_CMD_HIBERNATE);
++	cs35l41_enter_hibernate(dev, cs35l41->regmap, cs35l41->hw_cfg.bst_type);
+ 
+ 	regcache_cache_only(cs35l41->regmap, true);
+ 	regcache_mark_dirty(cs35l41->regmap);
 -- 
 2.32.0
 
