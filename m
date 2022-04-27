@@ -4,64 +4,64 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 58E10C433EF
-	for <alsa-devel@archiver.kernel.org>; Wed, 27 Apr 2022 08:12:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 01F93C433EF
+	for <alsa-devel@archiver.kernel.org>; Wed, 27 Apr 2022 08:12:44 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A7FA517E9;
-	Wed, 27 Apr 2022 10:11:42 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A7FA517E9
+	by alsa0.perex.cz (Postfix) with ESMTPS id 40C6117DE;
+	Wed, 27 Apr 2022 10:11:53 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 40C6117DE
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1651047152;
-	bh=sKaK1xgwQ90Lr5wLei68Sh2VFn5Y4VXvUQ0T4pte7Ew=;
+	s=default; t=1651047163;
+	bh=xN0pgTbCKAhIsajSBHFBQ8//KVpcGDycVRkcDJ1Sevk=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=eDRtksyXW/GeGEKiDjyXt/356k8mg1NtzmfLbnvfHDZ1ds+e9oLgoGTV7CNaGTgpe
-	 SL7+fMocg84uI0kD+EMjNPszwK6BXC3pU71N5soff9EUWGhBGY8+7Pg9BATWOjei9A
-	 DaMybDFfHc+AyUWvIpnYPN3VIDIL1oZQ+TvLKSMM=
+	b=bfbo2htfia/Czl6IRIbBghIlRaXzcSuiZnafn614+F2oPPkXwPxAWG8jZI4V5uIxc
+	 PAweTMNTNGY/rmOGCBqfxHeNoHj3lIE0C+oqSW9rCd8m/ZqjOJxi/jRS42fyuJxAWt
+	 UB3AugLCXBjQw8aAWOvv8xEOTkJRWAtacg50/07U=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 4CDBEF80552;
-	Wed, 27 Apr 2022 10:09:56 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 18575F80558;
+	Wed, 27 Apr 2022 10:09:57 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 0EB45F8053C; Wed, 27 Apr 2022 10:09:52 +0200 (CEST)
+ id AA0B8F8054A; Wed, 27 Apr 2022 10:09:54 +0200 (CEST)
 Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 9B4C2F80534
- for <alsa-devel@alsa-project.org>; Wed, 27 Apr 2022 10:09:42 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9B4C2F80534
+ by alsa1.perex.cz (Postfix) with ESMTPS id 728DBF8051A
+ for <alsa-devel@alsa-project.org>; Wed, 27 Apr 2022 10:09:44 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 728DBF8051A
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="cJnL54Ya"
+ header.b="Bj/x5Xwr"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1651046983; x=1682582983;
+ t=1651046985; x=1682582985;
  h=from:to:cc:subject:date:message-id:in-reply-to:
  references:mime-version:content-transfer-encoding;
- bh=sKaK1xgwQ90Lr5wLei68Sh2VFn5Y4VXvUQ0T4pte7Ew=;
- b=cJnL54YamOObTetIrWZNuyBcxWFY44Y4NwuvGQq6ojdePI+znS8IKqi+
- tH4vUKgQjZPxbG0PEEt1VviB7x7jTZRm/b9hXe++AFGywZYm3P46RL3FK
- rjgmOrmZwd8LmQrVEwFAt3RzwO1B4rvFE6UIeMiYi6UoJzB9Diwa4AbxH
- 1Ws1hVNq11aD8g7KAD3jlUnGOKyxOP5+A/c7UcEc9tvv9UwnCi8jF0OYv
- 6b/EE+j5hB1ku/hehkOo7Hq9P8Uza4eJHSpF83iMj4LfUAT1DN5Nh9owJ
- b/TGQ/CzjFxvWgvv/XcJBCsJBZXLbvwvF8YMt412WVZG4kJtgLkn9aPdk Q==;
-X-IronPort-AV: E=McAfee;i="6400,9594,10329"; a="291006294"
-X-IronPort-AV: E=Sophos;i="5.90,292,1643702400"; d="scan'208";a="291006294"
+ bh=xN0pgTbCKAhIsajSBHFBQ8//KVpcGDycVRkcDJ1Sevk=;
+ b=Bj/x5Xwrd+oZ/wCnqPgKmBYhBF0OKVpkhct1sponjN4Ut+TJBncrQJyo
+ N8RONc447+zV84KeDxP0m2JDAtI64C01/agONDVaopgrdx83/nsAE47xl
+ l76yozqqR7Onn97zkft7S8Th16BzM4WT/Jlk1C2OYAcZSLmgEnbCUMYI+
+ t1LTeja51/f4qXHHBVN4wOc28ynew55J2QXCQKcd712VsRQqBNko/1O1P
+ puk/VqWyBuriJWP9G6MEfpJfFy5mqDlQy29ZhdnlM3arMfTnn2XUaYUO5
+ DGUT6Xr86RtE7hKfw17G+1mpN6rJXN/937b5hi1aRzzHTV355SwBDPp/P w==;
+X-IronPort-AV: E=McAfee;i="6400,9594,10329"; a="291006322"
+X-IronPort-AV: E=Sophos;i="5.90,292,1643702400"; d="scan'208";a="291006322"
 Received: from fmsmga001.fm.intel.com ([10.253.24.23])
  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 27 Apr 2022 01:09:34 -0700
+ 27 Apr 2022 01:09:41 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.90,292,1643702400"; d="scan'208";a="705437576"
+X-IronPort-AV: E=Sophos;i="5.90,292,1643702400"; d="scan'208";a="705437656"
 Received: from crojewsk-ctrl.igk.intel.com ([10.102.9.28])
- by fmsmga001.fm.intel.com with ESMTP; 27 Apr 2022 01:09:31 -0700
+ by fmsmga001.fm.intel.com with ESMTP; 27 Apr 2022 01:09:37 -0700
 From: Cezary Rojewski <cezary.rojewski@intel.com>
 To: alsa-devel@alsa-project.org,
 	broonie@kernel.org
-Subject: [PATCH 11/14] ASoC: Intel: avs: Add ssm4567 machine board
-Date: Wed, 27 Apr 2022 10:18:59 +0200
-Message-Id: <20220427081902.3525183-12-cezary.rojewski@intel.com>
+Subject: [PATCH 13/14] ASoC: Intel: avs: Add max98373 machine board
+Date: Wed, 27 Apr 2022 10:19:01 +0200
+Message-Id: <20220427081902.3525183-14-cezary.rojewski@intel.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20220427081902.3525183-1-cezary.rojewski@intel.com>
 References: <20220427081902.3525183-1-cezary.rojewski@intel.com>
@@ -88,67 +88,70 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-To support AVS-ssm4567 configuration add machine board connecting AVS
-platform component driver with ssm4567 codec one.
+From: Amadeusz Sławiński <amadeuszx.slawinski@linux.intel.com>
+
+To support AVS-max98373 configuration add machine board connecting AVS
+platform component driver with max98373 codec one.
 
 Signed-off-by: Amadeusz Sławiński <amadeuszx.slawinski@linux.intel.com>
 Signed-off-by: Cezary Rojewski <cezary.rojewski@intel.com>
 ---
- sound/soc/intel/avs/boards/Kconfig   |  11 ++
- sound/soc/intel/avs/boards/Makefile  |   2 +
- sound/soc/intel/avs/boards/ssm4567.c | 270 +++++++++++++++++++++++++++
- 3 files changed, 283 insertions(+)
- create mode 100644 sound/soc/intel/avs/boards/ssm4567.c
+ sound/soc/intel/avs/boards/Kconfig    |  10 ++
+ sound/soc/intel/avs/boards/Makefile   |   2 +
+ sound/soc/intel/avs/boards/max98373.c | 238 ++++++++++++++++++++++++++
+ 3 files changed, 250 insertions(+)
+ create mode 100644 sound/soc/intel/avs/boards/max98373.c
 
 diff --git a/sound/soc/intel/avs/boards/Kconfig b/sound/soc/intel/avs/boards/Kconfig
-index f9ecee648830..8af85953adac 100644
+index 6865dc904326..38a76f486d91 100644
 --- a/sound/soc/intel/avs/boards/Kconfig
 +++ b/sound/soc/intel/avs/boards/Kconfig
-@@ -71,6 +71,17 @@ config SND_SOC_INTEL_AVS_MACH_RT5682
- 	   Say Y or m if you have such a device. This is a recommended option.
- 	   If unsure select "N".
+@@ -30,6 +30,16 @@ config SND_SOC_INTEL_AVS_MACH_MAX98357A
+ 	  Say Y or m if you have such a device. This is a recommended option.
+ 	  If unsure select "N".
  
-+config SND_SOC_INTEL_AVS_MACH_SSM4567
-+	tristate "ssm4567 I2S board"
++config SND_SOC_INTEL_AVS_MACH_MAX98373
++	tristate "max98373 I2S board"
 +	depends on I2C
 +	depends on MFD_INTEL_LPSS || COMPILE_TEST
-+	select SND_SOC_SSM4567
++	select SND_SOC_MAX98373
 +	help
-+	   This adds support for ASoC machine driver with SSM4567 I2S audio codec.
-+	   It is meant to be used with AVS driver.
-+	   Say Y or m if you have such a device. This is a recommended option.
-+	   If unsure select "N".
++	  This adds support for AVS with MAX98373 I2S codec configuration.
++	  Say Y or m if you have such a device. This is a recommended option.
++	  If unsure select "N".
 +
- config SND_SOC_INTEL_AVS_MACH_SSP_TEST
- 	tristate "SSP test board"
- 	help
+ config SND_SOC_INTEL_AVS_MACH_NAU8825
+ 	tristate "nau8825 I2S board"
+ 	depends on I2C
 diff --git a/sound/soc/intel/avs/boards/Makefile b/sound/soc/intel/avs/boards/Makefile
-index ece733a96c1e..30d0eac6c22a 100644
+index ae890ad747ba..a9e27638d23c 100644
 --- a/sound/soc/intel/avs/boards/Makefile
 +++ b/sound/soc/intel/avs/boards/Makefile
-@@ -7,6 +7,7 @@ snd-soc-avs-rt274-objs := rt274.o
+@@ -3,6 +3,7 @@
+ snd-soc-avs-dmic-objs := dmic.o
+ snd-soc-avs-hdaudio-objs := hdaudio.o
+ snd-soc-avs-max98357a-objs := max98357a.o
++snd-soc-avs-max98373-objs := max98373.o
+ snd-soc-avs-nau8825-objs := nau8825.o
+ snd-soc-avs-rt274-objs := rt274.o
  snd-soc-avs-rt286-objs := rt286.o
- snd-soc-avs-rt298-objs := rt298.o
- snd-soc-avs-rt5682-objs := rt5682.o
-+snd-soc-avs-ssm4567-objs := ssm4567.o
- snd-soc-avs-ssp-test-objs := ssp_test.o
- 
+@@ -14,6 +15,7 @@ snd-soc-avs-ssp-test-objs := ssp_test.o
  obj-$(CONFIG_SND_SOC_INTEL_AVS_MACH_DMIC) += snd-soc-avs-dmic.o
-@@ -16,4 +17,5 @@ obj-$(CONFIG_SND_SOC_INTEL_AVS_MACH_RT274) += snd-soc-avs-rt274.o
+ obj-$(CONFIG_SND_SOC_INTEL_AVS_MACH_HDAUDIO) += snd-soc-avs-hdaudio.o
+ obj-$(CONFIG_SND_SOC_INTEL_AVS_MACH_MAX98357A) += snd-soc-avs-max98357a.o
++obj-$(CONFIG_SND_SOC_INTEL_AVS_MACH_MAX98373) += snd-soc-avs-max98373.o
+ obj-$(CONFIG_SND_SOC_INTEL_AVS_MACH_NAU8825) += snd-soc-avs-nau8825.o
+ obj-$(CONFIG_SND_SOC_INTEL_AVS_MACH_RT274) += snd-soc-avs-rt274.o
  obj-$(CONFIG_SND_SOC_INTEL_AVS_MACH_RT286) += snd-soc-avs-rt286.o
- obj-$(CONFIG_SND_SOC_INTEL_AVS_MACH_RT298) += snd-soc-avs-rt298.o
- obj-$(CONFIG_SND_SOC_INTEL_AVS_MACH_RT5682) += snd-soc-avs-rt5682.o
-+obj-$(CONFIG_SND_SOC_INTEL_AVS_MACH_SSM4567) += snd-soc-avs-ssm4567.o
- obj-$(CONFIG_SND_SOC_INTEL_AVS_MACH_SSP_TEST) += snd-soc-avs-ssp-test.o
-diff --git a/sound/soc/intel/avs/boards/ssm4567.c b/sound/soc/intel/avs/boards/ssm4567.c
+diff --git a/sound/soc/intel/avs/boards/max98373.c b/sound/soc/intel/avs/boards/max98373.c
 new file mode 100644
-index 000000000000..d17f36701bc3
+index 000000000000..ced3549291f2
 --- /dev/null
-+++ b/sound/soc/intel/avs/boards/ssm4567.c
-@@ -0,0 +1,270 @@
++++ b/sound/soc/intel/avs/boards/max98373.c
+@@ -0,0 +1,238 @@
 +// SPDX-License-Identifier: GPL-2.0-only
 +//
-+// Copyright(c) 2021-2022 Intel Corporation. All rights reserved.
++// Copyright(c) 2022 Intel Corporation. All rights reserved.
 +//
 +// Authors: Cezary Rojewski <cezary.rojewski@intel.com>
 +//          Amadeusz Slawinski <amadeuszx.slawinski@linux.intel.com>
@@ -156,93 +159,43 @@ index 000000000000..d17f36701bc3
 +
 +#include <linux/module.h>
 +#include <linux/platform_device.h>
-+#include <sound/core.h>
-+#include <sound/pcm.h>
 +#include <sound/pcm_params.h>
 +#include <sound/soc.h>
 +#include <sound/soc-acpi.h>
-+#include "../../../codecs/nau8825.h"
++#include <sound/soc-dapm.h>
 +
-+#define SKL_NUVOTON_CODEC_DAI	"nau8825-hifi"
-+#define SKL_SSM_CODEC_DAI	"ssm4567-hifi"
++#define MAX98373_DEV0_NAME	"i2c-MX98373:00"
++#define MAX98373_DEV1_NAME	"i2c-MX98373:01"
++#define MAX98373_CODEC_NAME	"max98373-aif1"
 +
 +static struct snd_soc_codec_conf card_codec_conf[] = {
 +	{
-+		.dlc = COMP_CODEC_CONF("i2c-INT343B:00"),
-+		.name_prefix = "Left",
++		.dlc = COMP_CODEC_CONF(MAX98373_DEV0_NAME),
++		.name_prefix = "Right",
 +	},
 +	{
-+		.dlc = COMP_CODEC_CONF("i2c-INT343B:01"),
-+		.name_prefix = "Right",
++		.dlc = COMP_CODEC_CONF(MAX98373_DEV1_NAME),
++		.name_prefix = "Left",
 +	},
 +};
 +
 +static const struct snd_kcontrol_new card_controls[] = {
-+	SOC_DAPM_PIN_SWITCH("Left Speaker"),
-+	SOC_DAPM_PIN_SWITCH("Right Speaker"),
++	SOC_DAPM_PIN_SWITCH("Left Spk"),
++	SOC_DAPM_PIN_SWITCH("Right Spk"),
 +};
 +
-+static int
-+platform_clock_control(struct snd_soc_dapm_widget *w, struct snd_kcontrol *control, int event)
-+{
-+	struct snd_soc_dapm_context *dapm = w->dapm;
-+	struct snd_soc_card *card = dapm->card;
-+	struct snd_soc_dai *codec_dai;
-+	int ret;
-+
-+	codec_dai = snd_soc_card_get_codec_dai(card, SKL_NUVOTON_CODEC_DAI);
-+	if (!codec_dai) {
-+		dev_err(card->dev, "Codec dai not found\n");
-+		return -EINVAL;
-+	}
-+
-+	if (SND_SOC_DAPM_EVENT_ON(event)) {
-+		ret = snd_soc_dai_set_sysclk(codec_dai, NAU8825_CLK_MCLK, 24000000,
-+					     SND_SOC_CLOCK_IN);
-+		if (ret < 0)
-+			dev_err(card->dev, "set sysclk err = %d\n", ret);
-+	} else {
-+		ret = snd_soc_dai_set_sysclk(codec_dai, NAU8825_CLK_INTERNAL, 0, SND_SOC_CLOCK_IN);
-+		if (ret < 0)
-+			dev_err(card->dev, "set sysclk err = %d\n", ret);
-+	}
-+
-+	return ret;
-+}
-+
 +static const struct snd_soc_dapm_widget card_widgets[] = {
-+	SND_SOC_DAPM_SPK("Left Speaker", NULL),
-+	SND_SOC_DAPM_SPK("Right Speaker", NULL),
-+	SND_SOC_DAPM_SPK("DP1", NULL),
-+	SND_SOC_DAPM_SPK("DP2", NULL),
-+	SND_SOC_DAPM_SUPPLY("Platform Clock", SND_SOC_NOPM, 0, 0, platform_clock_control,
-+			    SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_POST_PMD),
++	SND_SOC_DAPM_SPK("Left Spk", NULL),
++	SND_SOC_DAPM_SPK("Right Spk", NULL),
 +};
 +
 +static const struct snd_soc_dapm_route card_base_routes[] = {
-+	{"Left Speaker", NULL, "Left OUT"},
-+	{"Right Speaker", NULL, "Right OUT"},
++	{ "Left Spk", NULL, "Left BE_OUT" },
++	{ "Right Spk", NULL, "Right BE_OUT" },
 +};
 +
-+static int avs_ssm4567_codec_init(struct snd_soc_pcm_runtime *runtime)
-+{
-+	int ret;
-+
-+	/* Slot 1 for left */
-+	ret = snd_soc_dai_set_tdm_slot(asoc_rtd_to_codec(runtime, 0), 0x01, 0x01, 2, 48);
-+	if (ret < 0)
-+		return ret;
-+
-+	/* Slot 2 for right */
-+	ret = snd_soc_dai_set_tdm_slot(asoc_rtd_to_codec(runtime, 1), 0x02, 0x02, 2, 48);
-+	if (ret < 0)
-+		return ret;
-+
-+	return 0;
-+}
-+
 +static int
-+avs_ssm4567_be_fixup(struct snd_soc_pcm_runtime *runrime, struct snd_pcm_hw_params *params)
++avs_max98373_be_fixup(struct snd_soc_pcm_runtime *runrime, struct snd_pcm_hw_params *params)
 +{
 +	struct snd_interval *rate, *channels;
 +	struct snd_mask *fmt;
@@ -255,11 +208,42 @@ index 000000000000..d17f36701bc3
 +	rate->min = rate->max = 48000;
 +	channels->min = channels->max = 2;
 +
-+	/* set SSP0 to 24 bit */
++	/* set SSP0 to 16 bit */
 +	snd_mask_none(fmt);
-+	snd_mask_set_format(fmt, SNDRV_PCM_FORMAT_S24_LE);
++	snd_mask_set_format(fmt, SNDRV_PCM_FORMAT_S16_LE);
 +	return 0;
 +}
++
++static int avs_max98373_hw_params(struct snd_pcm_substream *substream,
++				  struct snd_pcm_hw_params *params)
++{
++	struct snd_soc_pcm_runtime *runtime = asoc_substream_to_rtd(substream);
++	struct snd_soc_dai *codec_dai;
++	int ret, i;
++
++	for_each_rtd_codec_dais(runtime, i, codec_dai) {
++		if (!strcmp(codec_dai->component->name, MAX98373_DEV0_NAME)) {
++			ret = snd_soc_dai_set_tdm_slot(codec_dai, 0x30, 3, 8, 16);
++			if (ret < 0) {
++				dev_err(runtime->dev, "DEV0 TDM slot err:%d\n", ret);
++				return ret;
++			}
++		}
++		if (!strcmp(codec_dai->component->name, MAX98373_DEV1_NAME)) {
++			ret = snd_soc_dai_set_tdm_slot(codec_dai, 0xC0, 3, 8, 16);
++			if (ret < 0) {
++				dev_err(runtime->dev, "DEV1 TDM slot err:%d\n", ret);
++				return ret;
++			}
++		}
++	}
++
++	return 0;
++}
++
++static const struct snd_soc_ops avs_max98373_ops = {
++	.hw_params = avs_max98373_hw_params,
++};
 +
 +static int avs_create_dai_link(struct device *dev, const char *platform_name, int ssp_port,
 +			       struct snd_soc_dai_link **dai_link)
@@ -281,10 +265,10 @@ index 000000000000..d17f36701bc3
 +		return -ENOMEM;
 +
 +	dl->cpus->dai_name = devm_kasprintf(dev, GFP_KERNEL, "SSP%d Pin", ssp_port);
-+	dl->codecs[0].name = devm_kasprintf(dev, GFP_KERNEL, "i2c-INT343B:00");
-+	dl->codecs[0].dai_name = devm_kasprintf(dev, GFP_KERNEL, "ssm4567-hifi");
-+	dl->codecs[1].name = devm_kasprintf(dev, GFP_KERNEL, "i2c-INT343B:01");
-+	dl->codecs[1].dai_name = devm_kasprintf(dev, GFP_KERNEL, "ssm4567-hifi");
++	dl->codecs[0].name = devm_kasprintf(dev, GFP_KERNEL, MAX98373_DEV0_NAME);
++	dl->codecs[0].dai_name = devm_kasprintf(dev, GFP_KERNEL, MAX98373_CODEC_NAME);
++	dl->codecs[1].name = devm_kasprintf(dev, GFP_KERNEL, MAX98373_DEV1_NAME);
++	dl->codecs[1].dai_name = devm_kasprintf(dev, GFP_KERNEL, MAX98373_CODEC_NAME);
 +	if (!dl->cpus->dai_name || !dl->codecs[0].name || !dl->codecs[0].dai_name ||
 +	    !dl->codecs[1].name || !dl->codecs[1].dai_name)
 +		return -ENOMEM;
@@ -294,14 +278,14 @@ index 000000000000..d17f36701bc3
 +	dl->platforms = platform;
 +	dl->num_platforms = 1;
 +	dl->id = 0;
-+	dl->dai_fmt = SND_SOC_DAIFMT_DSP_A | SND_SOC_DAIFMT_IB_NF | SND_SOC_DAIFMT_CBS_CFS;
-+	dl->init = avs_ssm4567_codec_init;
-+	dl->be_hw_params_fixup = avs_ssm4567_be_fixup;
++	dl->dai_fmt = SND_SOC_DAIFMT_DSP_B | SND_SOC_DAIFMT_NB_NF | SND_SOC_DAIFMT_CBC_CFC;
++	dl->be_hw_params_fixup = avs_max98373_be_fixup;
 +	dl->nonatomic = 1;
 +	dl->no_pcm = 1;
 +	dl->dpcm_capture = 1;
 +	dl->dpcm_playback = 1;
 +	dl->ignore_pmdown_time = 1;
++	dl->ops = &avs_max98373_ops;
 +
 +	*dai_link = dl;
 +
@@ -313,7 +297,7 @@ index 000000000000..d17f36701bc3
 +{
 +	struct snd_soc_dapm_route *dr;
 +	const int num_base = ARRAY_SIZE(card_base_routes);
-+	const int num_dr = num_base + 4;
++	const int num_dr = num_base + 2;
 +	int idx;
 +
 +	dr = devm_kcalloc(dev, num_dr, sizeof(*dr), GFP_KERNEL);
@@ -323,26 +307,14 @@ index 000000000000..d17f36701bc3
 +	memcpy(dr, card_base_routes, num_base * sizeof(*dr));
 +
 +	idx = num_base;
-+	dr[idx].sink = devm_kasprintf(dev, GFP_KERNEL, "Left Playback");
++	dr[idx].sink = devm_kasprintf(dev, GFP_KERNEL, "Left HiFi Playback");
 +	dr[idx].source = devm_kasprintf(dev, GFP_KERNEL, "ssp%d Tx", ssp_port);
 +	if (!dr[idx].sink || !dr[idx].source)
 +		return -ENOMEM;
 +
 +	idx++;
-+	dr[idx].sink = devm_kasprintf(dev, GFP_KERNEL, "Right Playback");
++	dr[idx].sink = devm_kasprintf(dev, GFP_KERNEL, "Right HiFi Playback");
 +	dr[idx].source = devm_kasprintf(dev, GFP_KERNEL, "ssp%d Tx", ssp_port);
-+	if (!dr[idx].sink || !dr[idx].source)
-+		return -ENOMEM;
-+
-+	idx++;
-+	dr[idx].sink = devm_kasprintf(dev, GFP_KERNEL, "ssp%d Rx", ssp_port);
-+	dr[idx].source = devm_kasprintf(dev, GFP_KERNEL, "Left Capture Sense");
-+	if (!dr[idx].sink || !dr[idx].source)
-+		return -ENOMEM;
-+
-+	idx++;
-+	dr[idx].sink = devm_kasprintf(dev, GFP_KERNEL, "ssp%d Rx", ssp_port);
-+	dr[idx].source = devm_kasprintf(dev, GFP_KERNEL, "Right Capture Sense");
 +	if (!dr[idx].sink || !dr[idx].source)
 +		return -ENOMEM;
 +
@@ -352,7 +324,7 @@ index 000000000000..d17f36701bc3
 +	return 0;
 +}
 +
-+static int avs_ssm4567_probe(struct platform_device *pdev)
++static int avs_max98373_probe(struct platform_device *pdev)
 +{
 +	struct snd_soc_dapm_route *routes;
 +	struct snd_soc_dai_link *dai_link;
@@ -381,7 +353,7 @@ index 000000000000..d17f36701bc3
 +	if (!card)
 +		return -ENOMEM;
 +
-+	card->name = "avs_ssm4567-adi";
++	card->name = "avs_max98373";
 +	card->dev = dev;
 +	card->owner = THIS_MODULE;
 +	card->dai_link = dai_link;
@@ -395,7 +367,6 @@ index 000000000000..d17f36701bc3
 +	card->dapm_routes = routes;
 +	card->num_dapm_routes = num_routes;
 +	card->fully_routed = true;
-+	card->disable_route_checks = true;
 +
 +	ret = snd_soc_fixup_dai_links_platform_name(card, pname);
 +	if (ret)
@@ -404,18 +375,18 @@ index 000000000000..d17f36701bc3
 +	return devm_snd_soc_register_card(dev, card);
 +}
 +
-+static struct platform_driver avs_ssm4567_driver = {
-+	.probe = avs_ssm4567_probe,
++static struct platform_driver avs_max98373_driver = {
++	.probe = avs_max98373_probe,
 +	.driver = {
-+		.name = "avs_ssm4567",
++		.name = "avs_max98373",
 +		.pm = &snd_soc_pm_ops,
 +	},
 +};
 +
-+module_platform_driver(avs_ssm4567_driver)
++module_platform_driver(avs_max98373_driver)
 +
 +MODULE_LICENSE("GPL");
-+MODULE_ALIAS("platform:avs_ssm4567");
++MODULE_ALIAS("platform:avs_max98373");
 -- 
 2.25.1
 
