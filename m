@@ -4,42 +4,42 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7E06CC433EF
-	for <alsa-devel@archiver.kernel.org>; Thu, 28 Apr 2022 15:29:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 84DC1C433F5
+	for <alsa-devel@archiver.kernel.org>; Thu, 28 Apr 2022 15:40:50 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 7CC8015E2;
-	Thu, 28 Apr 2022 17:28:36 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7CC8015E2
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0755E15E5;
+	Thu, 28 Apr 2022 17:39:58 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0755E15E5
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1651159766;
-	bh=ALpSzuYvlhrsk1tu4G8vN90Yq1eOEb+p3lozYG0382A=;
+	s=default; t=1651160448;
+	bh=5wq4YWbFKGndVvwMl//xoPzqgo0CVZjVC0kEqoMUDIE=;
 	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=lkjq58pcDAyUeVPshQvnZkUQ4ITYCI6dg/f1cl9fc3BBKA6EgwNycryieNBDjfFQ+
-	 lSlM8AhvJboY/tkMIaRsj6wpO3zNvnoLEY7x4u+DS4SzNe63goHJ2s7EuBI2l9EMxC
-	 9G/AfRwnMVPS43cIMKLCi8E7DQyXZ30g/nSN0nuI=
-Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 0D07FF8014E;
-	Thu, 28 Apr 2022 17:28:36 +0200 (CEST)
+	b=BiXQdwtwpVJRnql3sz+XxnVUmvZ1Q1PoajJpuMlJRFJnr1F11pL6QFDD4t9lwAnFy
+	 r0sc/rfHHy35fSQYoKc+/MahOJ5WatQV01XO2UNpgO+PJioZHOTbiS7x3mV1/DPFQw
+	 C0Twn584uSu9/EAZYkyY0Ogg5Yq84KO+LDVprfas=
+Received: from vmi242170.contaboserver.net (localhost.localdomain [127.0.0.1])
+	by alsa1.perex.cz (Postfix) with ESMTP id 9AC72F8014E;
+	Thu, 28 Apr 2022 17:39:57 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id ECE27F8016E; Thu, 28 Apr 2022 17:28:29 +0200 (CEST)
+ id 0698CF8016E; Thu, 28 Apr 2022 17:39:51 +0200 (CEST)
 Received: from webhooks-bot.alsa-project.org (gate.perex.cz [77.48.224.242])
- by alsa1.perex.cz (Postfix) with ESMTP id F02BEF8012B
- for <alsa-devel@alsa-project.org>; Thu, 28 Apr 2022 17:28:22 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F02BEF8012B
+ by alsa1.perex.cz (Postfix) with ESMTP id 074A4F800AE
+ for <alsa-devel@alsa-project.org>; Thu, 28 Apr 2022 17:39:44 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 074A4F800AE
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-From: GitHub issues - opened <github@alsa-project.org>
+From: GitHub issues - edited <github@alsa-project.org>
 To: alsa-devel@alsa-project.org
-In-Reply-To: <1651159701066536903-webhooks-bot@alsa-project.org>
-References: <1651159701066536903-webhooks-bot@alsa-project.org>
+In-Reply-To: <1651160384067101955-webhooks-bot@alsa-project.org>
+References: <1651160384067101955-webhooks-bot@alsa-project.org>
 Subject: Play jitter coming from dshare
-Message-Id: <20220428152829.ECE27F8016E@alsa1.perex.cz>
-Date: Thu, 28 Apr 2022 17:28:29 +0200 (CEST)
+Message-Id: <20220428153951.0698CF8016E@alsa1.perex.cz>
+Date: Thu, 28 Apr 2022 17:39:51 +0200 (CEST)
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -55,7 +55,7 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-alsa-project/alsa-lib issue #221 was opened from davidboulangerlatour:
+alsa-project/alsa-lib issue #221 was edited from davidboulangerlatour:
 
 I have an application which plays a wav file (using dshare) at with a specific period (ie. every 720ms). This always worked well up to recently after upgrading alsa-lib from 1.1.7 to 1.2.4. With 1.2.4, the cycles look like this [750ms, 750ms, 750ms, 625ms], normally it would be [720ms, 720ms, ...].
 
@@ -94,6 +94,8 @@ Date:   Wed May 15 11:56:33 2019 +0530
 ```
 
 I tried the more recent 1.2.6 with the same issue. I also tried all the "hw_ptr_alignment" options with no success.
+
+cc @VanithaChannaiah @tiwai
 
 Issue URL     : https://github.com/alsa-project/alsa-lib/issues/221
 Repository URL: https://github.com/alsa-project/alsa-lib
