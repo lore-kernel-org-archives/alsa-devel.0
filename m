@@ -4,67 +4,42 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D3F70C433EF
-	for <alsa-devel@archiver.kernel.org>; Thu, 28 Apr 2022 16:48:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0FB9EC433EF
+	for <alsa-devel@archiver.kernel.org>; Thu, 28 Apr 2022 21:07:44 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 21134163E;
-	Thu, 28 Apr 2022 18:47:40 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 21134163E
+	by alsa0.perex.cz (Postfix) with ESMTPS id 6A70B1F4;
+	Thu, 28 Apr 2022 23:06:52 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6A70B1F4
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1651164510;
-	bh=oTA/bLA09vyo7gZftSiBJgvnmnzNeALY3BscTIa+ohw=;
-	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
+	s=default; t=1651180062;
+	bh=71rmlgzKbrm+k2NXfIQniqBVMPU/MCYQGZ8gt9pZKmw=;
+	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=fDbEdehr154OQhr96lMkIH5WOIMRf45NNGkRCPHQ27SxGM1FSX5LORWSvzMicmcFs
-	 kmS/SQx84Bg7hQgMRWx6lIgYDEz0Tphiw/liQh+plushYVPn2gVi8YtfyaH0yvegER
-	 hZILVl0fs8B5WgPRnT7Sl5zcZ22Mi99uvNyixzOw=
+	b=TxfS9NpuxcuJCVBpesMO6mhz4hz9uBHRFr19vPJAlaOzjPjXeznjTafVP7PSgLwCH
+	 ak/ZGU/0fzFn2Mf6FEDB4rmnf/TxIsxTD7Oas+Z/BaTIgpo7jZTiwJgjnR4nbcn1k2
+	 StQcicxgbb54Fcb8nk3f6KbDXTKPEmUDT8VxDwZ4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 6AF2CF80508;
-	Thu, 28 Apr 2022 18:47:09 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id F2F67F8012B;
+	Thu, 28 Apr 2022 23:06:51 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id CBD71F804BD; Thu, 28 Apr 2022 18:47:07 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id E441FF804BD
- for <alsa-devel@alsa-project.org>; Thu, 28 Apr 2022 18:47:01 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E441FF804BD
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="kzImxQxt"
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id 1CAB862026;
- Thu, 28 Apr 2022 16:47:00 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EDEBEC385A9;
- Thu, 28 Apr 2022 16:46:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1651164419;
- bh=oTA/bLA09vyo7gZftSiBJgvnmnzNeALY3BscTIa+ohw=;
- h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=kzImxQxtKo2A4VfSdtTB5B2HQF5eIMKRAuAelphHIW4NYWeafoGPqJYbmVl9JqVpy
- LgaRdgvPg1QheX0laSoq8QZ1n7U8Lx0MFBbg7PYGCD7p6jNbdomCIe+IXMvdZ01OED
- Ur91+jW4qSgd+LcePzEbAM1P+dDi1sFEs6KLezxeLPhA510mcHWGhAU4GdPUb3buIW
- 3s92pSDZeJROYgFMNPaX9yZScLT1AiaFOgn5df3hkOLwTKNu0OvAfzj611FACxzm//
- HpN6pdKOi+0VdBLxjyKVm5u18uVvyvrwGy6jZssFuLPUv6cAHmTAPeOYD0joBjou5E
- TCTy2g7WB/yvw==
-From: Mark Brown <broonie@kernel.org>
-To: perex@perex.cz, frattaroli.nicolas@gmail.com, lgirdwood@gmail.com,
- tiwai@suse.com, katsuhiro@katsuster.net
-In-Reply-To: <20220427172310.138638-1-frattaroli.nicolas@gmail.com>
-References: <20220427172310.138638-1-frattaroli.nicolas@gmail.com>
-Subject: Re: [PATCH] ASoC: rk3328: fix disabling mclk on pclk probe failure
-Message-Id: <165116441767.4067540.16396705501182849019.b4-ty@kernel.org>
-Date: Thu, 28 Apr 2022 17:46:57 +0100
+ id C941FF8012B; Thu, 28 Apr 2022 23:06:50 +0200 (CEST)
+Received: from webhooks-bot.alsa-project.org (gate.perex.cz [77.48.224.242])
+ by alsa1.perex.cz (Postfix) with ESMTP id AE41DF8012B
+ for <alsa-devel@alsa-project.org>; Thu, 28 Apr 2022 23:06:42 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AE41DF8012B
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-Cc: linux-rockchip@lists.infradead.org, alsa-devel@alsa-project.org,
- linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+From: GitHub pull_request - opened <github@alsa-project.org>
+To: alsa-devel@alsa-project.org
+In-Reply-To: <1651180002469324112-webhooks-bot@alsa-project.org>
+References: <1651180002469324112-webhooks-bot@alsa-project.org>
+Subject: conf: Use LFS calls when reading config files
+Message-Id: <20220428210650.C941FF8012B@alsa1.perex.cz>
+Date: Thu, 28 Apr 2022 23:06:50 +0200 (CEST)
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -80,37 +55,15 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, 27 Apr 2022 19:23:11 +0200, Nicolas Frattaroli wrote:
-> If preparing/enabling the pclk fails, the probe function should
-> unprepare and disable the previously prepared and enabled mclk,
-> which it doesn't do. This commit rectifies this.
-> 
-> 
+alsa-project/alsa-lib pull request #223 was opened from dos1:
 
-Applied to
+Although at first glance it doesn't seem useful to support config
+files larger than 2GB, LFS also influences inode size. Without this,
+32-bit libasound may be unable to read config files on filesystems
+with 64-bit inodes, such as Btrfs or NFS.
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+Signed-off-by: Sebastian Krzyszkowiak <dos@dosowisko.net>
 
-Thanks!
-
-[1/1] ASoC: rk3328: fix disabling mclk on pclk probe failure
-      commit: dd508e324cdde1c06ace08a8143fa50333a90703
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
+Request URL   : https://github.com/alsa-project/alsa-lib/pull/223
+Patch URL     : https://github.com/alsa-project/alsa-lib/pull/223.patch
+Repository URL: https://github.com/alsa-project/alsa-lib
