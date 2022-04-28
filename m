@@ -4,66 +4,62 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id AAF4CC433EF
-	for <alsa-devel@archiver.kernel.org>; Thu, 28 Apr 2022 09:37:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E036BC433F5
+	for <alsa-devel@archiver.kernel.org>; Thu, 28 Apr 2022 09:38:15 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E8BDB1672;
-	Thu, 28 Apr 2022 11:37:03 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E8BDB1672
+	by alsa0.perex.cz (Postfix) with ESMTPS id 38FC11638;
+	Thu, 28 Apr 2022 11:37:24 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 38FC11638
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1651138674;
-	bh=l4N8I65IsLC73kApLZNQFFXB5SFuZPw+PYVosG59Ml0=;
+	s=default; t=1651138694;
+	bh=VPd56KbThGY9Y5e6a18yAmm+0ZMyzxPUth5P/DU7PVw=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=NFREggmCJpwK1VLODGAh2EABANhTgQ+yNLHSuKvawuKJyGF+7jS1V9tIL+NreX9o+
-	 z1P6cwzrxop0mwlH0TGNZLvpJhRzgiuzssfAFTa6sOaDRVc7YBXgx40u1hGGEV3AB2
-	 nUpBBcFmWgup7J7f9DBNYSf94+aRd31XHpIFKFxo=
+	b=I3NLh2bMFrZqUznqDZl9xue6TBvaAKUR3eMkYdhKBDVVnkIjU8vbSKSTPQ/zez/sG
+	 bB/piowyEr4S8a3OhGYA5F1SiFCFmYb4dttqx7fORoKeD0SP8DzZnO6CTycBkmoMSI
+	 L1itLWt1odEpTEMxJ3dClyona9uX2LabmURWSTIY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id EC3CEF8051A;
-	Thu, 28 Apr 2022 11:34:49 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id A3DB0F80567;
+	Thu, 28 Apr 2022 11:34:50 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id F282AF80538; Thu, 28 Apr 2022 11:34:31 +0200 (CEST)
+ id CAACCF80539; Thu, 28 Apr 2022 11:34:31 +0200 (CEST)
 Received: from mailgw01.mediatek.com (unknown [60.244.123.138])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 9C678F80507
+ by alsa1.perex.cz (Postfix) with ESMTPS id 38AEDF804FE
  for <alsa-devel@alsa-project.org>; Thu, 28 Apr 2022 11:34:13 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9C678F80507
-X-UUID: 3508b95db52f4b08ab551568c67146f3-20220428
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 38AEDF804FE
+X-UUID: ab291a0b36b04045804852b3720d6dec-20220428
 X-CID-P-RULE: Release_Ham
-X-CID-O-INFO: VERSION:1.1.4, REQID:6972ace9-421c-4b09-ac37-66dd7eedca62, OB:20,
- L
- OB:30,IP:0,URL:0,TC:0,Content:0,EDM:0,RT:0,SF:95,FILE:0,RULE:Release_Ham,A
- CTION:release,TS:95
-X-CID-INFO: VERSION:1.1.4, REQID:6972ace9-421c-4b09-ac37-66dd7eedca62, OB:20,
- LOB
- :30,IP:0,URL:0,TC:0,Content:0,EDM:0,RT:0,SF:95,FILE:0,RULE:Spam_GS981B3D,A
- CTION:quarantine,TS:95
-X-CID-META: VersionHash:faefae9, CLOUDID:7c66d0c6-85ee-4ac1-ac05-bd3f1e72e732,
+X-CID-O-INFO: VERSION:1.1.4, REQID:fe1534ae-46b2-4522-8cc2-214e0d0887df, OB:0,
+ LO
+ B:0,IP:0,URL:0,TC:0,Content:-20,EDM:0,RT:0,SF:0,FILE:0,RULE:Release_Ham,AC
+ TION:release,TS:-20
+X-CID-META: VersionHash:faefae9, CLOUDID:0059082f-6199-437e-8ab4-9920b4bc5b76,
  C
- OID:5f109847ec06,Recheck:0,SF:28|17|19|48,TC:nil,Content:0,EDM:-3,File:nil
- ,QS:0,BEC:nil
-X-UUID: 3508b95db52f4b08ab551568c67146f3-20220428
-Received: from mtkmbs10n2.mediatek.inc [(172.21.101.183)] by
+ OID:IGNORED,Recheck:0,SF:nil,TC:nil,Content:0,EDM:-3,File:nil,QS:0,BEC:nil
+X-UUID: ab291a0b36b04045804852b3720d6dec-20220428
+Received: from mtkexhb02.mediatek.inc [(172.21.101.103)] by
  mailgw01.mediatek.com (envelope-from <jiaxin.yu@mediatek.com>)
- (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
- with ESMTP id 250099952; Thu, 28 Apr 2022 17:34:07 +0800
+ (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+ with ESMTP id 139911879; Thu, 28 Apr 2022 17:34:09 +0800
 Received: from mtkcas10.mediatek.inc (172.21.101.39) by
  mtkmbs10n2.mediatek.inc (172.21.101.183) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id 15.2.792.3; 
- Thu, 28 Apr 2022 17:34:04 +0800
+ Thu, 28 Apr 2022 17:34:08 +0800
 Received: from localhost.localdomain (10.17.3.154) by mtkcas10.mediatek.inc
  (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Thu, 28 Apr 2022 17:34:04 +0800
+ Transport; Thu, 28 Apr 2022 17:34:08 +0800
 From: Jiaxin Yu <jiaxin.yu@mediatek.com>
 To: <broonie@kernel.org>, <robh+dt@kernel.org>,
  <angelogioacchino.delregno@collabora.com>
-Subject: [v4 08/18] ASoC: mediatek: mt8186: support pcm in platform driver
-Date: Thu, 28 Apr 2022 17:33:45 +0800
-Message-ID: <20220428093355.16172-9-jiaxin.yu@mediatek.com>
+Subject: [v4 12/18] ASoC: mediatek: mt8186: support gpio control in platform
+ driver
+Date: Thu, 28 Apr 2022 17:33:49 +0800
+Message-ID: <20220428093355.16172-13-jiaxin.yu@mediatek.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20220428093355.16172-1-jiaxin.yu@mediatek.com>
 References: <20220428093355.16172-1-jiaxin.yu@mediatek.com>
@@ -92,444 +88,291 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Add mt8186 pcm dai driver.
+Add gpio control for all audio interface separately.
 
 Signed-off-by: Jiaxin Yu <jiaxin.yu@mediatek.com>
-Reviewed-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
 ---
- sound/soc/mediatek/mt8186/mt8186-dai-pcm.c | 423 +++++++++++++++++++++
- 1 file changed, 423 insertions(+)
- create mode 100644 sound/soc/mediatek/mt8186/mt8186-dai-pcm.c
+ sound/soc/mediatek/mt8186/mt8186-afe-gpio.c | 244 ++++++++++++++++++++
+ sound/soc/mediatek/mt8186/mt8186-afe-gpio.h |  19 ++
+ 2 files changed, 263 insertions(+)
+ create mode 100644 sound/soc/mediatek/mt8186/mt8186-afe-gpio.c
+ create mode 100644 sound/soc/mediatek/mt8186/mt8186-afe-gpio.h
 
-diff --git a/sound/soc/mediatek/mt8186/mt8186-dai-pcm.c b/sound/soc/mediatek/mt8186/mt8186-dai-pcm.c
+diff --git a/sound/soc/mediatek/mt8186/mt8186-afe-gpio.c b/sound/soc/mediatek/mt8186/mt8186-afe-gpio.c
 new file mode 100644
-index 000000000000..0b0032ecfe6d
+index 000000000000..5ba28095b7da
 --- /dev/null
-+++ b/sound/soc/mediatek/mt8186/mt8186-dai-pcm.c
-@@ -0,0 +1,423 @@
++++ b/sound/soc/mediatek/mt8186/mt8186-afe-gpio.c
+@@ -0,0 +1,244 @@
 +// SPDX-License-Identifier: GPL-2.0
 +//
-+// MediaTek ALSA SoC Audio DAI I2S Control
++// mt8186-afe-gpio.c  --  Mediatek 8186 afe gpio ctrl
 +//
 +// Copyright (c) 2022 MediaTek Inc.
 +// Author: Jiaxin Yu <jiaxin.yu@mediatek.com>
 +
-+#include <linux/regmap.h>
-+#include <sound/pcm_params.h>
++#include <linux/gpio.h>
++#include <linux/pinctrl/consumer.h>
++
 +#include "mt8186-afe-common.h"
 +#include "mt8186-afe-gpio.h"
-+#include "mt8186-interconnection.h"
 +
-+struct mtk_afe_pcm_priv {
-+	unsigned int id;
-+	unsigned int fmt;
-+	unsigned int bck_invert;
-+	unsigned int lck_invert;
++struct pinctrl *aud_pinctrl;
++
++enum mt8186_afe_gpio {
++	MT8186_AFE_GPIO_CLK_MOSI_OFF,
++	MT8186_AFE_GPIO_CLK_MOSI_ON,
++	MT8186_AFE_GPIO_CLK_MISO_OFF,
++	MT8186_AFE_GPIO_CLK_MISO_ON,
++	MT8186_AFE_GPIO_DAT_MISO_OFF,
++	MT8186_AFE_GPIO_DAT_MISO_ON,
++	MT8186_AFE_GPIO_DAT_MOSI_OFF,
++	MT8186_AFE_GPIO_DAT_MOSI_ON,
++	MT8186_AFE_GPIO_I2S0_OFF,
++	MT8186_AFE_GPIO_I2S0_ON,
++	MT8186_AFE_GPIO_I2S1_OFF,
++	MT8186_AFE_GPIO_I2S1_ON,
++	MT8186_AFE_GPIO_I2S2_OFF,
++	MT8186_AFE_GPIO_I2S2_ON,
++	MT8186_AFE_GPIO_I2S3_OFF,
++	MT8186_AFE_GPIO_I2S3_ON,
++	MT8186_AFE_GPIO_TDM_OFF,
++	MT8186_AFE_GPIO_TDM_ON,
++	MT8186_AFE_GPIO_PCM_OFF,
++	MT8186_AFE_GPIO_PCM_ON,
++	MT8186_AFE_GPIO_GPIO_NUM
 +};
 +
-+enum aud_tx_lch_rpt {
-+	AUD_TX_LCH_RPT_NO_REPEAT = 0,
-+	AUD_TX_LCH_RPT_REPEAT = 1
++struct audio_gpio_attr {
++	const char *name;
++	bool gpio_prepare;
++	struct pinctrl_state *gpioctrl;
 +};
 +
-+enum aud_vbt_16k_mode {
-+	AUD_VBT_16K_MODE_DISABLE = 0,
-+	AUD_VBT_16K_MODE_ENABLE = 1
++static struct audio_gpio_attr aud_gpios[MT8186_AFE_GPIO_GPIO_NUM] = {
++	[MT8186_AFE_GPIO_CLK_MOSI_OFF] = {"aud_clk_mosi_off", false, NULL},
++	[MT8186_AFE_GPIO_CLK_MOSI_ON] = {"aud_clk_mosi_on", false, NULL},
++	[MT8186_AFE_GPIO_CLK_MISO_OFF] = {"aud_clk_miso_off", false, NULL},
++	[MT8186_AFE_GPIO_CLK_MISO_ON] = {"aud_clk_miso_on", false, NULL},
++	[MT8186_AFE_GPIO_DAT_MISO_OFF] = {"aud_dat_miso_off", false, NULL},
++	[MT8186_AFE_GPIO_DAT_MISO_ON] = {"aud_dat_miso_on", false, NULL},
++	[MT8186_AFE_GPIO_DAT_MOSI_OFF] = {"aud_dat_mosi_off", false, NULL},
++	[MT8186_AFE_GPIO_DAT_MOSI_ON] = {"aud_dat_mosi_on", false, NULL},
++	[MT8186_AFE_GPIO_I2S0_OFF] = {"aud_gpio_i2s0_off", false, NULL},
++	[MT8186_AFE_GPIO_I2S0_ON] = {"aud_gpio_i2s0_on", false, NULL},
++	[MT8186_AFE_GPIO_I2S1_OFF] = {"aud_gpio_i2s1_off", false, NULL},
++	[MT8186_AFE_GPIO_I2S1_ON] = {"aud_gpio_i2s1_on", false, NULL},
++	[MT8186_AFE_GPIO_I2S2_OFF] = {"aud_gpio_i2s2_off", false, NULL},
++	[MT8186_AFE_GPIO_I2S2_ON] = {"aud_gpio_i2s2_on", false, NULL},
++	[MT8186_AFE_GPIO_I2S3_OFF] = {"aud_gpio_i2s3_off", false, NULL},
++	[MT8186_AFE_GPIO_I2S3_ON] = {"aud_gpio_i2s3_on", false, NULL},
++	[MT8186_AFE_GPIO_TDM_OFF] = {"aud_gpio_tdm_off", false, NULL},
++	[MT8186_AFE_GPIO_TDM_ON] = {"aud_gpio_tdm_on", false, NULL},
++	[MT8186_AFE_GPIO_PCM_OFF] = {"aud_gpio_pcm_off", false, NULL},
++	[MT8186_AFE_GPIO_PCM_ON] = {"aud_gpio_pcm_on", false, NULL},
 +};
 +
-+enum aud_ext_modem {
-+	AUD_EXT_MODEM_SELECT_INTERNAL = 0,
-+	AUD_EXT_MODEM_SELECT_EXTERNAL = 1
-+};
++static DEFINE_MUTEX(gpio_request_mutex);
 +
-+enum aud_pcm_sync_type {
-+	/* bck sync length = 1 */
-+	AUD_PCM_ONE_BCK_CYCLE_SYNC = 0,
-+	/* bck sync length = PCM_INTF_CON1[9:13] */
-+	AUD_PCM_EXTENDED_BCK_CYCLE_SYNC = 1
-+};
-+
-+enum aud_bt_mode {
-+	AUD_BT_MODE_DUAL_MIC_ON_TX = 0,
-+	AUD_BT_MODE_SINGLE_MIC_ON_TX = 1
-+};
-+
-+enum aud_pcm_afifo_src {
-+	/* slave mode & external modem uses different crystal */
-+	AUD_PCM_AFIFO_ASRC = 0,
-+	/* slave mode & external modem uses the same crystal */
-+	AUD_PCM_AFIFO_AFIFO = 1
-+};
-+
-+enum aud_pcm_clock_source {
-+	AUD_PCM_CLOCK_MASTER_MODE = 0,
-+	AUD_PCM_CLOCK_SLAVE_MODE = 1
-+};
-+
-+enum aud_pcm_wlen {
-+	AUD_PCM_WLEN_PCM_32_BCK_CYCLES = 0,
-+	AUD_PCM_WLEN_PCM_64_BCK_CYCLES = 1
-+};
-+
-+enum aud_pcm_24bit {
-+	AUD_PCM_24BIT_PCM_16_BITS = 0,
-+	AUD_PCM_24BIT_PCM_24_BITS = 1
-+};
-+
-+enum aud_pcm_mode {
-+	AUD_PCM_MODE_PCM_MODE_8K = 0,
-+	AUD_PCM_MODE_PCM_MODE_16K = 1,
-+	AUD_PCM_MODE_PCM_MODE_32K = 2,
-+	AUD_PCM_MODE_PCM_MODE_48K = 3,
-+};
-+
-+enum aud_pcm_fmt {
-+	AUD_PCM_FMT_I2S = 0,
-+	AUD_PCM_FMT_EIAJ = 1,
-+	AUD_PCM_FMT_PCM_MODE_A = 2,
-+	AUD_PCM_FMT_PCM_MODE_B = 3
-+};
-+
-+enum aud_bclk_out_inv {
-+	AUD_BCLK_OUT_INV_NO_INVERSE = 0,
-+	AUD_BCLK_OUT_INV_INVERSE = 1
-+};
-+
-+enum aud_lrclk_out_inv {
-+	AUD_LRCLK_OUT_INV_NO_INVERSE = 0,
-+	AUD_LRCLK_OUT_INV_INVERSE = 1
-+};
-+
-+enum aud_pcm_en {
-+	AUD_PCM_EN_DISABLE = 0,
-+	AUD_PCM_EN_ENABLE = 1
-+};
-+
-+/* dai component */
-+static const struct snd_kcontrol_new mtk_pcm_1_playback_ch1_mix[] = {
-+	SOC_DAPM_SINGLE_AUTODISABLE("ADDA_UL_CH1 Switch", AFE_CONN7,
-+				    I_ADDA_UL_CH1, 1, 0),
-+	SOC_DAPM_SINGLE_AUTODISABLE("DL2_CH1 Switch", AFE_CONN7,
-+				    I_DL2_CH1, 1, 0),
-+	SOC_DAPM_SINGLE_AUTODISABLE("DL4_CH1 Switch", AFE_CONN7_1,
-+				    I_DL4_CH1, 1, 0),
-+};
-+
-+static const struct snd_kcontrol_new mtk_pcm_1_playback_ch2_mix[] = {
-+	SOC_DAPM_SINGLE_AUTODISABLE("ADDA_UL_CH2 Switch", AFE_CONN8,
-+				    I_ADDA_UL_CH2, 1, 0),
-+	SOC_DAPM_SINGLE_AUTODISABLE("DL2_CH2 Switch", AFE_CONN8,
-+				    I_DL2_CH2, 1, 0),
-+	SOC_DAPM_SINGLE_AUTODISABLE("DL4_CH2 Switch", AFE_CONN8_1,
-+				    I_DL4_CH2, 1, 0),
-+};
-+
-+static int mtk_pcm_en_event(struct snd_soc_dapm_widget *w,
-+			    struct snd_kcontrol *kcontrol,
-+			    int event)
++int mt8186_afe_gpio_init(struct device *dev)
 +{
-+	struct snd_soc_component *cmpnt = snd_soc_dapm_to_component(w->dapm);
-+	struct mtk_base_afe *afe = snd_soc_component_get_drvdata(cmpnt);
++	int i, j, ret;
 +
-+	dev_dbg(afe->dev, "%s(), name %s, event 0x%x\n",
-+		__func__, w->name, event);
++	aud_pinctrl = devm_pinctrl_get(dev);
++	if (IS_ERR(aud_pinctrl)) {
++		ret = PTR_ERR(aud_pinctrl);
++		dev_err(dev, "%s(), ret %d, cannot get aud_pinctrl!\n",
++			__func__, ret);
++		return ret;
++	}
 +
-+	switch (event) {
-+	case SND_SOC_DAPM_PRE_PMU:
-+		mt8186_afe_gpio_request(afe->dev, true, MT8186_DAI_PCM, 0);
-+		break;
-+	case SND_SOC_DAPM_POST_PMD:
-+		mt8186_afe_gpio_request(afe->dev, false, MT8186_DAI_PCM, 0);
-+		break;
++	for (i = 0; i < ARRAY_SIZE(aud_gpios); i++) {
++		aud_gpios[i].gpioctrl = pinctrl_lookup_state(aud_pinctrl,
++							     aud_gpios[i].name);
++		if (IS_ERR(aud_gpios[i].gpioctrl)) {
++			ret = PTR_ERR(aud_gpios[i].gpioctrl);
++			dev_info(dev, "%s(), pinctrl_lookup_state %s fail, ret %d\n",
++				 __func__, aud_gpios[i].name, ret);
++		} else {
++			aud_gpios[i].gpio_prepare = true;
++		}
++	}
++
++	/* gpio status init */
++	for (i = MT8186_DAI_ADDA; i <= MT8186_DAI_TDM_IN; i++) {
++		for (j = 0; j <= 1; j++)
++			mt8186_afe_gpio_request(dev, false, i, j);
++	}
++
++	return 0;
++}
++EXPORT_SYMBOL_GPL(mt8186_afe_gpio_init);
++
++static int mt8186_afe_gpio_select(struct device *dev,
++				  enum mt8186_afe_gpio type)
++{
++	int ret = 0;
++
++	if (type < 0 || type >= MT8186_AFE_GPIO_GPIO_NUM) {
++		dev_err(dev, "%s(), error, invalid gpio type %d\n",
++			__func__, type);
++		return -EINVAL;
++	}
++
++	if (!aud_gpios[type].gpio_prepare) {
++		dev_err(dev, "%s(), error, gpio type %d not prepared\n",
++			__func__, type);
++		return -EIO;
++	}
++
++	ret = pinctrl_select_state(aud_pinctrl,
++				   aud_gpios[type].gpioctrl);
++	if (ret) {
++		dev_err(dev, "%s(), error, can not set gpio type %d\n",
++			__func__, type);
++		return ret;
 +	}
 +
 +	return 0;
 +}
 +
-+/* pcm in/out lpbk */
-+static const char * const pcm_lpbk_mux_map[] = {
-+	"Normal", "Lpbk",
-+};
-+
-+static int pcm_lpbk_mux_map_value[] = {
-+	0, 1,
-+};
-+
-+static SOC_VALUE_ENUM_SINGLE_AUTODISABLE_DECL(pcm_in_lpbk_mux_map_enum,
-+					      PCM_INTF_CON1,
-+					      PCM_I2S_PCM_LOOPBACK_SFT,
-+					      1,
-+					      pcm_lpbk_mux_map,
-+					      pcm_lpbk_mux_map_value);
-+
-+static const struct snd_kcontrol_new pcm_in_lpbk_mux_control =
-+	SOC_DAPM_ENUM("PCM In Lpbk Select", pcm_in_lpbk_mux_map_enum);
-+
-+static SOC_VALUE_ENUM_SINGLE_AUTODISABLE_DECL(pcm_out_lpbk_mux_map_enum,
-+					      PCM_INTF_CON1,
-+					      PCM_I2S_PCM_LOOPBACK_SFT,
-+					      1,
-+					      pcm_lpbk_mux_map,
-+					      pcm_lpbk_mux_map_value);
-+
-+static const struct snd_kcontrol_new pcm_out_lpbk_mux_control =
-+	SOC_DAPM_ENUM("PCM Out Lpbk Select", pcm_out_lpbk_mux_map_enum);
-+
-+static const struct snd_soc_dapm_widget mtk_dai_pcm_widgets[] = {
-+	/* inter-connections */
-+	SND_SOC_DAPM_MIXER("PCM_1_PB_CH1", SND_SOC_NOPM, 0, 0,
-+			   mtk_pcm_1_playback_ch1_mix,
-+			   ARRAY_SIZE(mtk_pcm_1_playback_ch1_mix)),
-+	SND_SOC_DAPM_MIXER("PCM_1_PB_CH2", SND_SOC_NOPM, 0, 0,
-+			   mtk_pcm_1_playback_ch2_mix,
-+			   ARRAY_SIZE(mtk_pcm_1_playback_ch2_mix)),
-+
-+	SND_SOC_DAPM_SUPPLY("PCM_1_EN",
-+			    PCM_INTF_CON1, PCM_EN_SFT, 0,
-+			    mtk_pcm_en_event,
-+			    SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_POST_PMD),
-+
-+	/* pcm in lpbk */
-+	SND_SOC_DAPM_MUX("PCM_In_Lpbk_Mux",
-+			 SND_SOC_NOPM, 0, 0, &pcm_in_lpbk_mux_control),
-+
-+	/* pcm out lpbk */
-+	SND_SOC_DAPM_MUX("PCM_Out_Lpbk_Mux",
-+			 SND_SOC_NOPM, 0, 0, &pcm_out_lpbk_mux_control),
-+};
-+
-+static const struct snd_soc_dapm_route mtk_dai_pcm_routes[] = {
-+	{"PCM 1 Playback", NULL, "PCM_1_PB_CH1"},
-+	{"PCM 1 Playback", NULL, "PCM_1_PB_CH2"},
-+
-+	{"PCM 1 Playback", NULL, "PCM_1_EN"},
-+	{"PCM 1 Capture", NULL, "PCM_1_EN"},
-+
-+	{"PCM_1_PB_CH1", "DL2_CH1 Switch", "DL2"},
-+	{"PCM_1_PB_CH2", "DL2_CH2 Switch", "DL2"},
-+
-+	{"PCM_1_PB_CH1", "DL4_CH1 Switch", "DL4"},
-+	{"PCM_1_PB_CH2", "DL4_CH2 Switch", "DL4"},
-+
-+	/* pcm out lpbk */
-+	{"PCM_Out_Lpbk_Mux", "Lpbk", "PCM 1 Playback"},
-+	{"I2S0", NULL, "PCM_Out_Lpbk_Mux"},
-+
-+	/* pcm in lpbk */
-+	{"PCM_In_Lpbk_Mux", "Lpbk", "PCM 1 Capture"},
-+	{"I2S3", NULL, "PCM_In_Lpbk_Mux"},
-+};
-+
-+/* dai ops */
-+static int mtk_dai_pcm_hw_params(struct snd_pcm_substream *substream,
-+				 struct snd_pcm_hw_params *params,
-+				 struct snd_soc_dai *dai)
++static int mt8186_afe_gpio_adda_dl(struct device *dev, bool enable)
 +{
-+	struct mtk_base_afe *afe = snd_soc_dai_get_drvdata(dai);
-+	struct mt8186_afe_private *afe_priv = afe->platform_priv;
-+	int pcm_id = dai->id;
-+	struct mtk_afe_pcm_priv *pcm_priv = afe_priv->dai_priv[pcm_id];
-+	unsigned int rate = params_rate(params);
-+	unsigned int rate_reg = mt8186_rate_transform(afe->dev, rate, dai->id);
-+	snd_pcm_format_t format = params_format(params);
-+	unsigned int data_width =
-+		snd_pcm_format_width(format);
-+	unsigned int wlen_width =
-+		snd_pcm_format_physical_width(format);
-+	unsigned int pcm_con = 0;
++	int ret;
 +
-+	dev_dbg(afe->dev, "%s(), id %d, stream %d, widget active p %d, c %d\n",
-+		__func__, dai->id, substream->stream, dai->playback_widget->active,
-+		dai->capture_widget->active);
-+	dev_dbg(afe->dev, "%s(), rate %d, rate_reg %d, data_width %d, wlen_width %d\n",
-+		__func__, rate, rate_reg, data_width, wlen_width);
++	if (enable) {
++		ret = mt8186_afe_gpio_select(dev, MT8186_AFE_GPIO_CLK_MOSI_ON);
++		if (ret) {
++			dev_err(dev, "%s(), MOSI CLK ON slect fail!\n", __func__);
++			return ret;
++		}
 +
-+	if (dai->playback_widget->active || dai->capture_widget->active)
-+		return 0;
++		ret = mt8186_afe_gpio_select(dev, MT8186_AFE_GPIO_DAT_MOSI_ON);
++		if (ret) {
++			dev_err(dev, "%s(), MOSI DAT ON slect fail!\n", __func__);
++			return ret;
++		}
++	} else {
++		ret = mt8186_afe_gpio_select(dev, MT8186_AFE_GPIO_DAT_MOSI_OFF);
++		if (ret) {
++			dev_err(dev, "%s(), MOSI DAT OFF slect fail!\n", __func__);
++			return ret;
++		}
 +
-+	switch (dai->id) {
++		ret = mt8186_afe_gpio_select(dev, MT8186_AFE_GPIO_CLK_MOSI_OFF);
++		if (ret) {
++			dev_err(dev, "%s(), MOSI CLK ON slect fail!\n", __func__);
++			return ret;
++		}
++	}
++
++	return 0;
++}
++
++static int mt8186_afe_gpio_adda_ul(struct device *dev, bool enable)
++{
++	int ret;
++
++	if (enable) {
++		ret = mt8186_afe_gpio_select(dev, MT8186_AFE_GPIO_CLK_MISO_ON);
++		if (ret) {
++			dev_err(dev, "%s(), MISO CLK ON slect fail!\n", __func__);
++			return ret;
++		}
++
++		ret = mt8186_afe_gpio_select(dev, MT8186_AFE_GPIO_DAT_MISO_ON);
++		if (ret) {
++			dev_err(dev, "%s(), MISO DAT ON slect fail!\n", __func__);
++			return ret;
++		}
++	} else {
++		ret = mt8186_afe_gpio_select(dev, MT8186_AFE_GPIO_DAT_MISO_OFF);
++		if (ret) {
++			dev_err(dev, "%s(), MISO DAT OFF slect fail!\n", __func__);
++			return ret;
++		}
++
++		ret = mt8186_afe_gpio_select(dev, MT8186_AFE_GPIO_CLK_MISO_OFF);
++		if (ret) {
++			dev_err(dev, "%s(), MISO CLK OFF slect fail!\n", __func__);
++			return ret;
++		}
++	}
++
++	return 0;
++}
++
++int mt8186_afe_gpio_request(struct device *dev, bool enable,
++			    int dai, int uplink)
++{
++	enum mt8186_afe_gpio sel;
++	int ret = -EINVAL;
++
++	mutex_lock(&gpio_request_mutex);
++
++	switch (dai) {
++	case MT8186_DAI_ADDA:
++		if (uplink)
++			ret = mt8186_afe_gpio_adda_ul(dev, enable);
++		else
++			ret = mt8186_afe_gpio_adda_dl(dev, enable);
++		goto unlock;
++	case MT8186_DAI_I2S_0:
++		sel = enable ? MT8186_AFE_GPIO_I2S0_ON : MT8186_AFE_GPIO_I2S0_OFF;
++		break;
++	case MT8186_DAI_I2S_1:
++		sel = enable ? MT8186_AFE_GPIO_I2S1_ON : MT8186_AFE_GPIO_I2S1_OFF;
++		break;
++	case MT8186_DAI_I2S_2:
++		sel = enable ? MT8186_AFE_GPIO_I2S2_ON : MT8186_AFE_GPIO_I2S2_OFF;
++		break;
++	case MT8186_DAI_I2S_3:
++		sel = enable ? MT8186_AFE_GPIO_I2S3_ON : MT8186_AFE_GPIO_I2S3_OFF;
++		break;
++	case MT8186_DAI_TDM_IN:
++		sel = enable ? MT8186_AFE_GPIO_TDM_ON : MT8186_AFE_GPIO_TDM_OFF;
++		break;
 +	case MT8186_DAI_PCM:
-+		pcm_con |= AUD_TX_LCH_RPT_NO_REPEAT << PCM_TX_LCH_RPT_SFT;
-+		pcm_con |= AUD_VBT_16K_MODE_DISABLE << PCM_VBT_16K_MODE_SFT;
-+		pcm_con |= AUD_EXT_MODEM_SELECT_EXTERNAL << PCM_EXT_MODEM_SFT;
-+		pcm_con |= AUD_PCM_ONE_BCK_CYCLE_SYNC << PCM_SYNC_TYPE_SFT;
-+		pcm_con |= AUD_BT_MODE_DUAL_MIC_ON_TX << PCM_BT_MODE_SFT;
-+		pcm_con |= AUD_PCM_AFIFO_AFIFO << PCM_BYP_ASRC_SFT;
-+		pcm_con |= AUD_PCM_CLOCK_MASTER_MODE << PCM_SLAVE_SFT;
-+		pcm_con |= 0 << PCM_SYNC_LENGTH_SFT;
-+
-+		/* sampling rate */
-+		pcm_con |= rate_reg << PCM_MODE_SFT;
-+
-+		/* format */
-+		pcm_con |= pcm_priv->fmt << PCM_FMT_SFT;
-+
-+		/* 24bit data width */
-+		if (data_width > 16)
-+			pcm_con |= AUD_PCM_24BIT_PCM_24_BITS << PCM_24BIT_SFT;
-+		else
-+			pcm_con |= AUD_PCM_24BIT_PCM_16_BITS << PCM_24BIT_SFT;
-+
-+		/* wlen width*/
-+		if (wlen_width > 16)
-+			pcm_con |= AUD_PCM_WLEN_PCM_64_BCK_CYCLES << PCM_WLEN_SFT;
-+		else
-+			pcm_con |= AUD_PCM_WLEN_PCM_32_BCK_CYCLES << PCM_WLEN_SFT;
-+
-+		/* clock invert */
-+		pcm_con |= pcm_priv->lck_invert << PCM_SYNC_OUT_INV_SFT;
-+		pcm_con |= pcm_priv->bck_invert << PCM_BCLK_OUT_INV_SFT;
-+
-+		regmap_update_bits(afe->regmap, PCM_INTF_CON1, 0xfffffffe, pcm_con);
++		sel = enable ? MT8186_AFE_GPIO_PCM_ON : MT8186_AFE_GPIO_PCM_OFF;
 +		break;
 +	default:
-+		dev_err(afe->dev, "%s(), id %d not support\n", __func__, dai->id);
-+		return -EINVAL;
++		mutex_unlock(&gpio_request_mutex);
++		dev_err(dev, "%s(), invalid dai %d\n", __func__, dai);
++		goto unlock;
 +	}
 +
-+	return 0;
++	ret = mt8186_afe_gpio_select(dev, sel);
++
++unlock:
++	mutex_unlock(&gpio_request_mutex);
++
++	return ret;
 +}
+diff --git a/sound/soc/mediatek/mt8186/mt8186-afe-gpio.h b/sound/soc/mediatek/mt8186/mt8186-afe-gpio.h
+new file mode 100644
+index 000000000000..1ddc27838eb1
+--- /dev/null
++++ b/sound/soc/mediatek/mt8186/mt8186-afe-gpio.h
+@@ -0,0 +1,19 @@
++/* SPDX-License-Identifier: GPL-2.0
++ *
++ * mt6833-afe-gpio.h  --  Mediatek 6833 afe gpio ctrl definition
++ *
++ * Copyright (c) 2022 MediaTek Inc.
++ * Author: Jiaxin Yu <jiaxin.yu@mediatek.com>
++ */
 +
-+static int mtk_dai_pcm_set_fmt(struct snd_soc_dai *dai, unsigned int fmt)
-+{
-+	struct mtk_base_afe *afe = snd_soc_dai_get_drvdata(dai);
-+	struct mt8186_afe_private *afe_priv = afe->platform_priv;
-+	struct mtk_afe_pcm_priv *pcm_priv = afe_priv->dai_priv[dai->id];
++#ifndef _MT8186_AFE_GPIO_H_
++#define _MT8186_AFE_GPIO_H_
 +
-+	if (!pcm_priv) {
-+		dev_err(afe->dev, "%s(), tdm_priv == NULL", __func__);
-+		return -EINVAL;
-+	}
++struct mtk_base_afe;
 +
-+	/* DAI mode*/
-+	switch (fmt & SND_SOC_DAIFMT_FORMAT_MASK) {
-+	case SND_SOC_DAIFMT_I2S:
-+		pcm_priv->fmt = AUD_PCM_FMT_I2S;
-+		break;
-+	case SND_SOC_DAIFMT_LEFT_J:
-+		pcm_priv->fmt = AUD_PCM_FMT_EIAJ;
-+		break;
-+	case SND_SOC_DAIFMT_DSP_A:
-+		pcm_priv->fmt = AUD_PCM_FMT_PCM_MODE_A;
-+		break;
-+	case SND_SOC_DAIFMT_DSP_B:
-+		pcm_priv->fmt = AUD_PCM_FMT_PCM_MODE_B;
-+		break;
-+	default:
-+		pcm_priv->fmt = AUD_PCM_FMT_I2S;
-+	}
++int mt8186_afe_gpio_init(struct device *dev);
 +
-+	/* DAI clock inversion*/
-+	switch (fmt & SND_SOC_DAIFMT_INV_MASK) {
-+	case SND_SOC_DAIFMT_NB_NF:
-+		pcm_priv->bck_invert = AUD_BCLK_OUT_INV_NO_INVERSE;
-+		pcm_priv->lck_invert = AUD_LRCLK_OUT_INV_NO_INVERSE;
-+		break;
-+	case SND_SOC_DAIFMT_NB_IF:
-+		pcm_priv->bck_invert = AUD_BCLK_OUT_INV_NO_INVERSE;
-+		pcm_priv->lck_invert = AUD_BCLK_OUT_INV_INVERSE;
-+		break;
-+	case SND_SOC_DAIFMT_IB_NF:
-+		pcm_priv->bck_invert = AUD_BCLK_OUT_INV_INVERSE;
-+		pcm_priv->lck_invert = AUD_LRCLK_OUT_INV_NO_INVERSE;
-+		break;
-+	case SND_SOC_DAIFMT_IB_IF:
-+		pcm_priv->bck_invert = AUD_BCLK_OUT_INV_INVERSE;
-+		pcm_priv->lck_invert = AUD_BCLK_OUT_INV_INVERSE;
-+		break;
-+	default:
-+		pcm_priv->bck_invert = AUD_BCLK_OUT_INV_NO_INVERSE;
-+		pcm_priv->lck_invert = AUD_LRCLK_OUT_INV_NO_INVERSE;
-+		break;
-+	}
++int mt8186_afe_gpio_request(struct device *dev, bool enable,
++			    int dai, int uplink);
 +
-+	return 0;
-+}
-+
-+static const struct snd_soc_dai_ops mtk_dai_pcm_ops = {
-+	.hw_params = mtk_dai_pcm_hw_params,
-+	.set_fmt = mtk_dai_pcm_set_fmt,
-+};
-+
-+/* dai driver */
-+#define MTK_PCM_RATES (SNDRV_PCM_RATE_8000 |\
-+		       SNDRV_PCM_RATE_16000 |\
-+		       SNDRV_PCM_RATE_32000 |\
-+		       SNDRV_PCM_RATE_48000)
-+
-+#define MTK_PCM_FORMATS (SNDRV_PCM_FMTBIT_S16_LE |\
-+			 SNDRV_PCM_FMTBIT_S24_LE |\
-+			 SNDRV_PCM_FMTBIT_S32_LE)
-+
-+static struct snd_soc_dai_driver mtk_dai_pcm_driver[] = {
-+	{
-+		.name = "PCM 1",
-+		.id = MT8186_DAI_PCM,
-+		.playback = {
-+			.stream_name = "PCM 1 Playback",
-+			.channels_min = 1,
-+			.channels_max = 2,
-+			.rates = MTK_PCM_RATES,
-+			.formats = MTK_PCM_FORMATS,
-+		},
-+		.capture = {
-+			.stream_name = "PCM 1 Capture",
-+			.channels_min = 1,
-+			.channels_max = 2,
-+			.rates = MTK_PCM_RATES,
-+			.formats = MTK_PCM_FORMATS,
-+		},
-+		.ops = &mtk_dai_pcm_ops,
-+		.symmetric_rate = 1,
-+		.symmetric_sample_bits = 1,
-+	},
-+};
-+
-+static struct mtk_afe_pcm_priv *init_pcm_priv_data(struct mtk_base_afe *afe)
-+{
-+	struct mtk_afe_pcm_priv *pcm_priv;
-+
-+	pcm_priv = devm_kzalloc(afe->dev, sizeof(struct mtk_afe_pcm_priv),
-+				GFP_KERNEL);
-+	if (!pcm_priv)
-+		return NULL;
-+
-+	pcm_priv->id = MT8186_DAI_PCM;
-+	pcm_priv->fmt = AUD_PCM_FMT_I2S;
-+	pcm_priv->bck_invert = AUD_BCLK_OUT_INV_NO_INVERSE;
-+	pcm_priv->lck_invert = AUD_LRCLK_OUT_INV_NO_INVERSE;
-+
-+	return pcm_priv;
-+}
-+
-+int mt8186_dai_pcm_register(struct mtk_base_afe *afe)
-+{
-+	struct mt8186_afe_private *afe_priv = afe->platform_priv;
-+	struct mtk_afe_pcm_priv *pcm_priv;
-+	struct mtk_base_afe_dai *dai;
-+
-+	dai = devm_kzalloc(afe->dev, sizeof(*dai), GFP_KERNEL);
-+	if (!dai)
-+		return -ENOMEM;
-+
-+	list_add(&dai->list, &afe->sub_dais);
-+
-+	dai->dai_drivers = mtk_dai_pcm_driver;
-+	dai->num_dai_drivers = ARRAY_SIZE(mtk_dai_pcm_driver);
-+
-+	dai->dapm_widgets = mtk_dai_pcm_widgets;
-+	dai->num_dapm_widgets = ARRAY_SIZE(mtk_dai_pcm_widgets);
-+	dai->dapm_routes = mtk_dai_pcm_routes;
-+	dai->num_dapm_routes = ARRAY_SIZE(mtk_dai_pcm_routes);
-+
-+	pcm_priv = init_pcm_priv_data(afe);
-+	if (!pcm_priv)
-+		return -ENOMEM;
-+
-+	afe_priv->dai_priv[MT8186_DAI_PCM] = pcm_priv;
-+
-+	return 0;
-+}
++#endif
 -- 
 2.25.1
 
