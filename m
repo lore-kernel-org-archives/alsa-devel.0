@@ -4,66 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 87421C433EF
-	for <alsa-devel@archiver.kernel.org>; Thu, 28 Apr 2022 16:48:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D3F70C433EF
+	for <alsa-devel@archiver.kernel.org>; Thu, 28 Apr 2022 16:48:31 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A43CB1635;
-	Thu, 28 Apr 2022 18:47:29 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A43CB1635
+	by alsa0.perex.cz (Postfix) with ESMTPS id 21134163E;
+	Thu, 28 Apr 2022 18:47:40 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 21134163E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1651164499;
-	bh=+RKLk9K6/GT4CyUUwj9j7R0islPDkWCMgjT+jFXMSDQ=;
+	s=default; t=1651164510;
+	bh=oTA/bLA09vyo7gZftSiBJgvnmnzNeALY3BscTIa+ohw=;
 	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=MJVLVYdTVfvsDmXJHiJ0T2B0xjjSV481R7XysML92NoEL0ts+rYKpjV19qohVPHcR
-	 1wzBfl5euHy1BCP1Ky5ZTOh1cjxOuAyLDHUzlDiEQv96vHdqgYp9S259zxplSTF2ZX
-	 kjTxAR6hH2BOufeBzR9joPhFOsQ1JXbKs8vJUuig=
+	b=fDbEdehr154OQhr96lMkIH5WOIMRf45NNGkRCPHQ27SxGM1FSX5LORWSvzMicmcFs
+	 kmS/SQx84Bg7hQgMRWx6lIgYDEz0Tphiw/liQh+plushYVPn2gVi8YtfyaH0yvegER
+	 hZILVl0fs8B5WgPRnT7Sl5zcZ22Mi99uvNyixzOw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 3D986F804FD;
-	Thu, 28 Apr 2022 18:47:07 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 6AF2CF80508;
+	Thu, 28 Apr 2022 18:47:09 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 76492F80506; Thu, 28 Apr 2022 18:47:06 +0200 (CEST)
+ id CBD71F804BD; Thu, 28 Apr 2022 18:47:07 +0200 (CEST)
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id D520FF804FD
- for <alsa-devel@alsa-project.org>; Thu, 28 Apr 2022 18:47:03 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D520FF804FD
+ by alsa1.perex.cz (Postfix) with ESMTPS id E441FF804BD
+ for <alsa-devel@alsa-project.org>; Thu, 28 Apr 2022 18:47:01 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E441FF804BD
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="P7mbsYTw"
+ header.b="kzImxQxt"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id 27B9F620D8;
- Thu, 28 Apr 2022 16:47:02 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0496CC385AA;
- Thu, 28 Apr 2022 16:46:59 +0000 (UTC)
+ by dfw.source.kernel.org (Postfix) with ESMTPS id 1CAB862026;
+ Thu, 28 Apr 2022 16:47:00 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EDEBEC385A9;
+ Thu, 28 Apr 2022 16:46:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1651164421;
- bh=+RKLk9K6/GT4CyUUwj9j7R0islPDkWCMgjT+jFXMSDQ=;
+ s=k20201202; t=1651164419;
+ bh=oTA/bLA09vyo7gZftSiBJgvnmnzNeALY3BscTIa+ohw=;
  h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=P7mbsYTwr8FAZSziLNTBYcHxEL0bwO1N5uSk0kLF0pB7j//Nmqo61SzGkoXAOpv7P
- Qh2pKMSZsG/UkD2/AHBby+wT2L/6sosdsGaSFrNKWhHDtX2h+1ktHYky6Kkz1FPHzW
- PNkC1ik45wdhBq5BuwUf0wOwaaHZOw6YeW0vC7LiZc+WYqJwg2B3vsqvmCEu+hIoo4
- AzoHCn8aZ94fzIy7YwaG41y02Id0iq8smbd23r57+HmqkP2iAg92xACXm/J+YQnobu
- bDx7X8du13fAzjn4f/KxmItkVb/i+pjaY8XURDboQLCNPNrsok6IJaLSF0C7MdgMIm
- z+atlvl9BKwVQ==
+ b=kzImxQxtKo2A4VfSdtTB5B2HQF5eIMKRAuAelphHIW4NYWeafoGPqJYbmVl9JqVpy
+ LgaRdgvPg1QheX0laSoq8QZ1n7U8Lx0MFBbg7PYGCD7p6jNbdomCIe+IXMvdZ01OED
+ Ur91+jW4qSgd+LcePzEbAM1P+dDi1sFEs6KLezxeLPhA510mcHWGhAU4GdPUb3buIW
+ 3s92pSDZeJROYgFMNPaX9yZScLT1AiaFOgn5df3hkOLwTKNu0OvAfzj611FACxzm//
+ HpN6pdKOi+0VdBLxjyKVm5u18uVvyvrwGy6jZssFuLPUv6cAHmTAPeOYD0joBjou5E
+ TCTy2g7WB/yvw==
 From: Mark Brown <broonie@kernel.org>
-To: tiwai@suse.com, nick83ola@gmail.com, lgirdwood@gmail.com, perex@perex.cz
-In-Reply-To: <20220427212916.40145-1-nick83ola@gmail.com>
-References: <20220427212916.40145-1-nick83ola@gmail.com>
-Subject: Re: [PATCH] ASoC: wm8960: Add ACPI support
-Message-Id: <165116441974.4067540.12774509625457137042.b4-ty@kernel.org>
-Date: Thu, 28 Apr 2022 17:46:59 +0100
+To: perex@perex.cz, frattaroli.nicolas@gmail.com, lgirdwood@gmail.com,
+ tiwai@suse.com, katsuhiro@katsuster.net
+In-Reply-To: <20220427172310.138638-1-frattaroli.nicolas@gmail.com>
+References: <20220427172310.138638-1-frattaroli.nicolas@gmail.com>
+Subject: Re: [PATCH] ASoC: rk3328: fix disabling mclk on pclk probe failure
+Message-Id: <165116441767.4067540.16396705501182849019.b4-ty@kernel.org>
+Date: Thu, 28 Apr 2022 17:46:57 +0100
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: patches@opensource.cirrus.com, alsa-devel@alsa-project.org,
- linux-kernel@vger.kernel.org, pierre-louis.bossart@linux.intel.com
+Cc: linux-rockchip@lists.infradead.org, alsa-devel@alsa-project.org,
+ linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -79,16 +80,12 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, 27 Apr 2022 22:29:16 +0100, Nicola Lunghi wrote:
-> HID made of either Wolfson/CirrusLogic PCI ID + 8960 identifier
+On Wed, 27 Apr 2022 19:23:11 +0200, Nicolas Frattaroli wrote:
+> If preparing/enabling the pclk fails, the probe function should
+> unprepare and disable the previously prepared and enabled mclk,
+> which it doesn't do. This commit rectifies this.
 > 
-> This helps enumerate the Waveshare WM8960 WM8960 Hi-Fi Sound
-> Card HAT on the Up2 platform.
 > 
-> The scripts at https://github.com/thesofproject/acpi-scripts
-> can be used to add the ACPI initrd overlay.
-> 
-> [...]
 
 Applied to
 
@@ -96,8 +93,8 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: wm8960: Add ACPI support
-      commit: 7e0bdbae446ff8a752484f6bcbcd7157e7484158
+[1/1] ASoC: rk3328: fix disabling mclk on pclk probe failure
+      commit: dd508e324cdde1c06ace08a8143fa50333a90703
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
