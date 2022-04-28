@@ -4,80 +4,80 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6D3C8C433EF
-	for <alsa-devel@archiver.kernel.org>; Thu, 28 Apr 2022 08:58:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E9576C433F5
+	for <alsa-devel@archiver.kernel.org>; Thu, 28 Apr 2022 09:08:18 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A807AE0F;
-	Thu, 28 Apr 2022 10:57:54 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A807AE0F
+	by alsa0.perex.cz (Postfix) with ESMTPS id 7A47615CC;
+	Thu, 28 Apr 2022 11:07:26 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7A47615CC
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1651136324;
-	bh=Gi8HN6KD/yJRYYiCF7hA6p2zoK1UZOU1l6WXedQ4Ogc=;
+	s=default; t=1651136896;
+	bh=mfgYlIDgoLMG4yoz3mHS5l78J+uwXJFp7hkdx8PGIa4=;
 	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=CzJt2ZABtz+1P2FJvkJA+qmYxCOdDE4H2YKmK79+aIkwuoPswhuETDq8Aptje7jnC
-	 zfAaHgv/8q5x7Akp2CYsS/Ob3TuDhFrheQ8QgHtvTZB6laU7JaMLnbE64jNIDHOOSc
-	 4N1veWzkYtEFRqF3KHpcQOSqgxOJSyoCeN6UqzSM=
+	b=vC27Z0W4AyWuB7pbF7fI71W9JzC8CnDWtdehVE9yptN1BcYmljEWK6qk7/WvPRImB
+	 +GANoNEqeqOG1dsw7MZ9FC7QyGKgkFrrevdmvCs6sOgo50Cu9LNCQCQgl3PItkzk//
+	 Bqa6M4aJ7FpFqO7a5mnyy5Y6/EsGCpE+xBFIPr9I=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 42C3FF8014E;
-	Thu, 28 Apr 2022 10:57:54 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 001F0F8014E;
+	Thu, 28 Apr 2022 11:07:25 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 73D04F800F2; Thu, 28 Apr 2022 10:57:52 +0200 (CEST)
-Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
- [67.231.152.168])
+ id DD9BDF8016E; Thu, 28 Apr 2022 11:07:23 +0200 (CEST)
+Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
+ [67.231.149.25])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 64C0BF800F2
- for <alsa-devel@alsa-project.org>; Thu, 28 Apr 2022 10:57:44 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 64C0BF800F2
+ by alsa1.perex.cz (Postfix) with ESMTPS id 73670F800F2
+ for <alsa-devel@alsa-project.org>; Thu, 28 Apr 2022 11:07:15 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 73670F800F2
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com
- header.b="ZrlLZuEJ"
-Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
- by mx0b-001ae601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 23S84mPF013671;
- Thu, 28 Apr 2022 03:57:42 -0500
+ header.b="GQ4B3y14"
+Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
+ by mx0a-001ae601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 23S85tWM016496;
+ Thu, 28 Apr 2022 04:07:13 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
  h=date : from : to : cc
  : subject : message-id : references : mime-version : content-type :
  in-reply-to; s=PODMain02222019;
- bh=lw4vPSC0Sg0RRx2v5dzNrqFzM/Hz4CzUnSZ52Sl0ZFk=;
- b=ZrlLZuEJLYh3LDQMwQVXkACvFBpiZn0Nez6BlpPvrug71GuV5HqLT3v3zpCSGfWZ3L/P
- QvGl4loqSYW55Qtbaq5jAMugtpwgTZeK7x1Kyt1eQ/F3P6mvtsmzyGnUMCtgSGPsSwFn
- bAhoxDmRuOZ34SSkznzSgeXloYcA3DTNHrifkQxV2El7zYYi4N7dHwJNymH4ZcA64Cwe
- hLuLQ/V2KAvfcl+JT9H3qebXSFUwPuijEtNQX9a8hSFGACOd/b08zUhImg3g07/+u52J
- 9N8AAqJGGCakLD5B/iBQhN6YJqrIHUbeFMJ4q+o0JHb9i5dHgK7H2kYF3k4YYUnUe1vZ ZA== 
+ bh=qelkuXXhI7j9+bgOOt/afSN3KCYXxCAlz6N2wmeGKIw=;
+ b=GQ4B3y14y2EK/kFXganY54q3e8Li5dqA47V23JKUE4ykUwxZ416fLL2fdKL4CK2xQ080
+ i9SRkr2I1AGdBWebYXTvbplHsgJhEYOxjoEXbFbVYs5+8EtuA09asI6gX/0Mh6dcw8Nh
+ KQdkIXegs379TkSzZDaAmF9hnIf/EhJvoX6isWi9NPjPp1kKERFSHpoYWfxLfcob+TRU
+ 4eRpFF7ohwLjToCQTXW+DnjtK1IC9hNa/9cqtTeV/PJf6fcGz0jJbLPAMQxxZiMyndsd
+ a/ivvWWjkFTtkDPpwu07D+CrpuUscwVLSPqEaN/G/3NrjZBPw08CmGl7YWVObziFHFuW 7Q== 
 Received: from ediex01.ad.cirrus.com ([84.19.233.68])
- by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3fprt61vr0-1
+ by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3fprtb1v8y-1
  (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
- Thu, 28 Apr 2022 03:57:42 -0500
+ Thu, 28 Apr 2022 04:07:12 -0500
 Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX01.ad.cirrus.com
  (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.24; Thu, 28 Apr
- 2022 09:57:40 +0100
+ 2022 10:07:10 +0100
 Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
  (198.61.84.80) with Microsoft SMTP Server id 15.1.2375.24 via
- Frontend Transport; Thu, 28 Apr 2022 09:57:40 +0100
+ Frontend Transport; Thu, 28 Apr 2022 10:07:10 +0100
 Received: from ediswmail.ad.cirrus.com (ediswmail.ad.cirrus.com [198.61.86.93])
- by ediswmail.ad.cirrus.com (Postfix) with ESMTP id DDDEE46C;
- Thu, 28 Apr 2022 08:57:40 +0000 (UTC)
-Date: Thu, 28 Apr 2022 08:57:40 +0000
+ by ediswmail.ad.cirrus.com (Postfix) with ESMTP id ABC8946C;
+ Thu, 28 Apr 2022 09:07:10 +0000 (UTC)
+Date: Thu, 28 Apr 2022 09:07:10 +0000
 From: Charles Keepax <ckeepax@opensource.cirrus.com>
 To: Vitaly Rodionov <vitalyr@opensource.cirrus.com>
-Subject: Re: [PATCH 06/26] ASoC: cs35l41: Move cs35l41_set_cspl_mbox_cmd to
- shared code
-Message-ID: <20220428085740.GK38351@ediswmail.ad.cirrus.com>
+Subject: Re: [PATCH 07/26] ASoC: cs35l41: Move cs35l41 fs errata into shared
+ code
+Message-ID: <20220428090710.GL38351@ediswmail.ad.cirrus.com>
 References: <20220427150720.9194-1-vitalyr@opensource.cirrus.com>
- <20220427150720.9194-7-vitalyr@opensource.cirrus.com>
+ <20220427150720.9194-8-vitalyr@opensource.cirrus.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-In-Reply-To: <20220427150720.9194-7-vitalyr@opensource.cirrus.com>
+In-Reply-To: <20220427150720.9194-8-vitalyr@opensource.cirrus.com>
 User-Agent: Mutt/1.5.21 (2010-09-15)
-X-Proofpoint-GUID: EUz3WwI3f4dQHnV4upV0JBtdt1_0x9G7
-X-Proofpoint-ORIG-GUID: EUz3WwI3f4dQHnV4upV0JBtdt1_0x9G7
+X-Proofpoint-ORIG-GUID: qOq2t3v99asS5a4Cp8ufLVpzTWToPi9V
+X-Proofpoint-GUID: qOq2t3v99asS5a4Cp8ufLVpzTWToPi9V
 X-Proofpoint-Spam-Reason: safe
 Cc: alsa-devel@alsa-project.org, patches@opensource.cirrus.com,
  Takashi Iwai <tiwai@suse.com>, linux-kernel@vger.kernel.org,
@@ -98,12 +98,11 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, Apr 27, 2022 at 04:07:00PM +0100, Vitaly Rodionov wrote:
+On Wed, Apr 27, 2022 at 04:07:01PM +0100, Vitaly Rodionov wrote:
 > From: Stefan Binding <sbinding@opensource.cirrus.com>
 > 
-> This function is used to control the DSP Firmware for cs35l41,
-> and will be needed by the cs35l41 hda driver, when firmware
-> support is added.
+> This sequence is required to setup firmware, and will
+> be needed for hda driver.
 > 
 > Signed-off-by: Stefan Binding <sbinding@opensource.cirrus.com>
 > Signed-off-by: Vitaly Rodionov <vitalyr@opensource.cirrus.com>
