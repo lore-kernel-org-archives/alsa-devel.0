@@ -4,85 +4,76 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 20A41C433F5
-	for <alsa-devel@archiver.kernel.org>; Thu, 28 Apr 2022 09:13:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D0621C433EF
+	for <alsa-devel@archiver.kernel.org>; Thu, 28 Apr 2022 09:35:11 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 54A60164D;
-	Thu, 28 Apr 2022 11:13:00 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 54A60164D
+	by alsa0.perex.cz (Postfix) with ESMTPS id 5E7B4163E;
+	Thu, 28 Apr 2022 11:34:19 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5E7B4163E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1651137230;
-	bh=LPrMDs4NgTPMMVGO+pTv6eFH4YrmdsHlQ5ANGzrurrY=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	s=default; t=1651138509;
+	bh=nHlu4mRkkxejHPmF+8F8ioW9GQVolC6x6FeEAoBkmL0=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=uiPJXfxiWBYLcsaMxHcsVLDlcFEu6xyiHubt3gux37HSShvKivY0GIN1yIOTokMmz
-	 YgOGcwDTAILEPIi2gVrW5a9NmI+6SwMnG/WbQ5H0AtCi40PUvb+ETBE/jaoPB7Wb9e
-	 0Cojkx5b5KwmQVGWJd2+a42jgR2Cfo+yaOR1N5r4=
+	b=fwGmXux5wReJMzvr+SGBCJGh07BBT7tUmdtHBeigXzBrg+1Y1ZK1xZIwwv4rftljg
+	 4wxCTnynnmeY5ra3DfXxmULZlAwslxsV0/MUcv6YnWZMuCLErnYIv86lHF6TwhF6Us
+	 WEF3XaElxCjzSpkzJ8Pv6vSEwM4LeRMENVpA+yl8=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id F1887F8014E;
-	Thu, 28 Apr 2022 11:12:59 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 9DD2DF80508;
+	Thu, 28 Apr 2022 11:34:18 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id F161AF800F2; Thu, 28 Apr 2022 11:12:58 +0200 (CEST)
-Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
- [67.231.152.168])
+ id F32FDF800F2; Thu, 28 Apr 2022 11:34:16 +0200 (CEST)
+Received: from mailgw01.mediatek.com (unknown [60.244.123.138])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id C2BDDF800F2
- for <alsa-devel@alsa-project.org>; Thu, 28 Apr 2022 11:12:52 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C2BDDF800F2
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com
- header.b="enTIccuO"
-Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
- by mx0b-001ae601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 23S85oPm014938;
- Thu, 28 Apr 2022 04:12:50 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
- h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=PODMain02222019;
- bh=fhO5OWNs7ldbb0025j9mY6KX+Symbg/QpoLGDSOJ+uE=;
- b=enTIccuO6DnllbRS7rvvcVza73OAWwSHdlFrRddxjsHM8oHoiLCvVyF86O2c5uWo10tM
- setgC0y2gGV9AQ3RbFBqfB/ZGI2sAoJTzfwFMK6W0HFwsw0iGZGPDRmm93ciffyhh8AT
- p/bmFvcamhpZqtBZWmpOpUj+H0DsdWECX1OW0M2B7JKgcAmm9fHgSiaSJXTTah5SLCMB
- a6xaLBUkJGFqJAqVxpUW9krzeOW4T1LU6CgkuahSFmSlY/7NBspqAhgadCjEhIT7HAW+
- otd/OawR1ZwBXYuiatGBpO663Mjdh0jZlg7dysV6QBW+6UVWaVeXq+v7OqOS8frYhwKC Ew== 
-Received: from ediex02.ad.cirrus.com ([84.19.233.68])
- by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3fprt61w5e-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
- Thu, 28 Apr 2022 04:12:50 -0500
-Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX02.ad.cirrus.com
- (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.24; Thu, 28 Apr
- 2022 10:12:48 +0100
-Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server id 15.1.2375.24 via
- Frontend Transport; Thu, 28 Apr 2022 10:12:48 +0100
-Received: from ediswmail.ad.cirrus.com (ediswmail.ad.cirrus.com [198.61.86.93])
- by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 9276146C;
- Thu, 28 Apr 2022 09:12:48 +0000 (UTC)
-Date: Thu, 28 Apr 2022 09:12:48 +0000
-From: Charles Keepax <ckeepax@opensource.cirrus.com>
-To: Vitaly Rodionov <vitalyr@opensource.cirrus.com>
-Subject: Re: [PATCH 20/26] ASoC: cs35l41: Add common cs35l41 enter hibernate
- function
-Message-ID: <20220428091248.GP38351@ediswmail.ad.cirrus.com>
-References: <20220427150720.9194-1-vitalyr@opensource.cirrus.com>
- <20220427150720.9194-21-vitalyr@opensource.cirrus.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 6345CF800F2
+ for <alsa-devel@alsa-project.org>; Thu, 28 Apr 2022 11:34:08 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6345CF800F2
+X-UUID: 92ec7905c2b04dfa8d2e0e9e93071ae7-20220428
+X-CID-P-RULE: Release_Ham
+X-CID-O-INFO: VERSION:1.1.4, REQID:af9f6609-e2ff-42ef-8aef-a75efbafd9ec, OB:0,
+ LO
+ B:0,IP:0,URL:0,TC:0,Content:0,EDM:0,RT:0,SF:0,FILE:0,RULE:Release_Ham,ACTI
+ ON:release,TS:0
+X-CID-META: VersionHash:faefae9, CLOUDID:2d57082f-6199-437e-8ab4-9920b4bc5b76,
+ C
+ OID:IGNORED,Recheck:0,SF:nil,TC:nil,Content:0,EDM:-3,File:nil,QS:0,BEC:nil
+X-UUID: 92ec7905c2b04dfa8d2e0e9e93071ae7-20220428
+Received: from mtkexhb02.mediatek.inc [(172.21.101.103)] by
+ mailgw01.mediatek.com (envelope-from <jiaxin.yu@mediatek.com>)
+ (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+ with ESMTP id 1295577112; Thu, 28 Apr 2022 17:34:01 +0800
+Received: from mtkcas10.mediatek.inc (172.21.101.39) by
+ mtkmbs10n1.mediatek.inc (172.21.101.34) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ 15.2.792.15; Thu, 28 Apr 2022 17:33:59 +0800
+Received: from localhost.localdomain (10.17.3.154) by mtkcas10.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Thu, 28 Apr 2022 17:33:58 +0800
+From: Jiaxin Yu <jiaxin.yu@mediatek.com>
+To: <broonie@kernel.org>, <robh+dt@kernel.org>,
+ <angelogioacchino.delregno@collabora.com>
+Subject: [v4 02/18] dt-bindings: mediatek: mt6358: add new compatible for
+ using mt6366
+Date: Thu, 28 Apr 2022 17:33:39 +0800
+Message-ID: <20220428093355.16172-3-jiaxin.yu@mediatek.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20220428093355.16172-1-jiaxin.yu@mediatek.com>
+References: <20220428093355.16172-1-jiaxin.yu@mediatek.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20220427150720.9194-21-vitalyr@opensource.cirrus.com>
-User-Agent: Mutt/1.5.21 (2010-09-15)
-X-Proofpoint-GUID: GQdJADMGzk9gxOMYQuqQXSy4g2VGf6d1
-X-Proofpoint-ORIG-GUID: GQdJADMGzk9gxOMYQuqQXSy4g2VGf6d1
-X-Proofpoint-Spam-Reason: safe
-Cc: alsa-devel@alsa-project.org, patches@opensource.cirrus.com,
- Takashi Iwai <tiwai@suse.com>, linux-kernel@vger.kernel.org,
- Stefan Binding <sbinding@opensource.cirrus.com>,
- Mark Brown <broonie@kernel.org>
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-MTK: N
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
+ Rob Herring <robh@kernel.org>, linux-kernel@vger.kernel.org,
+ Jiaxin Yu <jiaxin.yu@mediatek.com>,
+ Project_Global_Chrome_Upstream_Group@mediatek.com, tzungbi@google.com,
+ linux-mediatek@lists.infradead.org, trevor.wu@mediatek.com,
+ matthias.bgg@gmail.com, aaronyu@google.com, julianbraha@gmail.com,
+ linux-arm-kernel@lists.infradead.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -98,23 +89,29 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, Apr 27, 2022 at 04:07:14PM +0100, Vitaly Rodionov wrote:
-> From: Stefan Binding <sbinding@opensource.cirrus.com>
-> 
-> Since the CS35L41 HDA driver also support hibernation, it
-> makes sense to move code from the ASoC driver to enter
-> hibernation into common code.
-> 
-> Since HDA must support laptops which do not support hibernation
-> due to lack of external boost GPIO it is necessary to
-> ensure the function returns an error when an unsupported
-> boost type is in use.
-> 
-> Signed-off-by: Stefan Binding <sbinding@opensource.cirrus.com>
-> Signed-off-by: Vitaly Rodionov <vitalyr@opensource.cirrus.com>
-> ---
+Add new compatible string "mediatek,mt6366-sound" for using mt6366.
 
-Acked-by: Charles Keepax <ckeepax@opensource.cirrus.com>
+Signed-off-by: Jiaxin Yu <jiaxin.yu@mediatek.com>
+Acked-by: Rob Herring <robh@kernel.org>
+---
+ Documentation/devicetree/bindings/sound/mt6358.txt | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-Thanks,
-Charles
+diff --git a/Documentation/devicetree/bindings/sound/mt6358.txt b/Documentation/devicetree/bindings/sound/mt6358.txt
+index 59a73ffdf1d3..fbe9e55c68f5 100644
+--- a/Documentation/devicetree/bindings/sound/mt6358.txt
++++ b/Documentation/devicetree/bindings/sound/mt6358.txt
+@@ -7,7 +7,9 @@ Must be a child node of PMIC wrapper.
+ 
+ Required properties:
+ 
+-- compatible : "mediatek,mt6358-sound".
++- compatible - "string" - One of:
++    "mediatek,mt6358-sound"
++    "mediatek,mt6366-sound"
+ - Avdd-supply : power source of AVDD
+ 
+ Optional properties:
+-- 
+2.25.1
+
