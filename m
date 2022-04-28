@@ -4,74 +4,70 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E2550C433EF
-	for <alsa-devel@archiver.kernel.org>; Thu, 28 Apr 2022 12:19:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id F3CBCC433EF
+	for <alsa-devel@archiver.kernel.org>; Thu, 28 Apr 2022 12:20:46 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 32DD61634;
-	Thu, 28 Apr 2022 14:18:43 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 32DD61634
+	by alsa0.perex.cz (Postfix) with ESMTPS id 35CC6161D;
+	Thu, 28 Apr 2022 14:19:55 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 35CC6161D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1651148373;
-	bh=SIhXekKKnLhBSGoI0GYjRmEEOgQPCr6CvaqqGxEWhME=;
-	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
+	s=default; t=1651148445;
+	bh=0ZF7rbfOURu9fFQScLsiQBow2Dp0oWt4z38KgBEVbyw=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=jZ1vNen31ot+l3faz2rAtJwABDtzTsfr1D8Pq+BArAZypdeV4VAmFcER6MaV51ieX
-	 5Ans7qFAMtchx1btCeADvTAKo9Nlyf4a87LTVjxWcJqLkjPcQ2ZL+zXnPD8hbiHpoZ
-	 edS6PCOKEyz9EZsu4pjEUzvdawOpsvDlkDBt3PbI=
+	b=C9ePE2pxuhUtcqEHPZEqTdycWwkr1US1yca3pXa5PRvH2qyiJsBVfUJ8N05kVTuve
+	 ZQ3n71N0IT3ppgLqh9eVhUeY95RGZuUYzf/8ZHtEF915yxKMvCX6mZc1at9Oxbsi/u
+	 m7lqxBGPXYcNv9LTW91V4o/YXvkQ1XTns/CNheNg=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 742F9F80311;
-	Thu, 28 Apr 2022 14:18:12 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id D543EF8014E;
+	Thu, 28 Apr 2022 14:19:54 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id E2E07F80311; Thu, 28 Apr 2022 14:18:09 +0200 (CEST)
-Received: from mail-oi1-f182.google.com (mail-oi1-f182.google.com
- [209.85.167.182])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id B2239F8016E; Thu, 28 Apr 2022 14:19:53 +0200 (CEST)
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 79D6AF8012B
- for <alsa-devel@alsa-project.org>; Thu, 28 Apr 2022 14:18:01 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 79D6AF8012B
-Received: by mail-oi1-f182.google.com with SMTP id 12so5083827oix.12
- for <alsa-devel@alsa-project.org>; Thu, 28 Apr 2022 05:18:01 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=x-gm-message-state:from:to:cc:in-reply-to:references:subject:date
- :message-id;
- bh=oqNXD0idBs6+FKIlnsEQo6osQwhhpCXlDbeX0RQIYO0=;
- b=m22zchsoWTkfhIRsbIUFFXecunL6lzJwG4LndmDLHEgnVvC92f4Sq9oQyJKBfNrC0I
- 1FAYY+JaYbq2tVwiGrySM9U0N2s7hZiGBEP6nSy633Kp4QJEH56Q1fy+Mf8QUjaKHtf6
- cAN3xBhM7trwwSXmxKIWGdAi/cF4KwG6nuUiKwFcJ1gx4xUXP+Bzk2N07wt0PZkajXID
- U1w1DDvfLBELu8sdaDUZFb36Uut0bWz/Ran8AWHGvhbmkslUuoeOHmXFtCBOjPp0Qu/0
- bCk/kYWl+CJKmlZSENDS57GrI5wRCcP5MO1tUQ80MCR0+jNSXexGVyIwXkG13I+49hcL
- xDXw==
-X-Gm-Message-State: AOAM532Oc9rWSzxAR/EOVRqoTAhMUpUr9Hzxt0EG8m4ebNg7BCu6n4z7
- QvImB4SORtghXSf8pZRKZA==
-X-Google-Smtp-Source: ABdhPJz79Uyli5XuXZ/YbldCnIdSvSISWDE5Fl8O5kQTkx6KQr64F68etKJsVQXHaxzZGCB40WZDIg==
-X-Received: by 2002:a05:6808:1589:b0:322:9102:5503 with SMTP id
- t9-20020a056808158900b0032291025503mr15696224oiw.68.1651148279242; 
- Thu, 28 Apr 2022 05:17:59 -0700 (PDT)
-Received: from robh.at.kernel.org (66-90-144-107.dyn.grandenetworks.net.
- [66.90.144.107]) by smtp.gmail.com with ESMTPSA id
- j17-20020a4a92d1000000b0035ea6671d8esm999857ooh.35.2022.04.28.05.17.58
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Thu, 28 Apr 2022 05:17:58 -0700 (PDT)
-Received: (nullmailer pid 1999481 invoked by uid 1000);
- Thu, 28 Apr 2022 12:17:57 -0000
-From: Rob Herring <robh@kernel.org>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 8AC10F8012B
+ for <alsa-devel@alsa-project.org>; Thu, 28 Apr 2022 14:19:49 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8AC10F8012B
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="RqPNCacM"
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by ams.source.kernel.org (Postfix) with ESMTPS id 98CB6B82C96;
+ Thu, 28 Apr 2022 12:19:48 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 62EA2C385A0;
+ Thu, 28 Apr 2022 12:19:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1651148387;
+ bh=0ZF7rbfOURu9fFQScLsiQBow2Dp0oWt4z38KgBEVbyw=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=RqPNCacM155R73rT1xOj26j/PjnWU1BXlCCR+fgYHwmP6pAMyuA+qIPZhfNq50dbF
+ Hqi5elhl8jrh+4pjB1DaSTmiNMRnjVoz/zO6fLCu3R4HrPrtNNskRIltHnmVgCh71n
+ mLB27rM9gvH9guv4nsUV35OSWd2QV0993k1yu8A8SgrpHjaMdb35bDh1/7zF8eb76j
+ CopMvriSjfhzOzhzavCS63LS2g5Mh8uIL/X1yS8TctGAI5VnIBhVmuWwpl5WHmEwcS
+ 3RIxqZnWcz1fAD66e6vhNGq01RmJpcHvLKpqMEn7/GwmhFMX5v01TIVcbbnl9k/CaF
+ mZYWEGTDD4+jQ==
+Date: Thu, 28 Apr 2022 13:19:40 +0100
+From: Mark Brown <broonie@kernel.org>
 To: Jiaxin Yu <jiaxin.yu@mediatek.com>
-In-Reply-To: <20220428093355.16172-17-jiaxin.yu@mediatek.com>
+Subject: Re: [v4 00/18] ASoC: mediatek: Add support for MT8186 SoC
+Message-ID: <YmqGXCg97X6Vqvs+@sirena.org.uk>
 References: <20220428093355.16172-1-jiaxin.yu@mediatek.com>
- <20220428093355.16172-17-jiaxin.yu@mediatek.com>
-Subject: Re: [v4 16/18] dt-bindings: mediatek: mt8186: add
- mt8186-mt6366-da7219-max98357 document
-Date: Thu, 28 Apr 2022 07:17:57 -0500
-Message-Id: <1651148277.902080.1999480.nullmailer@robh.at.kernel.org>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature"; boundary="14HuojlumyrWt7WU"
+Content-Disposition: inline
+In-Reply-To: <20220428093355.16172-1-jiaxin.yu@mediatek.com>
+X-Cookie: Bedfellows make strange politicians.
 Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
- linux-kernel@vger.kernel.org, robh+dt@kernel.org,
+ linux-kernel@vger.kernel.org,
  Project_Global_Chrome_Upstream_Group@mediatek.com, tzungbi@google.com,
- broonie@kernel.org, linux-mediatek@lists.infradead.org, trevor.wu@mediatek.com,
+ robh+dt@kernel.org, linux-mediatek@lists.infradead.org, trevor.wu@mediatek.com,
  matthias.bgg@gmail.com, aaronyu@google.com, julianbraha@gmail.com,
  linux-arm-kernel@lists.infradead.org, angelogioacchino.delregno@collabora.com
 X-BeenThere: alsa-devel@alsa-project.org
@@ -89,37 +85,33 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Thu, 28 Apr 2022 17:33:53 +0800, Jiaxin Yu wrote:
-> Add document for mt8186 board with mt6366, da7219 and max98357.
-> 
-> Signed-off-by: Jiaxin Yu <jiaxin.yu@mediatek.com>
-> ---
->  .../sound/mt8186-mt6366-da7219-max98357.yaml  | 71 +++++++++++++++++++
->  1 file changed, 71 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/sound/mt8186-mt6366-da7219-max98357.yaml
-> 
 
-My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
-on your patch (DT_CHECKER_FLAGS is new in v5.13):
+--14HuojlumyrWt7WU
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-yamllint warnings/errors:
-./Documentation/devicetree/bindings/sound/mt8186-mt6366-da7219-max98357.yaml:30:9: [warning] wrong indentation: expected 6 but found 8 (indentation)
-./Documentation/devicetree/bindings/sound/mt8186-mt6366-da7219-max98357.yaml:40:9: [warning] wrong indentation: expected 6 but found 8 (indentation)
+On Thu, Apr 28, 2022 at 05:33:37PM +0800, Jiaxin Yu wrote:
+> This series of patches adds support for Mediatek AFE of MT8186 Soc.
+> Patches are based on broonie tree "for-next" branch.
 
-dtschema/dtc warnings/errors:
+This looks mostly good from a framework point of view - I did notice a
+few minor issues which I commented on (some of the control things are
+repeated in other patches) but the overwhelming bulk of the code looks
+good.
 
-doc reference errors (make refcheckdocs):
+--14HuojlumyrWt7WU
+Content-Type: application/pgp-signature; name="signature.asc"
 
-See https://patchwork.ozlabs.org/patch/
+-----BEGIN PGP SIGNATURE-----
 
-This check can fail if there are any dependencies. The base for a patch
-series is generally the most recent rc1.
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmJqhlwACgkQJNaLcl1U
+h9D9DggAg16/opdgBxLyrYeeiZua8OPPegaMglo/X8k1DiCR0BudGSgln13XMg5i
+gmLRcCIr6/gI69T9tIdarki2mOqMhdyZAjZtLsL8crocPPM5/pkuGF9lFg+dEyWa
+Hl3ipVQEKqxgtSSRelBtwZbT6N5tvVNjQkV1R0+376N/jbtS4gUa3wcs6weJhCGz
+7Zo6/8FogQaAG0S/RkqiBRAOfStCbJl+33rN1nASR7mZJHCsu6kefxdHsrtYJKq9
+VqQtzDPI8wfHaMhJ/cFidSWVssQD2Uoyea3/Fk3I5YmHvnM77gIB5taZPeAlKQxh
+9Ofv/WaTnH7gZHg389wqh3jxMnUJmQ==
+=bwgG
+-----END PGP SIGNATURE-----
 
-If you already ran 'make dt_binding_check' and didn't see the above
-error(s), then make sure 'yamllint' is installed and dt-schema is up to
-date:
-
-pip3 install dtschema --upgrade
-
-Please check and re-submit.
-
+--14HuojlumyrWt7WU--
