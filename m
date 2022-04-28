@@ -4,42 +4,75 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 84DC1C433F5
-	for <alsa-devel@archiver.kernel.org>; Thu, 28 Apr 2022 15:40:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id CD2CBC433EF
+	for <alsa-devel@archiver.kernel.org>; Thu, 28 Apr 2022 16:19:45 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0755E15E5;
-	Thu, 28 Apr 2022 17:39:58 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0755E15E5
+	by alsa0.perex.cz (Postfix) with ESMTPS id 03C6015E2;
+	Thu, 28 Apr 2022 18:18:53 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 03C6015E2
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1651160448;
-	bh=5wq4YWbFKGndVvwMl//xoPzqgo0CVZjVC0kEqoMUDIE=;
-	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=BiXQdwtwpVJRnql3sz+XxnVUmvZ1Q1PoajJpuMlJRFJnr1F11pL6QFDD4t9lwAnFy
-	 r0sc/rfHHy35fSQYoKc+/MahOJ5WatQV01XO2UNpgO+PJioZHOTbiS7x3mV1/DPFQw
-	 C0Twn584uSu9/EAZYkyY0Ogg5Yq84KO+LDVprfas=
-Received: from vmi242170.contaboserver.net (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 9AC72F8014E;
-	Thu, 28 Apr 2022 17:39:57 +0200 (CEST)
+	s=default; t=1651162783;
+	bh=m0fm0op/+sjZeNOFYRSXjp/N7NUHqPEtUYgGt0UTFHM=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=NuClealbOjClwmDxy1uQ5ENyU13BH4UtRNPESonSe4jdoBoDMyRQ/y3+cgshRzc09
+	 scaoGL6g1X+xpEo8fzkcWWAzdFzkYhZCJfmJIyMqJienDkiE0BJFT5q8rPPT4qWde8
+	 Bs67LfbtqdRWPen7PLkfWtpi0AHvKhixKjKqE1Kc=
+Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
+	by alsa1.perex.cz (Postfix) with ESMTP id 7DACEF800AE;
+	Thu, 28 Apr 2022 18:18:52 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 0698CF8016E; Thu, 28 Apr 2022 17:39:51 +0200 (CEST)
-Received: from webhooks-bot.alsa-project.org (gate.perex.cz [77.48.224.242])
- by alsa1.perex.cz (Postfix) with ESMTP id 074A4F800AE
- for <alsa-devel@alsa-project.org>; Thu, 28 Apr 2022 17:39:44 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 074A4F800AE
+ id DD23BF800F2; Thu, 28 Apr 2022 18:18:50 +0200 (CEST)
+Received: from ams.source.kernel.org (ams.source.kernel.org
+ [IPv6:2604:1380:4601:e00::1])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 1E512F800F2
+ for <alsa-devel@alsa-project.org>; Thu, 28 Apr 2022 18:18:42 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1E512F800F2
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="ZzZTAoZ6"
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by ams.source.kernel.org (Postfix) with ESMTPS id CECBBB82EA8;
+ Thu, 28 Apr 2022 16:18:41 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A1524C385A0;
+ Thu, 28 Apr 2022 16:18:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1651162720;
+ bh=m0fm0op/+sjZeNOFYRSXjp/N7NUHqPEtUYgGt0UTFHM=;
+ h=From:To:Cc:Subject:Date:From;
+ b=ZzZTAoZ6IauQokRVGBUB3AIhTJ/Wg+1zZvI+lPnuTV07JOYQqx1mxbwCQ9fgMButh
+ DNBa+fvu2azwZBrwtXYwMpNOvb0ec4hmc72FGBWfGpFUmYOMiZoGSthSqxGAf+QvQ6
+ FG6kTEkzIM6xybnltDCvwxVWhAR8zLIOt0Pg7+/KTkLPuNcKB4pFUffDtbQWsvq/Tv
+ 5CPqmkY/IkrVwauifqVBkqfAD4/AXWcfxU8uNd/CmOEcQ6hviv6aloEgMCgJ0I+mZ+
+ TsZBU3x9ZQuC1BvFNQoUJN8UuYBm4LSQ0yyQqk5ha3MKGrhaAAZY9nlpT2PK0QwpIR
+ BSv55hwTIAk8w==
+From: Mark Brown <broonie@kernel.org>
+To: Liam Girdwood <lgirdwood@gmail.com>
+Subject: [PATCH] ASoC: dapm: Don't fold register value changes into
+ notifications
+Date: Thu, 28 Apr 2022 17:18:32 +0100
+Message-Id: <20220428161833.3690050-1-broonie@kernel.org>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-From: GitHub issues - edited <github@alsa-project.org>
-To: alsa-devel@alsa-project.org
-In-Reply-To: <1651160384067101955-webhooks-bot@alsa-project.org>
-References: <1651160384067101955-webhooks-bot@alsa-project.org>
-Subject: Play jitter coming from dshare
-Message-Id: <20220428153951.0698CF8016E@alsa1.perex.cz>
-Date: Thu, 28 Apr 2022 17:39:51 +0200 (CEST)
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1367; h=from:subject;
+ bh=m0fm0op/+sjZeNOFYRSXjp/N7NUHqPEtUYgGt0UTFHM=;
+ b=owEBbQGS/pANAwAKASTWi3JdVIfQAcsmYgBiar45c+VptCWGynyXhpW1Bq4HgMm7PWzgkwcmj/Db
+ Rbe2mbqJATMEAAEKAB0WIQSt5miqZ1cYtZ/in+ok1otyXVSH0AUCYmq+OQAKCRAk1otyXVSH0LZOB/
+ 9MGTRRuKFPPY58sBwoNqflJO59SpRGNJ/fhqGfV/GuJNZcxPgzi8Q61ybPYWZMAcPEVWYOtDEkZUmX
+ 46F8q1/bLfS9QJ2RTFw4YgqHRJ8FpU3sDDWgIqWCVA47SqYdormOprVJ9muRwNoG398R4VULsrfQIR
+ aqgdxBBTz6Uwx0mKmng+qNjB8hlaVs57SvLUFM/jI/Ku32b5SYOQOJSpGk4YJZGOzbNZLwMP2SGizU
+ cMlyUdLt3hWjFkdo/17HyU5dVrh6CtYjFqWh008UzET4Y1pPaRu/dLhzRuB6+PzwjWvwlY6Vb7qMUi
+ e9Bj4yTnHCxh2Ls+y0TQ5nzwFbLgFi
+X-Developer-Key: i=broonie@kernel.org; a=openpgp;
+ fpr=3F2568AAC26998F9E813A1C5C3F436CA30F5D8EB
+Content-Transfer-Encoding: 8bit
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -55,47 +88,42 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-alsa-project/alsa-lib issue #221 was edited from davidboulangerlatour:
+DAPM tracks and reports the value presented to the user from DAPM controls
+separately to the register value, these may diverge during initialisation
+or when an autodisable control is in use.
 
-I have an application which plays a wav file (using dshare) at with a specific period (ie. every 720ms). This always worked well up to recently after upgrading alsa-lib from 1.1.7 to 1.2.4. With 1.2.4, the cycles look like this [750ms, 750ms, 750ms, 625ms], normally it would be [720ms, 720ms, ...].
+When writing DAPM controls we currently report that a change has occurred
+if either the DAPM value or the value stored in the register has changed,
+meaning that if the two are out of sync we may appear to report a spurious
+event to userspace. Since we use this folded in value for nothing other
+than the value reported to userspace simply drop the folding in of the
+register change.
 
-When doing a bisect to find the issue, I found this commit to be the cause:
-```
-7265e603bf880a9ec2cd01c3cf2afbd7709e5af4 is the first bad commit
-commit 7265e603bf880a9ec2cd01c3cf2afbd7709e5af4
-Author: Vanitha Channaiah <vanitha.channaiah@in.bosch.com>
-Date:   Wed May 15 11:56:33 2019 +0530
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/soc-dapm.c | 2 --
+ 1 file changed, 2 deletions(-)
 
-    pcm: dshare: Added "hw_ptr_alignment" option in configuration for alignment of slave pointers
-    
-    This change adapt the fix commit 6b058fda9dce
-    ("pcm: dmix: Add option to allow alignment of slave pointers")
-    for dshare plugin
-    
-    Issue is that snd_pcm_wait() goes back to waiting because the hw_ptr
-    is not period aligned. Therefore snd_pcm_wait() will block for a longer
-    time as required.
-    
-    With these rcar driver changes the exact position of the dma is returned.
-    During snd_pcm_start they read hw_ptr as reference, and this hw_ptr
-    is now not period aligned, and is a little ahead over the period while it
-    is read. Therefore when the avail is calculated during snd_pcm_wait(),
-    it is missing the avail_min by a few frames.
-    
-    An additional option hw_ptr_alignment is provided to dshare configuration,
-    to allow the user to configure the slave application and hw pointer
-    alignment at startup
-    
-    Signed-off-by: Vanitha Channaiah <vanitha.channaiah@in.bosch.com>
-    Signed-off-by: Takashi Iwai <tiwai@suse.de>
+diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
+index ca917a849c42..869c76506b66 100644
+--- a/sound/soc/soc-dapm.c
++++ b/sound/soc/soc-dapm.c
+@@ -3437,7 +3437,6 @@ int snd_soc_dapm_put_volsw(struct snd_kcontrol *kcontrol,
+ 			update.val = val;
+ 			card->update = &update;
+ 		}
+-		change |= reg_change;
+ 
+ 		ret = soc_dapm_mixer_update_power(card, kcontrol, connect,
+ 						  rconnect);
+@@ -3539,7 +3538,6 @@ int snd_soc_dapm_put_enum_double(struct snd_kcontrol *kcontrol,
+ 			update.val = val;
+ 			card->update = &update;
+ 		}
+-		change |= reg_change;
+ 
+ 		ret = soc_dapm_mux_update_power(card, kcontrol, item[0], e);
+ 
+-- 
+2.30.2
 
- src/pcm/pcm_dshare.c | 40 +++++++++++++++++++++++++++++++++++-----
- 1 file changed, 35 insertions(+), 5 deletions(-)
-```
-
-I tried the more recent 1.2.6 with the same issue. I also tried all the "hw_ptr_alignment" options with no success.
-
-cc @VanithaChannaiah @tiwai
-
-Issue URL     : https://github.com/alsa-project/alsa-lib/issues/221
-Repository URL: https://github.com/alsa-project/alsa-lib
