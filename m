@@ -4,82 +4,76 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id CC6C0C433EF
-	for <alsa-devel@archiver.kernel.org>; Fri, 29 Apr 2022 06:00:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3EE01C433F5
+	for <alsa-devel@archiver.kernel.org>; Fri, 29 Apr 2022 06:32:29 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 1E383AE9;
-	Fri, 29 Apr 2022 08:00:07 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1E383AE9
+	by alsa0.perex.cz (Postfix) with ESMTPS id E6A42950;
+	Fri, 29 Apr 2022 08:31:36 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E6A42950
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1651212057;
-	bh=agT/OGbej8JavnKnB1CEWcJgau+bTDrE7NAcsDX59r4=;
-	h=Subject:From:To:Date:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1651213947;
+	bh=gGK7/gBcj48QlxuUQ6aLxtWNQgyWkYr7fybLKh0KD5c=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=JjgQv+5qrMs670xFMzwp+/mDQNZoG3QPF9ig4xZC98Hrb7fyfS7HRSPKyYZbOUIfA
-	 2Z9OzIv272TgEAS5QhkY4OgGEfkULVze/0Xp3+x/0VlR6DbLE0zOlveRH4t7uTbRDI
-	 dUltL7k5Xuqd4Tb0A5fNmTU78jnUjSv/PwgRE93w=
+	b=rgt3Azf5fDcyUOEXwIBoqPJQcWx6+vc++U6cveuj9mMC4ti8IBvsxivqkuTnTlp2E
+	 jlBsT/xIyvJkOEMo43u8k37dZDgig6ZinlMg+GB1MRX+/4r2eVEJW0S5Nph2OEzTPa
+	 SENlC77eR4pXpguQQnKB2eQcPESFev+LegEzhi5k=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 7840EF80237;
-	Fri, 29 Apr 2022 08:00:06 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 7B2F2F8025D;
+	Fri, 29 Apr 2022 08:31:36 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 8D9FDF8025D; Fri, 29 Apr 2022 08:00:04 +0200 (CEST)
-Received: from mailgw02.mediatek.com (unknown [210.61.82.184])
+ id AC038F8007E; Fri, 29 Apr 2022 08:31:34 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org
+ [IPv6:2604:1380:4641:c500::1])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 5342BF8007E
+ for <alsa-devel@alsa-project.org>; Fri, 29 Apr 2022 08:31:29 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5342BF8007E
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="MbmY5wfp"
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id B6A88F8007E
- for <alsa-devel@alsa-project.org>; Fri, 29 Apr 2022 07:59:55 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B6A88F8007E
-X-UUID: bd6b44fac70b4733bbe0d11853d89fcf-20220429
-X-CID-P-RULE: Release_Ham
-X-CID-O-INFO: VERSION:1.1.4, REQID:6e9475b7-ebc5-477c-ac85-c26332b349d9, OB:0,
- LO
- B:0,IP:0,URL:0,TC:0,Content:-20,EDM:0,RT:0,SF:51,FILE:0,RULE:Release_Ham,A
- CTION:release,TS:31
-X-CID-INFO: VERSION:1.1.4, REQID:6e9475b7-ebc5-477c-ac85-c26332b349d9, OB:0,
- LOB:
- 0,IP:0,URL:0,TC:0,Content:-20,EDM:0,RT:0,SF:51,FILE:0,RULE:Release_Ham,ACT
- ION:release,TS:31
-X-CID-META: VersionHash:faefae9, CLOUDID:3fd5232f-6199-437e-8ab4-9920b4bc5b76,
- C
- OID:6ec4fd23a083,Recheck:0,SF:28|17|19|48,TC:nil,Content:0,EDM:-3,File:nil
- ,QS:0,BEC:nil
-X-UUID: bd6b44fac70b4733bbe0d11853d89fcf-20220429
-Received: from mtkcas10.mediatek.inc [(172.21.101.39)] by mailgw02.mediatek.com
- (envelope-from <yc.hung@mediatek.com>)
- (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
- with ESMTP id 1785308049; Fri, 29 Apr 2022 13:59:47 +0800
-Received: from mtkmbs07n1.mediatek.inc (172.21.101.16) by
- mtkmbs10n1.mediatek.inc (172.21.101.34) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- 15.2.792.15; Fri, 29 Apr 2022 13:59:46 +0800
-Received: from mtkcas10.mediatek.inc (172.21.101.39) by
- mtkmbs07n1.mediatek.inc (172.21.101.16) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Fri, 29 Apr 2022 13:59:46 +0800
-Received: from mtksdccf07 (172.21.84.99) by mtkcas10.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Fri, 29 Apr 2022 13:59:45 +0800
-Message-ID: <9965188904de2e89bc5390fa6c71d9fb243f9d12.camel@mediatek.com>
-Subject: Re: [PATCH v4] dt-bindings: dsp: mediatek: add mt8195 dsp document
-From: YC Hung <yc.hung@mediatek.com>
-To: Matthias Brugger <matthias.bgg@gmail.com>, Rob Herring <robh@kernel.org>
-Date: Fri, 29 Apr 2022 13:59:46 +0800
-In-Reply-To: <68895a40-559b-13ce-d433-f9b32c648323@gmail.com>
-References: <20220106064847.15588-1-yc.hung@mediatek.com>
- <Yd4yNkeGlzdULNlv@robh.at.kernel.org>
- <68895a40-559b-13ce-d433-f9b32c648323@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
+ by dfw.source.kernel.org (Postfix) with ESMTPS id B1CBF61D94;
+ Fri, 29 Apr 2022 06:31:27 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 21056C385AF;
+ Fri, 29 Apr 2022 06:31:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1651213887;
+ bh=gGK7/gBcj48QlxuUQ6aLxtWNQgyWkYr7fybLKh0KD5c=;
+ h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+ b=MbmY5wfpkIXYzVOY7GrWXGECIEPh4shZM0RuPaXg/0Pj3b62Ok4OxUHJfO1disdc6
+ v/aNccc7zhdMTWUjzv5GKqeWAEITIiynZ6Aq6cIGLE+EBCAx5+L476WZThSPpLXa6t
+ 93I/1eyw5mATjnSM7HXiPsJTeYs7BRTIDy+YKdEK0lfz70yTYjYuZudGITkfd12rPj
+ 4lgICGJ6SnFQQabh9SmD4Y5XX1+q+ES4gWn9BshAcmn1NlMVOiDEhdEBaY1ksWxClF
+ c+WWMHte6ENzDZX0deLkyoqvooI1c0bqPgRHYQWbVS/NqRZTJerGzZEl3CfpyzrvSW
+ g26ODSGzqn1EA==
+Received: from mchehab by mail.kernel.org with local (Exim 4.94.2)
+ (envelope-from <mchehab@kernel.org>)
+ id 1nkK9z-001Qml-NN; Fri, 29 Apr 2022 07:31:23 +0100
+From: Mauro Carvalho Chehab <mchehab@kernel.org>
+To: Luis Chamberlain <mcgrof@kernel.org>
+Subject: [PATCH 2/2] ALSA: hda - identify when audio is provided by a video
+ driver
+Date: Fri, 29 Apr 2022 07:31:16 +0100
+Message-Id: <5c3a968858a05c27e299eadf2a925d4aa91ac17a.1651212016.git.mchehab@kernel.org>
+X-Mailer: git-send-email 2.35.1
+In-Reply-To: <cover.1651212016.git.mchehab@kernel.org>
+References: <cover.1651212016.git.mchehab@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-MTK: N
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
- allen-kh.cheng@mediatek.com, cezary.rojewski@intel.com, tiwai@suse.com,
- robh+dt@kernel.org, linux-kernel@vger.kernel.org, broonie@kernel.org,
- linux-mediatek@lists.infradead.org, trevor.wu@mediatek.com,
- daniel.baluta@nxp.com, linux-arm-kernel@lists.infradead.org
+Content-Transfer-Encoding: 8bit
+Cc: alsa-devel@alsa-project.org, Kai Vehmanen <kai.vehmanen@intel.com>,
+ linux-kernel@vger.kernel.org, intel-gfx@lists.freedesktop.org,
+ Lucas De Marchi <lucas.demarchi@intel.com>, Takashi Iwai <tiwai@suse.com>,
+ dri-devel@lists.freedesktop.org, David Airlie <airlied@linux.ie>,
+ mauro.chehab@intel.com, Daniel Vetter <daniel@ffwll.ch>,
+ Mauro Carvalho Chehab <mchehab@kernel.org>,
+ Pierre-Louis Bossart <pierre-louis.bossart@intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -95,53 +89,48 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Hi Mattias/Rob,
+On some devices, the hda driver needs to hook into a video driver,
+in order to be able to properly access the audio hardware and/or
+the power management function.
 
-Sorry I miss this mail.
-Could you please help to check this patch? Thanks.
+That's the case of several snd_hda_intel devices that depends on
+i915 driver.
 
-On Fri, 2022-01-14 at 13:56 +0100, Matthias Brugger wrote:
-> 
-> On 12/01/2022 02:43, Rob Herring wrote:
-> > On Thu, 06 Jan 2022 14:48:48 +0800, YC Hung wrote:
-> > > From: "YC Hung" <yc.hung@mediatek.com>
-> > > 
-> > > This patch adds mt8195 dsp document. The dsp is used for Sound
-> > > Open
-> > > Firmware driver node. It includes registers,  clocks, memory
-> > > regions,
-> > > and mailbox for dsp.
-> > > 
-> > > Signed-off-by: yc.hung <yc.hung@mediatek.com>
-> > > ---
-> > > Changes since v3:
-> > >    Fix patch v3 error : v3 only provide difference between v3 and
-> > > v2.
-> > > 
-> > > Changes since v2:
-> > >    Remove useless watchdog interrupt.
-> > >    Add commit message more detail description.
-> > > 
-> > > Changes since v1:
-> > >    Rename yaml file name as mediatek,mt8195-dsp.yaml
-> > >    Refine descriptions for mailbox, memory-region and drop unused
-> > > labels
-> > >    in examples.
-> > > ---
-> > >   .../bindings/dsp/mediatek,mt8195-dsp.yaml     | 105
-> > > ++++++++++++++++++
-> > >   1 file changed, 105 insertions(+)
-> > >   create mode 100644
-> > > Documentation/devicetree/bindings/dsp/mediatek,mt8195-dsp.yaml
-> > > 
-> > 
-> > Reviewed-by: Rob Herring <robh@kernel.org>
-> > 
-> 
-> Rob, it seems we don't have a maintainer for this bindings. Shall I
-> as MediaTek 
-> SoC maintainer take them through my branch?
-> 
-> Regards,
-> Matthias
+Currently, this dependency is hidden from /proc/modules and
+from lsmod, making harder to identify the need to unbind the
+audio driver before being able to unbind the i915 driver.
+
+Add a reference for it at the module dependency, in order to
+allow userspace to identify it, and print a message on such
+cases.
+
+Signed-off-by: Mauro Carvalho Chehab <mchehab@kernel.org>
+---
+
+See [PATCH 0/2] at: https://lore.kernel.org/all/cover.1651212016.git.mchehab@kernel.org/
+
+ sound/hda/hdac_component.c | 8 ++++++++
+ 1 file changed, 8 insertions(+)
+
+diff --git a/sound/hda/hdac_component.c b/sound/hda/hdac_component.c
+index bb37e7e0bd79..103c6be8be1e 100644
+--- a/sound/hda/hdac_component.c
++++ b/sound/hda/hdac_component.c
+@@ -211,6 +211,14 @@ static int hdac_component_master_bind(struct device *dev)
+ 	}
+ 
+ 	complete_all(&acomp->master_bind_complete);
++
++	if (acomp->ops->owner && acomp->ops->owner->name) {
++		dev_info(dev, "audio component provided by %s driver\n",
++			 acomp->ops->owner->name);
++		module_add_named_dependency(acomp->ops->owner->name,
++					    dev->driver->owner);
++	}
++
+ 	return 0;
+ 
+  module_put:
+-- 
+2.35.1
 
