@@ -4,87 +4,86 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 66E61C433F5
-	for <alsa-devel@archiver.kernel.org>; Fri, 29 Apr 2022 22:05:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3D7AAC433EF
+	for <alsa-devel@archiver.kernel.org>; Fri, 29 Apr 2022 22:33:24 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A97BC1636;
-	Sat, 30 Apr 2022 00:04:50 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A97BC1636
+	by alsa0.perex.cz (Postfix) with ESMTPS id B175E15E5;
+	Sat, 30 Apr 2022 00:32:32 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B175E15E5
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1651269940;
-	bh=xp7C7UTpuk8jvqSzOKV3HirmLKsptC8a3kv9Tt+qSbQ=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1651271602;
+	bh=rGH3Pvi/KIWEpsjsI+/ZO+5t3JFvoUTpEYhNnVTMsRE=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=VMjiaC0gX4Pn8dgs9lM0TDx1T7Pin6B30cgWs5t5k8FrINv+GNrRzl9T+xFBo2L4i
-	 3goch4Tyu1e3bGxAjAbKGzFo6Vo6IdvxXuAGU9AbYTKHZstmp+CxzNmW8F8hT7vQf8
-	 pBly3aR8lUnjmZgZYj+fXSx8C2JyyMck7kqEWAvs=
+	b=aBrAaQSnEBZDjmAIo5v/4wKmcjFeVh/HkUtu9Sk0LcHyZrinDaZwBJ5VmvXkSDoEZ
+	 WmWO5ZUEvUueTG2Cy9SycOjdkZV7o2pr0snWjLFjp7zoYCX/pvCntQL1kQjq5TkRRZ
+	 NtEGXaJIp1QnO2BhI7q7BwnWi0T4GBw7GK953msg=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 2CDB7F80508;
-	Sat, 30 Apr 2022 00:04:04 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2F488F80237;
+	Sat, 30 Apr 2022 00:32:32 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id F303EF804A9; Sat, 30 Apr 2022 00:04:01 +0200 (CEST)
-Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com
- [IPv6:2a00:1450:4864:20::32d])
+ id 555F4F8025D; Sat, 30 Apr 2022 00:32:30 +0200 (CEST)
+Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com
+ [IPv6:2a00:1450:4864:20::62a])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 602FDF8016E
- for <alsa-devel@alsa-project.org>; Sat, 30 Apr 2022 00:03:54 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 602FDF8016E
+ by alsa1.perex.cz (Postfix) with ESMTPS id 7B01EF8012B
+ for <alsa-devel@alsa-project.org>; Sat, 30 Apr 2022 00:32:22 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7B01EF8012B
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org
- header.b="f8f/c/cT"
-Received: by mail-wm1-x32d.google.com with SMTP id
- bi24-20020a05600c3d9800b00393ff664705so5455565wmb.4
- for <alsa-devel@alsa-project.org>; Fri, 29 Apr 2022 15:03:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
- h=from:to:cc:subject:date:message-id:in-reply-to:references
- :mime-version:content-transfer-encoding;
- bh=2mHHs9RiQ0Cwt9nao+8sO16iLMStFW4oWbdufcxBAas=;
- b=f8f/c/cTt3LssA9qXtjrOXFQPPavMOVTGZzpLcbXhurIAQzfWMJoP3GCLGl0ZMonWM
- eV/vF62G+AYpTnkUY9OO93Vj2WXHdG200uV5F2iwpR/aH4FHQEw1peimC2U55a6hkI+E
- m8Vf4wiQ9wE06sG/+b9X+82stcqLaMIWac0hauq9j4E5kSwhUdInDaieIB0f2inIelJg
- tMbDepMlC1zBlf09k6orCogIpEYFkzg51S31VaJ8GTFCa/VQ7KkKuyftLaqDtwp2UFiy
- GzfW95tvh3wQ2liE4YD6ZSsetNNl77It0r15PPtxV0fz6ikkACMzhx8EoYKeZKZ6rOSw
- TbcA==
+ dkim=pass (2048-bit key) header.d=google.com header.i=@google.com
+ header.b="jtVIQhgW"
+Received: by mail-ej1-x62a.google.com with SMTP id bv19so17918533ejb.6
+ for <alsa-devel@alsa-project.org>; Fri, 29 Apr 2022 15:32:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=20210112;
+ h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+ :cc:content-transfer-encoding;
+ bh=rGH3Pvi/KIWEpsjsI+/ZO+5t3JFvoUTpEYhNnVTMsRE=;
+ b=jtVIQhgWNsRWUh3/qtfL8wvxrQSkYCxocgF3pVxPmbuTQlO1FU1zSwTusUya4w9pCr
+ Q+V71XWvVz8ays0WLjMt0UhoSljKeEOpWkt9YWVx0RDSEebt1lQhc6YeYhd0rY8VKJ8S
+ H8QziKjwqpVj28oGA9d7BjLoEhzg/hROUT27YWddOL0KZMqH9tGw52KEqqT9Fm0+RcCU
+ gFF18vwf2jQOa5wNR0is3BvSkIevHbjLUQ0uGKhvlmoeRjsbbIMMeXGmxdoQU71avLLC
+ DPHsiUfzbm3T4VlouiYe1DX+ScFxWSr1NAOegQk4LDg1Zxk/URtvRLNED2W1y8XcPRc3
+ 0/pA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
- h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
- :references:mime-version:content-transfer-encoding;
- bh=2mHHs9RiQ0Cwt9nao+8sO16iLMStFW4oWbdufcxBAas=;
- b=3Xgrk54IBEjwFqPjnp7VN7Sz5IFajF+xs33Gb8uG52luASfMu4Hf2mZ6mb5zfSRm59
- DQkOjt/zRZnqvxbxawCqRsxlasNyHNZyZfJKM7kdMByDFz1e9EJJ5wHEx/0DD5IQBiS5
- FaQaQZz2ajQHbkON842Cvkug8VaitwRCo1YIhR/dZg/3WzNKLFh9WLDxKhM8mKjwPimV
- XETM4gN5sq/fNPYR9rQbjJCcUuKsf/oy6mGzP2hTM0QthEAStQA3sqGCPSlFOYMCayFD
- FtrDCm1WrWr2gu2J9Qmq1rAgp079Sz4IQLcVSQL0D0rn3FvHhWeomq67TKAoFqB7h5eP
- HZyg==
-X-Gm-Message-State: AOAM533FL9Z+DsZoa90SSdIiyzkduf9gGpLHwwZg3sGJKIT7kGoCtsVc
- Llm+r+vSD4pL4/onfe7Z/S5H9Q==
-X-Google-Smtp-Source: ABdhPJx10OSweAWnFAfVBF8dE47IPSunHd4vm9HIlx8cMrsY5ylg8dBwo2QKcmir6edFrtpmwqXphQ==
-X-Received: by 2002:a05:600c:3503:b0:38f:fbd7:1f0d with SMTP id
- h3-20020a05600c350300b0038ffbd71f0dmr857994wmq.170.1651269833182; 
- Fri, 29 Apr 2022 15:03:53 -0700 (PDT)
-Received: from sagittarius-a.chello.ie (188-141-3-169.dynamic.upc.ie.
- [188.141.3.169]) by smtp.gmail.com with ESMTPSA id
- k15-20020adfc70f000000b0020c5253d90dsm338311wrg.89.2022.04.29.15.03.52
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Fri, 29 Apr 2022 15:03:52 -0700 (PDT)
-From: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
-To: srinivas.kandagatla@linaro.org, bjorn.andersson@linaro.org,
- robh+dt@kernel.org, krzk+dt@kernel.org
-Subject: [PATCH v3 1/2] ASoC: qcom: lpass: Fix apq8016 compat string to match
- yaml
-Date: Fri, 29 Apr 2022 23:03:48 +0100
-Message-Id: <20220429220349.1142759-2-bryan.odonoghue@linaro.org>
-X-Mailer: git-send-email 2.35.1
-In-Reply-To: <20220429220349.1142759-1-bryan.odonoghue@linaro.org>
-References: <20220429220349.1142759-1-bryan.odonoghue@linaro.org>
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc:content-transfer-encoding;
+ bh=rGH3Pvi/KIWEpsjsI+/ZO+5t3JFvoUTpEYhNnVTMsRE=;
+ b=uFybm96GM2u5lQIo4mByVp9Rts/5TZ8X5aS8FZiAhbg0P9MPXPQ/pxsn43RFBPG2A3
+ gs0bWgeyQ5qrCjo64Y9eFTx5T2FcCbo+7Gxmi6CgMRqSk+eu/CjjLSB/fgvmWdhpRDa3
+ a/DX3E2KSA4HUV2DBSn9cSV08JMICAT4jewwPXzwjKKJsXqiZnxlWucPV4OOWXKvmYJ6
+ vkiuc79ziqvtjZCUQ12u7c3a/JW4qVUqpOFZriU86b6eC5e6blaa97dk96g0IBB0o3a5
+ 8b3KMizIOo2GBvukApMwH6GYOFvx1rvGTdm3kE3YZ7LTBRvEEaD2OGk4UwxU6wWIThCk
+ pgnw==
+X-Gm-Message-State: AOAM533qmft+miJKMEnFPi6kxT/xQeitlBof0Z76lr//Pq9KEDnZ4QNQ
+ 7FLqKjYrbc1NPnRxMOQHIGTf3+epX3/Sf7OyRG95HQ==
+X-Google-Smtp-Source: ABdhPJwDvoRFJ0H4kYZv8n0cS8wPzrUFZKpcn3CBoM3Z2/WI9Fmk0xUhE3xQsl6wsPHaNqcgdBPdfXonHopDsj4LEJ0=
+X-Received: by 2002:a17:907:9690:b0:6f3:bf14:4c68 with SMTP id
+ hd16-20020a170907969000b006f3bf144c68mr1366366ejc.584.1651271540776; Fri, 29
+ Apr 2022 15:32:20 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: linux-arm-msm@vger.kernel.org, alsa-devel@alsa-project.org,
- bryan.odonoghue@linaro.org, devicetree@vger.kernel.org
+References: <d9c3fed4-de6a-2cd8-acb6-7f3d2ad46b70@linux.intel.com>
+In-Reply-To: <d9c3fed4-de6a-2cd8-acb6-7f3d2ad46b70@linux.intel.com>
+From: Curtis Malainey <cujomalainey@google.com>
+Date: Fri, 29 Apr 2022 15:32:09 -0700
+Message-ID: <CAOReqxg9Y0_S5jqati4O+GT0C_yR7agBZYK79O996MQAk3HmDQ@mail.gmail.com>
+Subject: Re: ASoC component/card relationship
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>,
+ Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+ Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+ =?UTF-8?Q?P=C3=A9ter_Ujfalusi?= <peter.ujfalusi@linux.intel.com>,
+ Cezary Rojewski <cezary.rojewski@intel.com>, Takashi Iwai <tiwai@suse.com>,
+ Liam Girdwood <liam.r.girdwood@linux.intel.com>,
+ Mark Brown <broonie@kernel.org>,
+ =?UTF-8?B?QW1hZGV1c3ogU8WCYXdpxYRza2k=?= <amadeuszx.slawinski@linux.intel.com>,
+ Bard Liao <yung-chuan.liao@linux.intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -100,48 +99,65 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The documented yaml compat string for the apq8016 is
-"qcom,apq8016-lpass-cpu" not "qcom,lpass-cpu-apq8016". Looking at the other
-lpass compat strings the general form is "qcom,socnum-lpass-cpu".
+On Fri, Apr 29, 2022 at 2:55 PM Pierre-Louis Bossart
+<pierre-louis.bossart@linux.intel.com> wrote:
+>
+> Hi,
+> In the existing ASoC code, there is a fixed mapping between ASoC card and=
+ component. A component relies on a ->card pointer that is set during the p=
+robe. A component cannot be used by or "bound to" more than one card [1]
+>
+> This has interesting impacts on how a codec or DSP driver need to be impl=
+emented.
+>
+> In the AVS series posted this week, multiple components are registered by=
+ the DSP driver, following an interface-based split. There's in addition a =
+second-level split, where the logic is pushed further: the DSP driver parti=
+tions the SSP DAIs in different set of 'dai_driver's used by different comp=
+onents, which are in turn used by different cards. What is done in these pa=
+tches is not wrong, and is probably the only solution to support a real-wor=
+ld platform with the existing ASoC code, but are the framework assumptions =
+correct? In this example, the board-level information on which interface is=
+ used for what functionality trickles down to the lowest level of the DSP d=
+river implementation.
+>
+> I believe this breaks to some extent the 'clean' split between platform a=
+nd machine driver(s), and it's not quite aligned with the usual notion of r=
+egister/probe used across frameworks, be it for drivers/clocks/you name it.
+>
+> A similar case could happen in a codec driver, if independent functionali=
+ty such as headset and amplifier support was exposed by separate cards, tha=
+t would in turn mandate that the codec driver exposed N components, each ha=
+ndling different functionality but the same type of DAI.
+>
+> An alternative approach would be that the DSP driver exposes all the poss=
+ible DAIs that can be used, and the binding is refined to allow for more fl=
+exibility. I think it's really the individual DAI that cannot be used by mo=
+re than one card.
 
-We need to fix both the driver and dts to match.
+Would it also be logical to expose the DAIs on the codecs
+independently or should this be validated on a case by case basis?
 
-Fixes: dc1ebd1811e9 ("ASoC: qcom: Add apq8016 lpass driver support")
-Reviewed-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Signed-off-by: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
----
- sound/soc/qcom/lpass-apq8016.c | 1 +
- sound/soc/qcom/lpass-cpu.c     | 5 +++++
- 2 files changed, 6 insertions(+)
+>
+> I figured I would ask on this mailing list if
+>
+> a) I am not mistaken on the component/card relationship and
+>
 
-diff --git a/sound/soc/qcom/lpass-apq8016.c b/sound/soc/qcom/lpass-apq8016.c
-index 3efa133d1c64..abaf694ee9a3 100644
---- a/sound/soc/qcom/lpass-apq8016.c
-+++ b/sound/soc/qcom/lpass-apq8016.c
-@@ -293,6 +293,7 @@ static struct lpass_variant apq8016_data = {
- 
- static const struct of_device_id apq8016_lpass_cpu_device_id[] __maybe_unused = {
- 	{ .compatible = "qcom,lpass-cpu-apq8016", .data = &apq8016_data },
-+	{ .compatible = "qcom,apq8016-lpass-cpu", .data = &apq8016_data },
- 	{}
- };
- MODULE_DEVICE_TABLE(of, apq8016_lpass_cpu_device_id);
-diff --git a/sound/soc/qcom/lpass-cpu.c b/sound/soc/qcom/lpass-cpu.c
-index e6846ad2b5fa..53f9bf6581d3 100644
---- a/sound/soc/qcom/lpass-cpu.c
-+++ b/sound/soc/qcom/lpass-cpu.c
-@@ -1102,6 +1102,11 @@ int asoc_qcom_lpass_cpu_platform_probe(struct platform_device *pdev)
- 	if (!match || !match->data)
- 		return -EINVAL;
- 
-+	if (of_device_is_compatible(dev->of_node, "qcom,lpass-cpu-apq8016")) {
-+		dev_warn(dev, "%s compatible is deprecated\n",
-+			 match->compatible);
-+	}
-+
- 	drvdata->variant = (struct lpass_variant *)match->data;
- 	variant = drvdata->variant;
- 
--- 
-2.35.1
+Just trying to think of a reason why this would not be true. Are we
+aware of platforms that have configuration relationships across DAIs?
+E.g. they use a single clock and must be configured together, so
+splitting them might cause them to be in sync? Otherwise I agree, if
+DAIs can be handled independently then I don't see why we should tie
+them together.
 
+Curtis
+
+> b) if this is by design, or if we want to clarify what a component is and=
+ what its restrictions might be.
+>
+> Thanks for your feedback/comments
+> -Pierre
+>
+> [1] https://elixir.bootlin.com/linux/latest/source/sound/soc/soc-core.c#L=
+1364
