@@ -4,76 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 552ABC433F5
-	for <alsa-devel@archiver.kernel.org>; Fri, 29 Apr 2022 13:20:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D6957C433F5
+	for <alsa-devel@archiver.kernel.org>; Fri, 29 Apr 2022 13:40:29 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id BD26D20C;
-	Fri, 29 Apr 2022 15:19:55 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BD26D20C
+	by alsa0.perex.cz (Postfix) with ESMTPS id 9014C9F6;
+	Fri, 29 Apr 2022 15:39:37 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9014C9F6
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1651238445;
-	bh=19u80WrRYBrn0euhR5t2IahZXsXYVRXAnPVdCH6q/OA=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	s=default; t=1651239627;
+	bh=oTA/bLA09vyo7gZftSiBJgvnmnzNeALY3BscTIa+ohw=;
+	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=vdHzpj4K6X4bBIkNFCVzxsUv9nXlzjxhI8l9vS98dPMwyXdnts/mrHBR595E7leCt
-	 o5GyWULFtgALiK7nfloCUlKT/7lZQNqLakrNvIGslVIx1/FmeNtdL3dEFEZQTcHOFH
-	 1ndRZj32qdco6rgxcWUXhzQyJCbz68wvtiMytV2s=
+	b=eG5/KDIS24eX4tC+/CwQF7g6doMz6NUqBUXV3MNQKtQfeoA5yhZyLDqMGHOS0p1LG
+	 C11cjOiRUP5y9VwH2D1TFJC6hUBOhWR52bSyC3xJcP/OigoW78DPMAe+PEyF6qBB17
+	 b3jhXemvyZxfp+BtIt8syj1c4vech86l3zx6app0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 47D6DF80237;
-	Fri, 29 Apr 2022 15:19:55 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 1BDDCF802E3;
+	Fri, 29 Apr 2022 15:39:36 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id D978FF8025D; Fri, 29 Apr 2022 15:19:53 +0200 (CEST)
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+ id A3276F80237; Fri, 29 Apr 2022 15:39:33 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org
+ [IPv6:2604:1380:4641:c500::1])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 7F944F8012B
- for <alsa-devel@alsa-project.org>; Fri, 29 Apr 2022 15:19:51 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7F944F8012B
+ by alsa1.perex.cz (Postfix) with ESMTPS id 607CCF80237
+ for <alsa-devel@alsa-project.org>; Fri, 29 Apr 2022 15:39:30 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 607CCF80237
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="uzp9dNrw"
+ header.b="g2iWwYLh"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by ams.source.kernel.org (Postfix) with ESMTPS id C2269B8346D;
- Fri, 29 Apr 2022 13:19:50 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id ABB19C385AC;
- Fri, 29 Apr 2022 13:19:46 +0000 (UTC)
+ by dfw.source.kernel.org (Postfix) with ESMTPS id 6EE22622E0;
+ Fri, 29 Apr 2022 13:39:28 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 45615C385B0;
+ Fri, 29 Apr 2022 13:39:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1651238389;
- bh=19u80WrRYBrn0euhR5t2IahZXsXYVRXAnPVdCH6q/OA=;
- h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=uzp9dNrw1fq7kaRwzsuipBWIEcIQrGCJXYGUQ+EJvcUn1wqUYdAMvlbx+LuUGhAKn
- 8xd69n0H8JX0CPgb6WjcW1q7XAfUofjuWy9WQ+fQO4NnJ5mRBJAAknOmVRLDPzOHCS
- OS+7RFvMnFVE+xOeV77jBorf1wah47euXafGH6skPCZhCuZrgiFz/g+Lbv5N9ZTIMu
- b5T8hbIzNmL26tDus1GewZO5h9kWYbB+tHrfcBxxkKFQIM3IS7wJgdMb+XHDJ/Xvn2
- 3jABx64hHlDYm6X8MbIoOTloGjf005gkwoSMRILhEkLYoCmCClXJdky2dowXC2lUUk
- AT0KiiAs5SSzg==
-Date: Fri, 29 Apr 2022 14:19:43 +0100
+ s=k20201202; t=1651239567;
+ bh=oTA/bLA09vyo7gZftSiBJgvnmnzNeALY3BscTIa+ohw=;
+ h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+ b=g2iWwYLhZMqK/AT1qsnItdAbEkyJvxxyoA3K1GYJrA+o76kDlvN915Ls+oqDkF2wY
+ +KgnKeJ19klqffLx7drnPNtUY2WqKbuwB4pK2wVy/r6R7dRbai8ZiOvEfxHm4tN5Rk
+ Oem4Myu40JQW8wpp4vxU0/dH1bRvwPpRu+rWXj2k73S32TqGYx5ym21swq9VIV9O7X
+ 7RdRDvp6BreO7NYw2BVovviIQdCwbOkuXqHqtZMkM7FlXNr47pKiTFBKyWAjwEA9Rw
+ rFsLLEI3hAx5QtZh/vioFxmvYOjKIoELdAUymfRr1RcCFAopZVJMm5fd2zXfWP5h1e
+ yXEbTShKn7FiA==
 From: Mark Brown <broonie@kernel.org>
-To: Matthias Brugger <matthias.bgg@gmail.com>
-Subject: Re: [PATCH v4] dt-bindings: dsp: mediatek: add mt8195 dsp document
-Message-ID: <Ymvl7x9NTJor/vfx@sirena.org.uk>
-References: <20220106064847.15588-1-yc.hung@mediatek.com>
- <Yd4yNkeGlzdULNlv@robh.at.kernel.org>
- <68895a40-559b-13ce-d433-f9b32c648323@gmail.com>
- <9965188904de2e89bc5390fa6c71d9fb243f9d12.camel@mediatek.com>
- <cf9b425e-84ff-af12-72a7-4056b8cbf90d@gmail.com>
+To: lgirdwood@gmail.com, katsuhiro@katsuster.net, frattaroli.nicolas@gmail.com,
+ perex@perex.cz, tiwai@suse.com
+In-Reply-To: <20220427172310.138638-1-frattaroli.nicolas@gmail.com>
+References: <20220427172310.138638-1-frattaroli.nicolas@gmail.com>
+Subject: Re: [PATCH] ASoC: rk3328: fix disabling mclk on pclk probe failure
+Message-Id: <165123956599.69278.1250997560637769759.b4-ty@kernel.org>
+Date: Fri, 29 Apr 2022 14:39:25 +0100
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature"; boundary="qbtHrth/VF0HNcN8"
-Content-Disposition: inline
-In-Reply-To: <cf9b425e-84ff-af12-72a7-4056b8cbf90d@gmail.com>
-X-Cookie: Are you still an ALCOHOLIC?
-Cc: Rob Herring <robh@kernel.org>, alsa-devel@alsa-project.org,
- allen-kh.cheng@mediatek.com, devicetree@vger.kernel.org,
- cezary.rojewski@intel.com, tiwai@suse.com, linux-kernel@vger.kernel.org,
- robh+dt@kernel.org, linux-mediatek@lists.infradead.org, trevor.wu@mediatek.com,
- YC Hung <yc.hung@mediatek.com>, daniel.baluta@nxp.com,
- linux-arm-kernel@lists.infradead.org
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+Cc: linux-rockchip@lists.infradead.org, alsa-devel@alsa-project.org,
+ linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -89,43 +81,37 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+On Wed, 27 Apr 2022 19:23:11 +0200, Nicolas Frattaroli wrote:
+> If preparing/enabling the pclk fails, the probe function should
+> unprepare and disable the previously prepared and enabled mclk,
+> which it doesn't do. This commit rectifies this.
+> 
+> 
 
---qbtHrth/VF0HNcN8
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Applied to
 
-On Fri, Apr 29, 2022 at 02:57:12PM +0200, Matthias Brugger wrote:
-> On 29/04/2022 07:59, YC Hung wrote:
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
 
-> > Sorry I miss this mail.
-> > Could you please help to check this patch? Thanks.
+Thanks!
 
-> Rob gave his reviewed-by. I just saw that the driver maintainer is Mark, so
-> I expect him to take the patch through his tree. Didn't realized this
-> beforehand.
+[1/1] ASoC: rk3328: fix disabling mclk on pclk probe failure
+      commit: dd508e324cdde1c06ace08a8143fa50333a90703
 
-TBH I'd missed this since there was nothing in the subject line that
-drew my attention to it.  Seen it now though.
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
 
-Please submit patches using subject lines reflecting the style for the
-subsystem, this makes it easier for people to identify relevant patches.
-Look at what existing commits in the area you're changing are doing and
-make sure your subject lines visually resemble what they're doing.
-There's no need to resubmit to fix this alone.
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
---qbtHrth/VF0HNcN8
-Content-Type: application/pgp-signature; name="signature.asc"
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
------BEGIN PGP SIGNATURE-----
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmJr5e4ACgkQJNaLcl1U
-h9B6jQf/dW9MqjjZQdTkinE+KFUJIRcK4SQ+e5QvdyqXMZ17f40lR3vhJ4Xo1NME
-uNZx34lYDN8jy1PAvJa8HlyqyL0nVzOuxN7qjRuMr/uBlg/qhLEYFUcaxZXXc/wR
-aGaaF3csCsN0+n/CMwkWP/my21AyyzhXfu8ygvhEVqhdJhetwOtYNfOB/aIHOId7
-oszASoq1Jvbpvz7CRKq/Vqqk8O9ASXDpvSERh6iWSkWH4ShJMteoAipC4MndSgSI
-rc0LLIZ2+wq+MAdE5KoqccPfGnx2UsJ9+6MzcYc7SbpRx/LirYjr5THGGkLWS/m3
-kqvXdGrUS8RZNjj07qJ/cqGj8a/mOw==
-=Hfdr
------END PGP SIGNATURE-----
-
---qbtHrth/VF0HNcN8--
+Thanks,
+Mark
