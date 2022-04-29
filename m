@@ -4,72 +4,87 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3A8E2C433EF
-	for <alsa-devel@archiver.kernel.org>; Fri, 29 Apr 2022 06:33:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1C463C433EF
+	for <alsa-devel@archiver.kernel.org>; Fri, 29 Apr 2022 08:48:25 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 4B73115C1;
-	Fri, 29 Apr 2022 08:32:09 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4B73115C1
+	by alsa0.perex.cz (Postfix) with ESMTPS id 35C04825;
+	Fri, 29 Apr 2022 10:47:33 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 35C04825
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1651213979;
-	bh=1qTI2+ULn9S33eUs/y9vp+7qFR3kaOf7jmVnCV4QTU0=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=PVhpJR4qOtdxa3BQgsq77Vs4bPxneTrUA/jGzt9XbrpEL/1vqrzpngxNL3TDwjHsc
-	 KqTrmF+7zfj2lmI37hGKceJnmcJrWCt5WWRvTDJsVvuynhhfhypbP1m4gC4OS/kC25
-	 PjbNtBx8T+hRzY/fokqtdh5TR7grpAuhy8kE/TlQ=
+	s=default; t=1651222103;
+	bh=yn70nK+WS+IAOTHF+SA05wSEuk6p4NwE6hE77E+hcGc=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=g8dvNQLMssjJCvuP6S25rsqcqrO0gxcNbB5R4JsR38Zf4sIsBr5BGNbiGTosGC06d
+	 MREkcSZn1Hn7ov72RHnmyG+IGfAgpggz6dKyyQfnT4NXvPC1kDOvfLXJVO+xZBeER9
+	 O8CEoZy+OLm2VUeEgwSEqqX7nKQGTymik/5x210Q=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 2F2C2F80237;
-	Fri, 29 Apr 2022 08:31:40 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id AE467F8016E;
+	Fri, 29 Apr 2022 10:47:32 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 806CDF8016E; Fri, 29 Apr 2022 08:31:38 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org
- [IPv6:2604:1380:4641:c500::1])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id 6B220F8025D; Fri, 29 Apr 2022 10:47:31 +0200 (CEST)
+Received: from mail-qt1-f176.google.com (mail-qt1-f176.google.com
+ [209.85.160.176])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 287CAF8016E
- for <alsa-devel@alsa-project.org>; Fri, 29 Apr 2022 08:31:29 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 287CAF8016E
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="oKda16HS"
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id 9E12261D7A;
- Fri, 29 Apr 2022 06:31:27 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0AFB0C385AC;
- Fri, 29 Apr 2022 06:31:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1651213887;
- bh=1qTI2+ULn9S33eUs/y9vp+7qFR3kaOf7jmVnCV4QTU0=;
- h=From:To:Cc:Subject:Date:From;
- b=oKda16HSltrM1J2Qv8n2yHzXm+KWDkgn6vpCbU3CbfalB9DsnP+Ip45pcRoJ4vYG2
- TXInGSja1792BOhv1g7WnGV5fnSbmrIlAMZ5QrXdOG0mmq2AzZB8r/oZTBXI46gMyO
- ILOot9hhasVU6Q0QhI3SUfoPAighV0XqYAhmPmOY/3ybC83GjCeb+DuTVpH6G1LTFW
- RAqC1CzHD5jD0vKp3aOFknDlb0mPlA1z7qAL1GRfGzPn7zVyFkPSvZJnKBjQxDlylc
- gqrmEugOKSe3ZkXOgWUUTx4NvJC+/H2fDLgdHk2RrMji1NnRlfe3qRrpwhJCCULhPY
- nu3UR42ITLJPA==
-Received: from mchehab by mail.kernel.org with local (Exim 4.94.2)
- (envelope-from <mchehab@kernel.org>)
- id 1nkK9z-001Qmf-Ly; Fri, 29 Apr 2022 07:31:23 +0100
-From: Mauro Carvalho Chehab <mchehab@kernel.org>
-To: Luis Chamberlain <mcgrof@kernel.org>
-Subject: [PATCH 0/2] Let userspace know when snd-hda-intel needs i915
-Date: Fri, 29 Apr 2022 07:31:14 +0100
-Message-Id: <cover.1651212016.git.mchehab@kernel.org>
-X-Mailer: git-send-email 2.35.1
+ by alsa1.perex.cz (Postfix) with ESMTPS id 2F755F8016E
+ for <alsa-devel@alsa-project.org>; Fri, 29 Apr 2022 10:47:24 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2F755F8016E
+Received: by mail-qt1-f176.google.com with SMTP id t16so5222402qtr.9
+ for <alsa-devel@alsa-project.org>; Fri, 29 Apr 2022 01:47:24 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc;
+ bh=6sgYQJjr5iy1crCmQpq1/lmSUnF0hBfImD2gP+L9eDc=;
+ b=K9q8JfRK8nqn75GXCxhzgsAATW0YXX1BMI3wZJfDTyipN3FZaXj0nFZ4E1QpcDgy0U
+ Y6j+v+f4CpzX73aQbeHf9s2YbHVLAuYXYqF5ZFml/6xWNSXYmpkc7VPqSjSuK/u9W7q4
+ cr4PSVhEZy9Dw5VVhzlxcR/s5sK48nlya6RqquRPvTHxHuIJUUPAIFDftado+wpaMZu4
+ SaV4CVbBuwyB3I1BbKcJVzbw4xhwZ6FJ1MfKzD9atT387PMrafpLsdF7oXKs47Kr82g8
+ 56DqCQmcna4dgYqMcIhbHYHiDCAZ0n1GCXEBnsX7LrjsIVS2IfxWUzOJCNcyR4lZcRUw
+ fkAg==
+X-Gm-Message-State: AOAM530yW9eAdldwid8KtFtPx0BWQBVTyQorIVwZlCtNB2MriRsGjbp/
+ h5wgIc+6PH9liWEWx7lU0Fla9Tmfs5OVVFPW
+X-Google-Smtp-Source: ABdhPJwl045aJuoc5cjbNW5SUHtc6IKWRUSwwkY4e80Y7cYLvWAnJ0NpKdFscUjNbVz2ZuQcbXGxmQ==
+X-Received: by 2002:a05:622a:189c:b0:2f3:654c:369f with SMTP id
+ v28-20020a05622a189c00b002f3654c369fmr18676391qtc.50.1651222042885; 
+ Fri, 29 Apr 2022 01:47:22 -0700 (PDT)
+Received: from mail-yb1-f182.google.com (mail-yb1-f182.google.com.
+ [209.85.219.182]) by smtp.gmail.com with ESMTPSA id
+ y18-20020ac85f52000000b002ed08a7dc8dsm1409559qta.13.2022.04.29.01.47.21
+ for <alsa-devel@alsa-project.org>
+ (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+ Fri, 29 Apr 2022 01:47:22 -0700 (PDT)
+Received: by mail-yb1-f182.google.com with SMTP id w187so13325405ybe.2
+ for <alsa-devel@alsa-project.org>; Fri, 29 Apr 2022 01:47:21 -0700 (PDT)
+X-Received: by 2002:a5b:984:0:b0:63f:8c38:676c with SMTP id
+ c4-20020a5b0984000000b0063f8c38676cmr35590406ybq.393.1651222041398; Fri, 29
+ Apr 2022 01:47:21 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: alsa-devel@alsa-project.org, Kai Vehmanen <kai.vehmanen@intel.com>,
- linux-kernel@vger.kernel.org, intel-gfx@lists.freedesktop.org,
- Lucas De Marchi <lucas.demarchi@intel.com>, Takashi Iwai <tiwai@suse.com>,
- dri-devel@lists.freedesktop.org, David Airlie <airlied@linux.ie>,
- mauro.chehab@intel.com, Daniel Vetter <daniel@ffwll.ch>,
- Mauro Carvalho Chehab <mchehab@kernel.org>, linux-modules@vger.kernel.org,
- Pierre-Louis Bossart <pierre-louis.bossart@intel.com>
+References: <20220428093355.16172-1-jiaxin.yu@mediatek.com>
+In-Reply-To: <20220428093355.16172-1-jiaxin.yu@mediatek.com>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Date: Fri, 29 Apr 2022 10:47:10 +0200
+X-Gmail-Original-Message-ID: <CAMuHMdWYJofetMwkAH4d8UzKZH77hxwRhXrMhaECOs1suQV2PA@mail.gmail.com>
+Message-ID: <CAMuHMdWYJofetMwkAH4d8UzKZH77hxwRhXrMhaECOs1suQV2PA@mail.gmail.com>
+Subject: Re: [v4 00/18] ASoC: mediatek: Add support for MT8186 SoC
+To: Jiaxin Yu <jiaxin.yu@mediatek.com>
+Content-Type: text/plain; charset="UTF-8"
+Cc: "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS"
+ <devicetree@vger.kernel.org>,
+ ALSA Development Mailing List <alsa-devel@alsa-project.org>,
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+ Rob Herring <robh+dt@kernel.org>,
+ Project_Global_Chrome_Upstream_Group@mediatek.com,
+ Tzung-Bi Shih <tzungbi@google.com>, Mark Brown <broonie@kernel.org>,
+ linux-mediatek@lists.infradead.org, Trevor Wu <trevor.wu@mediatek.com>,
+ Matthias Brugger <matthias.bgg@gmail.com>, aaronyu@google.com,
+ Julian Braha <julianbraha@gmail.com>,
+ Linux ARM <linux-arm-kernel@lists.infradead.org>,
+ AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -85,76 +100,21 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Currently, kernel/module annotates module dependencies when
-request_symbol is used, but it doesn't cover more complex inter-driver
-dependencies that are subsystem and/or driver-specific.
+Hi Jiaxin,
 
-In the case of hdmi sound, depending on the CPU/GPU, sometimes the
-snd_hda_driver can talk directly with the hardware, but sometimes, it
-uses the i915 driver. When the snd_hda_driver uses i915, it should
-first be unbind/rmmod, as otherwise trying to unbind/rmmod the i915
-driver cause driver issues, as as reported by CI tools with different
-GPU models:
+Gmail tends to mark your patches as spam.
+Can you please make sure to use "PATCH" in the subject line, e.g.
+"[PATCH v4 00/18] ASoC: mediatek: Add support for MT8186 SoC"?
 
-	https://intel-gfx-ci.01.org/tree/drm-tip/IGT_6415/fi-tgl-1115g4/igt@core_hotunplug@unbind-rebind.html
-	https://intel-gfx-ci.01.org/tree/drm-tip/CI_DRM_11495/bat-adlm-1/igt@i915_module_load@reload.html
+Thanks!
 
-In the past, just a few CPUs were doing such bindings, but this issue now
-applies to all "modern" Intel CPUs  that have onboard graphics, as well as
-to the  newer discrete GPUs.
+Gr{oetje,eeting}s,
 
-With the discrete GPU case, the HDA controller is physically separate and
-requires i915 to power on the hardware for all hardware  access. In this
-case, the issue is hit basicly 100% of the time.
+                        Geert
 
-With on-board graphics, i915 driver is needed only when the display
-codec is accessed. If i915 is unbind during runtime suspend, while
-snd-hda-intel is still bound, nothing bad happens, but unbinding i915
-on other situations may also cause issues.
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
-So, add support at kernel/modules to allow snd-hda drivers to properly
-annotate when a dependency on a DRM driver dependencies exists,
-and add a call to such new function at the snd-hda driver when it
-successfully binds into the DRM driver.
-
-This would allow userspace tools to check and properly remove the
-audio driver before trying to remove or unbind the GPU driver.
-
-It should be noticed that this series conveys the hidden module
-dependencies. Other changes are needed in order to allow
-removing or unbinding the i915 driver while keeping the snd-hda-intel
-driver loaded/bound. With that regards, there are some discussions on
-how to improve this at alsa-devel a while  back:
-
-https://mailman.alsa-project.org/pipermail/alsa-devel/2021-September/190099.html
-
-So, future improvements on both in i915 and the audio drivers could be made.
-E.g. with  discrete GPUs, it's the only codec of the card, so it seems feasible
-to detach the ALSA card if i915 is bound (using infra made for VGA
-switcheroo), but,  until these improvements are done and land in
-upstream, audio drivers needs to be unbound if i915 driver goes unbind.
-
-Yet, even if such fixes got merged, this series is still needed, as it makes
-such dependencies more explicit and easier to debug.
-
-PS.: This series was generated against next-20220428.
-
-Luis/Takashi/Daniel/David,
-
-If OK for you, I would prefer to have such patches applied via the drm-tip
-tree once reviewed, in order to make easier to use them by some patches
-I'm preparing to improve the CI tests that use i915 unbind logic.
-
-Mauro Carvalho Chehab (2):
-  module: add a function to add module references
-  ALSA: hda - identify when audio is provided by a video driver
-
- include/linux/module.h     |  7 +++++++
- kernel/module/main.c       | 31 +++++++++++++++++++++++++++++++
- sound/hda/hdac_component.c |  8 ++++++++
- 3 files changed, 46 insertions(+)
-
--- 
-2.35.1
-
-
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
