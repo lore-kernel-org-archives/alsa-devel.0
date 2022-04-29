@@ -4,80 +4,80 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 811A1C433F5
-	for <alsa-devel@archiver.kernel.org>; Fri, 29 Apr 2022 22:05:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 66E61C433F5
+	for <alsa-devel@archiver.kernel.org>; Fri, 29 Apr 2022 22:05:42 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id BF5241620;
-	Sat, 30 Apr 2022 00:04:30 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BF5241620
+	by alsa0.perex.cz (Postfix) with ESMTPS id A97BC1636;
+	Sat, 30 Apr 2022 00:04:50 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A97BC1636
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1651269920;
-	bh=NiRqID2KbLl6kxegULZqRjH2szoblFzNFB5sgXlMMuQ=;
+	s=default; t=1651269940;
+	bh=xp7C7UTpuk8jvqSzOKV3HirmLKsptC8a3kv9Tt+qSbQ=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Alfck3RdAjraGOOTGcrti7IHrPyDMuOaRl8AmEwPFJRIYlADuiSyARRvBIFCl9d/a
-	 6Mjwh3m89177oSQ+ol8Scvd7kKV2+cwj3uAya2z7TJ6OVCfiOVIrbtk/LyFeN/DRjF
-	 1Nab01D2k0lYc6H5N8ltVdNk1IIypFOTst6UQJBk=
+	b=VMjiaC0gX4Pn8dgs9lM0TDx1T7Pin6B30cgWs5t5k8FrINv+GNrRzl9T+xFBo2L4i
+	 3goch4Tyu1e3bGxAjAbKGzFo6Vo6IdvxXuAGU9AbYTKHZstmp+CxzNmW8F8hT7vQf8
+	 pBly3aR8lUnjmZgZYj+fXSx8C2JyyMck7kqEWAvs=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 011B1F804B2;
-	Sat, 30 Apr 2022 00:04:02 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2CDB7F80508;
+	Sat, 30 Apr 2022 00:04:04 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id EAC90F8012B; Sat, 30 Apr 2022 00:04:00 +0200 (CEST)
-Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com
- [IPv6:2a00:1450:4864:20::332])
+ id F303EF804A9; Sat, 30 Apr 2022 00:04:01 +0200 (CEST)
+Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com
+ [IPv6:2a00:1450:4864:20::32d])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 07DECF8012B
- for <alsa-devel@alsa-project.org>; Sat, 30 Apr 2022 00:03:55 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 07DECF8012B
+ by alsa1.perex.cz (Postfix) with ESMTPS id 602FDF8016E
+ for <alsa-devel@alsa-project.org>; Sat, 30 Apr 2022 00:03:54 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 602FDF8016E
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org
- header.b="aBZ84A6X"
-Received: by mail-wm1-x332.google.com with SMTP id
- l62-20020a1c2541000000b0038e4570af2fso5448879wml.5
- for <alsa-devel@alsa-project.org>; Fri, 29 Apr 2022 15:03:55 -0700 (PDT)
+ header.b="f8f/c/cT"
+Received: by mail-wm1-x32d.google.com with SMTP id
+ bi24-20020a05600c3d9800b00393ff664705so5455565wmb.4
+ for <alsa-devel@alsa-project.org>; Fri, 29 Apr 2022 15:03:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
  h=from:to:cc:subject:date:message-id:in-reply-to:references
  :mime-version:content-transfer-encoding;
- bh=ngAHAx8KCTZqbA/wVhf/k9wvjiY7TwrBlQ520mj9F/4=;
- b=aBZ84A6XYuRroZXuADMKuVKuiABfQxp6erm24iGZxALBSAsyoJg8sVqbwTb3ELkHRW
- RTAnZ5w9yk5l2zE2KaF7KMxIaYBc7+G6wkuaXhyhsZSAAQxY4HvUgfQ0YDLjcM2n/GK4
- EpvWmWTI+ax79bzPrVXkYY0pDp1Z4ATWp2ANK7I2teOnJ3gFwXRnSfnWMZBy/c4v2lCh
- TD/BdAZIPm+MqCuDqSPszjMhaepnn4wYFqj0/dKRJNDHSseXLrkIAEqTtX7mX3AGdDg9
- z9ut9RF+dMddYLFfDPzRDCr2jRUXcUvA5+VWVDxV5Rz4o+ykBIoPOLlKKL4qXs+UIJC9
- zM4A==
+ bh=2mHHs9RiQ0Cwt9nao+8sO16iLMStFW4oWbdufcxBAas=;
+ b=f8f/c/cTt3LssA9qXtjrOXFQPPavMOVTGZzpLcbXhurIAQzfWMJoP3GCLGl0ZMonWM
+ eV/vF62G+AYpTnkUY9OO93Vj2WXHdG200uV5F2iwpR/aH4FHQEw1peimC2U55a6hkI+E
+ m8Vf4wiQ9wE06sG/+b9X+82stcqLaMIWac0hauq9j4E5kSwhUdInDaieIB0f2inIelJg
+ tMbDepMlC1zBlf09k6orCogIpEYFkzg51S31VaJ8GTFCa/VQ7KkKuyftLaqDtwp2UFiy
+ GzfW95tvh3wQ2liE4YD6ZSsetNNl77It0r15PPtxV0fz6ikkACMzhx8EoYKeZKZ6rOSw
+ TbcA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
  h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
  :references:mime-version:content-transfer-encoding;
- bh=ngAHAx8KCTZqbA/wVhf/k9wvjiY7TwrBlQ520mj9F/4=;
- b=4hbMvX5AVqtP7kz3+6i8j4wr/6OwojoIB+tzDVXAbDDZFPlTzOq+jo57Ocpn0KC8/g
- zJchRTKnYi5qj4pnB+jj4fxXIPsqO12+QaTC4uYxRbPm6tyYHTeMygf0niGrpR8+tZlU
- oie3cfkUt7Gy7chT4PatBR552ziBh8nrCFypMRlZR7772J0sOUB2+5a7qyYvx8hmXMlb
- Fso2WkOwA6Zy3o2F87o6Egp4g+6w8VToJDm8HwXpAH8JIPk+3EOIlWNSFps6WMcMdsMt
- vl9RWHozM+UfRfyKrGyaVSZqFooSDae1bbVxLcEeZBCEl3zeJj+Qa5MHyHIwH7dsfbmZ
- 3vQg==
-X-Gm-Message-State: AOAM533C6X+iI8upplWIRIqLO1HOUR6z7fVdmHOhrXBCKg/bk9enMKzz
- 8nOoS0fWwba35JXc0OYW16I2bQ==
-X-Google-Smtp-Source: ABdhPJyKUSsewMfq0OpVMM/q5rmJHwonDZeVA4hBkJow4pGLOm7E+ezi81qsjihjWs3T6BQNDzW7+w==
-X-Received: by 2002:a7b:c181:0:b0:392:b34a:96a2 with SMTP id
- y1-20020a7bc181000000b00392b34a96a2mr877535wmi.48.1651269834379; 
- Fri, 29 Apr 2022 15:03:54 -0700 (PDT)
+ bh=2mHHs9RiQ0Cwt9nao+8sO16iLMStFW4oWbdufcxBAas=;
+ b=3Xgrk54IBEjwFqPjnp7VN7Sz5IFajF+xs33Gb8uG52luASfMu4Hf2mZ6mb5zfSRm59
+ DQkOjt/zRZnqvxbxawCqRsxlasNyHNZyZfJKM7kdMByDFz1e9EJJ5wHEx/0DD5IQBiS5
+ FaQaQZz2ajQHbkON842Cvkug8VaitwRCo1YIhR/dZg/3WzNKLFh9WLDxKhM8mKjwPimV
+ XETM4gN5sq/fNPYR9rQbjJCcUuKsf/oy6mGzP2hTM0QthEAStQA3sqGCPSlFOYMCayFD
+ FtrDCm1WrWr2gu2J9Qmq1rAgp079Sz4IQLcVSQL0D0rn3FvHhWeomq67TKAoFqB7h5eP
+ HZyg==
+X-Gm-Message-State: AOAM533FL9Z+DsZoa90SSdIiyzkduf9gGpLHwwZg3sGJKIT7kGoCtsVc
+ Llm+r+vSD4pL4/onfe7Z/S5H9Q==
+X-Google-Smtp-Source: ABdhPJx10OSweAWnFAfVBF8dE47IPSunHd4vm9HIlx8cMrsY5ylg8dBwo2QKcmir6edFrtpmwqXphQ==
+X-Received: by 2002:a05:600c:3503:b0:38f:fbd7:1f0d with SMTP id
+ h3-20020a05600c350300b0038ffbd71f0dmr857994wmq.170.1651269833182; 
+ Fri, 29 Apr 2022 15:03:53 -0700 (PDT)
 Received: from sagittarius-a.chello.ie (188-141-3-169.dynamic.upc.ie.
  [188.141.3.169]) by smtp.gmail.com with ESMTPSA id
- k15-20020adfc70f000000b0020c5253d90dsm338311wrg.89.2022.04.29.15.03.53
+ k15-20020adfc70f000000b0020c5253d90dsm338311wrg.89.2022.04.29.15.03.52
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Fri, 29 Apr 2022 15:03:53 -0700 (PDT)
+ Fri, 29 Apr 2022 15:03:52 -0700 (PDT)
 From: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
 To: srinivas.kandagatla@linaro.org, bjorn.andersson@linaro.org,
  robh+dt@kernel.org, krzk+dt@kernel.org
-Subject: [PATCH v3 2/2] arm64: dts: qcom: Fix apq8016 compat string to match
+Subject: [PATCH v3 1/2] ASoC: qcom: lpass: Fix apq8016 compat string to match
  yaml
-Date: Fri, 29 Apr 2022 23:03:49 +0100
-Message-Id: <20220429220349.1142759-3-bryan.odonoghue@linaro.org>
+Date: Fri, 29 Apr 2022 23:03:48 +0100
+Message-Id: <20220429220349.1142759-2-bryan.odonoghue@linaro.org>
 X-Mailer: git-send-email 2.35.1
 In-Reply-To: <20220429220349.1142759-1-bryan.odonoghue@linaro.org>
 References: <20220429220349.1142759-1-bryan.odonoghue@linaro.org>
@@ -106,25 +106,42 @@ lpass compat strings the general form is "qcom,socnum-lpass-cpu".
 
 We need to fix both the driver and dts to match.
 
-Fixes: 3761a3618f55 ("arm64: dts: qcom: add lpass node")
+Fixes: dc1ebd1811e9 ("ASoC: qcom: Add apq8016 lpass driver support")
+Reviewed-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 Signed-off-by: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
 ---
- arch/arm64/boot/dts/qcom/msm8916.dtsi | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/qcom/lpass-apq8016.c | 1 +
+ sound/soc/qcom/lpass-cpu.c     | 5 +++++
+ 2 files changed, 6 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/qcom/msm8916.dtsi b/arch/arm64/boot/dts/qcom/msm8916.dtsi
-index e34963505e07..452cdfbf8ef9 100644
---- a/arch/arm64/boot/dts/qcom/msm8916.dtsi
-+++ b/arch/arm64/boot/dts/qcom/msm8916.dtsi
-@@ -1392,7 +1392,7 @@ sound: sound@7702000 {
+diff --git a/sound/soc/qcom/lpass-apq8016.c b/sound/soc/qcom/lpass-apq8016.c
+index 3efa133d1c64..abaf694ee9a3 100644
+--- a/sound/soc/qcom/lpass-apq8016.c
++++ b/sound/soc/qcom/lpass-apq8016.c
+@@ -293,6 +293,7 @@ static struct lpass_variant apq8016_data = {
  
- 		lpass: audio-controller@7708000 {
- 			status = "disabled";
--			compatible = "qcom,lpass-cpu-apq8016";
-+			compatible = "qcom,apq8016-lpass-cpu";
+ static const struct of_device_id apq8016_lpass_cpu_device_id[] __maybe_unused = {
+ 	{ .compatible = "qcom,lpass-cpu-apq8016", .data = &apq8016_data },
++	{ .compatible = "qcom,apq8016-lpass-cpu", .data = &apq8016_data },
+ 	{}
+ };
+ MODULE_DEVICE_TABLE(of, apq8016_lpass_cpu_device_id);
+diff --git a/sound/soc/qcom/lpass-cpu.c b/sound/soc/qcom/lpass-cpu.c
+index e6846ad2b5fa..53f9bf6581d3 100644
+--- a/sound/soc/qcom/lpass-cpu.c
++++ b/sound/soc/qcom/lpass-cpu.c
+@@ -1102,6 +1102,11 @@ int asoc_qcom_lpass_cpu_platform_probe(struct platform_device *pdev)
+ 	if (!match || !match->data)
+ 		return -EINVAL;
  
- 			/*
- 			 * Note: Unlike the name would suggest, the SEC_I2S_CLK
++	if (of_device_is_compatible(dev->of_node, "qcom,lpass-cpu-apq8016")) {
++		dev_warn(dev, "%s compatible is deprecated\n",
++			 match->compatible);
++	}
++
+ 	drvdata->variant = (struct lpass_variant *)match->data;
+ 	variant = drvdata->variant;
+ 
 -- 
 2.35.1
 
