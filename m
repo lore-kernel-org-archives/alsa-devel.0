@@ -4,74 +4,72 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 82199C433F5
-	for <alsa-devel@archiver.kernel.org>; Sat, 30 Apr 2022 10:32:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8C14DC433EF
+	for <alsa-devel@archiver.kernel.org>; Sat, 30 Apr 2022 10:32:59 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 4771286E;
-	Sat, 30 Apr 2022 12:31:49 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4771286E
+	by alsa0.perex.cz (Postfix) with ESMTPS id A68FBE0E;
+	Sat, 30 Apr 2022 12:32:07 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A68FBE0E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1651314759;
-	bh=5a3g5n+qmEd88ekG2DL7ECt9MM1yHMe0jnzyEtuLpqg=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=WgpDHNJv1kqht/rAP+e7rHeoxRaHYeVZ6v7jRkHNfcUmaYE+HyqkjBXaY0nxafz8O
-	 MLPld8F3ZIpKmUdfp8RRCutJEnbVbTRs/M6y18Z3ZTAG+/PkneOLWZ3q4vh44i0H5T
-	 Evdh4AiSZp5n/IYo/mlwttHDQ3y6RbMbAAu6rmSA=
+	s=default; t=1651314777;
+	bh=6mrXqkGtPpcgemTiiATDVZ7XE8ok/9wW2Vk/4+SypUc=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=uSsF8ud9inwhROxrcA7cYkpVXaQrg6StgRBB5cGLZWTA0N3tpRYcF+A+ViiUh1W8s
+	 FLpNzD2+aDSrmOBXGwJrLtd0AAN5JJ+1MeIMOt+zo7VNrjR006MGmyxVkcYw9nZr8o
+	 qU0pVVoS5qICmpPy1KHSZiAaX8xKwEEM35A8dTO8=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 40440F80217;
-	Sat, 30 Apr 2022 12:31:19 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id F00BBF804F2;
+	Sat, 30 Apr 2022 12:31:21 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 7D6EAF804ED; Sat, 30 Apr 2022 12:31:17 +0200 (CEST)
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+ id 8E2A3F804F2; Sat, 30 Apr 2022 12:31:19 +0200 (CEST)
+Received: from ams.source.kernel.org (ams.source.kernel.org
+ [IPv6:2604:1380:4601:e00::1])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 06821F800E9
- for <alsa-devel@alsa-project.org>; Sat, 30 Apr 2022 12:31:10 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 06821F800E9
+ by alsa1.perex.cz (Postfix) with ESMTPS id 4BEE6F8012A
+ for <alsa-devel@alsa-project.org>; Sat, 30 Apr 2022 12:31:11 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4BEE6F8012A
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="gAOGtCXn"
+ header.b="p9m2Rbz/"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by ams.source.kernel.org (Postfix) with ESMTPS id 11FD8B80123;
+ by ams.source.kernel.org (Postfix) with ESMTPS id 2CC0BB81F1D;
  Sat, 30 Apr 2022 10:31:10 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9B45AC385B0;
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 98D37C385AF;
  Sat, 30 Apr 2022 10:31:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
  s=k20201202; t=1651314668;
- bh=5a3g5n+qmEd88ekG2DL7ECt9MM1yHMe0jnzyEtuLpqg=;
- h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=gAOGtCXn9lgpRzyoj/fqa0aPc3jhw1Jqo+MSKNxwVE+IUgMVRpGTf4OVtLZdSeZqd
- wzjmUKJAtT22aRbMgAPxuz9GQUEYery/ELlun2DLAoz4nAWVKdJoKcandelji+33q4
- fGaWOQOJcG0O89lfSGUZjTc7SB2nVxzbJbHQxYaFjuqGCSAznmzGifz9TAn5SMrf1Q
- PI8UwQorA626qDLrprZknbQa7iTyKQ7iF9pfgpqLHiLM4Tdq5yUXcJXxaai4gr4NhE
- xnFMc7czngQdUywPIYRNYuvNTjBhiiPK+QP50B9IVurAYM35wbS13rciykpn4LD+UZ
- xIGETWKHKhZwA==
+ bh=6mrXqkGtPpcgemTiiATDVZ7XE8ok/9wW2Vk/4+SypUc=;
+ h=From:To:Cc:Subject:Date:From;
+ b=p9m2Rbz/wxewOHRcZURI01kopZP08YV0c/d/09+uMir1kdo2NQlLMHJLQToHFbJVw
+ wQBe6xXi3E3fWWxujyrx05cGG1K4BFWIIn3br0xrw/iwy1ozkP8jKjiUd8SZdn6HEm
+ CGE/IVxSjWOGhzAJ28YK4YP8AP7Yb3XLEDS94Vk3cJcZYiXfoEPFqIm+RXrecqVhS1
+ r3IBmmVN8oawA4C6KaFPKZSFCFZCK7OQ9Dkvp5IaVNQwZ4qTILjd6ErKbDiOxtUoB5
+ t8RIicrGR9E0TTkNq+q1y3Iik0kkx+sBCVQvd0aLSRl69Hf0KFAWuP4DrX17wcI36S
+ yRN/hoQXLypeQ==
 Received: from mchehab by mail.kernel.org with local (Exim 4.94.2)
  (envelope-from <mchehab@kernel.org>)
- id 1nkkNQ-001lBO-G4; Sat, 30 Apr 2022 11:31:00 +0100
+ id 1nkkNQ-001lBL-FK; Sat, 30 Apr 2022 11:31:00 +0100
 From: Mauro Carvalho Chehab <mchehab@kernel.org>
 To: Luis Chamberlain <mcgrof@kernel.org>
-Subject: [PATCH v2 1/2] module: update dependencies at try_module_get()
-Date: Sat, 30 Apr 2022 11:30:58 +0100
-Message-Id: <3c7547d551558c9da02038dda45992f91b1f5141.1651314499.git.mchehab@kernel.org>
+Subject: [PATCH v2 0/2] Let userspace know when snd-hda-intel needs i915
+Date: Sat, 30 Apr 2022 11:30:57 +0100
+Message-Id: <cover.1651314499.git.mchehab@kernel.org>
 X-Mailer: git-send-email 2.35.1
-In-Reply-To: <cover.1651314499.git.mchehab@kernel.org>
-References: <cover.1651314499.git.mchehab@kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: alsa-devel@alsa-project.org, mauro.chehab@linux.intel.com,
- David Airlie <airlied@linux.ie>, Greg KH <gregkh@linuxfoundation.org>,
+Cc: mauro.chehab@linux.intel.com, alsa-devel@alsa-project.org,
+ Kai Vehmanen <kai.vehmanen@intel.com>, Greg KH <gregkh@linuxfoundation.org>,
  intel-gfx@lists.freedesktop.org, Lucas De Marchi <lucas.demarchi@intel.com>,
  Takashi Iwai <tiwai@suse.com>, dri-devel@lists.freedesktop.org,
- Kai Vehmanen <kai.vehmanen@intel.com>, linux-modules@vger.kernel.org,
- Daniel Vetter <daniel@ffwll.ch>, Dan Williams <dan.j.williams@intel.com>,
- Mauro Carvalho Chehab <mchehab@kernel.org>, linux-kernel@vger.kernel.org,
+ David Airlie <airlied@linux.ie>, linux-modules@vger.kernel.org,
+ Daniel Vetter <daniel@ffwll.ch>, Mauro Carvalho Chehab <mchehab@kernel.org>,
+ linux-kernel@vger.kernel.org,
  Pierre-Louis Bossart <pierre-louis.bossart@intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
@@ -88,99 +86,75 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Sometimes, device drivers are bound into each other via try_module_get(),
-making such references invisible when looking at /proc/modules or lsmod.
+Currently, kernel/module annotates module dependencies when
+request_symbol is used, but it doesn't cover more complex inter-driver
+dependencies that are subsystem and/or driver-specific.
 
-Add a function to allow setting up module references for such
-cases, and call it when try_module_get() is used.
+In the case of hdmi sound, depending on the CPU/GPU, sometimes the
+snd_hda_driver can talk directly with the hardware, but sometimes, it
+uses the i915 driver. When the snd_hda_driver uses i915, it should
+first be unbind/rmmod, as otherwise trying to unbind/rmmod the i915
+driver cause driver issues, as as reported by CI tools with different
+GPU models:
 
-Reviewed-by: Dan Williams <dan.j.williams@intel.com>
-Signed-off-by: Mauro Carvalho Chehab <mchehab@kernel.org>
+	https://intel-gfx-ci.01.org/tree/drm-tip/IGT_6415/fi-tgl-1115g4/igt@core_hotunplug@unbind-rebind.html
+	https://intel-gfx-ci.01.org/tree/drm-tip/CI_DRM_11495/bat-adlm-1/igt@i915_module_load@reload.html
+
+In the past, just a few CPUs were doing such bindings, but this issue now
+applies to all "modern" Intel CPUs  that have onboard graphics, as well as
+to the  newer discrete GPUs.
+
+With the discrete GPU case, the HDA controller is physically separate and
+requires i915 to power on the hardware for all hardware  access. In this
+case, the issue is hit basicly 100% of the time.
+
+With on-board graphics, i915 driver is needed only when the display
+codec is accessed. If i915 is unbind during runtime suspend, while
+snd-hda-intel is still bound, nothing bad happens, but unbinding i915
+on other situations may also cause issues.
+
+So, add support at kernel/modules to allow snd-hda drivers to properly
+annotate when a dependency on a DRM driver dependencies exists,
+and add a call to such new function at the snd-hda driver when it
+successfully binds into the DRM driver.
+
+This would allow userspace tools to check and properly remove the
+audio driver before trying to remove or unbind the GPU driver.
+
+It should be noticed that this series conveys the hidden module
+dependencies. Other changes are needed in order to allow
+removing or unbinding the i915 driver while keeping the snd-hda-intel
+driver loaded/bound. With that regards, there are some discussions on
+how to improve this at alsa-devel a while  back:
+
+https://mailman.alsa-project.org/pipermail/alsa-devel/2021-September/190099.html
+
+So, future improvements on both in i915 and the audio drivers could be made.
+E.g. with  discrete GPUs, it's the only codec of the card, so it seems feasible
+to detach the ALSA card if i915 is bound (using infra made for VGA
+switcheroo), but,  until these improvements are done and land in
+upstream, audio drivers needs to be unbound if i915 driver goes unbind.
+
+Yet, even if such fixes got merged, this series is still needed, as it makes
+such dependencies more explicit and easier to debug.
+
+PS.: This series was generated against next-20220428.
+
 ---
 
-See [PATCH v2 0/2] at: https://lore.kernel.org/all/cover.1651314499.git.mchehab@kernel.org/
+v2: the dependencies are now handled directly at try_module_get().
 
- include/linux/module.h |  4 +++-
- kernel/module/main.c   | 35 +++++++++++++++++++++++++++++++++--
- 2 files changed, 36 insertions(+), 3 deletions(-)
 
-diff --git a/include/linux/module.h b/include/linux/module.h
-index 46d4d5f2516e..836851baaad4 100644
---- a/include/linux/module.h
-+++ b/include/linux/module.h
-@@ -620,7 +620,9 @@ extern void __module_get(struct module *module);
- 
- /* This is the Right Way to get a module: if it fails, it's being removed,
-  * so pretend it's not there. */
--extern bool try_module_get(struct module *module);
-+extern bool __try_module_get(struct module *module, struct module *this);
-+
-+#define try_module_get(mod) __try_module_get(mod, THIS_MODULE)
- 
- extern void module_put(struct module *module);
- 
-diff --git a/kernel/module/main.c b/kernel/module/main.c
-index 05a42d8fcd7a..9f4416381e65 100644
---- a/kernel/module/main.c
-+++ b/kernel/module/main.c
-@@ -631,6 +631,35 @@ static int ref_module(struct module *a, struct module *b)
- 	return 0;
- }
- 
-+static int ref_module_dependency(struct module *mod,
-+				       struct module *this)
-+{
-+	int ret;
-+
-+	if (!this || !this->name) {
-+		return -EINVAL;
-+	}
-+
-+	if (mod == this)
-+		return 0;
-+
-+	mutex_lock(&module_mutex);
-+
-+	ret = ref_module(this, mod);
-+
-+#ifdef CONFIG_MODULE_UNLOAD
-+	if (ret)
-+		goto ret;
-+
-+	ret = sysfs_create_link(mod->holders_dir,
-+				&this->mkobj.kobj, this->name);
-+#endif
-+
-+ret:
-+	mutex_unlock(&module_mutex);
-+	return ret;
-+}
-+
- /* Clear the unload stuff of the module. */
- static void module_unload_free(struct module *mod)
- {
-@@ -841,7 +870,7 @@ void __module_get(struct module *module)
- }
- EXPORT_SYMBOL(__module_get);
- 
--bool try_module_get(struct module *module)
-+bool __try_module_get(struct module *module, struct module *this)
- {
- 	bool ret = true;
- 
-@@ -856,9 +885,11 @@ bool try_module_get(struct module *module)
- 
- 		preempt_enable();
- 	}
-+	if (ret)
-+		ref_module_dependency(module, this);
- 	return ret;
- }
--EXPORT_SYMBOL(try_module_get);
-+EXPORT_SYMBOL(__try_module_get);
- 
- void module_put(struct module *module)
- {
+Mauro Carvalho Chehab (2):
+  module: update dependencies at try_module_get()
+  ALSA: hda - identify when audio is provided by a video driver
+
+ include/linux/module.h     |  4 +++-
+ kernel/module/main.c       | 35 +++++++++++++++++++++++++++++++++--
+ sound/hda/hdac_component.c |  2 +-
+ 3 files changed, 37 insertions(+), 4 deletions(-)
+
 -- 
 2.35.1
+
 
