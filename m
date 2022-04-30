@@ -4,75 +4,76 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 67D14C433F5
-	for <alsa-devel@archiver.kernel.org>; Sat, 30 Apr 2022 13:39:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id CEF17C433EF
+	for <alsa-devel@archiver.kernel.org>; Sat, 30 Apr 2022 13:42:54 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B83E4F3;
-	Sat, 30 Apr 2022 15:38:35 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B83E4F3
+	by alsa0.perex.cz (Postfix) with ESMTPS id AB60E1F7;
+	Sat, 30 Apr 2022 15:42:02 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AB60E1F7
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1651325965;
-	bh=FzJFz5nQnOEB7AB6Bbc1j8nS92uMjFglrLsFGFrMKzw=;
-	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1651326172;
+	bh=tqVXu6g9oh/W80TNZwCI08nLQ3wJ9C50shdsYteF9Wk=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=dh9e8rHOT4b9MLQAAqq3ugWgnVqHh1yYO94//lEMDZBSbw5JCg64GRHjbKoIgnEVl
-	 +7Ru6z039kD69xj9nFXpPWUof5TvrW3tWBwt8v58XRLUh+RZAUkg3tjOFIWSDB3x9s
-	 6ZxLDB5mmXRhgUGgC4dFczfIQwkkHEFy+91V/85Y=
+	b=HbukhPJXroBRtbKcqgSKHWPbwD7Zc18joBSWy66vMoJGsXiMsZn+Sx1tJovlNDRci
+	 mj1QIF8uThBpmCiKu2L849KfkaOVFVyurxJ1/8Y0m4Fc8IdKe4HPYw1thbVqPolfZZ
+	 IGwRHNJ+z1XeaDpPFsoMFr1ixsJvbABFkMZrdsfg=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 377C8F80128;
-	Sat, 30 Apr 2022 15:38:35 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 30F5DF8012B;
+	Sat, 30 Apr 2022 15:42:02 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 86732F8012A; Sat, 30 Apr 2022 15:38:33 +0200 (CEST)
+ id B1563F8016E; Sat, 30 Apr 2022 15:42:00 +0200 (CEST)
 Received: from dfw.source.kernel.org (dfw.source.kernel.org
  [IPv6:2604:1380:4641:c500::1])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 5AFB3F80121
- for <alsa-devel@alsa-project.org>; Sat, 30 Apr 2022 15:38:26 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5AFB3F80121
+ by alsa1.perex.cz (Postfix) with ESMTPS id 505E9F8012A
+ for <alsa-devel@alsa-project.org>; Sat, 30 Apr 2022 15:41:56 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 505E9F8012A
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="jlSMgCul"
+ header.b="cb3YOJLy"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id 9088260B43;
- Sat, 30 Apr 2022 13:38:24 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CA220C385AA;
- Sat, 30 Apr 2022 13:38:18 +0000 (UTC)
+ by dfw.source.kernel.org (Postfix) with ESMTPS id A497E60EBC;
+ Sat, 30 Apr 2022 13:41:54 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0B8E6C385A7;
+ Sat, 30 Apr 2022 13:41:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1651325904;
- bh=FzJFz5nQnOEB7AB6Bbc1j8nS92uMjFglrLsFGFrMKzw=;
- h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
- b=jlSMgCulySK0sR8W6lTjvw+WKsHy9h2dvPSn/5YMc2Ov1/C/vSQeLPrh3/hxq3C2S
- 3IgkIw0WSNTct9hBvrXmgMyELaYee9X3mtIvkZ2yTAPC2v3ej3vzF8gFH8UU44MXbw
- KAqWgwhvW5Kb+28/T9aQZOdeMKDQxhCoyaDM5Rc4HmIJ7hWl19h6P1Gfv/gEy6VuWa
- AFwi7dJptexzaE2VQYSiaVEgvKpTyAV4wyKOTlFHh6sphvpGPBihxxB6k6TaJew2RL
- kkHhZDiMzx49PBfmL29bVUZATY3SHGlyUfdYempi/ByrrXPMeyQ9uc+WWBkNDMAlQp
- uxkJBLqr/FN2w==
-Date: Sat, 30 Apr 2022 14:38:14 +0100
+ s=k20201202; t=1651326114;
+ bh=tqVXu6g9oh/W80TNZwCI08nLQ3wJ9C50shdsYteF9Wk=;
+ h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+ b=cb3YOJLytublE7wGW2KxxKiBXvgND1jxCpgihm/fRJWShxCwNNy8GbV5pg0ZWUz1F
+ usDbmllk91NQ1SDqP+Wg+5aaj7u0qE4gneSvSFmgNoLl5bFdHv+GUAWfit0rS2BzJB
+ cTs9YnMu4x9ZowvhBvm3fZW58SWTG1P+bW7T4pEfkVTGpCLVwg8fdtvOykn4uYO8ej
+ PHnQFjFdRZ+FyellvBvwi+DrArmU5sQbIJc1weosrPL7HFDuV+SJ7qJbY6qLDZJxyl
+ gYWYpTSlcFbWKxXYdQjfSWXGLRIZHI1qOtfPll3BC1vzREj89ROC9AsbnHbB6hy1f6
+ y4Vlu/Tc2bP9A==
+Received: from mchehab by mail.kernel.org with local (Exim 4.94.2)
+ (envelope-from <mchehab@kernel.org>)
+ id 1nknM6-001nsj-Ji; Sat, 30 Apr 2022 14:41:50 +0100
 From: Mauro Carvalho Chehab <mchehab@kernel.org>
-To: Greg KH <gregkh@linuxfoundation.org>
-Subject: Re: [PATCH v2 1/2] module: update dependencies at try_module_get()
-Message-ID: <20220430143814.7184bd93@sal.lan>
-In-Reply-To: <Ym0l6yeTWCCAeww8@kroah.com>
-References: <cover.1651314499.git.mchehab@kernel.org>
- <3c7547d551558c9da02038dda45992f91b1f5141.1651314499.git.mchehab@kernel.org>
- <Ym0l6yeTWCCAeww8@kroah.com>
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.31; x86_64-redhat-linux-gnu)
+To: Luis Chamberlain <mcgrof@kernel.org>
+Subject: [PATCH v3 2/2] ALSA: hda - identify when audio is provided by a video
+ driver
+Date: Sat, 30 Apr 2022 14:41:48 +0100
+Message-Id: <6b5f1e2cec0137d5aab089a7e7497972ff5addb1.1651326000.git.mchehab@kernel.org>
+X-Mailer: git-send-email 2.35.1
+In-Reply-To: <cover.1651326000.git.mchehab@kernel.org>
+References: <cover.1651326000.git.mchehab@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Cc: alsa-devel@alsa-project.org, mauro.chehab@linux.intel.com,
- David Airlie <airlied@linux.ie>, linux-kernel@vger.kernel.org,
+ David Airlie <airlied@linux.ie>, Greg KH <gregkh@linuxfoundation.org>,
  intel-gfx@lists.freedesktop.org, Lucas De Marchi <lucas.demarchi@intel.com>,
  Takashi Iwai <tiwai@suse.com>, dri-devel@lists.freedesktop.org,
- Kai Vehmanen <kai.vehmanen@intel.com>, Luis Chamberlain <mcgrof@kernel.org>,
- Daniel Vetter <daniel@ffwll.ch>, Dan Williams <dan.j.williams@intel.com>,
- linux-modules@vger.kernel.org,
+ Kai Vehmanen <kai.vehmanen@intel.com>, linux-modules@vger.kernel.org,
+ Daniel Vetter <daniel@ffwll.ch>, Mauro Carvalho Chehab <mchehab@kernel.org>,
+ linux-kernel@vger.kernel.org,
  Pierre-Louis Bossart <pierre-louis.bossart@intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
@@ -89,55 +90,38 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Em Sat, 30 Apr 2022 14:04:59 +0200
-Greg KH <gregkh@linuxfoundation.org> escreveu:
+On some devices, the hda driver needs to hook into a video driver,
+in order to be able to properly access the audio hardware and/or
+the power management function.
 
-> On Sat, Apr 30, 2022 at 11:30:58AM +0100, Mauro Carvalho Chehab wrote:
+That's the case of several snd_hda_intel devices that depends on
+i915 driver.
 
-> Did you run checkpatch on this?  Please do :)
-> 
-> > +
-> > +	if (mod == this)
-> > +		return 0;  
-> 
-> How can this happen?
-> When people mistakenly call try_module_get(THIS_MODULE)?  
+Ensure that a proper reference between the snd-hda driver needing
+such binding is shown at /proc/modules, in order to allow userspace
+to know about such binding.
 
-Yes. There are lots of place where this is happening:
+Signed-off-by: Mauro Carvalho Chehab <mchehab@kernel.org>
+---
 
-	$ git grep try_module_get\(THIS_MODULE|wc -l
-	82
+See [PATCH v3 0/2] at: https://lore.kernel.org/all/cover.1651326000.git.mchehab@kernel.org/
 
-> We should
-> throw up a big warning when that happens anyway as that's always wrong.
-> 
-> But that's a different issue from this change, sorry for the noise.
+ sound/hda/hdac_component.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-It sounds very weird to use try_module_get(THIS_MODULE).
-
-We could add a WARN_ON() there - or something similar - but I would do it 
-on a separate patch.
-
-> 
-> > +
-> > +	mutex_lock(&module_mutex);
-> > +
-> > +	ret = ref_module(this, mod);
-> > +
-> > +#ifdef CONFIG_MODULE_UNLOAD
-> > +	if (ret)
-> > +		goto ret;
-> > +
-> > +	ret = sysfs_create_link(mod->holders_dir,
-> > +				&this->mkobj.kobj, this->name);  
-> 
-> Meta comment, why do we only create links if we can unload things?
-
-Good question. I don't know for certain. This is the already existing 
-pattern at add_usage_links() - see kernel/module/sysfs.c.
-
-Also, lsmod uses sysfs links when showing dependencies.
-
-Regards,
-Mauro
+diff --git a/sound/hda/hdac_component.c b/sound/hda/hdac_component.c
+index bb37e7e0bd79..30e130457272 100644
+--- a/sound/hda/hdac_component.c
++++ b/sound/hda/hdac_component.c
+@@ -199,7 +199,7 @@ static int hdac_component_master_bind(struct device *dev)
+ 	}
+ 
+ 	/* pin the module to avoid dynamic unbinding, but only if given */
+-	if (!try_module_get(acomp->ops->owner)) {
++	if (!__try_module_get(acomp->ops->owner, dev->driver->owner)) {
+ 		ret = -ENODEV;
+ 		goto out_unbind;
+ 	}
+-- 
+2.35.1
 
