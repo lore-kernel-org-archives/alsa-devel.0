@@ -4,42 +4,76 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9E570C433F5
-	for <alsa-devel@archiver.kernel.org>; Sat, 30 Apr 2022 16:49:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E5011C433EF
+	for <alsa-devel@archiver.kernel.org>; Sat, 30 Apr 2022 17:11:51 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D04CD822;
-	Sat, 30 Apr 2022 18:49:05 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D04CD822
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3FC691FE;
+	Sat, 30 Apr 2022 19:10:59 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3FC691FE
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1651337395;
-	bh=pwEFNKYa9qUYH9FGl9E2WGLdyTWMtCNZ+8Lq58htxe4=;
-	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
+	s=default; t=1651338709;
+	bh=7Q7phQTT380eAyC4pna502Skfk1vzTEtTNmA1K869r0=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=D+KW61j2wnmuxtb/vf/ldKJiycEmVdaqFbEKxtRjE/LM0iFudJA01YGhC6Cb1lm7I
-	 4tfCl7rp3NxWM+EWymm07v/A+sjcTgfbRHcnuevKfGUfzbLUvklaDKP/S4UBna6p82
-	 jbEA1d+++i3DfhttICVmoD94nXJu7FEBxQDKz1QA=
+	b=mTNUPe6fnlulWTwfOLxdAB3+Q5zOlfjZmkbq+NX3mhZ/fRiIHIZ0Z1zIunPM4FtUN
+	 U8iV3lZj1LUS0Dy21kJn3SdYF4k6BQXlF3tbp2W4MWNxfC3E56v+KBrHwUhJZqJBbC
+	 Qk2kjMTMcYJn+33sF3TZvocEy/tR86wjq2kD/5qs=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 818C5F80128;
-	Sat, 30 Apr 2022 18:49:05 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id BB4BDF80125;
+	Sat, 30 Apr 2022 19:10:58 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 32B80F8012A; Sat, 30 Apr 2022 18:49:04 +0200 (CEST)
-Received: from webhooks-bot.alsa-project.org (gate.perex.cz [77.48.224.242])
- by alsa1.perex.cz (Postfix) with ESMTP id DD94AF80125
- for <alsa-devel@alsa-project.org>; Sat, 30 Apr 2022 18:48:57 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DD94AF80125
+ id 387AFF8016E; Sat, 30 Apr 2022 19:10:57 +0200 (CEST)
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id BE079F8012A
+ for <alsa-devel@alsa-project.org>; Sat, 30 Apr 2022 19:10:53 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BE079F8012A
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="lmhHSkgN"
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by ams.source.kernel.org (Postfix) with ESMTPS id 2229CB800E2;
+ Sat, 30 Apr 2022 17:10:53 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C82E2C385AC;
+ Sat, 30 Apr 2022 17:10:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1651338651;
+ bh=7Q7phQTT380eAyC4pna502Skfk1vzTEtTNmA1K869r0=;
+ h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+ b=lmhHSkgN6SJu7W4wB+ucUrBjvZo8z0l460AEAQjsgfNd5JfX2DEAsTn3S6Uvo0yAq
+ 0zn9heKMP4uN52wwlOMVgMS+pfaWDa52qGhz4X/UQIFoRv/uWtLMPNlcVI/oM5pwDu
+ gFqP84DWRdqCWqWZ9qRcTvL3nXuC7RU61QBlmL7SsaSr8rUkVtLuFccLFuDfXg4Px3
+ /X0tCjMBYgIFeDBrIrlELcr/CScCik3+ha5rPRf4nBnX+v5vjjs08w4LIe28IA7GgV
+ zz8Xqo3X+OTqjh4Jv9ZNNNjCzMNYjV0ie6/NkGGP8tpWTpeIGtrGkAopcmZadVKO9z
+ UaIdwvKJ/y8RQ==
+Received: from mchehab by mail.kernel.org with local (Exim 4.94.2)
+ (envelope-from <mchehab@kernel.org>)
+ id 1nkqcJ-001tIM-D5; Sat, 30 Apr 2022 18:10:47 +0100
+From: Mauro Carvalho Chehab <mchehab@kernel.org>
+To: Luis Chamberlain <mcgrof@kernel.org>
+Subject: [PATCH v4 2/2] ALSA: hda - identify when audio is provided by a video
+ driver
+Date: Sat, 30 Apr 2022 18:10:46 +0100
+Message-Id: <d0b23b803e4a1e748b09c5b94f84231ef96f66ec.1651338466.git.mchehab@kernel.org>
+X-Mailer: git-send-email 2.35.1
+In-Reply-To: <cover.1651338466.git.mchehab@kernel.org>
+References: <cover.1651338466.git.mchehab@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-From: GitHub issues - edited <github@alsa-project.org>
-To: alsa-devel@alsa-project.org
-In-Reply-To: <1651337337514448881-webhooks-bot@alsa-project.org>
-References: <1651337337514448881-webhooks-bot@alsa-project.org>
-Subject: how can i swich between sound card without reboot in archlinux
-Message-Id: <20220430164904.32B80F8012A@alsa1.perex.cz>
-Date: Sat, 30 Apr 2022 18:49:04 +0200 (CEST)
+Content-Transfer-Encoding: 8bit
+Cc: alsa-devel@alsa-project.org, mauro.chehab@linux.intel.com,
+ David Airlie <airlied@linux.ie>, Greg KH <gregkh@linuxfoundation.org>,
+ intel-gfx@lists.freedesktop.org, Lucas De Marchi <lucas.demarchi@intel.com>,
+ Takashi Iwai <tiwai@suse.com>, dri-devel@lists.freedesktop.org,
+ Kai Vehmanen <kai.vehmanen@intel.com>, linux-modules@vger.kernel.org,
+ Daniel Vetter <daniel@ffwll.ch>, Mauro Carvalho Chehab <mchehab@kernel.org>,
+ linux-kernel@vger.kernel.org,
+ Pierre-Louis Bossart <pierre-louis.bossart@intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -55,9 +89,38 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-alsa-project/alsa-utils issue #144 was edited from EN-KS:
+On some devices, the hda driver needs to hook into a video driver,
+in order to be able to properly access the audio hardware and/or
+the power management function.
 
-I use riverwm and kitty. Currently there is no sound output when i try to plugin a usb 2.4G wireless headset in and then use alsamixer F6 to select the usb sound card unless I leave the usb adapter on the machine and reboot. the usb sound card was detected tho, Is this what it suppose to be? or any procedure that I missed?
+That's the case of several snd_hda_intel devices that depends on
+i915 driver.
 
-Issue URL     : https://github.com/alsa-project/alsa-utils/issues/144
-Repository URL: https://github.com/alsa-project/alsa-utils
+Ensure that a proper reference between the snd-hda driver needing
+such binding is shown at /proc/modules, in order to allow userspace
+to know about such binding.
+
+Signed-off-by: Mauro Carvalho Chehab <mchehab@kernel.org>
+---
+
+See [PATCH v4 0/2] at: https://lore.kernel.org/all/cover.1651338466.git.mchehab@kernel.org/
+
+ sound/hda/hdac_component.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/sound/hda/hdac_component.c b/sound/hda/hdac_component.c
+index bb37e7e0bd79..30e130457272 100644
+--- a/sound/hda/hdac_component.c
++++ b/sound/hda/hdac_component.c
+@@ -199,7 +199,7 @@ static int hdac_component_master_bind(struct device *dev)
+ 	}
+ 
+ 	/* pin the module to avoid dynamic unbinding, but only if given */
+-	if (!try_module_get(acomp->ops->owner)) {
++	if (!__try_module_get(acomp->ops->owner, dev->driver->owner)) {
+ 		ret = -ENODEV;
+ 		goto out_unbind;
+ 	}
+-- 
+2.35.1
+
