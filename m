@@ -4,62 +4,79 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A1BABC433EF
-	for <alsa-devel@archiver.kernel.org>; Mon,  2 May 2022 13:14:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6BB3EC433F5
+	for <alsa-devel@archiver.kernel.org>; Mon,  2 May 2022 14:02:14 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 23C2EE12;
-	Mon,  2 May 2022 15:13:51 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 23C2EE12
+	by alsa0.perex.cz (Postfix) with ESMTPS id B85371CF;
+	Mon,  2 May 2022 16:01:21 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B85371CF
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1651497281;
-	bh=i3sODOZ2hKY4Hg4AtT00iOazNEgIIhoNw/ZsA8dg1z0=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=Hz8uda2MxF5Hhz3/muVaTyipshaHAfNxxPvL/XHxuTSL+Hk+5PH5AQgAnFOdt4gKh
-	 yGO4xMAdFQVGdK3NIYUa8WtBuZRmOPCWSIhYzjnjbRWyvyyXVWkqi1hMOmZtsuBBq/
-	 QRDVE3KBMMpiaxBbFIcIhLe2cVWoSkwEzCHovqdo=
+	s=default; t=1651500131;
+	bh=SB+mn4fRsEDPQCfTw8QCueHkfqpMzSgEmOFpanrd+SA=;
+	h=Date:Subject:To:References:From:In-Reply-To:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=uHNfd4zqvW1HcopvIdJog3rfN6vMGby6xjEQTO/njfAzDEEvXeS+4Axx9HcvNR0aA
+	 oNDkcwi/yF+Yu94kX/Bd7B0luHe5hhGg4/MeAZu2RiLPNm9Rq69YXd6mEobfF/kuPv
+	 IOi5GYTYbXu2XO9Axch8DgODZuTJUM650mjDnkqQ=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id A33FAF80154;
-	Mon,  2 May 2022 15:13:50 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 4B7DFF80154;
+	Mon,  2 May 2022 16:01:21 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 637A8F80245; Mon,  2 May 2022 15:13:48 +0200 (CEST)
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de
- [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+ id 3E739F80245; Mon,  2 May 2022 16:01:19 +0200 (CEST)
+Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 345FCF800D2
- for <alsa-devel@alsa-project.org>; Mon,  2 May 2022 15:13:39 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 345FCF800D2
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
- by metis.ext.pengutronix.de with esmtps
- (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92)
- (envelope-from <sha@pengutronix.de>)
- id 1nlVru-0000l5-7Q; Mon, 02 May 2022 15:13:38 +0200
-Received: from [2a0a:edc0:0:1101:1d::28] (helo=dude02.red.stw.pengutronix.de)
- by drehscheibe.grey.stw.pengutronix.de with esmtp (Exim 4.94.2)
- (envelope-from <sha@pengutronix.de>)
- id 1nlVru-006XlI-C6; Mon, 02 May 2022 15:13:36 +0200
-Received: from sha by dude02.red.stw.pengutronix.de with local (Exim 4.94.2)
- (envelope-from <sha@pengutronix.de>)
- id 1nlVrs-00AvZi-7q; Mon, 02 May 2022 15:13:36 +0200
-From: Sascha Hauer <s.hauer@pengutronix.de>
-To: alsa-devel@alsa-project.org
-Subject: [PATCH] ASoC: soc-generic-dmaengine-pcm: Use default config when none
- is given
-Date: Mon,  2 May 2022 15:13:35 +0200
-Message-Id: <20220502131335.2604158-1-s.hauer@pengutronix.de>
-X-Mailer: git-send-email 2.30.2
+ by alsa1.perex.cz (Postfix) with ESMTPS id 7F2FDF80129
+ for <alsa-devel@alsa-project.org>; Mon,  2 May 2022 16:01:14 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7F2FDF80129
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
+ header.b="FoxT2E40"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+ d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+ t=1651500075; x=1683036075;
+ h=message-id:date:mime-version:subject:to:cc:references:
+ from:in-reply-to:content-transfer-encoding;
+ bh=SB+mn4fRsEDPQCfTw8QCueHkfqpMzSgEmOFpanrd+SA=;
+ b=FoxT2E40zE2w483pgrrdVWAWz5OpXmiWzMflwdcYrIp6U3watN1D5uGj
+ L9BMArHo5YHLUmTDuWZeXMQtrHI2rkfZ/GKl0kRzvIXi7VKqXAmIlrke4
+ USHFDvPZnmUtbrYsHZieXsTmykUeZ4Nqr1hfB0abWmdmUHMmYbFZk1b7+
+ 4meOpvUZp27J4QwSMxVQ1eIsrfoKTZgkvGpwcduWzyn4LlHl8cMR8vhM6
+ fOa6euxMgoRBofPDRIxWOXr1J6ux6Rezm3x0xe7W2TraGmE/+aUIo//ES
+ LP2YbXCd0xGkkpDpa9Vy7pkl+jfy4Uy6BebqkK74aCSPTNGrRbqm+fpth g==;
+X-IronPort-AV: E=McAfee;i="6400,9594,10334"; a="267370955"
+X-IronPort-AV: E=Sophos;i="5.91,192,1647327600"; d="scan'208";a="267370955"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+ by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 02 May 2022 07:01:07 -0700
+X-IronPort-AV: E=Sophos;i="5.91,192,1647327600"; d="scan'208";a="561742281"
+Received: from sushilsu-mobl1.amr.corp.intel.com (HELO [10.251.9.25])
+ ([10.251.9.25])
+ by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 02 May 2022 07:01:05 -0700
+Message-ID: <62f73d83-56b0-1ccb-c7f6-5bf975f7bf9b@linux.intel.com>
+Date: Mon, 2 May 2022 09:01:04 -0500
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: sha@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de);
- SAEximRunCond expanded to false
-X-PTX-Original-Recipient: alsa-devel@alsa-project.org
-Cc: Sascha Hauer <s.hauer@pengutronix.de>, Mark Brown <broonie@kernel.org>,
- Lars-Peter Clausen <lars@metafoo.de>, kernel@pengutronix.de
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Firefox/91.0 Thunderbird/91.5.0
+Subject: Re: [PATCH AUTOSEL 5.17 06/22] ASoC: Intel: sof_es8336: Add a quirk
+ for Huawei Matebook D15
+Content-Language: en-US
+To: Sasha Levin <sashal@kernel.org>, Mark Brown <broonie@kernel.org>
+References: <20220426190145.2351135-1-sashal@kernel.org>
+ <20220426190145.2351135-6-sashal@kernel.org> <Ymko4F24MvbGJUXp@sirena.org.uk>
+ <Ym7gMZRI7ad6u0fL@sashalap>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+In-Reply-To: <Ym7gMZRI7ad6u0fL@sashalap>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+Cc: cezary.rojewski@intel.com, peter.ujfalusi@linux.intel.com, tiwai@suse.com,
+ yang.jie@linux.intel.com, alsa-devel@alsa-project.org, stable@vger.kernel.org,
+ linux-kernel@vger.kernel.org, liam.r.girdwood@linux.intel.com,
+ Mauro Carvalho Chehab <mchehab@kernel.org>, yung-chuan.liao@linux.intel.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -75,168 +92,25 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-snd_dmaengine_pcm_register() can be passed a NULL pointer for the config
-which means that the we have to test for pcm->config being non NULL
-before accessing it. Make the code more straight forward by providing a
-default config when none is passed. With this pcm->config is never NULL
-and we can skip all the if (pcm->config) tests.
 
-Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
----
- sound/soc/soc-generic-dmaengine-pcm.c | 57 ++++++++++++---------------
- 1 file changed, 25 insertions(+), 32 deletions(-)
 
-diff --git a/sound/soc/soc-generic-dmaengine-pcm.c b/sound/soc/soc-generic-dmaengine-pcm.c
-index 285441d6aeed4..87858462bba99 100644
---- a/sound/soc/soc-generic-dmaengine-pcm.c
-+++ b/sound/soc/soc-generic-dmaengine-pcm.c
-@@ -79,29 +79,19 @@ static int dmaengine_pcm_hw_params(struct snd_soc_component *component,
- {
- 	struct dmaengine_pcm *pcm = soc_component_to_pcm(component);
- 	struct dma_chan *chan = snd_dmaengine_pcm_get_chan(substream);
--	int (*prepare_slave_config)(struct snd_pcm_substream *substream,
--			struct snd_pcm_hw_params *params,
--			struct dma_slave_config *slave_config);
- 	struct dma_slave_config slave_config;
-+	int ret;
- 
--	memset(&slave_config, 0, sizeof(slave_config));
--
--	if (!pcm->config)
--		prepare_slave_config = snd_dmaengine_pcm_prepare_slave_config;
--	else
--		prepare_slave_config = pcm->config->prepare_slave_config;
-+	if (!pcm->config->prepare_slave_config)
-+		return 0;
- 
--	if (prepare_slave_config) {
--		int ret = prepare_slave_config(substream, params, &slave_config);
--		if (ret)
--			return ret;
-+	memset(&slave_config, 0, sizeof(slave_config));
- 
--		ret = dmaengine_slave_config(chan, &slave_config);
--		if (ret)
--			return ret;
--	}
-+	ret = pcm->config->prepare_slave_config(substream, params, &slave_config);
-+	if (ret)
-+		return ret;
- 
--	return 0;
-+	return dmaengine_slave_config(chan, &slave_config);
- }
- 
- static int
-@@ -121,7 +111,7 @@ dmaengine_pcm_set_runtime_hwparams(struct snd_soc_component *component,
- 		return -EINVAL;
- 	}
- 
--	if (pcm->config && pcm->config->pcm_hardware)
-+	if (pcm->config->pcm_hardware)
- 		return snd_soc_set_runtime_hwparams(substream,
- 				pcm->config->pcm_hardware);
- 
-@@ -188,7 +178,6 @@ static struct dma_chan *dmaengine_pcm_compat_request_channel(
- {
- 	struct dmaengine_pcm *pcm = soc_component_to_pcm(component);
- 	struct snd_dmaengine_dai_dma_data *dma_data;
--	dma_filter_fn fn = NULL;
- 
- 	if (rtd->num_cpus > 1) {
- 		dev_err(rtd->dev,
-@@ -201,13 +190,11 @@ static struct dma_chan *dmaengine_pcm_compat_request_channel(
- 	if ((pcm->flags & SND_DMAENGINE_PCM_FLAG_HALF_DUPLEX) && pcm->chan[0])
- 		return pcm->chan[0];
- 
--	if (pcm->config && pcm->config->compat_request_channel)
-+	if (pcm->config->compat_request_channel)
- 		return pcm->config->compat_request_channel(rtd, substream);
- 
--	if (pcm->config)
--		fn = pcm->config->compat_filter_fn;
--
--	return snd_dmaengine_pcm_request_channel(fn, dma_data->filter_data);
-+	return snd_dmaengine_pcm_request_channel(pcm->config->compat_filter_fn,
-+						 dma_data->filter_data);
- }
- 
- static bool dmaengine_pcm_can_report_residue(struct device *dev,
-@@ -239,12 +226,12 @@ static int dmaengine_pcm_new(struct snd_soc_component *component,
- 	size_t max_buffer_size;
- 	unsigned int i;
- 
--	if (config && config->prealloc_buffer_size)
-+	if (config->prealloc_buffer_size)
- 		prealloc_buffer_size = config->prealloc_buffer_size;
- 	else
- 		prealloc_buffer_size = prealloc_buffer_size_kbytes * 1024;
- 
--	if (config && config->pcm_hardware && config->pcm_hardware->buffer_bytes_max)
-+	if (config->pcm_hardware && config->pcm_hardware->buffer_bytes_max)
- 		max_buffer_size = config->pcm_hardware->buffer_bytes_max;
- 	else
- 		max_buffer_size = SIZE_MAX;
-@@ -254,7 +241,7 @@ static int dmaengine_pcm_new(struct snd_soc_component *component,
- 		if (!substream)
- 			continue;
- 
--		if (!pcm->chan[i] && config && config->chan_names[i])
-+		if (!pcm->chan[i] && config->chan_names[i])
- 			pcm->chan[i] = dma_request_slave_channel(dev,
- 				config->chan_names[i]);
- 
-@@ -367,10 +354,10 @@ static int dmaengine_pcm_request_chan_of(struct dmaengine_pcm *pcm,
- 	struct dma_chan *chan;
- 
- 	if ((pcm->flags & SND_DMAENGINE_PCM_FLAG_NO_DT) || (!dev->of_node &&
--	    !(config && config->dma_dev && config->dma_dev->of_node)))
-+	    !(config->dma_dev && config->dma_dev->of_node)))
- 		return 0;
- 
--	if (config && config->dma_dev) {
-+	if (config->dma_dev) {
- 		/*
- 		 * If this warning is seen, it probably means that your Linux
- 		 * device structure does not match your HW device structure.
-@@ -387,7 +374,7 @@ static int dmaengine_pcm_request_chan_of(struct dmaengine_pcm *pcm,
- 			name = "rx-tx";
- 		else
- 			name = dmaengine_pcm_dma_channel_names[i];
--		if (config && config->chan_names[i])
-+		if (config->chan_names[i])
- 			name = config->chan_names[i];
- 		chan = dma_request_chan(dev, name);
- 		if (IS_ERR(chan)) {
-@@ -425,6 +412,10 @@ static void dmaengine_pcm_release_chan(struct dmaengine_pcm *pcm)
- 	}
- }
- 
-+static const struct snd_dmaengine_pcm_config snd_dmaengine_pcm_default_config = {
-+	.prepare_slave_config = snd_dmaengine_pcm_prepare_slave_config,
-+};
-+
- /**
-  * snd_dmaengine_pcm_register - Register a dmaengine based PCM device
-  * @dev: The parent device for the PCM device
-@@ -445,6 +436,8 @@ int snd_dmaengine_pcm_register(struct device *dev,
- #ifdef CONFIG_DEBUG_FS
- 	pcm->component.debugfs_prefix = "dma";
- #endif
-+	if (!config)
-+		config = &snd_dmaengine_pcm_default_config;
- 	pcm->config = config;
- 	pcm->flags = flags;
- 
-@@ -452,7 +445,7 @@ int snd_dmaengine_pcm_register(struct device *dev,
- 	if (ret)
- 		goto err_free_dma;
- 
--	if (config && config->process)
-+	if (config->process)
- 		driver = &dmaengine_pcm_component_process;
- 	else
- 		driver = &dmaengine_pcm_component;
--- 
-2.30.2
+On 5/1/22 14:32, Sasha Levin wrote:
+> On Wed, Apr 27, 2022 at 12:28:32PM +0100, Mark Brown wrote:
+>> On Tue, Apr 26, 2022 at 03:01:29PM -0400, Sasha Levin wrote:
+>>> From: Mauro Carvalho Chehab <mchehab@kernel.org>
+>>>
+>>> [ Upstream commit c7cb4717f641db68e8117635bfcf62a9c27dc8d3 ]
+>>>
+>>> Based on experimental tests, Huawei Matebook D15 actually uses
+>>> both gpio0 and gpio1: the first one controls the speaker, while
+>>> the other one controls the headphone.
+>>
+>> Are you sure this doesn't need the rest of the series it came along
+>> with?
+> 
+> I'm not :) Should we queue it too?
+
+If you add this platform to -stable, you'd need the entire series https://lore.kernel.org/alsa-devel/20220308192610.392950-1-pierre-louis.bossart@linux.intel.com/, and the additions made by Mauro.
+
+My take is that it's not really relevant for -stable, support for this hardware codec is still a works-in-progress and while we'd certainly want to have more distributions use the hardware support it's quite disruptive for -stable maintainers, with the risk of compilation problems and functional issues introduced. it'll make more sense for 5.18+.
 
