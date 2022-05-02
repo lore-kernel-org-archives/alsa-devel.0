@@ -4,79 +4,79 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6BB3EC433F5
-	for <alsa-devel@archiver.kernel.org>; Mon,  2 May 2022 14:02:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 10714C433F5
+	for <alsa-devel@archiver.kernel.org>; Mon,  2 May 2022 14:03:00 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B85371CF;
-	Mon,  2 May 2022 16:01:21 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B85371CF
+	by alsa0.perex.cz (Postfix) with ESMTPS id C270415E2;
+	Mon,  2 May 2022 16:02:08 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C270415E2
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1651500131;
-	bh=SB+mn4fRsEDPQCfTw8QCueHkfqpMzSgEmOFpanrd+SA=;
+	s=default; t=1651500178;
+	bh=DvDIwV3CmqjYSR4SOb9akGSwBgrd14Hct48y1doOBbM=;
 	h=Date:Subject:To:References:From:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=uHNfd4zqvW1HcopvIdJog3rfN6vMGby6xjEQTO/njfAzDEEvXeS+4Axx9HcvNR0aA
-	 oNDkcwi/yF+Yu94kX/Bd7B0luHe5hhGg4/MeAZu2RiLPNm9Rq69YXd6mEobfF/kuPv
-	 IOi5GYTYbXu2XO9Axch8DgODZuTJUM650mjDnkqQ=
+	b=a3NifOJAmqzt5qBQ7lvd6EjA5TeOYhxPrOckwZPAqZozLZsNsJoXgTbgAn8R5Wx/y
+	 mjXJ79GPmlzdk66Xy1ZTACdCQingBJr3dst1M6ssFCoYt2tIlwD4nS7ujRyFh49ba5
+	 HN9oglww8oxQeLnDV9LPBzS10S9DROCss70UA3ew=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 4B7DFF80154;
-	Mon,  2 May 2022 16:01:21 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 5458BF80254;
+	Mon,  2 May 2022 16:02:08 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 3E739F80245; Mon,  2 May 2022 16:01:19 +0200 (CEST)
-Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
+ id BBC64F8027C; Mon,  2 May 2022 16:02:06 +0200 (CEST)
+Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 7F2FDF80129
- for <alsa-devel@alsa-project.org>; Mon,  2 May 2022 16:01:14 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7F2FDF80129
+ by alsa1.perex.cz (Postfix) with ESMTPS id 8780BF80129
+ for <alsa-devel@alsa-project.org>; Mon,  2 May 2022 16:02:01 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8780BF80129
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="FoxT2E40"
+ header.b="DfnYgx/o"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1651500075; x=1683036075;
+ t=1651500124; x=1683036124;
  h=message-id:date:mime-version:subject:to:cc:references:
  from:in-reply-to:content-transfer-encoding;
- bh=SB+mn4fRsEDPQCfTw8QCueHkfqpMzSgEmOFpanrd+SA=;
- b=FoxT2E40zE2w483pgrrdVWAWz5OpXmiWzMflwdcYrIp6U3watN1D5uGj
- L9BMArHo5YHLUmTDuWZeXMQtrHI2rkfZ/GKl0kRzvIXi7VKqXAmIlrke4
- USHFDvPZnmUtbrYsHZieXsTmykUeZ4Nqr1hfB0abWmdmUHMmYbFZk1b7+
- 4meOpvUZp27J4QwSMxVQ1eIsrfoKTZgkvGpwcduWzyn4LlHl8cMR8vhM6
- fOa6euxMgoRBofPDRIxWOXr1J6ux6Rezm3x0xe7W2TraGmE/+aUIo//ES
- LP2YbXCd0xGkkpDpa9Vy7pkl+jfy4Uy6BebqkK74aCSPTNGrRbqm+fpth g==;
-X-IronPort-AV: E=McAfee;i="6400,9594,10334"; a="267370955"
-X-IronPort-AV: E=Sophos;i="5.91,192,1647327600"; d="scan'208";a="267370955"
+ bh=DvDIwV3CmqjYSR4SOb9akGSwBgrd14Hct48y1doOBbM=;
+ b=DfnYgx/oxMcB5cluUwYmGEX3bDnreUHnruCAAhLF87MrXcvUsASCuJHH
+ DjV8lp6yuw6PBlpYA2JCsrp/WsRJSYDLNnS41wyh7BSKoznA5wbeHrKCa
+ NMmjjH99x2UkxPucHrSbaoqwLyK9hQJJ26zpUuJaCOdLb7SY16jbVdccw
+ HtCVrOKATYE+RCSYnuIgltwYtg47SkswlFvVTbd9rDbSWekrq9B9Y7Mhg
+ cu+WQKMbdbi38mTEeCBsL1dXXhwEVKnBgHEBHgFnOktPZLzcr7Ir1x0Dt
+ c3via0XWbusfYQx/RnGc1tThdLjWocCOF57Tv1pvoKdKW45fRdn1ByFSY Q==;
+X-IronPort-AV: E=McAfee;i="6400,9594,10334"; a="330206730"
+X-IronPort-AV: E=Sophos;i="5.91,192,1647327600"; d="scan'208";a="330206730"
 Received: from orsmga007.jf.intel.com ([10.7.209.58])
- by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 02 May 2022 07:01:07 -0700
-X-IronPort-AV: E=Sophos;i="5.91,192,1647327600"; d="scan'208";a="561742281"
+ by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 02 May 2022 07:01:46 -0700
+X-IronPort-AV: E=Sophos;i="5.91,192,1647327600"; d="scan'208";a="561742733"
 Received: from sushilsu-mobl1.amr.corp.intel.com (HELO [10.251.9.25])
  ([10.251.9.25])
  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 02 May 2022 07:01:05 -0700
-Message-ID: <62f73d83-56b0-1ccb-c7f6-5bf975f7bf9b@linux.intel.com>
-Date: Mon, 2 May 2022 09:01:04 -0500
+ 02 May 2022 07:01:45 -0700
+Message-ID: <3b5f69bc-e7e9-b3f0-7ebb-bd66590474f3@linux.intel.com>
+Date: Mon, 2 May 2022 08:53:40 -0500
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
  Firefox/91.0 Thunderbird/91.5.0
-Subject: Re: [PATCH AUTOSEL 5.17 06/22] ASoC: Intel: sof_es8336: Add a quirk
- for Huawei Matebook D15
+Subject: Re: [PATCH 06/14] ASoC: Intel: avs: Coredump and recovery flow
 Content-Language: en-US
-To: Sasha Levin <sashal@kernel.org>, Mark Brown <broonie@kernel.org>
-References: <20220426190145.2351135-1-sashal@kernel.org>
- <20220426190145.2351135-6-sashal@kernel.org> <Ymko4F24MvbGJUXp@sirena.org.uk>
- <Ym7gMZRI7ad6u0fL@sashalap>
+To: Cezary Rojewski <cezary.rojewski@intel.com>, alsa-devel@alsa-project.org, 
+ broonie@kernel.org
+References: <20220426172346.3508411-1-cezary.rojewski@intel.com>
+ <20220426172346.3508411-7-cezary.rojewski@intel.com>
+ <d80075c7-3658-52e0-b09f-35182961d5df@linux.intel.com>
+ <f20f3d72-8f5a-1878-c1fa-49dafce784d7@intel.com>
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-In-Reply-To: <Ym7gMZRI7ad6u0fL@sashalap>
+In-Reply-To: <f20f3d72-8f5a-1878-c1fa-49dafce784d7@intel.com>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-Cc: cezary.rojewski@intel.com, peter.ujfalusi@linux.intel.com, tiwai@suse.com,
- yang.jie@linux.intel.com, alsa-devel@alsa-project.org, stable@vger.kernel.org,
- linux-kernel@vger.kernel.org, liam.r.girdwood@linux.intel.com,
- Mauro Carvalho Chehab <mchehab@kernel.org>, yung-chuan.liao@linux.intel.com
+Content-Transfer-Encoding: 8bit
+Cc: upstream@semihalf.com, harshapriya.n@intel.com, rad@semihalf.com,
+ tiwai@suse.com, hdegoede@redhat.com, amadeuszx.slawinski@linux.intel.com,
+ cujomalainey@chromium.org, lma@semihalf.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -93,24 +93,27 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
-
-On 5/1/22 14:32, Sasha Levin wrote:
-> On Wed, Apr 27, 2022 at 12:28:32PM +0100, Mark Brown wrote:
->> On Tue, Apr 26, 2022 at 03:01:29PM -0400, Sasha Levin wrote:
->>> From: Mauro Carvalho Chehab <mchehab@kernel.org>
->>>
->>> [ Upstream commit c7cb4717f641db68e8117635bfcf62a9c27dc8d3 ]
->>>
->>> Based on experimental tests, Huawei Matebook D15 actually uses
->>> both gpio0 and gpio1: the first one controls the speaker, while
->>> the other one controls the headphone.
+>>> +
+>>> +    /* forcibly shutdown all cores */
+>>> +    core_mask = GENMASK(adev->hw_cfg.dsp_cores - 1, 0);
+>>> +    avs_dsp_core_disable(adev, core_mask);
+>>> +
+>>> +    /* attempt dsp reboot */
+>>> +    ret = avs_dsp_boot_firmware(adev, true);
+>>> +    if (ret < 0)
+>>> +        dev_err(adev->dev, "dsp reboot failed: %d\n", ret);
+>>> +
+>>> +    pm_runtime_mark_last_busy(adev->dev);
+>>> +    pm_runtime_enable(adev->dev);
+>>> +    pm_request_autosuspend(adev->dev);
 >>
->> Are you sure this doesn't need the rest of the series it came along
->> with?
+>> there are zero users of this routine in the entire sound/ tree, can you clarify why this is needed or what you are trying to do?
 > 
-> I'm not :) Should we queue it too?
+> 
+> Unsure which routine you question here. I'll assume it's pm_request_autosuspend().
+> 
+> pm_request_audiosuspend() is being used to queue suspend once recovery completes. Recovery takes time and during that time all communication attempts with DSP will yield -EPERM. PM is also blocked for the device with pm_runtime_disable(), performed before scheduling the recovery work. Once recovery completes we do not just unblock the PM as that would cause immediate suspend. Instead, we "refresh" the *last busy* status and queue the suspend operation.
 
-If you add this platform to -stable, you'd need the entire series https://lore.kernel.org/alsa-devel/20220308192610.392950-1-pierre-louis.bossart@linux.intel.com/, and the additions made by Mauro.
+But since you already have autosuspend enabled, why would you need to explicitly queue a suspend operation? What happens if that last call is omitted, is there actually a functional difference?
 
-My take is that it's not really relevant for -stable, support for this hardware codec is still a works-in-progress and while we'd certainly want to have more distributions use the hardware support it's quite disruptive for -stable maintainers, with the risk of compilation problems and functional issues introduced. it'll make more sense for 5.18+.
-
+Not objecting if that's required, but since no one else used it so far I wonder if we missed something or if this is overkill.
