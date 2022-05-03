@@ -4,66 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 35636C433EF
-	for <alsa-devel@archiver.kernel.org>; Tue,  3 May 2022 15:52:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A5CA8C433EF
+	for <alsa-devel@archiver.kernel.org>; Tue,  3 May 2022 15:52:49 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C1E45828;
-	Tue,  3 May 2022 17:51:37 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C1E45828
+	by alsa0.perex.cz (Postfix) with ESMTPS id 7CCAB852;
+	Tue,  3 May 2022 17:51:57 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7CCAB852
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1651593147;
-	bh=akc4P1CT2JMs8+Y04oGAJTGvBEGi+T9fXK9A+hSt5zQ=;
+	s=default; t=1651593167;
+	bh=9NanTsR7u1YvPHXUBbajdoW6Gu4PT5r8nQaIC9rVc4Y=;
 	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=q4efmV3a6Vay4KC+8aJTyaNBl9I3aId9Uqzw0xDooFrkDjo4Tbc8UK8DhKsz6oV26
-	 WmMtodXw7CsZKWaoPwgFab0XGesBAV4PUQrM17Rr/9Qxud9DPQxpB11+FhCJq0CTs5
-	 dRFZyOaD58JBgdtFstUxSRa8s3Ff6kwKbPOblR/E=
+	b=XTwy30NRljRR8vHSI41+vcs+K3/02tDu3K/Gs/4wvQP0UUe7F6L6k9SxNvHOibsWf
+	 XMPVibJJjzB+c9rZoHPa4/+TU+jS+dTOniY5ZnvUc+pf5r1qXPQavW6eu2Lh+hN3gr
+	 dAA6J3uerScmhJMJ0Y1TOBxEACk1WP6PjNjDZOuk=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 6EEF4F8028D;
-	Tue,  3 May 2022 17:51:07 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 156FEF80272;
+	Tue,  3 May 2022 17:51:08 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 3DAB9F804AB; Tue,  3 May 2022 17:51:03 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+ id 3B319F80158; Tue,  3 May 2022 17:51:05 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org
+ [IPv6:2604:1380:4641:c500::1])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 278B0F80129
- for <alsa-devel@alsa-project.org>; Tue,  3 May 2022 17:50:59 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 278B0F80129
+ by alsa1.perex.cz (Postfix) with ESMTPS id 76B39F8025E
+ for <alsa-devel@alsa-project.org>; Tue,  3 May 2022 17:51:01 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 76B39F8025E
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="QNwadGzK"
+ header.b="h+tFXLbc"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id 8111661685;
- Tue,  3 May 2022 15:50:57 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 42A34C385B1;
- Tue,  3 May 2022 15:50:56 +0000 (UTC)
+ by dfw.source.kernel.org (Postfix) with ESMTPS id 014346168C;
+ Tue,  3 May 2022 15:51:00 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B3F1FC385AF;
+ Tue,  3 May 2022 15:50:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1651593056;
- bh=akc4P1CT2JMs8+Y04oGAJTGvBEGi+T9fXK9A+hSt5zQ=;
+ s=k20201202; t=1651593059;
+ bh=9NanTsR7u1YvPHXUBbajdoW6Gu4PT5r8nQaIC9rVc4Y=;
  h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=QNwadGzKxeUhgHNEJ8lR+79whi+iSFS3MKeSLzzuQud/kJbDvkA0YVeWH/1O8yLvm
- z/PXeygU+djtFbLoFeYjqOGARb++ncN0fcIwk/JEF/IZRRsF+APQsEoVOhxmjzqiS/
- ffIYUPqptykzkj0xJeCjc2GGUcoilpmGlHJ1wnm7mkX4ZgaDSKoDXNQaIR3Y9E3Gpz
- pXz4S6dxYy9xT0JpbZuiM0wu5pp8CcMF61pGtJHfo0mVoQH7sl9Z/skCOuXH+21csQ
- ibqqJ45KqWzPaIe7Bbuu2A3Kd8nbozXAvetJYoVsnwo7K4ojd6CAq/S3u05hnDJsoG
- SaMA/W1YO/wfg==
+ b=h+tFXLbcDFQL3QBa5OAnkcMHmqwDLOBRluafB44o94/hWjmsT2iQJrbmuDVxmMIfm
+ ajUdhjD6WBy4G5vwM7Oei3TU8nm2DiKXe0cPbMoFjsmcunrbl0Z1M2+FnqvUwtD0h+
+ Vke2bO1lUO96VS8KGFpqQfCdVm/jaJpRlJgDgGIHc0QiZ4wqW/YVM2MQHjRuWm1quL
+ aryMqmrklIKSDMIij9M+3pU8HlFnUO4xr+WMdTE9QgGU5no4QA0HnC8zoWRYP5SuVA
+ rsp3IySBLNeQoHBJZSznIO7crP3BzsrD9X57YMU842JXPXYhg5ElD3KwcUnhsCs948
+ wpQA2jDscqk7w==
 From: Mark Brown <broonie@kernel.org>
-To: ranjani.sridharan@linux.intel.com, alsa-devel@alsa-project.org
-In-Reply-To: <20220426171743.171061-1-ranjani.sridharan@linux.intel.com>
-References: <20220426171743.171061-1-ranjani.sridharan@linux.intel.com>
-Subject: Re: [PATCH 00/11] ASoC: SOF: Miscellaneous preparatory patches for
- IPC4
-Message-Id: <165159305599.184114.6184107807430721548.b4-ty@kernel.org>
-Date: Tue, 03 May 2022 16:50:55 +0100
+To: broonie@kernel.org, lgirdwood@gmail.com
+In-Reply-To: <20220428161833.3690050-1-broonie@kernel.org>
+References: <20220428161833.3690050-1-broonie@kernel.org>
+Subject: Re: [PATCH] ASoC: dapm: Don't fold register value changes into
+ notifications
+Message-Id: <165159305846.184114.14148614569923073381.b4-ty@kernel.org>
+Date: Tue, 03 May 2022 16:50:58 +0100
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: tiwai@suse.com
+Cc: alsa-devel@alsa-project.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -79,13 +80,17 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Tue, 26 Apr 2022 10:17:32 -0700, Ranjani Sridharan wrote:
-> This series includes last few remaining miscellaneous patches to prepare
-> for the introduction of new IPC version, IPC4, in the SOF driver. The changes
-> include new IPC ops for topology parsing to set up the volume table, prepare
-> the widgets for set up and free the routes. The remaining patches introduce
-> new fields in the existing data structures for use in IPC4 and align the flows
-> for widget/route set up so that they are common for both IPC3 and IPC4.
+On Thu, 28 Apr 2022 17:18:32 +0100, Mark Brown wrote:
+> DAPM tracks and reports the value presented to the user from DAPM controls
+> separately to the register value, these may diverge during initialisation
+> or when an autodisable control is in use.
+> 
+> When writing DAPM controls we currently report that a change has occurred
+> if either the DAPM value or the value stored in the register has changed,
+> meaning that if the two are out of sync we may appear to report a spurious
+> event to userspace. Since we use this folded in value for nothing other
+> than the value reported to userspace simply drop the folding in of the
+> register change.
 > 
 > [...]
 
@@ -95,28 +100,8 @@ Applied to
 
 Thanks!
 
-[01/11] ASoC: SOF: Add a new op to set up volume table
-        commit: 48d2a1ceae03610a431535aca9106eab4201b191
-[02/11] ASoC: SOF: sof-audio: reset route status before freeing widget
-        commit: 33a3facdf8ccf1b777ef0c39841425ca8d8d4a40
-[03/11] ASoC: SOF: sof-audio: Set up widgets from source to sink
-        commit: 5da0590a090b096279227cf2b044b1ef9b9c6c1b
-[04/11] ASoC: SOF: pcm: Move the call to snd_sof_pcm_platform_hw_params()
-        commit: f0d31dbb3fc44ac9cb0d9991cc0a629c88e80ac8
-[05/11] ASoC: SOF: expose a couple of functions
-        commit: 7b3a5be546a131f806fa015d1c78987daf1eb5c9
-[06/11] ASoC: SOF: Add a route_free op in struct sof_ipc_tplg_ops
-        commit: d77d7795547ae8e2ed23d1ce835b539ee1d794bb
-[07/11] ASoC: SOF: Add two new fields to struct snd_sof_widget
-        commit: 36cbc9df3faca01500480acdda016222663da761
-[08/11] ASoC: SOF: pcm: remove unnecessary function declaration
-        commit: f18ad9caa0dfeb12cb386777b1130c5fba9a0079
-[09/11] ASoC: SOF: topology: Skip parsing DAI link tokens if not needed
-        commit: a5ba725e9dc928832ba97a4418e36fef8d0244c6
-[10/11] ASoC: SOF: clarify use of widget complete flag
-        commit: 463a809ba8efa127484d16ff588e3bcdb63fe41e
-[11/11] ASoC: SOF: Add a prepare op to IPC topology widget ops
-        commit: 66344c6d92113e605d8212e79b1219406893ee05
+[1/1] ASoC: dapm: Don't fold register value changes into notifications
+      commit: ad685980469b9f9b99d4d6ea05f4cb8f57cb2234
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
