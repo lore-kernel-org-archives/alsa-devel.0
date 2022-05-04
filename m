@@ -4,186 +4,83 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3ECEBC433EF
-	for <alsa-devel@archiver.kernel.org>; Wed,  4 May 2022 16:01:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 79CCDC433FE
+	for <alsa-devel@archiver.kernel.org>; Wed,  4 May 2022 16:13:52 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id F326C161E;
-	Wed,  4 May 2022 18:00:49 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F326C161E
+	by alsa0.perex.cz (Postfix) with ESMTPS id E20971621;
+	Wed,  4 May 2022 18:12:59 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E20971621
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1651680100;
-	bh=FjB7KiIOB/n2JkdVlBssi8yuPI/4Mt7iNYzP5kZiKlg=;
-	h=Date:Subject:To:References:From:In-Reply-To:Cc:List-Id:
+	s=default; t=1651680830;
+	bh=zaNtbZO2sXMPp6Skc8+Qw4k0ZSL3t4eRToOdFIO6mh0=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=t4OniJ0dGqKwL/mPzzPCPoa5Bgx9snl6VordSEDqYTacF32CsL3Tbs6KgxBFqbzgH
-	 +4bwZZ1P1VDe1otZUYnawZn4Lw/r4wXISLGhkklJZapXmZ3CT5F48mCEpWHRHEJuLV
-	 UC74iwB0wI65KcEBD7lAg31IViJN4KdwCoqhdkhw=
+	b=kxpeuBkTYBa759qQleQfI8OxLfNtb+IA3GiD11bgmGq6jGmTk5Qqn2WG7xfalp+iI
+	 rTval1iXjHfZjt2ssmCLqwy/hsSO9tJFt7z+nmAIQcPVVd44WQNsOX1D7xzdFWEKi4
+	 bL2PBhNe4vy5xfKV4Qvb0hRcaWq8AsUfydPuTCgo=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 5A95BF80141;
-	Wed,  4 May 2022 18:00:49 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 66769F80129;
+	Wed,  4 May 2022 18:12:59 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id B2E93F80163; Wed,  4 May 2022 18:00:47 +0200 (CEST)
-Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
+ id A975EF80129; Wed,  4 May 2022 18:12:57 +0200 (CEST)
+Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
+ [67.231.152.168])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 1909AF80129
- for <alsa-devel@alsa-project.org>; Wed,  4 May 2022 18:00:43 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1909AF80129
+ by alsa1.perex.cz (Postfix) with ESMTPS id 8DBC8F80129
+ for <alsa-devel@alsa-project.org>; Wed,  4 May 2022 18:12:51 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8DBC8F80129
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="fWTtiUkW"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
- d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1651680045; x=1683216045;
- h=message-id:date:subject:to:cc:references:from:
- in-reply-to:content-transfer-encoding:mime-version;
- bh=FjB7KiIOB/n2JkdVlBssi8yuPI/4Mt7iNYzP5kZiKlg=;
- b=fWTtiUkWtKsQ8D4zBvuBtrz57gi/C/Sfyy9724dWgTxLUVINGk/WF+NG
- +ESTdK4GnyIcrmReae+6c8HRNX4DYk6D+aQaJYCESdtE1B/PtAB2Q23FO
- th77ORqgVsLwUngzSpPDZVd6q8OVXbODzyA8BcvvgaWlyl1zmEiLqw+XF
- eRtewVlNaT1FrTHG1Q8sUvDtooNly6MrbNkDmeb+3KEaIrsvhA/WJwnou
- SAA4pcrQuzfk2yR0Cie2OmtyrEmGVUPN3jl0KfasS1/uZk9k3eKDwrpqa
- WGckg1D4v05t53UhT+cAJhgcbRDe6P4AOaYULlH2fVDZPKTrMO3Blu1IQ Q==;
-X-IronPort-AV: E=McAfee;i="6400,9594,10337"; a="265396438"
-X-IronPort-AV: E=Sophos;i="5.91,198,1647327600"; d="scan'208";a="265396438"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
- by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 04 May 2022 09:00:39 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.91,198,1647327600"; d="scan'208";a="517084688"
-Received: from orsmsx603.amr.corp.intel.com ([10.22.229.16])
- by orsmga003.jf.intel.com with ESMTP; 04 May 2022 09:00:39 -0700
-Received: from orsmsx601.amr.corp.intel.com (10.22.229.14) by
- ORSMSX603.amr.corp.intel.com (10.22.229.16) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.27; Wed, 4 May 2022 09:00:38 -0700
-Received: from ORSEDG602.ED.cps.intel.com (10.7.248.7) by
- orsmsx601.amr.corp.intel.com (10.22.229.14) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.27 via Frontend Transport; Wed, 4 May 2022 09:00:38 -0700
-Received: from NAM10-MW2-obe.outbound.protection.outlook.com (104.47.55.105)
- by edgegateway.intel.com (134.134.137.103) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2308.27; Wed, 4 May 2022 09:00:38 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=EVVgy9LqbH9QHugs/RIdhUi+aOrKyqdiYPP0jKjNOr6FoeAopd4LI1TVsN2IJb01l0r76zV1tgFHrhxWbrPp63D0piL7vlX7U7/b/eixybcJhffDrRp4k564Hv7ez4KJiQdWZnfL+YlgLu/nGoBuh7Pm6n6Ioz5oVsxhuoJDShlgiEYAG7NWNZetiqUTxuewBlCEPjK3VZUCXp3/dfpvVFTpD1ASo8gbwfEspzxvs0c3Zc7B03vEp8U5gqwTyTUkhMNf+womBxapyJoTgQMvI9G3HrbWMUh6QhTMJu8ztWnWdMvbksEbEKMJn+LqWWfiS6RPYTLqDxigwV0KQCfvSA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=z9q2gQ5JlPRK+tmoWKMDqzWxbTdWkxkWIXGQjvNtyDs=;
- b=TD7SMnzriC3Ha/XN7gTtng1ZBYjm8ifDATL0iNn+5frhW9NUw4y24lf+NFahQt0yReqtHRbg6r5kFQJHU2T2qkgzmyNYxUrSD66fBQnvZJEFn1PpYHDWn1dIvD50HS1zyIJMstgjclJk1pvwCb9DZckp2gClATjYCq7/tAM2EXgpOgnHQNuCTgtqy+3y8//fCzTE3avIjGA4k0iVoHIAWZ5BAYExyrAscbCZfSUgGHYlaFg6cX4EvSQh48+nKjPCuk3MO5UC498lDOIZdoxnzcr8TauYsWTLzcvezKhq44dKWPXF6L6WBlw4E2oOek/rkQyy5dnEFKG0GlOpQq5shw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from MWHPR1101MB2157.namprd11.prod.outlook.com
- (2603:10b6:301:51::10) by MWHPR11MB1694.namprd11.prod.outlook.com
- (2603:10b6:300:21::23) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5206.24; Wed, 4 May
- 2022 16:00:37 +0000
-Received: from MWHPR1101MB2157.namprd11.prod.outlook.com
- ([fe80::b1bc:45f3:e805:6942]) by MWHPR1101MB2157.namprd11.prod.outlook.com
- ([fe80::b1bc:45f3:e805:6942%10]) with mapi id 15.20.5186.028; Wed, 4 May 2022
- 16:00:36 +0000
-Message-ID: <e34d453b-1fbe-6e53-dc90-00580c9df9dd@intel.com>
-Date: Wed, 4 May 2022 18:00:27 +0200
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Firefox/91.0 Thunderbird/91.7.0
-Subject: Re: ASoC component/card relationship
-Content-Language: en-US
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- =?UTF-8?Q?Amadeusz_S=c5=82awi=c5=84ski?=
- <amadeuszx.slawinski@linux.intel.com>, Mark Brown <broonie@kernel.org>
-References: <d9c3fed4-de6a-2cd8-acb6-7f3d2ad46b70@linux.intel.com>
- <YnFwGJBjVGrsMJWR@sirena.org.uk>
- <6dea4606-cb5e-1224-bf98-d1da1484ebfd@linux.intel.com>
- <YnGRNfaempsFG9/M@sirena.org.uk>
- <ff511a84-adac-1018-a934-2b8202c5a9fe@linux.intel.com>
- <6009dd4b-e5f3-78a6-eade-76c3f30a6d42@linux.intel.com>
- <2c2c1af4-9c40-841d-fc9e-486c3db482bd@linux.intel.com>
-From: Cezary Rojewski <cezary.rojewski@intel.com>
-In-Reply-To: <2c2c1af4-9c40-841d-fc9e-486c3db482bd@linux.intel.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: LO4P265CA0051.GBRP265.PROD.OUTLOOK.COM
- (2603:10a6:600:2ac::13) To MWHPR1101MB2157.namprd11.prod.outlook.com
- (2603:10b6:301:51::10)
+ dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com
+ header.b="j7TknbmA"
+Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
+ by mx0b-001ae601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 2444eM0Y022668;
+ Wed, 4 May 2022 11:12:49 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
+ h=from : to : cc :
+ subject : date : message-id : in-reply-to : references : mime-version :
+ content-type : content-transfer-encoding; s=PODMain02222019;
+ bh=ZKCB6dSDdWjC7uNzTek+77/fO8XVZ1uO6IiRscjYf3U=;
+ b=j7TknbmATv8vFwdGvxn+iWDnMd3HYxRoUcW1mfh9c94Eoaf9yJVUE1j1BY9+voAVow41
+ mH/k1c4eHz1X50o/vRzmK8DW6XPs/DM4TZjwPVIY79rV1K1gGM8TMG+D4RQqtZfZTpbZ
+ N8l7uG3Nyr9ne0TgWgEVHMdLUS3b0GJ6xvbWBnbUw6ROrkOWJ06yTWfZnw684uY9xCXX
+ nMAZPZHAM+DsxF9qkcWPPseBefy0Lx7QEBofKNYV3ff1u41DBZNuKB1UxOPvQkpdDcgl
+ 4t7wf2LuiHk7qGKcv9OYRpSzD9QFd7sctQOKBSIjhEoWO5ti+MZkeUqlOM0OBk+UJ4Qq +Q== 
+Received: from ediex01.ad.cirrus.com ([84.19.233.68])
+ by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3fs1hpcvrs-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+ Wed, 04 May 2022 11:12:49 -0500
+Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.24; Wed, 4 May
+ 2022 17:12:47 +0100
+Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server id 15.1.2375.24 via
+ Frontend Transport; Wed, 4 May 2022 17:12:47 +0100
+Received: from sbinding-cirrus-dsktp.ad.cirrus.com (unknown [198.90.238.73])
+ by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 1BD11459;
+ Wed,  4 May 2022 16:12:47 +0000 (UTC)
+From: Stefan Binding <sbinding@opensource.cirrus.com>
+To: Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi
+ Iwai <tiwai@suse.com>
+Subject: [PATCH v1 3/3] ALSA: hda/cs8409: Support manual mode detection for
+ CS42L42
+Date: Wed, 4 May 2022 17:12:36 +0100
+Message-ID: <20220504161236.2490532-4-sbinding@opensource.cirrus.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20220504161236.2490532-1-sbinding@opensource.cirrus.com>
+References: <20220504161236.2490532-1-sbinding@opensource.cirrus.com>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 92ec42d7-85e9-463f-61a2-08da2de73a5b
-X-MS-TrafficTypeDiagnostic: MWHPR11MB1694:EE_
-X-LD-Processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
-X-Microsoft-Antispam-PRVS: <MWHPR11MB169481ECBDB1C2C6D2DADAEFE3C39@MWHPR11MB1694.namprd11.prod.outlook.com>
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: HazHCGzbJITmeF+xa6It131yTdoadwQ4nV1YJttEtBBkMMbQ/zJINnjvYJWcq9Yc21Wp7e3YkO3RZlZnSLAa9N9VNjSbXiHjFfmCr+dUmYyPQVPZG92Y4aZpO2xkKvs0Kz5wc+uhiQ98E1YGBBVHEqxW7f/+n0oKCsl2bcOPkwtUD2Vr68uwhO1ObxGP/s4Fb7ZRA40afM6zvDqj3tcrDF4rET8t0tC7MHORJXViU1skdZURKtC4Mo7Malr8gppka3PbHH26smNMPk99Vrj2P1Iu6dh4Z0pLdqaGQZKidpAydq+rFAHFSAmU7AFpCLne3BKOgqQl2O45wwnrqiqPJdptVQ8ufko3V1StG3VaHIC687LxXpK96YokQUDp/9qVifZNvU7vt/Pv6OsBV+oLmD/EcfuWXJFx2iY0odBuaSOMphXTqEkaTBp8QXccnnYYgtJHFu6kQ1yeRCAF6ROkhzg/qPLYNG8+5jTwqxLaL3wnMcB5FpkS9NPOIb2SZhgLy89QBwcyZm/kXumcoGYtet8bAWn1qgD9Ijj0QWBaba/g7+szqVRA6g2nfv+6u/1yGJ7ZoIsYMhcYH3CZRe1fGEac5ntergawSnqlV5dXIsbfFyybpChivc7XLMYax8csnDFFc9xSXB57/Cp1InHtK+lVa5fa2xvok9LQRt6/t9h5RlbZRBCVtlErkueuoGw4Cb19umc+gMHPRBFPaD1t9l5k+Pe69bzFFtL+0qfQkmNw00eWTLY2E0/UorxWB86sW2LAX9UAol3haQMnSpGD4m1ryg4BJ7Q+7mxQkWIpuH6hMY6vGulM7lZBryUe5n2Idif6KD24FKS/LoNrmYVxVpdXf3sPIN3JSzDu1NePQww=
-X-Forefront-Antispam-Report: CIP:255.255.255.255; CTRY:; LANG:en; SCL:1; SRV:;
- IPV:NLI; SFV:NSPM; H:MWHPR1101MB2157.namprd11.prod.outlook.com; PTR:; CAT:NONE;
- SFS:(13230001)(366004)(5660300002)(7416002)(8936002)(38100700002)(3480700007)(2616005)(508600001)(44832011)(31686004)(36756003)(83380400001)(316002)(186003)(31696002)(966005)(6486002)(82960400001)(6506007)(53546011)(2906002)(6512007)(66556008)(66476007)(66946007)(54906003)(110136005)(4326008)(8676002)(6666004)(86362001)(26005)(43740500002)(45980500001);
- DIR:OUT; SFP:1102; 
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?U1VZNEhtSG9VRW9ZV0liT0VlN0pMQnhaSXJzdmxjRDBZT0hCY3VUeDBsYXpN?=
- =?utf-8?B?cTY5UG9LOHE0OG0yT0J5aDdlSUlKbHRJd3BjMGRKalhpYzVJNUZOOE1kS3lp?=
- =?utf-8?B?WFA3OG9zS3FLdTBycGRyTEtZVVhXbXR5dHdxak5aMld3aFU1bVBhbWdWcTFX?=
- =?utf-8?B?ZS80eDExSW1FVnZDeTFNc2pGL3pka2NVL3pnNWF1YmJEYU1zVEZGY1RIejlB?=
- =?utf-8?B?ZzRDTFZ6cm5CdTdsckJYWG02MFdlYzZQNEhQZkQxSmE5Y1I2MEc5ajRlcDFm?=
- =?utf-8?B?MGNhWEVWYWZwbFE5Rkl1a3krZ2VINVlsVzMxT0lya2FQMTd1bHRUdEdwZkZD?=
- =?utf-8?B?NFQwTjdzUUNHRzVMK2R6b2lOSWROLzhXeHhGR3pZTE90OVlFSjVnZEIwSlFC?=
- =?utf-8?B?NXhzWll4L1NscGl4NitzbjA1TUs2ZFBWVXAvQUxadEpvWTNCZjFydHMvOCtv?=
- =?utf-8?B?b2kvQ1l6aUFhUUx5NnFJRENrcE5Tc0NIRkFyMDBRUWNrSlRLbDJkK0ZVWDM5?=
- =?utf-8?B?c0p6VG10V21DMzBwc1BSN3dHcno3VmxteHlaMG1UL3lDMzR2TWkyOHNTMmwy?=
- =?utf-8?B?RnoyczFUeU5nSnF1RGtvVGdVNGtlRUpUV2ducERhazR4Nis4c29XZWNvN0Q3?=
- =?utf-8?B?a0p3M2lObm83NTJiRzBVY0dtdGM2UWdodWRKYmVsZE1Nd1c3OEw0anJGa1Zh?=
- =?utf-8?B?RDZqblRsMG9VOHVHUDNTWXlYRDJ4eXU4ZVJrM2tvV1hTK0tpa0Z6L3pVby94?=
- =?utf-8?B?NkZERXloVW9lTmN6Tk8wVzBpdGpzQ1VkYXVYWjNrMjBKcklkNkp4b2M5Rkta?=
- =?utf-8?B?VnFxZVBaOXdHWnhoQ0NpOTJzQzlnOFh2aTByTFgzTThONUpyOE5WR0pObFFp?=
- =?utf-8?B?ZWZpcFpKdWVvZUpIbm4yRUR4cXI0QzM1VG1FTW1sS0tlNVM0TE5BWFdkSEkz?=
- =?utf-8?B?a0Zoc0Q3UHpYM2YvcmNLTm5hZFY2OXdsMGNIazJLSW5EZXhXY2FYdC9BdnQ3?=
- =?utf-8?B?dmxLay9obGxMTUgwaVRHMm1VMUZGVXhHaFcvQ1JMZkFkTWNEUkxCdVlhS29t?=
- =?utf-8?B?SG5jcHMxM28wdkZaRzdpcFBjdENqS1p6V1YxbjRpdUllWFJiRWhRa3RQK09s?=
- =?utf-8?B?dVV1bktndFBNdGxGb3hETzBsQXQveDAwTVJVZjVaQkdtYTlYWmhwYzN3eVAr?=
- =?utf-8?B?a1ptbFZZVWVZUVJRbEFGR1oxN0hURnM4L3ljd2RYdlZMQjcyMk9DNTVkQzhv?=
- =?utf-8?B?NWRjZlZUeHZxalk5ZWtDeFdRbzBTSmNGczRLT3pDRWdvS3BSRzRmK1h4Y3cx?=
- =?utf-8?B?Q08vcThHL2kwVXJVclppbitVVmxoWEJyT0dSc0dBajE2S09Uc21WT0EyaWha?=
- =?utf-8?B?VDJsZFBOYzc5NWt3azhJM3BFQURiSS9XcWdrTHhEekt6b0c0SjhhSGFFeHRz?=
- =?utf-8?B?b3NOUmFTMk1sNGYwYkh5ajBMcklqSFZXNExPRWRRdHpjd1NxZmNTYlNoOFF1?=
- =?utf-8?B?YjYxRE9aOUJoeVNnK2F0TEJRaU9JbEsrWXBpYWVsMWh1MW8xa0dlWmlsdFZZ?=
- =?utf-8?B?Q25TcnNxM0xmSVgySncwblhiSXJmTFlpb2Z2c1ViR1R1dGZXaFJmSlkzTDho?=
- =?utf-8?B?cUZ3azhjT09uN0lGeU1qMEJSRSs5blhOZm55aUdzOW83bDVKSWtvc3RRYzdq?=
- =?utf-8?B?Tlg4eW4xZkd4VFlyQTBEaWpiZmJ6QjIwbDRBN2xKRXUzVjgrc2kxMWFQeTdC?=
- =?utf-8?B?VHhUMXIxdk5adkNkczZlNEZ2ODJtaWFNMmQwWDI1SFY5R3hDajBpbkhOWWZV?=
- =?utf-8?B?SGVIOUd4WGg4Ri93RlBxeVZEdk1rMGpjbVRVNG1VbkZLTmJOTnVVdHgxS3Ft?=
- =?utf-8?B?R1FLMnNKYmM4NDlaenMzNTVML2JIYlFyMi9HK3htaTBrRnhXeVA5L21KbHBF?=
- =?utf-8?B?ZUFXdUpEUkc1RHRpN3czR00yY0dpUDE5djMxSWFONThZc3BmMS9BZ1h4Y1Ez?=
- =?utf-8?B?MkM4RVhna3E5U3lYV0Y4K1pXb1kya3ZHYVNlZzlTUXM5NjgrMFV1TStYSHFY?=
- =?utf-8?B?R1h1TUs5VW1HYXgzR3VhWGsyb2RMc011dHZjS1E2TGcvVzFhRm85OWkwbXpq?=
- =?utf-8?B?Y203d1VQbHEyNkFCajFtYjRRV0ZNUC9HVjhUY2l2dC9Qa2JYWDFYNkEra1Qw?=
- =?utf-8?B?eDI4V0JmV20rci9DQzNVQ3FKVThlV2p6dHZzZlQ3QjRCajgyeGVoaVdvamhW?=
- =?utf-8?B?TXpjeHZTQ2lML2JaalR6TG1GU2tFeFQwMGNhRHVYbnJUZnJ4bGZLT3FvN01L?=
- =?utf-8?B?NEhlamhCcDlGMDFtRFgwOVhQbTRBSnRQbEFKZjlYek12SDdTL0gxQXFJMnZ3?=
- =?utf-8?Q?teGj9HqLRYpZwcs0=3D?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 92ec42d7-85e9-463f-61a2-08da2de73a5b
-X-MS-Exchange-CrossTenant-AuthSource: MWHPR1101MB2157.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 May 2022 16:00:36.9234 (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: tULBxQjN6uOvvTz2erusj/7hX1FLqmokp3CaayS6gltCsGyWXI+mQ/d43qe08HLaLNDkTEDz7di3BhimXSaT98tyPReY6/1VYowWDofyxUw=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR11MB1694
-X-OriginatorOrg: intel.com
-Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>,
- Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
- Kai Vehmanen <kai.vehmanen@linux.intel.com>,
- Curtis Malainey <cujomalainey@google.com>,
- Bard Liao <yung-chuan.liao@linux.intel.com>, Takashi Iwai <tiwai@suse.com>,
- Liam Girdwood <liam.r.girdwood@linux.intel.com>,
- =?UTF-8?Q?P=c3=a9ter_Ujfalusi?= <peter.ujfalusi@linux.intel.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-ORIG-GUID: tlrDwmQre3IaKaL4Hvk0FhU5ZMIdF7jb
+X-Proofpoint-GUID: tlrDwmQre3IaKaL4Hvk0FhU5ZMIdF7jb
+X-Proofpoint-Spam-Reason: safe
+Cc: patches@opensource.cirrus.com, alsa-devel@alsa-project.org,
+ linux-kernel@vger.kernel.org, Stefan Binding <sbinding@opensource.cirrus.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -199,92 +96,267 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On 2022-05-04 5:26 PM, Pierre-Louis Bossart wrote:
+For Jack detection on CS42L42, detection is normally done using
+"auto" mode, which automatically detects what type of jack is
+connected to the device. However, some headsets are not
+automatically detected, and as such and alternative detection
+method "manual mode" can be used to detect these headsets.
 
->>> b) the hardware/board level parts. That is a weak part of the topology
->>> today, it should come from a hardware description instead of being
->>> hard-coded in each topology. We must have dozens of identical topology
->>> files that differ only because of the SSP index or SoundWire link ID
->>> used on specific board. There should be a way to 'remap' BEs for
->>> specific boards.
->>>
->>> It doesn't mean we should toss the topology and redo everything, the
->>> latter part can be addressed by providing the 'real' hardware
->>> information to the topology and dynamically modify defaults.
->>>
->>
->> I already showed how we tried to solve this for i2s use cases in links
->> above.
-> 
-> You still have N identical topologies, completely identical with the
-> exception of 1 SSP index to maintain.
-> 
-> Just to make this point stronger, with the recent support of the ES8336
-> codecs, we had to generate the following topologies to account for all
-> permutations:
-> 
-> sof-apl-es8336-ssp0.tplg
-> sof-apl-es8336-ssp2.tplg
-> sof-cml-es8336-dmic2ch-ssp0.tplg
-> sof-cml-es8336-dmic2ch-ssp2.tplg
-> sof-cml-es8336-dmic4ch-ssp0.tplg
-> sof-cml-es8336-dmic4ch-ssp2.tplg
-> sof-cml-es8336-ssp0.tplg
-> sof-cml-es8336-ssp2.tplg
-> sof-glk-es8336-ssp0.tplg
-> sof-glk-es8336-ssp2.tplg
-> sof-jsl-es8336-dmic2ch-ssp0.tplg
-> sof-jsl-es8336-dmic2ch-ssp2.tplg
-> sof-jsl-es8336-dmic4ch-ssp0.tplg
-> sof-jsl-es8336-dmic4ch-ssp2.tplg
-> sof-jsl-es8336-ssp0.tplg
-> sof-jsl-es8336-ssp2.tplg
-> sof-tgl-es8336-dmic2ch-ssp0.tplg
-> sof-tgl-es8336-dmic2ch-ssp2.tplg
-> sof-tgl-es8336-dmic4ch-ssp0.tplg
-> sof-tgl-es8336-dmic4ch-ssp2.tplg
-> sof-tgl-es8336-ssp0.tplg
-> sof-tgl-es8336-ssp2.tplg
-> 
-> All these topologies come from the same file, and generated using
-> macros. That makes no sense to me, this should be the same topology that
-> is remapped at run-time.
+Signed-off-by: Stefan Binding <sbinding@opensource.cirrus.com>
+---
+ sound/pci/hda/patch_cs8409-tables.c |   3 -
+ sound/pci/hda/patch_cs8409.c        | 159 +++++++++++++++++++++++-----
+ sound/pci/hda/patch_cs8409.h        |   1 -
+ 3 files changed, 132 insertions(+), 31 deletions(-)
 
+diff --git a/sound/pci/hda/patch_cs8409-tables.c b/sound/pci/hda/patch_cs8409-tables.c
+index a7ee489e6aec..0d11b24a1317 100644
+--- a/sound/pci/hda/patch_cs8409-tables.c
++++ b/sound/pci/hda/patch_cs8409-tables.c
+@@ -252,7 +252,6 @@ struct sub_codec cs8409_cs42l42_codec = {
+ 	.init_seq_num = ARRAY_SIZE(cs42l42_init_reg_seq),
+ 	.hp_jack_in = 0,
+ 	.mic_jack_in = 0,
+-	.force_status_change = 1,
+ 	.paged = 1,
+ 	.suspended = 1,
+ 	.no_type_dect = 0,
+@@ -444,7 +443,6 @@ struct sub_codec dolphin_cs42l42_0 = {
+ 	.init_seq_num = ARRAY_SIZE(dolphin_c0_init_reg_seq),
+ 	.hp_jack_in = 0,
+ 	.mic_jack_in = 0,
+-	.force_status_change = 1,
+ 	.paged = 1,
+ 	.suspended = 1,
+ 	.no_type_dect = 0,
+@@ -458,7 +456,6 @@ struct sub_codec dolphin_cs42l42_1 = {
+ 	.init_seq_num = ARRAY_SIZE(dolphin_c1_init_reg_seq),
+ 	.hp_jack_in = 0,
+ 	.mic_jack_in = 0,
+-	.force_status_change = 1,
+ 	.paged = 1,
+ 	.suspended = 1,
+ 	.no_type_dect = 1,
+diff --git a/sound/pci/hda/patch_cs8409.c b/sound/pci/hda/patch_cs8409.c
+index d35d124bf3dc..c3a8b04c71d8 100644
+--- a/sound/pci/hda/patch_cs8409.c
++++ b/sound/pci/hda/patch_cs8409.c
+@@ -634,38 +634,128 @@ static void cs42l42_run_jack_detect(struct sub_codec *cs42l42)
+ 	cs8409_i2c_write(cs42l42, CS42L42_HSDET_CTL2, 0xc0);
+ }
+ 
+-static int cs42l42_handle_tip_sense(struct sub_codec *cs42l42, unsigned int reg_ts_status)
++static int cs42l42_manual_hs_det(struct sub_codec *cs42l42)
+ {
+-	int status_changed = cs42l42->force_status_change;
++	unsigned int hs_det_status;
++	unsigned int hs_det_comp1;
++	unsigned int hs_det_comp2;
++	unsigned int hs_det_sw;
++	unsigned int hs_type;
++
++	/* Set hs detect to manual, active mode */
++	cs8409_i2c_write(cs42l42, CS42L42_HSDET_CTL2,
++			 (1 << CS42L42_HSDET_CTRL_SHIFT) |
++			 (0 << CS42L42_HSDET_SET_SHIFT) |
++			 (0 << CS42L42_HSBIAS_REF_SHIFT) |
++			 (0 << CS42L42_HSDET_AUTO_TIME_SHIFT));
++
++	/* Configure HS DET comparator reference levels. */
++	cs8409_i2c_write(cs42l42, CS42L42_HSDET_CTL1,
++			 (CS42L42_HSDET_COMP1_LVL_VAL << CS42L42_HSDET_COMP1_LVL_SHIFT) |
++			 (CS42L42_HSDET_COMP2_LVL_VAL << CS42L42_HSDET_COMP2_LVL_SHIFT));
++
++	/* Open the SW_HSB_HS3 switch and close SW_HSB_HS4 for a Type 1 headset. */
++	cs8409_i2c_write(cs42l42, CS42L42_HS_SWITCH_CTL, CS42L42_HSDET_SW_COMP1);
++
++	msleep(100);
++
++	hs_det_status = cs8409_i2c_read(cs42l42, CS42L42_HS_DET_STATUS);
++
++	hs_det_comp1 = (hs_det_status & CS42L42_HSDET_COMP1_OUT_MASK) >>
++			CS42L42_HSDET_COMP1_OUT_SHIFT;
++	hs_det_comp2 = (hs_det_status & CS42L42_HSDET_COMP2_OUT_MASK) >>
++			CS42L42_HSDET_COMP2_OUT_SHIFT;
++
++	/* Close the SW_HSB_HS3 switch for a Type 2 headset. */
++	cs8409_i2c_write(cs42l42, CS42L42_HS_SWITCH_CTL, CS42L42_HSDET_SW_COMP2);
+ 
+-	cs42l42->force_status_change = 0;
++	msleep(100);
++
++	hs_det_status = cs8409_i2c_read(cs42l42, CS42L42_HS_DET_STATUS);
++
++	hs_det_comp1 |= ((hs_det_status & CS42L42_HSDET_COMP1_OUT_MASK) >>
++			CS42L42_HSDET_COMP1_OUT_SHIFT) << 1;
++	hs_det_comp2 |= ((hs_det_status & CS42L42_HSDET_COMP2_OUT_MASK) >>
++			CS42L42_HSDET_COMP2_OUT_SHIFT) << 1;
++
++	/* Use Comparator 1 with 1.25V Threshold. */
++	switch (hs_det_comp1) {
++	case CS42L42_HSDET_COMP_TYPE1:
++		hs_type = CS42L42_PLUG_CTIA;
++		hs_det_sw = CS42L42_HSDET_SW_TYPE1;
++		break;
++	case CS42L42_HSDET_COMP_TYPE2:
++		hs_type = CS42L42_PLUG_OMTP;
++		hs_det_sw = CS42L42_HSDET_SW_TYPE2;
++		break;
++	default:
++		/* Fallback to Comparator 2 with 1.75V Threshold. */
++		switch (hs_det_comp2) {
++		case CS42L42_HSDET_COMP_TYPE1:
++			hs_type = CS42L42_PLUG_CTIA;
++			hs_det_sw = CS42L42_HSDET_SW_TYPE1;
++			break;
++		case CS42L42_HSDET_COMP_TYPE2:
++			hs_type = CS42L42_PLUG_OMTP;
++			hs_det_sw = CS42L42_HSDET_SW_TYPE2;
++			break;
++		case CS42L42_HSDET_COMP_TYPE3:
++			hs_type = CS42L42_PLUG_HEADPHONE;
++			hs_det_sw = CS42L42_HSDET_SW_TYPE3;
++			break;
++		default:
++			hs_type = CS42L42_PLUG_INVALID;
++			hs_det_sw = CS42L42_HSDET_SW_TYPE4;
++			break;
++		}
++	}
++
++	/* Set Switches */
++	cs8409_i2c_write(cs42l42, CS42L42_HS_SWITCH_CTL, hs_det_sw);
++
++	/* Set HSDET mode to Manual—Disabled */
++	cs8409_i2c_write(cs42l42, CS42L42_HSDET_CTL2,
++			 (0 << CS42L42_HSDET_CTRL_SHIFT) |
++			 (0 << CS42L42_HSDET_SET_SHIFT) |
++			 (0 << CS42L42_HSBIAS_REF_SHIFT) |
++			 (0 << CS42L42_HSDET_AUTO_TIME_SHIFT));
++
++	/* Configure HS DET comparator reference levels. */
++	cs8409_i2c_write(cs42l42, CS42L42_HSDET_CTL1,
++			 (CS42L42_HSDET_COMP1_LVL_DEFAULT << CS42L42_HSDET_COMP1_LVL_SHIFT) |
++			 (CS42L42_HSDET_COMP2_LVL_DEFAULT << CS42L42_HSDET_COMP2_LVL_SHIFT));
++
++	return hs_type;
++}
++
++static int cs42l42_handle_tip_sense(struct sub_codec *cs42l42, unsigned int reg_ts_status)
++{
++	int status_changed = 0;
+ 
+ 	/* TIP_SENSE INSERT/REMOVE */
+ 	switch (reg_ts_status) {
+ 	case CS42L42_TS_PLUG:
+-		if (!cs42l42->hp_jack_in) {
+-			if (cs42l42->no_type_dect) {
+-				status_changed = 1;
+-				cs42l42->hp_jack_in = 1;
+-				cs42l42->mic_jack_in = 0;
+-			} else {
+-				cs42l42_run_jack_detect(cs42l42);
+-			}
++		if (cs42l42->no_type_dect) {
++			status_changed = 1;
++			cs42l42->hp_jack_in = 1;
++			cs42l42->mic_jack_in = 0;
++		} else {
++			cs42l42_run_jack_detect(cs42l42);
+ 		}
+ 		break;
+ 
+ 	case CS42L42_TS_UNPLUG:
+-		if (cs42l42->hp_jack_in || cs42l42->mic_jack_in) {
+-			status_changed = 1;
+-			cs42l42->hp_jack_in = 0;
+-			cs42l42->mic_jack_in = 0;
+-		}
++		status_changed = 1;
++		cs42l42->hp_jack_in = 0;
++		cs42l42->mic_jack_in = 0;
+ 		break;
+ 	default:
+ 		/* jack in transition */
+ 		break;
+ 	}
+ 
++	codec_dbg(cs42l42->codec, "Tip Sense Detection: (%d)\n", reg_ts_status);
++
+ 	return status_changed;
+ }
+ 
+@@ -698,24 +788,40 @@ static int cs42l42_jack_unsol_event(struct sub_codec *cs42l42)
+ 
+ 		type = (reg_hs_status & CS42L42_HSDET_TYPE_MASK) >> CS42L42_HSDET_TYPE_SHIFT;
+ 
++		/* Configure the HSDET mode. */
++		cs8409_i2c_write(cs42l42, CS42L42_HSDET_CTL2, 0x80);
++
+ 		if (cs42l42->no_type_dect) {
+ 			status_changed = cs42l42_handle_tip_sense(cs42l42, current_plug_status);
+-		} else if (type == CS42L42_PLUG_INVALID) {
+-			/* Type CS42L42_PLUG_INVALID not supported	*/
+-			status_changed = cs42l42_handle_tip_sense(cs42l42, CS42L42_TS_UNPLUG);
+ 		} else {
+-			if (!cs42l42->hp_jack_in) {
+-				status_changed = 1;
+-				cs42l42->hp_jack_in = 1;
++			if (type == CS42L42_PLUG_INVALID || type == CS42L42_PLUG_HEADPHONE) {
++				codec_dbg(cs42l42->codec,
++					  "Auto detect value not valid (%d), running manual det\n",
++					  type);
++				type = cs42l42_manual_hs_det(cs42l42);
+ 			}
+-			/* type = CS42L42_PLUG_HEADPHONE has no mic */
+-			if ((!cs42l42->mic_jack_in) && (type != CS42L42_PLUG_HEADPHONE)) {
++
++			switch (type) {
++			case CS42L42_PLUG_CTIA:
++			case CS42L42_PLUG_OMTP:
+ 				status_changed = 1;
++				cs42l42->hp_jack_in = 1;
+ 				cs42l42->mic_jack_in = 1;
++				break;
++			case CS42L42_PLUG_HEADPHONE:
++				status_changed = 1;
++				cs42l42->hp_jack_in = 1;
++				cs42l42->mic_jack_in = 0;
++				break;
++			default:
++				status_changed = 1;
++				cs42l42->hp_jack_in = 0;
++				cs42l42->mic_jack_in = 0;
++				break;
+ 			}
++			codec_dbg(cs42l42->codec, "Detection done (%d)\n", type);
+ 		}
+-		/* Configure the HSDET mode. */
+-		cs8409_i2c_write(cs42l42, CS42L42_HSDET_CTL2, 0x80);
++
+ 		/* Enable the HPOUT ground clamp and configure the HP pull-down */
+ 		cs8409_i2c_write(cs42l42, CS42L42_DAC_CTL2, 0x02);
+ 		/* Re-Enable Tip Sense Interrupt */
+@@ -803,7 +909,6 @@ static void cs42l42_suspend(struct sub_codec *cs42l42)
+ 	cs42l42->last_page = 0;
+ 	cs42l42->hp_jack_in = 0;
+ 	cs42l42->mic_jack_in = 0;
+-	cs42l42->force_status_change = 1;
+ 
+ 	/* Put CS42L42 into Reset */
+ 	gpio_data = snd_hda_codec_read(codec, CS8409_PIN_AFG, 0, AC_VERB_GET_GPIO_DATA, 0);
+diff --git a/sound/pci/hda/patch_cs8409.h b/sound/pci/hda/patch_cs8409.h
+index 988259f8a940..ebf473a3f109 100644
+--- a/sound/pci/hda/patch_cs8409.h
++++ b/sound/pci/hda/patch_cs8409.h
+@@ -304,7 +304,6 @@ struct sub_codec {
+ 
+ 	unsigned int hp_jack_in:1;
+ 	unsigned int mic_jack_in:1;
+-	unsigned int force_status_change:1;
+ 	unsigned int suspended:1;
+ 	unsigned int paged:1;
+ 	unsigned int last_page;
+-- 
+2.25.1
 
-What Amadeo is explaining here is that AVS driver already addresses this 
-too - at least in our opinion - see parse_link_formatted_string() in 
-sound/soc/intel/avs/topology.c.
-
-User is allowed to specify widget name as: ssp%d within the topology 
-file, leaving kernel with responsibility to fill the missing index. And 
-this is something I (perhaps we all) would like to see within the 
-framework in the future.
-
-In consequence, avs-driver user does NOT need to define N identical 
-topologies. For example, SSP-test board [1] and its definition in 
-board_selection.c [2] clearly show that all 6 SSP boards look at the 
-exact same file. The same approach is used when speaking of other, 
-simple i2s codecs, e.g.: rt274, rt286, rt298. Difference between rt298 
-on APL and GML comes down to SSP port number. Here, board_selection.c 
-shows different prefixes (apl- vs gml-) but the reality is that both 
-files are symlinks looking at the exact same actual topology file with 
-ssp%d specified as widget names.
-
-At the same time, compound machine boards are still permitted and made 
-use of, example being TDF8532/Dirana board for Automotive (not yet 
-present on the list).
-
-Really, flexibility is key here. As long as devices found on given 
-platform are not connected or dependent on each other, there are no 
-major objections preventing card split. Such code scales better and has 
-good reuseability.
-
-
-Regards,
-Czarek
-
-
-[1]: 
-https://lore.kernel.org/alsa-devel/20220427081902.3525183-6-cezary.rojewski@intel.com/
-[2]: 
-https://lore.kernel.org/alsa-devel/20220426172346.3508411-11-cezary.rojewski@intel.com/
