@@ -4,80 +4,76 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 79CCDC433FE
-	for <alsa-devel@archiver.kernel.org>; Wed,  4 May 2022 16:13:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id BBB4BC43217
+	for <alsa-devel@archiver.kernel.org>; Wed,  4 May 2022 16:14:24 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E20971621;
-	Wed,  4 May 2022 18:12:59 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E20971621
+	by alsa0.perex.cz (Postfix) with ESMTPS id C32E1163D;
+	Wed,  4 May 2022 18:13:32 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C32E1163D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1651680830;
-	bh=zaNtbZO2sXMPp6Skc8+Qw4k0ZSL3t4eRToOdFIO6mh0=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=kxpeuBkTYBa759qQleQfI8OxLfNtb+IA3GiD11bgmGq6jGmTk5Qqn2WG7xfalp+iI
-	 rTval1iXjHfZjt2ssmCLqwy/hsSO9tJFt7z+nmAIQcPVVd44WQNsOX1D7xzdFWEKi4
-	 bL2PBhNe4vy5xfKV4Qvb0hRcaWq8AsUfydPuTCgo=
+	s=default; t=1651680862;
+	bh=mGrK94gznWkYiEKfK7nncYsHgobZMrqo1NzoHlgWLlc=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=MW6IgNogz/aUVZtNOK+wUbr1563dkUwQbPuuDaFM6z2iumepLhr2EENmJCj/11WKD
+	 J8ROfRkiJNDpFvjWUIBp6YO25ZwwF43bn7JexZVSSJMJvr35qKIksKQCZj4YFCRouq
+	 glRHeej6cbzmB6hJxr71guZmZ4BLPYpIa1lK8hxw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 66769F80129;
-	Wed,  4 May 2022 18:12:59 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 14CAFF80431;
+	Wed,  4 May 2022 18:13:00 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id A975EF80129; Wed,  4 May 2022 18:12:57 +0200 (CEST)
-Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
- [67.231.152.168])
+ id F4045F80167; Wed,  4 May 2022 18:12:58 +0200 (CEST)
+Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
+ [67.231.149.25])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 8DBC8F80129
+ by alsa1.perex.cz (Postfix) with ESMTPS id 74131F80163
  for <alsa-devel@alsa-project.org>; Wed,  4 May 2022 18:12:51 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8DBC8F80129
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 74131F80163
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com
- header.b="j7TknbmA"
-Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
- by mx0b-001ae601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 2444eM0Y022668;
- Wed, 4 May 2022 11:12:49 -0500
+ header.b="VACKymnW"
+Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
+ by mx0a-001ae601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 2446CVn2001835;
+ Wed, 4 May 2022 11:12:48 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
  h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-type : content-transfer-encoding; s=PODMain02222019;
- bh=ZKCB6dSDdWjC7uNzTek+77/fO8XVZ1uO6IiRscjYf3U=;
- b=j7TknbmATv8vFwdGvxn+iWDnMd3HYxRoUcW1mfh9c94Eoaf9yJVUE1j1BY9+voAVow41
- mH/k1c4eHz1X50o/vRzmK8DW6XPs/DM4TZjwPVIY79rV1K1gGM8TMG+D4RQqtZfZTpbZ
- N8l7uG3Nyr9ne0TgWgEVHMdLUS3b0GJ6xvbWBnbUw6ROrkOWJ06yTWfZnw684uY9xCXX
- nMAZPZHAM+DsxF9qkcWPPseBefy0Lx7QEBofKNYV3ff1u41DBZNuKB1UxOPvQkpdDcgl
- 4t7wf2LuiHk7qGKcv9OYRpSzD9QFd7sctQOKBSIjhEoWO5ti+MZkeUqlOM0OBk+UJ4Qq +Q== 
-Received: from ediex01.ad.cirrus.com ([84.19.233.68])
- by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3fs1hpcvrs-1
+ subject : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=PODMain02222019;
+ bh=CA8OB2CanPoJtK8+jq1whJdPE6KMUGj3tSd1euRzv2Q=;
+ b=VACKymnWpd+seCKgTPyTvpO6eq3lkfSLCMhal19NtpUucLrbMeottc52dhi2diwkGM1T
+ oYQkK9boW36Yvnn9H7ajkHZLjePqvYXMPNR8ZIP+P9gxCryW9FpGhL2nLXSugyq18zSX
+ eZ2xxsdL7KKhMEn2saecVbH0OlMqPvbhw9mVcIEChqeKcJLf2ndmNjcLiYRZIVch+0aI
+ Aya7O8GVgWMjp6pxbRrdbprp+E3MUGny65bxSP6CiWbRZIx4JV04tWmKdQnLnsBr/ohk
+ Xkt9cf+qUH6Gc+ufT0gSiAhg1NQg0qXapR2Z38qqWZwhoCCIoVEyWM6sb8vY6yX0BBch 9w== 
+Received: from ediex02.ad.cirrus.com ([84.19.233.68])
+ by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3fs2h2d6b6-1
  (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
- Wed, 04 May 2022 11:12:49 -0500
-Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
+ Wed, 04 May 2022 11:12:48 -0500
+Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX02.ad.cirrus.com
+ (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.24; Wed, 4 May
- 2022 17:12:47 +0100
+ 2022 17:12:46 +0100
 Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
  (198.61.84.80) with Microsoft SMTP Server id 15.1.2375.24 via
- Frontend Transport; Wed, 4 May 2022 17:12:47 +0100
+ Frontend Transport; Wed, 4 May 2022 17:12:46 +0100
 Received: from sbinding-cirrus-dsktp.ad.cirrus.com (unknown [198.90.238.73])
- by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 1BD11459;
- Wed,  4 May 2022 16:12:47 +0000 (UTC)
+ by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 9A7D6B10;
+ Wed,  4 May 2022 16:12:45 +0000 (UTC)
 From: Stefan Binding <sbinding@opensource.cirrus.com>
 To: Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi
  Iwai <tiwai@suse.com>
-Subject: [PATCH v1 3/3] ALSA: hda/cs8409: Support manual mode detection for
- CS42L42
-Date: Wed, 4 May 2022 17:12:36 +0100
-Message-ID: <20220504161236.2490532-4-sbinding@opensource.cirrus.com>
+Subject: [PATCH v1 0/3]  Add Manual Mode Jack Detection for CS42L42 in HDA
+Date: Wed, 4 May 2022 17:12:33 +0100
+Message-ID: <20220504161236.2490532-1-sbinding@opensource.cirrus.com>
 X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20220504161236.2490532-1-sbinding@opensource.cirrus.com>
-References: <20220504161236.2490532-1-sbinding@opensource.cirrus.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 8bit
-X-Proofpoint-ORIG-GUID: tlrDwmQre3IaKaL4Hvk0FhU5ZMIdF7jb
-X-Proofpoint-GUID: tlrDwmQre3IaKaL4Hvk0FhU5ZMIdF7jb
+Content-Type: text/plain
+X-Proofpoint-ORIG-GUID: NlKOMX4SqaNPXbsdBqJoaKx2gXEXZEJS
+X-Proofpoint-GUID: NlKOMX4SqaNPXbsdBqJoaKx2gXEXZEJS
 X-Proofpoint-Spam-Reason: safe
 Cc: patches@opensource.cirrus.com, alsa-devel@alsa-project.org,
  linux-kernel@vger.kernel.org, Stefan Binding <sbinding@opensource.cirrus.com>
@@ -96,267 +92,31 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-For Jack detection on CS42L42, detection is normally done using
-"auto" mode, which automatically detects what type of jack is
-connected to the device. However, some headsets are not
-automatically detected, and as such and alternative detection
-method "manual mode" can be used to detect these headsets.
+CS42L42 supports automatic type detection, to determine headset type,
+or headphones. However, automatic type detection does not always work
+correctly. To improve detection accuracy, manual mode detection can be
+run. This is already done in the ASoC version of the CS42L42 driver,
+and this chain adds the same support into the HDA version.
 
-Signed-off-by: Stefan Binding <sbinding@opensource.cirrus.com>
----
- sound/pci/hda/patch_cs8409-tables.c |   3 -
- sound/pci/hda/patch_cs8409.c        | 159 +++++++++++++++++++++++-----
- sound/pci/hda/patch_cs8409.h        |   1 -
- 3 files changed, 132 insertions(+), 31 deletions(-)
+In addition, to better align the ASoC and HDA drivers, the ASoC header
+file has been moved into the general sound includes, which allows both
+ASoC and HDA to have access to the header.
+This improves the maintainability of the HDA driver, and makes it
+easier to port fixes/features from CS42L42 ASoC to HDA.
 
-diff --git a/sound/pci/hda/patch_cs8409-tables.c b/sound/pci/hda/patch_cs8409-tables.c
-index a7ee489e6aec..0d11b24a1317 100644
---- a/sound/pci/hda/patch_cs8409-tables.c
-+++ b/sound/pci/hda/patch_cs8409-tables.c
-@@ -252,7 +252,6 @@ struct sub_codec cs8409_cs42l42_codec = {
- 	.init_seq_num = ARRAY_SIZE(cs42l42_init_reg_seq),
- 	.hp_jack_in = 0,
- 	.mic_jack_in = 0,
--	.force_status_change = 1,
- 	.paged = 1,
- 	.suspended = 1,
- 	.no_type_dect = 0,
-@@ -444,7 +443,6 @@ struct sub_codec dolphin_cs42l42_0 = {
- 	.init_seq_num = ARRAY_SIZE(dolphin_c0_init_reg_seq),
- 	.hp_jack_in = 0,
- 	.mic_jack_in = 0,
--	.force_status_change = 1,
- 	.paged = 1,
- 	.suspended = 1,
- 	.no_type_dect = 0,
-@@ -458,7 +456,6 @@ struct sub_codec dolphin_cs42l42_1 = {
- 	.init_seq_num = ARRAY_SIZE(dolphin_c1_init_reg_seq),
- 	.hp_jack_in = 0,
- 	.mic_jack_in = 0,
--	.force_status_change = 1,
- 	.paged = 1,
- 	.suspended = 1,
- 	.no_type_dect = 1,
-diff --git a/sound/pci/hda/patch_cs8409.c b/sound/pci/hda/patch_cs8409.c
-index d35d124bf3dc..c3a8b04c71d8 100644
---- a/sound/pci/hda/patch_cs8409.c
-+++ b/sound/pci/hda/patch_cs8409.c
-@@ -634,38 +634,128 @@ static void cs42l42_run_jack_detect(struct sub_codec *cs42l42)
- 	cs8409_i2c_write(cs42l42, CS42L42_HSDET_CTL2, 0xc0);
- }
- 
--static int cs42l42_handle_tip_sense(struct sub_codec *cs42l42, unsigned int reg_ts_status)
-+static int cs42l42_manual_hs_det(struct sub_codec *cs42l42)
- {
--	int status_changed = cs42l42->force_status_change;
-+	unsigned int hs_det_status;
-+	unsigned int hs_det_comp1;
-+	unsigned int hs_det_comp2;
-+	unsigned int hs_det_sw;
-+	unsigned int hs_type;
-+
-+	/* Set hs detect to manual, active mode */
-+	cs8409_i2c_write(cs42l42, CS42L42_HSDET_CTL2,
-+			 (1 << CS42L42_HSDET_CTRL_SHIFT) |
-+			 (0 << CS42L42_HSDET_SET_SHIFT) |
-+			 (0 << CS42L42_HSBIAS_REF_SHIFT) |
-+			 (0 << CS42L42_HSDET_AUTO_TIME_SHIFT));
-+
-+	/* Configure HS DET comparator reference levels. */
-+	cs8409_i2c_write(cs42l42, CS42L42_HSDET_CTL1,
-+			 (CS42L42_HSDET_COMP1_LVL_VAL << CS42L42_HSDET_COMP1_LVL_SHIFT) |
-+			 (CS42L42_HSDET_COMP2_LVL_VAL << CS42L42_HSDET_COMP2_LVL_SHIFT));
-+
-+	/* Open the SW_HSB_HS3 switch and close SW_HSB_HS4 for a Type 1 headset. */
-+	cs8409_i2c_write(cs42l42, CS42L42_HS_SWITCH_CTL, CS42L42_HSDET_SW_COMP1);
-+
-+	msleep(100);
-+
-+	hs_det_status = cs8409_i2c_read(cs42l42, CS42L42_HS_DET_STATUS);
-+
-+	hs_det_comp1 = (hs_det_status & CS42L42_HSDET_COMP1_OUT_MASK) >>
-+			CS42L42_HSDET_COMP1_OUT_SHIFT;
-+	hs_det_comp2 = (hs_det_status & CS42L42_HSDET_COMP2_OUT_MASK) >>
-+			CS42L42_HSDET_COMP2_OUT_SHIFT;
-+
-+	/* Close the SW_HSB_HS3 switch for a Type 2 headset. */
-+	cs8409_i2c_write(cs42l42, CS42L42_HS_SWITCH_CTL, CS42L42_HSDET_SW_COMP2);
- 
--	cs42l42->force_status_change = 0;
-+	msleep(100);
-+
-+	hs_det_status = cs8409_i2c_read(cs42l42, CS42L42_HS_DET_STATUS);
-+
-+	hs_det_comp1 |= ((hs_det_status & CS42L42_HSDET_COMP1_OUT_MASK) >>
-+			CS42L42_HSDET_COMP1_OUT_SHIFT) << 1;
-+	hs_det_comp2 |= ((hs_det_status & CS42L42_HSDET_COMP2_OUT_MASK) >>
-+			CS42L42_HSDET_COMP2_OUT_SHIFT) << 1;
-+
-+	/* Use Comparator 1 with 1.25V Threshold. */
-+	switch (hs_det_comp1) {
-+	case CS42L42_HSDET_COMP_TYPE1:
-+		hs_type = CS42L42_PLUG_CTIA;
-+		hs_det_sw = CS42L42_HSDET_SW_TYPE1;
-+		break;
-+	case CS42L42_HSDET_COMP_TYPE2:
-+		hs_type = CS42L42_PLUG_OMTP;
-+		hs_det_sw = CS42L42_HSDET_SW_TYPE2;
-+		break;
-+	default:
-+		/* Fallback to Comparator 2 with 1.75V Threshold. */
-+		switch (hs_det_comp2) {
-+		case CS42L42_HSDET_COMP_TYPE1:
-+			hs_type = CS42L42_PLUG_CTIA;
-+			hs_det_sw = CS42L42_HSDET_SW_TYPE1;
-+			break;
-+		case CS42L42_HSDET_COMP_TYPE2:
-+			hs_type = CS42L42_PLUG_OMTP;
-+			hs_det_sw = CS42L42_HSDET_SW_TYPE2;
-+			break;
-+		case CS42L42_HSDET_COMP_TYPE3:
-+			hs_type = CS42L42_PLUG_HEADPHONE;
-+			hs_det_sw = CS42L42_HSDET_SW_TYPE3;
-+			break;
-+		default:
-+			hs_type = CS42L42_PLUG_INVALID;
-+			hs_det_sw = CS42L42_HSDET_SW_TYPE4;
-+			break;
-+		}
-+	}
-+
-+	/* Set Switches */
-+	cs8409_i2c_write(cs42l42, CS42L42_HS_SWITCH_CTL, hs_det_sw);
-+
-+	/* Set HSDET mode to Manual—Disabled */
-+	cs8409_i2c_write(cs42l42, CS42L42_HSDET_CTL2,
-+			 (0 << CS42L42_HSDET_CTRL_SHIFT) |
-+			 (0 << CS42L42_HSDET_SET_SHIFT) |
-+			 (0 << CS42L42_HSBIAS_REF_SHIFT) |
-+			 (0 << CS42L42_HSDET_AUTO_TIME_SHIFT));
-+
-+	/* Configure HS DET comparator reference levels. */
-+	cs8409_i2c_write(cs42l42, CS42L42_HSDET_CTL1,
-+			 (CS42L42_HSDET_COMP1_LVL_DEFAULT << CS42L42_HSDET_COMP1_LVL_SHIFT) |
-+			 (CS42L42_HSDET_COMP2_LVL_DEFAULT << CS42L42_HSDET_COMP2_LVL_SHIFT));
-+
-+	return hs_type;
-+}
-+
-+static int cs42l42_handle_tip_sense(struct sub_codec *cs42l42, unsigned int reg_ts_status)
-+{
-+	int status_changed = 0;
- 
- 	/* TIP_SENSE INSERT/REMOVE */
- 	switch (reg_ts_status) {
- 	case CS42L42_TS_PLUG:
--		if (!cs42l42->hp_jack_in) {
--			if (cs42l42->no_type_dect) {
--				status_changed = 1;
--				cs42l42->hp_jack_in = 1;
--				cs42l42->mic_jack_in = 0;
--			} else {
--				cs42l42_run_jack_detect(cs42l42);
--			}
-+		if (cs42l42->no_type_dect) {
-+			status_changed = 1;
-+			cs42l42->hp_jack_in = 1;
-+			cs42l42->mic_jack_in = 0;
-+		} else {
-+			cs42l42_run_jack_detect(cs42l42);
- 		}
- 		break;
- 
- 	case CS42L42_TS_UNPLUG:
--		if (cs42l42->hp_jack_in || cs42l42->mic_jack_in) {
--			status_changed = 1;
--			cs42l42->hp_jack_in = 0;
--			cs42l42->mic_jack_in = 0;
--		}
-+		status_changed = 1;
-+		cs42l42->hp_jack_in = 0;
-+		cs42l42->mic_jack_in = 0;
- 		break;
- 	default:
- 		/* jack in transition */
- 		break;
- 	}
- 
-+	codec_dbg(cs42l42->codec, "Tip Sense Detection: (%d)\n", reg_ts_status);
-+
- 	return status_changed;
- }
- 
-@@ -698,24 +788,40 @@ static int cs42l42_jack_unsol_event(struct sub_codec *cs42l42)
- 
- 		type = (reg_hs_status & CS42L42_HSDET_TYPE_MASK) >> CS42L42_HSDET_TYPE_SHIFT;
- 
-+		/* Configure the HSDET mode. */
-+		cs8409_i2c_write(cs42l42, CS42L42_HSDET_CTL2, 0x80);
-+
- 		if (cs42l42->no_type_dect) {
- 			status_changed = cs42l42_handle_tip_sense(cs42l42, current_plug_status);
--		} else if (type == CS42L42_PLUG_INVALID) {
--			/* Type CS42L42_PLUG_INVALID not supported	*/
--			status_changed = cs42l42_handle_tip_sense(cs42l42, CS42L42_TS_UNPLUG);
- 		} else {
--			if (!cs42l42->hp_jack_in) {
--				status_changed = 1;
--				cs42l42->hp_jack_in = 1;
-+			if (type == CS42L42_PLUG_INVALID || type == CS42L42_PLUG_HEADPHONE) {
-+				codec_dbg(cs42l42->codec,
-+					  "Auto detect value not valid (%d), running manual det\n",
-+					  type);
-+				type = cs42l42_manual_hs_det(cs42l42);
- 			}
--			/* type = CS42L42_PLUG_HEADPHONE has no mic */
--			if ((!cs42l42->mic_jack_in) && (type != CS42L42_PLUG_HEADPHONE)) {
-+
-+			switch (type) {
-+			case CS42L42_PLUG_CTIA:
-+			case CS42L42_PLUG_OMTP:
- 				status_changed = 1;
-+				cs42l42->hp_jack_in = 1;
- 				cs42l42->mic_jack_in = 1;
-+				break;
-+			case CS42L42_PLUG_HEADPHONE:
-+				status_changed = 1;
-+				cs42l42->hp_jack_in = 1;
-+				cs42l42->mic_jack_in = 0;
-+				break;
-+			default:
-+				status_changed = 1;
-+				cs42l42->hp_jack_in = 0;
-+				cs42l42->mic_jack_in = 0;
-+				break;
- 			}
-+			codec_dbg(cs42l42->codec, "Detection done (%d)\n", type);
- 		}
--		/* Configure the HSDET mode. */
--		cs8409_i2c_write(cs42l42, CS42L42_HSDET_CTL2, 0x80);
-+
- 		/* Enable the HPOUT ground clamp and configure the HP pull-down */
- 		cs8409_i2c_write(cs42l42, CS42L42_DAC_CTL2, 0x02);
- 		/* Re-Enable Tip Sense Interrupt */
-@@ -803,7 +909,6 @@ static void cs42l42_suspend(struct sub_codec *cs42l42)
- 	cs42l42->last_page = 0;
- 	cs42l42->hp_jack_in = 0;
- 	cs42l42->mic_jack_in = 0;
--	cs42l42->force_status_change = 1;
- 
- 	/* Put CS42L42 into Reset */
- 	gpio_data = snd_hda_codec_read(codec, CS8409_PIN_AFG, 0, AC_VERB_GET_GPIO_DATA, 0);
-diff --git a/sound/pci/hda/patch_cs8409.h b/sound/pci/hda/patch_cs8409.h
-index 988259f8a940..ebf473a3f109 100644
---- a/sound/pci/hda/patch_cs8409.h
-+++ b/sound/pci/hda/patch_cs8409.h
-@@ -304,7 +304,6 @@ struct sub_codec {
- 
- 	unsigned int hp_jack_in:1;
- 	unsigned int mic_jack_in:1;
--	unsigned int force_status_change:1;
- 	unsigned int suspended:1;
- 	unsigned int paged:1;
- 	unsigned int last_page;
+Stefan Binding (3):
+  ASoC: cs42l42: Move CS42L42 register descriptions to general include
+  ALSA: hda/cs8409: Use general cs42l42 include in cs8409 hda driver
+  ALSA: hda/cs8409: Support manual mode detection for CS42L42
+
+ include/sound/cs42l42.h             | 810 +++++++++++++++++++++++++++
+ sound/pci/hda/patch_cs8409-tables.c | 327 ++++++-----
+ sound/pci/hda/patch_cs8409.c        | 275 ++++++---
+ sound/pci/hda/patch_cs8409.h        |   9 +-
+ sound/soc/codecs/cs42l42.h          | 826 +---------------------------
+ 5 files changed, 1167 insertions(+), 1080 deletions(-)
+ create mode 100644 include/sound/cs42l42.h
+
 -- 
 2.25.1
 
