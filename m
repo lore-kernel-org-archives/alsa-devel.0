@@ -4,69 +4,83 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 25651C433EF
-	for <alsa-devel@archiver.kernel.org>; Wed,  4 May 2022 20:38:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2AB95C433EF
+	for <alsa-devel@archiver.kernel.org>; Wed,  4 May 2022 20:40:02 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 21DF51785;
-	Wed,  4 May 2022 22:38:03 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 21DF51785
+	by alsa0.perex.cz (Postfix) with ESMTPS id 19112175F;
+	Wed,  4 May 2022 22:39:10 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 19112175F
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1651696733;
-	bh=MhaXkcCYVV4yXHPmCqSqrqc+KqDCZa4fRVvXSNkprdQ=;
-	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
+	s=default; t=1651696800;
+	bh=FcQ9gEuvYR1sQAz11EGS2hatFJFlUdNPtc2CHaxljk8=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=cwc2eWPr4oL8l1/fNlE/+HB+E49yDukohyMR9hpC1SLuwribUiKi0f2fWCNXJOpuf
-	 LFgaDLYVSZa34GUfDiiO+5iyV2QvN+W9a5nGY7H8avTVu3/vznUYk6w3RCOOXeqiK4
-	 Hn7flsGE8T8naFbbmefUDscaUTKi6dQm5S7aPRTU=
+	b=JC3hOjdFfYZYuhFQPdouOCu9h5/RLi6wYrN3ULVj5XHbe2Slb2MCzKcOvGxdjcLIk
+	 3G7EUi4ntHhS43TOCFYn5MVtD4FPM7yAC60R8ki13inT0I4lVjRMgT2D4eZKqq9nTS
+	 fdBfMWN1IGjZT04Hur8Ib179jQ3K7tk2SJpLcHfQ=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 1F7D0F80506;
-	Wed,  4 May 2022 22:37:18 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id BFBBEF800D3;
+	Wed,  4 May 2022 22:39:09 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 685B4F8049E; Wed,  4 May 2022 22:37:13 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org
- [IPv6:2604:1380:4641:c500::1])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id B7075F80163; Wed,  4 May 2022 22:39:07 +0200 (CEST)
+Received: from mail-oi1-f169.google.com (mail-oi1-f169.google.com
+ [209.85.167.169])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id B4AF1F80141
- for <alsa-devel@alsa-project.org>; Wed,  4 May 2022 22:37:06 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B4AF1F80141
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="gt0aywyq"
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id A72A06178F;
- Wed,  4 May 2022 20:37:03 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7BAF9C385AE;
- Wed,  4 May 2022 20:37:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1651696623;
- bh=MhaXkcCYVV4yXHPmCqSqrqc+KqDCZa4fRVvXSNkprdQ=;
- h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=gt0aywyq4GFWecTCEeVm65qTaUaPrEQpKz39dH1/ojlUu8I5SqlQ4wMJ+X8eGpITe
- FrIjU3XZ8uY2VVBhMwBlNFWVjRMBU6x4N3+rZPfIFbYqaJu6ec8HFNPJSlW6NBot0j
- 7VVo8yQ+91rt2fOVmqIDqkOHc3livI9UZFcnz8W9uqxMnAiZdkPv2kFliPp0dGovdT
- tq1f8nVkCPtcCamU19YmxLhfACXCWblLOTsk6bFlEXL0CD2eLMyfkzhL5lSx/JIyCY
- Z2+M7DkpI/GcjRlv9sroGVCfAHGv1noVyxxYGvpk3+gqS8IoKVXFIfN91b/tppA9pn
- pslGtKTnpid0A==
-From: Mark Brown <broonie@kernel.org>
-To: pierre-louis.bossart@linux.intel.com, lgirdwood@gmail.com,
- peter.ujfalusi@linux.intel.com
-In-Reply-To: <20220504102831.10071-1-peter.ujfalusi@linux.intel.com>
-References: <20220504102831.10071-1-peter.ujfalusi@linux.intel.com>
-Subject: Re: [PATCH] ASoC: SOF: ipc3: Remove the ipc3-ops.h header file
-Message-Id: <165169662122.1744642.16025534398868254252.b4-ty@kernel.org>
-Date: Wed, 04 May 2022 21:37:01 +0100
+ by alsa1.perex.cz (Postfix) with ESMTPS id 57D5DF800D3
+ for <alsa-devel@alsa-project.org>; Wed,  4 May 2022 22:38:59 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 57D5DF800D3
+Received: by mail-oi1-f169.google.com with SMTP id q8so2358712oif.13
+ for <alsa-devel@alsa-project.org>; Wed, 04 May 2022 13:38:58 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+ :mime-version:content-disposition:content-transfer-encoding
+ :in-reply-to;
+ bh=AcpEU69sAJkwiV3catvTf9Ba2Nirs+uxT6TgvfUDezQ=;
+ b=eULnq6sluvfDaGdbxXxflDp6+Avnd9+lFqn7N2ykrnR1yqTZYsa5r1GsV6LeucliNj
+ 4dI3Y1AenP4LQqepvrtbUhR7bKwJkkzWv175DIAFs2xvSJ8KqV/0dQ936NjJXiRQg2oc
+ 0KIuKiBOSBVniTyh51lPbVGs6bAz+emcf1XQWUQ2i7qOqDpy2wz96rfWRrWyg40l1XTB
+ SVjiil5mJAccgBYRgYArfwOCbP9oIRIUY0qt+MZ2xJnEBjIDdrxsvEI5cdSUHYvhP7Pb
+ O0CENTubfW8PhPUjNNOpYRX5raeYbjAkyQ59HvCbv+xa/RI6EjAR6+Xvue5KVDFW+NF+
+ n7jw==
+X-Gm-Message-State: AOAM5312O2TfsHsAExl0qNojAnajsGAbX0vyYXSJYo5Bcr8wDUAHK8Yh
+ Sk5SXXbHHhf514LA01LMxw==
+X-Google-Smtp-Source: ABdhPJxqGL2rYGTLd4lmJ9hpkXvtgU1omEZJ82uy+vc3bVbntykS23hu/PcAgWaMqP8CbQy4JAssJw==
+X-Received: by 2002:aca:545:0:b0:325:6e7:992d with SMTP id
+ 66-20020aca0545000000b0032506e7992dmr673969oif.244.1651696737433; 
+ Wed, 04 May 2022 13:38:57 -0700 (PDT)
+Received: from robh.at.kernel.org (66-90-144-107.dyn.grandenetworks.net.
+ [66.90.144.107]) by smtp.gmail.com with ESMTPSA id
+ dv2-20020a056870d88200b000e93d386d97sm8387005oab.31.2022.05.04.13.38.56
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Wed, 04 May 2022 13:38:57 -0700 (PDT)
+Received: (nullmailer pid 2187220 invoked by uid 1000);
+ Wed, 04 May 2022 20:38:56 -0000
+Date: Wed, 4 May 2022 15:38:56 -0500
+From: Rob Herring <robh@kernel.org>
+To: =?iso-8859-1?Q?N=EDcolas_F=2E_R=2E_A=2E?= Prado <nfraprado@collabora.com>
+Subject: Re: [PATCH 1/3] ASoC: dt-bindings: mediatek: mt8192: Add i2s-share
+ properties
+Message-ID: <YnLkYKmJ0TJ8uyjC@robh.at.kernel.org>
+References: <20220429203039.2207848-1-nfraprado@collabora.com>
+ <20220429203039.2207848-2-nfraprado@collabora.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-Cc: daniel.baluta@nxp.com, alsa-devel@alsa-project.org,
- yung-chuan.liao@linux.intel.com, ranjani.sridharan@linux.intel.com,
- kai.vehmanen@linux.intel.com
+In-Reply-To: <20220429203039.2207848-2-nfraprado@collabora.com>
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
+ Liam Girdwood <lgirdwood@gmail.com>, Jiaxin Yu <jiaxin.yu@mediatek.com>,
+ linux-kernel@vger.kernel.org, Shane Chien <shane.chien@mediatek.com>,
+ Mark Brown <broonie@kernel.org>, linux-mediatek@lists.infradead.org,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Matthias Brugger <matthias.bgg@gmail.com>, kernel@collabora.com,
+ linux-arm-kernel@lists.infradead.org,
+ AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -82,40 +96,39 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, 4 May 2022 13:28:31 +0300, Peter Ujfalusi wrote:
-> Only the main IPC ops struct should be visible outside of IPC3 code to make
-> sure that the code is correctly abstracted.
+On Fri, Apr 29, 2022 at 04:30:37PM -0400, Nícolas F. R. A. Prado wrote:
+> The Mediatek AFE PCM controller for MT8192 allows sharing of an I2S bus
+> between two busses. Add a pattern for these properties in the
+> dt-binding.
 > 
-> Instead of keeping the ipc3-ops.h with only the high level ops struct
-> declaration, put the ipc3_ops to sof-priv.h and move all other ops struct
-> declaration into ipc3-priv.h
+> Signed-off-by: Nícolas F. R. A. Prado <nfraprado@collabora.com>
 > 
-> [...]
+> ---
+> 
+>  Documentation/devicetree/bindings/sound/mt8192-afe-pcm.yaml | 5 +++++
+>  1 file changed, 5 insertions(+)
+> 
+> diff --git a/Documentation/devicetree/bindings/sound/mt8192-afe-pcm.yaml b/Documentation/devicetree/bindings/sound/mt8192-afe-pcm.yaml
+> index 7a25bc9b8060..5b03c8dbf318 100644
+> --- a/Documentation/devicetree/bindings/sound/mt8192-afe-pcm.yaml
+> +++ b/Documentation/devicetree/bindings/sound/mt8192-afe-pcm.yaml
+> @@ -54,6 +54,11 @@ properties:
+>        - const: aud_infra_clk
+>        - const: aud_infra_26m_clk
+>  
+> +patternProperties:
+> +  "^i2s[0-35-9]-share$":
+> +    description: Name of the I2S bus that is shared with this bus
+> +    pattern: "^I2S[0-35-9]$"
 
-Applied to
+Why not a phandle to the the other bus? That would be the DT way to do 
+it. But I'm not sure I really understand who is sharing what here.
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
-
-Thanks!
-
-[1/1] ASoC: SOF: ipc3: Remove the ipc3-ops.h header file
-      commit: f80beaf6f2b1eb55fb1b2128a43e0a0c9c4d19de
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
+> +
+>  required:
+>    - compatible
+>    - interrupts
+> -- 
+> 2.36.0
+> 
+> 
