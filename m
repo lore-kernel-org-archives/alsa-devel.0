@@ -4,55 +4,55 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6D667C433F5
-	for <alsa-devel@archiver.kernel.org>; Wed,  4 May 2022 17:15:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id BC176C433EF
+	for <alsa-devel@archiver.kernel.org>; Wed,  4 May 2022 17:15:38 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id AB66316CC;
-	Wed,  4 May 2022 19:14:32 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AB66316CC
+	by alsa0.perex.cz (Postfix) with ESMTPS id 112AC16F1;
+	Wed,  4 May 2022 19:14:47 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 112AC16F1
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1651684522;
-	bh=vPlnNpaZodR5tR5ZBwaPWYoOgsy8kReGlTY5jY6r/0Y=;
+	s=default; t=1651684537;
+	bh=GICKHcMtB0oHnE5W+XUu/zN4OfgfTe7zG8c3RJ3kXbg=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=TqUQPrJi2pN3i4vgIOYB6wrD3qMlb/nyKPVc7QNYVfA9b8FsUVD3L/53V4h5eYXI6
-	 xx1C+BhDyABkSZxoJR+yhWPIbFD6nDX4asqUNdJXSOOLvtWnpnxMmNhzs/KCjoZGz9
-	 s8r+vAy9q5/HyLkHAek9KIFJEUwft7dAgd2aDvCs=
+	b=B2BUmjQgNfW5Amqxt/pdT0z15o5MQfw1L8nYTsO02wnE/ST4F6DxY39cFzPDxH/YB
+	 rPwU9L3JmXDajvTXIvqCcFONQ3hZbn5PsFrLmIuReLdj1W/NBsa4FvFhbxsSLiInoQ
+	 k+wKOXKz1uPJLnoE7MjVqhX9dPii2PxI231LBILg=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 33D5EF805BE;
+	by alsa1.perex.cz (Postfix) with ESMTP id A71BEF805C0;
 	Wed,  4 May 2022 19:09:40 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id D844EF805B3; Wed,  4 May 2022 19:09:38 +0200 (CEST)
+ id E9303F805B1; Wed,  4 May 2022 19:09:38 +0200 (CEST)
 Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
  [67.231.149.25])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 00413F80529
- for <alsa-devel@alsa-project.org>; Wed,  4 May 2022 19:09:17 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 00413F80529
+ by alsa1.perex.cz (Postfix) with ESMTPS id 00262F80516
+ for <alsa-devel@alsa-project.org>; Wed,  4 May 2022 19:09:16 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 00262F80516
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com
- header.b="WhEdRkcz"
+ header.b="WT1x1o/F"
 Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
- by mx0a-001ae601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 2446CVqE001835;
- Wed, 4 May 2022 12:09:15 -0500
+ by mx0a-001ae601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 2446CVqD001835;
+ Wed, 4 May 2022 12:09:14 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
  h=from : to : cc :
  subject : date : message-id : in-reply-to : references : mime-version :
  content-transfer-encoding : content-type; s=PODMain02222019;
- bh=IvnYN5iszdMNB95VpDFm5ngOBzKLXjW/DwEUt3YcyzE=;
- b=WhEdRkczNGpRZZHynb39Q6/hxkNtit6Nhi+356EB8U/w1gmTiW8XQ1e2Jl/uDdeGJnqn
- pY9Ncrx9TBYk00Zff0VRl9TuhHVgkRODbJZVwZ74aQTeaUGcTZ1hlaQx4pE6dJDfBxlq
- Pq7Jl6gihLHJHnDeAobZ+VV4PPSIF5hpOAtLzUH0d4+tr/fpN6UJIj+f52k6pcMi/mq9
- qLxGDycnnMi97H7QyQcLO7VlhznBKghFEpOjPYtc6NL9cN1CK80kpJSxF7kUfPBLo/cx
- RefKA1E7miz+XhfXNPLQfSuSoWjkh5gKRnPIozCzuvEFHYVx8cltGubaFED+t+tOTxka gw== 
+ bh=zHG4IIp2v5YYq2OpqzjED78DTsSBjDIKTwo+c5+pZws=;
+ b=WT1x1o/FMjoMeIR9bTK8Ihw6Q1LZa5VTkD3+scz+PKZWxtTqkHeRUerWEYWaP0Xndg/8
+ Srv7a5xnuFi4uYjQqCSrtZwcXZL0jGZ+C+oZbR9ay5820jTs3psrDoKYQ+rkqhGo17B9
+ SXgZGFdeA7UDPKBmmBIi0dF7XAk3RCjftm9dd+v2+8NTS+5rEFdNcSU2x11XLPvJOOtT
+ 76CGnLRrQJUr2fHjUt0qXaHXrKn/vsM5D1sbKokwx9vLp81ql35KGU1F1o9sCbOt660n
+ hjXwyow+BmryyqNHMVl0fWs2FMOwpO+pHJtuV9qapBxE3vzHkvD0Iz1reLn8jGO66NCh Eg== 
 Received: from ediex02.ad.cirrus.com ([84.19.233.68])
- by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3fs2h2d8fp-12
+ by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3fs2h2d8fp-11
  (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
- Wed, 04 May 2022 12:09:15 -0500
+ Wed, 04 May 2022 12:09:14 -0500
 Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX02.ad.cirrus.com
  (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.24; Wed, 4 May
@@ -61,22 +61,22 @@ Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
  (198.61.84.80) with Microsoft SMTP Server id 15.1.2375.24 via
  Frontend Transport; Wed, 4 May 2022 18:09:06 +0100
 Received: from algalon.ad.cirrus.com (algalon.ad.cirrus.com [198.90.251.122])
- by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 39D2211D3;
+ by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 28DDFB10;
  Wed,  4 May 2022 17:09:06 +0000 (UTC)
 From: Charles Keepax <ckeepax@opensource.cirrus.com>
 To: <broonie@kernel.org>
-Subject: [PATCH 17/38] ASoC: mt6351: Add endianness flag in
+Subject: [PATCH 16/38] ASoC: lochnagar: Add endianness flag in
  snd_soc_component_driver
-Date: Wed, 4 May 2022 18:08:44 +0100
-Message-ID: <20220504170905.332415-18-ckeepax@opensource.cirrus.com>
+Date: Wed, 4 May 2022 18:08:43 +0100
+Message-ID: <20220504170905.332415-17-ckeepax@opensource.cirrus.com>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20220504170905.332415-1-ckeepax@opensource.cirrus.com>
 References: <20220504170905.332415-1-ckeepax@opensource.cirrus.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: 69cUNFJq9v0foua4hJ03N5nO_wPnGX1S
-X-Proofpoint-GUID: 69cUNFJq9v0foua4hJ03N5nO_wPnGX1S
+X-Proofpoint-ORIG-GUID: xJthe743gBOpnp_5s8MdH0wAQ8-yZll3
+X-Proofpoint-GUID: xJthe743gBOpnp_5s8MdH0wAQ8-yZll3
 X-Proofpoint-Spam-Reason: safe
 Cc: oder_chiou@realtek.com, steven.eckhoff.opensource@gmail.com,
  alexandre.belloni@bootlin.com, lars@metafoo.de,
@@ -106,42 +106,31 @@ ambivalence to endian, typically because it is lost over the hardware
 link. This device receives audio over an I2S DAI and as such should
 have endianness applied.
 
-As the core will now expand the formats to cover both endian types,
-remove the redundant manual specification of both.
-
 Signed-off-by: Charles Keepax <ckeepax@opensource.cirrus.com>
 ---
- sound/soc/codecs/mt6351.c | 10 ++++------
- 1 file changed, 4 insertions(+), 6 deletions(-)
+ sound/soc/codecs/lochnagar-sc.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/codecs/mt6351.c b/sound/soc/codecs/mt6351.c
-index 5c0536eb1044f..d2cf4847eead1 100644
---- a/sound/soc/codecs/mt6351.c
-+++ b/sound/soc/codecs/mt6351.c
-@@ -282,12 +282,9 @@ static const struct snd_soc_dai_ops mt6351_codec_dai_ops = {
- 	.hw_params = mt6351_codec_dai_hw_params,
+diff --git a/sound/soc/codecs/lochnagar-sc.c b/sound/soc/codecs/lochnagar-sc.c
+index 54426a90bc0bf..54a8ba7ed3c20 100644
+--- a/sound/soc/codecs/lochnagar-sc.c
++++ b/sound/soc/codecs/lochnagar-sc.c
+@@ -212,12 +212,13 @@ static struct snd_soc_dai_driver lochnagar_sc_dai[] = {
  };
  
--#define MT6351_FORMATS (SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S16_BE |\
--			SNDRV_PCM_FMTBIT_U16_LE | SNDRV_PCM_FMTBIT_U16_BE |\
--			SNDRV_PCM_FMTBIT_S24_LE | SNDRV_PCM_FMTBIT_S24_BE |\
--			SNDRV_PCM_FMTBIT_U24_LE | SNDRV_PCM_FMTBIT_U24_BE |\
--			SNDRV_PCM_FMTBIT_S32_LE | SNDRV_PCM_FMTBIT_S32_BE |\
--			SNDRV_PCM_FMTBIT_U32_LE | SNDRV_PCM_FMTBIT_U32_BE)
-+#define MT6351_FORMATS (SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_U16_LE |\
-+			SNDRV_PCM_FMTBIT_S24_LE | SNDRV_PCM_FMTBIT_U24_LE |\
-+			SNDRV_PCM_FMTBIT_S32_LE | SNDRV_PCM_FMTBIT_U32_LE)
- 
- static struct snd_soc_dai_driver mt6351_dai_driver[] = {
- 	{
-@@ -1448,6 +1445,7 @@ static const struct snd_soc_component_driver mt6351_soc_component_driver = {
- 	.num_dapm_widgets = ARRAY_SIZE(mt6351_dapm_widgets),
- 	.dapm_routes = mt6351_dapm_routes,
- 	.num_dapm_routes = ARRAY_SIZE(mt6351_dapm_routes),
+ static const struct snd_soc_component_driver lochnagar_sc_driver = {
+-	.non_legacy_dai_naming = 1,
+-
+ 	.dapm_widgets = lochnagar_sc_widgets,
+ 	.num_dapm_widgets = ARRAY_SIZE(lochnagar_sc_widgets),
+ 	.dapm_routes = lochnagar_sc_routes,
+ 	.num_dapm_routes = ARRAY_SIZE(lochnagar_sc_routes),
++
++	.non_legacy_dai_naming = 1,
 +	.endianness = 1,
  };
  
- static int mt6351_codec_driver_probe(struct platform_device *pdev)
+ static int lochnagar_sc_probe(struct platform_device *pdev)
 -- 
 2.30.2
 
