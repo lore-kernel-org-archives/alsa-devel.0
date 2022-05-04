@@ -4,66 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9CA15C433EF
-	for <alsa-devel@archiver.kernel.org>; Wed,  4 May 2022 20:38:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 25651C433EF
+	for <alsa-devel@archiver.kernel.org>; Wed,  4 May 2022 20:38:55 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 574FA1777;
-	Wed,  4 May 2022 22:37:45 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 574FA1777
+	by alsa0.perex.cz (Postfix) with ESMTPS id 21DF51785;
+	Wed,  4 May 2022 22:38:03 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 21DF51785
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1651696715;
-	bh=1x6d0c1VcJVLCQrLiqIiA9Eq7CkM4/3TNYeopi2LLbE=;
+	s=default; t=1651696733;
+	bh=MhaXkcCYVV4yXHPmCqSqrqc+KqDCZa4fRVvXSNkprdQ=;
 	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=bt9+IwrXHRgmVS+MbJpGQWCB+v4YH08pzmgnJfy/qn/hp4yKOmrE0gEp5tBIbfmwq
-	 IOzJ2k2ZrSYGKeyDe9F66tmrX7aq65yt7U7zioT2avFfz8YDrlHLMCMGEGlAGBY06R
-	 d0Bz3UP5tciV7H7qmCWT/JyDJmWXZO2WfB15eheI=
+	b=cwc2eWPr4oL8l1/fNlE/+HB+E49yDukohyMR9hpC1SLuwribUiKi0f2fWCNXJOpuf
+	 LFgaDLYVSZa34GUfDiiO+5iyV2QvN+W9a5nGY7H8avTVu3/vznUYk6w3RCOOXeqiK4
+	 Hn7flsGE8T8naFbbmefUDscaUTKi6dQm5S7aPRTU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 9EBB5F80431;
-	Wed,  4 May 2022 22:37:17 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 1F7D0F80506;
+	Wed,  4 May 2022 22:37:18 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 8870DF80163; Wed,  4 May 2022 22:37:09 +0200 (CEST)
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+ id 685B4F8049E; Wed,  4 May 2022 22:37:13 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org
+ [IPv6:2604:1380:4641:c500::1])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 0A39EF80129
- for <alsa-devel@alsa-project.org>; Wed,  4 May 2022 22:37:02 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0A39EF80129
+ by alsa1.perex.cz (Postfix) with ESMTPS id B4AF1F80141
+ for <alsa-devel@alsa-project.org>; Wed,  4 May 2022 22:37:06 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B4AF1F80141
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="me5bxklD"
+ header.b="gt0aywyq"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by ams.source.kernel.org (Postfix) with ESMTPS id 2FB71B828CE;
- Wed,  4 May 2022 20:37:02 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 21688C385A5;
- Wed,  4 May 2022 20:36:59 +0000 (UTC)
+ by dfw.source.kernel.org (Postfix) with ESMTPS id A72A06178F;
+ Wed,  4 May 2022 20:37:03 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7BAF9C385AE;
+ Wed,  4 May 2022 20:37:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1651696621;
- bh=1x6d0c1VcJVLCQrLiqIiA9Eq7CkM4/3TNYeopi2LLbE=;
+ s=k20201202; t=1651696623;
+ bh=MhaXkcCYVV4yXHPmCqSqrqc+KqDCZa4fRVvXSNkprdQ=;
  h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=me5bxklD3rexV+BLJoIK7ihdV6AZ8TJlBbyF05vQ/SgbT486sOHD6NGjTJNXNFFav
- qGz6AE9kiJ/bQ7QoR/wGaIODvn4Sfmf1JtPjmhJBfNY7J9SqrHIecES7ir+clfVoJd
- KPq+Leoeez40BCV+bAwoTZseXjYLhGsAims9OEhIIl7nevoAduf0xrUASi4Hx56Bqi
- wiP/VBIxztrrPPbVEA8tZSMXytGgxjwQTEkE8VKAUZ6bri1T40tq+Hix2gaczV/ZBH
- PDspG2kqoLk1LSLZxcgFyxiD11nmoMwUHChmRTPNOpTgCQfQZeqMlihc2l6HoCpNim
- d5VBKxu1uS8SA==
+ b=gt0aywyq4GFWecTCEeVm65qTaUaPrEQpKz39dH1/ojlUu8I5SqlQ4wMJ+X8eGpITe
+ FrIjU3XZ8uY2VVBhMwBlNFWVjRMBU6x4N3+rZPfIFbYqaJu6ec8HFNPJSlW6NBot0j
+ 7VVo8yQ+91rt2fOVmqIDqkOHc3livI9UZFcnz8W9uqxMnAiZdkPv2kFliPp0dGovdT
+ tq1f8nVkCPtcCamU19YmxLhfACXCWblLOTsk6bFlEXL0CD2eLMyfkzhL5lSx/JIyCY
+ Z2+M7DkpI/GcjRlv9sroGVCfAHGv1noVyxxYGvpk3+gqS8IoKVXFIfN91b/tppA9pn
+ pslGtKTnpid0A==
 From: Mark Brown <broonie@kernel.org>
-To: alsa-devel@alsa-project.org, Sascha Hauer <s.hauer@pengutronix.de>
-In-Reply-To: <20220502131335.2604158-1-s.hauer@pengutronix.de>
-References: <20220502131335.2604158-1-s.hauer@pengutronix.de>
-Subject: Re: [PATCH] ASoC: soc-generic-dmaengine-pcm: Use default config when
- none is given
-Message-Id: <165169661985.1744642.14178720202501273376.b4-ty@kernel.org>
-Date: Wed, 04 May 2022 21:36:59 +0100
+To: pierre-louis.bossart@linux.intel.com, lgirdwood@gmail.com,
+ peter.ujfalusi@linux.intel.com
+In-Reply-To: <20220504102831.10071-1-peter.ujfalusi@linux.intel.com>
+References: <20220504102831.10071-1-peter.ujfalusi@linux.intel.com>
+Subject: Re: [PATCH] ASoC: SOF: ipc3: Remove the ipc3-ops.h header file
+Message-Id: <165169662122.1744642.16025534398868254252.b4-ty@kernel.org>
+Date: Wed, 04 May 2022 21:37:01 +0100
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: lars@metafoo.de, kernel@pengutronix.de
+Cc: daniel.baluta@nxp.com, alsa-devel@alsa-project.org,
+ yung-chuan.liao@linux.intel.com, ranjani.sridharan@linux.intel.com,
+ kai.vehmanen@linux.intel.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -79,13 +82,13 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Mon, 2 May 2022 15:13:35 +0200, Sascha Hauer wrote:
-> snd_dmaengine_pcm_register() can be passed a NULL pointer for the config
-> which means that the we have to test for pcm->config being non NULL
-> before accessing it. Make the code more straight forward by providing a
-> default config when none is passed. With this pcm->config is never NULL
-> and we can skip all the if (pcm->config) tests.
+On Wed, 4 May 2022 13:28:31 +0300, Peter Ujfalusi wrote:
+> Only the main IPC ops struct should be visible outside of IPC3 code to make
+> sure that the code is correctly abstracted.
 > 
+> Instead of keeping the ipc3-ops.h with only the high level ops struct
+> declaration, put the ipc3_ops to sof-priv.h and move all other ops struct
+> declaration into ipc3-priv.h
 > 
 > [...]
 
@@ -95,8 +98,8 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: soc-generic-dmaengine-pcm: Use default config when none is given
-      commit: 43556516fffe1d2be2d4a73cfe7cd34d6062dd11
+[1/1] ASoC: SOF: ipc3: Remove the ipc3-ops.h header file
+      commit: f80beaf6f2b1eb55fb1b2128a43e0a0c9c4d19de
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
