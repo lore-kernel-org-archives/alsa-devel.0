@@ -4,78 +4,79 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A4F7BC433EF
-	for <alsa-devel@archiver.kernel.org>; Wed,  4 May 2022 17:12:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6D561C433EF
+	for <alsa-devel@archiver.kernel.org>; Wed,  4 May 2022 17:12:21 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id DE0A21685;
-	Wed,  4 May 2022 19:11:09 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DE0A21685
+	by alsa0.perex.cz (Postfix) with ESMTPS id B0EB21698;
+	Wed,  4 May 2022 19:11:29 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B0EB21698
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1651684319;
-	bh=r8ocHv8byxoztnrUP7AP5RZd91AGbfHP8Xw6mHZAKRg=;
+	s=default; t=1651684339;
+	bh=AS8j4WwM3/L446RHcZ1NuDPVRGaCnslwh1Afk4De5pI=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=uzJt+W8lmT0EYk7/4egFB9nsMpVTHoXBnzjkidYFI0GFnUh/DLKDxzxVcgtsD+7qw
-	 2cc2aSO6NhgBc1K70FAZblsTYx8MKsSwbuy/ztRLLG477Id5siTsD2guL0GV6D9A2m
-	 bSa5T3smMC4HfZ8qLpEBQEU9Rjjvma8D9qD2QgT8=
+	b=gOctT4J53jOsjVC+/yzCDfkQRPzrIzyZMych5IBQDm7JlMO6pCzvubN6DXaZwWf5f
+	 uv+OZ8nqY5t118xLrDdNIpzDYIklehNc4s5GnfKvuLONnLQO3MXx3Rzi2ucyzAJUeo
+	 f7CoIHVc0cj1LlkyqFo1ZWq3uOtD65Wu6WJwAXHk=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id E301DF80549;
-	Wed,  4 May 2022 19:09:28 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2ABABF80551;
+	Wed,  4 May 2022 19:09:30 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 710E7F80129; Wed,  4 May 2022 19:09:23 +0200 (CEST)
-Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
- [67.231.152.168])
+ id DFCA7F80538; Wed,  4 May 2022 19:09:26 +0200 (CEST)
+Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
+ [67.231.149.25])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 7542FF80431
- for <alsa-devel@alsa-project.org>; Wed,  4 May 2022 19:09:13 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7542FF80431
+ by alsa1.perex.cz (Postfix) with ESMTPS id D44F7F80507
+ for <alsa-devel@alsa-project.org>; Wed,  4 May 2022 19:09:12 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D44F7F80507
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com
- header.b="P5axK1PJ"
-Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
- by mx0b-001ae601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 2446EsA7021058;
- Wed, 4 May 2022 12:09:10 -0500
+ header.b="RBO8PQjR"
+Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
+ by mx0a-001ae601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 2446CVq8001835;
+ Wed, 4 May 2022 12:09:11 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
  h=from : to : cc :
  subject : date : message-id : in-reply-to : references : mime-version :
  content-transfer-encoding : content-type; s=PODMain02222019;
- bh=By/S9E1F2xzDnQr0GMOU8svqtPkdMZwDtBOpCYX22YI=;
- b=P5axK1PJRRmMLXiLDuM5I6/QF6U6cU96q/UggEL7PNf+JXq/3R/JdLewpNvarZhPRXbY
- 3sJkC0+bDBzlZMFd67dM7I4GcpmZ7BB5zrTlrAspn5Sg3HdppL1GJ8X4wpCwDC7qgxdS
- fc5FCAtUlfsvjsDRX+88Nvj7qaaozd1HB76/soHKqCNaH4EQRIHmFJ+pDWZT9eY+StZR
- xmbJgpzua6qj2rAkYH20G9x2s7Z0LCvlW1vgaEsccbX7epKHenM4c0qrXIv7ie/JHNjB
- Re4ERFHsvkTFLsNhuvn0PzidrqJtNXEKklUEbeoIXR0ycF116pBGwp24bMtYdYuWYcgn TA== 
-Received: from ediex01.ad.cirrus.com ([84.19.233.68])
- by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3fs1hpcxs0-3
+ bh=epPzlLGEOlrrbGIfh48/Ui6qXv0aQrzvwrAiH5BnENA=;
+ b=RBO8PQjREXt0YeT7kt33+UdtJQDUldJrHBOGkufsxD9IDAcKgGmlqZeWgz37c6tMeODG
+ r4StQ1PTM2G5k6y5WcrHgaof0dtzK3UnmBZMmBZgHleShBH7YVMJnFVqI8qHVUvoRpmE
+ v1sv1LSjDUgfjUdBFQg5+il0K86jq9wJ7XjBf0jLYgxzGiiA0LhmBoC+Nd6l/nkaaTUV
+ zOOHkqLtUgrbjFkjeEjYgGQ2JU72O5MFDE310k1ysnqTx6IHF7XILRAbfFBmEy6Ne3Om
+ +F0V5gJ5mogsjLrm6zF5vBxTq+Qb1aZtVux4S1TPt6PDcm0kYKWzmZlxRpkaBTPuAmA3 Pg== 
+Received: from ediex02.ad.cirrus.com ([84.19.233.68])
+ by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3fs2h2d8fp-6
  (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
- Wed, 04 May 2022 12:09:10 -0500
-Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
+ Wed, 04 May 2022 12:09:11 -0500
+Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX02.ad.cirrus.com
+ (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.24; Wed, 4 May
  2022 18:09:05 +0100
 Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
  (198.61.84.80) with Microsoft SMTP Server id 15.1.2375.24 via
  Frontend Transport; Wed, 4 May 2022 18:09:05 +0100
 Received: from algalon.ad.cirrus.com (algalon.ad.cirrus.com [198.90.251.122])
- by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 6DA35B10;
+ by ediswmail.ad.cirrus.com (Postfix) with ESMTP id C0D3811D1;
  Wed,  4 May 2022 17:09:05 +0000 (UTC)
 From: Charles Keepax <ckeepax@opensource.cirrus.com>
 To: <broonie@kernel.org>
-Subject: [PATCH 04/38] ASoC: cs4270: Remove redundant big endian formats
-Date: Wed, 4 May 2022 18:08:31 +0100
-Message-ID: <20220504170905.332415-5-ckeepax@opensource.cirrus.com>
+Subject: [PATCH 10/38] ASoC: hdac_hda: Add endianness flag in
+ snd_soc_component_driver
+Date: Wed, 4 May 2022 18:08:37 +0100
+Message-ID: <20220504170905.332415-11-ckeepax@opensource.cirrus.com>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20220504170905.332415-1-ckeepax@opensource.cirrus.com>
 References: <20220504170905.332415-1-ckeepax@opensource.cirrus.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: w8jsU8o_xUE6YpioPdqlGirmYJgEPoSv
-X-Proofpoint-GUID: w8jsU8o_xUE6YpioPdqlGirmYJgEPoSv
+X-Proofpoint-ORIG-GUID: 42y-B7VDjPqN7dT7IBD8ETmXk2V1cu2i
+X-Proofpoint-GUID: 42y-B7VDjPqN7dT7IBD8ETmXk2V1cu2i
 X-Proofpoint-Spam-Reason: safe
 Cc: oder_chiou@realtek.com, steven.eckhoff.opensource@gmail.com,
  alexandre.belloni@bootlin.com, lars@metafoo.de,
@@ -100,43 +101,42 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The CODEC already provides the endianness flag on its
-snd_soc_component_driver structure, specifying it is ambivalent
-to endian. The core will expand the formats to cover both
-endian types, as such remove the redundant specification of both
-endians.
+The endianness flag is used on the CODEC side to specify an
+ambivalence to endian, typically because it is lost over the hardware
+link. This device receives audio over an HDA DAI and as such should
+have endianness applied.
 
 Signed-off-by: Charles Keepax <ckeepax@opensource.cirrus.com>
 ---
- sound/soc/codecs/cs4270.c | 15 +++------------
- 1 file changed, 3 insertions(+), 12 deletions(-)
+ sound/soc/codecs/hdac_hda.c | 15 ++++++++-------
+ 1 file changed, 8 insertions(+), 7 deletions(-)
 
-diff --git a/sound/soc/codecs/cs4270.c b/sound/soc/codecs/cs4270.c
-index 07cac01f87bdc..531f63b015547 100644
---- a/sound/soc/codecs/cs4270.c
-+++ b/sound/soc/codecs/cs4270.c
-@@ -32,18 +32,9 @@
- #include <linux/gpio/consumer.h>
- #include <linux/of_device.h>
+diff --git a/sound/soc/codecs/hdac_hda.c b/sound/soc/codecs/hdac_hda.c
+index a9f61c7e44ee7..8debcee592247 100644
+--- a/sound/soc/codecs/hdac_hda.c
++++ b/sound/soc/codecs/hdac_hda.c
+@@ -571,13 +571,14 @@ static const struct snd_soc_dapm_widget hdac_hda_dapm_widgets[] = {
+ };
  
--/*
-- * The codec isn't really big-endian or little-endian, since the I2S
-- * interface requires data to be sent serially with the MSbit first.
-- * However, to support BE and LE I2S devices, we specify both here.  That
-- * way, ALSA will always match the bit patterns.
-- */
--#define CS4270_FORMATS (SNDRV_PCM_FMTBIT_S8      | \
--			SNDRV_PCM_FMTBIT_S16_LE  | SNDRV_PCM_FMTBIT_S16_BE  | \
--			SNDRV_PCM_FMTBIT_S18_3LE | SNDRV_PCM_FMTBIT_S18_3BE | \
--			SNDRV_PCM_FMTBIT_S20_3LE | SNDRV_PCM_FMTBIT_S20_3BE | \
--			SNDRV_PCM_FMTBIT_S24_3LE | SNDRV_PCM_FMTBIT_S24_3BE | \
--			SNDRV_PCM_FMTBIT_S24_LE  | SNDRV_PCM_FMTBIT_S24_BE)
-+#define CS4270_FORMATS (SNDRV_PCM_FMTBIT_S8      | SNDRV_PCM_FMTBIT_S16_LE  | \
-+			SNDRV_PCM_FMTBIT_S18_3LE | SNDRV_PCM_FMTBIT_S20_3LE | \
-+			SNDRV_PCM_FMTBIT_S24_3LE | SNDRV_PCM_FMTBIT_S24_LE)
+ static const struct snd_soc_component_driver hdac_hda_codec = {
+-	.probe		= hdac_hda_codec_probe,
+-	.remove		= hdac_hda_codec_remove,
+-	.idle_bias_on	= false,
+-	.dapm_widgets           = hdac_hda_dapm_widgets,
+-	.num_dapm_widgets       = ARRAY_SIZE(hdac_hda_dapm_widgets),
+-	.dapm_routes            = hdac_hda_dapm_routes,
+-	.num_dapm_routes        = ARRAY_SIZE(hdac_hda_dapm_routes),
++	.probe			= hdac_hda_codec_probe,
++	.remove			= hdac_hda_codec_remove,
++	.dapm_widgets		= hdac_hda_dapm_widgets,
++	.num_dapm_widgets	= ARRAY_SIZE(hdac_hda_dapm_widgets),
++	.dapm_routes		= hdac_hda_dapm_routes,
++	.num_dapm_routes	= ARRAY_SIZE(hdac_hda_dapm_routes),
++	.idle_bias_on		= false,
++	.endianness		= 1,
+ };
  
- /* CS4270 registers addresses */
- #define CS4270_CHIPID	0x01	/* Chip ID */
+ static int hdac_hda_dev_probe(struct hdac_device *hdev)
 -- 
 2.30.2
 
