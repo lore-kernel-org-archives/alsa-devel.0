@@ -4,66 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0DF70C433F5
-	for <alsa-devel@archiver.kernel.org>; Wed,  4 May 2022 20:38:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9CA15C433EF
+	for <alsa-devel@archiver.kernel.org>; Wed,  4 May 2022 20:38:37 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 540DE1735;
-	Wed,  4 May 2022 22:37:12 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 540DE1735
+	by alsa0.perex.cz (Postfix) with ESMTPS id 574FA1777;
+	Wed,  4 May 2022 22:37:45 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 574FA1777
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1651696682;
-	bh=qmimBDeRB4bB+AEAXOitKu5QJGWKCNVo/BZKGvVdtVA=;
+	s=default; t=1651696715;
+	bh=1x6d0c1VcJVLCQrLiqIiA9Eq7CkM4/3TNYeopi2LLbE=;
 	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=L2Dz+JIM7dSydZKotuQNU841hzYBKwvvbrmJ0FYKEXq4sSouH0M0Trl6T8E5lKHr5
-	 eP1wuOR0/tPa5+u0OEukOFW55KQQUV3ayI0YEipGJg0gENn1KGkF8Gq/8HlG8IUA8H
-	 ewz5mV+9DvT0daSIt0aIHhiiQHBT4WTDzLLcMeiw=
+	b=bt9+IwrXHRgmVS+MbJpGQWCB+v4YH08pzmgnJfy/qn/hp4yKOmrE0gEp5tBIbfmwq
+	 IOzJ2k2ZrSYGKeyDe9F66tmrX7aq65yt7U7zioT2avFfz8YDrlHLMCMGEGlAGBY06R
+	 d0Bz3UP5tciV7H7qmCWT/JyDJmWXZO2WfB15eheI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id C66ABF80129;
-	Wed,  4 May 2022 22:37:11 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 9EBB5F80431;
+	Wed,  4 May 2022 22:37:17 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 2A639F80166; Wed,  4 May 2022 22:37:09 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+ id 8870DF80163; Wed,  4 May 2022 22:37:09 +0200 (CEST)
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 6F740F800D3
- for <alsa-devel@alsa-project.org>; Wed,  4 May 2022 22:37:06 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6F740F800D3
+ by alsa1.perex.cz (Postfix) with ESMTPS id 0A39EF80129
+ for <alsa-devel@alsa-project.org>; Wed,  4 May 2022 22:37:02 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0A39EF80129
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="Sjitd1DX"
+ header.b="me5bxklD"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id EF847617A8;
- Wed,  4 May 2022 20:37:04 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 86FCAC385A5;
- Wed,  4 May 2022 20:37:03 +0000 (UTC)
+ by ams.source.kernel.org (Postfix) with ESMTPS id 2FB71B828CE;
+ Wed,  4 May 2022 20:37:02 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 21688C385A5;
+ Wed,  4 May 2022 20:36:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1651696624;
- bh=qmimBDeRB4bB+AEAXOitKu5QJGWKCNVo/BZKGvVdtVA=;
+ s=k20201202; t=1651696621;
+ bh=1x6d0c1VcJVLCQrLiqIiA9Eq7CkM4/3TNYeopi2LLbE=;
  h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=Sjitd1DX16hJEzOOafTZ/yM2kGICPQVsuLAxt3lxQtAAmyVNyFbWHO76ifP4mhsqW
- 53KmUBq5IES+7vwcZE+UipR7uqZ6ZNeuaAANBeyHPq+n0BE1knxPChCsLbVusOK2le
- y19UXnxN/coVoDC038Ei+jt7cT4rZ3RiBYXaFOh8v1058BBJQLIenLRCVvQ1dpvaBO
- KDIRnJOwtaZzTCPS4Arv/eLutvzrhy5TxVQtZCUhSbz2xUhevsBQ+vVo61fpJpuS5t
- /0sjRPo7xzCJ9IldtGCqm0CR0mmRb8FCc47pum8dRcq42xMqMCBlCinQkFFPOseGZE
- 4RlDOFGXRGy+Q==
+ b=me5bxklD3rexV+BLJoIK7ihdV6AZ8TJlBbyF05vQ/SgbT486sOHD6NGjTJNXNFFav
+ qGz6AE9kiJ/bQ7QoR/wGaIODvn4Sfmf1JtPjmhJBfNY7J9SqrHIecES7ir+clfVoJd
+ KPq+Leoeez40BCV+bAwoTZseXjYLhGsAims9OEhIIl7nevoAduf0xrUASi4Hx56Bqi
+ wiP/VBIxztrrPPbVEA8tZSMXytGgxjwQTEkE8VKAUZ6bri1T40tq+Hix2gaczV/ZBH
+ PDspG2kqoLk1LSLZxcgFyxiD11nmoMwUHChmRTPNOpTgCQfQZeqMlihc2l6HoCpNim
+ d5VBKxu1uS8SA==
 From: Mark Brown <broonie@kernel.org>
-To: rf@opensource.cirrus.com
-In-Reply-To: <20220504134458.283780-1-rf@opensource.cirrus.com>
-References: <20220504134458.283780-1-rf@opensource.cirrus.com>
-Subject: Re: [PATCH] ASoC: cs35l45: Enable BOOST
-Message-Id: <165169662327.1744642.12027482630196745808.b4-ty@kernel.org>
-Date: Wed, 04 May 2022 21:37:03 +0100
+To: alsa-devel@alsa-project.org, Sascha Hauer <s.hauer@pengutronix.de>
+In-Reply-To: <20220502131335.2604158-1-s.hauer@pengutronix.de>
+References: <20220502131335.2604158-1-s.hauer@pengutronix.de>
+Subject: Re: [PATCH] ASoC: soc-generic-dmaengine-pcm: Use default config when
+ none is given
+Message-Id: <165169661985.1744642.14178720202501273376.b4-ty@kernel.org>
+Date: Wed, 04 May 2022 21:36:59 +0100
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: patches@opensource.cirrus.com, alsa-devel@alsa-project.org,
- linux-kernel@vger.kernel.org
+Cc: lars@metafoo.de, kernel@pengutronix.de
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -79,12 +79,15 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, 4 May 2022 14:44:58 +0100, Richard Fitzgerald wrote:
-> Do not disable the boost converter during probe. The silicon
-> contains functional default tunings so the boost converter can
-> be left at the chip default enabled state.
+On Mon, 2 May 2022 15:13:35 +0200, Sascha Hauer wrote:
+> snd_dmaengine_pcm_register() can be passed a NULL pointer for the config
+> which means that the we have to test for pcm->config being non NULL
+> before accessing it. Make the code more straight forward by providing a
+> default config when none is passed. With this pcm->config is never NULL
+> and we can skip all the if (pcm->config) tests.
 > 
 > 
+> [...]
 
 Applied to
 
@@ -92,8 +95,8 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: cs35l45: Enable BOOST
-      commit: 6ff98a694cc114fd79f692345a7fbd469f800f8c
+[1/1] ASoC: soc-generic-dmaengine-pcm: Use default config when none is given
+      commit: 43556516fffe1d2be2d4a73cfe7cd34d6062dd11
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
