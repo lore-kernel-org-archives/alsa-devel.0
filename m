@@ -4,66 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4A084C433EF
-	for <alsa-devel@archiver.kernel.org>; Fri,  6 May 2022 13:28:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6BE49C433F5
+	for <alsa-devel@archiver.kernel.org>; Fri,  6 May 2022 13:28:27 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id BE062182B;
-	Fri,  6 May 2022 15:27:17 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BE062182B
+	by alsa0.perex.cz (Postfix) with ESMTPS id 990A717F2;
+	Fri,  6 May 2022 15:27:35 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 990A717F2
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1651843687;
-	bh=St3pjYJCptFZg+sqb5RrNtN/QKh6uPFDxt+2I/i2wbg=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=ckTKqopTeyBLeQz+G4CDwrO6RTYkDM/3g4eFTD20K8l4EXfya3y2UhNAq4QcEeuWZ
-	 nel6i6CuWxX1FNZ6Pv4sxhqFYm5dMcLj3aRVtLOg8PyKglLlfrNNbMoCV9M6jpWm3h
-	 fBhY4ho3SgIH3WWitD2sE2EVi4kzkNVeXAK41sIE=
+	s=default; t=1651843705;
+	bh=/n5ueKTd1X5snYFEwBDmgkQQR2X8QmPCGLPArljBqA8=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=ZY2fl4f6NIuW50HR30bN7CjlpiB+LficGzCVYc9kEeEOwJdIayYYd79CcXemuLR3g
+	 o+4eSzc5T0nnA83sYZA6aEX92kukYDHamLa8dPnJT5AUJBPpNG47C+Ibcl0QUnjwk0
+	 Hfzcb4omQwUKU6gEB7prw4Ub0gIbuak+LNSiDv5U=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 2E1DBF800E3;
+	by alsa1.perex.cz (Postfix) with ESMTP id ECAEAF80508;
 	Fri,  6 May 2022 15:26:49 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id A5AF3F80508; Fri,  6 May 2022 15:26:47 +0200 (CEST)
+ id 28A7CF800F0; Fri,  6 May 2022 15:26:48 +0200 (CEST)
 Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 79F2BF800F0
- for <alsa-devel@alsa-project.org>; Fri,  6 May 2022 15:26:33 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 79F2BF800F0
+ by alsa1.perex.cz (Postfix) with ESMTPS id 8357FF801D5
+ for <alsa-devel@alsa-project.org>; Fri,  6 May 2022 15:26:39 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8357FF801D5
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="lKblsAuF"
+ header.b="OyiEIwkX"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1651843594; x=1683379594;
- h=from:to:cc:subject:date:message-id:mime-version:
- content-transfer-encoding;
- bh=St3pjYJCptFZg+sqb5RrNtN/QKh6uPFDxt+2I/i2wbg=;
- b=lKblsAuFV2nfhqosc5AaeSN4XmtahNkDnCR38ojQRpjvjYU/jO64LUKV
- TWFzNDbdcUePfAUUIEgKwaBNK9/BHfIVIxWWg6ZhoMXHCyEw7SwmwDj2u
- sKXkOrwQQsv5erexpbHoliqYA9wv9nuaz1snINyq3/3j0DHdMtGme6QG6
- TgjTy31sxRsgoYPr6JOtceWLDCOK5DxzwfkFndzsnUzvI1q5QXGrdn7Rc
- DRVYA8XMl35Kx8RQzPECBFbOo8K7/66F2bVfSYYsqo1Kou1xBt6RXbMzU
- 4KYIvXiIx3rQ9K68is1o757Dg9KWZSk5TeSFtyg+kCPVMmOzxgUaD+4Bt A==;
-X-IronPort-AV: E=McAfee;i="6400,9594,10339"; a="293672780"
-X-IronPort-AV: E=Sophos;i="5.91,203,1647327600"; d="scan'208";a="293672780"
+ t=1651843602; x=1683379602;
+ h=from:to:cc:subject:date:message-id:in-reply-to:
+ references:mime-version:content-transfer-encoding;
+ bh=/n5ueKTd1X5snYFEwBDmgkQQR2X8QmPCGLPArljBqA8=;
+ b=OyiEIwkXI+Gfaudr4sJvS9iVwR6qiyKsxYSPgM+/+cBEzrsHs44lGGbR
+ Z/8Xv/d0FjhZaiy0k/39o4AM9YaBCMKQhy4nhSmuyHNSVJekm/rioPLBq
+ xh7wfWjUnepZ95hiTZLRGKqsopFzdBBLNtLS1xgnKpDcsuv6FZo/wljfM
+ i4BYppInZ+igV44Fa+CD+jD7d2OADilqy5umBsNnNx+DNy8oMmGk4rHG0
+ DrCtkDAZ1erdQBiWB9qn42KQD04hhgJf4+/nVr+kGBodx0PfFKkc7UqrH
+ GEOIO3F8rt2Gg1ENC0IVOZS8mchu6ZltvSxjuf363PnfvN5eylGlVvlJp w==;
+X-IronPort-AV: E=McAfee;i="6400,9594,10339"; a="293672814"
+X-IronPort-AV: E=Sophos;i="5.91,203,1647327600"; d="scan'208";a="293672814"
 Received: from orsmga008.jf.intel.com ([10.7.209.65])
  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 06 May 2022 06:26:28 -0700
-X-IronPort-AV: E=Sophos;i="5.91,203,1647327600"; d="scan'208";a="585971550"
+ 06 May 2022 06:26:39 -0700
+X-IronPort-AV: E=Sophos;i="5.91,203,1647327600"; d="scan'208";a="585971597"
 Received: from oelagadx-mobl2.ger.corp.intel.com (HELO
  pujfalus-desk.ger.corp.intel.com) ([10.252.61.230])
  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 06 May 2022 06:26:24 -0700
+ 06 May 2022 06:26:36 -0700
 From: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
 To: lgirdwood@gmail.com, broonie@kernel.org,
  pierre-louis.bossart@linux.intel.com, yung-chuan.liao@linux.intel.com,
  rander.wang@intel.com
-Subject: [PATCH 0/8] ASoC: SOF: sof-client: Update for different IPC versions
-Date: Fri,  6 May 2022 16:26:39 +0300
-Message-Id: <20220506132647.18690-1-peter.ujfalusi@linux.intel.com>
+Subject: [PATCH 4/8] ASoC: SOF: sof-client: Add API to get the ipc_type
+Date: Fri,  6 May 2022 16:26:43 +0300
+Message-Id: <20220506132647.18690-5-peter.ujfalusi@linux.intel.com>
 X-Mailer: git-send-email 2.36.0
+In-Reply-To: <20220506132647.18690-1-peter.ujfalusi@linux.intel.com>
+References: <20220506132647.18690-1-peter.ujfalusi@linux.intel.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Cc: alsa-devel@alsa-project.org, daniel.baluta@nxp.com,
@@ -83,34 +86,49 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Hi,
+Provide a way for the client drivers to query the ipc_type used by the
+firmware.
 
-The current IPC client infrastructure can only be used with IPC3.
-This series carries updates for the core side of the client support to handle
-IPC4 messages and updates the ipc message injector to be usable with IPC4.
-
-The IPC flood test is only supported by SOF_IPC (IPC3), we are not going to
-create the aux device for it at all if the firmware is using IPC4.
-
-Regards,
-Peter
+Signed-off-by: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
+Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+Reviewed-by: Bard Liao <yung-chuan.liao@linux.intel.com>
 ---
-Peter Ujfalusi (8):
-  ASoC: SOF: sof-client: Add API to get the maximum IPC payload size
-  ASoC: SOF: ipc-msg-injector: Query the maximum IPC payload size
-  ASoC: SOF: sof-client-probes: Query the maximum IPC payload size
-  ASoC: SOF: sof-client: Add API to get the ipc_type
-  ASoC: SOF: sof-client: Add support IPC4 message sending
-  ASoC: SOF: ipc-msg-injector: Separate the message sending
-  ASoC: SOF: ipc-msg-injector: Add support for IPC4 messages
-  ASoC: SOF: sof-client: IPC flood test can only work with SOF_IPC
+ sound/soc/sof/sof-client.c | 8 ++++++++
+ sound/soc/sof/sof-client.h | 1 +
+ 2 files changed, 9 insertions(+)
 
- sound/soc/sof/sof-client-ipc-msg-injector.c | 181 ++++++++++++++++++--
- sound/soc/sof/sof-client-probes.c           |   5 +-
- sound/soc/sof/sof-client.c                  |  66 ++++++-
- sound/soc/sof/sof-client.h                  |   2 +
- 4 files changed, 227 insertions(+), 27 deletions(-)
-
+diff --git a/sound/soc/sof/sof-client.c b/sound/soc/sof/sof-client.c
+index 18839a8a03c3..ce002815aa44 100644
+--- a/sound/soc/sof/sof-client.c
++++ b/sound/soc/sof/sof-client.c
+@@ -327,6 +327,14 @@ size_t sof_client_get_ipc_max_payload_size(struct sof_client_dev *cdev)
+ }
+ EXPORT_SYMBOL_NS_GPL(sof_client_get_ipc_max_payload_size, SND_SOC_SOF_CLIENT);
+ 
++enum sof_ipc_type sof_client_get_ipc_type(struct sof_client_dev *cdev)
++{
++	struct snd_sof_dev *sdev = sof_client_dev_to_sof_dev(cdev);
++
++	return sdev->pdata->ipc_type;
++}
++EXPORT_SYMBOL_NS_GPL(sof_client_get_ipc_type, SND_SOC_SOF_CLIENT);
++
+ /* module refcount management of SOF core */
+ int sof_client_core_module_get(struct sof_client_dev *cdev)
+ {
+diff --git a/sound/soc/sof/sof-client.h b/sound/soc/sof/sof-client.h
+index 4b5787156775..46b215d9200f 100644
+--- a/sound/soc/sof/sof-client.h
++++ b/sound/soc/sof/sof-client.h
+@@ -42,6 +42,7 @@ struct dentry *sof_client_get_debugfs_root(struct sof_client_dev *cdev);
+ struct device *sof_client_get_dma_dev(struct sof_client_dev *cdev);
+ const struct sof_ipc_fw_version *sof_client_get_fw_version(struct sof_client_dev *cdev);
+ size_t sof_client_get_ipc_max_payload_size(struct sof_client_dev *cdev);
++enum sof_ipc_type sof_client_get_ipc_type(struct sof_client_dev *cdev);
+ 
+ /* module refcount management of SOF core */
+ int sof_client_core_module_get(struct sof_client_dev *cdev);
 -- 
 2.36.0
 
