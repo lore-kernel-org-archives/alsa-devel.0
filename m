@@ -4,66 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1EEA4C433FE
-	for <alsa-devel@archiver.kernel.org>; Fri,  6 May 2022 13:29:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B5EB3C433EF
+	for <alsa-devel@archiver.kernel.org>; Fri,  6 May 2022 13:29:27 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 47F4F181F;
-	Fri,  6 May 2022 15:28:18 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 47F4F181F
+	by alsa0.perex.cz (Postfix) with ESMTPS id ECCB61811;
+	Fri,  6 May 2022 15:28:35 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz ECCB61811
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1651843748;
-	bh=3ag24rVSHm4dqrak0S5Uo3zm0A2HCqdVxMA+VQqb+lc=;
+	s=default; t=1651843766;
+	bh=81ICnZrTHXX+1gQbGHLXKeCze0vykeEgh03pU+8j26Y=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=sT4AHLHgI3YY3GT5k/zsVB8xl4Oz7Y9fcCeMItGynYQhPz0x5mPjNa1Egk9nU+7xz
-	 YpWtTNlMcVUbtDWTIrKtm+bljMATobNzpYLKctfZTHT1zea3Qpom2FqmTE74Mjfdd6
-	 pQUkV/lGYTpdeuIv2fJ82+y4zlLDek+G99xsRUzw=
+	b=qeQjFHQej9ifVxltkreuT0Ao9fe76VueFBLCkgsljaWmPsaISmeKfmLrRDEfACZnX
+	 jXYhj91xiwB9jhRODZMkMHGxo9xsczSGKoNnhH6PxzfQnVg2bzDMSyz4872LdyAF2v
+	 3ZpJppZT1yo8tn5P0x73Lqv+x/BINS/BS16fBjPg=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id AD9EFF8052D;
-	Fri,  6 May 2022 15:26:52 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 3C822F80539;
+	Fri,  6 May 2022 15:26:55 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id A3B36F80171; Fri,  6 May 2022 15:26:50 +0200 (CEST)
+ id EDC63F80506; Fri,  6 May 2022 15:26:52 +0200 (CEST)
 Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 013E6F80171
- for <alsa-devel@alsa-project.org>; Fri,  6 May 2022 15:26:46 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 013E6F80171
+ by alsa1.perex.cz (Postfix) with ESMTPS id 9CC11F80506
+ for <alsa-devel@alsa-project.org>; Fri,  6 May 2022 15:26:43 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9CC11F80506
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="POdb/Rle"
+ header.b="CBoRN4Lk"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1651843608; x=1683379608;
+ t=1651843604; x=1683379604;
  h=from:to:cc:subject:date:message-id:in-reply-to:
  references:mime-version:content-transfer-encoding;
- bh=3ag24rVSHm4dqrak0S5Uo3zm0A2HCqdVxMA+VQqb+lc=;
- b=POdb/Rleoi5AEdE5QfChUA+l/VTG3+ETZXwW4aLM0J0At+H75PJp1Etr
- eSVlcK6SbfXc7Khm4BMiGXR6+jxpVF0pynv8Mgvbs6Uhfx75pXFJPSN0a
- GmtyYaQHbGHKx2IptHxOnryN7zPycxcBXme57xP5HXEyT+kJssRZw/xRC
- 1M/A91rV4H4a7shMZqafo/upW6jt+JtjlrBlrDARZUzwq2Rf0wtSP14AZ
- ndqL8wMQwgTet93Uzf54L/yrtiiDrbBY11C88wg8wxaPcgp2na2y7J5td
- kqV+/jlauQ1riPGXsPBhUiYT4nw5UNIRL7Zz8smXBSwCcWthkkSoR40bP w==;
-X-IronPort-AV: E=McAfee;i="6400,9594,10339"; a="293672830"
-X-IronPort-AV: E=Sophos;i="5.91,203,1647327600"; d="scan'208";a="293672830"
+ bh=81ICnZrTHXX+1gQbGHLXKeCze0vykeEgh03pU+8j26Y=;
+ b=CBoRN4Lk0Np/cKjooZ6QKjK7Qbb/GZTtFtafceFmJ8UPmVKukLyOHI3z
+ vuh/7GLDbtIDUUraw4SYL+YvyR0b7MLBIBGHKyoaXrxUgHdtRuKVXylYO
+ jZtDoGVS8AYlF4FSqjVylVxTYRkbCJkoDis+KtiufdQl1jXs1B5koqAOk
+ x5EqwViUGssaNXJyjGBA5lukt5tG/79+IAgQJoM1Hi2B0Gbmi8+MZcTIu
+ BaJpd8Nc3cEQZVk4gFMvUKUfegh4LOKWPWzmNwlOd+LN2B5FyCCOI90b6
+ KkoPCP0lQrmQsuKDvUjUgcEhWLKmtFxIUFIRpi+Td++hAYYUijLFvipZm Q==;
+X-IronPort-AV: E=McAfee;i="6400,9594,10339"; a="293672824"
+X-IronPort-AV: E=Sophos;i="5.91,203,1647327600"; d="scan'208";a="293672824"
 Received: from orsmga008.jf.intel.com ([10.7.209.65])
  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 06 May 2022 06:26:46 -0700
-X-IronPort-AV: E=Sophos;i="5.91,203,1647327600"; d="scan'208";a="585971612"
+ 06 May 2022 06:26:42 -0700
+X-IronPort-AV: E=Sophos;i="5.91,203,1647327600"; d="scan'208";a="585971606"
 Received: from oelagadx-mobl2.ger.corp.intel.com (HELO
  pujfalus-desk.ger.corp.intel.com) ([10.252.61.230])
  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 06 May 2022 06:26:42 -0700
+ 06 May 2022 06:26:39 -0700
 From: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
 To: lgirdwood@gmail.com, broonie@kernel.org,
  pierre-louis.bossart@linux.intel.com, yung-chuan.liao@linux.intel.com,
  rander.wang@intel.com
-Subject: [PATCH 6/8] ASoC: SOF: ipc-msg-injector: Separate the message sending
-Date: Fri,  6 May 2022 16:26:45 +0300
-Message-Id: <20220506132647.18690-7-peter.ujfalusi@linux.intel.com>
+Subject: [PATCH 5/8] ASoC: SOF: sof-client: Add support IPC4 message sending
+Date: Fri,  6 May 2022 16:26:44 +0300
+Message-Id: <20220506132647.18690-6-peter.ujfalusi@linux.intel.com>
 X-Mailer: git-send-email 2.36.0
 In-Reply-To: <20220506132647.18690-1-peter.ujfalusi@linux.intel.com>
 References: <20220506132647.18690-1-peter.ujfalusi@linux.intel.com>
@@ -86,95 +86,104 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Move out the code for sending the IPC message into a separate helper
-function in preparation for support for handling IPC4 communication.
+In order to be able to send an IPC4 message, the
+sof_client_ipc_tx_message() needs to parse the tx message differently to
+extract the size.
+
+The IPC notification registration is done by providing the notification
+type and the whole message is passed to the client when a match is found.
 
 Signed-off-by: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
 Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 Reviewed-by: Bard Liao <yung-chuan.liao@linux.intel.com>
 ---
- sound/soc/sof/sof-client-ipc-msg-injector.c | 48 +++++++++++++--------
- 1 file changed, 31 insertions(+), 17 deletions(-)
+ sound/soc/sof/sof-client.c | 47 +++++++++++++++++++++++++++++++++-----
+ 1 file changed, 41 insertions(+), 6 deletions(-)
 
-diff --git a/sound/soc/sof/sof-client-ipc-msg-injector.c b/sound/soc/sof/sof-client-ipc-msg-injector.c
-index 19bb6212cb56..b05493b1cd37 100644
---- a/sound/soc/sof/sof-client-ipc-msg-injector.c
-+++ b/sound/soc/sof/sof-client-ipc-msg-injector.c
-@@ -67,22 +67,11 @@ static ssize_t sof_msg_inject_dfs_read(struct file *file, char __user *buffer,
- 	return count;
- }
- 
--static ssize_t sof_msg_inject_dfs_write(struct file *file, const char __user *buffer,
--					size_t count, loff_t *ppos)
-+static int sof_msg_inject_send_message(struct sof_client_dev *cdev)
+diff --git a/sound/soc/sof/sof-client.c b/sound/soc/sof/sof-client.c
+index ce002815aa44..a664e0eb81fe 100644
+--- a/sound/soc/sof/sof-client.c
++++ b/sound/soc/sof/sof-client.c
+@@ -12,6 +12,7 @@
+ #include <linux/module.h>
+ #include <linux/mutex.h>
+ #include <linux/slab.h>
++#include <sound/sof/ipc4/header.h>
+ #include "ops.h"
+ #include "sof-client.h"
+ #include "sof-priv.h"
+@@ -245,10 +246,19 @@ EXPORT_SYMBOL_NS_GPL(sof_client_dev_unregister, SND_SOC_SOF_CLIENT);
+ int sof_client_ipc_tx_message(struct sof_client_dev *cdev, void *ipc_msg,
+ 			      void *reply_data, size_t reply_bytes)
  {
--	struct sof_client_dev *cdev = file->private_data;
- 	struct sof_msg_inject_priv *priv = cdev->data;
- 	struct device *dev = &cdev->auxdev.dev;
- 	int ret, err;
--	size_t size;
--
--	if (*ppos)
--		return 0;
--
--	size = simple_write_to_buffer(priv->tx_buffer, priv->max_msg_size,
--				      ppos, buffer, count);
--	if (size != count)
--		return size > 0 ? -EFAULT : size;
+-	struct sof_ipc_cmd_hdr *hdr = ipc_msg;
++	if (cdev->sdev->pdata->ipc_type == SOF_IPC) {
++		struct sof_ipc_cmd_hdr *hdr = ipc_msg;
  
- 	ret = pm_runtime_resume_and_get(dev);
- 	if (ret < 0 && ret != -EACCES) {
-@@ -91,19 +80,44 @@ static ssize_t sof_msg_inject_dfs_write(struct file *file, const char __user *bu
- 	}
+-	return sof_ipc_tx_message(cdev->sdev->ipc, ipc_msg, hdr->size,
+-				  reply_data, reply_bytes);
++		return sof_ipc_tx_message(cdev->sdev->ipc, ipc_msg, hdr->size,
++					  reply_data, reply_bytes);
++	} else if (cdev->sdev->pdata->ipc_type == SOF_INTEL_IPC4) {
++		struct sof_ipc4_msg *msg = ipc_msg;
++
++		return sof_ipc_tx_message(cdev->sdev->ipc, ipc_msg, msg->data_size,
++					  reply_data, reply_bytes);
++	}
++
++	return -EINVAL;
+ }
+ EXPORT_SYMBOL_NS_GPL(sof_client_ipc_tx_message, SND_SOC_SOF_CLIENT);
  
- 	/* send the message */
--	memset(priv->rx_buffer, 0, priv->max_msg_size);
- 	ret = sof_client_ipc_tx_message(cdev, priv->tx_buffer, priv->rx_buffer,
- 					priv->max_msg_size);
-+	if (ret)
-+		dev_err(dev, "IPC message send failed: %d\n", ret);
+@@ -358,9 +368,22 @@ EXPORT_SYMBOL_NS_GPL(sof_client_core_module_put, SND_SOC_SOF_CLIENT);
+ /* IPC event handling */
+ void sof_client_ipc_rx_dispatcher(struct snd_sof_dev *sdev, void *msg_buf)
+ {
+-	struct sof_ipc_cmd_hdr *hdr = msg_buf;
+-	u32 msg_type = hdr->cmd & SOF_GLB_TYPE_MASK;
+ 	struct sof_ipc_event_entry *event;
++	u32 msg_type;
 +
- 	pm_runtime_mark_last_busy(dev);
- 	err = pm_runtime_put_autosuspend(dev);
- 	if (err < 0)
- 		dev_err_ratelimited(dev, "debugfs write failed to idle %d\n", err);
++	if (sdev->pdata->ipc_type == SOF_IPC) {
++		struct sof_ipc_cmd_hdr *hdr = msg_buf;
++
++		msg_type = hdr->cmd & SOF_GLB_TYPE_MASK;
++	} else if (sdev->pdata->ipc_type == SOF_INTEL_IPC4) {
++		struct sof_ipc4_msg *msg = msg_buf;
++
++		msg_type = SOF_IPC4_NOTIFICATION_TYPE_GET(msg->primary);
++	} else {
++		dev_dbg_once(sdev->dev, "%s: Not supported IPC version: %d\n",
++			     __func__, sdev->pdata->ipc_type);
++		return;
++	}
  
--	/* return size if test is successful */
--	if (ret >= 0)
--		ret = size;
--
- 	return ret;
-+}
-+
-+static ssize_t sof_msg_inject_dfs_write(struct file *file, const char __user *buffer,
-+					size_t count, loff_t *ppos)
-+{
-+	struct sof_client_dev *cdev = file->private_data;
-+	struct sof_msg_inject_priv *priv = cdev->data;
-+	size_t size;
-+	int ret;
-+
-+	if (*ppos)
-+		return 0;
-+
-+	size = simple_write_to_buffer(priv->tx_buffer, priv->max_msg_size,
-+				      ppos, buffer, count);
-+	if (size != count)
-+		return size > 0 ? -EFAULT : size;
-+
-+	memset(priv->rx_buffer, 0, priv->max_msg_size);
-+
-+	ret = sof_msg_inject_send_message(cdev);
-+
-+	/* return the error code if test failed */
-+	if (ret < 0)
-+		size = ret;
-+
-+	return size;
- };
+ 	mutex_lock(&sdev->client_event_handler_mutex);
  
- static int sof_msg_inject_dfs_release(struct inode *inode, struct file *file)
+@@ -379,9 +402,21 @@ int sof_client_register_ipc_rx_handler(struct sof_client_dev *cdev,
+ 	struct snd_sof_dev *sdev = sof_client_dev_to_sof_dev(cdev);
+ 	struct sof_ipc_event_entry *event;
+ 
+-	if (!callback || !(ipc_msg_type & SOF_GLB_TYPE_MASK))
++	if (!callback)
+ 		return -EINVAL;
+ 
++	if (cdev->sdev->pdata->ipc_type == SOF_IPC) {
++		if (!(ipc_msg_type & SOF_GLB_TYPE_MASK))
++			return -EINVAL;
++	} else if (cdev->sdev->pdata->ipc_type == SOF_INTEL_IPC4) {
++		if (!(ipc_msg_type & SOF_IPC4_NOTIFICATION_TYPE_MASK))
++			return -EINVAL;
++	} else {
++		dev_warn(sdev->dev, "%s: Not supported IPC version: %d\n",
++			 __func__, sdev->pdata->ipc_type);
++		return -EINVAL;
++	}
++
+ 	event = kmalloc(sizeof(*event), GFP_KERNEL);
+ 	if (!event)
+ 		return -ENOMEM;
 -- 
 2.36.0
 
