@@ -4,76 +4,73 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 109F0C433F5
-	for <alsa-devel@archiver.kernel.org>; Fri,  6 May 2022 13:04:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A1060C433EF
+	for <alsa-devel@archiver.kernel.org>; Fri,  6 May 2022 13:13:35 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0E9AC17CF;
-	Fri,  6 May 2022 15:04:07 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0E9AC17CF
+	by alsa0.perex.cz (Postfix) with ESMTPS id 641CF17CC;
+	Fri,  6 May 2022 15:12:43 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 641CF17CC
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1651842297;
-	bh=gWc8hvL78+aop2VFzOSTirEQ6yFK+AXuqs5+QAVfsl0=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=JQED78B8Ov3M7NP08k/AmFCdojy7ewyCHpYHZZW5Bu9p4hZoJkPVvvD/VzvDgrpNk
-	 627XRW0W98i/Tw7EVKDFtl77O+8zCsJ34SFmXsjKzLAJzagP23YVyyzBDk/FZo4Hq/
-	 kmFZZ0txAywBzAVEzLsVtqQ3Z7MF1eMyZoBuGfV8=
+	s=default; t=1651842813;
+	bh=Z4VQ1ErZuEWJoaRAFl/6I2PdBArhJPm8vMKue0pYS2U=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=iG378tr8atyYNf/k0SiwRq9zwpFWMrCr/udYgShSU5h9zrZSwZ/zq3vhO0KZAsQ0w
+	 kAJKv3uVSB/TgpaZbz2dJKixTKu1nrmkDrKx83RJlOoaDMSTVAZB5QI4kREZekcntI
+	 CLoR/sur0/YWwJ/13Zx/KOIs4phABDcIMGHlKzG8=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id A7AE7F8012F;
-	Fri,  6 May 2022 15:04:06 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 0D5F7F800E3;
+	Fri,  6 May 2022 15:12:43 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 70710F8014B; Fri,  6 May 2022 15:04:04 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org
- [IPv6:2604:1380:4641:c500::1])
+ id 83014F8014B; Fri,  6 May 2022 15:12:41 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 277C4F800D3
- for <alsa-devel@alsa-project.org>; Fri,  6 May 2022 15:03:59 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 277C4F800D3
+ by alsa1.perex.cz (Postfix) with ESMTPS id 64890F800E3
+ for <alsa-devel@alsa-project.org>; Fri,  6 May 2022 15:12:38 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 64890F800E3
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="BPxVhH1r"
+ header.b="lK35KQpH"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id 417C661FFC;
- Fri,  6 May 2022 13:03:57 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CBC0FC385B1;
- Fri,  6 May 2022 13:03:54 +0000 (UTC)
+ by dfw.source.kernel.org (Postfix) with ESMTPS id 02E2061F38;
+ Fri,  6 May 2022 13:12:36 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D2837C385A9;
+ Fri,  6 May 2022 13:12:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1651842236;
- bh=gWc8hvL78+aop2VFzOSTirEQ6yFK+AXuqs5+QAVfsl0=;
- h=From:To:Cc:Subject:Date:From;
- b=BPxVhH1rDQ8hg8bdnlAs0q4Jrwh22vl7oPx/1GrXLOpHX+QG0KszN/RDvP1AobhTl
- WYgDXvvsuQ4G2T22cSIBgGO0Zcl4yT1CDvy4Pe1DeoS6yRYtlZet7ObpMbFOeR5eAE
- PrdxXIzGInSPgMuMRPCI276FCO992M1ky725KE0mzmYjY4zhj/yc4wZPDcXnLfQAcP
- UviV94p4+05Ox/XVMla0GEYWz0LOWn1rda+QAhi6wKwBoFpGG2dgpuxZIzF4bFYfm0
- 12rWpYW/O+WmO5PRc1347/+hp1xqEajAOP3My7kmECt4NrJeMYeTYf6IFISRyCb6qn
- 7M0iua7/m/xgA==
+ s=k20201202; t=1651842755;
+ bh=Z4VQ1ErZuEWJoaRAFl/6I2PdBArhJPm8vMKue0pYS2U=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=lK35KQpHmGG14FWep0OCLcKvpqOigIseXbWFXPDOVDVR3jHuqdtCULlkslvUwVt0k
+ lQR5BiEDwtvJXc6Gjhy9o9FJWgbON62YF6QCI7ugfRqQ6WrDYBIrxo66rOicGqlGlu
+ Y7+BXBgPWSG3f/Skfq+oKUzVt90vAK3av7bDPoyQm+VJW3qJqmLthFxUjDGNmRqoIU
+ woEB2wxDQN1q3XmjKfk0YzNj/2d/G1ec3f7EpVKarSwFEvdfoa/YaTOpEOpPsQryth
+ /bChJ1AkWohQJoMArbGxsgs7twTB4GVRwImZZazKPFaaZQBgVs0jxkkmiJdX9Tpgwv
+ QKlAkjTqfXfwA==
+Date: Fri, 6 May 2022 14:12:31 +0100
 From: Mark Brown <broonie@kernel.org>
-To: Codrin Ciubotariu <codrin.ciubotariu@microchip.com>,
- Liam Girdwood <lgirdwood@gmail.com>
-Subject: [PATCH] ASoC: sam9g20_wm8731: Use dev_err_probe() for
- snd_soc_register_card()
-Date: Fri,  6 May 2022 14:03:49 +0100
-Message-Id: <20220506130349.451452-1-broonie@kernel.org>
-X-Mailer: git-send-email 2.30.2
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: Re: [PATCH 02/14] ASoC: codecs: Add HD-Audio codec driver
+Message-ID: <YnUev8Rs42xLLE6Z@sirena.org.uk>
+References: <20220427081902.3525183-1-cezary.rojewski@intel.com>
+ <20220427081902.3525183-3-cezary.rojewski@intel.com>
+ <7bc3a92e-8bd1-c1d0-5610-af40dbb8fb7a@linux.intel.com>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=791; h=from:subject;
- bh=gWc8hvL78+aop2VFzOSTirEQ6yFK+AXuqs5+QAVfsl0=;
- b=owEBbQGS/pANAwAKASTWi3JdVIfQAcsmYgBidRxNjBZbmjacSHASSv61r8SORisrlHi8gZLtnmpc
- hJjbnbeJATMEAAEKAB0WIQSt5miqZ1cYtZ/in+ok1otyXVSH0AUCYnUcTQAKCRAk1otyXVSH0O01B/
- 9IP3wuDW1jl3N76L1EEYaDdfV+B9l4U5cZY94i6wf+A6jHIIXOH2ta8i1+zUgi3Cm6NM5nyrZV8SXy
- 5UpiKDLYCae4j2D/SY+7Orb9ALmy2tDrnOrNRB9SereUNSMtXmU+zLl9XyJGf9O95lGGHKVrl+dN7X
- D7ICVZKVlUmY2eyY+r1DxnSU0+6WOwtE/HB6QpgBkvaUPBQF7F/Lii3/yC4+A5n68dygnnQ0F3GBmB
- 6mKVOFFAFtNPy3+wTyMd+Y9728mqj5HB+dJ3d02G7FISjVswdDB4Q7f70SwqFF/jz4JCr8gk6PriEy
- Js3pYjqJXYIYyL7Pjpi1Oy+0fy9j6Y
-X-Developer-Key: i=broonie@kernel.org; a=openpgp;
- fpr=3F2568AAC26998F9E813A1C5C3F436CA30F5D8EB
-Content-Transfer-Encoding: 8bit
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature"; boundary="ZSV2pc7In/uUfPMj"
+Content-Disposition: inline
+In-Reply-To: <7bc3a92e-8bd1-c1d0-5610-af40dbb8fb7a@linux.intel.com>
+X-Cookie: <Culus-> libc6 is not essential :|
+Cc: Cezary Rojewski <cezary.rojewski@intel.com>, rad@semihalf.com,
+ upstream@semihalf.com, Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+ harshapriya.n@intel.com, tiwai@suse.com, alsa-devel@alsa-project.org,
+ hdegoede@redhat.com, amadeuszx.slawinski@linux.intel.com,
+ cujomalainey@chromium.org, lma@semihalf.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -89,28 +86,47 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Log the error code when snd_soc_regster_card() fails, but fold in the
-silencing of deferred probe errors.
 
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/atmel/sam9g20_wm8731.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+--ZSV2pc7In/uUfPMj
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-diff --git a/sound/soc/atmel/sam9g20_wm8731.c b/sound/soc/atmel/sam9g20_wm8731.c
-index 0365b583ba70..4d25fb61c652 100644
---- a/sound/soc/atmel/sam9g20_wm8731.c
-+++ b/sound/soc/atmel/sam9g20_wm8731.c
-@@ -171,7 +171,8 @@ static int at91sam9g20ek_audio_probe(struct platform_device *pdev)
- 
- 	ret = snd_soc_register_card(card);
- 	if (ret) {
--		dev_err(&pdev->dev, "snd_soc_register_card() failed\n");
-+		dev_err_probe(&pdev->dev, ret,
-+			      "snd_soc_register_card() failed: %d\n", ret);
- 		goto err;
- 	}
- 
--- 
-2.30.2
+On Wed, Apr 27, 2022 at 10:47:12AM -0500, Pierre-Louis Bossart wrote:
+> On 4/27/22 03:18, Cezary Rojewski wrote:
 
+> > Add generic ASoC equivalent of ALSA HD-Audio codec. This codec is
+> > designed to follow HDA_DEV_LEGACY convention. Driver wrapps existing
+> > hda_codec.c handlers to prevent code duplication within the newly added
+
+> I am surprised the explanations don't even mention the existence of hdac_hda.c
+
+> I thought the series was about adding machine drivers, but this
+> also adds code on the sound/soc/codecs/ side which I didn't see
+> coming.
+
+> I am not qualified to review this part of the code, I just
+> wonder about duplication of functionality.
+
+> At the very least an explanation on why you decided to NOT use
+> hdac_hda.c would be useful to reviewers and maintainers.
+
+Right, why the duplication here?  Can't we fix or extend the
+existing code to do whatever it's not currently doing which
+compels reimplementation?
+
+--ZSV2pc7In/uUfPMj
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmJ1Hr4ACgkQJNaLcl1U
+h9A2gAf/UjhT15dfZI5vIAveeggqy0vhUIKDQaHfDBr2+rmS0hJFfJxLBq/LWhYo
+8KU+BFsD+xdG6xBqe8oTY1gcx/8fqNelUdBoaAyCHwkNguWYOdfsKtkqQ27up3Kc
+Y562uqJoKdLLlp5myKukSJdOKrbpVrnVyZhbEH8fFRZ+XQwTJXVQoAXQWMz0UMZV
+wnnS0f0hi3c7NxSGMa6a7sUyVAm8TmFOE6GFBLSfdPSPVhnfp0wVoDejWfu6cGV+
+AbUipCMybpfj2KJw3eQv1XN0Rh3YbPCnmvnsPfnRCWxwwTFRW6FTN9aElWHGJvA4
+EVcbjdwjNdMOSJfCuBQqmrsZGBC58Q==
+=tgND
+-----END PGP SIGNATURE-----
+
+--ZSV2pc7In/uUfPMj--
