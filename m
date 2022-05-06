@@ -4,73 +4,74 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A1060C433EF
-	for <alsa-devel@archiver.kernel.org>; Fri,  6 May 2022 13:13:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 79AF1C433EF
+	for <alsa-devel@archiver.kernel.org>; Fri,  6 May 2022 13:27:37 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 641CF17CC;
-	Fri,  6 May 2022 15:12:43 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 641CF17CC
+	by alsa0.perex.cz (Postfix) with ESMTPS id EC05017DA;
+	Fri,  6 May 2022 15:26:44 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EC05017DA
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1651842813;
-	bh=Z4VQ1ErZuEWJoaRAFl/6I2PdBArhJPm8vMKue0pYS2U=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	s=default; t=1651843655;
+	bh=aAEPPHDWwvX/VSKkKZmrL+J1KgB/XxUHKZUmMwhq6Yk=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=iG378tr8atyYNf/k0SiwRq9zwpFWMrCr/udYgShSU5h9zrZSwZ/zq3vhO0KZAsQ0w
-	 kAJKv3uVSB/TgpaZbz2dJKixTKu1nrmkDrKx83RJlOoaDMSTVAZB5QI4kREZekcntI
-	 CLoR/sur0/YWwJ/13Zx/KOIs4phABDcIMGHlKzG8=
+	b=Bayp+YCRfd5WLy2hEwk6mE1ZHCWCeLsFXfZ4W4yxJEIT0sfVZR89PTCt3HJqtFGPa
+	 bWfjYZwQHYOga2X6WOfAc6G7xaxqmWUzp3nJWI75/DvJjsnpYsR4SxSrMv2sOG86Ar
+	 qVoie6MUS9MZDm6O/EU91eafp8FYzKyExXXKRvwM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 0D5F7F800E3;
-	Fri,  6 May 2022 15:12:43 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 6611DF8012F;
+	Fri,  6 May 2022 15:26:44 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 83014F8014B; Fri,  6 May 2022 15:12:41 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 64890F800E3
- for <alsa-devel@alsa-project.org>; Fri,  6 May 2022 15:12:38 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 64890F800E3
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="lK35KQpH"
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+ id A152BF8012F; Fri,  6 May 2022 15:26:42 +0200 (CEST)
+Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id 02E2061F38;
- Fri,  6 May 2022 13:12:36 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D2837C385A9;
- Fri,  6 May 2022 13:12:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1651842755;
- bh=Z4VQ1ErZuEWJoaRAFl/6I2PdBArhJPm8vMKue0pYS2U=;
- h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=lK35KQpHmGG14FWep0OCLcKvpqOigIseXbWFXPDOVDVR3jHuqdtCULlkslvUwVt0k
- lQR5BiEDwtvJXc6Gjhy9o9FJWgbON62YF6QCI7ugfRqQ6WrDYBIrxo66rOicGqlGlu
- Y7+BXBgPWSG3f/Skfq+oKUzVt90vAK3av7bDPoyQm+VJW3qJqmLthFxUjDGNmRqoIU
- woEB2wxDQN1q3XmjKfk0YzNj/2d/G1ec3f7EpVKarSwFEvdfoa/YaTOpEOpPsQryth
- /bChJ1AkWohQJoMArbGxsgs7twTB4GVRwImZZazKPFaaZQBgVs0jxkkmiJdX9Tpgwv
- QKlAkjTqfXfwA==
-Date: Fri, 6 May 2022 14:12:31 +0100
-From: Mark Brown <broonie@kernel.org>
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH 02/14] ASoC: codecs: Add HD-Audio codec driver
-Message-ID: <YnUev8Rs42xLLE6Z@sirena.org.uk>
-References: <20220427081902.3525183-1-cezary.rojewski@intel.com>
- <20220427081902.3525183-3-cezary.rojewski@intel.com>
- <7bc3a92e-8bd1-c1d0-5610-af40dbb8fb7a@linux.intel.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id D844CF8012F
+ for <alsa-devel@alsa-project.org>; Fri,  6 May 2022 15:26:35 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D844CF8012F
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
+ header.b="GXPecVw3"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+ d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+ t=1651843597; x=1683379597;
+ h=from:to:cc:subject:date:message-id:in-reply-to:
+ references:mime-version:content-transfer-encoding;
+ bh=aAEPPHDWwvX/VSKkKZmrL+J1KgB/XxUHKZUmMwhq6Yk=;
+ b=GXPecVw3Ehsm5f2K7U5GiM5W6gpNoTVOT5GWeiukC0gwU7NKSlUegBZ7
+ djPSm9FLGxmSspWRnNzU4Yh1KDsG5j499BY4YjMgIOJRZ6Rr+QRzwH8fi
+ Iy7eYARlMUWcZNnkhJMEWJc8hHYXq/+0caVx9yRjx30oHBXyM8UGfQXEY
+ Jhf8FCgI2QpnXXLMRvqqUCBvtvIoO8z8bETf/K4MTgrxSGrV08l1ZylgH
+ jWYUOtgL575mo4O9at8E+JV6qJ0TPtia1QRbMkjYSR1K94kwbdh9C8nuk
+ SCMD6Lgr4dZV3njB7zrRUd6TyfJpZkhbj9Zgg2sr0k4Ni1ANOGNOoJIso w==;
+X-IronPort-AV: E=McAfee;i="6400,9594,10339"; a="293672787"
+X-IronPort-AV: E=Sophos;i="5.91,203,1647327600"; d="scan'208";a="293672787"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+ by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 06 May 2022 06:26:30 -0700
+X-IronPort-AV: E=Sophos;i="5.91,203,1647327600"; d="scan'208";a="585971560"
+Received: from oelagadx-mobl2.ger.corp.intel.com (HELO
+ pujfalus-desk.ger.corp.intel.com) ([10.252.61.230])
+ by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 06 May 2022 06:26:27 -0700
+From: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
+To: lgirdwood@gmail.com, broonie@kernel.org,
+ pierre-louis.bossart@linux.intel.com, yung-chuan.liao@linux.intel.com,
+ rander.wang@intel.com
+Subject: [PATCH 1/8] ASoC: SOF: sof-client: Add API to get the maximum IPC
+ payload size
+Date: Fri,  6 May 2022 16:26:40 +0300
+Message-Id: <20220506132647.18690-2-peter.ujfalusi@linux.intel.com>
+X-Mailer: git-send-email 2.36.0
+In-Reply-To: <20220506132647.18690-1-peter.ujfalusi@linux.intel.com>
+References: <20220506132647.18690-1-peter.ujfalusi@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature"; boundary="ZSV2pc7In/uUfPMj"
-Content-Disposition: inline
-In-Reply-To: <7bc3a92e-8bd1-c1d0-5610-af40dbb8fb7a@linux.intel.com>
-X-Cookie: <Culus-> libc6 is not essential :|
-Cc: Cezary Rojewski <cezary.rojewski@intel.com>, rad@semihalf.com,
- upstream@semihalf.com, Kai Vehmanen <kai.vehmanen@linux.intel.com>,
- harshapriya.n@intel.com, tiwai@suse.com, alsa-devel@alsa-project.org,
- hdegoede@redhat.com, amadeuszx.slawinski@linux.intel.com,
- cujomalainey@chromium.org, lma@semihalf.com
+Content-Transfer-Encoding: 8bit
+Cc: alsa-devel@alsa-project.org, daniel.baluta@nxp.com,
+ ranjani.sridharan@linux.intel.com, kai.vehmanen@linux.intel.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -86,47 +87,51 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+Provide a way for the client drivers to query the maximum payload size of
+an IPC message.
+Currently clients do not have access to this information and they can only
+use the SOF_IPC_MSG_MAX_SIZE defined value.
 
---ZSV2pc7In/uUfPMj
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Signed-off-by: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
+Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+Reviewed-by: Bard Liao <yung-chuan.liao@linux.intel.com>
+---
+ sound/soc/sof/sof-client.c | 8 ++++++++
+ sound/soc/sof/sof-client.h | 1 +
+ 2 files changed, 9 insertions(+)
 
-On Wed, Apr 27, 2022 at 10:47:12AM -0500, Pierre-Louis Bossart wrote:
-> On 4/27/22 03:18, Cezary Rojewski wrote:
+diff --git a/sound/soc/sof/sof-client.c b/sound/soc/sof/sof-client.c
+index 5fb3eb21bf7d..18839a8a03c3 100644
+--- a/sound/soc/sof/sof-client.c
++++ b/sound/soc/sof/sof-client.c
+@@ -319,6 +319,14 @@ const struct sof_ipc_fw_version *sof_client_get_fw_version(struct sof_client_dev
+ }
+ EXPORT_SYMBOL_NS_GPL(sof_client_get_fw_version, SND_SOC_SOF_CLIENT);
+ 
++size_t sof_client_get_ipc_max_payload_size(struct sof_client_dev *cdev)
++{
++	struct snd_sof_dev *sdev = sof_client_dev_to_sof_dev(cdev);
++
++	return sdev->ipc->max_payload_size;
++}
++EXPORT_SYMBOL_NS_GPL(sof_client_get_ipc_max_payload_size, SND_SOC_SOF_CLIENT);
++
+ /* module refcount management of SOF core */
+ int sof_client_core_module_get(struct sof_client_dev *cdev)
+ {
+diff --git a/sound/soc/sof/sof-client.h b/sound/soc/sof/sof-client.h
+index 4b6394b4c694..4b5787156775 100644
+--- a/sound/soc/sof/sof-client.h
++++ b/sound/soc/sof/sof-client.h
+@@ -41,6 +41,7 @@ int sof_client_ipc_tx_message(struct sof_client_dev *cdev, void *ipc_msg,
+ struct dentry *sof_client_get_debugfs_root(struct sof_client_dev *cdev);
+ struct device *sof_client_get_dma_dev(struct sof_client_dev *cdev);
+ const struct sof_ipc_fw_version *sof_client_get_fw_version(struct sof_client_dev *cdev);
++size_t sof_client_get_ipc_max_payload_size(struct sof_client_dev *cdev);
+ 
+ /* module refcount management of SOF core */
+ int sof_client_core_module_get(struct sof_client_dev *cdev);
+-- 
+2.36.0
 
-> > Add generic ASoC equivalent of ALSA HD-Audio codec. This codec is
-> > designed to follow HDA_DEV_LEGACY convention. Driver wrapps existing
-> > hda_codec.c handlers to prevent code duplication within the newly added
-
-> I am surprised the explanations don't even mention the existence of hdac_hda.c
-
-> I thought the series was about adding machine drivers, but this
-> also adds code on the sound/soc/codecs/ side which I didn't see
-> coming.
-
-> I am not qualified to review this part of the code, I just
-> wonder about duplication of functionality.
-
-> At the very least an explanation on why you decided to NOT use
-> hdac_hda.c would be useful to reviewers and maintainers.
-
-Right, why the duplication here?  Can't we fix or extend the
-existing code to do whatever it's not currently doing which
-compels reimplementation?
-
---ZSV2pc7In/uUfPMj
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmJ1Hr4ACgkQJNaLcl1U
-h9A2gAf/UjhT15dfZI5vIAveeggqy0vhUIKDQaHfDBr2+rmS0hJFfJxLBq/LWhYo
-8KU+BFsD+xdG6xBqe8oTY1gcx/8fqNelUdBoaAyCHwkNguWYOdfsKtkqQ27up3Kc
-Y562uqJoKdLLlp5myKukSJdOKrbpVrnVyZhbEH8fFRZ+XQwTJXVQoAXQWMz0UMZV
-wnnS0f0hi3c7NxSGMa6a7sUyVAm8TmFOE6GFBLSfdPSPVhnfp0wVoDejWfu6cGV+
-AbUipCMybpfj2KJw3eQv1XN0Rh3YbPCnmvnsPfnRCWxwwTFRW6FTN9aElWHGJvA4
-EVcbjdwjNdMOSJfCuBQqmrsZGBC58Q==
-=tgND
------END PGP SIGNATURE-----
-
---ZSV2pc7In/uUfPMj--
