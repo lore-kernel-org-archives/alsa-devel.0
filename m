@@ -4,74 +4,74 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E2053C433F5
-	for <alsa-devel@archiver.kernel.org>; Sun,  8 May 2022 09:05:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 998ABC433EF
+	for <alsa-devel@archiver.kernel.org>; Sun,  8 May 2022 09:09:46 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 279E6182F;
-	Sun,  8 May 2022 11:05:03 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 279E6182F
+	by alsa0.perex.cz (Postfix) with ESMTPS id 1CBE01724;
+	Sun,  8 May 2022 11:08:54 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1CBE01724
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1652000753;
-	bh=cAL/dug8nspyBCS/yls1M5trja/eAU6uixTYKhm9p5E=;
+	s=default; t=1652000984;
+	bh=4WV19gTBdfYo95z/S2zRo6eGgaKTRTZH6EldWMkZUSk=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=qNV0R/UJsMljfh2mwa2mErsGNA7rgu9VEauWO4woVgmjAQzFGjQeVTnY0i//837yU
-	 MRQzVtZ1sHVx/zbtBkHKjTT0XtySfJ7M4M4ySMI+bArJypUUmYkYwg9Fi+Sk//HmoE
-	 DvqkHfaOz5t6xDP4yI3D9VNbfrrh/n/yi30y9pMU=
+	b=djCeKJJsK6OLrlbppKfHffDQnhYVmmWyJaIKtu9ypg5cxCzDBVWXqFDDB3KbyySBw
+	 p7fvb7VJEhR+/TNjdj2sg22upc7cdBNOQu18dv57V9McCoW+eQFZo+06q+2GvFMSjg
+	 aB7xumlOKvALsKctYTLU2LMQI7t4BSJQt8lcUA/4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id B0676F80159;
-	Sun,  8 May 2022 11:05:02 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 9C9E2F80159;
+	Sun,  8 May 2022 11:08:53 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id A5C1DF8023B; Sun,  8 May 2022 11:04:59 +0200 (CEST)
+ id 2F125F800D3; Sun,  8 May 2022 11:08:52 +0200 (CEST)
 Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 7BDF5F800E8
- for <alsa-devel@alsa-project.org>; Sun,  8 May 2022 11:04:56 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7BDF5F800E8
+ by alsa1.perex.cz (Postfix) with ESMTPS id ED2BEF800E8
+ for <alsa-devel@alsa-project.org>; Sun,  8 May 2022 11:08:45 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz ED2BEF800E8
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="sd0MOlp5"; 
+ header.b="v0DisxqI"; 
  dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="XFE8UdfU"
+ header.b="fcojrQa+"
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out2.suse.de (Postfix) with ESMTP id CED031F94E;
- Sun,  8 May 2022 09:04:55 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTP id 7D71E1F94E;
+ Sun,  8 May 2022 09:08:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1652000695; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1652000925; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=ENetGU4qz0n7hs3aZzQk0RDoZMeu51Yl29lFThR7ndA=;
- b=sd0MOlp5O7YENjUEQ1GvLt3dZF0I1cc7QxiYWNqgxQgN2pYO7W1jH/3LJqlr7wsp1opdCQ
- HnVkZNLjFXc9kjOAgQ/JtHyQuDk2msuY/pQaNQSAUL3+8zBNRFhj+K0w1ssMZHdYlAlEXK
- cSXVFXPoNJhW9ucsLW20Z30KWZYOA+g=
+ bh=KzMG58xlHRYJHpOi6n4ZmfzNuQcIpWcVOtEdXFXXxAc=;
+ b=v0DisxqIj25O52KzCg+fgvTRzgadjqp1byPNE+qfZoaZPC5kdV2PzePexF+Gx8uxrmzWEq
+ OSlSAyAspInWe71vNx2++lYHaLokWFo2sNG0fMFwI1Pf8/BaFV+zcKg9wQRTq/InxUTVh7
+ EpvwmgpifTuvXR3hlGEol7ydQD3jqtc=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1652000695;
+ s=susede2_ed25519; t=1652000925;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=ENetGU4qz0n7hs3aZzQk0RDoZMeu51Yl29lFThR7ndA=;
- b=XFE8UdfUdwQpvrLYYfeb1Tnd3/niri6vTxRjrunNXcKkOVUPma7+QngwG9Tm9AAtp9mEGw
- v+/34kcCECAVnUDg==
+ bh=KzMG58xlHRYJHpOi6n4ZmfzNuQcIpWcVOtEdXFXXxAc=;
+ b=fcojrQa+ETV6Xa2uC7II9U3gvCtifGhbnaNftYU60cZuOm0z73mXd13P/WfI9apCufN2t8
+ VaRqpElQhkPhY1AQ==
 Received: from alsa1.suse.de (alsa1.suse.de [10.160.4.42])
- by relay2.suse.de (Postfix) with ESMTP id C25A02C141;
- Sun,  8 May 2022 09:04:55 +0000 (UTC)
-Date: Sun, 08 May 2022 11:04:55 +0200
-Message-ID: <s5h7d6wo0nc.wl-tiwai@suse.de>
+ by relay2.suse.de (Postfix) with ESMTP id 66BD22C141;
+ Sun,  8 May 2022 09:08:45 +0000 (UTC)
+Date: Sun, 08 May 2022 11:08:45 +0200
+Message-ID: <s5h35hko0gy.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
-To: Mark Brown <broonie@kernel.org>
-Subject: Re: [GIT PULL] ASoC fixes for v5.18-rc4
-In-Reply-To: <20220428111823.D6F52C385A0@smtp.kernel.org>
-References: <20220428111823.D6F52C385A0@smtp.kernel.org>
+To: bo liu <bo.liu@senarytech.com>
+Subject: Re: [PATCH] add a new hda codec SN6140
+In-Reply-To: <20220506025735.17731-1-bo.liu@senarytech.com>
+References: <20220506025735.17731-1-bo.liu@senarytech.com>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
  FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
  (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
 MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
 Content-Type: text/plain; charset=US-ASCII
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
+Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, tiwai@suse.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -87,38 +87,15 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Thu, 28 Apr 2022 13:18:13 +0200,
-Mark Brown wrote:
+On Fri, 06 May 2022 04:57:35 +0200,
+bo liu wrote:
 > 
-> The following changes since commit 5b933c7262c5b0ea11ea3c3b3ea81add04895954:
+> The current kernel does not support the SN6140 codec chip.
+> Add the SN6140 codec configuration item to kernel.
 > 
->   firmware: cs_dsp: Fix overrun of unterminated control name string (2022-04-12 17:57:04 +0100)
-> 
-> are available in the Git repository at:
-> 
->   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git tags/asoc-fix-v5.18-rc4
-> 
-> for you to fetch changes up to c61711c1c95791850be48dd65a1d72eb34ba719f:
-> 
->   ASoC: SOF: Fix NULL pointer exception in sof_pci_probe callback (2022-04-27 14:15:21 +0100)
-> 
-> ----------------------------------------------------------------
-> ASoC: Fixes for v5.18
-> 
-> A larger collection of fixes than I'd like, mainly because mixer-test
-> is making it's way into the CI systems and turning up issues on a wider
-> range of systems.  The most substantial thing though is a revert and an
-> alternative fix for a dmaengine issue where the fix caused disruption
-> for some other configurations, the core fix is backed out an a driver
-> specific thing done instead.
+> Signed-off-by: bo liu <bo.liu@senarytech.com>
 
-Now merged.  Sorry for the delayed action, I've been off in the last
-weeks.
-
-I'm going to send a PR today, so that it'll be hopefully included in
-rc6.
+Thanks, applied now to for-next branch.
 
 
-thanks,
-
-Takashi -- slowly digesting
+Takashi
