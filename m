@@ -4,68 +4,76 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id BEDFCC433F5
-	for <alsa-devel@archiver.kernel.org>; Mon,  9 May 2022 18:58:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9D598C433F5
+	for <alsa-devel@archiver.kernel.org>; Mon,  9 May 2022 18:59:18 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C516A16C8;
-	Mon,  9 May 2022 20:57:53 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C516A16C8
+	by alsa0.perex.cz (Postfix) with ESMTPS id 79B5516D1;
+	Mon,  9 May 2022 20:58:26 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 79B5516D1
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1652122723;
-	bh=BQmdy4euCVu84oLWGyIOABUrNN0LpGizFTgwvqUNuLA=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=SVnQaVXw5Rb5D0OzqSR89MpwkDkfdvGd1NETDyKM0DCe1A8uXrVgl261fv4hi6UQi
-	 9wrKD/6a2gtW232WKWx3JY51L8On3/M9CBGf1aUgd+WmeOUaq6fuOiL3kiNuGzlVz3
-	 c+0pzcMBCVIWBE/4Q2YS1rgBbVajJF2cqkGK4NTM=
+	s=default; t=1652122756;
+	bh=ICjgh2SHUAfsGyKVspdhXwxyeTpLD0tJ1XV/0qJNQgE=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=bTk20mUVQ2ywaPMOxoRBUQ9nHHlkfNcgMljQ2N06VmXvP9EZBLmf2LFSyVSUhQMhi
+	 Il/a068JX7jLOYJkefwvhQ1svldfn0YQSsf6mvWkDnNbkcJrXxC4xk4pW8DwhgiPPA
+	 dcOpzVdNvzm0bpeMpXgUXpl0GlRVSChsHqkKhKlQ=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 5AEF0F80237;
-	Mon,  9 May 2022 20:57:53 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 246D9F8025D;
+	Mon,  9 May 2022 20:58:21 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 9E20AF8025D; Mon,  9 May 2022 20:57:51 +0200 (CEST)
-Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
+ id 58AC1F8047B; Mon,  9 May 2022 20:58:20 +0200 (CEST)
+Received: from sin.source.kernel.org (sin.source.kernel.org
+ [IPv6:2604:1380:40e1:4800::1])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id C375AF8025D
+ for <alsa-devel@alsa-project.org>; Mon,  9 May 2022 20:58:16 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C375AF8025D
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="cNOfUt66"
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id A0CD5F8011C
- for <alsa-devel@alsa-project.org>; Mon,  9 May 2022 20:57:42 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A0CD5F8011C
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="fGnrMi7x"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
- d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1652122665; x=1683658665;
- h=from:to:cc:subject:date:message-id:mime-version:
- content-transfer-encoding;
- bh=BQmdy4euCVu84oLWGyIOABUrNN0LpGizFTgwvqUNuLA=;
- b=fGnrMi7xJpzYXSo6Hq83BZKZ4TD/LPxF5NOA3BogPxYNKGL97tHl2XN6
- vCL8bmEyyF50DMiuYo0vIQwurVJErLzICQB9pFVNWt9U7cbdGqZX5OaFO
- FgYfRoYc0pqr8/lt1i23TQ8wvjHCVd13WcuNrxlj5gQmUNhvtnQnYVxZX
- 9jX/fQCgK1PxSQ1SUkLyhZASDvNBVwR2uX2Q/TIb3/KK6A0E+XUlY+cyD
- G+DMjKcavQdtmDymu86+KlNP5kXaU49LDmvTduE82ZTHy/Mb/AUtqnIB5
- SyDGef42z79UeCApHUyTtaI/Xriux6ZyH/8hMonn4i1ymLPQhpKKnBXsq w==;
-X-IronPort-AV: E=McAfee;i="6400,9594,10342"; a="355569847"
-X-IronPort-AV: E=Sophos;i="5.91,212,1647327600"; d="scan'208";a="355569847"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
- by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 09 May 2022 11:57:39 -0700
-X-IronPort-AV: E=Sophos;i="5.91,212,1647327600"; d="scan'208";a="894493722"
-Received: from djmuller-mobl.amr.corp.intel.com (HELO
- pbossart-mobl3.amr.corp.intel.com) ([10.212.167.174])
- by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 09 May 2022 11:57:39 -0700
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-To: alsa-devel@alsa-project.org
-Subject: [PATCH] ASoC: codecs: rt715-sdca: remove useless assignment of ops
-Date: Mon,  9 May 2022 13:57:29 -0500
-Message-Id: <20220509185729.59884-1-pierre-louis.bossart@linux.intel.com>
-X-Mailer: git-send-email 2.30.2
+ by sin.source.kernel.org (Postfix) with ESMTPS id 3D420CE1B0B;
+ Mon,  9 May 2022 18:58:13 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B70CFC385B8;
+ Mon,  9 May 2022 18:58:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1652122691;
+ bh=ICjgh2SHUAfsGyKVspdhXwxyeTpLD0tJ1XV/0qJNQgE=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=cNOfUt66xaeB9Y2OieOzu+BQCMSPIV/o++Q5uNjXXxOojRb/2rqrD3qCl/8GGhLme
+ 5PlW3HJImr989z4mRU7QMmV9LiewWaF5y7dwYyx/QCMAZW6DthHimUk72B9J4511Zy
+ WZTLc0SuSP+HuRDnWvmjcAVIFNvhXrJZcL+kr1v2nt3uE5bvk77F+CzG8PcSVAiHS9
+ ndIgjQsAQDIcTPurHpY8UVc4ru68mDkI1hsAsUOlntkZawahJEYsjkhv0/hXyraBqz
+ 0AqI5h3DlQFMz8agBSVk/tonMQCA7dBYiTn/jqkQ49wHDIrJGTfWNhbP/Q3c6nDz8+
+ SUOMymOk6L5kQ==
+Date: Mon, 9 May 2022 19:58:05 +0100
+From: Mark Brown <broonie@kernel.org>
+To: =?iso-8859-1?Q?N=EDcolas_F=2E_R=2E_A=2E?= Prado <nfraprado@collabora.com>
+Subject: Re: [PATCH] Revert "ASoC: dt-bindings: mediatek: mt8192: Add
+ i2s-share properties"
+Message-ID: <YnlkPTUqcoRk0pNv@sirena.org.uk>
+References: <20220509185625.580811-1-nfraprado@collabora.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: tiwai@suse.de, broonie@kernel.org,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature"; boundary="GjheQb+H4dAxuUfA"
+Content-Disposition: inline
+In-Reply-To: <20220509185625.580811-1-nfraprado@collabora.com>
+X-Cookie: Boycott meat -- suck your thumb.
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
+ Liam Girdwood <lgirdwood@gmail.com>, Jiaxin Yu <jiaxin.yu@mediatek.com>,
+ linux-kernel@vger.kernel.org, Shane Chien <shane.chien@mediatek.com>,
+ Rob Herring <robh+dt@kernel.org>, linux-mediatek@lists.infradead.org,
+ Matthias Brugger <matthias.bgg@gmail.com>,
+ Krzysztof Kozlowski <krzk+dt@kernel.org>, kernel@collabora.com,
+ linux-arm-kernel@lists.infradead.org,
+ AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -81,27 +89,44 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The ops are already part of the 'struct sdw_driver', it's unclear why
-this was copied into the 'slave' structure - no other driver does so.
 
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
----
- sound/soc/codecs/rt715-sdca-sdw.c | 2 --
- 1 file changed, 2 deletions(-)
+--GjheQb+H4dAxuUfA
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-diff --git a/sound/soc/codecs/rt715-sdca-sdw.c b/sound/soc/codecs/rt715-sdca-sdw.c
-index a5c673f43d824..0ecd2948f7aa7 100644
---- a/sound/soc/codecs/rt715-sdca-sdw.c
-+++ b/sound/soc/codecs/rt715-sdca-sdw.c
-@@ -181,8 +181,6 @@ static int rt715_sdca_sdw_probe(struct sdw_slave *slave,
- {
- 	struct regmap *mbq_regmap, *regmap;
- 
--	slave->ops = &rt715_sdca_slave_ops;
--
- 	/* Regmap Initialization */
- 	mbq_regmap = devm_regmap_init_sdw_mbq(slave, &rt715_sdca_mbq_regmap);
- 	if (IS_ERR(mbq_regmap))
--- 
-2.30.2
+On Mon, May 09, 2022 at 02:56:25PM -0400, N=EDcolas F. R. A. Prado wrote:
+> This reverts commit e056cf4341ae3f856f1e38da02b27cb04de4c69b. The commit
+> was merged while the property name and definition were still being
+> discussed. Revert the commit for now and a follow up commit will re-add
+> the property after it is further discussed and reviewed.
 
+Please submit patches using subject lines reflecting the style for the
+subsystem, this makes it easier for people to identify relevant patches.
+Look at what existing commits in the area you're changing are doing and
+make sure your subject lines visually resemble what they're doing.
+There's no need to resubmit to fix this alone.
+
+Please include human readable descriptions of things like commits and
+issues being discussed in e-mail in your mails, this makes them much
+easier for humans to read especially when they have no internet access.
+I do frequently catch up on my mail on flights or while otherwise
+travelling so this is even more pressing for me than just being about
+making things a bit easier to read.
+
+--GjheQb+H4dAxuUfA
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmJ5ZDwACgkQJNaLcl1U
+h9BBOwf8DEntKvg1X9xyFzUILjpwaenS8uKLDQGKJ8FH2tF11PeS9kYPLUbP9twY
+qWF7VO5OYA4wPhBnLf5Ivc2fNWgr0so+LCY4scCEQMxsn9udS+FfRTlBAPx2kfPj
+GwrnQtj59gWQrt/9dbe4RZ1JNcPU471ghlaXqPacg+wNQRqcRVdcPtAn4G9uBHxm
+rYPBGIcCyMV1hKtPAGfirZ7F6Py1G/DFCKAvXC/huj9nFWsvNOb5uiFnkXZDTlQX
+OooS9UNpAbe5uNG91MoRx8lBxHLc6WNnDwFxUVcF5O234cIRI6uNm25qlYQTzgD6
+MJOe9k1CWfsum8VGBztL5mYqwi/IQg==
+=/Syt
+-----END PGP SIGNATURE-----
+
+--GjheQb+H4dAxuUfA--
