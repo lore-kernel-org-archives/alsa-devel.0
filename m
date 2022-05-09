@@ -4,77 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id F11F6C433EF
-	for <alsa-devel@archiver.kernel.org>; Mon,  9 May 2022 11:59:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5686DC433EF
+	for <alsa-devel@archiver.kernel.org>; Mon,  9 May 2022 12:12:20 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id EB7EC18B0;
-	Mon,  9 May 2022 13:58:24 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EB7EC18B0
+	by alsa0.perex.cz (Postfix) with ESMTPS id BD2F518C4;
+	Mon,  9 May 2022 14:11:28 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BD2F518C4
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1652097555;
-	bh=KAiGLAeJ1F2x9+yVZHQWucvlaxVr8070RQ6hTo1dXBQ=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=g2tCSsf6a7MJXYSpb+SYu82bXIqZDfzhHpf0du/HDcaWe4A5QabVXqF0OE0iUVvFA
-	 3VBM+Tg0UsNusejWCfrE7Sp7GbBW6sn5uFepgvMaAHIuO7yy9qyfCeiEIhL2rBSTmt
-	 JyPk/CBWx/aSGJIccTguAygaaj7ItUzOplAe+V2M=
+	s=default; t=1652098338;
+	bh=WqEYfTtuozBNA5qrjR/G5GyXUn5xxE8msXTGh3lZLoI=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=PRlRzvvCknb4+OPqlATB0OTersUuSMGZuN7gyjBwB1dnrAkFsrvMeV1IZyVc2jdZS
+	 6pPXI9XQXVfcQ3U+yzuYGzjk0Ycyp9a5BpF071Mib1pQPNcvCXPOhsmdz8B9mwOkE3
+	 waDoO+klDqwttds3mFHFzwra8forkjSLqIkDwaq0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 8F568F80237;
-	Mon,  9 May 2022 13:58:24 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 63F2DF8025D;
+	Mon,  9 May 2022 14:11:28 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 2DDFDF8014C; Mon,  9 May 2022 13:58:23 +0200 (CEST)
-Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id AB700F80269; Mon,  9 May 2022 14:11:26 +0200 (CEST)
+Received: from phobos.denx.de (phobos.denx.de
+ [IPv6:2a01:238:438b:c500:173d:9f52:ddab:ee01])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 9A578F8014C
- for <alsa-devel@alsa-project.org>; Mon,  9 May 2022 13:58:16 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9A578F8014C
+ by alsa1.perex.cz (Postfix) with ESMTPS id 62BEFF800D3
+ for <alsa-devel@alsa-project.org>; Mon,  9 May 2022 14:11:20 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 62BEFF800D3
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="Zz6UYkjr"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
- d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1652097497; x=1683633497;
- h=date:from:to:cc:subject:message-id:references:
- mime-version:in-reply-to;
- bh=KAiGLAeJ1F2x9+yVZHQWucvlaxVr8070RQ6hTo1dXBQ=;
- b=Zz6UYkjrJropuBSHkXZkrSwU9YUVwOhbe0RbEwAa8JeV62qOvuy/x/EP
- lwT8zoaTXDhgZONMeLRo+vnBtLo2fBk9WXRauKU6NmXvjT6dMpzTC5JJp
- 7wjy2SDF9pLLHuNN/N7GFPn0QDpbkfVPdBKrtmzQRmCiryGxUQ+YLi+jt
- 0NJiJgWZ3yrFetkoBqT+6mGN1BSyHnGc99QZrlOrjE8k7tGcvFfBKni/y
- VhDwNCg0dXqWk4ZiR9eYuzna8Kzh2Ade9L3VO/Tc5saUS1gOiROAElh7j
- oKQP3x+Cimyo6baDUSNtdI+IjvHIFr75fKU4GDH/QOlCZr0z/tzKh/fwx g==;
-X-IronPort-AV: E=McAfee;i="6400,9594,10341"; a="268955775"
-X-IronPort-AV: E=Sophos;i="5.91,211,1647327600"; d="scan'208";a="268955775"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
- by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 09 May 2022 04:58:13 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.91,211,1647327600"; d="scan'208";a="738132053"
-Received: from lkp-server01.sh.intel.com (HELO 5056e131ad90) ([10.239.97.150])
- by orsmga005.jf.intel.com with ESMTP; 09 May 2022 04:58:10 -0700
-Received: from kbuild by 5056e131ad90 with local (Exim 4.95)
- (envelope-from <lkp@intel.com>) id 1no21h-000GUQ-Q8;
- Mon, 09 May 2022 11:58:09 +0000
-Date: Mon, 9 May 2022 19:58:04 +0800
-From: kernel test robot <lkp@intel.com>
-To: Cezary Rojewski <cezary.rojewski@intel.com>,
- alsa-devel@alsa-project.org, broonie@kernel.org
-Subject: Re: [PATCH v2 11/15] ASoC: Intel: avs: Machine board registration
-Message-ID: <202205091954.7hT2TBhd-lkp@intel.com>
-References: <20220509085821.3852259-12-cezary.rojewski@intel.com>
+ dkim=pass (2048-bit key) header.d=denx.de header.i=@denx.de
+ header.b="Sw6BYO5b"
+Received: from localhost.localdomain (85-222-111-42.dynamic.chello.pl
+ [85.222.111.42])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
+ (No client certificate requested)
+ (Authenticated sender: lukma@denx.de)
+ by phobos.denx.de (Postfix) with ESMTPSA id 4F1C483A79;
+ Mon,  9 May 2022 14:11:19 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=denx.de;
+ s=phobos-20191101; t=1652098279;
+ bh=IVzAp6mLcI5fjIjVSE0UrbrRh7utWQXvE4kL+Mmi6mg=;
+ h=From:To:Cc:Subject:Date:From;
+ b=Sw6BYO5bLJuvXdSDJyowlWgLu5sQkCcAUtk27KOyW/VgZH+YDRs7sfzGEkQ6xn70/
+ wcyDtPEYcxZBpJqbCHw5L2RLAZDO+2T4OF9RBOzo3gC8+aulshR8BxHj82/YHLShan
+ hp7EADvCeRp8J1oGiZ+NpGLWRJrxPrEYiL9uS7Mx0X9/eQHHcCWR/m0Ik8TSHx9NWn
+ TIf/4ohapp35wP3VW+BQdQnGeC/JUE3D5grlvtm2kTacsJTGwykaO2RVQldiSt5Pc/
+ Q+reqQ7uHZ3GVFNtNBEPSyIKcOfYaiQm/c2y8evsZx8NC08aVyyuJH/b9FRqB+A/zi
+ VfKsX0yFlp6qQ==
+From: Lukasz Majewski <lukma@denx.de>
+To: Liam Girdwood <lgirdwood@gmail.com>,
+	Mark Brown <broonie@kernel.org>
+Subject: [PATCH 1/2] ASoC: wm8940: add devicetree support
+Date: Mon,  9 May 2022 14:10:55 +0200
+Message-Id: <20220509121055.31103-1-lukma@denx.de>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220509085821.3852259-12-cezary.rojewski@intel.com>
-Cc: Cezary Rojewski <cezary.rojewski@intel.com>, upstream@semihalf.com,
- harshapriya.n@intel.com, rad@semihalf.com,
- pierre-louis.bossart@linux.intel.com, tiwai@suse.com, hdegoede@redhat.com,
- amadeuszx.slawinski@linux.intel.com, kbuild-all@lists.01.org,
- cujomalainey@chromium.org, lma@semihalf.com
+Content-Transfer-Encoding: 8bit
+X-Virus-Scanned: clamav-milter 0.103.5 at phobos.denx.de
+X-Virus-Status: Clean
+Cc: alsa-devel@alsa-project.org, patches@opensource.cirrus.com,
+ linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>,
+ Lukasz Majewski <lukma@denx.de>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -90,106 +81,50 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Hi Cezary,
+This adds devicetree support to the wm8940 codec driver.
+With a DT-based kernel, there is no board-specific setting
+to select the driver so allow it to be manually chosen.
 
-I love your patch! Perhaps something to improve:
+Signed-off-by: Lukasz Majewski <lukma@denx.de>
+---
+ sound/soc/codecs/Kconfig  | 2 +-
+ sound/soc/codecs/wm8940.c | 7 +++++++
+ 2 files changed, 8 insertions(+), 1 deletion(-)
 
-[auto build test WARNING on broonie-sound/for-next]
-[also build test WARNING on next-20220506]
-[cannot apply to tiwai-sound/for-next v5.18-rc6]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch]
-
-url:    https://github.com/intel-lab-lkp/linux/commits/Cezary-Rojewski/ASoC-Intel-avs-Driver-core-and-PCM-operations/20220509-165656
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
-config: arc-allyesconfig (https://download.01.org/0day-ci/archive/20220509/202205091954.7hT2TBhd-lkp@intel.com/config)
-compiler: arceb-elf-gcc (GCC) 11.3.0
-reproduce (this is a W=1 build):
-        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
-        chmod +x ~/bin/make.cross
-        # https://github.com/intel-lab-lkp/linux/commit/2ef25400a7aee5a8e75c2ccdb5618be31c9f6809
-        git remote add linux-review https://github.com/intel-lab-lkp/linux
-        git fetch --no-tags linux-review Cezary-Rojewski/ASoC-Intel-avs-Driver-core-and-PCM-operations/20220509-165656
-        git checkout 2ef25400a7aee5a8e75c2ccdb5618be31c9f6809
-        # save the config file
-        mkdir build_dir && cp config build_dir/.config
-        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-11.3.0 make.cross W=1 O=build_dir ARCH=arc SHELL=/bin/bash sound/soc/intel/avs/
-
-If you fix the issue, kindly add following tag as appropriate
-Reported-by: kernel test robot <lkp@intel.com>
-
-All warnings (new ones prefixed by >>):
-
-   In file included from include/linux/device.h:15,
-                    from include/linux/acpi.h:15,
-                    from sound/soc/intel/avs/board_selection.c:9:
-   sound/soc/intel/avs/board_selection.c: In function 'avs_register_i2s_board':
->> sound/soc/intel/avs/board_selection.c:328:36: warning: format '%ld' expects argument of type 'long int', but argument 5 has type 'int' [-Wformat=]
-     328 |                 dev_err(adev->dev, "Platform supports %d SSPs but board %s requires SSP%ld\n",
-         |                                    ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   include/linux/dev_printk.h:110:30: note: in definition of macro 'dev_printk_index_wrap'
-     110 |                 _p_func(dev, fmt, ##__VA_ARGS__);                       \
-         |                              ^~~
-   include/linux/dev_printk.h:144:56: note: in expansion of macro 'dev_fmt'
-     144 |         dev_printk_index_wrap(_dev_err, KERN_ERR, dev, dev_fmt(fmt), ##__VA_ARGS__)
-         |                                                        ^~~~~~~
-   sound/soc/intel/avs/board_selection.c:328:17: note: in expansion of macro 'dev_err'
-     328 |                 dev_err(adev->dev, "Platform supports %d SSPs but board %s requires SSP%ld\n",
-         |                 ^~~~~~~
-   sound/soc/intel/avs/board_selection.c:328:90: note: format string is defined here
-     328 |                 dev_err(adev->dev, "Platform supports %d SSPs but board %s requires SSP%ld\n",
-         |                                                                                        ~~^
-         |                                                                                          |
-         |                                                                                          long int
-         |                                                                                        %d
-
-
-vim +328 sound/soc/intel/avs/board_selection.c
-
-   318	
-   319	static int avs_register_i2s_board(struct avs_dev *adev, struct snd_soc_acpi_mach *mach)
-   320	{
-   321		struct platform_device *board;
-   322		int num_ssps;
-   323		char *name;
-   324		int ret;
-   325	
-   326		num_ssps = adev->hw_cfg.i2s_caps.ctrl_count;
-   327		if (fls(mach->mach_params.i2s_link_mask) > num_ssps) {
- > 328			dev_err(adev->dev, "Platform supports %d SSPs but board %s requires SSP%ld\n",
-   329				num_ssps, mach->drv_name, __fls(mach->mach_params.i2s_link_mask));
-   330			return -ENODEV;
-   331		}
-   332	
-   333		name = devm_kasprintf(adev->dev, GFP_KERNEL, "%s.%d-platform", mach->drv_name,
-   334				      mach->mach_params.i2s_link_mask);
-   335		if (!name)
-   336			return -ENOMEM;
-   337	
-   338		ret = avs_i2s_platform_register(adev, name, mach->mach_params.i2s_link_mask, mach->pdata);
-   339		if (ret < 0)
-   340			return ret;
-   341	
-   342		mach->mach_params.platform = name;
-   343	
-   344		board = platform_device_register_data(NULL, mach->drv_name, mach->mach_params.i2s_link_mask,
-   345						      (const void *)mach, sizeof(*mach));
-   346		if (IS_ERR(board)) {
-   347			dev_err(adev->dev, "ssp board register failed\n");
-   348			return PTR_ERR(board);
-   349		}
-   350	
-   351		ret = devm_add_action(adev->dev, board_pdev_unregister, board);
-   352		if (ret < 0) {
-   353			platform_device_unregister(board);
-   354			return ret;
-   355		}
-   356	
-   357		return 0;
-   358	}
-   359	
-
+diff --git a/sound/soc/codecs/Kconfig b/sound/soc/codecs/Kconfig
+index f46a22660103..5120b15139bc 100644
+--- a/sound/soc/codecs/Kconfig
++++ b/sound/soc/codecs/Kconfig
+@@ -1811,7 +1811,7 @@ config SND_SOC_WM8904
+ 	depends on I2C
+ 
+ config SND_SOC_WM8940
+-	tristate
++	tristate "Wolfson Microelectronics WM8940 codec"
+ 	depends on I2C
+ 
+ config SND_SOC_WM8955
+diff --git a/sound/soc/codecs/wm8940.c b/sound/soc/codecs/wm8940.c
+index 440d048ef0c0..8615a55f84dd 100644
+--- a/sound/soc/codecs/wm8940.c
++++ b/sound/soc/codecs/wm8940.c
+@@ -779,9 +779,16 @@ static const struct i2c_device_id wm8940_i2c_id[] = {
+ };
+ MODULE_DEVICE_TABLE(i2c, wm8940_i2c_id);
+ 
++static const struct of_device_id wm8940_of_match[] = {
++	{ .compatible = "wlf,wm8940", },
++	{ }
++};
++MODULE_DEVICE_TABLE(of, wm8940_of_match);
++
+ static struct i2c_driver wm8940_i2c_driver = {
+ 	.driver = {
+ 		.name = "wm8940",
++		.of_match_table = wm8940_of_match,
+ 	},
+ 	.probe =    wm8940_i2c_probe,
+ 	.id_table = wm8940_i2c_id,
 -- 
-0-DAY CI Kernel Test Service
-https://01.org/lkp
+2.35.1
+
