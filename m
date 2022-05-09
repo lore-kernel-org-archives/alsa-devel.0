@@ -4,65 +4,64 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7C33DC433F5
-	for <alsa-devel@archiver.kernel.org>; Mon,  9 May 2022 06:31:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 94D95C433F5
+	for <alsa-devel@archiver.kernel.org>; Mon,  9 May 2022 06:32:36 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C11F0850;
-	Mon,  9 May 2022 08:30:49 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C11F0850
+	by alsa0.perex.cz (Postfix) with ESMTPS id 864DC15E2;
+	Mon,  9 May 2022 08:31:44 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 864DC15E2
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1652077899;
-	bh=DXieFXLBq4ieE8RkkoZNSW7FjctpJuOTdLRbxH7qdmU=;
+	s=default; t=1652077954;
+	bh=4TIx1E6FlF7YHG/uNt/9l6SCt1BMcj3v5sx2IOZx3Yw=;
 	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=H4iZjAIVbMMGn70Twkux6Rb7Y9k3ZfYZuhnbKx9niIoaZNytjDsTbduPCv9nNU/nn
-	 w8cjWmKtdjOrFXb6iP5arbByXrssiv/jFuBNFHKyxH0Ia4tlHMesoBo13Ec1EKnxgp
-	 Iqe6rUZo4MAQjxRaBiQq2/7SSaHLhwbXTlO4IbP0=
+	b=CsoK9kyu0ZZal6Zo0HV1imqw4vWRLaDHJ4ZFG5h0/YhQ+U234j7smXo7Qo18MVYnL
+	 C51tH50km4cbUwkeBQWAcHNZ+my9RgfsNuFtziyW8p1gj+l/ND4nZV/XnuVx7jxksG
+	 M2Ruz/xlPyJjsY+HusTZGjyMwF3ldhygddgob47g=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 3A48AF80237;
-	Mon,  9 May 2022 08:30:49 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 35953F8025D;
+	Mon,  9 May 2022 08:31:44 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 2164CF8014C; Mon,  9 May 2022 08:30:47 +0200 (CEST)
+ id 9789EF80269; Mon,  9 May 2022 08:31:42 +0200 (CEST)
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id DAC87F8014C
- for <alsa-devel@alsa-project.org>; Mon,  9 May 2022 08:30:39 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DAC87F8014C
+ by alsa1.perex.cz (Postfix) with ESMTPS id 32102F8014C
+ for <alsa-devel@alsa-project.org>; Mon,  9 May 2022 08:31:40 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 32102F8014C
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="JhehAjvy"
+ header.b="H1qvUgiy"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id 5F22560F24;
- Mon,  9 May 2022 06:30:37 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2B594C385AB;
- Mon,  9 May 2022 06:30:35 +0000 (UTC)
+ by dfw.source.kernel.org (Postfix) with ESMTPS id AB9F06114C;
+ Mon,  9 May 2022 06:31:38 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7ED84C385AB;
+ Mon,  9 May 2022 06:31:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1652077836;
- bh=DXieFXLBq4ieE8RkkoZNSW7FjctpJuOTdLRbxH7qdmU=;
+ s=k20201202; t=1652077898;
+ bh=4TIx1E6FlF7YHG/uNt/9l6SCt1BMcj3v5sx2IOZx3Yw=;
  h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=JhehAjvyCcEicKiJYLuxM7jPXqRXdGrDQ7YZxKRrouELMebcz7yCCBUice324qwyw
- Rtuw+alC+f5y6hO4rLt3/aEMUNzSA0nsL0Ec3D8YAaapVa8uB6cO1n7txMmJPSItyk
- v68AKRI2x4bc98kxfcR3Ea+XijDESyg1xQUXnrQR2hdztrkqMPAGmlAPQkowRlGhNH
- 6QZm7MYN+sUCL1mAPqreqyfJI/M365LdiTl3Dsh4/nCGKbIknaHd9zEiVRHBZnnTv4
- 6M3jmnZvrev9JhCcVhJc05QjwCr5s4/qLUpJZm3z8wv7U4WaT3w+gcBZt9aWg3YwnQ
- Je4iUr+fKIT7Q==
-Date: Mon, 9 May 2022 12:00:32 +0530
+ b=H1qvUgiy3z6BACuGLfNCfuvmd14Br6VMFcz9E6HOw0oBZeTaqbLnUe8SC+qj3Akrd
+ VVAWT89Zu95U1pp9mxqQN86s3f0bEtgkVn+EfN6ENFIGJ9lMvs+BOq6Q0hhxhuaob7
+ fs0CXwiF+pMlkfTp34MMJItBBYnIVLtcvhM3+qBdz9tD6JryGDw+EPbHYHl7MUDU75
+ MiZlWPwThCjpVcJEQKJi+MbuF8l7vGfGu7Xjscs46g3E4TQ0rY/jAso79lkmgoOz4J
+ CzM80UtZmebacbXuXNlKSVuoUg2hzlY32Y08OBBf8kzpbwuHD6CxfKVvrKCZVjxS2m
+ X/mKsbBl84Emw==
+Date: Mon, 9 May 2022 12:01:33 +0530
 From: Vinod Koul <vkoul@kernel.org>
 To: Bard Liao <yung-chuan.liao@linux.intel.com>
-Subject: Re: [PATCH] soundwire: cadence: recheck device0 attachment after
- status change
-Message-ID: <Yni1CKb20D99kAce@matsya>
-References: <20220420023039.14144-1-yung-chuan.liao@linux.intel.com>
+Subject: Re: [PATCH 0/3] soundwire: pm runtime improvements
+Message-ID: <Yni1Rc1ONlMH82bt@matsya>
+References: <20220420023241.14335-1-yung-chuan.liao@linux.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20220420023039.14144-1-yung-chuan.liao@linux.intel.com>
+In-Reply-To: <20220420023241.14335-1-yung-chuan.liao@linux.intel.com>
 Cc: alsa-devel@alsa-project.org, gregkh@linuxfoundation.org,
  linux-kernel@vger.kernel.org, pierre-louis.bossart@linux.intel.com,
  srinivas.kandagatla@linaro.org, sanyog.r.kale@intel.com, bard.liao@intel.com
@@ -81,37 +80,15 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On 20-04-22, 10:30, Bard Liao wrote:
-> From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-> 
-> This patch adds a status check after device0 attachment to solve race
-> conditions observed during attachment with multiple devices per link
-> 
-> The sequence is the following
-> 
-> 1) deviceA attaches as device0
-> 
-> 2) the hardware detects a device0 status change and throws an
->  interrupt.
-> 
-> 3) the interrupt handler schedules the work function
-> 
-> 4) the workqueue starts, we read the status
-> slave0 = cdns_readl(cdns, CDNS_MCP_SLAVE_INTSTAT0);
-> slave1 = cdns_readl(cdns, CDNS_MCP_SLAVE_INTSTAT1);
-> 
-> we deal with the status change and program deviceA device number to a
-> non-zero value.
-> 
-> 5) deviceB attaches as device0, the device0 status seen by the
-> hardware does not change.
-> 
-> 6) we clear the CDNS_MCP_SLAVE_INTSTAT0/1 registers -> we will never detect
-> deviceB!
-> 
-> This patch suggest re-checking in a loop the device0 status with a
-> PING frame, i.e. using the real device0 status instead of information
-> on status changes.
+On 20-04-22, 10:32, Bard Liao wrote:
+> This series provides a solution to solve a corner case issue where the
+> manager device may become pm_runtime active, but without ALSA/ASoC
+> requesting any functionality from the peripherals. In this case, the
+> hardware peripheral device will report as ATTACHED and its initialization
+> routine will be executed. If this initialization routine initiates any
+> sort of deferred processing, there is a possibility that the manager could
+> suspend without the peripheral suspend sequence being invoked: from the
+> pm_runtime framework perspective, the peripheral is *already* suspended.
 
 Applied, thanks
 
