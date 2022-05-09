@@ -4,64 +4,64 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1CA69C433EF
-	for <alsa-devel@archiver.kernel.org>; Mon,  9 May 2022 08:53:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 57492C433EF
+	for <alsa-devel@archiver.kernel.org>; Mon,  9 May 2022 08:54:12 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 4A8A218FF;
-	Mon,  9 May 2022 10:53:01 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4A8A218FF
+	by alsa0.perex.cz (Postfix) with ESMTPS id 6A84C1921;
+	Mon,  9 May 2022 10:53:20 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6A84C1921
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1652086431;
-	bh=79EhPWO2erwZyQ3qgF6p2i8YrbX4v1+cb3BtQ/lu1/E=;
+	s=default; t=1652086450;
+	bh=v9Oy3M6qVpi9RQ+ICLK4FNOi8eIZA530mpjwNEP1pZY=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Li+Nc1lbfBj5+rg2KJ8WDMVeI5TOcW5nmex5MBYHihL1m8HEwLRYY37+ykDmw55VL
-	 K6rhrPsC6g/Wb+Z3S430VZVNMLX20AY5qJ/wFrTTHd2Fz9mCspPz2jOOyccLqFgZek
-	 Mn2PgATLvsEHYMzoeYp9wlb838dEV02YPJ7+un/U=
+	b=H074Y2w5e1ZrolS+gmwRStkQXHCTZ50hcho1HNvNU9K3kdfOa1W69omOKfR2RlKZU
+	 Wvh8xDPtbIPbR14x5U3SrfruErruRD3YlSDuFfGG0U46BkHpgzKwfTs/6CIjAMu8iE
+	 7Bqwbcp5km6qaJDu2nTqw0Y/Ug8mfflM1S05yOcs=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id D0420F805A1;
-	Mon,  9 May 2022 10:49:36 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id CFCF5F804A9;
+	Mon,  9 May 2022 10:49:48 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 7E075F805B1; Mon,  9 May 2022 10:49:35 +0200 (CEST)
+ id 5FA91F805B6; Mon,  9 May 2022 10:49:47 +0200 (CEST)
 Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 93702F805A1
- for <alsa-devel@alsa-project.org>; Mon,  9 May 2022 10:49:28 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 93702F805A1
+ by alsa1.perex.cz (Postfix) with ESMTPS id 4476BF80269
+ for <alsa-devel@alsa-project.org>; Mon,  9 May 2022 10:48:48 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4476BF80269
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="PMyB5y2L"
+ header.b="njcGHG6v"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1652086169; x=1683622169;
+ t=1652086129; x=1683622129;
  h=from:to:cc:subject:date:message-id:in-reply-to:
  references:mime-version:content-transfer-encoding;
- bh=79EhPWO2erwZyQ3qgF6p2i8YrbX4v1+cb3BtQ/lu1/E=;
- b=PMyB5y2LIVwNMLTu+AXSjFVxf5AlH3m8A9wjgIe71hIxsS/FFcxVr8Ke
- 7aAxVymRlJguTVDkWpshxsZI1ntg/i10cl9mAsyx0+jbPDZAiFCEumZ+I
- kKoAqT5yU/haPujKwkFDHPKQOPciY36pyW4YNl8pGFxF7gif//WVS1Gb9
- XLkTnjQyInZC8pTVJZmH2RxbkmjMegnkrxKtn9tBXPcV8GMxHFb97mLOG
- viz0PCGEN/Qlt2BkBprjHgtl2TLOmCQ/V98m8fkvioe445SOa3+wjqXnb
- wfavkdYVa8vVLTzLBXpaq/rDpjHp+Up/2LzJ9Gz8XqMGZSjtLj37DsMXI Q==;
-X-IronPort-AV: E=McAfee;i="6400,9594,10341"; a="294208668"
-X-IronPort-AV: E=Sophos;i="5.91,210,1647327600"; d="scan'208";a="294208668"
+ bh=v9Oy3M6qVpi9RQ+ICLK4FNOi8eIZA530mpjwNEP1pZY=;
+ b=njcGHG6vBWPfe6Z2KgszCr2NkSzuLBqdlfL64wZ9cJUfklj3nkyxkEPP
+ x6HZ/tKyo1DGHXgIDNCbW4BKGNAKt/v+5q2I2tBasaqzpTqHwteIEyBcD
+ aJI4V3KAIbfNoaxvMpgUqJqqtS0QJWZPQbmV9D3KmUHJczXMSnEOcFagn
+ YZMw0SCQEAz8pG8FTUUpjuqFEoMli6yaWngQF70YXQKspljklCrGo1QuF
+ U3dyRit5XEns1r1tRPzTJuMIqn4LXaCgCJCuQFpd/aa/tSLF3VTpzRrOd
+ RzAJiUg91lsOYjpalxl5TLEGk3aLyeU81LIsn/mIvpcPdGzxaUVm7tHu6 Q==;
+X-IronPort-AV: E=McAfee;i="6400,9594,10341"; a="294208527"
+X-IronPort-AV: E=Sophos;i="5.91,210,1647327600"; d="scan'208";a="294208527"
 Received: from orsmga005.jf.intel.com ([10.7.209.41])
  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 09 May 2022 01:49:26 -0700
+ 09 May 2022 01:48:46 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.91,210,1647327600"; d="scan'208";a="738068557"
+X-IronPort-AV: E=Sophos;i="5.91,210,1647327600"; d="scan'208";a="738068247"
 Received: from crojewsk-ctrl.igk.intel.com ([10.102.9.28])
- by orsmga005.jf.intel.com with ESMTP; 09 May 2022 01:49:23 -0700
+ by orsmga005.jf.intel.com with ESMTP; 09 May 2022 01:48:43 -0700
 From: Cezary Rojewski <cezary.rojewski@intel.com>
 To: alsa-devel@alsa-project.org,
 	broonie@kernel.org
-Subject: [PATCH v2 15/15] ASoC: Intel: avs: APL-based platforms support
-Date: Mon,  9 May 2022 10:58:21 +0200
-Message-Id: <20220509085821.3852259-16-cezary.rojewski@intel.com>
+Subject: [PATCH v2 04/15] ASoC: Intel: avs: non-HDA PCM BE operations
+Date: Mon,  9 May 2022 10:58:10 +0200
+Message-Id: <20220509085821.3852259-5-cezary.rojewski@intel.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20220509085821.3852259-1-cezary.rojewski@intel.com>
 References: <20220509085821.3852259-1-cezary.rojewski@intel.com>
@@ -88,410 +88,285 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Define handlers specific to cAVS 1.5+ platforms, that is, APL and
-similar platforms. These differ from SKL-alike ones in terms of AudioDSP
-firmware generation and thus the '+' suffix. Introduciton of IMR,
-removal of CLDMA, D0IX support and monolithic-ation of library/module
-code are most impactful but are not the only changes brought with this
-newer generation. Some generic and 1.5 operations are being re-used to
-reduce code size.
+DMIC and I2S interfaces differ in DMA operations from the HDAudio
+interface. With that in mind, implement all DAI operations to handle
+non-HDA BE interfaces.
+
+To prevent code duplication in newly added code, I2S platform
+registering is dynamic - makes use of specified port_mask and TDMs
+array to populate as many DAIs as required.
 
 Signed-off-by: Amadeusz Sławiński <amadeuszx.slawinski@linux.intel.com>
 Signed-off-by: Cezary Rojewski <cezary.rojewski@intel.com>
 ---
- sound/soc/intel/avs/Makefile    |   2 +-
- sound/soc/intel/avs/apl.c       | 250 ++++++++++++++++++++++++++++++++
- sound/soc/intel/avs/avs.h       |  13 ++
- sound/soc/intel/avs/core.c      |  18 +++
- sound/soc/intel/avs/loader.c    |   4 +
- sound/soc/intel/avs/messages.h  |   7 +
- sound/soc/intel/avs/registers.h |   2 +
- 7 files changed, 295 insertions(+), 1 deletion(-)
- create mode 100644 sound/soc/intel/avs/apl.c
+ sound/soc/intel/avs/avs.h |   4 +
+ sound/soc/intel/avs/pcm.c | 222 +++++++++++++++++++++++++++++++++++++-
+ 2 files changed, 225 insertions(+), 1 deletion(-)
 
-diff --git a/sound/soc/intel/avs/Makefile b/sound/soc/intel/avs/Makefile
-index 7d09385bc970..b6b93ae80304 100644
---- a/sound/soc/intel/avs/Makefile
-+++ b/sound/soc/intel/avs/Makefile
-@@ -3,7 +3,7 @@
- snd-soc-avs-objs := dsp.o ipc.o messages.o utils.o core.o loader.o \
- 		    topology.o path.o pcm.o board_selection.o
- snd-soc-avs-objs += cldma.o
--snd-soc-avs-objs += skl.o
-+snd-soc-avs-objs += skl.o apl.o
- 
- snd-soc-avs-objs += trace.o
- # tell define_trace.h where to find the trace header
-diff --git a/sound/soc/intel/avs/apl.c b/sound/soc/intel/avs/apl.c
-new file mode 100644
-index 000000000000..b8e2b23c9f64
---- /dev/null
-+++ b/sound/soc/intel/avs/apl.c
-@@ -0,0 +1,250 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+//
-+// Copyright(c) 2021-2022 Intel Corporation. All rights reserved.
-+//
-+// Authors: Cezary Rojewski <cezary.rojewski@intel.com>
-+//          Amadeusz Slawinski <amadeuszx.slawinski@linux.intel.com>
-+//
-+
-+#include <linux/devcoredump.h>
-+#include <linux/slab.h>
-+#include "avs.h"
-+#include "messages.h"
-+#include "path.h"
-+#include "topology.h"
-+
-+static int apl_enable_logs(struct avs_dev *adev, enum avs_log_enable enable, u32 aging_period,
-+			   u32 fifo_full_period, unsigned long resource_mask, u32 *priorities)
-+{
-+	struct apl_log_state_info *info;
-+	u32 size, num_cores = adev->hw_cfg.dsp_cores;
-+	int ret, i;
-+
-+	if (fls_long(resource_mask) > num_cores)
-+		return -EINVAL;
-+	size = struct_size(info, logs_core, num_cores);
-+	info = kzalloc(size, GFP_KERNEL);
-+	if (!info)
-+		return -ENOMEM;
-+
-+	info->aging_timer_period = aging_period;
-+	info->fifo_full_timer_period = fifo_full_period;
-+	info->core_mask = resource_mask;
-+	if (enable)
-+		for_each_set_bit(i, &resource_mask, num_cores) {
-+			info->logs_core[i].enable = enable;
-+			info->logs_core[i].min_priority = *priorities++;
-+		}
-+	else
-+		for_each_set_bit(i, &resource_mask, num_cores)
-+			info->logs_core[i].enable = enable;
-+
-+	ret = avs_ipc_set_enable_logs(adev, (u8 *)info, size);
-+	kfree(info);
-+	if (ret)
-+		return AVS_IPC_RET(ret);
-+
-+	return 0;
-+}
-+
-+static int apl_log_buffer_status(struct avs_dev *adev, union avs_notify_msg *msg)
-+{
-+	struct apl_log_buffer_layout layout;
-+	unsigned long flags;
-+	void __iomem *addr, *buf;
-+
-+	addr = avs_log_buffer_addr(adev, msg->log.core);
-+	if (!addr)
-+		return -ENXIO;
-+
-+	memcpy_fromio(&layout, addr, sizeof(layout));
-+
-+	spin_lock_irqsave(&adev->dbg.trace_lock, flags);
-+	if (!kfifo_initialized(&adev->dbg.trace_fifo))
-+		/* consume the logs regardless of consumer presence */
-+		goto update_read_ptr;
-+
-+	buf = apl_log_payload_addr(addr);
-+
-+	if (layout.read_ptr > layout.write_ptr) {
-+		__kfifo_fromio_locked(&adev->dbg.trace_fifo, buf + layout.read_ptr,
-+				      apl_log_payload_size(adev) - layout.read_ptr,
-+				      &adev->dbg.fifo_lock);
-+		layout.read_ptr = 0;
-+	}
-+	__kfifo_fromio_locked(&adev->dbg.trace_fifo, buf + layout.read_ptr,
-+			      layout.write_ptr - layout.read_ptr, &adev->dbg.fifo_lock);
-+
-+	wake_up(&adev->dbg.trace_waitq);
-+
-+update_read_ptr:
-+	spin_unlock_irqrestore(&adev->dbg.trace_lock, flags);
-+	writel(layout.write_ptr, addr);
-+	return 0;
-+}
-+
-+static int apl_wait_log_entry(struct avs_dev *adev, u32 core, struct apl_log_buffer_layout *layout)
-+{
-+	unsigned long timeout;
-+	void __iomem *addr;
-+
-+	addr = avs_log_buffer_addr(adev, core);
-+	if (!addr)
-+		return -ENXIO;
-+
-+	timeout = jiffies + msecs_to_jiffies(10);
-+
-+	do {
-+		memcpy_fromio(layout, addr, sizeof(*layout));
-+		if (layout->read_ptr != layout->write_ptr)
-+			return 0;
-+		usleep_range(500, 1000);
-+	} while (!time_after(jiffies, timeout));
-+
-+	return -ETIMEDOUT;
-+}
-+
-+/* reads log header and tests its type */
-+#define apl_is_entry_stackdump(addr) ((readl(addr) >> 30) & 0x1)
-+
-+static int apl_coredump(struct avs_dev *adev, union avs_notify_msg *msg)
-+{
-+	struct apl_log_buffer_layout layout;
-+	void __iomem *addr, *buf;
-+	size_t dump_size;
-+	u16 offset = 0;
-+	u8 *dump, *pos;
-+
-+	dump_size = AVS_FW_REGS_SIZE + msg->ext.coredump.stack_dump_size;
-+	dump = vzalloc(dump_size);
-+	if (!dump)
-+		return -ENOMEM;
-+
-+	memcpy_fromio(dump, avs_sram_addr(adev, AVS_FW_REGS_WINDOW), AVS_FW_REGS_SIZE);
-+
-+	if (!msg->ext.coredump.stack_dump_size)
-+		goto exit;
-+
-+	/* Dump the registers even if an external error prevents gathering the stack. */
-+	addr = avs_log_buffer_addr(adev, msg->ext.coredump.core_id);
-+	if (!addr)
-+		goto exit;
-+
-+	buf = apl_log_payload_addr(addr);
-+	memcpy_fromio(&layout, addr, sizeof(layout));
-+	if (!apl_is_entry_stackdump(buf + layout.read_ptr)) {
-+		/*
-+		 * DSP awaits the remaining logs to be
-+		 * gathered before dumping stack
-+		 */
-+		msg->log.core = msg->ext.coredump.core_id;
-+		avs_dsp_op(adev, log_buffer_status, msg);
-+	}
-+
-+	pos = dump + AVS_FW_REGS_SIZE;
-+	/* gather the stack */
-+	do {
-+		u32 count;
-+
-+		if (apl_wait_log_entry(adev, msg->ext.coredump.core_id, &layout))
-+			break;
-+
-+		if (layout.read_ptr > layout.write_ptr) {
-+			count = apl_log_payload_size(adev) - layout.read_ptr;
-+			memcpy_fromio(pos + offset, buf + layout.read_ptr, count);
-+			layout.read_ptr = 0;
-+			offset += count;
-+		}
-+		count = layout.write_ptr - layout.read_ptr;
-+		memcpy_fromio(pos + offset, buf + layout.read_ptr, count);
-+		offset += count;
-+
-+		/* update read pointer */
-+		writel(layout.write_ptr, addr);
-+	} while (offset < msg->ext.coredump.stack_dump_size);
-+
-+exit:
-+	dev_coredumpv(adev->dev, dump, dump_size, GFP_KERNEL);
-+
-+	return 0;
-+}
-+
-+static bool apl_lp_streaming(struct avs_dev *adev)
-+{
-+	struct avs_path *path;
-+
-+	/* Any gateway without buffer allocated in LP area disqualifies D0IX. */
-+	list_for_each_entry(path, &adev->path_list, node) {
-+		struct avs_path_pipeline *ppl;
-+
-+		list_for_each_entry(ppl, &path->ppl_list, node) {
-+			struct avs_path_module *mod;
-+
-+			list_for_each_entry(mod, &ppl->mod_list, node) {
-+				struct avs_tplg_modcfg_ext *cfg;
-+
-+				cfg = mod->template->cfg_ext;
-+
-+				/* only copiers have gateway attributes */
-+				if (!guid_equal(&cfg->type, &AVS_COPIER_MOD_UUID))
-+					continue;
-+				/* non-gateway copiers do not prevent PG */
-+				if (cfg->copier.dma_type == INVALID_OBJECT_ID)
-+					continue;
-+
-+				if (!mod->gtw_attrs.lp_buffer_alloc)
-+					return false;
-+			}
-+		}
-+	}
-+
-+	return true;
-+}
-+
-+static bool apl_d0ix_toggle(struct avs_dev *adev, struct avs_ipc_msg *tx, bool wake)
-+{
-+	/* wake in all cases */
-+	if (wake)
-+		return true;
-+
-+	/*
-+	 * If no pipelines are running, allow for d0ix schedule.
-+	 * If all gateways have lp=1, allow for d0ix schedule.
-+	 * If any gateway with lp=0 is allocated, abort scheduling d0ix.
-+	 *
-+	 * Note: for cAVS 1.5+ and 1.8, D0IX is LP-firmware transition,
-+	 * not the power-gating mechanism known from cAVS 2.0.
-+	 */
-+	return apl_lp_streaming(adev);
-+}
-+
-+static int apl_set_d0ix(struct avs_dev *adev, bool enable)
-+{
-+	bool streaming = false;
-+	int ret;
-+
-+	if (enable)
-+		/* Either idle or all gateways with lp=1. */
-+		streaming = !list_empty(&adev->path_list);
-+
-+	ret = avs_ipc_set_d0ix(adev, enable, streaming);
-+	return AVS_IPC_RET(ret);
-+}
-+
-+const struct avs_dsp_ops apl_dsp_ops = {
-+	.power = avs_dsp_core_power,
-+	.reset = avs_dsp_core_reset,
-+	.stall = avs_dsp_core_stall,
-+	.irq_handler = avs_dsp_irq_handler,
-+	.irq_thread = avs_dsp_irq_thread,
-+	.int_control = avs_dsp_interrupt_control,
-+	.load_basefw = avs_hda_load_basefw,
-+	.load_lib = avs_hda_load_library,
-+	.transfer_mods = avs_hda_transfer_modules,
-+	.enable_logs = apl_enable_logs,
-+	.log_buffer_offset = skl_log_buffer_offset,
-+	.log_buffer_status = apl_log_buffer_status,
-+	.coredump = apl_coredump,
-+	.d0ix_toggle = apl_d0ix_toggle,
-+	.set_d0ix = apl_set_d0ix,
-+};
 diff --git a/sound/soc/intel/avs/avs.h b/sound/soc/intel/avs/avs.h
-index 237e4422dcad..92e37722d280 100644
+index 14b4a780a91c..b4fd67fac17d 100644
 --- a/sound/soc/intel/avs/avs.h
 +++ b/sound/soc/intel/avs/avs.h
-@@ -57,6 +57,7 @@ struct avs_dsp_ops {
- 	((adev)->spec->dsp_ops->op(adev, ## __VA_ARGS__))
+@@ -270,4 +270,8 @@ struct avs_soc_component {
  
- extern const struct avs_dsp_ops skl_dsp_ops;
-+extern const struct avs_dsp_ops apl_dsp_ops;
+ extern const struct snd_soc_dai_ops avs_dai_fe_ops;
  
- #define AVS_PLATATTR_CLDMA		BIT_ULL(0)
- #define AVS_PLATATTR_IMR		BIT_ULL(1)
-@@ -333,4 +334,16 @@ unsigned int __kfifo_fromio_locked(struct kfifo *fifo, const void __iomem *src,
- 			 (avs_sram_addr(adev, AVS_DEBUG_WINDOW) + __offset); \
- })
- 
-+struct apl_log_buffer_layout {
-+	u32 read_ptr;
-+	u32 write_ptr;
-+	u8 buffer[];
-+} __packed;
-+
-+#define apl_log_payload_size(adev) \
-+	(avs_log_buffer_size(adev) - sizeof(struct apl_log_buffer_layout))
-+
-+#define apl_log_payload_addr(addr) \
-+	(addr + sizeof(struct apl_log_buffer_layout))
++int avs_dmic_platform_register(struct avs_dev *adev, const char *name);
++int avs_i2s_platform_register(struct avs_dev *adev, const char *name, unsigned long port_mask,
++			      unsigned long *tdms);
 +
  #endif /* __SOUND_SOC_INTEL_AVS_H */
-diff --git a/sound/soc/intel/avs/core.c b/sound/soc/intel/avs/core.c
-index 7e78a9a9d166..3a0997c3af2b 100644
---- a/sound/soc/intel/avs/core.c
-+++ b/sound/soc/intel/avs/core.c
-@@ -650,9 +650,27 @@ static const struct avs_spec skl_desc = {
- 	.rom_status = SKL_ADSP_SRAM_BASE_OFFSET,
- };
+diff --git a/sound/soc/intel/avs/pcm.c b/sound/soc/intel/avs/pcm.c
+index 9d01ed37c11e..079fa19f7d7b 100644
+--- a/sound/soc/intel/avs/pcm.c
++++ b/sound/soc/intel/avs/pcm.c
+@@ -112,6 +112,23 @@ static int avs_dai_hw_params(struct snd_pcm_substream *substream,
+ 	return 0;
+ }
  
-+static const struct avs_spec apl_desc = {
-+	.name = "apl",
-+	.min_fw_version = {
-+		.major = 9,
-+		.minor = 22,
-+		.hotfix = 1,
-+		.build = 4323,
-+	},
-+	.dsp_ops = &apl_dsp_ops,
-+	.core_init_mask = 3,
-+	.attributes = AVS_PLATATTR_IMR,
-+	.sram_base_offset = APL_ADSP_SRAM_BASE_OFFSET,
-+	.sram_window_size = APL_ADSP_SRAM_WINDOW_SIZE,
-+	.rom_status = APL_ADSP_SRAM_BASE_OFFSET,
++static int avs_dai_be_hw_params(struct snd_pcm_substream *substream,
++				struct snd_pcm_hw_params *be_hw_params, struct snd_soc_dai *dai,
++				int dma_id)
++{
++	struct snd_pcm_hw_params *fe_hw_params = NULL;
++	struct snd_soc_pcm_runtime *fe, *be;
++	struct snd_soc_dpcm *dpcm;
++
++	be = asoc_substream_to_rtd(substream);
++	for_each_dpcm_fe(be, substream->stream, dpcm) {
++		fe = dpcm->fe;
++		fe_hw_params = &fe->dpcm[substream->stream].hw_params;
++	}
++
++	return avs_dai_hw_params(substream, fe_hw_params, be_hw_params, dai, dma_id);
++}
++
+ static int avs_dai_prepare(struct avs_dev *adev, struct snd_pcm_substream *substream,
+ 			   struct snd_soc_dai *dai)
+ {
+@@ -134,6 +151,100 @@ static int avs_dai_prepare(struct avs_dev *adev, struct snd_pcm_substream *subst
+ 	return ret;
+ }
+ 
++static int avs_dai_nonhda_be_startup(struct snd_pcm_substream *substream, struct snd_soc_dai *dai)
++{
++	return avs_dai_startup(substream, dai, false);
++}
++
++static void avs_dai_nonhda_be_shutdown(struct snd_pcm_substream *substream, struct snd_soc_dai *dai)
++{
++	struct avs_dma_data *data;
++
++	data = snd_soc_dai_get_dma_data(dai, substream);
++
++	snd_soc_dai_set_dma_data(dai, substream, NULL);
++	kfree(data);
++}
++
++static int avs_dai_nonhda_be_hw_params(struct snd_pcm_substream *substream,
++				       struct snd_pcm_hw_params *hw_params, struct snd_soc_dai *dai)
++{
++	struct avs_dma_data *data;
++
++	data = snd_soc_dai_get_dma_data(dai, substream);
++	if (data->path)
++		return 0;
++
++	/* Actual port-id comes from topology. */
++	return avs_dai_be_hw_params(substream, hw_params, dai, 0);
++}
++
++static int avs_dai_nonhda_be_hw_free(struct snd_pcm_substream *substream, struct snd_soc_dai *dai)
++{
++	struct avs_dma_data *data;
++
++	dev_dbg(dai->dev, "%s: %s\n", __func__, dai->name);
++
++	data = snd_soc_dai_get_dma_data(dai, substream);
++	if (data->path) {
++		avs_path_free(data->path);
++		data->path = NULL;
++	}
++
++	return 0;
++}
++
++static int avs_dai_nonhda_be_prepare(struct snd_pcm_substream *substream, struct snd_soc_dai *dai)
++{
++	return avs_dai_prepare(to_avs_dev(dai->dev), substream, dai);
++}
++
++static int avs_dai_nonhda_be_trigger(struct snd_pcm_substream *substream, int cmd,
++				     struct snd_soc_dai *dai)
++{
++	struct avs_dma_data *data;
++	int ret = 0;
++
++	data = snd_soc_dai_get_dma_data(dai, substream);
++
++	switch (cmd) {
++	case SNDRV_PCM_TRIGGER_START:
++	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
++		ret = avs_path_run(data->path, AVS_TPLG_TRIGGER_AUTO);
++		if (ret < 0)
++			dev_err(dai->dev, "run BE path failed: %d\n", ret);
++		break;
++
++	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
++	case SNDRV_PCM_TRIGGER_STOP:
++		ret = avs_path_pause(data->path);
++		if (ret < 0)
++			dev_err(dai->dev, "pause BE path failed: %d\n", ret);
++
++		if (cmd == SNDRV_PCM_TRIGGER_STOP) {
++			ret = avs_path_reset(data->path);
++			if (ret < 0)
++				dev_err(dai->dev, "reset BE path failed: %d\n", ret);
++		}
++		break;
++
++	default:
++		ret = -EINVAL;
++		break;
++	}
++
++	return ret;
++}
++
++static const struct snd_soc_dai_ops avs_dai_nonhda_be_ops = {
++	.startup = avs_dai_nonhda_be_startup,
++	.shutdown = avs_dai_nonhda_be_shutdown,
++	.hw_params = avs_dai_nonhda_be_hw_params,
++	.hw_free = avs_dai_nonhda_be_hw_free,
++	.prepare = avs_dai_nonhda_be_prepare,
++	.trigger = avs_dai_nonhda_be_trigger,
 +};
 +
- static const struct pci_device_id avs_ids[] = {
- 	{ PCI_VDEVICE(INTEL, 0x9d70), (unsigned long)&skl_desc }, /* SKL */
- 	{ PCI_VDEVICE(INTEL, 0x9d71), (unsigned long)&skl_desc }, /* KBL */
-+	{ PCI_VDEVICE(INTEL, 0x5a98), (unsigned long)&apl_desc }, /* APL */
-+	{ PCI_VDEVICE(INTEL, 0x3198), (unsigned long)&apl_desc }, /* GML */
- 	{ 0 }
+ static const unsigned int rates[] = {
+ 	8000, 11025, 12000, 16000,
+ 	22050, 24000, 32000, 44100,
+@@ -589,7 +700,6 @@ static const struct snd_soc_component_driver avs_component_driver = {
+ 	.non_legacy_dai_naming	= true,
  };
- MODULE_DEVICE_TABLE(pci, avs_ids);
-diff --git a/sound/soc/intel/avs/loader.c b/sound/soc/intel/avs/loader.c
-index 8aa658c52325..542fd44aa501 100644
---- a/sound/soc/intel/avs/loader.c
-+++ b/sound/soc/intel/avs/loader.c
-@@ -37,6 +37,8 @@
- #define AVS_EXT_MANIFEST_MAGIC		0x31454124
- #define SKL_MANIFEST_MAGIC		0x00000006
- #define SKL_ADSPFW_OFFSET		0x284
-+#define APL_MANIFEST_MAGIC		0x44504324
-+#define APL_ADSPFW_OFFSET		0x2000
  
- /* Occasionally, engineering (release candidate) firmware is provided for testing. */
- static bool debug_ignore_fw_version;
-@@ -87,6 +89,8 @@ static int avs_fw_manifest_offset(struct firmware *fw)
- 	switch (magic) {
- 	case SKL_MANIFEST_MAGIC:
- 		return SKL_ADSPFW_OFFSET;
-+	case APL_MANIFEST_MAGIC:
-+		return APL_ADSPFW_OFFSET;
- 	default:
- 		return -EINVAL;
- 	}
-diff --git a/sound/soc/intel/avs/messages.h b/sound/soc/intel/avs/messages.h
-index 981ec024b152..c0f90dba9af8 100644
---- a/sound/soc/intel/avs/messages.h
-+++ b/sound/soc/intel/avs/messages.h
-@@ -365,6 +365,13 @@ struct skl_log_state_info {
- 	struct skl_log_state logs_core[];
- } __packed;
+-__maybe_unused
+ static int avs_soc_component_register(struct device *dev, const char *name,
+ 				      const struct snd_soc_component_driver *drv,
+ 				      struct snd_soc_dai_driver *cpu_dais, int num_cpu_dais)
+@@ -611,3 +721,113 @@ static int avs_soc_component_register(struct device *dev, const char *name,
  
-+struct apl_log_state_info {
-+	u32 aging_timer_period;
-+	u32 fifo_full_timer_period;
-+	u32 core_mask;
-+	struct skl_log_state logs_core[];
-+} __packed;
+ 	return snd_soc_add_component(&acomp->base, cpu_dais, num_cpu_dais);
+ }
 +
- int avs_ipc_set_enable_logs(struct avs_dev *adev, u8 *log_info, size_t size);
- 
- struct avs_fw_version {
-diff --git a/sound/soc/intel/avs/registers.h b/sound/soc/intel/avs/registers.h
-index 68f06aa4e10f..95be86148cf3 100644
---- a/sound/soc/intel/avs/registers.h
-+++ b/sound/soc/intel/avs/registers.h
-@@ -51,6 +51,8 @@
- /* Intel HD Audio SRAM windows base addresses */
- #define SKL_ADSP_SRAM_BASE_OFFSET	0x8000
- #define SKL_ADSP_SRAM_WINDOW_SIZE	0x2000
-+#define APL_ADSP_SRAM_BASE_OFFSET	0x80000
-+#define APL_ADSP_SRAM_WINDOW_SIZE	0x20000
- 
- /* Constants used when accessing SRAM, space shared with firmware */
- #define AVS_FW_REG_BASE(adev)		((adev)->spec->sram_base_offset)
++static struct snd_soc_dai_driver dmic_cpu_dais[] = {
++{
++	.name = "DMIC Pin",
++	.ops = &avs_dai_nonhda_be_ops,
++	.capture = {
++		.stream_name	= "DMIC Rx",
++		.channels_min	= 1,
++		.channels_max	= 4,
++		.rates		= SNDRV_PCM_RATE_16000 | SNDRV_PCM_RATE_48000,
++		.formats	= SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S24_LE,
++	},
++},
++{
++	.name = "DMIC WoV Pin",
++	.ops = &avs_dai_nonhda_be_ops,
++	.capture = {
++		.stream_name	= "DMIC WoV Rx",
++		.channels_min	= 1,
++		.channels_max	= 4,
++		.rates		= SNDRV_PCM_RATE_16000,
++		.formats	= SNDRV_PCM_FMTBIT_S16_LE,
++	},
++},
++};
++
++int avs_dmic_platform_register(struct avs_dev *adev, const char *name)
++{
++	return avs_soc_component_register(adev->dev, name, &avs_component_driver, dmic_cpu_dais,
++					  ARRAY_SIZE(dmic_cpu_dais));
++}
++
++static const struct snd_soc_dai_driver i2s_dai_template = {
++	.ops = &avs_dai_nonhda_be_ops,
++	.playback = {
++		.channels_min	= 1,
++		.channels_max	= 8,
++		.rates		= SNDRV_PCM_RATE_8000_192000 |
++				  SNDRV_PCM_RATE_KNOT,
++		.formats	= SNDRV_PCM_FMTBIT_S16_LE |
++				  SNDRV_PCM_FMTBIT_S24_LE |
++				  SNDRV_PCM_FMTBIT_S32_LE,
++	},
++	.capture = {
++		.channels_min	= 1,
++		.channels_max	= 8,
++		.rates		= SNDRV_PCM_RATE_8000_192000 |
++				  SNDRV_PCM_RATE_KNOT,
++		.formats	= SNDRV_PCM_FMTBIT_S16_LE |
++				  SNDRV_PCM_FMTBIT_S24_LE |
++				  SNDRV_PCM_FMTBIT_S32_LE,
++	},
++};
++
++int avs_i2s_platform_register(struct avs_dev *adev, const char *name, unsigned long port_mask,
++			      unsigned long *tdms)
++{
++	struct snd_soc_dai_driver *cpus, *dai;
++	size_t ssp_count, cpu_count;
++	int i, j;
++
++	ssp_count = adev->hw_cfg.i2s_caps.ctrl_count;
++	cpu_count = hweight_long(port_mask);
++	if (tdms)
++		for_each_set_bit(i, &port_mask, ssp_count)
++			cpu_count += hweight_long(tdms[i]);
++
++	cpus = devm_kzalloc(adev->dev, sizeof(*cpus) * cpu_count, GFP_KERNEL);
++	if (!cpus)
++		return -ENOMEM;
++
++	dai = cpus;
++	for_each_set_bit(i, &port_mask, ssp_count) {
++		memcpy(dai, &i2s_dai_template, sizeof(*dai));
++
++		dai->name =
++			devm_kasprintf(adev->dev, GFP_KERNEL, "SSP%d Pin", i);
++		dai->playback.stream_name =
++			devm_kasprintf(adev->dev, GFP_KERNEL, "ssp%d Tx", i);
++		dai->capture.stream_name =
++			devm_kasprintf(adev->dev, GFP_KERNEL, "ssp%d Rx", i);
++
++		if (!dai->name || !dai->playback.stream_name || !dai->capture.stream_name)
++			return -ENOMEM;
++		dai++;
++	}
++
++	if (!tdms)
++		goto plat_register;
++
++	for_each_set_bit(i, &port_mask, ssp_count) {
++		for_each_set_bit(j, &tdms[i], ssp_count) {
++			memcpy(dai, &i2s_dai_template, sizeof(*dai));
++
++			dai->name =
++				devm_kasprintf(adev->dev, GFP_KERNEL, "SSP%d:%d Pin", i, j);
++			dai->playback.stream_name =
++				devm_kasprintf(adev->dev, GFP_KERNEL, "ssp%d:%d Tx", i, j);
++			dai->capture.stream_name =
++				devm_kasprintf(adev->dev, GFP_KERNEL, "ssp%d:%d Rx", i, j);
++
++			if (!dai->name || !dai->playback.stream_name || !dai->capture.stream_name)
++				return -ENOMEM;
++			dai++;
++		}
++	}
++
++plat_register:
++	return avs_soc_component_register(adev->dev, name, &avs_component_driver, cpus, cpu_count);
++}
 -- 
 2.25.1
 
