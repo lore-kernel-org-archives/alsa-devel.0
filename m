@@ -4,72 +4,83 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1CDA9C433F5
-	for <alsa-devel@archiver.kernel.org>; Mon,  9 May 2022 08:49:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id AFD0DC433F5
+	for <alsa-devel@archiver.kernel.org>; Mon,  9 May 2022 08:50:11 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 47DF918B0;
-	Mon,  9 May 2022 10:48:47 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 47DF918B0
+	by alsa0.perex.cz (Postfix) with ESMTPS id D93E018B6;
+	Mon,  9 May 2022 10:49:19 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D93E018B6
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1652086177;
-	bh=jHvEqnYPNNljzsEFzbU38+XlL5/lYYeVv1qTWVkcuB8=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=nY+8MQrfk915M06z6iQvh+gXnc3I3ZbCwimkVNQXQFKcD1VOZ9CZV8lM/TISAiWGm
-	 0Kv0YtVdkhVWqP4ndFy7re369CWQCHhNDiRcxc+PZoX1/eFkhcz3a30X4tg1JnApMI
-	 FKNjgJNsrKy6Iu2tq2CH3g60i5dSWHKF56EOenJQ=
+	s=default; t=1652086209;
+	bh=wtRWJ7HfwBVFcUTYY1H+j3EFBYm6dguIrCVDwf2FjQQ=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=tz9cUk5QkNJnc53ShdccEd+sfERJYw6Rl4C8c7Ijqt202py76vNFdsx5WCrrX6fat
+	 pZEf7maT5hNTnW4jAaunmqKYJUbskQOXTixdfbS36Ug7igRiAJohsPxLBryH9iYXbF
+	 5LC/PEkmtfwYF77eFoIAj1SjLXRh4hBlJTBPu6Y8=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 9F601F802E3;
-	Mon,  9 May 2022 10:48:46 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 98105F8025D;
+	Mon,  9 May 2022 10:48:51 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 5A897F8014C; Mon,  9 May 2022 10:48:45 +0200 (CEST)
-Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id DE772F8050F; Mon,  9 May 2022 10:48:49 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id F2937F8014C
- for <alsa-devel@alsa-project.org>; Mon,  9 May 2022 10:48:36 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F2937F8014C
+ by alsa1.perex.cz (Postfix) with ESMTPS id C850EF8025D
+ for <alsa-devel@alsa-project.org>; Mon,  9 May 2022 10:48:43 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C850EF8025D
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="iaVFnpgZ"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
- d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1652086122; x=1683622122;
- h=from:to:cc:subject:date:message-id:mime-version:
- content-transfer-encoding;
- bh=jHvEqnYPNNljzsEFzbU38+XlL5/lYYeVv1qTWVkcuB8=;
- b=iaVFnpgZOeH11HSotFf1LzGFWx61W3YyD2A0HjTXlcKzpS00qK0y3AvD
- HeyY6YJm/dWVE5dX5OIdQtLtEtXZUXRJnuJCS4a6hrHOYBCNb/lWvXzIT
- ySEqekuzCHehgm1ezHiIr2k1G2i2Vk/mHgihA8osxipYFrQAKxgPg9q2w
- /jNOzpRlRx0l2tKG5Rwd+aB6fmmbZdvSE5T+SqBRl4MpAepVKMz2yUmWc
- f3M0Cczp8vb99l7EU7qrXsqbNm62zCG/YrkS2Vy6ztaDfCC2QPUEd2rB9
- EHrryK7mHQejNFpGiBwYffC1DlqduElAO4/Iu5sNvuJhSR46N5SmbgtWJ w==;
-X-IronPort-AV: E=McAfee;i="6400,9594,10341"; a="294208491"
-X-IronPort-AV: E=Sophos;i="5.91,210,1647327600"; d="scan'208";a="294208491"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
- by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 09 May 2022 01:48:32 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.91,210,1647327600"; d="scan'208";a="738068080"
-Received: from crojewsk-ctrl.igk.intel.com ([10.102.9.28])
- by orsmga005.jf.intel.com with ESMTP; 09 May 2022 01:48:29 -0700
-From: Cezary Rojewski <cezary.rojewski@intel.com>
-To: alsa-devel@alsa-project.org,
-	broonie@kernel.org
-Subject: [PATCH v2 00/15] ASoC: Intel: avs: Driver core and PCM operations
-Date: Mon,  9 May 2022 10:58:06 +0200
-Message-Id: <20220509085821.3852259-1-cezary.rojewski@intel.com>
-X-Mailer: git-send-email 2.25.1
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-Cc: Cezary Rojewski <cezary.rojewski@intel.com>, upstream@semihalf.com,
- harshapriya.n@intel.com, rad@semihalf.com,
- pierre-louis.bossart@linux.intel.com, tiwai@suse.com, hdegoede@redhat.com,
- amadeuszx.slawinski@linux.intel.com, cujomalainey@chromium.org,
- lma@semihalf.com
+ dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
+ header.b="Az8Vv25U"; 
+ dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
+ header.b="psk9Bisx"
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+ by smtp-out2.suse.de (Postfix) with ESMTP id 348B01FA06;
+ Mon,  9 May 2022 08:48:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1652086123; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=XREMqynW/xsoTG/Ro19s3qT72KUQkPR/IVuvheXTmgs=;
+ b=Az8Vv25UR5pgLI3x7A3tQ3wA+W6gRjvAqDYJmNBCl18nRpnjNFCcDak0ZtVc0565FP9mZB
+ xtfaTtIDMMJ0npgI+GH7mZE3ehFa3rsPT+c+NF41oFulz9GG7020zYqunmWbKrTsCQX4os
+ Dkw9JwgPL42mICBRSORsVcBxSe6OT48=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1652086123;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=XREMqynW/xsoTG/Ro19s3qT72KUQkPR/IVuvheXTmgs=;
+ b=psk9BisxVfaRzk4GKoEoS7EfF3uiiHK6RSy6OvYqOMsCg0/Ou5oUk5t1gsjKaJiRuiR9s5
+ LnQGk5XRfr701QDg==
+Received: from alsa1.suse.de (alsa1.suse.de [10.160.4.42])
+ by relay2.suse.de (Postfix) with ESMTP id 097F72C141;
+ Mon,  9 May 2022 08:48:41 +0000 (UTC)
+Date: Mon, 09 May 2022 10:48:41 +0200
+Message-ID: <s5hee13m6qe.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Mauro Carvalho Chehab <mchehab@kernel.org>
+Subject: Re: [PATCH v5 2/2] ALSA: hda - identify when audio is provided by a
+ video driver
+In-Reply-To: <4a0f0e351941201d00b2cd8e2157d3b0181dc19e.1651348913.git.mchehab@kernel.org>
+References: <cover.1651348913.git.mchehab@kernel.org>
+ <4a0f0e351941201d00b2cd8e2157d3b0181dc19e.1651348913.git.mchehab@kernel.org>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=US-ASCII
+Cc: alsa-devel@alsa-project.org, mauro.chehab@linux.intel.com,
+ David Airlie <airlied@linux.ie>, Greg KH <gregkh@linuxfoundation.org>,
+ intel-gfx@lists.freedesktop.org, Lucas De Marchi <lucas.demarchi@intel.com>,
+ Takashi Iwai <tiwai@suse.com>, dri-devel@lists.freedesktop.org,
+ Kai Vehmanen <kai.vehmanen@intel.com>, Luis Chamberlain <mcgrof@kernel.org>,
+ linux-modules@vger.kernel.org, Daniel Vetter <daniel@ffwll.ch>,
+ linux-kernel@vger.kernel.org,
+ Pierre-Louis Bossart <pierre-louis.bossart@intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -85,121 +96,27 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Part three of main AVS driver series. This series was originally part of
-the initial series which was later divided [1] into smaller,
-easier-to-review chunks. Thus, many patches found here were already
-present on the list.
+On Sat, 30 Apr 2022 22:04:55 +0200,
+Mauro Carvalho Chehab wrote:
+> 
+> On some devices, the hda driver needs to hook into a video driver,
+> in order to be able to properly access the audio hardware and/or
+> the power management function.
+> 
+> That's the case of several snd_hda_intel devices that depends on
+> i915 driver.
+> 
+> Ensure that a proper reference between the snd-hda driver needing
+> such binding is shown at /proc/modules, in order to allow userspace
+> to know about such binding.
+> 
+> Signed-off-by: Mauro Carvalho Chehab <mchehab@kernel.org>
 
-This series consists of code typical to many drivers - PCI driver
-operations, trace ability, PM operations - as well as PCM handlers for
-all standard audio interfaces, that is, HDA, I2S and DMIC are found
-here.
+Maybe I was too late to the game (just back from vacation), but FWIW:
 
-Series starts with updating firmware boot flow - libraries are no longer
-ignored. This change is dependent on already merged topology code [2]
-and because of that could not be part of the initial series [1].
-
-PCM operations are split into four changes. First component operations
-alone i.e. operations which are usually agnostic towards path position
-(FE/BE). Then it continues with "generic" FE operations - there is no
-interface split here as from Intel ADSP point of view, FE, or HOST side
-as it's called in the specs, involves HD-Audio operations only.
-BE (also known as LINK) side on the other hand is divided into
-"non-HD-Audio" and HD-Audio part. The former represents transfer over
-DMIC and I2S interfaces both.
-
-While patches implementing standard PCI driver operations along (again
-standard) HD-Audio initialization routines followed up by power
-management handlers are two major ones, series covers also other
-important subjects such as:
-
-While patches implementing standard PCI driver operations along (again
-standard) HD-Audio initialization routines followed up by power
-management handlers are two major ones, series covers also other
-important subjects such as:
-
-- event tracing
-- preparation for firmware tracing (debugability)
-- coredump (debugability)
-- recovery flow (attempt recovery after IPC timeout or exception)
-- D0ix (D0 device substate, complements standard power management)
-
-Series is finalized by actual addition of supported platforms: SKL and
-APL-based. Platform-specific files are limited to firmware-specific
-bits, that is, bits that are specific to given firmware generation.
-Everything else is shared and is part of already upstream messaging
-code found in ipc.c, messages.c and messages.h files.
+Reviewed-by: Takashi Iwai <tiwai@suse.de>
 
 
-Changes in v2:
-- usage of avs_releast_last_firmware() dropped in error path for library
-  loading procedure as suggested by Pierre
-- 'link_mask' usage replaced with 'i2s_link_mask' as requested by
-  Pierre. Existing code addressed with new patch:
-  "ASoC: Intel: avs: Replace link_mask usage with i2s_link_mask"
-- fixed possible race during recovery flow (->recovering flag is now
-  atomic and tested in single location only).
-- dropped platform prefixes for basically all i2s board descriptors
-- 'ssp_test' renamed to 'i2s_test' to match naming convention of other
-  boards
-- simplified PM implementation for current series, 'low_power' bits
-  moved to future series
-- replaced SND_INTEL_DSP_DRIVER_SST with _AVS as suggested by Mark.
-  Required changes to intel-dspcfg will be added in future series
-- number of typos across commit messages addressed
+thanks,
 
-
-[1]: https://lore.kernel.org/all/20220311153544.136854-1-cezary.rojewski@intel.com/
-[2]: https://lore.kernel.org/all/20220331135246.993089-1-cezary.rojewski@intel.com/
-
-
-Cezary Rojewski (14):
-  ASoC: Intel: avs: Account for libraries when booting basefw
-  ASoC: Intel: avs: Generic soc component driver
-  ASoC: Intel: avs: Generic PCM FE operations
-  ASoC: Intel: avs: non-HDA PCM BE operations
-  ASoC: Intel: avs: HDA PCM BE operations
-  ASoC: Intel: avs: Coredump and recovery flow
-  ASoC: Intel: avs: Prepare for firmware tracing
-  ASoC: Intel: avs: D0ix power state support
-  ASoC: Intel: avs: Event tracing
-  ASoC: Intel: avs: Machine board registration
-  ASoC: Intel: avs: PCI driver implementation
-  ASoC: Intel: avs: Power management
-  ASoC: Intel: avs: SKL-based platforms support
-  ASoC: Intel: avs: APL-based platforms support
-
-Piotr Maziarz (1):
-  ASoC: Intel: avs: Replace link_mask usage with i2s_link_mask
-
- include/sound/intel-dsp-config.h      |    3 +-
- include/sound/soc-acpi.h              |    2 +
- sound/soc/intel/Kconfig               |    2 +
- sound/soc/intel/avs/Makefile          |    7 +-
- sound/soc/intel/avs/apl.c             |  250 ++++++
- sound/soc/intel/avs/avs.h             |   79 ++
- sound/soc/intel/avs/board_selection.c |  501 +++++++++++
- sound/soc/intel/avs/core.c            |  631 +++++++++++++
- sound/soc/intel/avs/dsp.c             |   27 +-
- sound/soc/intel/avs/ipc.c             |  253 +++++-
- sound/soc/intel/avs/loader.c          |   84 ++
- sound/soc/intel/avs/messages.c        |   35 +-
- sound/soc/intel/avs/messages.h        |   51 ++
- sound/soc/intel/avs/pcm.c             | 1182 +++++++++++++++++++++++++
- sound/soc/intel/avs/registers.h       |    8 +
- sound/soc/intel/avs/skl.c             |  125 +++
- sound/soc/intel/avs/topology.c        |   14 +-
- sound/soc/intel/avs/trace.c           |   33 +
- sound/soc/intel/avs/trace.h           |  158 ++++
- sound/soc/intel/avs/utils.c           |   23 +
- 20 files changed, 3447 insertions(+), 21 deletions(-)
- create mode 100644 sound/soc/intel/avs/apl.c
- create mode 100644 sound/soc/intel/avs/board_selection.c
- create mode 100644 sound/soc/intel/avs/pcm.c
- create mode 100644 sound/soc/intel/avs/skl.c
- create mode 100644 sound/soc/intel/avs/trace.c
- create mode 100644 sound/soc/intel/avs/trace.h
-
--- 
-2.25.1
-
+Takashi
