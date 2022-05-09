@@ -4,69 +4,83 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id CCFDCC433F5
-	for <alsa-devel@archiver.kernel.org>; Mon,  9 May 2022 21:14:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B2055C433FE
+	for <alsa-devel@archiver.kernel.org>; Mon,  9 May 2022 21:48:11 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A5F6D16BC;
-	Mon,  9 May 2022 23:13:37 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A5F6D16BC
+	by alsa0.perex.cz (Postfix) with ESMTPS id BCCE316C8;
+	Mon,  9 May 2022 23:47:18 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BCCE316C8
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1652130867;
-	bh=/HNj4vbFe+rbGCIOvT0X4rdEp6WvFWKGhMhMgUZ7V6g=;
-	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
+	s=default; t=1652132888;
+	bh=GuoUeGQ0ezQTsgNzojrM/CQTTXHSeDJcchwWosOJc/M=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=rjHv52TLf0LYQoHGI3QFsyeMamcskUsvkFtbQGxM1v06P/yp9RbTyJecqvY5s8bD8
-	 5HY6sMaoxUtFrscda2n9lAMBIj1j4T5qNCWunTtycmRg/5rUTz/zANaZ5TLVsGBLAT
-	 zSMHI388wPvTqCjkPMmtq6mLBwwlkeLGx14fQuFM=
+	b=jyZLbhj39RTAO/GDixzQARnKEaZOJGDn7Ea44eaHkYQjhRO8QbACiirHVVDPpsYlM
+	 xwQJtnYb0pJcw/QmU3Sf5z3TtRcSFxO8YkhGmCtHiVm315W95uT/dsLZJdSalMQjJ3
+	 K01NrmqPtquYDEVRqOKMjQ1XI/Mu1f/DYMyQoKbM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 450A7F80237;
-	Mon,  9 May 2022 23:13:37 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 16E41F80527;
+	Mon,  9 May 2022 23:47:18 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 019D5F8025D; Mon,  9 May 2022 23:13:34 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 82C43F800D3
- for <alsa-devel@alsa-project.org>; Mon,  9 May 2022 23:13:31 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 82C43F800D3
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="fF7Eqyzz"
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+ id 60E3CF80511; Mon,  9 May 2022 23:47:15 +0200 (CEST)
+Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
+ [67.231.152.168])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id 8B26261702;
- Mon,  9 May 2022 21:13:29 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 27A66C385BB;
- Mon,  9 May 2022 21:13:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1652130808;
- bh=/HNj4vbFe+rbGCIOvT0X4rdEp6WvFWKGhMhMgUZ7V6g=;
- h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=fF7EqyzzOgJozMR47JWEeiU3x5UILq3oH6cAxfugjNEuxqX5U22vu92xHiVbwJzrv
- 9jfrDFAxWf9QRAfu8mk0Uy6aRR8G20N0Wb9TJZm81PUdOlU1goXSB70f2kwhQbUIFM
- 4cM/dcLNoK4h9GVLzEj73mrExixbxF6x27IjgYjE/Kbrw3xjjnReage1PYj9TkslD/
- AKZkGCwyHXWicGZ1AuZWJ4Q72V4/AV3zMysbeUjwqHgChv1kLIa4DVMwk4wTBxH4uW
- 508sbIlxNSSg8HK6vjptDSjgPD9hL60LQqjVESSrnoHRIWrEFxgKzm9ue9spY/Lr7k
- gpMpFIIbVaJhg==
-From: Mark Brown <broonie@kernel.org>
-To: lgirdwood@gmail.com, yung-chuan.liao@linux.intel.com,
- pierre-louis.bossart@linux.intel.com, peter.ujfalusi@linux.intel.com,
- rander.wang@intel.com
-In-Reply-To: <20220506132647.18690-1-peter.ujfalusi@linux.intel.com>
-References: <20220506132647.18690-1-peter.ujfalusi@linux.intel.com>
-Subject: Re: [PATCH 0/8] ASoC: SOF: sof-client: Update for different IPC
- versions
-Message-Id: <165213080684.1980311.14671784909471716067.b4-ty@kernel.org>
-Date: Mon, 09 May 2022 22:13:26 +0100
+ by alsa1.perex.cz (Postfix) with ESMTPS id 2961BF80237
+ for <alsa-devel@alsa-project.org>; Mon,  9 May 2022 23:47:08 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2961BF80237
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com
+ header.b="Yt9Ea6HT"
+Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
+ by mx0b-001ae601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 249KTf3G031853;
+ Mon, 9 May 2022 16:47:06 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
+ h=from : to : cc :
+ subject : date : message-id : in-reply-to : references : mime-version :
+ content-transfer-encoding : content-type; s=PODMain02222019;
+ bh=mQ0VKIP3M3AbpU4jvyDe143yf5cYcGKQIV2CSu/Weqk=;
+ b=Yt9Ea6HTy2XAa7qX7z9LPLjLLzgK+temuNwfhoner4iN9M7BnRr2l0zsJKgV74P0afBN
+ mOFYRJn+cSVRJDmHVatqx3c21KG1FuqGQbM/cEq/UUi/hK8xBLiUfY5XggwrVBedKVK0
+ c1o0sdIbCo2wCOw6bZ5t/mr3w2wEBYFyfo81le31ep4m/odNXCfiaJRrNIcrzbD5lyFk
+ hjnc+k9QqXHhmkPfFR+F6zmSsB7b2hfPEDOsM6TxW/nElkwu56BQ3Ss5df34WR9JHzWL
+ N2ZikE5hQ4rdBYWtRYtzv00ZhdIHW4TAv+nYmN3PFZ7b0nruwLKdq5hLWoEpwGqeSKNv zg== 
+Received: from ediex01.ad.cirrus.com ([84.19.233.68])
+ by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3fwn6nu87p-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+ Mon, 09 May 2022 16:47:06 -0500
+Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.24; Mon, 9 May
+ 2022 22:47:05 +0100
+Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server id 15.1.2375.24 via
+ Frontend Transport; Mon, 9 May 2022 22:47:05 +0100
+Received: from vitaly-Legion-7-16ACHg6.ad.cirrus.com (unknown [198.90.238.55])
+ by ediswmail.ad.cirrus.com (Postfix) with ESMTP id D5A5E475;
+ Mon,  9 May 2022 21:47:04 +0000 (UTC)
+From: Vitaly Rodionov <vitalyr@opensource.cirrus.com>
+To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Mark
+ Brown <broonie@kernel.org>
+Subject: [PATCH v2 02/26] ALSA: hda: cs35l41: Set Speaker Position for
+ CLSA0100 Laptop
+Date: Mon, 9 May 2022 22:46:39 +0100
+Message-ID: <20220509214703.4482-3-vitalyr@opensource.cirrus.com>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20220509214703.4482-1-vitalyr@opensource.cirrus.com>
+References: <20220509214703.4482-1-vitalyr@opensource.cirrus.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: alsa-devel@alsa-project.org, daniel.baluta@nxp.com,
- ranjani.sridharan@linux.intel.com, kai.vehmanen@linux.intel.com
+Content-Type: text/plain
+X-Proofpoint-ORIG-GUID: aMjU73ONnOiyPJrt6QcCXZZOK0A0F7Bj
+X-Proofpoint-GUID: aMjU73ONnOiyPJrt6QcCXZZOK0A0F7Bj
+X-Proofpoint-Spam-Reason: safe
+Cc: patches@opensource.cirrus.com, alsa-devel@alsa-project.org,
+ linux-kernel@vger.kernel.org, Stefan Binding <sbinding@opensource.cirrus.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -82,54 +96,29 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Fri, 6 May 2022 16:26:39 +0300, Peter Ujfalusi wrote:
-> The current IPC client infrastructure can only be used with IPC3.
-> This series carries updates for the core side of the client support to handle
-> IPC4 messages and updates the ipc message injector to be usable with IPC4.
-> 
-> The IPC flood test is only supported by SOF_IPC (IPC3), we are not going to
-> create the aux device for it at all if the firmware is using IPC4.
-> 
-> [...]
+From: Stefan Binding <sbinding@opensource.cirrus.com>
 
-Applied to
+This laptop does not contain required properties inside ACPI,
+instead the values are be hardcoded inside the driver.
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+Signed-off-by: Stefan Binding <sbinding@opensource.cirrus.com>
+Signed-off-by: Vitaly Rodionov <vitalyr@opensource.cirrus.com>
+---
+ sound/pci/hda/cs35l41_hda.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-Thanks!
+diff --git a/sound/pci/hda/cs35l41_hda.c b/sound/pci/hda/cs35l41_hda.c
+index bc277b352ac9..d7e90c0cae51 100644
+--- a/sound/pci/hda/cs35l41_hda.c
++++ b/sound/pci/hda/cs35l41_hda.c
+@@ -281,6 +281,7 @@ static int cs35l41_hda_read_acpi(struct cs35l41_hda *cs35l41, const char *hid, i
+ 
+ 	/* check I2C address to assign the index */
+ 	cs35l41->index = id == 0x40 ? 0 : 1;
++	cs35l41->hw_cfg.spk_pos = cs35l41->index;
+ 	cs35l41->reset_gpio = gpiod_get_index(physdev, NULL, 0, GPIOD_OUT_HIGH);
+ 	cs35l41->hw_cfg.bst_type = CS35L41_EXT_BOOST_NO_VSPK_SWITCH;
+ 	cs35l41->hw_cfg.valid = true;
+-- 
+2.34.1
 
-[1/8] ASoC: SOF: sof-client: Add API to get the maximum IPC payload size
-      commit: a669ec5f4bc485a56b2f379e7c7197a810872cc1
-[2/8] ASoC: SOF: ipc-msg-injector: Query the maximum IPC payload size
-      commit: ef368c3347fe79a4193317b130b02064801920d7
-[3/8] ASoC: SOF: sof-client-probes: Query the maximum IPC payload size
-      commit: a1e5bbc8ea6ae6e0fa1bd42f2ef810b13d9ec066
-[4/8] ASoC: SOF: sof-client: Add API to get the ipc_type
-      commit: cdf8233d2cd2e55c8bc409e5b4fbdb181a1dea2b
-[5/8] ASoC: SOF: sof-client: Add support IPC4 message sending
-      commit: 100c9374318f881c3083573af9dc76afa229fd23
-[6/8] ASoC: SOF: ipc-msg-injector: Separate the message sending
-      commit: a9aa3381e404abae3dd8c37b7c845415b56f0305
-[7/8] ASoC: SOF: ipc-msg-injector: Add support for IPC4 messages
-      commit: 066c67624d8ca2a2465690d4a7b7f52b880e9925
-[8/8] ASoC: SOF: sof-client: IPC flood test can only work with SOF_IPC
-      commit: 5889ccdd094ac32ee52851fc9eccd124897daf2b
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
