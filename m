@@ -4,75 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3509BC433EF
-	for <alsa-devel@archiver.kernel.org>; Mon,  9 May 2022 18:20:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D9FCDC433EF
+	for <alsa-devel@archiver.kernel.org>; Mon,  9 May 2022 18:48:17 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 22B471654;
-	Mon,  9 May 2022 20:19:44 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 22B471654
+	by alsa0.perex.cz (Postfix) with ESMTPS id 41CE316A0;
+	Mon,  9 May 2022 20:47:25 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 41CE316A0
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1652120434;
-	bh=sEtyjmgOrjIs5NYv5HPC0xk/tdYrRW3tbsJDYBclXYk=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	s=default; t=1652122095;
+	bh=p7HuNEoLVAfJ9j3uyjrKWwmQvfEfC4JfRx5T9daNFa0=;
+	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=T6QTfW0R/o/vxEKm3z6wP0UPUCiTf5XYiLp+mpJZtn8AncvDwUvrBc/hYMtSPJOGf
-	 Co0wE2SqccD4Qhf3Px87QasCGhdS0+SyxF4jC6WxCio/Ycm7Tgyd7JkGltybsBhCuj
-	 H7SNuuINrW5qTl+ZNsaUwxAyzVwu77GlMH2ufBZc=
+	b=YC2GnkhTjPWf2qd5ERXom06C+xcWJNA/3RcYhcD8qy54Tnn/SKE9s21+cXzprraEG
+	 VAPGxrBXggD0gZrOyKrAqiM1tX08JQKcw97rTLMVJ+sNgC7qD8Nl1Jh26wpZjk1Ngw
+	 +VxtkUlEYjlC8JTxf42Vx78lbiU70c3M1Dlbr0Cs=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id BC665F80237;
-	Mon,  9 May 2022 20:19:43 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id CA282F80237;
+	Mon,  9 May 2022 20:47:24 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id AC506F800D3; Mon,  9 May 2022 20:19:42 +0200 (CEST)
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+ id AFA17F80237; Mon,  9 May 2022 20:47:22 +0200 (CEST)
+Received: from ams.source.kernel.org (ams.source.kernel.org
+ [IPv6:2604:1380:4601:e00::1])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 5F74AF8014C
- for <alsa-devel@alsa-project.org>; Mon,  9 May 2022 20:19:38 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5F74AF8014C
+ by alsa1.perex.cz (Postfix) with ESMTPS id 47580F8011C
+ for <alsa-devel@alsa-project.org>; Mon,  9 May 2022 20:47:20 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 47580F8011C
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="QxjxEobB"
+ header.b="EL4GDAP1"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by ams.source.kernel.org (Postfix) with ESMTPS id 494A2B818CE;
- Mon,  9 May 2022 18:19:38 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0D3FBC385B2;
- Mon,  9 May 2022 18:19:33 +0000 (UTC)
+ by ams.source.kernel.org (Postfix) with ESMTPS id 5AB19B810EA;
+ Mon,  9 May 2022 18:47:19 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 34E7AC385B6;
+ Mon,  9 May 2022 18:47:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1652120377;
- bh=sEtyjmgOrjIs5NYv5HPC0xk/tdYrRW3tbsJDYBclXYk=;
- h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=QxjxEobBOscR/f/wqE5KqFFibxHBYEbMltpkRKBAnS7TIDyAfo31CyGMDkGQg/3J2
- CSgYm/b4Um//Ob7QXYzVoPwq7Z+JBR8dbsnNgYaeueJZy8t17DNMQygwvpK3Ztd4sp
- iqilsKMgPqHknWIpd4XUmv70r9KdcevXWafnn9Kxcc4NQn0UAwBjC7LxSYF0TC0gmK
- qL4VqlqrmaY02ut3JmWVbdGokASWh1yIDvabGmSm3M115Vb5a1oR0FMSqdD65VgbO7
- atMKHSrq1S2Ghayfh4VZYne1f6GlRhNOm8OTjChJMqHU6gc4Hf6nbzZyDnK2jaYSap
- Q7aUkUZatZjPA==
-Date: Mon, 9 May 2022 19:19:30 +0100
+ s=k20201202; t=1652122038;
+ bh=p7HuNEoLVAfJ9j3uyjrKWwmQvfEfC4JfRx5T9daNFa0=;
+ h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+ b=EL4GDAP1iF89mPzheQj9VmI5CRQMXXCv/D2nAwkCgBlp9YJqlPzZWm6EU7eViwm/h
+ nPe9/sl+/MrUSP3fOA0tU9CnJ/FWKBj5Eu4DgvS2DmOCQtvTLcEpZEmfkyKMLxPklz
+ Xag3WdHgutkk5HJTafYoYq6aid3oi4c8kTNzA++vwNj6sMCuj/psoW8ZfgrJVij4m8
+ 9BAg6nEgDGgte6njuD8kykbTZCDFfUy6RttEnsq5Ei0eggbbfbKZP030JCjJS/I0In
+ dllGdPba00PJVcXpOdppwuPP1QoSRQm8PWFsLXU2wyGj+gErK32ShaSYcRbQ2LihOO
+ PhlgMo/A/dPCw==
 From: Mark Brown <broonie@kernel.org>
-To: =?iso-8859-1?Q?N=EDcolas_F=2E_R=2E_A=2E?= Prado <nfraprado@collabora.com>
-Subject: Re: [PATCH 0/3] Add missing dt-binding properties for audio
- components on mt8192-asurada
-Message-ID: <YnlbMjTEORFSbxXS@sirena.org.uk>
-References: <20220429203039.2207848-1-nfraprado@collabora.com>
- <165211666198.1065748.1151009730882312510.b4-ty@kernel.org>
- <20220509181629.ettskdxfvwvqaq76@notapiano>
+To: codrin.ciubotariu@microchip.com, broonie@kernel.org,
+ Liam Girdwood <lgirdwood@gmail.com>
+In-Reply-To: <20220506130349.451452-1-broonie@kernel.org>
+References: <20220506130349.451452-1-broonie@kernel.org>
+Subject: Re: [PATCH] ASoC: sam9g20_wm8731: Use dev_err_probe() for
+ snd_soc_register_card()
+Message-Id: <165212203694.1274938.11416951870088105385.b4-ty@kernel.org>
+Date: Mon, 09 May 2022 19:47:16 +0100
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature"; boundary="4y1TD9hR4+zXz6BZ"
-Content-Disposition: inline
-In-Reply-To: <20220509181629.ettskdxfvwvqaq76@notapiano>
-X-Cookie: Boycott meat -- suck your thumb.
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, tzungbi@google.com,
- linux-kernel@vger.kernel.org, jiaxin.yu@mediatek.com, lgirdwood@gmail.com,
- shane.chien@mediatek.com, robh+dt@kernel.org,
- linux-mediatek@lists.infradead.org, krzysztof.kozlowski+dt@linaro.org,
- matthias.bgg@gmail.com, kernel@collabora.com,
- linux-arm-kernel@lists.infradead.org, angelogioacchino.delregno@collabora.com
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+Cc: alsa-devel@alsa-project.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -88,38 +81,36 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+On Fri, 6 May 2022 14:03:49 +0100, Mark Brown wrote:
+> Log the error code when snd_soc_regster_card() fails, but fold in the
+> silencing of deferred probe errors.
+> 
+> 
 
---4y1TD9hR4+zXz6BZ
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Applied to
 
-On Mon, May 09, 2022 at 02:16:29PM -0400, N=EDcolas F. R. A. Prado wrote:
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
 
-> this series wasn't supposed to be merged yet, I'm in the process of prepa=
-ring
-> and sending a v2. Well, for patch 1 at least, which needs some improvemen=
-ts
-> still. Patches 2 and 3 weren't going to be changed, so those would be fin=
-e to
-> keep merged if you want.=20
+Thanks!
 
-Please send a revert for the first patch with appropriate changelog if
-you want it dropping.
+[1/1] ASoC: sam9g20_wm8731: Use dev_err_probe() for snd_soc_register_card()
+      commit: 29f4078f777fed4cb47695b284938fbfd80f990e
 
---4y1TD9hR4+zXz6BZ
-Content-Type: application/pgp-signature; name="signature.asc"
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
 
------BEGIN PGP SIGNATURE-----
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmJ5WzIACgkQJNaLcl1U
-h9DR5Af/TprbNPs5eG3YL7V+LKRWqR7r5/vg4Mv3tT5GnibQHJMnJKNy2UouZxTo
-rkacxPv3r1VyUUeK8zHUkyzJrNx2E3UkAlpZ1lwC/HERm66keB5ugaBQpSDEj9/p
-ACsF6I1K/fAJq4cwI0vhDWWUXG5Ha0veDao+qfUaTVOyn4EsHCB21OBnsJFRTuLN
-26cIS9fHHyxKc055J2rLi4LqpTdxVOuuuJXkD4ScZmflZkEfH1Nea8JMeCnPnXXy
-AANm+RFzCi2lMMAO8BCv8PQCbuDxJHXCbx71WenqSS0Cd+r3VlGv5u19fZRGuv0z
-k8nbklED1MQtWoNvx67Kz6aY9MpB1w==
-=BxKV
------END PGP SIGNATURE-----
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
---4y1TD9hR4+zXz6BZ--
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
