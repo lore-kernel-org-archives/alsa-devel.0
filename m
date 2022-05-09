@@ -4,83 +4,82 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A4142C433F5
-	for <alsa-devel@archiver.kernel.org>; Mon,  9 May 2022 14:44:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id DDD0AC433F5
+	for <alsa-devel@archiver.kernel.org>; Mon,  9 May 2022 15:00:41 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 958D118C3;
-	Mon,  9 May 2022 16:44:02 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 958D118C3
+	by alsa0.perex.cz (Postfix) with ESMTPS id 4ACB918EC;
+	Mon,  9 May 2022 16:59:49 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4ACB918EC
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1652107492;
-	bh=YEOAHsp4YIuDbBJA0jElHnb9cuCzsO+aeS8tq87tTFs=;
-	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=rwt/tPo1gR8OrYSXgSMnZEPC3P2NIXHXfJ7z15FSjwfHY9X8LtNNPzdtHxw6VNKCe
-	 qIzcDC9+10k8Vwy7swpatZsEvLHI4UNgPIHzANyjk97w4qoUxCGIZihELKwettNz5x
-	 QXx2Ra5I1FJNcyaiuhvdVbPtUhbjn/J6Cq/AodwQ=
+	s=default; t=1652108439;
+	bh=WMaIrBbx8kkLgbDRbabF45hRXIuo7xhWwUqf0RX8+rE=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=N4EO2ZnfoLjrkr+R7agrcFXho28G8heQQLtr2eK6PJAKhLJgEARq8qSwY7pJ/YKyI
+	 ShcPBSj+SR25q6jy1+y1VV99fOegWJPO8ud3B+EvQCA6cSdwQ23vuQoLHiYh+1Dh4x
+	 gdl3g9b8e/1tRIf7A9OdB9PaaFzF2lX9mAb348yM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 41AD2F80237;
-	Mon,  9 May 2022 16:44:02 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id CA9DDF80269;
+	Mon,  9 May 2022 16:59:48 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 07701F8025D; Mon,  9 May 2022 16:44:01 +0200 (CEST)
-Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id C2A3BF802E3; Mon,  9 May 2022 16:59:46 +0200 (CEST)
+Received: from mail-io1-xd36.google.com (mail-io1-xd36.google.com
+ [IPv6:2607:f8b0:4864:20::d36])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id D1688F8011C
- for <alsa-devel@alsa-project.org>; Mon,  9 May 2022 16:43:57 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D1688F8011C
+ by alsa1.perex.cz (Postfix) with ESMTPS id DE274F800D3
+ for <alsa-devel@alsa-project.org>; Mon,  9 May 2022 16:59:43 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DE274F800D3
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="Yj6oUpg2"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
- d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1652107439; x=1683643439;
- h=date:from:to:cc:subject:in-reply-to:message-id:
- references:mime-version;
- bh=YEOAHsp4YIuDbBJA0jElHnb9cuCzsO+aeS8tq87tTFs=;
- b=Yj6oUpg2LYO3bkRqb1NTNuJVsObPU/T2jj6kzM0AhDJHV+Mj23o/RbTe
- uDWXj/tXsZSggOR5PmVoVMOwyqFawqOz2G1bXVU04g9yTbENyvSzMmvwP
- wNOKe8uudUe6tsimUll9+5lj+/9yD8IzefqXsYrZFGS8q8DuCWBNA5pUP
- 8gSVov59f8LvRvqPGcP+j2CBeO/Mww64O+mWQ4u2tK19oHC4oR9cE9a1A
- Iyav5iUB2JHAGJeMOnv176QwWfE1GSE9CdfOMqlwGukuteARaePxdMZ6B
- cuO7G4FGAv+IAQleGPKAi/WwHnHooHXIijeF92fuA7ZRJIqjof/YCX4kL A==;
-X-IronPort-AV: E=McAfee;i="6400,9594,10342"; a="269001382"
-X-IronPort-AV: E=Sophos;i="5.91,211,1647327600"; d="scan'208";a="269001382"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
- by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 09 May 2022 07:43:53 -0700
-X-IronPort-AV: E=Sophos;i="5.91,211,1647327600"; d="scan'208";a="519265466"
-Received: from eliteleevi.tm.intel.com ([10.237.54.20])
- by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 09 May 2022 07:43:49 -0700
-Date: Mon, 9 May 2022 17:33:51 +0300 (EEST)
-From: Kai Vehmanen <kai.vehmanen@linux.intel.com>
-X-X-Sender: kvehmane@eliteleevi.tm.intel.com
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, 
- Cezary Rojewski <cezary.rojewski@intel.com>
-Subject: Re: [PATCH 02/14] ASoC: codecs: Add HD-Audio codec driver
-In-Reply-To: <53557182-a2c5-a280-8887-bdb8a71dfd94@linux.intel.com>
-Message-ID: <alpine.DEB.2.22.394.2205091543170.1532214@eliteleevi.tm.intel.com>
-References: <20220427081902.3525183-1-cezary.rojewski@intel.com>
- <20220427081902.3525183-3-cezary.rojewski@intel.com>
- <7bc3a92e-8bd1-c1d0-5610-af40dbb8fb7a@linux.intel.com>
- <YnUev8Rs42xLLE6Z@sirena.org.uk>
- <4a808f4c-83fc-747d-1536-d276138e57b8@intel.com>
- <2849fc32-83b8-4727-0aea-aa20b4d3557a@linux.intel.com>
- <28e7b768-dfa4-eca4-9d7a-5e8c6f54bc27@intel.com>
- <53557182-a2c5-a280-8887-bdb8a71dfd94@linux.intel.com>
-User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7 02160 Espoo
+ dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
+ header.b="dabwonrx"
+Received: by mail-io1-xd36.google.com with SMTP id h85so15574763iof.12
+ for <alsa-devel@alsa-project.org>; Mon, 09 May 2022 07:59:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
+ h=from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=ZBWK8wEtyr3Z+BKeKhTzRy0e8y5LPeZaKSAOhM39sxY=;
+ b=dabwonrxBvREcvRmh8BKjyxddQgAgZ315FC7yvcivNt2pI9Im7qk0GE9KVz+g+WDI2
+ W9ogHxk50GBdSiADYTabQAKJX6n43XsDExJC6eaPdhV3fl+exZsAKteiLLAE0iAb9XWC
+ l5TdA8H1G5K1XcQSTk+9xVPhM/IBkBZ2TtIuClLkeq/aWaqY+dIpPXvQ8zsKGJZipt4a
+ M6fe6gY4TO2BUt4UMQsKHNr0gkVemrO07dDl1VcTDZsQFk2miX12Sqi6o+zW+QTXaLP8
+ mOXPWyL/tNDR9MGHmOBZwh2I/FpSRo4R2/BTQ6mKX4GB1RIzKmn7Rss5NDVMNsqTJg7h
+ hBzA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=ZBWK8wEtyr3Z+BKeKhTzRy0e8y5LPeZaKSAOhM39sxY=;
+ b=FZVli6o45VkTv7qJ12IpXm1un8ZDb5bUdGhtLJboKdQjLIj16qDVktIxYMRHgGRI54
+ qSN1mffDrKSsDHKeQAVpPmk6h8KWWUvUXlibjwVoT+vAZ1fd5cIkzEucXVgvsCSB+cZO
+ svnsBgp7t3NiZkzkQeVoYaBHneWaX/uB3F15tR8KmqpiM7uKhEhPT7GztxFneZrjIEpy
+ ftiIgsU4mzFnbIhhkSfkLTe4HTc7MeDWbDcoPtFX3Bmn/PI/2bBel6VZPh0HPiSl9r5t
+ PdV3uZMUUE4SGNjFtDqTVRKUeK1TWOhE+uaSIzXCLXv2PFClsBah8KE45Gk8C7l00PP0
+ J+Fw==
+X-Gm-Message-State: AOAM531MksmEstid2BLBd0vHv+6e1YPcbE68DL3pfGoscn+CqYMTkngo
+ 87kw4M1boVlE/J7KwhJqSmw=
+X-Google-Smtp-Source: ABdhPJxMA3QH7S6K4X/siM5hUPpJ1ohmB1mimy04z0Pxe/zc+KqEKDH9Fe83DZ1DWUwR302jkE11xQ==
+X-Received: by 2002:a6b:ca44:0:b0:657:b54a:5c53 with SMTP id
+ a65-20020a6bca44000000b00657b54a5c53mr6545149iog.108.1652108381502; 
+ Mon, 09 May 2022 07:59:41 -0700 (PDT)
+Received: from localhost.localdomain (cpe-65-29-252-111.wi.res.rr.com.
+ [65.29.252.111]) by smtp.gmail.com with ESMTPSA id
+ p18-20020a02b892000000b0032b3a7817c1sm3664414jam.133.2022.05.09.07.59.40
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Mon, 09 May 2022 07:59:41 -0700 (PDT)
+From: Daniel Kaehn <kaehndan@gmail.com>
+To: tiwai@suse.com,
+	robh@kernel.org
+Subject: [PATCH v7 0/2] Add generic serial MIDI driver using serial bus API
+Date: Mon,  9 May 2022 09:59:31 -0500
+Message-Id: <20220509145933.1161526-1-kaehndan@gmail.com>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Cc: alsa-devel@alsa-project.org, upstream@semihalf.com,
- Kai Vehmanen <kai.vehmanen@linux.intel.com>, harshapriya.n@intel.com,
- rad@semihalf.com, tiwai@suse.com, hdegoede@redhat.com,
- Mark Brown <broonie@kernel.org>, amadeuszx.slawinski@linux.intel.com,
- cujomalainey@chromium.org, lma@semihalf.com
+Content-Transfer-Encoding: 8bit
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
+ Daniel Kaehn <kaehndan@gmail.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -96,50 +95,87 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Hi,
+Generic serial MIDI driver adding support for using serial devices
+compatible with the serial bus as raw MIDI devices, allowing using
+additional serial devices not compatible with the existing
+serial-u16550 driver. Supports only setting standard serial baudrates on
+the underlying serial device; however, the underlying serial device can
+be configured so that a requested 38.4 kBaud is actually the standard MIDI
+31.25 kBaud. Supports DeviceTree configuration.
 
-On Fri, 6 May 2022, Pierre-Louis Bossart wrote:
+Changes in v7:
+- Separate examples in dt-binding to remove need to specify unit name
+    (fixing dt_binding_check error)
 
->>> On 5/6/22 10:28, Cezary Rojewski wrote:
->>>> My suggestion is different: have all HD-Audio ASoC users switch to this
->>>> implementation when possible and remove the existing code along with
->>>> skylake-driver.
-[...]
-> I am however concerned about the lack of long-term plans and confusion
-> coming having 3 different ways of dealing with HDaudio codecs on the
-> same hardware platform (legacy, ASoC/SOF-Skylake, ASoC-AVS). 2 was
-> already bad, I don't see how 3 is better?
+Changes in v6:    
+- Change compatible "serialmidi" -> serial-midi" 
+- Default current-speed to 38400 (closest baud to MIDI standard speed) 
+- Appropriately stop reading or writing MIDI if input or output
+    _trigger() is called with a parameter of zero, respectively 
+- Zero out corresponding triggered state on close to ensure input and
+    output closing results in the serial port being closed 
+- Fix order of operations in _probe() 
+- Remove "DEBUG" literal from debug messages
+- Remove unused dt-parsing patch checking for existence of node
+- Whitespace / tabbing fixes / improvements
 
-fortunately most of the actual logic is in the codec drivers (in 
-sound/pci/hda/), so redundancy in the asoc-to-hda wrappers is not that 
-bad.
+Changes in v5:
+- Reword description in dt-binding for clarity
+- Change 'speed' dt property to standard 'current-speed'
+- Move MIDI output loop onto workqueue (since this could loop quite a while,
+    if ALSA provides a continuous stream of bytes)
+- Add tx_state bit flags to snd_serial_generic struct
+- Safegard critical section in tx_work with atomic bit ops on tx_state
+- Switch operations on filemode to use atomic bit ops
 
-As a slight correction to the thread, hdac_hda.c does support HDMI and all 
-SOF machine drivers transitioned to this a few years back (and dropped 
-use of hdac_hdmi.c which is mostly duplicating code in patch_hdmi.c).
+Changes in v4:
+- Fix regressed typo - Correct 3.84 kBaud -> 38.4 kBaud in DT & Kconfig
+  (sorry about spam - noticed after sending v3 and didn't want to let
+  the error sit around for too long)
 
-In last few years, most of the changes have been to the actual codec 
-drivers and we've not really had many fixes to hdac_hda.c anymore (there 
-has been a few, and indeed PM related). So in this sense this has worked 
-well enough. Patches to fix bugs and add support for new hardware, have 
-benefitted all users (DSP and no-DSP) and changes have been only needed at 
-a single location. So this is all good.
+Changes in v3:
+- Replace use of snd_printk() with dev_* alternatives
+- Removed unnecessary initialization of err variables
+- Replaced instances of `== SERIAL_MODE_NOT_OPENED` with zero check
+- Loop on output_write to completely fill output buffer if data available
+- Depend on CONFIG_OF in Kconfig
+- Replace use of devm_kzalloc() with extra_size allocation in snd_devm_card_new()
+- Use module_serdev_device_driver() instead of module_init() and module_exit(0)
 
-The fixed DAI capabilities of hdac_hda.c are indeed not ideal (although in 
-practise hasn't really been an issue so far) and the approach in the new 
-hda.c seems indeed more robust. We do have a lot of existing machine 
-drivers (and shipping DSP topologies that we need to keep working), so 
-transitioning e.g. SOF machine drivers is not going to be straightforward.
-For new mach drivers, this could be considered.
+Changes in v2:
+- Fix 'snd_serial_generic_write_wakeup' missing static keyword 
+- Correct 3.125 kBaud > 31.25 kBaud in documentation for MIDI         
 
-So while not ideal, maybe it makes sense to have two wrappers, hdac_hda.c 
-for mach drivers with fixed DAI configuration, and the new hda.c that 
-supports dynamic configuration (but requires mach drivers that match 
-this). If the old SST driver is deprecated, we can then proceed to remove 
-hdac_hdmi.c from the tree, so there's some savings.
 
-Please do add some description to the commit+code+kconfig on how this new 
-codec driver relates to hdac_hda. Otherwise it's very confusing to have 
-two asoc codec drivers for the same thing.
+The need for this driver arose from a project using a Raspberry Pi4 which
+needed to receive and send raw MIDI with low latency. The pl011 UART
+used is not compatible with the existing serial MIDI driver made for
+u16550-style devices. Using a userspace program such as ttymidi to feed
+input from the TTY device to a virtual ALSA MIDI device was functional,
+but not ideal.
 
-Br, Kai
+I am not sure if a MIDI driver needing the mentioned 'hack' to clock
+38.4 kBaud down to the standard MIDI baud is permissible in the mainline
+kernel, but am submitting nevertheless in case it is useful. To my knowledge,
+it doesn't seem that there would be any way for this driver to manually
+configure a serial port to 31.25 kBaud using the serial bus API (please 
+correct me f I'm wrong). In my use case, I am actually configuring one port
+to run at 115.2 kBaud for faster communication with a custom onboard MIDI controller.
+
+Daniel Kaehn (2):
+  dt-bindings: sound: Add generic serial MIDI device
+  Add generic serial MIDI driver using serial bus API
+
+ .../bindings/sound/serial-midi.yaml           |  51 +++
+ sound/drivers/Kconfig                         |  18 +
+ sound/drivers/Makefile                        |   2 +
+ sound/drivers/serial-generic.c                | 374 ++++++++++++++++++
+ 4 files changed, 445 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/sound/serial-midi.yaml
+ create mode 100644 sound/drivers/serial-generic.c
+
+
+base-commit: c5eb0a61238dd6faf37f58c9ce61c9980aaffd7a
+-- 
+2.33.0
+
