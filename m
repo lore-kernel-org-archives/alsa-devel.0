@@ -4,83 +4,42 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 80EF5C433EF
-	for <alsa-devel@archiver.kernel.org>; Mon,  9 May 2022 21:55:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C6CB0C433EF
+	for <alsa-devel@archiver.kernel.org>; Mon,  9 May 2022 23:19:53 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A8D7E174E;
-	Mon,  9 May 2022 23:54:43 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A8D7E174E
+	by alsa0.perex.cz (Postfix) with ESMTPS id F2762164D;
+	Tue, 10 May 2022 01:19:00 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F2762164D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1652133333;
-	bh=Vo/pzIcHE1+rMUO5hxWBfoiy5LfJhQroggSdPazb6w4=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1652138391;
+	bh=Kj/+sZtPKnrN+Ix0z7khNl6calBdyVKhDy8XxD5GY+4=;
+	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=A4zZm06dqEK2mqKBxPKvSZetAtAhqIAC3B5Dsuk6Cep7x2PPHwS1gl9cfYRNuE7bO
-	 /fP+ABcCaQFVNKCRJEduBHSyDcCg+uYNj9y3ZjwPlmlsqoxK6e6mf7Txan2I/B1QVx
-	 urGmU/21yKrS5CxnjtIvJ7mpkDIdyU1Kot5QSLxE=
+	b=NOICbzCiUJza1FtjZ7xPh8heLyK/cTh7upOmVhGnPIONojiCN2SD/bixssNGpgUk9
+	 vPqhPEZnKljqCE1VUOJbfrwtiLFz99mi/4c4akMebl+4epUSQKOD91KLvfxdwfFFdt
+	 Y4jNdFNfzCu9xmKGSRKBMpo5JfMk/JsxWRnuzc6g=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id F25B7F805F4;
-	Mon,  9 May 2022 23:47:52 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 78B93F80237;
+	Tue, 10 May 2022 01:19:00 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 2A910F805D5; Mon,  9 May 2022 23:47:49 +0200 (CEST)
-Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
- [67.231.149.25])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 08DD3F80539
- for <alsa-devel@alsa-project.org>; Mon,  9 May 2022 23:47:19 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 08DD3F80539
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com
- header.b="WgoWhogx"
-Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
- by mx0a-001ae601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 249Bt3ZI026043;
- Mon, 9 May 2022 16:47:18 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
- h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding : content-type; s=PODMain02222019;
- bh=pgkInMNM5lIa62Ktk5wuKfnn1hSjdv2G0txAHRzh1uw=;
- b=WgoWhogxzjdN8ooFcZF2UK6U7qiEupaj99PBeC1SlpPctk4Mej6uCYTPlrOz8pdByRGQ
- ttCkHjEnbzgnhYZpkei8lt5D/9jAdL0MaNa4GYgonOYJSW7JBjg5AjSBn01NmAvhb40m
- kLPMt5fyy7LgGMWkaCcJ3jpO9qc1nSo4yUpreQiMBorDDOB6cQOPxG7rYNDameqfxOSH
- 5F/Z/VBI2ZuhTJUGV+jJHoc0P+WgnKCFNTvDbj+ADzCpiaQVVxC5TjjpcBidouKC6eHZ
- T+wNIurSBkYjYpjqteauZDi/YFByMnZHd0F+/oL+h6U4w4cYkbn4We7V2AoTT6TrZ0gB GQ== 
-Received: from ediex01.ad.cirrus.com ([84.19.233.68])
- by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3fwp613jeu-10
- (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
- Mon, 09 May 2022 16:47:18 -0500
-Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.24; Mon, 9 May
- 2022 22:47:14 +0100
-Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server id 15.1.2375.24 via
- Frontend Transport; Mon, 9 May 2022 22:47:14 +0100
-Received: from vitaly-Legion-7-16ACHg6.ad.cirrus.com (unknown [198.90.238.55])
- by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 6890EB10;
- Mon,  9 May 2022 21:47:14 +0000 (UTC)
-From: Vitaly Rodionov <vitalyr@opensource.cirrus.com>
-To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Mark
- Brown <broonie@kernel.org>
-Subject: [PATCH v2 26/26] ALSA: hda: cs35l41: Add kernel config to disable
- firmware autoload
-Date: Mon, 9 May 2022 22:47:03 +0100
-Message-ID: <20220509214703.4482-27-vitalyr@opensource.cirrus.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20220509214703.4482-1-vitalyr@opensource.cirrus.com>
-References: <20220509214703.4482-1-vitalyr@opensource.cirrus.com>
+ id D9075F8025D; Tue, 10 May 2022 01:18:58 +0200 (CEST)
+Received: from webhooks-bot.alsa-project.org (gate.perex.cz [77.48.224.242])
+ by alsa1.perex.cz (Postfix) with ESMTP id C9E8EF800D3
+ for <alsa-devel@alsa-project.org>; Tue, 10 May 2022 01:18:52 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C9E8EF800D3
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Proofpoint-GUID: MBfTHE0xNtPHE-E8JrjwFUa-26pgXtx8
-X-Proofpoint-ORIG-GUID: MBfTHE0xNtPHE-E8JrjwFUa-26pgXtx8
-X-Proofpoint-Spam-Reason: safe
-Cc: patches@opensource.cirrus.com, alsa-devel@alsa-project.org,
- linux-kernel@vger.kernel.org, Stefan Binding <sbinding@opensource.cirrus.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+From: GitHub issues - opened <github@alsa-project.org>
+To: alsa-devel@alsa-project.org
+In-Reply-To: <1652138332134727001-webhooks-bot@alsa-project.org>
+References: <1652138332134727001-webhooks-bot@alsa-project.org>
+Subject: Parallel build failure in rate/ (probably rate-lav/, pph/ too)
+Message-Id: <20220509231858.D9075F8025D@alsa1.perex.cz>
+Date: Tue, 10 May 2022 01:18:58 +0200 (CEST)
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -96,60 +55,13 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Stefan Binding <sbinding@opensource.cirrus.com>
+alsa-project/alsa-plugins issue #44 was opened from thesamesam:
 
-By default, the driver will automatically load DSP firmware
-for the amps, if available. Adding this option allows the
-autoload to be optional, which allows for different configurations.
+Originally reported downstream in [Gentoo](https://bugs.gentoo.org/835920) by a user.
 
-Signed-off-by: Stefan Binding <sbinding@opensource.cirrus.com>
-Signed-off-by: Vitaly Rodionov <vitalyr@opensource.cirrus.com>
----
- sound/pci/hda/Kconfig       |  7 +++++++
- sound/pci/hda/cs35l41_hda.c | 12 +++++++-----
- 2 files changed, 14 insertions(+), 5 deletions(-)
+It looks like in `rate/Makefile.am` (and I think ditto for `rate-lav/Makefile.am`, `pph/Makefile.am`), with high parallelism (`make -jN install`, for large N), `$(DESTDIR)@ALSA_PLUGIN_DIR@` may not have been created yet. All of these dirs override `install-exec-hook`.
 
-diff --git a/sound/pci/hda/Kconfig b/sound/pci/hda/Kconfig
-index 1c378cca5dac..c4282dec4dd4 100644
---- a/sound/pci/hda/Kconfig
-+++ b/sound/pci/hda/Kconfig
-@@ -94,6 +94,13 @@ config SND_HDA_PATCH_LOADER
- config SND_HDA_SCODEC_CS35L41
- 	tristate
- 
-+config SND_HDA_SCODEC_CS35L41_DISABLE_FIRMWARE_AUTOSTART
-+	bool "Prevent CS35L41 from starting firmware on boot"
-+	depends on SND_HDA_SCODEC_CS35L41
-+	help
-+	  Say Y here to prevent the CS35L41 HDA driver from loading DSP
-+	  Firmware at boot
-+
- config SND_HDA_CS_DSP_CONTROLS
- 	tristate
- 	depends on CS_DSP
-diff --git a/sound/pci/hda/cs35l41_hda.c b/sound/pci/hda/cs35l41_hda.c
-index 70e5354e3950..8b9e966145b5 100644
---- a/sound/pci/hda/cs35l41_hda.c
-+++ b/sound/pci/hda/cs35l41_hda.c
-@@ -773,11 +773,13 @@ static int cs35l41_hda_bind(struct device *dev, struct device *master, void *mas
- 
- 	cs35l41->firmware_type = HDA_CS_DSP_FW_SPK_PROT;
- 
--	cs35l41->request_fw_load = true;
--	mutex_lock(&cs35l41->fw_mutex);
--	if (cs35l41_smart_amp(cs35l41) < 0)
--		dev_warn(cs35l41->dev, "Cannot Run Firmware, reverting to dsp bypass...\n");
--	mutex_unlock(&cs35l41->fw_mutex);
-+	if (!IS_ENABLED(CONFIG_SND_HDA_SCODEC_CS35L41_DISABLE_FIRMWARE_AUTOSTART)) {
-+		cs35l41->request_fw_load = true;
-+		mutex_lock(&cs35l41->fw_mutex);
-+		if (cs35l41_smart_amp(cs35l41) < 0)
-+			dev_warn(cs35l41->dev, "Cannot Run Firmware, reverting to dsp bypass...\n");
-+		mutex_unlock(&cs35l41->fw_mutex);
-+	}
- 
- 	cs35l41_create_controls(cs35l41);
- 
--- 
-2.34.1
+For other subdirs, like `jack/Makefile.am`, there's no problem, because the implementation of `install-exec-hook` for those is set by `install-hooks.am` which handles `mkdir -p` before symlinking/installing.
 
+Issue URL     : https://github.com/alsa-project/alsa-plugins/issues/44
+Repository URL: https://github.com/alsa-project/alsa-plugins
