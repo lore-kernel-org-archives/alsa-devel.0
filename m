@@ -4,72 +4,77 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1FD24C433F5
-	for <alsa-devel@archiver.kernel.org>; Mon,  9 May 2022 11:51:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id F11F6C433EF
+	for <alsa-devel@archiver.kernel.org>; Mon,  9 May 2022 11:59:16 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C645D18BE;
-	Mon,  9 May 2022 13:50:40 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C645D18BE
+	by alsa0.perex.cz (Postfix) with ESMTPS id EB7EC18B0;
+	Mon,  9 May 2022 13:58:24 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EB7EC18B0
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1652097090;
-	bh=b4aTBZ4v+rVQoWlkbu6lUJp1RJHxYYLupXeHe22aK+E=;
+	s=default; t=1652097555;
+	bh=KAiGLAeJ1F2x9+yVZHQWucvlaxVr8070RQ6hTo1dXBQ=;
 	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=YPrSjRciqLucxkLXUe1Xv4jyaGaKvNvYEB/3fN3TFdxunk4t1ams+qcw4k+4Fg1cz
-	 QYPooL13QIyYvcHp6hn9A1C4ZCtLYL9ylp1ytxFBpcWqEpHoArYf1o7oFN4rIIZu4T
-	 8IaNG25GHQoEP5lfsV3gpl/vOJeF7jiHmD30mIDQ=
+	b=g2tCSsf6a7MJXYSpb+SYu82bXIqZDfzhHpf0du/HDcaWe4A5QabVXqF0OE0iUVvFA
+	 3VBM+Tg0UsNusejWCfrE7Sp7GbBW6sn5uFepgvMaAHIuO7yy9qyfCeiEIhL2rBSTmt
+	 JyPk/CBWx/aSGJIccTguAygaaj7ItUzOplAe+V2M=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 66FD0F80237;
-	Mon,  9 May 2022 13:50:40 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 8F568F80237;
+	Mon,  9 May 2022 13:58:24 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id AA528F8025D; Mon,  9 May 2022 13:50:38 +0200 (CEST)
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 7C9B9F800D3
- for <alsa-devel@alsa-project.org>; Mon,  9 May 2022 13:50:34 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7C9B9F800D3
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="PlNdM41f"
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+ id 2DDFDF8014C; Mon,  9 May 2022 13:58:23 +0200 (CEST)
+Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by ams.source.kernel.org (Postfix) with ESMTPS id 566C4B81161;
- Mon,  9 May 2022 11:50:34 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6D88FC385AB;
- Mon,  9 May 2022 11:50:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1652097033;
- bh=b4aTBZ4v+rVQoWlkbu6lUJp1RJHxYYLupXeHe22aK+E=;
- h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=PlNdM41fWWZMMZ5VmLAz0aq7w+uOUXEjhHnW6/VgxfsZMoyrZEny2Hkk0t+Qv65VK
- Aj8zV/bpPwgdiVytEIyiebz+eM7UwsQiIejW1ruXiyORKicJHyx39i5753qVcKZKlB
- /bGzM/mn/8gwltwCt0274kMqGFL/a2QWaY1zOPYn+f5PfNRs80fuUoZb53eo0vyYUi
- SJf1xPUdJiVa5yYAvrwkBL9jW1ugsH/fByazvJobZTvXZzsrMCaCqV9ESFKrgA1Nmn
- IygHhchmdKOTVFwPQM7Vf5JivhSD2Ks2GjaxTh2CgBtZpo7rp/rteudTZB27n7F3V4
- Ciy68yOBXKDyw==
-Date: Mon, 9 May 2022 12:50:27 +0100
-From: Mark Brown <broonie@kernel.org>
-To: YueHaibing <yuehaibing@huawei.com>
-Subject: Re: [PATCH v2] ASoC: mediatek: mt8195: Fix build warning without
- CONFIG_OF
-Message-ID: <YnkAAx3VAXCMFOTn@sirena.org.uk>
-References: <20220507021424.12180-1-yuehaibing@huawei.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 9A578F8014C
+ for <alsa-devel@alsa-project.org>; Mon,  9 May 2022 13:58:16 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9A578F8014C
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
+ header.b="Zz6UYkjr"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+ d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+ t=1652097497; x=1683633497;
+ h=date:from:to:cc:subject:message-id:references:
+ mime-version:in-reply-to;
+ bh=KAiGLAeJ1F2x9+yVZHQWucvlaxVr8070RQ6hTo1dXBQ=;
+ b=Zz6UYkjrJropuBSHkXZkrSwU9YUVwOhbe0RbEwAa8JeV62qOvuy/x/EP
+ lwT8zoaTXDhgZONMeLRo+vnBtLo2fBk9WXRauKU6NmXvjT6dMpzTC5JJp
+ 7wjy2SDF9pLLHuNN/N7GFPn0QDpbkfVPdBKrtmzQRmCiryGxUQ+YLi+jt
+ 0NJiJgWZ3yrFetkoBqT+6mGN1BSyHnGc99QZrlOrjE8k7tGcvFfBKni/y
+ VhDwNCg0dXqWk4ZiR9eYuzna8Kzh2Ade9L3VO/Tc5saUS1gOiROAElh7j
+ oKQP3x+Cimyo6baDUSNtdI+IjvHIFr75fKU4GDH/QOlCZr0z/tzKh/fwx g==;
+X-IronPort-AV: E=McAfee;i="6400,9594,10341"; a="268955775"
+X-IronPort-AV: E=Sophos;i="5.91,211,1647327600"; d="scan'208";a="268955775"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+ by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 09 May 2022 04:58:13 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.91,211,1647327600"; d="scan'208";a="738132053"
+Received: from lkp-server01.sh.intel.com (HELO 5056e131ad90) ([10.239.97.150])
+ by orsmga005.jf.intel.com with ESMTP; 09 May 2022 04:58:10 -0700
+Received: from kbuild by 5056e131ad90 with local (Exim 4.95)
+ (envelope-from <lkp@intel.com>) id 1no21h-000GUQ-Q8;
+ Mon, 09 May 2022 11:58:09 +0000
+Date: Mon, 9 May 2022 19:58:04 +0800
+From: kernel test robot <lkp@intel.com>
+To: Cezary Rojewski <cezary.rojewski@intel.com>,
+ alsa-devel@alsa-project.org, broonie@kernel.org
+Subject: Re: [PATCH v2 11/15] ASoC: Intel: avs: Machine board registration
+Message-ID: <202205091954.7hT2TBhd-lkp@intel.com>
+References: <20220509085821.3852259-12-cezary.rojewski@intel.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature"; boundary="dR5KuFyvd2qk11zt"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20220507021424.12180-1-yuehaibing@huawei.com>
-X-Cookie: Anger is momentary madness.
-Cc: alsa-devel@alsa-project.org, arnd@arndb.de, linux-kernel@vger.kernel.org,
- tiwai@suse.com, lgirdwood@gmail.com, tzungbi@google.com,
- linux-mediatek@lists.infradead.org, trevor.wu@mediatek.com,
- matthias.bgg@gmail.com, linux-arm-kernel@lists.infradead.org,
- angelogioacchino.delregno@collabora.com
+In-Reply-To: <20220509085821.3852259-12-cezary.rojewski@intel.com>
+Cc: Cezary Rojewski <cezary.rojewski@intel.com>, upstream@semihalf.com,
+ harshapriya.n@intel.com, rad@semihalf.com,
+ pierre-louis.bossart@linux.intel.com, tiwai@suse.com, hdegoede@redhat.com,
+ amadeuszx.slawinski@linux.intel.com, kbuild-all@lists.01.org,
+ cujomalainey@chromium.org, lma@semihalf.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -85,37 +90,106 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+Hi Cezary,
 
---dR5KuFyvd2qk11zt
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+I love your patch! Perhaps something to improve:
 
-On Sat, May 07, 2022 at 10:14:24AM +0800, YueHaibing wrote:
-> sound/soc/mediatek/mt8195/mt8195-mt6359.c:1639:32: warning: =E2=80=98mt81=
-95_mt6359_max98390_rt5682_card=E2=80=99 defined but not used [-Wunused-vari=
-able]
->  1639 | static struct mt8195_card_data mt8195_mt6359_max98390_rt5682_card=
- =3D {
->       |                                ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+[auto build test WARNING on broonie-sound/for-next]
+[also build test WARNING on next-20220506]
+[cannot apply to tiwai-sound/for-next v5.18-rc6]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch]
 
-This doesn't apply against current code, please check and resend (it
-looks like you have additional patches in your tree, am doesn't know the
-base SHA1s?).
+url:    https://github.com/intel-lab-lkp/linux/commits/Cezary-Rojewski/ASoC-Intel-avs-Driver-core-and-PCM-operations/20220509-165656
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+config: arc-allyesconfig (https://download.01.org/0day-ci/archive/20220509/202205091954.7hT2TBhd-lkp@intel.com/config)
+compiler: arceb-elf-gcc (GCC) 11.3.0
+reproduce (this is a W=1 build):
+        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+        chmod +x ~/bin/make.cross
+        # https://github.com/intel-lab-lkp/linux/commit/2ef25400a7aee5a8e75c2ccdb5618be31c9f6809
+        git remote add linux-review https://github.com/intel-lab-lkp/linux
+        git fetch --no-tags linux-review Cezary-Rojewski/ASoC-Intel-avs-Driver-core-and-PCM-operations/20220509-165656
+        git checkout 2ef25400a7aee5a8e75c2ccdb5618be31c9f6809
+        # save the config file
+        mkdir build_dir && cp config build_dir/.config
+        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-11.3.0 make.cross W=1 O=build_dir ARCH=arc SHELL=/bin/bash sound/soc/intel/avs/
 
---dR5KuFyvd2qk11zt
-Content-Type: application/pgp-signature; name="signature.asc"
+If you fix the issue, kindly add following tag as appropriate
+Reported-by: kernel test robot <lkp@intel.com>
 
------BEGIN PGP SIGNATURE-----
+All warnings (new ones prefixed by >>):
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmJ5AAIACgkQJNaLcl1U
-h9CSpAf+JWlnlwHrSebKB8rGFYewj7XuvxJYOCgKGxDjC0jGkchj3AvBNkFD2Kq1
-oKVPST+oVCaXX3JrpiWXMJzRjyokDkQsXjQFuQ3xOLDyuohNk/lwI6KKLk04edeh
-0DIySvexNYhTyNPrP3MjLrYvb9VTLJVSiNpmkCFBjg0ZMd3mZu37nmpMwXsE0HFu
-go20cHPF9WoxMI6KUBmYD2sWaVqJzwXbnZBpY0Nf+HABKDX2tnjtXNqje7eAJ8Ai
-WwiEC0IYZh1tmINQ87V4TahiDHNu7Sx+gFzEL410N557iw7AR/HLjxcdpUulA1zY
-CcLY4c5Cj+UjV8DRBrLtzzxzZmEzcw==
-=GTnm
------END PGP SIGNATURE-----
+   In file included from include/linux/device.h:15,
+                    from include/linux/acpi.h:15,
+                    from sound/soc/intel/avs/board_selection.c:9:
+   sound/soc/intel/avs/board_selection.c: In function 'avs_register_i2s_board':
+>> sound/soc/intel/avs/board_selection.c:328:36: warning: format '%ld' expects argument of type 'long int', but argument 5 has type 'int' [-Wformat=]
+     328 |                 dev_err(adev->dev, "Platform supports %d SSPs but board %s requires SSP%ld\n",
+         |                                    ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   include/linux/dev_printk.h:110:30: note: in definition of macro 'dev_printk_index_wrap'
+     110 |                 _p_func(dev, fmt, ##__VA_ARGS__);                       \
+         |                              ^~~
+   include/linux/dev_printk.h:144:56: note: in expansion of macro 'dev_fmt'
+     144 |         dev_printk_index_wrap(_dev_err, KERN_ERR, dev, dev_fmt(fmt), ##__VA_ARGS__)
+         |                                                        ^~~~~~~
+   sound/soc/intel/avs/board_selection.c:328:17: note: in expansion of macro 'dev_err'
+     328 |                 dev_err(adev->dev, "Platform supports %d SSPs but board %s requires SSP%ld\n",
+         |                 ^~~~~~~
+   sound/soc/intel/avs/board_selection.c:328:90: note: format string is defined here
+     328 |                 dev_err(adev->dev, "Platform supports %d SSPs but board %s requires SSP%ld\n",
+         |                                                                                        ~~^
+         |                                                                                          |
+         |                                                                                          long int
+         |                                                                                        %d
 
---dR5KuFyvd2qk11zt--
+
+vim +328 sound/soc/intel/avs/board_selection.c
+
+   318	
+   319	static int avs_register_i2s_board(struct avs_dev *adev, struct snd_soc_acpi_mach *mach)
+   320	{
+   321		struct platform_device *board;
+   322		int num_ssps;
+   323		char *name;
+   324		int ret;
+   325	
+   326		num_ssps = adev->hw_cfg.i2s_caps.ctrl_count;
+   327		if (fls(mach->mach_params.i2s_link_mask) > num_ssps) {
+ > 328			dev_err(adev->dev, "Platform supports %d SSPs but board %s requires SSP%ld\n",
+   329				num_ssps, mach->drv_name, __fls(mach->mach_params.i2s_link_mask));
+   330			return -ENODEV;
+   331		}
+   332	
+   333		name = devm_kasprintf(adev->dev, GFP_KERNEL, "%s.%d-platform", mach->drv_name,
+   334				      mach->mach_params.i2s_link_mask);
+   335		if (!name)
+   336			return -ENOMEM;
+   337	
+   338		ret = avs_i2s_platform_register(adev, name, mach->mach_params.i2s_link_mask, mach->pdata);
+   339		if (ret < 0)
+   340			return ret;
+   341	
+   342		mach->mach_params.platform = name;
+   343	
+   344		board = platform_device_register_data(NULL, mach->drv_name, mach->mach_params.i2s_link_mask,
+   345						      (const void *)mach, sizeof(*mach));
+   346		if (IS_ERR(board)) {
+   347			dev_err(adev->dev, "ssp board register failed\n");
+   348			return PTR_ERR(board);
+   349		}
+   350	
+   351		ret = devm_add_action(adev->dev, board_pdev_unregister, board);
+   352		if (ret < 0) {
+   353			platform_device_unregister(board);
+   354			return ret;
+   355		}
+   356	
+   357		return 0;
+   358	}
+   359	
+
+-- 
+0-DAY CI Kernel Test Service
+https://01.org/lkp
