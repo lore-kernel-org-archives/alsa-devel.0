@@ -4,65 +4,65 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3778CC433EF
-	for <alsa-devel@archiver.kernel.org>; Mon,  9 May 2022 17:11:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A98DDC433F5
+	for <alsa-devel@archiver.kernel.org>; Mon,  9 May 2022 17:11:35 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 570721901;
-	Mon,  9 May 2022 19:10:35 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 570721901
+	by alsa0.perex.cz (Postfix) with ESMTPS id B2F2F18F4;
+	Mon,  9 May 2022 19:10:43 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B2F2F18F4
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1652116285;
-	bh=9AdV0n94HVlFnbbxYfPaMxIQt8asvbfvtYpOnrLIhu8=;
+	s=default; t=1652116293;
+	bh=QgakIGbWNo3zLFi+HTo83Ju8g3nsMS29DGatcZR6tRc=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=bWN0yMGUzPCfEWBZF93zqr/14d/J2Zrt+9y0DCArxDgw3HR1jGTGBCVTFcXt3WlZU
-	 ONJ3mWh5Z5e95Y68FXZzph0Hzj4UQIOv5IcV/DYr4xOs7eC0LmHUFRFYxBsUruxJ9J
-	 oYBPTEaSIvWPFj6xYNw3TT1JHgRjd8nTUonlkgt0=
+	b=YpxR1gSmbYVazY7R+CaWPfpMP7E2JwRV2Qvt0R7wDD+Apnwk04vdgEA0V7hOeXO61
+	 A5/U+YAQ8qUrXkU5CMrIDuGDXTO1auSPfZleUE3/+aw+Vi13kSf86fx4BmFapQVRT8
+	 EQwNo/E6tNZtRLhtOld2ymRwgQXJMzih9aWWkmzI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 49421F8050F;
-	Mon,  9 May 2022 19:10:00 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 050A7F804FF;
+	Mon,  9 May 2022 19:10:04 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 74A56F80510; Mon,  9 May 2022 19:09:58 +0200 (CEST)
+ id CB7B8F80516; Mon,  9 May 2022 19:10:02 +0200 (CEST)
 Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 957FEF802E3
- for <alsa-devel@alsa-project.org>; Mon,  9 May 2022 19:09:51 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 957FEF802E3
+ by alsa1.perex.cz (Postfix) with ESMTPS id 060BDF804FF
+ for <alsa-devel@alsa-project.org>; Mon,  9 May 2022 19:09:52 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 060BDF804FF
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="DDNIhwVQ"
+ header.b="SkoFR2Se"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1652116192; x=1683652192;
+ t=1652116197; x=1683652197;
  h=from:to:cc:subject:date:message-id:in-reply-to:
  references:mime-version:content-transfer-encoding;
- bh=9AdV0n94HVlFnbbxYfPaMxIQt8asvbfvtYpOnrLIhu8=;
- b=DDNIhwVQZ4YlCczMY3OAhcKAZB+dPzoCEtL3+d71kcw90sL5dPIWnf/T
- WsPwHL5taJCTdaG8N3hyTIGtVwdxWApcbt4do6AbJuGMMvzb8V6QIoDqR
- o3HV0WNQkbwoSBxawN/+R9M5Jkim7NQTQZjLjSxK3lgfHhjomRFPgcInf
- UuRRnhOauxvbFKVx0o1g6L5R50tUgPyqnyhe/7V2+LsWGlTBLEVmEZRNG
- 8Ub+S4byP4eDnUoET4EMjr+Gqz1KFofhx7wE+jGL4/WH+OMQU10Qu+FAe
- bTT1odIC/d0dTH+y1qtA6ihVIv2UEBNzyEXYAQxc5xtTEDWxXEF8JBppe A==;
-X-IronPort-AV: E=McAfee;i="6400,9594,10342"; a="266701903"
-X-IronPort-AV: E=Sophos;i="5.91,211,1647327600"; d="scan'208";a="266701903"
+ bh=QgakIGbWNo3zLFi+HTo83Ju8g3nsMS29DGatcZR6tRc=;
+ b=SkoFR2SewEMnjkqV6wHtlFc1uT4R09NhUKwxuVtojYrc1t9+E87chnP+
+ JWaRS1Z5YADfSb8+m+y5CMy56/KxDqeuZ4gIhuLZbrm96i6kAKCeo8dRr
+ JIzu1Lsg73QZqLCpdsf+D/G0ZIT17gSthNTFmM9fecN5/RxLsLwEmIzWF
+ xrQTjxw/+yIBMFrtepoYzFTKd7oOCa+t3vxwmeJvcwKs9+x6oNJl6i7sH
+ bzhzClTf1sAkVGgYRGFgec5ce1mklIUgtFdpU6Y0zJjypPLV0FgDPMbLf
+ S3hBrxzI9GLmFBGV8k+OsmJzD0hcOlmoSH0r1SlmX+pAgynlupsxNCwbe Q==;
+X-IronPort-AV: E=McAfee;i="6400,9594,10342"; a="266701904"
+X-IronPort-AV: E=Sophos;i="5.91,211,1647327600"; d="scan'208";a="266701904"
 Received: from orsmga008.jf.intel.com ([10.7.209.65])
  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 09 May 2022 10:09:31 -0700
-X-IronPort-AV: E=Sophos;i="5.91,211,1647327600"; d="scan'208";a="592909317"
+ 09 May 2022 10:09:32 -0700
+X-IronPort-AV: E=Sophos;i="5.91,211,1647327600"; d="scan'208";a="592909326"
 Received: from mkarkhan-mobl.amr.corp.intel.com (HELO
  pbossart-mobl3.amr.corp.intel.com) ([10.209.61.140])
  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
  09 May 2022 10:09:31 -0700
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH 2/3] ASoC: Intel: sof_ssp_amp: fix no DMIC BE Link on
- Chromebooks
-Date: Mon,  9 May 2022 12:09:21 -0500
-Message-Id: <20220509170922.54868-3-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH 3/3] ASoC: Intel: sof_ssp_amp: enable capture stream from
+ cs35l41
+Date: Mon,  9 May 2022 12:09:22 -0500
+Message-Id: <20220509170922.54868-4-pierre-louis.bossart@linux.intel.com>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20220509170922.54868-1-pierre-louis.bossart@linux.intel.com>
 References: <20220509170922.54868-1-pierre-louis.bossart@linux.intel.com>
@@ -88,67 +88,30 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 From: Brent Lu <brent.lu@intel.com>
 
-The SOF topology supports 2 BE Links(dmic01 and dmic16k) and each
-link supports up to four DMICs. However, Chromebook does not implement
-ACPI NHLT table so the mach->mach_params.dmic_num is always zero. We
-add a quirk so machine driver knows it's running on a Chromebook and
-need to create BE Links for DMIC.
+Enable capture stream of the cs35l41 dai link to support feedback
+stream from amplifier.
 
 Reviewed-by: Bard Liao <yung-chuan.liao@linux.intel.com>
 Signed-off-by: Brent Lu <brent.lu@intel.com>
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- sound/soc/intel/boards/sof_ssp_amp.c | 16 ++++++++++++++--
- 1 file changed, 14 insertions(+), 2 deletions(-)
+ sound/soc/intel/boards/sof_ssp_amp.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
 diff --git a/sound/soc/intel/boards/sof_ssp_amp.c b/sound/soc/intel/boards/sof_ssp_amp.c
-index 8f5b9ebbe8287..675ade8187b65 100644
+index 675ade8187b65..4a762e002ac75 100644
 --- a/sound/soc/intel/boards/sof_ssp_amp.c
 +++ b/sound/soc/intel/boards/sof_ssp_amp.c
-@@ -9,6 +9,7 @@
- 
- #include <linux/acpi.h>
- #include <linux/delay.h>
-+#include <linux/dmi.h>
- #include <linux/module.h>
- #include <linux/platform_device.h>
- #include <sound/core.h>
-@@ -78,6 +79,16 @@ struct sof_card_private {
- 	bool idisp_codec;
- };
- 
-+static const struct dmi_system_id chromebook_platforms[] = {
-+	{
-+		.ident = "Google Chromebooks",
-+		.matches = {
-+			DMI_MATCH(DMI_SYS_VENDOR, "Google"),
-+		}
-+	},
-+	{},
-+};
+@@ -258,6 +258,9 @@ static struct snd_soc_dai_link *sof_card_dai_links_create(struct device *dev,
+ 		sof_rt1308_dai_link(&links[id]);
+ 	} else if (sof_ssp_amp_quirk & SOF_CS35L41_SPEAKER_AMP_PRESENT) {
+ 		cs35l41_set_dai_link(&links[id]);
 +
- static const struct snd_soc_dapm_widget sof_ssp_amp_dapm_widgets[] = {
- 	SND_SOC_DAPM_MIC("SoC DMIC", NULL),
- };
-@@ -371,7 +382,7 @@ static int sof_ssp_amp_probe(struct platform_device *pdev)
- 	struct snd_soc_dai_link *dai_links;
- 	struct snd_soc_acpi_mach *mach;
- 	struct sof_card_private *ctx;
--	int dmic_be_num, hdmi_num = 0;
-+	int dmic_be_num = 0, hdmi_num = 0;
- 	int ret, ssp_codec;
- 
- 	ctx = devm_kzalloc(&pdev->dev, sizeof(*ctx), GFP_KERNEL);
-@@ -383,7 +394,8 @@ static int sof_ssp_amp_probe(struct platform_device *pdev)
- 
- 	mach = pdev->dev.platform_data;
- 
--	dmic_be_num = mach->mach_params.dmic_num;
-+	if (dmi_check_system(chromebook_platforms) || mach->mach_params.dmic_num > 0)
-+		dmic_be_num = 2;
- 
- 	ssp_codec = sof_ssp_amp_quirk & SOF_AMPLIFIER_SSP_MASK;
- 
++		/* feedback from amplifier */
++		links[id].dpcm_capture = 1;
+ 	}
+ 	links[id].platforms = platform_component;
+ 	links[id].num_platforms = ARRAY_SIZE(platform_component);
 -- 
 2.30.2
 
