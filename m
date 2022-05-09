@@ -4,59 +4,82 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A594EC433EF
-	for <alsa-devel@archiver.kernel.org>; Mon,  9 May 2022 09:28:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2FD05C433F5
+	for <alsa-devel@archiver.kernel.org>; Mon,  9 May 2022 10:08:47 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A0BA018E4;
-	Mon,  9 May 2022 11:27:09 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A0BA018E4
+	by alsa0.perex.cz (Postfix) with ESMTPS id 8F36C18C7;
+	Mon,  9 May 2022 12:07:55 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8F36C18C7
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1652088479;
-	bh=bQB0nVUJvoVRwVeudM5C/JJ3LWAHQ0FQdaKGhVBdXFE=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1652090925;
+	bh=5bCvaKAbwb7XGw6v4TpSg+tT9LkUi8LLy80T2vDxscU=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=F43rU0JAuh9UhqM3VCSs85FqyiQT59lK34sFLCGLSjOI3KvwnBLvO2hsl+z6L1h86
-	 lWuGD6x4oISpDzczF58JppvbDEUksx/QeV0GnyJ7sb091mWi+8HUuT7nWBfJQSnbKZ
-	 x0UtLpiLH/8XuGPrMYpXS70m3YCCR7uDpZxGNJ1E=
+	b=feofwNjqxvfhC7S698yhM5aIStzlB2APw+qZuEgBUQZGJP8WoKmRSLP7aoIZgM8kl
+	 kK8b6It3eYi294AdzeI8GZwLaBdoNxGfNHmmmX9TmE6n9LB0lem1cCFHr+Eax0y4CA
+	 BGgDUwQv2zYuDLwEp0bKiJMiwdFy0dho58+N/enw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id B6CB6F8047B;
-	Mon,  9 May 2022 11:26:36 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2BAA7F80237;
+	Mon,  9 May 2022 12:07:55 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 3AC62F80237; Mon,  9 May 2022 11:26:34 +0200 (CEST)
-Received: from inva021.nxp.com (inva021.nxp.com [92.121.34.21])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 4A009F8025D; Mon,  9 May 2022 12:07:53 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 11E80F8011C
- for <alsa-devel@alsa-project.org>; Mon,  9 May 2022 11:26:28 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 11E80F8011C
-Received: from inva021.nxp.com (localhost [127.0.0.1])
- by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 6C332200E7E;
- Mon,  9 May 2022 11:26:28 +0200 (CEST)
-Received: from aprdc01srsp001v.ap-rdc01.nxp.com
- (aprdc01srsp001v.ap-rdc01.nxp.com [165.114.16.16])
- by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 35FE9200E85;
- Mon,  9 May 2022 11:26:28 +0200 (CEST)
-Received: from localhost.localdomain (shlinux2.ap.freescale.net
- [10.192.224.44])
- by aprdc01srsp001v.ap-rdc01.nxp.com (Postfix) with ESMTP id 81BD6180031E;
- Mon,  9 May 2022 17:26:26 +0800 (+08)
-From: Shengjiu Wang <shengjiu.wang@nxp.com>
-To: nicoleotsuka@gmail.com, Xiubo.Lee@gmail.com, festevam@gmail.com,
- shengjiu.wang@gmail.com, lgirdwood@gmail.com, broonie@kernel.org,
- perex@perex.cz, tiwai@suse.com, alsa-devel@alsa-project.org,
- robh+dt@kernel.org, krzk+dt@kernel.org, devicetree@vger.kernel.org
-Subject: [PATCH 2/2] ASoC: dt-bindings: fsl,
- micfil: Add compatible string for imx8mp
-Date: Mon,  9 May 2022 17:14:23 +0800
-Message-Id: <1652087663-1908-2-git-send-email-shengjiu.wang@nxp.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1652087663-1908-1-git-send-email-shengjiu.wang@nxp.com>
-References: <1652087663-1908-1-git-send-email-shengjiu.wang@nxp.com>
-X-Virus-Scanned: ClamAV using ClamSMTP
-Cc: linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
+ by alsa1.perex.cz (Postfix) with ESMTPS id 5BA29F8011C
+ for <alsa-devel@alsa-project.org>; Mon,  9 May 2022 12:07:45 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5BA29F8011C
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
+ header.b="Jqjtv2RN"; 
+ dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
+ header.b="Lk4zaFnr"
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+ by smtp-out2.suse.de (Postfix) with ESMTP id 12B7F1F9F5;
+ Mon,  9 May 2022 10:07:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1652090865; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=onb2w7bPIYEEL78XxSeaROmCWn+3/YkmTbagPJ1Pgf8=;
+ b=Jqjtv2RNi2Pnvh6ZM46IOI5TpfIsI8xYg4gLrijHFmjifSiQ7khCVsp0w6tCU1HZWfTACE
+ GWO1JDpuUblYxIJ+mHBm6lPxo2yHon13IorS8/Itz1rpOKgY5N6ItbplIIbBnzSw2lczpj
+ R0Msg/L01Qsvw3wGcmPwZUKZM7Lge54=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1652090865;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=onb2w7bPIYEEL78XxSeaROmCWn+3/YkmTbagPJ1Pgf8=;
+ b=Lk4zaFnrmOX/vKujOu7M4v9u8c2PHCQKNsPfqs2hDcYJo3j2DU+b4/61v8V6e8/YIqYUl6
+ y7atC+/QOOSJQBBA==
+Received: from alsa1.suse.de (alsa1.suse.de [10.160.4.42])
+ by relay2.suse.de (Postfix) with ESMTP id E7ECF2C141;
+ Mon,  9 May 2022 10:07:44 +0000 (UTC)
+Date: Mon, 09 May 2022 12:07:44 +0200
+Message-ID: <s5h35hjm32n.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Arnd Bergmann <arnd@kernel.org>
+Subject: Re: [RFC v2 31/39] sound: add HAS_IOPORT dependencies
+In-Reply-To: <CAK8P3a3_ppFRY7y4TL21kXfthcbFJmjMivfmH2r4Cqy_vAiesA@mail.gmail.com>
+References: <20220429135108.2781579-1-schnelle@linux.ibm.com>
+ <20220429135108.2781579-57-schnelle@linux.ibm.com>
+ <s5hczgnm6ia.wl-tiwai@suse.de>
+ <CAK8P3a3_ppFRY7y4TL21kXfthcbFJmjMivfmH2r4Cqy_vAiesA@mail.gmail.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=US-ASCII
+Cc: linux-arch <linux-arch@vger.kernel.org>,
+ "moderated list:SOUND" <alsa-devel@alsa-project.org>,
+ Arnd Bergmann <arnd@arndb.de>, Niklas Schnelle <schnelle@linux.ibm.com>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Takashi Iwai <tiwai@suse.com>,
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+ linux-pci <linux-pci@vger.kernel.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -72,25 +95,56 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Add compatible string for imx8mp, which has micfil module
+On Mon, 09 May 2022 11:20:33 +0200,
+Arnd Bergmann wrote:
+> 
+> On Mon, May 9, 2022 at 10:53 AM Takashi Iwai <tiwai@suse.de> wrote:
+> > On Fri, 29 Apr 2022 15:50:54 +0200, Niklas Schnelle wrote:
+> 
+> > >
+> > >  config SND_OPL3_LIB
+> > >       tristate
+> > > +     depends on HAS_IOPPORT
+> > >       select SND_TIMER
+> > >       select SND_HWDEP
+> > >       select SND_SEQ_DEVICE if SND_SEQUENCER != n
+> >
+> > Both of those are the items to be reverse-selected, so cannot fulfill
+> > the dependency with depends-on.  That is, the items that select those
+> > should have the dependency on HAS_IOPORT instead.
+> >
+> > That is, a change like below:
+> >
+> > > --- a/sound/isa/Kconfig
+> > > +++ b/sound/isa/Kconfig
+> > > @@ -31,7 +31,7 @@ if SND_ISA
+> > >
+> > >  config SND_ADLIB
+> > >       tristate "AdLib FM card"
+> > > -     select SND_OPL3_LIB
+> > > +     depends on SND_OPL3_LIB
+> >
+> > ... won't work.  CONFIG_SND_OPL3_LIB is not enabled by itself but only
+> > to be selected.
+> 
+> Right, I missed that in my review. Not sure if this was a mistake in
+> my original patch or if it started in a later version.
+> 
+> I think for the ISA drivers, I would still add 'depends on HAS_IOPORT'
+> to both CONFIG_SND_ISA and CONFIG_SND_OPL3_LIB if only to
+> make it easier to understand, even though CONFIG_ISA requires
+> HAS_IOPORT already, and CONFIG_SND_OPL3_LIB cannot be
+> selected by itself.
 
-Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
----
- Documentation/devicetree/bindings/sound/fsl,micfil.txt | 1 +
- 1 file changed, 1 insertion(+)
+Yes, that makes sense.
 
-diff --git a/Documentation/devicetree/bindings/sound/fsl,micfil.txt b/Documentation/devicetree/bindings/sound/fsl,micfil.txt
-index 53e227b15277..1ea05d4996c7 100644
---- a/Documentation/devicetree/bindings/sound/fsl,micfil.txt
-+++ b/Documentation/devicetree/bindings/sound/fsl,micfil.txt
-@@ -6,6 +6,7 @@ microphone bitstream in a configurable output sampling rate.
- Required properties:
- 
-   - compatible		: Compatible list, contains "fsl,imx8mm-micfil"
-+			  or "fsl,imx8mp-micfil"
- 
-   - reg			: Offset and length of the register set for the device.
- 
--- 
-2.17.1
+> For the PCI drivers, I think we need to add the same dependency
+> on anything that either selects SND_OPL3_LIB or calls inb()/outb()
+> directly.
 
+Agreed.
+
+
+thanks,
+
+Takashi
