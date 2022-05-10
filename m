@@ -4,72 +4,88 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D183DC433EF
-	for <alsa-devel@archiver.kernel.org>; Wed, 11 May 2022 12:07:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0DE37C433F5
+	for <alsa-devel@archiver.kernel.org>; Wed, 11 May 2022 12:15:52 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E21D417FD;
-	Wed, 11 May 2022 14:06:19 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E21D417FD
+	by alsa0.perex.cz (Postfix) with ESMTPS id 7E0D91937;
+	Wed, 11 May 2022 14:15:00 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7E0D91937
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1652270830;
-	bh=j+SZT1/756FCJSOH/SWqGVaW5SakBqAL99hxm7pxi3g=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=VGfkb/SE+8lit11gtEkPI7H1VIX1PRbwxExPhXc4FG+qt+2Jh+JqGUcPYplPQ2aw3
-	 Oh9frOHIpzEfVjnPYEBZOxh4B5SgAsTEtnlmZpJA6OgysgxphKhSPyw4kZjoiGfVDF
-	 MxgRC/oWHzLuZAGAKETg2/OsUL6nYr5RNhcVANuw=
+	s=default; t=1652271350;
+	bh=sKLSP2OqzvoJexN5vhbAfJZX1o4VhDPz7T6brdFfj8c=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=T1CcRRf30cgtwEnmskIXhnhjnFciKKo6Sb7rO0081PuDiHzivzXpT58/K72zeHG+F
+	 +KjoZ8MajbfRqXNgGyhZmyjaileGD4zu+Jgyy16eL8RimeJx8WhBYyf3/Ry2Q0cJiI
+	 rhRIOd9+934Bg25Q0Awq5Zx+tP1sVKxUNgSiNxk4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 6AADFF8011C;
-	Wed, 11 May 2022 14:06:19 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 10727F80137;
+	Wed, 11 May 2022 14:15:00 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id DC703F8015B; Wed, 11 May 2022 14:06:17 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org
- [IPv6:2604:1380:4641:c500::1])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id 8A4EBF8011C; Tue, 10 May 2022 16:45:24 +0200 (CEST)
+Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com
+ [IPv6:2a00:1450:4864:20::632])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 72442F800BB
- for <alsa-devel@alsa-project.org>; Wed, 11 May 2022 14:06:15 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 72442F800BB
+ by alsa1.perex.cz (Postfix) with ESMTPS id F41AAF8011C
+ for <alsa-devel@alsa-project.org>; Tue, 10 May 2022 16:45:21 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F41AAF8011C
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="envSBHOj"
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id 7F54661972;
- Wed, 11 May 2022 12:06:12 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3443CC34112;
- Wed, 11 May 2022 12:06:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1652270771;
- bh=j+SZT1/756FCJSOH/SWqGVaW5SakBqAL99hxm7pxi3g=;
- h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=envSBHOjKbIr0rKczLGiBRqfDL78Sma3TLybp44DVJuTLIaZYtNApvReFU9U06O9v
- 3xWNB92V4Auz9luxglol+DuNCsdzS/4IOAZzhsH4r7K/1qhf8Da9UxH4nnYbqnx3bi
- X7XtwTiOUgYAA2K0EfrMcIvP5trUSMbRD62bOPrG9C3gvdZ15dVNLAWZUDSwX9DIo9
- InXC0vmpN5eU4chLnavg+yxST5A7ekd4hW1gs68udySrsn6i3HvTh/KkAHBITw1JZ/
- F582nQUqMy0xXryp2aDLcd3uwHcA9Yro9GicbHNlMk0bIyoLfhdYzels8U8SX5q47X
- JteycUYF4C4OA==
-Date: Wed, 11 May 2022 13:06:05 +0100
-From: Mark Brown <broonie@kernel.org>
-To: Hui Tang <tanghui20@huawei.com>
-Subject: Re: [PATCH -next 1/2] ASoC: max98396: Fix build error for implicit
- function declaration
-Message-ID: <YnumrRUSkVCPONdl@sirena.org.uk>
-References: <20220511012348.94288-1-tanghui20@huawei.com>
- <20220511012348.94288-2-tanghui20@huawei.com>
+ dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
+ header.b="Pvlrqisa"
+Received: by mail-ej1-x632.google.com with SMTP id l18so33397635ejc.7
+ for <alsa-devel@alsa-project.org>; Tue, 10 May 2022 07:45:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
+ h=from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=c+hsJzreaFfLVPyymmLrJkbyzmNJnJu0qYLtB9ahG6I=;
+ b=Pvlrqisa1HswCwseRK15nENZEWQjoMc6spitn2A60Toeq2u4wyRG+3D8kZNYnnyuDY
+ 9B9drOlmdCDl44n0mlLh/ePzcVnHgzvsmA62fzw4U5HS0e3OpUiHr5zEOTf0wTBqLx2w
+ npSUuQ19m0y2UrlY2sVD7f3VanQHN3FNAsHvhJmswelBFq0dnTJlrsZbePKQ2cdDwxKn
+ FFs+aWCv83G8Vx7PImReftM1vgLqU6Hf0GElXyWqNRvaVy2Nw3uZU9EyNWrmLOsmfzA8
+ U7NVEoxvhVTyYIegJb4iGIid9ZrGAmZGpm5Ubn4q+d+baPRupiqJotuFWPgCnzIpllWA
+ ZQ3A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=c+hsJzreaFfLVPyymmLrJkbyzmNJnJu0qYLtB9ahG6I=;
+ b=Ki5fkHKaT1Vji7eX2dZO9aiWypwChSMubkI2A7lyEUkB8iHnA8OvyW5v+EMddrcFJ0
+ B9FljiZyOtQEYXiDuGnzlrQtReJTtrgA5DJgDqCd4GGY2Ho17g9LagM5OlbAE7VtYLcN
+ Lsq7flWjBQKIdVrSR3dlKo9eaEvlT5E+J9ePyHcgjU/lRL7NRl2O6Bd7nA47UGIKgtIP
+ BH3jadOSGOYjk/aCtE8B7ip2+KW9rFwl8qCF1cLrSVCpPs2BkVo3OukF3u87DOvrrFDq
+ gh4Z2RagXeOYKk/0RnK26q5LAGvKm1EDLhOlMRK8LV8Q8u/7SE8eB2zdQmt6mmafppsZ
+ Jdwg==
+X-Gm-Message-State: AOAM533T8bjW9JQfUpI+QXZfPFZXgXgOdA8yFskY9gN8jGjpwL1Rt5TE
+ xm1/gdyPTCgyaU5EcXSNKXA=
+X-Google-Smtp-Source: ABdhPJzbwex+ryg9LpRDhemVltmdQwfI6oaKvTEX7Dp179Go73CpJYXZYcOYN8rQYQA8rk/O4g1ujw==
+X-Received: by 2002:a17:907:6d1f:b0:6fc:309f:8363 with SMTP id
+ sa31-20020a1709076d1f00b006fc309f8363mr3370782ejc.655.1652193920050; 
+ Tue, 10 May 2022 07:45:20 -0700 (PDT)
+Received: from localhost.localdomain (89-38-99-188.hosted-by-worldstream.net.
+ [89.38.99.188]) by smtp.gmail.com with ESMTPSA id
+ z16-20020a170906241000b006fb6d9d25bfsm829652eja.22.2022.05.10.07.45.16
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Tue, 10 May 2022 07:45:19 -0700 (PDT)
+From: Yassine Oudjana <yassine.oudjana@gmail.com>
+X-Google-Original-From: Yassine Oudjana <y.oudjana@protonmail.com>
+To: Andy Gross <agross@kernel.org>,
+ Bjorn Andersson <bjorn.andersson@linaro.org>,
+ Mathieu Poirier <mathieu.poirier@linaro.org>,
+ Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Subject: [RFC PATCH 0/2] Make qcom-ngd-ctrl not wait indefinitely for already
+ booted ADSP
+Date: Tue, 10 May 2022 18:42:17 +0400
+Message-Id: <20220510144219.806391-1-y.oudjana@protonmail.com>
+X-Mailer: git-send-email 2.36.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature"; boundary="3Eq9i/WIkpo74bQR"
-Content-Disposition: inline
-In-Reply-To: <20220511012348.94288-2-tanghui20@huawei.com>
-X-Cookie: Look ere ye leap.
-Cc: alsa-devel@alsa-project.org, steve@sk2.org, linux-kernel@vger.kernel.org,
- tiwai@suse.com, lgirdwood@gmail.com, ricardw@axis.com,
- ryan.lee.analog@gmail.com
+Content-Transfer-Encoding: 8bit
+X-Mailman-Approved-At: Wed, 11 May 2022 14:14:58 +0200
+Cc: alsa-devel@alsa-project.org, Yassine Oudjana <y.oudjana@protonmail.com>,
+ linux-arm-msm@vger.kernel.org, linux-remoteproc@vger.kernel.org,
+ linux-kernel@vger.kernel.org, Yassine Oudjana <yassine.oudjana@gmail.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -85,49 +101,34 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+Commit a899d324863a3 ("slimbus: qcom-ngd-ctrl: add Sub System Restart support")
+made qcom-ngd-ctrl wait for ADSP to become ready before starting to do its work.
+Due to how the SSR notifications currently work though, if qcom-ngd-ctrl probes
+after ADSP boots and becomes ready, it never receives a QCOM_SSR_AFTER_POWERUP
+event notification and keeps waiting indefinitely, making SLIMbus never come up.
 
---3Eq9i/WIkpo74bQR
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+This series makes qcom_register_ssr_notifier call the notifier_call of the newly
+registered notifier block with the last SSR event received from the remoteproc,
+basically reporting the event that qcom-ngd-ctrl missed by registering late,
+stopping it from waiting for an event that has already happened.
 
-On Wed, May 11, 2022 at 09:23:47AM +0800, Hui Tang wrote:
+I'm not sure if this approach would have any unwanted consequences in other
+drivers relying on SSR events however, hence I'm sending this as a RFC. This
+can also be considered a bug report, so if anyone has a better fix then I'd
+appreciate it getting applied instead of this one.
 
->                          devm_regulator_get_optional
-> sound/soc/codecs/max98396.c:1556:23: error: =E2=80=98GPIOD_OUT_HIGH=E2=80=
-=99 undeclared (first use in this function); did you mean =E2=80=98GPIOF_IN=
-IT_HIGH=E2=80=99?
->               "reset", GPIOD_OUT_HIGH);
->                        ^~~~~~~~~~~~~~
->                        GPIOF_INIT_HIGH
-> sound/soc/codecs/max98396.c:1556:23: note: each undeclared identifier is =
-reported only once for each function it appears in
-> sound/soc/codecs/max98396.c:1565:3: error: implicit declaration of functi=
-on =E2=80=98gpiod_set_value_cansleep=E2=80=99; did you mean =E2=80=98gpio_s=
-et_value_cansleep=E2=80=99? [-Werror=3Dimplicit-function-declaration]
->    gpiod_set_value_cansleep(max98396->reset_gpio, 0);
->    ^~~~~~~~~~~~~~~~~~~~~~~~
->    gpio_set_value_cansleep
-> cc1: all warnings being treated as errors
->=20
-> Add depend on GPIOLIB for 'config SND_SOC_MAX98396'
+The second patch is a general fix that became necessary after the first patch,
+and should likely be applied anyway.
 
-No, these issues are missing headers not dependencies.  In general
-gpiolib stubs out so drivers can optionally use GPIO functionality.
+Yassine Oudjana (2):
+  remoteproc: qcom: Report last event on SSR notifier registration
+  slimbus: qcom-ngd-ctrl: Initialize ngd_up_work before it can be
+    scheduled
 
---3Eq9i/WIkpo74bQR
-Content-Type: application/pgp-signature; name="signature.asc"
+ drivers/remoteproc/qcom_common.c | 17 +++++++++++++----
+ drivers/slimbus/qcom-ngd-ctrl.c  |  3 ++-
+ 2 files changed, 15 insertions(+), 5 deletions(-)
 
------BEGIN PGP SIGNATURE-----
+-- 
+2.36.0
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmJ7pqwACgkQJNaLcl1U
-h9B0kgf8CXSZlR2n9HkIGn6ZvtvMYK62TBjP2DAICSADC+/7mIu2RtE2eQSLbIUJ
-xaxEvMealU9daTphvXFlWHhVlVQow897uyOrsuAmaNdbx7hi1PhJyr1vs89iS+uY
-Ss5lPUjN8OsdyweQkaQWO91ug+mSb3q3X3Qr0KBaCqMSgVXA7cUoEtHrFkWKn8qQ
-QRJoTxHmC7Xed5N0zEhE7d7quXBLgiGL9FZfKoQpJQ2IBDTB486XblaUhl2TVXDu
-sP4c1FHQvKT3qnDg0eLyvu8st/jPGe+pAjpKLh9rzvY36UFBrOu9bwzti1L/oZXW
-VJ24AXxfw3iFzrOkEF42aVToPho6hQ==
-=SyXL
------END PGP SIGNATURE-----
-
---3Eq9i/WIkpo74bQR--
