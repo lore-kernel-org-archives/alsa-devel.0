@@ -4,68 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A7687C433EF
-	for <alsa-devel@archiver.kernel.org>; Tue, 10 May 2022 14:51:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0ECB5C433EF
+	for <alsa-devel@archiver.kernel.org>; Tue, 10 May 2022 14:51:27 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 423E918FB;
-	Tue, 10 May 2022 16:50:16 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 423E918FB
+	by alsa0.perex.cz (Postfix) with ESMTPS id 106491902;
+	Tue, 10 May 2022 16:50:36 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 106491902
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1652194266;
-	bh=Te2sD/cDnoun0AwDA9vgLsTlUYlmrjjvVc6ECCVxxpU=;
+	s=default; t=1652194286;
+	bh=6XuMp8z+zo3YDGe5VL1Tf2eEEjux9fkOX0TVJgBGhn0=;
 	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=I4Eqf69TB1WUfIvj5TrCLuivHnyAJBK56DiZMOmlffkn7NZoS6KTA6hxkumQQT9vH
-	 crlAIYXuJbRpw/3IJIU6EjYD5qPBzHSzJgLKaKvZGYPFhvWorhUdk1jn3QakjIHzxc
-	 sPKvzko4vded8v3j0Zw2dz2n7NjMaF3XNvO+UaSE=
+	b=MwFCI4eo819RoloV1gw/uBr1tJoGWZfW2nPcvqHNU+4fDtB83Jg6k1iEFF0VC7fct
+	 pe5mQ0Zh10dej8gW2LngJ36ckKmFFHgoaoQIJP0TzXUMNA1BGrx37hbIekFODev6YC
+	 AiO2Ct8nEh9sZW/H9OBLvAq9ZgQuS+Mry9QbSWio=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 8EEA0F80153;
-	Tue, 10 May 2022 16:49:47 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 235EAF804FF;
+	Tue, 10 May 2022 16:49:49 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 47571F804FF; Tue, 10 May 2022 16:49:45 +0200 (CEST)
-Received: from sin.source.kernel.org (sin.source.kernel.org [145.40.73.55])
+ id 03154F8011C; Tue, 10 May 2022 16:49:48 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org
+ [IPv6:2604:1380:4641:c500::1])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 900EAF80153
+ by alsa1.perex.cz (Postfix) with ESMTPS id C03F5F8011C
  for <alsa-devel@alsa-project.org>; Tue, 10 May 2022 16:49:41 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 900EAF80153
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C03F5F8011C
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="hIU0MLSy"
+ header.b="HpmGOfTd"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by sin.source.kernel.org (Postfix) with ESMTPS id 2A920CE1F2B;
- Tue, 10 May 2022 14:49:39 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 01BFFC385C9;
- Tue, 10 May 2022 14:49:34 +0000 (UTC)
+ by dfw.source.kernel.org (Postfix) with ESMTPS id 1740E61944;
+ Tue, 10 May 2022 14:49:40 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 20D3BC385C2;
+ Tue, 10 May 2022 14:49:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1652194177;
- bh=Te2sD/cDnoun0AwDA9vgLsTlUYlmrjjvVc6ECCVxxpU=;
+ s=k20201202; t=1652194179;
+ bh=6XuMp8z+zo3YDGe5VL1Tf2eEEjux9fkOX0TVJgBGhn0=;
  h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=hIU0MLSy0U+hyR4yUULyOPI3PieQ6tkGZURG/I4Dz+y3wN7FQMcaIjyArGXSlH501
- i4OI+tJXfFqeHf+KdssFjQadGcCfVK4Hz8qRXku6q2hrQARzijqwkZOX1HxcDXriCS
- MK17vqz9geYAtwDWTZJJnhMh+lq0G2kBjoVzZJz9yt7UodOZEAjDxPl9cwSvW6JASA
- OUymGcyaf3i8CuAShTtf+yD2elx0XdAHUX6K+29C+SHNqhk7TOYyv8GdARoHhVgGNT
- Gn1WPVdEzE34Ma+a8+yt/nXgSziTHn1SMqjrDIcq3csEopB/qWro43E3uw3G7ZkI9E
- pbekd+u8gNhsA==
+ b=HpmGOfTdzuEbw4aomU+mEB5sr9X3wPkaBPXf40h+90ZQR56o676SLrqrzGhsxOorW
+ CnQtAmapvti3U8sJ9ej1bnpvw9RzJviM+kdGyCMG/YqspKQOZgm6t3TXLYcv991KqB
+ vu3uYl/WUQgYZ5oLEBFJ3GUTV0o0iusQKcuKC8wIKMa7LMXJ+tKYvq9vhyp/iTUZot
+ d+2HipY1fCqzyog6FWn78MVVT9sAn5chqjUvmo3zHKbGUxvjg1Ham8VMkXlxngKedU
+ 6Sc8MMMoIJRhFdtmtfh0OPzmvtifqHf6pEX2jiEzNYhK2z9nBq1dxxxiIs7iHSW4DS
+ Nwq0OwnZPzX0w==
 From: Mark Brown <broonie@kernel.org>
-To: Xiubo.Lee@gmail.com, alsa-devel@alsa-project.org, perex@perex.cz,
- krzk+dt@kernel.org, shengjiu.wang@nxp.com, lgirdwood@gmail.com,
- nicoleotsuka@gmail.com, festevam@gmail.com, devicetree@vger.kernel.org,
- shengjiu.wang@gmail.com, robh+dt@kernel.org, tiwai@suse.com
-In-Reply-To: <1652087663-1908-1-git-send-email-shengjiu.wang@nxp.com>
-References: <1652087663-1908-1-git-send-email-shengjiu.wang@nxp.com>
-Subject: Re: [PATCH 1/2] ASoC: fsl_micfil: Add support for i.MX8MPlus
-Message-Id: <165219417472.388769.13970240077661005048.b4-ty@kernel.org>
-Date: Tue, 10 May 2022 15:49:34 +0100
+To: pierre-louis.bossart@linux.intel.com, alsa-devel@alsa-project.org
+In-Reply-To: <20220509170425.54640-1-pierre-louis.bossart@linux.intel.com>
+References: <20220509170425.54640-1-pierre-louis.bossart@linux.intel.com>
+Subject: Re: [PATCH] ASoC: SOF: ipc: introduce cont_update_posn in
+ sof_ipc_stream_params struct
+Message-Id: <165219417785.388769.12855496179626110127.b4-ty@kernel.org>
+Date: Tue, 10 May 2022 15:49:37 +0100
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
+Cc: tiwai@suse.de, daniel.baluta@nxp.com, ranjani.sridharan@linux.intel.com,
+ kai.vehmanen@linux.intel.com, yc.hung@mediatek.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -81,14 +81,17 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Mon, 9 May 2022 17:14:22 +0800, Shengjiu Wang wrote:
-> On i.MX8Plus there are two updates for micfil module.
+On Mon, 9 May 2022 12:04:25 -0500, Pierre-Louis Bossart wrote:
+> From: YC Hung <yc.hung@mediatek.com>
 > 
-> One is that the output format is S32_LE, only the 24 more
-> significative bits have information, the other bits are always
-> zero. Add 'formats' variable in soc data to distinguish the
-> format on different platform.
-> Another is that the fifo depth is 32 entries.
+> The host stream position is updated when no_stream_position is set as 0.
+> However current implementation updates host stream position only when
+> report data is larger than or equal to host period size which is decided
+> by the period size of host side. It maybe cause host stream position
+> update not in time. Therefore this patch introduces another field
+> "cont_update_posn", a boolean value aimed to update host stream position
+> continuously and based on period size of pipeline. It can get better
+> precise when need to update host stream position from firmware.
 > 
 > [...]
 
@@ -98,10 +101,8 @@ Applied to
 
 Thanks!
 
-[1/2] ASoC: fsl_micfil: Add support for i.MX8MPlus
-      commit: cb05dac1bc34ad701972503ca1a75b51ae4478ff
-[2/2] ASoC: dt-bindings: fsl,micfil: Add compatible string for imx8mp
-      commit: 7b46eb1bf9534a75ff072a01e774b79e6a17cfdd
+[1/1] ASoC: SOF: ipc: introduce cont_update_posn in sof_ipc_stream_params struct
+      commit: 2cb29da3f2c29e62311eec6446be92aa5f2c1620
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
