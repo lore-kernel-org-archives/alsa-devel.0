@@ -4,72 +4,65 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D0B03C433F5
-	for <alsa-devel@archiver.kernel.org>; Tue, 10 May 2022 12:55:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 61299C433F5
+	for <alsa-devel@archiver.kernel.org>; Tue, 10 May 2022 13:01:40 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 8205018C4;
-	Tue, 10 May 2022 14:54:20 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8205018C4
+	by alsa0.perex.cz (Postfix) with ESMTPS id 34E0E18C8;
+	Tue, 10 May 2022 15:00:49 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 34E0E18C8
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1652187310;
-	bh=4PivaWWi4aEx+cxNzcxek9VaB+oZC2dWimjoWJP0lEo=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	s=default; t=1652187699;
+	bh=qiNUFofEKQvjLpQ/+eiLIB1OUhf4l/Ig7oEN2oOkq30=;
+	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=QW/zPVPugIgoNMqjix2PzD5GCQxZESVLGHH6v6wilxY2xPnTtCtd6lQ9w3xf2LVhp
-	 WxdWyCp/PJG5MR46pn1jckm5G98n3OsW+B8Iwd9r9ca8C74ZsDIIUwlguMVfifF9eY
-	 kt58Rse9tX+4YBnkvi5bjMEp2tzrPFdUzxbO3WdU=
+	b=roaHpkuHyrzYiHCmVqyY7s7W63X8Iyc11P/Vzk50y8c/RKD7/i9oNyQBIBvN4sEMT
+	 HuNzD6rAbQPHP9ekC3VM0fak3jdLoO6GqQRYTO7h3uA2qjsXViQhMsMHpY7+7glgW2
+	 JEiGjuUM+3zyS0R62pTW9fv9/eDCWlJRxxhOBJn0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 1B135F80153;
-	Tue, 10 May 2022 14:54:20 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 95660F804BB;
+	Tue, 10 May 2022 15:00:48 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 2EEF5F8019D; Tue, 10 May 2022 14:54:19 +0200 (CEST)
-Received: from ams.source.kernel.org (ams.source.kernel.org
- [IPv6:2604:1380:4601:e00::1])
+ id B3FE3F801F5; Tue, 10 May 2022 15:00:46 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id D03AEF8014C
- for <alsa-devel@alsa-project.org>; Tue, 10 May 2022 14:54:16 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D03AEF8014C
+ by alsa1.perex.cz (Postfix) with ESMTPS id 26042F8014C
+ for <alsa-devel@alsa-project.org>; Tue, 10 May 2022 15:00:44 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 26042F8014C
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="prHSrTuY"
+ header.b="h4CYoTib"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by ams.source.kernel.org (Postfix) with ESMTPS id 97B1BB81D2F;
- Tue, 10 May 2022 12:54:15 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 65B65C385C6;
- Tue, 10 May 2022 12:54:11 +0000 (UTC)
+ by dfw.source.kernel.org (Postfix) with ESMTPS id D8767614BD;
+ Tue, 10 May 2022 13:00:42 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9FB51C385C6;
+ Tue, 10 May 2022 13:00:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1652187254;
- bh=4PivaWWi4aEx+cxNzcxek9VaB+oZC2dWimjoWJP0lEo=;
- h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=prHSrTuY6SWToZk1S1G9KfEht4wO8o9B6JcZav7Jczb+IsjukMdEwDYWRiBweoJo8
- YPhv3WJ1ivSV9Ogg4OcHvox5ZIRJH30+2bDQB5YyCux8FxtykmT03WlZkrzuOUXtCp
- vlUJ5lmdEl2wieeeXEHobRBBpA1RnOcCP6+5aW7Q37uVoam18/1b3cKjLjuMOY6n4c
- i/tel7fHiiz8zoiek7/ffgOHy3MZXEcARJ8reaQn1vMzUlQLazBW8RCa+yT3sjX4/3
- LOl/gKSoeIXiKB/pAEGmp4EsC1zoT0a9mUAoiqfKvktbfb9yzYrDsMroI2eIiti8c+
- HuoPtieR/WPrw==
-Date: Tue, 10 May 2022 13:54:08 +0100
+ s=k20201202; t=1652187642;
+ bh=qiNUFofEKQvjLpQ/+eiLIB1OUhf4l/Ig7oEN2oOkq30=;
+ h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+ b=h4CYoTibCsRvp1hm8gTOmaO9ksXYpEuFjdzE4SHvBZvlJqJf2gN7Ye9xyj+jvN1Mc
+ dvyJ0bKTGHTFdaWTVEf6x5z/TjdWJtw2ty/yqatjhNiAiuhRJPu68ue0a9q8dYoAqj
+ xzqUaigZQXk+z6bwWfPaROOqniUA0ZABBczKN4bySKNMakNVUQz6O28ByhSUvBerKQ
+ aConbB7auaL5ETDSD4DnYS4Ij9Li//EfLg5EFFgFmyyjxVC/cir7L8D4PXeqe6dL5M
+ KqdMW89w0lqdtgDraORXTfqZycYEOtOzTkP6469mfkqfGSkwmprE5zHGOOgfFMUGBa
+ TG9VXNe2Ouk7A==
 From: Mark Brown <broonie@kernel.org>
-To: Shengjiu Wang <shengjiu.wang@nxp.com>
-Subject: Re: [PATCH 1/2] ASoC: fsl_micfil: Add support for i.MX8MPlus
-Message-ID: <YnpgcAVzADHoCUgI@sirena.org.uk>
-References: <1652087663-1908-1-git-send-email-shengjiu.wang@nxp.com>
+To: alsa-devel@alsa-project.org, pierre-louis.bossart@linux.intel.com
+In-Reply-To: <20220509185729.59884-1-pierre-louis.bossart@linux.intel.com>
+References: <20220509185729.59884-1-pierre-louis.bossart@linux.intel.com>
+Subject: Re: [PATCH] ASoC: codecs: rt715-sdca: remove useless assignment of ops
+Message-Id: <165218764138.65921.1373938687406294328.b4-ty@kernel.org>
+Date: Tue, 10 May 2022 14:00:41 +0100
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature"; boundary="2Z522tNyah4CHNrF"
-Content-Disposition: inline
-In-Reply-To: <1652087663-1908-1-git-send-email-shengjiu.wang@nxp.com>
-X-Cookie: I've read SEVEN MILLION books!!
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
- linuxppc-dev@lists.ozlabs.org, Xiubo.Lee@gmail.com, festevam@gmail.com,
- tiwai@suse.com, lgirdwood@gmail.com, nicoleotsuka@gmail.com,
- robh+dt@kernel.org, krzk+dt@kernel.org, shengjiu.wang@gmail.com,
- linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+Cc: tiwai@suse.de
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -85,36 +78,36 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+On Mon, 9 May 2022 13:57:29 -0500, Pierre-Louis Bossart wrote:
+> The ops are already part of the 'struct sdw_driver', it's unclear why
+> this was copied into the 'slave' structure - no other driver does so.
+> 
+> 
 
---2Z522tNyah4CHNrF
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Applied to
 
-On Mon, May 09, 2022 at 05:14:22PM +0800, Shengjiu Wang wrote:
-> On i.MX8Plus there are two updates for micfil module.
->=20
-> One is that the output format is S32_LE, only the 24 more
-> significative bits have information, the other bits are always
-> zero. Add 'formats' variable in soc data to distinguish the
-> format on different platform.
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
 
-You can set sig_bits to say that only the top 24 bits are meaningful,
-though I'm not sure many userspace applications pay any attention.
+Thanks!
 
---2Z522tNyah4CHNrF
-Content-Type: application/pgp-signature; name="signature.asc"
+[1/1] ASoC: codecs: rt715-sdca: remove useless assignment of ops
+      commit: 5118da41c7594ccf4e64003bf325ffcefb3da6e3
 
------BEGIN PGP SIGNATURE-----
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmJ6YG8ACgkQJNaLcl1U
-h9AAZAf9FIpl1VBhFVT54/Bc818gjoAdE0BtGCj8hJx+BkHhVZrP/j/zQDPMsSwm
-MicGHeGYNhAOFvKVkSFNg+9bZkho8sFtnlEaJfZ/JqFob5427lAlk4fr1EcfqU8f
-1ICz//JQzP6UAXI9UpI/JlqdBRHbW9OmMiQiVCtoGSPV4ReuXP4vQTvW6nSdFeXS
-yJaa7rvTSHn92leRXDek3XAxGEuci7VJ/zvFFxbO9wPLXGEj6VkMqSSaJ+an2Rgy
-bfB4kztha4PQsEPWaMZxYkbxwiLTNIDKYNMRkUWc43OpxCF6+hu5jimP18vRToGl
-25szXXQxFjmC9ojtkMeYsNeOQBqYPw==
-=M2n0
------END PGP SIGNATURE-----
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
---2Z522tNyah4CHNrF--
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
