@@ -4,67 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A09CBC433F5
-	for <alsa-devel@archiver.kernel.org>; Tue, 10 May 2022 13:02:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E71B1C433EF
+	for <alsa-devel@archiver.kernel.org>; Tue, 10 May 2022 14:50:37 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C2E2C18FE;
-	Tue, 10 May 2022 15:01:22 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C2E2C18FE
+	by alsa0.perex.cz (Postfix) with ESMTPS id 55D3F17EE;
+	Tue, 10 May 2022 16:49:45 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 55D3F17EE
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1652187732;
-	bh=MRzdmtS5LCRMgbir7hYUGrUcVpNYu8k5kS6pyDZ6p9s=;
+	s=default; t=1652194235;
+	bh=okWehPSv94o5n4/YHnWsmeTik2HBIjXblj7tJPWDO9E=;
 	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=A5KpzRCHwCV+qpsl0P9DPMxxsU2zirewCNAjIlUysOn0cZIhJ1g+EPpjooiWyAKHb
-	 EaE39uvloyuriSWXtqEu0tjNi/Fdi2Ue3MX9SJk3EI6CZ60/eB97nAQx87cFO5/Xkc
-	 5Fh/93dlkIn9ZpC6Z+xNIDxWDFxVn0v3WWZ8Ib4A=
+	b=ilD3BySHOYbcgUdbPlTnL04HBd8hxbG2vV211WlgiuCTB2bYp9v9ItcimEg/wiDWk
+	 aZOCyApERk9KdOqxTKz+X8RFdAEueq7fCBnElVRuLEsOxkN93N+I8M4UnGqrbomVsR
+	 +aJ6nT2Y9PIEWLk+qIH0yEtsQks9naBnbkr0XpOs=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id C7637F80510;
-	Tue, 10 May 2022 15:00:52 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id DED46F801F5;
+	Tue, 10 May 2022 16:49:44 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 85B01F80508; Tue, 10 May 2022 15:00:51 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org
- [IPv6:2604:1380:4641:c500::1])
+ id B15D6F8019D; Tue, 10 May 2022 16:49:43 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 7854BF8014C
- for <alsa-devel@alsa-project.org>; Tue, 10 May 2022 15:00:45 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7854BF8014C
+ by alsa1.perex.cz (Postfix) with ESMTPS id 22A8DF8014C
+ for <alsa-devel@alsa-project.org>; Tue, 10 May 2022 16:49:37 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 22A8DF8014C
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="e0mtljzZ"
+ header.b="t1SxeHdp"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id 87215614C2;
- Tue, 10 May 2022 13:00:44 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BA1ADC385C2;
- Tue, 10 May 2022 13:00:42 +0000 (UTC)
+ by dfw.source.kernel.org (Postfix) with ESMTPS id 0E7F661976;
+ Tue, 10 May 2022 14:49:35 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 43120C385A6;
+ Tue, 10 May 2022 14:49:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1652187643;
- bh=MRzdmtS5LCRMgbir7hYUGrUcVpNYu8k5kS6pyDZ6p9s=;
+ s=k20201202; t=1652194174;
+ bh=okWehPSv94o5n4/YHnWsmeTik2HBIjXblj7tJPWDO9E=;
  h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=e0mtljzZPiygJ/KTfcA4y40qffVBaorrpMXFZFutIYWO6QPq/1+70K+ac54SJecaM
- z3iBmOZG7sAA0yUhEND9FSSdEWjaaJR5fMOUjYFBAQmIFzDyUW98CZMWL/bjdG3WLh
- 2WXhLIEwMXD/BkbvLIk5kwVuggt6xqpY+qKQE6mxUREGbgSBo3nUqQOB6sOHhCNe9q
- ndvxMBZ/qdvEKiLM+q3yVkXfGjbCpv/QoWozvv4u5hE3w56i2AHNlkZcUitZ/O4g/R
- 83s55zpo1WBILCvy+/DX6OkhcjRnjRNHiHVTZM8ZXz9Jz+uf53T+uaVefm3IaWD6Nw
- gCrbcL4OmJpiA==
+ b=t1SxeHdp7fQWC9lw9euzejlkdo37j7bMZVQAqq6jmXaUhqFbk4GkvQ5QjwxGzYmbs
+ cCIAKfAM0tpqpEpqA+GHIiC3DsaQBYnQekmQctwNx0OvP6jsUj3S8AL4OCmjAZD1Zb
+ zVccDEt4TFv3t5ci7d+G7qPcint0YWkIMm7XRljq59e8WUPV72vqKZVdTH93os0mgw
+ ME7Saj6J6c2hpxBhDV8nXLXH2I8Bm8vY+b5AqZ4MAEPuqTsZe3FpxFNYDgkM/kIkQL
+ TsU+oe8eDEQEW03XmGau/8vqaS1rSwkVAPUpPBKgJ9ccxRUlJTxSJVviLw5yhA8kb0
+ TYECMedw9XmNQ==
 From: Mark Brown <broonie@kernel.org>
-To: tiwai@suse.com, zheyuma97@gmail.com, lgirdwood@gmail.com, perex@perex.cz
-In-Reply-To: <20220510053031.1685337-1-zheyuma97@gmail.com>
-References: <20220510053031.1685337-1-zheyuma97@gmail.com>
-Subject: Re: [PATCH v2] ASoC: tlv320adcx140: Register a callback to disable
- the regulator_disable
-Message-Id: <165218764249.65921.16308072156284883779.b4-ty@kernel.org>
-Date: Tue, 10 May 2022 14:00:42 +0100
+To: yangyingliang@huawei.com, alsa-devel@alsa-project.org,
+ linux-kernel@vger.kernel.org
+In-Reply-To: <20220510124749.2663874-1-yangyingliang@huawei.com>
+References: <20220510124749.2663874-1-yangyingliang@huawei.com>
+Subject: Re: [PATCH -next] ASoC: samsung: spdif: remove unnecessary check of
+ mem_res
+Message-Id: <165219417300.388769.4515467081124288900.b4-ty@kernel.org>
+Date: Tue, 10 May 2022 15:49:33 +0100
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Cc: krzysztof.kozlowski@linaro.org, lgirdwood@gmail.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -80,9 +80,9 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Tue, 10 May 2022 13:30:31 +0800, Zheyu Ma wrote:
-> The driver should register a callback that will deal with the disabling
-> when it fails to probe.
+On Tue, 10 May 2022 20:47:49 +0800, Yang Yingliang wrote:
+> The resource is checked in probe function, so there is
+> no need do this check in remove function.
 > 
 > 
 
@@ -92,8 +92,8 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: tlv320adcx140: Register a callback to disable the regulator_disable
-      commit: e1c9f68aa23a8bf98e956e92e61293ef51bd6282
+[1/1] ASoC: samsung: spdif: remove unnecessary check of mem_res
+      commit: 9d62ba94266be3ddc864348a4df7e54f5562f0d5
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
