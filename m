@@ -4,75 +4,79 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 14F7AC433EF
-	for <alsa-devel@archiver.kernel.org>; Tue, 10 May 2022 16:18:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5A0C5C433F5
+	for <alsa-devel@archiver.kernel.org>; Tue, 10 May 2022 16:18:40 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 5C61D18E4;
-	Tue, 10 May 2022 18:17:16 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5C61D18E4
+	by alsa0.perex.cz (Postfix) with ESMTPS id 519BC191C;
+	Tue, 10 May 2022 18:17:48 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 519BC191C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1652199486;
-	bh=jHn8nQJNH+T8Cz5fUMutmOfGOejntJoyFm5mRwbUM18=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=GK4gltknd9Kodgep5JnKcGDtbZQcc8iLKE7WR/101XDIm74XZkPyCV2pYptDUNIKo
-	 2z7qD50JcHtItKW05o9f3UwX5MM88Wssri1+YQgTnz4rLxIsHmEpDeNVVsHgJDHHw4
-	 ruwH6yuFOC5eawKw2C8Q2HeYcO3kFcPIeCZSc/hc=
+	s=default; t=1652199518;
+	bh=DkA7E8H+Q3Q5xt43U43baOuMqVZ0rI0i8MA64asRsHU=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=lb4vBuVuUhmRFYg67WAtfynk+2m/2B1gIxz3PA5HaUZaYScX1793SXXO+d/MRtn7o
+	 iIrEO/MP+PVAujTlBFwf6cGKfRhX0xnk7bIKgggEkCZvAOjgDXDr7nBNkdCfuHrCoZ
+	 TGsy2JTID3DRnTuhETKSbNstrCW8Y0i6Qm1SnYgI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id D9AF0F80240;
-	Tue, 10 May 2022 18:17:15 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 277D5F804BD;
+	Tue, 10 May 2022 18:17:18 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 4E7FBF80240; Tue, 10 May 2022 18:17:15 +0200 (CEST)
+ id 4A633F80508; Tue, 10 May 2022 18:17:17 +0200 (CEST)
 Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
  [67.231.152.168])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id B9273F80116
+ by alsa1.perex.cz (Postfix) with ESMTPS id 22BD2F8011C
  for <alsa-devel@alsa-project.org>; Tue, 10 May 2022 18:17:10 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B9273F80116
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 22BD2F8011C
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com
- header.b="BJ1IDdv+"
+ header.b="lujU0anK"
 Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
- by mx0b-001ae601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 24A5TVpe021012;
- Tue, 10 May 2022 11:17:08 -0500
+ by mx0b-001ae601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 24A5TVph021012;
+ Tue, 10 May 2022 11:17:09 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
  h=from : to : cc :
- subject : date : message-id : mime-version : content-transfer-encoding :
- content-type; s=PODMain02222019;
- bh=zXofkY1bd3XtG154r7H2+Sqnxy0DHw+79gdGYM1CoL8=;
- b=BJ1IDdv+25911XUZUZVcM8S3KMrQHBK+C6OnpU+dlcsAONI5D2yfYapVUc+x8xKet5HF
- 8Nm0AQ3/xE55kku8CxO1cAmqZ3xV0GRc0BA0lu0+4tD7Xzd2Urn4hKKV8sjS8Ywecznr
- VJCgu8a6E7hanZwOx3uI1DHovrB0YffW84JOaqUCK6gu7ArWc76+dvsnOcacYqTO0frc
- eE89DTQ/xQvuiNftyVXQjZn/1crXyC4nVCy9AW+JTmU315S7bNDFTRv/Ieo4ahK94yqp
- 5KEuEadPVqiP9BupfFIrcuKp4IRbWGOhCcllvujec+deFYm+N6FDLVwCQU4ZZ1ouhqv+ zw== 
+ subject : date : message-id : in-reply-to : references : mime-version :
+ content-transfer-encoding : content-type; s=PODMain02222019;
+ bh=MAF4HrjBnpXjwWhSzT2Z6EFEzR5KeFyp/09dN8HFm18=;
+ b=lujU0anKAJesYNHZ4SGqbWzKAImsZeHwIZNEJjlKEUyBRDKztCxzTwOy7wtUy2gIAEq4
+ 96ze3xk8zfxCJG4UpWY4fDinoCcDQ5y2Z9XuGFnydqctRgGwICB2nrVVoBbCaajNYkKI
+ gI53ijTdfZGHfkX7OAzWTrsfJwRdY3mSduYO8icbO73yYxt49hf+LPWR73Nt0OtLzHHH
+ +Q3Z2mgRTQlEABDGJrIh+ODbpSlOZMLlssecjxwyOpHlUIEkTR7yI4Ne038tzIOgHvzM
+ HZ/ujx24eh26fEBoXnusJEdiGYQHwdMavTHu8wNSmz2uQOWVfZUhryfdSdtfUStMgl+P kA== 
 Received: from ediex02.ad.cirrus.com ([84.19.233.68])
- by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3fwn6nvk88-1
+ by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3fwn6nvk88-3
  (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
- Tue, 10 May 2022 11:17:07 -0500
+ Tue, 10 May 2022 11:17:09 -0500
 Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX02.ad.cirrus.com
  (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.24; Tue, 10 May
- 2022 17:17:06 +0100
+ 2022 17:17:07 +0100
 Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
  (198.61.84.80) with Microsoft SMTP Server id 15.1.2375.24 via
- Frontend Transport; Tue, 10 May 2022 17:17:06 +0100
+ Frontend Transport; Tue, 10 May 2022 17:17:07 +0100
 Received: from sbinding-cirrus-dsktp.ad.cirrus.com (unknown [198.90.238.24])
- by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 2DA6E475;
- Tue, 10 May 2022 16:17:06 +0000 (UTC)
+ by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 1E42AB10;
+ Tue, 10 May 2022 16:17:07 +0000 (UTC)
 From: Stefan Binding <sbinding@opensource.cirrus.com>
 To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
-Subject: [PATCH v1 0/3] ALSA: hda/cs8409: Add support for Odin Laptop Variants
-Date: Tue, 10 May 2022 17:16:58 +0100
-Message-ID: <20220510161701.851260-1-sbinding@opensource.cirrus.com>
+Subject: [PATCH v1 3/3] ALSA: hda/cs8409: Add Speaker Playback Switch for
+ Warlock
+Date: Tue, 10 May 2022 17:17:01 +0100
+Message-ID: <20220510161701.851260-4-sbinding@opensource.cirrus.com>
 X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20220510161701.851260-1-sbinding@opensource.cirrus.com>
+References: <20220510161701.851260-1-sbinding@opensource.cirrus.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: GOqpgBxOq3tQq_4_EliPVL75yfgzbnSF
-X-Proofpoint-GUID: GOqpgBxOq3tQq_4_EliPVL75yfgzbnSF
+X-Proofpoint-ORIG-GUID: 8FixfZNXj90yNy0dxbUA2yYotHVd0tk1
+X-Proofpoint-GUID: 8FixfZNXj90yNy0dxbUA2yYotHVd0tk1
 X-Proofpoint-Spam-Reason: safe
 Cc: patches@opensource.cirrus.com, alsa-devel@alsa-project.org,
  linux-kernel@vger.kernel.org, Stefan Binding <sbinding@opensource.cirrus.com>
@@ -91,23 +95,48 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Add support for new Odin Laptop Variants into CS8409 HDA Driver.
+Add support for a Speaker Playback Switch, which disables
+the Amp connected to cs8409. The Switch is not added
+automatically because cs8409 does not have an output amp
+for the speaker NID.
 
-Since these laptops require Speaker Playback Switch, support must be added into
-CS8409 HDA driver. Since CS8409 does not have amplifier parameters for the NID
-associated with the speaker, the HDA driver does not add the switch
-automatically, so the driver needs to add this support manually.
+Note: This switch uses a different GPIO to Cyborg/Odin variants
 
-Stefan Binding (3):
-  ALSA: hda/cs8409: Support new Odin Variants
-  ALSA: hda/cs8409: Add Speaker Playback Switch for Cyborg
-  ALSA: hda/cs8409: Add Speaker Playback Switch for Warlock
+Signed-off-by: Stefan Binding <sbinding@opensource.cirrus.com>
+---
+ sound/pci/hda/patch_cs8409.c | 2 ++
+ sound/pci/hda/patch_cs8409.h | 1 +
+ 2 files changed, 3 insertions(+)
 
- sound/pci/hda/patch_cs8409-tables.c | 19 +++++++
- sound/pci/hda/patch_cs8409.c        | 85 ++++++++++++++++++++++++-----
- sound/pci/hda/patch_cs8409.h        |  5 ++
- 3 files changed, 95 insertions(+), 14 deletions(-)
-
+diff --git a/sound/pci/hda/patch_cs8409.c b/sound/pci/hda/patch_cs8409.c
+index f682769667e3..95b33a983e9e 100644
+--- a/sound/pci/hda/patch_cs8409.c
++++ b/sound/pci/hda/patch_cs8409.c
+@@ -1167,10 +1167,12 @@ void cs8409_cs42l42_fixups(struct hda_codec *codec, const struct hda_fixup *fix,
+ 		case CS8409_WARLOCK_MLK:
+ 		case CS8409_WARLOCK_MLK_DUAL_MIC:
+ 			spec->scodecs[CS8409_CODEC0]->full_scale_vol = CS42L42_FULL_SCALE_VOL_0DB;
++			spec->speaker_pdn_gpio = CS8409_WARLOCK_SPEAKER_PDN;
+ 			break;
+ 		default:
+ 			spec->scodecs[CS8409_CODEC0]->full_scale_vol =
+ 				CS42L42_FULL_SCALE_VOL_MINUS6DB;
++			spec->speaker_pdn_gpio = CS8409_WARLOCK_SPEAKER_PDN;
+ 			break;
+ 		}
+ 
+diff --git a/sound/pci/hda/patch_cs8409.h b/sound/pci/hda/patch_cs8409.h
+index 630a7a2de51f..260388a6256c 100644
+--- a/sound/pci/hda/patch_cs8409.h
++++ b/sound/pci/hda/patch_cs8409.h
+@@ -239,6 +239,7 @@ enum cs8409_coefficient_index_registers {
+ #define CS8409_CS42L42_RESET			GENMASK(5, 5) /* CS8409_GPIO5 */
+ #define CS8409_CS42L42_INT			GENMASK(4, 4) /* CS8409_GPIO4 */
+ #define CS8409_CYBORG_SPEAKER_PDN		GENMASK(2, 2) /* CS8409_GPIO2 */
++#define CS8409_WARLOCK_SPEAKER_PDN		GENMASK(1, 1) /* CS8409_GPIO1 */
+ #define CS8409_CS42L42_HP_PIN_NID		CS8409_PIN_ASP1_TRANSMITTER_A
+ #define CS8409_CS42L42_SPK_PIN_NID		CS8409_PIN_ASP2_TRANSMITTER_A
+ #define CS8409_CS42L42_AMIC_PIN_NID		CS8409_PIN_ASP1_RECEIVER_A
 -- 
 2.25.1
 
