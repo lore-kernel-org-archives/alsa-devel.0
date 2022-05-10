@@ -4,71 +4,72 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C4C13C433EF
-	for <alsa-devel@archiver.kernel.org>; Tue, 10 May 2022 15:50:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5279DC433FE
+	for <alsa-devel@archiver.kernel.org>; Tue, 10 May 2022 15:50:32 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E4BC81939;
-	Tue, 10 May 2022 17:49:28 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E4BC81939
+	by alsa0.perex.cz (Postfix) with ESMTPS id 7218A190A;
+	Tue, 10 May 2022 17:49:40 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7218A190A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1652197819;
-	bh=otwVBSNI0rywwn53sxFGDiMQg+fR5EjSFvuunSnPYgM=;
+	s=default; t=1652197830;
+	bh=ISZcK/ZX9IJ8RTUAaEuQ43PU7CydBS6RpFZ6oCpcNbc=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=karkZkI1AX3ymPbIFxmVRk5oURl+GQL8LxXprO6IE/vkq+nPfw1HMMD6qhD4p+6Bl
-	 l2vH0gv81oNTwRMNFVzep4Sa0endZAGqvxkyBpQexBWg/9B/mfqeYqneJaCDLHTzIm
-	 mQ0EMeAKlprI4N9TXnNp3qu8eZ2u66ltk8ADFAdE=
+	b=XF766fUlhV9lHJQMexkLfBu+JrJIM4F7vm3qUrOTIMzmp2r3DP7AqG+wrMw7t6OM2
+	 Db8NH0xUkzL3o/3ZR7U16Td+/nI7UQr1p0KYMyFyZrEmtrLnHL8gz+oCmrA7Q0LxjZ
+	 ogQuj9ONJWV/112wVNhg87PGV+u5qsg7vxAxYK6c=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id A16A9F80568;
-	Tue, 10 May 2022 17:47:00 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 41336F804BB;
+	Tue, 10 May 2022 17:47:23 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 5DF7EF80566; Tue, 10 May 2022 17:46:59 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org
- [IPv6:2604:1380:4641:c500::1])
+ id B74F1F801F5; Tue, 10 May 2022 17:47:21 +0200 (CEST)
+Received: from sin.source.kernel.org (sin.source.kernel.org
+ [IPv6:2604:1380:40e1:4800::1])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 8B3BAF80536
- for <alsa-devel@alsa-project.org>; Tue, 10 May 2022 17:46:56 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8B3BAF80536
+ by alsa1.perex.cz (Postfix) with ESMTPS id 54447F801F5
+ for <alsa-devel@alsa-project.org>; Tue, 10 May 2022 17:47:19 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 54447F801F5
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="mSh9gwGF"
+ header.b="OTDC+zJc"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id 51F30614A6;
- Tue, 10 May 2022 15:46:55 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5C81FC385CA;
- Tue, 10 May 2022 15:46:54 +0000 (UTC)
+ by sin.source.kernel.org (Postfix) with ESMTPS id DA356CE0F76;
+ Tue, 10 May 2022 15:47:16 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3D8F8C385C2;
+ Tue, 10 May 2022 15:47:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1652197615;
- bh=otwVBSNI0rywwn53sxFGDiMQg+fR5EjSFvuunSnPYgM=;
+ s=k20201202; t=1652197635;
+ bh=ISZcK/ZX9IJ8RTUAaEuQ43PU7CydBS6RpFZ6oCpcNbc=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=mSh9gwGF/l8e+9j22Ticap60SmVHcjRW0Cl7Ck2+hjBAJ3o98HKkOEwcnhAncv3uC
- HozpxrfP+jvCVG8+IAm04kiWeth6r/qgbHdeKR2dpJR8UyDjbMLNoLOmtu8xA/jFzy
- OQxhYiGmUnQE+149nMtGCO/iGTLKv9f5UQ8zCjaWKOySweJw6RrrdXyB9V5Tao8EQB
- HEMKpXMwq5DIXtTAe/jguI/5doOoGdxCT/c4PprSfnCJ2F0qw9SuXmbHQUrkNRaMzi
- bqxcHMhYdEyXsMvwBqlpeRXQC5sJDMiLMhCBG8n+rHfcViHFHoxlE+OqEyuZZMUpBU
- 4z7V16BjC/vXg==
+ b=OTDC+zJc46Zcm1wTBGZO5fZPpY/5Izxf0uaBplGARW6ZlT/4szyGpOWUxVDO4spgT
+ 0WxolEvCSC8IF1ZZB6mUbSLxKYA9/i03TgWYrgmJKsEHXO9a/fKz8B8X7qIKBlhBbr
+ YQ3R3kwSusP6A2Y1APJP1Kkfu5KeRvA0++Cy303giQbCiJBCrlbtpulbHykMAXBoC2
+ azQ3113DLdaPIbBuxipPq82+jO/gtV6JQ4BcMZXBU1kmhXHrU13/V4WYx8j4hb9cIE
+ 2G5/M+KptI3cVYFT3asyOhAnY6FehRbSzwFDhTZ9MgEwmfZSOUXFBQ2N80Mo2q0OyE
+ 9mX9SCJI/XcmQ==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.14 4/5] ASoC: ops: Validate input values in
- snd_soc_put_volsw_range()
-Date: Tue, 10 May 2022 11:46:36 -0400
-Message-Id: <20220510154637.154283-4-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 4.9 2/4] ASoC: max98090: Reject invalid values in
+ custom control put()
+Date: Tue, 10 May 2022 11:47:01 -0400
+Message-Id: <20220510154704.154362-2-sashal@kernel.org>
 X-Mailer: git-send-email 2.35.1
-In-Reply-To: <20220510154637.154283-1-sashal@kernel.org>
-References: <20220510154637.154283-1-sashal@kernel.org>
+In-Reply-To: <20220510154704.154362-1-sashal@kernel.org>
+References: <20220510154704.154362-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 Cc: Sasha Levin <sashal@kernel.org>, alsa-devel@alsa-project.org,
- tiwai@suse.com, lgirdwood@gmail.com, Mark Brown <broonie@kernel.org>
+ lgirdwood@gmail.com, pierre-louis.bossart@linux.intel.com, tiwai@suse.com,
+ Mark Brown <broonie@kernel.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -86,56 +87,36 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 From: Mark Brown <broonie@kernel.org>
 
-[ Upstream commit aa22125c57f9e577f0a667e4fa07fc3fa8ca1e60 ]
+[ Upstream commit 2fbe467bcbfc760a08f08475eea6bbd4c2874319 ]
 
-Check that values written via snd_soc_put_volsw_range() are
-within the range advertised by the control, ensuring that we
-don't write out of spec values to the hardware.
+The max98090 driver has a custom put function for some controls which can
+only be updated in certain circumstances which makes no effort to validate
+that input is suitable for the control, allowing out of spec values to be
+written to the hardware and presented to userspace. Fix this by returning
+an error when invalid values are written.
 
 Signed-off-by: Mark Brown <broonie@kernel.org>
-Link: https://lore.kernel.org/r/20220423131239.3375261-1-broonie@kernel.org
+Link: https://lore.kernel.org/r/20220420193454.2647908-1-broonie@kernel.org
 Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/soc-ops.c | 18 +++++++++++++++++-
- 1 file changed, 17 insertions(+), 1 deletion(-)
+ sound/soc/codecs/max98090.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/sound/soc/soc-ops.c b/sound/soc/soc-ops.c
-index d6d72595fbd0..0848aec1bd24 100644
---- a/sound/soc/soc-ops.c
-+++ b/sound/soc/soc-ops.c
-@@ -528,7 +528,15 @@ int snd_soc_put_volsw_range(struct snd_kcontrol *kcontrol,
- 	unsigned int mask = (1 << fls(max)) - 1;
- 	unsigned int invert = mc->invert;
- 	unsigned int val, val_mask;
--	int err, ret;
-+	int err, ret, tmp;
-+
-+	tmp = ucontrol->value.integer.value[0];
-+	if (tmp < 0)
-+		return -EINVAL;
-+	if (mc->platform_max && tmp > mc->platform_max)
-+		return -EINVAL;
-+	if (tmp > mc->max - mc->min + 1)
-+		return -EINVAL;
+diff --git a/sound/soc/codecs/max98090.c b/sound/soc/codecs/max98090.c
+index e7aef841f87d..4aefb13900c2 100644
+--- a/sound/soc/codecs/max98090.c
++++ b/sound/soc/codecs/max98090.c
+@@ -419,6 +419,9 @@ static int max98090_put_enab_tlv(struct snd_kcontrol *kcontrol,
  
- 	if (invert)
- 		val = (max - ucontrol->value.integer.value[0]) & mask;
-@@ -543,6 +551,14 @@ int snd_soc_put_volsw_range(struct snd_kcontrol *kcontrol,
- 	ret = err;
+ 	val = (val >> mc->shift) & mask;
  
- 	if (snd_soc_volsw_is_stereo(mc)) {
-+		tmp = ucontrol->value.integer.value[1];
-+		if (tmp < 0)
-+			return -EINVAL;
-+		if (mc->platform_max && tmp > mc->platform_max)
-+			return -EINVAL;
-+		if (tmp > mc->max - mc->min + 1)
-+			return -EINVAL;
++	if (sel < 0 || sel > mc->max)
++		return -EINVAL;
 +
- 		if (invert)
- 			val = (max - ucontrol->value.integer.value[1]) & mask;
- 		else
+ 	*select = sel;
+ 
+ 	/* Setting a volume is only valid if it is already On */
 -- 
 2.35.1
 
