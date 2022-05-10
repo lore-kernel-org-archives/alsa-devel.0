@@ -4,62 +4,63 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 89337C433EF
-	for <alsa-devel@archiver.kernel.org>; Tue, 10 May 2022 13:01:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A09CBC433F5
+	for <alsa-devel@archiver.kernel.org>; Tue, 10 May 2022 13:02:14 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A171118B0;
-	Tue, 10 May 2022 15:01:02 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A171118B0
+	by alsa0.perex.cz (Postfix) with ESMTPS id C2E2C18FE;
+	Tue, 10 May 2022 15:01:22 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C2E2C18FE
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1652187712;
-	bh=4aegVx1bOMbLneDfROhebeBKe1d5jbRdV2Z+Zar+nNI=;
+	s=default; t=1652187732;
+	bh=MRzdmtS5LCRMgbir7hYUGrUcVpNYu8k5kS6pyDZ6p9s=;
 	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Vg7a/s5/guBilo+24aUiAOiGLZM0g9ZRwKWFfHtv5jLI5z8noiDKGz98kfwNosTeQ
-	 NkG1c20qInOquvQ2w1YRYrZvni6PFUXkGMGew1vZW06+swx0XUt09KacH/al8DyfV8
-	 5roXLnxghUUbHgJf2IRRMuI2vdqU0oPLO7x942hY=
+	b=A5KpzRCHwCV+qpsl0P9DPMxxsU2zirewCNAjIlUysOn0cZIhJ1g+EPpjooiWyAKHb
+	 EaE39uvloyuriSWXtqEu0tjNi/Fdi2Ue3MX9SJk3EI6CZ60/eB97nAQx87cFO5/Xkc
+	 5Fh/93dlkIn9ZpC6Z+xNIDxWDFxVn0v3WWZ8Ib4A=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 2A908F8050F;
-	Tue, 10 May 2022 15:00:51 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id C7637F80510;
+	Tue, 10 May 2022 15:00:52 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 4E672F8050F; Tue, 10 May 2022 15:00:50 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+ id 85B01F80508; Tue, 10 May 2022 15:00:51 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org
+ [IPv6:2604:1380:4641:c500::1])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id D998AF80153
- for <alsa-devel@alsa-project.org>; Tue, 10 May 2022 15:00:43 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D998AF80153
+ by alsa1.perex.cz (Postfix) with ESMTPS id 7854BF8014C
+ for <alsa-devel@alsa-project.org>; Tue, 10 May 2022 15:00:45 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7854BF8014C
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="ryn/8gTl"
+ header.b="e0mtljzZ"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id C398E61405;
- Tue, 10 May 2022 13:00:41 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id F0DF0C385A6;
- Tue, 10 May 2022 13:00:39 +0000 (UTC)
+ by dfw.source.kernel.org (Postfix) with ESMTPS id 87215614C2;
+ Tue, 10 May 2022 13:00:44 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BA1ADC385C2;
+ Tue, 10 May 2022 13:00:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1652187641;
- bh=4aegVx1bOMbLneDfROhebeBKe1d5jbRdV2Z+Zar+nNI=;
+ s=k20201202; t=1652187643;
+ bh=MRzdmtS5LCRMgbir7hYUGrUcVpNYu8k5kS6pyDZ6p9s=;
  h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=ryn/8gTlGyzSBiHX7d023CICVL2MkYdLHKt+8cgyidnnTBre2caYVMd63vhG+q7Ud
- /SOTwoXmTsoZg4F2buLSYAnsz1jlrYlPkDMkDhGpB8Qhna418/PtS7aytkpKBRSOAQ
- KOm2VXzevc5NKSYfhgIoerpoCzx26nRY4mEMv+1eB83r6NHD0B+fsI28xBdjoe9huC
- oYZWctMEVmTJrhaGaBz3eweuSbhi0ZRnogujPN4nCeYrSrsfYaaxfo5XBCA+msdDiI
- E3MWMP51H6fcIq4sNBFdI04S16Ac55g+ctjcQ8GKUcvd/9kVpjRg0bc4o4W5LsbBHV
- JOsedRqsWuISA==
+ b=e0mtljzZPiygJ/KTfcA4y40qffVBaorrpMXFZFutIYWO6QPq/1+70K+ac54SJecaM
+ z3iBmOZG7sAA0yUhEND9FSSdEWjaaJR5fMOUjYFBAQmIFzDyUW98CZMWL/bjdG3WLh
+ 2WXhLIEwMXD/BkbvLIk5kwVuggt6xqpY+qKQE6mxUREGbgSBo3nUqQOB6sOHhCNe9q
+ ndvxMBZ/qdvEKiLM+q3yVkXfGjbCpv/QoWozvv4u5hE3w56i2AHNlkZcUitZ/O4g/R
+ 83s55zpo1WBILCvy+/DX6OkhcjRnjRNHiHVTZM8ZXz9Jz+uf53T+uaVefm3IaWD6Nw
+ gCrbcL4OmJpiA==
 From: Mark Brown <broonie@kernel.org>
 To: tiwai@suse.com, zheyuma97@gmail.com, lgirdwood@gmail.com, perex@perex.cz
-In-Reply-To: <20220509085925.1548328-1-zheyuma97@gmail.com>
-References: <20220509085925.1548328-1-zheyuma97@gmail.com>
-Subject: Re: [PATCH] ASoC: tlv320adcx140: Register a callback to disable the
- regulator_disable
-Message-Id: <165218763970.65921.14217933077833683707.b4-ty@kernel.org>
-Date: Tue, 10 May 2022 14:00:39 +0100
+In-Reply-To: <20220510053031.1685337-1-zheyuma97@gmail.com>
+References: <20220510053031.1685337-1-zheyuma97@gmail.com>
+Subject: Re: [PATCH v2] ASoC: tlv320adcx140: Register a callback to disable
+ the regulator_disable
+Message-Id: <165218764249.65921.16308072156284883779.b4-ty@kernel.org>
+Date: Tue, 10 May 2022 14:00:42 +0100
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -79,7 +80,7 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Mon, 9 May 2022 16:59:25 +0800, Zheyu Ma wrote:
+On Tue, 10 May 2022 13:30:31 +0800, Zheyu Ma wrote:
 > The driver should register a callback that will deal with the disabling
 > when it fails to probe.
 > 
