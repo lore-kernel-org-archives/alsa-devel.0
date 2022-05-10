@@ -4,64 +4,65 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id ECE86C433EF
-	for <alsa-devel@archiver.kernel.org>; Tue, 10 May 2022 15:47:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 10E07C433EF
+	for <alsa-devel@archiver.kernel.org>; Tue, 10 May 2022 15:48:11 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 1FDBA191B;
-	Tue, 10 May 2022 17:47:06 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1FDBA191B
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3C887191D;
+	Tue, 10 May 2022 17:47:19 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3C887191D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1652197676;
-	bh=+m4xr2VstQvfmpmlbh/Hzx8ERJ0r2on0tJLdU5O4+6U=;
+	s=default; t=1652197689;
+	bh=atRy27yf9Vy/665sbn+jOCfM4MC2nSQBCmGmLlIUE8A=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=mDWytSHh/gytnRAazFfDAX7LNyXEKUM3jsI6Pyt4hV0JbiQTvvccvIKDswX9iTbjC
-	 ce9jWZ6MudGlhRuCcYH7neDdMsITk1QYWmMgPd/H5khZAF7t+4x+bPNxCu9B45JNdd
-	 3Nhl1E3NqZKKv8IvwbOHisLIEJZTXQtkmLuDOJ9k=
+	b=F7t2zs+NmSf4Fn8nTTYc5tVNtrFgr7wNYw5xVxmEz/llS1ZPwHnzr9ArkaQr2wfxw
+	 YUWd9EZ+R0B245Sh8VcIbAHhEidfuXQJ9DqXo5WvzNRF7nukSVAaEdlgGRz6Bn2m6i
+	 cYO8xApLRAmSmHkErPjLY6+11FsAjfr02yj/57No=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id C069BF80510;
-	Tue, 10 May 2022 17:45:32 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 5F58FF80516;
+	Tue, 10 May 2022 17:45:54 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 453D3F80240; Tue, 10 May 2022 17:45:26 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+ id CCD8DF80516; Tue, 10 May 2022 17:45:52 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org
+ [IPv6:2604:1380:4641:c500::1])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id AD5CCF804BB
- for <alsa-devel@alsa-project.org>; Tue, 10 May 2022 17:45:19 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AD5CCF804BB
+ by alsa1.perex.cz (Postfix) with ESMTPS id 129B9F80517
+ for <alsa-devel@alsa-project.org>; Tue, 10 May 2022 17:45:46 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 129B9F80517
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="C+AYDTtG"
+ header.b="Q6UYgNaR"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id 5952561329;
- Tue, 10 May 2022 15:45:18 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CAA43C385C2;
- Tue, 10 May 2022 15:45:16 +0000 (UTC)
+ by dfw.source.kernel.org (Postfix) with ESMTPS id 3C294615B2;
+ Tue, 10 May 2022 15:45:45 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0DF15C385CB;
+ Tue, 10 May 2022 15:45:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1652197517;
- bh=+m4xr2VstQvfmpmlbh/Hzx8ERJ0r2on0tJLdU5O4+6U=;
+ s=k20201202; t=1652197545;
+ bh=atRy27yf9Vy/665sbn+jOCfM4MC2nSQBCmGmLlIUE8A=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=C+AYDTtGfc6NI6/rRcZetALBPs3cQsacGkCe8eQOFc3nNjzE3K1u1sR6Wf2r1eMSQ
- DOKiy51xa6N8fB6GnIGfpdepRuY6MNcQXeqhhhrCNGYHnJzVGjXIGUsAmYmoIAn24C
- hO9adxcLXRxL86B8cRV3Pbm9DEromxKJd+vdGvtUmyEELAed2Pu4CSGlpl0qVEfbmt
- LkFrBAKgccQwRwA9Sl8eYNlIPeWtEHv1joqXwkHk2X1dH+uXZ/yGcGqg/Rk2juSh8B
- id97JSjchfuAFQRAphq/bxFleM48YP+7Z689ufYAQ6BslRdHaKLChnx7eSVoW8tC6n
- 48plY8Yb5RKwA==
+ b=Q6UYgNaR3OUTg3BlgiCleyXt7Sh1FEI1uhKF9rd8BMD9p9ABqoCyjI4q1st12OZLa
+ dV7SOCPntvcuCcJkubIMtzvqdt8Eo+e13gEmqpolnZ4Rk5R0eqi7B+nUc7QybLtkB3
+ woo8qqQLdyKhjdFbLtAJV5KxKoN8iuEx8yfTw7Qcr86t0KSgVjSt+xqVP6wwTkvC+E
+ BKHyLQiovlyBwjbBL2dgQ8w4PFY9WC49m9jcnUShP08Vw0rLbfgIOGnbm1Q3Rw0ty/
+ 7SPbv+K6xqalUSdO+3N7iqAAq4epX80RZO9t4zBG5OPMoK3wifsuZBu+YeUNRIN6rc
+ C8Rvy+ehMQpoA==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.10 2/9] ASoC: max98090: Reject invalid values in
+Subject: [PATCH AUTOSEL 5.4 2/8] ASoC: max98090: Reject invalid values in
  custom control put()
-Date: Tue, 10 May 2022 11:45:05 -0400
-Message-Id: <20220510154512.153945-2-sashal@kernel.org>
+Date: Tue, 10 May 2022 11:45:30 -0400
+Message-Id: <20220510154536.154070-2-sashal@kernel.org>
 X-Mailer: git-send-email 2.35.1
-In-Reply-To: <20220510154512.153945-1-sashal@kernel.org>
-References: <20220510154512.153945-1-sashal@kernel.org>
+In-Reply-To: <20220510154536.154070-1-sashal@kernel.org>
+References: <20220510154536.154070-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -103,7 +104,7 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 3 insertions(+)
 
 diff --git a/sound/soc/codecs/max98090.c b/sound/soc/codecs/max98090.c
-index 945a79e4f3eb..779845e3a9e3 100644
+index 6b9d326e11b0..207cdcfb6ebb 100644
 --- a/sound/soc/codecs/max98090.c
 +++ b/sound/soc/codecs/max98090.c
 @@ -413,6 +413,9 @@ static int max98090_put_enab_tlv(struct snd_kcontrol *kcontrol,
