@@ -4,80 +4,85 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 62298C433F5
-	for <alsa-devel@archiver.kernel.org>; Tue, 10 May 2022 14:52:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D6AEFC433EF
+	for <alsa-devel@archiver.kernel.org>; Tue, 10 May 2022 15:34:12 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 7B36118F4;
-	Tue, 10 May 2022 16:51:21 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7B36118F4
+	by alsa0.perex.cz (Postfix) with ESMTPS id 20B1E1716;
+	Tue, 10 May 2022 17:33:20 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 20B1E1716
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1652194331;
-	bh=JXls05y2gUu5gia6y474ntis4yRroQ2OlH/j4C/LJS4=;
-	h=Date:Subject:To:References:From:In-Reply-To:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=p9CDfJWM6IFiUGz+HqF/VWAhflGSiE5my2DWygmx/AuvO3avFh097r1ZVsWHpe7IY
-	 Xk2+6IFBlSxWNj12025kyvM5D7UcizvTC4f55qvmBPj742j8E9ebwNJeoSuRrv74Qt
-	 6m9es8t3FW7CE8Plk4czMULbECBC5kskZTCr0ZmQ=
+	s=default; t=1652196850;
+	bh=ekcuWWiMhiyfLC0XDIFsVuQuKtSahX5Ih3CWtk7E64A=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=ArUT0ofmYa5NhX/HdYWh8Of6uFv0/Fsl1nW2J+QNoL+n/IREwJq2gGQjaCmmUYsVf
+	 0ep1b8GVD33XRz6QOa0PJgLbyGmzxQDpFPzNSj7ijxvJDPfToB96w1zqWRzBGhBI8S
+	 o+r5Lb0re+lpHv43LbW2Gr93TClwUe3NZhBPnepY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 24FC1F80153;
-	Tue, 10 May 2022 16:51:21 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id A83B4F80153;
+	Tue, 10 May 2022 17:33:19 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id AFB3CF801F5; Tue, 10 May 2022 16:51:19 +0200 (CEST)
-Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 180E1F8019D; Tue, 10 May 2022 17:33:18 +0200 (CEST)
+Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com
+ [IPv6:2607:f8b0:4864:20::1030])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id D66C2F8011C
- for <alsa-devel@alsa-project.org>; Tue, 10 May 2022 16:51:11 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D66C2F8011C
+ by alsa1.perex.cz (Postfix) with ESMTPS id 5DEABF8011C
+ for <alsa-devel@alsa-project.org>; Tue, 10 May 2022 17:33:13 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5DEABF8011C
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="RzqYm+6k"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
- d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1652194274; x=1683730274;
- h=message-id:date:mime-version:subject:to:cc:references:
- from:in-reply-to:content-transfer-encoding;
- bh=JXls05y2gUu5gia6y474ntis4yRroQ2OlH/j4C/LJS4=;
- b=RzqYm+6kUd98/ji4LXYHtHBpAMLcf48AKmx2QqNJWbjue/JAn3dbZKTf
- W0176omnKmGo8JW1jP6ieqrAtMxaf5XIDTIBs/Dw23Hla0JNPUzLu0HLW
- ybjbtubLLYMNugL3uS7AdO+uJlzrnQJkVd45JpmEHzsRZNQlNEYvA/ptf
- aLlFfKgjml5gaymc9yO5eN8ZxsfHW1H+FINsvIRV2HxYSSETKoXvTZduc
- 7mBFAtCgk9N4Ctpm90DDcsZ97Pj08+iu6baXJlq/80naoEyMb3L/oO9d3
- ZlBmaKkrzwD6x9ACDKg7It6bJeerZj5Chr2jmF7kc2QGQl2byRylEKIKV g==;
-X-IronPort-AV: E=McAfee;i="6400,9594,10342"; a="332431222"
-X-IronPort-AV: E=Sophos;i="5.91,214,1647327600"; d="scan'208";a="332431222"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
- by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 10 May 2022 07:51:07 -0700
-X-IronPort-AV: E=Sophos;i="5.91,214,1647327600"; d="scan'208";a="519786590"
-Received: from agupta51-mobl.amr.corp.intel.com (HELO [10.212.253.67])
- ([10.212.253.67])
- by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 10 May 2022 07:51:06 -0700
-Message-ID: <190c9add-7fa4-8e76-bfcb-43d30f22f8d9@linux.intel.com>
-Date: Tue, 10 May 2022 09:40:34 -0500
+ dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
+ header.b="PTDPu+0K"
+Received: by mail-pj1-x1030.google.com with SMTP id
+ t11-20020a17090ad50b00b001d95bf21996so2327587pju.2
+ for <alsa-devel@alsa-project.org>; Tue, 10 May 2022 08:33:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
+ h=from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=xJ1k9EA/+UNXzelEfz5rFqh3v1klZbFy5zSffXSzp80=;
+ b=PTDPu+0KKykd2FPVJTIXDso5T7TGfhUaukX+OcOvJ19CTh2naLi+X2R1Xy/i/zzQ7H
+ Tj1//nuXPdiYjbU8j496ocJuWP0aQOEr0L0c3Z81Zwr8UGIOwh/Os/uQ1uxYGGn763Hi
+ bAREukfFWUH4RYbRdHU8MBxTyzXq1GwDG1h3swrDRU+ZTCC2E4sdljBBYICAQ+8S4WO9
+ 86yYv0seNUKXFZNRngJnL0GW9MJiQGUv8BZHdf5mXcjuaT8zW/iPavwfWI4xrAklxN3b
+ i/mrBVpV6cX5i1EWr7rkx8peC2PqD8l4A/X2JqPxONICetxdx0mAnPHREYqsA+2fCit3
+ Jn5w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=xJ1k9EA/+UNXzelEfz5rFqh3v1klZbFy5zSffXSzp80=;
+ b=kdsBzOm3jRs0nxONHccxnSU50Kf71UWDsqWXCkhH+ZQl2DxgeXSCJZVSrWEDSRkyaS
+ kG50VU6TZOc3lNJr9KPKSIpeFVYbyYqQLm1SAT2IJed/nu/r6OmqSfK7o00wJflZAXKX
+ xhYGPcZFKde5SZ2c1ySsBaFI4uHrkDRcMYGO4HKUARCwEuNzSusKvbR7AKwmS4C2MRNQ
+ Ck4uwMfdZPWqgGDLe0ZuHBTptFVRmNiC1Xg8omNylwAZgv+ZgxJQhv5Q1U556hy/+h/I
+ YjElPmi6zWgYXRhYlVwCLpZ/wWrw/zxLXXQD42wbwo82HzPv9SjD1E1wK4mbpPGgdFUf
+ 6LoQ==
+X-Gm-Message-State: AOAM532Xx8b7TtxqYvIiscEQ7jnwxzt0H/P5T8+leabskzJ3o7Usr2UB
+ HQs5TLuTj+IygsBVGB9iPA==
+X-Google-Smtp-Source: ABdhPJz4gMh3dWEt+3+7fdc6o8dDMll05DHzp4cZDTjY7RzE3YMoSXSmSUc7p8a58rKvteYkM3EeLg==
+X-Received: by 2002:a17:902:7594:b0:15e:bbac:8d49 with SMTP id
+ j20-20020a170902759400b0015ebbac8d49mr20928350pll.124.1652196790823; 
+ Tue, 10 May 2022 08:33:10 -0700 (PDT)
+Received: from localhost.localdomain ([144.202.91.207])
+ by smtp.gmail.com with ESMTPSA id
+ cd10-20020a056a00420a00b0050dc76281d0sm11104248pfb.170.2022.05.10.08.33.02
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Tue, 10 May 2022 08:33:10 -0700 (PDT)
+From: Zheyu Ma <zheyuma97@gmail.com>
+To: james.schulman@cirrus.com, david.rhodes@cirrus.com,
+ tanureal@opensource.cirrus.com, rf@opensource.cirrus.com,
+ lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com,
+ oder_chiou@realtek.com
+Subject: [PATCH 0/6] ASOC: Fix the error handling code of the probe
+Date: Tue, 10 May 2022 23:32:45 +0800
+Message-Id: <20220510153251.1741210-1-zheyuma97@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Firefox/91.0 Thunderbird/91.5.0
-Subject: Re: [PATCH] [v2] ASoC: Intel: sof_cs42l42: adding support for ADL
- configuration and BT offload audio
-Content-Language: en-US
-To: Terry Chen <terry_chen@wistron.corp-partner.google.com>,
- alsa-devel@alsa-project.org
-References: <20220510104829.1466968-1-terry_chen@wistron.corp-partner.google.com>
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-In-Reply-To: <20220510104829.1466968-1-terry_chen@wistron.corp-partner.google.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-Cc: cezary.rojewski@intel.com, kai.vehmanen@linux.intel.com,
- linux-kernel@vger.kernel.org, casey.g.bowman@intel.com,
- yang.jie@linux.intel.com, tiwai@suse.com,
- mark_hsieh@wistron.corp-partner.google.com, liam.r.girdwood@linux.intel.com,
- mac.chiang@intel.com, broonie@kernel.org, seanpaul@chromium.org,
- cujomalainey@chromium.org, brent.lu@intel.com, vamshi.krishna.gopal@intel.com
+Content-Transfer-Encoding: 8bit
+Cc: patches@opensource.cirrus.com, alsa-devel@alsa-project.org,
+ Zheyu Ma <zheyuma97@gmail.com>, linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -93,162 +98,25 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+These drivers mishandle the regulator resource in the probe function,
+failing to disable the regulator for probing failure.
 
+Zheyu Ma (6):
+  ASoC: cs42l52: Fix the error handling of cs42l56_i2c_probe()
+  ASoC: cs35l36: Fix the error handling of cs35l36_i2c_probe()
+  ASoC: rt5645: Fix the error handling of rt5645_i2c_probe()
+  ASoC: tas571x: Fix the error handling of tas571x_i2c_probe()
+  ASoC: tas6424: Fix the error handling of tas6424_i2c_probe()
+  ASoC: wm8903: Fix the error handling of wm8903_i2c_probe()
 
+ sound/soc/codecs/cs35l36.c | 2 +-
+ sound/soc/codecs/cs42l56.c | 2 +-
+ sound/soc/codecs/rt5645.c  | 4 ++--
+ sound/soc/codecs/tas571x.c | 6 ++++--
+ sound/soc/codecs/tas6424.c | 8 ++++++--
+ sound/soc/codecs/wm8903.c  | 2 +-
+ 6 files changed, 15 insertions(+), 9 deletions(-)
 
-> +static int create_bt_offload_dai_links(struct device *dev,
-> +				       struct snd_soc_dai_link *links,
-> +				       struct snd_soc_dai_link_component *cpus,
-> +				       int *id, int ssp_bt)
-> +{
-> +	int ret = 0;
-
-this variable is not used in the rest of this function, something's not
-right here...
-
-> +	/* bt offload */
-> +	if (!(sof_cs42l42_quirk & SOF_BT_OFFLOAD_PRESENT))
-> +		return 0;
-> +
-> +	links[*id].name = devm_kasprintf(dev, GFP_KERNEL, "SSP%d-BT",
-> +					 ssp_bt);
-> +	if (!links[*id].name)
-> +		goto devm_err;
-
-is this missing ret = -ENOMEM?
-
-> +
-> +	links[*id].id = *id;
-> +	links[*id].codecs = dummy_component;
-> +	links[*id].num_codecs = ARRAY_SIZE(dummy_component);
-> +	links[*id].platforms = platform_component;
-> +	links[*id].num_platforms = ARRAY_SIZE(platform_component);
-> +
-> +	links[*id].dpcm_playback = 1;
-> +	links[*id].dpcm_capture = 1;
-> +	links[*id].no_pcm = 1;
-> +	links[*id].cpus = &cpus[*id];
-> +	links[*id].num_cpus = 1;
-> +
-> +	links[*id].cpus->dai_name = devm_kasprintf(dev, GFP_KERNEL,
-> +						   "SSP%d Pin",
-> +						   ssp_bt);
-> +	if (!links[*id].cpus->dai_name)
-> +		goto devm_err;
-
-same here, ret = -ENOMEM; ?
-
-> +
-> +	(*id)++;
-> +
-> +	return 0;
-> +
-> +devm_err:
-> +	return ret;
-
-or use what the existing code does for other links:
-
-devm_err:
-	return -ENOMEM;
-
-
-> +}
-> +
->  static struct snd_soc_dai_link *sof_card_dai_links_create(struct device *dev,
->  							  int ssp_codec,
->  							  int ssp_amp,
-> +							  int ssp_bt,
->  							  int dmic_be_num,
->  							  int hdmi_num)
->  {
-> @@ -522,6 +578,14 @@ static struct snd_soc_dai_link *sof_card_dai_links_create(struct device *dev,
->  				goto devm_err;
->  			}
->  			break;
-> +		case LINK_BT:
-> +			ret = create_bt_offload_dai_links(dev, links, cpus, &id, ssp_bt);
-> +			if (ret < 0) {
-> +				dev_err(dev, "fail to create bt offload dai links, ret %d\n",
-> +					ret);
-
-one line?
-
-> +				goto devm_err;
-> +			}
-> +			break;
->  		case LINK_NONE:
->  			/* caught here if it's not used as terminator in macro */
->  		default:
-> @@ -543,7 +607,7 @@ static int sof_audio_probe(struct platform_device *pdev)
->  	struct snd_soc_acpi_mach *mach;
->  	struct sof_card_private *ctx;
->  	int dmic_be_num, hdmi_num;
-> -	int ret, ssp_amp, ssp_codec;
-> +	int ret, ssp_bt, ssp_amp, ssp_codec;
->  
->  	ctx = devm_kzalloc(&pdev->dev, sizeof(*ctx), GFP_KERNEL);
->  	if (!ctx)
-> @@ -568,6 +632,9 @@ static int sof_audio_probe(struct platform_device *pdev)
->  
->  	dev_dbg(&pdev->dev, "sof_cs42l42_quirk = %lx\n", sof_cs42l42_quirk);
->  
-> +	ssp_bt = (sof_cs42l42_quirk & SOF_CS42L42_SSP_BT_MASK) >>
-> +			SOF_CS42L42_SSP_BT_SHIFT;
-> +
->  	ssp_amp = (sof_cs42l42_quirk & SOF_CS42L42_SSP_AMP_MASK) >>
->  			SOF_CS42L42_SSP_AMP_SHIFT;
->  
-> @@ -578,9 +645,11 @@ static int sof_audio_probe(struct platform_device *pdev)
->  
->  	if (sof_cs42l42_quirk & SOF_SPEAKER_AMP_PRESENT)
->  		sof_audio_card_cs42l42.num_links++;
-> +	if (sof_cs42l42_quirk & SOF_BT_OFFLOAD_PRESENT)
-> +		sof_audio_card_cs42l42.num_links++;
->  
->  	dai_links = sof_card_dai_links_create(&pdev->dev, ssp_codec, ssp_amp,
-> -					      dmic_be_num, hdmi_num);
-> +					      ssp_bt, dmic_be_num, hdmi_num);
->  	if (!dai_links)
->  		return -ENOMEM;
->  
-> @@ -621,6 +690,17 @@ static const struct platform_device_id board_ids[] = {
->  					SOF_CS42L42_SSP_AMP(1)) |
->  					SOF_CS42L42_DAILINK(LINK_HP, LINK_DMIC, LINK_HDMI, LINK_SPK, LINK_NONE),
->  	},
-> +	{
-> +		.name = "adl_mx98360a_cs4242",
-> +		.driver_data = (kernel_ulong_t)(SOF_CS42L42_SSP_CODEC(0) |
-> +					SOF_SPEAKER_AMP_PRESENT |
-> +					SOF_MAX98360A_SPEAKER_AMP_PRESENT |
-> +					SOF_CS42L42_SSP_AMP(1) |
-> +					SOF_CS42L42_NUM_HDMIDEV(4) |
-> +					SOF_BT_OFFLOAD_PRESENT |
-> +					SOF_CS42L42_SSP_BT(2)) |
-> +					SOF_CS42L42_DAILINK(LINK_HP, LINK_DMIC, LINK_HDMI, LINK_SPK, LINK_BT),
-> +	},
->  	{ }
->  };
->  MODULE_DEVICE_TABLE(platform, board_ids);
-> diff --git a/sound/soc/intel/common/soc-acpi-intel-adl-match.c b/sound/soc/intel/common/soc-acpi-intel-adl-match.c
-> index 7c8cd00457f81..3f40519250a90 100644
-> --- a/sound/soc/intel/common/soc-acpi-intel-adl-match.c
-> +++ b/sound/soc/intel/common/soc-acpi-intel-adl-match.c
-> @@ -384,6 +384,14 @@ struct snd_soc_acpi_mach snd_soc_acpi_intel_adl_machines[] = {
->  		.sof_fw_filename = "sof-adl.ri",
->  		.sof_tplg_filename = "sof-adl-cs35l41.tplg",
->  	},
-> +	{
-> +		.id = "10134242",
-> +		.drv_name = "adl_mx98360a_cs4242",
-> +		.machine_quirk = snd_soc_acpi_codec_list,
-> +		.quirk_data = &adl_max98360a_amp,
-> +		.sof_fw_filename = "sof-adl.ri",
-
-no longer necessary, and probably will not compile. please remove this
-field.
-
-> +		.sof_tplg_filename = "sof-adl-max98360a-rt5682.tplg",
-
-Why would you refer to a topology that uses a different codec?
-
+-- 
+2.25.1
 
