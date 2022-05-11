@@ -4,75 +4,73 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 92110C433F5
-	for <alsa-devel@archiver.kernel.org>; Wed, 11 May 2022 17:18:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 652E0C433FE
+	for <alsa-devel@archiver.kernel.org>; Wed, 11 May 2022 17:19:02 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 8CEB21A7E;
-	Wed, 11 May 2022 19:17:59 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8CEB21A7E
+	by alsa0.perex.cz (Postfix) with ESMTPS id 5D8D21AB2;
+	Wed, 11 May 2022 19:18:10 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5D8D21AB2
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1652289529;
-	bh=UKaZhF5/QJG0X6h5zdcto1ttT0j+Jd5mMY+08NNMXN4=;
+	s=default; t=1652289540;
+	bh=pCGbaPgKQY6Wo597Ab8cPIrEHe85QbL3zekp2mjDHxY=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=O2tICpcEo/MQdCDqbUA3cwki0eelilQwqx+3g0liQtm0CtUp2lrQh3wgVO9T96ijZ
-	 NAjoPogkJfEmA+kWPwt8CgFLx0FxVGWhozjDtqd+Wfz7CBo6+bTNtTUwdck7zTDg1u
-	 MZZy7Z3Hg73K0q22V5ZyQwDFrgCLnyff1o2OxDto=
+	b=VMxlvVjFnYTL8xOdnmcEws3v4eiM+Ff3TPZRyARtVWwgAeA6au7qcEWFpCpZyeBxC
+	 2UzpRzIECrbdgn4k3MA48wAuU0OnBLxw/u4NCDbHIpdTnf5CUFbfqWbJ9tKoxJBoRC
+	 HtzfmdRsxP537OBDy+HFgh7teyhy6Kg/xTODT73k=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 87B7FF80511;
-	Wed, 11 May 2022 19:17:13 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id D9E90F804D8;
+	Wed, 11 May 2022 19:17:16 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 23DA8F80508; Wed, 11 May 2022 19:17:10 +0200 (CEST)
+ id 9B969F80529; Wed, 11 May 2022 19:17:15 +0200 (CEST)
 Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 19746F800BB
- for <alsa-devel@alsa-project.org>; Wed, 11 May 2022 19:17:02 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 19746F800BB
+ by alsa1.perex.cz (Postfix) with ESMTPS id 10ACDF80212
+ for <alsa-devel@alsa-project.org>; Wed, 11 May 2022 19:17:04 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 10ACDF80212
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="RRz8BFSj"
+ header.b="OybKEyw0"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1652289424; x=1683825424;
+ t=1652289428; x=1683825428;
  h=from:to:cc:subject:date:message-id:in-reply-to:
  references:mime-version:content-transfer-encoding;
- bh=UKaZhF5/QJG0X6h5zdcto1ttT0j+Jd5mMY+08NNMXN4=;
- b=RRz8BFSj+B1yRSeEOv05UqB3/+KPvEBEyp8iaxBSfXpZLtPEYrj/z6sU
- INxn8euvY+zTyC03nzoQvTeUpm89pFAFtx3Yd4bcLtga4MAjmerLzLQRC
- jmdYHl3EHha9Ri16srNi+NCmzwIsAXJw0/tfhRrcbXiJv6bu5BDWm4A4/
- hwHp9s6jJjGZj5/hd1eoOxjNfpP/eUzLjhuO7OOPojcif6ePV1a9B56KG
- yfVr9dpzlUB8T9hQPl0+azhy9zla2ogkCpXKVi6pgGuo96uHarjIvtOw/
- 1AfE6DlpCTbYSAErYu3yJS4A47tfC2BAvDhi221Q0OBaIcNNS7kxa1FWN w==;
-X-IronPort-AV: E=McAfee;i="6400,9594,10344"; a="269431625"
-X-IronPort-AV: E=Sophos;i="5.91,217,1647327600"; d="scan'208";a="269431625"
+ bh=pCGbaPgKQY6Wo597Ab8cPIrEHe85QbL3zekp2mjDHxY=;
+ b=OybKEyw0nfG0m8f5ynCOT4XTpv/tne7L0ArJKnw1NTHTrIQThzwOJXJ7
+ ZiYp9q9AJoI4g3+eGOrza8rFQLaqSPjEGf4cW4wBxMq0nKXA8fA1xW7Ov
+ SP5uUR9+SX0bnZb/ebzScfLcPJRknQEJ6jHgdnO46zG9gOrM2sMXLXTAk
+ RC7AMQJwm8prRewQHJsDF95+82qH+8i085H3C5gUmb9v512AKPFZztuUc
+ EdQHv75XuGhhed0vqW5mOLA8gAtE+0JfbQIWN7SdfGb9Cpu83l2fBPaD+
+ Amr6fvMTM52I94tGKyqag87rGxwgvsNT6Jrin8JM/hqLA93QFosEEo+QM A==;
+X-IronPort-AV: E=McAfee;i="6400,9594,10344"; a="269431634"
+X-IronPort-AV: E=Sophos;i="5.91,217,1647327600"; d="scan'208";a="269431634"
 Received: from orsmga004.jf.intel.com ([10.7.209.38])
  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 11 May 2022 10:16:54 -0700
-X-IronPort-AV: E=Sophos;i="5.91,217,1647327600"; d="scan'208";a="697663169"
+ 11 May 2022 10:16:55 -0700
+X-IronPort-AV: E=Sophos;i="5.91,217,1647327600"; d="scan'208";a="697663176"
 Received: from sjbrune-mobl.amr.corp.intel.com (HELO
  rsridh2-mobl1.localdomain) ([10.254.32.42])
  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
  11 May 2022 10:16:54 -0700
 From: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH 1/5] ASoC: SOF: Intel: HDA: Set IPC4-specific DSP ops for CaVS
- platforms
-Date: Wed, 11 May 2022 10:16:44 -0700
-Message-Id: <20220511171648.1622993-2-ranjani.sridharan@linux.intel.com>
+Subject: [PATCH 3/5] ASoC: SOF: Add header for IPC4 manifest
+Date: Wed, 11 May 2022 10:16:46 -0700
+Message-Id: <20220511171648.1622993-4-ranjani.sridharan@linux.intel.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20220511171648.1622993-1-ranjani.sridharan@linux.intel.com>
 References: <20220511171648.1622993-1-ranjani.sridharan@linux.intel.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: Bard Liao <yung-chuan.liao@linux.intel.com>, tiwai@suse.com,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+Cc: tiwai@suse.com, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
  Rander Wang <rander.wang@intel.com>, broonie@kernel.org,
  Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
- Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
+ Bard Liao <yung-chuan.liao@linux.intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -88,334 +86,146 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Add implementation of low level, platform dependent IPC4 message handling
-and set the DSP ops for IPC4 for APL, CNL and TGL platforms.
+Add the header for the IPC4 manifest.
 
-Co-developed-by: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
-Signed-off-by: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
-Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Reviewed-by: Rander Wang <rander.wang@intel.com>
+Co-developed-by: Rander Wang <rander.wang@intel.com>
+Signed-off-by: Rander Wang <rander.wang@intel.com>
+Co-developed-by: Bard Liao <yung-chuan.liao@linux.intel.com>
+Signed-off-by: Bard Liao <yung-chuan.liao@linux.intel.com>
 Reviewed-by: Bard Liao <yung-chuan.liao@linux.intel.com>
+Reviewed-by: Rander Wang <rander.wang@intel.com>
+Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Signed-off-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 ---
- sound/soc/sof/intel/apl.c     | 17 ++++--
- sound/soc/sof/intel/cnl.c     | 97 +++++++++++++++++++++++++++++++++--
- sound/soc/sof/intel/hda-ipc.c | 82 +++++++++++++++++++++++++++++
- sound/soc/sof/intel/hda.h     |  6 +++
- sound/soc/sof/intel/tgl.c     | 18 +++++--
- 5 files changed, 208 insertions(+), 12 deletions(-)
+ include/sound/sof/ext_manifest4.h | 119 ++++++++++++++++++++++++++++++
+ 1 file changed, 119 insertions(+)
+ create mode 100644 include/sound/sof/ext_manifest4.h
 
-diff --git a/sound/soc/sof/intel/apl.c b/sound/soc/sof/intel/apl.c
-index b7839fd04dfb..4c67110a073e 100644
---- a/sound/soc/sof/intel/apl.c
-+++ b/sound/soc/sof/intel/apl.c
-@@ -37,11 +37,20 @@ int sof_apl_ops_init(struct snd_sof_dev *sdev)
- 	/* probe/remove/shutdown */
- 	sof_apl_ops.shutdown	= hda_dsp_shutdown;
- 
--	/* doorbell */
--	sof_apl_ops.irq_thread	= hda_dsp_ipc_irq_thread;
-+	if (sdev->pdata->ipc_type == SOF_IPC) {
-+		/* doorbell */
-+		sof_apl_ops.irq_thread	= hda_dsp_ipc_irq_thread;
- 
--	/* ipc */
--	sof_apl_ops.send_msg	= hda_dsp_ipc_send_msg;
-+		/* ipc */
-+		sof_apl_ops.send_msg	= hda_dsp_ipc_send_msg;
-+	}
+diff --git a/include/sound/sof/ext_manifest4.h b/include/sound/sof/ext_manifest4.h
+new file mode 100644
+index 000000000000..ec97edcbbfc3
+--- /dev/null
++++ b/include/sound/sof/ext_manifest4.h
+@@ -0,0 +1,119 @@
++/* SPDX-License-Identifier: ((GPL-2.0 WITH Linux-syscall-note) OR BSD-3-Clause) */
++/*
++ * This file is provided under a dual BSD/GPLv2 license.  When using or
++ * redistributing this file, you may do so under either license.
++ *
++ * Copyright(c) 2022 Intel Corporation. All rights reserved.
++ */
 +
-+	if (sdev->pdata->ipc_type == SOF_INTEL_IPC4) {
-+		sof_apl_ops.irq_thread	= hda_dsp_ipc4_irq_thread;
++/*
++ * Extended manifest is a place to store metadata about firmware, known during
++ * compilation time - for example firmware version or used compiler.
++ * Given information are read on host side before firmware startup.
++ * This part of output binary is not signed.
++ */
 +
-+		/* ipc */
-+		sof_apl_ops.send_msg	= hda_dsp_ipc4_send_msg;
-+	}
- 
- 	/* set DAI driver ops */
- 	hda_set_dai_drv_ops(sdev, &sof_apl_ops);
-diff --git a/sound/soc/sof/intel/cnl.c b/sound/soc/sof/intel/cnl.c
-index 98c4e4f61e7c..7a22d7e4a46c 100644
---- a/sound/soc/sof/intel/cnl.c
-+++ b/sound/soc/sof/intel/cnl.c
-@@ -15,6 +15,7 @@
-  * Hardware interface for audio DSP on Cannonlake.
-  */
- 
-+#include <sound/sof/ipc4/header.h>
- #include "../ops.h"
- #include "hda.h"
- #include "hda-ipc.h"
-@@ -29,6 +30,68 @@ static const struct snd_sof_debugfs_map cnl_dsp_debugfs[] = {
- static void cnl_ipc_host_done(struct snd_sof_dev *sdev);
- static void cnl_ipc_dsp_done(struct snd_sof_dev *sdev);
- 
-+irqreturn_t cnl_ipc4_irq_thread(int irq, void *context)
-+{
-+	struct sof_ipc4_msg notification_data = {{ 0 }};
-+	struct snd_sof_dev *sdev = context;
-+	bool ipc_irq = false;
-+	u32 hipcida, hipctdr;
++#ifndef __SOF_FIRMWARE_EXT_MANIFEST4_H__
++#define __SOF_FIRMWARE_EXT_MANIFEST4_H__
 +
-+	hipcida = snd_sof_dsp_read(sdev, HDA_DSP_BAR, CNL_DSP_REG_HIPCIDA);
-+	if (hipcida & CNL_DSP_REG_HIPCIDA_DONE) {
-+		/* DSP received the message */
-+		snd_sof_dsp_update_bits(sdev, HDA_DSP_BAR,
-+					CNL_DSP_REG_HIPCCTL,
-+					CNL_DSP_REG_HIPCCTL_DONE, 0);
-+		cnl_ipc_dsp_done(sdev);
++#include <linux/uuid.h>
 +
-+		ipc_irq = true;
-+	}
++/* In ASCII  $AE1 */
++#define SOF_EXT_MAN4_MAGIC_NUMBER	0x31454124
 +
-+	hipctdr = snd_sof_dsp_read(sdev, HDA_DSP_BAR, CNL_DSP_REG_HIPCTDR);
-+	if (hipctdr & CNL_DSP_REG_HIPCTDR_BUSY) {
-+		/* Message from DSP (reply or notification) */
-+		u32 hipctdd = snd_sof_dsp_read(sdev, HDA_DSP_BAR,
-+					       CNL_DSP_REG_HIPCTDD);
-+		u32 primary = hipctdr & CNL_DSP_REG_HIPCTDR_MSG_MASK;
-+		u32 extension = hipctdd & CNL_DSP_REG_HIPCTDD_MSG_MASK;
++#define MAX_MODULE_NAME_LEN		8
++#define MAX_FW_BINARY_NAME		8
++#define DEFAULT_HASH_SHA256_LEN		32
++#define SOF_MAN4_FW_HDR_OFFSET		0x2000
++#define SOF_MAN4_FW_HDR_OFFSET_CAVS_1_5	0x284
 +
-+		if (primary & SOF_IPC4_MSG_DIR_MASK) {
-+			/* Reply received */
-+			struct sof_ipc4_msg *data = sdev->ipc->msg.reply_data;
++/*********************************************************************
++ *	extended manifest		(struct sof_ext_manifest4_hdr)
++ *-------------------
++ *	css_manifest hdr
++ *-------------------
++ *	offset reserved for future
++ *-------------------
++ *	fw_hdr				(struct sof_man4_fw_binary_header)
++ *-------------------
++ *	module_entry[0]			(struct sof_man4_module)
++ *-------------------
++ *	module_entry[1]
++ *-------------------
++ *	...
++ *-------------------
++ *	module_entry[n]
++ *-------------------
++ *	module_config[0]		(struct sof_man4_module_config)
++ *-------------------
++ *	module_config[1]
++ *-------------------
++ *	...
++ *-------------------
++ *	module_config[m]
++ *-------------------
++ *	FW content
++ *-------------------
++ *********************************************************************/
 +
-+			data->primary = primary;
-+			data->extension = extension;
++struct sof_ext_manifest4_hdr {
++	uint32_t id;
++	uint32_t len; /* length of extension manifest */
++	uint16_t version_major; /* header version */
++	uint16_t version_minor;
++	uint32_t num_module_entries;
++} __packed;
 +
-+			spin_lock_irq(&sdev->ipc_lock);
++struct sof_man4_fw_binary_header {
++	/* This part must be unchanged to be backward compatible with SPT-LP ROM */
++	uint32_t id;
++	uint32_t len; /* sizeof(sof_man4_fw_binary_header) in bytes */
++	uint8_t name[MAX_FW_BINARY_NAME];
++	uint32_t preload_page_count; /* number of pages of preloaded image */
++	uint32_t fw_image_flags;
++	uint32_t feature_mask;
++	uint16_t major_version; /* Firmware version */
++	uint16_t minor_version;
++	uint16_t hotfix_version;
++	uint16_t build_version;
++	uint32_t num_module_entries;
 +
-+			snd_sof_ipc_get_reply(sdev);
-+			snd_sof_ipc_reply(sdev, data->primary);
++	/* This part may change to contain any additional data for BaseFw that is skipped by ROM */
++	uint32_t hw_buf_base_addr;
++	uint32_t hw_buf_length;
++	uint32_t load_offset; /* This value is used by ROM */
++} __packed;
 +
-+			spin_unlock_irq(&sdev->ipc_lock);
-+		} else {
-+			/* Notification received */
-+			notification_data.primary = primary;
-+			notification_data.extension = extension;
++struct sof_man4_segment_desc {
++	uint32_t flags;
++	uint32_t v_base_addr;
++	uint32_t file_offset;
++} __packed;
 +
-+			sdev->ipc->msg.rx_data = &notification_data;
-+			snd_sof_ipc_msgs_rx(sdev);
-+			sdev->ipc->msg.rx_data = NULL;
-+		}
++struct sof_man4_module {
++	uint32_t id;
++	uint8_t name[MAX_MODULE_NAME_LEN];
++	guid_t uuid;
++	uint32_t type;
++	uint8_t hash[DEFAULT_HASH_SHA256_LEN];
++	uint32_t entry_point;
++	uint16_t cfg_offset;
++	uint16_t cfg_count;
++	uint32_t affinity_mask;
++	uint16_t instance_max_count;
++	uint16_t instance_stack_size;
++	struct sof_man4_segment_desc	segments[3];
++} __packed;
 +
-+		/* Let DSP know that we have finished processing the message */
-+		cnl_ipc_host_done(sdev);
++struct sof_man4_module_config {
++	uint32_t par[4];	/* module parameters */
++	uint32_t is_bytes;	/* actual size of instance .bss (bytes) */
++	uint32_t cps;		/* cycles per second */
++	uint32_t ibs;		/* input buffer size (bytes) */
++	uint32_t obs;		/* output buffer size (bytes) */
++	uint32_t module_flags;	/* flags, reserved for future use */
++	uint32_t cpc;		/* cycles per single run */
++	uint32_t obls;		/* output block size, reserved for future use */
++} __packed;
 +
-+		ipc_irq = true;
-+	}
-+
-+	if (!ipc_irq)
-+		/* This interrupt is not shared so no need to return IRQ_NONE. */
-+		dev_dbg_ratelimited(sdev->dev, "nothing to do in IPC IRQ thread\n");
-+
-+	return IRQ_HANDLED;
-+}
-+
- irqreturn_t cnl_ipc_irq_thread(int irq, void *context)
- {
- 	struct snd_sof_dev *sdev = context;
-@@ -176,6 +239,22 @@ static bool cnl_compact_ipc_compress(struct snd_sof_ipc_msg *msg,
- 	return false;
- }
- 
-+int cnl_ipc4_send_msg(struct snd_sof_dev *sdev, struct snd_sof_ipc_msg *msg)
-+{
-+	struct sof_ipc4_msg *msg_data = msg->msg_data;
-+
-+	/* send the message via mailbox */
-+	if (msg_data->data_size)
-+		sof_mailbox_write(sdev, sdev->host_box.offset, msg_data->data_ptr,
-+				  msg_data->data_size);
-+
-+	snd_sof_dsp_write(sdev, HDA_DSP_BAR, CNL_DSP_REG_HIPCIDD, msg_data->extension);
-+	snd_sof_dsp_write(sdev, HDA_DSP_BAR, CNL_DSP_REG_HIPCIDR,
-+			  msg_data->primary | CNL_DSP_REG_HIPCIDR_BUSY);
-+
-+	return 0;
-+}
-+
- int cnl_ipc_send_msg(struct snd_sof_dev *sdev, struct snd_sof_ipc_msg *msg)
- {
- 	struct sof_intel_hda_dev *hdev = sdev->pdata->hw_pdata;
-@@ -255,11 +334,21 @@ int sof_cnl_ops_init(struct snd_sof_dev *sdev)
- 	/* probe/remove/shutdown */
- 	sof_cnl_ops.shutdown	= hda_dsp_shutdown;
- 
--	/* doorbell */
--	sof_cnl_ops.irq_thread	= cnl_ipc_irq_thread;
--
- 	/* ipc */
--	sof_cnl_ops.send_msg	= cnl_ipc_send_msg;
-+	if (sdev->pdata->ipc_type == SOF_IPC) {
-+		/* doorbell */
-+		sof_cnl_ops.irq_thread	= cnl_ipc_irq_thread;
-+
-+		/* ipc */
-+		sof_cnl_ops.send_msg	= cnl_ipc_send_msg;
-+	}
-+
-+	if (sdev->pdata->ipc_type == SOF_INTEL_IPC4) {
-+		sof_cnl_ops.irq_thread	= cnl_ipc4_irq_thread;
-+
-+		/* ipc */
-+		sof_cnl_ops.send_msg	= cnl_ipc4_send_msg;
-+	}
- 
- 	/* set DAI driver ops */
- 	hda_set_dai_drv_ops(sdev, &sof_cnl_ops);
-diff --git a/sound/soc/sof/intel/hda-ipc.c b/sound/soc/sof/intel/hda-ipc.c
-index 0395638c43ae..f08011249955 100644
---- a/sound/soc/sof/intel/hda-ipc.c
-+++ b/sound/soc/sof/intel/hda-ipc.c
-@@ -15,6 +15,7 @@
-  * Hardware interface for generic Intel audio DSP HDA IP
-  */
- 
-+#include <sound/sof/ipc4/header.h>
- #include "../ops.h"
- #include "hda.h"
- 
-@@ -65,6 +66,22 @@ int hda_dsp_ipc_send_msg(struct snd_sof_dev *sdev, struct snd_sof_ipc_msg *msg)
- 	return 0;
- }
- 
-+int hda_dsp_ipc4_send_msg(struct snd_sof_dev *sdev, struct snd_sof_ipc_msg *msg)
-+{
-+	struct sof_ipc4_msg *msg_data = msg->msg_data;
-+
-+	/* send the message via mailbox */
-+	if (msg_data->data_size)
-+		sof_mailbox_write(sdev, sdev->host_box.offset, msg_data->data_ptr,
-+				  msg_data->data_size);
-+
-+	snd_sof_dsp_write(sdev, HDA_DSP_BAR, HDA_DSP_REG_HIPCIE, msg_data->extension);
-+	snd_sof_dsp_write(sdev, HDA_DSP_BAR, HDA_DSP_REG_HIPCI,
-+			  msg_data->primary | HDA_DSP_REG_HIPCI_BUSY);
-+
-+	return 0;
-+}
-+
- void hda_dsp_ipc_get_reply(struct snd_sof_dev *sdev)
- {
- 	struct snd_sof_ipc_msg *msg = sdev->msg;
-@@ -100,6 +117,71 @@ void hda_dsp_ipc_get_reply(struct snd_sof_dev *sdev)
- 	}
- }
- 
-+irqreturn_t hda_dsp_ipc4_irq_thread(int irq, void *context)
-+{
-+	struct sof_ipc4_msg notification_data = {{ 0 }};
-+	struct snd_sof_dev *sdev = context;
-+	bool ipc_irq = false;
-+	u32 hipcie, hipct;
-+
-+	hipcie = snd_sof_dsp_read(sdev, HDA_DSP_BAR, HDA_DSP_REG_HIPCIE);
-+	if (hipcie & HDA_DSP_REG_HIPCIE_DONE) {
-+		/* DSP received the message */
-+		snd_sof_dsp_update_bits(sdev, HDA_DSP_BAR, HDA_DSP_REG_HIPCCTL,
-+					HDA_DSP_REG_HIPCCTL_DONE, 0);
-+		hda_dsp_ipc_dsp_done(sdev);
-+
-+		ipc_irq = true;
-+	}
-+
-+	hipct = snd_sof_dsp_read(sdev, HDA_DSP_BAR, HDA_DSP_REG_HIPCT);
-+	if (hipct & HDA_DSP_REG_HIPCT_BUSY) {
-+		/* Message from DSP (reply or notification) */
-+		u32 hipcte = snd_sof_dsp_read(sdev, HDA_DSP_BAR,
-+					      HDA_DSP_REG_HIPCTE);
-+		u32 primary = hipct & HDA_DSP_REG_HIPCT_MSG_MASK;
-+		u32 extension = hipcte & HDA_DSP_REG_HIPCTE_MSG_MASK;
-+
-+		/* mask BUSY interrupt */
-+		snd_sof_dsp_update_bits(sdev, HDA_DSP_BAR, HDA_DSP_REG_HIPCCTL,
-+					HDA_DSP_REG_HIPCCTL_BUSY, 0);
-+
-+		if (primary & SOF_IPC4_MSG_DIR_MASK) {
-+			/* Reply received */
-+			struct sof_ipc4_msg *data = sdev->ipc->msg.reply_data;
-+
-+			data->primary = primary;
-+			data->extension = extension;
-+
-+			spin_lock_irq(&sdev->ipc_lock);
-+
-+			snd_sof_ipc_get_reply(sdev);
-+			snd_sof_ipc_reply(sdev, data->primary);
-+
-+			spin_unlock_irq(&sdev->ipc_lock);
-+		} else {
-+			/* Notification received */
-+
-+			notification_data.primary = primary;
-+			notification_data.extension = extension;
-+			sdev->ipc->msg.rx_data = &notification_data;
-+			snd_sof_ipc_msgs_rx(sdev);
-+			sdev->ipc->msg.rx_data = NULL;
-+		}
-+
-+		/* Let DSP know that we have finished processing the message */
-+		hda_dsp_ipc_host_done(sdev);
-+
-+		ipc_irq = true;
-+	}
-+
-+	if (!ipc_irq)
-+		/* This interrupt is not shared so no need to return IRQ_NONE. */
-+		dev_dbg_ratelimited(sdev->dev, "nothing to do in IPC IRQ thread\n");
-+
-+	return IRQ_HANDLED;
-+}
-+
- /* IPC handler thread */
- irqreturn_t hda_dsp_ipc_irq_thread(int irq, void *context)
- {
-diff --git a/sound/soc/sof/intel/hda.h b/sound/soc/sof/intel/hda.h
-index e52cade75617..535791c7d187 100644
---- a/sound/soc/sof/intel/hda.h
-+++ b/sound/soc/sof/intel/hda.h
-@@ -764,4 +764,10 @@ extern int sof_hda_position_quirk;
- 
- void hda_set_dai_drv_ops(struct snd_sof_dev *sdev, struct snd_sof_dsp_ops *ops);
- 
-+/* IPC4 */
-+irqreturn_t cnl_ipc4_irq_thread(int irq, void *context);
-+int cnl_ipc4_send_msg(struct snd_sof_dev *sdev, struct snd_sof_ipc_msg *msg);
-+irqreturn_t hda_dsp_ipc4_irq_thread(int irq, void *context);
-+int hda_dsp_ipc4_send_msg(struct snd_sof_dev *sdev, struct snd_sof_ipc_msg *msg);
-+
- #endif
-diff --git a/sound/soc/sof/intel/tgl.c b/sound/soc/sof/intel/tgl.c
-index ed76f736afb4..c93526591a91 100644
---- a/sound/soc/sof/intel/tgl.c
-+++ b/sound/soc/sof/intel/tgl.c
-@@ -70,11 +70,21 @@ int sof_tgl_ops_init(struct snd_sof_dev *sdev)
- 	/* probe/remove/shutdown */
- 	sof_tgl_ops.shutdown	= hda_dsp_shutdown;
- 
--	/* doorbell */
--	sof_tgl_ops.irq_thread	= cnl_ipc_irq_thread;
-+	if (sdev->pdata->ipc_type == SOF_IPC) {
-+		/* doorbell */
-+		sof_tgl_ops.irq_thread	= cnl_ipc_irq_thread;
- 
--	/* ipc */
--	sof_tgl_ops.send_msg	= cnl_ipc_send_msg;
-+		/* ipc */
-+		sof_tgl_ops.send_msg	= cnl_ipc_send_msg;
-+	}
-+
-+	if (sdev->pdata->ipc_type == SOF_INTEL_IPC4) {
-+		/* doorbell */
-+		sof_tgl_ops.irq_thread	= cnl_ipc4_irq_thread;
-+
-+		/* ipc */
-+		sof_tgl_ops.send_msg	= cnl_ipc4_send_msg;
-+	}
- 
- 	/* set DAI driver ops */
- 	hda_set_dai_drv_ops(sdev, &sof_tgl_ops);
++#endif /* __SOF_FIRMWARE_EXT_MANIFEST4_H__ */
 -- 
 2.25.1
 
