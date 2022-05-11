@@ -4,82 +4,82 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 205A4C433F5
-	for <alsa-devel@archiver.kernel.org>; Tue, 10 May 2022 16:19:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D0754C433EF
+	for <alsa-devel@archiver.kernel.org>; Wed, 11 May 2022 01:08:54 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 50F8F193D;
-	Tue, 10 May 2022 18:18:15 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 50F8F193D
+	by alsa0.perex.cz (Postfix) with ESMTPS id D80C617D3;
+	Wed, 11 May 2022 03:08:01 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D80C617D3
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1652199545;
-	bh=4kGjT+2GiRwQv5cDjEd1FVM0anQ6yHlW2lfXFsBVkoU=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=d/3I09ISOTLpJ+OQnF7Qax0h0ZCEoXsl/TrzUYQnl0Uy6Ou99MA5fg5dydRIZbayF
-	 Pa07ofB/Izkdi8i3CPhqUi8tqK+CapJhtlsz9HoKUArT8nhS/JZ/DbPzBVxFSD11EH
-	 4InmQHOONN6TDQt9dd+In883BMEuED6z/IYW7Lvs=
+	s=default; t=1652231331;
+	bh=xrRQ0GJWq+66VCJpymvn0aMnpd4ABWaXmFU4EHXbdrg=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=W4uzs/mjabpQ+7BCL3tZ6ZUoRfjXITqAhg9QvSMN4iDuYtXplgQ3pJ/HKij1Jy6Ah
+	 THS6EomqjYaJxYoBQkPQ9JhYoZBfvxPpSJB27RcYN4+Xd3mGheYRjRTUpZ0boMGvl6
+	 En2DnCCS/Jsg0j8PCbZbnG8N9IOhfzHiwu1KTy3I=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 5C5A8F80510;
-	Tue, 10 May 2022 18:17:23 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 727D5F80153;
+	Wed, 11 May 2022 03:08:01 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 48376F8050F; Tue, 10 May 2022 18:17:21 +0200 (CEST)
-Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
- [67.231.152.168])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 74F8DF8019D; Wed, 11 May 2022 03:07:59 +0200 (CEST)
+Received: from mail-il1-x131.google.com (mail-il1-x131.google.com
+ [IPv6:2607:f8b0:4864:20::131])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 9B654F80153
- for <alsa-devel@alsa-project.org>; Tue, 10 May 2022 18:17:10 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9B654F80153
+ by alsa1.perex.cz (Postfix) with ESMTPS id B01DEF80116
+ for <alsa-devel@alsa-project.org>; Wed, 11 May 2022 03:07:48 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B01DEF80116
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com
- header.b="QuFbHVYa"
-Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
- by mx0b-001ae601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 24A5TVpg021012;
- Tue, 10 May 2022 11:17:08 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
- h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding : content-type; s=PODMain02222019;
- bh=nrGmf72PUMvWhBwg/KmhLmnE44YnGnwysukUNCGsDJ8=;
- b=QuFbHVYaIR3oebw39Hz2rxfsRHykhbyQBlCIkUj6BRhtHLyQXsFkhtAlzTj8UABIN5Tx
- KtYDDSPOpVoLifyLhKG3lOcOaIdzq5evAPSiYmWSO9m5H05LSkeM4CzubtYWFooiAHVG
- gLO1rPkdy/3wUMD43/3RQWcfAmBJn8zqcB5455BFJ2xI38HueEPD41zRe4jm1OLE7u9u
- 4hFafamjgVGCcSfTzoz/CnT8G7Jdtvv0qlgo9yKBZdsev5jsHDgdHth8fZC0pIvafPZe
- PRdLoFdILRQgatb9E2avRSBoVbNuySj1RNuQPSTWzGkBE1XI7/PxQxXubYImsJXoM8Xi Tw== 
-Received: from ediex02.ad.cirrus.com ([84.19.233.68])
- by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3fwn6nvk88-2
- (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
- Tue, 10 May 2022 11:17:08 -0500
-Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX02.ad.cirrus.com
- (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.24; Tue, 10 May
- 2022 17:17:07 +0100
-Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server id 15.1.2375.24 via
- Frontend Transport; Tue, 10 May 2022 17:17:07 +0100
-Received: from sbinding-cirrus-dsktp.ad.cirrus.com (unknown [198.90.238.24])
- by ediswmail.ad.cirrus.com (Postfix) with ESMTP id C9491475;
- Tue, 10 May 2022 16:17:06 +0000 (UTC)
-From: Stefan Binding <sbinding@opensource.cirrus.com>
-To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
-Subject: [PATCH v1 2/3] ALSA: hda/cs8409: Add Speaker Playback Switch for
- Cyborg
-Date: Tue, 10 May 2022 17:17:00 +0100
-Message-ID: <20220510161701.851260-3-sbinding@opensource.cirrus.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20220510161701.851260-1-sbinding@opensource.cirrus.com>
-References: <20220510161701.851260-1-sbinding@opensource.cirrus.com>
+ dkim=pass (2048-bit key) header.d=howett-net.20210112.gappssmtp.com
+ header.i=@howett-net.20210112.gappssmtp.com header.b="LIEre7zy"
+Received: by mail-il1-x131.google.com with SMTP id j12so424480ila.12
+ for <alsa-devel@alsa-project.org>; Tue, 10 May 2022 18:07:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=howett-net.20210112.gappssmtp.com; s=20210112;
+ h=from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=HKDzgb7pX+8jdkJlU9jvaZ8AoRxWNdGhkJfVlXnpRsg=;
+ b=LIEre7zyDoYEWVUarZq6FHOB/DFNLVDkTcdFAanAgP0v/z90hxZDp/iiiifBDSmtir
+ I+jgkHMBdorWmBgVkcQDdO3+ZZ+YWJfPQJ6vOif9BWlrTftuPl3axUZNYbq/gXurxjAA
+ UvFaSMK7ITl6CO2xtTLn+CkpLH/YTIIsfbd4J3G+RwssI/EZ6652uaY1CHcDTVs81Jo+
+ genasjfqV8DQT4UhxumUcxzjDTZFU1mjA6EC9bXVoc+eGMn+F2UMmyaLsWXERAjej7rL
+ qlaBG/mxKLzLIYhtzPC5qXllbkzIZOhCNg/VKR/7J5h87EzPkiEe5OlL+R0357adaGE/
+ TcXw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=HKDzgb7pX+8jdkJlU9jvaZ8AoRxWNdGhkJfVlXnpRsg=;
+ b=nohv8/Zx0kuhQL3izdT8JHzCA9C+ThIbwRS9a/Ex3jZ8q+4AzwxTqGoFo7s2a6Lx+F
+ dDtSoDYBuEwBAXJG21/N3mvq/hEddJT8jpFB3EYOTHmmun72PJcQOtJeQA+ICU6/2dTC
+ rOnYC9t4YnSKh4Y/wHC3syUWiIt0HvCfeVANx4kn70vDefHFw3frQlKB5YlitPlC0WDD
+ nv33pMK/EIdtiHn93RgR6c14frvKjDUkOUC2UGjNcZ+T7bZoZrrvQZ2FFe4PoZAquZWj
+ OIK8PTg9as/UCilElNwdcZG9FwvI4243RIyhvG9tdNoOJ4VPGDN5Shliu+LSMNr35t6Y
+ jI9w==
+X-Gm-Message-State: AOAM533s1rd+8EunfTqeohSy3o+q+UQ7SvSrug8ogNomrzzS/gngSTBo
+ RS9xfGhgcJERQ54SAgfJntkOktXGb22kIWAq
+X-Google-Smtp-Source: ABdhPJyimDsFW/z5X4qQsJpr8Uew0CKfoUgYdr4965M9kvE2Bk0HMz5fJz7x2J3J/Y5wlRu05lB5gg==
+X-Received: by 2002:a05:6e02:17c6:b0:2cd:f999:3dd with SMTP id
+ z6-20020a056e0217c600b002cdf99903ddmr10768806ilu.318.1652231266036; 
+ Tue, 10 May 2022 18:07:46 -0700 (PDT)
+Received: from rigel.delfino.n.howett.net
+ (99-107-94-179.lightspeed.stlsmo.sbcglobal.net. [99.107.94.179])
+ by smtp.googlemail.com with ESMTPSA id
+ q13-20020a6bd20d000000b0065a47e16f4bsm237870iob.29.2022.05.10.18.07.44
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Tue, 10 May 2022 18:07:45 -0700 (PDT)
+From: "Dustin L. Howett" <dustin@howett.net>
+To: alsa-devel@alsa-project.org
+Subject: [PATCH v2] ALSA: hda/realtek: Add quirk for the Framework Laptop
+Date: Tue, 10 May 2022 20:07:59 -0500
+Message-Id: <20220511010759.3554-1-dustin@howett.net>
+X-Mailer: git-send-email 2.36.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: 7s0dOMeRLauZMyKRs4YJNDSCKzZvKS-L
-X-Proofpoint-GUID: 7s0dOMeRLauZMyKRs4YJNDSCKzZvKS-L
-X-Proofpoint-Spam-Reason: safe
-Cc: patches@opensource.cirrus.com, alsa-devel@alsa-project.org,
- linux-kernel@vger.kernel.org, Stefan Binding <sbinding@opensource.cirrus.com>
+Cc: "Dustin L. Howett" <dustin@howett.net>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -95,182 +95,65 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Add support for a Speaker Playback Switch, which disables
-the Amp connected to cs8409. The Switch is not added
-automatically because cs8409 does not have an output amp
-for the speaker NID.
+Some board revisions of the Framework Laptop have an ALC295 with a
+disconnected or faulty headset mic presence detect.
 
-Signed-off-by: Stefan Binding <sbinding@opensource.cirrus.com>
+The "dell-headset-multi" fixup addresses this issue, but also enables an
+inoperative "Headphone Mic" input device whenever a headset is
+connected.
+
+Adding a new quirk chain specific to the Framework Laptop resolves this
+issue. The one introduced here is based on the System76 "no headphone
+mic" quirk chain.
+
+The VID:PID f111:0001 have been allocated to Framework Computer for this
+board revision.
+
+Revision history:
+- v2: Moved to a custom quirk chain to suppress the "Headphone Mic"
+  pincfg.
+
+Signed-off-by: Dustin L. Howett <dustin@howett.net>
 ---
- sound/pci/hda/patch_cs8409.c | 72 ++++++++++++++++++++++++++++++------
- sound/pci/hda/patch_cs8409.h |  3 ++
- 2 files changed, 64 insertions(+), 11 deletions(-)
+ sound/pci/hda/patch_realtek.c | 11 +++++++++++
+ 1 file changed, 11 insertions(+)
 
-diff --git a/sound/pci/hda/patch_cs8409.c b/sound/pci/hda/patch_cs8409.c
-index c4d21569cc7d..f682769667e3 100644
---- a/sound/pci/hda/patch_cs8409.c
-+++ b/sound/pci/hda/patch_cs8409.c
-@@ -419,6 +419,39 @@ static void cs8409_fix_caps(struct hda_codec *codec, unsigned int nid)
- 	snd_hda_override_wcaps(codec, nid, (get_wcaps(codec, nid) | AC_WCAP_UNSOL_CAP));
- }
+diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+index 4c0c593f3c0a..e00e6d2038a1 100644
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -7012,6 +7012,7 @@ enum {
+ 	ALC245_FIXUP_CS35L41_SPI_4,
+ 	ALC245_FIXUP_CS35L41_SPI_4_HP_GPIO_LED,
+ 	ALC285_FIXUP_HP_SPEAKERS_MICMUTE_LED,
++	ALC295_FIXUP_FRAMEWORK_LAPTOP_MIC_NO_PRESENCE,
+ };
  
-+static int cs8409_spk_sw_gpio_get(struct snd_kcontrol *kcontrol,
-+				 struct snd_ctl_elem_value *ucontrol)
-+{
-+	struct hda_codec *codec = snd_kcontrol_chip(kcontrol);
-+	struct cs8409_spec *spec = codec->spec;
-+
-+	ucontrol->value.integer.value[0] = !!(spec->gpio_data & spec->speaker_pdn_gpio);
-+	return 0;
-+}
-+
-+static int cs8409_spk_sw_gpio_put(struct snd_kcontrol *kcontrol,
-+				 struct snd_ctl_elem_value *ucontrol)
-+{
-+	struct hda_codec *codec = snd_kcontrol_chip(kcontrol);
-+	struct cs8409_spec *spec = codec->spec;
-+	unsigned int gpio_data;
-+
-+	gpio_data = (spec->gpio_data & ~spec->speaker_pdn_gpio) |
-+		(ucontrol->value.integer.value[0] ? spec->speaker_pdn_gpio : 0);
-+	if (gpio_data == spec->gpio_data)
-+		return 0;
-+	spec->gpio_data = gpio_data;
-+	snd_hda_codec_write(codec, CS8409_PIN_AFG, 0, AC_VERB_SET_GPIO_DATA, spec->gpio_data);
-+	return 1;
-+}
-+
-+static const struct snd_kcontrol_new cs8409_spk_sw_ctrl = {
-+	.iface = SNDRV_CTL_ELEM_IFACE_MIXER,
-+	.info = snd_ctl_boolean_mono_info,
-+	.get = cs8409_spk_sw_gpio_get,
-+	.put = cs8409_spk_sw_gpio_put,
-+};
-+
- /******************************************************************************
-  *                        CS42L42 Specific Functions
-  ******************************************************************************/
-@@ -836,7 +869,7 @@ static int cs42l42_jack_unsol_event(struct sub_codec *cs42l42)
- static void cs42l42_resume(struct sub_codec *cs42l42)
- {
- 	struct hda_codec *codec = cs42l42->codec;
--	unsigned int gpio_data;
-+	struct cs8409_spec *spec = codec->spec;
- 	struct cs8409_i2c_param irq_regs[] = {
- 		{ CS42L42_CODEC_STATUS, 0x00 },
- 		{ CS42L42_DET_INT_STATUS1, 0x00 },
-@@ -846,9 +879,9 @@ static void cs42l42_resume(struct sub_codec *cs42l42)
- 	int fsv_old, fsv_new;
+ static const struct hda_fixup alc269_fixups[] = {
+@@ -8806,6 +8807,15 @@ static const struct hda_fixup alc269_fixups[] = {
+ 		.chained = true,
+ 		.chain_id = ALC285_FIXUP_HP_MUTE_LED,
+ 	},
++	[ALC295_FIXUP_FRAMEWORK_LAPTOP_MIC_NO_PRESENCE] = {
++		.type = HDA_FIXUP_PINS,
++		.v.pins = (const struct hda_pintbl[]) {
++			{ 0x19, 0x02a1112c }, /* use as headset mic, without its own jack detect */
++			{ }
++		},
++		.chained = true,
++		.chain_id = ALC269_FIXUP_HEADSET_MODE_NO_HP_MIC
++	},
+ };
  
- 	/* Bring CS42L42 out of Reset */
--	gpio_data = snd_hda_codec_read(codec, CS8409_PIN_AFG, 0, AC_VERB_GET_GPIO_DATA, 0);
--	gpio_data |= cs42l42->reset_gpio;
--	snd_hda_codec_write(codec, CS8409_PIN_AFG, 0, AC_VERB_SET_GPIO_DATA, gpio_data);
-+	spec->gpio_data = snd_hda_codec_read(codec, CS8409_PIN_AFG, 0, AC_VERB_GET_GPIO_DATA, 0);
-+	spec->gpio_data |= cs42l42->reset_gpio;
-+	snd_hda_codec_write(codec, CS8409_PIN_AFG, 0, AC_VERB_SET_GPIO_DATA, spec->gpio_data);
- 	usleep_range(10000, 15000);
+ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
+@@ -9294,6 +9304,7 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
+ 	SND_PCI_QUIRK(0x8086, 0x2074, "Intel NUC 8", ALC233_FIXUP_INTEL_NUC8_DMIC),
+ 	SND_PCI_QUIRK(0x8086, 0x2080, "Intel NUC 8 Rugged", ALC256_FIXUP_INTEL_NUC8_RUGGED),
+ 	SND_PCI_QUIRK(0x8086, 0x2081, "Intel NUC 10", ALC256_FIXUP_INTEL_NUC10),
++	SND_PCI_QUIRK(0xf111, 0x0001, "Framework Laptop", ALC295_FIXUP_FRAMEWORK_LAPTOP_MIC_NO_PRESENCE),
  
- 	cs42l42->suspended = 0;
-@@ -880,7 +913,7 @@ static void cs42l42_resume(struct sub_codec *cs42l42)
- static void cs42l42_suspend(struct sub_codec *cs42l42)
- {
- 	struct hda_codec *codec = cs42l42->codec;
--	unsigned int gpio_data;
-+	struct cs8409_spec *spec = codec->spec;
- 	int reg_cdc_status = 0;
- 	const struct cs8409_i2c_param cs42l42_pwr_down_seq[] = {
- 		{ CS42L42_DAC_CTL2, 0x02 },
-@@ -911,9 +944,9 @@ static void cs42l42_suspend(struct sub_codec *cs42l42)
- 	cs42l42->mic_jack_in = 0;
- 
- 	/* Put CS42L42 into Reset */
--	gpio_data = snd_hda_codec_read(codec, CS8409_PIN_AFG, 0, AC_VERB_GET_GPIO_DATA, 0);
--	gpio_data &= ~cs42l42->reset_gpio;
--	snd_hda_codec_write(codec, CS8409_PIN_AFG, 0, AC_VERB_SET_GPIO_DATA, gpio_data);
-+	spec->gpio_data = snd_hda_codec_read(codec, CS8409_PIN_AFG, 0, AC_VERB_GET_GPIO_DATA, 0);
-+	spec->gpio_data &= ~cs42l42->reset_gpio;
-+	snd_hda_codec_write(codec, CS8409_PIN_AFG, 0, AC_VERB_SET_GPIO_DATA, spec->gpio_data);
- }
- #endif
- 
-@@ -1106,6 +1139,8 @@ void cs8409_cs42l42_fixups(struct hda_codec *codec, const struct hda_fixup *fix,
- 		spec->gen.no_primary_hp = 1;
- 		spec->gen.suppress_vmaster = 1;
- 
-+		spec->speaker_pdn_gpio = 0;
-+
- 		/* GPIO 5 out, 3,4 in */
- 		spec->gpio_dir = spec->scodecs[CS8409_CODEC0]->reset_gpio;
- 		spec->gpio_data = 0;
-@@ -1117,21 +1152,33 @@ void cs8409_cs42l42_fixups(struct hda_codec *codec, const struct hda_fixup *fix,
- 		cs8409_fix_caps(codec, CS8409_CS42L42_HP_PIN_NID);
- 		cs8409_fix_caps(codec, CS8409_CS42L42_AMIC_PIN_NID);
- 
--		/* Set HSBIAS_SENSE_EN and Full Scale volume for some variants. */
-+		spec->scodecs[CS8409_CODEC0]->hsbias_hiz = 0x0020;
-+
- 		switch (codec->fixup_id) {
-+		case CS8409_CYBORG:
-+			spec->scodecs[CS8409_CODEC0]->full_scale_vol =
-+				CS42L42_FULL_SCALE_VOL_MINUS6DB;
-+			spec->speaker_pdn_gpio = CS8409_CYBORG_SPEAKER_PDN;
-+			break;
- 		case CS8409_ODIN:
-+			spec->scodecs[CS8409_CODEC0]->full_scale_vol = CS42L42_FULL_SCALE_VOL_0DB;
-+			spec->speaker_pdn_gpio = CS8409_CYBORG_SPEAKER_PDN;
-+			break;
- 		case CS8409_WARLOCK_MLK:
- 		case CS8409_WARLOCK_MLK_DUAL_MIC:
--			spec->scodecs[CS8409_CODEC0]->hsbias_hiz = 0x0020;
- 			spec->scodecs[CS8409_CODEC0]->full_scale_vol = CS42L42_FULL_SCALE_VOL_0DB;
- 			break;
- 		default:
--			spec->scodecs[CS8409_CODEC0]->hsbias_hiz = 0x0020;
- 			spec->scodecs[CS8409_CODEC0]->full_scale_vol =
- 				CS42L42_FULL_SCALE_VOL_MINUS6DB;
- 			break;
- 		}
- 
-+		if (spec->speaker_pdn_gpio > 0) {
-+			spec->gpio_dir |= spec->speaker_pdn_gpio;
-+			spec->gpio_data |= spec->speaker_pdn_gpio;
-+		}
-+
- 		break;
- 	case HDA_FIXUP_ACT_PROBE:
- 		/* Fix Sample Rate to 48kHz */
-@@ -1148,6 +1195,9 @@ void cs8409_cs42l42_fixups(struct hda_codec *codec, const struct hda_fixup *fix,
- 				&cs42l42_dac_volume_mixer);
- 		snd_hda_gen_add_kctl(&spec->gen, "Mic Capture Volume",
- 				&cs42l42_adc_volume_mixer);
-+		if (spec->speaker_pdn_gpio > 0)
-+			snd_hda_gen_add_kctl(&spec->gen, "Speaker Playback Switch",
-+					     &cs8409_spk_sw_ctrl);
- 		/* Disable Unsolicited Response during boot */
- 		cs8409_enable_ur(codec, 0);
- 		snd_hda_codec_set_name(codec, "CS8409/CS42L42");
-diff --git a/sound/pci/hda/patch_cs8409.h b/sound/pci/hda/patch_cs8409.h
-index 9852dc4234b4..630a7a2de51f 100644
---- a/sound/pci/hda/patch_cs8409.h
-+++ b/sound/pci/hda/patch_cs8409.h
-@@ -238,6 +238,7 @@ enum cs8409_coefficient_index_registers {
- #define CS42L42_I2C_ADDR			(0x48 << 1)
- #define CS8409_CS42L42_RESET			GENMASK(5, 5) /* CS8409_GPIO5 */
- #define CS8409_CS42L42_INT			GENMASK(4, 4) /* CS8409_GPIO4 */
-+#define CS8409_CYBORG_SPEAKER_PDN		GENMASK(2, 2) /* CS8409_GPIO2 */
- #define CS8409_CS42L42_HP_PIN_NID		CS8409_PIN_ASP1_TRANSMITTER_A
- #define CS8409_CS42L42_SPK_PIN_NID		CS8409_PIN_ASP2_TRANSMITTER_A
- #define CS8409_CS42L42_AMIC_PIN_NID		CS8409_PIN_ASP1_RECEIVER_A
-@@ -326,6 +327,8 @@ struct cs8409_spec {
- 	unsigned int gpio_dir;
- 	unsigned int gpio_data;
- 
-+	int speaker_pdn_gpio;
-+
- 	struct mutex i2c_mux;
- 	unsigned int i2c_clck_enabled;
- 	unsigned int dev_addr;
+ #if 0
+ 	/* Below is a quirk table taken from the old code.
 -- 
-2.25.1
+2.36.0
 
