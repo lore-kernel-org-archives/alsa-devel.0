@@ -4,87 +4,72 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 56E47C433EF
-	for <alsa-devel@archiver.kernel.org>; Wed, 11 May 2022 10:33:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D183DC433EF
+	for <alsa-devel@archiver.kernel.org>; Wed, 11 May 2022 12:07:12 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id AF4681933;
-	Wed, 11 May 2022 12:32:38 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AF4681933
+	by alsa0.perex.cz (Postfix) with ESMTPS id E21D417FD;
+	Wed, 11 May 2022 14:06:19 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E21D417FD
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1652265208;
-	bh=diBqFc+BoWzAr/VmLH7dKrLdPRQvzkNUrCN5zzOorr4=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
+	s=default; t=1652270830;
+	bh=j+SZT1/756FCJSOH/SWqGVaW5SakBqAL99hxm7pxi3g=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=pVKy3oFz6ASNOYcb+KhDkpcoFjQWpz5GH/HpDXyJMRw7F7yBSEuqp7dRspH5D1Elc
-	 FZkhOF3KVwxxx8tFWQkH1QFIoHS46nTlO7u9VERA2CYqifn0mRuol5BIDeodxFZJL2
-	 +jhq0mTMk2Nuo13LyZfFfwpt+jMbuH9vZpB9hra0=
+	b=VGfkb/SE+8lit11gtEkPI7H1VIX1PRbwxExPhXc4FG+qt+2Jh+JqGUcPYplPQ2aw3
+	 Oh9frOHIpzEfVjnPYEBZOxh4B5SgAsTEtnlmZpJA6OgysgxphKhSPyw4kZjoiGfVDF
+	 MxgRC/oWHzLuZAGAKETg2/OsUL6nYr5RNhcVANuw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 38233F80137;
-	Wed, 11 May 2022 12:32:38 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 6AADFF8011C;
+	Wed, 11 May 2022 14:06:19 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 53741F8015B; Wed, 11 May 2022 12:32:37 +0200 (CEST)
-Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com
- [IPv6:2a00:1450:4864:20::62b])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id DC703F8015B; Wed, 11 May 2022 14:06:17 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org
+ [IPv6:2604:1380:4641:c500::1])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 2E94BF8011C
- for <alsa-devel@alsa-project.org>; Wed, 11 May 2022 12:32:33 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2E94BF8011C
+ by alsa1.perex.cz (Postfix) with ESMTPS id 72442F800BB
+ for <alsa-devel@alsa-project.org>; Wed, 11 May 2022 14:06:15 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 72442F800BB
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="j7v8dV+o"
-Received: by mail-ej1-x62b.google.com with SMTP id l18so3105926ejc.7
- for <alsa-devel@alsa-project.org>; Wed, 11 May 2022 03:32:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
- h=mime-version:references:in-reply-to:from:date:message-id:subject:to
- :cc; bh=diBqFc+BoWzAr/VmLH7dKrLdPRQvzkNUrCN5zzOorr4=;
- b=j7v8dV+of4JcYw6oQpjfYDg+/AhDGlh8rWDyVb4dNZFpWwCXA/ba7PSzuOc073fq5C
- CkbxcaE8TIYaP/pepZuL48hr/m1y4+28nijoEjmbwdqh6cKWZ9DJnWqZNJdkIV7JUYyK
- K+adh0jDs6KRrHOvq2jskXIux2qU/jq084T6hmNIBFHJD1Kdjv3EQgIogmZypxSboneH
- u24R/YdKD1LA+I5Zm3gwoh4EXivmzYiVlM1C6kwKzu3sEDV7G/8qbNQlrgM+GuoAmdEE
- TrmZCR0vnIxqBgF7fdIt1N9tzj894I735RdxUya0xlE6QJTIBqjtLCBvRhw/nG5KNTUv
- 2ZWw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc;
- bh=diBqFc+BoWzAr/VmLH7dKrLdPRQvzkNUrCN5zzOorr4=;
- b=clWSk8X+BZcXCUTf4Kl07tN+05AQn0wdT1HcGIhru8qXBDmj6XdIlYhPiGTq+N2XgP
- Irt39yVcm5NWEia795fbNSKygBUv0+DMxXc/QHC/gigW7JxD64vHQkCqAFggBP3LIVxe
- w2spD2pKCO/CMEdzpQNcvvl3D3YVM6vd7m93KV0cTaKO32EN/6Wwq0n2rZ+vZO906wO8
- yrpNszWzIu+MTqGFQ9NZw5Z+hGgfbqrrwyjt3uB/0zhQB9TIB9qLgYhIAV2LwoSh/Enr
- UzNR/2e0NPZ88u6+QBZhkp1GAgVYExOemuuHjRze3Ve/sGxnso+HQ57tic3F9c/crApG
- HdqA==
-X-Gm-Message-State: AOAM5330ZFsbF5X9z/nSPK4roaNo8rE0HEyX7Bn5rhWFX0YFl9M9r/46
- qXIMCH2p8ztaMAbxTg++Mzf8T9n/UBpV6ny7lk4=
-X-Google-Smtp-Source: ABdhPJw6yj7TxbR0Hf9m7Lwxgm0Ky888mXXjlZZAf43y7eUMo7ah+68FM66Xr2uyLeand054/IqjszNELkdzUOz42E0=
-X-Received: by 2002:a17:906:c14b:b0:6f8:e6bb:f8d5 with SMTP id
- dp11-20020a170906c14b00b006f8e6bbf8d5mr16921243ejc.4.1652265151596; Wed, 11
- May 2022 03:32:31 -0700 (PDT)
+ dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="envSBHOj"
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by dfw.source.kernel.org (Postfix) with ESMTPS id 7F54661972;
+ Wed, 11 May 2022 12:06:12 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3443CC34112;
+ Wed, 11 May 2022 12:06:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1652270771;
+ bh=j+SZT1/756FCJSOH/SWqGVaW5SakBqAL99hxm7pxi3g=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=envSBHOjKbIr0rKczLGiBRqfDL78Sma3TLybp44DVJuTLIaZYtNApvReFU9U06O9v
+ 3xWNB92V4Auz9luxglol+DuNCsdzS/4IOAZzhsH4r7K/1qhf8Da9UxH4nnYbqnx3bi
+ X7XtwTiOUgYAA2K0EfrMcIvP5trUSMbRD62bOPrG9C3gvdZ15dVNLAWZUDSwX9DIo9
+ InXC0vmpN5eU4chLnavg+yxST5A7ekd4hW1gs68udySrsn6i3HvTh/KkAHBITw1JZ/
+ F582nQUqMy0xXryp2aDLcd3uwHcA9Yro9GicbHNlMk0bIyoLfhdYzels8U8SX5q47X
+ JteycUYF4C4OA==
+Date: Wed, 11 May 2022 13:06:05 +0100
+From: Mark Brown <broonie@kernel.org>
+To: Hui Tang <tanghui20@huawei.com>
+Subject: Re: [PATCH -next 1/2] ASoC: max98396: Fix build error for implicit
+ function declaration
+Message-ID: <YnumrRUSkVCPONdl@sirena.org.uk>
+References: <20220511012348.94288-1-tanghui20@huawei.com>
+ <20220511012348.94288-2-tanghui20@huawei.com>
 MIME-Version: 1.0
-References: <20220511065803.3957-1-linmq006@gmail.com>
-In-Reply-To: <20220511065803.3957-1-linmq006@gmail.com>
-From: Fabio Estevam <festevam@gmail.com>
-Date: Wed, 11 May 2022 07:32:19 -0300
-Message-ID: <CAOMZO5AqKNg36_OBntqzpF6sYFitCMMJZP-KwFpYftJ76fdDsA@mail.gmail.com>
-Subject: Re: [PATCH] ASoC: fsl: Fix refcount leak in imx_sgtl5000_probe
-To: Miaoqian Lin <linmq006@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>,
- linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
- linux-kernel <linux-kernel@vger.kernel.org>, Xiubo Li <Xiubo.Lee@gmail.com>,
- Shawn Guo <shawnguo@kernel.org>, Sascha Hauer <s.hauer@pengutronix.de>,
- Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>,
- Nicolin Chen <nicoleotsuka@gmail.com>, Mark Brown <broonie@kernel.org>,
- NXP Linux Team <linux-imx@nxp.com>,
- Pengutronix Kernel Team <kernel@pengutronix.de>,
- Shengjiu Wang <shengjiu.wang@gmail.com>,
- Richard Zhao <richard.zhao@linaro.org>,
- "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE"
- <linux-arm-kernel@lists.infradead.org>
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature"; boundary="3Eq9i/WIkpo74bQR"
+Content-Disposition: inline
+In-Reply-To: <20220511012348.94288-2-tanghui20@huawei.com>
+X-Cookie: Look ere ye leap.
+Cc: alsa-devel@alsa-project.org, steve@sk2.org, linux-kernel@vger.kernel.org,
+ tiwai@suse.com, lgirdwood@gmail.com, ricardw@axis.com,
+ ryan.lee.analog@gmail.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -100,15 +85,49 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, May 11, 2022 at 3:58 AM Miaoqian Lin <linmq006@gmail.com> wrote:
->
-> of_find_i2c_device_by_node() takes a reference,
-> In error paths, we should call put_device() to drop
-> the reference to aviod refount leak.
 
-s/aviod refount/avoid refcount
+--3Eq9i/WIkpo74bQR
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> Fixes: 81e8e4926167 ("ASoC: fsl: add sgtl5000 clock support for imx-sgtl5000")
-> Signed-off-by: Miaoqian Lin <linmq006@gmail.com>
+On Wed, May 11, 2022 at 09:23:47AM +0800, Hui Tang wrote:
 
-Reviewed-by: Fabio Estevam <festevam@gmail.com>
+>                          devm_regulator_get_optional
+> sound/soc/codecs/max98396.c:1556:23: error: =E2=80=98GPIOD_OUT_HIGH=E2=80=
+=99 undeclared (first use in this function); did you mean =E2=80=98GPIOF_IN=
+IT_HIGH=E2=80=99?
+>               "reset", GPIOD_OUT_HIGH);
+>                        ^~~~~~~~~~~~~~
+>                        GPIOF_INIT_HIGH
+> sound/soc/codecs/max98396.c:1556:23: note: each undeclared identifier is =
+reported only once for each function it appears in
+> sound/soc/codecs/max98396.c:1565:3: error: implicit declaration of functi=
+on =E2=80=98gpiod_set_value_cansleep=E2=80=99; did you mean =E2=80=98gpio_s=
+et_value_cansleep=E2=80=99? [-Werror=3Dimplicit-function-declaration]
+>    gpiod_set_value_cansleep(max98396->reset_gpio, 0);
+>    ^~~~~~~~~~~~~~~~~~~~~~~~
+>    gpio_set_value_cansleep
+> cc1: all warnings being treated as errors
+>=20
+> Add depend on GPIOLIB for 'config SND_SOC_MAX98396'
+
+No, these issues are missing headers not dependencies.  In general
+gpiolib stubs out so drivers can optionally use GPIO functionality.
+
+--3Eq9i/WIkpo74bQR
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmJ7pqwACgkQJNaLcl1U
+h9B0kgf8CXSZlR2n9HkIGn6ZvtvMYK62TBjP2DAICSADC+/7mIu2RtE2eQSLbIUJ
+xaxEvMealU9daTphvXFlWHhVlVQow897uyOrsuAmaNdbx7hi1PhJyr1vs89iS+uY
+Ss5lPUjN8OsdyweQkaQWO91ug+mSb3q3X3Qr0KBaCqMSgVXA7cUoEtHrFkWKn8qQ
+QRJoTxHmC7Xed5N0zEhE7d7quXBLgiGL9FZfKoQpJQ2IBDTB486XblaUhl2TVXDu
+sP4c1FHQvKT3qnDg0eLyvu8st/jPGe+pAjpKLh9rzvY36UFBrOu9bwzti1L/oZXW
+VJ24AXxfw3iFzrOkEF42aVToPho6hQ==
+=SyXL
+-----END PGP SIGNATURE-----
+
+--3Eq9i/WIkpo74bQR--
