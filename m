@@ -4,64 +4,64 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 652E0C433FE
-	for <alsa-devel@archiver.kernel.org>; Wed, 11 May 2022 17:19:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id F1305C433F5
+	for <alsa-devel@archiver.kernel.org>; Wed, 11 May 2022 17:19:18 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 5D8D21AB2;
-	Wed, 11 May 2022 19:18:10 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5D8D21AB2
+	by alsa0.perex.cz (Postfix) with ESMTPS id 102201AB8;
+	Wed, 11 May 2022 19:18:27 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 102201AB8
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1652289540;
-	bh=pCGbaPgKQY6Wo597Ab8cPIrEHe85QbL3zekp2mjDHxY=;
+	s=default; t=1652289557;
+	bh=qhsECxJCvVMPp5goI5j67BtgEHQ/iDt/oCoegMgp/QQ=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=VMxlvVjFnYTL8xOdnmcEws3v4eiM+Ff3TPZRyARtVWwgAeA6au7qcEWFpCpZyeBxC
-	 2UzpRzIECrbdgn4k3MA48wAuU0OnBLxw/u4NCDbHIpdTnf5CUFbfqWbJ9tKoxJBoRC
-	 HtzfmdRsxP537OBDy+HFgh7teyhy6Kg/xTODT73k=
+	b=MGhSH0TiWJN4/+6xRPzFdEhbM1qcp0J3A2kfVA+Puoin4RRT8xj6e7+sSqcsSY5n7
+	 6q6oAQbzxQAfpzcUD6K9s6PGgV81Zqb7c+OMU+k1jiaiZFj3yEISKILWiKHY//LJ1a
+	 8ZzP5RYUIsyzlmrQBjD3Ck8vWYakkiJNuUnsnqFM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id D9E90F804D8;
-	Wed, 11 May 2022 19:17:16 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 64CE8F8052D;
+	Wed, 11 May 2022 19:17:17 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 9B969F80529; Wed, 11 May 2022 19:17:15 +0200 (CEST)
+ id 15FEEF80528; Wed, 11 May 2022 19:17:16 +0200 (CEST)
 Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 10ACDF80212
- for <alsa-devel@alsa-project.org>; Wed, 11 May 2022 19:17:04 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 10ACDF80212
+ by alsa1.perex.cz (Postfix) with ESMTPS id 547DCF804D8
+ for <alsa-devel@alsa-project.org>; Wed, 11 May 2022 19:17:07 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 547DCF804D8
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="OybKEyw0"
+ header.b="jdZt1vgn"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1652289428; x=1683825428;
+ t=1652289429; x=1683825429;
  h=from:to:cc:subject:date:message-id:in-reply-to:
  references:mime-version:content-transfer-encoding;
- bh=pCGbaPgKQY6Wo597Ab8cPIrEHe85QbL3zekp2mjDHxY=;
- b=OybKEyw0nfG0m8f5ynCOT4XTpv/tne7L0ArJKnw1NTHTrIQThzwOJXJ7
- ZiYp9q9AJoI4g3+eGOrza8rFQLaqSPjEGf4cW4wBxMq0nKXA8fA1xW7Ov
- SP5uUR9+SX0bnZb/ebzScfLcPJRknQEJ6jHgdnO46zG9gOrM2sMXLXTAk
- RC7AMQJwm8prRewQHJsDF95+82qH+8i085H3C5gUmb9v512AKPFZztuUc
- EdQHv75XuGhhed0vqW5mOLA8gAtE+0JfbQIWN7SdfGb9Cpu83l2fBPaD+
- Amr6fvMTM52I94tGKyqag87rGxwgvsNT6Jrin8JM/hqLA93QFosEEo+QM A==;
-X-IronPort-AV: E=McAfee;i="6400,9594,10344"; a="269431634"
-X-IronPort-AV: E=Sophos;i="5.91,217,1647327600"; d="scan'208";a="269431634"
+ bh=qhsECxJCvVMPp5goI5j67BtgEHQ/iDt/oCoegMgp/QQ=;
+ b=jdZt1vgnd1EZmlW0OYN6MvPNl7dHunbQrkV+u3nbbxsgOw2xv/VFdJ1G
+ fXlNlk2XkswAHSIic8bLprkreROm+A9S2LkbSBM0gmVSQ3Tl5AZNQ7Ale
+ Sex8cF5drRDLSBbfLAnRTU6Li9kAmD08D5MCtDaIcA5k2IbTdQ1Z5AJGv
+ ZrD+BqAzoYZ5HgIelYZqg2o24+qTabDPxogyeI+pA1YGV+D5g1HNvmmz4
+ sgn4QhBteWjMLt9TZCn6WHE1YxpR3J4I5hTrTajW7mUtzxD6WmOFxG2Ga
+ 6GUHwxDg643VGW4ghhVGdM6c3kDY3ewApo7io/b0owUIBMwzixf/x3UY4 g==;
+X-IronPort-AV: E=McAfee;i="6400,9594,10344"; a="269431644"
+X-IronPort-AV: E=Sophos;i="5.91,217,1647327600"; d="scan'208";a="269431644"
 Received: from orsmga004.jf.intel.com ([10.7.209.38])
  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 11 May 2022 10:16:55 -0700
-X-IronPort-AV: E=Sophos;i="5.91,217,1647327600"; d="scan'208";a="697663176"
+ 11 May 2022 10:16:56 -0700
+X-IronPort-AV: E=Sophos;i="5.91,217,1647327600"; d="scan'208";a="697663185"
 Received: from sjbrune-mobl.amr.corp.intel.com (HELO
  rsridh2-mobl1.localdomain) ([10.254.32.42])
  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 11 May 2022 10:16:54 -0700
+ 11 May 2022 10:16:55 -0700
 From: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH 3/5] ASoC: SOF: Add header for IPC4 manifest
-Date: Wed, 11 May 2022 10:16:46 -0700
-Message-Id: <20220511171648.1622993-4-ranjani.sridharan@linux.intel.com>
+Subject: [PATCH 5/5] ASoC: SOF: Intel: HDA: Set up sof_ipc4_fw_data for IPC4
+Date: Wed, 11 May 2022 10:16:48 -0700
+Message-Id: <20220511171648.1622993-6-ranjani.sridharan@linux.intel.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20220511171648.1622993-1-ranjani.sridharan@linux.intel.com>
 References: <20220511171648.1622993-1-ranjani.sridharan@linux.intel.com>
@@ -86,146 +86,113 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Add the header for the IPC4 manifest.
+Allocate the sof_ipc4_fw_data struct for IPC4 and set the fw header offset
+for the platforms which will be used by the core when loading the firmware
+image.
 
-Co-developed-by: Rander Wang <rander.wang@intel.com>
-Signed-off-by: Rander Wang <rander.wang@intel.com>
-Co-developed-by: Bard Liao <yung-chuan.liao@linux.intel.com>
-Signed-off-by: Bard Liao <yung-chuan.liao@linux.intel.com>
+The core expects that the "private" field in struct snd_sof_dev (which is
+unused today with IPC3) is used to save this data.
+
+Signed-off-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 Reviewed-by: Bard Liao <yung-chuan.liao@linux.intel.com>
 Reviewed-by: Rander Wang <rander.wang@intel.com>
 Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Signed-off-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 ---
- include/sound/sof/ext_manifest4.h | 119 ++++++++++++++++++++++++++++++
- 1 file changed, 119 insertions(+)
- create mode 100644 include/sound/sof/ext_manifest4.h
+ sound/soc/sof/intel/apl.c | 12 ++++++++++++
+ sound/soc/sof/intel/cnl.c | 12 ++++++++++++
+ sound/soc/sof/intel/tgl.c | 11 +++++++++++
+ 3 files changed, 35 insertions(+)
 
-diff --git a/include/sound/sof/ext_manifest4.h b/include/sound/sof/ext_manifest4.h
-new file mode 100644
-index 000000000000..ec97edcbbfc3
---- /dev/null
-+++ b/include/sound/sof/ext_manifest4.h
-@@ -0,0 +1,119 @@
-+/* SPDX-License-Identifier: ((GPL-2.0 WITH Linux-syscall-note) OR BSD-3-Clause) */
-+/*
-+ * This file is provided under a dual BSD/GPLv2 license.  When using or
-+ * redistributing this file, you may do so under either license.
-+ *
-+ * Copyright(c) 2022 Intel Corporation. All rights reserved.
-+ */
+diff --git a/sound/soc/sof/intel/apl.c b/sound/soc/sof/intel/apl.c
+index 4c67110a073e..0cea280a6d2d 100644
+--- a/sound/soc/sof/intel/apl.c
++++ b/sound/soc/sof/intel/apl.c
+@@ -15,6 +15,8 @@
+  * Hardware interface for audio DSP on Apollolake and GeminiLake
+  */
+ 
++#include <sound/sof/ext_manifest4.h>
++#include "../ipc4-priv.h"
+ #include "../sof-priv.h"
+ #include "hda.h"
+ #include "../sof-audio.h"
+@@ -46,6 +48,16 @@ int sof_apl_ops_init(struct snd_sof_dev *sdev)
+ 	}
+ 
+ 	if (sdev->pdata->ipc_type == SOF_INTEL_IPC4) {
++		struct sof_ipc4_fw_data *ipc4_data;
 +
-+/*
-+ * Extended manifest is a place to store metadata about firmware, known during
-+ * compilation time - for example firmware version or used compiler.
-+ * Given information are read on host side before firmware startup.
-+ * This part of output binary is not signed.
-+ */
++		sdev->private = devm_kzalloc(sdev->dev, sizeof(*ipc4_data), GFP_KERNEL);
++		if (!sdev->private)
++			return -ENOMEM;
 +
-+#ifndef __SOF_FIRMWARE_EXT_MANIFEST4_H__
-+#define __SOF_FIRMWARE_EXT_MANIFEST4_H__
++		ipc4_data = sdev->private;
++		ipc4_data->manifest_fw_hdr_offset = SOF_MAN4_FW_HDR_OFFSET;
 +
-+#include <linux/uuid.h>
++		/* doorbell */
+ 		sof_apl_ops.irq_thread	= hda_dsp_ipc4_irq_thread;
+ 
+ 		/* ipc */
+diff --git a/sound/soc/sof/intel/cnl.c b/sound/soc/sof/intel/cnl.c
+index 7a22d7e4a46c..cd6e5f8a5eb4 100644
+--- a/sound/soc/sof/intel/cnl.c
++++ b/sound/soc/sof/intel/cnl.c
+@@ -15,7 +15,9 @@
+  * Hardware interface for audio DSP on Cannonlake.
+  */
+ 
++#include <sound/sof/ext_manifest4.h>
+ #include <sound/sof/ipc4/header.h>
++#include "../ipc4-priv.h"
+ #include "../ops.h"
+ #include "hda.h"
+ #include "hda-ipc.h"
+@@ -344,6 +346,16 @@ int sof_cnl_ops_init(struct snd_sof_dev *sdev)
+ 	}
+ 
+ 	if (sdev->pdata->ipc_type == SOF_INTEL_IPC4) {
++		struct sof_ipc4_fw_data *ipc4_data;
 +
-+/* In ASCII  $AE1 */
-+#define SOF_EXT_MAN4_MAGIC_NUMBER	0x31454124
++		sdev->private = devm_kzalloc(sdev->dev, sizeof(*ipc4_data), GFP_KERNEL);
++		if (!sdev->private)
++			return -ENOMEM;
 +
-+#define MAX_MODULE_NAME_LEN		8
-+#define MAX_FW_BINARY_NAME		8
-+#define DEFAULT_HASH_SHA256_LEN		32
-+#define SOF_MAN4_FW_HDR_OFFSET		0x2000
-+#define SOF_MAN4_FW_HDR_OFFSET_CAVS_1_5	0x284
++		ipc4_data = sdev->private;
++		ipc4_data->manifest_fw_hdr_offset = SOF_MAN4_FW_HDR_OFFSET;
 +
-+/*********************************************************************
-+ *	extended manifest		(struct sof_ext_manifest4_hdr)
-+ *-------------------
-+ *	css_manifest hdr
-+ *-------------------
-+ *	offset reserved for future
-+ *-------------------
-+ *	fw_hdr				(struct sof_man4_fw_binary_header)
-+ *-------------------
-+ *	module_entry[0]			(struct sof_man4_module)
-+ *-------------------
-+ *	module_entry[1]
-+ *-------------------
-+ *	...
-+ *-------------------
-+ *	module_entry[n]
-+ *-------------------
-+ *	module_config[0]		(struct sof_man4_module_config)
-+ *-------------------
-+ *	module_config[1]
-+ *-------------------
-+ *	...
-+ *-------------------
-+ *	module_config[m]
-+ *-------------------
-+ *	FW content
-+ *-------------------
-+ *********************************************************************/
++		/* doorbell */
+ 		sof_cnl_ops.irq_thread	= cnl_ipc4_irq_thread;
+ 
+ 		/* ipc */
+diff --git a/sound/soc/sof/intel/tgl.c b/sound/soc/sof/intel/tgl.c
+index c93526591a91..1ddc492f1b13 100644
+--- a/sound/soc/sof/intel/tgl.c
++++ b/sound/soc/sof/intel/tgl.c
+@@ -9,6 +9,8 @@
+  * Hardware interface for audio DSP on Tigerlake.
+  */
+ 
++#include <sound/sof/ext_manifest4.h>
++#include "../ipc4-priv.h"
+ #include "../ops.h"
+ #include "hda.h"
+ #include "hda-ipc.h"
+@@ -79,6 +81,15 @@ int sof_tgl_ops_init(struct snd_sof_dev *sdev)
+ 	}
+ 
+ 	if (sdev->pdata->ipc_type == SOF_INTEL_IPC4) {
++		struct sof_ipc4_fw_data *ipc4_data;
 +
-+struct sof_ext_manifest4_hdr {
-+	uint32_t id;
-+	uint32_t len; /* length of extension manifest */
-+	uint16_t version_major; /* header version */
-+	uint16_t version_minor;
-+	uint32_t num_module_entries;
-+} __packed;
++		sdev->private = devm_kzalloc(sdev->dev, sizeof(*ipc4_data), GFP_KERNEL);
++		if (!sdev->private)
++			return -ENOMEM;
 +
-+struct sof_man4_fw_binary_header {
-+	/* This part must be unchanged to be backward compatible with SPT-LP ROM */
-+	uint32_t id;
-+	uint32_t len; /* sizeof(sof_man4_fw_binary_header) in bytes */
-+	uint8_t name[MAX_FW_BINARY_NAME];
-+	uint32_t preload_page_count; /* number of pages of preloaded image */
-+	uint32_t fw_image_flags;
-+	uint32_t feature_mask;
-+	uint16_t major_version; /* Firmware version */
-+	uint16_t minor_version;
-+	uint16_t hotfix_version;
-+	uint16_t build_version;
-+	uint32_t num_module_entries;
++		ipc4_data = sdev->private;
++		ipc4_data->manifest_fw_hdr_offset = SOF_MAN4_FW_HDR_OFFSET;
 +
-+	/* This part may change to contain any additional data for BaseFw that is skipped by ROM */
-+	uint32_t hw_buf_base_addr;
-+	uint32_t hw_buf_length;
-+	uint32_t load_offset; /* This value is used by ROM */
-+} __packed;
-+
-+struct sof_man4_segment_desc {
-+	uint32_t flags;
-+	uint32_t v_base_addr;
-+	uint32_t file_offset;
-+} __packed;
-+
-+struct sof_man4_module {
-+	uint32_t id;
-+	uint8_t name[MAX_MODULE_NAME_LEN];
-+	guid_t uuid;
-+	uint32_t type;
-+	uint8_t hash[DEFAULT_HASH_SHA256_LEN];
-+	uint32_t entry_point;
-+	uint16_t cfg_offset;
-+	uint16_t cfg_count;
-+	uint32_t affinity_mask;
-+	uint16_t instance_max_count;
-+	uint16_t instance_stack_size;
-+	struct sof_man4_segment_desc	segments[3];
-+} __packed;
-+
-+struct sof_man4_module_config {
-+	uint32_t par[4];	/* module parameters */
-+	uint32_t is_bytes;	/* actual size of instance .bss (bytes) */
-+	uint32_t cps;		/* cycles per second */
-+	uint32_t ibs;		/* input buffer size (bytes) */
-+	uint32_t obs;		/* output buffer size (bytes) */
-+	uint32_t module_flags;	/* flags, reserved for future use */
-+	uint32_t cpc;		/* cycles per single run */
-+	uint32_t obls;		/* output block size, reserved for future use */
-+} __packed;
-+
-+#endif /* __SOF_FIRMWARE_EXT_MANIFEST4_H__ */
+ 		/* doorbell */
+ 		sof_tgl_ops.irq_thread	= cnl_ipc4_irq_thread;
+ 
 -- 
 2.25.1
 
