@@ -4,77 +4,73 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 56407C433EF
-	for <alsa-devel@archiver.kernel.org>; Wed, 11 May 2022 13:42:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id EE3F2C433EF
+	for <alsa-devel@archiver.kernel.org>; Wed, 11 May 2022 13:42:47 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 6C30F1A3C;
-	Wed, 11 May 2022 15:41:12 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6C30F1A3C
+	by alsa0.perex.cz (Postfix) with ESMTPS id 10BB91A74;
+	Wed, 11 May 2022 15:41:56 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 10BB91A74
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1652276522;
-	bh=dZNE86wnqcpOQtWX8cCazTHhGmd6pCemp2aA6Zf1rYk=;
-	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=FY+cTLzxVVKKgwAceoe4D8TMM/0Vj65cU2W61tVIGoX1fPf+UoaFpkBBzIj5U2QCO
-	 Gtc48HuDxUQEZyumInXbL3mGCwkj3nZUnnQcefd+5B9XEZ3e/61b5qzSr0VnGXtEpA
-	 Catr+em8iU1lTuORWWIFfaenuOd0Oprj4RcfMh04=
+	s=default; t=1652276566;
+	bh=sUjTSKjAEazXj+mYR4EwJzpXOcfo9GyLRvzora/HNzs=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=ezVRQfmRBhX6u87Evct9WnE0XYB7v7iRIy+vE3jf5qPJ1Qf3dTA3DYuv6m0cDUMJf
+	 bElF5SLYLk608gGovi8gU6ol8SXuSxs5JNS1xd1kyc6+ZMI8uuWTrVpQGZp19Itl1Z
+	 VX95LT24V2EXJrJPgJSk2mTkXBznBU63Z8Mnz0XY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 12C6FF80137;
-	Wed, 11 May 2022 15:41:12 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id AA3CAF804B2;
+	Wed, 11 May 2022 15:41:55 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id C9588F80137; Wed, 11 May 2022 15:41:10 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id 0AEAAF804CA; Wed, 11 May 2022 15:41:55 +0200 (CEST)
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 9E95BF800BB
- for <alsa-devel@alsa-project.org>; Wed, 11 May 2022 15:41:03 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9E95BF800BB
+ by alsa1.perex.cz (Postfix) with ESMTPS id A72E7F800BB
+ for <alsa-devel@alsa-project.org>; Wed, 11 May 2022 15:41:52 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A72E7F800BB
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="mXySSoGz"; 
- dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="XrZnmTmk"
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out2.suse.de (Postfix) with ESMTP id 7A0651F381;
- Wed, 11 May 2022 13:41:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1652276463; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=KaGc7nT6sSEPibT82XP+OzHIlyFTroZl7donhj39f6o=;
- b=mXySSoGzJ9u1bIKAY5evgSEQ2/aA1HST6q0X9IGyiiFbYmb9YGx8oMUzlj8sMExFzp4bxR
- z3fvhZA5GZcTMRP3nA4z5wKgceteOGMXXKoP2uAn47po+CygnxfeEAmkjhgRPlu+UWOq20
- qF3XnBP+u62gcToYg/XPYCkXEjgr0Xg=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1652276463;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=KaGc7nT6sSEPibT82XP+OzHIlyFTroZl7donhj39f6o=;
- b=XrZnmTmkaSAtkCBGlJuRRhWK8iOs2zVZU4b+rNDBslD8jKdqyrQsi5jKgLGiVeJ/zs8lnr
- avwN6A+Au7WMwVCQ==
-Received: from alsa1.suse.de (alsa1.suse.de [10.160.4.42])
- by relay2.suse.de (Postfix) with ESMTP id 3D4C22C141;
- Wed, 11 May 2022 13:41:03 +0000 (UTC)
-Date: Wed, 11 May 2022 15:41:03 +0200
-Message-ID: <s5h35hggpao.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Werner Sembach <wse@tuxedocomputers.com>
-Subject: Re: [PATCH] ALSA: hda/intel: Add quirk for TongFang devices with pop
- noise
-In-Reply-To: <20220511133828.13724-1-wse@tuxedocomputers.com>
-References: <20220511133828.13724-1-wse@tuxedocomputers.com>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
- FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
- (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
-MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
-Content-Type: text/plain; charset=US-ASCII
-Cc: alsa-devel@alsa-project.org, kai.vehmanen@linux.intel.com,
- linux-kernel@vger.kernel.org, imre.deak@intel.com,
- pierre-louis.bossart@linux.intel.com, tiwai@suse.com
+ dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="bRK6F755"
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by ams.source.kernel.org (Postfix) with ESMTPS id 3524CB823DE;
+ Wed, 11 May 2022 13:41:51 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0A151C34113;
+ Wed, 11 May 2022 13:41:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1652276509;
+ bh=sUjTSKjAEazXj+mYR4EwJzpXOcfo9GyLRvzora/HNzs=;
+ h=From:To:Cc:Subject:Date:From;
+ b=bRK6F755WNzKgscteU7NcBOcs0luJg7bdzVp4tK6gMfXTWORISljuGnH5ZQ/0is53
+ dwXTSsggtLoLrkmNl2lRIm+pVuYShX717GSeQOKrr8uMauG0CmvpmbjEr70Ewj6ri2
+ 0FHVhxryONyQsc9VE5fuZdQlL25TuDTL/nW190U49yGtxJZcftDRcQisLkFYnm4WnI
+ ou57MzL8BgLM4B+xxFZjn3OSxJ77kXGOad3tRRrhACdfuawq8xhXhGC6sQbhAhoW0g
+ Jz+4hljcaOpfQcsKKZsnNTkrgMO0t2jUcM/h0IMmZmeVEZ+9YOMqK05B2r2PCr+hV7
+ YsSzz7H4GLj5w==
+From: Mark Brown <broonie@kernel.org>
+To: Liam Girdwood <lgirdwood@gmail.com>
+Subject: [PATCH 1/2] ASoC: ops: Fix bounds check for _sx controls
+Date: Wed, 11 May 2022 14:41:36 +0100
+Message-Id: <20220511134137.169575-1-broonie@kernel.org>
+X-Mailer: git-send-email 2.30.2
+MIME-Version: 1.0
+X-Developer-Signature: v=1; a=openpgp-sha256; l=934; h=from:subject;
+ bh=sUjTSKjAEazXj+mYR4EwJzpXOcfo9GyLRvzora/HNzs=;
+ b=owEBbQGS/pANAwAKASTWi3JdVIfQAcsmYgBie7uGQhxVpDx+e8J0VsAlWNBzpmuF5dgtxdsjcy+H
+ Ty6sjyKJATMEAAEKAB0WIQSt5miqZ1cYtZ/in+ok1otyXVSH0AUCYnu7hgAKCRAk1otyXVSH0APWB/
+ 9DOYeh9xsCG2S/F9AOUg3qkZk5c7wZAsTNpJnEU6fhrZL+768CZEzfHsZ1V5n14NRiHhLaunbjKlYk
+ cwVv08Fxw3E2QNax4ZmgwVZpbLTcDDfWoYNkzW32RwAnxqUFnzFTnd9855hFpuqexgtSpueC9vTZZD
+ NsXx1qSoSi+18iEFG8un/ntO8+uAqv6BZo0N2pD5R3mMyS88rtWb7pS7UjkICYhBLVIYxDLlEsykAw
+ T5swuhP+Lao0o2xHsWAsvm21gKtdofYuKjdX6a9+cegpP/ZFIdKLJUshJsNisOf/zcQnPD/0i5h7a/
+ pBMwGFk9PZkkVcA1lMpYnC1pubebDF
+X-Developer-Key: i=broonie@kernel.org; a=openpgp;
+ fpr=3F2568AAC26998F9E813A1C5C3F436CA30F5D8EB
+Content-Transfer-Encoding: 8bit
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -90,23 +86,30 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, 11 May 2022 15:38:28 +0200,
-Werner Sembach wrote:
-> 
-> When audio stops playing and sometimes when it starts playing, there is an
-> audible "pop" noise when using headphones on most Tongfang GMxMxxx,
-> GKxNxxx, GMxZxxx, GMxTxxx, and GMxAxxx devices.
-> 
-> Disabling power saving for the Realtek codec fixes this noise. Presumably
-> it is triggered on some power event in the audio circuit.
-> 
-> Signed-off-by: Werner Sembach <wse@tuxedocomputers.com>
-> Cc: stable@vger.kernel.org
+For _sx controls the semantics of the max field is not the usual one, max
+is the number of steps rather than the maximum value. This means that our
+check in snd_soc_put_volsw_sx() needs to just check against the maximum
+value.
 
-Usually this denylist is a last resort if any other methods never
-helped.  Is it the case?
+Fixes: 4f1e50d6a9cf9c1b ("ASoC: ops: Reject out of bounds values in snd_soc_put_volsw_sx()")
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/soc-ops.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
+diff --git a/sound/soc/soc-ops.c b/sound/soc/soc-ops.c
+index e693070f51fe..1ac7e2ce31a1 100644
+--- a/sound/soc/soc-ops.c
++++ b/sound/soc/soc-ops.c
+@@ -435,7 +435,7 @@ int snd_soc_put_volsw_sx(struct snd_kcontrol *kcontrol,
+ 	val = ucontrol->value.integer.value[0];
+ 	if (mc->platform_max && val > mc->platform_max)
+ 		return -EINVAL;
+-	if (val > max - min)
++	if (val > max)
+ 		return -EINVAL;
+ 	val_mask = mask << shift;
+ 	val = (val + min) & mask;
+-- 
+2.30.2
 
-thanks,
-
-Takashi
