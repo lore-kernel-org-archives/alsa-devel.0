@@ -4,72 +4,72 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7D0A4C433F5
-	for <alsa-devel@archiver.kernel.org>; Thu, 12 May 2022 11:19:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 494A5C433EF
+	for <alsa-devel@archiver.kernel.org>; Thu, 12 May 2022 11:19:56 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 76E471AA5;
-	Thu, 12 May 2022 13:18:45 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 76E471AA5
+	by alsa0.perex.cz (Postfix) with ESMTPS id 71CBA1AB2;
+	Thu, 12 May 2022 13:19:04 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 71CBA1AB2
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1652354375;
-	bh=jv8G1agcRVwhrz1O1q4Ch+Z472ENfIeo/WXmazNLAX4=;
+	s=default; t=1652354394;
+	bh=NH8yZoAXdtOReiq0YovMMdMQDe8qqy2jbXkwmV+zIM4=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=CqN0iwcZlrSPuib2C7Lj9HLXN9Q1WQz/uA0fg4QXs5+jM8i7l5KMGJmrEf0oT4aHn
-	 BYSZ0qecrK6AdzIAuIXzbgux0cylXrtfSu92IOYw2WP4bmqFiM4OkB93QmzAQGPiTi
-	 9u5Ku2gtYNTLODIdVIBaFG2g5BsVjTRcF+4fzZ+w=
+	b=dclL2d3aeE/QKBp6KEral71gHmRgUsYyZg+QHQ/qn6NwASwUktzwEDFNk4R55VC0y
+	 imvubkUEN6lZRVgGPtLdtRftChTDsc4Khc7ii++wn2wg7OCZAwMaDDw7EsZs8gsFeo
+	 sFw4V7WOS8822u4JBMrmUkd2c54sFtPcCBkfmTpo=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id A90E3F80245;
-	Thu, 12 May 2022 13:18:13 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id A9853F80517;
+	Thu, 12 May 2022 13:18:15 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id B042BF804FE; Thu, 12 May 2022 13:18:12 +0200 (CEST)
+ id EECC8F80510; Thu, 12 May 2022 13:18:14 +0200 (CEST)
 Received: from out3-smtp.messagingengine.com (out3-smtp.messagingengine.com
  [66.111.4.27])
  (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 05A89F8010B
- for <alsa-devel@alsa-project.org>; Thu, 12 May 2022 13:18:06 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 05A89F8010B
+ by alsa1.perex.cz (Postfix) with ESMTPS id B8395F80154
+ for <alsa-devel@alsa-project.org>; Thu, 12 May 2022 13:18:07 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B8395F80154
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=sakamocchi.jp header.i=@sakamocchi.jp
- header.b="vPMZ0qLt"; 
+ header.b="G2g3f7m6"; 
  dkim=pass (2048-bit key) header.d=messagingengine.com
- header.i=@messagingengine.com header.b="xf4mG0lp"
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
- by mailout.nyi.internal (Postfix) with ESMTP id 1F90F5C01B4;
- Thu, 12 May 2022 07:18:04 -0400 (EDT)
+ header.i=@messagingengine.com header.b="fuM6+MD9"
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+ by mailout.nyi.internal (Postfix) with ESMTP id 02F105C01D5;
+ Thu, 12 May 2022 07:18:06 -0400 (EDT)
 Received: from mailfrontend2 ([10.202.2.163])
- by compute3.internal (MEProxy); Thu, 12 May 2022 07:18:04 -0400
+ by compute5.internal (MEProxy); Thu, 12 May 2022 07:18:06 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sakamocchi.jp;
  h=cc:cc:content-transfer-encoding:date:date:from:from
  :in-reply-to:in-reply-to:message-id:mime-version:references
- :reply-to:sender:subject:subject:to:to; s=fm1; t=1652354284; x=
- 1652440684; bh=U41sdkndxEPcUW2HyhBS60wraWtLaKd+4y+3d1M8lDk=; b=v
- PMZ0qLtnKry/pGu8zc6NK4KjTrML9LTCDdfMOzRCCApM47NFSSLxD3WZsm7jacPS
- /zjGRXjhZ4xSuV+FXJGb5DFU26n3PdDLzmq+nrlaWbJw8ItIoc4LHM9Gt2eoZZ3Y
- HkjiGLh4EI86KdANWP4AYdpbuWdbuFX9Ohj+L356eFNlrC+dcJQ+lE9JEHNYTIhj
- FtP3sFs1SgUZ10iuE+RGUHSspM3rkWotEK+105YOUOdSMPINugZ4/oMq+RgPotvb
- 9DvDq2bfc+cb8kJPhNUgeF/EALzw3phrQJioR0RbBvDhksVuZ3R9tv/R2LB4Yoki
- /Xg/YO28RauXNGlZxPsHg==
+ :reply-to:sender:subject:subject:to:to; s=fm1; t=1652354285; x=
+ 1652440685; bh=nirK3xVc/Xpd3RXmWv7GnNr+Cb6v4Tn8f6hpEo6+q/Y=; b=G
+ 2g3f7m6h50JCk4Ab9+xqxjNhCOMHa0FNfCrlSSkK/TW5E/l81EtOk+udoqI57HMp
+ cBnRCg9XbHW2ncItQBKyiaEwz2Z7nGc6PZyyjzCyFJNr2952rRmnFgFePSs9rW03
+ geDiXpITyJNXbZPRzX3dDBo8e4uF3KXGIA9pzbfUe1oL6PLHcvpYZvzn1V9tOBFT
+ LmdBLNBjT2GTOflzJSdbWzw5UhZbNvHwbpcpv3q7Jcg9I4tlEUqtWDpwd8k3r4NE
+ 2iKx/KlY6haj0Wl1AhvM1HCYckgN4PsUriaAOYio7XQCuQjhlIt/uANGAXzXO0hC
+ 00EEyjLQJ+ctwxEzspDNw==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
  messagingengine.com; h=cc:cc:content-transfer-encoding:date:date
  :from:from:in-reply-to:in-reply-to:message-id:mime-version
  :references:reply-to:sender:subject:subject:to:to:x-me-proxy
  :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=
- 1652354284; x=1652440684; bh=U41sdkndxEPcUW2HyhBS60wraWtLaKd+4y+
- 3d1M8lDk=; b=xf4mG0lpw+MGNUABxgT/09xcAl9EvWDFQ3YJaImlcUTQop8tvC6
- MM1hgOtvR9HmjXpgtBAKI9cWR5w2z49j6WJwMvJkKpamFwuFcGwCt5RbGFdFRHTY
- CUv7dtcGp8ulSmY4fBoIDGvjyl65lQ8TUeRUHXS5HRfwD99FKcN14zNleCa6Kf7Y
- rM6F2gs34mhq02VPmh+HTBUSf7Yv25Q88ASOnoM0TrveAmsrnYVtDsk+60KJ0ALC
- lmJG4FJHm5kqh46soxRvuOzRXA5h8mshFDxFAp5EDKSD3dxlktZM7cpvGdq8qoKz
- H8d7X5LRoPWJa/r6UUtSJ2Q7EwWB/aQf90g==
-X-ME-Sender: <xms:6-x8YmEw2v5QQM_MX92cBfvKI2I9pC011fEm3bDzLguR_BGca7leug>
- <xme:6-x8YnXbv4kYH0HB1a0SFCeciGEs6-HqPZltl9FsqNncGDFd32-AC99r_zGbC7TFS
- TcRclut3FjDrlPUDmQ>
-X-ME-Received: <xmr:6-x8YgLnF8M_fZDfuSN18VztiINZO1NKKW6tVsa7jJtXj_moPKP9lz5gkCI5nFVqqIyTLBClGmNL6-rHg54HT7Im1Pkpd4qFkURWw9ma-HiPYnxheQ8>
+ 1652354285; x=1652440685; bh=nirK3xVc/Xpd3RXmWv7GnNr+Cb6v4Tn8f6h
+ pEo6+q/Y=; b=fuM6+MD9slT261H3zcvBPXydL6GwbbuAdJzXNKjQNYEdT2CpvDo
+ XlwKMSzH3e6DOXbZbCVV1Wyn9q5H0djaG3TZMtHb/oonex24IDttiKizfLPR7Ca6
+ AJEYgxL4CdXWc5GZFFW8ONKRwaJw64Xm1cklZTnP25tSVMPfj3z+GSax4jE/KqIn
+ 9dlFkW9D4Kvrb1rCO+C8X0mdYJX7lZnWYsvpkWXkAghK2mOEXfEQ0OsiOdBdgKnX
+ DSFgY74Rc1Jq3gbyd/jeF+rGutRVnlt7Nevtwde2Wd49U/WD64VgRZ0QH93bycHd
+ xi/bvS+YXqC2iX2vGQjcsMHtLZ0sTx7T/3g==
+X-ME-Sender: <xms:7ex8Yh4nvq20Ky15DhRl-G-DFCtmcUAnLUYQLTuuE_Cu9heMTZnwwQ>
+ <xme:7ex8Yu63uSx-wigsUixvGR9aZZrQiFt2BxRWA5z1x_Ta-PQ67vlEapLr2vipt7lsn
+ O1pmTrVFxOUCO7PH_g>
+X-ME-Received: <xmr:7ex8Yod8G9FftIfb019T5LU0UBwmx37VKQ4wq_IHItRxzAx4JX3HaEjByGTatVD595esY9fzGFN9cHj0luPIcsFMUyG8aesZw52D3fVh6MsNtunoZzI>
 X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvfedrgeejgdefiecutefuodetggdotefrodftvf
  curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
  uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
@@ -78,27 +78,25 @@ X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvfedrgeejgdefiecutefuodetggdote
  hpqeenucggtffrrghtthgvrhhnpedvjefgjeeuvdfguddukeelveetgfdtvefhtdfffeei
  gfevueetffeivdffkedvtdenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmh
  grihhlfhhrohhmpehoqdhtrghkrghshhhisehsrghkrghmohgttghhihdrjhhp
-X-ME-Proxy: <xmx:6-x8YgGUdIGNPID7Gk43TjNVcWMACgN8qBTXBO1rYonDXgH6prr9YA>
- <xmx:6-x8YsWuy2aecL5fdYsXWiqLZ0hFZTYDc4F8jFvJ5UjBD69c5m4zag>
- <xmx:6-x8YjMEQTjng_4G8eYAW631F31Bv-d1wkXz5iMngfT4a4u2AzS3Dw>
- <xmx:7Ox8YqxGt5OhzIzdCEqPlDRXJkNdvx3ifnDiDn2H8mrQ5tAb6dwISg>
+X-ME-Proxy: <xmx:7ex8YqK77N3XImnBrYE9vQH8OVWjyzOqBETarLPGOfrv-PY9YhTb4g>
+ <xmx:7ex8YlI0-98e4G2sIn3N2EHTZOeQnUNY07BW-HucWdTcNkTvBm6wvA>
+ <xmx:7ex8YjyPdec7FjytP5RE6z7wZCf8TwqMVFkxv9_g509aLn7TpzZTMQ>
+ <xmx:7ex8Yl0gcrcT9EGW9IOYf_bVRjqpuVsIDzPI_B8duwEE-8PU2jpuGg>
 Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
- 12 May 2022 07:18:02 -0400 (EDT)
+ 12 May 2022 07:18:04 -0400 (EDT)
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 To: tiwai@suse.de,
 	stefanr@s5r6.in-berlin.de
-Subject: [PATCH 1/3] firewire: convert sysfs sprintf/snprintf family to
- sysfs_emit
-Date: Thu, 12 May 2022 20:17:54 +0900
-Message-Id: <20220512111756.103008-2-o-takashi@sakamocchi.jp>
+Subject: [PATCH 2/3] firewire: use struct_size over open coded arithmetic
+Date: Thu, 12 May 2022 20:17:55 +0900
+Message-Id: <20220512111756.103008-3-o-takashi@sakamocchi.jp>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20220512111756.103008-1-o-takashi@sakamocchi.jp>
 References: <20220512111756.103008-1-o-takashi@sakamocchi.jp>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>,
- alsa-devel@alsa-project.org, linux1394-devel@lists.sourceforge.net,
- Abaci Robot <abaci@linux.alibaba.com>
+Cc: alsa-devel@alsa-project.org, linux1394-devel@lists.sourceforge.net,
+ "Minghao Chi \(CGEL ZTE\)" <chi.minghao@zte.com.cn>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -114,44 +112,38 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+From: "Minghao Chi (CGEL ZTE)" <chi.minghao@zte.com.cn>
 
-Fix the following coccicheck warning:
+Replace zero-length array with flexible-array member and make use
+of the struct_size() helper in kmalloc(). For example:
 
-./drivers/firewire/core-device.c:375:8-16: WARNING: use scnprintf or
-sprintf.
+struct fw_request {
+    ...
+    u32 data[];
+}
 
-Reported-by: Abaci Robot<abaci@linux.alibaba.com>
-Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+Make use of the struct_size() helper instead of an open-coded version
+in order to avoid any potential type mistakes.
+
+Signed-off-by: Minghao Chi (CGEL ZTE) <chi.minghao@zte.com.cn>
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- drivers/firewire/core-device.c | 6 ++----
- 1 file changed, 2 insertions(+), 4 deletions(-)
+ drivers/firewire/core-transaction.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/firewire/core-device.c b/drivers/firewire/core-device.c
-index 90ed8fdaba75..adddd8c45d0c 100644
---- a/drivers/firewire/core-device.c
-+++ b/drivers/firewire/core-device.c
-@@ -372,8 +372,7 @@ static ssize_t rom_index_show(struct device *dev,
- 	struct fw_device *device = fw_device(dev->parent);
- 	struct fw_unit *unit = fw_unit(dev);
+diff --git a/drivers/firewire/core-transaction.c b/drivers/firewire/core-transaction.c
+index e12a0a4c33f7..49657a793e80 100644
+--- a/drivers/firewire/core-transaction.c
++++ b/drivers/firewire/core-transaction.c
+@@ -778,7 +778,7 @@ static struct fw_request *allocate_request(struct fw_card *card,
+ 		return NULL;
+ 	}
  
--	return snprintf(buf, PAGE_SIZE, "%d\n",
--			(int)(unit->directory - device->config_rom));
-+	return sysfs_emit(buf, "%td\n", unit->directory - device->config_rom);
- }
+-	request = kmalloc(sizeof(*request) + length, GFP_ATOMIC);
++	request = kmalloc(struct_size(request, data, length), GFP_ATOMIC);
+ 	if (request == NULL)
+ 		return NULL;
  
- static struct device_attribute fw_unit_attributes[] = {
-@@ -403,8 +402,7 @@ static ssize_t guid_show(struct device *dev,
- 	int ret;
- 
- 	down_read(&fw_device_rwsem);
--	ret = snprintf(buf, PAGE_SIZE, "0x%08x%08x\n",
--		       device->config_rom[3], device->config_rom[4]);
-+	ret = sysfs_emit(buf, "0x%08x%08x\n", device->config_rom[3], device->config_rom[4]);
- 	up_read(&fw_device_rwsem);
- 
- 	return ret;
 -- 
 2.34.1
 
