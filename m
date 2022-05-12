@@ -4,69 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C4A88C433EF
-	for <alsa-devel@archiver.kernel.org>; Thu, 12 May 2022 14:15:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9C0E6C433EF
+	for <alsa-devel@archiver.kernel.org>; Thu, 12 May 2022 14:15:33 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E99921AB5;
-	Thu, 12 May 2022 16:14:23 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E99921AB5
+	by alsa0.perex.cz (Postfix) with ESMTPS id 94CBB1ADF;
+	Thu, 12 May 2022 16:14:41 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 94CBB1ADF
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1652364914;
-	bh=lG75f7u0FOqEgFZ07a5DYCoxWItDAZ8O3d88rmBiq6E=;
-	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
+	s=default; t=1652364931;
+	bh=68GFkRgsrtca9GWvE/A57OESbgWrNobjqyS8pJVM7kA=;
+	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=ATvQbxk7Wg121juGMbb7N5FCauly6fU9pQtVm0ivnHjQonzGt7PYP1nwTTFj7A9dz
-	 ppK37jFHqXGL+xuM9remG8NKWOUQ7nqb5nDhXUXlMEtJnmGVHY3SDPfIoEQefCl2uu
-	 FFUYkz6ARhzJrblrGrJpNsAWt41p8IRZkQeg9qHY=
+	b=PRVwGQrhTU9B41W76k5EQUkodKS0he6rDzwZnhSwKiW5uUyFjEZL4lvlFPIkU7UtM
+	 4IoYfocmD3c9dfbJBF23x7CGOr4Xwi/bB+E96x+Sb+uiVwZp7z37twrr6cDyjy+ZSB
+	 RI5VE06C7PO1ktWK4l56PusLhB1VM+nZY0HTHn9I=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id F23F4F80528;
-	Thu, 12 May 2022 16:13:00 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id E16A9F80536;
+	Thu, 12 May 2022 16:13:06 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id EBD07F80526; Thu, 12 May 2022 16:12:58 +0200 (CEST)
+ id 25B62F8053A; Thu, 12 May 2022 16:13:05 +0200 (CEST)
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 73794F8051A
- for <alsa-devel@alsa-project.org>; Thu, 12 May 2022 16:12:56 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 73794F8051A
+ by alsa1.perex.cz (Postfix) with ESMTPS id A503DF80538
+ for <alsa-devel@alsa-project.org>; Thu, 12 May 2022 16:13:02 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A503DF80538
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="b5kJwuzD"
+ header.b="mztajfli"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id 00FCB61AD5;
- Thu, 12 May 2022 14:12:55 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E693DC34117;
- Thu, 12 May 2022 14:12:51 +0000 (UTC)
+ by dfw.source.kernel.org (Postfix) with ESMTPS id 088B161A4F;
+ Thu, 12 May 2022 14:13:01 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9EB3CC34117;
+ Thu, 12 May 2022 14:12:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1652364774;
- bh=lG75f7u0FOqEgFZ07a5DYCoxWItDAZ8O3d88rmBiq6E=;
- h=From:To:In-Reply-To:References:Subject:Date:From;
- b=b5kJwuzD1lOZhBAXIcqO8oOT9HXbyUpXcSwfFc89H4yP4l4hnclrC3gTybPcExclI
- t0KnaO48RSag9HkYSggtIEsjXjtCbVdZdPYevcRYqzWDhSPY0PlXrulVYce1rXw1o8
- zZ1mBU00sjYdFFsVcRU29zxC32jTiYXCjWcNXfkGMGybHod6e3l3nluSOWKqEl8Nch
- 5M3YaGLOo5rbQIs0SHEswg73X7v0FQ2+OOSe53BNSZxHLFYhpAwZ3J9KVdqXT9ptrI
- q4fsKRWlFaJa+nBuSqF+h+m9KOiygo2iZ3a+Q38a8akrjAR7wjbkYh234QjiIRqiTH
- QBxQOD2IrYgug==
+ s=k20201202; t=1652364780;
+ bh=68GFkRgsrtca9GWvE/A57OESbgWrNobjqyS8pJVM7kA=;
+ h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+ b=mztajfliKVo8agx+Q0g9wLIjqs8vonKuc7nEbgPpRWPEKw/8YEk4ud55fybgtQedV
+ 9kAacqe3ZgYgyDbON5D4W6DLTYQHYPAeJR5aPIVe4dKGy+ccVFrmBl/Tm9Yms3EfYZ
+ ViF1hq0qz6lLvWA1xjLa6pLLm/JEzq2dDcOq61LRZZ1WCNVTND6s+K9CRIt2EB73KE
+ tEdf93K62NPXKJxmPcPABkUL7hMYo8XO2nbQrdJT5uyJdgFKf5WuR4tF/5LT0IHbgQ
+ icBKcm5YJcG3YmiNybUEDUtRwXya7MCm0pGL+F3fi/Px8/7YgxgiZbcc9gYfUCRmC/
+ BAg2Nu9akh7EQ==
 From: Mark Brown <broonie@kernel.org>
-To: Fabio Estevam <festevam@gmail.com>, alsa-devel@alsa-project.org,
- Takashi Iwai <tiwai@suse.com>, Jaroslav Kysela <perex@perex.cz>,
- linux-arm-kernel@lists.infradead.org, jiasheng@iscas.ac.cn,
- kernel@pengutronix.de, linux-kernel@vger.kernel.org,
- Liam Girdwood <lgirdwood@gmail.com>, linux-imx@nxp.com, linmq006@gmail.com,
- shawnguo@kernel.org, Sascha Hauer <s.hauer@pengutronix.de>
-In-Reply-To: <20220511133725.39039-1-linmq006@gmail.com>
-References: <20220511133725.39039-1-linmq006@gmail.com>
-Subject: Re: [PATCH] ASoC: mxs-saif: Fix refcount leak in mxs_saif_probe
-Message-Id: <165236477165.1016627.13757710006354879246.b4-ty@kernel.org>
-Date: Thu, 12 May 2022 15:12:51 +0100
+To: tanghui20@huawei.com, lgirdwood@gmail.com
+In-Reply-To: <20220512074640.75550-1-tanghui20@huawei.com>
+References: <20220512074640.75550-1-tanghui20@huawei.com>
+Subject: Re: [PATCH -next v2 0/2] ASoC: codecs: Fix build error
+Message-Id: <165236477836.1016627.1128343126631448820.b4-ty@kernel.org>
+Date: Thu, 12 May 2022 15:12:58 +0100
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
+Cc: alsa-devel@alsa-project.org, steve@sk2.org, tiwai@suse.com,
+ linux-kernel@vger.kernel.org, ricardw@axis.com, ryan.lee.analog@gmail.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -82,11 +79,17 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, 11 May 2022 17:37:22 +0400, Miaoqian Lin wrote:
-> of_parse_phandle() returns a node pointer with refcount
-> incremented, we should use of_node_put() on it when done.
+On Thu, 12 May 2022 15:46:38 +0800, Hui Tang wrote:
+> Fix two build error, as follows:
 > 
+> Changes in v2:
+>  * Add missing header files instead of adding dependencies.
 > 
+> Hui Tang (2):
+>   ASoC: max98396: Fix build error for implicit function declaration
+>   ASoC: tlv320adc3xxx: Fix build error for implicit function declaration
+> 
+> [...]
 
 Applied to
 
@@ -94,8 +97,10 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: mxs-saif: Fix refcount leak in mxs_saif_probe
-      commit: 2be84f73785fa9ed6443e3c5b158730266f1c2ee
+[1/2] ASoC: max98396: Fix build error for implicit function declaration
+      (no commit info)
+[2/2] ASoC: tlv320adc3xxx: Fix build error for implicit function declaration
+      commit: 19c5bda74dc45fee598a57600b550c9ea7662f10
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
