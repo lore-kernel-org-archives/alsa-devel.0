@@ -4,78 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2E8E9C4332F
-	for <alsa-devel@archiver.kernel.org>; Thu, 12 May 2022 14:10:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id DF446C433EF
+	for <alsa-devel@archiver.kernel.org>; Thu, 12 May 2022 14:13:42 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 7097A1AA6;
-	Thu, 12 May 2022 16:09:37 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7097A1AA6
+	by alsa0.perex.cz (Postfix) with ESMTPS id A95801AB5;
+	Thu, 12 May 2022 16:12:50 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A95801AB5
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1652364627;
-	bh=Zi8Pic5CJM9KyS0pkVNYuX6w9wNDHDJL2ofCVifXfuM=;
-	h=Date:Subject:To:References:From:In-Reply-To:Cc:List-Id:
+	s=default; t=1652364820;
+	bh=MzRMdy8E89Q9LhenGGBwHCK3EXb+c+A7ZNlc7Me5Nm8=;
+	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=DJsQYDryfDfuDWeV7lXWZ7C5IMR1gpVI5GwZWIMkcB9FXPoNivHjW9WSAvsWot6Y4
-	 7b9rJL2XCcTQTrw6M0vlZBXdWL+lX+dxhQzDAlLrEFSYemOs5fhvJrza0bzTK1xH7A
-	 jdBy8eIsgG8z69LY7LCNaNDY6CPUyS8lr4VOyy5o=
+	b=MKCG63KnNsOe2GH+8955MOxYZ9AIGyEinBT/j6X6qVWoXFJzdebWSYR77+0G5WAhm
+	 Eq5Nt3RcNcifI8w7TlrAtDvOfBaHBjV6c86Zs2tCoxCpMY7JcI9VKorIsBLlD8nnB9
+	 10/mKe27TLyoQf/W9IRj7UdMvc320RuT7qyg+0Js=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 1A4DCF80154;
-	Thu, 12 May 2022 16:09:37 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 51785F80254;
+	Thu, 12 May 2022 16:12:49 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 67665F80245; Thu, 12 May 2022 16:09:35 +0200 (CEST)
-Received: from mga18.intel.com (mga18.intel.com [134.134.136.126])
+ id 50F94F80249; Thu, 12 May 2022 16:12:47 +0200 (CEST)
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id BB008F8010B
+ for <alsa-devel@alsa-project.org>; Thu, 12 May 2022 16:12:42 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BB008F8010B
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="svjw17Mv"
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id A08E8F800BB;
- Thu, 12 May 2022 16:09:29 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A08E8F800BB
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="a70nsN5b"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
- d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1652364573; x=1683900573;
- h=message-id:date:mime-version:subject:to:cc:references:
- from:in-reply-to:content-transfer-encoding;
- bh=Zi8Pic5CJM9KyS0pkVNYuX6w9wNDHDJL2ofCVifXfuM=;
- b=a70nsN5bXEUBuk/eBvTzo0zZLh2bnvl13JVwRvH93gIQU3CY2B8J3TJx
- DQ66KKHciMYtldgFaR3ZTs5hz3lSug2dQXYjQs7YgNH69qLxv8TP9XrHP
- Vig9sKD/z5/wFiXITLjPikTtXlMbuIvb+F2xwzhr2xWbbkf41MpbnI6wh
- PM3/yrcDOgARLlBBoaW+fyiWkoFzy2xGpxMfKQ5liEn2QvfEiX/oULhyO
- E8FLqfWJwrUv3jUHwqDsFVeJvnawhbbljRyrZSOFFMwiYFIvXKcJ0+0iw
- uNhDNjp1j/lFgJdCFKO7LUWplI55YQeqTgM8W8auprjtsN7YP8ieWGD7A w==;
-X-IronPort-AV: E=McAfee;i="6400,9594,10344"; a="252061614"
-X-IronPort-AV: E=Sophos;i="5.91,220,1647327600"; d="scan'208";a="252061614"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
- by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 12 May 2022 07:09:27 -0700
-X-IronPort-AV: E=Sophos;i="5.91,220,1647327600"; d="scan'208";a="566702128"
-Received: from jainamit-mobl.amr.corp.intel.com (HELO [10.212.194.29])
- ([10.212.194.29])
- by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 12 May 2022 07:09:26 -0700
-Message-ID: <6a18ce53-c5c8-5ba9-fe7c-199bd9b4bff6@linux.intel.com>
-Date: Thu, 12 May 2022 08:13:59 -0500
+ by ams.source.kernel.org (Postfix) with ESMTPS id 24045B8284C;
+ Thu, 12 May 2022 14:12:42 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D636EC385B8;
+ Thu, 12 May 2022 14:12:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1652364760;
+ bh=MzRMdy8E89Q9LhenGGBwHCK3EXb+c+A7ZNlc7Me5Nm8=;
+ h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+ b=svjw17MvxqNc5V356vKOxOj8HsHsSKRfyzVv66MuPZWuhgMpbcmMNe6TBANhuZdLA
+ pCmPPkan5RPfb+7/54p9TtVpBGf0AaS4ug0HfXSuM2DT7kch1J+JtfZ0Z0MNJLx/Bg
+ gGc9iXO0/J0nylZ+hWTZZebYLk2DGbg/JIGJXLAx7z5TjbDQ0ye43fFRSgcnSEq8Eu
+ pAxYG4DlWnzSOd8J1l9BfT/wawdszuFQ+B5JArRWzqtqlq6OqlaZrikgzTrn2/uNrq
+ BK8ko4DYXG6uDY5Grx16bdZFJsHDH1EUWzSRoCOM42Fht1nLby/5bsxXWY3PPEWcE+
+ ToY2R63RNzzDQ==
+From: Mark Brown <broonie@kernel.org>
+To: ckeepax@opensource.cirrus.com
+In-Reply-To: <20220510153843.1029540-1-ckeepax@opensource.cirrus.com>
+References: <20220510153843.1029540-1-ckeepax@opensource.cirrus.com>
+Subject: Re: [PATCH 1/2] ASoC: wm2000: Remove redundant endianness flag
+Message-Id: <165236475959.1016627.2821653473768599607.b4-ty@kernel.org>
+Date: Thu, 12 May 2022 15:12:39 +0100
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Firefox/91.0 Thunderbird/91.5.0
-Subject: Re: [PATCH -next] ASoC: SOF: amd: add missing
- platform_device_unregister in acp_pci_rn_probe
-Content-Language: en-US
-To: Zheng Bin <zhengbin13@huawei.com>, lgirdwood@gmail.com,
- ranjani.sridharan@linux.intel.com, kai.vehmanen@linux.intel.com,
- daniel.baluta@nxp.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com,
- sound-open-firmware@alsa-project.org, alsa-devel@alsa-project.org,
- linux-kernel@vger.kernel.org
-References: <20220512013728.4128903-1-zhengbin13@huawei.com>
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-In-Reply-To: <20220512013728.4128903-1-zhengbin13@huawei.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-Cc: gaochao49@huawei.com
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+Cc: patches@opensource.cirrus.com, alsa-devel@alsa-project.org,
+ lgirdwood@gmail.com, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -91,34 +79,40 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-
-
-On 5/11/22 20:37, Zheng Bin wrote:
-> acp_pci_rn_probe misses a call platform_device_unregister in error path,
-> this patch fixes that.
+On Tue, 10 May 2022 16:38:42 +0100, Charles Keepax wrote:
+> The endianness flag is used on the CODEC side to specify an
+> ambivalence to endian, typically because it is lost over the hardware
+> link. This device has no DAI links and as such the flag would have
+> no effect, remove the redundant flag.
 > 
-> Signed-off-by: Zheng Bin <zhengbin13@huawei.com>
-
-Thanks for the patch, nice catch
-
-Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-
-> ---
->  sound/soc/sof/amd/pci-rn.c | 1 +
->  1 file changed, 1 insertion(+)
 > 
-> diff --git a/sound/soc/sof/amd/pci-rn.c b/sound/soc/sof/amd/pci-rn.c
-> index b8910bb7f27c..d5d9bcc2c997 100644
-> --- a/sound/soc/sof/amd/pci-rn.c
-> +++ b/sound/soc/sof/amd/pci-rn.c
-> @@ -101,6 +101,7 @@ static int acp_pci_rn_probe(struct pci_dev *pci, const struct pci_device_id *pci
->  	res = devm_kzalloc(&pci->dev, sizeof(struct resource) * ARRAY_SIZE(renoir_res), GFP_KERNEL);
->  	if (!res) {
->  		sof_pci_remove(pci);
-> +		platform_device_unregister(dmic_dev);
->  		return -ENOMEM;
->  	}
-> 
-> --
-> 2.31.1
-> 
+
+Applied to
+
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+
+Thanks!
+
+[1/2] ASoC: wm2000: Remove redundant endianness flag
+      commit: 69b53a097d9984d93448b021e0d422f2803310bd
+[2/2] ASoC: wm9090: Remove redundant endianness flag
+      commit: de2427207d13d7fe1882cd1772d66e33debf999e
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
