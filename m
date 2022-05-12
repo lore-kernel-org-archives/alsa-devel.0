@@ -4,83 +4,95 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1DE91C433F5
-	for <alsa-devel@archiver.kernel.org>; Mon, 16 May 2022 08:05:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 24B08C433F5
+	for <alsa-devel@archiver.kernel.org>; Mon, 16 May 2022 08:05:37 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 4D78D16A5;
-	Mon, 16 May 2022 10:04:26 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4D78D16A5
+	by alsa0.perex.cz (Postfix) with ESMTPS id 1FA4716AD;
+	Mon, 16 May 2022 10:04:45 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1FA4716AD
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1652688316;
-	bh=pN65gQJ10OF32RZKO8EWFjPhG23Ifbr/m0Il5f4ZdLI=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=TCovD25Lc+UM1KKiVZ7sjTQUG6mvlnxt3F++3vidNL1Y4b72hMVnPmII3Hsg0rjqs
-	 t6DfJxAA3vqbSbw5oYaOVTs7bvnWJqSBmwYyWj01Cz2Eo/TbBrNMjrBDaqxmzkEp1p
-	 f4VVc7f98FBKrAeMYqy9tqsxYRb9UsDbfnJAoxZI=
+	s=default; t=1652688335;
+	bh=L9N5iiQ09U/2wawF2mAqFtiEfdS6h1n6Ou2fn5OvXOc=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=qsPdFqRzYe9ubGr7PMsDV1nSgMXVNrbnMMZ3P/Sp1g2TVjjewyWiLv7pWvFJ3icrY
+	 qOtJvhlqxNShflL5SnI3p5gOWDDHMqpKuMUJI2ilLUtDeoOskoyxL28KG8Ah4QJMpR
+	 C25HVQdhg3lg4lv/FsHxF90KpvtOE9bWH9n0jPHI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id A99A5F8025C;
-	Mon, 16 May 2022 10:03:54 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 3745EF802DF;
+	Mon, 16 May 2022 10:03:55 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 73A4EF80245; Thu, 12 May 2022 09:44:13 +0200 (CEST)
-Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com
- [IPv6:2a00:1450:4864:20::533])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id 76B9FF8011C; Thu, 12 May 2022 10:22:45 +0200 (CEST)
+Received: from mailgw02.mediatek.com (unknown [210.61.82.184])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id A6830F8011C
- for <alsa-devel@alsa-project.org>; Thu, 12 May 2022 09:44:05 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A6830F8011C
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=amarulasolutions.com
- header.i=@amarulasolutions.com header.b="DiruNwr0"
-Received: by mail-ed1-x533.google.com with SMTP id z19so5202353edx.9
- for <alsa-devel@alsa-project.org>; Thu, 12 May 2022 00:44:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=amarulasolutions.com; s=google;
- h=from:to:cc:subject:date:message-id:mime-version
- :content-transfer-encoding;
- bh=DrDbGhLo7XaClO51j9YJvUywtHQ0+/I5lMy5wJbGhKc=;
- b=DiruNwr0imBp+10H53dtlHhIGwryjAwAWWCxLchPrV+5Ds5esyMWKjS3HAq8f4h/7O
- VZ8MmEQaRkIYQ8sFGjoZL7WHBNcERhJ9n5ZHJMUFreePm93eQoOr4FDrKr4sWpp1fB4N
- paupObkAaW1R41KdMj35taLnJ2UhWNnuoOsss=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
- :content-transfer-encoding;
- bh=DrDbGhLo7XaClO51j9YJvUywtHQ0+/I5lMy5wJbGhKc=;
- b=i703VjgXAQSvWZFZvMSpKuBf5Sf2CQ//vnNZ0/k3BuiVLCEzCAH4JUgk1XMSpFFS7d
- mjXXTrmu8nRZhqXVijZwWQsvZgDPY/UMBS69yloHj4lAtfZl6U+6I23QShIOg0ua4l6q
- fNHpX9/nYMJ15E3Kmrc1qyaWpFcaXm3yK3WjwOspLM1v7go4EUqzmAzW18Rj7zCdF1nZ
- E7jaP7iFb/sT+F9sKSKK2xnmWPhDJJLJ4Xpy48f07eVS/dySREMfMScZQESQT/PGhUol
- QZlzxu5syVkXAEjb7U/U861EAaxN4/Hj38qyOg7fJtwKR8lnb03evZuCcL2TadLkgalU
- HNOw==
-X-Gm-Message-State: AOAM5316PoFGEXVx6SSQRwVBOeYb/ENPLviSv13/7alL9Y/na6+EYnBb
- T9dmuKa0cQ1Wimnt+SXULQCLmIYKKDQHuw==
-X-Google-Smtp-Source: ABdhPJx58tfL7OheWyZCoXsZi7LTgs1k6P5QALJf6eVDOoqqZCFTxJOEZzC3/cKaG5YF/CTWwcEUwg==
-X-Received: by 2002:a05:6402:4241:b0:428:177b:5fd with SMTP id
- g1-20020a056402424100b00428177b05fdmr32950480edb.193.1652341444209; 
- Thu, 12 May 2022 00:44:04 -0700 (PDT)
-Received: from tom-ThinkPad-T14s-Gen-2i.station
- (net-188-217-59-245.cust.vodafonedsl.it. [188.217.59.245])
- by smtp.gmail.com with ESMTPSA id
- cm10-20020a0564020c8a00b0042617ba63c0sm2192721edb.74.2022.05.12.00.44.03
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Thu, 12 May 2022 00:44:03 -0700 (PDT)
-From: Tommaso Merciai <tommaso.merciai@amarulasolutions.com>
-To: 
-Subject: [PATCH] ASoC: max98088: add support for reg_4a_cfg_bypass reg
-Date: Thu, 12 May 2022 09:43:58 +0200
-Message-Id: <20220512074359.446999-1-tommaso.merciai@amarulasolutions.com>
-X-Mailer: git-send-email 2.25.1
+ by alsa1.perex.cz (Postfix) with ESMTPS id 8CE75F8011C;
+ Thu, 12 May 2022 10:22:38 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8CE75F8011C
+X-UUID: 7fd01ff23b3a46ea94302d643e553069-20220512
+X-CID-P-RULE: Release_Ham
+X-CID-O-INFO: VERSION:1.1.4, REQID:a1925763-f342-4ed1-953f-ec680391939b, OB:0,
+ LO
+ B:0,IP:0,URL:0,TC:0,Content:-20,EDM:0,RT:0,SF:95,FILE:0,RULE:Release_Ham,A
+ CTION:release,TS:75
+X-CID-INFO: VERSION:1.1.4, REQID:a1925763-f342-4ed1-953f-ec680391939b, OB:0,
+ LOB:
+ 0,IP:0,URL:0,TC:0,Content:-20,EDM:0,RT:0,SF:95,FILE:0,RULE:Spam_GS981B3D,A
+ CTION:quarantine,TS:75
+X-CID-META: VersionHash:faefae9, CLOUDID:d61f0aa7-eab7-4b74-a74d-5359964535a9,
+ C
+ OID:37d5c5ef7c08,Recheck:0,SF:28|17|19|48,TC:nil,Content:0,EDM:-3,File:nil
+ ,QS:0,BEC:nil
+X-UUID: 7fd01ff23b3a46ea94302d643e553069-20220512
+Received: from mtkmbs10n1.mediatek.inc [(172.21.101.34)] by
+ mailgw02.mediatek.com (envelope-from <tinghan.shen@mediatek.com>)
+ (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
+ with ESMTP id 902297265; Thu, 12 May 2022 16:22:28 +0800
+Received: from mtkmbs11n2.mediatek.inc (172.21.101.187) by
+ mtkmbs10n2.mediatek.inc (172.21.101.183) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.792.3; 
+ Thu, 12 May 2022 16:22:27 +0800
+Received: from mtksdccf07.mediatek.inc (172.21.84.99) by
+ mtkmbs11n2.mediatek.inc (172.21.101.73) with Microsoft SMTP Server id
+ 15.2.792.3 via Frontend Transport; Thu, 12 May 2022 16:22:27 +0800
+From: Tinghan Shen <tinghan.shen@mediatek.com>
+To: Matthias Brugger <matthias.bgg@gmail.com>, Pierre-Louis Bossart
+ <pierre-louis.bossart@linux.intel.com>, Liam Girdwood <lgirdwood@gmail.com>,
+ Ranjani Sridharan <ranjani.sridharan@linux.intel.com>, Kai Vehmanen
+ <kai.vehmanen@linux.intel.com>, Daniel Baluta <daniel.baluta@nxp.com>, "Mark
+ Brown" <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai
+ <tiwai@suse.com>, Javier Martinez Canillas <javierm@redhat.com>, "Thomas
+ Zimmermann" <tzimmermann@suse.de>, Daniel Vetter <daniel.vetter@ffwll.ch>,
+ Bjorn Andersson <bjorn.andersson@linaro.org>, Sudeep Holla
+ <sudeep.holla@arm.com>, Michal Suchanek <msuchanek@suse.de>, Shuai Xue
+ <xueshuai@linux.alibaba.com>, Simon Trimmer <simont@opensource.cirrus.com>,
+ Cristian Marussi <cristian.marussi@arm.com>, TingHan Shen
+ <tinghan.shen@mediatek.com>, Arnd Bergmann <arnd@arndb.de>, Borislav Petkov
+ <bp@suse.de>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, John Stultz
+ <john.stultz@linaro.org>, Curtis Malainey <cujomalainey@chromium.org>,
+ AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
+ Allen-KH Cheng <allen-kh.cheng@mediatek.com>, YC Hung <yc.hung@mediatek.com>, 
+ Tzung-Bi Shih <tzungbi@google.com>, Yang Yingliang
+ <yangyingliang@huawei.com>, Geert Uytterhoeven <geert+renesas@glider.be>,
+ =?UTF-8?q?P=C3=A9ter=20Ujfalusi?= <peter.ujfalusi@linux.intel.com>
+Subject: [PATCH v9 2/3] ASoC: SOF: mediatek: Add ipc support for mt8195
+Date: Thu, 12 May 2022 16:22:14 +0800
+Message-ID: <20220512082215.3018-3-tinghan.shen@mediatek.com>
+X-Mailer: git-send-email 2.18.0
+In-Reply-To: <20220512082215.3018-1-tinghan.shen@mediatek.com>
+References: <20220512082215.3018-1-tinghan.shen@mediatek.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-MTK: N
 X-Mailman-Approved-At: Mon, 16 May 2022 10:03:51 +0200
-Cc: alsa-devel@alsa-project.org, linux-amarula@amarulasolutions.com,
- Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>,
- tommaso.merciai@amarulasolutions.com, Mark Brown <broonie@kernel.org>,
- linuxfancy@googlegroups.com, linux-kernel@vger.kernel.org
+Cc: alsa-devel@alsa-project.org, Allen-KH Cheng <Allen-KH.Cheng@mediatek.com>,
+ linux-kernel@vger.kernel.org,
+ Project_Global_Chrome_Upstream_Group@mediatek.com,
+ linux-mediatek@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
+ sound-open-firmware@alsa-project.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -96,32 +108,269 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Add mixer controls support for M98088_REG_4A_CFG_BYPASS register
+From: Allen-KH Cheng <Allen-KH.Cheng@mediatek.com>
 
-References:
- - https://datasheets.maximintegrated.com/en/ds/MAX98089.pdf p71, p113
+This patch adds mt8195 IPC support by using mailbox.
 
-Signed-off-by: Tommaso Merciai <tommaso.merciai@amarulasolutions.com>
+On mt8195 resource, there are two mboxes used to handle ipc request
+and reply. We create a mtk-adsp-ipc client device to request mbox
+controllers.
+
+Signed-off-by: Allen-KH Cheng <Allen-KH.Cheng@mediatek.com>
+Reported-by: kernel test robot <lkp@intel.com>
 ---
- sound/soc/codecs/max98088.c | 5 +++++
- 1 file changed, 5 insertions(+)
+ sound/soc/sof/mediatek/Kconfig         |   1 +
+ sound/soc/sof/mediatek/adsp_helper.h   |  12 +--
+ sound/soc/sof/mediatek/mt8195/mt8195.c | 138 ++++++++++++++++++++++++-
+ 3 files changed, 140 insertions(+), 11 deletions(-)
 
-diff --git a/sound/soc/codecs/max98088.c b/sound/soc/codecs/max98088.c
-index 429717d4ac5a..f8ec2f164e08 100644
---- a/sound/soc/codecs/max98088.c
-+++ b/sound/soc/codecs/max98088.c
-@@ -486,6 +486,11 @@ static const struct snd_kcontrol_new max98088_snd_controls[] = {
-        SOC_SINGLE("EQ1 Switch", M98088_REG_49_CFG_LEVEL, 0, 1, 0),
-        SOC_SINGLE("EQ2 Switch", M98088_REG_49_CFG_LEVEL, 1, 1, 0),
+diff --git a/sound/soc/sof/mediatek/Kconfig b/sound/soc/sof/mediatek/Kconfig
+index f79e76a6f3c6..f1fa15c41891 100644
+--- a/sound/soc/sof/mediatek/Kconfig
++++ b/sound/soc/sof/mediatek/Kconfig
+@@ -33,6 +33,7 @@ config SND_SOC_SOF_MT8186
+ config SND_SOC_SOF_MT8195
+ 	tristate "SOF support for MT8195 audio DSP"
+ 	select SND_SOC_SOF_MTK_COMMON
++	depends on MTK_ADSP_IPC
+ 	help
+ 	  This adds support for Sound Open Firmware for Mediatek platforms
+ 	  using the mt8195 processors.
+diff --git a/sound/soc/sof/mediatek/adsp_helper.h b/sound/soc/sof/mediatek/adsp_helper.h
+index f269a2b6c26a..4ab998756bbc 100644
+--- a/sound/soc/sof/mediatek/adsp_helper.h
++++ b/sound/soc/sof/mediatek/adsp_helper.h
+@@ -7,24 +7,22 @@
+ #ifndef __MTK_ADSP_HELPER_H__
+ #define __MTK_ADSP_HELPER_H__
  
-+       SOC_SINGLE("SPK Bypass Switch", M98088_REG_4A_CFG_BYPASS, 0, 1, 0),
-+       SOC_SINGLE("REC Bypass Switch", M98088_REG_4A_CFG_BYPASS, 1, 1, 0),
-+       SOC_SINGLE("MIC2 Bypass Switch", M98088_REG_4A_CFG_BYPASS, 4, 1, 0),
-+       SOC_SINGLE("INA Bypass Switch", M98088_REG_4A_CFG_BYPASS, 7, 1, 0),
++#include <linux/firmware/mediatek/mtk-adsp-ipc.h>
 +
-        SOC_ENUM("EX Limiter Mode", max98088_exmode_enum),
-        SOC_ENUM("EX Limiter Threshold", max98088_ex_thresh_enum),
+ /*
+  * Global important adsp data structure.
+  */
+-#define DSP_MBOX_NUM	3
+-
+ struct mtk_adsp_chip_info {
+ 	phys_addr_t pa_sram;
+ 	phys_addr_t pa_dram; /* adsp dram physical base */
+ 	phys_addr_t pa_shared_dram; /* adsp dram physical base */
+ 	phys_addr_t pa_cfgreg;
+-	phys_addr_t pa_mboxreg[DSP_MBOX_NUM];
+ 	u32 sramsize;
+ 	u32 dramsize;
+ 	u32 cfgregsize;
+ 	void __iomem *va_sram; /* corresponding to pa_sram */
+ 	void __iomem *va_dram; /* corresponding to pa_dram */
+ 	void __iomem *va_cfgreg;
+-	void __iomem *va_mboxreg[DSP_MBOX_NUM];
+ 	void __iomem *shared_sram; /* part of  va_sram */
+ 	void __iomem *shared_dram; /* part of  va_dram */
+ 	phys_addr_t adsp_bootup_addr;
+@@ -42,10 +40,8 @@ struct mtk_adsp_chip_info {
+ struct adsp_priv {
+ 	struct device *dev;
+ 	struct snd_sof_dev *sdev;
+-
+-	/* DSP IPC handler */
+-	struct mbox_controller *adsp_mbox;
+-
++	struct mtk_adsp_ipc *dsp_ipc;
++	struct platform_device *ipc_dev;
+ 	struct mtk_adsp_chip_info *adsp;
+ 	struct clk **clk;
+ 	u32 (*ap2adsp_addr)(u32 addr, void *data);
+diff --git a/sound/soc/sof/mediatek/mt8195/mt8195.c b/sound/soc/sof/mediatek/mt8195/mt8195.c
+index ba13e4540f7a..f4b24afb6f75 100644
+--- a/sound/soc/sof/mediatek/mt8195/mt8195.c
++++ b/sound/soc/sof/mediatek/mt8195/mt8195.c
+@@ -12,6 +12,7 @@
+ #include <linux/delay.h>
+ #include <linux/firmware.h>
+ #include <linux/io.h>
++#include <linux/of_platform.h>
+ #include <linux/of_address.h>
+ #include <linux/of_irq.h>
+ #include <linux/of_platform.h>
+@@ -27,6 +28,99 @@
+ #include "mt8195.h"
+ #include "mt8195-clk.h"
+ 
++static int mt8195_get_mailbox_offset(struct snd_sof_dev *sdev)
++{
++	return MBOX_OFFSET;
++}
++
++static int mt8195_get_window_offset(struct snd_sof_dev *sdev, u32 id)
++{
++	return MBOX_OFFSET;
++}
++
++static int mt8195_send_msg(struct snd_sof_dev *sdev,
++			   struct snd_sof_ipc_msg *msg)
++{
++	struct adsp_priv *priv = sdev->pdata->hw_pdata;
++
++	sof_mailbox_write(sdev, sdev->host_box.offset, msg->msg_data,
++			  msg->msg_size);
++
++	return mtk_adsp_ipc_send(priv->dsp_ipc, MTK_ADSP_IPC_REQ, MTK_ADSP_IPC_OP_REQ);
++}
++
++static void mt8195_get_reply(struct snd_sof_dev *sdev)
++{
++	struct snd_sof_ipc_msg *msg = sdev->msg;
++	struct sof_ipc_reply reply;
++	int ret = 0;
++
++	if (!msg) {
++		dev_warn(sdev->dev, "unexpected ipc interrupt\n");
++		return;
++	}
++
++	/* get reply */
++	sof_mailbox_read(sdev, sdev->host_box.offset, &reply, sizeof(reply));
++	if (reply.error < 0) {
++		memcpy(msg->reply_data, &reply, sizeof(reply));
++		ret = reply.error;
++	} else {
++		/* reply has correct size? */
++		if (reply.hdr.size != msg->reply_size) {
++			dev_err(sdev->dev, "error: reply expected %zu got %u bytes\n",
++				msg->reply_size, reply.hdr.size);
++			ret = -EINVAL;
++		}
++
++		/* read the message */
++		if (msg->reply_size > 0)
++			sof_mailbox_read(sdev, sdev->host_box.offset,
++					 msg->reply_data, msg->reply_size);
++	}
++
++	msg->reply_error = ret;
++}
++
++static void mt8195_dsp_handle_reply(struct mtk_adsp_ipc *ipc)
++{
++	struct adsp_priv *priv = mtk_adsp_ipc_get_data(ipc);
++	unsigned long flags;
++
++	spin_lock_irqsave(&priv->sdev->ipc_lock, flags);
++	mt8195_get_reply(priv->sdev);
++	snd_sof_ipc_reply(priv->sdev, 0);
++	spin_unlock_irqrestore(&priv->sdev->ipc_lock, flags);
++}
++
++static void mt8195_dsp_handle_request(struct mtk_adsp_ipc *ipc)
++{
++	struct adsp_priv *priv = mtk_adsp_ipc_get_data(ipc);
++	u32 p; /* panic code */
++	int ret;
++
++	/* Read the message from the debug box. */
++	sof_mailbox_read(priv->sdev, priv->sdev->debug_box.offset + 4,
++			 &p, sizeof(p));
++
++	/* Check to see if the message is a panic code 0x0dead*** */
++	if ((p & SOF_IPC_PANIC_MAGIC_MASK) == SOF_IPC_PANIC_MAGIC) {
++		snd_sof_dsp_panic(priv->sdev, p, true);
++	} else {
++		snd_sof_ipc_msgs_rx(priv->sdev);
++
++		/* tell DSP cmd is done */
++		ret = mtk_adsp_ipc_send(priv->dsp_ipc, MTK_ADSP_IPC_RSP, MTK_ADSP_IPC_OP_RSP);
++		if (ret)
++			dev_err(priv->dev, "request send ipc failed");
++	}
++}
++
++static struct mtk_adsp_ipc_ops dsp_ops = {
++	.handle_reply		= mt8195_dsp_handle_reply,
++	.handle_request		= mt8195_dsp_handle_request,
++};
++
+ static int platform_parse_resource(struct platform_device *pdev, void *data)
+ {
+ 	struct resource *mmio;
+@@ -285,15 +379,36 @@ static int mt8195_dsp_probe(struct snd_sof_dev *sdev)
+ 	}
+ 
+ 	sdev->bar[DSP_REG_BAR] = priv->adsp->va_cfgreg;
+-	sdev->bar[DSP_MBOX0_BAR] =  priv->adsp->va_mboxreg[0];
+-	sdev->bar[DSP_MBOX1_BAR] =  priv->adsp->va_mboxreg[1];
+-	sdev->bar[DSP_MBOX2_BAR] =  priv->adsp->va_mboxreg[2];
+ 
+ 	sdev->mmio_bar = SOF_FW_BLK_TYPE_SRAM;
+ 	sdev->mailbox_bar = SOF_FW_BLK_TYPE_SRAM;
+ 
++	/* set default mailbox offset for FW ready message */
++	sdev->dsp_box.offset = mt8195_get_mailbox_offset(sdev);
++
++	priv->ipc_dev = platform_device_register_data(&pdev->dev, "mtk-adsp-ipc",
++						      PLATFORM_DEVID_NONE,
++						      pdev, sizeof(*pdev));
++	if (IS_ERR(priv->ipc_dev)) {
++		ret = PTR_ERR(priv->ipc_dev);
++		dev_err(sdev->dev, "failed to register mtk-adsp-ipc device\n");
++		goto err_adsp_sram_power_off;
++	}
++
++	priv->dsp_ipc = dev_get_drvdata(&priv->ipc_dev->dev);
++	if (!priv->dsp_ipc) {
++		ret = -EPROBE_DEFER;
++		dev_err(sdev->dev, "failed to get drvdata\n");
++		goto exit_pdev_unregister;
++	}
++
++	mtk_adsp_ipc_set_data(priv->dsp_ipc, priv);
++	priv->dsp_ipc->ops = &dsp_ops;
++
+ 	return 0;
+ 
++exit_pdev_unregister:
++	platform_device_unregister(priv->ipc_dev);
+ err_adsp_sram_power_off:
+ 	adsp_sram_power_on(&pdev->dev, false);
+ exit_clk_disable:
+@@ -310,7 +425,9 @@ static int mt8195_dsp_shutdown(struct snd_sof_dev *sdev)
+ static int mt8195_dsp_remove(struct snd_sof_dev *sdev)
+ {
+ 	struct platform_device *pdev = container_of(sdev->dev, struct platform_device, dev);
++	struct adsp_priv *priv = sdev->pdata->hw_pdata;
+ 
++	platform_device_unregister(priv->ipc_dev);
+ 	adsp_sram_power_on(&pdev->dev, false);
+ 	adsp_clock_off(sdev);
+ 
+@@ -361,6 +478,14 @@ static int mt8195_get_bar_index(struct snd_sof_dev *sdev, u32 type)
+ 	return type;
+ }
+ 
++static int mt8195_ipc_msg_data(struct snd_sof_dev *sdev,
++			       struct snd_pcm_substream *substream,
++			       void *p, size_t sz)
++{
++	sof_mailbox_read(sdev, sdev->dsp_box.offset, p, sz);
++	return 0;
++}
++
+ static struct snd_soc_dai_driver mt8195_dai[] = {
+ {
+ 	.name = "SOF_DL2",
+@@ -412,6 +537,13 @@ static struct snd_sof_dsp_ops sof_mt8195_ops = {
+ 	.write64	= sof_io_write64,
+ 	.read64		= sof_io_read64,
+ 
++	/* ipc */
++	.send_msg		= mt8195_send_msg,
++	.get_mailbox_offset	= mt8195_get_mailbox_offset,
++	.get_window_offset	= mt8195_get_window_offset,
++	.ipc_msg_data		= mt8195_ipc_msg_data,
++	.set_stream_data_offset = sof_set_stream_data_offset,
++
+ 	/* misc */
+ 	.get_bar_index	= mt8195_get_bar_index,
  
 -- 
-2.25.1
+2.18.0
 
