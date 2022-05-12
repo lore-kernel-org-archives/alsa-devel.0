@@ -4,96 +4,127 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E48ACC433F5
-	for <alsa-devel@archiver.kernel.org>; Thu, 12 May 2022 11:21:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id AE2C9C433EF
+	for <alsa-devel@archiver.kernel.org>; Thu, 12 May 2022 14:08:04 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 2B0771A98;
-	Thu, 12 May 2022 13:20:50 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2B0771A98
+	by alsa0.perex.cz (Postfix) with ESMTPS id 693BE1856;
+	Thu, 12 May 2022 16:07:11 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 693BE1856
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1652354500;
-	bh=Lk9uj1xbHFDojk0Vz617wIxJ6WKhY/yj7alJ+ki14Rk=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=C0ZGZS/i2xG6ffhaBECb1/lRjIbkga1mSUOgJDqUmxsMHnD6zD1EVKDHKIoNrK0Ef
-	 89keie1Kf+HSSEoKwkYHhNniLb/fb7TvoOCanvvnMGVQSvuzEKdbs3dkQAIOqySWS+
-	 2ueT6bQwswQcEPntTU61Z2ssuxgZRRcA7nOlUMVw=
+	s=default; t=1652364481;
+	bh=692ZNEOZofdYhRnQVJWWt4MBnIgvl8ICc55a/0sDmJw=;
+	h=Subject:To:References:From:Date:In-Reply-To:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=jb5xP0IxKzYWKKTZcji/pTNWp0ek1TtmCEZE7dyzCIrHk8SyJ9IErFLDtbuUQ+YoG
+	 F276LQzQ0FUpSGka0OyIy3MjePPsBM361GnS++59Il5THFbSMmpXB2HPxM8P+TE1jy
+	 3mydacZRV+vIrWFcIAMHyKeRldyEJ6Bvzn1ywtDY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id CB515F80154;
-	Thu, 12 May 2022 13:20:49 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id F031AF800BB;
+	Thu, 12 May 2022 16:07:10 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id E85D3F80245; Thu, 12 May 2022 13:20:48 +0200 (CEST)
-Received: from out3-smtp.messagingengine.com (out3-smtp.messagingengine.com
- [66.111.4.27])
- (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
+ id 1330BF80245; Thu, 12 May 2022 16:07:08 +0200 (CEST)
+Received: from NAM11-BN8-obe.outbound.protection.outlook.com
+ (mail-bn8nam11olkn20826.outbound.protection.outlook.com
+ [IPv6:2a01:111:f400:7eae::826])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id C7022F8010B
- for <alsa-devel@alsa-project.org>; Thu, 12 May 2022 13:20:42 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C7022F8010B
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=sakamocchi.jp header.i=@sakamocchi.jp
- header.b="AtRQRrHw"; 
- dkim=pass (2048-bit key) header.d=messagingengine.com
- header.i=@messagingengine.com header.b="rXIknwet"
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
- by mailout.nyi.internal (Postfix) with ESMTP id 5CCCC5C010D;
- Thu, 12 May 2022 07:20:41 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
- by compute5.internal (MEProxy); Thu, 12 May 2022 07:20:41 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sakamocchi.jp;
- h=cc:cc:content-transfer-encoding:date:date:from:from
- :in-reply-to:message-id:mime-version:reply-to:sender:subject
- :subject:to:to; s=fm1; t=1652354441; x=1652440841; bh=sY0qpOQXPg
- mJFgvkNCEQIW8UjRDURZNp7xYymx3dOoI=; b=AtRQRrHwTS+NvHV/uP+id/cHHq
- hNDx8pbwyo2UdyBlxttjzjI8gUSEWnWWrt2Jq68ogddYhJPy8klFDb2R8FlCY8Aj
- MDQ8McA8JNFQdHkXQHcgaRtGMy9RLX2W0oYGOu54722s23aygZJBzAT3d0pIkAL6
- tIiY3MWbnvnYK7mcZVBgryBYDkd6xisJbnkA7XuKZoYCIHA2yu0AKWNjqT3FWl11
- zCvECgcMuZ2QmZM7S9nPFcKn6Z+XVVHTnJpx2pfZPgaBMZ9fXFg5iyBBp7FjIn6B
- DJTZCJdpEe2jyM9EHfkCs3+iUK70s8Pp4NRpNuYiQZp5sCu1m7rLOAXc4GJg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
- messagingengine.com; h=cc:cc:content-transfer-encoding:date:date
- :from:from:in-reply-to:message-id:mime-version:reply-to:sender
- :subject:subject:to:to:x-me-proxy:x-me-proxy:x-me-sender
- :x-me-sender:x-sasl-enc; s=fm1; t=1652354441; x=1652440841; bh=s
- Y0qpOQXPgmJFgvkNCEQIW8UjRDURZNp7xYymx3dOoI=; b=rXIknwetozsmqir+0
- ljyIE4Har33F35h4sKqyWm/RjjDbQZlHB1rhF1qRxB1uQGTBI5bTEnqixLCVw3RL
- tzXaaRviqr2iU9+HlDKM2DnxmlaysUDf1GZNpIe7YeTCYTV9/9EHuVuhWd3dvSq0
- AzsY1EEtD8FG5pkTHVYci/J9135+l78Ml44jq6JirKhdmeWb2Ofd9SrLMojoKMOG
- 2m+VPCd7QSZUXasTOfQab89/7rq4d7PMrxRkPON7hYynN9NRac5ocYpQ32ekam6b
- HkX7dxr2nG92bnMKUDPk60pOnJ7Qet85CLjuds2XhatrbRwLQkevsRgRHHDr7TIW
- vtTgQ==
-X-ME-Sender: <xms:ie18YvU-7RBjUasm-RycEcZQA0XQV7eS6EwXmPrpe0gPgLtV-TdSYg>
- <xme:ie18YnkIZiNkPXu1LP12B8qWlhkP0I__OrtEbaNFsyYilQL0zUc1dr7sPxw91S4Xe
- SnOJHBE5wbOG-esIeo>
-X-ME-Received: <xmr:ie18Yrap-nLoMGup3cjWLjftJlVj8o66OLmRBuFUXoUtRV5JVYt60Vp4RvUP_wdGEKOKmZMVzeo4SWuTBjj6tpCOm8YbYA45CQ3jA24fAreLAxH4YXQ>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvfedrgeejgdefiecutefuodetggdotefrodftvf
- curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
- uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
- fjughrpefhvfevufffkffoggfgsedtkeertdertddtnecuhfhrohhmpefvrghkrghshhhi
- ucfurghkrghmohhtohcuoehoqdhtrghkrghshhhisehsrghkrghmohgttghhihdrjhhpqe
- enucggtffrrghtthgvrhhnpeffvdeuleffveekudfhteejudffgefhtedtgfeutdfgvdfg
- ueefudehveehveekkeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrih
- hlfhhrohhmpehoqdhtrghkrghshhhisehsrghkrghmohgttghhihdrjhhp
-X-ME-Proxy: <xmx:ie18YqUy37WDXts9UUOjHnzfpYEZlrGdi2rl7Z1ukRPNiDv0zmd-jA>
- <xmx:ie18YpmS6Pn1Q0mZW9EJivwE8EY8vB7ebZCtKLD_KN7SER6Q0aHJog>
- <xmx:ie18Ynd9rq8JUwYueXUplwDsYt-EAMea44g5EXh1D-eTr_xcT52A1w>
- <xmx:ie18Yvh6RvZ5rnZLHdFBcYgvF-x_4QL1LsKsYKc3C-ExANqSllG6PA>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
- 12 May 2022 07:20:39 -0400 (EDT)
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-To: tiwai@suse.de,
-	stefanr@s5r6.in-berlin.de
-Subject: [PATCH] firewire: cdev: fix potential leak of kernel stack due to
- uninitialized value
-Date: Thu, 12 May 2022 20:20:37 +0900
-Message-Id: <20220512112037.103142-1-o-takashi@sakamocchi.jp>
-X-Mailer: git-send-email 2.34.1
+ by alsa1.perex.cz (Postfix) with ESMTPS id 9E6ABF800BB
+ for <alsa-devel@alsa-project.org>; Thu, 12 May 2022 16:06:57 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9E6ABF800BB
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=BvMKMfLPJp2fksjlL7xPapli+UJysge3iMj8LOKhUnUvgF7fudwinK/OOIamqyPPonHV/NRThyIFl8gGU7dIAGQqkkAISHGVpURWbhsZwvDBtizMpabLBh0KOqpF0CEa3cPcSBadIcl8SY/9DxpWpVgfDAXIXPVZTNUj4+6/aOfBeQDWRU5/2wmhOJ16xAT5fRfdPjr3cIcS7DBFktrQo/2Q+CI/qMkCFUpgTpw+UkKzYoRxDoMgNhGU0B+nij+M0QWl99xXph2YE03ZRP0JTRRvboypMAXYvD2ktoa3qW7DsN5xgNcJtaX49X6GJejQ4qugfX6cDwhV2iF6VE1h7g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=DB9pqSVZEFrMVGYBfu4hz/fH+4AbZ617QLJOsujWzKg=;
+ b=Kl55cu4Bd5qm82PXIJPoO+PnCkGG8uC26I0qzuApG6X78rI1iaZWRMMhxs18H1GLI6nyZr76NHNtM44IilkRGVV6oqfc6Rpjf0UBs3wP9GPwSCq45S0STlzR+O8rsF3TLmd1+/t6LHLSHyEBV2zCZScQvCPaGlNHVKdRrN2l+DT4/svEJ6R3G7VAFXzHh+CJ8ttXP2I4LbPGKusj5hvukUpOKGTMa+mLhLRhrNmBrcEC2kCuus4mIcpPeseXmCfeVPmYtRbA+VmoheY9CGbFZ5Eh3Vc3DokIthNcMOGDVovRj4+GJ9TyEe/CyvkouuLVhO291Yc69afhj+YVKcyrSA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
+ dkim=none; arc=none
+Received: from CY4PR04MB0567.namprd04.prod.outlook.com (2603:10b6:903:b1::20)
+ by BYAPR04MB5367.namprd04.prod.outlook.com (2603:10b6:a03:cd::25)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5227.23; Thu, 12 May
+ 2022 14:06:53 +0000
+Received: from CY4PR04MB0567.namprd04.prod.outlook.com
+ ([fe80::8e:6e22:f98c:29d5]) by CY4PR04MB0567.namprd04.prod.outlook.com
+ ([fe80::8e:6e22:f98c:29d5%5]) with mapi id 15.20.5227.023; Thu, 12 May 2022
+ 14:06:53 +0000
+Subject: Re: [PATCH] ASoC: samsung: Fix refcount leak in aries_audio_probe
+To: Miaoqian Lin <linmq006@gmail.com>,
+ Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+ Sylwester Nawrocki <s.nawrocki@samsung.com>,
+ Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
+ Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
+ alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+References: <20220512043828.496-1-linmq006@gmail.com>
+From: Jonathan Bakker <xc-racer2@live.ca>
+Message-ID: <CY4PR04MB056741C407765D41970C8462CBCB9@CY4PR04MB0567.namprd04.prod.outlook.com>
+Date: Thu, 12 May 2022 07:06:50 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
+In-Reply-To: <20220512043828.496-1-linmq006@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-TMN: [JxHBLLJaBgVbupQ/OlKm4ESSMrsNiMfp1MoFxagRiQGScHV58ja7n8c7vFXmNunC]
+X-ClientProxiedBy: MW3PR06CA0021.namprd06.prod.outlook.com
+ (2603:10b6:303:2a::26) To CY4PR04MB0567.namprd04.prod.outlook.com
+ (2603:10b6:903:b1::20)
+X-Microsoft-Original-Message-ID: <fc28981e-e0a9-92b7-e169-575b54825868@live.ca>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: alsa-devel@alsa-project.org, linux1394-devel@lists.sourceforge.net,
- Dan Carpenter <dan.carpenter@oracle.com>
+X-MS-Exchange-MessageSentRepresentingType: 1
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 9d6b2806-70f9-4483-4ce9-08da3420aa38
+X-MS-TrafficTypeDiagnostic: BYAPR04MB5367:EE_
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: o2b+V6HScMhd4tAfh12Evw3PpeUs36dkZgNkLn2/KdT+7eJtNTjwCeNwSrDPYmcwxtjs+JGC0q9GC4X/aq0BJ5G4PBnpefgRrJcMe0Jvtb/fCYjAgzPNUXv+XFSmbPLBbunMW1sBl/sIYs5fU6S6ThnDYo0+BCeDNtQGv5f2YbBhXfRoQBipgAbZ2go/WI/uHL21OcD4+U42KW0JB2/2CbkZpQ8Ylop/iEW0trjgWC4kDUN/vs2fo4jHhTNI0Oc2p0YZEo1EyIzQr10wj8erKGth9gRugsmEczsRPyb9B8k+MnXTMwNVfB/uUNhGOF1ua+xojZ+j2T3cX6JceDQuR52wp8QXwe3p/prdToeN2f9pwpPynQL8lnekER/T3SW0p1/VjGbKX0BZctAIi5Mjv8O6GZxvnQNnD47s9K/a1iqhh3L1nhhmJFVEUcYJC69Gz9E/5u36FF4K3cZNWImaq5RfHZG1J1jlCDlMbTcyJKtk2DTq3lLNaraju3g06iAlUx8PIsx89dAk+7L+x1ABFBaCx9DcwwsAbXKBmt2YngMN63Enx8Hq2VeRzVpdGwPukGVymNTxBNMKZnMLrr5TdQ==
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?aGw4WVdLbE8wZkh5OWkyRHcvd2ZFUndTT1djVTl5OHh5TkRzQm5hbkdzTThS?=
+ =?utf-8?B?TS8xRXY0WXBia3A5eFc1TGJZVVBlVFJpYXM2V3NXejF2L1VKMzd1K2l3UnFH?=
+ =?utf-8?B?cU9PZWg5UGFTMUR5cnl2OFBYY0NkZ05uTWhKaWNrSGl5QTAyck56RmRKZG5t?=
+ =?utf-8?B?K1gwTGFyTDdpZGltSVMrT3NGUFpFbk9iQnVzYlNrMFVBR2lMT3JiMkVwUExK?=
+ =?utf-8?B?R2EwVmsvTERPcHplZjUrMS9BNkkyS1lpRFloRVZMM1hTWm8zc1NuSHJWY0Q0?=
+ =?utf-8?B?SmhHQ0l3SkJsbGgrM3Z5VG5CekZHWEdoM3dqanV0Mng3TTQwalFHejRvWVBa?=
+ =?utf-8?B?RlJ4YUhaakU1Mm1HWnNtdTNuemNDa1NkZVJFVGdXRWRZV2dWSFJKaG96QVJx?=
+ =?utf-8?B?RTF1enVvU013aEhBZXJzVEFkTU1BbDJsVVJNaVJHb0UyLzVxbDdhNHRHQnE4?=
+ =?utf-8?B?eStva3plS0ZiaU9ZandmN1kvMlVMWVdlemVybUplQUlIZzF6UCtpZG1relBz?=
+ =?utf-8?B?K1RqOUhkdlhvOFpkMm5pVWo4d1NMb2REemUvUkRXV1d4b0x4Q3VuOVplOGRk?=
+ =?utf-8?B?K3hNRjBlNlpXaTNsRWNrWnREeDQxTHlubEpVd01lRjNsSCtudG1Vc0pkTll2?=
+ =?utf-8?B?SnY5QkpjQjdLa1AxRG1aSFp4T2xuRWZZenY1dkhMWDE2QUNhWHRHcGU3azF6?=
+ =?utf-8?B?YjFKYTVVa0tWS3VOdVNUVjd5amE3YStLczROVUh6MTU0SHpleDI3bVhOUHpn?=
+ =?utf-8?B?TDQzOTJKczdJdjFCdjlXYXY5cGpFZmFkczhLNmFtQ1F0aFQ5dE5SMUo3cDRM?=
+ =?utf-8?B?c2FpUUVrMGQ4dlNPRG5XR2drNUEyZ2Fmb2xyQmR3c2c0OUpFa2VXRW1sTWxM?=
+ =?utf-8?B?VzdGOWpJaTV1LzI2TjdyY1BCMkpiZkpRUlU0eG0vbnZoR1RFNlVSWlNIWDBz?=
+ =?utf-8?B?cG9BckZMaE9WcFVwNVE3ejFaTldXUHpxbnNZeXlFaG1KU3RFb1RZbjIwaWVX?=
+ =?utf-8?B?TURjZCtwUzRWZWgycGRtNUdzOVNRYm5qUDdzeTNXOFpRbUo5WjlSWXEvcll0?=
+ =?utf-8?B?RFh6Nm5UcUdlbHRQNW9oU3FnQ09EaGVVR05EOFpNcVgyODdJL05EL2VjVmpv?=
+ =?utf-8?B?bzZ6UWtQczV4QlRESjFRTGcwUmtqT01kWnZNWTlJdjZaYjhFbXN5bUhzdERV?=
+ =?utf-8?B?VXIyTjJIeC9JN2FWSmV1SnFEME1sWCtiWVJCT3JLSXBqVnhGN2NZTGpJYmhk?=
+ =?utf-8?B?NEkzQ1BOQnpKUEdqemFyMjBMbGRPQTNUeFJYa0l6Z2xOWmVFNDgzYmZhMHho?=
+ =?utf-8?B?VXo2S0dTOHh5MytUVEQ3VWN0U0xIb1BONmg3dUxTRFU3MS8wNVpROHcxb29Y?=
+ =?utf-8?B?OU1SUHE2NHk2T2hBYmtQeU9ISHUzaklnN05OZmtmY2FZVWRNWHZvZnQrQ3JS?=
+ =?utf-8?B?ZnhWUkZzMXR5K2dvdFNKd2VQeDdBUnZRSUU0WXdSNmRjSGk2SmJVbmdZS2xw?=
+ =?utf-8?B?WCtleEE0bmlaVzduL0hsdEZuaEdXTFhjVU9OQjRydHhmbzhqeTNnZGVpK3RW?=
+ =?utf-8?B?cU1oNng1UWpJTGI3RHBlVmlhTzk3emlMMmZNUmw0L0oxdmdoSVloY1dKZ0tQ?=
+ =?utf-8?B?TVJzcW5ERGdKdVM1YUhkcS83N04rZ0lrcEFsajQ3Qmxmamp1WUo3ODM4MjJD?=
+ =?utf-8?B?Z0VtSktrSGh0bjBzWFpCUVNyVFRQVFd2Z0V5SmFzVDNSTktSemJLem5RVXJO?=
+ =?utf-8?B?SDhDaTBtakM1REg5N3F3OTZ3WlNUWGw1dUM3aUJsVHZQcHlqRmFlSHJmRjht?=
+ =?utf-8?B?b1ozSFIxN3FnY0MzYlVwdEwyVW1XaG43YjBKeDhMNnB3b0VpdjBxZ29iaGgw?=
+ =?utf-8?B?YjN0NkU0RmZrZ3J2TmlobTRaanlVOFpicWlReUcreTZWZWpVSGZQYUQ4UE5R?=
+ =?utf-8?B?MDdSdndDNkpacHJ0VkxGcjRvU2xJaGxiUittcVJnUjJqckFyWkQ5TkZLekhn?=
+ =?utf-8?B?dWhqVjljU2lnPT0=?=
+X-OriginatorOrg: sct-15-20-4755-11-msonline-outlook-edb50.templateTenant
+X-MS-Exchange-CrossTenant-Network-Message-Id: 9d6b2806-70f9-4483-4ce9-08da3420aa38
+X-MS-Exchange-CrossTenant-AuthSource: CY4PR04MB0567.namprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 May 2022 14:06:53.2635 (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
+X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg: 00000000-0000-0000-0000-000000000000
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR04MB5367
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -109,31 +140,37 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Recent change brings potential leak of value on kernel stack to userspace
-due to uninitialized value.
+Acked-by: Jonathan Bakker <xc-racer2@live.ca>
 
-This commit fixes the bug.
+Thanks!
+Jonathan
 
-Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
-Fixes: baa914cd81f ("firewire: add kernel API to access CYCLE_TIME register")
-Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
----
- drivers/firewire/core-cdev.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/firewire/core-cdev.c b/drivers/firewire/core-cdev.c
-index 8e9670036e5c..032ee56c34a3 100644
---- a/drivers/firewire/core-cdev.c
-+++ b/drivers/firewire/core-cdev.c
-@@ -1211,7 +1211,7 @@ static int ioctl_get_cycle_timer2(struct client *client, union ioctl_arg *arg)
- 	struct fw_cdev_get_cycle_timer2 *a = &arg->get_cycle_timer2;
- 	struct fw_card *card = client->device->card;
- 	struct timespec64 ts = {0, 0};
--	u32 cycle_time;
-+	u32 cycle_time = 0;
- 	int ret = 0;
- 
- 	local_irq_disable();
--- 
-2.34.1
-
+On 2022-05-11 9:38 p.m., Miaoqian Lin wrote:
+> of_parse_phandle() returns a node pointer with refcount
+> incremented, we should use of_node_put() on it when done.
+> If extcon_find_edev_by_node() fails, it doesn't call of_node_put()
+> Calling of_node_put() after extcon_find_edev_by_node() to fix this.
+> 
+> Fixes: 7a3a7671fa6c ("ASoC: samsung: Add driver for Aries boards")
+> Signed-off-by: Miaoqian Lin <linmq006@gmail.com>
+> ---
+>  sound/soc/samsung/aries_wm8994.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/sound/soc/samsung/aries_wm8994.c b/sound/soc/samsung/aries_wm8994.c
+> index 5265e546b124..83acbe57b248 100644
+> --- a/sound/soc/samsung/aries_wm8994.c
+> +++ b/sound/soc/samsung/aries_wm8994.c
+> @@ -585,10 +585,10 @@ static int aries_audio_probe(struct platform_device *pdev)
+>  
+>  	extcon_np = of_parse_phandle(np, "extcon", 0);
+>  	priv->usb_extcon = extcon_find_edev_by_node(extcon_np);
+> +	of_node_put(extcon_np);
+>  	if (IS_ERR(priv->usb_extcon))
+>  		return dev_err_probe(dev, PTR_ERR(priv->usb_extcon),
+>  				     "Failed to get extcon device");
+> -	of_node_put(extcon_np);
+>  
+>  	priv->adc = devm_iio_channel_get(dev, "headset-detect");
+>  	if (IS_ERR(priv->adc))
+> 
