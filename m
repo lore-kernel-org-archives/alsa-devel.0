@@ -4,66 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id DF446C433EF
-	for <alsa-devel@archiver.kernel.org>; Thu, 12 May 2022 14:13:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8F40FC433EF
+	for <alsa-devel@archiver.kernel.org>; Thu, 12 May 2022 14:14:15 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A95801AB5;
-	Thu, 12 May 2022 16:12:50 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A95801AB5
+	by alsa0.perex.cz (Postfix) with ESMTPS id C21AA1AC5;
+	Thu, 12 May 2022 16:13:22 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C21AA1AC5
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1652364820;
-	bh=MzRMdy8E89Q9LhenGGBwHCK3EXb+c+A7ZNlc7Me5Nm8=;
+	s=default; t=1652364852;
+	bh=UIXcV2KLWijXWL19jQLq1vEhgqxz6qEWy8qt2aKyHXE=;
 	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=MKCG63KnNsOe2GH+8955MOxYZ9AIGyEinBT/j6X6qVWoXFJzdebWSYR77+0G5WAhm
-	 Eq5Nt3RcNcifI8w7TlrAtDvOfBaHBjV6c86Zs2tCoxCpMY7JcI9VKorIsBLlD8nnB9
-	 10/mKe27TLyoQf/W9IRj7UdMvc320RuT7qyg+0Js=
+	b=MY7rHkvEj9otYaHITl1mrJPs5ZGJccFFP1RYImyBUbsAc01pDnl6fizbholpZk7+V
+	 SQ9JpEA1Rlj5GX9CCvE2RF4R8R8UaEEqjaPCy17j9lPAqaMBd8ytTvPTIRugdcnE19
+	 hVgk2wW7K1CmiXpcP0huEvDj/EyDHJJriSMXPwHw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 51785F80254;
-	Thu, 12 May 2022 16:12:49 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 9E804F8027C;
+	Thu, 12 May 2022 16:12:51 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 50F94F80249; Thu, 12 May 2022 16:12:47 +0200 (CEST)
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+ id 5F7C8F80245; Thu, 12 May 2022 16:12:48 +0200 (CEST)
+Received: from ams.source.kernel.org (ams.source.kernel.org
+ [IPv6:2604:1380:4601:e00::1])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id BB008F8010B
- for <alsa-devel@alsa-project.org>; Thu, 12 May 2022 16:12:42 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BB008F8010B
+ by alsa1.perex.cz (Postfix) with ESMTPS id 084C9F80154
+ for <alsa-devel@alsa-project.org>; Thu, 12 May 2022 16:12:45 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 084C9F80154
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="svjw17Mv"
+ header.b="a+r+E+To"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by ams.source.kernel.org (Postfix) with ESMTPS id 24045B8284C;
- Thu, 12 May 2022 14:12:42 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D636EC385B8;
- Thu, 12 May 2022 14:12:39 +0000 (UTC)
+ by ams.source.kernel.org (Postfix) with ESMTPS id E14FCB8284F;
+ Thu, 12 May 2022 14:12:44 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6FC6FC34114;
+ Thu, 12 May 2022 14:12:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1652364760;
- bh=MzRMdy8E89Q9LhenGGBwHCK3EXb+c+A7ZNlc7Me5Nm8=;
+ s=k20201202; t=1652364763;
+ bh=UIXcV2KLWijXWL19jQLq1vEhgqxz6qEWy8qt2aKyHXE=;
  h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=svjw17MvxqNc5V356vKOxOj8HsHsSKRfyzVv66MuPZWuhgMpbcmMNe6TBANhuZdLA
- pCmPPkan5RPfb+7/54p9TtVpBGf0AaS4ug0HfXSuM2DT7kch1J+JtfZ0Z0MNJLx/Bg
- gGc9iXO0/J0nylZ+hWTZZebYLk2DGbg/JIGJXLAx7z5TjbDQ0ye43fFRSgcnSEq8Eu
- pAxYG4DlWnzSOd8J1l9BfT/wawdszuFQ+B5JArRWzqtqlq6OqlaZrikgzTrn2/uNrq
- BK8ko4DYXG6uDY5Grx16bdZFJsHDH1EUWzSRoCOM42Fht1nLby/5bsxXWY3PPEWcE+
- ToY2R63RNzzDQ==
+ b=a+r+E+ToFiNe9Q7bFQULMTHx1L1w/qPqi22IiPMWuBdhHM2PMyik/wtrfUatP3Qwu
+ f/ymLloRnIPL9gHtXw8KX1zJpXeCsNNNDvaH1XbsPUkrKJSYy6yaa46/QrqqvBA45K
+ dLouZyUfxUxr1YRmmWGcRSDN1+AQL5tYeAqEbhxqk236jNDgSiejU3wcugptP9q0Uo
+ otnhI8wtvttwXf8huK8VHoDKu4xsvCq4/vcQ+z6ByhxcY41Nr5NtxJ76o0VPgGe/qd
+ l9+7DqfbVcaauw+IjIpsjDbd0OKcVgYPDNs0t7Nilmfyyl3i8GXeZac0ijp0e7YC8S
+ rMHxvAAY8lZiQ==
 From: Mark Brown <broonie@kernel.org>
-To: ckeepax@opensource.cirrus.com
-In-Reply-To: <20220510153843.1029540-1-ckeepax@opensource.cirrus.com>
-References: <20220510153843.1029540-1-ckeepax@opensource.cirrus.com>
-Subject: Re: [PATCH 1/2] ASoC: wm2000: Remove redundant endianness flag
-Message-Id: <165236475959.1016627.2821653473768599607.b4-ty@kernel.org>
-Date: Thu, 12 May 2022 15:12:39 +0100
+To: lgirdwood@gmail.com, alsa-devel@alsa-project.org, Xiubo.Lee@gmail.com,
+ tiwai@suse.com, shengjiu.wang@nxp.com, nicoleotsuka@gmail.com,
+ shengjiu.wang@gmail.com, festevam@gmail.com, perex@perex.cz
+In-Reply-To: <1652183808-3745-1-git-send-email-shengjiu.wang@nxp.com>
+References: <1652183808-3745-1-git-send-email-shengjiu.wang@nxp.com>
+Subject: Re: [PATCH] ASoC: fsl_ssi: Add support multi fifo script
+Message-Id: <165236476117.1016627.2134369167163504091.b4-ty@kernel.org>
+Date: Thu, 12 May 2022 15:12:41 +0100
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: patches@opensource.cirrus.com, alsa-devel@alsa-project.org,
- lgirdwood@gmail.com, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -79,13 +81,18 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Tue, 10 May 2022 16:38:42 +0100, Charles Keepax wrote:
-> The endianness flag is used on the CODEC side to specify an
-> ambivalence to endian, typically because it is lost over the hardware
-> link. This device has no DAI links and as such the flag would have
-> no effect, remove the redundant flag.
+On Tue, 10 May 2022 19:56:48 +0800, Shengjiu Wang wrote:
+> With dual fifo enabled, the case that recording mono sound
+> in the background, playback mono sound twice in parallal,
+> at second time playback sound may distort, the possible
+> reason is using dual fifo to playback mono sound is not
+> recommended.
 > 
+> This patch is to provide a option to use multi fifo script,
+> which can be dynamically configured as one fifo or two fifo
+> mode.
 > 
+> [...]
 
 Applied to
 
@@ -93,10 +100,8 @@ Applied to
 
 Thanks!
 
-[1/2] ASoC: wm2000: Remove redundant endianness flag
-      commit: 69b53a097d9984d93448b021e0d422f2803310bd
-[2/2] ASoC: wm9090: Remove redundant endianness flag
-      commit: de2427207d13d7fe1882cd1772d66e33debf999e
+[1/1] ASoC: fsl_ssi: Add support multi fifo script
+      commit: 7aded7003a4e949b3bf73f060771f9db018a6d96
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
