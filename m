@@ -4,68 +4,72 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 50C80C433FE
-	for <alsa-devel@archiver.kernel.org>; Thu, 12 May 2022 14:14:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 37B9EC433EF
+	for <alsa-devel@archiver.kernel.org>; Thu, 12 May 2022 14:14:41 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 408791AC2;
-	Thu, 12 May 2022 16:13:41 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 408791AC2
+	by alsa0.perex.cz (Postfix) with ESMTPS id 6D6481AD1;
+	Thu, 12 May 2022 16:13:49 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6D6481AD1
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1652364871;
-	bh=tLRm1gt0dfdj3Zg1SK1amryfSa02+W6LQsgnP3iGSlw=;
-	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
+	s=default; t=1652364879;
+	bh=0hh3VnoWdrScswPThoUAz7IHRdvYsSrWyfqva7PClQk=;
+	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=uull301Vu2ZS5+q+U1uToMRj85lK9UYf3tUaATUGUmlPNDri/ERsjDmoDc31JMDLb
-	 WnlhLGsil5gwuDnKw4uQoAG6eymL8v0y+5yQLR2Nc1SfbtYPW0cFjnO0HgRkn+qawH
-	 FjkNBfWVvxIq4lsrgG81GhP1bMMSTMGzAjVNF71Y=
+	b=Lmqjpr56dH1HSp+kHvUJYute/vLBAj34M8E4qtKFXSsMjvS8lsrf2cowdYTqrqVwa
+	 XcIuNsf9Kx78ehw4/LJSfBga6LGF5+mrPAL1akewXVpvTFy6H880UhIN6EkgculkHr
+	 S947Gy8c2q1c70Dv8CiEwQosoY2nez1R9Y20x9iI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 2CCFCF80508;
-	Thu, 12 May 2022 16:12:54 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id A815AF8050F;
+	Thu, 12 May 2022 16:12:56 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 500D1F8032B; Thu, 12 May 2022 16:12:51 +0200 (CEST)
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+ id 8E19FF80516; Thu, 12 May 2022 16:12:55 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org
+ [IPv6:2604:1380:4641:c500::1])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 36A53F8010B
- for <alsa-devel@alsa-project.org>; Thu, 12 May 2022 16:12:48 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 36A53F8010B
+ by alsa1.perex.cz (Postfix) with ESMTPS id 34808F8050F
+ for <alsa-devel@alsa-project.org>; Thu, 12 May 2022 16:12:52 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 34808F8050F
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="dX09OXXu"
+ header.b="csshdifP"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by ams.source.kernel.org (Postfix) with ESMTPS id A85A5B8284C;
- Thu, 12 May 2022 14:12:47 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1FCFDC34117;
- Thu, 12 May 2022 14:12:43 +0000 (UTC)
+ by dfw.source.kernel.org (Postfix) with ESMTPS id 7279661B6B;
+ Thu, 12 May 2022 14:12:50 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id F089EC385B8;
+ Thu, 12 May 2022 14:12:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1652364766;
- bh=tLRm1gt0dfdj3Zg1SK1amryfSa02+W6LQsgnP3iGSlw=;
- h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=dX09OXXu36Oyp6S5k1oT1e2eO9k85/jNMHbJr5d64l93qQR54dZf4/+FjjQG4R3Ht
- WvxpVK+rmiONY0vw+FjvPux3sA1YB2WcWeCNOsYDVGRTOhSYnjYEFjbre/xP4Ct6VZ
- MUGFh2/eOKIrx8EZFfciVFmDq3oropMtsWy02lw/soYMR9A3SZd3QWHk2LHIP4A/z1
- +UnbMKTsq3IwlbWfCoNE5GgPd+sAsXVcvcwqj671i/KWpPTMuu5clz5iZjTgzQp/ni
- iH71sBB0ZVzpbJeDF6h6EdL/80WvIantJt/kVqsgAM2wIPD+N7HROyyPyfbng+kI66
- w0obt0/3us2WA==
+ s=k20201202; t=1652364770;
+ bh=0hh3VnoWdrScswPThoUAz7IHRdvYsSrWyfqva7PClQk=;
+ h=From:To:In-Reply-To:References:Subject:Date:From;
+ b=csshdifPDDyuUKSgp96tlCgn60qYxckukQoSlyWxGcwgKeeuti4z2ik9F9AnEWPCQ
+ isX4F+ZF4oFv6jtdWDMIwvW7h+mwk8AMvBzc17Q4186w43TgYeDmTf5G7VgxDDn3S0
+ RN9WdsvQ939yycBgwp05MFZzXm7q0mXcwul1Fs9wKvIPht9HmyUd5UZm2upwxUoOur
+ YZA9p0Q+EeWkWGKVit6GzIzoN/4hnfuv1cZBflk+uW5jReIYP+qTu9YR6WEODsaKfI
+ dEovtkWepZcuPx/1G0rjE+e+GeyWKsFYJZejW2RpRAuzMBaVLiFc8q95X30AlBWoxH
+ g74dxMGfow4Rw==
 From: Mark Brown <broonie@kernel.org>
-To: tanureal@opensource.cirrus.com, lgirdwood@gmail.com, perex@perex.cz,
- james.schulman@cirrus.com, rf@opensource.cirrus.com, oder_chiou@realtek.com,
- tiwai@suse.com, zheyuma97@gmail.com, david.rhodes@cirrus.com
-In-Reply-To: <20220510153251.1741210-1-zheyuma97@gmail.com>
-References: <20220510153251.1741210-1-zheyuma97@gmail.com>
-Subject: Re: [PATCH 0/6] ASOC: Fix the error handling code of the probe
-Message-Id: <165236476384.1016627.11149997612368396008.b4-ty@kernel.org>
-Date: Thu, 12 May 2022 15:12:43 +0100
+To: Fabio Estevam <festevam@gmail.com>, alsa-devel@alsa-project.org,
+ Takashi Iwai <tiwai@suse.com>, linuxppc-dev@lists.ozlabs.org,
+ shawnguo@kernel.org, Jaroslav Kysela <perex@perex.cz>,
+ linux-arm-kernel@lists.infradead.org, Shengjiu Wang <shengjiu.wang@gmail.com>,
+ kernel@pengutronix.de, Nicolin Chen <nicoleotsuka@gmail.com>,
+ linux-kernel@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>,
+ linux-imx@nxp.com, linmq006@gmail.com, richard.zhao@linaro.org,
+ Xiubo Li <Xiubo.Lee@gmail.com>, Sascha Hauer <s.hauer@pengutronix.de>
+In-Reply-To: <20220511065803.3957-1-linmq006@gmail.com>
+References: <20220511065803.3957-1-linmq006@gmail.com>
+Subject: Re: [PATCH] ASoC: fsl: Fix refcount leak in imx_sgtl5000_probe
+Message-Id: <165236476669.1016627.799553310382817495.b4-ty@kernel.org>
+Date: Thu, 12 May 2022 15:12:46 +0100
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: patches@opensource.cirrus.com, alsa-devel@alsa-project.org,
- linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -81,19 +85,12 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Tue, 10 May 2022 23:32:45 +0800, Zheyu Ma wrote:
-> These drivers mishandle the regulator resource in the probe function,
-> failing to disable the regulator for probing failure.
+On Wed, 11 May 2022 10:58:03 +0400, Miaoqian Lin wrote:
+> of_find_i2c_device_by_node() takes a reference,
+> In error paths, we should call put_device() to drop
+> the reference to aviod refount leak.
 > 
-> Zheyu Ma (6):
->   ASoC: cs42l52: Fix the error handling of cs42l56_i2c_probe()
->   ASoC: cs35l36: Fix the error handling of cs35l36_i2c_probe()
->   ASoC: rt5645: Fix the error handling of rt5645_i2c_probe()
->   ASoC: tas571x: Fix the error handling of tas571x_i2c_probe()
->   ASoC: tas6424: Fix the error handling of tas6424_i2c_probe()
->   ASoC: wm8903: Fix the error handling of wm8903_i2c_probe()
 > 
-> [...]
 
 Applied to
 
@@ -101,18 +98,8 @@ Applied to
 
 Thanks!
 
-[1/6] ASoC: cs42l52: Fix the error handling of cs42l56_i2c_probe()
-      commit: c1ce4ba5021a9730c00bab6f8122702deb69d37e
-[2/6] ASoC: cs35l36: Fix the error handling of cs35l36_i2c_probe()
-      commit: cf7250e95d309ae518918613fb904a4565ffc85d
-[3/6] ASoC: rt5645: Fix the error handling of rt5645_i2c_probe()
-      commit: 7883c193d7ae1ccc20ee4c06d2a1fea40074e454
-[4/6] ASoC: tas571x: Fix the error handling of tas571x_i2c_probe()
-      commit: ef1878fd0cd61f0f3fafdf518bb8f1df742ef760
-[5/6] ASoC: tas6424: Fix the error handling of tas6424_i2c_probe()
-      commit: 68cacb5cf5cf04aaa95be1fd76eff728dfddc613
-[6/6] ASoC: wm8903: Fix the error handling of wm8903_i2c_probe()
-      commit: 83d1b65d4cbe6fb0bbdacc18c1f4ad0450275d8f
+[1/1] ASoC: fsl: Fix refcount leak in imx_sgtl5000_probe
+      commit: 41cd312dfe980af869c3503b4d38e62ed20dd3b7
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
