@@ -4,79 +4,74 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 629A4C433EF
-	for <alsa-devel@archiver.kernel.org>; Mon, 16 May 2022 10:32:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A33B5C433F5
+	for <alsa-devel@archiver.kernel.org>; Mon, 16 May 2022 10:48:25 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 90D1C167D;
-	Mon, 16 May 2022 12:32:03 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 90D1C167D
+	by alsa0.perex.cz (Postfix) with ESMTPS id 37C881677;
+	Mon, 16 May 2022 12:47:33 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 37C881677
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1652697173;
-	bh=4JQ7yR57/1qveu7J6rBKHhqLJ9AJ+U79zNmFDhgAwYc=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=hivhLjeNxacPoUmHBCWfdgrt/QSt/FsG51yYh+nfA92Gh5ZwOMvldmfpo9RgIduCI
-	 OZwzAeOtt1KGFv42h+CEIrpj7psRl/BB/740OLycsj2WHOfylUxbhptxmg1cBMp8pr
-	 dI7xVdh90oX3DoII9tUqpsb83DcP2npHqe7kdSQ4=
+	s=default; t=1652698103;
+	bh=UGwKRk4cWTNgwF2Wv+HiO1LYQNBjEmeVJ8ld7RI01FI=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=oii1wae5jWHYcUHwKM84/gYkPgehgSJcfhYjRKvGB4k9dkpiNByr+u6pkna55i027
+	 Hxey9Xp3K+03voPvkAZBKUGI6yaJTgLDOfr4MR40iMkzQzk/17B+Db6f/2drGv4Yat
+	 gmTh6oZ9SXio0dBgU9Nzv4WzjlqSI/zkN7+EzEKE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id B4054F801D5;
-	Mon, 16 May 2022 12:31:38 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 62A60F8051A;
+	Mon, 16 May 2022 12:47:32 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 84598F8025C; Mon, 16 May 2022 12:31:37 +0200 (CEST)
-Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
+ id 5D0A5F800D8; Mon, 16 May 2022 12:47:30 +0200 (CEST)
+Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 4C7F8F80171
- for <alsa-devel@alsa-project.org>; Mon, 16 May 2022 12:31:30 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4C7F8F80171
-Authenticated-By: 
-X-SpamFilter-By: ArmorX SpamTrap 5.73 with qID 24GAVJ4H0008875,
- This message is accepted by code: ctloc85258
-Received: from mail.realtek.com (rtexh36504.realtek.com.tw[172.21.6.27])
- by rtits2.realtek.com.tw (8.15.2/2.71/5.88) with ESMTPS id 24GAVJ4H0008875
- (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
- Mon, 16 May 2022 18:31:19 +0800
-Received: from RTEXMBS01.realtek.com.tw (172.21.6.94) by
- RTEXH36504.realtek.com.tw (172.21.6.27) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.27; Mon, 16 May 2022 18:31:19 +0800
-Received: from localhost.localdomain (172.22.102.1) by
- RTEXMBS01.realtek.com.tw (172.21.6.94) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.27; Mon, 16 May 2022 18:31:18 +0800
-From: Oder Chiou <oder_chiou@realtek.com>
-To: <broonie@kernel.org>, <lgirdwood@gmail.com>
-Subject: [PATCH] ASoC: rt5640: Do not manipulate pin "Platform Clock" if the
- "Platform Clock" is not in the DAPM
-Date: Mon, 16 May 2022 18:30:55 +0800
-Message-ID: <20220516103055.20003-1-oder_chiou@realtek.com>
-X-Mailer: git-send-email 2.35.3
+ by alsa1.perex.cz (Postfix) with ESMTPS id D6063F800D8
+ for <alsa-devel@alsa-project.org>; Mon, 16 May 2022 12:47:21 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D6063F800D8
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
+ header.b="BvlBNez6"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+ d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+ t=1652698045; x=1684234045;
+ h=from:to:cc:subject:date:message-id:in-reply-to:
+ references:mime-version:content-transfer-encoding;
+ bh=UGwKRk4cWTNgwF2Wv+HiO1LYQNBjEmeVJ8ld7RI01FI=;
+ b=BvlBNez6Ajbf4U8KESKfEuac4g3MVAV+c1GkFSsvzk0ydN6KPUvh04wj
+ MJaMg7BYr4YSh03PnXsi2CtEtCGS7xg3nu7V4CtRf5MSrof8ccfGkXRMM
+ P5eCLVOTfotj54PAGIZEcu9FAf0j1istoHbiCgk+B9k8zDudeHKqBv+vE
+ ZEwOpOeD2TlnCMdD9NP69ar+ORxdmtyVbyIS5JNfN3TroILziKiftlNsD
+ RABYaDZEUkuRC9qsssSIrabmBiwp+Q8S6Mn2HqfEFmWou7SEQ7q2MscTK
+ MzLLOGCxIFX+DNYE8P/l4ULQ6hUst3hx7EUu7Bagv3a9IpGhRmjmRaS5D A==;
+X-IronPort-AV: E=McAfee;i="6400,9594,10348"; a="333853239"
+X-IronPort-AV: E=Sophos;i="5.91,229,1647327600"; d="scan'208";a="333853239"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+ by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 16 May 2022 03:46:52 -0700
+X-IronPort-AV: E=Sophos;i="5.91,229,1647327600"; d="scan'208";a="596459785"
+Received: from afialcko-mobl.ger.corp.intel.com (HELO
+ pujfalus-desk.ger.corp.intel.com) ([10.252.51.55])
+ by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 16 May 2022 03:46:50 -0700
+From: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
+To: lgirdwood@gmail.com, broonie@kernel.org,
+ pierre-louis.bossart@linux.intel.com, daniel.baluta@nxp.com,
+ AjitKumar.Pandey@amd.com
+Subject: [PATCH 2/8] ASoC: SOF: Rename dtrace_is_supported flag to
+ fw_trace_is_supported
+Date: Mon, 16 May 2022 13:47:05 +0300
+Message-Id: <20220516104711.26115-3-peter.ujfalusi@linux.intel.com>
+X-Mailer: git-send-email 2.36.1
+In-Reply-To: <20220516104711.26115-1-peter.ujfalusi@linux.intel.com>
+References: <20220516104711.26115-1-peter.ujfalusi@linux.intel.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [172.22.102.1]
-X-ClientProxiedBy: RTEXH36504.realtek.com.tw (172.21.6.27) To
- RTEXMBS01.realtek.com.tw (172.21.6.94)
-X-KSE-ServerInfo: RTEXMBS01.realtek.com.tw, 9
-X-KSE-AntiSpam-Interceptor-Info: trusted connection
-X-KSE-Antiphishing-Info: Clean
-X-KSE-Antiphishing-ScanningType: Deterministic
-X-KSE-Antiphishing-Method: None
-X-KSE-Antiphishing-Bases: 05/16/2022 10:15:00
-X-KSE-AttachmentFiltering-Interceptor-Info: no applicable attachment filtering
- rules found
-X-KSE-Antivirus-Interceptor-Info: scan successful
-X-KSE-Antivirus-Info: =?big5?B?Q2xlYW4sIGJhc2VzOiAyMDIyLzUvMTYgpFekyCAwOTowMzowMA==?=
-X-KSE-BulkMessagesFiltering-Scan-Result: protection disabled
-X-KSE-ServerInfo: RTEXH36504.realtek.com.tw, 9
-X-KSE-Attachment-Filter-Triggered-Rules: Clean
-X-KSE-Attachment-Filter-Triggered-Filters: Clean
-X-KSE-BulkMessagesFiltering-Scan-Result: protection disabled
-Cc: Oder Chiou <oder_chiou@realtek.com>, jack.yu@realtek.com,
- alsa-devel@alsa-project.org, Sameer Pujar <spujar@nvidia.com>,
- derek.fang@realtek.com, shumingf@realtek.com, flove@realtek.com
+Cc: alsa-devel@alsa-project.org, ranjani.sridharan@linux.intel.com,
+ kai.vehmanen@linux.intel.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -92,98 +87,128 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The pin "Platform Clock" was only used by the Intel Byt CR platform. In the
-others, the error log will be informed. The patch will set the flag to
-avoid the pin "Platform Clock" manipulated by the other platforms.
+Rename the internal flag to not limit it's use for dma-trace, but to be
+used for generic firmware tracing functionality.
 
-Signed-off-by: Oder Chiou <oder_chiou@realtek.com>
-Reported-by: Sameer Pujar <spujar@nvidia.com>
+Signed-off-by: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
+Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+Reviewed-by: Bard Liao <yung-chuan.liao@linux.intel.com>
+Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- sound/soc/codecs/rt5640.c             | 11 +++++++++--
- sound/soc/codecs/rt5640.h             |  2 ++
- sound/soc/intel/boards/bytcr_rt5640.c |  2 ++
- 3 files changed, 13 insertions(+), 2 deletions(-)
+ sound/soc/sof/core.c          |  2 +-
+ sound/soc/sof/intel/hda-dsp.c |  2 +-
+ sound/soc/sof/sof-priv.h      |  4 +++-
+ sound/soc/sof/trace.c         | 14 +++++++-------
+ 4 files changed, 12 insertions(+), 10 deletions(-)
 
-diff --git a/sound/soc/codecs/rt5640.c b/sound/soc/codecs/rt5640.c
-index 12da2bea1a7b..69c80d80ed9d 100644
---- a/sound/soc/codecs/rt5640.c
-+++ b/sound/soc/codecs/rt5640.c
-@@ -2094,12 +2094,14 @@ EXPORT_SYMBOL_GPL(rt5640_sel_asrc_clk_src);
- void rt5640_enable_micbias1_for_ovcd(struct snd_soc_component *component)
- {
- 	struct snd_soc_dapm_context *dapm = snd_soc_component_get_dapm(component);
-+	struct rt5640_priv *rt5640 = snd_soc_component_get_drvdata(component);
- 
- 	snd_soc_dapm_mutex_lock(dapm);
- 	snd_soc_dapm_force_enable_pin_unlocked(dapm, "LDO2");
- 	snd_soc_dapm_force_enable_pin_unlocked(dapm, "MICBIAS1");
- 	/* OVCD is unreliable when used with RCCLK as sysclk-source */
--	snd_soc_dapm_force_enable_pin_unlocked(dapm, "Platform Clock");
-+	if (rt5640->use_platform_clock)
-+		snd_soc_dapm_force_enable_pin_unlocked(dapm, "Platform Clock");
- 	snd_soc_dapm_sync_unlocked(dapm);
- 	snd_soc_dapm_mutex_unlock(dapm);
- }
-@@ -2108,9 +2110,11 @@ EXPORT_SYMBOL_GPL(rt5640_enable_micbias1_for_ovcd);
- void rt5640_disable_micbias1_for_ovcd(struct snd_soc_component *component)
- {
- 	struct snd_soc_dapm_context *dapm = snd_soc_component_get_dapm(component);
-+	struct rt5640_priv *rt5640 = snd_soc_component_get_drvdata(component);
- 
- 	snd_soc_dapm_mutex_lock(dapm);
--	snd_soc_dapm_disable_pin_unlocked(dapm, "Platform Clock");
-+	if (rt5640->use_platform_clock)
-+		snd_soc_dapm_disable_pin_unlocked(dapm, "Platform Clock");
- 	snd_soc_dapm_disable_pin_unlocked(dapm, "MICBIAS1");
- 	snd_soc_dapm_disable_pin_unlocked(dapm, "LDO2");
- 	snd_soc_dapm_sync_unlocked(dapm);
-@@ -2535,6 +2539,9 @@ static void rt5640_enable_jack_detect(struct snd_soc_component *component,
- 		rt5640->jd_gpio_irq_requested = true;
+diff --git a/sound/soc/sof/core.c b/sound/soc/sof/core.c
+index 2d12e8bab769..ff636f0e2435 100644
+--- a/sound/soc/sof/core.c
++++ b/sound/soc/sof/core.c
+@@ -250,7 +250,7 @@ static int sof_probe_continue(struct snd_sof_dev *sdev)
  	}
  
-+	if (jack_data && jack_data->use_platform_clock)
-+		rt5640->use_platform_clock = jack_data->use_platform_clock;
+ 	if (sof_debug_check_flag(SOF_DBG_ENABLE_TRACE)) {
+-		sdev->dtrace_is_supported = true;
++		sdev->fw_trace_is_supported = true;
+ 
+ 		/* init DMA trace */
+ 		ret = snd_sof_init_trace(sdev);
+diff --git a/sound/soc/sof/intel/hda-dsp.c b/sound/soc/sof/intel/hda-dsp.c
+index c068a3f2f6df..000ea906670c 100644
+--- a/sound/soc/sof/intel/hda-dsp.c
++++ b/sound/soc/sof/intel/hda-dsp.c
+@@ -432,7 +432,7 @@ static int hda_dsp_set_D0_state(struct snd_sof_dev *sdev,
+ 		 * when the DSP enters D0I3 while the system is in S0
+ 		 * for debug purpose.
+ 		 */
+-		if (!sdev->dtrace_is_supported ||
++		if (!sdev->fw_trace_is_supported ||
+ 		    !hda_enable_trace_D0I3_S0 ||
+ 		    sdev->system_suspend_target != SOF_SUSPEND_NONE)
+ 			flags = HDA_PM_NO_DMA_TRACE;
+diff --git a/sound/soc/sof/sof-priv.h b/sound/soc/sof/sof-priv.h
+index a7ffb6ecf332..f1cbd2b0d1c9 100644
+--- a/sound/soc/sof/sof-priv.h
++++ b/sound/soc/sof/sof-priv.h
+@@ -546,13 +546,15 @@ struct snd_sof_dev {
+ 	int ipc_timeout;
+ 	int boot_timeout;
+ 
++	/* firmwre tracing */
++	bool fw_trace_is_supported; /* set with Kconfig or module parameter */
 +
- 	ret = request_irq(rt5640->irq, rt5640_irq,
- 			  IRQF_TRIGGER_RISING | IRQF_TRIGGER_FALLING | IRQF_ONESHOT,
- 			  "rt5640", rt5640);
-diff --git a/sound/soc/codecs/rt5640.h b/sound/soc/codecs/rt5640.h
-index 9e49b9a0ccaa..505c93514051 100644
---- a/sound/soc/codecs/rt5640.h
-+++ b/sound/soc/codecs/rt5640.h
-@@ -2155,11 +2155,13 @@ struct rt5640_priv {
- 	bool jd_inverted;
- 	unsigned int ovcd_th;
- 	unsigned int ovcd_sf;
-+	bool use_platform_clock;
- };
- 
- struct rt5640_set_jack_data {
- 	int codec_irq_override;
- 	struct gpio_desc *jd_gpio;
-+	bool use_platform_clock;
- };
- 
- int rt5640_dmic_enable(struct snd_soc_component *component,
-diff --git a/sound/soc/intel/boards/bytcr_rt5640.c b/sound/soc/intel/boards/bytcr_rt5640.c
-index 7b948a219177..ed9fa1728722 100644
---- a/sound/soc/intel/boards/bytcr_rt5640.c
-+++ b/sound/soc/intel/boards/bytcr_rt5640.c
-@@ -1191,12 +1191,14 @@ static int byt_rt5640_init(struct snd_soc_pcm_runtime *runtime)
- {
- 	struct snd_soc_card *card = runtime->card;
- 	struct byt_rt5640_private *priv = snd_soc_card_get_drvdata(card);
-+	struct rt5640_set_jack_data *jack_data = &priv->jack_data;
- 	struct snd_soc_component *component = asoc_rtd_to_codec(runtime, 0)->component;
- 	const struct snd_soc_dapm_route *custom_map = NULL;
- 	int num_routes = 0;
+ 	/* DMA for Trace */
+ 	struct snd_dma_buffer dmatb;
+ 	struct snd_dma_buffer dmatp;
+ 	int dma_trace_pages;
+ 	wait_queue_head_t trace_sleep;
+ 	u32 host_offset;
+-	bool dtrace_is_supported; /* set with Kconfig or module parameter */
+ 	bool dtrace_error;
+ 	bool dtrace_draining;
+ 	enum sof_dtrace_state dtrace_state;
+diff --git a/sound/soc/sof/trace.c b/sound/soc/sof/trace.c
+index 5d171bf8a5ea..c5cc78c1958f 100644
+--- a/sound/soc/sof/trace.c
++++ b/sound/soc/sof/trace.c
+@@ -392,7 +392,7 @@ static int snd_sof_enable_trace(struct snd_sof_dev *sdev)
+ 	struct sof_ipc_reply ipc_reply;
  	int ret;
  
- 	card->dapm.idle_bias_off = true;
-+	jack_data->use_platform_clock = true;
+-	if (!sdev->dtrace_is_supported)
++	if (!sdev->fw_trace_is_supported)
+ 		return 0;
  
- 	/* Start with RC clk for jack-detect (we disable MCLK below) */
- 	if (byt_rt5640_quirk & BYT_RT5640_MCLK_EN)
+ 	if (sdev->dtrace_state == SOF_DTRACE_ENABLED || !sdev->dma_trace_pages)
+@@ -459,9 +459,9 @@ int snd_sof_init_trace(struct snd_sof_dev *sdev)
+ 
+ 	/* dtrace is only supported with SOF_IPC */
+ 	if (sdev->pdata->ipc_type != SOF_IPC)
+-		sdev->dtrace_is_supported = false;
++		sdev->fw_trace_is_supported = false;
+ 
+-	if (!sdev->dtrace_is_supported)
++	if (!sdev->fw_trace_is_supported)
+ 		return 0;
+ 
+ 	/* set false before start initialization */
+@@ -521,7 +521,7 @@ EXPORT_SYMBOL(snd_sof_init_trace);
+ int snd_sof_trace_update_pos(struct snd_sof_dev *sdev,
+ 			     struct sof_ipc_dma_trace_posn *posn)
+ {
+-	if (!sdev->dtrace_is_supported)
++	if (!sdev->fw_trace_is_supported)
+ 		return 0;
+ 
+ 	if (sdev->dtrace_state == SOF_DTRACE_ENABLED &&
+@@ -541,7 +541,7 @@ int snd_sof_trace_update_pos(struct snd_sof_dev *sdev,
+ /* an error has occurred within the DSP that prevents further trace */
+ void snd_sof_trace_notify_for_error(struct snd_sof_dev *sdev)
+ {
+-	if (!sdev->dtrace_is_supported)
++	if (!sdev->fw_trace_is_supported)
+ 		return;
+ 
+ 	if (sdev->dtrace_state == SOF_DTRACE_ENABLED) {
+@@ -559,7 +559,7 @@ static void snd_sof_release_trace(struct snd_sof_dev *sdev, bool only_stop)
+ 	struct sof_ipc_reply ipc_reply;
+ 	int ret;
+ 
+-	if (!sdev->dtrace_is_supported || sdev->dtrace_state == SOF_DTRACE_DISABLED)
++	if (!sdev->fw_trace_is_supported || sdev->dtrace_state == SOF_DTRACE_DISABLED)
+ 		return;
+ 
+ 	ret = snd_sof_dma_trace_trigger(sdev, SNDRV_PCM_TRIGGER_STOP);
+@@ -611,7 +611,7 @@ EXPORT_SYMBOL(snd_sof_trace_resume);
+ 
+ void snd_sof_free_trace(struct snd_sof_dev *sdev)
+ {
+-	if (!sdev->dtrace_is_supported)
++	if (!sdev->fw_trace_is_supported)
+ 		return;
+ 
+ 	/* release trace */
 -- 
-2.35.3
+2.36.1
 
