@@ -4,52 +4,55 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1C9EBC433F5
-	for <alsa-devel@archiver.kernel.org>; Mon, 16 May 2022 08:20:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id ACAA0C433F5
+	for <alsa-devel@archiver.kernel.org>; Mon, 16 May 2022 08:20:30 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 142D016BE;
-	Mon, 16 May 2022 10:19:28 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 142D016BE
+	by alsa0.perex.cz (Postfix) with ESMTPS id 8F78016C6;
+	Mon, 16 May 2022 10:19:38 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8F78016C6
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1652689218;
-	bh=St/NUTPbZDtXW1c3PGYHWFvpvozC74+q0Vgdyb9XA8g=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=FMnYn7okNIE70flsbH0zBk4uGsSjTcW2Uo7qMXiZCanOGVun3ZxiktNxhgp6FDuSe
-	 tBjFFxUdmNw0SlJ5+zq2+g+tgWMxpiiFlu3a/z6bPTK7w6cT/M43tm++Ybr4gF+99S
-	 C4pbi9/KNsFcgCZY7e2kZdJl1w+sefjg5UstB9/M=
+	s=default; t=1652689228;
+	bh=FnNFm23XlqlBvhswPonUrqGCYZyY6blySUkGMyAl5pk=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=rmE6KVfvtuT2MitOFaZDzwdMI4giwDdgnhp8YAFyKDCqxWICFmCTCnYBLZ6y0jVp+
+	 bd4PpJihGNPG9bOVdtgxvlH+acD/ZBw5Kuil5dRIS8agyb5+wWZgWoWyccq28XJykS
+	 SyraoJeKCajov9P5DqJN0Z/gobsDOAhwQ1lX8D0M=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id D7E82F8051C;
-	Mon, 16 May 2022 10:18:54 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 544AFF80520;
+	Mon, 16 May 2022 10:18:55 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 4EFE6F8014B; Mon, 16 May 2022 10:18:52 +0200 (CEST)
+ id 2B05BF800F8; Mon, 16 May 2022 10:18:53 +0200 (CEST)
 Received: from inva020.nxp.com (inva020.nxp.com [92.121.34.13])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 5F302F8012C
- for <alsa-devel@alsa-project.org>; Mon, 16 May 2022 10:18:43 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5F302F8012C
+ by alsa1.perex.cz (Postfix) with ESMTPS id B0B4AF800F8
+ for <alsa-devel@alsa-project.org>; Mon, 16 May 2022 10:18:45 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B0B4AF800F8
 Received: from inva020.nxp.com (localhost [127.0.0.1])
- by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 7083D1A0473;
- Mon, 16 May 2022 10:18:43 +0200 (CEST)
+ by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 6F68F1A0490;
+ Mon, 16 May 2022 10:18:45 +0200 (CEST)
 Received: from aprdc01srsp001v.ap-rdc01.nxp.com
  (aprdc01srsp001v.ap-rdc01.nxp.com [165.114.16.16])
- by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 394351A0470;
- Mon, 16 May 2022 10:18:43 +0200 (CEST)
+ by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 37F1D1A0474;
+ Mon, 16 May 2022 10:18:45 +0200 (CEST)
 Received: from localhost.localdomain (shlinux2.ap.freescale.net
  [10.192.224.44])
- by aprdc01srsp001v.ap-rdc01.nxp.com (Postfix) with ESMTP id AD80E180219B;
- Mon, 16 May 2022 16:18:41 +0800 (+08)
+ by aprdc01srsp001v.ap-rdc01.nxp.com (Postfix) with ESMTP id B7995180219B;
+ Mon, 16 May 2022 16:18:43 +0800 (+08)
 From: Shengjiu Wang <shengjiu.wang@nxp.com>
 To: nicoleotsuka@gmail.com, Xiubo.Lee@gmail.com, festevam@gmail.com,
  shengjiu.wang@gmail.com, lgirdwood@gmail.com, broonie@kernel.org,
  perex@perex.cz, tiwai@suse.com, alsa-devel@alsa-project.org
-Subject: [PATCH 0/3] ASoC: fsl_sai: Add support for i.MX8MM, MP, ULP
-Date: Mon, 16 May 2022 16:06:09 +0800
-Message-Id: <1652688372-10274-1-git-send-email-shengjiu.wang@nxp.com>
+Subject: [PATCH 2/3] ASoC: fsl_sai: Add support for i.MX8M Plus
+Date: Mon, 16 May 2022 16:06:11 +0800
+Message-Id: <1652688372-10274-3-git-send-email-shengjiu.wang@nxp.com>
 X-Mailer: git-send-email 2.7.4
+In-Reply-To: <1652688372-10274-1-git-send-email-shengjiu.wang@nxp.com>
+References: <1652688372-10274-1-git-send-email-shengjiu.wang@nxp.com>
 X-Virus-Scanned: ClamAV using ClamSMTP
 Cc: linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
@@ -67,17 +70,43 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-ASoC: fsl_sai: Add support for i.MX8MM, MP, ULP platforms
+Add i.MX8M Plus specific soc data, the max register is FSL_SAI_MDIV.
 
-Shengjiu Wang (3):
-  ASoC: fsl_sai: Add support for i.MX8MM
-  ASoC: fsl_sai: Add support for i.MX8M Plus
-  ASoC: fsl_sai: Add support for i.MX8ULP
+Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
+---
+ sound/soc/fsl/fsl_sai.c | 12 ++++++++++++
+ 1 file changed, 12 insertions(+)
 
- sound/soc/fsl/fsl_sai.c | 43 ++++++++++++++++++++++++++++++++++++++++-
- sound/soc/fsl/fsl_sai.h |  1 +
- 2 files changed, 43 insertions(+), 1 deletion(-)
-
+diff --git a/sound/soc/fsl/fsl_sai.c b/sound/soc/fsl/fsl_sai.c
+index 1ac65de094b9..b528722acd65 100644
+--- a/sound/soc/fsl/fsl_sai.c
++++ b/sound/soc/fsl/fsl_sai.c
+@@ -1261,6 +1261,17 @@ static const struct fsl_sai_soc_data fsl_sai_imx8mm_data = {
+ 	.max_register = FSL_SAI_MCTL,
+ };
+ 
++static const struct fsl_sai_soc_data fsl_sai_imx8mp_data = {
++	.use_imx_pcm = true,
++	.use_edma = false,
++	.fifo_depth = 128,
++	.reg_offset = 8,
++	.mclk0_is_mclk1 = false,
++	.pins = 8,
++	.flags = 0,
++	.max_register = FSL_SAI_MDIV,
++};
++
+ static const struct of_device_id fsl_sai_ids[] = {
+ 	{ .compatible = "fsl,vf610-sai", .data = &fsl_sai_vf610_data },
+ 	{ .compatible = "fsl,imx6sx-sai", .data = &fsl_sai_imx6sx_data },
+@@ -1269,6 +1280,7 @@ static const struct of_device_id fsl_sai_ids[] = {
+ 	{ .compatible = "fsl,imx8mq-sai", .data = &fsl_sai_imx8mq_data },
+ 	{ .compatible = "fsl,imx8qm-sai", .data = &fsl_sai_imx8qm_data },
+ 	{ .compatible = "fsl,imx8mm-sai", .data = &fsl_sai_imx8mm_data },
++	{ .compatible = "fsl,imx8mp-sai", .data = &fsl_sai_imx8mp_data },
+ 	{ /* sentinel */ }
+ };
+ MODULE_DEVICE_TABLE(of, fsl_sai_ids);
 -- 
 2.17.1
 
