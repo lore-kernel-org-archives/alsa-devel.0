@@ -4,68 +4,81 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8A3A8C433EF
-	for <alsa-devel@archiver.kernel.org>; Fri, 20 May 2022 11:21:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5DA70C433F5
+	for <alsa-devel@archiver.kernel.org>; Fri, 20 May 2022 11:34:05 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C9F841755;
-	Fri, 20 May 2022 13:20:58 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C9F841755
+	by alsa0.perex.cz (Postfix) with ESMTPS id 954771723;
+	Fri, 20 May 2022 13:33:13 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 954771723
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1653045708;
-	bh=hm92cqByreXas/bEgQfVySkccwSgtlqkEkhn8E2dpuM=;
+	s=default; t=1653046443;
+	bh=qB+Y2b64SyCD76/3XYAEBdye3lfRy7RB0EKRB7eIy44=;
 	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=WooEbtKkcJ2PI+kYbO5vvcHeYE5kmNMVcYE77j22CC+2ro1sJ/2aH+/wBkzyHmV+C
-	 5MrkTXITT3vV5gPwJlQbGqKvDLaUlgNz8pIrE0rlIMPpS6ph6A9YUt+OptCWUG/0Lu
-	 0mHksuWii5jVUnKGfzRF+vlleYg2wdzEtJZJKB5o=
+	b=F+xJKuUQErJEgiIGIhnhsC15A7yiQ95T+142aUanuU/FMZTXT+QQLKFgwMgDPXHHo
+	 jrUjHfsqdyBWJs+pruCWtJsTVZ39AGVw4JYlRGbzu8Ioe/Pzkt1XAZ7EtgXUod+hG4
+	 ZEVcfSrrocZz2Ko32r6uaWxxrVPyoto2MmFTHxrE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 14A9FF80542;
-	Fri, 20 May 2022 13:19:02 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 3FA02F800F0;
+	Fri, 20 May 2022 13:33:13 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 49C56F8053D; Fri, 20 May 2022 13:19:00 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+ id 718B5F800F5; Tue, 17 May 2022 17:59:32 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org
+ [IPv6:2604:1380:4641:c500::1])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 1C9E6F80533
- for <alsa-devel@alsa-project.org>; Fri, 20 May 2022 13:18:54 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1C9E6F80533
+ by alsa1.perex.cz (Postfix) with ESMTPS id D82C5F800F5;
+ Tue, 17 May 2022 17:59:28 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D82C5F800F5
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="ZmBUhPxg"
+ header.b="Ic77Vldu"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id A8A3E61DB3;
- Fri, 20 May 2022 11:18:52 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2804EC385A9;
- Fri, 20 May 2022 11:18:49 +0000 (UTC)
+ by dfw.source.kernel.org (Postfix) with ESMTPS id C211960EC7;
+ Tue, 17 May 2022 15:59:25 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8EF9AC385B8;
+ Tue, 17 May 2022 15:59:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1653045532;
- bh=hm92cqByreXas/bEgQfVySkccwSgtlqkEkhn8E2dpuM=;
+ s=k20201202; t=1652803165;
+ bh=qB+Y2b64SyCD76/3XYAEBdye3lfRy7RB0EKRB7eIy44=;
  h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=ZmBUhPxgtXVt+6ijlPIB99zHWNb0nh7K1KxOfUBgRbh97A0FhYDvhf+e43+2GiHf8
- nHI4l/eaA2ZysNMKUIYndvy7w+9PPKRg/dMnBywjdq6FSzcfLsbOy4Vns6UZqX5F2f
- cvSOmfanHnjS69MMP/PojwUIgNqd2pv566t6WKUivZJWhl+FgsfwyAjt0lV0meiNdX
- FmSwK/gxjFbfZtctPC1AXDqIn0am6gCbHhsph9gl5jvgRXKn0EZeRJFmRiLIIZy78d
- qyF6MOa0K/YPtiGTr8uWdmoph3wTvCloGK+7c4qe8tNIoroVeOBz+I75WG2+f2Luov
- j4/JCu6zcVQLQ==
+ b=Ic77VlduGWC/bBx4kKkKWri6PpIr+WNQkfPakgMeHzOYKy/3leM0YedDNBvNKlxCD
+ otWAQX0IiJfU+Wv52iV+tqz/8Scfzy+wn90H09iQ6aHMq/5xfRkAQdjTWu/3FQ60OA
+ NE1TeWbfVRjKp6Clclo+taeyj9mzoHZ/mYJ+ygbLq/hPhiddlJftI8a6/tK2uJhSMH
+ ICMD1PCKO4WuSEPs+2muB6YeZlDylFHoqHFPQKpeghUGK+KCmqcbAr8f3LFkwyRRnV
+ kOk0b550GvXmG3KUmVgwz0ngaIjb6xnj8l1DGqMUt4bBIKBRlqQPKGFCRVROvSEtEy
+ //2+hgNIPKTFg==
 From: Mark Brown <broonie@kernel.org>
-To: tiwai@suse.com, u0084500@gmail.com, perex@perex.cz
-In-Reply-To: <1652926418-8519-1-git-send-email-u0084500@gmail.com>
-References: <1652926418-8519-1-git-send-email-u0084500@gmail.com>
-Subject: Re: [PATCH 0/2] ASoC: rt9120: Fix 3byte read logic and optimize
- 'PWDN' control
-Message-Id: <165304552987.45439.3493847954121004579.b4-ty@kernel.org>
-Date: Fri, 20 May 2022 12:18:49 +0100
+To: cujomalainey@chromium.org, tinghan.shen@mediatek.com,
+ john.stultz@linaro.org, javierm@redhat.com, cristian.marussi@arm.com,
+ peter.ujfalusi@linux.intel.com, pierre-louis.bossart@linux.intel.com,
+ geert+renesas@glider.be, yc.hung@mediatek.com, tzimmermann@suse.de,
+ lgirdwood@gmail.com, perex@perex.cz, kai.vehmanen@linux.intel.com,
+ tzungbi@google.com, bp@suse.de, ranjani.sridharan@linux.intel.com,
+ bjorn.andersson@linaro.org, gregkh@linuxfoundation.org, tiwai@suse.com,
+ Arnd Bergmann <arnd@arndb.de>, simont@opensource.cirrus.com,
+ daniel.baluta@nxp.com, xueshuai@linux.alibaba.com, msuchanek@suse.de,
+ yangyingliang@huawei.com, sudeep.holla@arm.com, allen-kh.cheng@mediatek.com,
+ matthias.bgg@gmail.com, daniel.vetter@ffwll.ch,
+ angelogioacchino.delregno@collabora.com
+In-Reply-To: <20220512082215.3018-1-tinghan.shen@mediatek.com>
+References: <20220512082215.3018-1-tinghan.shen@mediatek.com>
+Subject: Re: [PATCH v9 0/3] firmware: mtk: add adsp ipc protocol for SOF
+Message-Id: <165280315828.1635268.5394864574806411839.b4-ty@kernel.org>
+Date: Tue, 17 May 2022 16:59:18 +0100
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: oder_chiou@realtek.com, alsa-devel@alsa-project.org,
- ritchie_hsieh@richtek.com, linux-kernel@vger.kernel.org, lgirdwood@gmail.com,
- cy_huang@richtek.com, allen_lin@richtek.com
+X-Mailman-Approved-At: Fri, 20 May 2022 13:33:12 +0200
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+ Project_Global_Chrome_Upstream_Group@mediatek.com,
+ linux-mediatek@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
+ sound-open-firmware@alsa-project.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -81,14 +94,13 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Thu, 19 May 2022 10:13:36 +0800, cy_huang wrote:
-> From: ChiYuan Huang <cy_huang@richtek.com>
+On Thu, 12 May 2022 16:22:12 +0800, Tinghan Shen wrote:
+> This patch provides mediatek adsp ipc support for SOF.
+> ADSP IPC protocol offers (send/recv) interfaces using
+> mediatek-mailbox APIs.
 > 
-> Hi,
-> 
-> This patch series try to fix two things.
-> - 3byte read logic bug
-> - Use regcache and pm_runtime to optimize 'PWDN' control
+> This patch was tested and confirmed to work with SOF fw on
+> MT8195 cherry board and MT8186 krabby board.
 > 
 > [...]
 
@@ -98,10 +110,12 @@ Applied to
 
 Thanks!
 
-[1/2] ASoC: rt9120: Fix 3byte read, valule offset typo
-      commit: 57f68f2168988e574133fb5abcd73949bf1d1df2
-[2/2] ASoC: rt9120: Use pm_runtime and regcache to optimize 'pwdnn' logic
-      commit: 80b949f332e331b67c3ae4f323daf2cb91e743e5
+[1/3] firmware: mediatek: Add adsp ipc protocol interface
+      commit: 9db69df4bdd37eb1f65b6931ee067fb15b9a4d5c
+[2/3] ASoC: SOF: mediatek: Add ipc support for mt8195
+      commit: aea9350108ed1627f8610c93de44578162b3ee91
+[3/3] ASoC: SOF: mediatek: Add mt8186 ipc support
+      commit: e0100bfd383c7d994d2e957e85ca56a5fe5a3f43
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
