@@ -4,68 +4,73 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 49B02C433EF
-	for <alsa-devel@archiver.kernel.org>; Tue, 17 May 2022 17:27:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A4D5DC433F5
+	for <alsa-devel@archiver.kernel.org>; Tue, 17 May 2022 17:28:29 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id DF4D4112;
-	Tue, 17 May 2022 19:27:05 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DF4D4112
+	by alsa0.perex.cz (Postfix) with ESMTPS id CD4C084A;
+	Tue, 17 May 2022 19:27:37 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CD4C084A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1652808475;
-	bh=M3ILwqovAxTh6AYHomTWJ8pmDFncdh9esI4Ea0HjHC0=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=pufhtOJ7G6AKBFaQcZGzDHeeAOPQT4lJfDycG31Wk96fjcIQugApmcyP9yqGdB2bY
-	 IDlB1qMCcZnjwnmAyB/YMBfh6rcXg3s8RuQzoKH/FVOx1nAMyzyPrBiSTx5mMST4jN
-	 AT4kHY4L0cprsh2zrXCtgbgg2MciHOqBUDMBomgM=
+	s=default; t=1652808507;
+	bh=1kRFZ8COLuu45UoUzRyp1JfY9PDRHpfxdnJacwh7Ukk=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=XCNDCHGMKU05OBMTo7n51cGzc2AhT2tzAnpuphn+WHATCMYcOUnRmEyq4t1Lnr4SY
+	 piFwA4Qm/rxRawvDg4vwH7ncKbD8TULP++AgwO+zqZEc4BS0u48Rc9i83uFuTznu+u
+	 CUr5y3w5q0hYx/zZLXNJuX4lnw83WVm8Qg8qSXeE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 68C9CF802DB;
-	Tue, 17 May 2022 19:27:05 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2D8A4F800F0;
+	Tue, 17 May 2022 19:27:10 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 17C10F800F0; Tue, 17 May 2022 19:27:04 +0200 (CEST)
+ id 6A6CFF804BC; Tue, 17 May 2022 19:27:08 +0200 (CEST)
 Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 8D09AF800F0
- for <alsa-devel@alsa-project.org>; Tue, 17 May 2022 19:26:58 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8D09AF800F0
+ by alsa1.perex.cz (Postfix) with ESMTPS id F21A2F80423
+ for <alsa-devel@alsa-project.org>; Tue, 17 May 2022 19:27:04 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F21A2F80423
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="IUnWewJX"
+ header.b="WL0WzBhT"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1652808421; x=1684344421;
- h=from:to:cc:subject:date:message-id:mime-version:
- content-transfer-encoding;
- bh=M3ILwqovAxTh6AYHomTWJ8pmDFncdh9esI4Ea0HjHC0=;
- b=IUnWewJXEk/9ZrQiZrLBHWEga4RKeIBO69i2UOhPURLPrN+pcr9OArcN
- e+1W8eJW1r+1PAz0j3JVPmqlcB9QbIMGFoXw3OV53QV+BrFtVHLz31ueg
- opcZkwtDu8+OCQemhgJE7HzsjrjQFTcsPmOq2hEcHwtqSgRQuO7kgvW6n
- HAVJRHNfywDBePmfqZUrV5vXTwyNFAIVqEj8YBj8aRs5q9XJFHotpwNDm
- Q8DpL4TzzkXuFZEUWooFD6d8M2i+lydtxvZYVJGvff5Tx5hmVckSzzCza
- s47/Wt0jmwaGnCD89+bnM+5KZE/3NpG6O2Tvf9nqoA2HeLTJYEya0r8KL Q==;
-X-IronPort-AV: E=McAfee;i="6400,9594,10350"; a="271208262"
-X-IronPort-AV: E=Sophos;i="5.91,233,1647327600"; d="scan'208";a="271208262"
+ t=1652808426; x=1684344426;
+ h=from:to:cc:subject:date:message-id:in-reply-to:
+ references:mime-version:content-transfer-encoding;
+ bh=1kRFZ8COLuu45UoUzRyp1JfY9PDRHpfxdnJacwh7Ukk=;
+ b=WL0WzBhTftNsQxZDGzSMM+XBQfPuHEl8Kbjm7i9YHiX+j49NtOKMQ0e6
+ Nmk48K8XJiM4fnwtdE3+22WdHiHLj3FThj15tiuaPZXSy0NvzBQQCd/KB
+ y4uFfUHmj06wlC5D6Dm0LJMerWtL4bYJWUcgWzTasYXa8f1ZoORUXjTGE
+ +eu/Ue6eE7eZbMMEtyqLl9QRNXlFtMuWR5aYKGwdfEUBrQGRaXGpw3FlM
+ FLErdr5TVUYZWVCau5zTwOE/M7q1IvHJQeZirSu5G7EED5ndZXoYEaD9H
+ vmP8O/1JPvRGWaNJjrMIOsmcNnwCSXbwYrOZD4pxadW2AIhtjC+wc0ybr w==;
+X-IronPort-AV: E=McAfee;i="6400,9594,10350"; a="271208268"
+X-IronPort-AV: E=Sophos;i="5.91,233,1647327600"; d="scan'208";a="271208268"
 Received: from fmsmga008.fm.intel.com ([10.253.24.58])
  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 17 May 2022 10:26:55 -0700
-X-IronPort-AV: E=Sophos;i="5.91,233,1647327600"; d="scan'208";a="626589245"
+ 17 May 2022 10:26:57 -0700
+X-IronPort-AV: E=Sophos;i="5.91,233,1647327600"; d="scan'208";a="626589275"
 Received: from sfilary-mobl.amr.corp.intel.com (HELO
  pbossart-mobl3.amr.corp.intel.com) ([10.209.67.235])
  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 17 May 2022 10:26:55 -0700
+ 17 May 2022 10:26:56 -0700
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH 0/2] ASoC: remove two unnecessary gpiolib dependencies
-Date: Tue, 17 May 2022 12:26:45 -0500
-Message-Id: <20220517172647.468244-1-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH 2/2] ASoC: rt1015p: remove dependency on GPIOLIB
+Date: Tue, 17 May 2022 12:26:47 -0500
+Message-Id: <20220517172647.468244-3-pierre-louis.bossart@linux.intel.com>
 X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20220517172647.468244-1-pierre-louis.bossart@linux.intel.com>
+References: <20220517172647.468244-1-pierre-louis.bossart@linux.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-Cc: tiwai@suse.de, broonie@kernel.org,
+Cc: tiwai@suse.de,
+ =?UTF-8?q?P=C3=A9ter=20Ujfalusi?= <peter.ujfalusi@linux.intel.com>,
+ broonie@kernel.org, kernel test robot <yujie.liu@intel.com>,
  Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
@@ -82,15 +87,47 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Remove two dependencies - issues reported by Intel kernel test bot.
+commit dcc2c012c7691 ("ASoC: Fix gpiolib dependencies") removed a
+series of unnecessary dependencies on GPIOLIB when the gpio was
+optional.
 
-Pierre-Louis Bossart (2):
-  ASoC: max98357a: remove dependency on GPIOLIB
-  ASoC: rt1015p: remove dependency on GPIOLIB
+A similar simplification seems valid for rt1015p, so remove the
+dependency as well. This will avoid the following warning
 
- sound/soc/codecs/Kconfig | 2 --
- 1 file changed, 2 deletions(-)
+  WARNING: unmet direct dependencies detected for SND_SOC_RT1015P
 
+     Depends on [n]: SOUND [=y] && !UML && SND [=y] && SND_SOC [=y] &&
+     GPIOLIB [=n]
+
+     Selected by [y]:
+
+     - SND_SOC_INTEL_SOF_RT5682_MACH [=y] && SOUND [=y] && !UML && SND
+       [=y] && SND_SOC [=y] && SND_SOC_INTEL_MACH [=y] &&
+       (SND_SOC_SOF_HDA_LINK [=y] || SND_SOC_SOF_BAYTRAIL [=n]) && I2C
+       [=y] && ACPI [=y] && (SND_HDA_CODEC_HDMI [=y] &&
+       SND_SOC_SOF_HDA_AUDIO_CODEC [=y] && (MFD_INTEL_LPSS [=y] ||
+       COMPILE_TEST [=y]) || SND_SOC_SOF_BAYTRAIL [=n] &&
+       (X86_INTEL_LPSS [=n] || COMPILE_TEST [=y]))
+
+Reported-by: kernel test robot <yujie.liu@intel.com>
+Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Reviewed-by: Péter Ujfalusi <peter.ujfalusi@linux.intel.com>
+---
+ sound/soc/codecs/Kconfig | 1 -
+ 1 file changed, 1 deletion(-)
+
+diff --git a/sound/soc/codecs/Kconfig b/sound/soc/codecs/Kconfig
+index 735dece6a53ad..6165db92a6297 100644
+--- a/sound/soc/codecs/Kconfig
++++ b/sound/soc/codecs/Kconfig
+@@ -1254,7 +1254,6 @@ config SND_SOC_RT1015
+ 
+ config SND_SOC_RT1015P
+ 	tristate
+-	depends on GPIOLIB
+ 
+ config SND_SOC_RT1016
+ 	tristate
 -- 
 2.30.2
 
