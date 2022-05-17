@@ -4,65 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 28FBFC433F5
-	for <alsa-devel@archiver.kernel.org>; Tue, 17 May 2022 17:22:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3C517C433F5
+	for <alsa-devel@archiver.kernel.org>; Tue, 17 May 2022 17:23:16 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 2559C82A;
-	Tue, 17 May 2022 19:21:52 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2559C82A
+	by alsa0.perex.cz (Postfix) with ESMTPS id 325E5847;
+	Tue, 17 May 2022 19:22:24 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 325E5847
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1652808162;
-	bh=gpHNDv7W8QilNPsoHCNlBYD/f7WxUHNrmYHVIdtVSJg=;
+	s=default; t=1652808194;
+	bh=ZDs7Phs9piaA8rtTdRVeKCjTDwiJIQTu4SGXQVDKaQM=;
 	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=gubjoRGyrES6D3ppzA1OLydKUrjfuOMSRGUPczGM7QMxf15XAYvIJKFI+sU/z02zv
-	 fkp2ui2igW4zWCGjLgKqeeqNl0QYgP4gcTfy6xc+J5Yi5j/uGWcD1g9JfLqp8REm0c
-	 Hm48WzG4Dur2SeP06Qzudlr2J2VYY9UwsD/cdeD4=
+	b=Ja65w9JF5w4GW1+jRrp+JEQjJT7SWG0zhBVHeI1+XZBs/2MuzjWSO+igJFFtXarmQ
+	 KxAaA6JRAV3MS2l/MB9GbkutxWXPpNwIL8e9r89rB4wannYcw/BAufj9ZUF13qFcB8
+	 7UwAmBpfRd0VO2dC5SeiaYm4Pi1XxG0fGWEbldZU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id A9285F801D8;
-	Tue, 17 May 2022 19:21:51 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 5328CF80423;
+	Tue, 17 May 2022 19:21:54 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id BAB75F802DB; Tue, 17 May 2022 19:21:49 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+ id 81970F802DB; Tue, 17 May 2022 19:21:51 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org
+ [IPv6:2604:1380:4641:c500::1])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 17318F800F0
+ by alsa1.perex.cz (Postfix) with ESMTPS id DDCCAF800D8
  for <alsa-devel@alsa-project.org>; Tue, 17 May 2022 19:21:46 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 17318F800F0
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DDCCAF800D8
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="lDt5aEnJ"
+ header.b="eSuMtSBY"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id 2A5B461445;
- Tue, 17 May 2022 17:21:44 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 70DCFC385B8;
- Tue, 17 May 2022 17:21:40 +0000 (UTC)
+ by dfw.source.kernel.org (Postfix) with ESMTPS id 32A8261435;
+ Tue, 17 May 2022 17:21:45 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0F3BEC34116;
+ Tue, 17 May 2022 17:21:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1652808102;
- bh=gpHNDv7W8QilNPsoHCNlBYD/f7WxUHNrmYHVIdtVSJg=;
+ s=k20201202; t=1652808105;
+ bh=ZDs7Phs9piaA8rtTdRVeKCjTDwiJIQTu4SGXQVDKaQM=;
  h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=lDt5aEnJ27fTZvJ8rATWxo6ahhJMEg4JKFJ9WmUJXK7cVebD2voHmaJ8M1E0JSRPd
- 1lww4ZCCbqB6QmSGELZOGpJzGDT/MarrDEAqEP6bdWSRtAn+Sko/NR9XfhCB18zxQP
- MG877MiSz9E4lxDyFtnelx8schZbAV06Nb2OjQe68xeF5vFMetKWeu3OF3mZMKyM/y
- P8gJixmYGWicg1iWzvvDahU41j/SKsvWXliLENLGNDE615wBIR2bevxPU4JE90pwLo
- KPIg38Cj0hHhszer9d93YP4xkyNQXDMbK5IAwIzK9ga3qhr1QZYZ7ZfH2R5KcPqupG
- 7miCCTQgMXSMw==
+ b=eSuMtSBYhCt4HqB15MxJUaWJQRg/WC/6/PCtACtUAVxGR8uupbIS6NCPYzEs1uy+y
+ IqDSwavjHtIAo0VdFfKa203z0NxsnUAOYfVr/BRX6yTN5A/8TQ1Qa1i76HvN5Il+tI
+ 6q4w9MH0AC/rXN+3rnHItF8oE9dsV0lBocoSl1S8Z99SCAiGdrB2kQALG+/FWekOJ0
+ QZ+xJbswyR+okapP+7ztnsJVakdA8QaJ3lm4SwvzOKmlPh/DcNE8qpFyVfQul3tYci
+ 35sdBxG2zF1wRDkf5Rtfq9KzMh32P2Ac7+WAjiPQDH8hWJaiMsbS/OZ5+5B+zoN0uA
+ zBg5yAieOkUVg==
 From: Mark Brown <broonie@kernel.org>
 To: cezary.rojewski@intel.com, alsa-devel@alsa-project.org
-In-Reply-To: <20220509085821.3852259-1-cezary.rojewski@intel.com>
-References: <20220509085821.3852259-1-cezary.rojewski@intel.com>
-Subject: Re: [PATCH v2 00/15] ASoC: Intel: avs: Driver core and PCM operations
-Message-Id: <165280810017.1937076.14890520897502289688.b4-ty@kernel.org>
-Date: Tue, 17 May 2022 18:21:40 +0100
+In-Reply-To: <20220516101116.190192-1-cezary.rojewski@intel.com>
+References: <20220516101116.190192-1-cezary.rojewski@intel.com>
+Subject: Re: [PATCH v3 00/15] ASoC: Intel: avs: Driver core and PCM operations
+Message-Id: <165280810278.1937076.13954498752656897178.b4-ty@kernel.org>
+Date: Tue, 17 May 2022 18:21:42 +0100
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: upstream@semihalf.com, harshapriya.n@intel.com, rad@semihalf.com,
+Cc: upstream@semihalf.com, rad@semihalf.com,
  pierre-louis.bossart@linux.intel.com, tiwai@suse.com, hdegoede@redhat.com,
  amadeuszx.slawinski@linux.intel.com, cujomalainey@chromium.org,
  lma@semihalf.com
@@ -81,7 +82,7 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Mon, 9 May 2022 10:58:06 +0200, Cezary Rojewski wrote:
+On Mon, 16 May 2022 12:11:01 +0200, Cezary Rojewski wrote:
 > Part three of main AVS driver series. This series was originally part of
 > the initial series which was later divided [1] into smaller,
 > easier-to-review chunks. Thus, many patches found here were already
