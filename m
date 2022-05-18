@@ -4,76 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 45A9BC433F5
-	for <alsa-devel@archiver.kernel.org>; Wed, 18 May 2022 05:01:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id EE955C433EF
+	for <alsa-devel@archiver.kernel.org>; Wed, 18 May 2022 12:08:55 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B509F1DD;
-	Wed, 18 May 2022 07:00:41 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B509F1DD
+	by alsa0.perex.cz (Postfix) with ESMTPS id 29A8A20B;
+	Wed, 18 May 2022 14:08:03 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 29A8A20B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1652850091;
-	bh=gT+NhQx77NAOLeRCRqz6IqGIuWrrbpEwAqJ/CGWH2CY=;
-	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1652875733;
+	bh=J3/tR7Q+oe314sxSoPFX/GSG0Vdo8AD9s6k1muJ+ljU=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=NFPaqHqGaKv6djjt7hWF0PsMUl+1jvYYS34BAI/+HEDv33VnFTPTPKZdP//rNeFYW
-	 eOxx8boZGzGrUHWevm7ORZY02ojym2foRJno54NAevqhQ798WgHw+J44+r45Hm3fDb
-	 a4GmQ02Jogl5Wfpp6+t/bomxVtZptVJe6gq4j8H0=
+	b=uZlALNvxcg3e/Th1gZkL1RE4cqKIE2BC4R3m+d/rIPY3xvXAfSRV23B5KXN49ri1h
+	 t1yQy0xkgeFHOna4chYd/jFmevP4vdAG808fVhvadjWEQQ30NCNZ4a+EHuOgupQVir
+	 N2hwvEajX8SXlGjNoGVor7YxCSERap8AzncrR7oI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 447B4F800F0;
-	Wed, 18 May 2022 07:00:41 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 99A61F80159;
+	Wed, 18 May 2022 14:08:02 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 4DED3F8023B; Wed, 18 May 2022 07:00:38 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id B6B88F8023B; Wed, 18 May 2022 14:07:59 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 253FCF800F0
- for <alsa-devel@alsa-project.org>; Wed, 18 May 2022 07:00:31 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 253FCF800F0
+ by alsa1.perex.cz (Postfix) with ESMTPS id 33EA0F800E1
+ for <alsa-devel@alsa-project.org>; Wed, 18 May 2022 14:07:55 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 33EA0F800E1
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="tqf0LLx5"; 
- dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="V1PgXNYF"
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out2.suse.de (Postfix) with ESMTP id AD8ED1F390;
- Wed, 18 May 2022 05:00:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1652850031; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=I9YQWhyZX2/RpbjnCcry7qzZl2Hzq5L+6NYKhVenpOM=;
- b=tqf0LLx5wQK9vqcmxoaxerYLMhj5VOkEtOAWfKlL7aeZCqheNaatorbiNveZZSJb6tLP8V
- +NzpwND0AgVwO1fr12HQ3FYoOwMfYQ+aExQX/d56QBmJ4s6XwurboazZ6RVcXKTH7QqKPd
- 0Qudsk0zWVfXI5uZRioqVKFwTvrG1I8=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1652850031;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=I9YQWhyZX2/RpbjnCcry7qzZl2Hzq5L+6NYKhVenpOM=;
- b=V1PgXNYF12XwKN/EeBAaaHHFvcnxWqxE1a1YFKTu3WbmgQdoY7ObkVrhw1yhBoeiaih/7U
- aU8gUN14KoKseyBQ==
-Received: from valkyrie.site.suse.de (unknown [10.163.18.242])
- by relay2.suse.de (Postfix) with ESMTP id 4E0962C141;
- Wed, 18 May 2022 05:00:31 +0000 (UTC)
-Date: Wed, 18 May 2022 07:00:28 +0200
-Message-ID: <87bkvvv3ir.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Wan Jiabing <wanjiabing@vivo.com>
-Subject: Re: [PATCH] ALSA: usb-audio: Fix wrong kfree issue in
- snd_usb_endpoint_free_all
-In-Reply-To: <20220518021617.10114-1-wanjiabing@vivo.com>
-References: <20220518021617.10114-1-wanjiabing@vivo.com>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
- FLIM/1.14.9 (=?ISO-2022-JP-2?B?R29qGyQoRCtXGyhC?=) APEL/10.8 Emacs/27
- (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
-MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
-Content-Type: text/plain; charset=US-ASCII
-Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org,
- Takashi Iwai <tiwai@suse.com>, gushengxian <gushengxian@yulong.com>
+ dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="cJjZHkBO"
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by dfw.source.kernel.org (Postfix) with ESMTPS id BDEA661529;
+ Wed, 18 May 2022 12:07:52 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 28784C385AA;
+ Wed, 18 May 2022 12:07:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1652875672;
+ bh=J3/tR7Q+oe314sxSoPFX/GSG0Vdo8AD9s6k1muJ+ljU=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=cJjZHkBObVRkXwkcwhWs5fveXQL0Gcs6hJB31Q20uSJt3Qmo4uu4hHE3K5fJ6rDca
+ V2JaAHOvGUfSEAbkNE/r+27qv0comKbEetagxZCQXXOJlMWPwTf1XRUTVh/My8zBoK
+ 8OXg/lME5acrrWyuBdOqiQzo+y2dnSbGuhuC+v8Z3RJlKsF9m3zNZCZ/yBHwIH0SuK
+ axfRGd8rhYKZun5IrDygOVroIWHNnR+b////WWLXHEqTMYOfMtDa+dOYUtTmBgFwvt
+ ReF549LeKDH1lGoVhxwjk8TPLjtgFxoGgHdHw/BzLcggTuulZIxaZ/RL1x0/bwlIVe
+ EqUkbK7jDCERA==
+Date: Wed, 18 May 2022 13:07:47 +0100
+From: Mark Brown <broonie@kernel.org>
+To: Tan =?utf-8?B?TmF5xLFy?= <tannayir@gmail.com>
+Subject: Re: [PATCH] ASoC: ops: Fix the bounds checking in
+ snd_soc_put_volsw_sx and snd_soc_put_xr_sx
+Message-ID: <YoThkxU9Q2cDrq4v@sirena.org.uk>
+References: <fde0dc8a-a861-3c8e-1316-cfa81affc19e@gmail.com>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature"; boundary="TLTzlqRTLGHvHfuN"
+Content-Disposition: inline
+In-Reply-To: <fde0dc8a-a861-3c8e-1316-cfa81affc19e@gmail.com>
+X-Cookie: Alaska:
+Cc: Marek Vasut <marex@denx.de>, alsa-devel@alsa-project.org,
+ stable@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -89,19 +82,47 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, 18 May 2022 04:16:16 +0200,
-Wan Jiabing wrote:
-> 
-> Fix following coccicheck error:
-> ./sound/usb/endpoint.c:1671:8-10: ERROR: reference preceded by free on line 1671.
-> 
-> Here should be 'cp' rather than 'ip'.
-> 
-> Fixes: c11117b634f4 ("ALSA: usb-audio: Refcount multiple accesses on the single clock")
-> Signed-off-by: Wan Jiabing <wanjiabing@vivo.com>
 
-Oh, that was a silly failure.
-Applied now, thanks!
+--TLTzlqRTLGHvHfuN
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
+On Tue, May 17, 2022 at 10:58:40PM +0300, Tan Nay=C4=B1r wrote:
 
-Takashi
+> The commit message in your fix states this:
+> > For _sx controls the semantics of the max field is not the usual one, m=
+ax
+> > is the number of steps rather than the maximum value. This means that o=
+ur
+> > check in snd_soc_put_volsw_sx() needs to just check against the maximum
+> > value.
+
+> For some reason, this is not the case on my end.
+> Both the $platform_max and $max fields are set to the maximum value
+> of the range that is specified inside the codec code which is -84 to 40
+> and not the number of steps.
+> This was also the reason behind my patch to the bounds check.
+
+If you look at snd_soc_info_volsw_sx() you can see the code reporting
+the range to userspace - you can see the range reported to userspace
+there, note that the minimum value reported is unconditionally set to 0.
+This is also visible through the API.  What exactly is reported through
+the API on your system, and what value is being written?
+
+--TLTzlqRTLGHvHfuN
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmKE4ZMACgkQJNaLcl1U
+h9DU0gf/XqJbrB+FYxPpYOds/aWdFPKoyOIllMLSlTedGqDSRVyxbbvf8cObG2lw
+mXfBe3Ut/n6h8KkgwqH9MxrSFWIPwoVuvCVcBdcQt/T24Tq1PLSKIVpltHJrq4UR
++RNdNEpDrj7G6hxHoBYODI2L8mxObTeDGc9PwoEnBo7r2EHm/MwpEx+Y4C7/IQAr
+qU7rQVF0V8tlWgkUL+zYmMuCOcEotDUvw0FBOYAVOUwsl7kU5AP8LXmcYXz9lBv6
+2tOMSUHF+drmKNES3Eu+nq+80idSzbnqeo/EVwsHOlXBozPo8un2ORafcByXCmPj
+cHarzXRNihI25kgyXNeiVPNip7r2Qg==
+=nta/
+-----END PGP SIGNATURE-----
+
+--TLTzlqRTLGHvHfuN--
