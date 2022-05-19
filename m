@@ -4,53 +4,53 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 25CE9C433F5
-	for <alsa-devel@archiver.kernel.org>; Thu, 19 May 2022 15:55:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B1C09C433F5
+	for <alsa-devel@archiver.kernel.org>; Thu, 19 May 2022 15:55:46 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 59C551722;
-	Thu, 19 May 2022 17:54:40 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 59C551722
+	by alsa0.perex.cz (Postfix) with ESMTPS id AAA921708;
+	Thu, 19 May 2022 17:54:53 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AAA921708
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1652975730;
-	bh=tPnlbDi6ng/HBPbthhX1Y1n0QD+8GZuOTDYfta46klg=;
+	s=default; t=1652975743;
+	bh=munZFzNYHKWciReSad4PHX5rOR8JlefFmI724KEs6h4=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=ee65g691jMj86OMDd1HmhbpxzkMuLt5zTpukUyQ0phsyJOY0VfKClEsFTuL1HdIMR
-	 vKta9uTYBlUjhgwlJBXMJyCUvlmeLWGu/a4/v5LHV0fRAJ0LySwMQOx8sjpOi0BmmT
-	 /DPy96vNKx1oLsv4LIuHw8jWJLMd2ynLxc7ZH/64=
+	b=W3rarXWgi9vnOLAyZUjirElKPmT8XMqUnamOvINzjK1RGqhzYGF3tegQ+Rl7w3sZ1
+	 rAci8iecWhUs7ks/D4/aukePSNmkpsqljoBMpBSqbQ588ib2Rf4r+yQG4UKU5FtMLV
+	 dsPDxxba+wD7Fzw3OpqVzhA2d4/2UWRcSRKSMbYo=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 8BE3BF80641;
-	Thu, 19 May 2022 17:44:37 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 7D8F6F80640;
+	Thu, 19 May 2022 17:44:38 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id C87E5F80608; Thu, 19 May 2022 17:44:17 +0200 (CEST)
-Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
- [67.231.149.25])
+ id 30F91F80614; Thu, 19 May 2022 17:44:22 +0200 (CEST)
+Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
+ [67.231.152.168])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 3599EF80551
- for <alsa-devel@alsa-project.org>; Thu, 19 May 2022 17:43:39 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3599EF80551
+ by alsa1.perex.cz (Postfix) with ESMTPS id 80A31F80566
+ for <alsa-devel@alsa-project.org>; Thu, 19 May 2022 17:43:41 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 80A31F80566
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com
- header.b="FIPmVU1U"
-Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
- by mx0a-001ae601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 24J6k123002261;
- Thu, 19 May 2022 10:43:38 -0500
+ header.b="Vihn8DV1"
+Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
+ by mx0b-001ae601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 24J66mWC012194;
+ Thu, 19 May 2022 10:43:39 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
  h=from : to : cc :
  subject : date : message-id : in-reply-to : references : mime-version :
  content-transfer-encoding : content-type; s=PODMain02222019;
- bh=rKhvo9vVRPXr5v+65fMVjwI+21+zpA2rbws3nkqy2h0=;
- b=FIPmVU1UtkYwnK9TYlQJGNQFDoL+AZfUKxtGversk32aEoPfyE8NMqt6BqdPIc+eOY7t
- it8QU3i7rBrMVxDVrRmSrpgjvCcZION/Utz9vxrjPdffpRg1WYY/yKLuRejVYE2oJzRT
- cAYLyb1taACrUwYfOaLo0MLehJarjU3nRMDgNqwPtsKw007S6YVWPDRjeAjBW6MMYYvH
- Nl2imN/VXW21uu80awh60ki37cROx8DO9JQLW4js9UkVZwC7D8dKopOSu4doGD1253Ul
- UhXe4mgHVYxAv1mlD46Ge4kqQyNKoty+HxHjK8U36lLFgHR8OnUAefRGJoBYe7XR2mi0 mA== 
+ bh=Hbt5hcL/CH9zDfKOG46hFLImfYROum7HenxT3cTBb6Q=;
+ b=Vihn8DV1R+wbdB9q3t2Nz0YUyYRxm1JmRhbMerBzCbLTkyeeLGdorv0bzHJXzmwNRJ2w
+ iw5PH0Alh3Mu0+xfGeOS9dhGXGZgWQ7NtgzAgHAVxgjBFIuMB+bSj11zPS0JU4367OR+
+ +di3g/CD+cXEE6zT5tAjAZrFnG7oNRgdE6qbOMExJUNqa3vNshFtzuK6xaePfXCtx/Xl
+ +kB4M1PM2uDFIGzun1RJWVwvFkUACwO+T7UYO9cuwftrf2oOQaz7kB5fP2b3b23gXZkn
+ xs5r4s51M2MbVu0gvFNGzBsD2c2zO6LYURDr896n+XF/dPEPF9c0jyC9pm9rrMELs9EZ 0A== 
 Received: from ediex02.ad.cirrus.com ([84.19.233.68])
- by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3g29u37mcg-9
+ by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3g28upf5dn-15
  (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
  Thu, 19 May 2022 10:43:38 -0500
 Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX02.ad.cirrus.com
@@ -61,21 +61,21 @@ Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
  (198.61.84.80) with Microsoft SMTP Server id 15.1.2375.24 via
  Frontend Transport; Thu, 19 May 2022 16:43:21 +0100
 Received: from algalon.ad.cirrus.com (algalon.ad.cirrus.com [198.90.251.122])
- by ediswmail.ad.cirrus.com (Postfix) with ESMTP id B34CA11DA;
+ by ediswmail.ad.cirrus.com (Postfix) with ESMTP id D02F811D3;
  Thu, 19 May 2022 15:43:21 +0000 (UTC)
 From: Charles Keepax <ckeepax@opensource.cirrus.com>
 To: <broonie@kernel.org>
-Subject: [PATCH 47/56] ASoC: sh: Rename set_fmt_new back to set_fmt
-Date: Thu, 19 May 2022 16:43:09 +0100
-Message-ID: <20220519154318.2153729-48-ckeepax@opensource.cirrus.com>
+Subject: [PATCH 49/56] ASoC: sunxi: Rename set_fmt_new back to set_fmt
+Date: Thu, 19 May 2022 16:43:11 +0100
+Message-ID: <20220519154318.2153729-50-ckeepax@opensource.cirrus.com>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20220519154318.2153729-1-ckeepax@opensource.cirrus.com>
 References: <20220519154318.2153729-1-ckeepax@opensource.cirrus.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-Proofpoint-GUID: JlK0U7KZGaPbGrThUxDZRZ398gBXTG39
-X-Proofpoint-ORIG-GUID: JlK0U7KZGaPbGrThUxDZRZ398gBXTG39
+X-Proofpoint-GUID: X4Drpa-lc_DkTuCu5ArOiCCfpMNoJfVZ
+X-Proofpoint-ORIG-GUID: X4Drpa-lc_DkTuCu5ArOiCCfpMNoJfVZ
 X-Proofpoint-Spam-Reason: safe
 Cc: cezary.rojewski@intel.com, heiko@sntech.de,
  kuninori.morimoto.gx@renesas.com, alsa-devel@alsa-project.org,
@@ -110,64 +110,36 @@ callback.
 
 Signed-off-by: Charles Keepax <ckeepax@opensource.cirrus.com>
 ---
- sound/soc/sh/fsi.c       | 2 +-
- sound/soc/sh/rcar/core.c | 2 +-
- sound/soc/sh/rz-ssi.c    | 2 +-
- sound/soc/sh/ssi.c       | 2 +-
- 4 files changed, 4 insertions(+), 4 deletions(-)
+ sound/soc/sunxi/sun4i-i2s.c   | 2 +-
+ sound/soc/sunxi/sun8i-codec.c | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/sh/fsi.c b/sound/soc/sh/fsi.c
-index 4058d60b7e931..f3edc2e3d9d7c 100644
---- a/sound/soc/sh/fsi.c
-+++ b/sound/soc/sh/fsi.c
-@@ -1724,7 +1724,7 @@ static const struct snd_soc_dai_ops fsi_dai_ops = {
- 	.startup	= fsi_dai_startup,
- 	.shutdown	= fsi_dai_shutdown,
- 	.trigger	= fsi_dai_trigger,
--	.set_fmt_new	= fsi_dai_set_fmt,
-+	.set_fmt	= fsi_dai_set_fmt,
- 	.hw_params	= fsi_dai_hw_params,
- 	.auto_selectable_formats	= &fsi_dai_formats,
- 	.num_auto_selectable_formats	= 1,
-diff --git a/sound/soc/sh/rcar/core.c b/sound/soc/sh/rcar/core.c
-index 0ac15b74c58a8..a4180dc5a59ba 100644
---- a/sound/soc/sh/rcar/core.c
-+++ b/sound/soc/sh/rcar/core.c
-@@ -1068,7 +1068,7 @@ static const struct snd_soc_dai_ops rsnd_soc_dai_ops = {
- 	.startup	= rsnd_soc_dai_startup,
- 	.shutdown	= rsnd_soc_dai_shutdown,
- 	.trigger	= rsnd_soc_dai_trigger,
--	.set_fmt_new	= rsnd_soc_dai_set_fmt,
-+	.set_fmt	= rsnd_soc_dai_set_fmt,
- 	.set_tdm_slot	= rsnd_soc_set_dai_tdm_slot,
- 	.prepare	= rsnd_soc_dai_prepare,
- 	.auto_selectable_formats	= rsnd_soc_dai_formats,
-diff --git a/sound/soc/sh/rz-ssi.c b/sound/soc/sh/rz-ssi.c
-index 0557d22a089f3..beaf1a8d6da10 100644
---- a/sound/soc/sh/rz-ssi.c
-+++ b/sound/soc/sh/rz-ssi.c
-@@ -840,7 +840,7 @@ static int rz_ssi_dai_hw_params(struct snd_pcm_substream *substream,
+diff --git a/sound/soc/sunxi/sun4i-i2s.c b/sound/soc/sunxi/sun4i-i2s.c
+index 872838d3e0a94..f58aa6406a874 100644
+--- a/sound/soc/sunxi/sun4i-i2s.c
++++ b/sound/soc/sunxi/sun4i-i2s.c
+@@ -1081,7 +1081,7 @@ static int sun4i_i2s_set_tdm_slot(struct snd_soc_dai *dai,
  
- static const struct snd_soc_dai_ops rz_ssi_dai_ops = {
- 	.trigger	= rz_ssi_dai_trigger,
--	.set_fmt_new	= rz_ssi_dai_set_fmt,
-+	.set_fmt	= rz_ssi_dai_set_fmt,
- 	.hw_params	= rz_ssi_dai_hw_params,
- };
+ static const struct snd_soc_dai_ops sun4i_i2s_dai_ops = {
+ 	.hw_params	= sun4i_i2s_hw_params,
+-	.set_fmt_new	= sun4i_i2s_set_fmt,
++	.set_fmt	= sun4i_i2s_set_fmt,
+ 	.set_sysclk	= sun4i_i2s_set_sysclk,
+ 	.set_tdm_slot	= sun4i_i2s_set_tdm_slot,
+ 	.trigger	= sun4i_i2s_trigger,
+diff --git a/sound/soc/sunxi/sun8i-codec.c b/sound/soc/sunxi/sun8i-codec.c
+index 6e9ef948d6621..90d74a2d53f38 100644
+--- a/sound/soc/sunxi/sun8i-codec.c
++++ b/sound/soc/sunxi/sun8i-codec.c
+@@ -630,7 +630,7 @@ static int sun8i_codec_hw_free(struct snd_pcm_substream *substream,
+ }
  
-diff --git a/sound/soc/sh/ssi.c b/sound/soc/sh/ssi.c
-index 95571cbeae296..bf7a3c69920a6 100644
---- a/sound/soc/sh/ssi.c
-+++ b/sound/soc/sh/ssi.c
-@@ -336,7 +336,7 @@ static const struct snd_soc_dai_ops ssi_dai_ops = {
- 	.hw_params	= ssi_hw_params,
- 	.set_sysclk	= ssi_set_sysclk,
- 	.set_clkdiv	= ssi_set_clkdiv,
--	.set_fmt_new	= ssi_set_fmt,
-+	.set_fmt	= ssi_set_fmt,
- };
- 
- static struct snd_soc_dai_driver sh4_ssi_dai[] = {
+ static const struct snd_soc_dai_ops sun8i_codec_dai_ops = {
+-	.set_fmt_new	= sun8i_codec_set_fmt,
++	.set_fmt	= sun8i_codec_set_fmt,
+ 	.set_tdm_slot	= sun8i_codec_set_tdm_slot,
+ 	.startup	= sun8i_codec_startup,
+ 	.hw_params	= sun8i_codec_hw_params,
 -- 
 2.30.2
 
