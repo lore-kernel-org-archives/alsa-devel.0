@@ -4,78 +4,78 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id EE6C9C433F5
-	for <alsa-devel@archiver.kernel.org>; Thu, 19 May 2022 15:52:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A4B9AC433EF
+	for <alsa-devel@archiver.kernel.org>; Thu, 19 May 2022 15:52:40 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 2019316DD;
-	Thu, 19 May 2022 17:51:36 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2019316DD
+	by alsa0.perex.cz (Postfix) with ESMTPS id E36E616F1;
+	Thu, 19 May 2022 17:51:48 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E36E616F1
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1652975546;
-	bh=fx4O1+6VJloUREcg8uU9RNvXIjDDb1MfIb/nxHlLfGM=;
+	s=default; t=1652975559;
+	bh=pUktdBrvcHjL/Z/F9R0HOIYaDypg+/wZj8Rhc8LtyOU=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=AS1PKDSqLdIcJkHAKcToOI7liSH04oxeW8pPCmA/hN5KpaQovypcii30V40vhHI/t
-	 aH+qr0BYiKnBRHtjFU0J/7DkwpxN6a+sWCQWv18o2Y6dlis11oPlB+I6tOFIqEG4yO
-	 Rm3xMWhWb7tVeR/e484EExvO7cVe3IolECPJ9q0w=
+	b=GzMcfcQQP3ldLxxzhJ5nm2qB9cnPTCJGArIpOXCxyvEiMxmgbNELm9cHBakkhJ/KA
+	 0liBAsvBNzPFrGBUxmH62v4gmVfaKidXED2FLAUJWOtYDxQJUUCE/cKr492+db57l+
+	 NSclemu02I3xp8nHGNOph+ifl8BU7Pt0QwwIpfQA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 34957F80615;
-	Thu, 19 May 2022 17:44:22 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 4A02BF80616;
+	Thu, 19 May 2022 17:44:23 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id E7B53F805D7; Thu, 19 May 2022 17:44:05 +0200 (CEST)
+ id BD4C0F805E2; Thu, 19 May 2022 17:44:07 +0200 (CEST)
 Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
  [67.231.149.25])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 52017F8053C
- for <alsa-devel@alsa-project.org>; Thu, 19 May 2022 17:43:37 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 52017F8053C
+ by alsa1.perex.cz (Postfix) with ESMTPS id 20B73F80538
+ for <alsa-devel@alsa-project.org>; Thu, 19 May 2022 17:43:36 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 20B73F80538
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com
- header.b="GnXSynfB"
+ header.b="NK96uTLo"
 Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
- by mx0a-001ae601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 24J6k11v002261;
+ by mx0a-001ae601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 24J6k11u002261;
  Thu, 19 May 2022 10:43:35 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
  h=from : to : cc :
  subject : date : message-id : in-reply-to : references : mime-version :
  content-transfer-encoding : content-type; s=PODMain02222019;
- bh=12SYcb+LPlWeAIlnRTxwEljNJZIM/ewy54HOgWYskh4=;
- b=GnXSynfBzO8n537g+rp7kqP0/0lA9/JpYWRMNa9wbJbvkncces1SvZyk9UeX35jutn12
- uQ4Y2h9Rzef7efsUNa1BcbL80H1vVOrPSHiNkcqYdm+ruVDqLQjRPubT0HCwRyr121wT
- eGxaS3SuQVClqoRpl+x235/sUaYVinSYpdJMogMUZcXzJSGAqgwgCnvbzfg8dAPnh1N4
- JJ5WzMvpF9HZr691IJWzsiB2OsdTWIe1/yMndxjhdiHmZlKc+rlSYW2xHeGc/TsenSxt
- I+v5SiXdgtIzvO101BIz3eJGc05mx5b851MdtWzXKdmdgPjJz3kldB5tA/7s/a/KuxdW Yg== 
-Received: from ediex02.ad.cirrus.com ([84.19.233.68])
- by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3g29u37mcg-6
+ bh=AjjqMicnhPoZqT6UYhPvoYkn3XWnwuGY9ExR1ybyO/8=;
+ b=NK96uTLoDF75ZrvxXTw7p6hi4vOr0sdLWBCFb7xG2WQmM7XY+OSWKOGylt80CwFHEW0E
+ vFhM7kYvrRxtFCW7nLM2xduTcKUBmqHh4lQr8sV/uUkgXbFgGEfe+1xcxQfVQOFwvqf5
+ A3pODWEL7GZnc8tJxO1yIoPrWM2qx0A+NkP7QDSgAyQ44vklOyxds0962e9L+amBschB
+ JVN5JmUiThHA6OHIZ85kQQCP4n9hf8oh1h9ejwTkDE6OFAmENLWwJLW+EJStVYBoKQjB
+ DA7lPaF2/RSeC7+BYerdro+mM77ha8x4GHdwnkNK4ugcjsHnlIdFQhBfyMpWDB8diSJ/ wA== 
+Received: from ediex01.ad.cirrus.com ([84.19.233.68])
+ by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3g29u37mcf-5
  (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
- Thu, 19 May 2022 10:43:35 -0500
-Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX02.ad.cirrus.com
- (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
+ Thu, 19 May 2022 10:43:34 -0500
+Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.24; Thu, 19 May
- 2022 16:43:20 +0100
+ 2022 16:43:19 +0100
 Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
  (198.61.84.80) with Microsoft SMTP Server id 15.1.2375.24 via
- Frontend Transport; Thu, 19 May 2022 16:43:20 +0100
+ Frontend Transport; Thu, 19 May 2022 16:43:19 +0100
 Received: from algalon.ad.cirrus.com (algalon.ad.cirrus.com [198.90.251.122])
- by ediswmail.ad.cirrus.com (Postfix) with ESMTP id DE8D611D3;
- Thu, 19 May 2022 15:43:20 +0000 (UTC)
+ by ediswmail.ad.cirrus.com (Postfix) with ESMTP id BA87A476;
+ Thu, 19 May 2022 15:43:19 +0000 (UTC)
 From: Charles Keepax <ckeepax@opensource.cirrus.com>
 To: <broonie@kernel.org>
-Subject: [PATCH 35/56] ASoC: fsl: Rename set_fmt_new back to set_fmt
-Date: Thu, 19 May 2022 16:42:57 +0100
-Message-ID: <20220519154318.2153729-36-ckeepax@opensource.cirrus.com>
+Subject: [PATCH 19/56] ASoC: samsung: Update to use set_fmt_new callback
+Date: Thu, 19 May 2022 16:42:41 +0100
+Message-ID: <20220519154318.2153729-20-ckeepax@opensource.cirrus.com>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20220519154318.2153729-1-ckeepax@opensource.cirrus.com>
 References: <20220519154318.2153729-1-ckeepax@opensource.cirrus.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-Proofpoint-GUID: XH-DUBRhSyMMMA3SDjeA6SJsnafPjfxH
-X-Proofpoint-ORIG-GUID: XH-DUBRhSyMMMA3SDjeA6SJsnafPjfxH
+X-Proofpoint-GUID: 579zJA1j8qpgk8t0NR1Uq8E4v_eh2bkG
+X-Proofpoint-ORIG-GUID: 579zJA1j8qpgk8t0NR1Uq8E4v_eh2bkG
 X-Proofpoint-Spam-Reason: safe
 Cc: cezary.rojewski@intel.com, heiko@sntech.de,
  kuninori.morimoto.gx@renesas.com, alsa-devel@alsa-project.org,
@@ -104,83 +104,126 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Now the core has been migrated across to the new direct clock
-specification we can move the drivers back to the normal set_fmt
+As part of updating the core to directly tell drivers if they are clock
+provider or consumer update these CPU side drivers to use the new direct
 callback.
 
 Signed-off-by: Charles Keepax <ckeepax@opensource.cirrus.com>
 ---
- sound/soc/fsl/fsl_audmix.c | 2 +-
- sound/soc/fsl/fsl_esai.c   | 2 +-
- sound/soc/fsl/fsl_mqs.c    | 2 +-
- sound/soc/fsl/fsl_sai.c    | 2 +-
- sound/soc/fsl/fsl_ssi.c    | 2 +-
- 5 files changed, 5 insertions(+), 5 deletions(-)
+ sound/soc/samsung/i2s.c         | 8 ++++----
+ sound/soc/samsung/pcm.c         | 6 +++---
+ sound/soc/samsung/s3c-i2s-v2.c  | 8 ++++----
+ sound/soc/samsung/s3c24xx-i2s.c | 8 ++++----
+ 4 files changed, 15 insertions(+), 15 deletions(-)
 
-diff --git a/sound/soc/fsl/fsl_audmix.c b/sound/soc/fsl/fsl_audmix.c
-index c580dcb9a4cfe..43857b7a81c94 100644
---- a/sound/soc/fsl/fsl_audmix.c
-+++ b/sound/soc/fsl/fsl_audmix.c
-@@ -317,7 +317,7 @@ static int fsl_audmix_dai_trigger(struct snd_pcm_substream *substream, int cmd,
- }
+diff --git a/sound/soc/samsung/i2s.c b/sound/soc/samsung/i2s.c
+index 70c827162be4d..9ed275ebd744e 100644
+--- a/sound/soc/samsung/i2s.c
++++ b/sound/soc/samsung/i2s.c
+@@ -671,11 +671,11 @@ static int i2s_set_fmt(struct snd_soc_dai *dai, unsigned int fmt)
+ 		return -EINVAL;
+ 	}
  
- static const struct snd_soc_dai_ops fsl_audmix_dai_ops = {
--	.set_fmt_new  = fsl_audmix_dai_set_fmt,
-+	.set_fmt  = fsl_audmix_dai_set_fmt,
- 	.trigger      = fsl_audmix_dai_trigger,
+-	switch (fmt & SND_SOC_DAIFMT_MASTER_MASK) {
+-	case SND_SOC_DAIFMT_CBM_CFM:
++	switch (fmt & SND_SOC_DAIFMT_CLOCK_PROVIDER_MASK) {
++	case SND_SOC_DAIFMT_BC_FC:
+ 		tmp |= mod_slave;
+ 		break;
+-	case SND_SOC_DAIFMT_CBS_CFS:
++	case SND_SOC_DAIFMT_BP_FP:
+ 		/*
+ 		 * Set default source clock in Master mode, only when the
+ 		 * CLK_I2S_RCLK_SRC clock is not exposed so we ensure any
+@@ -1107,7 +1107,7 @@ static int samsung_i2s_dai_remove(struct snd_soc_dai *dai)
+ static const struct snd_soc_dai_ops samsung_i2s_dai_ops = {
+ 	.trigger = i2s_trigger,
+ 	.hw_params = i2s_hw_params,
+-	.set_fmt = i2s_set_fmt,
++	.set_fmt_new = i2s_set_fmt,
+ 	.set_clkdiv = i2s_set_clkdiv,
+ 	.set_sysclk = i2s_set_sysclk,
+ 	.startup = i2s_startup,
+diff --git a/sound/soc/samsung/pcm.c b/sound/soc/samsung/pcm.c
+index 4c4dfde0568fe..818172d8832d2 100644
+--- a/sound/soc/samsung/pcm.c
++++ b/sound/soc/samsung/pcm.c
+@@ -340,8 +340,8 @@ static int s3c_pcm_set_fmt(struct snd_soc_dai *cpu_dai,
+ 		goto exit;
+ 	}
+ 
+-	switch (fmt & SND_SOC_DAIFMT_MASTER_MASK) {
+-	case SND_SOC_DAIFMT_CBS_CFS:
++	switch (fmt & SND_SOC_DAIFMT_CLOCK_PROVIDER_MASK) {
++	case SND_SOC_DAIFMT_BP_FP:
+ 		/* Nothing to do, Master by default */
+ 		break;
+ 	default:
+@@ -437,7 +437,7 @@ static const struct snd_soc_dai_ops s3c_pcm_dai_ops = {
+ 	.set_clkdiv	= s3c_pcm_set_clkdiv,
+ 	.trigger	= s3c_pcm_trigger,
+ 	.hw_params	= s3c_pcm_hw_params,
+-	.set_fmt	= s3c_pcm_set_fmt,
++	.set_fmt_new	= s3c_pcm_set_fmt,
  };
  
-diff --git a/sound/soc/fsl/fsl_esai.c b/sound/soc/fsl/fsl_esai.c
-index 572bdaee73eb6..75f7807df29af 100644
---- a/sound/soc/fsl/fsl_esai.c
-+++ b/sound/soc/fsl/fsl_esai.c
-@@ -790,7 +790,7 @@ static const struct snd_soc_dai_ops fsl_esai_dai_ops = {
- 	.trigger = fsl_esai_trigger,
- 	.hw_params = fsl_esai_hw_params,
- 	.set_sysclk = fsl_esai_set_dai_sysclk,
--	.set_fmt_new = fsl_esai_set_dai_fmt,
-+	.set_fmt = fsl_esai_set_dai_fmt,
- 	.set_tdm_slot = fsl_esai_set_dai_tdm_slot,
- };
+ static int s3c_pcm_dai_probe(struct snd_soc_dai *dai)
+diff --git a/sound/soc/samsung/s3c-i2s-v2.c b/sound/soc/samsung/s3c-i2s-v2.c
+index de66cc422e6ea..9c8a0697849d7 100644
+--- a/sound/soc/samsung/s3c-i2s-v2.c
++++ b/sound/soc/samsung/s3c-i2s-v2.c
+@@ -252,12 +252,12 @@ static int s3c2412_i2s_set_fmt(struct snd_soc_dai *cpu_dai,
+ 	iismod = readl(i2s->regs + S3C2412_IISMOD);
+ 	pr_debug("hw_params r: IISMOD: %x \n", iismod);
  
-diff --git a/sound/soc/fsl/fsl_mqs.c b/sound/soc/fsl/fsl_mqs.c
-index 371d441b1dbef..fc539a1392509 100644
---- a/sound/soc/fsl/fsl_mqs.c
-+++ b/sound/soc/fsl/fsl_mqs.c
-@@ -152,7 +152,7 @@ static const struct snd_soc_dai_ops fsl_mqs_dai_ops = {
- 	.startup = fsl_mqs_startup,
- 	.shutdown = fsl_mqs_shutdown,
- 	.hw_params = fsl_mqs_hw_params,
--	.set_fmt_new = fsl_mqs_set_dai_fmt,
-+	.set_fmt = fsl_mqs_set_dai_fmt,
- };
+-	switch (fmt & SND_SOC_DAIFMT_MASTER_MASK) {
+-	case SND_SOC_DAIFMT_CBM_CFM:
++	switch (fmt & SND_SOC_DAIFMT_CLOCK_PROVIDER_MASK) {
++	case SND_SOC_DAIFMT_BC_FC:
+ 		i2s->master = 0;
+ 		iismod |= S3C2412_IISMOD_SLAVE;
+ 		break;
+-	case SND_SOC_DAIFMT_CBS_CFS:
++	case SND_SOC_DAIFMT_BP_FP:
+ 		i2s->master = 1;
+ 		iismod &= ~S3C2412_IISMOD_SLAVE;
+ 		break;
+@@ -666,7 +666,7 @@ int s3c_i2sv2_register_component(struct device *dev, int id,
+ 	ops->trigger = s3c2412_i2s_trigger;
+ 	if (!ops->hw_params)
+ 		ops->hw_params = s3c_i2sv2_hw_params;
+-	ops->set_fmt = s3c2412_i2s_set_fmt;
++	ops->set_fmt_new = s3c2412_i2s_set_fmt;
+ 	ops->set_clkdiv = s3c2412_i2s_set_clkdiv;
+ 	ops->set_sysclk = s3c_i2sv2_set_sysclk;
  
- static struct snd_soc_dai_driver fsl_mqs_dai = {
-diff --git a/sound/soc/fsl/fsl_sai.c b/sound/soc/fsl/fsl_sai.c
-index 3edd302eb5c22..f67d8527876e7 100644
---- a/sound/soc/fsl/fsl_sai.c
-+++ b/sound/soc/fsl/fsl_sai.c
-@@ -704,7 +704,7 @@ static int fsl_sai_startup(struct snd_pcm_substream *substream,
- static const struct snd_soc_dai_ops fsl_sai_pcm_dai_ops = {
- 	.set_bclk_ratio	= fsl_sai_set_dai_bclk_ratio,
- 	.set_sysclk	= fsl_sai_set_dai_sysclk,
--	.set_fmt_new	= fsl_sai_set_dai_fmt,
-+	.set_fmt	= fsl_sai_set_dai_fmt,
- 	.set_tdm_slot	= fsl_sai_set_dai_tdm_slot,
- 	.hw_params	= fsl_sai_hw_params,
- 	.hw_free	= fsl_sai_hw_free,
-diff --git a/sound/soc/fsl/fsl_ssi.c b/sound/soc/fsl/fsl_ssi.c
-index 32e4cf37c2029..7dd0c48cd9ae4 100644
---- a/sound/soc/fsl/fsl_ssi.c
-+++ b/sound/soc/fsl/fsl_ssi.c
-@@ -1156,7 +1156,7 @@ static const struct snd_soc_dai_ops fsl_ssi_dai_ops = {
- 	.shutdown = fsl_ssi_shutdown,
- 	.hw_params = fsl_ssi_hw_params,
- 	.hw_free = fsl_ssi_hw_free,
--	.set_fmt_new = fsl_ssi_set_dai_fmt,
-+	.set_fmt = fsl_ssi_set_dai_fmt,
- 	.set_tdm_slot = fsl_ssi_set_dai_tdm_slot,
- 	.trigger = fsl_ssi_trigger,
+diff --git a/sound/soc/samsung/s3c24xx-i2s.c b/sound/soc/samsung/s3c24xx-i2s.c
+index 0f46304eaa4f3..6226b3b585e54 100644
+--- a/sound/soc/samsung/s3c24xx-i2s.c
++++ b/sound/soc/samsung/s3c24xx-i2s.c
+@@ -169,11 +169,11 @@ static int s3c24xx_i2s_set_fmt(struct snd_soc_dai *cpu_dai,
+ 	iismod = readl(s3c24xx_i2s.regs + S3C2410_IISMOD);
+ 	pr_debug("hw_params r: IISMOD: %x \n", iismod);
+ 
+-	switch (fmt & SND_SOC_DAIFMT_MASTER_MASK) {
+-	case SND_SOC_DAIFMT_CBM_CFM:
++	switch (fmt & SND_SOC_DAIFMT_CLOCK_PROVIDER_MASK) {
++	case SND_SOC_DAIFMT_BC_CFC:
+ 		iismod |= S3C2410_IISMOD_SLAVE;
+ 		break;
+-	case SND_SOC_DAIFMT_CBS_CFS:
++	case SND_SOC_DAIFMT_BP_FP:
+ 		iismod &= ~S3C2410_IISMOD_SLAVE;
+ 		break;
+ 	default:
+@@ -394,7 +394,7 @@ static int s3c24xx_i2s_resume(struct snd_soc_component *component)
+ static const struct snd_soc_dai_ops s3c24xx_i2s_dai_ops = {
+ 	.trigger	= s3c24xx_i2s_trigger,
+ 	.hw_params	= s3c24xx_i2s_hw_params,
+-	.set_fmt	= s3c24xx_i2s_set_fmt,
++	.set_fmt_new	= s3c24xx_i2s_set_fmt,
+ 	.set_clkdiv	= s3c24xx_i2s_set_clkdiv,
+ 	.set_sysclk	= s3c24xx_i2s_set_sysclk,
  };
 -- 
 2.30.2
