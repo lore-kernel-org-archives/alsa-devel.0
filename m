@@ -4,84 +4,83 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id F031EC433F5
-	for <alsa-devel@archiver.kernel.org>; Thu, 19 May 2022 17:49:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 07612C433EF
+	for <alsa-devel@archiver.kernel.org>; Thu, 19 May 2022 17:50:12 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 2C24717A2;
-	Thu, 19 May 2022 19:48:56 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2C24717A2
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0769E1751;
+	Thu, 19 May 2022 19:49:21 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0769E1751
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1652982586;
-	bh=N7pcZixcgkaNbY2C/6f7AtiQBk8uffYtr7pBgalrhks=;
+	s=default; t=1652982611;
+	bh=uUePv91SGBoIY6PbN5B4ccVxrsUIAKkEylYxrUNGLEU=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Q78tX7sixiKrlPM2Et27aeDKN+9zmR7Js2TKQH4pPipJIgqMYSQTXFFv/u1haWW7B
-	 WdApfYlQOzYni4FT5RLJ9AbHe1k7YnbV3NQ+zwA/HOpqPfdE9eAclShQFaT3IYbQMY
-	 71+ekoAI+mWljwVs0XOumiXcs7NpQqWi+Z+L9Nrg=
+	b=CODVPg5He6PwAgymROaeZoBn8eJV85xZwUa5w5HrySYdRcyPGmANdgwFebMrnBCuQ
+	 vgFjW9qhXAPpwuGKHsPDBe/BJLe941qqA+2a6XwOgvUXaAogtnYbktv3Fw+vPkk8wN
+	 UXf/fhDFy35vu4X/YUANmbr2RImlRGNQgaRKebV8=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 0193BF80519;
-	Thu, 19 May 2022 19:48:07 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id E189DF80539;
+	Thu, 19 May 2022 19:48:08 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 4F746F80536; Thu, 19 May 2022 19:48:03 +0200 (CEST)
+ id B021FF80535; Thu, 19 May 2022 19:48:03 +0200 (CEST)
 Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
  [67.231.149.25])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 59BFBF80109
- for <alsa-devel@alsa-project.org>; Thu, 19 May 2022 19:47:56 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 59BFBF80109
+ by alsa1.perex.cz (Postfix) with ESMTPS id B8684F80237
+ for <alsa-devel@alsa-project.org>; Thu, 19 May 2022 19:47:54 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B8684F80237
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com
- header.b="j8PozsD8"
+ header.b="QYTDOaz6"
 Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
- by mx0a-001ae601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 24J6k19D002261;
- Thu, 19 May 2022 12:47:55 -0500
+ by mx0a-001ae601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 24J6k19A002261;
+ Thu, 19 May 2022 12:47:52 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
  h=from : to : cc :
  subject : date : message-id : in-reply-to : references : mime-version :
  content-transfer-encoding : content-type; s=PODMain02222019;
- bh=VKkphNH8QA4Izj/k6GEo35fXfHV4R/YMLEy/KzQdSnU=;
- b=j8PozsD86vM1bpfPPReTNWimAtbaBXKpVlFTNN4IEaa0SiZGER+NBuzpecl6VILuuIEa
- CV3KJl9kMa0g9HD3H5KbsSHDNkCFMaOrmLyRExgIFkLJHzT4GgwzJvjypqcgerY4Ee10
- dgLRuRjB6Esmyft8kS4vandUyVN+al6I00+VIJXnJArutSFQeFDJSsenDmES3mAeFC0p
- Mze8OgCwfsUqRmaCWbb7jseXVYhIffV8JkqSW6hqaspOghbW8SYewiD4TKVITo/Myos0
- RrXhZwmenorFlHXbavFdloALONFyD5T3KkY8i+cIgCe/NZuuFS2/kEf7wQxdjNYK/JhF ug== 
+ bh=J0fR9KNlFufNc0MdSXybhI4lFVPpHlH9P+kE1CluQgE=;
+ b=QYTDOaz6aW6hAuegxp5NakPZ/5EiCejl9QnqpMI+utTd/QTgJO/46d6rVuMf1kOSAg7v
+ TORwxcFYdWAAy+LDJTcKhSbDG35lwZPkUeKxeLN/ORrT3Ug1dMC/dTl/FfCDddtGbfqS
+ hpDHYPDIkJE0DApjBRu3Z9ik3bFgV5LYkT9Ae3clNtvHCoihOmAOmFn0T2D8l0WUdRww
+ 0AUYIyWSPDHRzuX68IEu5nR9jm5M6kJPIJDUv3/8zkdiwWezgUBtpSB0pybrW3nTuUbn
+ xfN39LJymNqu4ZZ0vh1+aaRd2D4Ll7/Hhnims+5duXqiowpnKOJF1rRzSXrmOFfDFu+K yQ== 
 Received: from ediex02.ad.cirrus.com ([84.19.233.68])
- by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3g29u37ted-5
+ by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3g29u37ted-2
  (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
- Thu, 19 May 2022 12:47:54 -0500
+ Thu, 19 May 2022 12:47:52 -0500
 Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX02.ad.cirrus.com
  (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.24; Thu, 19 May
- 2022 18:47:53 +0100
+ 2022 18:47:50 +0100
 Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
  (198.61.84.80) with Microsoft SMTP Server id 15.1.2375.24 via
- Frontend Transport; Thu, 19 May 2022 18:47:53 +0100
+ Frontend Transport; Thu, 19 May 2022 18:47:50 +0100
 Received: from vitaly-Legion-7-16ACHg6.ad.cirrus.com (unknown [198.90.238.59])
- by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 382B611D1;
- Thu, 19 May 2022 17:47:53 +0000 (UTC)
+ by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 2812F458;
+ Thu, 19 May 2022 17:47:50 +0000 (UTC)
 From: Vitaly Rodionov <vitalyr@opensource.cirrus.com>
 To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Mark
  Brown <broonie@kernel.org>
-Subject: [PATCH v3 09/17] ASoC: cs35l41: Move cs35l41 exit hibernate function
- into shared code
-Date: Thu, 19 May 2022 18:47:41 +0100
-Message-ID: <20220519174749.15459-10-vitalyr@opensource.cirrus.com>
+Subject: [PATCH v3 02/17] ALSA: hda: hda_cs_dsp_ctl: Add apis to write the
+ controls directly
+Date: Thu, 19 May 2022 18:47:34 +0100
+Message-ID: <20220519174749.15459-3-vitalyr@opensource.cirrus.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20220519174749.15459-1-vitalyr@opensource.cirrus.com>
 References: <20220519174749.15459-1-vitalyr@opensource.cirrus.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-Proofpoint-GUID: Cj07qmbQj0sV0pQeDB2_pBuhKISuk84q
-X-Proofpoint-ORIG-GUID: Cj07qmbQj0sV0pQeDB2_pBuhKISuk84q
+X-Proofpoint-GUID: bO3RACdmFGlnrsAaJeqjEDT6Jrg2Uxlp
+X-Proofpoint-ORIG-GUID: bO3RACdmFGlnrsAaJeqjEDT6Jrg2Uxlp
 X-Proofpoint-Spam-Reason: safe
 Cc: patches@opensource.cirrus.com, alsa-devel@alsa-project.org,
- Charles Keepax <ckeepax@opensource.cirrus.com>, linux-kernel@vger.kernel.org,
- Stefan Binding <sbinding@opensource.cirrus.com>
+ linux-kernel@vger.kernel.org, Stefan Binding <sbinding@opensource.cirrus.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -99,11 +98,11 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 From: Stefan Binding <sbinding@opensource.cirrus.com>
 
-CS35L41 HDA Driver will support hibernation using DSP firmware,
-move the exit hibernate function into shared code so this can
-be reused.
-
-Acked-by: Charles Keepax <ckeepax@opensource.cirrus.com>
+DSP controls are exposed as ALSA controls, however,
+some of these controls are required to be accessed by
+the driver. Add apis which allow read/write of these
+controls. The write api will also notify the ALSA control
+on value change.
 
 Signed-off-by: Stefan Binding <sbinding@opensource.cirrus.com>
 Signed-off-by: Vitaly Rodionov <vitalyr@opensource.cirrus.com>
@@ -111,174 +110,88 @@ Signed-off-by: Vitaly Rodionov <vitalyr@opensource.cirrus.com>
 
 Changes since v2:
  - No change
- 
- include/sound/cs35l41.h        |  1 +
- sound/soc/codecs/cs35l41-lib.c | 60 +++++++++++++++++++++++++++++++++
- sound/soc/codecs/cs35l41.c     | 61 +---------------------------------
- 3 files changed, 62 insertions(+), 60 deletions(-)
 
-diff --git a/include/sound/cs35l41.h b/include/sound/cs35l41.h
-index 8887087815a7..f848ba1e75b3 100644
---- a/include/sound/cs35l41.h
-+++ b/include/sound/cs35l41.h
-@@ -885,6 +885,7 @@ void cs35l41_configure_cs_dsp(struct device *dev, struct regmap *reg, struct cs_
- int cs35l41_set_cspl_mbox_cmd(struct device *dev, struct regmap *regmap,
- 			      enum cs35l41_cspl_mbox_cmd cmd);
- int cs35l41_write_fs_errata(struct device *dev, struct regmap *regmap);
-+int cs35l41_exit_hibernate(struct device *dev, struct regmap *regmap);
- int cs35l41_init_boost(struct device *dev, struct regmap *regmap,
- 		       struct cs35l41_hw_cfg *hw_cfg);
- bool cs35l41_safe_reset(struct regmap *regmap, enum cs35l41_boost_type b_type);
-diff --git a/sound/soc/codecs/cs35l41-lib.c b/sound/soc/codecs/cs35l41-lib.c
-index 6d3070ea9e06..cc5366c8bdd6 100644
---- a/sound/soc/codecs/cs35l41-lib.c
-+++ b/sound/soc/codecs/cs35l41-lib.c
-@@ -1321,6 +1321,66 @@ int cs35l41_write_fs_errata(struct device *dev, struct regmap *regmap)
+ sound/pci/hda/hda_cs_dsp_ctl.c | 52 ++++++++++++++++++++++++++++++++++
+ sound/pci/hda/hda_cs_dsp_ctl.h |  4 +++
+ 2 files changed, 56 insertions(+)
+
+diff --git a/sound/pci/hda/hda_cs_dsp_ctl.c b/sound/pci/hda/hda_cs_dsp_ctl.c
+index 46df48ff2ae1..3b837d000a00 100644
+--- a/sound/pci/hda/hda_cs_dsp_ctl.c
++++ b/sound/pci/hda/hda_cs_dsp_ctl.c
+@@ -237,6 +237,58 @@ void hda_cs_dsp_control_remove(struct cs_dsp_coeff_ctl *cs_ctl)
  }
- EXPORT_SYMBOL_GPL(cs35l41_write_fs_errata);
+ EXPORT_SYMBOL_NS_GPL(hda_cs_dsp_control_remove, SND_HDA_CS_DSP_CONTROLS);
  
-+static void cs35l41_wait_for_pwrmgt_sts(struct device *dev, struct regmap *regmap)
++int hda_cs_dsp_write_ctl(struct cs_dsp *dsp, const char *name, int type,
++			 unsigned int alg, void *buf, size_t len)
 +{
-+	const int pwrmgt_retries = 10;
-+	unsigned int sts;
-+	int i, ret;
++	struct cs_dsp_coeff_ctl *cs_ctl;
++	struct hda_cs_dsp_coeff_ctl *ctl;
++	struct snd_kcontrol *kctl;
++	int ret;
 +
-+	for (i = 0; i < pwrmgt_retries; i++) {
-+		ret = regmap_read(regmap, CS35L41_PWRMGT_STS, &sts);
-+		if (ret)
-+			dev_err(dev, "Failed to read PWRMGT_STS: %d\n", ret);
-+		else if (!(sts & CS35L41_WR_PEND_STS_MASK))
-+			return;
++	cs_ctl = cs_dsp_get_ctl(dsp, name, type, alg);
++	if (!cs_ctl)
++		return -EINVAL;
 +
-+		udelay(20);
-+	}
++	ctl = cs_ctl->priv;
 +
-+	dev_err(dev, "Timed out reading PWRMGT_STS\n");
-+}
++	if (len > cs_ctl->len)
++		return -EINVAL;
 +
-+int cs35l41_exit_hibernate(struct device *dev, struct regmap *regmap)
-+{
-+	const int wake_retries = 20;
-+	const int sleep_retries = 5;
-+	int ret, i, j;
++	ret = cs_dsp_coeff_write_ctrl(cs_ctl, 0, buf, len);
++	if (ret)
++		return ret;
 +
-+	for (i = 0; i < sleep_retries; i++) {
-+		dev_dbg(dev, "Exit hibernate\n");
++	if (cs_ctl->flags & WMFW_CTL_FLAG_SYS)
++		return 0;
 +
-+		for (j = 0; j < wake_retries; j++) {
-+			ret = cs35l41_set_cspl_mbox_cmd(dev, regmap,
-+							CSPL_MBOX_CMD_OUT_OF_HIBERNATE);
-+			if (!ret)
-+				break;
-+
-+			usleep_range(100, 200);
-+		}
-+
-+		if (j < wake_retries) {
-+			dev_dbg(dev, "Wake success at cycle: %d\n", j);
++	list_for_each_entry(kctl, &ctl->card->controls, list)
++		if (!strncmp(kctl->id.name, ctl->name, sizeof(kctl->id.name))) {
++			snd_ctl_notify(ctl->card, SNDRV_CTL_EVENT_MASK_VALUE, &kctl->id);
 +			return 0;
 +		}
 +
-+		dev_err(dev, "Wake failed, re-enter hibernate: %d\n", ret);
++	dev_warn(dsp->dev, "Cannot find Control for %s\n", name);
 +
-+		cs35l41_wait_for_pwrmgt_sts(dev, regmap);
-+		regmap_write(regmap, CS35L41_WAKESRC_CTL, 0x0088);
-+
-+		cs35l41_wait_for_pwrmgt_sts(dev, regmap);
-+		regmap_write(regmap, CS35L41_WAKESRC_CTL, 0x0188);
-+
-+		cs35l41_wait_for_pwrmgt_sts(dev, regmap);
-+		regmap_write(regmap, CS35L41_PWRMGT_CTL, 0x3);
-+	}
-+
-+	dev_err(dev, "Timed out waking device\n");
-+
-+	return -ETIMEDOUT;
++	return 0;
 +}
-+EXPORT_SYMBOL_GPL(cs35l41_exit_hibernate);
++EXPORT_SYMBOL_NS_GPL(hda_cs_dsp_write_ctl, SND_HDA_CS_DSP_CONTROLS);
 +
- MODULE_DESCRIPTION("CS35L41 library");
- MODULE_AUTHOR("David Rhodes, Cirrus Logic Inc, <david.rhodes@cirrus.com>");
- MODULE_AUTHOR("Lucas Tanure, Cirrus Logic Inc, <tanureal@opensource.cirrus.com>");
-diff --git a/sound/soc/codecs/cs35l41.c b/sound/soc/codecs/cs35l41.c
-index 3e68a07a3c8e..be7d02517739 100644
---- a/sound/soc/codecs/cs35l41.c
-+++ b/sound/soc/codecs/cs35l41.c
-@@ -1351,65 +1351,6 @@ static int __maybe_unused cs35l41_runtime_suspend(struct device *dev)
- 	return 0;
- }
++int hda_cs_dsp_read_ctl(struct cs_dsp *dsp, const char *name, int type,
++			unsigned int alg, void *buf, size_t len)
++{
++	struct cs_dsp_coeff_ctl *cs_ctl;
++
++	cs_ctl = cs_dsp_get_ctl(dsp, name, type, alg);
++	if (!cs_ctl)
++		return -EINVAL;
++
++	if (len > cs_ctl->len)
++		return -EINVAL;
++
++	return cs_dsp_coeff_read_ctrl(cs_ctl, 0, buf, len);
++}
++EXPORT_SYMBOL_NS_GPL(hda_cs_dsp_read_ctl, SND_HDA_CS_DSP_CONTROLS);
++
+ MODULE_DESCRIPTION("CS_DSP ALSA Control HDA Library");
+ MODULE_AUTHOR("Stefan Binding, <sbinding@opensource.cirrus.com>");
+ MODULE_LICENSE("GPL");
+diff --git a/sound/pci/hda/hda_cs_dsp_ctl.h b/sound/pci/hda/hda_cs_dsp_ctl.h
+index 3c90312b45d6..65b9c5c68957 100644
+--- a/sound/pci/hda/hda_cs_dsp_ctl.h
++++ b/sound/pci/hda/hda_cs_dsp_ctl.h
+@@ -30,5 +30,9 @@ struct hda_cs_dsp_ctl_info {
+ int hda_cs_dsp_control_add(struct cs_dsp_coeff_ctl *cs_ctl, struct hda_cs_dsp_ctl_info *info);
+ void hda_cs_dsp_control_remove(struct cs_dsp_coeff_ctl *cs_ctl);
+ int hda_cs_dsp_remove_kcontrol(struct snd_card *card, const char *name);
++int hda_cs_dsp_write_ctl(struct cs_dsp *dsp, const char *name, int type,
++			 unsigned int alg, void *buf, size_t len);
++int hda_cs_dsp_read_ctl(struct cs_dsp *dsp, const char *name, int type,
++			unsigned int alg, void *buf, size_t len);
  
--static void cs35l41_wait_for_pwrmgt_sts(struct cs35l41_private *cs35l41)
--{
--	const int pwrmgt_retries = 10;
--	unsigned int sts;
--	int i, ret;
--
--	for (i = 0; i < pwrmgt_retries; i++) {
--		ret = regmap_read(cs35l41->regmap, CS35L41_PWRMGT_STS, &sts);
--		if (ret)
--			dev_err(cs35l41->dev, "Failed to read PWRMGT_STS: %d\n", ret);
--		else if (!(sts & CS35L41_WR_PEND_STS_MASK))
--			return;
--
--		udelay(20);
--	}
--
--	dev_err(cs35l41->dev, "Timed out reading PWRMGT_STS\n");
--}
--
--static int cs35l41_exit_hibernate(struct cs35l41_private *cs35l41)
--{
--	const int wake_retries = 20;
--	const int sleep_retries = 5;
--	int ret, i, j;
--
--	for (i = 0; i < sleep_retries; i++) {
--		dev_dbg(cs35l41->dev, "Exit hibernate\n");
--
--		for (j = 0; j < wake_retries; j++) {
--			ret = cs35l41_set_cspl_mbox_cmd(cs35l41->dev, cs35l41->regmap,
--							CSPL_MBOX_CMD_OUT_OF_HIBERNATE);
--			if (!ret)
--				break;
--
--			usleep_range(100, 200);
--		}
--
--		if (j < wake_retries) {
--			dev_dbg(cs35l41->dev, "Wake success at cycle: %d\n", j);
--			return 0;
--		}
--
--		dev_err(cs35l41->dev, "Wake failed, re-enter hibernate: %d\n", ret);
--
--		cs35l41_wait_for_pwrmgt_sts(cs35l41);
--		regmap_write(cs35l41->regmap, CS35L41_WAKESRC_CTL, 0x0088);
--
--		cs35l41_wait_for_pwrmgt_sts(cs35l41);
--		regmap_write(cs35l41->regmap, CS35L41_WAKESRC_CTL, 0x0188);
--
--		cs35l41_wait_for_pwrmgt_sts(cs35l41);
--		regmap_write(cs35l41->regmap, CS35L41_PWRMGT_CTL, 0x3);
--	}
--
--	dev_err(cs35l41->dev, "Timed out waking device\n");
--
--	return -ETIMEDOUT;
--}
--
- static int __maybe_unused cs35l41_runtime_resume(struct device *dev)
- {
- 	struct cs35l41_private *cs35l41 = dev_get_drvdata(dev);
-@@ -1422,7 +1363,7 @@ static int __maybe_unused cs35l41_runtime_resume(struct device *dev)
- 
- 	regcache_cache_only(cs35l41->regmap, false);
- 
--	ret = cs35l41_exit_hibernate(cs35l41);
-+	ret = cs35l41_exit_hibernate(cs35l41->dev, cs35l41->regmap);
- 	if (ret)
- 		return ret;
- 
+ #endif /*__HDA_CS_DSP_CTL_H__*/
 -- 
 2.34.1
 
