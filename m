@@ -4,53 +4,53 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C456DC433F5
-	for <alsa-devel@archiver.kernel.org>; Thu, 19 May 2022 15:51:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2F653C433EF
+	for <alsa-devel@archiver.kernel.org>; Thu, 19 May 2022 15:51:57 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id EA70216E5;
-	Thu, 19 May 2022 17:50:45 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EA70216E5
+	by alsa0.perex.cz (Postfix) with ESMTPS id 57D141651;
+	Thu, 19 May 2022 17:51:05 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 57D141651
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1652975496;
-	bh=epdjtmk7HQDOb+wA838oWTnb7ILH0SDBOTNZa4s8NwE=;
+	s=default; t=1652975515;
+	bh=S+mrpQe2i+lunNslLiqpCaRULqFKICccTSb+OOJqkf4=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=hNHCu/ysZ4unCk9WTw6KiBRnwVnCT0OKADMouSJxo38tJUo5EapGp+U+VJXOho8Fc
-	 3wCs7xFq8FbB6Td8a0fWcsV/CVjoc3hc6cZ4A0QA0pQf/AJDujLAt93DyjaV549/lo
-	 PJ0eWqIVWt7LDY06sayUJyV17lAWb5/dVJXT5ZfY=
+	b=Er0kN7PHFD9aQwOKxE2Kx1Y3KwzMS3R8+f9Lm1OTiMGRqoCDKD1931NzuiN8R1nbN
+	 msfyhfIxB68uubNWdfyh8xIAlpElQczqvfw5uB75quUvkIn/1gsw1KjpER7KcC5nxg
+	 NJCwwKFDmqmzgsgOZZYSJ74FrutlUQzGAks66QUs=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 12B6FF80606;
-	Thu, 19 May 2022 17:44:18 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id CF164F805FE;
+	Thu, 19 May 2022 17:44:19 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 35030F805C9; Thu, 19 May 2022 17:44:03 +0200 (CEST)
-Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
- [67.231.149.25])
+ id C3795F805D5; Thu, 19 May 2022 17:44:03 +0200 (CEST)
+Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
+ [67.231.152.168])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id B6D53F800F0
- for <alsa-devel@alsa-project.org>; Thu, 19 May 2022 17:43:36 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B6D53F800F0
+ by alsa1.perex.cz (Postfix) with ESMTPS id 06805F80536
+ for <alsa-devel@alsa-project.org>; Thu, 19 May 2022 17:43:35 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 06805F80536
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com
- header.b="RbHLrHth"
-Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
- by mx0a-001ae601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 24J6k11t002261;
+ header.b="lEJw5cwM"
+Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
+ by mx0b-001ae601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 24J66mW7012194;
  Thu, 19 May 2022 10:43:34 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
  h=from : to : cc :
  subject : date : message-id : in-reply-to : references : mime-version :
  content-transfer-encoding : content-type; s=PODMain02222019;
- bh=ehkEzwiLd3q83xWm71iaowmNtSdgNw5jxD9S047EITQ=;
- b=RbHLrHthSV3jyUf+HbAT4o7ua0Nt0o9hI0nntMAYP+N6WR9mjJV8BsYg/VVDsffTEVxA
- JjRNmAEi7RdDvbyotOZIEc5qBAVJFO/ieuGVH1PTgZdspzv3iPf6Dv3o1SexdxyO5Xyr
- cvcZcQbm9j4LWWr4F5inO/akSCZ6VOXDWtyLe7J5eQWL1nrHQIHRuGT5GIwoadYFWh4X
- gujPnie/7Xcd3JlcaFufjHROV69Ygrgo9Q7yWPjnL7BKfGtesRZqM+OzgLPHamlN4UgW
- z5FpCVZhPU7pjXP5+I7nMKpvTi2m2y2EkKi5PtzATJv2ewAB+d+3I9Adben32hIc0WGd Ug== 
+ bh=0izqi8NBRaF340qivz0d9/CZYqNOou8aIl/HCv5U0cs=;
+ b=lEJw5cwMhbPWVQSN0JyY0ObRrpwQQelzODv3n9IvH7QK+jomjAvNWpPIWN5QysSBKMa1
+ Mq4t0jmWw1BzJPaQyaGDHHabAZnlQQlTWgqg1KbaHggnpRwOL2aDwcmDXt/Tk561dlS/
+ V/1/NWfq9sHuRmSJ5bnxFSUbqO2Derq9i4AMBki+7HWSNLDa8VcznW7tAg7ZKoYu+Cid
+ OIb8T5bsf1RPuAm7VVcG8ntlC1ZdioBnSnTybSx5/KnZehZcXsxJuin194oRcVQYlH+J
+ PCDbO9fXClZsBH/1VpQR6gWSY2dgNP2HLD6J4gDyIS4eFARSsIuhJ/cQKJzAOiUHVi3t yw== 
 Received: from ediex02.ad.cirrus.com ([84.19.233.68])
- by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3g29u37mcg-5
+ by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3g28upf5dn-10
  (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
  Thu, 19 May 2022 10:43:34 -0500
 Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX02.ad.cirrus.com
@@ -61,21 +61,21 @@ Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
  (198.61.84.80) with Microsoft SMTP Server id 15.1.2375.24 via
  Frontend Transport; Thu, 19 May 2022 16:43:20 +0100
 Received: from algalon.ad.cirrus.com (algalon.ad.cirrus.com [198.90.251.122])
- by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 6DD0711D3;
+ by ediswmail.ad.cirrus.com (Postfix) with ESMTP id A66D711D3;
  Thu, 19 May 2022 15:43:20 +0000 (UTC)
 From: Charles Keepax <ckeepax@opensource.cirrus.com>
 To: <broonie@kernel.org>
-Subject: [PATCH 29/56] ASoC: amd: vangogh: Rename set_fmt_new back to set_fmt
-Date: Thu, 19 May 2022 16:42:51 +0100
-Message-ID: <20220519154318.2153729-30-ckeepax@opensource.cirrus.com>
+Subject: [PATCH 32/56] ASoC: bcm: Rename set_fmt_new back to set_fmt
+Date: Thu, 19 May 2022 16:42:54 +0100
+Message-ID: <20220519154318.2153729-33-ckeepax@opensource.cirrus.com>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20220519154318.2153729-1-ckeepax@opensource.cirrus.com>
 References: <20220519154318.2153729-1-ckeepax@opensource.cirrus.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-Proofpoint-GUID: dXew_Pq7nQ1SHSoS_07-yO7Z5xPHZ9F-
-X-Proofpoint-ORIG-GUID: dXew_Pq7nQ1SHSoS_07-yO7Z5xPHZ9F-
+X-Proofpoint-GUID: c9plG5cow3MRz3odEjKvsVrUDqurwwph
+X-Proofpoint-ORIG-GUID: c9plG5cow3MRz3odEjKvsVrUDqurwwph
 X-Proofpoint-Spam-Reason: safe
 Cc: cezary.rojewski@intel.com, heiko@sntech.de,
  kuninori.morimoto.gx@renesas.com, alsa-devel@alsa-project.org,
@@ -110,22 +110,36 @@ callback.
 
 Signed-off-by: Charles Keepax <ckeepax@opensource.cirrus.com>
 ---
- sound/soc/amd/vangogh/acp5x-i2s.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/bcm/bcm2835-i2s.c | 2 +-
+ sound/soc/bcm/cygnus-ssp.c  | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/amd/vangogh/acp5x-i2s.c b/sound/soc/amd/vangogh/acp5x-i2s.c
-index 40fbd0bc77fde..72c8c68e59336 100644
---- a/sound/soc/amd/vangogh/acp5x-i2s.c
-+++ b/sound/soc/amd/vangogh/acp5x-i2s.c
-@@ -339,7 +339,7 @@ static int acp5x_i2s_trigger(struct snd_pcm_substream *substream,
- static const struct snd_soc_dai_ops acp5x_i2s_dai_ops = {
- 	.hw_params = acp5x_i2s_hwparams,
- 	.trigger = acp5x_i2s_trigger,
--	.set_fmt_new = acp5x_i2s_set_fmt,
-+	.set_fmt = acp5x_i2s_set_fmt,
- 	.set_tdm_slot = acp5x_i2s_set_tdm_slot,
+diff --git a/sound/soc/bcm/bcm2835-i2s.c b/sound/soc/bcm/bcm2835-i2s.c
+index aa7d8e081f89a..e39c8d9f40995 100644
+--- a/sound/soc/bcm/bcm2835-i2s.c
++++ b/sound/soc/bcm/bcm2835-i2s.c
+@@ -743,7 +743,7 @@ static const struct snd_soc_dai_ops bcm2835_i2s_dai_ops = {
+ 	.prepare	= bcm2835_i2s_prepare,
+ 	.trigger	= bcm2835_i2s_trigger,
+ 	.hw_params	= bcm2835_i2s_hw_params,
+-	.set_fmt_new	= bcm2835_i2s_set_dai_fmt,
++	.set_fmt	= bcm2835_i2s_set_dai_fmt,
+ 	.set_bclk_ratio	= bcm2835_i2s_set_dai_bclk_ratio,
+ 	.set_tdm_slot	= bcm2835_i2s_set_dai_tdm_slot,
  };
- 
+diff --git a/sound/soc/bcm/cygnus-ssp.c b/sound/soc/bcm/cygnus-ssp.c
+index 257f3657bcd6e..4bfa2d715ff4d 100644
+--- a/sound/soc/bcm/cygnus-ssp.c
++++ b/sound/soc/bcm/cygnus-ssp.c
+@@ -1148,7 +1148,7 @@ static const struct snd_soc_dai_ops cygnus_ssp_dai_ops = {
+ 	.shutdown	= cygnus_ssp_shutdown,
+ 	.trigger	= cygnus_ssp_trigger,
+ 	.hw_params	= cygnus_ssp_hw_params,
+-	.set_fmt_new	= cygnus_ssp_set_fmt,
++	.set_fmt	= cygnus_ssp_set_fmt,
+ 	.set_sysclk	= cygnus_ssp_set_sysclk,
+ 	.set_tdm_slot	= cygnus_set_dai_tdm_slot,
+ };
 -- 
 2.30.2
 
