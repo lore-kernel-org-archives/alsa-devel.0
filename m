@@ -4,78 +4,78 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A4B9AC433EF
-	for <alsa-devel@archiver.kernel.org>; Thu, 19 May 2022 15:52:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D7A3EC433EF
+	for <alsa-devel@archiver.kernel.org>; Thu, 19 May 2022 15:52:59 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E36E616F1;
-	Thu, 19 May 2022 17:51:48 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E36E616F1
+	by alsa0.perex.cz (Postfix) with ESMTPS id C95E916D1;
+	Thu, 19 May 2022 17:52:07 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C95E916D1
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1652975559;
-	bh=pUktdBrvcHjL/Z/F9R0HOIYaDypg+/wZj8Rhc8LtyOU=;
+	s=default; t=1652975577;
+	bh=onCWVyUYvE1fkQ36nrZ5LFhGuA10d28a9O0+9Q5vRaA=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=GzMcfcQQP3ldLxxzhJ5nm2qB9cnPTCJGArIpOXCxyvEiMxmgbNELm9cHBakkhJ/KA
-	 0liBAsvBNzPFrGBUxmH62v4gmVfaKidXED2FLAUJWOtYDxQJUUCE/cKr492+db57l+
-	 NSclemu02I3xp8nHGNOph+ifl8BU7Pt0QwwIpfQA=
+	b=uGy9SR3H+WSA60yWxiWuSuCv0QlBJLZhlVhnaY9qg0QX6rmeIcJWlCaLis27KFA2k
+	 Xyf/SUTNG0se6y2Jghr48w6lnmGDSSOhuegi3k8jkbWEcYDzvrR01R0e1O0uU8pZ3W
+	 Zmaeh+LC2U+5KQU123iwJgDfbzsxz+aDXhSsuU/E=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 4A02BF80616;
-	Thu, 19 May 2022 17:44:23 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 23F2DF80564;
+	Thu, 19 May 2022 17:44:25 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id BD4C0F805E2; Thu, 19 May 2022 17:44:07 +0200 (CEST)
-Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
- [67.231.149.25])
+ id 2E469F805E5; Thu, 19 May 2022 17:44:08 +0200 (CEST)
+Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
+ [67.231.152.168])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 20B73F80538
+ by alsa1.perex.cz (Postfix) with ESMTPS id A6535F80535
  for <alsa-devel@alsa-project.org>; Thu, 19 May 2022 17:43:36 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 20B73F80538
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A6535F80535
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com
- header.b="NK96uTLo"
-Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
- by mx0a-001ae601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 24J6k11u002261;
+ header.b="ZFct4dO4"
+Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
+ by mx0b-001ae601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 24JBHtai024228;
  Thu, 19 May 2022 10:43:35 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
  h=from : to : cc :
  subject : date : message-id : in-reply-to : references : mime-version :
  content-transfer-encoding : content-type; s=PODMain02222019;
- bh=AjjqMicnhPoZqT6UYhPvoYkn3XWnwuGY9ExR1ybyO/8=;
- b=NK96uTLoDF75ZrvxXTw7p6hi4vOr0sdLWBCFb7xG2WQmM7XY+OSWKOGylt80CwFHEW0E
- vFhM7kYvrRxtFCW7nLM2xduTcKUBmqHh4lQr8sV/uUkgXbFgGEfe+1xcxQfVQOFwvqf5
- A3pODWEL7GZnc8tJxO1yIoPrWM2qx0A+NkP7QDSgAyQ44vklOyxds0962e9L+amBschB
- JVN5JmUiThHA6OHIZ85kQQCP4n9hf8oh1h9ejwTkDE6OFAmENLWwJLW+EJStVYBoKQjB
- DA7lPaF2/RSeC7+BYerdro+mM77ha8x4GHdwnkNK4ugcjsHnlIdFQhBfyMpWDB8diSJ/ wA== 
+ bh=G4zupERH5Zc88BD4UCqDoelauUTmm8cZJDN3JGzAYN0=;
+ b=ZFct4dO4+QlcDMWLpgdbammZyn87Ncvb/Vge6R7Ja7CzEHUvRza63Grxbrc2qgmQwk7f
+ aeXxP7WnEa8/vDOC+9gMLROQHxUi2ZZv+VOt7j8KcaehCpHpX+jclqlUmOY3bNRrBzEO
+ a1p2Aa4FcYWoIbVJgDc+8GSaVcEl5AP/+PLoyuKdUwQjQadBp0PG8fu+zjiAKJw6pbTv
+ MOcsJQNrPH8wP8r0RT7fw6CwZs1An8U4eLtJ43r9AuGssnzYAd4UquMGmN3PTMIvbGka
+ No4X4qgkRxp0DPTuqazVwi5hWKAAwIf4cEVFNmPTlf/y1GHrKxysgO86yqpI/fdgNQma sg== 
 Received: from ediex01.ad.cirrus.com ([84.19.233.68])
- by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3g29u37mcf-5
+ by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3g28upf5dm-10
  (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
  Thu, 19 May 2022 10:43:34 -0500
 Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX01.ad.cirrus.com
  (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.24; Thu, 19 May
- 2022 16:43:19 +0100
+ 2022 16:43:20 +0100
 Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
  (198.61.84.80) with Microsoft SMTP Server id 15.1.2375.24 via
- Frontend Transport; Thu, 19 May 2022 16:43:19 +0100
+ Frontend Transport; Thu, 19 May 2022 16:43:20 +0100
 Received: from algalon.ad.cirrus.com (algalon.ad.cirrus.com [198.90.251.122])
- by ediswmail.ad.cirrus.com (Postfix) with ESMTP id BA87A476;
- Thu, 19 May 2022 15:43:19 +0000 (UTC)
+ by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 0C7B0475;
+ Thu, 19 May 2022 15:43:20 +0000 (UTC)
 From: Charles Keepax <ckeepax@opensource.cirrus.com>
 To: <broonie@kernel.org>
-Subject: [PATCH 19/56] ASoC: samsung: Update to use set_fmt_new callback
-Date: Thu, 19 May 2022 16:42:41 +0100
-Message-ID: <20220519154318.2153729-20-ckeepax@opensource.cirrus.com>
+Subject: [PATCH 23/56] ASoC: tegra: Update to use set_fmt_new callback
+Date: Thu, 19 May 2022 16:42:45 +0100
+Message-ID: <20220519154318.2153729-24-ckeepax@opensource.cirrus.com>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20220519154318.2153729-1-ckeepax@opensource.cirrus.com>
 References: <20220519154318.2153729-1-ckeepax@opensource.cirrus.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-Proofpoint-GUID: 579zJA1j8qpgk8t0NR1Uq8E4v_eh2bkG
-X-Proofpoint-ORIG-GUID: 579zJA1j8qpgk8t0NR1Uq8E4v_eh2bkG
+X-Proofpoint-GUID: EY-pvjFJiKFAevaceF1oiZRIpak7ye6H
+X-Proofpoint-ORIG-GUID: EY-pvjFJiKFAevaceF1oiZRIpak7ye6H
 X-Proofpoint-Spam-Reason: safe
 Cc: cezary.rojewski@intel.com, heiko@sntech.de,
  kuninori.morimoto.gx@renesas.com, alsa-devel@alsa-project.org,
@@ -110,121 +110,95 @@ callback.
 
 Signed-off-by: Charles Keepax <ckeepax@opensource.cirrus.com>
 ---
- sound/soc/samsung/i2s.c         | 8 ++++----
- sound/soc/samsung/pcm.c         | 6 +++---
- sound/soc/samsung/s3c-i2s-v2.c  | 8 ++++----
- sound/soc/samsung/s3c24xx-i2s.c | 8 ++++----
- 4 files changed, 15 insertions(+), 15 deletions(-)
+ sound/soc/tegra/tegra20_i2s.c  | 8 ++++----
+ sound/soc/tegra/tegra210_i2s.c | 8 ++++----
+ sound/soc/tegra/tegra30_i2s.c  | 8 ++++----
+ 3 files changed, 12 insertions(+), 12 deletions(-)
 
-diff --git a/sound/soc/samsung/i2s.c b/sound/soc/samsung/i2s.c
-index 70c827162be4d..9ed275ebd744e 100644
---- a/sound/soc/samsung/i2s.c
-+++ b/sound/soc/samsung/i2s.c
-@@ -671,11 +671,11 @@ static int i2s_set_fmt(struct snd_soc_dai *dai, unsigned int fmt)
+diff --git a/sound/soc/tegra/tegra20_i2s.c b/sound/soc/tegra/tegra20_i2s.c
+index 27365a877e471..9abb0e3536d82 100644
+--- a/sound/soc/tegra/tegra20_i2s.c
++++ b/sound/soc/tegra/tegra20_i2s.c
+@@ -95,11 +95,11 @@ static int tegra20_i2s_set_fmt(struct snd_soc_dai *dai,
+ 	}
+ 
+ 	mask |= TEGRA20_I2S_CTRL_MASTER_ENABLE;
+-	switch (fmt & SND_SOC_DAIFMT_MASTER_MASK) {
+-	case SND_SOC_DAIFMT_CBS_CFS:
++	switch (fmt & SND_SOC_DAIFMT_CLOCK_PROVIDER_MASK) {
++	case SND_SOC_DAIFMT_BP_FP:
+ 		val |= TEGRA20_I2S_CTRL_MASTER_ENABLE;
+ 		break;
+-	case SND_SOC_DAIFMT_CBM_CFM:
++	case SND_SOC_DAIFMT_BC_FC:
+ 		break;
+ 	default:
  		return -EINVAL;
- 	}
+@@ -311,7 +311,7 @@ static int tegra20_i2s_startup(struct snd_pcm_substream *substream,
+ }
  
+ static const struct snd_soc_dai_ops tegra20_i2s_dai_ops = {
+-	.set_fmt	= tegra20_i2s_set_fmt,
++	.set_fmt_new	= tegra20_i2s_set_fmt,
+ 	.hw_params	= tegra20_i2s_hw_params,
+ 	.trigger	= tegra20_i2s_trigger,
+ 	.startup	= tegra20_i2s_startup,
+diff --git a/sound/soc/tegra/tegra210_i2s.c b/sound/soc/tegra/tegra210_i2s.c
+index 9552bbb939dd1..a304948ee3935 100644
+--- a/sound/soc/tegra/tegra210_i2s.c
++++ b/sound/soc/tegra/tegra210_i2s.c
+@@ -214,11 +214,11 @@ static int tegra210_i2s_set_fmt(struct snd_soc_dai *dai,
+ 	unsigned int mask, val;
+ 
+ 	mask = I2S_CTRL_MASTER_EN_MASK;
 -	switch (fmt & SND_SOC_DAIFMT_MASTER_MASK) {
--	case SND_SOC_DAIFMT_CBM_CFM:
+-	case SND_SOC_DAIFMT_CBS_CFS:
 +	switch (fmt & SND_SOC_DAIFMT_CLOCK_PROVIDER_MASK) {
-+	case SND_SOC_DAIFMT_BC_FC:
- 		tmp |= mod_slave;
++	case SND_SOC_DAIFMT_BP_FP:
+ 		val = 0;
  		break;
--	case SND_SOC_DAIFMT_CBS_CFS:
-+	case SND_SOC_DAIFMT_BP_FP:
- 		/*
- 		 * Set default source clock in Master mode, only when the
- 		 * CLK_I2S_RCLK_SRC clock is not exposed so we ensure any
-@@ -1107,7 +1107,7 @@ static int samsung_i2s_dai_remove(struct snd_soc_dai *dai)
- static const struct snd_soc_dai_ops samsung_i2s_dai_ops = {
- 	.trigger = i2s_trigger,
- 	.hw_params = i2s_hw_params,
--	.set_fmt = i2s_set_fmt,
-+	.set_fmt_new = i2s_set_fmt,
- 	.set_clkdiv = i2s_set_clkdiv,
- 	.set_sysclk = i2s_set_sysclk,
- 	.startup = i2s_startup,
-diff --git a/sound/soc/samsung/pcm.c b/sound/soc/samsung/pcm.c
-index 4c4dfde0568fe..818172d8832d2 100644
---- a/sound/soc/samsung/pcm.c
-+++ b/sound/soc/samsung/pcm.c
-@@ -340,8 +340,8 @@ static int s3c_pcm_set_fmt(struct snd_soc_dai *cpu_dai,
- 		goto exit;
- 	}
- 
--	switch (fmt & SND_SOC_DAIFMT_MASTER_MASK) {
--	case SND_SOC_DAIFMT_CBS_CFS:
-+	switch (fmt & SND_SOC_DAIFMT_CLOCK_PROVIDER_MASK) {
-+	case SND_SOC_DAIFMT_BP_FP:
- 		/* Nothing to do, Master by default */
+-	case SND_SOC_DAIFMT_CBM_CFM:
++	case SND_SOC_DAIFMT_BC_FC:
+ 		val = I2S_CTRL_MASTER_EN;
  		break;
  	default:
-@@ -437,7 +437,7 @@ static const struct snd_soc_dai_ops s3c_pcm_dai_ops = {
- 	.set_clkdiv	= s3c_pcm_set_clkdiv,
- 	.trigger	= s3c_pcm_trigger,
- 	.hw_params	= s3c_pcm_hw_params,
--	.set_fmt	= s3c_pcm_set_fmt,
-+	.set_fmt_new	= s3c_pcm_set_fmt,
- };
+@@ -678,7 +678,7 @@ static int tegra210_i2s_hw_params(struct snd_pcm_substream *substream,
+ }
  
- static int s3c_pcm_dai_probe(struct snd_soc_dai *dai)
-diff --git a/sound/soc/samsung/s3c-i2s-v2.c b/sound/soc/samsung/s3c-i2s-v2.c
-index de66cc422e6ea..9c8a0697849d7 100644
---- a/sound/soc/samsung/s3c-i2s-v2.c
-+++ b/sound/soc/samsung/s3c-i2s-v2.c
-@@ -252,12 +252,12 @@ static int s3c2412_i2s_set_fmt(struct snd_soc_dai *cpu_dai,
- 	iismod = readl(i2s->regs + S3C2412_IISMOD);
- 	pr_debug("hw_params r: IISMOD: %x \n", iismod);
+ static const struct snd_soc_dai_ops tegra210_i2s_dai_ops = {
+-	.set_fmt	= tegra210_i2s_set_fmt,
++	.set_fmt_new	= tegra210_i2s_set_fmt,
+ 	.hw_params	= tegra210_i2s_hw_params,
+ 	.set_bclk_ratio	= tegra210_i2s_set_dai_bclk_ratio,
+ 	.set_tdm_slot	= tegra210_i2s_set_tdm_slot,
+diff --git a/sound/soc/tegra/tegra30_i2s.c b/sound/soc/tegra/tegra30_i2s.c
+index 084a533bf4f2c..a4ea5221de6b4 100644
+--- a/sound/soc/tegra/tegra30_i2s.c
++++ b/sound/soc/tegra/tegra30_i2s.c
+@@ -87,11 +87,11 @@ static int tegra30_i2s_set_fmt(struct snd_soc_dai *dai,
+ 	}
  
+ 	mask |= TEGRA30_I2S_CTRL_MASTER_ENABLE;
 -	switch (fmt & SND_SOC_DAIFMT_MASTER_MASK) {
--	case SND_SOC_DAIFMT_CBM_CFM:
+-	case SND_SOC_DAIFMT_CBS_CFS:
 +	switch (fmt & SND_SOC_DAIFMT_CLOCK_PROVIDER_MASK) {
++	case SND_SOC_DAIFMT_BP_FP:
+ 		val |= TEGRA30_I2S_CTRL_MASTER_ENABLE;
+ 		break;
+-	case SND_SOC_DAIFMT_CBM_CFM:
 +	case SND_SOC_DAIFMT_BC_FC:
- 		i2s->master = 0;
- 		iismod |= S3C2412_IISMOD_SLAVE;
- 		break;
--	case SND_SOC_DAIFMT_CBS_CFS:
-+	case SND_SOC_DAIFMT_BP_FP:
- 		i2s->master = 1;
- 		iismod &= ~S3C2412_IISMOD_SLAVE;
- 		break;
-@@ -666,7 +666,7 @@ int s3c_i2sv2_register_component(struct device *dev, int id,
- 	ops->trigger = s3c2412_i2s_trigger;
- 	if (!ops->hw_params)
- 		ops->hw_params = s3c_i2sv2_hw_params;
--	ops->set_fmt = s3c2412_i2s_set_fmt;
-+	ops->set_fmt_new = s3c2412_i2s_set_fmt;
- 	ops->set_clkdiv = s3c2412_i2s_set_clkdiv;
- 	ops->set_sysclk = s3c_i2sv2_set_sysclk;
- 
-diff --git a/sound/soc/samsung/s3c24xx-i2s.c b/sound/soc/samsung/s3c24xx-i2s.c
-index 0f46304eaa4f3..6226b3b585e54 100644
---- a/sound/soc/samsung/s3c24xx-i2s.c
-+++ b/sound/soc/samsung/s3c24xx-i2s.c
-@@ -169,11 +169,11 @@ static int s3c24xx_i2s_set_fmt(struct snd_soc_dai *cpu_dai,
- 	iismod = readl(s3c24xx_i2s.regs + S3C2410_IISMOD);
- 	pr_debug("hw_params r: IISMOD: %x \n", iismod);
- 
--	switch (fmt & SND_SOC_DAIFMT_MASTER_MASK) {
--	case SND_SOC_DAIFMT_CBM_CFM:
-+	switch (fmt & SND_SOC_DAIFMT_CLOCK_PROVIDER_MASK) {
-+	case SND_SOC_DAIFMT_BC_CFC:
- 		iismod |= S3C2410_IISMOD_SLAVE;
- 		break;
--	case SND_SOC_DAIFMT_CBS_CFS:
-+	case SND_SOC_DAIFMT_BP_FP:
- 		iismod &= ~S3C2410_IISMOD_SLAVE;
  		break;
  	default:
-@@ -394,7 +394,7 @@ static int s3c24xx_i2s_resume(struct snd_soc_component *component)
- static const struct snd_soc_dai_ops s3c24xx_i2s_dai_ops = {
- 	.trigger	= s3c24xx_i2s_trigger,
- 	.hw_params	= s3c24xx_i2s_hw_params,
--	.set_fmt	= s3c24xx_i2s_set_fmt,
-+	.set_fmt_new	= s3c24xx_i2s_set_fmt,
- 	.set_clkdiv	= s3c24xx_i2s_set_clkdiv,
- 	.set_sysclk	= s3c24xx_i2s_set_sysclk,
- };
+ 		return -EINVAL;
+@@ -304,7 +304,7 @@ static int tegra30_i2s_probe(struct snd_soc_dai *dai)
+ }
+ 
+ static const struct snd_soc_dai_ops tegra30_i2s_dai_ops = {
+-	.set_fmt	= tegra30_i2s_set_fmt,
++	.set_fmt_new	= tegra30_i2s_set_fmt,
+ 	.hw_params	= tegra30_i2s_hw_params,
+ 	.trigger	= tegra30_i2s_trigger,
+ 	.set_tdm_slot	= tegra30_i2s_set_tdm,
 -- 
 2.30.2
 
