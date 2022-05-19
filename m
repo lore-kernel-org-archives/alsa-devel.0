@@ -4,78 +4,78 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 41EAFC433EF
-	for <alsa-devel@archiver.kernel.org>; Thu, 19 May 2022 15:49:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B2E73C433FE
+	for <alsa-devel@archiver.kernel.org>; Thu, 19 May 2022 15:50:08 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 69B3716BE;
-	Thu, 19 May 2022 17:49:02 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 69B3716BE
+	by alsa0.perex.cz (Postfix) with ESMTPS id E95AE16CD;
+	Thu, 19 May 2022 17:49:16 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E95AE16CD
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1652975392;
-	bh=4S0w/pAircw4UyXPzfy7XFW2UmoKpsBnLN8BJYJdUqU=;
+	s=default; t=1652975407;
+	bh=FWpHVdh/vuqM6E83LyUvyFHfufpywWivp87z7hujd1g=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=C6l7n8RlnTi0vCRCrgUPeTlsKhxiNLpicYHaHfHZDf68eVZT2uYJgcd82/psyCm1u
-	 RZq7kX/eahmfwiwPbyVsvTsNPGpB4f83TThC43XR4YEPLCi3TwqP3P9kD1Wedac+cb
-	 YIptJhvE9Sqq4SUEfCKiWqmfG3PgYolZ6Nmy1+Hg=
+	b=Fpq99t75cRB6TW/CzUjlvmbNnR41gcwlF6pljo+4oZ85QXghozJ63Yjp7wAbzaZd/
+	 sTefxVsPMumCyGupYIhV5Kzd09uvo5slb/KGt0Abe39PU9Y3wr3Bs8HcsJABNNHKrn
+	 PioYAmYN7XxykxDhmiBPwESxy7l8jJCtdKSBjYOU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id E79AEF805E8;
-	Thu, 19 May 2022 17:44:09 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 5A566F805E9;
+	Thu, 19 May 2022 17:44:11 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 088E3F805C3; Thu, 19 May 2022 17:43:57 +0200 (CEST)
+ id 548A6F805C2; Thu, 19 May 2022 17:43:57 +0200 (CEST)
 Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
  [67.231.149.25])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id D17C3F80269
- for <alsa-devel@alsa-project.org>; Thu, 19 May 2022 17:43:34 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D17C3F80269
+ by alsa1.perex.cz (Postfix) with ESMTPS id 176B4F80528
+ for <alsa-devel@alsa-project.org>; Thu, 19 May 2022 17:43:33 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 176B4F80528
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com
- header.b="DrR83HdM"
+ header.b="L0kTv7Dq"
 Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
- by mx0a-001ae601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 24J6k11o002261;
- Thu, 19 May 2022 10:43:32 -0500
+ by mx0a-001ae601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 24J6k11m002261;
+ Thu, 19 May 2022 10:43:31 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
  h=from : to : cc :
  subject : date : message-id : in-reply-to : references : mime-version :
  content-transfer-encoding : content-type; s=PODMain02222019;
- bh=tjnD/juqDx0r9lwGe7Wq0UvP1XDXAhB0eJFtnk9DZ0Y=;
- b=DrR83HdM1bvgprtkGM1OGxUmf50LWqPhMWyR0tKTPhaY7G4FA/VONpKYHrElSfsyj900
- LOY6kl2/Av2BMzqD8Eog09oPRTvQWXYeq9VXS6kzwPh3jGkysMEl8px3CCoYoW72KmKV
- AWy0KW6uDAtH4UxoesbKx63F/RF5rLUvwZl8qQ7fHyRjoYr0h2EtC2gwc57LBfeBvBHQ
- hKiS9QDGOUxZWq0OMHnB2hpL3tG9t05ySMeXSYZvoAAQpCZjHp++jBvG39UH0qxkcuBK
- k6leIRTXN4GSoWgMM0mdDUR8Vc2x8dGFLKeP0+ZMcjvTqw6PX2cKN5GwRSOTJ+mWbVIs rw== 
+ bh=Yd0cAQSedFMycXCxPoAg0L5aPNoKfkfIW3+XQJ+og9U=;
+ b=L0kTv7DqrTasPfqs1qdQbcKeowa4PoXC1JlkAhKCWy1JRwGj7FcBPXdoa+yodMN+rhsC
+ lo3xqb04gM+d4DBFIEQZ05vRktl/8EEVOf+2CWD7vZKTTR/Px3CtFnSf6e9qU0aNMG0p
+ hd49bPGaOs8KpebqE+5WA2uf8YWT14wifPCmgP7uCfne8Cr/uQl6Nujfm9s7OsuTEpCs
+ K02QmwWs7dcHv1qxN+bdZmXmjUrrKnQIK4EVyKENOL6QDKH2Av6G+uRqj40TFu9QUz2I
+ xFIapgG0pXvc2wvufmeTWq71S3XbyXh6Ln9kyHnECWusNXVTVygZEnxzmz5iwBQYULxu VQ== 
 Received: from ediex02.ad.cirrus.com ([84.19.233.68])
- by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3g29u37mcg-3
+ by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3g29u37mcg-2
  (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
- Thu, 19 May 2022 10:43:32 -0500
+ Thu, 19 May 2022 10:43:31 -0500
 Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX02.ad.cirrus.com
  (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.24; Thu, 19 May
- 2022 16:43:20 +0100
+ 2022 16:43:18 +0100
 Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
  (198.61.84.80) with Microsoft SMTP Server id 15.1.2375.24 via
- Frontend Transport; Thu, 19 May 2022 16:43:20 +0100
+ Frontend Transport; Thu, 19 May 2022 16:43:18 +0100
 Received: from algalon.ad.cirrus.com (algalon.ad.cirrus.com [198.90.251.122])
- by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 023BD476;
- Thu, 19 May 2022 15:43:20 +0000 (UTC)
+ by ediswmail.ad.cirrus.com (Postfix) with ESMTP id D112F11D4;
+ Thu, 19 May 2022 15:43:18 +0000 (UTC)
 From: Charles Keepax <ckeepax@opensource.cirrus.com>
 To: <broonie@kernel.org>
-Subject: [PATCH 22/56] ASoC: sunxi: Update to use set_fmt_new callback
-Date: Thu, 19 May 2022 16:42:44 +0100
-Message-ID: <20220519154318.2153729-23-ckeepax@opensource.cirrus.com>
+Subject: [PATCH 07/56] ASoC: dwc: Update to use set_fmt_new callback
+Date: Thu, 19 May 2022 16:42:29 +0100
+Message-ID: <20220519154318.2153729-8-ckeepax@opensource.cirrus.com>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20220519154318.2153729-1-ckeepax@opensource.cirrus.com>
 References: <20220519154318.2153729-1-ckeepax@opensource.cirrus.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-Proofpoint-GUID: KaEXYmEwQEaUYiBbVtR-BjOHPaOE3Qq8
-X-Proofpoint-ORIG-GUID: KaEXYmEwQEaUYiBbVtR-BjOHPaOE3Qq8
+X-Proofpoint-GUID: concj0zx7CiOXvoUGleae8R55AUn_QvF
+X-Proofpoint-ORIG-GUID: concj0zx7CiOXvoUGleae8R55AUn_QvF
 X-Proofpoint-Spam-Reason: safe
 Cc: cezary.rojewski@intel.com, heiko@sntech.de,
  kuninori.morimoto.gx@renesas.com, alsa-devel@alsa-project.org,
@@ -105,107 +105,52 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 As part of updating the core to directly tell drivers if they are clock
-provider or consumer update these CPU side drivers to use the new direct
+provider or consumer update this CPU side driver to use the new direct
 callback.
 
 Signed-off-by: Charles Keepax <ckeepax@opensource.cirrus.com>
 ---
- sound/soc/sunxi/sun4i-i2s.c   | 20 ++++++++++----------
- sound/soc/sunxi/sun8i-codec.c |  8 ++++----
- 2 files changed, 14 insertions(+), 14 deletions(-)
+ sound/soc/dwc/dwc-i2s.c | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
-diff --git a/sound/soc/sunxi/sun4i-i2s.c b/sound/soc/sunxi/sun4i-i2s.c
-index 7047f71629ab3..872838d3e0a94 100644
---- a/sound/soc/sunxi/sun4i-i2s.c
-+++ b/sound/soc/sunxi/sun4i-i2s.c
-@@ -702,13 +702,13 @@ static int sun4i_i2s_set_soc_fmt(const struct sun4i_i2s *i2s,
- 			   SUN4I_I2S_FMT0_FMT_MASK, val);
+diff --git a/sound/soc/dwc/dwc-i2s.c b/sound/soc/dwc/dwc-i2s.c
+index 1edac3e10f345..d3778d2d739d8 100644
+--- a/sound/soc/dwc/dwc-i2s.c
++++ b/sound/soc/dwc/dwc-i2s.c
+@@ -357,20 +357,20 @@ static int dw_i2s_set_fmt(struct snd_soc_dai *cpu_dai, unsigned int fmt)
+ 	int ret = 0;
  
- 	/* DAI clock master masks */
--	switch (fmt & SND_SOC_DAIFMT_MASTER_MASK) {
--	case SND_SOC_DAIFMT_CBS_CFS:
-+	switch (fmt & SND_SOC_DAIFMT_CLOCK_PROVIDER_MASK) {
-+	case SND_SOC_DAIFMT_BP_FP:
- 		/* BCLK and LRCLK master */
- 		val = SUN4I_I2S_CTRL_MODE_MASTER;
- 		break;
- 
--	case SND_SOC_DAIFMT_CBM_CFM:
+ 	switch (fmt & SND_SOC_DAIFMT_CLOCK_PROVIDER_MASK) {
+-	case SND_SOC_DAIFMT_CBP_CFP:
 +	case SND_SOC_DAIFMT_BC_FC:
- 		/* BCLK and LRCLK slave */
- 		val = SUN4I_I2S_CTRL_MODE_SLAVE;
+ 		if (dev->capability & DW_I2S_SLAVE)
+ 			ret = 0;
+ 		else
+ 			ret = -EINVAL;
  		break;
-@@ -802,13 +802,13 @@ static int sun8i_i2s_set_soc_fmt(const struct sun4i_i2s *i2s,
- 			   SUN8I_I2S_TX_CHAN_OFFSET(offset));
- 
- 	/* DAI clock master masks */
--	switch (fmt & SND_SOC_DAIFMT_MASTER_MASK) {
--	case SND_SOC_DAIFMT_CBS_CFS:
-+	switch (fmt & SND_SOC_DAIFMT_CLOCK_PROVIDER_MASK) {
+-	case SND_SOC_DAIFMT_CBC_CFC:
 +	case SND_SOC_DAIFMT_BP_FP:
- 		/* BCLK and LRCLK master */
- 		val = SUN8I_I2S_CTRL_BCLK_OUT |	SUN8I_I2S_CTRL_LRCK_OUT;
+ 		if (dev->capability & DW_I2S_MASTER)
+ 			ret = 0;
+ 		else
+ 			ret = -EINVAL;
  		break;
- 
--	case SND_SOC_DAIFMT_CBM_CFM:
-+	case SND_SOC_DAIFMT_BC_FC:
- 		/* BCLK and LRCLK slave */
- 		val = 0;
- 		break;
-@@ -909,13 +909,13 @@ static int sun50i_h6_i2s_set_soc_fmt(const struct sun4i_i2s *i2s,
- 			   SUN50I_H6_I2S_TX_CHAN_SEL_OFFSET(offset));
- 
- 	/* DAI clock master masks */
--	switch (fmt & SND_SOC_DAIFMT_MASTER_MASK) {
--	case SND_SOC_DAIFMT_CBS_CFS:
-+	switch (fmt & SND_SOC_DAIFMT_CLOCK_PROVIDER_MASK) {
-+	case SND_SOC_DAIFMT_BP_FP:
- 		/* BCLK and LRCLK master */
- 		val = SUN8I_I2S_CTRL_BCLK_OUT |	SUN8I_I2S_CTRL_LRCK_OUT;
- 		break;
- 
--	case SND_SOC_DAIFMT_CBM_CFM:
-+	case SND_SOC_DAIFMT_BC_FC:
- 		/* BCLK and LRCLK slave */
- 		val = 0;
- 		break;
-@@ -1081,7 +1081,7 @@ static int sun4i_i2s_set_tdm_slot(struct snd_soc_dai *dai,
- 
- static const struct snd_soc_dai_ops sun4i_i2s_dai_ops = {
- 	.hw_params	= sun4i_i2s_hw_params,
--	.set_fmt	= sun4i_i2s_set_fmt,
-+	.set_fmt_new	= sun4i_i2s_set_fmt,
- 	.set_sysclk	= sun4i_i2s_set_sysclk,
- 	.set_tdm_slot	= sun4i_i2s_set_tdm_slot,
- 	.trigger	= sun4i_i2s_trigger,
-diff --git a/sound/soc/sunxi/sun8i-codec.c b/sound/soc/sunxi/sun8i-codec.c
-index 0bea2162f68d9..6e9ef948d6621 100644
---- a/sound/soc/sunxi/sun8i-codec.c
-+++ b/sound/soc/sunxi/sun8i-codec.c
-@@ -286,11 +286,11 @@ static int sun8i_codec_set_fmt(struct snd_soc_dai *dai, unsigned int fmt)
- 	u32 dsp_format, format, invert, value;
- 
- 	/* clock masters */
--	switch (fmt & SND_SOC_DAIFMT_MASTER_MASK) {
--	case SND_SOC_DAIFMT_CBS_CFS: /* Codec slave, DAI master */
-+	switch (fmt & SND_SOC_DAIFMT_CLOCK_PROVIDER_MASK) {
-+	case SND_SOC_DAIFMT_BP_FP: /* Codec slave, DAI master */
- 		value = 0x1;
- 		break;
--	case SND_SOC_DAIFMT_CBM_CFM: /* Codec Master, DAI slave */
-+	case SND_SOC_DAIFMT_BC_FC: /* Codec Master, DAI slave */
- 		value = 0x0;
+-	case SND_SOC_DAIFMT_CBP_CFC:
+-	case SND_SOC_DAIFMT_CBC_CFP:
++	case SND_SOC_DAIFMT_BC_FP:
++	case SND_SOC_DAIFMT_BP_FC:
+ 		ret = -EINVAL;
  		break;
  	default:
-@@ -630,7 +630,7 @@ static int sun8i_codec_hw_free(struct snd_pcm_substream *substream,
- }
+@@ -387,7 +387,7 @@ static const struct snd_soc_dai_ops dw_i2s_dai_ops = {
+ 	.hw_params	= dw_i2s_hw_params,
+ 	.prepare	= dw_i2s_prepare,
+ 	.trigger	= dw_i2s_trigger,
+-	.set_fmt	= dw_i2s_set_fmt,
++	.set_fmt_new	= dw_i2s_set_fmt,
+ };
  
- static const struct snd_soc_dai_ops sun8i_codec_dai_ops = {
--	.set_fmt	= sun8i_codec_set_fmt,
-+	.set_fmt_new	= sun8i_codec_set_fmt,
- 	.set_tdm_slot	= sun8i_codec_set_tdm_slot,
- 	.startup	= sun8i_codec_startup,
- 	.hw_params	= sun8i_codec_hw_params,
+ #ifdef CONFIG_PM
 -- 
 2.30.2
 
