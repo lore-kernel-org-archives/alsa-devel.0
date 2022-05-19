@@ -4,80 +4,79 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 22F0CC433F5
-	for <alsa-devel@archiver.kernel.org>; Thu, 19 May 2022 17:52:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E1EAEC433F5
+	for <alsa-devel@archiver.kernel.org>; Thu, 19 May 2022 17:52:17 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 7286F17EB;
-	Thu, 19 May 2022 19:51:12 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7286F17EB
+	by alsa0.perex.cz (Postfix) with ESMTPS id 31F0717F0;
+	Thu, 19 May 2022 19:51:26 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 31F0717F0
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1652982722;
-	bh=TYW6m6FsZTgi9/HXOilYOVwL35j8UnKEnnbWZDogcKM=;
+	s=default; t=1652982736;
+	bh=D9kSCjHK5fzcVjEGYXVbDTo3WKeyBSEp0Zdkksuqj0I=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=MzzuEsRb8F5+p89ZK4/3pWbeZ+/XWaW3gx4ZTxMGr/Vi9PXd6Go4tsAfwgD98wuEU
-	 G/xyhYqctQRzUbliQr9/UY5QZKO155xYxw1/4bFJmo+j1/7z2k3Y7RgSNaE/d2pm2D
-	 K52jJm2oX7h84/2EGP2VMv6ET7X07YoKJus7IXUM=
+	b=MRYDhq0LOgwzI7oAcNzIfbnZpV9tz8Dlz49YvigWVocNMD7JYkwAowqxTyMyBXem+
+	 fl2V0rM2lekbH/8k3v/oBVWSWPtv2kJS978ggS75wwAInrBDqifaokg8QZhz66PH4D
+	 mb6uftC6zsiST0SmDCwSx7W42NF4fZPFEZ17etEY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 564B7F80529;
+	by alsa1.perex.cz (Postfix) with ESMTP id E81E1F8056F;
 	Thu, 19 May 2022 19:48:19 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 34CA8F8055B; Thu, 19 May 2022 19:48:13 +0200 (CEST)
+ id 9C8B5F8051E; Thu, 19 May 2022 19:48:13 +0200 (CEST)
 Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
  [67.231.149.25])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id C4547F8051D
- for <alsa-devel@alsa-project.org>; Thu, 19 May 2022 19:47:58 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C4547F8051D
+ by alsa1.perex.cz (Postfix) with ESMTPS id 391B4F800F0
+ for <alsa-devel@alsa-project.org>; Thu, 19 May 2022 19:48:00 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 391B4F800F0
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com
- header.b="hW5YzUwS"
+ header.b="W88ZVcfJ"
 Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
- by mx0a-001ae601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 24J6k19F002261;
- Thu, 19 May 2022 12:47:56 -0500
+ by mx0a-001ae601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 24J5MiMw023727;
+ Thu, 19 May 2022 12:47:58 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
  h=from : to : cc :
  subject : date : message-id : in-reply-to : references : mime-version :
  content-transfer-encoding : content-type; s=PODMain02222019;
- bh=lT5+Vd2K9nx9nebBMceyYbav4hKVz0RuGn2jqWZLaCs=;
- b=hW5YzUwSDtt/du9D7tB+AFXvzZuPeWcYS0Rx/5iiBoFbzBVG8uk+f0WL5Hwpdah+GOFw
- BUan4kxc1otN6RR7/mT9FAzckteb+KBa9hfpJcqBKOkQQIpJE3DI8EbvNZV7D0Z7LuL3
- VKmFOrWcZ5bb++BqK0rMrTMjybYijNlImxaPKpDgCulDgFs6WZnNXiqhqubfAZXBWZpG
- 3OafSCFSi+MDt/LqPS4/XsgeuzyWeahVUJgtndRDb8SsZMfKg1zK2lVEnmFlMo41Pu+S
- gUkkxawV6QOexaDdINNUhpAl7ezXjHkUJK5GC8OQ3OqLLq7ZRblLrV5bhbpyJzfC0cjr Bg== 
-Received: from ediex02.ad.cirrus.com ([84.19.233.68])
- by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3g29u37ted-7
+ bh=i1KBfpmWq85BkKRplVpoCF4sGjk4Y2NdJNchd02pEJA=;
+ b=W88ZVcfJhmPnzUxupTGM9MsmjLQCGtMHwMqPD1YJJo/dAeDjRrGUDtmVtjf7vIfDge23
+ g3jpR9Vk8WAdX1rmA6JE8Ua8urL+RRMkUCg4l9EG0ePlDwbXZQCvvfI/VuZrulnJXQpf
+ gL3zZt25y/k18DZ2Tllqf31CT4j79O1pKP5ue2J0RHNJWqbbyJjWGyNbjMHGFgdaLuN6
+ CJ4/6Vhbp5gqWiMCHEq+5d8IKZFRPQO/ozMbxuMFjIA6kknn8KuxoRX6J9atQ2aiE8ih
+ 7sI5ouMXQk1Mr1rX4inziEhxR5H1mfhhsY9OkVx5qID6J2qlH1h8NAxlzHnqx88qApyH WA== 
+Received: from ediex01.ad.cirrus.com ([84.19.233.68])
+ by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3g29u37tee-8
  (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
- Thu, 19 May 2022 12:47:56 -0500
-Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX02.ad.cirrus.com
- (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
+ Thu, 19 May 2022 12:47:57 -0500
+Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.24; Thu, 19 May
- 2022 18:47:55 +0100
+ 2022 18:47:56 +0100
 Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
  (198.61.84.80) with Microsoft SMTP Server id 15.1.2375.24 via
- Frontend Transport; Thu, 19 May 2022 18:47:55 +0100
+ Frontend Transport; Thu, 19 May 2022 18:47:56 +0100
 Received: from vitaly-Legion-7-16ACHg6.ad.cirrus.com (unknown [198.90.238.59])
- by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 51536458;
+ by ediswmail.ad.cirrus.com (Postfix) with ESMTP id AA5C8476;
  Thu, 19 May 2022 17:47:55 +0000 (UTC)
 From: Vitaly Rodionov <vitalyr@opensource.cirrus.com>
 To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Mark
  Brown <broonie@kernel.org>
-Subject: [PATCH v3 13/17] ALSA: hda: cs35l41: Read Speaker Calibration data
- from UEFI variables
-Date: Thu, 19 May 2022 18:47:45 +0100
-Message-ID: <20220519174749.15459-14-vitalyr@opensource.cirrus.com>
+Subject: [PATCH v3 14/17] ALSA: hda: hda_cs_dsp_ctl: Add fw id strings
+Date: Thu, 19 May 2022 18:47:46 +0100
+Message-ID: <20220519174749.15459-15-vitalyr@opensource.cirrus.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20220519174749.15459-1-vitalyr@opensource.cirrus.com>
 References: <20220519174749.15459-1-vitalyr@opensource.cirrus.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-Proofpoint-GUID: qMteE48VueEwC7NqqKMd1iYup2WQRQSM
-X-Proofpoint-ORIG-GUID: qMteE48VueEwC7NqqKMd1iYup2WQRQSM
+X-Proofpoint-GUID: qjMIQxDJpqHELbsaoxr2Ja2eYVTl37xm
+X-Proofpoint-ORIG-GUID: qjMIQxDJpqHELbsaoxr2Ja2eYVTl37xm
 X-Proofpoint-Spam-Reason: safe
 Cc: patches@opensource.cirrus.com, alsa-devel@alsa-project.org,
  linux-kernel@vger.kernel.org, Stefan Binding <sbinding@opensource.cirrus.com>
@@ -98,143 +97,51 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 From: Stefan Binding <sbinding@opensource.cirrus.com>
 
-Speaker Calibration data, specific to an individual speaker is
-stored inside UEFI variables during calibration, and can be
-used by the DSP.
+This will be used to define the firmware names.
 
 Signed-off-by: Stefan Binding <sbinding@opensource.cirrus.com>
 Signed-off-by: Vitaly Rodionov <vitalyr@opensource.cirrus.com>
 ---
 
 Changes since v2:
- - Fixed building without CONFIG_EFI
+ - No change
  
- sound/pci/hda/cs35l41_hda.c | 63 +++++++++++++++++++++++++++++++++++++
- sound/pci/hda/cs35l41_hda.h | 15 +++++++++
- 2 files changed, 78 insertions(+)
+ sound/pci/hda/hda_cs_dsp_ctl.c | 8 ++++++++
+ sound/pci/hda/hda_cs_dsp_ctl.h | 2 ++
+ 2 files changed, 10 insertions(+)
 
-diff --git a/sound/pci/hda/cs35l41_hda.c b/sound/pci/hda/cs35l41_hda.c
-index 9c622104bf01..016f97f61c34 100644
---- a/sound/pci/hda/cs35l41_hda.c
-+++ b/sound/pci/hda/cs35l41_hda.c
-@@ -26,6 +26,9 @@
- #define HALO_STATE_DSP_CTL_NAME		"HALO_STATE"
- #define HALO_STATE_DSP_CTL_TYPE		5
- #define HALO_STATE_DSP_CTL_ALG		262308
-+#define CAL_R_DSP_CTL_NAME		"CAL_R"
-+#define CAL_R_DSP_CTL_TYPE		5
-+#define CAL_R_DSP_CTL_ALG		205
+diff --git a/sound/pci/hda/hda_cs_dsp_ctl.c b/sound/pci/hda/hda_cs_dsp_ctl.c
+index 3b837d000a00..4cf5f7c2e267 100644
+--- a/sound/pci/hda/hda_cs_dsp_ctl.c
++++ b/sound/pci/hda/hda_cs_dsp_ctl.c
+@@ -30,6 +30,14 @@ static const char * const hda_cs_dsp_fw_text[HDA_CS_DSP_NUM_FW] = {
+ 	[HDA_CS_DSP_FW_MISC] =     "Misc",
+ };
  
- static const struct reg_sequence cs35l41_hda_config[] = {
- 	{ CS35L41_PLL_CLK_CTRL,		0x00000430 }, // 3072000Hz, BCLK Input, PLL_REFCLK_EN = 1
-@@ -282,6 +285,61 @@ static int cs35l41_request_firmware_files(struct cs35l41_hda *cs35l41,
- 	return ret;
- }
- 
-+#if IS_ENABLED(CONFIG_EFI)
-+static int cs35l41_apply_calibration(struct cs35l41_hda *cs35l41)
-+{
-+	static efi_guid_t efi_guid = EFI_GUID(0x02f9af02, 0x7734, 0x4233, 0xb4, 0x3d, 0x93, 0xfe,
-+					      0x5a, 0xa3, 0x5d, 0xb3);
-+	static efi_char16_t efi_name[] = L"CirrusSmartAmpCalibrationData";
-+	const struct cs35l41_amp_efi_data *efi_data;
-+	const struct cs35l41_amp_cal_data *cl;
-+	unsigned long data_size = 0;
-+	efi_status_t status;
-+	int ret = 0;
-+	u8 *data = NULL;
-+	u32 attr;
-+	u32 r0;
++const char * const hda_cs_dsp_fw_ids[HDA_CS_DSP_NUM_FW] = {
++	[HDA_CS_DSP_FW_SPK_PROT] = "spk-prot",
++	[HDA_CS_DSP_FW_SPK_CALI] = "spk-cali",
++	[HDA_CS_DSP_FW_SPK_DIAG] = "spk-diag",
++	[HDA_CS_DSP_FW_MISC] =     "misc",
++};
++EXPORT_SYMBOL_NS_GPL(hda_cs_dsp_fw_ids, SND_HDA_CS_DSP_CONTROLS);
 +
-+	/* Get real size of UEFI variable */
-+	status = efi.get_variable(efi_name, &efi_guid, &attr, &data_size, data);
-+	if (status == EFI_BUFFER_TOO_SMALL) {
-+		ret = -ENODEV;
-+		/* Allocate data buffer of data_size bytes */
-+		data = vmalloc(data_size);
-+		if (!data)
-+			return -ENOMEM;
-+		/* Get variable contents into buffer */
-+		status = efi.get_variable(efi_name, &efi_guid, &attr, &data_size, data);
-+		if (status == EFI_SUCCESS) {
-+			efi_data = (struct cs35l41_amp_efi_data *)data;
-+			dev_dbg(cs35l41->dev, "Calibration: Size=%d, Amp Count=%d\n",
-+				efi_data->size, efi_data->count);
-+			if (efi_data->count > cs35l41->index) {
-+				cl = &efi_data->data[cs35l41->index];
-+				dev_dbg(cs35l41->dev,
-+					"Calibration: Ambient=%02x, Status=%02x, R0=%d\n",
-+					cl->calAmbient, cl->calStatus, cl->calR);
-+				r0 = cpu_to_be32(cl->calR);
-+				ret = hda_cs_dsp_write_ctl(&cs35l41->cs_dsp, CAL_R_DSP_CTL_NAME,
-+							   CAL_R_DSP_CTL_TYPE, CAL_R_DSP_CTL_ALG,
-+							   &r0, 4);
-+				if (ret)
-+					dev_err(cs35l41->dev, "Cannot Write Control: %s - %d\n",
-+						CAL_R_DSP_CTL_NAME, ret);
-+			}
-+		}
-+		vfree(data);
-+	}
-+	return ret;
-+}
-+#else
-+static int cs35l41_apply_calibration(struct cs35l41_hda *cs35l41)
-+{
-+	dev_warn(cs35l41->dev, "Calibration not supported without EFI support.\n");
-+	return 0;
-+}
-+#endif
-+
- static int cs35l41_init_dsp(struct cs35l41_hda *cs35l41)
+ static inline struct hda_cs_dsp_coeff_ctl *bytes_ext_to_ctl(struct soc_bytes_ext *ext)
  {
- 	const struct firmware *coeff_firmware = NULL;
-@@ -314,7 +372,12 @@ static int cs35l41_init_dsp(struct cs35l41_hda *cs35l41)
+ 	return container_of(ext, struct hda_cs_dsp_coeff_ctl, bytes_ext);
+diff --git a/sound/pci/hda/hda_cs_dsp_ctl.h b/sound/pci/hda/hda_cs_dsp_ctl.h
+index 65b9c5c68957..265d8024eec9 100644
+--- a/sound/pci/hda/hda_cs_dsp_ctl.h
++++ b/sound/pci/hda/hda_cs_dsp_ctl.h
+@@ -27,6 +27,8 @@ struct hda_cs_dsp_ctl_info {
+ 	const char *amp_name;
+ };
  
- 	ret = cs_dsp_power_up(dsp, wmfw_firmware, wmfw_filename, coeff_firmware, coeff_filename,
- 			      FW_NAME);
-+	if (ret)
-+		goto err_release;
++extern const char * const hda_cs_dsp_fw_ids[HDA_CS_DSP_NUM_FW];
 +
-+	ret = cs35l41_apply_calibration(cs35l41);
- 
-+err_release:
- 	if (wmfw_firmware)
- 		release_firmware(wmfw_firmware);
- 	if (coeff_firmware)
-diff --git a/sound/pci/hda/cs35l41_hda.h b/sound/pci/hda/cs35l41_hda.h
-index 54521a013e78..3cf9871fbed2 100644
---- a/sound/pci/hda/cs35l41_hda.h
-+++ b/sound/pci/hda/cs35l41_hda.h
-@@ -10,6 +10,7 @@
- #ifndef __CS35L41_HDA_H__
- #define __CS35L41_HDA_H__
- 
-+#include <linux/efi.h>
- #include <linux/regulator/consumer.h>
- #include <linux/gpio/consumer.h>
- #include <linux/device.h>
-@@ -18,6 +19,20 @@
- #include <linux/firmware/cirrus/cs_dsp.h>
- #include <linux/firmware/cirrus/wmfw.h>
- 
-+struct cs35l41_amp_cal_data {
-+	u32 calTarget[2];
-+	u32 calTime[2];
-+	s8 calAmbient;
-+	u8 calStatus;
-+	u16 calR;
-+} __packed;
-+
-+struct cs35l41_amp_efi_data {
-+	u32 size;
-+	u32 count;
-+	struct cs35l41_amp_cal_data data[];
-+} __packed;
-+
- enum cs35l41_hda_spk_pos {
- 	CS35l41_LEFT,
- 	CS35l41_RIGHT,
+ int hda_cs_dsp_control_add(struct cs_dsp_coeff_ctl *cs_ctl, struct hda_cs_dsp_ctl_info *info);
+ void hda_cs_dsp_control_remove(struct cs_dsp_coeff_ctl *cs_ctl);
+ int hda_cs_dsp_remove_kcontrol(struct snd_card *card, const char *name);
 -- 
 2.34.1
 
