@@ -4,99 +4,73 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id BB0CDC433F5
-	for <alsa-devel@archiver.kernel.org>; Thu, 19 May 2022 20:14:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id BF446C433F5
+	for <alsa-devel@archiver.kernel.org>; Thu, 19 May 2022 20:33:01 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 6267B17E6;
-	Thu, 19 May 2022 22:13:10 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6267B17E6
+	by alsa0.perex.cz (Postfix) with ESMTPS id 1EE0417B4;
+	Thu, 19 May 2022 22:32:09 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1EE0417B4
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1652991240;
-	bh=goQGEJv7lNGCGoSDAhfhIgthrIXj3Bk2lju2Uh4e/mE=;
-	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
+	s=default; t=1652992379;
+	bh=n23XRFUFMstCGk8mn6a//a0qUBX/Svoko9l1F+IHrPI=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=AEnE2G/eky29vKiw9PcWgzWmVUPZMKIbNbUOTcOZLIMEGhnau5DbKn6+gnJ+o10Yf
-	 ny999DN7POnSjYUA6qBfKvHKiJfnGaJ6MVwtos84fqB0QITWAYoqEhUSCba0kxbpQT
-	 Each6d/GoI1+21z9PkQBnBNCy0tYk0mhaR3ySaO8=
+	b=UJ5GP9wYXKN0XvgVZ5DWTZ22gnJybNHM43YSBuAMUXY9RHUGx8cYqIgFFURO8mtCn
+	 liDXUtpx0IAUICT1aUr5NOYlrYCLK7NO3FByPOmEWBpoemgMgF8WKk3Rnt49GEkPYC
+	 y+C5y8RyaLLWdTqjTfoCbxUjgvAlh0XUVE0XQ7+U=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id DD716F80237;
-	Thu, 19 May 2022 22:13:09 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id AB0EDF80237;
+	Thu, 19 May 2022 22:32:08 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id AABCEF800F0; Thu, 19 May 2022 22:13:07 +0200 (CEST)
-Received: from mail.ispras.ru (mail.ispras.ru [83.149.199.84])
- (using TLSv1.2 with cipher DHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 1DA98F8025D; Thu, 19 May 2022 22:32:07 +0200 (CEST)
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 5E1FDF800F0
- for <alsa-devel@alsa-project.org>; Thu, 19 May 2022 22:13:05 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5E1FDF800F0
-Received: from [192.168.1.206] (unknown [109.252.138.248])
- by mail.ispras.ru (Postfix) with ESMTPSA id DC1EB40755E1;
- Thu, 19 May 2022 20:13:01 +0000 (UTC)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 3B1BCF80109
+ for <alsa-devel@alsa-project.org>; Thu, 19 May 2022 22:32:02 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3B1BCF80109
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="lhjUgOWe"
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by ams.source.kernel.org (Postfix) with ESMTPS id 88257B82851;
+ Thu, 19 May 2022 20:32:01 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AB260C385AA;
+ Thu, 19 May 2022 20:31:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1652992320;
+ bh=n23XRFUFMstCGk8mn6a//a0qUBX/Svoko9l1F+IHrPI=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=lhjUgOWemoX82K6Ic18VuKLtgKoTBowUGJirOki8ui8abJaz6XBivJMANlENRZLXp
+ mAx0PYNBD5andrcuN38p1V6qeXPZyDGdPv+NUGUYbE9RFoj3Xq7LLhKQ8IKy7iA+SH
+ Q7FMAWRdC4hh6BriJhkZXlcXPbglugcSCfnsgppPaTi5H6/I/AaE9oa8cPTf6TSiJt
+ IxK9E8ohbKMT/v8yVassG1EBSSLHlZwz3gHD5I8b7M8MONF1PaCRrYZZH1D3y0GDRp
+ 1DKQOKuqd0wy1ji+VgXkvcVmdMxKuIpEifAxwEtqpiCYFFYPVPFNN6nvvxjW97iwnV
+ DVN+xoNVi3VQw==
+Date: Thu, 19 May 2022 21:31:55 +0100
+From: Mark Brown <broonie@kernel.org>
+To: Alexey Khoroshilov <khoroshilov@ispras.ru>
 Subject: Re: [PATCH] ASoC: max98090: Remove unneeded check in
  max98090_put_enab_tlv()
-To: Mark Brown <broonie@kernel.org>
+Message-ID: <YoapO3yPdW6Sa+wF@sirena.org.uk>
 References: <1652980212-21473-1-git-send-email-khoroshilov@ispras.ru>
  <YoZ+dmprwb5Ohto3@sirena.org.uk>
  <fd58c07c-488e-1c90-a755-194f714bbe45@ispras.ru>
  <YoaEXWGEY4s14je+@sirena.org.uk>
  <ce6853a9-6789-f151-3193-59b7dd73bd27@ispras.ru>
  <YoajesD+D1W3ZV7/@sirena.org.uk>
-From: Alexey Khoroshilov <khoroshilov@ispras.ru>
-Autocrypt: addr=khoroshilov@ispras.ru; prefer-encrypt=mutual; keydata=
- xsFNBFtq9eIBEACxmOIPDht+aZvO9DGi4TwnZ1WTDnyDVz3Nnh0rlQCK8IssaT6wE5a95VWo
- iwOWalcL9bJMHQvw60JwZKFjt9oH2bov3xzx/JRCISQB4a4U1J/scWvPtabbB3t+VAodF5KZ
- vZ2gu/Q/Wa5JZ9aBH0IvNpBAAThFg1rBXKh7wNqrhsQlMLg+zTSK6ZctddNl6RyaJvAmbaTS
- sSeyUKXiabxHn3BR9jclXfmPLfWuayinBvW4J3vS+bOhbLxeu3MO0dUqeX/Nl8EAhvzo0I2d
- A0vRu/Ze1wU3EQYT6M8z3i1b3pdLjr/i+MI8Rgijs+TFRAhxRw/+0vHGTg6Pn02t0XkycxQR
- mhH3v0kVTvMyM7YSI7yXvd0QPxb1RX9AGmvbJu7eylzcq9Jla+/T3pOuWsJkbvbvuFKKmmYY
- WnAOR7vu/VNVfiy4rM0bfO14cIuEG+yvogcPuMmQGYu6ZwS9IdgZIOAkO57M/6wR0jIyfxrG
- FV3ietPtVcqeDVrcShKyziRLJ+Xcsg9BLdnImAqVQomYr27pyNMRL5ILuT7uOuAQPDKBksK+
- l2Fws0d5iUifqnXSPuYxqgS4f8SQLS7ECxvCGVVbkEEng9vkkmyrF6wM86BZ9apPGDFbopiK
- 7GRxQtSGszVv83abaVb8aDsAudJIp7lLaIuXLZAe1r+ycYpEtQARAQABzSpBbGV4ZXkgS2hv
- cm9zaGlsb3YgPGtob3Jvc2hpbG92QGlzcHJhcy5ydT7CwX0EEwEIACcFAltq9eICGwMFCRLM
- AwAFCwkIBwIGFQgJCgsCBBYCAwECHgECF4AACgkQ2B/JSzCwrEWLaA/+NFZfyhU0vJzFtYsk
- yaqx8nWZLrAoUK7VcobH0lJH6lfGbarO5JpENaIiTP12YZ4xO+j3GGJtLy2gvnpypGnxmiAl
- RqPt7WeAIj6oqPrUs2QF7i4SOiPtku/NrysI1zHzlA8yqUduBtam5rdQeLRNCJiEED1fU8sp
- +DgJBN/OHEDyAag2hu1KFKWuPfQ+QGpXYZb+1NW/hKwvvwCNVyypELAfFnkketFXjIMwHnL8
- ZPqJZlkvkpxuRXOaXPL9NFhZnC/WS+NJ81L3pr+w6eo3xTPYZvRW8glvqlEDgHqr3uMGIaes
- nwfRXLHp+TC1ht6efCXzdPyMZ1E7HXQN9foKisI1V5iQFhN+CT3dbsguQI4e10F5ql0TZUJY
- SMzvY0eObs6TWRdD/Ha7Y5rLmZ54R9sxumpZNcJzktfgm9f0XfeqVEJUn/40MRDD+l2W12Db
- Jkko+sbtAEw+f+/j3uz8xOE+Uv4kwFC5a6JKgdX88oigHnpAs3FvffP594Loi3ibFrQUW5wH
- bXh5Ni+l1GKEQ0PHMk+KQQT9L2r9s7C0Nh8XzwdpOshZWsrNSZqcG+01wrmUhyX2uSaoZ07I
- /+KZURlMSqI71X6lkMWlB3SyThvYhHgnR0EGGTerwM1MaVjHN+Z6lPmsKNxG8lzCeWeZ6peA
- c5oUHV4WQ8Ux9BM8saLOwU0EW2r14gEQAMz+5u+X7j1/dT4WLVRQaE1Shnd2dKBn2E7fgo/N
- 4JIY6wHD/DJoWYQpCJjjvBYSonvQsHicvDW8lPh2EXgZ9Fi8AHKT2mVPitVy+uhfWa/0FtsC
- e3hPfrjTcN7BUcXlIjmptxIoDbvQrNfIWUGdWiyDj4EDfABW/kagXqaBwF2HdcDaNDGggD1c
- DglA0APjezIyTGnGMKsi5QSSlOLm8OZEJMj5t+JL6QXrruijNb5Asmz5mpRQrak7DpGOskjK
- fClm/0oy2zDvWuoXJa+dm3YFr43V+c5EIMA4LpGk63Eg+5NltQ/gj0ycgD5o6reCbjLz4R9D
- JzBezK/KOQuNG5qKUTMbOHWaApZnZ6BDdOVflkV1V+LMo5GvIzkATNLm/7Jj6DmYmXbKoSAY
- BKZiJWqzNsL1AJtmJA1y5zbWX/W4CpNs8qYMYG8eTNOqunzopEhX7T0cOswcTGArZYygiwDW
- BuIS83QRc7udMlQg79qyMA5WqS9g9g/iodlssR9weIVoZSjfjhm5NJ3FmaKnb56h6DSvFgsH
- xCa4s1DGnZGSAtedj8E3ACOsEfu4J/WqXEmvMYNBdGos2YAc+g0hjuOB10BSD98d38xP1vPc
- qNrztIF+TODAl1dNwU4rCSdGQymsrMVFuXnHMH4G+dHvMAwWauzDbnILHAGFyJtfxVefABEB
- AAHCwWUEGAEIAA8FAltq9eICGwwFCRLMAwAACgkQ2B/JSzCwrEU3Rg//eFWHXqTQ5CKw4KrX
- kTFxdXnYKJ5zZB0EzqU6m/FAV7snmygFLbOXYlcMW2Fh306ivj9NKJrlOaPbUzzyDf8dtDAg
- nSbH156oNJ9NHkz0mrxFMpJA2E5AUemOFx57PUYt93pR2B7bF2zGua4gMC+vorDQZjX9kvrL
- Kbenh3boFOe1tUaiRRvEltVFLOg+b+CMkKVbLIQe/HkyKJH5MFiHAF7QxnPHaxyO7QbWaUmF
- 6BHVujxAGvNgkrYJb6dpiNNZSFNRodaSToU5oM+z1dCrNNtN3u4R7AYr6DDIDxoSzR4k0ZaG
- uSeqh4xxQCD7vLT3JdZDyhYUJgy9mvSXdkXGdBIhVmeLch2gaWNf5UOutVJwdPbIaUDRjVoV
- Iw6qjKq+mnK3ttuxW5Aeg9Y1OuKEvCVu+U/iEEJxx1JRmVAYq848YqtVPY9DkZdBT4E9dHqO
- n8lr+XPVyMN6SBXkaR5tB6zSkSDrIw+9uv1LN7QIri43fLqhM950ltlveROEdLL1bI30lYO5
- J07KmxgOjrvY8X9WOC3O0k/nFpBbbsM4zUrmF6F5wIYO99xafQOlfpUnVtbo3GnBR2LIcPYj
- SyY3dW28JXo2cftxIOr1edJ+fhcRqYRrPzJrQBZcE2GZjRO8tz6IOMAsc+WMtVfj5grgVHCu
- kK2E04Fb+Zk1eJvHYRc=
-Message-ID: <4080eabc-5e56-905d-d994-84ee57c2cf31@ispras.ru>
-Date: Thu, 19 May 2022 23:13:00 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+ <4080eabc-5e56-905d-d994-84ee57c2cf31@ispras.ru>
 MIME-Version: 1.0
-In-Reply-To: <YoajesD+D1W3ZV7/@sirena.org.uk>
-Content-Type: text/plain; charset=windows-1252
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature"; boundary="fYcmQXDXRAF+pPBh"
+Content-Disposition: inline
+In-Reply-To: <4080eabc-5e56-905d-d994-84ee57c2cf31@ispras.ru>
+X-Cookie: Some restrictions may apply.
 Cc: ldv-project@linuxtesting.org, alsa-devel@alsa-project.org,
  Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org,
  Takashi Iwai <tiwai@suse.com>
@@ -115,14 +89,36 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On 19.05.2022 23:07, Mark Brown wrote:
-> On Thu, May 19, 2022 at 09:27:25PM +0300, Alexey Khoroshilov wrote:
->> On 19.05.2022 20:54, Mark Brown wrote:
->>> Oh, the check won't be working properly - it's just that like I say the
->>> fix is to move rather than remove it so it's operating on the signed
->>> value.
->> Do you mean something like this?
-> That looks about right.
-Should I prepare a patch or you will do it yourself?
 
+--fYcmQXDXRAF+pPBh
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
+On Thu, May 19, 2022 at 11:13:00PM +0300, Alexey Khoroshilov wrote:
+> On 19.05.2022 23:07, Mark Brown wrote:
+> > On Thu, May 19, 2022 at 09:27:25PM +0300, Alexey Khoroshilov wrote:
+
+> >> Do you mean something like this?
+
+> > That looks about right.
+
+> Should I prepare a patch or you will do it yourself?
+
+Please send it, you already wrote it - may as well get the credit too.
+
+--fYcmQXDXRAF+pPBh
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmKGqToACgkQJNaLcl1U
+h9A08Af6A1cyQi40qAdJmheJWDP8mFvjmJ336RjogFvj511AZW/XY6JzWTrpqgDC
+3DisrlCMjtnhgvN3jNz43lKFwoJY3pxozLUTFMg93ZxkL4WFPgXWVo3yrTG/DMiw
+qpo3D6mmEzPHp5iKGIUWsTSknhSuSmXc8RbLujDl8cEPrUf46Rd72cyCcQVqX/gU
+V4yBYWMMwEhevx9e3TmMuSH/U2NGU2ad17JiUiZn/5nRhhGv/q4bScVxNGUt7hRJ
+FMtLiELr/Zf4jJuFIhGKMMoAkDE/nutbG1eavHi/vlyG99Jf8EGfTUgGl7cGQRGa
+sdpiKzPj1JdoFPxHMv22a50C0jVSOw==
+=M3zP
+-----END PGP SIGNATURE-----
+
+--fYcmQXDXRAF+pPBh--
