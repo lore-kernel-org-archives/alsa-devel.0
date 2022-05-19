@@ -4,55 +4,55 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8FF7AC433F5
-	for <alsa-devel@archiver.kernel.org>; Thu, 19 May 2022 15:45:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0ED8EC433F5
+	for <alsa-devel@archiver.kernel.org>; Thu, 19 May 2022 15:46:07 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id ACD10168A;
-	Thu, 19 May 2022 17:44:59 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz ACD10168A
+	by alsa0.perex.cz (Postfix) with ESMTPS id 14A1C1655;
+	Thu, 19 May 2022 17:45:15 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 14A1C1655
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1652975149;
-	bh=sjnPl7Aulywtz+sbCPp9c8Eyevq9yfURBWCMZ2mN6N4=;
+	s=default; t=1652975165;
+	bh=w1AAvOAelPt27DeBFb2Pda0LVgQs0OOakYi/V/op9u8=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=EWU4bB3ctqIQxAnLKxSE39KAFsjU4ogpOm/eHAJwu1+Cnd2Qon69p5KkfVaBQCI0m
-	 bAYBBV+BcCp8er+pMoWqtJ2kE3kp1R2EzTmSiuzwbEyZOYQXxEFVY6emLz4wHmZkK/
-	 g4ieKQYcEe0lqMtzLjPU/7qkL9LJ5NapzmU3xk4U=
+	b=NZrJ/+Ppy5lg+4wcgDRMmQNdFeTTEPXa1pC3eLFLZrzr5zrr98AS3QMZXloFt9Unx
+	 7LoEMZWf8uGxRCwNQ9zwvHxN1jE6iMESobYP1Z+yzBjR1evlfbNtvePrmRVrM2iCkC
+	 QgfoeMJxmBPRxRhw9TrKUhDj844+WOZZR2bse7Bs=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id E7180F80578;
-	Thu, 19 May 2022 17:43:43 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id E00EAF8051F;
+	Thu, 19 May 2022 17:43:44 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 5ADD2F80539; Thu, 19 May 2022 17:43:37 +0200 (CEST)
+ id 7C629F80535; Thu, 19 May 2022 17:43:37 +0200 (CEST)
 Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
  [67.231.152.168])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 2A6F4F802E3
- for <alsa-devel@alsa-project.org>; Thu, 19 May 2022 17:43:27 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2A6F4F802E3
+ by alsa1.perex.cz (Postfix) with ESMTPS id E305EF800F0
+ for <alsa-devel@alsa-project.org>; Thu, 19 May 2022 17:43:26 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E305EF800F0
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com
- header.b="bMI53sSc"
+ header.b="CAH6IoNo"
 Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
- by mx0b-001ae601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 24JBHtac024228;
- Thu, 19 May 2022 10:43:26 -0500
+ by mx0b-001ae601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 24JBHtaa024228;
+ Thu, 19 May 2022 10:43:24 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
  h=from : to : cc :
  subject : date : message-id : in-reply-to : references : mime-version :
  content-transfer-encoding : content-type; s=PODMain02222019;
- bh=7rjEpVyIvqg6pO938gS/Nl/Dh/ev/bFQVZdRDckNPk0=;
- b=bMI53sScCGbPZPzn/hEwJ1DzAYvLspZio+fPw29owVy4tucPpmbITSLW3taZko1Eojx9
- 4dqvdpD8R27Gj8cMNtzp3iL/9XB6tHQ35ep3SYgrxhIZZFxlsik2lFdnO7Mf4kfhH/Is
- 5X3KbdPgpInsg0uwqh6+vJwHyJ6NE3vqGKFsj3Sz6CWHNPsxshkz3tVYlPO2Amynp3Uc
- aB6Q3xsBlbirAS6i5OCA+NJAgt4AyQzklVRg1beu+UswjacmkLlG5EJDbTUBLTQOvMKJ
- 0N27jLVFTnj/2GAKvBwaQe1ALPAXnB9ZGDHfOcgLOU3/zFW/rjjpSIQdlhY+V8PC/Js1 PA== 
+ bh=Xj2Gv9Gm2g2J5/zI185gQHXeWNTWv607gvBLqdpZrCk=;
+ b=CAH6IoNobGBdLE+I0IU/1MAHBVngbyg1kh8MJeE22k6DfBXLj/B7jp8HmUF3f1Hy7W5H
+ ERwrPkeGiq9cULVER49KKgQ/PRCcTSh+ZHBhAPW54VhX5wuipPGCvWeShjImcDrfOxfj
+ FUr+l00HkSKEiiucNY2kNG2zOxHzof8qfvQ8cyWG3vN5Heli6dXoL2Fa6fzlhl7FTo4P
+ K0lSPt4IrowH6mn7rDBVejZznwtg/2rFdnN6YCr6IcYVw8UtkrLPQfilrz+IzuIatsrU
+ tKqcrKiAZs2wbKoC3rocEJBiFPeJCiypZoR+OAFX9kegBdybgVP63zprW1LTnf8DfQ7L 2Q== 
 Received: from ediex01.ad.cirrus.com ([84.19.233.68])
- by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3g28upf5dm-4
+ by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3g28upf5dm-2
  (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
- Thu, 19 May 2022 10:43:26 -0500
+ Thu, 19 May 2022 10:43:24 -0500
 Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX01.ad.cirrus.com
  (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.24; Thu, 19 May
@@ -61,21 +61,21 @@ Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
  (198.61.84.80) with Microsoft SMTP Server id 15.1.2375.24 via
  Frontend Transport; Thu, 19 May 2022 16:43:18 +0100
 Received: from algalon.ad.cirrus.com (algalon.ad.cirrus.com [198.90.251.122])
- by ediswmail.ad.cirrus.com (Postfix) with ESMTP id E4093475;
+ by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 8C10C476;
  Thu, 19 May 2022 15:43:18 +0000 (UTC)
 From: Charles Keepax <ckeepax@opensource.cirrus.com>
 To: <broonie@kernel.org>
-Subject: [PATCH 08/56] ASoC: fsl: Update to use set_fmt_new callback
-Date: Thu, 19 May 2022 16:42:30 +0100
-Message-ID: <20220519154318.2153729-9-ckeepax@opensource.cirrus.com>
+Subject: [PATCH 03/56] ASoC: atmel: Update to use set_fmt_new callback
+Date: Thu, 19 May 2022 16:42:25 +0100
+Message-ID: <20220519154318.2153729-4-ckeepax@opensource.cirrus.com>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20220519154318.2153729-1-ckeepax@opensource.cirrus.com>
 References: <20220519154318.2153729-1-ckeepax@opensource.cirrus.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-Proofpoint-GUID: yV0aCyuIJdGCANWBPcWuqfejhbXNNDu3
-X-Proofpoint-ORIG-GUID: yV0aCyuIJdGCANWBPcWuqfejhbXNNDu3
+X-Proofpoint-GUID: -sTSiAKmhVkSFrLgysFDRu5ESSqdV9_s
+X-Proofpoint-ORIG-GUID: -sTSiAKmhVkSFrLgysFDRu5ESSqdV9_s
 X-Proofpoint-Spam-Reason: safe
 Cc: cezary.rojewski@intel.com, heiko@sntech.de,
  kuninori.morimoto.gx@renesas.com, alsa-devel@alsa-project.org,
@@ -110,255 +110,185 @@ callback.
 
 Signed-off-by: Charles Keepax <ckeepax@opensource.cirrus.com>
 ---
- sound/soc/fsl/fsl_audmix.c |  6 +++---
- sound/soc/fsl/fsl_esai.c   | 10 +++++-----
- sound/soc/fsl/fsl_mqs.c    |  4 ++--
- sound/soc/fsl/fsl_sai.c    | 10 +++++-----
- sound/soc/fsl/fsl_ssi.c    | 24 ++++++++++++------------
- sound/soc/fsl/imx-audmix.c |  4 ++--
- sound/soc/fsl/imx-card.c   |  2 +-
- 7 files changed, 30 insertions(+), 30 deletions(-)
+ sound/soc/atmel/atmel-i2s.c     |  6 +++---
+ sound/soc/atmel/atmel_ssc_dai.c | 20 ++++++++++----------
+ sound/soc/atmel/mchp-i2s-mcc.c  | 10 +++++-----
+ sound/soc/atmel/mchp-pdmc.c     |  6 +++---
+ 4 files changed, 21 insertions(+), 21 deletions(-)
 
-diff --git a/sound/soc/fsl/fsl_audmix.c b/sound/soc/fsl/fsl_audmix.c
-index 6dbb8c99f6268..c580dcb9a4cfe 100644
---- a/sound/soc/fsl/fsl_audmix.c
-+++ b/sound/soc/fsl/fsl_audmix.c
-@@ -259,8 +259,8 @@ static int fsl_audmix_dai_set_fmt(struct snd_soc_dai *dai, unsigned int fmt)
- 
- 	/* For playback the AUDMIX is consumer, and for record is provider */
- 	switch (fmt & SND_SOC_DAIFMT_CLOCK_PROVIDER_MASK) {
--	case SND_SOC_DAIFMT_CBP_CFP:
--	case SND_SOC_DAIFMT_CBC_CFC:
-+	case SND_SOC_DAIFMT_BC_FC:
-+	case SND_SOC_DAIFMT_BP_FP:
- 		break;
- 	default:
- 		return -EINVAL;
-@@ -317,7 +317,7 @@ static int fsl_audmix_dai_trigger(struct snd_pcm_substream *substream, int cmd,
- }
- 
- static const struct snd_soc_dai_ops fsl_audmix_dai_ops = {
--	.set_fmt      = fsl_audmix_dai_set_fmt,
-+	.set_fmt_new  = fsl_audmix_dai_set_fmt,
- 	.trigger      = fsl_audmix_dai_trigger,
- };
- 
-diff --git a/sound/soc/fsl/fsl_esai.c b/sound/soc/fsl/fsl_esai.c
-index 1a2bdf8e76f00..572bdaee73eb6 100644
---- a/sound/soc/fsl/fsl_esai.c
-+++ b/sound/soc/fsl/fsl_esai.c
-@@ -480,16 +480,16 @@ static int fsl_esai_set_dai_fmt(struct snd_soc_dai *dai, unsigned int fmt)
- 
- 	/* DAI clock provider masks */
- 	switch (fmt & SND_SOC_DAIFMT_CLOCK_PROVIDER_MASK) {
--	case SND_SOC_DAIFMT_CBP_CFP:
-+	case SND_SOC_DAIFMT_BC_FC:
- 		esai_priv->consumer_mode = true;
- 		break;
--	case SND_SOC_DAIFMT_CBC_CFP:
-+	case SND_SOC_DAIFMT_BP_FC:
- 		xccr |= ESAI_xCCR_xCKD;
- 		break;
--	case SND_SOC_DAIFMT_CBP_CFC:
-+	case SND_SOC_DAIFMT_BC_FP:
- 		xccr |= ESAI_xCCR_xFSD;
- 		break;
--	case SND_SOC_DAIFMT_CBC_CFC:
-+	case SND_SOC_DAIFMT_BP_FP:
- 		xccr |= ESAI_xCCR_xFSD | ESAI_xCCR_xCKD;
- 		break;
- 	default:
-@@ -790,7 +790,7 @@ static const struct snd_soc_dai_ops fsl_esai_dai_ops = {
- 	.trigger = fsl_esai_trigger,
- 	.hw_params = fsl_esai_hw_params,
- 	.set_sysclk = fsl_esai_set_dai_sysclk,
--	.set_fmt = fsl_esai_set_dai_fmt,
-+	.set_fmt_new = fsl_esai_set_dai_fmt,
- 	.set_tdm_slot = fsl_esai_set_dai_tdm_slot,
- };
- 
-diff --git a/sound/soc/fsl/fsl_mqs.c b/sound/soc/fsl/fsl_mqs.c
-index ceaecbe3a25e4..371d441b1dbef 100644
---- a/sound/soc/fsl/fsl_mqs.c
-+++ b/sound/soc/fsl/fsl_mqs.c
-@@ -103,7 +103,7 @@ static int fsl_mqs_set_dai_fmt(struct snd_soc_dai *dai, unsigned int fmt)
+diff --git a/sound/soc/atmel/atmel-i2s.c b/sound/soc/atmel/atmel-i2s.c
+index 1934767690b51..c5ce695da5866 100644
+--- a/sound/soc/atmel/atmel-i2s.c
++++ b/sound/soc/atmel/atmel-i2s.c
+@@ -343,7 +343,7 @@ static int atmel_i2s_hw_params(struct snd_pcm_substream *substream,
  	}
  
- 	switch (fmt & SND_SOC_DAIFMT_CLOCK_PROVIDER_MASK) {
+ 	switch (dev->fmt & SND_SOC_DAIFMT_CLOCK_PROVIDER_MASK) {
 -	case SND_SOC_DAIFMT_CBC_CFC:
 +	case SND_SOC_DAIFMT_BP_FP:
+ 		/* codec is slave, so cpu is master */
+ 		mr |= ATMEL_I2SC_MR_MODE_MASTER;
+ 		ret = atmel_i2s_get_gck_param(dev, params_rate(params));
+@@ -351,7 +351,7 @@ static int atmel_i2s_hw_params(struct snd_pcm_substream *substream,
+ 			return ret;
  		break;
- 	default:
- 		return -EINVAL;
-@@ -152,7 +152,7 @@ static const struct snd_soc_dai_ops fsl_mqs_dai_ops = {
- 	.startup = fsl_mqs_startup,
- 	.shutdown = fsl_mqs_shutdown,
- 	.hw_params = fsl_mqs_hw_params,
--	.set_fmt = fsl_mqs_set_dai_fmt,
-+	.set_fmt_new = fsl_mqs_set_dai_fmt,
- };
  
- static struct snd_soc_dai_driver fsl_mqs_dai = {
-diff --git a/sound/soc/fsl/fsl_sai.c b/sound/soc/fsl/fsl_sai.c
-index fa950dde53109..3edd302eb5c22 100644
---- a/sound/soc/fsl/fsl_sai.c
-+++ b/sound/soc/fsl/fsl_sai.c
-@@ -292,19 +292,19 @@ static int fsl_sai_set_dai_fmt_tr(struct snd_soc_dai *cpu_dai,
- 
- 	/* DAI clock provider masks */
- 	switch (fmt & SND_SOC_DAIFMT_CLOCK_PROVIDER_MASK) {
--	case SND_SOC_DAIFMT_CBC_CFC:
-+	case SND_SOC_DAIFMT_BP_FP:
- 		val_cr2 |= FSL_SAI_CR2_BCD_MSTR;
- 		val_cr4 |= FSL_SAI_CR4_FSD_MSTR;
- 		sai->is_consumer_mode = false;
- 		break;
 -	case SND_SOC_DAIFMT_CBP_CFP:
 +	case SND_SOC_DAIFMT_BC_FC:
- 		sai->is_consumer_mode = true;
- 		break;
--	case SND_SOC_DAIFMT_CBC_CFP:
-+	case SND_SOC_DAIFMT_BP_FC:
- 		val_cr2 |= FSL_SAI_CR2_BCD_MSTR;
- 		sai->is_consumer_mode = false;
- 		break;
+ 		/* codec is master, so cpu is slave */
+ 		mr |= ATMEL_I2SC_MR_MODE_SLAVE;
+ 		dev->gck_param = NULL;
+@@ -533,7 +533,7 @@ static const struct snd_soc_dai_ops atmel_i2s_dai_ops = {
+ 	.prepare	= atmel_i2s_prepare,
+ 	.trigger	= atmel_i2s_trigger,
+ 	.hw_params	= atmel_i2s_hw_params,
+-	.set_fmt	= atmel_i2s_set_dai_fmt,
++	.set_fmt_new	= atmel_i2s_set_dai_fmt,
+ };
+ 
+ static int atmel_i2s_dai_probe(struct snd_soc_dai *dai)
+diff --git a/sound/soc/atmel/atmel_ssc_dai.c b/sound/soc/atmel/atmel_ssc_dai.c
+index c1dea8d624164..da094762dc994 100644
+--- a/sound/soc/atmel/atmel_ssc_dai.c
++++ b/sound/soc/atmel/atmel_ssc_dai.c
+@@ -210,7 +210,7 @@ static int atmel_ssc_hw_rule_rate(struct snd_pcm_hw_params *params,
+ 		return frame_size;
+ 
+ 	switch (ssc_p->daifmt & SND_SOC_DAIFMT_CLOCK_PROVIDER_MASK) {
 -	case SND_SOC_DAIFMT_CBP_CFC:
 +	case SND_SOC_DAIFMT_BC_FP:
- 		val_cr4 |= FSL_SAI_CR4_FSD_MSTR;
- 		sai->is_consumer_mode = true;
+ 		if ((ssc_p->dir_mask & SSC_DIR_MASK_CAPTURE)
+ 		    && ssc->clk_from_rk_pin)
+ 			/* Receiver Frame Synchro (i.e. capture)
+@@ -220,7 +220,7 @@ static int atmel_ssc_hw_rule_rate(struct snd_pcm_hw_params *params,
+ 			mck_div = 3;
  		break;
-@@ -704,7 +704,7 @@ static int fsl_sai_startup(struct snd_pcm_substream *substream,
- static const struct snd_soc_dai_ops fsl_sai_pcm_dai_ops = {
- 	.set_bclk_ratio	= fsl_sai_set_dai_bclk_ratio,
- 	.set_sysclk	= fsl_sai_set_dai_sysclk,
--	.set_fmt	= fsl_sai_set_dai_fmt,
-+	.set_fmt_new	= fsl_sai_set_dai_fmt,
- 	.set_tdm_slot	= fsl_sai_set_dai_tdm_slot,
- 	.hw_params	= fsl_sai_hw_params,
- 	.hw_free	= fsl_sai_hw_free,
-diff --git a/sound/soc/fsl/fsl_ssi.c b/sound/soc/fsl/fsl_ssi.c
-index 84cb36d9dfea9..32e4cf37c2029 100644
---- a/sound/soc/fsl/fsl_ssi.c
-+++ b/sound/soc/fsl/fsl_ssi.c
-@@ -93,7 +93,7 @@
-  */
- #define FSLSSI_AC97_DAIFMT \
- 	(SND_SOC_DAIFMT_AC97 | \
--	 SND_SOC_DAIFMT_CBM_CFS | \
-+	 SND_SOC_DAIFMT_BC_FP | \
- 	 SND_SOC_DAIFMT_NB_NF)
  
- #define FSLSSI_SIER_DBG_RX_FLAGS \
-@@ -358,13 +358,13 @@ static bool fsl_ssi_is_ac97(struct fsl_ssi *ssi)
- static bool fsl_ssi_is_i2s_clock_provider(struct fsl_ssi *ssi)
- {
- 	return (ssi->dai_fmt & SND_SOC_DAIFMT_CLOCK_PROVIDER_MASK) ==
--		SND_SOC_DAIFMT_CBC_CFC;
-+		SND_SOC_DAIFMT_BP_FP;
- }
- 
--static bool fsl_ssi_is_i2s_cbp_cfc(struct fsl_ssi *ssi)
-+static bool fsl_ssi_is_i2s_bc_fp(struct fsl_ssi *ssi)
- {
- 	return (ssi->dai_fmt & SND_SOC_DAIFMT_CLOCK_PROVIDER_MASK) ==
--		SND_SOC_DAIFMT_CBP_CFC;
-+		SND_SOC_DAIFMT_BC_FP;
- }
- 
- /**
-@@ -847,7 +847,7 @@ static int fsl_ssi_hw_params(struct snd_pcm_substream *substream,
- 		u8 i2s_net = ssi->i2s_net;
- 
- 		/* Normal + Network mode to send 16-bit data in 32-bit frames */
--		if (fsl_ssi_is_i2s_cbp_cfc(ssi) && sample_size == 16)
-+		if (fsl_ssi_is_i2s_bc_fp(ssi) && sample_size == 16)
- 			i2s_net = SSI_SCR_I2S_MODE_NORMAL | SSI_SCR_NET;
- 
- 		/* Use Normal mode to send mono data at 1st slot of 2 slots */
-@@ -920,17 +920,17 @@ static int _fsl_ssi_set_dai_fmt(struct fsl_ssi *ssi, unsigned int fmt)
- 	switch (fmt & SND_SOC_DAIFMT_FORMAT_MASK) {
- 	case SND_SOC_DAIFMT_I2S:
- 		switch (fmt & SND_SOC_DAIFMT_CLOCK_PROVIDER_MASK) {
--		case SND_SOC_DAIFMT_CBC_CFC:
-+		case SND_SOC_DAIFMT_BP_FP:
- 			if (IS_ERR(ssi->baudclk)) {
- 				dev_err(ssi->dev,
- 					"missing baudclk for master mode\n");
- 				return -EINVAL;
- 			}
- 			fallthrough;
--		case SND_SOC_DAIFMT_CBP_CFC:
-+		case SND_SOC_DAIFMT_BC_FP:
- 			ssi->i2s_net |= SSI_SCR_I2S_MODE_MASTER;
- 			break;
--		case SND_SOC_DAIFMT_CBP_CFP:
-+		case SND_SOC_DAIFMT_BC_FC:
- 			ssi->i2s_net |= SSI_SCR_I2S_MODE_SLAVE;
- 			break;
- 		default:
-@@ -992,15 +992,15 @@ static int _fsl_ssi_set_dai_fmt(struct fsl_ssi *ssi, unsigned int fmt)
- 
- 	/* DAI clock provider masks */
- 	switch (fmt & SND_SOC_DAIFMT_CLOCK_PROVIDER_MASK) {
--	case SND_SOC_DAIFMT_CBC_CFC:
-+	case SND_SOC_DAIFMT_BP_FP:
- 		/* Output bit and frame sync clocks */
- 		strcr |= SSI_STCR_TFDIR | SSI_STCR_TXDIR;
- 		scr |= SSI_SCR_SYS_CLK_EN;
- 		break;
 -	case SND_SOC_DAIFMT_CBP_CFP:
 +	case SND_SOC_DAIFMT_BC_FC:
- 		/* Input bit or frame sync clocks */
- 		break;
--	case SND_SOC_DAIFMT_CBP_CFC:
-+	case SND_SOC_DAIFMT_BC_FP:
- 		/* Input bit clock but output frame sync clock */
- 		strcr |= SSI_STCR_TFDIR;
- 		break;
-@@ -1156,7 +1156,7 @@ static const struct snd_soc_dai_ops fsl_ssi_dai_ops = {
- 	.shutdown = fsl_ssi_shutdown,
- 	.hw_params = fsl_ssi_hw_params,
- 	.hw_free = fsl_ssi_hw_free,
--	.set_fmt = fsl_ssi_set_dai_fmt,
-+	.set_fmt_new = fsl_ssi_set_dai_fmt,
- 	.set_tdm_slot = fsl_ssi_set_dai_tdm_slot,
- 	.trigger = fsl_ssi_trigger,
- };
-diff --git a/sound/soc/fsl/imx-audmix.c b/sound/soc/fsl/imx-audmix.c
-index 502fe1b522aba..1292a845c4244 100644
---- a/sound/soc/fsl/imx-audmix.c
-+++ b/sound/soc/fsl/imx-audmix.c
-@@ -81,7 +81,7 @@ static int imx_audmix_fe_hw_params(struct snd_pcm_substream *substream,
- 	int ret, dir;
+ 		if ((ssc_p->dir_mask & SSC_DIR_MASK_PLAYBACK)
+ 		    && !ssc->clk_from_rk_pin)
+ 			/* Transmit Frame Synchro (i.e. playback)
+@@ -233,7 +233,7 @@ static int atmel_ssc_hw_rule_rate(struct snd_pcm_hw_params *params,
+ 	}
  
- 	/* For playback the AUDMIX is consumer, and for record is provider */
--	fmt |= tx ? SND_SOC_DAIFMT_CBC_CFC : SND_SOC_DAIFMT_CBP_CFP;
-+	fmt |= tx ? SND_SOC_DAIFMT_BP_FP : SND_SOC_DAIFMT_BC_FC;
- 	dir  = tx ? SND_SOC_CLOCK_OUT : SND_SOC_CLOCK_IN;
+ 	switch (ssc_p->daifmt & SND_SOC_DAIFMT_CLOCK_PROVIDER_MASK) {
+-	case SND_SOC_DAIFMT_CBC_CFC:
++	case SND_SOC_DAIFMT_BP_FP:
+ 		r.num = ssc_p->mck_rate / mck_div / frame_size;
  
- 	/* set DAI configuration */
-@@ -122,7 +122,7 @@ static int imx_audmix_be_hw_params(struct snd_pcm_substream *substream,
- 		return 0;
- 
- 	/* For playback the AUDMIX is consumer */
--	fmt |= SND_SOC_DAIFMT_CBP_CFP;
-+	fmt |= SND_SOC_DAIFMT_BC_FC;
- 
- 	/* set AUDMIX DAI configuration */
- 	ret = snd_soc_dai_set_fmt(asoc_rtd_to_cpu(rtd, 0), fmt);
-diff --git a/sound/soc/fsl/imx-card.c b/sound/soc/fsl/imx-card.c
-index 6f8efd838fcc8..1797d777b1b87 100644
---- a/sound/soc/fsl/imx-card.c
-+++ b/sound/soc/fsl/imx-card.c
-@@ -317,7 +317,7 @@ static int imx_aif_hw_params(struct snd_pcm_substream *substream,
+ 		ret = snd_interval_ratnum(i, 1, &r, &num, &den);
+@@ -243,8 +243,8 @@ static int atmel_ssc_hw_rule_rate(struct snd_pcm_hw_params *params,
  		}
+ 		break;
+ 
+-	case SND_SOC_DAIFMT_CBP_CFC:
+-	case SND_SOC_DAIFMT_CBP_CFP:
++	case SND_SOC_DAIFMT_BC_FP:
++	case SND_SOC_DAIFMT_BC_FC:
+ 		t.min = 8000;
+ 		t.max = ssc_p->mck_rate / mck_div / frame_size;
+ 		t.openmin = t.openmax = 0;
+@@ -433,8 +433,8 @@ static int atmel_ssc_set_dai_clkdiv(struct snd_soc_dai *cpu_dai,
+ static int atmel_ssc_cfs(struct atmel_ssc_info *ssc_p)
+ {
+ 	switch (ssc_p->daifmt & SND_SOC_DAIFMT_CLOCK_PROVIDER_MASK) {
+-	case SND_SOC_DAIFMT_CBP_CFC:
+-	case SND_SOC_DAIFMT_CBC_CFC:
++	case SND_SOC_DAIFMT_BC_FP:
++	case SND_SOC_DAIFMT_BP_FP:
+ 		return 1;
+ 	}
+ 	return 0;
+@@ -444,8 +444,8 @@ static int atmel_ssc_cfs(struct atmel_ssc_info *ssc_p)
+ static int atmel_ssc_cbs(struct atmel_ssc_info *ssc_p)
+ {
+ 	switch (ssc_p->daifmt & SND_SOC_DAIFMT_CLOCK_PROVIDER_MASK) {
+-	case SND_SOC_DAIFMT_CBC_CFP:
+-	case SND_SOC_DAIFMT_CBC_CFC:
++	case SND_SOC_DAIFMT_BP_FC:
++	case SND_SOC_DAIFMT_BP_FP:
+ 		return 1;
+ 	}
+ 	return 0;
+@@ -835,7 +835,7 @@ static const struct snd_soc_dai_ops atmel_ssc_dai_ops = {
+ 	.prepare	= atmel_ssc_prepare,
+ 	.trigger	= atmel_ssc_trigger,
+ 	.hw_params	= atmel_ssc_hw_params,
+-	.set_fmt	= atmel_ssc_set_dai_fmt,
++	.set_fmt_new	= atmel_ssc_set_dai_fmt,
+ 	.set_clkdiv	= atmel_ssc_set_dai_clkdiv,
+ };
+ 
+diff --git a/sound/soc/atmel/mchp-i2s-mcc.c b/sound/soc/atmel/mchp-i2s-mcc.c
+index 6d1227a1d67b5..48d434e0c3318 100644
+--- a/sound/soc/atmel/mchp-i2s-mcc.c
++++ b/sound/soc/atmel/mchp-i2s-mcc.c
+@@ -350,7 +350,7 @@ static int mchp_i2s_mcc_set_dai_fmt(struct snd_soc_dai *dai, unsigned int fmt)
+ 		return -EINVAL;
+ 
+ 	/* We can't generate only FSYNC */
+-	if ((fmt & SND_SOC_DAIFMT_CLOCK_PROVIDER_MASK) == SND_SOC_DAIFMT_CBP_CFC)
++	if ((fmt & SND_SOC_DAIFMT_CLOCK_PROVIDER_MASK) == SND_SOC_DAIFMT_BC_FP)
+ 		return -EINVAL;
+ 
+ 	/* We can only reconfigure the IP when it's stopped */
+@@ -547,19 +547,19 @@ static int mchp_i2s_mcc_hw_params(struct snd_pcm_substream *substream,
  	}
  
--	ret = snd_soc_dai_set_fmt(cpu_dai, fmt);
-+	ret = snd_soc_dai_set_fmt(cpu_dai, snd_soc_daifmt_clock_provider_flipped(fmt));
- 	if (ret && ret != -ENOTSUPP) {
- 		dev_err(dev, "failed to set cpu dai fmt: %d\n", ret);
- 		return ret;
+ 	switch (dev->fmt & SND_SOC_DAIFMT_CLOCK_PROVIDER_MASK) {
+-	case SND_SOC_DAIFMT_CBC_CFC:
++	case SND_SOC_DAIFMT_BP_FP:
+ 		/* cpu is BCLK and LRC master */
+ 		mra |= MCHP_I2SMCC_MRA_MODE_MASTER;
+ 		if (dev->sysclk)
+ 			mra |= MCHP_I2SMCC_MRA_IMCKMODE_GEN;
+ 		set_divs = 1;
+ 		break;
+-	case SND_SOC_DAIFMT_CBC_CFP:
++	case SND_SOC_DAIFMT_BP_FC:
+ 		/* cpu is BCLK master */
+ 		mrb |= MCHP_I2SMCC_MRB_CLKSEL_INT;
+ 		set_divs = 1;
+ 		fallthrough;
+-	case SND_SOC_DAIFMT_CBP_CFP:
++	case SND_SOC_DAIFMT_BC_FC:
+ 		/* cpu is slave */
+ 		mra |= MCHP_I2SMCC_MRA_MODE_SLAVE;
+ 		if (dev->sysclk)
+@@ -877,7 +877,7 @@ static const struct snd_soc_dai_ops mchp_i2s_mcc_dai_ops = {
+ 	.trigger	= mchp_i2s_mcc_trigger,
+ 	.hw_params	= mchp_i2s_mcc_hw_params,
+ 	.hw_free	= mchp_i2s_mcc_hw_free,
+-	.set_fmt	= mchp_i2s_mcc_set_dai_fmt,
++	.set_fmt_new	= mchp_i2s_mcc_set_dai_fmt,
+ 	.set_tdm_slot	= mchp_i2s_mcc_set_dai_tdm_slot,
+ };
+ 
+diff --git a/sound/soc/atmel/mchp-pdmc.c b/sound/soc/atmel/mchp-pdmc.c
+index a3856c73e2214..b3f04fa2f6089 100644
+--- a/sound/soc/atmel/mchp-pdmc.c
++++ b/sound/soc/atmel/mchp-pdmc.c
+@@ -492,8 +492,8 @@ static int mchp_pdmc_set_fmt(struct snd_soc_dai *dai, unsigned int fmt)
+ 	unsigned int fmt_format = fmt & SND_SOC_DAIFMT_FORMAT_MASK;
+ 
+ 	/* IP needs to be bitclock master */
+-	if (fmt_master != SND_SOC_DAIFMT_CBS_CFS &&
+-	    fmt_master != SND_SOC_DAIFMT_CBS_CFM)
++	if (fmt_master != SND_SOC_DAIFMT_BP_FP &&
++	    fmt_master != SND_SOC_DAIFMT_BP_FC)
+ 		return -EINVAL;
+ 
+ 	/* IP supports only PDM interface */
+@@ -708,7 +708,7 @@ static int mchp_pdmc_trigger(struct snd_pcm_substream *substream,
+ }
+ 
+ static const struct snd_soc_dai_ops mchp_pdmc_dai_ops = {
+-	.set_fmt	= mchp_pdmc_set_fmt,
++	.set_fmt_new	= mchp_pdmc_set_fmt,
+ 	.startup	= mchp_pdmc_startup,
+ 	.shutdown	= mchp_pdmc_shutdown,
+ 	.hw_params	= mchp_pdmc_hw_params,
 -- 
 2.30.2
 
