@@ -4,55 +4,55 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 368BDC433FE
-	for <alsa-devel@archiver.kernel.org>; Thu, 19 May 2022 15:46:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 01C54C433EF
+	for <alsa-devel@archiver.kernel.org>; Thu, 19 May 2022 15:47:11 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 6C5BF1684;
-	Thu, 19 May 2022 17:46:00 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6C5BF1684
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3CC341696;
+	Thu, 19 May 2022 17:46:20 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3CC341696
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1652975210;
-	bh=jvVIq469NF1ucS0Ryp2/MwKVYqvpJMP2zlOrIk9Gmno=;
+	s=default; t=1652975230;
+	bh=QVrbZ6wxW/CGr4ozwBILlf6VklJrpheAYkMHAiXjA5Y=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=eRthtp5SSNypWFmoHuWbzWeesoNdYBUapFqESJkHQj0PYUeRozDrW6fTemHbTodOW
-	 tPvqc+lI23zqesBFuxytYg/sQJgzqegZHX8730HWfXvKO5ABUjo3Ob1Gbl7rW6Kq+2
-	 CAzVGTX9z+Y92cxyEHf2hmxvX+mHLPqqbjaxVrHM=
+	b=TN0lOUKG7NKOZQtDDvBQKTJI8eREi9a+3s7bQwOfzfRXkV39V8z39YbjItNw4hbWy
+	 6Pnq2p01S4FoW6wNZ8u8jpzXPOavtuLfZIsp/pUm+4CDO5uI9+1wPRvylLDP3uCfCg
+	 jR5utXXlIgpFBpUD4nsMAeFnZMVVZqQuar4V/dL4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 0639FF805B4;
-	Thu, 19 May 2022 17:43:49 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 960D0F80237;
+	Thu, 19 May 2022 17:43:55 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id EEAF0F8056F; Thu, 19 May 2022 17:43:42 +0200 (CEST)
+ id 9A872F8057D; Thu, 19 May 2022 17:43:44 +0200 (CEST)
 Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
  [67.231.152.168])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 13FF7F8047B
- for <alsa-devel@alsa-project.org>; Thu, 19 May 2022 17:43:29 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 13FF7F8047B
+ by alsa1.perex.cz (Postfix) with ESMTPS id CB83DF8051F
+ for <alsa-devel@alsa-project.org>; Thu, 19 May 2022 17:43:32 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CB83DF8051F
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com
- header.b="GOv4Ue/1"
+ header.b="k8jqS5Kq"
 Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
- by mx0b-001ae601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 24J66mVw012194;
- Thu, 19 May 2022 10:43:27 -0500
+ by mx0b-001ae601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 24J66mW3012194;
+ Thu, 19 May 2022 10:43:31 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
  h=from : to : cc :
  subject : date : message-id : in-reply-to : references : mime-version :
  content-transfer-encoding : content-type; s=PODMain02222019;
- bh=S48Ysw1sAwGfbwtANji4TCZT3HSOohZVPd1AftkYm/o=;
- b=GOv4Ue/1IhM+zcg4JE0HVTAXzlJFqX9F7UWnxj44iOSwZPCw1VWksiDLcVoIn4LESV9E
- Q5cEX9xV11sLqorJxT+f4UN7svhh5CciPPB4UeJg5bdCyYjtAiBi4Zzr4qZm4E9aZlYI
- iBzGSIuqT2fO7pfSPfrG6b9OriYbdY40mnw8N4JI8jsY792OKu8nHuZ97CHTRs6C+qtv
- L/K6f7ZQvTYFkEnQCnnI0M9+YOk3P+MkPmBq03PT1Zhg4Zr+D/pFXFQUH0XtKcfuF+W1
- 4CAtZDWPuD8I/MTQ5OHEKyDXybCaMs02F6PUEpKjxDp6TeDFcn7i9EGqpUgqIn7w/Wvb ag== 
+ bh=QWGxPrxVtFm+ch47fPmaDYCLhGIbEJL7uvqlM4S3iww=;
+ b=k8jqS5KqIwT/A0SfwAxfT8H8o0hIu5XXPQjdwQL6ALQqAILOhShblXHzE1eiHUFCQzAj
+ jWpzLC2mfmV70TA4vDvMoVtUi3vcKBMx9+yykt/DZuqul5peS7MkV8RMjEbm8tc/F6CE
+ NJEZspovLEavMfXY+maFY4nf90E54ISuXkhLk3QQ14cy0SN6GFtaEXqhPtSNKswlp0+O
+ Kn19XBPVrfhjiCYYatMZz/V6/6j5QXwPFRSu/08KyuXUe0uXxpFJeFjprRLUnttXZh8y
+ jFeRn9mgQaPDVW9KaArgPW1k6n4p8syaaceTbyDtJtYHWRKaKq27MQJGsMps+zVNA/vZ Hg== 
 Received: from ediex02.ad.cirrus.com ([84.19.233.68])
- by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3g28upf5dn-2
+ by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3g28upf5dn-6
  (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
- Thu, 19 May 2022 10:43:27 -0500
+ Thu, 19 May 2022 10:43:31 -0500
 Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX02.ad.cirrus.com
  (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.24; Thu, 19 May
@@ -61,21 +61,21 @@ Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
  (198.61.84.80) with Microsoft SMTP Server id 15.1.2375.24 via
  Frontend Transport; Thu, 19 May 2022 16:43:19 +0100
 Received: from algalon.ad.cirrus.com (algalon.ad.cirrus.com [198.90.251.122])
- by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 10B0C476;
+ by ediswmail.ad.cirrus.com (Postfix) with ESMTP id CE76011D3;
  Thu, 19 May 2022 15:43:19 +0000 (UTC)
 From: Charles Keepax <ckeepax@opensource.cirrus.com>
 To: <broonie@kernel.org>
-Subject: [PATCH 10/56] ASoC: img: Update to use set_fmt_new callback
-Date: Thu, 19 May 2022 16:42:32 +0100
-Message-ID: <20220519154318.2153729-11-ckeepax@opensource.cirrus.com>
+Subject: [PATCH 20/56] ASoC: sh: Update to use set_fmt_new callback
+Date: Thu, 19 May 2022 16:42:42 +0100
+Message-ID: <20220519154318.2153729-21-ckeepax@opensource.cirrus.com>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20220519154318.2153729-1-ckeepax@opensource.cirrus.com>
 References: <20220519154318.2153729-1-ckeepax@opensource.cirrus.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-Proofpoint-GUID: XKQwV7PruBWAzZkNf5DmSKyjTPU2fDpf
-X-Proofpoint-ORIG-GUID: XKQwV7PruBWAzZkNf5DmSKyjTPU2fDpf
+X-Proofpoint-GUID: dSYIdavaSRil3PHyQkx5BJ_gEjfqh0Kd
+X-Proofpoint-ORIG-GUID: dSYIdavaSRil3PHyQkx5BJ_gEjfqh0Kd
 X-Proofpoint-Spam-Reason: safe
 Cc: cezary.rojewski@intel.com, heiko@sntech.de,
  kuninori.morimoto.gx@renesas.com, alsa-devel@alsa-project.org,
@@ -110,15 +110,92 @@ callback.
 
 Signed-off-by: Charles Keepax <ckeepax@opensource.cirrus.com>
 ---
- sound/soc/img/img-i2s-in.c  | 6 +++---
- sound/soc/img/img-i2s-out.c | 8 ++++----
- 2 files changed, 7 insertions(+), 7 deletions(-)
+ sound/soc/sh/fsi.c       |  8 ++++----
+ sound/soc/sh/rcar/core.c |  6 +++---
+ sound/soc/sh/rz-ssi.c    |  4 ++--
+ sound/soc/sh/ssi.c       | 12 ++++++------
+ 4 files changed, 15 insertions(+), 15 deletions(-)
 
-diff --git a/sound/soc/img/img-i2s-in.c b/sound/soc/img/img-i2s-in.c
-index 09d23b11621c4..79e733bc0ae69 100644
---- a/sound/soc/img/img-i2s-in.c
-+++ b/sound/soc/img/img-i2s-in.c
-@@ -333,8 +333,8 @@ static int img_i2s_in_set_fmt(struct snd_soc_dai *dai, unsigned int fmt)
+diff --git a/sound/soc/sh/fsi.c b/sound/soc/sh/fsi.c
+index e9a1eb6bdf66a..4058d60b7e931 100644
+--- a/sound/soc/sh/fsi.c
++++ b/sound/soc/sh/fsi.c
+@@ -1646,10 +1646,10 @@ static int fsi_dai_set_fmt(struct snd_soc_dai *dai, unsigned int fmt)
+ 	int ret;
+ 
+ 	/* set clock master audio interface */
+-	switch (fmt & SND_SOC_DAIFMT_MASTER_MASK) {
+-	case SND_SOC_DAIFMT_CBM_CFM:
++	switch (fmt & SND_SOC_DAIFMT_CLOCK_PROVIDER_MASK) {
++	case SND_SOC_DAIFMT_BC_FC:
+ 		break;
+-	case SND_SOC_DAIFMT_CBS_CFS:
++	case SND_SOC_DAIFMT_BP_FP:
+ 		fsi->clk_master = 1; /* cpu is master */
+ 		break;
+ 	default:
+@@ -1724,7 +1724,7 @@ static const struct snd_soc_dai_ops fsi_dai_ops = {
+ 	.startup	= fsi_dai_startup,
+ 	.shutdown	= fsi_dai_shutdown,
+ 	.trigger	= fsi_dai_trigger,
+-	.set_fmt	= fsi_dai_set_fmt,
++	.set_fmt_new	= fsi_dai_set_fmt,
+ 	.hw_params	= fsi_dai_hw_params,
+ 	.auto_selectable_formats	= &fsi_dai_formats,
+ 	.num_auto_selectable_formats	= 1,
+diff --git a/sound/soc/sh/rcar/core.c b/sound/soc/sh/rcar/core.c
+index eb762ab94d3ed..0ac15b74c58a8 100644
+--- a/sound/soc/sh/rcar/core.c
++++ b/sound/soc/sh/rcar/core.c
+@@ -756,10 +756,10 @@ static int rsnd_soc_dai_set_fmt(struct snd_soc_dai *dai, unsigned int fmt)
+ 
+ 	/* set clock master for audio interface */
+ 	switch (fmt & SND_SOC_DAIFMT_CLOCK_PROVIDER_MASK) {
+-	case SND_SOC_DAIFMT_CBP_CFP:
++	case SND_SOC_DAIFMT_BC_FC:
+ 		rdai->clk_master = 0;
+ 		break;
+-	case SND_SOC_DAIFMT_CBC_CFC:
++	case SND_SOC_DAIFMT_BP_FP:
+ 		rdai->clk_master = 1; /* cpu is master */
+ 		break;
+ 	default:
+@@ -1068,7 +1068,7 @@ static const struct snd_soc_dai_ops rsnd_soc_dai_ops = {
+ 	.startup	= rsnd_soc_dai_startup,
+ 	.shutdown	= rsnd_soc_dai_shutdown,
+ 	.trigger	= rsnd_soc_dai_trigger,
+-	.set_fmt	= rsnd_soc_dai_set_fmt,
++	.set_fmt_new	= rsnd_soc_dai_set_fmt,
+ 	.set_tdm_slot	= rsnd_soc_set_dai_tdm_slot,
+ 	.prepare	= rsnd_soc_dai_prepare,
+ 	.auto_selectable_formats	= rsnd_soc_dai_formats,
+diff --git a/sound/soc/sh/rz-ssi.c b/sound/soc/sh/rz-ssi.c
+index e392de7a262ef..0557d22a089f3 100644
+--- a/sound/soc/sh/rz-ssi.c
++++ b/sound/soc/sh/rz-ssi.c
+@@ -767,7 +767,7 @@ static int rz_ssi_dai_set_fmt(struct snd_soc_dai *dai, unsigned int fmt)
+ 	struct rz_ssi_priv *ssi = snd_soc_dai_get_drvdata(dai);
+ 
+ 	switch (fmt & SND_SOC_DAIFMT_CLOCK_PROVIDER_MASK) {
+-	case SND_SOC_DAIFMT_CBC_CFC:
++	case SND_SOC_DAIFMT_BP_FP:
+ 		break;
+ 	default:
+ 		dev_err(ssi->dev, "Codec should be clk and frame consumer\n");
+@@ -840,7 +840,7 @@ static int rz_ssi_dai_hw_params(struct snd_pcm_substream *substream,
+ 
+ static const struct snd_soc_dai_ops rz_ssi_dai_ops = {
+ 	.trigger	= rz_ssi_dai_trigger,
+-	.set_fmt	= rz_ssi_dai_set_fmt,
++	.set_fmt_new	= rz_ssi_dai_set_fmt,
+ 	.hw_params	= rz_ssi_dai_hw_params,
+ };
+ 
+diff --git a/sound/soc/sh/ssi.c b/sound/soc/sh/ssi.c
+index 15b01bcefca5c..95571cbeae296 100644
+--- a/sound/soc/sh/ssi.c
++++ b/sound/soc/sh/ssi.c
+@@ -291,16 +291,16 @@ static int ssi_set_fmt(struct snd_soc_dai *dai, unsigned int fmt)
  		return -EINVAL;
  	}
  
@@ -127,44 +204,28 @@ index 09d23b11621c4..79e733bc0ae69 100644
 +	switch (fmt & SND_SOC_DAIFMT_CLOCK_PROVIDER_MASK) {
 +	case SND_SOC_DAIFMT_BC_FC:
  		break;
- 	default:
- 		return -EINVAL;
-@@ -373,7 +373,7 @@ static int img_i2s_in_set_fmt(struct snd_soc_dai *dai, unsigned int fmt)
- static const struct snd_soc_dai_ops img_i2s_in_dai_ops = {
- 	.trigger = img_i2s_in_trigger,
- 	.hw_params = img_i2s_in_hw_params,
--	.set_fmt = img_i2s_in_set_fmt
-+	.set_fmt_new = img_i2s_in_set_fmt
- };
- 
- static int img_i2s_in_dai_probe(struct snd_soc_dai *dai)
-diff --git a/sound/soc/img/img-i2s-out.c b/sound/soc/img/img-i2s-out.c
-index 28f48ca1508a6..d92539603d6cb 100644
---- a/sound/soc/img/img-i2s-out.c
-+++ b/sound/soc/img/img-i2s-out.c
-@@ -302,10 +302,10 @@ static int img_i2s_out_set_fmt(struct snd_soc_dai *dai, unsigned int fmt)
- 	if (force_clk_active)
- 		control_set |= IMG_I2S_OUT_CTL_CLK_EN_MASK;
- 
--	switch (fmt & SND_SOC_DAIFMT_MASTER_MASK) {
--	case SND_SOC_DAIFMT_CBM_CFM:
-+	switch (fmt & SND_SOC_DAIFMT_CLOCK_PROVIDER_MASK) {
-+	case SND_SOC_DAIFMT_BC_FC:
+-	case SND_SOC_DAIFMT_CBS_CFM:
++	case SND_SOC_DAIFMT_BP_FC:
+ 		ssicr |= CR_SCK_MASTER;
+ 		break;
+-	case SND_SOC_DAIFMT_CBM_CFS:
++	case SND_SOC_DAIFMT_BC_FP:
+ 		ssicr |= CR_SWS_MASTER;
  		break;
 -	case SND_SOC_DAIFMT_CBS_CFS:
 +	case SND_SOC_DAIFMT_BP_FP:
- 		control_set |= IMG_I2S_OUT_CTL_MASTER_MASK;
+ 		ssicr |= CR_SWS_MASTER | CR_SCK_MASTER;
  		break;
  	default:
-@@ -381,7 +381,7 @@ static int img_i2s_out_set_fmt(struct snd_soc_dai *dai, unsigned int fmt)
- static const struct snd_soc_dai_ops img_i2s_out_dai_ops = {
- 	.trigger = img_i2s_out_trigger,
- 	.hw_params = img_i2s_out_hw_params,
--	.set_fmt = img_i2s_out_set_fmt
-+	.set_fmt_new = img_i2s_out_set_fmt
+@@ -336,7 +336,7 @@ static const struct snd_soc_dai_ops ssi_dai_ops = {
+ 	.hw_params	= ssi_hw_params,
+ 	.set_sysclk	= ssi_set_sysclk,
+ 	.set_clkdiv	= ssi_set_clkdiv,
+-	.set_fmt	= ssi_set_fmt,
++	.set_fmt_new	= ssi_set_fmt,
  };
  
- static int img_i2s_out_dai_probe(struct snd_soc_dai *dai)
+ static struct snd_soc_dai_driver sh4_ssi_dai[] = {
 -- 
 2.30.2
 
