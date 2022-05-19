@@ -4,78 +4,78 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D0388C433F5
-	for <alsa-devel@archiver.kernel.org>; Thu, 19 May 2022 15:48:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id AA764C433FE
+	for <alsa-devel@archiver.kernel.org>; Thu, 19 May 2022 15:48:28 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0608816AB;
-	Thu, 19 May 2022 17:47:20 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0608816AB
+	by alsa0.perex.cz (Postfix) with ESMTPS id D072116B1;
+	Thu, 19 May 2022 17:47:36 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D072116B1
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1652975290;
-	bh=qDJ+36361GBPpDPmH5+MqmhAUftY2gJ7mUxEhMzuPg0=;
+	s=default; t=1652975306;
+	bh=K8tTzJcufZ5E/bZvjbaxZIa2QLd9kqtx51J0+4ihvtA=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=ZvpwJ8VN98gW/l84omrfxLPKCpdE0u126ZBh368N35ZfamU4C4fH0ZJN0c1JM5K0J
-	 926r5G69xNIRA5dZLKj3Y8/2ViuZ1SUN1fyiBDC1q3qUkO6pTTB0u0Odi5ZunaFhOB
-	 ZNFR0vwI7ls+cwitEvjwCzOnKC+Q+6s1af7hOmO4=
+	b=MeMBPKPt/Yh8XtuxFeDx3Ka34cUn4j4cmUIyH4ZD99JhnQ7F7JVfVPH+PIny2Lwgi
+	 4lcewk9rNRPi51Abw/Y/dGNuJQUPx2f5FOLKqTLM81IrHfFxTFKGrRU98qTV2BIY+T
+	 /yGBTzyf1UxjLCBDtCWDkBFOB9cUo883/1LUV1qI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 63E9DF805C5;
-	Thu, 19 May 2022 17:44:02 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 5F1C2F805C8;
+	Thu, 19 May 2022 17:44:03 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 68D76F80520; Thu, 19 May 2022 17:43:49 +0200 (CEST)
+ id B63F2F805BB; Thu, 19 May 2022 17:43:49 +0200 (CEST)
 Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
  [67.231.152.168])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 2A528F80520
+ by alsa1.perex.cz (Postfix) with ESMTPS id 980ABF80526
  for <alsa-devel@alsa-project.org>; Thu, 19 May 2022 17:43:33 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2A528F80520
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 980ABF80526
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com
- header.b="YxhVrsQA"
+ header.b="YN6ej9i/"
 Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
- by mx0b-001ae601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 24JBHtaf024228;
- Thu, 19 May 2022 10:43:31 -0500
+ by mx0b-001ae601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 24J66mW4012194;
+ Thu, 19 May 2022 10:43:32 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
  h=from : to : cc :
  subject : date : message-id : in-reply-to : references : mime-version :
  content-transfer-encoding : content-type; s=PODMain02222019;
- bh=Pm3jjMaWxVpEIkKWLVm3yxKbzzbb30dvl/zIGbtUrP8=;
- b=YxhVrsQAg0fjF21c2EO9zIhWCpnRCHxgUI7rdcfp0X5ddAsfui0t4gVq1h19vCJWqckQ
- s0RT1SS/XTw1/mVSvQuUDcvkIoXaWAzuesU7hVP6GAjF3FEOUCmI9F6k2m83Rv1jHqTe
- eKPushTrUwgNbSD3UR8sH7bHjfBk7m7t/UXoOQtAD6iOw1jrTQBMYoq4yY9Jq8D5d7tF
- zxHxl/ddpAILBNjs7jK1lHJuiEG+0lI57IOKLVpQgk8mnSNLZU6P8pNH17xHW4i7olVJ
- JVI7tsdidRsJ6iJV48fSpJuud5KLi5N40whMnZy3ou+HF70jSx7M9mHODZKsVrx0LzlS IA== 
-Received: from ediex01.ad.cirrus.com ([84.19.233.68])
- by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3g28upf5dm-7
+ bh=ZaKUpotIvoQjdFwP7QMhM/HkrShRS0CkfsVa54u1syg=;
+ b=YN6ej9i/DaUwKi4WVG4klAJ0DdYoE0b40D8lRgZJMZc2zTEq2FwNM0+SSGGSeY78MXrs
+ xZYuob90IvQK5lULl8v8UGVckZ7Wbqw0h/+8XoTFp5Nw2LMZ6orPZXXDMovQvzU0qeVQ
+ EPOaxx/Os2qccEm1P/DFcRrQpWQTI7mVIjOR5/hrFSXQFhbFwHjv3JGf4gelj5QMkDC6
+ 6jFze3jVZv4dalMqOsyYTg7D1tlE5N84WGkPCXftFgdArtLslD6hJYckZdcOsz9e6nx4
+ Z5uIXpLgZj7w4haQRz3pJxb+gZ7m7ekVdW8LArtMcau4vowehKMH1Z3xBgyLq/aXxcsJ /w== 
+Received: from ediex02.ad.cirrus.com ([84.19.233.68])
+ by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3g28upf5dn-7
  (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
  Thu, 19 May 2022 10:43:31 -0500
-Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
+Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX02.ad.cirrus.com
+ (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.24; Thu, 19 May
- 2022 16:43:19 +0100
+ 2022 16:43:20 +0100
 Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
  (198.61.84.80) with Microsoft SMTP Server id 15.1.2375.24 via
- Frontend Transport; Thu, 19 May 2022 16:43:19 +0100
+ Frontend Transport; Thu, 19 May 2022 16:43:20 +0100
 Received: from algalon.ad.cirrus.com (algalon.ad.cirrus.com [198.90.251.122])
- by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 393CB11D3;
- Thu, 19 May 2022 15:43:19 +0000 (UTC)
+ by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 1636F11D1;
+ Thu, 19 May 2022 15:43:20 +0000 (UTC)
 From: Charles Keepax <ckeepax@opensource.cirrus.com>
 To: <broonie@kernel.org>
-Subject: [PATCH 12/56] ASoC: js4740-i2s: Update to use set_fmt_new callback
-Date: Thu, 19 May 2022 16:42:34 +0100
-Message-ID: <20220519154318.2153729-13-ckeepax@opensource.cirrus.com>
+Subject: [PATCH 24/56] ASoC: test-component: Update to use set_fmt_new callback
+Date: Thu, 19 May 2022 16:42:46 +0100
+Message-ID: <20220519154318.2153729-25-ckeepax@opensource.cirrus.com>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20220519154318.2153729-1-ckeepax@opensource.cirrus.com>
 References: <20220519154318.2153729-1-ckeepax@opensource.cirrus.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-Proofpoint-GUID: 5h7eLRo3hYvdU-IIdSldPGyTiV9e14zM
-X-Proofpoint-ORIG-GUID: 5h7eLRo3hYvdU-IIdSldPGyTiV9e14zM
+X-Proofpoint-GUID: q0UNWcUb84d3WFxs6NgPjsPFwNx8_Vjq
+X-Proofpoint-ORIG-GUID: q0UNWcUb84d3WFxs6NgPjsPFwNx8_Vjq
 X-Proofpoint-Spam-Reason: safe
 Cc: cezary.rojewski@intel.com, heiko@sntech.de,
  kuninori.morimoto.gx@renesas.com, alsa-devel@alsa-project.org,
@@ -110,46 +110,76 @@ callback.
 
 Signed-off-by: Charles Keepax <ckeepax@opensource.cirrus.com>
 ---
- sound/soc/jz4740/jz4740-i2s.c | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
+ sound/soc/generic/test-component.c | 22 +++++++++++-----------
+ 1 file changed, 11 insertions(+), 11 deletions(-)
 
-diff --git a/sound/soc/jz4740/jz4740-i2s.c b/sound/soc/jz4740/jz4740-i2s.c
-index 7ad5d9a924d80..2c9dee2417783 100644
---- a/sound/soc/jz4740/jz4740-i2s.c
-+++ b/sound/soc/jz4740/jz4740-i2s.c
-@@ -206,18 +206,18 @@ static int jz4740_i2s_set_fmt(struct snd_soc_dai *dai, unsigned int fmt)
+diff --git a/sound/soc/generic/test-component.c b/sound/soc/generic/test-component.c
+index 5da4725d9e16c..3a992a6eba9bb 100644
+--- a/sound/soc/generic/test-component.c
++++ b/sound/soc/generic/test-component.c
+@@ -66,7 +66,7 @@ static int test_dai_set_fmt(struct snd_soc_dai *dai, unsigned int fmt)
+ 	unsigned int format = fmt & SND_SOC_DAIFMT_FORMAT_MASK;
+ 	unsigned int clock  = fmt & SND_SOC_DAIFMT_CLOCK_MASK;
+ 	unsigned int inv    = fmt & SND_SOC_DAIFMT_INV_MASK;
+-	unsigned int master = fmt & SND_SOC_DAIFMT_MASTER_MASK;
++	unsigned int master = fmt & SND_SOC_DAIFMT_CLOCK_PROVIDER_MASK;
+ 	char *str;
  
- 	conf &= ~(JZ_AIC_CONF_BIT_CLK_MASTER | JZ_AIC_CONF_SYNC_CLK_MASTER);
+ 	dev_info(dai->dev, "name   : %s", dai->name);
+@@ -105,16 +105,16 @@ static int test_dai_set_fmt(struct snd_soc_dai *dai, unsigned int fmt)
  
--	switch (fmt & SND_SOC_DAIFMT_MASTER_MASK) {
--	case SND_SOC_DAIFMT_CBS_CFS:
-+	switch (fmt & SND_SOC_DAIFMT_CLOCK_PROVIDER_MASK) {
+ 	str = "unknown";
+ 	switch (master) {
+-	case SND_SOC_DAIFMT_CBP_CFP:
 +	case SND_SOC_DAIFMT_BP_FP:
- 		conf |= JZ_AIC_CONF_BIT_CLK_MASTER | JZ_AIC_CONF_SYNC_CLK_MASTER;
- 		format |= JZ_AIC_I2S_FMT_ENABLE_SYS_CLK;
+ 		str = "clk provider, frame provider";
  		break;
--	case SND_SOC_DAIFMT_CBM_CFS:
+-	case SND_SOC_DAIFMT_CBC_CFP:
 +	case SND_SOC_DAIFMT_BC_FP:
- 		conf |= JZ_AIC_CONF_SYNC_CLK_MASTER;
+ 		str = "clk consumer, frame provider";
  		break;
--	case SND_SOC_DAIFMT_CBS_CFM:
+-	case SND_SOC_DAIFMT_CBP_CFC:
 +	case SND_SOC_DAIFMT_BP_FC:
- 		conf |= JZ_AIC_CONF_BIT_CLK_MASTER;
+ 		str = "clk provider, frame consumer";
  		break;
--	case SND_SOC_DAIFMT_CBM_CFM:
+-	case SND_SOC_DAIFMT_CBC_CFC:
 +	case SND_SOC_DAIFMT_BC_FC:
+ 		str = "clk consumer, frame consumer";
  		break;
- 	default:
- 		return -EINVAL;
-@@ -433,7 +433,7 @@ static const struct snd_soc_dai_ops jz4740_i2s_dai_ops = {
- 	.shutdown = jz4740_i2s_shutdown,
- 	.trigger = jz4740_i2s_trigger,
- 	.hw_params = jz4740_i2s_hw_params,
--	.set_fmt = jz4740_i2s_set_fmt,
-+	.set_fmt_new = jz4740_i2s_set_fmt,
- 	.set_sysclk = jz4740_i2s_set_sysclk,
- };
+ 	}
+@@ -192,10 +192,10 @@ static int test_dai_bespoke_trigger(struct snd_pcm_substream *substream,
+ static u64 test_dai_formats =
+ 	/*
+ 	 * Select below from Sound Card, not auto
+-	 *	SND_SOC_POSSIBLE_DAIFMT_CBP_CFP
+-	 *	SND_SOC_POSSIBLE_DAIFMT_CBC_CFP
+-	 *	SND_SOC_POSSIBLE_DAIFMT_CBP_CFC
+-	 *	SND_SOC_POSSIBLE_DAIFMT_CBC_CFC
++	 *	SND_SOC_POSSIBLE_DAIFMT_BP_FP
++	 *	SND_SOC_POSSIBLE_DAIFMT_BC_FP
++	 *	SND_SOC_POSSIBLE_DAIFMT_BP_FC
++	 *	SND_SOC_POSSIBLE_DAIFMT_BC_FC
+ 	 */
+ 	SND_SOC_POSSIBLE_DAIFMT_I2S	|
+ 	SND_SOC_POSSIBLE_DAIFMT_RIGHT_J	|
+@@ -210,7 +210,7 @@ static u64 test_dai_formats =
+ 	SND_SOC_POSSIBLE_DAIFMT_IB_IF;
  
+ static const struct snd_soc_dai_ops test_ops = {
+-	.set_fmt		= test_dai_set_fmt,
++	.set_fmt_new		= test_dai_set_fmt,
+ 	.startup		= test_dai_startup,
+ 	.shutdown		= test_dai_shutdown,
+ 	.auto_selectable_formats	= &test_dai_formats,
+@@ -221,7 +221,7 @@ static const struct snd_soc_dai_ops test_verbose_ops = {
+ 	.set_sysclk		= test_dai_set_sysclk,
+ 	.set_pll		= test_dai_set_pll,
+ 	.set_clkdiv		= test_dai_set_clkdiv,
+-	.set_fmt		= test_dai_set_fmt,
++	.set_fmt_new		= test_dai_set_fmt,
+ 	.mute_stream		= test_dai_mute_stream,
+ 	.startup		= test_dai_startup,
+ 	.shutdown		= test_dai_shutdown,
 -- 
 2.30.2
 
