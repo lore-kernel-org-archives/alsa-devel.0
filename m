@@ -4,78 +4,78 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 860FAC433EF
-	for <alsa-devel@archiver.kernel.org>; Thu, 19 May 2022 15:50:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2E78AC433F5
+	for <alsa-devel@archiver.kernel.org>; Thu, 19 May 2022 15:51:04 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C186A16D9;
-	Thu, 19 May 2022 17:49:48 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C186A16D9
+	by alsa0.perex.cz (Postfix) with ESMTPS id 406D816C9;
+	Thu, 19 May 2022 17:50:12 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 406D816C9
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1652975438;
-	bh=M2aCfMzywFPgWyMSu23Sj28Yet6lMd+/d87gEx+XsAI=;
+	s=default; t=1652975462;
+	bh=+vwwY75sMRJQVHfA+eGB1Z39I6BKh09Jq/XMq96moj0=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=lwY7kNOio5HEejwjWbJY2sqeo5usPH8KOvMtxcUIFsPbO3sUFaoRToPa4RpMUj1gU
-	 3Yv+Fyqs7LbIvkFshBvy3dviI9lTPK26jLNnDcc7/llTDJohkdp93lil5Z3HRT6Pbm
-	 OBWV1YrPhbETk70swFkILlP0BfIst0s0oe3jxqcA=
+	b=f2OeEZwzuFvyi0Zm9xBQ0X8WskXO9S/DRw4+cKw1e6TKTarAUKfft4sS/evhDQgAf
+	 Qtv2CIWUF1m5gZV4vQ5EIICZrlGa2FC9tjwxyk6nnzKl8q7+tR7P5hpxCytkKEfz46
+	 ttyHoRIU8M+skZSq+bkzgBG22zgPW+0cETGIUvJo=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id EFF0FF805F1;
-	Thu, 19 May 2022 17:44:12 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id A0A44F805F7;
+	Thu, 19 May 2022 17:44:14 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id E6736F805C1; Thu, 19 May 2022 17:43:59 +0200 (CEST)
-Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
- [67.231.152.168])
+ id E357EF805C2; Thu, 19 May 2022 17:44:00 +0200 (CEST)
+Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
+ [67.231.149.25])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id A1D11F8052F
- for <alsa-devel@alsa-project.org>; Thu, 19 May 2022 17:43:35 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A1D11F8052F
+ by alsa1.perex.cz (Postfix) with ESMTPS id BBF71F8052E
+ for <alsa-devel@alsa-project.org>; Thu, 19 May 2022 17:43:34 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BBF71F8052E
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com
- header.b="Hu/rV+zs"
-Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
- by mx0b-001ae601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 24J66mW6012194;
- Thu, 19 May 2022 10:43:33 -0500
+ header.b="Y6JZdFPx"
+Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
+ by mx0a-001ae601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 24J6k11q002261;
+ Thu, 19 May 2022 10:43:32 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
  h=from : to : cc :
  subject : date : message-id : in-reply-to : references : mime-version :
  content-transfer-encoding : content-type; s=PODMain02222019;
- bh=hL6lfxK+JTiss7s+GosQaz6BMBYNmT6Il+oFSRdL23o=;
- b=Hu/rV+zsXTFHHh+rCI4kKGnjxTFrhffkouPrWrtApZaIUA+dS1E1KaUfrlRiozyWqkEc
- 9WMwVT/1/ZokDJeNaaD1CkknDWgwu+zQc0Ys2m2LkE7Rbz29EqgGT9Wxyi6DB2yd+SMH
- 8ZaFYnh/rU+Q0f8ZmfoEI5mU3mCvTYIQSP4P8GYbYYXPWqOcKEmpr26e5DYzKEBSDp5z
- mmY5WT0D2UTKjVLYhQ34eJT5Hj1W6GQz4bO1XwOkOfMaWvv54mY5TdyHKScupMKCVBfq
- HVSOOulS6g5W379dmi+5SGfAiFcNdqVkM0h2T0JitF2zKN8QjABwrGIFvl4mx+YX4NKd xQ== 
-Received: from ediex02.ad.cirrus.com ([84.19.233.68])
- by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3g28upf5dn-9
+ bh=VOQ+W/oBZOlr8tN9YP1v240fTtVnO2FxmwdVacMFRIc=;
+ b=Y6JZdFPxyitwRJjr9a6m7L6/DpQEebQmUx9/+TDWC/cDQtgPDs7SW/GjNAwxfYxZqXFS
+ NB+oTTLeRcop82GJsL+oh5BiU+uHSDZbeMIzpNJ7qRUgatKKrQ/smur9xw0bXNq6Idbm
+ mW6scEKBGXAF9Z5MOTg9iIims+lR/Yn+7Cqc6kqM0GuYIUPSp4xHIqYLJqyU5DazzGFq
+ tFAgc7/NglXG9ZepQkNbNVotV4srpV3YnUFXurHeSMLHteb/6oMCmN7TyQz162x2yVLh
+ dU14U4pxkZBdE8t7djgleUbsefuLbl/xZhOw4PT/fN2enZnXD9DTZZ2ypAU2LjIIBzzG qQ== 
+Received: from ediex01.ad.cirrus.com ([84.19.233.68])
+ by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3g29u37mcf-3
  (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
- Thu, 19 May 2022 10:43:33 -0500
-Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX02.ad.cirrus.com
- (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
+ Thu, 19 May 2022 10:43:32 -0500
+Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.24; Thu, 19 May
- 2022 16:43:20 +0100
+ 2022 16:43:19 +0100
 Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
  (198.61.84.80) with Microsoft SMTP Server id 15.1.2375.24 via
- Frontend Transport; Thu, 19 May 2022 16:43:20 +0100
+ Frontend Transport; Thu, 19 May 2022 16:43:19 +0100
 Received: from algalon.ad.cirrus.com (algalon.ad.cirrus.com [198.90.251.122])
- by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 5199211DA;
- Thu, 19 May 2022 15:43:20 +0000 (UTC)
+ by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 565F611D4;
+ Thu, 19 May 2022 15:43:19 +0000 (UTC)
 From: Charles Keepax <ckeepax@opensource.cirrus.com>
 To: <broonie@kernel.org>
-Subject: [PATCH 27/56] ASoC: xtensa: Update to use set_fmt_new callback
-Date: Thu, 19 May 2022 16:42:49 +0100
-Message-ID: <20220519154318.2153729-28-ckeepax@opensource.cirrus.com>
+Subject: [PATCH 14/56] ASoC: meson: Update to use set_fmt_new callback
+Date: Thu, 19 May 2022 16:42:36 +0100
+Message-ID: <20220519154318.2153729-15-ckeepax@opensource.cirrus.com>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20220519154318.2153729-1-ckeepax@opensource.cirrus.com>
 References: <20220519154318.2153729-1-ckeepax@opensource.cirrus.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-Proofpoint-GUID: FuQkjqCkMNYZ7gtMy5ikdmUthD9mU6_g
-X-Proofpoint-ORIG-GUID: FuQkjqCkMNYZ7gtMy5ikdmUthD9mU6_g
+X-Proofpoint-GUID: 9vKTyJR_k71vp336DaV_ccMq6PFsIzii
+X-Proofpoint-ORIG-GUID: 9vKTyJR_k71vp336DaV_ccMq6PFsIzii
 X-Proofpoint-Spam-Reason: safe
 Cc: cezary.rojewski@intel.com, heiko@sntech.de,
  kuninori.morimoto.gx@renesas.com, alsa-devel@alsa-project.org,
@@ -105,36 +105,86 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 As part of updating the core to directly tell drivers if they are clock
-provider or consumer update this CPU side driver to use the new direct
+provider or consumer update these CPU side drivers to use the new direct
 callback.
 
 Signed-off-by: Charles Keepax <ckeepax@opensource.cirrus.com>
 ---
- sound/soc/xtensa/xtfpga-i2s.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ sound/soc/meson/aiu-encoder-i2s.c   |  4 ++--
+ sound/soc/meson/axg-tdm-interface.c | 16 ++++++++--------
+ 2 files changed, 10 insertions(+), 10 deletions(-)
 
-diff --git a/sound/soc/xtensa/xtfpga-i2s.c b/sound/soc/xtensa/xtfpga-i2s.c
-index aeb4b2c4d1d35..72935f491901f 100644
---- a/sound/soc/xtensa/xtfpga-i2s.c
-+++ b/sound/soc/xtensa/xtfpga-i2s.c
-@@ -339,7 +339,7 @@ static int xtfpga_i2s_set_fmt(struct snd_soc_dai *cpu_dai,
- {
- 	if ((fmt & SND_SOC_DAIFMT_INV_MASK) != SND_SOC_DAIFMT_NB_NF)
- 		return -EINVAL;
+diff --git a/sound/soc/meson/aiu-encoder-i2s.c b/sound/soc/meson/aiu-encoder-i2s.c
+index 67729de41a73e..0ab991230deec 100644
+--- a/sound/soc/meson/aiu-encoder-i2s.c
++++ b/sound/soc/meson/aiu-encoder-i2s.c
+@@ -229,7 +229,7 @@ static int aiu_encoder_i2s_set_fmt(struct snd_soc_dai *dai, unsigned int fmt)
+ 	unsigned int skew;
+ 
+ 	/* Only CPU Master / Codec Slave supported ATM */
 -	if ((fmt & SND_SOC_DAIFMT_MASTER_MASK) != SND_SOC_DAIFMT_CBS_CFS)
 +	if ((fmt & SND_SOC_DAIFMT_CLOCK_PROVIDER_MASK) != SND_SOC_DAIFMT_BP_FP)
  		return -EINVAL;
- 	if ((fmt & SND_SOC_DAIFMT_FORMAT_MASK) != SND_SOC_DAIFMT_I2S)
- 		return -EINVAL;
-@@ -487,7 +487,7 @@ static const struct snd_soc_component_driver xtfpga_i2s_component = {
- static const struct snd_soc_dai_ops xtfpga_i2s_dai_ops = {
- 	.startup	= xtfpga_i2s_startup,
- 	.hw_params      = xtfpga_i2s_hw_params,
--	.set_fmt        = xtfpga_i2s_set_fmt,
-+	.set_fmt_new	= xtfpga_i2s_set_fmt,
- };
  
- static struct snd_soc_dai_driver xtfpga_i2s_dai[] = {
+ 	if (inv == SND_SOC_DAIFMT_NB_IF ||
+@@ -323,7 +323,7 @@ static void aiu_encoder_i2s_shutdown(struct snd_pcm_substream *substream,
+ const struct snd_soc_dai_ops aiu_encoder_i2s_dai_ops = {
+ 	.hw_params	= aiu_encoder_i2s_hw_params,
+ 	.hw_free	= aiu_encoder_i2s_hw_free,
+-	.set_fmt	= aiu_encoder_i2s_set_fmt,
++	.set_fmt_new	= aiu_encoder_i2s_set_fmt,
+ 	.set_sysclk	= aiu_encoder_i2s_set_sysclk,
+ 	.startup	= aiu_encoder_i2s_startup,
+ 	.shutdown	= aiu_encoder_i2s_shutdown,
+diff --git a/sound/soc/meson/axg-tdm-interface.c b/sound/soc/meson/axg-tdm-interface.c
+index e076ced300257..ffdb12d0e01e3 100644
+--- a/sound/soc/meson/axg-tdm-interface.c
++++ b/sound/soc/meson/axg-tdm-interface.c
+@@ -119,19 +119,19 @@ static int axg_tdm_iface_set_fmt(struct snd_soc_dai *dai, unsigned int fmt)
+ {
+ 	struct axg_tdm_iface *iface = snd_soc_dai_get_drvdata(dai);
+ 
+-	switch (fmt & SND_SOC_DAIFMT_MASTER_MASK) {
+-	case SND_SOC_DAIFMT_CBS_CFS:
++	switch (fmt & SND_SOC_DAIFMT_CLOCK_PROVIDER_MASK) {
++	case SND_SOC_DAIFMT_BP_FP:
+ 		if (!iface->mclk) {
+ 			dev_err(dai->dev, "cpu clock master: mclk missing\n");
+ 			return -ENODEV;
+ 		}
+ 		break;
+ 
+-	case SND_SOC_DAIFMT_CBM_CFM:
++	case SND_SOC_DAIFMT_BC_FC:
+ 		break;
+ 
+-	case SND_SOC_DAIFMT_CBS_CFM:
+-	case SND_SOC_DAIFMT_CBM_CFS:
++	case SND_SOC_DAIFMT_BP_FC:
++	case SND_SOC_DAIFMT_BC_FP:
+ 		dev_err(dai->dev, "only CBS_CFS and CBM_CFM are supported\n");
+ 		fallthrough;
+ 	default:
+@@ -326,8 +326,8 @@ static int axg_tdm_iface_hw_params(struct snd_pcm_substream *substream,
+ 	if (ret)
+ 		return ret;
+ 
+-	if ((iface->fmt & SND_SOC_DAIFMT_MASTER_MASK) ==
+-	    SND_SOC_DAIFMT_CBS_CFS) {
++	if ((iface->fmt & SND_SOC_DAIFMT_CLOCK_PROVIDER_MASK) ==
++	    SND_SOC_DAIFMT_BP_FP) {
+ 		ret = axg_tdm_iface_set_sclk(dai, params);
+ 		if (ret)
+ 			return ret;
+@@ -394,7 +394,7 @@ static int axg_tdm_iface_probe_dai(struct snd_soc_dai *dai)
+ 
+ static const struct snd_soc_dai_ops axg_tdm_iface_ops = {
+ 	.set_sysclk	= axg_tdm_iface_set_sysclk,
+-	.set_fmt	= axg_tdm_iface_set_fmt,
++	.set_fmt_new	= axg_tdm_iface_set_fmt,
+ 	.startup	= axg_tdm_iface_startup,
+ 	.hw_params	= axg_tdm_iface_hw_params,
+ 	.prepare	= axg_tdm_iface_prepare,
 -- 
 2.30.2
 
