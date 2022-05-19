@@ -4,78 +4,78 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 13223C433F5
-	for <alsa-devel@archiver.kernel.org>; Thu, 19 May 2022 15:47:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2C03EC433F5
+	for <alsa-devel@archiver.kernel.org>; Thu, 19 May 2022 15:47:44 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 34A4B1660;
-	Thu, 19 May 2022 17:46:32 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 34A4B1660
+	by alsa0.perex.cz (Postfix) with ESMTPS id 4D64D166C;
+	Thu, 19 May 2022 17:46:52 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4D64D166C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1652975242;
-	bh=wnsdSrYrsIB3xHR5wBfHX5BXIF003FXvxs+CF/vOXQM=;
+	s=default; t=1652975262;
+	bh=OU87iJYEcBRqWAExHBMngJdBXd52gZPZvVAfbX2HOmI=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=VFDV8uKDY8V8W0+mOByU54MCqicBttGKwUh2Oh1W02VpCKVLmYTV+qqQle/KeoSdw
-	 C2+DBez4LEU8vFYMFZgLKElD85v0RDEW9tAKg3qSdfLSeBNMmMTbXhuGmoTRln4IEo
-	 MtZrHOKNba+PmIXithgsfJkPB9SwcUOD+gAp0Kv4=
+	b=pkkhBwt1VMM1BJa6kzUHPiettmsLYdmzToypR4MFfE+YD6Zv2lP+fDvkZdNXNlXDO
+	 +emrMBxfYf+sHhxynmLclQpajz0oHuN2JKT7mCZRLDeziW10WP16FngaV11a7cquIB
+	 IK3EbvQDaWJUBAHfw6+0YGc60kbd2nVQQX+brqyk=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 99731F80526;
-	Thu, 19 May 2022 17:43:56 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 8780FF80528;
+	Thu, 19 May 2022 17:43:57 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 698DEF805A8; Thu, 19 May 2022 17:43:46 +0200 (CEST)
+ id 0509FF8059F; Thu, 19 May 2022 17:43:46 +0200 (CEST)
 Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
  [67.231.152.168])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 7036AF800D1
- for <alsa-devel@alsa-project.org>; Thu, 19 May 2022 17:43:31 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7036AF800D1
+ by alsa1.perex.cz (Postfix) with ESMTPS id C587DF80519
+ for <alsa-devel@alsa-project.org>; Thu, 19 May 2022 17:43:30 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C587DF80519
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com
- header.b="lWc/v8rb"
+ header.b="NuKu4vk+"
 Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
- by mx0b-001ae601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 24J66mW1012194;
+ by mx0b-001ae601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 24JBHtad024228;
  Thu, 19 May 2022 10:43:29 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
  h=from : to : cc :
  subject : date : message-id : in-reply-to : references : mime-version :
  content-transfer-encoding : content-type; s=PODMain02222019;
- bh=zovcG00Qw1epnEygXfoI+fXk8bpqiR5gNT0dl14iD4Y=;
- b=lWc/v8rbG6DU3/oen1cs99BZePFwWmNoSiUWQBhylY48FwvXVumaQtWAySXEUo/z6McS
- /n19a4Tn3t4SUfM5OhrzHXKcibSXa7p9DDnH2u9Se/Isfe/g2s+mK76dJc6G5Vf5e6iS
- zF629G9KrsUm46guTqiSNvL6wa5uR5omvc4xNLdwyC3NFY5daFs52w0/yP9oA7HZiBtc
- D49Q6eP0VNpzEg/inh1XB5k9w6wq+/x7e+f64q7vaLP8T1b9P1li8VRLv4mWKMcNZ2Jo
- /zDNcy1p0llemEEQ76/yGfJx3sHNbeZ4Mww6EIMds3wJTVA5TR18Q4gAx0fvAp86DpWN CQ== 
-Received: from ediex02.ad.cirrus.com ([84.19.233.68])
- by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3g28upf5dn-4
+ bh=JZwMeAXTmKyqZh6PnwjGmQ7Sg6P9A85VRbLP68aHx+U=;
+ b=NuKu4vk+OZb2YcWlAAFVraEWupCLmAqo6g/teCFwiVObhAP2zaNgrGJkg7fqXXlvkf+W
+ j8VllfGLHAb7SHTVf4t/KetLhJk2FG+dCpkE66CeRU3PKM5CR9jXYIxoEkHEuAuZOqKj
+ Dcny0Oe3fGhBQOshT+Gf4mpVoV92gK2bXBpDdvfBF5pcDl2g2GXHbO/8w6ix4KkRKVoQ
+ pUCAfZFnWfV+/4Lg0ReHkO1GpMbjzGru8BcJ/QGXithzrck4mcqarMpQheE9lGQLKk+R
+ VRcxLEIwpFUQn2dB6BuEE5ghSeyVTwq6c4hubJzdTwnhDjhfvXcVowjNQBlv+uvz95gP yQ== 
+Received: from ediex01.ad.cirrus.com ([84.19.233.68])
+ by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3g28upf5dm-5
  (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
- Thu, 19 May 2022 10:43:29 -0500
-Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX02.ad.cirrus.com
- (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
+ Thu, 19 May 2022 10:43:27 -0500
+Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.24; Thu, 19 May
  2022 16:43:19 +0100
 Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
  (198.61.84.80) with Microsoft SMTP Server id 15.1.2375.24 via
  Frontend Transport; Thu, 19 May 2022 16:43:19 +0100
 Received: from algalon.ad.cirrus.com (algalon.ad.cirrus.com [198.90.251.122])
- by ediswmail.ad.cirrus.com (Postfix) with ESMTP id A5A56475;
- Thu, 19 May 2022 15:43:19 +0000 (UTC)
+ by ediswmail.ad.cirrus.com (Postfix) with ESMTP id F195D11D3;
+ Thu, 19 May 2022 15:43:18 +0000 (UTC)
 From: Charles Keepax <ckeepax@opensource.cirrus.com>
 To: <broonie@kernel.org>
-Subject: [PATCH 18/56] ASoC: rockchip: Update to use set_fmt_new callback
-Date: Thu, 19 May 2022 16:42:40 +0100
-Message-ID: <20220519154318.2153729-19-ckeepax@opensource.cirrus.com>
+Subject: [PATCH 09/56] ASoC: hisilicon: Update to use set_fmt_new callback
+Date: Thu, 19 May 2022 16:42:31 +0100
+Message-ID: <20220519154318.2153729-10-ckeepax@opensource.cirrus.com>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20220519154318.2153729-1-ckeepax@opensource.cirrus.com>
 References: <20220519154318.2153729-1-ckeepax@opensource.cirrus.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-Proofpoint-GUID: 0Qtm8D2_cnb-mytSm_FVWYGxhUPRu7so
-X-Proofpoint-ORIG-GUID: 0Qtm8D2_cnb-mytSm_FVWYGxhUPRu7so
+X-Proofpoint-GUID: xseAf3viMvfsJbVMvc_EICfoCoFhnqVY
+X-Proofpoint-ORIG-GUID: xseAf3viMvfsJbVMvc_EICfoCoFhnqVY
 X-Proofpoint-Spam-Reason: safe
 Cc: cezary.rojewski@intel.com, heiko@sntech.de,
  kuninori.morimoto.gx@renesas.com, alsa-devel@alsa-project.org,
@@ -105,73 +105,76 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 As part of updating the core to directly tell drivers if they are clock
-provider or consumer update these CPU side drivers to use the new direct
+provider or consumer update this CPU side driver to use the new direct
 callback.
 
 Signed-off-by: Charles Keepax <ckeepax@opensource.cirrus.com>
 ---
- sound/soc/rockchip/rockchip_i2s.c     | 8 ++++----
- sound/soc/rockchip/rockchip_i2s_tdm.c | 8 ++++----
- 2 files changed, 8 insertions(+), 8 deletions(-)
+ sound/soc/hisilicon/hi6210-i2s.c | 20 ++++++++++----------
+ 1 file changed, 10 insertions(+), 10 deletions(-)
 
-diff --git a/sound/soc/rockchip/rockchip_i2s.c b/sound/soc/rockchip/rockchip_i2s.c
-index 4ce5d25793875..0a66c7df323dc 100644
---- a/sound/soc/rockchip/rockchip_i2s.c
-+++ b/sound/soc/rockchip/rockchip_i2s.c
-@@ -199,13 +199,13 @@ static int rockchip_i2s_set_fmt(struct snd_soc_dai *cpu_dai,
- 
- 	pm_runtime_get_sync(cpu_dai->dev);
- 	mask = I2S_CKR_MSS_MASK;
+diff --git a/sound/soc/hisilicon/hi6210-i2s.c b/sound/soc/hisilicon/hi6210-i2s.c
+index a297d4af5099f..51f98ae651a6b 100644
+--- a/sound/soc/hisilicon/hi6210-i2s.c
++++ b/sound/soc/hisilicon/hi6210-i2s.c
+@@ -227,9 +227,9 @@ static int hi6210_i2s_set_fmt(struct snd_soc_dai *cpu_dai, unsigned int fmt)
+ 	 * We don't actually set the hardware until the hw_params
+ 	 * call, but we need to validate the user input here.
+ 	 */
 -	switch (fmt & SND_SOC_DAIFMT_MASTER_MASK) {
+-	case SND_SOC_DAIFMT_CBM_CFM:
 -	case SND_SOC_DAIFMT_CBS_CFS:
 +	switch (fmt & SND_SOC_DAIFMT_CLOCK_PROVIDER_MASK) {
-+	case SND_SOC_DAIFMT_BP_FP:
- 		/* Set source clock in Master mode */
- 		val = I2S_CKR_MSS_MASTER;
- 		i2s->is_master_mode = true;
- 		break;
--	case SND_SOC_DAIFMT_CBM_CFM:
 +	case SND_SOC_DAIFMT_BC_FC:
- 		val = I2S_CKR_MSS_SLAVE;
- 		i2s->is_master_mode = false;
++	case SND_SOC_DAIFMT_BP_FP:
  		break;
-@@ -486,7 +486,7 @@ static const struct snd_soc_dai_ops rockchip_i2s_dai_ops = {
- 	.hw_params = rockchip_i2s_hw_params,
- 	.set_bclk_ratio	= rockchip_i2s_set_bclk_ratio,
- 	.set_sysclk = rockchip_i2s_set_sysclk,
--	.set_fmt = rockchip_i2s_set_fmt,
-+	.set_fmt_new = rockchip_i2s_set_fmt,
- 	.trigger = rockchip_i2s_trigger,
- };
- 
-diff --git a/sound/soc/rockchip/rockchip_i2s_tdm.c b/sound/soc/rockchip/rockchip_i2s_tdm.c
-index 98700e75b82a1..c90afccdae362 100644
---- a/sound/soc/rockchip/rockchip_i2s_tdm.c
-+++ b/sound/soc/rockchip/rockchip_i2s_tdm.c
-@@ -411,12 +411,12 @@ static int rockchip_i2s_tdm_set_fmt(struct snd_soc_dai *cpu_dai,
+ 	default:
+ 		return -EINVAL;
+@@ -245,8 +245,8 @@ static int hi6210_i2s_set_fmt(struct snd_soc_dai *cpu_dai, unsigned int fmt)
  	}
  
- 	mask = I2S_CKR_MSS_MASK;
--	switch (fmt & SND_SOC_DAIFMT_MASTER_MASK) {
--	case SND_SOC_DAIFMT_CBC_CFC:
-+	switch (fmt & SND_SOC_DAIFMT_CLOCK_PROVIDER_MASK) {
-+	case SND_SOC_DAIFMT_BP_FP:
- 		val = I2S_CKR_MSS_MASTER;
- 		i2s_tdm->is_master_mode = true;
- 		break;
--	case SND_SOC_DAIFMT_CBP_CFP:
+ 	i2s->format = fmt;
+-	i2s->master = (i2s->format & SND_SOC_DAIFMT_MASTER_MASK) ==
+-		      SND_SOC_DAIFMT_CBS_CFS;
++	i2s->master = (i2s->format & SND_SOC_DAIFMT_CLOCK_PROVIDER_MASK) ==
++		      SND_SOC_DAIFMT_BP_FP;
+ 
+ 	return 0;
+ }
+@@ -375,21 +375,21 @@ static int hi6210_i2s_hw_params(struct snd_pcm_substream *substream,
+ 	hi6210_write_reg(i2s, HII2S_MUX_TOP_MODULE_CFG, val);
+ 
+ 
+-	switch (i2s->format & SND_SOC_DAIFMT_MASTER_MASK) {
+-	case SND_SOC_DAIFMT_CBM_CFM:
++	switch (i2s->format & SND_SOC_DAIFMT_CLOCK_PROVIDER_MASK) {
 +	case SND_SOC_DAIFMT_BC_FC:
- 		val = I2S_CKR_MSS_SLAVE;
- 		i2s_tdm->is_master_mode = false;
+ 		i2s->master = false;
+ 		val = hi6210_read_reg(i2s, HII2S_I2S_CFG);
+ 		val |= HII2S_I2S_CFG__S2_MST_SLV;
+ 		hi6210_write_reg(i2s, HII2S_I2S_CFG, val);
  		break;
-@@ -1113,7 +1113,7 @@ static const struct snd_soc_dai_ops rockchip_i2s_tdm_dai_ops = {
- 	.hw_params = rockchip_i2s_tdm_hw_params,
- 	.set_bclk_ratio	= rockchip_i2s_tdm_set_bclk_ratio,
- 	.set_sysclk = rockchip_i2s_tdm_set_sysclk,
--	.set_fmt = rockchip_i2s_tdm_set_fmt,
-+	.set_fmt_new = rockchip_i2s_tdm_set_fmt,
- 	.set_tdm_slot = rockchip_dai_tdm_slot,
- 	.trigger = rockchip_i2s_tdm_trigger,
+-	case SND_SOC_DAIFMT_CBS_CFS:
++	case SND_SOC_DAIFMT_BP_FP:
+ 		i2s->master = true;
+ 		val = hi6210_read_reg(i2s, HII2S_I2S_CFG);
+ 		val &= ~HII2S_I2S_CFG__S2_MST_SLV;
+ 		hi6210_write_reg(i2s, HII2S_I2S_CFG, val);
+ 		break;
+ 	default:
+-		WARN_ONCE(1, "Invalid i2s->fmt MASTER_MASK. This shouldn't happen\n");
++		WARN_ONCE(1, "Invalid i2s->fmt CLOCK_PROVIDER_MASK. This shouldn't happen\n");
+ 		return -EINVAL;
+ 	}
+ 
+@@ -513,7 +513,7 @@ static int hi6210_i2s_dai_probe(struct snd_soc_dai *dai)
+ static const struct snd_soc_dai_ops hi6210_i2s_dai_ops = {
+ 	.trigger	= hi6210_i2s_trigger,
+ 	.hw_params	= hi6210_i2s_hw_params,
+-	.set_fmt	= hi6210_i2s_set_fmt,
++	.set_fmt_new	= hi6210_i2s_set_fmt,
+ 	.startup	= hi6210_i2s_startup,
+ 	.shutdown	= hi6210_i2s_shutdown,
  };
 -- 
 2.30.2
