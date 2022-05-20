@@ -4,70 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9AB28C433F5
-	for <alsa-devel@archiver.kernel.org>; Fri, 20 May 2022 21:07:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 11B67C433F5
+	for <alsa-devel@archiver.kernel.org>; Fri, 20 May 2022 21:18:33 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D4A341711;
-	Fri, 20 May 2022 23:06:38 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D4A341711
+	by alsa0.perex.cz (Postfix) with ESMTPS id 9EBA71713;
+	Fri, 20 May 2022 23:17:41 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9EBA71713
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1653080848;
-	bh=yYjAnH1dp0HZCKfEVdlZoxqq4j9Tl0It3Iy0wsyknRw=;
+	s=default; t=1653081511;
+	bh=OyzaCZBD9ZALRpT9MLyMAQuhOFvPwUiQYnS1u98ntZU=;
 	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
 	 List-Post:List-Help:List-Subscribe:From;
-	b=h0zSfpZbmUT+i2gY0FFEmYJF4QB4c1dWZ/eH+gCDqTMjexS/cWQGBMvudfKOgOIVH
-	 zA1fn518Fj7exRNZbRXEKr2RXgsli7vV6N3KRy66dVKmngCZUAFhijMGmsUhgNM1/K
-	 TsCiEOisWoFmm+/SzILQCSUoYloo2v1edkq2S/OA=
+	b=Df25BMNnFwXf3a4QuFmIhG0Y5W5fBuN0ZIP9+Zw7sTl1msO8IwjSAdcxfMBCsdTgy
+	 yAxUIwtf0lVzOsuEZpB8gIEdYQh2KCbmlAS0enMCiQTAIYWfNcNGa2eP5MvROTY43p
+	 B5mf2qMbnHXSR6WscwI6Ytfzu+JcKOWVJ1cSmj9s=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 6CF1FF80153;
-	Fri, 20 May 2022 23:06:38 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2B663F804BD;
+	Fri, 20 May 2022 23:17:41 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id C5670F8019D; Fri, 20 May 2022 23:06:36 +0200 (CEST)
-Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
+ id 92AC8F804BD; Fri, 20 May 2022 23:17:39 +0200 (CEST)
+Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id DB086F800D2
- for <alsa-devel@alsa-project.org>; Fri, 20 May 2022 23:06:28 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DB086F800D2
+ by alsa1.perex.cz (Postfix) with ESMTPS id E972DF800F0
+ for <alsa-devel@alsa-project.org>; Fri, 20 May 2022 23:17:32 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E972DF800F0
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="U8G0xeBJ"
+ header.b="GylOqrzv"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1653080791; x=1684616791;
+ t=1653081457; x=1684617457;
  h=from:to:cc:subject:date:message-id:mime-version:
  content-transfer-encoding;
- bh=yYjAnH1dp0HZCKfEVdlZoxqq4j9Tl0It3Iy0wsyknRw=;
- b=U8G0xeBJbWQj19SdD3alQAckxIDKDxifd7EfCljSqUKVCJBoXa+HxTdc
- axgKYo2ffREfwcxo4pd0M01kFhA6dqd1A/Y8sZZX0241sFUAoNA5ssQKg
- VmNVvbDEkmYXY/oDmdcCvQpk5Is28Swpi0eKJWprrQDnomR6v5y+HLx38
- Ko4a27+9gORScJSxs3h9YJkYCX2UvUOhMZdvipaXNqolDHNBbnxR35Pwt
- F/tToEWGUO22h2pl67DSOUeAsUX6YPlzCk+YLs6KEr6fvmQT1lmDgFHwv
- xsReyBaQGeid3fvpOy5YPaGoqPBP3mBkCAuiWIczReWSE3JS4hRIzvVAk w==;
-X-IronPort-AV: E=McAfee;i="6400,9594,10353"; a="298051280"
-X-IronPort-AV: E=Sophos;i="5.91,240,1647327600"; d="scan'208";a="298051280"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
- by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 20 May 2022 14:06:25 -0700
-X-IronPort-AV: E=Sophos;i="5.91,240,1647327600"; d="scan'208";a="628354397"
+ bh=OyzaCZBD9ZALRpT9MLyMAQuhOFvPwUiQYnS1u98ntZU=;
+ b=GylOqrzvjLaaEbhVXHbB3dz7lxmx8nVPw8a4kQhWeFm9QDFoE4Fh9ZkP
+ HCWjK6lcdkwIexz3iAynfzSdiJHRWw90Rsy5uRID/WU6UPZZt4vUL6XJ9
+ muPL7sgkEiEZBsjJwtin4LrAGQEaVSH5rZwGXDMXAiJpBlYkQQkfBcRvI
+ BGYls1z0BcsVSU0G9AC5O4XMQqiuplSHo8BA2M23yNuqhUJaQPffuMIYa
+ ooDGh9br3GrL703gNmSQOiAYVH4IncxtjFrU1CnNpV6oghXq1aMj3Tzko
+ 6hGjqSYRqiNJvup/jE8gbpLTrnAjoMt8o7hh36OMJaxdsUb17y3Eattkc A==;
+X-IronPort-AV: E=McAfee;i="6400,9594,10353"; a="270324214"
+X-IronPort-AV: E=Sophos;i="5.91,240,1647327600"; d="scan'208";a="270324214"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+ by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 20 May 2022 14:17:30 -0700
+X-IronPort-AV: E=Sophos;i="5.91,240,1647327600"; d="scan'208";a="674796005"
 Received: from achsu-mobl2.amr.corp.intel.com (HELO
  pbossart-mobl3.amr.corp.intel.com) ([10.212.181.190])
- by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 20 May 2022 14:06:25 -0700
+ by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 20 May 2022 14:17:30 -0700
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH] ASoC: soc-pcm: fix BE transition for TRIGGER_START
-Date: Fri, 20 May 2022 16:06:15 -0500
-Message-Id: <20220520210615.607229-1-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH 00/16] ASoC: trivial changes for cppcheck warnings
+Date: Fri, 20 May 2022 16:17:03 -0500
+Message-Id: <20220520211719.607543-1-pierre-louis.bossart@linux.intel.com>
 X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-Cc: tiwai@suse.de,
- =?UTF-8?q?P=C3=A9ter=20Ujfalusi?= <peter.ujfalusi@linux.intel.com>,
- broonie@kernel.org, Bard Liao <yung-chuan.liao@linux.intel.com>,
+Cc: tiwai@suse.de, broonie@kernel.org,
  Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
@@ -84,40 +82,47 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-A obvious editing mistake caught with a cppcheck warning
+This can probably wait for the next merge window, I found a number of
+cppcheck warnings that I didn't see in my last checks. The irony is
+that the only really important issue found by cppcheck was on one of
+my previous DPCM changes (submitted separately as a fix).
 
-sound/soc/soc-pcm.c:2132:8: style: Variable 'ret' is reassigned a
-value before the old one has been used. [redundantAssignment]
-   ret = soc_pcm_trigger(be_substream, cmd);
-       ^
-sound/soc/soc-pcm.c:2126:9: note: ret is assigned
-    ret = soc_pcm_trigger(be_substream,
-        ^
-sound/soc/soc-pcm.c:2129:9: note: ret is assigned
-    ret = soc_pcm_trigger(be_substream,
-        ^
+Pierre-Louis Bossart (16):
+  ASoC: cs35l45: typo in argument definition
+  ASoC: cs42l42: remove redundant test
+  ASoC: wcd-mbhc-v2: remove useless initialization
+  ASoC: wcd9335: remove redundant tests
+  ASoC: Intel: atom: sst: remove useless initialization
+  ASoC: Intel: atom: sst_ipc: remove redundant test
+  ASoC: Intel: atom: sst_ipc: remove useless initializations
+  ASoC: Intel: atom: controls: remove useless initializations
+  ASoC: Intel: boards: reset acpi_chan_package
+  ASoC: Intel: sof_pcm512x: remove unnecessary init
+  ASoC: mediatek: mt8195: simplify error handling
+  ASoC: qcom: q6dsp: q6adm: remove useless initializations
+  ASoC: qcom: q6dsp: remove spurious space
+  ASoC: rockchip: simplify error handling
+  ASoC: samsung: snow: simplify error handling
+  ASoC: meson: remove useless initialization
 
-Fixes: 374b50e234a3e ('ASoC: soc-pcm: improve BE transition for TRIGGER_START')
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Reviewed-by: Bard Liao <yung-chuan.liao@linux.intel.com>
-Reviewed-by: Péter Ujfalusi <peter.ujfalusi@linux.intel.com>
----
- sound/soc/soc-pcm.c | 2 --
- 1 file changed, 2 deletions(-)
+ sound/soc/codecs/cs35l45.h                 | 2 +-
+ sound/soc/codecs/cs42l42.c                 | 3 +--
+ sound/soc/codecs/wcd-mbhc-v2.c             | 2 +-
+ sound/soc/codecs/wcd9335.c                 | 4 ++--
+ sound/soc/intel/atom/sst-atom-controls.c   | 4 ++--
+ sound/soc/intel/atom/sst/sst.c             | 2 +-
+ sound/soc/intel/atom/sst/sst_ipc.c         | 8 ++++----
+ sound/soc/intel/boards/bytcr_rt5640.c      | 2 +-
+ sound/soc/intel/boards/bytcr_rt5651.c      | 2 +-
+ sound/soc/intel/boards/cht_bsw_rt5645.c    | 2 +-
+ sound/soc/intel/boards/sof_pcm512x.c       | 2 +-
+ sound/soc/mediatek/mt8195/mt8195-afe-clk.c | 8 ++++----
+ sound/soc/meson/meson-codec-glue.c         | 2 +-
+ sound/soc/qcom/qdsp6/q6adm.c               | 6 +++---
+ sound/soc/rockchip/rk3288_hdmi_analog.c    | 4 ++--
+ sound/soc/samsung/snow.c                   | 2 +-
+ 16 files changed, 27 insertions(+), 28 deletions(-)
 
-diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
-index 6f43db35a5c84..a827cc3c158ae 100644
---- a/sound/soc/soc-pcm.c
-+++ b/sound/soc/soc-pcm.c
-@@ -2128,8 +2128,6 @@ int dpcm_be_dai_trigger(struct snd_soc_pcm_runtime *fe, int stream,
- 			else
- 				ret = soc_pcm_trigger(be_substream,
- 						      SNDRV_PCM_TRIGGER_START);
--
--			ret = soc_pcm_trigger(be_substream, cmd);
- 			if (ret) {
- 				be->dpcm[stream].be_start--;
- 				goto next;
 -- 
 2.30.2
 
