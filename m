@@ -4,61 +4,62 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C99FEC433EF
-	for <alsa-devel@archiver.kernel.org>; Fri, 20 May 2022 11:20:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id CBAEEC433EF
+	for <alsa-devel@archiver.kernel.org>; Fri, 20 May 2022 11:20:34 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id AAA141742;
-	Fri, 20 May 2022 13:19:34 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AAA141742
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0D4831765;
+	Fri, 20 May 2022 13:19:43 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0D4831765
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1653045624;
-	bh=Sit1fCFqMaM4rxCfPkNfKul9KDtnUhSTtyPhp+iJFWI=;
+	s=default; t=1653045633;
+	bh=8fut9JzJYxNLGDgXqNqvjdjqVOf5PzcnA1tSy99j53M=;
 	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=F+ssEAV3gHpvpyNs+mRp+7m19yxk6mXCyFdgb++7G3KsG/bSvEqcvu4d7R1So/Pyk
-	 VF8yuuHc6qCVElOTnarrM2Wf3DkxNg5gbboaWrNAZGFQ8d7ezbPS5teGsZBOqW/BlI
-	 63hCPa/BlBfu3zI1JRsa001C5dMIwMF4e0/qNquA=
+	b=ekXLBqopPCLUGdAQeKy17KPTxW8Aruf1sxc1p4h8912yJZNm6lBKNzpHVixHMFAos
+	 T1vuzzviinzcUfzHtLYpGIgrZw0pck4TbuRpmdeAlWIc/KAQvmWkHZ3CdaH34HEfGd
+	 HiWJl5H9LDH1qQ0RbI+ebowWprMI9dKxW/IVzF9c=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id B3758F8051B;
-	Fri, 20 May 2022 13:18:47 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 8A593F8051E;
+	Fri, 20 May 2022 13:18:51 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 5BD61F804BD; Fri, 20 May 2022 13:18:46 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+ id 83568F80520; Fri, 20 May 2022 13:18:49 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org
+ [IPv6:2604:1380:4641:c500::1])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 9E9D6F80240
- for <alsa-devel@alsa-project.org>; Fri, 20 May 2022 13:18:43 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9E9D6F80240
+ by alsa1.perex.cz (Postfix) with ESMTPS id 84A0CF80519
+ for <alsa-devel@alsa-project.org>; Fri, 20 May 2022 13:18:46 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 84A0CF80519
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="lwCbtanr"
+ header.b="TSfCWZcz"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id 14AE061D18;
- Fri, 20 May 2022 11:18:42 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C7D8BC385AA;
- Fri, 20 May 2022 11:18:40 +0000 (UTC)
+ by dfw.source.kernel.org (Postfix) with ESMTPS id CD6F861DC2;
+ Fri, 20 May 2022 11:18:44 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 78082C34113;
+ Fri, 20 May 2022 11:18:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1653045521;
- bh=Sit1fCFqMaM4rxCfPkNfKul9KDtnUhSTtyPhp+iJFWI=;
+ s=k20201202; t=1653045524;
+ bh=8fut9JzJYxNLGDgXqNqvjdjqVOf5PzcnA1tSy99j53M=;
  h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=lwCbtanrbuvPb4V5XdKe3fCg35uG55k3JlIMBPRVHOptzWUaWoDPUkzC58OJmlsar
- qLzF2GzKnHdAn3/ZBMzoO+OndPiD1iJu8DryAh/97UtR0UtcBxJyYTe0Mbmo2wliAE
- SKf+TKK/pJ3S0PG9xQg47Yi61ZBHjA6l1LGl97VCZrFBvtZ9jRi5wKosBiIaHLM7bh
- Ci/PKJ/+NKvWktuL3Zw9xAOAG+msPdNh0oZQhlQ+q33gU4mCIjx1p5X/JYaUZeJCr0
- 91QuNdsxs2fvJnRYAhKAiwnvX316YhCTp+mczeLEOpt8kCAzkZJKhiLuFmOgE5NkUB
- MDoQpZ/PgTBWQ==
+ b=TSfCWZczSs8IpkVlMLlX/SNVZs2B5/nmDn8nYxyBPA/4OIJvc2qwftb2PuNIG1vlT
+ zwfMGn0gs8m0RJ9KfejCYrWSPaLJzCNAQJoF86PpnVLYM0Ltzzhu/jrx1ppUwBqMXl
+ FhV/J0T5H4F7LgIsImNEcyqgqs0LKn4RP0VFxCaaUIWyAqqk/4BsR5+6Anthd98iH5
+ qwmKlh+PBkXJ8QrtHNAu7yGrTc/DEu8sF0y5vYcvqfxq5hx1ch4b7OVqMkGRtV+E40
+ CuqXKRdj61RUjEGSOG+8CcInbg8SgVODV34PJPi/pn8BwmUSL+tvzaEBnicAJUxjXB
+ GlLyZUYPMK8uw==
 From: Mark Brown <broonie@kernel.org>
 To: pierre-louis.bossart@linux.intel.com, alsa-devel@alsa-project.org
-In-Reply-To: <20220517172647.468244-1-pierre-louis.bossart@linux.intel.com>
-References: <20220517172647.468244-1-pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH 0/2] ASoC: remove two unnecessary gpiolib dependencies
-Message-Id: <165304552054.45439.4256486357672468570.b4-ty@kernel.org>
-Date: Fri, 20 May 2022 12:18:40 +0100
+In-Reply-To: <20220517173109.468568-1-pierre-louis.bossart@linux.intel.com>
+References: <20220517173109.468568-1-pierre-louis.bossart@linux.intel.com>
+Subject: Re: [PATCH 0/2] ASoC: SOF: mediatek: add debug dump
+Message-Id: <165304552320.45439.13190111170352860473.b4-ty@kernel.org>
+Date: Fri, 20 May 2022 12:18:43 +0100
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -78,15 +79,18 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Tue, 17 May 2022 12:26:45 -0500, Pierre-Louis Bossart wrote:
-> Remove two dependencies - issues reported by Intel kernel test bot.
+On Tue, 17 May 2022 12:31:07 -0500, Pierre-Louis Bossart wrote:
+> YC Hung (2):
+>   ASoC: SOF: mediatek: Add mediatek common debug dump
+>   ASoC: SOF: mediatek: Add mt8195 debug dump
 > 
-> Pierre-Louis Bossart (2):
->   ASoC: max98357a: remove dependency on GPIOLIB
->   ASoC: rt1015p: remove dependency on GPIOLIB
-> 
-> sound/soc/codecs/Kconfig | 2 --
->  1 file changed, 2 deletions(-)
+> sound/soc/sof/mediatek/Makefile          |  1 +
+>  sound/soc/sof/mediatek/mt8195/mt8195.c   | 29 ++++++++
+>  sound/soc/sof/mediatek/mtk-adsp-common.c | 84 ++++++++++++++++++++++++
+>  sound/soc/sof/mediatek/mtk-adsp-common.h | 10 +++
+>  4 files changed, 124 insertions(+)
+>  create mode 100644 sound/soc/sof/mediatek/mtk-adsp-common.c
+>  create mode 100644 sound/soc/sof/mediatek/mtk-adsp-common.h
 > 
 > [...]
 
@@ -96,10 +100,10 @@ Applied to
 
 Thanks!
 
-[1/2] ASoC: max98357a: remove dependency on GPIOLIB
-      commit: 21ca3274333f5c1cbbf9d91e5b33f4f2463859b2
-[2/2] ASoC: rt1015p: remove dependency on GPIOLIB
-      commit: b390c25c6757b9d56cecdfbf6d55f15fc89a6386
+[1/2] ASoC: SOF: mediatek: Add mediatek common debug dump
+      commit: 698c1e99a0a3b883a629159ae47fa41778209258
+[2/2] ASoC: SOF: mediatek: Add mt8195 debug dump
+      commit: 3a054f90e95500387cc871f5a04ad91def1664ed
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
