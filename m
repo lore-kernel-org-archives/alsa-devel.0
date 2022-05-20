@@ -4,64 +4,64 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4661CC433EF
-	for <alsa-devel@archiver.kernel.org>; Fri, 20 May 2022 21:22:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 60770C433F5
+	for <alsa-devel@archiver.kernel.org>; Fri, 20 May 2022 21:22:30 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 7CC011746;
-	Fri, 20 May 2022 23:21:21 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7CC011746
+	by alsa0.perex.cz (Postfix) with ESMTPS id AF32C176E;
+	Fri, 20 May 2022 23:21:38 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AF32C176E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1653081731;
-	bh=zzzp6DdVnMVMBIYm+KLFZeV2M7cUlXgl5MrmkBwL7ZI=;
+	s=default; t=1653081748;
+	bh=ngAehnQ7+MeSSwjSeAY8VFh0ZBhyvEjFbFq5BxPj9tE=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Pr1EGQ9O8l5886nHWDtWn52PvKjst9gELO5AsknFxlcrnQ6z5owEIaBDA2/lQDIs1
-	 yclLD/THONhIwH29jy+vTn1HyJ3/Y4Q0X47ngtkB6ZJNUxsz2UHjOs5nj80hEls3hn
-	 sMmnP3XJtVtFSKl+qT70G/RyxMd7nek4cHXefQv4=
+	b=d9uBXC2BLBBM+ybsQ2PXDynEsDZtrzVD3UlkGi5JWnehyJLp6M780FPhoGVSOd5Dg
+	 R/VAt+QV9jyi3FO0kkHgVuiYYmhF+l/UuFoOugn592+XGWqUZ0IWL1gSzOHVtp8dZs
+	 6ZL753LCIMo7ro5EA+7zkQPu9rfNtGNwWmtsiJH4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id DBE0EF80570;
-	Fri, 20 May 2022 23:18:00 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 7B40CF80578;
+	Fri, 20 May 2022 23:18:01 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 1F80FF80553; Fri, 20 May 2022 23:17:57 +0200 (CEST)
+ id 8D5DCF80525; Fri, 20 May 2022 23:17:57 +0200 (CEST)
 Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 6D472F80525
- for <alsa-devel@alsa-project.org>; Fri, 20 May 2022 23:17:46 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6D472F80525
+ by alsa1.perex.cz (Postfix) with ESMTPS id 523E2F80526
+ for <alsa-devel@alsa-project.org>; Fri, 20 May 2022 23:17:44 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 523E2F80526
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="T5+QR3Nv"
+ header.b="UEKJcAKf"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1653081467; x=1684617467;
+ t=1653081465; x=1684617465;
  h=from:to:cc:subject:date:message-id:in-reply-to:
  references:mime-version:content-transfer-encoding;
- bh=zzzp6DdVnMVMBIYm+KLFZeV2M7cUlXgl5MrmkBwL7ZI=;
- b=T5+QR3Nv6XJAga24YW9MiQcbVyBk+PmjyL5W12y+ecLYBwSm4BPq+cvO
- lMu5572d1iVKH3PIvt6TxLKZPwcrHRPrsnksWrnO7FDKZLroo1EPN2JhW
- TAsH1nXDqUt6HIZWTPB/rJj1C1MaqYLvvsLIDAAuHdEbBKRvqb8WIaRuK
- yfq9QvJctIsoQJQd6mDUsLrLmKKmjVjXGCcqUcJrKFNzU4diJiqJjfFN6
- QHf0+8N3eGoUpB33TNyDNwC3xia5YaJN/9vE6tHWaYxZ8K+0bX9Bp7oU2
- siiJM/X3YU8J29mdRxqywYJ/YsE1yvmBHDfI+OZEf2HThDk5TJEm+N+oE Q==;
-X-IronPort-AV: E=McAfee;i="6400,9594,10353"; a="270324253"
-X-IronPort-AV: E=Sophos;i="5.91,240,1647327600"; d="scan'208";a="270324253"
+ bh=ngAehnQ7+MeSSwjSeAY8VFh0ZBhyvEjFbFq5BxPj9tE=;
+ b=UEKJcAKfrGlw2UP93KXH8Wjkz4Kh2SGJTiGL+cQcz7mD7C83T2eJ6XIc
+ MMqodbfsw2JnZ2DhHFrUI4ne9gpkfCA7uHzfO4IWCiArgza1AqiIDjgPJ
+ nQO8+qvvxNzZu0rOhkPUg3AFxGQzhfhbPX6zDgXz74PMSHgqYJ/CfHo6O
+ u20z+mHJBJo0Ondf6tzfxWhPw2plbbUGZYs2+G9ph2dhu5i3fHe0MvYPN
+ QXTLr4MO2ZKKsclGjJYFFdKJsYsy1DpJPXOZhm+ofllaj/FRY70XfpEwO
+ 5V7GTFCnWcUOdjA0IoUT+w2l5NE5urUyVaswjhGwDUAncJLdmZ9IfnXrh Q==;
+X-IronPort-AV: E=McAfee;i="6400,9594,10353"; a="270324249"
+X-IronPort-AV: E=Sophos;i="5.91,240,1647327600"; d="scan'208";a="270324249"
 Received: from fmsmga002.fm.intel.com ([10.253.24.26])
  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 20 May 2022 14:17:41 -0700
-X-IronPort-AV: E=Sophos;i="5.91,240,1647327600"; d="scan'208";a="674796067"
+ 20 May 2022 14:17:39 -0700
+X-IronPort-AV: E=Sophos;i="5.91,240,1647327600"; d="scan'208";a="674796035"
 Received: from achsu-mobl2.amr.corp.intel.com (HELO
  pbossart-mobl3.amr.corp.intel.com) ([10.212.181.190])
  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 20 May 2022 14:17:41 -0700
+ 20 May 2022 14:17:38 -0700
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH 15/16] ASoC: samsung: snow: simplify error handling
-Date: Fri, 20 May 2022 16:17:18 -0500
-Message-Id: <20220520211719.607543-16-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH 12/16] ASoC: qcom: q6dsp: q6adm: remove useless initializations
+Date: Fri, 20 May 2022 16:17:15 -0500
+Message-Id: <20220520211719.607543-13-pierre-louis.bossart@linux.intel.com>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20220520211719.607543-1-pierre-louis.bossart@linux.intel.com>
 References: <20220520211719.607543-1-pierre-louis.bossart@linux.intel.com>
@@ -87,42 +87,38 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-cppcheck warning:
-
-sound/soc/samsung/snow.c:219:9: warning: Identical condition and
-return expression 'ret', return value is always 0
-[identicalConditionAfterEarlyExit]
- return ret;
-        ^
-sound/soc/samsung/snow.c:215:6: note: If condition 'ret' is true, the
-function will return/exit
-if (ret)
-     ^
-sound/soc/samsung/snow.c:219:9: note: Returning identical expression
-'ret'
- return ret;
-        ^
+cppcheck complains about invalid NULL dereferences but there's
+indeed no need to initialize loop variables.
 
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Reviewed-by: Bard Liao <yung-chuan.liao@linux.intel.com>
 Reviewed-by: Péter Ujfalusi <peter.ujfalusi@linux.intel.com>
 ---
- sound/soc/samsung/snow.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/qcom/qdsp6/q6adm.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/samsung/snow.c b/sound/soc/samsung/snow.c
-index 02372109c251e..da342da038804 100644
---- a/sound/soc/samsung/snow.c
-+++ b/sound/soc/samsung/snow.c
-@@ -216,7 +216,7 @@ static int snow_probe(struct platform_device *pdev)
- 		return dev_err_probe(&pdev->dev, ret,
- 				     "snd_soc_register_card failed\n");
+diff --git a/sound/soc/qcom/qdsp6/q6adm.c b/sound/soc/qcom/qdsp6/q6adm.c
+index 72c5719f1d253..22b408c3794e0 100644
+--- a/sound/soc/qcom/qdsp6/q6adm.c
++++ b/sound/soc/qcom/qdsp6/q6adm.c
+@@ -90,7 +90,7 @@ struct q6adm_session_map_node_v5 {
+ static struct q6copp *q6adm_find_copp(struct q6adm *adm, int port_idx,
+ 				  int copp_idx)
+ {
+-	struct q6copp *c = NULL;
++	struct q6copp *c;
+ 	struct q6copp *ret = NULL;
+ 	unsigned long flags;
  
--	return ret;
-+	return 0;
- }
+@@ -299,7 +299,7 @@ static struct q6copp *q6adm_find_matching_copp(struct q6adm *adm,
+ 					       int channel_mode, int bit_width,
+ 					       int app_type)
+ {
+-	struct q6copp *c = NULL;
++	struct q6copp *c;
+ 	struct q6copp *ret = NULL;
+ 	unsigned long flags;
  
- static int snow_remove(struct platform_device *pdev)
 -- 
 2.30.2
 
