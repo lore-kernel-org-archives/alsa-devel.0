@@ -4,67 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1C80EC433EF
-	for <alsa-devel@archiver.kernel.org>; Fri, 20 May 2022 11:20:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3135AC433EF
+	for <alsa-devel@archiver.kernel.org>; Fri, 20 May 2022 11:21:17 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 62DAF1767;
-	Fri, 20 May 2022 13:19:59 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 62DAF1767
+	by alsa0.perex.cz (Postfix) with ESMTPS id 723E217A2;
+	Fri, 20 May 2022 13:20:25 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 723E217A2
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1653045649;
-	bh=QI/Wp5OFrg8DZFaDAnxSX717/fIkU2TW5bPmuaN/enI=;
+	s=default; t=1653045675;
+	bh=5eKqLMOdZtjukCQAuo4Z/Gy+jeKCAi4xtVHmgrj5cgg=;
 	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=gMz2HlvOx4b5pV7Rh7kSHHiABakEXVz5HwitulW4vwwzPIXlwgIfVwlBNuroEI38w
-	 XtfmO3PJb5O2l8K1pNzKD5ZwcNlmJTZa8VUiJgwvPd6GcLlWL5vlRbutx2/J1BI9Y2
-	 naexzd5l6tWtrrdtSHAx2VMJRoixDo4FKbXqbqY4=
+	b=pzT/yzXcNMv2MEHej35scezLiBR0AE28HdBGHLPPJjGkAeHi6th3c3zdQS110FtQ8
+	 zk4Oqm/krbhB9iYQ095ef1Y9g5Wv/4cnCrchdn4qJ9zDlnewasuBjzefYRkjAw4y/5
+	 bw6jSrxDsUmMEDHBohIwDtnehIvM5E+QzjPJdOCE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 3661FF80524;
-	Fri, 20 May 2022 13:18:52 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 780ABF80536;
+	Fri, 20 May 2022 13:18:56 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 21641F8051F; Fri, 20 May 2022 13:18:50 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+ id 1EB64F80526; Fri, 20 May 2022 13:18:52 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org
+ [IPv6:2604:1380:4641:c500::1])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id E046AF8051D
- for <alsa-devel@alsa-project.org>; Fri, 20 May 2022 13:18:46 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E046AF8051D
+ by alsa1.perex.cz (Postfix) with ESMTPS id B58D5F80519
+ for <alsa-devel@alsa-project.org>; Fri, 20 May 2022 13:18:45 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B58D5F80519
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="jYol+oKj"
+ header.b="vP+WVx1M"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id A899361D18;
- Fri, 20 May 2022 11:18:45 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 99908C385A9;
- Fri, 20 May 2022 11:18:44 +0000 (UTC)
+ by dfw.source.kernel.org (Postfix) with ESMTPS id 993F561CD1;
+ Fri, 20 May 2022 11:18:43 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EEE79C34117;
+ Fri, 20 May 2022 11:18:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1653045525;
- bh=QI/Wp5OFrg8DZFaDAnxSX717/fIkU2TW5bPmuaN/enI=;
+ s=k20201202; t=1653045523;
+ bh=5eKqLMOdZtjukCQAuo4Z/Gy+jeKCAi4xtVHmgrj5cgg=;
  h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=jYol+oKj0wYTzAeeKSLIkHdNvkNLvTGs/dmcsrT3DNkBcuFpI1S6i28rjXPkhn+nn
- WFsUZRTU/lFzOZIHV7Pbc/Ik2cRvauW0ihACXOX56JR7DlV6VMYHX9fiYDpAuxun3q
- Zv1onFxKi83gn+NdTP/+Djltn3O78M6jh/27rSB8vYrCT+sezTh7HPb6ciamW09rTW
- /IAPUdNgGObNbI1aY//Cr758RF5GpDDONKYAWzWONM80ngpydHk5KvsNJQ4iW6Nur0
- d8M0RFzDX+Sh86lF0RpSeqyaLRXHwEIfBP3JEMGiKRweoV34z302Z021poDR8pa4Ny
- kIV3EXrKpnkbg==
+ b=vP+WVx1MjIb6BNh8H6jwWU5TKkur/1WliBndJHz/RSV5gsNFtkN8NOUzneQM/irn4
+ NQKW6JVHgxl7Yaayzjmxkoe5YODatQmTfehpptfz/Ft9HaUNe1Sf1l7SO7FI3aXHMi
+ 3lBRApxbOtqE7OMPCafAPMkk06y9ln5rT9ntj3DZwVKnRChW5zCocoKTPs+yKuMnIl
+ fgO/txet7EOr6GgSGBad/D5yKpV6cgmcsSBD47dub8vnv/fqBY7RalnZ9noF4r9qP+
+ KcBtjqtkiRsbRMxFewQUAwgW0zMRhx9wTHwOBtmcExt3856ycvan5quDjeOWdhxNrZ
+ JeAGASdeoBsQg==
 From: Mark Brown <broonie@kernel.org>
-To: linux-kernel@vger.kernel.org, yangyingliang@huawei.com,
- alsa-devel@alsa-project.org
-In-Reply-To: <20220514091053.686416-1-yangyingliang@huawei.com>
-References: <20220514091053.686416-1-yangyingliang@huawei.com>
-Subject: Re: [PATCH -next] ASoC: wm2000: fix missing clk_disable_unprepare()
- on error in wm2000_anc_transition()
-Message-Id: <165304552434.45439.17487958177424111002.b4-ty@kernel.org>
-Date: Fri, 20 May 2022 12:18:44 +0100
+To: pierre-louis.bossart@linux.intel.com, alsa-devel@alsa-project.org
+In-Reply-To: <20220517173715.468894-1-pierre-louis.bossart@linux.intel.com>
+References: <20220517173715.468894-1-pierre-louis.bossart@linux.intel.com>
+Subject: Re: [PATCH RESEND] ASoC: SOF: sof-client-ipc-flood-test: use
+ pm_runtime_resume_and_get()
+Message-Id: <165304552169.45439.8283908201602877006.b4-ty@kernel.org>
+Date: Fri, 20 May 2022 12:18:41 +0100
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: lgirdwood@gmail.com
+Cc: tiwai@suse.de, peter.ujfalusi@linux.intel.com,
+ yung-chuan.liao@linux.intel.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -80,9 +81,11 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Sat, 14 May 2022 17:10:53 +0800, Yang Yingliang wrote:
-> Fix the missing clk_disable_unprepare() before return
-> from wm2000_anc_transition() in the error handling case.
+On Tue, 17 May 2022 12:37:15 -0500, Pierre-Louis Bossart wrote:
+> Use pm_runtime_resume_and_get() to replace the pm_runtime_get_sync() and
+> pm_runtime_put_noidle() pattern.
+> 
+> No functional changes.
 > 
 > 
 
@@ -92,8 +95,8 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: wm2000: fix missing clk_disable_unprepare() on error in wm2000_anc_transition()
-      commit: be2af740e2a9c7134f2d8ab4f104006e110b13de
+[1/1] ASoC: SOF: sof-client-ipc-flood-test: use pm_runtime_resume_and_get()
+      commit: b1378b259c0c0300cf62dd7117bf550edce0f9cc
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
