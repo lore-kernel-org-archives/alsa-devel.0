@@ -4,67 +4,42 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id EC51DC433F5
-	for <alsa-devel@archiver.kernel.org>; Fri, 20 May 2022 17:00:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C7E5AC433F5
+	for <alsa-devel@archiver.kernel.org>; Fri, 20 May 2022 17:16:25 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3195C1743;
-	Fri, 20 May 2022 18:59:48 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3195C1743
+	by alsa0.perex.cz (Postfix) with ESMTPS id 525851727;
+	Fri, 20 May 2022 19:15:33 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 525851727
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1653066038;
-	bh=gCn6MbY4/KVXMX30aPGTFXOtFXjbGRQ1q6L9baXlwQM=;
-	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
+	s=default; t=1653066983;
+	bh=TkKrWyZaDORfZ0nnpxdVdPIDoTFxQAML/2Var82r/gw=;
+	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Ri4eUUc1uzByEcC6UPo4ZfSUtK2WxW4nUB8rd3/A5DF91wVom+DGKnYh3jnF+kifx
-	 U3Q0OBE6IVh8YfAbfRFWxnv3XQ/euOPYxnoV+jEfqbTjEgG87+Rjwc1f2uTtfe8zuy
-	 zZbbUe0iQNqWtmScxeI8NiTJeC+2jei966LaT7q8=
+	b=dQHQggbD50jl2hFmT+1DaenMAu2SKwvCEfZ1pv7Q+0p4VqVcij3Xny8QHm/j28YhY
+	 UFdcbERhMBUPsqUsFRouA2tOuymp8JbW1x0SmRjfAtfuTEd3nhM3ylZnlMI9pVHxV4
+	 luT2//OB3Lf1GfYlxTtAoeLxWQ3mWuCIKbAoqC3I=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 3CE1AF801F5;
-	Fri, 20 May 2022 18:59:05 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id C9109F800D2;
+	Fri, 20 May 2022 19:15:32 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 2F724F8051B; Fri, 20 May 2022 18:59:03 +0200 (CEST)
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id F2547F801F5
- for <alsa-devel@alsa-project.org>; Fri, 20 May 2022 18:58:55 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F2547F801F5
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="HqqrloOU"
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by ams.source.kernel.org (Postfix) with ESMTPS id 908AEB82CCA;
- Fri, 20 May 2022 16:58:54 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6CB40C385A9;
- Fri, 20 May 2022 16:58:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1653065933;
- bh=gCn6MbY4/KVXMX30aPGTFXOtFXjbGRQ1q6L9baXlwQM=;
- h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=HqqrloOUg0BSmFjbmdTMi58NOw+U5joCBXA5kUnJ+nx1n6sbs44TmQZL1vXk71MOL
- f+pbRhhcydOmCTSajKoHw7TP5HrVdUDBgcdpEfcn+KtoOylHen7aaqZiTRaUcbdWVN
- m7XzuKgB7JG9J5YMoI6HuPaYNrq3OuvIX76vm4IKuQ2VavXP5n4ZW0g1gpuvnc2FNr
- Jxbf+i1SARBsu3PFOUuHEAW9+IHgq0eXPCUgtyTzhF2sxAwLan5ydgtSOZKOi6VptG
- /i/99r/Frtb+EaECjbDnKkdHXUUBrEfOFWHCNgSA9Gb0MJHMJpeQK/dHiaCYSVgm5J
- T5AHaE7IjyH1w==
-From: Mark Brown <broonie@kernel.org>
-To: shumingf@realtek.com, lgirdwood@gmail.com
-In-Reply-To: <20220520090205.25857-1-shumingf@realtek.com>
-References: <20220520090205.25857-1-shumingf@realtek.com>
-Subject: Re: [PATCH] ASoC: rt1308-sdw: add the default value of register 0xc320
-Message-Id: <165306593116.462688.8020360195712648118.b4-ty@kernel.org>
-Date: Fri, 20 May 2022 17:58:51 +0100
+ id 807F3F8019D; Fri, 20 May 2022 19:15:31 +0200 (CEST)
+Received: from webhooks-bot.alsa-project.org (gate.perex.cz [77.48.224.242])
+ by alsa1.perex.cz (Postfix) with ESMTP id C0582F800D2
+ for <alsa-devel@alsa-project.org>; Fri, 20 May 2022 19:15:28 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C0582F800D2
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-Cc: oder_chiou@realtek.com, jack.yu@realtek.com, alsa-devel@alsa-project.org,
- lars@metafoo.de, derek.fang@realtek.com, bard.liao@intel.com,
- flove@realtek.com, pierre-louis.bossart@intel.com
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+From: GitHub issues - edited <github@alsa-project.org>
+To: alsa-devel@alsa-project.org
+In-Reply-To: <1653066928026515961-webhooks-bot@alsa-project.org>
+References: <1653066928026515961-webhooks-bot@alsa-project.org>
+Subject: Complete support for "Pro" USB multichannel cards
+Message-Id: <20220520171531.807F3F8019D@alsa1.perex.cz>
+Date: Fri, 20 May 2022 19:15:31 +0200 (CEST)
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -80,40 +55,13 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Fri, 20 May 2022 17:02:05 +0800, shumingf@realtek.com wrote:
-> From: Shuming Fan <shumingf@realtek.com>
-> 
-> The driver missed the default value of register 0xc320.
-> This patch adds that default value to avoid the error messages
-> when the driver went to suspend mode already.
-> 
-> 
-> [...]
+alsa-project/alsa-ucm-conf issue #154 was edited from perexg:
 
-Applied to
+- [x] channel split using alsa-lib
+- [x] channel split inside app
+- [ ] channel split hide the specific configs (alsa-lib, app side support)
+- [x] mixer control remap using alsa-lib
+- [ ] simplify the mixer control remap
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
-
-Thanks!
-
-[1/1] ASoC: rt1308-sdw: add the default value of register 0xc320
-      commit: affa9983e7cbac8cbe2596975efacdbdf0eb18e9
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
+Issue URL     : https://github.com/alsa-project/alsa-ucm-conf/issues/154
+Repository URL: https://github.com/alsa-project/alsa-ucm-conf
