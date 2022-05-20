@@ -4,83 +4,83 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D1BDDC433EF
-	for <alsa-devel@archiver.kernel.org>; Fri, 20 May 2022 09:58:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id DEC82C433EF
+	for <alsa-devel@archiver.kernel.org>; Fri, 20 May 2022 10:25:47 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 2B8261731;
-	Fri, 20 May 2022 11:57:08 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2B8261731
+	by alsa0.perex.cz (Postfix) with ESMTPS id 81BEA16FE;
+	Fri, 20 May 2022 12:24:55 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 81BEA16FE
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1653040678;
-	bh=HC8j50IOQxMEPHmZdnEVos6iA1pNgClwqH5wkKKaCTo=;
+	s=default; t=1653042345;
+	bh=Ctcih0AxGGxU/GpcGZz5CZ8rkyHC/3xFQsqauWCyEHk=;
 	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=MwLlkJUFjrcAaOSVag6uCn46AAW79gAe5SQJQVeBrMcU+aLZOe4OXmX6eKbglXRvs
-	 927133v71UudG763YlpFBs4hYOlfXdlPZezDGEyO1OjWTaUzMZbXbEs2f3W4Zg2+Tf
-	 Yaudqux9rKAsyKMYH6VepNFG2bagEyox5KcvAqrg=
+	b=uhZOlx3zEs5Ks8+xuxqbBxkRtN8bz8KHNGHywSchKkW58AxHxOwONTF+aXCgZT1vD
+	 lmFivnGK/I4+mY7tX8Uh6rOw788sOvhjKTo6PJAD+33E1XR9Kn5B3KVrG37EhDOA2y
+	 37j0tKCi+hGI5FZYaR0enAfwJTpbjp8ULTqEPYkw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id B0589F80153;
-	Fri, 20 May 2022 11:57:07 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 1CECBF800D2;
+	Fri, 20 May 2022 12:24:55 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 98D1AF8019D; Fri, 20 May 2022 11:57:05 +0200 (CEST)
+ id DD328F8019D; Fri, 20 May 2022 12:24:53 +0200 (CEST)
 Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
  [67.231.152.168])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 5BEBEF800D2
- for <alsa-devel@alsa-project.org>; Fri, 20 May 2022 11:56:57 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5BEBEF800D2
+ by alsa1.perex.cz (Postfix) with ESMTPS id 3D5C0F800D2
+ for <alsa-devel@alsa-project.org>; Fri, 20 May 2022 12:24:50 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3D5C0F800D2
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com
- header.b="OZjWqUg2"
+ header.b="E3MDFwXs"
 Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
- by mx0b-001ae601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 24K5UCw9026795;
- Fri, 20 May 2022 04:56:56 -0500
+ by mx0b-001ae601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 24K5UCxB026795;
+ Fri, 20 May 2022 05:24:49 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
  h=date : from : to : cc
  : subject : message-id : references : mime-version : content-type :
  in-reply-to; s=PODMain02222019;
- bh=OE6raZbucX9LQfP+TUClB+u691iV9kBCVX1IaiFUTRE=;
- b=OZjWqUg2GB9AJ9JqFusRILLr+RJoWNaMdCe9RA8DZ3zC+BqhasJKotr9r087ufLn2CfT
- ImDGP7AQdM1dEhMs05cuGKULUV2UMVhWKhwv1lv9aIYxP58hsADDle5oYJD73+1i/5E/
- DJ4PIeWt9ouGrMRIwpVZYIv2N+Hl3NLhwUKoEL7upZzJBlhj+H8WMUIA+0c0utHrFXib
- 6St0njUEwySoagUHdfOhKQMIhve6czUMiuHZthPtAEsJdIL2UVkqXmo+S/ET4vQeKKCR
- eK2EWlTLp4WJJ/WhIR7yVYO0bDmrZEz1nQCC+kwy9kogs86oLbScSXA9l5o3Xs/ta2/U LQ== 
-Received: from ediex01.ad.cirrus.com ([84.19.233.68])
- by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3g28upg5ms-1
+ bh=WSOvhMBIg+CnexC+Y8X+ZG7BYMkoKeetiZYSiJmE0cw=;
+ b=E3MDFwXsbJRiBaE4OT2ai+JBwbYdqbCNDnTM5WTrjlOXZlrikeuJ1tiL+m5bGqsZo03j
+ hZNgysmRG2QNG9jfqt9CJyU1HKdQikMi9FpVUiaR7mHeBwbTedb07Mex56RR9EocUbFP
+ vjQtPAGfK1wk5RM/9IUs9D/tVUYW0yOqIgk1qYoeQRhBJEla3nFqJiatKvzERFcXHqSI
+ Q+/Hno0xMo5/BjF4Kn3iHQ0QMOXFJX9/9GuLbAmIRVv9J84ewdgkmDjMuNAiVSG2dbUO
+ otHvJplf8L8ZVHcLm7hZgWu0kIHYmP+5RyytltwUsoK/TaAybqvdQMM8AE7gkhiA4klo dQ== 
+Received: from ediex02.ad.cirrus.com ([84.19.233.68])
+ by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3g28upg6de-1
  (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
- Fri, 20 May 2022 04:56:55 -0500
-Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
+ Fri, 20 May 2022 05:24:48 -0500
+Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX02.ad.cirrus.com
+ (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.24; Fri, 20 May
- 2022 10:56:54 +0100
+ 2022 11:24:47 +0100
 Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
  (198.61.84.80) with Microsoft SMTP Server id 15.1.2375.24 via
- Frontend Transport; Fri, 20 May 2022 10:56:54 +0100
+ Frontend Transport; Fri, 20 May 2022 11:24:47 +0100
 Received: from ediswmail.ad.cirrus.com (ediswmail.ad.cirrus.com [198.61.86.93])
- by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 42FB3476;
- Fri, 20 May 2022 09:56:54 +0000 (UTC)
-Date: Fri, 20 May 2022 09:56:54 +0000
+ by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 20F84458;
+ Fri, 20 May 2022 10:24:47 +0000 (UTC)
+Date: Fri, 20 May 2022 10:24:47 +0000
 From: Charles Keepax <ckeepax@opensource.cirrus.com>
-To: Samuel Holland <samuel@sholland.org>
-Subject: Re: [PATCH 22/56] ASoC: sunxi: Update to use set_fmt_new callback
-Message-ID: <20220520095654.GK38351@ediswmail.ad.cirrus.com>
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Subject: Re: [PATCH 56/56] ASoC: simple-card-utils: Move
+ snd_soc_component_is_codec to be local
+Message-ID: <20220520102447.GL38351@ediswmail.ad.cirrus.com>
 References: <20220519154318.2153729-1-ckeepax@opensource.cirrus.com>
- <20220519154318.2153729-23-ckeepax@opensource.cirrus.com>
- <948d5418-44ca-2e60-0c1c-0b16f315feba@sholland.org>
+ <20220519154318.2153729-57-ckeepax@opensource.cirrus.com>
+ <87czg98193.wl-kuninori.morimoto.gx@renesas.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-In-Reply-To: <948d5418-44ca-2e60-0c1c-0b16f315feba@sholland.org>
+In-Reply-To: <87czg98193.wl-kuninori.morimoto.gx@renesas.com>
 User-Agent: Mutt/1.5.21 (2010-09-15)
-X-Proofpoint-GUID: 0o2bd6ilE3N_-d0xNvYBerQp3pGSYvGE
-X-Proofpoint-ORIG-GUID: 0o2bd6ilE3N_-d0xNvYBerQp3pGSYvGE
+X-Proofpoint-GUID: EewLKkNvojqM2gQAbwrh9EQ5fKjwiv7u
+X-Proofpoint-ORIG-GUID: EewLKkNvojqM2gQAbwrh9EQ5fKjwiv7u
 X-Proofpoint-Spam-Reason: safe
-Cc: cezary.rojewski@intel.com, heiko@sntech.de,
- kuninori.morimoto.gx@renesas.com, alsa-devel@alsa-project.org,
+Cc: cezary.rojewski@intel.com, heiko@sntech.de, alsa-devel@alsa-project.org,
  nicolas.ferre@microchip.com, srinivas.kandagatla@linaro.org,
  peter.ujfalusi@gmail.com, linux-stm32@st-md-mailman.stormreply.com,
  jbrunet@baylibre.com, pierre-louis.bossart@linux.intel.com, krzk@kernel.org,
@@ -89,8 +89,8 @@ Cc: cezary.rojewski@intel.com, heiko@sntech.de,
  linux-xtensa@linux-xtensa.org, nsaenz@kernel.org, broonie@kernel.org,
  linux-mediatek@lists.infradead.org, linux-tegra@vger.kernel.org,
  linux-amlogic@lists.infradead.org, linux-omap@vger.kernel.org,
- patches@opensource.cirrus.com, lgirdwood@gmail.com, jarkko.nikula@bitmer.com,
- kernel@pengutronix.de, shawnguo@kernel.org, daniel@zonque.org
+ patches@opensource.cirrus.com, lgirdwood@gmail.com, daniel@zonque.org,
+ kernel@pengutronix.de, shawnguo@kernel.org, jarkko.nikula@bitmer.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -106,36 +106,65 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Thu, May 19, 2022 at 06:40:11PM -0500, Samuel Holland wrote:
-> On 5/19/22 10:42 AM, Charles Keepax wrote:
-> > As part of updating the core to directly tell drivers if they are clock
-> > provider or consumer update these CPU side drivers to use the new direct
-> > callback.
-> > 
-> > Signed-off-by: Charles Keepax <ckeepax@opensource.cirrus.com>
-> > ---
-> >  sound/soc/sunxi/sun4i-i2s.c   | 20 ++++++++++----------
-> >  sound/soc/sunxi/sun8i-codec.c |  8 ++++----
-> >  2 files changed, 14 insertions(+), 14 deletions(-)
-> > diff --git a/sound/soc/sunxi/sun8i-codec.c b/sound/soc/sunxi/sun8i-codec.c
-> > index 0bea2162f68d9..6e9ef948d6621 100644
-> > --- a/sound/soc/sunxi/sun8i-codec.c
-> > +++ b/sound/soc/sunxi/sun8i-codec.c
-> > @@ -286,11 +286,11 @@ static int sun8i_codec_set_fmt(struct snd_soc_dai *dai, unsigned int fmt)
-> >  	u32 dsp_format, format, invert, value;
-> >  
-> >  	/* clock masters */
-> > -	switch (fmt & SND_SOC_DAIFMT_MASTER_MASK) {
-> > -	case SND_SOC_DAIFMT_CBS_CFS: /* Codec slave, DAI master */
-> > +	switch (fmt & SND_SOC_DAIFMT_CLOCK_PROVIDER_MASK) {
-> > +	case SND_SOC_DAIFMT_BP_FP: /* Codec slave, DAI master */
+On Fri, May 20, 2022 at 01:02:33AM +0000, Kuninori Morimoto wrote:
 > 
-> This is a codec driver, and it is only ever used on the codec end of a link, so
-> I would not expect it to be changed.
+> Hi
 > 
+> This is not related to this patch, but...
+> 
+> > -static inline int snd_soc_component_is_codec(struct snd_soc_component *component)
+> > -{
+> > -	return component->driver->non_legacy_dai_naming;
+> > -}
+> (snip)
+> > +static inline int asoc_simple_component_is_codec(struct snd_soc_component *component)
+> > +{
+> > +	return component->driver->endianness;
+> > +}
+> 
+> I have added "endianness" "non_legacy_dai_naming" to component
+> when convert old "Codec style" into current "Component style".
+> All codec needs to have these 2.
+> 
+> 	69941bab7c7aeaa7bf7e84397e294c17f0b7c6df
+> 	("ASoC: snd_soc_component_driver has non_legacy_dai_naming")
+> 
+> 	273d778ef38a8861f880e9df5799029dc82bd55d
+> 	("ASoC: snd_soc_component_driver has endianness")
+> 
+> The reason why I didn't use "codec" was that try to keep
+> original style as much as possible.
+> But it seems this is good time to use "codec" for it ?
+> I think the code will be more understandable.
+> 
+> -	.endianness
+> -	.non_legacy_dai_naming
+> +	.is_codec
 
-Thanks for spotting that, silly mistake on my part. Will fix for
-a rev 2.
+Yeah I considered this but it didn't really feel like the right
+way to go to me. Firstly, at this stage we almost certainly need
+to keep the endianness and non_legacy_dai_naming flags, there are
+corner cases when endianness probably shouldn't be applied to CODECs
+(as noted in my endianness series), and there are platform drivers
+that use non_legacy_dai_naming.
+
+We could add an is_codec flag along side the other two. But it
+means a whole extra flag and means the the core is still requiring
+a concept of what is a CODEC driver, which really we want to get
+rid of as part of componentisation.
+
+My thinking was that, whilst making this function local to the
+driver isn't perfect, simple card will be used with simple CODECs
+that are likely to exist on a standard audio bus, and thus have
+endianness and the newer graph cards don't require specific
+identification of what is a CODEC driver. So it probably works as
+a solution for now.
+
+> 
+> Thank you for your help !!
+
+Absolutely no problem, thank you for all the work you have done
+on this over the years.
 
 Thanks,
 Charles
