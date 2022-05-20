@@ -4,64 +4,64 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 73259C433EF
-	for <alsa-devel@archiver.kernel.org>; Fri, 20 May 2022 21:21:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id EEFE6C433EF
+	for <alsa-devel@archiver.kernel.org>; Fri, 20 May 2022 21:21:40 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E5EBF1741;
-	Fri, 20 May 2022 23:20:32 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E5EBF1741
+	by alsa0.perex.cz (Postfix) with ESMTPS id 41AC81768;
+	Fri, 20 May 2022 23:20:49 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 41AC81768
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1653081683;
-	bh=slqrcm7FpXNOFE4MzHtYKHZu8oxm6Ns10pm+G+gRZdc=;
+	s=default; t=1653081699;
+	bh=EHs6eO1CLtdckRmqkO15PRqJD3a5ZaJCzlMXaUVz6bY=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=OkDCY7nn45UeWYetsBNg2w6pJJl2cI5mY/SF0fVycoiIx5uWOMiuQlCV+g4Ob6x4X
-	 haspf7/e2QqUhVqGpUPSy9evtNPWlgovM0m9X2jK1/AtZKsfaPIKnlelPPK5ytUjok
-	 QDKTk1BMj1HhjctwZvm4ApcnZWjwo+ebaP8zxzE8=
+	b=qPUnw3ufh1aKas2kYWo+1jZX3jCfAiUDkAWNGmvhyyZ9rDdUnb/0gjL3hLKUnvb5o
+	 3JCVBRYAVl2P5hfLBBkGCnYzcnOPDorUeYXOcH5pe4kbf0qYOC1aYNuR/N6yqZP0xX
+	 BOnpUTP8//NRZpArVLI6UU9hKtlco4XCGA47bwl0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 3198AF80558;
+	by alsa1.perex.cz (Postfix) with ESMTP id B7248F80559;
 	Fri, 20 May 2022 23:17:59 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 2A83DF80544; Fri, 20 May 2022 23:17:54 +0200 (CEST)
+ id B3561F80549; Fri, 20 May 2022 23:17:54 +0200 (CEST)
 Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 4086AF8019D
- for <alsa-devel@alsa-project.org>; Fri, 20 May 2022 23:17:44 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4086AF8019D
+ by alsa1.perex.cz (Postfix) with ESMTPS id 6684FF801F5
+ for <alsa-devel@alsa-project.org>; Fri, 20 May 2022 23:17:42 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6684FF801F5
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="BJwb/Gnj"
+ header.b="naRRPQK/"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1653081465; x=1684617465;
+ t=1653081463; x=1684617463;
  h=from:to:cc:subject:date:message-id:in-reply-to:
  references:mime-version:content-transfer-encoding;
- bh=slqrcm7FpXNOFE4MzHtYKHZu8oxm6Ns10pm+G+gRZdc=;
- b=BJwb/Gnj6ZcHKW4EjhByYpKsHF5QMWu05nPs1EH0YrdxGWg6uT2Q8LLS
- QZrorwgPLVa0pEOjF2RAwApCIXgkW4hazerXrm+M33tub2rBTLIAeuVeG
- hj9NpPKDjSIvQxNbl2MSfJOdS/I7mNW28lfIvEA+qmBC41ojd+YN1Hxe9
- ypKDrmPqUiFpAEQBpMZvos+n5vSExjC3+JoAYeETXuhGEssNnL/Z6ihyZ
- GZbB5rzv88T8g3hWznoDZPxNT3SvYS0RmmXLamlEZQOY2CSDR1DnzZepQ
- atXSfsVXPBINl7H3pT6BrY5idLLNRX6NXF/OmU1NZBti1xguCsOCTgeS3 A==;
-X-IronPort-AV: E=McAfee;i="6400,9594,10353"; a="270324246"
-X-IronPort-AV: E=Sophos;i="5.91,240,1647327600"; d="scan'208";a="270324246"
+ bh=EHs6eO1CLtdckRmqkO15PRqJD3a5ZaJCzlMXaUVz6bY=;
+ b=naRRPQK/6wLrshAtCaTqUiS1ciDQlIO7IJxo/DcrL3qmfcD1XNMUZkCz
+ bmU7Zzmmuu/fMEPhbdQUeIGOZUudY1yUZGvM9VjTRYSBpUxWkj1KlUTBu
+ BMri+NJMN/w1mFy+2tQBNy6yfG4/0mpfp/B2BsayhqoY+HjPUWiqWAAS/
+ PQtcVj7j3hi7zbJSK5NDgND6es/pbVUSacRK+/qV7HYGfJJ78pYRa8yTE
+ mj2R+UAvtdzCtshhlPwab8+D3/cBt5HHCjqApj/BoyEeMuNUJdcup/e74
+ oUA+ekqoGaHNWgkb0PaPb8KCsa2zJ+JAfycRB1yIYbi6xv6b9rsDU0OEZ A==;
+X-IronPort-AV: E=McAfee;i="6400,9594,10353"; a="270324244"
+X-IronPort-AV: E=Sophos;i="5.91,240,1647327600"; d="scan'208";a="270324244"
 Received: from fmsmga002.fm.intel.com ([10.253.24.26])
  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 20 May 2022 14:17:38 -0700
-X-IronPort-AV: E=Sophos;i="5.91,240,1647327600"; d="scan'208";a="674796034"
+ 20 May 2022 14:17:37 -0700
+X-IronPort-AV: E=Sophos;i="5.91,240,1647327600"; d="scan'208";a="674796031"
 Received: from achsu-mobl2.amr.corp.intel.com (HELO
  pbossart-mobl3.amr.corp.intel.com) ([10.212.181.190])
  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 20 May 2022 14:17:38 -0700
+ 20 May 2022 14:17:36 -0700
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH 11/16] ASoC: mediatek: mt8195: simplify error handling
-Date: Fri, 20 May 2022 16:17:14 -0500
-Message-Id: <20220520211719.607543-12-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH 09/16] ASoC: Intel: boards: reset acpi_chan_package
+Date: Fri, 20 May 2022 16:17:12 -0500
+Message-Id: <20220520211719.607543-10-pierre-louis.bossart@linux.intel.com>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20220520211719.607543-1-pierre-louis.bossart@linux.intel.com>
 References: <20220520211719.607543-1-pierre-louis.bossart@linux.intel.com>
@@ -87,82 +87,59 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-cppcheck warnings:
-
-sound/soc/mediatek/mt8195/mt8195-afe-clk.c:311:9: warning: Identical
-condition and return expression 'ret', return value is always 0
-[identicalConditionAfterEarlyExit]
- return ret;
-        ^
-sound/soc/mediatek/mt8195/mt8195-afe-clk.c:297:6: note: If condition
-'ret' is true, the function will return/exit
- if (ret)
-     ^
-sound/soc/mediatek/mt8195/mt8195-afe-clk.c:311:9: note: Returning
-identical expression 'ret'
- return ret;
-        ^
-sound/soc/mediatek/mt8195/mt8195-afe-clk.c:341:9: warning: Identical
-condition and return expression 'ret', return value is always 0
-[identicalConditionAfterEarlyExit]
- return ret;
-        ^
-sound/soc/mediatek/mt8195/mt8195-afe-clk.c:338:6: note: If condition
-'ret' is true, the function will return/exit
-if (ret)
-     ^
-sound/soc/mediatek/mt8195/mt8195-afe-clk.c:341:9: note: Returning
-identical expression 'ret'
-return ret;
-        ^
+cppcheck complains about possible tests of uninitialized 'aif_value'
+members. This isn't really possible but static analysis cannot know
+what ACPICA does, so make sure the acpi_chan_package structure is
+reset prior to use to make the warning go away.
 
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Reviewed-by: Bard Liao <yung-chuan.liao@linux.intel.com>
 Reviewed-by: Péter Ujfalusi <peter.ujfalusi@linux.intel.com>
 ---
- sound/soc/mediatek/mt8195/mt8195-afe-clk.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ sound/soc/intel/boards/bytcr_rt5640.c   | 2 +-
+ sound/soc/intel/boards/bytcr_rt5651.c   | 2 +-
+ sound/soc/intel/boards/cht_bsw_rt5645.c | 2 +-
+ 3 files changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/sound/soc/mediatek/mt8195/mt8195-afe-clk.c b/sound/soc/mediatek/mt8195/mt8195-afe-clk.c
-index efd5cc364a351..2ee3872c83c36 100644
---- a/sound/soc/mediatek/mt8195/mt8195-afe-clk.c
-+++ b/sound/soc/mediatek/mt8195/mt8195-afe-clk.c
-@@ -284,7 +284,7 @@ static int mt8195_afe_enable_apll_tuner(struct mtk_base_afe *afe,
- {
- 	struct mt8195_afe_tuner_cfg *cfg = mt8195_afe_found_apll_tuner(id);
- 	unsigned long flags;
--	int ret = 0;
-+	int ret;
+diff --git a/sound/soc/intel/boards/bytcr_rt5640.c b/sound/soc/intel/boards/bytcr_rt5640.c
+index 7b948a219177d..7cc85fd862b21 100644
+--- a/sound/soc/intel/boards/bytcr_rt5640.c
++++ b/sound/soc/intel/boards/bytcr_rt5640.c
+@@ -1634,7 +1634,7 @@ static int snd_byt_rt5640_mc_probe(struct platform_device *pdev)
+ 		 * with the codec driver/pdata are non-existent
+ 		 */
  
- 	if (!cfg)
- 		return -EINVAL;
-@@ -308,7 +308,7 @@ static int mt8195_afe_enable_apll_tuner(struct mtk_base_afe *afe,
+-		struct acpi_chan_package chan_package;
++		struct acpi_chan_package chan_package = { 0 };
  
- 	spin_unlock_irqrestore(&cfg->ctrl_lock, flags);
+ 		/* format specified: 2 64-bit integers */
+ 		struct acpi_buffer format = {sizeof("NN"), "NN"};
+diff --git a/sound/soc/intel/boards/bytcr_rt5651.c b/sound/soc/intel/boards/bytcr_rt5651.c
+index d467fcaa48eaa..03a52b1069a92 100644
+--- a/sound/soc/intel/boards/bytcr_rt5651.c
++++ b/sound/soc/intel/boards/bytcr_rt5651.c
+@@ -952,7 +952,7 @@ static int snd_byt_rt5651_mc_probe(struct platform_device *pdev)
+ 		 * with the codec driver/pdata are non-existent
+ 		 */
  
--	return ret;
-+	return 0;
- }
+-		struct acpi_chan_package chan_package;
++		struct acpi_chan_package chan_package = { 0 };
  
- static int mt8195_afe_disable_apll_tuner(struct mtk_base_afe *afe,
-@@ -316,7 +316,7 @@ static int mt8195_afe_disable_apll_tuner(struct mtk_base_afe *afe,
- {
- 	struct mt8195_afe_tuner_cfg *cfg = mt8195_afe_found_apll_tuner(id);
- 	unsigned long flags;
--	int ret = 0;
-+	int ret;
+ 		/* format specified: 2 64-bit integers */
+ 		struct acpi_buffer format = {sizeof("NN"), "NN"};
+diff --git a/sound/soc/intel/boards/cht_bsw_rt5645.c b/sound/soc/intel/boards/cht_bsw_rt5645.c
+index 45c301ea5e003..453281326c831 100644
+--- a/sound/soc/intel/boards/cht_bsw_rt5645.c
++++ b/sound/soc/intel/boards/cht_bsw_rt5645.c
+@@ -603,7 +603,7 @@ static int snd_cht_mc_probe(struct platform_device *pdev)
+ 		 * with the codec driver/pdata are non-existent
+ 		 */
  
- 	if (!cfg)
- 		return -EINVAL;
-@@ -338,7 +338,7 @@ static int mt8195_afe_disable_apll_tuner(struct mtk_base_afe *afe,
- 	if (ret)
- 		return ret;
+-		struct acpi_chan_package chan_package;
++		struct acpi_chan_package chan_package = { 0 };
  
--	return ret;
-+	return 0;
- }
- 
- int mt8195_afe_get_mclk_source_clk_id(int sel)
+ 		/* format specified: 2 64-bit integers */
+ 		struct acpi_buffer format = {sizeof("NN"), "NN"};
 -- 
 2.30.2
 
