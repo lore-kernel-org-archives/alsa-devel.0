@@ -4,64 +4,64 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 60770C433F5
-	for <alsa-devel@archiver.kernel.org>; Fri, 20 May 2022 21:22:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6900DC433F5
+	for <alsa-devel@archiver.kernel.org>; Fri, 20 May 2022 21:22:46 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id AF32C176E;
-	Fri, 20 May 2022 23:21:38 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AF32C176E
+	by alsa0.perex.cz (Postfix) with ESMTPS id A6AFA1726;
+	Fri, 20 May 2022 23:21:54 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A6AFA1726
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1653081748;
-	bh=ngAehnQ7+MeSSwjSeAY8VFh0ZBhyvEjFbFq5BxPj9tE=;
+	s=default; t=1653081764;
+	bh=fZ22OOMIfMyFZ5KWRGnZn+ZuVUzFmdFaw6mBXxN2b3c=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=d9uBXC2BLBBM+ybsQ2PXDynEsDZtrzVD3UlkGi5JWnehyJLp6M780FPhoGVSOd5Dg
-	 R/VAt+QV9jyi3FO0kkHgVuiYYmhF+l/UuFoOugn592+XGWqUZ0IWL1gSzOHVtp8dZs
-	 6ZL753LCIMo7ro5EA+7zkQPu9rfNtGNwWmtsiJH4=
+	b=IBG7bLBpmL4a7XEyz38tue50DN+CaY0IBUWjXBcRm4is0io4Mckzx4AI+e9EVtf+I
+	 fShpVW6pv5zZJDKQyXhVC35VKqxYh71QrijJgkJG2RAxp4Inhw3DrAffv1K+6ptzPO
+	 h/cf99gJ7aulvaN91efx456zjwrlBJNsu6hibGXo=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 7B40CF80578;
-	Fri, 20 May 2022 23:18:01 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 14F22F8057D;
+	Fri, 20 May 2022 23:18:02 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 8D5DCF80525; Fri, 20 May 2022 23:17:57 +0200 (CEST)
+ id 465FBF80551; Fri, 20 May 2022 23:17:58 +0200 (CEST)
 Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 523E2F80526
- for <alsa-devel@alsa-project.org>; Fri, 20 May 2022 23:17:44 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 523E2F80526
+ by alsa1.perex.cz (Postfix) with ESMTPS id 47CF2F80520
+ for <alsa-devel@alsa-project.org>; Fri, 20 May 2022 23:17:45 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 47CF2F80520
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="UEKJcAKf"
+ header.b="lAhO3I0r"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1653081465; x=1684617465;
+ t=1653081467; x=1684617467;
  h=from:to:cc:subject:date:message-id:in-reply-to:
  references:mime-version:content-transfer-encoding;
- bh=ngAehnQ7+MeSSwjSeAY8VFh0ZBhyvEjFbFq5BxPj9tE=;
- b=UEKJcAKfrGlw2UP93KXH8Wjkz4Kh2SGJTiGL+cQcz7mD7C83T2eJ6XIc
- MMqodbfsw2JnZ2DhHFrUI4ne9gpkfCA7uHzfO4IWCiArgza1AqiIDjgPJ
- nQO8+qvvxNzZu0rOhkPUg3AFxGQzhfhbPX6zDgXz74PMSHgqYJ/CfHo6O
- u20z+mHJBJo0Ondf6tzfxWhPw2plbbUGZYs2+G9ph2dhu5i3fHe0MvYPN
- QXTLr4MO2ZKKsclGjJYFFdKJsYsy1DpJPXOZhm+ofllaj/FRY70XfpEwO
- 5V7GTFCnWcUOdjA0IoUT+w2l5NE5urUyVaswjhGwDUAncJLdmZ9IfnXrh Q==;
-X-IronPort-AV: E=McAfee;i="6400,9594,10353"; a="270324249"
-X-IronPort-AV: E=Sophos;i="5.91,240,1647327600"; d="scan'208";a="270324249"
+ bh=fZ22OOMIfMyFZ5KWRGnZn+ZuVUzFmdFaw6mBXxN2b3c=;
+ b=lAhO3I0rpERFvPUstsNOqgOw34M6fYsK6vSExvV8CdLbhfV9+wjox2o0
+ wFRpeswvFUFbGZm39dFopYd4D3KgGh0YkJ3ezlzdHV8pi9q352uJWmNos
+ 6Dv3nO9i/uunYfWZhAwJT0EvzPhQPgjdcMgV3wNVRTIjYrEyHC6N0CtmF
+ j7Vjxd98D13+Uw1+2Cd9bu7UaI5G/edi0bduYrdqRE/HZmoIXGR/hBStK
+ KIdOvEaUYzUCVuL5QdFMc/p1n4PK6BfuwgxB0n6cLv1S5rMGX/BNRypN+
+ BuzB8ZyTZ+XbqTlMA7BFYZ4Gk2t+7lzaOyuggqdj7wCqUqQjcwnyb96h1 Q==;
+X-IronPort-AV: E=McAfee;i="6400,9594,10353"; a="270324251"
+X-IronPort-AV: E=Sophos;i="5.91,240,1647327600"; d="scan'208";a="270324251"
 Received: from fmsmga002.fm.intel.com ([10.253.24.26])
  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 20 May 2022 14:17:39 -0700
-X-IronPort-AV: E=Sophos;i="5.91,240,1647327600"; d="scan'208";a="674796035"
+ 20 May 2022 14:17:41 -0700
+X-IronPort-AV: E=Sophos;i="5.91,240,1647327600"; d="scan'208";a="674796051"
 Received: from achsu-mobl2.amr.corp.intel.com (HELO
  pbossart-mobl3.amr.corp.intel.com) ([10.212.181.190])
  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 20 May 2022 14:17:38 -0700
+ 20 May 2022 14:17:40 -0700
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH 12/16] ASoC: qcom: q6dsp: q6adm: remove useless initializations
-Date: Fri, 20 May 2022 16:17:15 -0500
-Message-Id: <20220520211719.607543-13-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH 14/16] ASoC: rockchip: simplify error handling
+Date: Fri, 20 May 2022 16:17:17 -0500
+Message-Id: <20220520211719.607543-15-pierre-louis.bossart@linux.intel.com>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20220520211719.607543-1-pierre-louis.bossart@linux.intel.com>
 References: <20220520211719.607543-1-pierre-louis.bossart@linux.intel.com>
@@ -87,38 +87,51 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-cppcheck complains about invalid NULL dereferences but there's
-indeed no need to initialize loop variables.
+cppcheck warning:
+
+sound/soc/rockchip/rk3288_hdmi_analog.c:256:9: warning: Identical
+condition and return expression 'ret', return value is always 0
+[identicalConditionAfterEarlyExit]
+ return ret;
+        ^
+sound/soc/rockchip/rk3288_hdmi_analog.c:252:6: note: If condition
+'ret' is true, the function will return/exit
+ if (ret)
+     ^
+sound/soc/rockchip/rk3288_hdmi_analog.c:256:9: note: Returning
+identical expression 'ret'
+ return ret;
+        ^
 
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Reviewed-by: Bard Liao <yung-chuan.liao@linux.intel.com>
 Reviewed-by: Péter Ujfalusi <peter.ujfalusi@linux.intel.com>
 ---
- sound/soc/qcom/qdsp6/q6adm.c | 4 ++--
+ sound/soc/rockchip/rk3288_hdmi_analog.c | 4 ++--
  1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/qcom/qdsp6/q6adm.c b/sound/soc/qcom/qdsp6/q6adm.c
-index 72c5719f1d253..22b408c3794e0 100644
---- a/sound/soc/qcom/qdsp6/q6adm.c
-+++ b/sound/soc/qcom/qdsp6/q6adm.c
-@@ -90,7 +90,7 @@ struct q6adm_session_map_node_v5 {
- static struct q6copp *q6adm_find_copp(struct q6adm *adm, int port_idx,
- 				  int copp_idx)
- {
--	struct q6copp *c = NULL;
-+	struct q6copp *c;
- 	struct q6copp *ret = NULL;
- 	unsigned long flags;
+diff --git a/sound/soc/rockchip/rk3288_hdmi_analog.c b/sound/soc/rockchip/rk3288_hdmi_analog.c
+index bcdeddeba80c9..0c6bd9a019dbe 100644
+--- a/sound/soc/rockchip/rk3288_hdmi_analog.c
++++ b/sound/soc/rockchip/rk3288_hdmi_analog.c
+@@ -169,7 +169,7 @@ static struct snd_soc_card snd_soc_card_rk = {
  
-@@ -299,7 +299,7 @@ static struct q6copp *q6adm_find_matching_copp(struct q6adm *adm,
- 					       int channel_mode, int bit_width,
- 					       int app_type)
+ static int snd_rk_mc_probe(struct platform_device *pdev)
  {
--	struct q6copp *c = NULL;
-+	struct q6copp *c;
- 	struct q6copp *ret = NULL;
- 	unsigned long flags;
+-	int ret = 0;
++	int ret;
+ 	struct snd_soc_card *card = &snd_soc_card_rk;
+ 	struct device_node *np = pdev->dev.of_node;
+ 	struct rk_drvdata *machine;
+@@ -253,7 +253,7 @@ static int snd_rk_mc_probe(struct platform_device *pdev)
+ 		return dev_err_probe(&pdev->dev, ret,
+ 				     "Soc register card failed\n");
  
+-	return ret;
++	return 0;
+ }
+ 
+ static const struct of_device_id rockchip_sound_of_match[] = {
 -- 
 2.30.2
 
