@@ -4,68 +4,73 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3135AC433EF
-	for <alsa-devel@archiver.kernel.org>; Fri, 20 May 2022 11:21:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B2ECBC433F5
+	for <alsa-devel@archiver.kernel.org>; Fri, 20 May 2022 11:21:25 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 723E217A2;
-	Fri, 20 May 2022 13:20:25 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 723E217A2
+	by alsa0.perex.cz (Postfix) with ESMTPS id E808417AA;
+	Fri, 20 May 2022 13:20:33 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E808417AA
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1653045675;
-	bh=5eKqLMOdZtjukCQAuo4Z/Gy+jeKCAi4xtVHmgrj5cgg=;
-	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
+	s=default; t=1653045684;
+	bh=UhFND29rKzFNk/PM3lmGrodeQwn/fNPjQBAAKBp20gY=;
+	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=pzT/yzXcNMv2MEHej35scezLiBR0AE28HdBGHLPPJjGkAeHi6th3c3zdQS110FtQ8
-	 zk4Oqm/krbhB9iYQ095ef1Y9g5Wv/4cnCrchdn4qJ9zDlnewasuBjzefYRkjAw4y/5
-	 bw6jSrxDsUmMEDHBohIwDtnehIvM5E+QzjPJdOCE=
+	b=UL4mafx6bUZ64tRoPbROjxgnTwmPSjUXuI5d7wCtQC9rN9cSiwxc7UuK8kHM9AsCt
+	 cnmno772kajgFrzUTXCdqSjhGD6smXsoHLsh+iJRIC40i6q9N7vgx0SeeVlVbAMmBp
+	 bjoROp+1pwKPtYwC09T5v9wfShbzQ+WoBqx+KFBU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 780ABF80536;
-	Fri, 20 May 2022 13:18:56 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 0164AF80539;
+	Fri, 20 May 2022 13:19:00 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 1EB64F80526; Fri, 20 May 2022 13:18:52 +0200 (CEST)
+ id EF1E0F8053A; Fri, 20 May 2022 13:18:58 +0200 (CEST)
 Received: from dfw.source.kernel.org (dfw.source.kernel.org
  [IPv6:2604:1380:4641:c500::1])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id B58D5F80519
- for <alsa-devel@alsa-project.org>; Fri, 20 May 2022 13:18:45 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B58D5F80519
+ by alsa1.perex.cz (Postfix) with ESMTPS id C6FD6F8052D;
+ Fri, 20 May 2022 13:18:51 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C6FD6F8052D
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="vP+WVx1M"
+ header.b="qYqeBTUN"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id 993F561CD1;
- Fri, 20 May 2022 11:18:43 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EEE79C34117;
- Fri, 20 May 2022 11:18:41 +0000 (UTC)
+ by dfw.source.kernel.org (Postfix) with ESMTPS id 4066C61DAB;
+ Fri, 20 May 2022 11:18:50 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0B16EC385AA;
+ Fri, 20 May 2022 11:18:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1653045523;
- bh=5eKqLMOdZtjukCQAuo4Z/Gy+jeKCAi4xtVHmgrj5cgg=;
- h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=vP+WVx1MjIb6BNh8H6jwWU5TKkur/1WliBndJHz/RSV5gsNFtkN8NOUzneQM/irn4
- NQKW6JVHgxl7Yaayzjmxkoe5YODatQmTfehpptfz/Ft9HaUNe1Sf1l7SO7FI3aXHMi
- 3lBRApxbOtqE7OMPCafAPMkk06y9ln5rT9ntj3DZwVKnRChW5zCocoKTPs+yKuMnIl
- fgO/txet7EOr6GgSGBad/D5yKpV6cgmcsSBD47dub8vnv/fqBY7RalnZ9noF4r9qP+
- KcBtjqtkiRsbRMxFewQUAwgW0zMRhx9wTHwOBtmcExt3856ycvan5quDjeOWdhxNrZ
- JeAGASdeoBsQg==
+ s=k20201202; t=1653045529;
+ bh=UhFND29rKzFNk/PM3lmGrodeQwn/fNPjQBAAKBp20gY=;
+ h=From:To:In-Reply-To:References:Subject:Date:From;
+ b=qYqeBTUNoNrIVAwTHKSCHB3plxVJLKocoriVJmA4aOa7hh3BcI12PHAdCbTd4+ih7
+ orY0T+lvoqnSV587qMOMU8jApzkpzW0m5sQ15uJxkoEfCSNxrgUEad0krHecwGmnj0
+ 3tG6DvV+kxmPB6Ic9xgJT0dxoDNkTgf4cz0TRWgz6D6Swn+XmuTLJbAER0y/Am5cDn
+ v4JtnIe17vTWVc0pr+B0sHFCSET0ozsA9ZrBWfesyTASYP8bQ+DaDRZVrjiYP8WSho
+ XoSgPkp09sgS2m1HXPcdPHFusSNmURAWfoHzgphCFbiKJoXilhxDiAE5DmiU7WhCxl
+ JBLRGl/oEvUcg==
 From: Mark Brown <broonie@kernel.org>
-To: pierre-louis.bossart@linux.intel.com, alsa-devel@alsa-project.org
-In-Reply-To: <20220517173715.468894-1-pierre-louis.bossart@linux.intel.com>
-References: <20220517173715.468894-1-pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH RESEND] ASoC: SOF: sof-client-ipc-flood-test: use
- pm_runtime_resume_and_get()
-Message-Id: <165304552169.45439.8283908201602877006.b4-ty@kernel.org>
-Date: Fri, 20 May 2022 12:18:41 +0100
+To: yc.hung@mediatek.com, matthias.bgg@gmail.com,
+ pierre-louis.bossart@linux.intel.com, alsa-devel@alsa-project.org,
+ linux-mediatek@lists.infradead.org, Jaroslav Kysela <perex@perex.cz>,
+ Takashi Iwai <tiwai@suse.com>, linux-kernel@vger.kernel.org,
+ ranjani.sridharan@linux.intel.com, daniel.baluta@nxp.com,
+ linux-arm-kernel@lists.infradead.org, Liam Girdwood <lgirdwood@gmail.com>,
+ peter.ujfalusi@linux.intel.com, Allen-KH.Cheng@mediatek.com,
+ kai.vehmanen@linux.intel.com, geert@linux-m68k.org, yangyingliang@huawei.com,
+ wanjiabing@vivo.com, sound-open-firmware@alsa-project.org
+In-Reply-To: <20220518125902.13407-1-wanjiabing@vivo.com>
+References: <20220518125902.13407-1-wanjiabing@vivo.com>
+Subject: Re: [PATCH] ASoC: SOF: mediatek: remove duplicate include in mt8195.c
+Message-Id: <165304552575.45439.1697552885187311521.b4-ty@kernel.org>
+Date: Fri, 20 May 2022 12:18:45 +0100
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: tiwai@suse.de, peter.ujfalusi@linux.intel.com,
- yung-chuan.liao@linux.intel.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -81,11 +86,9 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Tue, 17 May 2022 12:37:15 -0500, Pierre-Louis Bossart wrote:
-> Use pm_runtime_resume_and_get() to replace the pm_runtime_get_sync() and
-> pm_runtime_put_noidle() pattern.
-> 
-> No functional changes.
+On Wed, 18 May 2022 20:58:57 +0800, Wan Jiabing wrote:
+> Fix following checkincludes.pl warning:
+> sound/soc/sof/mediatek/mt8195/mt8195.c: linux/of_platform.h is included more than once.
 > 
 > 
 
@@ -95,8 +98,8 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: SOF: sof-client-ipc-flood-test: use pm_runtime_resume_and_get()
-      commit: b1378b259c0c0300cf62dd7117bf550edce0f9cc
+[1/1] ASoC: SOF: mediatek: remove duplicate include in mt8195.c
+      commit: 0f653c95c4f4b6b623ce8bd995002daf8032bfc3
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
