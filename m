@@ -4,74 +4,76 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6D55BC433EF
-	for <alsa-devel@archiver.kernel.org>; Sat, 21 May 2022 06:49:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 18B72C433F5
+	for <alsa-devel@archiver.kernel.org>; Sat, 21 May 2022 06:50:23 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A07AA16FC;
-	Sat, 21 May 2022 08:48:40 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A07AA16FC
+	by alsa0.perex.cz (Postfix) with ESMTPS id 5167F170B;
+	Sat, 21 May 2022 08:49:31 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5167F170B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1653115770;
-	bh=fUaKf+zpd8M4No2nyMNWanagGO8lbduTQDjjeDrtbe8=;
+	s=default; t=1653115821;
+	bh=IIoc4T7ESM+7iWk9OaSoiBlmY5NBVHg2iMkaM7juLrA=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=rmQVHybokTxAUEs6v6TWSgczygxobT8A7O3NvVAalOV4Og0z6zASaGXKT9+nhRsVo
-	 mVqxmYIo7I/c3cENxItgf/DGtnd46+Ym2KYA0dFe5ZUvx3ZvRBlTHW89wgw3dHbX2X
-	 HoA7PA0pZ4CG5kKExG4NNiPBJY++sysABPGvHWSo=
+	b=Tw5ufwMo5lvEMXb9Zz43UROYNFPnrDOKpSdas6tW8Gbi9ppwdB4aKhyPD1bH9xrPO
+	 qd5AaHVEv2ef+qU49pLbuP6qV95kETSf5UrGbXdHrv/4iICymLQw5trqZeYnW7OmV5
+	 tZt5HtrH7z+oUS+8L0P5e+2xGczkQmhjmDtkzqp4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 4C5FFF8015B;
-	Sat, 21 May 2022 08:48:40 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id D2465F800D2;
+	Sat, 21 May 2022 08:49:30 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 30B8EF80212; Sat, 21 May 2022 08:48:38 +0200 (CEST)
+ id 6A3C0F8051E; Sat, 21 May 2022 08:49:28 +0200 (CEST)
 Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 923BFF80105
- for <alsa-devel@alsa-project.org>; Sat, 21 May 2022 08:48:35 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 923BFF80105
+ by alsa1.perex.cz (Postfix) with ESMTPS id E7D4DF80153
+ for <alsa-devel@alsa-project.org>; Sat, 21 May 2022 08:49:21 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E7D4DF80153
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="x5B6Mttf"; 
+ header.b="GYQuLlXl"; 
  dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="bOkrLTVp"
+ header.b="z0ZKNFWS"
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out1.suse.de (Postfix) with ESMTP id 1930321AA6;
- Sat, 21 May 2022 06:48:35 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTP id 3C11421B9F;
+ Sat, 21 May 2022 06:49:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1653115715; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1653115761; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=GAd0UtBPb681ICRV1hgwoQIsdYGiN36+TpkjElZ65Ec=;
- b=x5B6MttfIblsQ56V5612FhHFQgzrLxhpaXwhGEDMp1Tl/cewwCQrmWT3gXejY0pIqeU0ok
- isuHTYcj28AP2LSpzQ9MwNQCSQKYftcZOO0HQiT8DssyUcZoCZ9JW17D7/5kO93u8Ui1Ii
- djyuZijaXcwhSg/4WIf52mqWQO5WrdE=
+ bh=jvKzZqSyzLuvq1BOT4+dzaCOcfHBWt+sXaEiI2nPk0g=;
+ b=GYQuLlXl4spbIzkf0nKYMFRo/R6BeEKznF8Oqta0WaGywCIKI+Qz5o8IfeZcYPLEyMDWme
+ rx9xgj9GdHkK7Q+IIS1zo3FLf0XYaEsw+vTe7tSUunAVwDkT1YPCS6Z0E2HLNsXGw/QoE8
+ ObdMo3jYzO+aJ04LJJV0S3GCvANubPM=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1653115715;
+ s=susede2_ed25519; t=1653115761;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=GAd0UtBPb681ICRV1hgwoQIsdYGiN36+TpkjElZ65Ec=;
- b=bOkrLTVpJLrKDfF1qyg1uS/R7e7/lJ49+L8G/YJTdtG1mDY4u1SGPp48mSIABTowAmFKo/
- ff6ylzq/ZbNtHPDA==
+ bh=jvKzZqSyzLuvq1BOT4+dzaCOcfHBWt+sXaEiI2nPk0g=;
+ b=z0ZKNFWS0D+WJZEdubGQCF3+jyLihjH+jyFxv9+8PdBl9VVlNc4pGE2/vjUI1/wGdova54
+ gshgR1uQv2eRGyBQ==
 Received: from valkyrie.site.suse.de (unknown [10.163.18.242])
- by relay2.suse.de (Postfix) with ESMTP id 04D3E2C141;
- Sat, 21 May 2022 06:48:34 +0000 (UTC)
-Date: Sat, 21 May 2022 08:48:34 +0200
-Message-ID: <87y1yvnzy5.wl-tiwai@suse.de>
+ by relay2.suse.de (Postfix) with ESMTP id 1A96D2C141;
+ Sat, 21 May 2022 06:49:21 +0000 (UTC)
+Date: Sat, 21 May 2022 08:49:20 +0200
+Message-ID: <87wnefnzwv.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
-To: Mark Brown <broonie@kernel.org>
-Subject: Re: [GIT PULL] ASoC fixes for v5.18-rc7
-In-Reply-To: <20220520160154.D171FC385A9@smtp.kernel.org>
-References: <20220520160154.D171FC385A9@smtp.kernel.org>
+To: Kees Cook <keescook@chromium.org>
+Subject: Re: [PATCH] ALSA: lola: Bounds check loop iterator against streams
+ array size
+In-Reply-To: <20220520165537.2139826-1-keescook@chromium.org>
+References: <20220520165537.2139826-1-keescook@chromium.org>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
  FLIM/1.14.9 (=?ISO-2022-JP-2?B?R29qGyQoRCtXGyhC?=) APEL/10.8 Emacs/27
  (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
 MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
 Content-Type: text/plain; charset=US-ASCII
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
+Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org,
+ linux-hardening@vger.kernel.org, Takashi Iwai <tiwai@suse.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -87,33 +89,27 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Fri, 20 May 2022 18:01:40 +0200,
-Mark Brown wrote:
+On Fri, 20 May 2022 18:55:37 +0200,
+Kees Cook wrote:
 > 
-> The following changes since commit 5e02fb590e83684f63217f93a9cdeabd6a925f9c:
+> GCC 12 sees that it's technically possible for num_streams to be larger
+> than ARRAY_SIZE(pcm->streams). Bounds-check the iterator.
 > 
->   ASoC: cs35l41: Fix DSP mbox start command and global enable order (2022-03-07 13:12:38 +0000)
+> ../sound/pci/lola/lola_pcm.c: In function 'lola_pcm_update':
+> ../sound/pci/lola/lola_pcm.c:567:64: warning: array subscript [0, 31] is outside array bounds of 'struct lola_stream[16]' [-Warray-bounds]
+>   567 |                         struct lola_stream *str = &pcm->streams[i];
+>       |                                                    ~~~~~~~~~~~~^~~
+> In file included from ../sound/pci/lola/lola_pcm.c:15:
+> ../sound/pci/lola/lola.h:307:28: note: while referencing 'streams'
+>   307 |         struct lola_stream streams[MAX_STREAM_COUNT];
+>       |                            ^~~~~~~
 > 
-> are available in the Git repository at:
-> 
->   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git tags/asoc-fix-v5.18-rc7
-> 
-> for you to fetch changes up to 353bb6a5f2ac495f289b7c7a528c7d134c9a8ec4:
-> 
->   ASoC: wm_adsp: Compressed stream DSP memory structs should be __packed (2022-03-09 17:50:26 +0000)
-> 
-> ----------------------------------------------------------------
-> ASoC: Fix for v5.17
-> 
-> This is rather late and at this point I'm expecting it to get merged in
-> the merge window rather than as a fix but if we get a -rc8 it's a small,
-> driver specific fix which should be fine to send.
-> 
-> ----------------------------------------------------------------
-> Simon Trimmer (1):
->       ASoC: wm_adsp: Compressed stream DSP memory structs should be __packed
+> Cc: Jaroslav Kysela <perex@perex.cz>
+> Cc: Takashi Iwai <tiwai@suse.com>
+> Cc: alsa-devel@alsa-project.org
+> Signed-off-by: Kees Cook <keescook@chromium.org>
 
-Thanks, pulled now.
+Thanks, applied now.
 
 
 Takashi
