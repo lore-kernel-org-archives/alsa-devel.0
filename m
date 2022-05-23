@@ -4,76 +4,75 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 75D2FC433EF
-	for <alsa-devel@archiver.kernel.org>; Mon, 23 May 2022 07:50:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9A349C433F5
+	for <alsa-devel@archiver.kernel.org>; Mon, 23 May 2022 07:51:14 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 63E7E16E2;
-	Mon, 23 May 2022 09:49:49 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 63E7E16E2
+	by alsa0.perex.cz (Postfix) with ESMTPS id 7035D16ED;
+	Mon, 23 May 2022 09:50:22 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7035D16ED
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1653292239;
-	bh=dYPtm9LRKnmzw23Ut6Lv0ZknHnotGV7U38PiXoxhWzg=;
+	s=default; t=1653292272;
+	bh=q9CeUnBleJWbueAl1oHlNMFn6Mo4RPnOoS62BgIsKNY=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=a/HlZSnMHJIrHI0/1bwEkthwEsT5vmWJov+IjVMxzpCuB43iVBy9xMkEPavnJmIU4
-	 VzKIMzZBfPN1nLinruUypu9AZ0EYgYc6cq5KDknNLnPG3Ep9dS8UnZaMrb2JOTGhXn
-	 aptQ/BnjT13WaCwEFz1dGy/7MVgW0D6knq66Ey8s=
+	b=NQbNZOg7OieoVOn00sr/C0XkXpzwr4IcHWf2MPlkEDU/GXLCcLkbYNknCIf9BGvJ6
+	 qsYfr7kIErlEIyvyVJR0C+Fix9wUrh0eCo7cgZceG8erDaUqz034OKn5+z0OuObFqg
+	 6YbZ2FD7KxFm8eZEJgWgrc6zliXXg//QG+/qhlec=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 11FA5F80158;
-	Mon, 23 May 2022 09:49:49 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 8088CF8025E;
+	Mon, 23 May 2022 09:49:52 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 458ACF80116; Mon, 23 May 2022 09:49:48 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+ id 9B2FCF80116; Mon, 23 May 2022 09:49:48 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id D44F8F80116
- for <alsa-devel@alsa-project.org>; Mon, 23 May 2022 09:49:12 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D44F8F80116
+ by alsa1.perex.cz (Postfix) with ESMTPS id AA124F80158
+ for <alsa-devel@alsa-project.org>; Mon, 23 May 2022 09:49:22 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AA124F80158
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="gDp2PyW5"; 
+ header.b="jXhPD+I8"; 
  dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="nPYgmwnW"
+ header.b="ap/Vmq2T"
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out2.suse.de (Postfix) with ESMTP id 4EE361F8CF;
- Mon, 23 May 2022 07:49:12 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTP id 221BA21A64;
+ Mon, 23 May 2022 07:49:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1653292152; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1653292162; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=XAg+6nx5PUs28DZ7+XHOM+CyCealxuvpvLVJpUXQk44=;
- b=gDp2PyW5NIpyNPBkBZMOfhM01lfIgUpcc1/yahhhuOIRalyhwvrDZMR5y6ekuuFh/WeazF
- k4vyV66abLWtYrF3Farb0tIvV4jnxYRcRieABtxXm1HxXtYvYl0vUlJrjxXuXX5i0CHRzz
- LJE6emx0QVHMEgVtAl2u+FC8dX4YlYE=
+ bh=oiiJwEw/hQJq5SdxOlRWe8tdZfyTmWnTFgXSPEubMnY=;
+ b=jXhPD+I8YXX5c6AZytS65orXMgRxf2siusQaRn5dFSS8wnf5FRt/lA399TQTrmU9fvEXJM
+ j5wZE42U+bYxKEU4ZVZY2R36CksT2NOx3JnoQA0h1TRVWMf5g97H5g0B6Rh89J6w2E0Wkg
+ nBSOS6RhTgvpFGjUQRr6ohKMf46EFak=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1653292152;
+ s=susede2_ed25519; t=1653292162;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=XAg+6nx5PUs28DZ7+XHOM+CyCealxuvpvLVJpUXQk44=;
- b=nPYgmwnWMcMzTu1pFEiMckvlmuCFea5F+14LGYZ8yfIPmoTU4BUgXrZQGWNPZQxGOLkel+
- ooVsBBwCF2TC9HAA==
+ bh=oiiJwEw/hQJq5SdxOlRWe8tdZfyTmWnTFgXSPEubMnY=;
+ b=ap/Vmq2TQqZA0Spn4ADUHkc79XAY3TdNlGVie+hUmE9PNEIl9QJcO/Ws753cRefVmNAj4z
+ aKuQHM6xSNE+QZDQ==
 Received: from valkyrie.site.suse.de (unknown [10.163.18.242])
- by relay2.suse.de (Postfix) with ESMTP id 190442C141;
- Mon, 23 May 2022 07:49:12 +0000 (UTC)
-Date: Mon, 23 May 2022 09:49:11 +0200
-Message-ID: <871qwkofig.wl-tiwai@suse.de>
+ by relay2.suse.de (Postfix) with ESMTP id EDC112C141;
+ Mon, 23 May 2022 07:49:21 +0000 (UTC)
+Date: Mon, 23 May 2022 09:49:20 +0200
+Message-ID: <87zgj8n0xr.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
 To: Julia Lawall <Julia.Lawall@inria.fr>
-Subject: Re: [PATCH] ALSA: cs5535audio: fix typo in comment
-In-Reply-To: <20220521111145.81697-1-Julia.Lawall@inria.fr>
-References: <20220521111145.81697-1-Julia.Lawall@inria.fr>
+Subject: Re: [PATCH] ALSA: ctxfi: fix typo in comment
+In-Reply-To: <20220521111145.81697-44-Julia.Lawall@inria.fr>
+References: <20220521111145.81697-44-Julia.Lawall@inria.fr>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
  FLIM/1.14.9 (=?ISO-2022-JP-2?B?R29qGyQoRCtXGyhC?=) APEL/10.8 Emacs/27
  (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
 MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
 Content-Type: text/plain; charset=US-ASCII
-Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.com>,
- kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org,
- Jaya Kumar <jayakumar.alsa@gmail.com>
+Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org,
+ kernel-janitors@vger.kernel.org, Takashi Iwai <tiwai@suse.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -89,7 +88,7 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Sat, 21 May 2022 13:10:11 +0200,
+On Sat, 21 May 2022 13:10:54 +0200,
 Julia Lawall wrote:
 > 
 > Spelling mistake (triple letters) in comment.
