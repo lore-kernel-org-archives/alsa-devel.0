@@ -4,91 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 36510C433EF
-	for <alsa-devel@archiver.kernel.org>; Mon, 23 May 2022 16:35:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 14934C433F5
+	for <alsa-devel@archiver.kernel.org>; Mon, 23 May 2022 17:26:52 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 81C241722;
-	Mon, 23 May 2022 18:34:41 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 81C241722
+	by alsa0.perex.cz (Postfix) with ESMTPS id 6E0E315E2;
+	Mon, 23 May 2022 19:26:00 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6E0E315E2
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1653323731;
-	bh=/i1oZX4dUuFLft/qFvrCS5jJCjvVQOS8g772gEOkwWE=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
+	s=default; t=1653326810;
+	bh=KfZyEZ50W08Vd9FA1iteyipx9RBSkm/JonM4Uu4wCfQ=;
+	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=VVkhRkAfH4cthdQ149D0DvrsMvfTygNP0MDHeC/vLOlPMWgnHJTQl5mLSkhkIfayC
-	 kJwIBAqTpaE3vB3fvWxU4FKpgvsYu+PEn/8RRXWNAJINLZmdmExkDS1JBcNMr5RD6t
-	 JtO697eD8Da4A5pY9ubN1jcPt21uYesnBK0rFMBg=
+	b=U5a4yftuwHaPl5cm5pSXZIbDC/yp0YpA/sA8edqOHPyNsWwVkigIYeiwTUDuzexGu
+	 K4ZNSk8O6dZd0m5LZgv/YM73XrBmRxmfNAJl/cgS1sQM1xwYaj2QqCzHneH3Kd05WB
+	 l9uU+w+4aEZmY4Wo5UfKqaU74FZRIjrT2hh8ASE4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 1A7AFF80158;
-	Mon, 23 May 2022 18:34:41 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id E5A5CF80158;
+	Mon, 23 May 2022 19:25:59 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id A82EDF80116; Mon, 23 May 2022 18:34:39 +0200 (CEST)
-Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com
- [IPv6:2a00:1450:4864:20::62f])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id 1D21BF80236; Mon, 23 May 2022 19:25:58 +0200 (CEST)
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 54B41F80116
- for <alsa-devel@alsa-project.org>; Mon, 23 May 2022 18:34:31 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 54B41F80116
+ by alsa1.perex.cz (Postfix) with ESMTPS id DA92AF800E3
+ for <alsa-devel@alsa-project.org>; Mon, 23 May 2022 19:25:55 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DA92AF800E3
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=google.com header.i=@google.com
- header.b="V4gZGewx"
-Received: by mail-ej1-x62f.google.com with SMTP id rs12so18249043ejb.13
- for <alsa-devel@alsa-project.org>; Mon, 23 May 2022 09:34:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=20210112;
- h=mime-version:references:in-reply-to:from:date:message-id:subject:to
- :cc; bh=G/XA8ganN6D8SJro5978H4m5Fr+5l+LHKXISgC45i6U=;
- b=V4gZGewx8jIJhhKQRA3xFN/sZpiyapULO/rXmi27p0MmEibaEgQ8lH/+ejDyKRD2aK
- JmXLAC7N1DBNvBcq6khSV/szTMTFxbwPoyH9ag/RcgAZaLNvfFa3NkmSZnlOFIpQRGBG
- HFWAMTzc4Rih6kdSZ+4g38GMRpnnlGT5Wdqqc9FBi+RFYs78DfAuap/qX/8zm5NqMwNf
- /4H1Fb+2qzFVUINXJzpsdgOq38PEpU6MP0ML/oB1mqpNOYziflnFlyEbbEs4QQo6/+k8
- e56iow3cMFrFf4soDANOpi2DTNdbdI7R93SpDItrN+4tg+aL6OKiO4E5MZ95N9GZFqWc
- 84IQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc;
- bh=G/XA8ganN6D8SJro5978H4m5Fr+5l+LHKXISgC45i6U=;
- b=6Rdgi4kkUEX7g7WXfIjyEY3sMfyOWbnX26db1ZSEXrNpudjw6xsjsJrNNRABzMJrEy
- W9zvDTXqcXtm06rhx7yL9KgC+7zrfOIh0cIhAfKgJ0VJGZmp9gspBS0BPJBbsijZYlAY
- gIeAGPLeFH1pT/MEhhKJaL9zeV895e6a7+THgT+8Ed3GqmYmO+1r5kwIfGdxpvHSfENb
- xV5J10zZkynbWT5kGyMwdi4pgp+0NQcHSYPeguPotTyuydRreU3ah4Ffw5hm4Zj+1oMQ
- 0EMF0xZIHMAUtKBHISa2/d4pW/z+IcZOkzm6e8MCOEpHzOn124sOmiNg2xp1+PgBYKqi
- t8fg==
-X-Gm-Message-State: AOAM531kEE+z+qwofBodne51k627G7YW8ZexkipViVsrzpa8iVUypQqy
- oUHZpyaTK3ZhvR6jh1ucLz87zL+22YaV9HmKBXKamDxa+es=
-X-Google-Smtp-Source: ABdhPJw4KEeaBlMeJuRWGPa57xCB7Ewlw+G+TBeTDM2j4L9pKHotAqYYEh2UZdxh5ovyLhk/tMuvzvFu6fcl2j4lkqs=
-X-Received: by 2002:a17:907:3f19:b0:6f5:6b2:9615 with SMTP id
- hq25-20020a1709073f1900b006f506b29615mr21628853ejc.659.1653323669337; Mon, 23
- May 2022 09:34:29 -0700 (PDT)
+ dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="h5deFnDA"
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by ams.source.kernel.org (Postfix) with ESMTPS id 1CEBFB81201;
+ Mon, 23 May 2022 17:25:55 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CAF00C385A9;
+ Mon, 23 May 2022 17:25:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1653326753;
+ bh=KfZyEZ50W08Vd9FA1iteyipx9RBSkm/JonM4Uu4wCfQ=;
+ h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+ b=h5deFnDA46dP6Iv9Tc6qKmq+/efjbau6furgkYN9jpQ8lXVroSfGW7Ii1uOHS/yX8
+ zZTa7QKDDk/K6FTor1hsP2mhhIGst+I5njJ+Vx2NrCutJQWmRKpxOXY/cRVEDNY/ri
+ GYC2QsPmis69dsuyuuC/EOKYRwS1QXGt8qTdn4/sC5NE6EXFtHRWcs5FFJkX+09zTb
+ 8s2wzvtFzQPad6fG7g11GevAHoXbFnlkE8VulE7kiGXNpDa7pZ7CPkSbTIyCxXr5XN
+ /WzrXsSamE7VULpv/TN2rna/ohCncxLVaKv2/TWl/RuWGFiQf/CGRiO/ri2uRPlZ7L
+ iDXXIFMscEHpA==
+From: Mark Brown <broonie@kernel.org>
+To: alsa-devel@alsa-project.org, pierre-louis.bossart@linux.intel.com
+In-Reply-To: <20220520210615.607229-1-pierre-louis.bossart@linux.intel.com>
+References: <20220520210615.607229-1-pierre-louis.bossart@linux.intel.com>
+Subject: Re: [PATCH] ASoC: soc-pcm: fix BE transition for TRIGGER_START
+Message-Id: <165332675255.2124944.10877512911286086803.b4-ty@kernel.org>
+Date: Mon, 23 May 2022 18:25:52 +0100
 MIME-Version: 1.0
-References: <20220518013140.1467326-1-terry_chen@wistron.corp-partner.google.com>
- <00e58668-ca30-0048-6cd1-b2dd4ad66d7a@linux.intel.com>
- <CAMmR3bEeV3CbqG7nmHb17xtju2X37wa590z+TMwXFHnkiJNcqQ@mail.gmail.com>
-In-Reply-To: <CAMmR3bEeV3CbqG7nmHb17xtju2X37wa590z+TMwXFHnkiJNcqQ@mail.gmail.com>
-From: Curtis Malainey <cujomalainey@google.com>
-Date: Mon, 23 May 2022 09:34:18 -0700
-Message-ID: <CAOReqxif-+X5_EcR3N8EOx1H=cE3AdOr-Te8aqB4JBx5JrbFTg@mail.gmail.com>
-Subject: Re: [v6] FROMLIST: ASoC: Intel: sof_cs42l42: adding support for ADL
- configuration and BT offload audio
-To: Terry Chen <terry_chen@wistron.corp-partner.google.com>
-Content-Type: text/plain; charset="UTF-8"
-Cc: Cezary Rojewski <cezary.rojewski@intel.com>, "Bowman,
- Casey G" <casey.g.bowman@intel.com>,
- Kai Vehmanen <kai.vehmanen@linux.intel.com>,
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
- Takashi Iwai <tiwai@suse.com>, Jie Yang <yang.jie@linux.intel.com>,
- ALSA development <alsa-devel@alsa-project.org>,
- Mark Hsieh <mark_hsieh@wistron.corp-partner.google.com>,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- Liam Girdwood <liam.r.girdwood@linux.intel.com>,
- Mac Chiang <mac.chiang@intel.com>, Mark Brown <broonie@kernel.org>,
- Sean Paul <seanpaul@chromium.org>, Curtis Malainey <cujomalainey@chromium.org>,
- "Lu, Brent" <brent.lu@intel.com>, "Gopal,
- Vamshi Krishna" <vamshi.krishna.gopal@intel.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+Cc: tiwai@suse.de, peter.ujfalusi@linux.intel.com,
+ yung-chuan.liao@linux.intel.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -104,154 +79,46 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Tue, May 17, 2022 at 8:34 PM Terry Chen
-<terry_chen@wistron.corp-partner.google.com> wrote:
->
-> Hi Pierre
->
-> We upload v7 patch to follow the coding style as other components. Thanks
->
-> On Wed, May 18, 2022 at 10:02 AM Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com> wrote:
->>
->>
->>
->> On 5/17/22 20:31, Terry Chen wrote:
->> > To be able to do  driver data for adl_mx98360a_cs4242 which supports
->> > two max98360a speaker amplifiers on SSP1 and cs42l42 headphone codec
->> > on SSP0 running on ADL platform. Also add the capability to machine driver
->> > of creating DAI Link for BT offload. Although BT offload always uses SSP2
->> > port but we reserve the flexibility to assign the port number in macro.
->> >
->> > Signed-off-by: Terry Chen <terry_chen@wistron.corp-partner.google.com>
->> > (am from https://patchwork.kernel.org/patch/12845884/)
->> > (also found at https://lore.kernel.org/r/20220511075522.1764114-1-terry_chen@wistron.corp-partner.google.com)
->>
->> not sure what this is about, what's the point of adding information on
->> the v5 in the v6 patch?
+On Fri, 20 May 2022 16:06:15 -0500, Pierre-Louis Bossart wrote:
+> A obvious editing mistake caught with a cppcheck warning
+> 
+> sound/soc/soc-pcm.c:2132:8: style: Variable 'ret' is reassigned a
+> value before the old one has been used. [redundantAssignment]
+>    ret = soc_pcm_trigger(be_substream, cmd);
+>        ^
+> sound/soc/soc-pcm.c:2126:9: note: ret is assigned
+>     ret = soc_pcm_trigger(be_substream,
+>         ^
+> sound/soc/soc-pcm.c:2129:9: note: ret is assigned
+>     ret = soc_pcm_trigger(be_substream,
+>         ^
+> 
+> [...]
 
-Hi Terry,
+Applied to
 
-I think Pierre's confusion here is that you used chromeos style guides
-but didn't upload to gerrit, you sent it to ALSA. When sending to ALSA
-you should use the kernel style guides upstream.
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
 
->>
->> >
->> > ---
->> >  sound/soc/intel/boards/sof_cs42l42.c          | 92 ++++++++++++++++++-
->> >  .../intel/common/soc-acpi-intel-adl-match.c   |  7 ++
->> >  2 files changed, 95 insertions(+), 4 deletions(-)
->> >
->> > diff --git a/sound/soc/intel/boards/sof_cs42l42.c b/sound/soc/intel/boards/sof_cs42l42.c
->> > index ce78c18798876..2efffc7933479 100644
->> > --- a/sound/soc/intel/boards/sof_cs42l42.c
->> > +++ b/sound/soc/intel/boards/sof_cs42l42.c
->> > @@ -41,8 +41,13 @@
->> >  #define SOF_CS42L42_DAILINK_MASK             (GENMASK(24, 10))
->> >  #define SOF_CS42L42_DAILINK(link1, link2, link3, link4, link5) \
->> >       ((((link1) | ((link2) << 3) | ((link3) << 6) | ((link4) << 9) | ((link5) << 12)) << SOF_CS42L42_DAILINK_SHIFT) & SOF_CS42L42_DAILINK_MASK)
->> > -#define SOF_MAX98357A_SPEAKER_AMP_PRESENT    BIT(25)
->> > -#define SOF_MAX98360A_SPEAKER_AMP_PRESENT    BIT(26)
->> > +#define SOF_BT_OFFLOAD_PRESENT                       BIT(25)
->> > +#define SOF_CS42L42_SSP_BT_SHIFT             26
->> > +#define SOF_CS42L42_SSP_BT_MASK                      (GENMASK(28, 26))
->> > +#define SOF_CS42L42_SSP_BT(quirk)    \
->> > +     (((quirk) << SOF_CS42L42_SSP_BT_SHIFT) & SOF_CS42L42_SSP_BT_MASK)
->> > +#define SOF_MAX98357A_SPEAKER_AMP_PRESENT    BIT(29)
->> > +#define SOF_MAX98360A_SPEAKER_AMP_PRESENT    BIT(30)
->> >
->> >  enum {
->> >       LINK_NONE = 0,
->> > @@ -50,6 +55,7 @@ enum {
->> >       LINK_SPK = 2,
->> >       LINK_DMIC = 3,
->> >       LINK_HDMI = 4,
->> > +     LINK_BT = 5,
->> >  };
->> >
->> >  /* Default: SSP2 */
->> > @@ -278,6 +284,13 @@ static struct snd_soc_dai_link_component dmic_component[] = {
->> >       }
->> >  };
->> >
->> > +static struct snd_soc_dai_link_component dummy_component[] = {
->> > +     {
->> > +             .name = "snd-soc-dummy",
->> > +             .dai_name = "snd-soc-dummy-dai",
->> > +     }
->> > +};
->> > +
->> >  static int create_spk_amp_dai_links(struct device *dev,
->> >                                   struct snd_soc_dai_link *links,
->> >                                   struct snd_soc_dai_link_component *cpus,
->> > @@ -467,9 +480,56 @@ static int create_hdmi_dai_links(struct device *dev,
->> >       return -ENOMEM;
->> >  }
->> >
->> > +static int create_bt_offload_dai_links(struct device *dev,
->> > +                                    struct snd_soc_dai_link *links,
->> > +                                    struct snd_soc_dai_link_component *cpus,
->> > +                                    int *id, int ssp_bt)
->> > +{
->> > +     int ret = 0;
->>
->> either you remove this useless init...
->>
->> > +
->> > +     /* bt offload */
->> > +     if (!(sof_cs42l42_quirk & SOF_BT_OFFLOAD_PRESENT))
->> > +             return 0;
->> > +
->> > +     links[*id].name = devm_kasprintf(dev, GFP_KERNEL, "SSP%d-BT",
->> > +                                      ssp_bt);
->> > +     if (!links[*id].name) {
->> > +             ret = -ENOMEM;
->> > +             goto devm_err;
->> > +     }
->> > +
->> > +     links[*id].id = *id;
->> > +     links[*id].codecs = dummy_component;
->> > +     links[*id].num_codecs = ARRAY_SIZE(dummy_component);
->> > +     links[*id].platforms = platform_component;
->> > +     links[*id].num_platforms = ARRAY_SIZE(platform_component);
->> > +
->> > +     links[*id].dpcm_playback = 1;
->> > +     links[*id].dpcm_capture = 1;
->> > +     links[*id].no_pcm = 1;
->> > +     links[*id].cpus = &cpus[*id];
->> > +     links[*id].num_cpus = 1;
->> > +
->> > +     links[*id].cpus->dai_name = devm_kasprintf(dev, GFP_KERNEL,
->> > +                                                "SSP%d Pin",
->> > +                                                ssp_bt);
->> > +     if (!links[*id].cpus->dai_name) {
->> > +             ret = -ENOMEM;
->> > +             goto devm_err;
->> > +     }
->> > +
->> > +     (*id)++;
->> > +
->> > +     return 0;
->>
->> ... or you remove the return 0;
->>
->> pick one.
->>
->> > +
->> > +devm_err:
->> > +     return ret;
->> > +}
->> > +
->>
->> >       },
->> > +     {
->> > +             .id = "10134242",
->> > +             .drv_name = "adl_mx98360a_cs4242",
->> > +             .machine_quirk = snd_soc_acpi_codec_list,
->> > +             .quirk_data = &adl_max98360a_amp,
->> > +             .sof_tplg_filename = "sof-adl-max98360a-rt5682.tplg",
->>
->> No, I've told this before in previous reviews: do not use a topology
->> name that was designed for a different platform, this is not
->> maintainable. If the topologies happen to be the same, either generate
->> them twice or use a symlink.
+Thanks!
+
+[1/1] ASoC: soc-pcm: fix BE transition for TRIGGER_START
+      commit: f4d6aca0c80f09f4c780136a64ee039560a2c39b
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
