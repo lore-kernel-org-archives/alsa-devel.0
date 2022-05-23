@@ -4,83 +4,82 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 68B2DC433EF
-	for <alsa-devel@archiver.kernel.org>; Wed, 25 May 2022 13:22:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E8447C433EF
+	for <alsa-devel@archiver.kernel.org>; Wed, 25 May 2022 14:09:33 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 9D5AE16BC;
-	Wed, 25 May 2022 15:21:45 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9D5AE16BC
+	by alsa0.perex.cz (Postfix) with ESMTPS id 7AC531697;
+	Wed, 25 May 2022 16:08:41 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7AC531697
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1653484955;
-	bh=Jf8OhtlM5lEIw2sCpcGFdj398znEZBCuT39rDmiw/a4=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1653487771;
+	bh=fMIMMhJRlJQe9JKTSpnuOU6Ds5f0JXS0sAh5aX1dd3M=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=u8Tpf1NLYQH4SR4xT7Xh18ctc5GbHJTgK9Bfa4avE6F4B2BpFmJk87svVtIkUpePw
-	 +KZeICqeKBCkTRriVXxvPGXpT/b+PHOdSdBqM08qULVTs/WE7dlDdQV+YKHSnPjZRw
-	 p/krPt+bhe/GphH+ciY+izB7rAD71t89fueB+MTo=
+	b=vCLC2WKmOO/SQCAglcPtyEoDblr66VBebpZzv3iqhaDCSFp/FWgFSX3KbY+P5wdZy
+	 5DCYkx621kReX6J21+7KM4di5QRBPQMHKhAa6FjVnLKHKbO3fpXhIhRGb1rmyTh97+
+	 j0wHrj08SZZGTOg42ds8JriUyDA/zl5Z1+RjDetg=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 7252FF805BE;
-	Wed, 25 May 2022 15:17:20 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 12F30F80169;
+	Wed, 25 May 2022 16:08:41 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id D2AABF805B2; Wed, 25 May 2022 15:17:12 +0200 (CEST)
-Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
- [67.231.152.168])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 5A0FAF8052D
- for <alsa-devel@alsa-project.org>; Wed, 25 May 2022 15:16:51 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5A0FAF8052D
+ id 9F0DEF800E3; Mon, 23 May 2022 08:59:46 +0200 (CEST)
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [46.235.227.227])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256
+ bits)) (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 448E1F800E3
+ for <alsa-devel@alsa-project.org>; Mon, 23 May 2022 08:59:38 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 448E1F800E3
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com
- header.b="DCe12RJ3"
-Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
- by mx0b-001ae601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 24PCRmjL022096;
- Wed, 25 May 2022 08:16:49 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
- h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding : content-type; s=PODMain02222019;
- bh=SdH8ia3qSCQdREnp9xrzfWcqJ+zxm8KWhqDEaNAZy1Q=;
- b=DCe12RJ321uJnjX+r1SXut4gaTq6BAjUPASSBjSzvW1kualAjvBwek7UlqX7EjZ2t62M
- Qa3bd5Ivv3nWJzQ2HudbUkcWI81nPrMpLQZmd7qgLMjw7kQqSd4v9q1kHX7l6n/mxh1S
- v0T9bRxt2OsOYQEN4T5wm/6spZbGE3ZQFP3WrMy7W2cyn6MqfMoNvVNZYgNpLTElCpYS
- WduEvl+TFWDEtaXJAh4wWBvgd5dajx62ZeZ9JyV1pZOTmlj5aUTRwjpTcb3xP0hxmXXj
- MySd2+0xBmZvZHMuZDXqF0GzmsP/xes5Xaj/+F2vlvQt3DfwMAvDfxceYUPUlluYs6EE kw== 
-Received: from ediex01.ad.cirrus.com ([84.19.233.68])
- by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3g93u20we6-11
- (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
- Wed, 25 May 2022 08:16:49 -0500
-Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.24; Wed, 25 May
- 2022 14:16:46 +0100
-Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server id 15.1.2375.24 via
- Frontend Transport; Wed, 25 May 2022 14:16:46 +0100
-Received: from vitaly-Legion-7-16ACHg6.ad.cirrus.com (unknown [198.90.238.233])
- by ediswmail.ad.cirrus.com (Postfix) with ESMTP id C8CAA46C;
- Wed, 25 May 2022 13:16:45 +0000 (UTC)
-From: Vitaly Rodionov <vitalyr@opensource.cirrus.com>
-To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Mark
- Brown <broonie@kernel.org>
-Subject: [PATCH v4 16/17] ALSA: hda: cs35l41: Support Firmware switching and
- reloading
-Date: Wed, 25 May 2022 14:16:37 +0100
-Message-ID: <20220525131638.5512-17-vitalyr@opensource.cirrus.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20220525131638.5512-1-vitalyr@opensource.cirrus.com>
-References: <20220525131638.5512-1-vitalyr@opensource.cirrus.com>
+ dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com
+ header.b="b93nE9YS"
+Received: from [127.0.0.1] (localhost [127.0.0.1]) (Authenticated sender: sre)
+ with ESMTPSA id DFF2F1F42B4D
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+ s=mail; t=1653289176;
+ bh=fMIMMhJRlJQe9JKTSpnuOU6Ds5f0JXS0sAh5aX1dd3M=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=b93nE9YSM6DJsc4kIBgfLAD6U78/aWTdtTmsANj5h0ZRnRfo49OptjrpkvL4fnoKm
+ wB8yj9ZRGClhMgn1w9k6xiOW8xGF8aMj8SPwbcgV4hXJb9FMUHIsOTTQGKRSQb+kG5
+ ePAX785C9NVljDivTAcPR1iUa37w9iJxbOT3cMYCJXDEmkknbpRk5ejESbjH/uE02w
+ daTt/EZpgIgStQAkSWMNMhpvEBFiHaUJ0l3oxRKs8rkGig6JbRQdGBk0R5B+MbW2Bx
+ nPusTCOcwNztXImaE8sIQlB7OBIU0ivaJnNdkupLnTAa3C5F6+47ch4ScrpzpYdXhO
+ TZjBStxjJ8xgQ==
+Received: by mercury (Postfix, from userid 1000)
+ id 8AA59106043A; Mon, 23 May 2022 08:59:33 +0200 (CEST)
+Date: Mon, 23 May 2022 08:59:33 +0200
+From: Sebastian Reichel <sebastian.reichel@collabora.com>
+To: Rob Herring <robh@kernel.org>
+Subject: Re: [PATCH] dt-bindings: Fix properties without any type
+Message-ID: <20220523065933.kq5dxxe2chvp2r7w@mercury.elektranox.org>
+References: <20220519211411.2200720-1-robh@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: Gmp0fGDJqaZLM2LaG02kyCCsldnNpJ9s
-X-Proofpoint-GUID: Gmp0fGDJqaZLM2LaG02kyCCsldnNpJ9s
-X-Proofpoint-Spam-Reason: safe
-Cc: patches@opensource.cirrus.com, alsa-devel@alsa-project.org,
- linux-kernel@vger.kernel.org, Stefan Binding <sbinding@opensource.cirrus.com>
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature"; boundary="qdtpx5mo3ymeklm2"
+Content-Disposition: inline
+In-Reply-To: <20220519211411.2200720-1-robh@kernel.org>
+X-Mailman-Approved-At: Wed, 25 May 2022 16:08:39 +0200
+Cc: alsa-devel@alsa-project.org, linux-usb@vger.kernel.org,
+ linux-pci@vger.kernel.org, Linus Walleij <linus.walleij@linaro.org>,
+ dri-devel@lists.freedesktop.org, Thierry Reding <thierry.reding@gmail.com>,
+ Guenter Roeck <groeck@chromium.org>, Sam Ravnborg <sam@ravnborg.org>,
+ chrome-platform@lists.linux.dev, Herbert Xu <herbert@gondor.apana.org.au>,
+ Bartosz Golaszewski <brgl@bgdev.pl>, linux-serial@vger.kernel.org,
+ linux-input@vger.kernel.org, Jakub Kicinski <kuba@kernel.org>,
+ Paolo Abeni <pabeni@redhat.com>, linux-media@vger.kernel.org,
+ devicetree@vger.kernel.org, linux-pm@vger.kernel.org,
+ Kalle Valo <kvalo@kernel.org>, Maxime Ripard <mripard@kernel.org>,
+ linux-gpio@vger.kernel.org, Mark Brown <broonie@kernel.org>,
+ Matt Mackall <mpm@selenic.com>, Bjorn Helgaas <bhelgaas@google.com>,
+ Mauro Carvalho Chehab <mchehab@kernel.org>, Benson Leung <bleung@chromium.org>,
+ linux-arm-kernel@lists.infradead.org,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ Dmitry Torokhov <dmitry.torokhov@gmail.com>, Peter Rosin <peda@axentia.se>,
+ linux-crypto@vger.kernel.org, netdev@vger.kernel.org,
+ Krzysztof Kozlowski <krzk+dt@kernel.org>,
+ "David S. Miller" <davem@davemloft.net>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -96,289 +95,522 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Stefan Binding <sbinding@opensource.cirrus.com>
 
-This is required to support CS35L41 calibration.
+--qdtpx5mo3ymeklm2
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-By default, speaker protection firmware will be loaded, if
-available. However, different firmware is required to run
-the calibration sequence, so it is necessary to add support
-to be able to unload, switch and reload firmware.
+Hi,
 
-This patch adds 2 ALSA Controls for each amp:
-"DSP1 Firmware Load"
-"DSP1 Firmware Type"
+On Thu, May 19, 2022 at 04:14:11PM -0500, Rob Herring wrote:
+> Now that the schema tools can extract type information for all
+> properties (in order to decode dtb files), finding properties missing
+> any type definition is fairly trivial though not yet automated.
+>=20
+> Fix the various property schemas which are missing a type. Most of these
+> tend to be device specific properties which don't have a vendor prefix.
+> A vendor prefix is how we normally ensure a type is defined.
+>=20
+> Signed-off-by: Rob Herring <robh@kernel.org>
+> ---
+>  .../arm/hisilicon/controller/hip04-bootwrapper.yaml       | 5 +++--
+>  .../bindings/display/bridge/toshiba,tc358768.yaml         | 1 +
+>  .../devicetree/bindings/display/panel/panel-timing.yaml   | 5 +++++
+>  .../bindings/display/panel/raydium,rm67191.yaml           | 1 +
+>  .../bindings/display/panel/samsung,s6e8aa0.yaml           | 1 +
+>  .../devicetree/bindings/gpio/fairchild,74hc595.yaml       | 1 +
+>  .../devicetree/bindings/input/google,cros-ec-keyb.yaml    | 1 +
+>  .../devicetree/bindings/input/matrix-keymap.yaml          | 4 ++++
+>  Documentation/devicetree/bindings/media/i2c/adv7604.yaml  | 3 ++-
+>  Documentation/devicetree/bindings/mux/reg-mux.yaml        | 8 ++++++--
+>  Documentation/devicetree/bindings/net/cdns,macb.yaml      | 1 +
+>  Documentation/devicetree/bindings/net/ingenic,mac.yaml    | 1 +
+>  .../devicetree/bindings/net/ti,davinci-mdio.yaml          | 1 +
+>  .../devicetree/bindings/net/wireless/ti,wlcore.yaml       | 2 ++
+>  .../devicetree/bindings/pci/snps,dw-pcie-ep.yaml          | 6 ++++--
+>  Documentation/devicetree/bindings/pci/snps,dw-pcie.yaml   | 2 ++
+>  .../devicetree/bindings/pinctrl/canaan,k210-fpioa.yaml    | 2 ++
+>  Documentation/devicetree/bindings/power/avs/qcom,cpr.yaml | 1 +
+>  .../devicetree/bindings/power/supply/battery.yaml         | 7 ++++++-
+>  .../devicetree/bindings/power/supply/charger-manager.yaml | 1 +
+>  Documentation/devicetree/bindings/rng/st,stm32-rng.yaml   | 1 +
+>  Documentation/devicetree/bindings/serial/8250.yaml        | 1 +
+>  .../devicetree/bindings/sound/audio-graph-card2.yaml      | 3 +++
+>  .../devicetree/bindings/sound/imx-audio-hdmi.yaml         | 3 +++
+>  Documentation/devicetree/bindings/usb/smsc,usb3503.yaml   | 1 +
+>  25 files changed, 55 insertions(+), 8 deletions(-)
 
-"DSP1 Firmware Load" can be used to unload and
-load the firmware.
-"DSP1 Firmware Type"  can be used to switch the
-target firmware to be loaded by "DSP1 Firmware Load"
+For power-supply:
 
-Signed-off-by: Stefan Binding <sbinding@opensource.cirrus.com>
-Signed-off-by: Vitaly Rodionov <vitalyr@opensource.cirrus.com>
----
+Acked-by: Sebastian Reichel <sebastian.reichel@collabora.com>
 
-Changes since v2:
- - No change
- 
- sound/pci/hda/cs35l41_hda.c | 163 ++++++++++++++++++++++++++++++++++--
- sound/pci/hda/cs35l41_hda.h |   5 ++
- 2 files changed, 161 insertions(+), 7 deletions(-)
+-- Sebastian
 
-diff --git a/sound/pci/hda/cs35l41_hda.c b/sound/pci/hda/cs35l41_hda.c
-index 8de956e6850c..4a164b7ebab1 100644
---- a/sound/pci/hda/cs35l41_hda.c
-+++ b/sound/pci/hda/cs35l41_hda.c
-@@ -92,7 +92,7 @@ static int cs35l41_control_add(struct cs_dsp_coeff_ctl *cs_ctl)
- 	struct hda_cs_dsp_ctl_info info;
- 
- 	info.amp_name = cs35l41->amp_name;
--	info.fw_type = HDA_CS_DSP_FW_SPK_PROT;
-+	info.fw_type = cs35l41->firmware_type;
- 	info.card = cs35l41->codec->card;
- 
- 	return hda_cs_dsp_control_add(cs_ctl, &info);
-@@ -114,20 +114,24 @@ static int cs35l41_request_firmware_file(struct cs35l41_hda *cs35l41,
- 
- 	if (spkid > -1 && ssid && amp_name)
- 		*filename = kasprintf(GFP_KERNEL, "%s%s-%s-%s-%s-spkid%d-%s.%s", dir, CS35L41_PART,
--				      dsp_name, "spk-prot", ssid, spkid, amp_name, filetype);
-+				      dsp_name, hda_cs_dsp_fw_ids[cs35l41->firmware_type],
-+				      ssid, spkid, amp_name, filetype);
- 	else if (spkid > -1 && ssid)
- 		*filename = kasprintf(GFP_KERNEL, "%s%s-%s-%s-%s-spkid%d.%s", dir, CS35L41_PART,
--				      dsp_name, "spk-prot", ssid, spkid, filetype);
-+				      dsp_name, hda_cs_dsp_fw_ids[cs35l41->firmware_type],
-+				      ssid, spkid, filetype);
- 	else if (ssid && amp_name)
- 		*filename = kasprintf(GFP_KERNEL, "%s%s-%s-%s-%s-%s.%s", dir, CS35L41_PART,
--				      dsp_name, "spk-prot", ssid, amp_name,
--				      filetype);
-+				      dsp_name, hda_cs_dsp_fw_ids[cs35l41->firmware_type],
-+				      ssid, amp_name, filetype);
- 	else if (ssid)
- 		*filename = kasprintf(GFP_KERNEL, "%s%s-%s-%s-%s.%s", dir, CS35L41_PART,
--				      dsp_name, "spk-prot", ssid, filetype);
-+				      dsp_name, hda_cs_dsp_fw_ids[cs35l41->firmware_type],
-+				      ssid, filetype);
- 	else
- 		*filename = kasprintf(GFP_KERNEL, "%s%s-%s-%s.%s", dir, CS35L41_PART,
--				      dsp_name, "spk-prot", filetype);
-+				      dsp_name, hda_cs_dsp_fw_ids[cs35l41->firmware_type],
-+				      filetype);
- 
- 	if (*filename == NULL)
- 		return -ENOMEM;
-@@ -471,8 +475,11 @@ static void cs35l41_hda_playback_hook(struct device *dev, int action)
- 	struct regmap *reg = cs35l41->regmap;
- 	int ret = 0;
- 
-+	mutex_lock(&cs35l41->fw_mutex);
-+
- 	switch (action) {
- 	case HDA_GEN_PCM_ACT_OPEN:
-+		cs35l41->playback_started = true;
- 		if (cs35l41->firmware_running) {
- 			regmap_multi_reg_write(reg, cs35l41_hda_config_dsp,
- 					       ARRAY_SIZE(cs35l41_hda_config_dsp));
-@@ -510,12 +517,15 @@ static void cs35l41_hda_playback_hook(struct device *dev, int action)
- 					   0 << CS35L41_VMON_EN_SHIFT | 0 << CS35L41_IMON_EN_SHIFT);
- 		}
- 		cs35l41_irq_release(cs35l41);
-+		cs35l41->playback_started = false;
- 		break;
- 	default:
- 		dev_warn(cs35l41->dev, "Playback action not supported: %d\n", action);
- 		break;
- 	}
- 
-+	mutex_unlock(&cs35l41->fw_mutex);
-+
- 	if (ret)
- 		dev_err(cs35l41->dev, "Regmap access fail: %d\n", ret);
- }
-@@ -654,6 +664,136 @@ static int cs35l41_smart_amp(struct cs35l41_hda *cs35l41)
- 	return ret;
- }
- 
-+static void cs35l41_load_firmware(struct cs35l41_hda *cs35l41, bool load)
-+{
-+	pm_runtime_get_sync(cs35l41->dev);
-+
-+	if (cs35l41->firmware_running && !load) {
-+		dev_dbg(cs35l41->dev, "Unloading Firmware\n");
-+		cs35l41_remove_dsp(cs35l41);
-+	} else if (!cs35l41->firmware_running && load) {
-+		dev_dbg(cs35l41->dev, "Loading Firmware\n");
-+		cs35l41_smart_amp(cs35l41);
-+	} else {
-+		dev_dbg(cs35l41->dev, "Unable to Load firmware.\n");
-+	}
-+
-+	pm_runtime_mark_last_busy(cs35l41->dev);
-+	pm_runtime_put_autosuspend(cs35l41->dev);
-+}
-+
-+static int cs35l41_fw_load_ctl_get(struct snd_kcontrol *kcontrol,
-+				   struct snd_ctl_elem_value *ucontrol)
-+{
-+	struct cs35l41_hda *cs35l41 = snd_kcontrol_chip(kcontrol);
-+
-+	ucontrol->value.integer.value[0] = cs35l41->request_fw_load;
-+	return 0;
-+}
-+
-+static int cs35l41_fw_load_ctl_put(struct snd_kcontrol *kcontrol,
-+				   struct snd_ctl_elem_value *ucontrol)
-+{
-+	struct cs35l41_hda *cs35l41 = snd_kcontrol_chip(kcontrol);
-+	int ret = 0;
-+
-+	mutex_lock(&cs35l41->fw_mutex);
-+	if (cs35l41->request_fw_load != ucontrol->value.integer.value[0]) {
-+		if (cs35l41->playback_started) {
-+			dev_err(cs35l41->dev, "Cannot Load/Unload firmware during Playback\n");
-+			ret = -EBUSY;
-+		} else {
-+			cs35l41->request_fw_load = ucontrol->value.integer.value[0];
-+			cs35l41_load_firmware(cs35l41, ucontrol->value.integer.value[0]);
-+		}
-+	}
-+
-+	mutex_unlock(&cs35l41->fw_mutex);
-+
-+	return ret;
-+}
-+
-+static int cs35l41_fw_type_ctl_get(struct snd_kcontrol *kcontrol,
-+				   struct snd_ctl_elem_value *ucontrol)
-+{
-+	struct cs35l41_hda *cs35l41 = snd_kcontrol_chip(kcontrol);
-+
-+	ucontrol->value.enumerated.item[0] = cs35l41->firmware_type;
-+
-+	return 0;
-+}
-+
-+static int cs35l41_fw_type_ctl_put(struct snd_kcontrol *kcontrol,
-+				   struct snd_ctl_elem_value *ucontrol)
-+{
-+	struct cs35l41_hda *cs35l41 = snd_kcontrol_chip(kcontrol);
-+
-+	if (ucontrol->value.enumerated.item[0] < HDA_CS_DSP_NUM_FW) {
-+		cs35l41->firmware_type = ucontrol->value.enumerated.item[0];
-+		return 0;
-+	}
-+
-+	return -EINVAL;
-+}
-+
-+static int cs35l41_fw_type_ctl_info(struct snd_kcontrol *kcontrol, struct snd_ctl_elem_info *uinfo)
-+{
-+	return snd_ctl_enum_info(uinfo, 1, ARRAY_SIZE(hda_cs_dsp_fw_ids), hda_cs_dsp_fw_ids);
-+}
-+
-+static int cs35l41_create_controls(struct cs35l41_hda *cs35l41)
-+{
-+	struct snd_kcontrol_new fw_type_ctl = {
-+		.iface = SNDRV_CTL_ELEM_IFACE_MIXER,
-+		.info = cs35l41_fw_type_ctl_info,
-+		.get = cs35l41_fw_type_ctl_get,
-+		.put = cs35l41_fw_type_ctl_put,
-+	};
-+	struct snd_kcontrol_new fw_load_ctl = {
-+		.iface = SNDRV_CTL_ELEM_IFACE_MIXER,
-+		.info = snd_ctl_boolean_mono_info,
-+		.get = cs35l41_fw_load_ctl_get,
-+		.put = cs35l41_fw_load_ctl_put,
-+	};
-+	int ret = 0;
-+
-+	fw_load_ctl.name = kasprintf(GFP_KERNEL, "%s DSP1 Firmware Load", cs35l41->amp_name);
-+	if (!fw_load_ctl.name) {
-+		ret = -ENOMEM;
-+		goto err;
-+	}
-+
-+	fw_type_ctl.name = kasprintf(GFP_KERNEL, "%s DSP1 Firmware Type", cs35l41->amp_name);
-+	if (!fw_type_ctl.name) {
-+		ret = -ENOMEM;
-+		goto err;
-+	}
-+
-+	if (snd_ctl_add(cs35l41->codec->card, snd_ctl_new1(&fw_type_ctl, cs35l41))) {
-+		ret = -ENODEV;
-+		dev_err(cs35l41->dev, "Failed to add KControl: %s\n", fw_type_ctl.name);
-+		goto err;
-+	}
-+
-+	dev_dbg(cs35l41->dev, "Added Control %s\n", fw_type_ctl.name);
-+
-+	if (snd_ctl_add(cs35l41->codec->card, snd_ctl_new1(&fw_load_ctl, cs35l41))) {
-+		ret = -ENODEV;
-+		dev_err(cs35l41->dev, "Failed to add KControl: %s, removing all controls\n",
-+			fw_load_ctl.name);
-+		hda_cs_dsp_remove_kcontrol(cs35l41->codec->card, fw_type_ctl.name);
-+		goto err;
-+	}
-+
-+	dev_dbg(cs35l41->dev, "Added Control %s\n", fw_load_ctl.name);
-+
-+err:
-+	kfree(fw_load_ctl.name);
-+	kfree(fw_type_ctl.name);
-+
-+	return ret;
-+}
-+
- static int cs35l41_hda_bind(struct device *dev, struct device *master, void *master_data)
- {
- 	struct cs35l41_hda *cs35l41 = dev_get_drvdata(dev);
-@@ -675,8 +815,15 @@ static int cs35l41_hda_bind(struct device *dev, struct device *master, void *mas
- 	cs35l41->codec = comps->codec;
- 	strscpy(comps->name, dev_name(dev), sizeof(comps->name));
- 
-+	cs35l41->firmware_type = HDA_CS_DSP_FW_SPK_PROT;
-+
-+	cs35l41->request_fw_load = true;
-+	mutex_lock(&cs35l41->fw_mutex);
- 	if (cs35l41_smart_amp(cs35l41) < 0)
- 		dev_warn(cs35l41->dev, "Cannot Run Firmware, reverting to dsp bypass...\n");
-+	mutex_unlock(&cs35l41->fw_mutex);
-+
-+	cs35l41_create_controls(cs35l41);
- 
- 	comps->playback_hook = cs35l41_hda_playback_hook;
- 	comps->suspend_hook = cs35l41_hda_suspend_hook;
-@@ -1196,6 +1343,8 @@ int cs35l41_hda_probe(struct device *dev, const char *device_name, int id, int i
- 	if (ret)
- 		goto err;
- 
-+	mutex_init(&cs35l41->fw_mutex);
-+
- 	pm_runtime_set_autosuspend_delay(cs35l41->dev, 3000);
- 	pm_runtime_use_autosuspend(cs35l41->dev);
- 	pm_runtime_mark_last_busy(cs35l41->dev);
-diff --git a/sound/pci/hda/cs35l41_hda.h b/sound/pci/hda/cs35l41_hda.h
-index 3cf9871fbed2..19f0585d12db 100644
---- a/sound/pci/hda/cs35l41_hda.h
-+++ b/sound/pci/hda/cs35l41_hda.h
-@@ -58,10 +58,15 @@ struct cs35l41_hda {
- 	unsigned volatile long irq_errors;
- 	const char *amp_name;
- 	const char *acpi_subsystem_id;
-+	int firmware_type;
- 	int speaker_id;
-+	struct mutex fw_mutex;
-+
- 	struct regmap_irq_chip_data *irq_data;
- 	bool firmware_running;
-+	bool request_fw_load;
- 	bool halo_initialized;
-+	bool playback_started;
- 	struct cs_dsp cs_dsp;
- };
- 
--- 
-2.34.1
+>=20
+> diff --git a/Documentation/devicetree/bindings/arm/hisilicon/controller/h=
+ip04-bootwrapper.yaml b/Documentation/devicetree/bindings/arm/hisilicon/con=
+troller/hip04-bootwrapper.yaml
+> index 7378159e61df..483caf0ce25b 100644
+> --- a/Documentation/devicetree/bindings/arm/hisilicon/controller/hip04-bo=
+otwrapper.yaml
+> +++ b/Documentation/devicetree/bindings/arm/hisilicon/controller/hip04-bo=
+otwrapper.yaml
+> @@ -17,14 +17,15 @@ properties:
+>        - const: hisilicon,hip04-bootwrapper
+> =20
+>    boot-method:
+> +    $ref: /schemas/types.yaml#/definitions/uint32-array
+>      description: |
+>        Address and size of boot method.
+>        [0]: bootwrapper physical address
+>        [1]: bootwrapper size
+>        [2]: relocation physical address
+>        [3]: relocation size
+> -    minItems: 1
+> -    maxItems: 2
+> +    minItems: 2
+> +    maxItems: 4
+> =20
+>  required:
+>    - compatible
+> diff --git a/Documentation/devicetree/bindings/display/bridge/toshiba,tc3=
+58768.yaml b/Documentation/devicetree/bindings/display/bridge/toshiba,tc358=
+768.yaml
+> index 3bd670b8e5cd..0b6f5bef120f 100644
+> --- a/Documentation/devicetree/bindings/display/bridge/toshiba,tc358768.y=
+aml
+> +++ b/Documentation/devicetree/bindings/display/bridge/toshiba,tc358768.y=
+aml
+> @@ -58,6 +58,7 @@ properties:
+> =20
+>              properties:
+>                data-lines:
+> +                $ref: /schemas/types.yaml#/definitions/uint32
+>                  enum: [ 16, 18, 24 ]
+> =20
+>        port@1:
+> diff --git a/Documentation/devicetree/bindings/display/panel/panel-timing=
+=2Eyaml b/Documentation/devicetree/bindings/display/panel/panel-timing.yaml
+> index 7749de95ee40..229e3b36ee29 100644
+> --- a/Documentation/devicetree/bindings/display/panel/panel-timing.yaml
+> +++ b/Documentation/devicetree/bindings/display/panel/panel-timing.yaml
+> @@ -146,6 +146,7 @@ properties:
+>        Horizontal sync pulse.
+>        0 selects active low, 1 selects active high.
+>        If omitted then it is not used by the hardware
+> +    $ref: /schemas/types.yaml#/definitions/uint32
+>      enum: [0, 1]
+> =20
+>    vsync-active:
+> @@ -153,6 +154,7 @@ properties:
+>        Vertical sync pulse.
+>        0 selects active low, 1 selects active high.
+>        If omitted then it is not used by the hardware
+> +    $ref: /schemas/types.yaml#/definitions/uint32
+>      enum: [0, 1]
+> =20
+>    de-active:
+> @@ -160,6 +162,7 @@ properties:
+>        Data enable.
+>        0 selects active low, 1 selects active high.
+>        If omitted then it is not used by the hardware
+> +    $ref: /schemas/types.yaml#/definitions/uint32
+>      enum: [0, 1]
+> =20
+>    pixelclk-active:
+> @@ -169,6 +172,7 @@ properties:
+>        sample data on rising edge.
+>        Use 1 to drive pixel data on rising edge and
+>        sample data on falling edge
+> +    $ref: /schemas/types.yaml#/definitions/uint32
+>      enum: [0, 1]
+> =20
+>    syncclk-active:
+> @@ -179,6 +183,7 @@ properties:
+>        sample sync on rising edge of pixel clock.
+>        Use 1 to drive sync on rising edge and
+>        sample sync on falling edge of pixel clock
+> +    $ref: /schemas/types.yaml#/definitions/uint32
+>      enum: [0, 1]
+> =20
+>    interlaced:
+> diff --git a/Documentation/devicetree/bindings/display/panel/raydium,rm67=
+191.yaml b/Documentation/devicetree/bindings/display/panel/raydium,rm67191.=
+yaml
+> index 745dd247c409..617aa8c8c03a 100644
+> --- a/Documentation/devicetree/bindings/display/panel/raydium,rm67191.yaml
+> +++ b/Documentation/devicetree/bindings/display/panel/raydium,rm67191.yaml
+> @@ -24,6 +24,7 @@ properties:
+> =20
+>    dsi-lanes:
+>      description: Number of DSI lanes to be used must be <3> or <4>
+> +    $ref: /schemas/types.yaml#/definitions/uint32
+>      enum: [3, 4]
+> =20
+>    v3p3-supply:
+> diff --git a/Documentation/devicetree/bindings/display/panel/samsung,s6e8=
+aa0.yaml b/Documentation/devicetree/bindings/display/panel/samsung,s6e8aa0.=
+yaml
+> index ca959451557e..1cdc91b3439f 100644
+> --- a/Documentation/devicetree/bindings/display/panel/samsung,s6e8aa0.yaml
+> +++ b/Documentation/devicetree/bindings/display/panel/samsung,s6e8aa0.yaml
+> @@ -36,6 +36,7 @@ properties:
+> =20
+>    init-delay:
+>      description: delay after initialization sequence [ms]
+> +    $ref: /schemas/types.yaml#/definitions/uint32
+> =20
+>    panel-width-mm:
+>      description: physical panel width [mm]
+> diff --git a/Documentation/devicetree/bindings/gpio/fairchild,74hc595.yam=
+l b/Documentation/devicetree/bindings/gpio/fairchild,74hc595.yaml
+> index 5fe19fa5f67c..a99e7842ca17 100644
+> --- a/Documentation/devicetree/bindings/gpio/fairchild,74hc595.yaml
+> +++ b/Documentation/devicetree/bindings/gpio/fairchild,74hc595.yaml
+> @@ -26,6 +26,7 @@ properties:
+>      const: 2
+> =20
+>    registers-number:
+> +    $ref: /schemas/types.yaml#/definitions/uint32
+>      description: Number of daisy-chained shift registers
+> =20
+>    enable-gpios:
+> diff --git a/Documentation/devicetree/bindings/input/google,cros-ec-keyb.=
+yaml b/Documentation/devicetree/bindings/input/google,cros-ec-keyb.yaml
+> index e8f137abb03c..aa61fe64be63 100644
+> --- a/Documentation/devicetree/bindings/input/google,cros-ec-keyb.yaml
+> +++ b/Documentation/devicetree/bindings/input/google,cros-ec-keyb.yaml
+> @@ -31,6 +31,7 @@ properties:
+>      type: boolean
+> =20
+>    function-row-physmap:
+> +    $ref: /schemas/types.yaml#/definitions/uint32-array
+>      minItems: 1
+>      maxItems: 15
+>      description: |
+> diff --git a/Documentation/devicetree/bindings/input/matrix-keymap.yaml b=
+/Documentation/devicetree/bindings/input/matrix-keymap.yaml
+> index 6699d5e32dca..9f703bb51e12 100644
+> --- a/Documentation/devicetree/bindings/input/matrix-keymap.yaml
+> +++ b/Documentation/devicetree/bindings/input/matrix-keymap.yaml
+> @@ -27,6 +27,10 @@ properties:
+>        column and linux key-code. The 32-bit big endian cell is packed as:
+>            row << 24 | column << 16 | key-code
+> =20
+> +  linux,no-autorepeat:
+> +    type: boolean
+> +    description: Disable keyrepeat
+> +
+>    keypad,num-rows:
+>      $ref: /schemas/types.yaml#/definitions/uint32
+>      description: Number of row lines connected to the keypad controller.
+> diff --git a/Documentation/devicetree/bindings/media/i2c/adv7604.yaml b/D=
+ocumentation/devicetree/bindings/media/i2c/adv7604.yaml
+> index c19d8391e2d5..7589d377c686 100644
+> --- a/Documentation/devicetree/bindings/media/i2c/adv7604.yaml
+> +++ b/Documentation/devicetree/bindings/media/i2c/adv7604.yaml
+> @@ -60,7 +60,8 @@ properties:
+>        enables hot-plug detection.
+> =20
+>    default-input:
+> -    maxItems: 1
+> +    $ref: /schemas/types.yaml#/definitions/uint32
+> +    enum: [ 0, 1 ]
+>      description:
+>        Select which input is selected after reset.
+> =20
+> diff --git a/Documentation/devicetree/bindings/mux/reg-mux.yaml b/Documen=
+tation/devicetree/bindings/mux/reg-mux.yaml
+> index 60d5746eb39d..e2f6b11f1254 100644
+> --- a/Documentation/devicetree/bindings/mux/reg-mux.yaml
+> +++ b/Documentation/devicetree/bindings/mux/reg-mux.yaml
+> @@ -25,8 +25,12 @@ properties:
+>      const: 1
+> =20
+>    mux-reg-masks:
+> -    description: an array of register offset and pre-shifted bitfield ma=
+sk
+> -      pairs, each describing a single mux control.
+> +    $ref: /schemas/types.yaml#/definitions/uint32-matrix
+> +    items:
+> +      items:
+> +        - description: register offset
+> +        - description: pre-shifted bitfield mask
+> +    description: Each entry describes a single mux control.
+> =20
+>    idle-states: true
+> =20
+> diff --git a/Documentation/devicetree/bindings/net/cdns,macb.yaml b/Docum=
+entation/devicetree/bindings/net/cdns,macb.yaml
+> index 6cd3d853dcba..59fe2789fa44 100644
+> --- a/Documentation/devicetree/bindings/net/cdns,macb.yaml
+> +++ b/Documentation/devicetree/bindings/net/cdns,macb.yaml
+> @@ -129,6 +129,7 @@ patternProperties:
+>        reset-gpios: true
+> =20
+>        magic-packet:
+> +        type: boolean
+>          description:
+>            Indicates that the hardware supports waking up via magic packe=
+t.
+> =20
+> diff --git a/Documentation/devicetree/bindings/net/ingenic,mac.yaml b/Doc=
+umentation/devicetree/bindings/net/ingenic,mac.yaml
+> index 8e52b2e683b8..93b3e991d209 100644
+> --- a/Documentation/devicetree/bindings/net/ingenic,mac.yaml
+> +++ b/Documentation/devicetree/bindings/net/ingenic,mac.yaml
+> @@ -37,6 +37,7 @@ properties:
+>      const: stmmaceth
+> =20
+>    mode-reg:
+> +    $ref: /schemas/types.yaml#/definitions/phandle
+>      description: An extra syscon register that control ethernet interfac=
+e and timing delay
+> =20
+>    rx-clk-delay-ps:
+> diff --git a/Documentation/devicetree/bindings/net/ti,davinci-mdio.yaml b=
+/Documentation/devicetree/bindings/net/ti,davinci-mdio.yaml
+> index 6f44f9516c36..a339202c5e8e 100644
+> --- a/Documentation/devicetree/bindings/net/ti,davinci-mdio.yaml
+> +++ b/Documentation/devicetree/bindings/net/ti,davinci-mdio.yaml
+> @@ -34,6 +34,7 @@ properties:
+>      maxItems: 1
+> =20
+>    bus_freq:
+> +    $ref: /schemas/types.yaml#/definitions/uint32
+>      maximum: 2500000
+>      description: MDIO Bus frequency
+> =20
+> diff --git a/Documentation/devicetree/bindings/net/wireless/ti,wlcore.yam=
+l b/Documentation/devicetree/bindings/net/wireless/ti,wlcore.yaml
+> index 8dd164d10290..d68bb2ec1f7e 100644
+> --- a/Documentation/devicetree/bindings/net/wireless/ti,wlcore.yaml
+> +++ b/Documentation/devicetree/bindings/net/wireless/ti,wlcore.yaml
+> @@ -54,9 +54,11 @@ properties:
+> =20
+> =20
+>    ref-clock-frequency:
+> +    $ref: /schemas/types.yaml#/definitions/uint32
+>      description: Reference clock frequency.
+> =20
+>    tcxo-clock-frequency:
+> +    $ref: /schemas/types.yaml#/definitions/uint32
+>      description: TCXO clock frequency.
+> =20
+>    clock-xtal:
+> diff --git a/Documentation/devicetree/bindings/pci/snps,dw-pcie-ep.yaml b=
+/Documentation/devicetree/bindings/pci/snps,dw-pcie-ep.yaml
+> index e59059ab5be0..b78535040f04 100644
+> --- a/Documentation/devicetree/bindings/pci/snps,dw-pcie-ep.yaml
+> +++ b/Documentation/devicetree/bindings/pci/snps,dw-pcie-ep.yaml
+> @@ -55,13 +55,15 @@ properties:
+>        Translation Unit) registers.
+> =20
+>    num-ib-windows:
+> +    $ref: /schemas/types.yaml#/definitions/uint32
+> +    maximum: 256
+>      description: number of inbound address translation windows
+> -    maxItems: 1
+>      deprecated: true
+> =20
+>    num-ob-windows:
+> +    $ref: /schemas/types.yaml#/definitions/uint32
+> +    maximum: 256
+>      description: number of outbound address translation windows
+> -    maxItems: 1
+>      deprecated: true
+> =20
+>  required:
+> diff --git a/Documentation/devicetree/bindings/pci/snps,dw-pcie.yaml b/Do=
+cumentation/devicetree/bindings/pci/snps,dw-pcie.yaml
+> index a5345c494744..c90e5e2d25f6 100644
+> --- a/Documentation/devicetree/bindings/pci/snps,dw-pcie.yaml
+> +++ b/Documentation/devicetree/bindings/pci/snps,dw-pcie.yaml
+> @@ -68,6 +68,8 @@ properties:
+>        Translation Unit) registers.
+> =20
+>    num-viewport:
+> +    $ref: /schemas/types.yaml#/definitions/uint32
+> +    maximum: 256
+>      description: |
+>        number of view ports configured in hardware. If a platform
+>        does not specify it, the driver autodetects it.
+> diff --git a/Documentation/devicetree/bindings/pinctrl/canaan,k210-fpioa.=
+yaml b/Documentation/devicetree/bindings/pinctrl/canaan,k210-fpioa.yaml
+> index 53e963e090f2..533b4cfe33d2 100644
+> --- a/Documentation/devicetree/bindings/pinctrl/canaan,k210-fpioa.yaml
+> +++ b/Documentation/devicetree/bindings/pinctrl/canaan,k210-fpioa.yaml
+> @@ -120,6 +120,7 @@ patternProperties:
+>        input-schmitt-disable: true
+> =20
+>        input-polarity-invert:
+> +        type: boolean
+>          description:
+>            Enable or disable pin input polarity inversion.
+> =20
+> @@ -132,6 +133,7 @@ patternProperties:
+>        output-low: true
+> =20
+>        output-polarity-invert:
+> +        type: boolean
+>          description:
+>            Enable or disable pin output polarity inversion.
+> =20
+> diff --git a/Documentation/devicetree/bindings/power/avs/qcom,cpr.yaml b/=
+Documentation/devicetree/bindings/power/avs/qcom,cpr.yaml
+> index 3301fa0c2653..301db7daf870 100644
+> --- a/Documentation/devicetree/bindings/power/avs/qcom,cpr.yaml
+> +++ b/Documentation/devicetree/bindings/power/avs/qcom,cpr.yaml
+> @@ -51,6 +51,7 @@ properties:
+>        supported by the CPR power domain.
+> =20
+>    acc-syscon:
+> +    $ref: /schemas/types.yaml#/definitions/phandle
+>      description: A phandle to the syscon used for writing ACC settings.
+> =20
+>    nvmem-cells:
+> diff --git a/Documentation/devicetree/bindings/power/supply/battery.yaml =
+b/Documentation/devicetree/bindings/power/supply/battery.yaml
+> index d56ac484fec5..491488e7b970 100644
+> --- a/Documentation/devicetree/bindings/power/supply/battery.yaml
+> +++ b/Documentation/devicetree/bindings/power/supply/battery.yaml
+> @@ -85,8 +85,13 @@ properties:
+>      description: battery factory internal resistance
+> =20
+>    resistance-temp-table:
+> +    $ref: /schemas/types.yaml#/definitions/uint32-matrix
+> +    items:
+> +      items:
+> +        - description: the temperature in degree Celsius
+> +        - description: battery internal resistance percent
+>      description: |
+> -      An array providing the temperature in degree Celsius
+> +      A table providing the temperature in degree Celsius
+>        and corresponding battery internal resistance percent, which is us=
+ed to
+>        look up the resistance percent according to current temperature to=
+ get an
+>        accurate batterty internal resistance in different temperatures.
+> diff --git a/Documentation/devicetree/bindings/power/supply/charger-manag=
+er.yaml b/Documentation/devicetree/bindings/power/supply/charger-manager.ya=
+ml
+> index c863cfa67865..fbb2204769aa 100644
+> --- a/Documentation/devicetree/bindings/power/supply/charger-manager.yaml
+> +++ b/Documentation/devicetree/bindings/power/supply/charger-manager.yaml
+> @@ -36,6 +36,7 @@ properties:
+> =20
+>    cm-poll-mode:
+>      description: polling mode
+> +    $ref: /schemas/types.yaml#/definitions/uint32
+>      default: 0
+>      enum:
+>        - 0 # disabled
+> diff --git a/Documentation/devicetree/bindings/rng/st,stm32-rng.yaml b/Do=
+cumentation/devicetree/bindings/rng/st,stm32-rng.yaml
+> index 9a6e4eaf4d3c..fcd86f822a9c 100644
+> --- a/Documentation/devicetree/bindings/rng/st,stm32-rng.yaml
+> +++ b/Documentation/devicetree/bindings/rng/st,stm32-rng.yaml
+> @@ -27,6 +27,7 @@ properties:
+>      maxItems: 1
+> =20
+>    clock-error-detect:
+> +    type: boolean
+>      description: If set enable the clock detection management
+> =20
+>  required:
+> diff --git a/Documentation/devicetree/bindings/serial/8250.yaml b/Documen=
+tation/devicetree/bindings/serial/8250.yaml
+> index 3bab2f27b970..5f6b113d378f 100644
+> --- a/Documentation/devicetree/bindings/serial/8250.yaml
+> +++ b/Documentation/devicetree/bindings/serial/8250.yaml
+> @@ -138,6 +138,7 @@ properties:
+>      description: The current active speed of the UART.
+> =20
+>    reg-offset:
+> +    $ref: /schemas/types.yaml#/definitions/uint32
+>      description: |
+>        Offset to apply to the mapbase from the start of the registers.
+> =20
+> diff --git a/Documentation/devicetree/bindings/sound/audio-graph-card2.ya=
+ml b/Documentation/devicetree/bindings/sound/audio-graph-card2.yaml
+> index f7e94b1e0e4b..7416067c945e 100644
+> --- a/Documentation/devicetree/bindings/sound/audio-graph-card2.yaml
+> +++ b/Documentation/devicetree/bindings/sound/audio-graph-card2.yaml
+> @@ -24,10 +24,13 @@ properties:
+>        connection's sink, the second being the connection's source.
+>      $ref: /schemas/types.yaml#/definitions/non-unique-string-array
+>    multi:
+> +    type: object
+>      description: Multi-CPU/Codec node
+>    dpcm:
+> +    type: object
+>      description: DPCM node
+>    codec2codec:
+> +    type: object
+>      description: Codec to Codec node
+> =20
+>  required:
+> diff --git a/Documentation/devicetree/bindings/sound/imx-audio-hdmi.yaml =
+b/Documentation/devicetree/bindings/sound/imx-audio-hdmi.yaml
+> index d5474f83ac2c..e7e7bb65c366 100644
+> --- a/Documentation/devicetree/bindings/sound/imx-audio-hdmi.yaml
+> +++ b/Documentation/devicetree/bindings/sound/imx-audio-hdmi.yaml
+> @@ -20,9 +20,11 @@ properties:
+>      description: User specified audio sound card name
+> =20
+>    audio-cpu:
+> +    $ref: /schemas/types.yaml#/definitions/phandle
+>      description: The phandle of an CPU DAI controller
+> =20
+>    hdmi-out:
+> +    type: boolean
+>      description: |
+>        This is a boolean property. If present, the transmitting function
+>        of HDMI will be enabled, indicating there's a physical HDMI out
+> @@ -30,6 +32,7 @@ properties:
+>        block, such as an HDMI encoder or display-controller.
+> =20
+>    hdmi-in:
+> +    type: boolean
+>      description: |
+>        This is a boolean property. If present, the receiving function of
+>        HDMI will be enabled, indicating there is a physical HDMI in
+> diff --git a/Documentation/devicetree/bindings/usb/smsc,usb3503.yaml b/Do=
+cumentation/devicetree/bindings/usb/smsc,usb3503.yaml
+> index b9e219829801..321b6f166197 100644
+> --- a/Documentation/devicetree/bindings/usb/smsc,usb3503.yaml
+> +++ b/Documentation/devicetree/bindings/usb/smsc,usb3503.yaml
+> @@ -45,6 +45,7 @@ properties:
+>        property if all ports have to be enabled.
+> =20
+>    initial-mode:
+> +    $ref: /schemas/types.yaml#/definitions/uint32
+>      enum: [1, 2]
+>      description: >
+>        Specifies initial mode. 1 for Hub mode, 2 for standby mode.
+> --=20
+> 2.34.1
+>=20
 
+--qdtpx5mo3ymeklm2
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEE72YNB0Y/i3JqeVQT2O7X88g7+poFAmKLMMYACgkQ2O7X88g7
++ppw2xAAl0vBYZf1CgfDpJ+FG8uvWFMvL1zJnLWnGehckZCyHM1UPl7+pMlnNQH9
+CcE2ZhnsNwbnVyzwE6cM7wHpykHZ1vm10oEQ5NCJXGYfwkJliFfY+1FjDYr4u0CC
+cBv4Jtm+9aeuMNdQSlLdKe42tsvdfrszZ87rvZCjrGDCHTfdBMzQJq52ubyRN+Js
+GcNCpZcmU4wHx2KaV5ulTDcbn/aszCfgiXv5OnrcgTYNyYxQhC2KTabev9SHKXeG
+GqKebLt5HjxB5zxcZ6gIDHZCagq9Gz5zdFNMbpDghXrzV90UjhFnoCmTq5x6YQjV
+WAzIdCjj28n91dDC+MojBZtHTtjCA63D2ywbbPZaNIRXkHbpMOTU18I91TkAYF2e
+lD56173I9XS2qsr/vgryeaFruiaLMKk1igWcXZsKkvsNuJsB2gbHjrr9uie0ysaR
+sS9bs9tgOrjbOFx+jxCafEn98JvhYTwG3w3NGPzYwL2I9WNn6IdZHquTtsQHenWU
+55FmwvfHrzvR2S6Ehe9xiwfog6CJpTSbegiXhhN/iRwrSDoCFZTtwLDut7rGNqQ2
+0tLIJV/wMAF6TJegC24Q3NB+DdxPJ3r020+BSeswqoAzxg8XFrOx+A9xlcbxQGtY
+kJh1dEYtYu5bZLDiX7QdbEW1aiz2TTSsnhXBi3/xDSqJx05/bnk=
+=n1xp
+-----END PGP SIGNATURE-----
+
+--qdtpx5mo3ymeklm2--
