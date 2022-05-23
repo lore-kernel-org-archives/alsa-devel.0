@@ -4,76 +4,76 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 368B3C433F5
-	for <alsa-devel@archiver.kernel.org>; Mon, 23 May 2022 07:48:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 75D2FC433EF
+	for <alsa-devel@archiver.kernel.org>; Mon, 23 May 2022 07:50:41 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 76CC116E2;
-	Mon, 23 May 2022 09:47:32 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 76CC116E2
+	by alsa0.perex.cz (Postfix) with ESMTPS id 63E7E16E2;
+	Mon, 23 May 2022 09:49:49 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 63E7E16E2
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1653292102;
-	bh=J1LCnxg4MUElpTCZOVmUQLe4ik+HSS4qQoNbeonEc+M=;
+	s=default; t=1653292239;
+	bh=dYPtm9LRKnmzw23Ut6Lv0ZknHnotGV7U38PiXoxhWzg=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=NrrFRRTHKfwkLdR+v7lDwcVAW7h4vI6B/Clf+PIyHvrmgIwt4gfNFKjuVlPKzPdgs
-	 jGlQws9YbkY/7VtYSGxsbcJjA5ZH0sEnTqdU9BwSzd6RMdIo7QQymj9mw0zDaSuk7i
-	 rdQpqVtzSUH9+Q/ZRf2uJkENpzpa+cpbJ1EyUuXw=
+	b=a/HlZSnMHJIrHI0/1bwEkthwEsT5vmWJov+IjVMxzpCuB43iVBy9xMkEPavnJmIU4
+	 VzKIMzZBfPN1nLinruUypu9AZ0EYgYc6cq5KDknNLnPG3Ep9dS8UnZaMrb2JOTGhXn
+	 aptQ/BnjT13WaCwEFz1dGy/7MVgW0D6knq66Ey8s=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 07ADAF80158;
-	Mon, 23 May 2022 09:47:32 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 11FA5F80158;
+	Mon, 23 May 2022 09:49:49 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 59D16F80236; Mon, 23 May 2022 09:47:30 +0200 (CEST)
+ id 458ACF80116; Mon, 23 May 2022 09:49:48 +0200 (CEST)
 Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id D85F8F80116
- for <alsa-devel@alsa-project.org>; Mon, 23 May 2022 09:47:27 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D85F8F80116
+ by alsa1.perex.cz (Postfix) with ESMTPS id D44F8F80116
+ for <alsa-devel@alsa-project.org>; Mon, 23 May 2022 09:49:12 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D44F8F80116
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="b20X/kpZ"; 
+ header.b="gDp2PyW5"; 
  dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="Q3EYzpZO"
+ header.b="nPYgmwnW"
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
- by smtp-out2.suse.de (Postfix) with ESMTP id 1EB3E1F8D3;
- Mon, 23 May 2022 07:47:27 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTP id 4EE361F8CF;
+ Mon, 23 May 2022 07:49:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1653292047; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1653292152; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=CKOxkT5BRyZHP8hfcaLEyVpNeSQSZBeh1XjbfQEejgE=;
- b=b20X/kpZctFe0V2hgXc6DqI8Xf/ybuIEE023GOe63Ay91zBSXNUZqylg741fXoURmX3orL
- dVPxHHDgbwcfHVEo6Cg8Aq2FvLkt+PowdwZJn3DwmJ78tAtcSxnxiB+aIrRV4H0sTmpPzm
- WPkqQbaxgHPWYOAmPj/TfAeITBrwT1A=
+ bh=XAg+6nx5PUs28DZ7+XHOM+CyCealxuvpvLVJpUXQk44=;
+ b=gDp2PyW5NIpyNPBkBZMOfhM01lfIgUpcc1/yahhhuOIRalyhwvrDZMR5y6ekuuFh/WeazF
+ k4vyV66abLWtYrF3Farb0tIvV4jnxYRcRieABtxXm1HxXtYvYl0vUlJrjxXuXX5i0CHRzz
+ LJE6emx0QVHMEgVtAl2u+FC8dX4YlYE=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1653292047;
+ s=susede2_ed25519; t=1653292152;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=CKOxkT5BRyZHP8hfcaLEyVpNeSQSZBeh1XjbfQEejgE=;
- b=Q3EYzpZO9plPMEL2wqFdPWef77NOxUIG1Tl1vf8u93woP6h89hPfDDjkbcIL3MOcnga9CF
- lqOebJpC2JiLeDBA==
+ bh=XAg+6nx5PUs28DZ7+XHOM+CyCealxuvpvLVJpUXQk44=;
+ b=nPYgmwnWMcMzTu1pFEiMckvlmuCFea5F+14LGYZ8yfIPmoTU4BUgXrZQGWNPZQxGOLkel+
+ ooVsBBwCF2TC9HAA==
 Received: from valkyrie.site.suse.de (unknown [10.163.18.242])
- by relay2.suse.de (Postfix) with ESMTP id 012B12C14B;
- Mon, 23 May 2022 07:47:26 +0000 (UTC)
-Date: Mon, 23 May 2022 09:47:26 +0200
-Message-ID: <8735h0ofld.wl-tiwai@suse.de>
+ by relay2.suse.de (Postfix) with ESMTP id 190442C141;
+ Mon, 23 May 2022 07:49:12 +0000 (UTC)
+Date: Mon, 23 May 2022 09:49:11 +0200
+Message-ID: <871qwkofig.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
-To: Edward MatijeviH7 <motolav@gmail.com>
-Subject: Re: [PATCH] ALSA: ctxfi: Add SB046x PCI ID
-In-Reply-To: <844c9018-7ea8-79a9-9644-6005596d927f@gmail.com>
-References: <cae7d1a4-8bd9-7dfe-7427-db7e766f7272@gmail.com>
- <87o7zrnp93.wl-tiwai@suse.de>
- <844c9018-7ea8-79a9-9644-6005596d927f@gmail.com>
+To: Julia Lawall <Julia.Lawall@inria.fr>
+Subject: Re: [PATCH] ALSA: cs5535audio: fix typo in comment
+In-Reply-To: <20220521111145.81697-1-Julia.Lawall@inria.fr>
+References: <20220521111145.81697-1-Julia.Lawall@inria.fr>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
  FLIM/1.14.9 (=?ISO-2022-JP-2?B?R29qGyQoRCtXGyhC?=) APEL/10.8 Emacs/27
  (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
 MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
 Content-Type: text/plain; charset=US-ASCII
-Cc: alsa-devel@alsa-project.org
+Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.com>,
+ kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org,
+ Jaya Kumar <jayakumar.alsa@gmail.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -89,34 +89,15 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Sat, 21 May 2022 13:31:02 +0200,
-Edward MatijeviH7 wrote:
+On Sat, 21 May 2022 13:10:11 +0200,
+Julia Lawall wrote:
 > 
-> On 5/21/22 05:39, Takashi Iwai wrote:
-> > On Sat, 21 May 2022 06:45:15 +0200,
-> > Edward Matijevic wrote:
-> >> Adds the PCI ID for X-Fi cards sold under the Platnum and XtremeMusic names
-> >>
-> >> Before: snd_ctxfi 0000:05:05.0: chip 20K1 model Unknown (1102:0021) is found
-> >> After: snd_ctxfi 0000:05:05.0: chip 20K1 model SB046x (1102:0021) is found
-> >>
-> >> Signed-off-by: Edward Matijevic <motolav@gmail.com>
-> > Does / did everything work as expected?  The model field influence on
-> > a few device-specific setups such as the GPIO initial value, ADC and
-> > DAC selections, not only the name string.
-> >
-> >
-> > thanks,
-> >
-> > Takashi
+> Spelling mistake (triple letters) in comment.
+> Detected with the help of Coccinelle.
 > 
-> When first wrote the patch years ago I still had audio output with this patch
-> and the cards with that ID are already using the default cases/values in cthw20k1.c
-> so adding the name is just a cosmetic change so it no longer says "Unknown"
+> Signed-off-by: Julia Lawall <Julia.Lawall@inria.fr>
 
-OK, now I applied with a bit more comment.
+Thanks, applied.
 
-
-thanks,
 
 Takashi
