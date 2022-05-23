@@ -4,82 +4,123 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E8447C433EF
-	for <alsa-devel@archiver.kernel.org>; Wed, 25 May 2022 14:09:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 70ACEC433F5
+	for <alsa-devel@archiver.kernel.org>; Wed, 25 May 2022 14:10:06 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 7AC531697;
-	Wed, 25 May 2022 16:08:41 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7AC531697
+	by alsa0.perex.cz (Postfix) with ESMTPS id 68E661676;
+	Wed, 25 May 2022 16:09:14 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 68E661676
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1653487771;
-	bh=fMIMMhJRlJQe9JKTSpnuOU6Ds5f0JXS0sAh5aX1dd3M=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=vCLC2WKmOO/SQCAglcPtyEoDblr66VBebpZzv3iqhaDCSFp/FWgFSX3KbY+P5wdZy
-	 5DCYkx621kReX6J21+7KM4di5QRBPQMHKhAa6FjVnLKHKbO3fpXhIhRGb1rmyTh97+
-	 j0wHrj08SZZGTOg42ds8JriUyDA/zl5Z1+RjDetg=
+	s=default; t=1653487804;
+	bh=edIEAjQ2KYmM9aV+tmy+6KMSv2TEBUBy/QSNqR+YuGo=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=vfyOp8DLwiIKu1BhfaJt8hw1IbSUXOAXMbIDteN0Ub9glCzCQR26Ax6cAwREKEMe/
+	 pygZWNUBTX3U3N+qGz9W9AVEYCTT74c0QDSz9t0hOH1YnNLmiEBR4hzxnl0QGbXxTV
+	 gzJfiQnFX9hWm3wBHa0XqfkmQpCDkFGBnqczeErc=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 12F30F80169;
+	by alsa1.perex.cz (Postfix) with ESMTP id B3CFAF804B1;
 	Wed, 25 May 2022 16:08:41 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 9F0DEF800E3; Mon, 23 May 2022 08:59:46 +0200 (CEST)
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [46.235.227.227])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256
- bits)) (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 448E1F800E3
- for <alsa-devel@alsa-project.org>; Mon, 23 May 2022 08:59:38 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 448E1F800E3
+ id 4E0FCF80236; Mon, 23 May 2022 13:24:13 +0200 (CEST)
+Received: from NAM11-CO1-obe.outbound.protection.outlook.com
+ (mail-co1nam11on20603.outbound.protection.outlook.com
+ [IPv6:2a01:111:f400:7eab::603])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 73A2AF800CB
+ for <alsa-devel@alsa-project.org>; Mon, 23 May 2022 13:24:05 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 73A2AF800CB
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com
- header.b="b93nE9YS"
-Received: from [127.0.0.1] (localhost [127.0.0.1]) (Authenticated sender: sre)
- with ESMTPSA id DFF2F1F42B4D
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
- s=mail; t=1653289176;
- bh=fMIMMhJRlJQe9JKTSpnuOU6Ds5f0JXS0sAh5aX1dd3M=;
- h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=b93nE9YSM6DJsc4kIBgfLAD6U78/aWTdtTmsANj5h0ZRnRfo49OptjrpkvL4fnoKm
- wB8yj9ZRGClhMgn1w9k6xiOW8xGF8aMj8SPwbcgV4hXJb9FMUHIsOTTQGKRSQb+kG5
- ePAX785C9NVljDivTAcPR1iUa37w9iJxbOT3cMYCJXDEmkknbpRk5ejESbjH/uE02w
- daTt/EZpgIgStQAkSWMNMhpvEBFiHaUJ0l3oxRKs8rkGig6JbRQdGBk0R5B+MbW2Bx
- nPusTCOcwNztXImaE8sIQlB7OBIU0ivaJnNdkupLnTAa3C5F6+47ch4ScrpzpYdXhO
- TZjBStxjJ8xgQ==
-Received: by mercury (Postfix, from userid 1000)
- id 8AA59106043A; Mon, 23 May 2022 08:59:33 +0200 (CEST)
-Date: Mon, 23 May 2022 08:59:33 +0200
-From: Sebastian Reichel <sebastian.reichel@collabora.com>
-To: Rob Herring <robh@kernel.org>
-Subject: Re: [PATCH] dt-bindings: Fix properties without any type
-Message-ID: <20220523065933.kq5dxxe2chvp2r7w@mercury.elektranox.org>
-References: <20220519211411.2200720-1-robh@kernel.org>
+ dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com
+ header.b="YM5Ao3Ck"
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Y+RtbdKRSOa0EpxkMShDFWWglES8PzUCh4TYJopP2ZgwAw842LzynqIV524O+Tn4Hdp8V/SFXi2QFpeCk6frCH4Z/sXFvPNapnsQeVapFVJIt5GRs4bWbz+QjtxF73SIY4c4dyTVdPGAZ7RnhQl/cP9J6bMAnz8IoBMaht3UT+aj56XnjbEnLg+Kmuh/A7DiGXU/nFiQqFMyvPyrkyUDSDwf4DXGBWEI2x1s/gvg3MnJkqLCOv14/uTZgCv/UdRqUt69bNHUhVMdwUqoT0DWeOUZTDLtPCgJsv85Rn5tV0+y8fTF5LwKrW6lZW3zHLkQBT0WJuauI0f2ZDVGaJQ4Qg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=higz6ZAS7M6qi/IPX06VS2uYoWJbsXQ50yA2ijYcUwo=;
+ b=CU6RC7QwUSjO9lhwhQWRtGg6r3JZ5c46Ej3ig6+8pbQ9FeNmguT95s93bpfj/tCMKLaJ6P6GVU/wEMwnaTxSMFSKi8r6yK0uq1zXft0CWcab0r6eHCb81QWLe8EF5+nLd5zMJW8KPZk0HbEaP/lMXxINLlDJVLUBwvl6yp9fgoKy9ZLcRhCFGVz4Rwt+4+CXUWg8P0HWDdLtK0faIS4XOI7awCdCkD+QEPHOv89A+cX5Ns53dXxYgVPwFrH8VyRqxQTWw2mzpCOzuUw5ZZiBCjOFfekDhu1+iGEwLz5cA3XV6qTCGNBzw5V4fPaEEHyQiNevIgE5H/9COzptkjS6vQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 165.204.84.17) smtp.rcpttodomain=kernel.org smtp.mailfrom=amd.com; dmarc=pass
+ (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
+ dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1; 
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=higz6ZAS7M6qi/IPX06VS2uYoWJbsXQ50yA2ijYcUwo=;
+ b=YM5Ao3Ck4srcAqnBsdJU50bcJBW7tPx7dFaKE7Umw0Eo6TOvJc9OU0zPAhGJ5t/TtmsA2KNzV6FbfcCb8KMhZ/VEu59t9ANa4BNFoyDg511NDEF+gFZCPrZYQfjgGw32Mp2VBaQpmSEFYraRAMvGbEeHWJDwaACbAKkJWFeeLEo=
+Received: from BN6PR11CA0065.namprd11.prod.outlook.com (2603:10b6:404:f7::27)
+ by MW3PR12MB4571.namprd12.prod.outlook.com (2603:10b6:303:5c::13)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5273.14; Mon, 23 May
+ 2022 11:23:59 +0000
+Received: from BN8NAM11FT053.eop-nam11.prod.protection.outlook.com
+ (2603:10b6:404:f7:cafe::f2) by BN6PR11CA0065.outlook.office365.com
+ (2603:10b6:404:f7::27) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5273.18 via Frontend
+ Transport; Mon, 23 May 2022 11:23:58 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
+ smtp.mailfrom=amd.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=amd.com;
+Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
+ 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
+ client-ip=165.204.84.17; helo=SATLEXMB03.amd.com; pr=C
+Received: from SATLEXMB03.amd.com (165.204.84.17) by
+ BN8NAM11FT053.mail.protection.outlook.com (10.13.177.209) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.5273.14 via Frontend Transport; Mon, 23 May 2022 11:23:58 +0000
+Received: from SATLEXMB07.amd.com (10.181.41.45) by SATLEXMB03.amd.com
+ (10.181.40.144) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.24; Mon, 23 May
+ 2022 06:23:58 -0500
+Received: from SATLEXMB03.amd.com (10.181.40.144) by SATLEXMB07.amd.com
+ (10.181.41.45) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.24; Mon, 23 May
+ 2022 04:23:58 -0700
+Received: from amd-B450M-DS3H.amd.com (10.180.168.240) by SATLEXMB03.amd.com
+ (10.181.40.144) with Microsoft SMTP Server id 15.1.2375.24 via Frontend
+ Transport; Mon, 23 May 2022 06:23:49 -0500
+From: Syed Saba kareem <ssabakar@amd.com>
+To: <broonie@kernel.org>, <alsa-devel@alsa-project.org>
+Subject: [PATCH] ASoC: SOF: amd: Fixed Build error
+Date: Mon, 23 May 2022 16:53:08 +0530
+Message-ID: <20220523112311.3087070-1-ssabakar@amd.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature"; boundary="qdtpx5mo3ymeklm2"
-Content-Disposition: inline
-In-Reply-To: <20220519211411.2200720-1-robh@kernel.org>
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 1faec6cd-abb3-4041-9f09-08da3caebb33
+X-MS-TrafficTypeDiagnostic: MW3PR12MB4571:EE_
+X-Microsoft-Antispam-PRVS: <MW3PR12MB45711433B55A666A8F95D899FCD49@MW3PR12MB4571.namprd12.prod.outlook.com>
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: hRTyYzYvWgrb8eYVeaitFtYPzyo2z1GW/CFUtrVGpQ+ggelCbEdEBq15deKYPMDMKRTF5IEoWEMNvig0tW5FzdGrM2CfqZ2Hj7w9q8G0yW3/AX7atG2i+tu0Wt+odBxkcXyU8wB7rdNrrV3I0PUCIlkY2MozTv5FDYn0036621amP9NmrkajS8+l3opK3KKeKfivFfGVmPUl27F4u2YalNEIwlN+1/04WKzCC7VuDO+q2hBhXxnkjYNQsh7F15Ub5L4RyGVoaC3h6FHzIxxnlSbXfdAOXNsO4uIJcCfWUOV5CPT2POjmXlyBzgQLW4Yu8nyJSKbQ97UmDk7uBJKrRgQqFeV/lNufxGI1jsjYHOh+AyKn82ei9HPbzUwz3IYINK0FWA8eaXJCCDbe3ENvOInrky2AfhSHc7gLyKzu9TmVPJrmCEB7OKFOElA1kjW9yFP8WEZxPiMMIj5cFJDRgrT1MhktQQMNc55BKJC/UsO4reLH/UhwmluGKqMYHd3Dc5kM0GXsIVTRSayqSb3GFW5ue3MHIk5uf6Qmz7YZ/LZbXQJ71btBY+lV977Okf0FlfKmUPlJQ9sxzDzOn/RtZLPXTqo7Gb2vo0MGZcvvhMs3akIltQWSz7inLnVaGk5LitjJ3pCxRWTwwrFp/ja0hFARZBAl9r+mdnoYyPQOcH7KKHRAeqIvQDIImn5M4SewhdznAaCkZXlukBLag1pEUw==
+X-Forefront-Antispam-Report: CIP:165.204.84.17; CTRY:US; LANG:en; SCL:1; SRV:;
+ IPV:CAL; SFV:NSPM; H:SATLEXMB03.amd.com; PTR:InfoDomainNonexistent; CAT:NONE;
+ SFS:(13230001)(4636009)(46966006)(36840700001)(40470700004)(1076003)(4326008)(8936002)(82310400005)(356005)(81166007)(8676002)(7696005)(26005)(508600001)(70206006)(6666004)(40460700003)(2616005)(70586007)(4744005)(47076005)(36860700001)(2906002)(5660300002)(316002)(186003)(336012)(110136005)(54906003)(426003)(36756003)(83380400001)(36900700001);
+ DIR:OUT; SFP:1101; 
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 May 2022 11:23:58.8420 (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 1faec6cd-abb3-4041-9f09-08da3caebb33
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d; Ip=[165.204.84.17];
+ Helo=[SATLEXMB03.amd.com]
+X-MS-Exchange-CrossTenant-AuthSource: BN8NAM11FT053.eop-nam11.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW3PR12MB4571
 X-Mailman-Approved-At: Wed, 25 May 2022 16:08:39 +0200
-Cc: alsa-devel@alsa-project.org, linux-usb@vger.kernel.org,
- linux-pci@vger.kernel.org, Linus Walleij <linus.walleij@linaro.org>,
- dri-devel@lists.freedesktop.org, Thierry Reding <thierry.reding@gmail.com>,
- Guenter Roeck <groeck@chromium.org>, Sam Ravnborg <sam@ravnborg.org>,
- chrome-platform@lists.linux.dev, Herbert Xu <herbert@gondor.apana.org.au>,
- Bartosz Golaszewski <brgl@bgdev.pl>, linux-serial@vger.kernel.org,
- linux-input@vger.kernel.org, Jakub Kicinski <kuba@kernel.org>,
- Paolo Abeni <pabeni@redhat.com>, linux-media@vger.kernel.org,
- devicetree@vger.kernel.org, linux-pm@vger.kernel.org,
- Kalle Valo <kvalo@kernel.org>, Maxime Ripard <mripard@kernel.org>,
- linux-gpio@vger.kernel.org, Mark Brown <broonie@kernel.org>,
- Matt Mackall <mpm@selenic.com>, Bjorn Helgaas <bhelgaas@google.com>,
- Mauro Carvalho Chehab <mchehab@kernel.org>, Benson Leung <bleung@chromium.org>,
- linux-arm-kernel@lists.infradead.org,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- Dmitry Torokhov <dmitry.torokhov@gmail.com>, Peter Rosin <peda@axentia.se>,
- linux-crypto@vger.kernel.org, netdev@vger.kernel.org,
- Krzysztof Kozlowski <krzk+dt@kernel.org>,
- "David S. Miller" <davem@davemloft.net>
+Cc: Syed Saba Kareem <ssbakar@amd.com>, Sunil-kumar.Dommati@amd.com,
+ kernel test robot <lkp@intel.com>,
+ Ajit Kumar Pandey <AjitKumar.Pandey@amd.com>,
+ open list <linux-kernel@vger.kernel.org>, Basavaraj.Hiregoudar@amd.com,
+ Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>,
+ Vijendar.Mukunda@amd.com, Syed Saba kareem <ssabakar@amd.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -95,522 +136,34 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+Add linux/module.h in acp-pci.c to solve the below dependency
 
---qdtpx5mo3ymeklm2
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+All error/warnings (new ones prefixed by >>):
 
-Hi,
+>> sound/soc/amd/acp/acp-pci.c:148:1: warning: data definition has no type or storage class
+148 | MODULE_DEVICE_TABLE(pci, acp_pci_ids);
+| ^~~~~~~~~~~~~~~~~~~
+>> sound/soc/amd/acp/acp-pci.c:148:1: error: type defaults to 'int' in declaration of 'MODULE_DEVICE_TABLE' [-Werror=implicit-int]
+...
 
-On Thu, May 19, 2022 at 04:14:11PM -0500, Rob Herring wrote:
-> Now that the schema tools can extract type information for all
-> properties (in order to decode dtb files), finding properties missing
-> any type definition is fairly trivial though not yet automated.
->=20
-> Fix the various property schemas which are missing a type. Most of these
-> tend to be device specific properties which don't have a vendor prefix.
-> A vendor prefix is how we normally ensure a type is defined.
->=20
-> Signed-off-by: Rob Herring <robh@kernel.org>
-> ---
->  .../arm/hisilicon/controller/hip04-bootwrapper.yaml       | 5 +++--
->  .../bindings/display/bridge/toshiba,tc358768.yaml         | 1 +
->  .../devicetree/bindings/display/panel/panel-timing.yaml   | 5 +++++
->  .../bindings/display/panel/raydium,rm67191.yaml           | 1 +
->  .../bindings/display/panel/samsung,s6e8aa0.yaml           | 1 +
->  .../devicetree/bindings/gpio/fairchild,74hc595.yaml       | 1 +
->  .../devicetree/bindings/input/google,cros-ec-keyb.yaml    | 1 +
->  .../devicetree/bindings/input/matrix-keymap.yaml          | 4 ++++
->  Documentation/devicetree/bindings/media/i2c/adv7604.yaml  | 3 ++-
->  Documentation/devicetree/bindings/mux/reg-mux.yaml        | 8 ++++++--
->  Documentation/devicetree/bindings/net/cdns,macb.yaml      | 1 +
->  Documentation/devicetree/bindings/net/ingenic,mac.yaml    | 1 +
->  .../devicetree/bindings/net/ti,davinci-mdio.yaml          | 1 +
->  .../devicetree/bindings/net/wireless/ti,wlcore.yaml       | 2 ++
->  .../devicetree/bindings/pci/snps,dw-pcie-ep.yaml          | 6 ++++--
->  Documentation/devicetree/bindings/pci/snps,dw-pcie.yaml   | 2 ++
->  .../devicetree/bindings/pinctrl/canaan,k210-fpioa.yaml    | 2 ++
->  Documentation/devicetree/bindings/power/avs/qcom,cpr.yaml | 1 +
->  .../devicetree/bindings/power/supply/battery.yaml         | 7 ++++++-
->  .../devicetree/bindings/power/supply/charger-manager.yaml | 1 +
->  Documentation/devicetree/bindings/rng/st,stm32-rng.yaml   | 1 +
->  Documentation/devicetree/bindings/serial/8250.yaml        | 1 +
->  .../devicetree/bindings/sound/audio-graph-card2.yaml      | 3 +++
->  .../devicetree/bindings/sound/imx-audio-hdmi.yaml         | 3 +++
->  Documentation/devicetree/bindings/usb/smsc,usb3503.yaml   | 1 +
->  25 files changed, 55 insertions(+), 8 deletions(-)
+Reported-by: kernel test robot <lkp@intel.com>
+Signed-off-by: Syed Saba Kareem<ssbakar@amd.com>
+---
+ sound/soc/amd/acp/acp-pci.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-For power-supply:
+diff --git a/sound/soc/amd/acp/acp-pci.c b/sound/soc/amd/acp/acp-pci.c
+index 340e39d7f420..c893963ee2d0 100644
+--- a/sound/soc/amd/acp/acp-pci.c
++++ b/sound/soc/amd/acp/acp-pci.c
+@@ -16,6 +16,7 @@
+ #include <linux/pci.h>
+ #include <linux/platform_device.h>
+ #include <linux/pm_runtime.h>
++#include <linux/module.h>
+ 
+ #include "amd.h"
+ #include "../mach-config.h"
+-- 
+2.25.1
 
-Acked-by: Sebastian Reichel <sebastian.reichel@collabora.com>
-
--- Sebastian
-
->=20
-> diff --git a/Documentation/devicetree/bindings/arm/hisilicon/controller/h=
-ip04-bootwrapper.yaml b/Documentation/devicetree/bindings/arm/hisilicon/con=
-troller/hip04-bootwrapper.yaml
-> index 7378159e61df..483caf0ce25b 100644
-> --- a/Documentation/devicetree/bindings/arm/hisilicon/controller/hip04-bo=
-otwrapper.yaml
-> +++ b/Documentation/devicetree/bindings/arm/hisilicon/controller/hip04-bo=
-otwrapper.yaml
-> @@ -17,14 +17,15 @@ properties:
->        - const: hisilicon,hip04-bootwrapper
-> =20
->    boot-method:
-> +    $ref: /schemas/types.yaml#/definitions/uint32-array
->      description: |
->        Address and size of boot method.
->        [0]: bootwrapper physical address
->        [1]: bootwrapper size
->        [2]: relocation physical address
->        [3]: relocation size
-> -    minItems: 1
-> -    maxItems: 2
-> +    minItems: 2
-> +    maxItems: 4
-> =20
->  required:
->    - compatible
-> diff --git a/Documentation/devicetree/bindings/display/bridge/toshiba,tc3=
-58768.yaml b/Documentation/devicetree/bindings/display/bridge/toshiba,tc358=
-768.yaml
-> index 3bd670b8e5cd..0b6f5bef120f 100644
-> --- a/Documentation/devicetree/bindings/display/bridge/toshiba,tc358768.y=
-aml
-> +++ b/Documentation/devicetree/bindings/display/bridge/toshiba,tc358768.y=
-aml
-> @@ -58,6 +58,7 @@ properties:
-> =20
->              properties:
->                data-lines:
-> +                $ref: /schemas/types.yaml#/definitions/uint32
->                  enum: [ 16, 18, 24 ]
-> =20
->        port@1:
-> diff --git a/Documentation/devicetree/bindings/display/panel/panel-timing=
-=2Eyaml b/Documentation/devicetree/bindings/display/panel/panel-timing.yaml
-> index 7749de95ee40..229e3b36ee29 100644
-> --- a/Documentation/devicetree/bindings/display/panel/panel-timing.yaml
-> +++ b/Documentation/devicetree/bindings/display/panel/panel-timing.yaml
-> @@ -146,6 +146,7 @@ properties:
->        Horizontal sync pulse.
->        0 selects active low, 1 selects active high.
->        If omitted then it is not used by the hardware
-> +    $ref: /schemas/types.yaml#/definitions/uint32
->      enum: [0, 1]
-> =20
->    vsync-active:
-> @@ -153,6 +154,7 @@ properties:
->        Vertical sync pulse.
->        0 selects active low, 1 selects active high.
->        If omitted then it is not used by the hardware
-> +    $ref: /schemas/types.yaml#/definitions/uint32
->      enum: [0, 1]
-> =20
->    de-active:
-> @@ -160,6 +162,7 @@ properties:
->        Data enable.
->        0 selects active low, 1 selects active high.
->        If omitted then it is not used by the hardware
-> +    $ref: /schemas/types.yaml#/definitions/uint32
->      enum: [0, 1]
-> =20
->    pixelclk-active:
-> @@ -169,6 +172,7 @@ properties:
->        sample data on rising edge.
->        Use 1 to drive pixel data on rising edge and
->        sample data on falling edge
-> +    $ref: /schemas/types.yaml#/definitions/uint32
->      enum: [0, 1]
-> =20
->    syncclk-active:
-> @@ -179,6 +183,7 @@ properties:
->        sample sync on rising edge of pixel clock.
->        Use 1 to drive sync on rising edge and
->        sample sync on falling edge of pixel clock
-> +    $ref: /schemas/types.yaml#/definitions/uint32
->      enum: [0, 1]
-> =20
->    interlaced:
-> diff --git a/Documentation/devicetree/bindings/display/panel/raydium,rm67=
-191.yaml b/Documentation/devicetree/bindings/display/panel/raydium,rm67191.=
-yaml
-> index 745dd247c409..617aa8c8c03a 100644
-> --- a/Documentation/devicetree/bindings/display/panel/raydium,rm67191.yaml
-> +++ b/Documentation/devicetree/bindings/display/panel/raydium,rm67191.yaml
-> @@ -24,6 +24,7 @@ properties:
-> =20
->    dsi-lanes:
->      description: Number of DSI lanes to be used must be <3> or <4>
-> +    $ref: /schemas/types.yaml#/definitions/uint32
->      enum: [3, 4]
-> =20
->    v3p3-supply:
-> diff --git a/Documentation/devicetree/bindings/display/panel/samsung,s6e8=
-aa0.yaml b/Documentation/devicetree/bindings/display/panel/samsung,s6e8aa0.=
-yaml
-> index ca959451557e..1cdc91b3439f 100644
-> --- a/Documentation/devicetree/bindings/display/panel/samsung,s6e8aa0.yaml
-> +++ b/Documentation/devicetree/bindings/display/panel/samsung,s6e8aa0.yaml
-> @@ -36,6 +36,7 @@ properties:
-> =20
->    init-delay:
->      description: delay after initialization sequence [ms]
-> +    $ref: /schemas/types.yaml#/definitions/uint32
-> =20
->    panel-width-mm:
->      description: physical panel width [mm]
-> diff --git a/Documentation/devicetree/bindings/gpio/fairchild,74hc595.yam=
-l b/Documentation/devicetree/bindings/gpio/fairchild,74hc595.yaml
-> index 5fe19fa5f67c..a99e7842ca17 100644
-> --- a/Documentation/devicetree/bindings/gpio/fairchild,74hc595.yaml
-> +++ b/Documentation/devicetree/bindings/gpio/fairchild,74hc595.yaml
-> @@ -26,6 +26,7 @@ properties:
->      const: 2
-> =20
->    registers-number:
-> +    $ref: /schemas/types.yaml#/definitions/uint32
->      description: Number of daisy-chained shift registers
-> =20
->    enable-gpios:
-> diff --git a/Documentation/devicetree/bindings/input/google,cros-ec-keyb.=
-yaml b/Documentation/devicetree/bindings/input/google,cros-ec-keyb.yaml
-> index e8f137abb03c..aa61fe64be63 100644
-> --- a/Documentation/devicetree/bindings/input/google,cros-ec-keyb.yaml
-> +++ b/Documentation/devicetree/bindings/input/google,cros-ec-keyb.yaml
-> @@ -31,6 +31,7 @@ properties:
->      type: boolean
-> =20
->    function-row-physmap:
-> +    $ref: /schemas/types.yaml#/definitions/uint32-array
->      minItems: 1
->      maxItems: 15
->      description: |
-> diff --git a/Documentation/devicetree/bindings/input/matrix-keymap.yaml b=
-/Documentation/devicetree/bindings/input/matrix-keymap.yaml
-> index 6699d5e32dca..9f703bb51e12 100644
-> --- a/Documentation/devicetree/bindings/input/matrix-keymap.yaml
-> +++ b/Documentation/devicetree/bindings/input/matrix-keymap.yaml
-> @@ -27,6 +27,10 @@ properties:
->        column and linux key-code. The 32-bit big endian cell is packed as:
->            row << 24 | column << 16 | key-code
-> =20
-> +  linux,no-autorepeat:
-> +    type: boolean
-> +    description: Disable keyrepeat
-> +
->    keypad,num-rows:
->      $ref: /schemas/types.yaml#/definitions/uint32
->      description: Number of row lines connected to the keypad controller.
-> diff --git a/Documentation/devicetree/bindings/media/i2c/adv7604.yaml b/D=
-ocumentation/devicetree/bindings/media/i2c/adv7604.yaml
-> index c19d8391e2d5..7589d377c686 100644
-> --- a/Documentation/devicetree/bindings/media/i2c/adv7604.yaml
-> +++ b/Documentation/devicetree/bindings/media/i2c/adv7604.yaml
-> @@ -60,7 +60,8 @@ properties:
->        enables hot-plug detection.
-> =20
->    default-input:
-> -    maxItems: 1
-> +    $ref: /schemas/types.yaml#/definitions/uint32
-> +    enum: [ 0, 1 ]
->      description:
->        Select which input is selected after reset.
-> =20
-> diff --git a/Documentation/devicetree/bindings/mux/reg-mux.yaml b/Documen=
-tation/devicetree/bindings/mux/reg-mux.yaml
-> index 60d5746eb39d..e2f6b11f1254 100644
-> --- a/Documentation/devicetree/bindings/mux/reg-mux.yaml
-> +++ b/Documentation/devicetree/bindings/mux/reg-mux.yaml
-> @@ -25,8 +25,12 @@ properties:
->      const: 1
-> =20
->    mux-reg-masks:
-> -    description: an array of register offset and pre-shifted bitfield ma=
-sk
-> -      pairs, each describing a single mux control.
-> +    $ref: /schemas/types.yaml#/definitions/uint32-matrix
-> +    items:
-> +      items:
-> +        - description: register offset
-> +        - description: pre-shifted bitfield mask
-> +    description: Each entry describes a single mux control.
-> =20
->    idle-states: true
-> =20
-> diff --git a/Documentation/devicetree/bindings/net/cdns,macb.yaml b/Docum=
-entation/devicetree/bindings/net/cdns,macb.yaml
-> index 6cd3d853dcba..59fe2789fa44 100644
-> --- a/Documentation/devicetree/bindings/net/cdns,macb.yaml
-> +++ b/Documentation/devicetree/bindings/net/cdns,macb.yaml
-> @@ -129,6 +129,7 @@ patternProperties:
->        reset-gpios: true
-> =20
->        magic-packet:
-> +        type: boolean
->          description:
->            Indicates that the hardware supports waking up via magic packe=
-t.
-> =20
-> diff --git a/Documentation/devicetree/bindings/net/ingenic,mac.yaml b/Doc=
-umentation/devicetree/bindings/net/ingenic,mac.yaml
-> index 8e52b2e683b8..93b3e991d209 100644
-> --- a/Documentation/devicetree/bindings/net/ingenic,mac.yaml
-> +++ b/Documentation/devicetree/bindings/net/ingenic,mac.yaml
-> @@ -37,6 +37,7 @@ properties:
->      const: stmmaceth
-> =20
->    mode-reg:
-> +    $ref: /schemas/types.yaml#/definitions/phandle
->      description: An extra syscon register that control ethernet interfac=
-e and timing delay
-> =20
->    rx-clk-delay-ps:
-> diff --git a/Documentation/devicetree/bindings/net/ti,davinci-mdio.yaml b=
-/Documentation/devicetree/bindings/net/ti,davinci-mdio.yaml
-> index 6f44f9516c36..a339202c5e8e 100644
-> --- a/Documentation/devicetree/bindings/net/ti,davinci-mdio.yaml
-> +++ b/Documentation/devicetree/bindings/net/ti,davinci-mdio.yaml
-> @@ -34,6 +34,7 @@ properties:
->      maxItems: 1
-> =20
->    bus_freq:
-> +    $ref: /schemas/types.yaml#/definitions/uint32
->      maximum: 2500000
->      description: MDIO Bus frequency
-> =20
-> diff --git a/Documentation/devicetree/bindings/net/wireless/ti,wlcore.yam=
-l b/Documentation/devicetree/bindings/net/wireless/ti,wlcore.yaml
-> index 8dd164d10290..d68bb2ec1f7e 100644
-> --- a/Documentation/devicetree/bindings/net/wireless/ti,wlcore.yaml
-> +++ b/Documentation/devicetree/bindings/net/wireless/ti,wlcore.yaml
-> @@ -54,9 +54,11 @@ properties:
-> =20
-> =20
->    ref-clock-frequency:
-> +    $ref: /schemas/types.yaml#/definitions/uint32
->      description: Reference clock frequency.
-> =20
->    tcxo-clock-frequency:
-> +    $ref: /schemas/types.yaml#/definitions/uint32
->      description: TCXO clock frequency.
-> =20
->    clock-xtal:
-> diff --git a/Documentation/devicetree/bindings/pci/snps,dw-pcie-ep.yaml b=
-/Documentation/devicetree/bindings/pci/snps,dw-pcie-ep.yaml
-> index e59059ab5be0..b78535040f04 100644
-> --- a/Documentation/devicetree/bindings/pci/snps,dw-pcie-ep.yaml
-> +++ b/Documentation/devicetree/bindings/pci/snps,dw-pcie-ep.yaml
-> @@ -55,13 +55,15 @@ properties:
->        Translation Unit) registers.
-> =20
->    num-ib-windows:
-> +    $ref: /schemas/types.yaml#/definitions/uint32
-> +    maximum: 256
->      description: number of inbound address translation windows
-> -    maxItems: 1
->      deprecated: true
-> =20
->    num-ob-windows:
-> +    $ref: /schemas/types.yaml#/definitions/uint32
-> +    maximum: 256
->      description: number of outbound address translation windows
-> -    maxItems: 1
->      deprecated: true
-> =20
->  required:
-> diff --git a/Documentation/devicetree/bindings/pci/snps,dw-pcie.yaml b/Do=
-cumentation/devicetree/bindings/pci/snps,dw-pcie.yaml
-> index a5345c494744..c90e5e2d25f6 100644
-> --- a/Documentation/devicetree/bindings/pci/snps,dw-pcie.yaml
-> +++ b/Documentation/devicetree/bindings/pci/snps,dw-pcie.yaml
-> @@ -68,6 +68,8 @@ properties:
->        Translation Unit) registers.
-> =20
->    num-viewport:
-> +    $ref: /schemas/types.yaml#/definitions/uint32
-> +    maximum: 256
->      description: |
->        number of view ports configured in hardware. If a platform
->        does not specify it, the driver autodetects it.
-> diff --git a/Documentation/devicetree/bindings/pinctrl/canaan,k210-fpioa.=
-yaml b/Documentation/devicetree/bindings/pinctrl/canaan,k210-fpioa.yaml
-> index 53e963e090f2..533b4cfe33d2 100644
-> --- a/Documentation/devicetree/bindings/pinctrl/canaan,k210-fpioa.yaml
-> +++ b/Documentation/devicetree/bindings/pinctrl/canaan,k210-fpioa.yaml
-> @@ -120,6 +120,7 @@ patternProperties:
->        input-schmitt-disable: true
-> =20
->        input-polarity-invert:
-> +        type: boolean
->          description:
->            Enable or disable pin input polarity inversion.
-> =20
-> @@ -132,6 +133,7 @@ patternProperties:
->        output-low: true
-> =20
->        output-polarity-invert:
-> +        type: boolean
->          description:
->            Enable or disable pin output polarity inversion.
-> =20
-> diff --git a/Documentation/devicetree/bindings/power/avs/qcom,cpr.yaml b/=
-Documentation/devicetree/bindings/power/avs/qcom,cpr.yaml
-> index 3301fa0c2653..301db7daf870 100644
-> --- a/Documentation/devicetree/bindings/power/avs/qcom,cpr.yaml
-> +++ b/Documentation/devicetree/bindings/power/avs/qcom,cpr.yaml
-> @@ -51,6 +51,7 @@ properties:
->        supported by the CPR power domain.
-> =20
->    acc-syscon:
-> +    $ref: /schemas/types.yaml#/definitions/phandle
->      description: A phandle to the syscon used for writing ACC settings.
-> =20
->    nvmem-cells:
-> diff --git a/Documentation/devicetree/bindings/power/supply/battery.yaml =
-b/Documentation/devicetree/bindings/power/supply/battery.yaml
-> index d56ac484fec5..491488e7b970 100644
-> --- a/Documentation/devicetree/bindings/power/supply/battery.yaml
-> +++ b/Documentation/devicetree/bindings/power/supply/battery.yaml
-> @@ -85,8 +85,13 @@ properties:
->      description: battery factory internal resistance
-> =20
->    resistance-temp-table:
-> +    $ref: /schemas/types.yaml#/definitions/uint32-matrix
-> +    items:
-> +      items:
-> +        - description: the temperature in degree Celsius
-> +        - description: battery internal resistance percent
->      description: |
-> -      An array providing the temperature in degree Celsius
-> +      A table providing the temperature in degree Celsius
->        and corresponding battery internal resistance percent, which is us=
-ed to
->        look up the resistance percent according to current temperature to=
- get an
->        accurate batterty internal resistance in different temperatures.
-> diff --git a/Documentation/devicetree/bindings/power/supply/charger-manag=
-er.yaml b/Documentation/devicetree/bindings/power/supply/charger-manager.ya=
-ml
-> index c863cfa67865..fbb2204769aa 100644
-> --- a/Documentation/devicetree/bindings/power/supply/charger-manager.yaml
-> +++ b/Documentation/devicetree/bindings/power/supply/charger-manager.yaml
-> @@ -36,6 +36,7 @@ properties:
-> =20
->    cm-poll-mode:
->      description: polling mode
-> +    $ref: /schemas/types.yaml#/definitions/uint32
->      default: 0
->      enum:
->        - 0 # disabled
-> diff --git a/Documentation/devicetree/bindings/rng/st,stm32-rng.yaml b/Do=
-cumentation/devicetree/bindings/rng/st,stm32-rng.yaml
-> index 9a6e4eaf4d3c..fcd86f822a9c 100644
-> --- a/Documentation/devicetree/bindings/rng/st,stm32-rng.yaml
-> +++ b/Documentation/devicetree/bindings/rng/st,stm32-rng.yaml
-> @@ -27,6 +27,7 @@ properties:
->      maxItems: 1
-> =20
->    clock-error-detect:
-> +    type: boolean
->      description: If set enable the clock detection management
-> =20
->  required:
-> diff --git a/Documentation/devicetree/bindings/serial/8250.yaml b/Documen=
-tation/devicetree/bindings/serial/8250.yaml
-> index 3bab2f27b970..5f6b113d378f 100644
-> --- a/Documentation/devicetree/bindings/serial/8250.yaml
-> +++ b/Documentation/devicetree/bindings/serial/8250.yaml
-> @@ -138,6 +138,7 @@ properties:
->      description: The current active speed of the UART.
-> =20
->    reg-offset:
-> +    $ref: /schemas/types.yaml#/definitions/uint32
->      description: |
->        Offset to apply to the mapbase from the start of the registers.
-> =20
-> diff --git a/Documentation/devicetree/bindings/sound/audio-graph-card2.ya=
-ml b/Documentation/devicetree/bindings/sound/audio-graph-card2.yaml
-> index f7e94b1e0e4b..7416067c945e 100644
-> --- a/Documentation/devicetree/bindings/sound/audio-graph-card2.yaml
-> +++ b/Documentation/devicetree/bindings/sound/audio-graph-card2.yaml
-> @@ -24,10 +24,13 @@ properties:
->        connection's sink, the second being the connection's source.
->      $ref: /schemas/types.yaml#/definitions/non-unique-string-array
->    multi:
-> +    type: object
->      description: Multi-CPU/Codec node
->    dpcm:
-> +    type: object
->      description: DPCM node
->    codec2codec:
-> +    type: object
->      description: Codec to Codec node
-> =20
->  required:
-> diff --git a/Documentation/devicetree/bindings/sound/imx-audio-hdmi.yaml =
-b/Documentation/devicetree/bindings/sound/imx-audio-hdmi.yaml
-> index d5474f83ac2c..e7e7bb65c366 100644
-> --- a/Documentation/devicetree/bindings/sound/imx-audio-hdmi.yaml
-> +++ b/Documentation/devicetree/bindings/sound/imx-audio-hdmi.yaml
-> @@ -20,9 +20,11 @@ properties:
->      description: User specified audio sound card name
-> =20
->    audio-cpu:
-> +    $ref: /schemas/types.yaml#/definitions/phandle
->      description: The phandle of an CPU DAI controller
-> =20
->    hdmi-out:
-> +    type: boolean
->      description: |
->        This is a boolean property. If present, the transmitting function
->        of HDMI will be enabled, indicating there's a physical HDMI out
-> @@ -30,6 +32,7 @@ properties:
->        block, such as an HDMI encoder or display-controller.
-> =20
->    hdmi-in:
-> +    type: boolean
->      description: |
->        This is a boolean property. If present, the receiving function of
->        HDMI will be enabled, indicating there is a physical HDMI in
-> diff --git a/Documentation/devicetree/bindings/usb/smsc,usb3503.yaml b/Do=
-cumentation/devicetree/bindings/usb/smsc,usb3503.yaml
-> index b9e219829801..321b6f166197 100644
-> --- a/Documentation/devicetree/bindings/usb/smsc,usb3503.yaml
-> +++ b/Documentation/devicetree/bindings/usb/smsc,usb3503.yaml
-> @@ -45,6 +45,7 @@ properties:
->        property if all ports have to be enabled.
-> =20
->    initial-mode:
-> +    $ref: /schemas/types.yaml#/definitions/uint32
->      enum: [1, 2]
->      description: >
->        Specifies initial mode. 1 for Hub mode, 2 for standby mode.
-> --=20
-> 2.34.1
->=20
-
---qdtpx5mo3ymeklm2
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEE72YNB0Y/i3JqeVQT2O7X88g7+poFAmKLMMYACgkQ2O7X88g7
-+ppw2xAAl0vBYZf1CgfDpJ+FG8uvWFMvL1zJnLWnGehckZCyHM1UPl7+pMlnNQH9
-CcE2ZhnsNwbnVyzwE6cM7wHpykHZ1vm10oEQ5NCJXGYfwkJliFfY+1FjDYr4u0CC
-cBv4Jtm+9aeuMNdQSlLdKe42tsvdfrszZ87rvZCjrGDCHTfdBMzQJq52ubyRN+Js
-GcNCpZcmU4wHx2KaV5ulTDcbn/aszCfgiXv5OnrcgTYNyYxQhC2KTabev9SHKXeG
-GqKebLt5HjxB5zxcZ6gIDHZCagq9Gz5zdFNMbpDghXrzV90UjhFnoCmTq5x6YQjV
-WAzIdCjj28n91dDC+MojBZtHTtjCA63D2ywbbPZaNIRXkHbpMOTU18I91TkAYF2e
-lD56173I9XS2qsr/vgryeaFruiaLMKk1igWcXZsKkvsNuJsB2gbHjrr9uie0ysaR
-sS9bs9tgOrjbOFx+jxCafEn98JvhYTwG3w3NGPzYwL2I9WNn6IdZHquTtsQHenWU
-55FmwvfHrzvR2S6Ehe9xiwfog6CJpTSbegiXhhN/iRwrSDoCFZTtwLDut7rGNqQ2
-0tLIJV/wMAF6TJegC24Q3NB+DdxPJ3r020+BSeswqoAzxg8XFrOx+A9xlcbxQGtY
-kJh1dEYtYu5bZLDiX7QdbEW1aiz2TTSsnhXBi3/xDSqJx05/bnk=
-=n1xp
------END PGP SIGNATURE-----
-
---qdtpx5mo3ymeklm2--
