@@ -4,94 +4,90 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6D66BC433F5
-	for <alsa-devel@archiver.kernel.org>; Wed, 25 May 2022 14:11:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id AA16BC433F5
+	for <alsa-devel@archiver.kernel.org>; Wed, 25 May 2022 14:11:32 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id AD0D2169F;
-	Wed, 25 May 2022 16:10:28 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AD0D2169F
+	by alsa0.perex.cz (Postfix) with ESMTPS id DB9C816E6;
+	Wed, 25 May 2022 16:10:40 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DB9C816E6
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1653487878;
-	bh=yRgKy3AolnX1RBH745ck5qLpOvCyAGP/aBozRWlNa/I=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	s=default; t=1653487890;
+	bh=d4U1akJ30immRjUp+EMs18BTfYEpfiNrMRaUuPh7mU0=;
+	h=Date:Subject:To:References:From:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=fJA/go6PS+Sl7IunS7D1u5G8opE0fUecUq/m1RrfKoSaTz4C/qoyZ3ze4vxM7cQPE
-	 v3Q+Zquq7SbzQlQhjmSjsPED0nfbpHMGoOKlafEMwmJAdL0raolNfon47OVobXiZsd
-	 9AYvTVjSIyHll4Tcw/BpsTKE0EvDHd3rK6YJPhjA=
+	b=WquEb+6PMP3DKq3bH47GtU0zvot4OJe7jc+9+Pr3vSt4vqhW+ARFUF1Lu1ZTiizPl
+	 facnf4UIEE+ZJepDsUtfhJTqEmxYcAJ64LODTQ0kymbvOSum6C861r09mpaDVcToIl
+	 X43ISnW782Ltvy4EBfDBs/NyV8/T4nDsclKFE7+Q=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 7A277F80533;
-	Wed, 25 May 2022 16:08:44 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 0C972F80535;
+	Wed, 25 May 2022 16:08:45 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id E073FF80236; Mon, 23 May 2022 18:56:16 +0200 (CEST)
-Received: from mail-oa1-f52.google.com (mail-oa1-f52.google.com
- [209.85.160.52])
+ id ED861F804D1; Tue, 24 May 2022 10:08:08 +0200 (CEST)
+Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com
+ [IPv6:2607:f8b0:4864:20::42b])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id E9456F800E3
- for <alsa-devel@alsa-project.org>; Mon, 23 May 2022 18:56:13 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E9456F800E3
-Received: by mail-oa1-f52.google.com with SMTP id
- 586e51a60fabf-e93bbb54f9so19155057fac.12
- for <alsa-devel@alsa-project.org>; Mon, 23 May 2022 09:56:13 -0700 (PDT)
+ by alsa1.perex.cz (Postfix) with ESMTPS id B64E3F800E3
+ for <alsa-devel@alsa-project.org>; Tue, 24 May 2022 10:07:59 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B64E3F800E3
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
+ header.b="LMaffPBD"
+Received: by mail-pf1-x42b.google.com with SMTP id v11so15798392pff.6
+ for <alsa-devel@alsa-project.org>; Tue, 24 May 2022 01:07:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
+ h=message-id:date:mime-version:user-agent:subject:content-language:to
+ :cc:references:from:in-reply-to:content-transfer-encoding;
+ bh=X3gS5w+yc+z8mlTwEJOM2B4Sxx9AktXCC3K5ZpOXIhU=;
+ b=LMaffPBDwHynYXsfxp+uCT7ohVDVNK9Vjs4bhDm9AOuDGFs1AZjRzpTfbTHYnIK+ov
+ NVzcFXBqxc6/ndYU6V5V8TL9xCsb8vTurdkl8Q/hg388qUY47UAwuivzPGNH/oS+p4mN
+ FAr68T+aJBM07iAYphiomYFOzvcQRyA8nR1Kw2HrDr/4TRvrm3CxlerBSdlDHWFT0opk
+ W1GaFiGzPkSkhsA6IYL9stCD9SfwYDh1Bhb0gLByES1+Z4T0pA982bmY9gdW//BcRzrb
+ Tut5TXnn9f65K9kadu07Uk9U2UHRZAK2om4Sj/1loI2Tr7TG8OnyzB1Ch+r3z8ullmoe
+ ad5A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
- h=x-gm-message-state:date:from:to:cc:subject:message-id:references
- :mime-version:content-disposition:in-reply-to;
- bh=FfAOhZNasQcy6TRDHmB8U+mc653MKDmGV3a61UnarkE=;
- b=NDhRdc7pih0KdBwvR14I7x52eu5FfxwYrj1vlqbREjzgIHWIlXMb71e+nli+rB0omC
- bKt+r5iEwqFDjTrpwwNxCqCfLmU+5M/NYFD4/xtKgWJ4IWs61zAM4AVlcXwJ4kXeYcPk
- 9vv8Jy6zNCzgCKwZdBbrQQh5AVScTZ1X9DLyvLOKwRK/GHLDk+R8kSFgAFehyCRFTjZx
- 4SXpW3zL/OOWdvZFKKwwC2rfEIseAK/U7lOZupmiKgh3lx4Mqn89/jGF0SJNwCJHvG9j
- kYWlMXENo8+553Tzvh0jw4CT3emKvifm1+C01xSuKdL91VUavBCaXO45AYk5LSUB8Vx/
- AsGw==
-X-Gm-Message-State: AOAM531PvMlFSNUAtEU10QweZWca0Qy2v2WZq18TVWQSX+iDsGIhTWeM
- HUG3tAxlO0Peg+bBAY+kig==
-X-Google-Smtp-Source: ABdhPJzG3ZFQrmj1v1yitS4jTC5DzQZmWnfRLp9MNvhBwUQ6yufF6JdEMRoPfxaQK0q/QMOIiKOBDg==
-X-Received: by 2002:a05:6870:5823:b0:f2:2dfd:8df0 with SMTP id
- r35-20020a056870582300b000f22dfd8df0mr6004573oap.157.1653324972043; 
- Mon, 23 May 2022 09:56:12 -0700 (PDT)
-Received: from robh.at.kernel.org (66-90-144-107.dyn.grandenetworks.net.
- [66.90.144.107]) by smtp.gmail.com with ESMTPSA id
- eb38-20020a056870a8a600b000edf5a12baasm3976216oab.46.2022.05.23.09.56.10
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Mon, 23 May 2022 09:56:11 -0700 (PDT)
-Received: (nullmailer pid 1750116 invoked by uid 1000);
- Mon, 23 May 2022 16:56:09 -0000
-Date: Mon, 23 May 2022 11:56:09 -0500
-From: Rob Herring <robh@kernel.org>
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Subject: Re: [PATCH] dt-bindings: Fix properties without any type
-Message-ID: <20220523165609.GA1743214-robh@kernel.org>
-References: <20220519211411.2200720-1-robh@kernel.org>
- <6ae55a29-0b29-f53c-c9bd-fae929f3caf7@linaro.org>
+ h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+ :content-language:to:cc:references:from:in-reply-to
+ :content-transfer-encoding;
+ bh=X3gS5w+yc+z8mlTwEJOM2B4Sxx9AktXCC3K5ZpOXIhU=;
+ b=fjAlLx3jaaQYa7DCB4evQ2LS+JCia5l229A+vBwUIMuj8/Lk7pcsV1n1suIf6ezINP
+ a77jMqocsZNGxd0Wb2I+jeknEt1pX6BbQPAedIdsn8DTXB5/NqXdIaH/PKAWvoLAPWMS
+ RIGXN9ZVU9E8IKJWVlBB70kqmaNle2rzC1/4ayR6sUklK0aZUZbcVVlLxEkSPXi87sNl
+ LRdC0WGOcUhGMQiB1sa4nvmN+DzL6QUpW4GwtLdTXfu+oL5b00ibGxfmvf+Z3upvHvg1
+ Nf9JbzT3GMWe622xd6bVw/xRVhVhiNo9rqKDYQ9TwdylnKmMTbco3PYbKasjcOv32AKm
+ YiOQ==
+X-Gm-Message-State: AOAM533QUw0zbV+4sWF/5ZAtKozI3yv9GMzXO2+Ev7JjbKdWgzUwUjVr
+ aFKT7WIdhL01BK/4EymggLU=
+X-Google-Smtp-Source: ABdhPJyPFNp8GhXOQqfZfybfGeEG25WGMp64GBhgC3/kKfvSDRePWJoSXuUO+u2BzEymVjz0xoZCGQ==
+X-Received: by 2002:a65:6854:0:b0:3fa:ad92:15f0 with SMTP id
+ q20-20020a656854000000b003faad9215f0mr1573022pgt.12.1653379677215; 
+ Tue, 24 May 2022 01:07:57 -0700 (PDT)
+Received: from [192.168.0.103] (39-13-101-104.adsl.fetnet.net. [39.13.101.104])
+ by smtp.gmail.com with ESMTPSA id
+ n6-20020a17090a928600b001df82551cf2sm1016181pjo.44.2022.05.24.01.07.54
+ (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+ Tue, 24 May 2022 01:07:56 -0700 (PDT)
+Message-ID: <9e1eb15c-ca3a-dc04-1f8d-4ea71e32cce8@gmail.com>
+Date: Tue, 24 May 2022 16:07:53 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <6ae55a29-0b29-f53c-c9bd-fae929f3caf7@linaro.org>
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.0
+Subject: Re: [PATCH] ASoC: nau8822: choose the best master clock prescalar
+Content-Language: en-US
+To: Hui Wang <hui.wang@canonical.com>, alsa-devel@alsa-project.org,
+ broonie@kernel.org
+References: <20220524033309.30289-1-hui.wang@canonical.com>
+From: David Lin <ctlin0.linux@gmail.com>
+In-Reply-To: <20220524033309.30289-1-hui.wang@canonical.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 X-Mailman-Approved-At: Wed, 25 May 2022 16:08:39 +0200
-Cc: alsa-devel@alsa-project.org, linux-usb@vger.kernel.org,
- linux-pci@vger.kernel.org, Linus Walleij <linus.walleij@linaro.org>,
- dri-devel@lists.freedesktop.org, Thierry Reding <thierry.reding@gmail.com>,
- Guenter Roeck <groeck@chromium.org>, Sam Ravnborg <sam@ravnborg.org>,
- chrome-platform@lists.linux.dev, Herbert Xu <herbert@gondor.apana.org.au>,
- Bartosz Golaszewski <brgl@bgdev.pl>, linux-serial@vger.kernel.org,
- linux-input@vger.kernel.org, Jakub Kicinski <kuba@kernel.org>,
- Paolo Abeni <pabeni@redhat.com>, linux-media@vger.kernel.org,
- devicetree@vger.kernel.org, linux-pm@vger.kernel.org,
- Kalle Valo <kvalo@kernel.org>, Maxime Ripard <mripard@kernel.org>,
- linux-gpio@vger.kernel.org, Mark Brown <broonie@kernel.org>,
- Matt Mackall <mpm@selenic.com>, Bjorn Helgaas <bhelgaas@google.com>,
- Mauro Carvalho Chehab <mchehab@kernel.org>, Benson Leung <bleung@chromium.org>,
- linux-arm-kernel@lists.infradead.org,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- Dmitry Torokhov <dmitry.torokhov@gmail.com>,
- Sebastian Reichel <sre@kernel.org>, Peter Rosin <peda@axentia.se>,
- linux-crypto@vger.kernel.org, netdev@vger.kernel.org,
- Krzysztof Kozlowski <krzk+dt@kernel.org>,
- "David S. Miller" <davem@davemloft.net>
+Cc: wtli@nuvoton.com, YHCHuang@nuvoton.com, SJLIN0@nuvoton.com,
+ kchsu0@nuvoton.com, David Lin <CTLIN0@nuvoton.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -107,186 +103,74 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Sat, May 21, 2022 at 05:03:41PM +0200, Krzysztof Kozlowski wrote:
-> On 19/05/2022 23:14, Rob Herring wrote:
-> > Now that the schema tools can extract type information for all
-> > properties (in order to decode dtb files), finding properties missing
-> > any type definition is fairly trivial though not yet automated.
-> > 
-> > Fix the various property schemas which are missing a type. Most of these
-> > tend to be device specific properties which don't have a vendor prefix.
-> > A vendor prefix is how we normally ensure a type is defined.
-> > 
-> > Signed-off-by: Rob Herring <robh@kernel.org>
-> > ---
-> >  .../arm/hisilicon/controller/hip04-bootwrapper.yaml       | 5 +++--
-> >  .../bindings/display/bridge/toshiba,tc358768.yaml         | 1 +
-> >  .../devicetree/bindings/display/panel/panel-timing.yaml   | 5 +++++
-> >  .../bindings/display/panel/raydium,rm67191.yaml           | 1 +
-> >  .../bindings/display/panel/samsung,s6e8aa0.yaml           | 1 +
-> >  .../devicetree/bindings/gpio/fairchild,74hc595.yaml       | 1 +
-> >  .../devicetree/bindings/input/google,cros-ec-keyb.yaml    | 1 +
-> >  .../devicetree/bindings/input/matrix-keymap.yaml          | 4 ++++
-> >  Documentation/devicetree/bindings/media/i2c/adv7604.yaml  | 3 ++-
-> >  Documentation/devicetree/bindings/mux/reg-mux.yaml        | 8 ++++++--
-> >  Documentation/devicetree/bindings/net/cdns,macb.yaml      | 1 +
-> >  Documentation/devicetree/bindings/net/ingenic,mac.yaml    | 1 +
-> >  .../devicetree/bindings/net/ti,davinci-mdio.yaml          | 1 +
-> >  .../devicetree/bindings/net/wireless/ti,wlcore.yaml       | 2 ++
-> >  .../devicetree/bindings/pci/snps,dw-pcie-ep.yaml          | 6 ++++--
-> >  Documentation/devicetree/bindings/pci/snps,dw-pcie.yaml   | 2 ++
-> >  .../devicetree/bindings/pinctrl/canaan,k210-fpioa.yaml    | 2 ++
-> >  Documentation/devicetree/bindings/power/avs/qcom,cpr.yaml | 1 +
-> >  .../devicetree/bindings/power/supply/battery.yaml         | 7 ++++++-
-> >  .../devicetree/bindings/power/supply/charger-manager.yaml | 1 +
-> >  Documentation/devicetree/bindings/rng/st,stm32-rng.yaml   | 1 +
-> >  Documentation/devicetree/bindings/serial/8250.yaml        | 1 +
-> >  .../devicetree/bindings/sound/audio-graph-card2.yaml      | 3 +++
-> >  .../devicetree/bindings/sound/imx-audio-hdmi.yaml         | 3 +++
-> >  Documentation/devicetree/bindings/usb/smsc,usb3503.yaml   | 1 +
-> >  25 files changed, 55 insertions(+), 8 deletions(-)
-> > 
-> > diff --git a/Documentation/devicetree/bindings/arm/hisilicon/controller/hip04-bootwrapper.yaml b/Documentation/devicetree/bindings/arm/hisilicon/controller/hip04-bootwrapper.yaml
-> > index 7378159e61df..483caf0ce25b 100644
-> > --- a/Documentation/devicetree/bindings/arm/hisilicon/controller/hip04-bootwrapper.yaml
-> > +++ b/Documentation/devicetree/bindings/arm/hisilicon/controller/hip04-bootwrapper.yaml
-> > @@ -17,14 +17,15 @@ properties:
-> >        - const: hisilicon,hip04-bootwrapper
-> >  
-> >    boot-method:
-> > +    $ref: /schemas/types.yaml#/definitions/uint32-array
-> >      description: |
-> >        Address and size of boot method.
-> >        [0]: bootwrapper physical address
-> >        [1]: bootwrapper size
-> >        [2]: relocation physical address
-> >        [3]: relocation size
-> > -    minItems: 1
-> > -    maxItems: 2
-> > +    minItems: 2
-> > +    maxItems: 4
-> >  
-> >  required:
-> >    - compatible
-> > diff --git a/Documentation/devicetree/bindings/display/bridge/toshiba,tc358768.yaml b/Documentation/devicetree/bindings/display/bridge/toshiba,tc358768.yaml
-> > index 3bd670b8e5cd..0b6f5bef120f 100644
-> > --- a/Documentation/devicetree/bindings/display/bridge/toshiba,tc358768.yaml
-> > +++ b/Documentation/devicetree/bindings/display/bridge/toshiba,tc358768.yaml
-> > @@ -58,6 +58,7 @@ properties:
-> >  
-> >              properties:
-> >                data-lines:
-> > +                $ref: /schemas/types.yaml#/definitions/uint32
-> >                  enum: [ 16, 18, 24 ]
-> >  
-> >        port@1:
-> > diff --git a/Documentation/devicetree/bindings/display/panel/panel-timing.yaml b/Documentation/devicetree/bindings/display/panel/panel-timing.yaml
-> > index 7749de95ee40..229e3b36ee29 100644
-> > --- a/Documentation/devicetree/bindings/display/panel/panel-timing.yaml
-> > +++ b/Documentation/devicetree/bindings/display/panel/panel-timing.yaml
-> > @@ -146,6 +146,7 @@ properties:
-> >        Horizontal sync pulse.
-> >        0 selects active low, 1 selects active high.
-> >        If omitted then it is not used by the hardware
-> > +    $ref: /schemas/types.yaml#/definitions/uint32
-> >      enum: [0, 1]
-> >  
-> >    vsync-active:
-> > @@ -153,6 +154,7 @@ properties:
-> >        Vertical sync pulse.
-> >        0 selects active low, 1 selects active high.
-> >        If omitted then it is not used by the hardware
-> > +    $ref: /schemas/types.yaml#/definitions/uint32
-> >      enum: [0, 1]
-> >  
-> >    de-active:
-> > @@ -160,6 +162,7 @@ properties:
-> >        Data enable.
-> >        0 selects active low, 1 selects active high.
-> >        If omitted then it is not used by the hardware
-> > +    $ref: /schemas/types.yaml#/definitions/uint32
-> >      enum: [0, 1]
-> >  
-> >    pixelclk-active:
-> > @@ -169,6 +172,7 @@ properties:
-> >        sample data on rising edge.
-> >        Use 1 to drive pixel data on rising edge and
-> >        sample data on falling edge
-> > +    $ref: /schemas/types.yaml#/definitions/uint32
-> >      enum: [0, 1]
-> >  
-> >    syncclk-active:
-> > @@ -179,6 +183,7 @@ properties:
-> >        sample sync on rising edge of pixel clock.
-> >        Use 1 to drive sync on rising edge and
-> >        sample sync on falling edge of pixel clock
-> > +    $ref: /schemas/types.yaml#/definitions/uint32
-> >      enum: [0, 1]
-> >  
-> >    interlaced:
-> > diff --git a/Documentation/devicetree/bindings/display/panel/raydium,rm67191.yaml b/Documentation/devicetree/bindings/display/panel/raydium,rm67191.yaml
-> > index 745dd247c409..617aa8c8c03a 100644
-> > --- a/Documentation/devicetree/bindings/display/panel/raydium,rm67191.yaml
-> > +++ b/Documentation/devicetree/bindings/display/panel/raydium,rm67191.yaml
-> > @@ -24,6 +24,7 @@ properties:
-> >  
-> >    dsi-lanes:
-> >      description: Number of DSI lanes to be used must be <3> or <4>
-> > +    $ref: /schemas/types.yaml#/definitions/uint32
-> >      enum: [3, 4]
-> >  
-> >    v3p3-supply:
-> > diff --git a/Documentation/devicetree/bindings/display/panel/samsung,s6e8aa0.yaml b/Documentation/devicetree/bindings/display/panel/samsung,s6e8aa0.yaml
-> > index ca959451557e..1cdc91b3439f 100644
-> > --- a/Documentation/devicetree/bindings/display/panel/samsung,s6e8aa0.yaml
-> > +++ b/Documentation/devicetree/bindings/display/panel/samsung,s6e8aa0.yaml
-> > @@ -36,6 +36,7 @@ properties:
-> >  
-> >    init-delay:
-> >      description: delay after initialization sequence [ms]
-> > +    $ref: /schemas/types.yaml#/definitions/uint32
-> >  
-> >    panel-width-mm:
-> >      description: physical panel width [mm]
-> > diff --git a/Documentation/devicetree/bindings/gpio/fairchild,74hc595.yaml b/Documentation/devicetree/bindings/gpio/fairchild,74hc595.yaml
-> > index 5fe19fa5f67c..a99e7842ca17 100644
-> > --- a/Documentation/devicetree/bindings/gpio/fairchild,74hc595.yaml
-> > +++ b/Documentation/devicetree/bindings/gpio/fairchild,74hc595.yaml
-> > @@ -26,6 +26,7 @@ properties:
-> >      const: 2
-> >  
-> >    registers-number:
-> > +    $ref: /schemas/types.yaml#/definitions/uint32
-> >      description: Number of daisy-chained shift registers
-> >  
-> >    enable-gpios:
-> > diff --git a/Documentation/devicetree/bindings/input/google,cros-ec-keyb.yaml b/Documentation/devicetree/bindings/input/google,cros-ec-keyb.yaml
-> > index e8f137abb03c..aa61fe64be63 100644
-> > --- a/Documentation/devicetree/bindings/input/google,cros-ec-keyb.yaml
-> > +++ b/Documentation/devicetree/bindings/input/google,cros-ec-keyb.yaml
-> > @@ -31,6 +31,7 @@ properties:
-> >      type: boolean
-> >  
-> >    function-row-physmap:
-> > +    $ref: /schemas/types.yaml#/definitions/uint32-array
-> >      minItems: 1
-> >      maxItems: 15
-> >      description: |
-> > diff --git a/Documentation/devicetree/bindings/input/matrix-keymap.yaml b/Documentation/devicetree/bindings/input/matrix-keymap.yaml
-> > index 6699d5e32dca..9f703bb51e12 100644
-> > --- a/Documentation/devicetree/bindings/input/matrix-keymap.yaml
-> > +++ b/Documentation/devicetree/bindings/input/matrix-keymap.yaml
-> > @@ -27,6 +27,10 @@ properties:
-> >        column and linux key-code. The 32-bit big endian cell is packed as:
-> >            row << 24 | column << 16 | key-code
-> >  
-> > +  linux,no-autorepeat:
-> > +    type: boolean
-> > +    description: Disable keyrepeat
-> 
-> This should be rather a separate patch - it's documenting a missing
-> property, not only a type.
+On 2022/5/24 上午 11:33, Hui Wang wrote:
+> We have an imx6sx EVB with the codec nau8822, when playing the audio
+> with 48k sample rate, the audio sounds distorted and obviously faster
+> than expected.
+>
+> The codec input MCLK is 24000000Hz on our board, if the target sample
+> rate is 48000Hz, with the current algorithm, the computed prescalar
+> will result in 62500Hz, with the patched algorithm, the sample rate
+> will be 46875Hz which is nearer the target sample rate.
+>
+> And for other sample rate like 44100, 22050, 11025 or 8000, the
+> patched algorithm has no difference with the current algorithm, they
+> will generate the same prescalar and the same sample rate.
+>
+> Signed-off-by: Hui Wang <hui.wang@canonical.com>
+> ---
+>   sound/soc/codecs/nau8822.c | 9 ++++++---
+>   1 file changed, 6 insertions(+), 3 deletions(-)
+>
+> diff --git a/sound/soc/codecs/nau8822.c b/sound/soc/codecs/nau8822.c
+> index 66bbd8f4f1ad..b67fdf64ddab 100644
+> --- a/sound/soc/codecs/nau8822.c
+> +++ b/sound/soc/codecs/nau8822.c
+> @@ -668,21 +668,24 @@ static int nau8822_config_clkdiv(struct snd_soc_dai *dai, int div, int rate)
+>   	struct snd_soc_component *component = dai->component;
+>   	struct nau8822 *nau8822 = snd_soc_component_get_drvdata(component);
+>   	struct nau8822_pll *pll = &nau8822->pll;
+> +	int diff = INT_MAX;
+>   	int i, sclk, imclk;
+>   
+>   	switch (nau8822->div_id) {
+>   	case NAU8822_CLK_MCLK:
+>   		/* Configure the master clock prescaler div to make system
+>   		 * clock to approximate the internal master clock (IMCLK);
+> -		 * and large or equal to IMCLK.
+> +		 * and find the nearest value to IMCLK.
+>   		 */
+>   		div = 0;
+>   		imclk = rate * 256;
+>   		for (i = 1; i < ARRAY_SIZE(nau8822_mclk_scaler); i++) {
+>   			sclk = (nau8822->sysclk * 10) /	nau8822_mclk_scaler[i];
+> -			if (sclk < imclk)
+> +			if (abs(sclk - imclk) < diff) {
+> +				diff = abs(sclk - imclk);
+> +				div =  i;
+> +			} else
+>   				break;
+> -			div = i;
+>   		}
+>   		dev_dbg(component->dev, "master clock prescaler %x for fs %d\n",
+>   			div, rate);
 
-Yes, I've dropped this hunk while applying.
+Regarding to your environment with input MCLK is 24 MHz, I think you 
+should enable PLL for the internal process of codec.
 
-Rob
+So you should do the following calls/operations:
+
+//PLL
+     ret = snd_soc_dai_set_sysclk(codec_dai, NAU8822_CLK_PLL,
+                       24000000, SND_SOC_CLOCK_IN);
+     if (ret < 0 )
+         dev_err(card->dev, "failed to set codec sysclk: %d\n", ret);
+
+     ret = snd_soc_dai_set_pll(codec_dai, 0, 0,
+                   24000000, 256 * params_rate(params));
+     if (ret < 0 )
+
+         dev_err(card->dev, "failed to set codec pll: %d\n", ret);
+
+David
+
