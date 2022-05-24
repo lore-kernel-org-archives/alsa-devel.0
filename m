@@ -4,42 +4,42 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0CCA1C433EF
-	for <alsa-devel@archiver.kernel.org>; Tue, 24 May 2022 11:48:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E162AC433F5
+	for <alsa-devel@archiver.kernel.org>; Tue, 24 May 2022 11:52:09 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 41E3416F7;
-	Tue, 24 May 2022 13:47:50 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 41E3416F7
+	by alsa0.perex.cz (Postfix) with ESMTPS id 2123516A1;
+	Tue, 24 May 2022 13:51:18 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2123516A1
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1653392920;
-	bh=PkfOcXRA+tLM3eYM29GdcchAeuFqaIF/shnseoNDkKY=;
+	s=default; t=1653393128;
+	bh=SnAFb3qTns7ZPrTCG/KJRl5T1LtwEcp2pfDvGWrr41g=;
 	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=gQ0/KJuNB5L34dVWimyYnZ435cZZMgmSoufIUNPvKMJ1SIzudiIelRua711/gcc1H
-	 gdnKaNnEPUusFVF1IW2xtZdK+9GEviHiNaGLJ119ZAVVxjdpzouxJej4xmkLLQnZUX
-	 9ksQjLEzQ5E7Xm4MLl4oMVqu7f2OymaB0RC245WI=
+	b=uMLW2n5FsZVphyqQLTmKx2O6rB/pS/sASh/fsry9vlIN8Pcrwg/fRTJPnD7NXVWZE
+	 U6eNNOX47WnQV/aAKHrLSIdndlRKGCTmrWg4RaSwDoiPfLQZeld+G0XUwt79LDwFzb
+	 kOT/2RBsBgfXl+a/KPXRdF5WyI3ANPGz14w6jZyE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id CE475F804CC;
-	Tue, 24 May 2022 13:47:49 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id B8B73F804CC;
+	Tue, 24 May 2022 13:51:17 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 031F3F804D1; Tue, 24 May 2022 13:47:47 +0200 (CEST)
+ id 5D36CF804D1; Tue, 24 May 2022 13:51:16 +0200 (CEST)
 Received: from webhooks-bot.alsa-project.org (gate.perex.cz [77.48.224.242])
- by alsa1.perex.cz (Postfix) with ESMTP id 63E50F800E3
- for <alsa-devel@alsa-project.org>; Tue, 24 May 2022 13:47:45 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 63E50F800E3
+ by alsa1.perex.cz (Postfix) with ESMTP id 1A552F80100
+ for <alsa-devel@alsa-project.org>; Tue, 24 May 2022 13:51:11 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1A552F80100
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 From: GitHub pull_request - opened <github@alsa-project.org>
 To: alsa-devel@alsa-project.org
-In-Reply-To: <1653392864710031986-webhooks-bot@alsa-project.org>
-References: <1653392864710031986-webhooks-bot@alsa-project.org>
-Subject: Fix for arecord recording ghost data
-Message-Id: <20220524114748.031F3F804D1@alsa1.perex.cz>
-Date: Tue, 24 May 2022 13:47:47 +0200 (CEST)
+In-Reply-To: <1653393071134835958-webhooks-bot@alsa-project.org>
+References: <1653393071134835958-webhooks-bot@alsa-project.org>
+Subject: Add missing implementation for topology ignore_suspend flag
+Message-Id: <20220524115116.5D36CF804D1@alsa1.perex.cz>
+Date: Tue, 24 May 2022 13:51:16 +0200 (CEST)
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -55,13 +55,10 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-alsa-project/alsa-utils pull request #150 was opened from amadeuszslawinski-intel:
+alsa-project/alsa-lib pull request #230 was opened from amadeuszslawinski-intel:
 
-We noticed the issue in our tests, when using arecord would produce files with glitches at recording end.
+ignore_suspend flag was ignored while parsing topology, add missing support for it. This allows use of it on DAI links and DAPM widgets.
 
-Apparently it was caused by writing full buffer to output file instead of the data read, when stopping recording.
-Following commit adjust the code to only write the amount of data that was read and making sure that file size matches internal format data.
-
-Request URL   : https://github.com/alsa-project/alsa-utils/pull/150
-Patch URL     : https://github.com/alsa-project/alsa-utils/pull/150.patch
-Repository URL: https://github.com/alsa-project/alsa-utils
+Request URL   : https://github.com/alsa-project/alsa-lib/pull/230
+Patch URL     : https://github.com/alsa-project/alsa-lib/pull/230.patch
+Repository URL: https://github.com/alsa-project/alsa-lib
