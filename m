@@ -4,80 +4,80 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9C444C433F5
-	for <alsa-devel@archiver.kernel.org>; Wed, 25 May 2022 13:19:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 428D1C433EF
+	for <alsa-devel@archiver.kernel.org>; Wed, 25 May 2022 13:20:03 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B5A5B169E;
-	Wed, 25 May 2022 15:18:52 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B5A5B169E
+	by alsa0.perex.cz (Postfix) with ESMTPS id 80AB31688;
+	Wed, 25 May 2022 15:19:11 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 80AB31688
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1653484782;
-	bh=uUePv91SGBoIY6PbN5B4ccVxrsUIAKkEylYxrUNGLEU=;
+	s=default; t=1653484801;
+	bh=e82FJ2Og4SfLuReH4/RCVboI6JorWgRBfwE7JPurUqo=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=KkkwATZPmEDizUWFjlaJ+vLvyEQm2CSeW3nG6Gp22RitQJbfHJJx5tV105Xym1688
-	 mr26MHB0iYIKcZvrlfFwVx79kA5SgcwZJacpvxWLTJoKTRmv98zkgQmjlDlyB3lD99
-	 2sbKXZJkkegt0kTwnZInQpVOAAkAxA4HScIZn62g=
+	b=Ao3FeX7yH3MiiKka/jcHrhh83u6jkW7M91H0CbhZiDcUIyqQGvRMXZx6kO9ZgMnyx
+	 W95dEbEhBN0J3+qdtMHBlAeKhRhPNJNwGhYishlFmCi34N0koNCg+h95HDeEv9WKCt
+	 khm3FCbtjV678tg+paKECDovWxQjLtqpHTzb80T4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 869D6F80544;
-	Wed, 25 May 2022 15:17:06 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 70F05F80551;
+	Wed, 25 May 2022 15:17:07 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 5BEFCF80536; Wed, 25 May 2022 15:16:57 +0200 (CEST)
-Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
- [67.231.149.25])
+ id 04A51F80537; Wed, 25 May 2022 15:16:58 +0200 (CEST)
+Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
+ [67.231.152.168])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 03586F801EC
- for <alsa-devel@alsa-project.org>; Wed, 25 May 2022 15:16:44 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 03586F801EC
+ by alsa1.perex.cz (Postfix) with ESMTPS id 8C067F8051C
+ for <alsa-devel@alsa-project.org>; Wed, 25 May 2022 15:16:48 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8C067F8051C
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com
- header.b="ZertTB1l"
-Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
- by mx0a-001ae601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 24PBxMvb005635;
- Wed, 25 May 2022 08:16:42 -0500
+ header.b="XfqjvFfn"
+Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
+ by mx0b-001ae601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 24PCRmjI022096;
+ Wed, 25 May 2022 08:16:46 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
  h=from : to : cc :
  subject : date : message-id : in-reply-to : references : mime-version :
  content-transfer-encoding : content-type; s=PODMain02222019;
- bh=J0fR9KNlFufNc0MdSXybhI4lFVPpHlH9P+kE1CluQgE=;
- b=ZertTB1lJ1Tkn3b7rDKVsZH1nQ51SPMOzFc/u8kqPDRtbsU52Y8Nza29N8arOX6zp2Mc
- ompu5q+ovPeeDQJYlTN47v1Wahu7mWW0NNHymlaz1RK2IIH5fkOc1cIH/KTYmlJjjh55
- hHa4xOaTtW6igQdorYeYGQQa3uNZ3pDx4uq293LiKsoBt78a+F0biQ6yPrppe81kkZ+P
- sQEcH9NWoAhnW8J983J6zedDz0ltXluh+6mJRoKAn+rAx7/KoQB4mOp8JtXrWYsOJq2e
- Tz3YEuPSDfuN3C1XK28Z9ZJLLiytzNTga6dU/8o6I72Nq+s2kaswIdEpHcJxlEsCcEtO LQ== 
-Received: from ediex02.ad.cirrus.com ([84.19.233.68])
- by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3g93u4gx4s-1
+ bh=VovP2fjHmWUZWiLciMKSnLk1aUbcDY4P7rblNQN7RKM=;
+ b=XfqjvFfnpEY8n8ORa4hJO4LxzKZ3gcSWFo8woA9SzWd4yMB6k42SvpnUvZDLWTcmX/mJ
+ lRJfIAbaJAnBmzyzZLooJ7I5/G4S9nQcOj+vXguJ33MFs7JUTgxuNporxAbr6xSb8hkH
+ FWwgKQkdEuNLRbRxLiFJkVzA/67erJBpUzh5FUx8YLOrO+OEs+hqvE2Y71BUA0kjyk9h
+ OAqlbrgrfrH0cZiwmivZInD+Ja02iPL6UAiH3MnRLOel97NJ47p5AxdMSfbmvQ4IX8Cf
+ yu8L7MxFtXPJMbmPG2pOwE7NX9+PYWBrcCqDZG00g5Npxgo3xfo8dPEuu2SwQo8C0IFG kQ== 
+Received: from ediex01.ad.cirrus.com ([84.19.233.68])
+ by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3g93u20we6-8
  (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
- Wed, 25 May 2022 08:16:42 -0500
-Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX02.ad.cirrus.com
- (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
+ Wed, 25 May 2022 08:16:46 -0500
+Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.24; Wed, 25 May
- 2022 14:16:40 +0100
+ 2022 14:16:43 +0100
 Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
  (198.61.84.80) with Microsoft SMTP Server id 15.1.2375.24 via
- Frontend Transport; Wed, 25 May 2022 14:16:40 +0100
+ Frontend Transport; Wed, 25 May 2022 14:16:43 +0100
 Received: from vitaly-Legion-7-16ACHg6.ad.cirrus.com (unknown [198.90.238.233])
- by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 2A8B5468;
- Wed, 25 May 2022 13:16:40 +0000 (UTC)
+ by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 620A846C;
+ Wed, 25 May 2022 13:16:43 +0000 (UTC)
 From: Vitaly Rodionov <vitalyr@opensource.cirrus.com>
 To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Mark
  Brown <broonie@kernel.org>
-Subject: [PATCH v4 02/17] ALSA: hda: hda_cs_dsp_ctl: Add apis to write the
- controls directly
-Date: Wed, 25 May 2022 14:16:23 +0100
-Message-ID: <20220525131638.5512-3-vitalyr@opensource.cirrus.com>
+Subject: [PATCH v4 10/17] ASoC: cs35l41: Do not print error when waking from
+ hibernation
+Date: Wed, 25 May 2022 14:16:31 +0100
+Message-ID: <20220525131638.5512-11-vitalyr@opensource.cirrus.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20220525131638.5512-1-vitalyr@opensource.cirrus.com>
 References: <20220525131638.5512-1-vitalyr@opensource.cirrus.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: r0-ty98q_QKxfTnhHLoiMuyOT_uSqERn
-X-Proofpoint-GUID: r0-ty98q_QKxfTnhHLoiMuyOT_uSqERn
+X-Proofpoint-ORIG-GUID: UpThctazHpv93Cr7d4kdTzKRFBHrtW7C
+X-Proofpoint-GUID: UpThctazHpv93Cr7d4kdTzKRFBHrtW7C
 X-Proofpoint-Spam-Reason: safe
 Cc: patches@opensource.cirrus.com, alsa-devel@alsa-project.org,
  linux-kernel@vger.kernel.org, Stefan Binding <sbinding@opensource.cirrus.com>
@@ -98,11 +98,10 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 From: Stefan Binding <sbinding@opensource.cirrus.com>
 
-DSP controls are exposed as ALSA controls, however,
-some of these controls are required to be accessed by
-the driver. Add apis which allow read/write of these
-controls. The write api will also notify the ALSA control
-on value change.
+When waking from hibernation, it is possible for the function
+which sends the wake command to fail initially, but after a
+retry it will succeed. There is no need to print an error if
+the initial attempts fail.
 
 Signed-off-by: Stefan Binding <sbinding@opensource.cirrus.com>
 Signed-off-by: Vitaly Rodionov <vitalyr@opensource.cirrus.com>
@@ -110,88 +109,24 @@ Signed-off-by: Vitaly Rodionov <vitalyr@opensource.cirrus.com>
 
 Changes since v2:
  - No change
+ 
+ sound/soc/codecs/cs35l41-lib.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
- sound/pci/hda/hda_cs_dsp_ctl.c | 52 ++++++++++++++++++++++++++++++++++
- sound/pci/hda/hda_cs_dsp_ctl.h |  4 +++
- 2 files changed, 56 insertions(+)
-
-diff --git a/sound/pci/hda/hda_cs_dsp_ctl.c b/sound/pci/hda/hda_cs_dsp_ctl.c
-index 46df48ff2ae1..3b837d000a00 100644
---- a/sound/pci/hda/hda_cs_dsp_ctl.c
-+++ b/sound/pci/hda/hda_cs_dsp_ctl.c
-@@ -237,6 +237,58 @@ void hda_cs_dsp_control_remove(struct cs_dsp_coeff_ctl *cs_ctl)
+diff --git a/sound/soc/codecs/cs35l41-lib.c b/sound/soc/codecs/cs35l41-lib.c
+index cc5366c8bdd6..e726a38f1997 100644
+--- a/sound/soc/codecs/cs35l41-lib.c
++++ b/sound/soc/codecs/cs35l41-lib.c
+@@ -1302,7 +1302,8 @@ int cs35l41_set_cspl_mbox_cmd(struct device *dev, struct regmap *regmap,
+ 			return 0;
+ 	}
+ 
+-	dev_err(dev, "Failed to set mailbox cmd %u (status %u)\n", cmd, sts);
++	if (cmd != CSPL_MBOX_CMD_OUT_OF_HIBERNATE)
++		dev_err(dev, "Failed to set mailbox cmd %u (status %u)\n", cmd, sts);
+ 
+ 	return -ENOMSG;
  }
- EXPORT_SYMBOL_NS_GPL(hda_cs_dsp_control_remove, SND_HDA_CS_DSP_CONTROLS);
- 
-+int hda_cs_dsp_write_ctl(struct cs_dsp *dsp, const char *name, int type,
-+			 unsigned int alg, void *buf, size_t len)
-+{
-+	struct cs_dsp_coeff_ctl *cs_ctl;
-+	struct hda_cs_dsp_coeff_ctl *ctl;
-+	struct snd_kcontrol *kctl;
-+	int ret;
-+
-+	cs_ctl = cs_dsp_get_ctl(dsp, name, type, alg);
-+	if (!cs_ctl)
-+		return -EINVAL;
-+
-+	ctl = cs_ctl->priv;
-+
-+	if (len > cs_ctl->len)
-+		return -EINVAL;
-+
-+	ret = cs_dsp_coeff_write_ctrl(cs_ctl, 0, buf, len);
-+	if (ret)
-+		return ret;
-+
-+	if (cs_ctl->flags & WMFW_CTL_FLAG_SYS)
-+		return 0;
-+
-+	list_for_each_entry(kctl, &ctl->card->controls, list)
-+		if (!strncmp(kctl->id.name, ctl->name, sizeof(kctl->id.name))) {
-+			snd_ctl_notify(ctl->card, SNDRV_CTL_EVENT_MASK_VALUE, &kctl->id);
-+			return 0;
-+		}
-+
-+	dev_warn(dsp->dev, "Cannot find Control for %s\n", name);
-+
-+	return 0;
-+}
-+EXPORT_SYMBOL_NS_GPL(hda_cs_dsp_write_ctl, SND_HDA_CS_DSP_CONTROLS);
-+
-+int hda_cs_dsp_read_ctl(struct cs_dsp *dsp, const char *name, int type,
-+			unsigned int alg, void *buf, size_t len)
-+{
-+	struct cs_dsp_coeff_ctl *cs_ctl;
-+
-+	cs_ctl = cs_dsp_get_ctl(dsp, name, type, alg);
-+	if (!cs_ctl)
-+		return -EINVAL;
-+
-+	if (len > cs_ctl->len)
-+		return -EINVAL;
-+
-+	return cs_dsp_coeff_read_ctrl(cs_ctl, 0, buf, len);
-+}
-+EXPORT_SYMBOL_NS_GPL(hda_cs_dsp_read_ctl, SND_HDA_CS_DSP_CONTROLS);
-+
- MODULE_DESCRIPTION("CS_DSP ALSA Control HDA Library");
- MODULE_AUTHOR("Stefan Binding, <sbinding@opensource.cirrus.com>");
- MODULE_LICENSE("GPL");
-diff --git a/sound/pci/hda/hda_cs_dsp_ctl.h b/sound/pci/hda/hda_cs_dsp_ctl.h
-index 3c90312b45d6..65b9c5c68957 100644
---- a/sound/pci/hda/hda_cs_dsp_ctl.h
-+++ b/sound/pci/hda/hda_cs_dsp_ctl.h
-@@ -30,5 +30,9 @@ struct hda_cs_dsp_ctl_info {
- int hda_cs_dsp_control_add(struct cs_dsp_coeff_ctl *cs_ctl, struct hda_cs_dsp_ctl_info *info);
- void hda_cs_dsp_control_remove(struct cs_dsp_coeff_ctl *cs_ctl);
- int hda_cs_dsp_remove_kcontrol(struct snd_card *card, const char *name);
-+int hda_cs_dsp_write_ctl(struct cs_dsp *dsp, const char *name, int type,
-+			 unsigned int alg, void *buf, size_t len);
-+int hda_cs_dsp_read_ctl(struct cs_dsp *dsp, const char *name, int type,
-+			unsigned int alg, void *buf, size_t len);
- 
- #endif /*__HDA_CS_DSP_CTL_H__*/
 -- 
 2.34.1
 
