@@ -4,79 +4,80 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id CA341C4321E
-	for <alsa-devel@archiver.kernel.org>; Wed, 25 May 2022 13:21:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id DA700C433FE
+	for <alsa-devel@archiver.kernel.org>; Wed, 25 May 2022 13:21:59 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 11F8516E3;
-	Wed, 25 May 2022 15:20:58 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 11F8516E3
+	by alsa0.perex.cz (Postfix) with ESMTPS id 243E216BD;
+	Wed, 25 May 2022 15:21:08 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 243E216BD
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1653484908;
-	bh=D9kSCjHK5fzcVjEGYXVbDTo3WKeyBSEp0Zdkksuqj0I=;
+	s=default; t=1653484918;
+	bh=/kEp42UZlwvQPpKIQw+bYI9j/+UpBgZPbDEnz0ouxkU=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=gtzFhRCXIo0YVFwESoV5TJYIb4TOadsr8Rt3rpbVF0h92G1Hu0d7D6uKRjw2CSur0
-	 ZsIXr1WNBJXOJ7IR9PxwjqaeuPATLvU+sKa2IlTgz65a4B87HkPfqSF/Jiq6K2lYx2
-	 wI999TSU6/Hw67192o/XdsAgRqPAh9WYA0dKAI5A=
+	b=anLqVzbTfUDXsFR/+IKw2fwXt4ka4xsZt2Z89cPGgDw4W+ElY5zR4IFwg87GUIsqm
+	 tu7dgOEip6lfsQGV+y6tFSZARUMdFx0dcImN7oykpatkLdRE1gVYp7cjTweI5IkzHH
+	 7XY/CB695MKMJHjq3uUcGmfKSqZ8rfkQOuuV4XkU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 384C2F805A9;
+	by alsa1.perex.cz (Postfix) with ESMTP id C7B5DF805AF;
 	Wed, 25 May 2022 15:17:12 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 091BBF8054A; Wed, 25 May 2022 15:17:07 +0200 (CEST)
+ id 76E34F80566; Wed, 25 May 2022 15:17:09 +0200 (CEST)
 Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
  [67.231.152.168])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id AF247F80169
- for <alsa-devel@alsa-project.org>; Wed, 25 May 2022 15:16:50 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AF247F80169
+ by alsa1.perex.cz (Postfix) with ESMTPS id 59FF0F80529
+ for <alsa-devel@alsa-project.org>; Wed, 25 May 2022 15:16:52 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 59FF0F80529
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com
- header.b="nt9dKgx/"
+ header.b="nCNgBgeU"
 Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
- by mx0b-001ae601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 24P7Sjcr031231;
- Wed, 25 May 2022 08:16:49 -0500
+ by mx0b-001ae601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 24P7Sjct031231;
+ Wed, 25 May 2022 08:16:51 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
  h=from : to : cc :
  subject : date : message-id : in-reply-to : references : mime-version :
  content-transfer-encoding : content-type; s=PODMain02222019;
- bh=i1KBfpmWq85BkKRplVpoCF4sGjk4Y2NdJNchd02pEJA=;
- b=nt9dKgx/6wwZD/E6yEuUvionppErET5wgK0O3dDPSIKMW34I4kjP8HuTJbYGeKuQrIR3
- NuFyL/n9gixEb+TLFWOZMXTc4WqDuhD4unQ/Spw5GeBgFHy4X/ZKZ05CRXfvVwMv1nZg
- WVmPiQTZOBaGDMbelhxhtQfTsnoXjuhYgk5/NXTCPRi7z9I9MSar95qFW8gWGClTLl29
- 2qA2zzRA3nTNqOBoPmomdmk1TEi7uH1dL1Q3m8hZid0Un/uOF0AF6hNsFlHn7FzTf8GU
- TuQKr7QGJBbGzV8NqoFE42hXtoke3ugLLUjGDZwVc3iR7UHk81zpsYvxGWyqtNnyvj7I og== 
+ bh=zfY69P7pEy7Ti9ODGavDNoDFkIDCMhTvPP8FmRf6wG0=;
+ b=nCNgBgeU+d6D0Pq+laIYFZ2Flx6o9Cd3ToBHRzwIirNtzvgEIxkPZSAaxiRFKD/9upob
+ 7gxPj1bZou9mfKpgJ1tN0qimx2glN5pQbZ1M+0hR0Yyl7UmayFgYWNZrVztshj0pgkw+
+ Ldzu1M4wHa3RMpV0VcmZM27EGrpCc41HgtCSyol0xKQGEYLTB+OaVKGJR1PO7CGPv0pb
+ ot+wkwqbzxOzsYHa5v5dYylBLOR0FxNMdN1ef3ezys+TQERjvafB2fB/oM3kXwu2/C/b
+ 1iHr+0Mfnlbl35TEre/5Hdur0ftFlfluh2xDs2EO8HF9f2RxD5MmcNKRjTTrHqTzZ2YD Ow== 
 Received: from ediex02.ad.cirrus.com ([84.19.233.68])
- by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3g93u20web-2
+ by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3g93u20web-4
  (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
- Wed, 25 May 2022 08:16:48 -0500
+ Wed, 25 May 2022 08:16:50 -0500
 Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX02.ad.cirrus.com
  (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.24; Wed, 25 May
- 2022 14:16:45 +0100
+ 2022 14:16:46 +0100
 Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
  (198.61.84.80) with Microsoft SMTP Server id 15.1.2375.24 via
- Frontend Transport; Wed, 25 May 2022 14:16:45 +0100
+ Frontend Transport; Wed, 25 May 2022 14:16:46 +0100
 Received: from vitaly-Legion-7-16ACHg6.ad.cirrus.com (unknown [198.90.238.233])
- by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 13BE046C;
- Wed, 25 May 2022 13:16:45 +0000 (UTC)
+ by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 332DD468;
+ Wed, 25 May 2022 13:16:46 +0000 (UTC)
 From: Vitaly Rodionov <vitalyr@opensource.cirrus.com>
 To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Mark
  Brown <broonie@kernel.org>
-Subject: [PATCH v4 14/17] ALSA: hda: hda_cs_dsp_ctl: Add fw id strings
-Date: Wed, 25 May 2022 14:16:35 +0100
-Message-ID: <20220525131638.5512-15-vitalyr@opensource.cirrus.com>
+Subject: [PATCH v4 17/17] ALSA: hda: cs35l41: Add module parameter to control
+ firmware load
+Date: Wed, 25 May 2022 14:16:38 +0100
+Message-ID: <20220525131638.5512-18-vitalyr@opensource.cirrus.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20220525131638.5512-1-vitalyr@opensource.cirrus.com>
 References: <20220525131638.5512-1-vitalyr@opensource.cirrus.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: 4svRktvXs-WOUTjLWTNw70CPr-v42idL
-X-Proofpoint-GUID: 4svRktvXs-WOUTjLWTNw70CPr-v42idL
+X-Proofpoint-ORIG-GUID: OOguHXURhwrnlex9HUVOBe_8ajCWKS5Q
+X-Proofpoint-GUID: OOguHXURhwrnlex9HUVOBe_8ajCWKS5Q
 X-Proofpoint-Spam-Reason: safe
 Cc: patches@opensource.cirrus.com, alsa-devel@alsa-project.org,
  linux-kernel@vger.kernel.org, Stefan Binding <sbinding@opensource.cirrus.com>
@@ -97,51 +98,58 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 From: Stefan Binding <sbinding@opensource.cirrus.com>
 
-This will be used to define the firmware names.
+By default, the driver will automatically load DSP firmware
+for the amps, if available. Adding this option allows the
+autoload to be optional, which allows for different configurations.
 
 Signed-off-by: Stefan Binding <sbinding@opensource.cirrus.com>
 Signed-off-by: Vitaly Rodionov <vitalyr@opensource.cirrus.com>
 ---
 
 Changes since v2:
- - No change
+ - Added module paramter to control firmware loading
  
- sound/pci/hda/hda_cs_dsp_ctl.c | 8 ++++++++
- sound/pci/hda/hda_cs_dsp_ctl.h | 2 ++
- 2 files changed, 10 insertions(+)
+ sound/pci/hda/cs35l41_hda.c | 20 +++++++++++++++-----
+ 1 file changed, 15 insertions(+), 5 deletions(-)
 
-diff --git a/sound/pci/hda/hda_cs_dsp_ctl.c b/sound/pci/hda/hda_cs_dsp_ctl.c
-index 3b837d000a00..4cf5f7c2e267 100644
---- a/sound/pci/hda/hda_cs_dsp_ctl.c
-+++ b/sound/pci/hda/hda_cs_dsp_ctl.c
-@@ -30,6 +30,14 @@ static const char * const hda_cs_dsp_fw_text[HDA_CS_DSP_NUM_FW] = {
- 	[HDA_CS_DSP_FW_MISC] =     "Misc",
- };
+diff --git a/sound/pci/hda/cs35l41_hda.c b/sound/pci/hda/cs35l41_hda.c
+index 4a164b7ebab1..c836323a8aaf 100644
+--- a/sound/pci/hda/cs35l41_hda.c
++++ b/sound/pci/hda/cs35l41_hda.c
+@@ -33,6 +33,11 @@
+ #define CAL_DSP_CTL_TYPE		5
+ #define CAL_DSP_CTL_ALG			205
  
-+const char * const hda_cs_dsp_fw_ids[HDA_CS_DSP_NUM_FW] = {
-+	[HDA_CS_DSP_FW_SPK_PROT] = "spk-prot",
-+	[HDA_CS_DSP_FW_SPK_CALI] = "spk-cali",
-+	[HDA_CS_DSP_FW_SPK_DIAG] = "spk-diag",
-+	[HDA_CS_DSP_FW_MISC] =     "misc",
-+};
-+EXPORT_SYMBOL_NS_GPL(hda_cs_dsp_fw_ids, SND_HDA_CS_DSP_CONTROLS);
++static bool firmware_autostart = 1;
++module_param(firmware_autostart, bool, 0444);
++MODULE_PARM_DESC(firmware_autostart, "Allow automatic firmware download on boot"
++			     "(0=Disable, 1=Enable) (default=1); ");
 +
- static inline struct hda_cs_dsp_coeff_ctl *bytes_ext_to_ctl(struct soc_bytes_ext *ext)
- {
- 	return container_of(ext, struct hda_cs_dsp_coeff_ctl, bytes_ext);
-diff --git a/sound/pci/hda/hda_cs_dsp_ctl.h b/sound/pci/hda/hda_cs_dsp_ctl.h
-index 65b9c5c68957..265d8024eec9 100644
---- a/sound/pci/hda/hda_cs_dsp_ctl.h
-+++ b/sound/pci/hda/hda_cs_dsp_ctl.h
-@@ -27,6 +27,8 @@ struct hda_cs_dsp_ctl_info {
- 	const char *amp_name;
- };
+ static const struct reg_sequence cs35l41_hda_config[] = {
+ 	{ CS35L41_PLL_CLK_CTRL,		0x00000430 }, // 3072000Hz, BCLK Input, PLL_REFCLK_EN = 1
+ 	{ CS35L41_DSP_CLK_CTRL,		0x00000003 }, // DSP CLK EN
+@@ -817,11 +822,16 @@ static int cs35l41_hda_bind(struct device *dev, struct device *master, void *mas
  
-+extern const char * const hda_cs_dsp_fw_ids[HDA_CS_DSP_NUM_FW];
-+
- int hda_cs_dsp_control_add(struct cs_dsp_coeff_ctl *cs_ctl, struct hda_cs_dsp_ctl_info *info);
- void hda_cs_dsp_control_remove(struct cs_dsp_coeff_ctl *cs_ctl);
- int hda_cs_dsp_remove_kcontrol(struct snd_card *card, const char *name);
+ 	cs35l41->firmware_type = HDA_CS_DSP_FW_SPK_PROT;
+ 
+-	cs35l41->request_fw_load = true;
+-	mutex_lock(&cs35l41->fw_mutex);
+-	if (cs35l41_smart_amp(cs35l41) < 0)
+-		dev_warn(cs35l41->dev, "Cannot Run Firmware, reverting to dsp bypass...\n");
+-	mutex_unlock(&cs35l41->fw_mutex);
++	if (firmware_autostart) {
++		dev_dbg(cs35l41->dev, "Firmware Autostart.\n");
++		cs35l41->request_fw_load = true;
++		mutex_lock(&cs35l41->fw_mutex);
++		if (cs35l41_smart_amp(cs35l41) < 0)
++			dev_warn(cs35l41->dev, "Cannot Run Firmware, reverting to dsp bypass...\n");
++		mutex_unlock(&cs35l41->fw_mutex);
++	} else {
++		dev_dbg(cs35l41->dev, "Firmware Autostart is disabled.\n");
++	}
+ 
+ 	cs35l41_create_controls(cs35l41);
+ 
 -- 
 2.34.1
 
