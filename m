@@ -4,70 +4,83 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 95E69C433F5
-	for <alsa-devel@archiver.kernel.org>; Wed, 25 May 2022 21:00:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 72269C433F5
+	for <alsa-devel@archiver.kernel.org>; Wed, 25 May 2022 21:31:45 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A6CAA42;
-	Wed, 25 May 2022 23:00:06 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A6CAA42
+	by alsa0.perex.cz (Postfix) with ESMTPS id DE96316A1;
+	Wed, 25 May 2022 23:30:52 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DE96316A1
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1653512456;
-	bh=yzAy7uVOrWy2btbv/yATT3NHgIH0p/5Z2fvXVXuY4dQ=;
-	h=From:Date:Subject:To:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=uhS7qbXhhCT96jjaZUpGissyEqhgoy7X7L7P8zQ+5kSUjnGR+tivIsyyLYgIs2EsQ
-	 oq1dMH8KyuUCToW5pE32HUm2tlPayRl/QVe7STI0NB7z6CTl1jMcogwjnuaapNp6Cn
-	 W9B3MUiaUV8QW0DfY22BkhNwr7a+cmUXBMV46z5A=
+	s=default; t=1653514302;
+	bh=8GFcT/M1tk9WnUvUZ/xjIR+P+QUrCNq+NkKDve4Se5o=;
+	h=Date:Subject:To:References:From:In-Reply-To:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=qYC5VBsWJwRleIx5c2ie78Bttn9VZmny/7fkW/EVAuGQCRDVI1V3YSeMyUGx+LHAs
+	 wGn15hDElE2fx2OUdWlZE5NSJ/K08NsFcLW+mWM+0efNWfqjwYOaOkEFjRy9ilAXZ+
+	 BV3sZxe/RmSiGKYOEIYsZlYdUqI+BGKnt74B9RmI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 20859F80169;
-	Wed, 25 May 2022 23:00:06 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 5EFBFF80116;
+	Wed, 25 May 2022 23:30:52 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id E6703F8016D; Wed, 25 May 2022 23:00:04 +0200 (CEST)
-Received: from mail-qk1-x72b.google.com (mail-qk1-x72b.google.com
- [IPv6:2607:f8b0:4864:20::72b])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id C1400F801EC; Wed, 25 May 2022 23:30:50 +0200 (CEST)
+Received: from mga12.intel.com (mga12.intel.com [192.55.52.136])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id EA11CF80116
- for <alsa-devel@alsa-project.org>; Wed, 25 May 2022 23:00:01 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EA11CF80116
+ by alsa1.perex.cz (Postfix) with ESMTPS id DC9ECF80116
+ for <alsa-devel@alsa-project.org>; Wed, 25 May 2022 23:30:43 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DC9ECF80116
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=konsulko.com header.i=@konsulko.com
- header.b="ZU6yZxcz"
-Received: by mail-qk1-x72b.google.com with SMTP id x65so14270910qke.2
- for <alsa-devel@alsa-project.org>; Wed, 25 May 2022 14:00:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=konsulko.com; s=google;
- h=mime-version:from:date:message-id:subject:to:cc;
- bh=yzAy7uVOrWy2btbv/yATT3NHgIH0p/5Z2fvXVXuY4dQ=;
- b=ZU6yZxczWcDhn90IcgteaTCE6Er/+tqZZ8iBw+pqR6b1czxIdnRKLA54QAFKkxNx22
- PzUQIWOKsVSCmVacFn2Wy5tx4XqwdyDwFLJB7EzS5Mli39kF0ltKZ9Py1b3IF1Rc8ok9
- I3gTnWP/pwLEsF+UJajL65OCG3tKisHHyKieg=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
- bh=yzAy7uVOrWy2btbv/yATT3NHgIH0p/5Z2fvXVXuY4dQ=;
- b=TDkXd8AyXi/fXfaOVOJrqzF5gwnHhSbLtQb8OZu/8cKjfodeQ2gxrel1uv3jKaR1v6
- pHe92VjF4gFCCbhkRyRKrsiGJmM6AreGVyPv7pFbeZpNnfa1s8UyIveZfoNWed+4+zry
- +85vvP2o/M1t90FmMFw3967THkeErDewsvRb0cAPw39CjXnErBcmmWWq/ktAEikJAYB7
- IbLR9kmL/dkJm65joySesAUIB+6TlRKBmuuw+TGKLtWseHApe2bFlxFnsBAFw3OaJ3CX
- 6tEKWSnhRJHbkZvy6qeMwUv6P6GcqgTzi4zjKuZhMbRcomIK4iT5LIvfQy3ac2pNzSOX
- cYdg==
-X-Gm-Message-State: AOAM531AyEfIZqd3Y52wZpfDyOPvrB4jNU9rxADKnbAnIpGqsqCZFJJc
- 3bT+tn1O5J8AldtjJT1lcY1dMGvvxUOkqBNSBfXozr+cQTiztA==
-X-Google-Smtp-Source: ABdhPJyGyNtzV/wUqStpeK/CMlDHIP40Mx07THSuZ7Qsty0bq8Lt8KvyKpBWsnsy0N0LfhyaqDw6VHxpX6ZeCt+9MQw=
-X-Received: by 2002:a05:620a:2992:b0:6a0:94d2:2e5c with SMTP id
- r18-20020a05620a299200b006a094d22e5cmr21521242qkp.62.1653512399282; Wed, 25
- May 2022 13:59:59 -0700 (PDT)
+ dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
+ header.b="M/DFByrw"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+ d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+ t=1653514246; x=1685050246;
+ h=message-id:date:mime-version:subject:to:cc:references:
+ from:in-reply-to:content-transfer-encoding;
+ bh=8GFcT/M1tk9WnUvUZ/xjIR+P+QUrCNq+NkKDve4Se5o=;
+ b=M/DFByrwTQrp70fCir3rRXrKeSHFfvKuTyUiMiCPfX3puqPsqMQafvVw
+ Gjvz2lIXpLDI2Tm0HIUVhgoEJx+OE3XOj0kHG/bU2U4pkGOsOhNoHTzui
+ vZoPHF7R1mC6It61zPXw+S8uGz/BHvUyZQ16/xgFXMYkhjmqQ1RiKY6fp
+ NyV6W55NqNHMFA4+qHi7mDZKGg0op39Y6HiFK+9kQZVAaBRSoQoDTiFR5
+ rqphtIy2mHxeS4qdqo6NjYNubM1InCQxEwtIgBhSaaav4MDlxRk8MyKrx
+ krw50AJw2JcxAPxDRc8E8NAsGUne0Od+b42FNcshZCnXhjTeVTmIP6oJq A==;
+X-IronPort-AV: E=McAfee;i="6400,9594,10358"; a="253812008"
+X-IronPort-AV: E=Sophos;i="5.91,252,1647327600"; d="scan'208";a="253812008"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+ by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 25 May 2022 14:30:38 -0700
+X-IronPort-AV: E=Sophos;i="5.91,252,1647327600"; d="scan'208";a="745955652"
+Received: from srotter-mobl1.amr.corp.intel.com (HELO [10.212.216.74])
+ ([10.212.216.74])
+ by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 25 May 2022 14:30:36 -0700
+Message-ID: <895302ec-f9e5-2b6a-835a-08e73ef8ace3@linux.intel.com>
+Date: Wed, 25 May 2022 16:25:33 -0500
 MIME-Version: 1.0
-From: Michael Welling <michael.welling@konsulko.com>
-Date: Wed, 25 May 2022 13:59:48 -0700
-Message-ID: <CAMM3KADDNMD0X6q_vPbe8xLgzJ3Unguhz29Xk5cwnwaD2YmwRQ@mail.gmail.com>
-Subject: Enabling fsl_sai MCLK before codec probe
-To: alsa-devel@alsa-project.org
-Content-Type: text/plain; charset="UTF-8"
-Cc: Nicolin Chen <nicoleotsuka@gmail.com>, Liam Girdwood <lgirdwood@gmail.com>,
- Timur Tabi <timur@kernel.org>, Xiubo Li <Xiubo.Lee@gmail.com>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Firefox/91.0 Thunderbird/91.5.0
+Subject: Re: [PATCH v4 1/2] ASoC: amd: acp: Add support for nau8825 and
+ max98360 card
+Content-Language: en-US
+To: V sujith kumar Reddy <Vsujithkumar.Reddy@amd.com>, broonie@kernel.org,
+ alsa-devel@alsa-project.org
+References: <20220525203415.2227914-1-Vsujithkumar.Reddy@amd.com>
+ <20220525203415.2227914-2-Vsujithkumar.Reddy@amd.com>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+In-Reply-To: <20220525203415.2227914-2-Vsujithkumar.Reddy@amd.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+Cc: Sunil-kumar.Dommati@amd.com, Geert Uytterhoeven <geert+renesas@glider.be>,
+ ajitkumar.pandey@amd.com, Kai Vehmanen <kai.vehmanen@intel.com>,
+ open list <linux-kernel@vger.kernel.org>, Basavaraj.Hiregoudar@amd.com,
+ Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>,
+ Jia-Ju Bai <baijiaju1990@gmail.com>, Arnd Bergmann <arnd@arndb.de>,
+ Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+ Akihiko Odaki <akihiko.odaki@gmail.com>, Vijendar.Mukunda@amd.com,
+ Daniel Baluta <daniel.baluta@nxp.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -83,33 +96,47 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-So I have a tricky race condition that comes up with hardware that
-combines imx8 with a pcm1681 codec. The pcm1681 requires that MCLK be
-enabled for 65536 cycles before accessing the I2C management port.
 
-The imx8 sai driver on the other hand does not start the built in MCLK
-until a confluence of events that is not triggered until just before
-streaming starts which is too late.
 
-Is there a clean way to start the imx8 sai MCLK before the codec probe occurs?
-Or have it started and delayed during the codec probe before it tries
-to access i2c?
 
-We have a working solution but it is a bit overreaching and adds a
-callback function to the snd_soc_dai_ops struct to start the clock,
-and adds the code to the fsl_sai.c to toggle the appropriate bits in
-the SoC sai driver to make a clock appear and registers to the new
-function callback.
+> +struct snd_soc_acpi_mach snd_soc_acpi_amd_rmb_sof_machines[] = {
+> +	{
+> +		.id = "AMDI1019",
+> +		.drv_name = "rmb-dsp",
+> +		.pdata = &acp_quirk_data,
+> +		.fw_filename = "sof-rmb.ri",
+> +		.sof_tplg_filename = "sof-acp-rmb.tplg",
+> +	},
+> +	{
+> +		.id = "10508825",
+> +		.drv_name = "nau8825-max",
+> +		.pdata = &acp_quirk_data,
+> +		.machine_quirk = snd_soc_acpi_codec_list,
+> +		.quirk_data = &amp_max,
+> +		.fw_filename = "sof-rmb.ri",
+> +		.sof_tplg_filename = "sof-acp-rmb.tplg",
 
-Then the simple-card was amended to add the appropriate enabling
-through the new callback such that the clock is on long enough before
-the codec is probed.
+this looks rather odd, you have two entries in the table that point to
+the exact same pair of firmware and topology files. This is either
+intentional and missing a comment, or a copy-paste mistake, or some of
+these fields are not required.
 
-There was some suggestion of caching the i2c registers until the clock
-is enabled but this would be difficult given the clock is not started
-until streaming starts and we don't want to stream until the codec is
-initialized.
+> -	clk_disable_unprepare(drvdata->wclk);
+> +	if (!drvdata->soc_mclk)
+> +		clk_disable_unprepare(drvdata->wclk);
+>  }
 
-I am looking for a solution that is minimal and robust.
+mclk and wclk are different concepts usually.
 
-Any pointers would be greatly appreciated.
+
+>  struct acp_card_drvdata {
+> @@ -49,6 +51,7 @@ struct acp_card_drvdata {
+>  	unsigned int dai_fmt;
+>  	struct clk *wclk;
+>  	struct clk *bclk;
+> +	bool soc_mclk;
+
+I wonder if soc_mclk means 'soc_clock_provider' ?
+
+it looks like a configuration instead of a real/physical clock?
+
