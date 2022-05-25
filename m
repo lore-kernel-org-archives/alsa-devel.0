@@ -4,68 +4,42 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D8007C4332F
-	for <alsa-devel@archiver.kernel.org>; Tue, 24 May 2022 18:26:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7D5ACC433EF
+	for <alsa-devel@archiver.kernel.org>; Wed, 25 May 2022 00:37:23 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 396A71652;
-	Tue, 24 May 2022 20:25:32 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 396A71652
+	by alsa0.perex.cz (Postfix) with ESMTPS id A96DA164F;
+	Wed, 25 May 2022 02:36:30 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A96DA164F
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1653416782;
-	bh=IsSqmCDUURr9/5xQZSxVskm0kP7w7Lk6OXH98DkMxv4=;
-	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
+	s=default; t=1653439040;
+	bh=xOh3pE4N9F+3lPsg3NIc/jXSzwj3gELVZz2HjMg3Xfs=;
+	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=UAhweCQIcKGpXoosb3L8raTAobecQ1WXb6QJJubyCIp70vU+eT2Pp4zDNXEs5bqid
-	 2mGmmTXqH6PVgyJuuCZAmhcWvfexQtzUHsVhvfptWZyjQ0hs4Ydk4rvWLfKrpHkKyA
-	 R3eUOzSHXzR1dM7p5Ur09ks/kjy1Eauo9D2lfUoQ=
+	b=H3jE5yAC/WPc9a5X1rc3iRP1ebf2aPTHxzyEYRiMG6yIN9yxUvCNnyqUGntlhnWUP
+	 nQBpk+hEzksOCgg+cCDXwBdMa4oOEoWuwxBjIVinq3lfIHci3Y2rtiWKk1LnaxgBQY
+	 K7JNjUat9PWI4ON9hlNGiG9FI/QoxkKUuwOC22TY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id C2D4EF80100;
-	Tue, 24 May 2022 20:25:31 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 350D9F804CC;
+	Wed, 25 May 2022 02:36:30 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 14131F804D1; Tue, 24 May 2022 20:25:30 +0200 (CEST)
-Received: from ams.source.kernel.org (ams.source.kernel.org
- [IPv6:2604:1380:4601:e00::1])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id BEF51F80100
- for <alsa-devel@alsa-project.org>; Tue, 24 May 2022 20:25:27 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BEF51F80100
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="IRVqMZMQ"
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by ams.source.kernel.org (Postfix) with ESMTPS id C1832B81A99;
- Tue, 24 May 2022 18:25:26 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 200AAC34100;
- Tue, 24 May 2022 18:25:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1653416725;
- bh=IsSqmCDUURr9/5xQZSxVskm0kP7w7Lk6OXH98DkMxv4=;
- h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=IRVqMZMQYCBDCqMfRZHNB4oBMjtiMmAOnh2oO2C3JU3X6R3KV4Eoc7nxv6wY2I5zE
- KWpsOjPpSv2/PsIotxxsSodb80eyhiv2ruoXAN9ZoS8XYdWmbbHt+1khksFF0oByGd
- ES+3MycjpJXHEgHOEVJRdoUmbWJEe5XHtUSPku79MBb02/bGgjHS2zrrmA5SeMdmCW
- llgH5TQzJnesP0StWWrAnVpWDKElevgGxahS88yFGkfjyPvkPJeBERiusVBp500GxJ
- 3kPMg5pV4BykiFDsWEwPzyTyCUBbl5OSfSb+Onrx0yNWFeiTWwwa/BMA6xF3Zso5Vw
- Jo0qji14Bp7xg==
-From: Mark Brown <broonie@kernel.org>
-To: alsa-devel@alsa-project.org, ssabakar@amd.com
-In-Reply-To: <20220523112956.3087604-1-ssabakar@amd.com>
-References: <20220523112956.3087604-1-ssabakar@amd.com>
-Subject: Re: [PATCH] ASoC: SOF: amd: Fixed Build error
-Message-Id: <165341672284.1497256.4768954734853451749.b4-ty@kernel.org>
-Date: Tue, 24 May 2022 19:25:22 +0100
+ id ED2D0F804D1; Wed, 25 May 2022 02:36:28 +0200 (CEST)
+Received: from webhooks-bot.alsa-project.org (gate.perex.cz [77.48.224.242])
+ by alsa1.perex.cz (Postfix) with ESMTP id 88CDBF800E3
+ for <alsa-devel@alsa-project.org>; Wed, 25 May 2022 02:36:24 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 88CDBF800E3
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-Cc: Sunil-kumar.Dommati@amd.com, lkp@intel.com, ajitkumar.pandey@amd.com,
- lgirdwood@gmail.com, Basavaraj.Hiregoudar@amd.com, tiwai@suse.com,
- linux-kernel@vger.kernel.org, Vijendar.Mukunda@amd.com
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+From: GitHub pull_request - opened <github@alsa-project.org>
+To: alsa-devel@alsa-project.org
+In-Reply-To: <1653438984013969898-webhooks-bot@alsa-project.org>
+References: <1653438984013969898-webhooks-bot@alsa-project.org>
+Subject: Update mapping for the new Gigabyte Aorus Pro WiFi rev 1.2
+Message-Id: <20220525003628.ED2D0F804D1@alsa1.perex.cz>
+Date: Wed, 25 May 2022 02:36:28 +0200 (CEST)
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -81,43 +55,13 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Mon, 23 May 2022 16:59:53 +0530, Syed Saba kareem wrote:
-> Add linux/module.h in acp-pci.c to solve the below dependency
-> 
-> All error/warnings (new ones prefixed by >>):
-> 
-> >> sound/soc/amd/acp/acp-pci.c:148:1: warning: data definition has no type or storage class
-> 148 | MODULE_DEVICE_TABLE(pci, acp_pci_ids);
-> | ^~~~~~~~~~~~~~~~~~~
-> >> sound/soc/amd/acp/acp-pci.c:148:1: error: type defaults to 'int' in declaration of 'MODULE_DEVICE_TABLE' [-Werror=implicit-int]
-> ...
-> 
-> [...]
+alsa-project/alsa-ucm-conf pull request #156 was opened from 13r0ck:
 
-Applied to
+Requires kernel patch from:
+https://bugzilla.kernel.org/show_bug.cgi?id=215988
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+This doesn't fix the front mic for some reason, as well I am not sure if this will cause a regression for the 1.1 board
 
-Thanks!
-
-[1/1] ASoC: SOF: amd: Fixed Build error
-      commit: 803a1f7272797faa15a7879cdc70f9adaf3fdcba
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
+Request URL   : https://github.com/alsa-project/alsa-ucm-conf/pull/156
+Patch URL     : https://github.com/alsa-project/alsa-ucm-conf/pull/156.patch
+Repository URL: https://github.com/alsa-project/alsa-ucm-conf
