@@ -4,70 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id ACC97C433F5
-	for <alsa-devel@archiver.kernel.org>; Wed, 25 May 2022 06:38:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C9EDFC433F5
+	for <alsa-devel@archiver.kernel.org>; Wed, 25 May 2022 07:36:31 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3A703163E;
-	Wed, 25 May 2022 08:37:51 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3A703163E
+	by alsa0.perex.cz (Postfix) with ESMTPS id 1B14F161F;
+	Wed, 25 May 2022 09:35:39 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1B14F161F
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1653460721;
-	bh=lfql6zH6rIKoE/VkPmyUmAPT7oRgCyb0h64iapLLHcg=;
-	h=Date:Subject:To:References:From:In-Reply-To:Cc:List-Id:
+	s=default; t=1653464189;
+	bh=I+gP2fgpMad/HzGG5gzm4bfoDh1wNh5Wf5cP2c/AJEY=;
+	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=RVXOLI4ZUXAD4OkeTgHS/cc5i3CTf56ovZvV61m7v/cPqE4GFjxolzrVjGhIB5pLz
-	 4cbTNL2KV1GE41dY6TGhpRx1XJvPDuxjhJlSovVb23W8z+5b6M00wzptbQeZONvn8v
-	 8jN9NcigbnLMUC5eDrPlVm3mOimAa8jMiBX5cJbk=
+	b=sCn+hRmhLMpUiWu7Wn00Ganw4cX9mZ5tJhzMBJF9xLQEg9au8oPdWs6bChEceHRHl
+	 MEKoCp3+q6Y+4qpaFPBrkKjWRTjQY/Kgx9+45ZIA5Ni1C6KDn30puFMvsWhML+IIG8
+	 x3xPCZY2sgh51l8q9OO/zyjBZ3952WPQ/fm/wo1k=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id A9F20F800D0;
-	Wed, 25 May 2022 08:37:50 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 96560F80169;
+	Wed, 25 May 2022 09:35:38 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 245F2F80169; Wed, 25 May 2022 08:37:48 +0200 (CEST)
-Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 6B3F8F800D0
- for <alsa-devel@alsa-project.org>; Wed, 25 May 2022 08:37:41 +0200 (CEST)
-Received: from mail1.perex.cz (localhost [127.0.0.1])
- by smtp1.perex.cz (Perex's E-mail Delivery System) with ESMTP id 45F12A0040;
- Wed, 25 May 2022 08:37:40 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 smtp1.perex.cz 45F12A0040
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=perex.cz; s=default;
- t=1653460660; bh=4geO2k9JOuUuxhf4kWR2PCbqmRxSGcRd3MyMtU3Lsro=;
- h=Date:Subject:To:References:Cc:From:In-Reply-To:From;
- b=BwyeaZUbMYpOesIvJL3SjuIonrBS/MKndvj4nCOXF3XBpt865V/Msk7tWtQkbcrsh
- AuvMIavUT3LRs9KEMTQTWwE7wk27O1gJ/mc0dc465279hQYtY6fHpZfXYFAmD2RDHq
- W5t8P81sFJSMqWphe+KuKCgWKlq9UQ+w1qsINTOA=
-Received: from [192.168.100.98] (unknown [192.168.100.98])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
- (No client certificate requested) (Authenticated sender: perex)
- by mail1.perex.cz (Perex's E-mail Delivery System) with ESMTPSA;
- Wed, 25 May 2022 08:37:37 +0200 (CEST)
-Message-ID: <ef0ab4a6-ed6e-51e5-ffd8-397aa3e289ab@perex.cz>
-Date: Wed, 25 May 2022 08:37:37 +0200
+ id 636FEF8016D; Wed, 25 May 2022 09:35:36 +0200 (CEST)
+Received: from cmccmta1.chinamobile.com (cmccmta1.chinamobile.com
+ [221.176.66.79])
+ by alsa1.perex.cz (Postfix) with ESMTP id 69E5AF80116
+ for <alsa-devel@alsa-project.org>; Wed, 25 May 2022 09:35:31 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 69E5AF80116
+X-RM-TagInfo: emlType=0                                       
+X-RM-SPAM-FLAG: 00000000
+Received: from spf.mail.chinamobile.com (unknown[172.16.121.3])
+ by rmmx-syy-dmz-app04-12004 (RichMail) with SMTP id 2ee4628ddc3e020-0383c;
+ Wed, 25 May 2022 15:35:27 +0800 (CST)
+X-RM-TRANSID: 2ee4628ddc3e020-0383c
+X-RM-TagInfo: emlType=0                                       
+X-RM-SPAM-FLAG: 00000000
+Received: from [192.168.26.114] (unknown[10.42.68.12])
+ by rmsmtp-syy-appsvr02-12002 (RichMail) with SMTP id 2ee2628ddc3e16d-c8e67;
+ Wed, 25 May 2022 15:35:27 +0800 (CST)
+X-RM-TRANSID: 2ee2628ddc3e16d-c8e67
+Subject: Re: [PATCH] ASoC: stm32: sai: Use
+ of_device_get_match_data()tosimplify code
+To: Olivier MOYSAN <olivier.moysan@foss.st.com>,
+ Mark Brown <broonie@kernel.org>
+References: <20220519124235.21100-1-tangbin@cmss.chinamobile.com>
+ <69d5cef3-57c0-9bc7-a83b-a85ef1c4cf29@foss.st.com>
+ <YovZAf4S0XphBsco@sirena.org.uk>
+ <3fb8d7f8-4506-3b28-22cb-863bda1f21c8@cmss.chinamobile.com>
+ <d5ab354a-eb10-d31c-d55e-46a4c4d1a4ce@foss.st.com>
+From: tangbin <tangbin@cmss.chinamobile.com>
+Message-ID: <cd375914-a3e6-37c7-4a16-551937006f92@cmss.chinamobile.com>
+Date: Wed, 25 May 2022 15:36:13 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.9.0
-Subject: Re: Request for setup of new repositories
+In-Reply-To: <d5ab354a-eb10-d31c-d55e-46a4c4d1a4ce@foss.st.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Content-Language: en-US
-To: ALSA development <alsa-devel@alsa-project.org>
-References: <YmagC3V3t0k84k9A@workstation>
- <7d90c47a-ce1a-d9d7-ba8a-e794f20487cb@perex.cz>
- <YmfZxmfv5dfgdYG1@workstation> <YmtNgqfFREYKZM6t@workstation>
- <YnO4A43EUdnG0b7n@workstation>
- <14235475-bd6b-4b86-61f4-8c2aa7f95838@perex.cz>
- <b6e986d0-b594-4543-ae63-e08e88ad3418@www.fastmail.com>
- <YozAmQFZ3LhqQoZN@workstation>
- <afd7c233-39c5-b73f-75c7-728a8abbd434@perex.cz>
- <Yo2JcNT9rQ0xw0+Q@workstation>
-From: Jaroslav Kysela <perex@perex.cz>
-In-Reply-To: <Yo2JcNT9rQ0xw0+Q@workstation>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
+Cc: alsa-devel@alsa-project.org, lgirdwood@gmail.com,
+ linux-kernel@vger.kernel.org, alexandre.torgue@foss.st.com, tiwai@suse.com,
+ mcoquelin.stm32@gmail.com, arnaud.pouliquen@foss.st.com,
+ linux-stm32@st-md-mailman.stormreply.com, linux-arm-kernel@lists.infradead.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -83,75 +81,81 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On 25. 05. 22 3:42, Takashi Sakamoto wrote:
-> On Tue, May 24, 2022 at 02:36:19PM +0200, Jaroslav Kysela wrote:
->> On 24. 05. 22 13:25, Takashi Sakamoto wrote:
->>> Hi Jaroslav,
->>>
->>> On Thu, May 05, 2022 at 09:49:52PM +0900, Takashi Sakamoto wrote:
->>>> At present I prefer separated pages from source since the pages can be
->>>> generated from the source, however as you say the inclusive way is worth
->>>> to reduce repository maintained by the project. I test the idea later in
->>>> my libhinoko repository. When it looks well, I'll request you for
->>>> configuration change.
->>>
->>> I'd like to fix the issue for the URL of documentation before releasing
->>> libhitaki since I put the URL to configuration for gi-docgen.
->>>
->>> I'm investigating to put the documentation into the same repository
->>> where source is maintained, however I prefer to separate the two into
->>> different repositories. Then I suppose it good to put several
->>> documentations into one repository rather than maintaining them in
->>> different repositories.
->>>
->>> At present, three repositories are maintained for documentations:
->>>
->>> * https://github.com/alsa-project/alsa-gobject-docs
->>> * https://github.com/alsa-project/libhinawa-docs
->>> * https://github.com/alsa-project/libhitaki-doc
->>>
->>> Let us consolidate them in one repository. For example, by referring to
->>> team name:
->>>
->>> * https://github.com/alsa-project/gobject-introspection-docs/
->>>
->>> The documentations are expected to be public under below URL:
->>>
->>> * https://alsa-project.github.io/gobject-introspection-docs/alsa-gobject/
->>> * https://alsa-project.github.io/gobject-introspection-docs/hinawa/
->>> * https://alsa-project.github.io/gobject-introspection-docs/hitaki/
->>>
->>> I'd like to ask your opinion about the idea.
+Hi Olivier：
+
+On 2022/5/24 22:30, Olivier MOYSAN wrote:
+> Hi Tang,
+>
+> On 5/24/22 03:44, tangbin wrote:
+>> Hi Mark & Olivier：
 >>
->> Thanks for this idea. I just noted that github allows to specify a branch
->> for the git pages (github.io). Do you think that a 'doc' or 'docs' branch in
->> the separate source repos will be sufficient for your work? It may be more
->> logical than having a common doc repo (logical URLs) and things (source and
->> generated pages) will not mix together.
-> 
-> Thanks for the suggestion. Indeed, we can choose the way to put
-> documentation to specific branch in the repository. I've already
-> investigated the way then had complexed feeling.
-> 
-> ...To be honest, I'd like to avoid it, as much as possible, in a point
-> of the essential concept in source control management. The branching
-> idea forces to put several histories disconnected each other into one
-> repository. It's surely available technically, however I feel sort of
-> awkward somehow.
-> 
-> (I think I'm enough conservative when using tools. I feel something
-> shooting myself in the foot when doing it. It perhaps comes from my
-> experience under UNIX-like environment...)
-> 
-> The separated common repository for documents had room for integration of
-> documentation. For example, I can put library documentations as well as
-> overview page for included software such like Rust crates. It's flexible
-> and logical in a view of top level of software stack.
+>> On 2022/5/24 2:57, Mark Brown wrote:
+>>> On Mon, May 23, 2022 at 03:28:48PM +0200, Olivier MOYSAN wrote:
+>>>
+>>>> The current patch requires a change in the driver.
+>>>> Either changing STM_SAI_x_ID enums, or replacing data by a struct.
+>>>> For instance:
+>>>> struct stm32_sai_comp_data {
+>>>>     unsigned int id;
+>>>> }
+>>>> struct stm32_sai_comp_data stm32_sai_comp_data_a = {
+>>>>     .id = STM_SAI_A_ID;
+>>>> }
+>>>> struct of_device_id stm32_sai_sub_ids[] = {
+>>>>     .data = &stm32_sai_comp_data_a},
+>>>> }
+>>> Either approach works for me (or a revert for that matter).
+>>
+>>      Thanks for your advice, I was thoughtless.
+>>
+>>      I think change the date of STM_SAI_x_ID maybe simple. But if we 
+>> don't change the id,
+>>
+>> what about add a "#define" like the line 47:
+>>
+>> #define STM_SAI_IS_SUB(x) ((x)->id == STM_SAI_A_ID || (x)->id == 
+>> STM_SAI_B_ID)
+>>
+>> then in the judgement, wu use:
+>>
+>>      sai->id = (uintptr_t)of_device_get_match_data(&pdev->dev);
+>>
+>>      if (!STM_SAI_IS_SUB(sai))
+>>
+>>              return -EINVAL;
+>>
+>>
+>> if you think that's ok, I will send patch v2 for you .
+>>
+>
+> If we allow null value in STM_SAI_IS_SUB(sai) check, we can miss real 
+> NULL pointer error from of_device_get_match_data().
+>
+> The simplest way is to change STM_SAI_x_ID enums I think.
+> But honnestly, I feel more comfortable to let the driver unchanged.
+>
+Oh，you are right, I am sorry.
 
-It's fine for me. The gobject-introspection-docs is created now.
+Please forget this patch, I'm sorry to have wasted your time.
 
-					Jaroslav
+But I saw some codes is useless in the line 48 & line 49, I think we can 
+remove it.
 
--- 
-Jaroslav Kysela <perex@perex.cz>
-Linux Sound Maintainer; ALSA Project; Red Hat, Inc.
+If you think so, I will send this patch for you.
+
+
+Thanks
+
+Tang Bin
+
+
+> BRs
+> Olivier
+>
+>> Thanks
+>>
+>> Tang Bin
+>>
+>>
+
+
