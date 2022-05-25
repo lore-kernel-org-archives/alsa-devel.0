@@ -4,80 +4,80 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id DA700C433FE
-	for <alsa-devel@archiver.kernel.org>; Wed, 25 May 2022 13:21:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id AF9D2C433F5
+	for <alsa-devel@archiver.kernel.org>; Wed, 25 May 2022 13:22:23 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 243E216BD;
-	Wed, 25 May 2022 15:21:08 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 243E216BD
+	by alsa0.perex.cz (Postfix) with ESMTPS id 03E9D16F8;
+	Wed, 25 May 2022 15:21:32 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 03E9D16F8
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1653484918;
-	bh=/kEp42UZlwvQPpKIQw+bYI9j/+UpBgZPbDEnz0ouxkU=;
+	s=default; t=1653484942;
+	bh=Ycd9ktGWKvct8AyBn5NhO+WYBj7OPFxwWeNVmvObXSU=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=anLqVzbTfUDXsFR/+IKw2fwXt4ka4xsZt2Z89cPGgDw4W+ElY5zR4IFwg87GUIsqm
-	 tu7dgOEip6lfsQGV+y6tFSZARUMdFx0dcImN7oykpatkLdRE1gVYp7cjTweI5IkzHH
-	 7XY/CB695MKMJHjq3uUcGmfKSqZ8rfkQOuuV4XkU=
+	b=rXehYYsUo87/1acAYd3QOcl31Sn0QuuwaKSyGk6mW4li6/0XKd9Yn5mU5Ko09kOBN
+	 7UFb4wk7yOR7H4KgoNv2pp3trdn5R/G9VKwKCwfLOg/jbWEcMxo+yhFk/ySYuA6FJ5
+	 vOEgfJwQsXqT3t2qHJ9nOzXiAMYxHMB0/2gaB4gY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id C7B5DF805AF;
-	Wed, 25 May 2022 15:17:12 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id D08C8F805BA;
+	Wed, 25 May 2022 15:17:19 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 76E34F80566; Wed, 25 May 2022 15:17:09 +0200 (CEST)
+ id 68C39F80588; Wed, 25 May 2022 15:17:11 +0200 (CEST)
 Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
  [67.231.152.168])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 59FF0F80529
- for <alsa-devel@alsa-project.org>; Wed, 25 May 2022 15:16:52 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 59FF0F80529
+ by alsa1.perex.cz (Postfix) with ESMTPS id 5A32BF8052E
+ for <alsa-devel@alsa-project.org>; Wed, 25 May 2022 15:16:51 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5A32BF8052E
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com
- header.b="nCNgBgeU"
+ header.b="Mr0i9UjY"
 Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
- by mx0b-001ae601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 24P7Sjct031231;
- Wed, 25 May 2022 08:16:51 -0500
+ by mx0b-001ae601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 24P7Sjcs031231;
+ Wed, 25 May 2022 08:16:50 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
  h=from : to : cc :
  subject : date : message-id : in-reply-to : references : mime-version :
  content-transfer-encoding : content-type; s=PODMain02222019;
- bh=zfY69P7pEy7Ti9ODGavDNoDFkIDCMhTvPP8FmRf6wG0=;
- b=nCNgBgeU+d6D0Pq+laIYFZ2Flx6o9Cd3ToBHRzwIirNtzvgEIxkPZSAaxiRFKD/9upob
- 7gxPj1bZou9mfKpgJ1tN0qimx2glN5pQbZ1M+0hR0Yyl7UmayFgYWNZrVztshj0pgkw+
- Ldzu1M4wHa3RMpV0VcmZM27EGrpCc41HgtCSyol0xKQGEYLTB+OaVKGJR1PO7CGPv0pb
- ot+wkwqbzxOzsYHa5v5dYylBLOR0FxNMdN1ef3ezys+TQERjvafB2fB/oM3kXwu2/C/b
- 1iHr+0Mfnlbl35TEre/5Hdur0ftFlfluh2xDs2EO8HF9f2RxD5MmcNKRjTTrHqTzZ2YD Ow== 
+ bh=YY7pX14arfYdyxLm/NOk5hebMgT/zTyDYFlP9QJ69vY=;
+ b=Mr0i9UjYBTjYf5WV2cQKKwNbxmM/9vREtbuRjIF3Ul/A34v8JIAnZ1RIxSgJ0J4FYQEl
+ OaFxhbMSC45YPtNJVSvj0ZfEleUDzImJwrFHHtc3YwzG6fsf16Tmk/2SbZEPbuq5irjO
+ HQgZlLp6cWe066EbCNYAzoOktwp77XdBQ/JKeIuItI576sDJFoPDe7SXHeUcMle82oS9
+ fxvPQAl0veeKusEsn22uiSRgDZib8rvhX5INZwxF47qQtTnI4CRxO8b+3AcFpoEfp+XY
+ SLzj6zrbiqV0UBtrGoYM0FrAVayr0xa+mY5TAmbT3V06zWNW9896PS6cY9esZ6XHcn0F yg== 
 Received: from ediex02.ad.cirrus.com ([84.19.233.68])
- by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3g93u20web-4
+ by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3g93u20web-3
  (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
- Wed, 25 May 2022 08:16:50 -0500
+ Wed, 25 May 2022 08:16:49 -0500
 Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX02.ad.cirrus.com
  (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.24; Wed, 25 May
- 2022 14:16:46 +0100
+ 2022 14:16:45 +0100
 Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
  (198.61.84.80) with Microsoft SMTP Server id 15.1.2375.24 via
- Frontend Transport; Wed, 25 May 2022 14:16:46 +0100
+ Frontend Transport; Wed, 25 May 2022 14:16:45 +0100
 Received: from vitaly-Legion-7-16ACHg6.ad.cirrus.com (unknown [198.90.238.233])
- by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 332DD468;
- Wed, 25 May 2022 13:16:46 +0000 (UTC)
+ by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 7050911D3;
+ Wed, 25 May 2022 13:16:45 +0000 (UTC)
 From: Vitaly Rodionov <vitalyr@opensource.cirrus.com>
 To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Mark
  Brown <broonie@kernel.org>
-Subject: [PATCH v4 17/17] ALSA: hda: cs35l41: Add module parameter to control
- firmware load
-Date: Wed, 25 May 2022 14:16:38 +0100
-Message-ID: <20220525131638.5512-18-vitalyr@opensource.cirrus.com>
+Subject: [PATCH v4 15/17] ALSA: hda: cs35l41: Add defaulted values into dsp
+ bypass config sequence
+Date: Wed, 25 May 2022 14:16:36 +0100
+Message-ID: <20220525131638.5512-16-vitalyr@opensource.cirrus.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20220525131638.5512-1-vitalyr@opensource.cirrus.com>
 References: <20220525131638.5512-1-vitalyr@opensource.cirrus.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: OOguHXURhwrnlex9HUVOBe_8ajCWKS5Q
-X-Proofpoint-GUID: OOguHXURhwrnlex9HUVOBe_8ajCWKS5Q
+X-Proofpoint-ORIG-GUID: 0sQS18HOJ853hdbjbYSxHWIODfGjbU6y
+X-Proofpoint-GUID: 0sQS18HOJ853hdbjbYSxHWIODfGjbU6y
 X-Proofpoint-Spam-Reason: safe
 Cc: patches@opensource.cirrus.com, alsa-devel@alsa-project.org,
  linux-kernel@vger.kernel.org, Stefan Binding <sbinding@opensource.cirrus.com>
@@ -98,58 +98,56 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 From: Stefan Binding <sbinding@opensource.cirrus.com>
 
-By default, the driver will automatically load DSP firmware
-for the amps, if available. Adding this option allows the
-autoload to be optional, which allows for different configurations.
+The config sequences for running with and without firmware and DSP
+are different. The original behavior assumed that we would only
+run without DSP only in the case where firmware load failed.
+This meant the non-firmware sequence was written with the assumtion
+that various registers would be set to their default value.
+However, to support the ability to unload the firmware, the
+non-firmware register sequence must be updated to update all
+required registers, including values that would be defaulted,
+in case the firmware sequence, which could have already run,
+has changed their value.
 
 Signed-off-by: Stefan Binding <sbinding@opensource.cirrus.com>
 Signed-off-by: Vitaly Rodionov <vitalyr@opensource.cirrus.com>
 ---
 
 Changes since v2:
- - Added module paramter to control firmware loading
+ - No change
  
- sound/pci/hda/cs35l41_hda.c | 20 +++++++++++++++-----
- 1 file changed, 15 insertions(+), 5 deletions(-)
+ sound/pci/hda/cs35l41_hda.c | 13 +++++++++++++
+ 1 file changed, 13 insertions(+)
 
 diff --git a/sound/pci/hda/cs35l41_hda.c b/sound/pci/hda/cs35l41_hda.c
-index 4a164b7ebab1..c836323a8aaf 100644
+index b4087d548646..8de956e6850c 100644
 --- a/sound/pci/hda/cs35l41_hda.c
 +++ b/sound/pci/hda/cs35l41_hda.c
-@@ -33,6 +33,11 @@
- #define CAL_DSP_CTL_TYPE		5
- #define CAL_DSP_CTL_ALG			205
+@@ -35,11 +35,24 @@
  
-+static bool firmware_autostart = 1;
-+module_param(firmware_autostart, bool, 0444);
-+MODULE_PARM_DESC(firmware_autostart, "Allow automatic firmware download on boot"
-+			     "(0=Disable, 1=Enable) (default=1); ");
-+
  static const struct reg_sequence cs35l41_hda_config[] = {
  	{ CS35L41_PLL_CLK_CTRL,		0x00000430 }, // 3072000Hz, BCLK Input, PLL_REFCLK_EN = 1
- 	{ CS35L41_DSP_CLK_CTRL,		0x00000003 }, // DSP CLK EN
-@@ -817,11 +822,16 @@ static int cs35l41_hda_bind(struct device *dev, struct device *master, void *mas
- 
- 	cs35l41->firmware_type = HDA_CS_DSP_FW_SPK_PROT;
- 
--	cs35l41->request_fw_load = true;
--	mutex_lock(&cs35l41->fw_mutex);
--	if (cs35l41_smart_amp(cs35l41) < 0)
--		dev_warn(cs35l41->dev, "Cannot Run Firmware, reverting to dsp bypass...\n");
--	mutex_unlock(&cs35l41->fw_mutex);
-+	if (firmware_autostart) {
-+		dev_dbg(cs35l41->dev, "Firmware Autostart.\n");
-+		cs35l41->request_fw_load = true;
-+		mutex_lock(&cs35l41->fw_mutex);
-+		if (cs35l41_smart_amp(cs35l41) < 0)
-+			dev_warn(cs35l41->dev, "Cannot Run Firmware, reverting to dsp bypass...\n");
-+		mutex_unlock(&cs35l41->fw_mutex);
-+	} else {
-+		dev_dbg(cs35l41->dev, "Firmware Autostart is disabled.\n");
-+	}
- 
- 	cs35l41_create_controls(cs35l41);
- 
++	{ CS35L41_DSP_CLK_CTRL,		0x00000003 }, // DSP CLK EN
+ 	{ CS35L41_GLOBAL_CLK_CTRL,	0x00000003 }, // GLOBAL_FS = 48 kHz
+ 	{ CS35L41_SP_ENABLES,		0x00010000 }, // ASP_RX1_EN = 1
+ 	{ CS35L41_SP_RATE_CTRL,		0x00000021 }, // ASP_BCLK_FREQ = 3.072 MHz
+ 	{ CS35L41_SP_FORMAT,		0x20200200 }, // 32 bits RX/TX slots, I2S, clk consumer
++	{ CS35L41_SP_HIZ_CTRL,		0x00000002 }, // Hi-Z unused
++	{ CS35L41_SP_TX_WL,		0x00000018 }, // 24 cycles/slot
++	{ CS35L41_SP_RX_WL,		0x00000018 }, // 24 cycles/slot
+ 	{ CS35L41_DAC_PCM1_SRC,		0x00000008 }, // DACPCM1_SRC = ASPRX1
++	{ CS35L41_ASP_TX1_SRC,		0x00000018 }, // ASPTX1 SRC = VMON
++	{ CS35L41_ASP_TX2_SRC,		0x00000019 }, // ASPTX2 SRC = IMON
++	{ CS35L41_ASP_TX3_SRC,		0x00000032 }, // ASPTX3 SRC = ERRVOL
++	{ CS35L41_ASP_TX4_SRC,		0x00000033 }, // ASPTX4 SRC = CLASSH_TGT
++	{ CS35L41_DSP1_RX1_SRC,		0x00000008 }, // DSP1RX1 SRC = ASPRX1
++	{ CS35L41_DSP1_RX2_SRC,		0x00000009 }, // DSP1RX2 SRC = ASPRX2
++	{ CS35L41_DSP1_RX3_SRC,         0x00000018 }, // DSP1RX3 SRC = VMON
++	{ CS35L41_DSP1_RX4_SRC,         0x00000019 }, // DSP1RX4 SRC = IMON
++	{ CS35L41_DSP1_RX5_SRC,         0x00000020 }, // DSP1RX5 SRC = ERRVOL
+ 	{ CS35L41_AMP_DIG_VOL_CTRL,	0x00000000 }, // AMP_VOL_PCM  0.0 dB
+ 	{ CS35L41_AMP_GAIN_CTRL,	0x00000084 }, // AMP_GAIN_PCM 4.5 dB
+ };
 -- 
 2.34.1
 
