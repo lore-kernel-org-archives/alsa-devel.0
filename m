@@ -4,90 +4,76 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 62924C433EF
-	for <alsa-devel@archiver.kernel.org>; Wed, 25 May 2022 13:03:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id AF33FC433F5
+	for <alsa-devel@archiver.kernel.org>; Wed, 25 May 2022 13:13:05 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 8D7351681;
-	Wed, 25 May 2022 15:02:39 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8D7351681
+	by alsa0.perex.cz (Postfix) with ESMTPS id A77D8167E;
+	Wed, 25 May 2022 15:12:13 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A77D8167E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1653483809;
-	bh=lp3retmxFgxL/vxo9iAbTpFRo2pjR0cqKW2CT4kzrnQ=;
-	h=Date:Subject:To:References:From:In-Reply-To:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=VWYkBsAo8glDp7UjgLTl79yEUTVbJh4xCAbRbeiZxAqmesgLQR5Sy6qOtBcAz7ODW
-	 deUdlUS5VO0pWq5nvmkvWeAgi85xE8+90fZjRYy2sR5TrfkraiHwp7itTJIHCot9Qp
-	 SJgCq41ofL/qU8eTDQH/xnrCy/l1hZI/jAEnnS3w=
+	s=default; t=1653484383;
+	bh=gLKK4YYYbrMvlvQfse5pxVlplbrBmT9u2AAcIunxPIE=;
+	h=From:To:Subject:Date:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=LTmVO624klLOZqtgRI6iZKLOjZx0kL1UyKl62Q94DKR0BtagELv0mdLDZh4CXoK2Z
+	 ZXm0ahU/FZ0Oz1YK+aVDN/y9aQvzPQ+PL5smtv8cfskcj6379t0Awrz/5LGjBtOujA
+	 0FLJ36hxw9Xo5urXKJgjRjApJJ7DnJwDW507Io7k=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 2FB1DF80169;
-	Wed, 25 May 2022 15:02:39 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 4E356F80169;
+	Wed, 25 May 2022 15:12:13 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 3BC06F80116; Wed, 25 May 2022 15:02:37 +0200 (CEST)
-Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com
- [IPv6:2a00:1450:4864:20::335])
+ id 21B70F8016D; Wed, 25 May 2022 15:12:12 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id C65BEF80116
- for <alsa-devel@alsa-project.org>; Wed, 25 May 2022 15:02:33 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C65BEF80116
+ by alsa1.perex.cz (Postfix) with ESMTPS id 1D7B9F800D0
+ for <alsa-devel@alsa-project.org>; Wed, 25 May 2022 15:12:05 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1D7B9F800D0
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org
- header.b="DC523R3K"
-Received: by mail-wm1-x335.google.com with SMTP id
- r82-20020a1c4455000000b003975cedb52bso491273wma.1
- for <alsa-devel@alsa-project.org>; Wed, 25 May 2022 06:02:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
- h=message-id:date:mime-version:user-agent:subject:content-language:to
- :cc:references:from:in-reply-to:content-transfer-encoding;
- bh=ShM29w/vVaGDNZH6SQ+elqm5Fkj2T/cmtp459+NdGvY=;
- b=DC523R3Kj5+sEGuWNh0elaMU5MaxCnPKBd/OHbWaN64EkhSuxDVvbE27zNOMV9uqEF
- Ay5hZDcXuDe6mfQRenZFBXOXW0FZNQc+CXfNxnO7xAdIZ3jBzGd62GI5mhUTo4l1d4CT
- REhZ8VDI2Cb1yggAbpyLTkedMuNypupWyl30tfmgsGvLF6DH9QXcYl+5wsem5rjDqUvf
- I7QWyKBnPoMOHwpsxbfxUSf/rTVB4LtkAUEMTvvgwLLRCy/xxwIE/D8BZifvtLZ4MpqK
- Fg7B2b2xoJ2plau+y/IDB4lputdpmI7TwUaBr1Lh05ljTT5zSVr+SVcClR9qcSHvZGrO
- hE0g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
- :content-language:to:cc:references:from:in-reply-to
- :content-transfer-encoding;
- bh=ShM29w/vVaGDNZH6SQ+elqm5Fkj2T/cmtp459+NdGvY=;
- b=coUY44/Lle7mPhi0EJ5vp4XoUy7vIdYvJEoneQsiwCjkfHosuAWXN2cyRozk18dxzD
- powqy3KnF4174ep5GdoEo/Jd/ntw+E8wJdlkTuZgDg/Zd54jGSQvd/ZSJd0ag6yh7p1e
- OlvvX2gHLkgPZoC3vOZLxqYqnWTVRWwDQ1KDOa/nMQ58tG3Hhh+S9LbdbP1mcOb7N2S8
- xC4KuIq49sIyzWoDfRFFZxKSmdhr/QhBdesteuRw0LjwtD0wB51dw8zqKMAIaBF1mtdi
- JijF9fE6GpYNkZU0dn1yQ24oqWE5J+MSgTcbGi3UiojoatQxPM1yrvH8MKhM8ZcZIkJK
- SvOw==
-X-Gm-Message-State: AOAM532JdOFEmo6+fMROgMNf1Nn8Yw8ytp3bOLUJcuTujCUYkoiiDKL1
- XYGMHAKbEv4rVsj+ssUlJMtCbA==
-X-Google-Smtp-Source: ABdhPJyCU/WlGbiJ23Bg2bLlydBnQBDzhQyihPGzenV0sdMKEc3WN0iFkXg2CK+J1+ZQtgJOfb4NQw==
-X-Received: by 2002:a05:600c:1f0e:b0:397:707f:5a60 with SMTP id
- bd14-20020a05600c1f0e00b00397707f5a60mr1904691wmb.3.1653483750750; 
- Wed, 25 May 2022 06:02:30 -0700 (PDT)
-Received: from [192.168.0.162] (188-141-3-169.dynamic.upc.ie. [188.141.3.169])
- by smtp.gmail.com with ESMTPSA id
- l4-20020a05600c1d0400b0039751bb8c62sm1869799wms.24.2022.05.25.06.02.29
- (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Wed, 25 May 2022 06:02:30 -0700 (PDT)
-Message-ID: <78da8864-eb65-8dd5-cde5-0c0fc63b9ebf@linaro.org>
-Date: Wed, 25 May 2022 14:02:29 +0100
+ dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
+ header.b="i25oXxFx"; 
+ dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
+ header.b="HsqMGU4D"
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 41F481F918;
+ Wed, 25 May 2022 13:12:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1653484325; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=GlAsVjUz7tvek1CF+qpKw60D6+ZC4W6oi32PGTmb77g=;
+ b=i25oXxFx7ufi9DXpeJ106aoCvtPl89QMPOrahruOayl0uym1thf9rH26YYdtmzUtfP1uqF
+ p6Yiup5AsBXmQmiqvqi6t3pzOJlvQrfPsnzEe6cyhvumS+JTB9Ph8zeAVWcBHrki45oiGr
+ dNuwVib2j8krnUnFEuBKUAKc2d9MYGg=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1653484325;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=GlAsVjUz7tvek1CF+qpKw60D6+ZC4W6oi32PGTmb77g=;
+ b=HsqMGU4DigyH1NXbyLVtrenq1Di+ZXebIUJDyntwuNKNy3gOKTk/4EAyRZIvI0trxFRjaV
+ 9kE7AJD/71YfoKAg==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 292BF13ADF;
+ Wed, 25 May 2022 13:12:05 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+ by imap2.suse-dmz.suse.de with ESMTPSA id vjtjCSUrjmL5RgAAMHmgww
+ (envelope-from <tiwai@suse.de>); Wed, 25 May 2022 13:12:05 +0000
+From: Takashi Iwai <tiwai@suse.de>
+To: alsa-devel@alsa-project.org
+Subject: [PATCH] ALSA: usb-audio: Cancel pending work at closing a MIDI
+ substream
+Date: Wed, 25 May 2022 15:12:03 +0200
+Message-Id: <20220525131203.11299-1-tiwai@suse.de>
+X-Mailer: git-send-email 2.35.3
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.9.0
-Subject: Re: [PATCH v3 0/2] Fix apq8016 compat string
-Content-Language: en-US
-To: srinivas.kandagatla@linaro.org, bjorn.andersson@linaro.org,
- robh+dt@kernel.org, krzk+dt@kernel.org
-References: <20220429220349.1142759-1-bryan.odonoghue@linaro.org>
-From: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
-In-Reply-To: <20220429220349.1142759-1-bryan.odonoghue@linaro.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: linux-arm-msm@vger.kernel.org, alsa-devel@alsa-project.org,
- devicetree@vger.kernel.org
+Content-Transfer-Encoding: 8bit
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -103,32 +89,33 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On 29/04/2022 23:03, Bryan O'Donoghue wrote:
-> V3:
-> - Marks qcom,lpass-cpu-apq8016 as deprecated instead of removing - Bjorn
-> 
-> V2:
-> - Adds Reviewed-by: - Srini
-> - Adds Fixes - Srini
-> 
-> V1:
-> Reusing the apq8016 on msm8939 I found running checkpatch that the compat
-> string for the LPASS was throwing a warning.
-> 
-> This is easily fixed by alinging the YAML, DTS and driver to the documented
-> compat string
-> 
-> -			compatible = "qcom,lpass-cpu-apq8016";
-> +			compatible = "qcom,apq8016-lpass-cpu";
-> 
-> 
-> Bryan O'Donoghue (2):
->    ASoC: qcom: lpass: Fix apq8016 compat string to match yaml
->    arm64: dts: qcom: Fix apq8016 compat string to match yaml
-> 
->   arch/arm64/boot/dts/qcom/msm8916.dtsi | 2 +-
->   sound/soc/qcom/lpass-apq8016.c        | 1 +
->   sound/soc/qcom/lpass-cpu.c            | 5 +++++
->   3 files changed, 7 insertions(+), 1 deletion(-)
-> 
-ping
+At closing a USB MIDI output substream, there might be still a pending
+work, which would eventually access the rawmidi runtime object that is
+being released.  For fixing the race, make sure to cancel the pending
+work at closing.
+
+Reported-by: syzbot+6912c9592caca7ca0e7d@syzkaller.appspotmail.com
+Cc: <stable@vger.kernel.org>
+Link: https://lore.kernel.org/r/000000000000e7e75005dfd07cf6@google.com
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+---
+ sound/usb/midi.c | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/sound/usb/midi.c b/sound/usb/midi.c
+index 7c6ca2b433a5..344fbeadf161 100644
+--- a/sound/usb/midi.c
++++ b/sound/usb/midi.c
+@@ -1145,6 +1145,9 @@ static int snd_usbmidi_output_open(struct snd_rawmidi_substream *substream)
+ 
+ static int snd_usbmidi_output_close(struct snd_rawmidi_substream *substream)
+ {
++	struct usbmidi_out_port *port = substream->runtime->private_data;
++
++	cancel_work_sync(&port->ep->work);
+ 	return substream_open(substream, 0, 0);
+ }
+ 
+-- 
+2.35.3
+
