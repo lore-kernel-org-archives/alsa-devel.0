@@ -4,74 +4,82 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 51050C433F5
-	for <alsa-devel@archiver.kernel.org>; Wed, 25 May 2022 22:21:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 512EEC433EF
+	for <alsa-devel@archiver.kernel.org>; Thu, 26 May 2022 01:06:57 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E0E2016C2;
-	Thu, 26 May 2022 00:20:19 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E0E2016C2
+	by alsa0.perex.cz (Postfix) with ESMTPS id 8ACD0163C;
+	Thu, 26 May 2022 03:06:05 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8ACD0163C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1653517270;
-	bh=c7KzToDeUqtD99O2hzHK7o5kCE8vnxm1uZ6cI59st/U=;
-	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=YcZ1z2gAHOTAmOcHS4ZQqPZXFNFPh7ne6gz/UNnXjDbV2mHml50Q5yQTfjGg3kZbR
-	 UV3bRd/c10RxCHZlEkNZascWlbPNW6tsQIw6kWPZI3oxdw1+7u7x0eS3x9eq0GgBGH
-	 I4pnN1pI9ZJZZBlUGit3dFKL3pVl555KPMHUUBfI=
+	s=default; t=1653527215;
+	bh=lsIdVFoKBwdr8MmxGmwsOqXhHPeXiTrLGR8HhuCcFOw=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=N5gmpQC0EaYe7//Gau5yg0BLoZHg5Gqbu0//evvmN0+/CygfCovKjk8P/xM9gES6m
+	 Uyl7iBSIRCGzAvAj53mAD/PYzeYrtphEvOOq0b2D9YFbdaQgr0jsIm4fKGoXtmV5WI
+	 Hbf75uzTYKjPwrxLN5gWWL9XH9S/L89iFzL4MLgk=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 806C0F80116;
-	Thu, 26 May 2022 00:20:19 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 09860F80169;
+	Thu, 26 May 2022 03:06:05 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id BBA72F80100; Thu, 26 May 2022 00:20:17 +0200 (CEST)
-Received: from ams.source.kernel.org (ams.source.kernel.org
- [IPv6:2604:1380:4601:e00::1])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id 85F47F80169; Thu, 26 May 2022 03:06:02 +0200 (CEST)
+Received: from mail-oi1-x22e.google.com (mail-oi1-x22e.google.com
+ [IPv6:2607:f8b0:4864:20::22e])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 8C52DF80100
- for <alsa-devel@alsa-project.org>; Thu, 26 May 2022 00:20:09 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8C52DF80100
+ by alsa1.perex.cz (Postfix) with ESMTPS id 2B070F80116
+ for <alsa-devel@alsa-project.org>; Thu, 26 May 2022 03:05:51 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2B070F80116
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=linux-foundation.org
- header.i=@linux-foundation.org header.b="lc5Bswn5"
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by ams.source.kernel.org (Postfix) with ESMTPS id B9A8BB81EAD;
- Wed, 25 May 2022 22:20:08 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D0633C385B8;
- Wed, 25 May 2022 22:20:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
- s=korg; t=1653517207;
- bh=c7KzToDeUqtD99O2hzHK7o5kCE8vnxm1uZ6cI59st/U=;
- h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
- b=lc5Bswn5/mLgrZUzDGaOfcSNR02Mm/oMMFmAsk3PMUUgwWwgJa8zBW3fhkYeoBrs6
- zULKKPi/KMazKRvfEOpIG5mlq58qHM3l4UzEO0HxQt9EhuXQjV37+aQrktHPNlneq8
- f2dYK6/dz9JhOi+TYCUG0YZy8hrl37z6cFtGSZlg=
-Date: Wed, 25 May 2022 15:20:06 -0700
-From: Andrew Morton <akpm@linux-foundation.org>
-To: Jessica Clarke <jrtc27@jrtc27.com>
-Subject: Re: [linux-next:master] BUILD REGRESSION
- 8cb8311e95e3bb58bd84d6350365f14a718faa6d
-Message-Id: <20220525152006.e87d3fa50aca58fdc1b43b6a@linux-foundation.org>
-In-Reply-To: <F0E25DFF-8256-48FF-8B88-C0E3730A3E5E@jrtc27.com>
-References: <628ea118.wJYf60YnZco0hs9o%lkp@intel.com>
- <20220525145056.953631743a4c494aabf000dc@linux-foundation.org>
- <F0E25DFF-8256-48FF-8B88-C0E3730A3E5E@jrtc27.com>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-Cc: linux-fbdev@vger.kernel.org, kernel test robot <lkp@intel.com>,
- kvm@vger.kernel.org, linux-rdma@vger.kernel.org, netdev@vger.kernel.org,
- linux-staging@lists.linux.dev, alsa-devel@alsa-project.org,
- dri-devel@lists.freedesktop.org, virtualization@lists.linux-foundation.org,
- linux-mm@kvack.org, amd-gfx@lists.freedesktop.org, linux-pci@vger.kernel.org,
- linux-riscv@lists.infradead.org, linux-omap@vger.kernel.org,
- bpf@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- linux-parport@lists.infradead.org
+ dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
+ header.b="GmFwa5to"
+Received: by mail-oi1-x22e.google.com with SMTP id r68so531712oie.12
+ for <alsa-devel@alsa-project.org>; Wed, 25 May 2022 18:05:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
+ h=from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=Q6BIrUW7aokYWl+qRvM/xMt7zksnM8IWxexWiiS4vSs=;
+ b=GmFwa5tozLv5xHUwBAL0dqqPoL4zpzeFGfTDDdqfncOEB9N0QPrkiTEOOpyeY5A83e
+ nDc79M5ovmu08sVHkl86m+0PoTjqefMwbso4cqEABGsUg+VpLVpWCYJadS5N2YH7LoIC
+ rdqMdQScN8mkJQaV9AlsYbaQ2iv1BmwdYoO4P3ArHFHcvgSBXk+Us16PezrZLT0vwBnQ
+ 0csfIrPWtebkx16PBWHnUPQs4Tlta5pZPwXnooSFknfsQ3uiB4JoDAwNIf7Mc+CV/xDq
+ 3GNJTmMIS2jM4VPpIDDVOiVTH3zkNULXmAettAOx+aGeYksZGgpLjTpEbW+PJPGY9WGQ
+ c4gw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=Q6BIrUW7aokYWl+qRvM/xMt7zksnM8IWxexWiiS4vSs=;
+ b=XTaNRPsGWl0ynSOO0xmd4zHrSKxRjJZ/Kl0SoBSsFCXV8cmlJR/3mvaFZNiuP8B8HW
+ qaTL6Ahkizjpkytbj8w5hk6BfykDjy3dbdJehqgzCBD68lTHuZR6oUC8zfOUIdK7a42k
+ aol2xlexpG6BB9M1QSbGLAndFkyzIZVlP2plVIaHZBOf1cKNyK8gD5851AqDWjMPUEuH
+ t/qfrtTPmRNatf2xz21PzPU4Gd5KuqWWLRmQ0XOo8bQ6+Xjsz346QlQhWFupU1thR57B
+ pe1KKIRlXD5i4Lflbm1Z2ezcU6JvwQGJ/0gqNU7BLIeIqiCdYIvg1ChVPOThazl/mbGe
+ NOZg==
+X-Gm-Message-State: AOAM53101OEYttLoG4s0DtHjAZpF/Orzz/miLoeSxBkh9EdUHZPRmeVg
+ K76tWscyEFw4cpv5nYVQSKU=
+X-Google-Smtp-Source: ABdhPJxkUHZaDkprlhtovHOJ67rjkL+BpfKx/2PFSlfCbAc8cwM7YPENiXEKErvaq4eTmYqj9uDR6Q==
+X-Received: by 2002:a05:6808:130b:b0:326:d1ff:b56f with SMTP id
+ y11-20020a056808130b00b00326d1ffb56fmr6790966oiv.222.1653527149873; 
+ Wed, 25 May 2022 18:05:49 -0700 (PDT)
+Received: from localhost.localdomain ([2804:14c:485:4b69:8e74:fc8e:b11f:9d42])
+ by smtp.gmail.com with ESMTPSA id
+ be27-20020a056808219b00b00325cda1ff87sm183205oib.6.2022.05.25.18.05.47
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Wed, 25 May 2022 18:05:49 -0700 (PDT)
+From: Fabio Estevam <festevam@gmail.com>
+To: broonie@kernel.org
+Subject: [PATCH] ASoC: imx-audmux: Silence a clang warning
+Date: Wed, 25 May 2022 22:05:43 -0300
+Message-Id: <20220526010543.1164793-1-festevam@gmail.com>
+X-Mailer: git-send-email 2.25.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Cc: nathan@kernel.org, Fabio Estevam <festevam@gmail.com>,
+ alsa-devel@alsa-project.org, shengjiu.wang@gmail.com,
+ kernel test robot <lkp@intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -87,23 +95,31 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, 25 May 2022 23:07:35 +0100 Jessica Clarke <jrtc27@jrtc27.com> wrote:
+Change the of_device_get_match_data() cast to (uintptr_t)
+to silence the following clang warning:
 
-> This is i386, so an unsigned long is 32-bit, but i_blocks is a blkcnt_t
-> i.e. a u64, which makes the shift without a cast of the LHS fishy.
+sound/soc/fsl/imx-audmux.c:301:16: warning: cast to smaller integer type 'enum imx_audmux_type' from 'const void *' [-Wvoid-pointer-to-enum-cast]
 
-Ah, of course, thanks.  I remember 32 bits ;)
+Reported-by: kernel test robot <lkp@intel.com>
+Fixes: 6a8b8b582db1 ("ASoC: imx-audmux: Remove unused .id_table")
+Signed-off-by: Fabio Estevam <festevam@gmail.com>
+---
+ sound/soc/fsl/imx-audmux.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/mm/shmem.c~mm-shmemc-suppress-shift-warning
-+++ a/mm/shmem.c
-@@ -1945,7 +1945,7 @@ alloc_nohuge:
+diff --git a/sound/soc/fsl/imx-audmux.c b/sound/soc/fsl/imx-audmux.c
+index dfa05d40b276..a8e5e0f57faf 100644
+--- a/sound/soc/fsl/imx-audmux.c
++++ b/sound/soc/fsl/imx-audmux.c
+@@ -298,7 +298,7 @@ static int imx_audmux_probe(struct platform_device *pdev)
+ 		audmux_clk = NULL;
+ 	}
  
- 	spin_lock_irq(&info->lock);
- 	info->alloced += folio_nr_pages(folio);
--	inode->i_blocks += BLOCKS_PER_PAGE << folio_order(folio);
-+	inode->i_blocks += (blkcnt_t)BLOCKS_PER_PAGE << folio_order(folio);
- 	shmem_recalc_inode(inode);
- 	spin_unlock_irq(&info->lock);
- 	alloced = true;
-_
+-	audmux_type = (enum imx_audmux_type)of_device_get_match_data(&pdev->dev);
++	audmux_type = (uintptr_t)of_device_get_match_data(&pdev->dev);
+ 
+ 	switch (audmux_type) {
+ 	case IMX31_AUDMUX:
+-- 
+2.25.1
 
