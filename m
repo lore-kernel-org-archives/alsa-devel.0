@@ -4,133 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 19D84C433F5
-	for <alsa-devel@archiver.kernel.org>; Fri, 27 May 2022 06:55:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5D10EC433EF
+	for <alsa-devel@archiver.kernel.org>; Fri, 27 May 2022 07:43:23 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D8CE316C8;
-	Fri, 27 May 2022 08:54:51 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D8CE316C8
+	by alsa0.perex.cz (Postfix) with ESMTPS id 873D816D6;
+	Fri, 27 May 2022 09:42:31 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 873D816D6
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1653634541;
-	bh=ClcbCf2hLI3x1cz73SJJNlFmkyjPd5XDOJrhA85Oz5M=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=PN1P1dYlS+1hY9mTYKBOOZnlkH7As5RZSYwN2W7pP9nOq89g0GF8bKq94uYyhacv6
-	 rddrd2Hp97uIaC6i3b2tVk7Qr3LVkLIAaHwywrMFIBNkDowv3tnKizYFo2a9hRfoYo
-	 FdJCJ4cz1GiMPn560J09OPPTrhdArFoecdztB44c=
+	s=default; t=1653637401;
+	bh=0xvIV8iKpy7JaL9L1YBs9XRH416sKDOnCczXfNS5Vnw=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=hj0pqZiCvQoDMoclIksUMxGEgyo1BiN5cecGa52hwvANNizDutxxR4InT2t5yUr1E
+	 tKTFJddh3R8Qj5b8elVbwlphCZnbB8J1hgn8bj7P3ySiKAiAV3qXqR7AGONzaX0dMJ
+	 A8ty1HzBeZ7RtzgG8lzi8zumM9ZCph2Kssaa9fGI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 65D76F801D8;
-	Fri, 27 May 2022 08:54:51 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 28E96F801D8;
+	Fri, 27 May 2022 09:42:31 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 31FA6F802DB; Fri, 27 May 2022 08:54:50 +0200 (CEST)
-Received: from APC01-TYZ-obe.outbound.protection.outlook.com
- (mail-tyzapc01on20715.outbound.protection.outlook.com
- [IPv6:2a01:111:f403:704b::715])
+ id 08A8CF802DB; Fri, 27 May 2022 09:42:30 +0200 (CEST)
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de
+ [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id A3FEEF80100
- for <alsa-devel@alsa-project.org>; Fri, 27 May 2022 08:54:43 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A3FEEF80100
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=vivo0.onmicrosoft.com
- header.i=@vivo0.onmicrosoft.com header.b="HuNGhQ6l"
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=XV60BnFKuANmqgkOweW7MVAhvEN6znrr+OATF+EJNKy1TynsbSFZ51nH6b4NXxB9GvHG+unftfUDTu/KAPTZz/kKdU39xCFO/c40p41Ro3jMqpCcgLOVdkBhcRY1c4VIlrSvwl2SiOMrk4JC4WASUiUEVeyaSAwCuD0odPBywef4mt3twSaX7jJSI3kItDQjLryffA5qHO2qNRZfeUsHiWuUj5pgTKfw4I2TnL479P+VACPuqoKnOwcri8EF/ZhxM/O9VPS9EgOhNzbMpUS8lWnK19o5MaZxnGUZOsBgosQbyWc9SLRNu024MjhMxlR4nKTEe6VsBs7bLDwkBZx4TA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=sEWL3YXc1rYYEPJpdiOkM5k6qpACnJFEbxJApmZCJWs=;
- b=WeSWyieknjzeeYiYxPPfc1N0BGNG8QzLNlXsM8ZhnVD6oXdY5cnyKyiT2iO8SweypV+LhJ1NWBJCwpaYehoEpwZEAhVRh4T3VHsYo9mFxzAoqf5OB22Es42sVq/QVPuhCG1BKQ2pKjri62/XeibN3m58MtNkaXdINx9p5t91Ea4+UIdHKafJ4NTm7YRm0eZfP1ZSKsDUOQgVoZ/YUpbHn/4QX90pRRbVGHxUHcYKdeaPvjKHXLIjS+yh+o12oEYXs/E2HCc71UAo9l/A2/v+oy+hLoJqmz89vmwGDHaY8yafO46snwjOfy0DwsJiFlf+mq+KMP3Na+ssKUpUXbLVaA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=vivo.com; dmarc=pass action=none header.from=vivo.com;
- dkim=pass header.d=vivo.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vivo0.onmicrosoft.com; 
- s=selector2-vivo0-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=sEWL3YXc1rYYEPJpdiOkM5k6qpACnJFEbxJApmZCJWs=;
- b=HuNGhQ6lCrVV+KGbVaGardm9JwMhKoFjy/0qqBZH5+SPeA4g+++eS0BMj7y/gmitgQu97YPrFP7sz1c2hHKGa9GP/SzNmkuwyXkpIkYts2/fHGXNwiFS5S+8oQo2QTvXybKjjTsi+EBI87nsPpqTtKpq1rU8X01z/mDZqaNP28w=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=vivo.com;
-Received: from TYZPR06MB4173.apcprd06.prod.outlook.com (2603:1096:400:26::14)
- by HK0PR06MB2371.apcprd06.prod.outlook.com (2603:1096:203:46::15)
- with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5293.13; Fri, 27 May
- 2022 06:54:35 +0000
-Received: from TYZPR06MB4173.apcprd06.prod.outlook.com
- ([fe80::a92b:6d92:5ad9:febb]) by TYZPR06MB4173.apcprd06.prod.outlook.com
- ([fe80::a92b:6d92:5ad9:febb%9]) with mapi id 15.20.5293.013; Fri, 27 May 2022
- 06:54:35 +0000
-From: Yihao Han <hanyihao@vivo.com>
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
- Sylwester Nawrocki <s.nawrocki@samsung.com>,
- Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
- Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
- alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] ASoC: samsung: i2s: Check before clk_unregister() not needed
-Date: Thu, 26 May 2022 23:54:12 -0700
-Message-Id: <20220527065412.3677-1-hanyihao@vivo.com>
-X-Mailer: git-send-email 2.17.1
-Content-Type: text/plain
-X-ClientProxiedBy: HK0PR01CA0068.apcprd01.prod.exchangelabs.com
- (2603:1096:203:a6::32) To TYZPR06MB4173.apcprd06.prod.outlook.com
- (2603:1096:400:26::14)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 3A7FAF800D0
+ for <alsa-devel@alsa-project.org>; Fri, 27 May 2022 09:42:23 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3A7FAF800D0
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+ by metis.ext.pengutronix.de with esmtps
+ (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92)
+ (envelope-from <ukl@pengutronix.de>)
+ id 1nuUc2-0002kv-2L; Fri, 27 May 2022 09:42:22 +0200
+Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
+ by drehscheibe.grey.stw.pengutronix.de with esmtp (Exim 4.94.2)
+ (envelope-from <ukl@pengutronix.de>)
+ id 1nuUc1-004pLM-Nd; Fri, 27 May 2022 09:42:20 +0200
+Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.94.2)
+ (envelope-from <ukl@pengutronix.de>)
+ id 1nuUbz-00CQ8l-Ju; Fri, 27 May 2022 09:42:19 +0200
+Date: Fri, 27 May 2022 09:42:16 +0200
+From: Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH] ASoC: lm49453: Drop no-op remove function
+Message-ID: <20220527074216.h5nchtggs4tn6vak@pengutronix.de>
+References: <20220526204016.1724630-1-u.kleine-koenig@pengutronix.de>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 40245e5b-95e8-4a08-1fae-08da3fadc284
-X-MS-TrafficTypeDiagnostic: HK0PR06MB2371:EE_
-X-Microsoft-Antispam-PRVS: <HK0PR06MB23713D97F5F9BF1739FAD01CA2D89@HK0PR06MB2371.apcprd06.prod.outlook.com>
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 1JoOhOgqWtkd5qwutXuiy198XO3nfpo8u5/MC5QMBZPZ3f9Ab/tBjxLE6+gd5sJBW07Ww+RjpDvP3tgdIQpbapD/r97BwAW7fI2sBBGriILDo79mF95+dqYhUit2d2VRTkuDRmjJZp00xMXttVvWSX/io6OAf8iSKcTN1vnBc2C+AdK3xrneyt28IYJnlI3R+uL/oskaK8EaN+nLqUhOkQMuj4/lXaXJ3dJaqOutmlF2r+HczzLlQefVQCWV+++dTI4MaCKBFgDeQGHDye6TrrRVIwwghModuWRZ/ycAfj1owxydaU5LeaIf+CNT9vvcdbwmBFaBvxUxNYEGpASHoGqyDyYyDujftvyUZssangfe9zid8ZbFETwz+H/ziFL708KiB6UcZ1D3AjCB7gMCgrrh6R1s8fLQA6HEOesmASr6dPkR0qxJh0n/tCoER1oPmQBB2qMIaf2P05WBMYGKyS2OXFxrWsTBCaG/CIYzvkmWqU7G1OW4VXdhznC58hmGntT21ZCFYneix6iWeMbayi011ZUswqTm/b0Z4PfvJuYXCWoMMZdlFV36maz9XZ3zMEbXMSXHFGhtU/5bii++8sUqzjUaaWqFuzFoxtrH+qi39I9kT3gEd8VJcaejOvJ+ccQ+uxpCZH+76dDJLTtvkXqPu0HADFtWez56ziaqT8JzGYUkFztOlMeKbQ+z5kOM5c5zNhAUpsR/X6FNsIxfrA==
-X-Forefront-Antispam-Report: CIP:255.255.255.255; CTRY:; LANG:en; SCL:1; SRV:;
- IPV:NLI; SFV:NSPM; H:TYZPR06MB4173.apcprd06.prod.outlook.com; PTR:; CAT:NONE;
- SFS:(13230001)(4636009)(366004)(5660300002)(38350700002)(38100700002)(508600001)(8676002)(66556008)(66476007)(4326008)(83380400001)(66946007)(6506007)(36756003)(6666004)(1076003)(6512007)(6486002)(316002)(52116002)(26005)(8936002)(2906002)(4744005)(110136005)(107886003)(186003)(86362001)(2616005);
- DIR:OUT; SFP:1102; 
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?LGdXtrTvcoz1LORfrgkjeLF7a/g/T+CHXhBwiEdPJVVplfq8aIuzn4L18rSC?=
- =?us-ascii?Q?ONI1/EUtmu+j/kPNBhupcoCJreUqeyadVNvuA5AyolIasI0v1/vqe17UAYNd?=
- =?us-ascii?Q?YMmAY1Urqaz/5/HpuHTJyk8uaPPLg8VJAfn90buih+I93N+CJlFJoQo4E8vc?=
- =?us-ascii?Q?5xvvLNCcHqqFL+TUWqaj/oo9HXOYDEJkOjNS6u1b/lHO7trZ4JAzhisuwKxw?=
- =?us-ascii?Q?pJcr3mCLfytG9TW7q4o7Xk1qMPgLh6CcqhOrHbJRcNykXVutL7PLs6MHNSzy?=
- =?us-ascii?Q?A8+iXoy+EvrD5LPigJ7OzXz2I+95WdBBKaOFvwpWFhoiMDU6SXoS8CvgzwW6?=
- =?us-ascii?Q?yeAoXLoOWWOHb1rNesWko5ejG5EeQVHqFQAGH3eVrsn7B7sGNLy9Q5My9jPT?=
- =?us-ascii?Q?pdOtEsBj2/JZnFgmC/sLxwWvk1PYJJpl13BGzD02gudLMwztLW0oKoXFuQcb?=
- =?us-ascii?Q?BjgO7HOJQ2ZJb6EZoShR4uMkFPgH2NRN1Tey3t8A2Plpd7eqllpZCy0W3XOE?=
- =?us-ascii?Q?+ggwYp/ExZA7czTi53iSuYAdA5NoszjoBzRsXiKOTWu0bZJvljqPbtlyMs8Y?=
- =?us-ascii?Q?9cMfYQXXRMlbrAIO/Rx0R7DOYUANLB/OSYgelf+JaESF2nmI/ktKVZ3roEq6?=
- =?us-ascii?Q?ndJrdJOb9oHiCvX3W2mdiUKDGxJt5Gka15q3KPq+pNdgceAdbAwwqiMb/TWQ?=
- =?us-ascii?Q?lHfGSLPqcFPI/30YpltH2xVlqxbpK0qVg2c6ghgF1QbXYT/GzvgHJY1g7MOX?=
- =?us-ascii?Q?qWBXY7u3fDlgi2Ffk62fI4dshq/OtMd9Dn8vuW5VCh58wASbMnC6N/Vc80vb?=
- =?us-ascii?Q?L+0Hot+NP7fK+OBlyFQcnkjNpp0T0VSyK4s104/sSt8x1nBYNyR8i0VXHTWS?=
- =?us-ascii?Q?4rn248pRNdBCWIu+TUK+B4amD7T3uPPQ6LObnKSnX4CdDtgTc6rKOC8Ct+Sp?=
- =?us-ascii?Q?X9VQwdOGNQp3Heet5KyhYtcuQdpe6YnqyWlH2r2CFaccopqlvJNBRTirER3z?=
- =?us-ascii?Q?kAcNiQNENH0pbfK/TVSetL4xs5K7DjMjHTE8Uc/zu8okTEm12PavxXr01DQd?=
- =?us-ascii?Q?kFl3lbdjBF+uZQnTnolUeO7gDp43J+fUNcSlTBgjF0DZhtOrvCnVkoMBwSdm?=
- =?us-ascii?Q?+ATFVV1h90emh3cHRZjKzBrwVeCgIozCCJNfX+XIMXjMjW5FOzX6/mR7LQlZ?=
- =?us-ascii?Q?orgOk3CLitkUxQiSTism0Ed2YfNPqyhG2xCl8G/lqZczEa3bpw8P22bbOiI/?=
- =?us-ascii?Q?UJ9+u+UyhmGkIQTTGjmFN0mwUr4saojv/EzY39ySlNcHeuB8WISe1hZKAi/o?=
- =?us-ascii?Q?xF5CZESbMeXOFYv3mG5sPHVnbLc4H7F/78cgVxy/KS/PlwiMR+e4YGCrjRUJ?=
- =?us-ascii?Q?SpoQHksH4bYEHaGdCg25CZSTdvc/iYV96OTrwsA4w6+zRmqTcQqWSFmyneRe?=
- =?us-ascii?Q?exAFfmjGysr/wW3Sdqf2DUqXtO+8Dxp5IFp4pMpgt0NKTdGV30HHYy/+Loex?=
- =?us-ascii?Q?Gg4L7JVCS9tqA65mZkylsMZArJv/HgJPKC3rOoJlzFWYl334mtw25iWgwfqL?=
- =?us-ascii?Q?V8Rb4DGo77gCyBKLui/WzElI8gKZIBnh5tIwAqd1h+gw2u0fwU9CmXWe3uKt?=
- =?us-ascii?Q?KvHBLmqVklmnZTYQbgSjdRL+fB1wx0BmIuFsND8whvaTbPoK8/Z1MoFDVBAP?=
- =?us-ascii?Q?ZBzGyIE2lVfJmEp6PhgareJiH7qs24quLV38N3rknf3pQZbTTFE7tP+jw6/N?=
- =?us-ascii?Q?XmAK7c5GTw=3D=3D?=
-X-OriginatorOrg: vivo.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 40245e5b-95e8-4a08-1fae-08da3fadc284
-X-MS-Exchange-CrossTenant-AuthSource: TYZPR06MB4173.apcprd06.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 27 May 2022 06:54:35.4331 (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 923e42dc-48d5-4cbe-b582-1a797a6412ed
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: IwjDLklhzf/TAmC/WvNpDfnFcbJNlhxIxFYTaevyiP415DNWaz48hPnw8kQ46o4yw4HdnzNKZChOzuW9BlU+GA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: HK0PR06MB2371
-Cc: Yihao Han <hanyihao@vivo.com>
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature"; boundary="vmraiioxg3kgy4wn"
+Content-Disposition: inline
+In-Reply-To: <20220526204016.1724630-1-u.kleine-koenig@pengutronix.de>
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de);
+ SAEximRunCond expanded to false
+X-PTX-Original-Recipient: alsa-devel@alsa-project.org
+Cc: alsa-devel@alsa-project.org,
+ Vishwas A Deshpande <vishwas.a.deshpande@ti.com>,
+ M R Swami Reddy <mr.swami.reddy@ti.com>, kernel@pengutronix.de
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -146,29 +79,53 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-clk_unregister() already checks the clk ptr using
-!clk || WARN_ON_ONCE(IS_ERR(clk)) so there is no need to check it
-again before calling it.
 
-Signed-off-by: Yihao Han <hanyihao@vivo.com>
----
- sound/soc/samsung/i2s.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+--vmraiioxg3kgy4wn
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-diff --git a/sound/soc/samsung/i2s.c b/sound/soc/samsung/i2s.c
-index 70c827162be4..84e21f7fc179 100644
---- a/sound/soc/samsung/i2s.c
-+++ b/sound/soc/samsung/i2s.c
-@@ -1247,8 +1247,7 @@ static void i2s_unregister_clocks(struct samsung_i2s_priv *priv)
- 	int i;
- 
- 	for (i = 0; i < priv->clk_data.clk_num; i++) {
--		if (!IS_ERR(priv->clk_table[i]))
--			clk_unregister(priv->clk_table[i]);
-+		clk_unregister(priv->clk_table[i]);
- 	}
- }
- 
--- 
-2.17.1
+Hello,
 
+FTR: The two registered maintainers (M R Swami Reddy, Vishwas A
+Deshpande) didn't get my patch. The TI mail server told me:
+
+  vishwas.a.deshpande@ti.com
+    host cluster5.us.messagelabs.com [67.219.247.195]
+    SMTP error from remote mail server after RCPT TO:<vishwas.a.deshpande@t=
+i.com>:
+    550 Invalid recipient <vishwas.a.deshpande@ti.com> (#5.1.1)
+  mr.swami.reddy@ti.com
+    host cluster5.us.messagelabs.com [67.219.246.212]
+    SMTP error from remote mail server after RCPT TO:<mr.swami.reddy@ti.com=
+>:
+    550 Invalid recipient <mr.swami.reddy@ti.com> (#5.1.1)
+
+So if the only stopper to apply this patch is some feedback from one of
+them: please reconsider :-)
+
+What should happen to the maintainer entry?
+
+Best regards
+Uwe
+
+--=20
+Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
+Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+
+--vmraiioxg3kgy4wn
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAmKQgNUACgkQwfwUeK3K
+7AkUJAf+KsaECVGcDJqvX8S5RsLRHb7O8S9/C7pA1a0NHAxIdiKyNzcn4CFfvX8B
+nAr790yWQl4+W8LWFIMVHqpIla+6vcj+0FWgpfJ+kKpJaZ4vASwcy/59HjjooUKF
+VscO09jiqwA5tUXhQiJ9nYomafdBmomumSBezIkxZgLsZ8+8srq49V8oOwREh4IH
+sKD/irDs0pvCJ7Psx3WFc0B5cHlPIS//aVUmPp5mA/h7n8TxuYa/i/M3hWKNrgpo
+FqicYEk02qBoNTKYyOcIMPWNvxZDullmEf5m2CHR0gtq2HjyQgCegwgf8QZyXkum
+598ync2btCEnSNJL6SNMYqwhSgVFsQ==
+=WB+A
+-----END PGP SIGNATURE-----
+
+--vmraiioxg3kgy4wn--
