@@ -4,58 +4,84 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id AD1A4C433EF
-	for <alsa-devel@archiver.kernel.org>; Fri, 27 May 2022 15:30:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B8723C433F5
+	for <alsa-devel@archiver.kernel.org>; Fri, 27 May 2022 16:14:39 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0194E176C;
-	Fri, 27 May 2022 17:30:06 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0194E176C
+	by alsa0.perex.cz (Postfix) with ESMTPS id 1AE7D17C8;
+	Fri, 27 May 2022 18:13:47 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1AE7D17C8
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1653665456;
-	bh=MeaMHZSNWiYX7NmLTVIADdApsvo48kFbfH7Q4zDfd4A=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=hSnu2O2INAaWe3clhSN8LnJYyxGmIkunNlb4f8dwsXwHVJwFmt8F7FSe57nv/KWp3
-	 Yhn/edtEFY1OlHcUzQmsgUNpgQHlZb29XajywpFybfWcvZvDV0ocp8l1/YSJpdhIX/
-	 0JQXskF4YJZsVfxuqkx3zCdoHfMAP4skMyUd/rrU=
+	s=default; t=1653668077;
+	bh=14Og7Sp5BZ8huhbA///S/dvSyzUEyv4BvpFkxEw7qmk=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=m9dAgdZwiyNefcX9OUpoDUfw/rodKrxHmfuUa+jBHRsTxqZqDamsr5cMFQTEEn+ga
+	 mSkIpxe8YoOfNCQqSyDGiyQLNe6Mc8eKC93Upwfotxa3W4fhki5+5m/e/1czyiwutg
+	 NKo+wB1xkRhcv/lo+Oq28sFJCUMYcigNrK6l29q8=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id B5E0DF80529;
-	Fri, 27 May 2022 17:28:36 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id A5D4CF80100;
+	Fri, 27 May 2022 18:13:46 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 63948F802DB; Fri, 27 May 2022 14:12:22 +0200 (CEST)
-Received: from smtpbg.qq.com (smtpbg138.qq.com [106.55.201.18])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 89AB4F801D8; Fri, 27 May 2022 18:13:44 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 85FA5F800D0
- for <alsa-devel@alsa-project.org>; Fri, 27 May 2022 14:12:07 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 85FA5F800D0
-X-QQ-mid: bizesmtp74t1653653517tiv7vzps
-Received: from localhost.localdomain ( [182.148.13.40])
- by bizesmtp.qq.com (ESMTP) with 
- id ; Fri, 27 May 2022 20:11:40 +0800 (CST)
-X-QQ-SSF: 01000000002000B0G000000A0000000
-X-QQ-FEAT: RKCwGdK8Yfi2eFJ32OTXHJX7Mf5yNB5Ebft1FvL5LJRKtQWC4ZGmyFAmQ0teK
- 3lfRqetO0rebxgVX0jLKj8ICp3PiK4KesjiP6RTztZRjzc65a+muY5yOsdZI3TY404toRI3
- n5bFIYdbXgaHn+BLAFDFXdmpSDnMgiHYwer4O2ectEhEH/N3awrvJ9jR3of30tzDLcqOxYy
- SZBFgOBLPM6N9rbK1842vr8JrMaC3NcshCiwTMki5IPVqdFQ8ccZGsUn+k7NktrLlloyvrT
- MX836PLxb6HnusVvvNIZHT5q31BojLMlwfyWBnjXqQxXoJUy5ROUfVf093VONsFxiebQXGm
- 18PK4KI5DzNJgloBAo=
-X-QQ-GoodBg: 0
-From: Xiang wangx <wangxiang@cdjrlc.com>
-To: perex@perex.cz
-Subject: [PATCH] ALSA: hda/via: Delete does not require return
-Date: Fri, 27 May 2022 20:10:59 +0800
-Message-Id: <20220527121059.25221-1-wangxiang@cdjrlc.com>
-X-Mailer: git-send-email 2.36.1
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-QQ-SENDSIZE: 520
-Feedback-ID: bizesmtp:cdjrlc.com:qybgspam:qybgspam10
-X-Mailman-Approved-At: Fri, 27 May 2022 17:28:30 +0200
-Cc: alsa-devel@alsa-project.org, Xiang wangx <wangxiang@cdjrlc.com>,
- tiwai@suse.com, linux-kernel@vger.kernel.org
+ by alsa1.perex.cz (Postfix) with ESMTPS id 35417F800EB
+ for <alsa-devel@alsa-project.org>; Fri, 27 May 2022 18:13:39 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 35417F800EB
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
+ header.b="hPry9gFO"; 
+ dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
+ header.b="k3GbLAyh"
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 86B8A21ADA;
+ Fri, 27 May 2022 16:13:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1653668019; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=UCBex/08JKyMBNG9+8XKAWONPejCLu/grdanStzZ9Ik=;
+ b=hPry9gFOQJSaMDVK8/ftxw4EL2nKNKHnOvycMvmPCR9VXbPt+wMJiAxEmsXD+D4mpWO5yF
+ dvljsKCTxXOkbPwgPAZFIX+2+czQ4li6KU32mLBg+5v8KwD4yUT5yUGOc9gu3FjA5v3/9C
+ 2bXUPE4B57fTZHr30kmPe+T4kicqCH8=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1653668019;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=UCBex/08JKyMBNG9+8XKAWONPejCLu/grdanStzZ9Ik=;
+ b=k3GbLAyhK3rEjaYy1Ap1hlX+2Y3DUnhuUPtQaNqp1m3wZa+Hfih61pJCESQZmQ8gQauaNf
+ NI7IRvbsZdR+z1Cw==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 5A5C3139C4;
+ Fri, 27 May 2022 16:13:39 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+ by imap2.suse-dmz.suse.de with ESMTPSA id JkUdFbP4kGJHFgAAMHmgww
+ (envelope-from <tiwai@suse.de>); Fri, 27 May 2022 16:13:39 +0000
+Date: Fri, 27 May 2022 18:13:38 +0200
+Message-ID: <871qwf0x8t.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Vitaly Rodionov <vitalyr@opensource.cirrus.com>
+Subject: Re: [PATCH v4 00/17] ALSA: hda: cirrus: Add initial DSP support and
+ firmware loading
+In-Reply-To: <20220525131638.5512-1-vitalyr@opensource.cirrus.com>
+References: <20220525131638.5512-1-vitalyr@opensource.cirrus.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+Cc: alsa-devel@alsa-project.org, patches@opensource.cirrus.com,
+ Takashi Iwai <tiwai@suse.com>, linux-kernel@vger.kernel.org,
+ Mark Brown <broonie@kernel.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -71,26 +97,60 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Void function return statements are not generally useful.
+On Wed, 25 May 2022 15:16:21 +0200,
+Vitaly Rodionov wrote:
+> 
+> The CS35L41 Amplifier contains a DSP, capable of running firmware.
+> The firmware can run algorithms such as Speaker Protection, to ensure
+> that playback at high gains do not harm the speakers.
+> Adding support for CS35L41 firmware into the CS35L41 HDA driver also
+> allows us to support several extra features, such as hiberation 
+> and interrupts.
+> 
+> The chain adds support in stages:
+> - General fixes to improve generalization and code re-use inside
+>   the CS35L41 HDA driver.
+> - Add support for interrupts into the driver, which is required
+>   for complete support of the firmware.
+> - Refactor ASoC CS35L41 code which deals with firmware to allow
+>   for code re-use inside the CS35L41 HDA driver.
+> - Add support for loading firmware and tuning files from file system,
+>   and creating alsa controls to control it.
+> - Support firmware load paths for different hardware systems.
+> - Support suspend/resume in the driver when using firmware. The firmware
+>   supports hibernation, which allows the CS35L41 to drop into a low
+>   power mode during suspend.
+> - Support the ability to unload firmware, swap and reload the firmware.
+>   This is to allow different firmware to run during calibration.
+> 
+> The intended use-case is to load the firmware once on boot, and the driver
+> autmatically tries to load the firmware after it binds to the HDA driver.
+> This behaviour can be switched off using a kconfig, if desired.
 
-Signed-off-by: Xiang wangx <wangxiang@cdjrlc.com>
----
- sound/pci/hda/patch_via.c | 2 --
- 1 file changed, 2 deletions(-)
+The idea to add / delete controls by the control element change
+doesn't sound good; as already mentioned in my reply to the previous
+patch set, the change of the control elements can be triggered too
+easily by any normal users who have the access to the sound devices.
+It means thousands of additions and removals per second could be
+attacked by any user.
 
-diff --git a/sound/pci/hda/patch_via.c b/sound/pci/hda/patch_via.c
-index 773a136161f1..a05304f340df 100644
---- a/sound/pci/hda/patch_via.c
-+++ b/sound/pci/hda/patch_via.c
-@@ -449,8 +449,6 @@ static void vt1708_set_pinconfig_connect(struct hda_codec *codec, hda_nid_t nid)
- 		def_conf = def_conf & (~(AC_JACK_PORT_BOTH << 30));
- 		snd_hda_codec_set_pincfg(codec, nid, def_conf);
- 	}
--
--	return;
- }
- 
- static int vt1708_jack_detect_get(struct snd_kcontrol *kcontrol,
--- 
-2.36.1
+Moreover, the new controls with TLV controls don't look following the
+standard TLV syntax (type-length-value).  My previous questions about
+the TLV usages are still unanswered, so I'm not sure what impact this
+would have, though.  At least, alsactl behavior must be checked
+beforehand. If this is really device-specific (non-)TLV usages, it has
+to be clearly documented.
 
+I don't mean fully against such a TLV usage, *IFF* the same pattern
+has been already used in ASoC side.  In that case, we may need to
+introduce some PCM info flag to indicate a non-standard TLV usage (but
+it's a bit different story).
+
+OTOH, the too easily triggered control addition/removal is likely
+no-go, as this could be a cause of DoS-like attacks.  If we must to in
+this direction, it has to be verified and clarified.
+
+
+thanks,
+
+Takashi
