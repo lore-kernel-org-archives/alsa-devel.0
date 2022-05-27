@@ -4,78 +4,81 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D64C2C433F5
-	for <alsa-devel@archiver.kernel.org>; Fri, 27 May 2022 08:16:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 52C9BC433F5
+	for <alsa-devel@archiver.kernel.org>; Fri, 27 May 2022 08:22:06 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 4AFBD16E8;
-	Fri, 27 May 2022 10:15:37 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4AFBD16E8
+	by alsa0.perex.cz (Postfix) with ESMTPS id 5D69F16EE;
+	Fri, 27 May 2022 10:21:14 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5D69F16EE
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1653639387;
-	bh=yymcLsU0CVx4xjTLV/Cr9dvk3zmZQ7IzxRhZIbgm+9Q=;
+	s=default; t=1653639724;
+	bh=h34ru53r/ZWIXkS2uprj7xg/DHqS14cW0qXgZmCF+4o=;
 	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=RAZO1d3sFROr7viIWljOh7MHeuQ76FiEtYS5TZ7eIISfh8VUSEkU8mxPhtU+dGul/
-	 0W/euKA/wD0xE3RjwbqgKhpaZ/BBSAjd6/nQ0XQwy8Wm0lw5ZCcd+toB7C91p5b8mS
-	 gO8LDrNZx/XfEepfo8LQncZywmdFhJv7epcQZRUE=
+	b=WELc/dSLRPoyjos/nVcMXth8NLdo3mlHz2ooTBkh5o7Ia3bHMMoo63MEjKWDsooAW
+	 UidHik2dxO7EU/qiy5fn/8lcXrWzcc8AmapkOeZLYM5dr4BGVrh9SfxMZnyGH0K31T
+	 /ZHARH+BJUOjh9LFfHgyBd05iR9m+CFKPW1KIqoQ=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id DF197F801D8;
-	Fri, 27 May 2022 10:15:31 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 04A4BF801D8;
+	Fri, 27 May 2022 10:21:14 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id E7B23F802DB; Fri, 27 May 2022 10:15:30 +0200 (CEST)
-Received: from mail-lj1-x22e.google.com (mail-lj1-x22e.google.com
- [IPv6:2a00:1450:4864:20::22e])
+ id 7E0B0F802DB; Fri, 27 May 2022 10:21:13 +0200 (CEST)
+Received: from mail-lj1-x234.google.com (mail-lj1-x234.google.com
+ [IPv6:2a00:1450:4864:20::234])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 8693FF800D0
- for <alsa-devel@alsa-project.org>; Fri, 27 May 2022 10:15:20 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8693FF800D0
+ by alsa1.perex.cz (Postfix) with ESMTPS id C1469F800D0
+ for <alsa-devel@alsa-project.org>; Fri, 27 May 2022 10:21:10 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C1469F800D0
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="LN9wrgIz"
-Received: by mail-lj1-x22e.google.com with SMTP id v9so4150394lja.12
- for <alsa-devel@alsa-project.org>; Fri, 27 May 2022 01:15:20 -0700 (PDT)
+ header.b="FWKNkvb6"
+Received: by mail-lj1-x234.google.com with SMTP id g12so4109113lja.3
+ for <alsa-devel@alsa-project.org>; Fri, 27 May 2022 01:21:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
  h=mime-version:references:in-reply-to:from:date:message-id:subject:to
- :cc; bh=/qtRZ+VrSUBptAVUI9iiPS+3Nf9EqilNhA3oI5WaH1c=;
- b=LN9wrgIzY9T9nAhkMGUB6grt3fCRrvPbohzwAptzm29NkbPgyOlxbcXavd1U5vQhD5
- 4B5H4U+0WniWtiMLh6KWtbauRw4A51A3J+eqwoRymCrJH/d1KxxtN7mABubw7rd3WVXX
- VxxKJ69sGrKE3EGP9Gry/tEm3OaNUN11r4o7irMa/v+8tvRedjZhchK34GcpxIL6Fe4N
- 4i50BGegSLe1ekIbWuW050dhid4yNH0rQ2vfuxa9lzPIWUqOTfP3jyNr/ChL6hTYpmTU
- 4iBeMqEkNcBVHhMkKDbTTi/UlAL1ABHMaDg1wPiCk7Ws6zski7f4d176bNfCt4cBhKlp
- HpjA==
+ :cc; bh=1bhxU9R3etbe0aMg7Elh3OdIVGpBwQKqRBhXNWuSOSc=;
+ b=FWKNkvb63EkAcAUlzXUvM8I2I69XfNve9rJraEbZH5uCSgEGev1qFT2VW9fTOop6WR
+ hZE2bZ7wwWB5FHkfLa67JVv0Rej1wO9lL8YuB04PA+ZFXU244nVt2GBGKWnbOUY/UdQz
+ zEfyuqMiSYM9Gm4cV5OUw1a1uz1yOv90r9y6Td+00vWXYGMch6E2S4EQoMy6tgg8RGUN
+ r7Q7OdcCtMmDyK2sVn5xOHJoixoMOpdxmorbcF87ECDDedQV4PKKoHu0Qio/5Vk8eDcQ
+ KJCq6ZOm11FBwKyMNmOd36Bf+q2lOfjhV2ed9FohDvsbTP2bOiNjOMBwwUL3IMJ01w4v
+ FKMw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
  h=x-gm-message-state:mime-version:references:in-reply-to:from:date
  :message-id:subject:to:cc;
- bh=/qtRZ+VrSUBptAVUI9iiPS+3Nf9EqilNhA3oI5WaH1c=;
- b=ASzGDaS63VV+BV3dBUlYV21hMSysCZb7LJ6AQkzwC6LDRhYDis34VcrWAeiVXNR7kS
- XFzwhiv6JLv6hRyWnFuX9oA1UOSE7dBg3rVMn4pLPmGD2LG3jFC+wI4AOLvMX8m1d/N2
- 35rrMjxeaBZH/eS9hraLnxUM59tOeSijHMZA2B/DhY+5e/CXTTyz+X7VnYXQEVwM5m04
- BQazIIyg4iMkFZFLGlsyiKySpir/NI9uJwVJZU8+0lWFsbrv5DJcL8wEE/WCyogXpDIb
- 9iglKkWhbfB/h+VgT/TFSKX0QvDTnIuhDJQueLJlkaFTKWxPi/IzWtd2UnLGGFD539wX
- iwQg==
-X-Gm-Message-State: AOAM532cDfHNP1AQcf5VkYgL+sXQlFU0uWZRoxs4aYkuT2cKggN09QS5
- V07gEp8lyopjKlmzH9BhtTZk05n7aZtXb42kcB8=
-X-Google-Smtp-Source: ABdhPJwfhdtYBja/wknI3jeAuqx3w0yF2tm2ccxF6U2pCWUGQdvLXrCDDtBn6dYA2cj+a5HPO/SDcFLklo/+BLTlEFs=
-X-Received: by 2002:a05:651c:509:b0:253:f7d4:15bf with SMTP id
- o9-20020a05651c050900b00253f7d415bfmr10421261ljp.189.1653639317735; Fri, 27
- May 2022 01:15:17 -0700 (PDT)
+ bh=1bhxU9R3etbe0aMg7Elh3OdIVGpBwQKqRBhXNWuSOSc=;
+ b=Hk2QQ2/P0Sle9NULGU6xc5fXZl4TI9F+4ECSzTi0cUq+yINq/aNarIpO0+2dzoWUJy
+ NWzTITjVWPNuiPGrDWcV5/pGN7JTkq86jRy8L0OOcMgK5MxujUJWkdmDBb5/QnXVD00l
+ amkYJ+tmGiSKhEZ9z3xRbO2Q89jOK1Uif+35EXutjo0izD1CSKltOF39e7556VdVfZ0S
+ nvvVIT0fm0GYMeJCE+VKS3DfELwcMEP6eK/tQYqqdON2CJuQA8/nEEIvwKmJGXF1P1Js
+ NHcsG1G7Cle8nAY2NYUCD6U4Mc755YBAtxY2mDt5a3HvZ3/nunvXdn/pFq25MXk8fHin
+ U3Ug==
+X-Gm-Message-State: AOAM530jmwbRQH4BOOodkiVekq4oiTEoSI0TIMqE7hYDXcscHpGM/B/S
+ 3v/avNX4GZizKJpfbaTbnxgfY89fQi9unzgqr5k=
+X-Google-Smtp-Source: ABdhPJyTHUXDwANLG6wBs8U8ygZ7Gn50fbaiJBAj1wFOlt4Q39yhMaTfZfyh6lxacwcUGmL1cS/NWxWO+5UgrcZKuEA=
+X-Received: by 2002:a2e:a78f:0:b0:253:e71f:69a8 with SMTP id
+ c15-20020a2ea78f000000b00253e71f69a8mr15839350ljf.432.1653639668071; Fri, 27
+ May 2022 01:21:08 -0700 (PDT)
 MIME-Version: 1.0
-References: <20220526010543.1164793-1-festevam@gmail.com>
-In-Reply-To: <20220526010543.1164793-1-festevam@gmail.com>
+References: <20220526011958.139391-1-zhangqilong3@huawei.com>
+In-Reply-To: <20220526011958.139391-1-zhangqilong3@huawei.com>
 From: Shengjiu Wang <shengjiu.wang@gmail.com>
-Date: Fri, 27 May 2022 16:15:06 +0800
-Message-ID: <CAA+D8AOjUhoSShAaXUqFb9i=fXKrw4P8tgnsP2Qh2SjW8TzSaQ@mail.gmail.com>
-Subject: Re: [PATCH] ASoC: imx-audmux: Silence a clang warning
-To: Fabio Estevam <festevam@gmail.com>
+Date: Fri, 27 May 2022 16:20:56 +0800
+Message-ID: <CAA+D8AOD=u0Q7Npy0z=r02CyM9qVu+-vbqTD2nGfO95K_t-xFA@mail.gmail.com>
+Subject: Re: [PATCH] ASoC: fsl_xcvr:Fix unbalanced pm_runtime_enable in
+ fsl_xcvr_probe
+To: zhangqilong <zhangqilong3@huawei.com>
 Content-Type: text/plain; charset="UTF-8"
 X-Content-Filtered-By: Mailman/MimeDel 2.1.15
-Cc: nathan@kernel.org, alsa-devel@alsa-project.org,
- Mark Brown <broonie@kernel.org>, kernel test robot <lkp@intel.com>
+Cc: alsa-devel@alsa-project.org, Xiubo Li <Xiubo.Lee@gmail.com>,
+ linuxppc-dev <linuxppc-dev@lists.ozlabs.org>, Takashi Iwai <tiwai@suse.com>,
+ Liam Girdwood <lgirdwood@gmail.com>, Nicolin Chen <nicoleotsuka@gmail.com>,
+ Mark Brown <broonie@kernel.org>, Fabio Estevam <festevam@gmail.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -91,45 +94,46 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Thu, May 26, 2022 at 9:05 AM Fabio Estevam <festevam@gmail.com> wrote:
+On Thu, May 26, 2022 at 9:18 AM zhangqilong <zhangqilong3@huawei.com> wrote:
 
-> Change the of_device_get_match_data() cast to (uintptr_t)
-> to silence the following clang warning:
+> Add missing pm_runtime_disable() when probe error out. It could
+> avoid pm_runtime implementation complains when removing and probing
+> again the driver.
 >
-> sound/soc/fsl/imx-audmux.c:301:16: warning: cast to smaller integer type
-> 'enum imx_audmux_type' from 'const void *' [-Wvoid-pointer-to-enum-cast]
+> Fix:c590fa80b3928 ("ASoC: fsl_xcvr: register platform component before
+> registering cpu dai")
+> Signed-off-by: Zhang Qilong <zhangqilong3@huawei.com>
+> ---
+>  sound/soc/fsl/fsl_xcvr.c | 2 ++
+>  1 file changed, 2 insertions(+)
 >
-> Reported-by: kernel test robot <lkp@intel.com>
-> Fixes: 6a8b8b582db1 ("ASoC: imx-audmux: Remove unused .id_table")
-> Signed-off-by: Fabio Estevam <festevam@gmail.com>
+> diff --git a/sound/soc/fsl/fsl_xcvr.c b/sound/soc/fsl/fsl_xcvr.c
+> index d0556c79fdb1..907435efe121 100644
+> --- a/sound/soc/fsl/fsl_xcvr.c
+> +++ b/sound/soc/fsl/fsl_xcvr.c
+> @@ -1228,6 +1228,7 @@ static int fsl_xcvr_probe(struct platform_device
+> *pdev)
+>          */
+>         ret = devm_snd_dmaengine_pcm_register(dev, NULL, 0);
+>         if (ret) {
+> +               pm_runtime_disable(dev);
+>                 dev_err(dev, "failed to pcm register\n");
+>                 return ret;
+>         }
+> @@ -1235,6 +1236,7 @@ static int fsl_xcvr_probe(struct platform_device
+> *pdev)
+>         ret = devm_snd_soc_register_component(dev, &fsl_xcvr_comp,
+>                                               &fsl_xcvr_dai, 1);
+>         if (ret) {
+> +               pm_runtime_disable(dev);
+>                 dev_err(dev, "failed to register component %s\n",
+>                         fsl_xcvr_comp.name);
+>         }
 >
-
-Acked-by: Shengjiu Wang <shengjiu.wang@gmail.com>
+> Could you please also help add remove() function and add
+pm_runtime_disable()
+in the remove()?
+Thanks.
 
 best regards
 wang shengjiu
-
-
-> ---
->  sound/soc/fsl/imx-audmux.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/sound/soc/fsl/imx-audmux.c b/sound/soc/fsl/imx-audmux.c
-> index dfa05d40b276..a8e5e0f57faf 100644
-> --- a/sound/soc/fsl/imx-audmux.c
-> +++ b/sound/soc/fsl/imx-audmux.c
-> @@ -298,7 +298,7 @@ static int imx_audmux_probe(struct platform_device
-> *pdev)
->                 audmux_clk = NULL;
->         }
->
-> -       audmux_type = (enum
-> imx_audmux_type)of_device_get_match_data(&pdev->dev);
-> +       audmux_type = (uintptr_t)of_device_get_match_data(&pdev->dev);
->
->         switch (audmux_type) {
->         case IMX31_AUDMUX:
-> --
-> 2.25.1
->
->
