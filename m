@@ -4,71 +4,84 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D98ACC433EF
-	for <alsa-devel@archiver.kernel.org>; Sun, 29 May 2022 08:52:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1F8C9C433EF
+	for <alsa-devel@archiver.kernel.org>; Sun, 29 May 2022 09:36:53 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A742B191C;
-	Sun, 29 May 2022 10:51:05 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A742B191C
+	by alsa0.perex.cz (Postfix) with ESMTPS id 74F1218B4;
+	Sun, 29 May 2022 11:36:01 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 74F1218B4
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1653814315;
-	bh=aJ7ijjRfx0HzOhK4iMk7ROjT5YqVm7f3UtnkKu2s2ZI=;
-	h=From:To:Subject:Date:In-Reply-To:References:In-Reply-To:
-	 References:Cc:List-Id:List-Unsubscribe:List-Archive:List-Post:
-	 List-Help:List-Subscribe:From;
-	b=gvLCsPzCAc2jVpTGkpnvixr35jxbukw+TAJucZ2dPzm6h7xXASTay3IrCOedtdmXz
-	 8N84mWwG7dSvuWFLHHM09saQltHfzxYQcCASE9jr44wq7KRhbNSMY8z5bp/u80Ucpr
-	 g7dFQNKFVOK783e0BfxCP6BGBvea+FH/mhtAFnqk=
+	s=default; t=1653817011;
+	bh=84w8xQ+C3oedNx7jVkGeCy2PlB79Jq95jTAygGkRRWo=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=ElK5RgyDFjmsRrJ3+kIYV1c4T/N26xGvmjfRBrHhXpkjgrrf881iEn20PcSlsBIhu
+	 QfmEiOsdjW5783WsbeX8QsiN0T2N+iC+rXX+DMfq7VeFELDM6CLXp2IMnkqSLIYypB
+	 31nUVhvVhKmoRUzpNlU3Cf1ADJ0RNnRa1Kd8iWmQ=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 24101F80516;
-	Sun, 29 May 2022 10:50:47 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id E77FFF80245;
+	Sun, 29 May 2022 11:36:00 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 782B2F8051B; Sun, 29 May 2022 10:50:45 +0200 (CEST)
-Received: from alexa-out.qualcomm.com (alexa-out.qualcomm.com [129.46.98.28])
- (using TLSv1.2 with cipher AES256-SHA (256/256 bits))
+ id 07C3AF8024C; Sun, 29 May 2022 11:35:59 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 08727F8026D
- for <alsa-devel@alsa-project.org>; Sun, 29 May 2022 10:50:38 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 08727F8026D
+ by alsa1.perex.cz (Postfix) with ESMTPS id C8B16F800DE
+ for <alsa-devel@alsa-project.org>; Sun, 29 May 2022 11:35:52 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C8B16F800DE
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=quicinc.com header.i=@quicinc.com
- header.b="fCVH8eHq"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=quicinc.com; i=@quicinc.com; q=dns/txt; s=qcdkim;
- t=1653814240; x=1685350240;
- h=from:to:cc:subject:date:message-id;
- bh=pVctacfE/6fUl/sXtENzfCHXL++mZW7suIifbtJm0oE=;
- b=fCVH8eHqc4ym2jOCD3GQd/MUuZjjUEzO54TM775FKDXAXkjqqmD2oEWr
- CnFOEzmR7cLBEGCrUJsTMU7lUAuMAq4B2mFEFUz453K1C1/IJflKlRSUw
- 8w5QK7YYSE9C4UcT1WE3GkXvcj8G7xO/RNYoTSElMOcjBP0zTrFVxUYGd I=;
-Received: from ironmsg09-lv.qualcomm.com ([10.47.202.153])
- by alexa-out.qualcomm.com with ESMTP; 29 May 2022 01:50:35 -0700
-X-QCInternal: smtphost
-Received: from ironmsg02-blr.qualcomm.com ([10.86.208.131])
- by ironmsg09-lv.qualcomm.com with ESMTP/TLS/AES256-SHA;
- 29 May 2022 01:50:34 -0700
-X-QCInternal: smtphost
-Received: from hu-rbankapu-blr.qualcomm.com (HELO
- hu-ub18template-blr.qualcomm.com) ([10.131.39.233])
- by ironmsg02-blr.qualcomm.com with ESMTP; 29 May 2022 14:20:28 +0530
-Received: by hu-ub18template-blr.qualcomm.com (Postfix, from userid 4079802)
- id B8F86800995; Sun, 29 May 2022 14:20:27 +0530 (+0530)
-From: Raghu Bankapur <quic_rbankapu@quicinc.com>
-To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
- Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
- Raghu Bankapur <quic_rbankapu@quicinc.com>, alsa-devel@alsa-project.org,
- linux-kernel@vger.kernel.org
-Subject: [PATCH V0 1/1] asoc: msm: use hashtable to check kcontrol
-Date: Sun, 29 May 2022 14:20:09 +0530
-Message-Id: <ad55bbd41cc253acb9af6ac068c15dd1545ecd81.1653813866.git.quic_rbankapu@quicinc.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <cover.1653813866.git.quic_rbankapu@quicinc.com>
+ dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
+ header.b="Uf6KFYhj"; 
+ dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
+ header.b="1Jeo79TB"
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 079DE1F8C8;
+ Sun, 29 May 2022 09:35:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1653816952; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=8Rtujg9sB4Pj/rXWhXsT0WvzqNzEXC5UHMpDPH16RR8=;
+ b=Uf6KFYhjpNC13uxQMka7vtllz02yDMYsrnmgrOrhcOF72oWPEx2vhNrbuyNsFyDVRfTFlT
+ pEkZM6BoyZ8rhnRPLUZlcUq4qcHNGExr8lQai0XQ9FSv2J9QYpu52ZzPU1I1ful5VPFXUq
+ ywcjBIqLz0QR4t6RFBW2QDssofSsX/I=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1653816952;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=8Rtujg9sB4Pj/rXWhXsT0WvzqNzEXC5UHMpDPH16RR8=;
+ b=1Jeo79TBT8g7wWOXnTBqYm2p+8E/cKpbiRi6+HIp0zg5tb6WxOVwA/JW6toV7BzwWcO9tE
+ QJEeVK6zLFjk3fBg==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id ADD92139EC;
+ Sun, 29 May 2022 09:35:51 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+ by imap2.suse-dmz.suse.de with ESMTPSA id v/TWJXc+k2KwfwAAMHmgww
+ (envelope-from <tiwai@suse.de>); Sun, 29 May 2022 09:35:51 +0000
+Date: Sun, 29 May 2022 11:35:50 +0200
+Message-ID: <8735gsznnt.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Raghu Bankapur <quic_rbankapu@quicinc.com>
+Subject: Re: [PATCH V0 1/1] asoc: msm: use hashtable to check kcontrol
+In-Reply-To: <ad55bbd41cc253acb9af6ac068c15dd1545ecd81.1653813866.git.quic_rbankapu@quicinc.com>
 References: <cover.1653813866.git.quic_rbankapu@quicinc.com>
-In-Reply-To: <cover.1653813866.git.quic_rbankapu@quicinc.com>
-References: <cover.1653813866.git.quic_rbankapu@quicinc.com>
-Cc: Krishna Jha <quic_kkishorj@quicinc.com>
+ <ad55bbd41cc253acb9af6ac068c15dd1545ecd81.1653813866.git.quic_rbankapu@quicinc.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+ Liam Girdwood <lgirdwood@gmail.com>, Takashi Iwai <tiwai@suse.com>,
+ Mark Brown <broonie@kernel.org>, Krishna Jha <quic_kkishorj@quicinc.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -84,224 +97,245 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-use hashtabe instead of linear list to check kcontrol before
-adding them for improving early audio KPI.
+On Sun, 29 May 2022 10:50:09 +0200,
+Raghu Bankapur wrote:
+> 
+> use hashtabe instead of linear list to check kcontrol before
+> adding them for improving early audio KPI.
+> 
+> Change-Id: I7134816736e08e338c0f22a8ae283a0520aa847a
+> Signed-off-by: Raghu Bankapur <quic_rbankapu@quicinc.com>
 
-Change-Id: I7134816736e08e338c0f22a8ae283a0520aa847a
-Signed-off-by: Raghu Bankapur <quic_rbankapu@quicinc.com>
----
- include/sound/control.h |  4 ++
- include/sound/core.h    | 12 +++++-
- sound/core/control.c    | 92 +++++++++++++++++++++++++++++++++--------
- sound/core/init.c       |  3 ++
- sound/soc/Kconfig       |  9 ++++
- 5 files changed, 101 insertions(+), 19 deletions(-)
+Aha, interesting, a faster lookup is indeed measurable and needed.
 
-diff --git a/include/sound/control.h b/include/sound/control.h
-index 985c51a8fb74..1b85d36c2066 100644
---- a/include/sound/control.h
-+++ b/include/sound/control.h
-@@ -70,6 +70,10 @@ struct snd_kcontrol_volatile {
- struct snd_kcontrol {
- 	struct list_head list;		/* list of controls */
- 	struct snd_ctl_elem_id id;
-+#ifdef CONFIG_SND_CTL_HASHTABLE
-+	struct hlist_node hnode;
-+	unsigned int knametoint;		/* kctl name to uint, hash key value */
-+#endif
- 	unsigned int count;		/* count of same elements */
- 	snd_kcontrol_info_t *info;
- 	snd_kcontrol_get_t *get;
-diff --git a/include/sound/core.h b/include/sound/core.h
-index b7e9b58d3c78..dd6714fc43ff 100644
---- a/include/sound/core.h
-+++ b/include/sound/core.h
-@@ -14,7 +14,9 @@
- #include <linux/pm.h>			/* pm_message_t */
- #include <linux/stringify.h>
- #include <linux/printk.h>
--
-+#ifdef CONFIG_SND_CTL_HASHTABLE
-+#include <linux/hashtable.h>
-+#endif
- /* number of supported soundcards */
- #ifdef CONFIG_SND_DYNAMIC_MINORS
- #define SNDRV_CARDS CONFIG_SND_MAX_CARDS
-@@ -24,6 +26,10 @@
- 
- #define CONFIG_SND_MAJOR	116	/* standard configuration */
- 
-+#ifdef CONFIG_SND_CTL_HASHTABLE
-+#define SND_CTL_HASH_TABLE_BITS 14	/* buckets numbers: 1 << 14 */
-+#endif
-+
- /* forward declarations */
- struct pci_dev;
- struct module;
-@@ -103,7 +109,9 @@ struct snd_card {
- 	size_t user_ctl_alloc_size;	// current memory allocation by user controls.
- 	struct list_head controls;	/* all controls for this card */
- 	struct list_head ctl_files;	/* active control files */
--
-+#ifdef CONFIG_SND_CTL_HASHTABLE
-+	DECLARE_HASHTABLE(ctl_htable, SND_CTL_HASH_TABLE_BITS);
-+#endif
- 	struct snd_info_entry *proc_root;	/* root for soundcard specific files */
- 	struct proc_dir_entry *proc_root_link;	/* number link to real id */
- 
-diff --git a/sound/core/control.c b/sound/core/control.c
-index a25c0d64d104..914d05647497 100644
---- a/sound/core/control.c
-+++ b/sound/core/control.c
-@@ -368,6 +368,47 @@ enum snd_ctl_add_mode {
- 	CTL_ADD_EXCLUSIVE, CTL_REPLACE, CTL_ADD_ON_REPLACE,
- };
- 
-+#ifdef CONFIG_SND_CTL_HASHTABLE
-+char snd_ctl_string[50] = { '\0' };
-+
-+/* Used to convert the string into int value -- BKDRHash */
-+unsigned int snd_ctl_strtoint(const char *s)
-+{
-+	unsigned int res = 0;
-+
-+	while (*s)
-+		res = (res << 5) - res + (*s++);
-+
-+	return (res & 0x7FFFFFFF);
-+}
-+
-+/**
-+ * snd_ctl_hash_check - Check the duplicate enrty on snd hashtable
-+ * @card: the card instance
-+ * @nametoint: kctl name to uint
-+ *
-+ * Finds the control instance with the given nametoint from the card.
-+ *
-+ * Return: The pointer of the instance if found, or %NULL if not.
-+ *
-+ */
-+static struct snd_kcontrol *snd_ctl_hash_check(struct snd_card *card,
-+				 unsigned int nametoint)
-+{
-+	struct snd_kcontrol *kctl = NULL;
-+
-+	if (snd_BUG_ON(!card))
-+		return NULL;
-+
-+	hash_for_each_possible(card->ctl_htable, kctl, hnode, nametoint) {
-+		if (kctl->knametoint != nametoint)
-+			continue;
-+		return kctl;
-+	}
-+	return NULL;
-+}
-+#endif
-+
- /* add/replace a new kcontrol object; call with card->controls_rwsem locked */
- static int __snd_ctl_add_replace(struct snd_card *card,
- 				 struct snd_kcontrol *kcontrol,
-@@ -382,24 +423,38 @@ static int __snd_ctl_add_replace(struct snd_card *card,
- 	if (id.index > UINT_MAX - kcontrol->count)
- 		return -EINVAL;
- 
--	old = snd_ctl_find_id(card, &id);
--	if (!old) {
--		if (mode == CTL_REPLACE)
--			return -EINVAL;
--	} else {
--		if (mode == CTL_ADD_EXCLUSIVE) {
--			dev_err(card->dev,
--				"control %i:%i:%i:%s:%i is already present\n",
--				id.iface, id.device, id.subdevice, id.name,
--				id.index);
--			return -EBUSY;
--		}
-+#ifdef CONFIG_SND_CTL_HASHTABLE
-+	snprintf(snd_ctl_string, strlen(kcontrol->id.name) + 6, "%s%d%d%d",
-+		kcontrol->id.name, kcontrol->id.iface, kcontrol->id.device,
-+		kcontrol->id.subdevice);
- 
--		err = snd_ctl_remove(card, old);
--		if (err < 0)
--			return err;
--	}
-+	kcontrol->knametoint = snd_ctl_strtoint(snd_ctl_string);
-+	if (kcontrol->knametoint < 0)
-+		return -EINVAL;
-+
-+	old = snd_ctl_hash_check(card, kcontrol->knametoint);
-+	if (old) {
-+#endif
-+		old = snd_ctl_find_id(card, &id);
-+		if (!old) {
-+			if (mode == CTL_REPLACE)
-+				return -EINVAL;
-+		} else {
-+			if (mode == CTL_ADD_EXCLUSIVE) {
-+				dev_err(card->dev,
-+					"control %i:%i:%i:%s:%i is already present\n",
-+					id.iface, id.device, id.subdevice, id.name,
-+					id.index);
-+				return -EBUSY;
-+			}
- 
-+			err = snd_ctl_remove(card, old);
-+			if (err < 0)
-+				return err;
-+		}
-+#ifdef CONFIG_SND_CTL_HASHTABLE
-+	}
-+#endif
- 	if (snd_ctl_find_hole(card, kcontrol->count) < 0)
- 		return -ENOMEM;
- 
-@@ -410,7 +465,10 @@ static int __snd_ctl_add_replace(struct snd_card *card,
- 
- 	for (idx = 0; idx < kcontrol->count; idx++)
- 		snd_ctl_notify_one(card, SNDRV_CTL_EVENT_MASK_ADD, kcontrol, idx);
--
-+		
-+#ifdef CONFIG_SND_CTL_HASHTABLE
-+	hash_add(card->ctl_htable, &kcontrol->hnode, kcontrol->knametoint);
-+#endif
- 	return 0;
- }
- 
-diff --git a/sound/core/init.c b/sound/core/init.c
-index 31ba7024e3ad..fda38b2137ee 100644
---- a/sound/core/init.c
-+++ b/sound/core/init.c
-@@ -284,6 +284,9 @@ static int snd_card_init(struct snd_card *card, struct device *parent,
- 	INIT_LIST_HEAD(&card->ctl_files);
- 	spin_lock_init(&card->files_lock);
- 	INIT_LIST_HEAD(&card->files_list);
-+#ifdef CONFIG_SND_CTL_HASHTABLE
-+	hash_init(card->ctl_htable);
-+#endif
- 	mutex_init(&card->memory_mutex);
- #ifdef CONFIG_PM
- 	init_waitqueue_head(&card->power_sleep);
-diff --git a/sound/soc/Kconfig b/sound/soc/Kconfig
-index 5dcf77af07af..0eb18f8ee6fd 100644
---- a/sound/soc/Kconfig
-+++ b/sound/soc/Kconfig
-@@ -58,6 +58,15 @@ config SND_SOC_TOPOLOGY_KUNIT_TEST
- config SND_SOC_ACPI
- 	tristate
- 
-+config SND_CTL_HASHTABLE
-+	bool "Add SND CTL hashtable"
-+	help
-+	  This enables hash table in sound card for kcontrols. The traditional way is
-+	  traversing the linked list of controls and compare each exsiting control with
-+	  the new kcontrol to find out whether there are duplicate kcontrols, which will
-+	  consumes much time during bootup. Enable this will use hash table instead of
-+	  linked list to check new kcontrol and reduce much time for sound card registration.
-+
- # All the supported SoCs
- source "sound/soc/adi/Kconfig"
- source "sound/soc/amd/Kconfig"
--- 
-2.17.1
+One point with your patch is whether it works when a control element
+gets removed dynamically.  It's often the case with the user-space
+kctls.  Also, multiple ctl elements may have the same name string but
+with different index or device number.  Comparing only the string
+isn't enough.  (And I wonder how about the hash key collision.)
 
+FWIW, I posted an RFC patch faster lookup with Xarray some time ago:
+  https://lore.kernel.org/all/20211028130027.18764-1-tiwai@suse.de/T/
+
+
+thanks,
+
+Takashi
+
+
+> ---
+>  include/sound/control.h |  4 ++
+>  include/sound/core.h    | 12 +++++-
+>  sound/core/control.c    | 92 +++++++++++++++++++++++++++++++++--------
+>  sound/core/init.c       |  3 ++
+>  sound/soc/Kconfig       |  9 ++++
+>  5 files changed, 101 insertions(+), 19 deletions(-)
+> 
+> diff --git a/include/sound/control.h b/include/sound/control.h
+> index 985c51a8fb74..1b85d36c2066 100644
+> --- a/include/sound/control.h
+> +++ b/include/sound/control.h
+> @@ -70,6 +70,10 @@ struct snd_kcontrol_volatile {
+>  struct snd_kcontrol {
+>  	struct list_head list;		/* list of controls */
+>  	struct snd_ctl_elem_id id;
+> +#ifdef CONFIG_SND_CTL_HASHTABLE
+> +	struct hlist_node hnode;
+> +	unsigned int knametoint;		/* kctl name to uint, hash key value */
+> +#endif
+>  	unsigned int count;		/* count of same elements */
+>  	snd_kcontrol_info_t *info;
+>  	snd_kcontrol_get_t *get;
+> diff --git a/include/sound/core.h b/include/sound/core.h
+> index b7e9b58d3c78..dd6714fc43ff 100644
+> --- a/include/sound/core.h
+> +++ b/include/sound/core.h
+> @@ -14,7 +14,9 @@
+>  #include <linux/pm.h>			/* pm_message_t */
+>  #include <linux/stringify.h>
+>  #include <linux/printk.h>
+> -
+> +#ifdef CONFIG_SND_CTL_HASHTABLE
+> +#include <linux/hashtable.h>
+> +#endif
+>  /* number of supported soundcards */
+>  #ifdef CONFIG_SND_DYNAMIC_MINORS
+>  #define SNDRV_CARDS CONFIG_SND_MAX_CARDS
+> @@ -24,6 +26,10 @@
+>  
+>  #define CONFIG_SND_MAJOR	116	/* standard configuration */
+>  
+> +#ifdef CONFIG_SND_CTL_HASHTABLE
+> +#define SND_CTL_HASH_TABLE_BITS 14	/* buckets numbers: 1 << 14 */
+> +#endif
+> +
+>  /* forward declarations */
+>  struct pci_dev;
+>  struct module;
+> @@ -103,7 +109,9 @@ struct snd_card {
+>  	size_t user_ctl_alloc_size;	// current memory allocation by user controls.
+>  	struct list_head controls;	/* all controls for this card */
+>  	struct list_head ctl_files;	/* active control files */
+> -
+> +#ifdef CONFIG_SND_CTL_HASHTABLE
+> +	DECLARE_HASHTABLE(ctl_htable, SND_CTL_HASH_TABLE_BITS);
+> +#endif
+>  	struct snd_info_entry *proc_root;	/* root for soundcard specific files */
+>  	struct proc_dir_entry *proc_root_link;	/* number link to real id */
+>  
+> diff --git a/sound/core/control.c b/sound/core/control.c
+> index a25c0d64d104..914d05647497 100644
+> --- a/sound/core/control.c
+> +++ b/sound/core/control.c
+> @@ -368,6 +368,47 @@ enum snd_ctl_add_mode {
+>  	CTL_ADD_EXCLUSIVE, CTL_REPLACE, CTL_ADD_ON_REPLACE,
+>  };
+>  
+> +#ifdef CONFIG_SND_CTL_HASHTABLE
+> +char snd_ctl_string[50] = { '\0' };
+> +
+> +/* Used to convert the string into int value -- BKDRHash */
+> +unsigned int snd_ctl_strtoint(const char *s)
+> +{
+> +	unsigned int res = 0;
+> +
+> +	while (*s)
+> +		res = (res << 5) - res + (*s++);
+> +
+> +	return (res & 0x7FFFFFFF);
+> +}
+> +
+> +/**
+> + * snd_ctl_hash_check - Check the duplicate enrty on snd hashtable
+> + * @card: the card instance
+> + * @nametoint: kctl name to uint
+> + *
+> + * Finds the control instance with the given nametoint from the card.
+> + *
+> + * Return: The pointer of the instance if found, or %NULL if not.
+> + *
+> + */
+> +static struct snd_kcontrol *snd_ctl_hash_check(struct snd_card *card,
+> +				 unsigned int nametoint)
+> +{
+> +	struct snd_kcontrol *kctl = NULL;
+> +
+> +	if (snd_BUG_ON(!card))
+> +		return NULL;
+> +
+> +	hash_for_each_possible(card->ctl_htable, kctl, hnode, nametoint) {
+> +		if (kctl->knametoint != nametoint)
+> +			continue;
+> +		return kctl;
+> +	}
+> +	return NULL;
+> +}
+> +#endif
+> +
+>  /* add/replace a new kcontrol object; call with card->controls_rwsem locked */
+>  static int __snd_ctl_add_replace(struct snd_card *card,
+>  				 struct snd_kcontrol *kcontrol,
+> @@ -382,24 +423,38 @@ static int __snd_ctl_add_replace(struct snd_card *card,
+>  	if (id.index > UINT_MAX - kcontrol->count)
+>  		return -EINVAL;
+>  
+> -	old = snd_ctl_find_id(card, &id);
+> -	if (!old) {
+> -		if (mode == CTL_REPLACE)
+> -			return -EINVAL;
+> -	} else {
+> -		if (mode == CTL_ADD_EXCLUSIVE) {
+> -			dev_err(card->dev,
+> -				"control %i:%i:%i:%s:%i is already present\n",
+> -				id.iface, id.device, id.subdevice, id.name,
+> -				id.index);
+> -			return -EBUSY;
+> -		}
+> +#ifdef CONFIG_SND_CTL_HASHTABLE
+> +	snprintf(snd_ctl_string, strlen(kcontrol->id.name) + 6, "%s%d%d%d",
+> +		kcontrol->id.name, kcontrol->id.iface, kcontrol->id.device,
+> +		kcontrol->id.subdevice);
+>  
+> -		err = snd_ctl_remove(card, old);
+> -		if (err < 0)
+> -			return err;
+> -	}
+> +	kcontrol->knametoint = snd_ctl_strtoint(snd_ctl_string);
+> +	if (kcontrol->knametoint < 0)
+> +		return -EINVAL;
+> +
+> +	old = snd_ctl_hash_check(card, kcontrol->knametoint);
+> +	if (old) {
+> +#endif
+> +		old = snd_ctl_find_id(card, &id);
+> +		if (!old) {
+> +			if (mode == CTL_REPLACE)
+> +				return -EINVAL;
+> +		} else {
+> +			if (mode == CTL_ADD_EXCLUSIVE) {
+> +				dev_err(card->dev,
+> +					"control %i:%i:%i:%s:%i is already present\n",
+> +					id.iface, id.device, id.subdevice, id.name,
+> +					id.index);
+> +				return -EBUSY;
+> +			}
+>  
+> +			err = snd_ctl_remove(card, old);
+> +			if (err < 0)
+> +				return err;
+> +		}
+> +#ifdef CONFIG_SND_CTL_HASHTABLE
+> +	}
+> +#endif
+>  	if (snd_ctl_find_hole(card, kcontrol->count) < 0)
+>  		return -ENOMEM;
+>  
+> @@ -410,7 +465,10 @@ static int __snd_ctl_add_replace(struct snd_card *card,
+>  
+>  	for (idx = 0; idx < kcontrol->count; idx++)
+>  		snd_ctl_notify_one(card, SNDRV_CTL_EVENT_MASK_ADD, kcontrol, idx);
+> -
+> +		
+> +#ifdef CONFIG_SND_CTL_HASHTABLE
+> +	hash_add(card->ctl_htable, &kcontrol->hnode, kcontrol->knametoint);
+> +#endif
+>  	return 0;
+>  }
+>  
+> diff --git a/sound/core/init.c b/sound/core/init.c
+> index 31ba7024e3ad..fda38b2137ee 100644
+> --- a/sound/core/init.c
+> +++ b/sound/core/init.c
+> @@ -284,6 +284,9 @@ static int snd_card_init(struct snd_card *card, struct device *parent,
+>  	INIT_LIST_HEAD(&card->ctl_files);
+>  	spin_lock_init(&card->files_lock);
+>  	INIT_LIST_HEAD(&card->files_list);
+> +#ifdef CONFIG_SND_CTL_HASHTABLE
+> +	hash_init(card->ctl_htable);
+> +#endif
+>  	mutex_init(&card->memory_mutex);
+>  #ifdef CONFIG_PM
+>  	init_waitqueue_head(&card->power_sleep);
+> diff --git a/sound/soc/Kconfig b/sound/soc/Kconfig
+> index 5dcf77af07af..0eb18f8ee6fd 100644
+> --- a/sound/soc/Kconfig
+> +++ b/sound/soc/Kconfig
+> @@ -58,6 +58,15 @@ config SND_SOC_TOPOLOGY_KUNIT_TEST
+>  config SND_SOC_ACPI
+>  	tristate
+>  
+> +config SND_CTL_HASHTABLE
+> +	bool "Add SND CTL hashtable"
+> +	help
+> +	  This enables hash table in sound card for kcontrols. The traditional way is
+> +	  traversing the linked list of controls and compare each exsiting control with
+> +	  the new kcontrol to find out whether there are duplicate kcontrols, which will
+> +	  consumes much time during bootup. Enable this will use hash table instead of
+> +	  linked list to check new kcontrol and reduce much time for sound card registration.
+> +
+>  # All the supported SoCs
+>  source "sound/soc/adi/Kconfig"
+>  source "sound/soc/amd/Kconfig"
+> -- 
+> 2.17.1
+> 
