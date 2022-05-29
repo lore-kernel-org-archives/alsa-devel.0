@@ -4,100 +4,84 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 71ADBC433EF
-	for <alsa-devel@archiver.kernel.org>; Mon, 30 May 2022 07:22:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id AD1B4C433F5
+	for <alsa-devel@archiver.kernel.org>; Mon, 30 May 2022 07:22:18 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 2E75B1ABB;
-	Mon, 30 May 2022 09:21:08 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2E75B1ABB
+	by alsa0.perex.cz (Postfix) with ESMTPS id C87F01A9B;
+	Mon, 30 May 2022 09:21:26 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C87F01A9B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1653895318;
-	bh=tatRnW+6yqId1U/sVr+3qb4BoLjUck7cL6S9wZkIHaQ=;
-	h=Date:Subject:To:References:From:In-Reply-To:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=ovbiTa2YnC8uj4ElKoe4a/c7Jcy6F4oTBc8I7YZ489c5bqcUBAJG4VNHsfhl+mG2n
-	 /HULogZ/2K0sRmq17uyU5PMnCco4BHGQWwSm53XtJvmEr9wHW1iBAnNTMVxCBAlFdQ
-	 F9IPaKcC90RpNZvQAJrqIdAihQ6mzYaZl/OXbnsc=
+	s=default; t=1653895336;
+	bh=amxCenVYKFLLjgQKoWqRPAtEiyptJybLF6SX7O27awo=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=jsL1grsMIQa2uLSZuwRfisqBxUf68J1EhHdYRLkB0+v52Klm4eKvi+gjIm2jCefcX
+	 m5mqCWfOLixqYgaDde6t+29nfYaQATgYsmlBBBKdDco2rUytWYotH9Ch86vyiY2wR4
+	 QWHTj57l+VXJoMN+eSB0PuDvHUJMdP4oJQJai5V8=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 3DFF0F804B4;
+	by alsa1.perex.cz (Postfix) with ESMTP id AC717F8051B;
 	Mon, 30 May 2022 09:20:36 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id F0AD4F80279; Sat, 28 May 2022 11:18:15 +0200 (CEST)
-Received: from mail-lj1-x22b.google.com (mail-lj1-x22b.google.com
- [IPv6:2a00:1450:4864:20::22b])
+ id A5552F8024C; Mon, 30 May 2022 00:36:01 +0200 (CEST)
+Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com
+ [IPv6:2a00:1450:4864:20::52c])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id AB847F80124
- for <alsa-devel@alsa-project.org>; Sat, 28 May 2022 11:18:09 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AB847F80124
+ by alsa1.perex.cz (Postfix) with ESMTPS id 84822F800DE
+ for <alsa-devel@alsa-project.org>; Mon, 30 May 2022 00:35:57 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 84822F800DE
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="emBIciAF"
-Received: by mail-lj1-x22b.google.com with SMTP id a23so7114460ljd.9
- for <alsa-devel@alsa-project.org>; Sat, 28 May 2022 02:18:09 -0700 (PDT)
+ header.b="J5pOk7YA"
+Received: by mail-ed1-x52c.google.com with SMTP id v25so3326970eda.6
+ for <alsa-devel@alsa-project.org>; Sun, 29 May 2022 15:35:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
- h=message-id:date:mime-version:user-agent:subject:content-language:to
- :cc:references:from:in-reply-to:content-transfer-encoding;
- bh=HVRfiub+OH+3yERsymAq7YJAzta8XBR77uv0v0VV0CI=;
- b=emBIciAFdQnHcKQSohgcuqMQM4xd/Tz5hPJWkxKaoqpZiunJ9s/OTs4WGMG95NSW4L
- IgZczc+9GJXxJcHaJPXn5wGWSwvNNr7NK0iPiKDna7ZgvHSU3H+3cqKDq++bLMIID/pg
- WGi2IGkojhYGQUTThKK+rMJIPdLBixIvgKrHxkmswTwOqRnEJD7L5yQqGEaEOrvK5lk+
- qkpbzv53N91WJdtTRf68St7YDzO4K7K4CZ379sj7xnW+IFrVVRAmkaJKxBPwkYKBzJkg
- l3Y5YpoNbKupcj3Ag1FqEF0wqmBD5ctEDUT8y+jgldf7YfuRmpnjc1XtWB+r4HJU6Val
- yWqw==
+ h=from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=28grDNGVVwgvkgCPe3HFvEYkJipC2Cb3fnAVX4fq0Lg=;
+ b=J5pOk7YAN5RiRnaTEd5KNJyjKchIaoV/9ff0ljMqAgtajGMDjG8KcERrFloK1EIMkR
+ SyIl5qdg/OzIYTqNk/DmY3FDbsJh+pAUJu2h7kHYD2qMC17GDJkAMIzq+MuB7ACiRJdy
+ KYUwNGYiXTLtVsT5NBGsJdqE4fUMIR19VQOn3XrZ8N0hT9V5gzA4ekE4rzsvJVWsRORy
+ KqVhhqLLCLxlKBPf8xHkt5J/ya+Vr24XCrNHnJuaDLMF9QsPeMGrihSe990IOanm5c1Y
+ KPdFo/Wer5nAb1eDbCwilyzjUljbMNwdiVIj0L5+FcVv3OECj4LPkBUYZPFoqsXtGycA
+ IfcA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
- h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
- :content-language:to:cc:references:from:in-reply-to
+ h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
  :content-transfer-encoding;
- bh=HVRfiub+OH+3yERsymAq7YJAzta8XBR77uv0v0VV0CI=;
- b=GCbdac7N1W9wGG3QWFAgS5Hg2HEaiUWFIHh8RZDuF6XxgEUc0KszYlH1wwQoghSrDk
- 51+1+4qCIPhcjqb1/SKMJNHUlzKt1XuNit9bccsWhT7u+1qRVqa9YjflNBnnKuzxg+hq
- 4a42VGDwTTIrlD5tYeORlkIgVhXjUlZO6xirrUqgP0eQgqSnvNECv6pPjn8DjuPkg/Cb
- Wt92d2tGRX4vuXQNSeXEH8AIWUuohebo30+RC2/benbgm1Nq0dATY9aEPA26Voo+8S0j
- Brcfx/4IysJd5eRzp80S9GV6O7IhgXP5/wRmRH8oP76E5T+9rm4mdzqY7l6msf55vYjg
- fi/Q==
-X-Gm-Message-State: AOAM533lzpEOrqARxRv+ZGT0Pg6Z/454sXSbpC/AvB4C8qWUrkhtXiiM
- gTX5Qct/Zsdd533lM5tSSJI=
-X-Google-Smtp-Source: ABdhPJxNkzG4eousUKAj15zHH6g3YqSnU9H8B29bmyYBmgxkfeUg1JCXHoHxE95njq7TczFOLpZl7Q==
-X-Received: by 2002:a2e:a5ca:0:b0:253:c604:647c with SMTP id
- n10-20020a2ea5ca000000b00253c604647cmr27577549ljp.403.1653729487689; 
- Sat, 28 May 2022 02:18:07 -0700 (PDT)
-Received: from [10.0.0.127] (91-159-150-230.elisa-laajakaista.fi.
- [91.159.150.230]) by smtp.gmail.com with ESMTPSA id
- v9-20020a2ea449000000b0024f3d1daee2sm1402828ljn.106.2022.05.28.02.18.06
- (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Sat, 28 May 2022 02:18:07 -0700 (PDT)
-Message-ID: <454f31e4-12ce-2bee-8e95-d75854b34380@gmail.com>
-Date: Sat, 28 May 2022 12:19:20 +0300
+ bh=28grDNGVVwgvkgCPe3HFvEYkJipC2Cb3fnAVX4fq0Lg=;
+ b=UmeSebSnzojRDs0RfYPHI76n37dj8G40ugFKLUAFmbiOF+VDtGg1UkchiMSR/G/HNH
+ WPR3aEHqmsIgczeY05MClGtFR9s7lWAAob6JMH4/wZL5fFNzO8eUi+vAn5QTA8znW69i
+ RFQ94VQHo+SAZEdMZh/kFtc8sHfPEsRNAI9GMlh0Jevh/gZ7XPxGyHGX44/D3xbTHe39
+ 5EjnomEcC1Ni9G1kOctbRQyLQ9lt9Zm8X4ufgwcRN9VW803Fkv0aBit3a8YG9gDcrwc6
+ NzPILhjF1cFkgeyw6I2QiqVTdHZHIAd8n9GarmrxNkhMRc8QTm2jC26qxGeZd13ygMLJ
+ 7Cjg==
+X-Gm-Message-State: AOAM531zgAWtZZvQR6nIhC1Mq9+vngXLJt17csL6jBVqpsazjnbi/8pU
+ LEKMbJwdUmnEX1pjOM8nnA8=
+X-Google-Smtp-Source: ABdhPJy36gFtvxZXqd/ef4i7J/Vur7da2Ugd78lWMuv8NEHUzvMn6fT0GPLCrZE9jkhNYCiNYTZePA==
+X-Received: by 2002:a05:6402:a42:b0:42b:c5e9:1495 with SMTP id
+ bt2-20020a0564020a4200b0042bc5e91495mr25576734edb.323.1653863756112; 
+ Sun, 29 May 2022 15:35:56 -0700 (PDT)
+Received: from marios-pc.home.mlevogiannis.gr
+ (194.219.107.43.dsl.dyn.forthnet.gr. [194.219.107.43])
+ by smtp.gmail.com with ESMTPSA id
+ u28-20020a50c05c000000b0042dc882c823sm697456edd.70.2022.05.29.15.35.55
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Sun, 29 May 2022 15:35:55 -0700 (PDT)
+From: Marios Levogiannis <marios.levogiannis@gmail.com>
+To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
+ alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] ALSA: hda/realtek - Fix microphone noise on ASUS TUF
+ B550M-PLUS
+Date: Mon, 30 May 2022 01:35:24 +0300
+Message-Id: <20220529223524.9057-1-marios.levogiannis@gmail.com>
+X-Mailer: git-send-email 2.36.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.9.1
-Subject: Re: [PATCH 52/56] ASoC: ti: Rename set_fmt_new back to set_fmt
-Content-Language: en-US
-To: Charles Keepax <ckeepax@opensource.cirrus.com>, broonie@kernel.org
-References: <20220519154318.2153729-1-ckeepax@opensource.cirrus.com>
- <20220519154318.2153729-53-ckeepax@opensource.cirrus.com>
-From: =?UTF-8?Q?P=c3=a9ter_Ujfalusi?= <peter.ujfalusi@gmail.com>
-In-Reply-To: <20220519154318.2153729-53-ckeepax@opensource.cirrus.com>
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 X-Mailman-Approved-At: Mon, 30 May 2022 09:20:34 +0200
-Cc: cezary.rojewski@intel.com, heiko@sntech.de,
- kuninori.morimoto.gx@renesas.com, alsa-devel@alsa-project.org,
- nicolas.ferre@microchip.com, srinivas.kandagatla@linaro.org,
- linux-stm32@st-md-mailman.stormreply.com, jbrunet@baylibre.com,
- pierre-louis.bossart@linux.intel.com, krzk@kernel.org,
- linux-rockchip@lists.infradead.org, linux-imx@nxp.com,
- linux-mips@vger.kernel.org, linux-sunxi@lists.linux.dev,
- linux-xtensa@linux-xtensa.org, nsaenz@kernel.org,
- linux-mediatek@lists.infradead.org, linux-tegra@vger.kernel.org,
- linux-amlogic@lists.infradead.org, linux-omap@vger.kernel.org,
- patches@opensource.cirrus.com, lgirdwood@gmail.com, daniel@zonque.org,
- kernel@pengutronix.de, shawnguo@kernel.org, jarkko.nikula@bitmer.com
+Cc: Marios Levogiannis <marios.levogiannis@gmail.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -113,61 +97,61 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+Set microphone pins 0x18 (rear) and 0x19 (front) to VREF_50 to fix the
+microphone noise on ASUS TUF B550M-PLUS which uses the ALCS1200A codec.
+The initial value was VREF_80.
 
+The same issue is also present on Windows using both the default Windows
+driver and all tested Realtek drivers before version 6.0.9049.1. Comparing
+Realtek driver 6.0.9049.1 (the first one without the microphone noise) to
+Realtek driver 6.0.9047.1 (the last one with the microphone noise)
+revealed that the fix is the result of setting pins 0x18 and 0x19 to
+VREF_50.
 
-On 19/05/2022 18:43, Charles Keepax wrote:
-> Now the core has been migrated across to the new direct clock
-> specification we can move the drivers back to the normal set_fmt
-> callback.
+This fix may also work for other boards that have been reported to have
+the same microphone issue and use the ALC1150 and ALCS1200A codecs, since
+these codecs are similar and the fix in the Realtek driver on Windows is
+common for both. However, it is currently enabled only for ASUS TUF
+B550M-PLUS as this is the only board that could be tested.
+---
+ sound/pci/hda/patch_realtek.c | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
 
-Acked-by: Peter Ujfalusi <peter.ujfalusi@gmail.com>
-
-> Signed-off-by: Charles Keepax <ckeepax@opensource.cirrus.com>
-> ---
->  sound/soc/ti/davinci-i2s.c   | 2 +-
->  sound/soc/ti/davinci-mcasp.c | 2 +-
->  sound/soc/ti/omap-mcbsp.c    | 2 +-
->  3 files changed, 3 insertions(+), 3 deletions(-)
-> 
-> diff --git a/sound/soc/ti/davinci-i2s.c b/sound/soc/ti/davinci-i2s.c
-> index c7368d5296688..fe572b720b094 100644
-> --- a/sound/soc/ti/davinci-i2s.c
-> +++ b/sound/soc/ti/davinci-i2s.c
-> @@ -606,7 +606,7 @@ static const struct snd_soc_dai_ops davinci_i2s_dai_ops = {
->  	.prepare	= davinci_i2s_prepare,
->  	.trigger	= davinci_i2s_trigger,
->  	.hw_params	= davinci_i2s_hw_params,
-> -	.set_fmt_new	= davinci_i2s_set_dai_fmt,
-> +	.set_fmt	= davinci_i2s_set_dai_fmt,
->  	.set_clkdiv	= davinci_i2s_dai_set_clkdiv,
->  
->  };
-> diff --git a/sound/soc/ti/davinci-mcasp.c b/sound/soc/ti/davinci-mcasp.c
-> index 961bac6963652..e2aab4729f3ab 100644
-> --- a/sound/soc/ti/davinci-mcasp.c
-> +++ b/sound/soc/ti/davinci-mcasp.c
-> @@ -1620,7 +1620,7 @@ static const struct snd_soc_dai_ops davinci_mcasp_dai_ops = {
->  	.trigger	= davinci_mcasp_trigger,
->  	.delay		= davinci_mcasp_delay,
->  	.hw_params	= davinci_mcasp_hw_params,
-> -	.set_fmt_new	= davinci_mcasp_set_dai_fmt,
-> +	.set_fmt	= davinci_mcasp_set_dai_fmt,
->  	.set_clkdiv	= davinci_mcasp_set_clkdiv,
->  	.set_sysclk	= davinci_mcasp_set_sysclk,
->  	.set_tdm_slot	= davinci_mcasp_set_tdm_slot,
-> diff --git a/sound/soc/ti/omap-mcbsp.c b/sound/soc/ti/omap-mcbsp.c
-> index 5bfb56d4ff844..58d8e200a7b97 100644
-> --- a/sound/soc/ti/omap-mcbsp.c
-> +++ b/sound/soc/ti/omap-mcbsp.c
-> @@ -1271,7 +1271,7 @@ static const struct snd_soc_dai_ops mcbsp_dai_ops = {
->  	.trigger	= omap_mcbsp_dai_trigger,
->  	.delay		= omap_mcbsp_dai_delay,
->  	.hw_params	= omap_mcbsp_dai_hw_params,
-> -	.set_fmt_new	= omap_mcbsp_dai_set_dai_fmt,
-> +	.set_fmt	= omap_mcbsp_dai_set_dai_fmt,
->  	.set_clkdiv	= omap_mcbsp_dai_set_clkdiv,
->  	.set_sysclk	= omap_mcbsp_dai_set_dai_sysclk,
->  };
-
+diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+index 89d610afa..f3ad454b3 100644
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -1981,6 +1981,7 @@ enum {
+ 	ALC1220_FIXUP_CLEVO_PB51ED_PINS,
+ 	ALC887_FIXUP_ASUS_AUDIO,
+ 	ALC887_FIXUP_ASUS_HMIC,
++	ALCS1200A_FIXUP_MIC_VREF,
+ };
+ 
+ static void alc889_fixup_coef(struct hda_codec *codec,
+@@ -2526,6 +2527,14 @@ static const struct hda_fixup alc882_fixups[] = {
+ 		.chained = true,
+ 		.chain_id = ALC887_FIXUP_ASUS_AUDIO,
+ 	},
++	[ALCS1200A_FIXUP_MIC_VREF] = {
++		.type = HDA_FIXUP_PINCTLS,
++		.v.pins = (const struct hda_pintbl[]) {
++			{ 0x18, PIN_VREF50 }, /* rear mic */
++			{ 0x19, PIN_VREF50 }, /* front mic */
++			{}
++		}
++	},
+ };
+ 
+ static const struct snd_pci_quirk alc882_fixup_tbl[] = {
+@@ -2563,6 +2572,7 @@ static const struct snd_pci_quirk alc882_fixup_tbl[] = {
+ 	SND_PCI_QUIRK(0x1043, 0x835f, "Asus Eee 1601", ALC888_FIXUP_EEE1601),
+ 	SND_PCI_QUIRK(0x1043, 0x84bc, "ASUS ET2700", ALC887_FIXUP_ASUS_BASS),
+ 	SND_PCI_QUIRK(0x1043, 0x8691, "ASUS ROG Ranger VIII", ALC882_FIXUP_GPIO3),
++	SND_PCI_QUIRK(0x1043, 0x8797, "ASUS TUF B550M-PLUS", ALCS1200A_FIXUP_MIC_VREF),
+ 	SND_PCI_QUIRK(0x104d, 0x9043, "Sony Vaio VGC-LN51JGB", ALC882_FIXUP_NO_PRIMARY_HP),
+ 	SND_PCI_QUIRK(0x104d, 0x9044, "Sony VAIO AiO", ALC882_FIXUP_NO_PRIMARY_HP),
+ 	SND_PCI_QUIRK(0x104d, 0x9047, "Sony Vaio TT", ALC889_FIXUP_VAIO_TT),
 -- 
-Péter
+2.36.1
+
