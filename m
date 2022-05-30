@@ -4,61 +4,61 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 095E4C433F5
-	for <alsa-devel@archiver.kernel.org>; Mon, 30 May 2022 13:46:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 09212C433F5
+	for <alsa-devel@archiver.kernel.org>; Mon, 30 May 2022 13:47:24 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 390321F1F;
-	Mon, 30 May 2022 15:45:56 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 390321F1F
+	by alsa0.perex.cz (Postfix) with ESMTPS id 41C8A1F0C;
+	Mon, 30 May 2022 15:46:32 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 41C8A1F0C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1653918406;
-	bh=eSwQJ4MdzEqPLyRF0dMCA29MT+ipw7FAuQyfMB7EKTo=;
+	s=default; t=1653918442;
+	bh=5Lmd3+eZdEPNSsCtjnsLeMRcjHWJoPdqLRlFKh33qHw=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Hww7S1cykBN6di9ANVZOS9i1CqhSmOaUUjjhRzZcETB4ms7UMPLqqT46wgI1XMu2k
-	 Y12eCZL822eK5x8QMmjHDMkEQwvP+p+v2RuoqJhSDXMN+A9U0piNPVmBE17+40I4lL
-	 zV9DYGKYvWbstVG2AGuNoHE+daKQF2Za8gWc/2Y8=
+	b=vcxXtr45p5N9HNe7OT/7nBUVEbkbhLTW6pXx7jnCcZXkHgjUA/5co+EzvQXdLV/nf
+	 0s3XKNHU+aRNfsuQ5tM4wSALqq/djrS2K5dIJQkrgXwEedxsLsSJTBsx9P+ObWGwkq
+	 mEuWUIKw17LRXEh1DU46BwypiBFQU2BOUjlA8egY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id D9B4EF801F5;
-	Mon, 30 May 2022 15:45:55 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id E2F60F80240;
+	Mon, 30 May 2022 15:46:31 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 89709F804EC; Mon, 30 May 2022 15:45:54 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+ id 66377F804B4; Mon, 30 May 2022 15:46:30 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org
+ [IPv6:2604:1380:4641:c500::1])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 8C917F8019D
- for <alsa-devel@alsa-project.org>; Mon, 30 May 2022 15:45:48 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8C917F8019D
+ by alsa1.perex.cz (Postfix) with ESMTPS id 36358F800DE
+ for <alsa-devel@alsa-project.org>; Mon, 30 May 2022 15:46:24 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 36358F800DE
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="iIs6a9U5"
+ header.b="DaBe99U6"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id 390F560FB4;
- Mon, 30 May 2022 13:45:47 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 037DFC36AE7;
- Mon, 30 May 2022 13:45:45 +0000 (UTC)
+ by dfw.source.kernel.org (Postfix) with ESMTPS id BE60B60F14;
+ Mon, 30 May 2022 13:46:22 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0BBE2C3411E;
+ Mon, 30 May 2022 13:46:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1653918347;
- bh=eSwQJ4MdzEqPLyRF0dMCA29MT+ipw7FAuQyfMB7EKTo=;
+ s=k20201202; t=1653918382;
+ bh=5Lmd3+eZdEPNSsCtjnsLeMRcjHWJoPdqLRlFKh33qHw=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=iIs6a9U5Px7psAqlMuQ6B6Bei6l/CVkwsGhWhXcTEBluLTtXqwCAgwbufHu7OaFlD
- L6Cb/u5f9TRpIGp/szp9XFxV6LfPeDhiD5OBd859p8iYjs0gz0nWq45jeruvXMrgXc
- DiRqBSmeux/y+K5SYODJ2wEY6bBu/W6HAnwl44pRkVxNT6VGXe4ziSVvFKwMATRsgX
- vVrcJSbrhY7uhLOtkO3opK3w32GzSfAExKwyI7LP0hVj2y3fooq7IXGWmaKozjVn5H
- 5fzB58Ij7j0rsUJiq50j15XVWwqoyK75c23qG2SPYE8v5He6c1JEkmLlgcpEZZdZV+
- aOpy344KjSzIw==
+ b=DaBe99U67mbQGJWVyTAWHEndwYiPqe+DlZbkEo3tltsvesg+xPOQXZK4naIOQrQXa
+ B0PrvLdChj1YBOriBT1NL6n4ioowWMadkwBLJMSLLkj6Fb4P8bhVh64YLAZeja5YdU
+ ZV+6E7AWGtirn8jf3U5BIRPRdXFrSaRyQe6VB1AEbSVUdd9w44VeTrDAtn5u45ijBG
+ tkjLO0cyAeOgcN5cj28JznAv3T3etnBNK/uxjhvx2yoSebOs3msnGQWuihcDL5HP+a
+ dXp/4MIZT2hNtwI5cLUclt1aRnV4+DcHap2UL3jt9RGuLRpRx/R/ncGwVvjHVi4y4n
+ 6honkFNzeIQ6A==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.10 45/76] ASoC: tscs454: Add endianness flag in
- snd_soc_component_driver
-Date: Mon, 30 May 2022 09:43:35 -0400
-Message-Id: <20220530134406.1934928-45-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.10 61/76] ASoC: rt5645: Fix errorenous cleanup order
+Date: Mon, 30 May 2022 09:43:51 -0400
+Message-Id: <20220530134406.1934928-61-sashal@kernel.org>
 X-Mailer: git-send-email 2.35.1
 In-Reply-To: <20220530134406.1934928-1-sashal@kernel.org>
 References: <20220530134406.1934928-1-sashal@kernel.org>
@@ -66,9 +66,9 @@ MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
-Cc: Sasha Levin <sashal@kernel.org>, steven.eckhoff.opensource@gmail.com,
- alsa-devel@alsa-project.org, Charles Keepax <ckeepax@opensource.cirrus.com>,
- tiwai@suse.com, lgirdwood@gmail.com, Mark Brown <broonie@kernel.org>
+Cc: Sasha Levin <sashal@kernel.org>, oder_chiou@realtek.com,
+ alsa-devel@alsa-project.org, tiwai@suse.com, lgirdwood@gmail.com,
+ Mark Brown <broonie@kernel.org>, Lin Ma <linma@zju.edu.cn>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -84,66 +84,51 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Charles Keepax <ckeepax@opensource.cirrus.com>
+From: Lin Ma <linma@zju.edu.cn>
 
-[ Upstream commit ff69ec96b87dccb3a29edef8cec5d4fefbbc2055 ]
+[ Upstream commit 2def44d3aec59e38d2701c568d65540783f90f2f ]
 
-The endianness flag is used on the CODEC side to specify an
-ambivalence to endian, typically because it is lost over the hardware
-link. This device receives audio over an I2S DAI and as such should
-have endianness applied.
+There is a logic error when removing rt5645 device as the function
+rt5645_i2c_remove() first cancel the &rt5645->jack_detect_work and
+delete the &rt5645->btn_check_timer latter. However, since the timer
+handler rt5645_btn_check_callback() will re-queue the jack_detect_work,
+this cleanup order is buggy.
 
-A fixup is also required to use the width directly rather than relying
-on the format in hw_params, now both little and big endian would be
-supported. It is worth noting this changes the behaviour of S24_LE to
-use a word length of 24 rather than 32. This would appear to be a
-correction since the fact S24_LE is stored as 32 bits should not be
-presented over the bus.
+That is, once the del_timer_sync in rt5645_i2c_remove is concurrently
+run with the rt5645_btn_check_callback, the canceled jack_detect_work
+will be rescheduled again, leading to possible use-after-free.
 
-Signed-off-by: Charles Keepax <ckeepax@opensource.cirrus.com>
-Link: https://lore.kernel.org/r/20220504170905.332415-26-ckeepax@opensource.cirrus.com
+This patch fix the issue by placing the del_timer_sync function before
+the cancel_delayed_work_sync.
+
+Signed-off-by: Lin Ma <linma@zju.edu.cn>
+Link: https://lore.kernel.org/r/20220516092035.28283-1-linma@zju.edu.cn
 Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/codecs/tscs454.c | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
+ sound/soc/codecs/rt5645.c | 7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
 
-diff --git a/sound/soc/codecs/tscs454.c b/sound/soc/codecs/tscs454.c
-index d0af16b4db2f..a6f339bb4771 100644
---- a/sound/soc/codecs/tscs454.c
-+++ b/sound/soc/codecs/tscs454.c
-@@ -3115,18 +3115,17 @@ static int set_aif_sample_format(struct snd_soc_component *component,
- 	unsigned int width;
- 	int ret;
+diff --git a/sound/soc/codecs/rt5645.c b/sound/soc/codecs/rt5645.c
+index 420003d062c7..d1533e95a74f 100644
+--- a/sound/soc/codecs/rt5645.c
++++ b/sound/soc/codecs/rt5645.c
+@@ -4095,9 +4095,14 @@ static int rt5645_i2c_remove(struct i2c_client *i2c)
+ 	if (i2c->irq)
+ 		free_irq(i2c->irq, rt5645);
  
--	switch (format) {
--	case SNDRV_PCM_FORMAT_S16_LE:
-+	switch (snd_pcm_format_width(format)) {
-+	case 16:
- 		width = FV_WL_16;
- 		break;
--	case SNDRV_PCM_FORMAT_S20_3LE:
-+	case 20:
- 		width = FV_WL_20;
- 		break;
--	case SNDRV_PCM_FORMAT_S24_3LE:
-+	case 24:
- 		width = FV_WL_24;
- 		break;
--	case SNDRV_PCM_FORMAT_S24_LE:
--	case SNDRV_PCM_FORMAT_S32_LE:
-+	case 32:
- 		width = FV_WL_32;
- 		break;
- 	default:
-@@ -3321,6 +3320,7 @@ static const struct snd_soc_component_driver soc_component_dev_tscs454 = {
- 	.num_dapm_routes = ARRAY_SIZE(tscs454_intercon),
- 	.controls =	tscs454_snd_controls,
- 	.num_controls = ARRAY_SIZE(tscs454_snd_controls),
-+	.endianness = 1,
- };
++	/*
++	 * Since the rt5645_btn_check_callback() can queue jack_detect_work,
++	 * the timer need to be delted first
++	 */
++	del_timer_sync(&rt5645->btn_check_timer);
++
+ 	cancel_delayed_work_sync(&rt5645->jack_detect_work);
+ 	cancel_delayed_work_sync(&rt5645->rcclock_work);
+-	del_timer_sync(&rt5645->btn_check_timer);
  
- #define TSCS454_RATES SNDRV_PCM_RATE_8000_96000
+ 	regulator_bulk_disable(ARRAY_SIZE(rt5645->supplies), rt5645->supplies);
+ 
 -- 
 2.35.1
 
