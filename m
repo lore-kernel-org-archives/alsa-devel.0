@@ -4,72 +4,71 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 93119C433EF
-	for <alsa-devel@archiver.kernel.org>; Mon, 30 May 2022 13:30:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 52894C43217
+	for <alsa-devel@archiver.kernel.org>; Mon, 30 May 2022 13:31:13 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id CE9E21B15;
-	Mon, 30 May 2022 15:29:57 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CE9E21B15
+	by alsa0.perex.cz (Postfix) with ESMTPS id 7809E1B3A;
+	Mon, 30 May 2022 15:30:21 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7809E1B3A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1653917447;
-	bh=CTVEltGsmxIEL6MxUHji7KOQ/E2ixbrRp3Q2HZWeXhE=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	s=default; t=1653917471;
+	bh=exPGkkNvsUk+zn+DuPTfeI/LZZeoAt13rijdsRPZbco=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=rNrL3Vb64cwpVZgX9sZpj/3x35jT/aLn++J6xlAQEn8jgXVnZRgmQe6yFP2jXjZuZ
-	 Egw/+cHeh4Rn0nresKQyzYHbOxMqAZfYdIwNeP2iAak0hXo5t96v4qDgWOprMu6jrB
-	 pHJz5r/nrguIq+4vs+n5u5BBUBld73T/gpEX8UXM=
+	b=Nd9p9DLGFWsKxrBWoNWZOuZEG4IyJEDHshAzIfNBrEoUzArXGHiAxVeHvJE6qM4lv
+	 /l1KUN/WqRut9Zky9u8QNHuPQqhUbtxGplUBwxyamJnukk0k9piD7MDsvoWS1YakEM
+	 86XJhcGNKaob/aIyKUwaY9LPV8xxl2fnDTXoG7s8=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 7EBD1F801F5;
-	Mon, 30 May 2022 15:29:57 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 0BDA3F800E5;
+	Mon, 30 May 2022 15:30:21 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 4F0F1F800E5; Mon, 30 May 2022 15:29:56 +0200 (CEST)
+ id 5FBC9F80240; Mon, 30 May 2022 15:30:19 +0200 (CEST)
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 1AC89F800E5
- for <alsa-devel@alsa-project.org>; Mon, 30 May 2022 15:29:54 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1AC89F800E5
+ by alsa1.perex.cz (Postfix) with ESMTPS id 457E1F800DE
+ for <alsa-devel@alsa-project.org>; Mon, 30 May 2022 15:30:13 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 457E1F800DE
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="KHsjf8DL"
+ header.b="Uq9/GMjG"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id BA67160EDF;
- Mon, 30 May 2022 13:29:52 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 592FFC385B8;
- Mon, 30 May 2022 13:29:51 +0000 (UTC)
+ by dfw.source.kernel.org (Postfix) with ESMTPS id BCCB460F25;
+ Mon, 30 May 2022 13:30:11 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 33D9CC36AE7;
+ Mon, 30 May 2022 13:30:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1653917391;
- bh=CTVEltGsmxIEL6MxUHji7KOQ/E2ixbrRp3Q2HZWeXhE=;
- h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=KHsjf8DLrpo1UCFuVBej34UCl3inCkFTCyD0WmOVBo2JMq/EdKoP4Bs0YY6cv5oSW
- wpnDEXZt0MGHh+BYSDJJN0c1OZUmLe+5JE0oNQNDd2+d7jM9Axhii1och8W4CG2N84
- p5yv0eMw5rebhh0WCXWsMA/Uem1A/3zmGe2VJoJBLKaxJ+srnYH1zGMnLMYglIDd+b
- I7VepnpkEIklFsttGzRQmaaur6qriTG1UuRWzzeWcRJc4zIXO1vUbtGud7GyxhFN5P
- PA2JNkEATLM+729EWoDo+8xzPewbe6pkXfUCIEtS1vPygxpny2fk/CpnDoIGdPAPzR
- OYMib+AgTCwAA==
-Date: Mon, 30 May 2022 15:29:48 +0200
-From: Mark Brown <broonie@kernel.org>
-To: Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>
-Subject: Re: [PATCH] ASoC: Intel: avs: Fix build error on arc, m68k and sparc
-Message-ID: <YpTGzFNeZe+pGM2j@sirena.org.uk>
-References: <70daa951-4f77-3336-0567-e72e9e5e36c6@intel.com>
- <20220529141250.1979827-1-u.kleine-koenig@pengutronix.de>
+ s=k20201202; t=1653917411;
+ bh=exPGkkNvsUk+zn+DuPTfeI/LZZeoAt13rijdsRPZbco=;
+ h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+ b=Uq9/GMjG6ZiLGr9iL8yDwZLKuglrzEo7igaXhqpqFKjBAn1DM64KH/pDKqnQMGyTA
+ ProJ9/nzxCmSrIquJlZ+HbTf20VKFgDWld5DrFS/r+bIkJa69Ph+bFm0zDJXvi4Qi9
+ y1ul2+MwQpI/UdXco2KrScEzyYmn3EDS9rqGSsZETrpKOcomesIACNu0Cm6NUZL1li
+ KEkPcCpuZ+2Ly3LzI7NylxhnKSFtqI8y2AFfBlKRduZSlSDLq/gl1Gk3gHYhE4s+TB
+ vtlXQ6Xd8go9NwVadlFqAZmudQto/PRrcdz+oUB6ANLBOyZUNwVdwgi8XTMboQHf/L
+ CtrJepwxcoleg==
+From: Sasha Levin <sashal@kernel.org>
+To: linux-kernel@vger.kernel.org,
+	stable@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.18 127/159] ASoC: rt5645: Fix errorenous cleanup
+ order
+Date: Mon, 30 May 2022 09:23:52 -0400
+Message-Id: <20220530132425.1929512-127-sashal@kernel.org>
+X-Mailer: git-send-email 2.35.1
+In-Reply-To: <20220530132425.1929512-1-sashal@kernel.org>
+References: <20220530132425.1929512-1-sashal@kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature"; boundary="s9GNLvoQIEOcrVPW"
-Content-Disposition: inline
-In-Reply-To: <20220529141250.1979827-1-u.kleine-koenig@pengutronix.de>
-X-Cookie: May your camel be as swift as the wind.
-Cc: pierre-louis.bossart@linux.intel.com,
- Cezary Rojewski <cezary.rojewski@intel.com>, upstream@semihalf.com,
- rad@semihalf.com, alsa-devel@alsa-project.org, tiwai@suse.com,
- hdegoede@redhat.com, lma@semihalf.com, amadeuszx.slawinski@linux.intel.com,
- cujomalainey@chromium.org, Guenter Roeck <linux@roeck-us.net>
+X-stable: review
+X-Patchwork-Hint: Ignore
+Content-Transfer-Encoding: 8bit
+Cc: Sasha Levin <sashal@kernel.org>, oder_chiou@realtek.com,
+ alsa-devel@alsa-project.org, tiwai@suse.com, lgirdwood@gmail.com,
+ Mark Brown <broonie@kernel.org>, Lin Ma <linma@zju.edu.cn>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -85,35 +84,51 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+From: Lin Ma <linma@zju.edu.cn>
 
---s9GNLvoQIEOcrVPW
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+[ Upstream commit 2def44d3aec59e38d2701c568d65540783f90f2f ]
 
-On Sun, May 29, 2022 at 04:12:50PM +0200, Uwe Kleine-K=F6nig wrote:
-> On some platforms (i.e. arc, m68k and sparc) __fls returns an int (while
-> on most platforms it returns an unsigned long). This triggers a format
-> warning on these few platforms as the driver uses %ld to print a warning.
+There is a logic error when removing rt5645 device as the function
+rt5645_i2c_remove() first cancel the &rt5645->jack_detect_work and
+delete the &rt5645->btn_check_timer latter. However, since the timer
+handler rt5645_btn_check_callback() will re-queue the jack_detect_work,
+this cleanup order is buggy.
 
-Please don't send new patches in reply to old patches or serieses, this
-makes it harder for both people and tools to understand what is going
-on - it can bury things in mailboxes and make it difficult to keep track
-of what current patches are, both for the new patches and the old ones.
+That is, once the del_timer_sync in rt5645_i2c_remove is concurrently
+run with the rt5645_btn_check_callback, the canceled jack_detect_work
+will be rescheduled again, leading to possible use-after-free.
 
---s9GNLvoQIEOcrVPW
-Content-Type: application/pgp-signature; name="signature.asc"
+This patch fix the issue by placing the del_timer_sync function before
+the cancel_delayed_work_sync.
 
------BEGIN PGP SIGNATURE-----
+Signed-off-by: Lin Ma <linma@zju.edu.cn>
+Link: https://lore.kernel.org/r/20220516092035.28283-1-linma@zju.edu.cn
+Signed-off-by: Mark Brown <broonie@kernel.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ sound/soc/codecs/rt5645.c | 7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmKUxswACgkQJNaLcl1U
-h9ByOwf8CGhF4PXy/HlSD8OE7Bpvm9TVyjeiVFGHkNKSqdz/RFVKw1ejDotT1TM9
-wEn9kMo9p20gDKwK2BMEaVQYaEw3frqLMzSBT7ytWhsKkVs9Vz9UjmYflrKVfzaN
-6SWb8KGAQ7WppGb3M+WWGdvlctecgANjHSdOxsJRVQQDrJNicrzEGowX5xZ9Smdx
-l13XVjhw3OrOBv0dpaow+Z8hDxB5hLICecpt79GHZERJGL7yxTy1NNl5TguysbM/
-yi9DdqXK5BLzvo3tEP7ALdwIqPbZ34puM/fyRpvD+D5tcb/eZbLZ23wje0Vxvw1Y
-+B83fVPNx/WH3RM14JNCORe/T4pFhw==
-=YmCo
------END PGP SIGNATURE-----
+diff --git a/sound/soc/codecs/rt5645.c b/sound/soc/codecs/rt5645.c
+index 197c56047947..4b2e027c1033 100644
+--- a/sound/soc/codecs/rt5645.c
++++ b/sound/soc/codecs/rt5645.c
+@@ -4154,9 +4154,14 @@ static int rt5645_i2c_remove(struct i2c_client *i2c)
+ 	if (i2c->irq)
+ 		free_irq(i2c->irq, rt5645);
+ 
++	/*
++	 * Since the rt5645_btn_check_callback() can queue jack_detect_work,
++	 * the timer need to be delted first
++	 */
++	del_timer_sync(&rt5645->btn_check_timer);
++
+ 	cancel_delayed_work_sync(&rt5645->jack_detect_work);
+ 	cancel_delayed_work_sync(&rt5645->rcclock_work);
+-	del_timer_sync(&rt5645->btn_check_timer);
+ 
+ 	regulator_bulk_disable(ARRAY_SIZE(rt5645->supplies), rt5645->supplies);
+ 
+-- 
+2.35.1
 
---s9GNLvoQIEOcrVPW--
