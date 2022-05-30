@@ -4,71 +4,118 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2E757C433EF
-	for <alsa-devel@archiver.kernel.org>; Mon, 30 May 2022 12:59:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id DAD9AC433EF
+	for <alsa-devel@archiver.kernel.org>; Mon, 30 May 2022 13:23:23 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 91BA71929;
-	Mon, 30 May 2022 14:58:47 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 91BA71929
+	by alsa0.perex.cz (Postfix) with ESMTPS id 30E6E1904;
+	Mon, 30 May 2022 15:22:31 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 30E6E1904
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1653915577;
-	bh=zwLZOtzsjIrGjVkgMSw7EhmnbACABlAKZCgHcg080zU=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	s=default; t=1653917001;
+	bh=q83MKsHgvZkOoOK4bPLH9nG2HpyABWA1ewhtLTN8AQY=;
+	h=From:Date:Subject:To:Cc:List-Id:List-Unsubscribe:List-Archive:
 	 List-Post:List-Help:List-Subscribe:From;
-	b=E4fBT+Zf3GajUeBQamvp0PZwpUpwJlG39zr+Q5vOtEK1pxxSAR15PRAIdVdAUorxh
-	 /9QevXClR+GqWmCI6TvtCtzCPr/g2FxpH6pCLNoBL4JEmQaG7XumGyijLN2YoahIun
-	 AST4PSQ1exIfr+i+zRkEvZ8rd2AXMIfd6KDOMBOE=
+	b=jRvEFhDvxVg67FCLZeZibBiAvFmUMoUo7J0cNcJsrP/H7CxPtDGjnHWI5pLal/got
+	 mdL2GJmwLvUFfsab7xD3VNZWuFNPa2SejVQ5FPnpimQVYzxde6nTpRATkiMhxeIPX9
+	 vrid22JslUtX0j+ydtIHgMAOTcffGY3I7adxmxHA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 2F9C9F8012F;
-	Mon, 30 May 2022 14:58:47 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id C75FCF8019D;
+	Mon, 30 May 2022 15:22:30 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id A2E5BF800E5; Mon, 30 May 2022 14:58:45 +0200 (CEST)
-Received: from mga17.intel.com (mga17.intel.com [192.55.52.151])
+ id 6B91AF801F5; Mon, 30 May 2022 15:22:29 +0200 (CEST)
+Received: from EUR04-DB3-obe.outbound.protection.outlook.com
+ (mail-db3eur04on0630.outbound.protection.outlook.com
+ [IPv6:2a01:111:f400:fe0c::630])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 3308EF800E5
- for <alsa-devel@alsa-project.org>; Mon, 30 May 2022 14:58:34 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3308EF800E5
+ by alsa1.perex.cz (Postfix) with ESMTPS id 33D67F800DE
+ for <alsa-devel@alsa-project.org>; Mon, 30 May 2022 15:22:25 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 33D67F800DE
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="XUzaMHUL"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
- d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1653915520; x=1685451520;
- h=from:to:cc:subject:date:message-id:mime-version:
- content-transfer-encoding;
- bh=zwLZOtzsjIrGjVkgMSw7EhmnbACABlAKZCgHcg080zU=;
- b=XUzaMHULlOXAJfMMMWeBWAUjt3UQr22O5x3FXCF/LbYR3QtA1IYwuJDe
- r5zLz3T9SikKx4P4qbI8LlvTDZobjqnA1NhcdFYjwiPh5aikW8HJcbc79
- rOLoN2ZFmpzaNBNZ2dgWuPIDAJuGcQdjRR6iravHL7qB7o9aTHRQKiv6b
- HyG3LNQkg9s7mnsp0gTy7S1K4Lop+q1Z7Ggg13w3U8V9ag2PRHFHRKyS7
- 6nhhnYUdUtqBKKKsWb0FaDPUN2S849Y/gxLxDqiQp7ynLN8+Hg/jdGAhX
- cdKgJ5MZwREkRwpj/ygE5wVrIvJ90PF5EehHlDe1u+DuJ9uT/oq2/d7d1 g==;
-X-IronPort-AV: E=McAfee;i="6400,9594,10362"; a="255481757"
-X-IronPort-AV: E=Sophos;i="5.91,262,1647327600"; d="scan'208";a="255481757"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
- by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 30 May 2022 05:58:30 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.91,262,1647327600"; d="scan'208";a="561916818"
-Received: from brentlu-brix.itwn.intel.com ([10.5.253.25])
- by orsmga002.jf.intel.com with ESMTP; 30 May 2022 05:58:27 -0700
-From: Brent Lu <brent.lu@intel.com>
-To: alsa-devel@alsa-project.org
-Subject: [PATCH] ASoC: Intel: cirrus-common: fix incorrect channel mapping
-Date: Mon, 30 May 2022 20:54:21 +0800
-Message-Id: <20220530125421.885236-1-brent.lu@intel.com>
-X-Mailer: git-send-email 2.25.1
+ dkim=pass (1024-bit key) header.d=dialogsemiconductor.onmicrosoft.com
+ header.i=@dialogsemiconductor.onmicrosoft.com header.b="u0zT6DPu"
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=EJJUecNoC4eFnhArfYKwlLjuIkJue5vxgPE0USA+A9GU8Ob2ufKnHtZRB1hSuFXWdMkWyZkOON8+dUZOCs/kdhMvCkR9S4ETx48EuU2ceFzOqT9N26WoWvHAuJ1BaJnLPBQeMkvGqKEFiUa6eQUoj/Kdwy6TKhn04FS2MLmYuvfoCJgt9zqh5fkD2g0G1Ju57srUpx03OfHm72i8yW0vhOMZfBLjlvGGDyVjDzRJf9hycydioF/G6j3/TuSFXNRxlIWWzx+mu8UES68zdjGOFXgwP2LS796T68Hhc28MKb8JcVCfwgSE0wNtJVm/dFB3BFkHI3/MYbSExTjavecfNA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=QvvhPtiYvj/ucVaHUjGOzhyc0VeQkgTPJQYLa33diwM=;
+ b=UG4yM5wuwCtyAAErs5XXUCmadINnuRWaHZ2DQGGLb7Fwi+UhWsHYdCcBUg6idOYzvqOVJeeVyCf6p0r7a9wjTC0pJbWJYBkKQ0j+D3wAAOBG3U78ved+DDByzswbEqF0LbCb0lZ31wNzpvv67Q/Y76FO24SXb52pXfVe8cOVigxwyVDNSatxNha9FiE66w0LKztigrmyqvhwVMXM5ddcsoB1DCf/+CI0yQ4hYpoi+NwGJf4tAPiBzvSFeVfKaPh6OmRP90d2mrN0dnKkD/s74B/7b3rYC/vUp6lBPMaK9OsJ5TBP3g14oijt+N1IAhs1b2xOJLPXpJfuvcDDRsjbhw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=softfail (sender ip
+ is 193.240.239.45) smtp.rcpttodomain=alsa-project.org
+ smtp.mailfrom=diasemi.com; dmarc=fail (p=none sp=none pct=100) action=none
+ header.from=dm.renesas.com; dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=dialogsemiconductor.onmicrosoft.com;
+ s=selector1-dialogsemiconductor-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=QvvhPtiYvj/ucVaHUjGOzhyc0VeQkgTPJQYLa33diwM=;
+ b=u0zT6DPuQg3zv4x+MJ9e8hO1lhEYsSe16wXU+A3qJHM0R4JQa0F/+VjIYgD7kj0HrrlriVEl4q1eSkkAqpCvk6jIZ3mHYrghGiKuDrsqv+fZVlrfPeaeIAsZzxU6DzKqe84XXFOJP9Ifby4L6uevx5Dew2/pndKOyh9HOQ6NEVE=
+Received: from AM6P195CA0048.EURP195.PROD.OUTLOOK.COM (2603:10a6:209:87::25)
+ by AM5PR1001MB1058.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:203:12::17) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5293.13; Mon, 30 May
+ 2022 13:22:23 +0000
+Received: from VE1EUR02FT103.eop-EUR02.prod.protection.outlook.com
+ (2603:10a6:209:87:cafe::c0) by AM6P195CA0048.outlook.office365.com
+ (2603:10a6:209:87::25) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5293.13 via Frontend
+ Transport; Mon, 30 May 2022 13:22:23 +0000
+X-MS-Exchange-Authentication-Results: spf=softfail (sender IP is
+ 193.240.239.45) smtp.mailfrom=diasemi.com; dkim=none (message not signed)
+ header.d=none;dmarc=fail action=none header.from=dm.renesas.com;
+Received-SPF: SoftFail (protection.outlook.com: domain of transitioning
+ diasemi.com discourages use of 193.240.239.45 as permitted sender)
+Received: from mailrelay1.diasemi.com (193.240.239.45) by
+ VE1EUR02FT103.mail.protection.outlook.com (10.152.13.38) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.5293.13 via Frontend Transport; Mon, 30 May 2022 13:22:22 +0000
+Received: from nbsrvex-01v.diasemi.com (10.1.17.243) by
+ nbsrvex-01v.diasemi.com (10.1.17.243) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Mon, 30 May 2022 15:22:21 +0200
+Received: from slsrvapps-01.diasemi.com (10.24.28.40) by
+ nbsrvex-01v.diasemi.com (10.1.17.243) with Microsoft SMTP Server id
+ 15.1.2176.2 via Frontend Transport; Mon, 30 May 2022 15:22:21 +0200
+Received: by slsrvapps-01.diasemi.com (Postfix, from userid 22379)
+ id C96E580007F; Mon, 30 May 2022 13:22:21 +0000 (UTC)
+Message-ID: <cover.1653916368.git.DLG-Adam.Thomson.Opensource@dm.renesas.com>
+From: Adam Thomson <DLG-Adam.Thomson.Opensource@dm.renesas.com>
+Date: Mon, 30 May 2022 13:22:21 +0000
+Subject: [PATCH 0/2] ASoC: da7219: Small fixes for jack detection and removal
+To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>,
+ Takashi Iwai <tiwai@suse.com>, Jaroslav Kysela <perex@perex.cz>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: Cezary Rojewski <cezary.rojewski@intel.com>, linux-kernel@vger.kernel.org,
- Takashi Iwai <tiwai@suse.com>, Jie Yang <yang.jie@linux.intel.com>,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- Liam Girdwood <liam.r.girdwood@linux.intel.com>,
- Mark Brown <broonie@kernel.org>, xliu <xiang.liu@cirrus.com>,
- Bard Liao <yung-chuan.liao@linux.intel.com>, Brent Lu <brent.lu@intel.com>
+Content-Type: text/plain
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: fa607533-3a99-47c0-f620-08da423f6e29
+X-MS-TrafficTypeDiagnostic: AM5PR1001MB1058:EE_
+X-Microsoft-Antispam-PRVS: <AM5PR1001MB10582389719EDF07616F4E97A7DD9@AM5PR1001MB1058.EURPRD10.PROD.OUTLOOK.COM>
+X-MS-Exchange-SenderADCheck: 2
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: wQybtY5JClESGCTbN45+6hi+HwSAdI3WifNeNFOcf/iCimJxyzln2XTTeW7mWKlw/0JWLuP+VJ2dPfu69R/haM9TUgyGH4JXqy3KnzeC0oS+03BxNPiHMdUvQRUEZ6KPpv5IyvNOhLGo8HTa8mFh0uAnnGb91Dl6NkpQp9SBMw8Xz87KdMOHGrHNSAQxGCZPj/8E+LkJWY8fPWPG7enhTkAmfuufwGy7qQaju6Eo+pOJ8/PEHXlIZzjMsnvNGTipkY05S7l135WB1hCTe26ZTrMsvpr11esTWCqA+uAIrJHr7KE/bkQJ2IimMW3jv3PP5s8jeiWW8TPsSH2g2nl1FJfaZZPEEags6RaPj64ElMGtxHWiy32d5D4I28SLKns27vBhD2GmZILOqGh5H7CIe8tPuph5cFl1LAvQPS9ztuGigIU89BZu5DEybDethaeq9OnvGFfsIT9U1nDjXvRpXE+oPvhalgz6a3nXoDBhypRSaZfRl8RhSGlLqL4sJF5pXnnVG2P1rowW7xDaWy4xKFjOIfLMktK/lZujNvjvwHrjPiRkwYyrpKu7ny5ad8BOHvoRXOiWlGGKjMyof2K0FlIbGTi18Ce0pOQFjDnnaU/YYzoD20WO8qXbgWeFKeiLv3M5R8+FV+sWyDdv0MIWuXcai3CltJ3OWrcm5B8ftX6CmpUTEquq4RsQrEpbe8oxtiyj3lKtkhIxK9D/2efguyWqZYAOLPdHRk9yeUJBCJBaoo7u+BGLyOT/I7t0e1wl
+X-Forefront-Antispam-Report: CIP:193.240.239.45; CTRY:GB; LANG:en; SCL:1; SRV:;
+ IPV:NLI; SFV:NSPM; H:mailrelay1.diasemi.com; PTR:InfoDomainNonexistent;
+ CAT:NONE;
+ SFS:(13230001)(4636009)(396003)(376002)(39860400002)(346002)(136003)(46966006)(40470700004)(36840700001)(47076005)(40460700003)(4744005)(82740400003)(5660300002)(36860700001)(83380400001)(54906003)(42882007)(110136005)(42186006)(316002)(336012)(70206006)(4326008)(70586007)(40480700001)(2906002)(41300700001)(6266002)(82310400005)(2616005)(83170400001)(356005)(81166007)(8936002)(26005)(508600001)(8676002)(186003)(36900700001);
+ DIR:OUT; SFP:1101; 
+X-OriginatorOrg: diasemi.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 May 2022 13:22:22.4338 (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: fa607533-3a99-47c0-f620-08da423f6e29
+X-MS-Exchange-CrossTenant-Id: 511e3c0e-ee96-486e-a2ec-e272ffa37b7c
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=511e3c0e-ee96-486e-a2ec-e272ffa37b7c; Ip=[193.240.239.45];
+ Helo=[mailrelay1.diasemi.com]
+X-MS-Exchange-CrossTenant-AuthSource: VE1EUR02FT103.eop-EUR02.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM5PR1001MB1058
+Cc: alsa-devel@alsa-project.org,
+ Support Opensource <DLG-Support.Opensource@lm.renesas.com>,
+ linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -84,47 +131,17 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: xliu <xiang.liu@cirrus.com>
+This series contains 2 small fixes around the AAD part of DA7219, particularly
+in relation to jack pole detection on certain active headsets, and tidy up
+when a jack is removed.
 
-The default mapping of ASPRX1 Slot is left channel. Map the slots of
-right amplifiers (WR and TR) to right channel.
+Adam Thomson (2):
+  ASoC: da7219: Fix pole orientation detection on certain headsets
+  ASoC: da7219: cancel AAD related work earlier for jack removal
 
-Signed-off-by: xliu <xiang.liu@cirrus.com>
-Signed-off-by: Brent Lu <brent.lu@intel.com>
----
- sound/soc/intel/boards/sof_cirrus_common.c | 12 ++++++++++++
- 1 file changed, 12 insertions(+)
+ sound/soc/codecs/da7219-aad.c | 18 +++++++++++++++---
+ 1 file changed, 15 insertions(+), 3 deletions(-)
 
-diff --git a/sound/soc/intel/boards/sof_cirrus_common.c b/sound/soc/intel/boards/sof_cirrus_common.c
-index e71d74ec1b0b..64ca0e3991dc 100644
---- a/sound/soc/intel/boards/sof_cirrus_common.c
-+++ b/sound/soc/intel/boards/sof_cirrus_common.c
-@@ -107,6 +107,7 @@ static int cs35l41_hw_params(struct snd_pcm_substream *substream,
- 	struct snd_soc_pcm_runtime *rtd = asoc_substream_to_rtd(substream);
- 	struct snd_soc_dai *codec_dai;
- 	int clk_freq, i, ret;
-+	int rx_ch[2] = {1, 0};
- 
- 	clk_freq = sof_dai_get_bclk(rtd); /* BCLK freq */
- 
-@@ -134,6 +135,17 @@ static int cs35l41_hw_params(struct snd_pcm_substream *substream,
- 				ret);
- 			return ret;
- 		}
-+
-+		/* Setup for R channel Slot: WR and TR */
-+		if (i % 2) {
-+			ret = snd_soc_dai_set_channel_map(codec_dai, 0, NULL,
-+							  ARRAY_SIZE(rx_ch), rx_ch);
-+			if (ret < 0) {
-+				dev_err(codec_dai->dev, "fail to set channel map, ret %d\n",
-+					ret);
-+				return ret;
-+			}
-+		}
- 	}
- 
- 	return 0;
 -- 
-2.25.1
+2.17.1
 
