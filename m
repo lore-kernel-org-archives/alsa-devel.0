@@ -4,122 +4,73 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id F27A4C433EF
-	for <alsa-devel@archiver.kernel.org>; Mon, 30 May 2022 13:24:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 31F5FC433EF
+	for <alsa-devel@archiver.kernel.org>; Mon, 30 May 2022 13:26:39 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 38F841ACE;
-	Mon, 30 May 2022 15:23:23 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 38F841ACE
+	by alsa0.perex.cz (Postfix) with ESMTPS id 625D51908;
+	Mon, 30 May 2022 15:25:47 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 625D51908
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1653917053;
-	bh=n2a+VBlotDwS1w46jKFBa78Fu5F3v7YYimj6Bg0euEk=;
-	h=In-Reply-To:References:From:Date:Subject:To:Cc:List-Id:
+	s=default; t=1653917197;
+	bh=GTHiEG6Fbnv6d3nL/QXh9DsjWVX96eO95njhrpvwukM=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=OxrJzenu2ttMyUUupo/2MbcsI7Em95S9asE3xtuDnnchRijG+voLHr2eHjj261cs2
-	 AmlocwJawnfd3FnIthS+gpSdz/dGWMztp7ykFy4LVkiTPgT1GT0zDapSSfKQ3MQI/u
-	 HlfBi+AOu5zgGY/H9cYIsNN2GDRyhPdDnG/yTnZE=
+	b=HVUcNCwkCmwLADj/ERoi5yz54FcCahwsZ1Nzm4SutMlMj6v6/seDe1lrPrX8lFjnZ
+	 nCwMmYY8lHdJnX+3ZJF4wj3iTqc3A7J6VY+dA2quDGJZJjLgzSWoCsxWzs/Vt6wdns
+	 KGd1nZ/WfALGnT7H8FzQqMr9K6l89wCLBjrDWxCU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 52BF9F8051E;
-	Mon, 30 May 2022 15:22:44 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 14032F8012F;
+	Mon, 30 May 2022 15:25:47 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 1FDC9F800DE; Mon, 30 May 2022 15:22:38 +0200 (CEST)
-Received: from EUR05-VI1-obe.outbound.protection.outlook.com
- (mail-vi1eur05on20630.outbound.protection.outlook.com
- [IPv6:2a01:111:f400:7d00::630])
+ id D628CF8019D; Mon, 30 May 2022 15:25:44 +0200 (CEST)
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 250A0F800DE
+ for <alsa-devel@alsa-project.org>; Mon, 30 May 2022 15:25:37 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 250A0F800DE
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="POadj0WI"
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 4BF15F800DE
- for <alsa-devel@alsa-project.org>; Mon, 30 May 2022 15:22:30 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4BF15F800DE
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=dialogsemiconductor.onmicrosoft.com
- header.i=@dialogsemiconductor.onmicrosoft.com header.b="iaOzPl6D"
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=QbsJG4cPy0aVKFuKRAgC4uhCvLlcHPUyCVarDFkvQPG+TS+Ttk6xqLd6X7CYOp3CmTvXceBcGgjRdnEwqtyEshiwnElVk9d6gG8QzidTI6T5mO+QqIYCsC7+EVKrcbN9G8/UAKv0F2G3h3GzA7R0l9LUuaa/P3DHl8oSbTX6q7IRENcd2xQ/nKHGMFXNSwDVASdtz60S/WeFsFXzlXihPm9Ycn7eP3XroZJzRM6/kc+nJZsaEqRGys/BRWkpkLIkTBNLywKSKEL2bR+Rn6aZG98PF8zASulw5Wv1eCFkwAUFFi6GC4Y3rJhdedm6eDKGANpW4cs2JRgBFyJWQ7yEbg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=aSPIjFNdnRk4IR0W2usJZ+hjMggEmzmUzq/f11tyuVI=;
- b=PMUEi0wZIG0cqN9kVZg9mOE7h6xAIbki0rkgIG2SFQk9m8e3DTw6MXrhWtRRn0tR/mp0LI74GWJI59MRD1dCF2Oga6gFn+/ZaZMTkBzHvyykc1AYUvQuHWwwKmoFFjKx7w3VXETfoNnnxvaj0g8nVzOIPCoNkYFF26QdMoPeor3sNTFLtLmou2fr4ZCf98br7E0xgA0pM8bKzsDikMbWfhI1Vhv4gAOtmCqhU1kEHSK5s/OKRMUSgC1XlkwW7nNd0C3fLR2Mcbt2Wbb59VQz5rtYbil1b9jzSMA+x6bEJb8yaEF2sNJVN3WanhzyBc11pzQgpeXicrPINmQpEGcN2A==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=softfail (sender ip
- is 193.240.239.45) smtp.rcpttodomain=alsa-project.org
- smtp.mailfrom=diasemi.com; dmarc=fail (p=none sp=none pct=100) action=none
- header.from=dm.renesas.com; dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=dialogsemiconductor.onmicrosoft.com;
- s=selector1-dialogsemiconductor-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=aSPIjFNdnRk4IR0W2usJZ+hjMggEmzmUzq/f11tyuVI=;
- b=iaOzPl6D74ZpiOmz/Cc2PQ4/tXDrtueA0hGcFfXhhhQcmq3EV9wJ1tZto25W9JdBf3LytBVCdTx7twU7idmvFLDL3FwM9pmwqZq9Mlmp4huVbe/eQY9Y4HT+pJEZ9XlaPfqwDjfatKH/9y7C56HteWKc8fJhxrz3Q9AMfF1gWUI=
-Received: from AS9PR06CA0501.eurprd06.prod.outlook.com (2603:10a6:20b:49b::26)
- by GV2PR10MB6138.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:150:ae::7) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5293.19; Mon, 30 May
- 2022 13:22:26 +0000
-Received: from VE1EUR02FT057.eop-EUR02.prod.protection.outlook.com
- (2603:10a6:20b:49b:cafe::2a) by AS9PR06CA0501.outlook.office365.com
- (2603:10a6:20b:49b::26) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5293.13 via Frontend
- Transport; Mon, 30 May 2022 13:22:25 +0000
-X-MS-Exchange-Authentication-Results: spf=softfail (sender IP is
- 193.240.239.45) smtp.mailfrom=diasemi.com; dkim=none (message not signed)
- header.d=none;dmarc=fail action=none header.from=dm.renesas.com;
-Received-SPF: SoftFail (protection.outlook.com: domain of transitioning
- diasemi.com discourages use of 193.240.239.45 as permitted sender)
-Received: from mailrelay1.diasemi.com (193.240.239.45) by
- VE1EUR02FT057.mail.protection.outlook.com (10.152.13.90) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.5293.13 via Frontend Transport; Mon, 30 May 2022 13:22:24 +0000
-Received: from nbsrvex-01v.diasemi.com (10.1.17.243) by
- nbsrvex-01v.diasemi.com (10.1.17.243) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Mon, 30 May 2022 15:22:24 +0200
-Received: from slsrvapps-01.diasemi.com (10.24.28.40) by
- nbsrvex-01v.diasemi.com (10.1.17.243) with Microsoft SMTP Server id
- 15.1.2176.2 via Frontend Transport; Mon, 30 May 2022 15:22:23 +0200
-Received: by slsrvapps-01.diasemi.com (Postfix, from userid 22379)
- id D212680007F; Mon, 30 May 2022 13:22:23 +0000 (UTC)
-Message-ID: <b3f9a679f1e27a9359dcecb496953c4af30acbaa.1653916368.git.DLG-Adam.Thomson.Opensource@dm.renesas.com>
-In-Reply-To: <cover.1653916368.git.DLG-Adam.Thomson.Opensource@dm.renesas.com>
-References: <cover.1653916368.git.DLG-Adam.Thomson.Opensource@dm.renesas.com>
-From: Adam Thomson <DLG-Adam.Thomson.Opensource@dm.renesas.com>
-Date: Mon, 30 May 2022 13:22:23 +0000
-Subject: [PATCH 2/2] ASoC: da7219: cancel AAD related work earlier for jack
- removal
-To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>,
- Takashi Iwai <tiwai@suse.com>, Jaroslav Kysela <perex@perex.cz>
+ by ams.source.kernel.org (Postfix) with ESMTPS id 9B10DB80DA8;
+ Mon, 30 May 2022 13:25:36 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3D773C385B8;
+ Mon, 30 May 2022 13:25:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1653917135;
+ bh=GTHiEG6Fbnv6d3nL/QXh9DsjWVX96eO95njhrpvwukM=;
+ h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+ b=POadj0WI3NnPiZwAC+3H4GpwN7eCVam06YmaROePUXu62eImgoN0668bfACZBwYeV
+ OquEIxQv/lrSbSZ745w3BEo6kfBpXeeutjl1TiOQIz24b1e5vvjsDX/OmFskngg+GP
+ o43gzVceODqKb9iW4WWP2UgMPde5Otndm1PpJd20ssURIb4P5CnC4IxKmym/5+747t
+ Sh2Jjnw/OSYDW1r+YnXySnxjNifykZJPqEKr5PdUoRQdsbq/UNBy3EAJ5tmDhlDOGm
+ 9HmnSo5P9lNs2dicqu5KaM3UHtb3T8wvVMCXoYKp79A0gSsXLfw5HkLVyQUR7YKJ5T
+ ouYuxG2wHZTYQ==
+From: Sasha Levin <sashal@kernel.org>
+To: linux-kernel@vger.kernel.org,
+	stable@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.18 028/159] ALSA: jack: Access input_dev under mutex
+Date: Mon, 30 May 2022 09:22:13 -0400
+Message-Id: <20220530132425.1929512-28-sashal@kernel.org>
+X-Mailer: git-send-email 2.35.1
+In-Reply-To: <20220530132425.1929512-1-sashal@kernel.org>
+References: <20220530132425.1929512-1-sashal@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: ed6af9dd-19d0-428c-aeeb-08da423f6f6e
-X-MS-TrafficTypeDiagnostic: GV2PR10MB6138:EE_
-X-Microsoft-Antispam-PRVS: <GV2PR10MB6138E49329B5449E602C31A0A7DD9@GV2PR10MB6138.EURPRD10.PROD.OUTLOOK.COM>
-X-MS-Exchange-SenderADCheck: 2
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: BA22a3jbdbTcxXN1gqVBbo4Ia8Cw6uiZO8RzPSjGjHYZ2Oxqcy2cSsR10G6/AzyglkT0lJjmvukUhRlFkckNKij8GkKBI7ZcU82UntZd1Eb3B0BnBzn9EnTWwqiRgFzjbxGjZ4coIeUsxe0UR954RxbFfJIIzS+Zpcrr0/uNR9Yf+mJhMvANKmUgI2fqzqNfC1QnBTCq6NvkFykO+WQUXYY7nnUYFQXeBrOboPO8K3+rfYheSa+6DDWPETCKAA7qhECfBgDaoqJ9ZPTuR0l9GQJKU3ONcbCngPG+YSz+USc0J8i87aIMII9pPx1jqWEuWLjUoxselLh+Tg9QgGiTJ32iBFUV++vBHmGdIfdEBGv4DjzEkNS+XI7sRY+1XPyJoWU36hJ4a09+UphaGeI95y3DTbpMufzWVoPXYPKhfEyftnjDH26CyG9HliQRW/z6Lfnfs0Olrc5V+Ax4oZ3kHRRrPEejiFJeBNM81rSkYVt9LZAK4s3bZ8ONCVVcgZgzV9ut4M6CC2Y0XJIZFTzCsBHWmfqpuVEBcY94npH55J1Yq9+EJk/BleFxZoQg5OeBpaIeqXkZySQ4XBhvqsq8XLVsi5a13YxxZfK/cO5SN6RAKL9njVKn6N3vADTea7nZN7jpAmbMTiCcJ7t33qQEsMvSKRlFJG483QbwX9bYO0FmNU6LlTNpgNIvVDgyvMzT48OZQW9Tr4SbrsFrniK3qOBpWT/J3wwdSqxFDoEM3Tzx28ihrZvbDCs2Jbsu+rgY
-X-Forefront-Antispam-Report: CIP:193.240.239.45; CTRY:GB; LANG:en; SCL:1; SRV:;
- IPV:NLI; SFV:NSPM; H:mailrelay1.diasemi.com; PTR:InfoDomainNonexistent;
- CAT:NONE;
- SFS:(13230001)(4636009)(136003)(376002)(39860400002)(396003)(346002)(36840700001)(40470700004)(46966006)(6266002)(2906002)(26005)(83380400001)(82740400003)(40480700001)(81166007)(36860700001)(42882007)(186003)(83170400001)(2616005)(41300700001)(356005)(508600001)(42186006)(336012)(316002)(110136005)(8936002)(47076005)(54906003)(70206006)(4326008)(82310400005)(70586007)(8676002)(40460700003)(5660300002)(36900700001);
- DIR:OUT; SFP:1101; 
-X-OriginatorOrg: diasemi.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 May 2022 13:22:24.5619 (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: ed6af9dd-19d0-428c-aeeb-08da423f6f6e
-X-MS-Exchange-CrossTenant-Id: 511e3c0e-ee96-486e-a2ec-e272ffa37b7c
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=511e3c0e-ee96-486e-a2ec-e272ffa37b7c; Ip=[193.240.239.45];
- Helo=[mailrelay1.diasemi.com]
-X-MS-Exchange-CrossTenant-AuthSource: VE1EUR02FT057.eop-EUR02.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: GV2PR10MB6138
-Cc: alsa-devel@alsa-project.org,
- Support Opensource <DLG-Support.Opensource@lm.renesas.com>,
- linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset=UTF-8
+X-stable: review
+X-Patchwork-Hint: Ignore
+Content-Transfer-Encoding: 8bit
+Cc: Sasha Levin <sashal@kernel.org>,
+ Cezary Rojewski <cezary.rojewski@intel.com>, alsa-devel@alsa-project.org,
+ Takashi Iwai <tiwai@suse.de>, tiwai@suse.com,
+ =?UTF-8?q?Amadeusz=20S=C5=82awi=C5=84ski?=
+ <amadeuszx.slawinski@linux.intel.com>, xkernel.wang@foxmail.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -135,42 +86,152 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-To avoid the unlikely possibility of register misalignment for
-headphones being ungrounded/driven after a jack has been removed,
-move the cancel_work_sync() call to the start of the jack removal
-handling in the IRQ thread.
+From: Amadeusz Sławiński <amadeuszx.slawinski@linux.intel.com>
 
-Signed-off-by: Adam Thomson <DLG-Adam.Thomson.Opensource@dm.renesas.com>
+[ Upstream commit 1b6a6fc5280e97559287b61eade2d4b363e836f2 ]
+
+It is possible when using ASoC that input_dev is unregistered while
+calling snd_jack_report, which causes NULL pointer dereference.
+In order to prevent this serialize access to input_dev using mutex lock.
+
+Signed-off-by: Amadeusz Sławiński <amadeuszx.slawinski@linux.intel.com>
+Reviewed-by: Cezary Rojewski <cezary.rojewski@intel.com>
+Link: https://lore.kernel.org/r/20220412091628.3056922-1-amadeuszx.slawinski@linux.intel.com
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/codecs/da7219-aad.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ include/sound/jack.h |  1 +
+ sound/core/jack.c    | 34 +++++++++++++++++++++++++++-------
+ 2 files changed, 28 insertions(+), 7 deletions(-)
 
-diff --git a/sound/soc/codecs/da7219-aad.c b/sound/soc/codecs/da7219-aad.c
-index e7d8c33e02cc..bba73c44c219 100644
---- a/sound/soc/codecs/da7219-aad.c
-+++ b/sound/soc/codecs/da7219-aad.c
-@@ -434,6 +434,10 @@ static irqreturn_t da7219_aad_irq_thread(int irq, void *data)
- 			mask |= DA7219_AAD_REPORT_ALL_MASK;
- 			da7219_aad->jack_inserted = false;
+diff --git a/include/sound/jack.h b/include/sound/jack.h
+index 1181f536557e..1ed90e2109e9 100644
+--- a/include/sound/jack.h
++++ b/include/sound/jack.h
+@@ -62,6 +62,7 @@ struct snd_jack {
+ 	const char *id;
+ #ifdef CONFIG_SND_JACK_INPUT_DEV
+ 	struct input_dev *input_dev;
++	struct mutex input_dev_lock;
+ 	int registered;
+ 	int type;
+ 	char name[100];
+diff --git a/sound/core/jack.c b/sound/core/jack.c
+index d1e3055f2b6a..88493cc31914 100644
+--- a/sound/core/jack.c
++++ b/sound/core/jack.c
+@@ -42,8 +42,11 @@ static int snd_jack_dev_disconnect(struct snd_device *device)
+ #ifdef CONFIG_SND_JACK_INPUT_DEV
+ 	struct snd_jack *jack = device->device_data;
  
-+			/* Cancel any pending work */
-+			cancel_work_sync(&da7219_aad->btn_det_work);
-+			cancel_work_sync(&da7219_aad->hptest_work);
-+
- 			/* Un-drive headphones/lineout */
- 			snd_soc_component_update_bits(component, DA7219_HP_R_CTRL,
- 					    DA7219_HP_R_AMP_OE_MASK, 0);
-@@ -452,10 +456,6 @@ static irqreturn_t da7219_aad_irq_thread(int irq, void *data)
+-	if (!jack->input_dev)
++	mutex_lock(&jack->input_dev_lock);
++	if (!jack->input_dev) {
++		mutex_unlock(&jack->input_dev_lock);
+ 		return 0;
++	}
  
- 			/* Enable ground switch */
- 			snd_soc_component_update_bits(component, 0xFB, 0x01, 0x01);
--
--			/* Cancel any pending work */
--			cancel_work_sync(&da7219_aad->btn_det_work);
--			cancel_work_sync(&da7219_aad->hptest_work);
- 		}
+ 	/* If the input device is registered with the input subsystem
+ 	 * then we need to use a different deallocator. */
+@@ -52,6 +55,7 @@ static int snd_jack_dev_disconnect(struct snd_device *device)
+ 	else
+ 		input_free_device(jack->input_dev);
+ 	jack->input_dev = NULL;
++	mutex_unlock(&jack->input_dev_lock);
+ #endif /* CONFIG_SND_JACK_INPUT_DEV */
+ 	return 0;
+ }
+@@ -90,8 +94,11 @@ static int snd_jack_dev_register(struct snd_device *device)
+ 	snprintf(jack->name, sizeof(jack->name), "%s %s",
+ 		 card->shortname, jack->id);
+ 
+-	if (!jack->input_dev)
++	mutex_lock(&jack->input_dev_lock);
++	if (!jack->input_dev) {
++		mutex_unlock(&jack->input_dev_lock);
+ 		return 0;
++	}
+ 
+ 	jack->input_dev->name = jack->name;
+ 
+@@ -116,6 +123,7 @@ static int snd_jack_dev_register(struct snd_device *device)
+ 	if (err == 0)
+ 		jack->registered = 1;
+ 
++	mutex_unlock(&jack->input_dev_lock);
+ 	return err;
+ }
+ #endif /* CONFIG_SND_JACK_INPUT_DEV */
+@@ -517,9 +525,11 @@ int snd_jack_new(struct snd_card *card, const char *id, int type,
+ 		return -ENOMEM;
  	}
  
+-	/* don't creat input device for phantom jack */
+-	if (!phantom_jack) {
+ #ifdef CONFIG_SND_JACK_INPUT_DEV
++	mutex_init(&jack->input_dev_lock);
++
++	/* don't create input device for phantom jack */
++	if (!phantom_jack) {
+ 		int i;
+ 
+ 		jack->input_dev = input_allocate_device();
+@@ -537,8 +547,8 @@ int snd_jack_new(struct snd_card *card, const char *id, int type,
+ 				input_set_capability(jack->input_dev, EV_SW,
+ 						     jack_switch_types[i]);
+ 
+-#endif /* CONFIG_SND_JACK_INPUT_DEV */
+ 	}
++#endif /* CONFIG_SND_JACK_INPUT_DEV */
+ 
+ 	err = snd_device_new(card, SNDRV_DEV_JACK, jack, &ops);
+ 	if (err < 0)
+@@ -578,10 +588,14 @@ EXPORT_SYMBOL(snd_jack_new);
+ void snd_jack_set_parent(struct snd_jack *jack, struct device *parent)
+ {
+ 	WARN_ON(jack->registered);
+-	if (!jack->input_dev)
++	mutex_lock(&jack->input_dev_lock);
++	if (!jack->input_dev) {
++		mutex_unlock(&jack->input_dev_lock);
+ 		return;
++	}
+ 
+ 	jack->input_dev->dev.parent = parent;
++	mutex_unlock(&jack->input_dev_lock);
+ }
+ EXPORT_SYMBOL(snd_jack_set_parent);
+ 
+@@ -629,6 +643,8 @@ EXPORT_SYMBOL(snd_jack_set_key);
+ 
+ /**
+  * snd_jack_report - Report the current status of a jack
++ * Note: This function uses mutexes and should be called from a
++ * context which can sleep (such as a workqueue).
+  *
+  * @jack:   The jack to report status for
+  * @status: The current status of the jack
+@@ -654,8 +670,11 @@ void snd_jack_report(struct snd_jack *jack, int status)
+ 					     status & jack_kctl->mask_bits);
+ 
+ #ifdef CONFIG_SND_JACK_INPUT_DEV
+-	if (!jack->input_dev)
++	mutex_lock(&jack->input_dev_lock);
++	if (!jack->input_dev) {
++		mutex_unlock(&jack->input_dev_lock);
+ 		return;
++	}
+ 
+ 	for (i = 0; i < ARRAY_SIZE(jack->key); i++) {
+ 		int testbit = ((SND_JACK_BTN_0 >> i) & ~mask_bits);
+@@ -675,6 +694,7 @@ void snd_jack_report(struct snd_jack *jack, int status)
+ 	}
+ 
+ 	input_sync(jack->input_dev);
++	mutex_unlock(&jack->input_dev_lock);
+ #endif /* CONFIG_SND_JACK_INPUT_DEV */
+ }
+ EXPORT_SYMBOL(snd_jack_report);
 -- 
-2.17.1
+2.35.1
 
