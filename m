@@ -4,84 +4,87 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id AD1B4C433F5
-	for <alsa-devel@archiver.kernel.org>; Mon, 30 May 2022 07:22:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 84F3AC433FE
+	for <alsa-devel@archiver.kernel.org>; Mon, 30 May 2022 07:43:19 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C87F01A9B;
-	Mon, 30 May 2022 09:21:26 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C87F01A9B
+	by alsa0.perex.cz (Postfix) with ESMTPS id D2E4E1AA4;
+	Mon, 30 May 2022 09:42:26 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D2E4E1AA4
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1653895336;
-	bh=amxCenVYKFLLjgQKoWqRPAtEiyptJybLF6SX7O27awo=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=jsL1grsMIQa2uLSZuwRfisqBxUf68J1EhHdYRLkB0+v52Klm4eKvi+gjIm2jCefcX
-	 m5mqCWfOLixqYgaDde6t+29nfYaQATgYsmlBBBKdDco2rUytWYotH9Ch86vyiY2wR4
-	 QWHTj57l+VXJoMN+eSB0PuDvHUJMdP4oJQJai5V8=
+	s=default; t=1653896596;
+	bh=HDo/aWAOKpHP3170EqxS35VIvpkpAfPdFJ5y9Y8xfjk=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=UW+hu2wjW5iQ7IgMtw0jDbPWlNehZie20rcQITCFAS62tquQLbUf92rIetf2zFsRp
+	 TlfxMdMewL+kSgaVgzzEIAqPkEUAEX4yCYnd+UnGZBVU42rE24tgyv1fiKP7jOTvgn
+	 noO7M4C9X4l0Jvs77t7TKSI0tfHf1hO3IFobZ6No=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id AC717F8051B;
-	Mon, 30 May 2022 09:20:36 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 69DCCF800DE;
+	Mon, 30 May 2022 09:42:26 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id A5552F8024C; Mon, 30 May 2022 00:36:01 +0200 (CEST)
-Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com
- [IPv6:2a00:1450:4864:20::52c])
+ id 88FA5F8019D; Mon, 30 May 2022 09:42:24 +0200 (CEST)
+Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com
+ [IPv6:2a00:1450:4864:20::534])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 84822F800DE
- for <alsa-devel@alsa-project.org>; Mon, 30 May 2022 00:35:57 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 84822F800DE
+ by alsa1.perex.cz (Postfix) with ESMTPS id D3A1DF800DE
+ for <alsa-devel@alsa-project.org>; Mon, 30 May 2022 09:42:19 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D3A1DF800DE
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="J5pOk7YA"
-Received: by mail-ed1-x52c.google.com with SMTP id v25so3326970eda.6
- for <alsa-devel@alsa-project.org>; Sun, 29 May 2022 15:35:57 -0700 (PDT)
+ header.b="nPGSDOs/"
+Received: by mail-ed1-x534.google.com with SMTP id t5so12384085edc.2
+ for <alsa-devel@alsa-project.org>; Mon, 30 May 2022 00:42:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
- h=from:to:cc:subject:date:message-id:mime-version
- :content-transfer-encoding;
- bh=28grDNGVVwgvkgCPe3HFvEYkJipC2Cb3fnAVX4fq0Lg=;
- b=J5pOk7YAN5RiRnaTEd5KNJyjKchIaoV/9ff0ljMqAgtajGMDjG8KcERrFloK1EIMkR
- SyIl5qdg/OzIYTqNk/DmY3FDbsJh+pAUJu2h7kHYD2qMC17GDJkAMIzq+MuB7ACiRJdy
- KYUwNGYiXTLtVsT5NBGsJdqE4fUMIR19VQOn3XrZ8N0hT9V5gzA4ekE4rzsvJVWsRORy
- KqVhhqLLCLxlKBPf8xHkt5J/ya+Vr24XCrNHnJuaDLMF9QsPeMGrihSe990IOanm5c1Y
- KPdFo/Wer5nAb1eDbCwilyzjUljbMNwdiVIj0L5+FcVv3OECj4LPkBUYZPFoqsXtGycA
- IfcA==
+ h=from:to:cc:subject:date:message-id:in-reply-to:references
+ :mime-version:content-transfer-encoding;
+ bh=hfKG4YWK0/wF8JKckFHhogrN1Uspikw4VVSzOBOiZQs=;
+ b=nPGSDOs/5FdLND1ypnker0BsT+k7E7bv6TdT4ZdNBPkH7MsnjruPykKv0SZXIF/jNv
+ kx6YmAJDmpO4Nh8wbwsc1jKjSqisZYjKdSX3bL1TBqct6ziFgzEP1NfGPNcRtNKl5Lts
+ xcLeui3Jl2Iq+mLKp+WbGt2Y6Iriz/NbdrJrANZzv4fX41uAnP0hvZadOrgZSJBNt2WN
+ qqC3dmAy4vuC24MQDq5hZ+SyS9d9enWpyVX1iQkd31v4QaBTXGrz9y8x0hbrT8O9RwQG
+ yxC3uj+ytcd1VVQBVVlAmL81HnYbjEI/qg4Gng4MchGjaxHOhkXi6312xBJGWoRGGbHN
+ GYSA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
- h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
- :content-transfer-encoding;
- bh=28grDNGVVwgvkgCPe3HFvEYkJipC2Cb3fnAVX4fq0Lg=;
- b=UmeSebSnzojRDs0RfYPHI76n37dj8G40ugFKLUAFmbiOF+VDtGg1UkchiMSR/G/HNH
- WPR3aEHqmsIgczeY05MClGtFR9s7lWAAob6JMH4/wZL5fFNzO8eUi+vAn5QTA8znW69i
- RFQ94VQHo+SAZEdMZh/kFtc8sHfPEsRNAI9GMlh0Jevh/gZ7XPxGyHGX44/D3xbTHe39
- 5EjnomEcC1Ni9G1kOctbRQyLQ9lt9Zm8X4ufgwcRN9VW803Fkv0aBit3a8YG9gDcrwc6
- NzPILhjF1cFkgeyw6I2QiqVTdHZHIAd8n9GarmrxNkhMRc8QTm2jC26qxGeZd13ygMLJ
- 7Cjg==
-X-Gm-Message-State: AOAM531zgAWtZZvQR6nIhC1Mq9+vngXLJt17csL6jBVqpsazjnbi/8pU
- LEKMbJwdUmnEX1pjOM8nnA8=
-X-Google-Smtp-Source: ABdhPJy36gFtvxZXqd/ef4i7J/Vur7da2Ugd78lWMuv8NEHUzvMn6fT0GPLCrZE9jkhNYCiNYTZePA==
-X-Received: by 2002:a05:6402:a42:b0:42b:c5e9:1495 with SMTP id
- bt2-20020a0564020a4200b0042bc5e91495mr25576734edb.323.1653863756112; 
- Sun, 29 May 2022 15:35:56 -0700 (PDT)
+ h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+ :references:mime-version:content-transfer-encoding;
+ bh=hfKG4YWK0/wF8JKckFHhogrN1Uspikw4VVSzOBOiZQs=;
+ b=NOi3KA8QXx4I/W3AMeI/Um1h1iu79o0L7mWG/FdGqKw4p3UIzUyjI+979XjlkXk8ho
+ yhazKbiMt08zDuGA/mSiVMx18va7ffQTflmi/69e2/I3W06XZ1fSexAFMggfUsMT8106
+ KONmJcuR9fGUQmYY6Syvzw0NIg58t7lgmsYDdkjvPRdRQMETUbMovVgB26SpFTHbIo/R
+ FXSSHPe8FAsq6bCxcKgiWe307AuCHpwVHzQMuUFBleJN2u/Ql7nbMU/RfxkBZTG1Yx7s
+ sdFCdNgkGT+ooOXvCYwsXTVFnyDPiFfF8gUOdHSGdIDPCx7PguG1YRrFqQpuI0WUP31K
+ M5wA==
+X-Gm-Message-State: AOAM530jnrv8OuOWY9V3LNCxy/I0F0FSH6oRIc6/L+mWhkARdqSjxwXD
+ he6w8d7VqoHuG6QQ/nv4ZsLhdKCKWBt3GRzm
+X-Google-Smtp-Source: ABdhPJwqovQExkbkxPWrSxPyXA9KL9bw91tu3ooAFG/n8Qxt/g9ubvu7yewtRPUTtwTrPfTjoLX2mQ==
+X-Received: by 2002:aa7:dc09:0:b0:42a:aadd:8e71 with SMTP id
+ b9-20020aa7dc09000000b0042aaadd8e71mr57204773edu.41.1653896537958; 
+ Mon, 30 May 2022 00:42:17 -0700 (PDT)
 Received: from marios-pc.home.mlevogiannis.gr
  (194.219.107.43.dsl.dyn.forthnet.gr. [194.219.107.43])
  by smtp.gmail.com with ESMTPSA id
- u28-20020a50c05c000000b0042dc882c823sm697456edd.70.2022.05.29.15.35.55
+ z1-20020a1709060ac100b006f3ef214de1sm3709693ejf.71.2022.05.30.00.42.17
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Sun, 29 May 2022 15:35:55 -0700 (PDT)
+ Mon, 30 May 2022 00:42:17 -0700 (PDT)
 From: Marios Levogiannis <marios.levogiannis@gmail.com>
-To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
- alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+To: Takashi Iwai <tiwai@suse.com>
 Subject: [PATCH] ALSA: hda/realtek - Fix microphone noise on ASUS TUF
  B550M-PLUS
-Date: Mon, 30 May 2022 01:35:24 +0300
-Message-Id: <20220529223524.9057-1-marios.levogiannis@gmail.com>
+Date: Mon, 30 May 2022 10:41:31 +0300
+Message-Id: <20220530074131.12258-1-marios.levogiannis@gmail.com>
 X-Mailer: git-send-email 2.36.1
+In-Reply-To: <87r14by1xi.wl-tiwai@suse.de>
+References: <87r14by1xi.wl-tiwai@suse.de>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Mailman-Approved-At: Mon, 30 May 2022 09:20:34 +0200
-Cc: Marios Levogiannis <marios.levogiannis@gmail.com>
+Cc: alsa-devel@alsa-project.org,
+ Marios Levogiannis <marios.levogiannis@gmail.com>,
+ linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -113,6 +116,8 @@ the same microphone issue and use the ALC1150 and ALCS1200A codecs, since
 these codecs are similar and the fix in the Realtek driver on Windows is
 common for both. However, it is currently enabled only for ASUS TUF
 B550M-PLUS as this is the only board that could be tested.
+
+Signed-off-by: Marios Levogiannis <marios.levogiannis@gmail.com>
 ---
  sound/pci/hda/patch_realtek.c | 10 ++++++++++
  1 file changed, 10 insertions(+)
