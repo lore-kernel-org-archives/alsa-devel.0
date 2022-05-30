@@ -4,70 +4,72 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B17BBC433F5
-	for <alsa-devel@archiver.kernel.org>; Mon, 30 May 2022 14:14:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2563BC433F5
+	for <alsa-devel@archiver.kernel.org>; Mon, 30 May 2022 14:21:09 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A73DD1F05;
-	Mon, 30 May 2022 16:13:38 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A73DD1F05
+	by alsa0.perex.cz (Postfix) with ESMTPS id 1ECA21F07;
+	Mon, 30 May 2022 16:20:17 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1ECA21F07
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1653920068;
-	bh=M+00GOuXuD3qATD1qzKNz1hVq15YrxTq0pMnKrwvVeY=;
+	s=default; t=1653920467;
+	bh=mqoAqsjBcDXcw9PiUEES97ufmThPSY4MfFp/E6LjfcY=;
 	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=IaMMswKBg4iAsxkH//DUalvX/NTeWiUOHJ2yaomxH4fm2YD2jIaanZ4Y2BAL/k5Z5
-	 gY2U6Ms1CCxtShkHwROJVumcNeyGxCmFAtq3P20Qdp4mjaIbqgnFIomFcdHMEdyfVg
-	 uJmy01QnK4tsZZGoxI38+bfojlUcLp3iQE77EFw4=
+	b=GgNFP8h8YUQg/Wus7a+hqozowVezofTNFKjv7n0FQ9TP1SttsmHN0A+5jC6aNHKig
+	 dfpd21A9TGPRixdzOBD4vsxxBiWV/6n5dFt/uP3K89VS56kW91VR+0mw/cGzHxbpOk
+	 nyW5J41L93qF9eSSQvUO8yB39GZgtLaGLhU5TBOk=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 4A9BDF800E5;
-	Mon, 30 May 2022 16:13:38 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id A21C4F80124;
+	Mon, 30 May 2022 16:20:16 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 123F5F8012F; Mon, 30 May 2022 16:13:37 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+ id 0018BF800E5; Mon, 30 May 2022 16:20:14 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org
+ [IPv6:2604:1380:4641:c500::1])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id BB3FCF800E5
- for <alsa-devel@alsa-project.org>; Mon, 30 May 2022 16:13:33 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BB3FCF800E5
+ by alsa1.perex.cz (Postfix) with ESMTPS id D3366F800E5
+ for <alsa-devel@alsa-project.org>; Mon, 30 May 2022 16:20:08 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D3366F800E5
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="jox3gxFn"
+ header.b="pG1EQ9MY"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id 60D8861180;
- Mon, 30 May 2022 14:13:32 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6DC87C385B8;
- Mon, 30 May 2022 14:13:31 +0000 (UTC)
+ by dfw.source.kernel.org (Postfix) with ESMTPS id 6E76560AFB;
+ Mon, 30 May 2022 14:20:07 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 538F4C3411C;
+ Mon, 30 May 2022 14:20:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1653920011;
- bh=M+00GOuXuD3qATD1qzKNz1hVq15YrxTq0pMnKrwvVeY=;
+ s=k20201202; t=1653920406;
+ bh=mqoAqsjBcDXcw9PiUEES97ufmThPSY4MfFp/E6LjfcY=;
  h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=jox3gxFnMJU1mWKLehrO+A1MOhqnkIk7Oipg39sFbcHHnmKaAZRVYrdTuaBEpmjv4
- lcL8dWWain6ty0I9wQNm9Vw7QzIFXnBizSCFStfVcFmRDZkwgun69wdrtci3b7hUPW
- +zReSXJAeShCyXWK42qBF4IHy/m4cBrc2bl9vAPQyk225seicmLauLtIWEHCVJcp44
- sXOJm2iEuiqEDWBEEInwuh95ouU0kF/xff/7NA8jlRTspt7AYYXFhOb4nhtxFesJu/
- 7dBN1CAf7eaBv5oigmIAH4rgI79QGcl5OF+ZlwAmbY7P9RpDu2UPPFB5vrvNt+6eb9
- pOyi3WIrvBhDA==
-Date: Mon, 30 May 2022 16:13:27 +0200
+ b=pG1EQ9MYt1rwtjTf6xMu41KnNZKqIkFxQChFq7ffaXaZSxj2Qy4KjwdM3/0azsH8C
+ 5cSu0LrHFOda0VvlO6vv/UzUt4TnrvkSAaa8scZp6jwaM9tVxbD5s2Mgc4QydRcmYr
+ /u0jdjfDejga2mqShdrkBcdfwEwxbKqos+vfGXDpc0AG6Kbah8q30TNIX0kpd/RwI1
+ SYSenxoK2qgjboLkqtjGFJtwmESG73dV9r0zLJMJo/jLpz1CGDor9AzOwwzj+u70y8
+ w1BoGzV+uTOzxLbZ43OlBqK+KQvXbpGEHrt80cViQBJUqQor1Hcen7GlwHHEGNICjW
+ UxzfMvA/ZDolA==
+Date: Mon, 30 May 2022 16:20:02 +0200
 From: Mark Brown <broonie@kernel.org>
-To: Raghu Bankapur <quic_rbankapu@quicinc.com>
-Subject: Re: [PATCH V0 1/1] asoc: msm: use hashtable to check kcontrol
-Message-ID: <YpTRB6rwGGUnUmvK@sirena.org.uk>
-References: <cover.1653813866.git.quic_rbankapu@quicinc.com>
- <ad55bbd41cc253acb9af6ac068c15dd1545ecd81.1653813866.git.quic_rbankapu@quicinc.com>
+To: Sasha Levin <sashal@kernel.org>
+Subject: Re: [PATCH AUTOSEL 5.18 089/159] ASoC: tscs454: Add endianness flag
+ in snd_soc_component_driver
+Message-ID: <YpTSkjYKAZLcOykC@sirena.org.uk>
+References: <20220530132425.1929512-1-sashal@kernel.org>
+ <20220530132425.1929512-89-sashal@kernel.org>
 MIME-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature"; boundary="w30vGsfjdTtApDVJ"
+ protocol="application/pgp-signature"; boundary="HrYJqQMmui+RX7XF"
 Content-Disposition: inline
-In-Reply-To: <ad55bbd41cc253acb9af6ac068c15dd1545ecd81.1653813866.git.quic_rbankapu@quicinc.com>
+In-Reply-To: <20220530132425.1929512-89-sashal@kernel.org>
 X-Cookie: May your camel be as swift as the wind.
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
- Liam Girdwood <lgirdwood@gmail.com>, Takashi Iwai <tiwai@suse.com>,
- Krishna Jha <quic_kkishorj@quicinc.com>
+Cc: steven.eckhoff.opensource@gmail.com, alsa-devel@alsa-project.org,
+ Charles Keepax <ckeepax@opensource.cirrus.com>, lgirdwood@gmail.com,
+ tiwai@suse.com, linux-kernel@vger.kernel.org, stable@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -84,45 +86,46 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
---w30vGsfjdTtApDVJ
+--HrYJqQMmui+RX7XF
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Sun, May 29, 2022 at 02:20:09PM +0530, Raghu Bankapur wrote:
+On Mon, May 30, 2022 at 09:23:14AM -0400, Sasha Levin wrote:
+> From: Charles Keepax <ckeepax@opensource.cirrus.com>
+>=20
+> [ Upstream commit ff69ec96b87dccb3a29edef8cec5d4fefbbc2055 ]
+>=20
+> The endianness flag is used on the CODEC side to specify an
+> ambivalence to endian, typically because it is lost over the hardware
+> link. This device receives audio over an I2S DAI and as such should
+> have endianness applied.
+>=20
+> A fixup is also required to use the width directly rather than relying
+> on the format in hw_params, now both little and big endian would be
+> supported. It is worth noting this changes the behaviour of S24_LE to
+> use a word length of 24 rather than 32. This would appear to be a
+> correction since the fact S24_LE is stored as 32 bits should not be
+> presented over the bus.
 
-> index 5dcf77af07af..0eb18f8ee6fd 100644
-> --- a/sound/soc/Kconfig
-> +++ b/sound/soc/Kconfig
-> @@ -58,6 +58,15 @@ config SND_SOC_TOPOLOGY_KUNIT_TEST
->  config SND_SOC_ACPI
->  	tristate
-> =20
-> +config SND_CTL_HASHTABLE
-> +	bool "Add SND CTL hashtable"
-> +	help
-> +	  This enables hash table in sound card for kcontrols. The traditional =
-way is
+This series of commits doesn't feel like a good idea for stable,
+it will probably be safe but it's effectively new feature stuff
+so out of scope and there's some possibility we might uncover
+some bug which might've been being masked.
 
-Since the rest of the change is to the ALSA core this should be
-in the core ALSA Kconfig, though I'm also wondering if there's
-any reason to make it configurable at all - is there any big
-downside to just using the hastable all the time?  This sort of
-tuning control tends to be a bit unclear for users.
-
---w30vGsfjdTtApDVJ
+--HrYJqQMmui+RX7XF
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmKU0QcACgkQJNaLcl1U
-h9CgDgf8CA1ZjPNPDW9eTebFImHbdjUFqR86l8zehQwy0N0Cwxx9Sfpe7WQPbR9a
-ZeJ9L4cgNQ0e7l4+txIc+i+G/BzIOc5ojK3/OiUqTlCaiie5bP9aNVVd1SaHVCRW
-2buYD+83wCTYdpjRDHd6stmHc2XDZCkRRmeYeaKFNINNNe2ovg8W+LteV7dZdX9S
-/K8cHu+bIJzdUetALHkKS/jyHyD1xX0QVb7b6vQOfKmlelGVyVq7i5VVOso/tvqV
-A/Rmy8HUwbCbQieD2zGxsvRK4k50/tQH/1GmHp5O8vVzPfuqZRbHNR7dodJnz9gA
-fM18/fn88qbrP4HiYNiVKDnJ2heShA==
-=98Bq
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmKU0pIACgkQJNaLcl1U
+h9Ahbgf+LHN76oP+HIfs5W8ozL7j+orPH45zHI+PQPZeiSMVQbPsakBwTf5fOMi4
+vDOwGGNz5r3D/OYytHbH7v89EFqwJI0zRpopIiaC9rkUOKBVc6c4/dBfddj0Fhjp
+5UOzUjzLP7n4IfYdwFcN/ThC/vAo4B2mn0nm4Syj1VC1Ayavzl/976zR83eVpvBX
+rtT1MR1k/j44UMGkRdyNYC/WbkGYGRXuq3wfnlYc6e9tW+YOQrPkk1pvEOZFrQoO
+ZyAKV2ANrudifVI2AnvIQ02rviWsL0f89Wjg3MWuF7bjf4gojlW+PwHon4o83JuL
+MJpR6ljgbtubclAUhYL9ac5tTzJXMA==
+=Kb3f
 -----END PGP SIGNATURE-----
 
---w30vGsfjdTtApDVJ--
+--HrYJqQMmui+RX7XF--
