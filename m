@@ -4,73 +4,74 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 31F5FC433EF
-	for <alsa-devel@archiver.kernel.org>; Mon, 30 May 2022 13:26:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id EE7C0C43217
+	for <alsa-devel@archiver.kernel.org>; Mon, 30 May 2022 13:27:11 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 625D51908;
-	Mon, 30 May 2022 15:25:47 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 625D51908
+	by alsa0.perex.cz (Postfix) with ESMTPS id EC8DA17BF;
+	Mon, 30 May 2022 15:26:19 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EC8DA17BF
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1653917197;
-	bh=GTHiEG6Fbnv6d3nL/QXh9DsjWVX96eO95njhrpvwukM=;
+	s=default; t=1653917230;
+	bh=e4rQjDbcX7pYuLi/MagzF5WQm9G9+qVy7DrNZMANN00=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=HVUcNCwkCmwLADj/ERoi5yz54FcCahwsZ1Nzm4SutMlMj6v6/seDe1lrPrX8lFjnZ
-	 nCwMmYY8lHdJnX+3ZJF4wj3iTqc3A7J6VY+dA2quDGJZJjLgzSWoCsxWzs/Vt6wdns
-	 KGd1nZ/WfALGnT7H8FzQqMr9K6l89wCLBjrDWxCU=
+	b=ggIo/N863EH0Y239sSRSr0Zcg7uKGgRT33U6ZcT3Gv3mCiSmw3Ot6PPLCDw4tjzs4
+	 vZVxKfX/Xka3FD1uQ0WKCc6qvJv3lnsJbf8VFxTO7p1TKpWwZsB7rro9Ec44sDfajs
+	 hUr9C/Nx2npz2uB5euUJRhP6ivOgNx5ytL01Bc64=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 14032F8012F;
-	Mon, 30 May 2022 15:25:47 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 947B9F80240;
+	Mon, 30 May 2022 15:26:19 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id D628CF8019D; Mon, 30 May 2022 15:25:44 +0200 (CEST)
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+ id A0E20F800E5; Mon, 30 May 2022 15:26:18 +0200 (CEST)
+Received: from ams.source.kernel.org (ams.source.kernel.org
+ [IPv6:2604:1380:4601:e00::1])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 250A0F800DE
- for <alsa-devel@alsa-project.org>; Mon, 30 May 2022 15:25:37 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 250A0F800DE
+ by alsa1.perex.cz (Postfix) with ESMTPS id 91B06F800E5
+ for <alsa-devel@alsa-project.org>; Mon, 30 May 2022 15:26:12 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 91B06F800E5
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="POadj0WI"
+ header.b="QUAqlj54"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by ams.source.kernel.org (Postfix) with ESMTPS id 9B10DB80DA8;
- Mon, 30 May 2022 13:25:36 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3D773C385B8;
- Mon, 30 May 2022 13:25:34 +0000 (UTC)
+ by ams.source.kernel.org (Postfix) with ESMTPS id C38E3B80AE8;
+ Mon, 30 May 2022 13:26:11 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 41E97C385B8;
+ Mon, 30 May 2022 13:26:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1653917135;
- bh=GTHiEG6Fbnv6d3nL/QXh9DsjWVX96eO95njhrpvwukM=;
+ s=k20201202; t=1653917171;
+ bh=e4rQjDbcX7pYuLi/MagzF5WQm9G9+qVy7DrNZMANN00=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=POadj0WI3NnPiZwAC+3H4GpwN7eCVam06YmaROePUXu62eImgoN0668bfACZBwYeV
- OquEIxQv/lrSbSZ745w3BEo6kfBpXeeutjl1TiOQIz24b1e5vvjsDX/OmFskngg+GP
- o43gzVceODqKb9iW4WWP2UgMPde5Otndm1PpJd20ssURIb4P5CnC4IxKmym/5+747t
- Sh2Jjnw/OSYDW1r+YnXySnxjNifykZJPqEKr5PdUoRQdsbq/UNBy3EAJ5tmDhlDOGm
- 9HmnSo5P9lNs2dicqu5KaM3UHtb3T8wvVMCXoYKp79A0gSsXLfw5HkLVyQUR7YKJ5T
- ouYuxG2wHZTYQ==
+ b=QUAqlj54GqXv9MhQ6OhugDUR7UE+huI+vvQ8hT5Wf8bkW9EoPe0Vr1Ep/QhZiMIFP
+ E+4nvYCWg3PGMa+EHIg5C3tUF+hqyIBqjE1zcHj8tyrJcPAxwrcw/gOJAocyuikSBo
+ wpC+1PcsQD9NSImiiNIQoJNu7nmdk8ad4fvxajSvdob4BD5UhwEA8JWZGnVSpC9mdJ
+ ezLCvxsLzlWC9Tu257CJcBls2SiinX0SR1RFkHVKXWqhbw4HqVMEcJrZoeAPTs/ofu
+ MB+9a1OtznMq2HMnE43GT103hKPLbWQ8zNa7Rh1moXu8MAzVwY2sHR0wUMao1oXqX8
+ CZIRkMtY4Hlpw==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.18 028/159] ALSA: jack: Access input_dev under mutex
-Date: Mon, 30 May 2022 09:22:13 -0400
-Message-Id: <20220530132425.1929512-28-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.18 044/159] ASoC: rsnd: care default case on
+ rsnd_ssiu_busif_err_status_clear()
+Date: Mon, 30 May 2022 09:22:29 -0400
+Message-Id: <20220530132425.1929512-44-sashal@kernel.org>
 X-Mailer: git-send-email 2.35.1
 In-Reply-To: <20220530132425.1929512-1-sashal@kernel.org>
 References: <20220530132425.1929512-1-sashal@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
-Cc: Sasha Levin <sashal@kernel.org>,
- Cezary Rojewski <cezary.rojewski@intel.com>, alsa-devel@alsa-project.org,
- Takashi Iwai <tiwai@suse.de>, tiwai@suse.com,
- =?UTF-8?q?Amadeusz=20S=C5=82awi=C5=84ski?=
- <amadeuszx.slawinski@linux.intel.com>, xkernel.wang@foxmail.com
+Cc: Sasha Levin <sashal@kernel.org>, alsa-devel@alsa-project.org,
+ kernel test robot <lkp@intel.com>,
+ Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, tiwai@suse.com,
+ lgirdwood@gmail.com, Mark Brown <broonie@kernel.org>, colin.king@intel.com,
+ Dan Carpenter <dan.carpenter@oracle.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -86,152 +87,54 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Amadeusz Sławiński <amadeuszx.slawinski@linux.intel.com>
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 
-[ Upstream commit 1b6a6fc5280e97559287b61eade2d4b363e836f2 ]
+[ Upstream commit b1384d4c95088d01f4266237faabf165d3d605fc ]
 
-It is possible when using ASoC that input_dev is unregistered while
-calling snd_jack_report, which causes NULL pointer dereference.
-In order to prevent this serialize access to input_dev using mutex lock.
+commit cfb7b8bf1e2d66 ("ASoC: rsnd: tidyup
+rsnd_ssiu_busif_err_status_clear()") merged duplicate code, but it didn't
+care about default case, and causes smatch warnings.
 
-Signed-off-by: Amadeusz Sławiński <amadeuszx.slawinski@linux.intel.com>
-Reviewed-by: Cezary Rojewski <cezary.rojewski@intel.com>
-Link: https://lore.kernel.org/r/20220412091628.3056922-1-amadeuszx.slawinski@linux.intel.com
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
+smatch warnings:
+sound/soc/sh/rcar/ssiu.c:112 rsnd_ssiu_busif_err_status_clear() \
+	error: uninitialized symbol 'offset'.
+sound/soc/sh/rcar/ssiu.c:114 rsnd_ssiu_busif_err_status_clear() \
+	error: uninitialized symbol 'shift'.
+
+This patch cares it.
+
+Reported-by: kernel test robot <lkp@intel.com>
+Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
+Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Link: https://lore.kernel.org/r/87r15rgn6p.wl-kuninori.morimoto.gx@renesas.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- include/sound/jack.h |  1 +
- sound/core/jack.c    | 34 +++++++++++++++++++++++++++-------
- 2 files changed, 28 insertions(+), 7 deletions(-)
+ sound/soc/sh/rcar/ssiu.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/include/sound/jack.h b/include/sound/jack.h
-index 1181f536557e..1ed90e2109e9 100644
---- a/include/sound/jack.h
-+++ b/include/sound/jack.h
-@@ -62,6 +62,7 @@ struct snd_jack {
- 	const char *id;
- #ifdef CONFIG_SND_JACK_INPUT_DEV
- 	struct input_dev *input_dev;
-+	struct mutex input_dev_lock;
- 	int registered;
- 	int type;
- 	char name[100];
-diff --git a/sound/core/jack.c b/sound/core/jack.c
-index d1e3055f2b6a..88493cc31914 100644
---- a/sound/core/jack.c
-+++ b/sound/core/jack.c
-@@ -42,8 +42,11 @@ static int snd_jack_dev_disconnect(struct snd_device *device)
- #ifdef CONFIG_SND_JACK_INPUT_DEV
- 	struct snd_jack *jack = device->device_data;
- 
--	if (!jack->input_dev)
-+	mutex_lock(&jack->input_dev_lock);
-+	if (!jack->input_dev) {
-+		mutex_unlock(&jack->input_dev_lock);
- 		return 0;
-+	}
- 
- 	/* If the input device is registered with the input subsystem
- 	 * then we need to use a different deallocator. */
-@@ -52,6 +55,7 @@ static int snd_jack_dev_disconnect(struct snd_device *device)
- 	else
- 		input_free_device(jack->input_dev);
- 	jack->input_dev = NULL;
-+	mutex_unlock(&jack->input_dev_lock);
- #endif /* CONFIG_SND_JACK_INPUT_DEV */
- 	return 0;
- }
-@@ -90,8 +94,11 @@ static int snd_jack_dev_register(struct snd_device *device)
- 	snprintf(jack->name, sizeof(jack->name), "%s %s",
- 		 card->shortname, jack->id);
- 
--	if (!jack->input_dev)
-+	mutex_lock(&jack->input_dev_lock);
-+	if (!jack->input_dev) {
-+		mutex_unlock(&jack->input_dev_lock);
- 		return 0;
-+	}
- 
- 	jack->input_dev->name = jack->name;
- 
-@@ -116,6 +123,7 @@ static int snd_jack_dev_register(struct snd_device *device)
- 	if (err == 0)
- 		jack->registered = 1;
- 
-+	mutex_unlock(&jack->input_dev_lock);
- 	return err;
- }
- #endif /* CONFIG_SND_JACK_INPUT_DEV */
-@@ -517,9 +525,11 @@ int snd_jack_new(struct snd_card *card, const char *id, int type,
- 		return -ENOMEM;
+diff --git a/sound/soc/sh/rcar/ssiu.c b/sound/soc/sh/rcar/ssiu.c
+index 0d8f97633dd2..138f95dd9f4a 100644
+--- a/sound/soc/sh/rcar/ssiu.c
++++ b/sound/soc/sh/rcar/ssiu.c
+@@ -102,6 +102,8 @@ bool rsnd_ssiu_busif_err_status_clear(struct rsnd_mod *mod)
+ 		shift  = 1;
+ 		offset = 1;
+ 		break;
++	default:
++		goto out;
  	}
  
--	/* don't creat input device for phantom jack */
--	if (!phantom_jack) {
- #ifdef CONFIG_SND_JACK_INPUT_DEV
-+	mutex_init(&jack->input_dev_lock);
-+
-+	/* don't create input device for phantom jack */
-+	if (!phantom_jack) {
- 		int i;
- 
- 		jack->input_dev = input_allocate_device();
-@@ -537,8 +547,8 @@ int snd_jack_new(struct snd_card *card, const char *id, int type,
- 				input_set_capability(jack->input_dev, EV_SW,
- 						     jack_switch_types[i]);
- 
--#endif /* CONFIG_SND_JACK_INPUT_DEV */
+ 	for (i = 0; i < 4; i++) {
+@@ -120,7 +122,7 @@ bool rsnd_ssiu_busif_err_status_clear(struct rsnd_mod *mod)
+ 		}
+ 		rsnd_mod_write(mod, reg, val);
  	}
-+#endif /* CONFIG_SND_JACK_INPUT_DEV */
- 
- 	err = snd_device_new(card, SNDRV_DEV_JACK, jack, &ops);
- 	if (err < 0)
-@@ -578,10 +588,14 @@ EXPORT_SYMBOL(snd_jack_new);
- void snd_jack_set_parent(struct snd_jack *jack, struct device *parent)
- {
- 	WARN_ON(jack->registered);
--	if (!jack->input_dev)
-+	mutex_lock(&jack->input_dev_lock);
-+	if (!jack->input_dev) {
-+		mutex_unlock(&jack->input_dev_lock);
- 		return;
-+	}
- 
- 	jack->input_dev->dev.parent = parent;
-+	mutex_unlock(&jack->input_dev_lock);
+-
++out:
+ 	return error;
  }
- EXPORT_SYMBOL(snd_jack_set_parent);
  
-@@ -629,6 +643,8 @@ EXPORT_SYMBOL(snd_jack_set_key);
- 
- /**
-  * snd_jack_report - Report the current status of a jack
-+ * Note: This function uses mutexes and should be called from a
-+ * context which can sleep (such as a workqueue).
-  *
-  * @jack:   The jack to report status for
-  * @status: The current status of the jack
-@@ -654,8 +670,11 @@ void snd_jack_report(struct snd_jack *jack, int status)
- 					     status & jack_kctl->mask_bits);
- 
- #ifdef CONFIG_SND_JACK_INPUT_DEV
--	if (!jack->input_dev)
-+	mutex_lock(&jack->input_dev_lock);
-+	if (!jack->input_dev) {
-+		mutex_unlock(&jack->input_dev_lock);
- 		return;
-+	}
- 
- 	for (i = 0; i < ARRAY_SIZE(jack->key); i++) {
- 		int testbit = ((SND_JACK_BTN_0 >> i) & ~mask_bits);
-@@ -675,6 +694,7 @@ void snd_jack_report(struct snd_jack *jack, int status)
- 	}
- 
- 	input_sync(jack->input_dev);
-+	mutex_unlock(&jack->input_dev_lock);
- #endif /* CONFIG_SND_JACK_INPUT_DEV */
- }
- EXPORT_SYMBOL(snd_jack_report);
 -- 
 2.35.1
 
