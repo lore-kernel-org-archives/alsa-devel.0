@@ -4,61 +4,61 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id F03BCC433F5
-	for <alsa-devel@archiver.kernel.org>; Mon, 30 May 2022 13:47:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C9E89C433EF
+	for <alsa-devel@archiver.kernel.org>; Mon, 30 May 2022 13:47:39 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 1D50F1F29;
-	Mon, 30 May 2022 15:46:43 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1D50F1F29
+	by alsa0.perex.cz (Postfix) with ESMTPS id 16F221F31;
+	Mon, 30 May 2022 15:46:48 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 16F221F31
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1653918453;
-	bh=T3K49EzgFQoroZgGLydsYozObStO/D4Gzmz7Ic0mvUo=;
+	s=default; t=1653918458;
+	bh=7XsYRlWM8qmHI/XkqixZ5LiDMS9nt6vg5uZEvzT5rvc=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=tDAVMAOQDlks+WDlsjjsNfIKiPwwC90sUZF5BXgy4E9ABYGmI+Hrvm6PThFq/4QGd
-	 9I6IuXJ8rc1b17xtFgR8BfQ4tOePYm24vVrhlWhRRd/ZDxmpvLutHmQVHt9F9tX1TT
-	 qnU1YDDgayJ7C4sQwzlXI9m98HDWYu2SJ2V+KtxY=
+	b=cDC7EA9ptxoA6UFutHdHHfgIZCTKzJtkT840NjmZPwhT57IZvu43BK/1+Mqkt6FVV
+	 zSdhxYWSQ7mpW2jSbdP3HdeMtl+UpsQiHhgo2+NN5u0BhVcAvzN5B9760ycGf/8x2F
+	 b8Nn86QnzLlHsXmMnYKSqKkwC8rfcBoUQIv5Dz0I=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 852A3F800E5;
-	Mon, 30 May 2022 15:46:42 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 56A1AF8051E;
+	Mon, 30 May 2022 15:46:46 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id BB3DBF80520; Mon, 30 May 2022 15:46:40 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+ id 80DECF80524; Mon, 30 May 2022 15:46:44 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org
+ [IPv6:2604:1380:4641:c500::1])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 8BC5FF800E5
- for <alsa-devel@alsa-project.org>; Mon, 30 May 2022 15:46:34 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8BC5FF800E5
+ by alsa1.perex.cz (Postfix) with ESMTPS id 56794F8051D
+ for <alsa-devel@alsa-project.org>; Mon, 30 May 2022 15:46:38 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 56794F8051D
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="O1TScBse"
+ header.b="m++qONB0"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id 48F6860EC3;
- Mon, 30 May 2022 13:46:33 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E441DC3411C;
- Mon, 30 May 2022 13:46:30 +0000 (UTC)
+ by dfw.source.kernel.org (Postfix) with ESMTPS id 404FF60F47;
+ Mon, 30 May 2022 13:46:37 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D3D85C385B8;
+ Mon, 30 May 2022 13:46:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1653918392;
- bh=T3K49EzgFQoroZgGLydsYozObStO/D4Gzmz7Ic0mvUo=;
+ s=k20201202; t=1653918396;
+ bh=7XsYRlWM8qmHI/XkqixZ5LiDMS9nt6vg5uZEvzT5rvc=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=O1TScBseZrd131Xdds0Kniiv/g621BAopM1IChCcxmzSdItLTU5mhcEq5OZg3XbDZ
- ntq70mpKeabgM05bKQISaLMtrk8ufYN5VRx/GIh7kBwgEZ4Z0JOfR3QvPD3/zCr9GT
- oGCX5DxRpQPgBLLqiWdw4Me2i4wP6P12lThIaLZmB/DOx8JxYvwjjmiOi48C5Yry6O
- elhB9fgZSK4X7TS+B3JN6lB3nFnWJJCZsLQbO5U2QViBExwBW2ZI4MF857sAp34fkv
- PhopRUPzTK74OCOaEKNOlH+2dv/5l4LiTPP4+KFmov362Qi5Lo3pI98ixH7XRjiAfO
- 8IPmAU5TVzCig==
+ b=m++qONB0A/AEQB+Kf9jv0crPtZJHsXbwmvfEK3ViaSzrubNP1mDzECqNc0VbLVcuQ
+ +e63QmtOkW56Mcdtnb1u/TU0dUkLivk5IkDH4I2Q+OvW/fP3Z51HP1jU6q1UMjR62E
+ jbn6JllqdfiftYFiy2IIo9bX7ivBzouiax3N4auSNZRAdpntSnS90gkAxQ2Z0B5n5N
+ DAZ1WO7ilz1Xv8mO0V5WkLD0eGsOfDMABN87nk7cT6PzLAV5DBhDtxSP19hR7jx5gs
+ N9BlK310nAQtsjn1zpoQEAyhJECe9W1R+ua4dIr3uxQ3mUpjmqzloJdW5rs26k36GK
+ yGWqTbNIOWVEg==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.10 65/76] ASoC: max98357a: remove dependency on
- GPIOLIB
-Date: Mon, 30 May 2022 09:43:55 -0400
-Message-Id: <20220530134406.1934928-65-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.10 66/76] ASoC: rt1015p: remove dependency on GPIOLIB
+Date: Mon, 30 May 2022 09:43:56 -0400
+Message-Id: <20220530134406.1934928-66-sashal@kernel.org>
 X-Mailer: git-send-email 2.35.1
 In-Reply-To: <20220530134406.1934928-1-sashal@kernel.org>
 References: <20220530134406.1934928-1-sashal@kernel.org>
@@ -92,29 +92,34 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 
-[ Upstream commit 21ca3274333f5c1cbbf9d91e5b33f4f2463859b2 ]
+[ Upstream commit b390c25c6757b9d56cecdfbf6d55f15fc89a6386 ]
 
 commit dcc2c012c7691 ("ASoC: Fix gpiolib dependencies") removed a
 series of unnecessary dependencies on GPIOLIB when the gpio was
 optional.
 
-A similar simplification seems valid for max98357a, so remove the
+A similar simplification seems valid for rt1015p, so remove the
 dependency as well. This will avoid the following warning
 
-   WARNING: unmet direct dependencies detected for SND_SOC_MAX98357A
-     Depends on [n]: SOUND [=y] && !UML && SND [=y] && SND_SOC [=y] && GPIOLIB [=n]
+  WARNING: unmet direct dependencies detected for SND_SOC_RT1015P
+
+     Depends on [n]: SOUND [=y] && !UML && SND [=y] && SND_SOC [=y] &&
+     GPIOLIB [=n]
+
      Selected by [y]:
-     - SND_SOC_INTEL_SOF_CS42L42_MACH [=y] && SOUND [=y] && !UML &&
-       SND [=y] && SND_SOC [=y] && SND_SOC_INTEL_MACH [=y] &&
+
+     - SND_SOC_INTEL_SOF_RT5682_MACH [=y] && SOUND [=y] && !UML && SND
+       [=y] && SND_SOC [=y] && SND_SOC_INTEL_MACH [=y] &&
        (SND_SOC_SOF_HDA_LINK [=y] || SND_SOC_SOF_BAYTRAIL [=n]) && I2C
-       [=y] && ACPI [=y] && SND_HDA_CODEC_HDMI [=y] &&
+       [=y] && ACPI [=y] && (SND_HDA_CODEC_HDMI [=y] &&
        SND_SOC_SOF_HDA_AUDIO_CODEC [=y] && (MFD_INTEL_LPSS [=y] ||
-       COMPILE_TEST [=n])
+       COMPILE_TEST [=y]) || SND_SOC_SOF_BAYTRAIL [=n] &&
+       (X86_INTEL_LPSS [=n] || COMPILE_TEST [=y]))
 
 Reported-by: kernel test robot <yujie.liu@intel.com>
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Reviewed-by: Péter Ujfalusi <peter.ujfalusi@linux.intel.com>
-Link: https://lore.kernel.org/r/20220517172647.468244-2-pierre-louis.bossart@linux.intel.com
+Link: https://lore.kernel.org/r/20220517172647.468244-3-pierre-louis.bossart@linux.intel.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
@@ -122,16 +127,16 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 1 deletion(-)
 
 diff --git a/sound/soc/codecs/Kconfig b/sound/soc/codecs/Kconfig
-index 52c89a6f54e9..612fd7516666 100644
+index 612fd7516666..25f331551f68 100644
 --- a/sound/soc/codecs/Kconfig
 +++ b/sound/soc/codecs/Kconfig
-@@ -857,7 +857,6 @@ config SND_SOC_MAX98095
+@@ -1098,7 +1098,6 @@ config SND_SOC_RT1015
  
- config SND_SOC_MAX98357A
- 	tristate "Maxim MAX98357A CODEC"
+ config SND_SOC_RT1015P
+ 	tristate
 -	depends on GPIOLIB
  
- config SND_SOC_MAX98371
+ config SND_SOC_RT1305
  	tristate
 -- 
 2.35.1
