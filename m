@@ -4,73 +4,76 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9D758C433F5
-	for <alsa-devel@archiver.kernel.org>; Tue, 31 May 2022 14:38:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E6FCBC433F5
+	for <alsa-devel@archiver.kernel.org>; Tue, 31 May 2022 15:14:50 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id AE8111FE4;
-	Tue, 31 May 2022 16:37:26 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AE8111FE4
+	by alsa0.perex.cz (Postfix) with ESMTPS id 496A42016;
+	Tue, 31 May 2022 17:13:58 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 496A42016
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1654007896;
-	bh=Ef58uwirqvIT0ENOPdp32sUgNmFBpNX/Hh2p9Kv0ny8=;
-	h=From:Date:Subject:To:Cc:List-Id:List-Unsubscribe:List-Archive:
+	s=default; t=1654010088;
+	bh=RmwCycR3WFlIwfKXA5dP2eyhQAV6Zi3YQ1p6a5oR4A4=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
 	 List-Post:List-Help:List-Subscribe:From;
-	b=DqgT4sKCyT/EeDeL/gIsxUxJODRl5BqOBUUz6PRNyAKlsQxuO7VfY8RBjecj/e9t6
-	 DGeL92teJt0Z8ahCo/OHL5NSkQfiR1jrIET9Heu5hys0Ig+3VSyFHfJaY92s1SGdIB
-	 ghED4gCxrKJrVR92rvaLDroDHXuE63tz9whUIV5s=
+	b=BUhcvpt5yZ4qCD7KC4eHmiFD4bdcEcK5LZQf2Ppgz+JSxtJHspqiusw85Ly0HgjYt
+	 JN75of2ck4B/m1uQbYNtGanjPxC4+as+TgB9pjTQvOy6Hc9ruDZYXjwQePvLNUzZGq
+	 7K2yrgyIZiLm3yH6bY1Oj2nPTChlUAwQMQTLJ/5Q=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 222DAF8012C;
-	Tue, 31 May 2022 16:37:26 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id D0265F8051B;
+	Tue, 31 May 2022 17:13:57 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 8577FF80161; Tue, 31 May 2022 16:37:23 +0200 (CEST)
-Received: from mail-lj1-x229.google.com (mail-lj1-x229.google.com
- [IPv6:2a00:1450:4864:20::229])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id 2781EF8051C; Tue, 31 May 2022 17:13:56 +0200 (CEST)
+Received: from ams.source.kernel.org (ams.source.kernel.org
+ [IPv6:2604:1380:4601:e00::1])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 92301F8012C
- for <alsa-devel@alsa-project.org>; Tue, 31 May 2022 16:37:20 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 92301F8012C
+ by alsa1.perex.cz (Postfix) with ESMTPS id 7ACDDF80516
+ for <alsa-devel@alsa-project.org>; Tue, 31 May 2022 17:13:49 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7ACDDF80516
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="iuO3WZay"
-Received: by mail-lj1-x229.google.com with SMTP id g12so14815933lja.3
- for <alsa-devel@alsa-project.org>; Tue, 31 May 2022 07:37:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
- h=mime-version:from:date:message-id:subject:to:cc;
- bh=QXYlGIOgKGbFK7tXngN3mPfjcRChmvmkrNZG9U058+w=;
- b=iuO3WZayg+X3qeKsxu0QkN0YTakGB+50KV1wNIuElEa8JEwRn5lZDTrF5kdoiLVucT
- a9NYvbB42xgkz1bdgyQ8ABKxmXAFrF0YA7LzItr8NDS1B38tXumRfy4AUTK1xJs3ygTX
- B7JBTSnSrgTj/zrC7yAuNvXDBmsxhBN8B5hCIsUBoNjcpZ7qGDfh1C7dn/697mtDsy3p
- qMhzuvO2DPrQV+LCbiyurYuAieLezj7Qj0FCpIV5zFcRtDgJpU36G3Ktz7Din6XbP5AF
- QerT2SU+tKid5k2XIL3HIuQqBONIHuApKC9OEOJZNYWuBI8nCcyELSiV03YMvVAKvmFl
- gfBg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
- bh=QXYlGIOgKGbFK7tXngN3mPfjcRChmvmkrNZG9U058+w=;
- b=1SW0wskNtv6QjBH7CE//oKtpEXvj4PfOx0WsxMvyVjUVMQT+n4vHA7uBTsyd0G9Eq5
- H5ZYm0vOnfvUPpHAGgGLBU7qdCdBswaQWVDlC7vw0aO6WTcVAA7wwczywj/M+AqkYP0a
- cvawC4UBInghD0DVLg4AOsVVbaljJsE2M9FEpUSOEUB2Q+Er1V6JR9mQ9aJH0uPl6qlC
- QfKQf3dSKbn901s70C2FtgRpIsjIGEyKJ+ZzmL9qRNI0BrC5nIbcoA26WawRecM+b94d
- 89nFgLwTeg9L0N12vAvdryH1ZFVkljF1GWOuzhKGUJN7vh26zSPDkfe8GgoNqlJ99QUR
- sdzg==
-X-Gm-Message-State: AOAM531SVqFIGD2+tQONRkVQGleiwjmfwW6K2tMbMIf2DtcEn6USUJaa
- /Mee+r0u5YP4idirdJSF+XHrdtIeFoXmLoM/jbQ=
-X-Google-Smtp-Source: ABdhPJx/u1XdrzxOQrAtrRvRSzCd78GASzUH4nfTxLG8kIrLUt3LASlUQ+SIN2VTs+eo0WA3i+n4iOlgrLaGI53i3sg=
-X-Received: by 2002:a05:651c:1793:b0:254:1e6a:4ff2 with SMTP id
- bn19-20020a05651c179300b002541e6a4ff2mr16021561ljb.151.1654007838093; Tue, 31
- May 2022 07:37:18 -0700 (PDT)
+ dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="X3PA433j"
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by ams.source.kernel.org (Postfix) with ESMTPS id 97555B81168;
+ Tue, 31 May 2022 15:13:48 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B5AFCC385A9;
+ Tue, 31 May 2022 15:13:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1654010027;
+ bh=RmwCycR3WFlIwfKXA5dP2eyhQAV6Zi3YQ1p6a5oR4A4=;
+ h=From:To:Cc:Subject:Date:From;
+ b=X3PA433joT0XoLzFfVKPaRF8uiK6lH7oPvAiWsVJSbUkaJ338U46HfNfa6wvPSBoc
+ 9BFJ8wv5W6TuiXYJ0ZOx94kdXyuHp36rpenrEj3vsXZR9FKZJaDoUOqa9UD+EjCYZn
+ E8agMwIgYf1kMsyIIiQ5e8NqsOzhmXSxzLUwOHzxkzkXq/bU+g9ccEyd/JnRMJhYLe
+ zxFq/gW1GLU4/W+KbTqVNT/38VapH1Ira3EqMtx4WKXEqmS5B3xt0MqjXWsq0OfH6b
+ mI6HyScAbgqeHkKTY4TzPd7QzlcjHcOCsI8HpoTYiEndNVuqjz60k7S/ETsTNOn/74
+ ryT/wtvNVP0qw==
+From: Mark Brown <broonie@kernel.org>
+To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
+ Shuah Khan <shuah@kernel.org>
+Subject: [PATCH] selftests: alsa: Handle pkg-config failure more gracefully
+Date: Tue, 31 May 2022 17:13:37 +0200
+Message-Id: <20220531151337.2933810-1-broonie@kernel.org>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-From: Muni Sekhar <munisekharrms@gmail.com>
-Date: Tue, 31 May 2022 20:07:06 +0530
-Message-ID: <CAHhAz+iuAYpxkpVGWp1g6u_j+wyB+vsFR8FGz1i_8G5TQhOVZw@mail.gmail.com>
-Subject: soundwire: user space test utilities
-To: vkoul@kernel.org, sanyog.r.kale@intel.com, 
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Content-Type: text/plain; charset="UTF-8"
-Cc: alsa-devel <alsa-devel@alsa-project.org>
+X-Developer-Signature: v=1; a=openpgp-sha256; l=894; h=from:subject;
+ bh=RmwCycR3WFlIwfKXA5dP2eyhQAV6Zi3YQ1p6a5oR4A4=;
+ b=owEBbQGS/pANAwAKASTWi3JdVIfQAcsmYgBiljBBCCHKDUduv/2nquVo28cAVN51XaTXqgU+Tu7q
+ X2OsG86JATMEAAEKAB0WIQSt5miqZ1cYtZ/in+ok1otyXVSH0AUCYpYwQQAKCRAk1otyXVSH0CpYB/
+ 9QBZ+2ZEym7LVf16fGuCDWbOBtahBrHoM+mSrEzpsYPimoy6iMkBxy/QJFqhxCb2xGWP45mEHieKBc
+ enOaemDT17QIJDWAvqZIBr+zIKviE5ongTuvxqacPnR8MdUCdTEl0ZSKo98GGLR2ExVI+6p9iXdf5N
+ cIrkK5CmajuEYHxkq2qlG9bWC/FzXTB5n3tp4E4tqyzrVMfRkPyDfj88I1LWtM9R6L+OgexgCgscse
+ 9h+eJ/PQBjaHLKCf7RkF3IMAwZq/lF03RsolwPbWGsHtND94ZzHLRgt2HfWtFmCG2z2t0FErL4tKpr
+ jJ69pgWBSi8QzAqFwVR5QDADPmIeOt
+X-Developer-Key: i=broonie@kernel.org; a=openpgp;
+ fpr=3F2568AAC26998F9E813A1C5C3F436CA30F5D8EB
+Content-Transfer-Encoding: 8bit
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>,
+ linux-kselftest@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -86,12 +89,31 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Hi all,
+Follow the pattern used by other selftests like memfd and fall back on the
+standard toolchain options to build with a system installed alsa-lib if
+we don't get anything from pkg-config. This reduces our build dependencies
+a bit in the common case while still allowing use of pkg-config in case
+there is a need for it.
 
-I am looking for any existing user space test utilities to test
-SOUNDWIRE SUBSYSTEM in Linux kernel. Can someone please point me to
-this.
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ tools/testing/selftests/alsa/Makefile | 3 +++
+ 1 file changed, 3 insertions(+)
 
+diff --git a/tools/testing/selftests/alsa/Makefile b/tools/testing/selftests/alsa/Makefile
+index f64d9090426d..fd8ddce2b1a6 100644
+--- a/tools/testing/selftests/alsa/Makefile
++++ b/tools/testing/selftests/alsa/Makefile
+@@ -3,6 +3,9 @@
+ 
+ CFLAGS += $(shell pkg-config --cflags alsa)
+ LDLIBS += $(shell pkg-config --libs alsa)
++ifeq ($(LDLIBS),)
++LDLIBS += -lasound
++endif
+ 
+ TEST_GEN_PROGS := mixer-test
+ 
 -- 
-Thanks,
-Sekhar
+2.30.2
+
