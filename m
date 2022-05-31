@@ -4,70 +4,54 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id EBEB5C433F5
-	for <alsa-devel@archiver.kernel.org>; Mon, 30 May 2022 20:20:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9B10BC433FE
+	for <alsa-devel@archiver.kernel.org>; Tue, 31 May 2022 03:16:19 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0D6AA1FE5;
-	Mon, 30 May 2022 22:20:06 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0D6AA1FE5
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0BC0D1F95;
+	Tue, 31 May 2022 05:15:27 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0BC0D1F95
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1653942056;
-	bh=XbFAPiwcCHikey+nJp8pCVWkW4eoxgwwS1goDUKIfxU=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=QvcIz3HINJ2j2iYMK21ckcK2oo1FtL71k5yQD4eKg/tLHfxT17ODD+w4Qbs1GFqlc
-	 2/ICCuMxVSAe+z26QVvZc4iUo/ErV6OyfFq9iy3tQzYjsJKf0cGxxpB3WTsK1Mbc8q
-	 p4QYHfKnzzGTNt1C3Jev0NlB4ieA38Bb1pmO0qWg=
+	s=default; t=1653966977;
+	bh=F2qbWB2oa5IEIC3eIAiukBNad/Ace4q+d0l3t/G2nag=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=CW1FKDndA+hRvu9M5ih+JB9rLC+aIsunl6yzPfydUNR0g2zc9T/yJxPPnGLl9Y7Vh
+	 AaiEDatAJ17Zd2hvlwwbqwm4eXTRhqbeJR7XgDTm7hhcelKjYocN3OzityNdvjS1so
+	 jxvIwmXRCoN9PbuulJUYupX+Baa4+3IbREUgexGY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 852E1F800DE;
-	Mon, 30 May 2022 22:20:05 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 8849AF80129;
+	Tue, 31 May 2022 05:15:26 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 22674F8019D; Mon, 30 May 2022 22:20:04 +0200 (CEST)
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de
- [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+ id 24425F80161; Tue, 31 May 2022 05:15:24 +0200 (CEST)
+Received: from inva021.nxp.com (inva021.nxp.com [92.121.34.21])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 3A06EF800DE
- for <alsa-devel@alsa-project.org>; Mon, 30 May 2022 22:19:56 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3A06EF800DE
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
- by metis.ext.pengutronix.de with esmtps
- (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92)
- (envelope-from <ukl@pengutronix.de>)
- id 1nvlrh-0000Tv-QE; Mon, 30 May 2022 22:19:49 +0200
-Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
- by drehscheibe.grey.stw.pengutronix.de with esmtp (Exim 4.94.2)
- (envelope-from <ukl@pengutronix.de>)
- id 1nvlrg-005W6X-6Y; Mon, 30 May 2022 22:19:46 +0200
-Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.94.2)
- (envelope-from <ukl@pengutronix.de>)
- id 1nvlre-00DAN1-5k; Mon, 30 May 2022 22:19:46 +0200
-Date: Mon, 30 May 2022 22:19:46 +0200
-From: Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: Intel: avs: Fix build error on arc, m68k and sparc
-Message-ID: <20220530201946.4pqljnpcts6ms557@pengutronix.de>
-References: <70daa951-4f77-3336-0567-e72e9e5e36c6@intel.com>
- <20220529141250.1979827-1-u.kleine-koenig@pengutronix.de>
- <YpTGzFNeZe+pGM2j@sirena.org.uk>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature"; boundary="xwddooe5fwux7a7t"
-Content-Disposition: inline
-In-Reply-To: <YpTGzFNeZe+pGM2j@sirena.org.uk>
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de);
- SAEximRunCond expanded to false
-X-PTX-Original-Recipient: alsa-devel@alsa-project.org
-Cc: pierre-louis.bossart@linux.intel.com,
- Cezary Rojewski <cezary.rojewski@intel.com>, upstream@semihalf.com,
- rad@semihalf.com, alsa-devel@alsa-project.org, tiwai@suse.com,
- hdegoede@redhat.com, lma@semihalf.com, amadeuszx.slawinski@linux.intel.com,
- cujomalainey@chromium.org, Guenter Roeck <linux@roeck-us.net>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 9CB45F80129
+ for <alsa-devel@alsa-project.org>; Tue, 31 May 2022 05:15:14 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9CB45F80129
+Received: from inva021.nxp.com (localhost [127.0.0.1])
+ by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id DC608200EB0;
+ Tue, 31 May 2022 05:15:12 +0200 (CEST)
+Received: from aprdc01srsp001v.ap-rdc01.nxp.com
+ (aprdc01srsp001v.ap-rdc01.nxp.com [165.114.16.16])
+ by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id A6B2A200ECF;
+ Tue, 31 May 2022 05:15:12 +0200 (CEST)
+Received: from localhost.localdomain (shlinux2.ap.freescale.net
+ [10.192.224.44])
+ by aprdc01srsp001v.ap-rdc01.nxp.com (Postfix) with ESMTP id 2CDB0180031F;
+ Tue, 31 May 2022 11:15:11 +0800 (+08)
+From: Shengjiu Wang <shengjiu.wang@nxp.com>
+To: nicoleotsuka@gmail.com, Xiubo.Lee@gmail.com, festevam@gmail.com,
+ shengjiu.wang@gmail.com, lgirdwood@gmail.com, broonie@kernel.org,
+ perex@perex.cz, tiwai@suse.com, alsa-devel@alsa-project.org
+Subject: [PATCH] ASoC: fsl_sai: Add support for i.MX8MN
+Date: Tue, 31 May 2022 11:02:03 +0800
+Message-Id: <1653966123-28217-1-git-send-email-shengjiu.wang@nxp.com>
+X-Mailer: git-send-email 2.7.4
+X-Virus-Scanned: ClamAV using ClamSMTP
+Cc: linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -83,54 +67,26 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+The SAI module on i.MX8MN is almost same as i.MX8MP,
+So reuse same soc data as i.MX8MP.
 
---xwddooe5fwux7a7t
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
+---
+ sound/soc/fsl/fsl_sai.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-Hello Mark,
+diff --git a/sound/soc/fsl/fsl_sai.c b/sound/soc/fsl/fsl_sai.c
+index dae16a14f177..59a91a6d91a9 100644
+--- a/sound/soc/fsl/fsl_sai.c
++++ b/sound/soc/fsl/fsl_sai.c
+@@ -1299,6 +1299,7 @@ static const struct of_device_id fsl_sai_ids[] = {
+ 	{ .compatible = "fsl,imx8mm-sai", .data = &fsl_sai_imx8mm_data },
+ 	{ .compatible = "fsl,imx8mp-sai", .data = &fsl_sai_imx8mp_data },
+ 	{ .compatible = "fsl,imx8ulp-sai", .data = &fsl_sai_imx8ulp_data },
++	{ .compatible = "fsl,imx8mn-sai", .data = &fsl_sai_imx8mp_data },
+ 	{ /* sentinel */ }
+ };
+ MODULE_DEVICE_TABLE(of, fsl_sai_ids);
+-- 
+2.17.1
 
-On Mon, May 30, 2022 at 03:29:48PM +0200, Mark Brown wrote:
-> On Sun, May 29, 2022 at 04:12:50PM +0200, Uwe Kleine-K=F6nig wrote:
-> > On some platforms (i.e. arc, m68k and sparc) __fls returns an int (while
-> > on most platforms it returns an unsigned long). This triggers a format
-> > warning on these few platforms as the driver uses %ld to print a warnin=
-g.
->=20
-> Please don't send new patches in reply to old patches or serieses, this
-> makes it harder for both people and tools to understand what is going
-> on - it can bury things in mailboxes and make it difficult to keep track
-> of what current patches are, both for the new patches and the old ones.
-
-The motivation to do that is that the thread for a patch that broke
-something is the canonical place to look if someone already reported (or
-even fixed) the problem before.
-
-That b4 seems to fail to extract the patch is indeed unfortunate. For a
-MUA I'd expect that it sorts threads after the last received mail, so
-that part is only a matter of a sane mail reader configuration.
-
-Best regards
-Uwe
-
---=20
-Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
-Industrial Linux Solutions                 | https://www.pengutronix.de/ |
-
---xwddooe5fwux7a7t
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAmKVJt8ACgkQwfwUeK3K
-7AlhvggAm5Ly7M1d13iG9kd1lTnlRhMV6Ex4XBjf7Q+x7GkSYV/gbK4OIYPGDLFz
-0kckxAzuWHwb/u+5TRtRrTJfq42gZfre1zGkIUcb4eMBGovU0b1cbrcxdMdnDPlm
-WyFU3Gn+jYJyZqMy7cRU1fI0vuZZmD0trMKeiwR8wvgZ5VMvVRId5R1+rvXsnnnn
-r7r6ImyuCpn4yh/hphvVOt2SyV478s2shFGjUTDloz93ido+/47F9PMMPtMPQUtM
-+K/WHqQFbDXBurEwEYmWFG/etpZ1O5z4FHkxpDEpwuCCqM+SHW098lpNUq+w2q3r
-7WeuPcvuEkZQKrU4OPhil4f+V2Vbpw==
-=YCyv
------END PGP SIGNATURE-----
-
---xwddooe5fwux7a7t--
