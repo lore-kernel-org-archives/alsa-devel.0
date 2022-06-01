@@ -4,57 +4,53 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 124DFC433EF
-	for <alsa-devel@archiver.kernel.org>; Wed,  1 Jun 2022 09:25:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0086FC433EF
+	for <alsa-devel@archiver.kernel.org>; Wed,  1 Jun 2022 09:25:47 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 4ECD316F7;
-	Wed,  1 Jun 2022 11:24:36 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4ECD316F7
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3AA17173E;
+	Wed,  1 Jun 2022 11:24:56 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3AA17173E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1654075526;
-	bh=2R/V4MuaE6Xg8sEMP2gpB9dTuvSAr0TdZzdh4zzq1Os=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=bhd1LREuilIWcJF8Nf0kMnbVNZhmUqKb8elXj2vDlWKeH9//HBootG8Y8MO+u/pgn
-	 A+C2AoQSR7ZODbpuqjzTXFJZjR37ojFqYAc2LY6lBtWNwEdSyf+iC+s9iiA0HABbCS
-	 RpGU9zDC7N8L9H86o+FdWXkxKvEIrbbsBvl5WoC0=
+	s=default; t=1654075546;
+	bh=Dm/SG6mslO9OJCOaLyyqHHK6IrIcfq5mLox799Q6orU=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=Ljow4TnRqNO++HSmQ9FiO900oqzI1NF9WiuMeG7HSpZuDT61C2yIMLDgO4dGQhQEy
+	 nXnx3Kfu2S5P+h/WM/2SvaBFiKckceQZd4Ath79OcNjPhr4sBIxcZ+HZgJzR23ownB
+	 JlldoeIbhHDbyWMtVfhE1lXwKqcU9l8BZp4KnQ3g=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 75A85F8049C;
-	Wed,  1 Jun 2022 11:24:04 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 9898BF8052D;
+	Wed,  1 Jun 2022 11:24:08 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 18DB6F80271; Wed,  1 Jun 2022 11:24:02 +0200 (CEST)
+ id 3B734F80149; Wed,  1 Jun 2022 11:24:07 +0200 (CEST)
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de
  [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 021ADF80089
- for <alsa-devel@alsa-project.org>; Wed,  1 Jun 2022 11:23:54 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 021ADF80089
+ by alsa1.perex.cz (Postfix) with ESMTPS id 07BA1F80149
+ for <alsa-devel@alsa-project.org>; Wed,  1 Jun 2022 11:23:53 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 07BA1F80149
 Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
  by metis.ext.pengutronix.de with esmtps
  (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92)
  (envelope-from <mfe@pengutronix.de>)
- id 1nwKZy-0006FC-OT; Wed, 01 Jun 2022 11:23:50 +0200
+ id 1nwKZy-0006FD-OT; Wed, 01 Jun 2022 11:23:50 +0200
 Received: from [2a0a:edc0:0:1101:1d::28] (helo=dude02.red.stw.pengutronix.de)
  by drehscheibe.grey.stw.pengutronix.de with esmtp (Exim 4.94.2)
  (envelope-from <mfe@pengutronix.de>)
- id 1nwKZx-005oH1-1B; Wed, 01 Jun 2022 11:23:47 +0200
+ id 1nwKZx-005oH4-5Z; Wed, 01 Jun 2022 11:23:47 +0200
 Received: from mfe by dude02.red.stw.pengutronix.de with local (Exim 4.94.2)
  (envelope-from <mfe@pengutronix.de>)
- id 1nwKZv-00Dxwn-07; Wed, 01 Jun 2022 11:23:47 +0200
+ id 1nwKZu-00Dxwi-Us; Wed, 01 Jun 2022 11:23:46 +0200
 From: Marco Felsch <m.felsch@pengutronix.de>
 To: shengjiu.wang@gmail.com, Xiubo.Lee@gmail.com, festevam@gmail.com,
  nicoleotsuka@gmail.com, lgirdwood@gmail.com, broonie@kernel.org
-Subject: [PATCH 3/3] ASoC: fsl_sai: add error message in case of missing
- imx-pcm-dma support
-Date: Wed,  1 Jun 2022 11:23:42 +0200
-Message-Id: <20220601092342.3328644-3-m.felsch@pengutronix.de>
+Subject: [PATCH 1/3] ASoC: fsl_sai: use local device pointer
+Date: Wed,  1 Jun 2022 11:23:40 +0200
+Message-Id: <20220601092342.3328644-1-m.felsch@pengutronix.de>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20220601092342.3328644-1-m.felsch@pengutronix.de>
-References: <20220601092342.3328644-1-m.felsch@pengutronix.de>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
@@ -79,37 +75,177 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-If the imx-pcm-dma is required we need to have the module enabled. For
-all NXP/FSL sound cards using the ASoC architecture this is the case but
-in case of using the simple-audio-card sound card this isn't the case.
-
-In such case the driver probe fails silently and the card isn't
-available. It took a while to find the missing Kconfig. Make this easier
-for others by printing a error if this the module isn't available but
-required by the HW.
+Use a local variable to dereference the device pointer once and use the
+local variable in further calls. No functional changes.
 
 Signed-off-by: Marco Felsch <m.felsch@pengutronix.de>
 ---
- sound/soc/fsl/fsl_sai.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+ sound/soc/fsl/fsl_sai.c | 53 +++++++++++++++++++++--------------------
+ 1 file changed, 27 insertions(+), 26 deletions(-)
 
 diff --git a/sound/soc/fsl/fsl_sai.c b/sound/soc/fsl/fsl_sai.c
-index 3e54f1f71c1e..2371da814b09 100644
+index fa950dde5310..a7637d602f3c 100644
 --- a/sound/soc/fsl/fsl_sai.c
 +++ b/sound/soc/fsl/fsl_sai.c
-@@ -1152,8 +1152,11 @@ static int fsl_sai_probe(struct platform_device *pdev)
- 	 */
- 	if (sai->soc_data->use_imx_pcm) {
- 		ret = imx_pcm_dma_init(pdev);
--		if (ret)
-+		if (ret) {
-+			if (!IS_ENABLED(CONFIG_SND_SOC_IMX_PCM_DMA))
-+				dev_err(dev, "Error: You must enable the imx-pcm-dma support!\n");
- 			goto err_pm_get_sync;
-+		}
- 	} else {
- 		ret = devm_snd_dmaengine_pcm_register(dev, NULL, 0);
+@@ -1004,6 +1004,7 @@ static int fsl_sai_runtime_resume(struct device *dev);
+ static int fsl_sai_probe(struct platform_device *pdev)
+ {
+ 	struct device_node *np = pdev->dev.of_node;
++	struct device *dev = &pdev->dev;
+ 	struct fsl_sai *sai;
+ 	struct regmap *gpr;
+ 	struct resource *res;
+@@ -1012,12 +1013,12 @@ static int fsl_sai_probe(struct platform_device *pdev)
+ 	int irq, ret, i;
+ 	int index;
+ 
+-	sai = devm_kzalloc(&pdev->dev, sizeof(*sai), GFP_KERNEL);
++	sai = devm_kzalloc(dev, sizeof(*sai), GFP_KERNEL);
+ 	if (!sai)
+ 		return -ENOMEM;
+ 
+ 	sai->pdev = pdev;
+-	sai->soc_data = of_device_get_match_data(&pdev->dev);
++	sai->soc_data = of_device_get_match_data(dev);
+ 
+ 	sai->is_lsb_first = of_property_read_bool(np, "lsb-first");
+ 
+@@ -1032,18 +1033,18 @@ static int fsl_sai_probe(struct platform_device *pdev)
+ 			ARRAY_SIZE(fsl_sai_reg_defaults_ofs8);
+ 	}
+ 
+-	sai->regmap = devm_regmap_init_mmio(&pdev->dev, base, &fsl_sai_regmap_config);
++	sai->regmap = devm_regmap_init_mmio(dev, base, &fsl_sai_regmap_config);
+ 	if (IS_ERR(sai->regmap)) {
+-		dev_err(&pdev->dev, "regmap init failed\n");
++		dev_err(dev, "regmap init failed\n");
+ 		return PTR_ERR(sai->regmap);
+ 	}
+ 
+-	sai->bus_clk = devm_clk_get(&pdev->dev, "bus");
++	sai->bus_clk = devm_clk_get(dev, "bus");
+ 	/* Compatible with old DTB cases */
+ 	if (IS_ERR(sai->bus_clk) && PTR_ERR(sai->bus_clk) != -EPROBE_DEFER)
+-		sai->bus_clk = devm_clk_get(&pdev->dev, "sai");
++		sai->bus_clk = devm_clk_get(dev, "sai");
+ 	if (IS_ERR(sai->bus_clk)) {
+-		dev_err(&pdev->dev, "failed to get bus clock: %ld\n",
++		dev_err(dev, "failed to get bus clock: %ld\n",
+ 				PTR_ERR(sai->bus_clk));
+ 		/* -EPROBE_DEFER */
+ 		return PTR_ERR(sai->bus_clk);
+@@ -1051,9 +1052,9 @@ static int fsl_sai_probe(struct platform_device *pdev)
+ 
+ 	for (i = 1; i < FSL_SAI_MCLK_MAX; i++) {
+ 		sprintf(tmp, "mclk%d", i);
+-		sai->mclk_clk[i] = devm_clk_get(&pdev->dev, tmp);
++		sai->mclk_clk[i] = devm_clk_get(dev, tmp);
+ 		if (IS_ERR(sai->mclk_clk[i])) {
+-			dev_err(&pdev->dev, "failed to get mclk%d clock: %ld\n",
++			dev_err(dev, "failed to get mclk%d clock: %ld\n",
+ 					i + 1, PTR_ERR(sai->mclk_clk[i]));
+ 			sai->mclk_clk[i] = NULL;
+ 		}
+@@ -1068,10 +1069,10 @@ static int fsl_sai_probe(struct platform_device *pdev)
+ 	if (irq < 0)
+ 		return irq;
+ 
+-	ret = devm_request_irq(&pdev->dev, irq, fsl_sai_isr, IRQF_SHARED,
++	ret = devm_request_irq(dev, irq, fsl_sai_isr, IRQF_SHARED,
+ 			       np->name, sai);
+ 	if (ret) {
+-		dev_err(&pdev->dev, "failed to claim irq %u\n", irq);
++		dev_err(dev, "failed to claim irq %u\n", irq);
+ 		return ret;
+ 	}
+ 
+@@ -1088,7 +1089,7 @@ static int fsl_sai_probe(struct platform_device *pdev)
+ 	if (of_find_property(np, "fsl,sai-synchronous-rx", NULL) &&
+ 	    of_find_property(np, "fsl,sai-asynchronous", NULL)) {
+ 		/* error out if both synchronous and asynchronous are present */
+-		dev_err(&pdev->dev, "invalid binding for synchronous mode\n");
++		dev_err(dev, "invalid binding for synchronous mode\n");
+ 		return -EINVAL;
+ 	}
+ 
+@@ -1109,7 +1110,7 @@ static int fsl_sai_probe(struct platform_device *pdev)
+ 	    of_device_is_compatible(np, "fsl,imx6ul-sai")) {
+ 		gpr = syscon_regmap_lookup_by_compatible("fsl,imx6ul-iomuxc-gpr");
+ 		if (IS_ERR(gpr)) {
+-			dev_err(&pdev->dev, "cannot find iomuxc registers\n");
++			dev_err(dev, "cannot find iomuxc registers\n");
+ 			return PTR_ERR(gpr);
+ 		}
+ 
+@@ -1127,23 +1128,23 @@ static int fsl_sai_probe(struct platform_device *pdev)
+ 	sai->dma_params_tx.maxburst = FSL_SAI_MAXBURST_TX;
+ 
+ 	platform_set_drvdata(pdev, sai);
+-	pm_runtime_enable(&pdev->dev);
+-	if (!pm_runtime_enabled(&pdev->dev)) {
+-		ret = fsl_sai_runtime_resume(&pdev->dev);
++	pm_runtime_enable(dev);
++	if (!pm_runtime_enabled(dev)) {
++		ret = fsl_sai_runtime_resume(dev);
  		if (ret)
+ 			goto err_pm_disable;
+ 	}
+ 
+-	ret = pm_runtime_get_sync(&pdev->dev);
++	ret = pm_runtime_get_sync(dev);
+ 	if (ret < 0) {
+-		pm_runtime_put_noidle(&pdev->dev);
++		pm_runtime_put_noidle(dev);
+ 		goto err_pm_get_sync;
+ 	}
+ 
+ 	/* Get sai version */
+-	ret = fsl_sai_check_version(&pdev->dev);
++	ret = fsl_sai_check_version(dev);
+ 	if (ret < 0)
+-		dev_warn(&pdev->dev, "Error reading SAI version: %d\n", ret);
++		dev_warn(dev, "Error reading SAI version: %d\n", ret);
+ 
+ 	/* Select MCLK direction */
+ 	if (of_find_property(np, "fsl,sai-mclk-direction-output", NULL) &&
+@@ -1152,7 +1153,7 @@ static int fsl_sai_probe(struct platform_device *pdev)
+ 				   FSL_SAI_MCTL_MCLK_EN, FSL_SAI_MCTL_MCLK_EN);
+ 	}
+ 
+-	ret = pm_runtime_put_sync(&pdev->dev);
++	ret = pm_runtime_put_sync(dev);
+ 	if (ret < 0)
+ 		goto err_pm_get_sync;
+ 
+@@ -1165,12 +1166,12 @@ static int fsl_sai_probe(struct platform_device *pdev)
+ 		if (ret)
+ 			goto err_pm_get_sync;
+ 	} else {
+-		ret = devm_snd_dmaengine_pcm_register(&pdev->dev, NULL, 0);
++		ret = devm_snd_dmaengine_pcm_register(dev, NULL, 0);
+ 		if (ret)
+ 			goto err_pm_get_sync;
+ 	}
+ 
+-	ret = devm_snd_soc_register_component(&pdev->dev, &fsl_component,
++	ret = devm_snd_soc_register_component(dev, &fsl_component,
+ 					      &sai->cpu_dai_drv, 1);
+ 	if (ret)
+ 		goto err_pm_get_sync;
+@@ -1178,10 +1179,10 @@ static int fsl_sai_probe(struct platform_device *pdev)
+ 	return ret;
+ 
+ err_pm_get_sync:
+-	if (!pm_runtime_status_suspended(&pdev->dev))
+-		fsl_sai_runtime_suspend(&pdev->dev);
++	if (!pm_runtime_status_suspended(dev))
++		fsl_sai_runtime_suspend(dev);
+ err_pm_disable:
+-	pm_runtime_disable(&pdev->dev);
++	pm_runtime_disable(dev);
+ 
+ 	return ret;
+ }
 -- 
 2.30.2
 
