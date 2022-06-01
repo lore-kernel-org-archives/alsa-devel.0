@@ -4,62 +4,88 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0086FC433EF
-	for <alsa-devel@archiver.kernel.org>; Wed,  1 Jun 2022 09:25:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 18152C433F5
+	for <alsa-devel@archiver.kernel.org>; Wed,  1 Jun 2022 09:57:59 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3AA17173E;
-	Wed,  1 Jun 2022 11:24:56 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3AA17173E
+	by alsa0.perex.cz (Postfix) with ESMTPS id 6336516D7;
+	Wed,  1 Jun 2022 11:57:07 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6336516D7
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1654075546;
-	bh=Dm/SG6mslO9OJCOaLyyqHHK6IrIcfq5mLox799Q6orU=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=Ljow4TnRqNO++HSmQ9FiO900oqzI1NF9WiuMeG7HSpZuDT61C2yIMLDgO4dGQhQEy
-	 nXnx3Kfu2S5P+h/WM/2SvaBFiKckceQZd4Ath79OcNjPhr4sBIxcZ+HZgJzR23ownB
-	 JlldoeIbhHDbyWMtVfhE1lXwKqcU9l8BZp4KnQ3g=
+	s=default; t=1654077477;
+	bh=ySqko9whvF07xTDthLkA4pK6j2/J4LoysCt2czmq5cg=;
+	h=Date:Subject:To:References:From:In-Reply-To:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=ojOHGSQiGQoYDPnzqarwRU6sL2PuKYcC2OkWnChEXXG+3MpntwjLdWbAdZkNH98A+
+	 1rZ3je461cDtr70aYZVcKMDCrd2HS0CgjKOGZuNkX1tyeTAplSn9h4iNZilQuVgAEX
+	 2cLm0XpDYwuuYmoob1JHRhV9lylPjnGKXwT/QXmo=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 9898BF8052D;
-	Wed,  1 Jun 2022 11:24:08 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id F4219F8019B;
+	Wed,  1 Jun 2022 11:57:06 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 3B734F80149; Wed,  1 Jun 2022 11:24:07 +0200 (CEST)
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de
- [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 77876F80238; Wed,  1 Jun 2022 11:57:04 +0200 (CEST)
+Received: from alexa-out-sd-02.qualcomm.com (alexa-out-sd-02.qualcomm.com
+ [199.106.114.39])
+ (using TLSv1.2 with cipher AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 07BA1F80149
- for <alsa-devel@alsa-project.org>; Wed,  1 Jun 2022 11:23:53 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 07BA1F80149
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
- by metis.ext.pengutronix.de with esmtps
- (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92)
- (envelope-from <mfe@pengutronix.de>)
- id 1nwKZy-0006FD-OT; Wed, 01 Jun 2022 11:23:50 +0200
-Received: from [2a0a:edc0:0:1101:1d::28] (helo=dude02.red.stw.pengutronix.de)
- by drehscheibe.grey.stw.pengutronix.de with esmtp (Exim 4.94.2)
- (envelope-from <mfe@pengutronix.de>)
- id 1nwKZx-005oH4-5Z; Wed, 01 Jun 2022 11:23:47 +0200
-Received: from mfe by dude02.red.stw.pengutronix.de with local (Exim 4.94.2)
- (envelope-from <mfe@pengutronix.de>)
- id 1nwKZu-00Dxwi-Us; Wed, 01 Jun 2022 11:23:46 +0200
-From: Marco Felsch <m.felsch@pengutronix.de>
-To: shengjiu.wang@gmail.com, Xiubo.Lee@gmail.com, festevam@gmail.com,
- nicoleotsuka@gmail.com, lgirdwood@gmail.com, broonie@kernel.org
-Subject: [PATCH 1/3] ASoC: fsl_sai: use local device pointer
-Date: Wed,  1 Jun 2022 11:23:40 +0200
-Message-Id: <20220601092342.3328644-1-m.felsch@pengutronix.de>
-X-Mailer: git-send-email 2.30.2
+ by alsa1.perex.cz (Postfix) with ESMTPS id F0E82F80089
+ for <alsa-devel@alsa-project.org>; Wed,  1 Jun 2022 11:56:57 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F0E82F80089
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (1024-bit key) header.d=quicinc.com header.i=@quicinc.com
+ header.b="AhwlKQ8K"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=quicinc.com; i=@quicinc.com; q=dns/txt; s=qcdkim;
+ t=1654077419; x=1685613419;
+ h=message-id:date:mime-version:subject:to:cc:references:
+ from:in-reply-to:content-transfer-encoding;
+ bh=Rezegc47oD04NrEL7IdrsnJsfPKKiLWJ9Y6Vzv7ZuDI=;
+ b=AhwlKQ8KbatjQkN8n38gpoJ1MgoU5sn2sSxog6a1ybWJ1tpydOaAaEDv
+ ghY5rDXHLmj9rSmhbJoJrM40LO9HbkoW/E6ApGp/5w2Wj9Oj58KkMMzkn
+ PKNrgmEBILRhnddOFyaxqgIMRkD4yeTV6n/jOOfRoDo4LP3JGemRViKTJ 4=;
+Received: from unknown (HELO ironmsg04-sd.qualcomm.com) ([10.53.140.144])
+ by alexa-out-sd-02.qualcomm.com with ESMTP; 01 Jun 2022 02:56:55 -0700
+X-QCInternal: smtphost
+Received: from nasanex01c.na.qualcomm.com ([10.47.97.222])
+ by ironmsg04-sd.qualcomm.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 01 Jun 2022 02:56:53 -0700
+Received: from nalasex01a.na.qualcomm.com (10.47.209.196) by
+ nasanex01c.na.qualcomm.com (10.47.97.222) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.986.22; Wed, 1 Jun 2022 02:56:53 -0700
+Received: from [10.216.6.145] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.22; Wed, 1 Jun 2022
+ 02:56:47 -0700
+Message-ID: <26bfd089-46d6-d08d-efac-71ffc04f674c@quicinc.com>
+Date: Wed, 1 Jun 2022 15:26:44 +0530
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: mfe@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de);
- SAEximRunCond expanded to false
-X-PTX-Original-Recipient: alsa-devel@alsa-project.org
-Cc: alsa-devel@alsa-project.org, linuxppc-dev@lists.ozlabs.org,
- kernel@pengutronix.de
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.6.1
+Subject: Re: [PATCH 2/2] pinctrl: qcom: sc7280: Add lpi pinctrl variant data
+ structure for adsp based targets
+Content-Language: en-US
+To: Bjorn Andersson <bjorn.andersson@linaro.org>
+References: <1651672580-18952-1-git-send-email-quic_srivasam@quicinc.com>
+ <1651672580-18952-3-git-send-email-quic_srivasam@quicinc.com>
+ <YoJrGGg0RviVn2Xj@ripper>
+From: Srinivasa Rao Mandadapu <quic_srivasam@quicinc.com>
+Organization: Qualcomm
+In-Reply-To: <YoJrGGg0RviVn2Xj@ripper>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
+ quic_rohkumar@quicinc.com, Venkata Prasad Potturu <quic_potturu@quicinc.com>,
+ linux-arm-msm@vger.kernel.org, swboyd@chromium.org, tiwai@suse.com,
+ agross@kernel.org, robh+dt@kernel.org, lgirdwood@gmail.com,
+ linux-gpio@vger.kernel.org, broonie@kernel.org, srinivas.kandagatla@linaro.org,
+ bgoswami@quicinc.com, quic_plai@quicinc.com, judyhsiao@chromium.org,
+ Linus Walleij <linus.walleij@linaro.org>, linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -75,177 +101,64 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Use a local variable to dereference the device pointer once and use the
-local variable in further calls. No functional changes.
 
-Signed-off-by: Marco Felsch <m.felsch@pengutronix.de>
----
- sound/soc/fsl/fsl_sai.c | 53 +++++++++++++++++++++--------------------
- 1 file changed, 27 insertions(+), 26 deletions(-)
-
-diff --git a/sound/soc/fsl/fsl_sai.c b/sound/soc/fsl/fsl_sai.c
-index fa950dde5310..a7637d602f3c 100644
---- a/sound/soc/fsl/fsl_sai.c
-+++ b/sound/soc/fsl/fsl_sai.c
-@@ -1004,6 +1004,7 @@ static int fsl_sai_runtime_resume(struct device *dev);
- static int fsl_sai_probe(struct platform_device *pdev)
- {
- 	struct device_node *np = pdev->dev.of_node;
-+	struct device *dev = &pdev->dev;
- 	struct fsl_sai *sai;
- 	struct regmap *gpr;
- 	struct resource *res;
-@@ -1012,12 +1013,12 @@ static int fsl_sai_probe(struct platform_device *pdev)
- 	int irq, ret, i;
- 	int index;
- 
--	sai = devm_kzalloc(&pdev->dev, sizeof(*sai), GFP_KERNEL);
-+	sai = devm_kzalloc(dev, sizeof(*sai), GFP_KERNEL);
- 	if (!sai)
- 		return -ENOMEM;
- 
- 	sai->pdev = pdev;
--	sai->soc_data = of_device_get_match_data(&pdev->dev);
-+	sai->soc_data = of_device_get_match_data(dev);
- 
- 	sai->is_lsb_first = of_property_read_bool(np, "lsb-first");
- 
-@@ -1032,18 +1033,18 @@ static int fsl_sai_probe(struct platform_device *pdev)
- 			ARRAY_SIZE(fsl_sai_reg_defaults_ofs8);
- 	}
- 
--	sai->regmap = devm_regmap_init_mmio(&pdev->dev, base, &fsl_sai_regmap_config);
-+	sai->regmap = devm_regmap_init_mmio(dev, base, &fsl_sai_regmap_config);
- 	if (IS_ERR(sai->regmap)) {
--		dev_err(&pdev->dev, "regmap init failed\n");
-+		dev_err(dev, "regmap init failed\n");
- 		return PTR_ERR(sai->regmap);
- 	}
- 
--	sai->bus_clk = devm_clk_get(&pdev->dev, "bus");
-+	sai->bus_clk = devm_clk_get(dev, "bus");
- 	/* Compatible with old DTB cases */
- 	if (IS_ERR(sai->bus_clk) && PTR_ERR(sai->bus_clk) != -EPROBE_DEFER)
--		sai->bus_clk = devm_clk_get(&pdev->dev, "sai");
-+		sai->bus_clk = devm_clk_get(dev, "sai");
- 	if (IS_ERR(sai->bus_clk)) {
--		dev_err(&pdev->dev, "failed to get bus clock: %ld\n",
-+		dev_err(dev, "failed to get bus clock: %ld\n",
- 				PTR_ERR(sai->bus_clk));
- 		/* -EPROBE_DEFER */
- 		return PTR_ERR(sai->bus_clk);
-@@ -1051,9 +1052,9 @@ static int fsl_sai_probe(struct platform_device *pdev)
- 
- 	for (i = 1; i < FSL_SAI_MCLK_MAX; i++) {
- 		sprintf(tmp, "mclk%d", i);
--		sai->mclk_clk[i] = devm_clk_get(&pdev->dev, tmp);
-+		sai->mclk_clk[i] = devm_clk_get(dev, tmp);
- 		if (IS_ERR(sai->mclk_clk[i])) {
--			dev_err(&pdev->dev, "failed to get mclk%d clock: %ld\n",
-+			dev_err(dev, "failed to get mclk%d clock: %ld\n",
- 					i + 1, PTR_ERR(sai->mclk_clk[i]));
- 			sai->mclk_clk[i] = NULL;
- 		}
-@@ -1068,10 +1069,10 @@ static int fsl_sai_probe(struct platform_device *pdev)
- 	if (irq < 0)
- 		return irq;
- 
--	ret = devm_request_irq(&pdev->dev, irq, fsl_sai_isr, IRQF_SHARED,
-+	ret = devm_request_irq(dev, irq, fsl_sai_isr, IRQF_SHARED,
- 			       np->name, sai);
- 	if (ret) {
--		dev_err(&pdev->dev, "failed to claim irq %u\n", irq);
-+		dev_err(dev, "failed to claim irq %u\n", irq);
- 		return ret;
- 	}
- 
-@@ -1088,7 +1089,7 @@ static int fsl_sai_probe(struct platform_device *pdev)
- 	if (of_find_property(np, "fsl,sai-synchronous-rx", NULL) &&
- 	    of_find_property(np, "fsl,sai-asynchronous", NULL)) {
- 		/* error out if both synchronous and asynchronous are present */
--		dev_err(&pdev->dev, "invalid binding for synchronous mode\n");
-+		dev_err(dev, "invalid binding for synchronous mode\n");
- 		return -EINVAL;
- 	}
- 
-@@ -1109,7 +1110,7 @@ static int fsl_sai_probe(struct platform_device *pdev)
- 	    of_device_is_compatible(np, "fsl,imx6ul-sai")) {
- 		gpr = syscon_regmap_lookup_by_compatible("fsl,imx6ul-iomuxc-gpr");
- 		if (IS_ERR(gpr)) {
--			dev_err(&pdev->dev, "cannot find iomuxc registers\n");
-+			dev_err(dev, "cannot find iomuxc registers\n");
- 			return PTR_ERR(gpr);
- 		}
- 
-@@ -1127,23 +1128,23 @@ static int fsl_sai_probe(struct platform_device *pdev)
- 	sai->dma_params_tx.maxburst = FSL_SAI_MAXBURST_TX;
- 
- 	platform_set_drvdata(pdev, sai);
--	pm_runtime_enable(&pdev->dev);
--	if (!pm_runtime_enabled(&pdev->dev)) {
--		ret = fsl_sai_runtime_resume(&pdev->dev);
-+	pm_runtime_enable(dev);
-+	if (!pm_runtime_enabled(dev)) {
-+		ret = fsl_sai_runtime_resume(dev);
- 		if (ret)
- 			goto err_pm_disable;
- 	}
- 
--	ret = pm_runtime_get_sync(&pdev->dev);
-+	ret = pm_runtime_get_sync(dev);
- 	if (ret < 0) {
--		pm_runtime_put_noidle(&pdev->dev);
-+		pm_runtime_put_noidle(dev);
- 		goto err_pm_get_sync;
- 	}
- 
- 	/* Get sai version */
--	ret = fsl_sai_check_version(&pdev->dev);
-+	ret = fsl_sai_check_version(dev);
- 	if (ret < 0)
--		dev_warn(&pdev->dev, "Error reading SAI version: %d\n", ret);
-+		dev_warn(dev, "Error reading SAI version: %d\n", ret);
- 
- 	/* Select MCLK direction */
- 	if (of_find_property(np, "fsl,sai-mclk-direction-output", NULL) &&
-@@ -1152,7 +1153,7 @@ static int fsl_sai_probe(struct platform_device *pdev)
- 				   FSL_SAI_MCTL_MCLK_EN, FSL_SAI_MCTL_MCLK_EN);
- 	}
- 
--	ret = pm_runtime_put_sync(&pdev->dev);
-+	ret = pm_runtime_put_sync(dev);
- 	if (ret < 0)
- 		goto err_pm_get_sync;
- 
-@@ -1165,12 +1166,12 @@ static int fsl_sai_probe(struct platform_device *pdev)
- 		if (ret)
- 			goto err_pm_get_sync;
- 	} else {
--		ret = devm_snd_dmaengine_pcm_register(&pdev->dev, NULL, 0);
-+		ret = devm_snd_dmaengine_pcm_register(dev, NULL, 0);
- 		if (ret)
- 			goto err_pm_get_sync;
- 	}
- 
--	ret = devm_snd_soc_register_component(&pdev->dev, &fsl_component,
-+	ret = devm_snd_soc_register_component(dev, &fsl_component,
- 					      &sai->cpu_dai_drv, 1);
- 	if (ret)
- 		goto err_pm_get_sync;
-@@ -1178,10 +1179,10 @@ static int fsl_sai_probe(struct platform_device *pdev)
- 	return ret;
- 
- err_pm_get_sync:
--	if (!pm_runtime_status_suspended(&pdev->dev))
--		fsl_sai_runtime_suspend(&pdev->dev);
-+	if (!pm_runtime_status_suspended(dev))
-+		fsl_sai_runtime_suspend(dev);
- err_pm_disable:
--	pm_runtime_disable(&pdev->dev);
-+	pm_runtime_disable(dev);
- 
- 	return ret;
- }
--- 
-2.30.2
-
+On 5/16/2022 8:47 PM, Bjorn Andersson wrote:
+Thanks for Your time Bjorn!!!
+> On Wed 04 May 06:56 PDT 2022, Srinivasa Rao Mandadapu wrote:
+>
+>> Add compatible string and lpi pinctrl variant data structure for adsp enabled
+>> sc7280 platforms.
+> This says what the change does, but gives no clue to what this
+> compatible represents and why the clock is not optional.
+>
+> Could you please describe here what scenario this compatible is to be
+> used for etc, so that when someone else adds support for the next
+> platform they can use the git history to understand which case to
+> follow.
+>
+> Thanks,
+> Bjorn
+Okay. Will update the commit message.
+>
+>> Signed-off-by: Srinivasa Rao Mandadapu <quic_srivasam@quicinc.com>
+>> Co-developed-by: Venkata Prasad Potturu <quic_potturu@quicinc.com>
+>> Signed-off-by: Venkata Prasad Potturu <quic_potturu@quicinc.com>
+>> ---
+>>   drivers/pinctrl/qcom/pinctrl-sc7280-lpass-lpi.c | 14 ++++++++++++++
+>>   1 file changed, 14 insertions(+)
+>>
+>> diff --git a/drivers/pinctrl/qcom/pinctrl-sc7280-lpass-lpi.c b/drivers/pinctrl/qcom/pinctrl-sc7280-lpass-lpi.c
+>> index 2add9a4..c9e85d9 100644
+>> --- a/drivers/pinctrl/qcom/pinctrl-sc7280-lpass-lpi.c
+>> +++ b/drivers/pinctrl/qcom/pinctrl-sc7280-lpass-lpi.c
+>> @@ -134,6 +134,16 @@ static const struct lpi_function sc7280_functions[] = {
+>>   	LPI_FUNCTION(wsa_swr_data),
+>>   };
+>>   
+>> +static const struct lpi_pinctrl_variant_data sc7280_adsp_lpi_data = {
+>> +	.pins = sc7280_lpi_pins,
+>> +	.npins = ARRAY_SIZE(sc7280_lpi_pins),
+>> +	.groups = sc7280_groups,
+>> +	.ngroups = ARRAY_SIZE(sc7280_groups),
+>> +	.functions = sc7280_functions,
+>> +	.nfunctions = ARRAY_SIZE(sc7280_functions),
+>> +	.is_clk_optional = false,
+>> +};
+>> +
+>>   static const struct lpi_pinctrl_variant_data sc7280_lpi_data = {
+>>   	.pins = sc7280_lpi_pins,
+>>   	.npins = ARRAY_SIZE(sc7280_lpi_pins),
+>> @@ -149,6 +159,10 @@ static const struct of_device_id lpi_pinctrl_of_match[] = {
+>>   	       .compatible = "qcom,sc7280-lpass-lpi-pinctrl",
+>>   	       .data = &sc7280_lpi_data,
+>>   	},
+>> +	{
+>> +		.compatible = "qcom,sc7280-lpass-adsp-lpi-pinctrl",
+>> +		.data = &sc7280_adsp_lpi_data,
+>> +	},
+>>   	{ }
+>>   };
+>>   MODULE_DEVICE_TABLE(of, lpi_pinctrl_of_match);
+>> -- 
+>> 2.7.4
+>>
