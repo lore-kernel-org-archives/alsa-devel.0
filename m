@@ -4,74 +4,93 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B8950C43334
-	for <alsa-devel@archiver.kernel.org>; Wed,  1 Jun 2022 17:44:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C86CCC433EF
+	for <alsa-devel@archiver.kernel.org>; Wed,  1 Jun 2022 19:14:54 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 1529316E0;
-	Wed,  1 Jun 2022 19:43:57 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1529316E0
+	by alsa0.perex.cz (Postfix) with ESMTPS id C95A9171F;
+	Wed,  1 Jun 2022 21:14:01 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C95A9171F
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1654105487;
-	bh=O76EMfv/RHibOpFDppwDuUPZWItQ/txbZlbLLYm8wfs=;
-	h=Date:Subject:To:References:From:In-Reply-To:Cc:List-Id:
+	s=default; t=1654110891;
+	bh=zyzF3F7JC1BIMwfU3iCzCwHcM32zHxqiEVe/c/Rh2Gw=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=k3sAkgxTZgH9bhLpExPWrpWRX9KbcRepuefwAwGqX6USTyFvbjh0TeAuBbiq3MAlZ
-	 Tl7mWskR4Ns6PDbKaIfnXF/e+KRWQHRFUAe7p+mWp8ZAJW1HAMmgbaDPGdee64ALwd
-	 bd2NZYhCX9RIBgaTfWv+UZPqwSBgot8zK9EjpXaw=
+	b=bSIPu24P0A0wi1d0k4pdIogX18YJ5wnCOVORoE4gd9aUcn20m/WRImsrY88HT8m6b
+	 MVyXxgeZQ0qKXp5Xold6om3YZ4BCjZjCOVv1/iwmG1voCtMR4iwL2xMvWG3jJcXuKW
+	 Azc4xHA5BzzYWFGNi8F6iucQlfNoCI1oA/xjRb2U=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id A0937F80089;
-	Wed,  1 Jun 2022 19:43:56 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 489CDF8019B;
+	Wed,  1 Jun 2022 21:14:01 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 83F43F80238; Wed,  1 Jun 2022 19:43:54 +0200 (CEST)
-Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 598C1F80238; Wed,  1 Jun 2022 21:13:59 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id DABB8F80089
- for <alsa-devel@alsa-project.org>; Wed,  1 Jun 2022 19:43:48 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DABB8F80089
+ by alsa1.perex.cz (Postfix) with ESMTPS id 007EEF800BD
+ for <alsa-devel@alsa-project.org>; Wed,  1 Jun 2022 21:13:56 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 007EEF800BD
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="US0ULvqs"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
- d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1654105432; x=1685641432;
- h=message-id:date:mime-version:subject:to:cc:references:
- from:in-reply-to:content-transfer-encoding;
- bh=O76EMfv/RHibOpFDppwDuUPZWItQ/txbZlbLLYm8wfs=;
- b=US0ULvqsWUDxF7BSJS7KYsDaZWyx1XLyvAwFdXMdDSidbMtfJiTQgcqv
- yuxpe+bFowPMv3lN3Rc4AOVT4Ikalga1xLtSiX44cpDoepWnIZZY7eKUm
- lyh8MZsz6bNuZADAy+DVNu6JK/s/X4ylPKLjLRthDyRrwSS9E7fXHpmxW
- dsSEqxoYaakRCtlN+fTO0JdFZewHEeYpflO/w/oGDWPtBcuwLSW8GRogX
- k6iwhYXtUboqTzhtrzu+RulNksKDzrkpbDF+Hz9HMmSI0Q1G3r/TVE8WC
- GBbtWknfw8CWhnOQj2DD/GI3u7OCLmZt06xjcyNT+6Df9vNBOPiC2eVlu g==;
-X-IronPort-AV: E=McAfee;i="6400,9594,10365"; a="274471775"
-X-IronPort-AV: E=Sophos;i="5.91,269,1647327600"; d="scan'208";a="274471775"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
- by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 01 Jun 2022 10:43:44 -0700
-X-IronPort-AV: E=Sophos;i="5.91,269,1647327600"; d="scan'208";a="633638944"
-Received: from aloney-mobl2.amr.corp.intel.com (HELO [10.209.25.15])
- ([10.209.25.15])
- by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 01 Jun 2022 10:43:43 -0700
-Message-ID: <66914bd5-8bed-adba-c7a7-6cbfe1ad3520@linux.intel.com>
-Date: Wed, 1 Jun 2022 12:17:57 -0500
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Firefox/91.0 Thunderbird/91.5.0
-Subject: Re: soundwire: device drivers for PC based hardware
-Content-Language: en-US
-To: Muni Sekhar <munisekharrms@gmail.com>, vkoul@kernel.org,
- sanyog.r.kale@intel.com, alsa-devel <alsa-devel@alsa-project.org>
-References: <CAHhAz+gqRDh=CJseQEhAJcRVEguxQ5c4vdUX8dvzdPNT=Sy3iA@mail.gmail.com>
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-In-Reply-To: <CAHhAz+gqRDh=CJseQEhAJcRVEguxQ5c4vdUX8dvzdPNT=Sy3iA@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-Cc: LKML <linux-kernel@vger.kernel.org>
+ dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
+ header.b="eJWfOQDF"; 
+ dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
+ header.b="vlxyTuTt"
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 19D251F93D;
+ Wed,  1 Jun 2022 19:13:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1654110836; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=a9u5hPonEj/nYbaH7KqEil1yX8WxZg/sHH0JzVEX0BA=;
+ b=eJWfOQDFbje58Pvln7Hd8ShUzOVhrTKrqwXaSOxBSiC0DO+NSkUpdFOHooDD7pCwI3mB5A
+ /XeFPtQNE1COwDVA9WjuZuFOsjCqr9247l9RkcwE23TEhe7at1wvck2+p4ak44jzv5woGM
+ hYmBbN7ngTTPfiOau0OUGGeYDNH+SxU=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1654110836;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=a9u5hPonEj/nYbaH7KqEil1yX8WxZg/sHH0JzVEX0BA=;
+ b=vlxyTuTtVr+kbwBfCwGIfyk6VP7yVYURsb4cSA52VWdDlhJCfKg5DTmBIYcZlq2n6mguVd
+ pNmYzqXgm6SIVaAA==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id CCA9613A8F;
+ Wed,  1 Jun 2022 19:13:55 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+ by imap2.suse-dmz.suse.de with ESMTPSA id GhPeMHO6l2IGDgAAMHmgww
+ (envelope-from <tiwai@suse.de>); Wed, 01 Jun 2022 19:13:55 +0000
+Date: Wed, 01 Jun 2022 21:13:55 +0200
+Message-ID: <87mtewyz64.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Richard Fitzgerald <rf@opensource.cirrus.com>
+Subject: Re: [PATCH v4 00/17] ALSA: hda: cirrus: Add initial DSP support and
+ firmware loading
+In-Reply-To: <008e3188-f35d-4323-08ea-de5f3a88333a@opensource.cirrus.com>
+References: <20220525131638.5512-1-vitalyr@opensource.cirrus.com>
+ <871qwf0x8t.wl-tiwai@suse.de>
+ <20220530090846.GS38351@ediswmail.ad.cirrus.com>
+ <87czfvxtsc.wl-tiwai@suse.de>
+ <20220530093639.GT38351@ediswmail.ad.cirrus.com>
+ <87a6azxr7h.wl-tiwai@suse.de>
+ <20220530103415.GU38351@ediswmail.ad.cirrus.com>
+ <871qwbxpsb.wl-tiwai@suse.de>
+ <008e3188-f35d-4323-08ea-de5f3a88333a@opensource.cirrus.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+Cc: alsa-devel@alsa-project.org, Charles Keepax <ckeepax@opensource.cirrus.com>,
+ Vitaly Rodionov <vitalyr@opensource.cirrus.com>, patches@opensource.cirrus.com,
+ Takashi Iwai <tiwai@suse.com>, Mark Brown <broonie@kernel.org>,
+ linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -87,56 +106,63 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-
-
-On 5/31/22 10:17, Muni Sekhar wrote:
-> Hi all,
+On Wed, 01 Jun 2022 18:43:31 +0200,
+Richard Fitzgerald wrote:
 > 
-> I am looking for the soundwire device drivers which run on x86 CPU for
-> PC based platforms.
+> On 30/05/2022 11:45, Takashi Iwai wrote:
+> > On Mon, 30 May 2022 12:34:15 +0200,
+> > Charles Keepax wrote:
+> >> 
+> >> On Mon, May 30, 2022 at 12:14:26PM +0200, Takashi Iwai wrote:
+> >>> On Mon, 30 May 2022 11:36:39 +0200,
+> >>> Charles Keepax wrote:
+> >>>> On Mon, May 30, 2022 at 11:18:43AM +0200, Takashi Iwai wrote:
+> >>>>> On Mon, 30 May 2022 11:08:46 +0200,
+> >>>>> Charles Keepax wrote:
+> >>>>>> On Fri, May 27, 2022 at 06:13:38PM +0200, Takashi Iwai wrote:
+> >>>>>>> On Wed, 25 May 2022 15:16:21 +0200,
+> >>>>>>> Vitaly Rodionov wrote:
+> >>>> Yeah that should be what is happening here. Although it looks
+> >>>> like this code might be removing all the controls if the firmware
+> >>>> is unloaded. I will discuss that with the guys, we normal just
+> >>>> disable the controls on the wm_adsp stuff.
+> >>> 
+> >>> OK, that sounds good.  Basically my concern came up from the code
+> >>> snippet doing asynchronous addition/removal via work.  This showed
+> >>> some yellow signal, as such a pattern doesn't appear in the normal
+> >>> implementation.  If this is (still) really necessary, it has to be
+> >>> clarified as an exception.
+> >>> 
+> >> 
+> >> Hm... ok we will think about that. I think that part will
+> >> probably still be necessary. Because there is an ALSA control
+> >> that selects the firmware, then it is necesarry to defer creating
+> >> the controls to some work, since you are already holding the
+> >> lock.
+> > 
+> > Well, if an ALSA control can trigger the firmware loading, that's
+> > already fragile.  A firmware loading is a heavy task, which should
+> > happen only at probing and/or resuming in general.  Do we have other
+> > drivers doing the f/w loading triggered by a kctl...?
+> > 
 > 
-> linux/drivers/soundwire at master · torvalds/linux · GitHub
-> 
-> Can the above mentioned mainline tree drivers can be used for this purpose?
-> 
-> config SOUNDWIRE_INTEL
-> depends on ACPI && SND_SOC
-> 
-> config SOUNDWIRE_QCOM
-> depends on SND_SOC
-> 
-> As per the Kconfig file, both the Intel and Qualcomm SoundWire Master
-> driver depend on SND_SOC, does it mean it is only possible to run on
-> SoC CPU(Arm chipsets)?
+> On Wolfson/Cirrus codecs the firmware isn't to "make the chip work".
+> The DSP is programmable to allow for additional audio processing
+> algorithms. Which algorithm you need depends on the audio use case(s)
+> you are running, and can change as you change use-case. Many of the
+> codecs don't have enough DSP memory to hold all possible algorithms.
+> Which is why the firmware load has always been triggered from ALSA
+> controls in the ASoC code. It's not something that can be loaded
+> once in probe().
 
-Here's what you need in your .config to use SoundWire on x86-based
-hardware. Today this includes mostly Dell platforms, HP x360 convertible
-laptops and Intel 'bishop canyon' NUC laptops.
-
-CONFIG_REGMAP_SOUNDWIRE=m
-
-CONFIG_REGMAP_SOUNDWIRE_MBQ=m
-
-CONFIG_SND_INTEL_SOUNDWIRE_ACPI=m
-
-CONFIG_SND_SOC_INTEL_SOUNDWIRE_SOF_MACH=m
-
-CONFIG_SND_SOC_SOF_INTEL_SOUNDWIRE_LINK_BASELINE=m
-
-CONFIG_SND_SOC_SOF_INTEL_SOUNDWIRE=m
-
-CONFIG_SOUNDWIRE=m
-
-CONFIG_SOUNDWIRE_CADENCE=m
-
-CONFIG_SOUNDWIRE_INTEL=m
-
-# CONFIG_SOUNDWIRE_QCOM is not set
-
-CONFIG_SOUNDWIRE_GENERIC_ALLOCATION=m
+But it's still a question whether such an easily triggerable interface
+should be used for a heavy procedure like the DSP firmware load.
+e.g. calling the standard request_firmware() API directly from a
+control callback doesn't sound like a good idea at all.  The similar
+argument is applied to the dynamic addition/removal of other controls
+followed by a kctl callback.
 
 
-I think you can get everything if you select these 3 high-level ones:
-CONFIG_SOUNDWIRE
-CONFIG_SND_SOC_SOF_INTEL_SOUNDWIRE
-CONFIG_SND_SOC_INTEL_SOUNDWIRE_SOF_MACH
+thanks,
+
+Takashi
