@@ -4,77 +4,75 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8BC8FC433EF
-	for <alsa-devel@archiver.kernel.org>; Thu,  2 Jun 2022 13:59:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B51DAC43334
+	for <alsa-devel@archiver.kernel.org>; Thu,  2 Jun 2022 14:00:20 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id CD83F17D5;
-	Thu,  2 Jun 2022 15:59:04 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CD83F17D5
+	by alsa0.perex.cz (Postfix) with ESMTPS id F25A617EB;
+	Thu,  2 Jun 2022 15:59:28 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F25A617EB
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1654178394;
-	bh=fpEwUfAxjvS+H0wDAVvAN4L4mf0UkZC5zvLW4TChJS0=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=et2pLLYzRzbNaG6yvryvw9BTNxFyFTjfWu7Sg2TXVkiMU6pNIZT5zlhBjUIc+Vwra
-	 WJNGsZd1EqgllbCbQju2dRu/1p+50hkBTBjZzOWherbb2vXdjae4VLI8xc47ezf31V
-	 NMG9PutuHsOMVoMtEAxZj2TKaPvacziIMFALQg14=
+	s=default; t=1654178419;
+	bh=uOwNYbOInNeH7er3n7+1lBokyIeBy+L3vOymfZhD1Ww=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=J29wcDzETmsDJgEgAMzXE0ueArAcOtdIXs94ODQST/kG6jvAvr05EB48zDoWuLKb/
+	 Y2au8I68AxozknEXMkCNFcWWeDzMizeW5Cfs0EqG1cQ+Eq+fikUzthpYmRWROYcSmt
+	 OzRidloxPiR13XUfMK3il6EX6DwcEhvzUcJIxuxk=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 268E8F805D7;
-	Thu,  2 Jun 2022 15:53:57 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 6D28AF804AB;
+	Thu,  2 Jun 2022 15:58:13 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 3CE86F805D8; Thu,  2 Jun 2022 15:53:56 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id E0DD5F805B4
- for <alsa-devel@alsa-project.org>; Thu,  2 Jun 2022 15:53:45 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E0DD5F805B4
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="d9Oq2NHJ"
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+ id A22F5F80272; Thu,  2 Jun 2022 15:58:11 +0200 (CEST)
+Received: from mga06.intel.com (mga06b.intel.com [134.134.136.31])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id 6385B617D4;
- Thu,  2 Jun 2022 13:53:44 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1EFE9C3411A;
- Thu,  2 Jun 2022 13:53:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1654178023;
- bh=fpEwUfAxjvS+H0wDAVvAN4L4mf0UkZC5zvLW4TChJS0=;
- h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=d9Oq2NHJvy95ezilGqeivEGLyDs7//9T8zF1G0uL6pnnQV6RUAOVviNoKPWdvWJ68
- e0mYuM+EngtUe5nreyyYs6pOpATWNhpqR48NeQbQf/DEERC3mxB0cVTcH4SQ7LfQ8N
- hFP0iLGuMNkC//frq2qB+h0i2YUemi7HNtD5d/VpqZK+iJ4/YmFc30YggdIhMm7BCo
- l/AHP7XXb2QdiE3S2S5IZ5DUT8bpSb/w6OMsb0K6tWEOCydhRcTvU/k9lhs5GbUgvl
- d48we93T6y6If9QlHox+Rg+n2ZvA0J/bEa/NJexqhhwcvQa+/1OzJChIle/WVuFu94
- 98CrhX4k8MlRA==
-From: Mark Brown <broonie@kernel.org>
-To: Liam Girdwood <lgirdwood@gmail.com>
-Subject: [PATCH 19/20] ASoC: tlv320aic33: Use modern ASoC DAI format
- terminology
-Date: Thu,  2 Jun 2022 15:53:15 +0200
-Message-Id: <20220602135316.3554400-20-broonie@kernel.org>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20220602135316.3554400-1-broonie@kernel.org>
-References: <20220602135316.3554400-1-broonie@kernel.org>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 2C814F80149;
+ Thu,  2 Jun 2022 15:58:01 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2C814F80149
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
+ header.b="C/1m/ApB"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+ d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+ t=1654178286; x=1685714286;
+ h=from:to:cc:subject:date:message-id:mime-version:
+ content-transfer-encoding;
+ bh=uOwNYbOInNeH7er3n7+1lBokyIeBy+L3vOymfZhD1Ww=;
+ b=C/1m/ApBx6Mq72/2Yv8xOjAHVfRblOdbWfRv6XEvNcpyKhWK20P4hUCT
+ 3y+vOKy5MPU16HPzZD5YWz6hubB0BGUus4A9Uj9ZopJPgKcQBVO2NfbO0
+ axeYEIFX/YQnYe8+VXC2J+AwbTyBkkKWLlyfZDRxhzKiZ9N/cj/jdZ6jg
+ fM+Q57CDHwRGnGpSRF+vF5v7BLYX2bAZBADrN6dvEXFvLHa5vKMOXqHTX
+ 5W+55PODamqRa0u0RDfCRjoBmQFNDMe8+VhLrGxmDkXSzCWt0TSjGGR6/
+ CeR/M0PtW9IEQ55l3bnl9d1+ix4oO8fbUUFAnfcQfYC0HcCyF6JFt76Vh A==;
+X-IronPort-AV: E=McAfee;i="6400,9594,10365"; a="336612795"
+X-IronPort-AV: E=Sophos;i="5.91,271,1647327600"; d="scan'208";a="336612795"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+ by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 02 Jun 2022 06:57:58 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.91,271,1647327600"; d="scan'208";a="646007960"
+Received: from dev2.igk.intel.com ([10.237.148.94])
+ by fmsmga004.fm.intel.com with ESMTP; 02 Jun 2022 06:57:56 -0700
+From: =?UTF-8?q?Amadeusz=20S=C5=82awi=C5=84ski?=
+ <amadeuszx.slawinski@linux.intel.com>
+To: Mark Brown <broonie@kernel.org>,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH] ASoC: SOF: Fix potential NULL pointer dereference
+Date: Thu,  2 Jun 2022 15:57:57 +0200
+Message-Id: <20220602135757.3335351-1-amadeuszx.slawinski@linux.intel.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1531; h=from:subject;
- bh=fpEwUfAxjvS+H0wDAVvAN4L4mf0UkZC5zvLW4TChJS0=;
- b=owEBbQGS/pANAwAKASTWi3JdVIfQAcsmYgBimMCdT+Rr3tfbRitgCr5+4AcJtyY3o8pHe6e/2Tn3
- nkGBBoCJATMEAAEKAB0WIQSt5miqZ1cYtZ/in+ok1otyXVSH0AUCYpjAnQAKCRAk1otyXVSH0BI1B/
- 9u8XhYHDIhodbQPWncxeP/sQr0CTmemQmmWL0QdUDCz6DCVPaqudEKUomUYKBJwIgcZqbIPVJMKEai
- iKbsUdTzuuxS7lvQmAy4msxxzbEDBtgxPRdTZ9bPwAUhACeA2RPvsxlJuB/U5qXSD7Q+RpZQrQY7XH
- U6b0g4nm7ICkkHVvwofIw4RSgETYMcL6Kj4Q4ueqIRsNxKpOa/jwb6RRPcGl0sGURfy3RIBWYNV3hs
- JhVS8i6D/fsg2rdEeYxpW7jkxJNdkJ4gOpeQ8HeMwU+iCDx1mS2hSkK36A+yr3NBOIaxEtje1x3hrI
- C+ML5xUNLYovIWO0jcB0N4vmLDWRXf
-X-Developer-Key: i=broonie@kernel.org; a=openpgp;
- fpr=3F2568AAC26998F9E813A1C5C3F436CA30F5D8EB
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org, Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+ Takashi Iwai <tiwai@suse.com>,
+ Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+ Liam Girdwood <lgirdwood@gmail.com>,
+ =?UTF-8?q?Amadeusz=20S=C5=82awi=C5=84ski?=
+ <amadeuszx.slawinski@linux.intel.com>, Daniel Baluta <daniel.baluta@nxp.com>,
+ sound-open-firmware@alsa-project.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -90,46 +88,29 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-As part of moving to remove the old style defines for the bus clocks update
-the tlv320aic33 driver to use more modern terminology for clocking.
+Cleanup path for sof_prepare_widgets_in_path() should check if unprepare
+callback exists before calling it, instead it checks if it does not
+exist. Fix the check.
 
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Fixes: 370014c8197a ("ASoC: SOF: Add a prepare op to IPC topology widget ops")
+Signed-off-by: Amadeusz Sławiński <amadeuszx.slawinski@linux.intel.com>
 ---
- sound/soc/codecs/tlv320aic3x.c | 11 +++++------
- 1 file changed, 5 insertions(+), 6 deletions(-)
+ sound/soc/sof/sof-audio.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/codecs/tlv320aic3x.c b/sound/soc/codecs/tlv320aic3x.c
-index d53037b1509d..610e41bbf388 100644
---- a/sound/soc/codecs/tlv320aic3x.c
-+++ b/sound/soc/codecs/tlv320aic3x.c
-@@ -1253,22 +1253,21 @@ static int aic3x_set_dai_fmt(struct snd_soc_dai *codec_dai,
- 	iface_areg = snd_soc_component_read(component, AIC3X_ASD_INTF_CTRLA) & 0x3f;
- 	iface_breg = snd_soc_component_read(component, AIC3X_ASD_INTF_CTRLB) & 0x3f;
- 
--	/* set master/slave audio interface */
--	switch (fmt & SND_SOC_DAIFMT_MASTER_MASK) {
--	case SND_SOC_DAIFMT_CBM_CFM:
-+	switch (fmt & SND_SOC_DAIFMT_CLOCK_PROVIDER_MASK) {
-+	case SND_SOC_DAIFMT_CBP_CFP:
- 		aic3x->master = 1;
- 		iface_areg |= BIT_CLK_MASTER | WORD_CLK_MASTER;
- 		break;
--	case SND_SOC_DAIFMT_CBS_CFS:
-+	case SND_SOC_DAIFMT_CBC_CFC:
- 		aic3x->master = 0;
- 		iface_areg &= ~(BIT_CLK_MASTER | WORD_CLK_MASTER);
- 		break;
--	case SND_SOC_DAIFMT_CBM_CFS:
-+	case SND_SOC_DAIFMT_CBP_CFC:
- 		aic3x->master = 1;
- 		iface_areg |= BIT_CLK_MASTER;
- 		iface_areg &= ~WORD_CLK_MASTER;
- 		break;
--	case SND_SOC_DAIFMT_CBS_CFM:
-+	case SND_SOC_DAIFMT_CBC_CFP:
- 		aic3x->master = 1;
- 		iface_areg |= WORD_CLK_MASTER;
- 		iface_areg &= ~BIT_CLK_MASTER;
+diff --git a/sound/soc/sof/sof-audio.c b/sound/soc/sof/sof-audio.c
+index cd41d0599cef..789d0a1f1a77 100644
+--- a/sound/soc/sof/sof-audio.c
++++ b/sound/soc/sof/sof-audio.c
+@@ -323,7 +323,7 @@ sof_prepare_widgets_in_path(struct snd_sof_dev *sdev, struct snd_soc_dapm_widget
+ 			p->walking = false;
+ 			if (ret < 0) {
+ 				/* unprepare the source widget */
+-				if (!widget_ops[widget->id].ipc_unprepare && swidget->prepared) {
++				if (widget_ops[widget->id].ipc_unprepare && swidget->prepared) {
+ 					widget_ops[widget->id].ipc_unprepare(swidget);
+ 					swidget->prepared = false;
+ 				}
 -- 
-2.30.2
+2.25.1
 
