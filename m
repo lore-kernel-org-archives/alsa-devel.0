@@ -4,42 +4,42 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id CE5ADC433EF
-	for <alsa-devel@archiver.kernel.org>; Thu,  2 Jun 2022 10:08:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2B5E0C433EF
+	for <alsa-devel@archiver.kernel.org>; Thu,  2 Jun 2022 10:08:54 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A25F01718;
-	Thu,  2 Jun 2022 12:07:31 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A25F01718
+	by alsa0.perex.cz (Postfix) with ESMTPS id 6FE35173D;
+	Thu,  2 Jun 2022 12:08:02 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6FE35173D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1654164501;
+	s=default; t=1654164532;
 	bh=kKRgMFkAcrOCwy0OIAu0DsgSEAF0xJnNKwKV277U+yY=;
 	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=n9KnVdn8ntYzV+GOITaObUBDmyvcxvkIHzhNjv4BBdqxXSS32zng1T6Qm3EgsGyGn
-	 jGHf9VDhT2FB6WoS9a5jbZ/VT4bfvZMbSpGYAJWpmzD5AHP8w5Zlpp9PM1jzQa8PAL
-	 NpesL+JU6csQN6KdYwSROsRgWwbDh3vmpJ4izpks=
+	b=C7Z8kHOtMTdYGRmWo+bSoCdXMRnK1vK7v7yFQc8YU9XFN8BItI3EO+lwfnprWWugX
+	 GrQjEx5Tp0u7GMEujGLfXio21AUYODs5G5IJ5Iuu3bsDA/IAgX9LuB+9ffiUehb4N+
+	 0oDsuoFVA0dUobIjqN1UUPw0AaPQQFOXUeUj7jxY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 3CDD5F80158;
-	Thu,  2 Jun 2022 12:07:31 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id C8957F80272;
+	Thu,  2 Jun 2022 12:07:33 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 5A9A8F80236; Thu,  2 Jun 2022 12:07:29 +0200 (CEST)
+ id F0004F80425; Thu,  2 Jun 2022 12:07:32 +0200 (CEST)
 Received: from webhooks-bot.alsa-project.org (gate.perex.cz [77.48.224.242])
- by alsa1.perex.cz (Postfix) with ESMTP id 5E723F80089
- for <alsa-devel@alsa-project.org>; Thu,  2 Jun 2022 12:07:26 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5E723F80089
+ by alsa1.perex.cz (Postfix) with ESMTP id 9EDECF80272
+ for <alsa-devel@alsa-project.org>; Thu,  2 Jun 2022 12:07:30 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9EDECF80272
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 From: GitHub pull_request - edited <github@alsa-project.org>
 To: alsa-devel@alsa-project.org
-In-Reply-To: <1654164445923382044-webhooks-bot@alsa-project.org>
-References: <1654164445923382044-webhooks-bot@alsa-project.org>
-Subject: [PATCH 0/2] hwdep: define interface for hwdep device
-Message-Id: <20220602100729.5A9A8F80236@alsa1.perex.cz>
-Date: Thu,  2 Jun 2022 12:07:29 +0200 (CEST)
+In-Reply-To: <1654164450440290928-webhooks-bot@alsa-project.org>
+References: <1654164450440290928-webhooks-bot@alsa-project.org>
+Subject: [PATCH 0/3] hwdep: define interface for hwdep device
+Message-Id: <20220602100732.F0004F80425@alsa1.perex.cz>
+Date: Thu,  2 Jun 2022 12:07:32 +0200 (CEST)
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
