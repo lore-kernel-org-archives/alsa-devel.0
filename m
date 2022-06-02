@@ -4,72 +4,81 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id BF694C43334
-	for <alsa-devel@archiver.kernel.org>; Thu,  2 Jun 2022 02:13:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id DB299C43334
+	for <alsa-devel@archiver.kernel.org>; Thu,  2 Jun 2022 02:52:58 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 181461744;
-	Thu,  2 Jun 2022 04:12:28 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 181461744
+	by alsa0.perex.cz (Postfix) with ESMTPS id 498BF1757;
+	Thu,  2 Jun 2022 04:52:06 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 498BF1757
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1654135998;
-	bh=zfWnBsCpphEUOAd/bMtH899shOhmko7wvrzUwJJZjvY=;
-	h=Date:Subject:From:To:References:In-Reply-To:Cc:List-Id:
+	s=default; t=1654138376;
+	bh=UCYUWy7TFOroiMMaD3+k8wwhXkWNFku8xRYDRbCL70Y=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=clN7G/nErX6+GVSH2FQX0+SCyQCcd6+FFowcYbKhWmekfqH4znv4z85ckSjYCrGbz
-	 34HWFBur2YrU4qE4acTix/BRlKtDrEuBdCvQKTEbMOsG85u1C+vUTX8kPAEmE2J3lG
-	 tQ326AvqKZjGk75rsSC2hpdDRe8VkJOj8gYM6FMw=
+	b=s02gpLthn8AxJb+H96IMbwE1Qt/02Qhcz81tkah4uY3iy1DkTnnDW+Mkh1WV/JKIx
+	 Fhkzi3ywcWjR6JGavSNU9nxwDecr/MXOvbGp/o/8yc5Hde/XhFs4n+LuJUcKQrEf/W
+	 PMoGVXA8x/LMtPpQYRM7k0MSKqruk1VUTp+RTasw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id A8632F80158;
-	Thu,  2 Jun 2022 04:12:27 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id B8D3AF80158;
+	Thu,  2 Jun 2022 04:52:05 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id CB2D3F80236; Thu,  2 Jun 2022 04:12:25 +0200 (CEST)
-Received: from smtp-relay-canonical-0.canonical.com
- (smtp-relay-canonical-0.canonical.com [185.125.188.120])
- (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
+ id 26CF2F80124; Thu,  2 Jun 2022 04:52:04 +0200 (CEST)
+Received: from mail-lj1-x22b.google.com (mail-lj1-x22b.google.com
+ [IPv6:2a00:1450:4864:20::22b])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id E40C7F80124
- for <alsa-devel@alsa-project.org>; Thu,  2 Jun 2022 04:12:18 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E40C7F80124
+ by alsa1.perex.cz (Postfix) with ESMTPS id A0C9DF80089
+ for <alsa-devel@alsa-project.org>; Thu,  2 Jun 2022 04:51:57 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A0C9DF80089
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=canonical.com header.i=@canonical.com
- header.b="Wz0UvIBt"
-Received: from [192.168.0.109] (unknown [123.112.66.143])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
- (No client certificate requested)
- by smtp-relay-canonical-0.canonical.com (Postfix) with ESMTPSA id C74943F10B; 
- Thu,  2 Jun 2022 02:12:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
- s=20210705; t=1654135937;
- bh=yDM/Dexw2A3CpIrWAR2wuVCIZtw6z04gxUCdUmDTxqA=;
- h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
- In-Reply-To:Content-Type;
- b=Wz0UvIBtistwWUeTfPhoOUwppYkDokQS691pmhXU0fYjBhbtvwl5a1sOQemk43+an
- klkYiQ/+w1VSHILL9d8coVaXEtOO3iXfQjC4JUY/xDTkl2MdZ3zPVO+iI7asKXFVwZ
- kjq0TcszL0FfVc0tQa42bBOaDdP+I0z0vQb2N5bWuaN+hLAlx3Y07DOabSNnh0/ZeY
- ggkNuQM1vfPD2CjHHB2KRHlk+bU6+mF7zAEMP1aYEvNVuFlSNFAUSU2TwQUTzWTBfG
- ZQUVhgB+zMrb8uZAx0ZDzx+D9SsbWJ3+ON/UWMJdGoYRU8a9ThPopDJMBJcHC5DU4j
- rRbRQpNwUVoxw==
-Message-ID: <db674fa6-37cc-9dc6-ed87-f9fee681db9a@canonical.com>
-Date: Thu, 2 Jun 2022 10:12:06 +0800
+ dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
+ header.b="DLVEVzwa"
+Received: by mail-lj1-x22b.google.com with SMTP id m26so3924132ljb.0
+ for <alsa-devel@alsa-project.org>; Wed, 01 Jun 2022 19:51:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
+ h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+ :cc; bh=TpNrFeAUHEiuJn5JqT+slz/uAK22wiMfabJQ1vnT0bM=;
+ b=DLVEVzwa87pZn7j1l6lEeNeQ4lgELbwBF/l6k+A5J2pWd2zKMHwqusGX84wUNeL21l
+ kBF3aI64Z8tl6v4MVsVhUMs4QOuUSEylg7huxH6jiIuwRAOG6gNnceakYL6L9VvjaYRC
+ GHkY3dZ9OJfktSVKLTCQTjx3IuanijUi5YXkSfVeeLwWasVA4IWYThwiZhXjantCCe4W
+ +/pfzMlSHeTV3LnemtdbIf3E5mP+HHgPhPw35a62/P/6chXu7sVPh+CJUpIWn95LeNj5
+ kaH8N1dghdAEBj1l6GBLzNbcYtswK/ZvgZYQ7I9AAug1nvNcj2GbJsqcjnOYqFE0cIcj
+ S/KQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc;
+ bh=TpNrFeAUHEiuJn5JqT+slz/uAK22wiMfabJQ1vnT0bM=;
+ b=7y/7o1yXqskUjmKu+Vqmi5bjPMtGg+a3wX556x+5AQccS9EdJel6bBtncrOQXUgIif
+ krnRDTv1oQUf8f6pTEEfH7E3ZsC4jgUcRi+yFymZYyiz9HWgetzjPIKiEZAeZaKK8Cad
+ CdtVvCkKqt0JOS8uJvaiDX3P+3MfnaSSQobhfdviar1glJdGLFuJNMe82ei1pS52iUXi
+ BUSYKe/kK/hia5UwPGmaxmhUxOGFy0eZB8TXE6KNkHrwFrnfsdCf5NLwTtqgzNfbvMws
+ iH/b4NagCarOLvBxn9Q+1QNqLpPm5xGg3Swm4dY7D5CZrixCadKL53+kusjZRuuhPKZH
+ UbrA==
+X-Gm-Message-State: AOAM530Fnl181jmDGvD7Eur/+7fGO74CpIw0mIeBa8czoPjI59DQaCwo
+ g6AD82G2QebUSQCPRzulczhmNBI+OAS32Z3Bbno=
+X-Google-Smtp-Source: ABdhPJzemaRDxlsjG76/OUGceBVlHUFJwXleU0oYwHmcIUAwSqYDpFWZm5Xu0bQKxO44fiBRTnOLgCzLlVs2JIF0qQw=
+X-Received: by 2002:a05:651c:1792:b0:235:1df3:7b8e with SMTP id
+ bn18-20020a05651c179200b002351df37b8emr40560873ljb.464.1654138315702; Wed, 01
+ Jun 2022 19:51:55 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.9.1
-Subject: Re: [PATCH 2/2] ASoC: nau8822: Disable internal PLL if freq_out is
- zero
-Content-Language: en-US
-From: Hui Wang <hui.wang@canonical.com>
-To: alsa-devel@alsa-project.org, broonie@kernel.org
-References: <20220530040151.95221-1-hui.wang@canonical.com>
- <20220530040151.95221-3-hui.wang@canonical.com>
-In-Reply-To: <20220530040151.95221-3-hui.wang@canonical.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: wtli@nuvoton.com, ctlin0@nuvoton.com, kchsu0@nuvoton.com,
- ctlin0.linux@gmail.com
+References: <20220530083533.52254-1-zhangqilong3@huawei.com>
+In-Reply-To: <20220530083533.52254-1-zhangqilong3@huawei.com>
+From: Shengjiu Wang <shengjiu.wang@gmail.com>
+Date: Thu, 2 Jun 2022 10:51:44 +0800
+Message-ID: <CAA+D8AMuZx0CT6GVVh5AhrAKJEFSumFPpAXkNnCdLX5FiwuFFw@mail.gmail.com>
+Subject: Re: [PATCH V2] ASoC: fsl_xcvr:Fix unbalanced pm_runtime_enable in
+ fsl_xcvr_probe
+To: zhangqilong <zhangqilong3@huawei.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Content-Filtered-By: Mailman/MimeDel 2.1.15
+Cc: alsa-devel@alsa-project.org, Xiubo Li <Xiubo.Lee@gmail.com>,
+ linuxppc-dev <linuxppc-dev@lists.ozlabs.org>, Takashi Iwai <tiwai@suse.com>,
+ Liam Girdwood <lgirdwood@gmail.com>, Nicolin Chen <nicoleotsuka@gmail.com>,
+ Mark Brown <broonie@kernel.org>, Fabio Estevam <festevam@gmail.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -85,48 +94,75 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Hi Mark,
+On Mon, May 30, 2022 at 4:33 PM zhangqilong <zhangqilong3@huawei.com> wrote:
 
-I saw you merged the [PATCH 1/2], the [PATCH 2/2] is also needed. Please 
-take a look.
-
-Thanks,
-
-Hui.
-
-On 5/30/22 12:01, Hui Wang wrote:
-> After finishing the playback or recording, the machine driver might
-> call snd_soc_dai_set_pll(codec, pll_id, 0, 0, 0) to stop the internal
-> PLL, but with the codec driver nau8822, it will print error as below:
->   nau8822 0-001a: Unsupported input clock 0
->   fsl-asoc-card sound-nau8822: failed to stop FLL: -22
+> a) Add missing pm_runtime_disable() when probe error out. It could
+> avoid pm_runtime implementation complains when removing and probing
+> again the driver.
+> b) Add remove for missing pm_runtime_disable().
 >
-> Refer to the function wm8962_set_fll() in the codec driver wm8962, if
-> the freq_out is zero, turn off the internal PLL and return 0.
->
-> Cc: David Lin <ctlin0@nuvoton.com>
-> Cc: John Hsu <kchsu0@nuvoton.com>
-> Cc: Seven Li <wtli@nuvoton.com>
-> Signed-off-by: Hui Wang <hui.wang@canonical.com>
+> v2: add remove to put PM usage counter.
+
+
+> Fix:c590fa80b3928 ("ASoC: fsl_xcvr: register platform component before
+> registering cpu dai")
+> Signed-off-by: Zhang Qilong <zhangqilong3@huawei.com>
 > ---
->   sound/soc/codecs/nau8822.c | 7 +++++++
->   1 file changed, 7 insertions(+)
 >
-> diff --git a/sound/soc/codecs/nau8822.c b/sound/soc/codecs/nau8822.c
-> index b436e532993d..4d3720c69f91 100644
-> --- a/sound/soc/codecs/nau8822.c
-> +++ b/sound/soc/codecs/nau8822.c
-> @@ -726,6 +726,13 @@ static int nau8822_set_pll(struct snd_soc_dai *dai, int pll_id, int source,
->   	struct nau8822_pll *pll_param = &nau8822->pll;
->   	int ret, fs;
->   
-> +	if (freq_out == 0) {
-> +		dev_dbg(component->dev, "PLL disabled\n");
-> +		snd_soc_component_update_bits(component,
-> +			NAU8822_REG_POWER_MANAGEMENT_1, NAU8822_PLL_EN_MASK, NAU8822_PLL_OFF);
-> +		return 0;
-> +	}
+
+ The changelog should be in the place after "---"
+
+Best regards
+Wang shengjiu
+
+ sound/soc/fsl/fsl_xcvr.c | 9 +++++++++
+>  1 file changed, 9 insertions(+)
+>
+> diff --git a/sound/soc/fsl/fsl_xcvr.c b/sound/soc/fsl/fsl_xcvr.c
+> index d0556c79fdb1..55e640cba87d 100644
+> --- a/sound/soc/fsl/fsl_xcvr.c
+> +++ b/sound/soc/fsl/fsl_xcvr.c
+> @@ -1228,6 +1228,7 @@ static int fsl_xcvr_probe(struct platform_device
+> *pdev)
+>          */
+>         ret = devm_snd_dmaengine_pcm_register(dev, NULL, 0);
+>         if (ret) {
+> +               pm_runtime_disable(dev);
+>                 dev_err(dev, "failed to pcm register\n");
+>                 return ret;
+>         }
+> @@ -1235,6 +1236,7 @@ static int fsl_xcvr_probe(struct platform_device
+> *pdev)
+>         ret = devm_snd_soc_register_component(dev, &fsl_xcvr_comp,
+>                                               &fsl_xcvr_dai, 1);
+>         if (ret) {
+> +               pm_runtime_disable(dev);
+>                 dev_err(dev, "failed to register component %s\n",
+>                         fsl_xcvr_comp.name);
+>         }
+> @@ -1242,6 +1244,12 @@ static int fsl_xcvr_probe(struct platform_device
+> *pdev)
+>         return ret;
+>  }
+>
+> +static int fsl_xcvr_remove(struct platform_device *pdev)
+> +{
+> +       pm_runtime_disable(&pdev->dev);
+> +       return 0;
+> +}
 > +
->   	fs = freq_out / 256;
->   
->   	ret = nau8822_calc_pll(freq_in, fs, pll_param);
+>  static __maybe_unused int fsl_xcvr_runtime_suspend(struct device *dev)
+>  {
+>         struct fsl_xcvr *xcvr = dev_get_drvdata(dev);
+> @@ -1370,6 +1378,7 @@ static struct platform_driver fsl_xcvr_driver = {
+>                 .pm = &fsl_xcvr_pm_ops,
+>                 .of_match_table = fsl_xcvr_dt_ids,
+>         },
+> +       .remove = fsl_xcvr_remove,
+>  };
+>  module_platform_driver(fsl_xcvr_driver);
+>
+> --
+> 2.31.1
+>
+>
