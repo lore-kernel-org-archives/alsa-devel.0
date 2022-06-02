@@ -4,75 +4,78 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id EC516C43334
-	for <alsa-devel@archiver.kernel.org>; Thu,  2 Jun 2022 16:23:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id CABA5C43334
+	for <alsa-devel@archiver.kernel.org>; Thu,  2 Jun 2022 16:23:19 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id AC43317C1;
-	Thu,  2 Jun 2022 18:22:24 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AC43317C1
+	by alsa0.perex.cz (Postfix) with ESMTPS id EB13817D6;
+	Thu,  2 Jun 2022 18:22:27 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EB13817D6
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1654186994;
-	bh=szAktUbHrk5hDQDYHbpLkpBa09x2JUflMnDOukVHJWM=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=uguzAs+41fcl2/t1JQWwMC7PRy1FJQPk670YvH6x7sW/LFnhDVqaH9fyLx5T8mHnA
-	 MgQYUdbYgZyMYHhqPf8Na5VK9TfH+Wh6SOquIDJhvjavjwsIXfkinqbs+SYUcHrEtw
-	 QAVxXq8gkSB7IynqxK9QBbCIHKE9BNT2vdfmmOIc=
+	s=default; t=1654186998;
+	bh=cY18FiQvxoccY0yrTlCqmqGb1ca4OgA4DrBk4jZAe1o=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=GLCwcCEg58zAd1HEghvKQBevDdTwhMusUDnbrTCyNtwAIAywiPJFyEbW4OXsF4kkK
+	 Vi0o2FUg5rJPheYPCIdVCBnxhi7Xe42cX79nd/uFcvThw532U6/g4SeDIk/STrMXBU
+	 f5b3OgHjzNPkIWgZeVqLXwHbLlFEvJ2QFVjuEVcU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 93DC9F80534;
-	Thu,  2 Jun 2022 18:21:35 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 1AFC7F8025E;
+	Thu,  2 Jun 2022 18:21:38 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id B0888F80525; Thu,  2 Jun 2022 18:21:33 +0200 (CEST)
-Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
- [67.231.149.25])
+ id EFFF1F8053A; Thu,  2 Jun 2022 18:21:35 +0200 (CEST)
+Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
+ [67.231.152.168])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 4F575F80425
- for <alsa-devel@alsa-project.org>; Thu,  2 Jun 2022 18:21:24 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4F575F80425
+ by alsa1.perex.cz (Postfix) with ESMTPS id 5044EF80158
+ for <alsa-devel@alsa-project.org>; Thu,  2 Jun 2022 18:21:23 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5044EF80158
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com
- header.b="NpvpFZ3M"
-Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
- by mx0a-001ae601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 252Ao5gC026091;
- Thu, 2 Jun 2022 11:21:21 -0500
+ header.b="lEjRHuxs"
+Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
+ by mx0b-001ae601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 252BrAOo027248;
+ Thu, 2 Jun 2022 11:21:22 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
  h=from : to : cc :
- subject : date : message-id : mime-version : content-transfer-encoding :
- content-type; s=PODMain02222019;
- bh=9g6wF6XXOcEFnnrKMq7H5eD/0w2VbCNXrRcuyQ7orXY=;
- b=NpvpFZ3MtzZ6GK+80lTyOSf8x//XPPTImFKidxYG+M/B8keFIE6HY//NKRTRkJQ9NgYZ
- hHwBd/1QQFZYm4QhYeRhQ3ijrduv291Xfgv/U9EDWDJhlPAHB6+8H/hZsL8h3mz2cfXV
- DlL9mkGcIgTn7L2n47iteDwdkW1WONKbgq1U5UfgicQaiac6uok3qjVlJxpJbgXOUS1y
- sDVYN0ktwdbZ2p8rgz7zm+UNrYPVBW0s5PSgdlNdB2Ax1/caEHESywXfA8zd5TEk7hXv
- zrovMC3hzl5eS6CPPe1pqrWAB8+zaWLKM0jND8XavdTswhpwMxu1XLzmoRqQIYRy30jn YA== 
-Received: from ediex02.ad.cirrus.com ([84.19.233.68])
- by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3gbh51nq0d-1
+ subject : date : message-id : in-reply-to : references : mime-version :
+ content-transfer-encoding : content-type; s=PODMain02222019;
+ bh=xppXRKpPoQYmy1saWXUVFmsK1LSyZf5H5sACCvbLVy8=;
+ b=lEjRHuxs7mHfHzJ7wVetbgpiqnT7H29LBv0Jt6Mvdy2b0VqX8dC4Xok50oeK2Bs/+QHd
+ +5wQMeBWwGNzzKU2doxUyp75KXUl/rFdByNZvIECqgQuyBU6bPXcHv/XZDxiXRGK6sXn
+ BKGbOsUMVZcAIXDEwx48cKM8z3ZoaXqhuS42pVHQkpyIHoDN/CsyUCnu8UW8r2RGfbmD
+ GLBUJ0QrqiXOq9lvUo42bsIG5orm+Uk3M/GTaqYzEKD3c27tZIbtnEIlW4ZHFMByqQpe
+ o24KTHSJdypTtYT05SM8koH96jkm1AD4cyDzN16wZb5/LDnfwgHU0hlOG0LbxwmwBIY9 7w== 
+Received: from ediex01.ad.cirrus.com ([84.19.233.68])
+ by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3gbg5nnqyj-3
  (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
  Thu, 02 Jun 2022 11:21:21 -0500
-Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX02.ad.cirrus.com
- (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
+Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.28; Thu, 2 Jun
  2022 17:21:19 +0100
 Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
  (198.61.84.80) with Microsoft SMTP Server id 15.1.2375.28 via
  Frontend Transport; Thu, 2 Jun 2022 17:21:19 +0100
 Received: from algalon.ad.cirrus.com (algalon.ad.cirrus.com [198.90.251.122])
- by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 1A4ED459;
+ by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 4BD1B459;
  Thu,  2 Jun 2022 16:21:19 +0000 (UTC)
 From: Charles Keepax <ckeepax@opensource.cirrus.com>
 To: <broonie@kernel.org>
-Subject: [PATCH 0/6] Fixup Cirrus SX control usage
-Date: Thu, 2 Jun 2022 17:21:13 +0100
-Message-ID: <20220602162119.3393857-1-ckeepax@opensource.cirrus.com>
+Subject: [PATCH 4/6] ASoC: cs42l52: Correct TLV for Bypass Volume
+Date: Thu, 2 Jun 2022 17:21:17 +0100
+Message-ID: <20220602162119.3393857-5-ckeepax@opensource.cirrus.com>
 X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20220602162119.3393857-1-ckeepax@opensource.cirrus.com>
+References: <20220602162119.3393857-1-ckeepax@opensource.cirrus.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-Proofpoint-GUID: EcFLfLUIrSXk9lr5iPMpLZKeQx19pyIU
-X-Proofpoint-ORIG-GUID: EcFLfLUIrSXk9lr5iPMpLZKeQx19pyIU
+X-Proofpoint-ORIG-GUID: YAcTCwFmCohKk31UeMu-sq8dDcCmtFbR
+X-Proofpoint-GUID: YAcTCwFmCohKk31UeMu-sq8dDcCmtFbR
 X-Proofpoint-Spam-Reason: safe
 Cc: alsa-devel@alsa-project.org, patches@opensource.cirrus.com,
  lgirdwood@gmail.com, david.rhodes@cirrus.com, james.schulman@cirrus.com,
@@ -92,64 +95,36 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Mostly the usage of the SX controls seems to match the lowest gain
-value + number of gain levels expected. The one notable exception
-there being cs53l30 as David noted. However, there are a couple of
-other places where the minimum value/TLVs are slightly incorrectly
-specified.
+The Bypass Volume is accidentally using a -6dB minimum TLV rather than
+the correct -60dB minimum. Add a new TLV to correct this.
 
-There are two I couldn't quite work out yet, any input on these
-greatly appreciated:
+Signed-off-by: Charles Keepax <ckeepax@opensource.cirrus.com>
+---
+ sound/soc/codecs/cs42l52.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-SOC_DOUBLE_R_SX_TLV("Speaker Volume", CS42L52_SPKA_VOL, CS42L52_SPKB_VOL,
-                    0, 0x40, 0xC0, hl_tlv),
-
-0.5dB step
-0x40 - -96dB
-0x00 - 0dB
-
-This one is weird, the datasheet says 0x40 is the minimum, which
-matches, but the datasheet also says 0.5dB steps to 0x00 being 0dB
-which doesn't match with 0x40 being the minimum, or 0xC0 being
-the number of levels. Some clarification will needed from the
-hardware guys.
-
-SOC_SINGLE_SX_TLV("Beep Volume", CS42L56_BEEP_FREQ_OFFTIME,
-                  0, 0x07, 0x23, beep_tlv),
-
-2dB step
-0x07 - -50dB
-0x00 - 0dB
-0x06 - +6dB
-
-The minimum checks out at 0x07, but rest of this is weird. The values
-in the datasheet don't make sense, based on starting at -50dB with
-a 2dB step, 0x06 should equate to 12dB, over 31 volume levels, not
-6dB over 35 volume levels as stated. The control specifies 0x23(35)
-levels, which takes us up to a final value of 0x0A at 20dB. Again
-some clarification from the hardware guys might be needed here.
-
-Finally it is worth noting I don't actually have hardware for most of
-these devices, so mostly this is just build tested.
-
-Thanks,
-Charles
-
-Charles Keepax (6):
-  ASoC: cs42l52: Fix TLV scales for mixer controls
-  ASoC: cs35l36: Update digital volume TLV
-  ASoC: cs53l30: Correct number of volume levels on SX controls
-  ASoC: cs42l52: Correct TLV for Bypass Volume
-  ASoC: cs42l56: Correct typo in minimum level for SX volume controls
-  ASoC: cs42l51: Correct minimum value for SX volume control
-
- sound/soc/codecs/cs35l36.c |  3 ++-
- sound/soc/codecs/cs42l51.c |  2 +-
- sound/soc/codecs/cs42l52.c |  8 +++++---
- sound/soc/codecs/cs42l56.c |  4 ++--
- sound/soc/codecs/cs53l30.c | 16 ++++++++--------
- 5 files changed, 18 insertions(+), 15 deletions(-)
-
+diff --git a/sound/soc/codecs/cs42l52.c b/sound/soc/codecs/cs42l52.c
+index 02c25399cf8a2..10e696406a71b 100644
+--- a/sound/soc/codecs/cs42l52.c
++++ b/sound/soc/codecs/cs42l52.c
+@@ -137,6 +137,8 @@ static DECLARE_TLV_DB_SCALE(mic_tlv, 1600, 100, 0);
+ 
+ static DECLARE_TLV_DB_SCALE(pga_tlv, -600, 50, 0);
+ 
++static DECLARE_TLV_DB_SCALE(pass_tlv, -6000, 50, 0);
++
+ static DECLARE_TLV_DB_SCALE(mix_tlv, -5150, 50, 0);
+ 
+ static DECLARE_TLV_DB_SCALE(beep_tlv, -56, 200, 0);
+@@ -351,7 +353,7 @@ static const struct snd_kcontrol_new cs42l52_snd_controls[] = {
+ 			      CS42L52_SPKB_VOL, 0, 0x40, 0xC0, hl_tlv),
+ 
+ 	SOC_DOUBLE_R_SX_TLV("Bypass Volume", CS42L52_PASSTHRUA_VOL,
+-			      CS42L52_PASSTHRUB_VOL, 0, 0x88, 0x90, pga_tlv),
++			      CS42L52_PASSTHRUB_VOL, 0, 0x88, 0x90, pass_tlv),
+ 
+ 	SOC_DOUBLE("Bypass Mute", CS42L52_MISC_CTL, 4, 5, 1, 0),
+ 
 -- 
 2.30.2
 
