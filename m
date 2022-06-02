@@ -4,74 +4,71 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0421FC43334
-	for <alsa-devel@archiver.kernel.org>; Thu,  2 Jun 2022 13:08:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id DAFA2C433EF
+	for <alsa-devel@archiver.kernel.org>; Thu,  2 Jun 2022 13:08:38 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3A69E1741;
-	Thu,  2 Jun 2022 15:07:27 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3A69E1741
+	by alsa0.perex.cz (Postfix) with ESMTPS id DA5191740;
+	Thu,  2 Jun 2022 15:07:46 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DA5191740
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1654175297;
-	bh=NSNBkSX73Lx5b+0Jn5LFw33hKFsA/af0pAHUE4qKj9Q=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=KOMf1Ijfau0sLNPc3CXc/dyDtPDuSHKLNE8xRDUPIbjcNqlXXGXszRiDJTkLlv4+T
-	 M9Cu89bh96sMT+Q4U0q9XO9uPV90BclwXYfzCZmZmtGEKyicq/iXvJ7wcUCoQLyHwf
-	 JNGAurTVTrKOXs7cQwFEIR+Q+yLJ5cHc5x2958CA=
+	s=default; t=1654175317;
+	bh=g6DaQn1XOxtQxacZgcwUtfK0LXYTyL4uGdfcjrrr2MU=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=usn1Xi4sVuXp3LYOd0mnWK776SXYYUzfEONQEULa0NYLqYMzKSWRlxeFyzyPbFgQk
+	 SWArdyFuHND1iR6vlA23HXfPRDuJl1QmivECOc3zmEsgxjbIXNaOaYVim83FQ1UF9n
+	 WKJegbCpN64x25MhY305wRJKe1N/Gj/VesYhzvc0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 6064BF80425;
-	Thu,  2 Jun 2022 15:06:58 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id D385EF80525;
+	Thu,  2 Jun 2022 15:07:01 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 59589F80149; Thu,  2 Jun 2022 15:06:57 +0200 (CEST)
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+ id 5A42DF80527; Thu,  2 Jun 2022 15:07:00 +0200 (CEST)
+Received: from sin.source.kernel.org (sin.source.kernel.org [145.40.73.55])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 8F74DF80149
+ by alsa1.perex.cz (Postfix) with ESMTPS id 17A77F80236
  for <alsa-devel@alsa-project.org>; Thu,  2 Jun 2022 15:06:53 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8F74DF80149
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 17A77F80236
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="PnTiXYE4"
+ header.b="uodIq9eA"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by ams.source.kernel.org (Postfix) with ESMTPS id B4A6CB81F1B;
- Thu,  2 Jun 2022 13:06:52 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 85471C34119;
- Thu,  2 Jun 2022 13:06:50 +0000 (UTC)
+ by sin.source.kernel.org (Postfix) with ESMTPS id 01044CE1FD0;
+ Thu,  2 Jun 2022 13:06:49 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5C43FC3411A;
+ Thu,  2 Jun 2022 13:06:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1654175211;
- bh=NSNBkSX73Lx5b+0Jn5LFw33hKFsA/af0pAHUE4qKj9Q=;
- h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=PnTiXYE4dI3yETbGcj25vADACeQRzFfd3S/aIgA0t1l3/Q/hvDo0svteb6DmURqZb
- BZyrt7EwT26wtnkn4T/MgvX5olIkQMUWMyfacawYQ9ws9AT+Y/8gQu7AxNVhB46xoz
- tyVZLdgXGUZBkH+7LedZ65tV/NkRjiq5CAV2hr14k0r+HmPvHy2VIUG44rFDO+LTW5
- SAwCcA7UN/Yr7jEr0YJqjYG2GuRu9xIpZQHq/9WBxCoj0AxtkP04PbLWa3vVG3nWg/
- sfLy98+MRipvgHu/WwXm7JCUNKED3sLE2C0OjnsLjvr4OZVX4E1VEBcoxyLVUBgJWZ
- xIeoJVz/tb50Q==
+ s=k20201202; t=1654175207;
+ bh=g6DaQn1XOxtQxacZgcwUtfK0LXYTyL4uGdfcjrrr2MU=;
+ h=From:To:Cc:Subject:Date:From;
+ b=uodIq9eAqXxP1EgceQh/JW4ybvFmjiXPUzbdubNsF9ZCvgwy12bCKw6Zw/hkJ9eVO
+ sOtpCBcymivMS8Vd1sSCkjPPIuqQNa/9Dn0YvcSg2ZsRcP5N8b/+gOr26am4T+3Ys+
+ s2HBPCBxxKsZ3hW3j2RX2l7X6VOifDkmoIk4w0xJGOpDmavcc2heoewgXxVKwsLYjj
+ q3DM27K2uC+Ts8hRubCAifSqR4+C7xIY1J7u0qWI1fXM1+EK0A3ASLQoEtVloQROYl
+ FYHNCLqiqro2KvXIP+474bPvtRwnimbEmCq/5hhcjFUGVZxBRxgUPAYDfvY/yHIluf
+ KS13DIvF2KIWg==
 From: Mark Brown <broonie@kernel.org>
 To: Lars-Peter Clausen <lars@metafoo.de>,
  =?UTF-8?q?Nuno=20S=C3=A1?= <nuno.sa@analog.com>,
  Liam Girdwood <lgirdwood@gmail.com>
-Subject: [PATCH 3/3] ASoC: ssm4567: Use modern ASoC DAI format terminology
-Date: Thu,  2 Jun 2022 15:05:31 +0200
-Message-Id: <20220602130531.3552275-4-broonie@kernel.org>
+Subject: [PATCH 0/3] ASoC: ssm: Use modern ASoC DAI format terminology
+Date: Thu,  2 Jun 2022 15:05:28 +0200
+Message-Id: <20220602130531.3552275-1-broonie@kernel.org>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20220602130531.3552275-1-broonie@kernel.org>
-References: <20220602130531.3552275-1-broonie@kernel.org>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=834; h=from:subject;
- bh=NSNBkSX73Lx5b+0Jn5LFw33hKFsA/af0pAHUE4qKj9Q=;
- b=owEBbQGS/pANAwAKASTWi3JdVIfQAcsmYgBimLVWk9UTV/vcshTsvPqe0hqQGkmjOXcnwcT5VDWJ
- 5jxPWzSJATMEAAEKAB0WIQSt5miqZ1cYtZ/in+ok1otyXVSH0AUCYpi1VgAKCRAk1otyXVSH0JCxB/
- 4wSeJaeMyvmt0cEPT4aaeUH+ZK5Cu3wZ/8UG1ak820lCnRWc/ZbTDtjxTM9BmpV3xnrQVrBr8vOJSt
- WSGDNc2uGiB+IHx8GJnXgvjz2d1+Ojj1E/3BBDTXk1iiyWUuNjpXtJiU6logEXwf5FyA6QRpZF30xv
- HBfSYsDrKM4EEP5588Bfb6eM1cQyb3XgpnRR1J7OGUbiOzIz0z1huvbu2NDdDi/SQ5/Q0qwrrahKoj
- SxqoCpGRT4twNTq7klW/O6a2gocx6O1ms/5Xw6WYYHdGOK1qQSrss98m+a+uExgwKp8co8ogkWJA+N
- aC1NXyDnVcInZ7J99aUPYGwTJpc/VT
+X-Developer-Signature: v=1; a=openpgp-sha256; l=465; h=from:subject;
+ bh=g6DaQn1XOxtQxacZgcwUtfK0LXYTyL4uGdfcjrrr2MU=;
+ b=owEBbQGS/pANAwAKASTWi3JdVIfQAcsmYgBimLVURYvpSiKuDPuGpja8Puv6I99N3KdZZ8YG6jyQ
+ KOrWV8KJATMEAAEKAB0WIQSt5miqZ1cYtZ/in+ok1otyXVSH0AUCYpi1VAAKCRAk1otyXVSH0D9CB/
+ 0eMqE/cUxld2ZcyrRoHs5cVB4Th1guEQERc1fdAGufxiE8ZEuDCd7CexPsC31USjIsUDCsG2C8zpw4
+ 8RhxCm+58GaY+Sz0RDurpdIuDPp88c7AB2lDrQSVMyCfhiAJTjhLP22lHD3FbweX3qQY2FAaGBkmPU
+ 3mM8/6gPRNiN8JNPW23gRMgrzeQuwgRFcMIjQRuXZ0STQGglgOW1msosGioVr7qVXL15saZtBHj2qX
+ oYSGu8LQxeThYgSwI48jie+W4ebaS8LWNE8PJHgLNbgZ1pQHI30y8dAoOUZLgxs5RgHYoA/sEpH87O
+ 0bp0Xt5Yl/Y/adNxMdOMt91f5oUFNo
 X-Developer-Key: i=broonie@kernel.org; a=openpgp;
  fpr=3F2568AAC26998F9E813A1C5C3F436CA30F5D8EB
 Content-Transfer-Encoding: 8bit
@@ -91,29 +88,19 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-As part of moving to remove the old style defines for the bus clocks update
-the ssm4567 driver to use more modern terminology for clocking.
+Trivial updates to modernise the various ssm* drivers to the new
+DAI clocking constants.
 
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
+Mark Brown (3):
+  ASoC: ssm2518: Use modern ASoC DAI format terminology
+  ASoC: ssm2602: Use modern ASoC DAI format terminology
+  ASoC: ssm4567: Use modern ASoC DAI format terminology
+
+ sound/soc/codecs/ssm2518.c | 4 ++--
+ sound/soc/codecs/ssm2602.c | 6 +++---
  sound/soc/codecs/ssm4567.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ 3 files changed, 7 insertions(+), 7 deletions(-)
 
-diff --git a/sound/soc/codecs/ssm4567.c b/sound/soc/codecs/ssm4567.c
-index 08ced09ef001..b47321c597d0 100644
---- a/sound/soc/codecs/ssm4567.c
-+++ b/sound/soc/codecs/ssm4567.c
-@@ -278,8 +278,8 @@ static int ssm4567_set_dai_fmt(struct snd_soc_dai *dai, unsigned int fmt)
- 	unsigned int ctrl1 = 0;
- 	bool invert_fclk;
- 
--	switch (fmt & SND_SOC_DAIFMT_MASTER_MASK) {
--	case SND_SOC_DAIFMT_CBS_CFS:
-+	switch (fmt & SND_SOC_DAIFMT_CLOCK_PROVIDER_MASK) {
-+	case SND_SOC_DAIFMT_CBC_CFC:
- 		break;
- 	default:
- 		return -EINVAL;
 -- 
 2.30.2
 
