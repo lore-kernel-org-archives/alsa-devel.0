@@ -4,70 +4,74 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id EED03C433EF
-	for <alsa-devel@archiver.kernel.org>; Fri,  3 Jun 2022 10:38:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 70E91C43334
+	for <alsa-devel@archiver.kernel.org>; Fri,  3 Jun 2022 10:38:53 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 00AC91817;
-	Fri,  3 Jun 2022 12:37:55 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 00AC91817
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3E6061853;
+	Fri,  3 Jun 2022 12:38:01 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3E6061853
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1654252725;
-	bh=94AZfQNzohTSikU20D9y+1gErKKAeCfmcpY9ea6/fGk=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=YMriyhPyBlppYLkr7WHW/9rYqPRVuYD0x/jgFtcHMo/4IT4EygguF0w6VW4sWLihi
-	 lMf6Z1m3Iazj47TDlZo/ngMa71zY31KTWImDFpatIOm95syRnlIuDy2IUahHf9hUS8
-	 +lLejryFZf4Z1kTwRzOgY1G5dme5lVoj6/PI/M2I=
+	s=default; t=1654252731;
+	bh=MZgSgkuelUB2bqT/hGN4RaKV75AS5O65rBH5WsbZeS4=;
+	h=From:Date:Subject:To:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=WtkF1cfL+ZUvJhUNOYGv2jCgfOCBP9I/h630mMDq/aL86F9vXOiahDcSgakKtw2mG
+	 UQIK19T+mZt+33DrirMH6HYv32YibmKpOyq6rjWT6AFctYX53Oawh4OnLlu+NT9Y/l
+	 0Ue2I89020n11kjYK/Klfrlu6E3gpNzQYhW8gABw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 28E44F80526;
+	by alsa1.perex.cz (Postfix) with ESMTP id AE012F80528;
 	Fri,  3 Jun 2022 12:37:05 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 5B3C1F80149; Thu,  2 Jun 2022 18:45:43 +0200 (CEST)
-Received: from mail.shift-gmbh.com (mail.shift-gmbh.com [85.10.195.145])
- (using TLSv1.2 with cipher DHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 58AAEF80236; Fri,  3 Jun 2022 01:28:59 +0200 (CEST)
+Received: from mail-oa1-x2f.google.com (mail-oa1-x2f.google.com
+ [IPv6:2001:4860:4864:20::2f])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 36881F80149
- for <alsa-devel@alsa-project.org>; Thu,  2 Jun 2022 18:45:37 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 36881F80149
+ by alsa1.perex.cz (Postfix) with ESMTPS id 173DDF80149
+ for <alsa-devel@alsa-project.org>; Fri,  3 Jun 2022 01:28:52 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 173DDF80149
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=shiftphones.com header.i=@shiftphones.com
- header.b="SPkvOhTj"
-From: Alexander Martinz <amartinz@shiftphones.com>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=shiftphones.com;
- s=2018; t=1654188336;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=imGM7saNPOQ6vbKogvcqXOICfijWBW6J11L5perWAFg=;
- b=SPkvOhTj83B6oiJW3ZAr24eQ87yTw5YKMp8thSdc+8WpuYXGlWvxUk4x3VYgij5bb4pOhs
- dQbS4mOPX1RWY/Pu1wgAh41UG3hwC2EZcw7HcMoEg1c33blT+f7q5V4f9tTARR3kOdlYZP
- CaQTjPSJF7G4uIaPouDVMMwa6fYRIa1l9h+NRSaZF55+ua8vne/ugrWaUnXXmUk09tKKKm
- dnW8FXetCsw1XtkBuauUiw366+SuKbEOwAmKxtDq9Lostm16iyTS7ZfyVurzQf4wiS30LI
- ftKT364RV/wmI64x5etHJMHvwIOyC0MmW06r1LmlAzXMSc6SM1CKtYNnKPxrAg==
-To: ~postmarketos/upstreaming@lists.sr.ht
-Subject: [PATCH 2/2] ASoC: dt-bindings: nxp,tfa989x: Add tfa9890 support
-Date: Thu,  2 Jun 2022 18:45:04 +0200
-Message-Id: <20220602164504.261361-2-amartinz@shiftphones.com>
-In-Reply-To: <20220602164504.261361-1-amartinz@shiftphones.com>
-References: <20220602164504.261361-1-amartinz@shiftphones.com>
+ dkim=pass (2048-bit key) header.d=vt-edu.20210112.gappssmtp.com
+ header.i=@vt-edu.20210112.gappssmtp.com header.b="fCDSs9YZ"
+Received: by mail-oa1-x2f.google.com with SMTP id
+ 586e51a60fabf-f2bb84f9edso8697938fac.10
+ for <alsa-devel@alsa-project.org>; Thu, 02 Jun 2022 16:28:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=vt-edu.20210112.gappssmtp.com; s=20210112;
+ h=mime-version:from:date:message-id:subject:to;
+ bh=MZgSgkuelUB2bqT/hGN4RaKV75AS5O65rBH5WsbZeS4=;
+ b=fCDSs9YZjsjqNXhiYIHRYmpuqtwd+WOcehGhCisZnJMdn9kp2KMbRVntq4LybMZuhA
+ 7YZP4487mM6KkGBqtX9QhTX7HC4bX+D1iUCFGjMy3NnDi8hPSINPkEIjciQaIbgobE+t
+ wSSNHbLS5DWTiVnX2OXKmpCdjGm6kv4GKWfSvRLa9vNm9JG45b+51OxG5dOnIPVAINpB
+ YCEkiHJqfn3t5Ft0eQf1qJR4m5T9WnX2i0BNbdbdyC3Jrn1SomviHQtwjVUH/Th9/q6v
+ zDQbKJ7JKX+5jVCp+iir5AFy6++SfRtZZ8HIuw+rXPwttgGnFdT0QxovhVe8Dg4BnYIu
+ Za+w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
+ bh=MZgSgkuelUB2bqT/hGN4RaKV75AS5O65rBH5WsbZeS4=;
+ b=VWyyxxhzWEjMCSKvw3mXXEixg1CemIT2o0N/0YH0sDPpPGuL7c1QoOYFMnzOd+E7v9
+ mHSDXu7mXWz1u/yRc/osby1hSvHfLz0vl5woj06PR4e3N/2bXx4wU8lg7JsGL9Zd1unO
+ EG6ivDGrV52QH0/Niw1jgSZ10RI76G4xVUraV8gCdFQ4IHcwYzAfBWe5Pm6SDM/du/Sj
+ JfAJKuXKBUWb1cT1PUrp6A8saM+GdA3vmnq8IjK52O9wbuPybjAbhzlJg1+6bfMSwDEh
+ c9O7gbeil0xNd8tNFp1KqP6XQ75GLF1EBLxT9lxwYdXezHmxVusjNafw8DgSq77wY244
+ rO2g==
+X-Gm-Message-State: AOAM530u5Q4C1vAVyk4WB3CyWNGYZIUWHJTlLN1q3QvCtMajqKjz6V4u
+ RGiifLMBNlHG0s6BIo36E5hd4tci3K8klmFlbZizG6/1LwQ=
+X-Google-Smtp-Source: ABdhPJx7gB1sTLuIlBepCKuOpJi5W0y8pU8f659etm4PFpOKaZC8X0Y/VnVRdvcK28JbglJUfz/xBE03/Qd7G2M3xe8=
+X-Received: by 2002:a05:6870:5628:b0:f3:26ff:2f98 with SMTP id
+ m40-20020a056870562800b000f326ff2f98mr4144034oao.176.1654212529979; Thu, 02
+ Jun 2022 16:28:49 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Authentication-Results: ORIGINATING;
- auth=pass smtp.auth=amartinz@shiftphones.com
- smtp.mailfrom=amartinz@shiftphones.com
+From: Mikhail Kravchenko <mkravche@vt.edu>
+Date: Thu, 2 Jun 2022 19:28:39 -0400
+Message-ID: <CAL-J7+aURwwF8fVpQp36aojNFhAqcsdFaEia9EAAbOagVD40QA@mail.gmail.com>
+Subject: Issues with ALSA after update to Pop!_OS 22.04 LTS Jaunty Pipewire
+To: alsa-devel@alsa-project.org
+Content-Type: text/plain; charset="UTF-8"
 X-Mailman-Approved-At: Fri, 03 Jun 2022 12:37:02 +0200
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
- Stephan Gerhold <stephan@gerhold.net>, Dylan Van Assche <me@dylanvanassche.be>,
- Alexander Martinz <amartinz@shiftphones.com>, linux-kernel@vger.kernel.org,
- Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>,
- Liam Girdwood <lgirdwood@gmail.com>, Caleb Connolly <caleb@connolly.tech>,
- Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- phone-devel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -83,25 +87,39 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Document TFA9890 binding for tfa989x.
+I updated the operating system running on my machine to 22.04 Jaunty.
+This update brings the system over to pipe-wire. After running certain
+programs that utilize alsa, the audio on my system becomes
+intermittent and runs only one application's audio at a time.
+Resetting the pipe-wire services and forcing alsa to reload its
+modules does not reliably mitigate the issue.
 
-Signed-off-by: Alexander Martinz <amartinz@shiftphones.com>
----
- Documentation/devicetree/bindings/sound/nxp,tfa989x.yaml | 1 +
- 1 file changed, 1 insertion(+)
+This is the url generated by alsa-info.
+http://alsa-project.org/db/?f=4d643a3153ffabd5c72313e8ffa3c9f393e676ef
 
-diff --git a/Documentation/devicetree/bindings/sound/nxp,tfa989x.yaml b/Documentation/devicetree/bindings/sound/nxp,tfa989x.yaml
-index b9b1dba40856..7f2e68ff6d34 100644
---- a/Documentation/devicetree/bindings/sound/nxp,tfa989x.yaml
-+++ b/Documentation/devicetree/bindings/sound/nxp,tfa989x.yaml
-@@ -15,6 +15,7 @@ allOf:
- properties:
-   compatible:
-     enum:
-+      - nxp,tfa9890
-       - nxp,tfa9895
-       - nxp,tfa9897
- 
--- 
-2.36.1
+On a power cycle, the audio seems to work fine, but as soon as I run
+the problematic program I get the output:
 
+ALSA lib pcm_dmix.c:1032:(snd_pcm_dmix_open) unable to open slave
+
+If the program's audio is successful, and it opens the slave. Audio to
+other applications is upset.
+
+sudo alsa force-reload
+Unloading ALSA sound driver modules: snd-seq-dummy snd-seq-midi
+snd-seq-midi-event snd-hda-codec-realtek snd-hda-codec-generic
+snd-hda-codec-hdmi snd-hda-intel snd-intel-dspcfg snd-intel-sdw-acpi
+snd-hda-codec snd-hda-core snd-hrtimer snd-usb-audio snd-usbmidi-lib
+snd-hwdep snd-rawmidi snd-seq snd-pcm snd-seq-device snd-timer
+(failed: modules still loaded: snd-hda-codec-realtek
+snd-hda-codec-generic snd-hda-codec-hdmi snd-hda-intel
+snd-intel-dspcfg snd-intel-sdw-acpi snd-hda-codec snd-hda-core
+snd-hrtimer snd-usb-audio snd-usbmidi-lib snd-hwdep snd-rawmidi
+snd-seq snd-pcm snd-seq-device snd-timer).
+Loading ALSA sound driver modules: snd-seq-dummy snd-seq-midi
+snd-seq-midi-event snd-hda-codec-realtek snd-hda-codec-generic
+snd-hda-codec-hdmi snd-hda-intel snd-intel-dspcfg snd-intel-sdw-acpi
+snd-hda-codec snd-hda-core snd-hrtimer snd-usb-audio snd-usbmidi-lib
+snd-hwdep snd-rawmidi snd-seq snd-pcm snd-seq-device snd-timer.
+
+MK
