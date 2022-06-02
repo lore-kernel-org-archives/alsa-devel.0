@@ -4,42 +4,42 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 89EB7CCA478
-	for <alsa-devel@archiver.kernel.org>; Thu,  2 Jun 2022 14:01:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 722D0C43334
+	for <alsa-devel@archiver.kernel.org>; Thu,  2 Jun 2022 14:01:58 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id DD20D17B5;
-	Thu,  2 Jun 2022 16:00:35 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DD20D17B5
+	by alsa0.perex.cz (Postfix) with ESMTPS id B06CD1785;
+	Thu,  2 Jun 2022 16:01:06 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B06CD1785
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1654178485;
-	bh=kKRgMFkAcrOCwy0OIAu0DsgSEAF0xJnNKwKV277U+yY=;
+	s=default; t=1654178516;
+	bh=4lepozIVNN8uFqiMSDUGNSkfecEbe+qT7hKfMntI6VU=;
 	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=fYZb3IiuxiYFfzvH/Z0NQVvAKU2Btfou37bFC2BKXwt2nMHzQlmr+/TQdV3a3aNyP
-	 tR4t4nQBHqEMKp/FD+y/Rd+N0UlhUkMu0r6HsG+bMdxcTm/o16/cYXBQCcLPs0pZOb
-	 paChBsEOQmp4Lhxo9B+BQF7fACI73R9cRjw23WLI=
+	b=Hn8zd84qsFjWF+FNgOMK+FiAWY8nHdQg5WGftlYWpmbMXe0IsDFCkwCDO3LJyz+6u
+	 Jc7EfUq8aZRxP4gqQ5TfbNH7FLBPOyoWbpKYkr4j+GmhUplAnn9004KC7QtOq6TN5w
+	 gAM9ZmQt0ctz4a22LX6GkpAue/AKnc2tZgF+aWyA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 80E63F80158;
-	Thu,  2 Jun 2022 16:00:35 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 19CE5F80089;
+	Thu,  2 Jun 2022 16:00:54 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 0CB16F80158; Thu,  2 Jun 2022 16:00:34 +0200 (CEST)
+ id 7458CF804AB; Thu,  2 Jun 2022 16:00:53 +0200 (CEST)
 Received: from webhooks-bot.alsa-project.org (gate.perex.cz [77.48.224.242])
- by alsa1.perex.cz (Postfix) with ESMTP id C8DA8F80236
- for <alsa-devel@alsa-project.org>; Thu,  2 Jun 2022 16:00:29 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C8DA8F80236
+ by alsa1.perex.cz (Postfix) with ESMTP id 12B31F80089
+ for <alsa-devel@alsa-project.org>; Thu,  2 Jun 2022 16:00:50 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 12B31F80089
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 From: GitHub pull_request - edited <github@alsa-project.org>
 To: alsa-devel@alsa-project.org
-In-Reply-To: <1654178429799552917-webhooks-bot@alsa-project.org>
-References: <1654178429799552917-webhooks-bot@alsa-project.org>
+In-Reply-To: <1654178450465586901-webhooks-bot@alsa-project.org>
+References: <1654178450465586901-webhooks-bot@alsa-project.org>
 Subject: [PATCH 0/4] hwdep: define interface for hwdep device
-Message-Id: <20220602140034.0CB16F80158@alsa1.perex.cz>
-Date: Thu,  2 Jun 2022 16:00:34 +0200 (CEST)
+Message-Id: <20220602140053.7458CF804AB@alsa1.perex.cz>
+Date: Thu,  2 Jun 2022 16:00:53 +0200 (CEST)
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -62,19 +62,21 @@ The protocol in ALSA HwDep character device has common feature to each device. I
 This patchset adds the interface. The implementation of interface should have four methods; open, get_protocol_version, get_device_info, and create_source. Additionally, it should emit handle-disconnection signal when detecting ENODEV error in the interation of source. It requires to notify userspace application since the application should release character device immediately.
 
 ```
-Takashi Sakamoto (3):
+Takashi Sakamoto (4):
   hwdep: use explicit value for iface type enumeration
   hwdep: device-common: add interface for common feature of ALSA HwDep device
   hwdep: add error domain for implementators of DeviceCommon interface
+  hwdep: device-info: allow to set property at instantiation
 
  src/hwdep/alsahwdep-enum-types.h |  89 +++++++++-------
  src/hwdep/alsahwdep.h            |   2 +
  src/hwdep/alsahwdep.map          |  10 ++
  src/hwdep/device-common.c        | 178 +++++++++++++++++++++++++++++++
  src/hwdep/device-common.h        | 106 ++++++++++++++++++
+ src/hwdep/device-info.c          |  38 ++++++-
  src/hwdep/meson.build            |   2 +
  tests/alsahwdep-enums            |  10 ++
- 7 files changed, 356 insertions(+), 41 deletions(-)
+ 8 files changed, 389 insertions(+), 46 deletions(-)
  create mode 100644 src/hwdep/device-common.c
  create mode 100644 src/hwdep/device-common.h
 ```
