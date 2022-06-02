@@ -4,72 +4,73 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 658CEC43334
-	for <alsa-devel@archiver.kernel.org>; Thu,  2 Jun 2022 13:57:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A8F58C433EF
+	for <alsa-devel@archiver.kernel.org>; Thu,  2 Jun 2022 13:57:32 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B2B2C17A8;
-	Thu,  2 Jun 2022 15:56:22 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B2B2C17A8
+	by alsa0.perex.cz (Postfix) with ESMTPS id E8B821774;
+	Thu,  2 Jun 2022 15:56:40 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E8B821774
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1654178232;
-	bh=UV4KLVXEt3csZ4I0hhI3jLBRmZFWgvdIqhB74FxI2ts=;
+	s=default; t=1654178251;
+	bh=slnjXFuQx2CxmCeXUAaXzm782cOCmjgTLMmaLTkUwYM=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=KMPgvqfgAB2qASHIIfF7EBqtoPXW8Kn5bWzqefYpJOYPRPFYsFDbmG9BVI/M8h64x
-	 exD1K8mP1t9azsXqJjeRqlf1miaKiqBWWVkFLofOtUNlbcwGXkVYHskRmyESqsSqU9
-	 /DEkxR3N5+Vu62Ew5PrMId6WyVq+0m8aH3p+jl1A=
+	b=kVJnyWEa6wYDGPbpCyBXWWvP+xlKJXF2oM5V1jwsx0WCeHGAtspEMOCdd4SRQcbmh
+	 SMY1cght5ZViG7poGPL1OFo5VQDuIkp5k26HvF6qp9MvLnctNYT9a+lutrLlh1SzXP
+	 9uK2M8fCDPnGOFn50bZuXpBk8urf/+h4BG30FJpw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 65659F8057A;
-	Thu,  2 Jun 2022 15:53:44 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id AD43BF8057D;
+	Thu,  2 Jun 2022 15:53:45 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 37EC3F8055A; Thu,  2 Jun 2022 15:53:40 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+ id A963EF80566; Thu,  2 Jun 2022 15:53:41 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org
+ [IPv6:2604:1380:4641:c500::1])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id E52CEF80542
- for <alsa-devel@alsa-project.org>; Thu,  2 Jun 2022 15:53:36 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E52CEF80542
+ by alsa1.perex.cz (Postfix) with ESMTPS id CBD3BF80551
+ for <alsa-devel@alsa-project.org>; Thu,  2 Jun 2022 15:53:37 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CBD3BF80551
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="s4It3ktf"
+ header.b="pWd9dWn3"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id 99872617C8;
- Thu,  2 Jun 2022 13:53:30 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B099FC3411E;
- Thu,  2 Jun 2022 13:53:29 +0000 (UTC)
+ by dfw.source.kernel.org (Postfix) with ESMTPS id 6736E617D6;
+ Thu,  2 Jun 2022 13:53:36 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2288BC385A5;
+ Thu,  2 Jun 2022 13:53:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1654178010;
- bh=UV4KLVXEt3csZ4I0hhI3jLBRmZFWgvdIqhB74FxI2ts=;
+ s=k20201202; t=1654178015;
+ bh=slnjXFuQx2CxmCeXUAaXzm782cOCmjgTLMmaLTkUwYM=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=s4It3ktfFAV5+JQc+gVat2lQNMIfPd8Mh2kwi1tBkCE9Xmcpz7zdoxZnBT1QXBt6C
- rR7RrsT3s9zT0ESS4pKbIzopeLT3P08uiIt071N5/oWUXyfsKU7rIFJtS3uzdESQdj
- /iJGNNP0ewtD/fhxbqtNzeiegp6hSYK2g//x33QX+ImGk6eeDm8bXMhrYnZtUB8CPB
- wRgFvS6/KJvSfD7i8ScI9SMW8RYTRIKEsiH62kYUKvx/5uZRyHjdCL5RTvVUEYwQJO
- 14Nhwog47BiB8CWnvUH44Ev6Fshtnf7yUjfZ0Dm3dN7NlrM/qUSCQASsz/Vc23Lq6I
- u2xy395JcXcgw==
+ b=pWd9dWn30mtzJg0sydIPAW0HQ3O2aTvtH57NuRJe+qmKVeqIrJnAQGIsafHLl4lSY
+ w4UFoV8IrwIVKQusMiuRkB4QVm+kJLcyPBVJLMjpcxENpbis4LC1KO0/jVumKxTE60
+ TehH8sG8sfY2y2dbm+zpugmpeG9Fsk6nthz52gvQ+z/Z4UIv33mW2KBbS2TG2MY6aO
+ MAw2nFGnv6qm4TSRBdmwi4RvVEINm+71vFB2EYXJ07JRzmm0U+iy6c7Ur0LirMrU/B
+ ndqMxaYJpOQcLNXT9UvmZdNXMSCldNIXd2IfmUQgsGmvrSKZ5oNXo0hCsCvixNIKTr
+ lOusAi7LQV4hg==
 From: Mark Brown <broonie@kernel.org>
 To: Liam Girdwood <lgirdwood@gmail.com>
-Subject: [PATCH 07/20] ASoC: tas2552: Use modern ASoC DAI format terminology
-Date: Thu,  2 Jun 2022 15:53:03 +0200
-Message-Id: <20220602135316.3554400-8-broonie@kernel.org>
+Subject: [PATCH 12/20] ASoC: uda1334: Use modern ASoC DAI format terminology
+Date: Thu,  2 Jun 2022 15:53:08 +0200
+Message-Id: <20220602135316.3554400-13-broonie@kernel.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20220602135316.3554400-1-broonie@kernel.org>
 References: <20220602135316.3554400-1-broonie@kernel.org>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1245; h=from:subject;
- bh=UV4KLVXEt3csZ4I0hhI3jLBRmZFWgvdIqhB74FxI2ts=;
- b=owEBbQGS/pANAwAKASTWi3JdVIfQAcsmYgBimMCTUz5Ds4tI7A5V1us79mT1aCreuzPKcaPPAPOn
- b9IMtQOJATMEAAEKAB0WIQSt5miqZ1cYtZ/in+ok1otyXVSH0AUCYpjAkwAKCRAk1otyXVSH0CjYB/
- 4/zTUANI+EdJlybmejVvHo72wnhsklMVvYeYvcMakdV4HHX3H8K2C5NJTXUDMKiZwp+qd2clHgEJVq
- n6u99pePWV7iNx3kiRkH4nPemCVU6QoXR4wSqetHXm5DHMpI28CFkdu3p3zQNIvVcZi++p3encruJw
- g6GYEAQxcTJC0ufRFos27XQbbh96j94P6eS2q4lXzkzuYnidD5HJzj5gbt5jKtMs8SIhl/58DV9xxo
- 2rIYfvYsFF733uJoX7eS6Wa9fxDu8uZXfZ9oA3S9TYbapm3y+frBFJUuNlYh+vEq3qN+If7RhNznMB
- pFCtwhvIGoxfpvC5QNz5E7XhBYpV2r
+X-Developer-Signature: v=1; a=openpgp-sha256; l=880; h=from:subject;
+ bh=slnjXFuQx2CxmCeXUAaXzm782cOCmjgTLMmaLTkUwYM=;
+ b=owGbwMvMwMWocq27KDak/QLjabUkhqQZB6YH6q8t+d++ObPwfdZ0uWvzdRhzChzbuE85F51d4SZ/
+ RHN5J6MxCwMjF4OsmCLL2mcZq9LDJbbOfzT/FcwgViaQKQxcnAIwkRBr9n/WrXaTWywCuY089I+LKx
+ 7+wZ/JpS7VvnxK0PSn/Z9sriyS0sj3df8puV98orbrjmT/2+xFUUfkrkgncF4KEZm+10Gy51O/zK6J
+ sl7eaf0+fMtdeJU9tV/eWJgz2dbJ+qGjYmuu2x8uNWFrwzMVmxY90JH52mjIY/i/dfekGad8nbUOv8
+ tz5djP32ii77ehuGaeq7XPQ5cvi5eWyYk+aLSvkXI4MeXUFjNdxdOpx+SE/wr35q/XC5+50yX14g89
+ 2d+yeTwbXRKzAw/c0Pgfan1Y5LPoDuN5B3j7o39fF3xxvSBqdVvqP6kef4e03Ebr51YmZ27s2LTvyq
+ UlrEuZL6+fE3fctdst9NFk0+/SAA==
 X-Developer-Key: i=broonie@kernel.org; a=openpgp;
  fpr=3F2568AAC26998F9E813A1C5C3F436CA30F5D8EB
 Content-Transfer-Encoding: 8bit
@@ -90,40 +91,26 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 As part of moving to remove the old style defines for the bus clocks update
-the tas2552 driver to use more modern terminology for clocking.
+the uda1334 driver to use more modern terminology for clocking.
 
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/tas2552.c | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+ sound/soc/codecs/uda1334.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/codecs/tas2552.c b/sound/soc/codecs/tas2552.c
-index b5c9c61ff5a8..c98a9332dcc0 100644
---- a/sound/soc/codecs/tas2552.c
-+++ b/sound/soc/codecs/tas2552.c
-@@ -347,17 +347,17 @@ static int tas2552_set_dai_fmt(struct snd_soc_dai *dai, unsigned int fmt)
- 	struct tas2552_data *tas2552 = dev_get_drvdata(component->dev);
- 	u8 serial_format;
+diff --git a/sound/soc/codecs/uda1334.c b/sound/soc/codecs/uda1334.c
+index 8670a2a05a56..9d5ed34e5420 100644
+--- a/sound/soc/codecs/uda1334.c
++++ b/sound/soc/codecs/uda1334.c
+@@ -169,7 +169,7 @@ static int uda1334_set_dai_sysclk(struct snd_soc_dai *codec_dai,
+ static int uda1334_set_fmt(struct snd_soc_dai *codec_dai, unsigned int fmt)
+ {
+ 	fmt &= (SND_SOC_DAIFMT_FORMAT_MASK | SND_SOC_DAIFMT_INV_MASK |
+-		SND_SOC_DAIFMT_MASTER_MASK);
++		SND_SOC_DAIFMT_CLOCK_PROVIDER_MASK);
  
--	switch (fmt & SND_SOC_DAIFMT_MASTER_MASK) {
--	case SND_SOC_DAIFMT_CBS_CFS:
-+	switch (fmt & SND_SOC_DAIFMT_CLOCK_PROVIDER_MASK) {
-+	case SND_SOC_DAIFMT_CBC_CFC:
- 		serial_format = 0x00;
- 		break;
--	case SND_SOC_DAIFMT_CBS_CFM:
-+	case SND_SOC_DAIFMT_CBC_CFP:
- 		serial_format = TAS2552_WCLKDIR;
- 		break;
--	case SND_SOC_DAIFMT_CBM_CFS:
-+	case SND_SOC_DAIFMT_CBP_CFC:
- 		serial_format = TAS2552_BCLKDIR;
- 		break;
--	case SND_SOC_DAIFMT_CBM_CFM:
-+	case SND_SOC_DAIFMT_CBP_CFP:
- 		serial_format = (TAS2552_BCLKDIR | TAS2552_WCLKDIR);
- 		break;
- 	default:
+ 	if (fmt != (SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF |
+ 		    SND_SOC_DAIFMT_CBC_CFC)) {
 -- 
 2.30.2
 
