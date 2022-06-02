@@ -4,73 +4,72 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 86A6BC43334
-	for <alsa-devel@archiver.kernel.org>; Thu,  2 Jun 2022 13:55:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3CA2DC433EF
+	for <alsa-devel@archiver.kernel.org>; Thu,  2 Jun 2022 13:55:56 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C28D91788;
-	Thu,  2 Jun 2022 15:54:49 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C28D91788
+	by alsa0.perex.cz (Postfix) with ESMTPS id 73A8817AA;
+	Thu,  2 Jun 2022 15:55:04 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 73A8817AA
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1654178139;
-	bh=jRLUgUntU2fruxLhA+W/LLYekTcTbLPo5lIlqi7/X/s=;
+	s=default; t=1654178154;
+	bh=Ri2UCYgxRMTklRg+xVI6zTk4ef+4/+SeBSaDiHxSok0=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=pUwxfWe/Qa7hPvKtis8Y7IMk5wiHm7qKQ67NdqlNayW+m+pywXp0Qt09Md88PfTnz
-	 LnCry82x3Wf/PSUSTJdzDiLhL9Q7E2SWa2tcN2Nene0Z43ZWWhDEmTuG6wEdBx6ZVU
-	 WqnIj7vvrtT0e5giTPM3Cgd4QIDK11VIqsHn857o=
+	b=rSXBqH7Z7oElYliIp8KMq9zCjSBj4ZMcKMJYnHcCAm4GayhwvqczkT13Ane9tWato
+	 NPLPFT7VzBrHhnA3hu2jGo8/g/JY+cm0UryVMl7wWOhzGBEu6rFnuBuxHHsv+ro2LS
+	 UyJ9pPoy2h9WJoPVZiqmADZEpKwWkkjyP6UI9UCY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 07711F80538;
+	by alsa1.perex.cz (Postfix) with ESMTP id 978F4F8053E;
 	Thu,  2 Jun 2022 15:53:34 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id B2806F8052F; Thu,  2 Jun 2022 15:53:32 +0200 (CEST)
-Received: from ams.source.kernel.org (ams.source.kernel.org
- [IPv6:2604:1380:4601:e00::1])
+ id A17B0F80538; Thu,  2 Jun 2022 15:53:33 +0200 (CEST)
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 3E494F80272
- for <alsa-devel@alsa-project.org>; Thu,  2 Jun 2022 15:53:29 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3E494F80272
+ by alsa1.perex.cz (Postfix) with ESMTPS id 0DE5FF80089
+ for <alsa-devel@alsa-project.org>; Thu,  2 Jun 2022 15:53:31 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0DE5FF80089
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="WbWRBCt+"
+ header.b="Aa6jzAyu"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by ams.source.kernel.org (Postfix) with ESMTPS id 68908B81F5E;
+ by ams.source.kernel.org (Postfix) with ESMTPS id 96EDBB81ED6;
+ Thu,  2 Jun 2022 13:53:30 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9CCB5C3411F;
  Thu,  2 Jun 2022 13:53:28 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 76307C3411A;
- Thu,  2 Jun 2022 13:53:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1654178007;
- bh=jRLUgUntU2fruxLhA+W/LLYekTcTbLPo5lIlqi7/X/s=;
+ s=k20201202; t=1654178009;
+ bh=Ri2UCYgxRMTklRg+xVI6zTk4ef+4/+SeBSaDiHxSok0=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=WbWRBCt+QG7MAFHniAq/coqKZyh/SMERhCeoTKtDBRHtaHtGLnin/FNk7ov1HXgIZ
- JPPXujJEVFz/tqcF5lcw89C4keY4z4COFqCIqH1yamp9lfgE05dA5RkXwpds/SOZLQ
- 6HOT74a7Ba3glDHyL4xVvmc2bnGOEyKaeWSt1ypUwvCgjCK+KdFEfSgCiHzqKok6jE
- 1qRBcqztaqKmfBRXKW6c2vCfjbg2G0JTEXMlSHbbYUQJAs+CmScR5xQdGUSh2T8fVB
- Uyv3XEl2W9O2QNJ9TWwdm6aENBNQJTeczYB0GGj2fMacEeSDw+KD9eiN9uaN/POm/s
- jFIe3zspDGv0A==
+ b=Aa6jzAyuurtaZ6r9mZ2cajhyM9pZ7bCiCwFiFxYuzmdO1zSVPzwUIDeW00+uEAvGq
+ lhTCmHIr7Na3XFf5DMrD3I9gAPmFC8J0KQu67j1aa3cwdBrEdKyLePI9mTyQT2Rjqb
+ QjjWSKgjV4jOf6tPym1MnabcB7frG/5MYkN414+4ehOgOJjDr25WvFW6NoUTAO0Lkk
+ C88rvt7Keq+kZKDkORq7vkqPIhwwY71h8BM2AyhNaCbrYkQp0VVGAhoF/NdUKLwt5g
+ Qr55Pg9mQAbs0JKKCUTelmj76JXFimXMAhhO0spPYbcvbtsmLLUhUov4zWs8pn1Puj
+ SRp1qhkFhdzAw==
 From: Mark Brown <broonie@kernel.org>
 To: Liam Girdwood <lgirdwood@gmail.com>
-Subject: [PATCH 04/20] ASoC: sta32x: Use modern ASoC DAI format terminology
-Date: Thu,  2 Jun 2022 15:53:00 +0200
-Message-Id: <20220602135316.3554400-5-broonie@kernel.org>
+Subject: [PATCH 06/20] ASoC: sti-sas: Use modern ASoC DAI format terminology
+Date: Thu,  2 Jun 2022 15:53:02 +0200
+Message-Id: <20220602135316.3554400-7-broonie@kernel.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20220602135316.3554400-1-broonie@kernel.org>
 References: <20220602135316.3554400-1-broonie@kernel.org>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=858; h=from:subject;
- bh=jRLUgUntU2fruxLhA+W/LLYekTcTbLPo5lIlqi7/X/s=;
- b=owEBbQGS/pANAwAKASTWi3JdVIfQAcsmYgBimMCRzCX2Ws+l5zKiD5EchYFHv5T4guU9Wa7gxzP0
- ECe5zJ6JATMEAAEKAB0WIQSt5miqZ1cYtZ/in+ok1otyXVSH0AUCYpjAkQAKCRAk1otyXVSH0AeBB/
- 0fyiJKEcggu7tTU1FXTyAGTkan7/oFi6jiQZU4Kj+JorsMXMpoJQ7NZkiZziT9Xd2fB1judZSKiobL
- Yum8IgScOqQnMMgBSMC96P0RuQ0CmgmN3S/8YGJArMqNGSZRgc3z+tcamyjDdfpHEmOUB9RX7VU+/r
- DzC5H7dputF2/1a2FQzpOS4pCMuhBh3Mw2cWRRrYqxjYGVWZEpFzxBOyYK5KJRPFqeXBGYjC8S4rvV
- 5rnLDIENTbTMR/o/vUxkBLc4cyynttDH46Y4oDO6W6w+puLNCSHtU05uBy1xSAKj2Mwvk54R1XIxWf
- SqnSARuutRkfU6VM61CoSn1QUQZiCg
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1093; h=from:subject;
+ bh=Ri2UCYgxRMTklRg+xVI6zTk4ef+4/+SeBSaDiHxSok0=;
+ b=owEBbQGS/pANAwAKASTWi3JdVIfQAcsmYgBimMCTOCckEoTaGdO/lysCFX3L6zBZxH3kC1DbGdTs
+ urk25QyJATMEAAEKAB0WIQSt5miqZ1cYtZ/in+ok1otyXVSH0AUCYpjAkwAKCRAk1otyXVSH0BDEB/
+ 43fcfz+gp9Kc5IN94SvBp4rDCEdMIADX8fY+fuJE1wYY7CJdR4C/o5iQ1j6iZhM4E/w5Eqosn1OAd6
+ ZNi/uKXhKE3HLVszs8xVKgi7w3LZXtNEcqy1Gnj2iaPOID8d9tZo2s4Md+8hCL89XLtsOgXFRiew37
+ CqvKJEewbZI7Emiz1zhGNdMOP20mv8ID7GjodLOVqC9wIB2rmWRvS+NoezRoTR9AE8qyFh3zZEXj3l
+ u5zcdruy9MKBUjQlbBjModP42DX8yQIqwCbmAupNS2t7+O2tm64esyyeh4ORVZHgmpz3bsejR/he6r
+ yb3HzrWVRQTN9mjaQ5BK/LXcuADehQ
 X-Developer-Key: i=broonie@kernel.org; a=openpgp;
  fpr=3F2568AAC26998F9E813A1C5C3F436CA30F5D8EB
 Content-Transfer-Encoding: 8bit
@@ -91,28 +90,31 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 As part of moving to remove the old style defines for the bus clocks update
-the sta32x driver to use more modern terminology for clocking.
+the sti-sas driver to use more modern terminology for clocking.
 
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/sta32x.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ sound/soc/codecs/sti-sas.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/sound/soc/codecs/sta32x.c b/sound/soc/codecs/sta32x.c
-index 8585cbef4c9b..17e5077f26b0 100644
---- a/sound/soc/codecs/sta32x.c
-+++ b/sound/soc/codecs/sta32x.c
-@@ -601,8 +601,8 @@ static int sta32x_set_dai_fmt(struct snd_soc_dai *codec_dai,
- 	struct sta32x_priv *sta32x = snd_soc_component_get_drvdata(component);
- 	u8 confb = 0;
- 
--	switch (fmt & SND_SOC_DAIFMT_MASTER_MASK) {
--	case SND_SOC_DAIFMT_CBS_CFS:
-+	switch (fmt & SND_SOC_DAIFMT_CLOCK_PROVIDER_MASK) {
-+	case SND_SOC_DAIFMT_CBC_CFC:
- 		break;
- 	default:
+diff --git a/sound/soc/codecs/sti-sas.c b/sound/soc/codecs/sti-sas.c
+index 3be4940e3c77..10a6a112f4b4 100644
+--- a/sound/soc/codecs/sti-sas.c
++++ b/sound/soc/codecs/sti-sas.c
+@@ -199,10 +199,10 @@ static int stih407_sas_dac_mute(struct snd_soc_dai *dai, int mute, int stream)
+ static int sti_sas_spdif_set_fmt(struct snd_soc_dai *dai,
+ 				 unsigned int fmt)
+ {
+-	if ((fmt & SND_SOC_DAIFMT_MASTER_MASK) != SND_SOC_DAIFMT_CBS_CFS) {
++	if ((fmt & SND_SOC_DAIFMT_CLOCK_PROVIDER_MASK) != SND_SOC_DAIFMT_CBC_CFC) {
+ 		dev_err(dai->component->dev,
+-			"%s: ERROR: Unsupporter master mask 0x%x\n",
+-			__func__, fmt & SND_SOC_DAIFMT_MASTER_MASK);
++			"%s: ERROR: Unsupported clocking mask 0x%x\n",
++			__func__, fmt & SND_SOC_DAIFMT_CLOCK_PROVIDER_MASK);
  		return -EINVAL;
+ 	}
+ 
 -- 
 2.30.2
 
