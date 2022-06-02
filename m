@@ -4,73 +4,73 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 899FBC433EF
-	for <alsa-devel@archiver.kernel.org>; Thu,  2 Jun 2022 13:55:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 86A6BC43334
+	for <alsa-devel@archiver.kernel.org>; Thu,  2 Jun 2022 13:55:41 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 9390A17C6;
-	Thu,  2 Jun 2022 15:54:24 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9390A17C6
+	by alsa0.perex.cz (Postfix) with ESMTPS id C28D91788;
+	Thu,  2 Jun 2022 15:54:49 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C28D91788
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1654178114;
-	bh=F2pYS6kIWwAfwRbdvcqGY8oMDkGLureXRfIP8HCsUSk=;
+	s=default; t=1654178139;
+	bh=jRLUgUntU2fruxLhA+W/LLYekTcTbLPo5lIlqi7/X/s=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=fjD4HMhXAxnsTbPCxdGYFUXdGNaCgGni3A1rPnvkB2rhsF2M7sKLJLxwQ4RxCmdua
-	 LWjIcanxYXmik/w/+/wHLDMjfHrM9a4i+vDrtxcd91CWcWfmeyaDpIuZqnjoeTqDZJ
-	 9N4mQyCg1VqNnjukt58mp/XU7c5zPgatlg34v/Fs=
+	b=pUwxfWe/Qa7hPvKtis8Y7IMk5wiHm7qKQ67NdqlNayW+m+pywXp0Qt09Md88PfTnz
+	 LnCry82x3Wf/PSUSTJdzDiLhL9Q7E2SWa2tcN2Nene0Z43ZWWhDEmTuG6wEdBx6ZVU
+	 WqnIj7vvrtT0e5giTPM3Cgd4QIDK11VIqsHn857o=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 6EBEBF80534;
-	Thu,  2 Jun 2022 15:53:33 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 07711F80538;
+	Thu,  2 Jun 2022 15:53:34 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 67ECBF8052E; Thu,  2 Jun 2022 15:53:31 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org
- [IPv6:2604:1380:4641:c500::1])
+ id B2806F8052F; Thu,  2 Jun 2022 15:53:32 +0200 (CEST)
+Received: from ams.source.kernel.org (ams.source.kernel.org
+ [IPv6:2604:1380:4601:e00::1])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 4AFA6F80236
- for <alsa-devel@alsa-project.org>; Thu,  2 Jun 2022 15:53:27 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4AFA6F80236
+ by alsa1.perex.cz (Postfix) with ESMTPS id 3E494F80272
+ for <alsa-devel@alsa-project.org>; Thu,  2 Jun 2022 15:53:29 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3E494F80272
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="cYZKQBXY"
+ header.b="WbWRBCt+"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id 328FE617CF;
- Thu,  2 Jun 2022 13:53:25 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4F0FCC36AE7;
- Thu,  2 Jun 2022 13:53:24 +0000 (UTC)
+ by ams.source.kernel.org (Postfix) with ESMTPS id 68908B81F5E;
+ Thu,  2 Jun 2022 13:53:28 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 76307C3411A;
+ Thu,  2 Jun 2022 13:53:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1654178005;
- bh=F2pYS6kIWwAfwRbdvcqGY8oMDkGLureXRfIP8HCsUSk=;
+ s=k20201202; t=1654178007;
+ bh=jRLUgUntU2fruxLhA+W/LLYekTcTbLPo5lIlqi7/X/s=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=cYZKQBXY5wtbf9ol/9sQYn0emU4Kceyh85hxPM9F79Kssl97btcgTfq2AabITWQlS
- it5/rrpD2ssDMoYG7YMEIjyovYnLJVbvGYmAJmd09BsuXz/WE0m/9pKVBZfktC8DHR
- YeUCKWYjV5s7N+mWQgmXrTf5v41a98CjhEUwuP8LmEyWhUfFGl0Iy6i9sLzE8nbYyW
- IU+BDj7dhF8nyuxwxYLlCh97AcalnsvOmk2kte4CP7C7jLILhgYhOU2vMGAlCyZKeJ
- NBIJFBKiI+Sl1IrNV5/+5714GD5PtupYfrgqyQG+oHcwvSTvVupcvljUnUqa8cHu8C
- M3G8H/x+YZZZA==
+ b=WbWRBCt+QG7MAFHniAq/coqKZyh/SMERhCeoTKtDBRHtaHtGLnin/FNk7ov1HXgIZ
+ JPPXujJEVFz/tqcF5lcw89C4keY4z4COFqCIqH1yamp9lfgE05dA5RkXwpds/SOZLQ
+ 6HOT74a7Ba3glDHyL4xVvmc2bnGOEyKaeWSt1ypUwvCgjCK+KdFEfSgCiHzqKok6jE
+ 1qRBcqztaqKmfBRXKW6c2vCfjbg2G0JTEXMlSHbbYUQJAs+CmScR5xQdGUSh2T8fVB
+ Uyv3XEl2W9O2QNJ9TWwdm6aENBNQJTeczYB0GGj2fMacEeSDw+KD9eiN9uaN/POm/s
+ jFIe3zspDGv0A==
 From: Mark Brown <broonie@kernel.org>
 To: Liam Girdwood <lgirdwood@gmail.com>
-Subject: [PATCH 02/20] ASoC: max98090: Use modern ASoC DAI format terminology
-Date: Thu,  2 Jun 2022 15:52:58 +0200
-Message-Id: <20220602135316.3554400-3-broonie@kernel.org>
+Subject: [PATCH 04/20] ASoC: sta32x: Use modern ASoC DAI format terminology
+Date: Thu,  2 Jun 2022 15:53:00 +0200
+Message-Id: <20220602135316.3554400-5-broonie@kernel.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20220602135316.3554400-1-broonie@kernel.org>
 References: <20220602135316.3554400-1-broonie@kernel.org>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1683; h=from:subject;
- bh=F2pYS6kIWwAfwRbdvcqGY8oMDkGLureXRfIP8HCsUSk=;
- b=owGbwMvMwMWocq27KDak/QLjabUkhqQZB/orjuxiivLZUj7zZsUt155pNezvLhd86nGN83My83ng
- IuDSyWjMwsDIxSArpsiy9lnGqvRwia3zH81/BTOIlQlkCgMXpwBMRNiL/Q9fv4xwqD7bo+bY6X1O09
- tuf1f8fsPE+5xlDrNd68J1kz2sVZPj6szD/4U09ThXnPc+0qD6/fHumh3HtjrO4FB9vLko5/ktF+Ve
- 1+9865VtRVrFFbUMZtZKs8/5U3HoHof0Xm+l9U2LZeOvnWtdvkflv05mU9Vd347gIsP03cX5QdlMXX
- f7Hm59pz/v0fp/f+fX+t0X0c98ftfY/tAbk6hiY9NLQW7t/vXfF1+eynGu9/sDkW6JAK7dMl07Natz
- Xxxbmt76ra18YU3W1s/WvfN8UlsU+s+bTw0WnvlE70ST4JVNReGMDOUdtk96FbQnR6zyK1B0PXDqK/
- vkd/uq54TlsB0NXvTGVGFt5hkLAA==
+X-Developer-Signature: v=1; a=openpgp-sha256; l=858; h=from:subject;
+ bh=jRLUgUntU2fruxLhA+W/LLYekTcTbLPo5lIlqi7/X/s=;
+ b=owEBbQGS/pANAwAKASTWi3JdVIfQAcsmYgBimMCRzCX2Ws+l5zKiD5EchYFHv5T4guU9Wa7gxzP0
+ ECe5zJ6JATMEAAEKAB0WIQSt5miqZ1cYtZ/in+ok1otyXVSH0AUCYpjAkQAKCRAk1otyXVSH0AeBB/
+ 0fyiJKEcggu7tTU1FXTyAGTkan7/oFi6jiQZU4Kj+JorsMXMpoJQ7NZkiZziT9Xd2fB1judZSKiobL
+ Yum8IgScOqQnMMgBSMC96P0RuQ0CmgmN3S/8YGJArMqNGSZRgc3z+tcamyjDdfpHEmOUB9RX7VU+/r
+ DzC5H7dputF2/1a2FQzpOS4pCMuhBh3Mw2cWRRrYqxjYGVWZEpFzxBOyYK5KJRPFqeXBGYjC8S4rvV
+ 5rnLDIENTbTMR/o/vUxkBLc4cyynttDH46Y4oDO6W6w+puLNCSHtU05uBy1xSAKj2Mwvk54R1XIxWf
+ SqnSARuutRkfU6VM61CoSn1QUQZiCg
 X-Developer-Key: i=broonie@kernel.org; a=openpgp;
  fpr=3F2568AAC26998F9E813A1C5C3F436CA30F5D8EB
 Content-Transfer-Encoding: 8bit
@@ -91,50 +91,28 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 As part of moving to remove the old style defines for the bus clocks update
-the max98090 driver to use more modern terminology for clocking.
+the sta32x driver to use more modern terminology for clocking.
 
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/max98090.c | 12 +++++-------
- 1 file changed, 5 insertions(+), 7 deletions(-)
+ sound/soc/codecs/sta32x.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/codecs/max98090.c b/sound/soc/codecs/max98090.c
-index 576277a82d41..72471cdb2229 100644
---- a/sound/soc/codecs/max98090.c
-+++ b/sound/soc/codecs/max98090.c
-@@ -1591,9 +1591,9 @@ static int max98090_dai_set_fmt(struct snd_soc_dai *codec_dai,
- 		cdata->fmt = fmt;
+diff --git a/sound/soc/codecs/sta32x.c b/sound/soc/codecs/sta32x.c
+index 8585cbef4c9b..17e5077f26b0 100644
+--- a/sound/soc/codecs/sta32x.c
++++ b/sound/soc/codecs/sta32x.c
+@@ -601,8 +601,8 @@ static int sta32x_set_dai_fmt(struct snd_soc_dai *codec_dai,
+ 	struct sta32x_priv *sta32x = snd_soc_component_get_drvdata(component);
+ 	u8 confb = 0;
  
- 		regval = 0;
--		switch (fmt & SND_SOC_DAIFMT_MASTER_MASK) {
--		case SND_SOC_DAIFMT_CBS_CFS:
--			/* Set to slave mode PLL - MAS mode off */
-+		switch (fmt & SND_SOC_DAIFMT_CLOCK_PROVIDER_MASK) {
-+		case SND_SOC_DAIFMT_CBC_CFC:
-+			/* Set to consumer mode PLL - MAS mode off */
- 			snd_soc_component_write(component,
- 				M98090_REG_CLOCK_RATIO_NI_MSB, 0x00);
- 			snd_soc_component_write(component,
-@@ -1602,8 +1602,8 @@ static int max98090_dai_set_fmt(struct snd_soc_dai *codec_dai,
- 				M98090_USE_M1_MASK, 0);
- 			max98090->master = false;
- 			break;
--		case SND_SOC_DAIFMT_CBM_CFM:
--			/* Set to master mode */
-+		case SND_SOC_DAIFMT_CBP_CFP:
-+			/* Set to provider mode */
- 			if (max98090->tdm_slots == 4) {
- 				/* TDM */
- 				regval |= M98090_MAS_MASK |
-@@ -1619,8 +1619,6 @@ static int max98090_dai_set_fmt(struct snd_soc_dai *codec_dai,
- 			}
- 			max98090->master = true;
- 			break;
--		case SND_SOC_DAIFMT_CBS_CFM:
--		case SND_SOC_DAIFMT_CBM_CFS:
- 		default:
- 			dev_err(component->dev, "DAI clock mode unsupported");
- 			return -EINVAL;
+-	switch (fmt & SND_SOC_DAIFMT_MASTER_MASK) {
+-	case SND_SOC_DAIFMT_CBS_CFS:
++	switch (fmt & SND_SOC_DAIFMT_CLOCK_PROVIDER_MASK) {
++	case SND_SOC_DAIFMT_CBC_CFC:
+ 		break;
+ 	default:
+ 		return -EINVAL;
 -- 
 2.30.2
 
