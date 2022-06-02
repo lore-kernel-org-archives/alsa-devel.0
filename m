@@ -4,84 +4,78 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 611A0CCA478
-	for <alsa-devel@archiver.kernel.org>; Thu,  2 Jun 2022 13:03:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 53390C43334
+	for <alsa-devel@archiver.kernel.org>; Thu,  2 Jun 2022 13:07:48 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 515951730;
-	Thu,  2 Jun 2022 15:02:34 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 515951730
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3436916B0;
+	Thu,  2 Jun 2022 15:06:56 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3436916B0
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1654175004;
-	bh=mrbQ8miNJBYUIqNqm3hvqugDcbOaOh36wpvIGONBowo=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=ttIdeApMe2ZPNiAl2vQcMJikEZYtPxzFMC9N3y7XKnyPptrck/k+Mh7E7qVl8NMIe
-	 C3B1CBSOuxSQ6Imu/u2ESXIn5kvZkBN539WvowdaznBKzDFOn+E6JQ3FHtMiyQId2Y
-	 +9JX1SJm1gH2dLWlpsKp05yWU7IX84ymqKU9m0HU=
+	s=default; t=1654175266;
+	bh=BaIJRnZcgiZxycDzpLZEdZv7mSvYbDLGzSjaGh+brso=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=dXtXCQoOrG84Tk1e1XGTUSuAYR4MG46NXDPFY3LyN+GTqxA6hEFOBseUU8qRJgHGm
+	 OBVp6h2K4iUNjqhKMUSasYzd36L4hAIMlaX4KE/OQBkxg/wVN9xA1ll8hvuecTR77x
+	 NMH8QWlH5Bm664LIj2TjIoGf7B+2E4eKl4lJI1qo=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id E6D16F80149;
-	Thu,  2 Jun 2022 15:02:33 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id CB766F80089;
+	Thu,  2 Jun 2022 15:06:55 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 36DAAF80236; Thu,  2 Jun 2022 15:02:33 +0200 (CEST)
-Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com
- [IPv6:2607:f8b0:4864:20::632])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id 836A6F80236; Thu,  2 Jun 2022 15:06:54 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id A8C53F80149
- for <alsa-devel@alsa-project.org>; Thu,  2 Jun 2022 15:02:30 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A8C53F80149
+ by alsa1.perex.cz (Postfix) with ESMTPS id 440EDF80149
+ for <alsa-devel@alsa-project.org>; Thu,  2 Jun 2022 15:06:52 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 440EDF80149
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="pEVgysGf"
-Received: by mail-pl1-x632.google.com with SMTP id h1so4454844plf.11
- for <alsa-devel@alsa-project.org>; Thu, 02 Jun 2022 06:02:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
- h=from:to:cc:subject:date:message-id:mime-version
- :content-transfer-encoding;
- bh=XdxxRvNPqFgVB4QJaeaHAzMjj0lVYGxn3dldB8u/Zr4=;
- b=pEVgysGf3LJ/rw3xxHkq4t2G/Mh5jq0fS7dPhhVc0eFcSxs7j7DVRCc5NPnOOQE6En
- ro82zoh9lPKDxsRnKXS8z/pcJPAuoxXpP2yUmqZDj85NFbWo4DjK7K3eZqZF7ckz6XyP
- wCTrr36K7FKehCH0BPeVg7CBPAHIT1EZ2MVHmBQox45X0AH4nc3yvmUUzTEpMTZGv06k
- mBWZzLJaqJge+PHqw8x2yLS6XW+7IEPn3L6TOCe5zYZfRYnBSvKP+FXML2d39FPYB8tu
- brAkXmSOmwRR74eZ8D2ImNTfB78g/g6dtCyEnYwAzK2wYA/R4FZxEaoowjGXXh/sRstQ
- mWlw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
- :content-transfer-encoding;
- bh=XdxxRvNPqFgVB4QJaeaHAzMjj0lVYGxn3dldB8u/Zr4=;
- b=gm6Y/Kj13UhMORldbD8SbXo1xTiKW+DzhksvZpyI95tPzusQupiD06FuCHe2Mxg/0a
- bOMpIjYv7j84xxFMaqmMIkCaydDY4/LI7oMs6tt+wT9JFc6UfIn0kVj4apwVhvNq2JN0
- rN7HooPjfsrEkjjhqfmlhScbDVqy7QY0mkF2xTVFA0ZGu7vfJ4OFznUR1jcHwJBorHta
- hc4vPrAlcmqtXewIxxOQ3jUQ3prnG+rO11rUG/ZPD+DphWuEp1f/mjZpVwuVT8U3otOO
- MlrxsAk09nC78OhRk6fGrki2M+9LViyRre/ZM26QG6Ner1fFMAhbD8gV96r4RndXOVoW
- BGQA==
-X-Gm-Message-State: AOAM5332tbmObeYU6fAPSUX/Mzhiwx4M02oMbLowabw6jPrEX1IflhaM
- QEXg5dfBuitXc+gKLlhAYFzxrGkow/9EVurMGjY=
-X-Google-Smtp-Source: ABdhPJzNRjRgYVZM2ebupFUL1SqAFM9zF1iVEify9KqJCZ1syK4D1jMK1M6fBvdZ3QasUHTe/nrQLQ==
-X-Received: by 2002:a17:902:bf4c:b0:15c:3d1b:8a47 with SMTP id
- u12-20020a170902bf4c00b0015c3d1b8a47mr4955096pls.118.1654174948528; 
- Thu, 02 Jun 2022 06:02:28 -0700 (PDT)
-Received: from localhost.localdomain ([202.120.234.246])
- by smtp.googlemail.com with ESMTPSA id
- j23-20020a63ec17000000b003fc37053c82sm3240443pgh.12.2022.06.02.06.02.23
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Thu, 02 Jun 2022 06:02:27 -0700 (PDT)
-From: Miaoqian Lin <linmq006@gmail.com>
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
- Sylwester Nawrocki <s.nawrocki@samsung.com>,
- Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
- Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
- alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] ASoC: samsung: Fix error handling in aries_audio_probe
-Date: Thu,  2 Jun 2022 17:02:17 +0400
-Message-Id: <20220602130218.14901-1-linmq006@gmail.com>
-X-Mailer: git-send-email 2.25.1
+ dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="BliCki6+"
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by dfw.source.kernel.org (Postfix) with ESMTPS id B2AB06164A;
+ Thu,  2 Jun 2022 13:06:50 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2B532C36AE5;
+ Thu,  2 Jun 2022 13:06:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1654175210;
+ bh=BaIJRnZcgiZxycDzpLZEdZv7mSvYbDLGzSjaGh+brso=;
+ h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+ b=BliCki6+kno2DcyDDrjfkRDaWK7S2ImHPd74NTy8GAqn3nyN/eGmO3k7fDX7GeVtz
+ 00AgDXipElQWfKfiDOCoN+t5IXZ4nZxovFGmcngFXOUNS6RjJIyzJO63gYrboERtgf
+ 0kvl6PNXCuxsdAMpfsTgEh09scVWUleXhx6zWfMcUp5er+wvXP7S3dizN7D9ZvRIw3
+ juAU1pvRs0G2wj6hAZAi/06dF83f/zkJGn12Nx4GAMWueCSAtdUJl1quUQTyFzDUw9
+ wVwTs5BYgpspCStQPpgCGptNKDG+K4o8Zpv/8JPxGAdyDNrqupkpBRMxb4z+auMcuF
+ R/fzdFKSumVxQ==
+From: Mark Brown <broonie@kernel.org>
+To: Lars-Peter Clausen <lars@metafoo.de>,
+ =?UTF-8?q?Nuno=20S=C3=A1?= <nuno.sa@analog.com>,
+ Liam Girdwood <lgirdwood@gmail.com>
+Subject: [PATCH 2/3] ASoC: ssm2602: Use modern ASoC DAI format terminology
+Date: Thu,  2 Jun 2022 15:05:30 +0200
+Message-Id: <20220602130531.3552275-3-broonie@kernel.org>
+X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20220602130531.3552275-1-broonie@kernel.org>
+References: <20220602130531.3552275-1-broonie@kernel.org>
 MIME-Version: 1.0
+X-Developer-Signature: v=1; a=openpgp-sha256; l=943; h=from:subject;
+ bh=BaIJRnZcgiZxycDzpLZEdZv7mSvYbDLGzSjaGh+brso=;
+ b=owEBbQGS/pANAwAKASTWi3JdVIfQAcsmYgBimLVVu1rKL6rQi2dUiOFL1oopKaxvJKNyRBMDlRlg
+ pKMWui6JATMEAAEKAB0WIQSt5miqZ1cYtZ/in+ok1otyXVSH0AUCYpi1VQAKCRAk1otyXVSH0C1oB/
+ 9VOFf9RSkCrVJJQPcEnKuOFvMlSyHc3Vf5NcvRBT9IvS0NBqeNcBoZxKeVDUyv/iUh5ZqSVhSekL0V
+ aHKO4Tq5VsuzdEmogQ8bBgrSPIYfkXTERak5oFEXTI6X2dHE8LrRMBuatyWiBOxQ/ecn0efeglUVVM
+ 10CImNywcNMaiPNnWvHfcTwX2bIf4BfCbYwtN0ikAKMObXaeF746Gl1YJ7oXnwacy/nOa5+8fzVDNh
+ rVPjXsHalzsFMAVVeT7A69ssqF6tRo1JNRvfeU0aMmI4w8SKhYtYcP54vwTQ+zVcsyC6BGnP8vZuYe
+ 4wRfagKWly1GeQz7hxAF1jB4mnLx4L
+X-Developer-Key: i=broonie@kernel.org; a=openpgp;
+ fpr=3F2568AAC26998F9E813A1C5C3F436CA30F5D8EB
 Content-Transfer-Encoding: 8bit
-Cc: linmq006@gmail.com
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -97,34 +91,33 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-of_get_child_by_name() returns a node pointer with refcount
-incremented, we should use of_node_put() on it when not need anymore.
-This function is missing of_node_put(cpu) in the error path.
-Fix this by goto out label. of_node_put() will check NULL pointer.
+As part of moving to remove the old style defines for the bus clocks update
+the ssm2602 driver to use more modern terminology for clocking.
 
-Fixes: format:7a3a7671fa6c ("ASoC: samsung: Add driver for Aries boards")
-Signed-off-by: Miaoqian Lin <linmq006@gmail.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/samsung/aries_wm8994.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+ sound/soc/codecs/ssm2602.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/sound/soc/samsung/aries_wm8994.c b/sound/soc/samsung/aries_wm8994.c
-index bb0cf4244e00..edee02d7f100 100644
---- a/sound/soc/samsung/aries_wm8994.c
-+++ b/sound/soc/samsung/aries_wm8994.c
-@@ -628,8 +628,10 @@ static int aries_audio_probe(struct platform_device *pdev)
+diff --git a/sound/soc/codecs/ssm2602.c b/sound/soc/codecs/ssm2602.c
+index 7964e922b07f..1821854ca0f3 100644
+--- a/sound/soc/codecs/ssm2602.c
++++ b/sound/soc/codecs/ssm2602.c
+@@ -411,11 +411,11 @@ static int ssm2602_set_dai_fmt(struct snd_soc_dai *codec_dai,
+ 	unsigned int iface = 0;
+ 
+ 	/* set master/slave audio interface */
+-	switch (fmt & SND_SOC_DAIFMT_MASTER_MASK) {
+-	case SND_SOC_DAIFMT_CBM_CFM:
++	switch (fmt & SND_SOC_DAIFMT_CLOCK_PROVIDER_MASK) {
++	case SND_SOC_DAIFMT_CBP_CFP:
+ 		iface |= 0x0040;
+ 		break;
+-	case SND_SOC_DAIFMT_CBS_CFS:
++	case SND_SOC_DAIFMT_CBC_CFC:
+ 		break;
+ 	default:
  		return -EINVAL;
- 
- 	codec = of_get_child_by_name(dev->of_node, "codec");
--	if (!codec)
--		return -EINVAL;
-+	if (!codec) {
-+		ret = -EINVAL;
-+		goto out;
-+	}
- 
- 	for_each_card_prelinks(card, i, dai_link) {
- 		dai_link->codecs->of_node = of_parse_phandle(codec,
 -- 
-2.25.1
+2.30.2
 
