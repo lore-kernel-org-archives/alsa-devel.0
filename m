@@ -4,83 +4,47 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id BAC56C43334
-	for <alsa-devel@archiver.kernel.org>; Tue,  7 Jun 2022 05:59:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 52955C43334
+	for <alsa-devel@archiver.kernel.org>; Tue,  7 Jun 2022 06:11:11 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0AFAD1926;
-	Tue,  7 Jun 2022 07:59:05 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0AFAD1926
+	by alsa0.perex.cz (Postfix) with ESMTPS id BA5A6174C;
+	Tue,  7 Jun 2022 08:10:19 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BA5A6174C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1654581595;
-	bh=AybBKliAJksZ8YZwuHmW57XB+fBNZVcfQtB5anuzYnk=;
-	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=FjrPiwSrcKagcWzzSaiAWOL3j7enkqC1nOf7B5di8xc+w00tR5beKiepKS08MCSXj
-	 t+e64yBmgKLJCF6/f4vKj3QP2NTAHDdiN0u0LZovesf9Y7LxhOU9Q3BXEMOMcpIY5x
-	 gBY5mhis/GIGVJu/acijK/sEfgWLMAaFbz9o5TA4=
+	s=default; t=1654582269;
+	bh=dKRC0uiyyrKFb6HUXKrNJyA1AtnHEoemKM5oOAvYDgU=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=udz+lVQy+AEbFV3bPdUM3oxsopx50Qc4SBCzaXdjtjwhSc0me8ozS1WFPODCeDYWL
+	 BnYO04v5aDHtxR1Pc23FcnNTWTws766TZgE1YLXJrRfQRdByudTGTFS68lksH4k6QI
+	 UTK9Pq/lwWU470mG7jcV9aWje9DyTKVVoOoPkPwk=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 8764EF80116;
-	Tue,  7 Jun 2022 07:59:04 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 4F6A7F8013F;
+	Tue,  7 Jun 2022 08:10:19 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 7A3A9F80159; Tue,  7 Jun 2022 07:59:02 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id 0D343F804CC; Fri,  3 Jun 2022 22:15:15 +0200 (CEST)
+Received: from mail.tpi.com (mail.tpi.com [50.126.108.186])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 33F15F80109
- for <alsa-devel@alsa-project.org>; Tue,  7 Jun 2022 07:58:53 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 33F15F80109
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="Ey6QywJ/"; 
- dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="I0wmd/32"
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id E62A81FA12;
- Tue,  7 Jun 2022 05:58:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1654581532; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=dGv/U/AwOwnhF1KL4XOVkxEeA1ZngvDTiihZ7fFCtu0=;
- b=Ey6QywJ/f2g1rjL2dDp68VcwKgEh+JA9Y1AYMJivPo/43vtzApOjKXOjzBrsK35DhgbFO8
- Zw9ghqRbmA2RBhL4rEHjoZ+XKzow87eb+fOHOkOtzdrvg9an9vlPxSCxP0Xjflu6tX9k26
- qd6miqxBGUmTMTHAKmXAX1JobI520H4=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1654581532;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=dGv/U/AwOwnhF1KL4XOVkxEeA1ZngvDTiihZ7fFCtu0=;
- b=I0wmd/32xC0ylt5iG8Q2iw30nNnrNDoYS+/Zy0Q7xWCh88083f4z45QYa7ffilIsIqHb9n
- o2guOfqXpiJg44Bg==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id C1FD213A88;
- Tue,  7 Jun 2022 05:58:52 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id YDOILhzpnmI7XwAAMHmgww
- (envelope-from <tiwai@suse.de>); Tue, 07 Jun 2022 05:58:52 +0000
-Date: Tue, 07 Jun 2022 07:58:52 +0200
-Message-ID: <87wndtnher.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH] ALSA: hda: MTL: add HD Audio PCI ID and HDMI codec vendor
- ID
-In-Reply-To: <20220606204232.144296-1-pierre-louis.bossart@linux.intel.com>
-References: <20220606204232.144296-1-pierre-louis.bossart@linux.intel.com>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
-Cc: alsa-devel@alsa-project.org, broonie@kernel.org,
- Kai Vehmanen <kai.vehmanen@linux.intel.com>, Yong Zhi <yong.zhi@intel.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id E0719F800F5
+ for <alsa-devel@alsa-project.org>; Fri,  3 Jun 2022 22:15:07 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E0719F800F5
+Received: from sushi.tpi.com (sushi.tpi.com [10.0.0.212])
+ by mail.tpi.com (Postfix) with ESMTPA id 55DBD47EC7EC;
+ Fri,  3 Jun 2022 13:15:01 -0700 (PDT)
+From: Dean Gehnert <deang@tpi.com>
+To: linux-kernel@vger.kernel.org
+Subject: [PATCH] ASoC: topology: Avoid card NULL deref in
+ snd_soc_tplg_component_remove()
+Date: Fri,  3 Jun 2022 13:14:25 -0700
+Message-Id: <20220603201425.2590-1-deang@tpi.com>
+X-Mailer: git-send-email 2.17.1
+X-Mailman-Approved-At: Tue, 07 Jun 2022 08:10:18 +0200
+Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.com>,
+ stable@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>,
+ Dean Gehnert <deang@tpi.com>, Mark Brown <broonie@kernel.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -96,19 +60,60 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Mon, 06 Jun 2022 22:42:32 +0200,
-Pierre-Louis Bossart wrote:
-> 
-> From: Yong Zhi <yong.zhi@intel.com>
-> 
-> Add HD Audio PCI ID for Intel Meteorlake platform.
-> 
-> Signed-off-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
-> Signed-off-by: Yong Zhi <yong.zhi@intel.com>
-> Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Don't deference card in comp->card->snd_card before checking for NULL card.
 
-Thanks, applied now (with the correction of the hex number to lower
-letters in hda_intel.c).
+During the unloading of ASoC kernel modules, there is a kernel oops in
+snd_soc_tplg_component_remove() that happens because comp->card is set to
+NULL in soc_cleanup_component().
 
+Cc: Liam Girdwood <lgirdwood@gmail.com>
+Cc: Mark Brown <broonie@kernel.org>
+Cc: Jaroslav Kysela <perex@perex.cz>
+Cc: Takashi Iwai <tiwai@suse.com>
+Cc: alsa-devel@alsa-project.org
+Cc: linux-kernel@vger.kernel.org
+Cc: stable@vger.kernel.org
+Fixes: 7e567b5ae063 ("ASoC: topology: Add missing rwsem around snd_ctl_remove() calls")
+Signed-off-by: Dean Gehnert <deang@tpi.com>
+---
+ sound/soc/soc-topology.c | 10 +++++++---
+ 1 file changed, 7 insertions(+), 3 deletions(-)
 
-Takashi
+diff --git a/sound/soc/soc-topology.c b/sound/soc/soc-topology.c
+index 3f9d314fba16..cf0efe1147c2 100644
+--- a/sound/soc/soc-topology.c
++++ b/sound/soc/soc-topology.c
+@@ -2613,15 +2613,18 @@ EXPORT_SYMBOL_GPL(snd_soc_tplg_component_load);
+ /* remove dynamic controls from the component driver */
+ int snd_soc_tplg_component_remove(struct snd_soc_component *comp)
+ {
+-	struct snd_card *card = comp->card->snd_card;
++	struct snd_card *card;
+ 	struct snd_soc_dobj *dobj, *next_dobj;
+ 	int pass;
+ 
+ 	/* process the header types from end to start */
+ 	for (pass = SOC_TPLG_PASS_END; pass >= SOC_TPLG_PASS_START; pass--) {
+ 
++		card = (comp->card) ? comp->card->snd_card : NULL;
++
+ 		/* remove mixer controls */
+-		down_write(&card->controls_rwsem);
++		if (card)
++			down_write(&card->controls_rwsem);
+ 		list_for_each_entry_safe(dobj, next_dobj, &comp->dobj_list,
+ 			list) {
+ 
+@@ -2660,7 +2663,8 @@ int snd_soc_tplg_component_remove(struct snd_soc_component *comp)
+ 				break;
+ 			}
+ 		}
+-		up_write(&card->controls_rwsem);
++		if (card)
++			up_write(&card->controls_rwsem);
+ 	}
+ 
+ 	/* let caller know if FW can be freed when no objects are left */
+-- 
+2.17.1
+
