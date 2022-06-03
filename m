@@ -4,77 +4,78 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2C137C433EF
-	for <alsa-devel@archiver.kernel.org>; Fri,  3 Jun 2022 14:07:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9298CCCA47C
+	for <alsa-devel@archiver.kernel.org>; Fri,  3 Jun 2022 15:49:37 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 24F6317F8;
-	Fri,  3 Jun 2022 16:06:54 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 24F6317F8
+	by alsa0.perex.cz (Postfix) with ESMTPS id 594921893;
+	Fri,  3 Jun 2022 17:48:45 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 594921893
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1654265264;
-	bh=Hh07qKWtrq9pkw6iE7h3rIpvli7y8bEU8sC7SGunJUQ=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1654271375;
+	bh=c8FAA+GYtVK6waHC2Pi369IDxaTAAOyd+WAlU5SnEVs=;
+	h=Date:Subject:To:References:From:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=HE52qcmlJaF7hOBA7nIP4JtUJBMS8zsYK+sS9B3n5WnMSR/UaQCNUv01BhpAm6O8x
-	 pa2Ljf5TOM5mqURfi5cnT0ug8JdonRp+c2mqyjNSooxFjLZUi8CKhNKNy82KYHzMEp
-	 pJj6q3o2RKmNdp9fAkzqve7mm/HY0C0qUIJ40O74=
+	b=ryZ7ilUgfn8vWHYmaByRo/BDmMoHydfpD6z+s9N3wtT4Sfc3DrYo9yiCxyqbq27jX
+	 pWqIHs4VkF4MLhkzKShFOB8fWUx4VpxSSkByeLx4Z8+RnxvieDMPpHwlPwaGYu9s72
+	 rIBxAACOZAPaKv0jZUnWbDHQqtI82ZMeQ2r+AxSQ=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id CE0CDF804D6;
-	Fri,  3 Jun 2022 16:05:43 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2916EF804D1;
+	Fri,  3 Jun 2022 17:48:44 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 73888F80539; Fri,  3 Jun 2022 16:05:42 +0200 (CEST)
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de
- [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+ id 17A88F804CC; Fri,  3 Jun 2022 17:48:42 +0200 (CEST)
+Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 90BD6F804D6
- for <alsa-devel@alsa-project.org>; Fri,  3 Jun 2022 16:05:26 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 90BD6F804D6
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
- by metis.ext.pengutronix.de with esmtps
- (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92)
- (envelope-from <ukl@pengutronix.de>)
- id 1nx7vV-0006Wc-5I; Fri, 03 Jun 2022 16:05:21 +0200
-Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
- by drehscheibe.grey.stw.pengutronix.de with esmtp (Exim 4.94.2)
- (envelope-from <ukl@pengutronix.de>)
- id 1nx7vV-006EWN-GP; Fri, 03 Jun 2022 16:05:20 +0200
-Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.94.2)
- (envelope-from <ukl@pengutronix.de>)
- id 1nx7vT-00DxJa-Gh; Fri, 03 Jun 2022 16:05:19 +0200
-From: =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
- M R Swami Reddy <mr.swami.reddy@ti.com>,
- Vishwas A Deshpande <vishwas.a.deshpande@ti.com>
-Subject: [PATCH 3/4] ASoC: lm49453: Drop no-op remove function
-Date: Fri,  3 Jun 2022 16:05:12 +0200
-Message-Id: <20220603140513.131142-4-u.kleine-koenig@pengutronix.de>
-X-Mailer: git-send-email 2.36.1
-In-Reply-To: <20220603140513.131142-1-u.kleine-koenig@pengutronix.de>
-References: <20220603140513.131142-1-u.kleine-koenig@pengutronix.de>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 87DE5F800F5;
+ Fri,  3 Jun 2022 17:48:35 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 87DE5F800F5
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
+ header.b="Hq3Ae4a2"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+ d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+ t=1654271319; x=1685807319;
+ h=message-id:date:mime-version:subject:to:cc:references:
+ from:in-reply-to:content-transfer-encoding;
+ bh=c8FAA+GYtVK6waHC2Pi369IDxaTAAOyd+WAlU5SnEVs=;
+ b=Hq3Ae4a2KR7cDtbaCkN9Svt4/UbxTaNqe25Uyq7BZlm/M/rDTdZYkPBw
+ or0fEA+9SvWLmWOyYXBKg9UFAZIgreMC5nzibRVKbcZxkhxlzNRz040lX
+ nGlpih3ScnMlP1LPpRwJZB2GtTo0tMYhhyufoF82zB7ypv+DNozpumX2c
+ qKmS6moAcXCc6mhLhjjKh4GE/ddHVZl2JLNnXAJSN5emHwDh0C5IeSGax
+ Pn2KE++QCCvLyAq66t9JC2/2d6rVw/89sFOehs0xof+DEdarkrouGkjWC
+ 46Ig4mNY/TibTahgfcDnEQkrtS85RDdJJTq2nLjyGYIWNdj2MD+Uj9FZ8 w==;
+X-IronPort-AV: E=McAfee;i="6400,9594,10367"; a="263933836"
+X-IronPort-AV: E=Sophos;i="5.91,274,1647327600"; d="scan'208";a="263933836"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+ by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 03 Jun 2022 08:48:21 -0700
+X-IronPort-AV: E=Sophos;i="5.91,274,1647327600"; d="scan'208";a="824774387"
+Received: from linwayn1-mobl1.amr.corp.intel.com (HELO [10.212.249.119])
+ ([10.212.249.119])
+ by fmsmga006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 03 Jun 2022 08:48:20 -0700
+Message-ID: <571618d8-fdd8-eaab-a8e8-c26857e97580@linux.intel.com>
+Date: Fri, 3 Jun 2022 10:48:19 -0500
 MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Firefox/91.0 Thunderbird/91.9.1
+Subject: Re: [Sound-open-firmware] jack detection via input/event on linux
+Content-Language: en-US
+To: Jaroslav Kysela <perex@perex.cz>, hede <alsa426@der-he.de>
+References: <d8b21eb11013b6dd1e90e425bd808951@der-he.de>
+ <fe472e98-82b8-bba4-364a-930d8616b4e2@perex.cz>
+ <31258284cefb38127e84b2d098f8e2aa@der-he.de>
+ <cb35ce57-7696-3edb-459a-d2e8557a4748@perex.cz>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+In-Reply-To: <cb35ce57-7696-3edb-459a-d2e8557a4748@perex.cz>
 Content-Type: text/plain; charset=UTF-8
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1073; h=from:subject;
- bh=Hh07qKWtrq9pkw6iE7h3rIpvli7y8bEU8sC7SGunJUQ=;
- b=owEBbQGS/pANAwAKAcH8FHityuwJAcsmYgBimhUQpAfZbH4QMOm/aCYzFh6P3aS/JFtFgaceRoa2
- o2UsF8aJATMEAAEKAB0WIQR+cioWkBis/z50pAvB/BR4rcrsCQUCYpoVEAAKCRDB/BR4rcrsCVtRB/
- 9hhehPdGmBXylg67/O3qzNp2dlq6JVIVGh63RU/jrupGdAw18kjWEuL/2fiFQv4HhIp4oVgyQ9rR+v
- 3WlyZmKXm8qunPPOsfz6zlNYEAbQbLSJH0Y3tMjeQZcZoxcuknv2oTmc02i9NG32yz9INeB4ck2ONW
- TklNyv/nsu/cJ0SfHo13Y4uMnBziUuH36ambAXsTiZWH5foHg8iruAQvX7fIUrjJiai4P+Y9F1MqC6
- SKnsqinmZ33Zb7frcmG01hEbs/OWiV2G0oWr5VabhWtvVkx4wH6DC+Hwq0zkiqt8+b9dMr3mUdWBCX
- ySW4avmFCwvXfNRZ0Or7gMHJYWQm4r
-X-Developer-Key: i=u.kleine-koenig@pengutronix.de; a=openpgp;
- fpr=0D2511F322BFAB1C1580266BE2DCDD9132669BD6
 Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de);
- SAEximRunCond expanded to false
-X-PTX-Original-Recipient: alsa-devel@alsa-project.org
-Cc: alsa-devel@alsa-project.org, kernel@pengutronix.de
+Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>,
+ Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>,
+ sound-open-firmware@alsa-project.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -90,42 +91,104 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-A remove callback that just returns 0 is equivalent to no callback at all
-as can be seen in i2c_device_remove(). So simplify accordingly.
+[Adding alsa-devel, Mark and Takashi to this thread]
 
-Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
----
-Previous submission:
+On 6/3/22 08:33, Jaroslav Kysela wrote:
+> On 03. 06. 22 13:17, hede wrote:
+>> Am 03.06.2022 11:34, schrieb Jaroslav Kysela:
+>>> PA/PW use only ALSA controls at the moment - thus you should define
+>>> JackControl as defined in use-case.h. But it seems that the driver
+>>> does not create or publish the ALSA jack control (I see only
+>>> "iface=CARD,name='HDMI/DP,pcm=2 Jack'" jack controls for HDMI).
+>>>
+>>>                     Jaroslav
+>>
+>> Ah, thank you Jaroslav. That's the hint I was searching for atm.
+>> JackDev vs. JackControl. I had a vague guess on this but now you made it
+>> certain.
+>>
+>> Maybe I should take a look into the driver directly.
+> 
+> It seems that many ASoC drivers do not create kctls - the argument pins
+> is zero in the snd_soc_card_jack_new() call. The SND_JACK_HEADSET should
+> be remapped to kctl in sound/soc/intel/boards/sof_rt5682.c, too.
 
-https://lore.kernel.org/alsa-devel/20220526204016.1724630-1-u.kleine-koenig@pengutronix.de
+Did you mean something like the patch below Jaroslav? If yes, most of
+the Chromebook machine drivers are missing this remapping. That would
+also explain why the jack detection didn't work on my GLK test device,
+despite a UCM file that looked good...
 
- sound/soc/codecs/lm49453.c | 6 ------
- 1 file changed, 6 deletions(-)
-
-diff --git a/sound/soc/codecs/lm49453.c b/sound/soc/codecs/lm49453.c
-index bd0078e4499b..c4900ada8618 100644
---- a/sound/soc/codecs/lm49453.c
-+++ b/sound/soc/codecs/lm49453.c
-@@ -1442,11 +1442,6 @@ static int lm49453_i2c_probe(struct i2c_client *i2c)
- 	return ret;
- }
- 
--static int lm49453_i2c_remove(struct i2c_client *client)
--{
--	return 0;
--}
--
- static const struct i2c_device_id lm49453_i2c_id[] = {
- 	{ "lm49453", 0 },
- 	{ }
-@@ -1458,7 +1453,6 @@ static struct i2c_driver lm49453_i2c_driver = {
- 		.name = "lm49453",
- 	},
- 	.probe_new = lm49453_i2c_probe,
--	.remove = lm49453_i2c_remove,
- 	.id_table = lm49453_i2c_id,
+diff --git a/sound/soc/intel/boards/sof_rt5682.c
+b/sound/soc/intel/boards/sof_rt5682.c
+index 5d67a2c87a1d4..1db17ebd26f63 100644
+--- a/sound/soc/intel/boards/sof_rt5682.c
++++ b/sound/soc/intel/boards/sof_rt5682.c
+@@ -85,6 +85,17 @@ struct sof_card_private {
+ 	bool idisp_codec;
  };
- 
--- 
-2.36.1
 
++static struct snd_soc_jack_pin sof_jack_pins[] = {
++	{
++		.pin    = "Headphone",
++		.mask   = SND_JACK_HEADPHONE,
++	},
++	{
++		.pin    = "Headset Mic",
++		.mask   = SND_JACK_MICROPHONE,
++	},
++};
++
+ static int sof_rt5682_quirk_cb(const struct dmi_system_id *id)
+ {
+ 	sof_rt5682_quirk = (unsigned long)id->driver_data;
+@@ -295,11 +306,13 @@ static int sof_rt5682_codec_init(struct
+snd_soc_pcm_runtime *rtd)
+ 	 * Headset buttons map to the google Reference headset.
+ 	 * These can be configured by userspace.
+ 	 */
+-	ret = snd_soc_card_jack_new(rtd->card, "Headset Jack",
+-				    SND_JACK_HEADSET | SND_JACK_BTN_0 |
+-				    SND_JACK_BTN_1 | SND_JACK_BTN_2 |
+-				    SND_JACK_BTN_3,
+-				    &ctx->sof_headset);
++	ret = snd_soc_card_jack_new_pins(rtd->card, "Headset Jack",
++					 SND_JACK_HEADSET | SND_JACK_BTN_0 |
++					 SND_JACK_BTN_1 | SND_JACK_BTN_2 |
++					 SND_JACK_BTN_3,
++					 &ctx->sof_headset,
++					 sof_jack_pins,
++					 ARRAY_SIZE(sof_jack_pins));
+ 	if (ret) {
+ 		dev_err(rtd->dev, "Headset Jack creation failed: %d\n", ret);
+ 		return ret;
+@@ -481,7 +494,7 @@ static int sof_card_late_probe(struct snd_soc_card
+*card)
+ }
+
+ static const struct snd_kcontrol_new sof_controls[] = {
+-	SOC_DAPM_PIN_SWITCH("Headphone Jack"),
++	SOC_DAPM_PIN_SWITCH("Headphone"),
+ 	SOC_DAPM_PIN_SWITCH("Headset Mic"),
+ 	SOC_DAPM_PIN_SWITCH("Left Spk"),
+ 	SOC_DAPM_PIN_SWITCH("Right Spk"),
+@@ -489,7 +502,7 @@ static const struct snd_kcontrol_new sof_controls[] = {
+ };
+
+ static const struct snd_soc_dapm_widget sof_widgets[] = {
+-	SND_SOC_DAPM_HP("Headphone Jack", NULL),
++	SND_SOC_DAPM_HP("Headphone", NULL),
+ 	SND_SOC_DAPM_MIC("Headset Mic", NULL),
+ 	SND_SOC_DAPM_SPK("Left Spk", NULL),
+ 	SND_SOC_DAPM_SPK("Right Spk", NULL),
+@@ -501,8 +514,8 @@ static const struct snd_soc_dapm_widget
+dmic_widgets[] = {
+
+ static const struct snd_soc_dapm_route sof_map[] = {
+ 	/* HP jack connectors - unknown if we have jack detection */
+-	{ "Headphone Jack", NULL, "HPOL" },
+-	{ "Headphone Jack", NULL, "HPOR" },
++	{ "Headphone", NULL, "HPOL" },
++	{ "Headphone", NULL, "HPOR" },
+
+ 	/* other jacks */
+ 	{ "IN1P", NULL, "Headset Mic" },
