@@ -4,74 +4,78 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4C528C433EF
-	for <alsa-devel@archiver.kernel.org>; Fri,  3 Jun 2022 19:40:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D4A34C43334
+	for <alsa-devel@archiver.kernel.org>; Fri,  3 Jun 2022 20:31:10 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A410E17EC;
-	Fri,  3 Jun 2022 21:39:22 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A410E17EC
+	by alsa0.perex.cz (Postfix) with ESMTPS id 40F3418F1;
+	Fri,  3 Jun 2022 22:30:18 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 40F3418F1
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1654285212;
-	bh=BV+s9A/Oh3s+mJA3H+hW+hopPxhygm1cJIl5Qt7aYC8=;
-	h=Subject:From:To:Date:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1654288268;
+	bh=WsjG+nlUuG8Mo+Txr9TVSxyzFPcwRZWXpNaVmwbjD1c=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=N3iddzbhN0HNsJV1A4TAAnH2GliqrzMYI3CSxC2wpmxk3s/u+zrh2wgWOtw0RQ3Co
-	 MoWEALjoLlM1P8j0KE0En52D7EymxfFEHQUJgi3dR7DBPSIA63I1hpU/naRWDWgkb+
-	 iAJ9ddQmKUUayHZP7vwzeJHZHpaQHvmANPZJ1Ddg=
+	b=oCAiprRuK+ftakEwT1EvJy3ltxpADCIQe3yhpXQ0PhXyMWXZjLoP0UHRSqYQpe0wn
+	 qidWr/k/GKX0JVAXWEgMEb6JW0vQfqgbMxPoUtGBQndcapS4DZYY32EEIm7THzW+LF
+	 SFkBVBpENHWwN01ThAqcJ1BbFZsTzIvMdShcJnys=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 3DAE3F804C1;
-	Fri,  3 Jun 2022 21:39:22 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id CEFD4F80124;
+	Fri,  3 Jun 2022 22:30:17 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 6F76AF80089; Fri,  3 Jun 2022 21:39:21 +0200 (CEST)
-Received: from mga18.intel.com (mga18.intel.com [134.134.136.126])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id A32B9F80124; Fri,  3 Jun 2022 22:30:15 +0200 (CEST)
+Received: from mail-oa1-f47.google.com (mail-oa1-f47.google.com
+ [209.85.160.47])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id C2924F80089;
- Fri,  3 Jun 2022 21:39:10 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C2924F80089
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="KroORdY1"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
- d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1654285155; x=1685821155;
- h=message-id:subject:from:to:cc:date:in-reply-to:
- references:mime-version:content-transfer-encoding;
- bh=BV+s9A/Oh3s+mJA3H+hW+hopPxhygm1cJIl5Qt7aYC8=;
- b=KroORdY1bHZQC6qrgIKq0Y5CaUtG/fbYN4A3yLczrwUu6OsEuq7brc0v
- KmG0JkRZKGiEsO8ms1huBlm41tcmXkt1cQ7X45JZqvJHTMY30Jtp2zn6X
- E6Vz7YQN2zIChl3KYbCE+ei53oyCB51TQsv4/sCtQvwhqVoemaLEoskZi
- ffBxXaU54nOQYPIzuTZcs74F5xuTqKDEH2lMp9fQtYe54v/p9C1bub8cR
- jNSimIMIJIv1192buOdzdEhC6+yZQdt9QmrVGxZGN43I/mDZQmnVt48gp
- lNowm9HLQT7ZkmGKLDdFE2qjcBPBA+MXuhepx8XgstdFW9CN7KlNW60os w==;
-X-IronPort-AV: E=McAfee;i="6400,9594,10367"; a="258414130"
-X-IronPort-AV: E=Sophos;i="5.91,275,1647327600"; d="scan'208";a="258414130"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
- by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 03 Jun 2022 12:38:25 -0700
-X-IronPort-AV: E=Sophos;i="5.91,275,1647327600"; d="scan'208";a="563948435"
-Received: from aburkhar-mobl.amr.corp.intel.com ([10.254.4.242])
- by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 03 Jun 2022 12:38:24 -0700
-Message-ID: <d8f063d4f6f68fa8f8954da7f4585b542b66c767.camel@linux.intel.com>
-Subject: Re: [PATCH] ASoC: SOF: Fix potential NULL pointer dereference
-From: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-To: Amadeusz =?UTF-8?Q?S=C5=82awi=C5=84ski?=
- <amadeuszx.slawinski@linux.intel.com>, Mark Brown <broonie@kernel.org>, 
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Date: Fri, 03 Jun 2022 12:38:18 -0700
-In-Reply-To: <20220602135757.3335351-1-amadeuszx.slawinski@linux.intel.com>
-References: <20220602135757.3335351-1-amadeuszx.slawinski@linux.intel.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.3-0ubuntu1 
+ by alsa1.perex.cz (Postfix) with ESMTPS id 88B6BF80124
+ for <alsa-devel@alsa-project.org>; Fri,  3 Jun 2022 22:30:07 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 88B6BF80124
+Received: by mail-oa1-f47.google.com with SMTP id
+ 586e51a60fabf-f3381207a5so12057612fac.4
+ for <alsa-devel@alsa-project.org>; Fri, 03 Jun 2022 13:30:07 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+ :mime-version:content-disposition:in-reply-to;
+ bh=aWgRjcIRY9aXR5lMG74PBf5aEP4BmW1ZmceFBkmSQgE=;
+ b=H5PJ3ClKVGfxS3t3uVd8T0NAdBLXLPNQK25OqH8D7eBAH1i0kCSBuM67Oy0BFtZu+u
+ 252Es+E7L/tIDBqU5moDkBMwdRdXDFspUKaejUNGXYwIpnEijkW2mCprS/vfgWq0jVv6
+ Xwew2ZG8om98Z9q4skLKGCNPAcSsbWy263IzPr0TdDfIrgSn0GTOMabMMDtIkf0r4loY
+ znh0vywvJRiPIrpwOLzi5d0+yP/m1RpYDZBi2WbHn05vCXA/1aDJbq5pci1JIcpG864H
+ jDOHSCUQ/RYqbp8dhj7XlRkSfIR02K6uThfxXT/JqFOwhQSTWN5LnMrB0FzBzgVan/kB
+ wb2A==
+X-Gm-Message-State: AOAM530rZU4F7rZmuV0FmjmsV4OtI4QcqLvJznE+Sm3rvCEWhnPOT3ML
+ ohaEzhvo7Xt5UFmda2F9JA==
+X-Google-Smtp-Source: ABdhPJzDAK9Ow9YhSMIGcLFMa9uhRDPTC2tuaf29Q6ftaE+O1AaL/YlVV1f1W6fnvsQb1+wkPGINVA==
+X-Received: by 2002:a05:6870:d0ce:b0:f3:3856:f552 with SMTP id
+ k14-20020a056870d0ce00b000f33856f552mr7127615oaa.99.1654288204596; 
+ Fri, 03 Jun 2022 13:30:04 -0700 (PDT)
+Received: from robh.at.kernel.org (66-90-144-107.dyn.grandenetworks.net.
+ [66.90.144.107]) by smtp.gmail.com with ESMTPSA id
+ k10-20020a056830168a00b006068c4af381sm4098088otr.54.2022.06.03.13.30.03
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Fri, 03 Jun 2022 13:30:04 -0700 (PDT)
+Received: (nullmailer pid 855181 invoked by uid 1000);
+ Fri, 03 Jun 2022 20:30:03 -0000
+Date: Fri, 3 Jun 2022 15:30:03 -0500
+From: Rob Herring <robh@kernel.org>
+To: Sameer Pujar <spujar@nvidia.com>
+Subject: Re: [PATCH v3 1/6] ASoC: tegra: Add binding doc for OPE module
+Message-ID: <20220603203003.GA852734-robh@kernel.org>
+References: <1654238172-16293-1-git-send-email-spujar@nvidia.com>
+ <1654238172-16293-2-git-send-email-spujar@nvidia.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: alsa-devel@alsa-project.org, Kai Vehmanen <kai.vehmanen@linux.intel.com>,
- Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>,
- Daniel Baluta <daniel.baluta@nxp.com>, sound-open-firmware@alsa-project.org
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1654238172-16293-2-git-send-email-spujar@nvidia.com>
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
+ catalin.marinas@arm.com, tiwai@suse.com, broonie@kernel.org,
+ thierry.reding@gmail.com, linux-arm-kernel@lists.infradead.org,
+ krzysztof.kozlowski+dt@linaro.org, linux-tegra@vger.kernel.org,
+ jonathanh@nvidia.com, will@kernel.org, linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -87,38 +91,27 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Thu, 2022-06-02 at 15:57 +0200, Amadeusz Sławiński wrote:
-> Cleanup path for sof_prepare_widgets_in_path() should check if
-> unprepare
-> callback exists before calling it, instead it checks if it does not
-> exist. Fix the check.
+On Fri, Jun 03, 2022 at 12:06:07PM +0530, Sameer Pujar wrote:
+> This patch adds YAML schema for DT bindings of Output Processing
+> Engine (OPE) module. It consists of Parametric Equalizer (PEQ)
+> and Multi Band Dynamic Range Compressor (MBDRC) sub blocks and
+> binding doc for these blocks are added as well. The OPE will be
+> registered as an ASoC component and can be plugged into an audio
+> path as per need via ALSA mixer controls. The DT bindings are
+> applicable on Tegra210 and later SoCs where OPE module is present.
 > 
-> Fixes: 370014c8197a ("ASoC: SOF: Add a prepare op to IPC topology
-> widget ops")
-> Signed-off-by: Amadeusz Sławiński <
-> amadeuszx.slawinski@linux.intel.com>
+> Signed-off-by: Sameer Pujar <spujar@nvidia.com>
 > ---
->  sound/soc/sof/sof-audio.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+>  .../bindings/sound/nvidia,tegra210-ahub.yaml       |  4 +
+>  .../bindings/sound/nvidia,tegra210-mbdrc.yaml      | 47 ++++++++++++
+>  .../bindings/sound/nvidia,tegra210-ope.yaml        | 87 ++++++++++++++++++++++
+>  .../bindings/sound/nvidia,tegra210-peq.yaml        | 48 ++++++++++++
+>  4 files changed, 186 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/sound/nvidia,tegra210-mbdrc.yaml
+>  create mode 100644 Documentation/devicetree/bindings/sound/nvidia,tegra210-ope.yaml
+>  create mode 100644 Documentation/devicetree/bindings/sound/nvidia,tegra210-peq.yaml
 
-LGTM. Thanks for the fix.
-Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-> 
-> diff --git a/sound/soc/sof/sof-audio.c b/sound/soc/sof/sof-audio.c
-> index cd41d0599cef..789d0a1f1a77 100644
-> --- a/sound/soc/sof/sof-audio.c
-> +++ b/sound/soc/sof/sof-audio.c
-> @@ -323,7 +323,7 @@ sof_prepare_widgets_in_path(struct snd_sof_dev
-> *sdev, struct snd_soc_dapm_widget
->  			p->walking = false;
->  			if (ret < 0) {
->  				/* unprepare the source widget */
-> -				if (!widget_ops[widget-
-> >id].ipc_unprepare && swidget->prepared) {
-> +				if (widget_ops[widget-
-> >id].ipc_unprepare && swidget->prepared) {
->  					widget_ops[widget-
-> >id].ipc_unprepare(swidget);
->  					swidget->prepared = false;
->  				}
+Doesn't apply for me. I guess there is some undocumented dependency 
+here? Resend after the merge window if that solves it.
 
+Rob
