@@ -4,43 +4,43 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 04FCDC433EF
-	for <alsa-devel@archiver.kernel.org>; Sat,  4 Jun 2022 16:26:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 146A9C433EF
+	for <alsa-devel@archiver.kernel.org>; Sat,  4 Jun 2022 16:29:31 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3A6EB18BE;
-	Sat,  4 Jun 2022 18:25:16 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3A6EB18BE
+	by alsa0.perex.cz (Postfix) with ESMTPS id F32B418B2;
+	Sat,  4 Jun 2022 18:28:39 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F32B418B2
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1654359966;
-	bh=JgC4j47n3FobItWqzf5SJFtu/WIOx1MuP2H9BRuT5NY=;
+	s=default; t=1654360170;
+	bh=brlADAwX30RL/6G7aKgX+QqH/MLoDuqypg0sRnviI/s=;
 	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=O3Il0oZqFsuphSM1CL4w9SGnlwkWqNK8hzo39L8UAlG82OZXNMBJ+FUmKS2peE7ol
-	 gn9+KQpmGIvD+LKlDivWJsyf7JGbf8nsgXOqXj2kThjYA28U1xRetGcRWbM51iysHp
-	 JK5ySNvY4pJYLt8E7Ked/OvfqPmjKrE+60t6If9s=
+	b=faQUIm3kkz9qrs/QCflPMZnBppb2xdtlhGP5r0v34uz967xDv3/HSoZbtoGiTcP/c
+	 d2Hn5GJIro4Yqa/h2cXkzpcT1IN83EDVhaeVPc4H8uQeFjoCkSSyviB/n3oWrWGd9d
+	 ZoLozUqPl5LZRzvN58C7mAqLo6CNk1pP2cw5T/TM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 69A6BF80525;
-	Sat,  4 Jun 2022 18:25:04 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 90435F800E8;
+	Sat,  4 Jun 2022 18:28:39 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 75B3AF80526; Sat,  4 Jun 2022 18:25:03 +0200 (CEST)
+ id 8F400F8016D; Sat,  4 Jun 2022 18:28:38 +0200 (CEST)
 Received: from webhooks-bot.alsa-project.org (gate.perex.cz [77.48.224.242])
- by alsa1.perex.cz (Postfix) with ESMTP id EB0F7F80524
- for <alsa-devel@alsa-project.org>; Sat,  4 Jun 2022 18:24:55 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EB0F7F80524
+ by alsa1.perex.cz (Postfix) with ESMTP id 54E60F800E8
+ for <alsa-devel@alsa-project.org>; Sat,  4 Jun 2022 18:28:31 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 54E60F800E8
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 From: GitHub issues - edited <github@alsa-project.org>
 To: alsa-devel@alsa-project.org
-In-Reply-To: <1654359895755600929-webhooks-bot@alsa-project.org>
-References: <1654359895755600929-webhooks-bot@alsa-project.org>
+In-Reply-To: <1654360111754354000-webhooks-bot@alsa-project.org>
+References: <1654360111754354000-webhooks-bot@alsa-project.org>
 Subject: ASUS ROG Maximus Z690 Hero (ALC4082) - No audio from microphone,
  no audio on the front panel
-Message-Id: <20220604162503.75B3AF80526@alsa1.perex.cz>
-Date: Sat,  4 Jun 2022 18:25:03 +0200 (CEST)
+Message-Id: <20220604162838.8F400F8016D@alsa1.perex.cz>
+Date: Sat,  4 Jun 2022 18:28:38 +0200 (CEST)
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -77,7 +77,7 @@ I also tried to connect the headset to the front panel connectors, but got no au
 `arecord` output:
 [arecord.txt](https://github.com/alsa-project/alsa-ucm-conf/files/8838239/arecord.txt)
 `lsusb` output:
-[lsusb.txt](https://github.com/alsa-project/alsa-ucm-conf/files/8838241/lsusb.txt)
+[lsusb.txt](https://github.com/alsa-project/alsa-ucm-conf/files/8838250/lsusb.txt)
 
 This is on Kubuntu 22.04.
 
