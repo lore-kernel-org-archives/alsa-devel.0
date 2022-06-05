@@ -4,74 +4,62 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 912B1CCA47B
-	for <alsa-devel@archiver.kernel.org>; Sun,  5 Jun 2022 16:01:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id F1010C43334
+	for <alsa-devel@archiver.kernel.org>; Sun,  5 Jun 2022 16:32:54 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E92121923;
-	Sun,  5 Jun 2022 18:01:06 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E92121923
+	by alsa0.perex.cz (Postfix) with ESMTPS id 4EED716BC;
+	Sun,  5 Jun 2022 18:32:02 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4EED716BC
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1654444917;
-	bh=p2rvYINhcy33Y4ywqrw+OJul21tsTbOIlv60AkIcyD8=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=NiklOqszZJlEKBzdPnCARmn+6gLkp7U+vd7Up0OzpdJZcL9UAew0H/5y/43vFvnsM
-	 eh4GQVsftMSsMmHYanqw1Hv9wjXwvuGwbZ4JUthNYCcrpLVLmkR9c5d2f7jmjZV4gW
-	 myvtP99GM/lTpuW/QUbId/bSt5mKDPyChF25Kjmg=
+	s=default; t=1654446772;
+	bh=t4I1i9Rx25bVBuCIlSgY5JAjTbekX+85awJZ6N3WJI4=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=ftfSmP0a5CG6wGt5S0vR+dRGU9RcuyXjy68ab/Mwd6od0zHHGy6+pIP4D68xcXJlk
+	 jXjTuoQiLBJ082ioVVNHHb8ZxvF+/4j2mQHg6YPaCx3FwU6Tk1eE9f3GfWdF/s5RKn
+	 M7pEsI+5WxEBxqgUpVpD0ANS9d2ZlVAep7Nk5IFA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 8301EF80132;
-	Sun,  5 Jun 2022 18:01:06 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id CD079F80162;
+	Sun,  5 Jun 2022 18:32:01 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id B5A5BF80162; Sun,  5 Jun 2022 18:01:05 +0200 (CEST)
-Received: from mga06.intel.com (mga06b.intel.com [134.134.136.31])
+ id DA2DAF8016C; Sun,  5 Jun 2022 18:31:59 +0200 (CEST)
+Received: from casper.infradead.org (casper.infradead.org
+ [IPv6:2001:8b0:10b:1236::1])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 9BAA7F80089
- for <alsa-devel@alsa-project.org>; Sun,  5 Jun 2022 18:00:55 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9BAA7F80089
+ by alsa1.perex.cz (Postfix) with ESMTPS id 1B247F800D3
+ for <alsa-devel@alsa-project.org>; Sun,  5 Jun 2022 18:31:52 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1B247F800D3
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="TOt5bWnG"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
- d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1654444860; x=1685980860;
- h=date:from:to:cc:subject:message-id:references:
- mime-version:in-reply-to;
- bh=p2rvYINhcy33Y4ywqrw+OJul21tsTbOIlv60AkIcyD8=;
- b=TOt5bWnG1sJEHKoJZOtMUD3BBQU7eqDOWSEK8RtzTjTwBXgzv3V6Nn0k
- McWTJXgkH9wl7PbfPf8ZDE+b+R0Cird5mNTDt7C4D764PBfixQ9lZ4ruW
- vHMPA8gFzr3+R/maf7wi8flRgprtnHcG/uWM/6bvbnK7mfbcfRZaReti0
- O14G3V4wPdB7sQ1mkoeGpDiP1TRGgGzqUKW1hqH4kbNMTNT0wrY1Wu/n2
- Yovpl0kmaxUQX5D22CBFEnj4oMCrqrKSN5DSUDb8Zs23WFT9eYdjS5kjt
- jbEtGq+2m+eCuk7NY4LuTjs0Pv3rb3TNVKMyZcL3bCwdTOYjURxcMBFKL Q==;
-X-IronPort-AV: E=McAfee;i="6400,9594,10369"; a="337269580"
-X-IronPort-AV: E=Sophos;i="5.91,279,1647327600"; d="scan'208";a="337269580"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
- by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 05 Jun 2022 09:00:49 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.91,279,1647327600"; d="scan'208";a="554064493"
-Received: from lkp-server01.sh.intel.com (HELO 60dabacc1df6) ([10.239.97.150])
- by orsmga006.jf.intel.com with ESMTP; 05 Jun 2022 09:00:48 -0700
-Received: from kbuild by 60dabacc1df6 with local (Exim 4.95)
- (envelope-from <lkp@intel.com>) id 1nxsgJ-000C21-BT;
- Sun, 05 Jun 2022 16:00:47 +0000
-Date: Mon, 6 Jun 2022 00:00:11 +0800
-From: kernel test robot <lkp@intel.com>
-To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>,
- Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Subject: Re: [PATCH] ASoC: wcd938x: Fix event generation for some controls
-Message-ID: <202206052345.ErWjOII2-lkp@intel.com>
-References: <20220603122526.3914942-1-broonie@kernel.org>
+ dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org
+ header.b="PN0Bi1pm"
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+ d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
+ Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
+ Content-Description:In-Reply-To:References;
+ bh=dI3rf3edy3Kft6mBrBSiDKYbeeS3F5z2oeWA1gb5ziU=; b=PN0Bi1pmYIrCr/u2Syoq6r98BX
+ nf9F8H92bvNpjQGQ/5aeGRZljvrQUaqjJF1iLsyTqwJLSLQSQ0TVDVdhP0bDtTa7etHE2qRWRZUG+
+ 5V1RXDFoyMD/mUcy7w5SMQhsKCXGnHXYI6Becaqpe/x1tWY0+Fc1zIOTcVQYwLvmmHFbsEnjTWpWw
+ v3croie01C2H3c8BpGI9H+RmKEMsBANLlQ+33HqTGgpuyNuyYBPel0CeGRFJxi8gvCnTfdMLad6XP
+ RQUFWVxnfifHTxz44Oxy1eH0Gtp3lnJMjwVPABpM0RRdfwH0p5W2ubDEVUDAWQQy2hYEpDoiFCv5G
+ MPBNZ9UA==;
+Received: from [2601:1c0:6280:3f0::aa0b] (helo=casper.infradead.org)
+ by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+ id 1nxtA1-009qFA-TT; Sun, 05 Jun 2022 16:31:30 +0000
+From: Randy Dunlap <rdunlap@infradead.org>
+To: linux-kernel@vger.kernel.org
+Subject: [PATCH] ASoC: max98390: use linux/gpio/consumer.h to fix build
+Date: Sun,  5 Jun 2022 09:31:23 -0700
+Message-Id: <20220605163123.23537-1-rdunlap@infradead.org>
+X-Mailer: git-send-email 2.35.3
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220603122526.3914942-1-broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org, llvm@lists.linux.dev, kbuild-all@lists.01.org,
- Mark Brown <broonie@kernel.org>
+Content-Transfer-Encoding: 8bit
+Cc: Steve Lee <steve.lee.analog@gmail.com>, alsa-devel@alsa-project.org,
+ kernel test robot <lkp@intel.com>, Randy Dunlap <rdunlap@infradead.org>,
+ Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
+ Takashi Iwai <tiwai@suse.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -87,61 +75,38 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Hi Mark,
+Change the header file to fix build errors in max98390.c:
 
-I love your patch! Perhaps something to improve:
+../sound/soc/codecs/max98390.c: In function 'max98390_i2c_probe':
+../sound/soc/codecs/max98390.c:1076:22: error: implicit declaration of function 'devm_gpiod_get_optional'; did you mean 'devm_regulator_get_optional'? [-Werror=implicit-function-declaration]
+ 1076 |         reset_gpio = devm_gpiod_get_optional(&i2c->dev,
+../sound/soc/codecs/max98390.c:1077:55: error: 'GPIOD_OUT_HIGH' undeclared (first use in this function); did you mean 'GPIOF_INIT_HIGH'?
+ 1077 |                                              "reset", GPIOD_OUT_HIGH);
+../sound/soc/codecs/max98390.c:1077:55: note: each undeclared identifier is reported only once for each function it appears in
+../sound/soc/codecs/max98390.c:1083:17: error: implicit declaration of function 'gpiod_set_value_cansleep'; did you mean 'gpio_set_value_cansleep'? [-Werror=implicit-function-declaration]
+ 1083 |                 gpiod_set_value_cansleep(reset_gpio, 0);
 
-[auto build test WARNING on broonie-sound/for-next]
-[also build test WARNING on v5.18 next-20220603]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch]
-
-url:    https://github.com/intel-lab-lkp/linux/commits/Mark-Brown/ASoC-wcd938x-Fix-event-generation-for-some-controls/20220605-162848
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
-config: x86_64-randconfig-c007 (https://download.01.org/0day-ci/archive/20220605/202206052345.ErWjOII2-lkp@intel.com/config)
-compiler: clang version 15.0.0 (https://github.com/llvm/llvm-project 416a5080d89066029f9889dc23f94de47c2fa895)
-reproduce (this is a W=1 build):
-        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
-        chmod +x ~/bin/make.cross
-        # https://github.com/intel-lab-lkp/linux/commit/77b0604d37f40ad0f56da53a9a38ad0de298fa52
-        git remote add linux-review https://github.com/intel-lab-lkp/linux
-        git fetch --no-tags linux-review Mark-Brown/ASoC-wcd938x-Fix-event-generation-for-some-controls/20220605-162848
-        git checkout 77b0604d37f40ad0f56da53a9a38ad0de298fa52
-        # save the config file
-        mkdir build_dir && cp config build_dir/.config
-        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross W=1 O=build_dir ARCH=x86_64 SHELL=/bin/bash sound/soc/codecs/
-
-If you fix the issue, kindly add following tag where applicable
+Fixes: 397ff0249606 ("ASoC: max98390: Add reset gpio control")
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
 Reported-by: kernel test robot <lkp@intel.com>
+Cc: Steve Lee <steve.lee.analog@gmail.com>
+Cc: Mark Brown <broonie@kernel.org>
+Cc: Liam Girdwood <lgirdwood@gmail.com>
+Cc: Jaroslav Kysela <perex@perex.cz>
+Cc: Takashi Iwai <tiwai@suse.com>
+Cc: alsa-devel@alsa-project.org
+---
+ sound/soc/codecs/max98390.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-All warnings (new ones prefixed by >>):
-
->> sound/soc/codecs/wcd938x.c:2546:6: warning: unused variable 'change' [-Wunused-variable]
-           int change;
-               ^
-   1 warning generated.
-
-
-vim +/change +2546 sound/soc/codecs/wcd938x.c
-
-  2540	
-  2541	static int wcd938x_rx_hph_mode_put(struct snd_kcontrol *kcontrol,
-  2542					   struct snd_ctl_elem_value *ucontrol)
-  2543	{
-  2544		struct snd_soc_component *component = snd_soc_kcontrol_component(kcontrol);
-  2545		struct wcd938x_priv *wcd938x = snd_soc_component_get_drvdata(component);
-> 2546		int change;
-  2547	
-  2548		if (wcd938x->hph_mode == ucontrol->value.enumerated.item[0])
-  2549			return 0;
-  2550	
-  2551		wcd938x->hph_mode = ucontrol->value.enumerated.item[0];
-  2552	
-  2553		return 1;
-  2554	}
-  2555	
-
--- 
-0-DAY CI Kernel Test Service
-https://01.org/lkp
+--- a/sound/soc/codecs/max98390.c
++++ b/sound/soc/codecs/max98390.c
+@@ -10,7 +10,7 @@
+ #include <linux/cdev.h>
+ #include <linux/dmi.h>
+ #include <linux/firmware.h>
+-#include <linux/gpio.h>
++#include <linux/gpio/consumer.h>
+ #include <linux/i2c.h>
+ #include <linux/module.h>
+ #include <linux/of_gpio.h>
