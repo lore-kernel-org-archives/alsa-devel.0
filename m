@@ -4,65 +4,64 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 34BD5C43334
-	for <alsa-devel@archiver.kernel.org>; Mon,  6 Jun 2022 20:40:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 66A7EC433EF
+	for <alsa-devel@archiver.kernel.org>; Mon,  6 Jun 2022 20:40:50 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 809B71B4D;
-	Mon,  6 Jun 2022 22:39:47 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 809B71B4D
+	by alsa0.perex.cz (Postfix) with ESMTPS id A57B21B54;
+	Mon,  6 Jun 2022 22:39:58 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A57B21B54
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1654548037;
-	bh=Qi8Tnz14spmlT3/ARHwPvm8Eq4UxjpOfELypSQjvn1s=;
+	s=default; t=1654548048;
+	bh=4lsPaO9+MYFlg0SoKShmbAa5ueeozB08ZfFkV1z/D20=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Zs+1toQN2Y0Vyz/LHFi3NbDlv6IjPgd7aoe7bqWTH5Fm4gV5AQzd9mxpgCXrgCjJo
-	 uUuJqx4ZpusEer43CxcYyNhHnz36anV7ybRjHBQDi/XWb/Dt+YHDNKYE4O44ts+Z0n
-	 bb64OaX1jC/i52b1uu6M7MJ3om8bIskP/W7oLDj0=
+	b=W+aqr+8useF+DBKuoj0c7+7yGowTTXh7WM+FSfXHpTLYPQP9PyP+VrTpZFYMGHpcf
+	 XYtIh7IG9yo0msVQB6dhp9JH8INhGyX5cQB0yH5L9U63UzzyPfjxFwwtmHhWnxY+Ab
+	 Ji6itxytgLo/ROj5PjrrowL4lMQtp9a/0nwZq24U=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id DE0ECF8053C;
-	Mon,  6 Jun 2022 22:38:21 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 55031F8053E;
+	Mon,  6 Jun 2022 22:38:22 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id F172CF80089; Mon,  6 Jun 2022 22:38:19 +0200 (CEST)
+ id 92401F80535; Mon,  6 Jun 2022 22:38:20 +0200 (CEST)
 Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id C390CF80089
- for <alsa-devel@alsa-project.org>; Mon,  6 Jun 2022 22:38:10 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C390CF80089
+ by alsa1.perex.cz (Postfix) with ESMTPS id 96A24F80116
+ for <alsa-devel@alsa-project.org>; Mon,  6 Jun 2022 22:38:08 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 96A24F80116
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="aeeCEFU6"
+ header.b="cvfGJkXP"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1654547891; x=1686083891;
+ t=1654547889; x=1686083889;
  h=from:to:cc:subject:date:message-id:in-reply-to:
  references:mime-version:content-transfer-encoding;
- bh=Qi8Tnz14spmlT3/ARHwPvm8Eq4UxjpOfELypSQjvn1s=;
- b=aeeCEFU6VFUCVUG5XqYOrbY0W/BHvgbMzMprVP0DEweNxJK3efB8X6HS
- WdcZGAgZ6U2IiqH5TlfrlSRQ7fD7yGy6EwiH2+6h+gmIGOaNHIXeMst36
- o4tE0nJPAdPylE3lMnAzLIMBd4IMOmC07ft1yXg++wK+/4OZ+u5tad0VV
- daonJtkQFF0G2YR9BPQKJTvCC2gNdBB7kHTzQ/wM9ti7X3TQHIFuHkaog
- Eb7HPt1LsSxyx2zkl0vo6neOcT6MOH5qjn9bIs+kmCyAOa59rNPFN5x4O
- NmS2RwYjMR9jjS5zhyjeNMsJoIBg9C5Hb/cLOQ1yJvXfy7apUpOvq4pMi w==;
-X-IronPort-AV: E=McAfee;i="6400,9594,10370"; a="276730868"
-X-IronPort-AV: E=Sophos;i="5.91,280,1647327600"; d="scan'208";a="276730868"
+ bh=4lsPaO9+MYFlg0SoKShmbAa5ueeozB08ZfFkV1z/D20=;
+ b=cvfGJkXPYqLDTVbAkv45YQzx6uWsjFD4UlctU9hj3IqnfXcRobyBUBBa
+ 03Q6ySiwZJE7BfTbEFKF8vNXqSTm59ppt+eUpmNgb5a5DndXxiyEqwhvx
+ Z5RYZrv0Yge0xTrftPEMgMk7fJXzOvGgqQIpCiFv97NmAGFgvR5iU0RPW
+ OqdH0MZgPe23n/y9aCvdhbi4dP0DSb88y1kckb7dJ2Bc+PGrXnpnkzMfg
+ 6ZkvI3iLDUAvbyny5e9rjLlOiVtaAhexOtdcDDEAr4u+Om3Ru39wtxumQ
+ IHfUsMoyhC4nB4VkxIBZkCQ1z5evfZGFN94n8MTzriMmlIrsPSuA4BINJ A==;
+X-IronPort-AV: E=McAfee;i="6400,9594,10370"; a="276730864"
+X-IronPort-AV: E=Sophos;i="5.91,280,1647327600"; d="scan'208";a="276730864"
 Received: from fmsmga004.fm.intel.com ([10.253.24.48])
  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 06 Jun 2022 13:38:03 -0700
-X-IronPort-AV: E=Sophos;i="5.91,280,1647327600"; d="scan'208";a="647728097"
+ 06 Jun 2022 13:38:01 -0700
+X-IronPort-AV: E=Sophos;i="5.91,280,1647327600"; d="scan'208";a="647728080"
 Received: from yantem-mobl9.amr.corp.intel.com (HELO pbossart-mobl3.intel.com)
  ([10.212.24.154])
  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 06 Jun 2022 13:38:02 -0700
+ 06 Jun 2022 13:38:00 -0700
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH 6/7] ASoC: codecs: rt700/rt711/rt711-sdca: initialize
- workqueues in probe
-Date: Mon,  6 Jun 2022 15:37:51 -0500
-Message-Id: <20220606203752.144159-7-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH 3/7] ASoC: Intel: sof_sdw: handle errors on card registration
+Date: Mon,  6 Jun 2022 15:37:48 -0500
+Message-Id: <20220606203752.144159-4-pierre-louis.bossart@linux.intel.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20220606203752.144159-1-pierre-louis.bossart@linux.intel.com>
 References: <20220606203752.144159-1-pierre-louis.bossart@linux.intel.com>
@@ -86,112 +85,98 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The workqueues are initialized in the io_init functions, which isn't
-quite right. In some tests, this leads to warnings throw from
-__queue_delayed_work()
+If the card registration fails, typically because of deferred probes,
+the device properties added for headset codecs are not removed, which
+leads to kernel oopses in driver bind/unbind tests.
 
-WARN_ON_FUNCTION_MISMATCH(timer->function, delayed_work_timer_fn);
-
-Move all the initializations to the probe functions.
+We already clean-up the device properties when the card is removed,
+this code can be moved as a helper and called upon card registration
+errors.
 
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Reviewed-by: Rander Wang <rander.wang@intel.com>
 Reviewed-by: Bard Liao <yung-chuan.liao@linux.intel.com>
 ---
- sound/soc/codecs/rt700.c      | 12 +++++-------
- sound/soc/codecs/rt711-sdca.c | 10 +++-------
- sound/soc/codecs/rt711.c      | 12 +++++-------
- 3 files changed, 13 insertions(+), 21 deletions(-)
+ sound/soc/intel/boards/sof_sdw.c | 51 ++++++++++++++++++--------------
+ 1 file changed, 29 insertions(+), 22 deletions(-)
 
-diff --git a/sound/soc/codecs/rt700.c b/sound/soc/codecs/rt700.c
-index 4a99d5f4706fd..7a6cf3434591a 100644
---- a/sound/soc/codecs/rt700.c
-+++ b/sound/soc/codecs/rt700.c
-@@ -1115,6 +1115,11 @@ int rt700_init(struct device *dev, struct regmap *sdw_regmap,
+diff --git a/sound/soc/intel/boards/sof_sdw.c b/sound/soc/intel/boards/sof_sdw.c
+index 1f00679b42409..ad826ad82d51a 100644
+--- a/sound/soc/intel/boards/sof_sdw.c
++++ b/sound/soc/intel/boards/sof_sdw.c
+@@ -1398,6 +1398,33 @@ static struct snd_soc_card card_sof_sdw = {
+ 	.late_probe = sof_sdw_card_late_probe,
+ };
  
- 	mutex_init(&rt700->disable_irq_lock);
- 
-+	INIT_DELAYED_WORK(&rt700->jack_detect_work,
-+			  rt700_jack_detect_handler);
-+	INIT_DELAYED_WORK(&rt700->jack_btn_check_work,
-+			  rt700_btn_check_handler);
++static void mc_dailink_exit_loop(struct snd_soc_card *card)
++{
++	struct snd_soc_dai_link *link;
++	int ret;
++	int i, j;
 +
- 	/*
- 	 * Mark hw_init to false
- 	 * HW init will be performed when device reports present
-@@ -1209,13 +1214,6 @@ int rt700_io_init(struct device *dev, struct sdw_slave *slave)
- 	/* Finish Initial Settings, set power to D3 */
- 	regmap_write(rt700->regmap, RT700_SET_AUDIO_POWER_STATE, AC_PWRST_D3);
- 
--	if (!rt700->first_hw_init) {
--		INIT_DELAYED_WORK(&rt700->jack_detect_work,
--			rt700_jack_detect_handler);
--		INIT_DELAYED_WORK(&rt700->jack_btn_check_work,
--			rt700_btn_check_handler);
--	}
--
- 	/*
- 	 * if set_jack callback occurred early than io_init,
- 	 * we set up the jack detection function now
-diff --git a/sound/soc/codecs/rt711-sdca.c b/sound/soc/codecs/rt711-sdca.c
-index 93b36f05cb567..2b3b77577d1fd 100644
---- a/sound/soc/codecs/rt711-sdca.c
-+++ b/sound/soc/codecs/rt711-sdca.c
-@@ -1415,6 +1415,9 @@ int rt711_sdca_init(struct device *dev, struct regmap *regmap,
- 	mutex_init(&rt711->calibrate_mutex);
- 	mutex_init(&rt711->disable_irq_lock);
- 
-+	INIT_DELAYED_WORK(&rt711->jack_detect_work, rt711_sdca_jack_detect_handler);
-+	INIT_DELAYED_WORK(&rt711->jack_btn_check_work, rt711_sdca_btn_check_handler);
++	for (i = 0; i < ARRAY_SIZE(codec_info_list); i++) {
++		if (!codec_info_list[i].exit)
++			continue;
++		/*
++		 * We don't need to call .exit function if there is no matched
++		 * dai link found.
++		 */
++		for_each_card_prelinks(card, j, link) {
++			if (!strcmp(link->codecs[0].dai_name,
++				    codec_info_list[i].dai_name)) {
++				ret = codec_info_list[i].exit(card, link);
++				if (ret)
++					dev_warn(card->dev,
++						 "codec exit failed %d\n",
++						 ret);
++				break;
++			}
++		}
++	}
++}
 +
- 	/*
- 	 * Mark hw_init to false
- 	 * HW init will be performed when device reports present
-@@ -1546,13 +1549,6 @@ int rt711_sdca_io_init(struct device *dev, struct sdw_slave *slave)
- 	rt711_sdca_index_update_bits(rt711, RT711_VENDOR_HDA_CTL,
- 		RT711_PUSH_BTN_INT_CTL0, 0x20, 0x00);
+ static int mc_probe(struct platform_device *pdev)
+ {
+ 	struct snd_soc_card *card = &card_sof_sdw;
+@@ -1462,6 +1489,7 @@ static int mc_probe(struct platform_device *pdev)
+ 	ret = devm_snd_soc_register_card(&pdev->dev, card);
+ 	if (ret) {
+ 		dev_err(card->dev, "snd_soc_register_card failed %d\n", ret);
++		mc_dailink_exit_loop(card);
+ 		return ret;
+ 	}
  
--	if (!rt711->first_hw_init) {
--		INIT_DELAYED_WORK(&rt711->jack_detect_work,
--			rt711_sdca_jack_detect_handler);
--		INIT_DELAYED_WORK(&rt711->jack_btn_check_work,
--			rt711_sdca_btn_check_handler);
+@@ -1473,29 +1501,8 @@ static int mc_probe(struct platform_device *pdev)
+ static int mc_remove(struct platform_device *pdev)
+ {
+ 	struct snd_soc_card *card = platform_get_drvdata(pdev);
+-	struct snd_soc_dai_link *link;
+-	int ret;
+-	int i, j;
+ 
+-	for (i = 0; i < ARRAY_SIZE(codec_info_list); i++) {
+-		if (!codec_info_list[i].exit)
+-			continue;
+-		/*
+-		 * We don't need to call .exit function if there is no matched
+-		 * dai link found.
+-		 */
+-		for_each_card_prelinks(card, j, link) {
+-			if (!strcmp(link->codecs[0].dai_name,
+-				    codec_info_list[i].dai_name)) {
+-				ret = codec_info_list[i].exit(card, link);
+-				if (ret)
+-					dev_warn(&pdev->dev,
+-						 "codec exit failed %d\n",
+-						 ret);
+-				break;
+-			}
+-		}
 -	}
--
- 	/* calibration */
- 	ret = rt711_sdca_calibration(rt711);
- 	if (ret < 0)
-diff --git a/sound/soc/codecs/rt711.c b/sound/soc/codecs/rt711.c
-index 2f445b27305a4..5709a6bbe8fc5 100644
---- a/sound/soc/codecs/rt711.c
-+++ b/sound/soc/codecs/rt711.c
-@@ -1207,6 +1207,10 @@ int rt711_init(struct device *dev, struct regmap *sdw_regmap,
- 	mutex_init(&rt711->calibrate_mutex);
- 	mutex_init(&rt711->disable_irq_lock);
++	mc_dailink_exit_loop(card);
  
-+	INIT_DELAYED_WORK(&rt711->jack_detect_work, rt711_jack_detect_handler);
-+	INIT_DELAYED_WORK(&rt711->jack_btn_check_work, rt711_btn_check_handler);
-+	INIT_WORK(&rt711->calibration_work, rt711_calibration_work);
-+
- 	/*
- 	 * Mark hw_init to false
- 	 * HW init will be performed when device reports present
-@@ -1314,14 +1318,8 @@ int rt711_io_init(struct device *dev, struct sdw_slave *slave)
- 
- 	if (rt711->first_hw_init)
- 		rt711_calibration(rt711);
--	else {
--		INIT_DELAYED_WORK(&rt711->jack_detect_work,
--			rt711_jack_detect_handler);
--		INIT_DELAYED_WORK(&rt711->jack_btn_check_work,
--			rt711_btn_check_handler);
--		INIT_WORK(&rt711->calibration_work, rt711_calibration_work);
-+	else
- 		schedule_work(&rt711->calibration_work);
--	}
- 
- 	/*
- 	 * if set_jack callback occurred early than io_init,
+ 	return 0;
+ }
 -- 
 2.34.1
 
