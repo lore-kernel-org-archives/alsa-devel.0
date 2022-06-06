@@ -4,83 +4,72 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 909DBC433EF
-	for <alsa-devel@archiver.kernel.org>; Mon,  6 Jun 2022 03:21:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2FE8BC433EF
+	for <alsa-devel@archiver.kernel.org>; Mon,  6 Jun 2022 03:25:25 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 7E6721689;
-	Mon,  6 Jun 2022 05:20:40 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7E6721689
+	by alsa0.perex.cz (Postfix) with ESMTPS id 124B8112;
+	Mon,  6 Jun 2022 05:24:34 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 124B8112
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1654485690;
-	bh=RBpziSqMp8jxASX12UM+2uQcA4RDfjJ7/V+f0J8j0Z0=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
+	s=default; t=1654485924;
+	bh=27QfA0HUowPRHp50PZrytVJKom6NrSAJVHItu8R3jHk=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=ef0JqnsdRPeXeMWHzcH6znD2vr0v2Cx10KmdCnk4+tNbWl3eZSUmaWb80esy8EpG6
-	 +CVEtP7pKA7xIx00dmVxpASVTn5DUkeTWa0PtOVY7+nVg9ULpm+EzQMTsU504qEAmI
-	 xtPYIdYRDZ3ZesH+J06Mr7ZRYMyRYfTNTxbOYvJI=
+	b=Y2290GwwwMvOEqCsDQAFRd34pMHu60fZAIrgKCjQ5G2CVt2MbA2x3HRWTOhaFGWLV
+	 855ZIBzK6scE8AZN8qvAT4wsu3g53X0We7S2NDjkvjz9Ns5meF9vptxcCqQUdGDtbD
+	 w+CVPvLKeqhNDLlGU7oH9n8nLhUqbQNbKqw7cEPY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 2B27BF8012A;
-	Mon,  6 Jun 2022 05:20:40 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 98241F80116;
+	Mon,  6 Jun 2022 05:24:33 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 4F9A4F801D8; Mon,  6 Jun 2022 05:20:38 +0200 (CEST)
-Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com
- [IPv6:2a00:1450:4864:20::12e])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id 3EB0BF801D8; Mon,  6 Jun 2022 05:24:31 +0200 (CEST)
+Received: from ams.source.kernel.org (ams.source.kernel.org
+ [IPv6:2604:1380:4601:e00::1])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id CC76FF80089
- for <alsa-devel@alsa-project.org>; Mon,  6 Jun 2022 05:20:29 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CC76FF80089
+ by alsa1.perex.cz (Postfix) with ESMTPS id CB838F80116
+ for <alsa-devel@alsa-project.org>; Mon,  6 Jun 2022 05:24:26 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CB838F80116
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="Fop1j2gU"
-Received: by mail-lf1-x12e.google.com with SMTP id i29so4549086lfp.3
- for <alsa-devel@alsa-project.org>; Sun, 05 Jun 2022 20:20:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
- h=mime-version:references:in-reply-to:from:date:message-id:subject:to
- :cc; bh=JBBOhm/oySl2buTR87HVpULyvrffJzB9SuPNOzesUIk=;
- b=Fop1j2gUIvRQGO/VLsO1X+nPzEtD8XZPr1/5f8bzCpn9rIW75ux7KENBir8L7SNM4h
- xwrBMjvmeQA199O8iY7h6mg08LJc2HyLjWtQRiimpOmzht76OyoWv31diaUjx1XNeizd
- TE0MZz3gZIlhkoH6qC8aGb2xi07EbfaS1JGgD2kSRxXcoCo2g8ILwsOYpQwipbZ3eSkC
- L10zfxnM8QW2k1iIRHRr1vYMxVH2vOoBiIXhA0s5sIaHBC2nvddydx2za7zmiSODBaB7
- w7Qt7wuekuNTq7ZRjbb1zQ+HEDnS2nnKKDknpaY7G0Lp/vJrqQNwN5CLHPvp0n1e2SIj
- OqgQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc;
- bh=JBBOhm/oySl2buTR87HVpULyvrffJzB9SuPNOzesUIk=;
- b=FPhSKI7TcVyS9nFM7bpGbpwkstK41cOeMTgX6VrsEJO4YVkbLZxdMqdMvWq7xokyfS
- 8/o+//ikGRkTC06Ip/kTzKzounZbojPBgokNFW/vs+aPLayyzz1Oh3JAa5vDTJPG/hCU
- bAuDVtnD+H85XS7xIKt0/8hkubtRX4F1297cWq6WnFKK9TtTB8tQf4mgg4dRRwFfyE4C
- lNKzSnlUXBPG/JJ6aR6zfonUnYwybwbmtoSCjmHxhlQamB2uHnXrAZA7KwAPGjGFSU8V
- T1pRZXSB2otzTz55Y1lijN1xz4h/CX9N5zkFmfJA63uPeQfYGrpDe898k6+6fCxI6hkW
- fMvg==
-X-Gm-Message-State: AOAM531fL88P0E2JXc7VJOQh0TxAP267I8V9cUXtrSN0y5aofb1U4KhH
- de7CS3k57pscjqZyehZFNrRxGvHsklG7FsdUMs4=
-X-Google-Smtp-Source: ABdhPJyP6Fkw9PeAHNVSWk158HTkNrRp5yhF5FLfqD995zmg8kNq70vYnbiZhMkZ/nUeX90kYWBgB0eBPWA7vYBIAtc=
-X-Received: by 2002:a05:6512:3e25:b0:478:fd30:7b7c with SMTP id
- i37-20020a0565123e2500b00478fd307b7cmr19491762lfv.285.1654485627593; Sun, 05
- Jun 2022 20:20:27 -0700 (PDT)
+ dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="lvcFToTH"
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by ams.source.kernel.org (Postfix) with ESMTPS id 76F12B80E66;
+ Mon,  6 Jun 2022 03:24:25 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3EEB0C34119;
+ Mon,  6 Jun 2022 03:24:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1654485864;
+ bh=27QfA0HUowPRHp50PZrytVJKom6NrSAJVHItu8R3jHk=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=lvcFToTHkstRhWpP8zzRAtwT4O09ePpK8HGekpw3LbbkO31qHgbzt6f+XtyUX0wyA
+ Upkatwg5nauh8UM2QzesBlVcMsGR/vOtWBVpC8AQ7EE08dURfEzfG2PAQfmyn3Wsev
+ fbiAi3oV74RKwRDQyTv0Ao+mF7On+YoFOu+v3y2rwJR3RNstABANHp1SN/96ILPiON
+ E8aoRDtBzGZ9BnEuJp+MH983c3K/e7h5ieOGtIgCU0lq7G+SWBxJyWELlENqgeq8qP
+ Yiu9caGxHd3WDJsM/emwZ+t53/hVArkLUxciUrdm/uTeV5OPOQTfX2fckcYnno1Mrm
+ YoUygv94h4p3Q==
+Date: Mon, 6 Jun 2022 03:24:19 +0000
+From: Tzung-Bi Shih <tzungbi@kernel.org>
+To: Miaoqian Lin <linmq006@gmail.com>
+Subject: Re: [PATCH v2] ASoC: cros_ec_codec: Fix refcount leak in
+ cros_ec_codec_platform_probe
+Message-ID: <Yp1zY39dZDzquBE7@google.com>
+References: <20220603131043.38907-1-linmq006@gmail.com>
 MIME-Version: 1.0
-References: <20220601092342.3328644-1-m.felsch@pengutronix.de>
- <20220601092342.3328644-3-m.felsch@pengutronix.de>
-In-Reply-To: <20220601092342.3328644-3-m.felsch@pengutronix.de>
-From: Shengjiu Wang <shengjiu.wang@gmail.com>
-Date: Mon, 6 Jun 2022 11:20:16 +0800
-Message-ID: <CAA+D8APDR7w3T5ek5q-mvNsrp-u7sAXCzdT+OCYEr7GkH3L2QA@mail.gmail.com>
-Subject: Re: [PATCH 3/3] ASoC: fsl_sai: add error message in case of missing
- imx-pcm-dma support
-To: Marco Felsch <m.felsch@pengutronix.de>
-Content-Type: text/plain; charset="UTF-8"
-X-Content-Filtered-By: Mailman/MimeDel 2.1.15
-Cc: alsa-devel@alsa-project.org, Xiubo Li <Xiubo.Lee@gmail.com>,
- linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
- Liam Girdwood <lgirdwood@gmail.com>, Nicolin Chen <nicoleotsuka@gmail.com>,
- Mark Brown <broonie@kernel.org>, Sascha Hauer <kernel@pengutronix.de>,
- Fabio Estevam <festevam@gmail.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220603131043.38907-1-linmq006@gmail.com>
+Cc: chrome-platform@lists.linux.dev, alsa-devel@alsa-project.org,
+ Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org,
+ Takashi Iwai <tiwai@suse.com>,
+ Enric Balletbo i Serra <enric.balletbo@collabora.com>,
+ Mark Brown <broonie@kernel.org>, Guenter Roeck <groeck@chromium.org>,
+ Benson Leung <bleung@chromium.org>, Cheng-Yi Chiang <cychiang@chromium.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -96,49 +85,12 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, Jun 1, 2022 at 5:23 PM Marco Felsch <m.felsch@pengutronix.de> wrote:
+On Fri, Jun 03, 2022 at 05:10:43PM +0400, Miaoqian Lin wrote:
+> of_parse_phandle() returns a node pointer with refcount
+> incremented, we should use of_node_put() on it when not need anymore.
+> Add missing of_node_put() to avoid refcount leak.
+> 
+> Fixes: b6bc07d4360d ("ASoC: cros_ec_codec: support WoV")
+> Signed-off-by: Miaoqian Lin <linmq006@gmail.com>
 
-> If the imx-pcm-dma is required we need to have the module enabled. For
-> all NXP/FSL sound cards using the ASoC architecture this is the case but
-> in case of using the simple-audio-card sound card this isn't the case.
->
-> In such case the driver probe fails silently and the card isn't
-> available. It took a while to find the missing Kconfig. Make this easier
-> for others by printing a error if this the module isn't available but
-> required by the HW.
->
-> Signed-off-by: Marco Felsch <m.felsch@pengutronix.de>
->
-
-Acked-by: Shengjiu Wang <shengjiu.wang@gmail.com>
-
-Best regards
-Wang Shengjiu
-
-> ---
->  sound/soc/fsl/fsl_sai.c | 5 ++++-
->  1 file changed, 4 insertions(+), 1 deletion(-)
->
-> diff --git a/sound/soc/fsl/fsl_sai.c b/sound/soc/fsl/fsl_sai.c
-> index 3e54f1f71c1e..2371da814b09 100644
-> --- a/sound/soc/fsl/fsl_sai.c
-> +++ b/sound/soc/fsl/fsl_sai.c
-> @@ -1152,8 +1152,11 @@ static int fsl_sai_probe(struct platform_device
-> *pdev)
->          */
->         if (sai->soc_data->use_imx_pcm) {
->                 ret = imx_pcm_dma_init(pdev);
-> -               if (ret)
-> +               if (ret) {
-> +                       if (!IS_ENABLED(CONFIG_SND_SOC_IMX_PCM_DMA))
-> +                               dev_err(dev, "Error: You must enable the
-> imx-pcm-dma support!\n");
->                         goto err_pm_get_sync;
-> +               }
->         } else {
->                 ret = devm_snd_dmaengine_pcm_register(dev, NULL, 0);
->                 if (ret)
-> --
-> 2.30.2
->
->
+Reviewed-by: Tzung-Bi Shih <tzungbi@kernel.org>
