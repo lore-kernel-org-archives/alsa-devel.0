@@ -4,87 +4,79 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 147D3C433EF
-	for <alsa-devel@archiver.kernel.org>; Mon,  6 Jun 2022 15:23:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 772CDC433EF
+	for <alsa-devel@archiver.kernel.org>; Mon,  6 Jun 2022 15:26:49 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B081C18C4;
-	Mon,  6 Jun 2022 17:22:59 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B081C18C4
+	by alsa0.perex.cz (Postfix) with ESMTPS id A103C18C4;
+	Mon,  6 Jun 2022 17:25:57 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A103C18C4
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1654529029;
-	bh=1qVUS/BzihxAe+W87h5OVIov3OzXgna3j6bRi+OLJw4=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=FxikDmIAcF/OfJeIsXjc/nosNB4PUlV/nbTz7SJgrsoh9mn+EKOT2kkQdtNVG6jRc
-	 SETjV9o6cGDWKw7SXfvYqNzanSec6uoYX2xeZtOFU+AqBcG/sUdGNoLtPtVeWcwjaP
-	 BTyHSWJGgLY7Ks+A1IdBj5I6p5b60SI8XSJCJtMQ=
+	s=default; t=1654529207;
+	bh=n0n0WtLdjHGysi7HQyXylTbROYN14VH5/Fz95ISJfNs=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=JNrSruEqR9+5xf6CerJR0dh5ggSzwqoe3//0VLMMPBB5N+cxnEC2qLAYw2zd8qKDf
+	 6VAjCHOYMmkd7XnjbacroMrAfZ1DxTXLdYJpqJRVA9WN+vl6Ug5AwPsQ6WYnKj9vo9
+	 RORZohJqxmO9A71vzPavo1M8ogxegtPsvx4bzCqY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 50599F80109;
-	Mon,  6 Jun 2022 17:22:59 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 3EE3EF8012A;
+	Mon,  6 Jun 2022 17:25:57 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 22400F801D8; Mon,  6 Jun 2022 17:22:57 +0200 (CEST)
-Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com
- [IPv6:2a00:1450:4864:20::635])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id 2C559F80310; Mon,  6 Jun 2022 17:25:56 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id E7708F80109
- for <alsa-devel@alsa-project.org>; Mon,  6 Jun 2022 17:22:49 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E7708F80109
+ by alsa1.perex.cz (Postfix) with ESMTPS id B8414F80116
+ for <alsa-devel@alsa-project.org>; Mon,  6 Jun 2022 17:25:53 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B8414F80116
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="m09w9gwj"
-Received: by mail-ej1-x635.google.com with SMTP id s12so22420067ejx.3
- for <alsa-devel@alsa-project.org>; Mon, 06 Jun 2022 08:22:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
- h=from:to:cc:subject:date:message-id:mime-version
- :content-transfer-encoding;
- bh=q+Uwlf6qgJvF453WbwLN1jaXprVYO3wmuZLS2RkkxFs=;
- b=m09w9gwjIR2RAinzDyK8VruLeAVFJvHbrpa+jH7oL4BHaYqSW018C8VDZ5FfT4vyLg
- kNefBfLJHsDLZlV8RkJKC8ykSn5cgqkyB6k4jQdfBwSycSwz2Y4276a5v4F77KXSferg
- ZsKhu1CptfVOlueQ7oisLW6pMvU18Zv1B3k7IZq8sAB2opU8HQ1H2/L2XhGAvkO1NjTC
- mSVFBgdgRwsaDa2j/z3wTMl7LluZzvd7rYgBGxwur8G+FAr0zglFNsEyZlsKhYcP0EWW
- VJlrkvanXxE7DYNxjSJLAFFpi170XqtRM3xZi4myMc9TxZ/3uTlRHveq0na6un/jV+D5
- PavA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
- :content-transfer-encoding;
- bh=q+Uwlf6qgJvF453WbwLN1jaXprVYO3wmuZLS2RkkxFs=;
- b=CAgl75BXkwB+WKcrLD4yHkUKEqYyJBfj3l45YPZpWsA37J8BGoiizWxRToklehOS9p
- gc3DtChI0ihTbi4jLSZ/G7WBS5sp8qU1XqBatwYDU/mmBxauJ9xxpCX0Xp8S5K6c1Jqt
- 3Bsx4Pl2ncTUDdxOPcE+MI6Vmpn/zrMPPaJ0Qeb6zk6WNw9ypcWt9WMEP0be8yHyjuX1
- UHHxZtmYygU5WiJ8JgTblYDiOp5PtNe5PFHcMBNFy0YbfA0YVVDdJrGvw5TCMP9uiKsw
- yZDQMNR5qU/QGUCafBQbw6Q2ZZH5covvLSZBcbotTfJrmJRkJFPUJbN3M84eI1+fvaWi
- Z6vA==
-X-Gm-Message-State: AOAM533qUpJzrzz9904iOlNjqO8VfBLYHt4sQfHC6aDJs11hzGsymSa3
- VbKPZE2Niry114ZVi5nahS4=
-X-Google-Smtp-Source: ABdhPJwanu3lq40yFMgYXOPYxN6gLx5qlezisxn9fc6ryWKeN9LAGfPx4pY2ol6YBGm4gXEwZyWM9A==
-X-Received: by 2002:a17:907:1c87:b0:6f0:29ea:cc01 with SMTP id
- nb7-20020a1709071c8700b006f029eacc01mr22180895ejc.671.1654528968351; 
- Mon, 06 Jun 2022 08:22:48 -0700 (PDT)
-Received: from localhost.localdomain ([138.199.7.159])
- by smtp.gmail.com with ESMTPSA id
- b3-20020a170906660300b00711aed17047sm2348128ejp.28.2022.06.06.08.22.45
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Mon, 06 Jun 2022 08:22:47 -0700 (PDT)
-From: Yassine Oudjana <yassine.oudjana@gmail.com>
-X-Google-Original-From: Yassine Oudjana <y.oudjana@protonmail.com>
-To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
- Banajit Goswami <bgoswami@codeaurora.org>,
- Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
- Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
-Subject: [PATCH] ASoC: wcd9335: Remove RX channel from old list before adding
- it to a new one
-Date: Mon,  6 Jun 2022 19:22:26 +0400
-Message-Id: <20220606152226.149164-1-y.oudjana@protonmail.com>
+ dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="SyRBV2TJ"
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by dfw.source.kernel.org (Postfix) with ESMTPS id B02B861549;
+ Mon,  6 Jun 2022 15:25:51 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 25D91C341EE;
+ Mon,  6 Jun 2022 15:25:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1654529149;
+ bh=n0n0WtLdjHGysi7HQyXylTbROYN14VH5/Fz95ISJfNs=;
+ h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+ b=SyRBV2TJCk+cQ7Tdrw7NUuwMMWYDrQ2+swwAFUxrhnBVuxYgGXg9DCvfIB6fWOWJw
+ OcF4mG0EBO7ZCQMoRLmtmACaUEaF5jTA6TyjUHpThe5/ya+ni4NwynVkN3e1ySBxey
+ rni5yMAcAKraS72ibpwoH1EUdlc03pdZRqTZwK7d5KTAh5vZVq1tpBBv910ZRvddfy
+ 45t6H0OD4acfBGpQsSAuxeEPS6vchhtVYHvj6lAfYSJAmcQbYFI79DFftY1IqZwZll
+ nfdRvrOQwP0WZekD5Jp9Mf9PWn4RQpH0UfU4n72o/DYzLEJ4fdT3Cn74hRW/Bb2IKo
+ AZjLb8cHU9FZQ==
+Received: from mchehab by mail.kernel.org with local (Exim 4.95)
+ (envelope-from <mchehab@kernel.org>) id 1nyEby-0012Q5-Fh;
+ Mon, 06 Jun 2022 16:25:46 +0100
+From: Mauro Carvalho Chehab <mchehab@kernel.org>
+To: Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+ Jonathan Corbet <corbet@lwn.net>
+Subject: [PATCH 22/23] ASoC: wm8731: update wlf,wm8731.yaml reference
+Date: Mon,  6 Jun 2022 16:25:44 +0100
+Message-Id: <e56e54fe0ebb1b6e8dd2e245c398190016eb0a34.1654529011.git.mchehab@kernel.org>
 X-Mailer: git-send-email 2.36.1
+In-Reply-To: <cover.1654529011.git.mchehab@kernel.org>
+References: <cover.1654529011.git.mchehab@kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: linux-arm-msm@vger.kernel.org, alsa-devel@alsa-project.org,
- Yassine Oudjana <y.oudjana@protonmail.com>,
- Yassine Oudjana <yassine.oudjana@gmail.com>, linux-kernel@vger.kernel.org
+Cc: devicetree@vger.kernel.org,
+ Alexandre Belloni <alexandre.belloni@bootlin.com>,
+ Charles Keepax <ckeepax@opensource.cirrus.com>, alsa-devel@alsa-project.org,
+ Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+ linux-kernel@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>,
+ Rob Herring <robh+dt@kernel.org>, Nicolas Ferre <nicolas.ferre@microchip.com>,
+ Mark Brown <broonie@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Mauro Carvalho Chehab <mchehab@kernel.org>,
+ Claudiu Beznea <claudiu.beznea@microchip.com>,
+ linux-arm-kernel@lists.infradead.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -100,39 +92,35 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Yassine Oudjana <y.oudjana@protonmail.com>
+Changeset 0e336eeaf467 ("ASoC: wm8731: Convert DT bindings to YAML format")
+renamed: Documentation/devicetree/bindings/sound/wm8731.txt
+to: Documentation/devicetree/bindings/sound/wlf,wm8731.yaml.
 
-Currently in slim_rx_mux_put, an RX channel gets added to a new list
-even if it is already in one. This can mess up links and make either
-it, the new list head, or both, get linked to the wrong entries.
-This can cause an entry to link to itself which in turn ends up
-making list_for_each_entry in other functions loop infinitely.
-To avoid issues, always remove the RX channel from any list it's in
-before adding it to a new list.
+Update its cross-reference accordingly.
 
-Signed-off-by: Yassine Oudjana <y.oudjana@protonmail.com>
+Fixes: 0e336eeaf467 ("ASoC: wm8731: Convert DT bindings to YAML format")
+Signed-off-by: Mauro Carvalho Chehab <mchehab@kernel.org>
 ---
- sound/soc/codecs/wcd9335.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
 
-diff --git a/sound/soc/codecs/wcd9335.c b/sound/soc/codecs/wcd9335.c
-index 617a36a89dfe..597420679505 100644
---- a/sound/soc/codecs/wcd9335.c
-+++ b/sound/soc/codecs/wcd9335.c
-@@ -1289,9 +1289,12 @@ static int slim_rx_mux_put(struct snd_kcontrol *kc,
+To avoid mailbombing on a large number of people, only mailing lists were C/C on the cover.
+See [PATCH 00/23] at: https://lore.kernel.org/all/cover.1654529011.git.mchehab@kernel.org/
+
+ .../devicetree/bindings/sound/atmel-sam9x5-wm8731-audio.txt     | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/Documentation/devicetree/bindings/sound/atmel-sam9x5-wm8731-audio.txt b/Documentation/devicetree/bindings/sound/atmel-sam9x5-wm8731-audio.txt
+index 0720857089a7..8facbce53db8 100644
+--- a/Documentation/devicetree/bindings/sound/atmel-sam9x5-wm8731-audio.txt
++++ b/Documentation/devicetree/bindings/sound/atmel-sam9x5-wm8731-audio.txt
+@@ -16,7 +16,7 @@ Board connectors:
+  * Line In Jack
  
- 	wcd->rx_port_value[port_id] = ucontrol->value.enumerated.item[0];
+ wm8731 pins:
+-cf Documentation/devicetree/bindings/sound/wm8731.txt
++cf Documentation/devicetree/bindings/sound/wlf,wm8731.yaml
  
-+	/* Remove channel from any list it's in before adding it to a new one */
-+	list_del_init(&wcd->rx_chs[port_id].list);
-+
- 	switch (wcd->rx_port_value[port_id]) {
- 	case 0:
--		list_del_init(&wcd->rx_chs[port_id].list);
-+		/* Channel already removed from lists. Nothing to do here */
- 		break;
- 	case 1:
- 		list_add_tail(&wcd->rx_chs[port_id].list,
+ Example:
+ sound {
 -- 
 2.36.1
 
