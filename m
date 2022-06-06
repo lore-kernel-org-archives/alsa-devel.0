@@ -4,64 +4,64 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E3FF4C433EF
-	for <alsa-devel@archiver.kernel.org>; Mon,  6 Jun 2022 20:39:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 932EFC433EF
+	for <alsa-devel@archiver.kernel.org>; Mon,  6 Jun 2022 20:40:25 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 124FB1B51;
-	Mon,  6 Jun 2022 22:39:08 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 124FB1B51
+	by alsa0.perex.cz (Postfix) with ESMTPS id 8201C1B57;
+	Mon,  6 Jun 2022 22:39:33 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8201C1B57
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1654547998;
-	bh=pnD8LElz9CNXfUWsdTu8vF4x4a1ZomAejzhi0PjDOKw=;
+	s=default; t=1654548023;
+	bh=TPqtK5SVm0iqscZHyb+uAD0ftr82r8hCfnbw7lk3XE4=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=MrhSDguIjkbm1VLKa342ID8JOhrQBEVLvaiPZy3pdbgPjNOuDuBxieU8uBCB2Smy2
-	 u48d+7mdfVZ80kSn4DE1PA90CM3Y9caBgu1WtV4zhgj9mDkXc/vB2Db3qOs5QfQC24
-	 S9puljdJyt2j2BTRlPYo5p9iqkQr0oNQfhHBavqM=
+	b=RBfFXL8tWvHHo4xQlZ+iOi+R7I93RuXpEh6Kt145eOv23Aw5Hzz3vY8rgQ4KsrUH/
+	 Bc1tQqFukbAvOKib9eIRD/Z+5c/KKF0FSEao6Hvf5aSGboYYGHG38ehGBMIwUdva4J
+	 Kj+Gq2sOkZo3cbysp+qjToR0j4bvhe/vAzZgJGPA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 2BA3EF804BC;
-	Mon,  6 Jun 2022 22:38:20 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 42C8EF80526;
+	Mon,  6 Jun 2022 22:38:21 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 51172F80310; Mon,  6 Jun 2022 22:38:18 +0200 (CEST)
+ id 6ED54F80533; Mon,  6 Jun 2022 22:38:19 +0200 (CEST)
 Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 5BB94F80310
+ by alsa1.perex.cz (Postfix) with ESMTPS id C8545F804BC
  for <alsa-devel@alsa-project.org>; Mon,  6 Jun 2022 22:38:08 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5BB94F80310
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C8545F804BC
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="QGm0q0P2"
+ header.b="SeGGq/N1"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
  t=1654547890; x=1686083890;
  h=from:to:cc:subject:date:message-id:in-reply-to:
  references:mime-version:content-transfer-encoding;
- bh=pnD8LElz9CNXfUWsdTu8vF4x4a1ZomAejzhi0PjDOKw=;
- b=QGm0q0P2k+DGj0vi4EjFEthqPDo5wvUlYdxybpZ3ZfYNCvOrbGhqkDPn
- 8UE3HfQEsL+2YhLZmJvG/s5M3E4SAvzO8wHeYEewkvu1N1tiJXjuSIcPR
- 9Qbb+7n8H6X/H9zDlRtXmkJyCVOQ+mYWz5xdOjv8Nw90srOgSBESZY1KV
- Ih2EeJTUcMPjuO8+HCoF3v/oQBzmgU7oScRI355oXlaBxYC/cLbgv9dKf
- 7jd5rpmhLp4amm1JAFYoKBs1oHmdviCrQV/QSsOomcYCb+HtRXaCGfhLn
- 5lE5ByQEj/3zFji2NhFBooBtHZ3DAsoROaI38YsGsyJLiPPVizjAEKALK w==;
-X-IronPort-AV: E=McAfee;i="6400,9594,10370"; a="276730867"
-X-IronPort-AV: E=Sophos;i="5.91,280,1647327600"; d="scan'208";a="276730867"
+ bh=TPqtK5SVm0iqscZHyb+uAD0ftr82r8hCfnbw7lk3XE4=;
+ b=SeGGq/N1H/CTSWzMuO/zEzIi0JcJv3fbn9Z9J9QrNErynSVuQ2pYaooy
+ WNVLcTzk392Q0ouv5FbCROVMbdZynnjqBO3rsOX1iFO8RcvznWc7P9Kmo
+ ZxuvlMjvaTON3C47n4+xnDOLc8P6WEoIAZlj6poXPqfzH64nkKMiwUGsI
+ 1N9KQhN9o1A3kONEILh3VfA6naSMWVItPsFOOmo0h7BOlJCx/2CrMiOB0
+ ecjAYSsUn+hlkJD/ENVbxrXPtbDYAhYvO+Su+FjVd8CE73DvVZB95XDZI
+ VVdpDlFWIxu9i3fryVs3+x43HS4WHA/uMcHoZpfSFJvNDVtH2JgWac0Ay g==;
+X-IronPort-AV: E=McAfee;i="6400,9594,10370"; a="276730865"
+X-IronPort-AV: E=Sophos;i="5.91,280,1647327600"; d="scan'208";a="276730865"
 Received: from fmsmga004.fm.intel.com ([10.253.24.48])
  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 06 Jun 2022 13:38:02 -0700
-X-IronPort-AV: E=Sophos;i="5.91,280,1647327600"; d="scan'208";a="647728091"
+ 06 Jun 2022 13:38:01 -0700
+X-IronPort-AV: E=Sophos;i="5.91,280,1647327600"; d="scan'208";a="647728084"
 Received: from yantem-mobl9.amr.corp.intel.com (HELO pbossart-mobl3.intel.com)
  ([10.212.24.154])
  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
  06 Jun 2022 13:38:01 -0700
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH 5/7] ASoC: rt7*-sdw: harden jack_detect_handler
-Date: Mon,  6 Jun 2022 15:37:50 -0500
-Message-Id: <20220606203752.144159-6-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH 4/7] ASoC: rt711: fix calibrate mutex initialization
+Date: Mon,  6 Jun 2022 15:37:49 -0500
+Message-Id: <20220606203752.144159-5-pierre-louis.bossart@linux.intel.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20220606203752.144159-1-pierre-louis.bossart@linux.intel.com>
 References: <20220606203752.144159-1-pierre-louis.bossart@linux.intel.com>
@@ -85,61 +85,51 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Realtek headset codec drivers typically check if the card is
-instantiated before proceeding with the jack detection.
-
-The rt700, rt711 and rt711-sdca are however missing a check on the
-card pointer, which can lead to NULL dereferences encountered in
-driver bind/unbind tests.
+Follow the same flow as rt711-sdca and initialize all mutexes at probe
+time.
 
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Reviewed-by: Rander Wang <rander.wang@intel.com>
 Reviewed-by: Bard Liao <yung-chuan.liao@linux.intel.com>
 ---
- sound/soc/codecs/rt700.c      | 2 +-
- sound/soc/codecs/rt711-sdca.c | 2 +-
- sound/soc/codecs/rt711.c      | 2 +-
- 3 files changed, 3 insertions(+), 3 deletions(-)
+ sound/soc/codecs/rt711-sdw.c | 3 +++
+ sound/soc/codecs/rt711.c     | 2 +-
+ 2 files changed, 4 insertions(+), 1 deletion(-)
 
-diff --git a/sound/soc/codecs/rt700.c b/sound/soc/codecs/rt700.c
-index af32295fa9b93..4a99d5f4706fd 100644
---- a/sound/soc/codecs/rt700.c
-+++ b/sound/soc/codecs/rt700.c
-@@ -162,7 +162,7 @@ static void rt700_jack_detect_handler(struct work_struct *work)
- 	if (!rt700->hs_jack)
- 		return;
+diff --git a/sound/soc/codecs/rt711-sdw.c b/sound/soc/codecs/rt711-sdw.c
+index f49c94baa37c6..4fe68bcf2a7c2 100644
+--- a/sound/soc/codecs/rt711-sdw.c
++++ b/sound/soc/codecs/rt711-sdw.c
+@@ -474,6 +474,9 @@ static int rt711_sdw_remove(struct sdw_slave *slave)
+ 	if (rt711->first_hw_init)
+ 		pm_runtime_disable(&slave->dev);
  
--	if (!rt700->component->card->instantiated)
-+	if (!rt700->component->card || !rt700->component->card->instantiated)
- 		return;
++	mutex_destroy(&rt711->calibrate_mutex);
++	mutex_destroy(&rt711->disable_irq_lock);
++
+ 	return 0;
+ }
  
- 	reg = RT700_VERB_GET_PIN_SENSE | RT700_HP_OUT;
-diff --git a/sound/soc/codecs/rt711-sdca.c b/sound/soc/codecs/rt711-sdca.c
-index af73bcb4560a3..93b36f05cb567 100644
---- a/sound/soc/codecs/rt711-sdca.c
-+++ b/sound/soc/codecs/rt711-sdca.c
-@@ -294,7 +294,7 @@ static void rt711_sdca_jack_detect_handler(struct work_struct *work)
- 	if (!rt711->hs_jack)
- 		return;
- 
--	if (!rt711->component->card->instantiated)
-+	if (!rt711->component->card || !rt711->component->card->instantiated)
- 		return;
- 
- 	/* SDW_SCP_SDCA_INT_SDCA_0 is used for jack detection */
 diff --git a/sound/soc/codecs/rt711.c b/sound/soc/codecs/rt711.c
-index 1e35ba433a7e7..2f445b27305a4 100644
+index 9838fb4d5b9c0..1e35ba433a7e7 100644
 --- a/sound/soc/codecs/rt711.c
 +++ b/sound/soc/codecs/rt711.c
-@@ -242,7 +242,7 @@ static void rt711_jack_detect_handler(struct work_struct *work)
- 	if (!rt711->hs_jack)
- 		return;
+@@ -1204,6 +1204,7 @@ int rt711_init(struct device *dev, struct regmap *sdw_regmap,
+ 	rt711->sdw_regmap = sdw_regmap;
+ 	rt711->regmap = regmap;
  
--	if (!rt711->component->card->instantiated)
-+	if (!rt711->component->card || !rt711->component->card->instantiated)
- 		return;
++	mutex_init(&rt711->calibrate_mutex);
+ 	mutex_init(&rt711->disable_irq_lock);
  
- 	if (pm_runtime_status_suspended(rt711->slave->dev.parent)) {
+ 	/*
+@@ -1318,7 +1319,6 @@ int rt711_io_init(struct device *dev, struct sdw_slave *slave)
+ 			rt711_jack_detect_handler);
+ 		INIT_DELAYED_WORK(&rt711->jack_btn_check_work,
+ 			rt711_btn_check_handler);
+-		mutex_init(&rt711->calibrate_mutex);
+ 		INIT_WORK(&rt711->calibration_work, rt711_calibration_work);
+ 		schedule_work(&rt711->calibration_work);
+ 	}
 -- 
 2.34.1
 
