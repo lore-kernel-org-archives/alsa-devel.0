@@ -4,79 +4,79 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 750E0C433EF
-	for <alsa-devel@archiver.kernel.org>; Mon,  6 Jun 2022 13:44:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9104FC433EF
+	for <alsa-devel@archiver.kernel.org>; Mon,  6 Jun 2022 13:49:30 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 6BAF41751;
-	Mon,  6 Jun 2022 15:43:54 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6BAF41751
+	by alsa0.perex.cz (Postfix) with ESMTPS id 70E9416BF;
+	Mon,  6 Jun 2022 15:48:38 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 70E9416BF
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1654523084;
-	bh=rPdSPdTUwzlpUarpnYtySWOb8ImAxScKQ0LcARnMROc=;
-	h=Date:Subject:To:References:From:In-Reply-To:Cc:List-Id:
+	s=default; t=1654523368;
+	bh=pNb8/cHtExl8X5RDcZzVzKU9o0g3SCz+nU7o7IkmV/U=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=VttO8/M6dS9F/RTmV2zsPT8N8VFHrG82nVpmmf62gAJosfZ2BvbOKcM7lJJllWCnR
-	 uXj/xbzZe9udaFky5I5Ds0tL8SnS2YS4RNadWp3WpExLPYU3hWWT2XBcyz4NMNme/u
-	 ikVueHXlNb5mW0aOBbQTNXGQFvVxjNQwvqCyIsDw=
+	b=gMQHdQgb7QcJmZkvOlJFf8QzFp99WRhkedwWy49qUH+BrB2qEEdRI18nuynp9HYnU
+	 C5NxjpMBwlFsgr5UbzQmvgwl+X/3w8Ose3EpPz495U1AROUwz0cSc59M6NTrdpnpGj
+	 tPP3PlTfUwV9CBaVMxbbbYtTFlXyaG250C3KzJYc=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 0A300F80423;
-	Mon,  6 Jun 2022 15:43:54 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 17815F8012A;
+	Mon,  6 Jun 2022 15:48:38 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 1178FF801D8; Mon,  6 Jun 2022 15:43:52 +0200 (CEST)
-Received: from mga18.intel.com (mga18.intel.com [134.134.136.126])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 8311AF801D8; Mon,  6 Jun 2022 15:48:37 +0200 (CEST)
+Received: from mail-il1-f170.google.com (mail-il1-f170.google.com
+ [209.85.166.170])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id CCE47F80089;
- Mon,  6 Jun 2022 15:43:47 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CCE47F80089
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="fM/GqTTv"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
- d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1654523030; x=1686059030;
- h=message-id:date:mime-version:subject:to:cc:references:
- from:in-reply-to:content-transfer-encoding;
- bh=rPdSPdTUwzlpUarpnYtySWOb8ImAxScKQ0LcARnMROc=;
- b=fM/GqTTvdL9LsX9teU1UgKOuCtlIefFSpWtcSDaJEi2GOivEU6SIfvPi
- BYbGUSsSHFyERdqAxJ1UfGxr5xjDZqSnT+GIWZFkIlyZegI2x34W+47Cc
- edx+5eYp1eTDrQoDURigwKQ3GzOK0k5xfwQK5WnYcQEy0Yh6aPoiSwUw1
- osU8QoBu/fSwxePr/xJB5/tH5xE4wE1zf9eV+SUn2HWKpedUYecqdCrlE
- H7ZB5G4e+NbtDjDoGFCnJrkJmDRc4yCFBQNAlS1WeBsAF+l9uhA6rloOk
- yntX8XvKvmNL+cZWZ8f6iTu5bUSDIU6uoro0CfCHGYU8hbFm82LrdJYxQ w==;
-X-IronPort-AV: E=McAfee;i="6400,9594,10369"; a="258991673"
-X-IronPort-AV: E=Sophos;i="5.91,280,1647327600"; d="scan'208";a="258991673"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
- by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 06 Jun 2022 06:42:51 -0700
-X-IronPort-AV: E=Sophos;i="5.91,280,1647327600"; d="scan'208";a="583644843"
-Received: from bylee-mobl1.amr.corp.intel.com (HELO [10.212.115.14])
- ([10.212.115.14])
- by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 06 Jun 2022 06:42:50 -0700
-Message-ID: <308e49b9-d3b5-198e-d1d7-c191353f3884@linux.intel.com>
-Date: Mon, 6 Jun 2022 08:42:49 -0500
+ by alsa1.perex.cz (Postfix) with ESMTPS id B865EF80109
+ for <alsa-devel@alsa-project.org>; Mon,  6 Jun 2022 15:48:28 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B865EF80109
+Received: by mail-il1-f170.google.com with SMTP id u2so11026970iln.2
+ for <alsa-devel@alsa-project.org>; Mon, 06 Jun 2022 06:48:28 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+ :mime-version:content-disposition:in-reply-to;
+ bh=Iq+/ZT5S/tsKY65k+c5zzqLlMmHdbOtpYrK6tQD4cqY=;
+ b=L6DUFvxTKDUu6K5kqyAfllI3gD3hh/Z0mQJ0aWexTfpDRBFjFPrVcqomjhQzmI1uct
+ taMWLqoUESHM8M0+/AO6IQPs3IjYPezIAHZtc1JYU8NjiK2kNA9Db+UJqNtul5WfaxQe
+ 7Ry8865zf+8zBi9Y1af1W9W1pcksusS+SymstlbkR/t/i8VFtET2kU3nRq52OI5wvZPN
+ OtLMvOaKxsRvrlVreYlG8d8KcOOzSJUkZi62q0/5/eabyd78LokLY9qzM2qqcaJvsjSg
+ 40Pm9SfYH7bD2zESAFbkqUq9M3CrSP8BIypl7ju0MsxJjzHyBEHbbCz2DMBLBkfZoZx5
+ LsJA==
+X-Gm-Message-State: AOAM533D6f4rC8ST25hidJfdU/SQGetGy2L3RZQ2FYqq7t4uLbbbAQ4d
+ kNQTVfWod45Sn/T1iym54w==
+X-Google-Smtp-Source: ABdhPJwbi6EJiI2PaM91wEcFQReWOmrXQCRfzQHoHXpccKkWDSHoKnOoq6i68X1AyLTQWbbX3840mg==
+X-Received: by 2002:a05:6e02:15ca:b0:2bf:ad58:4a6d with SMTP id
+ q10-20020a056e0215ca00b002bfad584a6dmr14825916ilu.13.1654523306793; 
+ Mon, 06 Jun 2022 06:48:26 -0700 (PDT)
+Received: from robh.at.kernel.org ([64.188.179.251])
+ by smtp.gmail.com with ESMTPSA id
+ y38-20020a029529000000b0032e583132e4sm5675598jah.123.2022.06.06.06.48.25
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Mon, 06 Jun 2022 06:48:26 -0700 (PDT)
+Received: (nullmailer pid 632986 invoked by uid 1000);
+ Mon, 06 Jun 2022 13:48:24 -0000
+Date: Mon, 6 Jun 2022 08:48:24 -0500
+From: Rob Herring <robh@kernel.org>
+To: Sameer Pujar <spujar@nvidia.com>
+Subject: Re: [PATCH v3 1/6] ASoC: tegra: Add binding doc for OPE module
+Message-ID: <20220606134824.GB564610-robh@kernel.org>
+References: <1654238172-16293-1-git-send-email-spujar@nvidia.com>
+ <1654238172-16293-2-git-send-email-spujar@nvidia.com>
+ <20220603203003.GA852734-robh@kernel.org>
+ <b70e024b-4f80-16b9-4bbe-ed8a24a384df@nvidia.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Firefox/91.0 Thunderbird/91.9.1
-Subject: Re: [PATCH] ASoC: SOF: Fix potential NULL pointer dereference
-Content-Language: en-US
-To: Mark Brown <broonie@kernel.org>, =?UTF-8?Q?Amadeusz_S=c5=82awi=c5=84ski?=
- <amadeuszx.slawinski@linux.intel.com>
-References: <20220602135757.3335351-1-amadeuszx.slawinski@linux.intel.com>
- <Yp3lduXW6x2BRRB5@sirena.org.uk>
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-In-Reply-To: <Yp3lduXW6x2BRRB5@sirena.org.uk>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-Cc: alsa-devel@alsa-project.org, Kai Vehmanen <kai.vehmanen@linux.intel.com>,
- Liam Girdwood <lgirdwood@gmail.com>,
- Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
- Takashi Iwai <tiwai@suse.com>, Daniel Baluta <daniel.baluta@nxp.com>,
- sound-open-firmware@alsa-project.org
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <b70e024b-4f80-16b9-4bbe-ed8a24a384df@nvidia.com>
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
+ catalin.marinas@arm.com, tiwai@suse.com, broonie@kernel.org,
+ thierry.reding@gmail.com, linux-arm-kernel@lists.infradead.org,
+ krzysztof.kozlowski+dt@linaro.org, linux-tegra@vger.kernel.org,
+ jonathanh@nvidia.com, will@kernel.org, linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -92,18 +92,22 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-
-
-On 6/6/22 06:31, Mark Brown wrote:
-> On Thu, Jun 02, 2022 at 03:57:57PM +0200, Amadeusz Sławiński wrote:
->> Cleanup path for sof_prepare_widgets_in_path() should check if unprepare
->> callback exists before calling it, instead it checks if it does not
->> exist. Fix the check.
->>
->> Fixes: 370014c8197a ("ASoC: SOF: Add a prepare op to IPC topology widget ops")
+On Mon, Jun 06, 2022 at 01:47:48PM +0530, Sameer Pujar wrote:
 > 
-> This commit does not exist.
+> On 04-06-2022 02:00, Rob Herring wrote:
+> > Doesn't apply for me. I guess there is some undocumented dependency
+> > here? Resend after the merge window if that solves it.
+> 
+> These were getting applied fine on linux-next.
 
-Indeed, this SHA was for the SOF tree, the upstream version is this:
+linux-next is not a base maintainers can apply to. Convenient instead of 
+having to get a specific tree, but you still need to say what the base 
+is (what tree it should be applied to).
 
-66344c6d92113 ("ASoC: SOF: Add a prepare op to IPC topology widget ops")
+> Merge window seems to have closed now and v5.19-rc1 release is out. I can
+> apply these cleanly on v5.19-rc1. Please let me know if re-send is needed
+> now or I need to wait for some more time? Thanks.
+
+Yes, or the automated checks don't run.
+
+Rob
