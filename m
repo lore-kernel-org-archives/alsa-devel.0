@@ -4,64 +4,65 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 66A7EC433EF
-	for <alsa-devel@archiver.kernel.org>; Mon,  6 Jun 2022 20:40:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 37504CCA473
+	for <alsa-devel@archiver.kernel.org>; Mon,  6 Jun 2022 20:41:12 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A57B21B54;
-	Mon,  6 Jun 2022 22:39:58 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A57B21B54
+	by alsa0.perex.cz (Postfix) with ESMTPS id 652001B40;
+	Mon,  6 Jun 2022 22:40:20 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 652001B40
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1654548048;
-	bh=4lsPaO9+MYFlg0SoKShmbAa5ueeozB08ZfFkV1z/D20=;
+	s=default; t=1654548070;
+	bh=jrEjeelyT5LyWC/BU9wUwZyVpV3V3HPCSyA1LbvPP/E=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=W+aqr+8useF+DBKuoj0c7+7yGowTTXh7WM+FSfXHpTLYPQP9PyP+VrTpZFYMGHpcf
-	 XYtIh7IG9yo0msVQB6dhp9JH8INhGyX5cQB0yH5L9U63UzzyPfjxFwwtmHhWnxY+Ab
-	 Ji6itxytgLo/ROj5PjrrowL4lMQtp9a/0nwZq24U=
+	b=ewJQAovEUYq37H1aQJ3MdO/DxAkjQL0H2rFTbU8A8ozwjae1mhVBCwK09KMstAB5c
+	 6FDuzRJFO5yXSikg9mKaePyhdMJ2yFiwF8MWVvxDRotVpyoHk8LALimxFwEDFzSHpQ
+	 dUlyOuiUP9fNLbkCzb+eYMEOgZmYnxrV2zTlFH7Y=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 55031F8053E;
+	by alsa1.perex.cz (Postfix) with ESMTP id CB796F8054A;
 	Mon,  6 Jun 2022 22:38:22 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 92401F80535; Mon,  6 Jun 2022 22:38:20 +0200 (CEST)
+ id E0E63F80538; Mon,  6 Jun 2022 22:38:20 +0200 (CEST)
 Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 96A24F80116
- for <alsa-devel@alsa-project.org>; Mon,  6 Jun 2022 22:38:08 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 96A24F80116
+ by alsa1.perex.cz (Postfix) with ESMTPS id CACF0F80526
+ for <alsa-devel@alsa-project.org>; Mon,  6 Jun 2022 22:38:10 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CACF0F80526
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="cvfGJkXP"
+ header.b="CsGTyk9p"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1654547889; x=1686083889;
+ t=1654547892; x=1686083892;
  h=from:to:cc:subject:date:message-id:in-reply-to:
  references:mime-version:content-transfer-encoding;
- bh=4lsPaO9+MYFlg0SoKShmbAa5ueeozB08ZfFkV1z/D20=;
- b=cvfGJkXPYqLDTVbAkv45YQzx6uWsjFD4UlctU9hj3IqnfXcRobyBUBBa
- 03Q6ySiwZJE7BfTbEFKF8vNXqSTm59ppt+eUpmNgb5a5DndXxiyEqwhvx
- Z5RYZrv0Yge0xTrftPEMgMk7fJXzOvGgqQIpCiFv97NmAGFgvR5iU0RPW
- OqdH0MZgPe23n/y9aCvdhbi4dP0DSb88y1kckb7dJ2Bc+PGrXnpnkzMfg
- 6ZkvI3iLDUAvbyny5e9rjLlOiVtaAhexOtdcDDEAr4u+Om3Ru39wtxumQ
- IHfUsMoyhC4nB4VkxIBZkCQ1z5evfZGFN94n8MTzriMmlIrsPSuA4BINJ A==;
-X-IronPort-AV: E=McAfee;i="6400,9594,10370"; a="276730864"
-X-IronPort-AV: E=Sophos;i="5.91,280,1647327600"; d="scan'208";a="276730864"
+ bh=jrEjeelyT5LyWC/BU9wUwZyVpV3V3HPCSyA1LbvPP/E=;
+ b=CsGTyk9pZ358jTneCjSuOyytLssTRmrj3I736fblv6F3cfP76HNjjSYj
+ XiosG5xgNRf6e1OTg9bOqMLeaiymLyTEyyva4pciv080urI3EJVyE6WWw
+ IVm547810LtWA3nVukNvZ3bLKrfZrhss9Mtiqpm0Q2bm5hkOIn585cWcQ
+ PD9QxQKeIw9OJ2F7v69yBve285paC7EiwKjvDUCEBIutL5OwOhln/7KFU
+ obRjmyCodzwnY1fgevJCQRWZmVLgVRwpiFKK6GEc1svpsSBZb1AtbwXf1
+ YPUYdYtGDOUmJTDCk+ZlbequqEx6P1RlGcZEp1J3E9OOyMTk41uCUhj8H Q==;
+X-IronPort-AV: E=McAfee;i="6400,9594,10370"; a="276730869"
+X-IronPort-AV: E=Sophos;i="5.91,280,1647327600"; d="scan'208";a="276730869"
 Received: from fmsmga004.fm.intel.com ([10.253.24.48])
  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 06 Jun 2022 13:38:01 -0700
-X-IronPort-AV: E=Sophos;i="5.91,280,1647327600"; d="scan'208";a="647728080"
+ 06 Jun 2022 13:38:03 -0700
+X-IronPort-AV: E=Sophos;i="5.91,280,1647327600"; d="scan'208";a="647728103"
 Received: from yantem-mobl9.amr.corp.intel.com (HELO pbossart-mobl3.intel.com)
  ([10.212.24.154])
  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 06 Jun 2022 13:38:00 -0700
+ 06 Jun 2022 13:38:03 -0700
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH 3/7] ASoC: Intel: sof_sdw: handle errors on card registration
-Date: Mon,  6 Jun 2022 15:37:48 -0500
-Message-Id: <20220606203752.144159-4-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH 7/7] ASoC: codecs: rt700/rt711/rt711-sdca: resume bus/codec in
+ .set_jack_detect
+Date: Mon,  6 Jun 2022 15:37:52 -0500
+Message-Id: <20220606203752.144159-8-pierre-louis.bossart@linux.intel.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20220606203752.144159-1-pierre-louis.bossart@linux.intel.com>
 References: <20220606203752.144159-1-pierre-louis.bossart@linux.intel.com>
@@ -85,98 +86,192 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-If the card registration fails, typically because of deferred probes,
-the device properties added for headset codecs are not removed, which
-leads to kernel oopses in driver bind/unbind tests.
+The .set_jack_detect() codec component callback is invoked during card
+registration, which happens when the machine driver is probed.
 
-We already clean-up the device properties when the card is removed,
-this code can be moved as a helper and called upon card registration
-errors.
+The issue is that this callback can race with the bus suspend/resume,
+and IO timeouts can happen. This can be reproduced very easily if the
+machine driver is 'blacklisted' and manually probed after the bus
+suspends. The bus and codec need to be re-initialized using pm_runtime
+helpers.
 
+Previous contributions tried to make sure accesses to the bus during
+the .set_jack_detect() component callback only happen when the bus is
+active. This was done by changing the regcache status on a component
+remove. This is however a layering violation, the regcache status
+should only be modified on device probe, suspend and resume. The
+component probe/remove should not modify how the device regcache is
+handled. This solution also didn't handle all the possible race
+conditions, and the RT700 headset codec was not handled.
+
+This patch tries to resume the codec device before handling the jack
+initializations. In case the codec has not yet been initialized,
+pm_runtime may not be enabled yet, so we don't squelch the -EACCES
+error code and only stop the jack information. When the codec reports
+as attached, the jack initialization will proceed as usual.
+
+BugLink: https://github.com/thesofproject/linux/issues/3643
+Fixes: 7ad4d237e7c4a ('ASoC: rt711-sdca: Add RT711 SDCA vendor-specific driver')
+Fixes: 899b12542b089 ('ASoC: rt711: add snd_soc_component remove callback')
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Reviewed-by: Rander Wang <rander.wang@intel.com>
 Reviewed-by: Bard Liao <yung-chuan.liao@linux.intel.com>
 ---
- sound/soc/intel/boards/sof_sdw.c | 51 ++++++++++++++++++--------------
- 1 file changed, 29 insertions(+), 22 deletions(-)
+ sound/soc/codecs/rt700.c      | 16 +++++++++++++---
+ sound/soc/codecs/rt711-sdca.c | 26 ++++++++++++++------------
+ sound/soc/codecs/rt711.c      | 24 +++++++++++++-----------
+ 3 files changed, 40 insertions(+), 26 deletions(-)
 
-diff --git a/sound/soc/intel/boards/sof_sdw.c b/sound/soc/intel/boards/sof_sdw.c
-index 1f00679b42409..ad826ad82d51a 100644
---- a/sound/soc/intel/boards/sof_sdw.c
-+++ b/sound/soc/intel/boards/sof_sdw.c
-@@ -1398,6 +1398,33 @@ static struct snd_soc_card card_sof_sdw = {
- 	.late_probe = sof_sdw_card_late_probe,
- };
- 
-+static void mc_dailink_exit_loop(struct snd_soc_card *card)
-+{
-+	struct snd_soc_dai_link *link;
-+	int ret;
-+	int i, j;
-+
-+	for (i = 0; i < ARRAY_SIZE(codec_info_list); i++) {
-+		if (!codec_info_list[i].exit)
-+			continue;
-+		/*
-+		 * We don't need to call .exit function if there is no matched
-+		 * dai link found.
-+		 */
-+		for_each_card_prelinks(card, j, link) {
-+			if (!strcmp(link->codecs[0].dai_name,
-+				    codec_info_list[i].dai_name)) {
-+				ret = codec_info_list[i].exit(card, link);
-+				if (ret)
-+					dev_warn(card->dev,
-+						 "codec exit failed %d\n",
-+						 ret);
-+				break;
-+			}
-+		}
-+	}
-+}
-+
- static int mc_probe(struct platform_device *pdev)
+diff --git a/sound/soc/codecs/rt700.c b/sound/soc/codecs/rt700.c
+index 7a6cf3434591a..9bceeeb830b15 100644
+--- a/sound/soc/codecs/rt700.c
++++ b/sound/soc/codecs/rt700.c
+@@ -315,17 +315,27 @@ static int rt700_set_jack_detect(struct snd_soc_component *component,
+ 	struct snd_soc_jack *hs_jack, void *data)
  {
- 	struct snd_soc_card *card = &card_sof_sdw;
-@@ -1462,6 +1489,7 @@ static int mc_probe(struct platform_device *pdev)
- 	ret = devm_snd_soc_register_card(&pdev->dev, card);
- 	if (ret) {
- 		dev_err(card->dev, "snd_soc_register_card failed %d\n", ret);
-+		mc_dailink_exit_loop(card);
- 		return ret;
+ 	struct rt700_priv *rt700 = snd_soc_component_get_drvdata(component);
++	int ret;
+ 
+ 	rt700->hs_jack = hs_jack;
+ 
+-	if (!rt700->hw_init) {
+-		dev_dbg(&rt700->slave->dev,
+-			"%s hw_init not ready yet\n", __func__);
++	ret = pm_runtime_resume_and_get(component->dev);
++	if (ret < 0) {
++		if (ret != -EACCES) {
++			dev_err(component->dev, "%s: failed to resume %d\n", __func__, ret);
++			return ret;
++		}
++
++		/* pm_runtime not enabled yet */
++		dev_dbg(component->dev,	"%s: skipping jack init for now\n", __func__);
+ 		return 0;
  	}
  
-@@ -1473,29 +1501,8 @@ static int mc_probe(struct platform_device *pdev)
- static int mc_remove(struct platform_device *pdev)
- {
- 	struct snd_soc_card *card = platform_get_drvdata(pdev);
--	struct snd_soc_dai_link *link;
--	int ret;
--	int i, j;
+ 	rt700_jack_init(rt700);
  
--	for (i = 0; i < ARRAY_SIZE(codec_info_list); i++) {
--		if (!codec_info_list[i].exit)
--			continue;
--		/*
--		 * We don't need to call .exit function if there is no matched
--		 * dai link found.
--		 */
--		for_each_card_prelinks(card, j, link) {
--			if (!strcmp(link->codecs[0].dai_name,
--				    codec_info_list[i].dai_name)) {
--				ret = codec_info_list[i].exit(card, link);
--				if (ret)
--					dev_warn(&pdev->dev,
--						 "codec exit failed %d\n",
--						 ret);
--				break;
--			}
--		}
--	}
-+	mc_dailink_exit_loop(card);
- 
++	pm_runtime_mark_last_busy(component->dev);
++	pm_runtime_put_autosuspend(component->dev);
++
  	return 0;
  }
+ 
+diff --git a/sound/soc/codecs/rt711-sdca.c b/sound/soc/codecs/rt711-sdca.c
+index 2b3b77577d1fd..dfe3c9299ebde 100644
+--- a/sound/soc/codecs/rt711-sdca.c
++++ b/sound/soc/codecs/rt711-sdca.c
+@@ -487,16 +487,27 @@ static int rt711_sdca_set_jack_detect(struct snd_soc_component *component,
+ 	struct snd_soc_jack *hs_jack, void *data)
+ {
+ 	struct rt711_sdca_priv *rt711 = snd_soc_component_get_drvdata(component);
++	int ret;
+ 
+ 	rt711->hs_jack = hs_jack;
+ 
+-	if (!rt711->hw_init) {
+-		dev_dbg(&rt711->slave->dev,
+-			"%s hw_init not ready yet\n", __func__);
++	ret = pm_runtime_resume_and_get(component->dev);
++	if (ret < 0) {
++		if (ret != -EACCES) {
++			dev_err(component->dev, "%s: failed to resume %d\n", __func__, ret);
++			return ret;
++		}
++
++		/* pm_runtime not enabled yet */
++		dev_dbg(component->dev,	"%s: skipping jack init for now\n", __func__);
+ 		return 0;
+ 	}
+ 
+ 	rt711_sdca_jack_init(rt711);
++
++	pm_runtime_mark_last_busy(component->dev);
++	pm_runtime_put_autosuspend(component->dev);
++
+ 	return 0;
+ }
+ 
+@@ -1190,14 +1201,6 @@ static int rt711_sdca_probe(struct snd_soc_component *component)
+ 	return 0;
+ }
+ 
+-static void rt711_sdca_remove(struct snd_soc_component *component)
+-{
+-	struct rt711_sdca_priv *rt711 = snd_soc_component_get_drvdata(component);
+-
+-	regcache_cache_only(rt711->regmap, true);
+-	regcache_cache_only(rt711->mbq_regmap, true);
+-}
+-
+ static const struct snd_soc_component_driver soc_sdca_dev_rt711 = {
+ 	.probe = rt711_sdca_probe,
+ 	.controls = rt711_sdca_snd_controls,
+@@ -1207,7 +1210,6 @@ static const struct snd_soc_component_driver soc_sdca_dev_rt711 = {
+ 	.dapm_routes = rt711_sdca_audio_map,
+ 	.num_dapm_routes = ARRAY_SIZE(rt711_sdca_audio_map),
+ 	.set_jack = rt711_sdca_set_jack_detect,
+-	.remove = rt711_sdca_remove,
+ 	.endianness = 1,
+ };
+ 
+diff --git a/sound/soc/codecs/rt711.c b/sound/soc/codecs/rt711.c
+index 5709a6bbe8fc5..9df800abfc2d8 100644
+--- a/sound/soc/codecs/rt711.c
++++ b/sound/soc/codecs/rt711.c
+@@ -457,17 +457,27 @@ static int rt711_set_jack_detect(struct snd_soc_component *component,
+ 	struct snd_soc_jack *hs_jack, void *data)
+ {
+ 	struct rt711_priv *rt711 = snd_soc_component_get_drvdata(component);
++	int ret;
+ 
+ 	rt711->hs_jack = hs_jack;
+ 
+-	if (!rt711->hw_init) {
+-		dev_dbg(&rt711->slave->dev,
+-			"%s hw_init not ready yet\n", __func__);
++	ret = pm_runtime_resume_and_get(component->dev);
++	if (ret < 0) {
++		if (ret != -EACCES) {
++			dev_err(component->dev, "%s: failed to resume %d\n", __func__, ret);
++			return ret;
++		}
++
++		/* pm_runtime not enabled yet */
++		dev_dbg(component->dev,	"%s: skipping jack init for now\n", __func__);
+ 		return 0;
+ 	}
+ 
+ 	rt711_jack_init(rt711);
+ 
++	pm_runtime_mark_last_busy(component->dev);
++	pm_runtime_put_autosuspend(component->dev);
++
+ 	return 0;
+ }
+ 
+@@ -932,13 +942,6 @@ static int rt711_probe(struct snd_soc_component *component)
+ 	return 0;
+ }
+ 
+-static void rt711_remove(struct snd_soc_component *component)
+-{
+-	struct rt711_priv *rt711 = snd_soc_component_get_drvdata(component);
+-
+-	regcache_cache_only(rt711->regmap, true);
+-}
+-
+ static const struct snd_soc_component_driver soc_codec_dev_rt711 = {
+ 	.probe = rt711_probe,
+ 	.set_bias_level = rt711_set_bias_level,
+@@ -949,7 +952,6 @@ static const struct snd_soc_component_driver soc_codec_dev_rt711 = {
+ 	.dapm_routes = rt711_audio_map,
+ 	.num_dapm_routes = ARRAY_SIZE(rt711_audio_map),
+ 	.set_jack = rt711_set_jack_detect,
+-	.remove = rt711_remove,
+ 	.endianness = 1,
+ };
+ 
 -- 
 2.34.1
 
