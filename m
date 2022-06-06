@@ -4,80 +4,59 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1F6B5C43334
-	for <alsa-devel@archiver.kernel.org>; Sun,  5 Jun 2022 22:45:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id F0519C433EF
+	for <alsa-devel@archiver.kernel.org>; Mon,  6 Jun 2022 00:32:20 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 72678190B;
-	Mon,  6 Jun 2022 00:44:31 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 72678190B
+	by alsa0.perex.cz (Postfix) with ESMTPS id 473D41A22;
+	Mon,  6 Jun 2022 02:31:28 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 473D41A22
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1654469121;
-	bh=W10QYHoI4q5YOWnmyYirMcGbDevOmTVIHghn9ctabh0=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=N3hq0L+gxuMOYsH+LimDH/X8mtyQvqWrAumbpaaQR9zD86NCDDfHCuCfNEnQt7HsJ
-	 L9TkHrxSCSUpgJVxWe6GL0BqF03cFmeocn+Z4dbNvcTiBtOVGtHUXD+dCj8KVlXeVX
-	 OUpwby0k/Oj3IGR9779362eEGg/9QvCFai58UTlo=
+	s=default; t=1654475538;
+	bh=/OoIvTGSZgbYrQpeg5t5CN+NkDgvhu+4V0X6+SRdVeY=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=W+5epayautbwhtitXmoOttcxQFll1TdBp0XkQhYr0uyBq+uFFrGC5Bh+IiV7VgmVx
+	 9KSuP3qif8RYUEFhd2pbhX21qGP06/fTHCy379Z/ibATR04YnPiAeLosOBioUsmUgx
+	 YTFXi46cUE8/o/aVXlMBx7e6Oyf0P8VaXSFecuoI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 11D2FF80132;
-	Mon,  6 Jun 2022 00:44:31 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id C7B01F80089;
+	Mon,  6 Jun 2022 02:31:27 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 5FB00F800D3; Mon,  6 Jun 2022 00:44:30 +0200 (CEST)
-Received: from mail-qt1-f172.google.com (mail-qt1-f172.google.com
- [209.85.160.172])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id 7DB79F80162; Mon,  6 Jun 2022 02:31:25 +0200 (CEST)
+Received: from neo-zeon.de (neo-zeon.de [70.229.12.130])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 2CEE1F800D3
- for <alsa-devel@alsa-project.org>; Mon,  6 Jun 2022 00:44:23 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2CEE1F800D3
-Received: by mail-qt1-f172.google.com with SMTP id y15so9340451qtx.4
- for <alsa-devel@alsa-project.org>; Sun, 05 Jun 2022 15:44:23 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=x-gm-message-state:date:from:to:cc:subject:message-id:references
- :mime-version:content-disposition:in-reply-to;
- bh=LFhCaG60xFmD3TWaJ9EwtlMdlcWCG/u3VD55cWqFobw=;
- b=I3ogirni7ARt3zNL2MVkblt9CH0EXK62nrcOZOk5zN4suYE3WokKKpRG/UxYzQLVI4
- jwcwuO4X8l4DWSTxpoPfqmRaSzuFyowQJ0YsOOT7l5FZ9LrGuBYsUjXks3gGk+v/cV3t
- lJFtNnFPlQiFkW1vi94heKfAX3nvqFIWgrWZSGzgNL9n9Z0scnLcWVpjr7ytrJiDLMVL
- ZMClqQCqs9EM90S2kamEcxMRW/4hRAXDeI1R9e2yvbr1zAqMgFYj03eg5UHUhzXJA9DV
- uHFzuUmCPz9Txn/bBNZELkGRkG5t+2zhBXED3E5TyDTjgvRfV38IkEahS6+cAHEGCthb
- lLGg==
-X-Gm-Message-State: AOAM533pV5RKYeGNHTAob9S/G9CbNVkEzZvtCM9Vk9llNFCN82gS6o07
- 0TZgvV3V2/0pjwTt46KRYQ==
-X-Google-Smtp-Source: ABdhPJx90Inmr2t/uBYqmDG90Ua1+4jBi681xj4Vcuup0kVjJ2rGSOsLoVmjdx/DQucQL+eCEtpJGA==
-X-Received: by 2002:ac8:5e13:0:b0:304:b452:9ec8 with SMTP id
- h19-20020ac85e13000000b00304b4529ec8mr16434949qtx.356.1654469062534; 
- Sun, 05 Jun 2022 15:44:22 -0700 (PDT)
-Received: from robh.at.kernel.org ([2607:fb90:1bdb:2e61:f12:452:5315:9c7e])
- by smtp.gmail.com with ESMTPSA id
- s2-20020a05620a29c200b006a6a3ce437bsm6158799qkp.27.2022.06.05.15.44.20
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Sun, 05 Jun 2022 15:44:22 -0700 (PDT)
-Received: (nullmailer pid 3665782 invoked by uid 1000);
- Sun, 05 Jun 2022 22:44:19 -0000
-Date: Sun, 5 Jun 2022 17:44:19 -0500
-From: Rob Herring <robh@kernel.org>
-To: Alexander Martinz <amartinz@shiftphones.com>
-Subject: Re: [PATCH 2/2] ASoC: dt-bindings: nxp,tfa989x: Add tfa9890 support
-Message-ID: <20220605224419.GA3665749-robh@kernel.org>
-References: <20220602164504.261361-1-amartinz@shiftphones.com>
- <20220602164504.261361-2-amartinz@shiftphones.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 4A7A2F80116
+ for <alsa-devel@alsa-project.org>; Mon,  6 Jun 2022 02:31:17 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4A7A2F80116
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (1024-bit key) header.d=neo-zeon.de header.i=@neo-zeon.de
+ header.b="cP0g8p01"
+Received: from neo-zeon.de (localhost [127.0.0.1])
+ by neo-zeon.de (OpenSMTPD) with ESMTP id 74785451;
+ Sun, 5 Jun 2022 17:24:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha1; c=relaxed; d=neo-zeon.de; h=from:to:cc
+ :subject:date:message-id:mime-version:content-transfer-encoding;
+ s=1; bh=TjlQaViABde8WtBS7LK+iV0O8wY=; b=cP0g8p01cOgZgTNUl/Kf38B
+ F0xclhtGy2JhsHyVZLnBzFAauN2YXljSLY0xEQltA9FpzqYT9B4z2pzE9D3km6L2
+ tbku01vcxf4pBLDwW6mg2oyXXYCi83EuKGbogBpa2IpYXvWLeOAdaOSgDpW6hVh0
+ utQxut+aaq7aZaqwX6i8=
+Received: by neo-zeon.de (OpenSMTPD) with ESMTPSA id 38d4d4fd
+ (TLSv1.3:AEAD-AES256-GCM-SHA384:256:NO); 
+ Sun, 5 Jun 2022 17:24:35 -0700 (PDT)
+From: Cameron Berkenpas <cam@neo-zeon.de>
+To: alsa-devel@alsa-project.org
+Subject: [PATCH] ALSA: hda/realtek: Fix for quirk to enable speaker output on
+ the Lenovo Yoga DuetITL 2021
+Date: Sun,  5 Jun 2022 17:23:30 -0700
+Message-Id: <20220606002329.215330-1-cam@neo-zeon.de>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220602164504.261361-2-amartinz@shiftphones.com>
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
- Stephan Gerhold <stephan@gerhold.net>, Dylan Van Assche <me@dylanvanassche.be>,
- linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>,
- Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <robh+dt@kernel.org>,
- Caleb Connolly <caleb@connolly.tech>, Mark Brown <broonie@kernel.org>,
- ~postmarketos/upstreaming@lists.sr.ht,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- phone-devel@vger.kernel.org
+Content-Transfer-Encoding: 8bit
+Cc: tiwai@suse.de, Cameron Berkenpas <cam@neo-zeon.de>,
+ Songine <donglingluoying@gmail.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -93,13 +72,27 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Thu, 02 Jun 2022 18:45:04 +0200, Alexander Martinz wrote:
-> Document TFA9890 binding for tfa989x.
-> 
-> Signed-off-by: Alexander Martinz <amartinz@shiftphones.com>
-> ---
->  Documentation/devicetree/bindings/sound/nxp,tfa989x.yaml | 1 +
->  1 file changed, 1 insertion(+)
-> 
+Enables the ALC287_FIXUP_YOGA7_14ITL_SPEAKERS quirk for the Lenovo Yoga DuetITL 2021 laptop to fix speaker output.
 
-Acked-by: Rob Herring <robh@kernel.org>
+BugLink: https://bugzilla.kernel.org/show_bug.cgi?id=208555
+Signed-off-by: Cameron Berkenpas <cam@neo-zeon.de>
+Co-authored-by: Songine <donglingluoying@gmail.com>
+---
+ sound/pci/hda/patch_realtek.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+index f3ad454b3fbf..2af5725dfca0 100644
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -9262,6 +9262,7 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
+ 	SND_PCI_QUIRK(0x17aa, 0x3818, "Lenovo C940", ALC298_FIXUP_LENOVO_SPK_VOLUME),
+ 	SND_PCI_QUIRK(0x17aa, 0x3819, "Lenovo 13s Gen2 ITL", ALC287_FIXUP_13S_GEN2_SPEAKERS),
+ 	SND_PCI_QUIRK(0x17aa, 0x3820, "Yoga Duet 7 13ITL6", ALC287_FIXUP_YOGA7_14ITL_SPEAKERS),
++	SND_PCI_QUIRK(0x17aa, 0x3802, "Lenovo Yoga DuetITL 2021", ALC287_FIXUP_YOGA7_14ITL_SPEAKERS),
+ 	SND_PCI_QUIRK(0x17aa, 0x3824, "Legion Y9000X 2020", ALC285_FIXUP_LEGION_Y9000X_SPEAKERS),
+ 	SND_PCI_QUIRK(0x17aa, 0x3827, "Ideapad S740", ALC285_FIXUP_IDEAPAD_S740_COEF),
+ 	SND_PCI_QUIRK(0x17aa, 0x3834, "Lenovo IdeaPad Slim 9i 14ITL5", ALC287_FIXUP_YOGA7_14ITL_SPEAKERS),
+-- 
+2.34.1
+
