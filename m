@@ -4,69 +4,72 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E4EC2C43334
-	for <alsa-devel@archiver.kernel.org>; Mon,  6 Jun 2022 20:39:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B2B3CC433EF
+	for <alsa-devel@archiver.kernel.org>; Mon,  6 Jun 2022 20:39:33 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 15CDF1B21;
-	Mon,  6 Jun 2022 22:38:10 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 15CDF1B21
+	by alsa0.perex.cz (Postfix) with ESMTPS id EC6DE1B49;
+	Mon,  6 Jun 2022 22:38:41 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EC6DE1B49
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1654547940;
-	bh=RNGdZkia89zKmXDfsM60lpnZE8mA1O1dC7zqAE6q9tE=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=l27FYdN9KHMzvfNv5ZWRUnhhSIy37JQvCS/VeoA6hrgNyrBXAkmSRyCmVEv6UyyNL
-	 hU36A5GYkNwh27/y8CbzhQsOQeQDKqjvmuPd+7ANpwySlqHLWffJXuSzv/w9ALnsqr
-	 AzFrtMiZC1GSwVzVkMyVxiAdT6hR+NQQ2MmGG3uM=
+	s=default; t=1654547972;
+	bh=FJml6Co9p0cBpNQyBpViSHlJmowpg0qGsTm1UcMkgno=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=eFjJNepw0jfcsSaCF4yGhNFu1D7pqjOckuk+dvR9f4g3nF9qUZu47/nqR7JPLsvEV
+	 5Dr/vixDxD1VNHjRwverj8PsB1oMlyyzK9fPt77XP0v+kzMhB2v0M6Dx9KHtrWbDZ4
+	 5aDu4/nQfRblo8Yvk6g42BbiBb8tfVGlsXZHkmK4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id AB4F9F80423;
-	Mon,  6 Jun 2022 22:38:09 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 64241F80520;
+	Mon,  6 Jun 2022 22:38:14 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id AFA3AF80089; Mon,  6 Jun 2022 22:38:07 +0200 (CEST)
+ id 3CF6CF80528; Mon,  6 Jun 2022 22:38:13 +0200 (CEST)
 Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 74F51F80089
- for <alsa-devel@alsa-project.org>; Mon,  6 Jun 2022 22:38:03 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 74F51F80089
+ by alsa1.perex.cz (Postfix) with ESMTPS id 82C2BF80109
+ for <alsa-devel@alsa-project.org>; Mon,  6 Jun 2022 22:38:06 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 82C2BF80109
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="he7KEte6"
+ header.b="Xfo3hquI"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1654547885; x=1686083885;
- h=from:to:cc:subject:date:message-id:mime-version:
- content-transfer-encoding;
- bh=RNGdZkia89zKmXDfsM60lpnZE8mA1O1dC7zqAE6q9tE=;
- b=he7KEte6cfRu3o3o0M9ZDa9O0eIGUoaelZg7BQcSXTa+ij7ilP0s9WQP
- GK1GeBAyX00BaOsfnAW0zWUyyjsXNqD6lE7XiRMYKcLSuHyFLXHSpM5ZT
- Rl+ETIi3Z2/erzzoVWsT2DF1HbGAgjtyesE+XIGUXBqqW4W0ohhv2szgC
- YeDCpRqTngkaynuWfCiNJM3IlsIPSXMa0Jd+iAcovuO7YWKoasKRqPPn1
- mpr2H0WnUDBmmWqBjxXCi8b/iD5erCHgMWnPOlv7+iVRCqc9YC06vkpQ/
- FqnVjRdGkacSVv0Q/Du3D8CVBT8CW8t5ik1LASMcL416IprBhyDgmZEBk A==;
-X-IronPort-AV: E=McAfee;i="6400,9594,10370"; a="276730859"
-X-IronPort-AV: E=Sophos;i="5.91,280,1647327600"; d="scan'208";a="276730859"
+ t=1654547887; x=1686083887;
+ h=from:to:cc:subject:date:message-id:in-reply-to:
+ references:mime-version:content-transfer-encoding;
+ bh=FJml6Co9p0cBpNQyBpViSHlJmowpg0qGsTm1UcMkgno=;
+ b=Xfo3hquI9q/N7WcyuSO39Vf1+3UTmGEisLWa2Sm4BmlDDL3idEldlVhz
+ nm7By4o7KWQpnlewGQpdu2deTFB4H+pIyYkbrjgISrYyGvyVfuxkkFplj
+ xKCAwIHzukdf3b46AW6uXaOlphieZljLuARcnkQnO6Ha+k3mRJQEtrVQx
+ eB18MPyDB8JDf/x7i6wrXsSPH+ezw7qDuRrjwqLDIdEMUYG5hDomcCVcy
+ ATt5P7xjyUHjZfpSRozM0vaxIkBj2ghkAT23voUWzKgqc8MDwfQH8YPED
+ tqu9ls29EY7jTgdGqEbqf5l5gORh5TnDc6ZtHQ2rI8W+gkvQ3dnwa85mt Q==;
+X-IronPort-AV: E=McAfee;i="6400,9594,10370"; a="276730863"
+X-IronPort-AV: E=Sophos;i="5.91,280,1647327600"; d="scan'208";a="276730863"
 Received: from fmsmga004.fm.intel.com ([10.253.24.48])
  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 06 Jun 2022 13:37:59 -0700
-X-IronPort-AV: E=Sophos;i="5.91,280,1647327600"; d="scan'208";a="647728065"
+ 06 Jun 2022 13:38:01 -0700
+X-IronPort-AV: E=Sophos;i="5.91,280,1647327600"; d="scan'208";a="647728075"
 Received: from yantem-mobl9.amr.corp.intel.com (HELO pbossart-mobl3.intel.com)
  ([10.212.24.154])
  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 06 Jun 2022 13:37:59 -0700
+ 06 Jun 2022 13:38:00 -0700
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH 0/7] ASoC: harden SoundWire codec/machine drivers used on
- Intel platforms
-Date: Mon,  6 Jun 2022 15:37:45 -0500
-Message-Id: <20220606203752.144159-1-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH 2/7] ASoC: rt711-sdca-sdw: fix calibrate mutex initialization
+Date: Mon,  6 Jun 2022 15:37:47 -0500
+Message-Id: <20220606203752.144159-3-pierre-louis.bossart@linux.intel.com>
 X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20220606203752.144159-1-pierre-louis.bossart@linux.intel.com>
+References: <20220606203752.144159-1-pierre-louis.bossart@linux.intel.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: tiwai@suse.de, vkoul@kernel.org, broonie@kernel.org,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: tiwai@suse.de, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ Rander Wang <rander.wang@intel.com>, vkoul@kernel.org, broonie@kernel.org,
+ Bard Liao <yung-chuan.liao@linux.intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -82,46 +85,61 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-While testing fixes for SoundWire race conditions initially reported
-in [1], I found additional issues in codec drivers. When the order in
-which drivers are probed is changed, multiple errors are reported,
-from unbalanced pm_runtime_enable() calls to invalid mutex lock magic
-numbers, workqueues not initialized and missing resume sequences.
+In codec driver bind/unbind test, the following warning is thrown:
 
-In 'nominal' usages, there is no change of functionality, this is just
-a first step to test random device/driver bind/unbind sequences.
+DEBUG_LOCKS_WARN_ON(lock->magic != lock)
+...
+[  699.182495]  rt711_sdca_jack_init+0x1b/0x1d0 [snd_soc_rt711_sdca]
+[  699.182498]  rt711_sdca_set_jack_detect+0x3b/0x90 [snd_soc_rt711_sdca]
+[  699.182500]  snd_soc_component_set_jack+0x24/0x50 [snd_soc_core]
 
-Important note: these changes only touch Intel-based platforms, I
-don't have any background and ability to test on Qualcomm-based
-devices.
+A quick check in the code shows that the 'calibrate_mutex' used by
+this driver are not initialized at probe time. Moving the
+initialization to the probe removes the issue.
 
-[1] https://lore.kernel.org/alsa-devel/d0559e97-c4a0-b817-428c-d3e305390270@linux.intel.com/
+BugLink: https://github.com/thesofproject/linux/issues/3644
+Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Reviewed-by: Rander Wang <rander.wang@intel.com>
+Reviewed-by: Bard Liao <yung-chuan.liao@linux.intel.com>
+---
+ sound/soc/codecs/rt711-sdca-sdw.c | 3 +++
+ sound/soc/codecs/rt711-sdca.c     | 2 +-
+ 2 files changed, 4 insertions(+), 1 deletion(-)
 
-Pierre-Louis Bossart (7):
-  ASoC: Realtek/Maxim SoundWire codecs: disable pm_runtime on remove
-  ASoC: rt711-sdca-sdw: fix calibrate mutex initialization
-  ASoC: Intel: sof_sdw: handle errors on card registration
-  ASoC: rt711: fix calibrate mutex initialization
-  ASoC: rt7*-sdw: harden jack_detect_handler
-  ASoC: codecs: rt700/rt711/rt711-sdca: initialize workqueues in probe
-  ASoC: codecs: rt700/rt711/rt711-sdca: resume bus/codec in
-    .set_jack_detect
-
- sound/soc/codecs/max98373-sdw.c   | 12 +++++++-
- sound/soc/codecs/rt1308-sdw.c     | 11 +++++++
- sound/soc/codecs/rt1316-sdw.c     | 11 +++++++
- sound/soc/codecs/rt5682-sdw.c     |  5 ++-
- sound/soc/codecs/rt700-sdw.c      |  6 +++-
- sound/soc/codecs/rt700.c          | 30 +++++++++++-------
- sound/soc/codecs/rt711-sdca-sdw.c |  9 +++++-
- sound/soc/codecs/rt711-sdca.c     | 40 ++++++++++++------------
- sound/soc/codecs/rt711-sdw.c      |  9 +++++-
- sound/soc/codecs/rt711.c          | 40 ++++++++++++------------
- sound/soc/codecs/rt715-sdca-sdw.c | 12 ++++++++
- sound/soc/codecs/rt715-sdw.c      | 12 ++++++++
- sound/soc/intel/boards/sof_sdw.c  | 51 ++++++++++++++++++-------------
- 13 files changed, 169 insertions(+), 79 deletions(-)
-
+diff --git a/sound/soc/codecs/rt711-sdca-sdw.c b/sound/soc/codecs/rt711-sdca-sdw.c
+index c722a2b0041f7..a085b2f530aa1 100644
+--- a/sound/soc/codecs/rt711-sdca-sdw.c
++++ b/sound/soc/codecs/rt711-sdca-sdw.c
+@@ -373,6 +373,9 @@ static int rt711_sdca_sdw_remove(struct sdw_slave *slave)
+ 	if (rt711->first_hw_init)
+ 		pm_runtime_disable(&slave->dev);
+ 
++	mutex_destroy(&rt711->calibrate_mutex);
++	mutex_destroy(&rt711->disable_irq_lock);
++
+ 	return 0;
+ }
+ 
+diff --git a/sound/soc/codecs/rt711-sdca.c b/sound/soc/codecs/rt711-sdca.c
+index 57629c18db384..af73bcb4560a3 100644
+--- a/sound/soc/codecs/rt711-sdca.c
++++ b/sound/soc/codecs/rt711-sdca.c
+@@ -1412,6 +1412,7 @@ int rt711_sdca_init(struct device *dev, struct regmap *regmap,
+ 	rt711->regmap = regmap;
+ 	rt711->mbq_regmap = mbq_regmap;
+ 
++	mutex_init(&rt711->calibrate_mutex);
+ 	mutex_init(&rt711->disable_irq_lock);
+ 
+ 	/*
+@@ -1550,7 +1551,6 @@ int rt711_sdca_io_init(struct device *dev, struct sdw_slave *slave)
+ 			rt711_sdca_jack_detect_handler);
+ 		INIT_DELAYED_WORK(&rt711->jack_btn_check_work,
+ 			rt711_sdca_btn_check_handler);
+-		mutex_init(&rt711->calibrate_mutex);
+ 	}
+ 
+ 	/* calibration */
 -- 
 2.34.1
 
