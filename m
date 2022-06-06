@@ -4,73 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 90FF6C433EF
-	for <alsa-devel@archiver.kernel.org>; Mon,  6 Jun 2022 20:50:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A732BC43334
+	for <alsa-devel@archiver.kernel.org>; Mon,  6 Jun 2022 21:03:30 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D4A4A1B5A;
-	Mon,  6 Jun 2022 22:49:21 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D4A4A1B5A
+	by alsa0.perex.cz (Postfix) with ESMTPS id 61D021B45;
+	Mon,  6 Jun 2022 23:02:38 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 61D021B45
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1654548611;
-	bh=SOmY/AVYwA2iPNcOiSDH5HAH4vcUL2Kmlnk9R21q5IA=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=owtM7U/T+Ir3jK4qfXSZZME7hzpvgwsrQgkTUBbbFI85WDY6jYPw5U+VUUeVWWlEd
-	 J9883qBIbwh7oiAo62c7EGVt+FKxIyWnIg1ZZMCH1/UiaqAGkn7l80j4FfDidmSyaG
-	 YUHI0KdU5wG5ZZe+lOJTCuY7KRrmH10/gpFGINSg=
+	s=default; t=1654549408;
+	bh=WkaKwjZEmp1nYM2JZK8va72VapjVrUzzQf+INTX/1DM=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=KiDaMLif05zvsGyeKf+YYSiXvgOZzeEuFdQcBotRmSRoXVVWQSPWzvjR3n0oAfjs5
+	 wQLXZuGdZnirI2asFK6aPuKh5cfUpc2jm27PcQ9xcPminZwEcSmRs8OUHl1Vc0fpcS
+	 rux9B/AvokBNUqqnhxvUNhxIpLWq0cuoAXEY3opo=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 4C9F2F80534;
-	Mon,  6 Jun 2022 22:48:35 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id D3284F80089;
+	Mon,  6 Jun 2022 23:02:37 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 66F99F80535; Mon,  6 Jun 2022 22:48:34 +0200 (CEST)
-Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
+ id E0C78F80423; Mon,  6 Jun 2022 23:02:35 +0200 (CEST)
+Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 0D2CFF80109
- for <alsa-devel@alsa-project.org>; Mon,  6 Jun 2022 22:48:24 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0D2CFF80109
+ by alsa1.perex.cz (Postfix) with ESMTPS id EDDC1F80089
+ for <alsa-devel@alsa-project.org>; Mon,  6 Jun 2022 23:02:30 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EDDC1F80089
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="Ga62+IGV"
+ header.b="gJUNnPNE"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1654548506; x=1686084506;
- h=from:to:cc:subject:date:message-id:in-reply-to:
- references:mime-version:content-transfer-encoding;
- bh=SOmY/AVYwA2iPNcOiSDH5HAH4vcUL2Kmlnk9R21q5IA=;
- b=Ga62+IGVzGzMhLHGF7XDKtsiR6P97LZTyldhimvLqp7ti57JxX8UDSzW
- LuLHASYQXaB+OmvOBiccHe8ldfMSI8fApZ1Nku/aWhVw6dwKrXr01+bcU
- shr/tYad3Q9635KzNm2WI+ll3vJoyMxv31l+2zOPK+HscA9qQglvm/x+y
- cYEE46oSHbL341fdyTw6EiJ5a3ZHBD+sXfIW4I/Xbp+RRZpu/nNYfiWfH
- dhMNjJabYS2nviBm+U+iUbGvhRjNMlN/pOrBWUjmTzFgLvEN4vqr79xTw
- PfmKsiLmL4ez5qnDiu2vikAHPmGjdSDbq1GNBSPxrxO9RJzBX6C+dAgAI w==;
-X-IronPort-AV: E=McAfee;i="6400,9594,10370"; a="277173716"
-X-IronPort-AV: E=Sophos;i="5.91,280,1647327600"; d="scan'208";a="277173716"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
- by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 06 Jun 2022 13:46:35 -0700
-X-IronPort-AV: E=Sophos;i="5.91,280,1647327600"; d="scan'208";a="906739475"
+ t=1654549354; x=1686085354;
+ h=from:to:cc:subject:date:message-id:mime-version:
+ content-transfer-encoding;
+ bh=WkaKwjZEmp1nYM2JZK8va72VapjVrUzzQf+INTX/1DM=;
+ b=gJUNnPNE8wYJEZDZGIxykXpH5ZHluW5i7ixC64m/g3GVVBgoLeplONye
+ FOnIGO1NUGhC+1GLL3Adyw1UdnDepst/Kqqy4zsRGCRRT917V03RjB0qu
+ HENMrQMiB767QtP4qcvr7epJ00Klf0OON7AVWetmIeVqRWSdlWAH10THB
+ QkJlaaYgV9v7bt62Ue0GIXYo8IFvyNJl5gdCA+y2V58hRDwJswUApCAnn
+ HqhYHyiMGifM4lScltY97p0VRt30T7MH/TjqzCEzfygdxORhs8uQKa6XM
+ RWAW9u8EgbJEO4Vt1iILdxOsCEy/0MEpqpHWBmudkZfwheMqGCtEcPX8T g==;
+X-IronPort-AV: E=McAfee;i="6400,9594,10370"; a="275467620"
+X-IronPort-AV: E=Sophos;i="5.91,280,1647327600"; d="scan'208";a="275467620"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+ by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 06 Jun 2022 14:02:27 -0700
+X-IronPort-AV: E=Sophos;i="5.91,280,1647327600"; d="scan'208";a="608914446"
 Received: from yantem-mobl9.amr.corp.intel.com (HELO pbossart-mobl3.intel.com)
  ([10.212.24.154])
- by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 06 Jun 2022 13:46:35 -0700
+ by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 06 Jun 2022 14:02:27 -0700
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH 3/3] ASoC: Intel: sof_sdw: allow HDaudio/HDMI disable
-Date: Mon,  6 Jun 2022 15:46:22 -0500
-Message-Id: <20220606204622.144424-4-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH 0/5] ASoC: SOF: AMD/Mediatek updates for 5.20
+Date: Mon,  6 Jun 2022 16:02:07 -0500
+Message-Id: <20220606210212.146626-1-pierre-louis.bossart@linux.intel.com>
 X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20220606204622.144424-1-pierre-louis.bossart@linux.intel.com>
-References: <20220606204622.144424-1-pierre-louis.bossart@linux.intel.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Cc: tiwai@suse.de, broonie@kernel.org,
- Bard Liao <yung-chuan.liao@linux.intel.com>,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- Rander Wang <rander.wang@intel.com>
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -86,90 +82,29 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-For tests, it's rather common to disable the HDaudio links and codecs
-in the build. Since we already get a codec_mask parameter indicating
-that there are no codecs detected, it's straightforward to skip the
-HDMI dailink creation and create a card.
+Small patches reviewed on SOF GitHub.
 
-Note that when disabling HDMI, a modified topology without HDMI
-pipelines needs to be provided as well.
+Ajit Kumar Pandey (1):
+  ASoC: SOF: amd: Add SOF pm ops callback for Renoir
 
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Reviewed-by: Rander Wang <rander.wang@intel.com>
-Reviewed-by: Bard Liao <yung-chuan.liao@linux.intel.com>
----
- sound/soc/intel/boards/Kconfig   |  1 -
- sound/soc/intel/boards/sof_sdw.c | 24 +++++++++++++++---------
- 2 files changed, 15 insertions(+), 10 deletions(-)
+YC Hung (4):
+  ASoC: SOF: mediatek: revise mt8195 clock sequence
+  ASoC: SOF: mediatek: Add shared_size for mediatek common chip
+    information
+  ASoC: SOF: mediatek: mt8195 modify dram type as non-cache
+  ASoC: SOF: mediatek: mt8195 suspend check dsp idle
 
-diff --git a/sound/soc/intel/boards/Kconfig b/sound/soc/intel/boards/Kconfig
-index f3873b5bea87e..4b4c1e1e48087 100644
---- a/sound/soc/intel/boards/Kconfig
-+++ b/sound/soc/intel/boards/Kconfig
-@@ -660,7 +660,6 @@ config SND_SOC_INTEL_SOUNDWIRE_SOF_MACH
- 	depends on MFD_INTEL_LPSS || COMPILE_TEST
- 	depends on SND_SOC_INTEL_USER_FRIENDLY_LONG_NAMES || COMPILE_TEST
- 	depends on SOUNDWIRE
--	depends on SND_HDA_CODEC_HDMI && SND_SOC_SOF_HDA_AUDIO_CODEC
- 	select SND_SOC_MAX98373_I2C
- 	select SND_SOC_MAX98373_SDW
- 	select SND_SOC_RT700_SDW
-diff --git a/sound/soc/intel/boards/sof_sdw.c b/sound/soc/intel/boards/sof_sdw.c
-index ad826ad82d51a..77af3a7655c44 100644
---- a/sound/soc/intel/boards/sof_sdw.c
-+++ b/sound/soc/intel/boards/sof_sdw.c
-@@ -1127,10 +1127,14 @@ static int sof_card_dai_links_create(struct device *dev,
- 	for (i = 0; i < ARRAY_SIZE(codec_info_list); i++)
- 		codec_info_list[i].amp_num = 0;
- 
--	if (sof_sdw_quirk & SOF_SDW_TGL_HDMI)
--		hdmi_num = SOF_TGL_HDMI_COUNT;
--	else
--		hdmi_num = SOF_PRE_TGL_HDMI_COUNT;
-+	if (mach_params->codec_mask & IDISP_CODEC_MASK) {
-+		ctx->idisp_codec = true;
-+
-+		if (sof_sdw_quirk & SOF_SDW_TGL_HDMI)
-+			hdmi_num = SOF_TGL_HDMI_COUNT;
-+		else
-+			hdmi_num = SOF_PRE_TGL_HDMI_COUNT;
-+	}
- 
- 	ssp_mask = SOF_SSP_GET_PORT(sof_sdw_quirk);
- 	/*
-@@ -1150,9 +1154,6 @@ static int sof_card_dai_links_create(struct device *dev,
- 		return ret;
- 	}
- 
--	if (mach_params->codec_mask & IDISP_CODEC_MASK)
--		ctx->idisp_codec = true;
--
- 	/* enable dmic01 & dmic16k */
- 	dmic_num = (sof_sdw_quirk & SOF_SDW_PCH_DMIC || mach_params->dmic_num) ? 2 : 0;
- 	comp_num += dmic_num;
-@@ -1375,7 +1376,9 @@ static int sof_card_dai_links_create(struct device *dev,
- 
- static int sof_sdw_card_late_probe(struct snd_soc_card *card)
- {
--	int i, ret;
-+	struct mc_private *ctx = snd_soc_card_get_drvdata(card);
-+	int ret = 0;
-+	int i;
- 
- 	for (i = 0; i < ARRAY_SIZE(codec_info_list); i++) {
- 		if (!codec_info_list[i].late_probe)
-@@ -1386,7 +1389,10 @@ static int sof_sdw_card_late_probe(struct snd_soc_card *card)
- 			return ret;
- 	}
- 
--	return sof_sdw_hdmi_card_late_probe(card);
-+	if (ctx->idisp_codec)
-+		ret = sof_sdw_hdmi_card_late_probe(card);
-+
-+	return ret;
- }
- 
- /* SoC card */
+ sound/soc/sof/amd/acp-dsp-offset.h         |  2 +
+ sound/soc/sof/amd/acp.c                    | 36 ++++++++++++++++
+ sound/soc/sof/amd/acp.h                    |  4 ++
+ sound/soc/sof/amd/pci-rn.c                 |  4 ++
+ sound/soc/sof/amd/renoir.c                 |  4 ++
+ sound/soc/sof/mediatek/adsp_helper.h       |  1 +
+ sound/soc/sof/mediatek/mt8195/mt8195-clk.c |  7 +++
+ sound/soc/sof/mediatek/mt8195/mt8195.c     | 50 +++++++++++++++-------
+ sound/soc/sof/mediatek/mt8195/mt8195.h     |  5 +++
+ 9 files changed, 97 insertions(+), 16 deletions(-)
+
 -- 
 2.34.1
 
