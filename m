@@ -4,84 +4,81 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C6F63C43334
-	for <alsa-devel@archiver.kernel.org>; Tue,  7 Jun 2022 09:10:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 06093C43334
+	for <alsa-devel@archiver.kernel.org>; Tue,  7 Jun 2022 09:33:32 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 23B4518FD;
-	Tue,  7 Jun 2022 11:09:53 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 23B4518FD
+	by alsa0.perex.cz (Postfix) with ESMTPS id 58C07190A;
+	Tue,  7 Jun 2022 11:32:40 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 58C07190A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1654593043;
-	bh=r8r8SpB5VehUZe5gs63rAkCiARCuBlQTzHEt0/fZxnw=;
+	s=default; t=1654594410;
+	bh=b1b4b7e9jd05t+Cwa2KpHBFa5gGE3C8jParN/4NWJ6I=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=nN/SBZnMNHep0Z4lwSG7w3iXtLfcSIZtVFl+CB6coO4H5oBwF0Yy5o9/qG1/NZKfu
-	 27adqdeR2C/Eh6hWzIJm7jfxGOQHX49y8TjgQwzs62DTz1UlA7imItz1ucS8t7PIOl
-	 JKghmCjIkvKbVTjmr4k9fDN7f/xiF7YZpCiOkvHg=
+	b=At4voCt2SDzbRP0BuHGq6xJ5rboQPCkLQVbhZNuyLcHxHKUefoZHQPAXbLwVghNGc
+	 elPvz50gwvNNTnZtUI1Ob9PEeCorUGXkQJliV/6jJBm9bAwbGMvI619st/8O5TQGxv
+	 X3a4KoPwZHgizXxm4LRc/O8UNcE8i2HlLV/q+Iqs=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id B2D4DF8013F;
-	Tue,  7 Jun 2022 11:09:52 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id DA25BF8013F;
+	Tue,  7 Jun 2022 11:32:39 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 1889EF8013F; Tue,  7 Jun 2022 11:09:51 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+ id EF4ACF80159; Tue,  7 Jun 2022 11:32:36 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id B8A6BF80109
- for <alsa-devel@alsa-project.org>; Tue,  7 Jun 2022 11:09:47 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B8A6BF80109
+ by alsa1.perex.cz (Postfix) with ESMTPS id 4009BF800ED
+ for <alsa-devel@alsa-project.org>; Tue,  7 Jun 2022 11:32:28 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4009BF800ED
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="mho0hgki"; 
+ header.b="n3ijKLfb"; 
  dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="JMa2rdqt"
+ header.b="PQJetat8"
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id A650821B2E;
- Tue,  7 Jun 2022 09:09:46 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 18E5A1F9B7;
+ Tue,  7 Jun 2022 09:32:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1654592986; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1654594347; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=TfFcXf1hj12Nx1LfqrKz8MfMIvOtfXkX8OrqFYBpYmM=;
- b=mho0hgkiRJA0lfEjYewH+qVjOj3P74ECQILEf8ARbFxHVTUrrrT2EnXRaBohsklSqsvrbV
- A72g3Nfg1EkLoj2AvRnjd0sMVz3zoV17k7DmN3b89J19hOMohfeLFcl0f4gJsocty6uiO4
- ljLX3j8jiGPm2EeCiR7ZetTrA2mUmEo=
+ bh=Nt/6+7grGhwGHAZ+QcoRaYktwfh+Uf3lQYTSllFMNFA=;
+ b=n3ijKLfboCCxllb9+ay4SxB0gBPQ0WHYnWzGyBHoUZh6m/pRltiAQBT3dBWDf4c97LfUYX
+ gtB+FeUO0yEZRFQd8kl+nR0KIVQJ779u7HEXEPH2I5fPUHSxrNJslHUegthqmngC0EEKcG
+ xJy1qipUxfQMfDpd4N7qHk/dovyYJIw=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1654592986;
+ s=susede2_ed25519; t=1654594347;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=TfFcXf1hj12Nx1LfqrKz8MfMIvOtfXkX8OrqFYBpYmM=;
- b=JMa2rdqtXYBKH+Jzio6Snb4tg13j5QI2GRkJzUZJkXNa40fKaOreE3kaqf+WnHpvQTamOE
- OXz7Y4cZi8Cw5mCQ==
+ bh=Nt/6+7grGhwGHAZ+QcoRaYktwfh+Uf3lQYTSllFMNFA=;
+ b=PQJetat8phqwecA34MDtZoiQFTKjaCff9JjSDceTMNqrYaB8WKHpdPdCWXgg2p5cdzqIwx
+ rrpUUfQmOZt0RCDQ==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 6A2B213638;
- Tue,  7 Jun 2022 09:09:46 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id E612913638;
+ Tue,  7 Jun 2022 09:32:26 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id TeESGdoVn2K2KgAAMHmgww
- (envelope-from <tiwai@suse.de>); Tue, 07 Jun 2022 09:09:46 +0000
-Date: Tue, 07 Jun 2022 11:09:45 +0200
-Message-ID: <87h74won52.wl-tiwai@suse.de>
+ by imap2.suse-dmz.suse.de with ESMTPSA id Ch5zNyobn2KBNQAAMHmgww
+ (envelope-from <tiwai@suse.de>); Tue, 07 Jun 2022 09:32:26 +0000
+Date: Tue, 07 Jun 2022 11:32:26 +0200
+Message-ID: <87bkv4om39.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
 To: huangwenhui <huangwenhuia@uniontech.com>
-Subject: Re: [PATCH] ALSA: hda/realtek - Add HW8326 support
-In-Reply-To: <20220607084109.29120-1-huangwenhuia@uniontech.com>
-References: <20220607084109.29120-1-huangwenhuia@uniontech.com>
+Subject: Re: [PATCH] ALSA: hda/conexant - Fix loopback issue with CX20632
+In-Reply-To: <20220607065631.10708-1-huangwenhuia@uniontech.com>
+References: <20220607065631.10708-1-huangwenhuia@uniontech.com>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
 MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
 Content-Type: text/plain; charset=US-ASCII
-Cc: alsa-devel@alsa-project.org, kailang@realtek.com,
- tanureal@opensource.cirrus.com, jeremy.szu@canonical.com,
- linux-kernel@vger.kernel.org, tiwai@suse.com, wse@tuxedocomputers.com,
- hui.wang@canonical.com, sami@loone.fi, cam@neo-zeon.de
+Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, tiwai@suse.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -97,29 +94,15 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Tue, 07 Jun 2022 10:41:09 +0200,
+On Tue, 07 Jun 2022 08:56:31 +0200,
 huangwenhui wrote:
 > 
-> Added the support of new Huawei codec HW8326.
+> On a machine with CX20632,Alsamixer doesn't have 'Loopback
+> Mixing' and 'Line'.
 > 
+> Signed-off-by: huangwenhui <huangwenhuia@uniontech.com>
 
-It'd be appreciated if you describe about the hardware a bit more.
-It looks like a compatible chip with some other Realtek codecs
-(ALC256?).
+Thanks, applied.
 
-> @@ -11479,6 +11492,7 @@ static const struct hda_device_id snd_hda_id_realtek[] = {
->  	HDA_CODEC_ENTRY(0x10ec0236, "ALC236", patch_alc269),
->  	HDA_CODEC_ENTRY(0x10ec0245, "ALC245", patch_alc269),
->  	HDA_CODEC_ENTRY(0x10ec0255, "ALC255", patch_alc269),
-> +	HDA_CODEC_ENTRY(0x19e58326, "HW8326", patch_alc269),
->  	HDA_CODEC_ENTRY(0x10ec0256, "ALC256", patch_alc269),
->  	HDA_CODEC_ENTRY(0x10ec0257, "ALC257", patch_alc269),
->  	HDA_CODEC_ENTRY(0x10ec0260, "ALC260", patch_alc260),
-
-This table is sorted in the codec ID order.  Please put at the
-appropriate place (at the last), instead.
-
-
-thanks,
 
 Takashi
