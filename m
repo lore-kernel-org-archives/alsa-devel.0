@@ -4,62 +4,63 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4211CC43334
-	for <alsa-devel@archiver.kernel.org>; Tue,  7 Jun 2022 14:12:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7406BC43334
+	for <alsa-devel@archiver.kernel.org>; Tue,  7 Jun 2022 14:13:02 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 791321A16;
-	Tue,  7 Jun 2022 16:11:38 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 791321A16
+	by alsa0.perex.cz (Postfix) with ESMTPS id 884291ADE;
+	Tue,  7 Jun 2022 16:12:10 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 884291ADE
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1654611148;
-	bh=kfPGOaInU1BYGH+JnxZUqGymu0I19v0lySqG/auXctA=;
+	s=default; t=1654611180;
+	bh=LJ/VecaxaHlBm9faMjylfrWOnt1AHRsH4wC5sGgkJVY=;
 	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Q/e0f7R/+cQqCMzlmu6ZZ0KiLcmAn4exKCtvc00ShGKa0NKnm7zLhMxe5bGXD/s44
-	 ZPF5ptYpuU/Jjah0+FHdL3vDOfDtF2FDcFxAJCI7jhoxWD7IouTJ36oSYT+pPlrbcN
-	 gfNyULR5IkV8483Y3aAUwN1f8afA4Rikpf2HSegc=
+	b=ObLulRT9ZJx2vQtM2RHrRgUT7KDjD4M6buw8f+DECjpmIvmxqlqiXqzQJgNc2Vf3U
+	 8u+O6x3nl1tzTCMEYzYSs2EZ3MoxPViu2VaAiqAqFU3i1MtffHB3Z+6CFUZ6v3YTcV
+	 gHRjo6WahfLzaASxwiLEjKdX0iJjQfj8zazyhD5Y=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 06106F80159;
-	Tue,  7 Jun 2022 16:11:38 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id CF976F80248;
+	Tue,  7 Jun 2022 16:11:39 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id DB60CF80159; Tue,  7 Jun 2022 16:11:36 +0200 (CEST)
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+ id E07CEF804BC; Tue,  7 Jun 2022 16:11:38 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org
+ [IPv6:2604:1380:4641:c500::1])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 81C93F80116
- for <alsa-devel@alsa-project.org>; Tue,  7 Jun 2022 16:11:33 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 81C93F80116
+ by alsa1.perex.cz (Postfix) with ESMTPS id 51406F80109
+ for <alsa-devel@alsa-project.org>; Tue,  7 Jun 2022 16:11:36 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 51406F80109
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="q/FCnxdH"
+ header.b="TibF/vxz"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by ams.source.kernel.org (Postfix) with ESMTPS id C0965B81FCF;
- Tue,  7 Jun 2022 14:11:32 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E1700C385A5;
- Tue,  7 Jun 2022 14:11:29 +0000 (UTC)
+ by dfw.source.kernel.org (Postfix) with ESMTPS id 8CC9461520;
+ Tue,  7 Jun 2022 14:11:33 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E3173C34114;
+ Tue,  7 Jun 2022 14:11:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1654611091;
- bh=kfPGOaInU1BYGH+JnxZUqGymu0I19v0lySqG/auXctA=;
+ s=k20201202; t=1654611093;
+ bh=LJ/VecaxaHlBm9faMjylfrWOnt1AHRsH4wC5sGgkJVY=;
  h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=q/FCnxdHEfjK2boA/u8zj9aAUItcNlpqfj1BP5MyIIA7+7+q7yMjaQj1tdqaMz2Fq
- v1ojJwcS5u+MCk6WRnGqdd+r7py6iz6Duoeu16gyr9HSmi/XYFfiid94lvxUA2KJbq
- Wcq6uIlBDaadmnpS9PR9Wf+uzZnmI4rZa4C4rFWLRQkNBVWTh84ZKXJQvsd33Kir55
- lixlViiqT2qIK5OBwo3KgzSmOu9TGHv9mbnRZ4lfKil/ffBZxznTJYE42lKJ+9vsPh
- CzpwOwzgWAEEc/s83jBBk0gMmtuitfz6+J5MaMhjJ4tj4RPGBrFekz+64c3ipRzeP5
- lMuDcBM49c0UA==
+ b=TibF/vxz0785guXjXQf2zWeP4pXGBJCR0+6dL7rajS7IcV+n0lWSOE8pqIsOOr9EX
+ r+EFyAovNBYEF7YJl44Irh9qA4KVH7BdUY482eXgp3wjn3rYJPKUzu0vMpC+P8qCpz
+ 8zzzeiw8vjTVvo2bX4xjG8HiFgvnIGltPBNvWdZo2PHF0qcRMwtQAkL70WOieeT8ZR
+ fDDmkrfRjfnjA4pdxEALsu0+3wG77Cj2WqbkpIu0YwZd2K4HVHhj8zc1DNYDAbaU1R
+ mWa/xSkjiqIXhrcMlJHL0liNv+ByfzJBhDXpauuuVdfrX9FWQoTTol7S14gj0HN82p
+ NrEPXX7N7oLYQ==
 From: Mark Brown <broonie@kernel.org>
-To: cezary.rojewski@intel.com, pierre-louis.bossart@linux.intel.com, liam.r.girdwood@linux.intel.com, Uwe Kleine-König <u.kleine-koenig@pengutronix.de>, yang.jie@linux.intel.com
-In-Reply-To: <20220605153904.26921-1-u.kleine-koenig@pengutronix.de>
-References: <20220605153904.26921-1-u.kleine-koenig@pengutronix.de>
-Subject: Re: [PATCH] ASoC: Intel: broadwell: Make broadwell_disable_jack()
- return void
-Message-Id: <165461108963.1597191.1670854889189649863.b4-ty@kernel.org>
-Date: Tue, 07 Jun 2022 15:11:29 +0100
+To: lgirdwood@gmail.com, Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
+In-Reply-To: <20220605153537.26591-1-u.kleine-koenig@pengutronix.de>
+References: <20220605153537.26591-1-u.kleine-koenig@pengutronix.de>
+Subject: Re: [PATCH] ASoC: simple-card-utils: Make
+ asoc_simple_clean_reference() return void
+Message-Id: <165461109165.1597191.7359069618885924147.b4-ty@kernel.org>
+Date: Tue, 07 Jun 2022 15:11:31 +0100
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -79,9 +80,9 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Sun, 5 Jun 2022 17:39:04 +0200, Uwe Kleine-König wrote:
-> broadwell_disable_jack() returns zero unconditionally. Letting it
-> return void instead makes it easier to see in the callers that there is no
+On Sun, 5 Jun 2022 17:35:37 +0200, Uwe Kleine-König wrote:
+> asoc_simple_clean_reference() returns zero unconditionally. Letting it
+> return void instead makes it easier to see in the caller that there is no
 > error to handle.
 > 
 > This is a preparation for making platform remove callbacks return void.
@@ -95,8 +96,8 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: Intel: broadwell: Make broadwell_disable_jack() return void
-      commit: aa0d5f095093610e7274591d41a28381f60467a8
+[1/1] ASoC: simple-card-utils: Make asoc_simple_clean_reference() return void
+      commit: e6f08af6340eaf88e9eeff71bd4533eee9a04119
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
