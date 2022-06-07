@@ -4,62 +4,62 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1F00DC43334
-	for <alsa-devel@archiver.kernel.org>; Tue,  7 Jun 2022 17:51:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4A3A0C43334
+	for <alsa-devel@archiver.kernel.org>; Tue,  7 Jun 2022 17:52:14 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 6ED9B18FB;
-	Tue,  7 Jun 2022 19:50:40 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6ED9B18FB
+	by alsa0.perex.cz (Postfix) with ESMTPS id F3D7B1923;
+	Tue,  7 Jun 2022 19:51:21 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F3D7B1923
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1654624290;
-	bh=XldQ3pHSX4feMiGNiPXShHPmem0dUGG6WO6DOUYawLI=;
+	s=default; t=1654624332;
+	bh=Rv//rQT6MExGfmmYk5r6Q/5pYQkKhX0s2DVO7s2gm3w=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=eCkYnC4MzVIlQXp883lLfIv8h7EtW6jmbmhRWfKW9cso5BvInzdVPz6uFk+qud9K3
-	 WRZ/cRew70iB6QRaLgQQCqSd6uuSl5PrV7/DwazxF/9JMtXL5vwP2THzw9Brbwxe/g
-	 MsKi7pt4FlC/o+/uSdogcx4orkY+fMYL8Yc0dpHA=
+	b=Hb5Eu/MRf3HG5pGtSk1bmZF6MBmlBcprviqB0WjAT4l6dwq4boe9Zh06j8r3wj85+
+	 Oc1FShFXtkvjyCNdGB3ZGMIuvTB5jvkutZtVdXcYMDmkknzqH9YhsMBVXvAG6O+dBQ
+	 mZtgFqG4eoMA2aBC1tRYfOwKiPnFFjOPAfy1Hul4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 0BFE7F8013F;
-	Tue,  7 Jun 2022 19:50:40 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 99BB1F8028B;
+	Tue,  7 Jun 2022 19:51:21 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 2B475F80159; Tue,  7 Jun 2022 19:50:38 +0200 (CEST)
+ id 05E1CF804BC; Tue,  7 Jun 2022 19:51:20 +0200 (CEST)
 Received: from ams.source.kernel.org (ams.source.kernel.org
  [IPv6:2604:1380:4601:e00::1])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 5F7C1F80109
- for <alsa-devel@alsa-project.org>; Tue,  7 Jun 2022 19:50:28 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5F7C1F80109
+ by alsa1.perex.cz (Postfix) with ESMTPS id 32BF7F80159
+ for <alsa-devel@alsa-project.org>; Tue,  7 Jun 2022 19:51:14 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 32BF7F80159
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="hET+Pzd1"
+ header.b="jeNprH80"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by ams.source.kernel.org (Postfix) with ESMTPS id 98688B822CD;
- Tue,  7 Jun 2022 17:50:27 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 14DD8C3411C;
- Tue,  7 Jun 2022 17:50:24 +0000 (UTC)
+ by ams.source.kernel.org (Postfix) with ESMTPS id 97CABB82348;
+ Tue,  7 Jun 2022 17:51:13 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 757D8C3411C;
+ Tue,  7 Jun 2022 17:51:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1654624226;
- bh=XldQ3pHSX4feMiGNiPXShHPmem0dUGG6WO6DOUYawLI=;
+ s=k20201202; t=1654624272;
+ bh=Rv//rQT6MExGfmmYk5r6Q/5pYQkKhX0s2DVO7s2gm3w=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=hET+Pzd1AiVKxG9hIZ+SJnvHQBUMhqY2FqQyVJklmR1EUfCVBM8XAP9E0Zu5oPBhy
- 8SI4960TOxQ3DHliUWmGFl/w+yaGbUTfSZoXg6srrAhTY9J7racrVgLLQJdbz0+ENw
- YxbJEWY3vrcHRp+71+dDI58XMf9QqIsUQ2an+WXNJYy18qQOCaQZnkLu5ISWRjtxzU
- nxAOV2tpPtapAijOyS7D/2nb0/htP5ru+9gq0ZcacHMTTOpdfTLma/n+66SMMAMeBV
- hTRkcc4tXVn9CIjo0t18ORgAiy1+c8KN6yLjVlSgMt1QUWrkN/olTTKmmrfJZaztop
- c8F9hLxPccxbQ==
+ b=jeNprH80ONiZlr9Lf1zwOFn/nE4+Q40KXSfjGda2zDScTFRQk1oLLRAzt3BgwERoP
+ Ts8vWTsi9z77ItZbd6F1Qu0AnTm6b01pHGCCC/HhXBQUreeQr1sJu5SBEvUA5nWqCl
+ wzjKITocQBlejfBNZEAPrE4lVFDitk/kPsKACvJjX8GfEuvDG1DpmWeqwDQoVliTTn
+ 1fdPonn7yDBbaWLXeKYfupFn0DfTQ/35fHNAICqav+Z/CapZbB/nMzed2wj+4aPx8q
+ K83wCprbqGAGBdhYj2+2c5tgfkncNfqyBrN3uMDYR74kdZ/DiP8enpOBkRiNlLxQ6B
+ 8iTjSy2jofzgw==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.18 22/68] soundwire: qcom: adjust autoenumeration
- timeout
-Date: Tue,  7 Jun 2022 13:47:48 -0400
-Message-Id: <20220607174846.477972-22-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.18 39/68] ASoC: rt5640: Do not manipulate pin
+ "Platform Clock" if the "Platform Clock" is not in the DAPM
+Date: Tue,  7 Jun 2022 13:48:05 -0400
+Message-Id: <20220607174846.477972-39-sashal@kernel.org>
 X-Mailer: git-send-email 2.35.1
 In-Reply-To: <20220607174846.477972-1-sashal@kernel.org>
 References: <20220607174846.477972-1-sashal@kernel.org>
@@ -67,12 +67,12 @@ MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
-Cc: Sasha Levin <sashal@kernel.org>, alsa-devel@alsa-project.org,
- linux-arm-msm@vger.kernel.org, bjorn.andersson@linaro.org,
- Vinod Koul <vkoul@kernel.org>, agross@kernel.org,
- Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
- yung-chuan.liao@linux.intel.com,
- Srinivasa Rao Mandadapu <quic_srivasam@quicinc.com>
+Cc: Oder Chiou <oder_chiou@realtek.com>, Sasha Levin <sashal@kernel.org>,
+ cezary.rojewski@intel.com, alsa-devel@alsa-project.org,
+ peter.ujfalusi@linux.intel.com, Sameer Pujar <spujar@nvidia.com>,
+ tiwai@suse.com, yang.jie@linux.intel.com, lgirdwood@gmail.com,
+ hdegoede@redhat.com, Mark Brown <broonie@kernel.org>, akihiko.odaki@gmail.com,
+ andriy.shevchenko@linux.intel.com, pierre-louis.bossart@linux.intel.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -88,40 +88,105 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+From: Oder Chiou <oder_chiou@realtek.com>
 
-[ Upstream commit 74da272400b46f2e898f115d1b1cd60828766919 ]
+[ Upstream commit 832296804bc7171730884e78c761c29f6d258e13 ]
 
-Currently timeout for autoenumeration during probe and bus reset is set to
-2 secs which is really a big value. This can have an adverse effect on
-boot time if the slave device is not ready/reset.
-This was the case with wcd938x which was not reset yet but we spent 2
-secs waiting in the soundwire controller probe. Reduce this time to
-1/10 of Hz which should be good enough time to finish autoenumeration
-if any slaves are available on the bus.
+The pin "Platform Clock" was only used by the Intel Byt CR platform. In the
+others, the error log will be informed. The patch will set the flag to
+avoid the pin "Platform Clock" manipulated by the other platforms.
 
-Reported-by: Srinivasa Rao Mandadapu <quic_srivasam@quicinc.com>
-Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Link: https://lore.kernel.org/r/20220506084705.18525-1-srinivas.kandagatla@linaro.org
-Signed-off-by: Vinod Koul <vkoul@kernel.org>
+Signed-off-by: Oder Chiou <oder_chiou@realtek.com>
+Reported-by: Sameer Pujar <spujar@nvidia.com>
+Link: https://lore.kernel.org/r/20220516103055.20003-1-oder_chiou@realtek.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/soundwire/qcom.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/codecs/rt5640.c             | 11 +++++++++--
+ sound/soc/codecs/rt5640.h             |  2 ++
+ sound/soc/intel/boards/bytcr_rt5640.c |  2 ++
+ 3 files changed, 13 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/soundwire/qcom.c b/drivers/soundwire/qcom.c
-index da1ad7ebb1aa..22947e8297ac 100644
---- a/drivers/soundwire/qcom.c
-+++ b/drivers/soundwire/qcom.c
-@@ -105,7 +105,7 @@
+diff --git a/sound/soc/codecs/rt5640.c b/sound/soc/codecs/rt5640.c
+index 30c2e7cb7ed2..3559d9ecfa07 100644
+--- a/sound/soc/codecs/rt5640.c
++++ b/sound/soc/codecs/rt5640.c
+@@ -2094,12 +2094,14 @@ EXPORT_SYMBOL_GPL(rt5640_sel_asrc_clk_src);
+ void rt5640_enable_micbias1_for_ovcd(struct snd_soc_component *component)
+ {
+ 	struct snd_soc_dapm_context *dapm = snd_soc_component_get_dapm(component);
++	struct rt5640_priv *rt5640 = snd_soc_component_get_drvdata(component);
  
- #define SWRM_SPECIAL_CMD_ID	0xF
- #define MAX_FREQ_NUM		1
--#define TIMEOUT_MS		(2 * HZ)
-+#define TIMEOUT_MS		100
- #define QCOM_SWRM_MAX_RD_LEN	0x1
- #define QCOM_SDW_MAX_PORTS	14
- #define DEFAULT_CLK_FREQ	9600000
+ 	snd_soc_dapm_mutex_lock(dapm);
+ 	snd_soc_dapm_force_enable_pin_unlocked(dapm, "LDO2");
+ 	snd_soc_dapm_force_enable_pin_unlocked(dapm, "MICBIAS1");
+ 	/* OVCD is unreliable when used with RCCLK as sysclk-source */
+-	snd_soc_dapm_force_enable_pin_unlocked(dapm, "Platform Clock");
++	if (rt5640->use_platform_clock)
++		snd_soc_dapm_force_enable_pin_unlocked(dapm, "Platform Clock");
+ 	snd_soc_dapm_sync_unlocked(dapm);
+ 	snd_soc_dapm_mutex_unlock(dapm);
+ }
+@@ -2108,9 +2110,11 @@ EXPORT_SYMBOL_GPL(rt5640_enable_micbias1_for_ovcd);
+ void rt5640_disable_micbias1_for_ovcd(struct snd_soc_component *component)
+ {
+ 	struct snd_soc_dapm_context *dapm = snd_soc_component_get_dapm(component);
++	struct rt5640_priv *rt5640 = snd_soc_component_get_drvdata(component);
+ 
+ 	snd_soc_dapm_mutex_lock(dapm);
+-	snd_soc_dapm_disable_pin_unlocked(dapm, "Platform Clock");
++	if (rt5640->use_platform_clock)
++		snd_soc_dapm_disable_pin_unlocked(dapm, "Platform Clock");
+ 	snd_soc_dapm_disable_pin_unlocked(dapm, "MICBIAS1");
+ 	snd_soc_dapm_disable_pin_unlocked(dapm, "LDO2");
+ 	snd_soc_dapm_sync_unlocked(dapm);
+@@ -2535,6 +2539,9 @@ static void rt5640_enable_jack_detect(struct snd_soc_component *component,
+ 		rt5640->jd_gpio_irq_requested = true;
+ 	}
+ 
++	if (jack_data && jack_data->use_platform_clock)
++		rt5640->use_platform_clock = jack_data->use_platform_clock;
++
+ 	ret = request_irq(rt5640->irq, rt5640_irq,
+ 			  IRQF_TRIGGER_RISING | IRQF_TRIGGER_FALLING | IRQF_ONESHOT,
+ 			  "rt5640", rt5640);
+diff --git a/sound/soc/codecs/rt5640.h b/sound/soc/codecs/rt5640.h
+index 9e49b9a0ccaa..505c93514051 100644
+--- a/sound/soc/codecs/rt5640.h
++++ b/sound/soc/codecs/rt5640.h
+@@ -2155,11 +2155,13 @@ struct rt5640_priv {
+ 	bool jd_inverted;
+ 	unsigned int ovcd_th;
+ 	unsigned int ovcd_sf;
++	bool use_platform_clock;
+ };
+ 
+ struct rt5640_set_jack_data {
+ 	int codec_irq_override;
+ 	struct gpio_desc *jd_gpio;
++	bool use_platform_clock;
+ };
+ 
+ int rt5640_dmic_enable(struct snd_soc_component *component,
+diff --git a/sound/soc/intel/boards/bytcr_rt5640.c b/sound/soc/intel/boards/bytcr_rt5640.c
+index d76a505052fb..96a2ea92dd1e 100644
+--- a/sound/soc/intel/boards/bytcr_rt5640.c
++++ b/sound/soc/intel/boards/bytcr_rt5640.c
+@@ -1179,12 +1179,14 @@ static int byt_rt5640_init(struct snd_soc_pcm_runtime *runtime)
+ {
+ 	struct snd_soc_card *card = runtime->card;
+ 	struct byt_rt5640_private *priv = snd_soc_card_get_drvdata(card);
++	struct rt5640_set_jack_data *jack_data = &priv->jack_data;
+ 	struct snd_soc_component *component = asoc_rtd_to_codec(runtime, 0)->component;
+ 	const struct snd_soc_dapm_route *custom_map = NULL;
+ 	int num_routes = 0;
+ 	int ret;
+ 
+ 	card->dapm.idle_bias_off = true;
++	jack_data->use_platform_clock = true;
+ 
+ 	/* Start with RC clk for jack-detect (we disable MCLK below) */
+ 	if (byt_rt5640_quirk & BYT_RT5640_MCLK_EN)
 -- 
 2.35.1
 
