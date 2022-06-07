@@ -4,67 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1E925C433EF
-	for <alsa-devel@archiver.kernel.org>; Tue,  7 Jun 2022 10:53:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 592D7C433EF
+	for <alsa-devel@archiver.kernel.org>; Tue,  7 Jun 2022 10:53:19 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 62F3A1A97;
-	Tue,  7 Jun 2022 12:52:13 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 62F3A1A97
+	by alsa0.perex.cz (Postfix) with ESMTPS id 958CD1A28;
+	Tue,  7 Jun 2022 12:52:27 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 958CD1A28
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1654599183;
-	bh=aG9ovN6guKRQSvZdWZO5Xr00Umv+n1SAAe5wFZIzgsQ=;
+	s=default; t=1654599197;
+	bh=3AqcgFROyY3hkCEzdOdEFdNbxxw2PBTGqPDd+uvJsfg=;
 	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=MbJ2E0y4psHxoSWOz12BARwp3QIvddR6CSt6zVsGDnPFYEjc0dG4hdCLltLtPjisn
-	 RBXFdHK6cQgHW3MRAEjlzfQF5PD75IW5PGfIRO5ftd6V6K3tO3QZnAlC9wJ2uMtJfL
-	 1/BmdvtWwVEJ+y06QYJWhpaYbG7Ls3wt4HxXpIuw=
+	b=ab0sZnoVuFjQTCnqa9EZ503CVPI9Cff4VvGWM1vh70Tx3qlS/BXr/WlxXTUh/txj8
+	 /LOMZ3LS7XMkBntkU+z8pY395/YNOycREcgfbo7uZMDs7QIpkCCS7kiJrEmhJm6Vjh
+	 TiavyshnKzQUdHkPPLSCDVB2CREsoje4mG/juVmU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 4B63DF805EC;
-	Tue,  7 Jun 2022 12:46:20 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id E1D57F805F3;
+	Tue,  7 Jun 2022 12:46:21 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id C85A2F805ED; Tue,  7 Jun 2022 12:46:17 +0200 (CEST)
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+ id ADCAEF805EE; Tue,  7 Jun 2022 12:46:19 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 675A3F80159
- for <alsa-devel@alsa-project.org>; Tue,  7 Jun 2022 12:46:15 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 675A3F80159
+ by alsa1.perex.cz (Postfix) with ESMTPS id 557EEF805EC
+ for <alsa-devel@alsa-project.org>; Tue,  7 Jun 2022 12:46:17 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 557EEF805EC
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="gWeuZElk"
+ header.b="HMQtJMbL"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by ams.source.kernel.org (Postfix) with ESMTPS id 0DB30B81F02;
- Tue,  7 Jun 2022 10:46:15 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0EB98C3411E;
- Tue,  7 Jun 2022 10:46:11 +0000 (UTC)
+ by dfw.source.kernel.org (Postfix) with ESMTPS id 46A4B6152C;
+ Tue,  7 Jun 2022 10:46:16 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4A0E1C34119;
+ Tue,  7 Jun 2022 10:46:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1654598773;
- bh=aG9ovN6guKRQSvZdWZO5Xr00Umv+n1SAAe5wFZIzgsQ=;
+ s=k20201202; t=1654598775;
+ bh=3AqcgFROyY3hkCEzdOdEFdNbxxw2PBTGqPDd+uvJsfg=;
  h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=gWeuZElkb0dkbDC+RT5NbKzPN52MZIV1arnMMYpXZ8wGrRg3N3T6vEQ3mIJeC+DNY
- F7yhLeoUEcvz/5EO4xKF/2dn+CBtbzxLsqC9GnT4aXw4RjPMA3WTgtdAWzcLOdgaL3
- H71Yj56XsZllAODCFzxuAY1T6s15fe0m2OVwhPolS/lZCnE8Yptv+JOplb0sKKkvWz
- LJxPj4WSaWLPMkqy8UtTwqLySqll9+NjvUvs1oXCe7ODW2aJijeDG9rrBOxA7VJWBs
- gKMOswu/apRM1uxpAGXyT6BCbvR0cRxYlf1Z0SztU/NeiUz7icaiNjXma8eyPY/oiI
- 7Od4yj4g3f3fg==
+ b=HMQtJMbLxLQSEp7UXDJ7hEzxzW4fRv+j2PIoSK3J3pTWeudUPx8n5kx7opSQXGVHA
+ EyniiYipGW9svD5twRM5TSY91gW1hzouKgenmFd4IrEb4WfSuIHHIXVLKQb1Kfz8kk
+ JmX9onj1NqItd3H9uZeO9yh9ozWlUNaBPiftGsjH1noMt1mBZCQ3n1UPW0UFHisUgl
+ f58QhKi0WiSPJ4h4L9uI5TH0f/Hr8C2O8FAR8NFakWP/K6pKzUtwWJuEnxxWmoR8K8
+ 5bJp5IhW2xYqnOEhKK6WmxpehnwHmfBH9Ka7MVDKJUOlm28k/qfDQOaGaDd4au6ROD
+ APBg2hiXEMQgA==
 From: Mark Brown <broonie@kernel.org>
-To: festevam@gmail.com, nicoleotsuka@gmail.com, Xiubo.Lee@gmail.com,
- m.felsch@pengutronix.de, lgirdwood@gmail.com, shengjiu.wang@gmail.com
-In-Reply-To: <20220601092342.3328644-1-m.felsch@pengutronix.de>
-References: <20220601092342.3328644-1-m.felsch@pengutronix.de>
-Subject: Re: (subset) [PATCH 1/3] ASoC: fsl_sai: use local device pointer
-Message-Id: <165459877177.301808.17694507316184674663.b4-ty@kernel.org>
-Date: Tue, 07 Jun 2022 11:46:11 +0100
+To: tiwai@suse.com, support.opensource@diasemi.com, lgirdwood@gmail.com,
+ perex@perex.cz, jiasheng@iscas.ac.cn
+In-Reply-To: <20220531094712.2376759-1-jiasheng@iscas.ac.cn>
+References: <20220531094712.2376759-1-jiasheng@iscas.ac.cn>
+Subject: Re: [PATCH] ASoC: codecs: da7210: add check for i2c_add_driver
+Message-Id: <165459877402.301808.1092458245565665338.b4-ty@kernel.org>
+Date: Tue, 07 Jun 2022 11:46:14 +0100
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: alsa-devel@alsa-project.org, linuxppc-dev@lists.ozlabs.org,
- kernel@pengutronix.de
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -80,11 +79,15 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, 1 Jun 2022 11:23:40 +0200, Marco Felsch wrote:
-> Use a local variable to dereference the device pointer once and use the
-> local variable in further calls. No functional changes.
+On Tue, 31 May 2022 17:47:12 +0800, Jiasheng Jiang wrote:
+> As i2c_add_driver could return error if fails, it should be
+> better to check the return value.
+> However, if the CONFIG_I2C and CONFIG_SPI_MASTER are both true,
+> the return value of i2c_add_driver will be covered by
+> spi_register_driver.
+> Therefore, it is necessary to add check and return error if fails.
 > 
-> 
+> [...]
 
 Applied to
 
@@ -92,10 +95,8 @@ Applied to
 
 Thanks!
 
-[1/3] ASoC: fsl_sai: use local device pointer
-      commit: f53f50ee21d46094a8c48970e95e38a4deaa128e
-[3/3] ASoC: fsl_sai: add error message in case of missing imx-pcm-dma support
-      commit: 22205521770ee740f64a3ec90301f50e34738cfd
+[1/1] ASoC: codecs: da7210: add check for i2c_add_driver
+      commit: 82fa8f581a954ddeec1602bed9f8b4a09d100e6e
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
