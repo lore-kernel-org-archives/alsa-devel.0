@@ -4,81 +4,55 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2619DC433EF
-	for <alsa-devel@archiver.kernel.org>; Tue,  7 Jun 2022 12:37:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C3689C433EF
+	for <alsa-devel@archiver.kernel.org>; Tue,  7 Jun 2022 12:43:43 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 5E5CB1948;
-	Tue,  7 Jun 2022 14:36:23 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5E5CB1948
+	by alsa0.perex.cz (Postfix) with ESMTPS id DFCD619FF;
+	Tue,  7 Jun 2022 14:42:51 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DFCD619FF
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1654605433;
-	bh=hUCQM8ctHh71OAL8b+iUYMzh1tDQ8Vk2gJx0SYAmcFg=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=Lq5lLjUyiovg536N9RVM8nrf2uiTrYQ+1+pFKLVkEKm6Sth7ZiwmIInCKbjnZiAC2
-	 Ndk5JcFTE7Uv0911BO96PZTHcOURVKpaprWpwilLS8X35YEqF9UvbYC+kN6OYGkJm1
-	 XTVWqeoBATlDg5t3ojErVMMcJWshWRXOdhVBitc8=
+	s=default; t=1654605822;
+	bh=xGKjLuo0RHKRm7GexU26ZPCEP1WFarrvMzHYehe+2ls=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=nS4IprhZgJdJbKLS/1jsc5DrOb2SwhD8FKLIaXnQqDyOYwRQJoVamfmxLz2Gzpqq2
+	 AF/DcsPR8sgAzvQz5C1DhG8hXdTb5g0Q0BjQz3tFAk1Lfe1boIcXBEHkDOGj8APHcL
+	 8M9qN1mamC+hni9rXkFZufrL/5h7m1GfsOMgxluI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id DE6D8F80109;
-	Tue,  7 Jun 2022 14:36:22 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 80D36F80159;
+	Tue,  7 Jun 2022 14:42:51 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 0CD92F80159; Tue,  7 Jun 2022 14:36:22 +0200 (CEST)
-Received: from alexa-out.qualcomm.com (alexa-out.qualcomm.com [129.46.98.28])
- (using TLSv1.2 with cipher AES256-SHA (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id BB57BF80248
- for <alsa-devel@alsa-project.org>; Tue,  7 Jun 2022 14:36:13 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BB57BF80248
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=quicinc.com header.i=@quicinc.com
- header.b="vUukCcFP"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=quicinc.com; i=@quicinc.com; q=dns/txt; s=qcdkim;
- t=1654605375; x=1686141375;
- h=from:to:cc:subject:date:message-id:in-reply-to:
- references:mime-version;
- bh=fYpPCX6VZdvNlaz5PU1EmmzGezp4ojXcHXRAL2naybc=;
- b=vUukCcFPGQGZ6lGGUTS4mWADXMQDL8VolBMxnngcLHy16SmTP6Qsbp9j
- X6FXd2ZbQYgqxziFX4McfyKC8AhMAKXYaUWZvLYe4Lq5iEoqzWSt/jHjy
- iqloEil972+OXZo5pJrIIlOCEGmvx9wxmhaNzNC/yff1QoGx1w8BCZZHI s=;
-Received: from ironmsg08-lv.qualcomm.com ([10.47.202.152])
- by alexa-out.qualcomm.com with ESMTP; 07 Jun 2022 05:36:12 -0700
-X-QCInternal: smtphost
-Received: from nasanex01c.na.qualcomm.com ([10.47.97.222])
- by ironmsg08-lv.qualcomm.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 07 Jun 2022 05:36:11 -0700
-Received: from nalasex01a.na.qualcomm.com (10.47.209.196) by
- nasanex01c.na.qualcomm.com (10.47.97.222) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.986.22; Tue, 7 Jun 2022 05:36:10 -0700
-Received: from hu-srivasam-hyd.qualcomm.com (10.80.80.8) by
- nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.986.22; Tue, 7 Jun 2022 05:36:04 -0700
-From: Srinivasa Rao Mandadapu <quic_srivasam@quicinc.com>
-To: <agross@kernel.org>, <bjorn.andersson@linaro.org>, <lgirdwood@gmail.com>, 
- <broonie@kernel.org>, <robh+dt@kernel.org>, <quic_plai@quicinc.com>,
- <bgoswami@quicinc.com>, <perex@perex.cz>, <tiwai@suse.com>,
- <srinivas.kandagatla@linaro.org>, <quic_rohkumar@quicinc.com>,
- <linux-arm-msm@vger.kernel.org>, <alsa-devel@alsa-project.org>,
- <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
- <swboyd@chromium.org>, <judyhsiao@chromium.org>, <vkoul@kernel.org>
-Subject: [PATCH 2/2] ASoC: qcom: soundwire: Add software clock gating
- requirement check
-Date: Tue, 7 Jun 2022 18:05:34 +0530
-Message-ID: <1654605334-32030-3-git-send-email-quic_srivasam@quicinc.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1654605334-32030-1-git-send-email-quic_srivasam@quicinc.com>
-References: <1654605334-32030-1-git-send-email-quic_srivasam@quicinc.com>
+ id CAD6AF80159; Tue,  7 Jun 2022 14:42:49 +0200 (CEST)
+Received: from relmlie5.idc.renesas.com (relmlor1.renesas.com
+ [210.160.252.171])
+ by alsa1.perex.cz (Postfix) with ESMTP id 84178F80109
+ for <alsa-devel@alsa-project.org>; Tue,  7 Jun 2022 14:42:42 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 84178F80109
+X-IronPort-AV: E=Sophos;i="5.91,283,1647270000"; d="scan'208";a="122167175"
+Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
+ by relmlie5.idc.renesas.com with ESMTP; 07 Jun 2022 21:42:38 +0900
+Received: from localhost.localdomain (unknown [10.226.92.169])
+ by relmlir5.idc.renesas.com (Postfix) with ESMTP id 75EE74002639;
+ Tue,  7 Jun 2022 21:42:34 +0900 (JST)
+From: Biju Das <biju.das.jz@bp.renesas.com>
+To: Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>
+Subject: [PATCH v2] ASoC: dt-bindings: renesas,rz-ssi: Document RZ/G2UL SoC
+Date: Tue,  7 Jun 2022 13:42:31 +0100
+Message-Id: <20220607124231.3248-1-biju.das.jz@bp.renesas.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-Cc: Srinivasa Rao Mandadapu <quic_srivasam@quicinc.com>
+Content-Transfer-Encoding: 8bit
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
+ Geert Uytterhoeven <geert+renesas@glider.be>,
+ Prabhakar Mahadev Lad <prabhakar.mahadev-lad.rj@bp.renesas.com>,
+ Liam Girdwood <lgirdwood@gmail.com>, Biju Das <biju.das@bp.renesas.com>,
+ linux-renesas-soc@vger.kernel.org,
+ Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+ Mark Brown <broonie@kernel.org>, Chris Paterson <Chris.Paterson2@renesas.com>,
+ Biju Das <biju.das.jz@bp.renesas.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -94,91 +68,45 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Validate software clock gating required or not and do software
-clock gating on hclk if soundwire is operational and keep it
-running by adding flag in private dat structure.
-This is to avoid conflict between older architectures,
-where software clock gating is not required and on latest
-architectues, where software clock gating is mandatory.
+Document RZ/G2U2L SSI bindings. RZ/G2UL SSI is identical to one found
+on the RZ/G2L SoC. No driver changes are required as generic compatible
+string "renesas,rz-ssi" will be used as a fallback.
 
-Signed-off-by: Srinivasa Rao Mandadapu <quic_srivasam@quicinc.com>
+While at it add a '.' at the end of dmas description for the first cell.
+
+Signed-off-by: Biju Das <biju.das.jz@bp.renesas.com>
+Acked-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
 ---
- drivers/soundwire/qcom.c | 27 ++++++++++++++++++++-------
- 1 file changed, 20 insertions(+), 7 deletions(-)
+v1->v2:
+ * Rebased to latest sound.git
+ * Added Ack tag from Krzysztof Kozlowski
+ * Added Rb tag from Geert.
+---
+ Documentation/devicetree/bindings/sound/renesas,rz-ssi.yaml | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/soundwire/qcom.c b/drivers/soundwire/qcom.c
-index 38c3bf5..4896e92 100644
---- a/drivers/soundwire/qcom.c
-+++ b/drivers/soundwire/qcom.c
-@@ -194,6 +194,12 @@ static const struct qcom_swrm_data swrm_v1_5_data = {
- 	.default_cols = 16,
- };
- 
-+static const struct qcom_swrm_data swrm_v1_6_data = {
-+	.default_rows = 50,
-+	.default_cols = 16,
-+	.sw_clk_gate_required = 1,
-+};
-+
- #define to_qcom_sdw(b)	container_of(b, struct qcom_swrm_ctrl, bus)
- 
- static int qcom_swrm_ahb_reg_read(struct qcom_swrm_ctrl *ctrl, int reg,
-@@ -659,7 +665,8 @@ static int qcom_swrm_init(struct qcom_swrm_ctrl *ctrl)
- 	val = FIELD_PREP(SWRM_MCP_FRAME_CTRL_BANK_ROW_CTRL_BMSK, ctrl->rows_index);
- 	val |= FIELD_PREP(SWRM_MCP_FRAME_CTRL_BANK_COL_CTRL_BMSK, ctrl->cols_index);
- 
--	reset_control_reset(ctrl->audio_cgcr);
-+	if (data->sw_clk_gate_required)
-+		reset_control_reset(ctrl->audio_cgcr);
- 
- 	ctrl->reg_write(ctrl, SWRM_MCP_FRAME_CTRL_BANK_ADDR(0), val);
- 
-@@ -1312,6 +1319,15 @@ static int qcom_swrm_probe(struct platform_device *pdev)
- 			return PTR_ERR(ctrl->mmio);
- 	}
- 
-+	if (data->sw_clk_gate_required) {
-+		ctrl->audio_cgcr = devm_reset_control_get_exclusive(dev, "swr_audio_cgcr");
-+		if (IS_ERR(ctrl->audio_cgcr)) {
-+			dev_err(dev, "Failed to get cgcr reset ctrl required for SW gating\n");
-+			ret = PTR_ERR(ctrl->audio_cgcr);
-+			goto err_init;
-+		}
-+	}
-+
- 	ctrl->irq = of_irq_get(dev->of_node, 0);
- 	if (ctrl->irq < 0) {
- 		ret = ctrl->irq;
-@@ -1337,10 +1353,6 @@ static int qcom_swrm_probe(struct platform_device *pdev)
- 	ctrl->bus.compute_params = &qcom_swrm_compute_params;
- 	ctrl->bus.clk_stop_timeout = 300;
- 
--	ctrl->audio_cgcr = devm_reset_control_get_exclusive(dev, "swr_audio_cgcr");
--	if (IS_ERR(ctrl->audio_cgcr))
--		dev_err(dev, "Failed to get audio_cgcr reset required for soundwire-v1.6.0\n");
--
- 	ret = qcom_swrm_get_port_config(ctrl);
- 	if (ret)
- 		goto err_clk;
-@@ -1494,7 +1506,8 @@ static int __maybe_unused swrm_runtime_resume(struct device *dev)
- 		qcom_swrm_get_device_status(ctrl);
- 		sdw_handle_slave_status(&ctrl->bus, ctrl->status);
- 	} else {
--		reset_control_reset(ctrl->audio_cgcr);
-+		if (data->sw_clk_gate_required)
-+			reset_control_reset(ctrl->audio_cgcr);
- 
- 		ctrl->reg_write(ctrl, SWRM_MCP_BUS_CTRL, SWRM_MCP_BUS_CLK_START);
- 		ctrl->reg_write(ctrl, SWRM_INTERRUPT_CLEAR,
-@@ -1559,7 +1572,7 @@ static const struct dev_pm_ops swrm_dev_pm_ops = {
- static const struct of_device_id qcom_swrm_of_match[] = {
- 	{ .compatible = "qcom,soundwire-v1.3.0", .data = &swrm_v1_3_data },
- 	{ .compatible = "qcom,soundwire-v1.5.1", .data = &swrm_v1_5_data },
--	{ .compatible = "qcom,soundwire-v1.6.0", .data = &swrm_v1_5_data },
-+	{ .compatible = "qcom,soundwire-v1.6.0", .data = &swrm_v1_6_data },
- 	{/* sentinel */},
- };
- 
+diff --git a/Documentation/devicetree/bindings/sound/renesas,rz-ssi.yaml b/Documentation/devicetree/bindings/sound/renesas,rz-ssi.yaml
+index 7e8d252f7bca..0d9840375132 100644
+--- a/Documentation/devicetree/bindings/sound/renesas,rz-ssi.yaml
++++ b/Documentation/devicetree/bindings/sound/renesas,rz-ssi.yaml
+@@ -13,6 +13,7 @@ properties:
+   compatible:
+     items:
+       - enum:
++          - renesas,r9a07g043-ssi  # RZ/G2UL
+           - renesas,r9a07g044-ssi  # RZ/G2{L,LC}
+           - renesas,r9a07g054-ssi  # RZ/V2L
+       - const: renesas,rz-ssi
+@@ -50,7 +51,7 @@ properties:
+     minItems: 1
+     maxItems: 2
+     description:
+-      The first cell represents a phandle to dmac
++      The first cell represents a phandle to dmac.
+       The second cell specifies the encoded MID/RID values of the SSI port
+       connected to the DMA client and the slave channel configuration
+       parameters.
 -- 
-2.7.4
+2.25.1
 
