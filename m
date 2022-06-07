@@ -4,67 +4,70 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id F3536C433EF
-	for <alsa-devel@archiver.kernel.org>; Tue,  7 Jun 2022 10:54:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1F53AC433EF
+	for <alsa-devel@archiver.kernel.org>; Tue,  7 Jun 2022 10:54:30 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3995C1A7C;
-	Tue,  7 Jun 2022 12:53:21 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3995C1A7C
+	by alsa0.perex.cz (Postfix) with ESMTPS id 6F8E11AB4;
+	Tue,  7 Jun 2022 12:53:38 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6F8E11AB4
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1654599251;
-	bh=emluHOkPwOdLw8g48Pp6E94iAZ6WdkH2R/ZMnEXLDN4=;
+	s=default; t=1654599268;
+	bh=0D+tn4T5VwkAbtlCnkNSQiUQ+Bka36vahBMW9yn7jWs=;
 	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Yb1qwojh4fYQvBvHXhf79n3nmp4+6Z7YfToABrW36UwPpZqlVex6tU6yzD2ChZHFf
-	 ff7uju1GSJB2pGzAXHfrDj/m2gQ2G7J8ifUWaSrUhBBDwwewDlYYICGfimhizRlC/a
-	 4zOJka3E6BWbpETsTRf1t2xwXd1mq7DClIw0N86o=
+	b=h/ctmJiumccfue6MxWUDioCe6gg+G3Ecat3BCCLemT8QcPSIhfPOtlYxdQK0qz8xS
+	 Q+UGMxbh/hyAqPPpLu1Gf9xZovlAWdIKUsjL2aqz8ckfolZeaJdgBHlUi2X7G1McEv
+	 4aN6L0PCIDYyxGu7SZM+00AtAdrMamtb1KYt6CTU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 5A977F80601;
-	Tue,  7 Jun 2022 12:46:29 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2EC5EF80606;
+	Tue,  7 Jun 2022 12:46:32 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 8C8FEF805FD; Tue,  7 Jun 2022 12:46:27 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org
- [IPv6:2604:1380:4641:c500::1])
+ id 5C70EF80607; Tue,  7 Jun 2022 12:46:30 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id DE981F805F2
- for <alsa-devel@alsa-project.org>; Tue,  7 Jun 2022 12:46:20 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DE981F805F2
+ by alsa1.perex.cz (Postfix) with ESMTPS id C0C5EF805FD
+ for <alsa-devel@alsa-project.org>; Tue,  7 Jun 2022 12:46:27 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C0C5EF805FD
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="leVRtPee"
+ header.b="XN4OtEC1"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id CB4FE61555;
- Tue,  7 Jun 2022 10:46:19 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B71F0C34115;
- Tue,  7 Jun 2022 10:46:18 +0000 (UTC)
+ by dfw.source.kernel.org (Postfix) with ESMTPS id 68F7E61563;
+ Tue,  7 Jun 2022 10:46:26 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D0DB8C34114;
+ Tue,  7 Jun 2022 10:46:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1654598779;
- bh=emluHOkPwOdLw8g48Pp6E94iAZ6WdkH2R/ZMnEXLDN4=;
+ s=k20201202; t=1654598786;
+ bh=0D+tn4T5VwkAbtlCnkNSQiUQ+Bka36vahBMW9yn7jWs=;
  h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=leVRtPeeYnr6n+ecJ6sQENmeK3bEuqlU6v+aaQJlupT7CG0TrqN40cPU28qASe+QW
- MzZ1BDVE7RZpiW0IqLiWSk1gO7lr+1HD+/fhuIv7N+p6P5sEfE3r8EAjD6kmoChh04
- 3IP2AvQ/AjIdsO/2yS5ckymGTYxcofEnod6wp5rvIHY6/WlBPYJKGPj8avAl5NrDeX
- nYYbEtyCHglO8g5+bc8Ecc/QclMHtZI4nDsxBeDXERV5rjl28DyBEC8nLMIbJHZvM4
- nET0OJgNQUWLhiQi23z8vCQih2zPxQnmZybZMa3mGM+enPqdymai9pCQ/Xnue6YCcP
- 9AGfm1OkYOOqA==
+ b=XN4OtEC1ReiFN5hrpvP9Cq0PlQPq7YfJvoOUz4LGPyKKlCkjQsrmUKdomdFAAM9Te
+ fyZcmp7oO2ftDXjge+iSNiy13lm0+l8lD0CsQ6V6jnWbkgwr52PaswPwc5atqcLSH4
+ 3ABphjfscleAu/awS3918OV5qLYnVhXgoS5Gh74VzTsQmI2bajgKp66YztbgS5lnu6
+ hAhGwTsVAnbjIF/70ySUiM/TwVhYdRKQCm+HbtRuKN5UVKpIgZrmgmUIfoEnoC3QiZ
+ VqOvuz+DlJdyKmMonFsv0vuS+1wK8VF8xdTS9l9csNkz1nt+fgRXZApaosIZDCcEPn
+ 5ihB1ZNmT3Rnw==
 From: Mark Brown <broonie@kernel.org>
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-In-Reply-To: <87o7zflk3n.wl-kuninori.morimoto.gx@renesas.com>
-References: <87o7zflk3n.wl-kuninori.morimoto.gx@renesas.com>
-Subject: Re: [PATCH] ASoC: simple-card-utils: rename
- asoc_simple_init_dai_link_params() to asoc_simple_init_for_codec2codec()
-Message-Id: <165459877847.301808.3073980786136356007.b4-ty@kernel.org>
-Date: Tue, 07 Jun 2022 11:46:18 +0100
+To: aford173@gmail.com, alsa-devel@alsa-project.org
+In-Reply-To: <20220526182129.538472-1-aford173@gmail.com>
+References: <20220526182129.538472-1-aford173@gmail.com>
+Subject: Re: [PATCH] ASoC: wm8962: Fix suspend while playing music
+Message-Id: <165459878357.301808.15345032675363899374.b4-ty@kernel.org>
+Date: Tue, 07 Jun 2022 11:46:23 +0100
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>
+Cc: ckeepax@opensource.cirrus.com, geert+renesas@glider.be,
+ open list <linux-kernel@vger.kernel.org>, Liam Girdwood <lgirdwood@gmail.com>,
+ aford@beaconembedded.com, Takashi Iwai <tiwai@suse.com>,
+ chi.minghao@zte.com.cn,
+ "open list:WOLFSON MICROELECTRONICS DRIVERS" <patches@opensource.cirrus.com>,
+ steve@sk2.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -80,16 +83,13 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Mon, 30 May 2022 04:28:44 +0000, Kuninori Morimoto wrote:
-> From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+On Thu, 26 May 2022 13:21:28 -0500, Adam Ford wrote:
+> If the audio CODEC is playing sound when the system is suspended,
+> it can be left in a state which throws the following error:
 > 
-> commit 95cfc0a0aaf5752071 ("ASoC: simple-card: Add support for
-> codec2codec DAI links") added the function
-> asoc_simple_init_dai_link_params() to initialize dai_link "params".
-> It is very straight naming, but difficult to noticed that it is for
-> Codec2Codec support. Handling Codec2Codec is one of very tricky part
-> on ALSA SoC, thus it is very important to clarify it. This patch
-> renames the function name.
+> wm8962 3-001a: ASoC: error at soc_component_read_no_lock on wm8962.3-001a: -16
+> 
+> Once this error has occurred, the audio will not work again until rebooted.
 > 
 > [...]
 
@@ -99,8 +99,8 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: simple-card-utils: rename asoc_simple_init_dai_link_params() to asoc_simple_init_for_codec2codec()
-      commit: ff31753fcb061b90bd8c356d5b27a6eb5f8ade15
+[1/1] ASoC: wm8962: Fix suspend while playing music
+      commit: d1f5272c0f7d2e53c6f2480f46725442776f5f78
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
