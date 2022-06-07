@@ -4,69 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id F227DC433EF
-	for <alsa-devel@archiver.kernel.org>; Tue,  7 Jun 2022 10:54:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id F3536C433EF
+	for <alsa-devel@archiver.kernel.org>; Tue,  7 Jun 2022 10:54:12 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3B9471A45;
-	Tue,  7 Jun 2022 12:53:10 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3B9471A45
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3995C1A7C;
+	Tue,  7 Jun 2022 12:53:21 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3995C1A7C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1654599240;
-	bh=9+pUEn/bG4fcSHXKfmjMEcgyn72cKoDXq1ZmWQ/qRH8=;
+	s=default; t=1654599251;
+	bh=emluHOkPwOdLw8g48Pp6E94iAZ6WdkH2R/ZMnEXLDN4=;
 	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=G2hwpz6pks3tT7Th5Xy0pki3fnPpbEQETWY03oZE9ulqb3WUuWfoBqq/2peGzKLjD
-	 cNp0qGWeHKAT5tE1AKqMQFT7tTdGaMcMEZxbXCK1hhhYSWvRJB0Km4G4INK7vSGXtW
-	 yLxQjHvV6Bfh+VtxoS1bvGlsW9NgsB9lSGJJ0HbA=
+	b=Yb1qwojh4fYQvBvHXhf79n3nmp4+6Z7YfToABrW36UwPpZqlVex6tU6yzD2ChZHFf
+	 ff7uju1GSJB2pGzAXHfrDj/m2gQ2G7J8ifUWaSrUhBBDwwewDlYYICGfimhizRlC/a
+	 4zOJka3E6BWbpETsTRf1t2xwXd1mq7DClIw0N86o=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id B5EA2F805F2;
-	Tue,  7 Jun 2022 12:46:27 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 5A977F80601;
+	Tue,  7 Jun 2022 12:46:29 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 2AB74F805FE; Tue,  7 Jun 2022 12:46:27 +0200 (CEST)
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+ id 8C8FEF805FD; Tue,  7 Jun 2022 12:46:27 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org
+ [IPv6:2604:1380:4641:c500::1])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id E8252F805FF
- for <alsa-devel@alsa-project.org>; Tue,  7 Jun 2022 12:46:24 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E8252F805FF
+ by alsa1.perex.cz (Postfix) with ESMTPS id DE981F805F2
+ for <alsa-devel@alsa-project.org>; Tue,  7 Jun 2022 12:46:20 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DE981F805F2
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="kex5OYML"
+ header.b="leVRtPee"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by ams.source.kernel.org (Postfix) with ESMTPS id 89015B81EF1;
- Tue,  7 Jun 2022 10:46:24 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BC4F9C385A5;
- Tue,  7 Jun 2022 10:46:21 +0000 (UTC)
+ by dfw.source.kernel.org (Postfix) with ESMTPS id CB4FE61555;
+ Tue,  7 Jun 2022 10:46:19 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B71F0C34115;
+ Tue,  7 Jun 2022 10:46:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1654598783;
- bh=9+pUEn/bG4fcSHXKfmjMEcgyn72cKoDXq1ZmWQ/qRH8=;
+ s=k20201202; t=1654598779;
+ bh=emluHOkPwOdLw8g48Pp6E94iAZ6WdkH2R/ZMnEXLDN4=;
  h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=kex5OYMLDyO2+xhikta2ZmdqKF7VR7MASVYbYxiEvAYLOZlqAI+moQ+gH8k9rRbvx
- Ww9rDiQYQaZDjkruroSeg/paozDYytCbLOirvesWH75amyelz0s5aFJkwKowQUkwOZ
- eGRivwx9tttRSZR8/yIYXcryZOrq6lfqySn9kZLdXX3Y/J3QGAJgKAInECVSgVjuxS
- 19mN2BzJtAjLbB127+lhVoJgdZ1MlVIl9Sd03olb5NoImS5O1Pvce/zADKIes0KYFV
- Jj2JHbFoXInLzS5sVVogUl2TyO1pCUOx+ML6dMjF8nYeWBKforx488UCE7zNA6Io7l
- fojxb6C/ICyag==
+ b=leVRtPeeYnr6n+ecJ6sQENmeK3bEuqlU6v+aaQJlupT7CG0TrqN40cPU28qASe+QW
+ MzZ1BDVE7RZpiW0IqLiWSk1gO7lr+1HD+/fhuIv7N+p6P5sEfE3r8EAjD6kmoChh04
+ 3IP2AvQ/AjIdsO/2yS5ckymGTYxcofEnod6wp5rvIHY6/WlBPYJKGPj8avAl5NrDeX
+ nYYbEtyCHglO8g5+bc8Ecc/QclMHtZI4nDsxBeDXERV5rjl28DyBEC8nLMIbJHZvM4
+ nET0OJgNQUWLhiQi23z8vCQih2zPxQnmZybZMa3mGM+enPqdymai9pCQ/Xnue6YCcP
+ 9AGfm1OkYOOqA==
 From: Mark Brown <broonie@kernel.org>
-To: Liam Girdwood <lgirdwood@gmail.com>, Takashi Iwai <tiwai@suse.com>,
- tglx@linutronix.de, christophe.jaillet@wanadoo.fr,
- Jaroslav Kysela <perex@perex.cz>
-In-Reply-To: <28c0833d4a11f8f75f385e5aad93c23721b06c7e.1653724847.git.christophe.jaillet@wanadoo.fr>
-References: <28c0833d4a11f8f75f385e5aad93c23721b06c7e.1653724847.git.christophe.jaillet@wanadoo.fr>
-Subject: Re: [PATCH] ASoC: ab8500: Remove some leftover from the "Replace
- GPLv2 boilerplate/reference with SPDX" rules
-Message-Id: <165459878149.301808.7387374939170024578.b4-ty@kernel.org>
-Date: Tue, 07 Jun 2022 11:46:21 +0100
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+In-Reply-To: <87o7zflk3n.wl-kuninori.morimoto.gx@renesas.com>
+References: <87o7zflk3n.wl-kuninori.morimoto.gx@renesas.com>
+Subject: Re: [PATCH] ASoC: simple-card-utils: rename
+ asoc_simple_init_dai_link_params() to asoc_simple_init_for_codec2codec()
+Message-Id: <165459877847.301808.3073980786136356007.b4-ty@kernel.org>
+Date: Tue, 07 Jun 2022 11:46:18 +0100
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: alsa-devel@alsa-project.org, kernel-janitors@vger.kernel.org,
- linux-kernel@vger.kernel.org
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -82,12 +80,18 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Sat, 28 May 2022 10:00:53 +0200, Christophe JAILLET wrote:
-> The "Replace GPLv2 boilerplate/reference with SPDX" has left some empty
-> "License terms" paragraphs.
-> Remove them as well.
+On Mon, 30 May 2022 04:28:44 +0000, Kuninori Morimoto wrote:
+> From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 > 
+> commit 95cfc0a0aaf5752071 ("ASoC: simple-card: Add support for
+> codec2codec DAI links") added the function
+> asoc_simple_init_dai_link_params() to initialize dai_link "params".
+> It is very straight naming, but difficult to noticed that it is for
+> Codec2Codec support. Handling Codec2Codec is one of very tricky part
+> on ALSA SoC, thus it is very important to clarify it. This patch
+> renames the function name.
 > 
+> [...]
 
 Applied to
 
@@ -95,8 +99,8 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: ab8500: Remove some leftover from the "Replace GPLv2 boilerplate/reference with SPDX" rules
-      commit: b521e85eefa384a5c31984b1a7e0d71b762c9663
+[1/1] ASoC: simple-card-utils: rename asoc_simple_init_dai_link_params() to asoc_simple_init_for_codec2codec()
+      commit: ff31753fcb061b90bd8c356d5b27a6eb5f8ade15
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
