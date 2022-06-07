@@ -4,66 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 401DCC43334
-	for <alsa-devel@archiver.kernel.org>; Tue,  7 Jun 2022 10:58:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E2DCDC43334
+	for <alsa-devel@archiver.kernel.org>; Tue,  7 Jun 2022 10:58:35 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 8C20E1AD1;
-	Tue,  7 Jun 2022 12:57:33 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8C20E1AD1
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3338F1ADC;
+	Tue,  7 Jun 2022 12:57:44 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3338F1ADC
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1654599503;
-	bh=RhcTZ2u3lCTolhaZ4JjXcHWZ41VHKMhWO0IcuEOS2jg=;
+	s=default; t=1654599514;
+	bh=ot7NZIrQgQ0K2dEgKzUwzDdgV5Ilv020lsSs+EdKjrM=;
 	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=pjp/vCegjeIFdrIQpKetZ6VrKMPLaVGXWF1QSeNpKB7ZHT6hup5GsGUosBjouaQZn
-	 sPEseHZ3G33sLlNtT1zG9NKnrZodAuY91Ns4R14eNU7ZPgPAcAUcoQhl1dGyDct8I5
-	 j3zMgVQNWs0C1oOwPIvKEuFuii23K/JO4Yw+g1n0=
+	b=NApo4WktBVTLxF4sReHhCGLswBz3xJGhLoLUzZWchfJFTRJBnL9KQsSPgpd59oz+8
+	 BHYtuzjXoEmKlS7p79ktaj38QOZfyCMfM9O/yR9Azgbcbn3nYNTova7xbb5Sc5PQu4
+	 9NdKZccGicBP4DhKYiQpnGu0nQgdt45iI8q7zjm0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id C5649F80558;
-	Tue,  7 Jun 2022 12:55:22 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 64EE4F80570;
+	Tue,  7 Jun 2022 12:55:23 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id DAC32F8056F; Tue,  7 Jun 2022 12:55:20 +0200 (CEST)
+ id 4C339F80570; Tue,  7 Jun 2022 12:55:21 +0200 (CEST)
 Received: from dfw.source.kernel.org (dfw.source.kernel.org
  [IPv6:2604:1380:4641:c500::1])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 61EA2F8055A
- for <alsa-devel@alsa-project.org>; Tue,  7 Jun 2022 12:55:11 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 61EA2F8055A
+ by alsa1.perex.cz (Postfix) with ESMTPS id 5F39BF80528
+ for <alsa-devel@alsa-project.org>; Tue,  7 Jun 2022 12:55:16 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5F39BF80528
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="gTfaMfjM"
+ header.b="FHf5bn/4"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id BABE061563;
- Tue,  7 Jun 2022 10:55:09 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 96358C34114;
- Tue,  7 Jun 2022 10:55:07 +0000 (UTC)
+ by dfw.source.kernel.org (Postfix) with ESMTPS id AB966615DD;
+ Tue,  7 Jun 2022 10:55:14 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D70C4C3411E;
+ Tue,  7 Jun 2022 10:55:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1654599309;
- bh=RhcTZ2u3lCTolhaZ4JjXcHWZ41VHKMhWO0IcuEOS2jg=;
+ s=k20201202; t=1654599314;
+ bh=ot7NZIrQgQ0K2dEgKzUwzDdgV5Ilv020lsSs+EdKjrM=;
  h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=gTfaMfjMEXNLx6cz/l6LPqkCyy6Z4EJytgnAoqzKJ/EdxAQsNZCs6PqXDp5ys7kA+
- 6FNeqHRUq+qUdOZsD03Pn4wVaWIHmCMBuKbhj9JmEtJwU1nkcCZ6Gw+Ut3futShXRf
- fFC1VrKpGNgEPebRLJ4qWaPiPRhVi9fE4KpZc385ZAnroARDiId1/0TUmDS65ds+T6
- NZnB3wq4PrbJMntte6F+qbqOYSeABTa6xxUHtM9UQfthlh/MrSAWv24kepUBq7aZpG
- idmLNOl2fi54pNS6L2EE78FidIRZBobjPmGll3yD7XFZOKucCj/STFcO66LCQi05iO
- 0Qhr7ASDQYpPA==
+ b=FHf5bn/4/JYTbfZlXi8iW1Dfp090LKdGitT3vJ7mPXAUPwVQWGXIKhhBUPk/5v0he
+ +dCXcCO5Cc7OsnI+4WlBg/D5GcE1xmGVKMqaWzrNOzjpiM1JE+qI3E6zSHH5vK0nuT
+ pBhpqsJ7mazVeYUMCJwhiLbrvfATRDyVyfkNyvoyU3mEywBXqyO7A2phbejmbbuPaN
+ hSQDm0NqQ6v8EhJkXyrFplrvwatFDKjfuYKJjvbCsP2rkoulT1ZiALqMGJP/rsP9sB
+ b9sdvUqAgk2F65ej8HGsUOPJAN1XuOLbhnenmykfQiSuq3yaC2NT4EbKNV44G1XbuS
+ tJuaM402yYwug==
 From: Mark Brown <broonie@kernel.org>
-To: vishwas.a.deshpande@ti.com, mr.swami.reddy@ti.com, Uwe Kleine-König <u.kleine-koenig@pengutronix.de>, lgirdwood@gmail.com, support.opensource@diasemi.com
-In-Reply-To: <20220603140513.131142-1-u.kleine-koenig@pengutronix.de>
-References: <20220603140513.131142-1-u.kleine-koenig@pengutronix.de>
-Subject: Re: [PATCH 0/4] ASoC: Drop some i2c noop remove callbacks
-Message-Id: <165459930733.399031.7142294682184566357.b4-ty@kernel.org>
-Date: Tue, 07 Jun 2022 11:55:07 +0100
+To: alsa-devel@alsa-project.org, Vsujithkumar.Reddy@amd.com
+In-Reply-To: <20220531120813.47116-1-Vsujithkumar.Reddy@amd.com>
+References: <20220531120813.47116-1-Vsujithkumar.Reddy@amd.com>
+Subject: Re: [PATCH v5 0/2]Add Machine driver support for nau8825,
+ max98560 and rt5682s, rt1019
+Message-Id: <165459931260.399031.7143599683737432212.b4-ty@kernel.org>
+Date: Tue, 07 Jun 2022 11:55:12 +0100
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: alsa-devel@alsa-project.org, uwe@kleine-koenig.org, kernel@pengutronix.de
+Cc: Basavaraj.Hiregoudar@amd.com, Sunil-kumar.Dommati@amd.com,
+ ajitkumar.pandey@amd.com, Vijendar.Mukunda@amd.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -79,18 +81,16 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Fri, 3 Jun 2022 16:05:09 +0200, Uwe Kleine-König wrote:
-> From: Uwe Kleine-König <uwe@kleine-koenig.org>
+On Tue, 31 May 2022 17:38:10 +0530, V sujith kumar Reddy wrote:
+> This patch set depends on:
+>         --gpio patch
+>         --https://patchwork.kernel.org/project/alsa-devel/patch/20220516160619.17832-1-Vsujithkumar.Reddy@amd.com/
+>         --https://patchwork.kernel.org/project/alsa-devel/patch/20220516160619.17832-2-Vsujithkumar.Reddy@amd.com/
 > 
-> Hello,
-> 
-> I intended to send this after -rc1 was cut, but found a few spare
-> minutes to prepare this series. All four patches were sent already
-> before based on v5.18, but there were some conflicting changes added in
-> the merge window. This series contains the four patches on top of
-> current linus/master and so bases on a tree including the conflicting
-> changes. Expecting no more sound changes in this merge window, this
-> should apply cleanly on top of -rc1.
+> v4 --> v5:
+> Resolved:
+> . Used separate firmware files.
+> . Deleted useless initialization variables
 > 
 > [...]
 
@@ -100,14 +100,10 @@ Applied to
 
 Thanks!
 
-[1/4] ASoC: ak4642: Drop no-op remove function
-      commit: 60391d788a221f1866492a71929483790b772676
-[2/4] ASoC: da7219: Drop no-op remove function
-      commit: 8a291eebeb633316edad2e80537a3c7df83ee8dc
-[3/4] ASoC: lm49453: Drop no-op remove function
-      commit: 3cce931a5e4487f7339be559e2ea032478be021a
-[4/4] ASoC: da732x: Drop no-op remove function
-      commit: fb68cb963bb78380166a98beea593d20b956e4c3
+[1/2] ASoC: amd: acp: Add support for nau8825 and max98360 card
+      commit: 0439eb4d94e0fc17c6dd3829fabd88c11773381d
+[2/2] ASoC: amd: acp: Add support for rt5682s and rt1019 card with hs instance
+      commit: 4dc6737cfe882765d914fcb88b5eaa14551ffddd
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
