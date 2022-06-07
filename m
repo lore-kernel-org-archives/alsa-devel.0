@@ -4,71 +4,65 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 421F2C433EF
-	for <alsa-devel@archiver.kernel.org>; Tue,  7 Jun 2022 14:13:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3266EC433EF
+	for <alsa-devel@archiver.kernel.org>; Tue,  7 Jun 2022 14:13:33 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 50E451AE7;
-	Tue,  7 Jun 2022 16:12:29 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 50E451AE7
+	by alsa0.perex.cz (Postfix) with ESMTPS id 4355F1AF7;
+	Tue,  7 Jun 2022 16:12:41 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4355F1AF7
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1654611199;
-	bh=cJyU+230aiz3hoabBrQP0N+I1Q926hj1jnMqC2WpPTo=;
-	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
+	s=default; t=1654611211;
+	bh=wqITvfZQAbzIEt22kT1iwFc2Z2749nKTBX84jfVXf2M=;
+	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=dOL5sUbA1/PAkpCeWQd+5Sk2UuWz1uBT56TyUCnMnY+oc6dKSbR+MJE6h8pTweVaO
-	 +zd/JaYd2C6fIqWkabvP8050W2THDXt8u3LFA2AXj4uDwf5B6A2agZFtDCHxy0Evwj
-	 T9SzoOFuhwWxuJLgmkThCoxwkNC59OCNTEvDr7ew=
+	b=eAF0u4XOsDj8bXfu4MHg5C9eU3nKkmw8pJAuMNXryB/Adz/vnLJHgtw3Lil3sb+Y6
+	 sUlESi11ezQZUzucaO8MM5CflPU8iK8tFmTzdWSA9APQDEKnh0Qa9PjeDzrSQl3Tlm
+	 74xJdi2kcTA63SuGHx24MsjI4Z75V2YgmRKxClOg=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 4EA01F80520;
-	Tue,  7 Jun 2022 16:11:44 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 409ADF80534;
+	Tue,  7 Jun 2022 16:11:52 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 75E72F80526; Tue,  7 Jun 2022 16:11:43 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org
- [IPv6:2604:1380:4641:c500::1])
+ id B3656F80535; Tue,  7 Jun 2022 16:11:50 +0200 (CEST)
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 1D6ECF80302
- for <alsa-devel@alsa-project.org>; Tue,  7 Jun 2022 16:11:38 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1D6ECF80302
+ by alsa1.perex.cz (Postfix) with ESMTPS id 69087F80533
+ for <alsa-devel@alsa-project.org>; Tue,  7 Jun 2022 16:11:46 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 69087F80533
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="Xaa7RW0U"
+ header.b="EXGizF3G"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id 0C5946157A;
- Tue,  7 Jun 2022 14:11:37 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7DADCC385A5;
- Tue,  7 Jun 2022 14:11:33 +0000 (UTC)
+ by ams.source.kernel.org (Postfix) with ESMTPS id BE499B8201B;
+ Tue,  7 Jun 2022 14:11:45 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C3D2DC34114;
+ Tue,  7 Jun 2022 14:11:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1654611096;
- bh=cJyU+230aiz3hoabBrQP0N+I1Q926hj1jnMqC2WpPTo=;
- h=From:To:In-Reply-To:References:Subject:Date:From;
- b=Xaa7RW0UOlpXmuEQJCNVGyLHFldqiJn1YvEvkSSJk6FYeqT/mwPcEq/X2EkBkMNJE
- 8/S6s++4kXiQjCJ1Ne17gp+hxWYyCGfssDyxcRBuHIeC8h3RaGilmktV6vbxSq28ev
- OF7gq/r3h2qCI21Ti/8jSz9fVzK6j6wcgivZtB0ywaQ1wt/camEcx/U9cLuekBQJOL
- ECCjBxtDCWbQtUyL1u5e4/WhBb2jlqVkTp1E717ZoAWaj3/PmkAPSmDLWaOEbATkXQ
- VKLVy34eecT3Ow6KS5uHK0Am9GjANeGZTNo6BlH4v0XoHceSmKtjMONamMyAm6OHUC
- 4p5oLYP8cxiAw==
+ s=k20201202; t=1654611105;
+ bh=wqITvfZQAbzIEt22kT1iwFc2Z2749nKTBX84jfVXf2M=;
+ h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+ b=EXGizF3GqRSqsMgNTITqn3pZmO80cJuy3ttRTcPY7HIVYezOYZwC29sLZEky3fxXK
+ MHYg61o8otPujsycDOoOOdozs4rWwzwpiQ0Qb6ynPxq2DtyB1ZuWpijcwYPq01Rv9q
+ sLxRaF2uXTItWLKvFlztsNupL5qV4rW3jDYqNO6yJJomT9906twP/zv/RanQPma3Wi
+ cCeVYJKTzXgLX8nll81VWwb3ZPzmAnOyT9BJ2diBRbnNAUig7hwC/Ouu8hA/491xuV
+ to+Xe5fQb0QpPE/Hw/IxAPbubRwHYjtqAyYCfKPiQHb+EqZzr21Pz6ZrSoCUpjLjiR
+ Eb27B1CyV2ieQ==
 From: Mark Brown <broonie@kernel.org>
-To: perex@perex.cz, akihiko.odaki@gmail.com, pc.liao@mediatek.com,
- angelogioacchino.delregno@collabora.com, linux-mediatek@lists.infradead.org,
- tzungbi@google.com, koro.chen@mediatek.com, linux-kernel@vger.kernel.org,
- jiaxin.yu@mediatek.com, tiwai@suse.com, drinkcat@chromium.org,
- linmq006@gmail.com, lgirdwood@gmail.com, linux-arm-kernel@lists.infradead.org,
- alsa-devel@alsa-project.org, matthias.bgg@gmail.com
-In-Reply-To: <20220603124243.31358-1-linmq006@gmail.com>
-References: <20220603124243.31358-1-linmq006@gmail.com>
-Subject: Re: [PATCH v2] ASoC: mediatek: mt8173-rt5650: Fix refcount leak in
- mt8173_rt5650_dev_probe
-Message-Id: <165461109323.1597191.3939968146449868630.b4-ty@kernel.org>
-Date: Tue, 07 Jun 2022 15:11:33 +0100
+To: pierre-louis.bossart@linux.intel.com, alsa-devel@alsa-project.org
+In-Reply-To: <20220606210212.146626-1-pierre-louis.bossart@linux.intel.com>
+References: <20220606210212.146626-1-pierre-louis.bossart@linux.intel.com>
+Subject: Re: [PATCH 0/5] ASoC: SOF: AMD/Mediatek updates for 5.20
+Message-Id: <165461110452.1597191.17446972426439813577.b4-ty@kernel.org>
+Date: Tue, 07 Jun 2022 15:11:44 +0100
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
+Cc: tiwai@suse.de
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -84,12 +78,20 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Fri, 3 Jun 2022 16:42:41 +0400, Miaoqian Lin wrote:
-> of_parse_phandle() returns a node pointer with refcount
-> incremented, we should use of_node_put() on it when not need anymore.
-> Fix refcount leak in some error paths.
+On Mon, 6 Jun 2022 16:02:07 -0500, Pierre-Louis Bossart wrote:
+> Small patches reviewed on SOF GitHub.
 > 
+> Ajit Kumar Pandey (1):
+>   ASoC: SOF: amd: Add SOF pm ops callback for Renoir
 > 
+> YC Hung (4):
+>   ASoC: SOF: mediatek: revise mt8195 clock sequence
+>   ASoC: SOF: mediatek: Add shared_size for mediatek common chip
+>     information
+>   ASoC: SOF: mediatek: mt8195 modify dram type as non-cache
+>   ASoC: SOF: mediatek: mt8195 suspend check dsp idle
+> 
+> [...]
 
 Applied to
 
@@ -97,8 +99,16 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: mediatek: mt8173-rt5650: Fix refcount leak in mt8173_rt5650_dev_probe
-      commit: efe2178d1a32492f99e7f1f2568eea5c88a85729
+[1/5] ASoC: SOF: amd: Add SOF pm ops callback for Renoir
+      commit: b585692fc937dc8f9d494078b5ffe2aafe31ec18
+[2/5] ASoC: SOF: mediatek: revise mt8195 clock sequence
+      commit: e53b20598f394e37951d6355f1c88ae01165b53f
+[3/5] ASoC: SOF: mediatek: Add shared_size for mediatek common chip information
+      commit: fd43dcbb859c85831a05e37287e1c5395f54aba8
+[4/5] ASoC: SOF: mediatek: mt8195 modify dram type as non-cache
+      commit: 0bf4276cc7883d65e594926c1159d4c0712d02e7
+[5/5] ASoC: SOF: mediatek: mt8195 suspend check dsp idle
+      commit: 078f28fee5aa417169d8e8906815c684beddbe74
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
