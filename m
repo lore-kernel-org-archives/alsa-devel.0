@@ -4,70 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A9615C43334
-	for <alsa-devel@archiver.kernel.org>; Tue,  7 Jun 2022 10:52:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D37F7C43334
+	for <alsa-devel@archiver.kernel.org>; Tue,  7 Jun 2022 10:52:53 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E8A691923;
-	Tue,  7 Jun 2022 12:51:45 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E8A691923
+	by alsa0.perex.cz (Postfix) with ESMTPS id 284AD1914;
+	Tue,  7 Jun 2022 12:52:02 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 284AD1914
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1654599156;
-	bh=7hyUoDD8U/8SSRsc3zmtGqzvEKN++qYD6+Qv3iS5Xhc=;
-	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
+	s=default; t=1654599172;
+	bh=AXXJpNaKkdG+7UQKkjCCo3D49fnR3t/hk4qP9P50y44=;
+	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=HJ+KTYBiVlGKUY2cxgZYZKp2lJoYmgN/asNa5J2zI8fH+dh0rG1ygNxxCijvDaAGE
-	 XZ+Ghkj7iE8h8er2V/wi8rRMeGyLtg4LgFPAsXbcgu4sdI8A/sEloqYboJNDmZgHk8
-	 L/sTkSOrVj1w9kT2QRq/YY8vGq8ROux7cAqMKOeA=
+	b=tRApSUhQaLjaaqbUDpOm9RLPQQNs27rS75wyrSUoo/PG3dxEc46FTOIU3Kq3GQBtG
+	 jqffdzPxdlT0GKygSrGc0xDVAaiCHs/06EuvIRbqE7jlBuDZFNFZiYj2P3TCBWks+0
+	 mIFDOGXfXSYuxDmuRwk+g/YEYKdFCqDQF/9n4pvc=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 00FB6F805E4;
+	by alsa1.perex.cz (Postfix) with ESMTP id 88B36F805EA;
 	Tue,  7 Jun 2022 12:46:17 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 820B4F804E6; Tue,  7 Jun 2022 12:46:15 +0200 (CEST)
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+ id 1EED4F804E6; Tue,  7 Jun 2022 12:46:16 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org
+ [IPv6:2604:1380:4641:c500::1])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 298C3F80159
- for <alsa-devel@alsa-project.org>; Tue,  7 Jun 2022 12:46:13 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 298C3F80159
+ by alsa1.perex.cz (Postfix) with ESMTPS id D874FF805E4
+ for <alsa-devel@alsa-project.org>; Tue,  7 Jun 2022 12:46:09 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D874FF805E4
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="SuY6LaVu"
+ header.b="mL7XmWnZ"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by ams.source.kernel.org (Postfix) with ESMTPS id C6DC1B81F0B;
- Tue,  7 Jun 2022 10:46:12 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1BC6BC34115;
+ by dfw.source.kernel.org (Postfix) with ESMTPS id C9CD861578;
  Tue,  7 Jun 2022 10:46:08 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D3142C341C0;
+ Tue,  7 Jun 2022 10:46:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1654598771;
- bh=7hyUoDD8U/8SSRsc3zmtGqzvEKN++qYD6+Qv3iS5Xhc=;
- h=From:To:In-Reply-To:References:Subject:Date:From;
- b=SuY6LaVu/gau0DpI7Q8R6xBJsfAfYKiB2tzYXBqpju6IK2algZNMjsISeFm2c5mcf
- 04kJDOvZtD20nCeo/ySGr9a6ZtiXymq42zEVVheBgn4ryHMKDJep4rde4QyOwQPaK/
- NjP/fFnu5XCKAaeJIHiCFKUb8wPcrHx9e7BOwjeYfYeRZv7donfF1xSYEjnM2ZRPSf
- JEydpVrI9LTVF3VRtRKSx1E4UvCFRCMdkJ9y+7te4dD2193R/TC6duY+LwF07ajZQ3
- imwWFFORep06HVYBmlSmUi9cMwF8HkcsmycD8ELFEYi5cuHkoxQB2BvE4UbxEPBZQL
- PlxPo9YHEPBHQ==
+ s=k20201202; t=1654598768;
+ bh=AXXJpNaKkdG+7UQKkjCCo3D49fnR3t/hk4qP9P50y44=;
+ h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+ b=mL7XmWnZ4DH2YT5pHV0wtRdY1iYtU2Sg45NZFMb7kc5J77S4okvTh/kr3wDZDc2T/
+ U84TfYl/fQNgPV02O7hzN5U6M3mjRSpryr7aVrC7XEIqtUoVFBGy1JX5M9GGyiE+JT
+ 6MMcGfiN5TaDNaRm9Pozr3IdI8XOeX64LVQ+mTcyJWYYNxt+sH/NnSIQ2sT9V0gP6z
+ mhqbT35K9xd6+7Eq6W4OC7g2IYILBn6FrALqyOBH4guQ9n0v4+KvXhJ18Sqmoy8VqJ
+ 8/rWZ0ouCSX62snUe6dCLZ60jF0pMYVOJ1tc/j3ocN7LoE1RaI5kbxjLZ4B1qfiu4B
+ tUP0UMXh0nCcw==
 From: Mark Brown <broonie@kernel.org>
-To: linux-arm-kernel@lists.infradead.org, linmq006@gmail.com,
- Liam Girdwood <lgirdwood@gmail.com>, tzungbi@google.com,
- Takashi Iwai <tiwai@suse.com>, linux-mediatek@lists.infradead.org,
- jiaxin.yu@mediatek.com, koro.chen@mediatek.com, akihiko.odaki@gmail.com,
- matthias.bgg@gmail.com, linux-kernel@vger.kernel.org,
- Jaroslav Kysela <perex@perex.cz>, alsa-devel@alsa-project.org
-In-Reply-To: <20220602034144.60159-1-linmq006@gmail.com>
-References: <20220602034144.60159-1-linmq006@gmail.com>
-Subject: Re: [PATCH] ASoC: mediatek: mt8173: Fix refcount leak in
- mt8173_rt5650_rt5676_dev_probe
-Message-Id: <165459876882.301808.14719420011203139333.b4-ty@kernel.org>
-Date: Tue, 07 Jun 2022 11:46:08 +0100
+To: cgel.zte@gmail.com, lgirdwood@gmail.com
+In-Reply-To: <20220602071809.278134-1-chi.minghao@zte.com.cn>
+References: <20220602071809.278134-1-chi.minghao@zte.com.cn>
+Subject: Re: [PATCH] ASoC: mediatek: remove unnecessary check of
+ clk_disable_unprepare
+Message-Id: <165459876658.301808.3499982605939074236.b4-ty@kernel.org>
+Date: Tue, 07 Jun 2022 11:46:06 +0100
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
+Cc: alsa-devel@alsa-project.org, zealci@zte.com.cn,
+ linux-kernel@vger.kernel.org, chi.minghao@zte.com.cn,
+ linux-mediatek@lists.infradead.org, linux-arm-kernel@lists.infradead.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -83,10 +82,11 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Thu, 2 Jun 2022 07:41:42 +0400, Miaoqian Lin wrote:
-> of_parse_phandle() returns a node pointer with refcount
-> incremented, we should use of_node_put() on it when not need anymore.
-> Fix missing of_node_put() in error paths.
+On Thu, 2 Jun 2022 07:18:09 +0000, cgel.zte@gmail.com wrote:
+> From: Minghao Chi <chi.minghao@zte.com.cn>
+> 
+> Because clk_disable_unprepare already checked NULL clock
+> parameter, so the additional checks are unnecessary, just remove them.
 > 
 > 
 
@@ -96,8 +96,8 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: mediatek: mt8173: Fix refcount leak in mt8173_rt5650_rt5676_dev_probe
-      commit: ae4f11c1ed2d67192fdf3d89db719ee439827c11
+[1/1] ASoC: mediatek: remove unnecessary check of clk_disable_unprepare
+      commit: 12ba5ceb4a08d5ea776d3eaf83c0cee63fafe952
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
