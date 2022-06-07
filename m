@@ -4,66 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5D4A1CCA47C
-	for <alsa-devel@archiver.kernel.org>; Tue,  7 Jun 2022 10:48:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id CA2D6C43334
+	for <alsa-devel@archiver.kernel.org>; Tue,  7 Jun 2022 10:48:39 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A80A81932;
-	Tue,  7 Jun 2022 12:47:31 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A80A81932
+	by alsa0.perex.cz (Postfix) with ESMTPS id 1771618FF;
+	Tue,  7 Jun 2022 12:47:48 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1771618FF
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1654598901;
-	bh=SJgNHe3KICgmmrvxqN6h41R01m000Z64oQ2RkAsB7R0=;
+	s=default; t=1654598918;
+	bh=VWwzCqMXrN/G0KyRMlKG4MamL4lgLmSXarbHCk4VCkA=;
 	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=NclWTDcjUMHbmjHd9R5DVpAbRCMRNU1LnXTMc49iZFSLCrxvNBlD38itnPlWfppu9
-	 uDnzasozC0Cg4DN3PJJ3sOXLfHpnTEx/f3TOWXqkyexM/SaG/pPfo7YNAAVrdAczlB
-	 nyE/8wxvJvaMnApgjQWEwAzirmBXm07xnSJ/rpG0=
+	b=ryrEIcw0krVit93bLi7T1OUR4OhvNMxcV0vAReRShmMUnj124jFyL3zW2YbKeh+cZ
+	 tOqxDyr1ORLtMfVJCxWJ0c1zhwxKPRpD9Etfg/LkUSDK5nMDCQK7O4bX5V7ZrUQ3T7
+	 ZXru/yPRLHMbjPd5mND7YH16lTglY68U08I0qJrs=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 77A6BF80551;
-	Tue,  7 Jun 2022 12:45:41 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 4AD2CF80557;
+	Tue,  7 Jun 2022 12:45:43 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id C066CF80551; Tue,  7 Jun 2022 12:45:39 +0200 (CEST)
+ id 49300F80549; Tue,  7 Jun 2022 12:45:42 +0200 (CEST)
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 64D7CF80544
- for <alsa-devel@alsa-project.org>; Tue,  7 Jun 2022 12:45:37 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 64D7CF80544
+ by alsa1.perex.cz (Postfix) with ESMTPS id D0C45F80549
+ for <alsa-devel@alsa-project.org>; Tue,  7 Jun 2022 12:45:39 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D0C45F80549
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="Gxx4eQTN"
+ header.b="bgS3geV/"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id 4EF9861555;
+ by dfw.source.kernel.org (Postfix) with ESMTPS id 6254361552;
+ Tue,  7 Jun 2022 10:45:38 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 34022C34119;
  Tue,  7 Jun 2022 10:45:36 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7A127C34114;
- Tue,  7 Jun 2022 10:45:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1654598735;
- bh=SJgNHe3KICgmmrvxqN6h41R01m000Z64oQ2RkAsB7R0=;
+ s=k20201202; t=1654598737;
+ bh=VWwzCqMXrN/G0KyRMlKG4MamL4lgLmSXarbHCk4VCkA=;
  h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=Gxx4eQTNfVkZsr+Y/sX3S9k60i8nHYFFD0DGJOqcxqjNgUF7suN09lDMmBu4NVq28
- N04VPhijT9ZabUHdBIPDDnD1bVMRncaoklJIlnHWbHalLRW/rX+UaJ9xp0a+9vHXcL
- CHcKWg3E+StG8kr2gx6EaWWr0SmV/h6ogh7fnaU38maMYTX7gV5bh12kKeLNqTQVoj
- Cx1u/b+SJGEpG4o6QB1LnXB++O++C+0XqIFVotk4h3zNa2cDQXboyQtUxWAd1QNvQb
- rz8rcBWXwC37yv0h1t79yKHJmut7UWt8geIbWv5POWO2KY+ryh22Y3XeRSHe22AlgX
- ZeQGa1CE+1OIg==
+ b=bgS3geV/mOzLet2UKYeM0PnA/8Xmll1Djy9ySD6xUZ+i+sR+WpVZIRkahpn4Mdo3a
+ cAVRmDT8n0CigHgEDKNvLHkjsKiyPEfpZpcU8fiFLH7hpICXKUuN7nBOjWWLFad4WN
+ vFSY+y9Ps3+fRN5sYJDjizcz4ZzDPaZ5WywyI04soPjf3ZGC7vqha5YhOXLRQ7oXwG
+ kV1sr8hQhJBN0TmyFAbM40CAl9smif3NBJN95EVkB6vv1l95KimNOB7a0ZRG4J9pYC
+ w8DPldUPG9BzMsBMP7GONGRUZqdsZQjPveFamdbhT+BJa5TdPsWIpRu1tQN5Ym7Qgz
+ mH9BBfKjcaFxg==
 From: Mark Brown <broonie@kernel.org>
-To: simont@opensource.cirrus.com, ckeepax@opensource.cirrus.com,
- broonie@kernel.org, Liam Girdwood <lgirdwood@gmail.com>
-In-Reply-To: <20220603115003.3865834-1-broonie@kernel.org>
-References: <20220603115003.3865834-1-broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: wm_adsp: Fix event generation for wm_adsp_fw_put()
-Message-Id: <165459873421.301808.11005973850683820177.b4-ty@kernel.org>
-Date: Tue, 07 Jun 2022 11:45:34 +0100
+To: rdunlap@infradead.org, linux-kernel@vger.kernel.org
+In-Reply-To: <20220605163123.23537-1-rdunlap@infradead.org>
+References: <20220605163123.23537-1-rdunlap@infradead.org>
+Subject: Re: [PATCH] ASoC: max98390: use linux/gpio/consumer.h to fix build
+Message-Id: <165459873591.301808.2566417791038246308.b4-ty@kernel.org>
+Date: Tue, 07 Jun 2022 11:45:35 +0100
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: patches@opensource.cirrus.com, alsa-devel@alsa-project.org
+Cc: steve.lee.analog@gmail.com, alsa-devel@alsa-project.org, lkp@intel.com,
+ Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -79,13 +79,19 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Fri, 3 Jun 2022 13:50:03 +0200, Mark Brown wrote:
-> Currently wm_adsp_fw_put() returns 0 rather than 1 when updating the value
-> of the control, meaning that no event is generated to userspace. Fix this
-> by setting the default return value to 1, the code already exits early with
-> a return value of 0 if the value is unchanged.
+On Sun, 5 Jun 2022 09:31:23 -0700, Randy Dunlap wrote:
+> Change the header file to fix build errors in max98390.c:
 > 
+> ../sound/soc/codecs/max98390.c: In function 'max98390_i2c_probe':
+> ../sound/soc/codecs/max98390.c:1076:22: error: implicit declaration of function 'devm_gpiod_get_optional'; did you mean 'devm_regulator_get_optional'? [-Werror=implicit-function-declaration]
+>  1076 |         reset_gpio = devm_gpiod_get_optional(&i2c->dev,
+> ../sound/soc/codecs/max98390.c:1077:55: error: 'GPIOD_OUT_HIGH' undeclared (first use in this function); did you mean 'GPIOF_INIT_HIGH'?
+>  1077 |                                              "reset", GPIOD_OUT_HIGH);
+> ../sound/soc/codecs/max98390.c:1077:55: note: each undeclared identifier is reported only once for each function it appears in
+> ../sound/soc/codecs/max98390.c:1083:17: error: implicit declaration of function 'gpiod_set_value_cansleep'; did you mean 'gpio_set_value_cansleep'? [-Werror=implicit-function-declaration]
+>  1083 |                 gpiod_set_value_cansleep(reset_gpio, 0);
 > 
+> [...]
 
 Applied to
 
@@ -93,8 +99,8 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: wm_adsp: Fix event generation for wm_adsp_fw_put()
-      commit: 2abdf9f80019e8244d3806ed0e1c9f725e50b452
+[1/1] ASoC: max98390: use linux/gpio/consumer.h to fix build
+      commit: aa7407f807b250eca7697e5fe9a699bc6c2fab71
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
