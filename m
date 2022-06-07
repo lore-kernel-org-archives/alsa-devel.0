@@ -4,69 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D37F7C43334
-	for <alsa-devel@archiver.kernel.org>; Tue,  7 Jun 2022 10:52:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1E925C433EF
+	for <alsa-devel@archiver.kernel.org>; Tue,  7 Jun 2022 10:53:05 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 284AD1914;
-	Tue,  7 Jun 2022 12:52:02 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 284AD1914
+	by alsa0.perex.cz (Postfix) with ESMTPS id 62F3A1A97;
+	Tue,  7 Jun 2022 12:52:13 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 62F3A1A97
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1654599172;
-	bh=AXXJpNaKkdG+7UQKkjCCo3D49fnR3t/hk4qP9P50y44=;
+	s=default; t=1654599183;
+	bh=aG9ovN6guKRQSvZdWZO5Xr00Umv+n1SAAe5wFZIzgsQ=;
 	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=tRApSUhQaLjaaqbUDpOm9RLPQQNs27rS75wyrSUoo/PG3dxEc46FTOIU3Kq3GQBtG
-	 jqffdzPxdlT0GKygSrGc0xDVAaiCHs/06EuvIRbqE7jlBuDZFNFZiYj2P3TCBWks+0
-	 mIFDOGXfXSYuxDmuRwk+g/YEYKdFCqDQF/9n4pvc=
+	b=MbJ2E0y4psHxoSWOz12BARwp3QIvddR6CSt6zVsGDnPFYEjc0dG4hdCLltLtPjisn
+	 RBXFdHK6cQgHW3MRAEjlzfQF5PD75IW5PGfIRO5ftd6V6K3tO3QZnAlC9wJ2uMtJfL
+	 1/BmdvtWwVEJ+y06QYJWhpaYbG7Ls3wt4HxXpIuw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 88B36F805EA;
-	Tue,  7 Jun 2022 12:46:17 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 4B63DF805EC;
+	Tue,  7 Jun 2022 12:46:20 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 1EED4F804E6; Tue,  7 Jun 2022 12:46:16 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org
- [IPv6:2604:1380:4641:c500::1])
+ id C85A2F805ED; Tue,  7 Jun 2022 12:46:17 +0200 (CEST)
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id D874FF805E4
- for <alsa-devel@alsa-project.org>; Tue,  7 Jun 2022 12:46:09 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D874FF805E4
+ by alsa1.perex.cz (Postfix) with ESMTPS id 675A3F80159
+ for <alsa-devel@alsa-project.org>; Tue,  7 Jun 2022 12:46:15 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 675A3F80159
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="mL7XmWnZ"
+ header.b="gWeuZElk"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id C9CD861578;
- Tue,  7 Jun 2022 10:46:08 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D3142C341C0;
- Tue,  7 Jun 2022 10:46:06 +0000 (UTC)
+ by ams.source.kernel.org (Postfix) with ESMTPS id 0DB30B81F02;
+ Tue,  7 Jun 2022 10:46:15 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0EB98C3411E;
+ Tue,  7 Jun 2022 10:46:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1654598768;
- bh=AXXJpNaKkdG+7UQKkjCCo3D49fnR3t/hk4qP9P50y44=;
+ s=k20201202; t=1654598773;
+ bh=aG9ovN6guKRQSvZdWZO5Xr00Umv+n1SAAe5wFZIzgsQ=;
  h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=mL7XmWnZ4DH2YT5pHV0wtRdY1iYtU2Sg45NZFMb7kc5J77S4okvTh/kr3wDZDc2T/
- U84TfYl/fQNgPV02O7hzN5U6M3mjRSpryr7aVrC7XEIqtUoVFBGy1JX5M9GGyiE+JT
- 6MMcGfiN5TaDNaRm9Pozr3IdI8XOeX64LVQ+mTcyJWYYNxt+sH/NnSIQ2sT9V0gP6z
- mhqbT35K9xd6+7Eq6W4OC7g2IYILBn6FrALqyOBH4guQ9n0v4+KvXhJ18Sqmoy8VqJ
- 8/rWZ0ouCSX62snUe6dCLZ60jF0pMYVOJ1tc/j3ocN7LoE1RaI5kbxjLZ4B1qfiu4B
- tUP0UMXh0nCcw==
+ b=gWeuZElkb0dkbDC+RT5NbKzPN52MZIV1arnMMYpXZ8wGrRg3N3T6vEQ3mIJeC+DNY
+ F7yhLeoUEcvz/5EO4xKF/2dn+CBtbzxLsqC9GnT4aXw4RjPMA3WTgtdAWzcLOdgaL3
+ H71Yj56XsZllAODCFzxuAY1T6s15fe0m2OVwhPolS/lZCnE8Yptv+JOplb0sKKkvWz
+ LJxPj4WSaWLPMkqy8UtTwqLySqll9+NjvUvs1oXCe7ODW2aJijeDG9rrBOxA7VJWBs
+ gKMOswu/apRM1uxpAGXyT6BCbvR0cRxYlf1Z0SztU/NeiUz7icaiNjXma8eyPY/oiI
+ 7Od4yj4g3f3fg==
 From: Mark Brown <broonie@kernel.org>
-To: cgel.zte@gmail.com, lgirdwood@gmail.com
-In-Reply-To: <20220602071809.278134-1-chi.minghao@zte.com.cn>
-References: <20220602071809.278134-1-chi.minghao@zte.com.cn>
-Subject: Re: [PATCH] ASoC: mediatek: remove unnecessary check of
- clk_disable_unprepare
-Message-Id: <165459876658.301808.3499982605939074236.b4-ty@kernel.org>
-Date: Tue, 07 Jun 2022 11:46:06 +0100
+To: festevam@gmail.com, nicoleotsuka@gmail.com, Xiubo.Lee@gmail.com,
+ m.felsch@pengutronix.de, lgirdwood@gmail.com, shengjiu.wang@gmail.com
+In-Reply-To: <20220601092342.3328644-1-m.felsch@pengutronix.de>
+References: <20220601092342.3328644-1-m.felsch@pengutronix.de>
+Subject: Re: (subset) [PATCH 1/3] ASoC: fsl_sai: use local device pointer
+Message-Id: <165459877177.301808.17694507316184674663.b4-ty@kernel.org>
+Date: Tue, 07 Jun 2022 11:46:11 +0100
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: alsa-devel@alsa-project.org, zealci@zte.com.cn,
- linux-kernel@vger.kernel.org, chi.minghao@zte.com.cn,
- linux-mediatek@lists.infradead.org, linux-arm-kernel@lists.infradead.org
+Cc: alsa-devel@alsa-project.org, linuxppc-dev@lists.ozlabs.org,
+ kernel@pengutronix.de
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -82,11 +80,9 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Thu, 2 Jun 2022 07:18:09 +0000, cgel.zte@gmail.com wrote:
-> From: Minghao Chi <chi.minghao@zte.com.cn>
-> 
-> Because clk_disable_unprepare already checked NULL clock
-> parameter, so the additional checks are unnecessary, just remove them.
+On Wed, 1 Jun 2022 11:23:40 +0200, Marco Felsch wrote:
+> Use a local variable to dereference the device pointer once and use the
+> local variable in further calls. No functional changes.
 > 
 > 
 
@@ -96,8 +92,10 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: mediatek: remove unnecessary check of clk_disable_unprepare
-      commit: 12ba5ceb4a08d5ea776d3eaf83c0cee63fafe952
+[1/3] ASoC: fsl_sai: use local device pointer
+      commit: f53f50ee21d46094a8c48970e95e38a4deaa128e
+[3/3] ASoC: fsl_sai: add error message in case of missing imx-pcm-dma support
+      commit: 22205521770ee740f64a3ec90301f50e34738cfd
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
