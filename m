@@ -4,70 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D3B20C433EF
-	for <alsa-devel@archiver.kernel.org>; Tue,  7 Jun 2022 10:50:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9D801C433EF
+	for <alsa-devel@archiver.kernel.org>; Tue,  7 Jun 2022 10:50:38 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 020DF193C;
-	Tue,  7 Jun 2022 12:49:29 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 020DF193C
+	by alsa0.perex.cz (Postfix) with ESMTPS id CEB4D172C;
+	Tue,  7 Jun 2022 12:49:46 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CEB4D172C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1654599019;
-	bh=L5UprDm+eFlKd0eGBmXLIaDF8ATDo8XW9lH/TYTLBUc=;
+	s=default; t=1654599036;
+	bh=AxRIcnJX9fW26yyj+ldAClhP+8raYDyMP1J5TheAE7s=;
 	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=ckBYcC4NaGFqZyNx45v0rog2x3DH0DIhFajPNdlIX3w2d7VUjzHiMOnrsM4NBAvlw
-	 ujqQ/bCb05XaR9YNC2BQqL7WZvrexrXC66DsML+3VPhCqTOu2k09ay/Lq+SSy89qkw
-	 ccr+znsZpvrWkoJeSNuzACbMqxPreAdV17Arltfw=
+	b=FRThFLhEOGe+QS5GqJ6ANJdNg0Sm43PTBYzSqLIo+q8v/DQ7nn8JW4U0KlYFH1YzR
+	 gWHvOimQA/w3iUZM0jRTYLJu58znDjwTOO/ANTh6IuaIZdhhBULzYIAes0RSOmB0u0
+	 ZAJTiQTEh3VzuOzPiCq7Zy6g7qYcc/zfc+K0PvaI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id E4517F805A0;
-	Tue,  7 Jun 2022 12:46:00 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 9FA91F805B4;
+	Tue,  7 Jun 2022 12:46:01 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 7B316F805A9; Tue,  7 Jun 2022 12:45:58 +0200 (CEST)
-Received: from ams.source.kernel.org (ams.source.kernel.org
- [IPv6:2604:1380:4601:e00::1])
+ id 8366BF80116; Tue,  7 Jun 2022 12:45:58 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org
+ [IPv6:2604:1380:4641:c500::1])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 8847EF80588
- for <alsa-devel@alsa-project.org>; Tue,  7 Jun 2022 12:45:52 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8847EF80588
+ by alsa1.perex.cz (Postfix) with ESMTPS id 99F7AF805A1
+ for <alsa-devel@alsa-project.org>; Tue,  7 Jun 2022 12:45:55 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 99F7AF805A1
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="U7ZorcJL"
+ header.b="JmvRdb9a"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by ams.source.kernel.org (Postfix) with ESMTPS id 88909B81EEF;
- Tue,  7 Jun 2022 10:45:51 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8A813C385A5;
- Tue,  7 Jun 2022 10:45:47 +0000 (UTC)
+ by dfw.source.kernel.org (Postfix) with ESMTPS id 68B8E61558;
+ Tue,  7 Jun 2022 10:45:54 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EDA13C385A5;
+ Tue,  7 Jun 2022 10:45:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1654598750;
- bh=L5UprDm+eFlKd0eGBmXLIaDF8ATDo8XW9lH/TYTLBUc=;
+ s=k20201202; t=1654598753;
+ bh=AxRIcnJX9fW26yyj+ldAClhP+8raYDyMP1J5TheAE7s=;
  h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=U7ZorcJLYtG28or0KrIhV9ZevaqjS5ymiucoZSkHfYPcE3YjOmj0B/QVxKNkj3da8
- f+kCqKjDbZSmZtpqK8bYzAcqF+3cPgA67OdHbz08NByI37/CipYjTroKGhS37O26Mz
- hr5E7cTIpc7LLBrmkE+6fm6SD255/oI2Avclic0U7T/a+B8BEr0qWrDMkX32lisIme
- 1ZMc1qfOgErzEpLbmr90uMNlcVHXuVJqkNqSdW2usEdvoLF00xRJRkbCz58RngY0i+
- nB4JLb0O1eTfMhmF5sHNDXfyANzPSJcsnd+aLDSFx4RMOrcnC/YIIGw4tUxzPeVLmJ
- aPG5K1EM/a9Yg==
+ b=JmvRdb9aTcTuiiMN+2eKgM9/x2W0eaFM5fvZyvL9Gai492PJOXX/0yjou/p3KI+3Q
+ LbddzbrBsZXZB/B/6O4VRo/cdpH7N98aT4QxlHc+1A4zQ2WxRRBe9G5sdyEtpRkfq3
+ 2A31DdAwUest7Mz50UNGf3zuNMOOEvmtX86/+G3VjPCr2eJegHlRD+tU0xG7258hqr
+ F01G+ZoC8AuzXHAoxsv2k9HbiN0vd+cu88kR2NZUC0fgL/P55pJl2mVOqYHp2IgiXC
+ quaWtTGHV9ewCH+GtNukJ1OcsZu+K74kuNV5NAm5P+/mG7YfjpdC7ryo2+PDijWWpV
+ //MfPJL7YuqCw==
 From: Mark Brown <broonie@kernel.org>
-To: ~postmarketos/upstreaming@lists.sr.ht, amartinz@shiftphones.com
-In-Reply-To: <20220602164504.261361-1-amartinz@shiftphones.com>
-References: <20220602164504.261361-1-amartinz@shiftphones.com>
-Subject: Re: [PATCH 1/2] ASoC: codecs: tfa989x: Add support for tfa9890
-Message-Id: <165459874728.301808.2918260334640693383.b4-ty@kernel.org>
-Date: Tue, 07 Jun 2022 11:45:47 +0100
+To: peda@axentia.se, broonie@kernel.org, Liam Girdwood <lgirdwood@gmail.com>
+In-Reply-To: <20220602131058.3552621-1-broonie@kernel.org>
+References: <20220602131058.3552621-1-broonie@kernel.org>
+Subject: Re: [PATCH] ASoC: tfa9879: Use modern ASoC DAI format terminology
+Message-Id: <165459875269.301808.4543691086218525117.b4-ty@kernel.org>
+Date: Tue, 07 Jun 2022 11:45:52 +0100
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: me@dylanvanassche.be, alsa-devel@alsa-project.org, stephan@gerhold.net,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
- Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>,
- caleb@connolly.tech, Rob Herring <robh+dt@kernel.org>,
- krzysztof.kozlowski+dt@linaro.org, phone-devel@vger.kernel.org
+Cc: alsa-devel@alsa-project.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -83,16 +79,11 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Thu, 2 Jun 2022 18:45:03 +0200, Alexander Martinz wrote:
-> The initialization sequence is taken from the version provided
-> by the supplier [1].
+On Thu, 2 Jun 2022 15:10:58 +0200, Mark Brown wrote:
+> As part of moving to remove the old style defines for the bus clocks update
+> the tfa9879 driver to use more modern terminology for clocking.
 > 
-> This allows speakers using the TFA9890 amplifier to work, which are
-> used by various mobile phones such as the SHIFT6mq.
 > 
-> [1]: https://source.codeaurora.org/external/mas/tfa98xx/tree/src/tfa_init.c?id=d2cd12931fbc48df988b62931fb9960d4e9dc05d#n1827
-> 
-> [...]
 
 Applied to
 
@@ -100,10 +91,8 @@ Applied to
 
 Thanks!
 
-[1/2] ASoC: codecs: tfa989x: Add support for tfa9890
-      commit: ef6c320942a2f057204702d769d507186fd7f0b7
-[2/2] ASoC: dt-bindings: nxp,tfa989x: Add tfa9890 support
-      commit: d0da7c8668dc19df157d927a67721ca00e29ff2b
+[1/1] ASoC: tfa9879: Use modern ASoC DAI format terminology
+      commit: 4f8ed19593872b710f27bbc3b7a9ce03310efc57
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
