@@ -4,66 +4,70 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id F2936C43334
-	for <alsa-devel@archiver.kernel.org>; Tue,  7 Jun 2022 10:54:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 12C8EC433EF
+	for <alsa-devel@archiver.kernel.org>; Tue,  7 Jun 2022 10:55:02 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 4406E193D;
-	Tue,  7 Jun 2022 12:53:57 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4406E193D
+	by alsa0.perex.cz (Postfix) with ESMTPS id 1C9E61A44;
+	Tue,  7 Jun 2022 12:54:10 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1C9E61A44
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1654599287;
-	bh=OaP6dBe0ipQhDdS0OyxXwSYcURl+blulqTINjWPgrNE=;
+	s=default; t=1654599300;
+	bh=sBaYugq1xPFjZqPwbsR8mD4Kd6QBYOF8Y29dQgVIFnI=;
 	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=qKjDXtR/S//Br4t2VUQSxmg1SEb/iqRqr+QlMlmVYmbaCU8q0Uzxza2HvJZoLu17k
-	 Q7vWdo9Va8wdD+9dl0A50w+kTMFENOAG2+szHmoGTITNL0KCC57IcqkwFdNskn2/3p
-	 4hyJVl4TzLzc0etsOhPEPHLUM2Mm5oc8qfo0rvMI=
+	b=qPQLIQSqiG6SsnHWmBAaGtdFmV3QtCTeqAh0MdZnrCRFfirRW1PYPNXWpRnNgX9Fs
+	 Ql9p/RnU4DzMbvAKLfV6SfDCCdJB33Zg1JtowVvJwX+omTo+P0Mmu4MWNCabTudbk4
+	 AXPNjgwLOR11LR9V+LnsgQiNB7OoHYS3xZwxGYbM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id ABB46F80609;
-	Tue,  7 Jun 2022 12:46:37 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2A6CBF8060C;
+	Tue,  7 Jun 2022 12:46:42 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id C0EBDF8060A; Tue,  7 Jun 2022 12:46:35 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org
- [IPv6:2604:1380:4641:c500::1])
+ id 539F3F8060D; Tue,  7 Jun 2022 12:46:41 +0200 (CEST)
+Received: from ams.source.kernel.org (ams.source.kernel.org
+ [IPv6:2604:1380:4601:e00::1])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 34DB9F80602
- for <alsa-devel@alsa-project.org>; Tue,  7 Jun 2022 12:46:29 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 34DB9F80602
+ by alsa1.perex.cz (Postfix) with ESMTPS id 89B4AF805FC
+ for <alsa-devel@alsa-project.org>; Tue,  7 Jun 2022 12:46:23 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 89B4AF805FC
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="XNfMFvjS"
+ header.b="JVBFUfY3"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id 798DE61556;
- Tue,  7 Jun 2022 10:46:27 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 99A7FC385A5;
- Tue,  7 Jun 2022 10:46:26 +0000 (UTC)
+ by ams.source.kernel.org (Postfix) with ESMTPS id 8E972B81F05;
+ Tue,  7 Jun 2022 10:46:22 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B0AA1C34114;
+ Tue,  7 Jun 2022 10:46:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1654598787;
- bh=OaP6dBe0ipQhDdS0OyxXwSYcURl+blulqTINjWPgrNE=;
+ s=k20201202; t=1654598781;
+ bh=sBaYugq1xPFjZqPwbsR8mD4Kd6QBYOF8Y29dQgVIFnI=;
  h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=XNfMFvjSj/n+E+hVFXm22+HUfdxm1rf37HvCB/fW95pu51bwQ8ALkVVVKZKwlmdYX
- TK0SBupFDfsxFv+RiprQ2M0lVEhemqW23fRtZtf/5Bn515uTEmNn6EnJV8csWEZhOQ
- Cs+L4sv2jWR2LaR1BbC95s+ofW2OQjQzQNQPvC9NGyuKAjZj45lIKKjq49xSc4JSGn
- FZYc+4euWUpdw+yoMPmVRAMejZqkjPVE3hHFkbBlzjUCN6iGnupEiVtTiqPNGVG7DM
- FEuuuV6/oHyh5mtPY6/W9YYVyU4PstQaNSi8qu44kV/StuvK/3qh3dMCYRYMqY+w0B
- I8qmYbH51y8lA==
+ b=JVBFUfY3oP35uoMtrbJHwJUl6atnmUZ7r/majx+Lt7m2x3lavEwY6Y1inlSGqCMii
+ EeChp+GadknXLHlYN4zehy6nTZ4TGtf5N8GSnaAr5ol6PBuUKG7stJlFXy/cOZYdSf
+ H4mJP1REcjwf41T4IxYR3kQzHiQq1kkD0rRL3hdHsiH5eDVxzxPqKp4+sA6Il6SqjB
+ sfQXfejgVNpG8EM0JavqKyqh2yWTWDK//PnvgfG8n2I0QiF3N2Jba9FUh6WXnutf9e
+ KP6CGKP4ht5ezYXbIMQJoTNClU2zYbmFqXhpDyljusgcZiX/883aqEzRMzokliiNZH
+ YXVoQp3Sf0OjA==
 From: Mark Brown <broonie@kernel.org>
-To: broonie@kernel.org, Liam Girdwood <lgirdwood@gmail.com>
-In-Reply-To: <20220603123937.4013603-1-broonie@kernel.org>
-References: <20220603123937.4013603-1-broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: es8328: Fix event generation for deemphasis control
-Message-Id: <165459878635.301808.15195636189378527279.b4-ty@kernel.org>
-Date: Tue, 07 Jun 2022 11:46:26 +0100
+To: Liam Girdwood <lgirdwood@gmail.com>, Takashi Iwai <tiwai@suse.com>,
+ tglx@linutronix.de, christophe.jaillet@wanadoo.fr,
+ Jaroslav Kysela <perex@perex.cz>
+In-Reply-To: <84d94977c57deee9e85249f18394ebf8d72497bc.1653724723.git.christophe.jaillet@wanadoo.fr>
+References: <84d94977c57deee9e85249f18394ebf8d72497bc.1653724723.git.christophe.jaillet@wanadoo.fr>
+Subject: Re: [PATCH] ASoC: ux500: Remove some leftover from the "Replace GPLv2
+ boilerplate/reference with SPDX" rules
+Message-Id: <165459877943.301808.15291099978666980985.b4-ty@kernel.org>
+Date: Tue, 07 Jun 2022 11:46:19 +0100
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: alsa-devel@alsa-project.org
+Cc: alsa-devel@alsa-project.org, kernel-janitors@vger.kernel.org,
+ linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -79,11 +83,10 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Fri, 3 Jun 2022 14:39:37 +0200, Mark Brown wrote:
-> Currently the put() method for the deemphasis control returns 0 when a new
-> value is written to the control even if the value changed, meaning events
-> are not generated. Fix this, skip the work of updating the value when it is
-> unchanged and then return 1 after having done so.
+On Sat, 28 May 2022 09:59:22 +0200, Christophe JAILLET wrote:
+> The "Replace GPLv2 boilerplate/reference with SPDX" has left some empty
+> "License terms" paragraphs.
+> Remove them as well.
 > 
 > 
 
@@ -93,8 +96,8 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: es8328: Fix event generation for deemphasis control
-      commit: 8259610c2ec01c5cbfb61882ae176aabacac9c19
+[1/1] ASoC: ux500: Remove some leftover from the "Replace GPLv2 boilerplate/reference with SPDX" rules
+      commit: 8466579b63cc9aa957b7b4f273087512f989d2a1
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
