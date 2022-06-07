@@ -4,62 +4,62 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 94045C43334
-	for <alsa-devel@archiver.kernel.org>; Tue,  7 Jun 2022 10:55:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A8EF3C433EF
+	for <alsa-devel@archiver.kernel.org>; Tue,  7 Jun 2022 10:56:09 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id CD5BF192F;
-	Tue,  7 Jun 2022 12:55:03 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CD5BF192F
+	by alsa0.perex.cz (Postfix) with ESMTPS id EA7EB1ACE;
+	Tue,  7 Jun 2022 12:55:17 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EA7EB1ACE
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1654599353;
-	bh=xbOX5mYkYBdJEqOXhSxMTeZkmlq7lnOk2/ZsAiL1Tyo=;
+	s=default; t=1654599368;
+	bh=tH0f/y997NKkUUCgG9uAS0eF4X1+FPV2QFXnFMdScVM=;
 	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=ssz1UyTmca1rUeDDNxM5dHaIGI7Wp2RvEAXoBLjdFnxlCGMY4rTZQR95qo+E++5PS
-	 C1QE+LhsiyJ6nDzIS7XXVc2G61KCcJo6Io4fE0TdJatY2i1ZMlTNMl06LklA1/vtwo
-	 zRmyXS4Y495s69VV5CXP4q6wUVybVvDS/6uvZFyw=
+	b=Iwwj9foKz7Bl3uZ/kJU/MVhK72YXCZKuaWyKzZzjOU2RRyk6CJqW8bGHD9hxmEZ0P
+	 9qc3vyBLtUdSmmGjlH3wJI/sBX/AQPT1t2xFzUUWc6Td9WY8MSiyhSwOMkXC0vDxsI
+	 8ILzi57wq7PVvMOc3NjD4rPIJKcz7CV9OXSOf7Lk=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 09FACF8028B;
-	Tue,  7 Jun 2022 12:55:02 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id C6090F804E6;
+	Tue,  7 Jun 2022 12:55:04 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 50867F80159; Tue,  7 Jun 2022 12:55:00 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+ id BF111F8052D; Tue,  7 Jun 2022 12:55:02 +0200 (CEST)
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id D430BF8013F
- for <alsa-devel@alsa-project.org>; Tue,  7 Jun 2022 12:54:57 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D430BF8013F
+ by alsa1.perex.cz (Postfix) with ESMTPS id BA58EF80248
+ for <alsa-devel@alsa-project.org>; Tue,  7 Jun 2022 12:54:59 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BA58EF80248
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="qyplBmBS"
+ header.b="UtLy796h"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id 9D3C3615C6;
+ by ams.source.kernel.org (Postfix) with ESMTPS id 1146CB81F02;
+ Tue,  7 Jun 2022 10:54:59 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7DDA4C385A5;
  Tue,  7 Jun 2022 10:54:56 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CEDA9C34115;
- Tue,  7 Jun 2022 10:54:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1654599296;
- bh=xbOX5mYkYBdJEqOXhSxMTeZkmlq7lnOk2/ZsAiL1Tyo=;
+ s=k20201202; t=1654599297;
+ bh=tH0f/y997NKkUUCgG9uAS0eF4X1+FPV2QFXnFMdScVM=;
  h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=qyplBmBShWIbJyMIvseP/yZMDi+AHH5oxkL11uIwH2u7nYCWOVENTQ3eAH3XMTSc2
- ll9493erhcvy7CTionMdJK/T8tZ2IZfo+cal/sJs7oO12Tk0C8nAU8gv7rMGiUhgp6
- e4/Bvu3xaBJoT/ZxqRvDDX/0qE59iDOxGZ4DqO2al8t3uVNmxO8NFD61BPSNoHTYdR
- +QtrF2NmVd47US0OMol8d3hmlSF/5JXLmOh8j9lofcWRwUU89xLoIH9l2DGdNqIDk1
- 3ZxHm3wT+G7FMfTW8ffgvlaXAdI6vEBWiGRHf2uIe+AnPuzTRe2TlkTeGhtQFndJMZ
- 0gfUYZkIqkG4w==
+ b=UtLy796h/gSqQ5zF7TFUCkscQIyb7XkS44LyQ/VSZ8pRk1qjdpp8gLNKXIXNyx3oC
+ 05aQlbdTqJqkSW7FogtWrSFotZ5iirfhVmMV91zWJkudP/vxh2XZbkYVqh0xfr/cS2
+ bvCWVWgfdaBkJFYAL28ERnq6U10H1WRCSSWIQ0XCvY/yaNQUj/V70sz8Zzx7pokrh/
+ snQN7EJI66LNg1/ygV8pMZiLVscIczFGFu9QpToKqHAuPlbyDL+LBCuya7VXGzyWZu
+ 5UVxU3jdgdkVhj5p/f7qxCUhnYGYKKNwzbA0IuETZMeurEPBVFMxXqVkrBtX+3GCsV
+ OI+9iGOr9ARyA==
 From: Mark Brown <broonie@kernel.org>
 To: perex@perex.cz, tiwai@suse.com, vitalyr@opensource.cirrus.com
-In-Reply-To: <20220509214703.4482-1-vitalyr@opensource.cirrus.com>
-References: <20220509214703.4482-1-vitalyr@opensource.cirrus.com>
-Subject: Re: (subset) [PATCH v2 00/26] *ALSA: hda: cirrus: Add initial DSP
+In-Reply-To: <20220519174749.15459-1-vitalyr@opensource.cirrus.com>
+References: <20220519174749.15459-1-vitalyr@opensource.cirrus.com>
+Subject: Re: (subset) [PATCH v3 00/17] ALSA: hda: cirrus: Add initial DSP
  support and firmware loading
-Message-Id: <165459929457.399031.11506855716693117654.b4-ty@kernel.org>
-Date: Tue, 07 Jun 2022 11:54:54 +0100
+Message-Id: <165459929623.399031.12790916846072977011.b4-ty@kernel.org>
+Date: Tue, 07 Jun 2022 11:54:56 +0100
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -80,7 +80,7 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Mon, 9 May 2022 22:46:37 +0100, Vitaly Rodionov wrote:
+On Thu, 19 May 2022 18:47:32 +0100, Vitaly Rodionov wrote:
 > The CS35L41 Amplifier contains a DSP, capable of running firmware.
 > The firmware can run algorithms such as Speaker Protection, to ensure
 > that playback at high gains do not harm the speakers.
@@ -96,17 +96,11 @@ Applied to
 
 Thanks!
 
-[06/26] ASoC: cs35l41: Move cs35l41_set_cspl_mbox_cmd to shared code
-        (no commit info)
-[07/26] ASoC: cs35l41: Move cs35l41 fs errata into shared code
-        (no commit info)
-[08/26] ASoC: cs35l41: Move cs_dsp config struct into shared code
-        (no commit info)
-[18/26] ASoC: cs35l41: Move cs35l41 exit hibernate function into shared code
+[09/17] ASoC: cs35l41: Move cs35l41 exit hibernate function into shared code
         commit: 94e0bc317ad241c022a6bb311b3a28b4d51ea8b6
-[19/26] ASoC: cs35l41: Do not print error when waking from hibernation
+[10/17] ASoC: cs35l41: Do not print error when waking from hibernation
         commit: 97076475e2fdf471348b9ce73215cdbceeb4390f
-[20/26] ASoC: cs35l41: Add common cs35l41 enter hibernate function
+[11/17] ASoC: cs35l41: Add common cs35l41 enter hibernate function
         commit: e341efc308e5374ded6b471f9e1ec01450bcc93e
 
 All being well this means that it will be integrated into the linux-next
