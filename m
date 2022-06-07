@@ -4,71 +4,74 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E9C83C433EF
-	for <alsa-devel@archiver.kernel.org>; Tue,  7 Jun 2022 17:52:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 87DDFC433EF
+	for <alsa-devel@archiver.kernel.org>; Tue,  7 Jun 2022 17:54:54 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0D39819FF;
-	Tue,  7 Jun 2022 19:51:31 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0D39819FF
+	by alsa0.perex.cz (Postfix) with ESMTPS id AA18918FB;
+	Tue,  7 Jun 2022 19:54:02 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AA18918FB
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1654624341;
-	bh=mSmapjDN1hLuiRaMFbGcdot/5OABdk/qIsbPhTmZHB0=;
+	s=default; t=1654624492;
+	bh=0/OPehuoJpxf3SgM/ilGfsr7BWC3yKaBiuwbOz7xEW8=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=hI3kEpGFompIKWvp8/kygjyIP/qgnXXVo63lc4WiuxsaEhvtbc7A9N62l/Q+mdQAI
-	 rvbH0K5Y2yxWXHZFvBtteTqYgyMNqGc1ZZ1lJaBOB6FEPfIuM5WyC5WR3VVFQnaNPg
-	 FNNSKrCGmsivhJmUeJEU36UA5VPG56wV569OgVkA=
+	b=dRwqt+XSDp1EoAi5s2luz8RQ8i7ccqnvKaaa8AY5+UDI+sQKCub2I6nwSr7KG5LKU
+	 NlWLOBttb5hisKI+KKQQyHWikJZC+hWUC0TgQ5psseGM+3KGsOxV/xEo8yMniSQMA0
+	 yKkfmWLOAwTAM6Ks3WgQIUSKaw4LODLJfVqDYP6E=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 27F34F80520;
-	Tue,  7 Jun 2022 19:51:22 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 49B76F8013F;
+	Tue,  7 Jun 2022 19:54:02 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id A6F45F80302; Tue,  7 Jun 2022 19:51:20 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+ id 2B212F800ED; Tue,  7 Jun 2022 19:54:01 +0200 (CEST)
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 828F5F800ED
- for <alsa-devel@alsa-project.org>; Tue,  7 Jun 2022 19:51:09 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 828F5F800ED
+ by alsa1.perex.cz (Postfix) with ESMTPS id 63CA7F800ED
+ for <alsa-devel@alsa-project.org>; Tue,  7 Jun 2022 19:53:55 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 63CA7F800ED
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="Zzs+efBh"
+ header.b="IGrZrtMT"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id 4B3A26159C;
- Tue,  7 Jun 2022 17:51:07 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 671A4C34115;
- Tue,  7 Jun 2022 17:51:05 +0000 (UTC)
+ by ams.source.kernel.org (Postfix) with ESMTPS id 9AB30B80B66;
+ Tue,  7 Jun 2022 17:53:54 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1BFF3C385A5;
+ Tue,  7 Jun 2022 17:53:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1654624266;
- bh=mSmapjDN1hLuiRaMFbGcdot/5OABdk/qIsbPhTmZHB0=;
+ s=k20201202; t=1654624433;
+ bh=0/OPehuoJpxf3SgM/ilGfsr7BWC3yKaBiuwbOz7xEW8=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=Zzs+efBhEZHp9l98Ftgfnv3JHjFzpD/hMfKf6M26Xjvhl34PCD2+rdhABGqpa/7Ak
- kP204X3Fcb342LXdLAkI6fM6aNogl385ofgePy1b9CFEp8w5tfP2pOOL0q4xE+wLl9
- uqrbqX6aTJ05EnnQcWsoV4H0ooxjshyBXVsTvHY+MwbuqvsuCI2NiGwY+sDvbhDR4K
- Zxuvm//eY5c7JxlZDbK0U/2k1Pd72lVT2fU+MyClfGgYPrR9SG7jw+F7cReeoDveLc
- J6m2N47H9PRjZE/UI64WuW/De62718jwR2tdf7MbVz/e8z4NQhC4OURPNl5eLQGfwv
- 1hCHJAs/6xqgQ==
+ b=IGrZrtMTH9gRLwB8yPNJd5A0TLZQxYh2B/IDe2O2nSOs3/BWGfxNWPbpnfZr5kJjB
+ nei/fz9+FoC6pHZM9n2m7j8GaWCWZ6o3PQgiGmsU86+oVymQA/89k8vtCLB8Hfj4fF
+ 2nd9TexvB5eFW7dk/funp9gxwzhv6BTYlAK7aRas29ItS9hxeswr8fAR67pqLAVI1y
+ 5feZYp9yQxBIaTH1tfpCjBIpvOYjoVxsqh3WODlnXR9bxKLiKCQvQ67m0l+uIdoqPL
+ 1T5YFUiEHDuai7IOqq9aKcMvilW+mEt69vtpql6IwvGiz/kXrADGOo5K3D/fMq0I7Y
+ z+FS2YOauiSaw==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.18 37/68] ASoC: SOF: amd: Fixed Build error
-Date: Tue,  7 Jun 2022 13:48:03 -0400
-Message-Id: <20220607174846.477972-37-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.17 20/60] soundwire: qcom: adjust autoenumeration
+ timeout
+Date: Tue,  7 Jun 2022 13:52:17 -0400
+Message-Id: <20220607175259.478835-20-sashal@kernel.org>
 X-Mailer: git-send-email 2.35.1
-In-Reply-To: <20220607174846.477972-1-sashal@kernel.org>
-References: <20220607174846.477972-1-sashal@kernel.org>
+In-Reply-To: <20220607175259.478835-1-sashal@kernel.org>
+References: <20220607175259.478835-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 Cc: Sasha Levin <sashal@kernel.org>, alsa-devel@alsa-project.org,
- Syed Saba kareem <ssabakar@amd.com>, AjitKumar.Pandey@amd.com, tiwai@suse.com,
- lgirdwood@gmail.com, Mark Brown <broonie@kernel.org>,
- kernel test robot <lkp@intel.com>
+ linux-arm-msm@vger.kernel.org, bjorn.andersson@linaro.org,
+ Vinod Koul <vkoul@kernel.org>, agross@kernel.org,
+ Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+ yung-chuan.liao@linux.intel.com,
+ Srinivasa Rao Mandadapu <quic_srivasam@quicinc.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -84,41 +87,40 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Syed Saba kareem <ssabakar@amd.com>
+From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 
-[ Upstream commit 803a1f7272797faa15a7879cdc70f9adaf3fdcba ]
+[ Upstream commit 74da272400b46f2e898f115d1b1cd60828766919 ]
 
-Add linux/module.h in acp-pci.c to solve the below dependency
+Currently timeout for autoenumeration during probe and bus reset is set to
+2 secs which is really a big value. This can have an adverse effect on
+boot time if the slave device is not ready/reset.
+This was the case with wcd938x which was not reset yet but we spent 2
+secs waiting in the soundwire controller probe. Reduce this time to
+1/10 of Hz which should be good enough time to finish autoenumeration
+if any slaves are available on the bus.
 
-All error/warnings (new ones prefixed by >>):
-
->> sound/soc/amd/acp/acp-pci.c:148:1: warning: data definition has no type or storage class
-148 | MODULE_DEVICE_TABLE(pci, acp_pci_ids);
-| ^~~~~~~~~~~~~~~~~~~
->> sound/soc/amd/acp/acp-pci.c:148:1: error: type defaults to 'int' in declaration of 'MODULE_DEVICE_TABLE' [-Werror=implicit-int]
-...
-
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: Syed Saba Kareem<ssabakar@amd.com>
-Link: https://lore.kernel.org/r/20220523112956.3087604-1-ssabakar@amd.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Reported-by: Srinivasa Rao Mandadapu <quic_srivasam@quicinc.com>
+Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Link: https://lore.kernel.org/r/20220506084705.18525-1-srinivas.kandagatla@linaro.org
+Signed-off-by: Vinod Koul <vkoul@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/amd/acp/acp-pci.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/soundwire/qcom.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/amd/acp/acp-pci.c b/sound/soc/amd/acp/acp-pci.c
-index 340e39d7f420..c893963ee2d0 100644
---- a/sound/soc/amd/acp/acp-pci.c
-+++ b/sound/soc/amd/acp/acp-pci.c
-@@ -16,6 +16,7 @@
- #include <linux/pci.h>
- #include <linux/platform_device.h>
- #include <linux/pm_runtime.h>
-+#include <linux/module.h>
+diff --git a/drivers/soundwire/qcom.c b/drivers/soundwire/qcom.c
+index 54813417ef8e..249f1b69ec94 100644
+--- a/drivers/soundwire/qcom.c
++++ b/drivers/soundwire/qcom.c
+@@ -99,7 +99,7 @@
  
- #include "amd.h"
- #include "../mach-config.h"
+ #define SWRM_SPECIAL_CMD_ID	0xF
+ #define MAX_FREQ_NUM		1
+-#define TIMEOUT_MS		(2 * HZ)
++#define TIMEOUT_MS		100
+ #define QCOM_SWRM_MAX_RD_LEN	0x1
+ #define QCOM_SDW_MAX_PORTS	14
+ #define DEFAULT_CLK_FREQ	9600000
 -- 
 2.35.1
 
