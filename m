@@ -4,75 +4,76 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 90C27C43334
-	for <alsa-devel@archiver.kernel.org>; Thu,  9 Jun 2022 03:32:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2C972C43334
+	for <alsa-devel@archiver.kernel.org>; Thu,  9 Jun 2022 03:33:12 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D839A1FD8;
-	Thu,  9 Jun 2022 05:32:04 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D839A1FD8
+	by alsa0.perex.cz (Postfix) with ESMTPS id 661B1206B;
+	Thu,  9 Jun 2022 05:32:20 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 661B1206B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1654745574;
-	bh=Z5bQQZMvYNftESw73zkKwskprlgBpLYLchcGwj/y4EI=;
+	s=default; t=1654745590;
+	bh=gsoe9oWPPPhNGefCplf7SJU8wWDAfGz1hI1En/pfhhg=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=sONdByogGCUemy92yARZAi7XT0JcoWZRko6Hd7DwSbmi5ISUSSu3/qcK6h+8cFwTZ
-	 wgS8i3QKiV8jGUFplHJG8k7YMDTks9vUoixrx5zYuzp7f0Ix7hRUiiA1uixoH3gz64
-	 gE9wMy/nX8e7JDoXvBWFAD0EDnW2s1lBMaeVLsqs=
+	b=CGGyx0FrB7krv+O8SooJR5/Keg33znJDlmTHVwIxFcrgQKZJ/Ypb2JEBk9WOZgfQV
+	 e9SGIc97E5elvYgKSXv987KZA69c9rI5J0DamuTObhinfWFeqq1QltAPDMx4wrL2tA
+	 5ULH2KpbHJ5ITQUs26bwYON0G+RJSZ4CpS8MwMyg=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id EBBC6F805C7;
-	Thu,  9 Jun 2022 05:27:50 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id CAF7AF805CA;
+	Thu,  9 Jun 2022 05:27:51 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 9909EF805B5; Thu,  9 Jun 2022 05:27:44 +0200 (CEST)
+ id 43217F805BF; Thu,  9 Jun 2022 05:27:45 +0200 (CEST)
 Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 18E40F804BD
- for <alsa-devel@alsa-project.org>; Thu,  9 Jun 2022 05:27:20 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 18E40F804BD
+ by alsa1.perex.cz (Postfix) with ESMTPS id 7300CF80558
+ for <alsa-devel@alsa-project.org>; Thu,  9 Jun 2022 05:27:23 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7300CF80558
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="inBm5onq"
+ header.b="aCdg6lbL"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1654745242; x=1686281242;
+ t=1654745244; x=1686281244;
  h=from:to:cc:subject:date:message-id:in-reply-to:
  references:mime-version:content-transfer-encoding;
- bh=Z5bQQZMvYNftESw73zkKwskprlgBpLYLchcGwj/y4EI=;
- b=inBm5onqJduT2Yu5w72UqvHf6XjRIWTyPX80ODnbSsYniQRWxyU/06IK
- IWVAWoigtwvFWtnxGYqOedagjhvU4H5rb1F0a6RLYMTyAUa3CEW6od2M0
- mbCYBijxfP6HGk3tvO+CzXYdFDJEPpBNrEIp96ipwTRBHuXHG1vqpQ9tg
- JxErsrtyAf0prfQYo/JMICbzJssQ/Lr8Bj7vWrJwJNetCAyIfs4ksxRtK
- 3CPE6dxwZxxRsX8K/2YhmrHZtzAaPBuA/5OrJR7prW2e2oBBUGucbX9X7
- 9KIMC5fdo+hhtLHzi5M9b49zXX6GCzRVv45mzs0HXfpngz0E623SDfLCN w==;
-X-IronPort-AV: E=McAfee;i="6400,9594,10372"; a="341219566"
-X-IronPort-AV: E=Sophos;i="5.91,287,1647327600"; d="scan'208";a="341219566"
+ bh=gsoe9oWPPPhNGefCplf7SJU8wWDAfGz1hI1En/pfhhg=;
+ b=aCdg6lbLEK4+JERwiD1z/252GZL4D9spd8Os6f6ENWbogkmwILVBz3kg
+ ZDhduk3bBl0E8GXL5IMvYBWmlg/aHAS6Bq95V+pvXk1lX1XRJI/9R8/m8
+ 1EcEWM00a9En/WFL0LbOur1z5wzXhNY9fcpuExMj7O0t+XJeHoeHGwPk+
+ qiqNRiRMiUfEu0m/SbH1r0n/lhMObV0Wu603KCGO84BO6ELrAOIHEFxUt
+ o3CA0IeoTblR5odBIotvHuUt2AwZIVAoJd3SkZY3ZvVUQXHtLkyE3/AwV
+ T5rAcFCLuNQHqZf5zee2BiixctyTRvq20kwNpfxxZ0DYwH/4Ycdszmi+P Q==;
+X-IronPort-AV: E=McAfee;i="6400,9594,10372"; a="341219573"
+X-IronPort-AV: E=Sophos;i="5.91,287,1647327600"; d="scan'208";a="341219573"
 Received: from fmsmga007.fm.intel.com ([10.253.24.52])
  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 08 Jun 2022 20:27:00 -0700
-X-IronPort-AV: E=Sophos;i="5.91,287,1647327600"; d="scan'208";a="585260249"
+ 08 Jun 2022 20:27:01 -0700
+X-IronPort-AV: E=Sophos;i="5.91,287,1647327600"; d="scan'208";a="585260256"
 Received: from mandalag-mobl.amr.corp.intel.com (HELO
  rsridh2-mobl1.localdomain) ([10.254.38.40])
  by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 08 Jun 2022 20:27:00 -0700
+ 08 Jun 2022 20:27:01 -0700
 From: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH 16/23] ASoC: SOF: IPC4: set the BE DAI ops
-Date: Wed,  8 Jun 2022 20:26:36 -0700
-Message-Id: <20220609032643.916882-17-ranjani.sridharan@linux.intel.com>
+Subject: [PATCH 20/23] ASoC: SOF: Add a new IPC op for parsing topology
+ manifest
+Date: Wed,  8 Jun 2022 20:26:40 -0700
+Message-Id: <20220609032643.916882-21-ranjani.sridharan@linux.intel.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20220609032643.916882-1-ranjani.sridharan@linux.intel.com>
 References: <20220609032643.916882-1-ranjani.sridharan@linux.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-Cc: tiwai@suse.de,
- =?UTF-8?q?P=C3=A9ter=20Ujfalusi?= <peter.ujfalusi@linux.intel.com>,
- Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+Cc: tiwai@suse.de, Bard Liao <yung-chuan.liao@linux.intel.com>,
  Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- broonie@kernel.org, Bard Liao <yung-chuan.liao@linux.intel.com>
+ Ranjani Sridharan <ranjani.sridharan@linux.intel.com>, broonie@kernel.org,
+ =?UTF-8?q?P=C3=A9ter=20Ujfalusi?= <peter.ujfalusi@linux.intel.com>,
+ Jaska Uimonen <jaska.uimonen@linux.intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -88,242 +89,264 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Add BE DAI drv ops for IPC4 for DMIC, SSP and HDA type DAI's.
+Add a new topology IPC op, parse_manifest. Define and set the op for
+IPC4 and IPC4.
 
+Co-developed-by: Jaska Uimonen <jaska.uimonen@linux.intel.com>
+Signed-off-by: Jaska Uimonen <jaska.uimonen@linux.intel.com>
 Signed-off-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Reviewed-by: Péter Ujfalusi <peter.ujfalusi@linux.intel.com>
 Reviewed-by: Bard Liao <yung-chuan.liao@linux.intel.com>
 ---
- sound/soc/sof/intel/hda-dai.c | 173 +++++++++++++++++++++++++++++++++-
- 1 file changed, 170 insertions(+), 3 deletions(-)
+ sound/soc/sof/ipc3-topology.c | 48 ++++++++++++++++++++++++++
+ sound/soc/sof/ipc4-topology.c | 63 +++++++++++++++++++++++++++++++++++
+ sound/soc/sof/sof-audio.h     |  3 ++
+ sound/soc/sof/topology.c      | 45 +++----------------------
+ 4 files changed, 118 insertions(+), 41 deletions(-)
 
-diff --git a/sound/soc/sof/intel/hda-dai.c b/sound/soc/sof/intel/hda-dai.c
-index 9823230d2ef4..5423667002e5 100644
---- a/sound/soc/sof/intel/hda-dai.c
-+++ b/sound/soc/sof/intel/hda-dai.c
-@@ -10,6 +10,10 @@
+diff --git a/sound/soc/sof/ipc3-topology.c b/sound/soc/sof/ipc3-topology.c
+index 043554d7cb4a..a91d7df3f07e 100644
+--- a/sound/soc/sof/ipc3-topology.c
++++ b/sound/soc/sof/ipc3-topology.c
+@@ -17,6 +17,9 @@
+ /* Full volume for default values */
+ #define VOL_ZERO_DB	BIT(VOLUME_FWL)
  
- #include <sound/pcm_params.h>
- #include <sound/hdaudio_ext.h>
-+#include <sound/sof/ipc4/header.h>
-+#include <uapi/sound/sof/header.h>
-+#include "../ipc4-priv.h"
-+#include "../ipc4-topology.h"
- #include "../sof-priv.h"
- #include "../sof-audio.h"
- #include "hda.h"
-@@ -369,8 +373,7 @@ static int hda_dai_config_pause_push_ipc(struct snd_soc_dapm_widget *w)
- 	return ret;
++/* size of tplg ABI in bytes */
++#define SOF_IPC3_TPLG_ABI_SIZE 3
++
+ struct sof_widget_data {
+ 	int ctrl_type;
+ 	int ipc_cmd;
+@@ -2303,6 +2306,50 @@ static int sof_ipc3_dai_get_clk(struct snd_sof_dev *sdev, struct snd_sof_dai *da
+ 	return -EINVAL;
  }
  
--static int ipc3_hda_dai_prepare(struct snd_pcm_substream *substream,
--				struct snd_soc_dai *dai)
-+static int hda_dai_prepare(struct snd_pcm_substream *substream, struct snd_soc_dai *dai)
- {
- 	struct hdac_ext_stream *hext_stream =
- 				snd_soc_dai_get_dma_data(dai, substream);
-@@ -438,6 +441,91 @@ static int ipc3_hda_dai_trigger(struct snd_pcm_substream *substream,
- 	return 0;
- }
- 
-+/*
-+ * In contrast to IPC3, the dai trigger in IPC4 mixes pipeline state changes
-+ * (over IPC channel) and DMA state change (direct host register changes).
-+ */
-+static int ipc4_hda_dai_trigger(struct snd_pcm_substream *substream,
-+				int cmd, struct snd_soc_dai *dai)
++static int sof_ipc3_parse_manifest(struct snd_soc_component *scomp, int index,
++				   struct snd_soc_tplg_manifest *man)
 +{
-+	struct hdac_ext_stream *hext_stream = snd_soc_dai_get_dma_data(dai, substream);
-+	struct snd_sof_dev *sdev = snd_soc_component_get_drvdata(dai->component);
-+	struct snd_soc_pcm_runtime *rtd;
-+	struct snd_sof_widget *swidget;
-+	struct snd_soc_dapm_widget *w;
-+	struct snd_soc_dai *codec_dai;
-+	struct hdac_stream *hstream;
-+	struct snd_soc_dai *cpu_dai;
-+	int ret;
++	u32 size = le32_to_cpu(man->priv.size);
++	u32 abi_version;
 +
-+	dev_dbg(dai->dev, "%s: cmd=%d dai %s direction %d\n", __func__, cmd,
-+		dai->name, substream->stream);
-+
-+	hstream = substream->runtime->private_data;
-+	rtd = asoc_substream_to_rtd(substream);
-+	cpu_dai = asoc_rtd_to_cpu(rtd, 0);
-+	codec_dai = asoc_rtd_to_codec(rtd, 0);
-+
-+	w = snd_soc_dai_get_widget(dai, substream->stream);
-+	swidget = w->dobj.private;
-+
-+	switch (cmd) {
-+	case SNDRV_PCM_TRIGGER_START:
-+	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
-+		snd_hdac_ext_link_stream_start(hext_stream);
-+		break;
-+	case SNDRV_PCM_TRIGGER_SUSPEND:
-+	case SNDRV_PCM_TRIGGER_STOP:
-+	{
-+		struct snd_sof_widget *pipe_widget = swidget->pipe_widget;
-+		struct sof_ipc4_pipeline *pipeline = pipe_widget->private;
-+
-+		ret = sof_ipc4_set_pipeline_state(sdev, swidget->pipeline_id,
-+						  SOF_IPC4_PIPE_PAUSED);
-+		if (ret < 0)
-+			return ret;
-+
-+		pipeline->state = SOF_IPC4_PIPE_PAUSED;
-+
-+		snd_hdac_ext_link_stream_clear(hext_stream);
-+
-+		ret = sof_ipc4_set_pipeline_state(sdev, swidget->pipeline_id,
-+						  SOF_IPC4_PIPE_RESET);
-+		if (ret < 0)
-+			return ret;
-+
-+		pipeline->state = SOF_IPC4_PIPE_RESET;
-+
-+		ret = hda_link_dma_cleanup(substream, hstream, cpu_dai, codec_dai, false);
-+		if (ret < 0) {
-+			dev_err(sdev->dev, "%s: failed to clean up link DMA\n", __func__);
-+			return ret;
-+		}
-+		break;
++	/* backward compatible with tplg without ABI info */
++	if (!size) {
++		dev_dbg(scomp->dev, "No topology ABI info\n");
++		return 0;
 +	}
-+	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
-+	{
-+		struct snd_sof_widget *pipe_widget = swidget->pipe_widget;
-+		struct sof_ipc4_pipeline *pipeline = pipe_widget->private;
 +
-+		ret = sof_ipc4_set_pipeline_state(sdev, swidget->pipeline_id,
-+						  SOF_IPC4_PIPE_PAUSED);
-+		if (ret < 0)
-+			return ret;
-+
-+		pipeline->state = SOF_IPC4_PIPE_PAUSED;
-+
-+		snd_hdac_ext_link_stream_clear(hext_stream);
-+		break;
-+	}
-+	default:
-+		dev_err(sdev->dev, "%s: unknown trigger command %d\n", __func__, cmd);
++	if (size != SOF_IPC3_TPLG_ABI_SIZE) {
++		dev_err(scomp->dev, "%s: Invalid topology ABI size: %u\n",
++			__func__, size);
 +		return -EINVAL;
 +	}
 +
-+	return 0;
-+}
++	dev_info(scomp->dev,
++		 "Topology: ABI %d:%d:%d Kernel ABI %hhu:%hhu:%hhu\n",
++		 man->priv.data[0], man->priv.data[1], man->priv.data[2],
++		 SOF_ABI_MAJOR, SOF_ABI_MINOR, SOF_ABI_PATCH);
 +
- static int hda_dai_hw_free(struct snd_pcm_substream *substream,
- 			   struct snd_soc_dai *dai)
- {
-@@ -454,7 +542,7 @@ static const struct snd_soc_dai_ops ipc3_hda_dai_ops = {
- 	.hw_params = hda_dai_hw_params,
- 	.hw_free = hda_dai_hw_free,
- 	.trigger = ipc3_hda_dai_trigger,
--	.prepare = ipc3_hda_dai_prepare,
-+	.prepare = hda_dai_prepare,
- };
- 
- static int hda_dai_suspend(struct hdac_bus *bus)
-@@ -497,6 +585,14 @@ static int hda_dai_suspend(struct hdac_bus *bus)
- 
- 	return 0;
- }
++	abi_version = SOF_ABI_VER(man->priv.data[0], man->priv.data[1], man->priv.data[2]);
 +
-+static const struct snd_soc_dai_ops ipc4_hda_dai_ops = {
-+	.hw_params = hda_dai_hw_params,
-+	.hw_free = hda_dai_hw_free,
-+	.trigger = ipc4_hda_dai_trigger,
-+	.prepare = hda_dai_prepare,
-+};
++	if (SOF_ABI_VERSION_INCOMPATIBLE(SOF_ABI_VERSION, abi_version)) {
++		dev_err(scomp->dev, "%s: Incompatible topology ABI version\n", __func__);
++		return -EINVAL;
++	}
 +
- #endif
- 
- /* only one flag used so far to harden hw_params/hw_free/trigger/prepare */
-@@ -608,6 +704,59 @@ static const struct snd_soc_dai_ops ipc3_ssp_dai_ops = {
- 	.shutdown = ssp_dai_shutdown,
- };
- 
-+static int ipc4_be_dai_trigger(struct snd_pcm_substream *substream,
-+			       int cmd, struct snd_soc_dai *dai)
-+{
-+	struct snd_sof_widget *pipe_widget;
-+	struct sof_ipc4_pipeline *pipeline;
-+	struct snd_sof_widget *swidget;
-+	struct snd_soc_dapm_widget *w;
-+	struct snd_sof_dev *sdev;
-+	int ret;
-+
-+	w = snd_soc_dai_get_widget(dai, substream->stream);
-+	swidget = w->dobj.private;
-+	pipe_widget = swidget->pipe_widget;
-+	pipeline = pipe_widget->private;
-+	sdev = snd_soc_component_get_drvdata(swidget->scomp);
-+
-+	switch (cmd) {
-+	case SNDRV_PCM_TRIGGER_SUSPEND:
-+	case SNDRV_PCM_TRIGGER_STOP:
-+		ret = sof_ipc4_set_pipeline_state(sdev, swidget->pipeline_id,
-+						  SOF_IPC4_PIPE_PAUSED);
-+		if (ret < 0)
-+			return ret;
-+		pipeline->state = SOF_IPC4_PIPE_PAUSED;
-+
-+		ret = sof_ipc4_set_pipeline_state(sdev, swidget->pipeline_id,
-+						  SOF_IPC4_PIPE_RESET);
-+		if (ret < 0)
-+			return ret;
-+		pipeline->state = SOF_IPC4_PIPE_RESET;
-+		break;
-+	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
-+		ret = sof_ipc4_set_pipeline_state(sdev, swidget->pipeline_id,
-+						  SOF_IPC4_PIPE_PAUSED);
-+		if (ret < 0)
-+			return ret;
-+		pipeline->state = SOF_IPC4_PIPE_PAUSED;
-+		break;
-+	default:
-+		break;
++	if (SOF_ABI_VERSION_MINOR(abi_version) > SOF_ABI_MINOR) {
++		if (!IS_ENABLED(CONFIG_SND_SOC_SOF_STRICT_ABI_CHECKS)) {
++			dev_warn(scomp->dev, "%s: Topology ABI is more recent than kernel\n",
++				 __func__);
++		} else {
++			dev_err(scomp->dev, "%s: Topology ABI is more recent than kernel\n",
++				__func__);
++			return -EINVAL;
++		}
 +	}
 +
 +	return 0;
 +}
 +
-+static const struct snd_soc_dai_ops ipc4_dmic_dai_ops = {
-+	.trigger = ipc4_be_dai_trigger,
-+};
+ /* token list for each topology object */
+ static enum sof_tokens host_token_list[] = {
+ 	SOF_CORE_TOKENS,
+@@ -2413,4 +2460,5 @@ const struct sof_ipc_tplg_ops ipc3_tplg_ops = {
+ 	.dai_get_clk = sof_ipc3_dai_get_clk,
+ 	.set_up_all_pipelines = sof_ipc3_set_up_all_pipelines,
+ 	.tear_down_all_pipelines = sof_ipc3_tear_down_all_pipelines,
++	.parse_manifest = sof_ipc3_parse_manifest,
+ };
+diff --git a/sound/soc/sof/ipc4-topology.c b/sound/soc/sof/ipc4-topology.c
+index 9615034f8c70..27ad48990383 100644
+--- a/sound/soc/sof/ipc4-topology.c
++++ b/sound/soc/sof/ipc4-topology.c
+@@ -16,6 +16,7 @@
+ #include "ops.h"
+ 
+ #define SOF_IPC4_GAIN_PARAM_ID  0
++#define SOF_IPC4_TPLG_ABI_SIZE 6
+ 
+ static const struct sof_topology_token ipc4_sched_tokens[] = {
+ 	{SOF_TKN_SCHED_LP_MODE, SND_SOC_TPLG_TUPLE_TYPE_WORD, get_token_u32,
+@@ -1317,6 +1318,67 @@ static int sof_ipc4_dai_config(struct snd_sof_dev *sdev, struct snd_sof_widget *
+ 	return 0;
+ }
+ 
++static int sof_ipc4_parse_manifest(struct snd_soc_component *scomp, int index,
++				   struct snd_soc_tplg_manifest *man)
++{
++	struct snd_sof_dev *sdev = snd_soc_component_get_drvdata(scomp);
++	struct sof_ipc4_fw_data *ipc4_data = sdev->private;
++	struct sof_manifest_tlv *manifest_tlv;
++	struct sof_manifest *manifest;
++	u32 size = le32_to_cpu(man->priv.size);
++	u8 *man_ptr = man->priv.data;
++	u32 len_check;
++	int i;
 +
-+static const struct snd_soc_dai_ops ipc4_ssp_dai_ops = {
-+	.trigger = ipc4_be_dai_trigger,
-+};
++	if (!size || size < SOF_IPC4_TPLG_ABI_SIZE) {
++		dev_err(scomp->dev, "%s: Invalid topology ABI size: %u\n",
++			__func__, size);
++		return -EINVAL;
++	}
 +
- void hda_set_dai_drv_ops(struct snd_sof_dev *sdev, struct snd_sof_dsp_ops *ops)
- {
- 	int i;
-@@ -624,6 +773,24 @@ void hda_set_dai_drv_ops(struct snd_sof_dev *sdev, struct snd_sof_dsp_ops *ops)
- 			    strstr(ops->drv[i].name, "Analog") ||
- 			    strstr(ops->drv[i].name, "Digital"))
- 				ops->drv[i].ops = &ipc3_hda_dai_ops;
-+#endif
++	manifest = (struct sof_manifest *)man_ptr;
++
++	dev_info(scomp->dev,
++		 "Topology: ABI %d:%d:%d Kernel ABI %u:%u:%u\n",
++		  le16_to_cpu(manifest->abi_major), le16_to_cpu(manifest->abi_minor),
++		  le16_to_cpu(manifest->abi_patch),
++		  SOF_ABI_MAJOR, SOF_ABI_MINOR, SOF_ABI_PATCH);
++
++	/* TODO: Add ABI compatibility check */
++
++	/* no more data after the ABI version */
++	if (size <= SOF_IPC4_TPLG_ABI_SIZE)
++		return 0;
++
++	manifest_tlv = manifest->items;
++	len_check = sizeof(struct sof_manifest);
++	for (i = 0; i < le16_to_cpu(manifest->count); i++) {
++		len_check += sizeof(struct sof_manifest_tlv) + le32_to_cpu(manifest_tlv->size);
++		if (len_check > size)
++			return -EINVAL;
++
++		switch (le32_to_cpu(manifest_tlv->type)) {
++		case SOF_MANIFEST_DATA_TYPE_NHLT:
++			/* no NHLT in BIOS, so use the one from topology manifest */
++			if (ipc4_data->nhlt)
++				break;
++			ipc4_data->nhlt = devm_kmemdup(sdev->dev, manifest_tlv->data,
++						       le32_to_cpu(manifest_tlv->size), GFP_KERNEL);
++			if (!ipc4_data->nhlt)
++				return -ENOMEM;
++			break;
++		default:
++			dev_warn(scomp->dev, "Skipping unknown manifest data type %d\n",
++				 manifest_tlv->type);
++			break;
 +		}
-+		break;
-+	case SOF_INTEL_IPC4:
-+		for (i = 0; i < ops->num_drv; i++) {
-+			if (strstr(ops->drv[i].name, "DMIC")) {
-+				ops->drv[i].ops = &ipc4_dmic_dai_ops;
-+				continue;
-+			}
-+			if (strstr(ops->drv[i].name, "SSP")) {
-+				ops->drv[i].ops = &ipc4_ssp_dai_ops;
-+				continue;
-+			}
-+#if IS_ENABLED(CONFIG_SND_SOC_SOF_HDA)
-+			if (strstr(ops->drv[i].name, "iDisp") ||
-+			    strstr(ops->drv[i].name, "Analog") ||
-+			    strstr(ops->drv[i].name, "Digital"))
-+				ops->drv[i].ops = &ipc4_hda_dai_ops;
- #endif
- 		}
- 		break;
++		man_ptr += sizeof(struct sof_manifest_tlv) + le32_to_cpu(manifest_tlv->size);
++		manifest_tlv = (struct sof_manifest_tlv *)man_ptr;
++	}
++
++	return 0;
++}
++
+ static enum sof_tokens host_token_list[] = {
+ 	SOF_COMP_TOKENS,
+ 	SOF_AUDIO_FMT_NUM_TOKENS,
+@@ -1402,4 +1464,5 @@ const struct sof_ipc_tplg_ops ipc4_tplg_ops = {
+ 	.route_setup = sof_ipc4_route_setup,
+ 	.route_free = sof_ipc4_route_free,
+ 	.dai_config = sof_ipc4_dai_config,
++	.parse_manifest = sof_ipc4_parse_manifest,
+ };
+diff --git a/sound/soc/sof/sof-audio.h b/sound/soc/sof/sof-audio.h
+index d896da1192c5..79486266081f 100644
+--- a/sound/soc/sof/sof-audio.h
++++ b/sound/soc/sof/sof-audio.h
+@@ -168,6 +168,7 @@ struct sof_ipc_tplg_widget_ops {
+  * @dai_get_clk: Function pointer for getting the DAI clock setting
+  * @set_up_all_pipelines: Function pointer for setting up all topology pipelines
+  * @tear_down_all_pipelines: Function pointer for tearing down all topology pipelines
++ * @parse_manifest: Optional function pointer for ipc4 specific parsing of topology manifest
+  */
+ struct sof_ipc_tplg_ops {
+ 	const struct sof_ipc_tplg_widget_ops *widget;
+@@ -185,6 +186,8 @@ struct sof_ipc_tplg_ops {
+ 	int (*dai_get_clk)(struct snd_sof_dev *sdev, struct snd_sof_dai *dai, int clk_type);
+ 	int (*set_up_all_pipelines)(struct snd_sof_dev *sdev, bool verify);
+ 	int (*tear_down_all_pipelines)(struct snd_sof_dev *sdev, bool verify);
++	int (*parse_manifest)(struct snd_soc_component *scomp, int index,
++			      struct snd_soc_tplg_manifest *man);
+ };
+ 
+ /** struct snd_sof_tuple - Tuple info
+diff --git a/sound/soc/sof/topology.c b/sound/soc/sof/topology.c
+index 606dbca94246..1893c590f2f0 100644
+--- a/sound/soc/sof/topology.c
++++ b/sound/soc/sof/topology.c
+@@ -36,9 +36,6 @@
+ #define TLV_STEP	1
+ #define TLV_MUTE	2
+ 
+-/* size of tplg abi in byte */
+-#define SOF_TPLG_ABI_SIZE 3
+-
+ /**
+  * sof_update_ipc_object - Parse multiple sets of tokens within the token array associated with the
+  *			    token ID.
+@@ -2020,45 +2017,11 @@ static int sof_complete(struct snd_soc_component *scomp)
+ static int sof_manifest(struct snd_soc_component *scomp, int index,
+ 			struct snd_soc_tplg_manifest *man)
+ {
+-	u32 size;
+-	u32 abi_version;
+-
+-	size = le32_to_cpu(man->priv.size);
+-
+-	/* backward compatible with tplg without ABI info */
+-	if (!size) {
+-		dev_dbg(scomp->dev, "No topology ABI info\n");
+-		return 0;
+-	}
+-
+-	if (size != SOF_TPLG_ABI_SIZE) {
+-		dev_err(scomp->dev, "error: invalid topology ABI size\n");
+-		return -EINVAL;
+-	}
+-
+-	dev_info(scomp->dev,
+-		 "Topology: ABI %d:%d:%d Kernel ABI %d:%d:%d\n",
+-		 man->priv.data[0], man->priv.data[1],
+-		 man->priv.data[2], SOF_ABI_MAJOR, SOF_ABI_MINOR,
+-		 SOF_ABI_PATCH);
+-
+-	abi_version = SOF_ABI_VER(man->priv.data[0],
+-				  man->priv.data[1],
+-				  man->priv.data[2]);
+-
+-	if (SOF_ABI_VERSION_INCOMPATIBLE(SOF_ABI_VERSION, abi_version)) {
+-		dev_err(scomp->dev, "error: incompatible topology ABI version\n");
+-		return -EINVAL;
+-	}
++	struct snd_sof_dev *sdev = snd_soc_component_get_drvdata(scomp);
++	const struct sof_ipc_tplg_ops *ipc_tplg_ops = sdev->ipc->ops->tplg;
+ 
+-	if (SOF_ABI_VERSION_MINOR(abi_version) > SOF_ABI_MINOR) {
+-		if (!IS_ENABLED(CONFIG_SND_SOC_SOF_STRICT_ABI_CHECKS)) {
+-			dev_warn(scomp->dev, "warn: topology ABI is more recent than kernel\n");
+-		} else {
+-			dev_err(scomp->dev, "error: topology ABI is more recent than kernel\n");
+-			return -EINVAL;
+-		}
+-	}
++	if (ipc_tplg_ops->parse_manifest)
++		return ipc_tplg_ops->parse_manifest(scomp, index, man);
+ 
+ 	return 0;
+ }
 -- 
 2.25.1
 
