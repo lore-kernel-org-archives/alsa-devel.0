@@ -4,65 +4,65 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A32C5C43334
-	for <alsa-devel@archiver.kernel.org>; Thu,  9 Jun 2022 13:38:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6A923C43334
+	for <alsa-devel@archiver.kernel.org>; Thu,  9 Jun 2022 13:38:33 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id DC1D91ABE;
-	Thu,  9 Jun 2022 15:37:31 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DC1D91ABE
+	by alsa0.perex.cz (Postfix) with ESMTPS id BAF691ABD;
+	Thu,  9 Jun 2022 15:37:41 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BAF691ABD
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1654781901;
-	bh=eArE8WoqidIymkaFaEff+cQsFtCZvNeJ0MK1qIZTf4U=;
+	s=default; t=1654781911;
+	bh=Hc9vYKiIGg8Ubnaqos4pEjT2Ox9V/D6S5DeOypIXjEk=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=KIYpluYyh3dk2HPXZ56ZS8nX+ZU79BLxK8lzwbvBdr4HI0AVyVpa7Rz28+CIWQMRl
-	 XLTPeHsvgtv3FOkL72NrpY30T4qg3tOkbI0eE9AYcSmoINkdJG3Azyk/r6020NIs/3
-	 yrJWRaKXAsNkCdzEr9nwj9Zy4l5s81SCs1N/AtRk=
+	b=KPy+gpoO+bHF14Fiv+ErOOiOkMnwHsm8SDl038TfprbiztQ9+bcpItw8v4HYL5la4
+	 69kUnmyBgNfj+SGhtyHbX9eItqI9QSqSjypp/G/2Xj7/ApPPlLQCIbLNYLM1LoR3ek
+	 W7z1yMen0K4MPMMbdGxzQ9WT+jEuML84ogaIInSU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id C5272F8053A;
-	Thu,  9 Jun 2022 15:36:00 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 95994F80544;
+	Thu,  9 Jun 2022 15:36:01 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 3FA05F80538; Thu,  9 Jun 2022 15:35:58 +0200 (CEST)
+ id 8B04BF8053B; Thu,  9 Jun 2022 15:35:58 +0200 (CEST)
 Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id EC212F800E9
- for <alsa-devel@alsa-project.org>; Thu,  9 Jun 2022 15:35:50 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EC212F800E9
+ by alsa1.perex.cz (Postfix) with ESMTPS id 01A4CF80535
+ for <alsa-devel@alsa-project.org>; Thu,  9 Jun 2022 15:35:54 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 01A4CF80535
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="HXCMMEXJ"
+ header.b="fd9jJ87M"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1654781752; x=1686317752;
+ t=1654781756; x=1686317756;
  h=from:to:cc:subject:date:message-id:in-reply-to:
  references:mime-version:content-transfer-encoding;
- bh=eArE8WoqidIymkaFaEff+cQsFtCZvNeJ0MK1qIZTf4U=;
- b=HXCMMEXJ4lt9XHNzmm4DJf9s/jDrdVJZsNDDcCQZLJBVJLgxIVef/wME
- ghFe2TOpbGAp0sFw5k+e1ZqvBgOvRa0nX5JzXYnE01W8p1iB4XESWpycg
- 6Zw97VSltdwLyO75k7316BiL0ma6kS3WdDIEK4pcVg4rJJcUCxJaCHNcv
- rcUelHCmGb6EeB02CmdYCIzR0ZbxlJ0wMgbalfIArgD6JQFKn9Wr+kf//
- v8iDchf//Kn5xAH/q/a3wTCqvVfP4gR6RSv9/AnOKgmSX4vIrHurfbNL2
- E+uFH7MoxMhgMdjbkfw/ZyBqiGFEsIrB1enk/YhH34BNmLinv6MpS5TTw g==;
-X-IronPort-AV: E=McAfee;i="6400,9594,10373"; a="266061400"
-X-IronPort-AV: E=Sophos;i="5.91,287,1647327600"; d="scan'208";a="266061400"
+ bh=Hc9vYKiIGg8Ubnaqos4pEjT2Ox9V/D6S5DeOypIXjEk=;
+ b=fd9jJ87MvHNR2pg12HHOalbIZJd29IU3G9YPDWNcbxFCG0+AjhTYwOJ/
+ mp0IVBertuvkqhI90f3QNfOTIzWAGAb/vthX6v3ZH/cfu6FMgN4sOTQck
+ mMQwGxB+WOGXKpFCOuASLRkaY/ubw+dhanzNi04n238e3HHrew4FnlW1u
+ zPDMKi+MN/myuiECbbmHVDlfWi1WjShjOFauKqORtCYU5zODlO/QivODz
+ N3thddmvNUGbC15ej0i1vdErU6bMqQ/zqfxHNvWDjcaQAlenCHgQez/MP
+ +7/wLwg9J3KSa5FzDWT1owXdsVmyiyj4+3xsp0jQZLtrmXZ1WaACfZUIp A==;
+X-IronPort-AV: E=McAfee;i="6400,9594,10373"; a="266061409"
+X-IronPort-AV: E=Sophos;i="5.91,287,1647327600"; d="scan'208";a="266061409"
 Received: from fmsmga002.fm.intel.com ([10.253.24.26])
  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 09 Jun 2022 06:35:50 -0700
+ 09 Jun 2022 06:35:54 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.91,287,1647327600"; d="scan'208";a="683966159"
+X-IronPort-AV: E=Sophos;i="5.91,287,1647327600"; d="scan'208";a="683966167"
 Received: from dev2 (HELO DEV2.igk.intel.com) ([10.237.148.94])
- by fmsmga002.fm.intel.com with ESMTP; 09 Jun 2022 06:35:48 -0700
+ by fmsmga002.fm.intel.com with ESMTP; 09 Jun 2022 06:35:52 -0700
 From: =?UTF-8?q?Amadeusz=20S=C5=82awi=C5=84ski?=
  <amadeuszx.slawinski@linux.intel.com>
 To: Oder Chiou <oder_chiou@realtek.com>,
 	Mark Brown <broonie@kernel.org>
-Subject: [PATCH 05/11] ASoC: codecs: rt286: Move irq registration and cleanup
-Date: Thu,  9 Jun 2022 15:35:35 +0200
-Message-Id: <20220609133541.3984886-6-amadeuszx.slawinski@linux.intel.com>
+Subject: [PATCH 07/11] ASoC: codecs: rt274: Enable irq only when needed
+Date: Thu,  9 Jun 2022 15:35:37 +0200
+Message-Id: <20220609133541.3984886-8-amadeuszx.slawinski@linux.intel.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20220609133541.3984886-1-amadeuszx.slawinski@linux.intel.com>
 References: <20220609133541.3984886-1-amadeuszx.slawinski@linux.intel.com>
@@ -89,102 +89,83 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Currently irq is registered when i2c driver is loaded, it is unnecessary
-when component is unused. Initialize irq only when we probe ASoC
-component.
+Interrupt is only needed when jack detection is enabled, so enable it
+then, similarly disable it when jack detection is being disabled.
 
 Signed-off-by: Amadeusz Sławiński <amadeuszx.slawinski@linux.intel.com>
 Reviewed-by: Cezary Rojewski <cezary.rojewski@intel.com>
 ---
- sound/soc/codecs/rt286.c | 44 ++++++++++++++++------------------------
- 1 file changed, 18 insertions(+), 26 deletions(-)
+ sound/soc/codecs/rt274.c | 24 +++++++++++++++++++++---
+ 1 file changed, 21 insertions(+), 3 deletions(-)
 
-diff --git a/sound/soc/codecs/rt286.c b/sound/soc/codecs/rt286.c
-index 0534a073ee69..02a41c915776 100644
---- a/sound/soc/codecs/rt286.c
-+++ b/sound/soc/codecs/rt286.c
-@@ -945,13 +945,22 @@ static irqreturn_t rt286_irq(int irq, void *data)
- static int rt286_probe(struct snd_soc_component *component)
+diff --git a/sound/soc/codecs/rt274.c b/sound/soc/codecs/rt274.c
+index 144a6f775c21..730de9452333 100644
+--- a/sound/soc/codecs/rt274.c
++++ b/sound/soc/codecs/rt274.c
+@@ -16,6 +16,7 @@
+ #include <linux/spi/spi.h>
+ #include <linux/dmi.h>
+ #include <linux/acpi.h>
++#include <linux/irq.h>
+ #include <sound/core.h>
+ #include <sound/pcm.h>
+ #include <sound/pcm_params.h>
+@@ -395,28 +396,42 @@ static void rt274_jack_detect_work(struct work_struct *work)
+ 		SND_JACK_MICROPHONE | SND_JACK_HEADPHONE);
+ }
+ 
+-static irqreturn_t rt274_irq(int irq, void *data);
+-
+ static int rt274_mic_detect(struct snd_soc_component *component,
+ 	struct snd_soc_jack *jack,  void *data)
  {
- 	struct rt286_priv *rt286 = snd_soc_component_get_drvdata(component);
+ 	struct rt274_priv *rt274 = snd_soc_component_get_drvdata(component);
++	bool mic = false;
++	bool hp = false;
++	int status = 0;
 +	int ret;
  
- 	rt286->component = component;
- 	INIT_DELAYED_WORK(&rt286->jack_detect_work, rt286_jack_detect_work);
+ 	rt274->jack = jack;
  
--	if (rt286->i2c->irq)
--		schedule_delayed_work(&rt286->jack_detect_work,
--				      msecs_to_jiffies(50));
-+	if (rt286->i2c->irq) {
-+		ret = request_threaded_irq(rt286->i2c->irq, NULL, rt286_irq,
-+					   IRQF_TRIGGER_HIGH | IRQF_ONESHOT, "rt286", rt286);
-+		if (ret) {
-+			dev_err(&rt286->i2c->dev, "Failed to reguest IRQ: %d\n", ret);
-+			return ret;
-+		}
-+
-+		schedule_delayed_work(&rt286->jack_detect_work, msecs_to_jiffies(50));
-+	}
-+
- 	return 0;
- }
+ 	if (jack == NULL) {
+ 		/* Disable jack detection */
++		disable_irq(rt274->i2c->irq);
+ 		regmap_update_bits(rt274->regmap, RT274_EAPD_GPIO_IRQ_CTRL,
+ 					RT274_IRQ_EN, RT274_IRQ_DIS);
  
-@@ -959,7 +968,12 @@ static void rt286_remove(struct snd_soc_component *component)
- {
- 	struct rt286_priv *rt286 = snd_soc_component_get_drvdata(component);
- 
--	cancel_delayed_work_sync(&rt286->jack_detect_work);
-+	if (rt286->i2c->irq) {
-+		cancel_delayed_work_sync(&rt286->jack_detect_work);
-+
-+		disable_irq(rt286->i2c->irq);
-+		free_irq(rt286->i2c->irq, rt286);
-+	}
- }
- 
- #ifdef CONFIG_PM
-@@ -1232,16 +1246,6 @@ static int rt286_i2c_probe(struct i2c_client *i2c)
- 			RT286_GPIO_CTRL, 0xc, 0x8);
+ 		return 0;
  	}
  
--	if (rt286->i2c->irq) {
--		ret = request_threaded_irq(rt286->i2c->irq, NULL, rt286_irq,
--			IRQF_TRIGGER_HIGH | IRQF_ONESHOT, "rt286", rt286);
--		if (ret != 0) {
--			dev_err(&i2c->dev,
--				"Failed to reguest IRQ: %d\n", ret);
--			return ret;
--		}
--	}
--
- 	ret = devm_snd_soc_register_component(&i2c->dev,
- 				     &soc_component_dev_rt286,
- 				     rt286_dai, ARRAY_SIZE(rt286_dai));
-@@ -1249,24 +1253,12 @@ static int rt286_i2c_probe(struct i2c_client *i2c)
- 	return ret;
++	/* Enable jack detection */
+ 	regmap_update_bits(rt274->regmap, RT274_EAPD_GPIO_IRQ_CTRL,
+ 				RT274_IRQ_EN, RT274_IRQ_EN);
++	enable_irq(rt274->i2c->irq);
+ 
+ 	/* Send an initial report */
+-	rt274_irq(0, rt274);
++	ret = rt274_jack_detect(rt274, &hp, &mic);
++	if (!ret) {
++		if (hp)
++			status |= SND_JACK_HEADPHONE;
++
++		if (mic)
++			status |= SND_JACK_MICROPHONE;
++
++		snd_soc_jack_report(rt274->jack, status, SND_JACK_MICROPHONE | SND_JACK_HEADPHONE);
++	}
+ 
+ 	return 0;
  }
+@@ -984,6 +999,9 @@ static int rt274_probe(struct snd_soc_component *component)
+ 	INIT_DELAYED_WORK(&rt274->jack_detect_work, rt274_jack_detect_work);
  
--static int rt286_i2c_remove(struct i2c_client *i2c)
--{
--	struct rt286_priv *rt286 = i2c_get_clientdata(i2c);
--
--	if (i2c->irq)
--		free_irq(i2c->irq, rt286);
--
--	return 0;
--}
--
--
- static struct i2c_driver rt286_i2c_driver = {
- 	.driver = {
- 		   .name = "rt286",
- 		   .acpi_match_table = ACPI_PTR(rt286_acpi_match),
- 		   },
- 	.probe_new = rt286_i2c_probe,
--	.remove = rt286_i2c_remove,
- 	.id_table = rt286_i2c_id,
- };
- 
+ 	if (rt274->i2c->irq) {
++		/* irq will be enabled in rt274_mic_detect */
++		irq_set_status_flags(rt274->i2c->irq, IRQ_NOAUTOEN);
++
+ 		ret = request_threaded_irq(rt274->i2c->irq, NULL, rt274_irq,
+ 					   IRQF_TRIGGER_HIGH | IRQF_ONESHOT, "rt274", rt274);
+ 		if (ret) {
 -- 
 2.25.1
 
