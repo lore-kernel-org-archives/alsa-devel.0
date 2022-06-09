@@ -4,87 +4,83 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D91E5C433EF
-	for <alsa-devel@archiver.kernel.org>; Thu,  9 Jun 2022 11:20:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 766F5C433EF
+	for <alsa-devel@archiver.kernel.org>; Thu,  9 Jun 2022 12:03:24 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C80441F81;
-	Thu,  9 Jun 2022 13:20:07 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C80441F81
+	by alsa0.perex.cz (Postfix) with ESMTPS id AF0E71AD2;
+	Thu,  9 Jun 2022 14:02:31 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AF0E71AD2
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1654773657;
-	bh=feUkTjimDqdNAZmr88gQJ1wevRsyAEB+J/Arsp6EJSw=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1654776201;
+	bh=bVo+IZZ/zrNBOVcMRZ1EUyzPqU4fA6BEuDtMvThqfWU=;
+	h=From:To:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=N9IHZVdlodCVRmU2o+9UCjf3oYJw1bPz22/l8iqk4zdDrr8oxr8DD/xekMGIHZly9
-	 bx37haWy23lo3AoHExvuP9uc2LipSdj1cNkTceuSx3SwdyStfRwGWxlPePzxcb6Nq4
-	 TQQV+Rc9BEOhGslly5154KptcnjQ33QZFt3RnxTs=
+	b=SPxUMqIGRarj1DA4Zir5V0nz600fR3YXvHIjunHzkl78+8j9WVJP5nHm8cJRa+hqE
+	 NCBja7dQaEbZ3cl6IaDK0CALhwUzkkvVdYZuUz2JH9I/ChkoIFDxU2Y7iBlbohcj0H
+	 Hz+yyzagNuRvcmkddIhBtWHWG3qIsteAlGjTGxX4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id D8C7EF80520;
-	Thu,  9 Jun 2022 13:19:23 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 019FBF804B4;
+	Thu,  9 Jun 2022 14:02:31 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 9A3B5F800E9; Thu,  9 Jun 2022 13:19:22 +0200 (CEST)
-Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com
- [IPv6:2a00:1450:4864:20::32c])
+ id 13CECF804BD; Thu,  9 Jun 2022 14:02:30 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 24DCBF800E9
- for <alsa-devel@alsa-project.org>; Thu,  9 Jun 2022 13:19:15 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 24DCBF800E9
+ by alsa1.perex.cz (Postfix) with ESMTPS id 9D054F80116
+ for <alsa-devel@alsa-project.org>; Thu,  9 Jun 2022 14:02:23 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9D054F80116
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org
- header.b="xBqrNg9K"
-Received: by mail-wm1-x32c.google.com with SMTP id
- l2-20020a05600c4f0200b0039c55c50482so4721647wmq.0
- for <alsa-devel@alsa-project.org>; Thu, 09 Jun 2022 04:19:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
- h=from:to:cc:subject:date:message-id:in-reply-to:references
- :mime-version:content-transfer-encoding;
- bh=+ZJSswCGWMaH9Gz+kOuAf6ytw6vrkr1yTN4Lg9FPtP0=;
- b=xBqrNg9KKVu6SZc1GxgXSEhR+1JZWXAkOge99tA0ORYzfEbChmi+5TViL7TUfnrJPb
- X2DGKMm1z56pyydomoMZS3qB1rGaH7FnuwyV89l79P6jDuAIrU5n+MWZRGq6+Vk2VY92
- 8XE93wJE037IHOlwXYDm9CaBEhz9q5awUjOBK5I6YzOGhryDT+tvBh92Qn6tDBl8yxU8
- tX2O4xlYB1hDQKLsS0NQLcXXWW10Hd/o2EJR38JHI66cyzLK+QiqAagqP034HM1SGu8g
- 5a8f8T7mHgEkjoDOlk0imBzW8SScWBkKuvOxlsNCTN4q5pbT7J1NjQy4oTALU224EhFg
- qRKw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
- :references:mime-version:content-transfer-encoding;
- bh=+ZJSswCGWMaH9Gz+kOuAf6ytw6vrkr1yTN4Lg9FPtP0=;
- b=SE3MeyxnKAgGEHRvqLbBbyV4Ha+sR/b0Nofh01UvwStC5gq7iE05TATCAzIAEw9UGZ
- O7eg5C6j4nGYxzXIt2x9kZN7EXzKp+a/Ks5rVgXlf+Q3/9hhC0psbKjWU3YT9soDdL3s
- Cb/ca+bf8As1AhG7gj9nnFMPy4YKxSxVm/LgVnnVO3TQ7xtWyK7zyut+5vNieaZJn+40
- DNf0ppU+hnaF80OM2TugqScPnpwo6cmA8Q1yh1oKrWsTv1OoMdRiYUtXu80HUama3xLn
- lTwBI8wOugu6/vI3ANe4URvqiHLoiehJ1gNSpjm6pbcck3TzWyIzmCdIWkctHmyUm9TB
- NZ8w==
-X-Gm-Message-State: AOAM5310EejwGqgmLk1nrcsq3hfB1gdBCCWs5YJY3BoYZYQTQkNHO2IK
- LaSC0+PX/LWsaweEBdNAjFYH/Q==
-X-Google-Smtp-Source: ABdhPJw9zn0RkOe5DdDX7WWpabkr6e5Ps+WJTiyo5lJVo1Rp0/Xgi4rkCipV2m0jY4nKsH4ucoVpSQ==
-X-Received: by 2002:a05:600c:a0b:b0:39c:3551:b226 with SMTP id
- z11-20020a05600c0a0b00b0039c3551b226mr2746192wmp.201.1654773554158; 
- Thu, 09 Jun 2022 04:19:14 -0700 (PDT)
-Received: from srini-hackbase.lan
- (cpc90716-aztw32-2-0-cust825.18-1.cable.virginm.net. [86.26.103.58])
- by smtp.gmail.com with ESMTPSA id
- o22-20020a1c7516000000b003942a244ed1sm26477850wmc.22.2022.06.09.04.19.12
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Thu, 09 Jun 2022 04:19:13 -0700 (PDT)
-From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-To: broonie@kernel.org
-Subject: [PATCH 2/2] ASoC: codecs: wcd9335: move gains from SX_TLV to S8_TLV
-Date: Thu,  9 Jun 2022 12:19:01 +0100
-Message-Id: <20220609111901.318047-3-srinivas.kandagatla@linaro.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20220609111901.318047-1-srinivas.kandagatla@linaro.org>
-References: <20220609111901.318047-1-srinivas.kandagatla@linaro.org>
+ dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
+ header.b="G3gSPfJu"; 
+ dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
+ header.b="VIJUQ8wG"
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id F3F2021ED1;
+ Thu,  9 Jun 2022 12:02:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1654776143; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=p1lHFP71791SBAKrwiXAM/qloLw0sEgIhq2fIJp+m5Q=;
+ b=G3gSPfJuQyJq3eEC3b57IExpY/qfzG3M2gjSsCuiI/mnnpMa44vMVY6Qt0kT3LHjGHN7Bj
+ E1kX7GHQJBHSvU1YtivrN1EVjawmEpaXuO7YbXCE2iN91pgYzYnVS+70tQkE8jbgUT0+4h
+ MULYnIWG4eUxLW+Q//vTUBlgsh8c0rw=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1654776143;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=p1lHFP71791SBAKrwiXAM/qloLw0sEgIhq2fIJp+m5Q=;
+ b=VIJUQ8wG3hydgf+hk3rM6PuRVvqvjsNQUbFq1gDmy8vUTpjB/98jnrqR4JyOb7LYEXg+Zr
+ PzimE6pai4ZajhAQ==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id D40C113A8C;
+ Thu,  9 Jun 2022 12:02:22 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+ by imap2.suse-dmz.suse.de with ESMTPSA id WH0LM07hoWL1MAAAMHmgww
+ (envelope-from <tiwai@suse.de>); Thu, 09 Jun 2022 12:02:22 +0000
+From: Takashi Iwai <tiwai@suse.de>
+To: alsa-devel@alsa-project.org
+Subject: [PATCH 2/4] ALSA: control: Rename CONFIG_SND_CTL_VALIDATION to
+ CONFIG_SND_CTL_DEBUG
+Date: Thu,  9 Jun 2022 14:02:17 +0200
+Message-Id: <20220609120219.3937-3-tiwai@suse.de>
+X-Mailer: git-send-email 2.35.3
+In-Reply-To: <20220609120219.3937-1-tiwai@suse.de>
+References: <20220609120219.3937-1-tiwai@suse.de>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: alsa-devel@alsa-project.org, lgirdwood@gmail.com,
- linux-kernel@vger.kernel.org, tiwai@suse.com,
- Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -100,109 +96,85 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-move all the digital gains form using SX_TLV to S8_TLV, these gains are
-actually 8 bit gains with 7th signed bit and ranges from -84dB to +40dB
+The purpose of CONFIG_SND_CTL_VALIDATION is rather to enable the
+debugging feature for the control API.  The validation is only a part
+of it.  Let's rename it to be more explicit and intuitive.
 
-rest of the Qualcomm wcd codecs uses these properly.
+While we're at it, let's advertise, give more comment to recommend
+this feature for development in the kconfig help text.
 
-Fixes: 8c4f021d806a ("ASoC: wcd9335: add basic controls")
-Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/soc/codecs/wcd9335.c | 81 +++++++++++++++++---------------------
- 1 file changed, 36 insertions(+), 45 deletions(-)
+ include/sound/control.h |  2 +-
+ sound/core/Kconfig      | 17 +++++++++++------
+ sound/core/control.c    |  4 ++--
+ 3 files changed, 14 insertions(+), 9 deletions(-)
 
-diff --git a/sound/soc/codecs/wcd9335.c b/sound/soc/codecs/wcd9335.c
-index 617a36a89dfe..6e9c93540f7a 100644
---- a/sound/soc/codecs/wcd9335.c
-+++ b/sound/soc/codecs/wcd9335.c
-@@ -2253,51 +2253,42 @@ static int wcd9335_rx_hph_mode_put(struct snd_kcontrol *kc,
+diff --git a/include/sound/control.h b/include/sound/control.h
+index 985c51a8fb74..fcd3cce673ec 100644
+--- a/include/sound/control.h
++++ b/include/sound/control.h
+@@ -23,7 +23,7 @@ typedef int (snd_kcontrol_tlv_rw_t)(struct snd_kcontrol *kcontrol,
+ 				    unsigned int __user *tlv);
  
- static const struct snd_kcontrol_new wcd9335_snd_controls[] = {
- 	/* -84dB min - 40dB max */
--	SOC_SINGLE_SX_TLV("RX0 Digital Volume", WCD9335_CDC_RX0_RX_VOL_CTL,
--		0, -84, 40, digital_gain),
--	SOC_SINGLE_SX_TLV("RX1 Digital Volume", WCD9335_CDC_RX1_RX_VOL_CTL,
--		0, -84, 40, digital_gain),
--	SOC_SINGLE_SX_TLV("RX2 Digital Volume", WCD9335_CDC_RX2_RX_VOL_CTL,
--		0, -84, 40, digital_gain),
--	SOC_SINGLE_SX_TLV("RX3 Digital Volume", WCD9335_CDC_RX3_RX_VOL_CTL,
--		0, -84, 40, digital_gain),
--	SOC_SINGLE_SX_TLV("RX4 Digital Volume", WCD9335_CDC_RX4_RX_VOL_CTL,
--		0, -84, 40, digital_gain),
--	SOC_SINGLE_SX_TLV("RX5 Digital Volume", WCD9335_CDC_RX5_RX_VOL_CTL,
--		0, -84, 40, digital_gain),
--	SOC_SINGLE_SX_TLV("RX6 Digital Volume", WCD9335_CDC_RX6_RX_VOL_CTL,
--		0, -84, 40, digital_gain),
--	SOC_SINGLE_SX_TLV("RX7 Digital Volume", WCD9335_CDC_RX7_RX_VOL_CTL,
--		0, -84, 40, digital_gain),
--	SOC_SINGLE_SX_TLV("RX8 Digital Volume", WCD9335_CDC_RX8_RX_VOL_CTL,
--		0, -84, 40, digital_gain),
--	SOC_SINGLE_SX_TLV("RX0 Mix Digital Volume",
--			  WCD9335_CDC_RX0_RX_VOL_MIX_CTL,
--			  0, -84, 40, digital_gain),
--	SOC_SINGLE_SX_TLV("RX1 Mix Digital Volume",
--			  WCD9335_CDC_RX1_RX_VOL_MIX_CTL,
--			  0, -84, 40, digital_gain),
--	SOC_SINGLE_SX_TLV("RX2 Mix Digital Volume",
--			  WCD9335_CDC_RX2_RX_VOL_MIX_CTL,
--			  0, -84, 40, digital_gain),
--	SOC_SINGLE_SX_TLV("RX3 Mix Digital Volume",
--			  WCD9335_CDC_RX3_RX_VOL_MIX_CTL,
--			  0, -84, 40, digital_gain),
--	SOC_SINGLE_SX_TLV("RX4 Mix Digital Volume",
--			  WCD9335_CDC_RX4_RX_VOL_MIX_CTL,
--			  0, -84, 40, digital_gain),
--	SOC_SINGLE_SX_TLV("RX5 Mix Digital Volume",
--			  WCD9335_CDC_RX5_RX_VOL_MIX_CTL,
--			  0, -84, 40, digital_gain),
--	SOC_SINGLE_SX_TLV("RX6 Mix Digital Volume",
--			  WCD9335_CDC_RX6_RX_VOL_MIX_CTL,
--			  0, -84, 40, digital_gain),
--	SOC_SINGLE_SX_TLV("RX7 Mix Digital Volume",
--			  WCD9335_CDC_RX7_RX_VOL_MIX_CTL,
--			  0, -84, 40, digital_gain),
--	SOC_SINGLE_SX_TLV("RX8 Mix Digital Volume",
--			  WCD9335_CDC_RX8_RX_VOL_MIX_CTL,
--			  0, -84, 40, digital_gain),
-+	SOC_SINGLE_S8_TLV("RX0 Digital Volume", WCD9335_CDC_RX0_RX_VOL_CTL,
-+			-84, 40, digital_gain),
-+	SOC_SINGLE_S8_TLV("RX1 Digital Volume", WCD9335_CDC_RX1_RX_VOL_CTL,
-+			-84, 40, digital_gain),
-+	SOC_SINGLE_S8_TLV("RX2 Digital Volume", WCD9335_CDC_RX2_RX_VOL_CTL,
-+			-84, 40, digital_gain),
-+	SOC_SINGLE_S8_TLV("RX3 Digital Volume", WCD9335_CDC_RX3_RX_VOL_CTL,
-+			-84, 40, digital_gain),
-+	SOC_SINGLE_S8_TLV("RX4 Digital Volume", WCD9335_CDC_RX4_RX_VOL_CTL,
-+			-84, 40, digital_gain),
-+	SOC_SINGLE_S8_TLV("RX5 Digital Volume", WCD9335_CDC_RX5_RX_VOL_CTL,
-+			-84, 40, digital_gain),
-+	SOC_SINGLE_S8_TLV("RX6 Digital Volume", WCD9335_CDC_RX6_RX_VOL_CTL,
-+			-84, 40, digital_gain),
-+	SOC_SINGLE_S8_TLV("RX7 Digital Volume", WCD9335_CDC_RX7_RX_VOL_CTL,
-+			-84, 40, digital_gain),
-+	SOC_SINGLE_S8_TLV("RX8 Digital Volume", WCD9335_CDC_RX8_RX_VOL_CTL,
-+			-84, 40, digital_gain),
-+	SOC_SINGLE_S8_TLV("RX0 Mix Digital Volume", WCD9335_CDC_RX0_RX_VOL_MIX_CTL,
-+			-84, 40, digital_gain),
-+	SOC_SINGLE_S8_TLV("RX1 Mix Digital Volume", WCD9335_CDC_RX1_RX_VOL_MIX_CTL,
-+			-84, 40, digital_gain),
-+	SOC_SINGLE_S8_TLV("RX2 Mix Digital Volume", WCD9335_CDC_RX2_RX_VOL_MIX_CTL,
-+			-84, 40, digital_gain),
-+	SOC_SINGLE_S8_TLV("RX3 Mix Digital Volume", WCD9335_CDC_RX3_RX_VOL_MIX_CTL,
-+			-84, 40, digital_gain),
-+	SOC_SINGLE_S8_TLV("RX4 Mix Digital Volume", WCD9335_CDC_RX4_RX_VOL_MIX_CTL,
-+			-84, 40, digital_gain),
-+	SOC_SINGLE_S8_TLV("RX5 Mix Digital Volume", WCD9335_CDC_RX5_RX_VOL_MIX_CTL,
-+			-84, 40, digital_gain),
-+	SOC_SINGLE_S8_TLV("RX6 Mix Digital Volume", WCD9335_CDC_RX6_RX_VOL_MIX_CTL,
-+			-84, 40, digital_gain),
-+	SOC_SINGLE_S8_TLV("RX7 Mix Digital Volume", WCD9335_CDC_RX7_RX_VOL_MIX_CTL,
-+			-84, 40, digital_gain),
-+	SOC_SINGLE_S8_TLV("RX8 Mix Digital Volume", WCD9335_CDC_RX8_RX_VOL_MIX_CTL,
-+			-84, 40, digital_gain),
- 	SOC_ENUM("RX INT0_1 HPF cut off", cf_int0_1_enum),
- 	SOC_ENUM("RX INT0_2 HPF cut off", cf_int0_2_enum),
- 	SOC_ENUM("RX INT1_1 HPF cut off", cf_int1_1_enum),
+ /* internal flag for skipping validations */
+-#ifdef CONFIG_SND_CTL_VALIDATION
++#ifdef CONFIG_SND_CTL_DEBUG
+ #define SNDRV_CTL_ELEM_ACCESS_SKIP_CHECK	(1 << 24)
+ #define snd_ctl_skip_validation(info) \
+ 	((info)->access & SNDRV_CTL_ELEM_ACCESS_SKIP_CHECK)
+diff --git a/sound/core/Kconfig b/sound/core/Kconfig
+index dd7b40734723..5bd8c93931b2 100644
+--- a/sound/core/Kconfig
++++ b/sound/core/Kconfig
+@@ -178,14 +178,19 @@ config SND_PCM_XRUN_DEBUG
+ 	  sound clicking when system is loaded, it may help to determine
+ 	  the process or driver which causes the scheduling gaps.
+ 
+-config SND_CTL_VALIDATION
+-	bool "Perform sanity-checks for each control element access"
++config SND_CTL_DEBUG
++	bool "Enable debugging feature for control API"
+ 	depends on SND_DEBUG
+ 	help
+-	  Say Y to enable the additional validation of each control element
+-	  access, including sanity-checks like whether the values returned
+-	  from the driver are in the proper ranges or the check of the invalid
+-	  access at out-of-array areas.
++	  Say Y to enable the debugging feature for ALSA control API.
++	  It performs the additional sanity-checks for each control element
++	  read access, such as whether the values returned from the driver
++	  are in the proper ranges or the check of the invalid access at
++	  out-of-array areas.  The error is printed when the driver gives
++	  such unexpected values.
++	  When you develop a driver that deals with control elements, it's
++	  strongly recommended to try this one once and verify whether you see
++	  any relevant errors or not.
+ 
+ config SND_JACK_INJECTION_DEBUG
+ 	bool "Sound jack injection interface via debugfs"
+diff --git a/sound/core/control.c b/sound/core/control.c
+index a25c0d64d104..21741dc653ed 100644
+--- a/sound/core/control.c
++++ b/sound/core/control.c
+@@ -855,7 +855,7 @@ static const unsigned int value_sizes[] = {
+ 	[SNDRV_CTL_ELEM_TYPE_INTEGER64] = sizeof(long long),
+ };
+ 
+-#ifdef CONFIG_SND_CTL_VALIDATION
++#ifdef CONFIG_SND_CTL_DEBUG
+ /* fill the remaining snd_ctl_elem_value data with the given pattern */
+ static void fill_remaining_elem_value(struct snd_ctl_elem_value *control,
+ 				      struct snd_ctl_elem_info *info,
+@@ -1077,7 +1077,7 @@ static int snd_ctl_elem_read(struct snd_card *card,
+ 
+ 	snd_ctl_build_ioff(&control->id, kctl, index_offset);
+ 
+-#ifdef CONFIG_SND_CTL_VALIDATION
++#ifdef CONFIG_SND_CTL_DEBUG
+ 	/* info is needed only for validation */
+ 	memset(&info, 0, sizeof(info));
+ 	info.id = control->id;
 -- 
-2.25.1
+2.35.3
 
