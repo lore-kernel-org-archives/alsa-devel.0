@@ -4,65 +4,64 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 42058C433EF
-	for <alsa-devel@archiver.kernel.org>; Thu,  9 Jun 2022 03:29:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1DFEBC43334
+	for <alsa-devel@archiver.kernel.org>; Thu,  9 Jun 2022 03:29:58 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 585281FD8;
-	Thu,  9 Jun 2022 05:28:50 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 585281FD8
+	by alsa0.perex.cz (Postfix) with ESMTPS id 380581FE7;
+	Thu,  9 Jun 2022 05:29:06 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 380581FE7
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1654745380;
-	bh=Nncdf/Vvovv6vTjcc2YQESZozAGLNJ/3b1FiyaHTGZY=;
+	s=default; t=1654745396;
+	bh=W8f0kYRtjHBgJoVVyL+K9FYRrpeXMAMm/6D8H0ce1/o=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=pnjvTR2rJwg/9FBAKAxhRCXXMoKeeZnyYGpmdYRt5RCF7zK+JyIlk9nO3aWrWTwMw
-	 OfFX4J01zQVjfYK9fp4HtSuAqnyLwYT9W3KeLCmM6dfc6n8FCU/8sS7pm/wyPXgZ37
-	 ydDgl535YZ2/84Fl8gdL6mpr4EYv8ZAzZwOmqBzk=
+	b=Wwg7p6cVV2t1vHvWwA08ngcctR3tGdZMdDPB/16dY/TEPddZCFhj8pDjR+LGZBcwj
+	 0isuaRqqr5rjOAe1+32autqgHOLOGK6Hmo48UGQrj/pl2KhIiowJIWoczE3BztIO9o
+	 rhAFKQnKQw9ZMfbcGeK2P1fk7P/7FjFm5TbmRXrU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 934E2F8055B;
-	Thu,  9 Jun 2022 05:27:25 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 01BC8F80571;
+	Thu,  9 Jun 2022 05:27:30 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 92017F80527; Thu,  9 Jun 2022 05:27:24 +0200 (CEST)
+ id D3DE7F8052D; Thu,  9 Jun 2022 05:27:26 +0200 (CEST)
 Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 29D1AF80527
- for <alsa-devel@alsa-project.org>; Thu,  9 Jun 2022 05:27:14 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 29D1AF80527
+ by alsa1.perex.cz (Postfix) with ESMTPS id 94F10F8052D
+ for <alsa-devel@alsa-project.org>; Thu,  9 Jun 2022 05:27:15 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 94F10F8052D
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="TePTjvum"
+ header.b="GSP6LPga"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
  t=1654745236; x=1686281236;
  h=from:to:cc:subject:date:message-id:in-reply-to:
  references:mime-version:content-transfer-encoding;
- bh=Nncdf/Vvovv6vTjcc2YQESZozAGLNJ/3b1FiyaHTGZY=;
- b=TePTjvumd2Zd+WZSN44EKI/v0HVAlPxT+tv79tWrRstiZ9aJYIHV3Uc3
- JUd425N1ldIY+4hndLTocWNvPc8tXUfi2DoVTE6Y4MMHfyGHfyjq8ekQ2
- HfmgA6lfPj6G3UqjSJb8MC33OX9zlF+S/yw89U506oVDDqPDtpE9jzd24
- 8GeEwXjtKo+vMR04Zr4e2WnFX9r0mF1tm4yTZJIGleEMe1zDcwcj7bvj5
- VWaWJluhR25dR/nFCK6HcI66I6ouyvQzyR7jaTi4JxtiHuniQoFPE6dDM
- dAXhIvQqHpRuRsoMqoosYBEB7Q8il8AgkEiLsTxZ/RBUlVXlRRkCqajiG A==;
-X-IronPort-AV: E=McAfee;i="6400,9594,10372"; a="341219555"
-X-IronPort-AV: E=Sophos;i="5.91,287,1647327600"; d="scan'208";a="341219555"
+ bh=W8f0kYRtjHBgJoVVyL+K9FYRrpeXMAMm/6D8H0ce1/o=;
+ b=GSP6LPgauWVAlxjTjuEljSGsqQcSeDEKjuTDMjurhb9UrqjZBCxQoMUG
+ o1RqydoCo+gScsAjGus4Y/ES3ryzlaYvtptoC71JLe17A46pzdkYOvjCF
+ HczzqKehF17PpWMKVLYASm8hULRNxFaNldUS1qzss3/nZ7J8LqtwTNyQF
+ j78iwF8T6iClc6K3OlFKsO63P5yFntS2rFCdMefgxy1jrx0PivXuDRWNy
+ KmWy29dm+ZZSpx4/EA+vU6QlzqvY5LlKThkGzhVX4jbv6ZkDK805nZPgP
+ y4SJ6S4orYxYD7weSWUvE/HaWuYQjTfz2CWAwX2bX7d7RJz8cOQj/8yCe A==;
+X-IronPort-AV: E=McAfee;i="6400,9594,10372"; a="341219558"
+X-IronPort-AV: E=Sophos;i="5.91,287,1647327600"; d="scan'208";a="341219558"
 Received: from fmsmga007.fm.intel.com ([10.253.24.52])
  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
  08 Jun 2022 20:26:59 -0700
-X-IronPort-AV: E=Sophos;i="5.91,287,1647327600"; d="scan'208";a="585260236"
+X-IronPort-AV: E=Sophos;i="5.91,287,1647327600"; d="scan'208";a="585260241"
 Received: from mandalag-mobl.amr.corp.intel.com (HELO
  rsridh2-mobl1.localdomain) ([10.254.38.40])
  by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
  08 Jun 2022 20:26:59 -0700
 From: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH 07/23] ASoC: SOF: ipc4-topology: Add support for parsing and
- preparing pga widgets
-Date: Wed,  8 Jun 2022 20:26:27 -0700
-Message-Id: <20220609032643.916882-8-ranjani.sridharan@linux.intel.com>
+Subject: [PATCH 09/23] ASoC: SOF: ipc4-topology: Add control_setup op
+Date: Wed,  8 Jun 2022 20:26:29 -0700
+Message-Id: <20220609032643.916882-10-ranjani.sridharan@linux.intel.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20220609032643.916882-1-ranjani.sridharan@linux.intel.com>
 References: <20220609032643.916882-1-ranjani.sridharan@linux.intel.com>
@@ -72,7 +71,7 @@ Content-Transfer-Encoding: 8bit
 Cc: tiwai@suse.de, Bard Liao <yung-chuan.liao@linux.intel.com>,
  Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
  Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- broonie@kernel.org, Paul Olaru <paul.olaru@oss.nxp.com>,
+ broonie@kernel.org,
  =?UTF-8?q?P=C3=A9ter=20Ujfalusi?= <peter.ujfalusi@linux.intel.com>,
  Rander Wang <rander.wang@linux.intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
@@ -90,9 +89,9 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Add support for parsing and preparing pga type widgets. Define the
-token ID's and the associated token arrays needed to parse these
-widgets.
+Define the control_setup op for IPC4 topology IPC ops to handle the
+volume kcontrol types. Support for other kcontrol types will be added in
+the follow up patches.
 
 Co-developed-by: Rander Wang <rander.wang@linux.intel.com>
 Signed-off-by: Rander Wang <rander.wang@linux.intel.com>
@@ -101,260 +100,83 @@ Signed-off-by: Bard Liao <yung-chuan.liao@linux.intel.com>
 Signed-off-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 Reviewed-by: Péter Ujfalusi <peter.ujfalusi@linux.intel.com>
 Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Reviewed-by: Paul Olaru <paul.olaru@oss.nxp.com>
+Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 ---
- sound/soc/sof/ipc4-topology.c | 113 ++++++++++++++++++++++++++++++++++
- sound/soc/sof/ipc4-topology.h |  60 ++++++++++++++++++
- sound/soc/sof/sof-audio.h     |   1 +
- 3 files changed, 174 insertions(+)
+ sound/soc/sof/ipc4-topology.c | 49 +++++++++++++++++++++++++++++++++++
+ 1 file changed, 49 insertions(+)
 
 diff --git a/sound/soc/sof/ipc4-topology.c b/sound/soc/sof/ipc4-topology.c
-index 1bc5ff0154c5..30549573bd34 100644
+index 35457fe4edd9..0c36b7cb6e79 100644
 --- a/sound/soc/sof/ipc4-topology.c
 +++ b/sound/soc/sof/ipc4-topology.c
-@@ -95,6 +95,16 @@ static const struct sof_topology_token comp_ext_tokens[] = {
- 		offsetof(struct snd_sof_widget, uuid)},
- };
+@@ -15,6 +15,8 @@
+ #include "ipc4-topology.h"
+ #include "ops.h"
  
-+static const struct sof_topology_token gain_tokens[] = {
-+	{SOF_TKN_GAIN_RAMP_TYPE, SND_SOC_TPLG_TUPLE_TYPE_WORD,
-+		get_token_u32, offsetof(struct sof_ipc4_gain_data, curve_type)},
-+	{SOF_TKN_GAIN_RAMP_DURATION,
-+		SND_SOC_TPLG_TUPLE_TYPE_WORD, get_token_u32,
-+		offsetof(struct sof_ipc4_gain_data, curve_duration)},
-+	{SOF_TKN_GAIN_VAL, SND_SOC_TPLG_TUPLE_TYPE_WORD,
-+		get_token_u32, offsetof(struct sof_ipc4_gain_data, init_val)},
-+};
++#define SOF_IPC4_GAIN_PARAM_ID  0
 +
- static const struct sof_token_info ipc4_token_list[SOF_TOKEN_COUNT] = {
- 	[SOF_DAI_TOKENS] = {"DAI tokens", dai_tokens, ARRAY_SIZE(dai_tokens)},
- 	[SOF_PIPELINE_TOKENS] = {"Pipeline tokens", pipeline_tokens, ARRAY_SIZE(pipeline_tokens)},
-@@ -117,6 +127,7 @@ static const struct sof_token_info ipc4_token_list[SOF_TOKEN_COUNT] = {
- 		ARRAY_SIZE(ipc4_copier_tokens)},
- 	[SOF_AUDIO_FMT_NUM_TOKENS] = {"IPC4 Audio format number tokens",
- 		ipc4_audio_fmt_num_tokens, ARRAY_SIZE(ipc4_audio_fmt_num_tokens)},
-+	[SOF_GAIN_TOKENS] = {"Gain tokens", gain_tokens, ARRAY_SIZE(gain_tokens)},
- };
- 
- static void sof_ipc4_dbg_audio_format(struct device *dev,
-@@ -557,6 +568,62 @@ static int sof_ipc4_widget_setup_comp_pipeline(struct snd_sof_widget *swidget)
- 	return ret;
- }
- 
-+static int sof_ipc4_widget_setup_comp_pga(struct snd_sof_widget *swidget)
-+{
-+	struct snd_soc_component *scomp = swidget->scomp;
-+	struct snd_sof_dev *sdev = snd_soc_component_get_drvdata(scomp);
-+	struct sof_ipc4_fw_module *fw_module;
-+	struct snd_sof_control *scontrol;
-+	struct sof_ipc4_gain *gain;
-+	int ret;
-+
-+	gain = kzalloc(sizeof(*gain), GFP_KERNEL);
-+	if (!gain)
-+		return -ENOMEM;
-+
-+	swidget->private = gain;
-+
-+	gain->data.channels = SOF_IPC4_GAIN_ALL_CHANNELS_MASK;
-+	gain->data.init_val = SOF_IPC4_VOL_ZERO_DB;
-+
-+	/* The out_audio_fmt in topology is ignored as it is not required to be sent to the FW */
-+	ret = sof_ipc4_get_audio_fmt(scomp, swidget, &gain->available_fmt, false);
-+	if (ret)
-+		goto err;
-+
-+	ret = sof_update_ipc_object(scomp, &gain->data, SOF_GAIN_TOKENS, swidget->tuples,
-+				    swidget->num_tuples, sizeof(gain->data), 1);
-+	if (ret) {
-+		dev_err(scomp->dev, "Parsing gain tokens failed\n");
-+		goto err;
-+	}
-+
-+	dev_dbg(scomp->dev,
-+		"pga widget %s: ramp type: %d, ramp duration %d, initial gain value: %#x, cpc %d\n",
-+		swidget->widget->name, gain->data.curve_type, gain->data.curve_duration,
-+		gain->data.init_val, gain->base_config.cpc);
-+
-+	ret = sof_ipc4_widget_setup_msg(swidget, &gain->msg);
-+	if (ret)
-+		goto err;
-+
-+	fw_module = swidget->module_info;
-+
-+	/* update module ID for all kcontrols for this widget */
-+	list_for_each_entry(scontrol, &sdev->kcontrol_list, list)
-+		if (scontrol->comp_id == swidget->comp_id) {
-+			struct sof_ipc4_control_data *cdata = scontrol->ipc_control_data;
-+			struct sof_ipc4_msg *msg = &cdata->msg;
-+
-+			msg->primary |= fw_module->man4_module_entry.id;
-+		}
-+
-+	return 0;
-+err:
-+	kfree(gain);
-+	return ret;
-+}
-+
- static void
- sof_ipc4_update_pipeline_mem_usage(struct snd_sof_dev *sdev, struct snd_sof_widget *swidget,
- 				   struct sof_ipc4_base_module_cfg *base_config)
-@@ -874,6 +941,39 @@ sof_ipc4_prepare_copier_module(struct snd_sof_widget *swidget,
+ static const struct sof_topology_token ipc4_sched_tokens[] = {
+ 	{SOF_TKN_SCHED_LP_MODE, SND_SOC_TPLG_TUPLE_TYPE_WORD, get_token_u32,
+ 		offsetof(struct sof_ipc4_pipeline, lp_mode)}
+@@ -1030,6 +1032,52 @@ static int sof_ipc4_prepare_mixer_module(struct snd_sof_widget *swidget,
  	return sof_ipc4_widget_assign_instance_id(sdev, swidget);
  }
  
-+static void sof_ipc4_unprepare_generic_module(struct snd_sof_widget *swidget)
++static int sof_ipc4_control_load_volume(struct snd_sof_dev *sdev, struct snd_sof_control *scontrol)
 +{
-+	struct sof_ipc4_fw_module *fw_module = swidget->module_info;
++	struct sof_ipc4_control_data *control_data;
++	struct sof_ipc4_msg *msg;
++	int i;
 +
-+	ida_free(&fw_module->m_ida, swidget->instance_id);
++	scontrol->size = struct_size(control_data, chanv, scontrol->num_channels);
++
++	/* scontrol->ipc_control_data will be freed in sof_control_unload */
++	scontrol->ipc_control_data = kzalloc(scontrol->size, GFP_KERNEL);
++	if (!scontrol->ipc_control_data)
++		return -ENOMEM;
++
++	control_data = scontrol->ipc_control_data;
++	control_data->index = scontrol->index;
++
++	msg = &control_data->msg;
++	msg->primary = SOF_IPC4_MSG_TYPE_SET(SOF_IPC4_MOD_LARGE_CONFIG_SET);
++	msg->primary |= SOF_IPC4_MSG_DIR(SOF_IPC4_MSG_REQUEST);
++	msg->primary |= SOF_IPC4_MSG_TARGET(SOF_IPC4_MODULE_MSG);
++
++	msg->extension = SOF_IPC4_MOD_EXT_MSG_PARAM_ID(SOF_IPC4_GAIN_PARAM_ID);
++
++	/* set default volume values to 0dB in control */
++	for (i = 0; i < scontrol->num_channels; i++) {
++		control_data->chanv[i].channel = i;
++		control_data->chanv[i].value = SOF_IPC4_VOL_ZERO_DB;
++	}
++
++	return 0;
 +}
 +
-+static int sof_ipc4_prepare_gain_module(struct snd_sof_widget *swidget,
-+					struct snd_pcm_hw_params *fe_params,
-+					struct snd_sof_platform_stream_params *platform_params,
-+					struct snd_pcm_hw_params *pipeline_params, int dir)
++static int sof_ipc4_control_setup(struct snd_sof_dev *sdev, struct snd_sof_control *scontrol)
 +{
-+	struct snd_soc_component *scomp = swidget->scomp;
-+	struct snd_sof_dev *sdev = snd_soc_component_get_drvdata(scomp);
-+	struct sof_ipc4_gain *gain = swidget->private;
-+	int ret;
++	switch (scontrol->info_type) {
++	case SND_SOC_TPLG_CTL_VOLSW:
++	case SND_SOC_TPLG_CTL_VOLSW_SX:
++	case SND_SOC_TPLG_CTL_VOLSW_XR_SX:
++		return sof_ipc4_control_load_volume(sdev, scontrol);
++	default:
++		break;
++	}
 +
-+	gain->available_fmt.ref_audio_fmt = &gain->available_fmt.base_config->audio_fmt;
-+
-+	/* output format is not required to be sent to the FW for gain */
-+	ret = sof_ipc4_init_audio_fmt(sdev, swidget, &gain->base_config,
-+				      NULL, pipeline_params, &gain->available_fmt,
-+				      sizeof(gain->base_config));
-+	if (ret < 0)
-+		return ret;
-+
-+	/* update pipeline memory usage */
-+	sof_ipc4_update_pipeline_mem_usage(sdev, swidget, &gain->base_config);
-+
-+	/* assign instance ID */
-+	return sof_ipc4_widget_assign_instance_id(sdev, swidget);
++	return 0;
 +}
 +
  static enum sof_tokens host_token_list[] = {
  	SOF_COMP_TOKENS,
  	SOF_AUDIO_FMT_NUM_TOKENS,
-@@ -902,6 +1002,15 @@ static enum sof_tokens dai_token_list[] = {
- 	SOF_COMP_EXT_TOKENS,
- };
- 
-+static enum sof_tokens pga_token_list[] = {
-+	SOF_COMP_TOKENS,
-+	SOF_GAIN_TOKENS,
-+	SOF_AUDIO_FMT_NUM_TOKENS,
-+	SOF_AUDIO_FORMAT_BUFFER_SIZE_TOKENS,
-+	SOF_IN_AUDIO_FORMAT_TOKENS,
-+	SOF_COMP_EXT_TOKENS,
-+};
-+
- static const struct sof_ipc_tplg_widget_ops tplg_ipc4_widget_ops[SND_SOC_DAPM_TYPE_COUNT] = {
- 	[snd_soc_dapm_aif_in] =  {sof_ipc4_widget_setup_pcm, sof_ipc4_widget_free_comp_pcm,
- 				  host_token_list, ARRAY_SIZE(host_token_list), NULL,
-@@ -922,6 +1031,10 @@ static const struct sof_ipc_tplg_widget_ops tplg_ipc4_widget_ops[SND_SOC_DAPM_TY
- 	[snd_soc_dapm_scheduler] = {sof_ipc4_widget_setup_comp_pipeline, sof_ipc4_widget_free_comp,
- 				    pipeline_token_list, ARRAY_SIZE(pipeline_token_list), NULL,
- 				    NULL, NULL},
-+	[snd_soc_dapm_pga] = {sof_ipc4_widget_setup_comp_pga, sof_ipc4_widget_free_comp,
-+			      pga_token_list, ARRAY_SIZE(pga_token_list), NULL,
-+			      sof_ipc4_prepare_gain_module,
-+			      sof_ipc4_unprepare_generic_module},
- };
- 
+@@ -1108,4 +1156,5 @@ static const struct sof_ipc_tplg_widget_ops tplg_ipc4_widget_ops[SND_SOC_DAPM_TY
  const struct sof_ipc_tplg_ops ipc4_tplg_ops = {
-diff --git a/sound/soc/sof/ipc4-topology.h b/sound/soc/sof/ipc4-topology.h
-index 5f4c463f329e..060123826db4 100644
---- a/sound/soc/sof/ipc4-topology.h
-+++ b/sound/soc/sof/ipc4-topology.h
-@@ -31,6 +31,9 @@
- #define SOF_IPC4_NODE_INDEX(x)	((x) & SOF_IPC4_NODE_INDEX_MASK)
- #define SOF_IPC4_NODE_TYPE(x)  ((x) << 8)
- 
-+#define SOF_IPC4_GAIN_ALL_CHANNELS_MASK 0xffffffff
-+#define SOF_IPC4_VOL_ZERO_DB	0x7fffffff
-+
- /**
-  * struct sof_ipc4_pipeline - pipeline config data
-  * @priority: Priority of this pipeline
-@@ -128,4 +131,61 @@ struct sof_ipc4_copier {
- 	int dai_index;
+ 	.widget = tplg_ipc4_widget_ops,
+ 	.token_list = ipc4_token_list,
++	.control_setup = sof_ipc4_control_setup,
  };
- 
-+/**
-+ * struct sof_ipc4_ctrl_value_chan: generic channel mapped value data
-+ * @channel: Channel ID
-+ * @value: gain value
-+ */
-+struct sof_ipc4_ctrl_value_chan {
-+	u32 channel;
-+	u32 value;
-+};
-+
-+/**
-+ * struct sof_ipc4_control_data - IPC data for kcontrol IO
-+ * @msg: message structure for kcontrol IO
-+ * @index: pipeline ID
-+ * @chanv: channel ID and value array used by volume type controls
-+ * @data: data for binary kcontrols
-+ */
-+struct sof_ipc4_control_data {
-+	struct sof_ipc4_msg msg;
-+	int index;
-+
-+	union {
-+		struct sof_ipc4_ctrl_value_chan chanv[0];
-+		struct sof_abi_hdr data[0];
-+	};
-+};
-+
-+/**
-+ * struct sof_ipc4_gain_data - IPC gain blob
-+ * @channels: Channels
-+ * @init_val: Initial value
-+ * @curve_type: Curve type
-+ * @reserved: reserved for future use
-+ * @curve_duration: Curve duration
-+ */
-+struct sof_ipc4_gain_data {
-+	uint32_t channels;
-+	uint32_t init_val;
-+	uint32_t curve_type;
-+	uint32_t reserved;
-+	uint32_t curve_duration;
-+} __aligned(8);
-+
-+/**
-+ * struct sof_ipc4_gain - gain config data
-+ * @base_config: IPC base config data
-+ * @data: IPC gain blob
-+ * @available_fmt: Available audio format
-+ * @msg: message structure for gain
-+ */
-+struct sof_ipc4_gain {
-+	struct sof_ipc4_base_module_cfg base_config;
-+	struct sof_ipc4_gain_data data;
-+	struct sof_ipc4_available_audio_format available_fmt;
-+	struct sof_ipc4_msg msg;
-+};
-+
- #endif
-diff --git a/sound/soc/sof/sof-audio.h b/sound/soc/sof/sof-audio.h
-index c38b4bdd685a..d896da1192c5 100644
---- a/sound/soc/sof/sof-audio.h
-+++ b/sound/soc/sof/sof-audio.h
-@@ -232,6 +232,7 @@ enum sof_tokens {
- 	SOF_COPIER_TOKENS,
- 	SOF_AUDIO_FMT_NUM_TOKENS,
- 	SOF_COPIER_FORMAT_TOKENS,
-+	SOF_GAIN_TOKENS,
- 
- 	/* this should be the last */
- 	SOF_TOKEN_COUNT,
 -- 
 2.25.1
 
