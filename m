@@ -4,75 +4,75 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5A1F3C433EF
-	for <alsa-devel@archiver.kernel.org>; Thu,  9 Jun 2022 03:32:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 90C27C43334
+	for <alsa-devel@archiver.kernel.org>; Thu,  9 Jun 2022 03:32:56 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 951F6200F;
-	Thu,  9 Jun 2022 05:31:53 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 951F6200F
+	by alsa0.perex.cz (Postfix) with ESMTPS id D839A1FD8;
+	Thu,  9 Jun 2022 05:32:04 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D839A1FD8
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1654745563;
-	bh=fXTyITA23lhqxG0HwVULqH9IUeYyu7322kpw8Y+QV+A=;
+	s=default; t=1654745574;
+	bh=Z5bQQZMvYNftESw73zkKwskprlgBpLYLchcGwj/y4EI=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=vFQ5zK9zNb/9WlpVmI6WG7k6VsKcAQPnrr3nD3PZWIuUfDAgRfAB5lmSB5PHlYr1t
-	 8EShWBSSgjO6wrKhWvukofb83SS2SksEB+QyY30EDmcIt7d3ykMeUHQbca8kZ88f5M
-	 2kKEd/gu/U2ZTOVDD50EsE3L7OtlGJgL0OPhKn3U=
+	b=sONdByogGCUemy92yARZAi7XT0JcoWZRko6Hd7DwSbmi5ISUSSu3/qcK6h+8cFwTZ
+	 wgS8i3QKiV8jGUFplHJG8k7YMDTks9vUoixrx5zYuzp7f0Ix7hRUiiA1uixoH3gz64
+	 gE9wMy/nX8e7JDoXvBWFAD0EDnW2s1lBMaeVLsqs=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 41B15F805C3;
+	by alsa1.perex.cz (Postfix) with ESMTP id EBBC6F805C7;
 	Thu,  9 Jun 2022 05:27:50 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id CD107F805BA; Thu,  9 Jun 2022 05:27:43 +0200 (CEST)
+ id 9909EF805B5; Thu,  9 Jun 2022 05:27:44 +0200 (CEST)
 Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id EB3C1F80552
- for <alsa-devel@alsa-project.org>; Thu,  9 Jun 2022 05:27:21 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EB3C1F80552
+ by alsa1.perex.cz (Postfix) with ESMTPS id 18E40F804BD
+ for <alsa-devel@alsa-project.org>; Thu,  9 Jun 2022 05:27:20 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 18E40F804BD
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="WZchBfOD"
+ header.b="inBm5onq"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1654745243; x=1686281243;
+ t=1654745242; x=1686281242;
  h=from:to:cc:subject:date:message-id:in-reply-to:
  references:mime-version:content-transfer-encoding;
- bh=fXTyITA23lhqxG0HwVULqH9IUeYyu7322kpw8Y+QV+A=;
- b=WZchBfODUY4rvVX5AOKJkelWHE435fqIE62Dn8+Y/n93fA9x862J6HEo
- twcNhvbD/++EbqcpyOlDSDEdLZAjIr09WGupAxrL8R5JgTod3kaayH5Zs
- gx2OcKjEFijsI3Iieo93kVyM2WqUD/VYRIOOtQIMDwVVjZwAD+Xh0UNBC
- fLony8bALnf57dXPxGtvLdfCagRnj/cbrDAHwe8QW0qXFAW3i9eziYuzN
- pWBpgeKD+i4G3dtyKLt27loqdPG6ZvHJ2BQqWNOYztRiiTKAlQmKT0Kuj
- pJG7mkYpEefT1woH2pNhpOQGce8qyHi3jBetwgvn5+2dz2i8+iNzBsYRq A==;
-X-IronPort-AV: E=McAfee;i="6400,9594,10372"; a="341219569"
-X-IronPort-AV: E=Sophos;i="5.91,287,1647327600"; d="scan'208";a="341219569"
+ bh=Z5bQQZMvYNftESw73zkKwskprlgBpLYLchcGwj/y4EI=;
+ b=inBm5onqJduT2Yu5w72UqvHf6XjRIWTyPX80ODnbSsYniQRWxyU/06IK
+ IWVAWoigtwvFWtnxGYqOedagjhvU4H5rb1F0a6RLYMTyAUa3CEW6od2M0
+ mbCYBijxfP6HGk3tvO+CzXYdFDJEPpBNrEIp96ipwTRBHuXHG1vqpQ9tg
+ JxErsrtyAf0prfQYo/JMICbzJssQ/Lr8Bj7vWrJwJNetCAyIfs4ksxRtK
+ 3CPE6dxwZxxRsX8K/2YhmrHZtzAaPBuA/5OrJR7prW2e2oBBUGucbX9X7
+ 9KIMC5fdo+hhtLHzi5M9b49zXX6GCzRVv45mzs0HXfpngz0E623SDfLCN w==;
+X-IronPort-AV: E=McAfee;i="6400,9594,10372"; a="341219566"
+X-IronPort-AV: E=Sophos;i="5.91,287,1647327600"; d="scan'208";a="341219566"
 Received: from fmsmga007.fm.intel.com ([10.253.24.52])
  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
  08 Jun 2022 20:27:00 -0700
-X-IronPort-AV: E=Sophos;i="5.91,287,1647327600"; d="scan'208";a="585260253"
+X-IronPort-AV: E=Sophos;i="5.91,287,1647327600"; d="scan'208";a="585260249"
 Received: from mandalag-mobl.amr.corp.intel.com (HELO
  rsridh2-mobl1.localdomain) ([10.254.38.40])
  by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
  08 Jun 2022 20:27:00 -0700
 From: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH 18/23] ASoC: SOF: Intel: hda: init NHLT for IPC4
-Date: Wed,  8 Jun 2022 20:26:38 -0700
-Message-Id: <20220609032643.916882-19-ranjani.sridharan@linux.intel.com>
+Subject: [PATCH 16/23] ASoC: SOF: IPC4: set the BE DAI ops
+Date: Wed,  8 Jun 2022 20:26:36 -0700
+Message-Id: <20220609032643.916882-17-ranjani.sridharan@linux.intel.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20220609032643.916882-1-ranjani.sridharan@linux.intel.com>
 References: <20220609032643.916882-1-ranjani.sridharan@linux.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-Cc: tiwai@suse.de, Bard Liao <yung-chuan.liao@linux.intel.com>,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- Ranjani Sridharan <ranjani.sridharan@linux.intel.com>, broonie@kernel.org,
+Cc: tiwai@suse.de,
  =?UTF-8?q?P=C3=A9ter=20Ujfalusi?= <peter.ujfalusi@linux.intel.com>,
- Jaska Uimonen <jaska.uimonen@linux.intel.com>
+ Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ broonie@kernel.org, Bard Liao <yung-chuan.liao@linux.intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -88,171 +88,242 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Init and save the BIOS NHLT as part of the IPC4 FW data.
-Add a kernel module param to override the BIOS NHLT with the NHLT from
-the topology. Also, add the ops_free callback for all HDA platforms to
-free the NHLT.
+Add BE DAI drv ops for IPC4 for DMIC, SSP and HDA type DAI's.
 
-Co-developed-by: Jaska Uimonen <jaska.uimonen@linux.intel.com>
-Signed-off-by: Jaska Uimonen <jaska.uimonen@linux.intel.com>
 Signed-off-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Reviewed-by: Péter Ujfalusi <peter.ujfalusi@linux.intel.com>
 Reviewed-by: Bard Liao <yung-chuan.liao@linux.intel.com>
 ---
- sound/soc/sof/intel/hda-dai.c | 28 ++++++++++++++++++++++++++++
- sound/soc/sof/intel/hda.h     |  1 +
- sound/soc/sof/intel/pci-apl.c |  1 +
- sound/soc/sof/intel/pci-cnl.c |  1 +
- sound/soc/sof/intel/pci-icl.c |  1 +
- sound/soc/sof/intel/pci-tgl.c |  1 +
- sound/soc/sof/ipc4-priv.h     |  2 ++
- 7 files changed, 35 insertions(+)
+ sound/soc/sof/intel/hda-dai.c | 173 +++++++++++++++++++++++++++++++++-
+ 1 file changed, 170 insertions(+), 3 deletions(-)
 
 diff --git a/sound/soc/sof/intel/hda-dai.c b/sound/soc/sof/intel/hda-dai.c
-index 5423667002e5..228079a52c3d 100644
+index 9823230d2ef4..5423667002e5 100644
 --- a/sound/soc/sof/intel/hda-dai.c
 +++ b/sound/soc/sof/intel/hda-dai.c
-@@ -10,6 +10,7 @@
+@@ -10,6 +10,10 @@
  
  #include <sound/pcm_params.h>
  #include <sound/hdaudio_ext.h>
-+#include <sound/intel-nhlt.h>
- #include <sound/sof/ipc4/header.h>
- #include <uapi/sound/sof/header.h>
- #include "../ipc4-priv.h"
-@@ -18,6 +19,14 @@
++#include <sound/sof/ipc4/header.h>
++#include <uapi/sound/sof/header.h>
++#include "../ipc4-priv.h"
++#include "../ipc4-topology.h"
+ #include "../sof-priv.h"
  #include "../sof-audio.h"
  #include "hda.h"
- 
-+/*
-+ * The default method is to fetch NHLT from BIOS. With this parameter set
-+ * it is possible to override that with NHLT in the SOF topology manifest.
-+ */
-+static bool hda_use_tplg_nhlt;
-+module_param_named(sof_use_tplg_nhlt, hda_use_tplg_nhlt, bool, 0444);
-+MODULE_PARM_DESC(sof_use_tplg_nhlt, "SOF topology nhlt override");
-+
- #if IS_ENABLED(CONFIG_SND_SOC_SOF_HDA)
- 
- struct hda_pipe_params {
-@@ -777,6 +786,9 @@ void hda_set_dai_drv_ops(struct snd_sof_dev *sdev, struct snd_sof_dsp_ops *ops)
- 		}
- 		break;
- 	case SOF_INTEL_IPC4:
-+	{
-+		struct sof_ipc4_fw_data *ipc4_data = sdev->private;
-+
- 		for (i = 0; i < ops->num_drv; i++) {
- 			if (strstr(ops->drv[i].name, "DMIC")) {
- 				ops->drv[i].ops = &ipc4_dmic_dai_ops;
-@@ -793,12 +805,28 @@ void hda_set_dai_drv_ops(struct snd_sof_dev *sdev, struct snd_sof_dsp_ops *ops)
- 				ops->drv[i].ops = &ipc4_hda_dai_ops;
- #endif
- 		}
-+
-+		if (!hda_use_tplg_nhlt)
-+			ipc4_data->nhlt = intel_nhlt_init(sdev->dev);
-+
- 		break;
-+	}
- 	default:
- 		break;
- 	}
+@@ -369,8 +373,7 @@ static int hda_dai_config_pause_push_ipc(struct snd_soc_dapm_widget *w)
+ 	return ret;
  }
  
-+void hda_ops_free(struct snd_sof_dev *sdev)
+-static int ipc3_hda_dai_prepare(struct snd_pcm_substream *substream,
+-				struct snd_soc_dai *dai)
++static int hda_dai_prepare(struct snd_pcm_substream *substream, struct snd_soc_dai *dai)
+ {
+ 	struct hdac_ext_stream *hext_stream =
+ 				snd_soc_dai_get_dma_data(dai, substream);
+@@ -438,6 +441,91 @@ static int ipc3_hda_dai_trigger(struct snd_pcm_substream *substream,
+ 	return 0;
+ }
+ 
++/*
++ * In contrast to IPC3, the dai trigger in IPC4 mixes pipeline state changes
++ * (over IPC channel) and DMA state change (direct host register changes).
++ */
++static int ipc4_hda_dai_trigger(struct snd_pcm_substream *substream,
++				int cmd, struct snd_soc_dai *dai)
 +{
-+	if (sdev->pdata->ipc_type == SOF_INTEL_IPC4) {
-+		struct sof_ipc4_fw_data *ipc4_data = sdev->private;
++	struct hdac_ext_stream *hext_stream = snd_soc_dai_get_dma_data(dai, substream);
++	struct snd_sof_dev *sdev = snd_soc_component_get_drvdata(dai->component);
++	struct snd_soc_pcm_runtime *rtd;
++	struct snd_sof_widget *swidget;
++	struct snd_soc_dapm_widget *w;
++	struct snd_soc_dai *codec_dai;
++	struct hdac_stream *hstream;
++	struct snd_soc_dai *cpu_dai;
++	int ret;
 +
-+		if (!hda_use_tplg_nhlt)
-+			intel_nhlt_free(ipc4_data->nhlt);
++	dev_dbg(dai->dev, "%s: cmd=%d dai %s direction %d\n", __func__, cmd,
++		dai->name, substream->stream);
++
++	hstream = substream->runtime->private_data;
++	rtd = asoc_substream_to_rtd(substream);
++	cpu_dai = asoc_rtd_to_cpu(rtd, 0);
++	codec_dai = asoc_rtd_to_codec(rtd, 0);
++
++	w = snd_soc_dai_get_widget(dai, substream->stream);
++	swidget = w->dobj.private;
++
++	switch (cmd) {
++	case SNDRV_PCM_TRIGGER_START:
++	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
++		snd_hdac_ext_link_stream_start(hext_stream);
++		break;
++	case SNDRV_PCM_TRIGGER_SUSPEND:
++	case SNDRV_PCM_TRIGGER_STOP:
++	{
++		struct snd_sof_widget *pipe_widget = swidget->pipe_widget;
++		struct sof_ipc4_pipeline *pipeline = pipe_widget->private;
++
++		ret = sof_ipc4_set_pipeline_state(sdev, swidget->pipeline_id,
++						  SOF_IPC4_PIPE_PAUSED);
++		if (ret < 0)
++			return ret;
++
++		pipeline->state = SOF_IPC4_PIPE_PAUSED;
++
++		snd_hdac_ext_link_stream_clear(hext_stream);
++
++		ret = sof_ipc4_set_pipeline_state(sdev, swidget->pipeline_id,
++						  SOF_IPC4_PIPE_RESET);
++		if (ret < 0)
++			return ret;
++
++		pipeline->state = SOF_IPC4_PIPE_RESET;
++
++		ret = hda_link_dma_cleanup(substream, hstream, cpu_dai, codec_dai, false);
++		if (ret < 0) {
++			dev_err(sdev->dev, "%s: failed to clean up link DMA\n", __func__);
++			return ret;
++		}
++		break;
 +	}
-+}
-+EXPORT_SYMBOL_NS(hda_ops_free, SND_SOC_SOF_INTEL_HDA_COMMON);
++	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
++	{
++		struct snd_sof_widget *pipe_widget = swidget->pipe_widget;
++		struct sof_ipc4_pipeline *pipeline = pipe_widget->private;
 +
- /*
-  * common dai driver for skl+ platforms.
-  * some products who use this DAI array only physically have a subset of
-diff --git a/sound/soc/sof/intel/hda.h b/sound/soc/sof/intel/hda.h
-index 3e0f7b0c586a..59181468e05e 100644
---- a/sound/soc/sof/intel/hda.h
-+++ b/sound/soc/sof/intel/hda.h
-@@ -763,6 +763,7 @@ int hda_ctrl_dai_widget_free(struct snd_soc_dapm_widget *w, unsigned int quirk_f
- extern int sof_hda_position_quirk;
- 
- void hda_set_dai_drv_ops(struct snd_sof_dev *sdev, struct snd_sof_dsp_ops *ops);
-+void hda_ops_free(struct snd_sof_dev *sdev);
- 
- /* IPC4 */
- irqreturn_t cnl_ipc4_irq_thread(int irq, void *context);
-diff --git a/sound/soc/sof/intel/pci-apl.c b/sound/soc/sof/intel/pci-apl.c
-index 2de3658eb817..998e219011f0 100644
---- a/sound/soc/sof/intel/pci-apl.c
-+++ b/sound/soc/sof/intel/pci-apl.c
-@@ -44,6 +44,7 @@ static const struct sof_dev_desc bxt_desc = {
- 	.nocodec_tplg_filename = "sof-apl-nocodec.tplg",
- 	.ops = &sof_apl_ops,
- 	.ops_init = sof_apl_ops_init,
-+	.ops_free = hda_ops_free,
++		ret = sof_ipc4_set_pipeline_state(sdev, swidget->pipeline_id,
++						  SOF_IPC4_PIPE_PAUSED);
++		if (ret < 0)
++			return ret;
++
++		pipeline->state = SOF_IPC4_PIPE_PAUSED;
++
++		snd_hdac_ext_link_stream_clear(hext_stream);
++		break;
++	}
++	default:
++		dev_err(sdev->dev, "%s: unknown trigger command %d\n", __func__, cmd);
++		return -EINVAL;
++	}
++
++	return 0;
++}
++
+ static int hda_dai_hw_free(struct snd_pcm_substream *substream,
+ 			   struct snd_soc_dai *dai)
+ {
+@@ -454,7 +542,7 @@ static const struct snd_soc_dai_ops ipc3_hda_dai_ops = {
+ 	.hw_params = hda_dai_hw_params,
+ 	.hw_free = hda_dai_hw_free,
+ 	.trigger = ipc3_hda_dai_trigger,
+-	.prepare = ipc3_hda_dai_prepare,
++	.prepare = hda_dai_prepare,
  };
  
- static const struct sof_dev_desc glk_desc = {
-diff --git a/sound/soc/sof/intel/pci-cnl.c b/sound/soc/sof/intel/pci-cnl.c
-index 87e587aef9c9..c797356f7028 100644
---- a/sound/soc/sof/intel/pci-cnl.c
-+++ b/sound/soc/sof/intel/pci-cnl.c
-@@ -73,6 +73,7 @@ static const struct sof_dev_desc cfl_desc = {
- 	.nocodec_tplg_filename = "sof-cnl-nocodec.tplg",
- 	.ops = &sof_cnl_ops,
- 	.ops_init = sof_cnl_ops_init,
-+	.ops_free = hda_ops_free,
+ static int hda_dai_suspend(struct hdac_bus *bus)
+@@ -497,6 +585,14 @@ static int hda_dai_suspend(struct hdac_bus *bus)
+ 
+ 	return 0;
+ }
++
++static const struct snd_soc_dai_ops ipc4_hda_dai_ops = {
++	.hw_params = hda_dai_hw_params,
++	.hw_free = hda_dai_hw_free,
++	.trigger = ipc4_hda_dai_trigger,
++	.prepare = hda_dai_prepare,
++};
++
+ #endif
+ 
+ /* only one flag used so far to harden hw_params/hw_free/trigger/prepare */
+@@ -608,6 +704,59 @@ static const struct snd_soc_dai_ops ipc3_ssp_dai_ops = {
+ 	.shutdown = ssp_dai_shutdown,
  };
  
- static const struct sof_dev_desc cml_desc = {
-diff --git a/sound/soc/sof/intel/pci-icl.c b/sound/soc/sof/intel/pci-icl.c
-index 1c7f16ce531e..48f24f8ace26 100644
---- a/sound/soc/sof/intel/pci-icl.c
-+++ b/sound/soc/sof/intel/pci-icl.c
-@@ -45,6 +45,7 @@ static const struct sof_dev_desc icl_desc = {
- 	.nocodec_tplg_filename = "sof-icl-nocodec.tplg",
- 	.ops = &sof_icl_ops,
- 	.ops_init = sof_icl_ops_init,
-+	.ops_free = hda_ops_free,
- };
- 
- static const struct sof_dev_desc jsl_desc = {
-diff --git a/sound/soc/sof/intel/pci-tgl.c b/sound/soc/sof/intel/pci-tgl.c
-index 58a9bd92a237..ccc44ba3ad94 100644
---- a/sound/soc/sof/intel/pci-tgl.c
-+++ b/sound/soc/sof/intel/pci-tgl.c
-@@ -73,6 +73,7 @@ static const struct sof_dev_desc tglh_desc = {
- 	.nocodec_tplg_filename = "sof-tgl-nocodec.tplg",
- 	.ops = &sof_tgl_ops,
- 	.ops_init = sof_tgl_ops_init,
-+	.ops_free = hda_ops_free,
- };
- 
- static const struct sof_dev_desc ehl_desc = {
-diff --git a/sound/soc/sof/ipc4-priv.h b/sound/soc/sof/ipc4-priv.h
-index 8dddceaf5eb3..9492fe1796c2 100644
---- a/sound/soc/sof/ipc4-priv.h
-+++ b/sound/soc/sof/ipc4-priv.h
-@@ -18,11 +18,13 @@
-  * @manifest_fw_hdr_offset: FW header offset in the manifest
-  * @num_fw_modules : Number of modules in base FW
-  * @fw_modules: Array of base FW modules
-+ * @nhlt: NHLT table either from the BIOS or the topology manifest
-  */
- struct sof_ipc4_fw_data {
- 	u32 manifest_fw_hdr_offset;
- 	int num_fw_modules;
- 	void *fw_modules;
-+	void *nhlt;
- };
- 
- /**
++static int ipc4_be_dai_trigger(struct snd_pcm_substream *substream,
++			       int cmd, struct snd_soc_dai *dai)
++{
++	struct snd_sof_widget *pipe_widget;
++	struct sof_ipc4_pipeline *pipeline;
++	struct snd_sof_widget *swidget;
++	struct snd_soc_dapm_widget *w;
++	struct snd_sof_dev *sdev;
++	int ret;
++
++	w = snd_soc_dai_get_widget(dai, substream->stream);
++	swidget = w->dobj.private;
++	pipe_widget = swidget->pipe_widget;
++	pipeline = pipe_widget->private;
++	sdev = snd_soc_component_get_drvdata(swidget->scomp);
++
++	switch (cmd) {
++	case SNDRV_PCM_TRIGGER_SUSPEND:
++	case SNDRV_PCM_TRIGGER_STOP:
++		ret = sof_ipc4_set_pipeline_state(sdev, swidget->pipeline_id,
++						  SOF_IPC4_PIPE_PAUSED);
++		if (ret < 0)
++			return ret;
++		pipeline->state = SOF_IPC4_PIPE_PAUSED;
++
++		ret = sof_ipc4_set_pipeline_state(sdev, swidget->pipeline_id,
++						  SOF_IPC4_PIPE_RESET);
++		if (ret < 0)
++			return ret;
++		pipeline->state = SOF_IPC4_PIPE_RESET;
++		break;
++	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
++		ret = sof_ipc4_set_pipeline_state(sdev, swidget->pipeline_id,
++						  SOF_IPC4_PIPE_PAUSED);
++		if (ret < 0)
++			return ret;
++		pipeline->state = SOF_IPC4_PIPE_PAUSED;
++		break;
++	default:
++		break;
++	}
++
++	return 0;
++}
++
++static const struct snd_soc_dai_ops ipc4_dmic_dai_ops = {
++	.trigger = ipc4_be_dai_trigger,
++};
++
++static const struct snd_soc_dai_ops ipc4_ssp_dai_ops = {
++	.trigger = ipc4_be_dai_trigger,
++};
++
+ void hda_set_dai_drv_ops(struct snd_sof_dev *sdev, struct snd_sof_dsp_ops *ops)
+ {
+ 	int i;
+@@ -624,6 +773,24 @@ void hda_set_dai_drv_ops(struct snd_sof_dev *sdev, struct snd_sof_dsp_ops *ops)
+ 			    strstr(ops->drv[i].name, "Analog") ||
+ 			    strstr(ops->drv[i].name, "Digital"))
+ 				ops->drv[i].ops = &ipc3_hda_dai_ops;
++#endif
++		}
++		break;
++	case SOF_INTEL_IPC4:
++		for (i = 0; i < ops->num_drv; i++) {
++			if (strstr(ops->drv[i].name, "DMIC")) {
++				ops->drv[i].ops = &ipc4_dmic_dai_ops;
++				continue;
++			}
++			if (strstr(ops->drv[i].name, "SSP")) {
++				ops->drv[i].ops = &ipc4_ssp_dai_ops;
++				continue;
++			}
++#if IS_ENABLED(CONFIG_SND_SOC_SOF_HDA)
++			if (strstr(ops->drv[i].name, "iDisp") ||
++			    strstr(ops->drv[i].name, "Analog") ||
++			    strstr(ops->drv[i].name, "Digital"))
++				ops->drv[i].ops = &ipc4_hda_dai_ops;
+ #endif
+ 		}
+ 		break;
 -- 
 2.25.1
 
