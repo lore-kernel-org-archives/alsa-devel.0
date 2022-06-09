@@ -4,101 +4,100 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4DC40C433EF
-	for <alsa-devel@archiver.kernel.org>; Fri, 10 Jun 2022 06:42:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id EAC82C43334
+	for <alsa-devel@archiver.kernel.org>; Fri, 10 Jun 2022 06:42:39 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 95B3A1F55;
-	Fri, 10 Jun 2022 08:41:35 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 95B3A1F55
+	by alsa0.perex.cz (Postfix) with ESMTPS id 410A11EE2;
+	Fri, 10 Jun 2022 08:41:48 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 410A11EE2
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1654843345;
-	bh=YmnQmx0dlzflXivlNhp/Ycmw6waFmKpktyHcN3MNZb0=;
-	h=Date:In-Reply-To:References:Subject:From:To:Cc:List-Id:
+	s=default; t=1654843358;
+	bh=vaD1tsM8gOQSarLK5UH/NlerAopOvn5SLBojh+0trMk=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=blDK9RA7g+zkaEvcRcie3YDGGfPGY/hu5KvcKNWsn4GYaUXV4i4LQGbukF6Gi/uCt
-	 +KF7/7MINca3Im1yWwv/T7J0pRpmL/mij23haSOwQ0u3TJwoSpGaZCqrAw4Bs5axjI
-	 TmT2vgqwl0riSdH3iAfxBpNI89vCUPFmGhmIjtbw=
+	b=Io5xOeNnERbTQPXVH3D3aj0CE6PCzODuBabwxVUvhGeFOQNx0ccJ3Wd7w0Q6kZxiD
+	 H8l3ZQDi3KZJuWeAdskL3Gow+1Vsnp5lVMANeP1+ttXXFiXCgWL8gOeLLdKoalYq2m
+	 UuEN9wBdX90UNZq9yj2XG4pRg99hk64qV5AnjEVQ=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 6B959F80587;
-	Fri, 10 Jun 2022 08:37:51 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 1AD36F80588;
+	Fri, 10 Jun 2022 08:37:52 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id AC587F801F5; Fri, 10 Jun 2022 00:21:53 +0200 (CEST)
-Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com
- [IPv6:2607:f8b0:4864:20::1149])
+ id 296BCF800C7; Fri, 10 Jun 2022 00:49:42 +0200 (CEST)
+Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com
+ [IPv6:2a00:1450:4864:20::136])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 1ED90F800E9
- for <alsa-devel@alsa-project.org>; Fri, 10 Jun 2022 00:21:50 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1ED90F800E9
+ by alsa1.perex.cz (Postfix) with ESMTPS id D24BEF800E9
+ for <alsa-devel@alsa-project.org>; Fri, 10 Jun 2022 00:49:35 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D24BEF800E9
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=google.com header.i=@google.com
- header.b="E9tSuZ6h"
-Received: by mail-yw1-x1149.google.com with SMTP id
- 00721157ae682-30974094b5cso213546767b3.20
- for <alsa-devel@alsa-project.org>; Thu, 09 Jun 2022 15:21:50 -0700 (PDT)
+ header.b="h+XSjN/W"
+Received: by mail-lf1-x136.google.com with SMTP id c2so20765689lfk.0
+ for <alsa-devel@alsa-project.org>; Thu, 09 Jun 2022 15:49:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=20210112;
- h=date:in-reply-to:message-id:mime-version:references:subject:from:to
- :cc; bh=yboyFArx2lHvBt01l8NpldAEI3xLVVvkRY3YCO31PQs=;
- b=E9tSuZ6hKkd5R9UrAClvzMvLuSapw21MRvFh9K5m/Q4W/Ne6NP2WMWfSPzasz8wKZX
- Mng11d6Obxtbq83lWoSaFsdBiVCu3gb6X9dNoHMi3E7qOKWwZUm9cJAU6WOY5s+S4WcD
- k0KWGk2jmTkZOAqD94Ix96O/6kgOmQ/r+QpHomefwKvJ5cV0MNofmxceF2lXxoFWF6gg
- j5Cs7IkuMhKv2Pf+5++JwO5hcoMx6SP3if8FmA4NjIla9U/uK2//v1BfU0Tfe7AV8KrT
- Ey/sE8DleSJieRPHEDBL1hPn4naIWW02H/aWpnYArbukY4zZLmv4GV2t/e5g12dM+Qzj
- ZcQg==
+ h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+ :cc; bh=OAj7kkMIiekJ9rTKt4JAtAfIGa2quITOg+UqYlGq1Vc=;
+ b=h+XSjN/WVesJqDJFOPBbUOjCsElze90l5AUaZpaMfQE4BCHJP6262qTzyHWJva9Bl7
+ Ylea2b1VMRtuu3W6K04USb5N4DyE9/FJG1TJX23DJAAyMpmTkNe0IhcujfXyw2tL6Yzm
+ 5AoAwHI63jQHxPEb7KgmYY7AsIWc/AhRsgnJ71aDa/ZsS0NcL3wur4vFJaN8UMyAklRE
+ aEGCgipKXq1q5OQuT+b1/Z3ZAjDVwg+cOz821DhKZdc3CbTWkxewf2eBhHZ6cA8kCpl2
+ vQoxv4lOBXpPPrGtb7sLkscBoEWxzlYML194UCnlDBfFSziOT58BYv12MhyX6zYq7k9Z
+ Vkrg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
- h=x-gm-message-state:date:in-reply-to:message-id:mime-version
- :references:subject:from:to:cc;
- bh=yboyFArx2lHvBt01l8NpldAEI3xLVVvkRY3YCO31PQs=;
- b=pm/9H/+F7ULV1gwZ19BHi4HIhb8MXVDXjyOkkY1L+OfvlFl7m9CACOt/PHzDB2kbf1
- sgT67ehF8jAortSv1ZxF96LVQxqekqjcKirpe+tBSaYPhVrTSD0MJYONhNlsek2pmHu/
- dsKAMP8k9Jx/nd5A4XfEeV4iN0L7awCAjWlSjFpmde+EKg+29XZVRJS0Qf8Nua/yf2TS
- u9x9n+VdoiJkv1jZd/VqooBshnOK0anJGmX7aD7IjZWp5E15Xd29niDurBc1vBhaiQt1
- xnRmi+dYUqSmeqcZVk60wLTwVw0BwKvI4G6WAyDmgAP2clWT+oc7cOB44xvHx4f7p3C6
- PkPQ==
-X-Gm-Message-State: AOAM532WR/U+9Ye/UWQm9kfycH/UGUBcy84yCDmiiQlniLxoIOOPktuL
- WWg/RTOK7P5SqyTixR65F+95V7DH
-X-Google-Smtp-Source: ABdhPJzx/fiV7355Fpicwsezz0b2tB8XbCEkcbb8KPwyuPviI/0AOw7BwG+AXnNZJgmFqRPAiS2WX3p4fQ==
-X-Received: from fawn.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5795])
- (user=morbo job=sendgmr) by 2002:a81:c248:0:b0:313:3c2c:89cd with
- SMTP id
- t8-20020a81c248000000b003133c2c89cdmr17003210ywg.175.1654813309307; Thu, 09
- Jun 2022 15:21:49 -0700 (PDT)
-Date: Thu,  9 Jun 2022 22:16:31 +0000
-In-Reply-To: <20220609221702.347522-1-morbo@google.com>
-Message-Id: <20220609221702.347522-13-morbo@google.com>
-Mime-Version: 1.0
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc;
+ bh=OAj7kkMIiekJ9rTKt4JAtAfIGa2quITOg+UqYlGq1Vc=;
+ b=eblkZZiRuuIz9sYlztyGCPk3Hxw1/BwBfzYsyasb2t+uWWAw4Ug5Xr9VqQpk/xycnd
+ DjGiYsFcJFQdDfyvXU1TA4sk1Dp+esZpcw9bnO1BIsmvOeRr8Gmjw4MvNYYcz5Owfvz5
+ kqAZCQY2ngT3WgEIKYmv1KKjV5Ju51ih4SOEmGOJ2WBogeDeVIykrky8X6CkP/3eHA+f
+ rHw9J23gLT6eEOc3gEUodBNWstN8+Chmvqwc0fq8bOen8RFL5cItIy0PLWesOlA47H4N
+ SAwkCUOrrhNBFXit8wRKAXOhL9J2IOSh/eXJ+sQpp5n+LteLen/pCIPeaAH3j8SUFFfn
+ k+eQ==
+X-Gm-Message-State: AOAM531i1QmjSBJUtY7LenSLOQCUdFEyutTFWSLW/HI9NZ3ZtyCAApFU
+ sofmn7SBV0rbUcErDM9aXUhNp1YQyg0qehfgKPb6
+X-Google-Smtp-Source: ABdhPJxZXTnzcCwuX2K8dXo0GsWxPjCKHZ8xLR+ukHeOsc32GB8PW2KE6FFGhS4Nls3KDQ2FUv5nfKYIhCIQyfCKYvU=
+X-Received: by 2002:a05:6512:114e:b0:479:1e02:9318 with SMTP id
+ m14-20020a056512114e00b004791e029318mr20896704lfg.156.1654814973186; Thu, 09
+ Jun 2022 15:49:33 -0700 (PDT)
+MIME-Version: 1.0
 References: <20220609221702.347522-1-morbo@google.com>
-X-Mailer: git-send-email 2.36.1.476.g0c4daa206d-goog
-Subject: [PATCH 12/12] netfilter: conntrack: use correct format characters
+ <20220609152527.4ad7862d4126e276e6f76315@linux-foundation.org>
+In-Reply-To: <20220609152527.4ad7862d4126e276e6f76315@linux-foundation.org>
 From: Bill Wendling <morbo@google.com>
-To: isanbard@gmail.com
+Date: Thu, 9 Jun 2022 15:49:21 -0700
+Message-ID: <CAGG=3QXDt9AeCQOAp1311POFRSByJru4=Q=oFiQn3u2iZYk2_w@mail.gmail.com>
+Subject: Re: [PATCH 00/12] Clang -Wformat warning fixes
+To: Andrew Morton <akpm@linux-foundation.org>
 Content-Type: text/plain; charset="UTF-8"
-X-Mailman-Approved-At: Fri, 10 Jun 2022 08:37:37 +0200
-Cc: alsa-devel@alsa-project.org, x86@kernel.org,
+X-Mailman-Approved-At: Fri, 10 Jun 2022 08:37:38 +0200
+Cc: alsa-devel@alsa-project.org,
+ "maintainer:X86 ARCHITECTURE \(32-BIT AND 64-BIT\)" <x86@kernel.org>,
  Nick Desaulniers <ndesaulniers@google.com>,
  Dave Hansen <dave.hansen@linux.intel.com>,
  Phillip Potter <phil@philpotter.co.uk>, linux-mm@kvack.org,
- Eric Dumazet <edumazet@google.com>, netdev@vger.kernel.org,
- "H. Peter Anvin" <hpa@zytor.com>, Daniel Kiper <daniel.kiper@oracle.com>,
+ Eric Dumazet <edumazet@google.com>, Networking <netdev@vger.kernel.org>,
+ "H. Peter Anvin" <hpa@zytor.com>, Bill Wendling <isanbard@gmail.com>,
+ Daniel Kiper <daniel.kiper@oracle.com>,
  "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
- Jozsef Kadlecsik <kadlec@netfilter.org>, linux-acpi@vger.kernel.org,
+ Jozsef Kadlecsik <kadlec@netfilter.org>,
+ ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
  Ingo Molnar <mingo@redhat.com>, Tom Rix <trix@redhat.com>,
  Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
- Pablo Neira Ayuso <pablo@netfilter.org>, llvm@lists.linux.dev,
- coreteam@netfilter.org, Arnd Bergmann <arnd@arndb.de>,
- Ross Philipson <ross.philipson@oracle.com>,
+ Pablo Neira Ayuso <pablo@netfilter.org>,
+ clang-built-linux <llvm@lists.linux.dev>, coreteam@netfilter.org,
+ Arnd Bergmann <arnd@arndb.de>, Ross Philipson <ross.philipson@oracle.com>,
  Nathan Chancellor <nathan@kernel.org>, Borislav Petkov <bp@alien8.de>,
  Thomas Gleixner <tglx@linutronix.de>, linux-edac@vger.kernel.org,
  Tony Luck <tony.luck@intel.com>,
  Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
  Florian Westphal <fw@strlen.de>, Takashi Iwai <tiwai@suse.com>,
- linux-kernel@vger.kernel.org, netfilter-devel@vger.kernel.org,
- Jan Kara <jack@suse.com>, Andrew Morton <akpm@linux-foundation.org>,
- "David S. Miller" <davem@davemloft.net>
+ LKML <linux-kernel@vger.kernel.org>, netfilter-devel@vger.kernel.org,
+ Jan Kara <jack@suse.com>, "David S. Miller" <davem@davemloft.net>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -114,35 +113,36 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Bill Wendling <isanbard@gmail.com>
+On Thu, Jun 9, 2022 at 3:25 PM Andrew Morton <akpm@linux-foundation.org> wrote:
+>
+> On Thu,  9 Jun 2022 22:16:19 +0000 Bill Wendling <morbo@google.com> wrote:
+>
+> > This patch set fixes some clang warnings when -Wformat is enabled.
+> >
+>
+> tldr:
+>
+> -       printk(msg);
+> +       printk("%s", msg);
+>
+> the only reason to make this change is where `msg' could contain a `%'.
+> Generally, it came from userspace.
 
-When compiling with -Wformat, clang emits the following warnings:
+It helps kernel developers not accidentally to insert an unescaped '%'
+in their messages, potentially exposing their code to an attack
+vector.
 
-net/netfilter/nf_conntrack_helper.c:168:18: error: format string is not a string literal (potentially insecure) [-Werror,-Wformat-security]
-                request_module(mod_name);
-                               ^~~~~~~~
+> Otherwise these changes are a
+> useless consumer of runtime resources.
 
-Use a string literal for the format string.
+Calling a "printf" style function is already insanely expensive. :-) I
+understand that it's not okay blithely to increase runtime resources
+simply because it's already slow, but in this case it's worthwhile.
 
-Link: https://github.com/ClangBuiltLinux/linux/issues/378
-Signed-off-by: Bill Wendling <isanbard@gmail.com>
----
- net/netfilter/nf_conntrack_helper.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+> I think it would be better to quieten clang in some fashion.
 
-diff --git a/net/netfilter/nf_conntrack_helper.c b/net/netfilter/nf_conntrack_helper.c
-index c12a87ebc3ee..1e0424d37abc 100644
---- a/net/netfilter/nf_conntrack_helper.c
-+++ b/net/netfilter/nf_conntrack_helper.c
-@@ -165,7 +165,7 @@ nf_nat_helper_try_module_get(const char *name, u16 l3num, u8 protonum)
- 	if (!nat) {
- 		snprintf(mod_name, sizeof(mod_name), "%s", h->nat_mod_name);
- 		rcu_read_unlock();
--		request_module(mod_name);
-+		request_module("%s", mod_name);
- 
- 		rcu_read_lock();
- 		nat = nf_conntrack_nat_helper_find(mod_name);
--- 
-2.36.1.255.ge46751e96f-goog
+The "printk" and similar functions all have the "__printf" attribute.
+I don't know of a modification to that attribute which can turn off
+this type of check.
 
+-bw
