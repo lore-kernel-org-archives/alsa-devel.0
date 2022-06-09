@@ -4,77 +4,76 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3B38CC43334
-	for <alsa-devel@archiver.kernel.org>; Fri, 10 Jun 2022 06:44:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4E996C433EF
+	for <alsa-devel@archiver.kernel.org>; Fri, 10 Jun 2022 06:44:32 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 7CF2520A6;
-	Fri, 10 Jun 2022 08:43:24 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7CF2520A6
+	by alsa0.perex.cz (Postfix) with ESMTPS id 95D7020B4;
+	Fri, 10 Jun 2022 08:43:40 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 95D7020B4
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1654843454;
-	bh=HsBigjZ1XPrObeLq0ACCEwoyMPqii346Wm3pqYqs14U=;
+	s=default; t=1654843470;
+	bh=FzjMUMNJro7aLtA5JDb6o9RZ8s5VOEmKWDmXx3maUFs=;
 	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=gFJ5iMT60qcaLjufBiIxTbVoWcYchLtVx7TvdmSTKrjSPC9ADvI3AnMs5YaB2fLOB
-	 hXuVbWdagb9zM5LT33Kgp+draj4L7172EORsueeTnw0H/hXR9aR0WssfvE6E9910v1
-	 GnUsZaxg3unqCTOYA760B5LOiPAYFf8tTGGM2d+0=
+	b=bqdeDAmBgD31O0goGgUJ51ey9cXdsqZUBfAyRrBKG9fKcEF+dbrTV/sUzIXTqDgoP
+	 tIM5FfX+wqmcOwhCsufVFnyvhrKWJrxRuEL33y9FivNMzWiRr2UeRHylAhrMQz1b0Q
+	 ntc59EWKUsXRGcI34OII+8qRyCnAbLN2VR0hh28U=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 21B02F805C2;
+	by alsa1.perex.cz (Postfix) with ESMTP id 8C670F805C8;
 	Fri, 10 Jun 2022 08:37:56 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 6BBE6F801F5; Fri, 10 Jun 2022 01:16:39 +0200 (CEST)
-Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com
- [IPv6:2a00:1450:4864:20::12b])
+ id 6118EF801F5; Fri, 10 Jun 2022 01:18:52 +0200 (CEST)
+Received: from mail-lj1-x22c.google.com (mail-lj1-x22c.google.com
+ [IPv6:2a00:1450:4864:20::22c])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 5A932F800C7
- for <alsa-devel@alsa-project.org>; Fri, 10 Jun 2022 01:16:29 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5A932F800C7
+ by alsa1.perex.cz (Postfix) with ESMTPS id 173AAF80116
+ for <alsa-devel@alsa-project.org>; Fri, 10 Jun 2022 01:18:45 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 173AAF80116
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=google.com header.i=@google.com
- header.b="Ild0j7K/"
-Received: by mail-lf1-x12b.google.com with SMTP id s6so40226072lfo.13
- for <alsa-devel@alsa-project.org>; Thu, 09 Jun 2022 16:16:29 -0700 (PDT)
+ header.b="qsw/gp8R"
+Received: by mail-lj1-x22c.google.com with SMTP id c30so11215796ljr.9
+ for <alsa-devel@alsa-project.org>; Thu, 09 Jun 2022 16:18:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=20210112;
  h=mime-version:references:in-reply-to:from:date:message-id:subject:to
- :cc; bh=+qQsabkwxRvA8bdaAfDmJWrhJnuevA/KFdg/I1GgKtI=;
- b=Ild0j7K/fhaVoC0PM7iI7pWdMAhRoR7/W2DRfNt0y6B95s4E9BAdtVXpgi3bEW9uNf
- AG1lgqOnQ2uv5vAvry2j8xPExVeLJ3BYnAE/tN+xXqHuPln6DSb5D7skU1STvZI/NDhW
- jtR8Pxq27ZSax7URoP+iTQwlBmGjk0LFf4D0uom1Imt1fNNlM84d4KYNh2dTlJaTBsbT
- JVm5nxYhNIVv0OxKdscaj9QMvA2PvsOaMEbHHEGSiRoofkVzd7gclfaU8PJEykQKLQma
- 53nit31M3stTWvFisr1YokQQjCrMXni13o6jwb6NDhQT5srtIccNwD3iLK4QBnuEEitd
- 6fKg==
+ :cc; bh=af6354Q+PYtjAeTE1fHxbOWk4spb0xe2rddSt4jQNw0=;
+ b=qsw/gp8RDQr7TxcFAw67QADvplw4M8CuLpbXwYePEvTc9gyloRoNkLA0/65LPS2PHG
+ lwvUx0Vk5tnQau+/eN+yj4vNNvEwrbFYrLKwsm69bjXQ0R4nOllOmIVjbhrvEDyLI/wP
+ oUAGxwYePVYRcuzvMPpwS/H20SN6RBqtDq3M/sIFmsPVSQfFBqjqsQ4YrUJFt60H+vrG
+ /vbIkayBKj2NafmzkfPK5WFIV3Pwo6mzHcJ+8+5Fy+N2x3QXFf68sSVrj/uvcZRdIojW
+ qhr4netPBQEp3dEnvthXme6ipHwfVm1f0OwUWXWzeGYvw+rVPOiGjeTn1JUKCz0o06hy
+ xlcw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
  h=x-gm-message-state:mime-version:references:in-reply-to:from:date
  :message-id:subject:to:cc;
- bh=+qQsabkwxRvA8bdaAfDmJWrhJnuevA/KFdg/I1GgKtI=;
- b=QZA7JUyOB7VGpa2QAcvH4E8mKL9Jm8875j+HladNfOxrJdFTM3uoMTCKTBXaOh3Xw9
- NMEBsh2gTQX0u5ayFSU/qVr1qmeJjAwARNMlni/p4ZOhtjNtHg96/zyjQRRmzxnmB3fW
- vV7WmZV1Jx8NgQ9GRW37D1q8i6M6n+lE6qrknD/mM9prIp2MOs60XeWlZSgWTYPsIZtP
- WiMIKZCu5+Jb1L0N48SgtX0ijrhDpiTp5pIF4f0Ze6yGZx+AJMBZNA3i9n+qrTqcOs1x
- EFutnMIzuJmdY03UJFAsIGcIh7zOFc5xT+3RVTgqSIRfjbzhFgmQ7fCRBfHlvSjXq3AV
- QKxA==
-X-Gm-Message-State: AOAM531DNAHcU031diwVccrgrH1s7qJNCGOz9+o3GVUTq7qPj4EuB9rc
- WgAmL6eHFO0XB009nfYX6Gd4ISe7ojk8SCGDhRSs
-X-Google-Smtp-Source: ABdhPJxylpDJBi9Oyjp7yXKp6FA+T0ynmXHzLKYVD27usilZLqbUqbJzR3v4r67aMe0WXL7WusF4sc80jjd/QAokEMo=
-X-Received: by 2002:a05:6512:280a:b0:47a:e70d:63e9 with SMTP id
- cf10-20020a056512280a00b0047ae70d63e9mr5068916lfb.288.1654816587358; Thu, 09
- Jun 2022 16:16:27 -0700 (PDT)
+ bh=af6354Q+PYtjAeTE1fHxbOWk4spb0xe2rddSt4jQNw0=;
+ b=sYuN5khO5r0uf3w5xtwZGMxiKWdUkzMMr9jTPcpI5RxSH87IZdPC0QLUY6yO7Kw9GL
+ 05hiZ6ENnNptymljlECRJ1Kl6uHAV+A+P0NLOWdItpStD6TemxcGCSBZNFKz8YQHl3oE
+ A4/AeYnwKg54DZAt8Pl23+mTkSDfT2KWWQ5jz0Po+Io97gKSwy27Db72tMuo0sYhq9SX
+ YGCAeAnphHQCxhzCkQdOoBCiu9YGrwBVsEAYswUydIwS35OVF7WD/EK+rcmHYSp4/HJu
+ eJJpIjsRuWQUTYYkW9KHvnA5rG8zBjVH3dyCs40CtSO3TX2WhxVhy4KBgBpE3z+tQRtx
+ 8A2Q==
+X-Gm-Message-State: AOAM530uNnVt1fAGky8v/cDj3CV/fdMWICZoeMrokNFlG70VTJTPwJae
+ qhzLyRe68OoutXzOz7vK1TSQ8JShJR36UIPDuBvB
+X-Google-Smtp-Source: ABdhPJzslpbBTkBZ3coZd7t5JavMPBitkHrctHqYQ1MeTY4oO+M4rEae62HvWxHeD6/VvLbJ6ql3Pgg1eI26i3ys1SY=
+X-Received: by 2002:a2e:bc0e:0:b0:255:9fa0:ed4 with SMTP id
+ b14-20020a2ebc0e000000b002559fa00ed4mr10953078ljf.390.1654816723853; Thu, 09
+ Jun 2022 16:18:43 -0700 (PDT)
 MIME-Version: 1.0
 References: <20220609221702.347522-1-morbo@google.com>
- <20220609152527.4ad7862d4126e276e6f76315@linux-foundation.org>
- <CAGG=3QXDt9AeCQOAp1311POFRSByJru4=Q=oFiQn3u2iZYk2_w@mail.gmail.com>
- <nssn2ps-6n86-nqq6-9039-72847760nnq@vanv.qr>
-In-Reply-To: <nssn2ps-6n86-nqq6-9039-72847760nnq@vanv.qr>
+ <20220609221702.347522-2-morbo@google.com>
+ <3a773edf-f850-e83d-828d-19f91a373384@infradead.org>
+In-Reply-To: <3a773edf-f850-e83d-828d-19f91a373384@infradead.org>
 From: Bill Wendling <morbo@google.com>
-Date: Thu, 9 Jun 2022 16:16:16 -0700
-Message-ID: <CAGG=3QU0XJhQKJXLMayOkQSiF2yjBi2p2TEZ9KNTzU5mmye-gg@mail.gmail.com>
-Subject: Re: [PATCH 00/12] Clang -Wformat warning fixes
-To: Jan Engelhardt <jengelh@inai.de>
+Date: Thu, 9 Jun 2022 16:18:31 -0700
+Message-ID: <CAGG=3QVkvvc+25zvrfigo5Ohx85+1FCka_VMC4pm0dWUFMOqkA@mail.gmail.com>
+Subject: Re: [PATCH 01/12] x86/mce: use correct format characters
+To: Randy Dunlap <rdunlap@infradead.org>
 Content-Type: text/plain; charset="UTF-8"
 X-Mailman-Approved-At: Fri, 10 Jun 2022 08:37:38 +0200
 Cc: alsa-devel@alsa-project.org,
@@ -116,34 +115,46 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Thu, Jun 9, 2022 at 4:03 PM Jan Engelhardt <jengelh@inai.de> wrote:
-> On Friday 2022-06-10 00:49, Bill Wendling wrote:
-> >On Thu, Jun 9, 2022 at 3:25 PM Andrew Morton <akpm@linux-foundation.org> wrote:
-> >> On Thu,  9 Jun 2022 22:16:19 +0000 Bill Wendling <morbo@google.com> wrote:
-> >>
-> >> > This patch set fixes some clang warnings when -Wformat is enabled.
-> >>
-> >> tldr:
-> >>
-> >> -       printk(msg);
-> >> +       printk("%s", msg);
-> >>
-> >> Otherwise these changes are a
-> >> useless consumer of runtime resources.
+On Thu, Jun 9, 2022 at 4:15 PM Randy Dunlap <rdunlap@infradead.org> wrote:
+> On 6/9/22 15:16, Bill Wendling wrote:
+> > From: Bill Wendling <isanbard@gmail.com>
 > >
-> >Calling a "printf" style function is already insanely expensive.
-> >[...]
-> >The "printk" and similar functions all have the "__printf" attribute.
-> >I don't know of a modification to that attribute which can turn off
-> >this type of check.
+> > When compiling with -Wformat, clang emits the following warnings:
+> >
+> > arch/x86/kernel/cpu/mce/core.c:295:9: error: format string is not a string literal (potentially insecure) [-Werror,-Wformat-security]
+> >                 panic(msg);
+> >                       ^~~
+> >
+> > Use a string literal for the format string.
+> >
+> > Link: https://github.com/ClangBuiltLinux/linux/issues/378
+> > Signed-off-by: Bill Wendling <isanbard@gmail.com>
+> > ---
+> >  arch/x86/kernel/cpu/mce/core.c | 2 +-
+> >  scripts/Makefile.extrawarn     | 4 ++--
 >
-> Perhaps you can split vprintk_store in the middle (after the call to
-> vsnprintf), and offer the second half as a function of its own (e.g.
-> "puts"). Then the tldr could be
+> Where is the scripts/ change?
 >
-> - printk(msg);
-> + puts(msg);
-
-That might be a nice compromise. Andrew, what do you think?
+I'm sorry about this. The change in that file was a mistake that I
+reverted, but I forgot to change this part.
 
 -bw
+
+> >  2 files changed, 3 insertions(+), 3 deletions(-)
+> >
+> > diff --git a/arch/x86/kernel/cpu/mce/core.c b/arch/x86/kernel/cpu/mce/core.c
+> > index 2c8ec5c71712..3d411b7c85ad 100644
+> > --- a/arch/x86/kernel/cpu/mce/core.c
+> > +++ b/arch/x86/kernel/cpu/mce/core.c
+> > @@ -292,7 +292,7 @@ static noinstr void mce_panic(const char *msg, struct mce *final, char *exp)
+> >       if (!fake_panic) {
+> >               if (panic_timeout == 0)
+> >                       panic_timeout = mca_cfg.panic_timeout;
+> > -             panic(msg);
+> > +             panic("%s", msg);
+> >       } else
+> >               pr_emerg(HW_ERR "Fake kernel panic: %s\n", msg);
+> >
+>
+> --
+> ~Randy
