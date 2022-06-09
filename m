@@ -4,66 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 20046C433EF
-	for <alsa-devel@archiver.kernel.org>; Thu,  9 Jun 2022 09:00:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5AE09C43334
+	for <alsa-devel@archiver.kernel.org>; Thu,  9 Jun 2022 09:01:01 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 7792F1F5D;
-	Thu,  9 Jun 2022 10:59:34 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7792F1F5D
+	by alsa0.perex.cz (Postfix) with ESMTPS id 4B3BF1FAB;
+	Thu,  9 Jun 2022 11:00:09 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4B3BF1FAB
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1654765224;
-	bh=ff4FTka19j0mGy1Hw+hg20umL4w8F2vxucCX/SXKec4=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=lmHJ3V1q1W9JhozYfNnJ+NOosUVGCgg0KfpG4RdmgVdRkGNxQ4/jv1hZ+FEIu8Rgg
-	 kp0RQfU/9Yu3W2OwRh5D4gdClKHtTHkre+rdOpxOPD1I+BBtRjjFNn2gvFqkJlZaUr
-	 Rc3L8ngzGD7gyWGtl/z155lNefGgLmUxEZG8pYpA=
+	s=default; t=1654765259;
+	bh=bRybRqfXspTvgp/ZNTVf05qskzckdMEuYrCR/vCZnxQ=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=knJFEviSWQDyf+UN/q4hGLsJmvdUZM2N4sEft1gs3SXg1mtqJ+AdBv97P7pRH/J62
+	 yGVvek8jvSKU0hnLK5h9uw2XQttQy3u+67AOw2vYR7BLVI70t5+j9GulHQ032uPVmb
+	 pPsKizkKhAsh8LRFNquppvxYuLODNqg0Dgdes/lw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id D7652F80240;
-	Thu,  9 Jun 2022 10:59:33 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id AF21BF801F5;
+	Thu,  9 Jun 2022 10:59:37 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 022FFF800C7; Thu,  9 Jun 2022 10:59:31 +0200 (CEST)
+ id 253DDF8051E; Thu,  9 Jun 2022 10:59:34 +0200 (CEST)
 Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 002D8F800C7
- for <alsa-devel@alsa-project.org>; Thu,  9 Jun 2022 10:59:20 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 002D8F800C7
+ by alsa1.perex.cz (Postfix) with ESMTPS id 429A3F8012F
+ for <alsa-devel@alsa-project.org>; Thu,  9 Jun 2022 10:59:26 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 429A3F8012F
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="CmnrB7FF"
+ header.b="Whwa+XTh"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1654765166; x=1686301166;
- h=from:to:cc:subject:date:message-id:mime-version:
- content-transfer-encoding;
- bh=ff4FTka19j0mGy1Hw+hg20umL4w8F2vxucCX/SXKec4=;
- b=CmnrB7FFdAxKHPULtbOBlcp4Qe9D2lpfha7AdCzK/81226vox2vvnZaq
- wUCVjOV2OKNt1NXx05mwf/hXfU5LRZ5r2J1NRHwZkxKC5n8iyB4gygIKW
- 8fhdglnp/MEryz1bn4NwcBgxAUYVuJd6JUg0wtYn3vmGEuMLYzQ/v364h
- a0PvlFsFPUP631KGEwwcOSppvT1wzog1HghfY4rYAgn1o8IfJmljadkuF
- 2lTlntqrbzIIYf3BgAJeTmwtBGZnyyFdRPUUXgojYzSytBYlFtywPBrU7
- ilJFKGOsg9vB44YrJBNs596zhqpaXV4Y9q3CisFm1LPeufxgcsXtR3CeF Q==;
-X-IronPort-AV: E=McAfee;i="6400,9594,10372"; a="274732369"
-X-IronPort-AV: E=Sophos;i="5.91,287,1647327600"; d="scan'208";a="274732369"
+ t=1654765168; x=1686301168;
+ h=from:to:cc:subject:date:message-id:in-reply-to:
+ references:mime-version:content-transfer-encoding;
+ bh=bRybRqfXspTvgp/ZNTVf05qskzckdMEuYrCR/vCZnxQ=;
+ b=Whwa+XTh5fa/cOQT7nwSWk0J1msVok9JrWwYYdNuYjxKP1Ku8u70wWaD
+ 4VWJJQ6Lllv4WHYTmVkTOy9HOa0ntnF4cefUVczMY/TkilMXPlgOdzz2Z
+ COaIUU1BCyovx8TOPbmXuGnLb+BW9SImlzHbCu/NRH0Tj4RukXlWY1vOK
+ wGFaO7kUjAuaOdKXchEUFlQ52eYqZJKtZ2jcuh7vuqmPxNuDjkOdl0sRR
+ SlBbSAnLEFqYL91GnwD7fNcNcLQPS38ZM+xve17KtE+MK//cR0T7PN3PO
+ k6Y1ythf2PtP8lifi6juqIVM+gSEGcig5UZlZ2UatHsd9e/DXzMvJOhnb w==;
+X-IronPort-AV: E=McAfee;i="6400,9594,10372"; a="274732394"
+X-IronPort-AV: E=Sophos;i="5.91,287,1647327600"; d="scan'208";a="274732394"
 Received: from fmsmga008.fm.intel.com ([10.253.24.58])
  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 09 Jun 2022 01:59:16 -0700
-X-IronPort-AV: E=Sophos;i="5.91,287,1647327600"; d="scan'208";a="637369158"
+ 09 Jun 2022 01:59:21 -0700
+X-IronPort-AV: E=Sophos;i="5.91,287,1647327600"; d="scan'208";a="637369169"
 Received: from ekoledex-mobl1.ger.corp.intel.com (HELO
  pujfalus-desk.ger.corp.intel.com) ([10.252.58.94])
  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 09 Jun 2022 01:59:14 -0700
+ 09 Jun 2022 01:59:19 -0700
 From: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
 To: lgirdwood@gmail.com, broonie@kernel.org,
  pierre-louis.bossart@linux.intel.com
-Subject: [PATCH 0/3] ASoC: SOF: Intel: Fix IMR boot race caused by early core
- booting
-Date: Thu,  9 Jun 2022 11:59:46 +0300
-Message-Id: <20220609085949.29062-1-peter.ujfalusi@linux.intel.com>
+Subject: [PATCH 2/3] ASoC: SOF: Intel: hda-loader: Make sure that the fw load
+ sequence is followed
+Date: Thu,  9 Jun 2022 11:59:48 +0300
+Message-Id: <20220609085949.29062-3-peter.ujfalusi@linux.intel.com>
 X-Mailer: git-send-email 2.36.1
+In-Reply-To: <20220609085949.29062-1-peter.ujfalusi@linux.intel.com>
+References: <20220609085949.29062-1-peter.ujfalusi@linux.intel.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Cc: alsa-devel@alsa-project.org, yung-chuan.liao@linux.intel.com,
@@ -83,38 +86,34 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Hi,
+The hda_dsp_enable_core() is powering up _and_ unstall the core in one
+call while the first step of the firmware loading  must not unstall the
+core.
+The core can be unstalled only after the set cpb_cfp and the configuration
+of the IPC register for the ROM_CONTROL message.
 
-After the revisited IMR sequence patch
-2a68ff846164 ("ASoC: SOF: Intel: hda: Revisit IMR boot sequence")
-
-we have started to see random boot issues manifesting in ghost reply messages from
-the DSP for a never sent message.
-It turned out that an earlier commit:
-d416519982cb ("ASoC: SOF: hda: don't use the core op for power up/power down")
-
-replaced the core power up step with a full blown core power up + enable call.
-The result was that we have booted the core before we would place the message
-to the ROM code and based on luck and timing it got received by the (IMR) booted
-firmware or in between ROM and firmware boot.
-
-Mark, can you queue this series for 5.19 as the 2a68ff846164 is in rc1 to make
-sure that we fix this random issue?
-
-Regards,
-Peter
+Complements: 2a68ff846164 ("ASoC: SOF: Intel: hda: Revisit IMR boot sequence")
+Signed-off-by: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
+Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Reviewed-by: Bard Liao <yung-chuan.liao@linux.intel.com>
+Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 ---
-Peter Ujfalusi (3):
-  ASoC: SOF: Intel: hda-dsp: Expose hda_dsp_core_power_up()
-  ASoC: SOF: Intel: hda-loader: Make sure that the fw load sequence is
-    followed
-  ASoC: SOF: Intel: hda-loader: Clarify the cl_dsp_init() flow
+ sound/soc/sof/intel/hda-loader.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
- sound/soc/sof/intel/hda-dsp.c    | 10 +++++++++-
- sound/soc/sof/intel/hda-loader.c | 10 +++++-----
- sound/soc/sof/intel/hda.h        |  1 +
- 3 files changed, 15 insertions(+), 6 deletions(-)
-
+diff --git a/sound/soc/sof/intel/hda-loader.c b/sound/soc/sof/intel/hda-loader.c
+index 64290125d7cd..103e62bcfa82 100644
+--- a/sound/soc/sof/intel/hda-loader.c
++++ b/sound/soc/sof/intel/hda-loader.c
+@@ -110,7 +110,7 @@ static int cl_dsp_init(struct snd_sof_dev *sdev, int stream_tag, bool imr_boot)
+ 	int ret;
+ 
+ 	/* step 1: power up corex */
+-	ret = hda_dsp_enable_core(sdev, chip->host_managed_cores_mask);
++	ret = hda_dsp_core_power_up(sdev, chip->host_managed_cores_mask);
+ 	if (ret < 0) {
+ 		if (hda->boot_iteration == HDA_FW_BOOT_ATTEMPTS)
+ 			dev_err(sdev->dev, "error: dsp core 0/1 power up failed\n");
 -- 
 2.36.1
 
