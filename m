@@ -4,84 +4,85 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A207BC433EF
-	for <alsa-devel@archiver.kernel.org>; Fri, 10 Jun 2022 06:43:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4EF9DC433EF
+	for <alsa-devel@archiver.kernel.org>; Fri, 10 Jun 2022 06:43:27 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id EED911F9D;
-	Fri, 10 Jun 2022 08:42:20 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EED911F9D
+	by alsa0.perex.cz (Postfix) with ESMTPS id 8D8102066;
+	Fri, 10 Jun 2022 08:42:35 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8D8102066
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1654843391;
-	bh=2bN/nKdpXTi0IfmIlyhlZDNXBDPwn9T4gu9wAWbUpVw=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=hzOSwPD5KUaLynm3it5mqNLEeAdQRFvdgbf/1mFK+T4ME0tsJV4hQOCYPHwnkLCU4
-	 kNj7u1DraZ8rtm/hseqhUiVuhgyAedAU4ilcaEapZTc3poWjEwRd9HpAHtQMoDdnyj
-	 lIqqmNiIxsUh5p0EbbaIWsu/bCTOrFasw+H4W6xQ=
+	s=default; t=1654843405;
+	bh=8DPG20VCczCvHexMZwkQ1zY5Py8+AevTKqQ6qMOe6VU=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=oJiOrSArWuu8F+kUg2LxovkS5/bXBePnCcxrs5UX8Vp2iOz3Tq2nuaEQ/8p9Ic+a+
+	 ygR7++lrJ0yiWBXqBklnFbp3jXMo1TAxy/t9YSIsRim7luut4TEVVINC+OTbnuE4uY
+	 kqpSaNf7vxRSz+GFO4sG2lqaspw0Z/pPiwItY/2M=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 6F2DCF805AE;
-	Fri, 10 Jun 2022 08:37:53 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 21BABF805B4;
+	Fri, 10 Jun 2022 08:37:54 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id A8D26F801F5; Thu,  9 Jun 2022 20:21:19 +0200 (CEST)
-Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com
- [IPv6:2607:f8b0:4864:20::62a])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id 24ADAF800E9; Fri, 10 Jun 2022 00:25:36 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org
+ [IPv6:2604:1380:4641:c500::1])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 5730DF800C7
- for <alsa-devel@alsa-project.org>; Thu,  9 Jun 2022 20:21:09 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5730DF800C7
+ by alsa1.perex.cz (Postfix) with ESMTPS id AEFA8F800E9
+ for <alsa-devel@alsa-project.org>; Fri, 10 Jun 2022 00:25:33 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AEFA8F800E9
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=sohamsen-me.20210112.gappssmtp.com
- header.i=@sohamsen-me.20210112.gappssmtp.com header.b="tdBT48G+"
-Received: by mail-pl1-x62a.google.com with SMTP id o6so15800777plg.2
- for <alsa-devel@alsa-project.org>; Thu, 09 Jun 2022 11:21:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=sohamsen-me.20210112.gappssmtp.com; s=20210112;
- h=from:to:cc:subject:date:message-id:mime-version
- :content-transfer-encoding;
- bh=B9RF4GfJpLOSChLP69/9v/27AKPLXtsI2HPRFnCkmaU=;
- b=tdBT48G+TG4Dn6DuFoq587bfuOUoUSpyOGgjX4mp9zgApFfRSu8l0nI5/Wfvz14Ey7
- FUqAmZXE2OzN9JrSsWhlm20HOVjBcq3VgbGZMaM6IptI4VSZCfPOsV160m4cdk/XM70p
- mXZAqXRJgZELUwYt/KO1PYR1eFEXMIIGfH28O/rMMSuKyOIlcdpvkP2G5PmI5YCCDDoF
- 47Mxfy+dcWUVtRfdeavAplqTxhS3AFfA4eAFp3DJme8+9vFI9/OADdaKATBlmHfTi2CP
- fpNdE49qL7SghMpKLbVD8Ge5cEkSrz31yw1MK9QLqiTTjSZSnLZyvv2oOfn5b3LIumAc
- nJ3w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
- :content-transfer-encoding;
- bh=B9RF4GfJpLOSChLP69/9v/27AKPLXtsI2HPRFnCkmaU=;
- b=77d2CFRmKjEENfbdTuJbFsk4HWUixadkZ0D7TMsch2N9CnJU9hW4mmj7wMY2Uoy3Fy
- fVmfb9H8FAra3nSVeeMxvrWojkY/CwgGkjRFb52Wnf3MGK6u9nBWZ9rsO9BCAT42AKOw
- +bxuYqK78PN9uUKgO0iRRuuK91xXgQoYh7+vWcfipaQ6oXD7JdmHTLaeSzvnSpmuLkUv
- SmspoBKr8GEec/dKhAkoP4ZC8u4cgKVr+BDuubD7ZCq0Fh08n8HyJ8Ec0RwgAgHka53Y
- EqaNwKs9RN3WTQCBuv8xpMvdJC38X0hj9Y3ATc6Q5wdIhtsV9MSZQDMvZ4yeAmclxzfo
- bE2w==
-X-Gm-Message-State: AOAM531K1ZffMIpr3pn7sReSAYqu4QplJWFWYDiwTumMJTHaS/yDCyOJ
- 2a1DR7xrNufAfYsL9i874Tv8wg==
-X-Google-Smtp-Source: ABdhPJzrWPmA6aBJOj5hl9GBv4dVZQHWUYcE1nNAoieI6W6+s2CO85bmOAeu91zcppNDITHvs79ZQw==
-X-Received: by 2002:a17:90a:7349:b0:1dc:9314:8699 with SMTP id
- j9-20020a17090a734900b001dc93148699mr4674464pjs.184.1654798867227; 
- Thu, 09 Jun 2022 11:21:07 -0700 (PDT)
-Received: from localhost.localdomain ([202.173.126.209])
- by smtp.gmail.com with ESMTPSA id
- ja13-20020a170902efcd00b00168adae4eb2sm1497646plb.262.2022.06.09.11.21.04
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Thu, 09 Jun 2022 11:21:06 -0700 (PDT)
-From: contact@sohamsen.me
-To: tiwai@suse.com,
-	perex@perex.cz
-Subject: [PATCH] ALSA: hda/realtek: Add mute LED quirk for HP Omen laptop
-Date: Thu,  9 Jun 2022 23:49:20 +0530
-Message-Id: <20220609181919.45535-1-contact@sohamsen.me>
-X-Mailer: git-send-email 2.36.1
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+ dkim=pass (1024-bit key) header.d=linux-foundation.org
+ header.i=@linux-foundation.org header.b="v1isGaFZ"
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by dfw.source.kernel.org (Postfix) with ESMTPS id A447061F3D;
+ Thu,  9 Jun 2022 22:25:30 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B9ABFC34114;
+ Thu,  9 Jun 2022 22:25:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
+ s=korg; t=1654813530;
+ bh=8DPG20VCczCvHexMZwkQ1zY5Py8+AevTKqQ6qMOe6VU=;
+ h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+ b=v1isGaFZcOTd3hQSFwhJjKIptScdtzZdYTbChS0lD05tHMRSy7BT4ZgRXBgnC0WDM
+ KgLV/3LJHT5eYoc434PB9zA81twQJVarz5OWwe6dzijmGQzObvdi2M2MX6KmWex0Ff
+ UOZ65DWa7jodmuE8mcxI6Xnz3KDxzgQuDp9E63LI=
+Date: Thu, 9 Jun 2022 15:25:27 -0700
+From: Andrew Morton <akpm@linux-foundation.org>
+To: Bill Wendling <morbo@google.com>
+Subject: Re: [PATCH 00/12] Clang -Wformat warning fixes
+Message-Id: <20220609152527.4ad7862d4126e276e6f76315@linux-foundation.org>
+In-Reply-To: <20220609221702.347522-1-morbo@google.com>
+References: <20220609221702.347522-1-morbo@google.com>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 X-Mailman-Approved-At: Fri, 10 Jun 2022 08:37:38 +0200
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
- Soham Sen <contact@sohamsen.me>
+Cc: alsa-devel@alsa-project.org, x86@kernel.org,
+ Nick Desaulniers <ndesaulniers@google.com>,
+ Dave Hansen <dave.hansen@linux.intel.com>,
+ Phillip Potter <phil@philpotter.co.uk>, linux-mm@kvack.org,
+ Eric Dumazet <edumazet@google.com>, netdev@vger.kernel.org,
+ "H. Peter Anvin" <hpa@zytor.com>, isanbard@gmail.com,
+ Daniel Kiper <daniel.kiper@oracle.com>,
+ "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+ Jozsef Kadlecsik <kadlec@netfilter.org>, linux-acpi@vger.kernel.org,
+ Ingo Molnar <mingo@redhat.com>, Tom Rix <trix@redhat.com>,
+ Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+ Pablo Neira Ayuso <pablo@netfilter.org>, llvm@lists.linux.dev,
+ coreteam@netfilter.org, Arnd Bergmann <arnd@arndb.de>,
+ Ross Philipson <ross.philipson@oracle.com>,
+ Nathan Chancellor <nathan@kernel.org>, Borislav Petkov <bp@alien8.de>,
+ Thomas Gleixner <tglx@linutronix.de>, linux-edac@vger.kernel.org,
+ Tony Luck <tony.luck@intel.com>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ Florian Westphal <fw@strlen.de>, Takashi Iwai <tiwai@suse.com>,
+ linux-kernel@vger.kernel.org, netfilter-devel@vger.kernel.org,
+ Jan Kara <jack@suse.com>, "David S. Miller" <davem@davemloft.net>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -97,27 +98,18 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Soham Sen <contact@sohamsen.me>
+On Thu,  9 Jun 2022 22:16:19 +0000 Bill Wendling <morbo@google.com> wrote:
 
-The HP Omen 15 laptop needs a quirk to toggle the mute LED. It already is implemented for a different variant of the HP Omen laptop so a fixup entry is needed for this variant.
+> This patch set fixes some clang warnings when -Wformat is enabled.
+> 
 
-Signed-off-by: Soham Sen <contact@sohamsen.me>
----
- sound/pci/hda/patch_realtek.c | 1 +
- 1 file changed, 1 insertion(+)
+tldr:
 
-diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-index f3ad454b3..495b919bf 100644
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -9010,6 +9010,7 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
- 		      ALC285_FIXUP_HP_GPIO_AMP_INIT),
- 	SND_PCI_QUIRK(0x103c, 0x8783, "HP ZBook Fury 15 G7 Mobile Workstation",
- 		      ALC285_FIXUP_HP_GPIO_AMP_INIT),
-+	SND_PCI_QUIRK(0x103c, 0x8787, "HP OMEN 15", ALC285_FIXUP_HP_MUTE_LED),
- 	SND_PCI_QUIRK(0x103c, 0x8788, "HP OMEN 15", ALC285_FIXUP_HP_MUTE_LED),
- 	SND_PCI_QUIRK(0x103c, 0x87c8, "HP", ALC287_FIXUP_HP_GPIO_LED),
- 	SND_PCI_QUIRK(0x103c, 0x87e5, "HP ProBook 440 G8 Notebook PC", ALC236_FIXUP_HP_GPIO_LED),
--- 
-2.36.1
+-	printk(msg);
++	printk("%s", msg);
 
+the only reason to make this change is where `msg' could contain a `%'.
+Generally, it came from userspace.  Otherwise these changes are a
+useless consumer of runtime resources.
+
+I think it would be better to quieten clang in some fashion.
