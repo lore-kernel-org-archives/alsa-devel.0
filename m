@@ -4,59 +4,61 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 35979C43334
-	for <alsa-devel@archiver.kernel.org>; Thu,  9 Jun 2022 14:31:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 06DF3C43334
+	for <alsa-devel@archiver.kernel.org>; Thu,  9 Jun 2022 14:32:23 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C71C41B3C;
-	Thu,  9 Jun 2022 16:30:56 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C71C41B3C
+	by alsa0.perex.cz (Postfix) with ESMTPS id 4B1E01B5C;
+	Thu,  9 Jun 2022 16:31:31 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4B1E01B5C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1654785106;
-	bh=VTN6aYQ7O4A38Z8MdjYQbgqGi7ArL6NcnegrdDt3pk8=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=rLKkxM26ZzlaJOLmKiCfQd6J3p94WCq11QYN8d9Y7f5B6hrbQT1+w4oAbKBNboUwo
-	 TI9J/9MhC14guulXb4cRLGqp/GjgnkcdNW75dDNPmLJg2uwwS4WDbzv3BLjC8Lvbon
-	 5CTQ2wMryG1SMF9MmO6WzjkqzWgWdB8L9EMXcwSk=
+	s=default; t=1654785141;
+	bh=b+yAlR0BRblNoECJtAyeQLM6q9tEITgDOzTj0oLf4xY=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=WFJGlDfISTyARdkUoFjgzi4EM6NELxv9kl77NlZIF6RGqmlXM/RoNTUXCdkyJfu89
+	 laS5xcEymRWrFugpUORFbfHrw+N/SZpk+61AoRHr0u3MJ/0/nswMTRPpvlYnChpGw9
+	 LJV/3mfspbQpPri2Fk78WK5esaz6aXmCy/nkM8Lo=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 67A07F8012F;
-	Thu,  9 Jun 2022 16:30:56 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 764A6F80527;
+	Thu,  9 Jun 2022 16:31:00 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 078B4F8019D; Thu,  9 Jun 2022 16:30:55 +0200 (CEST)
+ id BD3E4F80528; Thu,  9 Jun 2022 16:30:59 +0200 (CEST)
 Received: from alexa-out-sd-01.qualcomm.com (alexa-out-sd-01.qualcomm.com
  [199.106.114.38])
  (using TLSv1.2 with cipher AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id DF604F80116
- for <alsa-devel@alsa-project.org>; Thu,  9 Jun 2022 16:30:47 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DF604F80116
+ by alsa1.perex.cz (Postfix) with ESMTPS id 85809F804BD
+ for <alsa-devel@alsa-project.org>; Thu,  9 Jun 2022 16:30:56 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 85809F804BD
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=quicinc.com header.i=@quicinc.com
- header.b="GTwxQrzs"
+ header.b="FAuQCcIM"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=quicinc.com; i=@quicinc.com; q=dns/txt; s=qcdkim;
- t=1654785053; x=1686321053;
- h=from:to:cc:subject:date:message-id:mime-version;
- bh=zBhPh/4xM3+f0L83e2KBCz3Sryu0k4hi/47OV450dSk=;
- b=GTwxQrzscZrVo14mFOb4BCRT8IiTtlPtoApWk5vcsgySDX42q41YD4vc
- NJYyR10LQcvypvSuvcnVdFOxG3M/b3CBDMnpQ530PP1LsSaXpF6TEtJjS
- adI/vSBN4KYi041Wi1YnMyLtCN4VoJ/CGQfKtQGPmMcV5vTBSzShBsdfG M=;
+ t=1654785057; x=1686321057;
+ h=from:to:cc:subject:date:message-id:in-reply-to:
+ references:mime-version;
+ bh=KcVpOMqtcK0GLgko7LK59DZwvEdtoQYB3VprnfPBpDI=;
+ b=FAuQCcIMMuFLXV8n8Ne1yOA/NmxqDSavoR8D4ceAQX3hCmB+XQJjJR9j
+ fI10MD79j9AxHW/XfjSZV2JUhBpStcz+qV16EYSdLL5HWNHmAloQFEvGO
+ 2Tnv6FE4asokqBlBe5zJKbnvxwslMeVdGMIzatsycqS25N13qypkk+IOI 8=;
 Received: from unknown (HELO ironmsg01-sd.qualcomm.com) ([10.53.140.141])
- by alexa-out-sd-01.qualcomm.com with ESMTP; 09 Jun 2022 07:30:45 -0700
+ by alexa-out-sd-01.qualcomm.com with ESMTP; 09 Jun 2022 07:30:56 -0700
 X-QCInternal: smtphost
 Received: from nasanex01c.na.qualcomm.com ([10.47.97.222])
  by ironmsg01-sd.qualcomm.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 09 Jun 2022 07:30:44 -0700
+ 09 Jun 2022 07:30:56 -0700
 Received: from nalasex01a.na.qualcomm.com (10.47.209.196) by
  nasanex01c.na.qualcomm.com (10.47.97.222) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.986.22; Thu, 9 Jun 2022 07:30:43 -0700
+ 15.2.986.22; Thu, 9 Jun 2022 07:30:55 -0700
 Received: from hu-srivasam-hyd.qualcomm.com (10.80.80.8) by
  nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.986.22; Thu, 9 Jun 2022 07:30:37 -0700
+ 15.2.986.22; Thu, 9 Jun 2022 07:30:49 -0700
 From: Srinivasa Rao Mandadapu <quic_srivasam@quicinc.com>
 To: <agross@kernel.org>, <bjorn.andersson@linaro.org>, <lgirdwood@gmail.com>, 
  <broonie@kernel.org>, <robh+dt@kernel.org>, <quic_plai@quicinc.com>,
@@ -65,10 +67,13 @@ To: <agross@kernel.org>, <bjorn.andersson@linaro.org>, <lgirdwood@gmail.com>,
  <linux-arm-msm@vger.kernel.org>, <alsa-devel@alsa-project.org>,
  <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
  <swboyd@chromium.org>, <judyhsiao@chromium.org>, <vkoul@kernel.org>
-Subject: [PATCH v4 0/2] Add software clock gating requirement check
-Date: Thu, 9 Jun 2022 20:00:21 +0530
-Message-ID: <1654785023-1667-1-git-send-email-quic_srivasam@quicinc.com>
+Subject: [PATCH v4 2/2] ASoC: qcom: soundwire: Enable software clock gating
+ requirement flag
+Date: Thu, 9 Jun 2022 20:00:23 +0530
+Message-ID: <1654785023-1667-3-git-send-email-quic_srivasam@quicinc.com>
 X-Mailer: git-send-email 2.7.4
+In-Reply-To: <1654785023-1667-1-git-send-email-quic_srivasam@quicinc.com>
+References: <1654785023-1667-1-git-send-email-quic_srivasam@quicinc.com>
 MIME-Version: 1.0
 Content-Type: text/plain
 X-Originating-IP: [10.80.80.8]
@@ -90,26 +95,41 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-This patch set is to add software clock gating requirement check
+Enable software clock gating flag in private data for SC7280
+based platforms, which are soundwire 1.6.0 version based.
 
-Changes Since V3:
-	-- Remove redundant check before reset control call
-	-- Reorganiaze patches.
-	-- Fix typos.
-Changes Since V2:
-	-- Fix if check before reset control call	
-Changes Since V1:
-	-- Use boolean flag for bool variable initialization
-	   instead of hard coding.
+Signed-off-by: Srinivasa Rao Mandadapu <quic_srivasam@quicinc.com>
+Reviewed-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+---
+ drivers/soundwire/qcom.c | 8 +++++++-
+ 1 file changed, 7 insertions(+), 1 deletion(-)
 
-	
-Srinivasa Rao Mandadapu (2):
-  soundwire: qcom: Add flag for software clock gating check
-  ASoC: qcom: soundwire: Enable software clock gating requirement flag
-
- drivers/soundwire/qcom.c | 22 +++++++++++++++++-----
- 1 file changed, 17 insertions(+), 5 deletions(-)
-
+diff --git a/drivers/soundwire/qcom.c b/drivers/soundwire/qcom.c
+index 8e163da..b1bdf17 100644
+--- a/drivers/soundwire/qcom.c
++++ b/drivers/soundwire/qcom.c
+@@ -194,6 +194,12 @@ static const struct qcom_swrm_data swrm_v1_5_data = {
+ 	.default_cols = 16,
+ };
+ 
++static const struct qcom_swrm_data swrm_v1_6_data = {
++	.default_rows = 50,
++	.default_cols = 16,
++	.sw_clk_gate_required = true,
++};
++
+ #define to_qcom_sdw(b)	container_of(b, struct qcom_swrm_ctrl, bus)
+ 
+ static int qcom_swrm_ahb_reg_read(struct qcom_swrm_ctrl *ctrl, int reg,
+@@ -1564,7 +1570,7 @@ static const struct dev_pm_ops swrm_dev_pm_ops = {
+ static const struct of_device_id qcom_swrm_of_match[] = {
+ 	{ .compatible = "qcom,soundwire-v1.3.0", .data = &swrm_v1_3_data },
+ 	{ .compatible = "qcom,soundwire-v1.5.1", .data = &swrm_v1_5_data },
+-	{ .compatible = "qcom,soundwire-v1.6.0", .data = &swrm_v1_5_data },
++	{ .compatible = "qcom,soundwire-v1.6.0", .data = &swrm_v1_6_data },
+ 	{/* sentinel */},
+ };
+ 
 -- 
 2.7.4
 
