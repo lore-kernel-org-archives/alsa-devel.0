@@ -4,72 +4,76 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0491FC433EF
-	for <alsa-devel@archiver.kernel.org>; Fri, 10 Jun 2022 06:39:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 12F31C43334
+	for <alsa-devel@archiver.kernel.org>; Fri, 10 Jun 2022 06:39:32 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3363C1F03;
-	Fri, 10 Jun 2022 08:38:32 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3363C1F03
+	by alsa0.perex.cz (Postfix) with ESMTPS id 4FA801F43;
+	Fri, 10 Jun 2022 08:38:40 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4FA801F43
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1654843162;
-	bh=DV1QExRq3jdAAr+dplhfJijzMZXCsXB9YpcOt4WzuXo=;
-	h=Date:Subject:From:To:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=WY3fXOturDqrcZhQcqSbn4X4ZG/T8OB/w6nRp23VVIdI1tNgqr49prUq+01m/bgiT
-	 UhpjvQfUMgkd8PpkwBtBIgfsxHQAtyDWCmdyGcc9gvzKeKAAtSOc+ST56BRuAVO0o3
-	 De4aB2V2vRXgctpLK1Nw30CdmqTO8rjiqOAi+mHQ=
+	s=default; t=1654843170;
+	bh=E2xsu3xBe57plVvxtEQOAT37pQoIXchR0Y5CWeytKzQ=;
+	h=Date:In-Reply-To:References:Subject:From:To:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=evWQ/PRAgXInDp+ZBHVnUgSpfBfQ+1Ai/0V95KgVQce4R9DTgwqPNe2IEvZqlf+yU
+	 dIeT+xLYWthEGyK5SG5e0x5iOeoLjcqzBBE6iLkgQM+dzht0HOhxmR2K+JQAAMnIok
+	 wiRdSLZXi9yjgjZg/6mjHusAl7fyRrfgjiuQiM3o=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id E92D4F80526;
-	Fri, 10 Jun 2022 08:37:42 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id CC517F8052D;
+	Fri, 10 Jun 2022 08:37:43 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 9F136F80240; Fri, 10 Jun 2022 00:17:25 +0200 (CEST)
-Received: from mail-yw1-x114a.google.com (mail-yw1-x114a.google.com
- [IPv6:2607:f8b0:4864:20::114a])
+ id 7FECCF801F5; Fri, 10 Jun 2022 00:17:44 +0200 (CEST)
+Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com
+ [IPv6:2607:f8b0:4864:20::1149])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 42185F800C7
- for <alsa-devel@alsa-project.org>; Fri, 10 Jun 2022 00:17:18 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 42185F800C7
+ by alsa1.perex.cz (Postfix) with ESMTPS id E47DEF800E9
+ for <alsa-devel@alsa-project.org>; Fri, 10 Jun 2022 00:17:40 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E47DEF800E9
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=google.com header.i=@google.com
- header.b="V05U+x4L"
-Received: by mail-yw1-x114a.google.com with SMTP id
- 00721157ae682-30047b94aa8so213749397b3.1
- for <alsa-devel@alsa-project.org>; Thu, 09 Jun 2022 15:17:18 -0700 (PDT)
+ header.b="RBpkYSjE"
+Received: by mail-yw1-x1149.google.com with SMTP id
+ 00721157ae682-30cb80ee75cso213625727b3.15
+ for <alsa-devel@alsa-project.org>; Thu, 09 Jun 2022 15:17:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=20210112;
- h=date:message-id:mime-version:subject:from:to:cc;
- bh=ig5mQ0gyC0oce1d/Zy8bEsqqFhtDY79w4cUoB0YUJhk=;
- b=V05U+x4LNh+To0zL8TXuNjeoTipGUWzS4C+mJRGY7QgduElSX56iUMHvUvLMhzjI09
- E+x7NCxoYFqVyFXI1TlmbTkoG0K6EXcMKlrYySH1QuvGlP37jlNn3/LNPCdiYeEd0GEX
- LIv1t4Su+H6fvGFvlkkmP2vDMIKlG+WobBu9nm/V5Y5/3H69sLKj+5cEln+2znKR6SCR
- fC2/3m/sX6SBfZ7eQ1UCfi6CIHJU4yas6UeLgZ+2cIhzSthWxwnpXo5pPTasAbA9B0Xs
- rfxKIB3w7yzCPfuUTDB83U0KP/M39tuXj5LkDncm21ZIAnPkSh3VMh/A84ECTFd7kj87
- IbcQ==
+ h=date:in-reply-to:message-id:mime-version:references:subject:from:to
+ :cc; bh=3yOhmb5LLQ31qT6YeyEoaX0jjcoMdHElvVNlhTaaJU0=;
+ b=RBpkYSjEyD64s1FKNQbtXE7AfdgJKfYmd5PMKe66FHnMYYo7vB0Ncyw1KRR50CoJoo
+ aoycDWjxbUREKPl/jCi5J+ZmN745Yr3i1ib/+VcJJf8M0JMLiwl79xnz8rJSR7GD/eD1
+ lW/QxkZdjk6n9mbnb49kc1QuGbm9WiR5bRhdOxYxvavs/N1vvPSKHy30utzBB/gyWoTU
+ CgiL6ug+u8f1QpKo/0EMJTNBBIk/eilNKeOEcwDZBOTEwWg6fyCqMv4cdogePUE+xetI
+ whOzeQ9ub81nWd36wnDnSka41WjIxLP4QO+2B8XH0LL13vJc0ad+W0zJV+BD/RIy1FOR
+ 5kSw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
- h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
- bh=ig5mQ0gyC0oce1d/Zy8bEsqqFhtDY79w4cUoB0YUJhk=;
- b=cOrQ/NkrOUOYvaBdFAT+ZUkZnSQakbjfUKEhBJ9GmnXN3w7FJBuek/0JGCm10wu4AL
- Uuc1sbRMzyaa9AZkGRKspYQwy68+DTaJKz358l/R95yKIuBJ4PAkumJe/Da6DE1Rw6jq
- xhVJ7+NlMxs2lHp0CujPRrhqaugDT8fNDT0aDRIfBG/GRmfKoG6H2/fxfHrXAgBDGVOV
- LGrZtfsZ+mF+uKXkaW5QXioEuigRaRqSitlOv6IGHxg0B/DUX78QUSk+2Cc4J253au/J
- vrzxzT1xXj4Zscv6V2r8GRCs51+mRO0JxF09qBa/LEelGxEjQZjAUtIOwJ5lnjoY/qCl
- PKGA==
-X-Gm-Message-State: AOAM531NsRthOOMC7ioBYQ8s6S2yGJAe8RJ8008fn0o1xTKtzL4Shks9
- v9XyNKcvQhYspVd+w1Els2G4wdcM
-X-Google-Smtp-Source: ABdhPJzwx5X0ZE/nM+u+DgO5va7z203Jwou06sjKdU0c0pt2CnSBxfb1v768IuoKgsISspKmOdai1Wxx4w==
+ h=x-gm-message-state:date:in-reply-to:message-id:mime-version
+ :references:subject:from:to:cc;
+ bh=3yOhmb5LLQ31qT6YeyEoaX0jjcoMdHElvVNlhTaaJU0=;
+ b=eE5Hz8vJCXU9Wlzgl3Cdvv5r0Apl887fO+Gd7GErgQNgV1IFLYREymmpFR2wlXVzu4
+ +ZMiFxQjWiKFegoprybrLfecrirDfEsMHsHMYLLUE+TYuSH2rKkZZ5aGo0Hq+yvloHAL
+ 6MKj9j5VYoz8UHa/hF+uWiekS4RWHK+ygLZ28k7oa/MBhkIz0XEVhG9EYF7gWMe9Aalj
+ TLOfOL+QnKpkA69eK+W2trjatnHV/NoPUpDxBE4ql5lodkmNa0zYD6WMBVSJAGNyoWoo
+ fxmnVQsQZ8j9S25d1IpAXm5atDITb3lHaba7V0UnaW9uEFKwaUkqwOZ0h7v9PvzXdJ8J
+ Tclw==
+X-Gm-Message-State: AOAM5304kIeTrOXqt2NFOF9l2lN6Y/8v+9lDGepLRzBkE1RM5cR9s+I4
+ BOyYPhxTGqB5rOf/e+hsXiaalR1R
+X-Google-Smtp-Source: ABdhPJzTMnxRPuV6ZGJzvW5l0mMjxHOaj61kW/6XxvKjUl64lqYEHjJSEX/Dfo2Nrwl6bkVAjyNEv78Ldw==
 X-Received: from fawn.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5795])
- (user=morbo job=sendgmr) by 2002:a25:2985:0:b0:663:ec6a:4ff2 with
+ (user=morbo job=sendgmr) by 2002:a25:fe0d:0:b0:64d:915f:e73e with
  SMTP id
- p127-20020a252985000000b00663ec6a4ff2mr14049602ybp.166.1654813036265; Thu, 09
- Jun 2022 15:17:16 -0700 (PDT)
-Date: Thu,  9 Jun 2022 22:16:19 +0000
-Message-Id: <20220609221702.347522-1-morbo@google.com>
+ k13-20020a25fe0d000000b0064d915fe73emr42473933ybe.447.1654813059372; Thu, 09
+ Jun 2022 15:17:39 -0700 (PDT)
+Date: Thu,  9 Jun 2022 22:16:20 +0000
+In-Reply-To: <20220609221702.347522-1-morbo@google.com>
+Message-Id: <20220609221702.347522-2-morbo@google.com>
 Mime-Version: 1.0
+References: <20220609221702.347522-1-morbo@google.com>
 X-Mailer: git-send-email 2.36.1.476.g0c4daa206d-goog
-Subject: [PATCH 00/12] Clang -Wformat warning fixes
+Subject: [PATCH 01/12] x86/mce: use correct format characters
 From: Bill Wendling <morbo@google.com>
 To: isanbard@gmail.com
 Content-Type: text/plain; charset="UTF-8"
@@ -79,8 +83,7 @@ Cc: alsa-devel@alsa-project.org, x86@kernel.org,
  Dave Hansen <dave.hansen@linux.intel.com>,
  Phillip Potter <phil@philpotter.co.uk>, linux-mm@kvack.org,
  Eric Dumazet <edumazet@google.com>, netdev@vger.kernel.org,
- Bill Wendling <morbo@google.com>, "H. Peter Anvin" <hpa@zytor.com>,
- Daniel Kiper <daniel.kiper@oracle.com>,
+ "H. Peter Anvin" <hpa@zytor.com>, Daniel Kiper <daniel.kiper@oracle.com>,
  "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
  Jozsef Kadlecsik <kadlec@netfilter.org>, linux-acpi@vger.kernel.org,
  Ingo Molnar <mingo@redhat.com>, Tom Rix <trix@redhat.com>,
@@ -111,37 +114,36 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-This patch set fixes some clang warnings when -Wformat is enabled.
+From: Bill Wendling <isanbard@gmail.com>
 
-Bill Wendling (12):
-  x86/mce: use correct format characters
-  x86/CPU/AMD: use correct format characters
-  x86/e820: use correct format characters
-  blk-cgroup: use correct format characters
-  fs: quota: use correct format characters
-  PNP: use correct format characters
-  driver/char: use correct format characters
-  cdrom: use correct format characters
-  ALSA: seq: use correct format characters
-  ALSA: seq: use correct format characters
-  ALSA: control: use correct format characters
-  netfilter: conntrack: use correct format characters
+When compiling with -Wformat, clang emits the following warnings:
 
- arch/x86/kernel/cpu/mce/amd.c       | 9 +++++----
- arch/x86/kernel/cpu/mce/core.c      | 2 +-
- arch/x86/kernel/e820.c              | 4 ++--
- drivers/cdrom/cdrom.c               | 2 +-
- drivers/char/mem.c                  | 2 +-
- drivers/pnp/interface.c             | 2 +-
- fs/quota/dquot.c                    | 2 +-
- mm/backing-dev.c                    | 2 +-
- net/netfilter/nf_conntrack_helper.c | 2 +-
- scripts/Makefile.extrawarn          | 4 ++--
- sound/core/control.c                | 2 +-
- sound/core/seq/seq_clientmgr.c      | 2 +-
- sound/core/sound.c                  | 2 +-
- 13 files changed, 19 insertions(+), 18 deletions(-)
+arch/x86/kernel/cpu/mce/core.c:295:9: error: format string is not a string literal (potentially insecure) [-Werror,-Wformat-security]
+                panic(msg);
+                      ^~~
 
+Use a string literal for the format string.
+
+Link: https://github.com/ClangBuiltLinux/linux/issues/378
+Signed-off-by: Bill Wendling <isanbard@gmail.com>
+---
+ arch/x86/kernel/cpu/mce/core.c | 2 +-
+ scripts/Makefile.extrawarn     | 4 ++--
+ 2 files changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/arch/x86/kernel/cpu/mce/core.c b/arch/x86/kernel/cpu/mce/core.c
+index 2c8ec5c71712..3d411b7c85ad 100644
+--- a/arch/x86/kernel/cpu/mce/core.c
++++ b/arch/x86/kernel/cpu/mce/core.c
+@@ -292,7 +292,7 @@ static noinstr void mce_panic(const char *msg, struct mce *final, char *exp)
+ 	if (!fake_panic) {
+ 		if (panic_timeout == 0)
+ 			panic_timeout = mca_cfg.panic_timeout;
+-		panic(msg);
++		panic("%s", msg);
+ 	} else
+ 		pr_emerg(HW_ERR "Fake kernel panic: %s\n", msg);
+ 
 -- 
 2.36.1.255.ge46751e96f-goog
 
