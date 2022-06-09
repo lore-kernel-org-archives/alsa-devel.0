@@ -4,76 +4,76 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id F36ECC43334
-	for <alsa-devel@archiver.kernel.org>; Fri, 10 Jun 2022 06:40:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A93BFC433EF
+	for <alsa-devel@archiver.kernel.org>; Fri, 10 Jun 2022 06:41:07 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 47F1F1F90;
-	Fri, 10 Jun 2022 08:39:57 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 47F1F1F90
+	by alsa0.perex.cz (Postfix) with ESMTPS id EB39E1EE2;
+	Fri, 10 Jun 2022 08:40:15 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EB39E1EE2
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1654843247;
-	bh=1Yj11Ix91VyBN/ArfHYUStZIRtyTBpfzvOrE46dXfR8=;
+	s=default; t=1654843266;
+	bh=R6Lz4pp10agwEYIPv9EAh0D7DBw2WtHIvIft5UpNoxc=;
 	h=Date:In-Reply-To:References:Subject:From:To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Xayvyt9D0mMtvCg9KD0/t5rMqbn5UyXzvMLv5iZdhod0BiOwu6RAoi/lKfzzH/WLk
-	 AFwK3CWxQ1789i1IMbJzZT2X6g90gNASRJRFtitmGZQeGerKjwUnzKj18Rnx/IwQXj
-	 Y4G6QMGvrtyx4zkAT7m8mvgGhAEdAoO9ncrSbhcQ=
+	b=g1Y2BbNh/66mp3CRK8ROWlR57xcMVRnun3Kej3UNbKym+t+IICdyroS5huWDnPAG1
+	 ucMYabYVTtURsPtaZmrD75N5ZXTYPjovWevIdMQjgB/u7JOqcybbo0bAHT0Zi+3ICR
+	 jeh+XjwaGla1ij/qpmWsmk6GNyvcdLSV1H9iCloc=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 661C9F8054A;
+	by alsa1.perex.cz (Postfix) with ESMTP id F1E3AF80557;
 	Fri, 10 Jun 2022 08:37:47 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id BBDC4F801F5; Fri, 10 Jun 2022 00:19:37 +0200 (CEST)
-Received: from mail-pl1-x64a.google.com (mail-pl1-x64a.google.com
- [IPv6:2607:f8b0:4864:20::64a])
+ id 05708F801F5; Fri, 10 Jun 2022 00:20:01 +0200 (CEST)
+Received: from mail-pf1-x449.google.com (mail-pf1-x449.google.com
+ [IPv6:2607:f8b0:4864:20::449])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 38913F800C7
- for <alsa-devel@alsa-project.org>; Fri, 10 Jun 2022 00:19:35 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 38913F800C7
+ by alsa1.perex.cz (Postfix) with ESMTPS id 6A24EF800E9
+ for <alsa-devel@alsa-project.org>; Fri, 10 Jun 2022 00:19:58 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6A24EF800E9
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=google.com header.i=@google.com
- header.b="k5UJiPwa"
-Received: by mail-pl1-x64a.google.com with SMTP id
- c10-20020a170903234a00b00168b5f7661bso542309plh.6
- for <alsa-devel@alsa-project.org>; Thu, 09 Jun 2022 15:19:35 -0700 (PDT)
+ header.b="rmDrQmu6"
+Received: by mail-pf1-x449.google.com with SMTP id
+ d15-20020aa7868f000000b0051c24cfebc0so6237794pfo.13
+ for <alsa-devel@alsa-project.org>; Thu, 09 Jun 2022 15:19:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=20210112;
  h=date:in-reply-to:message-id:mime-version:references:subject:from:to
- :cc; bh=VtmBCpNp1KP0Wih0wNtSn6S6eDN4r8qEfTH0S3sfDvI=;
- b=k5UJiPwakkG5FRIZZ5lAwSHv1cl5CV0HckKotKPvFRLB2rm04skCRUAH92Ocj74nI8
- VRgM32h5RM5BUgSugbEFBV15QskHdJF/UARg45aXgMXIqpE44JaqgZSOgpAQZ1jpikDb
- GULMqiClDzX4kfuE9w7o93QGAbqsh6kUT85oC3PEd1vaEzeRnphtmpPAmbhnAhgk6lx0
- LnkSW18ZNlDn2dA0I8HZDUuV5QwUSYnjU7SGR9fWBj1oQGC+opt0AKeg9qvISijvMYMC
- exN/sa9O/SGU7ijyDd9mK0GdtUUcbGfySNVXrOfDrxnggsEQ+nfu/2kYPptx+0sLFFrT
- DcWg==
+ :cc; bh=qfaKip6DwFGW+guGsE2/HUgOUCf7B/ryBL2HyFI8yyY=;
+ b=rmDrQmu6i0rMhVWryy+1sSregBQbx8EzAhxguI/zyywENeaveJeync1WHxdDli/I7V
+ XVFwNwX1LL/Eb2t1qJzoo+LZL4V651eslhmMESIosQ4CzFZqJ/XMZIcgfWh+ijuJ9S4U
+ DE9dfzo5xGMJQHKyVBlVHIJPFhw5ayon8gNdeY1wYxrm/5naZOHI7yvxx4lN8IU/5Vsd
+ Jrf74AJMKR+h5WOopQkEY05HkO30nH18xX4D85TjTMQIbL0iAHDhYHUPur2amaBP1CL6
+ RS8eMppIKQevbuQilaLP804yNxwZ9Wuv+YrNiMwDfjRjNIKBMBVfcgDhrLJV95/xQEbr
+ 74gA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
  h=x-gm-message-state:date:in-reply-to:message-id:mime-version
  :references:subject:from:to:cc;
- bh=VtmBCpNp1KP0Wih0wNtSn6S6eDN4r8qEfTH0S3sfDvI=;
- b=nEYr9K6zN2aRkRbJ9/NN5YHIz9Vb2SF5K5OHO0ms1HmnhjjfXshyBHSeQ3ac0mHrd+
- zUJBc16dQw5HriVvBUxgfWCF2CGruG4Zd8FywxkMy3Czxb0TpWAiZIaRLMC8kURlHCau
- hX6Ftg6vunoHWYGWgw70YBk5WMId2ctf7cFv4621rFfBAIQVrTnF1/96IN8MhLevOAgB
- U08CaglwujL+0HIi6bdtZqRz4PjNIS0CvOHa1FgQc7fn/x/ytwtbfLz8eI94jNV1pNSH
- y65e9sG0/+elODqNehA4sMmGU/m5PkLYdMn0edP8e69pANe6Wplhr+D8qHFxwP8aQWGw
- aeJQ==
-X-Gm-Message-State: AOAM530yxW+Ue24lV4d4x6NR8gK318Xo6tctfYVUtV+VqGBPHjuwTepG
- o5v0AwWH1Ww+zDmGha7zmQO75nsw
-X-Google-Smtp-Source: ABdhPJyLvkWkgsl5N6fEs4uPVrRWt8N7EGGq7Ji9SRjDngCAZu0NMTQ8venaNAjb270E/IyAc5Cnz/CcgQ==
+ bh=qfaKip6DwFGW+guGsE2/HUgOUCf7B/ryBL2HyFI8yyY=;
+ b=c/3hSP9oGz2rFg3jeffdgSd4bGyauJmwOpvTqPJrXyQMpUVsFwuWnGI3j0TXjusBYr
+ bWueIEFtaxvw4ZRqvZd5gMOf+d6mKwW3LytvwQkWLgH9QZPVmYFVgtin6A+1WHJdfS4b
+ LedMxZLvsn7pCr3JwowQBdT7wGSmsrNXoBOpJRIZfwf2XablgOMM5CAduOZ2aS3hQFmu
+ 4kJJzEU8d8+jBcQRDcsABlfMQbuulL0Tg2xHRaUMZC/3wkIp2YlHVnPJJG0/QFHFM7ZK
+ BDtvZA7OYobKA5zJHwIB8h/DocgEe8N3MH/t5oYFlD/Hvx9Hyagb3kAoSbEXf95ZmgIi
+ BQnw==
+X-Gm-Message-State: AOAM532KxRGd3dBLyzikoZ5cLaWyb+7jfadM3PJWWONnFS7xBZ0I5s7J
+ 73k/8QH8aRoNDxchgK9zLbw300b4
+X-Google-Smtp-Source: ABdhPJzfxk5qZb5y/5tpnB1EFv7CAi9wKZuC1KM7/pyahvYM5X1dHlQAhdkQ2HW7pda2hCN2ocO+yxStMQ==
 X-Received: from fawn.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5795])
- (user=morbo job=sendgmr) by 2002:a63:4722:0:b0:3fb:94a7:9986 with
+ (user=morbo job=sendgmr) by 2002:a62:1687:0:b0:50d:3364:46d4 with
  SMTP id
- u34-20020a634722000000b003fb94a79986mr36618043pga.531.1654813173379; Thu, 09
- Jun 2022 15:19:33 -0700 (PDT)
-Date: Thu,  9 Jun 2022 22:16:25 +0000
+ 129-20020a621687000000b0050d336446d4mr42409947pfw.74.1654813195848; Thu, 09
+ Jun 2022 15:19:55 -0700 (PDT)
+Date: Thu,  9 Jun 2022 22:16:26 +0000
 In-Reply-To: <20220609221702.347522-1-morbo@google.com>
-Message-Id: <20220609221702.347522-7-morbo@google.com>
+Message-Id: <20220609221702.347522-8-morbo@google.com>
 Mime-Version: 1.0
 References: <20220609221702.347522-1-morbo@google.com>
 X-Mailer: git-send-email 2.36.1.476.g0c4daa206d-goog
-Subject: [PATCH 06/12] PNP: use correct format characters
+Subject: [PATCH 07/12] driver/char: use correct format characters
 From: Bill Wendling <morbo@google.com>
 To: isanbard@gmail.com
 Content-Type: text/plain; charset="UTF-8"
@@ -118,31 +118,31 @@ From: Bill Wendling <isanbard@gmail.com>
 
 When compiling with -Wformat, clang emits the following warnings:
 
-drivers/pnp/interface.c:273:22: error: format string is not a string literal (potentially insecure) [-Werror,-Wformat-security]
-                pnp_printf(buffer, pnp_resource_type_name(res));
-                                   ^~~~~~~~~~~~~~~~~~~~~~~~~~~
+drivers/char/mem.c:775:16: error: format string is not a string literal (potentially insecure) [-Werror,-Wformat-security]
+                              NULL, devlist[minor].name);
+                                    ^~~~~~~~~~~~~~~~~~~
 
 Use a string literal for the format string.
 
 Link: https://github.com/ClangBuiltLinux/linux/issues/378
 Signed-off-by: Bill Wendling <isanbard@gmail.com>
 ---
- drivers/pnp/interface.c | 2 +-
+ drivers/char/mem.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/pnp/interface.c b/drivers/pnp/interface.c
-index 44efcdb87e6f..553221a0c89a 100644
---- a/drivers/pnp/interface.c
-+++ b/drivers/pnp/interface.c
-@@ -270,7 +270,7 @@ static ssize_t resources_show(struct device *dmdev,
- 	list_for_each_entry(pnp_res, &dev->resources, list) {
- 		res = &pnp_res->res;
+diff --git a/drivers/char/mem.c b/drivers/char/mem.c
+index 84ca98ed1dad..32d821ba9e4d 100644
+--- a/drivers/char/mem.c
++++ b/drivers/char/mem.c
+@@ -772,7 +772,7 @@ static int __init chr_dev_init(void)
+ 			continue;
  
--		pnp_printf(buffer, pnp_resource_type_name(res));
-+		pnp_printf(buffer, "%s", pnp_resource_type_name(res));
+ 		device_create(mem_class, NULL, MKDEV(MEM_MAJOR, minor),
+-			      NULL, devlist[minor].name);
++			      NULL, "%s", devlist[minor].name);
+ 	}
  
- 		if (res->flags & IORESOURCE_DISABLED) {
- 			pnp_printf(buffer, " disabled\n");
+ 	return tty_init();
 -- 
 2.36.1.255.ge46751e96f-goog
 
