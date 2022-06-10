@@ -4,70 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id BA11BC43334
-	for <alsa-devel@archiver.kernel.org>; Fri, 10 Jun 2022 02:37:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 86A8BC43334
+	for <alsa-devel@archiver.kernel.org>; Fri, 10 Jun 2022 02:37:54 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B95302112;
-	Fri, 10 Jun 2022 04:36:42 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B95302112
+	by alsa0.perex.cz (Postfix) with ESMTPS id BFD6021D5;
+	Fri, 10 Jun 2022 04:37:02 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BFD6021D5
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1654828652;
-	bh=JbfVyJIpKWWl8KF3OlHEusSCn78ZocgcBg7L63EI6as=;
+	s=default; t=1654828672;
+	bh=uprg4ZL4jSezrQW9p9662ttg9PS3pP4zuCPQgHXP8oA=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=QVyeKCqnbaqEa2Vcz+lMSKWBdwpmDUH9fEwym6r4CIkpdEj508hTJuF8Hth7nYxrF
-	 4VqwxcKi5S1AU/R9GWybxKCEniP+lQCF0b3to4r/p0BeVR5Al1awCTx8JWailI5YEJ
-	 smXGEih8be+NFYYNlm+BItOuXdFhh3G17XX1O3eM=
+	b=tY+lCVfhIahsx2rdKqw17L95dIKdOgSqrbEn+Rk2jbRgMOM6E0n+bl+sQgp/Huos0
+	 xBR50rZTzVwrnY4mUgYPDU72WbzFR11n93/zXzlsxCL/pLWX5xnPHy0YfVFB3MrfoE
+	 GKPLB5fgQ334CMhy35gTP6mEjjMlatzVGMuKoSsA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 137EBF804DA;
-	Fri, 10 Jun 2022 04:36:14 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 02D18F8052E;
+	Fri, 10 Jun 2022 04:36:17 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 4676AF80515; Fri, 10 Jun 2022 04:36:12 +0200 (CEST)
+ id 4872CF8052F; Fri, 10 Jun 2022 04:36:15 +0200 (CEST)
 Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id B7D7CF800E5
- for <alsa-devel@alsa-project.org>; Fri, 10 Jun 2022 04:36:05 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B7D7CF800E5
+ by alsa1.perex.cz (Postfix) with ESMTPS id 8CC93F804CF
+ for <alsa-devel@alsa-project.org>; Fri, 10 Jun 2022 04:36:07 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8CC93F804CF
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="Yk0+4ESd"
+ header.b="bltS1gaM"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1654828566; x=1686364566;
- h=from:to:cc:subject:date:message-id:in-reply-to:
- references:mime-version:content-transfer-encoding;
- bh=JbfVyJIpKWWl8KF3OlHEusSCn78ZocgcBg7L63EI6as=;
- b=Yk0+4ESdI+PQJtqPLoffi9J8o4WzuIKyBDy5oS4ZW+/ZD//4Z5+2igRu
- k4uWFnIXi4+0tydgDedNWZMdq3D2zxmoHLGi3WbjZu82tAydxiA1hF9Um
- dP4cLKQu4uEVPQKJBNk7zdPDRwfdblM4Kv9H/TDZE8Uoo05C87hKf5QW7
- Wdhl7G72Qp0HQ6kg7ktMaIS4neTo8dNt6P8Lw1VQqiv8UZarhYOENM7W2
- RV2na0vLySl0yynWB9TPxIuh4yCiH1yWg0tyEYYs1QY43muRR2AyqQuhk
- RdYQOZonW75/MJxPTXOGHV6flwVOSRouOWZ5OsCA+K6TZ4VwxmYpqAz6w g==;
-X-IronPort-AV: E=McAfee;i="6400,9594,10373"; a="266258663"
-X-IronPort-AV: E=Sophos;i="5.91,288,1647327600"; d="scan'208";a="266258663"
+ t=1654828569; x=1686364569;
+ h=from:to:cc:subject:date:message-id:in-reply-to: references;
+ bh=uprg4ZL4jSezrQW9p9662ttg9PS3pP4zuCPQgHXP8oA=;
+ b=bltS1gaMUr80qc2HrnUDaWodkAcq1sboI8fEJF51ONs5O/G0rbOMx3QO
+ x57cjc5NGpUxlMNHvJBR21QAdlH9kXaBlP2/K/xQpV5/+r+Ra3gZCmXt3
+ CCrcaP8TH/8NB5hC/7hBqXOyoeoeeKaItm6D3979Qm+w+HwE5Wi2nqH6w
+ l3Hh6OtEPvAnlgCeR36MyENassmSbYJnU6W6ydS/lY1E8e1Ejyf4DDapR
+ urRpL4NmwEUxiALu++BTIYo/2wb9tNNvGHeT8YNeFJC8wew6I2tT4JsMD
+ Fpoeu/6bVJsFIj5Tihat2djdHUgA50ViXk/0uE/AHeYmE0MijSF9QhKrQ Q==;
+X-IronPort-AV: E=McAfee;i="6400,9594,10373"; a="266258667"
+X-IronPort-AV: E=Sophos;i="5.91,288,1647327600"; d="scan'208";a="266258667"
 Received: from fmsmga008.fm.intel.com ([10.253.24.58])
  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 09 Jun 2022 19:35:51 -0700
-X-IronPort-AV: E=Sophos;i="5.91,288,1647327600"; d="scan'208";a="637874955"
+ 09 Jun 2022 19:35:53 -0700
+X-IronPort-AV: E=Sophos;i="5.91,288,1647327600"; d="scan'208";a="637874970"
 Received: from bard-ubuntu.sh.intel.com ([10.239.185.57])
  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 09 Jun 2022 19:35:48 -0700
+ 09 Jun 2022 19:35:51 -0700
 From: Bard Liao <yung-chuan.liao@linux.intel.com>
 To: alsa-devel@alsa-project.org,
 	vkoul@kernel.org
-Subject: [PATCH 1/2] soundwire: intel: uniquify debug message
-Date: Fri, 10 Jun 2022 10:35:36 +0800
-Message-Id: <20220610023537.27223-2-yung-chuan.liao@linux.intel.com>
+Subject: [PATCH 2/2] soundwire: Intel: add trigger callback
+Date: Fri, 10 Jun 2022 10:35:37 +0800
+Message-Id: <20220610023537.27223-3-yung-chuan.liao@linux.intel.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20220610023537.27223-1-yung-chuan.liao@linux.intel.com>
 References: <20220610023537.27223-1-yung-chuan.liao@linux.intel.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
 Cc: vinod.koul@linaro.org, tiwai@suse.de, gregkh@linuxfoundation.org,
  linux-kernel@vger.kernel.org, pierre-louis.bossart@linux.intel.com,
  broonie@kernel.org, srinivas.kandagatla@linaro.org, sanyog.r.kale@intel.com,
@@ -87,100 +83,53 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+When a pipeline is split into FE and BE parts, the BE pipeline may need to
+be triggered separately in the BE trigger op. So add the trigger callback
+in the link_res ops that will be invoked during BE DAI trigger.
 
-The same debug message is replicated multiple time, add __func__ to
-figure out what link is ignored.
-
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-Reviewed-by: Péter Ujfalusi <peter.ujfalusi@linux.intel.com>
 Signed-off-by: Bard Liao <yung-chuan.liao@linux.intel.com>
+Reviewed-by: Rander Wang <rander.wang@intel.com>
+Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 ---
- drivers/soundwire/intel.c | 28 ++++++++++++++--------------
- 1 file changed, 14 insertions(+), 14 deletions(-)
+ drivers/soundwire/intel.c           | 8 ++++++++
+ include/linux/soundwire/sdw_intel.h | 1 +
+ 2 files changed, 9 insertions(+)
 
 diff --git a/drivers/soundwire/intel.c b/drivers/soundwire/intel.c
-index 505c5ef061e3..808e2f320052 100644
+index 808e2f320052..3f3c2c99cb8e 100644
 --- a/drivers/soundwire/intel.c
 +++ b/drivers/soundwire/intel.c
-@@ -1328,8 +1328,8 @@ int intel_link_startup(struct auxiliary_device *auxdev)
+@@ -1004,9 +1004,17 @@ static int intel_trigger(struct snd_pcm_substream *substream, int cmd, struct sn
+ {
+ 	struct sdw_cdns *cdns = snd_soc_dai_get_drvdata(dai);
+ 	struct sdw_intel *sdw = cdns_to_intel(cdns);
++	struct sdw_intel_link_res *res = sdw->link_res;
+ 	struct sdw_cdns_dma_data *dma;
+ 	int ret = 0;
  
- 	if (bus->prop.hw_disabled) {
- 		dev_info(dev,
--			 "SoundWire master %d is disabled, ignoring\n",
--			 sdw->instance);
-+			 "%s: SoundWire master %d is disabled, ignoring\n",
-+			 __func__, sdw->instance);
- 		return 0;
- 	}
++	/* The .trigger callback is used to send required IPC to audio
++	 * firmware. The .free_stream callback will still be called
++	 * by intel_free_stream() in the TRIGGER_SUSPEND case.
++	 */
++	if (res->ops && res->ops->trigger)
++		res->ops->trigger(dai, cmd, substream->stream);
++
+ 	dma = snd_soc_dai_get_dma_data(dai, substream);
+ 	if (!dma) {
+ 		dev_err(dai->dev, "failed to get dma data in %s\n",
+diff --git a/include/linux/soundwire/sdw_intel.h b/include/linux/soundwire/sdw_intel.h
+index 67e0d3e750b5..f638707fd712 100644
+--- a/include/linux/soundwire/sdw_intel.h
++++ b/include/linux/soundwire/sdw_intel.h
+@@ -119,6 +119,7 @@ struct sdw_intel_ops {
+ 			     struct sdw_intel_stream_params_data *params_data);
+ 	int (*free_stream)(struct device *dev,
+ 			   struct sdw_intel_stream_free_data *free_data);
++	int (*trigger)(struct snd_soc_dai *dai, int cmd, int stream);
+ };
  
-@@ -1489,8 +1489,8 @@ int intel_link_process_wakeen_event(struct auxiliary_device *auxdev)
- 	bus = &sdw->cdns.bus;
- 
- 	if (bus->prop.hw_disabled || !sdw->startup_done) {
--		dev_dbg(dev, "SoundWire master %d is disabled or not-started, ignoring\n",
--			bus->link_id);
-+		dev_dbg(dev, "%s: SoundWire master %d is disabled or not-started, ignoring\n",
-+			__func__, bus->link_id);
- 		return 0;
- 	}
- 
-@@ -1549,8 +1549,8 @@ static int __maybe_unused intel_pm_prepare(struct device *dev)
- 	int ret;
- 
- 	if (bus->prop.hw_disabled || !sdw->startup_done) {
--		dev_dbg(dev, "SoundWire master %d is disabled or not-started, ignoring\n",
--			bus->link_id);
-+		dev_dbg(dev, "%s: SoundWire master %d is disabled or not-started, ignoring\n",
-+			__func__, bus->link_id);
- 		return 0;
- 	}
- 
-@@ -1609,8 +1609,8 @@ static int __maybe_unused intel_suspend(struct device *dev)
- 	int ret;
- 
- 	if (bus->prop.hw_disabled || !sdw->startup_done) {
--		dev_dbg(dev, "SoundWire master %d is disabled or not-started, ignoring\n",
--			bus->link_id);
-+		dev_dbg(dev, "%s: SoundWire master %d is disabled or not-started, ignoring\n",
-+			__func__, bus->link_id);
- 		return 0;
- 	}
- 
-@@ -1662,8 +1662,8 @@ static int __maybe_unused intel_suspend_runtime(struct device *dev)
- 	int ret;
- 
- 	if (bus->prop.hw_disabled || !sdw->startup_done) {
--		dev_dbg(dev, "SoundWire master %d is disabled or not-started, ignoring\n",
--			bus->link_id);
-+		dev_dbg(dev, "%s: SoundWire master %d is disabled or not-started, ignoring\n",
-+			__func__, bus->link_id);
- 		return 0;
- 	}
- 
-@@ -1727,8 +1727,8 @@ static int __maybe_unused intel_resume(struct device *dev)
- 	int ret;
- 
- 	if (bus->prop.hw_disabled || !sdw->startup_done) {
--		dev_dbg(dev, "SoundWire master %d is disabled or not-started, ignoring\n",
--			bus->link_id);
-+		dev_dbg(dev, "%s: SoundWire master %d is disabled or not-started, ignoring\n",
-+			__func__, bus->link_id);
- 		return 0;
- 	}
- 
-@@ -1825,8 +1825,8 @@ static int __maybe_unused intel_resume_runtime(struct device *dev)
- 	int ret;
- 
- 	if (bus->prop.hw_disabled || !sdw->startup_done) {
--		dev_dbg(dev, "SoundWire master %d is disabled or not-started, ignoring\n",
--			bus->link_id);
-+		dev_dbg(dev, "%s: SoundWire master %d is disabled or not-started, ignoring\n",
-+			__func__, bus->link_id);
- 		return 0;
- 	}
- 
+ /**
 -- 
 2.17.1
 
