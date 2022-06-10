@@ -4,73 +4,70 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id CA578C433EF
-	for <alsa-devel@archiver.kernel.org>; Fri, 10 Jun 2022 08:02:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2AA83C43334
+	for <alsa-devel@archiver.kernel.org>; Fri, 10 Jun 2022 08:04:53 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 112381ED9;
-	Fri, 10 Jun 2022 10:01:35 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 112381ED9
+	by alsa0.perex.cz (Postfix) with ESMTPS id 616B01EEF;
+	Fri, 10 Jun 2022 10:04:01 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 616B01EEF
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1654848145;
-	bh=bsjlU4WdaVedTinYzD8yfFZY8yRFASxRB/jOkDQuRsk=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=LHXhZlN+dv/ZQr3iP7/2DRRrVXVmxXJYE+bkL41dhgmX7IJOADZdjQKVx68rxSlnP
-	 WeemATbXP/MmVpBjn93ZLbcfHluia2zAOPdDE7lDdGsM4eYscq2rbPBjM/Px1gJoNh
-	 m4W03qEEWi2+VcckSc5d2ABPH01lOb/WEEdVTObU=
+	s=default; t=1654848291;
+	bh=Y6njyXAkEzvCKA5OoWSOeJB4odNLPQ1pRVzOdGh04GE=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=qFIKxV2M+RGL/mfbIHVUOv5/N5TSMXwd0KWHOPJwe+i/mNM3GFHDrwWEBZMBDSvL6
+	 1z1s6Heq5Np5/38gJ9odYqzZwbTok2GuXmtUjiwBlYIJt6h7hyAjZGQwTabJyzXvGe
+	 7jPiml5IFLw/ih/GgIBF68GuXhYHOqFCBDrY80FY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 99B29F80535;
-	Fri, 10 Jun 2022 10:01:06 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 10937F804CF;
+	Fri, 10 Jun 2022 10:04:01 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id D938BF80536; Fri, 10 Jun 2022 10:01:04 +0200 (CEST)
-Received: from mga06.intel.com (mga06b.intel.com [134.134.136.31])
+ id 30F8AF804CF; Fri, 10 Jun 2022 10:03:59 +0200 (CEST)
+Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 354D1F80515
- for <alsa-devel@alsa-project.org>; Fri, 10 Jun 2022 10:00:54 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 354D1F80515
+ by alsa1.perex.cz (Postfix) with ESMTPS id CA56DF800C7
+ for <alsa-devel@alsa-project.org>; Fri, 10 Jun 2022 10:03:51 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CA56DF800C7
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="FPlIg7Xs"
+ header.b="IgcsBwxQ"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1654848056; x=1686384056;
- h=from:to:cc:subject:date:message-id:in-reply-to:
- references:mime-version:content-transfer-encoding;
- bh=bsjlU4WdaVedTinYzD8yfFZY8yRFASxRB/jOkDQuRsk=;
- b=FPlIg7Xs8ICMSqOVISTxkDRiTY6kpAu4ngH/KgU4PqZGkQASkPX1Wlgc
- 3dREK3hf3Omm+Ri1zMj2x8iKC6rM6sZvMPuO5X5TGX5xK1sqmHOwwNVGI
- 9d/+GtgM8rpA6cL7fcLztiGdE9n227Fy1e0rG4fzJJUkKHo2OUTVlIIoE
- X1/K9rH6h8EqnZdSKxqs7ykIVUVq+XnS3AcNnXwXcEDqwJZVpAtr/mNeP
- 5SpeTIjgf9Ph8pqGO7j/4NDDutK9gSMGtQ4c/OIkP7mvSgHJChBvTD04V
- 9lbsOfY6fB58wJ6UrTj7WK04qAR4wfDQwNbN0bgmYeI2bq6RBSJ6aP/zH Q==;
-X-IronPort-AV: E=McAfee;i="6400,9594,10373"; a="339305566"
-X-IronPort-AV: E=Sophos;i="5.91,288,1647327600"; d="scan'208";a="339305566"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
- by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 10 Jun 2022 01:00:51 -0700
-X-IronPort-AV: E=Sophos;i="5.91,288,1647327600"; d="scan'208";a="638007978"
+ t=1654848234; x=1686384234;
+ h=from:to:cc:subject:date:message-id:mime-version:
+ content-transfer-encoding;
+ bh=Y6njyXAkEzvCKA5OoWSOeJB4odNLPQ1pRVzOdGh04GE=;
+ b=IgcsBwxQwYOSuaUZzimqp/TZ9toR1ziSRQxbpFAf4yJlA8DozHG0zj9G
+ ju9PaybbJa6rxs/mGOg3Ei4a+7H5XOsxWpnRCZ9/Erehfif3ze/dPBAEV
+ Nt7UtxqxonjwSBIdvVcyfEOsKGY340MNXXQRwtEp14QYX1WOVlzChMYnk
+ WhwT0uru9c2nN4+YKqLwSorUhMNBVDQguTbAneH0S/hpYtgdQU250er3K
+ E4urFw0WNbwMTD28zqYzJhKi9AyuhOBpkTaiAudDcYJ392qZDzxWuWV/H
+ edZL612LdnWX80foxNIxf2W+pxq637dl+kbfIsPHfGEwGFKR5KwQnQfNg A==;
+X-IronPort-AV: E=McAfee;i="6400,9594,10373"; a="275082921"
+X-IronPort-AV: E=Sophos;i="5.91,288,1647327600"; d="scan'208";a="275082921"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+ by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 10 Jun 2022 01:03:49 -0700
+X-IronPort-AV: E=Sophos;i="5.91,288,1647327600"; d="scan'208";a="616383386"
 Received: from nuribebu-mobl.amr.corp.intel.com (HELO
  pujfalus-desk.ger.corp.intel.com) ([10.251.215.108])
- by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 10 Jun 2022 01:00:49 -0700
+ by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 10 Jun 2022 01:03:45 -0700
 From: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
 To: lgirdwood@gmail.com, broonie@kernel.org,
- pierre-louis.bossart@linux.intel.com, daniel.baluta@nxp.com
-Subject: [PATCH 2/3] ASoC: SOF: ipc3-dtrace: Add helper function to update the
- sdev->host_offset
-Date: Fri, 10 Jun 2022 11:01:18 +0300
-Message-Id: <20220610080119.30880-3-peter.ujfalusi@linux.intel.com>
+ pierre-louis.bossart@linux.intel.com
+Subject: [PATCH] ASoC: SOF: debug: Clarify the IPC timeout handling path
+Date: Fri, 10 Jun 2022 11:04:21 +0300
+Message-Id: <20220610080421.31453-1-peter.ujfalusi@linux.intel.com>
 X-Mailer: git-send-email 2.36.1
-In-Reply-To: <20220610080119.30880-1-peter.ujfalusi@linux.intel.com>
-References: <20220610080119.30880-1-peter.ujfalusi@linux.intel.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: alsa-devel@alsa-project.org, yung-chuan.liao@linux.intel.com,
- ranjani.sridharan@linux.intel.com, kai.vehmanen@linux.intel.com
+Cc: alsa-devel@alsa-project.org, daniel.baluta@nxp.com,
+ ranjani.sridharan@linux.intel.com, kai.vehmanen@linux.intel.com,
+ yc.hung@mediatek.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -86,75 +83,73 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-We are using the READ_ONCE() on the debugfs read path for accessing
-sdev->host_offset, but the set is not atomic or protected in any way.
+The dmesg log message of "Firmware exception" causes lots of confusion as
+the snd_sof_handle_fw_exception() is only called in case of an IPC tx
+timeout, where such a message does not make much sense.
 
-Add a small helper to do the host_offset update and be really paranoid
-about the a possible race in update
+To not limit the snd_sof_handle_fw_exception() handler to just one error
+case, add a parameter to allow the caller to specify a meaningful message
+to be printed.
 
 Signed-off-by: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
+Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Reviewed-by: Bard Liao <yung-chuan.liao@linux.intel.com>
+Reviewed-by: Yaochun Hung <yc.hung@mediatek.com>
 ---
- sound/soc/sof/ipc3-dtrace.c | 23 ++++++++++++++++++-----
- 1 file changed, 18 insertions(+), 5 deletions(-)
+ sound/soc/sof/debug.c    | 5 ++---
+ sound/soc/sof/ipc3.c     | 2 +-
+ sound/soc/sof/sof-priv.h | 2 +-
+ 3 files changed, 4 insertions(+), 5 deletions(-)
 
-diff --git a/sound/soc/sof/ipc3-dtrace.c b/sound/soc/sof/ipc3-dtrace.c
-index 9292ff7ce1e8..1f4d7a98c8fc 100644
---- a/sound/soc/sof/ipc3-dtrace.c
-+++ b/sound/soc/sof/ipc3-dtrace.c
-@@ -252,6 +252,21 @@ static int debugfs_create_trace_filter(struct snd_sof_dev *sdev)
- 	return 0;
+diff --git a/sound/soc/sof/debug.c b/sound/soc/sof/debug.c
+index cf1271eb29b2..c5d797e97c02 100644
+--- a/sound/soc/sof/debug.c
++++ b/sound/soc/sof/debug.c
+@@ -428,7 +428,7 @@ static void snd_sof_ipc_dump(struct snd_sof_dev *sdev)
+ 	}
  }
  
-+static bool sof_dtrace_set_host_offset(struct sof_dtrace_priv *priv, u32 new_offset)
-+{
-+	u32 host_offset = READ_ONCE(priv->host_offset);
-+
-+	if (host_offset != new_offset) {
-+		/* This is a bit paranoid and unlikely that it is needed */
-+		u32 ret = cmpxchg(&priv->host_offset, host_offset, new_offset);
-+
-+		if (ret == host_offset)
-+			return true;
-+	}
-+
-+	return false;
-+}
-+
- static size_t sof_dtrace_avail(struct snd_sof_dev *sdev,
- 			       loff_t pos, size_t buffer_size)
+-void snd_sof_handle_fw_exception(struct snd_sof_dev *sdev)
++void snd_sof_handle_fw_exception(struct snd_sof_dev *sdev, const char *msg)
  {
-@@ -368,7 +383,7 @@ static int dfsentry_dtrace_release(struct inode *inode, struct file *file)
+ 	if (IS_ENABLED(CONFIG_SND_SOC_SOF_DEBUG_RETAIN_DSP_CONTEXT) ||
+ 	    sof_debug_check_flag(SOF_DBG_RETAIN_CTX)) {
+@@ -441,8 +441,7 @@ void snd_sof_handle_fw_exception(struct snd_sof_dev *sdev)
  
- 	/* avoid duplicate traces at next open */
- 	if (priv->dtrace_state != SOF_DTRACE_ENABLED)
--		priv->host_offset = 0;
-+		sof_dtrace_set_host_offset(priv, 0);
- 
- 	return 0;
+ 	/* dump vital information to the logs */
+ 	snd_sof_ipc_dump(sdev);
+-	snd_sof_dsp_dbg_dump(sdev, "Firmware exception",
+-			     SOF_DBG_DUMP_REGS | SOF_DBG_DUMP_MBOX);
++	snd_sof_dsp_dbg_dump(sdev, msg, SOF_DBG_DUMP_REGS | SOF_DBG_DUMP_MBOX);
+ 	sof_fw_trace_fw_crashed(sdev);
  }
-@@ -444,7 +459,7 @@ static int ipc3_dtrace_enable(struct snd_sof_dev *sdev)
- 	params.buffer.pages = priv->dma_trace_pages;
- 	params.stream_tag = 0;
- 
--	priv->host_offset = 0;
-+	sof_dtrace_set_host_offset(priv, 0);
- 	priv->dtrace_draining = false;
- 
- 	ret = sof_dtrace_host_init(sdev, &priv->dmatb, &params);
-@@ -559,10 +574,8 @@ int ipc3_dtrace_posn_update(struct snd_sof_dev *sdev,
- 		return 0;
- 
- 	if (trace_pos_update_expected(priv) &&
--	    priv->host_offset != posn->host_offset) {
--		priv->host_offset = posn->host_offset;
-+	    sof_dtrace_set_host_offset(priv, posn->host_offset))
- 		wake_up(&priv->trace_sleep);
--	}
- 
- 	if (posn->overflow != 0)
+ EXPORT_SYMBOL(snd_sof_handle_fw_exception);
+diff --git a/sound/soc/sof/ipc3.c b/sound/soc/sof/ipc3.c
+index dff5feaad370..ef8019e009b7 100644
+--- a/sound/soc/sof/ipc3.c
++++ b/sound/soc/sof/ipc3.c
+@@ -290,7 +290,7 @@ static int ipc3_wait_tx_done(struct snd_sof_ipc *ipc, void *reply_data)
  		dev_err(sdev->dev,
+ 			"ipc tx timed out for %#x (msg/reply size: %d/%zu)\n",
+ 			hdr->cmd, hdr->size, msg->reply_size);
+-		snd_sof_handle_fw_exception(ipc->sdev);
++		snd_sof_handle_fw_exception(ipc->sdev, "IPC timeout");
+ 		ret = -ETIMEDOUT;
+ 	} else {
+ 		ret = msg->reply_error;
+diff --git a/sound/soc/sof/sof-priv.h b/sound/soc/sof/sof-priv.h
+index 9d7f53ff9c70..32c152528f1d 100644
+--- a/sound/soc/sof/sof-priv.h
++++ b/sound/soc/sof/sof-priv.h
+@@ -655,7 +655,7 @@ void sof_print_oops_and_stack(struct snd_sof_dev *sdev, const char *level,
+ 			      u32 panic_code, u32 tracep_code, void *oops,
+ 			      struct sof_ipc_panic_info *panic_info,
+ 			      void *stack, size_t stack_words);
+-void snd_sof_handle_fw_exception(struct snd_sof_dev *sdev);
++void snd_sof_handle_fw_exception(struct snd_sof_dev *sdev, const char *msg);
+ int snd_sof_dbg_memory_info_init(struct snd_sof_dev *sdev);
+ int snd_sof_debugfs_add_region_item_iomem(struct snd_sof_dev *sdev,
+ 		enum snd_sof_fw_blk_type blk_type, u32 offset, size_t size,
 -- 
 2.36.1
 
