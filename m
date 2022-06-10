@@ -4,177 +4,74 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3702FC43334
-	for <alsa-devel@archiver.kernel.org>; Fri, 10 Jun 2022 10:03:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E197DC433EF
+	for <alsa-devel@archiver.kernel.org>; Fri, 10 Jun 2022 10:03:57 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 75A14192D;
-	Fri, 10 Jun 2022 12:02:55 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 75A14192D
+	by alsa0.perex.cz (Postfix) with ESMTPS id 114481A4D;
+	Fri, 10 Jun 2022 12:03:06 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 114481A4D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1654855425;
-	bh=6MffibroFwMqNdnLBGNCXDKXcfxhQ82DNB1MroWRHy8=;
+	s=default; t=1654855436;
+	bh=4RmeL8OoRvwTRPjcy9R34dIdSFR4j/KUysjnhoDR5tM=;
 	h=Date:Subject:To:References:From:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Fr54k9mYCsFiykWUcFLKohGs+yQcsJh1/KTDRGLYskWa/sdsZcsa4Z7kifASNC0Ek
-	 CBA5lBcrvB8emlvOi8WmLx9ZwUR7aALGrALuusudiOUkjj1FItPHa2O5busmjxmN9N
-	 wM1XKaFy1oJAeg5h4Kfeuh+7HTodgPP9vNTa6POE=
+	b=NslVoq/MhHUZz1l+pcOJBJ8yIssMo5B+K+6PPHTugUzyb4cmjI+0ZvDAZbX3y7fdS
+	 W6wnwSSX4Eu9X9mjVAH0X5I4e8rSwpGAS7LJ3j6aLc4uIA00qmXz0WlTLloGyIdwwS
+	 eh36OOJbmA++ejK6C74T4D0xj/aKI6524ZiRsPxM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 2B51BF80527;
-	Fri, 10 Jun 2022 12:02:12 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 27274F80535;
+	Fri, 10 Jun 2022 12:02:15 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 672AEF80528; Fri, 10 Jun 2022 12:02:11 +0200 (CEST)
-Received: from mga17.intel.com (mga17.intel.com [192.55.52.151])
+ id 2E931F80536; Fri, 10 Jun 2022 12:02:14 +0200 (CEST)
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id F1958F80526
- for <alsa-devel@alsa-project.org>; Fri, 10 Jun 2022 12:02:07 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F1958F80526
+ by alsa1.perex.cz (Postfix) with ESMTPS id AC526F804E7
+ for <alsa-devel@alsa-project.org>; Fri, 10 Jun 2022 12:02:06 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AC526F804E7
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="NoIuPiYa"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
- d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1654855329; x=1686391329;
- h=message-id:date:subject:to:cc:references:from:
- in-reply-to:content-transfer-encoding:mime-version;
- bh=6MffibroFwMqNdnLBGNCXDKXcfxhQ82DNB1MroWRHy8=;
- b=NoIuPiYatMHN54KBzWubduEoF0DPMFuhKGu9LzeD1rvqzlwMYUgoYbvc
- KDb5SrSsKOYauGSj6IK1jqDtoEspiosANfHUUEPyFUg5OC1tNjq5c+1Cv
- L3Ojpm2CbJ8cybFgYeHKi/l5jbj4pSr9a2JuVRSdRbrNouZxhNNN/r6i/
- Dkj/79N8FlBQCnQty6OmZ9wTT7TPBeFHa1U1rcbix6E8f9ah8nIUd7R10
- QjTg1VXiDr2fi9LodwTPN1hAni4gyjNbxBoOwxGW/gQr3mXJwQe1+mXo4
- c6G4Jdvh6G+ypM2wI4R1Wc1FYlFcWpbOQER/5iJAZ9uONoqxuK4sFn5iT A==;
-X-IronPort-AV: E=McAfee;i="6400,9594,10373"; a="258016524"
-X-IronPort-AV: E=Sophos;i="5.91,288,1647327600"; d="scan'208";a="258016524"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
- by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 10 Jun 2022 03:02:04 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.91,288,1647327600"; d="scan'208";a="556311839"
-Received: from fmsmsx604.amr.corp.intel.com ([10.18.126.84])
- by orsmga006.jf.intel.com with ESMTP; 10 Jun 2022 03:02:03 -0700
-Received: from fmsmsx605.amr.corp.intel.com (10.18.126.85) by
- fmsmsx604.amr.corp.intel.com (10.18.126.84) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.27; Fri, 10 Jun 2022 03:02:03 -0700
-Received: from FMSEDG603.ED.cps.intel.com (10.1.192.133) by
- fmsmsx605.amr.corp.intel.com (10.18.126.85) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.27 via Frontend Transport; Fri, 10 Jun 2022 03:02:03 -0700
-Received: from NAM10-MW2-obe.outbound.protection.outlook.com (104.47.55.103)
- by edgegateway.intel.com (192.55.55.68) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2308.27; Fri, 10 Jun 2022 03:01:55 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=SIPmSn1L7URuj8htsGT4RXtwEVTTq9mqwrpViS8mXBtY2rqoDF6Lj9x05Lh0bIuO7kRSGwk/YpnL0wbYvwPRZKJG8PpXXCypueBrdl5PLWhZMtKqv0DV3EIbsSm1kKJ5reetxl8WaEngY8Cg3Xh16efXFwH5jgf235SCMNsbVU5qI02wP5/CIy6xOyS6dB0MpFhUhAWbNNyTJ8pk98zZ9vWmY66bWAJV/JKJj8owofTqCpI/fju6yEB+qfUyTxswbxDs7oHNcrdVa2GChE4ATcg2qfdHx/LclzGQeYuu4PSQ9f8utQ1QYUja0xeAX0dI4gD9dyDrT5ABZasOgazrZA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=NJ2TSCMUrAhM1J18mY5un7kGBhzbNFUf/sUKpJAFFSQ=;
- b=Y7aI2TmIJ+vOjVUySYSsGfd/B0lSUrrQpux5RCaOf+N7S4WpxeiMFVyeWIRaXbEHDanx5a5GzLhzB0pEfzzo4TzBB3QScJqGnkjs5oOJN110bEC4sZ/1A0Z/tJTvwrqugHnLk8wnCKEqWDhacjO4k4W5UMC/VGC8kSF3GHKGKrWjo6U+kKSLeeCklFHdALc5s3yyhoOFdOXLZdxwh7wjLB00s2oYBeZ6zaEh9a86nHZ70eqD2vZpHFXP+2j8F1te3S5p2iSLwwt0h020yd82vZ9t0ySuB0d1gQPk1jnv2BeLRSCcS5IlWtcYoR12nzP/2yOT803CIR+uXweTyV2/hg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from CY5PR11MB6365.namprd11.prod.outlook.com (2603:10b6:930:3b::5)
- by BN9PR11MB5388.namprd11.prod.outlook.com (2603:10b6:408:11d::19) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5332.13; Fri, 10 Jun
- 2022 10:01:54 +0000
-Received: from CY5PR11MB6365.namprd11.prod.outlook.com
- ([fe80::7592:b83b:92ac:6c61]) by CY5PR11MB6365.namprd11.prod.outlook.com
- ([fe80::7592:b83b:92ac:6c61%5]) with mapi id 15.20.5332.012; Fri, 10 Jun 2022
- 10:01:54 +0000
-Message-ID: <6d588b56-6ba0-c171-3d3a-980304f0c2f2@intel.com>
-Date: Fri, 10 Jun 2022 12:01:46 +0200
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Firefox/91.0 Thunderbird/91.9.1
-Subject: Re: [PATCH v2 02/14] ASoC: Intel: avs: Add topology parsing
- infrastructure
-Content-Language: en-US
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- <alsa-devel@alsa-project.org>, <broonie@kernel.org>
-References: <20220331135246.993089-1-cezary.rojewski@intel.com>
- <20220331135246.993089-3-cezary.rojewski@intel.com>
- <af6d9ad3-eca9-9721-4fc0-055752e3b6da@linux.intel.com>
-From: Cezary Rojewski <cezary.rojewski@intel.com>
-In-Reply-To: <af6d9ad3-eca9-9721-4fc0-055752e3b6da@linux.intel.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: LO2P123CA0069.GBRP123.PROD.OUTLOOK.COM
- (2603:10a6:600:1::33) To CY5PR11MB6365.namprd11.prod.outlook.com
- (2603:10b6:930:3b::5)
+ dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com
+ header.b="MdWfEoWR"
+Received: from [192.168.1.100] (2-237-20-237.ip236.fastwebnet.it
+ [2.237.20.237])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits))
+ (No client certificate requested) (Authenticated sender: kholk11)
+ by madras.collabora.co.uk (Postfix) with ESMTPSA id C9780660173B;
+ Fri, 10 Jun 2022 11:02:04 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+ s=mail; t=1654855325;
+ bh=4RmeL8OoRvwTRPjcy9R34dIdSFR4j/KUysjnhoDR5tM=;
+ h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+ b=MdWfEoWRLnqD/8GdzQ6y1S1xEOLCa4BxGoMaNEFIGobL2tWvAQi5xrZREl+FcXuJo
+ vsWGJJzcnkqZxyhmotmK+fjtHyXsinJtGcprszocVFjJUwlHNkfKCkQ+VGHxc3tLW6
+ dTtQvLNLKD3s1WAfFzSdNuHyEGKTsr2cKTE40nNdiX9B28++KpmSBeS6vq5KkZSL/X
+ 2khpxy0asninbBhVqIl03LvKYHm7ZIVv8ISgsecO7+O2Bb3fxZStohAxkPsFjrQpaU
+ Tr/XV7Jh1GUQ7CPuoY9M4QTdoFsV3LnFl6/TReW+CFpp18xyi8/T4q6j4Do7ib3+nT
+ iApa2/7txVaEg==
+Message-ID: <af063ee7-fcd2-c3c8-8889-8d5a34baeb3c@collabora.com>
+Date: Fri, 10 Jun 2022 12:02:01 +0200
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 0eac9d36-3400-4739-354d-08da4ac83f49
-X-MS-TrafficTypeDiagnostic: BN9PR11MB5388:EE_
-X-Microsoft-Antispam-PRVS: <BN9PR11MB5388DB51D10B09EE1E714212E3A69@BN9PR11MB5388.namprd11.prod.outlook.com>
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: vlvmkzbdiCDoInToEvE2qvKsr3wS3DE7Nf/Mu+TJOStWMKEvRWWDkwefnGm5mmEWeK8br4Y1GsV+QNSJ5D3g/BOJBlLKvh50KsCVCKkFe1ZjpqRCseFaXkBGOjJjHbi1B1N2Iw7NTusk+L6YCRSipj/uQ2pDw8sz+1xrUaQ62cGDICuIGzvMBaKWFG9vCZff/Q8awZYuWKKOlnbCpx2xFjKSNYmGGQ1QJRYIry6Jcbk17Nu5BS+nutAdYU8qUN8dAPEjjnCHlMEIJekJGTQyXtrOtnL1M9g/aexq/vsqiNqtHbYws2tVS8YEWFqYr8oBpPO4EC6bB+9CSiJNg/mSvUWLl27ED801laXmr8aGPx2zygswnfavBqmWYJaKlMmFSxI2OY9NjXiYX6xF2Ag6KJvz894CQ1O7U6mrI/L7+9xpCnHZ2oHgizuxciXiS9l03Z67Qx87+1NGVj0NZCB2hW/RPosGzU3DvQsEF8cP+VjKbtynvOQVu2D3eO0vtxf4wIM/6Jlw8uEir6/k1S+RzoDRKYa6r8bLq6lwE16k3Rpbqtz2KvUOkdThSwVicdo9FFkfJpsRX9swO++qIhTlwf3w+8c4ogGVRpPSxNW6IPDXl6/wPKl8/hf59C6r50NZOFG2asP2GWwuLvAD+SMy6kJT19AOxVubtdVuvHhCbPI+ys9DAaJf3ZGO4GSZM5bl3sGo7qoG6XLRv6HVRHxwUisVWhRg0x6rIZEE8P9P+3k=
-X-Forefront-Antispam-Report: CIP:255.255.255.255; CTRY:; LANG:en; SCL:1; SRV:;
- IPV:NLI; SFV:NSPM; H:CY5PR11MB6365.namprd11.prod.outlook.com; PTR:; CAT:NONE;
- SFS:(13230001)(366004)(2616005)(31696002)(66476007)(66556008)(66946007)(5660300002)(8676002)(7416002)(4326008)(83380400001)(6506007)(8936002)(38100700002)(86362001)(186003)(44832011)(31686004)(53546011)(2906002)(6486002)(508600001)(6512007)(82960400001)(36756003)(6666004)(316002)(26005)(43740500002)(45980500001);
- DIR:OUT; SFP:1102; 
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?cEdJU09MRkpTb0svckpWMjh0Mmp2cURxTnVJRHI4SlRTZVhwWGRqRWJGTEVF?=
- =?utf-8?B?QzJGQmp6bTBhSHNLRk5KUzJVRUV4SE5BL0txMnBGbFN2d2xFd3VReTJyc2Ir?=
- =?utf-8?B?Q3FpMUxBKzNSUHNJT2gwVTBXTElOcWFMbmR6USthWTdrM2cyYkg3SkdQSkEx?=
- =?utf-8?B?UlRLOFBSRUVHNFlKd291VEpvQjJ6N0ZmQWp1UTNTK0U0UGt6RGxVYW1GRUNE?=
- =?utf-8?B?ZUE5OVB4ZkJRaVcrbFArdm10RjNvWVVoY3JURFloK2lzdHdyZXZTZTVSeWVn?=
- =?utf-8?B?VjZOUlVxQU0zczlxbUNBc1ZGMFJxbnVsMTNVQWtuSURHVmsxQ1RjYmpHYmo0?=
- =?utf-8?B?c3RiNkN3UnJGNnlQcFcwaFIrc2I2UG5Ib2lyQmU1aEpBVk5xVGxTbUFjOXBF?=
- =?utf-8?B?STU5TW16L1liMkllaFBTc3lVc0x2NUo3UmlGYlB5eS81bW5oQjIxQ0phRVlT?=
- =?utf-8?B?d1ZiVFJxOGYxZnR6amN3NmRMY2h0RkE0cTZvRDhuS1BvQm12aHFJeDhYT3hN?=
- =?utf-8?B?VkpzVStUeFVITS8yK1FRdHBIKzRsY2hQcVdEbkplQjB2SUU4bmU1RkhlaFBQ?=
- =?utf-8?B?TGFhY0hpLzRQci85ang5WmJGOEgxV3d3V2FXQVdHbVdUQTlpallBRGFvQnlk?=
- =?utf-8?B?cTF6ZmVnM1U0L3ljaE0wT1BQSm5NMHltYTNBNFJYNlRpTE4rSVRXbVl6K0xY?=
- =?utf-8?B?eHF6T2s2amRtOCsxcmZHbGJvNEtOdmdkbmR0MzF1N0VLbXZTampVbS9Ncms2?=
- =?utf-8?B?Mk54dmdxaHpSVGtOSFlUMFp3TmRPT2hXSGx6azIxYlIvZzU5WGcxVVB1dGFa?=
- =?utf-8?B?VFBSMEdyYzMvZGdrYUxFTzM2Sk1lcWdIejVIY3ZYSVpBZ3NocXdBUWoyZitj?=
- =?utf-8?B?ZW5aa0NORjRDYkVvZUtRZm0xWkFrRXFrZTNGdCtoZWZpQXVoTEMySGFtV25j?=
- =?utf-8?B?SGlRQk5lcThqaGdaYzh1SklrbWhlbDdwQWZCb3FYeEtpVWwySzdYVkw1aEwx?=
- =?utf-8?B?M1ozYWx2OFpxRU5oRXhOUGdpREJpYWxlaEd5TUdxc2xSdHJoSTNJQXc4Z2F5?=
- =?utf-8?B?SGE2NUxiRVhHazZGMkcrd0Jkci9YeFgzSUFJVDlTcTVzQStrUmUwZk1DZmdP?=
- =?utf-8?B?YUZyZllZMW9IMmtPQlhCcldZSXRSVHNod0ZRakNleklUZGJEZ1pkZGx0VWFt?=
- =?utf-8?B?NUFySXNqTmVlaGNYZlY2MjN4SlVJenRNQ21VUHlLbHo0UTJpWUlUTmJlY3Vr?=
- =?utf-8?B?WWoxVUFHWDcycW1CRE4ybTR3MlZ1VkdkanczQ0tCdWkzY3B0Nkd3MHJXRFNn?=
- =?utf-8?B?MzRFVDloUzlaNHhWUmttd3JYY2VJUXJBZ1pLKzBBTHFGWEg0NFNnZnZ5Zmsw?=
- =?utf-8?B?M2RmUjU0TElYME55WnhGdlNlYnB1VzN2ZlpVeUdINUc0bjROcDZIc3ZrVE9V?=
- =?utf-8?B?VE1ON0xDUWNBSkdEbWxMbG5zR3ZpZGdibkpTNklsNzZtcFVPWWhrVDRBWXVs?=
- =?utf-8?B?Q1lUTUJpYVhPL0luNnpCVDRaWEQxeXc5WE1TL1Q2UEhHdEpoY1pDMGZGNFYy?=
- =?utf-8?B?UzVSQjRJQmczOSt3MzZ0UFlvbTN6bENPcGNTU3pXelNqSFNrakh1ZmRlL1ho?=
- =?utf-8?B?YmE2elNPZXFyR1RCTWZyVEl1TUUrQTlEVitNT1l2M2JZdHVzUThjN3Rxc3V4?=
- =?utf-8?B?MHNCVWZnVWdBWWpnU29BMzQvRHd3Z3JRb1pDYncxSlp2bUV6VkFXVGNLZldj?=
- =?utf-8?B?MlZFRngvSjc1bndDTXBVVk5qMmFUNUNXUmJSbEpqRlFSWEtkUVJ2a1RSaStJ?=
- =?utf-8?B?TFJBVkljMkwwbXJQV3lETUw0M0JlNlhaZGxSY2xRY0dNekplVXZsMGoyaHl1?=
- =?utf-8?B?QzVBOHkreXlWVjNwYThIOHNtaUt2TkN1UlViWnAyTE1yRkIrZjIwaC9kbDcr?=
- =?utf-8?B?TGRrNkZ0c0h3SUJ5RTFYUDF5WG9RaHl2Mk94MTZSOXVoWVVBUStGSjJPWXc1?=
- =?utf-8?B?TkdmZ3p3bmdnS3lLUUl2eVY2STF4MzVqUXhZYTJ2bjJPOWtxOXVCSEFRdHJS?=
- =?utf-8?B?Y29wb0VyRSthUXd2WG1zN1RiSUwvNko5eW9jZkZzL1h2bjZ4NVhxTlFOdDFk?=
- =?utf-8?B?YS9ZWENJTml3Z0Q4dENNVkRORHlhRmlnWGIyUDJ1ZWlNd2xCK1g4WFR3REhG?=
- =?utf-8?B?cXltNm5OQ2NiTGkxdjZDeEVaakhycXRYeEh0WjZxdk03R25VOWh2djgzeU9S?=
- =?utf-8?B?eXp6ZHpGY0k4TnQ3emppbEg3WHVQWmdEa0NNZ09HcENKODg4RGJSRVhGQVVw?=
- =?utf-8?B?T2dPSWNjYkp4T1FkY29wenNBd1pjRmZrbWtDZkVZV3IxVEQySkM5RzVKZS8w?=
- =?utf-8?Q?//7qsiwZ9MXzIhZI=3D?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 0eac9d36-3400-4739-354d-08da4ac83f49
-X-MS-Exchange-CrossTenant-AuthSource: CY5PR11MB6365.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 Jun 2022 10:01:54.4211 (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: ScTSCAXSZ3ZvqqSAtC4SJpvg1qm4Ynom8Cru7c9qPZAKoSIwdCgbesKxRiIim1NJELTzkAoTn6wh24KGlF+5GHxiB1YR8MMWHlWJzFctFkU=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN9PR11MB5388
-X-OriginatorOrg: intel.com
-Cc: upstream@semihalf.com, harshapriya.n@intel.com, rad@semihalf.com,
- tiwai@suse.com, hdegoede@redhat.com, amadeuszx.slawinski@linux.intel.com,
- cujomalainey@chromium.org, lma@semihalf.com
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.9.0
+Subject: Re: [PATCH v7 2/8] ASoC: mediatek: mt8186: add platform driver
+Content-Language: en-US
+To: Jiaxin Yu <jiaxin.yu@mediatek.com>, broonie@kernel.org, robh+dt@kernel.org
+References: <20220610082724.29256-1-jiaxin.yu@mediatek.com>
+ <20220610082724.29256-3-jiaxin.yu@mediatek.com>
+From: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+In-Reply-To: <20220610082724.29256-3-jiaxin.yu@mediatek.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
+ linux-kernel@vger.kernel.org,
+ Project_Global_Chrome_Upstream_Group@mediatek.com, tzungbi@google.com,
+ linux-mediatek@lists.infradead.org, trevor.wu@mediatek.com,
+ matthias.bgg@gmail.com, aaronyu@google.com, julianbraha@gmail.com,
+ linux-arm-kernel@lists.infradead.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -190,50 +87,617 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On 2022-06-09 9:57 PM, Pierre-Louis Bossart wrote:
+Il 10/06/22 10:27, Jiaxin Yu ha scritto:
+> Add mt8186 platform and affiliated driver.
 > 
->> +static int
->> +avs_parse_uuid_token(struct snd_soc_component *comp, void *elem, void *object, u32 offset)
->> +{
->> +	struct snd_soc_tplg_vendor_value_elem *tuple = elem;
->> +	guid_t *val = (guid_t *)((u8 *)object + offset);
->> +
->> +	guid_copy((guid_t *)val, (const guid_t *)&tuple->value);
->> +
->> +	return 0;
->> +}
+> Signed-off-by: Jiaxin Yu <jiaxin.yu@mediatek.com>
+> ---
+>   sound/soc/mediatek/Kconfig                    |   12 +
+>   sound/soc/mediatek/Makefile                   |    1 +
+>   sound/soc/mediatek/mt8186/Makefile            |   19 +
+>   sound/soc/mediatek/mt8186/mt8186-afe-common.h |  235 ++
+>   .../soc/mediatek/mt8186/mt8186-afe-control.c  |  261 ++
+>   sound/soc/mediatek/mt8186/mt8186-afe-pcm.c    | 3009 +++++++++++++++++
+>   6 files changed, 3537 insertions(+)
+>   create mode 100644 sound/soc/mediatek/mt8186/Makefile
+>   create mode 100644 sound/soc/mediatek/mt8186/mt8186-afe-common.h
+>   create mode 100644 sound/soc/mediatek/mt8186/mt8186-afe-control.c
+>   create mode 100644 sound/soc/mediatek/mt8186/mt8186-afe-pcm.c
 > 
-> Cezary and Amadeusz, could you please look into this 'make W=1' error?
 
-...
+..snip..
 
-> /data/pbossart/ktest/work/sound/soc/intel/avs/topology.c:9:
-> 
-> In function ‘fortify_memcpy_chk’,
-> 
->      inlined from ‘guid_copy’ at
-> /data/pbossart/ktest/work/include/linux/uuid.h:43:2,
-> 
->      inlined from ‘avs_parse_uuid_token’ at
-> /data/pbossart/ktest/work/sound/soc/intel/avs/topology.c:134:2:
-> 
-> /data/pbossart/ktest/work/include/linux/fortify-string.h:352:25: error:
-> call to ‘__read_overflow2_field’ declared with attribute warning:
-> detected read beyond size of field (2nd parameter); maybe use
-> struct_group()? [-Werror=attribute-warning]
-> 
->    352 |                         __read_overflow2_field(q_size_field, size);
-> 
->        |                         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-> 
-> cc1: all warnings being treated as errors
+> diff --git a/sound/soc/mediatek/mt8186/mt8186-afe-control.c b/sound/soc/mediatek/mt8186/mt8186-afe-control.c
+> new file mode 100644
+> index 000000000000..2d78212c3c3f
+> --- /dev/null
+> +++ b/sound/soc/mediatek/mt8186/mt8186-afe-control.c
+> @@ -0,0 +1,261 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +//
+> +// MediaTek ALSA SoC Audio Control
+> +//
+> +// Copyright (c) 2022 MediaTek Inc.
+> +// Author: Jiaxin Yu <jiaxin.yu@mediatek.com>
+> +
+> +#include "mt8186-afe-common.h"
+> +#include <linux/pm_runtime.h>
+> +
+
+..snip..
+
+> +
+> +static unsigned int pcm_rate_transform(struct device *dev,
+> +				       unsigned int rate)
+> +{
+> +	switch (rate) {
+> +	case 8000:
+> +		return MTK_AFE_PCM_RATE_8K;
+> +	case 16000:
+> +		return MTK_AFE_PCM_RATE_16K;
+> +	case 32000:
+> +		return MTK_AFE_PCM_RATE_32K;
+> +	case 48000:
+> +		return MTK_AFE_PCM_RATE_48K;
+> +	default:
+> +		dev_info(dev, "%s(), rate %u invalid, use %d!!!\n",
+> +			 __func__,
+> +			 rate, MTK_AFE_PCM_RATE_32K);
+> +		return MTK_AFE_PCM_RATE_32K;
+
+This return statement should go outside of the switch, and that print
+should be a dev_err() instead.
+
+> +	}
+> +}
+> +
+> +unsigned int mt8186_tdm_relatch_rate_transform(struct device *dev,
+> +					       unsigned int rate)
+> +{
+> +	switch (rate) {
+> +	case 8000:
+> +		return MTK_AFE_TDM_RELATCH_RATE_8K;
+> +	case 11025:
+> +		return MTK_AFE_TDM_RELATCH_RATE_11K;
+> +	case 12000:
+> +		return MTK_AFE_TDM_RELATCH_RATE_12K;
+> +	case 16000:
+> +		return MTK_AFE_TDM_RELATCH_RATE_16K;
+> +	case 22050:
+> +		return MTK_AFE_TDM_RELATCH_RATE_22K;
+> +	case 24000:
+> +		return MTK_AFE_TDM_RELATCH_RATE_24K;
+> +	case 32000:
+> +		return MTK_AFE_TDM_RELATCH_RATE_32K;
+> +	case 44100:
+> +		return MTK_AFE_TDM_RELATCH_RATE_44K;
+> +	case 48000:
+> +		return MTK_AFE_TDM_RELATCH_RATE_48K;
+> +	case 88200:
+> +		return MTK_AFE_TDM_RELATCH_RATE_88K;
+> +	case 96000:
+> +		return MTK_AFE_TDM_RELATCH_RATE_96K;
+> +	case 176400:
+> +		return MTK_AFE_TDM_RELATCH_RATE_176K;
+> +	case 192000:
+> +		return MTK_AFE_TDM_RELATCH_RATE_192K;
+> +	case 352800:
+> +		return MTK_AFE_TDM_RELATCH_RATE_352K;
+> +	case 384000:
+> +		return MTK_AFE_TDM_RELATCH_RATE_384K;
+> +	default:
+> +		dev_info(dev, "%s(), rate %u invalid, use %d!!!\n",
+> +			 __func__,
+> +			 rate, MTK_AFE_TDM_RELATCH_RATE_48K);
+> +		return MTK_AFE_TDM_RELATCH_RATE_48K;
+
+Same here.
+
+> +	}
+> +}
+> +
+> +unsigned int mt8186_rate_transform(struct device *dev,
+> +				   unsigned int rate, int aud_blk)
+> +{
+> +	switch (aud_blk) {
+> +	case MT8186_DAI_PCM:
+> +		return pcm_rate_transform(dev, rate);
+> +	case MT8186_DAI_TDM_IN:
+> +		return tdm_rate_transform(dev, rate);
+> +	default:
+> +		return mt8186_general_rate_transform(dev, rate);
+> +	}
+> +}
+> +
+> +int mt8186_dai_set_priv(struct mtk_base_afe *afe, int id,
+> +			int priv_size, const void *priv_data)
+> +{
+> +	struct mt8186_afe_private *afe_priv = afe->platform_priv;
+> +	void *temp_data;
+> +
+> +	temp_data = devm_kzalloc(afe->dev,
+> +				 priv_size,
+> +				 GFP_KERNEL);
+> +	if (!temp_data)
+> +		return -ENOMEM;
+> +
+> +	if (priv_data)
+> +		memcpy(temp_data, priv_data, priv_size);
+> +
+> +	afe_priv->dai_priv[id] = temp_data;
+> +
+> +	return 0;
+> +}
+> diff --git a/sound/soc/mediatek/mt8186/mt8186-afe-pcm.c b/sound/soc/mediatek/mt8186/mt8186-afe-pcm.c
+> new file mode 100644
+> index 000000000000..aaba8627d9e1
+> --- /dev/null
+> +++ b/sound/soc/mediatek/mt8186/mt8186-afe-pcm.c
+> @@ -0,0 +1,3009 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +//
+> +// Mediatek ALSA SoC AFE platform driver for 8186
+> +//
+> +// Copyright (c) 2022 MediaTek Inc.
+> +// Author: Jiaxin Yu <jiaxin.yu@mediatek.com>
+> +
+> +#include <linux/delay.h>
+> +#include <linux/dma-mapping.h>
+> +#include <linux/module.h>
+> +#include <linux/of.h>
+> +#include <linux/of_address.h>
+> +#include <linux/pm_runtime.h>
+> +#include <linux/reset.h>
+> +#include <sound/soc.h>
+> +
+> +#include "../common/mtk-afe-platform-driver.h"
+> +#include "../common/mtk-afe-fe-dai.h"
+> +
+> +#include "mt8186-afe-common.h"
+> +#include "mt8186-afe-clk.h"
+> +#include "mt8186-afe-gpio.h"
+> +#include "mt8186-interconnection.h"
+> +
+
+..snip..
+
+> +
+> +static int mt8186_fe_hw_free(struct snd_pcm_substream *substream,
+> +			     struct snd_soc_dai *dai)
+> +{
+> +	int ret;
+> +
+> +	ret = mtk_afe_fe_hw_free(substream, dai);
+> +	if (ret)
+> +		goto exit;
+> +
+> +	/* wait for some platform related operation */
+
+This comment says that we should wait for "some platform related operation":
+it's not describing what kind of operation we would wait for... and we are
+not waiting for anything at all and just returning.
+
+Are you implementing this wait mechanism?
+...otherwise, there's no need for that goto at all.
+
+> +exit:
+> +	return ret;
+> +}
+> +
+> +static int mt8186_fe_trigger(struct snd_pcm_substream *substream, int cmd,
+> +			     struct snd_soc_dai *dai)
+> +{
+> +	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+> +	struct snd_pcm_runtime * const runtime = substream->runtime;
+> +	struct mtk_base_afe *afe = snd_soc_dai_get_drvdata(dai);
+> +	struct mt8186_afe_private *afe_priv = afe->platform_priv;
+> +	int id = asoc_rtd_to_cpu(rtd, 0)->id;
+> +	struct mtk_base_afe_memif *memif = &afe->memif[id];
+> +	int irq_id = memif->irq_usage;
+> +	struct mtk_base_afe_irq *irqs = &afe->irqs[irq_id];
+> +	const struct mtk_base_irq_data *irq_data = irqs->irq_data;
+> +	unsigned int counter = runtime->period_size;
+
+You're assigning a value to 'counter' here and you may or may not use it,
+because if we look down there...
+
+> +	unsigned int rate = runtime->rate;
+> +	int fs;
+> +	int ret;
+> +
+> +	dev_dbg(afe->dev, "%s(), %s cmd %d, irq_id %d\n",
+> +		__func__, memif->data->name, cmd, irq_id);
+> +
+> +	switch (cmd) {
+> +	case SNDRV_PCM_TRIGGER_START:
+> +	case SNDRV_PCM_TRIGGER_RESUME:
+> +		ret = mtk_memif_set_enable(afe, id);
+> +		if (ret) {
+> +			dev_err(afe->dev, "%s(), error, id %d, memif enable, ret %d\n",
+> +				__func__, id, ret);
+> +			return ret;
+> +		}
+> +
+> +		/*
+> +		 * for small latency record
+> +		 * ul memif need read some data before irq enable
+> +		 */
+> +		if (substream->stream == SNDRV_PCM_STREAM_CAPTURE &&
+> +		    ((runtime->period_size * 1000) / rate <= 10))
+> +			udelay(300);
+> +
+> +		/* set irq counter */
+> +		if (afe_priv->irq_cnt[id] > 0)
+> +			counter = afe_priv->irq_cnt[id];
+
+...you're reassigning the counter if irq_cnt > 0, so you can as well avoid a
+reassignment if you simply do it like
+
+		if (afe_priv->irq_cnt[id] > 0)
+			counter = afe_priv->irq_cnt[id];
+		else
+			counter = runtime->period_size;
+
+> +
+> +		regmap_update_bits(afe->regmap, irq_data->irq_cnt_reg,
+> +				   irq_data->irq_cnt_maskbit
+> +				   << irq_data->irq_cnt_shift,
+> +				   counter << irq_data->irq_cnt_shift);
+> +
+> +		/* set irq fs */
+> +		fs = afe->irq_fs(substream, runtime->rate);
+> +		if (fs < 0)
+> +			return -EINVAL;
+> +
+> +		regmap_update_bits(afe->regmap, irq_data->irq_fs_reg,
+> +				   irq_data->irq_fs_maskbit
+> +				   << irq_data->irq_fs_shift,
+> +				   fs << irq_data->irq_fs_shift);
+> +
+> +		/* enable interrupt */
+> +		if (runtime->stop_threshold != ~(0U))
+> +			regmap_update_bits(afe->regmap,
+> +					   irq_data->irq_en_reg,
+> +					   1 << irq_data->irq_en_shift,
+> +					   1 << irq_data->irq_en_shift);
+> +		return 0;
+> +	case SNDRV_PCM_TRIGGER_STOP:
+> +	case SNDRV_PCM_TRIGGER_SUSPEND:
+> +		if (afe_priv->xrun_assert[id] > 0) {
+> +			if (substream->stream == SNDRV_PCM_STREAM_CAPTURE) {
+> +				int avail = snd_pcm_capture_avail(runtime);
+> +
+> +				if (avail >= runtime->buffer_size) {
+> +					dev_err(afe->dev, "%s(), id %d, xrun assert\n",
+> +						__func__, id);
+
+You're printing an error here, but not returning an error state related to
+this one at the end of this case... why?
+
+(if this is intended, add a comment in the code explaining the reason)
+
+> +				}
+> +			}
+> +		} > +
+> +		ret = mtk_memif_set_disable(afe, id);
+> +		if (ret)
+> +			dev_err(afe->dev, "%s(), error, id %d, memif enable, ret %d\n",
+> +				__func__, id, ret);
+> +
+> +		/* disable interrupt */
+> +		if (runtime->stop_threshold != ~(0U))
+> +			regmap_update_bits(afe->regmap,
+> +					   irq_data->irq_en_reg,
+> +					   1 << irq_data->irq_en_shift,
+> +					   0 << irq_data->irq_en_shift);
+> +
+> +		/* clear pending IRQ */
+> +		regmap_write(afe->regmap, irq_data->irq_clr_reg,
+> +			     1 << irq_data->irq_clr_shift);
+> +		return ret;
+> +	default:
+> +		return -EINVAL;
+> +	}
+> +}
+> +
+
+..snip..
+
+> +
+> +static int mt8186_irq_cnt1_set(struct snd_kcontrol *kcontrol,
+> +			       struct snd_ctl_elem_value *ucontrol)
+> +{
+> +	struct snd_soc_component *cmpnt = snd_soc_kcontrol_component(kcontrol);
+> +	struct mtk_base_afe *afe = snd_soc_component_get_drvdata(cmpnt);
+> +	struct mt8186_afe_private *afe_priv = afe->platform_priv;
+> +	int memif_num = MT8186_PRIMARY_MEMIF;
+> +	struct mtk_base_afe_memif *memif = &afe->memif[memif_num];
+> +	int irq_id = memif->irq_usage;
+> +	int irq_cnt = afe_priv->irq_cnt[memif_num];
+> +
+> +	dev_dbg(afe->dev, "%s(), irq_id %d, irq_cnt = %d, value = %ld\n",
+> +		__func__, irq_id, irq_cnt, ucontrol->value.integer.value[0]);
+> +
+> +	if (irq_cnt == ucontrol->value.integer.value[0])
+> +		return 0;
+> +
+> +	irq_cnt = ucontrol->value.integer.value[0];
+> +	afe_priv->irq_cnt[memif_num] = irq_cnt;
+> +
+> +	if (pm_runtime_status_suspended(afe->dev) || irq_id < 0) {
+> +		dev_info(afe->dev, "%s(), suspended || irq_id %d, not set\n",
+> +			 __func__, irq_id);
+
+This should probably be a dev_dbg, as that's not supposed to normally happen.
+Besides, since the expected flow for this function is to write to registers,
+I think that for readability purposes it's best to invert this conditional:
+
+	if (!pm_runtime_status_suspended(afe->dev) && irq_id >= 0) {
+		.....
+	} else {
+		dev_dbg(.....)
+	}
+
+> +	} else {
+> +		struct mtk_base_afe_irq *irqs = &afe->irqs[irq_id];
+> +		const struct mtk_base_irq_data *irq_data = irqs->irq_data;
+> +
+> +		regmap_update_bits(afe->regmap, irq_data->irq_cnt_reg,
+> +				   irq_data->irq_cnt_maskbit
+> +				   << irq_data->irq_cnt_shift,
+> +				   irq_cnt << irq_data->irq_cnt_shift);
+> +	}
+> +
+> +	return 1;
+> +}
+> +
+> +static int mt8186_irq_cnt2_get(struct snd_kcontrol *kcontrol,
+> +			       struct snd_ctl_elem_value *ucontrol)
+> +{
+> +	struct snd_soc_component *cmpnt = snd_soc_kcontrol_component(kcontrol);
+> +	struct mtk_base_afe *afe = snd_soc_component_get_drvdata(cmpnt);
+> +	struct mt8186_afe_private *afe_priv = afe->platform_priv;
+> +
+> +	ucontrol->value.integer.value[0] =
+> +		afe_priv->irq_cnt[MT8186_RECORD_MEMIF];
+> +
+> +	return 0;
+> +}
+> +
+> +static int mt8186_irq_cnt2_set(struct snd_kcontrol *kcontrol,
+> +			       struct snd_ctl_elem_value *ucontrol)
+> +{
+> +	struct snd_soc_component *cmpnt = snd_soc_kcontrol_component(kcontrol);
+> +	struct mtk_base_afe *afe = snd_soc_component_get_drvdata(cmpnt);
+> +	struct mt8186_afe_private *afe_priv = afe->platform_priv;
+> +	int memif_num = MT8186_RECORD_MEMIF;
+> +	struct mtk_base_afe_memif *memif = &afe->memif[memif_num];
+> +	int irq_id = memif->irq_usage;
+> +	int irq_cnt = afe_priv->irq_cnt[memif_num];
+> +
+> +	dev_dbg(afe->dev, "%s(), irq_id %d, irq_cnt = %d, value = %ld\n",
+> +		__func__, irq_id, irq_cnt, ucontrol->value.integer.value[0]);
+> +
+> +	if (irq_cnt == ucontrol->value.integer.value[0])
+> +		return 0;
+> +
+> +	irq_cnt = ucontrol->value.integer.value[0];
+> +	afe_priv->irq_cnt[memif_num] = irq_cnt;
+> +
+> +	if (pm_runtime_status_suspended(afe->dev) || irq_id < 0) {
+> +		dev_info(afe->dev, "%s(), suspended || irq_id %d, not set\n",
+> +			 __func__, irq_id);
+
+same here.
+
+> +	} else {
+> +		struct mtk_base_afe_irq *irqs = &afe->irqs[irq_id];
+> +		const struct mtk_base_irq_data *irq_data = irqs->irq_data;
+> +
+> +		regmap_update_bits(afe->regmap, irq_data->irq_cnt_reg,
+> +				   irq_data->irq_cnt_maskbit
+> +				   << irq_data->irq_cnt_shift,
+> +				   irq_cnt << irq_data->irq_cnt_shift);
+> +	}
+> +
+> +	return 1;
+> +}
+> +
+
+..snip..
+
+> +
+> +static int mt8186_afe_pcm_dev_probe(struct platform_device *pdev)
+> +{
+> +	struct mtk_base_afe *afe;
+> +	struct mt8186_afe_private *afe_priv;
+> +	struct resource *res;
+> +	struct reset_control *rstc;
+> +	struct device *dev = &pdev->dev;
+> +	int i, ret, irq_id;
+> +
+> +	ret = dma_set_mask_and_coherent(dev, DMA_BIT_MASK(34));
+> +	if (ret)
+> +		return ret;
+> +
+> +	afe = devm_kzalloc(dev, sizeof(*afe), GFP_KERNEL);
+> +	if (!afe)
+> +		return -ENOMEM;
+> +	platform_set_drvdata(pdev, afe);
+> +
+> +	afe->platform_priv = devm_kzalloc(dev, sizeof(*afe_priv), GFP_KERNEL);
+> +	if (!afe->platform_priv)
+> +		return -ENOMEM;
+> +
+> +	afe_priv = afe->platform_priv;
+> +	afe->dev = &pdev->dev;
+> +
+> +	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+> +	afe->base_addr = devm_ioremap_resource(&pdev->dev, res);
+> +	if (IS_ERR(afe->base_addr))
+> +		return PTR_ERR(afe->base_addr);
+> +
+> +	/* init audio related clock */
+> +	ret = mt8186_init_clock(afe);
+> +	if (ret) {
+> +		dev_err(dev, "init clock error, ret %d\n", ret);
+> +		return ret;
+> +	}
+> +
+> +	/* init memif */
+> +	afe->memif_32bit_supported = 0;
+> +	afe->memif_size = MT8186_MEMIF_NUM;
+> +	afe->memif = devm_kcalloc(dev, afe->memif_size, sizeof(*afe->memif),
+> +				  GFP_KERNEL);
+> +
+> +	if (!afe->memif)
+> +		return -ENOMEM;
+> +
+> +	for (i = 0; i < afe->memif_size; i++) {
+> +		afe->memif[i].data = &memif_data[i];
+> +		afe->memif[i].irq_usage = memif_irq_usage[i];
+> +		afe->memif[i].const_irq = 1;
+> +	}
+> +
+> +	mutex_init(&afe->irq_alloc_lock);	/* needed when dynamic irq */
+> +
+> +	/* init irq */
+> +	afe->irqs_size = MT8186_IRQ_NUM;
+> +	afe->irqs = devm_kcalloc(dev, afe->irqs_size, sizeof(*afe->irqs),
+> +				 GFP_KERNEL);
+> +
+> +	if (!afe->irqs)
+> +		return -ENOMEM;
+> +
+> +	for (i = 0; i < afe->irqs_size; i++)
+> +		afe->irqs[i].irq_data = &irq_data[i];
+> +
+> +	/* request irq */
+> +	irq_id = platform_get_irq(pdev, 0);
+> +	if (irq_id <= 0)
+> +		return dev_err_probe(dev, irq_id < 0 ? irq_id : -ENXIO,
+> +				     "no irq found");
+> +
+> +	ret = devm_request_irq(dev, irq_id, mt8186_afe_irq_handler,
+> +			       IRQF_TRIGGER_NONE,
+> +			       "Afe_ISR_Handle", (void *)afe);
+> +	if (ret)
+> +		return dev_err_probe(dev, ret, "could not request_irq for Afe_ISR_Handle\n");
+> +
+> +	ret = enable_irq_wake(irq_id);
+> +	if (ret < 0)
+> +		return dev_err_probe(dev, ret, "enable_irq_wake %d\n", irq_id);
+> +
+> +	/* init sub_dais */
+> +	INIT_LIST_HEAD(&afe->sub_dais);
+> +
+> +	for (i = 0; i < ARRAY_SIZE(dai_register_cbs); i++) {
+> +		ret = dai_register_cbs[i](afe);
+> +		if (ret)
+> +			return dev_err_probe(dev, ret, "dai register i %d fail\n", i);
+> +	}
+> +
+> +	/* init dai_driver and component_driver */
+> +	ret = mtk_afe_combine_sub_dai(afe);
+> +	if (ret)
+> +		return dev_err_probe(dev, ret, "mtk_afe_combine_sub_dai fail\n");
+> +
+> +	/* reset controller to reset audio regs before regmap cache */
+> +	rstc = devm_reset_control_get_exclusive(dev, "audiosys");
+> +	if (IS_ERR(rstc))
+> +		return dev_err_probe(dev, PTR_ERR(rstc), "could not get audiosys reset\n");
+> +
+> +	ret = reset_control_reset(rstc);
+> +	if (ret)
+> +		return dev_err_probe(dev, ret, "failed to trigger audio reset\n");
+> +
+> +	/* enable clock for regcache get default value from hw */
+> +	afe_priv->pm_runtime_bypass_reg_ctl = true;
 
 
-Hello,
+> +	pm_runtime_enable(dev);
 
-Thanks for the report! Already investigating, if all goes well patch 
-will be provided today.
+What about....
+
+	ret = devm_pm_runtime_enable(dev);
+	if (ret)
+		return ret;
+
+	ret = pm_runtime_resume_and_get(dev);
+	if (ret)
+		return dev_err_probe(dev, ret, "failed to resume device\n");
+
+> +	ret = pm_runtime_get_sync(dev);
+> +	if (ret) {
+> +		dev_err(dev, "failed to resume device: %d\n", ret);
+> +		goto err_pm_disable;
+> +	}
+> +
+> +	afe->regmap = devm_regmap_init_mmio(dev, afe->base_addr,
+> +					    &mt8186_afe_regmap_config);
+> +	if (IS_ERR(afe->regmap)) {
+> +		ret = PTR_ERR(afe->regmap);
+> +		goto err_pm_disable;
+> +	}
+> +
+> +	/* others */
+> +	afe->mtk_afe_hardware = &mt8186_afe_hardware;
+> +	afe->memif_fs = mt8186_memif_fs;
+> +	afe->irq_fs = mt8186_irq_fs;
+> +	afe->get_dai_fs = mt8186_get_dai_fs;
+> +	afe->get_memif_pbuf_size = mt8186_get_memif_pbuf_size;
+> +
+> +	afe->runtime_resume = mt8186_afe_runtime_resume;
+> +	afe->runtime_suspend = mt8186_afe_runtime_suspend;
+> +
+> +	/* register platform */
+> +	dev_info(dev, "%s(), devm_snd_soc_register_component\n", __func__);
+
+This should be dev_dbg().
+
+> +
+> +	ret = devm_snd_soc_register_component(dev,
+> +					      &mt8186_afe_component,
+> +					      afe->dai_drivers,
+> +					      afe->num_dai_drivers);
+> +	if (ret) {
+> +		dev_err(dev, "err_dai_component\n");
+> +		goto err_pm_disable;
+> +	}
+> +
+> +	ret = pm_runtime_put_sync(dev);
+> +	if (ret) {
+> +		pm_runtime_get_noresume(dev);
+> +		dev_err(dev, "failed to suspend device: %d\n", ret);
+> +		goto err_pm_disable;
+> +	}
+> +	afe_priv->pm_runtime_bypass_reg_ctl = false;
+> +
+> +	regcache_cache_only(afe->regmap, true);
+> +	regcache_mark_dirty(afe->regmap);
+> +
+> +	return 0;
+> +
+> +err_pm_disable:
+> +	pm_runtime_put_noidle(dev);
+> +	pm_runtime_set_suspended(dev);
+> +	pm_runtime_disable(dev);
+
+...and then, since we're using devm_pm_runtime_enable, this call to
+pm_runtime_disable() can be removed.
+
+> +
+> +	return ret;
+> +}
+> +
+> +static int mt8186_afe_pcm_dev_remove(struct platform_device *pdev)
+> +{
+> +	struct mtk_base_afe *afe = platform_get_drvdata(pdev);
+> +
+> +	pm_runtime_disable(&pdev->dev);
+
+Here too.
 
 
 Regards,
-Czarek
+Angelo
