@@ -4,89 +4,56 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id CDFD8C43334
-	for <alsa-devel@archiver.kernel.org>; Fri, 10 Jun 2022 06:02:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C8422C433EF
+	for <alsa-devel@archiver.kernel.org>; Fri, 10 Jun 2022 06:02:32 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 595E62083;
-	Fri, 10 Jun 2022 08:01:08 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 595E62083
+	by alsa0.perex.cz (Postfix) with ESMTPS id 4F7492228;
+	Fri, 10 Jun 2022 08:01:40 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4F7492228
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1654840918;
-	bh=u6cMsm4SJbva1EavVE1shJi5pWmEzm7xUgoyCsORLCg=;
-	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=HgsCy5By0Gmz5H3F6VfW2HdmPUv90kgmNJ3aB4Lf7OdkgPPU95sOxQoImLkwdK/eU
-	 +2WLPukA8UalmLBux27rK0dbvVhNYwe7+/NI9IhNPfR+QW6n4bylee0Q6+08bq7b1f
-	 XlP4/jLIXKW6abNxDvZAI8ZX+yI4qxRkzhZeZ1gg=
+	s=default; t=1654840950;
+	bh=MR0JCiIRMeeslN8c7dQS89qVKgt6g4CApA7OqKVUDQk=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=WRb4lWZrvpgR6t+oY7Yx8VtJR25uJ1kgBujXbGNSipc6YB03Sh5YspVy9h/MtsUIH
+	 LSO2EfqhjrSu7jXWjeZ75v/8jD1k/9q9jUWZltIUxAAGTN6pK0pejXBCLdEhSCGmsl
+	 WRVe3zpq9yHnnd69EumvFncbzsZKC0tVEQz9ozO8=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 00C5CF804CF;
-	Fri, 10 Jun 2022 08:01:07 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id AE280F804D2;
+	Fri, 10 Jun 2022 08:01:23 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 9B067F804D2; Fri, 10 Jun 2022 08:01:06 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id 0B346F804D2; Fri, 10 Jun 2022 08:01:21 +0200 (CEST)
+Received: from inva020.nxp.com (inva020.nxp.com [92.121.34.13])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 0F764F800C7
- for <alsa-devel@alsa-project.org>; Fri, 10 Jun 2022 08:01:03 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0F764F800C7
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="nDk29oxZ"; 
- dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="YkneiiF3"
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 74BE91FDAA;
- Fri, 10 Jun 2022 06:01:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1654840863; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=AobPOQlu+zPpu0gzPwOafVjYurxrcXyhXdq0bbKTvi0=;
- b=nDk29oxZWSwgFAum1xA9UZ/4qFk8pczw8uBSzqd0xuBUx0W+Ws66hVI5+fNUsw7AujGswJ
- L2/UphCLMx0meOu6VAMtwI9XDGEsYhSR/yB5huZW1lTBLWs+yBDgpWaBIsMM9HlOH7+7Mw
- NdY5Gr/JjnAUTuy9/0VfOmPlMXTZ8zs=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1654840863;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=AobPOQlu+zPpu0gzPwOafVjYurxrcXyhXdq0bbKTvi0=;
- b=YkneiiF3hizARxtNrQ21hwoFK5GdxVaUuKztdX64Rj2MWgfUhKkaXo74XDCTewRoEuWgyM
- E7K/aolPLUrCg0Bg==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 44B6013941;
- Fri, 10 Jun 2022 06:01:03 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id t8T7Dx/eomKZFgAAMHmgww
- (envelope-from <tiwai@suse.de>); Fri, 10 Jun 2022 06:01:03 +0000
-Date: Fri, 10 Jun 2022 08:01:03 +0200
-Message-ID: <874k0tnjkw.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Raghu Ballappa Bankapur <quic_rbankapu@quicinc.com>
-Subject: Re: [PATCH V0 1/1] asoc: msm: use hashtable to check kcontrol
-In-Reply-To: <f3a25238-fcc6-2381-e329-0bd80a3632a5@quicinc.com>
-References: <cover.1653813866.git.quic_rbankapu@quicinc.com>
- <ad55bbd41cc253acb9af6ac068c15dd1545ecd81.1653813866.git.quic_rbankapu@quicinc.com>
- <8735gsznnt.wl-tiwai@suse.de>
- <f3a25238-fcc6-2381-e329-0bd80a3632a5@quicinc.com>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 8bit
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
- Liam Girdwood <lgirdwood@gmail.com>, Takashi Iwai <tiwai@suse.com>,
- Mark Brown <broonie@kernel.org>, Krishna Jha <quic_kkishorj@quicinc.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id B8C8FF804D2
+ for <alsa-devel@alsa-project.org>; Fri, 10 Jun 2022 08:01:15 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B8C8FF804D2
+Received: from inva020.nxp.com (localhost [127.0.0.1])
+ by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 068FA1A0086;
+ Fri, 10 Jun 2022 08:01:15 +0200 (CEST)
+Received: from aprdc01srsp001v.ap-rdc01.nxp.com
+ (aprdc01srsp001v.ap-rdc01.nxp.com [165.114.16.16])
+ by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id B26111A004D;
+ Fri, 10 Jun 2022 08:01:14 +0200 (CEST)
+Received: from localhost.localdomain (shlinux2.ap.freescale.net
+ [10.192.224.44])
+ by aprdc01srsp001v.ap-rdc01.nxp.com (Postfix) with ESMTP id 473DB1802205;
+ Fri, 10 Jun 2022 14:01:13 +0800 (+08)
+From: Shengjiu Wang <shengjiu.wang@nxp.com>
+To: nicoleotsuka@gmail.com, Xiubo.Lee@gmail.com, festevam@gmail.com,
+ shengjiu.wang@gmail.com, lgirdwood@gmail.com, broonie@kernel.org,
+ perex@perex.cz, tiwai@suse.com, alsa-devel@alsa-project.org,
+ robh+dt@kernel.org, krzk+dt@kernel.org, devicetree@vger.kernel.org
+Subject: [PATCH 1/2] ASoC: dt-bindings: fsl,
+ mqs: Add compatible string for i.MX93 platform
+Date: Fri, 10 Jun 2022 13:47:21 +0800
+Message-Id: <1654840042-7069-1-git-send-email-shengjiu.wang@nxp.com>
+X-Mailer: git-send-email 2.7.4
+X-Virus-Scanned: ClamAV using ClamSMTP
+Cc: linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -102,21 +69,26 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Thu, 09 Jun 2022 20:16:52 +0200,
-Raghu Ballappa Bankapur wrote:
-> 
-> 
-> Hi Takashi
-> 
-> Our implementation also falls inline with your approach  [PATCH RFC] ALSA:
-> control: Use xarray for faster lookups (kernel.org), but you approach looks to
-> be clean with xarray.
-> 
-> is it possible to upstream those changes?
+Add compatible string "fsl,imx93-mqs" for i.MX93 platform
 
-I submitted a v2 patch, please check it out.
+Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
+---
+ Documentation/devicetree/bindings/sound/fsl,mqs.txt | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
+diff --git a/Documentation/devicetree/bindings/sound/fsl,mqs.txt b/Documentation/devicetree/bindings/sound/fsl,mqs.txt
+index 40353fc30255..d66284b8bef2 100644
+--- a/Documentation/devicetree/bindings/sound/fsl,mqs.txt
++++ b/Documentation/devicetree/bindings/sound/fsl,mqs.txt
+@@ -2,7 +2,7 @@ fsl,mqs audio CODEC
+ 
+ Required properties:
+   - compatible : Must contain one of "fsl,imx6sx-mqs", "fsl,codec-mqs"
+-		"fsl,imx8qm-mqs", "fsl,imx8qxp-mqs".
++		"fsl,imx8qm-mqs", "fsl,imx8qxp-mqs", "fsl,imx93-mqs".
+   - clocks : A list of phandles + clock-specifiers, one for each entry in
+ 	     clock-names
+   - clock-names : "mclk" - must required.
+-- 
+2.17.1
 
-thanks,
-
-Takashi
