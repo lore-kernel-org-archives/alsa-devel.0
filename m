@@ -4,73 +4,71 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 05DBCC43334
-	for <alsa-devel@archiver.kernel.org>; Fri, 10 Jun 2022 08:38:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 893D6C43334
+	for <alsa-devel@archiver.kernel.org>; Fri, 10 Jun 2022 08:48:07 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 2BC101FFE;
-	Fri, 10 Jun 2022 10:37:17 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2BC101FFE
+	by alsa0.perex.cz (Postfix) with ESMTPS id 7B37C1FE5;
+	Fri, 10 Jun 2022 10:47:15 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7B37C1FE5
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1654850287;
-	bh=poqxcVlyb35nPsRN08CWTSN9K3tM+emwBa6OJg84uMw=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=T8YtrWdnLupY368Y39zOcbXgCT7j4TSY0eHw90S/3Mg2h6678UKce/KRNg0y9rzr8
-	 NuOJp0ScS6lprvw7PEiyZmpVpuCaog5pkmNeuilYHAt1fvbS6DkHO79KhrM2Pv/w8L
-	 zrg7V8NAOF1cCTNlFa2DUi0DzRUF2GNwnocAPS4U=
+	s=default; t=1654850885;
+	bh=7iqw2caWuf+KVVvzQ6NnaJrcrgTEvkTKcJsf01oHIVs=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=lKLaNw4fsWW/9uYXpLT4W/ch+iyL4sHcBeJsXzCHWk22d10apE/c5rAbgLnuTen1Y
+	 BTt7J9+Yb+XryaninqLXwamkLVHT7SV9SgXwSZBrBA9zZSXrxMtcKQ8mY9CBuX3yP3
+	 lvSHKGC/oNk7ZGKDlruQI5y4ytDLhTJsWc3/1Pjs=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 74F9FF80544;
-	Fri, 10 Jun 2022 10:35:38 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 1C859F804CF;
+	Fri, 10 Jun 2022 10:47:15 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 4372AF804CF; Fri, 10 Jun 2022 10:35:35 +0200 (CEST)
-Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
+ id E33C4F804D2; Fri, 10 Jun 2022 10:47:13 +0200 (CEST)
+Received: from mga17.intel.com (mga17.intel.com [192.55.52.151])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 3CA12F804CF
- for <alsa-devel@alsa-project.org>; Fri, 10 Jun 2022 10:35:28 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3CA12F804CF
+ by alsa1.perex.cz (Postfix) with ESMTPS id 56D8EF800DF
+ for <alsa-devel@alsa-project.org>; Fri, 10 Jun 2022 10:47:04 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 56D8EF800DF
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="YLAARtqx"
+ header.b="U1P0J884"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1654850129; x=1686386129;
- h=from:to:cc:subject:date:message-id:in-reply-to:
- references:mime-version:content-transfer-encoding;
- bh=poqxcVlyb35nPsRN08CWTSN9K3tM+emwBa6OJg84uMw=;
- b=YLAARtqxecg3mShnpoJ8wXebrNXKGLfzcSbIJ+LhsKwAnyxjyMsp28pL
- y1pEKCRgKChS1awcYqTnNfsP3QiGfldBCGzFhWzHHfi2lz5kpAYv2C4Ik
- ARoxylvYqgbBv39yV5SF7SPZmmPpORlLkWJZvzglWK1hrHApQSg7SiKsc
- ZweuF85COJT9a5JCI0zQzdlRFdZO/Iol2xND1D1Qb1SLuwe73J41qCICP
- IzAUkWQU3PSFAx5QD/ROPp1QgMDniu6XMb58MxAIkzwF8nONFd1iiPr7X
- N5DbwQquG2EANBkUWd1H8QWbqx6WDDH57KjXDItiA3YQyPBbUvvsxK+gM w==;
-X-IronPort-AV: E=McAfee;i="6400,9594,10373"; a="302936648"
-X-IronPort-AV: E=Sophos;i="5.91,288,1647327600"; d="scan'208";a="302936648"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
- by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 10 Jun 2022 01:35:27 -0700
-X-IronPort-AV: E=Sophos;i="5.91,288,1647327600"; d="scan'208";a="638020892"
+ t=1654850828; x=1686386828;
+ h=from:to:cc:subject:date:message-id:mime-version:
+ content-transfer-encoding;
+ bh=7iqw2caWuf+KVVvzQ6NnaJrcrgTEvkTKcJsf01oHIVs=;
+ b=U1P0J884j1nLvFCEI20AYq7ZwXVTV+OLRMhsFH4ttxmWQ2tuoUL2QliF
+ QEMMWJo5keLs1KKZzhhtBsXUhWrPRsh42wEPQ/8/MB2XI5p65vd4qu1+m
+ X3k8jf4AqHuh6Hb2GME0CJ80BYoJq2uQda7M6XTg+262oFh431ElZ3z4Z
+ esoldHAyeLhJllt1hVfeuboDFMI2JN8+ESsMyKDqD4GQrpXP9iqUNwMi0
+ /IOvSpoEvZt5NWwZn2wmevlRdGjbWkQ5vUJUFo/L4NwdmtFYvYu+lEMjt
+ zep7f+FZpP/0Y0s6VDaFoBWqI8zImLDBg9KQDleoQf9WMlxkuFypn6Pa4 A==;
+X-IronPort-AV: E=McAfee;i="6400,9594,10373"; a="257998280"
+X-IronPort-AV: E=Sophos;i="5.91,288,1647327600"; d="scan'208";a="257998280"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+ by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 10 Jun 2022 01:47:02 -0700
+X-IronPort-AV: E=Sophos;i="5.91,288,1647327600"; d="scan'208";a="616399581"
 Received: from nuribebu-mobl.amr.corp.intel.com (HELO
  pujfalus-desk.ger.corp.intel.com) ([10.251.215.108])
- by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 10 Jun 2022 01:35:25 -0700
+ by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 10 Jun 2022 01:47:00 -0700
 From: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
 To: lgirdwood@gmail.com, broonie@kernel.org,
  pierre-louis.bossart@linux.intel.com
-Subject: [PATCH 5/6] ASoC: SOF: Intel: Switch to use the generic
- pm_ops.set_core_state
-Date: Fri, 10 Jun 2022 11:35:48 +0300
-Message-Id: <20220610083549.16773-6-peter.ujfalusi@linux.intel.com>
+Subject: [PATCH] ASoC: SOF: ipc3-topology: Move and correct size checks in
+ sof_ipc3_control_load_bytes()
+Date: Fri, 10 Jun 2022 11:47:35 +0300
+Message-Id: <20220610084735.19397-1-peter.ujfalusi@linux.intel.com>
 X-Mailer: git-send-email 2.36.1
-In-Reply-To: <20220610083549.16773-1-peter.ujfalusi@linux.intel.com>
-References: <20220610083549.16773-1-peter.ujfalusi@linux.intel.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Cc: alsa-devel@alsa-project.org, yung-chuan.liao@linux.intel.com,
- ranjani.sridharan@linux.intel.com, kai.vehmanen@linux.intel.com
+ ranjani.sridharan@linux.intel.com, kai.vehmanen@linux.intel.com,
+ jaska.uimonen@linux.intel.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -86,108 +84,64 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Instead of craft and send an IPC(3) message in hda_dsp_core_get(),
-tgl_dsp_core_get() and tgl_dsp_core_put(), use the generic ops for handling
-the IPC dependent implementation of core power on/off.
+Move the size checks prior to allocating memory as these checks do not need
+the data to be allocated and in case of an error we would not need to free
+the allocation.
 
+The max size must not be less than the size of
+struct sof_ipc_ctrl_data + struct sof_abi_hdr as the ABI header needs to
+be present under all circumstances.
+The check was incorrectly used or between the two size checks.
+
+Fixes: b5cee8feb1d4 ("ASoC: SOF: topology: Make control parsing IPC agnostic")
 Signed-off-by: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
+Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 Reviewed-by: Bard Liao <yung-chuan.liao@linux.intel.com>
-Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- sound/soc/sof/intel/hda-dsp.c | 15 ++++++---------
- sound/soc/sof/intel/tgl.c     | 30 ++++++++++--------------------
- 2 files changed, 16 insertions(+), 29 deletions(-)
+ sound/soc/sof/ipc3-topology.c | 23 +++++++++++------------
+ 1 file changed, 11 insertions(+), 12 deletions(-)
 
-diff --git a/sound/soc/sof/intel/hda-dsp.c b/sound/soc/sof/intel/hda-dsp.c
-index e24eea725acb..263ad455e283 100644
---- a/sound/soc/sof/intel/hda-dsp.c
-+++ b/sound/soc/sof/intel/hda-dsp.c
-@@ -940,13 +940,7 @@ void hda_dsp_d0i3_work(struct work_struct *work)
+diff --git a/sound/soc/sof/ipc3-topology.c b/sound/soc/sof/ipc3-topology.c
+index 043554d7cb4a..10740c55294d 100644
+--- a/sound/soc/sof/ipc3-topology.c
++++ b/sound/soc/sof/ipc3-topology.c
+@@ -1577,24 +1577,23 @@ static int sof_ipc3_control_load_bytes(struct snd_sof_dev *sdev, struct snd_sof_
+ 	struct sof_ipc_ctrl_data *cdata;
+ 	int ret;
  
- int hda_dsp_core_get(struct snd_sof_dev *sdev, int core)
- {
--	struct sof_ipc_pm_core_config pm_core_config = {
--		.hdr = {
--			.cmd = SOF_IPC_GLB_PM_MSG | SOF_IPC_PM_CORE_ENABLE,
--			.size = sizeof(pm_core_config),
--		},
--		.enable_mask = sdev->enabled_cores_mask | BIT(core),
--	};
-+	const struct sof_ipc_pm_ops *pm_ops = sdev->ipc->ops->pm;
- 	int ret, ret1;
+-	scontrol->ipc_control_data = kzalloc(scontrol->max_size, GFP_KERNEL);
+-	if (!scontrol->ipc_control_data)
+-		return -ENOMEM;
+-
+-	if (scontrol->max_size < sizeof(*cdata) ||
+-	    scontrol->max_size < sizeof(struct sof_abi_hdr)) {
+-		ret = -EINVAL;
+-		goto err;
++	if (scontrol->max_size < (sizeof(*cdata) + sizeof(struct sof_abi_hdr))) {
++		dev_err(sdev->dev, "%s: insufficient size for a bytes control: %zu.\n",
++			__func__, scontrol->max_size);
++		return -EINVAL;
+ 	}
  
- 	/* power up core */
-@@ -961,9 +955,12 @@ int hda_dsp_core_get(struct snd_sof_dev *sdev, int core)
- 	if (sdev->fw_state != SOF_FW_BOOT_COMPLETE || core == SOF_DSP_PRIMARY_CORE)
- 		return 0;
+-	/* init the get/put bytes data */
+ 	if (scontrol->priv_size > scontrol->max_size - sizeof(*cdata)) {
+-		dev_err(sdev->dev, "err: bytes data size %zu exceeds max %zu.\n",
++		dev_err(sdev->dev,
++			"%s: bytes data size %zu exceeds max %zu.\n", __func__,
+ 			scontrol->priv_size, scontrol->max_size - sizeof(*cdata));
+-		ret = -EINVAL;
+-		goto err;
++		return -EINVAL;
+ 	}
  
-+	/* No need to continue the set_core_state ops is not available */
-+	if (!pm_ops->set_core_state)
-+		return 0;
++	scontrol->ipc_control_data = kzalloc(scontrol->max_size, GFP_KERNEL);
++	if (!scontrol->ipc_control_data)
++		return -ENOMEM;
 +
- 	/* Now notify DSP for secondary cores */
--	ret = sof_ipc_tx_message(sdev->ipc, &pm_core_config, sizeof(pm_core_config),
--				 &pm_core_config, sizeof(pm_core_config));
-+	ret = pm_ops->set_core_state(sdev, core, true);
- 	if (ret < 0) {
- 		dev_err(sdev->dev, "failed to enable secondary core '%d' failed with %d\n",
- 			core, ret);
-diff --git a/sound/soc/sof/intel/tgl.c b/sound/soc/sof/intel/tgl.c
-index 1ddc492f1b13..dcad7c382de6 100644
---- a/sound/soc/sof/intel/tgl.c
-+++ b/sound/soc/sof/intel/tgl.c
-@@ -24,40 +24,30 @@ static const struct snd_sof_debugfs_map tgl_dsp_debugfs[] = {
+ 	scontrol->size = sizeof(struct sof_ipc_ctrl_data) + scontrol->priv_size;
  
- static int tgl_dsp_core_get(struct snd_sof_dev *sdev, int core)
- {
--	struct sof_ipc_pm_core_config pm_core_config = {
--		.hdr = {
--			.cmd = SOF_IPC_GLB_PM_MSG | SOF_IPC_PM_CORE_ENABLE,
--			.size = sizeof(pm_core_config),
--		},
--		.enable_mask = sdev->enabled_cores_mask | BIT(core),
--	};
-+	const struct sof_ipc_pm_ops *pm_ops = sdev->ipc->ops->pm;
- 
- 	/* power up primary core if not already powered up and return */
- 	if (core == SOF_DSP_PRIMARY_CORE)
- 		return hda_dsp_enable_core(sdev, BIT(core));
- 
--	/* notify DSP for secondary cores */
--	return sof_ipc_tx_message(sdev->ipc, &pm_core_config, sizeof(pm_core_config),
--				 &pm_core_config, sizeof(pm_core_config));
-+	if (pm_ops->set_core_state)
-+		return pm_ops->set_core_state(sdev, core, true);
-+
-+	return 0;
- }
- 
- static int tgl_dsp_core_put(struct snd_sof_dev *sdev, int core)
- {
--	struct sof_ipc_pm_core_config pm_core_config = {
--		.hdr = {
--			.cmd = SOF_IPC_GLB_PM_MSG | SOF_IPC_PM_CORE_ENABLE,
--			.size = sizeof(pm_core_config),
--		},
--		.enable_mask = sdev->enabled_cores_mask & ~BIT(core),
--	};
-+	const struct sof_ipc_pm_ops *pm_ops = sdev->ipc->ops->pm;
- 
- 	/* power down primary core and return */
- 	if (core == SOF_DSP_PRIMARY_CORE)
- 		return hda_dsp_core_reset_power_down(sdev, BIT(core));
- 
--	/* notify DSP for secondary cores */
--	return sof_ipc_tx_message(sdev->ipc, &pm_core_config, sizeof(pm_core_config),
--				 &pm_core_config, sizeof(pm_core_config));
-+	if (pm_ops->set_core_state)
-+		return pm_ops->set_core_state(sdev, core, false);
-+
-+	return 0;
- }
- 
- /* Tigerlake ops */
+ 	cdata = scontrol->ipc_control_data;
 -- 
 2.36.1
 
