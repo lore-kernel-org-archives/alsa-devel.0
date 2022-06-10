@@ -4,66 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E1666C43334
-	for <alsa-devel@archiver.kernel.org>; Fri, 10 Jun 2022 08:01:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id F1485C43334
+	for <alsa-devel@archiver.kernel.org>; Fri, 10 Jun 2022 08:02:17 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 057241E81;
-	Fri, 10 Jun 2022 10:01:02 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 057241E81
+	by alsa0.perex.cz (Postfix) with ESMTPS id F38221F05;
+	Fri, 10 Jun 2022 10:01:25 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F38221F05
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1654848112;
-	bh=JluXeIPfCgMOMur4k5WuOu7ujvoG0GASReiXRlR7PLg=;
+	s=default; t=1654848136;
+	bh=35FbUiX/RvhJGqP4E4tIk7etTwYaPumYlFUSKr5vsrg=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=bFIqzNCsTUFa2TkfTnpq0+0Vb4OVQlj9I56QIk/NiVI8EObkm+CpGn8yPEHaLavTz
-	 0urC38oP4eYFPCLx+DgvTpV4UbSavxD5+Y2mti/O+jL/4KZK7fbLxwlZ8c/v313jrH
-	 RkVJ8eoPu3PGwhcN5XwrkvM1ApFZbL3TxdCDKIsU=
+	b=n483zQmbi6Au2cvRgwwr5lOFOg0a+IHH+rHmgu0wTrhvZ9hp5j4KE0Ryts7i+V5e4
+	 Q/0HJwnooHEH3bQqqvXi9MAr5jHghEk/rOlZWJc1kiKWCgI+9rm1BoDRDptXrE01ph
+	 ++xgK5C+X6DxI8hG0nRzgjEQlAdfwEnGvlNWo7rM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 81270F80520;
-	Fri, 10 Jun 2022 10:01:01 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id DBB37F80533;
+	Fri, 10 Jun 2022 10:01:02 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id AF892F80526; Fri, 10 Jun 2022 10:00:59 +0200 (CEST)
+ id 11D15F80529; Fri, 10 Jun 2022 10:01:02 +0200 (CEST)
 Received: from mga06.intel.com (mga06b.intel.com [134.134.136.31])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 105FCF804CF
- for <alsa-devel@alsa-project.org>; Fri, 10 Jun 2022 10:00:52 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 105FCF804CF
+ by alsa1.perex.cz (Postfix) with ESMTPS id 1DE6CF804E7
+ for <alsa-devel@alsa-project.org>; Fri, 10 Jun 2022 10:00:54 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1DE6CF804E7
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="W08H5xNf"
+ header.b="a0HG84PP"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1654848054; x=1686384054;
+ t=1654848056; x=1686384056;
  h=from:to:cc:subject:date:message-id:in-reply-to:
  references:mime-version:content-transfer-encoding;
- bh=JluXeIPfCgMOMur4k5WuOu7ujvoG0GASReiXRlR7PLg=;
- b=W08H5xNff3kxiu0nnkmm4kLuSjMaQOwu9un+C3hT4aw3PSobb5o6RAHY
- zXxE47jZAxh4TDENCPT7qOHDLaJ4xp3HIPFmp7yO9gdNqfoPsh3hjdicN
- /ImCz1jdSf+JmTevLKiAXIkgDs4dF7erOQ4NeK3jKB+ETBwj1Bakt2/bw
- gu8jY+xi2XYTRsxLjAAqCOLAczQCTC+P8E55pMyHfRcCZzzPuZbcYMI2x
- Ul5DorjdRMW4gVabZNF9ltcVORmZToA4I0gwyC5IAi/ZP4ALFqCiZfEIX
- 6PjWDBWUDvYZ6vIsgJuykie2VZ7gM5gpALlOoHRdehDdMrBFS4HkuMziZ Q==;
-X-IronPort-AV: E=McAfee;i="6400,9594,10373"; a="339305540"
-X-IronPort-AV: E=Sophos;i="5.91,288,1647327600"; d="scan'208";a="339305540"
+ bh=35FbUiX/RvhJGqP4E4tIk7etTwYaPumYlFUSKr5vsrg=;
+ b=a0HG84PPC9xLk1ul922XM/MdgdFWLDFioPz9XpIFHG4T+5rrKD8wurlH
+ U/p4L5bzrCjlx88WrBqeK4gX1Uo9xOZJ0fmywiMhzoclqjMpRuhCCdjsj
+ B37dKNzIBgRsNHsQWxiQllJgcgGtLbh2gSxhB2yw2+WPnhOtszaWb2+kt
+ BnAh3OMuEyyqrVQLDUavuwNkSVp/LPepGlmPwHgVcTXq0AmycebTG0qK4
+ 7hXnj5XXk6xHU4kXsKs0i6wZauOeFR1VFae/w/kGwUXpJUdLws11DvtBT
+ 8OtK9IaXhq6O2KjN+3zZNQyFxjmla+J8kmA3Z5HKjDF/FwaqsbMTdYth/ Q==;
+X-IronPort-AV: E=McAfee;i="6400,9594,10373"; a="339305582"
+X-IronPort-AV: E=Sophos;i="5.91,288,1647327600"; d="scan'208";a="339305582"
 Received: from fmsmga008.fm.intel.com ([10.253.24.58])
  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 10 Jun 2022 01:00:49 -0700
-X-IronPort-AV: E=Sophos;i="5.91,288,1647327600"; d="scan'208";a="638007958"
+ 10 Jun 2022 01:00:54 -0700
+X-IronPort-AV: E=Sophos;i="5.91,288,1647327600"; d="scan'208";a="638007989"
 Received: from nuribebu-mobl.amr.corp.intel.com (HELO
  pujfalus-desk.ger.corp.intel.com) ([10.251.215.108])
  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 10 Jun 2022 01:00:46 -0700
+ 10 Jun 2022 01:00:51 -0700
 From: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
 To: lgirdwood@gmail.com, broonie@kernel.org,
  pierre-louis.bossart@linux.intel.com, daniel.baluta@nxp.com
-Subject: [PATCH 1/3] ASoC: SOF: ipc3-dtrace: Introduce SOF_DTRACE_INITIALIZING
- state
-Date: Fri, 10 Jun 2022 11:01:17 +0300
-Message-Id: <20220610080119.30880-2-peter.ujfalusi@linux.intel.com>
+Subject: [PATCH 3/3] ASoC: SOF: ipc3-dtrace: Return from dtrace_read if there
+ is no new data available
+Date: Fri, 10 Jun 2022 11:01:19 +0300
+Message-Id: <20220610080119.30880-4-peter.ujfalusi@linux.intel.com>
 X-Mailer: git-send-email 2.36.1
 In-Reply-To: <20220610080119.30880-1-peter.ujfalusi@linux.intel.com>
 References: <20220610080119.30880-1-peter.ujfalusi@linux.intel.com>
@@ -86,103 +86,31 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-With the new state we can make sure we are not missing the first
-host_offset update.
-
-In case the dtrace is small, the DMA copy will be fast and depending on
-the moonphase it might be done before we set the sdev->dtrace_state  to
-SOF_DTRACE_ENABLED.
-
-The DMA will start the copy as soon as the host starts the DMA. Set the
-dtrace to enabled before we let the DMA to run in order to avoid missing
-the position update.
-
-The new state is needed to cover architectures where the host side
-snd_sof_dma_trace_trigger() is a NOP and the dtrace in the firmware is
-ready as soon as the IPC message has been processed.
+If no new trace data is available then return immediately, there is no
+need to continue with the execution of the trace_read() function.
 
 Signed-off-by: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
 Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Reviewed-by: Bard Liao <yung-chuan.liao@linux.intel.com>
 ---
- sound/soc/sof/ipc3-dtrace.c | 20 ++++++++++++++++----
- 1 file changed, 16 insertions(+), 4 deletions(-)
+ sound/soc/sof/ipc3-dtrace.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
 diff --git a/sound/soc/sof/ipc3-dtrace.c b/sound/soc/sof/ipc3-dtrace.c
-index b4e1343f9138..9292ff7ce1e8 100644
+index 1f4d7a98c8fc..f59931d818c1 100644
 --- a/sound/soc/sof/ipc3-dtrace.c
 +++ b/sound/soc/sof/ipc3-dtrace.c
-@@ -18,6 +18,7 @@
- enum sof_dtrace_state {
- 	SOF_DTRACE_DISABLED,
- 	SOF_DTRACE_STOPPED,
-+	SOF_DTRACE_INITIALIZING,
- 	SOF_DTRACE_ENABLED,
- };
- 
-@@ -32,6 +33,15 @@ struct sof_dtrace_priv {
- 	enum sof_dtrace_state dtrace_state;
- };
- 
-+static bool trace_pos_update_expected(struct sof_dtrace_priv *priv)
-+{
-+	if (priv->dtrace_state == SOF_DTRACE_ENABLED ||
-+	    priv->dtrace_state == SOF_DTRACE_INITIALIZING)
-+		return true;
-+
-+	return false;
-+}
-+
- static int trace_filter_append_elem(struct snd_sof_dev *sdev, u32 key, u32 value,
- 				    struct sof_ipc_trace_filter_elem *elem_list,
- 				    int capacity, int *counter)
-@@ -274,7 +284,7 @@ static size_t sof_wait_dtrace_avail(struct snd_sof_dev *sdev, loff_t pos,
- 	if (ret)
- 		return ret;
- 
--	if (priv->dtrace_state != SOF_DTRACE_ENABLED && priv->dtrace_draining) {
-+	if (priv->dtrace_draining && !trace_pos_update_expected(priv)) {
- 		/*
- 		 * tracing has ended and all traces have been
- 		 * read by client, return EOF
-@@ -445,6 +455,7 @@ static int ipc3_dtrace_enable(struct snd_sof_dev *sdev)
- 	dev_dbg(sdev->dev, "%s: stream_tag: %d\n", __func__, params.stream_tag);
- 
- 	/* send IPC to the DSP */
-+	priv->dtrace_state = SOF_DTRACE_INITIALIZING;
- 	ret = sof_ipc_tx_message(sdev->ipc, &params, sizeof(params), &ipc_reply, sizeof(ipc_reply));
- 	if (ret < 0) {
- 		dev_err(sdev->dev, "can't set params for DMA for trace %d\n", ret);
-@@ -452,17 +463,18 @@ static int ipc3_dtrace_enable(struct snd_sof_dev *sdev)
+@@ -353,6 +353,10 @@ static ssize_t dfsentry_dtrace_read(struct file *file, char __user *buffer,
+ 		return -EIO;
  	}
  
- start:
-+	priv->dtrace_state = SOF_DTRACE_ENABLED;
++	/* no new trace data */
++	if (!avail)
++		return 0;
 +
- 	ret = sof_dtrace_host_trigger(sdev, SNDRV_PCM_TRIGGER_START);
- 	if (ret < 0) {
- 		dev_err(sdev->dev, "Host dtrace trigger start failed: %d\n", ret);
- 		goto trace_release;
- 	}
- 
--	priv->dtrace_state = SOF_DTRACE_ENABLED;
--
- 	return 0;
- 
- trace_release:
-+	priv->dtrace_state = SOF_DTRACE_DISABLED;
- 	sof_dtrace_host_release(sdev);
- 	return ret;
- }
-@@ -546,7 +558,7 @@ int ipc3_dtrace_posn_update(struct snd_sof_dev *sdev,
- 	if (!sdev->fw_trace_is_supported)
- 		return 0;
- 
--	if (priv->dtrace_state == SOF_DTRACE_ENABLED &&
-+	if (trace_pos_update_expected(priv) &&
- 	    priv->host_offset != posn->host_offset) {
- 		priv->host_offset = posn->host_offset;
- 		wake_up(&priv->trace_sleep);
+ 	/* make sure count is <= avail */
+ 	if (count > avail)
+ 		count = avail;
 -- 
 2.36.1
 
