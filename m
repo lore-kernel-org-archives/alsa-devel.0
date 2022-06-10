@@ -4,73 +4,73 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7F0A5C433EF
-	for <alsa-devel@archiver.kernel.org>; Fri, 10 Jun 2022 12:31:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4DF04C43334
+	for <alsa-devel@archiver.kernel.org>; Fri, 10 Jun 2022 12:44:39 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id BDF711F80;
-	Fri, 10 Jun 2022 14:30:45 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BDF711F80
+	by alsa0.perex.cz (Postfix) with ESMTPS id 38D0D1F26;
+	Fri, 10 Jun 2022 14:43:47 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 38D0D1F26
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1654864295;
-	bh=HvheQlqo9Qk1XDkvr95LUajm9gwLG5cr+phlYzI9mdc=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=Z+cPgyz9AC368V3i2H8qSsU3xDJiE44xlNXzBqt15iFJLxigyoCCVyhBjdyfH63BY
-	 BBcsZA3NUU1m22Zb+BB0zm5eys7Ic+Q7wl9JWc3Q4Mo00UHiEAGmCcqHco0HkPFDV7
-	 0NxuDQlVfCZZgOKntrdsFVU+xviCTiRfCfmtuS3M=
+	s=default; t=1654865077;
+	bh=MXZ6xTG4CogdlZTDXiEkaqvXNjBEdhfNSLTAy3qhCXs=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=FFN69HYXV1LrTf3kQF+noLm1GRhfuc7Dxn85pyT2Vh5GAUrNIv6ZndAxoRnMMnoKl
+	 eoqkdo+9+1JiqaKbRG9fTPYd0XSDu5EEyxR4UFuomkzoISfAehl4nVbPhSUfeaHGXt
+	 hZpovInLWql0kKRRMJBoJFvPor5fsbFA7bTxvWE4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 90DA9F805C1;
-	Fri, 10 Jun 2022 14:26:49 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 653F4F800C7;
+	Fri, 10 Jun 2022 14:43:46 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id A6218F805C2; Fri, 10 Jun 2022 14:26:48 +0200 (CEST)
-Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+ id D4003F804D2; Fri, 10 Jun 2022 14:43:44 +0200 (CEST)
+Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 32C9AF805A9
- for <alsa-devel@alsa-project.org>; Fri, 10 Jun 2022 14:26:42 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 32C9AF805A9
+ by alsa1.perex.cz (Postfix) with ESMTPS id 1FB06F800C7
+ for <alsa-devel@alsa-project.org>; Fri, 10 Jun 2022 14:43:36 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1FB06F800C7
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="KquV9ol1"
+ header.b="QzAwksaa"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1654864003; x=1686400003;
- h=from:to:cc:subject:date:message-id:in-reply-to:
- references:mime-version:content-transfer-encoding;
- bh=HvheQlqo9Qk1XDkvr95LUajm9gwLG5cr+phlYzI9mdc=;
- b=KquV9ol1K9j5MxyQAlnB6ZkWFkiEFX7MEwEWyQqkGIdokw6bK+4pysi3
- j40WZD21POpVFRs1a8r3ajRcjCbg/J20AP6elZTnGCKZL50lesPlcZnw5
- DIDr57+1azm1uVgTjtv32HNYb35b8qn4yBmEHGk38yxwhUocuVUomq6jg
- 6IA6djpMbpCj9X+RHFvwhMcSwgBKSgwtJDxo7MwwT5noVfK12JQgZQG0n
- I0UGPAWsSqqqTEhcRjLCm0GN5g0b79C3hWDWzGj8GpUH6QQCyHHpVEN5I
- UyQQQ3WEN0JYhpyKOPWC9uZRKKPDfxIM6kYYpX0qZ2wXzDx1yZco5hgGW w==;
-X-IronPort-AV: E=McAfee;i="6400,9594,10373"; a="278414495"
-X-IronPort-AV: E=Sophos;i="5.91,290,1647327600"; d="scan'208";a="278414495"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
- by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 10 Jun 2022 05:26:40 -0700
+ t=1654865018; x=1686401018;
+ h=from:to:cc:subject:date:message-id:mime-version:
+ content-transfer-encoding;
+ bh=MXZ6xTG4CogdlZTDXiEkaqvXNjBEdhfNSLTAy3qhCXs=;
+ b=QzAwksaaAu7FSVjlHT75do7MNHSfTY/rwjnBomHMjDEWU0YFmOfVfObY
+ qo0IHIP6xXD3hrVVO4jt1ni3UUlveMqd48UgjyAnRZ3RGcqDDUeerSZYf
+ VRW6gBJfKPTWMWWv32CfCjIsDX5wtPFiUNSYJllEcWIikG3RIyA45Pq27
+ 5G4KidRLZuzqhXZiu8ZAcLY+/k7GF1mQhxS471nWmK/gQGjZ6mIp7ireV
+ P7Bg7o/pENssipQVoWQi3xWHfrlRnI+GAyOOJpnPCMdh1PoFgN01kIR9+
+ vFd+GRRQIZ0eDk1TyDJ2UqNOwOIybUfyajPTwyViuUZDB3ogvzu7dVaek Q==;
+X-IronPort-AV: E=McAfee;i="6400,9594,10373"; a="363949843"
+X-IronPort-AV: E=Sophos;i="5.91,290,1647327600"; d="scan'208";a="363949843"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+ by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 10 Jun 2022 05:42:45 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.91,290,1647327600"; d="scan'208";a="684517949"
-Received: from crojewsk-ctrl.igk.intel.com ([10.102.9.28])
- by fmsmga002.fm.intel.com with ESMTP; 10 Jun 2022 05:26:38 -0700
-From: Cezary Rojewski <cezary.rojewski@intel.com>
-To: alsa-devel@alsa-project.org,
-	broonie@kernel.org
-Subject: [PATCH 16/17] ASoC: Intel: bdw_rt286: Refactor suspend/resume
-Date: Fri, 10 Jun 2022 14:36:26 +0200
-Message-Id: <20220610123627.1339985-17-cezary.rojewski@intel.com>
+X-IronPort-AV: E=Sophos;i="5.91,290,1647327600"; d="scan'208";a="671830119"
+Received: from dev2.igk.intel.com ([10.237.148.94])
+ by FMSMGA003.fm.intel.com with ESMTP; 10 Jun 2022 05:42:43 -0700
+From: =?UTF-8?q?Amadeusz=20S=C5=82awi=C5=84ski?=
+ <amadeuszx.slawinski@linux.intel.com>
+To: Cezary Rojewski <cezary.rojewski@intel.com>,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ Mark Brown <broonie@kernel.org>
+Subject: [PATCH] ASoC: Intel: avs: Fix parsing UUIDs in topology
+Date: Fri, 10 Jun 2022 14:42:57 +0200
+Message-Id: <20220610124257.4160658-1-amadeuszx.slawinski@linux.intel.com>
 X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20220610123627.1339985-1-cezary.rojewski@intel.com>
-References: <20220610123627.1339985-1-cezary.rojewski@intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-Cc: Cezary Rojewski <cezary.rojewski@intel.com>,
- pierre-louis.bossart@linux.intel.com, tiwai@suse.com, hdegoede@redhat.com,
- amadeuszx.slawinski@linux.intel.com
+Cc: Liam Girdwood <liam.r.girdwood@linux.intel.com>,
+ alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.com>,
+ =?UTF-8?q?Amadeusz=20S=C5=82awi=C5=84ski?=
+ <amadeuszx.slawinski@linux.intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -86,109 +86,34 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Make use of card->remove() rather than pdev->remove() to unassign jack
-during card unbind procedure.
+Use correct type for parsing UUIDs, this eliminates warning present,
+when compiling with W=1.
 
-To reduce code size, define unified jack setter in form of
-bdw_rt286_set_jack() and invoke it during remove(), suspend_pre() and
-resume_port().
-
-Signed-off-by: Cezary Rojewski <cezary.rojewski@intel.com>
-Reviewed-by: Amadeusz Sławiński <amadeuszx.slawinski@linux.intel.com>
+Fixes: 34ae2cd53673 ("ASoC: Intel: avs: Add topology parsing infrastructure")
+Reported-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Signed-off-by: Amadeusz Sławiński <amadeuszx.slawinski@linux.intel.com>
+Reviewed-by: Cezary Rojewski <cezary.rojewski@intel.com>
 ---
- sound/soc/intel/boards/bdw_rt286.c | 50 +++++++++---------------------
- 1 file changed, 14 insertions(+), 36 deletions(-)
+ sound/soc/intel/avs/topology.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/intel/boards/bdw_rt286.c b/sound/soc/intel/boards/bdw_rt286.c
-index 81da9781c3ba..a2ff4da0bb93 100644
---- a/sound/soc/intel/boards/bdw_rt286.c
-+++ b/sound/soc/intel/boards/bdw_rt286.c
-@@ -199,43 +199,33 @@ static struct snd_soc_dai_link card_dai_links[] = {
- 	},
- };
- 
--static void broadwell_disable_jack(struct snd_soc_card *card)
-+static int card_set_jack(struct snd_soc_card *card, struct snd_soc_jack *jack)
+diff --git a/sound/soc/intel/avs/topology.c b/sound/soc/intel/avs/topology.c
+index 0d11cc8aab0b..6a06fe387d13 100644
+--- a/sound/soc/intel/avs/topology.c
++++ b/sound/soc/intel/avs/topology.c
+@@ -128,10 +128,10 @@ struct avs_tplg_token_parser {
+ static int
+ avs_parse_uuid_token(struct snd_soc_component *comp, void *elem, void *object, u32 offset)
  {
--	struct snd_soc_component *component;
--
--	for_each_card_components(card, component) {
--		if (!strcmp(component->name, "i2c-INT343A:00")) {
--			dev_dbg(component->dev, "disabling jack detect before going to suspend.\n");
--			rt286_mic_detect(component, NULL);
--			break;
--		}
--	}
-+	struct snd_soc_dai *codec_dai = snd_soc_card_get_codec_dai(card, "rt286-aif1");
-+
-+	return rt286_mic_detect(codec_dai->component, jack);
+-	struct snd_soc_tplg_vendor_value_elem *tuple = elem;
++	struct snd_soc_tplg_vendor_uuid_elem *tuple = elem;
+ 	guid_t *val = (guid_t *)((u8 *)object + offset);
+ 
+-	guid_copy((guid_t *)val, (const guid_t *)&tuple->value);
++	guid_copy((guid_t *)val, (const guid_t *)&tuple->uuid);
+ 
+ 	return 0;
  }
- 
--static int card_suspend_pre(struct snd_soc_card *card)
-+static int card_remove(struct snd_soc_card *card)
- {
--	broadwell_disable_jack(card);
-+	return card_set_jack(card, NULL);
-+}
- 
--	return 0;
-+static int card_suspend_pre(struct snd_soc_card *card)
-+{
-+	return card_set_jack(card, NULL);
- }
- 
- static int card_resume_post(struct snd_soc_card *card)
- {
--	struct snd_soc_component *component;
--
--	for_each_card_components(card, component) {
--		if (!strcmp(component->name, "i2c-INT343A:00")) {
--			dev_dbg(component->dev, "enabling jack detect for resume.\n");
--			rt286_mic_detect(component, &card_headset);
--			break;
--		}
--	}
--
--	return 0;
-+	return card_set_jack(card, &card_headset);
- }
- 
- static struct snd_soc_card bdw_rt286_card = {
- 	.owner = THIS_MODULE,
-+	.remove = card_remove,
-+	.suspend_pre = card_suspend_pre,
-+	.resume_post = card_resume_post,
- 	.dai_link = card_dai_links,
- 	.num_links = ARRAY_SIZE(card_dai_links),
- 	.controls = card_controls,
-@@ -245,8 +235,6 @@ static struct snd_soc_card bdw_rt286_card = {
- 	.dapm_routes = card_routes,
- 	.num_dapm_routes = ARRAY_SIZE(card_routes),
- 	.fully_routed = true,
--	.suspend_pre = card_suspend_pre,
--	.resume_post = card_resume_post,
- };
- 
- /* Use space before codec name to simplify card ID, and simplify driver name. */
-@@ -278,18 +266,8 @@ static int bdw_rt286_probe(struct platform_device *pdev)
- 	return devm_snd_soc_register_card(dev, &bdw_rt286_card);
- }
- 
--static int bdw_rt286_remove(struct platform_device *pdev)
--{
--	struct snd_soc_card *card = platform_get_drvdata(pdev);
--
--	broadwell_disable_jack(card);
--
--	return 0;
--}
--
- static struct platform_driver bdw_rt286_driver = {
- 	.probe = bdw_rt286_probe,
--	.remove = bdw_rt286_remove,
- 	.driver = {
- 		.name = "bdw_rt286",
- 		.pm = &snd_soc_pm_ops
 -- 
 2.25.1
 
