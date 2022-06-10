@@ -4,67 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8532ACCA47B
-	for <alsa-devel@archiver.kernel.org>; Fri, 10 Jun 2022 16:00:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 21581C433EF
+	for <alsa-devel@archiver.kernel.org>; Fri, 10 Jun 2022 16:01:14 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 8C8C51941;
-	Fri, 10 Jun 2022 17:59:57 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8C8C51941
+	by alsa0.perex.cz (Postfix) with ESMTPS id 47646190F;
+	Fri, 10 Jun 2022 18:00:22 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 47646190F
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1654876847;
-	bh=rzSH/RSyuG4CWrd4Hatex8pHH2v31xWjR6/WgpyRVyo=;
+	s=default; t=1654876872;
+	bh=pukN4eqMLDwAfADmCFrP37xeUN5VQo3/IDlxoegqoS4=;
 	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=m2bsBiNGjYkyZs3GgZDjWoGqytrQglCe+W5NFYY3hLVyv7rMbrayd4+qrnkAAMm7V
-	 5LJdNgPDDJqAkvyxRVa3B8If94Wn7qvIPHLSA7RQpnZTCelgKVYm/cGSNdcTnNSHay
-	 FUMyeR/fWe36Ar7y9ah+20eVD7u6ujZ2q7a+xqcQ=
+	b=WpM2fRRtvdjQ8hWd9KWO9v5suhqLsxHNO7sqRfQxtr0qKfa/LeFSWljeLAtbZiuKM
+	 J1Penkw4ri3gl0PxnQ0pAMHUK5kry9zZYMBzfDCpo1kAUEJu/e+h8nu1Yo+2w6bXtH
+	 XmMZwRA+W3+sSXaNRaQQcCw2FhqHu98InqdkeaEY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 137E9F80535;
-	Fri, 10 Jun 2022 17:59:21 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 4AEB5F80539;
+	Fri, 10 Jun 2022 17:59:22 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id E44B2F80515; Fri, 10 Jun 2022 17:59:13 +0200 (CEST)
+ id 0FC95F800E5; Fri, 10 Jun 2022 17:59:14 +0200 (CEST)
 Received: from ams.source.kernel.org (ams.source.kernel.org
  [IPv6:2604:1380:4601:e00::1])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id D15E8F804D8
- for <alsa-devel@alsa-project.org>; Fri, 10 Jun 2022 17:58:57 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D15E8F804D8
+ by alsa1.perex.cz (Postfix) with ESMTPS id 3B002F800DF
+ for <alsa-devel@alsa-project.org>; Fri, 10 Jun 2022 17:58:54 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3B002F800DF
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="mmYi3XaT"
+ header.b="fWJn0Otz"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by ams.source.kernel.org (Postfix) with ESMTPS id 955AFB83634;
- Fri, 10 Jun 2022 15:58:56 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 19B3EC3411B;
- Fri, 10 Jun 2022 15:58:53 +0000 (UTC)
+ by ams.source.kernel.org (Postfix) with ESMTPS id E21CFB83625;
+ Fri, 10 Jun 2022 15:58:52 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 26C31C3411B;
+ Fri, 10 Jun 2022 15:58:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1654876735;
- bh=rzSH/RSyuG4CWrd4Hatex8pHH2v31xWjR6/WgpyRVyo=;
+ s=k20201202; t=1654876731;
+ bh=pukN4eqMLDwAfADmCFrP37xeUN5VQo3/IDlxoegqoS4=;
  h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=mmYi3XaT24Whre/dR0dLpUupQD6pU/v/PsljYUiX3kxJm4RuLBVGO9425ULgs/lvi
- sF9xoVJgx0Du1f/KtQcmudgSvlKTSMIDe/WvTRSqd5dgbU/5OBaQBpiS3C73/OKmbJ
- FNMyVXsOf+8Ynfdp+hWvzIROrxLd1oMqdl3fU4yj1pcMouTpnvTJ7iXPfWd2xp7zF0
- x6fvi+aAXiq1HuNxQiq2BL3EDMGJKfB8iGEzfAGtVdoVARKLUah0VGqV67c1UIbMOT
- saKLuEor0td4Wm7g8xISabqCIZWWg8ojncPVsD1qO56eUaEZ0OiwglrCQk3k+ctM0D
- W2hYHVLN3NYZg==
+ b=fWJn0OtzebIFM7/P7n1RM4dTqpyVVGYeGa4DzyvrCkYLaR18dVgExyfTy7Kb0gqTh
+ cjjI6b8iuUr73n8KH8su64SNubqJUvFE2QhF7yKse8Y0daL8GjPwx29RGXweQZeIw9
+ 1upoWOtofQHmN8khipe5wS/6weMsfXq1CzEzNKbzk44velHJcNeFx6ty4GpqFdpUP/
+ 1300TIHC/zZOyHdzbg2t1Cq6GdvrFqNfXc+rYRnCIvR9sNcBty5DHMYxj5h+6fpw8d
+ rshZg3sB234Du6DQjpUpWgol7FvQfEqhk6VpuTCKIGs6BRB+NeqDXk70EPTlLnGKRB
+ ZlVNvhCFlqQDA==
 From: Mark Brown <broonie@kernel.org>
-To: srinivas.kandagatla@linaro.org
-In-Reply-To: <20220609111901.318047-1-srinivas.kandagatla@linaro.org>
-References: <20220609111901.318047-1-srinivas.kandagatla@linaro.org>
-Subject: Re: [PATCH 0/2] ASoC: codecs: qualcomm move gain to S8_TLV
-Message-Id: <165487673382.1755957.2629868931367227265.b4-ty@kernel.org>
-Date: Fri, 10 Jun 2022 16:58:53 +0100
+To: lgirdwood@gmail.com, pierre-louis.bossart@linux.intel.com,
+ peter.ujfalusi@linux.intel.com
+In-Reply-To: <20220610080421.31453-1-peter.ujfalusi@linux.intel.com>
+References: <20220610080421.31453-1-peter.ujfalusi@linux.intel.com>
+Subject: Re: [PATCH] ASoC: SOF: debug: Clarify the IPC timeout handling path
+Message-Id: <165487672987.1755957.712485917798463422.b4-ty@kernel.org>
+Date: Fri, 10 Jun 2022 16:58:49 +0100
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, tiwai@suse.com,
- lgirdwood@gmail.com
+Cc: alsa-devel@alsa-project.org, daniel.baluta@nxp.com,
+ ranjani.sridharan@linux.intel.com, kai.vehmanen@linux.intel.com,
+ yc.hung@mediatek.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -80,15 +82,14 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Thu, 9 Jun 2022 12:18:59 +0100, Srinivas Kandagatla wrote:
-> Move all the digital and IIR gains form using SX_TLV to S8_TLV,
-> these gains are actually 8 bit gains with 7th signed bit and
-> ranges from -84dB to +40dB
+On Fri, 10 Jun 2022 11:04:21 +0300, Peter Ujfalusi wrote:
+> The dmesg log message of "Firmware exception" causes lots of confusion as
+> the snd_sof_handle_fw_exception() is only called in case of an IPC tx
+> timeout, where such a message does not make much sense.
 > 
-> Tested on DB410c with Headset playback
-> 
-> Thanks,
-> Srini
+> To not limit the snd_sof_handle_fw_exception() handler to just one error
+> case, add a parameter to allow the caller to specify a meaningful message
+> to be printed.
 > 
 > [...]
 
@@ -98,10 +99,8 @@ Applied to
 
 Thanks!
 
-[1/2] ASoC: codecs: msm8916-wcd-digital: move gains from SX_TLV to S8_TLV
-      commit: 5babb012c847beb6c8c7108fd78f650b7a2c6054
-[2/2] ASoC: codecs: wcd9335: move gains from SX_TLV to S8_TLV
-      commit: 2fbe0953732e06b471cdedbf6f615b84235580d8
+[1/1] ASoC: SOF: debug: Clarify the IPC timeout handling path
+      commit: 145cb4e7a9ee12326f99948d8980ad258462b6c4
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
