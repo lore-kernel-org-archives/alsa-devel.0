@@ -4,64 +4,64 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D8D8AC433EF
-	for <alsa-devel@archiver.kernel.org>; Fri, 10 Jun 2022 12:31:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7F0A5C433EF
+	for <alsa-devel@archiver.kernel.org>; Fri, 10 Jun 2022 12:31:37 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 23D311F19;
-	Fri, 10 Jun 2022 14:30:21 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 23D311F19
+	by alsa0.perex.cz (Postfix) with ESMTPS id BDF711F80;
+	Fri, 10 Jun 2022 14:30:45 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BDF711F80
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1654864271;
-	bh=MnA/zvLOHXOwPxUeE7yEGW4hRg5u/uyCNgxQJp5Kx0Y=;
+	s=default; t=1654864295;
+	bh=HvheQlqo9Qk1XDkvr95LUajm9gwLG5cr+phlYzI9mdc=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=lLhjbniQw5mwVAxZDXS3KL1YeP0PIT28qv/AUDuZ3RypuEsfsxs7OVsYJe3woAIGq
-	 KiOfdB0Yn08SM2IRuIKchj9QiKRDMNJf/ed7tybM+XhkvwkHu5l1bmxnE85Q1MhUfe
-	 dCwc5MLFZVX9P78FkjzZnJqhBos8sMHtgmKZWadk=
+	b=Z+cPgyz9AC368V3i2H8qSsU3xDJiE44xlNXzBqt15iFJLxigyoCCVyhBjdyfH63BY
+	 BBcsZA3NUU1m22Zb+BB0zm5eys7Ic+Q7wl9JWc3Q4Mo00UHiEAGmCcqHco0HkPFDV7
+	 0NxuDQlVfCZZgOKntrdsFVU+xviCTiRfCfmtuS3M=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id A11CEF805B5;
-	Fri, 10 Jun 2022 14:26:46 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 90DA9F805C1;
+	Fri, 10 Jun 2022 14:26:49 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 8F9ADF805B2; Fri, 10 Jun 2022 14:26:45 +0200 (CEST)
+ id A6218F805C2; Fri, 10 Jun 2022 14:26:48 +0200 (CEST)
 Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id CE893F805AE
+ by alsa1.perex.cz (Postfix) with ESMTPS id 32C9AF805A9
  for <alsa-devel@alsa-project.org>; Fri, 10 Jun 2022 14:26:42 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CE893F805AE
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 32C9AF805A9
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="a9faCpIx"
+ header.b="KquV9ol1"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1654864004; x=1686400004;
+ t=1654864003; x=1686400003;
  h=from:to:cc:subject:date:message-id:in-reply-to:
  references:mime-version:content-transfer-encoding;
- bh=MnA/zvLOHXOwPxUeE7yEGW4hRg5u/uyCNgxQJp5Kx0Y=;
- b=a9faCpIxIaeAJvmZ4wmpaxaICpWoNdstJx0/CII+dmEyrpTEqfP9YktE
- E+7peUrXRuBF9cvyu3tVYqbgOS7HZZZkhEPYTkotG1XI1FN/5geQZPBVO
- QJRhBAfI9uUgC+fwmW225s5WxfzLXEVOEpG9TFcpt2Yn+BjDa12ASxRW9
- jkFxUnQ/QUe3CKX33wbs6PkjE302rwG0T9rF+QE+rORovmieBoC/TApC2
- IgIbJX9oavIuvCejUgabywL52lh0v8aTYKZDG50/xAoAyHfH7Gxqy5bJB
- OFfToHBM0iP2Lxz+Bf+6sgtspeoPjRhzr3s/grFMdPjpDDeto2Clde0kt A==;
-X-IronPort-AV: E=McAfee;i="6400,9594,10373"; a="278414500"
-X-IronPort-AV: E=Sophos;i="5.91,290,1647327600"; d="scan'208";a="278414500"
+ bh=HvheQlqo9Qk1XDkvr95LUajm9gwLG5cr+phlYzI9mdc=;
+ b=KquV9ol1K9j5MxyQAlnB6ZkWFkiEFX7MEwEWyQqkGIdokw6bK+4pysi3
+ j40WZD21POpVFRs1a8r3ajRcjCbg/J20AP6elZTnGCKZL50lesPlcZnw5
+ DIDr57+1azm1uVgTjtv32HNYb35b8qn4yBmEHGk38yxwhUocuVUomq6jg
+ 6IA6djpMbpCj9X+RHFvwhMcSwgBKSgwtJDxo7MwwT5noVfK12JQgZQG0n
+ I0UGPAWsSqqqTEhcRjLCm0GN5g0b79C3hWDWzGj8GpUH6QQCyHHpVEN5I
+ UyQQQ3WEN0JYhpyKOPWC9uZRKKPDfxIM6kYYpX0qZ2wXzDx1yZco5hgGW w==;
+X-IronPort-AV: E=McAfee;i="6400,9594,10373"; a="278414495"
+X-IronPort-AV: E=Sophos;i="5.91,290,1647327600"; d="scan'208";a="278414495"
 Received: from fmsmga002.fm.intel.com ([10.253.24.26])
  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 10 Jun 2022 05:26:42 -0700
+ 10 Jun 2022 05:26:40 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.91,290,1647327600"; d="scan'208";a="684517965"
+X-IronPort-AV: E=Sophos;i="5.91,290,1647327600"; d="scan'208";a="684517949"
 Received: from crojewsk-ctrl.igk.intel.com ([10.102.9.28])
- by fmsmga002.fm.intel.com with ESMTP; 10 Jun 2022 05:26:40 -0700
+ by fmsmga002.fm.intel.com with ESMTP; 10 Jun 2022 05:26:38 -0700
 From: Cezary Rojewski <cezary.rojewski@intel.com>
 To: alsa-devel@alsa-project.org,
 	broonie@kernel.org
-Subject: [PATCH 17/17] ASoC: Intel: bdw_rt286: Remove FE DAI ops
-Date: Fri, 10 Jun 2022 14:36:27 +0200
-Message-Id: <20220610123627.1339985-18-cezary.rojewski@intel.com>
+Subject: [PATCH 16/17] ASoC: Intel: bdw_rt286: Refactor suspend/resume
+Date: Fri, 10 Jun 2022 14:36:26 +0200
+Message-Id: <20220610123627.1339985-17-cezary.rojewski@intel.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20220610123627.1339985-1-cezary.rojewski@intel.com>
 References: <20220610123627.1339985-1-cezary.rojewski@intel.com>
@@ -86,58 +86,109 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-bdw_rt286_fe_ops is redundant as platform FE DAIs already limit the
-number of channels available for the endpoint.
+Make use of card->remove() rather than pdev->remove() to unassign jack
+during card unbind procedure.
+
+To reduce code size, define unified jack setter in form of
+bdw_rt286_set_jack() and invoke it during remove(), suspend_pre() and
+resume_port().
 
 Signed-off-by: Cezary Rojewski <cezary.rojewski@intel.com>
 Reviewed-by: Amadeusz Sławiński <amadeuszx.slawinski@linux.intel.com>
 ---
- sound/soc/intel/boards/bdw_rt286.c | 25 -------------------------
- 1 file changed, 25 deletions(-)
+ sound/soc/intel/boards/bdw_rt286.c | 50 +++++++++---------------------
+ 1 file changed, 14 insertions(+), 36 deletions(-)
 
 diff --git a/sound/soc/intel/boards/bdw_rt286.c b/sound/soc/intel/boards/bdw_rt286.c
-index a2ff4da0bb93..7d34e5002558 100644
+index 81da9781c3ba..a2ff4da0bb93 100644
 --- a/sound/soc/intel/boards/bdw_rt286.c
 +++ b/sound/soc/intel/boards/bdw_rt286.c
-@@ -108,30 +108,6 @@ static const struct snd_soc_ops codec_link_ops = {
- 	.hw_params = codec_link_hw_params,
+@@ -199,43 +199,33 @@ static struct snd_soc_dai_link card_dai_links[] = {
+ 	},
  };
  
--static const unsigned int channels[] = {
--	2,
--};
+-static void broadwell_disable_jack(struct snd_soc_card *card)
++static int card_set_jack(struct snd_soc_card *card, struct snd_soc_jack *jack)
+ {
+-	struct snd_soc_component *component;
 -
--static const struct snd_pcm_hw_constraint_list constraints_channels = {
--	.count = ARRAY_SIZE(channels),
--	.list = channels,
--	.mask = 0,
--};
+-	for_each_card_components(card, component) {
+-		if (!strcmp(component->name, "i2c-INT343A:00")) {
+-			dev_dbg(component->dev, "disabling jack detect before going to suspend.\n");
+-			rt286_mic_detect(component, NULL);
+-			break;
+-		}
+-	}
++	struct snd_soc_dai *codec_dai = snd_soc_card_get_codec_dai(card, "rt286-aif1");
++
++	return rt286_mic_detect(codec_dai->component, jack);
+ }
+ 
+-static int card_suspend_pre(struct snd_soc_card *card)
++static int card_remove(struct snd_soc_card *card)
+ {
+-	broadwell_disable_jack(card);
++	return card_set_jack(card, NULL);
++}
+ 
+-	return 0;
++static int card_suspend_pre(struct snd_soc_card *card)
++{
++	return card_set_jack(card, NULL);
+ }
+ 
+ static int card_resume_post(struct snd_soc_card *card)
+ {
+-	struct snd_soc_component *component;
 -
--static int bdw_rt286_fe_startup(struct snd_pcm_substream *substream)
+-	for_each_card_components(card, component) {
+-		if (!strcmp(component->name, "i2c-INT343A:00")) {
+-			dev_dbg(component->dev, "enabling jack detect for resume.\n");
+-			rt286_mic_detect(component, &card_headset);
+-			break;
+-		}
+-	}
+-
+-	return 0;
++	return card_set_jack(card, &card_headset);
+ }
+ 
+ static struct snd_soc_card bdw_rt286_card = {
+ 	.owner = THIS_MODULE,
++	.remove = card_remove,
++	.suspend_pre = card_suspend_pre,
++	.resume_post = card_resume_post,
+ 	.dai_link = card_dai_links,
+ 	.num_links = ARRAY_SIZE(card_dai_links),
+ 	.controls = card_controls,
+@@ -245,8 +235,6 @@ static struct snd_soc_card bdw_rt286_card = {
+ 	.dapm_routes = card_routes,
+ 	.num_dapm_routes = ARRAY_SIZE(card_routes),
+ 	.fully_routed = true,
+-	.suspend_pre = card_suspend_pre,
+-	.resume_post = card_resume_post,
+ };
+ 
+ /* Use space before codec name to simplify card ID, and simplify driver name. */
+@@ -278,18 +266,8 @@ static int bdw_rt286_probe(struct platform_device *pdev)
+ 	return devm_snd_soc_register_card(dev, &bdw_rt286_card);
+ }
+ 
+-static int bdw_rt286_remove(struct platform_device *pdev)
 -{
--	struct snd_pcm_runtime *runtime = substream->runtime;
+-	struct snd_soc_card *card = platform_get_drvdata(pdev);
 -
--	/* Board supports stereo configuration only */
--	runtime->hw.channels_max = 2;
--	return snd_pcm_hw_constraint_list(runtime, 0, SNDRV_PCM_HW_PARAM_CHANNELS,
--					  &constraints_channels);
+-	broadwell_disable_jack(card);
+-
+-	return 0;
 -}
 -
--static const struct snd_soc_ops bdw_rt286_fe_ops = {
--	.startup = bdw_rt286_fe_startup,
--};
--
- SND_SOC_DAILINK_DEF(system, DAILINK_COMP_ARRAY(COMP_CPU("System Pin")));
- SND_SOC_DAILINK_DEF(offload0, DAILINK_COMP_ARRAY(COMP_CPU("Offload0 Pin")));
- SND_SOC_DAILINK_DEF(offload1, DAILINK_COMP_ARRAY(COMP_CPU("Offload1 Pin")));
-@@ -150,7 +126,6 @@ static struct snd_soc_dai_link card_dai_links[] = {
- 		.nonatomic = 1,
- 		.dynamic = 1,
- 		.trigger = { SND_SOC_DPCM_TRIGGER_POST, SND_SOC_DPCM_TRIGGER_POST },
--		.ops = &bdw_rt286_fe_ops,
- 		.dpcm_playback = 1,
- 		.dpcm_capture = 1,
- 		SND_SOC_DAILINK_REG(system, dummy, platform),
+ static struct platform_driver bdw_rt286_driver = {
+ 	.probe = bdw_rt286_probe,
+-	.remove = bdw_rt286_remove,
+ 	.driver = {
+ 		.name = "bdw_rt286",
+ 		.pm = &snd_soc_pm_ops
 -- 
 2.25.1
 
