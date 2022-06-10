@@ -4,63 +4,61 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 01F5EC433EF
-	for <alsa-devel@archiver.kernel.org>; Fri, 10 Jun 2022 18:22:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 58189C43334
+	for <alsa-devel@archiver.kernel.org>; Fri, 10 Jun 2022 18:22:57 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 68D0F16B9;
-	Fri, 10 Jun 2022 20:21:33 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 68D0F16B9
+	by alsa0.perex.cz (Postfix) with ESMTPS id 4545618F2;
+	Fri, 10 Jun 2022 20:22:05 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4545618F2
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1654885343;
-	bh=ctmexQLdnglHp49NgMIN8gOm5562B67YT7yIGnPgkdQ=;
+	s=default; t=1654885375;
+	bh=yEAAXCEqcQVHO5K/f+JF29UarljBadFTFpcNW5TXzP0=;
 	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=iPx+q/qUVk9AYTxQv9pXbReicRTPJ+dsZNLfrfkYpmXWvLKSmWk6ruuS8yT7uacPR
-	 U83VlF6fAX306YEnXkpeVPq69Vq/MOB734X0voyQedU3DIDAjNe8hhMsjZYsp639Hr
-	 oIZ/btxzxh44sk03Rty2nGqD0cz33clv4J4CnEJ0=
+	b=W95DPG3JGGRyNVhj48F5K/PzPNj7lpWtbjPq8fe5g2JqzzaasZcpGKWpI97uPJAvo
+	 hX66xs9Xfob4a+f3B9g4tOiLNGd8IOB+MdVrtf38wqKsDTEWKAiSwaJOPVI5t2XOxT
+	 9XfwbLeyOZ9R8HqDdD/vxH1IMTyscaLWcmIIAc6A=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id E066EF800C7;
-	Fri, 10 Jun 2022 20:21:32 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id B1E73F800E5;
+	Fri, 10 Jun 2022 20:21:34 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 4A4A0F800E5; Fri, 10 Jun 2022 20:21:31 +0200 (CEST)
-Received: from ams.source.kernel.org (ams.source.kernel.org
- [IPv6:2604:1380:4601:e00::1])
+ id AB274F804D8; Fri, 10 Jun 2022 20:21:32 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 90B44F800E5
- for <alsa-devel@alsa-project.org>; Fri, 10 Jun 2022 20:21:26 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 90B44F800E5
+ by alsa1.perex.cz (Postfix) with ESMTPS id 3FEDAF804CF
+ for <alsa-devel@alsa-project.org>; Fri, 10 Jun 2022 20:21:29 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3FEDAF804CF
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="ra/iDnL2"
+ header.b="mvZpjfBW"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by ams.source.kernel.org (Postfix) with ESMTPS id 93814B83471;
- Fri, 10 Jun 2022 18:21:25 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0E404C34114;
- Fri, 10 Jun 2022 18:21:22 +0000 (UTC)
+ by dfw.source.kernel.org (Postfix) with ESMTPS id 89453621E6;
+ Fri, 10 Jun 2022 18:21:26 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D7F12C3411C;
+ Fri, 10 Jun 2022 18:21:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1654885284;
- bh=ctmexQLdnglHp49NgMIN8gOm5562B67YT7yIGnPgkdQ=;
+ s=k20201202; t=1654885286;
+ bh=yEAAXCEqcQVHO5K/f+JF29UarljBadFTFpcNW5TXzP0=;
  h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=ra/iDnL2H9ob90ivzwAJJAVKHHVFNhkAjyQ/Dc2UhfpVoOv9z5yVtg7NMBZs1EwAP
- zlc1ttXsIKwxy6YNl90MUc1QsODQzrfxzyARx5hvIF27dxfluL1BclP1qM1Vh2nL11
- W7zxuicLkdiU4ZlE4g84xAkXaurPvUZyt4lgq0jMJW9yM3mmXBjd3J9tBLUhjKqtl4
- ZI7O5t3dqbfiMcTqg8mpi9+YW2/eBSdGwOJ2aYRFWUj6yZlsoAlWpPXD/NksAlWNyM
- FLHNMEF4toZS+mv2wXT89cnN/X/VI+OQrkaoWLmbPYT9bB7I2Pc3FTUZ7Wv/RJpC+T
- 1IrVH/aifM/Lw==
+ b=mvZpjfBWRXyIGIZk/C5pZN8s8yRBnL359oekoHQdrA64kCCCEy2v/e2gQBxifRHzC
+ ChL5Vb8BWzUhkgHLWVIuTdrWIE6FPq6yy6rqn6d05yUzmIw0+Cgs1Y7Q/3mZYSCpRr
+ 6fBXGzFOXMN3uQ+wLh9h0Q28lJhWjSDF0hQqNMzN4U6M/VqpKfobs3iN0z8cs3bc0R
+ yLXK2p5vdCENDsuDV3C3FrqDQWUqYGtNvhWXjNcZxSigz8ipxyx8HEcxukA95LCxeg
+ iwyWlB0zrpyXDi8MCwysSxXtGRNPOHvHSC7c3zyY4x5hzn5gEt96w2KMBoLnu8tXTT
+ rGpZJkV9XhPHw==
 From: Mark Brown <broonie@kernel.org>
-To: pierre-louis.bossart@linux.intel.com, cezary.rojewski@intel.com,
- amadeuszx.slawinski@linux.intel.com
-In-Reply-To: <20220610124257.4160658-1-amadeuszx.slawinski@linux.intel.com>
-References: <20220610124257.4160658-1-amadeuszx.slawinski@linux.intel.com>
-Subject: Re: [PATCH] ASoC: Intel: avs: Fix parsing UUIDs in topology
-Message-Id: <165488528271.2064162.5038484220213087257.b4-ty@kernel.org>
-Date: Fri, 10 Jun 2022 19:21:22 +0100
+To: cezary.rojewski@intel.com, amadeuszx.slawinski@linux.intel.com
+In-Reply-To: <20220610124420.4160986-1-amadeuszx.slawinski@linux.intel.com>
+References: <20220610124420.4160986-1-amadeuszx.slawinski@linux.intel.com>
+Subject: Re: [PATCH] ASoC: Remove unused hw_write_t type
+Message-Id: <165488528458.2064162.9796208189773872151.b4-ty@kernel.org>
+Date: Fri, 10 Jun 2022 19:21:24 +0100
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -81,9 +79,10 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Fri, 10 Jun 2022 14:42:57 +0200, Amadeusz Sławiński wrote:
-> Use correct type for parsing UUIDs, this eliminates warning present,
-> when compiling with W=1.
+On Fri, 10 Jun 2022 14:44:20 +0200, Amadeusz Sławiński wrote:
+> Commit 81da8a0b7975 ("ASoC: remove codec hw_write/control_data") removed
+> use of hw_write_t in struct snd_soc_codec, but it left type definition.
+> Fully clean it up.
 > 
 > 
 
@@ -93,8 +92,8 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: Intel: avs: Fix parsing UUIDs in topology
-      commit: 46c80e72c16adff20f61240f887c4842e80cb6ec
+[1/1] ASoC: Remove unused hw_write_t type
+      commit: 81eef68f3bb78f5b3dc29032ffd804a4a2d7aaf0
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
