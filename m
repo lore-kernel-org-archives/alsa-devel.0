@@ -4,70 +4,76 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2AA83C43334
-	for <alsa-devel@archiver.kernel.org>; Fri, 10 Jun 2022 08:04:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 01E6AC43334
+	for <alsa-devel@archiver.kernel.org>; Fri, 10 Jun 2022 08:28:37 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 616B01EEF;
-	Fri, 10 Jun 2022 10:04:01 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 616B01EEF
+	by alsa0.perex.cz (Postfix) with ESMTPS id 893CC1B3C;
+	Fri, 10 Jun 2022 10:27:45 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 893CC1B3C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1654848291;
-	bh=Y6njyXAkEzvCKA5OoWSOeJB4odNLPQ1pRVzOdGh04GE=;
+	s=default; t=1654849715;
+	bh=cI2cxj31d/21r2KZqq6kL8Hl935OxZdV1/AXdBFNB+E=;
 	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
 	 List-Post:List-Help:List-Subscribe:From;
-	b=qFIKxV2M+RGL/mfbIHVUOv5/N5TSMXwd0KWHOPJwe+i/mNM3GFHDrwWEBZMBDSvL6
-	 1z1s6Heq5Np5/38gJ9odYqzZwbTok2GuXmtUjiwBlYIJt6h7hyAjZGQwTabJyzXvGe
-	 7jPiml5IFLw/ih/GgIBF68GuXhYHOqFCBDrY80FY=
+	b=Nimpx8jg0jDqeWkYJNUUwHDBw1l3cpPtZMZTCAM+wEiw594JUMz6yisaY/J/KXp3V
+	 mRPyN9pFalGoIz+bJuDx6HwUx1whcTQbgz0KjKbraV7oKLH6ykrrccLsjx9nw+k+yU
+	 PmIbLLUIke9yx0kl+ZHjhDQ8l62IjTIBuUmgrD1g=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 10937F804CF;
-	Fri, 10 Jun 2022 10:04:01 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 0B1CAF80520;
+	Fri, 10 Jun 2022 10:27:45 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 30F8AF804CF; Fri, 10 Jun 2022 10:03:59 +0200 (CEST)
-Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
+ id CF758F80520; Fri, 10 Jun 2022 10:27:42 +0200 (CEST)
+Received: from mailgw02.mediatek.com (unknown [210.61.82.184])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id CA56DF800C7
- for <alsa-devel@alsa-project.org>; Fri, 10 Jun 2022 10:03:51 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CA56DF800C7
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="IgcsBwxQ"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
- d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1654848234; x=1686384234;
- h=from:to:cc:subject:date:message-id:mime-version:
- content-transfer-encoding;
- bh=Y6njyXAkEzvCKA5OoWSOeJB4odNLPQ1pRVzOdGh04GE=;
- b=IgcsBwxQwYOSuaUZzimqp/TZ9toR1ziSRQxbpFAf4yJlA8DozHG0zj9G
- ju9PaybbJa6rxs/mGOg3Ei4a+7H5XOsxWpnRCZ9/Erehfif3ze/dPBAEV
- Nt7UtxqxonjwSBIdvVcyfEOsKGY340MNXXQRwtEp14QYX1WOVlzChMYnk
- WhwT0uru9c2nN4+YKqLwSorUhMNBVDQguTbAneH0S/hpYtgdQU250er3K
- E4urFw0WNbwMTD28zqYzJhKi9AyuhOBpkTaiAudDcYJ392qZDzxWuWV/H
- edZL612LdnWX80foxNIxf2W+pxq637dl+kbfIsPHfGEwGFKR5KwQnQfNg A==;
-X-IronPort-AV: E=McAfee;i="6400,9594,10373"; a="275082921"
-X-IronPort-AV: E=Sophos;i="5.91,288,1647327600"; d="scan'208";a="275082921"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
- by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 10 Jun 2022 01:03:49 -0700
-X-IronPort-AV: E=Sophos;i="5.91,288,1647327600"; d="scan'208";a="616383386"
-Received: from nuribebu-mobl.amr.corp.intel.com (HELO
- pujfalus-desk.ger.corp.intel.com) ([10.251.215.108])
- by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 10 Jun 2022 01:03:45 -0700
-From: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
-To: lgirdwood@gmail.com, broonie@kernel.org,
- pierre-louis.bossart@linux.intel.com
-Subject: [PATCH] ASoC: SOF: debug: Clarify the IPC timeout handling path
-Date: Fri, 10 Jun 2022 11:04:21 +0300
-Message-Id: <20220610080421.31453-1-peter.ujfalusi@linux.intel.com>
-X-Mailer: git-send-email 2.36.1
+ by alsa1.perex.cz (Postfix) with ESMTPS id E56ECF800C7
+ for <alsa-devel@alsa-project.org>; Fri, 10 Jun 2022 10:27:38 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E56ECF800C7
+X-UUID: 2e1cb47bef79416d8b6bf25739b9fa08-20220610
+X-CID-P-RULE: Release_Ham
+X-CID-O-INFO: VERSION:1.1.5, REQID:fedc80bb-d6b6-4ed8-a078-ee5faef7b35a, OB:0,
+ LO
+ B:0,IP:0,URL:0,TC:0,Content:-5,EDM:0,RT:0,SF:95,FILE:0,RULE:Release_Ham,AC
+ TION:release,TS:90
+X-CID-INFO: VERSION:1.1.5, REQID:fedc80bb-d6b6-4ed8-a078-ee5faef7b35a, OB:0,
+ LOB:
+ 0,IP:0,URL:0,TC:0,Content:-5,EDM:0,RT:0,SF:95,FILE:0,RULE:Spam_GS981B3D,AC
+ TION:quarantine,TS:90
+X-CID-META: VersionHash:2a19b09, CLOUDID:7477ec7e-c8dc-403a-96e8-6237210dceee,
+ C
+ OID:7f2c70db6cac,Recheck:0,SF:28|17|19|48,TC:nil,Content:0,EDM:-3,IP:nil,U
+ RL:1,File:nil,QS:0,BEC:nil
+X-UUID: 2e1cb47bef79416d8b6bf25739b9fa08-20220610
+Received: from mtkmbs10n1.mediatek.inc [(172.21.101.34)] by
+ mailgw02.mediatek.com (envelope-from <jiaxin.yu@mediatek.com>)
+ (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
+ with ESMTP id 1144194516; Fri, 10 Jun 2022 16:27:27 +0800
+Received: from mtkmbs11n1.mediatek.inc (172.21.101.185) by
+ mtkmbs11n1.mediatek.inc (172.21.101.185) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.792.3; 
+ Fri, 10 Jun 2022 16:27:26 +0800
+Received: from localhost.localdomain (10.17.3.154) by mtkmbs11n1.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.2.792.3 via Frontend
+ Transport; Fri, 10 Jun 2022 16:27:25 +0800
+From: Jiaxin Yu <jiaxin.yu@mediatek.com>
+To: <broonie@kernel.org>, <robh+dt@kernel.org>,
+ <angelogioacchino.delregno@collabora.com>
+Subject: [PATCH v7 0/8] ASoC: mediatek: Add support for MT8186 SoC
+Date: Fri, 10 Jun 2022 16:27:16 +0800
+Message-ID: <20220610082724.29256-1-jiaxin.yu@mediatek.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: alsa-devel@alsa-project.org, daniel.baluta@nxp.com,
- ranjani.sridharan@linux.intel.com, kai.vehmanen@linux.intel.com,
- yc.hung@mediatek.com
+Content-Type: text/plain
+X-MTK: N
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
+ linux-kernel@vger.kernel.org, Jiaxin Yu <jiaxin.yu@mediatek.com>,
+ Project_Global_Chrome_Upstream_Group@mediatek.com, tzungbi@google.com,
+ linux-mediatek@lists.infradead.org, trevor.wu@mediatek.com,
+ matthias.bgg@gmail.com, aaronyu@google.com, julianbraha@gmail.com,
+ linux-arm-kernel@lists.infradead.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -83,73 +89,124 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The dmesg log message of "Firmware exception" causes lots of confusion as
-the snd_sof_handle_fw_exception() is only called in case of an IPC tx
-timeout, where such a message does not make much sense.
+This series of patches adds support for Mediatek AFE of MT8186 Soc.
+Patches are based on broonie tree "for-next" branch.
 
-To not limit the snd_sof_handle_fw_exception() handler to just one error
-case, add a parameter to allow the caller to specify a meaningful message
-to be printed.
+Changes since v6:
+  - The Makefile and Kconfig updates are moved into the driver patches so that can
+    keep independence of each patch.
 
-Signed-off-by: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
-Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Reviewed-by: Yaochun Hung <yc.hung@mediatek.com>
----
- sound/soc/sof/debug.c    | 5 ++---
- sound/soc/sof/ipc3.c     | 2 +-
- sound/soc/sof/sof-priv.h | 2 +-
- 3 files changed, 4 insertions(+), 5 deletions(-)
+Changes since v5:
+  - fix build error about function snd_soc_card_jack_new that modified by:
+    Link: https://lore.kernel.org/r/20220408041114.6024-1-akihiko.odaki@gmail.com
+  - some have been accepted, details are in the link below:
+    Link: https://lore.kernel.org/all/165459931885.399031.2621579592368573898.b4-ty@kernel.org/
 
-diff --git a/sound/soc/sof/debug.c b/sound/soc/sof/debug.c
-index cf1271eb29b2..c5d797e97c02 100644
---- a/sound/soc/sof/debug.c
-+++ b/sound/soc/sof/debug.c
-@@ -428,7 +428,7 @@ static void snd_sof_ipc_dump(struct snd_sof_dev *sdev)
- 	}
- }
- 
--void snd_sof_handle_fw_exception(struct snd_sof_dev *sdev)
-+void snd_sof_handle_fw_exception(struct snd_sof_dev *sdev, const char *msg)
- {
- 	if (IS_ENABLED(CONFIG_SND_SOC_SOF_DEBUG_RETAIN_DSP_CONTEXT) ||
- 	    sof_debug_check_flag(SOF_DBG_RETAIN_CTX)) {
-@@ -441,8 +441,7 @@ void snd_sof_handle_fw_exception(struct snd_sof_dev *sdev)
- 
- 	/* dump vital information to the logs */
- 	snd_sof_ipc_dump(sdev);
--	snd_sof_dsp_dbg_dump(sdev, "Firmware exception",
--			     SOF_DBG_DUMP_REGS | SOF_DBG_DUMP_MBOX);
-+	snd_sof_dsp_dbg_dump(sdev, msg, SOF_DBG_DUMP_REGS | SOF_DBG_DUMP_MBOX);
- 	sof_fw_trace_fw_crashed(sdev);
- }
- EXPORT_SYMBOL(snd_sof_handle_fw_exception);
-diff --git a/sound/soc/sof/ipc3.c b/sound/soc/sof/ipc3.c
-index dff5feaad370..ef8019e009b7 100644
---- a/sound/soc/sof/ipc3.c
-+++ b/sound/soc/sof/ipc3.c
-@@ -290,7 +290,7 @@ static int ipc3_wait_tx_done(struct snd_sof_ipc *ipc, void *reply_data)
- 		dev_err(sdev->dev,
- 			"ipc tx timed out for %#x (msg/reply size: %d/%zu)\n",
- 			hdr->cmd, hdr->size, msg->reply_size);
--		snd_sof_handle_fw_exception(ipc->sdev);
-+		snd_sof_handle_fw_exception(ipc->sdev, "IPC timeout");
- 		ret = -ETIMEDOUT;
- 	} else {
- 		ret = msg->reply_error;
-diff --git a/sound/soc/sof/sof-priv.h b/sound/soc/sof/sof-priv.h
-index 9d7f53ff9c70..32c152528f1d 100644
---- a/sound/soc/sof/sof-priv.h
-+++ b/sound/soc/sof/sof-priv.h
-@@ -655,7 +655,7 @@ void sof_print_oops_and_stack(struct snd_sof_dev *sdev, const char *level,
- 			      u32 panic_code, u32 tracep_code, void *oops,
- 			      struct sof_ipc_panic_info *panic_info,
- 			      void *stack, size_t stack_words);
--void snd_sof_handle_fw_exception(struct snd_sof_dev *sdev);
-+void snd_sof_handle_fw_exception(struct snd_sof_dev *sdev, const char *msg);
- int snd_sof_dbg_memory_info_init(struct snd_sof_dev *sdev);
- int snd_sof_debugfs_add_region_item_iomem(struct snd_sof_dev *sdev,
- 		enum snd_sof_fw_blk_type blk_type, u32 offset, size_t size,
+Changes since v4:
+  - [v5 07/20]
+    - remove unsusd controls
+  - [v5 09/20]
+    - correct indent error
+  - [v5 10/20]
+  - [v5 13/20]
+  - [v5 14/20]
+    - fix the return value if the value is different from the previous
+      value in mixer controls
+  - [v5 17/20]
+  - [v5 19/20]
+    - correct the compatible name with '_' instead of '-'
+  - [v5 18/20]
+  - [v5 20/20]
+    - correct the yaml after 'pip3 install dtschema --upgrade'
+
+Changes since v3:
+  - [v4 09/18]
+    - remove DEBUG_COEFF debugging code
+  - [v4 10/18]
+    - simplify the logic of the code
+  - [v4 13/18]
+    - split out the MT6366 bits into mt8186-mt6366-commom.c
+    - fix build error of "error: 'struct dev_pm_info' has no member named 'runtime_error'"
+    - fix bug of adda dai driver
+    - add route for pcm interface channel 2.
+  - [v4 15/18]
+  - [v4 17/18]
+    - commonize the configuration of the codec
+    - move MT6366 common bits into mt8186-mt6366-common.c
+
+Changes since v2:
+  - add a new compatible string "mediatek,mt6366-sound"
+  - modify the log level for simplicity
+  - use dev_err_probe(...) instead of dev_err(...) in dev probe()
+  - optimized the logic of some code
+  - use BIT() and GENMASK() macros to descript the registers
+
+  Thanks for AngeloGioacchino's careful reviews.
+
+Changes since v1:
+  [v2 01/17]
+    - add a new ID to the existing mt6358 codec driver
+  [v2 03/17]
+    - modify log level in DAPM events
+    - use standard numeric control with name ending in Switch
+    - return 1 when the value changed in mixer control's .get callback
+  [v2 05/17]
+    - ending in Switch to the standard on/off controls
+    - change to "HW Gain 1 Volume" and "HW Gain 2 Volume"
+  [v2 09/17]
+    - return an error in the default case rather than just picking one of
+      the behaviours when do .set_fmt
+    - use the new defines that are _PROVIDER_MASK, _DAIFMT_CBP_CFP and
+      _DAIFMT_CBC_CFC
+  [v2 10/17]
+  [v2 11/17]
+    - the clock and gpio are aplit out into separate  patches
+
+  The source file's GPL comment use c++ style, and the header fils's GPL
+  comment use c style. We have added "Switch" after the names of all the
+  controls that just are simple on/off.
+
+Jiaxin Yu (8):
+  dt-bindings: mediatek: mt6358: add new compatible for using mt6366
+  ASoC: mediatek: mt8186: add platform driver
+  ASoC: mediatek: mt8186: add mt8186-mt6366 common driver
+  dt-bindings: mediatek: mt8186: add audio afe document
+  ASoC: mediatek: mt8186: add machine driver with mt6366, da7219 and
+    max98357
+  dt-bindings: mediatek: mt8186: add mt8186-mt6366-da7219-max98357
+    document
+  ASoC: mediatek: mt8186: add machine driver with mt6366, rt1019 and
+    rt5682s
+  dt-bindings: mediatek: mt8186: add mt8186-mt6366-rt1019-rt5682s
+    document
+
+ .../devicetree/bindings/sound/mt6358.txt      |    4 +-
+ .../bindings/sound/mt8186-afe-pcm.yaml        |  175 +
+ .../sound/mt8186-mt6366-da7219-max98357.yaml  |   75 +
+ .../sound/mt8186-mt6366-rt1019-rt5682s.yaml   |   75 +
+ sound/soc/mediatek/Kconfig                    |   44 +
+ sound/soc/mediatek/Makefile                   |    1 +
+ sound/soc/mediatek/mt8186/Makefile            |   22 +
+ sound/soc/mediatek/mt8186/mt8186-afe-common.h |  235 ++
+ .../soc/mediatek/mt8186/mt8186-afe-control.c  |  261 ++
+ sound/soc/mediatek/mt8186/mt8186-afe-pcm.c    | 3009 +++++++++++++++++
+ .../mediatek/mt8186/mt8186-mt6366-common.c    |   59 +
+ .../mediatek/mt8186/mt8186-mt6366-common.h    |   17 +
+ .../mt8186/mt8186-mt6366-da7219-max98357.c    | 1002 ++++++
+ .../mt8186/mt8186-mt6366-rt1019-rt5682s.c     |  978 ++++++
+ 14 files changed, 5956 insertions(+), 1 deletion(-)
+ create mode 100644 Documentation/devicetree/bindings/sound/mt8186-afe-pcm.yaml
+ create mode 100644 Documentation/devicetree/bindings/sound/mt8186-mt6366-da7219-max98357.yaml
+ create mode 100644 Documentation/devicetree/bindings/sound/mt8186-mt6366-rt1019-rt5682s.yaml
+ create mode 100644 sound/soc/mediatek/mt8186/Makefile
+ create mode 100644 sound/soc/mediatek/mt8186/mt8186-afe-common.h
+ create mode 100644 sound/soc/mediatek/mt8186/mt8186-afe-control.c
+ create mode 100644 sound/soc/mediatek/mt8186/mt8186-afe-pcm.c
+ create mode 100644 sound/soc/mediatek/mt8186/mt8186-mt6366-common.c
+ create mode 100644 sound/soc/mediatek/mt8186/mt8186-mt6366-common.h
+ create mode 100644 sound/soc/mediatek/mt8186/mt8186-mt6366-da7219-max98357.c
+ create mode 100644 sound/soc/mediatek/mt8186/mt8186-mt6366-rt1019-rt5682s.c
+
 -- 
-2.36.1
+2.18.0
 
