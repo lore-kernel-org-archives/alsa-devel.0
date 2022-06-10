@@ -4,78 +4,76 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 13D26C433EF
-	for <alsa-devel@archiver.kernel.org>; Fri, 10 Jun 2022 16:38:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 78AE5C43334
+	for <alsa-devel@archiver.kernel.org>; Fri, 10 Jun 2022 16:38:33 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id EB88A1AB8;
-	Fri, 10 Jun 2022 18:37:31 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EB88A1AB8
+	by alsa0.perex.cz (Postfix) with ESMTPS id B391C1AC5;
+	Fri, 10 Jun 2022 18:37:41 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B391C1AC5
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1654879102;
-	bh=qhb3ue3jkx0OzNd+SAkFQAItwZgBg+sANmqWbb2tG7A=;
+	s=default; t=1654879111;
+	bh=MhZTM4O1XuTX/ZJuo1iJ3jSaLSQYSG34sFN9TIyGN6U=;
 	h=Date:Subject:To:References:From:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=qOhzhLYkMB7F4A+5gtcf/mCm/EptRsJK3i/xjxXGjuLNEbyn2RNn7l+qIfk5ga01/
-	 rUtWAst2dxYcEoTewvSj2kYK2Kd7MkGqI2zoOhE3v3v3l+U6VO2k6T8JIh5r6PM/XF
-	 H6o8rwEIAsBzL7zncio+s3JS3A3UywoM3IOqlCUI=
+	b=AKWhVgU3yAqj6LL8C49PjvryzupCUGydGY72dmT/RkzXOkM2EGfkiRSA+9f92zRMn
+	 mJPS5E4bh34vLrmRua4jL1DTVgCUJ4+IaoqiSvi9Qa4MUMVjXx8xPjhe3ajZnBFruZ
+	 WZthWXNL53aRLOm6IJpODCR2a6z9kNPowGVQwLEA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 89DC3F800DF;
-	Fri, 10 Jun 2022 18:37:02 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 25AD9F804D2;
+	Fri, 10 Jun 2022 18:37:36 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id C5371F80529; Fri, 10 Jun 2022 18:37:00 +0200 (CEST)
-Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
+ id C3EC3F804DA; Fri, 10 Jun 2022 18:37:34 +0200 (CEST)
+Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 55A88F800C7
- for <alsa-devel@alsa-project.org>; Fri, 10 Jun 2022 18:36:54 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 55A88F800C7
+ by alsa1.perex.cz (Postfix) with ESMTPS id 776E6F80529
+ for <alsa-devel@alsa-project.org>; Fri, 10 Jun 2022 18:37:27 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 776E6F80529
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="BJvOG+JT"
+ header.b="RD2huzKx"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1654879015; x=1686415015;
+ t=1654879049; x=1686415049;
  h=message-id:date:mime-version:subject:to:cc:references:
  from:in-reply-to:content-transfer-encoding;
- bh=qhb3ue3jkx0OzNd+SAkFQAItwZgBg+sANmqWbb2tG7A=;
- b=BJvOG+JTgAJPFA5F0k21appnSB4zyybGyggNFznPOECbzIbIvw9aRX3E
- a3CCH0VCR7F9Mh4dlVAjTNIu/rlUeiedaImHQTBGbh4Ciy2Uih0RSLA4u
- DWPRj+SfWsoeUGmeMtMYSzzyJXFRKFWtmCOOFI4jOTdouI/iLDrJDuS3p
- WGsNxwy4OB8N20qtJyzHXFOOnWUJerVxPKpgRdtOSNk3RgyEb7tGV4Ua3
- ToZup4JeKnIR8rZ6TJEI+lPk1PPgUrtc0xLMpWD/1n4o8HzjDkEfxlsTy
- V6cbATP+f73LKvZ1kHwurFG1trRcLjqG0aEfUSJGEchldAO9JvW/+YxCW A==;
-X-IronPort-AV: E=McAfee;i="6400,9594,10374"; a="303054971"
-X-IronPort-AV: E=Sophos;i="5.91,290,1647327600"; d="scan'208";a="303054971"
+ bh=MhZTM4O1XuTX/ZJuo1iJ3jSaLSQYSG34sFN9TIyGN6U=;
+ b=RD2huzKxGm7aFiADgqGvGOOnPGGSYdLrgIZjcASqQCqz8aqUI8f1WjKx
+ 44w0i/jNZnlNieXacCED8DDi+clQ0j8Ore2RXfOk7KTnx0NPE+WOFqQcn
+ cvvQ3QcwhNcYFqdSn/K7lXHnk0PTaqgFifGc0Oh0ur42UuxlM3HRfize3
+ RxgcBbZPaoq3zy/iNeDJIequLN8+3PZiytjNcaoS6dUrHrJk4XcP8yHNd
+ haHwXpR8fVtwHqlwz+J5Kylkn52EUAvfEGIv/xeqwwNGtp8MskMhsdgZK
+ VQxBFOoPao9yN5m01hqxpLsX2u93iwDuU0yBeZk5iF/vB/rdFfisYyh2d w==;
+X-IronPort-AV: E=McAfee;i="6400,9594,10374"; a="278813335"
+X-IronPort-AV: E=Sophos;i="5.91,290,1647327600"; d="scan'208";a="278813335"
 Received: from fmsmga001.fm.intel.com ([10.253.24.23])
- by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 10 Jun 2022 09:36:47 -0700
-X-IronPort-AV: E=Sophos;i="5.91,290,1647327600"; d="scan'208";a="725032963"
+ by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 10 Jun 2022 09:37:23 -0700
+X-IronPort-AV: E=Sophos;i="5.91,290,1647327600"; d="scan'208";a="725033065"
 Received: from pljackso-mobl.amr.corp.intel.com (HELO [10.213.190.122])
  ([10.213.190.122])
  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 10 Jun 2022 09:36:46 -0700
-Message-ID: <b86e6cbd-3488-a239-d765-cf01bf0d4f70@linux.intel.com>
-Date: Fri, 10 Jun 2022 10:06:58 -0500
+ 10 Jun 2022 09:37:23 -0700
+Message-ID: <59f2fd76-ac1e-9fdf-401b-2c09e5be8cc8@linux.intel.com>
+Date: Fri, 10 Jun 2022 11:34:23 -0500
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
  Firefox/91.0 Thunderbird/91.9.1
-Subject: Re: [PATCH 1/2] soundwire: intel: uniquify debug message
+Subject: Re: [PATCH 09/17] ASoC: Intel: bdw_rt286: Reword prefixes of all
+ driver members
 Content-Language: en-US
-To: Greg KH <gregkh@linuxfoundation.org>,
- Bard Liao <yung-chuan.liao@linux.intel.com>
-References: <20220610023537.27223-1-yung-chuan.liao@linux.intel.com>
- <20220610023537.27223-2-yung-chuan.liao@linux.intel.com>
- <YqLVwqx9/Pos8T06@kroah.com>
+To: Cezary Rojewski <cezary.rojewski@intel.com>, alsa-devel@alsa-project.org, 
+ broonie@kernel.org
+References: <20220610123627.1339985-1-cezary.rojewski@intel.com>
+ <20220610123627.1339985-10-cezary.rojewski@intel.com>
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-In-Reply-To: <YqLVwqx9/Pos8T06@kroah.com>
+In-Reply-To: <20220610123627.1339985-10-cezary.rojewski@intel.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-Cc: alsa-devel@alsa-project.org, vinod.koul@linaro.org, tiwai@suse.de,
- linux-kernel@vger.kernel.org, vkoul@kernel.org, broonie@kernel.org,
- srinivas.kandagatla@linaro.org, sanyog.r.kale@intel.com, bard.liao@intel.com
+Cc: hdegoede@redhat.com, tiwai@suse.com, amadeuszx.slawinski@linux.intel.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -93,71 +91,274 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
 
-On 6/10/22 00:25, Greg KH wrote:
-> On Fri, Jun 10, 2022 at 10:35:36AM +0800, Bard Liao wrote:
->> From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
->>
->> The same debug message is replicated multiple time, add __func__ to
->> figure out what link is ignored.
->>
->> Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
->> Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
->> Reviewed-by: Péter Ujfalusi <peter.ujfalusi@linux.intel.com>
->> Signed-off-by: Bard Liao <yung-chuan.liao@linux.intel.com>
->> ---
->>  drivers/soundwire/intel.c | 28 ++++++++++++++--------------
->>  1 file changed, 14 insertions(+), 14 deletions(-)
->>
->> diff --git a/drivers/soundwire/intel.c b/drivers/soundwire/intel.c
->> index 505c5ef061e3..808e2f320052 100644
->> --- a/drivers/soundwire/intel.c
->> +++ b/drivers/soundwire/intel.c
->> @@ -1328,8 +1328,8 @@ int intel_link_startup(struct auxiliary_device *auxdev)
->>  
->>  	if (bus->prop.hw_disabled) {
->>  		dev_info(dev,
->> -			 "SoundWire master %d is disabled, ignoring\n",
->> -			 sdw->instance);
->> +			 "%s: SoundWire master %d is disabled, ignoring\n",
->> +			 __func__, sdw->instance);
+On 6/10/22 07:36, Cezary Rojewski wrote:
+> Replace ambiguous 'broadwell_rt286_' prefixes in favour of 'card_',
+> 'link_' and other similar strings to clearly state which object given
+> member implements behavior for.
 > 
-> This is not a debug message, please make it such if you want to have
-> __func__  And even then, it's not needed as you can get that from the
-> kernel automatically.
+> Signed-off-by: Cezary Rojewski <cezary.rojewski@intel.com>
+> Reviewed-by: Amadeusz Sławiński <amadeuszx.slawinski@linux.intel.com>
 
-Sorry, I don't understand the feedback at all.
+This doesn't apply or assumes something else was applied already?
 
-This message was added precisely to figure out why the expected
-programming sequence was not followed, only to discover that we have
-devices with spurious PCI wakes handled below. Without this added
-difference with __func__, we wouldn't know if the issue happened during
-the expected/regular programming sequence or not.
-
+> ---
+>  sound/soc/intel/boards/bdw_rt286.c | 96 +++++++++++++++---------------
+>  1 file changed, 48 insertions(+), 48 deletions(-)
 > 
->>  		return 0;
->>  	}
->>  
->> @@ -1489,8 +1489,8 @@ int intel_link_process_wakeen_event(struct auxiliary_device *auxdev)
->>  	bus = &sdw->cdns.bus;
->>  
->>  	if (bus->prop.hw_disabled || !sdw->startup_done) {
->> -		dev_dbg(dev, "SoundWire master %d is disabled or not-started, ignoring\n",
->> -			bus->link_id);
->> +		dev_dbg(dev, "%s: SoundWire master %d is disabled or not-started, ignoring\n",
->> +			__func__, bus->link_id);
->>  		return 0;
->>  	}
->>  
->> @@ -1549,8 +1549,8 @@ static int __maybe_unused intel_pm_prepare(struct device *dev)
->>  	int ret;
->>  
->>  	if (bus->prop.hw_disabled || !sdw->startup_done) {
->> -		dev_dbg(dev, "SoundWire master %d is disabled or not-started, ignoring\n",
->> -			bus->link_id);
->> +		dev_dbg(dev, "%s: SoundWire master %d is disabled or not-started, ignoring\n",
->> +			__func__, bus->link_id);
-> 
-> Not needed, it is provided automatically if you ask the kernel for this.
-> Same for all other instances in this patch.
-
-provided how? Your comment is a bit cryptic here.
+> diff --git a/sound/soc/intel/boards/bdw_rt286.c b/sound/soc/intel/boards/bdw_rt286.c
+> index b29d77dfb281..092bc9a45548 100644
+> --- a/sound/soc/intel/boards/bdw_rt286.c
+> +++ b/sound/soc/intel/boards/bdw_rt286.c
+> @@ -16,9 +16,9 @@
+>  
+>  #include "../../codecs/rt286.h"
+>  
+> -static struct snd_soc_jack broadwell_headset;
+> +static struct snd_soc_jack card_headset;
+>  /* Headset jack detection DAPM pins */
+> -static struct snd_soc_jack_pin broadwell_headset_pins[] = {
+> +static struct snd_soc_jack_pin card_headset_pins[] = {
+>  	{
+>  		.pin = "Mic Jack",
+>  		.mask = SND_JACK_MICROPHONE,
+> @@ -29,12 +29,12 @@ static struct snd_soc_jack_pin broadwell_headset_pins[] = {
+>  	},
+>  };
+>  
+> -static const struct snd_kcontrol_new broadwell_controls[] = {
+> +static const struct snd_kcontrol_new card_controls[] = {
+>  	SOC_DAPM_PIN_SWITCH("Speaker"),
+>  	SOC_DAPM_PIN_SWITCH("Headphone Jack"),
+>  };
+>  
+> -static const struct snd_soc_dapm_widget broadwell_widgets[] = {
+> +static const struct snd_soc_dapm_widget card_widgets[] = {
+>  	SND_SOC_DAPM_HP("Headphone Jack", NULL),
+>  	SND_SOC_DAPM_SPK("Speaker", NULL),
+>  	SND_SOC_DAPM_MIC("Mic Jack", NULL),
+> @@ -43,7 +43,7 @@ static const struct snd_soc_dapm_widget broadwell_widgets[] = {
+>  	SND_SOC_DAPM_LINE("Line Jack", NULL),
+>  };
+>  
+> -static const struct snd_soc_dapm_route broadwell_rt286_map[] = {
+> +static const struct snd_soc_dapm_route card_routes[] = {
+>  
+>  	/* speaker */
+>  	{"Speaker", NULL, "SPOR"},
+> @@ -65,22 +65,22 @@ static const struct snd_soc_dapm_route broadwell_rt286_map[] = {
+>  	{"AIF1 Playback", NULL, "SSP0 CODEC OUT"},
+>  };
+>  
+> -static int broadwell_rt286_codec_init(struct snd_soc_pcm_runtime *rtd)
+> +static int codec_link_init(struct snd_soc_pcm_runtime *rtd)
+>  {
+>  	struct snd_soc_component *component = asoc_rtd_to_codec(rtd, 0)->component;
+>  	int ret = 0;
+>  	ret = snd_soc_card_jack_new_pins(rtd->card, "Headset",
+> -		SND_JACK_HEADSET | SND_JACK_BTN_0, &broadwell_headset,
+> -		broadwell_headset_pins, ARRAY_SIZE(broadwell_headset_pins));
+> +		SND_JACK_HEADSET | SND_JACK_BTN_0, &card_headset,
+> +		card_headset_pins, ARRAY_SIZE(card_headset_pins));
+>  	if (ret)
+>  		return ret;
+>  
+> -	rt286_mic_detect(component, &broadwell_headset);
+> +	rt286_mic_detect(component, &card_headset);
+>  	return 0;
+>  }
+>  
+>  
+> -static int broadwell_ssp0_fixup(struct snd_soc_pcm_runtime *rtd,
+> +static int codec_link_hw_params_fixup(struct snd_soc_pcm_runtime *rtd,
+>  			struct snd_pcm_hw_params *params)
+>  {
+>  	struct snd_interval *rate = hw_param_interval(params,
+> @@ -97,7 +97,7 @@ static int broadwell_ssp0_fixup(struct snd_soc_pcm_runtime *rtd,
+>  	return 0;
+>  }
+>  
+> -static int broadwell_rt286_hw_params(struct snd_pcm_substream *substream,
+> +static int codec_link_hw_params(struct snd_pcm_substream *substream,
+>  	struct snd_pcm_hw_params *params)
+>  {
+>  	struct snd_soc_pcm_runtime *rtd = asoc_substream_to_rtd(substream);
+> @@ -115,8 +115,8 @@ static int broadwell_rt286_hw_params(struct snd_pcm_substream *substream,
+>  	return ret;
+>  }
+>  
+> -static const struct snd_soc_ops broadwell_rt286_ops = {
+> -	.hw_params = broadwell_rt286_hw_params,
+> +static const struct snd_soc_ops codec_link_ops = {
+> +	.hw_params = codec_link_hw_params,
+>  };
+>  
+>  static const unsigned int channels[] = {
+> @@ -129,7 +129,7 @@ static const struct snd_pcm_hw_constraint_list constraints_channels = {
+>  	.mask = 0,
+>  };
+>  
+> -static int broadwell_fe_startup(struct snd_pcm_substream *substream)
+> +static int bdw_rt286_fe_startup(struct snd_pcm_substream *substream)
+>  {
+>  	struct snd_pcm_runtime *runtime = substream->runtime;
+>  
+> @@ -140,8 +140,8 @@ static int broadwell_fe_startup(struct snd_pcm_substream *substream)
+>  					  &constraints_channels);
+>  }
+>  
+> -static const struct snd_soc_ops broadwell_fe_ops = {
+> -	.startup = broadwell_fe_startup,
+> +static const struct snd_soc_ops bdw_rt286_fe_ops = {
+> +	.startup = bdw_rt286_fe_startup,
+>  };
+>  
+>  SND_SOC_DAILINK_DEF(system,
+> @@ -169,7 +169,7 @@ SND_SOC_DAILINK_DEF(ssp0_port,
+>  	    DAILINK_COMP_ARRAY(COMP_CPU("ssp0-port")));
+>  
+>  /* broadwell digital audio interface glue - connects codec <--> CPU */
+> -static struct snd_soc_dai_link broadwell_rt286_dais[] = {
+> +static struct snd_soc_dai_link card_dai_links[] = {
+>  	/* Front End DAI links */
+>  	{
+>  		.name = "System PCM",
+> @@ -177,7 +177,7 @@ static struct snd_soc_dai_link broadwell_rt286_dais[] = {
+>  		.nonatomic = 1,
+>  		.dynamic = 1,
+>  		.trigger = {SND_SOC_DPCM_TRIGGER_POST, SND_SOC_DPCM_TRIGGER_POST},
+> -		.ops = &broadwell_fe_ops,
+> +		.ops = &bdw_rt286_fe_ops,
+>  		.dpcm_playback = 1,
+>  		.dpcm_capture = 1,
+>  		SND_SOC_DAILINK_REG(system, dummy, platform),
+> @@ -215,12 +215,12 @@ static struct snd_soc_dai_link broadwell_rt286_dais[] = {
+>  		.name = "Codec",
+>  		.id = 0,
+>  		.no_pcm = 1,
+> -		.init = broadwell_rt286_codec_init,
+> +		.init = codec_link_init,
+>  		.dai_fmt = SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF |
+>  			SND_SOC_DAIFMT_CBC_CFC,
+>  		.ignore_pmdown_time = 1,
+> -		.be_hw_params_fixup = broadwell_ssp0_fixup,
+> -		.ops = &broadwell_rt286_ops,
+> +		.be_hw_params_fixup = codec_link_hw_params_fixup,
+> +		.ops = &codec_link_ops,
+>  		.dpcm_playback = 1,
+>  		.dpcm_capture = 1,
+>  		SND_SOC_DAILINK_REG(ssp0_port, codec, platform),
+> @@ -241,21 +241,21 @@ static void broadwell_disable_jack(struct snd_soc_card *card)
+>  	}
+>  }
+>  
+> -static int broadwell_suspend(struct snd_soc_card *card)
+> +static int card_suspend_pre(struct snd_soc_card *card)
+>  {
+>  	broadwell_disable_jack(card);
+>  
+>  	return 0;
+>  }
+>  
+> -static int broadwell_resume(struct snd_soc_card *card){
+> +static int card_resume_post(struct snd_soc_card *card){
+>  	struct snd_soc_component *component;
+>  
+>  	for_each_card_components(card, component) {
+>  		if (!strcmp(component->name, "i2c-INT343A:00")) {
+>  
+>  			dev_dbg(component->dev, "enabling jack detect for resume.\n");
+> -			rt286_mic_detect(component, &broadwell_headset);
+> +			rt286_mic_detect(component, &card_headset);
+>  			break;
+>  		}
+>  	}
+> @@ -270,48 +270,48 @@ static int broadwell_resume(struct snd_soc_card *card){
+>  #define DRIVER_NAME NULL /* card name will be used for driver name */
+>  
+>  /* broadwell audio machine driver for WPT + RT286S */
+> -static struct snd_soc_card broadwell_rt286 = {
+> +static struct snd_soc_card bdw_rt286_card = {
+>  	.owner = THIS_MODULE,
+> -	.dai_link = broadwell_rt286_dais,
+> -	.num_links = ARRAY_SIZE(broadwell_rt286_dais),
+> -	.controls = broadwell_controls,
+> -	.num_controls = ARRAY_SIZE(broadwell_controls),
+> -	.dapm_widgets = broadwell_widgets,
+> -	.num_dapm_widgets = ARRAY_SIZE(broadwell_widgets),
+> -	.dapm_routes = broadwell_rt286_map,
+> -	.num_dapm_routes = ARRAY_SIZE(broadwell_rt286_map),
+> +	.dai_link = card_dai_links,
+> +	.num_links = ARRAY_SIZE(card_dai_links),
+> +	.controls = card_controls,
+> +	.num_controls = ARRAY_SIZE(card_controls),
+> +	.dapm_widgets = card_widgets,
+> +	.num_dapm_widgets = ARRAY_SIZE(card_widgets),
+> +	.dapm_routes = card_routes,
+> +	.num_dapm_routes = ARRAY_SIZE(card_routes),
+>  	.fully_routed = true,
+> -	.suspend_pre = broadwell_suspend,
+> -	.resume_post = broadwell_resume,
+> +	.suspend_pre = card_suspend_pre,
+> +	.resume_post = card_resume_post,
+>  };
+>  
+> -static int broadwell_audio_probe(struct platform_device *pdev)
+> +static int bdw_rt286_probe(struct platform_device *pdev)
+>  {
+>  	struct snd_soc_acpi_mach *mach;
+>  	int ret;
+>  
+> -	broadwell_rt286.dev = &pdev->dev;
+> +	bdw_rt286_card.dev = &pdev->dev;
+>  
+>  	/* override platform name, if required */
+>  	mach = pdev->dev.platform_data;
+> -	ret = snd_soc_fixup_dai_links_platform_name(&broadwell_rt286,
+> +	ret = snd_soc_fixup_dai_links_platform_name(&bdw_rt286_card,
+>  						    mach->mach_params.platform);
+>  	if (ret)
+>  		return ret;
+>  
+>  	/* set card and driver name */
+>  	if (snd_soc_acpi_sof_parent(&pdev->dev)) {
+> -		broadwell_rt286.name = SOF_CARD_NAME;
+> -		broadwell_rt286.driver_name = SOF_DRIVER_NAME;
+> +		bdw_rt286_card.name = SOF_CARD_NAME;
+> +		bdw_rt286_card.driver_name = SOF_DRIVER_NAME;
+>  	} else {
+> -		broadwell_rt286.name = CARD_NAME;
+> -		broadwell_rt286.driver_name = DRIVER_NAME;
+> +		bdw_rt286_card.name = CARD_NAME;
+> +		bdw_rt286_card.driver_name = DRIVER_NAME;
+>  	}
+>  
+> -	return devm_snd_soc_register_card(&pdev->dev, &broadwell_rt286);
+> +	return devm_snd_soc_register_card(&pdev->dev, &bdw_rt286_card);
+>  }
+>  
+> -static int broadwell_audio_remove(struct platform_device *pdev)
+> +static int bdw_rt286_remove(struct platform_device *pdev)
+>  {
+>  	struct snd_soc_card *card = platform_get_drvdata(pdev);
+>  
+> @@ -320,16 +320,16 @@ static int broadwell_audio_remove(struct platform_device *pdev)
+>  	return 0;
+>  }
+>  
+> -static struct platform_driver broadwell_audio = {
+> -	.probe = broadwell_audio_probe,
+> -	.remove = broadwell_audio_remove,
+> +static struct platform_driver bdw_rt286_driver = {
+> +	.probe = bdw_rt286_probe,
+> +	.remove = bdw_rt286_remove,
+>  	.driver = {
+>  		.name = "broadwell-audio",
+>  		.pm = &snd_soc_pm_ops
+>  	},
+>  };
+>  
+> -module_platform_driver(broadwell_audio)
+> +module_platform_driver(bdw_rt286_driver)
+>  
+>  /* Module information */
+>  MODULE_AUTHOR("Liam Girdwood, Xingchao Wang");
