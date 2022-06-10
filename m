@@ -4,66 +4,89 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 637FBC433EF
-	for <alsa-devel@archiver.kernel.org>; Fri, 10 Jun 2022 05:27:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id CDFD8C43334
+	for <alsa-devel@archiver.kernel.org>; Fri, 10 Jun 2022 06:02:00 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 93DCC215C;
-	Fri, 10 Jun 2022 07:26:19 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 93DCC215C
+	by alsa0.perex.cz (Postfix) with ESMTPS id 595E62083;
+	Fri, 10 Jun 2022 08:01:08 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 595E62083
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1654838829;
-	bh=gwCK9uMfRUGm8E6XoELsFSqRflgNay8yFNDnSDJjIw8=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	s=default; t=1654840918;
+	bh=u6cMsm4SJbva1EavVE1shJi5pWmEzm7xUgoyCsORLCg=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=a5ZDs0zch+Rh95OBaMrGMP0YjM+0mhZt06SDa11KuTKduOhqq/YpSlNTCuWyhcAcc
-	 EgDBIZVH4ErY5/G4jyeSFjg4GRNeikF7LuDsqD8FVduMsa5Cv8Im9cDbUmzfqfmQYJ
-	 A7N/9zD1c4SDnIsz2oB0+AscYNYw0w5kUDEM0Wuc=
+	b=HgsCy5By0Gmz5H3F6VfW2HdmPUv90kgmNJ3aB4Lf7OdkgPPU95sOxQoImLkwdK/eU
+	 +2WLPukA8UalmLBux27rK0dbvVhNYwe7+/NI9IhNPfR+QW6n4bylee0Q6+08bq7b1f
+	 XlP4/jLIXKW6abNxDvZAI8ZX+yI4qxRkzhZeZ1gg=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 23846F800E5;
-	Fri, 10 Jun 2022 07:26:19 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 00C5CF804CF;
+	Fri, 10 Jun 2022 08:01:07 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 8CBCEF804E7; Fri, 10 Jun 2022 07:26:17 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id 9B067F804D2; Fri, 10 Jun 2022 08:01:06 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 40DB8F800E5
- for <alsa-devel@alsa-project.org>; Fri, 10 Jun 2022 07:26:10 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 40DB8F800E5
+ by alsa1.perex.cz (Postfix) with ESMTPS id 0F764F800C7
+ for <alsa-devel@alsa-project.org>; Fri, 10 Jun 2022 08:01:03 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0F764F800C7
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=linuxfoundation.org
- header.i=@linuxfoundation.org header.b="GxdUSQ2Y"
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
+ header.b="nDk29oxZ"; 
+ dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
+ header.b="YkneiiF3"
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id 4927C61E33;
- Fri, 10 Jun 2022 05:26:09 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2EE92C34114;
- Fri, 10 Jun 2022 05:26:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
- s=korg; t=1654838768;
- bh=gwCK9uMfRUGm8E6XoELsFSqRflgNay8yFNDnSDJjIw8=;
- h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=GxdUSQ2YDkvS3Pl8dMqe65wnQRwTnSFBKsCTFUh8i9zW47JnZ11Tk/6J+WRSGBO38
- soK+Wv94GzKlQGFUh4wJITycUkm7Z3Y3+PIGLMf7CB6jNTWPZyoCLuUp6r1JCVNaKt
- X+drEUBA4JfjILQuvuKd7ictTayLxW0Qo5/IfZGE=
-Date: Fri, 10 Jun 2022 07:26:06 +0200
-From: Greg KH <gregkh@linuxfoundation.org>
-To: Bard Liao <yung-chuan.liao@linux.intel.com>
-Subject: Re: [PATCH 2/2] soundwire: Intel: add trigger callback
-Message-ID: <YqLV7qexsdhCI7ZZ@kroah.com>
-References: <20220610023537.27223-1-yung-chuan.liao@linux.intel.com>
- <20220610023537.27223-3-yung-chuan.liao@linux.intel.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220610023537.27223-3-yung-chuan.liao@linux.intel.com>
-Cc: alsa-devel@alsa-project.org, vinod.koul@linaro.org, tiwai@suse.de,
- linux-kernel@vger.kernel.org, pierre-louis.bossart@linux.intel.com,
- vkoul@kernel.org, broonie@kernel.org, srinivas.kandagatla@linaro.org,
- sanyog.r.kale@intel.com, bard.liao@intel.com
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 74BE91FDAA;
+ Fri, 10 Jun 2022 06:01:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1654840863; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=AobPOQlu+zPpu0gzPwOafVjYurxrcXyhXdq0bbKTvi0=;
+ b=nDk29oxZWSwgFAum1xA9UZ/4qFk8pczw8uBSzqd0xuBUx0W+Ws66hVI5+fNUsw7AujGswJ
+ L2/UphCLMx0meOu6VAMtwI9XDGEsYhSR/yB5huZW1lTBLWs+yBDgpWaBIsMM9HlOH7+7Mw
+ NdY5Gr/JjnAUTuy9/0VfOmPlMXTZ8zs=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1654840863;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=AobPOQlu+zPpu0gzPwOafVjYurxrcXyhXdq0bbKTvi0=;
+ b=YkneiiF3hizARxtNrQ21hwoFK5GdxVaUuKztdX64Rj2MWgfUhKkaXo74XDCTewRoEuWgyM
+ E7K/aolPLUrCg0Bg==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 44B6013941;
+ Fri, 10 Jun 2022 06:01:03 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+ by imap2.suse-dmz.suse.de with ESMTPSA id t8T7Dx/eomKZFgAAMHmgww
+ (envelope-from <tiwai@suse.de>); Fri, 10 Jun 2022 06:01:03 +0000
+Date: Fri, 10 Jun 2022 08:01:03 +0200
+Message-ID: <874k0tnjkw.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Raghu Ballappa Bankapur <quic_rbankapu@quicinc.com>
+Subject: Re: [PATCH V0 1/1] asoc: msm: use hashtable to check kcontrol
+In-Reply-To: <f3a25238-fcc6-2381-e329-0bd80a3632a5@quicinc.com>
+References: <cover.1653813866.git.quic_rbankapu@quicinc.com>
+ <ad55bbd41cc253acb9af6ac068c15dd1545ecd81.1653813866.git.quic_rbankapu@quicinc.com>
+ <8735gsznnt.wl-tiwai@suse.de>
+ <f3a25238-fcc6-2381-e329-0bd80a3632a5@quicinc.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 8bit
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+ Liam Girdwood <lgirdwood@gmail.com>, Takashi Iwai <tiwai@suse.com>,
+ Mark Brown <broonie@kernel.org>, Krishna Jha <quic_kkishorj@quicinc.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -79,61 +102,21 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Fri, Jun 10, 2022 at 10:35:37AM +0800, Bard Liao wrote:
-> When a pipeline is split into FE and BE parts, the BE pipeline may need to
-> be triggered separately in the BE trigger op. So add the trigger callback
-> in the link_res ops that will be invoked during BE DAI trigger.
+On Thu, 09 Jun 2022 20:16:52 +0200,
+Raghu Ballappa Bankapur wrote:
 > 
-> Signed-off-by: Bard Liao <yung-chuan.liao@linux.intel.com>
-> Reviewed-by: Rander Wang <rander.wang@intel.com>
-> Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-> Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-> ---
->  drivers/soundwire/intel.c           | 8 ++++++++
->  include/linux/soundwire/sdw_intel.h | 1 +
->  2 files changed, 9 insertions(+)
 > 
-> diff --git a/drivers/soundwire/intel.c b/drivers/soundwire/intel.c
-> index 808e2f320052..3f3c2c99cb8e 100644
-> --- a/drivers/soundwire/intel.c
-> +++ b/drivers/soundwire/intel.c
-> @@ -1004,9 +1004,17 @@ static int intel_trigger(struct snd_pcm_substream *substream, int cmd, struct sn
->  {
->  	struct sdw_cdns *cdns = snd_soc_dai_get_drvdata(dai);
->  	struct sdw_intel *sdw = cdns_to_intel(cdns);
-> +	struct sdw_intel_link_res *res = sdw->link_res;
->  	struct sdw_cdns_dma_data *dma;
->  	int ret = 0;
->  
-> +	/* The .trigger callback is used to send required IPC to audio
-> +	 * firmware. The .free_stream callback will still be called
-> +	 * by intel_free_stream() in the TRIGGER_SUSPEND case.
-> +	 */
-> +	if (res->ops && res->ops->trigger)
-> +		res->ops->trigger(dai, cmd, substream->stream);
-> +
->  	dma = snd_soc_dai_get_dma_data(dai, substream);
->  	if (!dma) {
->  		dev_err(dai->dev, "failed to get dma data in %s\n",
-> diff --git a/include/linux/soundwire/sdw_intel.h b/include/linux/soundwire/sdw_intel.h
-> index 67e0d3e750b5..f638707fd712 100644
-> --- a/include/linux/soundwire/sdw_intel.h
-> +++ b/include/linux/soundwire/sdw_intel.h
-> @@ -119,6 +119,7 @@ struct sdw_intel_ops {
->  			     struct sdw_intel_stream_params_data *params_data);
->  	int (*free_stream)(struct device *dev,
->  			   struct sdw_intel_stream_free_data *free_data);
-> +	int (*trigger)(struct snd_soc_dai *dai, int cmd, int stream);
->  };
->  
->  /**
-> -- 
-> 2.17.1
+> Hi Takashi
 > 
+> Our implementation also falls inline with your approach  [PATCH RFC] ALSA:
+> control: Use xarray for faster lookups (kernel.org), but you approach looks to
+> be clean with xarray.
+> 
+> is it possible to upstream those changes?
 
-Where is the in-kernel user of this new callback?  Without that, there
-is no need for this, NOR is there a way to properly review this commit.
+I submitted a v2 patch, please check it out.
 
-sorry,
 
-greg k-h
+thanks,
+
+Takashi
