@@ -4,82 +4,86 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 769BEC433EF
-	for <alsa-devel@archiver.kernel.org>; Sat, 11 Jun 2022 04:24:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id EFDDDC433EF
+	for <alsa-devel@archiver.kernel.org>; Sat, 11 Jun 2022 06:16:55 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 7E8AB1AFC;
-	Sat, 11 Jun 2022 06:24:01 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7E8AB1AFC
+	by alsa0.perex.cz (Postfix) with ESMTPS id 6791818E3;
+	Sat, 11 Jun 2022 08:16:03 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6791818E3
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1654921491;
-	bh=IBiuP6w7DSxwhPAB45JWodM+1T6RMbf47f6G5qLDzVs=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1654928213;
+	bh=SQgcLmlMIsTNQEyPzC+TDbwB04w9UbPFBZGm5xhoZlg=;
+	h=In-Reply-To:References:From:Date:Subject:To:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=IUckKP0Z+jzwpNi7bSa19ysnDeE+3Xzt+2ypqYOzHAI6VbfSCn0nmqfDoNntYR0sI
-	 1amUprKXG6tfR1K3TDjgeSLO6CwmgO7JzvoauujBeGeIcmABZ6IQvQBHFkE+nspyiO
-	 G7dXWI4WMfb1KK+nCM668YHoOt9Fl9ObtViw5mV8=
+	b=C68TjB8opdA7bXPc2AYKEHyi54PQlA40kiaHBmqhotE9IieQRCwbpxc8FsTiRSyd3
+	 M/ajAP7uN40J9DV/Mj+DjNXi2/J4YLfM0XW8twfvFS0N5B+SwlbxpkL9rPfiyM6kgT
+	 tS02WGuha+2XjRtqDzDircqLayyS+FGcBneeQHw4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 5AC1FF8052E;
-	Sat, 11 Jun 2022 06:23:21 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id E5F95F80238;
+	Sat, 11 Jun 2022 08:16:02 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id A9ED5F8052F; Sat, 11 Jun 2022 06:23:19 +0200 (CEST)
-Received: from alexa-out.qualcomm.com (alexa-out.qualcomm.com [129.46.98.28])
- (using TLSv1.2 with cipher AES256-SHA (256/256 bits))
+ id 931ECF8025A; Sat, 11 Jun 2022 08:16:00 +0200 (CEST)
+Received: from mail-oa1-x2d.google.com (mail-oa1-x2d.google.com
+ [IPv6:2001:4860:4864:20::2d])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id CEBADF800EC
- for <alsa-devel@alsa-project.org>; Sat, 11 Jun 2022 06:23:14 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CEBADF800EC
+ by alsa1.perex.cz (Postfix) with ESMTPS id 2E334F800EC
+ for <alsa-devel@alsa-project.org>; Sat, 11 Jun 2022 08:15:53 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2E334F800EC
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=quicinc.com header.i=@quicinc.com
- header.b="BP4XxUeW"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=quicinc.com; i=@quicinc.com; q=dns/txt; s=qcdkim;
- t=1654921398; x=1686457398;
- h=from:to:cc:subject:date:message-id:in-reply-to:
- references:mime-version;
- bh=c8bqdAnqmktg0aOzLWCVGCCGf+orHFeBka/gFzLMk08=;
- b=BP4XxUeWyAKP2pEV+VBC81W4YEWrnuIKIHxdiTC8ADOVNhjStUF6orHP
- 6C+MKCTdHAZj7qGKsGML41gmzGIEFXHbhGT1fWaUq4lP232Yr3btbKWxK
- fYurl89on8Qe0AEzB7/gm1viimuuyaconhnLY6+cN20GMGriL+VNW5Lrv o=;
-Received: from ironmsg08-lv.qualcomm.com ([10.47.202.152])
- by alexa-out.qualcomm.com with ESMTP; 10 Jun 2022 21:23:13 -0700
-X-QCInternal: smtphost
-Received: from nasanex01c.na.qualcomm.com ([10.47.97.222])
- by ironmsg08-lv.qualcomm.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 10 Jun 2022 21:23:11 -0700
-Received: from nalasex01a.na.qualcomm.com (10.47.209.196) by
- nasanex01c.na.qualcomm.com (10.47.97.222) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.986.22; Fri, 10 Jun 2022 21:23:11 -0700
-Received: from hu-srivasam-hyd.qualcomm.com (10.80.80.8) by
- nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.986.22; Fri, 10 Jun 2022 21:23:05 -0700
-From: Srinivasa Rao Mandadapu <quic_srivasam@quicinc.com>
-To: <agross@kernel.org>, <bjorn.andersson@linaro.org>, <lgirdwood@gmail.com>, 
- <broonie@kernel.org>, <robh+dt@kernel.org>, <quic_plai@quicinc.com>,
- <bgoswami@quicinc.com>, <perex@perex.cz>, <tiwai@suse.com>,
- <srinivas.kandagatla@linaro.org>, <quic_rohkumar@quicinc.com>,
- <linux-arm-msm@vger.kernel.org>, <alsa-devel@alsa-project.org>,
- <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
- <swboyd@chromium.org>, <judyhsiao@chromium.org>, Linus Walleij
- <linus.walleij@linaro.org>, <linux-gpio@vger.kernel.org>
-Subject: [PATCH v4 2/2] pinctrl: qcom: sc7280: Add clock optional check for
- ADSP bypass targets
-Date: Sat, 11 Jun 2022 09:52:37 +0530
-Message-ID: <1654921357-16400-3-git-send-email-quic_srivasam@quicinc.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1654921357-16400-1-git-send-email-quic_srivasam@quicinc.com>
-References: <1654921357-16400-1-git-send-email-quic_srivasam@quicinc.com>
+ dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org
+ header.b="AnUXfulX"
+Received: by mail-oa1-x2d.google.com with SMTP id
+ 586e51a60fabf-fe4ac3b87fso1874896fac.3
+ for <alsa-devel@alsa-project.org>; Fri, 10 Jun 2022 23:15:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=chromium.org; s=google;
+ h=mime-version:in-reply-to:references:from:user-agent:date:message-id
+ :subject:to; bh=VTKjR9J4dzoae+YBRke5SnGRPApYN87UxusBPdbF2KE=;
+ b=AnUXfulXmU8MEv3PEde7hHyZIHBZMs7O2D5TI9BR3ZytKSqULoVY2tB2B/G/cSaRuh
+ d25qEB69gWtDjyWLoPWKupuqsX9GEuT26cLSqiZS+nATU15Yy6mfK3bzUK5DkFoDlKTV
+ GWWsHUpvRkIK6WxmiZiTF07JFDFKQxcmxOqlk=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=x-gm-message-state:mime-version:in-reply-to:references:from
+ :user-agent:date:message-id:subject:to;
+ bh=VTKjR9J4dzoae+YBRke5SnGRPApYN87UxusBPdbF2KE=;
+ b=Igz0eZM+/PYsS8FHW2cQsG1pTlW+7gNvpcBkrOjD6NnObLO7B7U+SB4Uwk5YMSmVv7
+ Oql6LBn+vTwdazYA4Jhzizo/vWP4RHhnkkkX3Q5w2tg/yy0Z6vqm2uavm2Lhp+uvdk8s
+ 1iqCwJE5PhE6AiDDIB97tlA/knN1vkIf/xSc+q6o1ezaYYUgI8r6GeJ8IeaKS3RMmQxc
+ vyg57V3d7vB2BfapMNgDSyF++ulfX4yiRg4urRdAMhyNtGUbdtNSESfeszyMe30SOhHo
+ PSiTdEU/0fPLNm8dt99yPTa5Up8HVu1KBJkqSBxyK8PCT3XqCIbGcx1ZFm7ypi9iYeet
+ X2mQ==
+X-Gm-Message-State: AOAM531Tr2lubhRvIUDdjVFwmpaVIbXz135o4Ky3BDf/Bf2yUxoCRTr9
+ EGud0M6g2L+ZA2tLYxlupdXEVkbDK43rd/yrCLzwxw==
+X-Google-Smtp-Source: ABdhPJzbNfqQrErnPRd5zH8RtCVRU6bbLe/df5ml8E2KvzxEVk7l2sxNN9+pKPB5imCFCS9iZUpgVfe3ss32nRzIhGo=
+X-Received: by 2002:a05:6870:b381:b0:fe:2004:b3b5 with SMTP id
+ w1-20020a056870b38100b000fe2004b3b5mr1882765oap.63.1654928151857; Fri, 10 Jun
+ 2022 23:15:51 -0700 (PDT)
+Received: from 753933720722 named unknown by gmailapi.google.com with
+ HTTPREST; Fri, 10 Jun 2022 23:15:51 -0700
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-Cc: Srinivasa Rao Mandadapu <quic_srivasam@quicinc.com>
+In-Reply-To: <1654921357-16400-2-git-send-email-quic_srivasam@quicinc.com>
+References: <1654921357-16400-1-git-send-email-quic_srivasam@quicinc.com>
+ <1654921357-16400-2-git-send-email-quic_srivasam@quicinc.com>
+From: Stephen Boyd <swboyd@chromium.org>
+User-Agent: alot/0.10
+Date: Fri, 10 Jun 2022 23:15:51 -0700
+Message-ID: <CAE-0n50k1TeE_JaZ7jT7n3QzHsF9f+pE57mRC9PeBgsNPtOtbw@mail.gmail.com>
+Subject: Re: [PATCH v4 1/2] dt-bindings: pinctrl: qcom: sc7280: Add boolean
+ param for ADSP bypass platforms
+To: Linus Walleij <linus.walleij@linaro.org>, 
+ Srinivasa Rao Mandadapu <quic_srivasam@quicinc.com>, agross@kernel.org,
+ alsa-devel@alsa-project.org, 
+ bgoswami@quicinc.com, bjorn.andersson@linaro.org, broonie@kernel.org, 
+ devicetree@vger.kernel.org, judyhsiao@chromium.org, lgirdwood@gmail.com, 
+ linux-arm-msm@vger.kernel.org, linux-gpio@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, perex@perex.cz, quic_plai@quicinc.com, 
+ quic_rohkumar@quicinc.com, robh+dt@kernel.org, srinivas.kandagatla@linaro.org, 
+ tiwai@suse.com
+Content-Type: text/plain; charset="UTF-8"
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -95,49 +99,26 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Update lpass lpi pin control driver, with clock optional check for ADSP
-disabled platforms. This check required for distingushing ADSP based
-platforms and ADSP bypass platforms.
-In case of ADSP enabled platforms, where audio is routed through ADSP
-macro and decodec GDSC Switches are triggered as clocks by pinctrl
-driver and ADSP firmware controls them. So It's mandatory to enable
-them in ADSP based solutions.
-In case of ADSP bypass platforms clock voting is optional as these macro
-and dcodec GDSC switches are maintained as power domains and operated from
-lpass clock drivers.
+Quoting Srinivasa Rao Mandadapu (2022-06-10 21:22:36)
+> Add boolean param qcom,adsp-bypass-mode to support adsp bypassed sc7280
+> platforms. Which is required to make clock voting as optional for ADSP
+> bypass platforms.
+>
+> Signed-off-by: Srinivasa Rao Mandadapu <quic_srivasam@quicinc.com>
+> ---
 
-Signed-off-by: Srinivasa Rao Mandadapu <quic_srivasam@quicinc.com>
 Reviewed-by: Stephen Boyd <swboyd@chromium.org>
----
- drivers/pinctrl/qcom/pinctrl-lpass-lpi.c        | 2 ++
- drivers/pinctrl/qcom/pinctrl-sc7280-lpass-lpi.c | 1 -
- 2 files changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/pinctrl/qcom/pinctrl-lpass-lpi.c b/drivers/pinctrl/qcom/pinctrl-lpass-lpi.c
-index 74810ec..b3d4244 100644
---- a/drivers/pinctrl/qcom/pinctrl-lpass-lpi.c
-+++ b/drivers/pinctrl/qcom/pinctrl-lpass-lpi.c
-@@ -388,6 +388,8 @@ int lpi_pinctrl_probe(struct platform_device *pdev)
- 	pctrl->data = data;
- 	pctrl->dev = &pdev->dev;
- 
-+	data->is_clk_optional = of_property_read_bool(np, "qcom,adsp-bypass-mode");
-+
- 	pctrl->clks[0].id = "core";
- 	pctrl->clks[1].id = "audio";
- 
-diff --git a/drivers/pinctrl/qcom/pinctrl-sc7280-lpass-lpi.c b/drivers/pinctrl/qcom/pinctrl-sc7280-lpass-lpi.c
-index 2add9a4..d615b6c5 100644
---- a/drivers/pinctrl/qcom/pinctrl-sc7280-lpass-lpi.c
-+++ b/drivers/pinctrl/qcom/pinctrl-sc7280-lpass-lpi.c
-@@ -141,7 +141,6 @@ static const struct lpi_pinctrl_variant_data sc7280_lpi_data = {
- 	.ngroups = ARRAY_SIZE(sc7280_groups),
- 	.functions = sc7280_functions,
- 	.nfunctions = ARRAY_SIZE(sc7280_functions),
--	.is_clk_optional = true,
- };
- 
- static const struct of_device_id lpi_pinctrl_of_match[] = {
--- 
-2.7.4
+> diff --git a/Documentation/devicetree/bindings/pinctrl/qcom,sc7280-lpass-lpi-pinctrl.yaml b/Documentation/devicetree/bindings/pinctrl/qcom,sc7280-lpass-lpi-pinctrl.yaml
+> index d32ee32..33d1d37 100644
+> --- a/Documentation/devicetree/bindings/pinctrl/qcom,sc7280-lpass-lpi-pinctrl.yaml
+> +++ b/Documentation/devicetree/bindings/pinctrl/qcom,sc7280-lpass-lpi-pinctrl.yaml
+> @@ -19,6 +19,11 @@ properties:
+>    compatible:
+>      const: qcom,sc7280-lpass-lpi-pinctrl
+>
+> +  qcom,adsp-bypass-mode:
+> +    description:
+> +      Tells ADSP is in bypass mode.
 
+Doubt "Tells" is required, but OK.
