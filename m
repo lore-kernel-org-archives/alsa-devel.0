@@ -4,52 +4,52 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7502EC43334
-	for <alsa-devel@archiver.kernel.org>; Tue, 14 Jun 2022 05:56:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id AF405C433EF
+	for <alsa-devel@archiver.kernel.org>; Tue, 14 Jun 2022 05:57:05 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C55061866;
-	Tue, 14 Jun 2022 07:55:59 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C55061866
+	by alsa0.perex.cz (Postfix) with ESMTPS id F08A21852;
+	Tue, 14 Jun 2022 07:56:13 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F08A21852
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1655186209;
-	bh=q6W+J3+zxqX0r1UKpkgSNvEZtsCtnVS6h9KvjGtCFsU=;
+	s=default; t=1655186224;
+	bh=moRm3LZaWjAvMr/JY0Hg4zQYgfZJVr5LKGrFgTW+uyo=;
 	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
 	 List-Post:List-Help:List-Subscribe:From;
-	b=SejZw+QGtIIyCclYI0Z2HonAhLeA9fbSa+C7ysxB1Daj1jW9G+Lfs/BK6yEBBhXZ8
-	 xrtmsi0JKK2G0Qg0tFUUNOq2XWZD7faiu6JoeR++sYMU21enxlw4ta26Tq2aNNDD3m
-	 5P2IJgbg9gVpXAJojP9ott0HMzxhnFEBHf4G0PzA=
+	b=iSpG0dmsmVJWvaPjGjixnC8l+bXcoMjeXYv82kMNVWJdNp4X2A3/IHfeO1POtn9j5
+	 Tqi+p/WWffvTvdVpqe3WCqFsN+q76+jt8JkGWuAanEndb8KrCDy7fjrqVhSb9K+70y
+	 uu8hk7lwY+EeXnajezkHfvjC3CE9FHvX3ScrC1R4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id B6F16F8053C;
-	Tue, 14 Jun 2022 07:54:16 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id A30EBF80543;
+	Tue, 14 Jun 2022 07:54:17 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 53CA4F80107; Mon, 13 Jun 2022 09:00:07 +0200 (CEST)
+ id 0EF3AF804C1; Mon, 13 Jun 2022 10:13:24 +0200 (CEST)
 Received: from mail.nfschina.com (unknown
  [IPv6:2400:dd01:100f:2:72e2:84ff:fe10:5f45])
- by alsa1.perex.cz (Postfix) with ESMTP id AC66DF80107
- for <alsa-devel@alsa-project.org>; Mon, 13 Jun 2022 08:59:58 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AC66DF80107
+ by alsa1.perex.cz (Postfix) with ESMTP id 9D596F80139
+ for <alsa-devel@alsa-project.org>; Mon, 13 Jun 2022 10:13:16 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9D596F80139
 Received: from localhost (unknown [127.0.0.1])
- by mail.nfschina.com (Postfix) with ESMTP id 0B9761E80D53;
- Mon, 13 Jun 2022 14:58:45 +0800 (CST)
+ by mail.nfschina.com (Postfix) with ESMTP id 76F9D1E80D8F;
+ Mon, 13 Jun 2022 16:11:59 +0800 (CST)
 X-Virus-Scanned: amavisd-new at test.com
 Received: from mail.nfschina.com ([127.0.0.1])
  by localhost (mail.nfschina.com [127.0.0.1]) (amavisd-new, port 10024)
- with ESMTP id jrgQAJbPANH4; Mon, 13 Jun 2022 14:58:42 +0800 (CST)
+ with ESMTP id bfep-sN8dM9B; Mon, 13 Jun 2022 16:11:56 +0800 (CST)
 Received: from localhost.localdomain (unknown [180.167.10.98])
  (Authenticated sender: renyu@nfschina.com)
- by mail.nfschina.com (Postfix) with ESMTPA id 98E401E80D05;
- Mon, 13 Jun 2022 14:58:41 +0800 (CST)
+ by mail.nfschina.com (Postfix) with ESMTPA id 0EA6A1E80D89;
+ Mon, 13 Jun 2022 16:11:56 +0800 (CST)
 From: Ren Yu <renyu@nfschina.com>
 To: lgirdwood@gmail.com
-Subject: [PATCH] soc: There are several spelling mistakes. Fix them
-Date: Mon, 13 Jun 2022 14:58:58 +0800
-Message-Id: <20220613065858.23369-1-renyu@nfschina.com>
+Subject: [PATCH] soc: fix typos in comment
+Date: Mon, 13 Jun 2022 16:12:19 +0800
+Message-Id: <20220613081219.25058-1-renyu@nfschina.com>
 X-Mailer: git-send-email 2.11.0
 X-Mailman-Approved-At: Tue, 14 Jun 2022 07:54:10 +0200
 Cc: alsa-devel@alsa-project.org, ckeepax@opensource.cirrus.com,
- renyu@nfschina.com, yuzhe@nfschina.com, linux-kernel@vger.kernel.org,
+ Ren Yu <renyu@nfschina.com>, yuzhe@nfschina.com, linux-kernel@vger.kernel.org,
  tiwai@suse.com, liqiong@nfschina.com, hukun@nfschina.com,
  rf@opensource.cirrus.com, broonie@kernel.org, srinivas.kandagatla@linaro.org,
  qixu@nfschina.com, steve@sk2.org
@@ -67,6 +67,8 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
+
+change 'slection' to 'selection'
 
 Signed-off-by: Ren Yu <renyu@nfschina.com>
 ---
