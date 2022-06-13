@@ -4,80 +4,72 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id BF80AC43334
-	for <alsa-devel@archiver.kernel.org>; Mon, 13 Jun 2022 16:17:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0081AC433EF
+	for <alsa-devel@archiver.kernel.org>; Mon, 13 Jun 2022 17:02:54 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id DACEB16C1;
-	Mon, 13 Jun 2022 18:16:36 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DACEB16C1
+	by alsa0.perex.cz (Postfix) with ESMTPS id 4CBF21717;
+	Mon, 13 Jun 2022 19:02:02 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4CBF21717
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1655137046;
-	bh=sjtJervTZ6yZDBRnrd/C1P0OUfxohUo/Bykqdjnc5/o=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=dogOvQwzGSNv2o/0O+Z+Vy0/fYOGwGtnq/zkfyZQBh8tQGxCuE6MEOUE18QB33ECe
-	 5Vrd2xJRttkSHR3MfHmqwmsueo2j8MGz9xJWg1YCs9kLcb3JgFiRPqNMVCdRWFmcSO
-	 8AFrb0vlA9orjy4MXIESvkcpnfra934sYGd9zpUw=
+	s=default; t=1655139772;
+	bh=zH7DwkKRGFFZLBmAteDlsCQw8yPj/w0q9YqYHZgyiVA=;
+	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=oXmIEYtfi0LOd9dY+MloqohuTbPVWMCrsQA7pCewz4LNFjHYR4N61Hyuo3TTk27uX
+	 S2jf0rLrMXP31jdTBmN7Qi/kAzoRq9VancM6zsI54bFDE3LIj13vBkZk4UIwB30Nfu
+	 MAjkLX98kgfYU2f4fwAtfMM/LSsOLG2brfqvhiB0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 0C98BF804D1;
-	Mon, 13 Jun 2022 18:16:07 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id DF8A1F804BB;
+	Mon, 13 Jun 2022 19:02:01 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 2A5D5F804C1; Mon, 13 Jun 2022 18:16:04 +0200 (CEST)
-Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
- [67.231.152.168])
+ id E9D74F80107; Mon, 13 Jun 2022 19:01:59 +0200 (CEST)
+Received: from sin.source.kernel.org (sin.source.kernel.org
+ [IPv6:2604:1380:40e1:4800::1])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 69CDDF80107
+ for <alsa-devel@alsa-project.org>; Mon, 13 Jun 2022 19:01:57 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 69CDDF80107
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="bkjewIXi"
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id E16FCF80139
- for <alsa-devel@alsa-project.org>; Mon, 13 Jun 2022 18:15:57 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E16FCF80139
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com
- header.b="NFFik29o"
-Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
- by mx0b-001ae601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 25DBuxUi006945;
- Mon, 13 Jun 2022 11:15:55 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
- h=from : to : cc :
- subject : date : message-id : mime-version : content-transfer-encoding :
- content-type; s=PODMain02222019;
- bh=4R4Ym4XA5bDdt/zDB7Y35xb6VBHh26DwvdrgZzMm1m4=;
- b=NFFik29o2NvZUx2AhujDPn+6BjLnktd3Bb8eKXXHUnu7rvyrxakwxjWipe1RFpIAn8UJ
- SrDUBCvzuuXVhrjqZNNhyRRAXV3pagYvMHitgSfIzZMkpX6cyt+UyfxmOhtJ70ZwrCns
- 1n3nFFMXiy9W/vln0kIIwBEyVKjItaSvwe/fLuZzzM0aKZajzPNjkPOX7iC1RRB35sMz
- E/YOADb3ImA7phkeOaBqHYWO6/mR3ZJCOrXZvNmU43iD+0QKhhnwUkA+iX9fTvNvqQjj
- 5/cG1DBMeVyFHbrSEZZ+CHPS6qFXLKpKs3xF5t2ESAvtRBMfofhVXNY0evryromRK/dm qg== 
-Received: from ediex01.ad.cirrus.com ([84.19.233.68])
- by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3gmqfq24mu-2
- (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
- Mon, 13 Jun 2022 11:15:55 -0500
-Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.28; Mon, 13 Jun
- 2022 17:15:52 +0100
-Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server id 15.1.2375.28 via
- Frontend Transport; Mon, 13 Jun 2022 17:15:52 +0100
-Received: from algalon.ad.cirrus.com (algalon.ad.cirrus.com [198.90.251.122])
- by ediswmail.ad.cirrus.com (Postfix) with ESMTP id C607546C;
- Mon, 13 Jun 2022 16:15:52 +0000 (UTC)
-From: Charles Keepax <ckeepax@opensource.cirrus.com>
-To: <broonie@kernel.org>, <samuel@sholland.org>
-Subject: [PATCH 1/2] ASoC: sun8i-codec: Partial revert to fix clock specifiers
-Date: Mon, 13 Jun 2022 17:15:51 +0100
-Message-ID: <20220613161552.481337-1-ckeepax@opensource.cirrus.com>
-X-Mailer: git-send-email 2.30.2
+ by sin.source.kernel.org (Postfix) with ESMTPS id 27554CE13D4;
+ Mon, 13 Jun 2022 17:01:52 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 078CDC34114;
+ Mon, 13 Jun 2022 17:01:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1655139710;
+ bh=zH7DwkKRGFFZLBmAteDlsCQw8yPj/w0q9YqYHZgyiVA=;
+ h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+ b=bkjewIXiUaJie2/EFRI2Y6+WB0SV1vS+n59R8pKdxGZaIjTc2Zkr5uclzJWcg1tFu
+ Hx7hvnEr8mGj3M/GTIgQAE0y8tGzsSEQHYXNZLoHPlr845yaC0jHwBWLyTHvDz4rFe
+ +ss1xm/nAdObcdxocEjm2LorKEpdlFjeeEOpDugA7sdt13DkDxbaA+pV4Dp8r3mPcq
+ n4DPLGyOxwKjaUYp834Om6WsBCnuSoUsCPejZwTrG0ALwOc23P/aYug+kjBExpzCtY
+ cw238838J/TPZsu5YwDO2n4nLgpmQKdXIbiTusuSNgifO2xH82OYNbaimjMCmpk5K0
+ eKHk2TnY291Jw==
+From: Mark Brown <broonie@kernel.org>
+To: andrzej.hajda@intel.com, airlied@linux.ie, kyungmin.park@samsung.com,
+ jy0922.shim@samsung.com, narmstrong@baylibre.com, linux@armlinux.org.uk,
+ robert.foss@linaro.org, daniel@ffwll.ch, alim.akhtar@samsung.com,
+ lgirdwood@gmail.com, inki.dae@samsung.com, broonie@kernel.org,
+ sw0312.kim@samsung.com
+In-Reply-To: <20220602103029.3498791-1-broonie@kernel.org>
+References: <20220602103029.3498791-1-broonie@kernel.org>
+Subject: Re: [PATCH] ASoC: hdmi-codec: Update to modern DAI terminology
+Message-Id: <165513970673.636966.9826730904967146178.b4-ty@kernel.org>
+Date: Mon, 13 Jun 2022 18:01:46 +0100
 MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: ufAMjQSTEEIdy2v7qIN3Z_ZuR-cxb2fr
-X-Proofpoint-GUID: ufAMjQSTEEIdy2v7qIN3Z_ZuR-cxb2fr
-X-Proofpoint-Spam-Reason: safe
-Cc: alsa-devel@alsa-project.org, patches@opensource.cirrus.com,
- lgirdwood@gmail.com, jernej.skrabec@gmail.com, linux-kernel@vger.kernel.org,
- wens@csie.org, linux-mediatek@lists.infradead.org, matthias.bgg@gmail.com,
- linux-sunxi@lists.linux.dev
+Cc: alsa-devel@alsa-project.org, linux-samsung-soc@vger.kernel.org,
+ jonas@kwiboo.se, dri-devel@lists.freedesktop.org, jernej.skrabec@gmail.com,
+ Laurent.pinchart@ideasonboard.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -93,36 +85,43 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Recent updates accidentally updated the clock producer/consumer
-specifiers on this device as part of refactoring the CPU side of the DAI
-links. However, this device sits on the CODEC side and shouldn't have
-been updated. Partially revert the changes keeping the switch to the new
-clock terminology but going back to the CODEC defines.
+On Thu, 2 Jun 2022 12:30:29 +0200, Mark Brown wrote:
+> As part of retiring the old defines used to specify DAI formats update the
+> hdmi_codec driver to use the modern names, including the variables in the
+> struct hdmi_codec_daifmt exported to the DRM drivers.
+> 
+> In updating this I did note that the only use of this information in DRM
+> drivers is to reject clock provider settings, thinking about what this
+> hardware is doing I rather suspect that there might not be any hardware
+> out there which needs the configuration so it may be worth considering
+> just having hdmi-codec support only clock consumer.
+> 
+> [...]
 
-Fixes: 7cc3965fde74 ("ASoC: sunxi: Update to use set_fmt_new callback")
-Reported-by: Samuel Holland <samuel@sholland.org>
-Signed-off-by: Charles Keepax <ckeepax@opensource.cirrus.com>
----
- sound/soc/sunxi/sun8i-codec.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+Applied to
 
-diff --git a/sound/soc/sunxi/sun8i-codec.c b/sound/soc/sunxi/sun8i-codec.c
-index 90d74a2d53f38..f797c535f2983 100644
---- a/sound/soc/sunxi/sun8i-codec.c
-+++ b/sound/soc/sunxi/sun8i-codec.c
-@@ -287,10 +287,10 @@ static int sun8i_codec_set_fmt(struct snd_soc_dai *dai, unsigned int fmt)
- 
- 	/* clock masters */
- 	switch (fmt & SND_SOC_DAIFMT_CLOCK_PROVIDER_MASK) {
--	case SND_SOC_DAIFMT_BP_FP: /* Codec slave, DAI master */
-+	case SND_SOC_DAIFMT_CBC_CFC: /* Codec slave, DAI master */
- 		value = 0x1;
- 		break;
--	case SND_SOC_DAIFMT_BC_FC: /* Codec Master, DAI slave */
-+	case SND_SOC_DAIFMT_CBP_CFP: /* Codec Master, DAI slave */
- 		value = 0x0;
- 		break;
- 	default:
--- 
-2.30.2
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
 
+Thanks!
+
+[1/1] ASoC: hdmi-codec: Update to modern DAI terminology
+      commit: 9f1c8677724a0e6a6ac7a74d2b0192a584df859d
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
