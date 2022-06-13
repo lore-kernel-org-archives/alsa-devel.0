@@ -4,104 +4,70 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7A6F0C43334
-	for <alsa-devel@archiver.kernel.org>; Mon, 13 Jun 2022 08:47:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 60213C43334
+	for <alsa-devel@archiver.kernel.org>; Mon, 13 Jun 2022 09:06:29 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E05201811;
-	Mon, 13 Jun 2022 10:46:45 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E05201811
+	by alsa0.perex.cz (Postfix) with ESMTPS id 9815917F2;
+	Mon, 13 Jun 2022 11:05:37 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9815917F2
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1655110056;
-	bh=WDdxPYfDPDVNWmCVfj+MxmToaXeuP5dXhUF7ZoYA9BQ=;
-	h=Date:Subject:To:References:From:In-Reply-To:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=m1p3E9m1ozb0TynSfeo/apZ9UGbz74CZDHvgrlJQAb0OuTNirBm6w8X3BmimKToxJ
-	 Y3F/XaXDHOodcA9rhbIqUhaQJIwN09mB5zVA7L1V6W6mhGTfNef4nBNV6KMfqfs7xv
-	 amRHhSmBll0MdcubjDK1D7jrse7h2nQMxYStDVt8=
+	s=default; t=1655111187;
+	bh=l8S3Z+0zbZSIg4WtSqTEwKIJlqjfS3FsszNBCyCwNW0=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=rQV3LKNIdtv+Aj4wKT4CvAtDlaasFmMhQy4iUISOwR4rGUPCiTUOXiA4t+E58ok2h
+	 +PmKPIg286Y41XO6avRHn4Wg4QbV5r4RPrx68vr974E3mYvx0EzCYO95+p/X6uoKmA
+	 WSlbQVEexNm5gBkrjv8u5Nu7PoKVD8FlxoHav2Ns=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 7A831F804BB;
-	Mon, 13 Jun 2022 10:46:45 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 26FAEF804C1;
+	Mon, 13 Jun 2022 11:05:37 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 527A5F804C1; Mon, 13 Jun 2022 10:46:44 +0200 (CEST)
-Received: from us-smtp-delivery-124.mimecast.com
- (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+ id 098ADF80139; Mon, 13 Jun 2022 11:05:36 +0200 (CEST)
+Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 50DA3F800D8
- for <alsa-devel@alsa-project.org>; Mon, 13 Jun 2022 10:46:37 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 50DA3F800D8
+ by alsa1.perex.cz (Postfix) with ESMTPS id 70C8BF80139
+ for <alsa-devel@alsa-project.org>; Mon, 13 Jun 2022 11:05:31 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 70C8BF80139
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com
- header.b="GRDTYrLO"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
- s=mimecast20190719; t=1655109996;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=cS8G57sFhFp1YHMWkjR4hgEVKmHLztM42dadVSCcBBo=;
- b=GRDTYrLOf8ar1KF6jQGdiBDjuEV0iGL3YC//2pKzn+6v+gPlOCKidP3a0+tD1+AehKWf/V
- wkNrDJBstFpyXNZy/KrFwdbpBxHwczhg0/Rcb/CP0GmJiWY3MaonRM+aSSTwsq5JYr3+WV
- n4O3OEuORLf6gHfc+8Wu0ViAUPf5Bbw=
-Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
- [209.85.218.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-312-efP0xqU9MemfHVBJ0-aYMg-1; Mon, 13 Jun 2022 04:46:31 -0400
-X-MC-Unique: efP0xqU9MemfHVBJ0-aYMg-1
-Received: by mail-ej1-f71.google.com with SMTP id
- gr1-20020a170906e2c100b006fefea3ec0aso1509083ejb.14
- for <alsa-devel@alsa-project.org>; Mon, 13 Jun 2022 01:46:31 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
- :content-language:to:cc:references:from:in-reply-to
- :content-transfer-encoding;
- bh=cS8G57sFhFp1YHMWkjR4hgEVKmHLztM42dadVSCcBBo=;
- b=ww7jA/PWV33yzH7xGZiGJ0+35mu1AycbwH2XzbmW4XBOlxK//EW/0xlEuWjnKuDJ3+
- Otjj1EsGGAJe/E64wmsQwYygIb9vcN/xNbPZIXi/Svf2bm34NDXfbj4Fize13U7PEjLC
- 2xvzoyKys1Zkwer8UGAluUQPDrjEvDneY7oTIhhP5W5eMzdsmgRi7jNV2QEorjPGKtYK
- DtxWLbis8hQvvRT6h6crU+BDGLrVtVmTnGzSLN/htnueCwWNZ/4wYb+SJyE5IXzwTyuG
- hJ7emAVWeIhAYFD682X+WqMsOhk88Cqrknv4lOemrh848MjxKZeAZLIIn0XZU3XH/J2y
- 9owA==
-X-Gm-Message-State: AOAM532wQK3ToVijgtDo/TBTc+93fAbLjaGxzYY8Al0TBuJRI+bEB66J
- 5Wru7fcUHwZroYeF/YoS6tFmadFokDADp3wPSPmol1OITfvi37OE49Sf2waTgEBR3id8YXViOmw
- mjRYhEq4TPc1IH6uHbnjv4U4=
-X-Received: by 2002:aa7:d143:0:b0:42d:ca9c:aa76 with SMTP id
- r3-20020aa7d143000000b0042dca9caa76mr65166711edo.163.1655109990126; 
- Mon, 13 Jun 2022 01:46:30 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJynKfM05niysYqRnGnJhh9hGo+CwtESeSRPe0V1/WJphMLu45sbwYXwXFaw5jkK/YSDmbKOvA==
-X-Received: by 2002:aa7:d143:0:b0:42d:ca9c:aa76 with SMTP id
- r3-20020aa7d143000000b0042dca9caa76mr65166697edo.163.1655109989974; 
- Mon, 13 Jun 2022 01:46:29 -0700 (PDT)
-Received: from [10.40.98.142] ([78.108.130.194])
- by smtp.gmail.com with ESMTPSA id
- g18-20020a170906c19200b006fecf74395bsm3566682ejz.8.2022.06.13.01.46.29
- (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Mon, 13 Jun 2022 01:46:29 -0700 (PDT)
-Message-ID: <5ca147d1-3a2d-60c6-c491-8aa844183222@redhat.com>
-Date: Mon, 13 Jun 2022 10:46:28 +0200
+ dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
+ header.b="A9/4PkWU"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+ d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+ t=1655111134; x=1686647134;
+ h=from:to:cc:subject:date:message-id:mime-version:
+ content-transfer-encoding;
+ bh=l8S3Z+0zbZSIg4WtSqTEwKIJlqjfS3FsszNBCyCwNW0=;
+ b=A9/4PkWURjvybLSIBb/6ZvjiH6XW6abvPxMzJzwgEnzvMmHKJq0IHNkl
+ I3+A4KZHDK4MQPtE+W+uQnih+dRLl+k5yUMlkuRLkQro1zlPE7ulDDBxG
+ 9zPRW3X7j+lS/+Ul3sioAadCm1l+18EGbeZhvyCewzRqLNsj44ByenqHH
+ nnEHpeUKds2emm86gMRG80gZyN/5D9MbXT/OHd7My/XbB0ojjx9p7RAq0
+ pCsEsKPMrpevuhN3cus56EWw8PfNtHvl3YNc/SXFUJu3z/M0qhpP8dCWR
+ fQ64xxN/K2WaTaY/JkyzLNu/+DSURlnet7ubWPnbgXBf2zrfuh7Rz029p A==;
+X-IronPort-AV: E=McAfee;i="6400,9594,10376"; a="275753754"
+X-IronPort-AV: E=Sophos;i="5.91,296,1647327600"; d="scan'208";a="275753754"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+ by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 13 Jun 2022 02:05:27 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.91,296,1647327600"; d="scan'208";a="639625504"
+Received: from crojewsk-ctrl.igk.intel.com ([10.102.9.28])
+ by fmsmga008.fm.intel.com with ESMTP; 13 Jun 2022 02:05:25 -0700
+From: Cezary Rojewski <cezary.rojewski@intel.com>
+To: alsa-devel@alsa-project.org,
+	broonie@kernel.org
+Subject: [PATCH v2 00/17] ASoC: Intel: haswell and broadwell boards update
+Date: Mon, 13 Jun 2022 11:15:29 +0200
+Message-Id: <20220613091546.1565167-1-cezary.rojewski@intel.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.8.0
-Subject: Re: How to add 2 different SND_PCI_QUIRKs for 2 models with the same
- PCI subsys vend + prod ids?
-To: Takashi Iwai <tiwai@suse.de>
-References: <7e3aa97a-77c9-3367-8929-a86049286d75@redhat.com>
- <87k09l7ys7.wl-tiwai@suse.de>
-From: Hans de Goede <hdegoede@redhat.com>
-In-Reply-To: <87k09l7ys7.wl-tiwai@suse.de>
-Authentication-Results: relay.mimecast.com;
- auth=pass smtp.auth=CUSA124A263 smtp.mailfrom=hdegoede@redhat.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: redhat.com
-Content-Language: en-US
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-Cc: "nikitashvets@flyium.com" <nikitashvets@flyium.com>,
- "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+Content-Transfer-Encoding: 8bit
+Cc: Cezary Rojewski <cezary.rojewski@intel.com>,
+ pierre-louis.bossart@linux.intel.com, tiwai@suse.com, hdegoede@redhat.com,
+ amadeuszx.slawinski@linux.intel.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -117,44 +83,64 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Hi,
+A number of patches improving overall quality and readability of
+haswell.c and broadwell.c source files found in sound/soc/intel/boards.
+Both files are first renamed and only then actual changes are being
+incrementally added. The respective names are: hsw_rt5640 and bdw_rt286
+to match the pattern found in more recent boards.
 
-On 6/13/22 10:28, Takashi Iwai wrote:
-> On Mon, 13 Jun 2022 09:54:47 +0200,
-> Hans de Goede wrote:
->>
->> Hi All,
->>
->> There is a problem with the sound on the Lenovo Yoga Duet 7 13IML05, which
->> requires a SND_PCI_QUIRK to fix. But there already is an existing quirk
->> for another Lenovo laptop using the same  PCI subsys vend + prod ids.
->>
->> For more details see:
->> https://wiki.archlinux.org/title/Lenovo_Yoga_Duet_7_13IML05#Audio
->>
->> So I guess this means that we need to add a way to also include a DMI match
->> for SND_PCI_QUIRKs ?
->>
->> Maybe add a:
->>
->> const struct dmi_systemid *dmi_ids;
->>
->> member to struct snd_pci_quirk and a new
->> SND_PCI_QUIRK_DMI macro to set this?
-> 
-> Do both machines have the very same codec?  I couldn't find
-> alsa-info.sh output for Duet 7, but at least, C940 seems with ALC298
-> (0x10ec0298), judging from
->   https://bugzilla.kernel.org/show_bug.cgi?id=205755
-> If Duet 7 has a different codec (e.g. ALC287 0x10ec0287), we can
-> distinguish from that.
+Most patches bring no functional change - the more impactful patches at
+are placed the end:
 
-I've just asked the reporter of this for alsa-info.sh output.
+Refactor of suspend/resume flow for the bdw_rt286 board by dropping
+dev->remove() in favour of card->remove() and adjust jack handling to
+reduce code size slightly by implementing card_set_jack().
 
-So assuming the codec is indeed different how would I go about
-fixing this ?
+The last patch is removing of FE DAI ops. Given the existence of
+platform FE DAI capabilities (either static declaration or through
+topology file), this code is redundant.
 
-Regards,
 
-Hans
+Changes in v2:
+- fixed wording error in patch 02/17 so it correctly mentions
+  'haswell_rt5640', not 'broadwell_rt286'
+- decided not to add kernel module names changes to this patchset so the
+  review is not complicated unnecessarily. Will send them separately
+  instead
+
+
+Cezary Rojewski (17):
+  ASoC: Intel: Rename haswell source file to hsw_rt5640
+  ASoC: Intel: hsw_rt5640: Reword prefixes of all driver members
+  ASoC: Intel: hsw_rt5640: Reword driver name
+  ASoC: Intel: hsw_rt5640: Update code indentation
+  ASoC: Intel: hsw_rt5640: Update file comments
+  ASoC: Intel: hsw_rt5640: Improve probe() function quality
+  ASoC: Intel: hsw_rt5640: Improve hw_params() debug-ability
+  ASoC: Intel: Rename broadwell source file to bdw_rt286
+  ASoC: Intel: bdw_rt286: Reword prefixes of all driver members
+  ASoC: Intel: bdw_rt286: Reword driver name
+  ASoC: Intel: bdw_rt286: Update code indentation
+  ASoC: Intel: bdw_rt286: Update file comments
+  ASoC: Intel: bdw_rt286: Improve probe() function quality
+  ASoC: Intel: bdw_rt286: Improve hw_params() debug-ability
+  ASoC: Intel: bdw_rt286: Improve codec_link_init() quality
+  ASoC: Intel: bdw_rt286: Refactor suspend/resume
+  ASoC: Intel: bdw_rt286: Remove FE DAI ops
+
+ sound/soc/intel/boards/Kconfig                |   4 +-
+ sound/soc/intel/boards/Makefile               |   4 +-
+ sound/soc/intel/boards/bdw_rt286.c            | 257 +++++++++++++
+ sound/soc/intel/boards/broadwell.c            | 338 ------------------
+ sound/soc/intel/boards/haswell.c              | 202 -----------
+ sound/soc/intel/boards/hsw_rt5640.c           | 176 +++++++++
+ .../common/soc-acpi-intel-hsw-bdw-match.c     |   6 +-
+ 7 files changed, 440 insertions(+), 547 deletions(-)
+ create mode 100644 sound/soc/intel/boards/bdw_rt286.c
+ delete mode 100644 sound/soc/intel/boards/broadwell.c
+ delete mode 100644 sound/soc/intel/boards/haswell.c
+ create mode 100644 sound/soc/intel/boards/hsw_rt5640.c
+
+-- 
+2.25.1
 
