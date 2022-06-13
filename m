@@ -4,83 +4,77 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5069EC43334
-	for <alsa-devel@archiver.kernel.org>; Mon, 13 Jun 2022 05:42:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 116A2C43334
+	for <alsa-devel@archiver.kernel.org>; Mon, 13 Jun 2022 07:16:36 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 9245116CB;
-	Mon, 13 Jun 2022 07:41:26 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9245116CB
+	by alsa0.perex.cz (Postfix) with ESMTPS id 4C98C179F;
+	Mon, 13 Jun 2022 09:15:44 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4C98C179F
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1655098936;
-	bh=2Lfh4pda6TY+K1C96k7ocNNFcO104P+MzAEG1R0c0XM=;
-	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=DdQDExmC6ylV7I1gFwCzmbCB4npgcH+l4KStxzfN3dRfwdPw2tIPgtFTk8rp58TDr
-	 SbxCC+BTxL6cqxy7xg1h5mE649vYHqiuIK8Lw39ywRrJWeJDljIsQ9pPWasBBwBZxh
-	 JDgKmInJbpQr09Wyraxm0IF/Y8UOZYCNv55yiU1U=
+	s=default; t=1655104594;
+	bh=chJj+2JoNgd1frgXKNP+zonfaxLxHYP2OBsbZXA2s1U=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=gwLqUn+u4IAQDr8TWqoFp8p7YRgIjG1W85zCzVsrr4M7jh21cVp9G8foEx4F12Lkv
+	 bXxLN3BQTKjaYfr67S9KJKEnA0KetM8IZ3AVPuvCTyqA8Z5EWvIRBToujDJ+HGvF7R
+	 IZz42tLVS1Y+dxnyE3rja06DHjR3iX8SQ6f7NLNI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 15D0BF804BB;
-	Mon, 13 Jun 2022 07:41:26 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id D8C13F804BB;
+	Mon, 13 Jun 2022 09:15:43 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 467E1F804C1; Mon, 13 Jun 2022 07:41:24 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id ED276F804C1; Mon, 13 Jun 2022 09:15:41 +0200 (CEST)
+Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 90951F800D8
- for <alsa-devel@alsa-project.org>; Mon, 13 Jun 2022 07:41:13 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 90951F800D8
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="sEUK/XO2"; 
- dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="BVoNivKB"
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id E19551F91B;
- Mon, 13 Jun 2022 05:41:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1655098872; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=3dINdTPcWskYcY4vaHavZqUpGKTEZb/iEHgT5+r3rkI=;
- b=sEUK/XO2825jyPzqfgauovi913iP9V+rVVL1jeonqZUh91YxzlEYTnvaNHJtAio13YBdPo
- v/oPSVzDCPpZ8kP8EVevZuSY6pRt7G50Z1h9W8KJyDZ9t4u+dICM1HcX2b4QtTTqarla4y
- aVuptZqZpvR/GfdWlY5slmMieU8Cihg=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1655098872;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=3dINdTPcWskYcY4vaHavZqUpGKTEZb/iEHgT5+r3rkI=;
- b=BVoNivKBgpz8BtiMTCIHUiwn5BoVYysZMR6nylaDkjCiLtcmPu3dzuGkGq/7oot3uFd/CK
- 8lnEtn3nQbAz0HAA==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id B24F113941;
- Mon, 13 Jun 2022 05:41:12 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id qyWdKfjNpmJ3bQAAMHmgww
- (envelope-from <tiwai@suse.de>); Mon, 13 Jun 2022 05:41:12 +0000
-Date: Mon, 13 Jun 2022 07:41:12 +0200
-Message-ID: <87edztt91j.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Daniil Dementev <d.dementev@ispras.ru>
-Subject: Re: [PATCH] ALSA: usb-audio: US16x08: Move overflow check before
- array access
-In-Reply-To: <20220610165732.2904-1-d.dementev@ispras.ru>
-References: <20220610165732.2904-1-d.dementev@ispras.ru>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
-Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org,
- Takashi Iwai <tiwai@suse.com>, Alexey Khoroshilov <khoroshilov@ispras.ru>
+ by alsa1.perex.cz (Postfix) with ESMTPS id EAF0FF80139
+ for <alsa-devel@alsa-project.org>; Mon, 13 Jun 2022 09:15:36 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EAF0FF80139
+Authenticated-By: 
+X-SpamFilter-By: ArmorX SpamTrap 5.73 with qID 25D7FQcS4026291,
+ This message is accepted by code: ctloc85258
+Received: from mail.realtek.com (rtexh36504.realtek.com.tw[172.21.6.27])
+ by rtits2.realtek.com.tw (8.15.2/2.71/5.88) with ESMTPS id 25D7FQcS4026291
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+ Mon, 13 Jun 2022 15:15:26 +0800
+Received: from RTEXDAG02.realtek.com.tw (172.21.6.101) by
+ RTEXH36504.realtek.com.tw (172.21.6.27) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.27; Mon, 13 Jun 2022 15:15:26 +0800
+Received: from RTEXMBS01.realtek.com.tw (172.21.6.94) by
+ RTEXDAG02.realtek.com.tw (172.21.6.101) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.27; Mon, 13 Jun 2022 15:15:26 +0800
+Received: from RTEXMBS01.realtek.com.tw ([fe80::754e:2219:bbef:d0cd]) by
+ RTEXMBS01.realtek.com.tw ([fe80::754e:2219:bbef:d0cd%5]) with mapi id
+ 15.01.2308.027; Mon, 13 Jun 2022 15:15:26 +0800
+From: Kailang <kailang@realtek.com>
+To: "Takashi Iwai (tiwai@suse.de)" <tiwai@suse.de>
+Subject: There is headset Mic issue on HP ALC897 Platform
+Thread-Topic: There is headset Mic issue on HP ALC897 Platform
+Thread-Index: Adh+9NJeodMPB4mjQpOVDxtvRC/wwQ==
+Date: Mon, 13 Jun 2022 07:15:26 +0000
+Message-ID: <719133a27d8844a890002cb817001dfa@realtek.com>
+Accept-Language: zh-TW, en-US
+Content-Language: zh-TW
+X-MS-Has-Attach: yes
+X-MS-TNEF-Correlator: 
+x-originating-ip: [172.22.102.99]
+x-kse-serverinfo: RTEXDAG02.realtek.com.tw, 9
+x-kse-attachmentfiltering-interceptor-info: no applicable attachment filtering
+ rules found
+x-kse-antivirus-interceptor-info: scan successful
+x-kse-antivirus-info: =?us-ascii?Q?Clean,_bases:_2022/6/13_=3F=3F_06:01:00?=
+x-kse-bulkmessagesfiltering-scan-result: protection disabled
+Content-Type: multipart/mixed;
+ boundary="_002_719133a27d8844a890002cb817001dfarealtekcom_"
+MIME-Version: 1.0
+X-KSE-ServerInfo: RTEXH36504.realtek.com.tw, 9
+X-KSE-AntiSpam-Interceptor-Info: fallback
+X-KSE-Antivirus-Interceptor-Info: fallback
+X-KSE-AntiSpam-Interceptor-Info: fallback
+Cc: " \(alsa-devel@alsa-project.org\)" <alsa-devel@alsa-project.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -96,18 +90,60 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Fri, 10 Jun 2022 18:57:32 +0200,
-Daniil Dementev wrote:
-> 
-> Buffer overflow could occur in the loop "while", due to accessing an
-> array element before checking the index.
-> 
-> Found by Linux Verification Center (linuxtesting.org) with SVACE.
-> 
-> Signed-off-by: Daniil Dementev <d.dementev@ispras.ru>
-> Reviewed-by: Alexey Khoroshilov <khoroshilov@ispras.ru>
+--_002_719133a27d8844a890002cb817001dfarealtekcom_
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 
-Thanks, applied.
+Hi Takashi,
 
+HP ALC897 platform.
+It need to fill 0x19 verb table to enable Headset MIC.
+Attach was the supporting patch.
 
-Takashi
+BR,
+Kailang
+
+--_002_719133a27d8844a890002cb817001dfarealtekcom_
+Content-Type: application/octet-stream;
+	name="0000-HP-alc897-HSMIC-0x8719.patch"
+Content-Description: 0000-HP-alc897-HSMIC-0x8719.patch
+Content-Disposition: attachment;
+	filename="0000-HP-alc897-HSMIC-0x8719.patch"; size=1791;
+	creation-date="Mon, 13 Jun 2022 06:59:34 GMT";
+	modification-date="Mon, 13 Jun 2022 07:09:57 GMT"
+Content-Transfer-Encoding: base64
+
+RnJvbSA4ODY0OTAzYmY5ZjFiMDM1ZjY0ZmE1NTAwZDEwNTZiYmZiNjAyNGYyIE1vbiBTZXAgMTcg
+MDA6MDA6MDAgMjAwMQpGcm9tOiBrYWlsYW5nIDxrYWlsYW5nQHJlYWx0ZWsuY29tPgpEYXRlOiBN
+b24sIDEzIEp1biAyMDIyIDE0OjU3OjE5ICswODAwClN1YmplY3Q6IFtQQVRDSF0gQUxTQTogaGRh
+L3JlYWx0ZWsgLSBBTEM4OTcgaGVhZHNldCBNSUMgbm8gc291bmQKClRoZXJlIGlzIG5vdCBoYXZl
+IEhlYWRzZXQgTWljIHZlcmIgdGFibGUgaW4gQklPUyBkZWZhdWx0LgpTbywgaXQgd2lsbCBoYXZl
+IHJlY29yZGluZyBpc3N1ZSBmcm9tIGhlYWRzZXQgTUlDLgpBZGQgdGhlIHZlcmIgdGFibGUgdmFs
+dWUgd2l0aG91dCBqYWNrIGRldGVjdC4gSXQgd2lsbCB0dXJuIG9uIEhlYWRzZXQgTWljLgoKU2ln
+bmVkLW9mZi1ieTogS2FpbGFuZyBZYW5nIDxrYWlsYW5nQHJlYWx0ZWsuY29tPgoKZGlmZiAtLWdp
+dCBhL3NvdW5kL3BjaS9oZGEvcGF0Y2hfcmVhbHRlay5jIGIvc291bmQvcGNpL2hkYS9wYXRjaF9y
+ZWFsdGVrLmMKaW5kZXggOGEzZTJmZTQyMTA2Li5jMDU5Mjk2ZmU5ZDYgMTAwNjQ0Ci0tLSBhL3Nv
+dW5kL3BjaS9oZGEvcGF0Y2hfcmVhbHRlay5jCisrKyBiL3NvdW5kL3BjaS9oZGEvcGF0Y2hfcmVh
+bHRlay5jCkBAIC0xMDI2Niw2ICsxMDI2Niw3IEBAIGVudW0gewogCUFMQzY2OF9GSVhVUF9BU1VT
+X05PX0hFQURTRVRfTUlDLAogCUFMQzY2OF9GSVhVUF9IRUFEU0VUX01JQywKIAlBTEM2NjhfRklY
+VVBfTUlDX0RFVF9DT0VGLAorCUFMQzg5N19GSVhVUF9IUF9IU01JQ19WRVJCLAogfTsKIAogc3Rh
+dGljIGNvbnN0IHN0cnVjdCBoZGFfZml4dXAgYWxjNjYyX2ZpeHVwc1tdID0gewpAQCAtMTA2NzIs
+NiArMTA2NzMsMTMgQEAgc3RhdGljIGNvbnN0IHN0cnVjdCBoZGFfZml4dXAgYWxjNjYyX2ZpeHVw
+c1tdID0gewogCQkJe30KIAkJfSwKIAl9LAorCVtBTEM4OTdfRklYVVBfSFBfSFNNSUNfVkVSQl0g
+PSB7CisJCS50eXBlID0gSERBX0ZJWFVQX1BJTlMsCisJCS52LnBpbnMgPSAoY29uc3Qgc3RydWN0
+IGhkYV9waW50YmxbXSkgeworCQkJeyAweDE5LCAweDAxYTE5MTNjIH0sIC8qIHVzZSBhcyBoZWFk
+c2V0IG1pYywgd2l0aG91dCBpdHMgb3duIGphY2sgZGV0ZWN0ICovCisJCQl7IH0KKwkJfSwKKwl9
+LAogfTsKIAogc3RhdGljIGNvbnN0IHN0cnVjdCBzbmRfcGNpX3F1aXJrIGFsYzY2Ml9maXh1cF90
+YmxbXSA9IHsKQEAgLTEwNjk3LDYgKzEwNzA1LDcgQEAgc3RhdGljIGNvbnN0IHN0cnVjdCBzbmRf
+cGNpX3F1aXJrIGFsYzY2Ml9maXh1cF90YmxbXSA9IHsKIAlTTkRfUENJX1FVSVJLKDB4MTAyOCwg
+MHgwNjk4LCAiRGVsbCIsIEFMQzY2OF9GSVhVUF9ERUxMX01JQ19OT19QUkVTRU5DRSksCiAJU05E
+X1BDSV9RVUlSSygweDEwMjgsIDB4MDY5ZiwgIkRlbGwiLCBBTEM2NjhfRklYVVBfREVMTF9NSUNf
+Tk9fUFJFU0VOQ0UpLAogCVNORF9QQ0lfUVVJUksoMHgxMDNjLCAweDE2MzIsICJIUCBSUDU4MDAi
+LCBBTEM2NjJfRklYVVBfSFBfUlA1ODAwKSwKKwlTTkRfUENJX1FVSVJLKDB4MTAzYywgMHg4NzE5
+LCAiSFAiLCBBTEM4OTdfRklYVVBfSFBfSFNNSUNfVkVSQiksCiAJU05EX1BDSV9RVUlSSygweDEw
+M2MsIDB4ODczZSwgIkhQIiwgQUxDNjcxX0ZJWFVQX0hQX0hFQURTRVRfTUlDMiksCiAJU05EX1BD
+SV9RVUlSSygweDEwNDMsIDB4MTA4MCwgIkFzdXMgVVg1MDFWVyIsIEFMQzY2OF9GSVhVUF9IRUFE
+U0VUX01PREUpLAogCVNORF9QQ0lfUVVJUksoMHgxMDQzLCAweDExY2QsICJBc3VzIE41NTAiLCBB
+TEM2NjJfRklYVVBfQVNVU19OeDUwKSwK
+
+--_002_719133a27d8844a890002cb817001dfarealtekcom_--
