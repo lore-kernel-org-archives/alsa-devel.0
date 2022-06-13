@@ -4,74 +4,85 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id CDDFFC43334
-	for <alsa-devel@archiver.kernel.org>; Mon, 13 Jun 2022 09:11:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 11920C433EF
+	for <alsa-devel@archiver.kernel.org>; Mon, 13 Jun 2022 09:14:22 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 41D241878;
-	Mon, 13 Jun 2022 11:10:32 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 41D241878
+	by alsa0.perex.cz (Postfix) with ESMTPS id 36040180F;
+	Mon, 13 Jun 2022 11:13:29 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 36040180F
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1655111482;
-	bh=lR4Eg3fFKvbOU46Ba8iw/Y2tPLa+IWjj7O2y08P3DPk=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1655111660;
+	bh=4PLoVlsk6D1dfQ7HCsTSA+5SP836b5qiYclt2avFC/c=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=WwkY1JelRi6D06wlls0sI0tojo/0MB7num2Ew9HFiMDIR3YT6Z01167E/mlGlblFy
-	 yZVqTCRo0EU3QwUrkFxqQsIlWvotbo2FcWbSDx1y79T/lzz1mrWw7/+r3noTwvwcJU
-	 Ec2Ck2JEDLZFXPN6ZksTJsvVAYdyK2SfWLXET5Mw=
+	b=pwZe8LHYqahgLfH2jApyNZKo33ra2aEKY3JUQCfXG2RQuSzekE8Hgge8NNMFW6pZE
+	 Qep7GmBLf/57RSkZM+2DTZGDNTauruqcswkUtmrja/rcHylWDNA8V/P5/91XkUDAb3
+	 JzecEgcNyJtoJObxmTnXVu8vxWQsHCH8a8fZCL/w=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 01364F805C2;
-	Mon, 13 Jun 2022 11:06:24 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 33B46F80139;
+	Mon, 13 Jun 2022 11:13:29 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 66321F805A8; Mon, 13 Jun 2022 11:06:21 +0200 (CEST)
-Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 4D2EAF804C1; Mon, 13 Jun 2022 11:13:28 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id DFE1EF8057D
- for <alsa-devel@alsa-project.org>; Mon, 13 Jun 2022 11:06:09 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DFE1EF8057D
+ by alsa1.perex.cz (Postfix) with ESMTPS id 400C1F80107
+ for <alsa-devel@alsa-project.org>; Mon, 13 Jun 2022 11:13:22 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 400C1F80107
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="mPl7BfjU"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
- d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1655111171; x=1686647171;
- h=from:to:cc:subject:date:message-id:in-reply-to:
- references:mime-version:content-transfer-encoding;
- bh=lR4Eg3fFKvbOU46Ba8iw/Y2tPLa+IWjj7O2y08P3DPk=;
- b=mPl7BfjUNYI8Hnw5DJ1Ny6apgTfuTX7HZxFHKEZ+VUG+0vvZLcB8HQiA
- ZR87wIt6z/XistJVLLiC+4NUZJCDPtkJ88xtc5XZ8YUT/gx1X3kgDoU6W
- FWtE7QhdA5Qdd8cMGsPFZNhR6+hn90cn2fwHxFGqBWt9bwGCcbRyfXxck
- 1/Gytx6pFSc4XFVHjFGlf2NWUN3FddflrLUIC5YOpR3XG0zJdSdMvM2Ek
- 1DTIWK6gUgFNV5NWRQNplKncBLUdNjIzDD3C7v2vGReJ96WAtadgTAsSK
- MS11/T/zM1CszczDzG3PduOl6S27YU7WPd2/CmytGw66CLvQIjqIz0sDC w==;
-X-IronPort-AV: E=McAfee;i="6400,9594,10376"; a="275753961"
-X-IronPort-AV: E=Sophos;i="5.91,296,1647327600"; d="scan'208";a="275753961"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
- by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 13 Jun 2022 02:05:59 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.91,296,1647327600"; d="scan'208";a="639626240"
-Received: from crojewsk-ctrl.igk.intel.com ([10.102.9.28])
- by fmsmga008.fm.intel.com with ESMTP; 13 Jun 2022 02:05:57 -0700
-From: Cezary Rojewski <cezary.rojewski@intel.com>
-To: alsa-devel@alsa-project.org,
-	broonie@kernel.org
-Subject: [PATCH v2 15/17] ASoC: Intel: bdw_rt286: Improve codec_link_init()
- quality
-Date: Mon, 13 Jun 2022 11:15:44 +0200
-Message-Id: <20220613091546.1565167-16-cezary.rojewski@intel.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20220613091546.1565167-1-cezary.rojewski@intel.com>
-References: <20220613091546.1565167-1-cezary.rojewski@intel.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-Cc: Cezary Rojewski <cezary.rojewski@intel.com>,
- pierre-louis.bossart@linux.intel.com, tiwai@suse.com, hdegoede@redhat.com,
- amadeuszx.slawinski@linux.intel.com
+ dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
+ header.b="JZ5rdor0"; 
+ dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
+ header.b="QzLpMQHi"
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id ADF141F747;
+ Mon, 13 Jun 2022 09:13:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1655111601; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=auwLo7o+9sZw3vmZ03/PgS9ea2U9jdZ3kBfeuVhPitM=;
+ b=JZ5rdor03djY40OBMQSU3DhGqg8DaKPgNquNm840V2FP00m8Rl45MUAT9AK7CTRSf8YreW
+ fqEE3PLoi1rZVW6r2vYanF/ssRCwZcJKdkiqtpYeMz6ouPqJoym1gKdQnaapCQYj2qRdie
+ Ze3mutp9UoxI5nbXM7THFcNDTW7xGxg=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1655111601;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=auwLo7o+9sZw3vmZ03/PgS9ea2U9jdZ3kBfeuVhPitM=;
+ b=QzLpMQHiSBjt0IETZ3S7fK8xAzzyiqTO+J/MTwzv7hslM6kWbT5Z/FDkJl2o+2Rflt6XS7
+ GJUYawbn6VeNYnDw==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 8FE02134CF;
+ Mon, 13 Jun 2022 09:13:21 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+ by imap2.suse-dmz.suse.de with ESMTPSA id fl9lIrH/pmLeOwAAMHmgww
+ (envelope-from <tiwai@suse.de>); Mon, 13 Jun 2022 09:13:21 +0000
+Date: Mon, 13 Jun 2022 11:13:21 +0200
+Message-ID: <87ilp57wpa.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Hans de Goede <hdegoede@redhat.com>
+Subject: Re: How to add 2 different SND_PCI_QUIRKs for 2 models with the same
+ PCI subsys vend + prod ids?
+In-Reply-To: <5ca147d1-3a2d-60c6-c491-8aa844183222@redhat.com>
+References: <7e3aa97a-77c9-3367-8929-a86049286d75@redhat.com>
+ <87k09l7ys7.wl-tiwai@suse.de>
+ <5ca147d1-3a2d-60c6-c491-8aa844183222@redhat.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+Cc: "nikitashvets@flyium.com" <nikitashvets@flyium.com>,
+ "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -87,40 +98,156 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Drop redundant 'ret' assignemnt, stop ignoring set_jack() return value
-and reword local 'component' variable to 'codec' to improve readability.
+On Mon, 13 Jun 2022 10:46:28 +0200,
+Hans de Goede wrote:
+> 
+> Hi,
+> 
+> On 6/13/22 10:28, Takashi Iwai wrote:
+> > On Mon, 13 Jun 2022 09:54:47 +0200,
+> > Hans de Goede wrote:
+> >>
+> >> Hi All,
+> >>
+> >> There is a problem with the sound on the Lenovo Yoga Duet 7 13IML05, which
+> >> requires a SND_PCI_QUIRK to fix. But there already is an existing quirk
+> >> for another Lenovo laptop using the same  PCI subsys vend + prod ids.
+> >>
+> >> For more details see:
+> >> https://wiki.archlinux.org/title/Lenovo_Yoga_Duet_7_13IML05#Audio
+> >>
+> >> So I guess this means that we need to add a way to also include a DMI match
+> >> for SND_PCI_QUIRKs ?
+> >>
+> >> Maybe add a:
+> >>
+> >> const struct dmi_systemid *dmi_ids;
+> >>
+> >> member to struct snd_pci_quirk and a new
+> >> SND_PCI_QUIRK_DMI macro to set this?
+> > 
+> > Do both machines have the very same codec?  I couldn't find
+> > alsa-info.sh output for Duet 7, but at least, C940 seems with ALC298
+> > (0x10ec0298), judging from
+> >   https://bugzilla.kernel.org/show_bug.cgi?id=205755
+> > If Duet 7 has a different codec (e.g. ALC287 0x10ec0287), we can
+> > distinguish from that.
+> 
+> I've just asked the reporter of this for alsa-info.sh output.
+> 
+> So assuming the codec is indeed different how would I go about
+> fixing this ?
 
-Signed-off-by: Cezary Rojewski <cezary.rojewski@intel.com>
-Reviewed-by: Amadeusz Sławiński <amadeuszx.slawinski@linux.intel.com>
----
- sound/soc/intel/boards/bdw_rt286.c | 7 +++----
- 1 file changed, 3 insertions(+), 4 deletions(-)
+It'll be something like below.
 
-diff --git a/sound/soc/intel/boards/bdw_rt286.c b/sound/soc/intel/boards/bdw_rt286.c
-index c21f71b477d5..92fddf6061e8 100644
---- a/sound/soc/intel/boards/bdw_rt286.c
-+++ b/sound/soc/intel/boards/bdw_rt286.c
-@@ -61,8 +61,8 @@ static const struct snd_soc_dapm_route card_routes[] = {
- 
- static int codec_link_init(struct snd_soc_pcm_runtime *rtd)
- {
--	struct snd_soc_component *component = asoc_rtd_to_codec(rtd, 0)->component;
--	int ret = 0;
-+	struct snd_soc_component *codec = asoc_rtd_to_codec(rtd, 0)->component;
-+	int ret;
- 
- 	ret = snd_soc_card_jack_new_pins(rtd->card, "Headset", SND_JACK_HEADSET | SND_JACK_BTN_0,
- 					 &card_headset, card_headset_pins,
-@@ -70,8 +70,7 @@ static int codec_link_init(struct snd_soc_pcm_runtime *rtd)
- 	if (ret)
- 		return ret;
- 
--	snd_soc_component_set_jack(component, &card_headset, NULL);
--	return 0;
-+	return snd_soc_component_set_jack(codec, &card_headset, NULL);
+
+Takashi
+
+-- 8< --
+diff --git a/sound/pci/hda/hda_auto_parser.c b/sound/pci/hda/hda_auto_parser.c
+index cd1db943b7e0..7c6b1fe8dfcc 100644
+--- a/sound/pci/hda/hda_auto_parser.c
++++ b/sound/pci/hda/hda_auto_parser.c
+@@ -819,7 +819,7 @@ static void set_pin_targets(struct hda_codec *codec,
+ 		snd_hda_set_pin_ctl_cache(codec, cfg->nid, cfg->val);
  }
  
- static int codec_link_hw_params_fixup(struct snd_soc_pcm_runtime *rtd,
--- 
-2.25.1
-
+-static void apply_fixup(struct hda_codec *codec, int id, int action, int depth)
++void __snd_hda_apply_fixup(struct hda_codec *codec, int id, int action, int depth)
+ {
+ 	const char *modelname = codec->fixup_name;
+ 
+@@ -829,7 +829,7 @@ static void apply_fixup(struct hda_codec *codec, int id, int action, int depth)
+ 		if (++depth > 10)
+ 			break;
+ 		if (fix->chained_before)
+-			apply_fixup(codec, fix->chain_id, action, depth + 1);
++			__snd_hda_apply_fixup(codec, fix->chain_id, action, depth + 1);
+ 
+ 		switch (fix->type) {
+ 		case HDA_FIXUP_PINS:
+@@ -870,6 +870,7 @@ static void apply_fixup(struct hda_codec *codec, int id, int action, int depth)
+ 		id = fix->chain_id;
+ 	}
+ }
++EXPORT_SYMBOL_GPL(__snd_hda_apply_fixup);
+ 
+ /**
+  * snd_hda_apply_fixup - Apply the fixup chain with the given action
+@@ -879,7 +880,7 @@ static void apply_fixup(struct hda_codec *codec, int id, int action, int depth)
+ void snd_hda_apply_fixup(struct hda_codec *codec, int action)
+ {
+ 	if (codec->fixup_list)
+-		apply_fixup(codec, codec->fixup_id, action, 0);
++		__snd_hda_apply_fixup(codec, codec->fixup_id, action, 0);
+ }
+ EXPORT_SYMBOL_GPL(snd_hda_apply_fixup);
+ 
+diff --git a/sound/pci/hda/hda_local.h b/sound/pci/hda/hda_local.h
+index aca592651870..682dca2057db 100644
+--- a/sound/pci/hda/hda_local.h
++++ b/sound/pci/hda/hda_local.h
+@@ -348,6 +348,7 @@ void snd_hda_apply_verbs(struct hda_codec *codec);
+ void snd_hda_apply_pincfgs(struct hda_codec *codec,
+ 			   const struct hda_pintbl *cfg);
+ void snd_hda_apply_fixup(struct hda_codec *codec, int action);
++void __snd_hda_apply_fixup(struct hda_codec *codec, int id, int action, int depth);
+ void snd_hda_pick_fixup(struct hda_codec *codec,
+ 			const struct hda_model_fixup *models,
+ 			const struct snd_pci_quirk *quirk,
+diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+index a1a7842e7b5f..f2b0de3aa756 100644
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -7004,6 +7004,7 @@ enum {
+ 	ALC287_FIXUP_LEGION_15IMHG05_SPEAKERS,
+ 	ALC287_FIXUP_LEGION_15IMHG05_AUTOMUTE,
+ 	ALC287_FIXUP_YOGA7_14ITL_SPEAKERS,
++	ALC298_FIXUP_LENOVO_C940_DUET7,
+ 	ALC287_FIXUP_13S_GEN2_SPEAKERS,
+ 	ALC256_FIXUP_SET_COEF_DEFAULTS,
+ 	ALC256_FIXUP_SYSTEM76_MIC_NO_PRESENCE,
+@@ -7022,6 +7023,23 @@ enum {
+ 	ALC295_FIXUP_FRAMEWORK_LAPTOP_MIC_NO_PRESENCE,
+ };
+ 
++/* A special fixup for Lenovo C940 and Yoga Duet 7;
++ * both have the very same PCI SSID, and we need to apply different fixups
++ * depending on the codec ID
++ */
++static void alc298_fixup_lenovo_c940_duet7(struct hda_codec *codec,
++					   const struct hda_fixup *fix,
++					   int action)
++{
++	int id;
++
++	if (codec->core.vendor_id == 0x10ec0298)
++		id = ALC298_FIXUP_LENOVO_SPK_VOLUME; /* C940 */
++	else
++		id = ALC287_FIXUP_YOGA7_14ITL_SPEAKERS; /* Duet 7 */
++	__snd_hda_apply_fixup(codec, id, action, 0);
++}
++
+ static const struct hda_fixup alc269_fixups[] = {
+ 	[ALC269_FIXUP_GPIO2] = {
+ 		.type = HDA_FIXUP_FUNC,
+@@ -8721,6 +8739,10 @@ static const struct hda_fixup alc269_fixups[] = {
+ 		.chained = true,
+ 		.chain_id = ALC269_FIXUP_HEADSET_MODE,
+ 	},
++	[ALC298_FIXUP_LENOVO_C940_DUET7] = {
++		.type = HDA_FIXUP_FUNC,
++		.v.func = alc298_fixup_lenovo_c940_duet7,
++	},
+ 	[ALC287_FIXUP_13S_GEN2_SPEAKERS] = {
+ 		.type = HDA_FIXUP_VERBS,
+ 		.v.verbs = (const struct hda_verb[]) {
+@@ -9274,7 +9296,7 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
+ 	SND_PCI_QUIRK(0x17aa, 0x31af, "ThinkCentre Station", ALC623_FIXUP_LENOVO_THINKSTATION_P340),
+ 	SND_PCI_QUIRK(0x17aa, 0x3802, "Lenovo Yoga DuetITL 2021", ALC287_FIXUP_YOGA7_14ITL_SPEAKERS),
+ 	SND_PCI_QUIRK(0x17aa, 0x3813, "Legion 7i 15IMHG05", ALC287_FIXUP_LEGION_15IMHG05_SPEAKERS),
+-	SND_PCI_QUIRK(0x17aa, 0x3818, "Lenovo C940", ALC298_FIXUP_LENOVO_SPK_VOLUME),
++	SND_PCI_QUIRK(0x17aa, 0x3818, "Lenovo C940 / Yoga Duet 7", ALC298_FIXUP_LENOVO_C940_DUET7),
+ 	SND_PCI_QUIRK(0x17aa, 0x3819, "Lenovo 13s Gen2 ITL", ALC287_FIXUP_13S_GEN2_SPEAKERS),
+ 	SND_PCI_QUIRK(0x17aa, 0x3820, "Yoga Duet 7 13ITL6", ALC287_FIXUP_YOGA7_14ITL_SPEAKERS),
+ 	SND_PCI_QUIRK(0x17aa, 0x3824, "Legion Y9000X 2020", ALC285_FIXUP_LEGION_Y9000X_SPEAKERS),
