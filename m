@@ -4,62 +4,61 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 59648C43334
-	for <alsa-devel@archiver.kernel.org>; Tue, 14 Jun 2022 02:11:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E135CC433EF
+	for <alsa-devel@archiver.kernel.org>; Tue, 14 Jun 2022 02:11:46 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 933A21888;
-	Tue, 14 Jun 2022 04:10:40 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 933A21888
+	by alsa0.perex.cz (Postfix) with ESMTPS id 36C9A1862;
+	Tue, 14 Jun 2022 04:10:55 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 36C9A1862
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1655172690;
-	bh=Hk15Ko+XriFcMJvHOag9fZWU72/YW9YpHBaQUG75oCY=;
+	s=default; t=1655172705;
+	bh=XOI0c77YmpwmB73ozt+1WFSrwCF5nxhWw69Zwe/maM0=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=OVPUYlOQBEM3Xo3GaUDzVlRUKfyonQhk3wyNLj8xGE3/dOQJhNIGVKaJu4IyaPlPU
-	 pOvX8nmd0SrBpgI7Db3m+n5cnfHHRKjqOCWD1OLBVNCGXtDu5iWnOVsCeMwVoFPlEh
-	 FrSSmBl4Pr9TAQYQyq3ZMva6R3iz5MxRq1dWWfg0=
+	b=ZJiESP8g76Fh2peSWygbQwMC8mLVIsLu+nSafEg9IHYp4A55vvFPSqUEEcClssWe5
+	 PSFe88PQg/9ul9GZhE6/ZkPi77i5xpj/dVIh6CdwS/x9jKFi0TXlWrXOkQ6MguRuCH
+	 9zhEdtFn+cjFpb9ZiUKHZpBoh9dcTwpsmFmEs4Es=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 0CDB0F80527;
-	Tue, 14 Jun 2022 04:06:30 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id AFC35F805C9;
+	Tue, 14 Jun 2022 04:06:33 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 85008F805AF; Tue, 14 Jun 2022 04:06:27 +0200 (CEST)
-Received: from ams.source.kernel.org (ams.source.kernel.org
- [IPv6:2604:1380:4601:e00::1])
+ id 76341F80539; Tue, 14 Jun 2022 04:06:32 +0200 (CEST)
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id DD159F805B6
- for <alsa-devel@alsa-project.org>; Tue, 14 Jun 2022 04:06:22 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DD159F805B6
+ by alsa1.perex.cz (Postfix) with ESMTPS id A9546F805C9
+ for <alsa-devel@alsa-project.org>; Tue, 14 Jun 2022 04:06:29 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A9546F805C9
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="hEXiYSRs"
+ header.b="bXWmK99x"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by ams.source.kernel.org (Postfix) with ESMTPS id C82E1B80D19;
- Tue, 14 Jun 2022 02:06:21 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 666FEC3411B;
- Tue, 14 Jun 2022 02:06:19 +0000 (UTC)
+ by ams.source.kernel.org (Postfix) with ESMTPS id 46850B816C0;
+ Tue, 14 Jun 2022 02:06:29 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 31EF2C341C5;
+ Tue, 14 Jun 2022 02:06:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1655172380;
- bh=Hk15Ko+XriFcMJvHOag9fZWU72/YW9YpHBaQUG75oCY=;
+ s=k20201202; t=1655172389;
+ bh=XOI0c77YmpwmB73ozt+1WFSrwCF5nxhWw69Zwe/maM0=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=hEXiYSRsHvCsCLJE/a7OJPaX/SkB4OWA29p9XUcrDYfEGaaN9ggsPpeXacEBWX/Ja
- GbAbuDyjRJ9ppWyrBxCcNhhTXKfU3n42kKgI5X0JQERQCs43QYQRiF2vLe99rSpq7P
- v16sx2TVihfUV85LYNJBwUMPJFN0j4COJPq//xoc64i5huMa9tlODmcUKjEIPeR/yW
- gxae8jFL78mNOaLhewX7nhCzLwdi0w0T0lZ9AG/WfIhPRqu/G52jwY+raxo4+uwlFL
- qbYwoVt6IVE31YDWZWiIWDWTCUT8cb0m8gZKqNSJ8vL7j9eB0Sgw2R/VI24ry5g+1L
- 4pfUUAuDMl72g==
+ b=bXWmK99x/rHDsLxHKDZke0ys1sImNwzLu0g1gUzFThMUzyV1gQYxaAMoI5U8cpcQG
+ PoZA6FbRPKmexbpr9uj/HiAcPhQUhVSPN0Dx9FsRmn3G9oCtLKqhgAKe6k/KIsAcXL
+ vSKwz2VUa9R7R7JsKcdRGO7L3TILzhUdDHWdxyv8XRd4DqXfb19gqGU7BhUqPxAwsP
+ 10yD4DKgBIhKTk6/0Yufsrk6X+s/9F6lc+ZAt/EB/aE6/2MqKYQDQm3jMVc3vxUZeA
+ Iz87kNs5/k2Ux8GhwQDLqjxLwrXPkCTUH1+sJ31yDpnYBm5QOHTAGYgSqOZOCIVeHI
+ S1hjYaQbNpNoA==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.17 11/43] ASoC: cs42l56: Correct typo in minimum
- level for SX volume controls
-Date: Mon, 13 Jun 2022 22:05:30 -0400
-Message-Id: <20220614020602.1098943-11-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.17 17/43] ASoC: es8328: Fix event generation for
+ deemphasis control
+Date: Mon, 13 Jun 2022 22:05:36 -0400
+Message-Id: <20220614020602.1098943-17-sashal@kernel.org>
 X-Mailer: git-send-email 2.35.1
 In-Reply-To: <20220614020602.1098943-1-sashal@kernel.org>
 References: <20220614020602.1098943-1-sashal@kernel.org>
@@ -67,10 +66,8 @@ MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
-Cc: Sasha Levin <sashal@kernel.org>, brian.austin@cirrus.com,
- Charles Keepax <ckeepax@opensource.cirrus.com>, alsa-devel@alsa-project.org,
- tiwai@suse.com, lgirdwood@gmail.com, Paul.Handrigan@cirrus.com,
- Mark Brown <broonie@kernel.org>
+Cc: Sasha Levin <sashal@kernel.org>, alsa-devel@alsa-project.org,
+ tiwai@suse.com, lgirdwood@gmail.com, Mark Brown <broonie@kernel.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -86,39 +83,45 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Charles Keepax <ckeepax@opensource.cirrus.com>
+From: Mark Brown <broonie@kernel.org>
 
-[ Upstream commit a8928ada9b96944cadd8b65d191e33199fd38782 ]
+[ Upstream commit 8259610c2ec01c5cbfb61882ae176aabacac9c19 ]
 
-A couple of the SX volume controls specify 0x84 as the lowest volume
-value, however the correct value from the datasheet is 0x44. The
-datasheet don't include spaces in the value it displays as binary so
-this was almost certainly just a typo reading 1000100.
+Currently the put() method for the deemphasis control returns 0 when a new
+value is written to the control even if the value changed, meaning events
+are not generated. Fix this, skip the work of updating the value when it is
+unchanged and then return 1 after having done so.
 
-Signed-off-by: Charles Keepax <ckeepax@opensource.cirrus.com>
-Link: https://lore.kernel.org/r/20220602162119.3393857-6-ckeepax@opensource.cirrus.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
+Link: https://lore.kernel.org/r/20220603123937.4013603-1-broonie@kernel.org
 Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/codecs/cs42l56.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ sound/soc/codecs/es8328.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-diff --git a/sound/soc/codecs/cs42l56.c b/sound/soc/codecs/cs42l56.c
-index 3cf8a0b4478c..b39c25409c23 100644
---- a/sound/soc/codecs/cs42l56.c
-+++ b/sound/soc/codecs/cs42l56.c
-@@ -391,9 +391,9 @@ static const struct snd_kcontrol_new cs42l56_snd_controls[] = {
- 	SOC_DOUBLE("ADC Boost Switch", CS42L56_GAIN_BIAS_CTL, 3, 2, 1, 1),
+diff --git a/sound/soc/codecs/es8328.c b/sound/soc/codecs/es8328.c
+index 9632afc2d4d6..ca3b1c00fa78 100644
+--- a/sound/soc/codecs/es8328.c
++++ b/sound/soc/codecs/es8328.c
+@@ -161,13 +161,16 @@ static int es8328_put_deemph(struct snd_kcontrol *kcontrol,
+ 	if (deemph > 1)
+ 		return -EINVAL;
  
- 	SOC_DOUBLE_R_SX_TLV("Headphone Volume", CS42L56_HPA_VOLUME,
--			      CS42L56_HPB_VOLUME, 0, 0x84, 0x48, hl_tlv),
-+			      CS42L56_HPB_VOLUME, 0, 0x44, 0x48, hl_tlv),
- 	SOC_DOUBLE_R_SX_TLV("LineOut Volume", CS42L56_LOA_VOLUME,
--			      CS42L56_LOB_VOLUME, 0, 0x84, 0x48, hl_tlv),
-+			      CS42L56_LOB_VOLUME, 0, 0x44, 0x48, hl_tlv),
++	if (es8328->deemph == deemph)
++		return 0;
++
+ 	ret = es8328_set_deemph(component);
+ 	if (ret < 0)
+ 		return ret;
  
- 	SOC_SINGLE_TLV("Bass Shelving Volume", CS42L56_TONE_CTL,
- 			0, 0x00, 1, tone_tlv),
+ 	es8328->deemph = deemph;
+ 
+-	return 0;
++	return 1;
+ }
+ 
+ 
 -- 
 2.35.1
 
