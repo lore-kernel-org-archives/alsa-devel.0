@@ -4,62 +4,61 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 80A3AC433EF
-	for <alsa-devel@archiver.kernel.org>; Tue, 14 Jun 2022 02:19:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id F08F8CCA47B
+	for <alsa-devel@archiver.kernel.org>; Tue, 14 Jun 2022 02:19:43 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B939218EE;
-	Tue, 14 Jun 2022 04:18:41 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B939218EE
+	by alsa0.perex.cz (Postfix) with ESMTPS id DE0BB1906;
+	Tue, 14 Jun 2022 04:18:51 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DE0BB1906
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1655173171;
-	bh=h3/CVxVIjCVxAAoWrgd+Z2TY8aIOGi1RT8g+0/Nmjpw=;
+	s=default; t=1655173181;
+	bh=4syYMxPkzIJ/qkZf+faSQz3RfpeaARsghA50qhraB/I=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=roaLIFmAIbz38jAxoqmVdxtzy7yZuz2LONY7xfDEAV8gqu6Ds4I6nmBrdJ956z4gQ
-	 VTAWHHOpiy7UJahNi+VTem1VW5Hgso5a1cnGvEd2fxdiQ7fPiDGI6yUwzLkHJ+Yzld
-	 Te2sA9LaYIsCegEGX/D7V2SIyUH49tkZdsNkp5J0=
+	b=jqI79tkXh+sECaWkmY10n1itcBs1EDDK6b6xDGWzh3VKdevQjvAUSRbsoQ9ToaQKE
+	 I6oqYJ2tKMN57pZB+pyFc/fpHN0udwQXmmh6U6hXF3IdcUH0p/6ZUjP9axrhMwumXI
+	 gVO2kM9ha2y9BX/W/zrAxEVeXvdhlFCyyHxZYlHE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 2110CF8057A;
+	by alsa1.perex.cz (Postfix) with ESMTP id E377FF8063D;
 	Tue, 14 Jun 2022 04:09:19 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 93093F80639; Tue, 14 Jun 2022 04:09:17 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org
- [IPv6:2604:1380:4641:c500::1])
+ id 497FDF80638; Tue, 14 Jun 2022 04:09:18 +0200 (CEST)
+Received: from ams.source.kernel.org (ams.source.kernel.org
+ [IPv6:2604:1380:4601:e00::1])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 49E69F80537
- for <alsa-devel@alsa-project.org>; Tue, 14 Jun 2022 04:09:14 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 49E69F80537
+ by alsa1.perex.cz (Postfix) with ESMTPS id 26712F80137
+ for <alsa-devel@alsa-project.org>; Tue, 14 Jun 2022 04:09:11 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 26712F80137
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="Ph4S36Bn"
+ header.b="icFefRUc"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id 2F61E60F1C;
- Tue, 14 Jun 2022 02:09:13 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 09354C36AFF;
+ by ams.source.kernel.org (Postfix) with ESMTPS id C7D17B816A9;
  Tue, 14 Jun 2022 02:09:10 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2E2F0C36B00;
+ Tue, 14 Jun 2022 02:09:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1655172552;
- bh=h3/CVxVIjCVxAAoWrgd+Z2TY8aIOGi1RT8g+0/Nmjpw=;
+ s=k20201202; t=1655172550;
+ bh=4syYMxPkzIJ/qkZf+faSQz3RfpeaARsghA50qhraB/I=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=Ph4S36Bnp1/gKDaXY3hLb61cRM5yAfQp7Nz2kFQB4mAXcdHqxIrDumAvfUA2s+xQA
- vBEdL1e13QVQb0bnj9DfxG7Ebggtxs+IOV4pIj9IdnSYIV1ArUc7d6OeAJNMspfRdH
- l422vn8THbqxqlnnCDD0cA6R+xviEDEKiPkQwKA6wfTjttSiBSfL52kJQecwKw/Pny
- k7T9lEhXfBX4Jm4yOJaQZNP8FydO6Qh7IG8IYVfXh2af2u8BYNNSk06otCSzMArYGl
- FMyFzY4VAM/8Pe8tQR1u51kicABfChpEu1JpHFRWNJzv1CJJ0NzslWfXDgdzE9vewt
- Vh2sRu1DUfceQ==
+ b=icFefRUctHjT2dbVTz7d01h2QBq6iC1uQDwxf8U9eOj9FzfmIoR1En2PP+2rktx2t
+ rvcvykeBw2R+W61KICDUmqbKrOklxCd9jT/cgT+WlgkmGc52EkS0WxMpUdKDTabaiq
+ Kdm5LBWXaLHotNvWRal/fn7Nwkm1IXLacSp1hDh6NhoXsORmcAVJQ/VklOBBREpSn5
+ t/r+0p2zZ0DS+SNYjsOtants6e9gl7WEmKn7jEzVQoR4Hn4vVFaBs62YOl3QoSVB5V
+ poH3a2JFyNMvmjC5mE9heMS6siM1SzUwDsUQOp/xfHWLYnnI0sN8Mpv6Cj240GSFIq
+ qzZPP6rdw1bPQ==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.4 06/23] ASoC: cs53l30: Correct number of volume
- levels on SX controls
-Date: Mon, 13 Jun 2022 22:08:42 -0400
-Message-Id: <20220614020900.1100401-6-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.4 05/23] ASoC: cs35l36: Update digital volume TLV
+Date: Mon, 13 Jun 2022 22:08:41 -0400
+Message-Id: <20220614020900.1100401-5-sashal@kernel.org>
 X-Mailer: git-send-email 2.35.1
 In-Reply-To: <20220614020900.1100401-1-sashal@kernel.org>
 References: <20220614020900.1100401-1-sashal@kernel.org>
@@ -70,7 +69,7 @@ Content-Transfer-Encoding: 8bit
 Cc: Sasha Levin <sashal@kernel.org>, brian.austin@cirrus.com,
  Charles Keepax <ckeepax@opensource.cirrus.com>, alsa-devel@alsa-project.org,
  tiwai@suse.com, lgirdwood@gmail.com, Paul.Handrigan@cirrus.com,
- David Rhodes <david.rhodes@cirrus.com>, Mark Brown <broonie@kernel.org>
+ Mark Brown <broonie@kernel.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -88,55 +87,33 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 From: Charles Keepax <ckeepax@opensource.cirrus.com>
 
-[ Upstream commit 7fbd6dd68127927e844912a16741016d432a0737 ]
+[ Upstream commit 5005a2345825eb8346546d99bfe669f73111b5c5 ]
 
-This driver specified the maximum value rather than the number of volume
-levels on the SX controls, this is incorrect, so correct them.
+The digital volume TLV specifies the step as 0.25dB but the actual step
+of the control is 0.125dB. Update the TLV to correct this.
 
-Reported-by: David Rhodes <david.rhodes@cirrus.com>
 Signed-off-by: Charles Keepax <ckeepax@opensource.cirrus.com>
-Link: https://lore.kernel.org/r/20220602162119.3393857-4-ckeepax@opensource.cirrus.com
+Link: https://lore.kernel.org/r/20220602162119.3393857-3-ckeepax@opensource.cirrus.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/codecs/cs53l30.c | 16 ++++++++--------
- 1 file changed, 8 insertions(+), 8 deletions(-)
+ sound/soc/codecs/cs35l36.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/sound/soc/codecs/cs53l30.c b/sound/soc/codecs/cs53l30.c
-index ed22361b35c1..a5a383b92305 100644
---- a/sound/soc/codecs/cs53l30.c
-+++ b/sound/soc/codecs/cs53l30.c
-@@ -347,22 +347,22 @@ static const struct snd_kcontrol_new cs53l30_snd_controls[] = {
- 	SOC_ENUM("ADC2 NG Delay", adc2_ng_delay_enum),
+diff --git a/sound/soc/codecs/cs35l36.c b/sound/soc/codecs/cs35l36.c
+index e9b5f76f27a8..aa32b8c26578 100644
+--- a/sound/soc/codecs/cs35l36.c
++++ b/sound/soc/codecs/cs35l36.c
+@@ -444,7 +444,8 @@ static bool cs35l36_volatile_reg(struct device *dev, unsigned int reg)
+ 	}
+ }
  
- 	SOC_SINGLE_SX_TLV("ADC1A PGA Volume",
--		    CS53L30_ADC1A_AFE_CTL, 0, 0x34, 0x18, pga_tlv),
-+		    CS53L30_ADC1A_AFE_CTL, 0, 0x34, 0x24, pga_tlv),
- 	SOC_SINGLE_SX_TLV("ADC1B PGA Volume",
--		    CS53L30_ADC1B_AFE_CTL, 0, 0x34, 0x18, pga_tlv),
-+		    CS53L30_ADC1B_AFE_CTL, 0, 0x34, 0x24, pga_tlv),
- 	SOC_SINGLE_SX_TLV("ADC2A PGA Volume",
--		    CS53L30_ADC2A_AFE_CTL, 0, 0x34, 0x18, pga_tlv),
-+		    CS53L30_ADC2A_AFE_CTL, 0, 0x34, 0x24, pga_tlv),
- 	SOC_SINGLE_SX_TLV("ADC2B PGA Volume",
--		    CS53L30_ADC2B_AFE_CTL, 0, 0x34, 0x18, pga_tlv),
-+		    CS53L30_ADC2B_AFE_CTL, 0, 0x34, 0x24, pga_tlv),
+-static DECLARE_TLV_DB_SCALE(dig_vol_tlv, -10200, 25, 0);
++static const DECLARE_TLV_DB_RANGE(dig_vol_tlv, 0, 912,
++				  TLV_DB_MINMAX_ITEM(-10200, 1200));
+ static DECLARE_TLV_DB_SCALE(amp_gain_tlv, 0, 1, 1);
  
- 	SOC_SINGLE_SX_TLV("ADC1A Digital Volume",
--		    CS53L30_ADC1A_DIG_VOL, 0, 0xA0, 0x0C, dig_tlv),
-+		    CS53L30_ADC1A_DIG_VOL, 0, 0xA0, 0x6C, dig_tlv),
- 	SOC_SINGLE_SX_TLV("ADC1B Digital Volume",
--		    CS53L30_ADC1B_DIG_VOL, 0, 0xA0, 0x0C, dig_tlv),
-+		    CS53L30_ADC1B_DIG_VOL, 0, 0xA0, 0x6C, dig_tlv),
- 	SOC_SINGLE_SX_TLV("ADC2A Digital Volume",
--		    CS53L30_ADC2A_DIG_VOL, 0, 0xA0, 0x0C, dig_tlv),
-+		    CS53L30_ADC2A_DIG_VOL, 0, 0xA0, 0x6C, dig_tlv),
- 	SOC_SINGLE_SX_TLV("ADC2B Digital Volume",
--		    CS53L30_ADC2B_DIG_VOL, 0, 0xA0, 0x0C, dig_tlv),
-+		    CS53L30_ADC2B_DIG_VOL, 0, 0xA0, 0x6C, dig_tlv),
- };
- 
- static const struct snd_soc_dapm_widget cs53l30_dapm_widgets[] = {
+ static const char * const cs35l36_pcm_sftramp_text[] =  {
 -- 
 2.35.1
 
