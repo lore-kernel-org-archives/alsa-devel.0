@@ -4,62 +4,60 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 99670C433EF
-	for <alsa-devel@archiver.kernel.org>; Tue, 14 Jun 2022 02:13:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D0EFAC43334
+	for <alsa-devel@archiver.kernel.org>; Tue, 14 Jun 2022 02:13:55 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B8E6518CE;
-	Tue, 14 Jun 2022 04:12:48 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B8E6518CE
+	by alsa0.perex.cz (Postfix) with ESMTPS id 207B618C7;
+	Tue, 14 Jun 2022 04:13:04 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 207B618C7
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1655172818;
-	bh=+PYrvTFnip/gg9TheCSfPkipohp84RZ+kbpGq3MpCVQ=;
+	s=default; t=1655172834;
+	bh=4seMafuumCFqNw+bDTbGN5XERJrkspwfxmcEylUX7QY=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=omvCILIEHbhs0VJWQfAV10y1BI3oV+qFsLEbZveps6pyy3CANvyQiJvcA+aOR2KVb
-	 jqk8/VvQRd9HvO1BjDkU2VU3fT0q+o3sdfTJgB4f3rQ2CBaHwRyqCqk5k0/DiRA4BY
-	 +ZcEYI1nPmis04K4FJZMRdGFKgWRDfbXQScdz/u0=
+	b=NlC6jNe1aFTkSK+agfuHZhmRTSlRqzMSDWIp2yl8ZGI8xX+g9aGplSd8C4IdUH8jj
+	 rx2WBtgFB9Hw6N/x3mKIUW1BdhFcAWn7Xcyd82ro+IZerCePV0QTlWxwKfua30TH0p
+	 tDGXpT7pfimwRw6fcu5Q6VtJcAKmdFl5AHpGITPY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 37FDBF8053D;
-	Tue, 14 Jun 2022 04:07:34 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id D9C11F80542;
+	Tue, 14 Jun 2022 04:07:35 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id B3970F805E6; Tue, 14 Jun 2022 04:07:31 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org
- [IPv6:2604:1380:4641:c500::1])
+ id DAEF7F805EB; Tue, 14 Jun 2022 04:07:33 +0200 (CEST)
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 1C8E5F8053A
- for <alsa-devel@alsa-project.org>; Tue, 14 Jun 2022 04:07:28 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1C8E5F8053A
+ by alsa1.perex.cz (Postfix) with ESMTPS id 6E60AF8053D
+ for <alsa-devel@alsa-project.org>; Tue, 14 Jun 2022 04:07:24 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6E60AF8053D
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="a86eNXtV"
+ header.b="DAX+vGGh"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id 7381260D58;
- Tue, 14 Jun 2022 02:07:26 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 196EEC3411B;
+ by ams.source.kernel.org (Postfix) with ESMTPS id 11C92B8168A;
  Tue, 14 Jun 2022 02:07:24 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 92714C385A2;
+ Tue, 14 Jun 2022 02:07:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1655172446;
- bh=+PYrvTFnip/gg9TheCSfPkipohp84RZ+kbpGq3MpCVQ=;
+ s=k20201202; t=1655172442;
+ bh=4seMafuumCFqNw+bDTbGN5XERJrkspwfxmcEylUX7QY=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=a86eNXtVPKHKeXnY8L1Ib220lFPllZhYeh1nFgjmZv/6ysVmBSJdL5uSG3jrlO+qq
- wdcBz7Od+q04NS5LVdwgroTBZHovCWBWXiYzOo6Tu4p330yDA9UWu8+VQNYI3LbJlM
- cvyP4QWndmIhQwXjUpxsp6k6afYYOaFS44EgHeqyMCnaKMSHIjWsQvi3G3zkEtP1pR
- VpQLhSHfIaQaWp5fDlb1HdrfYGgYIcJpRMbFg3Q4QRW3TsJyPh3sc5tOEFlQGK+BZo
- cA9F9zQf44qSJkS0O04XTfSJYDWyXDD3q85hmxENNCpbEgo/vUuwn1CZMnHVkVc2gc
- WBkyVf1fm92xA==
+ b=DAX+vGGhlo34Eh9VR0dukyTGBEaiZyplLL3xjBuRnXazDejsMAot8SLCKL2fQTJNG
+ WULweSdXbdce5wjhj6h3lFK7p3wFo69oyGmLLZeEVJcFnyPtTGjH85ac0ErNde2bas
+ ifQvczgFoxc3vBUdzWF1wc14aY15eRChPeuPbRWzJFuNIo+7XlS1IbYBbkjd+VY28X
+ lc85T7rGdbRgSV2ekCAYuS0IGW0r3noKPWBhOTkRZuzjSTGU5/xpd5XJNEShZA7iWr
+ FrmR6URhuwefsXQmHxrCl9v07NSmv8yywg3Xaes2vc99v8J7yMsJKnGfnqM355Bx8k
+ skC1sjF70klnQ==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.15 10/41] ASoC: cs42l52: Correct TLV for Bypass
- Volume
-Date: Mon, 13 Jun 2022 22:06:35 -0400
-Message-Id: <20220614020707.1099487-10-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.15 08/41] ASoC: cs35l36: Update digital volume TLV
+Date: Mon, 13 Jun 2022 22:06:33 -0400
+Message-Id: <20220614020707.1099487-8-sashal@kernel.org>
 X-Mailer: git-send-email 2.35.1
 In-Reply-To: <20220614020707.1099487-1-sashal@kernel.org>
 References: <20220614020707.1099487-1-sashal@kernel.org>
@@ -88,41 +86,33 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 From: Charles Keepax <ckeepax@opensource.cirrus.com>
 
-[ Upstream commit 91e90c712fade0b69cdff7cc6512f6099bd18ae5 ]
+[ Upstream commit 5005a2345825eb8346546d99bfe669f73111b5c5 ]
 
-The Bypass Volume is accidentally using a -6dB minimum TLV rather than
-the correct -60dB minimum. Add a new TLV to correct this.
+The digital volume TLV specifies the step as 0.25dB but the actual step
+of the control is 0.125dB. Update the TLV to correct this.
 
 Signed-off-by: Charles Keepax <ckeepax@opensource.cirrus.com>
-Link: https://lore.kernel.org/r/20220602162119.3393857-5-ckeepax@opensource.cirrus.com
+Link: https://lore.kernel.org/r/20220602162119.3393857-3-ckeepax@opensource.cirrus.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/codecs/cs42l52.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ sound/soc/codecs/cs35l36.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/sound/soc/codecs/cs42l52.c b/sound/soc/codecs/cs42l52.c
-index 785caba3f653..c19ad3c24702 100644
---- a/sound/soc/codecs/cs42l52.c
-+++ b/sound/soc/codecs/cs42l52.c
-@@ -137,6 +137,8 @@ static DECLARE_TLV_DB_SCALE(mic_tlv, 1600, 100, 0);
+diff --git a/sound/soc/codecs/cs35l36.c b/sound/soc/codecs/cs35l36.c
+index d83c1b318c1c..0accdb45ed72 100644
+--- a/sound/soc/codecs/cs35l36.c
++++ b/sound/soc/codecs/cs35l36.c
+@@ -444,7 +444,8 @@ static bool cs35l36_volatile_reg(struct device *dev, unsigned int reg)
+ 	}
+ }
  
- static DECLARE_TLV_DB_SCALE(pga_tlv, -600, 50, 0);
+-static DECLARE_TLV_DB_SCALE(dig_vol_tlv, -10200, 25, 0);
++static const DECLARE_TLV_DB_RANGE(dig_vol_tlv, 0, 912,
++				  TLV_DB_MINMAX_ITEM(-10200, 1200));
+ static DECLARE_TLV_DB_SCALE(amp_gain_tlv, 0, 1, 1);
  
-+static DECLARE_TLV_DB_SCALE(pass_tlv, -6000, 50, 0);
-+
- static DECLARE_TLV_DB_SCALE(mix_tlv, -5150, 50, 0);
- 
- static DECLARE_TLV_DB_SCALE(beep_tlv, -56, 200, 0);
-@@ -351,7 +353,7 @@ static const struct snd_kcontrol_new cs42l52_snd_controls[] = {
- 			      CS42L52_SPKB_VOL, 0, 0x40, 0xC0, hl_tlv),
- 
- 	SOC_DOUBLE_R_SX_TLV("Bypass Volume", CS42L52_PASSTHRUA_VOL,
--			      CS42L52_PASSTHRUB_VOL, 0, 0x88, 0x90, pga_tlv),
-+			      CS42L52_PASSTHRUB_VOL, 0, 0x88, 0x90, pass_tlv),
- 
- 	SOC_DOUBLE("Bypass Mute", CS42L52_MISC_CTL, 4, 5, 1, 0),
- 
+ static const char * const cs35l36_pcm_sftramp_text[] =  {
 -- 
 2.35.1
 
