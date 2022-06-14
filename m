@@ -4,53 +4,53 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B8438C433EF
-	for <alsa-devel@archiver.kernel.org>; Tue, 14 Jun 2022 04:26:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id AD1F1C433EF
+	for <alsa-devel@archiver.kernel.org>; Tue, 14 Jun 2022 04:27:17 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 93BF718C1;
-	Tue, 14 Jun 2022 06:26:06 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 93BF718C1
+	by alsa0.perex.cz (Postfix) with ESMTPS id E3EE818C0;
+	Tue, 14 Jun 2022 06:26:25 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E3EE818C0
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1655180816;
-	bh=BbyXxlWq3TqAErV0Y8GNiAe4UdpZlX77AUTUjKWi/GE=;
+	s=default; t=1655180836;
+	bh=QB9n9mNnhQQWszwYca0ptb6IIp0I7IZuGi4WyLz0bsE=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=M09lW0ApA0YbV2ExG5vMQZ/SRBTzyyRcLMqc3w7EHIR+cTqxWuSLNKm704ZZD22Br
-	 UM1EPGLGjYG49GbARuR8JmJBSLf9Rchskvo70LvyXnEX8tHTkNrhErXUopRdk7QtG+
-	 8JO/n8SgsfaEPrv6YobVLT1A2w0e1x1Wlx6Bjcmo=
+	b=PgZ20BP2JeMfCLqUUx2/ls3r9yv3kc5eSzmFVuhHvUOKSj1Sipu+0ZM1mcr6WXq98
+	 IjjHAyqSyP0CuzHEygqo6jCT8Zq0G/j589XE7rwVMBnKOB3v5n01C58ws1lLJ2AO1S
+	 CYvGp2HGxZTD5BMzW3Odze6zWgwfF7p4MhXrjSdE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 4B194F80527;
-	Tue, 14 Jun 2022 06:25:39 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2CA72F8052E;
+	Tue, 14 Jun 2022 06:25:46 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id B390CF80527; Tue, 14 Jun 2022 06:25:38 +0200 (CEST)
+ id 1B67DF8052F; Tue, 14 Jun 2022 06:25:44 +0200 (CEST)
 Received: from inva021.nxp.com (inva021.nxp.com [92.121.34.21])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 739C6F8012B
- for <alsa-devel@alsa-project.org>; Tue, 14 Jun 2022 06:25:30 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 739C6F8012B
+ by alsa1.perex.cz (Postfix) with ESMTPS id 6AE27F8016E
+ for <alsa-devel@alsa-project.org>; Tue, 14 Jun 2022 06:25:32 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6AE27F8016E
 Received: from inva021.nxp.com (localhost [127.0.0.1])
- by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 3DB13202719;
- Tue, 14 Jun 2022 06:25:30 +0200 (CEST)
+ by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id A215C2026FE;
+ Tue, 14 Jun 2022 06:25:32 +0200 (CEST)
 Received: from aprdc01srsp001v.ap-rdc01.nxp.com
  (aprdc01srsp001v.ap-rdc01.nxp.com [165.114.16.16])
- by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id E85B8202718;
- Tue, 14 Jun 2022 06:25:29 +0200 (CEST)
+ by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 57D96202717;
+ Tue, 14 Jun 2022 06:25:32 +0200 (CEST)
 Received: from localhost.localdomain (shlinux2.ap.freescale.net
  [10.192.224.44])
- by aprdc01srsp001v.ap-rdc01.nxp.com (Postfix) with ESMTP id 0E88B180219B;
- Tue, 14 Jun 2022 12:25:27 +0800 (+08)
+ by aprdc01srsp001v.ap-rdc01.nxp.com (Postfix) with ESMTP id 720D8180219B;
+ Tue, 14 Jun 2022 12:25:30 +0800 (+08)
 From: Shengjiu Wang <shengjiu.wang@nxp.com>
 To: nicoleotsuka@gmail.com, Xiubo.Lee@gmail.com, festevam@gmail.com,
  shengjiu.wang@gmail.com, lgirdwood@gmail.com, broonie@kernel.org,
  perex@perex.cz, tiwai@suse.com, alsa-devel@alsa-project.org,
  robh+dt@kernel.org, krzk+dt@kernel.org, devicetree@vger.kernel.org
-Subject: [PATCH 1/7] ASoC: fsl_sai: Add PDM daifmt support
-Date: Tue, 14 Jun 2022 12:11:18 +0800
-Message-Id: <1655179884-12278-2-git-send-email-shengjiu.wang@nxp.com>
+Subject: [PATCH 3/7] ASoC: fsl_sai: Add support for more sample rates
+Date: Tue, 14 Jun 2022 12:11:20 +0800
+Message-Id: <1655179884-12278-4-git-send-email-shengjiu.wang@nxp.com>
 X-Mailer: git-send-email 2.7.4
 In-Reply-To: <1655179884-12278-1-git-send-email-shengjiu.wang@nxp.com>
 References: <1655179884-12278-1-git-send-email-shengjiu.wang@nxp.com>
@@ -71,81 +71,48 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-PDM format is used for 1-bit stream, so clear the FBT and SYWD,
-and the each dataline only has one channel data.
+Add support for more sample rates, because PDM format
+bitstream has higher sample rates. for example DSD512
+format, the bit clock is 22.5792MHz, if the word width
+is U8_LE, then the max sample rate is 2822400.
 
 Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
 ---
- sound/soc/fsl/fsl_sai.c | 17 +++++++++++++++--
- sound/soc/fsl/fsl_sai.h |  1 +
- 2 files changed, 16 insertions(+), 2 deletions(-)
+ sound/soc/fsl/fsl_sai.c | 7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
 
 diff --git a/sound/soc/fsl/fsl_sai.c b/sound/soc/fsl/fsl_sai.c
-index 4f5bd9597c74..d11ee3b6f163 100644
+index d11ee3b6f163..9d2828b55c07 100644
 --- a/sound/soc/fsl/fsl_sai.c
 +++ b/sound/soc/fsl/fsl_sai.c
-@@ -224,6 +224,7 @@ static int fsl_sai_set_dai_fmt_tr(struct snd_soc_dai *cpu_dai,
- 	if (!sai->is_lsb_first)
- 		val_cr4 |= FSL_SAI_CR4_MF;
+@@ -30,7 +30,8 @@
+ static const unsigned int fsl_sai_rates[] = {
+ 	8000, 11025, 12000, 16000, 22050,
+ 	24000, 32000, 44100, 48000, 64000,
+-	88200, 96000, 176400, 192000
++	88200, 96000, 176400, 192000, 352800,
++	384000, 705600, 768000, 1411200, 2822400,
+ };
  
-+	sai->is_pdm_mode = false;
- 	/* DAI mode */
- 	switch (fmt & SND_SOC_DAIFMT_FORMAT_MASK) {
- 	case SND_SOC_DAIFMT_I2S:
-@@ -262,6 +263,11 @@ static int fsl_sai_set_dai_fmt_tr(struct snd_soc_dai *cpu_dai,
- 		val_cr2 |= FSL_SAI_CR2_BCP;
- 		sai->is_dsp_mode = true;
- 		break;
-+	case SND_SOC_DAIFMT_PDM:
-+		val_cr2 |= FSL_SAI_CR2_BCP;
-+		val_cr4 &= ~FSL_SAI_CR4_MF;
-+		sai->is_pdm_mode = true;
-+		break;
- 	case SND_SOC_DAIFMT_RIGHT_J:
- 		/* To be done */
- 	default:
-@@ -470,6 +476,13 @@ static int fsl_sai_hw_params(struct snd_pcm_substream *substream,
- 
- 	pins = DIV_ROUND_UP(channels, slots);
- 
-+	/*
-+	 * PDM mode, channels are independent
-+	 * each channels are on one dataline/FIFO.
-+	 */
-+	if (sai->is_pdm_mode)
-+		pins = channels;
-+
- 	if (!sai->is_consumer_mode) {
- 		if (sai->bclk_ratio)
- 			ret = fsl_sai_set_bclk(cpu_dai, tx,
-@@ -492,13 +505,13 @@ static int fsl_sai_hw_params(struct snd_pcm_substream *substream,
- 		}
- 	}
- 
--	if (!sai->is_dsp_mode)
-+	if (!sai->is_dsp_mode && !sai->is_pdm_mode)
- 		val_cr4 |= FSL_SAI_CR4_SYWD(slot_width);
- 
- 	val_cr5 |= FSL_SAI_CR5_WNW(slot_width);
- 	val_cr5 |= FSL_SAI_CR5_W0W(slot_width);
- 
--	if (sai->is_lsb_first)
-+	if (sai->is_lsb_first || sai->is_pdm_mode)
- 		val_cr5 |= FSL_SAI_CR5_FBT(0);
- 	else
- 		val_cr5 |= FSL_SAI_CR5_FBT(word_width - 1);
-diff --git a/sound/soc/fsl/fsl_sai.h b/sound/soc/fsl/fsl_sai.h
-index 1c8f5ca07f9d..bc2a86a413e1 100644
---- a/sound/soc/fsl/fsl_sai.h
-+++ b/sound/soc/fsl/fsl_sai.h
-@@ -259,6 +259,7 @@ struct fsl_sai {
- 	bool is_consumer_mode;
- 	bool is_lsb_first;
- 	bool is_dsp_mode;
-+	bool is_pdm_mode;
- 	bool synchronous[2];
- 
- 	unsigned int mclk_id[2];
+ static const struct snd_pcm_hw_constraint_list fsl_sai_rate_constraints = {
+@@ -763,7 +764,7 @@ static struct snd_soc_dai_driver fsl_sai_dai_template = {
+ 		.channels_min = 1,
+ 		.channels_max = 32,
+ 		.rate_min = 8000,
+-		.rate_max = 192000,
++		.rate_max = 2822400,
+ 		.rates = SNDRV_PCM_RATE_KNOT,
+ 		.formats = FSL_SAI_FORMATS,
+ 	},
+@@ -772,7 +773,7 @@ static struct snd_soc_dai_driver fsl_sai_dai_template = {
+ 		.channels_min = 1,
+ 		.channels_max = 32,
+ 		.rate_min = 8000,
+-		.rate_max = 192000,
++		.rate_max = 2822400,
+ 		.rates = SNDRV_PCM_RATE_KNOT,
+ 		.formats = FSL_SAI_FORMATS,
+ 	},
 -- 
 2.17.1
 
