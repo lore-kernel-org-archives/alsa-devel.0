@@ -4,61 +4,62 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B1E4CC43334
-	for <alsa-devel@archiver.kernel.org>; Tue, 14 Jun 2022 02:19:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 80A3AC433EF
+	for <alsa-devel@archiver.kernel.org>; Tue, 14 Jun 2022 02:19:33 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 01B081904;
-	Tue, 14 Jun 2022 04:18:16 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 01B081904
+	by alsa0.perex.cz (Postfix) with ESMTPS id B939218EE;
+	Tue, 14 Jun 2022 04:18:41 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B939218EE
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1655173146;
-	bh=uDO5nkW3n7id8M1f7aDZx0zjUV7GsY+47TRMg3RV4e4=;
+	s=default; t=1655173171;
+	bh=h3/CVxVIjCVxAAoWrgd+Z2TY8aIOGi1RT8g+0/Nmjpw=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=OcWfv7eC8G4/YEYQJujJbssoMECkvwy5fpqiKJw1azNRKPnGzSt/TbWQbQbw14owD
-	 dUjJBmVl2jvBnXRxVbOnmXjy8IACbclFoGDyGEZ7XUG4lGOsrEzJ2tzlh84RGShvPk
-	 yxHzfDx+nLZ5OkN5qLzuxugjKdqim0CkUiKG717k=
+	b=roaLIFmAIbz38jAxoqmVdxtzy7yZuz2LONY7xfDEAV8gqu6Ds4I6nmBrdJ956z4gQ
+	 VTAWHHOpiy7UJahNi+VTem1VW5Hgso5a1cnGvEd2fxdiQ7fPiDGI6yUwzLkHJ+Yzld
+	 Te2sA9LaYIsCegEGX/D7V2SIyUH49tkZdsNkp5J0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 91789F80634;
-	Tue, 14 Jun 2022 04:09:16 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2110CF8057A;
+	Tue, 14 Jun 2022 04:09:19 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 4AAF5F80632; Tue, 14 Jun 2022 04:09:13 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+ id 93093F80639; Tue, 14 Jun 2022 04:09:17 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org
+ [IPv6:2604:1380:4641:c500::1])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 1E43DF80139
- for <alsa-devel@alsa-project.org>; Tue, 14 Jun 2022 04:09:07 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1E43DF80139
+ by alsa1.perex.cz (Postfix) with ESMTPS id 49E69F80537
+ for <alsa-devel@alsa-project.org>; Tue, 14 Jun 2022 04:09:14 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 49E69F80537
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="O/LhZ6Qw"
+ header.b="Ph4S36Bn"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id E063B60B76;
- Tue, 14 Jun 2022 02:09:05 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 29403C341CF;
- Tue, 14 Jun 2022 02:09:04 +0000 (UTC)
+ by dfw.source.kernel.org (Postfix) with ESMTPS id 2F61E60F1C;
+ Tue, 14 Jun 2022 02:09:13 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 09354C36AFF;
+ Tue, 14 Jun 2022 02:09:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1655172545;
- bh=uDO5nkW3n7id8M1f7aDZx0zjUV7GsY+47TRMg3RV4e4=;
+ s=k20201202; t=1655172552;
+ bh=h3/CVxVIjCVxAAoWrgd+Z2TY8aIOGi1RT8g+0/Nmjpw=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=O/LhZ6QwJjUflch3TMlUKpiIcFVQLjejH+VAHMZK8wEBcnO1PHaKo0ZycFJQLMMO2
- 124XuCmK1piMsNNZmsHam56GdfbY7ZBptsg4iZ4gOc7VrwGc4ZFT5R/mCEFVTF8DlS
- AB2ohqaEQgHhOHJl4Eg+J7EAkyiRvjUOItWTzX8hAOWyMwHeyMzGFT7R2gFIf3CYjF
- dosfRITH/ZfTqleAxZSdTRisRkPBSYbT5QK13AedGWmx9EoUggK4abZBZQ6ehrOP4/
- zKblhHTkJQApbgKFlq6N39S7lfGB/OpOVV70AvbrAWw5b38226bN6pzQP1CiIE4/2g
- xiZ9NIfefDR8g==
+ b=Ph4S36Bnp1/gKDaXY3hLb61cRM5yAfQp7Nz2kFQB4mAXcdHqxIrDumAvfUA2s+xQA
+ vBEdL1e13QVQb0bnj9DfxG7Ebggtxs+IOV4pIj9IdnSYIV1ArUc7d6OeAJNMspfRdH
+ l422vn8THbqxqlnnCDD0cA6R+xviEDEKiPkQwKA6wfTjttSiBSfL52kJQecwKw/Pny
+ k7T9lEhXfBX4Jm4yOJaQZNP8FydO6Qh7IG8IYVfXh2af2u8BYNNSk06otCSzMArYGl
+ FMyFzY4VAM/8Pe8tQR1u51kicABfChpEu1JpHFRWNJzv1CJJ0NzslWfXDgdzE9vewt
+ Vh2sRu1DUfceQ==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.4 02/23] ASoC: nau8822: Add operation for internal
- PLL off and on
-Date: Mon, 13 Jun 2022 22:08:38 -0400
-Message-Id: <20220614020900.1100401-2-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.4 06/23] ASoC: cs53l30: Correct number of volume
+ levels on SX controls
+Date: Mon, 13 Jun 2022 22:08:42 -0400
+Message-Id: <20220614020900.1100401-6-sashal@kernel.org>
 X-Mailer: git-send-email 2.35.1
 In-Reply-To: <20220614020900.1100401-1-sashal@kernel.org>
 References: <20220614020900.1100401-1-sashal@kernel.org>
@@ -66,10 +67,10 @@ MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
-Cc: Sasha Levin <sashal@kernel.org>, alsa-devel@alsa-project.org,
- Seven Li <wtli@nuvoton.com>, tiwai@suse.com, John Hsu <kchsu0@nuvoton.com>,
- lgirdwood@gmail.com, Hui Wang <hui.wang@canonical.com>,
- Mark Brown <broonie@kernel.org>, David Lin <ctlin0@nuvoton.com>
+Cc: Sasha Levin <sashal@kernel.org>, brian.austin@cirrus.com,
+ Charles Keepax <ckeepax@opensource.cirrus.com>, alsa-devel@alsa-project.org,
+ tiwai@suse.com, lgirdwood@gmail.com, Paul.Handrigan@cirrus.com,
+ David Rhodes <david.rhodes@cirrus.com>, Mark Brown <broonie@kernel.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -85,70 +86,57 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Hui Wang <hui.wang@canonical.com>
+From: Charles Keepax <ckeepax@opensource.cirrus.com>
 
-[ Upstream commit aeca8a3295022bcec46697f16e098140423d8463 ]
+[ Upstream commit 7fbd6dd68127927e844912a16741016d432a0737 ]
 
-We tried to enable the audio on an imx6sx EVB with the codec nau8822,
-after setting the internal PLL fractional parameters, the audio still
-couldn't work and the there was no sdma irq at all.
+This driver specified the maximum value rather than the number of volume
+levels on the SX controls, this is incorrect, so correct them.
 
-After checking with the section "8.1.1 Phase Locked Loop (PLL) Design
-Example" of "NAU88C22 Datasheet Rev 0.6", we found we need to
-turn off the PLL before programming fractional parameters and turn on
-the PLL after programming.
-
-After this change, the audio driver could record and play sound and
-the sdma's irq is triggered when playing or recording.
-
-Cc: David Lin <ctlin0@nuvoton.com>
-Cc: John Hsu <kchsu0@nuvoton.com>
-Cc: Seven Li <wtli@nuvoton.com>
-Signed-off-by: Hui Wang <hui.wang@canonical.com>
-Link: https://lore.kernel.org/r/20220530040151.95221-2-hui.wang@canonical.com
+Reported-by: David Rhodes <david.rhodes@cirrus.com>
+Signed-off-by: Charles Keepax <ckeepax@opensource.cirrus.com>
+Link: https://lore.kernel.org/r/20220602162119.3393857-4-ckeepax@opensource.cirrus.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/codecs/nau8822.c | 4 ++++
- sound/soc/codecs/nau8822.h | 3 +++
- 2 files changed, 7 insertions(+)
+ sound/soc/codecs/cs53l30.c | 16 ++++++++--------
+ 1 file changed, 8 insertions(+), 8 deletions(-)
 
-diff --git a/sound/soc/codecs/nau8822.c b/sound/soc/codecs/nau8822.c
-index 78db3bd0b3bc..cd163978792e 100644
---- a/sound/soc/codecs/nau8822.c
-+++ b/sound/soc/codecs/nau8822.c
-@@ -740,6 +740,8 @@ static int nau8822_set_pll(struct snd_soc_dai *dai, int pll_id, int source,
- 		pll_param->pll_int, pll_param->pll_frac,
- 		pll_param->mclk_scaler, pll_param->pre_factor);
+diff --git a/sound/soc/codecs/cs53l30.c b/sound/soc/codecs/cs53l30.c
+index ed22361b35c1..a5a383b92305 100644
+--- a/sound/soc/codecs/cs53l30.c
++++ b/sound/soc/codecs/cs53l30.c
+@@ -347,22 +347,22 @@ static const struct snd_kcontrol_new cs53l30_snd_controls[] = {
+ 	SOC_ENUM("ADC2 NG Delay", adc2_ng_delay_enum),
  
-+	snd_soc_component_update_bits(component,
-+		NAU8822_REG_POWER_MANAGEMENT_1, NAU8822_PLL_EN_MASK, NAU8822_PLL_OFF);
- 	snd_soc_component_update_bits(component,
- 		NAU8822_REG_PLL_N, NAU8822_PLLMCLK_DIV2 | NAU8822_PLLN_MASK,
- 		(pll_param->pre_factor ? NAU8822_PLLMCLK_DIV2 : 0) |
-@@ -757,6 +759,8 @@ static int nau8822_set_pll(struct snd_soc_dai *dai, int pll_id, int source,
- 		pll_param->mclk_scaler << NAU8822_MCLKSEL_SFT);
- 	snd_soc_component_update_bits(component,
- 		NAU8822_REG_CLOCKING, NAU8822_CLKM_MASK, NAU8822_CLKM_PLL);
-+	snd_soc_component_update_bits(component,
-+		NAU8822_REG_POWER_MANAGEMENT_1, NAU8822_PLL_EN_MASK, NAU8822_PLL_ON);
+ 	SOC_SINGLE_SX_TLV("ADC1A PGA Volume",
+-		    CS53L30_ADC1A_AFE_CTL, 0, 0x34, 0x18, pga_tlv),
++		    CS53L30_ADC1A_AFE_CTL, 0, 0x34, 0x24, pga_tlv),
+ 	SOC_SINGLE_SX_TLV("ADC1B PGA Volume",
+-		    CS53L30_ADC1B_AFE_CTL, 0, 0x34, 0x18, pga_tlv),
++		    CS53L30_ADC1B_AFE_CTL, 0, 0x34, 0x24, pga_tlv),
+ 	SOC_SINGLE_SX_TLV("ADC2A PGA Volume",
+-		    CS53L30_ADC2A_AFE_CTL, 0, 0x34, 0x18, pga_tlv),
++		    CS53L30_ADC2A_AFE_CTL, 0, 0x34, 0x24, pga_tlv),
+ 	SOC_SINGLE_SX_TLV("ADC2B PGA Volume",
+-		    CS53L30_ADC2B_AFE_CTL, 0, 0x34, 0x18, pga_tlv),
++		    CS53L30_ADC2B_AFE_CTL, 0, 0x34, 0x24, pga_tlv),
  
- 	return 0;
- }
-diff --git a/sound/soc/codecs/nau8822.h b/sound/soc/codecs/nau8822.h
-index 489191ff187e..b45d42c15de6 100644
---- a/sound/soc/codecs/nau8822.h
-+++ b/sound/soc/codecs/nau8822.h
-@@ -90,6 +90,9 @@
- #define NAU8822_REFIMP_3K			0x3
- #define NAU8822_IOBUF_EN			(0x1 << 2)
- #define NAU8822_ABIAS_EN			(0x1 << 3)
-+#define NAU8822_PLL_EN_MASK			(0x1 << 5)
-+#define NAU8822_PLL_ON				(0x1 << 5)
-+#define NAU8822_PLL_OFF				(0x0 << 5)
+ 	SOC_SINGLE_SX_TLV("ADC1A Digital Volume",
+-		    CS53L30_ADC1A_DIG_VOL, 0, 0xA0, 0x0C, dig_tlv),
++		    CS53L30_ADC1A_DIG_VOL, 0, 0xA0, 0x6C, dig_tlv),
+ 	SOC_SINGLE_SX_TLV("ADC1B Digital Volume",
+-		    CS53L30_ADC1B_DIG_VOL, 0, 0xA0, 0x0C, dig_tlv),
++		    CS53L30_ADC1B_DIG_VOL, 0, 0xA0, 0x6C, dig_tlv),
+ 	SOC_SINGLE_SX_TLV("ADC2A Digital Volume",
+-		    CS53L30_ADC2A_DIG_VOL, 0, 0xA0, 0x0C, dig_tlv),
++		    CS53L30_ADC2A_DIG_VOL, 0, 0xA0, 0x6C, dig_tlv),
+ 	SOC_SINGLE_SX_TLV("ADC2B Digital Volume",
+-		    CS53L30_ADC2B_DIG_VOL, 0, 0xA0, 0x0C, dig_tlv),
++		    CS53L30_ADC2B_DIG_VOL, 0, 0xA0, 0x6C, dig_tlv),
+ };
  
- /* NAU8822_REG_AUDIO_INTERFACE (0x4) */
- #define NAU8822_AIFMT_MASK			(0x3 << 3)
+ static const struct snd_soc_dapm_widget cs53l30_dapm_widgets[] = {
 -- 
 2.35.1
 
