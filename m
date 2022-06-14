@@ -4,69 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 74546C433EF
-	for <alsa-devel@archiver.kernel.org>; Tue, 14 Jun 2022 10:26:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B0BCEC43334
+	for <alsa-devel@archiver.kernel.org>; Tue, 14 Jun 2022 10:26:37 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 784B7175A;
-	Tue, 14 Jun 2022 12:25:13 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 784B7175A
+	by alsa0.perex.cz (Postfix) with ESMTPS id 5DE9B183A;
+	Tue, 14 Jun 2022 12:25:45 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5DE9B183A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1655202363;
-	bh=qA9xWVn3AUOfZxfhOprMPBGdr1XvmWBCUKQPSallH0Y=;
+	s=default; t=1655202395;
+	bh=cN29pCVu1fdFS3tkH1//D2VHMIqIZryyXy+3UpwRphg=;
 	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=HYVaoisClcf1kgLX5leKPXiDecHOuEQJZY/raungpFfWESzNk+cxxADpnU+WTRfh7
-	 8FC3CLqHpOeKZtckdVjXXxGcYnhy18anGt0bfzuu6MIug+B5/X7C6/nni++8YJoU1w
-	 8oa/XqcwICUHEhH3cg04JLyF2SmrRYlhpeQzrEP4=
+	b=Sl8iSGmlMEdRP3i/+aC3c4er5WblMJeeOb5e2nzHcLBL29d8Y5fGQvwtuWCvaswt/
+	 WBvyAaLguiWaCL0551C3XTpNh8MZM0ZldOQ/Pqb/0mbF57hIQUg0x6zfZ2sZniiJ7u
+	 UhKEfXOO2gu1pfbncePdh6CPHksa/4pu2Sjr+7Xo=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 0D19BF800E1;
-	Tue, 14 Jun 2022 12:25:13 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 9E72BF80246;
+	Tue, 14 Jun 2022 12:25:15 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 1BBCCF80139; Tue, 14 Jun 2022 12:25:12 +0200 (CEST)
+ id 0334AF80246; Tue, 14 Jun 2022 12:25:15 +0200 (CEST)
 Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id E0397F800E1
- for <alsa-devel@alsa-project.org>; Tue, 14 Jun 2022 12:25:09 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E0397F800E1
+ by alsa1.perex.cz (Postfix) with ESMTPS id 85CD8F80137
+ for <alsa-devel@alsa-project.org>; Tue, 14 Jun 2022 12:25:12 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 85CD8F80137
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="DGbRvEEx"
+ header.b="tg3uPwlP"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by ams.source.kernel.org (Postfix) with ESMTPS id DE201B8184D;
- Tue, 14 Jun 2022 10:25:08 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E8D11C3411B;
- Tue, 14 Jun 2022 10:25:04 +0000 (UTC)
+ by ams.source.kernel.org (Postfix) with ESMTPS id 20AC2B8184A;
+ Tue, 14 Jun 2022 10:25:12 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BD418C3411B;
+ Tue, 14 Jun 2022 10:25:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1655202307;
- bh=qA9xWVn3AUOfZxfhOprMPBGdr1XvmWBCUKQPSallH0Y=;
+ s=k20201202; t=1655202310;
+ bh=cN29pCVu1fdFS3tkH1//D2VHMIqIZryyXy+3UpwRphg=;
  h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=DGbRvEExBH84aRP3LsVoe88rb3sKrQrDJjoxsjJUxG+m6/s4Zp1yT0QXwou0ZZVuK
- 57N8LOHwEwXf6uz0O6ZrgPYZ4CPv1Sld/mUjt4GiUELMyBk7E/CTgnfpByvHA2w5UD
- TUgtNdMlbDKO0UxlVPSD1oqwSHrKk8JP/n5xsaTzJRowVJB6RmK4fZYVIILpyYhGcZ
- +hJ7KFui/7hcXr6XyVRtoGWsLlyJFNNN1/AVXvVH+koYyKq6TyrXaIkaw5q6Oyd68o
- KbrIQja2neTtQpk1folFoQbvO3D/ZX0abdGoU57kNE6UE4lxmo9QjNiQ8FhXsQaypE
- IWVx6FLZPRDRw==
+ b=tg3uPwlPEcST66oS7WoXuS6WbTiOJ9LpvOECob7L3DZ2rIkqKP+9iPFzK+EN0xUjr
+ RX7e15KNGTSf7D3UwX6puyQHzo/TfNLBsXaYcC0qma3VVakwzX8A3h+Ah36foVPz4S
+ muh2uf9zappxGG9QHbQ/tfFQbN7YAxwIeIF12cFx6Imvh87EwEkzutSv+iCbttkm5h
+ c4MYWo/eTa2KKa4fvatAMz1l2RNQw1tibcwuKxrfhVlV+pQRVCQFio6vljvD6RXndv
+ zky/mpA8/nvbMOcz+JH69nSYSZQRyja6Ye0ReCbqIrIbTDR10HIzuqXCo3Rz6Gt8m9
+ ev0rVDQWave9Q==
 From: Mark Brown <broonie@kernel.org>
-To: robh+dt@kernel.org, shengjiu.wang@nxp.com, tiwai@suse.com,
- alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
- shengjiu.wang@gmail.com, nicoleotsuka@gmail.com, Xiubo.Lee@gmail.com,
- perex@perex.cz, festevam@gmail.com, krzk+dt@kernel.org, lgirdwood@gmail.com
-In-Reply-To: <1654840042-7069-1-git-send-email-shengjiu.wang@nxp.com>
-References: <1654840042-7069-1-git-send-email-shengjiu.wang@nxp.com>
-Subject: Re: [PATCH 1/2] ASoC: dt-bindings: fsl,
- mqs: Add compatible string for i.MX93 platform
-Message-Id: <165520230461.3607327.1182225062255156973.b4-ty@kernel.org>
-Date: Tue, 14 Jun 2022 11:25:04 +0100
+To: pierre-louis.bossart@linux.intel.com, alsa-devel@alsa-project.org
+In-Reply-To: <20220610214504.42974-1-pierre-louis.bossart@linux.intel.com>
+References: <20220610214504.42974-1-pierre-louis.bossart@linux.intel.com>
+Subject: Re: [PATCH] ASoC: SOF: Intel: hda-dai: enhance debug messages
+Message-Id: <165520230949.3607327.2834763347940935898.b4-ty@kernel.org>
+Date: Tue, 14 Jun 2022 11:25:09 +0100
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
+Cc: tiwai@suse.de, peter.ujfalusi@linux.intel.com,
+ ranjani.sridharan@linux.intel.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -82,8 +79,10 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Fri, 10 Jun 2022 13:47:21 +0800, Shengjiu Wang wrote:
-> Add compatible string "fsl,imx93-mqs" for i.MX93 platform
+On Fri, 10 Jun 2022 16:45:04 -0500, Pierre-Louis Bossart wrote:
+> The same message was added twice for dai and link_dma, remove the
+> latter one and add dai name and direction to better understand
+> problematic sequences.
 > 
 > 
 
@@ -93,10 +92,8 @@ Applied to
 
 Thanks!
 
-[1/2] ASoC: dt-bindings: fsl,mqs: Add compatible string for i.MX93 platform
-      commit: 81ae0635df7de58496def18b0b9333992630b9af
-[2/2] ASoC: fsl_mqs: Add support for i.MX93 platform
-      commit: 047c69a3a9b19f29e021c77a7e9ce79230a342ed
+[1/1] ASoC: SOF: Intel: hda-dai: enhance debug messages
+      commit: 519d1130b66e000ce363ad82c0d61ae36a5392dc
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
