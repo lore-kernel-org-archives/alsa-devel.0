@@ -4,66 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E1B24C43334
-	for <alsa-devel@archiver.kernel.org>; Tue, 14 Jun 2022 10:26:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 46306C433EF
+	for <alsa-devel@archiver.kernel.org>; Tue, 14 Jun 2022 10:27:05 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 2A7BC1816;
-	Tue, 14 Jun 2022 12:26:04 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2A7BC1816
+	by alsa0.perex.cz (Postfix) with ESMTPS id 8353717A3;
+	Tue, 14 Jun 2022 12:26:13 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8353717A3
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1655202414;
-	bh=99g8Fw9OTxxKNgdn/j7VfhLA6hv+UvRMsBMD01/lQGU=;
+	s=default; t=1655202423;
+	bh=NtfG1AQIcHLoK85/ppWe+StyZnfKLy3RTpV6LmmkOjk=;
 	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=pKGhNaQp1Sivniyqvcd8i+lbAk+1K0yOIr3xzQ6Emr8/UlOQvhdgiEQTAlW/agVZM
-	 ZmdixifXGzme1/adXFsxeYpHlIr/o69lBmEKHJ6FyxkvKLGCrd1VKwwpvf11BZGqgk
-	 7koFEQV1IQjkppWs9IKxFvrPafBIhS7Q1fc/UOL8=
+	b=F/VJQbwMr+pkWTaG8DnQFg/AImIe38vY5IAfCdunbliNOcVTlu7Srl4T6/VwZmuVe
+	 HYXRA5OwxY8zB/Pe+om5PkzsdpYzTR9iuz2KmoH5m6vjCJHlCduSFwiLbFBzez0xip
+	 k4MSaPAENLK6FIuuVMzzCIzX7A1qGgoBgLOth07A=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 5DDC7F80527;
-	Tue, 14 Jun 2022 12:25:18 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id E5DB6F800D8;
+	Tue, 14 Jun 2022 12:25:21 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 027F5F80528; Tue, 14 Jun 2022 12:25:16 +0200 (CEST)
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+ id 5FE57F80533; Tue, 14 Jun 2022 12:25:20 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org
+ [IPv6:2604:1380:4641:c500::1])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 090D3F80217
- for <alsa-devel@alsa-project.org>; Tue, 14 Jun 2022 12:25:14 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 090D3F80217
+ by alsa1.perex.cz (Postfix) with ESMTPS id 98957F800D8
+ for <alsa-devel@alsa-project.org>; Tue, 14 Jun 2022 12:25:12 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 98957F800D8
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="fXfyjYnY"
+ header.b="MT/tsId3"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by ams.source.kernel.org (Postfix) with ESMTPS id 9368CB8184C;
- Tue, 14 Jun 2022 10:25:13 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3CE77C3411E;
- Tue, 14 Jun 2022 10:25:11 +0000 (UTC)
+ by dfw.source.kernel.org (Postfix) with ESMTPS id DC9D360C5C;
+ Tue, 14 Jun 2022 10:25:09 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 18191C341C4;
+ Tue, 14 Jun 2022 10:25:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1655202312;
- bh=99g8Fw9OTxxKNgdn/j7VfhLA6hv+UvRMsBMD01/lQGU=;
+ s=k20201202; t=1655202309;
+ bh=NtfG1AQIcHLoK85/ppWe+StyZnfKLy3RTpV6LmmkOjk=;
  h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=fXfyjYnYl7AHJ2j63ZRJgv7gR0oF5G7JG8GbFTOexGQ3lMFYWcHCorXLTE8Hsxk3e
- /R2+Z/qN6UHRtA/QYXiFk6Q2OcTkSTC1Zy5jTiesURrbt+Sd2QhpXPpozsUjkdCUuO
- FQ8PSsa4dN1Rmcv9ZETB11jAYejH5MMln4rFlpwKuc1F0ntN1Zboj7PyGdLKZ6skwo
- 4dkk1aoDJQZMbw5vJIWoEjmOHsQiPxpfDyEWKzJFnG+3LsGoYwp8/fmP9gy+xcqE3I
- KL5VT7s71Umx7d4WzgKZiTchsuLnmCG+8TXgFC0tTSuY27RvSSTndtc/bSIIyfmeMI
- 3V22E8SuviEyg==
+ b=MT/tsId3DnrGt/FJ/BHHM5ki3xrTfSdUGT7TkatjQRN2RcDfPAV7G/ac3SuttKnzA
+ DWn1LtBUIois29DFJWvpF8h1dtFUNVRIuJqsxLt/DUAtiE2YTCP55rwpe3j10BXcdb
+ 1U8VRKGnYLJUT3rpE11MBJ1VHA/3cne/Q65E2Cdmc7i/CvC1GcjawfSFIT3Ntb2Uza
+ AuurPyUGAxoVGpTpNoI7wdE9W7P2gmBfftc4BNwQYJXAd1VIn1ABf4LnR2GptugN2o
+ 9t0PvVyfYcdkQ/teRoYlKU3sjAXhUIXsAZP/bfSMC+lH4fOh73JqLvfbWcLgkNrsie
+ IAOWCnNdQG3ow==
 From: Mark Brown <broonie@kernel.org>
 To: pierre-louis.bossart@linux.intel.com, alsa-devel@alsa-project.org
-In-Reply-To: <20220610214601.43005-1-pierre-louis.bossart@linux.intel.com>
-References: <20220610214601.43005-1-pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH] ASoC: SOF: reduce default verbosity of IPC logs
-Message-Id: <165520231097.3607327.14936258784984745064.b4-ty@kernel.org>
-Date: Tue, 14 Jun 2022 11:25:10 +0100
+In-Reply-To: <20220610214415.42942-1-pierre-louis.bossart@linux.intel.com>
+References: <20220610214415.42942-1-pierre-louis.bossart@linux.intel.com>
+Subject: Re: [PATCH] ASoC: intel: sof_sdw: add RT711 SDCA card for MTL platform
+Message-Id: <165520230782.3607327.11391458588524693814.b4-ty@kernel.org>
+Date: Tue, 14 Jun 2022 11:25:07 +0100
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: tiwai@suse.de, peter.ujfalusi@linux.intel.com,
- ranjani.sridharan@linux.intel.com
+Cc: tiwai@suse.de, yung-chuan.liao@linux.intel.com, uday.m.bhat@intel.com,
+ yong.zhi@intel.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -79,19 +80,12 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Fri, 10 Jun 2022 16:46:01 -0500, Pierre-Louis Bossart wrote:
-> We currently log the initiation of an IPC as well at its success.
+On Fri, 10 Jun 2022 16:44:15 -0500, Pierre-Louis Bossart wrote:
+> From: Yong Zhi <yong.zhi@intel.com>
 > 
-> [ 3906.106987] kernel: sof-audio-pci-intel-tgl 0000:00:1f.3: ipc tx: 0x80010000: GLB_DAI_MSG: CONFIG
-> [ 3906.107189] kernel: sof-audio-pci-intel-tgl 0000:00:1f.3: ipc tx succeeded: 0x80010000: GLB_DAI_MSG: CONFIG
+> Enable on-board rt711 based sound card for MTL RVP.
 > 
-> This is overkill in most cases, we already have a message thrown in
-> case of errors and have tracepoints enabled to check for IPC
-> duration. The only case where this might be useful is to check if
-> there is an interleaved IPC RX. Add a flag and only print those logs
-> if enabled.
 > 
-> [...]
 
 Applied to
 
@@ -99,8 +93,8 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: SOF: reduce default verbosity of IPC logs
-      commit: f7309dbe628d5c8653d5f3649ef05a65c9b88daf
+[1/1] ASoC: intel: sof_sdw: add RT711 SDCA card for MTL platform
+      commit: 18489174e4fb98ad07fd387973a39e755ac01dee
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
