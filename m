@@ -4,62 +4,62 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id DDF03C433EF
-	for <alsa-devel@archiver.kernel.org>; Tue, 14 Jun 2022 02:15:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id AA77BCCA481
+	for <alsa-devel@archiver.kernel.org>; Tue, 14 Jun 2022 02:15:22 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 1FA72173A;
-	Tue, 14 Jun 2022 04:14:12 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1FA72173A
+	by alsa0.perex.cz (Postfix) with ESMTPS id 9F08C18D6;
+	Tue, 14 Jun 2022 04:14:30 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9F08C18D6
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1655172902;
-	bh=35ASCPnS8+xGT0L0LVS2NYvX5iXNUglTyS4P5OUQwgg=;
+	s=default; t=1655172920;
+	bh=Wb9zf+MdbLEL6269vRZQ5BnfGJNFA8u3ASZMRlx1A2o=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Sels7nfUHg9eLEMtSRO3h5yM0rmcPNtrhUoGp7vWEs+IhRUi78ShFfDtrKAIEVlny
-	 Lfuk/QH9m7+/uIZRIR+DbhRZZ6EViFeX/IGqKwu/2l/ZiOIg4GGQDc+hg38lV0WTpu
-	 TjORupeDqf7Cm95sTVakABDrzOyltDiGeHQN6jt8=
+	b=MJgMbB67AgGqWvXhjU3rGNzuAm2noEKMDF7tU6ZNbLASw4mjlTtCjnI2MH/eyU4R6
+	 Po+wFIZpkR16diMr7Oisq5j2MexrTn7+oTL7Ho4K+5n24c8KZYFU+eFkC2EqAj5Bb0
+	 CWRoZyKj4M6+tIGzUpaTB5J5b8dhNx5m1O6iy+KA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id BAFF2F805FF;
-	Tue, 14 Jun 2022 04:07:46 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 5B973F80602;
+	Tue, 14 Jun 2022 04:07:47 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 01747F805FF; Tue, 14 Jun 2022 04:07:43 +0200 (CEST)
+ id 3F0F5F805FE; Tue, 14 Jun 2022 04:07:45 +0200 (CEST)
 Received: from dfw.source.kernel.org (dfw.source.kernel.org
  [IPv6:2604:1380:4641:c500::1])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 82611F805F5
- for <alsa-devel@alsa-project.org>; Tue, 14 Jun 2022 04:07:37 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 82611F805F5
+ by alsa1.perex.cz (Postfix) with ESMTPS id 39C8DF80548
+ for <alsa-devel@alsa-project.org>; Tue, 14 Jun 2022 04:07:41 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 39C8DF80548
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="WkscnIVO"
+ header.b="aRZ9vPQY"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id 3ACBB60F3D;
- Tue, 14 Jun 2022 02:07:36 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9702AC34114;
- Tue, 14 Jun 2022 02:07:34 +0000 (UTC)
+ by dfw.source.kernel.org (Postfix) with ESMTPS id B286260EF0;
+ Tue, 14 Jun 2022 02:07:39 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 13AECC385A2;
+ Tue, 14 Jun 2022 02:07:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1655172455;
- bh=35ASCPnS8+xGT0L0LVS2NYvX5iXNUglTyS4P5OUQwgg=;
+ s=k20201202; t=1655172459;
+ bh=Wb9zf+MdbLEL6269vRZQ5BnfGJNFA8u3ASZMRlx1A2o=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=WkscnIVOgqtfnZMuNGegEd/8zPJgKKit9Ttp/Mo7QAR64U816+nIMG3eWQPkJqIhA
- LZvBNNF6nsEXF0kly6j0bARgepcAj1mjzK+ukDcxJnY76epdpXaZgZoDuWSOPmpaMQ
- VSt9L3pf8WHrxMhHn/mhO5nkJewFdqt4TdEDYupQM7h1O2bIn3821TaQL/u1GunYxF
- OxwbUbyTTpAlrgterdOY1Up8t0QZ0Ywg+lSA3XKAtYbj7bdSqFyyGnrtiqJ2LQ4ngq
- p+wBLJ0jankuy35oM1fHzdzulygv3zv3+WEgrIr70lkk0/7MOqMDexpIgMeM3IANOO
- byCO1LQP5ZTaQ==
+ b=aRZ9vPQYGGojsa6O3Z0EPaWAGrqpkkF4xZ49bwMYgew9BEqv5BU7MpSBQP7TG8pBl
+ 0ihtS4tnNLU35bhfVdWoLwW7hfkEj9lzsnrTg4VIpC+n1rVDKNd3pvg/IFM+i6+dMd
+ 1pGkqBSABEHLFv/Q9ee8D1k5V2l6kgvdLIyNsHRspcrQy37TT59T5wxcDuxEWUo6dm
+ SUJW4SOHNYAEy0zJ9UJYjbeUNEQZBZ7+IwHkax3JHqvhVVaQPMifCts8c7WVgAQpoO
+ SpozCCuYX5FXmryXSbUknkg1J9A0z3vPMtOVXcawDzBNJ/6Xs3xQMhhp6sWCauemlu
+ rEneP9rrJGi5g==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.15 16/41] ASoC: wm8962: Fix suspend while playing
- music
-Date: Mon, 13 Jun 2022 22:06:41 -0400
-Message-Id: <20220614020707.1099487-16-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.15 18/41] ASoC: wm_adsp: Fix event generation for
+ wm_adsp_fw_put()
+Date: Mon, 13 Jun 2022 22:06:43 -0400
+Message-Id: <20220614020707.1099487-18-sashal@kernel.org>
 X-Mailer: git-send-email 2.35.1
 In-Reply-To: <20220614020707.1099487-1-sashal@kernel.org>
 References: <20220614020707.1099487-1-sashal@kernel.org>
@@ -68,10 +68,8 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 Cc: Sasha Levin <sashal@kernel.org>, alsa-devel@alsa-project.org,
- patches@opensource.wolfsonmicro.com,
- Charles Keepax <ckeepax@opensource.cirrus.com>, tiwai@suse.com,
- lgirdwood@gmail.com, Mark Brown <broonie@kernel.org>,
- Adam Ford <aford173@gmail.com>
+ patches@opensource.wolfsonmicro.com, tiwai@suse.com, lgirdwood@gmail.com,
+ Richard Fitzgerald <rf@opensource.cirrus.com>, Mark Brown <broonie@kernel.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -87,40 +85,37 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Adam Ford <aford173@gmail.com>
+From: Mark Brown <broonie@kernel.org>
 
-[ Upstream commit d1f5272c0f7d2e53c6f2480f46725442776f5f78 ]
+[ Upstream commit 2abdf9f80019e8244d3806ed0e1c9f725e50b452 ]
 
-If the audio CODEC is playing sound when the system is suspended,
-it can be left in a state which throws the following error:
+Currently wm_adsp_fw_put() returns 0 rather than 1 when updating the value
+of the control, meaning that no event is generated to userspace. Fix this
+by setting the default return value to 1, the code already exits early with
+a return value of 0 if the value is unchanged.
 
-wm8962 3-001a: ASoC: error at soc_component_read_no_lock on wm8962.3-001a: -16
-
-Once this error has occurred, the audio will not work again until rebooted.
-
-Fix this by configuring SET_SYSTEM_SLEEP_PM_OPS.
-
-Signed-off-by: Adam Ford <aford173@gmail.com>
-Acked-by: Charles Keepax <ckeepax@opensource.cirrus.com>
-Link: https://lore.kernel.org/r/20220526182129.538472-1-aford173@gmail.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
+Reviewed-by: Richard Fitzgerald <rf@opensource.cirrus.com>
+Link: https://lore.kernel.org/r/20220603115003.3865834-1-broonie@kernel.org
 Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/codecs/wm8962.c | 1 +
- 1 file changed, 1 insertion(+)
+ sound/soc/codecs/wm_adsp.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/codecs/wm8962.c b/sound/soc/codecs/wm8962.c
-index ba16bdf9e478..a5a4ae4440cc 100644
---- a/sound/soc/codecs/wm8962.c
-+++ b/sound/soc/codecs/wm8962.c
-@@ -3867,6 +3867,7 @@ static int wm8962_runtime_suspend(struct device *dev)
- #endif
+diff --git a/sound/soc/codecs/wm_adsp.c b/sound/soc/codecs/wm_adsp.c
+index f7c800927cb2..08fc1a025b1a 100644
+--- a/sound/soc/codecs/wm_adsp.c
++++ b/sound/soc/codecs/wm_adsp.c
+@@ -794,7 +794,7 @@ int wm_adsp_fw_put(struct snd_kcontrol *kcontrol,
+ 	struct snd_soc_component *component = snd_soc_kcontrol_component(kcontrol);
+ 	struct soc_enum *e = (struct soc_enum *)kcontrol->private_value;
+ 	struct wm_adsp *dsp = snd_soc_component_get_drvdata(component);
+-	int ret = 0;
++	int ret = 1;
  
- static const struct dev_pm_ops wm8962_pm = {
-+	SET_SYSTEM_SLEEP_PM_OPS(pm_runtime_force_suspend, pm_runtime_force_resume)
- 	SET_RUNTIME_PM_OPS(wm8962_runtime_suspend, wm8962_runtime_resume, NULL)
- };
- 
+ 	if (ucontrol->value.enumerated.item[0] == dsp[e->shift_l].fw)
+ 		return 0;
 -- 
 2.35.1
 
