@@ -4,53 +4,54 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id AD1F1C433EF
-	for <alsa-devel@archiver.kernel.org>; Tue, 14 Jun 2022 04:27:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id F3F82C433EF
+	for <alsa-devel@archiver.kernel.org>; Tue, 14 Jun 2022 04:27:26 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E3EE818C0;
-	Tue, 14 Jun 2022 06:26:25 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E3EE818C0
+	by alsa0.perex.cz (Postfix) with ESMTPS id 441A518DC;
+	Tue, 14 Jun 2022 06:26:35 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 441A518DC
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1655180836;
-	bh=QB9n9mNnhQQWszwYca0ptb6IIp0I7IZuGi4WyLz0bsE=;
+	s=default; t=1655180845;
+	bh=8YBl6tiPpOxpEUAqpG5GE0vGwBCIUWkQkG4hWPxnsdM=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=PgZ20BP2JeMfCLqUUx2/ls3r9yv3kc5eSzmFVuhHvUOKSj1Sipu+0ZM1mcr6WXq98
-	 IjjHAyqSyP0CuzHEygqo6jCT8Zq0G/j589XE7rwVMBnKOB3v5n01C58ws1lLJ2AO1S
-	 CYvGp2HGxZTD5BMzW3Odze6zWgwfF7p4MhXrjSdE=
+	b=PSdYybUiwZqL/nGxOyduUU8DRe8Hz1emCYXy1LvtsfjU2e3dEKR5ErVHWXDXlw1DJ
+	 XgXkEUcfjqdjTGtxDPrRZJFyTN7KO76EquT19qDA1ddNURozgBMk+pDGTU4tNPtg2k
+	 ZNu1623fNLbHwkVByRZOal2vZ5+RwLx5V8YAaPak=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 2CA72F8052E;
-	Tue, 14 Jun 2022 06:25:46 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id E98B8F80534;
+	Tue, 14 Jun 2022 06:25:51 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 1B67DF8052F; Tue, 14 Jun 2022 06:25:44 +0200 (CEST)
-Received: from inva021.nxp.com (inva021.nxp.com [92.121.34.21])
+ id 90A60F80535; Tue, 14 Jun 2022 06:25:49 +0200 (CEST)
+Received: from inva020.nxp.com (inva020.nxp.com [92.121.34.13])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 6AE27F8016E
- for <alsa-devel@alsa-project.org>; Tue, 14 Jun 2022 06:25:32 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6AE27F8016E
-Received: from inva021.nxp.com (localhost [127.0.0.1])
- by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id A215C2026FE;
- Tue, 14 Jun 2022 06:25:32 +0200 (CEST)
+ by alsa1.perex.cz (Postfix) with ESMTPS id C28ADF80528
+ for <alsa-devel@alsa-project.org>; Tue, 14 Jun 2022 06:25:36 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C28ADF80528
+Received: from inva020.nxp.com (localhost [127.0.0.1])
+ by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 36DCC1A2682;
+ Tue, 14 Jun 2022 06:25:36 +0200 (CEST)
 Received: from aprdc01srsp001v.ap-rdc01.nxp.com
  (aprdc01srsp001v.ap-rdc01.nxp.com [165.114.16.16])
- by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 57D96202717;
- Tue, 14 Jun 2022 06:25:32 +0200 (CEST)
+ by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id E0B631A2685;
+ Tue, 14 Jun 2022 06:25:35 +0200 (CEST)
 Received: from localhost.localdomain (shlinux2.ap.freescale.net
  [10.192.224.44])
- by aprdc01srsp001v.ap-rdc01.nxp.com (Postfix) with ESMTP id 720D8180219B;
- Tue, 14 Jun 2022 12:25:30 +0800 (+08)
+ by aprdc01srsp001v.ap-rdc01.nxp.com (Postfix) with ESMTP id 05267180222C;
+ Tue, 14 Jun 2022 12:25:33 +0800 (+08)
 From: Shengjiu Wang <shengjiu.wang@nxp.com>
 To: nicoleotsuka@gmail.com, Xiubo.Lee@gmail.com, festevam@gmail.com,
  shengjiu.wang@gmail.com, lgirdwood@gmail.com, broonie@kernel.org,
  perex@perex.cz, tiwai@suse.com, alsa-devel@alsa-project.org,
  robh+dt@kernel.org, krzk+dt@kernel.org, devicetree@vger.kernel.org
-Subject: [PATCH 3/7] ASoC: fsl_sai: Add support for more sample rates
-Date: Tue, 14 Jun 2022 12:11:20 +0800
-Message-Id: <1655179884-12278-4-git-send-email-shengjiu.wang@nxp.com>
+Subject: [PATCH 6/7] ASoC: dt-bindings: fsl-sai: Add new property to configure
+ dataline
+Date: Tue, 14 Jun 2022 12:11:23 +0800
+Message-Id: <1655179884-12278-7-git-send-email-shengjiu.wang@nxp.com>
 X-Mailer: git-send-email 2.7.4
 In-Reply-To: <1655179884-12278-1-git-send-email-shengjiu.wang@nxp.com>
 References: <1655179884-12278-1-git-send-email-shengjiu.wang@nxp.com>
@@ -71,48 +72,40 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Add support for more sample rates, because PDM format
-bitstream has higher sample rates. for example DSD512
-format, the bit clock is 22.5792MHz, if the word width
-is U8_LE, then the max sample rate is 2822400.
+"fsl,dataline" is added to configure the dataline of SAI.
+It has 3 value for each configuration, first one means the type:
+I2S(1) or PDM(2), second one is dataline mask for 'rx', third one is
+dataline mask for 'tx'. for example:
+
+fsl,dataline = <1 0xff 0xff 2 0xff 0x11>,
+
+it means I2S type rx mask is 0xff, tx mask is 0xff, PDM type
+rx mask is 0xff, tx mask is 0x11 (dataline 1 and 4 enabled).
 
 Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
 ---
- sound/soc/fsl/fsl_sai.c | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
+ Documentation/devicetree/bindings/sound/fsl-sai.txt | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
-diff --git a/sound/soc/fsl/fsl_sai.c b/sound/soc/fsl/fsl_sai.c
-index d11ee3b6f163..9d2828b55c07 100644
---- a/sound/soc/fsl/fsl_sai.c
-+++ b/sound/soc/fsl/fsl_sai.c
-@@ -30,7 +30,8 @@
- static const unsigned int fsl_sai_rates[] = {
- 	8000, 11025, 12000, 16000, 22050,
- 	24000, 32000, 44100, 48000, 64000,
--	88200, 96000, 176400, 192000
-+	88200, 96000, 176400, 192000, 352800,
-+	384000, 705600, 768000, 1411200, 2822400,
- };
+diff --git a/Documentation/devicetree/bindings/sound/fsl-sai.txt b/Documentation/devicetree/bindings/sound/fsl-sai.txt
+index c71c5861d787..4c66e6a1a533 100644
+--- a/Documentation/devicetree/bindings/sound/fsl-sai.txt
++++ b/Documentation/devicetree/bindings/sound/fsl-sai.txt
+@@ -49,6 +49,14 @@ Required properties:
+ 			  receive data by following their own bit clocks and
+ 			  frame sync clocks separately.
  
- static const struct snd_pcm_hw_constraint_list fsl_sai_rate_constraints = {
-@@ -763,7 +764,7 @@ static struct snd_soc_dai_driver fsl_sai_dai_template = {
- 		.channels_min = 1,
- 		.channels_max = 32,
- 		.rate_min = 8000,
--		.rate_max = 192000,
-+		.rate_max = 2822400,
- 		.rates = SNDRV_PCM_RATE_KNOT,
- 		.formats = FSL_SAI_FORMATS,
- 	},
-@@ -772,7 +773,7 @@ static struct snd_soc_dai_driver fsl_sai_dai_template = {
- 		.channels_min = 1,
- 		.channels_max = 32,
- 		.rate_min = 8000,
--		.rate_max = 192000,
-+		.rate_max = 2822400,
- 		.rates = SNDRV_PCM_RATE_KNOT,
- 		.formats = FSL_SAI_FORMATS,
- 	},
++  - fsl,dataline        : configure the dataline. it has 3 value for each configuration
++                          first one means the type: I2S(1) or PDM(2)
++                          second one is dataline mask for 'rx'
++                          third one is dataline mask for 'tx'.
++                          for example: fsl,dataline = <1 0xff 0xff 2 0xff 0x11>;
++                          it means I2S type rx mask is 0xff, tx mask is 0xff, PDM type
++                          rx mask is 0xff, tx mask is 0x11 (dataline 1 and 4 enabled).
++
+ Optional properties:
+ 
+   - big-endian		: Boolean property, required if all the SAI
 -- 
 2.17.1
 
