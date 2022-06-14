@@ -4,62 +4,61 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 781E9C433EF
-	for <alsa-devel@archiver.kernel.org>; Tue, 14 Jun 2022 02:24:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A8F39C43334
+	for <alsa-devel@archiver.kernel.org>; Tue, 14 Jun 2022 02:24:46 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B11DA192F;
-	Tue, 14 Jun 2022 04:23:29 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B11DA192F
+	by alsa0.perex.cz (Postfix) with ESMTPS id E70251913;
+	Tue, 14 Jun 2022 04:23:54 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E70251913
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1655173459;
-	bh=gX6d4W5ZOnEqylI6qnqXvGiuiG+YvJ1yoDEsCSk7LbM=;
+	s=default; t=1655173485;
+	bh=OhAGgrsd2hb8cxfZVSqxF5k5FDAbFKwyrNdGMaFnscM=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Ej9HpxPAwKDE4ltzNlCzEN+qtTrmXBXEySUl5Hf7hYP0iK22Tgr1S0zsIUtR6y6bw
-	 /gpe68yfTG9PfbrmDKO+yDXPyV/dhyzD3Pcmu/kvaoO45nKtUlfSG6Egn1xSeggrvu
-	 pH3wHQO+x5iiCFJcMTkOCUPcphK+WKWycgdSbOic=
+	b=mEwF/z3SlQQXC2KTCea2RtqucoobjlTcizywqJjaqV17ZYJPxJIHRkN4f2NXSsM9p
+	 3BjTqVy+SZGFWpNo57fk3JrI1rYX74bAkMMCxOTpuPPjItS8uJNtYd5WWdn0iU9E1v
+	 Ycvgl9O/IrYm0u0DfiOA+7A3s3QovVtiVV9DYpx0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 15C4AF8070C;
-	Tue, 14 Jun 2022 04:10:34 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 91E19F80718;
+	Tue, 14 Jun 2022 04:10:38 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 0A696F806F9; Tue, 14 Jun 2022 04:10:31 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org
- [IPv6:2604:1380:4641:c500::1])
+ id DE803F8071C; Tue, 14 Jun 2022 04:10:36 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 6733AF80538
- for <alsa-devel@alsa-project.org>; Tue, 14 Jun 2022 04:10:25 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6733AF80538
+ by alsa1.perex.cz (Postfix) with ESMTPS id 97490F806FA
+ for <alsa-devel@alsa-project.org>; Tue, 14 Jun 2022 04:10:30 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 97490F806FA
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="i/fvux1j"
+ header.b="XHvGOJSs"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id 5FA20610AB;
- Tue, 14 Jun 2022 02:10:24 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A28CFC3411B;
- Tue, 14 Jun 2022 02:10:22 +0000 (UTC)
+ by dfw.source.kernel.org (Postfix) with ESMTPS id 8CAD461121;
+ Tue, 14 Jun 2022 02:10:29 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 55AC6C34114;
+ Tue, 14 Jun 2022 02:10:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1655172623;
- bh=gX6d4W5ZOnEqylI6qnqXvGiuiG+YvJ1yoDEsCSk7LbM=;
+ s=k20201202; t=1655172629;
+ bh=OhAGgrsd2hb8cxfZVSqxF5k5FDAbFKwyrNdGMaFnscM=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=i/fvux1j+MLp+z1QuwLieUHinrbP4Br+FEgM4YgrpLbt6yIazP7GjXrE/92wSKa/i
- zmxYkMzl3xVdqm378BPutSS2GIvKbG4Ac7tugFS7+63G0DEDKdfIIThkRr5kdKDurU
- 046Ukbml9LH90nEKk4rw9TbfAk7xXkmm/lR6k5snSZ9tNs52o5kG18uK4TznDbjjrh
- oK2TMIi9+rn7rJuYsetPLZcgQiAb2TJMech3esU2hBvxDOrMbf4EgvOMHR8OkZiOwp
- 2jEcKYfQT9Yt82VTKh9bv8DahxyG66Tqgr+0N7foHRx0yFYfHWW/acFwuGv8sWgPg3
- qOXy0wNz1teNg==
+ b=XHvGOJSs3TkaTzfVkZJxgyDXJ/Rpkn0C1J5ak+Az+lQLcq4gPUkYsurqNKYtftnZt
+ OTCTUgnX5mKK8NlGYlmuAyIss/Hhyhr4Y5hkeUpKGq3HdEXBdf0TPZpqbhjQqa2Qr9
+ K9ULQPzD62ik2jrUOksoAZXb+Ohe9vpish9T+Bjdsi2P9ULjACEY6bUUWPH6xVbw0q
+ Jq9uclsA2+Q5VNRPDgN0pTyVPkBkxAALCrtt1MGuDDIh+lxS6NChp9jg5ecVQQ6K59
+ ljI5K960lxMWoH0pjDFvxa0tJt499JgYtRTU4/ygUSqYra2iJpbSMiyJI9yCH9OCrp
+ MyEMGihbyFckQ==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.14 02/14] ASoC: cs53l30: Correct number of volume
- levels on SX controls
-Date: Mon, 13 Jun 2022 22:10:07 -0400
-Message-Id: <20220614021019.1100929-2-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 4.14 06/14] ASoC: wm8962: Fix suspend while playing
+ music
+Date: Mon, 13 Jun 2022 22:10:11 -0400
+Message-Id: <20220614021019.1100929-6-sashal@kernel.org>
 X-Mailer: git-send-email 2.35.1
 In-Reply-To: <20220614021019.1100929-1-sashal@kernel.org>
 References: <20220614021019.1100929-1-sashal@kernel.org>
@@ -67,10 +66,11 @@ MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
-Cc: Sasha Levin <sashal@kernel.org>, brian.austin@cirrus.com,
- Charles Keepax <ckeepax@opensource.cirrus.com>, alsa-devel@alsa-project.org,
- tiwai@suse.com, lgirdwood@gmail.com, Paul.Handrigan@cirrus.com,
- David Rhodes <david.rhodes@cirrus.com>, Mark Brown <broonie@kernel.org>
+Cc: Sasha Levin <sashal@kernel.org>, alsa-devel@alsa-project.org,
+ patches@opensource.wolfsonmicro.com,
+ Charles Keepax <ckeepax@opensource.cirrus.com>, tiwai@suse.com,
+ lgirdwood@gmail.com, Mark Brown <broonie@kernel.org>,
+ Adam Ford <aford173@gmail.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -86,57 +86,40 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Charles Keepax <ckeepax@opensource.cirrus.com>
+From: Adam Ford <aford173@gmail.com>
 
-[ Upstream commit 7fbd6dd68127927e844912a16741016d432a0737 ]
+[ Upstream commit d1f5272c0f7d2e53c6f2480f46725442776f5f78 ]
 
-This driver specified the maximum value rather than the number of volume
-levels on the SX controls, this is incorrect, so correct them.
+If the audio CODEC is playing sound when the system is suspended,
+it can be left in a state which throws the following error:
 
-Reported-by: David Rhodes <david.rhodes@cirrus.com>
-Signed-off-by: Charles Keepax <ckeepax@opensource.cirrus.com>
-Link: https://lore.kernel.org/r/20220602162119.3393857-4-ckeepax@opensource.cirrus.com
+wm8962 3-001a: ASoC: error at soc_component_read_no_lock on wm8962.3-001a: -16
+
+Once this error has occurred, the audio will not work again until rebooted.
+
+Fix this by configuring SET_SYSTEM_SLEEP_PM_OPS.
+
+Signed-off-by: Adam Ford <aford173@gmail.com>
+Acked-by: Charles Keepax <ckeepax@opensource.cirrus.com>
+Link: https://lore.kernel.org/r/20220526182129.538472-1-aford173@gmail.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/codecs/cs53l30.c | 16 ++++++++--------
- 1 file changed, 8 insertions(+), 8 deletions(-)
+ sound/soc/codecs/wm8962.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/sound/soc/codecs/cs53l30.c b/sound/soc/codecs/cs53l30.c
-index c7edf2df5e36..f30807b3705d 100644
---- a/sound/soc/codecs/cs53l30.c
-+++ b/sound/soc/codecs/cs53l30.c
-@@ -351,22 +351,22 @@ static const struct snd_kcontrol_new cs53l30_snd_controls[] = {
- 	SOC_ENUM("ADC2 NG Delay", adc2_ng_delay_enum),
+diff --git a/sound/soc/codecs/wm8962.c b/sound/soc/codecs/wm8962.c
+index 0e8008d38161..d46881f96c16 100644
+--- a/sound/soc/codecs/wm8962.c
++++ b/sound/soc/codecs/wm8962.c
+@@ -3861,6 +3861,7 @@ static int wm8962_runtime_suspend(struct device *dev)
+ #endif
  
- 	SOC_SINGLE_SX_TLV("ADC1A PGA Volume",
--		    CS53L30_ADC1A_AFE_CTL, 0, 0x34, 0x18, pga_tlv),
-+		    CS53L30_ADC1A_AFE_CTL, 0, 0x34, 0x24, pga_tlv),
- 	SOC_SINGLE_SX_TLV("ADC1B PGA Volume",
--		    CS53L30_ADC1B_AFE_CTL, 0, 0x34, 0x18, pga_tlv),
-+		    CS53L30_ADC1B_AFE_CTL, 0, 0x34, 0x24, pga_tlv),
- 	SOC_SINGLE_SX_TLV("ADC2A PGA Volume",
--		    CS53L30_ADC2A_AFE_CTL, 0, 0x34, 0x18, pga_tlv),
-+		    CS53L30_ADC2A_AFE_CTL, 0, 0x34, 0x24, pga_tlv),
- 	SOC_SINGLE_SX_TLV("ADC2B PGA Volume",
--		    CS53L30_ADC2B_AFE_CTL, 0, 0x34, 0x18, pga_tlv),
-+		    CS53L30_ADC2B_AFE_CTL, 0, 0x34, 0x24, pga_tlv),
- 
- 	SOC_SINGLE_SX_TLV("ADC1A Digital Volume",
--		    CS53L30_ADC1A_DIG_VOL, 0, 0xA0, 0x0C, dig_tlv),
-+		    CS53L30_ADC1A_DIG_VOL, 0, 0xA0, 0x6C, dig_tlv),
- 	SOC_SINGLE_SX_TLV("ADC1B Digital Volume",
--		    CS53L30_ADC1B_DIG_VOL, 0, 0xA0, 0x0C, dig_tlv),
-+		    CS53L30_ADC1B_DIG_VOL, 0, 0xA0, 0x6C, dig_tlv),
- 	SOC_SINGLE_SX_TLV("ADC2A Digital Volume",
--		    CS53L30_ADC2A_DIG_VOL, 0, 0xA0, 0x0C, dig_tlv),
-+		    CS53L30_ADC2A_DIG_VOL, 0, 0xA0, 0x6C, dig_tlv),
- 	SOC_SINGLE_SX_TLV("ADC2B Digital Volume",
--		    CS53L30_ADC2B_DIG_VOL, 0, 0xA0, 0x0C, dig_tlv),
-+		    CS53L30_ADC2B_DIG_VOL, 0, 0xA0, 0x6C, dig_tlv),
+ static const struct dev_pm_ops wm8962_pm = {
++	SET_SYSTEM_SLEEP_PM_OPS(pm_runtime_force_suspend, pm_runtime_force_resume)
+ 	SET_RUNTIME_PM_OPS(wm8962_runtime_suspend, wm8962_runtime_resume, NULL)
  };
  
- static const struct snd_soc_dapm_widget cs53l30_dapm_widgets[] = {
 -- 
 2.35.1
 
