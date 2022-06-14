@@ -4,75 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 948C3C433EF
-	for <alsa-devel@archiver.kernel.org>; Tue, 14 Jun 2022 17:04:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 074A5C433EF
+	for <alsa-devel@archiver.kernel.org>; Tue, 14 Jun 2022 17:21:57 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A1B7918C0;
-	Tue, 14 Jun 2022 19:03:28 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A1B7918C0
+	by alsa0.perex.cz (Postfix) with ESMTPS id 59CE71865;
+	Tue, 14 Jun 2022 19:21:05 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 59CE71865
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1655226258;
-	bh=N/a1+iOdz3lY2s/egNYoPVvzbpbW+nXFVLFsz9Tgkjw=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	s=default; t=1655227315;
+	bh=0oUJqP1mCI5IlGt5vTnBQHDnvzI5GNaQ+HZMPp+kobg=;
+	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=K0GZE5ejOMo7br8mssM7CBk/V3qZfzUEviO9FH7sEY7njdvatUD7EhHQaKrdD5oyQ
-	 lxQUZBeXq+H6hMudfljG2tkGZ6kn/tcgi8r5h8YsoPrJHJY1PjL1lRyLse11U0zlOl
-	 HB9rcxff5ZUf8kS7L0VS2IgcYzRlmGysm9Z/vh2w=
+	b=nvIbZ74dgKyWgGR8fB3Vpcx2U/SlqWfHeRGaQXQA1wCOiZwrQQYa1Czoklo2RuTxy
+	 Uz0twAA8yMNZCGtHx9GbVW22FAF1+OJWJPgXiJkygHMmkTriQwCU7MmwZWzNm2nmi8
+	 faaGwAHrgAHysoz695eJFFASXYa5Fzvz074n0fOE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 2A2F6F80137;
-	Tue, 14 Jun 2022 19:03:28 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id DB4C4F80137;
+	Tue, 14 Jun 2022 19:21:04 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id A510EF80139; Tue, 14 Jun 2022 19:03:26 +0200 (CEST)
-Received: from ams.source.kernel.org (ams.source.kernel.org
- [IPv6:2604:1380:4601:e00::1])
+ id CE389F800E1; Tue, 14 Jun 2022 19:21:02 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org
+ [IPv6:2604:1380:4641:c500::1])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 68524F800D8
- for <alsa-devel@alsa-project.org>; Tue, 14 Jun 2022 19:03:23 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 68524F800D8
+ by alsa1.perex.cz (Postfix) with ESMTPS id 42F96F800E1
+ for <alsa-devel@alsa-project.org>; Tue, 14 Jun 2022 19:20:59 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 42F96F800E1
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="bWcHs0GD"
+ header.b="EaqkKH/M"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by ams.source.kernel.org (Postfix) with ESMTPS id B9485B81A09;
- Tue, 14 Jun 2022 17:03:22 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DC961C3411B;
- Tue, 14 Jun 2022 17:03:19 +0000 (UTC)
+ by dfw.source.kernel.org (Postfix) with ESMTPS id F0CC66167B;
+ Tue, 14 Jun 2022 17:20:56 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B3287C3411C;
+ Tue, 14 Jun 2022 17:20:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1655226201;
- bh=N/a1+iOdz3lY2s/egNYoPVvzbpbW+nXFVLFsz9Tgkjw=;
- h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=bWcHs0GDCcstiwXShOQTdUSjFxPyAaLPQ1GrB224k3jRqcwmXixhOLjdZDuvSjOLA
- 60gj61afagLt4TWtujLVTdue1C7WDBAcPmGTVdis6F3QjQsQan0tvTsHLvAjuuMri9
- bS6gInK4e6jo9cUpu9j/izr7b22dTFwzPv2PpR2QvkeQX/XcThi+FNuSQTrf/88Udu
- NyhUSmA2tcQ6wdT1x+wOCrDO6IyuZBxYrc6turRtVsg+EbPHT+qSoV2hjfJvtNNhjg
- jczf2nMUlippzHQWOyVumRnjxodbII1nXVSZCKPfj4DrXL9uC2/fuoKh/FcpSE7x3T
- 74GUs+UkjOE/Q==
-Date: Tue, 14 Jun 2022 18:03:16 +0100
+ s=k20201202; t=1655227256;
+ bh=0oUJqP1mCI5IlGt5vTnBQHDnvzI5GNaQ+HZMPp+kobg=;
+ h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+ b=EaqkKH/MmNdIJ2WzbxWDauLxZRi0PzVMuqDMnd3TR+mY3oLxra7KXtwMb8ZbWEKky
+ izlTNhkm8igbm4twu4H4xnIwaiT2RKodZb6RS3jJfj5MaRVA2uMZ+HWIwnsqBsZTKC
+ I2KiCYNFqsTRIy5utaxMLi1sBvOfNxz29ou2wtVlnmliZHsEk1C3714jXIjdIGCkbH
+ u3I0HCQ/2CkUKOTPK2uOngAz2e9crVtfh5biEiMTlpUdNM06qdDHaaPjlP95N46ams
+ R1yNPq6CEKMOx94+rM5pRcnOkbh6rtwx6Ccc3XYps2LG+DwAWOKPhrSNbg9tWuI7RB
+ JD+YumShgAgmA==
 From: Mark Brown <broonie@kernel.org>
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: ACPI REV override for Dell XPS 13 9343
-Message-ID: <Yqi/VGIi9kXtzRcv@sirena.org.uk>
-References: <29a2ca0f-bc0a-04b0-d0c9-8658359d365c@intel.com>
- <47431e56-9acb-7c7d-307f-83d81956ec5c@linux.intel.com>
- <fb13198a-3d38-4304-6212-966561725d55@intel.com>
- <398e4885-736c-d9a9-a18d-34f69f2b63ca@linux.intel.com>
+To: broonie@kernel.org, lgirdwood@gmail.com
+In-Reply-To: <20220604105407.4055294-1-broonie@kernel.org>
+References: <20220604105407.4055294-1-broonie@kernel.org>
+Subject: Re: [PATCH] ASoC: ops: Fix boolean/integer detection for simple
+ controls
+Message-Id: <165522725543.2442209.10680964769464937742.b4-ty@kernel.org>
+Date: Tue, 14 Jun 2022 18:20:55 +0100
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature"; boundary="DwejfaIazyrqXF31"
-Content-Disposition: inline
-In-Reply-To: <398e4885-736c-d9a9-a18d-34f69f2b63ca@linux.intel.com>
-X-Cookie: DYSLEXICS OF THE WORLD, UNTIE!
-Cc: Cezary Rojewski <cezary.rojewski@intel.com>, "Wysocki,
- Rafael J" <rafael.j.wysocki@intel.com>,
- "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
- Dominik Brodowski <linux@dominikbrodowski.net>, Takashi Iwai <tiwai@suse.com>,
- Hans de Goede <hdegoede@redhat.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+Cc: alsa-devel@alsa-project.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -88,34 +80,40 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+On Sat, 4 Jun 2022 11:54:07 +0100, Mark Brown wrote:
+> The standard snd_soc_info_volsw() detects if a control is a volume control
+> and needs to be reported as an integer even if it only has two values by
+> looking for the string " Volume" in the control name. This results in false
+> positives if the control has a name like "HP Volume Ramp Switch" since any
+> " Volume" is matched, not just a trailing one. Fix this by making sure that
+> we only match at the end of the control name.
+> 
+> [...]
 
---DwejfaIazyrqXF31
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Applied to
 
-On Tue, Jun 14, 2022 at 11:51:01AM -0500, Pierre-Louis Bossart wrote:
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
 
-> It' very very hard to remove stuff, and in this case there is limited
-> evidence that distributions use the DSP + I2S mode. You could deprecate
-> the ACPI_OVERRIDE but you've got to leave time for distributions to switch.
+Thanks!
 
-At the time that quirk was done I don't think there was even DSP support
-- it was just plain I2S AFAIR, no firmware loaded or at least only in
-passthrough mode.
+[1/1] ASoC: ops: Fix boolean/integer detection for simple controls
+      commit: aa2a4b897132169fbc6d32932644b95875cf9c7f
 
---DwejfaIazyrqXF31
-Content-Type: application/pgp-signature; name="signature.asc"
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
 
------BEGIN PGP SIGNATURE-----
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmKov1MACgkQJNaLcl1U
-h9DDJgf7BrR/3JwZblf81TG0J8XhpmACd2+W47xA/n5c8kvEbICLVjkEN9d4UgMP
-DUcprrmV/dzpW1SUiG7JCj46JMLw0g4olhI4d+xbwQTIyxtUd7wFWI+V0oUyUEJY
-W4sU2oi9rLpt/0iZUBXwPx+3E60/JF4Gp7byfHH52K/e4mdMqqeo3/OJlQajxWai
-7mjQXMZez5ZRz1wmr49gG8rms4HIvjylcPFsIyDrSTDimnm3Wo4h7URRCrPrJVAl
-DLCRj1JTFFXlR7a8NWqWeErb7xGdKRWNQHFDmpNdhIRy1eVyy/gmAq0gfis2K4d+
-UR5c9j97Fj28CumuPL0Lgxr5Mbj1jQ==
-=0yqe
------END PGP SIGNATURE-----
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
---DwejfaIazyrqXF31--
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
