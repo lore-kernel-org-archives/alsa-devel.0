@@ -4,70 +4,72 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 439ABC433EF
-	for <alsa-devel@archiver.kernel.org>; Tue, 14 Jun 2022 02:18:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 69D65C43334
+	for <alsa-devel@archiver.kernel.org>; Tue, 14 Jun 2022 02:18:52 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 81E7418FE;
-	Tue, 14 Jun 2022 04:17:47 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 81E7418FE
+	by alsa0.perex.cz (Postfix) with ESMTPS id DD7F31897;
+	Tue, 14 Jun 2022 04:18:00 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DD7F31897
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1655173117;
-	bh=thEwbKeA8G8Hd+okRvbHM1k84A5MXhDzeB5+afTFWOs=;
+	s=default; t=1655173130;
+	bh=L4eD9J0MTtWeGzYMeXFppIGyk1FWZFElAdCvuNUix20=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=mgnis63c0TAWy0A8DNMkbt+yFjfhlzKAS3FbP77v+7lmlqYANvouA8ckuhAze0Z2i
-	 2k0osLEoabKZDb7HhxkKo/YV/lr3M/yBkJWD4ogAuw9pv300QXTDccRCNG9A5LNqrv
-	 4OVwiJ/MoGKKGldV+uYR0ZSY6j37Muki2w3A/bYc=
+	b=tHZm+X5LgZFvNserik/iMCtlB47YdxtXYGQmZVB/USxUOcaICTxfroRUWQeTzAmWb
+	 2uqV+5+fwU2h7L+Y81pS5IXMA5RuH4I9KTjbMeroNXbwMwtTT2lcGzJ38UCW1n4N8b
+	 qUablRdOCW+ft1cyy9Pvf6FSZUc/zD6xhCh8i3nE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 1A90AF8062F;
-	Tue, 14 Jun 2022 04:08:57 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id DF102F80587;
+	Tue, 14 Jun 2022 04:09:14 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id F1E13F80630; Tue, 14 Jun 2022 04:08:54 +0200 (CEST)
-Received: from ams.source.kernel.org (ams.source.kernel.org
- [IPv6:2604:1380:4601:e00::1])
+ id C2EBCF8057B; Tue, 14 Jun 2022 04:09:12 +0200 (CEST)
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id E2599F8062F
- for <alsa-devel@alsa-project.org>; Tue, 14 Jun 2022 04:08:48 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E2599F8062F
+ by alsa1.perex.cz (Postfix) with ESMTPS id 4143AF8057A
+ for <alsa-devel@alsa-project.org>; Tue, 14 Jun 2022 04:09:10 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4143AF8057A
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="BSsNdfaG"
+ header.b="Q4c/KqM7"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by ams.source.kernel.org (Postfix) with ESMTPS id 5C49BB816C2;
- Tue, 14 Jun 2022 02:08:48 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 27016C385A2;
- Tue, 14 Jun 2022 02:08:47 +0000 (UTC)
+ by ams.source.kernel.org (Postfix) with ESMTPS id D9854B80D19;
+ Tue, 14 Jun 2022 02:09:09 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 477C8C385A2;
+ Tue, 14 Jun 2022 02:09:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1655172528;
- bh=thEwbKeA8G8Hd+okRvbHM1k84A5MXhDzeB5+afTFWOs=;
+ s=k20201202; t=1655172548;
+ bh=L4eD9J0MTtWeGzYMeXFppIGyk1FWZFElAdCvuNUix20=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=BSsNdfaGWnz/sjEPCZxZKFRbEwm+61mjeJi34t9XmJy98G3rgHnMGPmFVfZTwVNg9
- FbCAvo/2SmvERnPcQpkQGYlSCn7eXuaQNTA3RFFdPrH6Yk82t3Boji+HEQig0zntwY
- l0CTXRXmccwE9+zm0hENJYHdcxZ7YxcZiFmUHNopyRHD00bHUZBNmDRhEMVintINgD
- AGHPpYx9OEXUfrOA048yabY0RuDVNCJe3ZrAaFtnsKs1kNjNy+VAtkIlGxASXICX2M
- qMy0QRDPY+9F2H7PyrFG0uloeeMLXnMQJBWQ7+GTAi15Rno9R/DKPvYLoIkAn9Njq2
- rHZ9youQb17DA==
+ b=Q4c/KqM7fW+4W2Kd24MPGnaxzFBRvwevHq0fGAGvbx73zi00jH6jYwiBq0V2EnMHN
+ U6hs6vd2eMd8G/w9ez16rIWU9gjPWkPUGSJgo7295S0w8WsWhNHXYEJNFYKVfO6yKu
+ GV0yzfC9ihfGFeiS8EZ8gxzsPE0W5zzupQfXTXe94ZuXbpQ5y4xgBWEbNPgQqUwmaR
+ tKkWUIoJhznnsQhphxwSxZ3MLbJkcaeR3ghFEQ0QRvlp3f3dcL3ADUhq9XK5C8OmnB
+ iM6DoFph2+DUar2Vhqfc2Fersj2l2XbqsRPFLA1+W9XCwl83VcyPRwikx0H0p7Of7Z
+ 7iq4asjbzwS5g==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.10 21/29] ALSA: hda/realtek - Add HW8326 support
-Date: Mon, 13 Jun 2022 22:08:07 -0400
-Message-Id: <20220614020815.1099999-21-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.4 04/23] ASoC: cs42l52: Fix TLV scales for mixer
+ controls
+Date: Mon, 13 Jun 2022 22:08:40 -0400
+Message-Id: <20220614020900.1100401-4-sashal@kernel.org>
 X-Mailer: git-send-email 2.35.1
-In-Reply-To: <20220614020815.1099999-1-sashal@kernel.org>
-References: <20220614020815.1099999-1-sashal@kernel.org>
+In-Reply-To: <20220614020900.1100401-1-sashal@kernel.org>
+References: <20220614020900.1100401-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
-Cc: Sasha Levin <sashal@kernel.org>, huangwenhui <huangwenhuia@uniontech.com>,
- alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, tiwai@suse.com
+Cc: Sasha Levin <sashal@kernel.org>, brian.austin@cirrus.com,
+ Charles Keepax <ckeepax@opensource.cirrus.com>, alsa-devel@alsa-project.org,
+ tiwai@suse.com, lgirdwood@gmail.com, Paul.Handrigan@cirrus.com,
+ Mark Brown <broonie@kernel.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -83,150 +85,43 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: huangwenhui <huangwenhuia@uniontech.com>
+From: Charles Keepax <ckeepax@opensource.cirrus.com>
 
-[ Upstream commit 527f4643e03c298c1e3321cfa27866b1374a55e1 ]
+[ Upstream commit 8bf5aabf524eec61013e506f764a0b2652dc5665 ]
 
-Added the support of new Huawei codec HW8326. The HW8326 is developed
-by Huawei with Realtek's IP Core, and it's compatible with ALC256.
+The datasheet specifies the range of the mixer volumes as between
+-51.5dB and 12dB with a 0.5dB step. Update the TLVs for this.
 
-Signed-off-by: huangwenhui <huangwenhuia@uniontech.com>
-Link: https://lore.kernel.org/r/20220608082357.26898-1-huangwenhuia@uniontech.com
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Signed-off-by: Charles Keepax <ckeepax@opensource.cirrus.com>
+Link: https://lore.kernel.org/r/20220602162119.3393857-2-ckeepax@opensource.cirrus.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/hda/hdac_device.c       |  1 +
- sound/pci/hda/patch_realtek.c | 14 ++++++++++++++
- 2 files changed, 15 insertions(+)
+ sound/soc/codecs/cs42l52.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/sound/hda/hdac_device.c b/sound/hda/hdac_device.c
-index 3e9e9ac804f6..b7e5032b61c9 100644
---- a/sound/hda/hdac_device.c
-+++ b/sound/hda/hdac_device.c
-@@ -660,6 +660,7 @@ static const struct hda_vendor_id hda_vendor_ids[] = {
- 	{ 0x14f1, "Conexant" },
- 	{ 0x17e8, "Chrontel" },
- 	{ 0x1854, "LG" },
-+	{ 0x19e5, "Huawei" },
- 	{ 0x1aec, "Wolfson Microelectronics" },
- 	{ 0x1af4, "QEMU" },
- 	{ 0x434d, "C-Media" },
-diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-index 71a9462e8f6e..e067759561df 100644
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -439,6 +439,7 @@ static void alc_fill_eapd_coef(struct hda_codec *codec)
- 	case 0x10ec0245:
- 	case 0x10ec0255:
- 	case 0x10ec0256:
-+	case 0x19e58326:
- 	case 0x10ec0257:
- 	case 0x10ec0282:
- 	case 0x10ec0283:
-@@ -576,6 +577,7 @@ static void alc_shutup_pins(struct hda_codec *codec)
- 	switch (codec->core.vendor_id) {
- 	case 0x10ec0236:
- 	case 0x10ec0256:
-+	case 0x19e58326:
- 	case 0x10ec0283:
- 	case 0x10ec0286:
- 	case 0x10ec0288:
-@@ -3252,6 +3254,7 @@ static void alc_disable_headset_jack_key(struct hda_codec *codec)
- 	case 0x10ec0230:
- 	case 0x10ec0236:
- 	case 0x10ec0256:
-+	case 0x19e58326:
- 		alc_write_coef_idx(codec, 0x48, 0x0);
- 		alc_update_coef_idx(codec, 0x49, 0x0045, 0x0);
- 		break;
-@@ -3280,6 +3283,7 @@ static void alc_enable_headset_jack_key(struct hda_codec *codec)
- 	case 0x10ec0230:
- 	case 0x10ec0236:
- 	case 0x10ec0256:
-+	case 0x19e58326:
- 		alc_write_coef_idx(codec, 0x48, 0xd011);
- 		alc_update_coef_idx(codec, 0x49, 0x007f, 0x0045);
- 		break;
-@@ -4849,6 +4853,7 @@ static void alc_headset_mode_unplugged(struct hda_codec *codec)
- 	case 0x10ec0230:
- 	case 0x10ec0236:
- 	case 0x10ec0256:
-+	case 0x19e58326:
- 		alc_process_coef_fw(codec, coef0256);
- 		break;
- 	case 0x10ec0234:
-@@ -4964,6 +4969,7 @@ static void alc_headset_mode_mic_in(struct hda_codec *codec, hda_nid_t hp_pin,
- 	case 0x10ec0230:
- 	case 0x10ec0236:
- 	case 0x10ec0256:
-+	case 0x19e58326:
- 		alc_write_coef_idx(codec, 0x45, 0xc489);
- 		snd_hda_set_pin_ctl_cache(codec, hp_pin, 0);
- 		alc_process_coef_fw(codec, coef0256);
-@@ -5114,6 +5120,7 @@ static void alc_headset_mode_default(struct hda_codec *codec)
- 	case 0x10ec0230:
- 	case 0x10ec0236:
- 	case 0x10ec0256:
-+	case 0x19e58326:
- 		alc_write_coef_idx(codec, 0x1b, 0x0e4b);
- 		alc_write_coef_idx(codec, 0x45, 0xc089);
- 		msleep(50);
-@@ -5213,6 +5220,7 @@ static void alc_headset_mode_ctia(struct hda_codec *codec)
- 	case 0x10ec0230:
- 	case 0x10ec0236:
- 	case 0x10ec0256:
-+	case 0x19e58326:
- 		alc_process_coef_fw(codec, coef0256);
- 		break;
- 	case 0x10ec0234:
-@@ -5327,6 +5335,7 @@ static void alc_headset_mode_omtp(struct hda_codec *codec)
- 	case 0x10ec0230:
- 	case 0x10ec0236:
- 	case 0x10ec0256:
-+	case 0x19e58326:
- 		alc_process_coef_fw(codec, coef0256);
- 		break;
- 	case 0x10ec0234:
-@@ -5428,6 +5437,7 @@ static void alc_determine_headset_type(struct hda_codec *codec)
- 	case 0x10ec0230:
- 	case 0x10ec0236:
- 	case 0x10ec0256:
-+	case 0x19e58326:
- 		alc_write_coef_idx(codec, 0x1b, 0x0e4b);
- 		alc_write_coef_idx(codec, 0x06, 0x6104);
- 		alc_write_coefex_idx(codec, 0x57, 0x3, 0x09a3);
-@@ -5722,6 +5732,7 @@ static void alc255_set_default_jack_type(struct hda_codec *codec)
- 	case 0x10ec0230:
- 	case 0x10ec0236:
- 	case 0x10ec0256:
-+	case 0x19e58326:
- 		alc_process_coef_fw(codec, alc256fw);
- 		break;
- 	}
-@@ -6325,6 +6336,7 @@ static void alc_combo_jack_hp_jd_restart(struct hda_codec *codec)
- 	case 0x10ec0236:
- 	case 0x10ec0255:
- 	case 0x10ec0256:
-+	case 0x19e58326:
- 		alc_update_coef_idx(codec, 0x1b, 0x8000, 1 << 15); /* Reset HP JD */
- 		alc_update_coef_idx(codec, 0x1b, 0x8000, 0 << 15);
- 		break;
-@@ -9812,6 +9824,7 @@ static int patch_alc269(struct hda_codec *codec)
- 	case 0x10ec0230:
- 	case 0x10ec0236:
- 	case 0x10ec0256:
-+	case 0x19e58326:
- 		spec->codec_variant = ALC269_TYPE_ALC256;
- 		spec->shutup = alc256_shutup;
- 		spec->init_hook = alc256_init;
-@@ -11254,6 +11267,7 @@ static const struct hda_device_id snd_hda_id_realtek[] = {
- 	HDA_CODEC_ENTRY(0x10ec0b00, "ALCS1200A", patch_alc882),
- 	HDA_CODEC_ENTRY(0x10ec1168, "ALC1220", patch_alc882),
- 	HDA_CODEC_ENTRY(0x10ec1220, "ALC1220", patch_alc882),
-+	HDA_CODEC_ENTRY(0x19e58326, "HW8326", patch_alc269),
- 	{} /* terminator */
- };
- MODULE_DEVICE_TABLE(hdaudio, snd_hda_id_realtek);
+diff --git a/sound/soc/codecs/cs42l52.c b/sound/soc/codecs/cs42l52.c
+index 2ea4cba3be2a..0daa3b4c68ca 100644
+--- a/sound/soc/codecs/cs42l52.c
++++ b/sound/soc/codecs/cs42l52.c
+@@ -137,7 +137,7 @@ static DECLARE_TLV_DB_SCALE(mic_tlv, 1600, 100, 0);
+ 
+ static DECLARE_TLV_DB_SCALE(pga_tlv, -600, 50, 0);
+ 
+-static DECLARE_TLV_DB_SCALE(mix_tlv, -50, 50, 0);
++static DECLARE_TLV_DB_SCALE(mix_tlv, -5150, 50, 0);
+ 
+ static DECLARE_TLV_DB_SCALE(beep_tlv, -56, 200, 0);
+ 
+@@ -364,7 +364,7 @@ static const struct snd_kcontrol_new cs42l52_snd_controls[] = {
+ 			      CS42L52_ADCB_VOL, 0, 0xA0, 0x78, ipd_tlv),
+ 	SOC_DOUBLE_R_SX_TLV("ADC Mixer Volume",
+ 			     CS42L52_ADCA_MIXER_VOL, CS42L52_ADCB_MIXER_VOL,
+-				0, 0x19, 0x7F, ipd_tlv),
++				0, 0x19, 0x7F, mix_tlv),
+ 
+ 	SOC_DOUBLE("ADC Switch", CS42L52_ADC_MISC_CTL, 0, 1, 1, 0),
+ 
 -- 
 2.35.1
 
