@@ -4,67 +4,70 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 46306C433EF
-	for <alsa-devel@archiver.kernel.org>; Tue, 14 Jun 2022 10:27:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 84644C433EF
+	for <alsa-devel@archiver.kernel.org>; Tue, 14 Jun 2022 10:27:20 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 8353717A3;
-	Tue, 14 Jun 2022 12:26:13 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8353717A3
+	by alsa0.perex.cz (Postfix) with ESMTPS id BD524185B;
+	Tue, 14 Jun 2022 12:26:28 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BD524185B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1655202423;
-	bh=NtfG1AQIcHLoK85/ppWe+StyZnfKLy3RTpV6LmmkOjk=;
+	s=default; t=1655202438;
+	bh=/4wjBN/XD9r9d8fn277nelFLTt+axEseUdjXrsmW1cU=;
 	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=F/VJQbwMr+pkWTaG8DnQFg/AImIe38vY5IAfCdunbliNOcVTlu7Srl4T6/VwZmuVe
-	 HYXRA5OwxY8zB/Pe+om5PkzsdpYzTR9iuz2KmoH5m6vjCJHlCduSFwiLbFBzez0xip
-	 k4MSaPAENLK6FIuuVMzzCIzX7A1qGgoBgLOth07A=
+	b=QsLkfiut/HnWyX36q+Rgf2ilqONW6K6gpfI9u/PSk6YhbSJEMHjZG6KWXu2tn5X/z
+	 HopLnar8H/M6WzdN++n56PM4V+ajUWv40eUHmfPp0fvN1AnmMEn7eVJpb19G1zsll1
+	 jHOYiLcnxb7SwEOEDKQQrEtxIX/4rpLI7S7GOb48=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id E5DB6F800D8;
-	Tue, 14 Jun 2022 12:25:21 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 710BAF80535;
+	Tue, 14 Jun 2022 12:25:22 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 5FE57F80533; Tue, 14 Jun 2022 12:25:20 +0200 (CEST)
+ id 92C22F8052F; Tue, 14 Jun 2022 12:25:20 +0200 (CEST)
 Received: from dfw.source.kernel.org (dfw.source.kernel.org
  [IPv6:2604:1380:4641:c500::1])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 98957F800D8
- for <alsa-devel@alsa-project.org>; Tue, 14 Jun 2022 12:25:12 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 98957F800D8
+ by alsa1.perex.cz (Postfix) with ESMTPS id 23CADF8052D
+ for <alsa-devel@alsa-project.org>; Tue, 14 Jun 2022 12:25:18 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 23CADF8052D
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="MT/tsId3"
+ header.b="JdeSQWXL"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id DC9D360C5C;
- Tue, 14 Jun 2022 10:25:09 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 18191C341C4;
- Tue, 14 Jun 2022 10:25:07 +0000 (UTC)
+ by dfw.source.kernel.org (Postfix) with ESMTPS id 054F460C97;
+ Tue, 14 Jun 2022 10:25:16 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C1194C341C0;
+ Tue, 14 Jun 2022 10:25:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1655202309;
- bh=NtfG1AQIcHLoK85/ppWe+StyZnfKLy3RTpV6LmmkOjk=;
+ s=k20201202; t=1655202314;
+ bh=/4wjBN/XD9r9d8fn277nelFLTt+axEseUdjXrsmW1cU=;
  h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=MT/tsId3DnrGt/FJ/BHHM5ki3xrTfSdUGT7TkatjQRN2RcDfPAV7G/ac3SuttKnzA
- DWn1LtBUIois29DFJWvpF8h1dtFUNVRIuJqsxLt/DUAtiE2YTCP55rwpe3j10BXcdb
- 1U8VRKGnYLJUT3rpE11MBJ1VHA/3cne/Q65E2Cdmc7i/CvC1GcjawfSFIT3Ntb2Uza
- AuurPyUGAxoVGpTpNoI7wdE9W7P2gmBfftc4BNwQYJXAd1VIn1ABf4LnR2GptugN2o
- 9t0PvVyfYcdkQ/teRoYlKU3sjAXhUIXsAZP/bfSMC+lH4fOh73JqLvfbWcLgkNrsie
- IAOWCnNdQG3ow==
+ b=JdeSQWXLchu9QxQUVDqhSTbVyAhOjuRuArsn0syriXa+9Qq9BrxzCpSbML5WI6MvX
+ rieOOwWnvg/qq0YjsQmfXXIgeK6bx8mQHr+Cp7jItHCN2TGh12ndouxY2FFFPOMzoV
+ OIj9Mb9xNVeeg7e7EYjwZAe452Iwx8BRu9WNpRbfAaEvucIA6+u0M2XLRpTQgF4owu
+ hkJKkhk4nlzqH98aZNLkIRN8piFSAYzExErE7j+l41MzNbTwRZ3EqFPXUSTgcaT58B
+ RjsjdaMcL3qclOjPvMSkjIE7/PkiKj4D6GIXIZdSp95ObCXd5jSt0nEnh7dDi9Gs33
+ rlAatUrbYIFqw==
 From: Mark Brown <broonie@kernel.org>
-To: pierre-louis.bossart@linux.intel.com, alsa-devel@alsa-project.org
-In-Reply-To: <20220610214415.42942-1-pierre-louis.bossart@linux.intel.com>
-References: <20220610214415.42942-1-pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH] ASoC: intel: sof_sdw: add RT711 SDCA card for MTL platform
-Message-Id: <165520230782.3607327.11391458588524693814.b4-ty@kernel.org>
-Date: Tue, 14 Jun 2022 11:25:07 +0100
+To: ckeepax@opensource.cirrus.com, samuel@sholland.org
+In-Reply-To: <20220613161552.481337-1-ckeepax@opensource.cirrus.com>
+References: <20220613161552.481337-1-ckeepax@opensource.cirrus.com>
+Subject: Re: [PATCH 1/2] ASoC: sun8i-codec: Partial revert to fix clock
+ specifiers
+Message-Id: <165520231251.3607327.1586830877046934824.b4-ty@kernel.org>
+Date: Tue, 14 Jun 2022 11:25:12 +0100
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: tiwai@suse.de, yung-chuan.liao@linux.intel.com, uday.m.bhat@intel.com,
- yong.zhi@intel.com
+Cc: alsa-devel@alsa-project.org, patches@opensource.cirrus.com,
+ linux-kernel@vger.kernel.org, jernej.skrabec@gmail.com, lgirdwood@gmail.com,
+ wens@csie.org, linux-mediatek@lists.infradead.org, matthias.bgg@gmail.com,
+ linux-sunxi@lists.linux.dev
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -80,12 +83,15 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Fri, 10 Jun 2022 16:44:15 -0500, Pierre-Louis Bossart wrote:
-> From: Yong Zhi <yong.zhi@intel.com>
+On Mon, 13 Jun 2022 17:15:51 +0100, Charles Keepax wrote:
+> Recent updates accidentally updated the clock producer/consumer
+> specifiers on this device as part of refactoring the CPU side of the DAI
+> links. However, this device sits on the CODEC side and shouldn't have
+> been updated. Partially revert the changes keeping the switch to the new
+> clock terminology but going back to the CODEC defines.
 > 
-> Enable on-board rt711 based sound card for MTL RVP.
 > 
-> 
+> [...]
 
 Applied to
 
@@ -93,8 +99,10 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: intel: sof_sdw: add RT711 SDCA card for MTL platform
-      commit: 18489174e4fb98ad07fd387973a39e755ac01dee
+[1/2] ASoC: sun8i-codec: Partial revert to fix clock specifiers
+      commit: beb89d1d49e9ae1188356d6e37581e5f0b5f62b4
+[2/2] ASoC: mediatek: mt8186: Use new direct clock defines
+      commit: 845a215558647acd4290dd773b9c0de62c123335
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
