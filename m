@@ -4,54 +4,53 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id F3F82C433EF
-	for <alsa-devel@archiver.kernel.org>; Tue, 14 Jun 2022 04:27:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id F0942C43334
+	for <alsa-devel@archiver.kernel.org>; Tue, 14 Jun 2022 04:27:41 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 441A518DC;
-	Tue, 14 Jun 2022 06:26:35 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 441A518DC
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0EC0918E8;
+	Tue, 14 Jun 2022 06:26:50 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0EC0918E8
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1655180845;
-	bh=8YBl6tiPpOxpEUAqpG5GE0vGwBCIUWkQkG4hWPxnsdM=;
+	s=default; t=1655180860;
+	bh=g3Vi1xOFu1YNedXbqLotI9LCw1AHai8hQi8w67xt2oQ=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=PSdYybUiwZqL/nGxOyduUU8DRe8Hz1emCYXy1LvtsfjU2e3dEKR5ErVHWXDXlw1DJ
-	 XgXkEUcfjqdjTGtxDPrRZJFyTN7KO76EquT19qDA1ddNURozgBMk+pDGTU4tNPtg2k
-	 ZNu1623fNLbHwkVByRZOal2vZ5+RwLx5V8YAaPak=
+	b=tpszTaU5m/LQTWpzZ9fSTprAIBWzALYzmL66NaiahqMpytt3JBw7UIanfDGshfTsr
+	 o6r32tg/ss0BiewJrBwsOiYi6ni/4GL4UWZA4R3Mg3EQevgPCB4vrGGgUB5GnC+yhP
+	 SHlGuf0qGIFwDZs1RREjBTdgAv/uyea7YsvUkv6E=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id E98B8F80534;
-	Tue, 14 Jun 2022 06:25:51 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 192B7F800E1;
+	Tue, 14 Jun 2022 06:26:19 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 90A60F80535; Tue, 14 Jun 2022 06:25:49 +0200 (CEST)
-Received: from inva020.nxp.com (inva020.nxp.com [92.121.34.13])
+ id 3F503F80537; Tue, 14 Jun 2022 06:26:17 +0200 (CEST)
+Received: from inva021.nxp.com (inva021.nxp.com [92.121.34.21])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id C28ADF80528
- for <alsa-devel@alsa-project.org>; Tue, 14 Jun 2022 06:25:36 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C28ADF80528
-Received: from inva020.nxp.com (localhost [127.0.0.1])
- by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 36DCC1A2682;
- Tue, 14 Jun 2022 06:25:36 +0200 (CEST)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 48BDCF80165
+ for <alsa-devel@alsa-project.org>; Tue, 14 Jun 2022 06:25:35 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 48BDCF80165
+Received: from inva021.nxp.com (localhost [127.0.0.1])
+ by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 07F54202710;
+ Tue, 14 Jun 2022 06:25:35 +0200 (CEST)
 Received: from aprdc01srsp001v.ap-rdc01.nxp.com
  (aprdc01srsp001v.ap-rdc01.nxp.com [165.114.16.16])
- by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id E0B631A2685;
- Tue, 14 Jun 2022 06:25:35 +0200 (CEST)
+ by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id B1A13202717;
+ Tue, 14 Jun 2022 06:25:34 +0200 (CEST)
 Received: from localhost.localdomain (shlinux2.ap.freescale.net
  [10.192.224.44])
- by aprdc01srsp001v.ap-rdc01.nxp.com (Postfix) with ESMTP id 05267180222C;
- Tue, 14 Jun 2022 12:25:33 +0800 (+08)
+ by aprdc01srsp001v.ap-rdc01.nxp.com (Postfix) with ESMTP id CC104180219B;
+ Tue, 14 Jun 2022 12:25:32 +0800 (+08)
 From: Shengjiu Wang <shengjiu.wang@nxp.com>
 To: nicoleotsuka@gmail.com, Xiubo.Lee@gmail.com, festevam@gmail.com,
  shengjiu.wang@gmail.com, lgirdwood@gmail.com, broonie@kernel.org,
  perex@perex.cz, tiwai@suse.com, alsa-devel@alsa-project.org,
  robh+dt@kernel.org, krzk+dt@kernel.org, devicetree@vger.kernel.org
-Subject: [PATCH 6/7] ASoC: dt-bindings: fsl-sai: Add new property to configure
- dataline
-Date: Tue, 14 Jun 2022 12:11:23 +0800
-Message-Id: <1655179884-12278-7-git-send-email-shengjiu.wang@nxp.com>
+Subject: [PATCH 5/7] ASoC: fsl_sai: Move res variable to be global
+Date: Tue, 14 Jun 2022 12:11:22 +0800
+Message-Id: <1655179884-12278-6-git-send-email-shengjiu.wang@nxp.com>
 X-Mailer: git-send-email 2.7.4
 In-Reply-To: <1655179884-12278-1-git-send-email-shengjiu.wang@nxp.com>
 References: <1655179884-12278-1-git-send-email-shengjiu.wang@nxp.com>
@@ -72,40 +71,60 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-"fsl,dataline" is added to configure the dataline of SAI.
-It has 3 value for each configuration, first one means the type:
-I2S(1) or PDM(2), second one is dataline mask for 'rx', third one is
-dataline mask for 'tx'. for example:
-
-fsl,dataline = <1 0xff 0xff 2 0xff 0x11>,
-
-it means I2S type rx mask is 0xff, tx mask is 0xff, PDM type
-rx mask is 0xff, tx mask is 0x11 (dataline 1 and 4 enabled).
+The resource info need to be accessed by hw_params()
+function for multi fifo case, the start address may
+be not the FIFO0. So move it to be global first.
 
 Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
 ---
- Documentation/devicetree/bindings/sound/fsl-sai.txt | 8 ++++++++
- 1 file changed, 8 insertions(+)
+ sound/soc/fsl/fsl_sai.c | 7 +++----
+ sound/soc/fsl/fsl_sai.h | 1 +
+ 2 files changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/sound/fsl-sai.txt b/Documentation/devicetree/bindings/sound/fsl-sai.txt
-index c71c5861d787..4c66e6a1a533 100644
---- a/Documentation/devicetree/bindings/sound/fsl-sai.txt
-+++ b/Documentation/devicetree/bindings/sound/fsl-sai.txt
-@@ -49,6 +49,14 @@ Required properties:
- 			  receive data by following their own bit clocks and
- 			  frame sync clocks separately.
+diff --git a/sound/soc/fsl/fsl_sai.c b/sound/soc/fsl/fsl_sai.c
+index ddfe28cb7df0..86aa0baba848 100644
+--- a/sound/soc/fsl/fsl_sai.c
++++ b/sound/soc/fsl/fsl_sai.c
+@@ -1077,7 +1077,6 @@ static int fsl_sai_probe(struct platform_device *pdev)
+ 	struct device *dev = &pdev->dev;
+ 	struct fsl_sai *sai;
+ 	struct regmap *gpr;
+-	struct resource *res;
+ 	void __iomem *base;
+ 	char tmp[8];
+ 	int irq, ret, i;
+@@ -1092,7 +1091,7 @@ static int fsl_sai_probe(struct platform_device *pdev)
  
-+  - fsl,dataline        : configure the dataline. it has 3 value for each configuration
-+                          first one means the type: I2S(1) or PDM(2)
-+                          second one is dataline mask for 'rx'
-+                          third one is dataline mask for 'tx'.
-+                          for example: fsl,dataline = <1 0xff 0xff 2 0xff 0x11>;
-+                          it means I2S type rx mask is 0xff, tx mask is 0xff, PDM type
-+                          rx mask is 0xff, tx mask is 0x11 (dataline 1 and 4 enabled).
-+
- Optional properties:
+ 	sai->is_lsb_first = of_property_read_bool(np, "lsb-first");
  
-   - big-endian		: Boolean property, required if all the SAI
+-	base = devm_platform_get_and_ioremap_resource(pdev, 0, &res);
++	base = devm_platform_get_and_ioremap_resource(pdev, 0, &sai->res);
+ 	if (IS_ERR(base))
+ 		return PTR_ERR(base);
+ 
+@@ -1192,8 +1191,8 @@ static int fsl_sai_probe(struct platform_device *pdev)
+ 				   MCLK_DIR(index));
+ 	}
+ 
+-	sai->dma_params_rx.addr = res->start + FSL_SAI_RDR0;
+-	sai->dma_params_tx.addr = res->start + FSL_SAI_TDR0;
++	sai->dma_params_rx.addr = sai->res->start + FSL_SAI_RDR0;
++	sai->dma_params_tx.addr = sai->res->start + FSL_SAI_TDR0;
+ 	sai->dma_params_rx.maxburst = FSL_SAI_MAXBURST_RX;
+ 	sai->dma_params_tx.maxburst = FSL_SAI_MAXBURST_TX;
+ 
+diff --git a/sound/soc/fsl/fsl_sai.h b/sound/soc/fsl/fsl_sai.h
+index c0b6bc42fc3c..4d657edc9c9f 100644
+--- a/sound/soc/fsl/fsl_sai.h
++++ b/sound/soc/fsl/fsl_sai.h
+@@ -258,6 +258,7 @@ struct fsl_sai {
+ 	struct regmap *regmap;
+ 	struct clk *bus_clk;
+ 	struct clk *mclk_clk[FSL_SAI_MCLK_MAX];
++	struct resource *res;
+ 
+ 	bool is_consumer_mode;
+ 	bool is_lsb_first;
 -- 
 2.17.1
 
