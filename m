@@ -4,62 +4,60 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id CB209C433EF
-	for <alsa-devel@archiver.kernel.org>; Tue, 14 Jun 2022 02:12:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 720CDC43334
+	for <alsa-devel@archiver.kernel.org>; Tue, 14 Jun 2022 02:12:43 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 2488516D0;
-	Tue, 14 Jun 2022 04:11:25 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2488516D0
+	by alsa0.perex.cz (Postfix) with ESMTPS id B20CC18BD;
+	Tue, 14 Jun 2022 04:11:51 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B20CC18BD
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1655172735;
-	bh=Z8Xq68xdswcbRuITMR0/0mROJ/UDggcKz9rSjlswhFY=;
+	s=default; t=1655172761;
+	bh=4yOOPVOIpvSqR9UuvIJDO33Nq+pMmZ47tgde5EPLflE=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=OEGOInKnx6g6x8OSFLKvXO+PfrRAc0TRz5z6uXnCHkaci385I+Toz4VFACG3yL5+C
-	 7paPlsd7Fm8Dg+QWOwXhlIGJelwnyhoqdEoukeFigv2lZaXGgpKICSFLB1gz3H2U5Z
-	 YSpiBSs0yfLZSzuiNCdDbMRWHV0BNHoUgACQnR3o=
+	b=I6UXUkMym5QHtJH/IRIuq4TWeDAlq58DDyam5K2PUSLOpiA8KTEFyyRLICIX8hkoM
+	 fy9tZtdFmqxmnd9Xizsa78h08L/H1oMqfnC1VRHURuGE6jwRqHBCHaPqgnWoXdpACg
+	 jkFR4rmdnbT0Vu2wRjyptLkz5ySaHoWnnIdxWCoM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 76C27F805D8;
-	Tue, 14 Jun 2022 04:06:36 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 0C907F8052E;
+	Tue, 14 Jun 2022 04:06:54 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id DDFE6F805D5; Tue, 14 Jun 2022 04:06:34 +0200 (CEST)
-Received: from ams.source.kernel.org (ams.source.kernel.org
- [IPv6:2604:1380:4601:e00::1])
+ id 386E4F8051E; Tue, 14 Jun 2022 04:06:52 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 690BEF805C0
- for <alsa-devel@alsa-project.org>; Tue, 14 Jun 2022 04:06:28 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 690BEF805C0
+ by alsa1.perex.cz (Postfix) with ESMTPS id 36D92F80535
+ for <alsa-devel@alsa-project.org>; Tue, 14 Jun 2022 04:06:44 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 36D92F80535
 Authentication-Results: alsa1.perex.cz;
  dkim=fail reason="key not found in DNS" (0-bit key) header.d=kernel.org
- header.i=@kernel.org header.b="Cst981I8"
+ header.i=@kernel.org header.b="fzcDaUow"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by ams.source.kernel.org (Postfix) with ESMTPS id DFCF3B8169A;
- Tue, 14 Jun 2022 02:06:27 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 87B55C3411B;
- Tue, 14 Jun 2022 02:06:26 +0000 (UTC)
+ by dfw.source.kernel.org (Postfix) with ESMTPS id B0D2360AF2;
+ Tue, 14 Jun 2022 02:06:43 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4A730C36AFE;
+ Tue, 14 Jun 2022 02:06:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1655172387;
- bh=Z8Xq68xdswcbRuITMR0/0mROJ/UDggcKz9rSjlswhFY=;
+ s=k20201202; t=1655172403;
+ bh=4yOOPVOIpvSqR9UuvIJDO33Nq+pMmZ47tgde5EPLflE=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=Cst981I8nXNrfwWnTV/lG5nFz9h62u/oBChdYo98oQOT8AiJAaWOrvv7geLH6+YeT
- Y1VbdjY8N3vXCJie5unhO6+UnYaptdRfp/oev6+oJj9ynnU8zXRJi0K5zX3pB2Qdzi
- hyt12IIeyVwtf5HjcQzyEMWWem2AO+ze5skev+DD++E/s7+h2m7Gdg9yOnv1aPN4+G
- mTZh5fM1k0th0EUvstpDlOCIVGq22QZKj5kVncmSJxo7qcvQsbgO2Qg2sFakAp1bUX
- WifNzxh/Zc+qK3/unKs3O/ie+eihn8UtesjDGqPm6C+qbB2+DxcqKtAWmgxbS9eYRK
- A+GY2CBu4jYyg==
+ b=fzcDaUowUZgTXBV9TAqlIrgiRlrAjuxwOTGTz28vXXoEDk39g5tS2n7pfHKJQIx7e
+ mid53mca8EIusPYo3TAeoGePuFsUjTiRUjeZMK6f6O8t0RadhQp6gyictVrYx/unBw
+ vkMncFddGC/qm+UhQGFRW1gKVmIty0bbATp0FbEgN4yjNjEiptcxhN4hGVYzvUpk6t
+ kwKPEc8YmBx/oz0j9heSEJ7h7/cqUgdPoJ3ZLlpSYg09/qaD8TYh4vafCgXtBtbnJ7
+ 5y+tWZDKjgcG5HjPePpH/UChrv25Rz/vtYBTXW1GGY9A6zEWii6Ii2oQfSRodOTX6q
+ dJXNAp70nIwLQ==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.17 16/43] ASoC: wm8962: Fix suspend while playing
- music
-Date: Mon, 13 Jun 2022 22:05:35 -0400
-Message-Id: <20220614020602.1098943-16-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.17 27/43] ALSA: hda/realtek - Add HW8326 support
+Date: Mon, 13 Jun 2022 22:05:46 -0400
+Message-Id: <20220614020602.1098943-27-sashal@kernel.org>
 X-Mailer: git-send-email 2.35.1
 In-Reply-To: <20220614020602.1098943-1-sashal@kernel.org>
 References: <20220614020602.1098943-1-sashal@kernel.org>
@@ -67,11 +65,8 @@ MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
-Cc: Sasha Levin <sashal@kernel.org>, alsa-devel@alsa-project.org,
- patches@opensource.wolfsonmicro.com,
- Charles Keepax <ckeepax@opensource.cirrus.com>, tiwai@suse.com,
- lgirdwood@gmail.com, Mark Brown <broonie@kernel.org>,
- Adam Ford <aford173@gmail.com>
+Cc: Sasha Levin <sashal@kernel.org>, huangwenhui <huangwenhuia@uniontech.com>,
+ alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, tiwai@suse.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -87,40 +82,150 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Adam Ford <aford173@gmail.com>
+From: huangwenhui <huangwenhuia@uniontech.com>
 
-[ Upstream commit d1f5272c0f7d2e53c6f2480f46725442776f5f78 ]
+[ Upstream commit 527f4643e03c298c1e3321cfa27866b1374a55e1 ]
 
-If the audio CODEC is playing sound when the system is suspended,
-it can be left in a state which throws the following error:
+Added the support of new Huawei codec HW8326. The HW8326 is developed
+by Huawei with Realtek's IP Core, and it's compatible with ALC256.
 
-wm8962 3-001a: ASoC: error at soc_component_read_no_lock on wm8962.3-001a: -16
-
-Once this error has occurred, the audio will not work again until rebooted.
-
-Fix this by configuring SET_SYSTEM_SLEEP_PM_OPS.
-
-Signed-off-by: Adam Ford <aford173@gmail.com>
-Acked-by: Charles Keepax <ckeepax@opensource.cirrus.com>
-Link: https://lore.kernel.org/r/20220526182129.538472-1-aford173@gmail.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Signed-off-by: huangwenhui <huangwenhuia@uniontech.com>
+Link: https://lore.kernel.org/r/20220608082357.26898-1-huangwenhuia@uniontech.com
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/codecs/wm8962.c | 1 +
- 1 file changed, 1 insertion(+)
+ sound/hda/hdac_device.c       |  1 +
+ sound/pci/hda/patch_realtek.c | 14 ++++++++++++++
+ 2 files changed, 15 insertions(+)
 
-diff --git a/sound/soc/codecs/wm8962.c b/sound/soc/codecs/wm8962.c
-index a5584ba962dc..e97eaca7049f 100644
---- a/sound/soc/codecs/wm8962.c
-+++ b/sound/soc/codecs/wm8962.c
-@@ -3858,6 +3858,7 @@ static int wm8962_runtime_suspend(struct device *dev)
- #endif
- 
- static const struct dev_pm_ops wm8962_pm = {
-+	SET_SYSTEM_SLEEP_PM_OPS(pm_runtime_force_suspend, pm_runtime_force_resume)
- 	SET_RUNTIME_PM_OPS(wm8962_runtime_suspend, wm8962_runtime_resume, NULL)
+diff --git a/sound/hda/hdac_device.c b/sound/hda/hdac_device.c
+index 3e9e9ac804f6..b7e5032b61c9 100644
+--- a/sound/hda/hdac_device.c
++++ b/sound/hda/hdac_device.c
+@@ -660,6 +660,7 @@ static const struct hda_vendor_id hda_vendor_ids[] = {
+ 	{ 0x14f1, "Conexant" },
+ 	{ 0x17e8, "Chrontel" },
+ 	{ 0x1854, "LG" },
++	{ 0x19e5, "Huawei" },
+ 	{ 0x1aec, "Wolfson Microelectronics" },
+ 	{ 0x1af4, "QEMU" },
+ 	{ 0x434d, "C-Media" },
+diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+index 112ecc256b14..7e7e517d32c6 100644
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -443,6 +443,7 @@ static void alc_fill_eapd_coef(struct hda_codec *codec)
+ 	case 0x10ec0245:
+ 	case 0x10ec0255:
+ 	case 0x10ec0256:
++	case 0x19e58326:
+ 	case 0x10ec0257:
+ 	case 0x10ec0282:
+ 	case 0x10ec0283:
+@@ -580,6 +581,7 @@ static void alc_shutup_pins(struct hda_codec *codec)
+ 	switch (codec->core.vendor_id) {
+ 	case 0x10ec0236:
+ 	case 0x10ec0256:
++	case 0x19e58326:
+ 	case 0x10ec0283:
+ 	case 0x10ec0286:
+ 	case 0x10ec0288:
+@@ -3247,6 +3249,7 @@ static void alc_disable_headset_jack_key(struct hda_codec *codec)
+ 	case 0x10ec0230:
+ 	case 0x10ec0236:
+ 	case 0x10ec0256:
++	case 0x19e58326:
+ 		alc_write_coef_idx(codec, 0x48, 0x0);
+ 		alc_update_coef_idx(codec, 0x49, 0x0045, 0x0);
+ 		break;
+@@ -3275,6 +3278,7 @@ static void alc_enable_headset_jack_key(struct hda_codec *codec)
+ 	case 0x10ec0230:
+ 	case 0x10ec0236:
+ 	case 0x10ec0256:
++	case 0x19e58326:
+ 		alc_write_coef_idx(codec, 0x48, 0xd011);
+ 		alc_update_coef_idx(codec, 0x49, 0x007f, 0x0045);
+ 		break;
+@@ -4910,6 +4914,7 @@ static void alc_headset_mode_unplugged(struct hda_codec *codec)
+ 	case 0x10ec0230:
+ 	case 0x10ec0236:
+ 	case 0x10ec0256:
++	case 0x19e58326:
+ 		alc_process_coef_fw(codec, coef0256);
+ 		break;
+ 	case 0x10ec0234:
+@@ -5025,6 +5030,7 @@ static void alc_headset_mode_mic_in(struct hda_codec *codec, hda_nid_t hp_pin,
+ 	case 0x10ec0230:
+ 	case 0x10ec0236:
+ 	case 0x10ec0256:
++	case 0x19e58326:
+ 		alc_write_coef_idx(codec, 0x45, 0xc489);
+ 		snd_hda_set_pin_ctl_cache(codec, hp_pin, 0);
+ 		alc_process_coef_fw(codec, coef0256);
+@@ -5175,6 +5181,7 @@ static void alc_headset_mode_default(struct hda_codec *codec)
+ 	case 0x10ec0230:
+ 	case 0x10ec0236:
+ 	case 0x10ec0256:
++	case 0x19e58326:
+ 		alc_write_coef_idx(codec, 0x1b, 0x0e4b);
+ 		alc_write_coef_idx(codec, 0x45, 0xc089);
+ 		msleep(50);
+@@ -5274,6 +5281,7 @@ static void alc_headset_mode_ctia(struct hda_codec *codec)
+ 	case 0x10ec0230:
+ 	case 0x10ec0236:
+ 	case 0x10ec0256:
++	case 0x19e58326:
+ 		alc_process_coef_fw(codec, coef0256);
+ 		break;
+ 	case 0x10ec0234:
+@@ -5388,6 +5396,7 @@ static void alc_headset_mode_omtp(struct hda_codec *codec)
+ 	case 0x10ec0230:
+ 	case 0x10ec0236:
+ 	case 0x10ec0256:
++	case 0x19e58326:
+ 		alc_process_coef_fw(codec, coef0256);
+ 		break;
+ 	case 0x10ec0234:
+@@ -5489,6 +5498,7 @@ static void alc_determine_headset_type(struct hda_codec *codec)
+ 	case 0x10ec0230:
+ 	case 0x10ec0236:
+ 	case 0x10ec0256:
++	case 0x19e58326:
+ 		alc_write_coef_idx(codec, 0x1b, 0x0e4b);
+ 		alc_write_coef_idx(codec, 0x06, 0x6104);
+ 		alc_write_coefex_idx(codec, 0x57, 0x3, 0x09a3);
+@@ -5783,6 +5793,7 @@ static void alc255_set_default_jack_type(struct hda_codec *codec)
+ 	case 0x10ec0230:
+ 	case 0x10ec0236:
+ 	case 0x10ec0256:
++	case 0x19e58326:
+ 		alc_process_coef_fw(codec, alc256fw);
+ 		break;
+ 	}
+@@ -6385,6 +6396,7 @@ static void alc_combo_jack_hp_jd_restart(struct hda_codec *codec)
+ 	case 0x10ec0236:
+ 	case 0x10ec0255:
+ 	case 0x10ec0256:
++	case 0x19e58326:
+ 		alc_update_coef_idx(codec, 0x1b, 0x8000, 1 << 15); /* Reset HP JD */
+ 		alc_update_coef_idx(codec, 0x1b, 0x8000, 0 << 15);
+ 		break;
+@@ -10092,6 +10104,7 @@ static int patch_alc269(struct hda_codec *codec)
+ 	case 0x10ec0230:
+ 	case 0x10ec0236:
+ 	case 0x10ec0256:
++	case 0x19e58326:
+ 		spec->codec_variant = ALC269_TYPE_ALC256;
+ 		spec->shutup = alc256_shutup;
+ 		spec->init_hook = alc256_init;
+@@ -11542,6 +11555,7 @@ static const struct hda_device_id snd_hda_id_realtek[] = {
+ 	HDA_CODEC_ENTRY(0x10ec0b00, "ALCS1200A", patch_alc882),
+ 	HDA_CODEC_ENTRY(0x10ec1168, "ALC1220", patch_alc882),
+ 	HDA_CODEC_ENTRY(0x10ec1220, "ALC1220", patch_alc882),
++	HDA_CODEC_ENTRY(0x19e58326, "HW8326", patch_alc269),
+ 	{} /* terminator */
  };
- 
+ MODULE_DEVICE_TABLE(hdaudio, snd_hda_id_realtek);
 -- 
 2.35.1
 
