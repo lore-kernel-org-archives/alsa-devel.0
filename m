@@ -4,58 +4,87 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 945ADC433EF
-	for <alsa-devel@archiver.kernel.org>; Tue, 14 Jun 2022 04:28:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id ED1BBC433EF
+	for <alsa-devel@archiver.kernel.org>; Tue, 14 Jun 2022 05:35:19 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D14DC18FD;
-	Tue, 14 Jun 2022 06:27:36 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D14DC18FD
+	by alsa0.perex.cz (Postfix) with ESMTPS id 34AE81700;
+	Tue, 14 Jun 2022 07:34:27 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 34AE81700
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1655180906;
-	bh=EP/4+DzOjY9uBROSw+EGDGiwiiTcy12UIq6VZuyuaDU=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1655184917;
+	bh=AxRXiS9VNt6hnchU3ve2cpT2/tKNekodqdsznrwF4hk=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=i+jzUq0/6p11tRIb5jYFzwU8IkbvkuzSZZwbYt/TP693/l0VvRNn29u67t7FEjVWJ
-	 4wMKWpbMx5mc73g3xrbyEYIhvkBpKP/ficvMHUr+bKx9qTvrm+C5wQTcIJY2BCmkCx
-	 CyOdmHATKUhfaJ09zAYz378gn/FPZv6TZOBKgjc0=
+	b=nFQ4cTcGeeZ2S/naJ57wUIg4nVjKRIv2VUhxUHoMamHdn4X8fQQF4OSkcRX8xwb3v
+	 2U+D/HsxlWO4ujmP6IzUqjkPY5Ett0wn1RB8cA2JIpHJ2i0dn9rs16aWIa7tp+xhjf
+	 fAMGvaOF/LI/qaehb3JM+TCJGld5CrcSylUjy8f8=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id BA2E8F80542;
-	Tue, 14 Jun 2022 06:26:21 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id A2D5DF80137;
+	Tue, 14 Jun 2022 07:34:26 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id D3551F8051F; Tue, 14 Jun 2022 06:26:17 +0200 (CEST)
-Received: from inva020.nxp.com (inva020.nxp.com [92.121.34.13])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 6CABBF80139; Tue, 14 Jun 2022 07:34:25 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 5F005F800E1
- for <alsa-devel@alsa-project.org>; Tue, 14 Jun 2022 06:25:34 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5F005F800E1
-Received: from inva020.nxp.com (localhost [127.0.0.1])
- by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 16D731A2684;
- Tue, 14 Jun 2022 06:25:34 +0200 (CEST)
-Received: from aprdc01srsp001v.ap-rdc01.nxp.com
- (aprdc01srsp001v.ap-rdc01.nxp.com [165.114.16.16])
- by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 845B71A2674;
- Tue, 14 Jun 2022 06:25:33 +0200 (CEST)
-Received: from localhost.localdomain (shlinux2.ap.freescale.net
- [10.192.224.44])
- by aprdc01srsp001v.ap-rdc01.nxp.com (Postfix) with ESMTP id 9F004180222A;
- Tue, 14 Jun 2022 12:25:31 +0800 (+08)
-From: Shengjiu Wang <shengjiu.wang@nxp.com>
-To: nicoleotsuka@gmail.com, Xiubo.Lee@gmail.com, festevam@gmail.com,
- shengjiu.wang@gmail.com, lgirdwood@gmail.com, broonie@kernel.org,
- perex@perex.cz, tiwai@suse.com, alsa-devel@alsa-project.org,
- robh+dt@kernel.org, krzk+dt@kernel.org, devicetree@vger.kernel.org
-Subject: [PATCH 4/7] ASoc: fsl_sai: Add pinctrl operation for PDM and DSD
-Date: Tue, 14 Jun 2022 12:11:21 +0800
-Message-Id: <1655179884-12278-5-git-send-email-shengjiu.wang@nxp.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1655179884-12278-1-git-send-email-shengjiu.wang@nxp.com>
-References: <1655179884-12278-1-git-send-email-shengjiu.wang@nxp.com>
-X-Virus-Scanned: ClamAV using ClamSMTP
-Cc: linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
+ by alsa1.perex.cz (Postfix) with ESMTPS id A0753F800D8
+ for <alsa-devel@alsa-project.org>; Tue, 14 Jun 2022 07:34:18 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A0753F800D8
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
+ header.b="UDdRtR4m"; 
+ dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
+ header.b="P7Zbo5ZR"
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id D6A9621B1E;
+ Tue, 14 Jun 2022 05:34:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1655184857; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=Hg86Ck1HwfrZkZzHR/xQUxFcJtXxy5iACMD6ydjCxvs=;
+ b=UDdRtR4mRzvaNFfivxIFU8qvVNQc56jWCj2H41hOcWxlmRwdbtMagLWc3TroWM9WU0su6b
+ qfVTkvF57eJ8Rnq5J5ORL6y1+B5ZfYFjB/ZuKVTS6QwIxfBm5UVsT62Cl1OX1gqFfev9uv
+ UkZqo9g2zALeHiBjSURdzT77gtjpKRo=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1655184857;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=Hg86Ck1HwfrZkZzHR/xQUxFcJtXxy5iACMD6ydjCxvs=;
+ b=P7Zbo5ZRlwPGhJBuZ1a/jhPiBwAVOhOZ6PsMvyx2nM/ef26aAS7zOq7XZnMUszYdLNSrZs
+ pQYAt+MPhTByYtAg==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id B863613524;
+ Tue, 14 Jun 2022 05:34:17 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+ by imap2.suse-dmz.suse.de with ESMTPSA id m0pDLNkdqGL3VwAAMHmgww
+ (envelope-from <tiwai@suse.de>); Tue, 14 Jun 2022 05:34:17 +0000
+Date: Tue, 14 Jun 2022 07:34:17 +0200
+Message-ID: <87edzr7qqu.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Hans de Goede <hdegoede@redhat.com>
+Subject: Re: How to add 2 different SND_PCI_QUIRKs for 2 models with the same
+ PCI subsys vend + prod ids?
+In-Reply-To: <632db5d6-e978-08b7-5fc2-e09988f66c85@redhat.com>
+References: <7e3aa97a-77c9-3367-8929-a86049286d75@redhat.com>
+ <87k09l7ys7.wl-tiwai@suse.de>
+ <5ca147d1-3a2d-60c6-c491-8aa844183222@redhat.com>
+ <87ilp57wpa.wl-tiwai@suse.de>
+ <632db5d6-e978-08b7-5fc2-e09988f66c85@redhat.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+Cc: "nikitashvets@flyium.com" <nikitashvets@flyium.com>,
+ "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -71,159 +100,68 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-With DSD format, the pinctrl is different compare with
-I2S format, because one dataline only has one channel
-data, and the codec always mux the LRCLK pin to DSD
-data line, and on i.MX8MQ the BCLK pin can route to
-codec on DSD case for the MCLK is too high.
+On Mon, 13 Jun 2022 22:53:54 +0200,
+Hans de Goede wrote:
+> 
+> Hi,
+> 
+> On 6/13/22 11:13, Takashi Iwai wrote:
+> > On Mon, 13 Jun 2022 10:46:28 +0200,
+> > Hans de Goede wrote:
+> >>
+> >> Hi,
+> >>
+> >> On 6/13/22 10:28, Takashi Iwai wrote:
+> >>> On Mon, 13 Jun 2022 09:54:47 +0200,
+> >>> Hans de Goede wrote:
+> >>>>
+> >>>> Hi All,
+> >>>>
+> >>>> There is a problem with the sound on the Lenovo Yoga Duet 7 13IML05, which
+> >>>> requires a SND_PCI_QUIRK to fix. But there already is an existing quirk
+> >>>> for another Lenovo laptop using the same  PCI subsys vend + prod ids.
+> >>>>
+> >>>> For more details see:
+> >>>> https://wiki.archlinux.org/title/Lenovo_Yoga_Duet_7_13IML05#Audio
+> >>>>
+> >>>> So I guess this means that we need to add a way to also include a DMI match
+> >>>> for SND_PCI_QUIRKs ?
+> >>>>
+> >>>> Maybe add a:
+> >>>>
+> >>>> const struct dmi_systemid *dmi_ids;
+> >>>>
+> >>>> member to struct snd_pci_quirk and a new
+> >>>> SND_PCI_QUIRK_DMI macro to set this?
+> >>>
+> >>> Do both machines have the very same codec?  I couldn't find
+> >>> alsa-info.sh output for Duet 7, but at least, C940 seems with ALC298
+> >>> (0x10ec0298), judging from
+> >>>   https://bugzilla.kernel.org/show_bug.cgi?id=205755
+> >>> If Duet 7 has a different codec (e.g. ALC287 0x10ec0287), we can
+> >>> distinguish from that.
+> >>
+> >> I've just asked the reporter of this for alsa-info.sh output.
+> >>
+> >> So assuming the codec is indeed different how would I go about
+> >> fixing this ?
+> > 
+> > It'll be something like below.
+> 
+> Thanks.
+> 
+> The alsa-info.sh output for the Yoga Duet 7 is here:
+> 
+> http://alsa-project.org/db/?f=5500aa1b489d2ef4ee6ac3ee613f11f3ed8ecfa8
+> 
+> This confirms that the codec is different, so I've asked
+> @nikitashvets to test the below patch you suggested and
+> he has confirmed that this fixes things (thank you @nikitashvets).
+> 
+> Takashi, if you can turn this into a proper patch (-series?)
+> and merge it that would be great!
 
-Add pinctrl operation that the pinctrl can be switched
-on runtime according to the I2S format or DSD format
+Sure, thanks for quick testing!
 
-Signed-off-by: Viorel Suman <viorel.suman@nxp.com>
-Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
----
- sound/soc/fsl/fsl_sai.c | 70 +++++++++++++++++++++++++++++++++++------
- sound/soc/fsl/fsl_sai.h |  2 ++
- 2 files changed, 63 insertions(+), 9 deletions(-)
 
-diff --git a/sound/soc/fsl/fsl_sai.c b/sound/soc/fsl/fsl_sai.c
-index 9d2828b55c07..ddfe28cb7df0 100644
---- a/sound/soc/fsl/fsl_sai.c
-+++ b/sound/soc/fsl/fsl_sai.c
-@@ -10,6 +10,7 @@
- #include <linux/module.h>
- #include <linux/of_address.h>
- #include <linux/of_device.h>
-+#include <linux/pinctrl/consumer.h>
- #include <linux/pm_qos.h>
- #include <linux/pm_runtime.h>
- #include <linux/regmap.h>
-@@ -57,6 +58,31 @@ static inline bool fsl_sai_dir_is_synced(struct fsl_sai *sai, int dir)
- 	return !sai->synchronous[dir] && sai->synchronous[adir];
- }
- 
-+static struct pinctrl_state *fsl_sai_get_pins_state(struct fsl_sai *sai, u32 bclk)
-+{
-+	struct pinctrl_state *state = 0;
-+
-+	if (sai->is_pdm_mode) {
-+		/* DSD512@44.1kHz, DSD512@48kHz */
-+		if (bclk >= 22579200)
-+			state = pinctrl_lookup_state(sai->pinctrl, "dsd512");
-+
-+		/* Get default DSD state */
-+		if (IS_ERR_OR_NULL(state))
-+			state = pinctrl_lookup_state(sai->pinctrl, "dsd");
-+	} else {
-+		/* 706k32b2c, 768k32b2c, etc */
-+		if (bclk >= 45158400)
-+			state = pinctrl_lookup_state(sai->pinctrl, "pcm_b2m");
-+	}
-+
-+	/* Get default state */
-+	if (IS_ERR_OR_NULL(state))
-+		state = pinctrl_lookup_state(sai->pinctrl, "default");
-+
-+	return state;
-+}
-+
- static irqreturn_t fsl_sai_isr(int irq, void *devid)
- {
- 	struct fsl_sai *sai = (struct fsl_sai *)devid;
-@@ -466,7 +492,7 @@ static int fsl_sai_hw_params(struct snd_pcm_substream *substream,
- 	u32 slots = (channels == 1) ? 2 : channels;
- 	u32 slot_width = word_width;
- 	int adir = tx ? RX : TX;
--	u32 pins;
-+	u32 pins, bclk;
- 	int ret;
- 
- 	if (sai->slots)
-@@ -484,15 +510,21 @@ static int fsl_sai_hw_params(struct snd_pcm_substream *substream,
- 	if (sai->is_pdm_mode)
- 		pins = channels;
- 
-+	bclk = params_rate(params) * (sai->bclk_ratio ? sai->bclk_ratio : slots * slot_width);
-+
-+	if (!IS_ERR_OR_NULL(sai->pinctrl)) {
-+		sai->pins_state = fsl_sai_get_pins_state(sai, bclk);
-+		if (!IS_ERR_OR_NULL(sai->pins_state)) {
-+			ret = pinctrl_select_state(sai->pinctrl, sai->pins_state);
-+			if (ret) {
-+				dev_err(cpu_dai->dev, "failed to set proper pins state: %d\n", ret);
-+				return ret;
-+			}
-+		}
-+	}
-+
- 	if (!sai->is_consumer_mode) {
--		if (sai->bclk_ratio)
--			ret = fsl_sai_set_bclk(cpu_dai, tx,
--					       sai->bclk_ratio *
--					       params_rate(params));
--		else
--			ret = fsl_sai_set_bclk(cpu_dai, tx,
--					       slots * slot_width *
--					       params_rate(params));
-+		ret = fsl_sai_set_bclk(cpu_dai, tx, bclk);
- 		if (ret)
- 			return ret;
- 
-@@ -757,6 +789,23 @@ static int fsl_sai_dai_probe(struct snd_soc_dai *cpu_dai)
- 	return 0;
- }
- 
-+static int fsl_sai_dai_resume(struct snd_soc_component *component)
-+{
-+	struct fsl_sai *sai = snd_soc_component_get_drvdata(component);
-+	struct device *dev = &sai->pdev->dev;
-+	int ret;
-+
-+	if (!IS_ERR_OR_NULL(sai->pinctrl) && !IS_ERR_OR_NULL(sai->pins_state)) {
-+		ret = pinctrl_select_state(sai->pinctrl, sai->pins_state);
-+		if (ret) {
-+			dev_err(dev, "failed to set proper pins state: %d\n", ret);
-+			return ret;
-+		}
-+	}
-+
-+	return 0;
-+}
-+
- static struct snd_soc_dai_driver fsl_sai_dai_template = {
- 	.probe = fsl_sai_dai_probe,
- 	.playback = {
-@@ -782,6 +831,7 @@ static struct snd_soc_dai_driver fsl_sai_dai_template = {
- 
- static const struct snd_soc_component_driver fsl_component = {
- 	.name           = "fsl-sai",
-+	.resume         = fsl_sai_dai_resume,
- };
- 
- static struct reg_default fsl_sai_reg_defaults_ofs0[] = {
-@@ -1147,6 +1197,8 @@ static int fsl_sai_probe(struct platform_device *pdev)
- 	sai->dma_params_rx.maxburst = FSL_SAI_MAXBURST_RX;
- 	sai->dma_params_tx.maxburst = FSL_SAI_MAXBURST_TX;
- 
-+	sai->pinctrl = devm_pinctrl_get(&pdev->dev);
-+
- 	platform_set_drvdata(pdev, sai);
- 	pm_runtime_enable(dev);
- 	if (!pm_runtime_enabled(dev)) {
-diff --git a/sound/soc/fsl/fsl_sai.h b/sound/soc/fsl/fsl_sai.h
-index e28a49ce12ef..c0b6bc42fc3c 100644
---- a/sound/soc/fsl/fsl_sai.h
-+++ b/sound/soc/fsl/fsl_sai.h
-@@ -278,6 +278,8 @@ struct fsl_sai {
- 	struct fsl_sai_verid verid;
- 	struct fsl_sai_param param;
- 	struct pm_qos_request pm_qos_req;
-+	struct pinctrl *pinctrl;
-+	struct pinctrl_state *pins_state;
- };
- 
- #define TX 1
--- 
-2.17.1
-
+Takashi
