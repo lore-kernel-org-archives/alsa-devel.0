@@ -4,67 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 074A5C433EF
-	for <alsa-devel@archiver.kernel.org>; Tue, 14 Jun 2022 17:21:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id ACF52C433EF
+	for <alsa-devel@archiver.kernel.org>; Tue, 14 Jun 2022 17:22:30 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 59CE71865;
-	Tue, 14 Jun 2022 19:21:05 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 59CE71865
+	by alsa0.perex.cz (Postfix) with ESMTPS id 6B53D188F;
+	Tue, 14 Jun 2022 19:21:37 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6B53D188F
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1655227315;
-	bh=0oUJqP1mCI5IlGt5vTnBQHDnvzI5GNaQ+HZMPp+kobg=;
+	s=default; t=1655227347;
+	bh=p/VKG1rDAA+aAWsG57lOpE/6sIdp+ee6SPXOLgjcCUU=;
 	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=nvIbZ74dgKyWgGR8fB3Vpcx2U/SlqWfHeRGaQXQA1wCOiZwrQQYa1Czoklo2RuTxy
-	 Uz0twAA8yMNZCGtHx9GbVW22FAF1+OJWJPgXiJkygHMmkTriQwCU7MmwZWzNm2nmi8
-	 faaGwAHrgAHysoz695eJFFASXYa5Fzvz074n0fOE=
+	b=VLOCq6dWIrDFD4CZ5wWZMp6vpdkqcA7tUE5pSScrNhXjH+tu+WbtiiW3HLeksaa3Z
+	 zNvfp0ofvkbrMv/+qvMPFBJ6XsFZXub//udvfviTezbQQf0kxyPkQbAmH7xT5qnJEd
+	 6xwnJV0J0ahqUzGHUYp8xnqkzyBhqyvFL8wanAEY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id DB4C4F80137;
-	Tue, 14 Jun 2022 19:21:04 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 8388EF80217;
+	Tue, 14 Jun 2022 19:21:05 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id CE389F800E1; Tue, 14 Jun 2022 19:21:02 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org
- [IPv6:2604:1380:4641:c500::1])
+ id C8E92F80137; Tue, 14 Jun 2022 19:21:03 +0200 (CEST)
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 42F96F800E1
- for <alsa-devel@alsa-project.org>; Tue, 14 Jun 2022 19:20:59 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 42F96F800E1
+ by alsa1.perex.cz (Postfix) with ESMTPS id 81532F800D8
+ for <alsa-devel@alsa-project.org>; Tue, 14 Jun 2022 19:21:00 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 81532F800D8
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="EaqkKH/M"
+ header.b="lrQ86pa3"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id F0CC66167B;
+ by ams.source.kernel.org (Postfix) with ESMTPS id 812A0B81A2C;
+ Tue, 14 Jun 2022 17:20:59 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D6009C3411E;
  Tue, 14 Jun 2022 17:20:56 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B3287C3411C;
- Tue, 14 Jun 2022 17:20:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1655227256;
- bh=0oUJqP1mCI5IlGt5vTnBQHDnvzI5GNaQ+HZMPp+kobg=;
+ s=k20201202; t=1655227258;
+ bh=p/VKG1rDAA+aAWsG57lOpE/6sIdp+ee6SPXOLgjcCUU=;
  h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=EaqkKH/MmNdIJ2WzbxWDauLxZRi0PzVMuqDMnd3TR+mY3oLxra7KXtwMb8ZbWEKky
- izlTNhkm8igbm4twu4H4xnIwaiT2RKodZb6RS3jJfj5MaRVA2uMZ+HWIwnsqBsZTKC
- I2KiCYNFqsTRIy5utaxMLi1sBvOfNxz29ou2wtVlnmliZHsEk1C3714jXIjdIGCkbH
- u3I0HCQ/2CkUKOTPK2uOngAz2e9crVtfh5biEiMTlpUdNM06qdDHaaPjlP95N46ams
- R1yNPq6CEKMOx94+rM5pRcnOkbh6rtwx6Ccc3XYps2LG+DwAWOKPhrSNbg9tWuI7RB
- JD+YumShgAgmA==
+ b=lrQ86pa3xiFVyV9AuQEPora8zm++cxrClQhhAq7t/tY06j9ZOo3C7aFwmcEW5iz+C
+ GtXZ5wKLTwZdlW7PpYCGhPg0uwO2peiRMBCV499REps2z8wkXHOeZwA7ddfz+C7X2l
+ QCX2mUEo3XYsOWXuVYy3QnG7zleva052v3ugr7OZjNBZtrFOSgTVAUz+xgh/0CET6D
+ 3mg8tdBTUMInBT8YB/bCq8DF2YkVx4TR/oSk6SV/1IPNfjgAw6HA1CfB0yqIdu13Q4
+ fKjYyUEXjn4zeAbZl4bwyC+6saq33q2QH2V3t5OG2ldAaX34Ged3TjVtb4RtrSbYv/
+ B5n4KqwsEVoLg==
 From: Mark Brown <broonie@kernel.org>
-To: broonie@kernel.org, lgirdwood@gmail.com
-In-Reply-To: <20220604105407.4055294-1-broonie@kernel.org>
-References: <20220604105407.4055294-1-broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: ops: Fix boolean/integer detection for simple
- controls
-Message-Id: <165522725543.2442209.10680964769464937742.b4-ty@kernel.org>
-Date: Tue, 14 Jun 2022 18:20:55 +0100
+To: ckeepax@opensource.cirrus.com
+In-Reply-To: <20220614131022.778057-1-ckeepax@opensource.cirrus.com>
+References: <20220614131022.778057-1-ckeepax@opensource.cirrus.com>
+Subject: Re: [PATCH] ASoC: cs35l45: Add endianness flag in
+ snd_soc_component_driver
+Message-Id: <165522725660.2442209.5932511980580944240.b4-ty@kernel.org>
+Date: Tue, 14 Jun 2022 18:20:56 +0100
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: alsa-devel@alsa-project.org
+Cc: alsa-devel@alsa-project.org, lgirdwood@gmail.com,
+ patches@opensource.cirrus.com, linux-kernel@vger.kernel.org,
+ james.schulman@cirrus.com, david.rhodes@cirrus.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -80,15 +81,13 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Sat, 4 Jun 2022 11:54:07 +0100, Mark Brown wrote:
-> The standard snd_soc_info_volsw() detects if a control is a volume control
-> and needs to be reported as an integer even if it only has two values by
-> looking for the string " Volume" in the control name. This results in false
-> positives if the control has a name like "HP Volume Ramp Switch" since any
-> " Volume" is matched, not just a trailing one. Fix this by making sure that
-> we only match at the end of the control name.
+On Tue, 14 Jun 2022 14:10:22 +0100, Charles Keepax wrote:
+> The endianness flag is used on the CODEC side to specify an
+> ambivalence to endian, typically because it is lost over the hardware
+> link. This device receives audio over an I2S DAI and as such should
+> have endianness applied.
 > 
-> [...]
+> 
 
 Applied to
 
@@ -96,8 +95,8 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: ops: Fix boolean/integer detection for simple controls
-      commit: aa2a4b897132169fbc6d32932644b95875cf9c7f
+[1/1] ASoC: cs35l45: Add endianness flag in snd_soc_component_driver
+      commit: d919630fe77904931277e663c902582ea6f4e4cf
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
