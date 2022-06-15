@@ -4,95 +4,100 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 93836C43334
-	for <alsa-devel@archiver.kernel.org>; Wed, 15 Jun 2022 12:16:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6A927C43334
+	for <alsa-devel@archiver.kernel.org>; Wed, 15 Jun 2022 12:17:07 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A5CED1908;
-	Wed, 15 Jun 2022 14:15:56 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A5CED1908
+	by alsa0.perex.cz (Postfix) with ESMTPS id 6551F18E8;
+	Wed, 15 Jun 2022 14:16:15 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6551F18E8
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1655295406;
-	bh=5rSuNJe4eZvblTjY6UbhfWksuJFjzzMXxUR3k32tAc4=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=hYPJvtrM2xLTaf32WKG7xIOWGLN+TVo8DG18TVT5tTL+yTmACXONhmQ0ge/xSEcxG
-	 Vh9bDFxfqDRBDwW1HBmVtuuV5zIUZh5Z09Oa00zmYfvR2gmk356ujRw+Ra/KjGOxh0
-	 qlfw2W+K6gFkTEpYSOGZLI5VPZEYhYnI0ItNwHFI=
+	s=default; t=1655295425;
+	bh=XX+Aa+fT1RjwyoHoUXPHFjHKmen0LBK6YIBMddLOd4s=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=s7Mspsz4YkzrSGWiR+JyoX6h8kyDlpMfeH8OwtgtpAc4Jiu7OrfU5v6mAIsUqFyAp
+	 UW0uM+9yW/F5AP+kMy4j4McAOcSM3GkqFKWNaZpDLZRzdmnjfOqr2JNYaM7RCJ1emo
+	 vrulsqFMc9RpnUkrZ5fOiL0Lmi3i0NiMVh/yfO6s=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id E5D22F80162;
-	Wed, 15 Jun 2022 14:15:26 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id C079EF80527;
+	Wed, 15 Jun 2022 14:15:28 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id A4167F804B0; Wed, 15 Jun 2022 14:15:25 +0200 (CEST)
+ id 9EE80F801F7; Wed, 15 Jun 2022 14:15:26 +0200 (CEST)
 Received: from wout3-smtp.messagingengine.com (wout3-smtp.messagingengine.com
  [64.147.123.19])
  (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 12B2AF80162
- for <alsa-devel@alsa-project.org>; Wed, 15 Jun 2022 14:15:14 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 12B2AF80162
+ by alsa1.perex.cz (Postfix) with ESMTPS id 68D19F800B9
+ for <alsa-devel@alsa-project.org>; Wed, 15 Jun 2022 14:15:18 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 68D19F800B9
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=sakamocchi.jp header.i=@sakamocchi.jp
- header.b="6ljtl9uE"; 
+ header.b="pOgL8x/L"; 
  dkim=pass (2048-bit key) header.d=messagingengine.com
- header.i=@messagingengine.com header.b="xgXH8KbH"
+ header.i=@messagingengine.com header.b="PVvL8wis"
 Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
- by mailout.west.internal (Postfix) with ESMTP id 455CE3200A06;
- Wed, 15 Jun 2022 08:15:10 -0400 (EDT)
+ by mailout.west.internal (Postfix) with ESMTP id A0E5D320094C;
+ Wed, 15 Jun 2022 08:15:16 -0400 (EDT)
 Received: from mailfrontend1 ([10.202.2.162])
- by compute4.internal (MEProxy); Wed, 15 Jun 2022 08:15:10 -0400
+ by compute4.internal (MEProxy); Wed, 15 Jun 2022 08:15:17 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sakamocchi.jp;
  h=cc:cc:content-transfer-encoding:date:date:from:from
- :in-reply-to:message-id:mime-version:reply-to:sender:subject
- :subject:to:to; s=fm2; t=1655295309; x=1655381709; bh=E5GB5GpdbY
- JSrufkCaPqhlwD01Qyo32O/2slcoPfrac=; b=6ljtl9uEc1wBVUm2+M5YHWmQ6Z
- EWF413tJRnSF9piY6PtXk4+0udO/8H381RwjCeu9hE4d2bZt1PcV7aZOEsydZY6n
- 1AFaal86/POlWPeTnw32lCtPGb1PoYqZEq94G+ArhoaYd30UAhUsIw0ALvXVEIqh
- czkfudiOI8yqImMSydNTO4xKzmNB0zhd+uRJDTv1fmD+dFmxS6l5x5rvRo4CeDyt
- AURvSHIwJUnkhNBEJQl4haP4qcbf2CePxpqFLX23kj4D5YF9Ps6zArMpXdNgawxq
- a/0rPiusH5TAj3LGRjYN99B1tMyCgrORkrevoRqdBNaJu6lRb4qHzv+Z3Fng==
+ :in-reply-to:in-reply-to:message-id:mime-version:references
+ :reply-to:sender:subject:subject:to:to; s=fm2; t=1655295316; x=
+ 1655381716; bh=MtKBc2bhfjgMYC9HTZUX2V0/dMYlGGjy+AYAPIY7ZaY=; b=p
+ OgL8x/LCbQn1ZNkAoeJT4yLKckCmZt8L9inva/gKLl6CpoP9eEI22A/mBzZX9jnm
+ wqyNxQVfZtkidxjFf8VlyecFpGPQ09/gslVQ5d70YOwlFecNNKsLrTqLySQIjwhL
+ aSx7iJ2RcepelsJ6cf+ZX5C6uHPLVViDbMUCDlGZy1fYbElhRJWB3vIiGHUjzU/c
+ u92UHw8GtvDbS1QFCC8N/ZV5p71LYSX0EMla5a3am/2HjWFlp2BnbaseFbsN1Tqv
+ 6HFt8YnkA54eCI8cLcnghCsLv6D6EGIZyFTLFC+PSum3ZQkQge3ndIeLeMZuJZJx
+ ZEzDhF4eVqN01DYLFN3Xw==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
  messagingengine.com; h=cc:cc:content-transfer-encoding:date:date
- :feedback-id:feedback-id:from:from:in-reply-to:message-id
- :mime-version:reply-to:sender:subject:subject:to:to:x-me-proxy
- :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; t=
- 1655295309; x=1655381709; bh=E5GB5GpdbYJSrufkCaPqhlwD01Qyo32O/2s
- lcoPfrac=; b=xgXH8KbH+4Bp9fRMS69ltdN0GV1Tc9hAIk08itfVcY0I/Lsh7B3
- jdOa8Jl5RhGFHnlOWNlmfmOvCenXDSLsIH2ve5nvlndRggOWtYL5BBH48o6U7PPU
- G05etzCPpjL7tfs7oXZJSyE6YvUbUe9C6M2iHOZrtO2ZbVcqX1YjojNCO+psCkpg
- dtN3ZKG1vJbmafha31Bg0oPFAIwHDyEtC7zAOQeACQ44+DF5vMVfl7MN6zNDupgA
- d5l1zsnvPvF2UtQoFpO/01D4S4J1owUSOeqlVbAfzQzBMGevHvJQ5Gs5z+WpAXeQ
- QIr6wOy1Dl2GuAihe59h55wfwAVD1HUVZWg==
-X-ME-Sender: <xms:Tc2pYnPmjNm0Q4vjUsPuZgr2r_yYw1D-Scep7H9XAD3Y0I2w5KhahA>
- <xme:Tc2pYh-NA6xUHmvlD6YqzkILmdDFg1ffgqX6XrbzYtbP9Jq4lc-cBopwwVIkh5vTV
- xBQDfXA3Vb4nwd6cQo>
-X-ME-Received: <xmr:Tc2pYmRIQWDsifDVLYw55mbg7ROL9WO4rHH7s_LXb02RCrCxd9i2WauuwQoCzdsDSqlF5I4Q02d5xgJJ1rmphY44sylQBOwLrsfWVDmyDjhr1XMi3E4>
+ :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+ :message-id:mime-version:references:reply-to:sender:subject
+ :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+ :x-sasl-enc; s=fm2; t=1655295316; x=1655381716; bh=MtKBc2bhfjgMY
+ C9HTZUX2V0/dMYlGGjy+AYAPIY7ZaY=; b=PVvL8wis2OyJPIAnu6qZutU3QqpUW
+ RtyTWLXpnh6h7PzT0oEq45F+GGr3AMHs0YPPblpfJuxT1o4o33wMMrI7iF7YqmOn
+ huXzEkzdumAHvu34ciSbfvcnwqwwEvMBfXFPB2dVbSde0i+OdxP50ctK3/LlhG2R
+ XLTk6qh85FV+sQ4cGUSfu/DjZpP28hXLrw40c8daTnhHXGKovUakyrVJlyidGfQA
+ mQZeuiKt7CRdkT3M1IHPnZusupUxYy+841Pd/Tw3+kjOOJ05z4Fmrwv4QCtIil1e
+ NWwWh7Js6UJoA5rIh+Sm7fywjqmiI3JhngJQTyUrMPY7bmIC4fG9FFyyg==
+X-ME-Sender: <xms:U82pYuz_TJtOmm6mspO7Xm37siDuNEseBoT97cMLhRtQyPMLyobooQ>
+ <xme:U82pYqQbPSsGwQEWF6luJTCwJ_bwvVchVBDq0Xt0xljdx7glXI13PIx9eOxiNa6DM
+ tgUwppIWiIyRFI-fb0>
+X-ME-Received: <xmr:U82pYgV1avoX-ZvtRJOj0yhMYXgBtrSo_pJcKGY0O2ZINljwUz23LDEXc4-EjcfkMKdS1I40zkvprv65LfZlc_UzAxL-ec0WvT2Grbruf-f9w4GAwng>
 X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvfedruddvuddggeejucetufdoteggodetrfdotf
  fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
- uceurghilhhouhhtmecufedttdenucenucfjughrpefhvfevufffkffoggfgsedtkeertd
- ertddtnecuhfhrohhmpefvrghkrghshhhiucfurghkrghmohhtohcuoehoqdhtrghkrghs
- hhhisehsrghkrghmohgttghhihdrjhhpqeenucggtffrrghtthgvrhhnpeeggfehleehje
- eileehveefkefhtdeffedtfeeghfekffetudevjeegkeevhfdvueenucffohhmrghinhep
- khgvrhhnvghlrdhorhhgnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrg
- hilhhfrhhomhepohdqthgrkhgrshhhihesshgrkhgrmhhotggthhhirdhjph
-X-ME-Proxy: <xmx:Tc2pYrsW6VuGe4I9JZ0QxDJVtbgrAxhqhaSg8n0gySnA85kBWGSyUw>
- <xmx:Tc2pYvdzUueH2PlM3nCjBcFsZFW-VEiMgCA1UrWbo2ZqG-drng9gUQ>
- <xmx:Tc2pYn3m5SxPeJRzsKkSHkPrPk5HGvf_xf3MGb9aNaXXFuTSBUzKyw>
- <xmx:Tc2pYgppJfDW45dZnZCmvmpLt7CllGnrs5II0RgNsqvvyvOSl97F_w>
+ uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+ cujfgurhephffvvefufffkofgjfhgggfestdekredtredttdenucfhrhhomhepvfgrkhgr
+ shhhihcuufgrkhgrmhhothhouceoohdqthgrkhgrshhhihesshgrkhgrmhhotggthhhird
+ hjpheqnecuggftrfgrthhtvghrnhepvdejgfejuedvgfduudekleevtefgtdevhfdtffef
+ iefgveeuteffiedvffekvddtnecuvehluhhsthgvrhfuihiivgepudenucfrrghrrghmpe
+ hmrghilhhfrhhomhepohdqthgrkhgrshhhihesshgrkhgrmhhotggthhhirdhjph
+X-ME-Proxy: <xmx:U82pYki99b-h3W2WehOkNvDXxU_tTsUvrBcHd_NzwB_10xDXbirXmQ>
+ <xmx:U82pYgAMVK7EWE97mXawaesmtXBCGs1d1Z571tmA7RKa61HeMAkbSg>
+ <xmx:U82pYlK4d00e_xrLu9F84qa6zu_TwrZGcHkdi8R8TG0ejpOHCFqdnQ>
+ <xmx:VM2pYjMWbM-m2btWT4YcTBJ9B1SeBFl7ZRhihAKJcg4mvyNMrL6QOw>
 Feedback-ID: ie8e14432:Fastmail
 Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
- 15 Jun 2022 08:15:08 -0400 (EDT)
+ 15 Jun 2022 08:15:14 -0400 (EDT)
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 To: tiwai@suse.de,
 	stefanr@s5r6.in-berlin.de
-Subject: [PATCH v2 0/3] firewire: fix minor issues
-Date: Wed, 15 Jun 2022 21:15:02 +0900
-Message-Id: <20220615121505.61412-1-o-takashi@sakamocchi.jp>
+Subject: [PATCH v2 2/3] firewire: use struct_size over open coded arithmetic
+Date: Wed, 15 Jun 2022 21:15:04 +0900
+Message-Id: <20220615121505.61412-3-o-takashi@sakamocchi.jp>
 X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20220615121505.61412-1-o-takashi@sakamocchi.jp>
+References: <20220615121505.61412-1-o-takashi@sakamocchi.jp>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: alsa-devel@alsa-project.org, linux1394-devel@lists.sourceforge.net
+Cc: alsa-devel@alsa-project.org, linux1394-devel@lists.sourceforge.net,
+ "Minghao Chi \(CGEL ZTE\)" <chi.minghao@zte.com.cn>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -108,28 +113,41 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-This second version of patchset is revised version of previous one[1] to
-fix mistake of macro usage pointed out by reviewer[2].
+From: "Minghao Chi (CGEL ZTE)" <chi.minghao@zte.com.cn>
 
-As I note, they are not so urgent changes, thus I don't mind postponing
-until next merge window.
+Replace zero-length array with flexible-array member and make use
+of the struct_size() helper in kmalloc(). For example:
 
-[1] https://lore.kernel.org/alsa-devel/20220512111756.103008-1-o-takashi@sakamocchi.jp/
-[2] https://lore.kernel.org/alsa-devel/87o7yvpf4t.wl-tiwai@suse.de/
+struct fw_request {
+    ...
+    u32 data[];
+}
 
-Jiapeng Chong (1):
-  firewire: convert sysfs sprintf/snprintf family to sysfs_emit
+Make use of the struct_size() helper instead of an open-coded version
+in order to avoid any potential type mistakes.
 
-Lv Ruyi (1):
-  firewire: Fix using uninitialized value
+(Revised by Takashi Sakamoto to fix the value of third argument.)
 
-Minghao Chi (CGEL ZTE) (1):
-  firewire: use struct_size over open coded arithmetic
-
- drivers/firewire/core-device.c      | 6 ++----
+Signed-off-by: Minghao Chi (CGEL ZTE) <chi.minghao@zte.com.cn>
+Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+---
  drivers/firewire/core-transaction.c | 3 ++-
- 2 files changed, 4 insertions(+), 5 deletions(-)
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
+diff --git a/drivers/firewire/core-transaction.c b/drivers/firewire/core-transaction.c
+index af498d767702..4604a9d97fd1 100644
+--- a/drivers/firewire/core-transaction.c
++++ b/drivers/firewire/core-transaction.c
+@@ -779,7 +779,8 @@ static struct fw_request *allocate_request(struct fw_card *card,
+ 		return NULL;
+ 	}
+ 
+-	request = kmalloc(sizeof(*request) + length, GFP_ATOMIC);
++	request = kmalloc(struct_size(request, data, length / sizeof(request->data[0])),
++			  GFP_ATOMIC);
+ 	if (request == NULL)
+ 		return NULL;
+ 
 -- 
 2.34.1
 
