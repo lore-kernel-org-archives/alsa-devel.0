@@ -4,68 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3201DC433EF
-	for <alsa-devel@archiver.kernel.org>; Wed, 15 Jun 2022 13:56:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 855E0C43334
+	for <alsa-devel@archiver.kernel.org>; Wed, 15 Jun 2022 13:56:22 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id CCDAC192E;
-	Wed, 15 Jun 2022 15:55:20 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CCDAC192E
+	by alsa0.perex.cz (Postfix) with ESMTPS id 9D4DE18E9;
+	Wed, 15 Jun 2022 15:55:30 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9D4DE18E9
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1655301370;
-	bh=ekP0QNj5q0wLAX06GcBg0CJvxlJ3QpBhVkxB3X4207k=;
+	s=default; t=1655301380;
+	bh=dsFBCqxi5+rm7d/vKyHSZXyn8G5XYjrNJYoeNI9XU3U=;
 	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=cXtwylb+PPbLsK1NoK6Lh+8IsRIX0UVc9BKfswSw4S2qYfjP5YonM/wTgIbT2uyUQ
-	 KWgMLFa9I/zSwXtm5Yv3KgqfKq2uGmKe4GVxfb4Gw1SvDYwTKzNlgjvCRxwJhoV0LS
-	 JOmjVfTLyGF+n0gg1qm1dQuRYbPuc/DmONsdd2c0=
+	b=XgiEwQYxWzs2vtsmfwhi4EvhBcCYEZeEAK7WXeCfE/fLM0cem1hz4iDCLMu5y4hSU
+	 o9B9S/H5z0xYM6+PAHlzkzG5C4ZH6f88aVE35o36nRygJDToQvaM6z4D2qhijZTFbb
+	 do02XxtR8MR+x8TVbcdp64Sp/LlP7mK2f2G3C6iU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id B0572F80132;
-	Wed, 15 Jun 2022 15:54:48 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 688DEF8052E;
+	Wed, 15 Jun 2022 15:54:49 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id BC97FF804B0; Wed, 15 Jun 2022 15:54:46 +0200 (CEST)
+ id 7F63BF804B0; Wed, 15 Jun 2022 15:54:47 +0200 (CEST)
 Received: from ams.source.kernel.org (ams.source.kernel.org
  [IPv6:2604:1380:4601:e00::1])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 8D3ECF800B9
- for <alsa-devel@alsa-project.org>; Wed, 15 Jun 2022 15:54:43 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8D3ECF800B9
+ by alsa1.perex.cz (Postfix) with ESMTPS id 1C0A1F8016C
+ for <alsa-devel@alsa-project.org>; Wed, 15 Jun 2022 15:54:44 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1C0A1F8016C
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="G1p69ZqU"
+ header.b="MFISBOcD"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by ams.source.kernel.org (Postfix) with ESMTPS id 08A27B81721;
+ by ams.source.kernel.org (Postfix) with ESMTPS id E4CD3B81E66;
+ Wed, 15 Jun 2022 13:54:43 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 68C3FC34115;
  Wed, 15 Jun 2022 13:54:40 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AF57FC3411B;
- Wed, 15 Jun 2022 13:54:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1655301278;
- bh=ekP0QNj5q0wLAX06GcBg0CJvxlJ3QpBhVkxB3X4207k=;
+ s=k20201202; t=1655301281;
+ bh=dsFBCqxi5+rm7d/vKyHSZXyn8G5XYjrNJYoeNI9XU3U=;
  h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=G1p69ZqU5KSno9XBwtkKDa3gaYtxzLf3SdqOfaLvjVFKW7NNno3JKa8DQcBGa7JK6
- suJpslhmltYavZsPZ9EPCsftE8+daMIgpIDEckeobs8jF1Pz55Qck7A7JtQiKwiiR0
- iKPZDYbxWlIB0QQtbirPdw9DW3kzDP2gUbLNro5mbR6Y/TgQfEdoAiN35EsW/QfoVL
- /cnmpOjnKo8ppFazHzCKV1xMnymZQmkSIPImwC5sGv9AWe9kJNsDYcx7DIoYihUcBf
- Pk1u06qUyB0pJOAYHt74blA37SXt1Z8ukCCWltImrpHxyhdwBxs5Z+GZ5N3uf7KGqt
- VHeDV1KlY/Kdw==
+ b=MFISBOcDi0N9xeJux0zRoP5IPR+3bRbR+q/GlslTR+4NCKwxlArGSdNFDdcnh2qay
+ 5e/Ui5crnDkPe6HOycxHUiKl4e7VvrtyodHbE6KDAmd7TzadGR/rcV1Ts3SDiOTTn1
+ iDOrG7G18Y20nGaXCE0cHueu2hgqcS/++ra2n5RPxesi9Boy2N31NfJ0N9K1MRTs3A
+ cYuKC69EzJTHbp3fO9VBz20dl9NVdC4vfehKqCy/AVTCkJkl+Wf/6jPpf0UQ0Uz8D9
+ csHPO6SPk9mpFOaRy0eSnc/r2jWobmp3GVSDop5u07aGn02KgLz7gF0fZ8b6XFvJfM
+ lmJwdWteclSdA==
 From: Mark Brown <broonie@kernel.org>
-To: lgirdwood@gmail.com, ckeepax@opensource.cirrus.com, tiwai@suse.com,
- perex@perex.cz, spujar@nvidia.com
-In-Reply-To: <1655280277-4701-1-git-send-email-spujar@nvidia.com>
-References: <1655280277-4701-1-git-send-email-spujar@nvidia.com>
-Subject: Re: [PATCH] ASoC: tegra: Fix clock DAI format on Tegra210
-Message-Id: <165530127643.947339.2607790181344123264.b4-ty@kernel.org>
-Date: Wed, 15 Jun 2022 14:54:36 +0100
+To: yung-chuan.liao@linux.intel.com, tiwai@suse.de
+In-Reply-To: <20220615084348.3489-1-yung-chuan.liao@linux.intel.com>
+References: <20220615084348.3489-1-yung-chuan.liao@linux.intel.com>
+Subject: Re: [PATCH 0/2] ASoC: SOF: Intel: Add support for MeteorLake
+Message-Id: <165530128015.947339.2563327661123479806.b4-ty@kernel.org>
+Date: Wed, 15 Jun 2022 14:54:40 +0100
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: linux-tegra@vger.kernel.org, alsa-devel@alsa-project.org,
- thierry.reding@gmail.com, linux-kernel@vger.kernel.org, jonathanh@nvidia.com
+Cc: alsa-devel@alsa-project.org, peter.ujfalusi@linux.intel.com,
+ pierre-louis.bossart@linux.intel.com, bard.liao@intel.com,
+ ranjani.sridharan@linux.intel.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -81,15 +81,13 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, 15 Jun 2022 13:34:37 +0530, Sameer Pujar wrote:
-> I2S reset failures are seen on Tegra210 and later platforms. This indicates
-> absence of I2S bit clock, which is required to perform the reset operation.
-> Following failures are seen with I2S based tests on Tegra210 and later:
+On Wed, 15 Jun 2022 16:43:46 +0800, Bard Liao wrote:
+> Add platform abstraction for the Meteor Lake platform.
 > 
->   tegra210-i2s 2901100.i2s: timeout: failed to reset I2S for playback
->   tegra210-i2s 2901100.i2s: ASoC: PRE_PMU: I2S2 RX event failed: -110
->   tegra210-i2s 2901100.i2s: timeout: failed to reset I2S for capture
->   tegra210-i2s 2901100.i2s: ASoC: PRE_PMU: I2S2 TX event failed: -110
+> This platform has significant differences compared to the TGL/ADL
+> generation: it relies on new hardware using the code name 'ACE' and
+> only supports the INTEL_IPC4 protocol and firmware architecture based
+> on the Zephyr RTOS
 > 
 > [...]
 
@@ -99,8 +97,10 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: tegra: Fix clock DAI format on Tegra210
-      commit: 5983a8a4a4dc13b5f192212a5e744eb303cd65c2
+[1/2] ASoC: SOC: Intel: introduce cl_init callback
+      commit: ab222a4aaecfafece1516c775143e1cb9eb31612
+[2/2] ASoC: SOF: Intel: Add support for MeteorLake (MTL)
+      commit: 064520e8aeaa2569f6504a50a37ac801b73656bc
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
