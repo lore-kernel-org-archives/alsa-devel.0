@@ -4,64 +4,65 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 62C4BC433EF
-	for <alsa-devel@archiver.kernel.org>; Thu, 16 Jun 2022 21:57:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4D137C433EF
+	for <alsa-devel@archiver.kernel.org>; Thu, 16 Jun 2022 21:57:53 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 7C6961AFE;
-	Thu, 16 Jun 2022 23:56:50 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7C6961AFE
+	by alsa0.perex.cz (Postfix) with ESMTPS id 6C76A1B02;
+	Thu, 16 Jun 2022 23:57:01 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6C76A1B02
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1655416660;
-	bh=LTdL0slQiHxU3KC6lpZNIp2W8oeUBbocsotjy3j5hH8=;
+	s=default; t=1655416671;
+	bh=sWEKbU6dqvHwRpnGPLTEIY49Qt7panA9csgyYzeYU3Y=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=AXCmsbgMpliDz7RypFc4EpkPJjtcUWHjt6GrIn9SEQYnolDWUUNXgqkQVvv2382Bx
-	 DlzhBTy4U9fTl3lJPEEw0n7SSVNvdo2dWO+usQ6vf69lcjaQQ3UYPRClVQyNGwNomI
-	 AkVNrQDaiHKgaONKcZ/reFGDgkoRZZssdq2Niys4=
+	b=sy3gNeWZ2Cl14taM/DiDtvultQ6efdCHJuU7qj1XBwUg0fFSs7ZDWSviRhaZyZx6E
+	 acIrwKrPkT1rHWhVF9hAo+IYlnGSZQHKNfv4iyPJ4/kFZswMv55rCphwOL1iXqNDG5
+	 5R7uExyceFHwirsYlcIBt5HCeP1c3aOosItO+5m8=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 111BDF80548;
+	by alsa1.perex.cz (Postfix) with ESMTP id 93400F8054A;
 	Thu, 16 Jun 2022 23:54:58 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id A7A2CF8053B; Thu, 16 Jun 2022 23:54:52 +0200 (CEST)
+ id 0AC91F8053C; Thu, 16 Jun 2022 23:54:53 +0200 (CEST)
 Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 4E1D7F801D8
- for <alsa-devel@alsa-project.org>; Thu, 16 Jun 2022 23:54:47 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4E1D7F801D8
+ by alsa1.perex.cz (Postfix) with ESMTPS id 78FCCF80527
+ for <alsa-devel@alsa-project.org>; Thu, 16 Jun 2022 23:54:41 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 78FCCF80527
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="ZLV+iqY3"
+ header.b="LSKwai30"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1655416488; x=1686952488;
+ t=1655416484; x=1686952484;
  h=from:to:cc:subject:date:message-id:in-reply-to:
  references:mime-version:content-transfer-encoding;
- bh=LTdL0slQiHxU3KC6lpZNIp2W8oeUBbocsotjy3j5hH8=;
- b=ZLV+iqY3mXMEJIjkhPC396DQk+NsOSGtahqLAYPq/eUilZBoyTYdf8nv
- UyIMhgGhRl8QazX4R1HrkXx0ha3IUr7du7FvBDQK42T+Sa8GUTatXhlBs
- nISJfM8gFWNtDEmb/+1WeLyuA29sW0beTlAhQrSjtxHQglJDVBfxKvc2Y
- rsG7JHG/lUeWtrlab1ipCGVh1PMu5DDrE0faNdb+4KmXMZomu0tMEXv8g
- B9t/7zFDC5TBpC7v9zc4nSd7choz/BlzKXB+EGB25V5Cp8/xH+QZZJ62W
- AezOZ+rSBOWHWYQ63L9D0pTyRK0qzzedhaq3Fv9oWR46IerGPZK3xEtoq A==;
-X-IronPort-AV: E=McAfee;i="6400,9594,10380"; a="268047834"
-X-IronPort-AV: E=Sophos;i="5.92,306,1650956400"; d="scan'208";a="268047834"
+ bh=sWEKbU6dqvHwRpnGPLTEIY49Qt7panA9csgyYzeYU3Y=;
+ b=LSKwai30C6B1iXnaviLHLJSqn/sLoCsqVYY1rHCy6rx71K9PVY4jg5Wk
+ x0po7P8BfzsWJV25W3wRK2fJbyJAjIeON0BUYaIaGhxfGCk6Uc7G+n3nG
+ UP+kRvmsFmcN4hDRLpOAPp70uPGfqUp32/8yp8A8mL+M4Z360sF7Tqd0F
+ E8lvEzztqWpFeVFqO3xLpKtP+IWrRXxZ1OtkcL7b7z1e/6Cp1l+4tl4M9
+ l9qO9bEhb2S7nd5LPWoXK7NYSGOWyxKrNAfIwMTND0UqybJOluTYRxy4A
+ jCDHnuzE6KhdOdrwcM5hHGg6UTK5sjt+qtzhD+V91DDXWS8WWC89FfBWd w==;
+X-IronPort-AV: E=McAfee;i="6400,9594,10380"; a="268047812"
+X-IronPort-AV: E=Sophos;i="5.92,306,1650956400"; d="scan'208";a="268047812"
 Received: from fmsmga003.fm.intel.com ([10.253.24.29])
  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 16 Jun 2022 14:54:22 -0700
-X-IronPort-AV: E=Sophos;i="5.92,306,1650956400"; d="scan'208";a="675212702"
+ 16 Jun 2022 14:54:17 -0700
+X-IronPort-AV: E=Sophos;i="5.92,306,1650956400"; d="scan'208";a="675212662"
 Received: from buckkenx-mobl.amr.corp.intel.com (HELO
  pbossart-mobl3.intel.com) ([10.212.52.70])
  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 16 Jun 2022 14:54:22 -0700
+ 16 Jun 2022 14:54:17 -0700
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH 11/13] ASoC: SOF: ipc4: remove use of __func__ in dev_dbg
-Date: Thu, 16 Jun 2022 16:53:49 -0500
-Message-Id: <20220616215351.135643-12-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH 04/13] ASoC: SOF: Intel: hda-stream: remove use of __func__ in
+ dev_dbg
+Date: Thu, 16 Jun 2022 16:53:42 -0500
+Message-Id: <20220616215351.135643-5-pierre-louis.bossart@linux.intel.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20220616215351.135643-1-pierre-louis.bossart@linux.intel.com>
 References: <20220616215351.135643-1-pierre-louis.bossart@linux.intel.com>
@@ -100,22 +101,29 @@ Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 Reviewed-by: Péter Ujfalusi <peter.ujfalusi@linux.intel.com>
 Reviewed-by: Bard Liao <yung-chuan.liao@linux.intel.com>
 ---
- sound/soc/sof/ipc4.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/sof/intel/hda-stream.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/sof/ipc4.c b/sound/soc/sof/ipc4.c
-index a8dea5abf2655..432b812bdf9c6 100644
---- a/sound/soc/sof/ipc4.c
-+++ b/sound/soc/sof/ipc4.c
-@@ -574,7 +574,7 @@ static void sof_ipc4_rx_msg(struct snd_sof_dev *sdev)
- 		data_size = sizeof(struct sof_ipc4_notify_resource_data);
- 		break;
- 	default:
--		dev_dbg(sdev->dev, "%s: Unhandled DSP message: %#x|%#x\n", __func__,
-+		dev_dbg(sdev->dev, "Unhandled DSP message: %#x|%#x\n",
- 			ipc4_msg->primary, ipc4_msg->extension);
- 		break;
- 	}
+diff --git a/sound/soc/sof/intel/hda-stream.c b/sound/soc/sof/intel/hda-stream.c
+index fad871966de83..4531e1ee5ed00 100644
+--- a/sound/soc/sof/intel/hda-stream.c
++++ b/sound/soc/sof/intel/hda-stream.c
+@@ -116,13 +116,13 @@ int hda_dsp_stream_setup_bdl(struct snd_sof_dev *sdev,
+ 	int remain, ioc;
+ 
+ 	period_bytes = hstream->period_bytes;
+-	dev_dbg(sdev->dev, "%s: period_bytes:0x%x\n", __func__, period_bytes);
++	dev_dbg(sdev->dev, "period_bytes:0x%x\n", period_bytes);
+ 	if (!period_bytes)
+ 		period_bytes = hstream->bufsize;
+ 
+ 	periods = hstream->bufsize / period_bytes;
+ 
+-	dev_dbg(sdev->dev, "%s: periods:%d\n", __func__, periods);
++	dev_dbg(sdev->dev, "periods:%d\n", periods);
+ 
+ 	remain = hstream->bufsize % period_bytes;
+ 	if (remain)
 -- 
 2.34.1
 
