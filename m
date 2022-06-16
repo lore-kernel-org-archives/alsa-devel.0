@@ -4,79 +4,79 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 70157C433EF
-	for <alsa-devel@archiver.kernel.org>; Mon, 20 Jun 2022 15:31:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 995B0C433EF
+	for <alsa-devel@archiver.kernel.org>; Mon, 20 Jun 2022 15:31:43 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id BB390283E;
-	Mon, 20 Jun 2022 17:30:35 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BB390283E
+	by alsa0.perex.cz (Postfix) with ESMTPS id DC6211B1B;
+	Mon, 20 Jun 2022 17:30:51 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DC6211B1B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1655739085;
-	bh=3Z+N2Tb+XSMJ4HQdsW+Q0eUsdvDEdkaZpRjYxQFhAIw=;
+	s=default; t=1655739101;
+	bh=gdlYQXwWRtKL2CgBPbDv66bH7NuVC5xMJQGrWl1yumU=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=HHXTOSC7wgK02QSrQZpNPrCIvdO1F3IOooxfxamTSiDBt0aqafNhEf0AzgES/dQjh
-	 dR5Meon/KOXo8NRyCwwO2GmZFHoVF5cYf0wKdWGb/11l2mvzLyROQgnUA+Uz2S4RVG
-	 ZkV+9NKn8SVSzFzkMsPJLDDGuwnsmaRo00C9zimw=
+	b=WNpwxmQg3wLMw+W7Zx9e16p7al5VrHDVoeng6WsgjzwzV1hYTjcmmJPZI+GiQc8Nu
+	 7eubakmWq0MKoipOWOgib27g0yVjky1Pp4RAYvji1gHXFki0bRGavhjFGe1ej3B05K
+	 pS/kf8IqXlOY8hp9Hfv+gMP6GUPHPmVCqxNz4R0k=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 9A5E0F80BF3;
-	Mon, 20 Jun 2022 17:08:05 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 6FF60F8053A;
+	Mon, 20 Jun 2022 17:08:06 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 00376F8047C; Thu, 16 Jun 2022 16:36:06 +0200 (CEST)
-Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
- [67.231.152.168])
+ id C7557F804D0; Thu, 16 Jun 2022 16:36:07 +0200 (CEST)
+Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
+ [67.231.149.25])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id B03CAF805AF
- for <alsa-devel@alsa-project.org>; Thu, 16 Jun 2022 16:34:55 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B03CAF805AF
+ by alsa1.perex.cz (Postfix) with ESMTPS id 51488F80528
+ for <alsa-devel@alsa-project.org>; Thu, 16 Jun 2022 16:34:56 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 51488F80528
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com
- header.b="ZREMjiil"
-Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
- by mx0b-001ae601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 25G8o9fa009500;
+ header.b="NS8cl+rP"
+Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
+ by mx0a-001ae601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 25G4igBo030693;
  Thu, 16 Jun 2022 09:34:53 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
  h=from : to : cc :
  subject : date : message-id : in-reply-to : references : mime-version :
  content-transfer-encoding : content-type; s=PODMain02222019;
- bh=8tSPP1RTMjwN9/fm7e1xi82dPxSMcLxVZ0qD6znQAiU=;
- b=ZREMjiilmbtSjP/ytOkfU2OKJK1sPvkC04jU3ES7c+EfQ/NwXAF0KsyGIFEGCmMKygsR
- wg5tr9z13rk7/AU6Pl4hFBKpFEtTRP5JmEEafrlGaHnThnr5+i/f09XlbmjdAx71cWYB
- HiSuWncG1jrFgnAGx3vm8//RqPdrZZQvXEdy/Wcn7PAugtDhBHdRdMB7XtZSFpncs+QB
- UxuT9+Mjykli+8MoqKH4nWLOMieobVtkpGDVxM4TnbzK8dTE9figMB6/cgt0bpMp9Yh3
- mANlsu1SzrHhXFeyAMrfqoUdh9teIwsB0DxpwBV5EjIWEcEnLO4Oy8ODiZ35Qs5fVW0T rw== 
+ bh=MJd4HTYiz47/wuQOLQf1s1YFU4vXLOeqEUW76ST4wvc=;
+ b=NS8cl+rPwfa8MUX3QB5NWqoul1M/dV8noXSsOmnBTdy0e7fMPatWHoxrBgsbzNienzLQ
+ eQQW3VKrZwA6m1OlLciydM7R2WER4IqJwNxJOeZKRcwLSFQRiPJy/rYZPqDr2yk/Bs+/
+ jo6+nN5srH7nwJUVrkN/PWrHG3nzIhKDbpnPMgPQ6X1yUwnNVthLlYZvNzubMWV5LBsb
+ jggr3o5IVAJgNfyAskKZ/2xNm6YJ1cmC873it/M+a6QeYCCbS6LnINhT9Zm0ke/LTGSF
+ 0wanPZUiEjjVLpD6H5cJymcC3Yhjv2NbNm4PS1UB2SsCRuRGOzdq+k/2Bbhz6xYI9pAb Fw== 
 Received: from ediex02.ad.cirrus.com ([84.19.233.68])
- by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3gmqfq5w3u-8
+ by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3gmrf35vuw-18
  (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
- Thu, 16 Jun 2022 09:34:52 -0500
+ Thu, 16 Jun 2022 09:34:53 -0500
 Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX02.ad.cirrus.com
  (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.28; Thu, 16 Jun
- 2022 15:34:36 +0100
+ 2022 15:34:37 +0100
 Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
  (198.61.84.80) with Microsoft SMTP Server id 15.1.2375.28 via
- Frontend Transport; Thu, 16 Jun 2022 15:34:36 +0100
+ Frontend Transport; Thu, 16 Jun 2022 15:34:37 +0100
 Received: from algalon.ad.cirrus.com (algalon.ad.cirrus.com [198.90.251.122])
- by ediswmail.ad.cirrus.com (Postfix) with ESMTP id C298B11DA;
+ by ediswmail.ad.cirrus.com (Postfix) with ESMTP id EE27111D4;
  Thu, 16 Jun 2022 14:34:36 +0000 (UTC)
 From: Charles Keepax <ckeepax@opensource.cirrus.com>
 To: <broonie@kernel.org>
-Subject: [PATCH 85/96] ASoC: lochnagar: Remove now redundant
+Subject: [PATCH 87/96] ASoC: ml26124: Remove now redundant
  non_legacy_dai_naming flag
-Date: Thu, 16 Jun 2022 15:34:18 +0100
-Message-ID: <20220616143429.1324494-86-ckeepax@opensource.cirrus.com>
+Date: Thu, 16 Jun 2022 15:34:20 +0100
+Message-ID: <20220616143429.1324494-88-ckeepax@opensource.cirrus.com>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20220616143429.1324494-1-ckeepax@opensource.cirrus.com>
 References: <20220616143429.1324494-1-ckeepax@opensource.cirrus.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: CQhjCtEelBg-Ip53g70SpnvrDeSHBSET
-X-Proofpoint-GUID: CQhjCtEelBg-Ip53g70SpnvrDeSHBSET
+X-Proofpoint-GUID: LLhfd5OQapMheBczOb5ZBYu3eswTS1nF
+X-Proofpoint-ORIG-GUID: LLhfd5OQapMheBczOb5ZBYu3eswTS1nF
 X-Proofpoint-Spam-Reason: safe
 X-Mailman-Approved-At: Mon, 20 Jun 2022 17:06:46 +0200
 Cc: cezary.rojewski@intel.com, heiko@sntech.de,
@@ -114,21 +114,21 @@ the non_legacy_dai_naming flag.
 
 Signed-off-by: Charles Keepax <ckeepax@opensource.cirrus.com>
 ---
- sound/soc/codecs/lochnagar-sc.c | 1 -
+ sound/soc/codecs/ml26124.c | 1 -
  1 file changed, 1 deletion(-)
 
-diff --git a/sound/soc/codecs/lochnagar-sc.c b/sound/soc/codecs/lochnagar-sc.c
-index 54a8ba7ed3c20..13fbd8830b09f 100644
---- a/sound/soc/codecs/lochnagar-sc.c
-+++ b/sound/soc/codecs/lochnagar-sc.c
-@@ -217,7 +217,6 @@ static const struct snd_soc_component_driver lochnagar_sc_driver = {
- 	.dapm_routes = lochnagar_sc_routes,
- 	.num_dapm_routes = ARRAY_SIZE(lochnagar_sc_routes),
- 
--	.non_legacy_dai_naming = 1,
- 	.endianness = 1,
+diff --git a/sound/soc/codecs/ml26124.c b/sound/soc/codecs/ml26124.c
+index de8fcbdd85be4..3c6ac77379cbe 100644
+--- a/sound/soc/codecs/ml26124.c
++++ b/sound/soc/codecs/ml26124.c
+@@ -537,7 +537,6 @@ static const struct snd_soc_component_driver soc_component_dev_ml26124 = {
+ 	.idle_bias_on		= 1,
+ 	.use_pmdown_time	= 1,
+ 	.endianness		= 1,
+-	.non_legacy_dai_naming	= 1,
  };
  
+ static const struct regmap_config ml26124_i2c_regmap = {
 -- 
 2.30.2
 
