@@ -4,79 +4,78 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E5B4FC43334
-	for <alsa-devel@archiver.kernel.org>; Mon, 20 Jun 2022 15:17:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 47E68C43334
+	for <alsa-devel@archiver.kernel.org>; Mon, 20 Jun 2022 15:17:28 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3A0AF1F21;
-	Mon, 20 Jun 2022 17:16:24 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3A0AF1F21
+	by alsa0.perex.cz (Postfix) with ESMTPS id 825FD18CE;
+	Mon, 20 Jun 2022 17:16:36 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 825FD18CE
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1655738234;
-	bh=/uuW6CCynC/66waE/Fv9Bc2EyASuIpB5Jzzk0tJGtWk=;
+	s=default; t=1655738246;
+	bh=lJpzynfpDomxkWHksv6w5aKTmRgGbcm73QSAp/7roqI=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=mFmUllOju4GhktNvo1ajlAvSRB1bsN1iq+rS4RluxSngZAVRjS3Mgupb4f3J5S/vh
-	 lqrXEtihd6zvBpQ186K/ESchsXR4Id/dv7Un6wk97qmGFDYq0VfNRBf0b64XUb6s0A
-	 S43+F0OX2a7MkXsuwD0/jqtP4gPu2YTYk+qEDJXI=
+	b=Z20RTzbegrwM9wvumGIdrnpdxPJXz30n18d2vjG0A7J9nf+pxd/KvRfMM27jZmK6u
+	 D6DauubmAtwQcaMj2Il3MMhuaJGF06Rz8M6zEaEs4bpyD6NjUSlSZTHyU9waBRDNFU
+	 1SAVYvkAo5PepClS6Trcf6C3+lCNeo+P/V8lgC9E=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id C60E7F8061C;
-	Mon, 20 Jun 2022 17:07:29 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 5936FF8061E;
+	Mon, 20 Jun 2022 17:07:30 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 164A5F8052F; Thu, 16 Jun 2022 16:35:17 +0200 (CEST)
+ id 437E2F80537; Thu, 16 Jun 2022 16:35:17 +0200 (CEST)
 Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
  [67.231.149.25])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 56ABDF80536
- for <alsa-devel@alsa-project.org>; Thu, 16 Jun 2022 16:34:42 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 56ABDF80536
+ by alsa1.perex.cz (Postfix) with ESMTPS id 0F6AAF8054A
+ for <alsa-devel@alsa-project.org>; Thu, 16 Jun 2022 16:34:41 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0F6AAF8054A
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com
- header.b="jf7PxyL/"
+ header.b="CoEtyYAm"
 Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
- by mx0a-001ae601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 25GC07CE027888;
- Thu, 16 Jun 2022 09:34:41 -0500
+ by mx0a-001ae601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 25G4igBZ030693;
+ Thu, 16 Jun 2022 09:34:39 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
  h=from : to : cc :
  subject : date : message-id : in-reply-to : references : mime-version :
  content-transfer-encoding : content-type; s=PODMain02222019;
- bh=w2elvprt/NPXLmHM0bB06m5qSNTTQZOMLvUvMKNQ3w8=;
- b=jf7PxyL/w4OFh9bwY+xWqqoWuKxDpHijUR8oE9w7rNuOZcm4ZlPXmWaUzd2x/Wv9pxvk
- w525luItMMkGrjWtqxJ8fTan7w8bhV1xD1eSkRPV4XAZ/zYSwHLby+kcEgRWFzRgCxCS
- Emy9j08QeSp+LPR4xIuyY5na+O5omGL1pyDssKG27BnAKQ+p1gJtHGlNuyb738XxchE9
- 8EZIyccWbMawBOk9qEQ4KpaD4F37pHvHQOAFwvZynVc0Ie1/ZelNrx7fmXaSzqFghXRQ
- 1jutLYO8awc5xO3HifDRwEaTwFz99COh3m1LR8VTzsozGmZ5cQdMlkLS6JX7A+MfC/PH tA== 
-Received: from ediex01.ad.cirrus.com ([84.19.233.68])
- by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3gmrf35vuu-11
+ bh=2rO2csJgitEQs3OC7sxGlM+d50Sg1X6iLqCuhVLcybA=;
+ b=CoEtyYAmL9GtOap1UiaIKtynAGoc94M2RhtZduMVLXZU+HQwlVVQCmnh+oqcDMKOo19J
+ JVLbmX8r55SFYSTzF+ja0ar94jIas8GZfaUyOTSY1kONezkwYWxu+FxJtOwwIhPPxWDZ
+ kWNcovn+Jb3lUDT8wF1HHes5/L6IdUWCM9CNQ/8yVb8mOYLoSNC21qDzVhWyloxIQDFQ
+ 2L2BWKDl8vlgnsRVtKnIAvyWkA/YwiqkdR5w/PmNQh77LxvKHqjXqPvB/YEctccjTxOd
+ e8n9pgmcdwY1WPwzAmIIGU73sFBCkRGKa2v01IVJXVl3t3DPXeA7GLYjRx72Ae46NnGC 6A== 
+Received: from ediex02.ad.cirrus.com ([84.19.233.68])
+ by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3gmrf35vuw-4
  (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
- Thu, 16 Jun 2022 09:34:40 -0500
-Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
+ Thu, 16 Jun 2022 09:34:39 -0500
+Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX02.ad.cirrus.com
+ (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.28; Thu, 16 Jun
  2022 15:34:32 +0100
 Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
  (198.61.84.80) with Microsoft SMTP Server id 15.1.2375.28 via
  Frontend Transport; Thu, 16 Jun 2022 15:34:32 +0100
 Received: from algalon.ad.cirrus.com (algalon.ad.cirrus.com [198.90.251.122])
- by ediswmail.ad.cirrus.com (Postfix) with ESMTP id E47B611DA;
- Thu, 16 Jun 2022 14:34:31 +0000 (UTC)
+ by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 1A74711D4;
+ Thu, 16 Jun 2022 14:34:32 +0000 (UTC)
 From: Charles Keepax <ckeepax@opensource.cirrus.com>
 To: <broonie@kernel.org>
-Subject: [PATCH 25/96] ASoC: test-component: Migrate to new style legacy DAI
- naming flag
-Date: Thu, 16 Jun 2022 15:33:18 +0100
-Message-ID: <20220616143429.1324494-26-ckeepax@opensource.cirrus.com>
+Subject: [PATCH 27/96] ASoC: au1x: Migrate to new style legacy DAI naming flag
+Date: Thu, 16 Jun 2022 15:33:20 +0100
+Message-ID: <20220616143429.1324494-28-ckeepax@opensource.cirrus.com>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20220616143429.1324494-1-ckeepax@opensource.cirrus.com>
 References: <20220616143429.1324494-1-ckeepax@opensource.cirrus.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-Proofpoint-GUID: Imefr2FbWEKdHfYaMvZ_557fVEkOHJiT
-X-Proofpoint-ORIG-GUID: Imefr2FbWEKdHfYaMvZ_557fVEkOHJiT
+X-Proofpoint-GUID: cu72FF8zL6hScIpqECZnPeTc5fEXSo1R
+X-Proofpoint-ORIG-GUID: cu72FF8zL6hScIpqECZnPeTc5fEXSo1R
 X-Proofpoint-Spam-Reason: safe
 X-Mailman-Approved-At: Mon, 20 Jun 2022 17:06:45 +0200
 Cc: cezary.rojewski@intel.com, heiko@sntech.de,
@@ -110,26 +109,73 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 Change the legacy DAI naming flag from opting in to the new scheme
 (non_legacy_dai_naming), to opting out of it (legacy_dai_naming).
-This driver appears to be on the CPU side of the DAI link and
+These drivers appear to be on the CPU side of the DAI link and
 currently uses the legacy naming, so add the new flag.
 
 Signed-off-by: Charles Keepax <ckeepax@opensource.cirrus.com>
 ---
- sound/soc/generic/test-component.c | 1 +
- 1 file changed, 1 insertion(+)
+ sound/soc/au1x/ac97c.c    | 3 ++-
+ sound/soc/au1x/i2sc.c     | 3 ++-
+ sound/soc/au1x/psc-ac97.c | 3 ++-
+ sound/soc/au1x/psc-i2s.c  | 3 ++-
+ 4 files changed, 8 insertions(+), 4 deletions(-)
 
-diff --git a/sound/soc/generic/test-component.c b/sound/soc/generic/test-component.c
-index d28712fabe3f6..e2a009bc69af2 100644
---- a/sound/soc/generic/test-component.c
-+++ b/sound/soc/generic/test-component.c
-@@ -564,6 +564,7 @@ static int test_driver_probe(struct platform_device *pdev)
- 		cdriv->pcm_construct		= test_component_pcm_construct;
- 		cdriv->pointer			= test_component_pointer;
- 		cdriv->trigger			= test_component_trigger;
-+		cdriv->legacy_dai_naming	= 1;
- 	} else {
- 		cdriv->name			= "test_codec";
- 		cdriv->idle_bias_on		= 1;
+diff --git a/sound/soc/au1x/ac97c.c b/sound/soc/au1x/ac97c.c
+index 3b1700e665f52..0320513942774 100644
+--- a/sound/soc/au1x/ac97c.c
++++ b/sound/soc/au1x/ac97c.c
+@@ -223,7 +223,8 @@ static struct snd_soc_dai_driver au1xac97c_dai_driver = {
+ };
+ 
+ static const struct snd_soc_component_driver au1xac97c_component = {
+-	.name		= "au1xac97c",
++	.name			= "au1xac97c",
++	.legacy_dai_name	= 1,
+ };
+ 
+ static int au1xac97c_drvprobe(struct platform_device *pdev)
+diff --git a/sound/soc/au1x/i2sc.c b/sound/soc/au1x/i2sc.c
+index 45bb7851e75d7..b15c8baa9ee45 100644
+--- a/sound/soc/au1x/i2sc.c
++++ b/sound/soc/au1x/i2sc.c
+@@ -227,7 +227,8 @@ static struct snd_soc_dai_driver au1xi2s_dai_driver = {
+ };
+ 
+ static const struct snd_soc_component_driver au1xi2s_component = {
+-	.name		= "au1xi2s",
++	.name			= "au1xi2s",
++	.legacy_dai_naming	= 1,
+ };
+ 
+ static int au1xi2s_drvprobe(struct platform_device *pdev)
+diff --git a/sound/soc/au1x/psc-ac97.c b/sound/soc/au1x/psc-ac97.c
+index 05eb36991f147..b536394b9ca08 100644
+--- a/sound/soc/au1x/psc-ac97.c
++++ b/sound/soc/au1x/psc-ac97.c
+@@ -356,7 +356,8 @@ static const struct snd_soc_dai_driver au1xpsc_ac97_dai_template = {
+ };
+ 
+ static const struct snd_soc_component_driver au1xpsc_ac97_component = {
+-	.name		= "au1xpsc-ac97",
++	.name			= "au1xpsc-ac97",
++	.legacy_dai_naming	= 1,
+ };
+ 
+ static int au1xpsc_ac97_drvprobe(struct platform_device *pdev)
+diff --git a/sound/soc/au1x/psc-i2s.c b/sound/soc/au1x/psc-i2s.c
+index 530a072d74274..79b5ae4e494cb 100644
+--- a/sound/soc/au1x/psc-i2s.c
++++ b/sound/soc/au1x/psc-i2s.c
+@@ -286,7 +286,8 @@ static const struct snd_soc_dai_driver au1xpsc_i2s_dai_template = {
+ };
+ 
+ static const struct snd_soc_component_driver au1xpsc_i2s_component = {
+-	.name		= "au1xpsc-i2s",
++	.name			= "au1xpsc-i2s",
++	.legacy_dai_naming	= 1,
+ };
+ 
+ static int au1xpsc_i2s_drvprobe(struct platform_device *pdev)
 -- 
 2.30.2
 
