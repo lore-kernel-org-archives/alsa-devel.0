@@ -4,78 +4,78 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 772A5C43334
-	for <alsa-devel@archiver.kernel.org>; Mon, 20 Jun 2022 15:13:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5D9F5C43334
+	for <alsa-devel@archiver.kernel.org>; Mon, 20 Jun 2022 15:14:11 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A36F41B54;
-	Mon, 20 Jun 2022 17:13:04 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A36F41B54
+	by alsa0.perex.cz (Postfix) with ESMTPS id 950751EDE;
+	Mon, 20 Jun 2022 17:13:19 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 950751EDE
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1655738034;
-	bh=UHbyXWubtR890Hwm7fCu/30xup3ljLOmEAmhXmIs8yc=;
+	s=default; t=1655738049;
+	bh=WiYHecA31lANfuQ3YMDGsbDx0FoZHlWR6XeIIsKJHDg=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=uJmLmil3NTNfWggH57XBMLQp+GRcD5/7bAo5BC7ufbXV04yyjk7lOyDx2lUEnnVPE
-	 K/T/ZW2LkUEVEH/facU74EVUQHylHv/XVpOnmFiDv5Zxx5UAeOPQaBY+jl3tW566vg
-	 z/hIi7hnmDFatQnuDM0C9FNIwyNGVO5eZZEZVh5E=
+	b=e5OL6Dwpvb1ufIGpx0hvKNdgbUhTZYP5uvJgs2GakjNDH+Bn5bjOqYgFZ8xPuW8fg
+	 Cg/kKbghT2dveHWL85MNPIGErTQ0g9bEDuX5hOUZRuC18vSD1A7q/ApHg+LezwHVuP
+	 OixBmIkmdV5vB+Juhi4Gs/WExeJM9ahWNPIWZO6U=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 2D203F805D9;
+	by alsa1.perex.cz (Postfix) with ESMTP id DC194F805E4;
 	Mon, 20 Jun 2022 17:07:03 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 33B6FF805BA; Thu, 16 Jun 2022 16:35:00 +0200 (CEST)
-Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
- [67.231.152.168])
+ id 03FADF805C2; Thu, 16 Jun 2022 16:35:01 +0200 (CEST)
+Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
+ [67.231.149.25])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 89205F8052E
- for <alsa-devel@alsa-project.org>; Thu, 16 Jun 2022 16:34:39 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 89205F8052E
+ by alsa1.perex.cz (Postfix) with ESMTPS id 20358F800B9
+ for <alsa-devel@alsa-project.org>; Thu, 16 Jun 2022 16:34:37 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 20358F800B9
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com
- header.b="m69t8gFE"
-Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
- by mx0b-001ae601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 25GC0DJc015765;
- Thu, 16 Jun 2022 09:34:38 -0500
+ header.b="iHp7L1eF"
+Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
+ by mx0a-001ae601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 25GC07C8027888;
+ Thu, 16 Jun 2022 09:34:35 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
  h=from : to : cc :
  subject : date : message-id : in-reply-to : references : mime-version :
  content-transfer-encoding : content-type; s=PODMain02222019;
- bh=ZCITtJ1KUhO3m0hQgxKHALQnZSotGGuUuKGm6KuVmmc=;
- b=m69t8gFE7S2gSBkUxOPiADwSPUC62pqTNxCxTS1ANW5kgPeKu/J+pHz0ztQT0D922tDu
- GiVopaBxL2FGqDH7Y0LhxZcsOJMz2s+ro3hV1qk+e4tuaNsVrFI248vAcSuSDyfoKi2g
- gRspf2XGNn8ota7d46jJv6CQGlNVM23sXJoriNSLVpuR9f5pCARG7aPO1NGmQw8PC0g/
- pVcu6ansmtioKZ38iSrKv91e6h4tLf3ZJcA+Loow/HZL7d5q9NsEX7vNHEqLQyGM4GxN
- faTPO8j+m5C2DkAQtk5163rJFjh/7+f3iWBUAtnDnwla9tnwSxd0TNpK4LUzHx+fhFwF GQ== 
-Received: from ediex02.ad.cirrus.com ([84.19.233.68])
- by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3gmqfq5w3h-10
+ bh=8Jk9hCbOsuYwm0RYQaJwiZ5tuQRLpnFj2YNVDn9mPS8=;
+ b=iHp7L1eFGG3w4R1gJZ7svezdIg2n8c1IoX+LpD9yIl5HyWma98qrDD3wdw1321cTL0tM
+ kgji9flINp3lVkyIp5tMh41FYe6FsziM9gDhF7+6XB1RsvhUrU+AAbnnI91EzvS6wQp8
+ 87jckojpIZseCVI4jHmyq1iTzO37UFHOHoQZofHJd0BXypBQjN1O3Bl09UGK9cTm0LtK
+ zNK6qL92/sAR72fjwU4M71iAn3sfC21yNbfV+KDB8VYTlt0nK0P4B3P91w7nhqmlzSnw
+ NZ8QZH23awCoA15qHCa0ZhIQ9ca3FrHVna6365VpjylCkElgK90Eh24BcJULcIFdecYs +A== 
+Received: from ediex01.ad.cirrus.com ([84.19.233.68])
+ by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3gmrf35vuu-5
  (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
- Thu, 16 Jun 2022 09:34:38 -0500
-Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX02.ad.cirrus.com
- (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
+ Thu, 16 Jun 2022 09:34:35 -0500
+Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.28; Thu, 16 Jun
- 2022 15:34:31 +0100
+ 2022 15:34:30 +0100
 Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
  (198.61.84.80) with Microsoft SMTP Server id 15.1.2375.28 via
- Frontend Transport; Thu, 16 Jun 2022 15:34:31 +0100
+ Frontend Transport; Thu, 16 Jun 2022 15:34:30 +0100
 Received: from algalon.ad.cirrus.com (algalon.ad.cirrus.com [198.90.251.122])
- by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 7A8EC11D3;
- Thu, 16 Jun 2022 14:34:31 +0000 (UTC)
+ by ediswmail.ad.cirrus.com (Postfix) with ESMTP id B532E11D3;
+ Thu, 16 Jun 2022 14:34:30 +0000 (UTC)
 From: Charles Keepax <ckeepax@opensource.cirrus.com>
 To: <broonie@kernel.org>
-Subject: [PATCH 20/96] ASoC: fsl: Migrate to new style legacy DAI naming flag
-Date: Thu, 16 Jun 2022 15:33:13 +0100
-Message-ID: <20220616143429.1324494-21-ckeepax@opensource.cirrus.com>
+Subject: [PATCH 10/96] ASoC: sh: Migrate to new style legacy DAI naming flag
+Date: Thu, 16 Jun 2022 15:33:03 +0100
+Message-ID: <20220616143429.1324494-11-ckeepax@opensource.cirrus.com>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20220616143429.1324494-1-ckeepax@opensource.cirrus.com>
 References: <20220616143429.1324494-1-ckeepax@opensource.cirrus.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: q3wxFhw9DIjTkf02NbyOlQ_pKVrbeAUy
-X-Proofpoint-GUID: q3wxFhw9DIjTkf02NbyOlQ_pKVrbeAUy
+X-Proofpoint-GUID: pks9M87GbJ1NhtR99gCkFJVek6Qn3se_
+X-Proofpoint-ORIG-GUID: pks9M87GbJ1NhtR99gCkFJVek6Qn3se_
 X-Proofpoint-Spam-Reason: safe
 X-Mailman-Approved-At: Mon, 20 Jun 2022 17:06:45 +0200
 Cc: cezary.rojewski@intel.com, heiko@sntech.de,
@@ -114,145 +114,110 @@ currently uses the legacy naming, so add the new flag.
 
 Signed-off-by: Charles Keepax <ckeepax@opensource.cirrus.com>
 ---
- sound/soc/fsl/fsl_aud2htx.c     | 3 ++-
- sound/soc/fsl/fsl_easrc.c       | 7 ++++---
- sound/soc/fsl/fsl_esai.c        | 3 ++-
- sound/soc/fsl/fsl_rpmsg.c       | 3 ++-
- sound/soc/fsl/fsl_sai.c         | 3 ++-
- sound/soc/fsl/fsl_spdif.c       | 3 ++-
- sound/soc/fsl/fsl_ssi.c         | 1 +
- sound/soc/fsl/fsl_xcvr.c        | 3 ++-
- sound/soc/fsl/mpc5200_psc_i2s.c | 3 ++-
- 9 files changed, 19 insertions(+), 10 deletions(-)
+ sound/soc/sh/hac.c       |  3 ++-
+ sound/soc/sh/rcar/core.c | 11 ++++++-----
+ sound/soc/sh/rz-ssi.c    |  9 +++++----
+ sound/soc/sh/siu_pcm.c   | 17 +++++++++--------
+ sound/soc/sh/ssi.c       |  3 ++-
+ 5 files changed, 24 insertions(+), 19 deletions(-)
 
-diff --git a/sound/soc/fsl/fsl_aud2htx.c b/sound/soc/fsl/fsl_aud2htx.c
-index 422922146f2a5..873295f59ad7b 100644
---- a/sound/soc/fsl/fsl_aud2htx.c
-+++ b/sound/soc/fsl/fsl_aud2htx.c
-@@ -103,7 +103,8 @@ static struct snd_soc_dai_driver fsl_aud2htx_dai = {
+diff --git a/sound/soc/sh/hac.c b/sound/soc/sh/hac.c
+index 475fc984f8c51..46d145cbaf297 100644
+--- a/sound/soc/sh/hac.c
++++ b/sound/soc/sh/hac.c
+@@ -307,7 +307,8 @@ static struct snd_soc_dai_driver sh4_hac_dai[] = {
  };
  
- static const struct snd_soc_component_driver fsl_aud2htx_component = {
--	.name	= "fsl-aud2htx",
-+	.name			= "fsl-aud2htx",
+ static const struct snd_soc_component_driver sh4_hac_component = {
+-	.name		= "sh4-hac",
++	.name			= "sh4-hac",
 +	.legacy_dai_naming	= 1,
  };
  
- static const struct reg_default fsl_aud2htx_reg_defaults[] = {
-diff --git a/sound/soc/fsl/fsl_easrc.c b/sound/soc/fsl/fsl_easrc.c
-index be14f84796cb4..ea96b0fb6b202 100644
---- a/sound/soc/fsl/fsl_easrc.c
-+++ b/sound/soc/fsl/fsl_easrc.c
-@@ -1572,9 +1572,10 @@ static struct snd_soc_dai_driver fsl_easrc_dai = {
- };
- 
- static const struct snd_soc_component_driver fsl_easrc_component = {
--	.name		= "fsl-easrc-dai",
--	.controls       = fsl_easrc_snd_controls,
--	.num_controls   = ARRAY_SIZE(fsl_easrc_snd_controls),
-+	.name			= "fsl-easrc-dai",
-+	.controls		= fsl_easrc_snd_controls,
-+	.num_controls		= ARRAY_SIZE(fsl_easrc_snd_controls),
+ static int hac_soc_platform_probe(struct platform_device *pdev)
+diff --git a/sound/soc/sh/rcar/core.c b/sound/soc/sh/rcar/core.c
+index a4180dc5a59ba..4973f94a21446 100644
+--- a/sound/soc/sh/rcar/core.c
++++ b/sound/soc/sh/rcar/core.c
+@@ -1813,11 +1813,12 @@ int rsnd_kctrl_new(struct rsnd_mod *mod,
+  *		snd_soc_component
+  */
+ static const struct snd_soc_component_driver rsnd_soc_component = {
+-	.name		= "rsnd",
+-	.probe		= rsnd_debugfs_probe,
+-	.hw_params	= rsnd_hw_params,
+-	.hw_free	= rsnd_hw_free,
+-	.pointer	= rsnd_pointer,
++	.name			= "rsnd",
++	.probe			= rsnd_debugfs_probe,
++	.hw_params		= rsnd_hw_params,
++	.hw_free		= rsnd_hw_free,
++	.pointer		= rsnd_pointer,
 +	.legacy_dai_naming	= 1,
  };
  
- static const struct reg_default fsl_easrc_reg_defaults[] = {
-diff --git a/sound/soc/fsl/fsl_esai.c b/sound/soc/fsl/fsl_esai.c
-index 75f7807df29af..5c21fc490fce1 100644
---- a/sound/soc/fsl/fsl_esai.c
-+++ b/sound/soc/fsl/fsl_esai.c
-@@ -824,7 +824,8 @@ static struct snd_soc_dai_driver fsl_esai_dai = {
+ static int rsnd_rdai_continuance_probe(struct rsnd_priv *priv,
+diff --git a/sound/soc/sh/rz-ssi.c b/sound/soc/sh/rz-ssi.c
+index beaf1a8d6da10..0d0594a0e4f6c 100644
+--- a/sound/soc/sh/rz-ssi.c
++++ b/sound/soc/sh/rz-ssi.c
+@@ -906,10 +906,11 @@ static struct snd_soc_dai_driver rz_ssi_soc_dai[] = {
  };
  
- static const struct snd_soc_component_driver fsl_esai_component = {
--	.name		= "fsl-esai",
-+	.name			= "fsl-esai",
+ static const struct snd_soc_component_driver rz_ssi_soc_component = {
+-	.name		= "rz-ssi",
+-	.open		= rz_ssi_pcm_open,
+-	.pointer	= rz_ssi_pcm_pointer,
+-	.pcm_construct	= rz_ssi_pcm_new,
++	.name			= "rz-ssi",
++	.open			= rz_ssi_pcm_open,
++	.pointer		= rz_ssi_pcm_pointer,
++	.pcm_construct		= rz_ssi_pcm_new,
 +	.legacy_dai_naming	= 1,
  };
  
- static const struct reg_default fsl_esai_reg_defaults[] = {
-diff --git a/sound/soc/fsl/fsl_rpmsg.c b/sound/soc/fsl/fsl_rpmsg.c
-index 19fd312508839..bf94838bdbefe 100644
---- a/sound/soc/fsl/fsl_rpmsg.c
-+++ b/sound/soc/fsl/fsl_rpmsg.c
-@@ -135,7 +135,8 @@ static struct snd_soc_dai_driver fsl_rpmsg_dai = {
+ static int rz_ssi_probe(struct platform_device *pdev)
+diff --git a/sound/soc/sh/siu_pcm.c b/sound/soc/sh/siu_pcm.c
+index 0a8a3c314a73d..f15ff36e79345 100644
+--- a/sound/soc/sh/siu_pcm.c
++++ b/sound/soc/sh/siu_pcm.c
+@@ -540,13 +540,14 @@ static void siu_pcm_free(struct snd_soc_component *component,
+ }
+ 
+ const struct snd_soc_component_driver siu_component = {
+-	.name		= DRV_NAME,
+-	.open		= siu_pcm_open,
+-	.close		= siu_pcm_close,
+-	.prepare	= siu_pcm_prepare,
+-	.trigger	= siu_pcm_trigger,
+-	.pointer	= siu_pcm_pointer_dma,
+-	.pcm_construct	= siu_pcm_new,
+-	.pcm_destruct	= siu_pcm_free,
++	.name			= DRV_NAME,
++	.open			= siu_pcm_open,
++	.close			= siu_pcm_close,
++	.prepare		= siu_pcm_prepare,
++	.trigger		= siu_pcm_trigger,
++	.pointer		= siu_pcm_pointer_dma,
++	.pcm_construct		= siu_pcm_new,
++	.pcm_destruct		= siu_pcm_free,
++	.legacy_dai_naming	= 1,
+ };
+ EXPORT_SYMBOL_GPL(siu_component);
+diff --git a/sound/soc/sh/ssi.c b/sound/soc/sh/ssi.c
+index bf7a3c69920a6..96cf523c22734 100644
+--- a/sound/soc/sh/ssi.c
++++ b/sound/soc/sh/ssi.c
+@@ -377,7 +377,8 @@ static struct snd_soc_dai_driver sh4_ssi_dai[] = {
  };
  
- static const struct snd_soc_component_driver fsl_component = {
--	.name           = "fsl-rpmsg",
-+	.name			= "fsl-rpmsg",
+ static const struct snd_soc_component_driver sh4_ssi_component = {
+-	.name		= "sh4-ssi",
++	.name			= "sh4-ssi",
 +	.legacy_dai_naming	= 1,
  };
  
- static const struct fsl_rpmsg_soc_data imx7ulp_data = {
-diff --git a/sound/soc/fsl/fsl_sai.c b/sound/soc/fsl/fsl_sai.c
-index 4f5bd9597c746..68b5b488deebd 100644
---- a/sound/soc/fsl/fsl_sai.c
-+++ b/sound/soc/fsl/fsl_sai.c
-@@ -767,7 +767,8 @@ static struct snd_soc_dai_driver fsl_sai_dai_template = {
- };
- 
- static const struct snd_soc_component_driver fsl_component = {
--	.name           = "fsl-sai",
-+	.name			= "fsl-sai",
-+	.legacy_dai_naming	= 1,
- };
- 
- static struct reg_default fsl_sai_reg_defaults_ofs0[] = {
-diff --git a/sound/soc/fsl/fsl_spdif.c b/sound/soc/fsl/fsl_spdif.c
-index 42d11aca38a10..0504431792cf9 100644
---- a/sound/soc/fsl/fsl_spdif.c
-+++ b/sound/soc/fsl/fsl_spdif.c
-@@ -1237,7 +1237,8 @@ static struct snd_soc_dai_driver fsl_spdif_dai = {
- };
- 
- static const struct snd_soc_component_driver fsl_spdif_component = {
--	.name		= "fsl-spdif",
-+	.name			= "fsl-spdif",
-+	.legacy_dai_naming	= 1,
- };
- 
- /* FSL SPDIF REGMAP */
-diff --git a/sound/soc/fsl/fsl_ssi.c b/sound/soc/fsl/fsl_ssi.c
-index 7dd0c48cd9ae4..c9e0e31d5b34d 100644
---- a/sound/soc/fsl/fsl_ssi.c
-+++ b/sound/soc/fsl/fsl_ssi.c
-@@ -1182,6 +1182,7 @@ static struct snd_soc_dai_driver fsl_ssi_dai_template = {
- 
- static const struct snd_soc_component_driver fsl_ssi_component = {
- 	.name = "fsl-ssi",
-+	.legacy_dai_naming = 1,
- };
- 
- static struct snd_soc_dai_driver fsl_ssi_ac97_dai = {
-diff --git a/sound/soc/fsl/fsl_xcvr.c b/sound/soc/fsl/fsl_xcvr.c
-index 55e640cba87d0..c043efe4548d1 100644
---- a/sound/soc/fsl/fsl_xcvr.c
-+++ b/sound/soc/fsl/fsl_xcvr.c
-@@ -911,7 +911,8 @@ static struct snd_soc_dai_driver fsl_xcvr_dai = {
- };
- 
- static const struct snd_soc_component_driver fsl_xcvr_comp = {
--	.name = "fsl-xcvr-dai",
-+	.name			= "fsl-xcvr-dai",
-+	.legacy_dai_naming	= 1,
- };
- 
- static const struct reg_default fsl_xcvr_reg_defaults[] = {
-diff --git a/sound/soc/fsl/mpc5200_psc_i2s.c b/sound/soc/fsl/mpc5200_psc_i2s.c
-index 3149d59ae968d..73f3e61f208a7 100644
---- a/sound/soc/fsl/mpc5200_psc_i2s.c
-+++ b/sound/soc/fsl/mpc5200_psc_i2s.c
-@@ -148,7 +148,8 @@ static struct snd_soc_dai_driver psc_i2s_dai[] = {{
- } };
- 
- static const struct snd_soc_component_driver psc_i2s_component = {
--	.name		= "mpc5200-i2s",
-+	.name			= "mpc5200-i2s",
-+	.legacy_dai_naming	= 1,
- };
- 
- /* ---------------------------------------------------------------------
+ static int sh4_soc_dai_probe(struct platform_device *pdev)
 -- 
 2.30.2
 
