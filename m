@@ -4,92 +4,96 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 68D06C433EF
-	for <alsa-devel@archiver.kernel.org>; Thu, 16 Jun 2022 06:27:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A0090C433EF
+	for <alsa-devel@archiver.kernel.org>; Thu, 16 Jun 2022 06:27:33 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A33891AC6;
-	Thu, 16 Jun 2022 08:26:09 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A33891AC6
+	by alsa0.perex.cz (Postfix) with ESMTPS id BC8791ACE;
+	Thu, 16 Jun 2022 08:26:41 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BC8791ACE
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1655360819;
-	bh=xRz6qUFAhZ4KVNFOXRrGzfgAu/EcgeQSazWeOW2XCys=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=NnOrnGwWmb+5UAropyn+GJftEY8KX5s2F7Og4/7g5DMJC12cc19Y3VrGLm1LQJzGn
-	 0r34sOy+tx6y5v+M/H9CS1CmLziJ5AEvA6ulFmoiSXAzic7ZvZ6PAEWA9gsxQRmJDe
-	 fp+8D7Xx2VsF5rxAAzOfCch4EYyZ8ophndxnL8X8=
+	s=default; t=1655360851;
+	bh=Q0f2O84rdgTt9lWltJ5d4iN+/S6RrFqzFduhMO8bc2E=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=b0hZ96qr9Lqbja3nl3IG0VmXHW2dMdrMtvXD+49WxpvybQWaKHBpyZN7E6kK4fcP1
+	 do7ZRLTIxRSDcP5sZ+lOHq3uCq/hJGYWDzKkV5LhPkRrT5kioJz4tq8rlAboi3j40c
+	 /NzCfQ82dUVvo2/EC8twTWTcrQjV1154o8oDtixA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 27C8BF801D8;
-	Thu, 16 Jun 2022 08:26:09 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id D71DFF8012A;
+	Thu, 16 Jun 2022 08:26:13 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 694F4F800F0; Thu, 16 Jun 2022 08:26:07 +0200 (CEST)
+ id 4A363F804E0; Thu, 16 Jun 2022 08:26:12 +0200 (CEST)
 Received: from wout3-smtp.messagingengine.com (wout3-smtp.messagingengine.com
  [64.147.123.19])
  (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 67455F800F0
- for <alsa-devel@alsa-project.org>; Thu, 16 Jun 2022 08:26:02 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 67455F800F0
+ by alsa1.perex.cz (Postfix) with ESMTPS id 38EB9F80310
+ for <alsa-devel@alsa-project.org>; Thu, 16 Jun 2022 08:26:09 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 38EB9F80310
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=sholland.org header.i=@sholland.org
- header.b="oRV5c0++"; 
+ header.b="Xt5lIXMG"; 
  dkim=pass (2048-bit key) header.d=messagingengine.com
- header.i=@messagingengine.com header.b="a54JFqrc"
+ header.i=@messagingengine.com header.b="l4UPReM0"
 Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
- by mailout.west.internal (Postfix) with ESMTP id DAB7C3200B2F;
- Thu, 16 Jun 2022 02:25:56 -0400 (EDT)
+ by mailout.west.internal (Postfix) with ESMTP id 785043200B3F;
+ Thu, 16 Jun 2022 02:26:03 -0400 (EDT)
 Received: from mailfrontend2 ([10.202.2.163])
- by compute5.internal (MEProxy); Thu, 16 Jun 2022 02:25:58 -0400
+ by compute5.internal (MEProxy); Thu, 16 Jun 2022 02:26:04 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sholland.org; h=
  cc:cc:content-transfer-encoding:date:date:from:from:in-reply-to
- :message-id:mime-version:reply-to:sender:subject:subject:to:to;
- s=fm3; t=1655360756; x=1655447156; bh=Xnp4ckN+cZwV9xzQVgATT4HTL
- TgBz5AgEV9Xzx+z6Ck=; b=oRV5c0++bKiskbBAezs67H9yvAo3oy3HW2fTHP/zr
- SMiLE/o+Ota/gXm+vI18sC51q2Pu+pJzomq13/3gYjlSWr5+Oc1wYpt/HzaGUX21
- JdiST4q5q7myWZ0O9fOP90swm4vb6CrDbRVcHY/FrEuW8SFMsU/D9dwxVKTz+n+8
- 40isa4Zs3l6ezb4D6k4QmLQ+DSRaZt5zY/LwQ6Kmdqt2MU8BbNLbhWZ9RPw2a38Z
- 5nSsYppbqF4T8Rq5++Zo+VkYsn45hItf7Y0O5x4KPJWtYiYkWt3/oXvIcgyHAZtH
- H0+/2/C2FI6AmnbqynfKaDvR62kCJxOegOLa3Jd+Ps+0w==
+ :in-reply-to:message-id:mime-version:references:reply-to:sender
+ :subject:subject:to:to; s=fm3; t=1655360762; x=1655447162; bh=Kz
+ eS9u1MTLURbLcpn0LvQlKGCvEwzACeYn+zXwv6d8E=; b=Xt5lIXMGvMHUEnnJJZ
+ /G7J9P5KS1Yt6jgkg2mbEyXxEonBCxI9sZPkxNRzdVBBoxt3AQTepDBVeKFWBCAm
+ ZQRqeK49gKcw0aALEAk9ggYJub0n1tDLrBqRrmPMr625vC9acqWQYFdipCl3PeBB
+ Q/psD8VuuAm4cbrg0U0INOgxtE+Yc1CldnAWuSSSrjEimp1mOOPJfnmlT84erV5v
+ BVJSpoO2fH4qUAvnPOGz6y3OsikKUlb/zHPMbN4C74LfHqF6XgjBLoOeXi8O71qv
+ S/0+nnFYS2gsr4wlJ7KO+jLvV72+ytdhNnoH3Y/oOLDYDq3k/iB0Yhtf7BTE5PCl
+ Mpzg==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
  messagingengine.com; h=cc:cc:content-transfer-encoding:date:date
- :feedback-id:feedback-id:from:from:in-reply-to:message-id
- :mime-version:reply-to:sender:subject:subject:to:to:x-me-proxy
- :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; t=
- 1655360756; x=1655447156; bh=Xnp4ckN+cZwV9xzQVgATT4HTLTgBz5AgEV9
- Xzx+z6Ck=; b=a54JFqrcFQCbsFrEPhetIGNxCusZrgAjFbJjIdH6/aRnNVrXGn6
- IAfJgpK9SGK6lxpUYsCoeB6zEnDRt2Y/JZWs8BuLYqT3jRi/ibw/fWFD9LVQ3rne
- jLGPVAl1+WOihMZgSx9YBKuJMJN54M8FzyEL/qdbDOFSbd3ULaOQTf0FYJN5zfw4
- bok+jOUaTSOtPeCKqgOD8MQ01VHfEPx6B+5XDD2wcsSYHP+XOM7CANzoJh1vun7S
- g1srrx3Gh7b1dcYL97ytDCvLwJzvDu4Psacz8oBMEdT8usA8odmvE/J0hqK5eEHs
- OczuZXujSh0+0cMhPubGdKWZClFYa7EfF4Q==
-X-ME-Sender: <xms:88yqYkTV-Hb6vSYoDfQKcxwxmD_0leCw4kxTvHZ2n-KmwKxJTJ4Zpw>
- <xme:88yqYhwCNBIaiOC6P_bQ8j_F6_PSEBBKarpK0064Tp48aeqweNuA8OeFtf5wjyOYG
- UAc5kPl5v8wbgiheg>
-X-ME-Received: <xmr:88yqYh1mOqtTU45bi4fAX_23c0h7fm3-WjhJw7q1Fri9XgPIXRXv3BpoI9GWZHvMxv8JSchdRbbdPqTIjOg4bEuBlhHlNBzCSerLJ7l6qS7PXYuwQLiA5cnBsfkGrG3izIQx8g>
+ :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+ :message-id:mime-version:references:reply-to:sender:subject
+ :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+ :x-sasl-enc; s=fm2; t=1655360762; x=1655447162; bh=KzeS9u1MTLURb
+ Lcpn0LvQlKGCvEwzACeYn+zXwv6d8E=; b=l4UPReM079yTbntpXZluelJtAEG/t
+ iYgeutXBJXaF+ZKU+m1R0jlfK9vS7vPacorFJyYAeQ4d/hyIh9yg+vZeIigKwH8X
+ yVBi9kJGOS4YlbrbdjadQjfnQPCOePrtgdLGboDeWcan5s39qcYqPK313cCOz8T2
+ y1mo9XtSmMAatIJ8yUe/c69S3VTf6IuWFDoSQcm0ZCdpUcm/zusbSs3Xv5mMXAXj
+ u7NoNeR4t/AYTniifc9eWOh+FUVKyIa4pPwZiLal12xgIsSanFJqgaafhnFkedLT
+ 3VSd6+HxZnie7Xnp4t63zJvY4/9UsduCgPhVovyDfPIKvihCuqd1UdIpg==
+X-ME-Sender: <xms:-syqYlaGEElpFySsXxzhzUNX4NdiLS9iDF-GknN9yHMI1H2u70UTdw>
+ <xme:-syqYsaS-Kfc_J--cd0iXBWEnod6RGvzYi3QIl2vOBWt5rdjUDQ97DWYWnuC8YT07
+ 3-FvMhc2WI1X7hLGQ>
+X-ME-Received: <xmr:-syqYn-6nNLTXtYmXMN0TTOV37JpeaN0wMgEgvzasr4IoRwrLxDuc8YwVnrT2Xent4MBwzVsTjR7E51440TsIICc-Acv5CnyvaAuIGSWfTUypg_IQghnPVfKJI7YqeO5YQFzrQ>
 X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvfedruddvvddguddthecutefuodetggdotefrod
  ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
  necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
- enucfjughrpefhvfevufffkffoggfgsedtkeertdertddtnecuhfhrohhmpefurghmuhgv
- lhcujfholhhlrghnugcuoehsrghmuhgvlhesshhhohhllhgrnhgurdhorhhgqeenucggtf
- frrghtthgvrhhnpeekveelhfejueelleetvdejvdeffeetgeelheeujeffhefgffefkeeh
- hffhkeekgeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhroh
- hmpehsrghmuhgvlhesshhhohhllhgrnhgurdhorhhg
-X-ME-Proxy: <xmx:88yqYoD0Ou05GTvMXlxR9uRomhyoiUabBKeLQ4XyAZkEdkISL0RBHg>
- <xmx:88yqYtjeCJzWB7X1yZ3mgo0xm58iIKE9FSX5Zktt6KeUv3JTAsv36A>
- <xmx:88yqYkqOA6if4u2hF0BOr9QFbmnSq1wiZt6kSwbdEIM6DUq0nEUCAw>
- <xmx:9MyqYt4GJOkih0MZ7KF2UugYL2n1DPQgi_GmG6dnJk1sePH1Y6jK8Q>
+ enucfjughrpefhvfevufffkffojghfggfgsedtkeertdertddtnecuhfhrohhmpefurghm
+ uhgvlhcujfholhhlrghnugcuoehsrghmuhgvlhesshhhohhllhgrnhgurdhorhhgqeenuc
+ ggtffrrghtthgvrhhnpedukeetueduhedtleetvefguddvvdejhfefudelgfduveeggeeh
+ gfdufeeitdevteenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfh
+ hrohhmpehsrghmuhgvlhesshhhohhllhgrnhgurdhorhhg
+X-ME-Proxy: <xmx:-syqYjruQNCCC-nymaVBSj44cspl0GbuITlZQNWwZCY4eckXoKVKgQ>
+ <xmx:-syqYgpPaSd7yW01CSy8-j0lpvueowtqrTJ0usGVTW8hzRsC6JOeEw>
+ <xmx:-syqYpQ_-G4C-kURH7XWdtVDt94Hc9JV7nOelU_QDFYPXaI8iEiTEQ>
+ <xmx:-syqYrAAcYDB_v8QcOfKFp-5LiySAsR_Z9ldbfUejsoMHBZQrDBTsQ>
 Feedback-ID: i0ad843c9:Fastmail
 Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
- 16 Jun 2022 02:25:54 -0400 (EDT)
+ 16 Jun 2022 02:26:02 -0400 (EDT)
 From: Samuel Holland <samuel@sholland.org>
 To: Chen-Yu Tsai <wens@csie.org>, Jernej Skrabec <jernej.skrabec@gmail.com>,
  Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>
-Subject: [PATCH 0/3] ASoC: sun50i-codec-analog: Internal bias support
-Date: Thu, 16 Jun 2022 01:25:51 -0500
-Message-Id: <20220616062554.57266-1-samuel@sholland.org>
+Subject: [PATCH 2/3] ASoC: sun50i-codec-analog: Add support for internal bias
+Date: Thu, 16 Jun 2022 01:25:53 -0500
+Message-Id: <20220616062554.57266-3-samuel@sholland.org>
 X-Mailer: git-send-email 2.35.1
+In-Reply-To: <20220616062554.57266-1-samuel@sholland.org>
+References: <20220616062554.57266-1-samuel@sholland.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Cc: devicetree@vger.kernel.org, Arnaud Ferraris <arnaud.ferraris@collabora.com>,
@@ -113,23 +117,90 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-This series adds support for enabling the codec's internal microphone
-bias, which is needed on at least some versions of the PinePhone.
+From: Arnaud Ferraris <arnaud.ferraris@collabora.com>
 
+In order to properly bias headset microphones, there should be a pull-up
+resistor between pins HBIAS and MIC2P. This can be an external resistor,
+but the codec also provides an internal 2.2K resistor which is enabled
+by a register.
 
-Arnaud Ferraris (2):
-  ASoC: dt-bindings: sun50i-codec: Add binding for internal bias
-  ASoC: sun50i-codec-analog: Add support for internal bias
+This patch enables or disables the internal bias resistor based on a
+device tree property.
 
-Samuel Holland (1):
-  arm64: dts: allwinner: pinephone: Enable internal HMIC bias
+Signed-off-by: Arnaud Ferraris <arnaud.ferraris@collabora.com>
+[Samuel: split binding and implementation patches]
+Signed-off-by: Samuel Holland <samuel@sholland.org>
+---
 
- .../allwinner,sun50i-a64-codec-analog.yaml    |  5 ++++
- .../allwinner/sun50i-a64-pinephone-1.0.dts    |  4 +++
- .../allwinner/sun50i-a64-pinephone-1.1.dts    |  4 +++
- sound/soc/sunxi/sun50i-codec-analog.c         | 29 +++++++++++++++++++
- 4 files changed, 42 insertions(+)
+ sound/soc/sunxi/sun50i-codec-analog.c | 29 +++++++++++++++++++++++++++
+ 1 file changed, 29 insertions(+)
 
+diff --git a/sound/soc/sunxi/sun50i-codec-analog.c b/sound/soc/sunxi/sun50i-codec-analog.c
+index a41e25ad0aaf..699a5a318875 100644
+--- a/sound/soc/sunxi/sun50i-codec-analog.c
++++ b/sound/soc/sunxi/sun50i-codec-analog.c
+@@ -117,8 +117,13 @@
+ #define SUN50I_ADDA_HS_MBIAS_CTRL_MMICBIASEN	7
+ 
+ #define SUN50I_ADDA_JACK_MIC_CTRL	0x1d
++#define SUN50I_ADDA_JACK_MIC_CTRL_INNERRESEN	6
+ #define SUN50I_ADDA_JACK_MIC_CTRL_HMICBIASEN	5
+ 
++struct sun50i_codec_analog {
++	bool	internal_bias_resistor;
++};
++
+ /* mixer controls */
+ static const struct snd_kcontrol_new sun50i_a64_codec_mixer_controls[] = {
+ 	SOC_DAPM_DOUBLE_R("Mic1 Playback Switch",
+@@ -471,6 +476,18 @@ static const struct snd_soc_dapm_route sun50i_a64_codec_routes[] = {
+ 	{ "EARPIECE", NULL, "Earpiece Amp" },
+ };
+ 
++static int sun50i_a64_codec_probe(struct snd_soc_component *component)
++{
++	struct sun50i_codec_analog *codec = snd_soc_component_get_drvdata(component);
++
++	regmap_update_bits(component->regmap, SUN50I_ADDA_JACK_MIC_CTRL,
++			   BIT(SUN50I_ADDA_JACK_MIC_CTRL_INNERRESEN),
++			   codec->internal_bias_resistor <<
++				SUN50I_ADDA_JACK_MIC_CTRL_INNERRESEN);
++
++	return 0;
++}
++
+ static int sun50i_a64_codec_suspend(struct snd_soc_component *component)
+ {
+ 	return regmap_update_bits(component->regmap, SUN50I_ADDA_HP_CTRL,
+@@ -491,6 +508,7 @@ static const struct snd_soc_component_driver sun50i_codec_analog_cmpnt_drv = {
+ 	.num_dapm_widgets	= ARRAY_SIZE(sun50i_a64_codec_widgets),
+ 	.dapm_routes		= sun50i_a64_codec_routes,
+ 	.num_dapm_routes	= ARRAY_SIZE(sun50i_a64_codec_routes),
++	.probe			= sun50i_a64_codec_probe,
+ 	.suspend		= sun50i_a64_codec_suspend,
+ 	.resume			= sun50i_a64_codec_resume,
+ };
+@@ -505,9 +523,20 @@ MODULE_DEVICE_TABLE(of, sun50i_codec_analog_of_match);
+ 
+ static int sun50i_codec_analog_probe(struct platform_device *pdev)
+ {
++	struct sun50i_codec_analog *codec;
+ 	struct regmap *regmap;
+ 	void __iomem *base;
+ 
++	codec = devm_kzalloc(&pdev->dev, sizeof(*codec), GFP_KERNEL);
++	if (!codec)
++		return -ENOMEM;
++
++	platform_set_drvdata(pdev, codec);
++
++	codec->internal_bias_resistor =
++		device_property_read_bool(&pdev->dev,
++					  "allwinner,internal-bias-resistor");
++
+ 	base = devm_platform_ioremap_resource(pdev, 0);
+ 	if (IS_ERR(base)) {
+ 		dev_err(&pdev->dev, "Failed to map the registers\n");
 -- 
 2.35.1
 
