@@ -4,64 +4,64 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C42D9C433EF
-	for <alsa-devel@archiver.kernel.org>; Thu, 16 Jun 2022 21:44:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6EE43C43334
+	for <alsa-devel@archiver.kernel.org>; Thu, 16 Jun 2022 21:44:32 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id DFFC51AE0;
-	Thu, 16 Jun 2022 23:43:22 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DFFC51AE0
+	by alsa0.perex.cz (Postfix) with ESMTPS id AE4E71B08;
+	Thu, 16 Jun 2022 23:43:40 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AE4E71B08
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1655415853;
-	bh=kgcbmJclD26K4TD6jubandKsG5uYAgcLrZOQH/KIiUY=;
+	s=default; t=1655415870;
+	bh=xdEDHDa/Hwww+P6wtwpjjeOrIwzn1OiFvYBvMmjfmWE=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=VQGSvlUoCIxyAFeYroLP2jRHx2whdwzwtXuNxlUBZsMVjQwtdGnr0aaHe/fhO88Am
-	 JTSws+gK1I+g30QAzee9AToKo6Ia9A3rt4yDhu/khjiwk16DOSAaxiW6VRrzi7VTDP
-	 ZHUkit+TNA27DufzlU/WrHxcYrHd2FLrVRoem0XE=
+	b=rkeM1H/N7vRLyQT0ki6ukeRmJ6RpO4C1PnepPV5fZhyEeEIzyqmSACnU5RM9UPWtw
+	 OnvbsYe+remVHvXL5IGOcte6H9UefCJ5zDm1l4JwmglITWwI8BXSdrxm76rSZnVPK6
+	 SmJPjfNXuer9Y/ood1z/zEDCZON96Lp2KXzO9esc=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id A1FCDF8052D;
-	Thu, 16 Jun 2022 23:41:28 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 3C954F8053A;
+	Thu, 16 Jun 2022 23:41:29 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 7A2E0F8047C; Thu, 16 Jun 2022 23:41:22 +0200 (CEST)
+ id C8541F80542; Thu, 16 Jun 2022 23:41:23 +0200 (CEST)
 Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 6A1B8F800D3
- for <alsa-devel@alsa-project.org>; Thu, 16 Jun 2022 23:41:14 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6A1B8F800D3
+ by alsa1.perex.cz (Postfix) with ESMTPS id BCA44F804E0
+ for <alsa-devel@alsa-project.org>; Thu, 16 Jun 2022 23:41:13 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BCA44F804E0
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="ebkG/ZWs"
+ header.b="C09/BZt9"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
  t=1655415675; x=1686951675;
  h=from:to:cc:subject:date:message-id:in-reply-to:
  references:mime-version:content-transfer-encoding;
- bh=kgcbmJclD26K4TD6jubandKsG5uYAgcLrZOQH/KIiUY=;
- b=ebkG/ZWsFQB7d99XQ2xOLDgHU80tchgUg1aQI3516B4BqtAykPe4Iciv
- iTOmubb7/ueea2V/++GkgUo5BfAgSg1NKAnOevyQzABZxgzCmHdxc0klX
- 24FqswJsm7R2zLpZA1mdnap4ghCIs9en394+CPXuITZSt8BN50AOYqJgS
- tcyd9Xk8wnpksARcnX5s/3n2PBW/uJRVGWdC0WWif+Jos0PO07uaxEWOD
- 2XssUvm5//Hs2pa+jf6Gc35SrNyXEzJb2x6T4sd9KsD9vVE1f/JFlA7NR
- F3yzxSwLMchgPNKa0gqVyiIksRBCPkxSQM6g2eiDf1ZSgAT5pquFP0WbW g==;
-X-IronPort-AV: E=McAfee;i="6400,9594,10380"; a="276932460"
-X-IronPort-AV: E=Sophos;i="5.92,306,1650956400"; d="scan'208";a="276932460"
+ bh=xdEDHDa/Hwww+P6wtwpjjeOrIwzn1OiFvYBvMmjfmWE=;
+ b=C09/BZt9ZTQswlBZBPWGSrS8MVXv2E5+t25Sy2Y8j+/gIPGoMOl50FII
+ /XDQ+PEtEYEca+pY3cBIlOk7AUjhTzWPihExb1GQbLEMsedjGPmE6rZLz
+ 1WujSla5yCINBrB5kNO3EIx4ix/2NxMyHcN0x1d4n2nlUwCjM2WAVnX0N
+ f9RIMauU2NaOfuIJPA2ywqewP9CrxsKybamxq0xYIE7HTggp8VTNFzFTH
+ vhnEHsRo4gEa9TvCbIHvGesPac7++ZOBrCckmrmmlre/WKAQSQ/qnp9W8
+ TwEtyPJRTCr7a8fAhn8j3Kp0Sidx21i1X3IvZMh0K8MmaeIUVHXuc87tY w==;
+X-IronPort-AV: E=McAfee;i="6400,9594,10380"; a="276932452"
+X-IronPort-AV: E=Sophos;i="5.92,306,1650956400"; d="scan'208";a="276932452"
 Received: from fmsmga006.fm.intel.com ([10.253.24.20])
  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 16 Jun 2022 14:41:11 -0700
-X-IronPort-AV: E=Sophos;i="5.92,306,1650956400"; d="scan'208";a="831746778"
+ 16 Jun 2022 14:41:10 -0700
+X-IronPort-AV: E=Sophos;i="5.92,306,1650956400"; d="scan'208";a="831746772"
 Received: from buckkenx-mobl.amr.corp.intel.com (HELO
  pbossart-mobl3.intel.com) ([10.212.52.70])
  by fmsmga006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 16 Jun 2022 14:41:10 -0700
+ 16 Jun 2022 14:41:09 -0700
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH 09/13] ASoC: Intel: cml_rt1011_rt5682: remap jack pins
-Date: Thu, 16 Jun 2022 16:40:51 -0500
-Message-Id: <20220616214055.134943-10-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH 08/13] ASoC: Intel: glk_rt5682_max98357a: remap jack pins
+Date: Thu, 16 Jun 2022 16:40:50 -0500
+Message-Id: <20220616214055.134943-9-pierre-louis.bossart@linux.intel.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20220616214055.134943-1-pierre-louis.bossart@linux.intel.com>
 References: <20220616214055.134943-1-pierre-louis.bossart@linux.intel.com>
@@ -102,15 +102,15 @@ Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 Reviewed-by: Péter Ujfalusi <peter.ujfalusi@linux.intel.com>
 Reviewed-by: Bard Liao <yung-chuan.liao@linux.intel.com>
 ---
- sound/soc/intel/boards/cml_rt1011_rt5682.c | 23 +++++++++++++++++-----
- 1 file changed, 18 insertions(+), 5 deletions(-)
+ sound/soc/intel/boards/glk_rt5682_max98357a.c | 21 +++++++++++++++----
+ 1 file changed, 17 insertions(+), 4 deletions(-)
 
-diff --git a/sound/soc/intel/boards/cml_rt1011_rt5682.c b/sound/soc/intel/boards/cml_rt1011_rt5682.c
-index a99f74a15b5fd..20da83d9eeced 100644
---- a/sound/soc/intel/boards/cml_rt1011_rt5682.c
-+++ b/sound/soc/intel/boards/cml_rt1011_rt5682.c
-@@ -121,6 +121,17 @@ static const struct snd_soc_dapm_route cml_rt1011_tt_map[] = {
- 	{"TR Ext Spk", NULL, "TR SPO" },
+diff --git a/sound/soc/intel/boards/glk_rt5682_max98357a.c b/sound/soc/intel/boards/glk_rt5682_max98357a.c
+index 170164baae7da..cf0f89db3e204 100644
+--- a/sound/soc/intel/boards/glk_rt5682_max98357a.c
++++ b/sound/soc/intel/boards/glk_rt5682_max98357a.c
+@@ -78,6 +78,17 @@ static const struct snd_soc_dapm_widget geminilake_widgets[] = {
+ 	SND_SOC_DAPM_SPK("HDMI3", NULL),
  };
  
 +static struct snd_soc_jack_pin jack_pins[] = {
@@ -124,23 +124,21 @@ index a99f74a15b5fd..20da83d9eeced 100644
 +	},
 +};
 +
- static int cml_rt5682_codec_init(struct snd_soc_pcm_runtime *rtd)
- {
- 	struct card_private *ctx = snd_soc_card_get_drvdata(rtd->card);
-@@ -137,11 +148,13 @@ static int cml_rt5682_codec_init(struct snd_soc_pcm_runtime *rtd)
+ static const struct snd_soc_dapm_route geminilake_map[] = {
+ 	/* HP jack connectors - unknown if we have jack detection */
+ 	{ "Headphone Jack", NULL, "HPOL" },
+@@ -173,10 +184,12 @@ static int geminilake_rt5682_codec_init(struct snd_soc_pcm_runtime *rtd)
  	 * Headset buttons map to the google Reference headset.
  	 * These can be configured by userspace.
  	 */
 -	ret = snd_soc_card_jack_new(rtd->card, "Headset Jack",
--				    SND_JACK_HEADSET | SND_JACK_BTN_0 |
--				    SND_JACK_BTN_1 | SND_JACK_BTN_2 |
--				    SND_JACK_BTN_3,
--				    &ctx->headset);
+-			SND_JACK_HEADSET | SND_JACK_BTN_0 | SND_JACK_BTN_1 |
+-			SND_JACK_BTN_2 | SND_JACK_BTN_3 | SND_JACK_LINEOUT,
+-			&ctx->geminilake_headset);
 +	ret = snd_soc_card_jack_new_pins(rtd->card, "Headset Jack",
-+					 SND_JACK_HEADSET | SND_JACK_BTN_0 |
-+					 SND_JACK_BTN_1 | SND_JACK_BTN_2 |
-+					 SND_JACK_BTN_3,
-+					 &ctx->headset,
++					 SND_JACK_HEADSET | SND_JACK_BTN_0 | SND_JACK_BTN_1 |
++					 SND_JACK_BTN_2 | SND_JACK_BTN_3 | SND_JACK_LINEOUT,
++					 &ctx->geminilake_headset,
 +					 jack_pins,
 +					 ARRAY_SIZE(jack_pins));
  	if (ret) {
