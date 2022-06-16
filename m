@@ -4,79 +4,79 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 110A9C43334
-	for <alsa-devel@archiver.kernel.org>; Mon, 20 Jun 2022 15:25:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C0747C433EF
+	for <alsa-devel@archiver.kernel.org>; Mon, 20 Jun 2022 15:26:09 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3E68420E2;
-	Mon, 20 Jun 2022 17:25:01 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3E68420E2
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0D73320D3;
+	Mon, 20 Jun 2022 17:25:18 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0D73320D3
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1655738751;
-	bh=LLCL9s72WoKh4PR4DAyCmWoWKBLw164NDGGgtlgRxps=;
+	s=default; t=1655738768;
+	bh=eXyVVt0KPWgn1ZvatOci/+9aXexEfRf6yROTlCw6kiU=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=IcE/x+CzLq7Ee8bEjwSFLdQ4KzlVHikUEHnAajAIK5uT/s4fcXbE3jXAoSGUa9ELu
-	 7YNXsG+Iomf8vY6hZEpoKHUT3MDTA9l3mo+fs3HhUmHRY+0H/kMw7yd3EGrUfmEReY
-	 EPmnswVppnpBb4tNcqLszepYQtRH3OB/LjyjHoPo=
+	b=FDk8jso62wXEWREi1gTiDj9aRLijnoEsGEnzeZLGlbYJzMNNOLCehja1pqZFGkYTw
+	 5bkROLrxAw3P8oiM5U9DBNKKzzkX++6Z3RxIRRWPItysaZTqH7ONrdqyQPg1YjqoVp
+	 eV6IBLY4LNoVgc6q0fwwicR/TMU+dKgDPHshfEu4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id B0794F80791;
-	Mon, 20 Jun 2022 17:07:52 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 6A4F4F80797;
+	Mon, 20 Jun 2022 17:07:53 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 39BDAF804E0; Thu, 16 Jun 2022 16:35:46 +0200 (CEST)
+ id A6762F8047C; Thu, 16 Jun 2022 16:35:47 +0200 (CEST)
 Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
  [67.231.152.168])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id AA9DCF80571
+ by alsa1.perex.cz (Postfix) with ESMTPS id 6ABD0F80567
  for <alsa-devel@alsa-project.org>; Thu, 16 Jun 2022 16:34:51 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AA9DCF80571
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6ABD0F80567
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com
- header.b="BiT1cvme"
+ header.b="K/sAEySN"
 Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
- by mx0b-001ae601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 25G8o9fU009500;
+ by mx0b-001ae601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 25GBnCaR029573;
  Thu, 16 Jun 2022 09:34:48 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
  h=from : to : cc :
  subject : date : message-id : in-reply-to : references : mime-version :
  content-transfer-encoding : content-type; s=PODMain02222019;
- bh=7Bq72ssSzXzMAew0ncbg3wMXNO2cUCX44WTWYkeLRvQ=;
- b=BiT1cvmesTpfC/F+GuVyaI8Bw/Ia8nCVvunWSXpGHNGaBYtlmG3X1G7kX9e8tJupeUad
- 9AiwR9qwTF6ax01HsKkNPn8oktzNubgGRC/Guspoca1IEw01kPotqZL4EOd0WJBfEHB8
- OduyKDMTScRCOv56wmz/7eTs/vNisgqYVgFwjioQCH157l20rcXSlb8jZno5Si68CBx3
- T0djO159kb/75EVc7aDdk14RRkkDrfzyNzaxd02Mw+u1QFJ5I533/pbRWoqgAVdAs1tB
- 6zWbNA8cJJEPA8lGp3nPHPua+XP4vBvpghMsgRb2N4LI6zi4daxoIN3Yrp/O3atqPA7P CQ== 
-Received: from ediex02.ad.cirrus.com ([84.19.233.68])
- by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3gmqfq5w3u-2
+ bh=sW35yMEAhpqMwtioXqY0ldNVVBynIZiI7vWJLow7w50=;
+ b=K/sAEySNlrk9zWD4JC6sxmA1NA2m85QzFBSZpNnsvzDnb9YvN9p7RwEhbZ253+91rtCK
+ AEfSo/Q5aA3terKXJZr/Tm89XVwmmXQSybRj+wSkp+6qRkRpunzH6gV/VKnpfwSm1bWp
+ ioVghtrbTGvKL6sdHDWA4rUdz7PF+m9k+zmOxTnwltLcmRUvI+9Pv4BPlP0f5NC28qFH
+ pl4ZKZOxZjhHzJFHoybXAdLXjwLUHBVT/9C4x7XTbb6Bx6zgClcm9sgnswn4uxGOD4d2
+ v0hhoA4tND8kNvABBMjgeXdCRO8sYJVOckTJRgaA4biFuP9n9nj6CdVu+bobOxKK7x7B tA== 
+Received: from ediex01.ad.cirrus.com ([84.19.233.68])
+ by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3gmqfq5w3m-11
  (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
  Thu, 16 Jun 2022 09:34:48 -0500
-Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX02.ad.cirrus.com
- (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
+Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.28; Thu, 16 Jun
- 2022 15:34:35 +0100
+ 2022 15:34:34 +0100
 Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
  (198.61.84.80) with Microsoft SMTP Server id 15.1.2375.28 via
- Frontend Transport; Thu, 16 Jun 2022 15:34:35 +0100
+ Frontend Transport; Thu, 16 Jun 2022 15:34:34 +0100
 Received: from algalon.ad.cirrus.com (algalon.ad.cirrus.com [198.90.251.122])
- by ediswmail.ad.cirrus.com (Postfix) with ESMTP id F120511D3;
+ by ediswmail.ad.cirrus.com (Postfix) with ESMTP id CEE9711D4;
  Thu, 16 Jun 2022 14:34:34 +0000 (UTC)
 From: Charles Keepax <ckeepax@opensource.cirrus.com>
 To: <broonie@kernel.org>
-Subject: [PATCH 64/96] ASoC: uda*: Remove now redundant non_legacy_dai_naming
- flag
-Date: Thu, 16 Jun 2022 15:33:57 +0100
-Message-ID: <20220616143429.1324494-65-ckeepax@opensource.cirrus.com>
+Subject: [PATCH 62/96] ASoC: tlv320*: Remove now redundant
+ non_legacy_dai_naming flag
+Date: Thu, 16 Jun 2022 15:33:55 +0100
+Message-ID: <20220616143429.1324494-63-ckeepax@opensource.cirrus.com>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20220616143429.1324494-1-ckeepax@opensource.cirrus.com>
 References: <20220616143429.1324494-1-ckeepax@opensource.cirrus.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: Q2UALWv1XkgCyNtTjiBPLr8xrjOLWyAa
-X-Proofpoint-GUID: Q2UALWv1XkgCyNtTjiBPLr8xrjOLWyAa
+X-Proofpoint-ORIG-GUID: inhGalbJUPd6iILVxAUgYgXvh4ZaAOfF
+X-Proofpoint-GUID: inhGalbJUPd6iILVxAUgYgXvh4ZaAOfF
 X-Proofpoint-Spam-Reason: safe
 X-Mailman-Approved-At: Mon, 20 Jun 2022 17:06:46 +0200
 Cc: cezary.rojewski@intel.com, heiko@sntech.de,
@@ -114,47 +114,107 @@ the non_legacy_dai_naming flag.
 
 Signed-off-by: Charles Keepax <ckeepax@opensource.cirrus.com>
 ---
- sound/soc/codecs/uda1334.c | 1 -
- sound/soc/codecs/uda134x.c | 1 -
- sound/soc/codecs/uda1380.c | 1 -
- 3 files changed, 3 deletions(-)
+ sound/soc/codecs/tlv320adcx140.c | 1 -
+ sound/soc/codecs/tlv320aic23.c   | 1 -
+ sound/soc/codecs/tlv320aic26.c   | 1 -
+ sound/soc/codecs/tlv320aic31xx.c | 1 -
+ sound/soc/codecs/tlv320aic32x4.c | 2 --
+ sound/soc/codecs/tlv320aic3x.c   | 1 -
+ sound/soc/codecs/tlv320dac33.c   | 1 -
+ 7 files changed, 8 deletions(-)
 
-diff --git a/sound/soc/codecs/uda1334.c b/sound/soc/codecs/uda1334.c
-index 9d5ed34e54204..eace965336003 100644
---- a/sound/soc/codecs/uda1334.c
-+++ b/sound/soc/codecs/uda1334.c
-@@ -236,7 +236,6 @@ static const struct snd_soc_component_driver soc_component_dev_uda1334 = {
+diff --git a/sound/soc/codecs/tlv320adcx140.c b/sound/soc/codecs/tlv320adcx140.c
+index de5b184a701ef..6618ac4a7d5c8 100644
+--- a/sound/soc/codecs/tlv320adcx140.c
++++ b/sound/soc/codecs/tlv320adcx140.c
+@@ -1053,7 +1053,6 @@ static const struct snd_soc_component_driver soc_codec_driver_adcx140 = {
+ 	.idle_bias_on		= 0,
+ 	.use_pmdown_time	= 1,
+ 	.endianness		= 1,
+-	.non_legacy_dai_naming	= 1,
+ };
+ 
+ static struct snd_soc_dai_driver adcx140_dai_driver[] = {
+diff --git a/sound/soc/codecs/tlv320aic23.c b/sound/soc/codecs/tlv320aic23.c
+index c86ca793a2b66..c47aa4d4162dd 100644
+--- a/sound/soc/codecs/tlv320aic23.c
++++ b/sound/soc/codecs/tlv320aic23.c
+@@ -586,7 +586,6 @@ static const struct snd_soc_component_driver soc_component_dev_tlv320aic23 = {
  	.idle_bias_on		= 1,
  	.use_pmdown_time	= 1,
  	.endianness		= 1,
 -	.non_legacy_dai_naming	= 1,
  };
  
- static const struct of_device_id uda1334_of_match[] = {
-diff --git a/sound/soc/codecs/uda134x.c b/sound/soc/codecs/uda134x.c
-index 037833c509f70..2db3d8a60c7a0 100644
---- a/sound/soc/codecs/uda134x.c
-+++ b/sound/soc/codecs/uda134x.c
-@@ -527,7 +527,6 @@ static const struct snd_soc_component_driver soc_component_dev_uda134x = {
+ int tlv320aic23_probe(struct device *dev, struct regmap *regmap)
+diff --git a/sound/soc/codecs/tlv320aic26.c b/sound/soc/codecs/tlv320aic26.c
+index f85f8061639f3..8bae4b4750688 100644
+--- a/sound/soc/codecs/tlv320aic26.c
++++ b/sound/soc/codecs/tlv320aic26.c
+@@ -331,7 +331,6 @@ static const struct snd_soc_component_driver aic26_soc_component_dev = {
  	.idle_bias_on		= 1,
  	.use_pmdown_time	= 1,
  	.endianness		= 1,
 -	.non_legacy_dai_naming	= 1,
  };
  
- static const struct regmap_config uda134x_regmap_config = {
-diff --git a/sound/soc/codecs/uda1380.c b/sound/soc/codecs/uda1380.c
-index b5004842520bf..fdaaee845176e 100644
---- a/sound/soc/codecs/uda1380.c
-+++ b/sound/soc/codecs/uda1380.c
-@@ -736,7 +736,6 @@ static const struct snd_soc_component_driver soc_component_dev_uda1380 = {
+ static const struct regmap_config aic26_regmap = {
+diff --git a/sound/soc/codecs/tlv320aic31xx.c b/sound/soc/codecs/tlv320aic31xx.c
+index aacee23679924..0847302121f6e 100644
+--- a/sound/soc/codecs/tlv320aic31xx.c
++++ b/sound/soc/codecs/tlv320aic31xx.c
+@@ -1417,7 +1417,6 @@ static const struct snd_soc_component_driver soc_codec_driver_aic31xx = {
  	.idle_bias_on		= 1,
  	.use_pmdown_time	= 1,
  	.endianness		= 1,
 -	.non_legacy_dai_naming	= 1,
  };
  
- static int uda1380_i2c_probe(struct i2c_client *i2c)
+ static const struct snd_soc_dai_ops aic31xx_dai_ops = {
+diff --git a/sound/soc/codecs/tlv320aic32x4.c b/sound/soc/codecs/tlv320aic32x4.c
+index a8e6adf62ac82..4b74805cdd2e5 100644
+--- a/sound/soc/codecs/tlv320aic32x4.c
++++ b/sound/soc/codecs/tlv320aic32x4.c
+@@ -1077,7 +1077,6 @@ static const struct snd_soc_component_driver soc_component_dev_aic32x4 = {
+ 	.idle_bias_on		= 1,
+ 	.use_pmdown_time	= 1,
+ 	.endianness		= 1,
+-	.non_legacy_dai_naming	= 1,
+ };
+ 
+ static const struct snd_kcontrol_new aic32x4_tas2505_snd_controls[] = {
+@@ -1199,7 +1198,6 @@ static const struct snd_soc_component_driver soc_component_dev_aic32x4_tas2505 =
+ 	.idle_bias_on		= 1,
+ 	.use_pmdown_time	= 1,
+ 	.endianness		= 1,
+-	.non_legacy_dai_naming	= 1,
+ };
+ 
+ static int aic32x4_parse_dt(struct aic32x4_priv *aic32x4,
+diff --git a/sound/soc/codecs/tlv320aic3x.c b/sound/soc/codecs/tlv320aic3x.c
+index 610e41bbf388c..08938801daec2 100644
+--- a/sound/soc/codecs/tlv320aic3x.c
++++ b/sound/soc/codecs/tlv320aic3x.c
+@@ -1697,7 +1697,6 @@ static const struct snd_soc_component_driver soc_component_dev_aic3x = {
+ 	.num_dapm_routes	= ARRAY_SIZE(intercon),
+ 	.use_pmdown_time	= 1,
+ 	.endianness		= 1,
+-	.non_legacy_dai_naming	= 1,
+ };
+ 
+ static void aic3x_configure_ocmv(struct device *dev, struct aic3x_priv *aic3x)
+diff --git a/sound/soc/codecs/tlv320dac33.c b/sound/soc/codecs/tlv320dac33.c
+index 371026eb8f41b..17ae3b1d96fb4 100644
+--- a/sound/soc/codecs/tlv320dac33.c
++++ b/sound/soc/codecs/tlv320dac33.c
+@@ -1431,7 +1431,6 @@ static const struct snd_soc_component_driver soc_component_dev_tlv320dac33 = {
+ 	.num_dapm_routes	= ARRAY_SIZE(audio_map),
+ 	.use_pmdown_time	= 1,
+ 	.endianness		= 1,
+-	.non_legacy_dai_naming	= 1,
+ };
+ 
+ #define DAC33_RATES	(SNDRV_PCM_RATE_44100 | \
 -- 
 2.30.2
 
