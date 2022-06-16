@@ -4,55 +4,55 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8F3EEC43334
-	for <alsa-devel@archiver.kernel.org>; Mon, 20 Jun 2022 15:19:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id AC285C43334
+	for <alsa-devel@archiver.kernel.org>; Mon, 20 Jun 2022 15:19:35 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id DBC9B1FB6;
-	Mon, 20 Jun 2022 17:18:25 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DBC9B1FB6
+	by alsa0.perex.cz (Postfix) with ESMTPS id E7A3B1FBF;
+	Mon, 20 Jun 2022 17:18:43 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E7A3B1FBF
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1655738355;
-	bh=Evqd/f3MyhE6Wv9RR6Z2UVyIRChAWyV2yD3EpOfebxY=;
+	s=default; t=1655738374;
+	bh=Mi9DSwds60AkWLBJiYf/7YV4YrsggOaCsaVsok2qZcQ=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Gr+jTi7jEBX2bqZLn2i1vKRjxdKwb1mUUWjC8qMtVWMW+2rScN1ZupYgg5cfIpHo3
-	 +U5aZ7JV+F7rBpf9cadd2Zgi/6eEUm5SSCVCeXHwKlqCI2Neb7A2e4p5oGMifb0Wwq
-	 ff9X0Bq9tf73nBtiWOdLNAbkxSs5rzJfiLx0idJ0=
+	b=Y4nuG08brCtRmtJIO1HFT7Munn31j0BqJC6igatq7Ti1iiF+MtUF010pzfzwRJTPN
+	 KR+snfHoH3RqKMdd3n0dkccbAAY5y/LsQq3rYv+f+U7DOOjiZrigQOZnl5endwCxW3
+	 46dubEAO5OQkus6WOKvTgLQdi5t7FiL88JkrlO2w=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id B8152F80649;
-	Mon, 20 Jun 2022 17:07:34 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 5A80DF8065D;
+	Mon, 20 Jun 2022 17:07:35 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 966B0F8012A; Thu, 16 Jun 2022 16:35:25 +0200 (CEST)
-Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
- [67.231.152.168])
+ id AD2F4F801D8; Thu, 16 Jun 2022 16:35:27 +0200 (CEST)
+Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
+ [67.231.149.25])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 1BA0BF801D8
- for <alsa-devel@alsa-project.org>; Thu, 16 Jun 2022 16:34:45 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1BA0BF801D8
+ by alsa1.perex.cz (Postfix) with ESMTPS id A9E87F80423
+ for <alsa-devel@alsa-project.org>; Thu, 16 Jun 2022 16:34:47 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A9E87F80423
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com
- header.b="eTCWyBYP"
-Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
- by mx0b-001ae601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 25GC0DJh015765;
- Thu, 16 Jun 2022 09:34:42 -0500
+ header.b="k/9ab/S2"
+Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
+ by mx0a-001ae601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 25G4igBe030693;
+ Thu, 16 Jun 2022 09:34:43 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
  h=from : to : cc :
  subject : date : message-id : in-reply-to : references : mime-version :
  content-transfer-encoding : content-type; s=PODMain02222019;
- bh=tlTfDDpAddy4OPcZxsIlei/7Fh8yufBurTEFJp8EGOs=;
- b=eTCWyBYPETIQY5UBEFWDf7VSk1WrYtHOSJ2ohO0O/Qt8X05VidDW7HdLKgP/rI99y/Bq
- VYSmBngXae95da0rf3UEQLWG+ltLVXegfYTz2aNHELdDbrfcGLnk1E9+tr7/CXyUKHu5
- 1vbCRRHWeAbWyy+zzY8EYQIqYiDA5MRVcOIBLke6ND7nd3fLgBh7oOlqZXIArZeSFgdD
- 7OB190XV83cgwhEb35MWM4/KtfWSeyQhPyryiRl1Kf6meUt9AgcjzS2sQ/Vw11Yn5Cr8
- lDapnXswcObNAtzXX0YrR+fO4qMVVYiK0uB75Av3uAMnd/Dudk/Fsn0jbIfIKbnvVy3S rw== 
+ bh=KldRAQaWlyO+eIosBDd1bGZgvOmvQGtuzz10esRY5l4=;
+ b=k/9ab/S2XbU350x3WZAVH6h3cC08n3Wdy7SKnthddTO+4NQK7o5wFpBUuTQG4u6yqKI8
+ OmZ5LxgOP7fNZD5i1IlQ4aqMMqV0tF1GOUC77KqVCXrD38hUQ219BOHLfQf7C4q/FNRt
+ VtOXh26JMgoHmxSWZN58TQxw50iixwi1XPCV6ShMEd55iRuaifeciEzRsLujnVp3EBYz
+ HSqOQigA3fjw8sU3dNwbsd2dnOfKIC8t0mEUMxA4mzE8Gac/FZHCkt6uBkOLJ947wSgo
+ wRxft1LQLiSfvM3yBTa1et0CqJCeLVeAROsh3Mqi3En6eHK7yqIp59ZXbm6O6bTmdZOC tQ== 
 Received: from ediex02.ad.cirrus.com ([84.19.233.68])
- by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3gmqfq5w3h-15
+ by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3gmrf35vuw-9
  (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
- Thu, 16 Jun 2022 09:34:41 -0500
+ Thu, 16 Jun 2022 09:34:43 -0500
 Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX02.ad.cirrus.com
  (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.28; Thu, 16 Jun
@@ -61,22 +61,22 @@ Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
  (198.61.84.80) with Microsoft SMTP Server id 15.1.2375.28 via
  Frontend Transport; Thu, 16 Jun 2022 15:34:33 +0100
 Received: from algalon.ad.cirrus.com (algalon.ad.cirrus.com [198.90.251.122])
- by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 205FF11D3;
+ by ediswmail.ad.cirrus.com (Postfix) with ESMTP id A41F611D4;
  Thu, 16 Jun 2022 14:34:33 +0000 (UTC)
 From: Charles Keepax <ckeepax@opensource.cirrus.com>
 To: <broonie@kernel.org>
-Subject: [PATCH 39/96] ASoC: samsung: Remove now redundant
- non_legacy_dai_naming flag
-Date: Thu, 16 Jun 2022 15:33:32 +0100
-Message-ID: <20220616143429.1324494-40-ckeepax@opensource.cirrus.com>
+Subject: [PATCH 46/96] ASoC: ad*: Remove now redundant non_legacy_dai_naming
+ flag
+Date: Thu, 16 Jun 2022 15:33:39 +0100
+Message-ID: <20220616143429.1324494-47-ckeepax@opensource.cirrus.com>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20220616143429.1324494-1-ckeepax@opensource.cirrus.com>
 References: <20220616143429.1324494-1-ckeepax@opensource.cirrus.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: IEWeOK1VfT9ESYVwDfYTbCzLctN-XRWD
-X-Proofpoint-GUID: IEWeOK1VfT9ESYVwDfYTbCzLctN-XRWD
+X-Proofpoint-GUID: 5GsZk63Ebre3qby9lir0QAv1OankcQSo
+X-Proofpoint-ORIG-GUID: 5GsZk63Ebre3qby9lir0QAv1OankcQSo
 X-Proofpoint-Spam-Reason: safe
 X-Mailman-Approved-At: Mon, 20 Jun 2022 17:06:45 +0200
 Cc: cezary.rojewski@intel.com, heiko@sntech.de,
@@ -114,21 +114,164 @@ the non_legacy_dai_naming flag.
 
 Signed-off-by: Charles Keepax <ckeepax@opensource.cirrus.com>
 ---
- sound/soc/samsung/aries_wm8994.c | 1 -
- 1 file changed, 1 deletion(-)
+ sound/soc/codecs/ad1836.c   | 1 -
+ sound/soc/codecs/ad193x.c   | 1 -
+ sound/soc/codecs/ad1980.c   | 1 -
+ sound/soc/codecs/ad73311.c  | 1 -
+ sound/soc/codecs/adau1373.c | 1 -
+ sound/soc/codecs/adau1701.c | 1 -
+ sound/soc/codecs/adau1761.c | 1 -
+ sound/soc/codecs/adau1781.c | 1 -
+ sound/soc/codecs/adau1977.c | 1 -
+ sound/soc/codecs/adau7002.c | 1 -
+ sound/soc/codecs/adau7118.c | 1 -
+ sound/soc/codecs/adav80x.c  | 1 -
+ 12 files changed, 12 deletions(-)
 
-diff --git a/sound/soc/samsung/aries_wm8994.c b/sound/soc/samsung/aries_wm8994.c
-index edee02d7f100a..e7d52d27132ea 100644
---- a/sound/soc/samsung/aries_wm8994.c
-+++ b/sound/soc/samsung/aries_wm8994.c
-@@ -432,7 +432,6 @@ static const struct snd_soc_component_driver aries_component = {
+diff --git a/sound/soc/codecs/ad1836.c b/sound/soc/codecs/ad1836.c
+index 29e1689da67ff..2c64df96b5ce9 100644
+--- a/sound/soc/codecs/ad1836.c
++++ b/sound/soc/codecs/ad1836.c
+@@ -332,7 +332,6 @@ static const struct snd_soc_component_driver soc_component_dev_ad1836 = {
  	.idle_bias_on		= 1,
  	.use_pmdown_time	= 1,
  	.endianness		= 1,
 -	.non_legacy_dai_naming	= 1,
  };
  
- static struct snd_soc_dai_driver aries_ext_dai[] = {
+ static const struct reg_default ad1836_reg_defaults[] = {
+diff --git a/sound/soc/codecs/ad193x.c b/sound/soc/codecs/ad193x.c
+index 30b98b4267e13..1d3c4d94b4ae9 100644
+--- a/sound/soc/codecs/ad193x.c
++++ b/sound/soc/codecs/ad193x.c
+@@ -523,7 +523,6 @@ static const struct snd_soc_component_driver soc_component_dev_ad193x = {
+ 	.idle_bias_on		= 1,
+ 	.use_pmdown_time	= 1,
+ 	.endianness		= 1,
+-	.non_legacy_dai_naming	= 1,
+ };
+ 
+ const struct regmap_config ad193x_regmap_config = {
+diff --git a/sound/soc/codecs/ad1980.c b/sound/soc/codecs/ad1980.c
+index 9fd2023da218f..5e777d7fd5d91 100644
+--- a/sound/soc/codecs/ad1980.c
++++ b/sound/soc/codecs/ad1980.c
+@@ -302,7 +302,6 @@ static const struct snd_soc_component_driver soc_component_dev_ad1980 = {
+ 	.idle_bias_on		= 1,
+ 	.use_pmdown_time	= 1,
+ 	.endianness		= 1,
+-	.non_legacy_dai_naming	= 1,
+ };
+ 
+ static int ad1980_probe(struct platform_device *pdev)
+diff --git a/sound/soc/codecs/ad73311.c b/sound/soc/codecs/ad73311.c
+index b98bf19f594e0..f6090ac57e937 100644
+--- a/sound/soc/codecs/ad73311.c
++++ b/sound/soc/codecs/ad73311.c
+@@ -58,7 +58,6 @@ static const struct snd_soc_component_driver soc_component_dev_ad73311 = {
+ 	.idle_bias_on		= 1,
+ 	.use_pmdown_time	= 1,
+ 	.endianness		= 1,
+-	.non_legacy_dai_naming	= 1,
+ };
+ 
+ static int ad73311_probe(struct platform_device *pdev)
+diff --git a/sound/soc/codecs/adau1373.c b/sound/soc/codecs/adau1373.c
+index a9032b5c8d782..7f832d00ab177 100644
+--- a/sound/soc/codecs/adau1373.c
++++ b/sound/soc/codecs/adau1373.c
+@@ -1470,7 +1470,6 @@ static const struct snd_soc_component_driver adau1373_component_driver = {
+ 	.num_dapm_routes	= ARRAY_SIZE(adau1373_dapm_routes),
+ 	.use_pmdown_time	= 1,
+ 	.endianness		= 1,
+-	.non_legacy_dai_naming	= 1,
+ };
+ 
+ static int adau1373_i2c_probe(struct i2c_client *client)
+diff --git a/sound/soc/codecs/adau1701.c b/sound/soc/codecs/adau1701.c
+index 98768e5300f09..135a7db7fcf95 100644
+--- a/sound/soc/codecs/adau1701.c
++++ b/sound/soc/codecs/adau1701.c
+@@ -772,7 +772,6 @@ static const struct snd_soc_component_driver adau1701_component_drv = {
+ 	.set_sysclk		= adau1701_set_sysclk,
+ 	.use_pmdown_time	= 1,
+ 	.endianness		= 1,
+-	.non_legacy_dai_naming	= 1,
+ };
+ 
+ static const struct regmap_config adau1701_regmap = {
+diff --git a/sound/soc/codecs/adau1761.c b/sound/soc/codecs/adau1761.c
+index 8f887227981f1..3ccc7acac2056 100644
+--- a/sound/soc/codecs/adau1761.c
++++ b/sound/soc/codecs/adau1761.c
+@@ -930,7 +930,6 @@ static const struct snd_soc_component_driver adau1761_component_driver = {
+ 	.idle_bias_on		= 1,
+ 	.use_pmdown_time	= 1,
+ 	.endianness		= 1,
+-	.non_legacy_dai_naming	= 1,
+ };
+ 
+ #define ADAU1761_FORMATS (SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S24_LE | \
+diff --git a/sound/soc/codecs/adau1781.c b/sound/soc/codecs/adau1781.c
+index 74dc3344b2590..ff6be24863bfb 100644
+--- a/sound/soc/codecs/adau1781.c
++++ b/sound/soc/codecs/adau1781.c
+@@ -439,7 +439,6 @@ static const struct snd_soc_component_driver adau1781_component_driver = {
+ 	.idle_bias_on		= 1,
+ 	.use_pmdown_time	= 1,
+ 	.endianness		= 1,
+-	.non_legacy_dai_naming	= 1,
+ };
+ 
+ #define ADAU1781_FORMATS (SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S24_LE | \
+diff --git a/sound/soc/codecs/adau1977.c b/sound/soc/codecs/adau1977.c
+index 5fcbdf2ec313c..7a9672f94fc6c 100644
+--- a/sound/soc/codecs/adau1977.c
++++ b/sound/soc/codecs/adau1977.c
+@@ -876,7 +876,6 @@ static const struct snd_soc_component_driver adau1977_component_driver = {
+ 	.num_dapm_routes	= ARRAY_SIZE(adau1977_dapm_routes),
+ 	.use_pmdown_time	= 1,
+ 	.endianness		= 1,
+-	.non_legacy_dai_naming	= 1,
+ };
+ 
+ static int adau1977_setup_micbias(struct adau1977 *adau1977)
+diff --git a/sound/soc/codecs/adau7002.c b/sound/soc/codecs/adau7002.c
+index 0e00de6ce3fb1..401bafabc8eb4 100644
+--- a/sound/soc/codecs/adau7002.c
++++ b/sound/soc/codecs/adau7002.c
+@@ -91,7 +91,6 @@ static const struct snd_soc_component_driver adau7002_component_driver = {
+ 	.idle_bias_on		= 1,
+ 	.use_pmdown_time	= 1,
+ 	.endianness		= 1,
+-	.non_legacy_dai_naming	= 1,
+ };
+ 
+ static int adau7002_probe(struct platform_device *pdev)
+diff --git a/sound/soc/codecs/adau7118.c b/sound/soc/codecs/adau7118.c
+index 841229dcbca10..bbb0972498876 100644
+--- a/sound/soc/codecs/adau7118.c
++++ b/sound/soc/codecs/adau7118.c
+@@ -442,7 +442,6 @@ static const struct snd_soc_component_driver adau7118_component_driver = {
+ 	.num_dapm_widgets	= ARRAY_SIZE(adau7118_widgets),
+ 	.use_pmdown_time	= 1,
+ 	.endianness		= 1,
+-	.non_legacy_dai_naming	= 1,
+ };
+ 
+ static void adau7118_regulator_disable(void *data)
+diff --git a/sound/soc/codecs/adav80x.c b/sound/soc/codecs/adav80x.c
+index 90f3a5e9e31f4..fcff35f26cecb 100644
+--- a/sound/soc/codecs/adav80x.c
++++ b/sound/soc/codecs/adav80x.c
+@@ -842,7 +842,6 @@ static const struct snd_soc_component_driver adav80x_component_driver = {
+ 	.idle_bias_on		= 1,
+ 	.use_pmdown_time	= 1,
+ 	.endianness		= 1,
+-	.non_legacy_dai_naming	= 1,
+ };
+ 
+ int adav80x_bus_probe(struct device *dev, struct regmap *regmap)
 -- 
 2.30.2
 
