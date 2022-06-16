@@ -4,65 +4,64 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id BDC44C43334
-	for <alsa-devel@archiver.kernel.org>; Thu, 16 Jun 2022 21:56:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2CEE1C43334
+	for <alsa-devel@archiver.kernel.org>; Thu, 16 Jun 2022 21:57:11 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id DEDDC1B1A;
-	Thu, 16 Jun 2022 23:55:59 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DEDDC1B1A
+	by alsa0.perex.cz (Postfix) with ESMTPS id 6A0431AFA;
+	Thu, 16 Jun 2022 23:56:19 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6A0431AFA
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1655416609;
-	bh=n2U0AeRSHQQSTBYckbxzcDuezlEcPXhJrUuMBQM3oUc=;
+	s=default; t=1655416629;
+	bh=tle3XaCM3m5rl3ceURrAobSqzhe1N33/uIWkuhEeGuI=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=LiSznYPvdBQglL7DJr7azz+ZYS/kgnfx6ea4c5vlVQa+D/QxzGgtgTiZzCfwbaeH8
-	 iD/JIZhcPOzcHTfg5gPhxPrZG9IASfS1hm3r15ZLkrKQsDsDWtNutk5Txl3ASJvkvb
-	 hXo+l987pXiHSszL5JELMf8AcgpZBbQjE2lpnpvg=
+	b=JmrEy5LNOUbdgm7UTlBBu5N5IF/gGtqEz2xzfffuPr9SxritJbr8KGE9iYDjzM26R
+	 MTPkRkVOuw41PF029v8VnKiBPiq3CNy3pVt+sNf4duLjVUL0VX9M2I13N0mwg9H7Gk
+	 vNoFtQaYFTmkhn27GvS7ej2VqD468jd+iiSODfl0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id E8D86F80539;
-	Thu, 16 Jun 2022 23:54:52 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id CBC2EF804E0;
+	Thu, 16 Jun 2022 23:54:53 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 039EDF8052D; Thu, 16 Jun 2022 23:54:47 +0200 (CEST)
+ id 167ECF800D3; Thu, 16 Jun 2022 23:54:48 +0200 (CEST)
 Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 52DE2F8012A
+ by alsa1.perex.cz (Postfix) with ESMTPS id 90BBBF80310
  for <alsa-devel@alsa-project.org>; Thu, 16 Jun 2022 23:54:41 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 52DE2F8012A
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 90BBBF80310
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="diwxM2Rf"
+ header.b="cZf/rbT3"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1655416482; x=1686952482;
+ t=1655416483; x=1686952483;
  h=from:to:cc:subject:date:message-id:in-reply-to:
  references:mime-version:content-transfer-encoding;
- bh=n2U0AeRSHQQSTBYckbxzcDuezlEcPXhJrUuMBQM3oUc=;
- b=diwxM2RfQLxjG+2WdWC5ap2ma7JmkHBZ0qtNkVvg3DTFqOJYkyBJ3Wnu
- Caao5R6DyF35I1n6goHJO8aO2Rxma/8gJBCvnNAaEHuSZ+EpGPxK6YwMj
- 0QNJlLKzFOQ468bbnBsTZDM73uKxPNycU/J2s4WAjtn/ZhCEy9ikvYEnh
- MtWu8fY9REU3MkDOIRRQJa1foYuLu8/DMb1Ao4WuZ0HHUzxgfCneVJSvS
- Gi8CMmnhFggt0EmQIWjxdMeRMTMhckRBAp3fgkwu2G67xsAVZMGN5vCA6
- JpWyTieUMDUyXR+o9kNvSRCXmgs5Bu+NV0RrrVNDpXhlfLBoOkXVdPU5B A==;
-X-IronPort-AV: E=McAfee;i="6400,9594,10380"; a="268047805"
-X-IronPort-AV: E=Sophos;i="5.92,306,1650956400"; d="scan'208";a="268047805"
+ bh=tle3XaCM3m5rl3ceURrAobSqzhe1N33/uIWkuhEeGuI=;
+ b=cZf/rbT39xYfK4C0lC3OUVGpj2yjViWpQML/uSSX5EHgVLwI+xt5BHgE
+ NQO5aFFHD09ZoMkN5R4CZ8mTmHohDN59WiYkhRVDWxQ2WVE1BS4dv9tMM
+ 5SblS8Cs9EHAUNcbEYLnRUfF8h0JlZ8h3PNkVxmk8DFBkyqfjCsXEDS5x
+ 9VvPqGSgMWSxGvaNutdGfjZZn9FVrCJpi9vnqZ7tdHNEVybhpyj7F0Sra
+ jFnFNxyZXsgeGOJoZ1LJa+RIS5wff3MI9G/AVfV77NUgUVTKuh1EMePqR
+ sXxp+Qzl5RGNUd9g9d5KHcWbu+G13FazrWHPwmDqWWb1qqmIAl2Oi9x7g g==;
+X-IronPort-AV: E=McAfee;i="6400,9594,10380"; a="268047814"
+X-IronPort-AV: E=Sophos;i="5.92,306,1650956400"; d="scan'208";a="268047814"
 Received: from fmsmga003.fm.intel.com ([10.253.24.29])
  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 16 Jun 2022 14:54:17 -0700
-X-IronPort-AV: E=Sophos;i="5.92,306,1650956400"; d="scan'208";a="675212652"
+ 16 Jun 2022 14:54:18 -0700
+X-IronPort-AV: E=Sophos;i="5.92,306,1650956400"; d="scan'208";a="675212667"
 Received: from buckkenx-mobl.amr.corp.intel.com (HELO
  pbossart-mobl3.intel.com) ([10.212.52.70])
  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 16 Jun 2022 14:54:16 -0700
+ 16 Jun 2022 14:54:17 -0700
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH 03/13] ASoC: SOF: Intel: hda-dai: remove use of __func__ in
- dev_dbg
-Date: Thu, 16 Jun 2022 16:53:41 -0500
-Message-Id: <20220616215351.135643-4-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH 05/13] ASoC: SOF: Intel: mtl: remove use of __func__ in dev_dbg
+Date: Thu, 16 Jun 2022 16:53:43 -0500
+Message-Id: <20220616215351.135643-6-pierre-louis.bossart@linux.intel.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20220616215351.135643-1-pierre-louis.bossart@linux.intel.com>
 References: <20220616215351.135643-1-pierre-louis.bossart@linux.intel.com>
@@ -101,40 +100,23 @@ Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 Reviewed-by: Péter Ujfalusi <peter.ujfalusi@linux.intel.com>
 Reviewed-by: Bard Liao <yung-chuan.liao@linux.intel.com>
 ---
- sound/soc/sof/intel/hda-dai.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ sound/soc/sof/intel/mtl.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/sound/soc/sof/intel/hda-dai.c b/sound/soc/sof/intel/hda-dai.c
-index 70721defca467..ed74a1f264e86 100644
---- a/sound/soc/sof/intel/hda-dai.c
-+++ b/sound/soc/sof/intel/hda-dai.c
-@@ -393,7 +393,7 @@ static int hda_dai_prepare(struct snd_pcm_substream *substream, struct snd_soc_d
- 	if (hext_stream && hext_stream->link_prepared)
- 		return 0;
+diff --git a/sound/soc/sof/intel/mtl.c b/sound/soc/sof/intel/mtl.c
+index 37be77beb415f..3a043589c12bb 100644
+--- a/sound/soc/sof/intel/mtl.c
++++ b/sound/soc/sof/intel/mtl.c
+@@ -540,8 +540,7 @@ static irqreturn_t mtl_ipc_irq_thread(int irq, void *context)
  
--	dev_dbg(sdev->dev, "%s: prepare stream dir %d\n", __func__, substream->stream);
-+	dev_dbg(sdev->dev, "prepare stream dir %d\n", substream->stream);
+ 	if (!ipc_irq) {
+ 		/* This interrupt is not shared so no need to return IRQ_NONE. */
+-		dev_dbg_ratelimited(sdev->dev, "%s nothing to do in IPC IRQ thread\n",
+-				    __func__);
++		dev_dbg_ratelimited(sdev->dev, "nothing to do in IPC IRQ thread\n");
+ 	}
  
- 	ret = hda_link_dma_prepare(substream);
- 	if (ret < 0)
-@@ -419,7 +419,7 @@ static int ipc3_hda_dai_trigger(struct snd_pcm_substream *substream,
- 	struct snd_soc_dapm_widget *w;
- 	int ret;
- 
--	dev_dbg(dai->dev, "%s: cmd=%d dai %s direction %d\n", __func__, cmd,
-+	dev_dbg(dai->dev, "cmd=%d dai %s direction %d\n", cmd,
- 		dai->name, substream->stream);
- 
- 	ret = hda_link_dma_trigger(substream, cmd);
-@@ -468,7 +468,7 @@ static int ipc4_hda_dai_trigger(struct snd_pcm_substream *substream,
- 	struct snd_soc_dai *cpu_dai;
- 	int ret;
- 
--	dev_dbg(dai->dev, "%s: cmd=%d dai %s direction %d\n", __func__, cmd,
-+	dev_dbg(dai->dev, "cmd=%d dai %s direction %d\n", cmd,
- 		dai->name, substream->stream);
- 
- 	hstream = substream->runtime->private_data;
+ 	return IRQ_HANDLED;
 -- 
 2.34.1
 
