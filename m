@@ -4,64 +4,64 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9A90FC433EF
-	for <alsa-devel@archiver.kernel.org>; Thu, 16 Jun 2022 21:44:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5E103C43334
+	for <alsa-devel@archiver.kernel.org>; Thu, 16 Jun 2022 21:45:00 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id CB9E41B0C;
-	Thu, 16 Jun 2022 23:43:52 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CB9E41B0C
+	by alsa0.perex.cz (Postfix) with ESMTPS id 8C66E1AFB;
+	Thu, 16 Jun 2022 23:44:08 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8C66E1AFB
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1655415882;
-	bh=u3u+V+Agh6TNeOhWGGMJwpZdH5G0ZA18HSNMooZh+Ms=;
+	s=default; t=1655415898;
+	bh=8lay7MCQxSMnosNJUAEJ1GC9DQer96JAtAYrJCcBC1U=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=eeWDfbcw5od+VimYmt64efaiWyZk2ZMvEMhUnkFB+bwRVm0346JJKX2SIKqqorOi1
-	 3g19tvG/EYwqI/Ob4p+8s4Ml1+p+MfEqf3CyJXP7BHX3G5+Z+y+ElyWMRl2+kg0TWj
-	 qb9/XgvNpdmHE7P0nIGXH6+IuVBOF+MsVowz+e7A=
+	b=pl88c4XEppzCNhS5UHGW8fv1i+vnmQVN0PSv/5VHS1OO7MmvuIXum6VhFSLa4MSnj
+	 b2oEL6xJ8zcl+yWBqeS9M4Jzx5DwdaXu9oSPXvA0HMHTsclnw22Z4rUUKux6H1T+ml
+	 nO49zAW1bdtnvP9edEZ/C7c3ZgDwNRSVLdR7Uw2k=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id D057FF80563;
-	Thu, 16 Jun 2022 23:41:29 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 576D5F80566;
+	Thu, 16 Jun 2022 23:41:30 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id AA27AF80559; Thu, 16 Jun 2022 23:41:26 +0200 (CEST)
+ id D3DE2F80552; Thu, 16 Jun 2022 23:41:26 +0200 (CEST)
 Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id CCD5AF8051F
- for <alsa-devel@alsa-project.org>; Thu, 16 Jun 2022 23:41:13 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CCD5AF8051F
+ by alsa1.perex.cz (Postfix) with ESMTPS id 90A55F8053A
+ for <alsa-devel@alsa-project.org>; Thu, 16 Jun 2022 23:41:17 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 90A55F8053A
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="mvy3Rd96"
+ header.b="bNTg7uSG"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1655415675; x=1686951675;
+ t=1655415678; x=1686951678;
  h=from:to:cc:subject:date:message-id:in-reply-to:
  references:mime-version:content-transfer-encoding;
- bh=u3u+V+Agh6TNeOhWGGMJwpZdH5G0ZA18HSNMooZh+Ms=;
- b=mvy3Rd96RAV/Nusbq6hHCB2y6N3RoqCteBPK3q+nOQxddXEGxopoLQPP
- XDCd2IoMAqX6lolZ+tWdUq+WXysyr++igZus2+qMGm4PxpCqwnL7GLzaY
- CI9+hHgt+4PULd6Zi3DESzRVYK5vSw84l5478YlRt1piKBWzcAC1ssAX5
- Stvc7mXa9sQ0JhND//JuazTLDtxIbis+QBUP41qcMpIvwmSa/gD1NGHA1
- c90z1y02QIvL6AVFcX5Xsed9slDT22OOiaGOXel8tO5ZTlz9cHXWh2Ql2
- o0ySWYAjM+N9TfeQQ/NuPdfliO8xIJnCbADTu8gM6Qrqzb06hnxtnvBhf Q==;
-X-IronPort-AV: E=McAfee;i="6400,9594,10380"; a="276932445"
-X-IronPort-AV: E=Sophos;i="5.92,306,1650956400"; d="scan'208";a="276932445"
+ bh=8lay7MCQxSMnosNJUAEJ1GC9DQer96JAtAYrJCcBC1U=;
+ b=bNTg7uSG662ae5qlafYwwY0/o/kEvs9XO8e/GS4h12T0I6D1hYslsEeg
+ 6rzp0uld40g0YUbn6S+oOswJ1SrEZkEJOI59JZuUKHs5rAKFzHGWKQdoH
+ gzriuzoS0DQ6EYM4DGQXTMFi1RaPzU7xotOOAKmks0yC45eP+o5TMQB2a
+ T385907I3IaBu/a+d5JF3reF2TSapxNkEKDX7wtf3Poj6HxDDS8mSx9vh
+ ynwSDogJ+gm/os5u5If0iiIhNJLc4DJ2ATrS3JvUaAtsyc5Et8jjVf5rr
+ g++gqU5XTfTP7xafCfsaNLQAm2sUyq70l83WdIPE4Sql0ZkW4e5Ui54Db Q==;
+X-IronPort-AV: E=McAfee;i="6400,9594,10380"; a="276932484"
+X-IronPort-AV: E=Sophos;i="5.92,306,1650956400"; d="scan'208";a="276932484"
 Received: from fmsmga006.fm.intel.com ([10.253.24.20])
  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 16 Jun 2022 14:41:09 -0700
-X-IronPort-AV: E=Sophos;i="5.92,306,1650956400"; d="scan'208";a="831746767"
+ 16 Jun 2022 14:41:14 -0700
+X-IronPort-AV: E=Sophos;i="5.92,306,1650956400"; d="scan'208";a="831746802"
 Received: from buckkenx-mobl.amr.corp.intel.com (HELO
  pbossart-mobl3.intel.com) ([10.212.52.70])
  by fmsmga006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 16 Jun 2022 14:41:09 -0700
+ 16 Jun 2022 14:41:13 -0700
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH 07/13] ASoC: Intel: bxt_da7219_max98357a: remap jack pins
-Date: Thu, 16 Jun 2022 16:40:49 -0500
-Message-Id: <20220616214055.134943-8-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH 13/13] ASoC: Intel: sof_rt5682: remap jack pins
+Date: Thu, 16 Jun 2022 16:40:55 -0500
+Message-Id: <20220616214055.134943-14-pierre-louis.bossart@linux.intel.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20220616214055.134943-1-pierre-louis.bossart@linux.intel.com>
 References: <20220616214055.134943-1-pierre-louis.bossart@linux.intel.com>
@@ -102,16 +102,16 @@ Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 Reviewed-by: Péter Ujfalusi <peter.ujfalusi@linux.intel.com>
 Reviewed-by: Bard Liao <yung-chuan.liao@linux.intel.com>
 ---
- sound/soc/intel/boards/bxt_da7219_max98357a.c | 21 +++++++++++++++----
- 1 file changed, 17 insertions(+), 4 deletions(-)
+ sound/soc/intel/boards/sof_rt5682.c | 23 ++++++++++++++++++-----
+ 1 file changed, 18 insertions(+), 5 deletions(-)
 
-diff --git a/sound/soc/intel/boards/bxt_da7219_max98357a.c b/sound/soc/intel/boards/bxt_da7219_max98357a.c
-index d98376da425a6..7c6c95e99ade2 100644
---- a/sound/soc/intel/boards/bxt_da7219_max98357a.c
-+++ b/sound/soc/intel/boards/bxt_da7219_max98357a.c
-@@ -186,6 +186,17 @@ static const struct snd_soc_dapm_route gemini_map[] = {
- 	{"ssp2 Rx", NULL, "Capture"},
- };
+diff --git a/sound/soc/intel/boards/sof_rt5682.c b/sound/soc/intel/boards/sof_rt5682.c
+index f28dae64587e1..a24fb71d5ff3a 100644
+--- a/sound/soc/intel/boards/sof_rt5682.c
++++ b/sound/soc/intel/boards/sof_rt5682.c
+@@ -248,6 +248,17 @@ static int sof_hdmi_init(struct snd_soc_pcm_runtime *rtd)
+ 	return 0;
+ }
  
 +static struct snd_soc_jack_pin jack_pins[] = {
 +	{
@@ -124,21 +124,23 @@ index d98376da425a6..7c6c95e99ade2 100644
 +	},
 +};
 +
- static int broxton_ssp_fixup(struct snd_soc_pcm_runtime *rtd,
- 			struct snd_pcm_hw_params *params)
+ static int sof_rt5682_codec_init(struct snd_soc_pcm_runtime *rtd)
  {
-@@ -231,10 +242,12 @@ static int broxton_da7219_codec_init(struct snd_soc_pcm_runtime *rtd)
+ 	struct sof_card_private *ctx = snd_soc_card_get_drvdata(rtd->card);
+@@ -295,11 +306,13 @@ static int sof_rt5682_codec_init(struct snd_soc_pcm_runtime *rtd)
  	 * Headset buttons map to the google Reference headset.
  	 * These can be configured by userspace.
  	 */
 -	ret = snd_soc_card_jack_new(rtd->card, "Headset Jack",
--			SND_JACK_HEADSET | SND_JACK_BTN_0 | SND_JACK_BTN_1 |
--			SND_JACK_BTN_2 | SND_JACK_BTN_3 | SND_JACK_LINEOUT,
--			&broxton_headset);
+-				    SND_JACK_HEADSET | SND_JACK_BTN_0 |
+-				    SND_JACK_BTN_1 | SND_JACK_BTN_2 |
+-				    SND_JACK_BTN_3,
+-				    &ctx->sof_headset);
 +	ret = snd_soc_card_jack_new_pins(rtd->card, "Headset Jack",
-+					 SND_JACK_HEADSET | SND_JACK_BTN_0 | SND_JACK_BTN_1 |
-+					 SND_JACK_BTN_2 | SND_JACK_BTN_3 | SND_JACK_LINEOUT,
-+					 &broxton_headset,
++					 SND_JACK_HEADSET | SND_JACK_BTN_0 |
++					 SND_JACK_BTN_1 | SND_JACK_BTN_2 |
++					 SND_JACK_BTN_3,
++					 &ctx->sof_headset,
 +					 jack_pins,
 +					 ARRAY_SIZE(jack_pins));
  	if (ret) {
