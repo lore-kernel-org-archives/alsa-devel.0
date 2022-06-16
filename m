@@ -4,78 +4,79 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A9708C43334
-	for <alsa-devel@archiver.kernel.org>; Mon, 20 Jun 2022 15:35:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9E250C433EF
+	for <alsa-devel@archiver.kernel.org>; Mon, 20 Jun 2022 15:35:41 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B757228B3;
-	Mon, 20 Jun 2022 17:34:33 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B757228B3
+	by alsa0.perex.cz (Postfix) with ESMTPS id F3F5D28BC;
+	Mon, 20 Jun 2022 17:34:49 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F3F5D28BC
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1655739323;
-	bh=roW/Gd68PQuUPui2/EU0HJdHFjIk65KxSFPkBF69UZY=;
+	s=default; t=1655739340;
+	bh=9LQovC95FqkFEn9EkPegq9kSk3FrFhPVfuodp9nN0Z4=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=ainuL5vL1eRLOzWzAifCOJZgEqGHytZHZYFZTNSaI/YfAY6APk2U20/pgvuL0Qqss
-	 wBW+t9nHmzHDyrZRWip7WCJ6PqUQzZV/uFr1Rlf9GRdZ7/FDVpwahw2FCWp/0kytO6
-	 IO9bgGp5x3wOp3PXK4R9pJ/LOvHY0fchezjHxFNw=
+	b=iAlFIPH3jGhz76ZBr4/9rAcp6OldyDGbUGfarpjlJ22/0qULSV4cL1tjrKpY6B4lF
+	 MBA4V0flRyI8hh6CKzwPV8jtnKsJppr2TwAWDXs6HcfR6yOkPtVvJKBx6xQ219Z0Ic
+	 9IgOLREXLA1GlY+E7XDZBkc9PpAIlneKb1CNnJEc=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id AE39DF80CAA;
-	Mon, 20 Jun 2022 17:08:14 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 787EDF80CB3;
+	Mon, 20 Jun 2022 17:08:15 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 73CD0F801D8; Thu, 16 Jun 2022 16:36:26 +0200 (CEST)
-Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
- [67.231.152.168])
+ id 72741F80310; Thu, 16 Jun 2022 16:56:11 +0200 (CEST)
+Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
+ [67.231.149.25])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id EEE37F805A9
- for <alsa-devel@alsa-project.org>; Thu, 16 Jun 2022 16:34:58 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EEE37F805A9
+ by alsa1.perex.cz (Postfix) with ESMTPS id 49770F800B9
+ for <alsa-devel@alsa-project.org>; Thu, 16 Jun 2022 16:56:03 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 49770F800B9
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com
- header.b="gCQdUSk/"
-Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
- by mx0b-001ae601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 25G8o9ff009500;
- Thu, 16 Jun 2022 09:34:57 -0500
+ header.b="gsdkNsfo"
+Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
+ by mx0a-001ae601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 25GC07CG027888;
+ Thu, 16 Jun 2022 09:34:42 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
  h=from : to : cc :
  subject : date : message-id : in-reply-to : references : mime-version :
  content-transfer-encoding : content-type; s=PODMain02222019;
- bh=BgbBX9Efb8K0LJNikCHrznq2RAOzoLRPZllxMCU4hQg=;
- b=gCQdUSk/rpXWxIbHsNOWoet4j2CvQDAbvyMUKg5MV9c7BW9qmUnwOMU3XkvoWH73h0p2
- 8N11vjRf6+hCqPoBYabcE14Q/uSpf2ddYtYzdi//jC6Rr5qBRI4EorNp/N/ApSyc/Oba
- madrOdzUyt2II2A9U6Ez3i9BJsP81VvXLfeKDwskOiaR6Zq2wZN1CK7iKSu9E5y4suIr
- H6cANzf8oLPK5k72u1fg3vt/j7okmXScfrX7FZXwhFGe2/GvBBeQN1ZcVdFOg41OfBf8
- f1Ex8eA3ibrKLVYMdi9UwBzhcZxNw71JWQVHLH0KwegXNuQAHzrlmdHd9xHrRWHuEU1i AQ== 
-Received: from ediex02.ad.cirrus.com ([84.19.233.68])
- by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3gmqfq5w3u-13
+ bh=NdWNqGk7KYNCnb6vF06SM0HZUNiwmzGy7/npWlCANTY=;
+ b=gsdkNsfo/0O13JhpLG/Y6+/kJMHeayAZNaKGelZCe/HB68N4BqesyNXhHbOCDFQqUwPB
+ /u9V891+dcl70g7R+PJrhdN9nzqabkNoc74zYBpj6YuYVzA9ZlQG3zw+jXJbqqc/gxVz
+ PWPmhIZpW7vnyd/UNpjgrY4mBgbnwit1gZOQk5ko1OZjRhJCekop+6K3435/3WBslkaV
+ MqPhFncyZpcWCAfO0FZhM11MicI1Yp8Rc5Q6WXamy/dwG3viSP7+Ny9oCYORDn+LfIFZ
+ 6nx1t5hKqtTaVpkE7f3j5qKFAEBsOx3MIrhNYH5q/y13IlXxh9ezb7OfJU5GO/rOXn0S aw== 
+Received: from ediex01.ad.cirrus.com ([84.19.233.68])
+ by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3gmrf35vuu-13
  (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
- Thu, 16 Jun 2022 09:34:57 -0500
-Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX02.ad.cirrus.com
- (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
+ Thu, 16 Jun 2022 09:34:42 -0500
+Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.28; Thu, 16 Jun
- 2022 15:34:37 +0100
+ 2022 15:34:32 +0100
 Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
  (198.61.84.80) with Microsoft SMTP Server id 15.1.2375.28 via
- Frontend Transport; Thu, 16 Jun 2022 15:34:37 +0100
+ Frontend Transport; Thu, 16 Jun 2022 15:34:32 +0100
 Received: from algalon.ad.cirrus.com (algalon.ad.cirrus.com [198.90.251.122])
- by ediswmail.ad.cirrus.com (Postfix) with ESMTP id BAA5D11DA;
- Thu, 16 Jun 2022 14:34:37 +0000 (UTC)
+ by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 99B5C11D4;
+ Thu, 16 Jun 2022 14:34:32 +0000 (UTC)
 From: Charles Keepax <ckeepax@opensource.cirrus.com>
 To: <broonie@kernel.org>
-Subject: [PATCH 96/96] ASoC: soc-component: Remove non_legacy_dai_naming flag
-Date: Thu, 16 Jun 2022 15:34:29 +0100
-Message-ID: <20220616143429.1324494-97-ckeepax@opensource.cirrus.com>
+Subject: [PATCH 33/96] ASoC: samsung: Migrate to new style legacy DAI naming
+ flag
+Date: Thu, 16 Jun 2022 15:33:26 +0100
+Message-ID: <20220616143429.1324494-34-ckeepax@opensource.cirrus.com>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20220616143429.1324494-1-ckeepax@opensource.cirrus.com>
 References: <20220616143429.1324494-1-ckeepax@opensource.cirrus.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: QvTLDZlAgJ1aTgudm9s4QWmV0lZ-2fqM
-X-Proofpoint-GUID: QvTLDZlAgJ1aTgudm9s4QWmV0lZ-2fqM
+X-Proofpoint-GUID: 8_ol56DkCUVdYxwog0l7JC1OmNRUBq55
+X-Proofpoint-ORIG-GUID: 8_ol56DkCUVdYxwog0l7JC1OmNRUBq55
 X-Proofpoint-Spam-Reason: safe
 X-Mailman-Approved-At: Mon, 20 Jun 2022 17:06:46 +0200
 Cc: cezary.rojewski@intel.com, heiko@sntech.de,
@@ -107,26 +108,101 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Now all the users are moved over to the new legacy_dai_naming flag,
-remove the now unused old flag.
+Change the legacy DAI naming flag from opting in to the new scheme
+(non_legacy_dai_naming), to opting out of it (legacy_dai_naming).
+These drivers appear to be on the CPU side of the DAI link and
+currently uses the legacy naming, so add the new flag.
 
 Signed-off-by: Charles Keepax <ckeepax@opensource.cirrus.com>
 ---
- include/sound/soc-component.h | 1 -
- 1 file changed, 1 deletion(-)
+ sound/soc/samsung/i2s.c         | 2 ++
+ sound/soc/samsung/pcm.c         | 3 ++-
+ sound/soc/samsung/s3c2412-i2s.c | 7 ++++---
+ sound/soc/samsung/s3c24xx-i2s.c | 7 ++++---
+ sound/soc/samsung/spdif.c       | 7 ++++---
+ 5 files changed, 16 insertions(+), 10 deletions(-)
 
-diff --git a/include/sound/soc-component.h b/include/sound/soc-component.h
-index 96c2f5fffc51e..c26ffb033777a 100644
---- a/include/sound/soc-component.h
-+++ b/include/sound/soc-component.h
-@@ -180,7 +180,6 @@ struct snd_soc_component_driver {
- 	 */
- 	unsigned int endianness:1;
- 	unsigned int legacy_dai_naming:1;
--	unsigned int non_legacy_dai_naming:1;
+diff --git a/sound/soc/samsung/i2s.c b/sound/soc/samsung/i2s.c
+index fdd9561c6a9f3..9505200f3d11b 100644
+--- a/sound/soc/samsung/i2s.c
++++ b/sound/soc/samsung/i2s.c
+@@ -1143,6 +1143,8 @@ static const struct snd_soc_component_driver samsung_i2s_component = {
  
- 	/* this component uses topology and ignore machine driver FEs */
- 	const char *ignore_machine;
+ 	.suspend = i2s_suspend,
+ 	.resume = i2s_resume,
++
++	.legacy_dai_naming = 1,
+ };
+ 
+ #define SAMSUNG_I2S_FMTS (SNDRV_PCM_FMTBIT_S8 | SNDRV_PCM_FMTBIT_S16_LE | \
+diff --git a/sound/soc/samsung/pcm.c b/sound/soc/samsung/pcm.c
+index c2eb3534bfccb..e859252ae5e6e 100644
+--- a/sound/soc/samsung/pcm.c
++++ b/sound/soc/samsung/pcm.c
+@@ -480,7 +480,8 @@ static struct snd_soc_dai_driver s3c_pcm_dai[] = {
+ };
+ 
+ static const struct snd_soc_component_driver s3c_pcm_component = {
+-	.name		= "s3c-pcm",
++	.name			= "s3c-pcm",
++	.legacy_dai_naming	= 1,
+ };
+ 
+ static int s3c_pcm_dev_probe(struct platform_device *pdev)
+diff --git a/sound/soc/samsung/s3c2412-i2s.c b/sound/soc/samsung/s3c2412-i2s.c
+index ec1c6f9d76ac7..0579a352961cc 100644
+--- a/sound/soc/samsung/s3c2412-i2s.c
++++ b/sound/soc/samsung/s3c2412-i2s.c
+@@ -192,9 +192,10 @@ static struct snd_soc_dai_driver s3c2412_i2s_dai = {
+ };
+ 
+ static const struct snd_soc_component_driver s3c2412_i2s_component = {
+-	.name		= "s3c2412-i2s",
+-	.suspend	= s3c2412_i2s_suspend,
+-	.resume		= s3c2412_i2s_resume,
++	.name			= "s3c2412-i2s",
++	.suspend		= s3c2412_i2s_suspend,
++	.resume			= s3c2412_i2s_resume,
++	.legacy_dai_naming	= 1,
+ };
+ 
+ static int s3c2412_iis_dev_probe(struct platform_device *pdev)
+diff --git a/sound/soc/samsung/s3c24xx-i2s.c b/sound/soc/samsung/s3c24xx-i2s.c
+index 4082ad7cbcc11..e760fc8b42636 100644
+--- a/sound/soc/samsung/s3c24xx-i2s.c
++++ b/sound/soc/samsung/s3c24xx-i2s.c
+@@ -415,9 +415,10 @@ static struct snd_soc_dai_driver s3c24xx_i2s_dai = {
+ };
+ 
+ static const struct snd_soc_component_driver s3c24xx_i2s_component = {
+-	.name		= "s3c24xx-i2s",
+-	.suspend	= s3c24xx_i2s_suspend,
+-	.resume		= s3c24xx_i2s_resume,
++	.name			= "s3c24xx-i2s",
++	.suspend		= s3c24xx_i2s_suspend,
++	.resume			= s3c24xx_i2s_resume,
++	.legacy_dai_naming	= 1,
+ };
+ 
+ static int s3c24xx_iis_dev_probe(struct platform_device *pdev)
+diff --git a/sound/soc/samsung/spdif.c b/sound/soc/samsung/spdif.c
+index 47b6d19e43ffb..7d815e237e5c6 100644
+--- a/sound/soc/samsung/spdif.c
++++ b/sound/soc/samsung/spdif.c
+@@ -352,9 +352,10 @@ static struct snd_soc_dai_driver samsung_spdif_dai = {
+ };
+ 
+ static const struct snd_soc_component_driver samsung_spdif_component = {
+-	.name		= "samsung-spdif",
+-	.suspend	= spdif_suspend,
+-	.resume		= spdif_resume,
++	.name			= "samsung-spdif",
++	.suspend		= spdif_suspend,
++	.resume			= spdif_resume,
++	.legacy_dai_naming	= 1,
+ };
+ 
+ static int spdif_probe(struct platform_device *pdev)
 -- 
 2.30.2
 
