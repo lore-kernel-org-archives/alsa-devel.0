@@ -4,79 +4,78 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 05063C433EF
-	for <alsa-devel@archiver.kernel.org>; Mon, 20 Jun 2022 15:35:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A9708C43334
+	for <alsa-devel@archiver.kernel.org>; Mon, 20 Jun 2022 15:35:25 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 5097128AC;
-	Mon, 20 Jun 2022 17:34:17 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5097128AC
+	by alsa0.perex.cz (Postfix) with ESMTPS id B757228B3;
+	Mon, 20 Jun 2022 17:34:33 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B757228B3
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1655739307;
-	bh=qAwX+9VbCTNNYmyVq0l5leLj23/wNprUVL1sqFYHFJE=;
+	s=default; t=1655739323;
+	bh=roW/Gd68PQuUPui2/EU0HJdHFjIk65KxSFPkBF69UZY=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=VmUWc/zLK0s6l4yM+g2xoEzfyt5Xy1rl/OWjRymczAsWBrra4PjiBle4hMQC9fu/b
-	 GK7RVLY/p1l89B2+16zYTCiswyP7B+lR3Gdbw17oq6TkVQ8S+fBhPA+jDCNmaz594e
-	 Yu8KsRhzx8AzoHeufkx8SllBPoLLhb1aNazSy7jg=
+	b=ainuL5vL1eRLOzWzAifCOJZgEqGHytZHZYFZTNSaI/YfAY6APk2U20/pgvuL0Qqss
+	 wBW+t9nHmzHDyrZRWip7WCJ6PqUQzZV/uFr1Rlf9GRdZ7/FDVpwahw2FCWp/0kytO6
+	 IO9bgGp5x3wOp3PXK4R9pJ/LOvHY0fchezjHxFNw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 37E7DF80C95;
+	by alsa1.perex.cz (Postfix) with ESMTP id AE39DF80CAA;
 	Mon, 20 Jun 2022 17:08:14 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 1BF05F80423; Thu, 16 Jun 2022 16:36:22 +0200 (CEST)
-Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
- [67.231.149.25])
+ id 73CD0F801D8; Thu, 16 Jun 2022 16:36:26 +0200 (CEST)
+Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
+ [67.231.152.168])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 2BF1FF80534
- for <alsa-devel@alsa-project.org>; Thu, 16 Jun 2022 16:35:02 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2BF1FF80534
+ by alsa1.perex.cz (Postfix) with ESMTPS id EEE37F805A9
+ for <alsa-devel@alsa-project.org>; Thu, 16 Jun 2022 16:34:58 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EEE37F805A9
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com
- header.b="c0qZY5g/"
-Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
- by mx0a-001ae601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 25G9kEUL001578;
- Thu, 16 Jun 2022 09:35:01 -0500
+ header.b="gCQdUSk/"
+Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
+ by mx0b-001ae601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 25G8o9ff009500;
+ Thu, 16 Jun 2022 09:34:57 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
  h=from : to : cc :
  subject : date : message-id : in-reply-to : references : mime-version :
  content-transfer-encoding : content-type; s=PODMain02222019;
- bh=88RPvpte25vNDPk7zBjOCc7u9DrIqas32OxYlf/3F9g=;
- b=c0qZY5g/WHcI0cgEdCjBi0oHNPouAXwWZq7PcPQvNxp0d77JbnayniO1pMps/uqbPqbx
- Dl+vcXg3T3I2+8tT6aQ/cMOzjQFPhgTpsErSk4THK02KVM+I8MM9KTaIMH6h30SJFh8n
- ZhD9ygAYIuXAfmjOVesXP/DPJon0NN5Jzb+gv3TPTpN6Mm6DwtXZtCy2rbQZz1EyeZ4A
- HSdx8YFlYvvH2KIZIJQmx7zr/JSUqEBQh5czfAQ7NUb0QdzVrGJUVlxnqhVZvA8SBsfo
- wW0/a3rR89wsJcTjcz9Q3X7fmU++l48Iw9rWTLESopPX2I2GKP1tE9+wBtCEiZI9ST3X hw== 
-Received: from ediex01.ad.cirrus.com ([84.19.233.68])
- by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3gmrf35vvg-3
+ bh=BgbBX9Efb8K0LJNikCHrznq2RAOzoLRPZllxMCU4hQg=;
+ b=gCQdUSk/rpXWxIbHsNOWoet4j2CvQDAbvyMUKg5MV9c7BW9qmUnwOMU3XkvoWH73h0p2
+ 8N11vjRf6+hCqPoBYabcE14Q/uSpf2ddYtYzdi//jC6Rr5qBRI4EorNp/N/ApSyc/Oba
+ madrOdzUyt2II2A9U6Ez3i9BJsP81VvXLfeKDwskOiaR6Zq2wZN1CK7iKSu9E5y4suIr
+ H6cANzf8oLPK5k72u1fg3vt/j7okmXScfrX7FZXwhFGe2/GvBBeQN1ZcVdFOg41OfBf8
+ f1Ex8eA3ibrKLVYMdi9UwBzhcZxNw71JWQVHLH0KwegXNuQAHzrlmdHd9xHrRWHuEU1i AQ== 
+Received: from ediex02.ad.cirrus.com ([84.19.233.68])
+ by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3gmqfq5w3u-13
  (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
- Thu, 16 Jun 2022 09:35:01 -0500
-Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
+ Thu, 16 Jun 2022 09:34:57 -0500
+Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX02.ad.cirrus.com
+ (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.28; Thu, 16 Jun
  2022 15:34:37 +0100
 Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
  (198.61.84.80) with Microsoft SMTP Server id 15.1.2375.28 via
  Frontend Transport; Thu, 16 Jun 2022 15:34:37 +0100
 Received: from algalon.ad.cirrus.com (algalon.ad.cirrus.com [198.90.251.122])
- by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 250B211D3;
+ by ediswmail.ad.cirrus.com (Postfix) with ESMTP id BAA5D11DA;
  Thu, 16 Jun 2022 14:34:37 +0000 (UTC)
 From: Charles Keepax <ckeepax@opensource.cirrus.com>
 To: <broonie@kernel.org>
-Subject: [PATCH 89/96] ASoC: sgtl5000: Remove now redundant
- non_legacy_dai_naming flag
-Date: Thu, 16 Jun 2022 15:34:22 +0100
-Message-ID: <20220616143429.1324494-90-ckeepax@opensource.cirrus.com>
+Subject: [PATCH 96/96] ASoC: soc-component: Remove non_legacy_dai_naming flag
+Date: Thu, 16 Jun 2022 15:34:29 +0100
+Message-ID: <20220616143429.1324494-97-ckeepax@opensource.cirrus.com>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20220616143429.1324494-1-ckeepax@opensource.cirrus.com>
 References: <20220616143429.1324494-1-ckeepax@opensource.cirrus.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-Proofpoint-GUID: sp6TYkBlBYWniCCnX9ALG-nrtyJwhdyb
-X-Proofpoint-ORIG-GUID: sp6TYkBlBYWniCCnX9ALG-nrtyJwhdyb
+X-Proofpoint-ORIG-GUID: QvTLDZlAgJ1aTgudm9s4QWmV0lZ-2fqM
+X-Proofpoint-GUID: QvTLDZlAgJ1aTgudm9s4QWmV0lZ-2fqM
 X-Proofpoint-Spam-Reason: safe
 X-Mailman-Approved-At: Mon, 20 Jun 2022 17:06:46 +0200
 Cc: cezary.rojewski@intel.com, heiko@sntech.de,
@@ -108,27 +107,26 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The ASoC core has now been changed to default to the non-legacy DAI
-naming, as such drivers using the new scheme no longer need to specify
-the non_legacy_dai_naming flag.
+Now all the users are moved over to the new legacy_dai_naming flag,
+remove the now unused old flag.
 
 Signed-off-by: Charles Keepax <ckeepax@opensource.cirrus.com>
 ---
- sound/soc/codecs/sgtl5000.c | 1 -
+ include/sound/soc-component.h | 1 -
  1 file changed, 1 deletion(-)
 
-diff --git a/sound/soc/codecs/sgtl5000.c b/sound/soc/codecs/sgtl5000.c
-index 2aa48aef6a97d..0b8a377ba145f 100644
---- a/sound/soc/codecs/sgtl5000.c
-+++ b/sound/soc/codecs/sgtl5000.c
-@@ -1536,7 +1536,6 @@ static const struct snd_soc_component_driver sgtl5000_driver = {
- 	.idle_bias_on		= 1,
- 	.use_pmdown_time	= 1,
- 	.endianness		= 1,
--	.non_legacy_dai_naming	= 1,
- };
+diff --git a/include/sound/soc-component.h b/include/sound/soc-component.h
+index 96c2f5fffc51e..c26ffb033777a 100644
+--- a/include/sound/soc-component.h
++++ b/include/sound/soc-component.h
+@@ -180,7 +180,6 @@ struct snd_soc_component_driver {
+ 	 */
+ 	unsigned int endianness:1;
+ 	unsigned int legacy_dai_naming:1;
+-	unsigned int non_legacy_dai_naming:1;
  
- static const struct regmap_config sgtl5000_regmap = {
+ 	/* this component uses topology and ignore machine driver FEs */
+ 	const char *ignore_machine;
 -- 
 2.30.2
 
