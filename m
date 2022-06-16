@@ -4,72 +4,82 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 562C6C433EF
-	for <alsa-devel@archiver.kernel.org>; Thu, 16 Jun 2022 11:17:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C2476C43334
+	for <alsa-devel@archiver.kernel.org>; Thu, 16 Jun 2022 13:21:59 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A51881ADC;
-	Thu, 16 Jun 2022 13:16:15 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A51881ADC
+	by alsa0.perex.cz (Postfix) with ESMTPS id F29B31ACF;
+	Thu, 16 Jun 2022 15:21:06 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F29B31ACF
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1655378225;
-	bh=0H94X44bwP0GrLlj0Q2AlhCSU6r1nc2a+8rYr2pqroU=;
-	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
+	s=default; t=1655385717;
+	bh=lUc87Jap898y+IIalqVZO2gl5CnCzU2QyBG8NQVcmGM=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=hBDzzW8kg8xg9WPfQuiGjXoaHFx8PS7vkTP7s8OMyFEpdWMGHaisJ+/a4R4wOw6JT
-	 1VbrGHD4+ZmECFi4AjKMBn9ja4Yjx4X1WA6tOWHG9dwWrFIASMqpZRk+I6knPyvAl5
-	 zwZuzUvLMbwIvFHmxoDHCme9U9sRq4jHsQ+KHg8U=
+	b=kzTy42towrEJgDefKnJx3BHPQPkuluD3ckJ3HQoZPKKBlJAy0jPpqLkavTmDv9gR+
+	 pnh71qYmH2gIHRTTUy6QmjtfuAo9hFgA7JUzVfzlo0H23Kb1OtA5s8ZBBRh7Er8Xy4
+	 nDMsNvez4Xj5LW9tMGq812+4ahZXe0GgtH9GBIaY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 8EB27F8047C;
-	Thu, 16 Jun 2022 13:15:26 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 87152F8012A;
+	Thu, 16 Jun 2022 15:21:06 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id CCDBEF8047C; Thu, 16 Jun 2022 13:15:24 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org
- [IPv6:2604:1380:4641:c500::1])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id 339E3F801D8; Thu, 16 Jun 2022 15:21:04 +0200 (CEST)
+Received: from mail-yb1-xb2c.google.com (mail-yb1-xb2c.google.com
+ [IPv6:2607:f8b0:4864:20::b2c])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 4BAA7F8012A;
- Thu, 16 Jun 2022 13:15:19 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4BAA7F8012A
+ by alsa1.perex.cz (Postfix) with ESMTPS id DEC90F800B9
+ for <alsa-devel@alsa-project.org>; Thu, 16 Jun 2022 15:20:56 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DEC90F800B9
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="dA2YYDgM"
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id 768A4618CE;
- Thu, 16 Jun 2022 11:15:17 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3B520C3411B;
- Thu, 16 Jun 2022 11:15:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1655378116;
- bh=0H94X44bwP0GrLlj0Q2AlhCSU6r1nc2a+8rYr2pqroU=;
- h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=dA2YYDgMwiohEUvN9W1EnQvdw9/riQtk/gw3lwXDOATbrFKR7Xq/7OnFbDW1h2rL/
- Cu+7P5RT9Lk4EH2DjQU6xV2jJs6ThUmsfz7ckA2RQsJJru+EFY/hhiUt1UGhoEhII2
- uo63+u2u6Pz3Nhye7wdtvANq0etn0Z/uyQ0I2mksKe3xP34hAIjqsr/vo4/pYTH/di
- sQ6X5J/htXbdbAbbJHtjJHkjq5lEojcXTKkDwqtmW3KZpfqCjl/q8CwsPCAeQzBYUk
- V9Chfad4RkQKfUKhzD6QIjZ1Z+V/UeCoHzkHuQbjmLPbvuUWwhw1khczjQZj79w8rv
- /Xvfy8uX6chjA==
-From: Mark Brown <broonie@kernel.org>
-To: pierre-louis.bossart@linux.intel.com, ranjani.sridharan@linux.intel.com,
- dan.carpenter@oracle.com
-In-Reply-To: <YqqyDU5BhOzpRjco@kili>
-References: <YqqyDU5BhOzpRjco@kili>
-Subject: Re: [PATCH] ASoC: SOF: ipc4-topology: Fix error code in
- sof_ipc4_volume_put()
-Message-Id: <165537811396.677284.13292348933501496374.b4-ty@kernel.org>
-Date: Thu, 16 Jun 2022 12:15:13 +0100
+ dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org
+ header.b="q88uiE0E"
+Received: by mail-yb1-xb2c.google.com with SMTP id w6so2154448ybl.4
+ for <alsa-devel@alsa-project.org>; Thu, 16 Jun 2022 06:20:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
+ h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+ :cc; bh=lUc87Jap898y+IIalqVZO2gl5CnCzU2QyBG8NQVcmGM=;
+ b=q88uiE0E1kg3prS5s8m72FF9o/VgEeIkZHBX7dcUXI31XCT6lwxPsHgs51tr53r2PA
+ 0Mj25we68MBLG04mnrcLWpDKu2yvTkdJ0kFcIIwsE8sOYHefWxi+GH4qIVU+S2Mt7TAc
+ f0KmplnOOQ1iq9DRanS6RPoAoE+HUb2j5YxrX/5EHmgSgnV3QIaC7gvvtFWWL0VwHwtv
+ s3Y+EYeWpwkUkJ3ViyJaQ6tQ9CON2+JsWRrNFr9iizaNltsZ2JvrcqS7BBW7DbZnaTZ9
+ EbM7z0KihSrDBrJzRMycD8bZ0T4m3glrx/sUcbGVRXKHu+0rJczYWDoZCBqRENb1P6yc
+ 6vCw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc;
+ bh=lUc87Jap898y+IIalqVZO2gl5CnCzU2QyBG8NQVcmGM=;
+ b=4ztExDohRjfcq/2Us0j1F/32xu/OlKF9quI5/MNl1xYUXgO41/Zo1OMyceYkfXNWMZ
+ LThS7NlN4bkbmkINQ8r8yCldKgG+2tMhaESrrvhbqhT3W6RQ1tvSKvwhtj0zHL7F3oAc
+ KLG21rwICZxJZq5wvk65ma7q1jaMF6s6ckRrC1P3QSmr/vtDTxY2WLM8y0t/U/v683qK
+ iQGBQfYwM8JR1LRQVIk/9GcY+4cNCw3EnPekR+SDYy7ezvXy5yZ7wTTfQ93pEc60fCI9
+ 2WhQQVF9rBq8DRzyjVmnsP5vvHYnOUYMY15nfjKg67dO1DGJtgxKsgx6GauVfy7N55ic
+ EYfQ==
+X-Gm-Message-State: AJIora9nXpMf32IB3sQ3BaofUtWp9H1sbIF5zJDZ5kRM8RhZiaTqKJNN
+ GnI6ReaRxOfpxLkCzT28uqLCCPR0IwR5+Z5cLvDG1g==
+X-Google-Smtp-Source: AGRyM1u2t1y+crLk3AHoDyDv4IsZ7WNZDTO6dDelMZMuSQjGCXA49t3VXN/k20a8ixUwj4L6zeUKsMoPoPZQ1VfCJZg=
+X-Received: by 2002:a25:dc0b:0:b0:65d:e5d:a87a with SMTP id
+ y11-20020a25dc0b000000b0065d0e5da87amr5244211ybe.295.1655385654096; Thu, 16
+ Jun 2022 06:20:54 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-Cc: daniel.baluta@nxp.com, alsa-devel@alsa-project.org,
- kai.vehmanen@linux.intel.com, peter.ujfalusi@linux.intel.com,
- kernel-janitors@vger.kernel.org, lgirdwood@gmail.com, tiwai@suse.com,
- yung-chuan.liao@linux.intel.com, rander.wang@linux.intel.com,
- sound-open-firmware@alsa-project.org
+References: <1654921357-16400-1-git-send-email-quic_srivasam@quicinc.com>
+In-Reply-To: <1654921357-16400-1-git-send-email-quic_srivasam@quicinc.com>
+From: Linus Walleij <linus.walleij@linaro.org>
+Date: Thu, 16 Jun 2022 15:20:43 +0200
+Message-ID: <CACRpkdbEi6MBPXTLfDPk+ksgN4Y_UHFVOcaiWy=sZMa9WZ3T-w@mail.gmail.com>
+Subject: Re: [PATCH v3 0/2] [PATCH v4 0/2] Add pinctrl support adsp bypass
+ platforms
+To: Srinivasa Rao Mandadapu <quic_srivasam@quicinc.com>
+Content-Type: text/plain; charset="UTF-8"
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
+ quic_rohkumar@quicinc.com, linux-arm-msm@vger.kernel.org, swboyd@chromium.org,
+ tiwai@suse.com, agross@kernel.org, robh+dt@kernel.org, lgirdwood@gmail.com,
+ linux-gpio@vger.kernel.org, broonie@kernel.org, srinivas.kandagatla@linaro.org,
+ bgoswami@quicinc.com, quic_plai@quicinc.com, bjorn.andersson@linaro.org,
+ judyhsiao@chromium.org, linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -85,36 +95,16 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Thu, 16 Jun 2022 07:31:09 +0300, Dan Carpenter wrote:
-> The sof_ipc4_volume_put() function returns type bool so returning
-> -ENOENT means returning true.  Return false instead.
-> 
-> 
+On Sat, Jun 11, 2022 at 6:23 AM Srinivasa Rao Mandadapu
+<quic_srivasam@quicinc.com> wrote:
 
-Applied to
+> This patch set is to make clock voting optinal for adsp bypass
+> sc7280 platforms.
+>
+> Changes Since V3:
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+v4 looks really appetizing, just giving Bjorn some time to have a look
+before applying!
 
-Thanks!
-
-[1/1] ASoC: SOF: ipc4-topology: Fix error code in sof_ipc4_volume_put()
-      commit: 7acf970a6fbb3c10bb5979d0dc3ed42b161daf15
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
+Yours,
+Linus Walleij
