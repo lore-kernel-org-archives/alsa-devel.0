@@ -4,64 +4,64 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7E99BC433EF
-	for <alsa-devel@archiver.kernel.org>; Thu, 16 Jun 2022 20:20:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 77157C433EF
+	for <alsa-devel@archiver.kernel.org>; Thu, 16 Jun 2022 20:20:32 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 8FFE21B03;
-	Thu, 16 Jun 2022 22:19:21 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8FFE21B03
+	by alsa0.perex.cz (Postfix) with ESMTPS id 86E131B01;
+	Thu, 16 Jun 2022 22:19:40 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 86E131B01
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1655410811;
-	bh=jc7KKG8eBXydP8elEvM0qSTFVzMLTE5DFGwRLb1ulW0=;
+	s=default; t=1655410830;
+	bh=JPttLoo1e6ngS8OJt0II4U3qIJOTyL/KyoZn5sRtmCI=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=fw7hQcll9bFJ8xTHnUkR/lPLqJKNZShqUV7lYcR7hTTb6i5X2o8QQBeeOLXEzY7jh
-	 NVazqyfAd27QdyFlcIgLFr9r2prfUJMMjpJhYdj7Eyptb0FxT6/rq7a1PuN/945Ljz
-	 J5kU29JvEJ0bl5Rd4/hpBZRmvLJGj4nKlaxNinys=
+	b=tXONqTMBd6Dcl9kOtHVQrEA0BMb/6RXiXXRP5+Bnl6KKigiSECke6NKsm5J0cYoKF
+	 gcrXuaWpsl1ycxqINLpv5E4a1JeojPvn4LtosqTByepWBukqq9hPbiL1wvDSFYfMcx
+	 yvNB+9HhZgCp2119RUs+QA72nkm3vVhlm7UCgd/E=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id DBAD4F8012A;
-	Thu, 16 Jun 2022 22:18:53 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 57D7BF80527;
+	Thu, 16 Jun 2022 22:18:56 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 9595DF804D0; Thu, 16 Jun 2022 22:18:52 +0200 (CEST)
+ id D32C0F804E0; Thu, 16 Jun 2022 22:18:52 +0200 (CEST)
 Received: from mga17.intel.com (mga17.intel.com [192.55.52.151])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 4303BF8012A
- for <alsa-devel@alsa-project.org>; Thu, 16 Jun 2022 22:18:45 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4303BF8012A
+ by alsa1.perex.cz (Postfix) with ESMTPS id D51CEF801D8
+ for <alsa-devel@alsa-project.org>; Thu, 16 Jun 2022 22:18:43 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D51CEF801D8
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="ndGIvnSm"
+ header.b="e0JxD/nF"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
  t=1655410727; x=1686946727;
  h=from:to:cc:subject:date:message-id:in-reply-to:
  references:mime-version:content-transfer-encoding;
- bh=jc7KKG8eBXydP8elEvM0qSTFVzMLTE5DFGwRLb1ulW0=;
- b=ndGIvnSmGZ/RvXG5/E4Hk02vv+EZWXi174fAMknuoVcjPadqYYTss7Tv
- 4TMcj/P5WBjgQfJki9buGAVTGlNlKoXebK7k5RchiP9ewr3q8biKHlAOQ
- Cgz+D64nxt2Sj6mhaM7c//omdT+Uiq3NjnOXyHZrLxbaOL2SM7/+TbCBk
- h/YOTsMyw0c1VOO8ZjSUzhvAXUO3dDWX52EUlgUJ9VYpYrP+VURYEi7Wb
- bbHB6/NA6lsotGeuRNromfH7yDBeFQxy88UCS7mAEKxfwad9ffYtzd8Ez
- qNWcJkZ6w0HRhPn/11aTMGJ249sjdmku4lS+zkF2JFpNVkr9XyWgu/0cy g==;
-X-IronPort-AV: E=McAfee;i="6400,9594,10380"; a="259803608"
-X-IronPort-AV: E=Sophos;i="5.92,306,1650956400"; d="scan'208";a="259803608"
+ bh=JPttLoo1e6ngS8OJt0II4U3qIJOTyL/KyoZn5sRtmCI=;
+ b=e0JxD/nFz/GFsuCeFSs+SRtmL/608zexSFQh1AKTMrlEburMpR/4fIGH
+ nALF5jSa3vpEPqZ10gSMo9s8KdNTf3x9P/v4mUCJ5qL1U87Yl6RsljyNC
+ v9Z+Lty7NmEjprxlPNYR/YN666h89ojU4qIxzpiOaZpNB1j330DZudoIF
+ iVJ8quXCEsqDWLr+zB3+aGB/ttB69avg5H8vSMBvfzH41e6o5Kxw+GggD
+ LUEG7HUnl+Sfh+IBL0fC/eZWI/JJJKkjev8lF76dAMAvv7jOKy7v9fOZY
+ RmAaAMTCJSE+1qxLuAwWpSyl8y3DJKOG5SuaZgSnGbgAMTfCC8LsbPywd w==;
+X-IronPort-AV: E=McAfee;i="6400,9594,10380"; a="259803605"
+X-IronPort-AV: E=Sophos;i="5.92,306,1650956400"; d="scan'208";a="259803605"
 Received: from orsmga007.jf.intel.com ([10.7.209.58])
  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
  16 Jun 2022 13:18:39 -0700
-X-IronPort-AV: E=Sophos;i="5.92,306,1650956400"; d="scan'208";a="583771737"
+X-IronPort-AV: E=Sophos;i="5.92,306,1650956400"; d="scan'208";a="583771733"
 Received: from buckkenx-mobl.amr.corp.intel.com (HELO
  pbossart-mobl3.intel.com) ([10.212.52.70])
  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 16 Jun 2022 13:18:39 -0700
+ 16 Jun 2022 13:18:38 -0700
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH 2/3] ASoC: SOF: pm: add definitions for S4 and S5 states
-Date: Thu, 16 Jun 2022 15:18:17 -0500
-Message-Id: <20220616201818.130802-3-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH 1/3] ASoC: SOF: pm: add explicit behavior for ACPI S1 and S2
+Date: Thu, 16 Jun 2022 15:18:16 -0500
+Message-Id: <20220616201818.130802-2-pierre-louis.bossart@linux.intel.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20220616201818.130802-1-pierre-louis.bossart@linux.intel.com>
 References: <20220616201818.130802-1-pierre-louis.bossart@linux.intel.com>
@@ -87,58 +87,41 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-We currently don't have a means to differentiate between S3, S4 and
-S5. Add definitions so that we have select different code paths
-depending on the target state in follow-up patches.
+The existing code only deals with S0 and S3, let's start adding S1 and S2.
+
+No functional change.
 
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 Reviewed-by: Péter Ujfalusi <peter.ujfalusi@linux.intel.com>
 ---
- sound/soc/sof/pm.c       | 9 +++++++++
- sound/soc/sof/sof-priv.h | 2 ++
- 2 files changed, 11 insertions(+)
+ sound/soc/sof/pm.c | 12 +++++++++++-
+ 1 file changed, 11 insertions(+), 1 deletion(-)
 
 diff --git a/sound/soc/sof/pm.c b/sound/soc/sof/pm.c
-index 239f39a5166a4..df740be645e84 100644
+index 18eb327a57f03..239f39a5166a4 100644
 --- a/sound/soc/sof/pm.c
 +++ b/sound/soc/sof/pm.c
-@@ -23,6 +23,9 @@ static u32 snd_sof_dsp_power_target(struct snd_sof_dev *sdev)
- 	u32 target_dsp_state;
+@@ -335,8 +335,18 @@ int snd_sof_prepare(struct device *dev)
+ 		return 0;
  
- 	switch (sdev->system_suspend_target) {
-+	case SOF_SUSPEND_S5:
-+	case SOF_SUSPEND_S4:
-+		/* DSP should be in D3 if the system is suspending to S3+ */
- 	case SOF_SUSPEND_S3:
- 		/* DSP should be in D3 if the system is suspending to S3 */
- 		target_dsp_state = SOF_DSP_PM_D3;
-@@ -344,6 +347,12 @@ int snd_sof_prepare(struct device *dev)
- 	case ACPI_STATE_S3:
- 		sdev->system_suspend_target = SOF_SUSPEND_S3;
- 		break;
-+	case ACPI_STATE_S4:
-+		sdev->system_suspend_target = SOF_SUSPEND_S4;
+ #if defined(CONFIG_ACPI)
+-	if (acpi_target_system_state() == ACPI_STATE_S0)
++	switch (acpi_target_system_state()) {
++	case ACPI_STATE_S0:
+ 		sdev->system_suspend_target = SOF_SUSPEND_S0IX;
 +		break;
-+	case ACPI_STATE_S5:
-+		sdev->system_suspend_target = SOF_SUSPEND_S5;
++	case ACPI_STATE_S1:
++	case ACPI_STATE_S2:
++	case ACPI_STATE_S3:
++		sdev->system_suspend_target = SOF_SUSPEND_S3;
 +		break;
- 	default:
- 		break;
- 	}
-diff --git a/sound/soc/sof/sof-priv.h b/sound/soc/sof/sof-priv.h
-index 52396f38dcec2..8bbc94907c624 100644
---- a/sound/soc/sof/sof-priv.h
-+++ b/sound/soc/sof/sof-priv.h
-@@ -91,6 +91,8 @@ enum sof_system_suspend_state {
- 	SOF_SUSPEND_NONE = 0,
- 	SOF_SUSPEND_S0IX,
- 	SOF_SUSPEND_S3,
-+	SOF_SUSPEND_S4,
-+	SOF_SUSPEND_S5,
- };
++	default:
++		break;
++	}
+ #endif
  
- enum sof_dfsentry_type {
+ 	return 0;
 -- 
 2.34.1
 
