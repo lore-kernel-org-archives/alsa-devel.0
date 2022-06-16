@@ -4,78 +4,79 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 70BA6C433EF
-	for <alsa-devel@archiver.kernel.org>; Thu, 16 Jun 2022 22:08:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 75AE7C43334
+	for <alsa-devel@archiver.kernel.org>; Thu, 16 Jun 2022 22:08:19 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 962101B08;
-	Fri, 17 Jun 2022 00:07:11 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 962101B08
+	by alsa0.perex.cz (Postfix) with ESMTPS id BB1B91B27;
+	Fri, 17 Jun 2022 00:07:27 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BB1B91B27
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1655417281;
-	bh=96P6uvGDTDGFtAFSYZWWSlbmSlPk/R9jOmty2SHjkCU=;
+	s=default; t=1655417297;
+	bh=ZERpvGk6JBzFwOx//nRfYnj+hzodvXoYEt05yQtBDw4=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=UW7p5B2csyqDL8zHcfwVOKPhr52HJa0GKAi5T7zpG9X2vsq5gFv77bdHrOQ4SJkHD
-	 ii+RpLqa9lT/JmihZ+kDkLoHL4KuV0mM8MUTnmKVJItAhv5NOOVrRk6F5ttfSmDEf9
-	 gEckz3IsLG+aGvrzRDbUwIYt3kFpmmcsE6b6BwQc=
+	b=kAqHF563u+TiBGGs0stqY2pDTGx5x/V/bsw+Lg9DuC6rncAq5tkuPB11e0inyXhbo
+	 u6Bii1u4WL8Mri4aB58F2TqROMGSQfMKaTkAuJeKPVi0Ew4+v/7jBav1uVB1/x0voM
+	 SMKtLOHy8W9aerdkbG1HC86+3ITq3ZQwaNCXh//w=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id EAD7AF80558;
-	Fri, 17 Jun 2022 00:04:59 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 7255EF80563;
+	Fri, 17 Jun 2022 00:05:00 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id BDA07F80543; Fri, 17 Jun 2022 00:04:55 +0200 (CEST)
+ id 6D5A6F8055B; Fri, 17 Jun 2022 00:04:58 +0200 (CEST)
 Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id B71B7F8053A
- for <alsa-devel@alsa-project.org>; Fri, 17 Jun 2022 00:04:52 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B71B7F8053A
+ by alsa1.perex.cz (Postfix) with ESMTPS id AC6D5F8053E
+ for <alsa-devel@alsa-project.org>; Fri, 17 Jun 2022 00:04:54 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AC6D5F8053E
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="LiSaGJVm"
+ header.b="nZBUeLyf"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1655417093; x=1686953093;
+ t=1655417095; x=1686953095;
  h=from:to:cc:subject:date:message-id:in-reply-to:
  references:mime-version:content-transfer-encoding;
- bh=96P6uvGDTDGFtAFSYZWWSlbmSlPk/R9jOmty2SHjkCU=;
- b=LiSaGJVmtW6QU10TajeCmDTZKpgIev1zYz8EU7fZ8Uf7TJr9UAm3g86r
- 6fcG8PTKpWIQ/h9A9fKhkU3R1X0hqclpzT6+hNJx9nuz3OHHGxJGbo1aj
- oKPXbesGchv4dz0rb+Kd6XKwHv7K6VbqD//S12eBf1Cqm75AtSlLJq4UL
- ZoeriQRahWTEsrJB7u/HoLE0wZVeCUUnL9sCwFdZvLwFcR/Bm3yxqWQ9V
- WsgJCX8RfcV1NOHRqbxl6nnNTn1Q5gWK8yqCtd+5Py90+4Bnlu3bxX/C+
- ttkRCyT4ozkB0nBuifRbvSeNEvOY5YVYv1ajHhNHuceffmPdrnWFBYxzM g==;
-X-IronPort-AV: E=McAfee;i="6400,9594,10380"; a="304810975"
-X-IronPort-AV: E=Sophos;i="5.92,306,1650956400"; d="scan'208";a="304810975"
+ bh=ZERpvGk6JBzFwOx//nRfYnj+hzodvXoYEt05yQtBDw4=;
+ b=nZBUeLyfNbGJZwOxA4HsTmHeLmzgf2UQkC+0FI5tDsWzw+u/sSJUVzCj
+ RJiQ6Xx03OiYs1ceZwnB0asWZdFq9ZrfuYLAQqqiTDy0OVZpA0GoafmXr
+ DMaTCbtnotv2OfS02mNdmSM/d552T/oGlVOfjA33idArV65lXVF7y6ut4
+ 83i6zmbmQXcKDkDlgJXr4AZZZr3qZGAzgUBeqJbSaxs0RzmCuBHh81KEm
+ Wxk3QXi/6TWwSTA0PSQxhV5V9NsqpwKco1QVbFghyNXKJiIMSRkb4SG97
+ xSpG7L/b3m5IHbkBc04yK/CFgyAMYWOKvnqwxzC0ozjysDoqEfj6d8ugM A==;
+X-IronPort-AV: E=McAfee;i="6400,9594,10380"; a="304810981"
+X-IronPort-AV: E=Sophos;i="5.92,306,1650956400"; d="scan'208";a="304810981"
 Received: from fmsmga001.fm.intel.com ([10.253.24.23])
  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 16 Jun 2022 15:04:52 -0700
-X-IronPort-AV: E=Sophos;i="5.92,306,1650956400"; d="scan'208";a="728085035"
+ 16 Jun 2022 15:04:53 -0700
+X-IronPort-AV: E=Sophos;i="5.92,306,1650956400"; d="scan'208";a="728085042"
 Received: from buckkenx-mobl.amr.corp.intel.com (HELO
  pbossart-mobl3.intel.com) ([10.212.52.70])
  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 16 Jun 2022 15:04:51 -0700
+ 16 Jun 2022 15:04:52 -0700
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH 10/11] ASoC: tas2552: use pm_runtime_resume_and_get()
-Date: Thu, 16 Jun 2022 17:04:26 -0500
-Message-Id: <20220616220427.136036-11-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH 11/11] ASoC: ti: davinci-mcasp: use pm_runtime_resume_and_get()
+Date: Thu, 16 Jun 2022 17:04:27 -0500
+Message-Id: <20220616220427.136036-12-pierre-louis.bossart@linux.intel.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20220616220427.136036-1-pierre-louis.bossart@linux.intel.com>
 References: <20220616220427.136036-1-pierre-louis.bossart@linux.intel.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: Cezary Rojewski <cezary.rojewski@intel.com>, Stephen Kitt <steve@sk2.org>,
+Cc: Cezary Rojewski <cezary.rojewski@intel.com>,
  Kai Vehmanen <kai.vehmanen@linux.intel.com>,
  Liam Girdwood <lgirdwood@gmail.com>, tiwai@suse.de,
- open list <linux-kernel@vger.kernel.org>, Takashi Iwai <tiwai@suse.com>,
+ Peter Ujfalusi <peter.ujfalusi@gmail.com>, Takashi Iwai <tiwai@suse.com>,
  Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
  Ranjani Sridharan <ranjani.sridharan@linux.intel.com>, broonie@kernel.org,
  =?UTF-8?q?Amadeusz=20S=C5=82awi=C5=84ski?=
  <amadeuszx.slawinski@linux.intel.com>,
- Bard Liao <yung-chuan.liao@linux.intel.com>
+ Bard Liao <yung-chuan.liao@linux.intel.com>,
+ open list <linux-kernel@vger.kernel.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -91,7 +92,7 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The use of pm_runtime_get_sync() is buggy with no use of put_noidle() on
+The use of pm_runtime_get_sync() is buggy with no use of put_noidle on
 error.
 
 Use pm_runtime_resume_and_get() instead.
@@ -101,22 +102,23 @@ Reviewed-by: Bard Liao <yung-chuan.liao@linux.intel.com>
 Reviewed-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
 Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 ---
- sound/soc/codecs/tas2552.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/ti/davinci-mcasp.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/sound/soc/codecs/tas2552.c b/sound/soc/codecs/tas2552.c
-index c98a9332dcc0e..da744cfae611c 100644
---- a/sound/soc/codecs/tas2552.c
-+++ b/sound/soc/codecs/tas2552.c
-@@ -581,7 +581,7 @@ static int tas2552_component_probe(struct snd_soc_component *component)
+diff --git a/sound/soc/ti/davinci-mcasp.c b/sound/soc/ti/davinci-mcasp.c
+index e2aab4729f3ab..0201000b619f6 100644
+--- a/sound/soc/ti/davinci-mcasp.c
++++ b/sound/soc/ti/davinci-mcasp.c
+@@ -2111,8 +2111,7 @@ static int davinci_mcasp_gpio_request(struct gpio_chip *chip, unsigned offset)
+ 	}
  
- 	gpiod_set_value(tas2552->enable_gpio, 1);
+ 	/* Do not change the PIN yet */
+-
+-	return pm_runtime_get_sync(mcasp->dev);
++	return pm_runtime_resume_and_get(mcasp->dev);
+ }
  
--	ret = pm_runtime_get_sync(component->dev);
-+	ret = pm_runtime_resume_and_get(component->dev);
- 	if (ret < 0) {
- 		dev_err(component->dev, "Enabling device failed: %d\n",
- 			ret);
+ static void davinci_mcasp_gpio_free(struct gpio_chip *chip, unsigned offset)
 -- 
 2.34.1
 
