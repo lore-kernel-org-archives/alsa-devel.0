@@ -4,95 +4,86 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9E250C433EF
-	for <alsa-devel@archiver.kernel.org>; Mon, 20 Jun 2022 15:35:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 86786C43334
+	for <alsa-devel@archiver.kernel.org>; Mon, 20 Jun 2022 15:35:57 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id F3F5D28BC;
-	Mon, 20 Jun 2022 17:34:49 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F3F5D28BC
+	by alsa0.perex.cz (Postfix) with ESMTPS id C32EB28BE;
+	Mon, 20 Jun 2022 17:35:05 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C32EB28BE
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1655739340;
-	bh=9LQovC95FqkFEn9EkPegq9kSk3FrFhPVfuodp9nN0Z4=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=iAlFIPH3jGhz76ZBr4/9rAcp6OldyDGbUGfarpjlJ22/0qULSV4cL1tjrKpY6B4lF
-	 MBA4V0flRyI8hh6CKzwPV8jtnKsJppr2TwAWDXs6HcfR6yOkPtVvJKBx6xQ219Z0Ic
-	 9IgOLREXLA1GlY+E7XDZBkc9PpAIlneKb1CNnJEc=
+	s=default; t=1655739355;
+	bh=phVOXGW/navuHXVoL5vQ1frl6TxtAwmTs2TDZSyMkm4=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=dXCesmVWzklHiEHEd3Ez3jAT3vjxdQ8FHim1WHC3LDBGJxnFJGAknbVmhQEddl4K2
+	 9wtWX5ld0psErlQ8z2/mVRLheZYIKWeCUL+tIuiYuagXLTaHaA3Lp9SRnokaa6B1jE
+	 VOUAkFLSHw0+tvTzfBlm+H5SGvxJ8Zm9A4I7n6rw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 787EDF80CB3;
-	Mon, 20 Jun 2022 17:08:15 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2F7C3F80CB8;
+	Mon, 20 Jun 2022 17:08:16 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 72741F80310; Thu, 16 Jun 2022 16:56:11 +0200 (CEST)
-Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
- [67.231.149.25])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 3C9BDF801D8; Thu, 16 Jun 2022 22:27:11 +0200 (CEST)
+Received: from mail-il1-x12c.google.com (mail-il1-x12c.google.com
+ [IPv6:2607:f8b0:4864:20::12c])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 49770F800B9
- for <alsa-devel@alsa-project.org>; Thu, 16 Jun 2022 16:56:03 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 49770F800B9
+ by alsa1.perex.cz (Postfix) with ESMTPS id E6713F800D3
+ for <alsa-devel@alsa-project.org>; Thu, 16 Jun 2022 22:27:02 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E6713F800D3
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com
- header.b="gsdkNsfo"
-Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
- by mx0a-001ae601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 25GC07CG027888;
- Thu, 16 Jun 2022 09:34:42 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
- h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding : content-type; s=PODMain02222019;
- bh=NdWNqGk7KYNCnb6vF06SM0HZUNiwmzGy7/npWlCANTY=;
- b=gsdkNsfo/0O13JhpLG/Y6+/kJMHeayAZNaKGelZCe/HB68N4BqesyNXhHbOCDFQqUwPB
- /u9V891+dcl70g7R+PJrhdN9nzqabkNoc74zYBpj6YuYVzA9ZlQG3zw+jXJbqqc/gxVz
- PWPmhIZpW7vnyd/UNpjgrY4mBgbnwit1gZOQk5ko1OZjRhJCekop+6K3435/3WBslkaV
- MqPhFncyZpcWCAfO0FZhM11MicI1Yp8Rc5Q6WXamy/dwG3viSP7+Ny9oCYORDn+LfIFZ
- 6nx1t5hKqtTaVpkE7f3j5qKFAEBsOx3MIrhNYH5q/y13IlXxh9ezb7OfJU5GO/rOXn0S aw== 
-Received: from ediex01.ad.cirrus.com ([84.19.233.68])
- by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3gmrf35vuu-13
- (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
- Thu, 16 Jun 2022 09:34:42 -0500
-Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.28; Thu, 16 Jun
- 2022 15:34:32 +0100
-Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server id 15.1.2375.28 via
- Frontend Transport; Thu, 16 Jun 2022 15:34:32 +0100
-Received: from algalon.ad.cirrus.com (algalon.ad.cirrus.com [198.90.251.122])
- by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 99B5C11D4;
- Thu, 16 Jun 2022 14:34:32 +0000 (UTC)
-From: Charles Keepax <ckeepax@opensource.cirrus.com>
-To: <broonie@kernel.org>
-Subject: [PATCH 33/96] ASoC: samsung: Migrate to new style legacy DAI naming
- flag
-Date: Thu, 16 Jun 2022 15:33:26 +0100
-Message-ID: <20220616143429.1324494-34-ckeepax@opensource.cirrus.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20220616143429.1324494-1-ckeepax@opensource.cirrus.com>
-References: <20220616143429.1324494-1-ckeepax@opensource.cirrus.com>
+ dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
+ header.b="gmVDginz"
+Received: by mail-il1-x12c.google.com with SMTP id v7so1696009ilo.3
+ for <alsa-devel@alsa-project.org>; Thu, 16 Jun 2022 13:27:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
+ h=from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=SsJY7P3jisvIHHNgMnMfhfTU+j7BrzVjUHUb60jK/yY=;
+ b=gmVDginzPKhGopFMuxnIaJgoXctH5rT+joAZIaV5r2mT3QTDOWq8ECncyWDHnXL1dC
+ oHxC/EYQHWI5/hwcOTcP/96DoHeM83/PhmVTEc3RqdOcCujBPtAIWn+mMDheKN4Wak7m
+ qr4gToYI1blM9ThtKQWGJQJZAxjnySq/LdT57Bk1sQkQ6pTNXluZX2CqUKy4uN9f0ZRt
+ Pw7Gar5N3qd6NO4VSnFrQEPFZ8gA0YBwRtvfiFwfYwYlip/FhCTDI+uGDxyjYh31+ogs
+ DXd7wr2QhMIJ3H5eQD7wZmQRWsoOYGIZMlewoYqcL+MzKUm5F40rJbsbJLT3+arBVeJh
+ bAng==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=SsJY7P3jisvIHHNgMnMfhfTU+j7BrzVjUHUb60jK/yY=;
+ b=Bw3srl/KVrzI81X4V7JsMwpWnp4b0QWW3Z1Sc8E+F6rs0kC/lSIz3g3Ij2PQRN6Mlt
+ 0vAXDjKitnoTzLyKFXPY/Bm7heHEnNfVJPaPBwN9xDXLzMQr7jxKam01YkEGfTH2incu
+ 81PO3Opx3b4h1Vo3wKYkwFKSM5uhqUywXzaxIz9vrtk2zfWNHtCKmXI4KBFktiqHJs4C
+ SiOyA4WJUJ9wEnmxygMnfw0ihUfNFldeIn9WIp23PMKUVMWuMWcmQGGuXZtKv15/0qNv
+ arlXyhui/rlxwwan7D8P4dANVFVvHq4D78rabpZXp2G1GT3MhDXf/yeF3K4fLdwt23Ig
+ 9NtA==
+X-Gm-Message-State: AJIora829XQbUVGMYCipHpiqD21hemMGhRqL0/FiPYfS2xDHrpjh5UNw
+ 1qOPLnVWuRMLbkWWCRizYhE=
+X-Google-Smtp-Source: AGRyM1vvlN1n/ci4DNl2/+810XdfpCysIlotnk/8vNyQ0FNGYJtIclLv00X8l27SSYgIDNEUdtOU/A==
+X-Received: by 2002:a05:6e02:1c44:b0:2d7:6bc3:9960 with SMTP id
+ d4-20020a056e021c4400b002d76bc39960mr3935563ilg.194.1655411221180; 
+ Thu, 16 Jun 2022 13:27:01 -0700 (PDT)
+Received: from tremont-lap.lan ([2604:2d80:d289:7400:7af5:ac5e:1454:9e62])
+ by smtp.gmail.com with ESMTPSA id
+ n4-20020a02a904000000b0032e583132e4sm1283700jam.123.2022.06.16.13.26.59
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Thu, 16 Jun 2022 13:27:00 -0700 (PDT)
+From: David Owens <daowens01@gmail.com>
+X-Google-Original-From: David Owens <dowens@precisionplanting.com>
+To: Peter Ujfalusi <peter.ujfalusi@gmail.com>,
+ Jarkko Nikula <jarkko.nikula@bitmer.com>,
+ Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
+ Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
+Subject: [PATCH v3] ASoC: ti: omap-mcbsp: duplicate sysfs error
+Date: Thu, 16 Jun 2022 15:26:45 -0500
+Message-Id: <20220616202645.1645972-1-dowens@precisionplanting.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Proofpoint-GUID: 8_ol56DkCUVdYxwog0l7JC1OmNRUBq55
-X-Proofpoint-ORIG-GUID: 8_ol56DkCUVdYxwog0l7JC1OmNRUBq55
-X-Proofpoint-Spam-Reason: safe
-X-Mailman-Approved-At: Mon, 20 Jun 2022 17:06:46 +0200
-Cc: cezary.rojewski@intel.com, heiko@sntech.de,
- kuninori.morimoto.gx@renesas.com, airlied@linux.ie,
- alsa-devel@alsa-project.org, dri-devel@lists.freedesktop.org,
- nicolas.ferre@microchip.com, srinivas.kandagatla@linaro.org,
- peter.ujfalusi@gmail.com, linux-stm32@st-md-mailman.stormreply.com,
- jbrunet@baylibre.com, pierre-louis.bossart@linux.intel.com, krzk@kernel.org,
- linux-rockchip@lists.infradead.org, linux-imx@nxp.com,
- linux-mips@vger.kernel.org, linux-sunxi@lists.linux.dev,
- linux-xtensa@linux-xtensa.org, nsaenz@kernel.org, kernel@pengutronix.de,
- mripard@kernel.org, linux-rpi-kernel@lists.infradead.org,
- linux-tegra@vger.kernel.org, linux-amlogic@lists.infradead.org,
- linux-omap@vger.kernel.org, patches@opensource.cirrus.com, lgirdwood@gmail.com,
- vkoul@kernel.org, jarkko.nikula@bitmer.com, daniel@ffwll.ch,
- shawnguo@kernel.org, daniel@zonque.org
+X-Mailman-Approved-At: Mon, 20 Jun 2022 17:06:47 +0200
+Cc: David Owens <dowens@precisionplanting.com>, linux-omap@vger.kernel.org,
+ alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -108,101 +99,161 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Change the legacy DAI naming flag from opting in to the new scheme
-(non_legacy_dai_naming), to opting out of it (legacy_dai_naming).
-These drivers appear to be on the CPU side of the DAI link and
-currently uses the legacy naming, so add the new flag.
+Convert to managed versions of sysfs and clk allocation to simplify
+unbinding and error handling in probe.  Managed sysfs node
+creation specifically addresses the following error seen the second time
+probe is attempted after sdma_pcm_platform_register() previously requested
+probe deferral:
 
-Signed-off-by: Charles Keepax <ckeepax@opensource.cirrus.com>
+sysfs: cannot create duplicate filename '/devices/platform/68000000.ocp/49022000.mcbsp/max_tx_thres'
+
+Signed-off-by: David Owens <dowens@precisionplanting.com>
 ---
- sound/soc/samsung/i2s.c         | 2 ++
- sound/soc/samsung/pcm.c         | 3 ++-
- sound/soc/samsung/s3c2412-i2s.c | 7 ++++---
- sound/soc/samsung/s3c24xx-i2s.c | 7 ++++---
- sound/soc/samsung/spdif.c       | 7 ++++---
- 5 files changed, 16 insertions(+), 10 deletions(-)
 
-diff --git a/sound/soc/samsung/i2s.c b/sound/soc/samsung/i2s.c
-index fdd9561c6a9f3..9505200f3d11b 100644
---- a/sound/soc/samsung/i2s.c
-+++ b/sound/soc/samsung/i2s.c
-@@ -1143,6 +1143,8 @@ static const struct snd_soc_component_driver samsung_i2s_component = {
+Changes in v3:
+ * Whitespace changes only to allow clean applly
+
+Changes in v2:
+ * Improved error handling
+
+---
+ sound/soc/ti/omap-mcbsp-priv.h |  2 --
+ sound/soc/ti/omap-mcbsp-st.c   | 21 ++++-----------------
+ sound/soc/ti/omap-mcbsp.c      | 26 ++++----------------------
+ 3 files changed, 8 insertions(+), 41 deletions(-)
+
+diff --git a/sound/soc/ti/omap-mcbsp-priv.h b/sound/soc/ti/omap-mcbsp-priv.h
+index 7865cda4bf0a..da519ea1f303 100644
+--- a/sound/soc/ti/omap-mcbsp-priv.h
++++ b/sound/soc/ti/omap-mcbsp-priv.h
+@@ -316,8 +316,6 @@ static inline int omap_mcbsp_read(struct omap_mcbsp *mcbsp, u16 reg,
  
- 	.suspend = i2s_suspend,
- 	.resume = i2s_resume,
-+
-+	.legacy_dai_naming = 1,
+ /* Sidetone specific API */
+ int omap_mcbsp_st_init(struct platform_device *pdev);
+-void omap_mcbsp_st_cleanup(struct platform_device *pdev);
+-
+ int omap_mcbsp_st_start(struct omap_mcbsp *mcbsp);
+ int omap_mcbsp_st_stop(struct omap_mcbsp *mcbsp);
+ 
+diff --git a/sound/soc/ti/omap-mcbsp-st.c b/sound/soc/ti/omap-mcbsp-st.c
+index 0bc7d26c660a..402a57a502e6 100644
+--- a/sound/soc/ti/omap-mcbsp-st.c
++++ b/sound/soc/ti/omap-mcbsp-st.c
+@@ -292,14 +292,11 @@ static ssize_t st_taps_store(struct device *dev,
+ 
+ static DEVICE_ATTR_RW(st_taps);
+ 
+-static const struct attribute *sidetone_attrs[] = {
++static struct attribute *sidetone_attrs[] = {
+ 	&dev_attr_st_taps.attr,
+ 	NULL,
  };
+-
+-static const struct attribute_group sidetone_attr_group = {
+-	.attrs = (struct attribute **)sidetone_attrs,
+-};
++ATTRIBUTE_GROUPS(sidetone);
  
- #define SAMSUNG_I2S_FMTS (SNDRV_PCM_FMTBIT_S8 | SNDRV_PCM_FMTBIT_S16_LE | \
-diff --git a/sound/soc/samsung/pcm.c b/sound/soc/samsung/pcm.c
-index c2eb3534bfccb..e859252ae5e6e 100644
---- a/sound/soc/samsung/pcm.c
-+++ b/sound/soc/samsung/pcm.c
-@@ -480,7 +480,8 @@ static struct snd_soc_dai_driver s3c_pcm_dai[] = {
+ int omap_mcbsp_st_start(struct omap_mcbsp *mcbsp)
+ {
+@@ -347,7 +344,7 @@ int omap_mcbsp_st_init(struct platform_device *pdev)
+ 	if (!st_data)
+ 		return -ENOMEM;
+ 
+-	st_data->mcbsp_iclk = clk_get(mcbsp->dev, "ick");
++	st_data->mcbsp_iclk = devm_clk_get(mcbsp->dev, "ick");
+ 	if (IS_ERR(st_data->mcbsp_iclk)) {
+ 		dev_warn(mcbsp->dev,
+ 			 "Failed to get ick, sidetone might be broken\n");
+@@ -359,7 +356,7 @@ int omap_mcbsp_st_init(struct platform_device *pdev)
+ 	if (!st_data->io_base_st)
+ 		return -ENOMEM;
+ 
+-	ret = sysfs_create_group(&mcbsp->dev->kobj, &sidetone_attr_group);
++	ret = devm_device_add_group(mcbsp->dev, &sidetone_group);
+ 	if (ret)
+ 		return ret;
+ 
+@@ -368,16 +365,6 @@ int omap_mcbsp_st_init(struct platform_device *pdev)
+ 	return 0;
+ }
+ 
+-void omap_mcbsp_st_cleanup(struct platform_device *pdev)
+-{
+-	struct omap_mcbsp *mcbsp = platform_get_drvdata(pdev);
+-
+-	if (mcbsp->st_data) {
+-		sysfs_remove_group(&mcbsp->dev->kobj, &sidetone_attr_group);
+-		clk_put(mcbsp->st_data->mcbsp_iclk);
+-	}
+-}
+-
+ static int omap_mcbsp_st_info_volsw(struct snd_kcontrol *kcontrol,
+ 				    struct snd_ctl_elem_info *uinfo)
+ {
+diff --git a/sound/soc/ti/omap-mcbsp.c b/sound/soc/ti/omap-mcbsp.c
+index 4479d74f0a45..395493a2d965 100644
+--- a/sound/soc/ti/omap-mcbsp.c
++++ b/sound/soc/ti/omap-mcbsp.c
+@@ -595,16 +595,13 @@ static ssize_t dma_op_mode_store(struct device *dev,
+ 
+ static DEVICE_ATTR_RW(dma_op_mode);
+ 
+-static const struct attribute *additional_attrs[] = {
++static struct attribute *additional_attrs[] = {
+ 	&dev_attr_max_tx_thres.attr,
+ 	&dev_attr_max_rx_thres.attr,
+ 	&dev_attr_dma_op_mode.attr,
+ 	NULL,
  };
+-
+-static const struct attribute_group additional_attr_group = {
+-	.attrs = (struct attribute **)additional_attrs,
+-};
++ATTRIBUTE_GROUPS(additional);
  
- static const struct snd_soc_component_driver s3c_pcm_component = {
--	.name		= "s3c-pcm",
-+	.name			= "s3c-pcm",
-+	.legacy_dai_naming	= 1,
- };
+ /*
+  * McBSP1 and McBSP3 are directly mapped on 1610 and 1510.
+@@ -702,8 +699,7 @@ static int omap_mcbsp_init(struct platform_device *pdev)
+ 		mcbsp->max_tx_thres = max_thres(mcbsp) - 0x10;
+ 		mcbsp->max_rx_thres = max_thres(mcbsp) - 0x10;
  
- static int s3c_pcm_dev_probe(struct platform_device *pdev)
-diff --git a/sound/soc/samsung/s3c2412-i2s.c b/sound/soc/samsung/s3c2412-i2s.c
-index ec1c6f9d76ac7..0579a352961cc 100644
---- a/sound/soc/samsung/s3c2412-i2s.c
-+++ b/sound/soc/samsung/s3c2412-i2s.c
-@@ -192,9 +192,10 @@ static struct snd_soc_dai_driver s3c2412_i2s_dai = {
- };
+-		ret = sysfs_create_group(&mcbsp->dev->kobj,
+-					 &additional_attr_group);
++		ret = devm_device_add_group(mcbsp->dev, &additional_group);
+ 		if (ret) {
+ 			dev_err(mcbsp->dev,
+ 				"Unable to create additional controls\n");
+@@ -711,16 +707,7 @@ static int omap_mcbsp_init(struct platform_device *pdev)
+ 		}
+ 	}
  
- static const struct snd_soc_component_driver s3c2412_i2s_component = {
--	.name		= "s3c2412-i2s",
--	.suspend	= s3c2412_i2s_suspend,
--	.resume		= s3c2412_i2s_resume,
-+	.name			= "s3c2412-i2s",
-+	.suspend		= s3c2412_i2s_suspend,
-+	.resume			= s3c2412_i2s_resume,
-+	.legacy_dai_naming	= 1,
- };
+-	ret = omap_mcbsp_st_init(pdev);
+-	if (ret)
+-		goto err_st;
+-
+-	return 0;
+-
+-err_st:
+-	if (mcbsp->pdata->buffer_size)
+-		sysfs_remove_group(&mcbsp->dev->kobj, &additional_attr_group);
+-	return ret;
++	return omap_mcbsp_st_init(pdev);
+ }
  
- static int s3c2412_iis_dev_probe(struct platform_device *pdev)
-diff --git a/sound/soc/samsung/s3c24xx-i2s.c b/sound/soc/samsung/s3c24xx-i2s.c
-index 4082ad7cbcc11..e760fc8b42636 100644
---- a/sound/soc/samsung/s3c24xx-i2s.c
-+++ b/sound/soc/samsung/s3c24xx-i2s.c
-@@ -415,9 +415,10 @@ static struct snd_soc_dai_driver s3c24xx_i2s_dai = {
- };
+ /*
+@@ -1431,11 +1418,6 @@ static int asoc_mcbsp_remove(struct platform_device *pdev)
+ 	if (cpu_latency_qos_request_active(&mcbsp->pm_qos_req))
+ 		cpu_latency_qos_remove_request(&mcbsp->pm_qos_req);
  
- static const struct snd_soc_component_driver s3c24xx_i2s_component = {
--	.name		= "s3c24xx-i2s",
--	.suspend	= s3c24xx_i2s_suspend,
--	.resume		= s3c24xx_i2s_resume,
-+	.name			= "s3c24xx-i2s",
-+	.suspend		= s3c24xx_i2s_suspend,
-+	.resume			= s3c24xx_i2s_resume,
-+	.legacy_dai_naming	= 1,
- };
+-	if (mcbsp->pdata->buffer_size)
+-		sysfs_remove_group(&mcbsp->dev->kobj, &additional_attr_group);
+-
+-	omap_mcbsp_st_cleanup(pdev);
+-
+ 	return 0;
+ }
  
- static int s3c24xx_iis_dev_probe(struct platform_device *pdev)
-diff --git a/sound/soc/samsung/spdif.c b/sound/soc/samsung/spdif.c
-index 47b6d19e43ffb..7d815e237e5c6 100644
---- a/sound/soc/samsung/spdif.c
-+++ b/sound/soc/samsung/spdif.c
-@@ -352,9 +352,10 @@ static struct snd_soc_dai_driver samsung_spdif_dai = {
- };
- 
- static const struct snd_soc_component_driver samsung_spdif_component = {
--	.name		= "samsung-spdif",
--	.suspend	= spdif_suspend,
--	.resume		= spdif_resume,
-+	.name			= "samsung-spdif",
-+	.suspend		= spdif_suspend,
-+	.resume			= spdif_resume,
-+	.legacy_dai_naming	= 1,
- };
- 
- static int spdif_probe(struct platform_device *pdev)
 -- 
-2.30.2
+2.34.1
 
