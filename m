@@ -4,79 +4,81 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 75AE7C43334
-	for <alsa-devel@archiver.kernel.org>; Thu, 16 Jun 2022 22:08:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8E1CFC433EF
+	for <alsa-devel@archiver.kernel.org>; Thu, 16 Jun 2022 22:08:30 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id BB1B91B27;
-	Fri, 17 Jun 2022 00:07:27 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BB1B91B27
+	by alsa0.perex.cz (Postfix) with ESMTPS id D151D1B32;
+	Fri, 17 Jun 2022 00:07:38 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D151D1B32
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1655417297;
-	bh=ZERpvGk6JBzFwOx//nRfYnj+hzodvXoYEt05yQtBDw4=;
+	s=default; t=1655417308;
+	bh=16VgkFnDUAPnUMogOVCeb93snA9dZAeCyiMXw7+CLi0=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=kAqHF563u+TiBGGs0stqY2pDTGx5x/V/bsw+Lg9DuC6rncAq5tkuPB11e0inyXhbo
-	 u6Bii1u4WL8Mri4aB58F2TqROMGSQfMKaTkAuJeKPVi0Ew4+v/7jBav1uVB1/x0voM
-	 SMKtLOHy8W9aerdkbG1HC86+3ITq3ZQwaNCXh//w=
+	b=vZvxpVtfQMSDdXqgIXa6WqTFqiFTzl/mz5pBJcyWY0sScZ8TSE0o1t4+hDoWyBDAU
+	 RQNo8Jqm3NmxsJWkh/o9/aegEbo2jvDjqqFIvgAsEroIih4dZAGAtmlyMCUlWd/clP
+	 TJqXQ2uaYSweV3yOH10u4EygZaECvIg1wK/uPD9I=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 7255EF80563;
-	Fri, 17 Jun 2022 00:05:00 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 15518F80568;
+	Fri, 17 Jun 2022 00:05:01 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 6D5A6F8055B; Fri, 17 Jun 2022 00:04:58 +0200 (CEST)
+ id D6A5AF8055A; Fri, 17 Jun 2022 00:04:58 +0200 (CEST)
 Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id AC6D5F8053E
- for <alsa-devel@alsa-project.org>; Fri, 17 Jun 2022 00:04:54 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AC6D5F8053E
+ by alsa1.perex.cz (Postfix) with ESMTPS id 441EEF800F0
+ for <alsa-devel@alsa-project.org>; Fri, 17 Jun 2022 00:04:50 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 441EEF800F0
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="nZBUeLyf"
+ header.b="k+jKpu7A"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1655417095; x=1686953095;
+ t=1655417096; x=1686953096;
  h=from:to:cc:subject:date:message-id:in-reply-to:
  references:mime-version:content-transfer-encoding;
- bh=ZERpvGk6JBzFwOx//nRfYnj+hzodvXoYEt05yQtBDw4=;
- b=nZBUeLyfNbGJZwOxA4HsTmHeLmzgf2UQkC+0FI5tDsWzw+u/sSJUVzCj
- RJiQ6Xx03OiYs1ceZwnB0asWZdFq9ZrfuYLAQqqiTDy0OVZpA0GoafmXr
- DMaTCbtnotv2OfS02mNdmSM/d552T/oGlVOfjA33idArV65lXVF7y6ut4
- 83i6zmbmQXcKDkDlgJXr4AZZZr3qZGAzgUBeqJbSaxs0RzmCuBHh81KEm
- Wxk3QXi/6TWwSTA0PSQxhV5V9NsqpwKco1QVbFghyNXKJiIMSRkb4SG97
- xSpG7L/b3m5IHbkBc04yK/CFgyAMYWOKvnqwxzC0ozjysDoqEfj6d8ugM A==;
-X-IronPort-AV: E=McAfee;i="6400,9594,10380"; a="304810981"
-X-IronPort-AV: E=Sophos;i="5.92,306,1650956400"; d="scan'208";a="304810981"
+ bh=16VgkFnDUAPnUMogOVCeb93snA9dZAeCyiMXw7+CLi0=;
+ b=k+jKpu7AH8T21swmoljZHZM3ziL3C/zPElvZcTI2bBwSlQM17ytle0rv
+ VZ9yBBQO3OPxny1e4LUmZZd0IxDg6m6GFSluB/UHr08PpeZRBX7nBh06t
+ zJH3tnfew8OUJg0qcN3zZMgwV6uZrdHfAyN62DJrHzBv+EZ9K8ZSTKm/G
+ FVDdaCkcITmd34rFDWHA8wcMp8Maon0zqBGi5hC4BeAQGUqCarbqXfEq5
+ bfH+dQUd55Sc2cXz34HwOflyNyAAYi9Uod5aS50OmAMEAr2D1XKKTBug6
+ DydS48WTbLB8fkskYahZ9nRd9OzZKPfBKLCK6IiT3J/1Vo6KbkQAsWOti A==;
+X-IronPort-AV: E=McAfee;i="6400,9594,10380"; a="304810968"
+X-IronPort-AV: E=Sophos;i="5.92,306,1650956400"; d="scan'208";a="304810968"
 Received: from fmsmga001.fm.intel.com ([10.253.24.23])
  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 16 Jun 2022 15:04:53 -0700
-X-IronPort-AV: E=Sophos;i="5.92,306,1650956400"; d="scan'208";a="728085042"
+ 16 Jun 2022 15:04:50 -0700
+X-IronPort-AV: E=Sophos;i="5.92,306,1650956400"; d="scan'208";a="728085027"
 Received: from buckkenx-mobl.amr.corp.intel.com (HELO
  pbossart-mobl3.intel.com) ([10.212.52.70])
  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 16 Jun 2022 15:04:52 -0700
+ 16 Jun 2022 15:04:49 -0700
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH 11/11] ASoC: ti: davinci-mcasp: use pm_runtime_resume_and_get()
-Date: Thu, 16 Jun 2022 17:04:27 -0500
-Message-Id: <20220616220427.136036-12-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH 09/11] ASoC: rockchip: pdm: use pm_runtime_resume_and_get()
+Date: Thu, 16 Jun 2022 17:04:25 -0500
+Message-Id: <20220616220427.136036-10-pierre-louis.bossart@linux.intel.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20220616220427.136036-1-pierre-louis.bossart@linux.intel.com>
 References: <20220616220427.136036-1-pierre-louis.bossart@linux.intel.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Cc: Cezary Rojewski <cezary.rojewski@intel.com>,
- Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+ Heiko Stuebner <heiko@sntech.de>, Kai Vehmanen <kai.vehmanen@linux.intel.com>,
  Liam Girdwood <lgirdwood@gmail.com>, tiwai@suse.de,
- Peter Ujfalusi <peter.ujfalusi@gmail.com>, Takashi Iwai <tiwai@suse.com>,
+ open list <linux-kernel@vger.kernel.org>, Takashi Iwai <tiwai@suse.com>,
  Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- Ranjani Sridharan <ranjani.sridharan@linux.intel.com>, broonie@kernel.org,
- =?UTF-8?q?Amadeusz=20S=C5=82awi=C5=84ski?=
+ Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+ "open list:ARM/Rockchip SoC support" <linux-rockchip@lists.infradead.org>,
+ broonie@kernel.org, =?UTF-8?q?Amadeusz=20S=C5=82awi=C5=84ski?=
  <amadeuszx.slawinski@linux.intel.com>,
  Bard Liao <yung-chuan.liao@linux.intel.com>,
- open list <linux-kernel@vger.kernel.org>
+ "moderated list:ARM/Rockchip SoC support"
+ <linux-arm-kernel@lists.infradead.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -92,33 +94,34 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The use of pm_runtime_get_sync() is buggy with no use of put_noidle on
-error.
-
-Use pm_runtime_resume_and_get() instead.
+Simplify the flow.
 
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Reviewed-by: Bard Liao <yung-chuan.liao@linux.intel.com>
 Reviewed-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
 Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 ---
- sound/soc/ti/davinci-mcasp.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ sound/soc/rockchip/rockchip_pdm.c | 6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
 
-diff --git a/sound/soc/ti/davinci-mcasp.c b/sound/soc/ti/davinci-mcasp.c
-index e2aab4729f3ab..0201000b619f6 100644
---- a/sound/soc/ti/davinci-mcasp.c
-+++ b/sound/soc/ti/davinci-mcasp.c
-@@ -2111,8 +2111,7 @@ static int davinci_mcasp_gpio_request(struct gpio_chip *chip, unsigned offset)
- 	}
+diff --git a/sound/soc/rockchip/rockchip_pdm.c b/sound/soc/rockchip/rockchip_pdm.c
+index 64d9891b6434f..066e29b7879d1 100644
+--- a/sound/soc/rockchip/rockchip_pdm.c
++++ b/sound/soc/rockchip/rockchip_pdm.c
+@@ -688,11 +688,9 @@ static int rockchip_pdm_resume(struct device *dev)
+ 	struct rk_pdm_dev *pdm = dev_get_drvdata(dev);
+ 	int ret;
  
- 	/* Do not change the PIN yet */
--
--	return pm_runtime_get_sync(mcasp->dev);
-+	return pm_runtime_resume_and_get(mcasp->dev);
- }
+-	ret = pm_runtime_get_sync(dev);
+-	if (ret < 0) {
+-		pm_runtime_put(dev);
++	ret = pm_runtime_resume_and_get(dev);
++	if (ret < 0)
+ 		return ret;
+-	}
  
- static void davinci_mcasp_gpio_free(struct gpio_chip *chip, unsigned offset)
+ 	ret = regcache_sync(pdm->regmap);
+ 
 -- 
 2.34.1
 
