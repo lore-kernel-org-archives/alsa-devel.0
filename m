@@ -4,65 +4,64 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 94B64C433EF
-	for <alsa-devel@archiver.kernel.org>; Thu, 16 Jun 2022 21:58:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 23C1DC433EF
+	for <alsa-devel@archiver.kernel.org>; Thu, 16 Jun 2022 21:58:25 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C75621B0A;
-	Thu, 16 Jun 2022 23:57:18 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C75621B0A
+	by alsa0.perex.cz (Postfix) with ESMTPS id 638BF1ADF;
+	Thu, 16 Jun 2022 23:57:33 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 638BF1ADF
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1655416688;
-	bh=jFuPmfcrS1SpwmL6BkU6nFSiJTPtQUjWPAI4azgav0Q=;
+	s=default; t=1655416703;
+	bh=qZt4b5gljydc4Ir5+JB96immHEwvqtPwBpsTZgV15h0=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=OmZRCWuexohq5hOQc4Tsab+RffSiJxKCbNFhyjecF5XSCyTU8X/iao07l+l6aug1g
-	 8OlmXlcuKTUrUdHPetZtGouFAy1r17yHaCsEf1hjaI/N2Wy9/SkKnd4if9UAQ3WsTS
-	 1EnrYXz2hNcQnT/bMhVLmkSYQVdDk7KBcmYngwBo=
+	b=leTiZ0Bs/kegz2BjP4wZwhd4oNwR4IsynMfQv0GlTHC2gO10+qY3WL0G3Gf2mn4lc
+	 Y2yeMi6yxfzT+Z5mkmzJSnbPSnmgMZ+dYuMItQ2wc2PHLhkMRe0MmacIYQBfvwN9NS
+	 EkqJ+eLjp/wNjXBovEpGuZ/72wIl+dtfa3WDZMd4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 1BA38F80559;
+	by alsa1.perex.cz (Postfix) with ESMTP id AAE6FF80563;
 	Thu, 16 Jun 2022 23:54:59 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 73C60F8053D; Thu, 16 Jun 2022 23:54:53 +0200 (CEST)
+ id 73EB3F80542; Thu, 16 Jun 2022 23:54:54 +0200 (CEST)
 Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id C6E06F804E0
- for <alsa-devel@alsa-project.org>; Thu, 16 Jun 2022 23:54:43 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C6E06F804E0
+ by alsa1.perex.cz (Postfix) with ESMTPS id BF3F7F80533
+ for <alsa-devel@alsa-project.org>; Thu, 16 Jun 2022 23:54:45 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BF3F7F80533
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="CqJXYLs2"
+ header.b="FFz67Sgv"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1655416485; x=1686952485;
+ t=1655416487; x=1686952487;
  h=from:to:cc:subject:date:message-id:in-reply-to:
  references:mime-version:content-transfer-encoding;
- bh=jFuPmfcrS1SpwmL6BkU6nFSiJTPtQUjWPAI4azgav0Q=;
- b=CqJXYLs2mJOq80rWlRyoVC8ZJ5wUC7SwkiDtpwMh+V0Fm70jZuVHWz3T
- Z09X3K+4Rf6Y4NuEOGjcR6jOFKFsagv2j3lCn7iXhWGrkFJUl1UgYnV1B
- hVdGxWpvQ5iB2KsTKWQJQdsRqL17SqdQT3s1iHi9F2HTx9hvUaW9npO2L
- uM7Ye57OdMxpb+mpxb56XjhUEaVhsXOXJSpOkVM117lyPMr2YVEUM/+3B
- Ie3vf9tdT6QSTW7kqRNXk9G2K7MzLYx+hkvHThuTuzSYDqMSlZTvYfbxN
- NcFcJc1YTYQfvGBsyp963QVznBJhNGUrXA9gwQbk88mjRoAJBTvLovr4Q A==;
-X-IronPort-AV: E=McAfee;i="6400,9594,10380"; a="268047823"
-X-IronPort-AV: E=Sophos;i="5.92,306,1650956400"; d="scan'208";a="268047823"
+ bh=qZt4b5gljydc4Ir5+JB96immHEwvqtPwBpsTZgV15h0=;
+ b=FFz67SgvQi5kKP9Ll8988/5qBbGrRZbGEMCZIa7wybqEZFp1BwnpFMNg
+ YytsgrSKOhnF5lLnjRsOEQapj2MmTpKdjMYgkXVaA2EIeyo/Ep3jBQa1F
+ qYTF0RymtlI5Uls5vx/ULsVsD6nF2yBcGhWE4+WFFSqXl0l3cyIVp+YEl
+ o0dFEH89yGp85WlYQepOdRNJjs7NwQAQ+AlTJo0j3lQ47ZRIS4tpv5I1u
+ kViF8C5a/CtVu+T6R1LePu9NaP8v0MpKx6zoXTBR88xhaWag0R0RKHSB8
+ uJ2LEFFp4X7tHRV4cFYEZPOK5IKzYaXN8cV+6jsFu4UOhIPj4d8DpvHyT A==;
+X-IronPort-AV: E=McAfee;i="6400,9594,10380"; a="268047832"
+X-IronPort-AV: E=Sophos;i="5.92,306,1650956400"; d="scan'208";a="268047832"
 Received: from fmsmga003.fm.intel.com ([10.253.24.29])
  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 16 Jun 2022 14:54:19 -0700
-X-IronPort-AV: E=Sophos;i="5.92,306,1650956400"; d="scan'208";a="675212675"
+ 16 Jun 2022 14:54:22 -0700
+X-IronPort-AV: E=Sophos;i="5.92,306,1650956400"; d="scan'208";a="675212691"
 Received: from buckkenx-mobl.amr.corp.intel.com (HELO
  pbossart-mobl3.intel.com) ([10.212.52.70])
  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 16 Jun 2022 14:54:19 -0700
+ 16 Jun 2022 14:54:21 -0700
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH 07/13] ASoC: SOF: ipc3-loader: remove use of __func__ in
- dev_dbg
-Date: Thu, 16 Jun 2022 16:53:45 -0500
-Message-Id: <20220616215351.135643-8-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH 10/13] ASoC: SOF: sof-client: remove use of __func__ in dev_dbg
+Date: Thu, 16 Jun 2022 16:53:48 -0500
+Message-Id: <20220616215351.135643-11-pierre-louis.bossart@linux.intel.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20220616215351.135643-1-pierre-louis.bossart@linux.intel.com>
 References: <20220616215351.135643-1-pierre-louis.bossart@linux.intel.com>
@@ -101,43 +100,24 @@ Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 Reviewed-by: Péter Ujfalusi <peter.ujfalusi@linux.intel.com>
 Reviewed-by: Bard Liao <yung-chuan.liao@linux.intel.com>
 ---
- sound/soc/sof/ipc3-loader.c | 11 +++++------
- 1 file changed, 5 insertions(+), 6 deletions(-)
+ sound/soc/sof/sof-client.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/sof/ipc3-loader.c b/sound/soc/sof/ipc3-loader.c
-index f3c741b495198..c573e7593808a 100644
---- a/sound/soc/sof/ipc3-loader.c
-+++ b/sound/soc/sof/ipc3-loader.c
-@@ -75,13 +75,12 @@ static int ipc3_fw_ext_man_get_config_data(struct snd_sof_dev *sdev,
- 	elems_size = config->hdr.size - sizeof(struct sof_ext_man_elem_header);
- 	elems_counter = elems_size / sizeof(struct sof_config_elem);
+diff --git a/sound/soc/sof/sof-client.c b/sound/soc/sof/sof-client.c
+index 16cca666bb852..125aa21371954 100644
+--- a/sound/soc/sof/sof-client.c
++++ b/sound/soc/sof/sof-client.c
+@@ -383,8 +383,8 @@ void sof_client_ipc_rx_dispatcher(struct snd_sof_dev *sdev, void *msg_buf)
  
--	dev_dbg(sdev->dev, "%s can hold up to %d config elements\n",
--		__func__, elems_counter);
-+	dev_dbg(sdev->dev, "manifest can hold up to %d config elements\n", elems_counter);
- 
- 	for (i = 0; i < elems_counter; ++i) {
- 		elem = &config->elems[i];
--		dev_dbg(sdev->dev, "%s get index %d token %d val %d\n",
--			__func__, i, elem->token, elem->value);
-+		dev_dbg(sdev->dev, "get index %d token %d val %d\n",
-+			i, elem->token, elem->value);
- 		switch (elem->token) {
- 		case SOF_EXT_MAN_CONFIG_EMPTY:
- 			/* unused memory space is zero filled - mapped to EMPTY elements */
-@@ -323,10 +322,10 @@ static int sof_ipc3_load_fw_to_dsp(struct snd_sof_dev *sdev)
- 	header = (struct snd_sof_fw_header *)(fw->data + plat_data->fw_offset);
- 	load_module = sof_ops(sdev)->load_module;
- 	if (!load_module) {
--		dev_dbg(sdev->dev, "%s: Using generic module loading\n", __func__);
-+		dev_dbg(sdev->dev, "Using generic module loading\n");
- 		load_module = sof_ipc3_parse_module_memcpy;
+ 		msg_type = SOF_IPC4_NOTIFICATION_TYPE_GET(msg->primary);
  	} else {
--		dev_dbg(sdev->dev, "%s: Using custom module loading\n", __func__);
-+		dev_dbg(sdev->dev, "Using custom module loading\n");
+-		dev_dbg_once(sdev->dev, "%s: Not supported IPC version: %d\n",
+-			     __func__, sdev->pdata->ipc_type);
++		dev_dbg_once(sdev->dev, "Not supported IPC version: %d\n",
++			     sdev->pdata->ipc_type);
+ 		return;
  	}
  
- 	/* parse each module */
 -- 
 2.34.1
 
