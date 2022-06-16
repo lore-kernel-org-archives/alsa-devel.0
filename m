@@ -4,64 +4,65 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 77157C433EF
-	for <alsa-devel@archiver.kernel.org>; Thu, 16 Jun 2022 20:20:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1791DC43334
+	for <alsa-devel@archiver.kernel.org>; Thu, 16 Jun 2022 20:20:44 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 86E131B01;
-	Thu, 16 Jun 2022 22:19:40 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 86E131B01
+	by alsa0.perex.cz (Postfix) with ESMTPS id 4FA341B14;
+	Thu, 16 Jun 2022 22:19:52 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4FA341B14
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1655410830;
-	bh=JPttLoo1e6ngS8OJt0II4U3qIJOTyL/KyoZn5sRtmCI=;
+	s=default; t=1655410842;
+	bh=6WklOQ25jZMyFPZkPKq+nnZlQlQPdWmVSz0tllK2VRY=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=tXONqTMBd6Dcl9kOtHVQrEA0BMb/6RXiXXRP5+Bnl6KKigiSECke6NKsm5J0cYoKF
-	 gcrXuaWpsl1ycxqINLpv5E4a1JeojPvn4LtosqTByepWBukqq9hPbiL1wvDSFYfMcx
-	 yvNB+9HhZgCp2119RUs+QA72nkm3vVhlm7UCgd/E=
+	b=ZHnwm3qF+LP9HXhkWtPRH4JuXxGwMmOk50RqWli1JDIl4vH5jBKtEEXa9qgPXwQ4i
+	 m3f+bg3Q4+wXlPOYOI76//HAeEVD+PhjUAzS+UBOHrt2TkJgZ4o9v1XHeld59UcH3X
+	 uCKumV8xEKYi2j+krqUn659F988oXz5SvMyz9rHA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 57D7BF80527;
-	Thu, 16 Jun 2022 22:18:56 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 54C66F80535;
+	Thu, 16 Jun 2022 22:18:59 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id D32C0F804E0; Thu, 16 Jun 2022 22:18:52 +0200 (CEST)
+ id DBA99F8052E; Thu, 16 Jun 2022 22:18:57 +0200 (CEST)
 Received: from mga17.intel.com (mga17.intel.com [192.55.52.151])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id D51CEF801D8
- for <alsa-devel@alsa-project.org>; Thu, 16 Jun 2022 22:18:43 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D51CEF801D8
+ by alsa1.perex.cz (Postfix) with ESMTPS id 39337F800F0
+ for <alsa-devel@alsa-project.org>; Thu, 16 Jun 2022 22:18:47 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 39337F800F0
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="e0JxD/nF"
+ header.b="OpF9Glkq"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1655410727; x=1686946727;
+ t=1655410731; x=1686946731;
  h=from:to:cc:subject:date:message-id:in-reply-to:
  references:mime-version:content-transfer-encoding;
- bh=JPttLoo1e6ngS8OJt0II4U3qIJOTyL/KyoZn5sRtmCI=;
- b=e0JxD/nFz/GFsuCeFSs+SRtmL/608zexSFQh1AKTMrlEburMpR/4fIGH
- nALF5jSa3vpEPqZ10gSMo9s8KdNTf3x9P/v4mUCJ5qL1U87Yl6RsljyNC
- v9Z+Lty7NmEjprxlPNYR/YN666h89ojU4qIxzpiOaZpNB1j330DZudoIF
- iVJ8quXCEsqDWLr+zB3+aGB/ttB69avg5H8vSMBvfzH41e6o5Kxw+GggD
- LUEG7HUnl+Sfh+IBL0fC/eZWI/JJJKkjev8lF76dAMAvv7jOKy7v9fOZY
- RmAaAMTCJSE+1qxLuAwWpSyl8y3DJKOG5SuaZgSnGbgAMTfCC8LsbPywd w==;
-X-IronPort-AV: E=McAfee;i="6400,9594,10380"; a="259803605"
-X-IronPort-AV: E=Sophos;i="5.92,306,1650956400"; d="scan'208";a="259803605"
+ bh=6WklOQ25jZMyFPZkPKq+nnZlQlQPdWmVSz0tllK2VRY=;
+ b=OpF9GlkqllK1jBNEC3qdAFkHKRVAEa0idaiIgucxnMCfFm1VdB5GEbnx
+ Djm6BmOGXwX+KK4HVzB4n5z2bbfB3BWlvoxLX8jutoJxU4lejW0PpFsZ1
+ 37iiPhuiv+1hHSWWtoO6SUdrVPtp/bmI2U8VuD0mzZrGT7cxI9xInQP4/
+ htb7dycRIWCnGZFb1sQibnsPB3Y+ghWBIoT5H+pxqxoLSs0rOmIPhDGVG
+ puvJKX/RRj6rw1TfUsEakoD4M+mfTnZ3bMUkfmVMZ3m+uFriNrpIYi0ta
+ A3i/ZExFgP3NYrSM9MXELSWy6dFXAjgb+rSPpiUrTBgjYXvY7aoqVBxyp g==;
+X-IronPort-AV: E=McAfee;i="6400,9594,10380"; a="259803611"
+X-IronPort-AV: E=Sophos;i="5.92,306,1650956400"; d="scan'208";a="259803611"
 Received: from orsmga007.jf.intel.com ([10.7.209.58])
  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 16 Jun 2022 13:18:39 -0700
-X-IronPort-AV: E=Sophos;i="5.92,306,1650956400"; d="scan'208";a="583771733"
+ 16 Jun 2022 13:18:40 -0700
+X-IronPort-AV: E=Sophos;i="5.92,306,1650956400"; d="scan'208";a="583771739"
 Received: from buckkenx-mobl.amr.corp.intel.com (HELO
  pbossart-mobl3.intel.com) ([10.212.52.70])
  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 16 Jun 2022 13:18:38 -0700
+ 16 Jun 2022 13:18:40 -0700
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH 1/3] ASoC: SOF: pm: add explicit behavior for ACPI S1 and S2
-Date: Thu, 16 Jun 2022 15:18:16 -0500
-Message-Id: <20220616201818.130802-2-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH 3/3] ASoC: SOF: Intel: disable IMR boot when resuming from
+ ACPI S4 and S5 states
+Date: Thu, 16 Jun 2022 15:18:18 -0500
+Message-Id: <20220616201818.130802-4-pierre-louis.bossart@linux.intel.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20220616201818.130802-1-pierre-louis.bossart@linux.intel.com>
 References: <20220616201818.130802-1-pierre-louis.bossart@linux.intel.com>
@@ -87,41 +88,35 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The existing code only deals with S0 and S3, let's start adding S1 and S2.
+The IMR was assumed to be preserved when suspending to S4 and S5
+states, but community reports invalidate that assumption, the hardware
+seems to be powered off and the IMR memory content cleared.
 
-No functional change.
+Make sure regular boot with firmware download is used for S4 and S5.
 
+BugLink: https://github.com/thesofproject/sof/issues/5892
+Fixes: 5fb5f51185126 ("ASoC: SOF: Intel: hda-loader: add IMR restore support")
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 Reviewed-by: Péter Ujfalusi <peter.ujfalusi@linux.intel.com>
 ---
- sound/soc/sof/pm.c | 12 +++++++++++-
- 1 file changed, 11 insertions(+), 1 deletion(-)
+ sound/soc/sof/intel/hda-loader.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/sound/soc/sof/pm.c b/sound/soc/sof/pm.c
-index 18eb327a57f03..239f39a5166a4 100644
---- a/sound/soc/sof/pm.c
-+++ b/sound/soc/sof/pm.c
-@@ -335,8 +335,18 @@ int snd_sof_prepare(struct device *dev)
- 		return 0;
+diff --git a/sound/soc/sof/intel/hda-loader.c b/sound/soc/sof/intel/hda-loader.c
+index bca9dc5917f42..819b3b08c6557 100644
+--- a/sound/soc/sof/intel/hda-loader.c
++++ b/sound/soc/sof/intel/hda-loader.c
+@@ -395,7 +395,8 @@ int hda_dsp_cl_boot_firmware(struct snd_sof_dev *sdev)
+ 	struct snd_dma_buffer dmab;
+ 	int ret, ret1, i;
  
- #if defined(CONFIG_ACPI)
--	if (acpi_target_system_state() == ACPI_STATE_S0)
-+	switch (acpi_target_system_state()) {
-+	case ACPI_STATE_S0:
- 		sdev->system_suspend_target = SOF_SUSPEND_S0IX;
-+		break;
-+	case ACPI_STATE_S1:
-+	case ACPI_STATE_S2:
-+	case ACPI_STATE_S3:
-+		sdev->system_suspend_target = SOF_SUSPEND_S3;
-+		break;
-+	default:
-+		break;
-+	}
- #endif
- 
- 	return 0;
+-	if (hda->imrboot_supported && !sdev->first_boot) {
++	if (sdev->system_suspend_target < SOF_SUSPEND_S4 &&
++	    hda->imrboot_supported && !sdev->first_boot) {
+ 		dev_dbg(sdev->dev, "IMR restore supported, booting from IMR directly\n");
+ 		hda->boot_iteration = 0;
+ 		ret = hda_dsp_boot_imr(sdev);
 -- 
 2.34.1
 
