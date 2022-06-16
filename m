@@ -4,78 +4,79 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 759A4C433EF
-	for <alsa-devel@archiver.kernel.org>; Mon, 20 Jun 2022 15:13:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2B572C43334
+	for <alsa-devel@archiver.kernel.org>; Mon, 20 Jun 2022 15:13:41 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C216E1B0B;
-	Mon, 20 Jun 2022 17:12:32 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C216E1B0B
+	by alsa0.perex.cz (Postfix) with ESMTPS id 745681B46;
+	Mon, 20 Jun 2022 17:12:49 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 745681B46
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1655738002;
-	bh=XcZ1W1WJn5vOuMiYhpu5kjcnp/FZ2EwD2QWH7s5szLg=;
+	s=default; t=1655738019;
+	bh=cMX8/36gQKsevsLMjzf8uyxJAn48hFfMFuteNtj6WIA=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Xt3R3EQoHh9MxNo6n64oLI7M0zEUMBdQLD7GrURdsRbjcMXD0VWinM04BmFGetrUZ
-	 oa/mIKxxlMyoK3+vr/L+wSuiOGZlelp39qz9YmeG0xjRx7rHfI5ZhTntgA4FJbPpWv
-	 EKOxOgmGHd0jLfNdQ8DYdOJ8qnt5ebPA0j0lZP5c=
+	b=fdTBsX0jFXx2WcDswvXj7CTGQE9LOIq+n6qb9L4E9F0c6YR+vhkPPe1DaSBDAeCEf
+	 h5dv6F7J9FHwg5Eh1kh0Fl8t/BtzLLvbzSnFWv+EklDIjeHddH8+MesIpkZdkEkuuV
+	 pgtLKqhl5cdgpBGOMGuaqDR6VVgPx9rbY9Qxf0k8=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 0DADAF805C9;
+	by alsa1.perex.cz (Postfix) with ESMTP id A1D06F805D8;
 	Mon, 20 Jun 2022 17:07:02 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 49D68F805A0; Thu, 16 Jun 2022 16:34:57 +0200 (CEST)
-Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
- [67.231.152.168])
+ id F2A3EF805C4; Thu, 16 Jun 2022 16:34:58 +0200 (CEST)
+Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
+ [67.231.149.25])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 91C53F80528
- for <alsa-devel@alsa-project.org>; Thu, 16 Jun 2022 16:34:36 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 91C53F80528
+ by alsa1.perex.cz (Postfix) with ESMTPS id F38D6F8052D
+ for <alsa-devel@alsa-project.org>; Thu, 16 Jun 2022 16:34:38 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F38D6F8052D
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com
- header.b="e1rFS6HG"
-Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
- by mx0b-001ae601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 25GC0DJY015765;
- Thu, 16 Jun 2022 09:34:35 -0500
+ header.b="SHgtCg4o"
+Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
+ by mx0a-001ae601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 25GC07C9027888;
+ Thu, 16 Jun 2022 09:34:36 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
  h=from : to : cc :
  subject : date : message-id : in-reply-to : references : mime-version :
  content-transfer-encoding : content-type; s=PODMain02222019;
- bh=Z4rUFJQC8NApp1mf+grKH2chieKDYOmZYhpQ8q1UBdg=;
- b=e1rFS6HGcELEataAYSB9YKaFyfKYXDbP5iFBJ4Jj3DtlrzcfIjj8PPGa53F6eZ/iQwzg
- Yn0ko3toaVGMTOfsyjMtgG/u4zY9FUVL7r0LTx3TZYYuqhrJTMF5QukQ9FE1y9sWW1GX
- 3mN+u23i9gm68Z5olpxtS92+89DEIv9a5+yfNICp9X2XkBr65UCnAGGVApAdOKq0ruAu
- my1utuOozAGt/1o7lc9StElt9zCcyZkTzDNW5I2ITlV8AW233jq7HSbut1TBtHtlGafv
- rG0j2OiLAA86owsx6N2MIW6eQ8pSS571tBG+3NxO3xiOGf/HhyqtIb8dBs0Q/+vukZUr qQ== 
-Received: from ediex02.ad.cirrus.com ([84.19.233.68])
- by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3gmqfq5w3h-6
+ bh=8CQSKjmzsDlZ0wmGn5pCtMbuJN3c/eN6aYD6PAfwFwE=;
+ b=SHgtCg4oeqAkoaOR++2dDwvRLTuDTz8UIaKOa7WN8w7cBZostOUJNnruFpEhYdjaic1k
+ +7iOA34gBti/GPMCE5NnzcqZ+mGh9OmTFS0wIEmBFDjbN38LMS00Vzj+DNA0KIGpYmAM
+ UKAbye1BmrNIvXn8l46G+1U3V+fML2A3eF0Gd21QDiRls9m8fO59DhGbMhgBpJ4Zrv73
+ xcwFtc/T2bpP1KcckHUX5egskR/T7o5D9dUkru1ZUfEKbaYN5cGghRG+2Msny/4DJEAd
+ UeUOB83yF5ZJMs0hNA3JPqY9GKZ/OcaSDIrMzhmYL7Olh1AKSRxrCJf0shzrgDPldh0A Dw== 
+Received: from ediex01.ad.cirrus.com ([84.19.233.68])
+ by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3gmrf35vuu-6
  (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
- Thu, 16 Jun 2022 09:34:34 -0500
-Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX02.ad.cirrus.com
- (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
+ Thu, 16 Jun 2022 09:34:36 -0500
+Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.28; Thu, 16 Jun
- 2022 15:34:30 +0100
+ 2022 15:34:31 +0100
 Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
  (198.61.84.80) with Microsoft SMTP Server id 15.1.2375.28 via
- Frontend Transport; Thu, 16 Jun 2022 15:34:30 +0100
+ Frontend Transport; Thu, 16 Jun 2022 15:34:31 +0100
 Received: from algalon.ad.cirrus.com (algalon.ad.cirrus.com [198.90.251.122])
- by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 9F971478;
+ by ediswmail.ad.cirrus.com (Postfix) with ESMTP id EBC7611D3;
  Thu, 16 Jun 2022 14:34:30 +0000 (UTC)
 From: Charles Keepax <ckeepax@opensource.cirrus.com>
 To: <broonie@kernel.org>
-Subject: [PATCH 09/96] ASoC: bcm: Migrate to new style legacy DAI naming flag
-Date: Thu, 16 Jun 2022 15:33:02 +0100
-Message-ID: <20220616143429.1324494-10-ckeepax@opensource.cirrus.com>
+Subject: [PATCH 13/96] ASoC: xilinx: Migrate to new style legacy DAI naming
+ flag
+Date: Thu, 16 Jun 2022 15:33:06 +0100
+Message-ID: <20220616143429.1324494-14-ckeepax@opensource.cirrus.com>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20220616143429.1324494-1-ckeepax@opensource.cirrus.com>
 References: <20220616143429.1324494-1-ckeepax@opensource.cirrus.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: 3zHa20P_xhcoVdD1hy7wKILCc4DBWNEb
-X-Proofpoint-GUID: 3zHa20P_xhcoVdD1hy7wKILCc4DBWNEb
+X-Proofpoint-GUID: wzCxxBJRMOWUMt5liZTazDE8EHvkfRl4
+X-Proofpoint-ORIG-GUID: wzCxxBJRMOWUMt5liZTazDE8EHvkfRl4
 X-Proofpoint-Spam-Reason: safe
 X-Mailman-Approved-At: Mon, 20 Jun 2022 17:06:45 +0200
 Cc: cezary.rojewski@intel.com, heiko@sntech.de,
@@ -114,55 +115,62 @@ currently uses the legacy naming, so add the new flag.
 
 Signed-off-by: Charles Keepax <ckeepax@opensource.cirrus.com>
 ---
- sound/soc/bcm/bcm2835-i2s.c          | 3 ++-
- sound/soc/bcm/bcm63xx-i2s-whistler.c | 1 +
- sound/soc/bcm/cygnus-ssp.c           | 7 ++++---
- 3 files changed, 7 insertions(+), 4 deletions(-)
+ sound/soc/xilinx/xlnx_formatter_pcm.c | 16 ++++++++--------
+ sound/soc/xilinx/xlnx_i2s.c           |  1 +
+ sound/soc/xilinx/xlnx_spdif.c         |  1 +
+ 3 files changed, 10 insertions(+), 8 deletions(-)
 
-diff --git a/sound/soc/bcm/bcm2835-i2s.c b/sound/soc/bcm/bcm2835-i2s.c
-index e39c8d9f40995..f4d84774dac72 100644
---- a/sound/soc/bcm/bcm2835-i2s.c
-+++ b/sound/soc/bcm/bcm2835-i2s.c
-@@ -821,7 +821,8 @@ static const struct regmap_config bcm2835_regmap_config = {
+diff --git a/sound/soc/xilinx/xlnx_formatter_pcm.c b/sound/soc/xilinx/xlnx_formatter_pcm.c
+index 5c4158069a5a8..f5ac0aa312d6e 100644
+--- a/sound/soc/xilinx/xlnx_formatter_pcm.c
++++ b/sound/soc/xilinx/xlnx_formatter_pcm.c
+@@ -575,14 +575,14 @@ static int xlnx_formatter_pcm_new(struct snd_soc_component *component,
+ }
+ 
+ static const struct snd_soc_component_driver xlnx_asoc_component = {
+-	.name		= DRV_NAME,
+-	.set_sysclk	= xlnx_formatter_set_sysclk,
+-	.open		= xlnx_formatter_pcm_open,
+-	.close		= xlnx_formatter_pcm_close,
+-	.hw_params	= xlnx_formatter_pcm_hw_params,
+-	.trigger	= xlnx_formatter_pcm_trigger,
+-	.pointer	= xlnx_formatter_pcm_pointer,
+-	.pcm_construct	= xlnx_formatter_pcm_new,
++	.name			= DRV_NAME,
++	.set_sysclk		= xlnx_formatter_set_sysclk,
++	.open			= xlnx_formatter_pcm_open,
++	.close			= xlnx_formatter_pcm_close,
++	.hw_params		= xlnx_formatter_pcm_hw_params,
++	.trigger		= xlnx_formatter_pcm_trigger,
++	.pointer		= xlnx_formatter_pcm_pointer,
++	.pcm_construct		= xlnx_formatter_pcm_new,
  };
  
- static const struct snd_soc_component_driver bcm2835_i2s_component = {
--	.name		= "bcm2835-i2s-comp",
-+	.name			= "bcm2835-i2s-comp",
-+	.legacy_dai_naming	= 1,
- };
+ static int xlnx_formatter_pcm_probe(struct platform_device *pdev)
+diff --git a/sound/soc/xilinx/xlnx_i2s.c b/sound/soc/xilinx/xlnx_i2s.c
+index 4cc6ee7c81a32..9de92d35e30ee 100644
+--- a/sound/soc/xilinx/xlnx_i2s.c
++++ b/sound/soc/xilinx/xlnx_i2s.c
+@@ -158,6 +158,7 @@ static const struct snd_soc_dai_ops xlnx_i2s_dai_ops = {
  
- static int bcm2835_i2s_probe(struct platform_device *pdev)
-diff --git a/sound/soc/bcm/bcm63xx-i2s-whistler.c b/sound/soc/bcm/bcm63xx-i2s-whistler.c
-index 527caf430715b..2da1384ffe911 100644
---- a/sound/soc/bcm/bcm63xx-i2s-whistler.c
-+++ b/sound/soc/bcm/bcm63xx-i2s-whistler.c
-@@ -218,6 +218,7 @@ static struct snd_soc_dai_driver bcm63xx_i2s_dai = {
- 
- static const struct snd_soc_component_driver bcm63xx_i2s_component = {
- 	.name = "bcm63xx",
+ static const struct snd_soc_component_driver xlnx_i2s_component = {
+ 	.name = DRV_NAME,
 +	.legacy_dai_naming = 1,
  };
  
- static int bcm63xx_i2s_dev_probe(struct platform_device *pdev)
-diff --git a/sound/soc/bcm/cygnus-ssp.c b/sound/soc/bcm/cygnus-ssp.c
-index 4bfa2d715ff4d..8b7a215730707 100644
---- a/sound/soc/bcm/cygnus-ssp.c
-+++ b/sound/soc/bcm/cygnus-ssp.c
-@@ -1201,9 +1201,10 @@ static const struct snd_soc_dai_driver cygnus_spdif_dai_info = {
- static struct snd_soc_dai_driver cygnus_ssp_dai[CYGNUS_MAX_PORTS];
+ static const struct of_device_id xlnx_i2s_of_match[] = {
+diff --git a/sound/soc/xilinx/xlnx_spdif.c b/sound/soc/xilinx/xlnx_spdif.c
+index cba0e868a7d77..7342048e98751 100644
+--- a/sound/soc/xilinx/xlnx_spdif.c
++++ b/sound/soc/xilinx/xlnx_spdif.c
+@@ -226,6 +226,7 @@ static struct snd_soc_dai_driver xlnx_spdif_rx_dai = {
  
- static const struct snd_soc_component_driver cygnus_ssp_component = {
--	.name		= "cygnus-audio",
--	.suspend	= cygnus_ssp_suspend,
--	.resume		= cygnus_ssp_resume,
-+	.name			= "cygnus-audio",
-+	.suspend		= cygnus_ssp_suspend,
-+	.resume			= cygnus_ssp_resume,
-+	.legacy_dai_naming	= 1,
+ static const struct snd_soc_component_driver xlnx_spdif_component = {
+ 	.name = "xlnx-spdif",
++	.legacy_dai_naming = 1,
  };
  
- /*
+ static const struct of_device_id xlnx_spdif_of_match[] = {
 -- 
 2.30.2
 
