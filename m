@@ -4,78 +4,79 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id DFDBAC43334
-	for <alsa-devel@archiver.kernel.org>; Mon, 20 Jun 2022 15:17:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5A396C433EF
+	for <alsa-devel@archiver.kernel.org>; Mon, 20 Jun 2022 15:18:04 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3BB7E1F66;
-	Mon, 20 Jun 2022 17:16:54 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3BB7E1F66
+	by alsa0.perex.cz (Postfix) with ESMTPS id A72A01F78;
+	Mon, 20 Jun 2022 17:17:12 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A72A01F78
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1655738264;
-	bh=PlSTYXu2lpVBTXFcZF5mIzdMYeEnrg9oDi36TAIvs90=;
+	s=default; t=1655738282;
+	bh=tvs99kTxLRL7q64mDaRkaZ4uHtao7ILVcbWcTfoMBiM=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Ol47V6tRlSNSjScLJOZ3ZZKaP4pTTM/jlTU2Ksi9k3IMasjHuOnDlO3oAlXEWS5Pz
-	 gEQHQ4ucoMztVeBgUVPfkqpkXeOB6bOfi3jJgxzzzjgot+/He73/3Wgn+XQCOHpBOo
-	 M2X4m6ZpTF3Km+09I8MEr+BjYsMzGztjPsmJLC0M=
+	b=p3eXdGWQXi66SDS4ysU8HBn45vCOEzw1UWB8uWZZCUGLIygwiCErcrDTzv298vS6d
+	 rwgWkmSFDBg1ZXjf3Bq+Of8RkI5340PLDxiEfc9ldSOuMMUUH2jdbNa7kbVUBmxeIT
+	 rqTp263M4fr20ABqDxQHg4p83NqHyh4IeVW35zJI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id D89BFF80624;
-	Mon, 20 Jun 2022 17:07:30 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id C4973F80630;
+	Mon, 20 Jun 2022 17:07:31 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id B6988F80535; Thu, 16 Jun 2022 16:35:20 +0200 (CEST)
+ id 021AAF80537; Thu, 16 Jun 2022 16:35:20 +0200 (CEST)
 Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
  [67.231.149.25])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 57DF6F8053A
- for <alsa-devel@alsa-project.org>; Thu, 16 Jun 2022 16:34:44 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 57DF6F8053A
+ by alsa1.perex.cz (Postfix) with ESMTPS id A8226F80548
+ for <alsa-devel@alsa-project.org>; Thu, 16 Jun 2022 16:34:42 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A8226F80548
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com
- header.b="gsyVEE5v"
+ header.b="aunoSd3Y"
 Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
- by mx0a-001ae601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 25GC07CF027888;
- Thu, 16 Jun 2022 09:34:41 -0500
+ by mx0a-001ae601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 25G4igBa030693;
+ Thu, 16 Jun 2022 09:34:40 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
  h=from : to : cc :
  subject : date : message-id : in-reply-to : references : mime-version :
  content-transfer-encoding : content-type; s=PODMain02222019;
- bh=QOfuAT4opaQnGN4l3F7a/ekhy562k9SkJ4H9CFLqgJc=;
- b=gsyVEE5vjk/SPn6uZApJO4ZAWx4GqHhPRrIYYWurRE8cpj5RngDXNmg8NLRXRUnG+o5h
- R4D7/Yajp1eyz2ms3z/+jdkbjH679P+q23PSjkufoy4+yaI2Jp7doLdI2fzFGTXhR3p+
- zHUS4IG7rAG76ugZ7N6x77xhrSj3cH8V6tCp2PZLdqnXbrZoWQD3dLwRSfd/5jX/x55/
- aw60EqUcj2g80/BMMTb3nMDcgGXQtAMHfHNHF4OeY3LQOZJbPIWXxpXIcL8NDZC+8TO2
- pTsuW4p8oCQMUrOvWQKiDBsqtTZd49HEDhI5vqHzMCUNx82+UXmlrIKF+hjPsacqDXdy Xw== 
-Received: from ediex01.ad.cirrus.com ([84.19.233.68])
- by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3gmrf35vuu-12
+ bh=PWSGRrWgNvQqI/FJwn730ONsTAALyjkFDX1e4aDoN0Y=;
+ b=aunoSd3Y2LL2Jh+8WAGSuUqS/F2Tah6wB9r4VPbfcwz95TZhTzl3UQ9GceTQLDOs532y
+ iJ89IK50EAtZ4TMSfizFzR7Tvmturi6f+su6cOwHpNSPUpN+q4Sfb2ZqrcwBtuiWTFj/
+ B+45969XSLj0aFL8/laa4Rqq/aqHvT5ebKeoa2163CMTDIgWN3lknry43+v57P78+u9C
+ wnqkoiMeDYqBImmmP638gYKomrQBgbDtO8wAgSIPGKX9OGb1yuiR0IkSmd3AocEB6pm4
+ NK0HGv1yk7ByxuVsi8FA6tFUaL6pwXX8er0JLSEKQoKFAh0MrG03/3W+Y7T2txTgxlat /Q== 
+Received: from ediex02.ad.cirrus.com ([84.19.233.68])
+ by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3gmrf35vuw-5
  (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
- Thu, 16 Jun 2022 09:34:41 -0500
-Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
+ Thu, 16 Jun 2022 09:34:40 -0500
+Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX02.ad.cirrus.com
+ (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.28; Thu, 16 Jun
  2022 15:34:32 +0100
 Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
  (198.61.84.80) with Microsoft SMTP Server id 15.1.2375.28 via
  Frontend Transport; Thu, 16 Jun 2022 15:34:32 +0100
 Received: from algalon.ad.cirrus.com (algalon.ad.cirrus.com [198.90.251.122])
- by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 2FC5811DA;
+ by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 84C4C11D3;
  Thu, 16 Jun 2022 14:34:32 +0000 (UTC)
 From: Charles Keepax <ckeepax@opensource.cirrus.com>
 To: <broonie@kernel.org>
-Subject: [PATCH 28/96] ASoC: pxa: Migrate to new style legacy DAI naming flag
-Date: Thu, 16 Jun 2022 15:33:21 +0100
-Message-ID: <20220616143429.1324494-29-ckeepax@opensource.cirrus.com>
+Subject: [PATCH 32/96] ASoC: mxs-saif: Migrate to new style legacy DAI naming
+ flag
+Date: Thu, 16 Jun 2022 15:33:25 +0100
+Message-ID: <20220616143429.1324494-33-ckeepax@opensource.cirrus.com>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20220616143429.1324494-1-ckeepax@opensource.cirrus.com>
 References: <20220616143429.1324494-1-ckeepax@opensource.cirrus.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-Proofpoint-GUID: 4w4lVN3eXif12lQ6eqdKAmtSagwuJlo3
-X-Proofpoint-ORIG-GUID: 4w4lVN3eXif12lQ6eqdKAmtSagwuJlo3
+X-Proofpoint-GUID: aFh-e9vjHCOO20rpLqkPvBmaX-DQ1kFa
+X-Proofpoint-ORIG-GUID: aFh-e9vjHCOO20rpLqkPvBmaX-DQ1kFa
 X-Proofpoint-Spam-Reason: safe
 X-Mailman-Approved-At: Mon, 20 Jun 2022 17:06:45 +0200
 Cc: cezary.rojewski@intel.com, heiko@sntech.de,
@@ -109,100 +110,28 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 Change the legacy DAI naming flag from opting in to the new scheme
 (non_legacy_dai_naming), to opting out of it (legacy_dai_naming).
-These drivers appear to be on the CPU side of the DAI link and
+This driver appears to be on the CPU side of the DAI link and
 currently uses the legacy naming, so add the new flag.
 
 Signed-off-by: Charles Keepax <ckeepax@opensource.cirrus.com>
 ---
- sound/soc/pxa/mmp-sspa.c   |  9 +++++----
- sound/soc/pxa/pxa-ssp.c    | 21 +++++++++++----------
- sound/soc/pxa/pxa2xx-i2s.c | 21 +++++++++++----------
- 3 files changed, 27 insertions(+), 24 deletions(-)
+ sound/soc/mxs/mxs-saif.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/sound/soc/pxa/mmp-sspa.c b/sound/soc/pxa/mmp-sspa.c
-index 382e9d8608a3f..fb5a4390443fe 100644
---- a/sound/soc/pxa/mmp-sspa.c
-+++ b/sound/soc/pxa/mmp-sspa.c
-@@ -456,10 +456,11 @@ static int mmp_sspa_close(struct snd_soc_component *component,
- }
+diff --git a/sound/soc/mxs/mxs-saif.c b/sound/soc/mxs/mxs-saif.c
+index 467b0f2ce0bb1..ac761d3a01c05 100644
+--- a/sound/soc/mxs/mxs-saif.c
++++ b/sound/soc/mxs/mxs-saif.c
+@@ -663,7 +663,8 @@ static struct snd_soc_dai_driver mxs_saif_dai = {
+ };
  
- static const struct snd_soc_component_driver mmp_sspa_component = {
--	.name		= "mmp-sspa",
--	.mmap		= mmp_pcm_mmap,
--	.open		= mmp_sspa_open,
--	.close		= mmp_sspa_close,
-+	.name			= "mmp-sspa",
-+	.mmap			= mmp_pcm_mmap,
-+	.open			= mmp_sspa_open,
-+	.close			= mmp_sspa_close,
+ static const struct snd_soc_component_driver mxs_saif_component = {
+-	.name		= "mxs-saif",
++	.name			= "mxs-saif",
 +	.legacy_dai_naming	= 1,
  };
  
- static int asoc_mmp_sspa_probe(struct platform_device *pdev)
-diff --git a/sound/soc/pxa/pxa-ssp.c b/sound/soc/pxa/pxa-ssp.c
-index 0f504a9f4983d..430dd446321e5 100644
---- a/sound/soc/pxa/pxa-ssp.c
-+++ b/sound/soc/pxa/pxa-ssp.c
-@@ -848,16 +848,17 @@ static struct snd_soc_dai_driver pxa_ssp_dai = {
- };
- 
- static const struct snd_soc_component_driver pxa_ssp_component = {
--	.name		= "pxa-ssp",
--	.pcm_construct	= pxa2xx_soc_pcm_new,
--	.open		= pxa2xx_soc_pcm_open,
--	.close		= pxa2xx_soc_pcm_close,
--	.hw_params	= pxa2xx_soc_pcm_hw_params,
--	.prepare	= pxa2xx_soc_pcm_prepare,
--	.trigger	= pxa2xx_soc_pcm_trigger,
--	.pointer	= pxa2xx_soc_pcm_pointer,
--	.suspend	= pxa_ssp_suspend,
--	.resume		= pxa_ssp_resume,
-+	.name			= "pxa-ssp",
-+	.pcm_construct		= pxa2xx_soc_pcm_new,
-+	.open			= pxa2xx_soc_pcm_open,
-+	.close			= pxa2xx_soc_pcm_close,
-+	.hw_params		= pxa2xx_soc_pcm_hw_params,
-+	.prepare		= pxa2xx_soc_pcm_prepare,
-+	.trigger		= pxa2xx_soc_pcm_trigger,
-+	.pointer		= pxa2xx_soc_pcm_pointer,
-+	.suspend		= pxa_ssp_suspend,
-+	.resume			= pxa_ssp_resume,
-+	.legacy_dai_naming	= 1,
- };
- 
- #ifdef CONFIG_OF
-diff --git a/sound/soc/pxa/pxa2xx-i2s.c b/sound/soc/pxa/pxa2xx-i2s.c
-index ffcf44e4dc8c0..3e4c704036722 100644
---- a/sound/soc/pxa/pxa2xx-i2s.c
-+++ b/sound/soc/pxa/pxa2xx-i2s.c
-@@ -355,16 +355,17 @@ static struct snd_soc_dai_driver pxa_i2s_dai = {
- };
- 
- static const struct snd_soc_component_driver pxa_i2s_component = {
--	.name		= "pxa-i2s",
--	.pcm_construct	= pxa2xx_soc_pcm_new,
--	.open		= pxa2xx_soc_pcm_open,
--	.close		= pxa2xx_soc_pcm_close,
--	.hw_params	= pxa2xx_soc_pcm_hw_params,
--	.prepare	= pxa2xx_soc_pcm_prepare,
--	.trigger	= pxa2xx_soc_pcm_trigger,
--	.pointer	= pxa2xx_soc_pcm_pointer,
--	.suspend	= pxa2xx_soc_pcm_suspend,
--	.resume		= pxa2xx_soc_pcm_resume,
-+	.name			= "pxa-i2s",
-+	.pcm_construct		= pxa2xx_soc_pcm_new,
-+	.open			= pxa2xx_soc_pcm_open,
-+	.close			= pxa2xx_soc_pcm_close,
-+	.hw_params		= pxa2xx_soc_pcm_hw_params,
-+	.prepare		= pxa2xx_soc_pcm_prepare,
-+	.trigger		= pxa2xx_soc_pcm_trigger,
-+	.pointer		= pxa2xx_soc_pcm_pointer,
-+	.suspend		= pxa2xx_soc_pcm_suspend,
-+	.resume			= pxa2xx_soc_pcm_resume,
-+	.legacy_dai_naming	= 1,
- };
- 
- static int pxa2xx_i2s_drv_probe(struct platform_device *pdev)
+ static irqreturn_t mxs_saif_irq(int irq, void *dev_id)
 -- 
 2.30.2
 
