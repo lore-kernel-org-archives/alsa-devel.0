@@ -4,65 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 24B2DC43334
-	for <alsa-devel@archiver.kernel.org>; Fri, 17 Jun 2022 23:20:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id EB00AC43334
+	for <alsa-devel@archiver.kernel.org>; Fri, 17 Jun 2022 23:21:15 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 51C8F1E7C;
-	Sat, 18 Jun 2022 01:19:49 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 51C8F1E7C
+	by alsa0.perex.cz (Postfix) with ESMTPS id A6A171EF7;
+	Sat, 18 Jun 2022 01:20:23 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A6A171EF7
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1655508039;
-	bh=m5hngH8qrhfmzzpAvzXVE+okMt66HBMJ29sZoca1Slk=;
+	s=default; t=1655508073;
+	bh=1ZQAmxpThkE2DLyss9Wc6dIO9PFD69OSF6CfY8xWydE=;
 	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=sp7qpbyJTBgKNc5AmqOcxPPH84woTgSoSICLcheZ3O+ve6Fiqigv21mXF98U+UjO7
-	 GS3nODeHNemALQ6wpuSaIC1jGFeq8Nw4526yyK9zwNPKB9o0cBTd9AC8GCT8SRU99y
-	 oi+4nuS+ro8LNjq5ik6tG9PQ8OJjB0/yvSKWvoj8=
+	b=CyuBOZxuaokEx+X7hkTitdZ/CA52VP7Hi8f6Px1ltPDCCIAsqlwuIiaP/f8hHF4zy
+	 x+6C6h4G/Aju0SEuzdnameDDl9miyhFPwbkPbXoi0AavOa6MTCiMOpSALj5H0+8cS1
+	 AGTlGhj8OQoPHijHBBT1UmR3esYM4fd+qgZ78CBI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id C06BEF8028B;
-	Sat, 18 Jun 2022 01:19:48 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 3BDA4F804BC;
+	Sat, 18 Jun 2022 01:19:54 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id CB961F80527; Sat, 18 Jun 2022 01:19:46 +0200 (CEST)
+ id 325E5F80534; Sat, 18 Jun 2022 01:19:53 +0200 (CEST)
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 5E041F804BC
- for <alsa-devel@alsa-project.org>; Sat, 18 Jun 2022 01:19:44 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5E041F804BC
+ by alsa1.perex.cz (Postfix) with ESMTPS id CA45AF804BC
+ for <alsa-devel@alsa-project.org>; Sat, 18 Jun 2022 01:19:49 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CA45AF804BC
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="bSYqBpRL"
+ header.b="pk/mbNWt"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id 88147618F1;
- Fri, 17 Jun 2022 23:19:42 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A8A5FC3411D;
- Fri, 17 Jun 2022 23:19:41 +0000 (UTC)
+ by dfw.source.kernel.org (Postfix) with ESMTPS id C5BEF6139D;
+ Fri, 17 Jun 2022 23:19:47 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2EE71C3411E;
+ Fri, 17 Jun 2022 23:19:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1655507982;
- bh=m5hngH8qrhfmzzpAvzXVE+okMt66HBMJ29sZoca1Slk=;
+ s=k20201202; t=1655507987;
+ bh=1ZQAmxpThkE2DLyss9Wc6dIO9PFD69OSF6CfY8xWydE=;
  h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=bSYqBpRLuM0Jz2UqeAWh1FPqhjwcagVx7cdqIGzhaPNdgeq1+zwyTeLdsLh2rXBqT
- PcFU9NooL29wQNsFiwzOvPnHKABCJapS00gbeBaJ2+qufwwoH6c576eQZ6MQKr2zw2
- YjMllCuXh25B5eLCZgfM0glU+Yai3bSW1lL0jvG53FAnYtdWcdeBQeAHPtpgTBpcqa
- Rf7D/8NOClWY91JsgWejkIRmMEs3oBFs5sGwQGLWop7er0kgTn+P/6C7m8WZ3bz/vu
- o+9tqBIu03FebsBDFLsc5xZAYM0Yc+uoynl/9Inv+U7EktUDN/ki4wVQztHK5silVQ
- PsWVnzgAzzAcg==
+ b=pk/mbNWthNkCEDjD0aDVFlePtSIelO8IwNo1zp+ymn6vxb6jwtPjiTcQHjhxEnKxU
+ JxTBSgjXTPWMnhMlT1XdJdAzLpManKtq9/bIJpIvguJNtpwreUEhMTL4KubdOiyutq
+ fZ7qTTBmuGX+Vrj9r9Dr2cpDa+uoTrshQNvfc5RfmkpopGqoV35m7aQI1pN6rCZvfg
+ aPf09t16WuzEbf3jLneas3RM3Xk0SBWOHXQO0cj1CxC9rIDC2UszxC3wNiiBUDrpSq
+ +Fz++F6tVQgbJP1sOu8PxJnBcodeucpFeQDkoee/wDPTRUcc9TyVcJcKUWAMha7Isj
+ wuTRSuMrI+hOw==
 From: Mark Brown <broonie@kernel.org>
-To: pierre-louis.bossart@linux.intel.com, alsa-devel@alsa-project.org
-In-Reply-To: <20220616201818.130802-1-pierre-louis.bossart@linux.intel.com>
-References: <20220616201818.130802-1-pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH 0/3] ASoC: SOF: Intel: fix resume from hibernate
-Message-Id: <165550798141.994018.4634156179835140087.b4-ty@kernel.org>
-Date: Sat, 18 Jun 2022 00:19:41 +0100
+To: sbinding@opensource.cirrus.com, lgirdwood@gmail.com
+In-Reply-To: <20220617153606.2619457-1-sbinding@opensource.cirrus.com>
+References: <20220617153606.2619457-1-sbinding@opensource.cirrus.com>
+Subject: Re: [PATCH v1] ASoC: ops: Fix integer detection for when max possible
+ values > 1
+Message-Id: <165550798591.994018.15249156290558800333.b4-ty@kernel.org>
+Date: Sat, 18 Jun 2022 00:19:45 +0100
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: tiwai@suse.de
+Cc: patches@opensource.cirrus.com, alsa-devel@alsa-project.org,
+ linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -78,13 +80,22 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Thu, 16 Jun 2022 15:18:15 -0500, Pierre-Louis Bossart wrote:
-> The enablement of IMR-based DSP boot helped reduce resume latency, but
-> unfortunately the context is not saved in S4 and S5 which leads to
-> multiple reports of boot failures.
-> 
-> This patchset forces a full firmware reload/reboot when resuming from
-> S4/S5 and restores functionality.
+On Fri, 17 Jun 2022 16:36:06 +0100, Stefan Binding wrote:
+> The standard snd_soc_info_volsw() allows a two value control to be
+> defined as an integer control only if the control name ends in
+> "Volume". It achieves this by creating a substring if it contains
+> " Volume", and ensuring this exists at the end of the name. The
+> volume substring is then used to decide whether the type is a
+> SNDRV_CTL_ELEM_TYPE_INTEGER or SNDRV_CTL_ELEM_TYPE_BOOLEAN.
+> However this volume substring is only computed for a two value
+> control.
+> This means for controls where there are more than two possible
+> values, the substring is never created, so in this case the
+> substring remains NULL, and the condition yields
+> SNDRV_CTL_ELEM_TYPE_BOOLEAN, even though there are more than 2
+> possible values.
+> If there are more than 2 possible values for the control,
+> then it should always be an integer control.
 > 
 > [...]
 
@@ -94,12 +105,8 @@ Applied to
 
 Thanks!
 
-[1/3] ASoC: SOF: pm: add explicit behavior for ACPI S1 and S2
-      commit: 6639990dbb25257eeb3df4d03e38e7d26c2484ab
-[2/3] ASoC: SOF: pm: add definitions for S4 and S5 states
-      commit: 7a5974e035a6d496797547e4b469bc88938343c2
-[3/3] ASoC: SOF: Intel: disable IMR boot when resuming from ACPI S4 and S5 states
-      commit: 58ecb11eab44dd5d64e35664ac4d62fecb6328f4
+[1/1] ASoC: ops: Fix integer detection for when max possible values > 1
+      commit: 442302003bd2b151e12d52b0af9a7dac131bf931
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
