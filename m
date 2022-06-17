@@ -4,72 +4,89 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5F4F8C43334
-	for <alsa-devel@archiver.kernel.org>; Fri, 17 Jun 2022 08:46:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3C215C43334
+	for <alsa-devel@archiver.kernel.org>; Fri, 17 Jun 2022 08:47:12 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 83CCA1B47;
-	Fri, 17 Jun 2022 10:46:02 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 83CCA1B47
+	by alsa0.perex.cz (Postfix) with ESMTPS id 8861E1B1E;
+	Fri, 17 Jun 2022 10:46:20 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8861E1B1E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1655455612;
-	bh=yqzhLHcKPAJYHbRZbKXDOvARyleooSL+Wl+IzjUN4p4=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	s=default; t=1655455630;
+	bh=7FiGF66O9qhSnUzROd02PKlWSHoF7nIFtVfbQthR0bQ=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=n3r6HhZYGdvucbb7iTxzZ+p/MLuA/glPF8IGGAlt9QYyTH/nfzFsX3tEwbu5IcFsW
-	 2c5RTR67wRbbN3g+IOqG7svRQ+2cFs5Xx7KboFw0oLKlfPU3kMT+PAYVgar8l1DjCh
-	 Lb1KTDW14X+6cFRrxz37eNgH+OsXup4u1kssIyfU=
+	b=RtDgEifwGv8SVVKztiOKzb/dz5QyuO0Yvwpys0Zea7x102tLS1TQTfdygjLeY5X2s
+	 ujySZebRKXOucpwi9G71QCsvprOVexM7HIlzeGf6fBPdcwwGvIB7tZSf86U529y7tY
+	 WfpzhosuD9yzyu2DNzsvGkKyOYFbPIzj1YUUR8ps=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id EDA1DF80311;
-	Fri, 17 Jun 2022 10:45:31 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 9C392F80159;
+	Fri, 17 Jun 2022 10:46:10 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 63CD1F804BC; Fri, 17 Jun 2022 10:45:30 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id DD3B5F80248; Fri, 17 Jun 2022 10:46:08 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 82F7AF800B0
- for <alsa-devel@alsa-project.org>; Fri, 17 Jun 2022 10:45:25 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 82F7AF800B0
+ by alsa1.perex.cz (Postfix) with ESMTPS id EA77AF800D3
+ for <alsa-devel@alsa-project.org>; Fri, 17 Jun 2022 10:46:01 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EA77AF800D3
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="UcxHZnnN"
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
+ header.b="MCOh0FzE"; 
+ dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
+ header.b="72MKVD06"
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id 8BD5F61337;
- Fri, 17 Jun 2022 08:45:23 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0BBD5C3411B;
- Fri, 17 Jun 2022 08:45:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1655455523;
- bh=yqzhLHcKPAJYHbRZbKXDOvARyleooSL+Wl+IzjUN4p4=;
- h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=UcxHZnnNY9YJMK/0j7CavYwMR4LNBIcWcBMa62qHUvOAEXrVqtH6V+LS5oz+jZJS0
- qT3ZRdlvEcrhBCUzfISNq/c15rlmZyHYbMtG/IQ1ZMcwSCRgR8tqWt6Su0WOpDfQZm
- yvwQYttfIBB+6uaRfR5uD1uLtRCWyc+XQVrKF6yVaxAYhr0lLUvDerQGnT7b1tj8Eh
- K+Ojta6jA3AFtXowcVyEOZ6WSccsFNoPm6lcNxSWIHyVHr0qbyqDec3VGeuoR8Ld8t
- Ipq/iCF/S2AQiIWP0AmmCfkROXNAacAy3UsBgGLK7d3+pIXCZ6eLkTlMDSXJj4ag9R
- pLZ2vAdO16r9w==
-Date: Fri, 17 Jun 2022 09:45:17 +0100
-From: Mark Brown <broonie@kernel.org>
-To: Judy Hsiao <judyhsiao@chromium.org>
-Subject: Re: [PATCH v3 0/3] ASoC: rockchip: i2s: switch BCLK to GPIO
-Message-ID: <Yqw/HbgbdkFPht8D@sirena.org.uk>
-References: <20220616155836.3401420-1-judyhsiao@chromium.org>
- <20220617044251.4029697-1-judyhsiao@chromium.org>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature"; boundary="aLv2GpDJ47ZFHIwQ"
-Content-Disposition: inline
-In-Reply-To: <20220617044251.4029697-1-judyhsiao@chromium.org>
-X-Cookie: 98% lean.
-Cc: alsa-devel@alsa-project.org, Heiko Stuebner <heiko@sntech.de>,
- linux-kernel@vger.kernel.org, Brian Norris <briannorris@chromium.org>,
- Liam Girdwood <lgirdwood@gmail.com>, linux-rockchip@lists.infradead.org,
- Rob Herring <robh+dt@kernel.org>, Chen-Yu Tsai <wenst@chromium.org>,
- linux-arm-kernel@lists.infradead.org
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 7A79D1FDB3;
+ Fri, 17 Jun 2022 08:46:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1655455561; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=u+WqOTby9MKyDRmm+DsTXAsXR1RSnlR5Pe8lf7qyXRk=;
+ b=MCOh0FzEg3OOp1ZBT+KRQWoOs2i8i3tZLTN3bsQJqo9mlb+utMcRugpCgYDSdFUGdjtXjy
+ aaMB3ui9/NaRiwp4YBZgFFSmI14+F47F6tr0GkNPbb/KJSLy6qqNdxtGuc5WhNU1Eo1GCY
+ 1n8njEndZEffZWuq14u3p/yxj7OJG14=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1655455561;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=u+WqOTby9MKyDRmm+DsTXAsXR1RSnlR5Pe8lf7qyXRk=;
+ b=72MKVD06ySOQ6JhuZy/7fCwVNvjnvo3hsGWB6MH1iI0OpFfr0jnR6KKn0lFEELIP4Gz87D
+ SrDQ+Y6bC02LTlCA==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 41EFC13458;
+ Fri, 17 Jun 2022 08:46:01 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+ by imap2.suse-dmz.suse.de with ESMTPSA id H6QqD0k/rGKyHQAAMHmgww
+ (envelope-from <tiwai@suse.de>); Fri, 17 Jun 2022 08:46:01 +0000
+Date: Fri, 17 Jun 2022 10:46:00 +0200
+Message-ID: <87tu8j1xvb.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: Re: [PATCH] ALSA: hda: intel-nhlt: remove use of __func__ in dev_dbg
+In-Reply-To: <20220616220559.136160-1-pierre-louis.bossart@linux.intel.com>
+References: <20220616220559.136160-1-pierre-louis.bossart@linux.intel.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 8bit
+Cc: alsa-devel@alsa-project.org, Bard Liao <yung-chuan.liao@linux.intel.com>,
+ Greg KH <gregkh@linuxfoundation.org>,
+ Cezary Rojewski <cezary.rojewski@intel.com>,
+ Ranjani Sridharan <ranjani.sridharan@linux.intel.com>, broonie@kernel.org,
+ Amadeusz =?ISO-8859-2?Q?S=B3awi=F1ski?= <amadeuszx.slawinski@linux.intel.com>,
+ =?ISO-8859-1?Q?P=E9ter?= Ujfalusi <peter.ujfalusi@linux.intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -85,35 +102,19 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+On Fri, 17 Jun 2022 00:05:59 +0200,
+Pierre-Louis Bossart wrote:
+> 
+> The module and function information can be added with
+> 'modprobe foo dyndbg=+pmf'
+> 
+> Suggested-by: Greg KH <gregkh@linuxfoundation.org>
+> Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+> Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+> Reviewed-by: Péter Ujfalusi <peter.ujfalusi@linux.intel.com>
+> Reviewed-by: Bard Liao <yung-chuan.liao@linux.intel.com>
 
---aLv2GpDJ47ZFHIwQ
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Thanks, applied.
 
-On Fri, Jun 17, 2022 at 04:42:48AM +0000, Judy Hsiao wrote:
-> The patches series is to fix the unexpected large
-> DC output voltage of Max98357a to burn the speakers=20
-> on rockchip platform when BCLK and SD_MODE are ON but LRCLK is OFF.
 
-Please don't send new patches in reply to old patches or serieses, this
-makes it harder for both people and tools to understand what is going
-on - it can bury things in mailboxes and make it difficult to keep track
-of what current patches are, both for the new patches and the old ones.
-
---aLv2GpDJ47ZFHIwQ
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmKsPxwACgkQJNaLcl1U
-h9C/VAf6Ah6++LNhpFFUJaZ0Bc+FLeKDMzIEESVc0bMzROauZlkjBbR2EunJMmq4
-BhlzGKMafwI0RT4sGVbO7nPwVr5ltH7tfcIxMz57xvVwie7Bb2tld2ZTSAqP5xXq
-bJUNA+bJVHSW8KwiYfcydoQeCvcNMuik4ywZ6nubQPX806JQLxM9cQFdu0ayaMzM
-pjFAFbXkeyJKUrsbvXfP0BQ+PVAoqnJe53NAHwd7GkTOw/vHO7zx+0Mz5HSSZ3p5
-HEM9h42NagL4ZomdmeStvS2zUxms/g62hrgi9KcWiclSYGBWXDfvL4nbJ3MFugRY
-ZufRWrarft2pGXl6wfWVsQwSmx05Rg==
-=tvsr
------END PGP SIGNATURE-----
-
---aLv2GpDJ47ZFHIwQ--
+Takashi
