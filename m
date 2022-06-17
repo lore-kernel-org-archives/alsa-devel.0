@@ -4,66 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6B629C433EF
-	for <alsa-devel@archiver.kernel.org>; Fri, 17 Jun 2022 16:31:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 23332C433EF
+	for <alsa-devel@archiver.kernel.org>; Fri, 17 Jun 2022 16:31:45 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 56FEE1F04;
-	Fri, 17 Jun 2022 18:30:34 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 56FEE1F04
+	by alsa0.perex.cz (Postfix) with ESMTPS id 6EBA31E7E;
+	Fri, 17 Jun 2022 18:30:53 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6EBA31E7E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1655483484;
-	bh=8lIyfl6cLa0jSZ4rrQjgGG9QXNu4BOP9MO1nbLqDdLo=;
+	s=default; t=1655483503;
+	bh=37RF6vXxD+QrHf1TXFejX0md9vYNoUUU5wVJL32Ybtc=;
 	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=BjYVyO9X1RORuZEKwrilqtPU4xc7lc6lzL9PXeZdJDXnx4fYfoyFPy+DFUZIlBmvm
-	 uKl+rgyNzoaVbUqRiko7Sc31HybbAtY3FmfIvXcOTkcZV4GeEAYrjJIDK6uDZ5OjyW
-	 ihc+0SRIh6rmnQ1QTdJ7Wju+MFlfCbyOlChokEpE=
+	b=ac8B+rWvttVMmG8s2oNdD82T7IQ8s8JmnudtY+wsvm0JQ8fWAw6uQzU2OMmJoKHwf
+	 w6YGnTBg3Vnioh3hTSZ8YeVZlBLieZE6b1v1gFwm7iI8xjIzwVdNhyuZLtWa0y1Mpr
+	 OGXaUapAi5FAah/O7M5g9zDFRron0LM/kvFK8/Sk=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 0F94BF80529;
-	Fri, 17 Jun 2022 18:30:03 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id B5B32F80533;
+	Fri, 17 Jun 2022 18:30:07 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id A6FE8F80529; Fri, 17 Jun 2022 18:29:57 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+ id 95912F804BC; Fri, 17 Jun 2022 18:30:02 +0200 (CEST)
+Received: from ams.source.kernel.org (ams.source.kernel.org
+ [IPv6:2604:1380:4601:e00::1])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id B0D51F804BC
- for <alsa-devel@alsa-project.org>; Fri, 17 Jun 2022 18:29:54 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B0D51F804BC
+ by alsa1.perex.cz (Postfix) with ESMTPS id 9B921F804BC
+ for <alsa-devel@alsa-project.org>; Fri, 17 Jun 2022 18:29:57 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9B921F804BC
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="hYtqErNI"
+ header.b="fHZWCnro"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id C415761DB0;
- Fri, 17 Jun 2022 16:29:51 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D154DC3411B;
- Fri, 17 Jun 2022 16:29:49 +0000 (UTC)
+ by ams.source.kernel.org (Postfix) with ESMTPS id 152E9B82B10;
+ Fri, 17 Jun 2022 16:29:57 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7DE7DC3411E;
+ Fri, 17 Jun 2022 16:29:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1655483391;
- bh=8lIyfl6cLa0jSZ4rrQjgGG9QXNu4BOP9MO1nbLqDdLo=;
+ s=k20201202; t=1655483395;
+ bh=37RF6vXxD+QrHf1TXFejX0md9vYNoUUU5wVJL32Ybtc=;
  h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=hYtqErNIDh/G1tDlX/Gzd3hNB+flGgum09vIYQJuYIFxJjvLZRa/tscQu9LOaPW/6
- alWYxfOJ0rIouFHSzLzI+DmX7MblakbKEAiWwh8PDIIdnom1XEl0n4yJa8xtbPh4Se
- s3YbkjaxHtitZk9Qv17eolMl/qhubOExjXGYrHHYJjgTp1S2ljLtYDytN9cBbA2dkJ
- N9JphuDvQGzriMAS6F2s1VuijRkycdwwWsyicPIFZMjaISr4HNVfhOPvkAWf6iKymA
- ojjjTeb+fwH5KHOZYWJD2R4uPkUiyMYuxx0dWt7gv9MMHI+vOjMYRsnc02wcCJqCEp
- rzDhqaD8ewH1Q==
+ b=fHZWCnrostRioI8qJQqZM89Yo4HTK4ZybWo84szEyHnw4asIJwp7Qcpc/DmxAy0zn
+ BALYsQdy7TJjLxZZfrr0eCuF/VO95wCkmwbJGYNwZZJkHF0mVmiiBxMEF8BHNh6MYy
+ wIgZKItJnJ5SD7yqqJ3hhGz5DqjdrYj1x4wavMC/sptB03sCBU9F/Hny7RZyCcM4/Z
+ 6f27UwQK68UcB4p+1HsED7Z7T1QZ96nabkrthm2aff7KNNFSJ7RXQ+82KeGz306UIy
+ SvzXkameWHuV2RbDHkMCfZe4RCoMjdIm+KMIqnPm1FL+2xb1zD58aN6RGRVpXD8nxv
+ YVIvSdxRrh4xw==
 From: Mark Brown <broonie@kernel.org>
-To: peter.ujfalusi@gmail.com, lgirdwood@gmail.com
-In-Reply-To: <20220616153521.29701-1-peter.ujfalusi@gmail.com>
-References: <20220616153521.29701-1-peter.ujfalusi@gmail.com>
-Subject: Re: [PATCH] ASoC: twl4030: Drop legacy, non DT boot support
-Message-Id: <165548338955.901499.17638246583616685807.b4-ty@kernel.org>
-Date: Fri, 17 Jun 2022 17:29:49 +0100
+To: pierre-louis.bossart@linux.intel.com, alsa-devel@alsa-project.org
+In-Reply-To: <20220616215351.135643-1-pierre-louis.bossart@linux.intel.com>
+References: <20220616215351.135643-1-pierre-louis.bossart@linux.intel.com>
+Subject: Re: [PATCH 00/13] ASoC: SOF/Intel: remove __func__ from dev_dbg()
+Message-Id: <165548339423.901499.18321717025583594390.b4-ty@kernel.org>
+Date: Fri, 17 Jun 2022 17:29:54 +0100
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: tony@atomide.com, alsa-devel@alsa-project.org, linux-omap@vger.kernel.org,
- jarkko.nikula@bitmer.com, aaro.koskinen@iki.fi
+Cc: tiwai@suse.de, gregkh@linuxfoundation.org, cezary.rojewski@intel.com,
+ amadeuszx.slawinski@linux.intel.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -79,13 +80,13 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Thu, 16 Jun 2022 18:35:21 +0300, Peter Ujfalusi wrote:
-> Legacy or non DT boot is no longer possible on systems where the
-> tw4030/5030 is used.
+On Thu, 16 Jun 2022 16:53:38 -0500, Pierre-Louis Bossart wrote:
+> Cleanups suggested by Greg KH during SoundWire reviews, since the
+> __func__ information can be added with the dyndbg kernel parameter
+> [1].
 > 
-> Drop the support for handling legacy pdata and replace it with a local
-> board_params struct to allow further cleanups on the mfd side.
-> 
+> The first two patches change the error level in cases where the use of
+> dev_dbg() was inconsistent with an aborted programming sequence.
 > 
 > [...]
 
@@ -95,8 +96,32 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: twl4030: Drop legacy, non DT boot support
-      commit: 7adadfb06b9839fa7d9de0cde7ad57a3be3665f0
+[01/13] ASoC: SOF: Intel: hda-dsp: report error on power-up/down
+        commit: 6d5e37b0f343af70a7e824641f264fb140bbead5
+[02/13] ASoC: SOF: Intel: hda-stream: report error on stream not opened
+        commit: 3abc88730a0e45247296a561a12e811b5d2d2236
+[03/13] ASoC: SOF: Intel: hda-dai: remove use of __func__ in dev_dbg
+        commit: 18701bb1370cb6b34a8f3ad820045930138083dc
+[04/13] ASoC: SOF: Intel: hda-stream: remove use of __func__ in dev_dbg
+        commit: 8bf064f8e439d9b92a023a54adc657f920f4e1a8
+[05/13] ASoC: SOF: Intel: mtl: remove use of __func__ in dev_dbg
+        commit: b837870fe17f21cf80b15d143c9ea0bc6b342741
+[06/13] ASoC: SOF: ipc3-dtrace: remove use of __func__ in dev_dbg
+        commit: 9fd8fcd03451ea3f04af9a419748248d3fa8fb59
+[07/13] ASoC: SOF: ipc3-loader: remove use of __func__ in dev_dbg
+        commit: e16809a74f09b2c2e066b3d7cf1d87be2a75911e
+[08/13] ASoC: SOF: ipc3-topology: remove use of __func__ in dev_dbg
+        commit: f132dc020270976fe83c86f8c826890873023980
+[09/13] ASoC: SOF: ipc4-topology remove use of __func__ in dev_dbg
+        commit: 3809264b53906b8b666b93831ecc23a00e119b68
+[10/13] ASoC: SOF: sof-client: remove use of __func__ in dev_dbg
+        commit: 298e3aba1b56d19dcb70e10ffe93057d1ddd18f6
+[11/13] ASoC: SOF: ipc4: remove use of __func__ in dev_dbg
+        commit: b3ec3eb2baaad057631ab7e09c38ab3ad5c7a42b
+[12/13] ASoC: Intel: boards: hda: remove use of __func__ in dev_dbg
+        commit: 46bc6bc3a6a3af5306e8e3320a083cf3c32350d4
+[13/13] ASoC: Intel: boards: sof_sdw: remove use of __func__ in dev_dbg
+        commit: d2d19cb6ed13eb54dd6c958f3808a23820c3ebba
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
