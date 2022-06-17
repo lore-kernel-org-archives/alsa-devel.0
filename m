@@ -4,67 +4,80 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3AABEC43334
-	for <alsa-devel@archiver.kernel.org>; Fri, 17 Jun 2022 16:31:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8CA8DC433EF
+	for <alsa-devel@archiver.kernel.org>; Fri, 17 Jun 2022 16:55:24 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 5371E1F29;
-	Fri, 17 Jun 2022 18:31:01 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5371E1F29
+	by alsa0.perex.cz (Postfix) with ESMTPS id 24CDA1B05;
+	Fri, 17 Jun 2022 18:54:32 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 24CDA1B05
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1655483511;
-	bh=saZDLQrvcJUhl+w7RmXmEIruNfKYNuAQkwMfgiwHaRA=;
-	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
+	s=default; t=1655484922;
+	bh=BOMz4eRHsI/doHclQMZA9JX+LMGw9XdFocJWup16nh4=;
+	h=Date:Subject:To:References:From:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=hjWK+fXlTnpX3KVRT181OUPp3hNU8B6TwdjZ4LGCbBDeMEWAUF+3gCba8aBy04phB
-	 De5R1mVmvQnsN5/jCQde9W9pVmUCfP/4ezxImHrXuU9iZS2+iLL6STTZbZTT9RBWbd
-	 7VtS9CyyW9zhdq3Ihx4X1u8sJ803JpSxGuE3fAEY=
+	b=sjATmk4wJa7w+fsrr1+1v20yCYyd3u7TrU2FMF9Xd2OejoNGGdgHmGecOcLKFMeOs
+	 JiEjMz4Z5bOti4Viw1dS/9Gc1B89sjP9uXFzD9Vt4DFYcMosC7m0ISHjWx/9R7yfuH
+	 ep9Ct8Gp1fXj4quis3J2q46836ZmnP2NYNqMddpI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id A3B80F80535;
-	Fri, 17 Jun 2022 18:30:08 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 9E44AF800B0;
+	Fri, 17 Jun 2022 18:54:31 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id DF1E0F80534; Fri, 17 Jun 2022 18:30:04 +0200 (CEST)
-Received: from sin.source.kernel.org (sin.source.kernel.org
- [IPv6:2604:1380:40e1:4800::1])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 74D55F8051F
- for <alsa-devel@alsa-project.org>; Fri, 17 Jun 2022 18:29:58 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 74D55F8051F
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="bs0G9l0S"
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+ id CD7C9F80527; Fri, 17 Jun 2022 18:54:29 +0200 (CEST)
+Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by sin.source.kernel.org (Postfix) with ESMTPS id 9D552CE2C28;
- Fri, 17 Jun 2022 16:29:55 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CC0FCC3411B;
- Fri, 17 Jun 2022 16:29:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1655483394;
- bh=saZDLQrvcJUhl+w7RmXmEIruNfKYNuAQkwMfgiwHaRA=;
- h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=bs0G9l0S7e/TredrSsutdTCdz7UaUU6cgSZJfMVk0ZdZxhlME8VCSXHPCUFCRht/N
- CG+6lEOP7C/DkIPUxsxqOOTfLMZVIa+M6VubebuF2Cj5Q6WkEM44ycCehKueslPyiG
- U5q51I5REQcr9ZrY4KaXRQOkhXeF0iE8JyMb2p91JnvfFCXPqciBZyUYzUkJeuz9oS
- utBS5K3uGKYT99/HRqfSMV+BJry/14tgnyEy1D8bocg21cggtkG7iD71WXloTdnPFz
- 8zZpq8TXR7kyqoghg2ev0URvS+9Z8yiL/JtmglAY4g0HyspXgsBNb0C61VKBlA3/HF
- brPROXUFhKrng==
-From: Mark Brown <broonie@kernel.org>
-To: pierre-louis.bossart@linux.intel.com, alsa-devel@alsa-project.org
-In-Reply-To: <20220616214055.134943-1-pierre-louis.bossart@linux.intel.com>
-References: <20220616214055.134943-1-pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH 00/13] ASoC: Intel: Chromebooks: remap jack pins
-Message-Id: <165548339256.901499.13440685571052781757.b4-ty@kernel.org>
-Date: Fri, 17 Jun 2022 17:29:52 +0100
+ by alsa1.perex.cz (Postfix) with ESMTPS id 9445BF800B0
+ for <alsa-devel@alsa-project.org>; Fri, 17 Jun 2022 18:54:20 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9445BF800B0
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
+ header.b="CoCIdrhp"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+ d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+ t=1655484867; x=1687020867;
+ h=message-id:date:mime-version:subject:to:cc:references:
+ from:in-reply-to:content-transfer-encoding;
+ bh=BOMz4eRHsI/doHclQMZA9JX+LMGw9XdFocJWup16nh4=;
+ b=CoCIdrhp/L+OJITDGw+Syu2bhtdXG6NHJfUgIAQM4MrVpCSEtlO/S+OT
+ znp+vYdM4x4MzFUi8yTWLDd+LeD9iCvHMyor3VCqwTUa7pMr4sZOagZqp
+ miqd5tFO0bogWw/1lp4hbsFAdgYKyEjUdJfsj0A41kcfEkn0ugI+3GN76
+ pskXxHqbZoO6x0tba1t4IoYV8wcD+Pp4AEpcdZCHTgWLpWqOzAhOktYOz
+ wVw6n6YJcY1x7nC7r8AmiFuU3C9iEeR4pmxvmDu83WTR7CyL7d4ZXI+H+
+ ssGy3ZYue95Mn+SeIrOiK9LGd8tS1M+nm94UwDBmGrNYPmmz43m5d44a8 w==;
+X-IronPort-AV: E=McAfee;i="6400,9594,10380"; a="304936849"
+X-IronPort-AV: E=Sophos;i="5.92,306,1650956400"; d="scan'208";a="304936849"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+ by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 17 Jun 2022 08:01:23 -0700
+X-IronPort-AV: E=Sophos;i="5.92,306,1650956400"; d="scan'208";a="536843176"
+Received: from hamiline-mobl.amr.corp.intel.com (HELO [10.212.17.33])
+ ([10.212.17.33])
+ by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 17 Jun 2022 08:01:23 -0700
+Message-ID: <1ddc85ea-4e40-eb07-ee5b-8bc58514223d@linux.intel.com>
+Date: Fri, 17 Jun 2022 09:35:26 -0500
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-Cc: cujomalainey@google.com, tiwai@suse.de, cezary.rojewski@intel.com,
- amadeuszx.slawinski@linux.intel.com
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Firefox/91.0 Thunderbird/91.9.1
+Subject: Re: [PATCH 2/2] ASoC: codecs: soundwire: call pm_runtime_resume() in
+ component probe
+Content-Language: en-US
+To: Mark Brown <broonie@kernel.org>
+References: <20220616210825.132093-1-pierre-louis.bossart@linux.intel.com>
+ <20220616210825.132093-3-pierre-louis.bossart@linux.intel.com>
+ <YqxNEjG19K/RbbFM@sirena.org.uk>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+In-Reply-To: <YqxNEjG19K/RbbFM@sirena.org.uk>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+Cc: alsa-devel@alsa-project.org, tiwai@suse.de,
+ =?UTF-8?Q?P=c3=a9ter_Ujfalusi?= <peter.ujfalusi@linux.intel.com>,
+ Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+ Rander Wang <rander.wang@intel.com>, vkoul@kernel.org,
+ Bard Liao <yung-chuan.liao@linux.intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -80,65 +93,49 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Thu, 16 Jun 2022 16:40:42 -0500, Pierre-Louis Bossart wrote:
-> This patchset adds the missing jack pin remapping needed by upstream
-> UCM on Chromebooks, suggested by Jaroslav Kysela [1].
+
+
+On 6/17/22 04:44, Mark Brown wrote:
+> On Thu, Jun 16, 2022 at 04:08:25PM -0500, Pierre-Louis Bossart wrote:
 > 
-> These patches were succesfully tested on GeminiLake and JasperLake
-> platforms, and generalized to other Chromebooks.
+>> Make sure that the bus and codecs are pm_runtime active when the card
+>> is registered/created. This avoid timeouts when accessing registers.
 > 
-> [1] https://mailman.alsa-project.org/pipermail/sound-open-firmware/2022-June/004468.html
+>> +static int max98373_sdw_probe(struct snd_soc_component *component)
+>> +{
+>> +	int ret;
+>> +
+>> +	ret = pm_runtime_resume(component->dev);
+>> +	if (ret < 0 && ret != -EACCES)
+>> +		return ret;
 > 
-> [...]
+> I'm not clear what the issue is here.  Is something that's accessing the
+> registers forgetting to do a pm_runtime_get(), or doing that rather than
+> using pm_runtime_get_sync()?  This doesn't feel safe or robust.
 
-Applied to
+The context is that I have been trying to remove all timing dependencies
+between components, and make sure that you can bind/unbind drivers in
+any order, with the deferred probe making sure that all required
+components are already probed. I started this after seeing reports of
+kernel oopses when the machine driver was removed, and realizing that
+the SoundWire bus itself didn't support bind/unbind tests by design.
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+In the case where you bind the machine driver after a delay, then the
+bus might be suspended already, and there are cases where we see
+timeouts for registers that are not regmap-managed (usually
+vendor-specific stuff with an indirection mechanism), and even for
+regmap the register read-write are cache-based when the bus is suspended.
 
-Thanks!
+What this patch does it make sure that the bus is operation when the
+card is created. In usual cases, this is a no-op, this just helps with
+corner test cases. It's not plugging a major hole in the pm_runtime
+support, just fixing a programming sequence that was not tested before.
 
-[01/13] ASoC: Intel: skl_nau88l25_max98357a: remap jack pins
-        commit: e33ea0685a219543f3e23d88186bc6c3259b3ff4
-[02/13] ASoC: Intel: skl_nau88l25_ssm4567: remap jack pins
-        commit: 4864ef4a67edfbf802ba36c921c5e9f66e1530bf
-[03/13] ASoC: Intel: kbl_rt5663_max98927: remap jack pins
-        commit: decdbf3dd7ec3e3522548f50e22d81558d151118
-[04/13] ASoC: Intel: kbl_da7219_max98357a: remap jack pins
-        commit: c2065d43ae8546668f8f187138eda8a18f7625fd
-[05/13] ASoC: Intel: kbl_da7219_max98927: remap jack pins
-        commit: b9f53b9fc14e26ef3b3c33160afb094ad7ae192b
-[06/13] ASoC: Intel: kbl_rt5663_rt5514_max98927: remap jack pins
-        commit: c0703be996c343b4d1036b6ba258133d88b7932b
-[07/13] ASoC: Intel: bxt_da7219_max98357a: remap jack pins
-        commit: bbdd4ea2190b4712c0cd9989a5e402c7f99fc122
-[08/13] ASoC: Intel: glk_rt5682_max98357a: remap jack pins
-        commit: 4c3a68e9026ad7d3aa61278ce5702407d91d5dd9
-[09/13] ASoC: Intel: cml_rt1011_rt5682: remap jack pins
-        commit: 77a036e8b074a679c0177f61c9d3b8e942673141
-[10/13] ASoC: Intel: sof_cs42l42: remap jack pins
-        commit: 7459c8940a506280908f8b5e9e4227784a0b6569
-[11/13] ASoC: Intel: sof_da7219_max98373: remap jack pins
-        commit: 2913bb1f6830251416659dbb04c392bbc9592f14
-[12/13] ASoC: Intel: sof_nau8825: remap jack pins
-        commit: 2a172d2f06c155ea7c9b34f47febdfe9b9bbe1c2
-[13/13] ASoC: Intel: sof_rt5682: remap jack pins
-        commit: c3ce12b27e562bf3a255bc9f3096dacea2194dd8
+One possible objection is that we don't keep the reference and the bus
+active until all components are probed. I tried doing this at the ASoC
+core level, but that breaks all kinds of devices that have their own
+quirky way of dealing with pm_runtime - specifically HDaudio and HDMI.
+That's why I added this resume here.
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
+Makes sense?
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
