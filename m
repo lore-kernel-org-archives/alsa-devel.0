@@ -4,87 +4,55 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id CE317C433EF
-	for <alsa-devel@archiver.kernel.org>; Fri, 17 Jun 2022 04:44:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 01A97C43334
+	for <alsa-devel@archiver.kernel.org>; Fri, 17 Jun 2022 08:00:14 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id BDE3E1DF7;
-	Fri, 17 Jun 2022 06:44:02 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BDE3E1DF7
+	by alsa0.perex.cz (Postfix) with ESMTPS id C7D0D1B1F;
+	Fri, 17 Jun 2022 09:59:21 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C7D0D1B1F
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1655441092;
-	bh=lVwLP5SYkH99WxKZhCGO+vAH91oYK4hBQYmM/EBYpSE=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=KYTMPLhMhxEbFqlyOqOVPBdg6shOboE/TEqZMEEU3JAs81kR8PvOXvh84354/cTgK
-	 t4d6QUpy/kcOJdu5NnB4w7ZKUqud2zXVEOP5hMj5/Gwv2Cs6o6b7DOHVVtcJenDgkN
-	 eu2FlFPiVB9FE3ljPiNiwtQcxO8b06eiOD2+6bnE=
+	s=default; t=1655452811;
+	bh=z/Glu1iUac/syCab7z/hDaTohPEXEnw9Gd+Af6EXNyU=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=QRth388LM0KHg635n1IQKru/VSclNQftpWLVUgIC78+vi5GY5TjViYNOTnMJT8N4/
+	 a8ZsPjLo77gbL9Zuv+hwt9cqEC6TvIuAZB2/rQevWd8WytSb6RTD8U29GOOuMdfznt
+	 zt6QKM4bWke1tb+VwmeQMGSwj2rK1GYJ2/7Fcp18=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 62E44F8052F;
-	Fri, 17 Jun 2022 06:43:18 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 4AB81F80248;
+	Fri, 17 Jun 2022 09:59:21 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 555B5F8051F; Fri, 17 Jun 2022 06:43:15 +0200 (CEST)
-Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com
- [IPv6:2607:f8b0:4864:20::102c])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id 9D6C3F8019D; Fri, 17 Jun 2022 09:59:19 +0200 (CEST)
+Received: from inva021.nxp.com (inva021.nxp.com [92.121.34.21])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 9CF31F8013F
- for <alsa-devel@alsa-project.org>; Fri, 17 Jun 2022 06:43:07 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9CF31F8013F
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org
- header.b="BujGQWIg"
-Received: by mail-pj1-x102c.google.com with SMTP id
- k12-20020a17090a404c00b001eaabc1fe5dso3599267pjg.1
- for <alsa-devel@alsa-project.org>; Thu, 16 Jun 2022 21:43:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=chromium.org; s=google;
- h=from:to:cc:subject:date:message-id:in-reply-to:references
- :mime-version:content-transfer-encoding;
- bh=8Wxs+t8AydwdeN+7uxKuiteA2RZtEpmD8TRPNehIbXA=;
- b=BujGQWIgJyIOYZGwuzcY38wUuoThSD7buWCL2pX60I69wFEdu7+4sM97/CuuVe63UF
- kSOvoRLcEKVngTAEfeb9HcagtkZH/K6atNQO20UxjATp1F9eMvejLWdZpSGScvt3Fcff
- cONnKc9Kb6kUAiBd3BS9vm223Z6RhV6AUDdBo=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
- :references:mime-version:content-transfer-encoding;
- bh=8Wxs+t8AydwdeN+7uxKuiteA2RZtEpmD8TRPNehIbXA=;
- b=5LIojOuTZCPesEzNg7kklH950dzv8wA1CYZ/uFy+F5BiYNoP8CG70gaLrgm9JPjB0b
- TCBT5YjXErP9uQ21qUfJ18kkDRd0RoRi6uQ0wJ2Ww8O31g7EvzW1/Buy0sQ0cQX7h+7q
- 3ycSOptZe+KAqcG5gnxBGbJntjap9tAaIhb5kOO2VTDAARPVLGZ3/k9adUxy/2ONBquL
- jX/guE7jdxiFbXoOkEdA0MNQDTY4pnaeRUwAssMqrULAYHZ37W/zt038RGA7YvixHSCQ
- SHBB4DRb9AMpCaEzyBk0X4EjIVTXpZdWlfbbZY4kaB20qRvx0bfO5oYxZt2Cojx5eosJ
- k2xg==
-X-Gm-Message-State: AJIora97pQbHBorEbhHyYm7K8SgSVO5F1BcjnSaJz9nstBOA4vsS7zrA
- E/cuq6eKpuI0FK8YyWcqZd/mZg==
-X-Google-Smtp-Source: AGRyM1s9wJKWUpL9MAnTnB+BbKU3V/LCXZui5P3kXeXzIVbNwKcGBtESmejkYk/lmWprL5Bn4LvPig==
-X-Received: by 2002:a17:90b:947:b0:1e8:9bd0:5420 with SMTP id
- dw7-20020a17090b094700b001e89bd05420mr8697939pjb.32.1655440985174; 
- Thu, 16 Jun 2022 21:43:05 -0700 (PDT)
-Received: from judyhsiao0523.c.googlers.com.com
- (0.223.81.34.bc.googleusercontent.com. [34.81.223.0])
- by smtp.gmail.com with ESMTPSA id
- v8-20020a17090a778800b001eab0a27d92sm4491030pjk.51.2022.06.16.21.43.02
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Thu, 16 Jun 2022 21:43:04 -0700 (PDT)
-From: Judy Hsiao <judyhsiao@chromium.org>
-To: Heiko Stuebner <heiko@sntech.de>
-Subject: [PATCH v3 2/3] arm64: dts: rk3399: i2s: switch BCLK to GPIO
-Date: Fri, 17 Jun 2022 04:42:50 +0000
-Message-Id: <20220617044251.4029697-3-judyhsiao@chromium.org>
-X-Mailer: git-send-email 2.36.1.476.g0c4daa206d-goog
-In-Reply-To: <20220617044251.4029697-1-judyhsiao@chromium.org>
-References: <20220616155836.3401420-1-judyhsiao@chromium.org>
- <20220617044251.4029697-1-judyhsiao@chromium.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
- Brian Norris <briannorris@chromium.org>, Liam Girdwood <lgirdwood@gmail.com>,
- Rob Herring <robh+dt@kernel.org>, linux-rockchip@lists.infradead.org,
- Mark Brown <broonie@kernel.org>, Chen-Yu Tsai <wenst@chromium.org>,
- Judy Hsiao <judyhsiao@chromium.org>, linux-arm-kernel@lists.infradead.org
+ by alsa1.perex.cz (Postfix) with ESMTPS id EB103F800D3
+ for <alsa-devel@alsa-project.org>; Fri, 17 Jun 2022 09:59:16 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EB103F800D3
+Received: from inva021.nxp.com (localhost [127.0.0.1])
+ by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id B77E1201FAA;
+ Fri, 17 Jun 2022 09:59:15 +0200 (CEST)
+Received: from aprdc01srsp001v.ap-rdc01.nxp.com
+ (aprdc01srsp001v.ap-rdc01.nxp.com [165.114.16.16])
+ by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 6E2B2201FAC;
+ Fri, 17 Jun 2022 09:59:15 +0200 (CEST)
+Received: from localhost.localdomain (shlinux2.ap.freescale.net
+ [10.192.224.44])
+ by aprdc01srsp001v.ap-rdc01.nxp.com (Postfix) with ESMTP id 7FDD61820F45;
+ Fri, 17 Jun 2022 15:59:13 +0800 (+08)
+From: Shengjiu Wang <shengjiu.wang@nxp.com>
+To: nicoleotsuka@gmail.com, Xiubo.Lee@gmail.com, festevam@gmail.com,
+ shengjiu.wang@gmail.com, lgirdwood@gmail.com, broonie@kernel.org,
+ perex@perex.cz, tiwai@suse.com, alsa-devel@alsa-project.org,
+ robh+dt@kernel.org, krzk+dt@kernel.org, devicetree@vger.kernel.org
+Subject: [PATCH v2 0/7] Add PDM/DSD/dataline configuration support
+Date: Fri, 17 Jun 2022 15:44:30 +0800
+Message-Id: <1655451877-16382-1-git-send-email-shengjiu.wang@nxp.com>
+X-Mailer: git-send-email 2.7.4
+X-Virus-Scanned: ClamAV using ClamSMTP
+Cc: linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -100,98 +68,28 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-We discovered that the state of BCLK on, LRCLK off and SD_MODE on
-may cause the speaker melting issue. Removing LRCLK while BCLK
-is present can cause unexpected output behavior including a large
-DC output voltage as described in the Max98357a datasheet.
+Support PDM format and DSD format.
+Add new dts property to configure dataline. The SAI has multiple
+successive FIFO registers, but in some use
+case the required dataline/FIFOs are not successive.
 
-In order to:
-  1. prevent BCLK from turning on by other component.
-  2. keep BCLK and LRCLK being present at the same time
+Changes in v2:
+- refine the commit subject of patch 5/7
 
-This patch adjusts the device tree to allow BCLK to switch
-to GPIO func before LRCLK output, and switch back during
-LRCLK is output.
+Shengjiu Wang (7):
+  ASoC: fsl_sai: Add PDM daifmt support
+  ASoC: fsl_sai: Add DSD bit format support
+  ASoC: fsl_sai: Add support for more sample rates
+  ASoc: fsl_sai: Add pinctrl operation for PDM and DSD
+  ASoC: fsl_sai: Make res a member of struct fsl_sai
+  ASoC: dt-bindings: fsl-sai: Add new property to configure dataline
+  ASoC: fsl_sai: Configure dataline/FIFO information from dts property
 
-Signed-off-by: Judy Hsiao <judyhsiao@chromium.org>
-Reviewed-by: Brian Norris <briannorris@chromium.org>
----
- .../boot/dts/rockchip/rk3399-gru-scarlet.dtsi | 10 ++++++++
- arch/arm64/boot/dts/rockchip/rk3399.dtsi      | 25 ++++++++++++++++++-
- 2 files changed, 34 insertions(+), 1 deletion(-)
+ .../devicetree/bindings/sound/fsl-sai.txt     |   8 +
+ sound/soc/fsl/fsl_sai.c                       | 260 ++++++++++++++++--
+ sound/soc/fsl/fsl_sai.h                       |  26 +-
+ 3 files changed, 272 insertions(+), 22 deletions(-)
 
-diff --git a/arch/arm64/boot/dts/rockchip/rk3399-gru-scarlet.dtsi b/arch/arm64/boot/dts/rockchip/rk3399-gru-scarlet.dtsi
-index 913d845eb51a..df1647e9d487 100644
---- a/arch/arm64/boot/dts/rockchip/rk3399-gru-scarlet.dtsi
-+++ b/arch/arm64/boot/dts/rockchip/rk3399-gru-scarlet.dtsi
-@@ -766,6 +766,16 @@ &i2s0_8ch_bus {
- 		<4 RK_PA0 1 &pcfg_pull_none_6ma>;
- };
- 
-+&i2s0_8ch_bus_bclk_off {
-+	rockchip,pins =
-+		<3 RK_PD0 RK_FUNC_GPIO &pcfg_pull_none_6ma>,
-+		<3 RK_PD1 1 &pcfg_pull_none_6ma>,
-+		<3 RK_PD2 1 &pcfg_pull_none_6ma>,
-+		<3 RK_PD3 1 &pcfg_pull_none_6ma>,
-+		<3 RK_PD7 1 &pcfg_pull_none_6ma>,
-+		<4 RK_PA0 1 &pcfg_pull_none_6ma>;
-+};
-+
- /* there is no external pull up, so need to set this pin pull up */
- &sdmmc_cd_pin {
- 	rockchip,pins = <1 RK_PB3 RK_FUNC_GPIO &pcfg_pull_up>;
-diff --git a/arch/arm64/boot/dts/rockchip/rk3399.dtsi b/arch/arm64/boot/dts/rockchip/rk3399.dtsi
-index fbd0346624e6..311c8394cc84 100644
---- a/arch/arm64/boot/dts/rockchip/rk3399.dtsi
-+++ b/arch/arm64/boot/dts/rockchip/rk3399.dtsi
-@@ -1662,8 +1662,9 @@ i2s0: i2s@ff880000 {
- 		dma-names = "tx", "rx";
- 		clock-names = "i2s_clk", "i2s_hclk";
- 		clocks = <&cru SCLK_I2S0_8CH>, <&cru HCLK_I2S0_8CH>;
--		pinctrl-names = "default";
-+		pinctrl-names = "bclk_on", "bclk_off";
- 		pinctrl-0 = <&i2s0_8ch_bus>;
-+		pinctrl-1 = <&i2s0_8ch_bus_bclk_off>;
- 		power-domains = <&power RK3399_PD_SDIOAUDIO>;
- 		#sound-dai-cells = <0>;
- 		status = "disabled";
-@@ -2407,6 +2408,19 @@ i2s0_8ch_bus: i2s0-8ch-bus {
- 					<3 RK_PD7 1 &pcfg_pull_none>,
- 					<4 RK_PA0 1 &pcfg_pull_none>;
- 			};
-+
-+			i2s0_8ch_bus_bclk_off: i2s0-8ch-bus-bclk-off {
-+				rockchip,pins =
-+					<3 RK_PD0 RK_FUNC_GPIO &pcfg_pull_none>,
-+					<3 RK_PD1 1 &pcfg_pull_none>,
-+					<3 RK_PD2 1 &pcfg_pull_none>,
-+					<3 RK_PD3 1 &pcfg_pull_none>,
-+					<3 RK_PD4 1 &pcfg_pull_none>,
-+					<3 RK_PD5 1 &pcfg_pull_none>,
-+					<3 RK_PD6 1 &pcfg_pull_none>,
-+					<3 RK_PD7 1 &pcfg_pull_none>,
-+					<4 RK_PA0 1 &pcfg_pull_none>;
-+			};
- 		};
- 
- 		i2s1 {
-@@ -2418,6 +2432,15 @@ i2s1_2ch_bus: i2s1-2ch-bus {
- 					<4 RK_PA6 1 &pcfg_pull_none>,
- 					<4 RK_PA7 1 &pcfg_pull_none>;
- 			};
-+
-+			i2s1_2ch_bus_bclk_off: i2s1-2ch-bus-bclk-off {
-+				rockchip,pins =
-+					<4 RK_PA3 RK_FUNC_GPIO &pcfg_pull_none>,
-+					<4 RK_PA4 1 &pcfg_pull_none>,
-+					<4 RK_PA5 1 &pcfg_pull_none>,
-+					<4 RK_PA6 1 &pcfg_pull_none>,
-+					<4 RK_PA7 1 &pcfg_pull_none>;
-+			};
- 		};
- 
- 		sdio0 {
 -- 
-2.36.1.476.g0c4daa206d-goog
+2.17.1
 
