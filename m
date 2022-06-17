@@ -4,65 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 233C2C433EF
-	for <alsa-devel@archiver.kernel.org>; Fri, 17 Jun 2022 16:30:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6B629C433EF
+	for <alsa-devel@archiver.kernel.org>; Fri, 17 Jun 2022 16:31:26 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 549BC1AC9;
-	Fri, 17 Jun 2022 18:30:02 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 549BC1AC9
+	by alsa0.perex.cz (Postfix) with ESMTPS id 56FEE1F04;
+	Fri, 17 Jun 2022 18:30:34 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 56FEE1F04
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1655483452;
-	bh=6VId+EutToOC4ZceXtnrBXbOCSzBxkRrFdaIXIrtMAE=;
+	s=default; t=1655483484;
+	bh=8lIyfl6cLa0jSZ4rrQjgGG9QXNu4BOP9MO1nbLqDdLo=;
 	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=sYwYvdt64ZjYiJ6sDG9PMK7YdDMuajLll9d5ICaWNSmT6hO4cnUkMbtrNIJ+VRjTu
-	 H+AvOXbFCKeNEv9IedcP3H1x8+H53c+DaTXTsvAiKDobrVAIMlgPywF9Q2Jl+Bqgay
-	 0Fh0MdH90RQhGESD5sAOuSEf6hAdO3ri08TZAe6c=
+	b=BjYVyO9X1RORuZEKwrilqtPU4xc7lc6lzL9PXeZdJDXnx4fYfoyFPy+DFUZIlBmvm
+	 uKl+rgyNzoaVbUqRiko7Sc31HybbAtY3FmfIvXcOTkcZV4GeEAYrjJIDK6uDZ5OjyW
+	 ihc+0SRIh6rmnQ1QTdJ7Wju+MFlfCbyOlChokEpE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id AD8B4F80528;
-	Fri, 17 Jun 2022 18:30:01 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 0F94BF80529;
+	Fri, 17 Jun 2022 18:30:03 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id B2D4BF800B0; Fri, 17 Jun 2022 18:29:57 +0200 (CEST)
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+ id A6FE8F80529; Fri, 17 Jun 2022 18:29:57 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 27233F800B0
+ by alsa1.perex.cz (Postfix) with ESMTPS id B0D51F804BC
  for <alsa-devel@alsa-project.org>; Fri, 17 Jun 2022 18:29:54 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 27233F800B0
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B0D51F804BC
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="cTBqv6dO"
+ header.b="hYtqErNI"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by ams.source.kernel.org (Postfix) with ESMTPS id 9B6B3B82B1B;
- Fri, 17 Jun 2022 16:29:53 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A9732C3411E;
+ by dfw.source.kernel.org (Postfix) with ESMTPS id C415761DB0;
  Fri, 17 Jun 2022 16:29:51 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D154DC3411B;
+ Fri, 17 Jun 2022 16:29:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1655483392;
- bh=6VId+EutToOC4ZceXtnrBXbOCSzBxkRrFdaIXIrtMAE=;
+ s=k20201202; t=1655483391;
+ bh=8lIyfl6cLa0jSZ4rrQjgGG9QXNu4BOP9MO1nbLqDdLo=;
  h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=cTBqv6dOd/8KSH+sJDqARx90Ad1ybMMAhlxwLe+Qp9TACPUXnlHOKcJLysABJMT2j
- hiRURYeoB2CQT1aaTtBIInzhoCjoSTdCcNtll3O6IRIZ5a560hpwmJx0cd+aG48AVv
- Bv3uZKeAV5i0CNXX4zdsLFVdnVJZ0snnCh4dV8oYyeCL7VSW7V06kfY2Ucmrksv79x
- 8DjqPx4ol/GWOKzgn/us3lzubwOUuAV8prn53Q6sAyoi8KdOp2EhSIGaTry9vp/rPc
- iXu0gTeHI6skDP1NRgZTC0h3iowSTvANLOACXo3afYTsdCesqy5pjIOvN/l2cJLgM3
- /skN2LUuh9uSg==
+ b=hYtqErNIDh/G1tDlX/Gzd3hNB+flGgum09vIYQJuYIFxJjvLZRa/tscQu9LOaPW/6
+ alWYxfOJ0rIouFHSzLzI+DmX7MblakbKEAiWwh8PDIIdnom1XEl0n4yJa8xtbPh4Se
+ s3YbkjaxHtitZk9Qv17eolMl/qhubOExjXGYrHHYJjgTp1S2ljLtYDytN9cBbA2dkJ
+ N9JphuDvQGzriMAS6F2s1VuijRkycdwwWsyicPIFZMjaISr4HNVfhOPvkAWf6iKymA
+ ojjjTeb+fwH5KHOZYWJD2R4uPkUiyMYuxx0dWt7gv9MMHI+vOjMYRsnc02wcCJqCEp
+ rzDhqaD8ewH1Q==
 From: Mark Brown <broonie@kernel.org>
-To: pierre-louis.bossart@linux.intel.com, alsa-devel@alsa-project.org
-In-Reply-To: <20220616220802.136282-1-pierre-louis.bossart@linux.intel.com>
-References: <20220616220802.136282-1-pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH 0/2] ASoC: minor kernel-doc corrections
-Message-Id: <165548339142.901499.2738384775711530242.b4-ty@kernel.org>
-Date: Fri, 17 Jun 2022 17:29:51 +0100
+To: peter.ujfalusi@gmail.com, lgirdwood@gmail.com
+In-Reply-To: <20220616153521.29701-1-peter.ujfalusi@gmail.com>
+References: <20220616153521.29701-1-peter.ujfalusi@gmail.com>
+Subject: Re: [PATCH] ASoC: twl4030: Drop legacy, non DT boot support
+Message-Id: <165548338955.901499.17638246583616685807.b4-ty@kernel.org>
+Date: Fri, 17 Jun 2022 17:29:49 +0100
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: tiwai@suse.de
+Cc: tony@atomide.com, alsa-devel@alsa-project.org, linux-omap@vger.kernel.org,
+ jarkko.nikula@bitmer.com, aaro.koskinen@iki.fi
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -78,16 +79,13 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Thu, 16 Jun 2022 17:08:00 -0500, Pierre-Louis Bossart wrote:
-> Remove warnings with make W=1
+On Thu, 16 Jun 2022 18:35:21 +0300, Peter Ujfalusi wrote:
+> Legacy or non DT boot is no longer possible on systems where the
+> tw4030/5030 is used.
 > 
-> Pierre-Louis Bossart (2):
->   ASoC: cs4270: update kernel-doc
->   ASoC: sunxi: sun4i-i2s: update kernel-doc
+> Drop the support for handling legacy pdata and replace it with a local
+> board_params struct to allow further cleanups on the mfd side.
 > 
-> sound/soc/codecs/cs4270.c   | 1 -
->  sound/soc/sunxi/sun4i-i2s.c | 2 ++
->  2 files changed, 2 insertions(+), 1 deletion(-)
 > 
 > [...]
 
@@ -97,10 +95,8 @@ Applied to
 
 Thanks!
 
-[1/2] ASoC: cs4270: update kernel-doc
-      commit: e1ab67be68e900a6585277ca442ca7f67dffb3bd
-[2/2] ASoC: sunxi: sun4i-i2s: update kernel-doc
-      commit: 7c619b306285588725573d975fd44607d13438cf
+[1/1] ASoC: twl4030: Drop legacy, non DT boot support
+      commit: 7adadfb06b9839fa7d9de0cde7ad57a3be3665f0
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
