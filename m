@@ -4,80 +4,75 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4C646C433EF
-	for <alsa-devel@archiver.kernel.org>; Fri, 17 Jun 2022 19:48:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E9B46C433EF
+	for <alsa-devel@archiver.kernel.org>; Fri, 17 Jun 2022 20:03:11 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C0D291E82;
-	Fri, 17 Jun 2022 21:47:55 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C0D291E82
+	by alsa0.perex.cz (Postfix) with ESMTPS id 86E881A75;
+	Fri, 17 Jun 2022 22:02:19 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 86E881A75
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1655495325;
-	bh=UArsJI0e93/zPeU0GTpsxAfxvbVJorGPGyLoU1Vq9ig=;
+	s=default; t=1655496189;
+	bh=bIOPDztJcbgiHuxrPZa6CZEtsLYHu/u1qnz0FsmldL4=;
 	h=Date:Subject:To:References:From:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=UrF0mUXLIyxD5ksfOmxVEnfQTFmRDk5iCO4JsQWPtjrKgL/QRs55BgK9nQsCIORXf
-	 4kbSNYcNblD+FL8vS3MzPsDIKMdFtwbbM8sYwbwVu5dZM4/cVkWfFCRY1B4oaSZLEb
-	 kbykWbdgfBuyvE17Nu5HoLYGO9IPtAjlRZG0182Y=
+	b=qCNhMPK783eqzFetQCgqRGCtgf7oZ8OgunjQ+/8hop6kseOxBdLlTRt2OJAewxxFd
+	 +aps/iUd3xmqoM4Ewe1aVmJWTqhqXx/K9DuEMLvgQh5kC0JM5eXZJyTZK8fkc8UKrs
+	 DMwgrYMDTBNK5DEBzEEP1dteIIhEh1wgEwnAMPM8=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 5A5C6F8051F;
-	Fri, 17 Jun 2022 21:47:55 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 14684F8051F;
+	Fri, 17 Jun 2022 22:02:19 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 7CACAF80527; Fri, 17 Jun 2022 21:47:54 +0200 (CEST)
-Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
+ id 6C33DF80527; Fri, 17 Jun 2022 22:02:17 +0200 (CEST)
+Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id D6442F804BC
- for <alsa-devel@alsa-project.org>; Fri, 17 Jun 2022 21:47:46 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D6442F804BC
+ by alsa1.perex.cz (Postfix) with ESMTPS id 359C1F8028B
+ for <alsa-devel@alsa-project.org>; Fri, 17 Jun 2022 22:02:09 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 359C1F8028B
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="kPg65wmd"
+ header.b="U4CnNCJW"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1655495269; x=1687031269;
+ t=1655496132; x=1687032132;
  h=message-id:date:mime-version:subject:to:cc:references:
  from:in-reply-to:content-transfer-encoding;
- bh=UArsJI0e93/zPeU0GTpsxAfxvbVJorGPGyLoU1Vq9ig=;
- b=kPg65wmd/A20mHnuB0CLolaVKP9qIiuDLkEAjewqH3N6yAmndlhpQTe1
- 8s2p6dnkvGsO+zvS/Tb/sYX/bWfzy6nanv7lz/wb16KcDI/ywse0fQdpj
- 44uUmEJ619SpluDYvd+6RQzILvcyOQe3nVeoAHicgKq4QpKQGnVmkNGdl
- GeI6bvX2q0CS3dOfNXAHxCDG/msBzEe9VLLexSYMlg99gsCjpbyiIQvO/
- M8sjb5NZ45YsFrJoFFQg3T61dnd6x1jII3AgtZd1nOAKLPdl9s83CVQHy
- BcFzpaewrbrZIW7HhBGm/UU96Pq7CmBGPLRMc2B4p+FilOogHvBjaCA0T w==;
-X-IronPort-AV: E=McAfee;i="6400,9594,10380"; a="305003416"
-X-IronPort-AV: E=Sophos;i="5.92,306,1650956400"; d="scan'208";a="305003416"
+ bh=bIOPDztJcbgiHuxrPZa6CZEtsLYHu/u1qnz0FsmldL4=;
+ b=U4CnNCJWoAGBE8Ui8E8uMexmjEFFLFnEcurWeL5hXsJwCm5xFCpFBZ5C
+ IToRoHA0l2CmUmtb/GBqTxd/+XhqQq2Pp50D3ZTSVQy31mLhnHqbSAeny
+ o4u4OW8VzAI8lV7Ad+vY+qc5EjHn+5Qvv1xVqu2OfNPvFepl66OW1ljo9
+ X/cQP1mNG4SDxWEUyhptgTN8KsFlfMx1UVdWVkeztfV10fcqcK9m+tEHs
+ RBFSqGkPu4bKqHAhgtpAolsVo3H792/bfUJgwapQVGX3xqJg6Th2/inD/
+ vc10+f6+VtYLotagTfmzrGkl7zZGkQcu6aCta5cKAb7Bo5DjyuXeYZlFd A==;
+X-IronPort-AV: E=McAfee;i="6400,9594,10380"; a="365901198"
+X-IronPort-AV: E=Sophos;i="5.92,306,1650956400"; d="scan'208";a="365901198"
 Received: from fmsmga008.fm.intel.com ([10.253.24.58])
- by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 17 Jun 2022 12:47:40 -0700
-X-IronPort-AV: E=Sophos;i="5.92,306,1650956400"; d="scan'208";a="642163174"
+ by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 17 Jun 2022 13:02:06 -0700
+X-IronPort-AV: E=Sophos;i="5.92,306,1650956400"; d="scan'208";a="642167729"
 Received: from patelman-mobl1.amr.corp.intel.com (HELO [10.212.115.29])
  ([10.212.115.29])
  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 17 Jun 2022 12:47:39 -0700
-Message-ID: <e993c4c7-a956-b669-f5b5-5d42c8b35f1e@linux.intel.com>
-Date: Fri, 17 Jun 2022 14:47:39 -0500
+ 17 Jun 2022 13:02:05 -0700
+Message-ID: <ad76d0d9-22f9-5e35-8575-bf7a78bd1568@linux.intel.com>
+Date: Fri, 17 Jun 2022 15:02:05 -0500
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
  Firefox/91.0 Thunderbird/91.9.1
-Subject: Re: [PATCH 03/11] ASoC: soc-component: use pm_runtime_resume_and_get()
+Subject: Re: [PATCH] ASoC: ops: Fix multiple value control type
 Content-Language: en-US
-To: alsa-devel@alsa-project.org
-References: <20220616220427.136036-1-pierre-louis.bossart@linux.intel.com>
- <20220616220427.136036-4-pierre-louis.bossart@linux.intel.com>
+To: Sameer Pujar <spujar@nvidia.com>, broonie@kernel.org,
+ lgirdwood@gmail.com, perex@perex.cz, tiwai@suse.com
+References: <1655492828-5471-1-git-send-email-spujar@nvidia.com>
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-In-Reply-To: <20220616220427.136036-4-pierre-louis.bossart@linux.intel.com>
+In-Reply-To: <1655492828-5471-1-git-send-email-spujar@nvidia.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-Cc: Cezary Rojewski <cezary.rojewski@intel.com>,
- Kai Vehmanen <kai.vehmanen@linux.intel.com>, tiwai@suse.de,
- open list <linux-kernel@vger.kernel.org>, Takashi Iwai <tiwai@suse.com>,
- Liam Girdwood <lgirdwood@gmail.com>, broonie@kernel.org,
- Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
- =?UTF-8?Q?Amadeusz_S=c5=82awi=c5=84ski?= <amadeuszx.slawinski@linux.intel.com>,
- Bard Liao <yung-chuan.liao@linux.intel.com>
+Cc: linux-tegra@vger.kernel.org, alsa-devel@alsa-project.org,
+ linux-kernel@vger.kernel.org, jonathanh@nvidia.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -95,61 +90,45 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
 
-On 6/16/22 17:04, Pierre-Louis Bossart wrote:
-> simplify the flow. No functionality change, except that on -EACCESS
-> the reference count will be decreased.
-
-This patch turns out to be incorrect and should not be merged.
-
-I missed the fact that the component pm_runtime_put() will decrease the
-reference count that is already decreased with
-pm_runtime_resume_and_get() when pm_runtime is not enabled. This leads
-to warnings:
-
-snd-soc-dummy snd-soc-dummy: Runtime PM usage count underflow!
-
-Unfortunately we missed those warnings during validation, that's not so
-good.
-
-pm_runtime_resume_and_get() really needs to be used ONLY when the
-get/put are part of the same function and the reference count can be
-checked. When the get/put are in different functions, it's asking for
-trouble.
-
-Also the check on -EACCES is problematic when the component is handled
-by a framework, it's not clear if that can happen or not.
-
-The rest of the patches follow the pattern get_sync/put and don't have a
-problem.
-
-Sorry for the noise.
-
+On 6/17/22 14:07, Sameer Pujar wrote:
+> The commit aa2a4b897132("ASoC: ops: Fix boolean/integer detection for
+> simple controls") fixes false positives with controls not ending in
+> " Volume" string. But it now forces boolean type for the multi value
+> controls. Fix this by adding a max check before assigning types.
 > 
-> Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-> Reviewed-by: Bard Liao <yung-chuan.liao@linux.intel.com>
-> Reviewed-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
-> Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+> Fixes: aa2a4b897132("ASoC: ops: Fix boolean/integer detection for simple controls")
+> Signed-off-by: Sameer Pujar <spujar@nvidia.com>
+
+Tested-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+
+This fixes the second regression we noticed today, with mixer values
+such as:
+
+numid=5,iface=MIXER,name='PGA4.0 4 Master Capture Volume'
+  ; type=BOOLEAN,access=rw---R--,values=2
+  : values=on,on
+  | dBscale-min=-50.00dB,step=1.00dB,mute=1
+
+This caused an across-the-board fail with alsa-bat tests
+
+https://github.com/thesofproject/linux/pull/3702
+
+Thanks Sameer!
+
 > ---
->  sound/soc/soc-component.c | 8 ++++----
->  1 file changed, 4 insertions(+), 4 deletions(-)
+>  sound/soc/soc-ops.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> diff --git a/sound/soc/soc-component.c b/sound/soc/soc-component.c
-> index e12f8244242b9..cb92e002c38bc 100644
-> --- a/sound/soc/soc-component.c
-> +++ b/sound/soc/soc-component.c
-> @@ -1213,11 +1213,11 @@ int snd_soc_pcm_component_pm_runtime_get(struct snd_soc_pcm_runtime *rtd,
->  	int i;
->  
->  	for_each_rtd_components(rtd, i, component) {
-> -		int ret = pm_runtime_get_sync(component->dev);
-> -		if (ret < 0 && ret != -EACCES) {
-> -			pm_runtime_put_noidle(component->dev);
-> +		int ret = pm_runtime_resume_and_get(component->dev);
-> +
-> +		if (ret < 0 && ret != -EACCES)
->  			return soc_component_ret(component, ret);
-> -		}
-> +
->  		/* mark stream if succeeded */
->  		soc_component_mark_push(component, stream, pm);
+> diff --git a/sound/soc/soc-ops.c b/sound/soc/soc-ops.c
+> index 0267e39..21be8e8 100644
+> --- a/sound/soc/soc-ops.c
+> +++ b/sound/soc/soc-ops.c
+> @@ -190,7 +190,7 @@ int snd_soc_info_volsw(struct snd_kcontrol *kcontrol,
+>  			vol_string = NULL;
 >  	}
+>  
+> -	if (!vol_string)
+> +	if (!vol_string && max == 1)
+>  		uinfo->type = SNDRV_CTL_ELEM_TYPE_BOOLEAN;
+>  	else
+>  		uinfo->type = SNDRV_CTL_ELEM_TYPE_INTEGER;
