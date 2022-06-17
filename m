@@ -4,77 +4,77 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C540CC433EF
-	for <alsa-devel@archiver.kernel.org>; Fri, 17 Jun 2022 14:43:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0472EC433EF
+	for <alsa-devel@archiver.kernel.org>; Fri, 17 Jun 2022 14:43:33 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 087FF1F36;
-	Fri, 17 Jun 2022 16:42:19 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 087FF1F36
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3E4461F29;
+	Fri, 17 Jun 2022 16:42:41 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3E4461F29
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1655476989;
-	bh=4AhXHW/qaD+kjYkKNZEckY62iWs2DAVoIzCN0wvH/uA=;
+	s=default; t=1655477011;
+	bh=6FbQ7PW9Q483W5AN1WuaGpYW/4PbXpaDvI0o57mZffk=;
 	h=From:To:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=fu9EFI2X+3A3H/I5kvsN1HpfAoPUIKeIsB7TSWu9trmWHvlAZJG5Fy29Vzx06uK5y
-	 qf0+frhVe4emZCgilKciye7pHv81yXf4dBNGsgHtEV5sWfjNVswLKBZ0IIKmosP6p0
-	 OS96RcH33qAqnM62B1r/6Kr5WP0UfQIwvC25gjOg=
+	b=CXo6gBK/fVRzbw8VBheRKt79pZw5s26ZNMS6855CBinZtmFaVzQaO5ZZdtTfoGxc6
+	 IN1stt7DazoFMEfSI8PtptyFVVLpJ/e1NkOZHv8gxEEhnk8C69+dlm9qUPdeDBm39T
+	 PRqJS71Or/hm8K7AhFjZRTGp1r+/Cb9+rNwyJ5IE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 32E4EF8053D;
-	Fri, 17 Jun 2022 16:41:09 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id BCB42F8054A;
+	Fri, 17 Jun 2022 16:41:10 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id EE960F8053E; Fri, 17 Jun 2022 16:41:06 +0200 (CEST)
+ id AB0B1F8053D; Fri, 17 Jun 2022 16:41:07 +0200 (CEST)
 Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 5AED4F80528
+ by alsa1.perex.cz (Postfix) with ESMTPS id 5D6AAF80529
  for <alsa-devel@alsa-project.org>; Fri, 17 Jun 2022 16:40:56 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5AED4F80528
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5D6AAF80529
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="RCJpB9FK"; 
+ header.b="PXcEHhuL"; 
  dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="UP0RDxJi"
+ header.b="U4V8tweL"
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id D961121E41;
- Fri, 17 Jun 2022 14:40:55 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 1A8DD21E47;
+ Fri, 17 Jun 2022 14:40:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1655476855; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ t=1655476856; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=ZGkXG1xnzX0VB45f9WjivjukT6cJNqRAE3FdcbJBjEU=;
- b=RCJpB9FKB0G2guvda9tNr6m/UK2nAuuvwKbAymBG//bZ0E37ZdRXyJREygtokXN6TiAtnd
- Zw3CDfTHjcPkHsNdtT6+E7gLa7jbjateooPoi4gfYFGTai7prIScRncgL9V8Jj5+jv3WIE
- WG+7KwAVhjKyGL0IZNC8bHP0W/DJj0w=
+ bh=e1tGlwoq7AuYV3LO3lbinxAjnWguF1m2X35r3UPl2Ng=;
+ b=PXcEHhuLkV6TwBsKApUzFgtQX/mFni+xY6yrN5hVT6bRv2lGGmoFq14DkNT1kiF5PNXbEV
+ Lels0Qn4RK9ZX7xnezE126WydVq7BhH60+ae60ct0h+jl+buDHVIKwl9u7YwskhG4APinF
+ U1ymyBNzzY/GxQePG/rOQmDpjvTLfI4=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1655476855;
+ s=susede2_ed25519; t=1655476856;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=ZGkXG1xnzX0VB45f9WjivjukT6cJNqRAE3FdcbJBjEU=;
- b=UP0RDxJiC8RHWJzNVsDSMIR/XOYcWhdVKS32mdTCd1N+Pwn2vfYikOyFEemEcwr7wxiEFr
- wCAjFZMHMN4UHxAw==
+ bh=e1tGlwoq7AuYV3LO3lbinxAjnWguF1m2X35r3UPl2Ng=;
+ b=U4V8tweL6qvWJruyULwSVqJpVDFbVt+SAc6o1g2ORVd9zJuqhSnbyBNHqI8lMnE7EhM8zg
+ W+JxlqZNAHS0tsAg==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id BEA6F1348F;
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 02A621348F;
  Fri, 17 Jun 2022 14:40:55 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id kH+4LXeSrGIYNQAAMHmgww
+ by imap2.suse-dmz.suse.de with ESMTPSA id sPFeO3eSrGIYNQAAMHmgww
  (envelope-from <tiwai@suse.de>); Fri, 17 Jun 2022 14:40:55 +0000
 From: Takashi Iwai <tiwai@suse.de>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH 3/5] ALSA: rawmidi: Take open_mutex around parameter changes
-Date: Fri, 17 Jun 2022 16:40:49 +0200
-Message-Id: <20220617144051.18985-4-tiwai@suse.de>
+Subject: [PATCH 5/5] ALSA: rawmidi: Take buffer refcount while draining output
+Date: Fri, 17 Jun 2022 16:40:51 +0200
+Message-Id: <20220617144051.18985-6-tiwai@suse.de>
 X-Mailer: git-send-email 2.35.3
 In-Reply-To: <20220617144051.18985-1-tiwai@suse.de>
 References: <20220617144051.18985-1-tiwai@suse.de>
@@ -95,81 +95,109 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The input/output parameter changes are pretty intrusive, possibly
-involving with the buffer resizing operation.  Hence those should be
-performed exclusively; otherwise some ugly race could happen.
+Although snd_rawmidi_drain_output() may take some long time, it has no
+protection and intrusive operations like the buffer resize may happen
+meanwhile.  For making the operation a bit more robust, this patch
+takes the buffer refcount for blocking the buffer resize.
 
-This patch puts the existing open_mutex for snd_rawmidi_input_params()
-and *_output_params() for protecting the concurrent calls.  Since
-those are exported, it's also meant for hardening from the external
-calls, too.
+Also, as this function is exported, in theory, it might be called
+asynchronously from the stream open/close state.  For avoiding the
+missing refcount, now the close call checks the buffer refcount, too.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/core/rawmidi.c | 39 +++++++++++++++++++++++++--------------
- 1 file changed, 25 insertions(+), 14 deletions(-)
+ sound/core/rawmidi.c | 45 ++++++++++++++++++++++++++++++++++++++++----
+ 1 file changed, 41 insertions(+), 4 deletions(-)
 
 diff --git a/sound/core/rawmidi.c b/sound/core/rawmidi.c
-index 0a00f37d8c42..7fd6b369d46f 100644
+index 889fa4747dad..6963d5a487b3 100644
 --- a/sound/core/rawmidi.c
 +++ b/sound/core/rawmidi.c
-@@ -712,11 +712,19 @@ static int resize_runtime_buffer(struct snd_rawmidi_substream *substream,
- int snd_rawmidi_output_params(struct snd_rawmidi_substream *substream,
- 			      struct snd_rawmidi_params *params)
- {
--	if (substream->append && substream->use_count > 1)
--		return -EBUSY;
-+	int err;
-+
- 	snd_rawmidi_drain_output(substream);
--	substream->active_sensing = !params->no_active_sensing;
--	return resize_runtime_buffer(substream, params, false);
-+	mutex_lock(&substream->rmidi->open_mutex);
-+	if (substream->append && substream->use_count > 1)
-+		err = -EBUSY;
-+	else
-+		err = resize_runtime_buffer(substream, params, false);
-+
-+	if (!err)
-+		substream->active_sensing = !params->no_active_sensing;
-+	mutex_unlock(&substream->rmidi->open_mutex);
-+	return err;
+@@ -140,6 +140,23 @@ static inline void snd_rawmidi_buffer_unref(struct snd_rawmidi_runtime *runtime)
+ 	runtime->buffer_ref--;
  }
- EXPORT_SYMBOL(snd_rawmidi_output_params);
  
-@@ -727,19 +735,22 @@ int snd_rawmidi_input_params(struct snd_rawmidi_substream *substream,
- 	unsigned int clock_type = params->mode & SNDRV_RAWMIDI_MODE_CLOCK_MASK;
- 	int err;
- 
-+	snd_rawmidi_drain_input(substream);
-+	mutex_lock(&substream->rmidi->open_mutex);
- 	if (framing == SNDRV_RAWMIDI_MODE_FRAMING_NONE && clock_type != SNDRV_RAWMIDI_MODE_CLOCK_NONE)
--		return -EINVAL;
-+		err = -EINVAL;
- 	else if (clock_type > SNDRV_RAWMIDI_MODE_CLOCK_MONOTONIC_RAW)
--		return -EINVAL;
--	if (framing > SNDRV_RAWMIDI_MODE_FRAMING_TSTAMP)
--		return -EINVAL;
--	snd_rawmidi_drain_input(substream);
--	err = resize_runtime_buffer(substream, params, true);
--	if (err < 0)
--		return err;
-+		err = -EINVAL;
-+	else if (framing > SNDRV_RAWMIDI_MODE_FRAMING_TSTAMP)
-+		err = -EINVAL;
-+	else
-+		err = resize_runtime_buffer(substream, params, true);
- 
--	substream->framing = framing;
--	substream->clock_type = clock_type;
-+	if (!err) {
-+		substream->framing = framing;
-+		substream->clock_type = clock_type;
++static void snd_rawmidi_buffer_ref_sync(struct snd_rawmidi_substream *substream)
++{
++	int loop = HZ;
++
++	spin_lock_irq(&substream->lock);
++	while (substream->runtime->buffer_ref) {
++		spin_unlock_irq(&substream->lock);
++		if (!--loop) {
++			rmidi_err(substream->rmidi, "Buffer ref sync timeout\n");
++			return;
++		}
++		schedule_timeout_uninterruptible(1);
++		spin_lock_irq(&substream->lock);
 +	}
-+	mutex_unlock(&substream->rmidi->open_mutex);
- 	return 0;
++	spin_unlock_irq(&substream->lock);
++}
++
+ static int snd_rawmidi_runtime_create(struct snd_rawmidi_substream *substream)
+ {
+ 	struct snd_rawmidi_runtime *runtime;
+@@ -222,15 +239,27 @@ EXPORT_SYMBOL(snd_rawmidi_drop_output);
+ 
+ int snd_rawmidi_drain_output(struct snd_rawmidi_substream *substream)
+ {
+-	int err;
++	int err = 0;
+ 	long timeout;
+-	struct snd_rawmidi_runtime *runtime = substream->runtime;
++	struct snd_rawmidi_runtime *runtime;
++
++	spin_lock_irq(&substream->lock);
++	runtime = substream->runtime;
++	if (!substream->opened || !runtime || !runtime->buffer) {
++		err = -EINVAL;
++	} else {
++		snd_rawmidi_buffer_ref(runtime);
++		runtime->drain = 1;
++	}
++	spin_unlock_irq(&substream->lock);
++	if (err < 0)
++		return err;
+ 
+-	err = 0;
+-	runtime->drain = 1;
+ 	timeout = wait_event_interruptible_timeout(runtime->sleep,
+ 				(runtime->avail >= runtime->buffer_size),
+ 				10*HZ);
++
++	spin_lock_irq(&substream->lock);
+ 	if (signal_pending(current))
+ 		err = -ERESTARTSYS;
+ 	if (runtime->avail < runtime->buffer_size && !timeout) {
+@@ -240,6 +269,8 @@ int snd_rawmidi_drain_output(struct snd_rawmidi_substream *substream)
+ 		err = -EIO;
+ 	}
+ 	runtime->drain = 0;
++	spin_unlock_irq(&substream->lock);
++
+ 	if (err != -ERESTARTSYS) {
+ 		/* we need wait a while to make sure that Tx FIFOs are empty */
+ 		if (substream->ops->drain)
+@@ -248,6 +279,11 @@ int snd_rawmidi_drain_output(struct snd_rawmidi_substream *substream)
+ 			msleep(50);
+ 		snd_rawmidi_drop_output(substream);
+ 	}
++
++	spin_lock_irq(&substream->lock);
++	snd_rawmidi_buffer_unref(runtime);
++	spin_unlock_irq(&substream->lock);
++
+ 	return err;
  }
- EXPORT_SYMBOL(snd_rawmidi_input_params);
+ EXPORT_SYMBOL(snd_rawmidi_drain_output);
+@@ -522,6 +558,7 @@ static void close_substream(struct snd_rawmidi *rmidi,
+ 			if (snd_rawmidi_drain_output(substream) == -ERESTARTSYS)
+ 				snd_rawmidi_output_trigger(substream, 0);
+ 		}
++		snd_rawmidi_buffer_ref_sync(substream);
+ 	}
+ 	spin_lock_irq(&substream->lock);
+ 	substream->opened = 0;
 -- 
 2.35.3
 
