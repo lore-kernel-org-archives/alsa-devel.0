@@ -4,58 +4,65 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 463D4C433EF
-	for <alsa-devel@archiver.kernel.org>; Fri, 17 Jun 2022 16:00:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 233C2C433EF
+	for <alsa-devel@archiver.kernel.org>; Fri, 17 Jun 2022 16:30:54 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id BE7841EEE;
-	Fri, 17 Jun 2022 17:59:27 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BE7841EEE
+	by alsa0.perex.cz (Postfix) with ESMTPS id 549BC1AC9;
+	Fri, 17 Jun 2022 18:30:02 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 549BC1AC9
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1655481617;
-	bh=qW8HfvDAZawQaEfKWSAaJHCSDpNX7Y7e/4vXtWde3To=;
-	h=Date:To:From:Subject:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=iQpzYnRAG+sN0wNPFxaFIQf/xuY7CChFVDwgHombOwgtIA96LYv1xEBqdlTxHKKUm
-	 0lTAyZNjmf39EEVAlCNHW1br7RWYTKiBzGd98eEwm430cg3IPbvATl/pURIlvyI885
-	 T2OMWPArVX6W5ApaBHM3ePMDVcmcyMNltU7PVrWc=
+	s=default; t=1655483452;
+	bh=6VId+EutToOC4ZceXtnrBXbOCSzBxkRrFdaIXIrtMAE=;
+	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=sYwYvdt64ZjYiJ6sDG9PMK7YdDMuajLll9d5ICaWNSmT6hO4cnUkMbtrNIJ+VRjTu
+	 H+AvOXbFCKeNEv9IedcP3H1x8+H53c+DaTXTsvAiKDobrVAIMlgPywF9Q2Jl+Bqgay
+	 0Fh0MdH90RQhGESD5sAOuSEf6hAdO3ri08TZAe6c=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 5DE1DF8051F;
-	Fri, 17 Jun 2022 17:59:27 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id AD8B4F80528;
+	Fri, 17 Jun 2022 18:30:01 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 8C13DF8051F; Fri, 17 Jun 2022 17:59:25 +0200 (CEST)
-Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
+ id B2D4BF800B0; Fri, 17 Jun 2022 18:29:57 +0200 (CEST)
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id A240AF804BC
- for <alsa-devel@alsa-project.org>; Fri, 17 Jun 2022 17:59:18 +0200 (CEST)
-Received: from mail1.perex.cz (localhost [127.0.0.1])
- by smtp1.perex.cz (Perex's E-mail Delivery System) with ESMTP id E6ADCA003F
- for <alsa-devel@alsa-project.org>; Fri, 17 Jun 2022 17:59:17 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 smtp1.perex.cz E6ADCA003F
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=perex.cz; s=default;
- t=1655481557; bh=izjBi7AVFDBIxGTgudPJ02d25Z/+2rTu3NWE3knxBkQ=;
- h=Date:To:From:Subject:From;
- b=YvpNR7F57TlUG3Br+hLDQRaNbVak4LpAaiU++yVFww6LIPyaX1lX1OK7/AG69cLqv
- 2IeOVcSRAcSPPQPd31CmKN0mVGQPersbYeRt/2+3zjaSB1GzBLpQgbm9M7uZMXfO4I
- kz38C4Tv17E3wXI7lLDmtUaRKhtQREMn16okvPKY=
-Received: from [192.168.100.98] (unknown [192.168.100.98])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
- (No client certificate requested) (Authenticated sender: perex)
- by mail1.perex.cz (Perex's E-mail Delivery System) with ESMTPSA
- for <alsa-devel@alsa-project.org>; Fri, 17 Jun 2022 17:59:16 +0200 (CEST)
-Message-ID: <31c3cc9c-a4db-d97b-6b55-c5d471f9f6d8@perex.cz>
-Date: Fri, 17 Jun 2022 17:59:16 +0200
+ by alsa1.perex.cz (Postfix) with ESMTPS id 27233F800B0
+ for <alsa-devel@alsa-project.org>; Fri, 17 Jun 2022 18:29:54 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 27233F800B0
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="cTBqv6dO"
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by ams.source.kernel.org (Postfix) with ESMTPS id 9B6B3B82B1B;
+ Fri, 17 Jun 2022 16:29:53 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A9732C3411E;
+ Fri, 17 Jun 2022 16:29:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1655483392;
+ bh=6VId+EutToOC4ZceXtnrBXbOCSzBxkRrFdaIXIrtMAE=;
+ h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+ b=cTBqv6dOd/8KSH+sJDqARx90Ad1ybMMAhlxwLe+Qp9TACPUXnlHOKcJLysABJMT2j
+ hiRURYeoB2CQT1aaTtBIInzhoCjoSTdCcNtll3O6IRIZ5a560hpwmJx0cd+aG48AVv
+ Bv3uZKeAV5i0CNXX4zdsLFVdnVJZ0snnCh4dV8oYyeCL7VSW7V06kfY2Ucmrksv79x
+ 8DjqPx4ol/GWOKzgn/us3lzubwOUuAV8prn53Q6sAyoi8KdOp2EhSIGaTry9vp/rPc
+ iXu0gTeHI6skDP1NRgZTC0h3iowSTvANLOACXo3afYTsdCesqy5pjIOvN/l2cJLgM3
+ /skN2LUuh9uSg==
+From: Mark Brown <broonie@kernel.org>
+To: pierre-louis.bossart@linux.intel.com, alsa-devel@alsa-project.org
+In-Reply-To: <20220616220802.136282-1-pierre-louis.bossart@linux.intel.com>
+References: <20220616220802.136282-1-pierre-louis.bossart@linux.intel.com>
+Subject: Re: [PATCH 0/2] ASoC: minor kernel-doc corrections
+Message-Id: <165548339142.901499.2738384775711530242.b4-ty@kernel.org>
+Date: Fri, 17 Jun 2022 17:29:51 +0100
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.9.0
-Content-Language: en-US
-To: ALSA development <alsa-devel@alsa-project.org>
-From: Jaroslav Kysela <perex@perex.cz>
-Subject: ALSA 1.2.7.1 release
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+Cc: tiwai@suse.de
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -71,31 +78,45 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Hello all,
+On Thu, 16 Jun 2022 17:08:00 -0500, Pierre-Louis Bossart wrote:
+> Remove warnings with make W=1
+> 
+> Pierre-Louis Bossart (2):
+>   ASoC: cs4270: update kernel-doc
+>   ASoC: sunxi: sun4i-i2s: update kernel-doc
+> 
+> sound/soc/codecs/cs4270.c   | 1 -
+>  sound/soc/sunxi/sun4i-i2s.c | 2 ++
+>  2 files changed, 2 insertions(+), 1 deletion(-)
+> 
+> [...]
 
-        new ALSA userspace packages were released. You may download them from
-the ALSA website http://www.alsa-project.org or directly:
+Applied to
 
-        HTTP: https://www.alsa-project.org/files/pub
-        FTP:  ftp://ftp.alsa-project.org/pub
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
 
-Released packages:
+Thanks!
 
-        alsa-lib
-        alsa-ucm-conf
-        alsa-plugins
+[1/2] ASoC: cs4270: update kernel-doc
+      commit: e1ab67be68e900a6585277ca442ca7f67dffb3bd
+[2/2] ASoC: sunxi: sun4i-i2s: update kernel-doc
+      commit: 7c619b306285588725573d975fd44607d13438cf
 
-Full list of changes:
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
 
-        https://www.alsa-project.org/wiki/Changes_v1.2.7_v1.2.7.1
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
-The fingerprint of the public signing key is:
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
-        F04D F507 37AC 1A88 4C4B 3D71 8380 596D A6E5 9C91
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
-				Have fun,
-					Jaroslav
-
--- 
-Jaroslav Kysela <perex@perex.cz>
-Linux Sound Maintainer; ALSA Project; Red Hat, Inc.
+Thanks,
+Mark
