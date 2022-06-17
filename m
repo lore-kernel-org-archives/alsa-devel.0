@@ -4,43 +4,72 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8A2D8CCA479
-	for <alsa-devel@archiver.kernel.org>; Fri, 17 Jun 2022 17:18:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id ED0F4C433EF
+	for <alsa-devel@archiver.kernel.org>; Fri, 17 Jun 2022 17:19:59 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0BC731E76;
-	Fri, 17 Jun 2022 19:17:28 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0BC731E76
+	by alsa0.perex.cz (Postfix) with ESMTPS id C7FFB1ED7;
+	Fri, 17 Jun 2022 19:19:07 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C7FFB1ED7
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1655486298;
-	bh=Qa69ge+fjPXl2I3oCYjVntMX1rZE24V6WRdFR6piTto=;
-	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
+	s=default; t=1655486397;
+	bh=PIou0DnlbBXu21XPNS3Ea1V4LIE+vfdJaLmOJWWvK/s=;
+	h=Date:Subject:To:References:From:In-Reply-To:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=MunyfQrvspdYPeCgnEsJ+lcujGydbufxcNWNvYYTAH3/k2BqG+gLxA9eky+3kxQZ4
-	 +XJ3P+G/wlUM1+8hCJlm2cx9Kle0AfbFKv5YbYABM3HQeP+MM+Vk3b9UtoNeeAw3/j
-	 vZjiu8dtoyCpWj3JXd26pq/L2SN3Cx/RkJxV6pIY=
+	b=cSWJTfRE1yhs4E7LRGs9/cDnouVWYzi685ETxj0U4qOivjQy5OUOB1QylBvw/8ds1
+	 BUJh41ljHoHlVozJx6+UNJzYDBy3IE1iHbyDpRoBOWl2I1zGIXmsH3uHz6ZZnOFaiJ
+	 zpTAFuOvjreLV9RrOnyPlPRtQEWpyHSjqQ0Sm50c=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 9094FF8051F;
-	Fri, 17 Jun 2022 19:17:27 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 552C8F804BC;
+	Fri, 17 Jun 2022 19:19:07 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 0F757F80527; Fri, 17 Jun 2022 19:17:26 +0200 (CEST)
-Received: from webhooks-bot.alsa-project.org (gate.perex.cz [77.48.224.242])
- by alsa1.perex.cz (Postfix) with ESMTP id 38F84F8028B
- for <alsa-devel@alsa-project.org>; Fri, 17 Jun 2022 19:17:22 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 38F84F8028B
+ id 82539F80528; Fri, 17 Jun 2022 19:19:06 +0200 (CEST)
+Received: from mga12.intel.com (mga12.intel.com [192.55.52.136])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id ECA9EF804BC
+ for <alsa-devel@alsa-project.org>; Fri, 17 Jun 2022 19:18:57 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz ECA9EF804BC
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
+ header.b="SudYYjdv"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+ d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+ t=1655486341; x=1687022341;
+ h=message-id:date:mime-version:subject:to:references:from:
+ in-reply-to:content-transfer-encoding;
+ bh=PIou0DnlbBXu21XPNS3Ea1V4LIE+vfdJaLmOJWWvK/s=;
+ b=SudYYjdvDKdZVgY7SU0PGMiROBd3PoGLrJeXiv2e0xd1hItAW9C3eq0R
+ ngJaToGHeruAsKfP0N6TrF3q66+/Dd8sZ6igif9F3ovvcSnPyCZkEB2Il
+ sxdK8qivj3g6B31SV39ydch+5gKL5eZDA2OqGDaeSpdng2d0d9ntx8t+x
+ 2qbN85wOPf7tqUsug/O4BvYIcTSbIuCIdRR0FMcgRaJ19W2nQWQCD8OBa
+ dG0JWaaS9u7SDGMp1elfEgWbkyMCkRz0L1dV6dKN9BI2GyshVd2HmaAkT
+ c3Yw2w1XYsK69SS3rZG19ZgMo/lXFFG9vxNrW9ZVND6SFJG1CvMhz0la8 A==;
+X-IronPort-AV: E=McAfee;i="6400,9594,10380"; a="259330304"
+X-IronPort-AV: E=Sophos;i="5.92,306,1650956400"; d="scan'208";a="259330304"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+ by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 17 Jun 2022 05:39:28 -0700
+X-IronPort-AV: E=Sophos;i="5.92,306,1650956400"; d="scan'208";a="619251348"
+Received: from cuphoff-mobl.ger.corp.intel.com (HELO [10.249.254.149])
+ ([10.249.254.149])
+ by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 17 Jun 2022 05:39:27 -0700
+Message-ID: <5f787bbb-9855-91d7-75cc-bd8c4117bce5@linux.intel.com>
+Date: Fri, 17 Jun 2022 15:40:05 +0300
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-From: GitHub issues - opened <github@alsa-project.org>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Firefox/91.0 Thunderbird/91.10.0
+Subject: Re: Can anyone test with AMD onboard or HDMI/DP?
+Content-Language: en-US
 To: alsa-devel@alsa-project.org
-In-Reply-To: <1655486242531116009-webhooks-bot@alsa-project.org>
-References: <1655486242531116009-webhooks-bot@alsa-project.org>
-Subject: alsa-lib parser error: "sequence command 'devdisall' is ignored" when
- attempting alsactl restore, nrestore, init, etc.
-Message-Id: <20220617171726.0F757F80527@alsa1.perex.cz>
-Date: Fri, 17 Jun 2022 19:17:26 +0200 (CEST)
+References: <87bkur1nil.wl-tiwai@suse.de>
+From: =?UTF-8?Q?P=c3=a9ter_Ujfalusi?= <peter.ujfalusi@linux.intel.com>
+In-Reply-To: <87bkur1nil.wl-tiwai@suse.de>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -56,28 +85,105 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-alsa-project/alsa-lib issue #240 was opened from salperinlea:
 
-This may play into a much larger issue I have been having with an Intel tiger lake soundcard, which cannot be activated after my machine has been suspended, but which always loads on boot.
 
-In an attempt to solve this error, I have tried to use alsactl restore, at which point I get the error:
-<code><pre>
-sudo alsactl restore
-alsa-lib parser.c:1194:(parse_sequence) error: sequence command 'devdisall' is ignored
-alsa-lib parser.c:1194:(parse_sequence) error: sequence command 'devdisall' is ignored
-</code></pre>
-I believe the reason that this repeats is that I have two soundcards; one is an Nvidia card, hard-wired to a dGPU and the HDMI port.
+On 17/06/2022 15:29, Takashi Iwai wrote:
+> Hi,
+> 
+> can anyone have an AMD onboard audio device and/or AMD HDMI/DP output
+> for testing a patch below with 5.18.x or 5.19-rc kernels?  It's a
+> pending fix (for 5.18+), but currently it can't be verified whether it
+> causes a regression on the actual audio I/O (while it fixes the kernel
+> crash).
+> 
+> If the generic allocator still doesn't work as expected here, it
+> should show some audio stuttering or such effect.
 
-Info:
-Arch Linux 251.2, Kernel 5.18.3, KDE 5.25 DE.
+But the fallback was needed for some machines using SOF to be able to
+load the firmware...
+like this:
+https://github.com/thesofproject/linux/issues/3609
 
-<code><pre>
-lspci | grep 'Audio'
-0000:00:1f.3 Multimedia audio controller: Intel Corporation Tiger Lake-H HD Audio Controller (rev 11)
-0000:01:00.1 Audio device: NVIDIA Corporation Device 228e (rev a1)
-</code></pre>
+> 
+> Thanks!
+> 
+> Takashi
+> 
+> -- 8< --
+> From: Takashi Iwai <tiwai@suse.de>
+> Subject: [PATCH] ALSA: memalloc: Drop x86-specific hack for WC allocations
+> 
+> The recent report for a crash on Haswell machines implied that the
+> x86-specific (rather hackish) implementation for write-cache memory
+> buffer allocation in ALSA core is buggy with the recent kernel in some
+> corner cases.  This patch drops the x86-specific implementation and
+> uses the standard dma_alloc_wc() & co generically for avoiding the bug
+> and also for simplification.
+> 
+> BugLink: https://bugzilla.kernel.org/show_bug.cgi?id=216112
+> Signed-off-by: Takashi Iwai <tiwai@suse.de>
+> ---
+>  sound/core/memalloc.c | 23 +----------------------
+>  1 file changed, 1 insertion(+), 22 deletions(-)
+> 
+> diff --git a/sound/core/memalloc.c b/sound/core/memalloc.c
+> index 15dc7160ba34..8cfdaee77905 100644
+> --- a/sound/core/memalloc.c
+> +++ b/sound/core/memalloc.c
+> @@ -431,33 +431,17 @@ static const struct snd_malloc_ops snd_dma_iram_ops = {
+>   */
+>  static void *snd_dma_dev_alloc(struct snd_dma_buffer *dmab, size_t size)
+>  {
+> -	void *p;
+> -
+> -	p = dma_alloc_coherent(dmab->dev.dev, size, &dmab->addr, DEFAULT_GFP);
+> -#ifdef CONFIG_X86
+> -	if (p && dmab->dev.type == SNDRV_DMA_TYPE_DEV_WC)
+> -		set_memory_wc((unsigned long)p, PAGE_ALIGN(size) >> PAGE_SHIFT);
+> -#endif
+> -	return p;
+> +	return dma_alloc_coherent(dmab->dev.dev, size, &dmab->addr, DEFAULT_GFP);
+>  }
+>  
+>  static void snd_dma_dev_free(struct snd_dma_buffer *dmab)
+>  {
+> -#ifdef CONFIG_X86
+> -	if (dmab->dev.type == SNDRV_DMA_TYPE_DEV_WC)
+> -		set_memory_wb((unsigned long)dmab->area,
+> -			      PAGE_ALIGN(dmab->bytes) >> PAGE_SHIFT);
+> -#endif
+>  	dma_free_coherent(dmab->dev.dev, dmab->bytes, dmab->area, dmab->addr);
+>  }
+>  
+>  static int snd_dma_dev_mmap(struct snd_dma_buffer *dmab,
+>  			    struct vm_area_struct *area)
+>  {
+> -#ifdef CONFIG_X86
+> -	if (dmab->dev.type == SNDRV_DMA_TYPE_DEV_WC)
+> -		area->vm_page_prot = pgprot_writecombine(area->vm_page_prot);
+> -#endif
+>  	return dma_mmap_coherent(dmab->dev.dev, area,
+>  				 dmab->area, dmab->addr, dmab->bytes);
+>  }
+> @@ -471,10 +455,6 @@ static const struct snd_malloc_ops snd_dma_dev_ops = {
+>  /*
+>   * Write-combined pages
+>   */
+> -#ifdef CONFIG_X86
+> -/* On x86, share the same ops as the standard dev ops */
+> -#define snd_dma_wc_ops	snd_dma_dev_ops
+> -#else /* CONFIG_X86 */
+>  static void *snd_dma_wc_alloc(struct snd_dma_buffer *dmab, size_t size)
+>  {
+>  	return dma_alloc_wc(dmab->dev.dev, size, &dmab->addr, DEFAULT_GFP);
+> @@ -497,7 +477,6 @@ static const struct snd_malloc_ops snd_dma_wc_ops = {
+>  	.free = snd_dma_wc_free,
+>  	.mmap = snd_dma_wc_mmap,
+>  };
+> -#endif /* CONFIG_X86 */
+>  
+>  #ifdef CONFIG_SND_DMA_SGBUF
+>  static void *snd_dma_sg_fallback_alloc(struct snd_dma_buffer *dmab, size_t size);
 
-I am not sure what other info may be of use, but I will provide it upon request.
-
-Issue URL     : https://github.com/alsa-project/alsa-lib/issues/240
-Repository URL: https://github.com/alsa-project/alsa-lib
+-- 
+Péter
