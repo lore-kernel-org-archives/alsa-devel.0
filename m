@@ -4,85 +4,87 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8B804C43334
-	for <alsa-devel@archiver.kernel.org>; Fri, 17 Jun 2022 08:45:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 645C3C433EF
+	for <alsa-devel@archiver.kernel.org>; Fri, 17 Jun 2022 08:46:21 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id CD7461B42;
-	Fri, 17 Jun 2022 10:44:35 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CD7461B42
+	by alsa0.perex.cz (Postfix) with ESMTPS id A31BB1B20;
+	Fri, 17 Jun 2022 10:45:29 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A31BB1B20
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1655455525;
-	bh=ylj4ReGORT9cmTFQ92IdQM9+4sF2ngr5x4tsi6CO7rk=;
+	s=default; t=1655455579;
+	bh=l4Oy++oNbhdZkbFrGPAijfPn04cBbv+I89WWctteSl0=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=mVWgj4bbZSTJ+TsIsvob67axyVwW8u5R8GZGTPLqeB0tBL1k8lDPBOD89dlyh058E
-	 KPzvW/a2FpmzosjKj9p1SiTuPvdT8yzmUjQciBMaVAlbQxNfLaDfVy+2FwR706G2IP
-	 9t2/gObDFnjj+6korHnku3vKpqj8p+WEC2dccr78=
+	b=fkoh9WHyEXgYT7oNyJ2Tuk/7PxkGWUkXtSZGqre3jmA27NsUArD+bHCFp8SoGbQow
+	 liWRHzlHAcdQ0p8tzBiXXsl/YLDkvcp5Uera2VAK4mWO8xSXY16rG+4i7ekPRFiuD8
+	 Ocr1VN+kVmhY9mJqYEk+2CijTz5rvxLLreygc/z0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 7698DF80248;
-	Fri, 17 Jun 2022 10:44:35 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2CD5EF8019D;
+	Fri, 17 Jun 2022 10:45:29 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 884F0F800B0; Fri, 17 Jun 2022 10:44:33 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+ id 7322AF800B9; Fri, 17 Jun 2022 10:45:27 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 7E85EF800B0
- for <alsa-devel@alsa-project.org>; Fri, 17 Jun 2022 10:44:25 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7E85EF800B0
+ by alsa1.perex.cz (Postfix) with ESMTPS id 4661DF800B9
+ for <alsa-devel@alsa-project.org>; Fri, 17 Jun 2022 10:45:19 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4661DF800B9
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="D8vHnUIc"; 
+ header.b="k+2IqKpd"; 
  dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="zgiEJELQ"
+ header.b="wepxJrTY"
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 2A79721E82;
- Fri, 17 Jun 2022 08:44:25 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 58ABF1F8F0;
+ Fri, 17 Jun 2022 08:45:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1655455465; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1655455519; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=p4BqFADQhBXykYtq6UxSN4rgPXAv5STR0u5g4yNGgGA=;
- b=D8vHnUIckQwj4k5ewvXCYPdGJ52oA+6QimA42fG5/S9KBf5BYDL7kNyJptcoDtLQZNFxRt
- 0pelWJG2A3In7HA0k2gpey65ozAy2HoVVY6TuuXqCgzE3XDOvO/WgFlBEKbUJaQbyFbs9Q
- gRrZ4ONn4Yrz4hs2qI4KpYXGxn8rJG0=
+ bh=cZ9+ve8XC0OCoOAsAYJQp1jZeNyLxdr9D/JzmhtU/GA=;
+ b=k+2IqKpdXdmz/ZVAsz6SGW/Ht1pK213EF9W+1NyavEcwp/qjlEnzx6NowCtjBSXCSHqRui
+ CptWkJ5RgfXQrHj3niyX5obZfmxQzDP1dgeIKuNcYbET5rvV4gIVZy4gm9g8dS2Y9ecK1r
+ ueUI3x6f/ATI0lspaClTjVn3BL6ceh4=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1655455465;
+ s=susede2_ed25519; t=1655455519;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=p4BqFADQhBXykYtq6UxSN4rgPXAv5STR0u5g4yNGgGA=;
- b=zgiEJELQ24ikqeLfPIRXEqFDERJ5qa0431XEV28g9HdqLz6d+OQZEuuFlg5qlNsp+ygpS6
- jHsibdzw5/MUH0DQ==
+ bh=cZ9+ve8XC0OCoOAsAYJQp1jZeNyLxdr9D/JzmhtU/GA=;
+ b=wepxJrTY7QClAfM/aCneypGa5AcE1T4gDM9YLTJ59fH3v3r+Ayrr5oqU+9YHVNv2FAMWdj
+ 2sdtWUtkiJZ5WGAw==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id D9A5213458;
- Fri, 17 Jun 2022 08:44:24 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 3967513458;
+ Fri, 17 Jun 2022 08:45:19 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id YaA+NOg+rGLWHAAAMHmgww
- (envelope-from <tiwai@suse.de>); Fri, 17 Jun 2022 08:44:24 +0000
-Date: Fri, 17 Jun 2022 10:44:24 +0200
-Message-ID: <87wndf1xxz.wl-tiwai@suse.de>
+ by imap2.suse-dmz.suse.de with ESMTPSA id nJU1DR8/rGJnHQAAMHmgww
+ (envelope-from <tiwai@suse.de>); Fri, 17 Jun 2022 08:45:19 +0000
+Date: Fri, 17 Jun 2022 10:45:18 +0200
+Message-ID: <87v8sz1xwh.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
-To: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: Re: [PATCH v2 1/3] firewire: convert sysfs sprintf/snprintf family to
- sysfs_emit
-In-Reply-To: <20220615121505.61412-2-o-takashi@sakamocchi.jp>
-References: <20220615121505.61412-1-o-takashi@sakamocchi.jp>
- <20220615121505.61412-2-o-takashi@sakamocchi.jp>
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: Re: [PATCH] ALSA: hda: intel-dspcfg: use SOF for UpExtreme and
+ UpExtreme11 boards
+In-Reply-To: <20220616201029.130477-1-pierre-louis.bossart@linux.intel.com>
+References: <20220616201029.130477-1-pierre-louis.bossart@linux.intel.com>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
 MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
-Cc: Abaci Robot <abaci@linux.alibaba.com>,
- Jiapeng Chong <jiapeng.chong@linux.alibaba.com>, alsa-devel@alsa-project.org,
- stefanr@s5r6.in-berlin.de, linux1394-devel@lists.sourceforge.net
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 8bit
+Cc: =?ISO-8859-1?Q?P=E9ter?= Ujfalusi <peter.ujfalusi@linux.intel.com>,
+ alsa-devel@alsa-project.org, broonie@kernel.org,
+ Bard Liao <yung-chuan.liao@linux.intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -98,23 +100,23 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, 15 Jun 2022 14:15:03 +0200,
-Takashi Sakamoto wrote:
+On Thu, 16 Jun 2022 22:10:29 +0200,
+Pierre-Louis Bossart wrote:
 > 
-> From: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+> The UpExtreme BIOS reports microphones that are not physically
+> present, so this module ends-up selecting SOF, while the UpExtreme11
+> BIOS does not report microphones so the snd-hda-intel driver is
+> selected.
 > 
-> Fix the following coccicheck warning:
+> For consistency use SOF unconditionally in autodetection mode. The use
+> of the snd-hda-intel driver can still be enabled with
+> 'options snd-intel-dspcfg dsp_driver=1'
 > 
-> ./drivers/firewire/core-device.c:375:8-16: WARNING: use scnprintf or
-> sprintf.
-> 
-> Reported-by: Abaci Robot<abaci@linux.alibaba.com>
-> Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-> Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+> Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+> Reviewed-by: Bard Liao <yung-chuan.liao@linux.intel.com>
+> Reviewed-by: Péter Ujfalusi <peter.ujfalusi@linux.intel.com>
 
-I applied (only) this one now.
+Thanks, applied now.
 
-
-thanks,
 
 Takashi
