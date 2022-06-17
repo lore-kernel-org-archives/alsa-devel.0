@@ -4,53 +4,53 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6B158C43334
-	for <alsa-devel@archiver.kernel.org>; Fri, 17 Jun 2022 08:01:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8ACBAC43334
+	for <alsa-devel@archiver.kernel.org>; Fri, 17 Jun 2022 08:02:04 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 9E91B1B52;
-	Fri, 17 Jun 2022 10:00:59 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9E91B1B52
+	by alsa0.perex.cz (Postfix) with ESMTPS id 6864D1B60;
+	Fri, 17 Jun 2022 10:01:12 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6864D1B60
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1655452909;
-	bh=DDn22UWRqYTXo0jYKdufM3+M7C8dggpl7NWkO4iEaZQ=;
+	s=default; t=1655452922;
+	bh=lFskeMsslsiN2afO68sWLOwVPwmtfjMjyFwnjcKJ9V0=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=OFUu2MD/2dA2BCNJwWYxinHJ7DbzvDcLvi3JPk+iusqBpjOV7itYeGQp8lR8QN7XM
-	 SSpYLDLO/OgYEUG7IHHTGFdwFt1NowZDKzJSRdXvIaprZLV9oss+H1pVbiuU1d1r07
-	 KdE3l2gd1iip80yR5envDQmkBBewCmqGdohGWqzk=
+	b=Lduvq5AZEKEnIoYFmh2zEHte3ETmgWxGiJ+1IX+4WTo1Xc2P/Nn7sUFg8SvcgXBth
+	 Z8drW67YkQ9UMI8n80CFXX1ZqGLTY5U7ix7yIPib2xf6iJLc2lqTeZfr54L6bmrNr/
+	 qRVSCSfG1fwA5u+6v1GoxnWhWDQfa/WHOiS8zAKc=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 5135EF8053E;
-	Fri, 17 Jun 2022 09:59:32 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 1CD78F8013F;
+	Fri, 17 Jun 2022 10:00:51 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 45D84F8052E; Fri, 17 Jun 2022 09:59:29 +0200 (CEST)
-Received: from inva020.nxp.com (inva020.nxp.com [92.121.34.13])
+ id 6BBA7F8028B; Fri, 17 Jun 2022 10:00:50 +0200 (CEST)
+Received: from inva021.nxp.com (inva021.nxp.com [92.121.34.21])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id A1C38F80159
- for <alsa-devel@alsa-project.org>; Fri, 17 Jun 2022 09:59:18 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A1C38F80159
-Received: from inva020.nxp.com (localhost [127.0.0.1])
- by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 2A9331A2A06;
- Fri, 17 Jun 2022 09:59:18 +0200 (CEST)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 02C59F800D3
+ for <alsa-devel@alsa-project.org>; Fri, 17 Jun 2022 09:59:22 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 02C59F800D3
+Received: from inva021.nxp.com (localhost [127.0.0.1])
+ by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id B133E201FB3;
+ Fri, 17 Jun 2022 09:59:21 +0200 (CEST)
 Received: from aprdc01srsp001v.ap-rdc01.nxp.com
  (aprdc01srsp001v.ap-rdc01.nxp.com [165.114.16.16])
- by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id D44501A1704;
- Fri, 17 Jun 2022 09:59:17 +0200 (CEST)
+ by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 67C92201F99;
+ Fri, 17 Jun 2022 09:59:21 +0200 (CEST)
 Received: from localhost.localdomain (shlinux2.ap.freescale.net
  [10.192.224.44])
- by aprdc01srsp001v.ap-rdc01.nxp.com (Postfix) with ESMTP id E67E6180222B;
- Fri, 17 Jun 2022 15:59:15 +0800 (+08)
+ by aprdc01srsp001v.ap-rdc01.nxp.com (Postfix) with ESMTP id 842991820F45;
+ Fri, 17 Jun 2022 15:59:19 +0800 (+08)
 From: Shengjiu Wang <shengjiu.wang@nxp.com>
 To: nicoleotsuka@gmail.com, Xiubo.Lee@gmail.com, festevam@gmail.com,
  shengjiu.wang@gmail.com, lgirdwood@gmail.com, broonie@kernel.org,
  perex@perex.cz, tiwai@suse.com, alsa-devel@alsa-project.org,
  robh+dt@kernel.org, krzk+dt@kernel.org, devicetree@vger.kernel.org
-Subject: [PATCH v2 2/7] ASoC: fsl_sai: Add DSD bit format support
-Date: Fri, 17 Jun 2022 15:44:32 +0800
-Message-Id: <1655451877-16382-3-git-send-email-shengjiu.wang@nxp.com>
+Subject: [PATCH v2 5/7] ASoC: fsl_sai: Make res a member of struct fsl_sai
+Date: Fri, 17 Jun 2022 15:44:35 +0800
+Message-Id: <1655451877-16382-6-git-send-email-shengjiu.wang@nxp.com>
 X-Mailer: git-send-email 2.7.4
 In-Reply-To: <1655451877-16382-1-git-send-email-shengjiu.wang@nxp.com>
 References: <1655451877-16382-1-git-send-email-shengjiu.wang@nxp.com>
@@ -71,29 +71,61 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Support DSD_U8, DSD_U16_LE, DSD_U32_LE.
+The resource info need to be accessed by hw_params()
+function for multi fifo case, the start address may
+be not the FIFO0. So move it to be a member of
+struct fsl_sai.
 
 Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
 ---
- sound/soc/fsl/fsl_sai.h | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+ sound/soc/fsl/fsl_sai.c | 7 +++----
+ sound/soc/fsl/fsl_sai.h | 1 +
+ 2 files changed, 4 insertions(+), 4 deletions(-)
 
+diff --git a/sound/soc/fsl/fsl_sai.c b/sound/soc/fsl/fsl_sai.c
+index ddfe28cb7df0..86aa0baba848 100644
+--- a/sound/soc/fsl/fsl_sai.c
++++ b/sound/soc/fsl/fsl_sai.c
+@@ -1077,7 +1077,6 @@ static int fsl_sai_probe(struct platform_device *pdev)
+ 	struct device *dev = &pdev->dev;
+ 	struct fsl_sai *sai;
+ 	struct regmap *gpr;
+-	struct resource *res;
+ 	void __iomem *base;
+ 	char tmp[8];
+ 	int irq, ret, i;
+@@ -1092,7 +1091,7 @@ static int fsl_sai_probe(struct platform_device *pdev)
+ 
+ 	sai->is_lsb_first = of_property_read_bool(np, "lsb-first");
+ 
+-	base = devm_platform_get_and_ioremap_resource(pdev, 0, &res);
++	base = devm_platform_get_and_ioremap_resource(pdev, 0, &sai->res);
+ 	if (IS_ERR(base))
+ 		return PTR_ERR(base);
+ 
+@@ -1192,8 +1191,8 @@ static int fsl_sai_probe(struct platform_device *pdev)
+ 				   MCLK_DIR(index));
+ 	}
+ 
+-	sai->dma_params_rx.addr = res->start + FSL_SAI_RDR0;
+-	sai->dma_params_tx.addr = res->start + FSL_SAI_TDR0;
++	sai->dma_params_rx.addr = sai->res->start + FSL_SAI_RDR0;
++	sai->dma_params_tx.addr = sai->res->start + FSL_SAI_TDR0;
+ 	sai->dma_params_rx.maxburst = FSL_SAI_MAXBURST_RX;
+ 	sai->dma_params_tx.maxburst = FSL_SAI_MAXBURST_TX;
+ 
 diff --git a/sound/soc/fsl/fsl_sai.h b/sound/soc/fsl/fsl_sai.h
-index bc2a86a413e1..e28a49ce12ef 100644
+index c0b6bc42fc3c..4d657edc9c9f 100644
 --- a/sound/soc/fsl/fsl_sai.h
 +++ b/sound/soc/fsl/fsl_sai.h
-@@ -11,7 +11,10 @@
- #define FSL_SAI_FORMATS (SNDRV_PCM_FMTBIT_S16_LE |\
- 			 SNDRV_PCM_FMTBIT_S20_3LE |\
- 			 SNDRV_PCM_FMTBIT_S24_LE |\
--			 SNDRV_PCM_FMTBIT_S32_LE)
-+			 SNDRV_PCM_FMTBIT_S32_LE |\
-+			 SNDRV_PCM_FMTBIT_DSD_U8 |\
-+			 SNDRV_PCM_FMTBIT_DSD_U16_LE |\
-+			 SNDRV_PCM_FMTBIT_DSD_U32_LE)
+@@ -258,6 +258,7 @@ struct fsl_sai {
+ 	struct regmap *regmap;
+ 	struct clk *bus_clk;
+ 	struct clk *mclk_clk[FSL_SAI_MCLK_MAX];
++	struct resource *res;
  
- /* SAI Register Map Register */
- #define FSL_SAI_VERID	0x00 /* SAI Version ID Register */
+ 	bool is_consumer_mode;
+ 	bool is_lsb_first;
 -- 
 2.17.1
 
