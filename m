@@ -4,94 +4,72 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 63CA8C43334
-	for <alsa-devel@archiver.kernel.org>; Fri, 17 Jun 2022 13:31:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 17D2DC433EF
+	for <alsa-devel@archiver.kernel.org>; Fri, 17 Jun 2022 13:57:07 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 36AD61DF8;
-	Fri, 17 Jun 2022 15:30:44 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 36AD61DF8
+	by alsa0.perex.cz (Postfix) with ESMTPS id 724761F05;
+	Fri, 17 Jun 2022 15:56:15 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 724761F05
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1655472694;
-	bh=8twHaqZ/md6nc42SO3/jksI9z7vAwXPh1US3Fcm/Mps=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=ZtzM/pSFhX7l2WHX3P2yzunggxZyjRPu2/LCuJ86ETWT/q0s+ucS72v5VIVmnaxNQ
-	 EKQbSy37X1OD2nII35Zqa35FzOvY6elpgQ6D5SPBAQu2T82GIsKXH+bahp5c5Zgv7W
-	 Ato/J4mJebl21iRSMZTIlAYvHFhZ3449U1SCeq5o=
+	s=default; t=1655474225;
+	bh=igga9Q0E6r52TO7civdZ7evT+W8BMSCEeUo4MbGJ8kw=;
+	h=Date:Subject:To:References:From:In-Reply-To:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=q1X619UlnXM4ivXab9a4PJSvys7aACPQ+a6VBtjsj1b2SzxPTHHlRvIrqlV0pBOQZ
+	 FbOYhVneVZqZlkFM61ggZtUCX1n9TX0Ukvq4aMqHh3cotQhyAP6rjxT/vS58/W2dCW
+	 Q7rOqOHr744FpYT4+l8ZKAeEaJtdELGuRGvU0uCg=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id C178CF8051F;
-	Fri, 17 Jun 2022 15:30:43 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id E2FD2F800B0;
+	Fri, 17 Jun 2022 15:56:14 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 5E89DF80527; Fri, 17 Jun 2022 15:30:42 +0200 (CEST)
-Received: from out2-smtp.messagingengine.com (out2-smtp.messagingengine.com
- [66.111.4.26])
- (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
+ id 06E2BF80527; Fri, 17 Jun 2022 15:56:13 +0200 (CEST)
+Received: from mga06.intel.com (mga06b.intel.com [134.134.136.31])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 6A3DBF804BC
- for <alsa-devel@alsa-project.org>; Fri, 17 Jun 2022 15:30:32 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6A3DBF804BC
+ by alsa1.perex.cz (Postfix) with ESMTPS id 3255BF800B0
+ for <alsa-devel@alsa-project.org>; Fri, 17 Jun 2022 15:55:57 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3255BF800B0
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=system76.com header.i=@system76.com
- header.b="NLaiZfRg"; 
- dkim=pass (2048-bit key) header.d=messagingengine.com
- header.i=@messagingengine.com header.b="UTNeoG2f"
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
- by mailout.nyi.internal (Postfix) with ESMTP id 947D95C0176;
- Fri, 17 Jun 2022 09:30:30 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
- by compute3.internal (MEProxy); Fri, 17 Jun 2022 09:30:30 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=system76.com; h=
- cc:cc:content-transfer-encoding:date:date:from:from:in-reply-to
- :message-id:mime-version:reply-to:sender:subject:subject:to:to;
- s=fm2; t=1655472630; x=1655559030; bh=4xGA2GBGwJDvIs+SqqRufpmJP
- abbrFui0Vfcb+4UBhI=; b=NLaiZfRgdef6rITmcl5pO8NTskPpTR312Ju/aE9Fn
- oF6AC9/PWXD5PnwM1lDLktqCCrD+jqlc64qEgq7+ogStJp03sMNAUco0Ee6+hBDp
- f7K/ycRKOpxjzrEM0s/NPS2J0Z4V7Q86kKXyTcq7zeCAV3XgJBcyx0zBl26wt8qq
- AWmBLPy7n00dGzGlAt2MhLzPtBSQH1RBNq8I9W9JAUJVg+2GgnDpULbT/XWh2RIs
- DIovb/4+MVb9FlWPtB6FYSL5hnFCnR5HjPn5uRNDUPjkWVCi3M/UBv0xxBDfn/mR
- jcZIHQ1CbbGdV43wq4DSdCj/K4T2qZtSTKAj+SN+XmLEg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
- messagingengine.com; h=cc:cc:content-transfer-encoding:date:date
- :feedback-id:feedback-id:from:from:in-reply-to:message-id
- :mime-version:reply-to:sender:subject:subject:to:to:x-me-proxy
- :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; t=
- 1655472630; x=1655559030; bh=4xGA2GBGwJDvIs+SqqRufpmJPabbrFui0Vf
- cb+4UBhI=; b=UTNeoG2fkstPY1Y58WOou+6vHHdtFu2bulLp+O4XY7XNhqdVYrr
- mSPHb69k274Q4P5osdtAa7sut9mh8AxkRCLyfQW37T6NGEvhcP71ecADFWgfCuPu
- uMQRTmGJluNq7xX0qGdPXHNel91uv3k3uDWXlUs1OXVe1BTnma0QJvf44jbyhybo
- RDiiuzldrmoN+GLDdfMh4UK/XqnSIqrjTiZCcaES34LY4o/LIxacp0P3jeEeCP27
- LJ0iYL6Ei6HAGwLVhan0EY+u+8BFKoyPwivkz4KhPsEecC5ufcpMdNlTwj+3f963
- WIlPj/Qhb+odqwwLm5mtfEbp9yfxSAI3DOg==
-X-ME-Sender: <xms:9oGsYn7C8k1o8NeNWm9zLx0UM349sX0pXfwgClvk-TMpVB4dpowpRA>
- <xme:9oGsYs4fOCMe5eCIIWYltUNCuaIli4o1C-BsfNt_n5KgOYYViuHJKyCtY1KEBIdpK
- IVp0-kY_piRf0qrhA>
-X-ME-Received: <xmr:9oGsYuf2wFg7uzgv74Mzv7K3bIpIVte_qSzccpGwv-pvRT6q59_xs87S>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvfedruddvhedgiedvucetufdoteggodetrfdotf
- fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
- uceurghilhhouhhtmecufedttdenucenucfjughrpefhvfevufffkffoggfgsedtkeertd
- ertddtnecuhfhrohhmpefvihhmucevrhgrfihfohhrugcuoehttghrrgiffhhorhgusehs
- hihsthgvmhejiedrtghomheqnecuggftrfgrthhtvghrnhepkefgteefvdeivdfhffdtff
- fgieffhfetgeduudekieefueeutdelfedtveeuheefnecuvehluhhsthgvrhfuihiivgep
- tdenucfrrghrrghmpehmrghilhhfrhhomhepthgtrhgrfihfohhrugesshihshhtvghmje
- eirdgtohhm
-X-ME-Proxy: <xmx:9oGsYoIW1FvMUJPxP1RyikmoRNrQlPxqQPo-e-su6OXpOLYhsdRd5g>
- <xmx:9oGsYrIlol1R3lYdLKcJq_NqunCy6aIpax8SEY1nCrLud91V642CXw>
- <xmx:9oGsYhyV5ihrYZF2FcFA944nn8aotmS1i1fKS4KxKap8pcAYzYnQYQ>
- <xmx:9oGsYhiwcqo_q5NBBmjgRp1mDQpqrOPsPS9Qox-YghwQtcz-dsKvRQ>
-Feedback-ID: i1761444e:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
- 17 Jun 2022 09:30:29 -0400 (EDT)
-From: Tim Crawford <tcrawford@system76.com>
-To: alsa-devel@alsa-project.org
-Subject: [PATCH] ALSA: hda/realtek: Add quirk for Clevo PD70PNT
-Date: Fri, 17 Jun 2022 07:30:28 -0600
-Message-Id: <20220617133028.50568-1-tcrawford@system76.com>
-X-Mailer: git-send-email 2.34.1
+ dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
+ header.b="HV8omPhR"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+ d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+ t=1655474159; x=1687010159;
+ h=message-id:date:mime-version:subject:to:references:from:
+ in-reply-to:content-transfer-encoding;
+ bh=igga9Q0E6r52TO7civdZ7evT+W8BMSCEeUo4MbGJ8kw=;
+ b=HV8omPhRrObOwz+y4KywnadIl3qhv8WDPR6SLjL7j9D9ywcViVLtZlc3
+ em+zLVE4V95SqgYoEr8xLQGFV2IbHcWfKULcSJv5xPDT/WJdXdg6X9mYZ
+ rcCAPwTm6oxetMobHEKr1MNhq29EhbpK/U3PfUpYNuAsNPHmx7vuGHhIn
+ UQJEVkYDQvhGCeLo+IStaCUB7oiMzB97M9z8DtkKQeZVYsaIK8P1N5izE
+ dRHI7ryURT77PlhFQFssCdOUX1cMJB1ptuMDxBXVYf3YZYcPR+NJbXgDl
+ ODl6ydF/CHZKT8cTbhUjGHlP0IWZLIQUGWypLHmi8EkV7lXu1EzOAWUUw w==;
+X-IronPort-AV: E=McAfee;i="6400,9594,10380"; a="341182029"
+X-IronPort-AV: E=Sophos;i="5.92,306,1650956400"; d="scan'208";a="341182029"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+ by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 17 Jun 2022 06:55:55 -0700
+X-IronPort-AV: E=Sophos;i="5.92,306,1650956400"; d="scan'208";a="675489353"
+Received: from cuphoff-mobl.ger.corp.intel.com (HELO [10.249.254.149])
+ ([10.249.254.149])
+ by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 17 Jun 2022 06:55:54 -0700
+Message-ID: <0920a0b2-31be-8629-07d0-564bb49dc60d@linux.intel.com>
+Date: Fri, 17 Jun 2022 16:56:31 +0300
 MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Firefox/91.0 Thunderbird/91.10.0
+Subject: Re: Can anyone test with AMD onboard or HDMI/DP?
+Content-Language: en-US
+To: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
+References: <87bkur1nil.wl-tiwai@suse.de>
+From: =?UTF-8?Q?P=c3=a9ter_Ujfalusi?= <peter.ujfalusi@linux.intel.com>
+In-Reply-To: <87bkur1nil.wl-tiwai@suse.de>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-Cc: tiwai@suse.de, productdev@system76.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -107,25 +85,108 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Fixes speaker output and headset detection on Clevo PD70PNT.
+Hi Takashi,
 
-Signed-off-by: Tim Crawford <tcrawford@system76.com>
----
- sound/pci/hda/patch_realtek.c | 1 +
- 1 file changed, 1 insertion(+)
+On 17/06/2022 15:29, Takashi Iwai wrote:
+> Hi,
 
-diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-index b937f63d0d09..ff9a09a670ed 100644
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -2634,6 +2634,7 @@ static const struct snd_pci_quirk alc882_fixup_tbl[] = {
- 	SND_PCI_QUIRK(0x1558, 0x67e1, "Clevo PB71[DE][CDF]", ALC1220_FIXUP_CLEVO_PB51ED_PINS),
- 	SND_PCI_QUIRK(0x1558, 0x67e5, "Clevo PC70D[PRS](?:-D|-G)?", ALC1220_FIXUP_CLEVO_PB51ED_PINS),
- 	SND_PCI_QUIRK(0x1558, 0x67f1, "Clevo PC70H[PRS]", ALC1220_FIXUP_CLEVO_PB51ED_PINS),
-+	SND_PCI_QUIRK(0x1558, 0x67f5, "Clevo PD70PN[NRT]", ALC1220_FIXUP_CLEVO_PB51ED_PINS),
- 	SND_PCI_QUIRK(0x1558, 0x70d1, "Clevo PC70[ER][CDF]", ALC1220_FIXUP_CLEVO_PB51ED_PINS),
- 	SND_PCI_QUIRK(0x1558, 0x7714, "Clevo X170SM", ALC1220_FIXUP_CLEVO_PB51ED_PINS),
- 	SND_PCI_QUIRK(0x1558, 0x7715, "Clevo X170KM-G", ALC1220_FIXUP_CLEVO_PB51ED),
+Try #2, first mail did not made it through, I think.
+
+> can anyone have an AMD onboard audio device and/or AMD HDMI/DP output
+> for testing a patch below with 5.18.x or 5.19-rc kernels?  It's a
+> pending fix (for 5.18+), but currently it can't be verified whether it
+> causes a regression on the actual audio I/O (while it fixes the kernel
+> crash).
+> 
+> If the generic allocator still doesn't work as expected here, it
+> should show some audio stuttering or such effect.
+
+But the fallback was needed for some machines using SOF to be able to
+load the firmware...
+like this:
+https://github.com/thesofproject/linux/issues/3609
+
+> 
+> 
+> Thanks!
+> 
+> Takashi
+> 
+> -- 8< --
+> From: Takashi Iwai <tiwai@suse.de>
+> Subject: [PATCH] ALSA: memalloc: Drop x86-specific hack for WC allocations
+> 
+> The recent report for a crash on Haswell machines implied that the
+> x86-specific (rather hackish) implementation for write-cache memory
+> buffer allocation in ALSA core is buggy with the recent kernel in some
+> corner cases.  This patch drops the x86-specific implementation and
+> uses the standard dma_alloc_wc() & co generically for avoiding the bug
+> and also for simplification.
+> 
+> BugLink: https://bugzilla.kernel.org/show_bug.cgi?id=216112
+> Signed-off-by: Takashi Iwai <tiwai@suse.de>
+> ---
+>  sound/core/memalloc.c | 23 +----------------------
+>  1 file changed, 1 insertion(+), 22 deletions(-)
+> 
+> diff --git a/sound/core/memalloc.c b/sound/core/memalloc.c
+> index 15dc7160ba34..8cfdaee77905 100644
+> --- a/sound/core/memalloc.c
+> +++ b/sound/core/memalloc.c
+> @@ -431,33 +431,17 @@ static const struct snd_malloc_ops snd_dma_iram_ops = {
+>   */
+>  static void *snd_dma_dev_alloc(struct snd_dma_buffer *dmab, size_t size)
+>  {
+> -	void *p;
+> -
+> -	p = dma_alloc_coherent(dmab->dev.dev, size, &dmab->addr, DEFAULT_GFP);
+> -#ifdef CONFIG_X86
+> -	if (p && dmab->dev.type == SNDRV_DMA_TYPE_DEV_WC)
+> -		set_memory_wc((unsigned long)p, PAGE_ALIGN(size) >> PAGE_SHIFT);
+> -#endif
+> -	return p;
+> +	return dma_alloc_coherent(dmab->dev.dev, size, &dmab->addr, DEFAULT_GFP);
+>  }
+>  
+>  static void snd_dma_dev_free(struct snd_dma_buffer *dmab)
+>  {
+> -#ifdef CONFIG_X86
+> -	if (dmab->dev.type == SNDRV_DMA_TYPE_DEV_WC)
+> -		set_memory_wb((unsigned long)dmab->area,
+> -			      PAGE_ALIGN(dmab->bytes) >> PAGE_SHIFT);
+> -#endif
+>  	dma_free_coherent(dmab->dev.dev, dmab->bytes, dmab->area, dmab->addr);
+>  }
+>  
+>  static int snd_dma_dev_mmap(struct snd_dma_buffer *dmab,
+>  			    struct vm_area_struct *area)
+>  {
+> -#ifdef CONFIG_X86
+> -	if (dmab->dev.type == SNDRV_DMA_TYPE_DEV_WC)
+> -		area->vm_page_prot = pgprot_writecombine(area->vm_page_prot);
+> -#endif
+>  	return dma_mmap_coherent(dmab->dev.dev, area,
+>  				 dmab->area, dmab->addr, dmab->bytes);
+>  }
+> @@ -471,10 +455,6 @@ static const struct snd_malloc_ops snd_dma_dev_ops = {
+>  /*
+>   * Write-combined pages
+>   */
+> -#ifdef CONFIG_X86
+> -/* On x86, share the same ops as the standard dev ops */
+> -#define snd_dma_wc_ops	snd_dma_dev_ops
+> -#else /* CONFIG_X86 */
+>  static void *snd_dma_wc_alloc(struct snd_dma_buffer *dmab, size_t size)
+>  {
+>  	return dma_alloc_wc(dmab->dev.dev, size, &dmab->addr, DEFAULT_GFP);
+> @@ -497,7 +477,6 @@ static const struct snd_malloc_ops snd_dma_wc_ops = {
+>  	.free = snd_dma_wc_free,
+>  	.mmap = snd_dma_wc_mmap,
+>  };
+> -#endif /* CONFIG_X86 */
+>  
+>  #ifdef CONFIG_SND_DMA_SGBUF
+>  static void *snd_dma_sg_fallback_alloc(struct snd_dma_buffer *dmab, size_t size);
+
 -- 
-2.35.3
-
+Péter
