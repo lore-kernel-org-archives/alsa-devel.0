@@ -4,72 +4,76 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id ED0F4C433EF
-	for <alsa-devel@archiver.kernel.org>; Fri, 17 Jun 2022 17:19:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id EB9E6C433EF
+	for <alsa-devel@archiver.kernel.org>; Fri, 17 Jun 2022 17:38:14 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C7FFB1ED7;
-	Fri, 17 Jun 2022 19:19:07 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C7FFB1ED7
+	by alsa0.perex.cz (Postfix) with ESMTPS id 72DF018AC;
+	Fri, 17 Jun 2022 19:37:22 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 72DF018AC
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1655486397;
-	bh=PIou0DnlbBXu21XPNS3Ea1V4LIE+vfdJaLmOJWWvK/s=;
-	h=Date:Subject:To:References:From:In-Reply-To:List-Id:
+	s=default; t=1655487492;
+	bh=3Yd3TXEOMHN10AgSI3I3wAjJ5fOqjixc8epZoVg7wTo=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=cSWJTfRE1yhs4E7LRGs9/cDnouVWYzi685ETxj0U4qOivjQy5OUOB1QylBvw/8ds1
-	 BUJh41ljHoHlVozJx6+UNJzYDBy3IE1iHbyDpRoBOWl2I1zGIXmsH3uHz6ZZnOFaiJ
-	 zpTAFuOvjreLV9RrOnyPlPRtQEWpyHSjqQ0Sm50c=
+	b=WlImaOh7OS84JbCpgEFAbMnP1LHgMBZx4wR/ez+wGboI3a6lE3GeKJ+lBvJ4xSxcJ
+	 4ISs4URAg9zfhD1ZgzgexELkwtgScYFAi0JnGdx6ZU5qjRMoeRX061xHsmFLgVhiZ/
+	 p2EFWwrshTHXBeBx/SkHKM5R6o7lmg8mEWhteyxw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 552C8F804BC;
-	Fri, 17 Jun 2022 19:19:07 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 08311F8051F;
+	Fri, 17 Jun 2022 19:37:22 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 82539F80528; Fri, 17 Jun 2022 19:19:06 +0200 (CEST)
-Received: from mga12.intel.com (mga12.intel.com [192.55.52.136])
+ id D390EF8028B; Fri, 17 Jun 2022 19:37:20 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org
+ [IPv6:2604:1380:4641:c500::1])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 7E07AF8028B
+ for <alsa-devel@alsa-project.org>; Fri, 17 Jun 2022 19:37:18 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7E07AF8028B
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="mv37Y8lq"
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id ECA9EF804BC
- for <alsa-devel@alsa-project.org>; Fri, 17 Jun 2022 19:18:57 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz ECA9EF804BC
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="SudYYjdv"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
- d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1655486341; x=1687022341;
- h=message-id:date:mime-version:subject:to:references:from:
- in-reply-to:content-transfer-encoding;
- bh=PIou0DnlbBXu21XPNS3Ea1V4LIE+vfdJaLmOJWWvK/s=;
- b=SudYYjdvDKdZVgY7SU0PGMiROBd3PoGLrJeXiv2e0xd1hItAW9C3eq0R
- ngJaToGHeruAsKfP0N6TrF3q66+/Dd8sZ6igif9F3ovvcSnPyCZkEB2Il
- sxdK8qivj3g6B31SV39ydch+5gKL5eZDA2OqGDaeSpdng2d0d9ntx8t+x
- 2qbN85wOPf7tqUsug/O4BvYIcTSbIuCIdRR0FMcgRaJ19W2nQWQCD8OBa
- dG0JWaaS9u7SDGMp1elfEgWbkyMCkRz0L1dV6dKN9BI2GyshVd2HmaAkT
- c3Yw2w1XYsK69SS3rZG19ZgMo/lXFFG9vxNrW9ZVND6SFJG1CvMhz0la8 A==;
-X-IronPort-AV: E=McAfee;i="6400,9594,10380"; a="259330304"
-X-IronPort-AV: E=Sophos;i="5.92,306,1650956400"; d="scan'208";a="259330304"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
- by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 17 Jun 2022 05:39:28 -0700
-X-IronPort-AV: E=Sophos;i="5.92,306,1650956400"; d="scan'208";a="619251348"
-Received: from cuphoff-mobl.ger.corp.intel.com (HELO [10.249.254.149])
- ([10.249.254.149])
- by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 17 Jun 2022 05:39:27 -0700
-Message-ID: <5f787bbb-9855-91d7-75cc-bd8c4117bce5@linux.intel.com>
-Date: Fri, 17 Jun 2022 15:40:05 +0300
+ by dfw.source.kernel.org (Postfix) with ESMTPS id 1EC0861EC0;
+ Fri, 17 Jun 2022 17:37:15 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B56DCC3411B;
+ Fri, 17 Jun 2022 17:37:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1655487434;
+ bh=3Yd3TXEOMHN10AgSI3I3wAjJ5fOqjixc8epZoVg7wTo=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=mv37Y8lqcRckvZ9ZxwhpWdIr/cUy3Iy6p2H1IAUsPeTojM1YdAFSCxiXUATOcB4EE
+ YdkDTF2DyGB3M+fqLvY3qFEzodMnc8jwDiEmLod99nftHHGACT56DQKafZllj+hl2O
+ BU6TwzJ2oXTNA1YkQPoLn0RuJzQhWKiXPmh0tEYnn9ml0C4csfpV7yDkHOqpaVPQ0j
+ C2qmno2RC/OL4GY9R7DHdW4SHlpkNtYVkFZeGpZTzXjhgVamfeYSIhxYFo2PdE61ja
+ z23IhR52sOWSOK0+inYZdKlHvATjWAGmVogUmN7rTDALjJ5u71lhasXzuxGB1vQqjx
+ X/EzEkEnYTZDg==
+Date: Fri, 17 Jun 2022 18:37:09 +0100
+From: Mark Brown <broonie@kernel.org>
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: Re: [PATCH 2/2] ASoC: codecs: soundwire: call pm_runtime_resume() in
+ component probe
+Message-ID: <Yqy7xahv6vTjT/KO@sirena.org.uk>
+References: <20220616210825.132093-1-pierre-louis.bossart@linux.intel.com>
+ <20220616210825.132093-3-pierre-louis.bossart@linux.intel.com>
+ <YqxNEjG19K/RbbFM@sirena.org.uk>
+ <1ddc85ea-4e40-eb07-ee5b-8bc58514223d@linux.intel.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Firefox/91.0 Thunderbird/91.10.0
-Subject: Re: Can anyone test with AMD onboard or HDMI/DP?
-Content-Language: en-US
-To: alsa-devel@alsa-project.org
-References: <87bkur1nil.wl-tiwai@suse.de>
-From: =?UTF-8?Q?P=c3=a9ter_Ujfalusi?= <peter.ujfalusi@linux.intel.com>
-In-Reply-To: <87bkur1nil.wl-tiwai@suse.de>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature"; boundary="6L3BUMMUwAsTiWU2"
+Content-Disposition: inline
+In-Reply-To: <1ddc85ea-4e40-eb07-ee5b-8bc58514223d@linux.intel.com>
+X-Cookie: 98% lean.
+Cc: alsa-devel@alsa-project.org, tiwai@suse.de,
+ =?iso-8859-1?Q?P=E9ter?= Ujfalusi <peter.ujfalusi@linux.intel.com>,
+ Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+ Rander Wang <rander.wang@intel.com>, vkoul@kernel.org,
+ Bard Liao <yung-chuan.liao@linux.intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -86,104 +90,42 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
+--6L3BUMMUwAsTiWU2
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-On 17/06/2022 15:29, Takashi Iwai wrote:
-> Hi,
-> 
-> can anyone have an AMD onboard audio device and/or AMD HDMI/DP output
-> for testing a patch below with 5.18.x or 5.19-rc kernels?  It's a
-> pending fix (for 5.18+), but currently it can't be verified whether it
-> causes a regression on the actual audio I/O (while it fixes the kernel
-> crash).
-> 
-> If the generic allocator still doesn't work as expected here, it
-> should show some audio stuttering or such effect.
+On Fri, Jun 17, 2022 at 09:35:26AM -0500, Pierre-Louis Bossart wrote:
 
-But the fallback was needed for some machines using SOF to be able to
-load the firmware...
-like this:
-https://github.com/thesofproject/linux/issues/3609
+> What this patch does it make sure that the bus is operation when the
+> card is created. In usual cases, this is a no-op, this just helps with
+> corner test cases. It's not plugging a major hole in the pm_runtime
+> support, just fixing a programming sequence that was not tested before.
 
-> 
-> Thanks!
-> 
-> Takashi
-> 
-> -- 8< --
-> From: Takashi Iwai <tiwai@suse.de>
-> Subject: [PATCH] ALSA: memalloc: Drop x86-specific hack for WC allocations
-> 
-> The recent report for a crash on Haswell machines implied that the
-> x86-specific (rather hackish) implementation for write-cache memory
-> buffer allocation in ALSA core is buggy with the recent kernel in some
-> corner cases.  This patch drops the x86-specific implementation and
-> uses the standard dma_alloc_wc() & co generically for avoiding the bug
-> and also for simplification.
-> 
-> BugLink: https://bugzilla.kernel.org/show_bug.cgi?id=216112
-> Signed-off-by: Takashi Iwai <tiwai@suse.de>
-> ---
->  sound/core/memalloc.c | 23 +----------------------
->  1 file changed, 1 insertion(+), 22 deletions(-)
-> 
-> diff --git a/sound/core/memalloc.c b/sound/core/memalloc.c
-> index 15dc7160ba34..8cfdaee77905 100644
-> --- a/sound/core/memalloc.c
-> +++ b/sound/core/memalloc.c
-> @@ -431,33 +431,17 @@ static const struct snd_malloc_ops snd_dma_iram_ops = {
->   */
->  static void *snd_dma_dev_alloc(struct snd_dma_buffer *dmab, size_t size)
->  {
-> -	void *p;
-> -
-> -	p = dma_alloc_coherent(dmab->dev.dev, size, &dmab->addr, DEFAULT_GFP);
-> -#ifdef CONFIG_X86
-> -	if (p && dmab->dev.type == SNDRV_DMA_TYPE_DEV_WC)
-> -		set_memory_wc((unsigned long)p, PAGE_ALIGN(size) >> PAGE_SHIFT);
-> -#endif
-> -	return p;
-> +	return dma_alloc_coherent(dmab->dev.dev, size, &dmab->addr, DEFAULT_GFP);
->  }
->  
->  static void snd_dma_dev_free(struct snd_dma_buffer *dmab)
->  {
-> -#ifdef CONFIG_X86
-> -	if (dmab->dev.type == SNDRV_DMA_TYPE_DEV_WC)
-> -		set_memory_wb((unsigned long)dmab->area,
-> -			      PAGE_ALIGN(dmab->bytes) >> PAGE_SHIFT);
-> -#endif
->  	dma_free_coherent(dmab->dev.dev, dmab->bytes, dmab->area, dmab->addr);
->  }
->  
->  static int snd_dma_dev_mmap(struct snd_dma_buffer *dmab,
->  			    struct vm_area_struct *area)
->  {
-> -#ifdef CONFIG_X86
-> -	if (dmab->dev.type == SNDRV_DMA_TYPE_DEV_WC)
-> -		area->vm_page_prot = pgprot_writecombine(area->vm_page_prot);
-> -#endif
->  	return dma_mmap_coherent(dmab->dev.dev, area,
->  				 dmab->area, dmab->addr, dmab->bytes);
->  }
-> @@ -471,10 +455,6 @@ static const struct snd_malloc_ops snd_dma_dev_ops = {
->  /*
->   * Write-combined pages
->   */
-> -#ifdef CONFIG_X86
-> -/* On x86, share the same ops as the standard dev ops */
-> -#define snd_dma_wc_ops	snd_dma_dev_ops
-> -#else /* CONFIG_X86 */
->  static void *snd_dma_wc_alloc(struct snd_dma_buffer *dmab, size_t size)
->  {
->  	return dma_alloc_wc(dmab->dev.dev, size, &dmab->addr, DEFAULT_GFP);
-> @@ -497,7 +477,6 @@ static const struct snd_malloc_ops snd_dma_wc_ops = {
->  	.free = snd_dma_wc_free,
->  	.mmap = snd_dma_wc_mmap,
->  };
-> -#endif /* CONFIG_X86 */
->  
->  #ifdef CONFIG_SND_DMA_SGBUF
->  static void *snd_dma_sg_fallback_alloc(struct snd_dma_buffer *dmab, size_t size);
+> One possible objection is that we don't keep the reference and the bus
+> active until all components are probed. I tried doing this at the ASoC
+> core level, but that breaks all kinds of devices that have their own
+> quirky way of dealing with pm_runtime - specifically HDaudio and HDMI.
+> That's why I added this resume here.
 
--- 
-Péter
+> Makes sense?
+
+Ish.  Ugh, right.  So it's not fixing anything really, it's mainly
+papering over cracks where things are being missed.  In any case it's
+not doing any harm and it helps things for now.
+
+--6L3BUMMUwAsTiWU2
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmKsu8QACgkQJNaLcl1U
+h9CYaAf7BDg7UWjeWnNGYWfARTmob0Z607HFvy4qtgMAtKCwUGD9zvIXqUYXCZPB
+J6amn8RnLwwDuxMQM1a+zjonl8J2y0QlLcGyxBad5yV3HvtDXWtulwPjzDfZ5lwl
+Tp/AGN8to/Ebv2htioA0no3SnTfCnE9FtNz1flD/MsizTVpPqZpoc/bQXLvEjUXz
+PO9xPguCy/oOOb0l+C6BMC93kaNCxPcLix7kbWodWS9iGQIGio+U+zXtnknxP5GH
+GecQuhjA9wjIAVHXmHkdMgND06LXsjqteK3yy+iBr9ggDFqYDq6Jf6P1g2FpzwZI
+ZphHbLI5KkOY6Qi4L9RlK+oWP7VkQA==
+=IOvc
+-----END PGP SIGNATURE-----
+
+--6L3BUMMUwAsTiWU2--
