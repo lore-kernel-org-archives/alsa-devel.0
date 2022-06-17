@@ -4,53 +4,54 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 30CB6CCA47C
-	for <alsa-devel@archiver.kernel.org>; Fri, 17 Jun 2022 08:01:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6501EC43334
+	for <alsa-devel@archiver.kernel.org>; Fri, 17 Jun 2022 08:01:37 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id DA5591B49;
-	Fri, 17 Jun 2022 10:00:21 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DA5591B49
+	by alsa0.perex.cz (Postfix) with ESMTPS id 92C811B5B;
+	Fri, 17 Jun 2022 10:00:45 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 92C811B5B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1655452871;
-	bh=EP/4+DzOjY9uBROSw+EGDGiwiiTcy12UIq6VZuyuaDU=;
+	s=default; t=1655452895;
+	bh=usgtQlCLCPgZsvOAMeL9AbCf6wQR4AqkoaWpO8MMqxI=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=bYj5lioHM6lFu5dMD+OqfvLpufi/734HbG3uJPJs/ZKsSGeVaBYloPxlcPYViyxmE
-	 RmH8UvMKdz52n8P8QD1fikRL4oMnXwa8XMV+wl/pv9XGWmcvgh4TSVrK/H27jAgYgq
-	 6MAFSKy2PiO72JP0knasgELi1bP/tyaOtMCzBjZw=
+	b=UeTqpo7fqyYD3PcJU6Bp3UXjZVDU2rEVSblAjbCPFT7V7CE3fYXvhQqNkQ5Vl5I8j
+	 LK8ezTCpbNq59ESio4DKWW8npTBCn9OV1trmE8menHpoHzRFcLdHqqVgwwcK83RhzL
+	 Zngqn+hMtTVGbMe0GqPrdOkj8p+WKc1j/I9+VCqU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 80BBFF8052E;
-	Fri, 17 Jun 2022 09:59:29 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id B5D26F80539;
+	Fri, 17 Jun 2022 09:59:31 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 435CDF80529; Fri, 17 Jun 2022 09:59:27 +0200 (CEST)
+ id F3E15F80533; Fri, 17 Jun 2022 09:59:28 +0200 (CEST)
 Received: from inva021.nxp.com (inva021.nxp.com [92.121.34.21])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 3B0D0F80311
- for <alsa-devel@alsa-project.org>; Fri, 17 Jun 2022 09:59:21 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3B0D0F80311
+ by alsa1.perex.cz (Postfix) with ESMTPS id AE0E6F800B0
+ for <alsa-devel@alsa-project.org>; Fri, 17 Jun 2022 09:59:24 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AE0E6F800B0
 Received: from inva021.nxp.com (localhost [127.0.0.1])
- by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id C26BB201FAF;
- Fri, 17 Jun 2022 09:59:20 +0200 (CEST)
+ by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 59A38201FB5;
+ Fri, 17 Jun 2022 09:59:24 +0200 (CEST)
 Received: from aprdc01srsp001v.ap-rdc01.nxp.com
  (aprdc01srsp001v.ap-rdc01.nxp.com [165.114.16.16])
- by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 3B4AD201F99;
- Fri, 17 Jun 2022 09:59:20 +0200 (CEST)
+ by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id C69AC201FA1;
+ Fri, 17 Jun 2022 09:59:23 +0200 (CEST)
 Received: from localhost.localdomain (shlinux2.ap.freescale.net
  [10.192.224.44])
- by aprdc01srsp001v.ap-rdc01.nxp.com (Postfix) with ESMTP id 56066180222B;
- Fri, 17 Jun 2022 15:59:18 +0800 (+08)
+ by aprdc01srsp001v.ap-rdc01.nxp.com (Postfix) with ESMTP id E34651820F45;
+ Fri, 17 Jun 2022 15:59:21 +0800 (+08)
 From: Shengjiu Wang <shengjiu.wang@nxp.com>
 To: nicoleotsuka@gmail.com, Xiubo.Lee@gmail.com, festevam@gmail.com,
  shengjiu.wang@gmail.com, lgirdwood@gmail.com, broonie@kernel.org,
  perex@perex.cz, tiwai@suse.com, alsa-devel@alsa-project.org,
  robh+dt@kernel.org, krzk+dt@kernel.org, devicetree@vger.kernel.org
-Subject: [PATCH v2 4/7] ASoc: fsl_sai: Add pinctrl operation for PDM and DSD
-Date: Fri, 17 Jun 2022 15:44:34 +0800
-Message-Id: <1655451877-16382-5-git-send-email-shengjiu.wang@nxp.com>
+Subject: [PATCH v2 7/7] ASoC: fsl_sai: Configure dataline/FIFO information
+ from dts property
+Date: Fri, 17 Jun 2022 15:44:37 +0800
+Message-Id: <1655451877-16382-8-git-send-email-shengjiu.wang@nxp.com>
 X-Mailer: git-send-email 2.7.4
 In-Reply-To: <1655451877-16382-1-git-send-email-shengjiu.wang@nxp.com>
 References: <1655451877-16382-1-git-send-email-shengjiu.wang@nxp.com>
@@ -71,159 +72,278 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-With DSD format, the pinctrl is different compare with
-I2S format, because one dataline only has one channel
-data, and the codec always mux the LRCLK pin to DSD
-data line, and on i.MX8MQ the BCLK pin can route to
-codec on DSD case for the MCLK is too high.
+The SAI has multiple successive FIFO registers, but in some use
+case the required dataline/FIFOs are not successive, so need
+get such information from dts property "fsl,dataline"
 
-Add pinctrl operation that the pinctrl can be switched
-on runtime according to the I2S format or DSD format
+fsl,dataline has 3 values for each configuration:
+first one means the type: I2S(1) or DSD(2),
+second one is dataline mask for 'rx',
+third one is dataline mask for 'tx'.
 
-Signed-off-by: Viorel Suman <viorel.suman@nxp.com>
+Also set dma peripheral address and TRCE bits according to data lane.
+
 Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
+Signed-off-by: Viorel Suman <viorel.suman@nxp.com>
 ---
- sound/soc/fsl/fsl_sai.c | 70 +++++++++++++++++++++++++++++++++++------
- sound/soc/fsl/fsl_sai.h |  2 ++
- 2 files changed, 63 insertions(+), 9 deletions(-)
+ sound/soc/fsl/fsl_sai.c | 161 +++++++++++++++++++++++++++++++++++++++-
+ sound/soc/fsl/fsl_sai.h |  17 +++++
+ 2 files changed, 174 insertions(+), 4 deletions(-)
 
 diff --git a/sound/soc/fsl/fsl_sai.c b/sound/soc/fsl/fsl_sai.c
-index 9d2828b55c07..ddfe28cb7df0 100644
+index 86aa0baba848..f5eabb0b10e8 100644
 --- a/sound/soc/fsl/fsl_sai.c
 +++ b/sound/soc/fsl/fsl_sai.c
-@@ -10,6 +10,7 @@
- #include <linux/module.h>
- #include <linux/of_address.h>
- #include <linux/of_device.h>
-+#include <linux/pinctrl/consumer.h>
- #include <linux/pm_qos.h>
- #include <linux/pm_runtime.h>
- #include <linux/regmap.h>
-@@ -57,6 +58,31 @@ static inline bool fsl_sai_dir_is_synced(struct fsl_sai *sai, int dir)
- 	return !sai->synchronous[dir] && sai->synchronous[adir];
- }
- 
-+static struct pinctrl_state *fsl_sai_get_pins_state(struct fsl_sai *sai, u32 bclk)
-+{
-+	struct pinctrl_state *state = 0;
-+
-+	if (sai->is_pdm_mode) {
-+		/* DSD512@44.1kHz, DSD512@48kHz */
-+		if (bclk >= 22579200)
-+			state = pinctrl_lookup_state(sai->pinctrl, "dsd512");
-+
-+		/* Get default DSD state */
-+		if (IS_ERR_OR_NULL(state))
-+			state = pinctrl_lookup_state(sai->pinctrl, "dsd");
-+	} else {
-+		/* 706k32b2c, 768k32b2c, etc */
-+		if (bclk >= 45158400)
-+			state = pinctrl_lookup_state(sai->pinctrl, "pcm_b2m");
-+	}
-+
-+	/* Get default state */
-+	if (IS_ERR_OR_NULL(state))
-+		state = pinctrl_lookup_state(sai->pinctrl, "default");
-+
-+	return state;
-+}
-+
- static irqreturn_t fsl_sai_isr(int irq, void *devid)
- {
- 	struct fsl_sai *sai = (struct fsl_sai *)devid;
-@@ -466,7 +492,7 @@ static int fsl_sai_hw_params(struct snd_pcm_substream *substream,
+@@ -487,13 +487,18 @@ static int fsl_sai_hw_params(struct snd_pcm_substream *substream,
+ 	unsigned int ofs = sai->soc_data->reg_offset;
+ 	bool tx = substream->stream == SNDRV_PCM_STREAM_PLAYBACK;
+ 	unsigned int channels = params_channels(params);
++	struct snd_dmaengine_dai_dma_data *dma_params;
++	struct fsl_sai_dl_cfg *dl_cfg = sai->dl_cfg;
+ 	u32 word_width = params_width(params);
++	int trce_mask = 0, dl_cfg_idx = 0;
++	int dl_cfg_cnt = sai->dl_cfg_cnt;
++	u32 dl_type = FSL_SAI_DL_I2S;
+ 	u32 val_cr4 = 0, val_cr5 = 0;
  	u32 slots = (channels == 1) ? 2 : channels;
  	u32 slot_width = word_width;
  	int adir = tx ? RX : TX;
--	u32 pins;
-+	u32 pins, bclk;
- 	int ret;
+ 	u32 pins, bclk;
+-	int ret;
++	int ret, i;
  
  	if (sai->slots)
-@@ -484,15 +510,21 @@ static int fsl_sai_hw_params(struct snd_pcm_substream *substream,
- 	if (sai->is_pdm_mode)
+ 		slots = sai->slots;
+@@ -507,8 +512,22 @@ static int fsl_sai_hw_params(struct snd_pcm_substream *substream,
+ 	 * PDM mode, channels are independent
+ 	 * each channels are on one dataline/FIFO.
+ 	 */
+-	if (sai->is_pdm_mode)
++	if (sai->is_pdm_mode) {
  		pins = channels;
- 
-+	bclk = params_rate(params) * (sai->bclk_ratio ? sai->bclk_ratio : slots * slot_width);
++		dl_type = FSL_SAI_DL_PDM;
++	}
 +
-+	if (!IS_ERR_OR_NULL(sai->pinctrl)) {
-+		sai->pins_state = fsl_sai_get_pins_state(sai, bclk);
-+		if (!IS_ERR_OR_NULL(sai->pins_state)) {
-+			ret = pinctrl_select_state(sai->pinctrl, sai->pins_state);
-+			if (ret) {
-+				dev_err(cpu_dai->dev, "failed to set proper pins state: %d\n", ret);
-+				return ret;
-+			}
++	for (i = 0; i < dl_cfg_cnt; i++) {
++		if (dl_cfg[i].type == dl_type && dl_cfg[i].pins[tx] == pins) {
++			dl_cfg_idx = i;
++			break;
 +		}
 +	}
 +
- 	if (!sai->is_consumer_mode) {
--		if (sai->bclk_ratio)
--			ret = fsl_sai_set_bclk(cpu_dai, tx,
--					       sai->bclk_ratio *
--					       params_rate(params));
--		else
--			ret = fsl_sai_set_bclk(cpu_dai, tx,
--					       slots * slot_width *
--					       params_rate(params));
-+		ret = fsl_sai_set_bclk(cpu_dai, tx, bclk);
- 		if (ret)
- 			return ret;
++	if (hweight8(dl_cfg[dl_cfg_idx].mask[tx]) < pins) {
++		dev_err(cpu_dai->dev, "channel not supported\n");
++		return -EINVAL;
++	}
  
-@@ -757,6 +789,23 @@ static int fsl_sai_dai_probe(struct snd_soc_dai *cpu_dai)
+ 	bclk = params_rate(params) * (sai->bclk_ratio ? sai->bclk_ratio : slots * slot_width);
+ 
+@@ -571,13 +590,28 @@ static int fsl_sai_hw_params(struct snd_pcm_substream *substream,
+ 				   FSL_SAI_CR5_FBT_MASK, val_cr5);
+ 	}
+ 
+-	if (sai->soc_data->pins > 1)
++	if (hweight8(dl_cfg[dl_cfg_idx].mask[tx]) <= 1)
++		regmap_update_bits(sai->regmap, FSL_SAI_xCR4(tx, ofs),
++				   FSL_SAI_CR4_FCOMB_MASK, 0);
++	else
+ 		regmap_update_bits(sai->regmap, FSL_SAI_xCR4(tx, ofs),
+ 				   FSL_SAI_CR4_FCOMB_MASK, FSL_SAI_CR4_FCOMB_SOFT);
+ 
++	dma_params = tx ? &sai->dma_params_tx : &sai->dma_params_rx;
++	dma_params->addr = sai->res->start + FSL_SAI_xDR0(tx) +
++			   dl_cfg[dl_cfg_idx].start_off[tx] * 0x4;
++
++	/* Find a proper tcre setting */
++	for (i = 0; i < sai->soc_data->pins; i++) {
++		trce_mask = (1 << (i + 1)) - 1;
++		if (hweight8(dl_cfg[dl_cfg_idx].mask[tx] & trce_mask) == pins)
++			break;
++	}
++
+ 	regmap_update_bits(sai->regmap, FSL_SAI_xCR3(tx, ofs),
+ 			   FSL_SAI_CR3_TRCE_MASK,
+-			   FSL_SAI_CR3_TRCE((1 << pins) - 1));
++			   FSL_SAI_CR3_TRCE((dl_cfg[dl_cfg_idx].mask[tx] & trce_mask)));
++
+ 	regmap_update_bits(sai->regmap, FSL_SAI_xCR4(tx, ofs),
+ 			   FSL_SAI_CR4_SYWD_MASK | FSL_SAI_CR4_FRSZ_MASK |
+ 			   FSL_SAI_CR4_CHMOD_MASK,
+@@ -1068,6 +1102,118 @@ static int fsl_sai_check_version(struct device *dev)
  	return 0;
  }
  
-+static int fsl_sai_dai_resume(struct snd_soc_component *component)
++/*
++ * Calculate the offset between first two datalines, don't
++ * different offset in one case.
++ */
++static unsigned int fsl_sai_calc_dl_off(unsigned long dl_mask)
 +{
-+	struct fsl_sai *sai = snd_soc_component_get_drvdata(component);
-+	struct device *dev = &sai->pdev->dev;
-+	int ret;
++	int fbidx, nbidx, offset;
 +
-+	if (!IS_ERR_OR_NULL(sai->pinctrl) && !IS_ERR_OR_NULL(sai->pins_state)) {
-+		ret = pinctrl_select_state(sai->pinctrl, sai->pins_state);
-+		if (ret) {
-+			dev_err(dev, "failed to set proper pins state: %d\n", ret);
-+			return ret;
-+		}
++	fbidx = find_first_bit(&dl_mask, FSL_SAI_DL_NUM);
++	nbidx = find_next_bit(&dl_mask, FSL_SAI_DL_NUM, fbidx + 1);
++	offset = nbidx - fbidx - 1;
++
++	return (offset < 0 || offset >= (FSL_SAI_DL_NUM - 1) ? 0 : offset);
++}
++
++/*
++ * read the fsl,dataline property from dts file.
++ * It has 3 value for each configuration, first one means the type:
++ * I2S(1) or PDM(2), second one is dataline mask for 'rx', third one is
++ * dataline mask for 'tx'. for example
++ *
++ * fsl,dataline = <1 0xff 0xff 2 0xff 0x11>,
++ *
++ * It means I2S type rx mask is 0xff, tx mask is 0xff, PDM type
++ * rx mask is 0xff, tx mask is 0x11 (dataline 1 and 4 enabled).
++ *
++ */
++static int fsl_sai_read_dlcfg(struct fsl_sai *sai)
++{
++	struct platform_device *pdev = sai->pdev;
++	struct device_node *np = pdev->dev.of_node;
++	struct device *dev = &pdev->dev;
++	int ret, elems, i, index, num_cfg;
++	char *propname = "fsl,dataline";
++	struct fsl_sai_dl_cfg *cfg;
++	unsigned long dl_mask;
++	unsigned int soc_dl;
++	u32 rx, tx, type;
++
++	elems = of_property_count_u32_elems(np, propname);
++
++	if (elems <= 0) {
++		elems = 0;
++	} else if (elems % 3) {
++		dev_err(dev, "Number of elements must be divisible to 3.\n");
++		return -EINVAL;
 +	}
 +
++	num_cfg = elems / 3;
++	/*  Add one more for default value */
++	cfg = devm_kzalloc(&pdev->dev, (num_cfg + 1) * sizeof(*cfg), GFP_KERNEL);
++	if (!cfg)
++		return -ENOMEM;
++
++	/* Consider default value "0 0xFF 0xFF" if property is missing */
++	soc_dl = BIT(sai->soc_data->pins) - 1;
++	cfg[0].type = FSL_SAI_DL_DEFAULT;
++	cfg[0].pins[0] = sai->soc_data->pins;
++	cfg[0].mask[0] = soc_dl;
++	cfg[0].start_off[0] = 0;
++	cfg[0].next_off[0] = 0;
++
++	cfg[0].pins[1] = sai->soc_data->pins;
++	cfg[0].mask[1] = soc_dl;
++	cfg[0].start_off[1] = 0;
++	cfg[0].next_off[1] = 0;
++	for (i = 1, index = 0; i < num_cfg + 1; i++) {
++		/*
++		 * type of dataline
++		 * 0 means default mode
++		 * 1 means I2S mode
++		 * 2 means PDM mode
++		 */
++		ret = of_property_read_u32_index(np, propname, index++, &type);
++		if (ret)
++			return -EINVAL;
++
++		ret = of_property_read_u32_index(np, propname, index++, &rx);
++		if (ret)
++			return -EINVAL;
++
++		ret = of_property_read_u32_index(np, propname, index++, &tx);
++		if (ret)
++			return -EINVAL;
++
++		if ((rx & ~soc_dl) || (tx & ~soc_dl)) {
++			dev_err(dev, "dataline cfg[%d] setting error, mask is 0x%x\n", i, soc_dl);
++			return -EINVAL;
++		}
++
++		rx = rx & soc_dl;
++		tx = tx & soc_dl;
++
++		cfg[i].type = type;
++		cfg[i].pins[0] = hweight8(rx);
++		cfg[i].mask[0] = rx;
++		dl_mask = rx;
++		cfg[i].start_off[0] = find_first_bit(&dl_mask, FSL_SAI_DL_NUM);
++		cfg[i].next_off[0] = fsl_sai_calc_dl_off(rx);
++
++		cfg[i].pins[1] = hweight8(tx);
++		cfg[i].mask[1] = tx;
++		dl_mask = tx;
++		cfg[i].start_off[1] = find_first_bit(&dl_mask, FSL_SAI_DL_NUM);
++		cfg[i].next_off[1] = fsl_sai_calc_dl_off(tx);
++	}
++
++	sai->dl_cfg = cfg;
++	sai->dl_cfg_cnt = num_cfg + 1;
 +	return 0;
 +}
 +
- static struct snd_soc_dai_driver fsl_sai_dai_template = {
- 	.probe = fsl_sai_dai_probe,
- 	.playback = {
-@@ -782,6 +831,7 @@ static struct snd_soc_dai_driver fsl_sai_dai_template = {
+ static int fsl_sai_runtime_suspend(struct device *dev);
+ static int fsl_sai_runtime_resume(struct device *dev);
  
- static const struct snd_soc_component_driver fsl_component = {
- 	.name           = "fsl-sai",
-+	.resume         = fsl_sai_dai_resume,
- };
+@@ -1134,6 +1280,13 @@ static int fsl_sai_probe(struct platform_device *pdev)
+ 	else
+ 		sai->mclk_clk[0] = sai->bus_clk;
  
- static struct reg_default fsl_sai_reg_defaults_ofs0[] = {
-@@ -1147,6 +1197,8 @@ static int fsl_sai_probe(struct platform_device *pdev)
- 	sai->dma_params_rx.maxburst = FSL_SAI_MAXBURST_RX;
- 	sai->dma_params_tx.maxburst = FSL_SAI_MAXBURST_TX;
- 
-+	sai->pinctrl = devm_pinctrl_get(&pdev->dev);
++	/* read dataline mask for rx and tx*/
++	ret = fsl_sai_read_dlcfg(sai);
++	if (ret < 0) {
++		dev_err(dev, "failed to read dlcfg %d\n", ret);
++		return ret;
++	}
 +
- 	platform_set_drvdata(pdev, sai);
- 	pm_runtime_enable(dev);
- 	if (!pm_runtime_enabled(dev)) {
+ 	irq = platform_get_irq(pdev, 0);
+ 	if (irq < 0)
+ 		return irq;
 diff --git a/sound/soc/fsl/fsl_sai.h b/sound/soc/fsl/fsl_sai.h
-index e28a49ce12ef..c0b6bc42fc3c 100644
+index 4d657edc9c9f..9bb8ced520c8 100644
 --- a/sound/soc/fsl/fsl_sai.h
 +++ b/sound/soc/fsl/fsl_sai.h
-@@ -278,6 +278,8 @@ struct fsl_sai {
- 	struct fsl_sai_verid verid;
- 	struct fsl_sai_param param;
- 	struct pm_qos_request pm_qos_req;
-+	struct pinctrl *pinctrl;
-+	struct pinctrl_state *pins_state;
+@@ -218,6 +218,13 @@
+ 
+ #define PMQOS_CPU_LATENCY   BIT(0)
+ 
++/* Max number of dataline */
++#define FSL_SAI_DL_NUM		(8)
++/* default dataline type is zero */
++#define FSL_SAI_DL_DEFAULT	(0)
++#define FSL_SAI_DL_I2S		BIT(0)
++#define FSL_SAI_DL_PDM		BIT(1)
++
+ struct fsl_sai_soc_data {
+ 	bool use_imx_pcm;
+ 	bool use_edma;
+@@ -253,6 +260,14 @@ struct fsl_sai_param {
+ 	u32 dataline;
  };
  
- #define TX 1
++struct fsl_sai_dl_cfg {
++	unsigned int type;
++	unsigned int pins[2];
++	unsigned int mask[2];
++	unsigned int start_off[2];
++	unsigned int next_off[2];
++};
++
+ struct fsl_sai {
+ 	struct platform_device *pdev;
+ 	struct regmap *regmap;
+@@ -265,6 +280,8 @@ struct fsl_sai {
+ 	bool is_dsp_mode;
+ 	bool is_pdm_mode;
+ 	bool synchronous[2];
++	struct fsl_sai_dl_cfg *dl_cfg;
++	unsigned int dl_cfg_cnt;
+ 
+ 	unsigned int mclk_id[2];
+ 	unsigned int mclk_streams;
 -- 
 2.17.1
 
