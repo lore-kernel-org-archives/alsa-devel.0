@@ -4,115 +4,96 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E4441C433EF
-	for <alsa-devel@archiver.kernel.org>; Mon, 20 Jun 2022 15:36:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C600EC433EF
+	for <alsa-devel@archiver.kernel.org>; Mon, 20 Jun 2022 15:36:28 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 2935228CC;
-	Mon, 20 Jun 2022 17:35:22 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2935228CC
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0D5A428D5;
+	Mon, 20 Jun 2022 17:35:37 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0D5A428D5
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1655739372;
-	bh=t6QXcNLzauxbqf0PNTG8MvaAdoQQFis6uQHBpNA5m+I=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=T4sIdPTz5fPVhM/1fU7XNyvgsT0lxaLhwwZNVmpl4Lu8jIx/r/GTb/vy+H/ICyxlK
-	 RE5LfDd7gTH8tgsJA1zjg9Z/1jRgwBIwbkHJEDWfx8vlSzeWribPmjaGbbALhMKiBR
-	 ZwiLKzrimWTyGQn15/cOzN3y4I/mKGtpxgJxrRNw=
+	s=default; t=1655739387;
+	bh=SS0L4/SmUigtqlDgQOGwHotGC/L4Q/Fk8rn2k46jjfg=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=hu8Hh4oSu2/f9d9m9KwW03J8isYoVOpz8hH72HUgeA+2FFjLprsZiQa7/dZlt5gtc
+	 Oi3PbLkPDxH/Vo8nL4pQ9Tp4SGjIWyykRTgXDLIsDvLezyzTE1eiQDi6G08GpfRJi9
+	 HYVv32P/AwODCH9M3bUna5ygF635SplR9Sdnlm6M=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id D5A32F80CBD;
-	Mon, 20 Jun 2022 17:08:16 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id B402AF80CC1;
+	Mon, 20 Jun 2022 17:08:17 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id A5B3AF800B0; Fri, 17 Jun 2022 09:25:50 +0200 (CEST)
-Received: from out4-smtp.messagingengine.com (out4-smtp.messagingengine.com
- [66.111.4.28])
- (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
+ id 619A6F804BC; Sat, 18 Jun 2022 14:32:11 +0200 (CEST)
+Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com
+ [IPv6:2a00:1450:4864:20::436])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 8E5C6F800B0
- for <alsa-devel@alsa-project.org>; Fri, 17 Jun 2022 09:25:43 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8E5C6F800B0
+ by alsa1.perex.cz (Postfix) with ESMTPS id 3EC80F8024C
+ for <alsa-devel@alsa-project.org>; Sat, 18 Jun 2022 14:32:02 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3EC80F8024C
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=cerno.tech header.i=@cerno.tech
- header.b="nr/26OCn"; 
- dkim=pass (2048-bit key) header.d=messagingengine.com
- header.i=@messagingengine.com header.b="CkYUa18G"
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
- by mailout.nyi.internal (Postfix) with ESMTP id D16F15C0151;
- Fri, 17 Jun 2022 03:25:38 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
- by compute3.internal (MEProxy); Fri, 17 Jun 2022 03:25:38 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=cc
- :cc:content-transfer-encoding:content-type:date:date:from:from
- :in-reply-to:in-reply-to:message-id:mime-version:references
- :reply-to:sender:subject:subject:to:to; s=fm1; t=1655450738; x=
- 1655537138; bh=t6QXcNLzauxbqf0PNTG8MvaAdoQQFis6uQHBpNA5m+I=; b=n
- r/26OCnEDIr6jYGUp00hxr/NMoxkf6xXfRuhMockkxh6n/wloYbpla88d1SGLc3P
- BtUBgD8RZGZwQq1VPEdFsxTpp0vbEShL/ls6VxYlg3QMzR0vwLar8HSi00UlQ0gL
- CH0ldBnQE8fgusDetIp4GspeBfNwxFV/Kux0Hx5Gn4thT/XQgU8PMW4HgsFFcXRm
- Zivnb/+Onrj1LGZ5AHx2nvHV0C75KC/tYxnCCabt/MYKO/z8c0fQcLinaQbHGkZ/
- ReDK0Ixt6XyqgHi5Jl8vZzwm7V5ELSXQsKa2v6qLRWnUgG5G2P5dohWhsokjAjTc
- L+OzZ1aV3f76OQGSJyChg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
- messagingengine.com; h=cc:cc:content-transfer-encoding
- :content-type:date:date:feedback-id:feedback-id:from:from
- :in-reply-to:in-reply-to:message-id:mime-version:references
- :reply-to:sender:subject:subject:to:to:x-me-proxy:x-me-proxy
- :x-me-sender:x-me-sender:x-sasl-enc; s=fm2; t=1655450738; x=
- 1655537138; bh=t6QXcNLzauxbqf0PNTG8MvaAdoQQFis6uQHBpNA5m+I=; b=C
- kYUa18GGhGd0oZQ43NnZDN3+5y/3awo+Sws0Pq3eb6UKVOekXJ4Y7ZEHvLp36JHj
- tycJVtu9HwZf6jSnqxW4zSYXVJbe86AaaXxlWH7q4QH3qe9lRa6jd+fNATp9LPAT
- uMB4hcgr49bGrbUHs5jLTWfsDcAY1XnxmodGaA/DgxKZG0akk8naBHEsjI+9wBbi
- bdBT2GvJE4pNDjc9Q1xJKM5StazQkLXgIHK2oujsy/VM2X0INDscm2W7ndAJ5rcf
- mBBIfmMwMR/jziK5WAQT6SO63sjbrOoLYrgXG/T1UfFrVqW/5w3OIEWPJWQoFPkh
- /k+4PB1FRuFRA5/pGTzAw==
-X-ME-Sender: <xms:cCysYuGbj_tXIkPunEurAIwroXW5XpxjXpF4QSJbzxhbPXclwax6XA>
- <xme:cCysYvWgkzuxSA4c7vUx_UbBJT8gLLCv-uNPJbxN_6t01QjqR06uBZtc0l9wxHzhR
- zr0LWaTeAJNrwG7Sv4>
-X-ME-Received: <xmr:cCysYoL-s8_MAzYdUOgHxl_upF4_8dJ4RyvHl_ZD6Qzg5t8bcXrIWoJ5sq56JxsiML5p_3EqajNOb9VnX0x1uY0f2nUbuWm7o5g4tUo>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvfedruddvgedguddujecutefuodetggdotefrod
- ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
- necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
- enucfjughrpeffhffvvefukfhfgggtugfgjgesthhqredttddtvdenucfhrhhomhepofgr
- gihimhgvucftihhprghrugcuoehmrgigihhmvgestggvrhhnohdrthgvtghhqeenucggtf
- frrghtthgvrhhnpeetgfelgefggeekkefggfeludeiudffjeffgeevveekjedukedtudeu
- teefteefgfenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhroh
- hmpehmrgigihhmvgestggvrhhnohdrthgvtghh
-X-ME-Proxy: <xmx:cCysYoGVB8cZQ7yOz48SmLfp873hgDRpdEpPRutGsvxTCLizycl41w>
- <xmx:cCysYkVSvHtiRSBPNAhrPCzXsNP5d45QhqafU_iIo0w9pj_rG6ibZQ>
- <xmx:cCysYrOhmw8cG_xUkAWqqi3Xw5qv0x5wtJ9n4l4N9ZI1Bu5NZbr7WA>
- <xmx:ciysYvyJISiAd-XGF0UUbZ-Rv8dPZGqNpVjs7CZjxA6lvgGh5OS30A>
-Feedback-ID: i8771445c:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
- 17 Jun 2022 03:25:36 -0400 (EDT)
-Date: Fri, 17 Jun 2022 09:25:33 +0200
-From: Maxime Ripard <maxime@cerno.tech>
-To: Charles Keepax <ckeepax@opensource.cirrus.com>
-Subject: Re: [PATCH 03/96] drm/vc4: Migrate to new style legacy DAI naming flag
-Message-ID: <20220617072533.foajsg6z3c2js3nb@houat>
-References: <20220616143429.1324494-1-ckeepax@opensource.cirrus.com>
- <20220616143429.1324494-4-ckeepax@opensource.cirrus.com>
+ dkim=pass (2048-bit key) header.d=conchuod.ie header.i=@conchuod.ie
+ header.b="S2mJhG/E"
+Received: by mail-wr1-x436.google.com with SMTP id c21so8820464wrb.1
+ for <alsa-devel@alsa-project.org>; Sat, 18 Jun 2022 05:32:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=conchuod.ie; s=google;
+ h=from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=cxrfrrOtT2Oa/bD+7FBstHMfLsi5+SmAhxAWzjAkyZ0=;
+ b=S2mJhG/EP2bvAoovp3+1EX915fqgCN7s5TTHRtk6gjrtEqOI/5G9b2iqkP8Hp2fPJT
+ Xv7w9JM5mIzSBmUBnG5veKqEPc/MaxIruLrav0YlVhnIQlMG/M+wTnbgpcN0tcmr+tr2
+ or89IY4gglZ6yWfGfoA+jfJEq4JsK9dvMaD2rRItnHWPYoJkG7IkTqJN1pM8cYB5TpdM
+ 9bGqfIt5FOQFRPbbNCxOn37acP1sIBQPp6tl26reXViVZmDuywOt0O5V9tWi+koaQg4c
+ DJEmvefmmDhAvEMjrhz9P1n7uaAObdu8xiUcENoorbn9u8vIjZNy1IW7RHROc+mSnsUJ
+ yKqw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=cxrfrrOtT2Oa/bD+7FBstHMfLsi5+SmAhxAWzjAkyZ0=;
+ b=QuoYIARFl/BXTKKXy3uAkD9iW+Gn3YB7U/xYjdF1lJddaqzkYZh+xuqEzx19yBMNPW
+ h5faXdtCoTaIt5QINrjfE4qMROhrU8fovxD9tNFmmR2sbBkMYKPG/HR6a0q/nkr8WfWu
+ cNpmcIsTrBBsWpDdH57ZVspwg1Koz2EF1JZ+pzeYhwsLXcu6DMMuWhi51pZmYNCU6S9H
+ iiOmr9psUjrQ+EOJtbmBfxleZ9k3+VBZ56VdqIjCs1R4V7teX28f8+9y/kzmnGWE1+1h
+ HtMBaDCuTutAa4xGV0UKbJmpkfgWBXUb3ze98MuiDtADwGI3/s97ctt3w9fwis7rg9sW
+ mM2w==
+X-Gm-Message-State: AJIora/orNV3N7ctjVSUK4taBLp0TsFkEztjbMofC/RK4YUwATLg0WeD
+ oELsPy3fxiwa4RmWSrRdg7z8ig==
+X-Google-Smtp-Source: AGRyM1vo09vBquhwF3XuUkIoGOLL2MXJBKKEyvgcE2QTAi/5UKplOA45WdH+tRLIApC05LNQOZn4qQ==
+X-Received: by 2002:adf:fd0f:0:b0:210:32d7:4cb5 with SMTP id
+ e15-20020adffd0f000000b0021032d74cb5mr13971427wrr.565.1655555519244; 
+ Sat, 18 Jun 2022 05:31:59 -0700 (PDT)
+Received: from henark71.. ([51.37.234.167]) by smtp.gmail.com with ESMTPSA id
+ az10-20020adfe18a000000b00210396b2eaesm9292305wrb.45.2022.06.18.05.31.57
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Sat, 18 Jun 2022 05:31:58 -0700 (PDT)
+From: Conor Dooley <mail@conchuod.ie>
+To: David Airlie <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>,
+ Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Thierry Reding <thierry.reding@gmail.com>, Sam Ravnborg <sam@ravnborg.org>,
+ Eugeniy Paltsev <Eugeniy.Paltsev@synopsys.com>,
+ Vinod Koul <vkoul@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>,
+ Mark Brown <broonie@kernel.org>, Serge Semin <fancer.lancer@gmail.com>,
+ Daniel Lezcano <daniel.lezcano@linaro.org>,
+ Palmer Dabbelt <palmer@dabbelt.com>, Palmer Dabbelt <palmer@rivosinc.com>
+Subject: [PATCH 00/14] Canaan devicetree fixes
+Date: Sat, 18 Jun 2022 13:30:22 +0100
+Message-Id: <20220618123035.563070-1-mail@conchuod.ie>
+X-Mailer: git-send-email 2.36.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <20220616143429.1324494-4-ckeepax@opensource.cirrus.com>
+Content-Transfer-Encoding: 8bit
 X-Mailman-Approved-At: Mon, 20 Jun 2022 17:06:46 +0200
-Cc: cezary.rojewski@intel.com, heiko@sntech.de,
- kuninori.morimoto.gx@renesas.com, airlied@linux.ie,
- alsa-devel@alsa-project.org, dri-devel@lists.freedesktop.org,
- nicolas.ferre@microchip.com, srinivas.kandagatla@linaro.org,
- peter.ujfalusi@gmail.com, linux-stm32@st-md-mailman.stormreply.com,
- jbrunet@baylibre.com, pierre-louis.bossart@linux.intel.com, krzk@kernel.org,
- linux-rockchip@lists.infradead.org, linux-imx@nxp.com,
- linux-mips@vger.kernel.org, linux-sunxi@lists.linux.dev,
- linux-xtensa@linux-xtensa.org, nsaenz@kernel.org, kernel@pengutronix.de,
- broonie@kernel.org, linux-rpi-kernel@lists.infradead.org,
- linux-tegra@vger.kernel.org, linux-amlogic@lists.infradead.org,
- linux-omap@vger.kernel.org, patches@opensource.cirrus.com, lgirdwood@gmail.com,
- vkoul@kernel.org, jarkko.nikula@bitmer.com, daniel@ffwll.ch,
- shawnguo@kernel.org, daniel@zonque.org
+Cc: linux-riscv@lists.infradead.org, Niklas Cassel <niklas.cassel@wdc.com>,
+ alsa-devel@alsa-project.org, Albert Ou <aou@eecs.berkeley.edu>,
+ devicetree@vger.kernel.org, Damien Le Moal <damien.lemoal@opensource.wdc.com>,
+ linux-kernel@vger.kernel.org, Heng Sia <jee.heng.sia@intel.com>,
+ linux-spi@vger.kernel.org, Conor Dooley <conor.dooley@microchip.com>,
+ Jose Abreu <joabreu@synopsys.com>, Geert Uytterhoeven <geert@linux-m68k.org>,
+ dri-devel@lists.freedesktop.org, Paul Walmsley <paul.walmsley@sifive.com>,
+ dmaengine@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+ Dillon Min <dillon.minfei@gmail.com>, Masahiro Yamada <masahiroy@kernel.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -128,15 +109,74 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Thu, Jun 16, 2022 at 03:32:56PM +0100, Charles Keepax wrote:
-> Change the legacy DAI naming flag from opting in to the new scheme
-> (non_legacy_dai_naming), to opting out of it (legacy_dai_naming).
-> This driver appears to be on the CPU side of the DAI link and
-> currently uses the legacy naming, so add the new flag.
->=20
-> Signed-off-by: Charles Keepax <ckeepax@opensource.cirrus.com>
+From: Conor Dooley <conor.dooley@microchip.com>
 
-Acked-by: Maxime Ripard <maxime@cerno.tech>
+Hey all,
+This series should rid us of dtbs_check errors for the RISC-V Canaan k210
+based boards (well, unless you enable W=1 but that's another days work).
+I *DO NOT* have any Canaan hardware so I have not tested any of this in
+anger. I based the series on next-20220617.
 
-Thanks!
-Maxime
+For the bindings, I am never sure about which of {unevaluated,additional}
+Properties is correct to use, but the if statements in the binding didn't
+work with additional so I used unevaluated...
+
+@Mark, for your two bindings I was not sure about the properties that I
+made depend on the compatible, but I looked in tree and was not able to
+find other users to contradict what's in the Canaan devicetrees nor did
+I get that much help from their docs.
+
+@Rob, yesterday's removal of ilitek,ili9341.txt is moved to ths series
+since I was editing the dt-schema binding here anyway.
+
+Finally, @Palmer:
+This + Atul's stuff + the sifive dts watchdog patch will get us sorted
+in terms of dtbs_check errors. To make keeping it that way a little
+easier, I changed the Canaan devicetree Makefile so that it would build
+all of the devicetrees in the directory if SOC_CANAAN. Hopefully someone
+with a device can test it - but my build log *looked* fine but that's
+not exactly sufficient.
+
+Thanks,
+Conor.
+
+Conor Dooley (14):
+  dt-bindings: display: convert ilitek,ili9341.txt to dt-schema
+  dt-bindings: display: panel: allow ilitek,ili9341 in isolation
+  ASoC: dt-bindings: convert designware-i2s to dt-schema
+  dt-bindings: dma: add Canaan k210 to Synopsys DesignWare DMA
+  dt-bindings: timer: add Canaan k210 to Synopsys DesignWare timer
+  spi: dt-bindings: dw-apb-ssi: update spi-{r,t}x-bus-width for dwc-ssi
+  riscv: dts: canaan: fix the k210's memory node
+  riscv: dts: canaan: add a specific compatible for k210's dma
+  riscv: dts: canaan: add a specific compatible for k210's timers
+  riscv: dts: canaan: fix mmc node names
+  riscv: dts: canaan: fix kd233 display spi frequency
+  riscv: dts: canaan: use custom compatible for k210 i2s
+  riscv: dts: canaan: remove spi-max-frequency from controllers
+  riscv: dts: canaan: build all devicetress if SOC_CANAAN
+
+ .../bindings/display/ilitek,ili9341.txt       | 27 ------
+ .../display/panel/ilitek,ili9341.yaml         | 60 ++++++++----
+ .../bindings/dma/snps,dw-axi-dmac.yaml        | 35 +++++--
+ .../bindings/sound/designware-i2s.txt         | 35 -------
+ .../bindings/sound/snps,designware-i2s.yaml   | 93 +++++++++++++++++++
+ .../bindings/spi/snps,dw-apb-ssi.yaml         | 48 +++++++---
+ .../bindings/timer/snps,dw-apb-timer.yaml     | 28 ++++--
+ arch/riscv/boot/dts/canaan/Makefile           | 10 +-
+ arch/riscv/boot/dts/canaan/canaan_kd233.dts   |  4 +-
+ arch/riscv/boot/dts/canaan/k210.dtsi          | 25 ++---
+ .../riscv/boot/dts/canaan/sipeed_maix_bit.dts |  2 +-
+ .../boot/dts/canaan/sipeed_maix_dock.dts      |  2 +-
+ arch/riscv/boot/dts/canaan/sipeed_maix_go.dts |  2 +-
+ .../boot/dts/canaan/sipeed_maixduino.dts      |  2 +-
+ 14 files changed, 239 insertions(+), 134 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/display/ilitek,ili9341.txt
+ delete mode 100644 Documentation/devicetree/bindings/sound/designware-i2s.txt
+ create mode 100644 Documentation/devicetree/bindings/sound/snps,designware-i2s.yaml
+
+
+base-commit: 07dc787be2316e243a16a33d0a9b734cd9365bd3
+-- 
+2.36.1
+
