@@ -4,71 +4,72 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A3588C43334
-	for <alsa-devel@archiver.kernel.org>; Mon, 20 Jun 2022 15:39:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B5FF4C433EF
+	for <alsa-devel@archiver.kernel.org>; Mon, 20 Jun 2022 15:40:10 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D40A62943;
-	Mon, 20 Jun 2022 17:39:03 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D40A62943
+	by alsa0.perex.cz (Postfix) with ESMTPS id 1805B294B;
+	Mon, 20 Jun 2022 17:39:19 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1805B294B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1655739593;
-	bh=MG2QOqgmPA4v6RrHU3OlIycBVEmVIDyoBQpgRSfHhrI=;
+	s=default; t=1655739609;
+	bh=4RQhycoKExY2jyKeqia36uWYJwLaxZXyRQKSXMgeSS0=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=cHluLgQjqUPY8x1z2CNNAkdFJZU/u6Yauud1SDclRVSLyH0veJk3ClJE61P2VCUj9
-	 2fZtZhKWYEldvoMzCc5SsDn4hucSHzfcZjkWf64vcXj/BjSdIkSpOg/fyIcMSW/oog
-	 IPttYMUFx/dkBhSsamYlPtgoL/Pv9skvGUB9aDuc=
+	b=s93tVdp/VuukSiyRyt4MTk6FSD5i8iijBCMzMtJubcphECqFvslYlcJ+nYfRd8CPp
+	 HQAgZMahPH/L2bP211fzPm7ABwFRmmCejHDRAoy3QSkse6/H3jushlGp1XmxgD0Iwb
+	 Rcl12RrGIN5euRDC1N6gZSwyN+hfK6CXZP/2wWDY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id E4A35F896C7;
-	Mon, 20 Jun 2022 17:08:25 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 7A864F896D6;
+	Mon, 20 Jun 2022 17:08:26 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 42D92F8026A; Sat, 18 Jun 2022 14:32:32 +0200 (CEST)
-Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com
- [IPv6:2a00:1450:4864:20::436])
+ id 1E0C8F8026A; Sat, 18 Jun 2022 14:32:35 +0200 (CEST)
+Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com
+ [IPv6:2a00:1450:4864:20::32c])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id D30B6F804AE
+ by alsa1.perex.cz (Postfix) with ESMTPS id E3D19F804A9
  for <alsa-devel@alsa-project.org>; Sat, 18 Jun 2022 14:32:25 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D30B6F804AE
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E3D19F804A9
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=conchuod.ie header.i=@conchuod.ie
- header.b="DDJ6xBBb"
-Received: by mail-wr1-x436.google.com with SMTP id c21so8820464wrb.1
+ header.b="Pu1M106x"
+Received: by mail-wm1-x32c.google.com with SMTP id
+ c130-20020a1c3588000000b0039c6fd897b4so5556621wma.4
  for <alsa-devel@alsa-project.org>; Sat, 18 Jun 2022 05:32:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=conchuod.ie; s=google;
  h=from:to:cc:subject:date:message-id:in-reply-to:references
  :mime-version:content-transfer-encoding;
- bh=hvr7KGApLNCGFBglHD3dnfCRd3yjQwODkG+M5NRKmQI=;
- b=DDJ6xBBbhzIGoPiqSpo5MnWPGVLzU4ERv8vLSiBnnPAynNwKjWM49EcnFIFQEkgm/l
- doK52smtoMBCAMnt3+oFGMyw4xhf6W+5pMee3IBtco7DlzBypqqFxGPePkxlqPEw5tri
- SDLBm2agXeKviAcJotwY5RL1uBwFcjHga0K6SkH6mQCE6NwwTJxpZV0bQ6udBQCQ8t5X
- /ugUETlZEHQBi+kUxi5RSWCIVIQtoVjqwtn8FqK1wrZYFA5exI/WKKix1Zp5xujFsjOq
- WhKYuvAAICTLiFyGacSvPtjx9GD78ZZmFV4S8UwSg41UB0EBKvQ+vCEP9thO5HxmtSKW
- MnvQ==
+ bh=Pg5EtL0V3UHrid7YbhvB+3zhrduzQGisX4A0SVhhM0E=;
+ b=Pu1M106xN55HI9pfnOZNoRrDpjX1i4VH9bR0a4BhQ0DJdKnxN33JrDSsp8oMDBO6jp
+ LVQ1VI+4atrButRPKUPNqCrIEigfT0IM8RSE/TM7b+yFCd8/4+xiDRZ3O7NsK9REtRLv
+ 84xM29eeccO+uGrixFZq0EZFXZEdycBvA0ECOB3ZQETpwQOJCmoI57SPRa91RH4Ybiwn
+ DHwH4ld25Q7R0o4T9qzfzLsKmjYB53l8b9saZnSz3GnJD24tqYxXVFcv/kp23HP9PpCH
+ I+j/f4rZISdty/aA/Vg0TKDsifyuWEt2DZv8kvr86VvPeWNfHBmzINiITLTKs1DLpX1a
+ cUAQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
  h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
  :references:mime-version:content-transfer-encoding;
- bh=hvr7KGApLNCGFBglHD3dnfCRd3yjQwODkG+M5NRKmQI=;
- b=NN5feCWUPeal/CjWJr0Idp/UKEL7NyCk+qxwqdSluV0P+VXSuM3C6+/QXiLj+XRMfX
- bqDn2rnz+LQ/FB124nqGL8caKWnB6sqWX+emYIKfQitYxZOJ19/IMBlDFEJQWXGGLR3p
- d3XRmzLbTbsKx7I4raIQkexlom/df5kdZm2EuJjGMr41y0yG/K7HKKDrN1R9HglDIL/n
- wYq9OQZg91jnrxBpc4T9GNakFVXOoZtx+dYCE4yer102ewcLwWQI+kP8d1TYRoqOM7K/
- BUmN+sM4XYJ1gGzRP/SKNyuGyxfUqq+RgYaHGc2tUDNvZW4jULnIAWou6ZmYzG9SUOGj
- 3U0w==
-X-Gm-Message-State: AJIora9U1jVwYTYBBb5udZhnUStvUOYCHHwWoP3EZuV5x0mLAiA/4Khr
- 7orUjIJDQo6lfLFCr38X8AJCfQ==
-X-Google-Smtp-Source: AGRyM1sRT/G1/Zc62fYFm4YsukPkHZCuylsLgzzu2NtDF1otkPHXpMjCG/oHMIlIy5/3wMzfMLCUWA==
-X-Received: by 2002:a05:6000:147:b0:214:7d6e:cb1d with SMTP id
- r7-20020a056000014700b002147d6ecb1dmr13471356wrx.650.1655555545465; 
- Sat, 18 Jun 2022 05:32:25 -0700 (PDT)
+ bh=Pg5EtL0V3UHrid7YbhvB+3zhrduzQGisX4A0SVhhM0E=;
+ b=UhgtJNbR39ILomrNaDSTTimn2Qa2mjwDG7XB8iUyOL7I0gWnpbdTJpEJvK4nsSHrwg
+ PmNRDMsK3cUmdmPSnX+8i/XDALKf3yD+9c9rVXnTKTo7Wy9v++dcVahfye4mH7XG9OLf
+ n4mzGWve4Pm87SD5Qrq/lncG80cZQyssbD/JZMkbxN1gyoh1e1P55hwCwtnobfR17XFp
+ Oa7ld9Hwowk3pIPkEH9+VZVgPTXQ0L9nSaC8Wqdp4M6UQBLh7+fdqO2GhvjyVr2HCSSD
+ sL4kzDgIIaPjB5amrFjBv0f97RYJWoZDwODFdeNY5630n6ong3ipvEcUdgiuaKpR2BKY
+ 7UpQ==
+X-Gm-Message-State: AJIora9LDCJN11HblQT3ZyPiViAajaeLpiyZGAZ/2zRRSZXRRkKo5pbg
+ xa1QasuJ6VQB23zRTIfOfzS42w==
+X-Google-Smtp-Source: AGRyM1t+D1hSYvVv2lyhJXTM8fnBYLleL1Z3z4M3dP8UVmVZwbcohvWxMo8SxFiBx5Zo6H6ulo6zQw==
+X-Received: by 2002:a05:600c:3553:b0:39c:63a3:f54a with SMTP id
+ i19-20020a05600c355300b0039c63a3f54amr15447271wmq.61.1655555543356; 
+ Sat, 18 Jun 2022 05:32:23 -0700 (PDT)
 Received: from henark71.. ([51.37.234.167]) by smtp.gmail.com with ESMTPSA id
- az10-20020adfe18a000000b00210396b2eaesm9292305wrb.45.2022.06.18.05.32.23
+ az10-20020adfe18a000000b00210396b2eaesm9292305wrb.45.2022.06.18.05.32.21
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Sat, 18 Jun 2022 05:32:24 -0700 (PDT)
+ Sat, 18 Jun 2022 05:32:22 -0700 (PDT)
 From: Conor Dooley <mail@conchuod.ie>
 To: David Airlie <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>,
  Rob Herring <robh+dt@kernel.org>,
@@ -79,9 +80,10 @@ To: David Airlie <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>,
  Mark Brown <broonie@kernel.org>, Serge Semin <fancer.lancer@gmail.com>,
  Daniel Lezcano <daniel.lezcano@linaro.org>,
  Palmer Dabbelt <palmer@dabbelt.com>, Palmer Dabbelt <palmer@rivosinc.com>
-Subject: [PATCH 14/14] riscv: dts: canaan: build all devicetress if SOC_CANAAN
-Date: Sat, 18 Jun 2022 13:30:36 +0100
-Message-Id: <20220618123035.563070-15-mail@conchuod.ie>
+Subject: [PATCH 13/14] riscv: dts: canaan: remove spi-max-frequency from
+ controllers
+Date: Sat, 18 Jun 2022 13:30:35 +0100
+Message-Id: <20220618123035.563070-14-mail@conchuod.ie>
 X-Mailer: git-send-email 2.36.1
 In-Reply-To: <20220618123035.563070-1-mail@conchuod.ie>
 References: <20220618123035.563070-1-mail@conchuod.ie>
@@ -114,37 +116,45 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 From: Conor Dooley <conor.dooley@microchip.com>
 
-Testing & checking the Canaan devicetrees is inconvenient as only the
-devicetree corresponding to SOC_CANAAN_K210_DTB_BUILTIN will be built.
-Change the Makefile so that all devicetrees are built by default if
-SOC_CANAAN but only the one specified by SOC_CANAAN_K210_DTB_BUILTIN
-gets built as an object.
+spi-max-frequency is a device, not a controller  property and should be
+removed.
 
+Link: https://lore.kernel.org/lkml/20220526014141.2872567-1-robh@kernel.org/
 Signed-off-by: Conor Dooley <conor.dooley@microchip.com>
 ---
-I don't have any Canaan hardware, but I build tested it and the log
-looked correct with arch/riscv/boot/dts/canaan/k210_generic.dtb.o
-getting successfully built.
----
- arch/riscv/boot/dts/canaan/Makefile | 10 ++++++++--
- 1 file changed, 8 insertions(+), 2 deletions(-)
+ arch/riscv/boot/dts/canaan/k210.dtsi | 5 +----
+ 1 file changed, 1 insertion(+), 4 deletions(-)
 
-diff --git a/arch/riscv/boot/dts/canaan/Makefile b/arch/riscv/boot/dts/canaan/Makefile
-index c61b08ac8554..befe4eb7527b 100644
---- a/arch/riscv/boot/dts/canaan/Makefile
-+++ b/arch/riscv/boot/dts/canaan/Makefile
-@@ -1,3 +1,9 @@
- # SPDX-License-Identifier: GPL-2.0
--dtb-$(CONFIG_SOC_CANAAN_K210_DTB_BUILTIN) += $(addsuffix .dtb, $(CONFIG_SOC_CANAAN_K210_DTB_SOURCE))
--obj-$(CONFIG_SOC_CANAAN_K210_DTB_BUILTIN) += $(addsuffix .o, $(dtb-y))
-+dtb-$(CONFIG_SOC_CANAAN) += canaan_kd233.dtb
-+dtb-$(CONFIG_SOC_CANAAN) += k210_generic.dtb
-+dtb-$(CONFIG_SOC_CANAAN) += sipeed_maix_bit.dtb
-+dtb-$(CONFIG_SOC_CANAAN) += sipeed_maix_dock.dtb
-+dtb-$(CONFIG_SOC_CANAAN) += sipeed_maix_go.dtb
-+dtb-$(CONFIG_SOC_CANAAN) += sipeed_maixduino.dtb
+diff --git a/arch/riscv/boot/dts/canaan/k210.dtsi b/arch/riscv/boot/dts/canaan/k210.dtsi
+index 5eb6b69c1170..ec290db4705c 100644
+--- a/arch/riscv/boot/dts/canaan/k210.dtsi
++++ b/arch/riscv/boot/dts/canaan/k210.dtsi
+@@ -413,7 +413,6 @@ spi0: spi@52000000 {
+ 				clock-names = "ssi_clk", "pclk";
+ 				resets = <&sysrst K210_RST_SPI0>;
+ 				reset-names = "spi";
+-				spi-max-frequency = <25000000>;
+ 				num-cs = <4>;
+ 				reg-io-width = <4>;
+ 			};
+@@ -429,7 +428,6 @@ spi1: spi@53000000 {
+ 				clock-names = "ssi_clk", "pclk";
+ 				resets = <&sysrst K210_RST_SPI1>;
+ 				reset-names = "spi";
+-				spi-max-frequency = <25000000>;
+ 				num-cs = <4>;
+ 				reg-io-width = <4>;
+ 			};
+@@ -445,8 +443,7 @@ spi3: spi@54000000 {
+ 				clock-names = "ssi_clk", "pclk";
+ 				resets = <&sysrst K210_RST_SPI3>;
+ 				reset-names = "spi";
+-				/* Could possibly go up to 200 MHz */
+-				spi-max-frequency = <100000000>;
 +
-+obj-$(CONFIG_SOC_CANAAN_K210_DTB_BUILTIN) += $(addsuffix .dtb.o, $(CONFIG_SOC_CANAAN_K210_DTB_SOURCE))
+ 				num-cs = <4>;
+ 				reg-io-width = <4>;
+ 			};
 -- 
 2.36.1
 
