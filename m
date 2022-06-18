@@ -4,71 +4,71 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D8774C433EF
-	for <alsa-devel@archiver.kernel.org>; Mon, 20 Jun 2022 15:36:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D7AE6C433EF
+	for <alsa-devel@archiver.kernel.org>; Mon, 20 Jun 2022 15:37:16 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 2A2FF28EC;
-	Mon, 20 Jun 2022 17:36:08 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2A2FF28EC
+	by alsa0.perex.cz (Postfix) with ESMTPS id 31CC528F4;
+	Mon, 20 Jun 2022 17:36:25 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 31CC528F4
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1655739418;
-	bh=etcfk4Kx/QJQzeGDxs7CPWKvjQajBK8rPkt5Yw/KTO8=;
+	s=default; t=1655739435;
+	bh=VvmeoniMTH8Z1GHuiuvLejdFjhkB5ENa0zfc7naWXAc=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=lEdAOz7XxyOalWpCrayI0eQevcGlxBJ1bgOvQrt8lMn8tBq2qOGCNqj7J0i1YxSzQ
-	 ZZ03TdARpSWePTO0vDLr3T1ekoxQZ0ib+5G38+WrP8GfXKOrz9OW78QNvYKJrXXaYp
-	 TLF2fDmno1K62eSDvnGtxJo+Rbcke3FY0Qisv/Zk=
+	b=GznW4hQyjzGvO4/1izNFCGGu7jbn/WyBo578jrIgkRoU6nZH0byG6jwRQpPf+k6/Z
+	 RNbvchzzw29sNxZNqC+eHYdw3jfM5vOWc5Qdfxjm7hjU9Lln7WjWd4+ItMeoASzxVA
+	 bQ4TKtFxmW/og/Json+XVJtY/8c1QX1NEwezoZ/g=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 55AA0F89616;
-	Mon, 20 Jun 2022 17:08:19 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 33A3FF8961C;
+	Mon, 20 Jun 2022 17:08:20 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id A3118F80534; Sat, 18 Jun 2022 14:32:16 +0200 (CEST)
-Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com
- [IPv6:2a00:1450:4864:20::436])
+ id 848A8F80535; Sat, 18 Jun 2022 14:32:19 +0200 (CEST)
+Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com
+ [IPv6:2a00:1450:4864:20::429])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 30D5EF804A9
- for <alsa-devel@alsa-project.org>; Sat, 18 Jun 2022 14:32:10 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 30D5EF804A9
+ by alsa1.perex.cz (Postfix) with ESMTPS id 9331DF8024C
+ for <alsa-devel@alsa-project.org>; Sat, 18 Jun 2022 14:32:08 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9331DF8024C
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=conchuod.ie header.i=@conchuod.ie
- header.b="WWI5aigp"
-Received: by mail-wr1-x436.google.com with SMTP id c21so8820464wrb.1
- for <alsa-devel@alsa-project.org>; Sat, 18 Jun 2022 05:32:10 -0700 (PDT)
+ header.b="YKP/o6CN"
+Received: by mail-wr1-x429.google.com with SMTP id o16so8802910wra.4
+ for <alsa-devel@alsa-project.org>; Sat, 18 Jun 2022 05:32:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=conchuod.ie; s=google;
  h=from:to:cc:subject:date:message-id:in-reply-to:references
  :mime-version:content-transfer-encoding;
- bh=Xc3yLaPJl3fJMhU7mLPNTXUDP5YmMspTrPH6skgYH5k=;
- b=WWI5aigpx63NXABwWobIVtxzeWyDWABcTlqhEd7p5galGx1leb4l0QUX6DRW4V7R2/
- 7tCNkKvAuMxDi861SOauKvR8OiOrKRFQWKbf/UOyK4ZoNWlOxvSKeVmw3Pjw/ViKSDBb
- bJGQhxOX2sak4JARX2cUY3oHghGpdM5DQO1bngmpG9k9r1Q9YO+8El+G/rDrBCypfz88
- jYj4Hwbu5WXw7XC7sEypXuV849AqQEAwqdgU0LsiCYfp++8WMxNxdrDQLMOhAiSs1NIp
- AxnI+k8juFNCyik85P9Aotl91uS4CXhVavQDoNI3Z5E9qqRGU5RemiTnsiZNhX6+GfbW
- +y3A==
+ bh=n9g/PqG7lJoC3tmWnVa7QkZ4DkjcrfTJ4GH+uywTgjo=;
+ b=YKP/o6CNE+lQ/JvutgsR0jZOXfHfDWCY/dQhqMKd5OzvitLi7mgxOOlC22neXUi3t3
+ BN9TvFhMfSVyIRalfKp0Va337xJ573OA/jlHmNvKMC9gL9WCqqIk9PYa0TsCVpUjtR8B
+ tbSkAAYjMwonv2CjEuI0NKpP3MKNtmcrz4U2Kau04jp49doWSVikIYXLNtIJ0CbxpRRk
+ ACyFnBPLFEDO8mQ9dOPY47H5osv138u3PU28fgbHfr0fyUMw+29W9vwD1hyvLo5Y4+V/
+ UZtdS0DFsqY5lgkZ/53LD/FQ/OdBPmTBXN7bsmN9ILMpN1rxcP2HcJnRbBzUtni7FWjs
+ qlYw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
  h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
  :references:mime-version:content-transfer-encoding;
- bh=Xc3yLaPJl3fJMhU7mLPNTXUDP5YmMspTrPH6skgYH5k=;
- b=WO6UPXr3hiGgzPQziqJ4ZUFihDGjViPhRtTdbTrknBXtbUyiwpVZxv4OJzY9S2j0rI
- Kz9rpepBWOBr3qud8z/JQB7SKJptFMJaE0NvK13KOlxob+dJZrrf4eJ1o3XuL3jFqX6w
- YB/yhpkUKW7aIbkEUiSFsCQ4Qrd2LHTh9k/byYrogXI63fHf8XGFmw6nqtuqYEereSMK
- Qe8NNIkb9AKbaPmK2S8zQSWntvg61nZbfDVjTFKR4NmCiZUvQi0XVa0LKXeGH1CpJ61G
- RkGzcFt3FAs2foTqG8Y47ho5zbmfA98SYxB8GAM1QVPjwQGDQ6SBZljTZUgenL7OfiKp
- fGsQ==
-X-Gm-Message-State: AJIora/D5QddrhvUzs+O194hIBOGK4kwx4+jNXcKOetPUvF3OM6QoWKH
- AzpIVyON8fVkpJ6mXwMXklT/jg==
-X-Google-Smtp-Source: AGRyM1vjUOgV8azxYb57OQztWrqMQYhc0lprasxXMnlkIZhmfHP3nu/9sasVI2/ycyhjwJt5Z7ma0Q==
-X-Received: by 2002:a05:6000:1789:b0:219:2aa8:7159 with SMTP id
- e9-20020a056000178900b002192aa87159mr13617696wrg.474.1655555529797; 
- Sat, 18 Jun 2022 05:32:09 -0700 (PDT)
+ bh=n9g/PqG7lJoC3tmWnVa7QkZ4DkjcrfTJ4GH+uywTgjo=;
+ b=bBoIDLdQFLixoQzGop5AOuJxQ8BZoJotrZFWnyGeE2dem5akT6A5205+aO81ue3fJ0
+ 6AJS+CaPGEiO5OIiD7fDgCaxaLXnU/eYsqo7fCpj+fMvQNQLx/Zxo+MmYijCPDw7u+jl
+ fJ0EtmHHFId6pCPGnATQAoKUAGnc/JIRy1gbDINZJDu36+t1939HDLT3J/05u3uinKks
+ iz8MQ2y/VELsPN7uSMp4l0T7OabT+yEzpUTzlb+Ys6pTHWXnm8ASgrlAYXes9P1PCdJy
+ gmr0Nw4ltaqoHnwihtLYrKj8fWkggy0v0Ey3hz+48GhvVVBkz19j9YI4hxv52tkANuwV
+ pd6Q==
+X-Gm-Message-State: AJIora9ffocgsNnZwg8QSTDQxlm6RK7wwWwGMKAHrGmnz/lFTGfmpY4H
+ iPkoWoyRUxGz/piDanoH8TYgYw==
+X-Google-Smtp-Source: AGRyM1uLcJx1fdLcx/uXs4UMpQTYdcZbfApX1+t2jE32dzxYMzfs1UyeNBdv+e0Fp23i7qfwRgxtPQ==
+X-Received: by 2002:a5d:4251:0:b0:21b:885b:2fcc with SMTP id
+ s17-20020a5d4251000000b0021b885b2fccmr1452539wrr.52.1655555526382; 
+ Sat, 18 Jun 2022 05:32:06 -0700 (PDT)
 Received: from henark71.. ([51.37.234.167]) by smtp.gmail.com with ESMTPSA id
- az10-20020adfe18a000000b00210396b2eaesm9292305wrb.45.2022.06.18.05.32.08
+ az10-20020adfe18a000000b00210396b2eaesm9292305wrb.45.2022.06.18.05.32.04
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Sat, 18 Jun 2022 05:32:09 -0700 (PDT)
+ Sat, 18 Jun 2022 05:32:05 -0700 (PDT)
 From: Conor Dooley <mail@conchuod.ie>
 To: David Airlie <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>,
  Rob Herring <robh+dt@kernel.org>,
@@ -79,10 +79,10 @@ To: David Airlie <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>,
  Mark Brown <broonie@kernel.org>, Serge Semin <fancer.lancer@gmail.com>,
  Daniel Lezcano <daniel.lezcano@linaro.org>,
  Palmer Dabbelt <palmer@dabbelt.com>, Palmer Dabbelt <palmer@rivosinc.com>
-Subject: [PATCH 06/14] spi: dt-bindings: dw-apb-ssi: update spi-{r,
- t}x-bus-width for dwc-ssi
-Date: Sat, 18 Jun 2022 13:30:28 +0100
-Message-Id: <20220618123035.563070-7-mail@conchuod.ie>
+Subject: [PATCH 04/14] dt-bindings: dma: add Canaan k210 to Synopsys
+ DesignWare DMA
+Date: Sat, 18 Jun 2022 13:30:26 +0100
+Message-Id: <20220618123035.563070-5-mail@conchuod.ie>
 X-Mailer: git-send-email 2.36.1
 In-Reply-To: <20220618123035.563070-1-mail@conchuod.ie>
 References: <20220618123035.563070-1-mail@conchuod.ie>
@@ -115,74 +115,96 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 From: Conor Dooley <conor.dooley@microchip.com>
 
-snps,dwc-ssi-1.01a has a single user - the Canaan k210, which uses a
-width of 4 for spi-{r,t}x-bus-width. Update the binding to reflect
-this.
+The Canaan k210 apparently has a Sysnopsys Designware AXI DMA
+controller, but according to the documentation & devicetree it has 6
+interrupts rather than the standard one. Add a custom compatible that
+supports the 6 interrupt configuration which falls back to the standard
+binding which is currently the one in use in the devicetree entry.
 
+Link: https://canaan-creative.com/wp-content/uploads/2020/03/kendryte_standalone_programming_guide_20190311144158_en.pdf #Page 58
 Signed-off-by: Conor Dooley <conor.dooley@microchip.com>
 ---
- .../bindings/spi/snps,dw-apb-ssi.yaml         | 48 ++++++++++++++-----
- 1 file changed, 35 insertions(+), 13 deletions(-)
+ .../bindings/dma/snps,dw-axi-dmac.yaml        | 35 ++++++++++++++-----
+ 1 file changed, 26 insertions(+), 9 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/spi/snps,dw-apb-ssi.yaml b/Documentation/devicetree/bindings/spi/snps,dw-apb-ssi.yaml
-index e25d44c218f2..f2b9e3f062cd 100644
---- a/Documentation/devicetree/bindings/spi/snps,dw-apb-ssi.yaml
-+++ b/Documentation/devicetree/bindings/spi/snps,dw-apb-ssi.yaml
-@@ -135,19 +135,41 @@ properties:
-       of the designware controller, and the upper limit is also subject to
-       controller configuration.
+diff --git a/Documentation/devicetree/bindings/dma/snps,dw-axi-dmac.yaml b/Documentation/devicetree/bindings/dma/snps,dw-axi-dmac.yaml
+index 4324a94b26b2..bc85598151ef 100644
+--- a/Documentation/devicetree/bindings/dma/snps,dw-axi-dmac.yaml
++++ b/Documentation/devicetree/bindings/dma/snps,dw-axi-dmac.yaml
+@@ -18,9 +18,13 @@ allOf:
  
--patternProperties:
--  "^.*@[0-9a-f]+$":
--    type: object
--    properties:
--      reg:
--        minimum: 0
--        maximum: 3
+ properties:
+   compatible:
+-    enum:
+-      - snps,axi-dma-1.01a
+-      - intel,kmb-axi-dma
++    oneOf:
++      - items:
++          - const: canaan,k210-axi-dma
++          - const: snps,axi-dma-1.01a
++      - enum:
++          - snps,axi-dma-1.01a
++          - intel,kmb-axi-dma
+ 
+   reg:
+     minItems: 1
+@@ -33,9 +37,6 @@ properties:
+       - const: axidma_ctrl_regs
+       - const: axidma_apb_regs
+ 
+-  interrupts:
+-    maxItems: 1
 -
--      spi-rx-bus-width:
--        const: 1
--
--      spi-tx-bus-width:
--        const: 1
+   clocks:
+     items:
+       - description: Bus Clock
+@@ -92,6 +93,22 @@ properties:
+     minimum: 1
+     maximum: 256
+ 
 +if:
 +  properties:
 +    compatible:
 +      contains:
-+        const: snps,dwc-ssi-1.01a
++        const: canaan,k210-axi-dma
 +
 +then:
-+  patternProperties:
-+    "^.*@[0-9a-f]+$":
-+      type: object
-+      properties:
-+        reg:
-+          minimum: 0
-+          maximum: 3
-+
-+        spi-rx-bus-width:
-+          const: 4
-+
-+        spi-tx-bus-width:
-+          const: 4
++  properties:
++    interrupts:
++      maxItems: 6
 +
 +else:
-+  patternProperties:
-+    "^.*@[0-9a-f]+$":
-+      type: object
-+      properties:
-+        reg:
-+          minimum: 0
-+          maximum: 3
++  properties:
++    interrupts:
++      maxItems: 1
 +
-+        spi-rx-bus-width:
-+          const: 1
-+
-+        spi-tx-bus-width:
-+          const: 1
+ required:
+   - compatible
+   - reg
+@@ -105,7 +122,7 @@ required:
+   - snps,priority
+   - snps,block-size
  
- unevaluatedProperties: false
+-additionalProperties: false
++unevaluatedProperties: false
  
+ examples:
+   - |
+@@ -113,12 +130,12 @@ examples:
+      #include <dt-bindings/interrupt-controller/irq.h>
+      /* example with snps,dw-axi-dmac */
+      dmac: dma-controller@80000 {
+-         compatible = "snps,axi-dma-1.01a";
++         compatible = "canaan,k210-axi-dma", "snps,axi-dma-1.01a";
+          reg = <0x80000 0x400>;
+          clocks = <&core_clk>, <&cfgr_clk>;
+          clock-names = "core-clk", "cfgr-clk";
+          interrupt-parent = <&intc>;
+-         interrupts = <27>;
++         interrupts = <27>, <28>, <29>, <30>, <31>, <32>;
+          #dma-cells = <1>;
+          dma-channels = <4>;
+          snps,dma-masters = <2>;
 -- 
 2.36.1
 
