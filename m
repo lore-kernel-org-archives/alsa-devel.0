@@ -4,71 +4,71 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id F0203C433EF
-	for <alsa-devel@archiver.kernel.org>; Mon, 20 Jun 2022 15:36:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D8774C433EF
+	for <alsa-devel@archiver.kernel.org>; Mon, 20 Jun 2022 15:36:59 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 33E2A28E1;
-	Mon, 20 Jun 2022 17:35:53 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 33E2A28E1
+	by alsa0.perex.cz (Postfix) with ESMTPS id 2A2FF28EC;
+	Mon, 20 Jun 2022 17:36:08 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2A2FF28EC
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1655739403;
-	bh=PuoPsQY1UrmiVltMOPol6IxDQiWfcgMwrdiLxX2LxuU=;
+	s=default; t=1655739418;
+	bh=etcfk4Kx/QJQzeGDxs7CPWKvjQajBK8rPkt5Yw/KTO8=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Ctp9pUbk+wOpB4jqHZqj/mrQL4YGM8TEUqduti/vHL3h1hGL83348+SEcb0GnATLG
-	 K3OntTTKeY9j2HYHiW6+WR0QJO+xbixdtwhz5Yh/wgx47wXmzbSWW4CNFpKO7qu1JO
-	 nZ2ZQ8Qr8GdJZhjKQ4tJCeY38lG+QLzjuTi8rXlw=
+	b=lEdAOz7XxyOalWpCrayI0eQevcGlxBJ1bgOvQrt8lMn8tBq2qOGCNqj7J0i1YxSzQ
+	 ZZ03TdARpSWePTO0vDLr3T1ekoxQZ0ib+5G38+WrP8GfXKOrz9OW78QNvYKJrXXaYp
+	 TLF2fDmno1K62eSDvnGtxJo+Rbcke3FY0Qisv/Zk=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id D041DF89610;
-	Mon, 20 Jun 2022 17:08:18 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 55AA0F89616;
+	Mon, 20 Jun 2022 17:08:19 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id D9FF2F8052F; Sat, 18 Jun 2022 14:32:15 +0200 (CEST)
-Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com
- [IPv6:2a00:1450:4864:20::42b])
+ id A3118F80534; Sat, 18 Jun 2022 14:32:16 +0200 (CEST)
+Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com
+ [IPv6:2a00:1450:4864:20::436])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id A01DDF8026D
- for <alsa-devel@alsa-project.org>; Sat, 18 Jun 2022 14:32:03 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A01DDF8026D
+ by alsa1.perex.cz (Postfix) with ESMTPS id 30D5EF804A9
+ for <alsa-devel@alsa-project.org>; Sat, 18 Jun 2022 14:32:10 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 30D5EF804A9
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=conchuod.ie header.i=@conchuod.ie
- header.b="M53yntPk"
-Received: by mail-wr1-x42b.google.com with SMTP id g27so2149364wrb.10
- for <alsa-devel@alsa-project.org>; Sat, 18 Jun 2022 05:32:03 -0700 (PDT)
+ header.b="WWI5aigp"
+Received: by mail-wr1-x436.google.com with SMTP id c21so8820464wrb.1
+ for <alsa-devel@alsa-project.org>; Sat, 18 Jun 2022 05:32:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=conchuod.ie; s=google;
  h=from:to:cc:subject:date:message-id:in-reply-to:references
  :mime-version:content-transfer-encoding;
- bh=VGm3r1/aMg071qi73xSEXzAaqTqN1Q+VH+odYYMqRVE=;
- b=M53yntPkwb6rKwStueOhqY4C1t2aG9EbhwHhEkSpZVLk6/Ha9CTunpiN1nH5i1T2ni
- 5JCiDu8P8qFkOcNjiTBcRPTpJ9KbRiL05AMzyCAFUykl37Rag27eKr6thTN5anQaY1IA
- d8v/udL/AQi/r/JkuA+rpOwoe0vhrVH5XVbN5PE8ePoNCNnBwCSEPjkZljjFjg/EkxCQ
- el3IEdR24l5otSXU3Y5fbKJLJLHwns9s3upwUZvehURiZy0BSTnHD/ZEbcy4pgmwT1K8
- YyyUjR0YdliUS1un+CNRD26PIMihoSSIzLSN+QUEXCap4g/KGAoFVIX7OS+QN6XqmwZP
- BCzA==
+ bh=Xc3yLaPJl3fJMhU7mLPNTXUDP5YmMspTrPH6skgYH5k=;
+ b=WWI5aigpx63NXABwWobIVtxzeWyDWABcTlqhEd7p5galGx1leb4l0QUX6DRW4V7R2/
+ 7tCNkKvAuMxDi861SOauKvR8OiOrKRFQWKbf/UOyK4ZoNWlOxvSKeVmw3Pjw/ViKSDBb
+ bJGQhxOX2sak4JARX2cUY3oHghGpdM5DQO1bngmpG9k9r1Q9YO+8El+G/rDrBCypfz88
+ jYj4Hwbu5WXw7XC7sEypXuV849AqQEAwqdgU0LsiCYfp++8WMxNxdrDQLMOhAiSs1NIp
+ AxnI+k8juFNCyik85P9Aotl91uS4CXhVavQDoNI3Z5E9qqRGU5RemiTnsiZNhX6+GfbW
+ +y3A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
  h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
  :references:mime-version:content-transfer-encoding;
- bh=VGm3r1/aMg071qi73xSEXzAaqTqN1Q+VH+odYYMqRVE=;
- b=K60159XiszwGf61b7OR6DBEPfIIRU8ZSp8Df/oDIQTvDqioyS8RrsePs1EJPGTyJpL
- A1Kc0b51AJSidQaiWVmJ8G73lS0zBQKvhkzolpzn2+mqrPLcF9OYbGDj5+p3TIIkWbQX
- oYMx7cvxqIwO3OxrpbnLJ7O/uObry2g7/b4qc9MVKZhTat+EfKLMUM6XaL6g5Yvd6uAi
- IuJ/6fn382AbZKUqoorj7MLunXHG1ichmuIfvFovkQaepO7bkNqxwEVrni5vHS0Q5D5S
- 4eT5R6FWTskw6csVuhhZbhn8kx7eM+eQ5iDASnJtGawU67aDC5fZyZbi0n3PJhV6TPS+
- YYhA==
-X-Gm-Message-State: AJIora9B+fqWY41jC3wlKrrOl9syeSCstkKiMCXByt7zBZjXkpp37jyr
- v8a8M7uEKfv6U7R70QDEw6WvNA==
-X-Google-Smtp-Source: AGRyM1v68t/Wwno8np+QMYDsHNGouaSLNzMTK0OgH/L3C4APgn3/IkzS+cmwriXRfa4S1osF+ky/Jg==
-X-Received: by 2002:a5d:65c1:0:b0:210:33b7:4525 with SMTP id
- e1-20020a5d65c1000000b0021033b74525mr13815784wrw.494.1655555521116; 
- Sat, 18 Jun 2022 05:32:01 -0700 (PDT)
+ bh=Xc3yLaPJl3fJMhU7mLPNTXUDP5YmMspTrPH6skgYH5k=;
+ b=WO6UPXr3hiGgzPQziqJ4ZUFihDGjViPhRtTdbTrknBXtbUyiwpVZxv4OJzY9S2j0rI
+ Kz9rpepBWOBr3qud8z/JQB7SKJptFMJaE0NvK13KOlxob+dJZrrf4eJ1o3XuL3jFqX6w
+ YB/yhpkUKW7aIbkEUiSFsCQ4Qrd2LHTh9k/byYrogXI63fHf8XGFmw6nqtuqYEereSMK
+ Qe8NNIkb9AKbaPmK2S8zQSWntvg61nZbfDVjTFKR4NmCiZUvQi0XVa0LKXeGH1CpJ61G
+ RkGzcFt3FAs2foTqG8Y47ho5zbmfA98SYxB8GAM1QVPjwQGDQ6SBZljTZUgenL7OfiKp
+ fGsQ==
+X-Gm-Message-State: AJIora/D5QddrhvUzs+O194hIBOGK4kwx4+jNXcKOetPUvF3OM6QoWKH
+ AzpIVyON8fVkpJ6mXwMXklT/jg==
+X-Google-Smtp-Source: AGRyM1vjUOgV8azxYb57OQztWrqMQYhc0lprasxXMnlkIZhmfHP3nu/9sasVI2/ycyhjwJt5Z7ma0Q==
+X-Received: by 2002:a05:6000:1789:b0:219:2aa8:7159 with SMTP id
+ e9-20020a056000178900b002192aa87159mr13617696wrg.474.1655555529797; 
+ Sat, 18 Jun 2022 05:32:09 -0700 (PDT)
 Received: from henark71.. ([51.37.234.167]) by smtp.gmail.com with ESMTPSA id
- az10-20020adfe18a000000b00210396b2eaesm9292305wrb.45.2022.06.18.05.31.59
+ az10-20020adfe18a000000b00210396b2eaesm9292305wrb.45.2022.06.18.05.32.08
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Sat, 18 Jun 2022 05:32:00 -0700 (PDT)
+ Sat, 18 Jun 2022 05:32:09 -0700 (PDT)
 From: Conor Dooley <mail@conchuod.ie>
 To: David Airlie <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>,
  Rob Herring <robh+dt@kernel.org>,
@@ -79,10 +79,10 @@ To: David Airlie <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>,
  Mark Brown <broonie@kernel.org>, Serge Semin <fancer.lancer@gmail.com>,
  Daniel Lezcano <daniel.lezcano@linaro.org>,
  Palmer Dabbelt <palmer@dabbelt.com>, Palmer Dabbelt <palmer@rivosinc.com>
-Subject: [PATCH 01/14] dt-bindings: display: convert ilitek,
- ili9341.txt to dt-schema
-Date: Sat, 18 Jun 2022 13:30:23 +0100
-Message-Id: <20220618123035.563070-2-mail@conchuod.ie>
+Subject: [PATCH 06/14] spi: dt-bindings: dw-apb-ssi: update spi-{r,
+ t}x-bus-width for dwc-ssi
+Date: Sat, 18 Jun 2022 13:30:28 +0100
+Message-Id: <20220618123035.563070-7-mail@conchuod.ie>
 X-Mailer: git-send-email 2.36.1
 In-Reply-To: <20220618123035.563070-1-mail@conchuod.ie>
 References: <20220618123035.563070-1-mail@conchuod.ie>
@@ -115,134 +115,74 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 From: Conor Dooley <conor.dooley@microchip.com>
 
-A dt-schema binding for the Ilitek ili9341 was created as
-panel/ilitek,ili9341.yaml but the txt binding was ignored in the
-process. Move the remaining items in the txt binding to the yaml one &
-delete it.
+snps,dwc-ssi-1.01a has a single user - the Canaan k210, which uses a
+width of 4 for spi-{r,t}x-bus-width. Update the binding to reflect
+this.
 
-The example in the txt binding has a spi-max-frequency which disagrees
-with the yaml replacement (and its own documentation) so change that to
-conform with the binding. There are no users in tree of the Adafruit
-yx240qv29 to check against.
-
-Link: https://cdn-learn.adafruit.com/assets/assets/000/046/879/original/SPEC-YX240QV29-T_Rev.A__1_.pdf
 Signed-off-by: Conor Dooley <conor.dooley@microchip.com>
 ---
- .../bindings/display/ilitek,ili9341.txt       | 27 -----------
- .../display/panel/ilitek,ili9341.yaml         | 48 +++++++++++++------
- 2 files changed, 34 insertions(+), 41 deletions(-)
- delete mode 100644 Documentation/devicetree/bindings/display/ilitek,ili9341.txt
+ .../bindings/spi/snps,dw-apb-ssi.yaml         | 48 ++++++++++++++-----
+ 1 file changed, 35 insertions(+), 13 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/display/ilitek,ili9341.txt b/Documentation/devicetree/bindings/display/ilitek,ili9341.txt
-deleted file mode 100644
-index 169b32e4ee4e..000000000000
---- a/Documentation/devicetree/bindings/display/ilitek,ili9341.txt
-+++ /dev/null
-@@ -1,27 +0,0 @@
--Ilitek ILI9341 display panels
--
--This binding is for display panels using an Ilitek ILI9341 controller in SPI
--mode.
--
--Required properties:
--- compatible:	"adafruit,yx240qv29", "ilitek,ili9341"
--- dc-gpios:	D/C pin
--- reset-gpios:	Reset pin
--
--The node for this driver must be a child node of a SPI controller, hence
--all mandatory properties described in ../spi/spi-bus.txt must be specified.
--
--Optional properties:
--- rotation:	panel rotation in degrees counter clockwise (0,90,180,270)
--- backlight:	phandle of the backlight device attached to the panel
--
--Example:
--	display@0{
--		compatible = "adafruit,yx240qv29", "ilitek,ili9341";
--		reg = <0>;
--		spi-max-frequency = <32000000>;
--		dc-gpios = <&gpio0 9 GPIO_ACTIVE_HIGH>;
--		reset-gpios = <&gpio0 8 GPIO_ACTIVE_HIGH>;
--		rotation = <270>;
--		backlight = <&backlight>;
--	};
-diff --git a/Documentation/devicetree/bindings/display/panel/ilitek,ili9341.yaml b/Documentation/devicetree/bindings/display/panel/ilitek,ili9341.yaml
-index 6058948a9764..94ca92878434 100644
---- a/Documentation/devicetree/bindings/display/panel/ilitek,ili9341.yaml
-+++ b/Documentation/devicetree/bindings/display/panel/ilitek,ili9341.yaml
-@@ -23,6 +23,7 @@ properties:
-       - enum:
-           # ili9341 240*320 Color on stm32f429-disco board
-           - st,sf-tc240t-9370-t
-+          - adafruit,yx240qv29
-       - const: ilitek,ili9341
+diff --git a/Documentation/devicetree/bindings/spi/snps,dw-apb-ssi.yaml b/Documentation/devicetree/bindings/spi/snps,dw-apb-ssi.yaml
+index e25d44c218f2..f2b9e3f062cd 100644
+--- a/Documentation/devicetree/bindings/spi/snps,dw-apb-ssi.yaml
++++ b/Documentation/devicetree/bindings/spi/snps,dw-apb-ssi.yaml
+@@ -135,19 +135,41 @@ properties:
+       of the designware controller, and the upper limit is also subject to
+       controller configuration.
  
-   reg: true
-@@ -47,31 +48,50 @@ properties:
-   vddi-led-supply:
-     description: Voltage supply for the LED driver (1.65 .. 3.3 V)
- 
--additionalProperties: false
-+unevaluatedProperties: false
- 
- required:
-   - compatible
-   - reg
-   - dc-gpios
--  - port
-+
+-patternProperties:
+-  "^.*@[0-9a-f]+$":
+-    type: object
+-    properties:
+-      reg:
+-        minimum: 0
+-        maximum: 3
+-
+-      spi-rx-bus-width:
+-        const: 1
+-
+-      spi-tx-bus-width:
+-        const: 1
 +if:
 +  properties:
 +    compatible:
 +      contains:
-+        enum:
-+          - st,sf-tc240t-9370-t
++        const: snps,dwc-ssi-1.01a
++
 +then:
-+  required:
-+    - port
++  patternProperties:
++    "^.*@[0-9a-f]+$":
++      type: object
++      properties:
++        reg:
++          minimum: 0
++          maximum: 3
++
++        spi-rx-bus-width:
++          const: 4
++
++        spi-tx-bus-width:
++          const: 4
++
++else:
++  patternProperties:
++    "^.*@[0-9a-f]+$":
++      type: object
++      properties:
++        reg:
++          minimum: 0
++          maximum: 3
++
++        spi-rx-bus-width:
++          const: 1
++
++        spi-tx-bus-width:
++          const: 1
  
- examples:
-   - |+
-+    #include <dt-bindings/gpio/gpio.h>
-     spi {
-         #address-cells = <1>;
-         #size-cells = <0>;
-         panel: display@0 {
--                 compatible = "st,sf-tc240t-9370-t",
--                              "ilitek,ili9341";
--                 reg = <0>;
--                 spi-3wire;
--                 spi-max-frequency = <10000000>;
--                 dc-gpios = <&gpiod 13 0>;
--                 port {
--                         panel_in: endpoint {
--                           remote-endpoint = <&display_out>;
--                      };
--                 };
--             };
-+            compatible = "st,sf-tc240t-9370-t",
-+                         "ilitek,ili9341";
-+            reg = <0>;
-+            spi-3wire;
-+            spi-max-frequency = <10000000>;
-+            dc-gpios = <&gpiod 13 0>;
-+            port {
-+                panel_in: endpoint {
-+                    remote-endpoint = <&display_out>;
-+                };
-+            };
-+        };
-+        display@1{
-+            compatible = "adafruit,yx240qv29", "ilitek,ili9341";
-+            reg = <1>;
-+            spi-max-frequency = <10000000>;
-+            dc-gpios = <&gpio0 9 GPIO_ACTIVE_HIGH>;
-+            reset-gpios = <&gpio0 8 GPIO_ACTIVE_HIGH>;
-+            rotation = <270>;
-+            backlight = <&backlight>;
-         };
-+    };
- ...
+ unevaluatedProperties: false
+ 
 -- 
 2.36.1
 
