@@ -4,71 +4,71 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5AE3EC43334
-	for <alsa-devel@archiver.kernel.org>; Mon, 20 Jun 2022 15:37:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5C542C433EF
+	for <alsa-devel@archiver.kernel.org>; Mon, 20 Jun 2022 15:37:48 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 8F0DD28FD;
-	Mon, 20 Jun 2022 17:36:39 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8F0DD28FD
+	by alsa0.perex.cz (Postfix) with ESMTPS id A91F328AA;
+	Mon, 20 Jun 2022 17:36:56 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A91F328AA
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1655739449;
-	bh=k/lRa8XTNrnrcSBxrKngX1ghLIEFySQ4wrer/gxuxiQ=;
+	s=default; t=1655739466;
+	bh=DzESz/xld8nTlrdzA4wBKfzDm0kZsEHzQQguG/lSkFg=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=HrVAmfxBQJms4y92CumWrlejXmUFPno0gxY8beCqGeY9p3B73pDQwlapjLJxtx32Z
-	 g8WK/LnphDnex6HfiHnr5e2yYlu0XRIR4C90Dy41ccJElsdi9DXTCI30DbpmAAzEbT
-	 7Eavz+tw/AOXIEIxLgxhgN29b9ZRtP5YA0sq0u4s=
+	b=XtTmXEV7gv61RcocPnNBOArOIwgZWflq27vM4km2DcmeJAbxO4U1/6jhrF9C+6Vb6
+	 qJkFkYuf8otQpriywZjkM8egwudIzQ6JnZAMaPOFaZf5sxYn1C4c4jXRik5zRorOpV
+	 pGVmpDO43X4HDu9zKOKyzdTJ20xh2b1fLEONHhBM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id A4A00F89623;
-	Mon, 20 Jun 2022 17:08:20 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 44D26F89629;
+	Mon, 20 Jun 2022 17:08:21 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 46593F80533; Sat, 18 Jun 2022 14:32:15 +0200 (CEST)
+ id 6F1D2F80535; Sat, 18 Jun 2022 14:32:20 +0200 (CEST)
 Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com
  [IPv6:2a00:1450:4864:20::42a])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 95B5DF800C7
- for <alsa-devel@alsa-project.org>; Sat, 18 Jun 2022 14:32:04 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 95B5DF800C7
+ by alsa1.perex.cz (Postfix) with ESMTPS id 9F058F8052F
+ for <alsa-devel@alsa-project.org>; Sat, 18 Jun 2022 14:32:15 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9F058F8052F
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=conchuod.ie header.i=@conchuod.ie
- header.b="NLP+j4Vv"
+ header.b="ErRXmSLo"
 Received: by mail-wr1-x42a.google.com with SMTP id g4so8781944wrh.11
- for <alsa-devel@alsa-project.org>; Sat, 18 Jun 2022 05:32:04 -0700 (PDT)
+ for <alsa-devel@alsa-project.org>; Sat, 18 Jun 2022 05:32:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=conchuod.ie; s=google;
  h=from:to:cc:subject:date:message-id:in-reply-to:references
  :mime-version:content-transfer-encoding;
- bh=wA+ekkpjde0Zx9cXanks0YsUmdtDvWig/ia7r5xRwsg=;
- b=NLP+j4VvWO4pMdDxz+jP2qakHnxjIhWDW5IcIZ6iTjVuR6PvXGlfRvScvAs6fv4LGC
- tVHzVYgFUHCv1IRJ4Ht4KdNVLD+jSSS5h4H+avCrhP5W5KXZfsniSNzQaIy0Vmjf7cJe
- 1JtCXoeodTgNGx3zxBouJNSTU+BRjTFYSAg0N4jBQrfeC5wyTPkZscKwWYLFzG+dbNUH
- VQDUJvWUJkk/fS8UHWuapx2oX/lVLREXGX91trMzLN+PvRD1VA55gaBikAJhJXd6EtNJ
- TXtuW3AI8LcIC7NdxtxNMfIR5WAfMQnhkZScOGuGAVa6FafYwFTfgLXwxWgUJlRmcjG8
- FuBw==
+ bh=ANXJKxbxI6u0tRhbN1AR4RFN+HN2j5iiePXGo5syCSs=;
+ b=ErRXmSLorMjbdC5xWyP7urzRERR22/20eLl2XT0de71YUvLq9olsxJGpQ3PYt53udC
+ MVVWn2OjFLzgo73dqk3/65ggchSO1J6/nfMBeW38N005pku7I4zSrpTv/zuaPfLKqJXk
+ qjB07OxZX64wGSSlEDl91/abWVL2GYNDo4+scSLK83C9i4JROcieRdmp2gRhc8Fbnv7b
+ b+9kOPXlfRJAEYkP1FzaLttvE+ReKggwoO5cB1Sf7ynv7N/LnmCtOMTXn+ccH3yxMsLw
+ zDc7cjrPkXazBBOkKzNLuqxuVA3FOYoudEVTiel9Zmf2Ygdp7uXNnHjAvJ2fnRfqPbuk
+ SpFQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
  h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
  :references:mime-version:content-transfer-encoding;
- bh=wA+ekkpjde0Zx9cXanks0YsUmdtDvWig/ia7r5xRwsg=;
- b=Xew3Wh6vQFGHUXkZqkQfWI02hLtkv8HQAid3ZWQBHRAVHwf2NBM5NPxi3LKnxA1CoS
- 2dxFv0c+Vl3NzuLmpYaZGCx1SXM78LR0/5jXY2Ztc+AZ/Gj6UntFCgX2zO5xo+p7ca2F
- +Y//c3qKfjS410dc8GBml4M9FhTuq9ks5XsEh7IhePQycCrDW2R2rFXRCx/wb/8XuCyU
- cFabk63MZw44GcxSQJgpGh1r35u/aJaPT2l4+9YduKXj0+vkeu2SpsAs99zzTRomanNR
- bNLUYnhUxb6wQZrNBe24ahoGlyCHaLKM7RiNN2mgH1CYTqNQ0nyGsQTgW7FfsiFM4Lhi
- MAjQ==
-X-Gm-Message-State: AJIora9luTfnvOb2RrbSlXrJwE+2GhNXbrG28zC0HKdUCWawgYjUeyAd
- vzyM7dsoMq6rUlfprLjFQIshvg==
-X-Google-Smtp-Source: AGRyM1uabX5izdogY/5f2icOXRBDHwfiqcRqU22eeMbzZR7yfphBy2Stjoi6dvehhY38C8EymhY+dA==
-X-Received: by 2002:adf:ef52:0:b0:21b:81e8:5d0b with SMTP id
- c18-20020adfef52000000b0021b81e85d0bmr6154762wrp.502.1655555522853; 
- Sat, 18 Jun 2022 05:32:02 -0700 (PDT)
+ bh=ANXJKxbxI6u0tRhbN1AR4RFN+HN2j5iiePXGo5syCSs=;
+ b=FCAaPS88JU8iJJWljvv2DdpU01/mrRIUD6T8qpUoj+nMc/pA9NZWtRebd3BZPpyl73
+ VJTzPcOnPTLy/PxtY/tydRIFDYiiBAKTY9EacLJ4D9JiweW0O8xpmUvSC+cPW/WeaZSn
+ 88xEn3q7Qi/oRC+6zhsN3sV99cpKnhT10Tt30/ZSowM4/Gt5Pe+mQ1QbilyKx3Bcm2zU
+ FodWxu5QnTtElUEa82zr1tyAi667zFPZ2XfxPZhcRk20qsGRWcNAHcteEQm449GPp3/S
+ Bnbnin2pP9N4tWCCf07EAAoMu0D6P4KCKe29FsCv6X7SewlIyjc8tyLYnJ1ouQ2L7OuA
+ AmQw==
+X-Gm-Message-State: AJIora8ECfVMbMEE3lQUIKojd5qm0Io69YYbupKWu/djudwDywvtFWe9
+ Y9raUjSsgPfGaNU/Gm18id0Log==
+X-Google-Smtp-Source: AGRyM1tbrkXYGfjWsBsEjmtzpjiA7Ap83fqu9IJcwCnfQzpYaSuFuxLt2MogvQUzBnMlTPtFn6izqg==
+X-Received: by 2002:a5d:584d:0:b0:216:a2a9:5f2c with SMTP id
+ i13-20020a5d584d000000b00216a2a95f2cmr14168978wrf.184.1655555535278; 
+ Sat, 18 Jun 2022 05:32:15 -0700 (PDT)
 Received: from henark71.. ([51.37.234.167]) by smtp.gmail.com with ESMTPSA id
- az10-20020adfe18a000000b00210396b2eaesm9292305wrb.45.2022.06.18.05.32.01
+ az10-20020adfe18a000000b00210396b2eaesm9292305wrb.45.2022.06.18.05.32.13
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Sat, 18 Jun 2022 05:32:02 -0700 (PDT)
+ Sat, 18 Jun 2022 05:32:14 -0700 (PDT)
 From: Conor Dooley <mail@conchuod.ie>
 To: David Airlie <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>,
  Rob Herring <robh+dt@kernel.org>,
@@ -79,10 +79,10 @@ To: David Airlie <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>,
  Mark Brown <broonie@kernel.org>, Serge Semin <fancer.lancer@gmail.com>,
  Daniel Lezcano <daniel.lezcano@linaro.org>,
  Palmer Dabbelt <palmer@dabbelt.com>, Palmer Dabbelt <palmer@rivosinc.com>
-Subject: [PATCH 02/14] dt-bindings: display: panel: allow ilitek,
- ili9341 in isolation
-Date: Sat, 18 Jun 2022 13:30:24 +0100
-Message-Id: <20220618123035.563070-3-mail@conchuod.ie>
+Subject: [PATCH 09/14] riscv: dts: canaan: add a specific compatible for
+ k210's timers
+Date: Sat, 18 Jun 2022 13:30:31 +0100
+Message-Id: <20220618123035.563070-10-mail@conchuod.ie>
 X-Mailer: git-send-email 2.36.1
 In-Reply-To: <20220618123035.563070-1-mail@conchuod.ie>
 References: <20220618123035.563070-1-mail@conchuod.ie>
@@ -115,45 +115,51 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 From: Conor Dooley <conor.dooley@microchip.com>
 
-The dt-binding for the ilitek,ili9341 does not allow it to be used as a
-compatible in isolation. This generates a warning for the Canaan kd233
-devicetree:
-arch/riscv/boot/dts/canaan/canaan_kd233.dtb: panel@0: compatible:0: 'ilitek,ili9341' is not one of ['st,sf-tc240t-9370-t']
-        From schema: Documentation/devicetree/bindings/display/panel/ilitek,ili9341.yaml
-arch/riscv/boot/dts/canaan/canaan_kd233.dtb: panel@0: compatible: ['ilitek,ili9341'] is too short
-        From schema: Documentation/devicetree/bindings/display/panel/ilitek,ili9341.yaml
-Allow ilitek,ili9341 to be selected in isolation.
+The timers on the k210 have non standard interrupt configurations,
+which leads to dtbs_check warnings:
+
+k210_generic.dtb: timer@502d0000: interrupts: [[14], [15]] is too long
+From schema: Documentation/devicetree/bindings/timer/snps,dw-apb-timer.yaml
+
+Change to using the newly added canaan k210 specific binding to avoid
+the warning.
 
 Signed-off-by: Conor Dooley <conor.dooley@microchip.com>
 ---
- .../bindings/display/panel/ilitek,ili9341.yaml     | 14 ++++++++------
- 1 file changed, 8 insertions(+), 6 deletions(-)
+ arch/riscv/boot/dts/canaan/k210.dtsi | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/display/panel/ilitek,ili9341.yaml b/Documentation/devicetree/bindings/display/panel/ilitek,ili9341.yaml
-index 94ca92878434..c402bedaa37a 100644
---- a/Documentation/devicetree/bindings/display/panel/ilitek,ili9341.yaml
-+++ b/Documentation/devicetree/bindings/display/panel/ilitek,ili9341.yaml
-@@ -19,12 +19,14 @@ allOf:
+diff --git a/arch/riscv/boot/dts/canaan/k210.dtsi b/arch/riscv/boot/dts/canaan/k210.dtsi
+index 314f6da5d7f6..ef46ddf3c00c 100644
+--- a/arch/riscv/boot/dts/canaan/k210.dtsi
++++ b/arch/riscv/boot/dts/canaan/k210.dtsi
+@@ -310,7 +310,7 @@ fpioa: pinmux@502b0000 {
+ 			};
  
- properties:
-   compatible:
--    items:
--      - enum:
--          # ili9341 240*320 Color on stm32f429-disco board
--          - st,sf-tc240t-9370-t
--          - adafruit,yx240qv29
--      - const: ilitek,ili9341
-+    oneOf:
-+      - items:
-+          - const: ilitek,ili9341
-+      - items:
-+          - enum:
-+              - st,sf-tc240t-9370-t
-+              - adafruit,yx240qv29
-+          - const: ilitek,ili9341
+ 			timer0: timer@502d0000 {
+-				compatible = "snps,dw-apb-timer";
++				compatible = "canaan,k210-apb-timer", "snps,dw-apb-timer";
+ 				reg = <0x502D0000 0x100>;
+ 				interrupts = <14>, <15>;
+ 				clocks = <&sysclk K210_CLK_TIMER0>,
+@@ -320,7 +320,7 @@ timer0: timer@502d0000 {
+ 			};
  
-   reg: true
+ 			timer1: timer@502e0000 {
+-				compatible = "snps,dw-apb-timer";
++				compatible = "canaan,k210-apb-timer", "snps,dw-apb-timer";
+ 				reg = <0x502E0000 0x100>;
+ 				interrupts = <16>, <17>;
+ 				clocks = <&sysclk K210_CLK_TIMER1>,
+@@ -330,7 +330,7 @@ timer1: timer@502e0000 {
+ 			};
  
+ 			timer2: timer@502f0000 {
+-				compatible = "snps,dw-apb-timer";
++				compatible = "canaan,k210-apb-timer", "snps,dw-apb-timer";
+ 				reg = <0x502F0000 0x100>;
+ 				interrupts = <18>, <19>;
+ 				clocks = <&sysclk K210_CLK_TIMER2>,
 -- 
 2.36.1
 
