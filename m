@@ -4,72 +4,71 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3B876C433EF
-	for <alsa-devel@archiver.kernel.org>; Mon, 20 Jun 2022 15:39:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A3588C43334
+	for <alsa-devel@archiver.kernel.org>; Mon, 20 Jun 2022 15:39:55 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 7CD07292B;
-	Mon, 20 Jun 2022 17:38:47 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7CD07292B
+	by alsa0.perex.cz (Postfix) with ESMTPS id D40A62943;
+	Mon, 20 Jun 2022 17:39:03 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D40A62943
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1655739577;
-	bh=ivEhDPx8RcqA9p42BbGsvZRnF+FDgt3FMOGYf55/Glc=;
+	s=default; t=1655739593;
+	bh=MG2QOqgmPA4v6RrHU3OlIycBVEmVIDyoBQpgRSfHhrI=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=DXcy8rv1/BaPpj0FwvnBr41ljHSSr4sn8s5/FuTTegEqswQpth9MJxrKf7iai0Yz/
-	 OVCmsQ7vLSyTUh5WC2jJc+x0lVKUMDAEWGTTIjUUyEp1LXhA7oh5AgOKLIynCGHAFD
-	 xlpBsRo74M9V/WZYE850DIFYx0DAVd3AXKYvQOc0=
+	b=cHluLgQjqUPY8x1z2CNNAkdFJZU/u6Yauud1SDclRVSLyH0veJk3ClJE61P2VCUj9
+	 2fZtZhKWYEldvoMzCc5SsDn4hucSHzfcZjkWf64vcXj/BjSdIkSpOg/fyIcMSW/oog
+	 IPttYMUFx/dkBhSsamYlPtgoL/Pv9skvGUB9aDuc=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 4ADB3F896B2;
+	by alsa1.perex.cz (Postfix) with ESMTP id E4A35F896C7;
 	Mon, 20 Jun 2022 17:08:25 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 2C897F8051F; Sat, 18 Jun 2022 14:32:26 +0200 (CEST)
-Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com
- [IPv6:2a00:1450:4864:20::333])
+ id 42D92F8026A; Sat, 18 Jun 2022 14:32:32 +0200 (CEST)
+Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com
+ [IPv6:2a00:1450:4864:20::436])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 0B08AF804A9
- for <alsa-devel@alsa-project.org>; Sat, 18 Jun 2022 14:32:18 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0B08AF804A9
+ by alsa1.perex.cz (Postfix) with ESMTPS id D30B6F804AE
+ for <alsa-devel@alsa-project.org>; Sat, 18 Jun 2022 14:32:25 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D30B6F804AE
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=conchuod.ie header.i=@conchuod.ie
- header.b="bhD31hG1"
-Received: by mail-wm1-x333.google.com with SMTP id
- i17-20020a7bc951000000b0039c4760ec3fso5312062wml.0
- for <alsa-devel@alsa-project.org>; Sat, 18 Jun 2022 05:32:18 -0700 (PDT)
+ header.b="DDJ6xBBb"
+Received: by mail-wr1-x436.google.com with SMTP id c21so8820464wrb.1
+ for <alsa-devel@alsa-project.org>; Sat, 18 Jun 2022 05:32:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=conchuod.ie; s=google;
  h=from:to:cc:subject:date:message-id:in-reply-to:references
  :mime-version:content-transfer-encoding;
- bh=hRUbJk2nRy4s5CIJwi9VsR0jeyH/n7EOc4sICxWxXyQ=;
- b=bhD31hG1IqRZiTVI7PGE75Ozpn0ZL75oApBble/77rs/x6j7Yj0P44fPfNnU7vhVUY
- nCjZMXxWsTk0A61dgIyHtvcMlkUKqozbRvB64rHl/1QTd2jL/SWVTA2Y2ndXS0ZqhK4S
- r9aFcMkRXpG9sUoBVLmgJheYo4olnTUwQPZVfeHRImZxUkokJecGSOgHC/rYW/i1Ng8a
- J62jSu9bj5d3BTplW1G7IvlHfdW0zGfdAEhQ8IJXKKHoaeeUEsv3cwY2C56pbw+EFDRT
- Px2zfYaeM76WmKCsR+FKXUs2W3XDiaxFj/ATwEYBX9PdDmUTbV3rwLoFdXHfn/aL4RDD
- bpaQ==
+ bh=hvr7KGApLNCGFBglHD3dnfCRd3yjQwODkG+M5NRKmQI=;
+ b=DDJ6xBBbhzIGoPiqSpo5MnWPGVLzU4ERv8vLSiBnnPAynNwKjWM49EcnFIFQEkgm/l
+ doK52smtoMBCAMnt3+oFGMyw4xhf6W+5pMee3IBtco7DlzBypqqFxGPePkxlqPEw5tri
+ SDLBm2agXeKviAcJotwY5RL1uBwFcjHga0K6SkH6mQCE6NwwTJxpZV0bQ6udBQCQ8t5X
+ /ugUETlZEHQBi+kUxi5RSWCIVIQtoVjqwtn8FqK1wrZYFA5exI/WKKix1Zp5xujFsjOq
+ WhKYuvAAICTLiFyGacSvPtjx9GD78ZZmFV4S8UwSg41UB0EBKvQ+vCEP9thO5HxmtSKW
+ MnvQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
  h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
  :references:mime-version:content-transfer-encoding;
- bh=hRUbJk2nRy4s5CIJwi9VsR0jeyH/n7EOc4sICxWxXyQ=;
- b=LzxAiyomctQrTkQljzmpaIYSC4MOW59DhllKorg6fTr4+OyDBfihDw+VmlB2nPW3vk
- otX7Wz2yey/aM9a3qXG58MM74YT7n3Fsa2zA1QSX+1Hj/8u5DG6ciS4PG8RLM+3xh6d5
- ktxa+LIkgK/iMDfAjn2/PgzseRH8lbapcVNsTnH8xw8LWp13DgI08CnH1KCn69ciOX3y
- 9uypgRIoRDQAjzrpf4zdPlBFd5r5XeWiBO1Y2kcV/X1ESbaDYeguT4YNwJN9hoqzMyO0
- nGswFind0yVH+fzu6Xw/2UaeG9CqyQQZoeh+GCPFbv7Ec7pLvGysrPv0yAJ9+dqp5vvX
- QJtA==
-X-Gm-Message-State: AJIora/FGT2MCrpbUNxRFm8y5iUm3PoxX6pql7ZqKlSqhnzw+FnhQBgx
- pivBaXugcFAMiuijYPixh18b4Q==
-X-Google-Smtp-Source: AGRyM1vrfCLD3Ztbth3Hr/dYyMBMcGJMbeidx+6HhuS1VFlnoKH5xZoqGBvj1wkYgukALt4oQZ1Dvg==
-X-Received: by 2002:a05:600c:3ba8:b0:39c:5bba:5406 with SMTP id
- n40-20020a05600c3ba800b0039c5bba5406mr15029119wms.120.1655555537181; 
- Sat, 18 Jun 2022 05:32:17 -0700 (PDT)
+ bh=hvr7KGApLNCGFBglHD3dnfCRd3yjQwODkG+M5NRKmQI=;
+ b=NN5feCWUPeal/CjWJr0Idp/UKEL7NyCk+qxwqdSluV0P+VXSuM3C6+/QXiLj+XRMfX
+ bqDn2rnz+LQ/FB124nqGL8caKWnB6sqWX+emYIKfQitYxZOJ19/IMBlDFEJQWXGGLR3p
+ d3XRmzLbTbsKx7I4raIQkexlom/df5kdZm2EuJjGMr41y0yG/K7HKKDrN1R9HglDIL/n
+ wYq9OQZg91jnrxBpc4T9GNakFVXOoZtx+dYCE4yer102ewcLwWQI+kP8d1TYRoqOM7K/
+ BUmN+sM4XYJ1gGzRP/SKNyuGyxfUqq+RgYaHGc2tUDNvZW4jULnIAWou6ZmYzG9SUOGj
+ 3U0w==
+X-Gm-Message-State: AJIora9U1jVwYTYBBb5udZhnUStvUOYCHHwWoP3EZuV5x0mLAiA/4Khr
+ 7orUjIJDQo6lfLFCr38X8AJCfQ==
+X-Google-Smtp-Source: AGRyM1sRT/G1/Zc62fYFm4YsukPkHZCuylsLgzzu2NtDF1otkPHXpMjCG/oHMIlIy5/3wMzfMLCUWA==
+X-Received: by 2002:a05:6000:147:b0:214:7d6e:cb1d with SMTP id
+ r7-20020a056000014700b002147d6ecb1dmr13471356wrx.650.1655555545465; 
+ Sat, 18 Jun 2022 05:32:25 -0700 (PDT)
 Received: from henark71.. ([51.37.234.167]) by smtp.gmail.com with ESMTPSA id
- az10-20020adfe18a000000b00210396b2eaesm9292305wrb.45.2022.06.18.05.32.15
+ az10-20020adfe18a000000b00210396b2eaesm9292305wrb.45.2022.06.18.05.32.23
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Sat, 18 Jun 2022 05:32:16 -0700 (PDT)
+ Sat, 18 Jun 2022 05:32:24 -0700 (PDT)
 From: Conor Dooley <mail@conchuod.ie>
 To: David Airlie <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>,
  Rob Herring <robh+dt@kernel.org>,
@@ -80,15 +79,15 @@ To: David Airlie <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>,
  Mark Brown <broonie@kernel.org>, Serge Semin <fancer.lancer@gmail.com>,
  Daniel Lezcano <daniel.lezcano@linaro.org>,
  Palmer Dabbelt <palmer@dabbelt.com>, Palmer Dabbelt <palmer@rivosinc.com>
-Subject: [PATCH 10/14] riscv: dts: canaan: fix mmc node names
-Date: Sat, 18 Jun 2022 13:30:32 +0100
-Message-Id: <20220618123035.563070-11-mail@conchuod.ie>
+Subject: [PATCH 14/14] riscv: dts: canaan: build all devicetress if SOC_CANAAN
+Date: Sat, 18 Jun 2022 13:30:36 +0100
+Message-Id: <20220618123035.563070-15-mail@conchuod.ie>
 X-Mailer: git-send-email 2.36.1
 In-Reply-To: <20220618123035.563070-1-mail@conchuod.ie>
 References: <20220618123035.563070-1-mail@conchuod.ie>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Mailman-Approved-At: Mon, 20 Jun 2022 17:06:46 +0200
+X-Mailman-Approved-At: Mon, 20 Jun 2022 17:06:47 +0200
 Cc: linux-riscv@lists.infradead.org, Niklas Cassel <niklas.cassel@wdc.com>,
  alsa-devel@alsa-project.org, Albert Ou <aou@eecs.berkeley.edu>,
  devicetree@vger.kernel.org, Damien Le Moal <damien.lemoal@opensource.wdc.com>,
@@ -115,83 +114,37 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 From: Conor Dooley <conor.dooley@microchip.com>
 
-The newly-converted-to-dt-schema binding expects the mmc node name to be
-'^mmc(@.*)?$' so align the devicetree with the schema.
+Testing & checking the Canaan devicetrees is inconvenient as only the
+devicetree corresponding to SOC_CANAAN_K210_DTB_BUILTIN will be built.
+Change the Makefile so that all devicetrees are built by default if
+SOC_CANAAN but only the one specified by SOC_CANAAN_K210_DTB_BUILTIN
+gets built as an object.
 
 Signed-off-by: Conor Dooley <conor.dooley@microchip.com>
 ---
- arch/riscv/boot/dts/canaan/canaan_kd233.dts     | 2 +-
- arch/riscv/boot/dts/canaan/sipeed_maix_bit.dts  | 2 +-
- arch/riscv/boot/dts/canaan/sipeed_maix_dock.dts | 2 +-
- arch/riscv/boot/dts/canaan/sipeed_maix_go.dts   | 2 +-
- arch/riscv/boot/dts/canaan/sipeed_maixduino.dts | 2 +-
- 5 files changed, 5 insertions(+), 5 deletions(-)
+I don't have any Canaan hardware, but I build tested it and the log
+looked correct with arch/riscv/boot/dts/canaan/k210_generic.dtb.o
+getting successfully built.
+---
+ arch/riscv/boot/dts/canaan/Makefile | 10 ++++++++--
+ 1 file changed, 8 insertions(+), 2 deletions(-)
 
-diff --git a/arch/riscv/boot/dts/canaan/canaan_kd233.dts b/arch/riscv/boot/dts/canaan/canaan_kd233.dts
-index 039b92abf046..40992d495aa8 100644
---- a/arch/riscv/boot/dts/canaan/canaan_kd233.dts
-+++ b/arch/riscv/boot/dts/canaan/canaan_kd233.dts
-@@ -142,7 +142,7 @@ &spi1 {
- 	cs-gpios = <&gpio0 16 GPIO_ACTIVE_LOW>;
- 	status = "okay";
- 
--	slot@0 {
-+	mmc@0 {
- 		compatible = "mmc-spi-slot";
- 		reg = <0>;
- 		voltage-ranges = <3300 3300>;
-diff --git a/arch/riscv/boot/dts/canaan/sipeed_maix_bit.dts b/arch/riscv/boot/dts/canaan/sipeed_maix_bit.dts
-index b9e30df127fe..5e809d0e11fb 100644
---- a/arch/riscv/boot/dts/canaan/sipeed_maix_bit.dts
-+++ b/arch/riscv/boot/dts/canaan/sipeed_maix_bit.dts
-@@ -189,7 +189,7 @@ &spi1 {
- 	cs-gpios = <&gpio0 13 GPIO_ACTIVE_LOW>;
- 	status = "okay";
- 
--	slot@0 {
-+	mmc@0 {
- 		compatible = "mmc-spi-slot";
- 		reg = <0>;
- 		voltage-ranges = <3300 3300>;
-diff --git a/arch/riscv/boot/dts/canaan/sipeed_maix_dock.dts b/arch/riscv/boot/dts/canaan/sipeed_maix_dock.dts
-index 8d23401b0bbb..4be5ffac6b4a 100644
---- a/arch/riscv/boot/dts/canaan/sipeed_maix_dock.dts
-+++ b/arch/riscv/boot/dts/canaan/sipeed_maix_dock.dts
-@@ -191,7 +191,7 @@ &spi1 {
- 	cs-gpios = <&gpio0 13 GPIO_ACTIVE_LOW>;
- 	status = "okay";
- 
--	slot@0 {
-+	mmc@0 {
- 		compatible = "mmc-spi-slot";
- 		reg = <0>;
- 		voltage-ranges = <3300 3300>;
-diff --git a/arch/riscv/boot/dts/canaan/sipeed_maix_go.dts b/arch/riscv/boot/dts/canaan/sipeed_maix_go.dts
-index 24fd83b43d9d..5c63f79b18ec 100644
---- a/arch/riscv/boot/dts/canaan/sipeed_maix_go.dts
-+++ b/arch/riscv/boot/dts/canaan/sipeed_maix_go.dts
-@@ -199,7 +199,7 @@ &spi1 {
- 	cs-gpios = <&gpio0 13 GPIO_ACTIVE_LOW>;
- 	status = "okay";
- 
--	slot@0 {
-+	mmc@0 {
- 		compatible = "mmc-spi-slot";
- 		reg = <0>;
- 		voltage-ranges = <3300 3300>;
-diff --git a/arch/riscv/boot/dts/canaan/sipeed_maixduino.dts b/arch/riscv/boot/dts/canaan/sipeed_maixduino.dts
-index 25341f38292a..59f7eaf74655 100644
---- a/arch/riscv/boot/dts/canaan/sipeed_maixduino.dts
-+++ b/arch/riscv/boot/dts/canaan/sipeed_maixduino.dts
-@@ -164,7 +164,7 @@ &spi1 {
- 	cs-gpios = <&gpio1_0 2 GPIO_ACTIVE_LOW>;
- 	status = "okay";
- 
--	slot@0 {
-+	mmc@0 {
- 		compatible = "mmc-spi-slot";
- 		reg = <0>;
- 		voltage-ranges = <3300 3300>;
+diff --git a/arch/riscv/boot/dts/canaan/Makefile b/arch/riscv/boot/dts/canaan/Makefile
+index c61b08ac8554..befe4eb7527b 100644
+--- a/arch/riscv/boot/dts/canaan/Makefile
++++ b/arch/riscv/boot/dts/canaan/Makefile
+@@ -1,3 +1,9 @@
+ # SPDX-License-Identifier: GPL-2.0
+-dtb-$(CONFIG_SOC_CANAAN_K210_DTB_BUILTIN) += $(addsuffix .dtb, $(CONFIG_SOC_CANAAN_K210_DTB_SOURCE))
+-obj-$(CONFIG_SOC_CANAAN_K210_DTB_BUILTIN) += $(addsuffix .o, $(dtb-y))
++dtb-$(CONFIG_SOC_CANAAN) += canaan_kd233.dtb
++dtb-$(CONFIG_SOC_CANAAN) += k210_generic.dtb
++dtb-$(CONFIG_SOC_CANAAN) += sipeed_maix_bit.dtb
++dtb-$(CONFIG_SOC_CANAAN) += sipeed_maix_dock.dtb
++dtb-$(CONFIG_SOC_CANAAN) += sipeed_maix_go.dtb
++dtb-$(CONFIG_SOC_CANAAN) += sipeed_maixduino.dtb
++
++obj-$(CONFIG_SOC_CANAAN_K210_DTB_BUILTIN) += $(addsuffix .dtb.o, $(CONFIG_SOC_CANAAN_K210_DTB_SOURCE))
 -- 
 2.36.1
 
