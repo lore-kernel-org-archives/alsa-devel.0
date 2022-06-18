@@ -4,67 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 42329C43334
-	for <alsa-devel@archiver.kernel.org>; Fri, 17 Jun 2022 23:21:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 528D8C43334
+	for <alsa-devel@archiver.kernel.org>; Sat, 18 Jun 2022 00:47:59 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 292F61F01;
-	Sat, 18 Jun 2022 01:20:40 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 292F61F01
+	by alsa0.perex.cz (Postfix) with ESMTPS id 78C9F1E7C;
+	Sat, 18 Jun 2022 02:47:07 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 78C9F1E7C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1655508090;
-	bh=VtNJbvspHUs35Tn5OYelrC56+LY9y645NyYD8WwY/BE=;
+	s=default; t=1655513277;
+	bh=4zuLcL1TWVwMXxDPqAn1JCc2VF+UUiD+MEgJhQXw/LE=;
 	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=RZoraIs9EbkCSW7mB5wRXdpBgcEOaP+0DxnRpyHx0lYY2MN/n/Uqy6UdRLNfaaW/t
-	 i3AlRBq0T9tI1UU6AZc0Wkg1v7Ecuwcrsp+1PxhkuyyC3gaFRP5NJEDmRCB8QyL/E0
-	 tXU6NeAUoa6PEl5U2Ci/qSVOiTjR82kRtB/gbSRY=
+	b=Mt4FePbP0d+5bjCnqIRcMssDkzLrGA+i0dIavUjYS/pUvA+TWnf5ptZ5OgT9gsUFB
+	 9mPRcFwLgXr9b7EyCULq1DaiU82fBcu4hS1YJUIl+7BpZXFl10gXb4bgTCpgOpuoRN
+	 vBL2JQaKnGROG8v/EGCYMI44+cKlDTzU9DtoTsXE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 78E2FF8053C;
-	Sat, 18 Jun 2022 01:19:56 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id E137BF804BC;
+	Sat, 18 Jun 2022 02:47:06 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 33E83F80539; Sat, 18 Jun 2022 01:19:55 +0200 (CEST)
-Received: from sin.source.kernel.org (sin.source.kernel.org [145.40.73.55])
+ id D14B3F80527; Sat, 18 Jun 2022 02:47:04 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 03BE3F8052F
- for <alsa-devel@alsa-project.org>; Sat, 18 Jun 2022 01:19:51 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 03BE3F8052F
+ by alsa1.perex.cz (Postfix) with ESMTPS id E62DBF804BC
+ for <alsa-devel@alsa-project.org>; Sat, 18 Jun 2022 02:47:01 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E62DBF804BC
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="biJN97UE"
+ header.b="lxVBcsJ6"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by sin.source.kernel.org (Postfix) with ESMTPS id DA4BFCE2D81;
- Fri, 17 Jun 2022 23:19:45 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CEC44C3411B;
- Fri, 17 Jun 2022 23:19:42 +0000 (UTC)
+ by dfw.source.kernel.org (Postfix) with ESMTPS id 0800C61E69;
+ Sat, 18 Jun 2022 00:46:59 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7B963C3411B;
+ Sat, 18 Jun 2022 00:46:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1655507984;
- bh=VtNJbvspHUs35Tn5OYelrC56+LY9y645NyYD8WwY/BE=;
+ s=k20201202; t=1655513218;
+ bh=4zuLcL1TWVwMXxDPqAn1JCc2VF+UUiD+MEgJhQXw/LE=;
  h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=biJN97UERqtusKpdqZOLkc8npgf4Ip0seEShYYNVx6p+bRjaxF0ksDkDDNa/JiaCs
- d9VSB+XZZlKrV+96ejddsf3x7gPSnqkRYFRh9MxTlVj1qHlkslW02vX2x2VvkKXTC9
- AEbmLfDvO1lUki/m81RbLA78+HjKw+dUEIive4YLLmidHus7QcUe59zkNdnuuRmdpN
- YsNb2I8676V1lX9qbyErvXPlaGW3G26PEVqdLmSo5WRpYWokf//RnvtLoUry6rQAb0
- ViLFAivaLWR5dAkmh97USctZgdAl20pEXZVVKo6g+nd+zlyqpJvPWkadjcZT28XcRp
- fmhfpiTe6+HZw==
+ b=lxVBcsJ6i0NXVZlTUV1lURqwAvD3KCAppwOv6bc4TM8qkNoR7GuKkMhHUUyZHhbsw
+ 5CqxGNMwEBQRhU75YTcbhknxHa9UbFgsW3xm6E2naYH11OFnUPlw+2vRwCZToKIDD8
+ RaMzI8bed7MlZjpxjo0J680j/4PFjHSa5xhFIbbdxBvIoNIR2DmsPRK7uk/YfXWHII
+ kQHcu/ig4FG7llJbGiaNordJ9x3j0g0h0hixRRZ7HCvuNV02ENcgcqH7GJK5DU5u1Q
+ zlx6srFo72iFhUfMHXr1nL2qEcEiifLOibRMz4JUtZtZjNIa6WwZo2uLBfG38/bJ2q
+ yElgEmNqKfzaQ==
 From: Mark Brown <broonie@kernel.org>
-To: jiaxin.yu@mediatek.com, fshao@chromium.org
-In-Reply-To: <20220617100632.1447811-1-fshao@chromium.org>
-References: <20220617100632.1447811-1-fshao@chromium.org>
-Subject: Re: [PATCH] ASoC: mediatek: mt8186: Fix mutex double unlock in GPIO
- request
-Message-Id: <165550798257.994018.15965487016237461990.b4-ty@kernel.org>
-Date: Sat, 18 Jun 2022 00:19:42 +0100
+To: alsa-devel@alsa-project.org, pierre-louis.bossart@linux.intel.com
+In-Reply-To: <20220616210825.132093-1-pierre-louis.bossart@linux.intel.com>
+References: <20220616210825.132093-1-pierre-louis.bossart@linux.intel.com>
+Subject: Re: [PATCH 0/2] ASoC: SOF/soundwire: use resume_and_get on component
+ probe
+Message-Id: <165551321721.1009219.14840787966530660266.b4-ty@kernel.org>
+Date: Sat, 18 Jun 2022 01:46:57 +0100
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: alsa-devel@alsa-project.org, linux-mediatek@lists.infradead.org,
- linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Cc: tiwai@suse.de, vkoul@kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -80,52 +79,13 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Fri, 17 Jun 2022 18:06:33 +0800, Fei Shao wrote:
-> The lockdep mechanism reveals an unbalanced unlocking on MT8186:
-> 
->   [    2.993966] WARNING: bad unlock balance detected!
->   [    2.993971] 5.15.46-421fef3b44d7-lockdep #16 Not tainted
->   [    2.993978] -------------------------------------
->   [    2.993983] kworker/u16:1/10 is trying to release lock (gpio_request_mutex) at:
->   [    2.993994] [<ffffffdcd9adebf8>] mt8186_afe_gpio_request+0xf8/0x210
->   [    2.994012] but there are no more locks to release!
->   [    2.994017]
->   [    2.994017] other info that might help us debug this:
->   [    2.994022] 3 locks held by kworker/u16:1/10:
->   [    2.994028]  #0: ffffff80c004a148 ((wq_completion)events_unbound){+.+.}-{0:0}, at: process_one_work+0x1a8/0x364
->   [    2.994054]  #1: ffffffc0080d3d58 (deferred_probe_work){+.+.}-{0:0}, at: process_one_work+0x1d0/0x364
->   [    2.994074]  #2: ffffff80c12ab9a0 (&dev->mutex){....}-{3:3}, at: __device_attach+0x44/0x150
->   [    2.994096]
->   [    2.994096] stack backtrace:
->   [    2.994102] CPU: 6 PID: 10 Comm: kworker/u16:1 Not tainted 5.15.46-421fef3b44d7-lockdep #16 a2af0e2c6b3eeab6799b5aa8091c1d05d3a7bbb1
->   [    2.994113] Hardware name: Google Kingler board (DT)
->   [    2.994120] Workqueue: events_unbound deferred_probe_work_func
->   [    2.994130] Call trace:
->   [    2.994135]  dump_backtrace+0x0/0x1d4
->   [    2.994144]  show_stack+0x20/0x2c
->   [    2.994152]  dump_stack_lvl+0x78/0x9c
->   [    2.994163]  dump_stack+0x18/0x44
->   [    2.994172]  print_unlock_imbalance_bug+0xf0/0xf4
->   [    2.994184]  lock_release+0x150/0x388
->   [    2.994193]  __mutex_unlock_slowpath+0x4c/0x1bc
->   [    2.994202]  mutex_unlock+0x44/0x50
->   [    2.994210]  mt8186_afe_gpio_request+0xf8/0x210
->   [    2.994220]  mt8186_afe_gpio_init+0xcc/0x134
->   [    2.994230]  mt8186_mt6366_rt1019_rt5682s_dev_probe+0x14c/0x220
->   [    2.994238]  platform_probe+0xb0/0xd0
->   [    2.994247]  really_probe+0xcc/0x2c8
->   [    2.994253]  __driver_probe_device+0xbc/0xe8
->   [    2.994264]  driver_probe_device+0x48/0xf0
->   [    2.994271]  __device_attach_driver+0xa0/0xc8
->   [    2.994278]  bus_for_each_drv+0x8c/0xd8
->   [    2.994288]  __device_attach+0xc4/0x150
->   [    2.994298]  device_initial_probe+0x1c/0x28
->   [    2.994308]  bus_probe_device+0x3c/0xa0
->   [    2.994318]  deferred_probe_work_func+0xa0/0xe0
->   [    2.994325]  process_one_work+0x208/0x364
->   [    2.994334]  worker_thread+0x288/0x3fc
->   [    2.994343]  kthread+0x140/0x160
->   [    2.994351]  ret_from_fork+0x10/0x20
+On Thu, 16 Jun 2022 16:08:23 -0500, Pierre-Louis Bossart wrote:
+> While testing driver bind/unbind sequences, I stumbled on a corner
+> case where the SoundWire bus can be suspended before the ASoC card
+> registration happens. During the registration, register accesses would
+> then lead to timeouts. This does not happen in regular usages where
+> the card registration happens within the 3-second time window before
+> suspend.
 > 
 > [...]
 
@@ -135,8 +95,10 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: mediatek: mt8186: Fix mutex double unlock in GPIO request
-      commit: 6c9e9046e1ff356bda66661213735d33c6cfea53
+[1/2] ASoC: SOF: pcm: use pm_resume_and_get() on component probe
+      commit: 4ea3bfd13a2484b5f1c19f60b1dc7494f261f0a4
+[2/2] ASoC: codecs: soundwire: call pm_runtime_resume() in component probe
+      commit: 011e397f5c9c96e533d4a244af84e74c9caefb83
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
