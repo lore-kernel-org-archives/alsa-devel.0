@@ -4,42 +4,83 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C82DFC43334
-	for <alsa-devel@archiver.kernel.org>; Sun, 19 Jun 2022 09:12:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 19F68C43334
+	for <alsa-devel@archiver.kernel.org>; Sun, 19 Jun 2022 09:54:34 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A6E5F1B46;
-	Sun, 19 Jun 2022 11:11:12 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A6E5F1B46
+	by alsa0.perex.cz (Postfix) with ESMTPS id 85E4C1AEF;
+	Sun, 19 Jun 2022 11:53:42 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 85E4C1AEF
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1655629922;
-	bh=FQsgfIjuKEcetV99ANoRil9FsjvrjOOtFSxiKL7rFFY=;
-	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=iLsjkupPIOQfeC8GfmIrxCClVphs7aDvJ4UT5D3Ajr3YA7cNz10LXvQwU9sDBmEHW
-	 dz283jRe5CDXx/BJOLKAFK8/DOpELBMh6YLmlOOmF2cnPmOpuxYS2keXqEX+TDhiT3
-	 NXIv9LUOhYxkenh/BHhRpbz3YliMZON/YMXkL1Wo=
+	s=default; t=1655632472;
+	bh=jlbEPSvKUPCdJa3mV+PEJWaI5UtEbyXT+jbHwq3vWds=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=JMuM8Pige0CbiVnbYBDXUelPinA4sAzvlhg/y9uZdKy1+kGf3jR9hHmRkMFvERcQs
+	 N1H6YvjOEzCHMvi76xUnlht/Rm0iFBnnLLOTMJJGYJLZakmRiLrtfhRKawwHK4zXpU
+	 ZRkMlXHupcE5Xq8kKPR6hZT582FOFAhOEHOMpLXc=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 2C0DCF80158;
-	Sun, 19 Jun 2022 11:11:12 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 27CE9F8020D;
+	Sun, 19 Jun 2022 11:53:42 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 755BAF8020D; Sun, 19 Jun 2022 11:11:09 +0200 (CEST)
-Received: from webhooks-bot.alsa-project.org (gate.perex.cz [77.48.224.242])
- by alsa1.perex.cz (Postfix) with ESMTP id 55891F800E4
- for <alsa-devel@alsa-project.org>; Sun, 19 Jun 2022 11:11:02 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 55891F800E4
+ id 9FE69F8020D; Sun, 19 Jun 2022 11:53:37 +0200 (CEST)
+Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com
+ [IPv6:2607:f8b0:4864:20::1034])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id E4ADAF800CB
+ for <alsa-devel@alsa-project.org>; Sun, 19 Jun 2022 11:53:33 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E4ADAF800CB
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org
+ header.b="Ujfw05oC"
+Received: by mail-pj1-x1034.google.com with SMTP id
+ g16-20020a17090a7d1000b001ea9f820449so8197535pjl.5
+ for <alsa-devel@alsa-project.org>; Sun, 19 Jun 2022 02:53:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=chromium.org; s=google;
+ h=from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=kR0nPmihBKg/JVQtdlu4B3iD3y1xFJeR/L3hKnfirkg=;
+ b=Ujfw05oCO6CQHlxIt9U1/Vw2jZz2wiVAu2MidO2JcQLF7s5nkeLtX+pXVg0r+JG7Rq
+ bspYGi4fxvj/xaZ96AGR+/2wKEL8/NTtY2c8USzvxw8l9fcUpS41zrHtRVsNA/M50cgw
+ jGn6RF4QAyzCyK8+RxV6AHBAabXA7pT2Kp29w=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=kR0nPmihBKg/JVQtdlu4B3iD3y1xFJeR/L3hKnfirkg=;
+ b=p1Ou0qznUSnzxS+uTAbI0zIb56LFaM8zgSwgj4ly8RyBv0qD3NPMeLjk4C7I6PPLxd
+ e3FHm9MttLAdMASKPIVsUql9gTGICnOVAZZsYls/KZl9GRbTkpyK3rOsvulpdWuqMrWZ
+ qDN26Tmha+H+9qVEnRwwjNrMXv5Gh0p8hhkqgs/awtm0UtnEj6RkzPGTzmOaAlgDIM2g
+ Dq098grvhLm4LuxIXrK/mtcPn/R4fNWT3c4LBy/ljwy3vuqjHQLw7s04PrqOZP4QpdJr
+ 4cTTol3iMP5XgzCQlfUuoi/LaXjFSgpKEuAoi4HvLQQlIDP6D5h2sJVkKLeyblVPi2d4
+ sj7w==
+X-Gm-Message-State: AJIora9R1VQbKSYXKbcM/xG6lg/dE0hTcL+exfamjj2cA/E7yMxtGeWE
+ iAnCqG5b0qr/MV11zsPqi4SVfw==
+X-Google-Smtp-Source: AGRyM1v7zPmyGbZPOSnbb98hniYzON8YpxLeYV5xLE/gaU76OD8LpMvcKXf8EiPwhBviJK2jxy4o0Q==
+X-Received: by 2002:a17:90a:e418:b0:1ec:9908:d5f0 with SMTP id
+ hv24-20020a17090ae41800b001ec9908d5f0mr3170210pjb.7.1655632411623; 
+ Sun, 19 Jun 2022 02:53:31 -0700 (PDT)
+Received: from judyhsiao0523.c.googlers.com.com
+ (0.223.81.34.bc.googleusercontent.com. [34.81.223.0])
+ by smtp.gmail.com with ESMTPSA id
+ 135-20020a62178d000000b0050dc762817esm6799971pfx.88.2022.06.19.02.53.29
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Sun, 19 Jun 2022 02:53:30 -0700 (PDT)
+From: Judy Hsiao <judyhsiao@chromium.org>
+To: Heiko Stuebner <heiko@sntech.de>
+Subject: [PATCH v4 0/3] ASoC: rockchip: i2s: switch BCLK to GPIO
+Date: Sun, 19 Jun 2022 09:53:21 +0000
+Message-Id: <20220619095324.492678-1-judyhsiao@chromium.org>
+X-Mailer: git-send-email 2.36.1.476.g0c4daa206d-goog
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-From: GitHub issues - opened <github@alsa-project.org>
-To: alsa-devel@alsa-project.org
-In-Reply-To: <1655629862636706114-webhooks-bot@alsa-project.org>
-References: <1655629862636706114-webhooks-bot@alsa-project.org>
-Subject: Alsa-to-Jack bridge broken in alsa* 1.2.7.x
-Message-Id: <20220619091109.755BAF8020D@alsa1.perex.cz>
-Date: Sun, 19 Jun 2022 11:11:09 +0200 (CEST)
+Content-Transfer-Encoding: 8bit
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+ Brian Norris <briannorris@chromium.org>, Liam Girdwood <lgirdwood@gmail.com>,
+ Rob Herring <robh+dt@kernel.org>, linux-rockchip@lists.infradead.org,
+ Mark Brown <broonie@kernel.org>, Chen-Yu Tsai <wenst@chromium.org>,
+ Judy Hsiao <judyhsiao@chromium.org>, linux-arm-kernel@lists.infradead.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -55,36 +96,36 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-alsa-project/alsa-lib issue #243 was opened from hlekin:
+The patches series is to fix the unexpected large DC output
+voltage of Max98357a that burns the speakers on the rockchip
+platform when BCLK and SD_MODE are ON but LRCLK is OFF.
 
-I am using a setup according to https://alsa.opensrc.org/Jack_and_Loopback_device_as_Alsa-to-Jack_bridge
+Changes Since V4:
+    -- Fix indentation in the driver. (Align parameters with the parenthesis
+       placement.)
+    -- Fix incorrect return type of rockchip_snd_rxctrl.
+Changes Since V3:
+    -- Fix indentation in the documentation.
+    -- Put pinctrl-1 right after pinctrl-0 in dtsi.
+    -- Fix indentation in the driver.
+    -- Remove unnecessary dev_dbg() in the driver.
+Changes Since V2:
+    -- Add documents of i2s pinctrl-names.
+    -- Fix dtsi syntax error.
+    -- Include the dtsi change and the driver change in the same series.
+    -- Ensure that driver gets both bclk_on and bclk_off states before using them.
 
-Since the upgrade of alsa-lib, alsa-ucm-conf, and alsa-utils to version 1.2.7, my alsa-to-jack-bridge setup is broken:
-$ jack_connect system:capture_1 ploop:playback_1
-ERROR ploop:playback_1 not a valid port
-A downgrade to versions 1.2.6 resolves the issue. Versions 1.2.7.1 result in the same error.
+Judy Hsiao (3):
+  ASoC: rockchip: i2s: switch BCLK to GPIO
+  arm64: dts: rk3399: i2s: switch BCLK to GPIO
+  ASoC: dt-bindings: rockchip: Document pinctrl-names for i2s
 
-The relevant output of qjackctl 0.9.7-2 > Messages is:
-Cannot write socket fd = 25 err = Broken pipe
-CheckRes error
-Could not write notification
-ClientNotify fails name = cloop notification = 0 val1 = 0 val2 = 0
-NotifyAddClient old_client fails name = ploop
-Cannot write socket fd = 28 err = Broken pipe
-CheckRes error
-Could not write notification
-ClientNotify fails name = ploop notification = 1 val1 = 0 val2 = 0
-ERROR ploop:playback_1 not a valid port
-ERROR ploop:playback_2 not a valid port
-ERROR cloop:capture_1 not a valid port
-ERROR cloop:capture_2 not a valid port
+ .../bindings/sound/rockchip-i2s.yaml          |   7 +
+ .../boot/dts/rockchip/rk3399-gru-scarlet.dtsi |  10 +
+ arch/arm64/boot/dts/rockchip/rk3399.dtsi      |  25 ++-
+ sound/soc/rockchip/rockchip_i2s.c             | 171 +++++++++++++-----
+ 4 files changed, 165 insertions(+), 48 deletions(-)
 
-Please find attached alsa-info.sh output for alsa-versions 1.2.7.1 and 1.2.6
-[alsa-info.sh-output-220619.zip](https://github.com/alsa-project/alsa-lib/files/8935020/alsa-info.sh-output-220619.zip)
-.
-I am aware, that this is a very poor bug report. Please ask for any information you need!
+-- 
+2.36.1.476.g0c4daa206d-goog
 
-By the way, many thanks for all your programs and the effort you put in to them.
-
-Issue URL     : https://github.com/alsa-project/alsa-lib/issues/243
-Repository URL: https://github.com/alsa-project/alsa-lib
