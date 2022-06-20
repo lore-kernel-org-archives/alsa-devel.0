@@ -4,65 +4,65 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B8BDBC43334
-	for <alsa-devel@archiver.kernel.org>; Mon, 20 Jun 2022 08:15:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5B099C43334
+	for <alsa-devel@archiver.kernel.org>; Mon, 20 Jun 2022 08:15:42 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 061721902;
-	Mon, 20 Jun 2022 10:14:31 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 061721902
+	by alsa0.perex.cz (Postfix) with ESMTPS id 9BAEC18EC;
+	Mon, 20 Jun 2022 10:14:50 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9BAEC18EC
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1655712921;
-	bh=aBOBlOyz852sglEqIR7/HbSbdqdNaRPyc8TMc0PuzuY=;
+	s=default; t=1655712940;
+	bh=caF6uMwN6uVQ02UDhQ8rgZeuZsctMB4Rc9h8B0yK7gw=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=aqQJYpAbWjGCvNPsNGJ6aavkVjk0jDeI0TX/fT0reauRiSi9QbUNQUBU+1kIbJw9y
-	 2pubUqL2wnrHSgntSwxSCrhDFwD4gx0/2dwAIokgFmfZhX7aKopt1MwRS5YaaxbhgF
-	 tA0hMLTjdtMOrpq2LnIKM/FAvsgBK/I6F7LNNwrY=
+	b=hbjpUy5CROorr55k7+NKKCK9/UaB7ADBEr59pv0417y4Bx84oBw7EBhHEtp7qSJ7q
+	 rU323NPNfUAGwjxIGR68SSUyQsMc7KETb7UU+Z6nE+NF+dDvozEmlsQX/CQ99rfMLL
+	 M+e+bqlsphxe6RR/jYkHZN/xNn/xUIkzh1A1jPPw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id D0299F80567;
-	Mon, 20 Jun 2022 10:12:46 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id AEB4AF80568;
+	Mon, 20 Jun 2022 10:12:47 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 734D3F8052E; Mon, 20 Jun 2022 10:12:41 +0200 (CEST)
+ id AA0C5F80553; Mon, 20 Jun 2022 10:12:42 +0200 (CEST)
 Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 8B027F8052E
- for <alsa-devel@alsa-project.org>; Mon, 20 Jun 2022 10:12:30 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8B027F8052E
+ by alsa1.perex.cz (Postfix) with ESMTPS id 403B0F80534
+ for <alsa-devel@alsa-project.org>; Mon, 20 Jun 2022 10:12:32 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 403B0F80534
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="KzrmD1w2"
+ header.b="PJX4H+pf"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1655712751; x=1687248751;
+ t=1655712753; x=1687248753;
  h=from:to:cc:subject:date:message-id:in-reply-to:
  references:mime-version:content-transfer-encoding;
- bh=aBOBlOyz852sglEqIR7/HbSbdqdNaRPyc8TMc0PuzuY=;
- b=KzrmD1w2hjLRkYKypspjj6xsyLMuIzwoZtKjoNUeqlBZ4bpCrGX+Ba9R
- 0TU21bv1eGqFhs5jDOjxn0WBEjjmyvCLz0XDvAbVopwzYYR4RgaWh66+K
- 9sXx+KNBmomWpbIK3z7tV9M/N1ZMpH9OtUuI82Rdl4INpoIKa6KiRdztp
- x49bJlZTz9o9inszOOaSN8F1ZzfaTxyFVIMGfR8b1JWxvJ+pbgaXSMxMV
- 5t11PBkzMBYPNvSrqi2J2ERrcT/N8/TnPsNc54RVH1vxA0TIfTLeCo9Cd
- /9B7W0ASJFh2dqqkFgaCoPhk9MvPmn3iUiz2E0IROdz+5tpF5ACJugURa g==;
-X-IronPort-AV: E=McAfee;i="6400,9594,10380"; a="305270888"
-X-IronPort-AV: E=Sophos;i="5.92,306,1650956400"; d="scan'208";a="305270888"
+ bh=caF6uMwN6uVQ02UDhQ8rgZeuZsctMB4Rc9h8B0yK7gw=;
+ b=PJX4H+pf2QH2PQntziWultKDZ/Vf0Z8iPdx+MSkDFwAgnagzgNHEnUfu
+ iriV8xVHmhE+5Ru/3ajcC7wdDpmTECIpjetNu8F2bWSSllpGTfUwl/mX/
+ YF0ZUO5AzVLgbwH3+u1k21lQfKm8VwA1fnttbppWmUubcLgoobFEk4pYN
+ G7EFH8Zks+2QN5n+2iZAhI6sRH2hcgVhRkiT326zkgVWb04lESHlyl28E
+ 7yxR5XLjUWa4BOtaQoVaOjcLxQdleTl9V1PGT4dH1BE/apiZLC6RdPFv7
+ KNzHq9wDuvC/9fPkk7Lx/r0RiPdSTUTSfqoW2ajd6ict564Z+rvZuE7qV w==;
+X-IronPort-AV: E=McAfee;i="6400,9594,10380"; a="305270897"
+X-IronPort-AV: E=Sophos;i="5.92,306,1650956400"; d="scan'208";a="305270897"
 Received: from fmsmga007.fm.intel.com ([10.253.24.52])
  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 20 Jun 2022 01:12:29 -0700
+ 20 Jun 2022 01:12:31 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.92,306,1650956400"; d="scan'208";a="591067385"
+X-IronPort-AV: E=Sophos;i="5.92,306,1650956400"; d="scan'208";a="591067391"
 Received: from crojewsk-ctrl.igk.intel.com ([10.102.9.28])
- by fmsmga007.fm.intel.com with ESMTP; 20 Jun 2022 01:12:28 -0700
+ by fmsmga007.fm.intel.com with ESMTP; 20 Jun 2022 01:12:29 -0700
 From: Cezary Rojewski <cezary.rojewski@intel.com>
 To: alsa-devel@alsa-project.org,
 	broonie@kernel.org
-Subject: [PATCH v3 06/17] ASoC: Intel: hsw_rt5640: Improve probe() function
- quality
-Date: Mon, 20 Jun 2022 10:22:15 +0200
-Message-Id: <20220620082226.2489357-7-cezary.rojewski@intel.com>
+Subject: [PATCH v3 07/17] ASoC: Intel: hsw_rt5640: Improve hw_params()
+ debug-ability
+Date: Mon, 20 Jun 2022 10:22:16 +0200
+Message-Id: <20220620082226.2489357-8-cezary.rojewski@intel.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20220620082226.2489357-1-cezary.rojewski@intel.com>
 References: <20220620082226.2489357-1-cezary.rojewski@intel.com>
@@ -87,40 +87,27 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Declare local 'dev' and make use of it plus dev_get_platdata() to
-improve code readability.
+Print status if setting sysclk fails.
 
 Signed-off-by: Cezary Rojewski <cezary.rojewski@intel.com>
 Reviewed-by: Amadeusz Sławiński <amadeuszx.slawinski@linux.intel.com>
 ---
- sound/soc/intel/boards/hsw_rt5640.c | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
+ sound/soc/intel/boards/hsw_rt5640.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/sound/soc/intel/boards/hsw_rt5640.c b/sound/soc/intel/boards/hsw_rt5640.c
-index f843ba5f4718..273c8e274d25 100644
+index 273c8e274d25..ad747363d112 100644
 --- a/sound/soc/intel/boards/hsw_rt5640.c
 +++ b/sound/soc/intel/boards/hsw_rt5640.c
-@@ -147,16 +147,17 @@ static struct snd_soc_card hsw_rt5640_card = {
- static int hsw_rt5640_probe(struct platform_device *pdev)
- {
- 	struct snd_soc_acpi_mach *mach;
-+	struct device *dev = &pdev->dev;
- 	int ret;
+@@ -53,7 +53,7 @@ static int codec_link_hw_params(struct snd_pcm_substream *substream,
  
--	hsw_rt5640_card.dev = &pdev->dev;
--	mach = pdev->dev.platform_data;
-+	hsw_rt5640_card.dev = dev;
-+	mach = dev_get_platdata(dev);
- 
- 	ret = snd_soc_fixup_dai_links_platform_name(&hsw_rt5640_card, mach->mach_params.platform);
- 	if (ret)
+ 	ret = snd_soc_dai_set_sysclk(codec_dai, RT5640_SCLK_S_MCLK, 12288000, SND_SOC_CLOCK_IN);
+ 	if (ret < 0) {
+-		dev_err(rtd->dev, "can't set codec sysclk configuration\n");
++		dev_err(rtd->dev, "set codec sysclk failed: %d\n", ret);
  		return ret;
+ 	}
  
--	return devm_snd_soc_register_card(&pdev->dev, &hsw_rt5640_card);
-+	return devm_snd_soc_register_card(dev, &hsw_rt5640_card);
- }
- 
- static struct platform_driver hsw_rt5640_driver = {
 -- 
 2.25.1
 
