@@ -4,101 +4,97 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B5FF4C433EF
-	for <alsa-devel@archiver.kernel.org>; Mon, 20 Jun 2022 15:40:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D470CC433EF
+	for <alsa-devel@archiver.kernel.org>; Mon, 20 Jun 2022 15:40:26 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 1805B294B;
-	Mon, 20 Jun 2022 17:39:19 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1805B294B
+	by alsa0.perex.cz (Postfix) with ESMTPS id 1A1F22954;
+	Mon, 20 Jun 2022 17:39:35 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1A1F22954
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1655739609;
-	bh=4RQhycoKExY2jyKeqia36uWYJwLaxZXyRQKSXMgeSS0=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1655739625;
+	bh=yRfgMFLNS25yAYInEmnhTX2o/3NHuxycgfLSO6DobOo=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=s93tVdp/VuukSiyRyt4MTk6FSD5i8iijBCMzMtJubcphECqFvslYlcJ+nYfRd8CPp
-	 HQAgZMahPH/L2bP211fzPm7ABwFRmmCejHDRAoy3QSkse6/H3jushlGp1XmxgD0Iwb
-	 Rcl12RrGIN5euRDC1N6gZSwyN+hfK6CXZP/2wWDY=
+	b=oumolowrsRcpB3AqcOMiflt6ShKY0kF79IMZicAe7oxtKnVJF10eq8AcmAGSNtdpH
+	 vP5+1lqDI7n7vkKO/djW0L1ohwEMTfEY5jjG0pRBa6m2Mrh9w0RgKX0FXZ2yca1YHz
+	 aRgr/eqNVrNvwVzHtQ8OwlSPym5BCvmjhtWOIQ1k=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 7A864F896D6;
-	Mon, 20 Jun 2022 17:08:26 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 1858BF896DD;
+	Mon, 20 Jun 2022 17:08:27 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 1E0C8F8026A; Sat, 18 Jun 2022 14:32:35 +0200 (CEST)
-Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com
- [IPv6:2a00:1450:4864:20::32c])
+ id ACC00F800E3; Mon, 20 Jun 2022 10:07:59 +0200 (CEST)
+Received: from mail-oa1-f43.google.com (mail-oa1-f43.google.com
+ [209.85.160.43])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id E3D19F804A9
- for <alsa-devel@alsa-project.org>; Sat, 18 Jun 2022 14:32:25 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E3D19F804A9
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=conchuod.ie header.i=@conchuod.ie
- header.b="Pu1M106x"
-Received: by mail-wm1-x32c.google.com with SMTP id
- c130-20020a1c3588000000b0039c6fd897b4so5556621wma.4
- for <alsa-devel@alsa-project.org>; Sat, 18 Jun 2022 05:32:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=conchuod.ie; s=google;
- h=from:to:cc:subject:date:message-id:in-reply-to:references
- :mime-version:content-transfer-encoding;
- bh=Pg5EtL0V3UHrid7YbhvB+3zhrduzQGisX4A0SVhhM0E=;
- b=Pu1M106xN55HI9pfnOZNoRrDpjX1i4VH9bR0a4BhQ0DJdKnxN33JrDSsp8oMDBO6jp
- LVQ1VI+4atrButRPKUPNqCrIEigfT0IM8RSE/TM7b+yFCd8/4+xiDRZ3O7NsK9REtRLv
- 84xM29eeccO+uGrixFZq0EZFXZEdycBvA0ECOB3ZQETpwQOJCmoI57SPRa91RH4Ybiwn
- DHwH4ld25Q7R0o4T9qzfzLsKmjYB53l8b9saZnSz3GnJD24tqYxXVFcv/kp23HP9PpCH
- I+j/f4rZISdty/aA/Vg0TKDsifyuWEt2DZv8kvr86VvPeWNfHBmzINiITLTKs1DLpX1a
- cUAQ==
+ by alsa1.perex.cz (Postfix) with ESMTPS id AF54CF800E3
+ for <alsa-devel@alsa-project.org>; Mon, 20 Jun 2022 10:07:52 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AF54CF800E3
+Received: by mail-oa1-f43.google.com with SMTP id
+ 586e51a60fabf-101ec2d6087so2859522fac.3
+ for <alsa-devel@alsa-project.org>; Mon, 20 Jun 2022 01:07:52 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
- h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
- :references:mime-version:content-transfer-encoding;
- bh=Pg5EtL0V3UHrid7YbhvB+3zhrduzQGisX4A0SVhhM0E=;
- b=UhgtJNbR39ILomrNaDSTTimn2Qa2mjwDG7XB8iUyOL7I0gWnpbdTJpEJvK4nsSHrwg
- PmNRDMsK3cUmdmPSnX+8i/XDALKf3yD+9c9rVXnTKTo7Wy9v++dcVahfye4mH7XG9OLf
- n4mzGWve4Pm87SD5Qrq/lncG80cZQyssbD/JZMkbxN1gyoh1e1P55hwCwtnobfR17XFp
- Oa7ld9Hwowk3pIPkEH9+VZVgPTXQ0L9nSaC8Wqdp4M6UQBLh7+fdqO2GhvjyVr2HCSSD
- sL4kzDgIIaPjB5amrFjBv0f97RYJWoZDwODFdeNY5630n6ong3ipvEcUdgiuaKpR2BKY
- 7UpQ==
-X-Gm-Message-State: AJIora9LDCJN11HblQT3ZyPiViAajaeLpiyZGAZ/2zRRSZXRRkKo5pbg
- xa1QasuJ6VQB23zRTIfOfzS42w==
-X-Google-Smtp-Source: AGRyM1t+D1hSYvVv2lyhJXTM8fnBYLleL1Z3z4M3dP8UVmVZwbcohvWxMo8SxFiBx5Zo6H6ulo6zQw==
-X-Received: by 2002:a05:600c:3553:b0:39c:63a3:f54a with SMTP id
- i19-20020a05600c355300b0039c63a3f54amr15447271wmq.61.1655555543356; 
- Sat, 18 Jun 2022 05:32:23 -0700 (PDT)
-Received: from henark71.. ([51.37.234.167]) by smtp.gmail.com with ESMTPSA id
- az10-20020adfe18a000000b00210396b2eaesm9292305wrb.45.2022.06.18.05.32.21
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Sat, 18 Jun 2022 05:32:22 -0700 (PDT)
-From: Conor Dooley <mail@conchuod.ie>
-To: David Airlie <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>,
- Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Thierry Reding <thierry.reding@gmail.com>, Sam Ravnborg <sam@ravnborg.org>,
- Eugeniy Paltsev <Eugeniy.Paltsev@synopsys.com>,
- Vinod Koul <vkoul@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>,
- Mark Brown <broonie@kernel.org>, Serge Semin <fancer.lancer@gmail.com>,
- Daniel Lezcano <daniel.lezcano@linaro.org>,
- Palmer Dabbelt <palmer@dabbelt.com>, Palmer Dabbelt <palmer@rivosinc.com>
-Subject: [PATCH 13/14] riscv: dts: canaan: remove spi-max-frequency from
- controllers
-Date: Sat, 18 Jun 2022 13:30:35 +0100
-Message-Id: <20220618123035.563070-14-mail@conchuod.ie>
-X-Mailer: git-send-email 2.36.1
-In-Reply-To: <20220618123035.563070-1-mail@conchuod.ie>
-References: <20220618123035.563070-1-mail@conchuod.ie>
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc;
+ bh=U6iOgcYMqJ9zOwx1P0bKGX4G545U6AIxu9kHxZeyUd0=;
+ b=DGsz6RGiTEyGNe1N2bWUNtpJzTbsdlYoi36NQep2pRpTtYQ6IeN8SCMuUooT13/DX+
+ 8U2xQ5dgK1enxyO4FTcOg3ko1+/Ya1/GO5Imc98wAc/yOpMvz4u8NSuf1DC2ODUSVD5G
+ SrQXpm/ZBFL18pUn6HmMaKo8As35eZql1Nwad7RtSRKnlcaQc3tZm1Ox+CYvy81mm+nG
+ ao4oWHUX/yY7KDfWnyW4efK2FTumusT6/0mMXSiZiNbDlG6ukWoPlXe5Cn4IsDYPCtye
+ O9dSjkMlomeu0rqneWjQOLd1MPU39ExXcR2P3OlLmVgXVODSFwe34koTicC/6+JLglhg
+ 7iDA==
+X-Gm-Message-State: AJIora8m6HYmZMUoPjp32gl6xjGKggw/qbjZ6B5AS68Gb6dw7xRobwHM
+ 0DAI6R4lR8NMYCqieK3VETAW0ZHb1XHTFQ==
+X-Google-Smtp-Source: AGRyM1tmHrn6StCrZYkSTPLJM7A/tcBW83YSrqdIbkYo4nRZ3OI0/rhEqhIhG+Oi5r7Cq12EfRdIyw==
+X-Received: by 2002:a05:6870:3102:b0:101:15a2:9d7f with SMTP id
+ v2-20020a056870310200b0010115a29d7fmr12080443oaa.36.1655712470144; 
+ Mon, 20 Jun 2022 01:07:50 -0700 (PDT)
+Received: from mail-ot1-f44.google.com (mail-ot1-f44.google.com.
+ [209.85.210.44]) by smtp.gmail.com with ESMTPSA id
+ v186-20020acadec3000000b0032e73b538dasm6940979oig.52.2022.06.20.01.07.49
+ for <alsa-devel@alsa-project.org>
+ (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+ Mon, 20 Jun 2022 01:07:50 -0700 (PDT)
+Received: by mail-ot1-f44.google.com with SMTP id
+ l24-20020a0568301d7800b0060c1ebc6438so7814305oti.9
+ for <alsa-devel@alsa-project.org>; Mon, 20 Jun 2022 01:07:49 -0700 (PDT)
+X-Received: by 2002:a25:bd41:0:b0:668:c259:f6c2 with SMTP id
+ p1-20020a25bd41000000b00668c259f6c2mr15091616ybm.365.1655712136748; Mon, 20
+ Jun 2022 01:02:16 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Mailman-Approved-At: Mon, 20 Jun 2022 17:06:47 +0200
-Cc: linux-riscv@lists.infradead.org, Niklas Cassel <niklas.cassel@wdc.com>,
- alsa-devel@alsa-project.org, Albert Ou <aou@eecs.berkeley.edu>,
- devicetree@vger.kernel.org, Damien Le Moal <damien.lemoal@opensource.wdc.com>,
- linux-kernel@vger.kernel.org, Heng Sia <jee.heng.sia@intel.com>,
- linux-spi@vger.kernel.org, Conor Dooley <conor.dooley@microchip.com>,
- Jose Abreu <joabreu@synopsys.com>, Geert Uytterhoeven <geert@linux-m68k.org>,
+References: <20220618123035.563070-1-mail@conchuod.ie>
+ <20220618123035.563070-7-mail@conchuod.ie>
+In-Reply-To: <20220618123035.563070-7-mail@conchuod.ie>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Date: Mon, 20 Jun 2022 10:02:05 +0200
+X-Gmail-Original-Message-ID: <CAMuHMdXtjZVvy-gGTksVRYa+dS7-1ngQf9_kfp6k29nkfizKbA@mail.gmail.com>
+Message-ID: <CAMuHMdXtjZVvy-gGTksVRYa+dS7-1ngQf9_kfp6k29nkfizKbA@mail.gmail.com>
+Subject: Re: [PATCH 06/14] spi: dt-bindings: dw-apb-ssi: update
+ spi-{r,t}x-bus-width for dwc-ssi
+To: Conor Dooley <mail@conchuod.ie>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailman-Approved-At: Mon, 20 Jun 2022 17:06:44 +0200
+Cc: Niklas Cassel <niklas.cassel@wdc.com>, alsa-devel@alsa-project.org,
+ David Airlie <airlied@linux.ie>, Palmer Dabbelt <palmer@rivosinc.com>,
+ linux-kernel@vger.kernel.org, Conor Dooley <conor.dooley@microchip.com>,
+ Thierry Reding <thierry.reding@gmail.com>, Heng Sia <jee.heng.sia@intel.com>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ linux-riscv@lists.infradead.org, Sam Ravnborg <sam@ravnborg.org>,
+ Damien Le Moal <damien.lemoal@opensource.wdc.com>,
+ Daniel Lezcano <daniel.lezcano@linaro.org>, Jose Abreu <joabreu@synopsys.com>,
+ Eugeniy Paltsev <Eugeniy.Paltsev@synopsys.com>, devicetree@vger.kernel.org,
+ Albert Ou <aou@eecs.berkeley.edu>, Mark Brown <broonie@kernel.org>,
  dri-devel@lists.freedesktop.org, Paul Walmsley <paul.walmsley@sifive.com>,
- dmaengine@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
- Dillon Min <dillon.minfei@gmail.com>, Masahiro Yamada <masahiroy@kernel.org>
+ Thomas Gleixner <tglx@linutronix.de>, Dillon Min <dillon.minfei@gmail.com>,
+ Liam Girdwood <lgirdwood@gmail.com>, Serge Semin <fancer.lancer@gmail.com>,
+ linux-spi@vger.kernel.org, Vinod Koul <vkoul@kernel.org>,
+ Rob Herring <robh+dt@kernel.org>, Palmer Dabbelt <palmer@dabbelt.com>,
+ Daniel Vetter <daniel@ffwll.ch>, dmaengine@vger.kernel.org,
+ Masahiro Yamada <masahiroy@kernel.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -114,47 +110,87 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Conor Dooley <conor.dooley@microchip.com>
+Hi Conor,
 
-spi-max-frequency is a device, not a controller  property and should be
-removed.
+On Sat, Jun 18, 2022 at 2:32 PM Conor Dooley <mail@conchuod.ie> wrote:
+> From: Conor Dooley <conor.dooley@microchip.com>
+>
+> snps,dwc-ssi-1.01a has a single user - the Canaan k210, which uses a
+> width of 4 for spi-{r,t}x-bus-width. Update the binding to reflect
+> this.
+>
+> Signed-off-by: Conor Dooley <conor.dooley@microchip.com>
 
-Link: https://lore.kernel.org/lkml/20220526014141.2872567-1-robh@kernel.org/
-Signed-off-by: Conor Dooley <conor.dooley@microchip.com>
----
- arch/riscv/boot/dts/canaan/k210.dtsi | 5 +----
- 1 file changed, 1 insertion(+), 4 deletions(-)
+Thanks for your patch!
 
-diff --git a/arch/riscv/boot/dts/canaan/k210.dtsi b/arch/riscv/boot/dts/canaan/k210.dtsi
-index 5eb6b69c1170..ec290db4705c 100644
---- a/arch/riscv/boot/dts/canaan/k210.dtsi
-+++ b/arch/riscv/boot/dts/canaan/k210.dtsi
-@@ -413,7 +413,6 @@ spi0: spi@52000000 {
- 				clock-names = "ssi_clk", "pclk";
- 				resets = <&sysrst K210_RST_SPI0>;
- 				reset-names = "spi";
--				spi-max-frequency = <25000000>;
- 				num-cs = <4>;
- 				reg-io-width = <4>;
- 			};
-@@ -429,7 +428,6 @@ spi1: spi@53000000 {
- 				clock-names = "ssi_clk", "pclk";
- 				resets = <&sysrst K210_RST_SPI1>;
- 				reset-names = "spi";
--				spi-max-frequency = <25000000>;
- 				num-cs = <4>;
- 				reg-io-width = <4>;
- 			};
-@@ -445,8 +443,7 @@ spi3: spi@54000000 {
- 				clock-names = "ssi_clk", "pclk";
- 				resets = <&sysrst K210_RST_SPI3>;
- 				reset-names = "spi";
--				/* Could possibly go up to 200 MHz */
--				spi-max-frequency = <100000000>;
-+
- 				num-cs = <4>;
- 				reg-io-width = <4>;
- 			};
--- 
-2.36.1
+> --- a/Documentation/devicetree/bindings/spi/snps,dw-apb-ssi.yaml
+> +++ b/Documentation/devicetree/bindings/spi/snps,dw-apb-ssi.yaml
+> @@ -135,19 +135,41 @@ properties:
+>        of the designware controller, and the upper limit is also subject to
+>        controller configuration.
+>
+> -patternProperties:
+> -  "^.*@[0-9a-f]+$":
+> -    type: object
+> -    properties:
+> -      reg:
+> -        minimum: 0
+> -        maximum: 3
+> -
+> -      spi-rx-bus-width:
+> -        const: 1
+> -
+> -      spi-tx-bus-width:
+> -        const: 1
+> +if:
+> +  properties:
+> +    compatible:
+> +      contains:
+> +        const: snps,dwc-ssi-1.01a
+> +
+> +then:
+> +  patternProperties:
+> +    "^.*@[0-9a-f]+$":
+> +      type: object
+> +      properties:
+> +        reg:
+> +          minimum: 0
+> +          maximum: 3
+> +
+> +        spi-rx-bus-width:
+> +          const: 4
+> +
+> +        spi-tx-bus-width:
+> +          const: 4
 
+These two also depend on the board (SPI device + wiring).
+So all of [1, 2, 4] are valid values.
+
+> +
+> +else:
+> +  patternProperties:
+> +    "^.*@[0-9a-f]+$":
+> +      type: object
+> +      properties:
+> +        reg:
+> +          minimum: 0
+> +          maximum: 3
+> +
+> +        spi-rx-bus-width:
+> +          const: 1
+> +
+> +        spi-tx-bus-width:
+> +          const: 1
+>
+>  unevaluatedProperties: false
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
