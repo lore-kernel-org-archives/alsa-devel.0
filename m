@@ -4,93 +4,72 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id CC4D6C43334
-	for <alsa-devel@archiver.kernel.org>; Mon, 20 Jun 2022 09:17:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8890FC433EF
+	for <alsa-devel@archiver.kernel.org>; Mon, 20 Jun 2022 09:38:36 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 9A8041933;
-	Mon, 20 Jun 2022 11:17:05 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9A8041933
+	by alsa0.perex.cz (Postfix) with ESMTPS id 2751317F7;
+	Mon, 20 Jun 2022 11:37:44 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2751317F7
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1655716675;
-	bh=ao9OdRfwZ9pjSMMclgdNiPGY/0QZWsyh/Hgmot84dno=;
-	h=Subject:From:To:Date:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1655717914;
+	bh=krr41zHUDxKp6WLORy1hxD2G39jlUs83esoX9QIYIqo=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Bz6i8T/O7ITOW850Hr5xhptJwpmFkEa8vgjtUcImJUbVTspeeRqFLOYk9VpIgB16d
-	 OpTCzfSDMFhIhslnR3QUqA5iObxdVeaBnl9pdaO00F+A610HdjVDHLzOlTraLPgFOQ
-	 QHlWUREzc6sWuMC8Z2WSQAmxvBXG9s+528S20Y90=
+	b=KwZPXhu4LMH/M67CcnLdWshQFpsHZCpsURLIay61FkO7d5nI9kPvyj3StYAvQ2PJo
+	 SdnqMrN1Z+ph7keB6e3b2MT0+yv9k1iK5U+AD+WP2vb51CljLSTVvk8RsWTvg896ko
+	 OG9DIw91N7T9UYCQA5nkZIJYwZuBy3XIO/8+gw7o=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 1D63AF804CF;
-	Mon, 20 Jun 2022 11:17:05 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id AC570F804CF;
+	Mon, 20 Jun 2022 11:37:43 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 12FF6F804D2; Mon, 20 Jun 2022 11:17:04 +0200 (CEST)
-Received: from mailgw02.mediatek.com (unknown [210.61.82.184])
+ id 6CCCFF800E3; Mon, 20 Jun 2022 11:37:41 +0200 (CEST)
+Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 99721F800FB;
- Mon, 20 Jun 2022 11:16:54 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 99721F800FB
-X-UUID: 36eef338cfb74a14ab06673e7c6a772d-20220620
-X-CID-P-RULE: Release_Ham
-X-CID-O-INFO: VERSION:1.1.6, REQID:14f07526-6b8b-4088-ae29-c2bd702ee75f, OB:10,
- L
- OB:0,IP:0,URL:0,TC:0,Content:0,EDM:0,RT:0,SF:45,FILE:0,RULE:Release_Ham,AC
- TION:release,TS:45
-X-CID-INFO: VERSION:1.1.6, REQID:14f07526-6b8b-4088-ae29-c2bd702ee75f, OB:10,
- LOB
- :0,IP:0,URL:0,TC:0,Content:0,EDM:0,RT:0,SF:45,FILE:0,RULE:Release_Ham,ACTI
- ON:release,TS:45
-X-CID-META: VersionHash:b14ad71, CLOUDID:2f7effe9-f7af-4e69-92ee-0fd74a0c286c,
- C
- OID:a7e4c246682a,Recheck:0,SF:28|17|19|48,TC:nil,Content:0,EDM:-3,IP:nil,U
- RL:0,File:nil,QS:nil,BEC:nil,COL:0
-X-UUID: 36eef338cfb74a14ab06673e7c6a772d-20220620
-Received: from mtkcas11.mediatek.inc [(172.21.101.40)] by mailgw02.mediatek.com
- (envelope-from <tinghan.shen@mediatek.com>)
- (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
- with ESMTP id 401679810; Mon, 20 Jun 2022 17:16:43 +0800
-Received: from mtkmbs11n2.mediatek.inc (172.21.101.187) by
- mtkmbs11n1.mediatek.inc (172.21.101.185) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.792.3; 
- Mon, 20 Jun 2022 17:16:42 +0800
-Received: from mtksdccf07 (172.21.84.99) by mtkmbs11n2.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.2.792.3 via Frontend
- Transport; Mon, 20 Jun 2022 17:16:41 +0800
-Message-ID: <485c9b07fb2a60635e7cd52e710af872733fcff9.camel@mediatek.com>
-Subject: Re: [PATCH v3 1/4] dt-bindings: dsp: mediatek: Use meaningful names
- for mbox
-From: Tinghan Shen <tinghan.shen@mediatek.com>
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>, Rob Herring
- <robh+dt@kernel.org>, Krzysztof Kozlowski
- <krzysztof.kozlowski+dt@linaro.org>, Matthias Brugger
- <matthias.bgg@gmail.com>, Pierre-Louis Bossart
- <pierre-louis.bossart@linux.intel.com>, Liam Girdwood <lgirdwood@gmail.com>,
- Peter Ujfalusi <peter.ujfalusi@linux.intel.com>, Bard Liao
- <yung-chuan.liao@linux.intel.com>, Ranjani Sridharan
- <ranjani.sridharan@linux.intel.com>, Kai Vehmanen
- <kai.vehmanen@linux.intel.com>, Daniel Baluta <daniel.baluta@nxp.com>, Mark
- Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, "Takashi Iwai"
- <tiwai@suse.com>, YC Hung <yc.hung@mediatek.com>, Curtis Malainey
- <cujomalainey@chromium.org>, Allen-KH Cheng <allen-kh.cheng@mediatek.com>
-Date: Mon, 20 Jun 2022 17:16:41 +0800
-In-Reply-To: <3830efc5-298d-7887-5718-2cb2a7ad4895@linaro.org>
-References: <20220616073042.13229-1-tinghan.shen@mediatek.com>
- <20220616073042.13229-2-tinghan.shen@mediatek.com>
- <629e761b-e3ad-0861-1937-ad660a8a900b@linaro.org>
- <af32751dd7013a96dac5d165c35e132fda87f2ac.camel@mediatek.com>
- <3830efc5-298d-7887-5718-2cb2a7ad4895@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
+ by alsa1.perex.cz (Postfix) with ESMTPS id B974CF800E3
+ for <alsa-devel@alsa-project.org>; Mon, 20 Jun 2022 11:37:34 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B974CF800E3
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
+ header.b="lCYem4Rl"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+ d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+ t=1655717855; x=1687253855;
+ h=date:from:to:cc:subject:in-reply-to:message-id:
+ references:mime-version;
+ bh=krr41zHUDxKp6WLORy1hxD2G39jlUs83esoX9QIYIqo=;
+ b=lCYem4RlmdrONjTV/ECZkas42NkNYu0ojAySHkw2EPXgSHWAwdFpbQw5
+ NmKbOP3JbNi59+HL///8EtUh36ZrR95k1jHwZ/2fA9nrqfOaufJji8rlt
+ 601tU0+BiyF79Q/9fCz2Y+vBUtX/ZCeYlDNU64/SNmYxzVgEyNbDTr7gv
+ 9C1qBotB36lKQoiT3qaeeqHxqtt/sC+PiPl8fKrr6/ESBEyjQJTKPUjuo
+ Jxuefq19tldQgP9mR+BOZfzBw5cWy/jm4FWr4LubQniV+CRCJbrqsYzQ6
+ Bpqufa89Qoj4/41SaGmInlBSY1udZWjNgN0bNF8c/iqFXbr/woRWYoUzf g==;
+X-IronPort-AV: E=McAfee;i="6400,9594,10380"; a="366176162"
+X-IronPort-AV: E=Sophos;i="5.92,306,1650956400"; d="scan'208";a="366176162"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+ by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 20 Jun 2022 02:37:29 -0700
+X-IronPort-AV: E=Sophos;i="5.92,306,1650956400"; d="scan'208";a="689370980"
+Received: from eliteleevi.tm.intel.com ([10.237.54.20])
+ by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 20 Jun 2022 02:37:27 -0700
+Date: Mon, 20 Jun 2022 12:26:52 +0300 (EEST)
+From: Kai Vehmanen <kai.vehmanen@linux.intel.com>
+X-X-Sender: kvehmane@eliteleevi.tm.intel.com
+To: Takashi Iwai <tiwai@suse.de>
+Subject: Re: Intel HDMI probe regression on IVB (and older?)
+In-Reply-To: <87bkunztec.wl-tiwai@suse.de>
+Message-ID: <alpine.DEB.2.22.394.2206201141320.1532214@eliteleevi.tm.intel.com>
+References: <87bkunztec.wl-tiwai@suse.de>
+User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7 02160 Espoo
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-MTK: N
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
- linux-kernel@vger.kernel.org,
- Project_Global_Chrome_Upstream_Group@mediatek.com,
- linux-mediatek@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
- sound-open-firmware@alsa-project.org
+Content-Type: text/plain; charset=US-ASCII
+Cc: alsa-devel@alsa-project.org, Lucas De Marchi <lucas.demarchi@intel.com>,
+ Kai Vehmanen <kai.vehmanen@linux.intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -106,67 +85,19 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Hi Krzysztof,
+Hi,
 
-On Mon, 2022-06-20 at 10:51 +0200, Krzysztof Kozlowski wrote:
-> On 20/06/2022 08:40, Tinghan Shen wrote:
-> > Hi Krzysztof,
-> > 
-> > On Thu, 2022-06-16 at 06:55 -0700, Krzysztof Kozlowski wrote:
-> > > On 16/06/2022 00:30, Tinghan Shen wrote:
-> > > > Rename mbox according to actions instead of 'mbox0' and 'mbox1'.
-> > > > 
-> > > > Signed-off-by: Tinghan Shen <tinghan.shen@mediatek.com>
-> > > > ---
-> > > >  .../devicetree/bindings/dsp/mediatek,mt8195-dsp.yaml   | 10 +++++-----
-> > > >  1 file changed, 5 insertions(+), 5 deletions(-)
-> > > > 
-> > > > diff --git a/Documentation/devicetree/bindings/dsp/mediatek,mt8195-dsp.yaml
-> > > > b/Documentation/devicetree/bindings/dsp/mediatek,mt8195-dsp.yaml
-> > > > index b7e68b0dfa13..ca8d8661f872 100644
-> > > > --- a/Documentation/devicetree/bindings/dsp/mediatek,mt8195-dsp.yaml
-> > > > +++ b/Documentation/devicetree/bindings/dsp/mediatek,mt8195-dsp.yaml
-> > > > @@ -50,13 +50,13 @@ properties:
-> > > >  
-> > > >    mboxes:
-> > > >      items:
-> > > > -      - description: ipc reply between host and audio DSP.
-> > > > -      - description: ipc request between host and audio DSP.
-> > > > +      - description: mailbox for receiving audio DSP requests.
-> > > > +      - description: mailbox for transmitting requests to audio DSP.
-> > > >  
-> > > >    mbox-names:
-> > > >      items:
-> > > > -      - const: mbox0
-> > > > -      - const: mbox1
-> > > > +      - const: rx
-> > > > +      - const: tx
-> > > >  
-> > > 
-> > > Commit msg lacks important piece - do you break any users with this? Do
-> > > you have any users of this binding?
-> > > 
-> > > 
-> > > Best regards,
-> > > Krzysztof
-> > 
-> > The 8195 dsp node, which uses this binding, has not yet been added to the 8195 devicetree.
-> 
-> Could you mention it in the commit msg? Such one sentence is enough.
-> 
-> With commit msg extended:
-> 
-> Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-> 
-> 
-> Best regards,
-> Krzysztof
+On Mon, 20 Jun 2022, Takashi Iwai wrote:
 
-No problem. I'll udpate commit message at next version.
+> we've got a regression report about Intel HDMI.  It seems that the
+> recent change to skip the component binding (commit c9db8a30d9f0)
+> throws away the devices incorrectly on IvyBridge.  I guess the similar
+> issue could happen on older chips.  The bug report is found at
+>   https://bugzilla.opensuse.org/show_bug.cgi?id=1200611
 
+we'll check. We actually have IVB (and older), in the i915 CI and I can 
+see the binding check working correctly there (with 5.19-rc2). But 
+obviously something goes wrong in the reporter's case, so needs more 
+debug.
 
-Thanks,
-TingHan
-
-
-
+Br, Kai
