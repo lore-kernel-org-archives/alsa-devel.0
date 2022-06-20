@@ -4,78 +4,78 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 39823C43334
-	for <alsa-devel@archiver.kernel.org>; Wed, 22 Jun 2022 15:24:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D738DC433EF
+	for <alsa-devel@archiver.kernel.org>; Wed, 22 Jun 2022 15:25:03 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 7DBF41DE3;
-	Wed, 22 Jun 2022 17:23:52 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7DBF41DE3
+	by alsa0.perex.cz (Postfix) with ESMTPS id 202F01FB3;
+	Wed, 22 Jun 2022 17:24:12 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 202F01FB3
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1655911482;
-	bh=QlvVOwoQ6lFmeptQTmb/eEJoyNlDHdD3UTl9WHMxEeQ=;
+	s=default; t=1655911502;
+	bh=NcXpNtH+Jlgb6PTV7lsYU3FWa8/XgfjPnJFkV560tBk=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=EvH0x52WD9mWQXeW7/pZWxap2N0Rw+Uo3E3Q+48kLJGNKyaQt9tEUOsWtaumZRbAR
-	 aDRlNqJ1nO4qvqykSXNvcvKgd3kvta+swmzj5y2OB+0QiCAqkWtQLL/j5MsI9/kriT
-	 SWnezilloXerr4C8cfbp9RA2dXNmHr9kRLR8vO+U=
+	b=plCPQn2JVXhEcPL3zpu7r4LWaBk3Z4lnb9THxLhW8/WmG7CyZXt94fbm8XxZPIeGU
+	 y2kHV3FipqXvYoyFnj2HZSQzOgmYgwHUUtWPcaaafTyoI9x7ppFXulV3qBakvcI9BA
+	 4lxfoJtHwq0ms1vql1MnxNh8isH2aa59+rZdEMwY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id C7889F8019B;
-	Wed, 22 Jun 2022 17:23:22 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 6DA3BF8053E;
+	Wed, 22 Jun 2022 17:23:23 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id B46F4F804DA; Mon, 20 Jun 2022 22:06:27 +0200 (CEST)
-Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com
- [IPv6:2a00:1450:4864:20::430])
+ id 416E8F80536; Mon, 20 Jun 2022 22:06:29 +0200 (CEST)
+Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com
+ [IPv6:2a00:1450:4864:20::32a])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 0FE16F804E5
- for <alsa-devel@alsa-project.org>; Mon, 20 Jun 2022 22:06:21 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0FE16F804E5
+ by alsa1.perex.cz (Postfix) with ESMTPS id 75D46F800CB
+ for <alsa-devel@alsa-project.org>; Mon, 20 Jun 2022 22:06:24 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 75D46F800CB
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="e6An1+k7"
-Received: by mail-wr1-x430.google.com with SMTP id g4so16059613wrh.11
- for <alsa-devel@alsa-project.org>; Mon, 20 Jun 2022 13:06:21 -0700 (PDT)
+ header.b="M57wXO9i"
+Received: by mail-wm1-x32a.google.com with SMTP id
+ p6-20020a05600c1d8600b0039c630b8d96so6919401wms.1
+ for <alsa-devel@alsa-project.org>; Mon, 20 Jun 2022 13:06:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
  h=from:to:cc:subject:date:message-id:in-reply-to:references
  :mime-version:content-transfer-encoding;
- bh=DcQuE9oGehOZto3hA/rTLb2fToN8VqZpboB1wSvVLeU=;
- b=e6An1+k7URA0wQXNcY2/BdRAilnccZF6A/hAv9jWNU7eSpvfOtHDfFPlFA9Tmj9tdP
- Q3jbhTK1VDeXWFItQMxcv0vZ7RCc5cmoO02hqrWFt1bNQVvSZ9vWPfkxDdj301roqukK
- VxcyBZNW8QGynfO8JWI+WWahEFDrUvnJXyIxMEVYx3RByt41ka89CAhjte2WBrFW5mhM
- TCXItN7+bBmjpnPbHtb5ce5F5Rk9ZgfpC/oo8VuyT8lEVZBE0Oo1B0D7mW2UL08mlg2l
- JQb9VPre/3jtmwZhYCFcXMZ3dZ9tQ6hqqgn0BUdmCk0DnRF2pxNugG3O1NbKVirJLc3k
- 3CXQ==
+ bh=wkuS+j3EIennvsLgZYGM7vfpABGRVV/MeAPfOizAshw=;
+ b=M57wXO9iRmAgu6U0WPasocwyW6YC4HvS/IJuioNN538vnmyv29ll0KmRtJRGqY4itN
+ I5gbLCbLPlKHq7ZNuKC0QkXblcjbrochyZFlSuHnjjhoHPPr1Vg/TNn/mngewPIWO169
+ E27kNJdVJV3Q769UkEnpR1Oh4c69WClUwfdfkWm6pR4le2OgBRbLQJrUBMFotv/eASj1
+ YU0JLn4khTyo1PQcOGGFf4AknS/GI3pTm1R4xxZ86sjh87yWudtYtwnb4CMZDPW1zXwd
+ CLfvknNTNJG/K6TH6GcO0gCA7f0ytehD0u7KI3rLDYx1D5YiPv3fyPkopDKkyw4YaySB
+ j/Kg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
  h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
  :references:mime-version:content-transfer-encoding;
- bh=DcQuE9oGehOZto3hA/rTLb2fToN8VqZpboB1wSvVLeU=;
- b=r0P4QqD3C5LlgqmrUCbej9o6dx0A2UU1nppG77K6pzLaD7HukpFoMLsw6HU22tY6MN
- 1+/s6yEUuSu47uNBZ+aRSbqmn1bnrMCXmappkJ2J5WOJ57G4Q7qOXUJFbWv1hJgL/YFy
- 8XCVlABpL15VqTi/AKr1HptHI910EA5Rjl2EyTnGBv55KaxQoeIGGB+oACYofBE+UchF
- xBYrGJJofiMi+Tm07GoohgitXfyHFsE5VAqeO5hIu61yNBSdtG8VB0BJ+DYnDq2ED0+K
- rKCbdcUuoWayCuk/fYvfTg6XpVCzqQg0F0v7QR6gSYZZ0HX/wM8jKxG3FyGwoRzqhWFj
- BtXw==
-X-Gm-Message-State: AJIora8kXbYwh0lmACUpbKQYzj8KcXH/BR0veeAgNw9tx8TQTrGqhiOK
- 5hJnFODiS/hIgbqQLVTSVd4=
-X-Google-Smtp-Source: AGRyM1toV/6s8wRgMxmabtCAeVPKyocBr9a+nW1Hds3EtsXXFabw7Q99ucUCOTs0Oy4tAKumPVl4nQ==
-X-Received: by 2002:a5d:64c7:0:b0:21b:9661:6aac with SMTP id
- f7-20020a5d64c7000000b0021b96616aacmr665641wri.496.1655755579596; 
- Mon, 20 Jun 2022 13:06:19 -0700 (PDT)
+ bh=wkuS+j3EIennvsLgZYGM7vfpABGRVV/MeAPfOizAshw=;
+ b=gQFeGwvbQP5GfyGk5BIgBv/i1cMmiey1QcORwWKZTZqw4cVPraVxV4kXSTCBRmjJd2
+ +pfAW1F93SHoWNY2Uzk0jjpkZD8FmWiF9ne2TTwZPgvmJ/sBa62Uy49S9scuXZePup1b
+ tULeF0y4jhDI802Vo/TC2/NGAmEzduBH2js0EMJnU5B5FNTQGHFfv8GAo0Rk4XBzdO+3
+ TYC+4C9CNokc7WeZSspSTfV5jFaLdH83EujYiNqGe3WiImA2UmtMyTu/TkUhk9RH1pL7
+ xVLQpcLwT70x4z6QTpr4GfJFc0uNDasdMVX05EHxWL5wn73AJEvdsqFA5XRmExbBisMz
+ AmpA==
+X-Gm-Message-State: AJIora9V6e0/nMVI8Bx9PkNXTMJwWTg0QTLyx+flD2zsi/s91r3j0kTl
+ 1lHRNLxv2lqvLcKYfO/xcDY=
+X-Google-Smtp-Source: AGRyM1uEEMAc+8FJxLc/mlb8t301IgpWCnjiYLUqgY6m1IDXCYaAeszmfVIolkVxg0Mtj7p66FG3gQ==
+X-Received: by 2002:a05:600c:5112:b0:397:53f5:e15b with SMTP id
+ o18-20020a05600c511200b0039753f5e15bmr26724095wms.93.1655755584181; 
+ Mon, 20 Jun 2022 13:06:24 -0700 (PDT)
 Received: from localhost (92.40.169.68.threembb.co.uk. [92.40.169.68])
  by smtp.gmail.com with ESMTPSA id
- c5-20020adffb45000000b0021b91d1ddbfsm2917554wrs.21.2022.06.20.13.06.18
+ t22-20020a05600c41d600b0039db7f1a3f5sm15482666wmh.45.2022.06.20.13.06.23
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Mon, 20 Jun 2022 13:06:19 -0700 (PDT)
+ Mon, 20 Jun 2022 13:06:23 -0700 (PDT)
 From: Aidan MacDonald <aidanmacdonald.0x0@gmail.com>
 To: broonie@kernel.org
-Subject: [PATCH 03/49] regmap-irq: Remove an unnecessary restriction on
- type_in_mask
-Date: Mon, 20 Jun 2022 21:05:58 +0100
-Message-Id: <20220620200644.1961936-4-aidanmacdonald.0x0@gmail.com>
+Subject: [PATCH 06/49] mfd: wcd934x: Convert irq chip to config regs
+Date: Mon, 20 Jun 2022 21:06:01 +0100
+Message-Id: <20220620200644.1961936-7-aidanmacdonald.0x0@gmail.com>
 In-Reply-To: <20220620200644.1961936-1-aidanmacdonald.0x0@gmail.com>
 References: <20220620200644.1961936-1-aidanmacdonald.0x0@gmail.com>
 MIME-Version: 1.0
@@ -110,52 +110,44 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Check types_supported instead of checking type_rising/falling_val
-when using type_in_mask interrupts. This makes the intent clearer
-and allows a type_in_mask irq to support level or edge triggers,
-rather than only edge triggers. Update the comment to reflect the
-new behavior.
+Switch the driver to config registers. This will allow the old
+type register code in regmap-irq to be removed.
 
 Signed-off-by: Aidan MacDonald <aidanmacdonald.0x0@gmail.com>
 ---
- drivers/base/regmap/regmap-irq.c | 19 ++++++++-----------
- 1 file changed, 8 insertions(+), 11 deletions(-)
+ drivers/mfd/wcd934x.c | 11 ++++++++---
+ 1 file changed, 8 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/base/regmap/regmap-irq.c b/drivers/base/regmap/regmap-irq.c
-index a6db605707b0..59cfd4000e63 100644
---- a/drivers/base/regmap/regmap-irq.c
-+++ b/drivers/base/regmap/regmap-irq.c
-@@ -253,22 +253,19 @@ static void regmap_irq_enable(struct irq_data *data)
- 	struct regmap *map = d->map;
- 	const struct regmap_irq *irq_data = irq_to_regmap_irq(d, data->hwirq);
- 	unsigned int reg = irq_data->reg_offset / map->reg_stride;
--	unsigned int mask, type;
--
--	type = irq_data->type.type_falling_val | irq_data->type.type_rising_val;
-+	unsigned int mask;
+diff --git a/drivers/mfd/wcd934x.c b/drivers/mfd/wcd934x.c
+index 68e2fa2fda99..07e884087f2c 100644
+--- a/drivers/mfd/wcd934x.c
++++ b/drivers/mfd/wcd934x.c
+@@ -55,17 +55,22 @@ static const struct regmap_irq wcd934x_irqs[] = {
+ 	WCD934X_REGMAP_IRQ_REG(WCD934X_IRQ_SOUNDWIRE, 2, BIT(4)),
+ };
  
- 	/*
- 	 * The type_in_mask flag means that the underlying hardware uses
--	 * separate mask bits for rising and falling edge interrupts, but
--	 * we want to make them into a single virtual interrupt with
--	 * configurable edge.
-+	 * separate mask bits for each interrupt trigger type, but we want
-+	 * to have a single logical interrupt with a configurable type.
- 	 *
--	 * If the interrupt we're enabling defines the falling or rising
--	 * masks then instead of using the regular mask bits for this
--	 * interrupt, use the value previously written to the type buffer
--	 * at the corresponding offset in regmap_irq_set_type().
-+	 * If the interrupt we're enabling defines any supported types
-+	 * then instead of using the regular mask bits for this interrupt,
-+	 * use the value previously written to the type buffer at the
-+	 * corresponding offset in regmap_irq_set_type().
- 	 */
--	if (d->chip->type_in_mask && type)
-+	if (d->chip->type_in_mask && irq_data->type.types_supported)
- 		mask = d->type_buf[reg] & irq_data->mask;
- 	else
- 		mask = irq_data->mask;
++static const unsigned int wcd934x_config_regs[] = {
++	WCD934X_INTR_LEVEL0,
++};
++
+ static const struct regmap_irq_chip wcd934x_regmap_irq_chip = {
+ 	.name = "wcd934x_irq",
+ 	.status_base = WCD934X_INTR_PIN1_STATUS0,
+ 	.mask_base = WCD934X_INTR_PIN1_MASK0,
+ 	.ack_base = WCD934X_INTR_PIN1_CLEAR0,
+-	.type_base = WCD934X_INTR_LEVEL0,
+-	.num_type_reg = 4,
+-	.type_in_mask = false,
+ 	.num_regs = 4,
+ 	.irqs = wcd934x_irqs,
+ 	.num_irqs = ARRAY_SIZE(wcd934x_irqs),
++	.config_base = wcd934x_config_regs,
++	.num_config_bases = ARRAY_SIZE(wcd934x_config_regs),
++	.num_config_regs = 4,
++	.set_type_config = regmap_irq_set_type_config_simple,
+ };
+ 
+ static bool wcd934x_is_volatile_register(struct device *dev, unsigned int reg)
 -- 
 2.35.1
 
