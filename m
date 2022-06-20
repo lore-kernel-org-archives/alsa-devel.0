@@ -4,64 +4,65 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9A7F2C43334
-	for <alsa-devel@archiver.kernel.org>; Mon, 20 Jun 2022 08:14:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 71174C43334
+	for <alsa-devel@archiver.kernel.org>; Mon, 20 Jun 2022 08:14:58 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B1A1718C8;
-	Mon, 20 Jun 2022 10:13:44 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B1A1718C8
+	by alsa0.perex.cz (Postfix) with ESMTPS id B44DB187D;
+	Mon, 20 Jun 2022 10:14:06 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B44DB187D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1655712874;
-	bh=6JtxhdVF68FxjUQnyy4IHfIL6UuGS31kUjgIV/EBCks=;
+	s=default; t=1655712896;
+	bh=o0Kok7wGPSNdLmm0aDT4JNZdUbDgMsPnAiN9aOQ2AiM=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=MpKNLpurTrW43Jm5xnhVWu0DvDV7TA9eujqZC8jgCXSGrb/D0+bJTmFr/VYIHPoDn
-	 kCjjw+oj1HOAGOutm5SSd/Sb99G6BfMnpxQy8BVZ/VXAobQi9fiXqyiH66eLpYzeV5
-	 dvyXUKpgzrWD7RD+FU4vL6ndOofX8V5fHugFRThc=
+	b=A1h0tmF7evau3PmzJL1M5NZuyj8TneDG+ymKD97MOuIdrEuhEjpI4zncoDcZQtwzG
+	 oGGtkb3qaJ1JYT9bnCzgDkhF5Gfwc7bn/CvHvjhJOnkbhntfIVsIS2ICHtvOZPquaq
+	 s71w/GWTl7Mzpwzuz12ck8kMTmafGA944OhK5WBM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 86572F80551;
-	Mon, 20 Jun 2022 10:12:40 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 9F636F80553;
+	Mon, 20 Jun 2022 10:12:44 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 6A9A8F804E7; Mon, 20 Jun 2022 10:12:37 +0200 (CEST)
+ id 91B9CF80557; Mon, 20 Jun 2022 10:12:40 +0200 (CEST)
 Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 67861F804EB
- for <alsa-devel@alsa-project.org>; Mon, 20 Jun 2022 10:12:25 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 67861F804EB
+ by alsa1.perex.cz (Postfix) with ESMTPS id B8D87F80542
+ for <alsa-devel@alsa-project.org>; Mon, 20 Jun 2022 10:12:34 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B8D87F80542
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="VJD79XGu"
+ header.b="Llve7oz+"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1655712748; x=1687248748;
+ t=1655712755; x=1687248755;
  h=from:to:cc:subject:date:message-id:in-reply-to:
  references:mime-version:content-transfer-encoding;
- bh=6JtxhdVF68FxjUQnyy4IHfIL6UuGS31kUjgIV/EBCks=;
- b=VJD79XGuQU9M67GBl9SqX3C6SZwXLxa46Dj0DGHYgP7g1Z+kAXBspnUd
- F/tb2x88ShdHQf0Pq9lgqxsWOJViCPjgNt/AmDYPUS4lfS326bmogdD6z
- y3XP3eLA2i4/83ndk3j9RfCenA50q41OkqRKj4BXtr4A/Jr2G1/iS/Nsi
- f700N3tRoan592I83Cg0nwjAeqSF/vNgjZbgUHXpgrYhnWMVrU3SRJQMy
- vp75nV4f3Z8EiRmB+DZw0hTrp5pY1QmknhdT/KO+MTh82pJyaccXpOQUj
- I5/US4NtYjzvJM1LrOpC94KYzBo4OAvzeaQCrKRb3oqWhKX2VDtRfvMwE w==;
-X-IronPort-AV: E=McAfee;i="6400,9594,10380"; a="305270871"
-X-IronPort-AV: E=Sophos;i="5.92,306,1650956400"; d="scan'208";a="305270871"
+ bh=o0Kok7wGPSNdLmm0aDT4JNZdUbDgMsPnAiN9aOQ2AiM=;
+ b=Llve7oz+dAMgXhqXSkyJH98MUZbOdSbG1IVM7M/4W9d5GXMY3jXFaYe6
+ F1Y4Ff5gSgW1NfE7WTQEKvCqdyLI5ILxVaLJxnohFEg1737mIYXsRZuws
+ LVp1D9UCm9g39CKg3sg8p1uI+yjvdwv0JYZqbJMCXqC3i9y00OO5eEpqa
+ lVALp+D0PUzDQylM2HSj3IDL+tevfTwjFFCX4WvTudD+m76DKJokg8rsq
+ ma4WiAqHdxYs4IYxWDwRyIB1Ltr5YzCCpaceIqVDgnoM7bVgkLghpR8rH
+ Mki5evzQxK4FuRXUPrd3ZLmJ3+84MweV68xWR9Xn7yz5JXFeIgswzfGZe A==;
+X-IronPort-AV: E=McAfee;i="6400,9594,10380"; a="305270901"
+X-IronPort-AV: E=Sophos;i="5.92,306,1650956400"; d="scan'208";a="305270901"
 Received: from fmsmga007.fm.intel.com ([10.253.24.52])
  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 20 Jun 2022 01:12:24 -0700
+ 20 Jun 2022 01:12:34 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.92,306,1650956400"; d="scan'208";a="591067359"
+X-IronPort-AV: E=Sophos;i="5.92,306,1650956400"; d="scan'208";a="591067404"
 Received: from crojewsk-ctrl.igk.intel.com ([10.102.9.28])
- by fmsmga007.fm.intel.com with ESMTP; 20 Jun 2022 01:12:22 -0700
+ by fmsmga007.fm.intel.com with ESMTP; 20 Jun 2022 01:12:32 -0700
 From: Cezary Rojewski <cezary.rojewski@intel.com>
 To: alsa-devel@alsa-project.org,
 	broonie@kernel.org
-Subject: [PATCH v3 03/17] ASoC: Intel: hsw_rt5640: Reword driver name
-Date: Mon, 20 Jun 2022 10:22:12 +0200
-Message-Id: <20220620082226.2489357-4-cezary.rojewski@intel.com>
+Subject: [PATCH v3 08/17] ASoC: Intel: Rename broadwell source file to
+ bdw_rt286
+Date: Mon, 20 Jun 2022 10:22:17 +0200
+Message-Id: <20220620082226.2489357-9-cezary.rojewski@intel.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20220620082226.2489357-1-cezary.rojewski@intel.com>
 References: <20220620082226.2489357-1-cezary.rojewski@intel.com>
@@ -86,57 +87,33 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Align with other Intel boards naming convention and let the name
-explicitly state which components are being connected.
+Rename source file to drop any ambiguity.
 
 Signed-off-by: Cezary Rojewski <cezary.rojewski@intel.com>
 Reviewed-by: Amadeusz Sławiński <amadeuszx.slawinski@linux.intel.com>
 ---
- sound/soc/intel/boards/hsw_rt5640.c                   | 4 ++--
- sound/soc/intel/common/soc-acpi-intel-hsw-bdw-match.c | 4 ++--
- 2 files changed, 4 insertions(+), 4 deletions(-)
+ sound/soc/intel/boards/Makefile                     | 2 +-
+ sound/soc/intel/boards/{broadwell.c => bdw_rt286.c} | 0
+ 2 files changed, 1 insertion(+), 1 deletion(-)
+ rename sound/soc/intel/boards/{broadwell.c => bdw_rt286.c} (100%)
 
-diff --git a/sound/soc/intel/boards/hsw_rt5640.c b/sound/soc/intel/boards/hsw_rt5640.c
-index b51ce8d0ca22..a096453bf1df 100644
---- a/sound/soc/intel/boards/hsw_rt5640.c
-+++ b/sound/soc/intel/boards/hsw_rt5640.c
-@@ -188,7 +188,7 @@ static int hsw_rt5640_probe(struct platform_device *pdev)
- static struct platform_driver hsw_rt5640_driver = {
- 	.probe = hsw_rt5640_probe,
- 	.driver = {
--		.name = "haswell-audio",
-+		.name = "hsw_rt5640",
- 		.pm = &snd_soc_pm_ops,
- 	},
- };
-@@ -199,4 +199,4 @@ module_platform_driver(hsw_rt5640_driver)
- MODULE_AUTHOR("Liam Girdwood, Xingchao Wang");
- MODULE_DESCRIPTION("Intel SST Audio for Haswell Lynxpoint");
- MODULE_LICENSE("GPL v2");
--MODULE_ALIAS("platform:haswell-audio");
-+MODULE_ALIAS("platform:hsw_rt5640");
-diff --git a/sound/soc/intel/common/soc-acpi-intel-hsw-bdw-match.c b/sound/soc/intel/common/soc-acpi-intel-hsw-bdw-match.c
-index 0441df97b260..4e00f8f6c521 100644
---- a/sound/soc/intel/common/soc-acpi-intel-hsw-bdw-match.c
-+++ b/sound/soc/intel/common/soc-acpi-intel-hsw-bdw-match.c
-@@ -12,7 +12,7 @@
- struct snd_soc_acpi_mach snd_soc_acpi_intel_haswell_machines[] = {
- 	{
- 		.id = "INT33CA",
--		.drv_name = "haswell-audio",
-+		.drv_name = "hsw_rt5640",
- 		.fw_filename = "intel/IntcSST1.bin",
- 		.sof_tplg_filename = "sof-hsw.tplg",
- 	},
-@@ -41,7 +41,7 @@ struct snd_soc_acpi_mach snd_soc_acpi_intel_broadwell_machines[] = {
- 	},
- 	{
- 		.id = "INT33CA",
--		.drv_name = "haswell-audio",
-+		.drv_name = "hsw_rt5640",
- 		.fw_filename = "intel/IntcSST2.bin",
- 		.sof_tplg_filename = "sof-bdw-rt5640.tplg",
- 	},
+diff --git a/sound/soc/intel/boards/Makefile b/sound/soc/intel/boards/Makefile
+index e479546a3d4b..eea1e26acfda 100644
+--- a/sound/soc/intel/boards/Makefile
++++ b/sound/soc/intel/boards/Makefile
+@@ -2,7 +2,7 @@
+ snd-soc-sst-haswell-objs := hsw_rt5640.o
+ snd-soc-sst-bdw-rt5650-mach-objs := bdw-rt5650.o
+ snd-soc-sst-bdw-rt5677-mach-objs := bdw-rt5677.o
+-snd-soc-sst-broadwell-objs := broadwell.o
++snd-soc-sst-broadwell-objs := bdw_rt286.o
+ snd-soc-sst-bxt-da7219_max98357a-objs := bxt_da7219_max98357a.o
+ snd-soc-sst-bxt-rt298-objs := bxt_rt298.o
+ snd-soc-sst-sof-pcm512x-objs := sof_pcm512x.o
+diff --git a/sound/soc/intel/boards/broadwell.c b/sound/soc/intel/boards/bdw_rt286.c
+similarity index 100%
+rename from sound/soc/intel/boards/broadwell.c
+rename to sound/soc/intel/boards/bdw_rt286.c
 -- 
 2.25.1
 
