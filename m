@@ -4,64 +4,65 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C5316C43334
-	for <alsa-devel@archiver.kernel.org>; Mon, 20 Jun 2022 08:16:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7AF24C433EF
+	for <alsa-devel@archiver.kernel.org>; Mon, 20 Jun 2022 08:16:43 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 11FE918D8;
-	Mon, 20 Jun 2022 10:15:34 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 11FE918D8
+	by alsa0.perex.cz (Postfix) with ESMTPS id C642E18B7;
+	Mon, 20 Jun 2022 10:15:51 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C642E18B7
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1655712984;
-	bh=X4L5HxgvJhKjA8csEVWyCP3QlR1qaLDSS0PxrRvBsuI=;
+	s=default; t=1655713001;
+	bh=VqcF/ymnuWaB2osTDuyyh60mLTmj08VZJ8pmkLi1HkQ=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=aGtVjX5w32g4lSO10LhQJrx/jlNCunabI7MkyWgXbmtr3ens9aX03ApE4T3IahKUZ
-	 c8qcFuRds70fv4ol92z6U6Lcjl65fz37yImoyopnh4y8X6GnHIHbn1wKI3+fCyUsbR
-	 jS3pPzLUdR1CXXy3Ycotxr5LZK0O8BaZSuIHYdu8=
+	b=uv5SS8ndO9ci8k4p3/gufjr/vuwc1NfusutHlgvKDJ57cGFSNeP5ePJTLaYAT6CXE
+	 IwcS0SPlkQxsxsIZG3EJiKKEk0OmFPt7nvUSRvgGFnzS+vvE0YJkGzXkXojtDGL5ZN
+	 VNCo1Cr3Ff0MJpSDKdiOD7dUHO5IGfMpr8KqIzrk=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 5FC8EF8058C;
-	Mon, 20 Jun 2022 10:12:54 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 28596F805A9;
+	Mon, 20 Jun 2022 10:12:55 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id CCCFEF80566; Mon, 20 Jun 2022 10:12:46 +0200 (CEST)
+ id 21569F80578; Mon, 20 Jun 2022 10:12:48 +0200 (CEST)
 Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 5A5B4F80548
- for <alsa-devel@alsa-project.org>; Mon, 20 Jun 2022 10:12:38 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5A5B4F80548
+ by alsa1.perex.cz (Postfix) with ESMTPS id 67A43F80558
+ for <alsa-devel@alsa-project.org>; Mon, 20 Jun 2022 10:12:44 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 67A43F80558
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="MX1EdnYL"
+ header.b="flnLZEuO"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1655712759; x=1687248759;
+ t=1655712765; x=1687248765;
  h=from:to:cc:subject:date:message-id:in-reply-to:
  references:mime-version:content-transfer-encoding;
- bh=X4L5HxgvJhKjA8csEVWyCP3QlR1qaLDSS0PxrRvBsuI=;
- b=MX1EdnYLKBhhjWyl0fsVP4drdlGeN62ui6NDrHRaAoQlPQhzhebk0dnw
- ljda/CIs7fSiWJ9IpsMFcSZrhzn6O3EsqlosY+qDAmIyTQ3ilSKGyK8MY
- hpYIIyAl+joblSNhio5BUolQFjpYnZN65TjHCyd7Z1WKtjnZbplKX8ED6
- aTHWe7fH4bQHfB/kjI+8m23KyvCO1RM5IwzpkUd9FR0CsCErXtGBQuCIb
- loGWgaEYW/ulNT7KZdvK2LbGreX6rnkcVzGgF+EBsMe+S6VCB5sQkhVyo
- nrHQrWhnhoFvoWEjQnNieEcyQ9T+oqfPxf7Q5vmln9g7YxK4fNrZR4ate w==;
-X-IronPort-AV: E=McAfee;i="6400,9594,10380"; a="305270913"
-X-IronPort-AV: E=Sophos;i="5.92,306,1650956400"; d="scan'208";a="305270913"
+ bh=VqcF/ymnuWaB2osTDuyyh60mLTmj08VZJ8pmkLi1HkQ=;
+ b=flnLZEuOOGzzIn9hYFCVQZizGxiGzgh8hQ6jIxow1VKN1lf3pXisoW7v
+ 9lADi+km7qdKlzaB5zGBmoH4Wmn8rxwMhsgNP4s9g3VCjoavyvo4aHulo
+ 2S93z9CDRoaa1Q7jAtZX2sSbinr+2YbpoNncApwAgMLZgVp1akKGCvnDW
+ stKTppde8aycLnobXepmSVRtNTFuh+zeLAHLBPfm6XAJ+V8BRpmOQm1x1
+ bc+Hz7GbbtMh3l7M2XQkAzaBENYPtgC2rlggOzwFo9G7wj2EFU0nnyWfd
+ h9WmbTKuJepTNOpw2DyyEhjeXPP3OYtA9nadRN6WrDhsS8rJk7ISeTWJ/ Q==;
+X-IronPort-AV: E=McAfee;i="6400,9594,10380"; a="305270936"
+X-IronPort-AV: E=Sophos;i="5.92,306,1650956400"; d="scan'208";a="305270936"
 Received: from fmsmga007.fm.intel.com ([10.253.24.52])
  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 20 Jun 2022 01:12:38 -0700
+ 20 Jun 2022 01:12:44 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.92,306,1650956400"; d="scan'208";a="591067418"
+X-IronPort-AV: E=Sophos;i="5.92,306,1650956400"; d="scan'208";a="591067441"
 Received: from crojewsk-ctrl.igk.intel.com ([10.102.9.28])
- by fmsmga007.fm.intel.com with ESMTP; 20 Jun 2022 01:12:36 -0700
+ by fmsmga007.fm.intel.com with ESMTP; 20 Jun 2022 01:12:42 -0700
 From: Cezary Rojewski <cezary.rojewski@intel.com>
 To: alsa-devel@alsa-project.org,
 	broonie@kernel.org
-Subject: [PATCH v3 10/17] ASoC: Intel: bdw_rt286: Reword driver name
-Date: Mon, 20 Jun 2022 10:22:19 +0200
-Message-Id: <20220620082226.2489357-11-cezary.rojewski@intel.com>
+Subject: [PATCH v3 13/17] ASoC: Intel: bdw_rt286: Improve probe() function
+ quality
+Date: Mon, 20 Jun 2022 10:22:22 +0200
+Message-Id: <20220620082226.2489357-14-cezary.rojewski@intel.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20220620082226.2489357-1-cezary.rojewski@intel.com>
 References: <20220620082226.2489357-1-cezary.rojewski@intel.com>
@@ -86,48 +87,73 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Align with other Intel boards naming convention and let the name
-explicitly state which components are being connected.
+Declare local 'dev' and make use of it plus dev_get_platdata() to
+improve code readability. Relocate few relevant to the function macros
+for the exact same read too.
 
 Signed-off-by: Cezary Rojewski <cezary.rojewski@intel.com>
 Reviewed-by: Amadeusz Sławiński <amadeuszx.slawinski@linux.intel.com>
 ---
- sound/soc/intel/boards/bdw_rt286.c                    | 4 ++--
- sound/soc/intel/common/soc-acpi-intel-hsw-bdw-match.c | 2 +-
- 2 files changed, 3 insertions(+), 3 deletions(-)
+ sound/soc/intel/boards/bdw_rt286.c | 23 +++++++++++------------
+ 1 file changed, 11 insertions(+), 12 deletions(-)
 
 diff --git a/sound/soc/intel/boards/bdw_rt286.c b/sound/soc/intel/boards/bdw_rt286.c
-index a5a425f6d95c..03cc50cb3c31 100644
+index f922b4636ced..8624e52b4def 100644
 --- a/sound/soc/intel/boards/bdw_rt286.c
 +++ b/sound/soc/intel/boards/bdw_rt286.c
-@@ -322,7 +322,7 @@ static struct platform_driver bdw_rt286_driver = {
- 	.probe = bdw_rt286_probe,
- 	.remove = bdw_rt286_remove,
- 	.driver = {
--		.name = "broadwell-audio",
-+		.name = "bdw_rt286",
- 		.pm = &snd_soc_pm_ops
- 	},
+@@ -235,13 +235,6 @@ static int bdw_rt286_resume(struct snd_soc_card *card)
+ 	return 0;
+ }
+ 
+-/* Use space before codec name to simplify card ID, and simplify driver name. */
+-#define SOF_CARD_NAME "bdw rt286" /* card name will be 'sof-bdw rt286' */
+-#define SOF_DRIVER_NAME "SOF"
+-
+-#define CARD_NAME "broadwell-rt286"
+-#define DRIVER_NAME NULL /* card name will be used for driver name */
+-
+ static struct snd_soc_card bdw_rt286_card = {
+ 	.owner = THIS_MODULE,
+ 	.dai_link = card_dai_links,
+@@ -257,27 +250,33 @@ static struct snd_soc_card bdw_rt286_card = {
+ 	.resume_post = bdw_rt286_resume,
  };
-@@ -333,4 +333,4 @@ module_platform_driver(bdw_rt286_driver)
- MODULE_AUTHOR("Liam Girdwood, Xingchao Wang");
- MODULE_DESCRIPTION("Intel SST Audio for WPT/Broadwell");
- MODULE_LICENSE("GPL v2");
--MODULE_ALIAS("platform:broadwell-audio");
-+MODULE_ALIAS("platform:bdw_rt286");
-diff --git a/sound/soc/intel/common/soc-acpi-intel-hsw-bdw-match.c b/sound/soc/intel/common/soc-acpi-intel-hsw-bdw-match.c
-index 4e00f8f6c521..cbcb649604e5 100644
---- a/sound/soc/intel/common/soc-acpi-intel-hsw-bdw-match.c
-+++ b/sound/soc/intel/common/soc-acpi-intel-hsw-bdw-match.c
-@@ -23,7 +23,7 @@ EXPORT_SYMBOL_GPL(snd_soc_acpi_intel_haswell_machines);
- struct snd_soc_acpi_mach snd_soc_acpi_intel_broadwell_machines[] = {
- 	{
- 		.id = "INT343A",
--		.drv_name = "broadwell-audio",
-+		.drv_name = "bdw_rt286",
- 		.fw_filename =  "intel/IntcSST2.bin",
- 		.sof_tplg_filename = "sof-bdw-rt286.tplg",
- 	},
+ 
++/* Use space before codec name to simplify card ID, and simplify driver name. */
++#define SOF_CARD_NAME "bdw rt286" /* card name will be 'sof-bdw rt286' */
++#define SOF_DRIVER_NAME "SOF"
++
++#define CARD_NAME "broadwell-rt286"
++
+ static int bdw_rt286_probe(struct platform_device *pdev)
+ {
+ 	struct snd_soc_acpi_mach *mach;
++	struct device *dev = &pdev->dev;
+ 	int ret;
+ 
+-	bdw_rt286_card.dev = &pdev->dev;
+-	mach = pdev->dev.platform_data;
++	bdw_rt286_card.dev = dev;
++	mach = dev_get_platdata(dev);
+ 
+ 	ret = snd_soc_fixup_dai_links_platform_name(&bdw_rt286_card, mach->mach_params.platform);
+ 	if (ret)
+ 		return ret;
+ 
+-	if (snd_soc_acpi_sof_parent(&pdev->dev)) {
++	if (snd_soc_acpi_sof_parent(dev)) {
+ 		bdw_rt286_card.name = SOF_CARD_NAME;
+ 		bdw_rt286_card.driver_name = SOF_DRIVER_NAME;
+ 	} else {
+ 		bdw_rt286_card.name = CARD_NAME;
+-		bdw_rt286_card.driver_name = DRIVER_NAME;
+ 	}
+ 
+-	return devm_snd_soc_register_card(&pdev->dev, &bdw_rt286_card);
++	return devm_snd_soc_register_card(dev, &bdw_rt286_card);
+ }
+ 
+ static int bdw_rt286_remove(struct platform_device *pdev)
 -- 
 2.25.1
 
