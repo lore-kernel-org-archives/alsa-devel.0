@@ -4,77 +4,77 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4BD55C43334
-	for <alsa-devel@archiver.kernel.org>; Wed, 22 Jun 2022 15:35:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C4FE6C433EF
+	for <alsa-devel@archiver.kernel.org>; Wed, 22 Jun 2022 15:35:31 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 8D95620CD;
-	Wed, 22 Jun 2022 17:34:23 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8D95620CD
+	by alsa0.perex.cz (Postfix) with ESMTPS id F360E1F6D;
+	Wed, 22 Jun 2022 17:34:39 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F360E1F6D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1655912113;
-	bh=+0yLKRFOKqBW1Upp/o0HCNE6LCYhV91297Rd5m9WDJ8=;
+	s=default; t=1655912130;
+	bh=FpGKCq2GGtLX13/bAR9ApL0zzxiJlvthiIpB7Iv1RcU=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Lj2OVpXXJBr5VwaYk/y2B1VOiaEHTPIELnGCkYFJbrL+GeDpLYgnqyDTVl+t89yxv
-	 XC9efwD363GM5UEeKTg/Il0D5Vt6k8Spn8NJ5OG1Zz+dr0IgzJ4pfV0xBD/GoBZvCS
-	 SmiWjPpzwCJzfoALNcYikpgm9C0NMCj6muyiTMR4=
+	b=STHv0cB/VdUipdai/KOmwlxc+iSOZmfSibWowRyLztJ+SUo8joC80GtbqFoYODOcn
+	 oBR0XXeLSftILKbhs2jaqEyGqXOPO6HGikE4SVgMXDNoVJKxyata0rGOsmaz9jbPMF
+	 fKL+tpf1L4c2C6gSlxroWHj2XhkajaZqQm8CX3fg=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id D7736F80637;
-	Wed, 22 Jun 2022 17:23:47 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 7193DF8063B;
+	Wed, 22 Jun 2022 17:23:48 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 97C84F804E5; Mon, 20 Jun 2022 22:07:28 +0200 (CEST)
-Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com
- [IPv6:2a00:1450:4864:20::430])
+ id 5CB9AF804E7; Mon, 20 Jun 2022 22:07:32 +0200 (CEST)
+Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com
+ [IPv6:2a00:1450:4864:20::431])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id E047FF804D2
- for <alsa-devel@alsa-project.org>; Mon, 20 Jun 2022 22:07:24 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E047FF804D2
+ by alsa1.perex.cz (Postfix) with ESMTPS id 5D5DBF804D2
+ for <alsa-devel@alsa-project.org>; Mon, 20 Jun 2022 22:07:28 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5D5DBF804D2
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="TIaLYM+7"
-Received: by mail-wr1-x430.google.com with SMTP id i10so12335105wrc.0
- for <alsa-devel@alsa-project.org>; Mon, 20 Jun 2022 13:07:24 -0700 (PDT)
+ header.b="l4GFUZrK"
+Received: by mail-wr1-x431.google.com with SMTP id m1so8326299wrb.2
+ for <alsa-devel@alsa-project.org>; Mon, 20 Jun 2022 13:07:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
  h=from:to:cc:subject:date:message-id:in-reply-to:references
  :mime-version:content-transfer-encoding;
- bh=dqZEE7XdviwRWITP3iO6UBVL417kMvPw/5cpdhOCnY0=;
- b=TIaLYM+7aLuuRlXrQlapwog96FVtU0ooWGOQ047CVxq6/eBhXYieIqxwCcMXfW3g6t
- f+HGuhXPfSxIelrPnYEN7OU7peoZLJxZnRXDaJcr5fL+fEf69btKbTF4tAUZNYQyHScv
- iwtpLeRs+BLtCQHpOHV5HTtcb+smm2n5XiEw9va+rWEPvmpRhr9uihWsn8c3AWaKo2tu
- ixhGNtLy3TSWF+J6E4waInzEuxA2ck3ipVwp4MrV2tbNe0NS3OQkYDrzOC8k9atTsxJT
- 71CeVTVSDdBpYrNOzHBu5VTgwxnGKG7OS+jOMILWiKTmwhHwDvjmfpRNJ4UZ4pzCshkj
- 2pww==
+ bh=klzG1EiAdFscBZBcoCzDKMr3GKqX2S6ab3hLTukICYA=;
+ b=l4GFUZrKtyjWTlZn2W6sbNe7RkJpSisjb5nPFCMRsK4VVftYk11OQgyGsUsVQOVVxd
+ WveltYUyuvOFbYFUdYhxpXNuxE4S4YCumzKcvnxPGX4OsA13JEey1GXiYfj+BN3FyuAk
+ YoyM6iFFHOgbk2ykc+NDEEHh/n23+NkaBHDoIRTmULng90YVn+qOGMdpsjX8phANF5/i
+ sk5OxAxVvNJ2GPbb6NqRjZvP8u6Pf1FxTRCjPvzgHPcXQnzfgqR8rhEIYzbMNaK4cAp6
+ yiv/olpO3Koxh4OhoUfRvU3fEVkmdETxuX090a9/gNWOJYRM4fDVw5XWJYzxI9yxqfA6
+ IXWQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
  h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
  :references:mime-version:content-transfer-encoding;
- bh=dqZEE7XdviwRWITP3iO6UBVL417kMvPw/5cpdhOCnY0=;
- b=pVEO8qcocxfAVSEAS6Gjg1P0+UB7xc9QyQ9n+56Iy2/pn7tr7eDSNBLZRzlSWk4Iuz
- xMZxeVOEbpBqIhO2cHVJzgWvIWREsnkRw9dqF4p+U7DE3f1F6VlXx/yr2/znXn7gtKP/
- CMwvuObln4X3+Qm4KBZRh9/zVB1b/m9qSskV1m+Wz4+Xr/L4CIDxEBSr7hSn/z7hLBMJ
- 9qsNdY4nIT0x9D94XOY6Gn4pdXsicgffdsFi8K9rXN54yKsWeZ8EMOH3fA7cEdPDAu9O
- +VjURXZrqSmU7nviCoyIl5F9kpEk9SWYMdcBUs0XNAHddnLSyKmFU0yYRwfCBGaeMpZC
- wG5Q==
-X-Gm-Message-State: AJIora9wMfA4gQPuFmYgfz2PYGQELaAeFhpdX37mSd0Dy4taQnBs2l3M
- zEOMJ6DQIp/hdPEWxxKvbd4=
-X-Google-Smtp-Source: AGRyM1t7fF9oWyoFMD4Gd1xha3GDwq5quNlzvF+7I8uqpwdkfaVZSf+y3kr/8cPcMtmBqNLfvwIwNg==
-X-Received: by 2002:a5d:5885:0:b0:218:3d12:e0eb with SMTP id
- n5-20020a5d5885000000b002183d12e0ebmr24861338wrf.510.1655755642796; 
- Mon, 20 Jun 2022 13:07:22 -0700 (PDT)
+ bh=klzG1EiAdFscBZBcoCzDKMr3GKqX2S6ab3hLTukICYA=;
+ b=h1vQ8BX+ppv7c09DUswXkAB471AZvCDzYTds8A8bASic6/8WA9BYvnOvmpJdh47fH0
+ Cg8he4hRq2quYoBU5JNzszDpdnoqt4KI+YSGNSu0bLuO2gtHJr0Gfk8XREHAiJkAq7jN
+ FnW1VOrQdQaq7YLAdNw33wea3zbl8sr96FrrL8ttItBJlhJ8mOysNXqEcNsB+QrTQPPD
+ POzevNc3WIRoQZKlqXNOFxD9UybgXX6h4whD3d247dj94fpsi2qVjfwvajJuQ260/EyJ
+ flaURTP4ma65CNUs3VNO1wD1Ihnirh2jccVYLWXZknuuQ6dc7BHi0zODl5chq5uwpprT
+ c4yQ==
+X-Gm-Message-State: AJIora+CkuN4DcgXuGH81aV32npECv6ZlRZUN0UD3GyzUumrL/aIe2/U
+ JHWD9BKs18sz+IThEI3Nnhk=
+X-Google-Smtp-Source: AGRyM1tNlpsLQBbADqcDPRR01JRNtswf/HBtBf5oihaYlvZj08PdTVfZrZn0YfVlGpD8PsGFQGId1w==
+X-Received: by 2002:a5d:5981:0:b0:218:51ae:8808 with SMTP id
+ n1-20020a5d5981000000b0021851ae8808mr24885992wri.244.1655755648056; 
+ Mon, 20 Jun 2022 13:07:28 -0700 (PDT)
 Received: from localhost (92.40.169.63.threembb.co.uk. [92.40.169.63])
  by smtp.gmail.com with ESMTPSA id
- w10-20020a05600c014a00b0039ee51fda45sm12789702wmm.2.2022.06.20.13.07.21
+ d3-20020adffbc3000000b0020e6ce4dabdsm14219147wrs.103.2022.06.20.13.07.27
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Mon, 20 Jun 2022 13:07:22 -0700 (PDT)
+ Mon, 20 Jun 2022 13:07:27 -0700 (PDT)
 From: Aidan MacDonald <aidanmacdonald.0x0@gmail.com>
 To: broonie@kernel.org
-Subject: [PATCH 42/49] mfd: qcom-pm8008: Fix broken mask/unmask in irq chip
-Date: Mon, 20 Jun 2022 21:06:37 +0100
-Message-Id: <20220620200644.1961936-43-aidanmacdonald.0x0@gmail.com>
+Subject: [PATCH 45/49] regmap-irq: Remove mask_invert flag
+Date: Mon, 20 Jun 2022 21:06:40 +0100
+Message-Id: <20220620200644.1961936-46-aidanmacdonald.0x0@gmail.com>
 In-Reply-To: <20220620200644.1961936-1-aidanmacdonald.0x0@gmail.com>
 References: <20220620200644.1961936-1-aidanmacdonald.0x0@gmail.com>
 MIME-Version: 1.0
@@ -109,38 +109,111 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Swap mask_base and unmask_base, and drop the broken_mask_unmask
-flag since we're now expecting the registers to have their usual
-behavior.
+An inverted mask register can be represented more directly
+as an unmask register. Drop the redundant mask_invert flag.
 
 Signed-off-by: Aidan MacDonald <aidanmacdonald.0x0@gmail.com>
 ---
- drivers/mfd/qcom-pm8008.c | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
+ drivers/base/regmap/regmap-irq.c | 30 ++++++++----------------------
+ include/linux/regmap.h           |  2 --
+ 2 files changed, 8 insertions(+), 24 deletions(-)
 
-diff --git a/drivers/mfd/qcom-pm8008.c b/drivers/mfd/qcom-pm8008.c
-index 18095e72714e..7bc6becfe7f4 100644
---- a/drivers/mfd/qcom-pm8008.c
-+++ b/drivers/mfd/qcom-pm8008.c
-@@ -45,8 +45,8 @@ enum {
- #define PM8008_GPIO2_ADDR	PM8008_PERIPH_3_BASE
+diff --git a/drivers/base/regmap/regmap-irq.c b/drivers/base/regmap/regmap-irq.c
+index 8a718615fd09..0a8edaee064a 100644
+--- a/drivers/base/regmap/regmap-irq.c
++++ b/drivers/base/regmap/regmap-irq.c
+@@ -30,9 +30,6 @@ struct regmap_irq_chip_data {
+ 	int irq;
+ 	int wake_count;
  
- #define PM8008_STATUS_BASE	(PM8008_PERIPH_0_BASE | INT_LATCHED_STS_OFFSET)
--#define PM8008_MASK_BASE	(PM8008_PERIPH_0_BASE | INT_EN_SET_OFFSET)
--#define PM8008_UNMASK_BASE	(PM8008_PERIPH_0_BASE | INT_EN_CLR_OFFSET)
-+#define PM8008_MASK_BASE	(PM8008_PERIPH_0_BASE | INT_EN_CLR_OFFSET)
-+#define PM8008_UNMASK_BASE	(PM8008_PERIPH_0_BASE | INT_EN_SET_OFFSET)
- #define PM8008_TYPE_BASE	(PM8008_PERIPH_0_BASE | INT_SET_TYPE_OFFSET)
- #define PM8008_ACK_BASE		(PM8008_PERIPH_0_BASE | INT_LATCHED_CLR_OFFSET)
- #define PM8008_POLARITY_HI_BASE	(PM8008_PERIPH_0_BASE | INT_POL_HIGH_OFFSET)
-@@ -141,7 +141,6 @@ static struct regmap_irq_chip pm8008_irq_chip = {
- 	.status_base		= PM8008_STATUS_BASE,
- 	.mask_base		= PM8008_MASK_BASE,
- 	.unmask_base		= PM8008_UNMASK_BASE,
--	.broken_mask_unmask	= true,
- 	.ack_base		= PM8008_ACK_BASE,
- 	.config_base		= pm8008_config_regs,
- 	.num_config_bases	= ARRAY_SIZE(pm8008_config_regs),
+-	unsigned int mask_base;
+-	unsigned int unmask_base;
+-
+ 	void *status_reg_buf;
+ 	unsigned int *main_status_buf;
+ 	unsigned int *status_buf;
+@@ -126,8 +123,8 @@ static void regmap_irq_sync_unlock(struct irq_data *data)
+ 	 * suppress pointless writes.
+ 	 */
+ 	for (i = 0; i < d->chip->num_regs; i++) {
+-		if (d->mask_base) {
+-			reg = sub_irq_reg(d, d->mask_base, i);
++		if (d->chip->mask_base) {
++			reg = sub_irq_reg(d, d->chip->mask_base, i);
+ 			ret = regmap_irq_update_mask_bits(d, reg,
+ 					d->mask_buf_def[i], d->mask_buf[i]);
+ 			if (ret != 0)
+@@ -135,8 +132,8 @@ static void regmap_irq_sync_unlock(struct irq_data *data)
+ 					reg);
+ 		}
+ 
+-		if (d->unmask_base) {
+-			reg = sub_irq_reg(d, d->unmask_base, i);
++		if (d->chip->unmask_base) {
++			reg = sub_irq_reg(d, d->chip->unmask_base, i);
+ 			ret = regmap_irq_update_mask_bits(d, reg,
+ 					d->mask_buf_def[i], ~d->mask_buf[i]);
+ 			if (ret != 0)
+@@ -721,17 +718,6 @@ int regmap_add_irq_chip_fwnode(struct fwnode_handle *fwnode,
+ 	d->chip = chip;
+ 	d->irq_base = irq_base;
+ 
+-	/*
+-	 * Swap role of mask_base and unmask_base if mask bits are inverted.
+-	 */
+-	if (chip->mask_invert) {
+-		d->mask_base = chip->unmask_base;
+-		d->unmask_base = chip->mask_base;
+-	} else {
+-		d->mask_base = chip->mask_base;
+-		d->unmask_base = chip->unmask_base;
+-	}
+-
+ 	if (chip->irq_reg_stride)
+ 		d->irq_reg_stride = chip->irq_reg_stride;
+ 	else
+@@ -756,8 +742,8 @@ int regmap_add_irq_chip_fwnode(struct fwnode_handle *fwnode,
+ 	for (i = 0; i < chip->num_regs; i++) {
+ 		d->mask_buf[i] = d->mask_buf_def[i];
+ 
+-		if (d->mask_base) {
+-			reg = sub_irq_reg(d, d->mask_base, i);
++		if (d->chip->mask_base) {
++			reg = sub_irq_reg(d, d->chip->mask_base, i);
+ 			ret = regmap_irq_update_mask_bits(d, reg,
+ 					d->mask_buf_def[i], d->mask_buf[i]);
+ 			if (ret != 0) {
+@@ -767,8 +753,8 @@ int regmap_add_irq_chip_fwnode(struct fwnode_handle *fwnode,
+ 			}
+ 		}
+ 
+-		if (d->unmask_base) {
+-			reg = sub_irq_reg(d, d->unmask_base, i);
++		if (d->chip->unmask_base) {
++			reg = sub_irq_reg(d, d->chip->unmask_base, i);
+ 			ret = regmap_irq_update_mask_bits(d, reg,
+ 					d->mask_buf_def[i], ~d->mask_buf[i]);
+ 			if (ret != 0) {
+diff --git a/include/linux/regmap.h b/include/linux/regmap.h
+index a3103c88e936..bb625a1edef9 100644
+--- a/include/linux/regmap.h
++++ b/include/linux/regmap.h
+@@ -1462,7 +1462,6 @@ struct regmap_irq_sub_irq_map {
+  * @config_base: Base address for IRQ type config regs. If null unsupported.
+  * @irq_reg_stride:  Stride to use for chips where registers are not contiguous.
+  * @init_ack_masked: Ack all masked interrupts once during initalization.
+- * @mask_invert: Inverted mask register: cleared bits are masked out.
+  * @use_ack:     Use @ack register even if it is zero.
+  * @ack_invert:  Inverted ack register: cleared bits for ack.
+  * @clear_ack:  Use this to set 1 and 0 or vice-versa to clear interrupts.
+@@ -1514,7 +1513,6 @@ struct regmap_irq_chip {
+ 	unsigned int irq_reg_stride;
+ 	bool mask_writeonly:1;
+ 	bool init_ack_masked:1;
+-	bool mask_invert:1;
+ 	bool use_ack:1;
+ 	bool ack_invert:1;
+ 	bool clear_ack:1;
 -- 
 2.35.1
 
