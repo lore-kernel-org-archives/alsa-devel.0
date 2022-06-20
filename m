@@ -4,64 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id ADB3BC433EF
-	for <alsa-devel@archiver.kernel.org>; Mon, 20 Jun 2022 10:04:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C0467C433EF
+	for <alsa-devel@archiver.kernel.org>; Mon, 20 Jun 2022 10:05:20 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E748A18A2;
-	Mon, 20 Jun 2022 12:03:56 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E748A18A2
+	by alsa0.perex.cz (Postfix) with ESMTPS id D6C2118B9;
+	Mon, 20 Jun 2022 12:04:28 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D6C2118B9
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1655719487;
-	bh=zr6VMQioBySyht2zXsQHKQt8RAO9xK3VUFFQXX2Rqw4=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=kHmd12JmjxvYnFGSGeNR1136QIq5prBnzJdpSLNOdslYtkU0krVP5SGSoazQYniCJ
-	 dnsb2/6mRPy8JrtzhXX896/VX57qjdYs1UiUMZPyRSuOhmI2osDNB9lyBqt9l7nHK+
-	 Vm18WfJMip50xCNJCqJp5taxXDm2ju+YWXEDSH94=
+	s=default; t=1655719518;
+	bh=6VvB/TlWpsJQa652pZrSZHJbablnDYdsutOy9NV5/cQ=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=WN4F2Rflus+hGaryGmPnx0DoT2kV9vnb4VfLJcpDEQmRDtSWkdgSbphxLt4wq6HPY
+	 2FQ58JdmEdTS6mTYQpRtlQ7CQzCF7mYC2JecJ6Em3zRLEirgHxSC0JuNfOvETNE2S3
+	 VAl150SIcx+BXq48Cio7qVyqqcN5h+OTo+crrz9g=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 75805F804D2;
-	Mon, 20 Jun 2022 12:03:56 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 3B57CF804E7;
+	Mon, 20 Jun 2022 12:03:57 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 7D437F804D2; Mon, 20 Jun 2022 12:03:54 +0200 (CEST)
+ id A17B6F804D8; Mon, 20 Jun 2022 12:03:55 +0200 (CEST)
 Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 928FEF800FB
- for <alsa-devel@alsa-project.org>; Mon, 20 Jun 2022 12:03:50 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 928FEF800FB
+ by alsa1.perex.cz (Postfix) with ESMTPS id B277EF804CF
+ for <alsa-devel@alsa-project.org>; Mon, 20 Jun 2022 12:03:51 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B277EF804CF
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="IAxA8Ttd"
+ header.b="lqM01RU0"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1655719432; x=1687255432;
- h=from:to:cc:subject:date:message-id:mime-version:
- content-transfer-encoding;
- bh=zr6VMQioBySyht2zXsQHKQt8RAO9xK3VUFFQXX2Rqw4=;
- b=IAxA8Ttd57+KXT36umOQYmpgBN7YReJUsiwWV+PDRRj72yHJj6jj8c8G
- iNM2VVJmPLcyCHnh6hC6mTcz0QaDCXwUSp9pOWZVo8KbPydGhEqe9gVlB
- mzLDbezyljQ+4qqV6Gs0EuQWuGsDXzTy9jUgYBLXZSTAR4V9ZboMpjWc6
- t9nUlqUbEEohaPD3EC3DAiIB4C5eGhx5OzdcLEnYKCz1oazjzrA128qGW
- nK5CbKTp0WiTQS5OCWwdOyUeWuFjCmagxaEKjCJulJEevf1+PV4RgGYBh
- VTbN+bjTzHcKrz/y+JZdvHIaWcKoxB05NpvhU9d5kuYspOdSTpDkyXijf w==;
-X-IronPort-AV: E=McAfee;i="6400,9594,10380"; a="366180634"
-X-IronPort-AV: E=Sophos;i="5.92,306,1650956400"; d="scan'208";a="366180634"
+ t=1655719433; x=1687255433;
+ h=from:to:cc:subject:date:message-id:in-reply-to:
+ references:mime-version:content-transfer-encoding;
+ bh=6VvB/TlWpsJQa652pZrSZHJbablnDYdsutOy9NV5/cQ=;
+ b=lqM01RU0Z/kjyZqjY0HN5Y4QM1bvWuqUDY3eQ4OWLk0ogOvBauCTJX0f
+ 9lpAduyyscBSLVWvAUEnbuXcAD0YxuLozbshPYLy0z1Th+8v3KT/PQnr1
+ Z8bO/9y/owRAV4bb/SieIj21h0cU20J9lbUbTJX9uw/e+JBI1DaBUItwa
+ Iv+RBKFyc8P/Z/HFvVqMjO9tum2V96nKv5mwX2pOIJ+3inHhN896UorvO
+ Q7nBcyN7DNtQZNJt6rVxoxtM1lG4L7dpnO90etFRiAdyc5mdQmWaQyBkY
+ 1jOk/eGhGoNPj5o1Lke80qObET+Qibky5eoWq3So096HwkFC/Hbjn721N A==;
+X-IronPort-AV: E=McAfee;i="6400,9594,10380"; a="366180643"
+X-IronPort-AV: E=Sophos;i="5.92,306,1650956400"; d="scan'208";a="366180643"
 Received: from fmsmga008.fm.intel.com ([10.253.24.58])
  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 20 Jun 2022 03:03:47 -0700
+ 20 Jun 2022 03:03:49 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.92,306,1650956400"; d="scan'208";a="643046247"
+X-IronPort-AV: E=Sophos;i="5.92,306,1650956400"; d="scan'208";a="643046252"
 Received: from crojewsk-ctrl.igk.intel.com ([10.102.9.28])
- by fmsmga008.fm.intel.com with ESMTP; 20 Jun 2022 03:03:45 -0700
+ by fmsmga008.fm.intel.com with ESMTP; 20 Jun 2022 03:03:47 -0700
 From: Cezary Rojewski <cezary.rojewski@intel.com>
 To: alsa-devel@alsa-project.org,
 	broonie@kernel.org
-Subject: [PATCH v4 00/17] ASoC: Intel: haswell and broadwell boards update
-Date: Mon, 20 Jun 2022 12:13:45 +0200
-Message-Id: <20220620101402.2684366-1-cezary.rojewski@intel.com>
+Subject: [PATCH v4 01/17] ASoC: Intel: Rename haswell source file to hsw_rt5640
+Date: Mon, 20 Jun 2022 12:13:46 +0200
+Message-Id: <20220620101402.2684366-2-cezary.rojewski@intel.com>
 X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20220620101402.2684366-1-cezary.rojewski@intel.com>
+References: <20220620101402.2684366-1-cezary.rojewski@intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -83,71 +86,31 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-A number of patches improving overall quality and readability of
-haswell.c and broadwell.c source files found in sound/soc/intel/boards.
-Both files are first renamed and only then actual changes are being
-incrementally added. The respective names are: hsw_rt5640 and bdw_rt286
-to match the pattern found in more recent boards.
+Rename source file to drop any ambiguity.
 
-Most patches bring no functional change - the more impactful patches at
-are placed the end:
+Signed-off-by: Cezary Rojewski <cezary.rojewski@intel.com>
+Reviewed-by: Amadeusz Sławiński <amadeuszx.slawinski@linux.intel.com>
+---
+ sound/soc/intel/boards/Makefile                    | 2 +-
+ sound/soc/intel/boards/{haswell.c => hsw_rt5640.c} | 0
+ 2 files changed, 1 insertion(+), 1 deletion(-)
+ rename sound/soc/intel/boards/{haswell.c => hsw_rt5640.c} (100%)
 
-Refactor of suspend/resume flow for the bdw_rt286 board by dropping
-dev->remove() in favour of card->remove() and adjust jack handling to
-reduce code size slightly by implementing card_set_jack().
-
-The last patch is removing of FE DAI ops. Given the existence of
-platform FE DAI capabilities (either static declaration or through
-topology file), this code is redundant.
-
-
-Changes in v4:
-- just a rebase to fix missed conflicts with for-next
-
-Changes in v3:
-- Patch 16/17 refactoring suspend/resume has been renamed to "Refactor
-  jack handling". Dropped the usage of card->remove() in favor of
-  link->exit() in that very patch
-
-Changes in v2:
-- fixed wording error in patch 02/17 so it correctly mentions
-  'haswell_rt5640', not 'broadwell_rt286'
-- decided not to add kernel module names changes to this patchset so the
-  review is not complicated unnecessarily. Will send them separately
-  instead
-
-Cezary Rojewski (17):
-  ASoC: Intel: Rename haswell source file to hsw_rt5640
-  ASoC: Intel: hsw_rt5640: Reword prefixes of all driver members
-  ASoC: Intel: hsw_rt5640: Reword driver name
-  ASoC: Intel: hsw_rt5640: Update code indentation
-  ASoC: Intel: hsw_rt5640: Update file comments
-  ASoC: Intel: hsw_rt5640: Improve probe() function quality
-  ASoC: Intel: hsw_rt5640: Improve hw_params() debug-ability
-  ASoC: Intel: Rename broadwell source file to bdw_rt286
-  ASoC: Intel: bdw_rt286: Reword prefixes of all driver members
-  ASoC: Intel: bdw_rt286: Reword driver name
-  ASoC: Intel: bdw_rt286: Update code indentation
-  ASoC: Intel: bdw_rt286: Update file comments
-  ASoC: Intel: bdw_rt286: Improve probe() function quality
-  ASoC: Intel: bdw_rt286: Improve hw_params() debug-ability
-  ASoC: Intel: bdw_rt286: Improve codec_init() quality
-  ASoC: Intel: bdw_rt286: Refactor jack handling
-  ASoC: Intel: bdw_rt286: Remove FE DAI ops
-
- sound/soc/intel/boards/Kconfig                |   4 +-
- sound/soc/intel/boards/Makefile               |   4 +-
- sound/soc/intel/boards/bdw_rt286.c            | 256 +++++++++++++
- sound/soc/intel/boards/broadwell.c            | 338 ------------------
- sound/soc/intel/boards/haswell.c              | 202 -----------
- sound/soc/intel/boards/hsw_rt5640.c           | 176 +++++++++
- .../common/soc-acpi-intel-hsw-bdw-match.c     |   6 +-
- 7 files changed, 439 insertions(+), 547 deletions(-)
- create mode 100644 sound/soc/intel/boards/bdw_rt286.c
- delete mode 100644 sound/soc/intel/boards/broadwell.c
- delete mode 100644 sound/soc/intel/boards/haswell.c
- create mode 100644 sound/soc/intel/boards/hsw_rt5640.c
-
+diff --git a/sound/soc/intel/boards/Makefile b/sound/soc/intel/boards/Makefile
+index 40c0c3d1c500..e479546a3d4b 100644
+--- a/sound/soc/intel/boards/Makefile
++++ b/sound/soc/intel/boards/Makefile
+@@ -1,5 +1,5 @@
+ # SPDX-License-Identifier: GPL-2.0-only
+-snd-soc-sst-haswell-objs := haswell.o
++snd-soc-sst-haswell-objs := hsw_rt5640.o
+ snd-soc-sst-bdw-rt5650-mach-objs := bdw-rt5650.o
+ snd-soc-sst-bdw-rt5677-mach-objs := bdw-rt5677.o
+ snd-soc-sst-broadwell-objs := broadwell.o
+diff --git a/sound/soc/intel/boards/haswell.c b/sound/soc/intel/boards/hsw_rt5640.c
+similarity index 100%
+rename from sound/soc/intel/boards/haswell.c
+rename to sound/soc/intel/boards/hsw_rt5640.c
 -- 
 2.25.1
 
