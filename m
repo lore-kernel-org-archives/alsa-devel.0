@@ -4,64 +4,65 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C2F4AC433EF
-	for <alsa-devel@archiver.kernel.org>; Mon, 20 Jun 2022 08:15:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B8BDBC43334
+	for <alsa-devel@archiver.kernel.org>; Mon, 20 Jun 2022 08:15:22 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 12FEB18C7;
-	Mon, 20 Jun 2022 10:14:19 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 12FEB18C7
+	by alsa0.perex.cz (Postfix) with ESMTPS id 061721902;
+	Mon, 20 Jun 2022 10:14:31 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 061721902
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1655712909;
-	bh=S2zgngizPET+7aZCkrrk7QSbk4YZ3FUTi7y2NyUjsLk=;
+	s=default; t=1655712921;
+	bh=aBOBlOyz852sglEqIR7/HbSbdqdNaRPyc8TMc0PuzuY=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=mWUPKyK7VfiirE5HbKHUOIrjVbL+OTfVjoJ346Y4winlLm/PlSCZGyKrjI6kHodnG
-	 mbR8KyHi01bQClDW08HdvQ2hH2scSataYoHqyDoJR0KmRBDaD3i8obYwM987WB/RU8
-	 7BKVAYNTr+ZIzhzf4rPr6faxLsr1HjfyGOSdQq5E=
+	b=aqQJYpAbWjGCvNPsNGJ6aavkVjk0jDeI0TX/fT0reauRiSi9QbUNQUBU+1kIbJw9y
+	 2pubUqL2wnrHSgntSwxSCrhDFwD4gx0/2dwAIokgFmfZhX7aKopt1MwRS5YaaxbhgF
+	 tA0hMLTjdtMOrpq2LnIKM/FAvsgBK/I6F7LNNwrY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 02483F80559;
-	Mon, 20 Jun 2022 10:12:45 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id D0299F80567;
+	Mon, 20 Jun 2022 10:12:46 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 4D84FF80558; Mon, 20 Jun 2022 10:12:41 +0200 (CEST)
+ id 734D3F8052E; Mon, 20 Jun 2022 10:12:41 +0200 (CEST)
 Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 585E4F804E5
- for <alsa-devel@alsa-project.org>; Mon, 20 Jun 2022 10:12:28 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 585E4F804E5
+ by alsa1.perex.cz (Postfix) with ESMTPS id 8B027F8052E
+ for <alsa-devel@alsa-project.org>; Mon, 20 Jun 2022 10:12:30 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8B027F8052E
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="fFFT70Kv"
+ header.b="KzrmD1w2"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1655712749; x=1687248749;
+ t=1655712751; x=1687248751;
  h=from:to:cc:subject:date:message-id:in-reply-to:
  references:mime-version:content-transfer-encoding;
- bh=S2zgngizPET+7aZCkrrk7QSbk4YZ3FUTi7y2NyUjsLk=;
- b=fFFT70KvzEN7cYCeN7pVV6LVF4CDgEqvPLz22uQa08zEaNv7WN109oFq
- eSMn6Hg6dFFAseaj34XLOPXmsZqeODmfRtiz00wrsecFOeOA1JDH+kQcf
- SfGzJ+/vZiSkswyIKqpc1gX/Drow5rbDEBOMiyar/fm2SYt+Scqodl6WY
- 3wUJQ04VsACzwQMxmszBA+lA8hvqd8GGLQjfmpdjRDPCLYYsIAkw2kUw9
- fUo+6qRp48KDhbGdN6qZoqDvfnKYFaNoCW2y5YG+c0amp2YEakjolEwPc
- KcNJh4jfMTekNP22JXY341reYEt/tIHRr+xKWxz0BXM/8SZX6E5I14laX A==;
-X-IronPort-AV: E=McAfee;i="6400,9594,10380"; a="305270883"
-X-IronPort-AV: E=Sophos;i="5.92,306,1650956400"; d="scan'208";a="305270883"
+ bh=aBOBlOyz852sglEqIR7/HbSbdqdNaRPyc8TMc0PuzuY=;
+ b=KzrmD1w2hjLRkYKypspjj6xsyLMuIzwoZtKjoNUeqlBZ4bpCrGX+Ba9R
+ 0TU21bv1eGqFhs5jDOjxn0WBEjjmyvCLz0XDvAbVopwzYYR4RgaWh66+K
+ 9sXx+KNBmomWpbIK3z7tV9M/N1ZMpH9OtUuI82Rdl4INpoIKa6KiRdztp
+ x49bJlZTz9o9inszOOaSN8F1ZzfaTxyFVIMGfR8b1JWxvJ+pbgaXSMxMV
+ 5t11PBkzMBYPNvSrqi2J2ERrcT/N8/TnPsNc54RVH1vxA0TIfTLeCo9Cd
+ /9B7W0ASJFh2dqqkFgaCoPhk9MvPmn3iUiz2E0IROdz+5tpF5ACJugURa g==;
+X-IronPort-AV: E=McAfee;i="6400,9594,10380"; a="305270888"
+X-IronPort-AV: E=Sophos;i="5.92,306,1650956400"; d="scan'208";a="305270888"
 Received: from fmsmga007.fm.intel.com ([10.253.24.52])
  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 20 Jun 2022 01:12:28 -0700
+ 20 Jun 2022 01:12:29 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.92,306,1650956400"; d="scan'208";a="591067380"
+X-IronPort-AV: E=Sophos;i="5.92,306,1650956400"; d="scan'208";a="591067385"
 Received: from crojewsk-ctrl.igk.intel.com ([10.102.9.28])
- by fmsmga007.fm.intel.com with ESMTP; 20 Jun 2022 01:12:25 -0700
+ by fmsmga007.fm.intel.com with ESMTP; 20 Jun 2022 01:12:28 -0700
 From: Cezary Rojewski <cezary.rojewski@intel.com>
 To: alsa-devel@alsa-project.org,
 	broonie@kernel.org
-Subject: [PATCH v3 05/17] ASoC: Intel: hsw_rt5640: Update file comments
-Date: Mon, 20 Jun 2022 10:22:14 +0200
-Message-Id: <20220620082226.2489357-6-cezary.rojewski@intel.com>
+Subject: [PATCH v3 06/17] ASoC: Intel: hsw_rt5640: Improve probe() function
+ quality
+Date: Mon, 20 Jun 2022 10:22:15 +0200
+Message-Id: <20220620082226.2489357-7-cezary.rojewski@intel.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20220620082226.2489357-1-cezary.rojewski@intel.com>
 References: <20220620082226.2489357-1-cezary.rojewski@intel.com>
@@ -86,99 +87,40 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Drop redundant and update valuable comments within the file to increase
-readability. This patch also revisits module information and kconfig
-help strings.
+Declare local 'dev' and make use of it plus dev_get_platdata() to
+improve code readability.
 
 Signed-off-by: Cezary Rojewski <cezary.rojewski@intel.com>
 Reviewed-by: Amadeusz Sławiński <amadeuszx.slawinski@linux.intel.com>
 ---
- sound/soc/intel/boards/Kconfig      |  2 +-
- sound/soc/intel/boards/hsw_rt5640.c | 16 ++++++----------
- 2 files changed, 7 insertions(+), 11 deletions(-)
+ sound/soc/intel/boards/hsw_rt5640.c | 7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
 
-diff --git a/sound/soc/intel/boards/Kconfig b/sound/soc/intel/boards/Kconfig
-index f3873b5bea87..c3dc0809ed67 100644
---- a/sound/soc/intel/boards/Kconfig
-+++ b/sound/soc/intel/boards/Kconfig
-@@ -41,7 +41,7 @@ config SND_SOC_INTEL_SOF_CIRRUS_COMMON
- if SND_SOC_INTEL_CATPT
- 
- config SND_SOC_INTEL_HASWELL_MACH
--	tristate "Haswell Lynxpoint"
-+	tristate "Haswell with RT5640 I2S codec"
- 	depends on I2C
- 	depends on I2C_DESIGNWARE_PLATFORM || COMPILE_TEST
- 	depends on X86_INTEL_LPSS || COMPILE_TEST
 diff --git a/sound/soc/intel/boards/hsw_rt5640.c b/sound/soc/intel/boards/hsw_rt5640.c
-index da31b011b495..f843ba5f4718 100644
+index f843ba5f4718..273c8e274d25 100644
 --- a/sound/soc/intel/boards/hsw_rt5640.c
 +++ b/sound/soc/intel/boards/hsw_rt5640.c
-@@ -1,6 +1,6 @@
- // SPDX-License-Identifier: GPL-2.0-only
- /*
-- * Intel Haswell Lynxpoint SST Audio
-+ * Sound card driver for Intel Haswell Lynx Point with Realtek 5640
-  *
-  * Copyright (C) 2013, Intel Corporation. All rights reserved.
-  */
-@@ -14,7 +14,6 @@
- #include <sound/soc-acpi.h>
- #include "../../codecs/rt5640.h"
- 
--/* Haswell ULT platforms have a Headphone and Mic jack */
- static const struct snd_soc_dapm_widget card_widgets[] = {
- 	SND_SOC_DAPM_HP("Headphones", NULL),
- 	SND_SOC_DAPM_MIC("Mic", NULL),
-@@ -36,10 +35,10 @@ static int codec_link_hw_params_fixup(struct snd_soc_pcm_runtime *rtd,
- 	struct snd_interval *channels = hw_param_interval(params, SNDRV_PCM_HW_PARAM_CHANNELS);
- 	struct snd_interval *rate = hw_param_interval(params, SNDRV_PCM_HW_PARAM_RATE);
- 
--	/* The ADSP will covert the FE rate to 48k, stereo */
-+	/* The ADSP will convert the FE rate to 48k, stereo. */
- 	rate->min = rate->max = 48000;
- 	channels->min = channels->max = 2;
--	/* set SSP0 to 16 bit */
-+	/* Set SSP0 to 16 bit. */
- 	params_set_format(params, SNDRV_PCM_FORMAT_S16_LE);
- 
- 	return 0;
-@@ -58,7 +57,7 @@ static int codec_link_hw_params(struct snd_pcm_substream *substream,
- 		return ret;
- 	}
- 
--	/* set correct codec filter for DAI format and clock config */
-+	/* Set correct codec filter for DAI format and clock config. */
- 	snd_soc_component_update_bits(codec_dai->component, 0x83, 0xffff, 0x8000);
- 
- 	return ret;
-@@ -133,7 +132,6 @@ static struct snd_soc_dai_link card_dai_links[] = {
- 	},
- };
- 
--/* audio machine driver for Haswell Lynxpoint DSP + RT5640 */
- static struct snd_soc_card hsw_rt5640_card = {
- 	.name = "haswell-rt5640",
- 	.owner = THIS_MODULE,
-@@ -152,7 +150,6 @@ static int hsw_rt5640_probe(struct platform_device *pdev)
+@@ -147,16 +147,17 @@ static struct snd_soc_card hsw_rt5640_card = {
+ static int hsw_rt5640_probe(struct platform_device *pdev)
+ {
+ 	struct snd_soc_acpi_mach *mach;
++	struct device *dev = &pdev->dev;
  	int ret;
  
- 	hsw_rt5640_card.dev = &pdev->dev;
--	/* override platform name, if required */
- 	mach = pdev->dev.platform_data;
+-	hsw_rt5640_card.dev = &pdev->dev;
+-	mach = pdev->dev.platform_data;
++	hsw_rt5640_card.dev = dev;
++	mach = dev_get_platdata(dev);
  
  	ret = snd_soc_fixup_dai_links_platform_name(&hsw_rt5640_card, mach->mach_params.platform);
-@@ -172,8 +169,7 @@ static struct platform_driver hsw_rt5640_driver = {
+ 	if (ret)
+ 		return ret;
  
- module_platform_driver(hsw_rt5640_driver)
+-	return devm_snd_soc_register_card(&pdev->dev, &hsw_rt5640_card);
++	return devm_snd_soc_register_card(dev, &hsw_rt5640_card);
+ }
  
--/* Module information */
- MODULE_AUTHOR("Liam Girdwood, Xingchao Wang");
--MODULE_DESCRIPTION("Intel SST Audio for Haswell Lynxpoint");
--MODULE_LICENSE("GPL v2");
-+MODULE_DESCRIPTION("Sound card driver for Intel Haswell Lynx Point with Realtek 5640");
-+MODULE_LICENSE("GPL");
- MODULE_ALIAS("platform:hsw_rt5640");
+ static struct platform_driver hsw_rt5640_driver = {
 -- 
 2.25.1
 
