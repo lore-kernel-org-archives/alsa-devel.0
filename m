@@ -4,78 +4,78 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7308AC43334
-	for <alsa-devel@archiver.kernel.org>; Wed, 22 Jun 2022 15:28:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 873D0C433EF
+	for <alsa-devel@archiver.kernel.org>; Wed, 22 Jun 2022 15:29:12 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B3FE11FF0;
-	Wed, 22 Jun 2022 17:28:04 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B3FE11FF0
+	by alsa0.perex.cz (Postfix) with ESMTPS id BD8D11FF4;
+	Wed, 22 Jun 2022 17:28:20 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BD8D11FF4
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1655911734;
-	bh=Wq5NQ82Zcz/1kUjbkROMXgpEqf1Ci3lHZ/aKXefzCPw=;
+	s=default; t=1655911750;
+	bh=wkfUYqrBXC8qPRT5H2ltOSOhV9/XqM/ja5DLKDeSBnQ=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Gpc2QnYILB5AfcCFJnZ80kJkfE0hX1NNS/2KabqlRNyT2gCbxidYB7G84JKay3gAN
-	 1oeCl0u8D4lq0YOAVEPsLyEqC+zKXKZBlirZoX55REe/9YaNLUrYE/+ct61vCKaYPa
-	 +6CU6W5N3+m2/haFWBeiFzIaCzqGzGPpK4LSnBfw=
+	b=BbLwhZn9mg/7ORIAnU8oV5Rt2Noe2WiwUPYqTLtzrsxFIqwuCgnCmU/tDyM/a0OGe
+	 QAqqnb0eOGqFH6+pOoi5J5trYvs0m3Dj8nHwOrLehytJTAmQfka8jV2S2yj1Zd2RWl
+	 F1f7YYwr6o9a0PSHyaHo47e1WbVssYINTxMDX8j8=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id D6E3DF805C6;
-	Wed, 22 Jun 2022 17:23:31 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id A1D87F805CA;
+	Wed, 22 Jun 2022 17:23:32 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id AE4FDF804E7; Mon, 20 Jun 2022 22:06:49 +0200 (CEST)
-Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com
- [IPv6:2a00:1450:4864:20::330])
+ id 10A2CF804D8; Mon, 20 Jun 2022 22:06:51 +0200 (CEST)
+Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com
+ [IPv6:2a00:1450:4864:20::42f])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id A35D0F804D8
- for <alsa-devel@alsa-project.org>; Mon, 20 Jun 2022 22:06:44 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A35D0F804D8
+ by alsa1.perex.cz (Postfix) with ESMTPS id D3B29F804DA
+ for <alsa-devel@alsa-project.org>; Mon, 20 Jun 2022 22:06:47 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D3B29F804DA
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="gdmCZ/lB"
-Received: by mail-wm1-x330.google.com with SMTP id
- m39-20020a05600c3b2700b0039c511ebbacso8269579wms.3
- for <alsa-devel@alsa-project.org>; Mon, 20 Jun 2022 13:06:44 -0700 (PDT)
+ header.b="VO5DAnqE"
+Received: by mail-wr1-x42f.google.com with SMTP id s1so16072728wra.9
+ for <alsa-devel@alsa-project.org>; Mon, 20 Jun 2022 13:06:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
  h=from:to:cc:subject:date:message-id:in-reply-to:references
  :mime-version:content-transfer-encoding;
- bh=yDbkoyglFzlD/is/5GkDF5bxT9ENs1AtX/zXNAcYF8s=;
- b=gdmCZ/lBOcInOC7Vpu1bY/iCkTRvuWC70p3sTpyPTGpiGjPvbOfn3qCcOS6TYvfax1
- 3L11FjZaxXZKn19jySJpcCpWV+xtFrtQQCVooDpT2B76t5Yf89SzliwlOHigso1rDVLk
- oTKVebpiS712yjcf0kpN9r3uejsVQPOSwQQwOfRTaV3WxoLZf11oL8qGCQ6IIb3JKTvH
- Gd5oqTmwdqCLXQGfP9Un8n1q4CYFfIWgJvxX8PaS4jqeICZF2WLj79nuYT2SFdtS4Hri
- hh9xIXG5EB3E4bg9SOAm4e7Z9wjbeiNwP/00cDnzR6iUmi2i9i1qZqeOzh3rmmFV/C0Q
- vMPA==
+ bh=uoe8IKHiznCb2+08YYHq6Yn162+SdkatHT+ONYvtyvg=;
+ b=VO5DAnqEeePAwi/axXTy4qE8A246zDDyLHKvfEeupMh4NJS9PKzy2HLbzv2HmLinOh
+ sJDew7tvb/Du6JA9+pWT6wLYpZiUruBlDXuUNGniMiaSflxpZ999oM2RPoZbfWY8bM3s
+ gls0xbSabfR+zndjmVVe2gZatWsAghFwtSJv7FWIrq2fOl5iZF4ORrEzRPpb9VagUUok
+ bzn4DhZTxBTkt686Eof5bwsbZb+iffrPyGoKCrO/d9vttrGG2aS8UHirbaHGBHIZdzMU
+ DZCNjjT5h1ru5g19uCfpQwoKH/YS5Rr49DFzT6RKpFmZ5PA1XwoUduGXijcI+1DBXDyM
+ XTeg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
  h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
  :references:mime-version:content-transfer-encoding;
- bh=yDbkoyglFzlD/is/5GkDF5bxT9ENs1AtX/zXNAcYF8s=;
- b=JjprvxEucayTVuYrVQP4oCGQXMXRGWUJnWnNbY2m4XUokx7VOL7TVNZ13unuV7oO/w
- XcrVfQ4KQ9Mev2Y41jqU64cHGYdCcYV8RSYNQ87jImqjD7c/+9gkKe06eYuOf78y1Kq2
- RDEUlJ2SI09+YPa/GXU6CA+TeaS9plvpzQv9Ktt5AaRJOgt7J0MjK2E2fnVJAXJ45R0p
- xsJ+4sLnw9QCk5m3sRBN5C93PRM/SL3q1abvEJpobHB90Mf8IXDwTfEWsOIvpHgfFzwY
- zntLxm0MPJC3SCw5gM3vVoQISgCRJ7MMs06OWjGxzgqQsq7ViWiK5k/O2ZSkaVKKqoY+
- C9jA==
-X-Gm-Message-State: AOAM5310ETbe0OvW2KqaIUKMnGAIdJrAsVbIbKF+bg6ZwR4JCd3v7E4O
- w1+v1d6ZQlnc7Mh59AcbVHo=
-X-Google-Smtp-Source: ABdhPJynux7C1eoNMlx+vUMO5VOj8q1wBlYfPuBT+ReLmKHLRHcj/n+Q7FNGG42F1xN9EMg0dcGAng==
-X-Received: by 2002:a05:600c:601f:b0:39c:416c:4069 with SMTP id
- az31-20020a05600c601f00b0039c416c4069mr36844654wmb.85.1655755603037; 
- Mon, 20 Jun 2022 13:06:43 -0700 (PDT)
+ bh=uoe8IKHiznCb2+08YYHq6Yn162+SdkatHT+ONYvtyvg=;
+ b=L86xtQr/y2mns8VuNmGM2NN6IwU+lyumRwGWY2Xvy6e6yazWyZ87BpcjyzSzwBAGE/
+ KtEht/XpeLSKsT6u9EzOQw9TqY6Q9bvTs82DdQdox0IkzI6CcUYJnpvZ4l7NmYaQRQKa
+ BLeI09spxwhsZsRC4feqfl8eLjBKS2nbGaB3Cbsj1nibXw9R0S75Kgd4Moi3GeJwvZ2P
+ s/3MpdvS2s4wROaAnMRYStYsAr+L3Iy29jDxifU3M3XJrSoKPN0d91d+imGvhw2ZELNj
+ Lm9KUNSZA8O8nIkWjlPslB+Te4wfqGOIn6MBm0/vqx6mgwL3SdNjXgXe/1TeR5e9ULYF
+ mChQ==
+X-Gm-Message-State: AJIora/IZytUYB8kiia/s+e2ID4MXfjTs2zTX5uEKaMiESescZs+NAKy
+ 2iR0eLu8ZT674NlbSJBYmiA=
+X-Google-Smtp-Source: AGRyM1uZONrpz0spvVCV2D/AIVMzkFz9w2tp1QWQa34Ft0vrEMdw9wgaS52AsbxHhGWZBMtjoEgiDw==
+X-Received: by 2002:adf:fec2:0:b0:21a:6cff:a4f1 with SMTP id
+ q2-20020adffec2000000b0021a6cffa4f1mr18316222wrs.139.1655755607554; 
+ Mon, 20 Jun 2022 13:06:47 -0700 (PDT)
 Received: from localhost (92.40.169.68.threembb.co.uk. [92.40.169.68])
  by smtp.gmail.com with ESMTPSA id
- n15-20020a5d4c4f000000b0021b966abc19sm300460wrt.19.2022.06.20.13.06.42
+ j27-20020a05600c1c1b00b0039c1396b495sm16596378wms.9.2022.06.20.13.06.46
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Mon, 20 Jun 2022 13:06:42 -0700 (PDT)
+ Mon, 20 Jun 2022 13:06:47 -0700 (PDT)
 From: Aidan MacDonald <aidanmacdonald.0x0@gmail.com>
 To: broonie@kernel.org
-Subject: [PATCH 18/49] mfd: qcom-pm8008: Add broken_mask_unmask irq chip flag
-Date: Mon, 20 Jun 2022 21:06:13 +0100
-Message-Id: <20220620200644.1961936-19-aidanmacdonald.0x0@gmail.com>
+Subject: [PATCH 21/49] mfd: tps65090: replace irqchip mask_invert with
+ unmask_base
+Date: Mon, 20 Jun 2022 21:06:16 +0100
+Message-Id: <20220620200644.1961936-22-aidanmacdonald.0x0@gmail.com>
 In-Reply-To: <20220620200644.1961936-1-aidanmacdonald.0x0@gmail.com>
 References: <20220620200644.1961936-1-aidanmacdonald.0x0@gmail.com>
 MIME-Version: 1.0
@@ -110,28 +110,28 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The qcom-pm8008 appears to use "1 to enable" convention for
-enabling interrupts, with separate set and clear registers.
-It's relying on masks and unmasks being inverted from their
-intuitive meaning, so it needs the broken_mask_unmask flag.
+An inverted mask register can be described more directly
+as an unmask register.
 
 Signed-off-by: Aidan MacDonald <aidanmacdonald.0x0@gmail.com>
 ---
- drivers/mfd/qcom-pm8008.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/mfd/tps65090.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/drivers/mfd/qcom-pm8008.c b/drivers/mfd/qcom-pm8008.c
-index da16566f7883..18095e72714e 100644
---- a/drivers/mfd/qcom-pm8008.c
-+++ b/drivers/mfd/qcom-pm8008.c
-@@ -141,6 +141,7 @@ static struct regmap_irq_chip pm8008_irq_chip = {
- 	.status_base		= PM8008_STATUS_BASE,
- 	.mask_base		= PM8008_MASK_BASE,
- 	.unmask_base		= PM8008_UNMASK_BASE,
-+	.broken_mask_unmask	= true,
- 	.ack_base		= PM8008_ACK_BASE,
- 	.config_base		= pm8008_config_regs,
- 	.num_config_bases	= ARRAY_SIZE(pm8008_config_regs),
+diff --git a/drivers/mfd/tps65090.c b/drivers/mfd/tps65090.c
+index bd6235308c6b..e474e1ca253a 100644
+--- a/drivers/mfd/tps65090.c
++++ b/drivers/mfd/tps65090.c
+@@ -127,8 +127,7 @@ static struct regmap_irq_chip tps65090_irq_chip = {
+ 	.num_irqs = ARRAY_SIZE(tps65090_irqs),
+ 	.num_regs = NUM_INT_REG,
+ 	.status_base = TPS65090_REG_INTR_STS,
+-	.mask_base = TPS65090_REG_INTR_MASK,
+-	.mask_invert = true,
++	.unmask_base = TPS65090_REG_INTR_MASK,
+ };
+ 
+ static bool is_volatile_reg(struct device *dev, unsigned int reg)
 -- 
 2.35.1
 
