@@ -4,67 +4,80 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3C6BFC433EF
-	for <alsa-devel@archiver.kernel.org>; Mon, 20 Jun 2022 13:08:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0ACB5CCA481
+	for <alsa-devel@archiver.kernel.org>; Mon, 20 Jun 2022 14:57:38 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 69326170F;
-	Mon, 20 Jun 2022 15:07:15 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 69326170F
+	by alsa0.perex.cz (Postfix) with ESMTPS id 6695A1828;
+	Mon, 20 Jun 2022 16:56:46 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6695A1828
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1655730485;
-	bh=HHDQX3NlnZLPN1fa0iK8DZnWO6BfR1zyzteOcjoiVi0=;
-	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
+	s=default; t=1655737056;
+	bh=iuHCJsCWRrFc8xRE1pPf353DnYJkGMJluzCFMW+Nr6Q=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=f5PqS5fHAZbJHJvrLdM9chgXEfQFMhnKsCKtQEYS86TuM8QLNowcdoVe499vjtHix
-	 olEf6bi4Wfdp0dpr4NWk42YZyDRYH1Dk44lryjSNlsa4/LaqCFCrardqE0Hv1/zUxU
-	 g4jK0+4Di8ymzeOZ1hRCSPxZScHAjF2PtrsPj4Bs=
+	b=AIWaJM6K9J+CEsyC09CT9CWgIqvjftrjHXYGtOZyZpJNv1ESST0krgX7XPwYCTZL3
+	 zag1VZDrjhqd4qMGS7dumKMi92ShB2k4rJz8XbwwxpxdpRQxcdqZ4VkQi4nKX3aJqx
+	 GFyN+7zMglDkFD3WbjI9gpGwrWudsXUJHHs97cbI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id AAB88F804CF;
-	Mon, 20 Jun 2022 15:07:14 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 0645EF800CB;
+	Mon, 20 Jun 2022 16:56:46 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 1FBB5F804D2; Mon, 20 Jun 2022 15:07:12 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org
- [IPv6:2604:1380:4641:c500::1])
+ id C101EF804D2; Mon, 20 Jun 2022 16:56:44 +0200 (CEST)
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id B7C56F800E3
- for <alsa-devel@alsa-project.org>; Mon, 20 Jun 2022 15:07:03 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B7C56F800E3
+ by alsa1.perex.cz (Postfix) with ESMTPS id 90392F800CB
+ for <alsa-devel@alsa-project.org>; Mon, 20 Jun 2022 16:56:40 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 90392F800CB
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="jDPIXvHQ"
+ header.b="Maa4UXxT"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id 1C8B061555;
- Mon, 20 Jun 2022 13:07:01 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 51062C3411C;
- Mon, 20 Jun 2022 13:06:59 +0000 (UTC)
+ by ams.source.kernel.org (Postfix) with ESMTPS id C13A0B811D7;
+ Mon, 20 Jun 2022 14:56:39 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 01640C3411B;
+ Mon, 20 Jun 2022 14:56:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1655730420;
- bh=HHDQX3NlnZLPN1fa0iK8DZnWO6BfR1zyzteOcjoiVi0=;
- h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=jDPIXvHQX18UEYQlx4HNpijY7v08HdK6Z59LniMV9r6zv5YWWaYLYW5omi0xo5tNJ
- 52P7pJC3yL817qJOTzi74pG3W7u4Z/7jXhpc7DWmoDsN9qbXbqyTomZp6cfw4YnywO
- EEJVxNjLTLRMQN1V6UoboeIjDmsV+CROjfZe5DP4TwrNJfEc1JJyN/B/a8C5ko9XrT
- X2HCWjphlXV+qI2lCAcoWuJ2G5xfQFw5n/cWypFAuQMewZSrAx+kcJS7vXd0I21Vf7
- M2GPQ3hYyJyz19+E5VOD6xwj2Y5LOg5cKW4cpIgMPfILwACbm/v91EaCZjFutI8SUj
- E5RWkgbTxPEgA==
+ s=k20201202; t=1655736998;
+ bh=iuHCJsCWRrFc8xRE1pPf353DnYJkGMJluzCFMW+Nr6Q=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=Maa4UXxTdt3KZpgrG3Bdx+W/MPuQawr5e4TNJJ861YViGUrJ0N5wel/7n6wsgIZ+g
+ tyve74E9CTe/JKawsgozk5sAZfqVl+m9dsj9540Z2Pk9PYPSs5N96jM6yw/0Pe+5up
+ OuZUE3yFNLH9+2PHOOjek94zMLsKyEejQEJyNFhwBOArVeI2YsY3FtieoN0W3VlY/Q
+ t21P/3MIqx2FNfrkU7U/0+x90M3A4gAXtFQBemeNpRHXWUzOhzCfDvmM+OqmEYu7m5
+ XuoHD19cmutNfSdAPAdklL31pj7efFk1CWj0YORIyMzkVpwMpBAgpkThMdut9k67m7
+ 30DSA9rk+tzYQ==
+Date: Mon, 20 Jun 2022 15:56:31 +0100
 From: Mark Brown <broonie@kernel.org>
-To: srinivas.kandagatla@linaro.org
-In-Reply-To: <20220617210230.7685-1-srinivas.kandagatla@linaro.org>
-References: <20220617210230.7685-1-srinivas.kandagatla@linaro.org>
-Subject: Re: [PATCH] MAINTAINERS: update ASoC Qualcomm maintainer email-id
-Message-Id: <165573041905.667528.13097598599735683089.b4-ty@kernel.org>
-Date: Mon, 20 Jun 2022 14:06:59 +0100
+To: Pierluigi Passaro <pierluigi.p@variscite.com>
+Subject: Re: [PATCH 4/4] ASoC: wm8904: add DMIC support
+Message-ID: <YrCKn6UgvdwOQqAu@sirena.org.uk>
+References: <AM6PR08MB437614D88A0F44746C2B88BAFFB09@AM6PR08MB4376.eurprd08.prod.outlook.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org,
- lgirdwood@gmail.com, tiwai@suse.com
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature"; boundary="AbQUs8uU3Zo5uRnw"
+Content-Disposition: inline
+In-Reply-To: <AM6PR08MB437614D88A0F44746C2B88BAFFB09@AM6PR08MB4376.eurprd08.prod.outlook.com>
+X-Cookie: Good day to avoid cops.  Crawl to work.
+Cc: "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+ "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
+ "nicoleotsuka@gmail.com" <nicoleotsuka@gmail.com>,
+ "Xiubo.Lee@gmail.com" <Xiubo.Lee@gmail.com>,
+ "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
+ "shengjiu.wang@gmail.com" <shengjiu.wang@gmail.com>,
+ "tiwai@suse.com" <tiwai@suse.com>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "lgirdwood@gmail.com" <lgirdwood@gmail.com>,
+ Eran Matityahu <eran.m@variscite.com>,
+ "robh+dt@kernel.org" <robh+dt@kernel.org>,
+ Alifer Willians de Moraes <alifer.m@variscite.com>,
+ "patches@opensource.cirrus.com" <patches@opensource.cirrus.com>,
+ "festevam@gmail.com" <festevam@gmail.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -80,36 +93,45 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Fri, 17 Jun 2022 14:02:30 -0700, Srinivas Kandagatla wrote:
-> Update Banajit's email address from codeaurora.org to quicinc.com, as
-> codeaurora.org is not in use anymore.
-> 
-> 
 
-Applied to
+--AbQUs8uU3Zo5uRnw
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+On Mon, Jun 20, 2022 at 02:49:51PM +0000, Pierluigi Passaro wrote:
 
-Thanks!
+> > > +static const char *cin_text[] =3D {
+> > > +=A0=A0=A0=A0 "ADC", "DMIC"
+> > > +};
 
-[1/1] MAINTAINERS: update ASoC Qualcomm maintainer email-id
-      commit: ad9894ac6cc1c1f7c36451d508d69f6ba677834a
+> > > +static SOC_ENUM_SINGLE_DECL(cin_enum,
+> > > +=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=
+=A0=A0 WM8904_DIGITAL_MICROPHONE_0, 12, cin_text);
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
+> > Why would this be runtime selectable?=A0 I'd expect the decision to use
+> > an analogue or digital microphone to be made in the hardware design.
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+> I agree that dedicated HW is required, but currently SW side there's no s=
+upport at all.
+> This patch is aiming to provide a way to enable DMIC on boards using it.
+> Is this supposed to be managed in a different way ?
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
+Via firmware description.
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
+--AbQUs8uU3Zo5uRnw
+Content-Type: application/pgp-signature; name="signature.asc"
 
-Thanks,
-Mark
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmKwip4ACgkQJNaLcl1U
+h9COyQf/e1DSNnLS5C1cVLwYjiESEN2bZYjPBZvXZ/Nil+AvbRsE6mebr8M1RLAW
+2Hhd0EnevkPtZygo8C0zz92XHbocSuNy15oYDIhYb7M3cG7VEOhqK8i2izZcs7CY
+pR4TpxfAncFHht0NaOPWauJOlapDytWDmSNKtmi0Y1EXbJi86winalwy//S7Q3nO
+Q/87q+YM253/joHhJK/cHMbz6ONqF1VodXrPX3SIJC40T3hW3mSqeNV/UFWkejdG
+ROH4DIdG6ydfG+Kiwsy6aAVVr9Fg2XqkoEQPZzHUv3Laujd6U2Z3HgRI4eDgsOJC
+hBOpo+Aw3wIT6Hjw5v4VY2YpcsD0YQ==
+=elfJ
+-----END PGP SIGNATURE-----
+
+--AbQUs8uU3Zo5uRnw--
