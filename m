@@ -4,80 +4,79 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 73F5BC433EF
-	for <alsa-devel@archiver.kernel.org>; Tue, 21 Jun 2022 21:39:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id CC56AC43334
+	for <alsa-devel@archiver.kernel.org>; Tue, 21 Jun 2022 21:39:56 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 4C1EA1FD0;
-	Tue, 21 Jun 2022 23:38:45 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4C1EA1FD0
+	by alsa0.perex.cz (Postfix) with ESMTPS id 2350E1FDF;
+	Tue, 21 Jun 2022 23:39:05 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2350E1FDF
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1655847575;
-	bh=9JciEPK6uWn/59WK5lSBpQ7C30B3/2JPu4ukaeQEqes=;
+	s=default; t=1655847595;
+	bh=TQsW7AgCxyVcm4iaJlcXpR3eUhtxzQfFFHM4lfIhWKs=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=k2kjiiBypgvO0VAM+F140e9hXFN1/MmevIBBwMHWw+tNMwuIB6JmFgN4g0KWU/ulC
-	 eRWI34z7Ujom4Xev+gjal7s9LfVkHj1hyDeF1zHXACcRhgSXdSHAb925eMPQnO+afe
-	 NTpOfLlT+ODy8xJxN+sCKe1Byo907RBr9qh65MRg=
+	b=HHxLMS+qUgEwFbus+wBwkdyRN4RYNsYyJY/CtWfJX1cWSiHmL8Md1CcJ9zfdceh2D
+	 wuqrxfPfJz7kr1Cm90z9Tqh6tQdTN2VMoZaVGlvjt/fiH/pOKJHpr9yi8zcEUIRlsU
+	 KxABN4BDtb36VPQ16Z0LeQpdiZPB1LVi64fuRsYc=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id D2A21F8053D;
-	Tue, 21 Jun 2022 23:38:16 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 75AEEF80155;
+	Tue, 21 Jun 2022 23:38:19 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 65C79F8053B; Tue, 21 Jun 2022 23:38:13 +0200 (CEST)
+ id 098E2F80544; Tue, 21 Jun 2022 23:38:18 +0200 (CEST)
 Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
  [67.231.152.168])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 95E47F80152
- for <alsa-devel@alsa-project.org>; Tue, 21 Jun 2022 23:38:06 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 95E47F80152
+ by alsa1.perex.cz (Postfix) with ESMTPS id BBB8DF80253
+ for <alsa-devel@alsa-project.org>; Tue, 21 Jun 2022 23:38:08 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BBB8DF80253
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com
- header.b="g/DFUibQ"
+ header.b="CpGerZCA"
 Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
- by mx0b-001ae601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 25LBDkxT018841;
- Tue, 21 Jun 2022 16:38:04 -0500
+ by mx0b-001ae601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 25LBDkxX018841;
+ Tue, 21 Jun 2022 16:38:07 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
  h=from : to : cc :
  subject : date : message-id : in-reply-to : references : mime-version :
  content-transfer-encoding : content-type; s=PODMain02222019;
- bh=R/t6fc1SxxcbNSxZ8Yw6JojVc/MfujfdPc5svZLK/5I=;
- b=g/DFUibQKofR9TIzS+H1BaYTEv1zrXcJRp9RWEaR1/Qg59sI7MmIrtP9CyoILpujO5/V
- 5BdYyq83CzhueuFAlK2I802emCDOl7JB0lV3GYchufp32OtE/PKmh47+Y2/AEc5ePya8
- R0lqijNLdCWwWqgbnNkAPpq6NC8wo7Kvf5zXNEYZqoK3vk0o0DmLAbFRn4efd7J4THJB
- ZRd9a2paGVucjPpjtRu4FEDeOkd/tp1nT5v0O9lE6PWb7LFw0PF8L2mkj+WbVxGVKVoB
- DQl/gaw2ELH4LE9MJRl6uuOTzTGj9ulBKlzSQwvkDi1UwPZcx0j6kD86d4+6/8ZTIahj sA== 
+ bh=0fK09WSPqLJ843WJS+jSWz9TO+bRzFkM+vnHmi+bF70=;
+ b=CpGerZCAyNCWBC+D8NHpuo4ja1haWu+siKwzUDjYsJKvMCt9Of3IwnEV9fBFaB2MryPZ
+ O3Esf+ULsnnlXUEuzOhxiIkbn8Vd9OTRclOwfIIvz5dTplGg3feCwaMtWl7wJb88TCV/
+ CeAr3LyLiQCOCYQIL2RUAawL8O4hr1GAeIGVDuzr/E/I2wWQ+MfHpOCA6A0+omQ6YJq0
+ Zdl/DIfIrcm0a5bflRkzhzRezS9ESK1ihsTSyaHYfApqnF9iKDbQRCKAtcqbJmUeCe+H
+ yGBvfe0GZBC/lxG40T/T3OT7/6f6XOUgZLbEikApiraBKeQFwxMGVGxMqhataN3CTkr8 Cg== 
 Received: from ediex01.ad.cirrus.com ([84.19.233.68])
- by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3gsb4p45ae-3
+ by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3gsb4p45ae-7
  (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
- Tue, 21 Jun 2022 16:38:04 -0500
+ Tue, 21 Jun 2022 16:38:07 -0500
 Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX01.ad.cirrus.com
  (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.28; Tue, 21 Jun
- 2022 22:38:03 +0100
+ 2022 22:38:05 +0100
 Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
  (198.61.84.80) with Microsoft SMTP Server id 15.1.2375.28 via
- Frontend Transport; Tue, 21 Jun 2022 22:38:03 +0100
+ Frontend Transport; Tue, 21 Jun 2022 22:38:05 +0100
 Received: from vitaly-Legion-7-16ACHg6.ad.cirrus.com (unknown [198.90.238.175])
- by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 7081611D3;
- Tue, 21 Jun 2022 21:38:03 +0000 (UTC)
+ by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 94A32475;
+ Tue, 21 Jun 2022 21:38:05 +0000 (UTC)
 From: Vitaly Rodionov <vitalyr@opensource.cirrus.com>
 To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Mark
  Brown <broonie@kernel.org>
-Subject: [PATCH v6 05/14] ALSA: hda: cs35l41: Save Subsystem ID inside CS35L41
- Driver
-Date: Tue, 21 Jun 2022 22:37:52 +0100
-Message-ID: <20220621213801.2021097-6-vitalyr@opensource.cirrus.com>
+Subject: [PATCH v6 11/14] ALSA: hda: hda_cs_dsp_ctl: Add fw id strings
+Date: Tue, 21 Jun 2022 22:37:58 +0100
+Message-ID: <20220621213801.2021097-12-vitalyr@opensource.cirrus.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20220621213801.2021097-1-vitalyr@opensource.cirrus.com>
 References: <20220621213801.2021097-1-vitalyr@opensource.cirrus.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-Proofpoint-GUID: -D2a_yCXoMP18Qi12m6-gFX5ePQx81AN
-X-Proofpoint-ORIG-GUID: -D2a_yCXoMP18Qi12m6-gFX5ePQx81AN
+X-Proofpoint-GUID: Yg3XOzqz_ykYaHLDTi1wxawzfGr5yqfE
+X-Proofpoint-ORIG-GUID: Yg3XOzqz_ykYaHLDTi1wxawzfGr5yqfE
 X-Proofpoint-Spam-Reason: safe
 Cc: patches@opensource.cirrus.com, alsa-devel@alsa-project.org,
  linux-kernel@vger.kernel.org, Stefan Binding <sbinding@opensource.cirrus.com>
@@ -98,70 +97,47 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 From: Stefan Binding <sbinding@opensource.cirrus.com>
 
-The Subsystem ID is read from the HDA driver, and will
-be used by the CS35L41 driver to be able to uniquely
-identify the laptop, which is required to be able to
-define firmware to be used by specific models.
+This will be used to define the firmware names.
 
 Signed-off-by: Stefan Binding <sbinding@opensource.cirrus.com>
 Signed-off-by: Vitaly Rodionov <vitalyr@opensource.cirrus.com>
 ---
- sound/pci/hda/cs35l41_hda.c   | 3 +++
- sound/pci/hda/cs35l41_hda.h   | 1 +
- sound/pci/hda/hda_component.h | 1 +
- sound/pci/hda/patch_realtek.c | 1 +
- 4 files changed, 6 insertions(+)
+ sound/pci/hda/hda_cs_dsp_ctl.c | 8 ++++++++
+ sound/pci/hda/hda_cs_dsp_ctl.h | 2 ++
+ 2 files changed, 10 insertions(+)
 
-diff --git a/sound/pci/hda/cs35l41_hda.c b/sound/pci/hda/cs35l41_hda.c
-index 92c6d8b7052e..7f0132694774 100644
---- a/sound/pci/hda/cs35l41_hda.c
-+++ b/sound/pci/hda/cs35l41_hda.c
-@@ -356,6 +356,9 @@ static int cs35l41_hda_bind(struct device *dev, struct device *master, void *mas
- 		return -EBUSY;
- 
- 	comps->dev = dev;
-+	if (!cs35l41->acpi_subsystem_id)
-+		cs35l41->acpi_subsystem_id = devm_kasprintf(dev, GFP_KERNEL,
-+							    "%.8x", comps->subsystem_id);
- 	cs35l41->codec = comps->codec;
- 	strscpy(comps->name, dev_name(dev), sizeof(comps->name));
- 	comps->playback_hook = cs35l41_hda_playback_hook;
-diff --git a/sound/pci/hda/cs35l41_hda.h b/sound/pci/hda/cs35l41_hda.h
-index 5814af050944..b57f59a1ba49 100644
---- a/sound/pci/hda/cs35l41_hda.h
-+++ b/sound/pci/hda/cs35l41_hda.h
-@@ -42,6 +42,7 @@ struct cs35l41_hda {
- 	int channel_index;
- 	unsigned volatile long irq_errors;
- 	const char *amp_name;
-+	const char *acpi_subsystem_id;
- 	struct mutex fw_mutex;
- 	struct regmap_irq_chip_data *irq_data;
- 	bool firmware_running;
-diff --git a/sound/pci/hda/hda_component.h b/sound/pci/hda/hda_component.h
-index 534e845b9cd1..fa6df52e7855 100644
---- a/sound/pci/hda/hda_component.h
-+++ b/sound/pci/hda/hda_component.h
-@@ -14,6 +14,7 @@
- struct hda_component {
- 	struct device *dev;
- 	char name[HDA_MAX_NAME_SIZE];
-+	int subsystem_id;
- 	struct hda_codec *codec;
- 	void (*playback_hook)(struct device *dev, int action);
+diff --git a/sound/pci/hda/hda_cs_dsp_ctl.c b/sound/pci/hda/hda_cs_dsp_ctl.c
+index 6131fcfe21e5..f4f3b0a249f4 100644
+--- a/sound/pci/hda/hda_cs_dsp_ctl.c
++++ b/sound/pci/hda/hda_cs_dsp_ctl.c
+@@ -28,6 +28,14 @@ static const char * const hda_cs_dsp_fw_text[HDA_CS_DSP_NUM_FW] = {
+ 	[HDA_CS_DSP_FW_MISC] =     "Misc",
  };
-diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-index 923c0d498d54..6a944396582b 100644
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -6655,6 +6655,7 @@ static void cs35l41_generic_fixup(struct hda_codec *cdc, int action, const char
- 			if (!name)
- 				return;
- 			spec->comps[i].codec = cdc;
-+			spec->comps[i].subsystem_id = cdc->core.subsystem_id;
- 			component_match_add(dev, &spec->match, component_compare_dev_name, name);
- 		}
- 		ret = component_master_add_with_match(dev, &comp_master_ops, spec->match);
+ 
++const char * const hda_cs_dsp_fw_ids[HDA_CS_DSP_NUM_FW] = {
++	[HDA_CS_DSP_FW_SPK_PROT] = "spk-prot",
++	[HDA_CS_DSP_FW_SPK_CALI] = "spk-cali",
++	[HDA_CS_DSP_FW_SPK_DIAG] = "spk-diag",
++	[HDA_CS_DSP_FW_MISC] =     "misc",
++};
++EXPORT_SYMBOL_NS_GPL(hda_cs_dsp_fw_ids, SND_HDA_CS_DSP_CONTROLS);
++
+ static int hda_cs_dsp_coeff_info(struct snd_kcontrol *kctl, struct snd_ctl_elem_info *uinfo)
+ {
+ 	struct hda_cs_dsp_coeff_ctl *ctl = (struct hda_cs_dsp_coeff_ctl *)kctl->private_value;
+diff --git a/sound/pci/hda/hda_cs_dsp_ctl.h b/sound/pci/hda/hda_cs_dsp_ctl.h
+index c65bfd6878fd..4babc69cf2f0 100644
+--- a/sound/pci/hda/hda_cs_dsp_ctl.h
++++ b/sound/pci/hda/hda_cs_dsp_ctl.h
+@@ -27,6 +27,8 @@ struct hda_cs_dsp_ctl_info {
+ 	const char *device_name;
+ };
+ 
++extern const char * const hda_cs_dsp_fw_ids[HDA_CS_DSP_NUM_FW];
++
+ int hda_cs_dsp_control_add(struct cs_dsp_coeff_ctl *cs_ctl, struct hda_cs_dsp_ctl_info *info);
+ void hda_cs_dsp_control_remove(struct cs_dsp_coeff_ctl *cs_ctl);
+ int hda_cs_dsp_write_ctl(struct cs_dsp *dsp, const char *name, int type,
 -- 
 2.34.1
 
