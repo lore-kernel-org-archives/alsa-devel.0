@@ -4,82 +4,77 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id EBDF1C433EF
-	for <alsa-devel@archiver.kernel.org>; Mon, 20 Jun 2022 20:59:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 314EBC43334
+	for <alsa-devel@archiver.kernel.org>; Tue, 21 Jun 2022 00:53:30 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 33F9028C7;
-	Mon, 20 Jun 2022 22:58:41 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 33F9028C7
+	by alsa0.perex.cz (Postfix) with ESMTPS id 5E8CE2031;
+	Tue, 21 Jun 2022 02:52:38 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5E8CE2031
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1655758771;
-	bh=fWWQdr94vqQ22zSXgDabYfb0y1tKbOl5QuOKHrgJF3s=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1655772808;
+	bh=lKdhkZXkI4k6wa8+uQOzhJu5OvBIf64/xrTaRZ2FKzI=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=HNj2wAor1P0HHrEUMTZlcILmtDuPHIiHlyHXVXaAprfjRkLhLYSb5BHE7pnJal5bD
-	 GheO/qLJXUvisCDH32MtKGt+GkjZ3DAb8bLySBTMeO6a+yw+UejAzGux5E8gQBcj6B
-	 YQ+Ijom4yklEGg5DxVhnJ45jckdz+6blzg8Bvbjg=
+	b=EST5ybuWrU+YkRJdOyKtrA0vwuIh9peSVJ/cjDUMWTaWuQ/IB6Zekz/SehGZOuTKr
+	 7UYceTYydolw//DuEwwSQDaicgQYEiyD/Ix0oHOvBbwnQ8P32skSz/lVr4Ij9Nkaoc
+	 FbJaW/BtY0jw8Mjt4cbo397fIaYYxsbGwy0iPsik=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id EF4A3F805BF;
-	Mon, 20 Jun 2022 22:55:13 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id DAE99F804D2;
+	Tue, 21 Jun 2022 02:52:37 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id F07CEF8057B; Mon, 20 Jun 2022 22:55:07 +0200 (CEST)
-Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
- [67.231.149.25])
+ id B06FCF804D8; Tue, 21 Jun 2022 02:52:35 +0200 (CEST)
+Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id B46EDF80544
- for <alsa-devel@alsa-project.org>; Mon, 20 Jun 2022 22:54:50 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B46EDF80544
+ by alsa1.perex.cz (Postfix) with ESMTPS id 05B76F800CB
+ for <alsa-devel@alsa-project.org>; Tue, 21 Jun 2022 02:52:28 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 05B76F800CB
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com
- header.b="TvwLmECg"
-Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
- by mx0a-001ae601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 25KBU7tl002386;
- Mon, 20 Jun 2022 15:54:48 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
- h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding : content-type; s=PODMain02222019;
- bh=sI8SX3PB/R2fNl6PH3oFh+Fy/DogbIVBHrE/v2Q5jyw=;
- b=TvwLmECgsqVyc6FETOJpczxjXNwdmzZMzlje2TnoHjQoZ6ylI1t/Hjhn7SjVdbmzsECq
- 7NJJz35LXkB7Y7oR9/twYLfxCoRuCCup46TIAbNt+gbhtnmruRLWMLELEJU6Y8ZewQOl
- rfVuO+ZzX1xncpCky8DLtYznYZz84Qux0ab3YZWKDq4178KKXk7eXz4JSHWIioUnSvit
- DVUkpboT9c2d0CMT6t1EcBavvhCMunhx897AjS2BOciEC+Ga9jC4cuIgHTCncBBqS9op
- Lc4IgS/lc5rI1FgAY6QO54GSQIUJMApix7um7MO2Ys7tx5dNuq9iZS+LMf4NCA0T/C+X HQ== 
-Received: from ediex01.ad.cirrus.com ([84.19.233.68])
- by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3gsc41antf-4
- (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
- Mon, 20 Jun 2022 15:54:48 -0500
-Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.28; Mon, 20 Jun
- 2022 21:54:45 +0100
-Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server id 15.1.2375.28 via
- Frontend Transport; Mon, 20 Jun 2022 21:54:45 +0100
-Received: from vitaly-Legion-7-16ACHg6.ad.cirrus.com (unknown [198.90.238.175])
- by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 348F9468;
- Mon, 20 Jun 2022 20:54:45 +0000 (UTC)
-From: Vitaly Rodionov <vitalyr@opensource.cirrus.com>
-To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Mark
- Brown <broonie@kernel.org>
-Subject: [PATCH v5 08/14] ALSA: hda: cs35l41: Support Speaker ID for laptops
-Date: Mon, 20 Jun 2022 21:54:26 +0100
-Message-ID: <20220620205432.3809-9-vitalyr@opensource.cirrus.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20220620205432.3809-1-vitalyr@opensource.cirrus.com>
-References: <20220620205432.3809-1-vitalyr@opensource.cirrus.com>
+ dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
+ header.b="Cj33T5G8"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+ d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+ t=1655772750; x=1687308750;
+ h=date:from:to:cc:subject:message-id:references:
+ mime-version:in-reply-to;
+ bh=lKdhkZXkI4k6wa8+uQOzhJu5OvBIf64/xrTaRZ2FKzI=;
+ b=Cj33T5G80/moMOV/JTOb9RbSzM1ve4uPOoFttdyaAJQURX3QCJftJqQr
+ FADQxW8H/twmdWYfV1v7subZWuYPHvBSS4A6iGKYdTLD4D8zj6WLtu/4R
+ ifAoYQ9tqkSf6/pVfYYSmRgOcqb+vUR7i9nwcOjN1RTd+Pa643/+Ktn9X
+ G2pBmmoncceAZwQQW6kK9n4v8KV5W+Qpg6j9yjfggfGillAnO/nVaAUHO
+ DnRxGSnArsGsPHEROKecmc4rz3r23Y+x2g7kBqIuMwcjBS+CekkN0XbRK
+ CrWlFqbmsv3mFKBHzdojy+FcjsV8LPdgud7sra9Ni8e5OKw985n6q//A7 g==;
+X-IronPort-AV: E=McAfee;i="6400,9594,10384"; a="366320235"
+X-IronPort-AV: E=Sophos;i="5.92,207,1650956400"; d="scan'208";a="366320235"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+ by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 20 Jun 2022 17:52:24 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.92,207,1650956400"; d="scan'208";a="562150223"
+Received: from lkp-server01.sh.intel.com (HELO 60dabacc1df6) ([10.239.97.150])
+ by orsmga006.jf.intel.com with ESMTP; 20 Jun 2022 17:52:21 -0700
+Received: from kbuild by 60dabacc1df6 with local (Exim 4.95)
+ (envelope-from <lkp@intel.com>) id 1o3S7x-000XZb-3D;
+ Tue, 21 Jun 2022 00:52:21 +0000
+Date: Tue, 21 Jun 2022 08:52:10 +0800
+From: kernel test robot <lkp@intel.com>
+To: Vitaly Rodionov <vitalyr@opensource.cirrus.com>,
+ Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
+ Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH v5 04/14] ALSA: hda: cs35l41: Add initial DSP support and
+ firmware loading
+Message-ID: <202206210829.FlHFxgAO-lkp@intel.com>
+References: <20220620205432.3809-5-vitalyr@opensource.cirrus.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Proofpoint-GUID: CguKstawXZivFrZCmDTO9CACLkQ49sdZ
-X-Proofpoint-ORIG-GUID: CguKstawXZivFrZCmDTO9CACLkQ49sdZ
-X-Proofpoint-Spam-Reason: safe
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220620205432.3809-5-vitalyr@opensource.cirrus.com>
 Cc: patches@opensource.cirrus.com, alsa-devel@alsa-project.org,
- linux-kernel@vger.kernel.org, Stefan Binding <sbinding@opensource.cirrus.com>
+ kbuild-all@lists.01.org, linux-kernel@vger.kernel.org,
+ Vitaly Rodionov <vitaly.rodionov@cirrus.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -95,286 +90,109 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Stefan Binding <sbinding@opensource.cirrus.com>
+Hi Vitaly,
 
-Some Laptops use a number of gpios to define which vendor is
-used for a particular laptop.
-Different coefficient files are used for different vendors.
+Thank you for the patch! Perhaps something to improve:
 
-Signed-off-by: Stefan Binding <sbinding@opensource.cirrus.com>
-Signed-off-by: Vitaly Rodionov <vitalyr@opensource.cirrus.com>
----
- sound/pci/hda/cs35l41_hda.c | 174 ++++++++++++++++++++++++++++++++++--
- sound/pci/hda/cs35l41_hda.h |   1 +
- 2 files changed, 166 insertions(+), 9 deletions(-)
+[auto build test WARNING on tiwai-sound/for-next]
+[also build test WARNING on linus/master v5.19-rc2 next-20220617]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch]
 
-diff --git a/sound/pci/hda/cs35l41_hda.c b/sound/pci/hda/cs35l41_hda.c
-index 6d90bb8f74ea..6ac68b00cafe 100644
---- a/sound/pci/hda/cs35l41_hda.c
-+++ b/sound/pci/hda/cs35l41_hda.c
-@@ -86,13 +86,19 @@ static const struct cs_dsp_client_ops client_ops = {
- static int cs35l41_request_firmware_file(struct cs35l41_hda *cs35l41,
- 					 const struct firmware **firmware, char **filename,
- 					 const char *dir, const char *ssid, const char *amp_name,
--					 const char *filetype)
-+					 int spkid, const char *filetype)
- {
- 	const char * const dsp_name = cs35l41->cs_dsp.name;
- 	char *s, c;
- 	int ret = 0;
- 
--	if (ssid && amp_name)
-+	if (spkid > -1 && ssid && amp_name)
-+		*filename = kasprintf(GFP_KERNEL, "%s%s-%s-%s-%s-spkid%d-%s.%s", dir, CS35L41_PART,
-+				      dsp_name, "spk-prot", ssid, spkid, amp_name, filetype);
-+	else if (spkid > -1 && ssid)
-+		*filename = kasprintf(GFP_KERNEL, "%s%s-%s-%s-%s-spkid%d.%s", dir, CS35L41_PART,
-+				      dsp_name, "spk-prot", ssid, spkid, filetype);
-+	else if (ssid && amp_name)
- 		*filename = kasprintf(GFP_KERNEL, "%s%s-%s-%s-%s-%s.%s", dir, CS35L41_PART,
- 				      dsp_name, "spk-prot", ssid, amp_name,
- 				      filetype);
-@@ -130,6 +136,93 @@ static int cs35l41_request_firmware_file(struct cs35l41_hda *cs35l41,
- 	return ret;
- }
- 
-+static int cs35l41_request_firmware_files_spkid(struct cs35l41_hda *cs35l41,
-+						const struct firmware **wmfw_firmware,
-+						char **wmfw_filename,
-+						const struct firmware **coeff_firmware,
-+						char **coeff_filename)
-+{
-+	int ret;
-+
-+	/* try cirrus/part-dspN-fwtype-sub<-spkidN><-ampname>.wmfw */
-+	ret = cs35l41_request_firmware_file(cs35l41, wmfw_firmware, wmfw_filename,
-+					    CS35L41_FIRMWARE_ROOT,
-+					    cs35l41->acpi_subsystem_id, cs35l41->amp_name,
-+					    cs35l41->speaker_id, "wmfw");
-+	if (!ret) {
-+		/* try cirrus/part-dspN-fwtype-sub<-spkidN><-ampname>.bin */
-+		cs35l41_request_firmware_file(cs35l41, coeff_firmware, coeff_filename,
-+					      CS35L41_FIRMWARE_ROOT,
-+					      cs35l41->acpi_subsystem_id, cs35l41->amp_name,
-+					      cs35l41->speaker_id, "bin");
-+		return 0;
-+	}
-+
-+	/* try cirrus/part-dspN-fwtype-sub<-ampname>.wmfw */
-+	ret = cs35l41_request_firmware_file(cs35l41, wmfw_firmware, wmfw_filename,
-+					    CS35L41_FIRMWARE_ROOT, cs35l41->acpi_subsystem_id,
-+					    cs35l41->amp_name, -1, "wmfw");
-+	if (!ret) {
-+		/* try cirrus/part-dspN-fwtype-sub<-spkidN><-ampname>.bin */
-+		cs35l41_request_firmware_file(cs35l41, coeff_firmware, coeff_filename,
-+					      CS35L41_FIRMWARE_ROOT, cs35l41->acpi_subsystem_id,
-+					      cs35l41->amp_name, cs35l41->speaker_id, "bin");
-+		return 0;
-+	}
-+
-+	/* try cirrus/part-dspN-fwtype-sub<-spkidN>.wmfw */
-+	ret = cs35l41_request_firmware_file(cs35l41, wmfw_firmware, wmfw_filename,
-+					    CS35L41_FIRMWARE_ROOT, cs35l41->acpi_subsystem_id,
-+					    NULL, cs35l41->speaker_id, "wmfw");
-+	if (!ret) {
-+		/* try cirrus/part-dspN-fwtype-sub<-spkidN><-ampname>.bin */
-+		ret = cs35l41_request_firmware_file(cs35l41, coeff_firmware, coeff_filename,
-+						    CS35L41_FIRMWARE_ROOT,
-+						    cs35l41->acpi_subsystem_id,
-+						    cs35l41->amp_name, cs35l41->speaker_id, "bin");
-+		if (ret)
-+			/* try cirrus/part-dspN-fwtype-sub<-spkidN>.bin */
-+			cs35l41_request_firmware_file(cs35l41, coeff_firmware, coeff_filename,
-+						CS35L41_FIRMWARE_ROOT,
-+						cs35l41->acpi_subsystem_id,
-+						NULL, cs35l41->speaker_id, "bin");
-+		return 0;
-+	}
-+
-+	/* try cirrus/part-dspN-fwtype-sub.wmfw */
-+	ret = cs35l41_request_firmware_file(cs35l41, wmfw_firmware, wmfw_filename,
-+					    CS35L41_FIRMWARE_ROOT, cs35l41->acpi_subsystem_id,
-+					    NULL, -1, "wmfw");
-+	if (!ret) {
-+		/* try cirrus/part-dspN-fwtype-sub<-spkidN><-ampname>.bin */
-+		ret = cs35l41_request_firmware_file(cs35l41, coeff_firmware, coeff_filename,
-+						    CS35L41_FIRMWARE_ROOT,
-+						    cs35l41->acpi_subsystem_id,
-+						    cs35l41->amp_name, cs35l41->speaker_id, "bin");
-+		if (ret)
-+			/* try cirrus/part-dspN-fwtype-sub<-spkidN>.bin */
-+			cs35l41_request_firmware_file(cs35l41, coeff_firmware, coeff_filename,
-+						      CS35L41_FIRMWARE_ROOT,
-+						      cs35l41->acpi_subsystem_id,
-+						      NULL, cs35l41->speaker_id, "bin");
-+		return 0;
-+	}
-+
-+	/* fallback try cirrus/part-dspN-fwtype.wmfw */
-+	ret = cs35l41_request_firmware_file(cs35l41, wmfw_firmware, wmfw_filename,
-+					    CS35L41_FIRMWARE_ROOT, NULL, NULL, -1, "wmfw");
-+	if (!ret) {
-+		/* fallback try cirrus/part-dspN-fwtype.bin */
-+		cs35l41_request_firmware_file(cs35l41, coeff_firmware, coeff_filename,
-+					      CS35L41_FIRMWARE_ROOT, NULL, NULL, -1, "bin");
-+		return 0;
-+	}
-+
-+	dev_warn(cs35l41->dev, "Failed to request firmware\n");
-+
-+	return ret;
-+}
-+
- static int cs35l41_request_firmware_files(struct cs35l41_hda *cs35l41,
- 					  const struct firmware **wmfw_firmware,
- 					  char **wmfw_filename,
-@@ -138,43 +231,48 @@ static int cs35l41_request_firmware_files(struct cs35l41_hda *cs35l41,
- {
- 	int ret;
- 
-+	if (cs35l41->speaker_id > -1)
-+		return cs35l41_request_firmware_files_spkid(cs35l41, wmfw_firmware, wmfw_filename,
-+							    coeff_firmware, coeff_filename);
-+
- 	/* try cirrus/part-dspN-fwtype-sub<-ampname>.wmfw */
- 	ret = cs35l41_request_firmware_file(cs35l41, wmfw_firmware, wmfw_filename,
- 					    CS35L41_FIRMWARE_ROOT, cs35l41->acpi_subsystem_id,
--					    cs35l41->amp_name, "wmfw");
-+					    cs35l41->amp_name, -1, "wmfw");
- 	if (!ret) {
- 		/* try cirrus/part-dspN-fwtype-sub<-ampname>.bin */
- 		cs35l41_request_firmware_file(cs35l41, coeff_firmware, coeff_filename,
- 					      CS35L41_FIRMWARE_ROOT, cs35l41->acpi_subsystem_id,
--					      cs35l41->amp_name, "bin");
-+					      cs35l41->amp_name, -1, "bin");
- 		return 0;
- 	}
- 
- 	/* try cirrus/part-dspN-fwtype-sub.wmfw */
- 	ret = cs35l41_request_firmware_file(cs35l41, wmfw_firmware, wmfw_filename,
- 					    CS35L41_FIRMWARE_ROOT, cs35l41->acpi_subsystem_id,
--					    NULL, "wmfw");
-+					    NULL, -1, "wmfw");
- 	if (!ret) {
- 		/* try cirrus/part-dspN-fwtype-sub<-ampname>.bin */
- 		ret = cs35l41_request_firmware_file(cs35l41, coeff_firmware, coeff_filename,
- 						    CS35L41_FIRMWARE_ROOT,
- 						    cs35l41->acpi_subsystem_id,
--						    cs35l41->amp_name, "bin");
-+						    cs35l41->amp_name, -1, "bin");
- 		if (ret)
- 			/* try cirrus/part-dspN-fwtype-sub.bin */
- 			cs35l41_request_firmware_file(cs35l41, coeff_firmware, coeff_filename,
- 						      CS35L41_FIRMWARE_ROOT,
--						      cs35l41->acpi_subsystem_id, NULL, "bin");
-+						      cs35l41->acpi_subsystem_id,
-+						      NULL, -1, "bin");
- 		return 0;
- 	}
- 
- 	/* fallback try cirrus/part-dspN-fwtype.wmfw */
- 	ret = cs35l41_request_firmware_file(cs35l41, wmfw_firmware, wmfw_filename,
--					    CS35L41_FIRMWARE_ROOT, NULL, NULL, "wmfw");
-+					    CS35L41_FIRMWARE_ROOT, NULL, NULL, -1, "wmfw");
- 	if (!ret) {
- 		/* fallback try cirrus/part-dspN-fwtype.bin */
- 		cs35l41_request_firmware_file(cs35l41, coeff_firmware, coeff_filename,
--					      CS35L41_FIRMWARE_ROOT, NULL, NULL, "bin");
-+					      CS35L41_FIRMWARE_ROOT, NULL, NULL, -1, "bin");
- 		return 0;
- 	}
- 
-@@ -614,6 +712,61 @@ static int cs35l41_get_acpi_sub_string(struct device *dev, struct acpi_device *a
- 	return ret;
- }
- 
-+static int cs35l41_get_speaker_id(struct device *dev, int amp_index,
-+				  int num_amps, int fixed_gpio_id)
-+{
-+	struct gpio_desc *speaker_id_desc;
-+	int speaker_id = -ENODEV;
-+
-+	if (fixed_gpio_id >= 0) {
-+		dev_dbg(dev, "Found Fixed Speaker ID GPIO (index = %d)\n", fixed_gpio_id);
-+		speaker_id_desc = gpiod_get_index(dev, NULL, fixed_gpio_id, GPIOD_IN);
-+		if (IS_ERR(speaker_id_desc)) {
-+			speaker_id = PTR_ERR(speaker_id_desc);
-+			return speaker_id;
-+		}
-+		speaker_id = gpiod_get_value_cansleep(speaker_id_desc);
-+		gpiod_put(speaker_id_desc);
-+		dev_dbg(dev, "Speaker ID = %d\n", speaker_id);
-+	} else {
-+		int base_index;
-+		int gpios_per_amp;
-+		int count;
-+		int tmp;
-+		int i;
-+
-+		count = gpiod_count(dev, "spk-id");
-+		if (count > 0) {
-+			speaker_id = 0;
-+			gpios_per_amp = count / num_amps;
-+			base_index = gpios_per_amp * amp_index;
-+
-+			if (count % num_amps)
-+				return -EINVAL;
-+
-+			dev_dbg(dev, "Found %d Speaker ID GPIOs per Amp\n", gpios_per_amp);
-+
-+			for (i = 0; i < gpios_per_amp; i++) {
-+				speaker_id_desc = gpiod_get_index(dev, "spk-id", i + base_index,
-+								  GPIOD_IN);
-+				if (IS_ERR(speaker_id_desc)) {
-+					speaker_id = PTR_ERR(speaker_id_desc);
-+					break;
-+				}
-+				tmp = gpiod_get_value_cansleep(speaker_id_desc);
-+				gpiod_put(speaker_id_desc);
-+				if (tmp < 0) {
-+					speaker_id = tmp;
-+					break;
-+				}
-+				speaker_id |= tmp << i;
-+			}
-+			dev_dbg(dev, "Speaker ID = %d\n", speaker_id);
-+		}
-+	}
-+	return speaker_id;
-+}
-+
- static int cs35l41_hda_read_acpi(struct cs35l41_hda *cs35l41, const char *hid, int id)
- {
- 	struct cs35l41_hw_cfg *hw_cfg = &cs35l41->hw_cfg;
-@@ -719,6 +872,8 @@ static int cs35l41_hda_read_acpi(struct cs35l41_hda *cs35l41, const char *hid, i
- 	else
- 		hw_cfg->bst_cap = -1;
- 
-+	cs35l41->speaker_id = cs35l41_get_speaker_id(physdev, cs35l41->index, nval, -1);
-+
- 	if (hw_cfg->bst_ind > 0 || hw_cfg->bst_cap > 0 || hw_cfg->bst_ipk > 0)
- 		hw_cfg->bst_type = CS35L41_INT_BOOST;
- 	else
-@@ -752,6 +907,7 @@ static int cs35l41_hda_read_acpi(struct cs35l41_hda *cs35l41, const char *hid, i
- 	cs35l41->channel_index = 0;
- 	cs35l41->reset_gpio = gpiod_get_index(physdev, NULL, 0, GPIOD_OUT_HIGH);
- 	cs35l41->hw_cfg.bst_type = CS35L41_EXT_BOOST_NO_VSPK_SWITCH;
-+	cs35l41->speaker_id = cs35l41_get_speaker_id(physdev, 0, 0, 2);
- 	hw_cfg->gpio2.func = CS35L41_GPIO2_INT_OPEN_DRAIN;
- 	hw_cfg->gpio2.valid = true;
- 	cs35l41->hw_cfg.valid = true;
-diff --git a/sound/pci/hda/cs35l41_hda.h b/sound/pci/hda/cs35l41_hda.h
-index b57f59a1ba49..a9dbc1c19248 100644
---- a/sound/pci/hda/cs35l41_hda.h
-+++ b/sound/pci/hda/cs35l41_hda.h
-@@ -43,6 +43,7 @@ struct cs35l41_hda {
- 	unsigned volatile long irq_errors;
- 	const char *amp_name;
- 	const char *acpi_subsystem_id;
-+	int speaker_id;
- 	struct mutex fw_mutex;
- 	struct regmap_irq_chip_data *irq_data;
- 	bool firmware_running;
+url:    https://github.com/intel-lab-lkp/linux/commits/Vitaly-Rodionov/ALSA-hda-cirrus-Add-initial-DSP-support-and-firmware-loading/20220621-045835
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound.git for-next
+config: i386-allyesconfig (https://download.01.org/0day-ci/archive/20220621/202206210829.FlHFxgAO-lkp@intel.com/config)
+compiler: gcc-11 (Debian 11.3.0-3) 11.3.0
+reproduce (this is a W=1 build):
+        # https://github.com/intel-lab-lkp/linux/commit/90a2fe69cdb8e417d88f54f2dc4f57e06041c112
+        git remote add linux-review https://github.com/intel-lab-lkp/linux
+        git fetch --no-tags linux-review Vitaly-Rodionov/ALSA-hda-cirrus-Add-initial-DSP-support-and-firmware-loading/20220621-045835
+        git checkout 90a2fe69cdb8e417d88f54f2dc4f57e06041c112
+        # save the config file
+        mkdir build_dir && cp config build_dir/.config
+        make W=1 O=build_dir ARCH=i386 SHELL=/bin/bash sound/pci/hda/
+
+If you fix the issue, kindly add following tag where applicable
+Reported-by: kernel test robot <lkp@intel.com>
+
+All warnings (new ones prefixed by >>):
+
+   In file included from include/linux/device.h:15,
+                    from include/linux/platform_device.h:13,
+                    from include/sound/soc.h:14,
+                    from sound/pci/hda/hda_cs_dsp_ctl.c:10:
+   sound/pci/hda/hda_cs_dsp_ctl.c: In function 'hda_cs_dsp_add_kcontrol':
+>> sound/pci/hda/hda_cs_dsp_ctl.c:101:43: warning: format '%ld' expects argument of type 'long int', but argument 4 has type 'size_t' {aka 'unsigned int'} [-Wformat=]
+     101 |                 dev_err(cs_ctl->dsp->dev, "Control %s: length %ld exceeds maximum %d\n", ctl->name,
+         |                                           ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   include/linux/dev_printk.h:110:30: note: in definition of macro 'dev_printk_index_wrap'
+     110 |                 _p_func(dev, fmt, ##__VA_ARGS__);                       \
+         |                              ^~~
+   include/linux/dev_printk.h:144:56: note: in expansion of macro 'dev_fmt'
+     144 |         dev_printk_index_wrap(_dev_err, KERN_ERR, dev, dev_fmt(fmt), ##__VA_ARGS__)
+         |                                                        ^~~~~~~
+   sound/pci/hda/hda_cs_dsp_ctl.c:101:17: note: in expansion of macro 'dev_err'
+     101 |                 dev_err(cs_ctl->dsp->dev, "Control %s: length %ld exceeds maximum %d\n", ctl->name,
+         |                 ^~~~~~~
+   sound/pci/hda/hda_cs_dsp_ctl.c:101:65: note: format string is defined here
+     101 |                 dev_err(cs_ctl->dsp->dev, "Control %s: length %ld exceeds maximum %d\n", ctl->name,
+         |                                                               ~~^
+         |                                                                 |
+         |                                                                 long int
+         |                                                               %d
+
+
+vim +101 sound/pci/hda/hda_cs_dsp_ctl.c
+
+03621b0e3c3696 Stefan Binding 2022-06-20   92  
+03621b0e3c3696 Stefan Binding 2022-06-20   93  static int hda_cs_dsp_add_kcontrol(struct hda_cs_dsp_coeff_ctl *ctl)
+03621b0e3c3696 Stefan Binding 2022-06-20   94  {
+03621b0e3c3696 Stefan Binding 2022-06-20   95  	struct cs_dsp_coeff_ctl *cs_ctl = ctl->cs_ctl;
+03621b0e3c3696 Stefan Binding 2022-06-20   96  	struct snd_kcontrol_new *kcontrol;
+03621b0e3c3696 Stefan Binding 2022-06-20   97  	struct snd_kcontrol *kctl;
+03621b0e3c3696 Stefan Binding 2022-06-20   98  	int ret = 0;
+03621b0e3c3696 Stefan Binding 2022-06-20   99  
+03621b0e3c3696 Stefan Binding 2022-06-20  100  	if (cs_ctl->len > ADSP_MAX_STD_CTRL_SIZE) {
+03621b0e3c3696 Stefan Binding 2022-06-20 @101  		dev_err(cs_ctl->dsp->dev, "Control %s: length %ld exceeds maximum %d\n", ctl->name,
+03621b0e3c3696 Stefan Binding 2022-06-20  102  			cs_ctl->len, ADSP_MAX_STD_CTRL_SIZE);
+03621b0e3c3696 Stefan Binding 2022-06-20  103  		return -EINVAL;
+03621b0e3c3696 Stefan Binding 2022-06-20  104  	}
+03621b0e3c3696 Stefan Binding 2022-06-20  105  
+03621b0e3c3696 Stefan Binding 2022-06-20  106  	kcontrol = kzalloc(sizeof(*kcontrol), GFP_KERNEL);
+03621b0e3c3696 Stefan Binding 2022-06-20  107  	if (!kcontrol)
+03621b0e3c3696 Stefan Binding 2022-06-20  108  		return -ENOMEM;
+03621b0e3c3696 Stefan Binding 2022-06-20  109  
+03621b0e3c3696 Stefan Binding 2022-06-20  110  	kcontrol->name = ctl->name;
+03621b0e3c3696 Stefan Binding 2022-06-20  111  	kcontrol->info = hda_cs_dsp_coeff_info;
+03621b0e3c3696 Stefan Binding 2022-06-20  112  	kcontrol->iface = SNDRV_CTL_ELEM_IFACE_MIXER;
+03621b0e3c3696 Stefan Binding 2022-06-20  113  	kcontrol->private_value = (unsigned long)ctl;
+03621b0e3c3696 Stefan Binding 2022-06-20  114  	kcontrol->access = wmfw_convert_flags(cs_ctl->flags);
+03621b0e3c3696 Stefan Binding 2022-06-20  115  
+03621b0e3c3696 Stefan Binding 2022-06-20  116  	kcontrol->get = hda_cs_dsp_coeff_get;
+03621b0e3c3696 Stefan Binding 2022-06-20  117  	kcontrol->put = hda_cs_dsp_coeff_put;
+03621b0e3c3696 Stefan Binding 2022-06-20  118  
+03621b0e3c3696 Stefan Binding 2022-06-20  119  	kctl = snd_ctl_new1(kcontrol, NULL);
+03621b0e3c3696 Stefan Binding 2022-06-20  120  	if (!kctl) {
+03621b0e3c3696 Stefan Binding 2022-06-20  121  		ret = -ENOMEM;
+03621b0e3c3696 Stefan Binding 2022-06-20  122  		goto err;
+03621b0e3c3696 Stefan Binding 2022-06-20  123  	}
+03621b0e3c3696 Stefan Binding 2022-06-20  124  	ctl->kctl = kctl;
+03621b0e3c3696 Stefan Binding 2022-06-20  125  
+03621b0e3c3696 Stefan Binding 2022-06-20  126  	ret = snd_ctl_add(ctl->card, kctl);
+03621b0e3c3696 Stefan Binding 2022-06-20  127  	if (ret)
+03621b0e3c3696 Stefan Binding 2022-06-20  128  		dev_err(cs_ctl->dsp->dev, "Failed to add KControl: %s - Ret: %d\n", kcontrol->name,
+03621b0e3c3696 Stefan Binding 2022-06-20  129  			ret);
+03621b0e3c3696 Stefan Binding 2022-06-20  130  	else
+03621b0e3c3696 Stefan Binding 2022-06-20  131  		dev_dbg(cs_ctl->dsp->dev, "Added KControl: %s\n", kcontrol->name);
+03621b0e3c3696 Stefan Binding 2022-06-20  132  
+03621b0e3c3696 Stefan Binding 2022-06-20  133  err:
+03621b0e3c3696 Stefan Binding 2022-06-20  134  	kfree(kcontrol);
+03621b0e3c3696 Stefan Binding 2022-06-20  135  
+03621b0e3c3696 Stefan Binding 2022-06-20  136  	return ret;
+03621b0e3c3696 Stefan Binding 2022-06-20  137  }
+03621b0e3c3696 Stefan Binding 2022-06-20  138  
+
 -- 
-2.34.1
-
+0-DAY CI Kernel Test Service
+https://01.org/lkp
