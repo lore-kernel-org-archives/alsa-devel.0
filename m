@@ -4,68 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 47029C43334
-	for <alsa-devel@archiver.kernel.org>; Tue, 21 Jun 2022 17:00:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2972DC433EF
+	for <alsa-devel@archiver.kernel.org>; Tue, 21 Jun 2022 17:01:08 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 07FDC201A;
-	Tue, 21 Jun 2022 19:00:06 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 07FDC201A
+	by alsa0.perex.cz (Postfix) with ESMTPS id 1816416FD;
+	Tue, 21 Jun 2022 19:00:16 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1816416FD
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1655830856;
-	bh=lmiWAcqBGF009l5Gs571NJGOJ8UGNGQUNmtknNwqWDs=;
+	s=default; t=1655830866;
+	bh=hhDgR9+5NL1h5Gv282n4ttBsZNpOmbxBkFIjUMRxL+Q=;
 	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=dSJUNzJ7HpGzlYJhzWGYEf1lc+g5TPhlhzcKNeTldwxC+1XpjAYzOczkPINUKD9Qd
-	 RWCuQP4TFQA/0y3YMf+Qu0o5Ejo8vN2UmAbCOrEBKDZi+cu2/1X/U+pJQDcAnHM/pT
-	 C0jkZAHGRkRyR2trff6OGbFouKmCA8OoP+JCiWMU=
+	b=Hwip16CgGBvdRhAkIsfUoqfenbR7sVVj19hOW+xHWzc4p4D18u6qqIKbAzpHnjzp1
+	 gINO5cqIcKkEKAPUwH9I64C/8R20H3EGJspeeTyjF9GaomS/uowmOiArnFqyqS6xrU
+	 2iidKg9ueuiLy0aeMOlQG2bQiOqdjWPqOeBrxbvk=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 6A7BDF80256;
-	Tue, 21 Jun 2022 18:59:38 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 08E4CF80539;
+	Tue, 21 Jun 2022 18:59:40 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 27480F80537; Tue, 21 Jun 2022 18:59:37 +0200 (CEST)
+ id B77F9F80539; Tue, 21 Jun 2022 18:59:38 +0200 (CEST)
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id C4D84F80256
- for <alsa-devel@alsa-project.org>; Tue, 21 Jun 2022 18:59:33 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C4D84F80256
+ by alsa1.perex.cz (Postfix) with ESMTPS id 7FF0EF80253
+ for <alsa-devel@alsa-project.org>; Tue, 21 Jun 2022 18:59:32 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7FF0EF80253
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="uLuwfksU"
+ header.b="Gei6u/KB"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id 51F2861569;
- Tue, 21 Jun 2022 16:59:32 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9054DC3411C;
+ by dfw.source.kernel.org (Postfix) with ESMTPS id A2CC8614EF;
  Tue, 21 Jun 2022 16:59:29 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 520A7C341C0;
+ Tue, 21 Jun 2022 16:59:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1655830771;
- bh=lmiWAcqBGF009l5Gs571NJGOJ8UGNGQUNmtknNwqWDs=;
+ s=k20201202; t=1655830769;
+ bh=hhDgR9+5NL1h5Gv282n4ttBsZNpOmbxBkFIjUMRxL+Q=;
  h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=uLuwfksU+hlYfMlUGekAGUfxxB6eErGQomsklnOQF2lMY9JMDlr9QnhZ5FdSKwRVQ
- +TVielA9x07BfwCcx+1rHL5v8ifn7eidBhCvimyWoBSXR7qn8DpHW+APIWB5i6t5K7
- f6Fi2Cd4BphilV6F86Ws8tw4vWWk7jxC3zgu73IXjRjfAcpNXdbLG30jn/fs5A1sE5
- WDyH7b9dF4/9PiQSvhG84rYFji4hbHTV2CrFEDa31RZbs/TfcSDT8URZpEq8BuJvy4
- apKjwdnqv/hYIPkn2ebIxPFO4m7GYT7JzyUdaj18UivmCGa1S03bTWY0DHPNT01tXb
- v2lR/rcJJbxpA==
+ b=Gei6u/KBmvx7ON01tCim3cOTmP0WwDaYDUALfpz1QqZTIUyLnYwaY/ZlGTSg1GJ6b
+ vzR0ZLGagImXNmzFayhD/yQ/xOXvKmgRsvqD6KP1GErzAGcUUMKH679xxbmEbWFa2x
+ 8Rw3D6w9aKj/sI+HPMuc/ULk6/+35G0/PG+JPRKG6bHLrf7W319InFMtVp9QqZsbOX
+ c2rzhvVzCapXQRrWgf/AMga9pqOudDB113q+gIVT16E4i08cRrL7/ohVAzrzcInAm2
+ U3nSYf4waXrbcW7Gv4j4ODARisPiCqOregm4OaeHIIw/1WaInKE09HiqrKfzLcWFxB
+ MrGagKjHA4Kpg==
 From: Mark Brown <broonie@kernel.org>
-To: judyhsiao@chromium.org, heiko@sntech.de
-In-Reply-To: <20220619095324.492678-1-judyhsiao@chromium.org>
-References: <20220619095324.492678-1-judyhsiao@chromium.org>
-Subject: Re: (subset) [PATCH v4 0/3] ASoC: rockchip: i2s: switch BCLK to GPIO
-Message-Id: <165583076931.271995.9857794745310978104.b4-ty@kernel.org>
-Date: Tue, 21 Jun 2022 17:59:29 +0100
+To: shumingf@realtek.com, lgirdwood@gmail.com
+In-Reply-To: <20220621090719.30558-1-shumingf@realtek.com>
+References: <20220621090719.30558-1-shumingf@realtek.com>
+Subject: Re: [PATCH] ASoC: rt711-sdca: fix kernel NULL pointer dereference
+ when IO error
+Message-Id: <165583076705.271995.16679730452918183093.b4-ty@kernel.org>
+Date: Tue, 21 Jun 2022 17:59:27 +0100
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: alsa-devel@alsa-project.org, briannorris@chromium.org,
- Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org,
- linux-rockchip@lists.infradead.org, robh+dt@kernel.org, wenst@chromium.org,
- linux-arm-kernel@lists.infradead.org
+Cc: oder_chiou@realtek.com, jack.yu@realtek.com, alsa-devel@alsa-project.org,
+ lars@metafoo.de, derek.fang@realtek.com, Vijendar.Mukunda@amd.com,
+ flove@realtek.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -81,25 +81,13 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Sun, 19 Jun 2022 09:53:21 +0000, Judy Hsiao wrote:
-> The patches series is to fix the unexpected large DC output
-> voltage of Max98357a that burns the speakers on the rockchip
-> platform when BCLK and SD_MODE are ON but LRCLK is OFF.
+On Tue, 21 Jun 2022 17:07:19 +0800, shumingf@realtek.com wrote:
+> From: Shuming Fan <shumingf@realtek.com>
 > 
-> Changes Since V4:
->     -- Fix indentation in the driver. (Align parameters with the parenthesis
->        placement.)
->     -- Fix incorrect return type of rockchip_snd_rxctrl.
-> Changes Since V3:
->     -- Fix indentation in the documentation.
->     -- Put pinctrl-1 right after pinctrl-0 in dtsi.
->     -- Fix indentation in the driver.
->     -- Remove unnecessary dev_dbg() in the driver.
-> Changes Since V2:
->     -- Add documents of i2s pinctrl-names.
->     -- Fix dtsi syntax error.
->     -- Include the dtsi change and the driver change in the same series.
->     -- Ensure that driver gets both bclk_on and bclk_off states before using them.
+> The initial settings will be written before the codec probe function.
+> But, the rt711->component doesn't be assigned yet.
+> If IO error happened during initial settings operations, it will cause the kernel panic.
+> This patch changed component->dev to slave->dev to fix this issue.
 > 
 > [...]
 
@@ -109,10 +97,8 @@ Applied to
 
 Thanks!
 
-[1/3] ASoC: rockchip: i2s: switch BCLK to GPIO
-      commit: 44f362c2cc6dd0c5e3cb499c4fb4ed45b63a6196
-[3/3] ASoC: dt-bindings: rockchip: Document pinctrl-names for i2s
-      (no commit info)
+[1/1] ASoC: rt711-sdca: fix kernel NULL pointer dereference when IO error
+      commit: f69a10f84cb5ff0b1c6aef0e19e866bbe53ec7ea
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
