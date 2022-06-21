@@ -4,68 +4,85 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2972DC433EF
-	for <alsa-devel@archiver.kernel.org>; Tue, 21 Jun 2022 17:01:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 065BFC43334
+	for <alsa-devel@archiver.kernel.org>; Tue, 21 Jun 2022 17:12:38 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 1816416FD;
-	Tue, 21 Jun 2022 19:00:16 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1816416FD
+	by alsa0.perex.cz (Postfix) with ESMTPS id 070E92003;
+	Tue, 21 Jun 2022 19:11:47 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 070E92003
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1655830866;
-	bh=hhDgR9+5NL1h5Gv282n4ttBsZNpOmbxBkFIjUMRxL+Q=;
-	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
+	s=default; t=1655831557;
+	bh=zkv//vh9fO7dBvRSCt/u2U10ROBis5M+X/X/VWWmI9k=;
+	h=Date:Subject:To:References:From:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Hwip16CgGBvdRhAkIsfUoqfenbR7sVVj19hOW+xHWzc4p4D18u6qqIKbAzpHnjzp1
-	 gINO5cqIcKkEKAPUwH9I64C/8R20H3EGJspeeTyjF9GaomS/uowmOiArnFqyqS6xrU
-	 2iidKg9ueuiLy0aeMOlQG2bQiOqdjWPqOeBrxbvk=
+	b=UCMBwnXi6eCA7n4ATDdQqZ4JbxiHlqIcc19Y8x+x9hdBQIckioQs7iTaMWJ6byJee
+	 YgGIc6n93iG2JyCMH3iTVsVFv2sG4UnJyp0TyM12etumyZimKZHVmHbbv6ecEWnCR/
+	 SqwEdZcgL/UDuW4EIYzYpUXBop83s85ARd1ziTew=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 08E4CF80539;
-	Tue, 21 Jun 2022 18:59:40 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 9A2C0F80152;
+	Tue, 21 Jun 2022 19:11:46 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id B77F9F80539; Tue, 21 Jun 2022 18:59:38 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 7FF0EF80253
- for <alsa-devel@alsa-project.org>; Tue, 21 Jun 2022 18:59:32 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7FF0EF80253
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="Gei6u/KB"
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+ id 01917F80152; Tue, 21 Jun 2022 19:11:44 +0200 (CEST)
+Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
+ [67.231.149.25])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id A2CC8614EF;
- Tue, 21 Jun 2022 16:59:29 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 520A7C341C0;
- Tue, 21 Jun 2022 16:59:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1655830769;
- bh=hhDgR9+5NL1h5Gv282n4ttBsZNpOmbxBkFIjUMRxL+Q=;
- h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=Gei6u/KBmvx7ON01tCim3cOTmP0WwDaYDUALfpz1QqZTIUyLnYwaY/ZlGTSg1GJ6b
- vzR0ZLGagImXNmzFayhD/yQ/xOXvKmgRsvqD6KP1GErzAGcUUMKH679xxbmEbWFa2x
- 8Rw3D6w9aKj/sI+HPMuc/ULk6/+35G0/PG+JPRKG6bHLrf7W319InFMtVp9QqZsbOX
- c2rzhvVzCapXQRrWgf/AMga9pqOudDB113q+gIVT16E4i08cRrL7/ohVAzrzcInAm2
- U3nSYf4waXrbcW7Gv4j4ODARisPiCqOregm4OaeHIIw/1WaInKE09HiqrKfzLcWFxB
- MrGagKjHA4Kpg==
-From: Mark Brown <broonie@kernel.org>
-To: shumingf@realtek.com, lgirdwood@gmail.com
-In-Reply-To: <20220621090719.30558-1-shumingf@realtek.com>
-References: <20220621090719.30558-1-shumingf@realtek.com>
-Subject: Re: [PATCH] ASoC: rt711-sdca: fix kernel NULL pointer dereference
- when IO error
-Message-Id: <165583076705.271995.16679730452918183093.b4-ty@kernel.org>
-Date: Tue, 21 Jun 2022 17:59:27 +0100
+ by alsa1.perex.cz (Postfix) with ESMTPS id 9F775F800CB
+ for <alsa-devel@alsa-project.org>; Tue, 21 Jun 2022 19:11:38 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9F775F800CB
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com
+ header.b="ZlvqUof0"
+Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
+ by mx0a-001ae601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 25LBPIlq007338;
+ Tue, 21 Jun 2022 12:11:36 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
+ h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=PODMain02222019;
+ bh=zDQ6GqXPGfrimhD4YgdQPLhNjpqeT4KNBIe2LvxDde0=;
+ b=ZlvqUof0O3JHa37dG1ErPk5I9vsN1NDH/u5TxkE0hL6ChBK/cHYnUOST22fYhfgaZUs1
+ HXu+CJHymtECTeFmrZeS1oyeBtkCouERVjhsW/KWWB6i9HVvqppVkrSO/botusxUmeSh
+ fwzL4FMJr9Y7Yl4uQPP3KK4aUxIU+BGFPlRx7Ig1BCW9NlqUecIoluRiV3zsQeXwqmfH
+ JNrcsgXfugEW+hYkGR0aBXe1d498EpAuUDArOTjEW7YR3rSVYmX3QYdqrVQKVTY+TaFx
+ 3fG07v92OiWfpKdFbhJP3YVWMBaW/OJC891MEgfw4iQLTE3RamgZSnXUckX0zY19aamI eA== 
+Received: from ediex02.ad.cirrus.com ([84.19.233.68])
+ by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3gsc41bx2d-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+ Tue, 21 Jun 2022 12:11:35 -0500
+Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX02.ad.cirrus.com
+ (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.28; Tue, 21 Jun
+ 2022 18:11:33 +0100
+Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server id 15.1.2375.28 via
+ Frontend Transport; Tue, 21 Jun 2022 18:11:33 +0100
+Received: from [141.131.206.39] (david-linux.ad.cirrus.com [141.131.206.39])
+ by ediswmail.ad.cirrus.com (Postfix) with ESMTP id A77DE475;
+ Tue, 21 Jun 2022 17:11:31 +0000 (UTC)
+Message-ID: <06b02d51-6915-d56f-51e6-94a3fd182bc4@opensource.cirrus.com>
+Date: Tue, 21 Jun 2022 12:11:31 -0500
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-Cc: oder_chiou@realtek.com, jack.yu@realtek.com, alsa-devel@alsa-project.org,
- lars@metafoo.de, derek.fang@realtek.com, Vijendar.Mukunda@amd.com,
- flove@realtek.com
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.9.1
+Subject: Re: [PATCH 3/4] ASoC: cs35l41: Correct some control names
+Content-Language: en-US
+To: Charles Keepax <ckeepax@opensource.cirrus.com>, <broonie@kernel.org>
+References: <20220621102041.1713504-1-ckeepax@opensource.cirrus.com>
+ <20220621102041.1713504-3-ckeepax@opensource.cirrus.com>
+From: David Rhodes <drhodes@opensource.cirrus.com>
+In-Reply-To: <20220621102041.1713504-3-ckeepax@opensource.cirrus.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-GUID: exPQh_68I1CYLfWJkVVshTwYPeURyIev
+X-Proofpoint-ORIG-GUID: exPQh_68I1CYLfWJkVVshTwYPeURyIev
+X-Proofpoint-Spam-Reason: safe
+Cc: alsa-devel@alsa-project.org, patches@opensource.cirrus.com,
+ lgirdwood@gmail.com, james.schulman@cirrus.com, david.rhodes@cirrus.com,
+ linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -81,40 +98,14 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Tue, 21 Jun 2022 17:07:19 +0800, shumingf@realtek.com wrote:
-> From: Shuming Fan <shumingf@realtek.com>
+On 6/21/22 05:20, Charles Keepax wrote:
+> Various boolean controls on cs35l41 are missing the required "Switch" in
+> the name, add these.
 > 
-> The initial settings will be written before the codec probe function.
-> But, the rt711->component doesn't be assigned yet.
-> If IO error happened during initial settings operations, it will cause the kernel panic.
-> This patch changed component->dev to slave->dev to fix this issue.
-> 
-> [...]
+> Signed-off-by: Charles Keepax <ckeepax@opensource.cirrus.com>
+> ---
 
-Applied to
-
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
-
-Thanks!
-
-[1/1] ASoC: rt711-sdca: fix kernel NULL pointer dereference when IO error
-      commit: f69a10f84cb5ff0b1c6aef0e19e866bbe53ec7ea
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
+Acked-by: David Rhodes <drhodes@opensource.cirrus.com>
 
 Thanks,
-Mark
+David
