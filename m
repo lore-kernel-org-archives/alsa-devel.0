@@ -4,70 +4,76 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B9FACC43334
-	for <alsa-devel@archiver.kernel.org>; Tue, 21 Jun 2022 11:49:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5BF0DC433EF
+	for <alsa-devel@archiver.kernel.org>; Tue, 21 Jun 2022 12:01:46 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0477C20DC;
-	Tue, 21 Jun 2022 13:48:36 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0477C20DC
+	by alsa0.perex.cz (Postfix) with ESMTPS id 5DB1F20B9;
+	Tue, 21 Jun 2022 14:00:54 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5DB1F20B9
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1655812166;
-	bh=wNneQbCSnZJ3B73vFRbV+qd4hqox28N2+TeEipHGpiw=;
+	s=default; t=1655812904;
+	bh=qjpYr7d65Vb1p/cOGKGYqrffPaKpQgRvaDvuTBMzq4o=;
 	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
 	 List-Post:List-Help:List-Subscribe:From;
-	b=hZcqqisTM+M+ZXhp+8Xyo9DoosGYwgvO0ydYxp7IrZ6gN4+wOVc8rDeZCb2wqnK+h
-	 Nr2Bz0rVctK7Zxz164AE2LbeAVg7fv7Rwo2KMU+hoox3I9/NhdPpH6IvUOcOCxLxf2
-	 eBqITj9SCPdwH0Up6sOyPebK1dQuXynPBIyzpfPc=
+	b=eE1JD7JfDPsMgGt3lLd2c4ZfyhgbawYeNCAZsk1qJiCcBqNv8y+DKHLZkyyXnsRsZ
+	 QSIlbFzEmtA8fSEAIKupndBEk/sl0FeG16qwxBZAjMpYdhZ1+zVfu+AddQQxiHIuU1
+	 ef6qYRJzPZ69cETMwJCOdhJmeOQjDFpG15o0XMNQ=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 990FFF800E3;
-	Tue, 21 Jun 2022 13:48:35 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id A3CEFF80152;
+	Tue, 21 Jun 2022 14:00:53 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id D61B3F800E3; Tue, 21 Jun 2022 13:48:33 +0200 (CEST)
-Received: from mga12.intel.com (mga12.intel.com [192.55.52.136])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 58D98F800CB; Tue, 21 Jun 2022 14:00:51 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 28A94F800E3
- for <alsa-devel@alsa-project.org>; Tue, 21 Jun 2022 13:48:28 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 28A94F800E3
+ by alsa1.perex.cz (Postfix) with ESMTPS id E90AAF800CB
+ for <alsa-devel@alsa-project.org>; Tue, 21 Jun 2022 14:00:47 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E90AAF800CB
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="MUlfsHKV"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
- d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1655812112; x=1687348112;
- h=from:to:cc:subject:date:message-id:mime-version:
- content-transfer-encoding;
- bh=wNneQbCSnZJ3B73vFRbV+qd4hqox28N2+TeEipHGpiw=;
- b=MUlfsHKVeO7XC6RSRqpQi9r1tJ1qL57lVs+at+KgKnygE2dRzohdLWRz
- hpWoagziJoKnLqBcm3BgkuXYAvMSc7rpYdSzJhbwXSmVOBHPNfZIbGoKQ
- P23g15pNV1cw3d/hrhSaKRPoEQ951AR1a37AjxgbU5Oovl0SDdkF5X/yy
- oMLt+s/rnKo8JinmDsHE9pDC8zrEhfP3jiuUKRtMDryuYrdx6gxn4lNHO
- oFDFyYUnVmul/5Ry7v9bpfHRQ7Jrm29FkY/plht74S7asY6gqAXiE7j4W
- Gi5Ao1dJhE0XpEx86TDegH4x0DX30ZbwmfHvSh41ss36x9FRs6UjRSRv/ A==;
-X-IronPort-AV: E=McAfee;i="6400,9594,10384"; a="259919674"
-X-IronPort-AV: E=Sophos;i="5.92,209,1650956400"; d="scan'208";a="259919674"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
- by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 21 Jun 2022 04:48:13 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.92,209,1650956400"; d="scan'208";a="643588758"
-Received: from crojewsk-ctrl.igk.intel.com ([10.102.9.28])
- by fmsmga008.fm.intel.com with ESMTP; 21 Jun 2022 04:48:11 -0700
-From: Cezary Rojewski <cezary.rojewski@intel.com>
-To: alsa-devel@alsa-project.org,
-	broonie@kernel.org
-Subject: [PATCH] ASoC: core: Exit all links before removing their components
-Date: Tue, 21 Jun 2022 13:57:58 +0200
-Message-Id: <20220621115758.3154933-1-cezary.rojewski@intel.com>
-X-Mailer: git-send-email 2.25.1
+ dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
+ header.b="PMSnvb9P"; 
+ dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
+ header.b="8nbDez45"
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 264A921C62;
+ Tue, 21 Jun 2022 12:00:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1655812847; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=/QMsDJItj/GQBqWAiQh4CqtEy4N0BYINY9d85+5WldY=;
+ b=PMSnvb9PA4jdzrcXcc1WuOnCpL4dXhOVJNegQVJThLthTuL097f3A5iRIHoORpOfWw94qp
+ /O7JNDbtecd5iuvopR22RDSg2FvaShZfPFsBmIngybtTjUqS5Mt41pZDMSS0edDgrrFo7c
+ 0OL0aliENjEqp4jWj8RygvOXqHUhtVA=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1655812847;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=/QMsDJItj/GQBqWAiQh4CqtEy4N0BYINY9d85+5WldY=;
+ b=8nbDez45h9024SYgiRZbNkPLbp/nc/V5WsemTji4XPTRhTHnqRuPsq1bGK8aeRhRet/+su
+ DPkYsrky+mYBEHAw==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 171B213638;
+ Tue, 21 Jun 2022 12:00:47 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+ by imap2.suse-dmz.suse.de with ESMTPSA id SdwwBe+ysWLRegAAMHmgww
+ (envelope-from <tiwai@suse.de>); Tue, 21 Jun 2022 12:00:47 +0000
+From: Takashi Iwai <tiwai@suse.de>
+To: alsa-devel@alsa-project.org
+Subject: [PATCH] ALSA: hda: Fix discovery of i915 graphics PCI device
+Date: Tue, 21 Jun 2022 14:00:44 +0200
+Message-Id: <20220621120044.11573-1-tiwai@suse.de>
+X-Mailer: git-send-email 2.35.3
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-Cc: Cezary Rojewski <cezary.rojewski@intel.com>,
- pierre-louis.bossart@linux.intel.com, tiwai@suse.com, hdegoede@redhat.com,
- amadeuszx.slawinski@linux.intel.com
+Cc: Kai Vehmanen <kai.vehmanen@linux.intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -83,77 +89,62 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Flows leading to link->init() and link->exit() are not symmetric.
-Currently the relevant part of card probe sequence goes as:
+It's been reported that the recent fix for skipping the
+component-binding with D-GPU caused a regression on some systems; it
+resulted in the completely missing component binding with i915 GPU.
 
-	for_each_card_rtds(card, rtd)
-		for_each_rtd_components(rtd, i, component)
-			component->probe()
-	for_each_card_rtds(card, rtd)
-		for_each_rtd_dais(rtd, i, dai)
-			dai->probe()
-	for_each_card_rtds(card, rtd)
-		rtd->init()
+The problem was the use of pci_get_class() function.  It matches with
+the full PCI class bits, while we want to match only partially the PCI
+base class bits.  So, when a system has an i915 graphics device with
+the PCI class 0380, it won't hit because we're looking for only the
+PCI class 0300.
 
-On the other side, equivalent remove sequence goes as:
+This patch fixes i915_gfx_present() to look up each PCI device and
+match with PCI base class explicitly instead of pci_get_class().
 
-	for_each_card_rtds(card, rtd)
-		for_each_rtd_dais(rtd, i, dai)
-			dai->remove()
-	for_each_card_rtds(card, rtd)
-		for_each_rtd_components(rtd, i, component)
-			component->remove()
-	for_each_card_rtds(card, rtd)
-		rtd->exit()
-
-what can lead to errors as link->exit() may still operate on resources
-owned by its components despite the probability of them being freed
-during the component->remove().
-
-This change modifies the remove sequence to:
-
-	for_each_card_rtds(card, rtd)
-		rtd->exit()
-	for_each_card_rtds(card, rtd)
-		for_each_rtd_dais(rtd, i, dai)
-			dai->remove()
-	for_each_card_rtds(card, rtd)
-		for_each_rtd_components(rtd, i, component)
-			component->remove()
-
-so code found in link->exit() is safe to touch any component stuff as
-component->remove() has not been called yet.
-
-Signed-off-by: Cezary Rojewski <cezary.rojewski@intel.com>
-Reviewed-by: Amadeusz Sławiński <amadeuszx.slawinski@linux.intel.com>
+Fixes: c9db8a30d9f0 ("ALSA: hda/i915 - skip acomp init if no matching display")
+Reviewed-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
+Tested-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
+Cc: <stable@vger.kernel.org>
+Link: https://bugzilla.opensuse.org/show_bug.cgi?id=1200611
+Link: https://lore.kernel.org/r/87bkunztec.wl-tiwai@suse.de
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/soc/soc-core.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ sound/hda/hdac_i915.c | 15 ++++++---------
+ 1 file changed, 6 insertions(+), 9 deletions(-)
 
-diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index 4a3fca50a536..638e781df3b0 100644
---- a/sound/soc/soc-core.c
-+++ b/sound/soc/soc-core.c
-@@ -935,9 +935,6 @@ void snd_soc_remove_pcm_runtime(struct snd_soc_card *card,
+diff --git a/sound/hda/hdac_i915.c b/sound/hda/hdac_i915.c
+index 3f35972e1cf7..161a9711cd63 100644
+--- a/sound/hda/hdac_i915.c
++++ b/sound/hda/hdac_i915.c
+@@ -119,21 +119,18 @@ static int i915_component_master_match(struct device *dev, int subcomponent,
+ /* check whether Intel graphics is present and reachable */
+ static int i915_gfx_present(struct pci_dev *hdac_pci)
  {
- 	lockdep_assert_held(&client_mutex);
+-	unsigned int class = PCI_BASE_CLASS_DISPLAY << 16;
+ 	struct pci_dev *display_dev = NULL;
+-	bool match = false;
  
--	/* release machine specific resources */
--	snd_soc_link_exit(rtd);
+-	do {
+-		display_dev = pci_get_class(class, display_dev);
 -
- 	/*
- 	 * Notify the machine driver for extra destruction
- 	 */
-@@ -1888,6 +1885,9 @@ static void soc_cleanup_card_resources(struct snd_soc_card *card)
+-		if (display_dev && display_dev->vendor == PCI_VENDOR_ID_INTEL &&
++	for_each_pci_dev(display_dev) {
++		if (display_dev->vendor == PCI_VENDOR_ID_INTEL &&
++		    (display_dev->class >> 16) == PCI_BASE_CLASS_DISPLAY &&
+ 		    connectivity_check(display_dev, hdac_pci)) {
+ 			pci_dev_put(display_dev);
+-			match = true;
++			return true;
+ 		}
+-	} while (!match && display_dev);
++	}
  
- 	snd_soc_dapm_shutdown(card);
+-	return match;
++	return false;
+ }
  
-+	/* release machine specific resources */
-+	for_each_card_rtds(card, rtd)
-+		snd_soc_link_exit(rtd);
- 	/* remove and free each DAI */
- 	soc_remove_link_dais(card);
- 	soc_remove_link_components(card);
+ /**
 -- 
-2.25.1
+2.35.3
 
