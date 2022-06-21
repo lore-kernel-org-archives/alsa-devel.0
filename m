@@ -4,87 +4,82 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A1694C43334
-	for <alsa-devel@archiver.kernel.org>; Tue, 21 Jun 2022 12:02:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C9A8EC433EF
+	for <alsa-devel@archiver.kernel.org>; Tue, 21 Jun 2022 13:12:40 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A060D2250;
-	Tue, 21 Jun 2022 14:01:31 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A060D2250
+	by alsa0.perex.cz (Postfix) with ESMTPS id 544FD2069;
+	Tue, 21 Jun 2022 15:11:48 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 544FD2069
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1655812941;
-	bh=NWLINASpolDRXk/pJGgHvjbSYq4N2/lnmhGlC1wCNW8=;
-	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1655817158;
+	bh=4xEME0PJkdFrWYpmGq18CjMHFdjMkxkM8iVMwtol8e0=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=NwVMvwmaEMJJMHHDaeVv+95GEdTakdKLGKNM6/HDnndxxvpC+AoQou4EKfVTGTIZu
-	 pjwLewTdl/hSV5l4zqm2JBe79SHKpD20xTmvsudqJiK9dVPB4Cl0Tqp7ewitp6MwFv
-	 EVhcT1vBw9z9p/ILWG8OwhkHFPLAhc9AK6IHeCF0=
+	b=o1SRQfIjLcvxVYI8BBR+JYIeq6B8Tc+B09iI4F3KYZ7AEc4XnwtU6r7NlW2JtBjGK
+	 dmhCuCzA1j5CbbfU3hN5JBT0WfeWHYexKMaHIi0Idbt6wsEocp0uTx4fKhbzNPtIkL
+	 9hxA6vsp+23puLfKbPrH1rY58mV5ggvEXqLOmRD8=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 46455F800CB;
-	Tue, 21 Jun 2022 14:01:31 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id D715EF80152;
+	Tue, 21 Jun 2022 15:11:47 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 54A36F8030F; Tue, 21 Jun 2022 14:01:30 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id A3399F80155; Tue, 21 Jun 2022 15:11:46 +0200 (CEST)
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 3D4FBF800CB
- for <alsa-devel@alsa-project.org>; Tue, 21 Jun 2022 14:01:24 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3D4FBF800CB
+ by alsa1.perex.cz (Postfix) with ESMTPS id 4E3F9F800E3
+ for <alsa-devel@alsa-project.org>; Tue, 21 Jun 2022 15:11:44 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4E3F9F800E3
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="dQrnHGcu"; 
- dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="e213L7Ii"
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="eUVPXq0o"
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id B9B7D21A2B;
- Tue, 21 Jun 2022 12:01:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1655812883; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=X6O+sgAe6vlrjfvA9iDekXGSUzdCcbq2nxgObx/dAXU=;
- b=dQrnHGcu+eEBg//VpaIPme4ayz4J1rZPxFUc2dAlWaopRu3iAEUkVy+ISo71YRbOo3B1ho
- zShIO1NtAUsCqSuZUzFBiyQz7w6PZ1Al14BxhnBpN7arQ8BveRE4omp7wN/rjXYkSOXChf
- MRB2EUZyNW74+NPxLGFDo9Uum51nKiY=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1655812883;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=X6O+sgAe6vlrjfvA9iDekXGSUzdCcbq2nxgObx/dAXU=;
- b=e213L7IiI7qzXFvbe/gHGuOdYEkV/nwLB9l082qUZqniHIfAjTMkVlFqDXot7i/fVPklcp
- 5rnoMYz3rPENBVCQ==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id AA59913638;
- Tue, 21 Jun 2022 12:01:23 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id b2vbKBOzsWIqewAAMHmgww
- (envelope-from <tiwai@suse.de>); Tue, 21 Jun 2022 12:01:23 +0000
-Date: Tue, 21 Jun 2022 14:01:23 +0200
-Message-ID: <8735fyb4z0.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Kai Vehmanen <kai.vehmanen@linux.intel.com>
-Subject: Re: Intel HDMI probe regression on IVB (and older?)
-In-Reply-To: <alpine.DEB.2.22.394.2206211427200.1532214@eliteleevi.tm.intel.com>
-References: <87bkunztec.wl-tiwai@suse.de>
- <alpine.DEB.2.22.394.2206201141320.1532214@eliteleevi.tm.intel.com>
- <87r13jpec5.wl-tiwai@suse.de>
- <alpine.DEB.2.22.394.2206201821290.1532214@eliteleevi.tm.intel.com>
- <87h74fpc6f.wl-tiwai@suse.de>
- <alpine.DEB.2.22.394.2206201916240.1532214@eliteleevi.tm.intel.com>
- <alpine.DEB.2.22.394.2206211427200.1532214@eliteleevi.tm.intel.com>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
-Cc: alsa-devel@alsa-project.org, Lucas De Marchi <lucas.demarchi@intel.com>
+ by ams.source.kernel.org (Postfix) with ESMTPS id 6E9C9B817F4;
+ Tue, 21 Jun 2022 13:11:43 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EAA18C341C4;
+ Tue, 21 Jun 2022 13:11:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1655817102;
+ bh=4xEME0PJkdFrWYpmGq18CjMHFdjMkxkM8iVMwtol8e0=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=eUVPXq0oGf0ynQ+mmppKszQbX0ExCvwwwyzClTkcVE2WThQMGV7mvgtdtLwZi9kpe
+ dDtkTM9jnjSnDNtlRJewWC2apC09nfHB0duGnIXX0vqBCDd2TgvrAQUuRzZP/zIVMI
+ Qpxjuj6zkn5CTumFR0+GSS6TqhPfsPduG/ILTsZ028IBm564m0B90BDHOesyPEfIDJ
+ lgcjqomPUoKP17Xs6KIlERtTK2y7LLH3NVb06Zrn7GoO6wqzZKmX5zptHYXZ/71NYW
+ AIei+ef2lro1GS4HLIqKo7DmO+D52U9EVKbAKnLXvmtcoi3VNenn9OmHeZRQM95nvV
+ l6dTKpR7L08qQ==
+Date: Tue, 21 Jun 2022 14:11:35 +0100
+From: Mark Brown <broonie@kernel.org>
+To: Pierluigi Passaro <pierluigi.p@variscite.com>
+Subject: Re: [PATCH 4/4] ASoC: wm8904: add DMIC support
+Message-ID: <YrHDh6lzdZXj7HcQ@sirena.org.uk>
+References: <20220307141041.27538-1-alifer.m@variscite.com>
+ <20220307141041.27538-4-alifer.m@variscite.com>
+ <AM6PR08MB4376411B180D8860E2AD3AE0FFB09@AM6PR08MB4376.eurprd08.prod.outlook.com>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature"; boundary="zPDn0Yp+KJI2UZco"
+Content-Disposition: inline
+In-Reply-To: <AM6PR08MB4376411B180D8860E2AD3AE0FFB09@AM6PR08MB4376.eurprd08.prod.outlook.com>
+X-Cookie: Edited for television.
+Cc: "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+ "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
+ "nicoleotsuka@gmail.com" <nicoleotsuka@gmail.com>,
+ "Xiubo.Lee@gmail.com" <Xiubo.Lee@gmail.com>,
+ "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
+ "shengjiu.wang@gmail.com" <shengjiu.wang@gmail.com>,
+ "tiwai@suse.com" <tiwai@suse.com>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "lgirdwood@gmail.com" <lgirdwood@gmail.com>,
+ Eran Matityahu <eran.m@variscite.com>,
+ "robh+dt@kernel.org" <robh+dt@kernel.org>,
+ Alifer Willians de Moraes <alifer.m@variscite.com>,
+ "patches@opensource.cirrus.com" <patches@opensource.cirrus.com>,
+ "festevam@gmail.com" <festevam@gmail.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -100,36 +95,46 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Tue, 21 Jun 2022 13:36:04 +0200,
-Kai Vehmanen wrote:
-> 
-> Hi,
-> 
-> On Mon, 20 Jun 2022, Kai Vehmanen wrote:
-> 
-> > On Mon, 20 Jun 2022, Takashi Iwai wrote:
-> > 
-> > > > But it's a marginal difference, so for your version:
-> > > > 
-> > > > Reviewed-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
-> > > 
-> > > OK, could you throw the patch to CI for verification?
-> > > I can merge it for the next pull request (probably in this week) once
-> > > after confirmation. 
-> > 
-> > sure thing, I'll confirm later this week.
-> 
-> tests are clean for the patch so
-> 
-> Tested-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
-> 
-> Did a bit of analysis why this was not caught in testing earlier. IVB (and 
-> older) systems are covered in the intel-gfx CI, but it turns out PCI class 
-> is 0300 (VGA compatible adapter) on all of these. But alas on the 
-> reporter's system, PCI_CLASS_DISPLAY_OTHER was used, so the problem is 
-> definitely there and the fix is needed.
 
-Great, thanks for the update.  I submitted the proper patch now.
+--zPDn0Yp+KJI2UZco
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
+On Mon, Jun 20, 2022 at 07:53:56PM +0000, Pierluigi Passaro wrote:
 
-Takashi
+> > This means that DMICDAT2 is not usefully selectable at runtime, you've
+> > got IN1 as digital and IN2 as analogue, so while the DMIC/ADC switch is
+> > useful the DMIC1/2 switch is not.
+
+> A customer could have the following working configuration
+> - pin 1: DMIC_CLK
+> - pin 24: LINEIN2R
+> - pin 25: DMICDAT2
+> - pin 26: LINEIN2L
+> - pin 27: DMICDAT1
+
+> with no shared pins: here there's the chance to select DMIC1, DMIC2 and
+> LINEIN2 at runtime: I can't find a reason for a fixed behavior.
+> Can you please elaborate ?
+
+So in that case the driver should offer the DMIC1/2 selection.  The
+driver should be looking at which pins are wired up as DMICs and only
+registering controls that can actually be used in the system based on
+the pins that are wired up.
+
+--zPDn0Yp+KJI2UZco
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmKxw4YACgkQJNaLcl1U
+h9BfeAf/UZDQPNisaKHZIdpACSlbsSETLopyOjBB/groSLMQsNWcxbfkFhXkhdZS
+mASQEVcOrYDiXD7yh6dcIeBAys+tfFZkrbX5YVBy+3sMm9jufXa7k3gbcJ6fA5rx
+ARo7N0DMY9I2YqAkQ6dtTOxIicnYMxWJibPLagGEc6WiGGbi1CfnlZJ8UmHKTy7T
+CFIAQes0bK4R26y7dZW7ogoSAClxlwImn9pLvrkwEh9VppUsP7XR/SauygBUsl3g
+8gR9o1PjcVI3heKldnX1mQrzN13oJfBm2Vjd+7VGl8cLs3ZaQ8cx4dAgt+zj1JTF
+7EXAU2zpt9gbnFQhQXfk+PuFpldzwA==
+=5L+0
+-----END PGP SIGNATURE-----
+
+--zPDn0Yp+KJI2UZco--
