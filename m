@@ -4,71 +4,79 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 70F20C433EF
-	for <alsa-devel@archiver.kernel.org>; Tue, 21 Jun 2022 22:58:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 700F0C433EF
+	for <alsa-devel@archiver.kernel.org>; Tue, 21 Jun 2022 22:58:42 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B1FD42009;
-	Wed, 22 Jun 2022 00:57:19 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B1FD42009
+	by alsa0.perex.cz (Postfix) with ESMTPS id B0DC62891;
+	Wed, 22 Jun 2022 00:57:50 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B0DC62891
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1655852289;
-	bh=CxXPtEW5e1uUGi2JZOJqB6xQiXiupMBZIw/yEArO8jo=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=tNgwJhPbXAK6LjMgAb57Utfjdmw4EqAY+/uNxFKs53NfCpDqBy8xHch3wlAb6GWGP
-	 buYt6fjIdBaF56EICg/RUd+Va+dhkHZ4CkKTGD28MLk4y7HGTz1l3K62d8PP73Fm5v
-	 2+h0DPhz12v4og/HRirAz4Te006mzF3NyiXwNvlo=
+	s=default; t=1655852320;
+	bh=govaHQk7YyG0eUsVlD5BABnVJzMY8uw730DimVkT0HA=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=nz0LdopDIincE/ron2LLe655FIymEMgwUX/bMZab4GHlvS69dkellQlDSol36M8K5
+	 gyRznahrrLmC57N5yN1CRuyD1I2EkbQpx34Iv1idZLIUWq1fnS4Tl+Ze3ddUTLGPoS
+	 BtQbMa/QxZ1IqBxOBWF4LzOuQVSHiDE88yjMD5cs=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id DE739F80253;
-	Wed, 22 Jun 2022 00:57:18 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id C9DF8F804F3;
+	Wed, 22 Jun 2022 00:57:19 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 43C06F80104; Wed, 22 Jun 2022 00:57:16 +0200 (CEST)
+ id 0CB63F800CB; Wed, 22 Jun 2022 00:57:17 +0200 (CEST)
 Received: from mga18.intel.com (mga18.intel.com [134.134.136.126])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 8B2A6F80104
- for <alsa-devel@alsa-project.org>; Wed, 22 Jun 2022 00:57:12 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8B2A6F80104
+ by alsa1.perex.cz (Postfix) with ESMTPS id 2752EF800CB
+ for <alsa-devel@alsa-project.org>; Wed, 22 Jun 2022 00:57:09 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2752EF800CB
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="QvAoWOmE"
+ header.b="BrChb3Rv"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1655852233; x=1687388233;
- h=from:to:cc:subject:date:message-id:mime-version:
- content-transfer-encoding;
- bh=CxXPtEW5e1uUGi2JZOJqB6xQiXiupMBZIw/yEArO8jo=;
- b=QvAoWOmES6T0/OcDLfInFO+2ktMaG22blCckDvEGQ9qO5E83xVMUZeL8
- /ABRXmGArjW3NyrZXy4hlUusjdmHpZiqTZqc5tDkeCAQe6lRSdmEXFJOo
- GeArZeuuB5gVBwnfnmVtXkiMH7Jd+Nd7nNaJrgcrDCJvT/dBa/UrgKd8X
- aWozJTM1nHwxyUhW1N2Or4InnzbX3kcsyxB4u7GtM4jh6gK//G9P2rVit
- jbAKw7Loy9mqxRaAll7sXIExkvYPXKvKp0DvWrRDrLZQzOkjSDsPiEjA6
- xAxA/pNv4V6HVIJRF/IrdTUxtGUCpa6C5RS7MjxYbIpP0T4lDK5wnpI0q w==;
-X-IronPort-AV: E=McAfee;i="6400,9594,10385"; a="263292318"
-X-IronPort-AV: E=Sophos;i="5.92,210,1650956400"; d="scan'208";a="263292318"
+ t=1655852231; x=1687388231;
+ h=from:to:cc:subject:date:message-id:in-reply-to:
+ references:mime-version:content-transfer-encoding;
+ bh=govaHQk7YyG0eUsVlD5BABnVJzMY8uw730DimVkT0HA=;
+ b=BrChb3Rv94ydwL8R1gk8XmmiSOGD6+y3ItEUOiAa04LWedb6XD77dlH2
+ MrLZZQ8nLZDGvugscMvNmUOEuxU/p7shF81qJaGARCw5bzzvpInfB2orc
+ pScQgUJq+kJ1ifu7WraNXwXeH5m2DNDi81p8njTDzyjCMtXmQX7o6b3fF
+ +lSw3nTwwXrnSrC9uLnsLvp/xWXyXahv06z+qIRTvv3aYIEUa7m30aBA8
+ nrCblPhLymfvIIBTElZiv8Li6gXuyhYXaXU2iRvC9QQVOkKB0Z1Uo8IG5
+ UT0GwmxTNi+yLvgJoRIZICN2tBU0NCHHhyi8+icAk8Qw/BoB9molrKCas g==;
+X-IronPort-AV: E=McAfee;i="6400,9594,10385"; a="263292327"
+X-IronPort-AV: E=Sophos;i="5.92,210,1650956400"; d="scan'208";a="263292327"
 Received: from fmsmga005.fm.intel.com ([10.253.24.32])
  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 21 Jun 2022 15:57:01 -0700
-X-IronPort-AV: E=Sophos;i="5.92,210,1650956400"; d="scan'208";a="914354215"
+ 21 Jun 2022 15:57:03 -0700
+X-IronPort-AV: E=Sophos;i="5.92,210,1650956400"; d="scan'208";a="914354241"
 Received: from dpasupul-mobl.amr.corp.intel.com (HELO
  pbossart-mobl3.intel.com) ([10.209.178.35])
  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 21 Jun 2022 15:57:00 -0700
+ 21 Jun 2022 15:57:02 -0700
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH 0/3] soundwire: revisit peripheral driver bind/unbind
-Date: Tue, 21 Jun 2022 17:56:37 -0500
-Message-Id: <20220621225641.221170-1-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH 2/3] soundwire: peripheral: remove useless ops pointer
+Date: Tue, 21 Jun 2022 17:56:39 -0500
+Message-Id: <20220621225641.221170-3-pierre-louis.bossart@linux.intel.com>
 X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20220621225641.221170-1-pierre-louis.bossart@linux.intel.com>
+References: <20220621225641.221170-1-pierre-louis.bossart@linux.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Cc: tiwai@suse.de, gregkh@linuxfoundation.org,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, vkoul@kernel.org,
- broonie@kernel.org, srinivas.kandagatla@linaro.org,
- Bard liao <yung-chuan.liao@linux.intel.com>
+ =?UTF-8?q?P=C3=A9ter=20Ujfalusi?= <peter.ujfalusi@linux.intel.com>,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ Rander Wang <rander.wang@intel.com>, vkoul@kernel.org, broonie@kernel.org,
+ srinivas.kandagatla@linaro.org,
+ Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+ Sanyog Kale <sanyog.r.kale@intel.com>,
+ Bard liao <yung-chuan.liao@linux.intel.com>,
+ open list <linux-kernel@vger.kernel.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -84,41 +92,38 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-This patchset fixes the driver bind/unbind cases which are not
-well-supported today. I initially reported a race condition in March
-2022 [1] and the more tests I ran the more timing assumptions crept to
-the surface.
+Now that we are using the ops structure directly from the driver,
+there are no users left of this ops pointer.
 
-With this patchset, I've been able to bind the drivers in any order,
-and when all dependencies were available the card is
-created/registered. Likewise I was able to remove codec drivers while
-the bus was still running. The initial suggestion to use
-device_lock()/unlock() led to system hangs in suspend-resume that I
-was unable to root-cause after weeks of tests, hence this patchset
-relies on a SoundWire-specific lock doesn't interfere with other core
-device locking.
+Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Reviewed-by: Rander Wang <rander.wang@intel.com>
+Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+Reviewed-by: Bard Liao <yung-chuan.liao@linux.intel.com>
+Reviewed-by: Péter Ujfalusi <peter.ujfalusi@linux.intel.com>
+---
+ include/linux/soundwire/sdw.h | 2 --
+ 1 file changed, 2 deletions(-)
 
-I think it's a pretty important set of changes that would ideally be
-merged in this kernel cycle, so that we can finally add the inclusive
-'manager/peripheral' language change in the next kernel cycle.
-
-Feedback and comments welcome.
-
-[1] https://lore.kernel.org/alsa-devel/d0559e97-c4a0-b817-428c-d3e305390270@linux.intel.com/
-
-Pierre-Louis Bossart (3):
-  soundwire: revisit driver bind/unbind and callbacks
-  soundwire: peripheral: remove useless ops pointer
-  soundwire: intel: use pm_runtime_resume() on component probe
-
- drivers/soundwire/bus.c       | 75 ++++++++++++++++++++---------------
- drivers/soundwire/bus_type.c  | 30 +++++++++++---
- drivers/soundwire/intel.c     | 18 +++++++++
- drivers/soundwire/slave.c     |  3 +-
- drivers/soundwire/stream.c    | 53 ++++++++++++++++---------
- include/linux/soundwire/sdw.h |  8 +---
- 6 files changed, 124 insertions(+), 63 deletions(-)
-
+diff --git a/include/linux/soundwire/sdw.h b/include/linux/soundwire/sdw.h
+index bf6f0decb3f6d..39058c841469f 100644
+--- a/include/linux/soundwire/sdw.h
++++ b/include/linux/soundwire/sdw.h
+@@ -637,7 +637,6 @@ struct sdw_slave_ops {
+  * @dev: Linux device
+  * @status: Status reported by the Slave
+  * @bus: Bus handle
+- * @ops: Slave callback ops
+  * @prop: Slave properties
+  * @debugfs: Slave debugfs
+  * @node: node for bus list
+@@ -667,7 +666,6 @@ struct sdw_slave {
+ 	struct device dev;
+ 	enum sdw_slave_status status;
+ 	struct sdw_bus *bus;
+-	const struct sdw_slave_ops *ops;
+ 	struct sdw_slave_prop prop;
+ #ifdef CONFIG_DEBUG_FS
+ 	struct dentry *debugfs;
 -- 
 2.34.1
 
