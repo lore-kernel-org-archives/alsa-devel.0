@@ -4,69 +4,76 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A64A3C43334
-	for <alsa-devel@archiver.kernel.org>; Wed, 22 Jun 2022 17:31:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C659CC43334
+	for <alsa-devel@archiver.kernel.org>; Wed, 22 Jun 2022 17:31:54 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C130C1EEE;
-	Wed, 22 Jun 2022 19:30:53 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C130C1EEE
+	by alsa0.perex.cz (Postfix) with ESMTPS id A71131DFE;
+	Wed, 22 Jun 2022 19:31:02 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A71131DFE
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1655919103;
-	bh=WpJxGSkPnoTmSLwPwAWBaxy5WCwKFsEXIi5/wZIjC5Q=;
+	s=default; t=1655919112;
+	bh=B9aUHJD3yJ+AfE8Llrw6Si0We0sEP5bH4s0Gorml2mU=;
 	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=OZJ7sAZpgffHL2LOPVossURV9JZejkEY7SYuB4fhYYAVSfun+j7OIMPcxNTGCJZld
-	 Tiv6aSAgAtEF4PK8H4WG3fJCSXLGDm+Cyq4GSuaoXdumHSoKc1gj37eVIfJzHMjfyR
-	 u6Jwv+KuXRAX2dI+4a/ZwM25jNrI9abl+2NfVHzo=
+	b=VdbDXo7wpRkjWVBvhyDeCNvMKwmAlPjfVK7ttSiqjrrak6IINRy29jb7NGIiaZoPp
+	 M3SEiURXBQLM9QDYOu9DgfGIjaAcoxiXT7qdVuzH3WSx6/TG6eFYIbtBxL4Uc0zCEq
+	 aUefjNO7Hcdyd6R+hKfNboNYLJR8YhX4qRRMvbSE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 68220F80539;
-	Wed, 22 Jun 2022 19:30:18 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 09C3EF8053D;
+	Wed, 22 Jun 2022 19:30:28 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 70597F80100; Wed, 22 Jun 2022 19:30:16 +0200 (CEST)
-Received: from ams.source.kernel.org (ams.source.kernel.org
- [IPv6:2604:1380:4601:e00::1])
+ id 1F07FF8053E; Wed, 22 Jun 2022 19:30:26 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org
+ [IPv6:2604:1380:4641:c500::1])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 4745EF80100
- for <alsa-devel@alsa-project.org>; Wed, 22 Jun 2022 19:30:09 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4745EF80100
+ by alsa1.perex.cz (Postfix) with ESMTPS id C08ADF8053C;
+ Wed, 22 Jun 2022 19:30:20 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C08ADF8053C
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="O8jxIq/L"
+ header.b="PbhL7BDb"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by ams.source.kernel.org (Postfix) with ESMTPS id 3876CB8205B;
- Wed, 22 Jun 2022 17:30:09 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2EC7AC3411B;
- Wed, 22 Jun 2022 17:30:04 +0000 (UTC)
+ by dfw.source.kernel.org (Postfix) with ESMTPS id 885D261C3D;
+ Wed, 22 Jun 2022 17:30:17 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 11686C34114;
+ Wed, 22 Jun 2022 17:30:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1655919007;
- bh=WpJxGSkPnoTmSLwPwAWBaxy5WCwKFsEXIi5/wZIjC5Q=;
+ s=k20201202; t=1655919016;
+ bh=B9aUHJD3yJ+AfE8Llrw6Si0We0sEP5bH4s0Gorml2mU=;
  h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=O8jxIq/LPamDMoq3ZB2j4wKsgadFaOqNRR2sr+IiON6+3oKt+nbysJU5zpEoBOByl
- fHmubXbbNGi5HsAVhjywJjEsxEmjTw71SSTsJr5e/wmXA3GWk4Ki9vdn6oQlVG3jqT
- QQtlHrEY+c3CoRRr0TmpuAJ0g9VGIpx7EfPEqG+U6cuTP5Sz4PgZiwIMmkffuNxd0U
- 64ztA/4TMUpRS4RSCgoXh85rrTNo9jaNjhEzenVzLKNeYpjLIXHfH90Osum6p7LKOb
- v/wPfk30TGijakLXclDCK7BscWP31fN8u3E4QnoSIoaDYuWRk7S9IcE1e5M6Zg+yy+
- KMyCln03Hi57A==
+ b=PbhL7BDbL8ugnS61MPkvlHVei8H0YXV25HEjOO4yIEagzWBsXsOQ43PjjMKF0CX6J
+ ztJjPP2SmofIZ+HgK8jFO5IDlrxo4pYcGT/0CEKmmgiT55cI04oI5mocctHOa89ZlF
+ BOArjVrYOPZAwqwTyUt3vvSKqCxPZKlifuRsNd2EBMV06VeUDxtPNpAmtZeg0/11XO
+ sIWLN5Zf6egJM3q5ctgUFJ7SXIDZMepAXFX433At2osHWiVd632iOy5gMd+2foB0HV
+ ccFbiozoNwwY1oQSAHsHbAkp8VMo2bAXyJeX7tC3F5nhea+qZgBfizUkhP1H1dbK3o
+ PbAVgLkTVaCXQ==
 From: Mark Brown <broonie@kernel.org>
-To: lgirdwood@gmail.com, heiko@sntech.de, wens@kernel.org, tiwai@suse.com,
- perex@perex.cz
-In-Reply-To: <20220621185747.2782-1-wens@kernel.org>
-References: <20220621185747.2782-1-wens@kernel.org>
-Subject: Re: [PATCH] ASoC: rockchip: i2s: Fix crash on missing pinctrl
-Message-Id: <165591900483.1405752.13168398437677956332.b4-ty@kernel.org>
-Date: Wed, 22 Jun 2022 18:30:04 +0100
+To: kai.vehmanen@linux.intel.com, peter.ujfalusi@linux.intel.com,
+ ranjani.sridharan@linux.intel.com, lgirdwood@gmail.com, perex@perex.cz,
+ tiwai@suse.com, matthias.bgg@gmail.com, robh+dt@kernel.org,
+ yc.hung@mediatek.com, cujomalainey@chromium.org,
+ yung-chuan.liao@linux.intel.com, tinghan.shen@mediatek.com,
+ daniel.baluta@nxp.com, allen-kh.cheng@mediatek.com,
+ krzysztof.kozlowski+dt@linaro.org, pierre-louis.bossart@linux.intel.com
+In-Reply-To: <20220622062245.21021-1-tinghan.shen@mediatek.com>
+References: <20220622062245.21021-1-tinghan.shen@mediatek.com>
+Subject: Re: [PATCH v4 0/4] Add MT8186 ADSP dt-binding
+Message-Id: <165591901017.1405752.13178281441778356298.b4-ty@kernel.org>
+Date: Wed, 22 Jun 2022 18:30:10 +0100
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
- linux-rockchip@lists.infradead.org, wens@csie.org, judyhsiao@chromium.org,
- linux-arm-kernel@lists.infradead.org
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
+ linux-kernel@vger.kernel.org,
+ Project_Global_Chrome_Upstream_Group@mediatek.com,
+ linux-mediatek@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
+ sound-open-firmware@alsa-project.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -82,13 +89,16 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, 22 Jun 2022 02:57:47 +0800, Chen-Yu Tsai wrote:
-> From: Chen-Yu Tsai <wens@csie.org>
+On Wed, 22 Jun 2022 14:22:41 +0800, Tinghan Shen wrote:
+> v3 -> v4:
+> 1. Update commit message of patch 1/4
+> 2. Add review tag to path 3/4
 > 
-> Commit 44f362c2cc6d ("ASoC: rockchip: i2s: switch BCLK to GPIO") added
-> pinctrl lookups, but did not skip the lookup if there was no pinctrl
-> device tied to the I2S controller. As a result, the lookup was done
-> on an invalid pointer in such cases, causing a kernel panic.
+> v2 -> v3:
+> 1. Change mbox-names to rx/tx for both mt8186 and mt8195.
+> 2. Update description of mbox-names
+> 3. Use static string array instead of kasprintf
+> 4. Align clock names in dsp driver with dt-bindings
 > 
 > [...]
 
@@ -98,8 +108,14 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: rockchip: i2s: Fix crash on missing pinctrl
-      commit: c3b5fd7fbb698496461f280728b456d9927f22af
+[1/4] dt-bindings: dsp: mediatek: Use meaningful names for mbox
+      commit: 009b21f392759ca7be91bc4be9d9534f6cee2878
+[2/4] firmware: mediatek: Use meaningful names for mbox
+      commit: 74bbdd632637628fef8f651bddc5d17aeb7eb46a
+[3/4] dt-bindings: dsp: mediatek: Add mt8186 dsp document
+      commit: 99370c4ea3d0cee8445f6a1104f25667e3fd47ba
+[4/4] ASoC: SOF: mediatek: Align mt8186 clock names with dt-bindings
+      commit: acaeb8c62fd1b2b57be1523b8d5b1d64a1a9dc38
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
