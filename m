@@ -4,80 +4,91 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D1C77C43334
-	for <alsa-devel@archiver.kernel.org>; Wed, 22 Jun 2022 13:09:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7E8EDC43334
+	for <alsa-devel@archiver.kernel.org>; Wed, 22 Jun 2022 13:11:04 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 14AB51F3B;
-	Wed, 22 Jun 2022 15:09:00 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 14AB51F3B
+	by alsa0.perex.cz (Postfix) with ESMTPS id 8E1731F6D;
+	Wed, 22 Jun 2022 15:10:12 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8E1731F6D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1655903390;
-	bh=+4SHZom6L/m61eJQVY1bJiCes0l+AaRUKNvBeE5bzgY=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=KI4AfVWDd4MrTKvFHefUT1UVcCVGj+xS041HEvtuQKWmjcK8MtWVjzWKYQzWbO1/U
-	 0yYRX0Q5zRUnVDE4dNVwTOemiN3N5wfUoS3X7KyYXurwB6cXj+xPsf+JYLoprqahY4
-	 9QEm9fxmNJVtJEs3vJOL3S25RjJtIa/k08baX2lI=
+	s=default; t=1655903462;
+	bh=3Ur4dHBuUUDP964QLvooTJDDBd0SW01UopYEBOliLrA=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=JGIJSQIUCuURYwS5LE21m0pJ7jWtVP+ItHPN6Mq3wgJxJsSWR8CJjD3P6dgUCuggY
+	 B99afh1yl0+Llz9IkAO3lRTOJYr2Xi3CQeQ7mFjT0DcOBkInKRx7oHn4ZQUl4xyEZ7
+	 y0wcB2VappgbS5EV4WQsalOnyvJ+Wt94vNAAW+us=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 4A188F80534;
-	Wed, 22 Jun 2022 15:08:12 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2B92CF8019B;
+	Wed, 22 Jun 2022 15:10:12 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 7C6E4F8032D; Wed, 22 Jun 2022 15:08:08 +0200 (CEST)
-Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
- [67.231.152.168])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id CE1CEF802D2; Wed, 22 Jun 2022 15:10:10 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 39F53F802D2
- for <alsa-devel@alsa-project.org>; Wed, 22 Jun 2022 15:07:56 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 39F53F802D2
+ by alsa1.perex.cz (Postfix) with ESMTPS id DFE76F8019B
+ for <alsa-devel@alsa-project.org>; Wed, 22 Jun 2022 15:10:05 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DFE76F8019B
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com
- header.b="fXUNsaIY"
-Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
- by mx0b-001ae601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 25M7FLQE012089;
- Wed, 22 Jun 2022 08:07:54 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
- h=from : to : cc :
- subject : date : message-id : mime-version : content-transfer-encoding :
- content-type; s=PODMain02222019;
- bh=gBYOHgPVp12lYmk5v3IHB2WXYsDvG+/8wdG4s8qgEuQ=;
- b=fXUNsaIY8RSc18mWHMTird7xW4JaSQg4PwgrbLI7JYASOTkfOcLlgTwlpaA1FIGdfc4c
- NHjyXxwU2J3P+BIgYfAvDrDJwLVIe5yf25F45ioXc+ZmUksCoJLa04rps6ybeQb/NLPI
- 0n1BqHXAck3Wreoh4D7Ko1XWHBZ2B5UrbbFnpc1aRpyPd7D+lQVQPs5PzvjXkTZ0OQWn
- SWTT7mJ1AFG9Jj+RBs5kdQ+praPhcCQ3jLYnJX7dr+8ZYz1WQE2q/x3XTHxN6OZ3HfTd
- s4JC677o3XMmQjIW8Ncuhqnpoi79lFoYRQdZYdtbfUF7cpCQzWNhr+1CxiVryhcnzohJ XA== 
-Received: from ediex01.ad.cirrus.com ([84.19.233.68])
- by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3gsb4p4ybp-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
- Wed, 22 Jun 2022 08:07:54 -0500
-Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.28; Wed, 22 Jun
- 2022 14:07:53 +0100
-Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server id 15.1.2375.28 via
- Frontend Transport; Wed, 22 Jun 2022 14:07:53 +0100
-Received: from sbinding-cirrus-dsktp.ad.cirrus.com (unknown [198.90.238.151])
- by ediswmail.ad.cirrus.com (Postfix) with ESMTP id D69127C;
- Wed, 22 Jun 2022 13:07:46 +0000 (UTC)
-From: Stefan Binding <sbinding@opensource.cirrus.com>
-To: "Rafael J . Wysocki" <rafael@kernel.org>, Len Brown <lenb@kernel.org>,
- Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
-Subject: [PATCH v1 0/2] Read _SUB from ACPI to be able to identify firmware
-Date: Wed, 22 Jun 2022 14:07:28 +0100
-Message-ID: <20220622130730.1573747-1-sbinding@opensource.cirrus.com>
-X-Mailer: git-send-email 2.25.1
-MIME-Version: 1.0
+ dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
+ header.b="iP0LQU0B"; 
+ dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
+ header.b="XaYsgD3x"
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id BBBDB21B7D;
+ Wed, 22 Jun 2022 13:10:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1655903405; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=TPq/PYAfUeArN2v5LZAdETQPOiri6zDleVEOUExbxsM=;
+ b=iP0LQU0B72dXyEUXeiRd7ei2C5Kw3uGLRK+eFb6ZN2ODd+acmfdbWaQ6QiLCwmyiLlh4pL
+ GCp5xyY4BFgK3gruF61bPHj5cKw8TSN3TC3jJNktrNCHSWfhmhmrComYP5D80zwabefYvB
+ +k0qfsPdES1FcqKrYQWzhiOhBLuNz5Q=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1655903405;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=TPq/PYAfUeArN2v5LZAdETQPOiri6zDleVEOUExbxsM=;
+ b=XaYsgD3xTNr7U669pBlBhguFGCGPn+Eheg6V25EOLcDMQsFShk58TeluQOffovNTBO+y2z
+ +0ZELqC1exxk23BA==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 8AA4B134A9;
+ Wed, 22 Jun 2022 13:10:05 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+ by imap2.suse-dmz.suse.de with ESMTPSA id XZE1Ia0Us2KgKAAAMHmgww
+ (envelope-from <tiwai@suse.de>); Wed, 22 Jun 2022 13:10:05 +0000
+Date: Wed, 22 Jun 2022 15:10:04 +0200
+Message-ID: <87y1xon8sz.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Amadeusz =?ISO-8859-2?Q?S=B3awi=F1ski?=
+ <amadeuszx.slawinski@linux.intel.com>
+Subject: Re: [PATCH v7 01/14] ALSA: hda: hda_cs_dsp_ctl: Add Library to
+ support CS_DSP ALSA controls
+In-Reply-To: <d05c292e-f955-48df-50e3-55e36a956775@linux.intel.com>
+References: <20220622074653.179078-1-vitalyr@opensource.cirrus.com>
+ <20220622074653.179078-2-vitalyr@opensource.cirrus.com>
+ <d05c292e-f955-48df-50e3-55e36a956775@linux.intel.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=ISO-8859-2
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Proofpoint-GUID: pI4CQgaqMYeQBZynIB44jpdYyBigxKCt
-X-Proofpoint-ORIG-GUID: pI4CQgaqMYeQBZynIB44jpdYyBigxKCt
-X-Proofpoint-Spam-Reason: safe
-Cc: linux-acpi@vger.kernel.org, alsa-devel@alsa-project.org,
- Stefan Binding <sbinding@opensource.cirrus.com>, linux-kernel@vger.kernel.org,
- patches@opensource.cirrus.com
+Cc: alsa-devel@alsa-project.org,
+ Vitaly Rodionov <vitalyr@opensource.cirrus.com>, patches@opensource.cirrus.com,
+ Takashi Iwai <tiwai@suse.com>, Stefan Binding <sbinding@opensource.cirrus.com>,
+ Mark Brown <broonie@kernel.org>, linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -93,27 +104,47 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-CS35L41 has a DSP which is able to run firmware, as well as a tuning file.
-Different systems may want to use different firmwares and tuning files, and
-some firmwares/tunings may not be compatible with other systems.
-To allow a system to select the correct fimware/tuning, we can read an _SUB
-from the ACPI. This _SUB can then be used to uniquely identify the system
-in the firmware/tuning file name.
+On Wed, 22 Jun 2022 10:40:20 +0200,
+Amadeusz S³awiñski wrote:
+> 
+> > +static int hda_cs_dsp_add_kcontrol(struct hda_cs_dsp_coeff_ctl *ctl)
+> > +{
+> > +	struct cs_dsp_coeff_ctl *cs_ctl = ctl->cs_ctl;
+> > +	struct snd_kcontrol_new *kcontrol;
+> > +	struct snd_kcontrol *kctl;
+> > +	int ret = 0;
+> > +
+> > +	if (cs_ctl->len > ADSP_MAX_STD_CTRL_SIZE) {
+> > +		dev_err(cs_ctl->dsp->dev, "Control %s: length %zu exceeds maximum %d\n", ctl->name,
+> > +			cs_ctl->len, ADSP_MAX_STD_CTRL_SIZE);
+> > +		return -EINVAL;
+> > +	}
+> > +
+> > +	kcontrol = kzalloc(sizeof(*kcontrol), GFP_KERNEL);
+> > +	if (!kcontrol)
+> > +		return -ENOMEM;
+> > +
+> > +	kcontrol->name = ctl->name;
+> > +	kcontrol->info = hda_cs_dsp_coeff_info;
+> > +	kcontrol->iface = SNDRV_CTL_ELEM_IFACE_MIXER;
+> > +	kcontrol->private_value = (unsigned long)ctl;
+> > +	kcontrol->access = wmfw_convert_flags(cs_ctl->flags);
+> > +
+> > +	kcontrol->get = hda_cs_dsp_coeff_get;
+> > +	kcontrol->put = hda_cs_dsp_coeff_put;
+> > +
+> > +	kctl = snd_ctl_new1(kcontrol, NULL);
+> 
+> Wouldn't
+> kctl = snd_ctl_new1(kcontrol, ctl);
+> work instead of
+> kcontrol->private_value = (unsigned long)ctl;
+> ...
+> kctl = snd_ctl_new1(kcontrol, NULL);
+> ?
 
-Add a helper function which reads the _SUB, so this can be used by other
-parts in the future.
-Add support inside the CS35L41 ASoC driver to read this _SUB, and save it
-appropriately.
+The second argument to snd_ctl_new1() is set to private_data field,
+while private_value is taken from snd_kcontrol_new template.
 
-Stefan Binding (2):
-  ACPI: utils: Add api to read _SUB from ACPI
-  ASoC: cs35l41: Read System Name from ACPI _SUB to identify firmware
 
- drivers/acpi/utils.c       | 26 ++++++++++++++++++++++++++
- include/linux/acpi.h       |  8 ++++++++
- sound/soc/codecs/cs35l41.c | 27 +++++++++++++++++++++++++++
- 3 files changed, 61 insertions(+)
-
--- 
-2.25.1
-
+Takashi
