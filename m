@@ -4,94 +4,56 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 29450C43334
-	for <alsa-devel@archiver.kernel.org>; Wed, 22 Jun 2022 15:01:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8FF43C43334
+	for <alsa-devel@archiver.kernel.org>; Wed, 22 Jun 2022 15:23:03 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 813A11B47;
-	Wed, 22 Jun 2022 17:00:34 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 813A11B47
+	by alsa0.perex.cz (Postfix) with ESMTPS id 2948D1B08;
+	Wed, 22 Jun 2022 17:22:11 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2948D1B08
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1655910084;
-	bh=X8m0HdW0szEH622YY/dKPJWcd2zG9FVQwm0ZbAmXRco=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=VqbYXh7dZzRSrOEI/2wdYsm9vjVdvdH6csiV3EoOtie7z3Tp039SNqglzx5NqzAmY
-	 W6OY7K+mKRE0Iyjc34tolDSowiSmXzMQivdFzUcPgkCGrc6ty9WvWqmVpZqBgePrOy
-	 mIH9zCrwQZ6D96ogdWcDi3FrKvDzaVdYF5d9UJ1U=
+	s=default; t=1655911381;
+	bh=gDQEEOMHJwv/vwhMSl0koqV0mmLsKIRqsa1GAsw7Xvo=;
+	h=Subject:From:In-Reply-To:Date:References:To:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=WaI3xRgrnuGK8V3b0r7RbbsKHK6okkexh9LobP3C6bkmmNqIjQIicFGW4bIOaNgXz
+	 Yay6+gjkIf7cLsKEmSRaFzmc3gD8wTKslBR/zwDy4aNJ5EEt/0YlxkcqFSoCdN9RIT
+	 DS5ABnT41shIWG3Lvzu9/+wtW/ZUFgqZubORVnLQ=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id F30BAF8019B;
-	Wed, 22 Jun 2022 17:00:33 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id AB9FFF800CB;
+	Wed, 22 Jun 2022 17:22:10 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id D7BCEF802D2; Wed, 22 Jun 2022 17:00:32 +0200 (CEST)
-Received: from wout5-smtp.messagingengine.com (wout5-smtp.messagingengine.com
- [64.147.123.21])
- (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
+ id AE10EF802D2; Wed, 22 Jun 2022 17:22:08 +0200 (CEST)
+Received: from hutie.ust.cz (hutie.ust.cz [185.8.165.127])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 82884F80118
- for <alsa-devel@alsa-project.org>; Wed, 22 Jun 2022 17:00:23 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 82884F80118
+ by alsa1.perex.cz (Postfix) with ESMTPS id 29B65F80118
+ for <alsa-devel@alsa-project.org>; Wed, 22 Jun 2022 17:22:01 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 29B65F80118
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=system76.com header.i=@system76.com
- header.b="BLunZIOa"; 
- dkim=pass (2048-bit key) header.d=messagingengine.com
- header.i=@messagingengine.com header.b="rJ4PZdlW"
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
- by mailout.west.internal (Postfix) with ESMTP id 285FB320094F;
- Wed, 22 Jun 2022 11:00:20 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
- by compute4.internal (MEProxy); Wed, 22 Jun 2022 11:00:20 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=system76.com; h=
- cc:cc:content-transfer-encoding:date:date:from:from:in-reply-to
- :message-id:mime-version:reply-to:sender:subject:subject:to:to;
- s=fm2; t=1655910019; x=1655996419; bh=OHfERes/iK9BSUjjbm10Zvf8L
- wtNHdD+wNOT/uFcZbc=; b=BLunZIOa4BUoEc9Kc1dz61PmGUR7JKDbtg6hDL6Vn
- 03CbdCSSIGVW7XuLqwVFNSE68Bqrd4zfYoF3uRC+LdillNhKSx1rCZeyEqJIAt8N
- UgvF1JrdD9gk7/4QDE6H1Zl7b2ca9HQzo2yEsDWJdwknKJwnLurmIDXCrKqN8EUt
- 9S3nyeb5onwcRiINIglh+DBRmZGH+0XWBwmfixcjCFAFSxhFFhWk6d6TeMjpG+MT
- agXdbGdlBwMD796N44XQ1BM7gcSJTWEaD2IfFhfpm3Mj/eZcC8CSxBvnEl05A/Fi
- RkNdjFnSbCzPgBSzDu/cRNmaIjMwChvZZoLVCiwhUtr0w==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
- messagingengine.com; h=cc:cc:content-transfer-encoding:date:date
- :feedback-id:feedback-id:from:from:in-reply-to:message-id
- :mime-version:reply-to:sender:subject:subject:to:to:x-me-proxy
- :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; t=
- 1655910019; x=1655996419; bh=OHfERes/iK9BSUjjbm10Zvf8LwtNHdD+wNO
- T/uFcZbc=; b=rJ4PZdlWL1g1ltff8DONBb82yXiaiqE8gm08FDHTKjyJKCFUhqP
- 9jkUvSU7Y7umQIsTrBpIrIQAPFCrvijMdfmpIVmqKCtb30uZsjvswfkW/wAVw4km
- //T1lLd/q9jbpvmFWdm47vA8b4uh0mJe379CZVWLiV9p0l6BhF26bwiKr5f82SYx
- E+kilrlnQpLkj0M50P0A0ccoS7qpRQoyujL0g8vxFjEe+NWxQGIr1CA3v4mU5ckm
- 66qEi5gKvoPYVIgNlXGvtTGLqpESilfgz2yH1zv79lnwKQDw7tZUNazOu17tkM9B
- 9M+Ul6am8yeohTFpgSUMrMXO4rYA099iErA==
-X-ME-Sender: <xms:gi6zYmF_PRLYPMe4gqJn4oT-UPRuaA2zb_arKlQVP7OMO6J9y9y0wQ>
- <xme:gi6zYnV-Ath-uOj-3QbahmUYz6AZDJVsoA8_mjf2TXefd4qwGJK2fRCjoz1MfgPL3
- 2o7E1yGFeqSrZAhiw>
-X-ME-Received: <xmr:gi6zYgJO6TeQwIs41c1KGeJCMGUKnP5Qk3KqVeiZ2YKftdHpB2xWVYEq>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvfedrudefhedgkeehucetufdoteggodetrfdotf
- fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
- uceurghilhhouhhtmecufedttdenucenucfjughrpefhvfevufffkffoggfgsedtkeertd
- ertddtnecuhfhrohhmpefvihhmucevrhgrfihfohhrugcuoehttghrrgiffhhorhgusehs
- hihsthgvmhejiedrtghomheqnecuggftrfgrthhtvghrnhepkefgteefvdeivdfhffdtff
- fgieffhfetgeduudekieefueeutdelfedtveeuheefnecuvehluhhsthgvrhfuihiivgep
- tdenucfrrghrrghmpehmrghilhhfrhhomhepthgtrhgrfihfohhrugesshihshhtvghmje
- eirdgtohhm
-X-ME-Proxy: <xmx:gy6zYgFvJ1U2U1Q-rBPoPtlkWQ2Jq1Bh5QwdG-_4jrgSVzfwbz8lqw>
- <xmx:gy6zYsXttB423n2YY1qv2E2pwU_bUwAObPAh66oXwYkR6rqM6gvyOQ>
- <xmx:gy6zYjPXKikT7VflhQlqpIDZWpVwmpbyM-EJ0QmcZlvmBuN5kn0NnA>
- <xmx:gy6zYnf5gj0x4hZ47IYicSRhUc7IycPi9vikD4HApojlq6qcRq9NtA>
-Feedback-ID: i1761444e:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
- 22 Jun 2022 11:00:18 -0400 (EDT)
-From: Tim Crawford <tcrawford@system76.com>
-To: alsa-devel@alsa-project.org
-Subject: [PATCH] ALSA: hda/realtek: Add quirk for Clevo NS50PU
-Date: Wed, 22 Jun 2022 09:00:17 -0600
-Message-Id: <20220622150017.9897-1-tcrawford@system76.com>
-X-Mailer: git-send-email 2.34.1
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: tiwai@suse.de, productdev@system76.com
+ dkim=pass (1024-bit key) header.d=cutebit.org header.i=@cutebit.org
+ header.b="sY7XJ271"
+Content-Type: text/plain;
+	charset=utf-8
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cutebit.org; s=mail;
+ t=1655911320; bh=gDQEEOMHJwv/vwhMSl0koqV0mmLsKIRqsa1GAsw7Xvo=;
+ h=Subject:From:In-Reply-To:Date:Cc:References:To;
+ b=sY7XJ2718q7skD7mpkx259iGqJHkgHnyoFFrivVimXIP7sxb7/CX37kY8hxMKqgOp
+ IdQ8Wde0JrLNpQzhjY+zEVx306yUH5B4PWfFMOyANYHG9k5R4vcAVqJ62DS476XdjL
+ WVX+Bgv496QBxSEfxWfpRxp0gwCreFn3eacMrBFU=
+Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3696.80.82.1.1\))
+Subject: Re: [PATCH 1/2] ASoC: soc-core.c: fixup snd_soc_of_get_dai_link_cpus()
+From: =?utf-8?Q?Martin_Povi=C5=A1er?= <povik+lin@cutebit.org>
+In-Reply-To: <87zgi5p7k1.wl-kuninori.morimoto.gx@renesas.com>
+Date: Wed, 22 Jun 2022 17:21:57 +0200
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <E911EF2B-5297-4893-BDA1-EEB8ECFC3B45@cutebit.org>
+References: <871qvhqm56.wl-kuninori.morimoto.gx@renesas.com>
+ <87zgi5p7k1.wl-kuninori.morimoto.gx@renesas.com>
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -107,25 +69,23 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Fixes headset detection on Clevo NS50PU.
 
-Signed-off-by: Tim Crawford <tcrawford@system76.com>
----
- sound/pci/hda/patch_realtek.c | 1 +
- 1 file changed, 1 insertion(+)
+> On 22. 6. 2022, at 7:54, Kuninori Morimoto =
+<kuninori.morimoto.gx@renesas.com> wrote:
+>=20
+>=20
+> From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+>=20
+> commit 900dedd7e47cc3f ("ASoC: Introduce =
+snd_soc_of_get_dai_link_cpus")
+> adds new snd_soc_of_get_dai_link_cpus(), but it is using
+> "codec" everywhere. It is very strange, and is issue when error case.
+> It should call cpu instead of codec in error case.
+> This patch tidyup it.
+>=20
+> Fixes: 900dedd7e47cc3f ("ASoC: Introduce =
+snd_soc_of_get_dai_link_cpus")
+> Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 
-diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-index b937f63d0d09..d4f7ce6d84c3 100644
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -9210,6 +9210,7 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
- 	SND_PCI_QUIRK(0x1558, 0x70f3, "Clevo NH77DPQ", ALC293_FIXUP_SYSTEM76_MIC_NO_PRESENCE),
- 	SND_PCI_QUIRK(0x1558, 0x70f4, "Clevo NH77EPY", ALC293_FIXUP_SYSTEM76_MIC_NO_PRESENCE),
- 	SND_PCI_QUIRK(0x1558, 0x70f6, "Clevo NH77DPQ-Y", ALC293_FIXUP_SYSTEM76_MIC_NO_PRESENCE),
-+	SND_PCI_QUIRK(0x1558, 0x7716, "Clevo NS50PU", ALC256_FIXUP_SYSTEM76_MIC_NO_PRESENCE),
- 	SND_PCI_QUIRK(0x1558, 0x8228, "Clevo NR40BU", ALC293_FIXUP_SYSTEM76_MIC_NO_PRESENCE),
- 	SND_PCI_QUIRK(0x1558, 0x8520, "Clevo NH50D[CD]", ALC293_FIXUP_SYSTEM76_MIC_NO_PRESENCE),
- 	SND_PCI_QUIRK(0x1558, 0x8521, "Clevo NH77D[CD]", ALC293_FIXUP_SYSTEM76_MIC_NO_PRESENCE),
--- 
-2.35.3
+Reviewed-by: Martin Povi=C5=A1er <povik+lin@cutebit.org>
 
