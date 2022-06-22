@@ -4,75 +4,84 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 264ADC43334
-	for <alsa-devel@archiver.kernel.org>; Wed, 22 Jun 2022 12:47:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 73B39C43334
+	for <alsa-devel@archiver.kernel.org>; Wed, 22 Jun 2022 13:09:01 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 87FD41DF7;
-	Wed, 22 Jun 2022 14:47:04 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 87FD41DF7
+	by alsa0.perex.cz (Postfix) with ESMTPS id F2D6C1B3F;
+	Wed, 22 Jun 2022 15:08:08 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F2D6C1B3F
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1655902074;
-	bh=/JpW+MAHG6QANCQr3Dhf2Dft36ErEiGWlnr8flDHyx4=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	s=default; t=1655903339;
+	bh=SsYKZ7uvv9yaQ/JCZsQGKadLQnqUgXyz0MIqg9apmNQ=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=W05IP2KVSS9gFpSl7MgZsMqJXmWWvotCqW/6h03hb6QEUl4zzGpqyVYbHhpXh+Q8/
-	 dHkRaxXQMwOU/1IVOaQujG87YmKJistpls3FjeMb1HZmOq4xzpaCjxZK8RvWBT59Ix
-	 S57YoBMhLz9QEHmAV4VFGuBKZnmkvyrkHWpJrD+o=
+	b=Rymx825Mg6qxtizgtIEETIN4Vq8ROXCyfwAFm2NK+qBrOMyUBoX7Sqvo2gEN0sl+s
+	 2FK3WMe7vrzVBS+kGIroNCO2IACqdbbtPzWlEu4zP6c1LFvbMeWmI8iB81zlYNFj8Z
+	 PjU17780Ng5zhj0LLfAslYGy0ULPC79TvbW5dgpI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 19D80F8019B;
-	Wed, 22 Jun 2022 14:47:04 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 7D293F80424;
+	Wed, 22 Jun 2022 15:08:08 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 64804F800CB; Wed, 22 Jun 2022 14:47:02 +0200 (CEST)
-Received: from sin.source.kernel.org (sin.source.kernel.org
- [IPv6:2604:1380:40e1:4800::1])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id C95AEF80118
- for <alsa-devel@alsa-project.org>; Wed, 22 Jun 2022 14:46:58 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C95AEF80118
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="UXKN57sG"
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+ id 82333F80424; Wed, 22 Jun 2022 15:08:06 +0200 (CEST)
+Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
+ [67.231.149.25])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by sin.source.kernel.org (Postfix) with ESMTPS id 69E4BCE1F90;
- Wed, 22 Jun 2022 12:46:54 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5C52CC34114;
- Wed, 22 Jun 2022 12:46:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1655902012;
- bh=/JpW+MAHG6QANCQr3Dhf2Dft36ErEiGWlnr8flDHyx4=;
- h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=UXKN57sGJH8mvMvKBd9DwnAWiSGlnl3txMLFktjIqifSztLXkACZQk3EW0IXqVRIe
- 2KnTRFlA1ZO9z8bMCU1Q6E2lIQrDHBb4ejyk/l4lxy0DoAGHDz0YJSgG+pG406CQS8
- a8T/Ci1ODscDlnjiMkSDCONDCjYyWf4z4AiiUUU0eaZAqL2EVeV33dD0COgsAI4YUg
- YMIr25VPmVPA7uikrS0LRAgRwss5XUZDD2np98dJlNOI8tXE4Yn/sBnd1dEmCrfbL4
- fV512pxos0Crfdq8aLqCz5A6qLhkUBEISIVmHpYxBQJyq63aBvYjEXmgHtdk+ozF7q
- ifjVTHNRDE2QA==
-Date: Wed, 22 Jun 2022 13:46:46 +0100
-From: Mark Brown <broonie@kernel.org>
-To: Srinivasa Rao Mandadapu <quic_srivasam@quicinc.com>
-Subject: Re: [PATCH 1/2] ASoC: google: dt-bindings: Update
- sc7280-audioreach-herobrine compatible name
-Message-ID: <YrMPNpE+RWIZP372@sirena.org.uk>
-References: <1655892799-29641-1-git-send-email-quic_srivasam@quicinc.com>
- <1655892799-29641-2-git-send-email-quic_srivasam@quicinc.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 497ECF80118
+ for <alsa-devel@alsa-project.org>; Wed, 22 Jun 2022 15:07:59 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 497ECF80118
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com
+ header.b="MlsgOdH4"
+Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
+ by mx0a-001ae601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 25MAmnr9022149;
+ Wed, 22 Jun 2022 08:07:57 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
+ h=from : to : cc :
+ subject : date : message-id : in-reply-to : references : mime-version :
+ content-transfer-encoding : content-type; s=PODMain02222019;
+ bh=OX/zp2cZpxgV2NdCHL6oybnWUUgNbKlj6YCC3UjHsj8=;
+ b=MlsgOdH4YkjEB0DDKt8BGnqDA5rxtsjnGdphz1xwuB2UY3Me98DJwra2qPc7ODDOekYd
+ Tiod9IbwtUVkru6dDgeJsqwbzBDIctt03JPcy1A+C29y/OTbJ1VAfvW2ogoDIKXm5UGq
+ aTvXLSRn+mY9Tatq+fqJLrzWXZ98Z87Rhr89+wCDFVpObX1f2v9R0Pv04AjOE39Nlo6l
+ 6c4PDEsLzy3WiP3FRKP12vYsNFG1m8qry8YLToDG3ftOMxQj+17VAdPYLx3tzD2TNqJK
+ hGXEqkYfTMfLup4BHuTa0JBT8Op4NB2zyNU/Du7U6Vrc+NUp9cjNBWLSs0uxfX+RPhAW 5g== 
+Received: from ediex02.ad.cirrus.com ([84.19.233.68])
+ by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3gsc41d2wc-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+ Wed, 22 Jun 2022 08:07:57 -0500
+Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX02.ad.cirrus.com
+ (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.28; Wed, 22 Jun
+ 2022 14:07:55 +0100
+Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server id 15.1.2375.28 via
+ Frontend Transport; Wed, 22 Jun 2022 14:07:55 +0100
+Received: from sbinding-cirrus-dsktp.ad.cirrus.com (unknown [198.90.238.151])
+ by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 440627C;
+ Wed, 22 Jun 2022 13:07:55 +0000 (UTC)
+From: Stefan Binding <sbinding@opensource.cirrus.com>
+To: "Rafael J . Wysocki" <rafael@kernel.org>, Len Brown <lenb@kernel.org>,
+ Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
+Subject: [PATCH v1 2/2] ASoC: cs35l41: Read System Name from ACPI _SUB to
+ identify firmware
+Date: Wed, 22 Jun 2022 14:07:30 +0100
+Message-ID: <20220622130730.1573747-3-sbinding@opensource.cirrus.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20220622130730.1573747-1-sbinding@opensource.cirrus.com>
+References: <20220622130730.1573747-1-sbinding@opensource.cirrus.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature"; boundary="vKK8oBS2+ubOpulY"
-Content-Disposition: inline
-In-Reply-To: <1655892799-29641-2-git-send-email-quic_srivasam@quicinc.com>
-X-Cookie: Truckers welcome.
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
- quic_rohkumar@quicinc.com, linux-arm-msm@vger.kernel.org, swboyd@chromium.org,
- tiwai@suse.com, lgirdwood@gmail.com, robh+dt@kernel.org,
- bjorn.andersson@linaro.org, agross@kernel.org, srinivas.kandagatla@linaro.org,
- bgoswami@quicinc.com, quic_plai@quicinc.com, judyhsiao@chromium.org,
- linux-kernel@vger.kernel.org
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Proofpoint-GUID: d4Xer4K1ffLl8TVON-jfV70-VNLBo7W_
+X-Proofpoint-ORIG-GUID: d4Xer4K1ffLl8TVON-jfV70-VNLBo7W_
+X-Proofpoint-Spam-Reason: safe
+Cc: linux-acpi@vger.kernel.org, alsa-devel@alsa-project.org,
+ Stefan Binding <sbinding@opensource.cirrus.com>, linux-kernel@vger.kernel.org,
+ patches@opensource.cirrus.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -88,35 +97,70 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+When loading firmware, wm_adsp uses a number of parameters to
+determine the path of the firmware and tuning files to load.
+One of these parameters is system_name.
+Add support in cs35l41 to read this system name from the ACPI
+_SUB ID in order to uniquely identify the firmware and tuning
+mapped to a particular system.
 
---vKK8oBS2+ubOpulY
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Signed-off-by: Stefan Binding <sbinding@opensource.cirrus.com>
+---
+ sound/soc/codecs/cs35l41.c | 27 +++++++++++++++++++++++++++
+ 1 file changed, 27 insertions(+)
 
-On Wed, Jun 22, 2022 at 03:43:18PM +0530, Srinivasa Rao Mandadapu wrote:
-> Update audioreach based compatible string for sc7280 based ADSP enabled
-> platforms.
+diff --git a/sound/soc/codecs/cs35l41.c b/sound/soc/codecs/cs35l41.c
+index 8766e19d85f1..5df04a2ab5a3 100644
+--- a/sound/soc/codecs/cs35l41.c
++++ b/sound/soc/codecs/cs35l41.c
+@@ -6,6 +6,7 @@
+ //
+ // Author: David Rhodes <david.rhodes@cirrus.com>
+ 
++#include <linux/acpi.h>
+ #include <linux/delay.h>
+ #include <linux/err.h>
+ #include <linux/init.h>
+@@ -1142,6 +1143,28 @@ static int cs35l41_dsp_init(struct cs35l41_private *cs35l41)
+ 	return ret;
+ }
+ 
++static int cs35l41_probe_acpi(struct cs35l41_private *cs35l41)
++{
++	struct acpi_device *adev;
++	int ret;
++	char sub[ACPI_MAX_SUB_BUF_SIZE];
++
++	adev = ACPI_COMPANION(cs35l41->dev);
++	/* If there is no ACPI_COMPANION, there is no ACPI for this system, return 0 */
++	if (!adev)
++		return 0;
++
++	ret = acpi_get_sub(adev->handle, sub, sizeof(sub));
++	if (ret < 0)
++		return ret;
++
++	cs35l41->dsp.system_name = devm_kstrdup(cs35l41->dev, sub, GFP_KERNEL);
++	if (!cs35l41->dsp.system_name)
++		return -ENOMEM;
++
++	return 0;
++}
++
+ int cs35l41_probe(struct cs35l41_private *cs35l41, const struct cs35l41_hw_cfg *hw_cfg)
+ {
+ 	u32 regid, reg_revid, i, mtl_revid, int_status, chipid_match;
+@@ -1270,6 +1293,10 @@ int cs35l41_probe(struct cs35l41_private *cs35l41, const struct cs35l41_hw_cfg *
+ 		goto err;
+ 	}
+ 
++	ret = cs35l41_probe_acpi(cs35l41);
++	if (ret < 0)
++		goto err;
++
+ 	ret = cs35l41_dsp_init(cs35l41);
+ 	if (ret < 0)
+ 		goto err;
+-- 
+2.25.1
 
->    compatible:
->      enum:
->        - google,sc7280-herobrine
-> +      - google,sc7280-audioreach-herobrine
-
-Isn't the DSP firmware selection a purely software one?
-
---vKK8oBS2+ubOpulY
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmKzDzUACgkQJNaLcl1U
-h9Cq9Qf/XODQj9ijI4XCvV7JMPgGqnBmpV961ywot0AgWRVTxh+vn1mYXulQq/YU
-/NJgVpeyp/+JHvSX7IRr+HpbmaSWp9Yu+GfroD8P47PyceQ+7TEHU4CM7QdxeOAU
-bBonT5ukV9nRtaREKW4nKjhTdzGkSa84o3k2zMVUB+1S02LyilDEpQNQ7SrYrJeQ
-zIuArN368oSuNYKelxjViqp0knxVQ40YBo8ib6Z749YCtBZCGYDJXUvur722XJ/t
-VQPqMf00GufWgH1esQVoVUOJmO9S9WsmO/zj9SHXHFvGMF3BPj9fpy1YVeS1a4vr
-cZpjmtLdGdzCiim7L0OmcyB6Ky4jRg==
-=wlSz
------END PGP SIGNATURE-----
-
---vKK8oBS2+ubOpulY--
