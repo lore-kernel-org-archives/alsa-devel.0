@@ -4,86 +4,97 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A8D4AC433EF
-	for <alsa-devel@archiver.kernel.org>; Wed, 22 Jun 2022 13:35:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id EBDD7C433EF
+	for <alsa-devel@archiver.kernel.org>; Wed, 22 Jun 2022 14:36:08 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3E9511B17;
-	Wed, 22 Jun 2022 15:34:35 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3E9511B17
+	by alsa0.perex.cz (Postfix) with ESMTPS id C085B1EDC;
+	Wed, 22 Jun 2022 16:35:15 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C085B1EDC
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1655904925;
-	bh=UuqDi3KhIyIB5GOCAY9xouDA6baBtQlq5ib6CknoiGo=;
-	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1655908565;
+	bh=zx261cOhUZW+3p0tYAgy15qhI+yWktMGo5zYsxypKC4=;
+	h=Date:Subject:To:References:From:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=QeHrUXbsY70ShFeuu9T8r82Tvhf/4FFyltHnZAkihEurAunm5y9oYJc4HMSU3+JMb
-	 OalpcgYuc3g1P0gVaYJbH8+iPF8EOw3njiKRE3sbs6wDO0U9MSciIPSgSIBFAeOpQ+
-	 +Kf2FHX1ZhfGQx7ck0kHqyX3/kN4SqZwocgeqxDk=
+	b=ebYGAZ30RlU9CmqED0kai/TvuCxs+/DMxE41kmSBULLF6OW+wGtzBhdRNdgAPX7Uy
+	 Kc8hRrTV66ulu8+a2jfn4j5qu/8YOiigQxnCYwAdgT7UFymxSqfmDpO1nMYS3UBTzy
+	 5474IF+RHTTMjIXl4uwbMquP3yY2sUL89npiSNJo=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id B8D19F8019B;
-	Wed, 22 Jun 2022 15:34:34 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 5C5BFF80100;
+	Wed, 22 Jun 2022 16:35:15 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id AB5ACF802D2; Wed, 22 Jun 2022 15:34:33 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+ id 0DFD2F802D2; Wed, 22 Jun 2022 16:35:14 +0200 (CEST)
+Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com
+ [IPv6:2a00:1450:4864:20::636])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 0352DF80118
- for <alsa-devel@alsa-project.org>; Wed, 22 Jun 2022 15:34:30 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0352DF80118
+ by alsa1.perex.cz (Postfix) with ESMTPS id 26423F80100
+ for <alsa-devel@alsa-project.org>; Wed, 22 Jun 2022 16:35:07 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 26423F80100
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="oTFsweeR"; 
- dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="h1klysAQ"
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 480641F9CB;
- Wed, 22 Jun 2022 13:34:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1655904870; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=tL5R6CgcdLWhC5WLpBa844ixXg1BzecaMDlHfUxUCKo=;
- b=oTFsweeR2zWwsfHkFSd9fObMJoC1i/pkvs8e0E7OFgmHpd331ZU83Zxt4R4RefSx0GxPIF
- BO6V6YFa6282U50nlEDfrHQi96LUt6jC+Iv8sgbTBwdEPqIp8U4GeAj0Lv9TtQo4fLDh10
- RcRxRi2ZYv2T/rHmb1xo9ue9MgoCtp8=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1655904870;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=tL5R6CgcdLWhC5WLpBa844ixXg1BzecaMDlHfUxUCKo=;
- b=h1klysAQHh0dlXwzG0fc0dEjn8xJqACVkGI5r38y5k8yipDNrlHDQ/sSB7a4YOwhXDYpjg
- JqhOk5hG1tbPYgDg==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 196B1134A9;
- Wed, 22 Jun 2022 13:34:30 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id htnbBGYas2KuNgAAMHmgww
- (envelope-from <tiwai@suse.de>); Wed, 22 Jun 2022 13:34:30 +0000
-Date: Wed, 22 Jun 2022 15:34:29 +0200
-Message-ID: <87wnd8n7oa.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Vitaly Rodionov <vitalyr@opensource.cirrus.com>
-Subject: Re: [PATCH v7 01/14] ALSA: hda: hda_cs_dsp_ctl: Add Library to
- support CS_DSP ALSA controls
-In-Reply-To: <20220622074653.179078-2-vitalyr@opensource.cirrus.com>
-References: <20220622074653.179078-1-vitalyr@opensource.cirrus.com>
- <20220622074653.179078-2-vitalyr@opensource.cirrus.com>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
-Cc: alsa-devel@alsa-project.org, patches@opensource.cirrus.com,
- Takashi Iwai <tiwai@suse.com>, linux-kernel@vger.kernel.org,
- Stefan Binding <sbinding@opensource.cirrus.com>,
- Mark Brown <broonie@kernel.org>
+ dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org
+ header.b="EzNqat5N"
+Received: by mail-ej1-x636.google.com with SMTP id sb34so5636895ejc.11
+ for <alsa-devel@alsa-project.org>; Wed, 22 Jun 2022 07:35:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
+ h=message-id:date:mime-version:user-agent:subject:content-language:to
+ :cc:references:from:in-reply-to:content-transfer-encoding;
+ bh=H/cSfccrkMobuaWdmE/tdPoYRx0z9bpXg+/yToTVvnE=;
+ b=EzNqat5NrSDe5C45j1gKPwkoY+xrhidH+Z3Io7mhsMwqTNnLBUaUqxRvEbatmHXAh8
+ 9R3VSv/sxc9Cka2XRU3PM+c1zHm/1nOsEmLooSA985j/kn3qrN4Nf6Y+KCn7AVfqwa8U
+ oSUoxFP+uHkVZUNXblWZtsOPHxfd38C05M1J/W3+8xDSZanH8hUTP0xNCuvjt4qajvsK
+ WPTsGa3qrNsJbMB7JVilnqYU99IMZ6Zz7HQH1j3Wi0gpZ3ZlD60gHK7iPQlvJOjq6Ljy
+ yu1XE4KI2cVXyfy3y3xwGNHO7gy8kNWuEH3fveAZ6avUzs+XnGMyg2aRzXbypXDfewmG
+ uc0w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+ :content-language:to:cc:references:from:in-reply-to
+ :content-transfer-encoding;
+ bh=H/cSfccrkMobuaWdmE/tdPoYRx0z9bpXg+/yToTVvnE=;
+ b=3H8CWE03nmDKbfmhG2w/YBzIVv7V7waNyKQ1W8h26VJU7dfWA+8KMbKD2lvESBoRun
+ rHl/XO2tBEDZ/3efw0MK6REwyBT5j6Mp3YujOedCcywCDuR/EbJ1okI/eL4tDJZOwrGG
+ L7IpmJ2ggBvR+L/6qLWTRxptHWw0e72au8RiAWUVnrA3n93Sxt40AVNWB3xwn5kyXM7+
+ ZUNRa5WNzOoYgUAyGaB1vN9RB+RXak2ob8gUCKZ80sqwOwpEsSXbO7LHhCACptM0ShV2
+ kcoyISe95oUgMGZEqBmBwoWg71DZ2EnnDrbIxDNRrlbOkmr4gudJqUy43tThexmklm/D
+ FQ5A==
+X-Gm-Message-State: AJIora+AnvpqC0zo8HV30MWY158XS/pzLDwE3pX6Gh4I6mSWag880hXn
+ XGpPBDV7Lwl7uKDdZ0uDUjq7MQ==
+X-Google-Smtp-Source: AGRyM1vJVzIPqFGBsUHqfmMJi7WDemTnx1NnVJOZoZ49hmcATWo1tUFMa4ra8zQAsOYs2fyIGY6jyA==
+X-Received: by 2002:a17:907:7b8d:b0:722:dcae:6417 with SMTP id
+ ne13-20020a1709077b8d00b00722dcae6417mr3366157ejc.225.1655908505951; 
+ Wed, 22 Jun 2022 07:35:05 -0700 (PDT)
+Received: from [192.168.0.226] (xdsl-188-155-176-92.adslplus.ch.
+ [188.155.176.92]) by smtp.gmail.com with ESMTPSA id
+ g36-20020a056402322400b004357f88fcdcsm8144577eda.11.2022.06.22.07.35.04
+ (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+ Wed, 22 Jun 2022 07:35:05 -0700 (PDT)
+Message-ID: <5421df1e-6e86-27a4-3da7-c15661aee190@linaro.org>
+Date: Wed, 22 Jun 2022 16:35:04 +0200
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.10.0
+Subject: Re: [PATCH 1/3] ASoC: dt-bindings: Add bindings for WCD9335 DAIs
+Content-Language: en-US
+To: Yassine Oudjana <yassine.oudjana@gmail.com>,
+ Andy Gross <agross@kernel.org>, Bjorn Andersson
+ <bjorn.andersson@linaro.org>, Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+ Banajit Goswami <bgoswami@quicinc.com>, Liam Girdwood <lgirdwood@gmail.com>,
+ Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>,
+ Takashi Iwai <tiwai@suse.com>
+References: <20220622064758.40543-1-y.oudjana@protonmail.com>
+ <20220622064758.40543-2-y.oudjana@protonmail.com>
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <20220622064758.40543-2-y.oudjana@protonmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
+ Yassine Oudjana <y.oudjana@protonmail.com>, linux-arm-msm@vger.kernel.org,
+ linux-kernel@vger.kernel.org, phone-devel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -99,139 +110,47 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, 22 Jun 2022 09:46:40 +0200,
-Vitaly Rodionov wrote:
+On 22/06/2022 08:47, Yassine Oudjana wrote:
+> From: Yassine Oudjana <y.oudjana@protonmail.com>
 > 
-> +static int hda_cs_dsp_add_kcontrol(struct hda_cs_dsp_coeff_ctl *ctl)
-> +{
-> +	struct cs_dsp_coeff_ctl *cs_ctl = ctl->cs_ctl;
-> +	struct snd_kcontrol_new *kcontrol;
-> +	struct snd_kcontrol *kctl;
-> +	int ret = 0;
+> Add bindings for the DAIs available in WCD9335 to avoid
+> having to use unclear number indices in device trees.
+> 
+> Signed-off-by: Yassine Oudjana <y.oudjana@protonmail.com>
+> ---
+>  MAINTAINERS                              |  1 +
+>  include/dt-bindings/sound/qcom,wcd9335.h | 15 +++++++++++++++
+>  2 files changed, 16 insertions(+)
+>  create mode 100644 include/dt-bindings/sound/qcom,wcd9335.h
+> 
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index b774f21828f7..2bcc3cc129c5 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -16366,6 +16366,7 @@ M:	Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+>  M:	Banajit Goswami <bgoswami@quicinc.com>
+>  L:	alsa-devel@alsa-project.org (moderated for non-subscribers)
+>  S:	Supported
+> +F:	include/dt-bindings/sound/qcom,wcd9335.h
+>  F:	sound/soc/codecs/lpass-va-macro.c
+>  F:	sound/soc/codecs/lpass-wsa-macro.*
+>  F:	sound/soc/codecs/msm8916-wcd-analog.c
+> diff --git a/include/dt-bindings/sound/qcom,wcd9335.h b/include/dt-bindings/sound/qcom,wcd9335.h
+> new file mode 100644
+> index 000000000000..709d33ca748d
+> --- /dev/null
+> +++ b/include/dt-bindings/sound/qcom,wcd9335.h
+> @@ -0,0 +1,15 @@
+> +/* SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause) */
 > +
-> +	if (cs_ctl->len > ADSP_MAX_STD_CTRL_SIZE) {
-> +		dev_err(cs_ctl->dsp->dev, "Control %s: length %zu exceeds maximum %d\n", ctl->name,
-> +			cs_ctl->len, ADSP_MAX_STD_CTRL_SIZE);
-> +		return -EINVAL;
-> +	}
-> +
-> +	kcontrol = kzalloc(sizeof(*kcontrol), GFP_KERNEL);
-> +	if (!kcontrol)
-> +		return -ENOMEM;
-> +
-> +	kcontrol->name = ctl->name;
-> +	kcontrol->info = hda_cs_dsp_coeff_info;
-> +	kcontrol->iface = SNDRV_CTL_ELEM_IFACE_MIXER;
-> +	kcontrol->private_value = (unsigned long)ctl;
-> +	kcontrol->access = wmfw_convert_flags(cs_ctl->flags);
-> +
-> +	kcontrol->get = hda_cs_dsp_coeff_get;
-> +	kcontrol->put = hda_cs_dsp_coeff_put;
-> +
-> +	kctl = snd_ctl_new1(kcontrol, NULL);
-> +	if (!kctl) {
-> +		ret = -ENOMEM;
-> +		goto err;
-> +	}
-> +	ctl->kctl = kctl;
-> +
-> +	ret = snd_ctl_add(ctl->card, kctl);
-> +	if (ret)
-> +		dev_err(cs_ctl->dsp->dev, "Failed to add KControl: %s - Ret: %d\n", kcontrol->name,
-> +			ret);
-> +	else
-> +		dev_dbg(cs_ctl->dsp->dev, "Added KControl: %s\n", kcontrol->name);
+> +#ifndef __DT_QCOM_WCD9335_H
+> +#define __DT_QCOM_WCD9335_H
 
-snd_ctl_add() releases the kctl automatically upon errors, hence
-assigning ctl->kctl may lead to a use-after-free.  Therefore ctl->kctl
-should be assigned after the success of snd_ctl_add().
+Header guard should match better path, so:
 
-> +int hda_cs_dsp_control_add(struct cs_dsp_coeff_ctl *cs_ctl, struct hda_cs_dsp_ctl_info *info)
-> +{
-> +	struct cs_dsp *cs_dsp = cs_ctl->dsp;
-> +	char name[SNDRV_CTL_ELEM_ID_NAME_MAXLEN];
-> +	struct hda_cs_dsp_coeff_ctl *ctl;
-> +	const char *region_name;
-> +	int ret;
-> +
-> +	if (cs_ctl->flags & WMFW_CTL_FLAG_SYS)
-> +		return 0;
-> +
-> +	region_name = cs_dsp_mem_region_name(cs_ctl->alg_region.type);
-> +	if (!region_name) {
-> +		dev_err(cs_dsp->dev, "Unknown region type: %d\n", cs_ctl->alg_region.type);
-> +		return -EINVAL;
-> +	}
-> +
-> +	ret = scnprintf(name, SNDRV_CTL_ELEM_ID_NAME_MAXLEN, "%s %s %.12s %x", info->device_name,
-> +			cs_dsp->name, hda_cs_dsp_fw_text[info->fw_type], cs_ctl->alg_region.alg);
-> +
-> +	if (cs_ctl->subname) {
-> +		int avail = SNDRV_CTL_ELEM_ID_NAME_MAXLEN - ret - 2;
-> +		int skip = 0;
-> +
-> +		/* Truncate the subname from the start if it is too long */
-> +		if (cs_ctl->subname_len > avail)
-> +			skip = cs_ctl->subname_len - avail;
-> +
-> +		snprintf(name + ret, SNDRV_CTL_ELEM_ID_NAME_MAXLEN - ret,
-> +			 " %.*s", cs_ctl->subname_len - skip, cs_ctl->subname + skip);
-> +	}
-> +
-> +	ctl = kzalloc(sizeof(*ctl), GFP_KERNEL);
-> +	if (!ctl)
-> +		return -ENOMEM;
-> +	ctl->cs_ctl = cs_ctl;
-> +	ctl->card = info->card;
-> +
-> +	ctl->name = kmemdup(name, strlen(name) + 1, GFP_KERNEL);
+__DT_SOUND_QCOM_WCD9335_H
 
-This is kstrdup() :)
+Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 
-But, we don't need to keep the name string persistently at all.
-It's copied onto kcontrol id field, and the original string is no
-longer needed after that point.  So you can pass the name as is to
-hda_cs_dsp_add_kcontrol().
-
-
-> +	if (!ctl->name) {
-> +		ret = -ENOMEM;
-> +		dev_err(cs_dsp->dev, "Cannot save ctl name\n");
-> +		goto err_ctl;
-> +	}
-> +
-> +	cs_ctl->priv = ctl;
-> +
-> +	return hda_cs_dsp_add_kcontrol(ctl);
-
-Hm, this leaves ctl even if it returns an error, i.e. some leaks?
-
-> +err_ctl:
-> +	dev_err(cs_dsp->dev, "Error adding control: %s\n", name);
-> +	kfree(ctl);
-> +	return ret;
-> +}
-> +EXPORT_SYMBOL_NS_GPL(hda_cs_dsp_control_add, SND_HDA_CS_DSP_CONTROLS);
-> +
-> +void hda_cs_dsp_control_remove(struct cs_dsp_coeff_ctl *cs_ctl)
-> +{
-> +	struct hda_cs_dsp_coeff_ctl *ctl = cs_ctl->priv;
-> +
-> +	snd_ctl_remove_id(ctl->card, &ctl->kctl->id);
-> +	kfree(ctl->name);
-> +	kfree(ctl);
-> +}
-> +EXPORT_SYMBOL_NS_GPL(hda_cs_dsp_control_remove, SND_HDA_CS_DSP_CONTROLS);
-
-Is hda_cs_dsp_control_remove() *always* called explicitly for all
-added controls at the device removal / unbind?  ALSA control core also
-releases the remaining controls by itself, and if the objects are
-released there, it'll lead to memory leaks for ctl object.
-
-If the snd_kcontrol may be freed by itself without
-hda_cs_dsp_control_remove() call, it should have a proper private_free
-callback to free the assigned ctl object (also better to reset
-ctl->cs_ctl->priv field, too).
-
-
-Takashi
+Best regards,
+Krzysztof
