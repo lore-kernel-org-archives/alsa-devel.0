@@ -4,68 +4,65 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7A12CC433EF
-	for <alsa-devel@archiver.kernel.org>; Wed, 22 Jun 2022 17:31:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 312A3C43334
+	for <alsa-devel@archiver.kernel.org>; Wed, 22 Jun 2022 17:31:36 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D90C31B0B;
-	Wed, 22 Jun 2022 19:30:11 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D90C31B0B
+	by alsa0.perex.cz (Postfix) with ESMTPS id DD98A1EE4;
+	Wed, 22 Jun 2022 19:30:43 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DD98A1EE4
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1655919061;
-	bh=nbdRl8yrmOHkHu8DVnNH3Pr4b8c6Ku62sPIrhkAdeYo=;
+	s=default; t=1655919094;
+	bh=wjmwx45d12C26bDvWpgp91d6lJmG4wfDYbcp9V8Bvyw=;
 	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=PWWT/fY6jsK61fyCMvka/hnhOHbEj0AmCyo/kj7pJ8qZa0Argfx1TD21R/q8eaAHX
-	 tR5o/egfBQq+Z2CWb8mHzIWk6cIqBan9Ikg7UqZxSQdavggUmFvc89uBeaJ0VxRWCr
-	 qNy6rNbeojNsrPwUnqveC4LLkbroWG6h8Bc0d4sQ=
+	b=lAKVNCnBKf3fQ8jRy6J+VL5XzaQKKTvS3RbzEZAt4POievIBibPHVRHfO+Vz4E2lW
+	 RC017+WrkBRoFgv7H2Yzhd7xL9w5rEMdk59/fV0Z/H74vX2NAr8QqwjGSqqdygtiWV
+	 XatBCmNXN1kw9wejVVFNjzzHRBtvpnSveXPUVU+g=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 5AD76F802D2;
-	Wed, 22 Jun 2022 19:30:11 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 967C6F80536;
+	Wed, 22 Jun 2022 19:30:15 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 4A54EF802D2; Wed, 22 Jun 2022 19:30:10 +0200 (CEST)
+ id 1F754F804AB; Wed, 22 Jun 2022 19:30:14 +0200 (CEST)
 Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 499C5F80118
- for <alsa-devel@alsa-project.org>; Wed, 22 Jun 2022 19:30:06 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 499C5F80118
+ by alsa1.perex.cz (Postfix) with ESMTPS id BFF4BF80482
+ for <alsa-devel@alsa-project.org>; Wed, 22 Jun 2022 19:30:11 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BFF4BF80482
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="WKyBLd2y"
+ header.b="FCQO60wY"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by ams.source.kernel.org (Postfix) with ESMTPS id 07442B81DC6;
- Wed, 22 Jun 2022 17:30:06 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6D37AC34114;
- Wed, 22 Jun 2022 17:30:02 +0000 (UTC)
+ by ams.source.kernel.org (Postfix) with ESMTPS id 25D17B81F2D;
+ Wed, 22 Jun 2022 17:30:11 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 59BF5C341C5;
+ Wed, 22 Jun 2022 17:30:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1655919004;
- bh=nbdRl8yrmOHkHu8DVnNH3Pr4b8c6Ku62sPIrhkAdeYo=;
+ s=k20201202; t=1655919009;
+ bh=wjmwx45d12C26bDvWpgp91d6lJmG4wfDYbcp9V8Bvyw=;
  h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=WKyBLd2y06uc2X/T0ZbOPh+D7H5TTEYcUlrayt2FwH3Zw9+QHhsK2CeQGFL7Gjocu
- +soosTrU06AbL6cWgvgLz98HoLVagGXuhLSTLP5pM6EnaGntEC8AzePt54xqmXzP1p
- 52uZ4r+t1fFVhXR1j22E0HADo80olvbyvUhohjBzKLvVHpNQ0NNYhYAuRLKKerNyO/
- xG67FUJBAOEZV9w0rPUCwUeOImG4lmUmdWWOJVuGRykfF+L8B5MvfZNhuVkshZ0ZTQ
- pEABjEVs17SFwyWNthfYGb5r65sFQyo2937r9ys2epsEZK9mXzhZiXnxw/f1UM5hzp
- KF25qFJCTC/xg==
+ b=FCQO60wYINb0qtwRiHsHJ+BMl30CzFr5kTb3wv13Ye3m9bwU7X/BLFvywJyLcdg9C
+ U484FEWifRyCsQPFEUlEnm2YUMNzTC26bXMBEPYaU8g/rrmR78m4mL4EwaREliSPXU
+ 22OBLOG1RWu0975o1CbR47VblL0nEkLO2cLG0hHHlh6tS/2rVuiXUmaeG3p7tnLcnw
+ IOAVwNYNZ3p2WNmTFfVfVWtPtE9/gY3jvfZ1z9z+HwPK8pKN1k2Eb/e3/RwnaH10dx
+ U6mlW3M9avW/xkBHbz3/Oby48PAL8xFgyOgHCrvtPi8vs5+XpNb0J3hbNfwS6jQI+4
+ uxDM/1zWTI2HQ==
 From: Mark Brown <broonie@kernel.org>
 To: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>, lgirdwood@gmail.com
-In-Reply-To: <20220621145834.198519-1-u.kleine-koenig@pengutronix.de>
-References: <20220621145834.198519-1-u.kleine-koenig@pengutronix.de>
-Subject: Re: [PATCH] ASoC: core: Make snd_soc_unregister_card() return void
-Message-Id: <165591900215.1405752.6651339800557082462.b4-ty@kernel.org>
-Date: Wed, 22 Jun 2022 18:30:02 +0100
+In-Reply-To: <20220622061739.225966-1-u.kleine-koenig@pengutronix.de>
+References: <20220622061739.225966-1-u.kleine-koenig@pengutronix.de>
+Subject: Re: [PATCH] ASoC: amd: acp: Fix error handling in .remove()
+Message-Id: <165591900806.1405752.8746115269962335688.b4-ty@kernel.org>
+Date: Wed, 22 Jun 2022 18:30:08 +0100
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: alsa-devel@alsa-project.org, alexandre.belloni@bootlin.com,
- nicolas.ferre@microchip.com, linmq006@gmail.com, tiwai@suse.com,
- kernel@pengutronix.de, codrin.ciubotariu@microchip.com,
- claudiu.beznea@microchip.com, linux-arm-kernel@lists.infradead.org
+Cc: alsa-devel@alsa-project.org, tiwai@suse.com, kernel@pengutronix.de
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -81,13 +78,13 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Tue, 21 Jun 2022 16:58:34 +0200, Uwe Kleine-König wrote:
-> The function snd_soc_unregister_card() returned 0 unconditionally and most
-> callers don't care to check the return value. Make it return void and
-> adapt the callers that didn't ignore the return value before.
+On Wed, 22 Jun 2022 08:17:39 +0200, Uwe Kleine-König wrote:
+> Even in the presence of problems (here: rn_acp_deinit() might fail), it's
+> important to unregister all resources acquired during .probe() because
+> even if .remove() returns an error code, the device is removed.
 > 
-> This is a preparation for making platform remove callbacks return void.
-> 
+> As .remove() is only called after .probe() returned success, platdata
+> must be valid, so the first check in .remove() can just be dropped.
 > 
 > [...]
 
@@ -97,8 +94,8 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: core: Make snd_soc_unregister_card() return void
-      commit: 1892a991886ace2c3450bec801df2cf4028a803a
+[1/1] ASoC: amd: acp: Fix error handling in .remove()
+      commit: 0deb003933052ac1a44b5f94b927484be6e34f86
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
