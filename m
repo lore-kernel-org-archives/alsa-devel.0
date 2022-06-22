@@ -4,65 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 312A3C43334
-	for <alsa-devel@archiver.kernel.org>; Wed, 22 Jun 2022 17:31:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A64A3C43334
+	for <alsa-devel@archiver.kernel.org>; Wed, 22 Jun 2022 17:31:45 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id DD98A1EE4;
-	Wed, 22 Jun 2022 19:30:43 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DD98A1EE4
+	by alsa0.perex.cz (Postfix) with ESMTPS id C130C1EEE;
+	Wed, 22 Jun 2022 19:30:53 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C130C1EEE
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1655919094;
-	bh=wjmwx45d12C26bDvWpgp91d6lJmG4wfDYbcp9V8Bvyw=;
+	s=default; t=1655919103;
+	bh=WpJxGSkPnoTmSLwPwAWBaxy5WCwKFsEXIi5/wZIjC5Q=;
 	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=lAKVNCnBKf3fQ8jRy6J+VL5XzaQKKTvS3RbzEZAt4POievIBibPHVRHfO+Vz4E2lW
-	 RC017+WrkBRoFgv7H2Yzhd7xL9w5rEMdk59/fV0Z/H74vX2NAr8QqwjGSqqdygtiWV
-	 XatBCmNXN1kw9wejVVFNjzzHRBtvpnSveXPUVU+g=
+	b=OZJ7sAZpgffHL2LOPVossURV9JZejkEY7SYuB4fhYYAVSfun+j7OIMPcxNTGCJZld
+	 Tiv6aSAgAtEF4PK8H4WG3fJCSXLGDm+Cyq4GSuaoXdumHSoKc1gj37eVIfJzHMjfyR
+	 u6Jwv+KuXRAX2dI+4a/ZwM25jNrI9abl+2NfVHzo=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 967C6F80536;
-	Wed, 22 Jun 2022 19:30:15 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 68220F80539;
+	Wed, 22 Jun 2022 19:30:18 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 1F754F804AB; Wed, 22 Jun 2022 19:30:14 +0200 (CEST)
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+ id 70597F80100; Wed, 22 Jun 2022 19:30:16 +0200 (CEST)
+Received: from ams.source.kernel.org (ams.source.kernel.org
+ [IPv6:2604:1380:4601:e00::1])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id BFF4BF80482
- for <alsa-devel@alsa-project.org>; Wed, 22 Jun 2022 19:30:11 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BFF4BF80482
+ by alsa1.perex.cz (Postfix) with ESMTPS id 4745EF80100
+ for <alsa-devel@alsa-project.org>; Wed, 22 Jun 2022 19:30:09 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4745EF80100
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="FCQO60wY"
+ header.b="O8jxIq/L"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by ams.source.kernel.org (Postfix) with ESMTPS id 25D17B81F2D;
- Wed, 22 Jun 2022 17:30:11 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 59BF5C341C5;
- Wed, 22 Jun 2022 17:30:08 +0000 (UTC)
+ by ams.source.kernel.org (Postfix) with ESMTPS id 3876CB8205B;
+ Wed, 22 Jun 2022 17:30:09 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2EC7AC3411B;
+ Wed, 22 Jun 2022 17:30:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1655919009;
- bh=wjmwx45d12C26bDvWpgp91d6lJmG4wfDYbcp9V8Bvyw=;
+ s=k20201202; t=1655919007;
+ bh=WpJxGSkPnoTmSLwPwAWBaxy5WCwKFsEXIi5/wZIjC5Q=;
  h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=FCQO60wYINb0qtwRiHsHJ+BMl30CzFr5kTb3wv13Ye3m9bwU7X/BLFvywJyLcdg9C
- U484FEWifRyCsQPFEUlEnm2YUMNzTC26bXMBEPYaU8g/rrmR78m4mL4EwaREliSPXU
- 22OBLOG1RWu0975o1CbR47VblL0nEkLO2cLG0hHHlh6tS/2rVuiXUmaeG3p7tnLcnw
- IOAVwNYNZ3p2WNmTFfVfVWtPtE9/gY3jvfZ1z9z+HwPK8pKN1k2Eb/e3/RwnaH10dx
- U6mlW3M9avW/xkBHbz3/Oby48PAL8xFgyOgHCrvtPi8vs5+XpNb0J3hbNfwS6jQI+4
- uxDM/1zWTI2HQ==
+ b=O8jxIq/LPamDMoq3ZB2j4wKsgadFaOqNRR2sr+IiON6+3oKt+nbysJU5zpEoBOByl
+ fHmubXbbNGi5HsAVhjywJjEsxEmjTw71SSTsJr5e/wmXA3GWk4Ki9vdn6oQlVG3jqT
+ QQtlHrEY+c3CoRRr0TmpuAJ0g9VGIpx7EfPEqG+U6cuTP5Sz4PgZiwIMmkffuNxd0U
+ 64ztA/4TMUpRS4RSCgoXh85rrTNo9jaNjhEzenVzLKNeYpjLIXHfH90Osum6p7LKOb
+ v/wPfk30TGijakLXclDCK7BscWP31fN8u3E4QnoSIoaDYuWRk7S9IcE1e5M6Zg+yy+
+ KMyCln03Hi57A==
 From: Mark Brown <broonie@kernel.org>
-To: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>, lgirdwood@gmail.com
-In-Reply-To: <20220622061739.225966-1-u.kleine-koenig@pengutronix.de>
-References: <20220622061739.225966-1-u.kleine-koenig@pengutronix.de>
-Subject: Re: [PATCH] ASoC: amd: acp: Fix error handling in .remove()
-Message-Id: <165591900806.1405752.8746115269962335688.b4-ty@kernel.org>
-Date: Wed, 22 Jun 2022 18:30:08 +0100
+To: lgirdwood@gmail.com, heiko@sntech.de, wens@kernel.org, tiwai@suse.com,
+ perex@perex.cz
+In-Reply-To: <20220621185747.2782-1-wens@kernel.org>
+References: <20220621185747.2782-1-wens@kernel.org>
+Subject: Re: [PATCH] ASoC: rockchip: i2s: Fix crash on missing pinctrl
+Message-Id: <165591900483.1405752.13168398437677956332.b4-ty@kernel.org>
+Date: Wed, 22 Jun 2022 18:30:04 +0100
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: alsa-devel@alsa-project.org, tiwai@suse.com, kernel@pengutronix.de
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+ linux-rockchip@lists.infradead.org, wens@csie.org, judyhsiao@chromium.org,
+ linux-arm-kernel@lists.infradead.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -78,13 +82,13 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, 22 Jun 2022 08:17:39 +0200, Uwe Kleine-König wrote:
-> Even in the presence of problems (here: rn_acp_deinit() might fail), it's
-> important to unregister all resources acquired during .probe() because
-> even if .remove() returns an error code, the device is removed.
+On Wed, 22 Jun 2022 02:57:47 +0800, Chen-Yu Tsai wrote:
+> From: Chen-Yu Tsai <wens@csie.org>
 > 
-> As .remove() is only called after .probe() returned success, platdata
-> must be valid, so the first check in .remove() can just be dropped.
+> Commit 44f362c2cc6d ("ASoC: rockchip: i2s: switch BCLK to GPIO") added
+> pinctrl lookups, but did not skip the lookup if there was no pinctrl
+> device tied to the I2S controller. As a result, the lookup was done
+> on an invalid pointer in such cases, causing a kernel panic.
 > 
 > [...]
 
@@ -94,8 +98,8 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: amd: acp: Fix error handling in .remove()
-      commit: 0deb003933052ac1a44b5f94b927484be6e34f86
+[1/1] ASoC: rockchip: i2s: Fix crash on missing pinctrl
+      commit: c3b5fd7fbb698496461f280728b456d9927f22af
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
