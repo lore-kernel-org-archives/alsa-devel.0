@@ -4,78 +4,91 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id BE645C433EF
-	for <alsa-devel@archiver.kernel.org>; Wed, 22 Jun 2022 15:43:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C95BBCCA481
+	for <alsa-devel@archiver.kernel.org>; Wed, 22 Jun 2022 16:14:47 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 197191FF8;
-	Wed, 22 Jun 2022 17:42:48 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 197191FF8
+	by alsa0.perex.cz (Postfix) with ESMTPS id 68A341A74;
+	Wed, 22 Jun 2022 18:13:55 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 68A341A74
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1655912618;
-	bh=74OTJmsDUnJ8Yy67wCt0W4gdTWxoxbdt0Ekwa+iJXlw=;
-	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=NZemzJ30wLMKegpL/QXSKk03TOkfAff1H1BH5epTKxOYFNuJtKIO4ePy0l5dJQbjy
-	 UCNbdmvwmiMLetmhQzncEdsOEE3gMT3ZLc62sU3F0iQN2vfU5gnjqMfrvvX+CrC7A7
-	 o9Qs36SpifpE97u52cwcPY2tR2rUnFGmTEukKDXg=
+	s=default; t=1655914485;
+	bh=z3ZsC4lF8v59iUkBIj8ZCbqJHdvE7u+KpyXvEw3GTLg=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=eu3luYrZa0imma4xtwI9XL9Vjh7Vuqu+eImkt822PS1qiYhBvEGz21BvAuh+PPGka
+	 LRsWR9gFTIp+qO/+S+1/xWTnkUJCk3ORsB8opbbP+TcjMAAAmLYQAO3x734kQQyleS
+	 9z5v8rY/OjA1NU6N9XUIt1Lda3VP3ymBd/399UWo=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 76D91F80787;
-	Wed, 22 Jun 2022 17:24:12 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 0693CF8019B;
+	Wed, 22 Jun 2022 18:13:55 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 7B47CF802D2; Wed, 22 Jun 2022 17:17:01 +0200 (CEST)
-Received: from sin.source.kernel.org (sin.source.kernel.org [145.40.73.55])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id 04C62F802D2; Wed, 22 Jun 2022 18:13:54 +0200 (CEST)
+Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com
+ [IPv6:2a00:1450:4864:20::532])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id D4A21F800CB
- for <alsa-devel@alsa-project.org>; Wed, 22 Jun 2022 17:16:50 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D4A21F800CB
+ by alsa1.perex.cz (Postfix) with ESMTPS id 90392F800CB
+ for <alsa-devel@alsa-project.org>; Wed, 22 Jun 2022 18:13:51 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 90392F800CB
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="Wd3MRhoZ"
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by sin.source.kernel.org (Postfix) with ESMTPS id 4D6C9CE20E9;
- Wed, 22 Jun 2022 15:16:47 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 821F2C34114;
- Wed, 22 Jun 2022 15:16:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1655911005;
- bh=74OTJmsDUnJ8Yy67wCt0W4gdTWxoxbdt0Ekwa+iJXlw=;
- h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=Wd3MRhoZEa6qShbmTQ//LXyurzxGZedShHyF58V4d/EgvL0X0NAU6WbQjTyrsDCFy
- 9o6DzQBjeTAVrFaODUGwNzjWaoCZaomicw4Yz0hU37Q4HtmjEPKP5QpbzZxh61TIle
- VNaUfM6ZI3D7gX/pX/Dt07tQc3sTOG1abvL6llR/iSnNhsy6lnNJoXQH0yB1zO8Rs4
- ryl2ehKgtUYQJ99Okc2O5QWFF377RFC9m7TA/ATUZN8TQEPq/lcfeBPoMAeCCHwYHX
- frMeOdV7fGBnNCxVvKViwd/uGsp9eLgSEEcYIEfWvDGpUE8Lpe6VfYddUCmnYj/OMD
- bT9FlVvImCbeg==
-From: Mark Brown <broonie@kernel.org>
-To: aidanmacdonald.0x0@gmail.com
-In-Reply-To: <20220620200644.1961936-1-aidanmacdonald.0x0@gmail.com>
-References: <20220620200644.1961936-1-aidanmacdonald.0x0@gmail.com>
-Subject: Re: (subset) [PATCH 00/49] regmap-irq cleanups and refactoring
-Message-Id: <165591099823.672192.3312043171342090457.b4-ty@kernel.org>
-Date: Wed, 22 Jun 2022 16:16:38 +0100
+ dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
+ header.b="nUQ08BYK"
+Received: by mail-ed1-x532.google.com with SMTP id cf14so14841229edb.8
+ for <alsa-devel@alsa-project.org>; Wed, 22 Jun 2022 09:13:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
+ h=from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=cE/2OYYz5mN+xKGqyzZkM7i8jyDkRjpQ6WY0c9nnpkI=;
+ b=nUQ08BYK5oFMjhuwIdhfb68k27dg61OmpVwaXYMS2hbVZ9fdyf4oALt66tdaAUL1B3
+ rWBbo4MtyGKruasxn6e7dLhgHxT7LvmG0Pv//40q50rgMdT2GxH75jMdCs2hmJWfoBAA
+ b0rday1T6F/TkSeyE2Q/HBQBDt5gmvhgDjldLPtLkUD1T2+gjpW9bvme1SJnwqbMN4Pg
+ m2ToIWwJfj8bYsPP2DD4hddV+T6+336irst/x0Qkk+OmjsdYvg5Cn72N7wSYlVDKsKAv
+ t/xheAfXiJoPoZL/hy7MrwiCT23C/OylmEHjICTSiQq0MSMLxXIvM87lGKoLoy7Ag+0e
+ aYdQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=cE/2OYYz5mN+xKGqyzZkM7i8jyDkRjpQ6WY0c9nnpkI=;
+ b=5OIs2202NnVpSQ4YsfZVNR+FhfyL6UVHZctVPiy+DPQGfge9cDVXB9Q8+2nNPKDU8w
+ guQMWq+qaPEQf28q9Is1QEBRyCyOGlMuCZ4YM1krs8Watlp40CXM9fggp7UA4KNHVZcR
+ JTh65vZ4QeLk0MZpYWeh39AE2d1J6svbjJOObUSAT+FL4+JzgaYgq5G+/S3UvJOViODN
+ PndxzH5/EYBijSz/fwD4lD3PM3xsvXm4cFJehNE92Se21Yod3oIEZV9y4CsSClZcgmLw
+ gO+OO4RMP4AWJRM1C/mPc0PD5s9RBUH//4jLQeVWs/EaHo/j3YO7aSBS//XGYuStFsow
+ FLFw==
+X-Gm-Message-State: AJIora/VUV5CI60e+ZB8wRLKbUWC9ppagI8EjbyjWU2/mGd7S7VP0PIT
+ c6eiPpY1PHs/VMujmITUI68=
+X-Google-Smtp-Source: AGRyM1tWD6g6LO0qhLnaY9KN6b/00f7QxioRtjLEKur7v1cPD63I0UcdtnaoF4NQCs9CgxoC6rjd9w==
+X-Received: by 2002:a05:6402:348e:b0:435:a912:355f with SMTP id
+ v14-20020a056402348e00b00435a912355fmr4947487edc.326.1655914429451; 
+ Wed, 22 Jun 2022 09:13:49 -0700 (PDT)
+Received: from localhost.localdomain ([185.107.95.225])
+ by smtp.gmail.com with ESMTPSA id
+ sd14-20020a1709076e0e00b007072dc80e06sm9576036ejc.190.2022.06.22.09.13.43
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Wed, 22 Jun 2022 09:13:48 -0700 (PDT)
+From: Yassine Oudjana <yassine.oudjana@gmail.com>
+X-Google-Original-From: Yassine Oudjana <y.oudjana@protonmail.com>
+To: Andy Gross <agross@kernel.org>,
+ Bjorn Andersson <bjorn.andersson@linaro.org>,
+ Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+ Banajit Goswami <bgoswami@quicinc.com>,
+ Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
+ Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
+Subject: [PATCH v2 0/3] ASoC: dt-bindings: Add bindings for WCD9335 DAIs
+Date: Wed, 22 Jun 2022 20:13:19 +0400
+Message-Id: <20220622161322.168017-1-y.oudjana@protonmail.com>
+X-Mailer: git-send-email 2.36.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-X-Mailman-Approved-At: Wed, 22 Jun 2022 17:23:19 +0200
-Cc: alsa-devel@alsa-project.org, rafael@kernel.org, linus.walleij@linaro.org,
- tiwai@suse.com, cristian.ciocaltea@gmail.com, mani@kernel.org,
- lee.jones@linaro.org, samuel@sholland.org, zhang.lyra@gmail.com, brgl@bgdev.pl,
- mazziesaccount@gmail.com, michael@walle.cc, jernej.skrabec@gmail.com,
- cw00.choi@samsung.com, wens@csie.org, myungjoo.ham@samsung.com,
- agross@kernel.org, orsonzhai@gmail.com, linux-sunxi@lists.linux.dev,
- b.zolnierkie@samsung.com, linux-arm-msm@vger.kernel.org, tharvey@gateworks.com,
- linux-actions@lists.infradead.org, linux-gpio@vger.kernel.org,
- tglx@linutronix.de, bjorn.andersson@linaro.org,
- linux-arm-kernel@lists.infradead.org, rjones@gateworks.com,
- gregkh@linuxfoundation.org, lgirdwood@gmail.com, linux-kernel@vger.kernel.org,
- krzysztof.kozlowski@linaro.org, maz@kernel.org, baolin.wang7@gmail.com,
- srinivas.kandagatla@linaro.org
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
+ Yassine Oudjana <y.oudjana@protonmail.com>, linux-arm-msm@vger.kernel.org,
+ linux-kernel@vger.kernel.org, Yassine Oudjana <yassine.oudjana@gmail.com>,
+ phone-devel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -91,43 +104,27 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Mon, 20 Jun 2022 21:05:55 +0100, Aidan MacDonald wrote:
-> Here's a bunch of cleanups for regmap-irq focused on simplifying the API
-> and generalizing it a bit. It's broken up into three refactors, focusing
-> on one area at a time.
-> 
-> * Patches 01 and 02 are straightforward bugfixes, independent of the
->   rest of the series. Neither of the bugs are triggered by in-tree
->   drivers but they might be worth picking up early anyhow.
-> 
-> [...]
+Add DT bindings for WCD9335 DAIs and use them in the driver as well
+as all device trees currently using WCD9335.
 
-Applied to
+Changes since v1:
+ - Make header guard match path
+ - Maintain the alphabetical order in msm8996-xiaomi-gemini includes
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/regmap.git for-next
+Yassine Oudjana (3):
+  ASoC: dt-bindings: Add bindings for WCD9335 DAIs
+  ASoC: wcd9335: Use DT bindings instead of local DAI definitions
+  arm64: dts: qcom: Use WCD9335 DT bindings
 
-Thanks!
+ MAINTAINERS                                       |  1 +
+ arch/arm64/boot/dts/qcom/apq8096-db820c.dts       |  5 +++--
+ .../arm64/boot/dts/qcom/msm8996-xiaomi-gemini.dts |  5 +++--
+ .../boot/dts/qcom/msm8996-xiaomi-scorpio.dts      |  5 +++--
+ include/dt-bindings/sound/qcom,wcd9335.h          | 15 +++++++++++++++
+ sound/soc/codecs/wcd9335.c                        | 13 ++-----------
+ 6 files changed, 27 insertions(+), 17 deletions(-)
+ create mode 100644 include/dt-bindings/sound/qcom,wcd9335.h
 
-[01/49] regmap-irq: Fix a bug in regmap_irq_enable() for type_in_mask chips
-        commit: 485037ae9a095491beb7f893c909a76cc4f9d1e7
-[02/49] regmap-irq: Fix offset/index mismatch in read_sub_irq_data()
-        commit: 3f05010f243be06478a9b11cfce0ce994f5a0890
+-- 
+2.36.1
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
