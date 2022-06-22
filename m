@@ -4,59 +4,60 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E5EF5C433EF
-	for <alsa-devel@archiver.kernel.org>; Wed, 22 Jun 2022 10:14:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8E853C433EF
+	for <alsa-devel@archiver.kernel.org>; Wed, 22 Jun 2022 10:15:16 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3CF8A1FB3;
-	Wed, 22 Jun 2022 12:13:53 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3CF8A1FB3
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3BE5E205A;
+	Wed, 22 Jun 2022 12:14:24 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3BE5E205A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1655892883;
-	bh=TybKAsDdOzXRRPJR01dy7T95nNUwcNlrkUSe6TAwpXs=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=uqu9JQpbX7c2BTPMrjdimRi1L0ydMe6+BPcylvku3fCzMLtjQARXRee0iJEDyv1S0
-	 V0uh1fwg1zVEzXfPSNu3rx85z3wpRR0k3R3bL96i0DQcQXks1XwMA2lLFqe9j4Hp2A
-	 8qtpoEreYVlItiSxI59fZaixc1CZKZ7O7TeMKWZ4=
+	s=default; t=1655892914;
+	bh=1JQSq0jv6yjngWcl4d4BKj9Bg0HQJaZQ/LAfhyRieSs=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=PgqSMsRgz6GbAsBz3cTRAs77DVcnaqiIGCtC9ThJOI++arh+rA38hEH6qB2CEcFxO
+	 /QiG3/SJ3xS08NTc7iFx0tg7wWv+HBOfx46wDFLt87IzT6BtmYmC62DTKUHLUwpB2O
+	 5JQmyBZilECvJxEGZSY7cf+72G4pbwmK+QpDsNiA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id D63B7F80118;
-	Wed, 22 Jun 2022 12:13:52 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 804C9F80424;
+	Wed, 22 Jun 2022 12:13:59 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 7DFFCF802D2; Wed, 22 Jun 2022 12:13:51 +0200 (CEST)
-Received: from alexa-out-sd-01.qualcomm.com (alexa-out-sd-01.qualcomm.com
- [199.106.114.38])
+ id 65BD9F80482; Wed, 22 Jun 2022 12:13:58 +0200 (CEST)
+Received: from alexa-out.qualcomm.com (alexa-out.qualcomm.com [129.46.98.28])
  (using TLSv1.2 with cipher AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id B79DBF80118
- for <alsa-devel@alsa-project.org>; Wed, 22 Jun 2022 12:13:45 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B79DBF80118
+ by alsa1.perex.cz (Postfix) with ESMTPS id A8EB6F800CB
+ for <alsa-devel@alsa-project.org>; Wed, 22 Jun 2022 12:13:50 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A8EB6F800CB
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=quicinc.com header.i=@quicinc.com
- header.b="byOVdAh3"
+ header.b="ZlteGonj"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=quicinc.com; i=@quicinc.com; q=dns/txt; s=qcdkim;
- t=1655892829; x=1687428829;
- h=from:to:cc:subject:date:message-id:mime-version;
- bh=45HUCslR63O2eDoFf6sU5iI/mplnXmcLJYZs0gw37HM=;
- b=byOVdAh3RsBblOjtJizQ23Fo5TNt7J306iT+PnZOESnb3Ieg+vSpwslm
- srmZalIIwIuy5CiOgCMwh3zBOpoJZHfhwfZ/NaG9mVn6VHPhW+sKi1soc
- QevfrjPGLZfR1XleZfCTQC3mZPkZv8w8LTWQjyv6/uKl+hvJF1NVv2pD8 k=;
-Received: from unknown (HELO ironmsg05-sd.qualcomm.com) ([10.53.140.145])
- by alexa-out-sd-01.qualcomm.com with ESMTP; 22 Jun 2022 03:13:42 -0700
+ t=1655892832; x=1687428832;
+ h=from:to:cc:subject:date:message-id:in-reply-to:
+ references:mime-version;
+ bh=FdbuCESvF6sDFvc2UhQ68eQw+NWfPZ6BbVp5AMkpCt8=;
+ b=ZlteGonj3jUsvCGIHgS5RQYLn//lx6d7buv15A4/g/LXvBnqhrtteVb1
+ Oa8HQJemBumdhk+piQRNdzsc5EX2dFmcHE0xe5oRMF/Td7JSjpxJRIRjN
+ p2x3d7FirBv5FRaTWNKab1hSkOSvJPj5iZhzGzh27ro9Y72PtXKw003gp A=;
+Received: from ironmsg07-lv.qualcomm.com ([10.47.202.151])
+ by alexa-out.qualcomm.com with ESMTP; 22 Jun 2022 03:13:48 -0700
 X-QCInternal: smtphost
 Received: from nasanex01c.na.qualcomm.com ([10.47.97.222])
- by ironmsg05-sd.qualcomm.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 22 Jun 2022 03:13:41 -0700
+ by ironmsg07-lv.qualcomm.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 22 Jun 2022 03:13:47 -0700
 Received: from nalasex01a.na.qualcomm.com (10.47.209.196) by
  nasanex01c.na.qualcomm.com (10.47.97.222) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.986.22; Wed, 22 Jun 2022 03:13:41 -0700
+ 15.2.986.22; Wed, 22 Jun 2022 03:13:47 -0700
 Received: from hu-srivasam-hyd.qualcomm.com (10.80.80.8) by
  nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.986.22; Wed, 22 Jun 2022 03:13:35 -0700
+ 15.2.986.22; Wed, 22 Jun 2022 03:13:41 -0700
 From: Srinivasa Rao Mandadapu <quic_srivasam@quicinc.com>
 To: <agross@kernel.org>, <bjorn.andersson@linaro.org>, <lgirdwood@gmail.com>, 
  <broonie@kernel.org>, <robh+dt@kernel.org>, <quic_plai@quicinc.com>,
@@ -65,10 +66,13 @@ To: <agross@kernel.org>, <bjorn.andersson@linaro.org>, <lgirdwood@gmail.com>,
  <linux-arm-msm@vger.kernel.org>, <alsa-devel@alsa-project.org>,
  <linux-kernel@vger.kernel.org>, <swboyd@chromium.org>,
  <judyhsiao@chromium.org>, <devicetree@vger.kernel.org>
-Subject: [PATCH 0/2] Update machine driver for audioreach solution
-Date: Wed, 22 Jun 2022 15:43:17 +0530
-Message-ID: <1655892799-29641-1-git-send-email-quic_srivasam@quicinc.com>
+Subject: [PATCH 1/2] ASoC: google: dt-bindings: Update
+ sc7280-audioreach-herobrine compatible name
+Date: Wed, 22 Jun 2022 15:43:18 +0530
+Message-ID: <1655892799-29641-2-git-send-email-quic_srivasam@quicinc.com>
 X-Mailer: git-send-email 2.7.4
+In-Reply-To: <1655892799-29641-1-git-send-email-quic_srivasam@quicinc.com>
+References: <1655892799-29641-1-git-send-email-quic_srivasam@quicinc.com>
 MIME-Version: 1.0
 Content-Type: text/plain
 X-Originating-IP: [10.80.80.8]
@@ -90,17 +94,26 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-This patch set is to update sc7280 machine driver for audioreach support.
+Update audioreach based compatible string for sc7280 based ADSP enabled
+platforms.
 
-Srinivasa Rao Mandadapu (2):
-  ASoC: google: dt-bindings: Update sc7280-audioreach-herobrine
-    compatible name
-  ASoC: qcom: Add driver support for audioreach solution
+Signed-off-by: Srinivasa Rao Mandadapu <quic_srivasam@quicinc.com>
+---
+ Documentation/devicetree/bindings/sound/google,sc7280-herobrine.yaml | 1 +
+ 1 file changed, 1 insertion(+)
 
- .../bindings/sound/google,sc7280-herobrine.yaml    |  1 +
- sound/soc/qcom/sc7280.c                            | 34 ++++++++++++++++++++++
- 2 files changed, 35 insertions(+)
-
+diff --git a/Documentation/devicetree/bindings/sound/google,sc7280-herobrine.yaml b/Documentation/devicetree/bindings/sound/google,sc7280-herobrine.yaml
+index 869b403..d3885e5 100644
+--- a/Documentation/devicetree/bindings/sound/google,sc7280-herobrine.yaml
++++ b/Documentation/devicetree/bindings/sound/google,sc7280-herobrine.yaml
+@@ -17,6 +17,7 @@ properties:
+   compatible:
+     enum:
+       - google,sc7280-herobrine
++      - google,sc7280-audioreach-herobrine
+ 
+   audio-routing:
+     $ref: /schemas/types.yaml#/definitions/non-unique-string-array
 -- 
 2.7.4
 
