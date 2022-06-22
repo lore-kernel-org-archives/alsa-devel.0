@@ -4,53 +4,53 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id AF505C43334
-	for <alsa-devel@archiver.kernel.org>; Wed, 22 Jun 2022 06:24:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5360FC43334
+	for <alsa-devel@archiver.kernel.org>; Wed, 22 Jun 2022 06:25:00 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id F26AC1F7C;
-	Wed, 22 Jun 2022 08:23:58 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F26AC1F7C
+	by alsa0.perex.cz (Postfix) with ESMTPS id 9612A1F5C;
+	Wed, 22 Jun 2022 08:24:08 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9612A1F5C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1655879089;
-	bh=EOlCgDSESFEHej+OBgK4JovTm/nBnNweRcysKlVqBIM=;
+	s=default; t=1655879098;
+	bh=u3X8j0aQOk6m0Qmng1sMZzo8XgxdrWDd5lKTvYED25c=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=rOdze5ebZJBlSIjw+7jGZWp3OTpK3+HaglmtYodlW1G6V9iLc3TxayUgianVbRRX6
-	 2bZ949cYMlnkF7r6miFS2y8PIYrHijaHG8mFVD1G6DTxX7HjP7TRmsxAgmhxoYy11/
-	 uDv0Y6ZoNq4ACrRQqh0ObI5zLgd3bGFnPxxc4LXM=
+	b=PBx5BLLh2EldudSgKmtWO3lxb5TQHcaYVvT/8uT/I4GfUsBZZBjq2qIZAwPwicAPb
+	 FiYWHAL57AKM9Q3A9SzSjvNk6Roeocdoc+Nt5LmD+4BCcm2N33kD9sOnGL/U5qav5Y
+	 7BCZKqL0DEHZZA6TxJ0R1VxKSd7CwpxG+sGff/XA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id AE7E9F80543;
-	Wed, 22 Jun 2022 08:23:13 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id A5D28F8032D;
+	Wed, 22 Jun 2022 08:24:07 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 56193F80537; Wed, 22 Jun 2022 08:23:11 +0200 (CEST)
+ id 84127F80482; Wed, 22 Jun 2022 08:24:06 +0200 (CEST)
 Received: from mailgw01.mediatek.com (unknown [60.244.123.138])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id D3529F802D2;
+ by alsa1.perex.cz (Postfix) with ESMTPS id EF671F8032D;
  Wed, 22 Jun 2022 08:23:00 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D3529F802D2
-X-UUID: 26db0123e0c24dd29e953cfc5126be01-20220622
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EF671F8032D
+X-UUID: 76fa46e451e5465b809a2311a8e95adc-20220622
 X-CID-P-RULE: Release_Ham
-X-CID-O-INFO: VERSION:1.1.6, REQID:92e0131c-1632-4819-ba51-e39677ad1153, OB:0,
+X-CID-O-INFO: VERSION:1.1.6, REQID:915b2812-44d5-49d4-b3b5-763d45cae09f, OB:0,
  LO
  B:0,IP:0,URL:0,TC:0,Content:-5,EDM:0,RT:0,SF:0,FILE:0,RULE:Release_Ham,ACT
  ION:release,TS:-5
-X-CID-META: VersionHash:b14ad71, CLOUDID:af4bb82d-1756-4fa3-be7f-474a6e4be921,
+X-CID-META: VersionHash:b14ad71, CLOUDID:f9c82fea-f7af-4e69-92ee-0fd74a0c286c,
  C
  OID:IGNORED,Recheck:0,SF:nil,TC:nil,Content:0,EDM:-3,IP:nil,URL:0,File:nil
  ,QS:nil,BEC:nil,COL:0
-X-UUID: 26db0123e0c24dd29e953cfc5126be01-20220622
+X-UUID: 76fa46e451e5465b809a2311a8e95adc-20220622
 Received: from mtkmbs11n2.mediatek.inc [(172.21.101.187)] by
  mailgw01.mediatek.com (envelope-from <tinghan.shen@mediatek.com>)
  (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
- with ESMTP id 1397534780; Wed, 22 Jun 2022 14:22:48 +0800
+ with ESMTP id 2090030197; Wed, 22 Jun 2022 14:22:48 +0800
 Received: from mtkmbs07n1.mediatek.inc (172.21.101.16) by
  mtkmbs10n1.mediatek.inc (172.21.101.34) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- 15.2.792.15; Wed, 22 Jun 2022 14:22:47 +0800
+ 15.2.792.15; Wed, 22 Jun 2022 14:22:48 +0800
 Received: from mtkmbs11n2.mediatek.inc (172.21.101.187) by
  mtkmbs07n1.mediatek.inc (172.21.101.16) with Microsoft SMTP Server (TLS) id
  15.0.1497.2; Wed, 22 Jun 2022 14:22:47 +0800
@@ -70,9 +70,10 @@ To: Rob Herring <robh+dt@kernel.org>, Krzysztof Kozlowski
  <tiwai@suse.com>, Tinghan Shen <tinghan.shen@mediatek.com>, YC Hung
  <yc.hung@mediatek.com>, Curtis Malainey <cujomalainey@chromium.org>,
  "Allen-KH Cheng" <allen-kh.cheng@mediatek.com>
-Subject: [PATCH v4 2/4] firmware: mediatek: Use meaningful names for mbox
-Date: Wed, 22 Jun 2022 14:22:43 +0800
-Message-ID: <20220622062245.21021-3-tinghan.shen@mediatek.com>
+Subject: [PATCH v4 4/4] ASoC: SOF: mediatek: Align mt8186 clock names with
+ dt-bindings
+Date: Wed, 22 Jun 2022 14:22:45 +0800
+Message-ID: <20220622062245.21021-5-tinghan.shen@mediatek.com>
 X-Mailer: git-send-email 2.18.0
 In-Reply-To: <20220622062245.21021-1-tinghan.shen@mediatek.com>
 References: <20220622062245.21021-1-tinghan.shen@mediatek.com>
@@ -99,92 +100,28 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Rename mbox according to actions instead of 'mbox0' and 'mbox1'
+Align clock names in mt8186 dsp driver with dt-bindings.
 
 Signed-off-by: Tinghan Shen <tinghan.shen@mediatek.com>
 ---
- drivers/firmware/mtk-adsp-ipc.c | 36 +++++++++++----------------------
- 1 file changed, 12 insertions(+), 24 deletions(-)
+ sound/soc/sof/mediatek/mt8186/mt8186-clk.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/firmware/mtk-adsp-ipc.c b/drivers/firmware/mtk-adsp-ipc.c
-index cb255a99170c..3c071f814455 100644
---- a/drivers/firmware/mtk-adsp-ipc.c
-+++ b/drivers/firmware/mtk-adsp-ipc.c
-@@ -12,6 +12,8 @@
- #include <linux/platform_device.h>
- #include <linux/slab.h>
+diff --git a/sound/soc/sof/mediatek/mt8186/mt8186-clk.c b/sound/soc/sof/mediatek/mt8186/mt8186-clk.c
+index 22220fd50b62..2df3b7ae1c6f 100644
+--- a/sound/soc/sof/mediatek/mt8186/mt8186-clk.c
++++ b/sound/soc/sof/mediatek/mt8186/mt8186-clk.c
+@@ -18,8 +18,8 @@
+ #include "mt8186-clk.h"
  
-+static const char * const adsp_mbox_ch_names[MTK_ADSP_MBOX_NUM] = { "rx", "tx" };
-+
- /*
-  * mtk_adsp_ipc_send - send ipc cmd to MTK ADSP
-  *
-@@ -72,7 +74,6 @@ static int mtk_adsp_ipc_probe(struct platform_device *pdev)
- 	struct mtk_adsp_ipc *adsp_ipc;
- 	struct mtk_adsp_chan *adsp_chan;
- 	struct mbox_client *cl;
--	char *chan_name;
- 	int ret;
- 	int i, j;
+ static const char *adsp_clks[ADSP_CLK_MAX] = {
+-	[CLK_TOP_AUDIODSP] = "audiodsp_sel",
+-	[CLK_TOP_ADSP_BUS] = "adsp_bus_sel",
++	[CLK_TOP_AUDIODSP] = "audiodsp",
++	[CLK_TOP_ADSP_BUS] = "adsp_bus",
+ };
  
-@@ -83,12 +84,6 @@ static int mtk_adsp_ipc_probe(struct platform_device *pdev)
- 		return -ENOMEM;
- 
- 	for (i = 0; i < MTK_ADSP_MBOX_NUM; i++) {
--		chan_name = kasprintf(GFP_KERNEL, "mbox%d", i);
--		if (!chan_name) {
--			ret = -ENOMEM;
--			goto out;
--		}
--
- 		adsp_chan = &adsp_ipc->chans[i];
- 		cl = &adsp_chan->cl;
- 		cl->dev = dev->parent;
-@@ -99,17 +94,20 @@ static int mtk_adsp_ipc_probe(struct platform_device *pdev)
- 
- 		adsp_chan->ipc = adsp_ipc;
- 		adsp_chan->idx = i;
--		adsp_chan->ch = mbox_request_channel_byname(cl, chan_name);
-+		adsp_chan->ch = mbox_request_channel_byname(cl, adsp_mbox_ch_names[i]);
- 		if (IS_ERR(adsp_chan->ch)) {
- 			ret = PTR_ERR(adsp_chan->ch);
- 			if (ret != -EPROBE_DEFER)
--				dev_err(dev, "Failed to request mbox chan %d ret %d\n",
--					i, ret);
--			goto out_free;
--		}
-+				dev_err(dev, "Failed to request mbox chan %s ret %d\n",
-+					adsp_mbox_ch_names[i], ret);
-+
-+			for (j = 0; j < i; j++) {
-+				adsp_chan = &adsp_ipc->chans[j];
-+				mbox_free_channel(adsp_chan->ch);
-+			}
- 
--		dev_dbg(dev, "request mbox chan %s\n", chan_name);
--		kfree(chan_name);
-+			return ret;
-+		}
- 	}
- 
- 	adsp_ipc->dev = dev;
-@@ -117,16 +115,6 @@ static int mtk_adsp_ipc_probe(struct platform_device *pdev)
- 	dev_dbg(dev, "MTK ADSP IPC initialized\n");
- 
- 	return 0;
--
--out_free:
--	kfree(chan_name);
--out:
--	for (j = 0; j < i; j++) {
--		adsp_chan = &adsp_ipc->chans[j];
--		mbox_free_channel(adsp_chan->ch);
--	}
--
--	return ret;
- }
- 
- static int mtk_adsp_ipc_remove(struct platform_device *pdev)
+ int mt8186_adsp_init_clock(struct snd_sof_dev *sdev)
 -- 
 2.18.0
 
