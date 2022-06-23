@@ -4,71 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1B9A4C433EF
-	for <alsa-devel@archiver.kernel.org>; Thu, 23 Jun 2022 13:59:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7B53BC43334
+	for <alsa-devel@archiver.kernel.org>; Thu, 23 Jun 2022 14:00:21 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B95BA1AAB;
-	Thu, 23 Jun 2022 15:58:59 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B95BA1AAB
+	by alsa0.perex.cz (Postfix) with ESMTPS id 959681B4C;
+	Thu, 23 Jun 2022 15:59:29 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 959681B4C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1655992789;
-	bh=QTbgOAZwMyn05WBjxP2ZCaMwk4y/Iz2SpmqxwtERJAI=;
+	s=default; t=1655992819;
+	bh=2mVrmGmg0xr+Ozcvo3SQuzInJWS43tMd2u0JvspqRZY=;
 	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=sGZBaAZHSmOvGTO2S4uYtpmWeiWJsQ2vJe/zESvabVjeuA7LTS8a9na7DRW6ynOtD
-	 6m9jtMiY8zDU0hh04KxQnHd//B7BfF7g9RxWBc6XfvkgRKw8wI6NwoflRzInL7gywp
-	 yLCVSlSqY+TzMR/tBXgtB7gcteIMgEOmVuUdx9co=
+	b=M20aHaoE4ojRufiRkQlyF7lHcaQHgBzFiQyL//UHan4P2kU/QHLqfC0NdF4lmeaKf
+	 5C8Hm2Xtul8ON1hRawNEcOwDnwSFYrLYw5tpenVWQ/0+33d0OxzB4loYBAYI3ayxeT
+	 uIwZ/DspflzF0WJFWaSSVjZQlJ4ivZXtomxAf4GU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 44ED3F804C1;
-	Thu, 23 Jun 2022 15:58:59 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id E4BF0F804CC;
+	Thu, 23 Jun 2022 15:59:00 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id D1008F800BD; Thu, 23 Jun 2022 15:58:57 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org
- [IPv6:2604:1380:4641:c500::1])
+ id 340EFF804EC; Thu, 23 Jun 2022 15:59:00 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 56D80F800BD
- for <alsa-devel@alsa-project.org>; Thu, 23 Jun 2022 15:58:54 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 56D80F800BD
+ by alsa1.perex.cz (Postfix) with ESMTPS id 74C03F800BD
+ for <alsa-devel@alsa-project.org>; Thu, 23 Jun 2022 15:58:55 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 74C03F800BD
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="Tf8T51sH"
+ header.b="VfDbK+9x"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id 9A36A61DE7;
+ by dfw.source.kernel.org (Postfix) with ESMTPS id 78F3B61DE6;
+ Thu, 23 Jun 2022 13:58:54 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 84E18C3411D;
  Thu, 23 Jun 2022 13:58:52 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C05A9C3411B;
- Thu, 23 Jun 2022 13:58:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1655992732;
- bh=QTbgOAZwMyn05WBjxP2ZCaMwk4y/Iz2SpmqxwtERJAI=;
+ s=k20201202; t=1655992733;
+ bh=2mVrmGmg0xr+Ozcvo3SQuzInJWS43tMd2u0JvspqRZY=;
  h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=Tf8T51sHVep8tOFxWqdD/A/vx48C12KeSiJbaKdh1dP9Iezx8bHHnvidqJWLKru/R
- MhGntlBojNf4fKWdLQeNdkee1okdmRMpUiPq+x6CeJwdPHsbA+Ei2THXufR/XvYT1X
- HwpJr4hAaXhrzx+0m1PERjB1RMJs1I6Dx1eQIDtWJNU3awfytnc6X3FWKKntI25fWj
- Q+E0pZWqqeFUUzXyqFg3eMa227a6lPgJm6jf4D7vMm7IP8E4JbfKvctjfY5YelOnF0
- GRw90IUQCwYL5hNJTpIKBtp5P1evPdB2tLDuIkI+I+OUyT9Iboh0C0zDTH7PNV6UoA
- mcodghDw7hcAA==
+ b=VfDbK+9xXR0NUdvVobxenGV/aPApAVTZ9kOoVcXuGXY4rLTPo7/ydth9gXKOuC5iP
+ rfgMFrGZUnvRShxQbc5Gy2CKaUtV9a+fkRPWeUW0h/pi4OlfakqhiwGhO5GWcfVjrm
+ 7zp6uT2Gs5JohG5a2ru+g5GNyBKSuTSJR9In/JWC+EqLVtAC0i04AcIKpFc/v4A0xd
+ QmqpeettfwY0aY1LxRulZrmBvBRnIvkDN6Q/tNBY+JApGKhQ+zX2o0dJAjfFR2c4Sk
+ E31R06UEA4tXld+JtP2xo4WPARl7WmefM4Us3MW1XgotY7ysASsaxqBcmvUqGJNOnl
+ 66m0FG9WUsoog==
 From: Mark Brown <broonie@kernel.org>
-To: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
-In-Reply-To: <20220622210629.286487-1-u.kleine-koenig@pengutronix.de>
-References: <20220622210629.286487-1-u.kleine-koenig@pengutronix.de>
-Subject: Re: [PATCH] ASoC: topology: KUnit: Followup prototype change of
- snd_soc_unregister_card()
-Message-Id: <165599272948.179867.17711982471875038786.b4-ty@kernel.org>
-Date: Thu, 23 Jun 2022 14:58:49 +0100
+To: ckeepax@opensource.cirrus.com
+In-Reply-To: <20220623105120.1981154-1-ckeepax@opensource.cirrus.com>
+References: <20220623105120.1981154-1-ckeepax@opensource.cirrus.com>
+Subject: Re: (subset) [PATCH 1/6] ASoC: dapm: Initialise kcontrol data for
+ mux/demux controls
+Message-Id: <165599273226.179867.18058864820347037377.b4-ty@kernel.org>
+Date: Thu, 23 Jun 2022 14:58:52 +0100
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: linmq006@gmail.com, lkp@intel.com, alexandre.belloni@bootlin.com,
- tiwai@suse.com, alsa-devel@alsa-project.org, lgirdwood@gmail.com,
- kernel@pengutronix.de, codrin.ciubotariu@microchip.com,
- claudiu.beznea@microchip.com, linux-arm-kernel@lists.infradead.org,
- nicolas.ferre@microchip.com
+Cc: alsa-devel@alsa-project.org, lgirdwood@gmail.com,
+ patches@opensource.cirrus.com, linux-kernel@vger.kernel.org,
+ james.schulman@cirrus.com, david.rhodes@cirrus.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -84,12 +81,18 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, 22 Jun 2022 23:06:29 +0200, Uwe Kleine-König wrote:
-> snd_soc_unregister_card() was recently converted to return void. Only
-> the first instance was adapted, so convert the remaining ones now to fix
-> building the topology test.
+On Thu, 23 Jun 2022 11:51:15 +0100, Charles Keepax wrote:
+> DAPM keeps a copy of the current value of mux/demux controls,
+> however this value is only initialised in the case of autodisable
+> controls. This leads to false notification events when first
+> modifying a DAPM kcontrol that has a non-zero default.
 > 
+> Autodisable controls are left as they are, since they already
+> initialise the value, and there would be more work required to
+> support autodisable muxes where the first option isn't disabled
+> and/or that isn't the default.
 > 
+> [...]
 
 Applied to
 
@@ -97,8 +100,8 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: topology: KUnit: Followup prototype change of snd_soc_unregister_card()
-      commit: d5017d1323d45db14d1db3d348779264ffce9fb2
+[6/6] ASoC: dapm: Move stereo autodisable check
+      commit: 4d6c2b46d81765e920007f76185a8d1fb5e41ca3
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
