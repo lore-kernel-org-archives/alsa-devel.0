@@ -4,83 +4,73 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8B111C43334
-	for <alsa-devel@archiver.kernel.org>; Thu, 23 Jun 2022 10:54:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A2811C43334
+	for <alsa-devel@archiver.kernel.org>; Thu, 23 Jun 2022 11:00:09 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C1CA31EDF;
-	Thu, 23 Jun 2022 12:53:13 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C1CA31EDF
+	by alsa0.perex.cz (Postfix) with ESMTPS id 9A8461AEA;
+	Thu, 23 Jun 2022 12:59:17 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9A8461AEA
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1655981643;
-	bh=D8ymrI+ZJpDY3JdYK2FugXvXF8B1ZnMDWfwpxbtfgBQ=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1655982007;
+	bh=CfMWKUhq2LwBwXVFqnGPAdGYJgnDF2oxir15TkcTtUs=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=kOhbgXCRT+/K0Mf9uMknde85W2GVXUxviWJuZ/VTAzp4sie4cF+Gt31pddDLkeYdO
-	 yD0CtHD9IAySmuS8WpuJtY4Fn0ZoE+hr/lYTMI2/6EZg2r4PM8ih6Z98+I4JNp2mch
-	 3bB+BXRRChj74QbnOIcrZbNSKG22w0romFzgEc6s=
+	b=Hn2zCzYXeg40QUB9Dok6mZ6WwKdXGsjUVyjCt2Jm9e6qcfHqHPNcltVQlqbS4oyXh
+	 t96RID33eO5Kex+bYE0VWdPuAlRu/5s+gU4DfxyZHrRjThqiXWNS0/FQoKcXR1/cKF
+	 uggwif1ivWh6yS514GNOtCIoCjb7b6w47VOTkcWc=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id F303FF80549;
-	Thu, 23 Jun 2022 12:51:42 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2D29CF804BB;
+	Thu, 23 Jun 2022 12:59:17 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id DDCB3F80544; Thu, 23 Jun 2022 12:51:41 +0200 (CEST)
-Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
- [67.231.149.25])
+ id 0F489F800D0; Thu, 23 Jun 2022 12:59:16 +0200 (CEST)
+Received: from sin.source.kernel.org (sin.source.kernel.org
+ [IPv6:2604:1380:40e1:4800::1])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 8DA1AF800D0
+ for <alsa-devel@alsa-project.org>; Thu, 23 Jun 2022 12:59:09 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8DA1AF800D0
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="CAp3iHZo"
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 06B9CF804BB
- for <alsa-devel@alsa-project.org>; Thu, 23 Jun 2022 12:51:24 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 06B9CF804BB
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com
- header.b="d5Y7RicZ"
-Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
- by mx0a-001ae601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 25NAKUqE006859;
- Thu, 23 Jun 2022 05:51:23 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
- h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding : content-type; s=PODMain02222019;
- bh=PqTwzrb4S4WU+IKe42NZ58931YA2zsn+4TLdSNVlyA4=;
- b=d5Y7RicZHCIcuVwhORgaW2TwwmC4FiYNeUGB+LtM4KbURSkMr4y64k4rsC/MKKr+ziQ7
- aU4IeN4Zbkh3rSCJHsbLNemLo/xsT9v7ZDaO5xOUz8AR9h6+WLn1vmecNOPc6FVn5fCB
- szn4neTeZAXmIwXzmJuq+eDoWm789Ypc3fBlCRP3Y1vCYckd5LaMTxwDyVOWIz0wE1SX
- 1ncV69gMJViHg2mNaPqIZR7Nb6v2K5eNIpW943lZvTABdYtB5FNhZDUfkWuLOiqOAD9R
- es4L7dWW6qZoxygOauoQwjycBLkfxSPV4fqNqysbNGZyYycpPxtKyjRyNKFwdFY8MsPX gA== 
-Received: from ediex02.ad.cirrus.com ([84.19.233.68])
- by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3gsc41f17q-2
- (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
- Thu, 23 Jun 2022 05:51:22 -0500
-Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX02.ad.cirrus.com
- (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.28; Thu, 23 Jun
- 2022 11:51:20 +0100
-Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server id 15.1.2375.28 via
- Frontend Transport; Thu, 23 Jun 2022 11:51:20 +0100
-Received: from algalon.ad.cirrus.com (algalon.ad.cirrus.com [198.90.251.122])
- by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 353A511D3;
- Thu, 23 Jun 2022 10:51:20 +0000 (UTC)
-From: Charles Keepax <ckeepax@opensource.cirrus.com>
-To: <broonie@kernel.org>
-Subject: [PATCH 3/6] ASoC: cs47l15: Fix event generation for low power mux
- control
-Date: Thu, 23 Jun 2022 11:51:17 +0100
-Message-ID: <20220623105120.1981154-3-ckeepax@opensource.cirrus.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20220623105120.1981154-1-ckeepax@opensource.cirrus.com>
-References: <20220623105120.1981154-1-ckeepax@opensource.cirrus.com>
+ by sin.source.kernel.org (Postfix) with ESMTPS id 3DD21CE23E3;
+ Thu, 23 Jun 2022 10:59:07 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 20F84C3411B;
+ Thu, 23 Jun 2022 10:59:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1655981945;
+ bh=CfMWKUhq2LwBwXVFqnGPAdGYJgnDF2oxir15TkcTtUs=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=CAp3iHZoYrem1wfMXPX7VHgmKRZ1bvpp37pskrENNAXnur+1FR/Y6c74IOXH762rX
+ b8QyKRQRMSGeFMTFfbdfsYFvRqGECVn/uP3jxHHREh9y9r3Exyeaq3mou2LeRsSE6l
+ 8Vx3xErMa61BjxoCzOOQkd+rNkg4QYPOduEWn6SS5n9XE9uwuYMzn/C/erAMf9j17I
+ Wm/cvzD3kYp6mvcmV0T3Wb7LlLe13H8U5w32FMYeuqKxpraancGrgVaXWxqjfREo+D
+ 1TrH8adIvsUWZWNeGqpuyGvd2/RpDKd3uKUFtvd03SZ7BdnyHAnU41/jlTGiOAc23t
+ N2VPPBAsvFHiQ==
+Date: Thu, 23 Jun 2022 11:59:00 +0100
+From: Mark Brown <broonie@kernel.org>
+To: Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>
+Subject: Re: [PATCH] ASoC: core: Make snd_soc_unregister_card() return void
+Message-ID: <YrRHdJdlmryopCU/@sirena.org.uk>
+References: <20220621145834.198519-1-u.kleine-koenig@pengutronix.de>
+ <165591900215.1405752.6651339800557082462.b4-ty@kernel.org>
+ <20220622205046.by5jnrql6psaev3u@pengutronix.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Proofpoint-GUID: QT_BBaCGrsJ8nfY_jQ9gRizWN6dSzuU2
-X-Proofpoint-ORIG-GUID: QT_BBaCGrsJ8nfY_jQ9gRizWN6dSzuU2
-X-Proofpoint-Spam-Reason: safe
-Cc: alsa-devel@alsa-project.org, patches@opensource.cirrus.com,
- lgirdwood@gmail.com, david.rhodes@cirrus.com, james.schulman@cirrus.com,
- linux-kernel@vger.kernel.org
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature"; boundary="PhGv3YkaA9Ljwtt3"
+Content-Disposition: inline
+In-Reply-To: <20220622205046.by5jnrql6psaev3u@pengutronix.de>
+X-Cookie: I had pancake makeup for brunch!
+Cc: alsa-devel@alsa-project.org, alexandre.belloni@bootlin.com,
+ lgirdwood@gmail.com, nicolas.ferre@microchip.com, linmq006@gmail.com,
+ tiwai@suse.com, kernel@pengutronix.de, codrin.ciubotariu@microchip.com,
+ claudiu.beznea@microchip.com, linux-arm-kernel@lists.infradead.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -96,39 +86,34 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-cs47l15_in1_adc_put always returns zero regardless of if the control
-value was updated. This results in missing notifications to user-space
-of the control change. Update the handling to return 1 when the value is
-changed.
 
-Signed-off-by: Charles Keepax <ckeepax@opensource.cirrus.com>
----
- sound/soc/codecs/cs47l15.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+--PhGv3YkaA9Ljwtt3
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-diff --git a/sound/soc/codecs/cs47l15.c b/sound/soc/codecs/cs47l15.c
-index 391fd7da331fd..1c7d52bef8935 100644
---- a/sound/soc/codecs/cs47l15.c
-+++ b/sound/soc/codecs/cs47l15.c
-@@ -122,6 +122,9 @@ static int cs47l15_in1_adc_put(struct snd_kcontrol *kcontrol,
- 		snd_soc_kcontrol_component(kcontrol);
- 	struct cs47l15 *cs47l15 = snd_soc_component_get_drvdata(component);
- 
-+	if (!!ucontrol->value.integer.value[0] == cs47l15->in1_lp_mode)
-+		return 0;
-+
- 	switch (ucontrol->value.integer.value[0]) {
- 	case 0:
- 		/* Set IN1 to normal mode */
-@@ -150,7 +153,7 @@ static int cs47l15_in1_adc_put(struct snd_kcontrol *kcontrol,
- 		break;
- 	}
- 
--	return 0;
-+	return 1;
- }
- 
- static const struct snd_kcontrol_new cs47l15_snd_controls[] = {
--- 
-2.30.2
+On Wed, Jun 22, 2022 at 10:50:46PM +0200, Uwe Kleine-K=F6nig wrote:
 
+> Did you see the kernel bot report with the build issue? It doesn't make
+> allmodconfig fail for me (that's why I didn't notice the issue). I'm
+> looking into it.
+
+Yes, it raced with me queuing it to apply I think.  It doesn't trigger
+in an allmodconfig for me either.
+
+--PhGv3YkaA9Ljwtt3
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmK0R3MACgkQJNaLcl1U
+h9D0Ugf/TFSPks3W7rHR+ZY6qTZ9dmpDzmm31LrYZZDaeHqCI8lsSp8Zgp0MhlIb
+a/RgNHEr/diZbdc0nHOoBv94q7aMeDXranSi5ICpqa4kpA4e6ArrEKvsYBVlvMkB
+JDfH2uJ69YXZt5DM3QvRbwi27BWfGkbjFF4jtI3Yf771DS3nysZon6LDctGeWh0W
+0uhMJGiAorjNciY7DkG90H5YVSVspmyBO9Hb5evt75D/mcDhve0UQFBF0BY52HD6
+vK8fLKeft7t9xuj6H8e2cf++l99Zr63w5xu74ZBd3r1IzwtGsbU+QNdPaHPHs9GG
+BUkoInrWuooOPlm+exW8X5WdWI32Pw==
+=uLLe
+-----END PGP SIGNATURE-----
+
+--PhGv3YkaA9Ljwtt3--
