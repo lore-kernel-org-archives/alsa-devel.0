@@ -4,77 +4,83 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id AACB5C433EF
-	for <alsa-devel@archiver.kernel.org>; Wed, 22 Jun 2022 21:12:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8EACFC43334
+	for <alsa-devel@archiver.kernel.org>; Thu, 23 Jun 2022 02:13:01 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E52881AF9;
-	Wed, 22 Jun 2022 23:11:16 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E52881AF9
+	by alsa0.perex.cz (Postfix) with ESMTPS id DB2B21ACD;
+	Thu, 23 Jun 2022 04:12:08 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DB2B21ACD
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1655932327;
-	bh=qETdEtCS92Y/0CHpomE0Y/TnCnDaHjp9IhR6dEaORYM=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=g5NS9mt1e52PqpymMn2TEGSQpwY/5xqcAZz+G4AJJfmbmFzsjw6b0GLMlpbsYNcos
-	 N2mYb+mFIStLeQZAI4PfJrPAirbltEkD+Opu8BOID9RixVIaxyw5O1Sk1Dj19Uu/Zy
-	 GwvqDhi5c8qAlT93x40RmqyCcd89MLddkJ57y7jw=
+	s=default; t=1655950378;
+	bh=j2h8gEZWVv8wk6ToHRuwmvN/Zr6XHox7skDWD39TmDM=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=AR/QSvJ3gnYNUz4RMBiGmlVJPfepq8fTTJ0OrDPRDSNnRxYbeT0ib/HsLnBR3t8lY
+	 TbDj8WNz9D0SmT9f/kiXVBcX7V0+/um/tGSNLdXceiNYN/hvdbu/mgf4RLkWDFy8Lo
+	 mjgbm1yKhvx7WBi5gMgkvpQVv0HSNw7TE/5WLyYk=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 8ADB5F800CB;
-	Wed, 22 Jun 2022 23:11:16 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 7D414F800BD;
+	Thu, 23 Jun 2022 04:12:08 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id A1764F802D2; Wed, 22 Jun 2022 23:11:14 +0200 (CEST)
-Received: from mga06.intel.com (mga06b.intel.com [134.134.136.31])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id D004FF800BD; Thu, 23 Jun 2022 04:12:06 +0200 (CEST)
+Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com
+ [IPv6:2607:f8b0:4864:20::102c])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id A71BCF800CB
- for <alsa-devel@alsa-project.org>; Wed, 22 Jun 2022 23:11:06 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A71BCF800CB
+ by alsa1.perex.cz (Postfix) with ESMTPS id 38F35F800BD
+ for <alsa-devel@alsa-project.org>; Thu, 23 Jun 2022 04:12:03 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 38F35F800BD
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="eHykpkAL"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
- d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1655932270; x=1687468270;
- h=date:from:to:cc:subject:message-id:references:
- mime-version:in-reply-to;
- bh=qETdEtCS92Y/0CHpomE0Y/TnCnDaHjp9IhR6dEaORYM=;
- b=eHykpkALOfBahAXvBPIteYqtrcrAaScZaq2KrraeJd1nUFDpyj/ypTgt
- OIGncNjXp2P9Re0IYB4Zglr5zaWypDexg6buzZGPM0RVY7sp/auLIaJgE
- nAA7vwWVHFuvdcj61kHS3dZc+f/wPBuehAj2lSx/+e2Wlm+4DFLhl8uwz
- FVZzqfGFThgNVPZ/f851UXwE2xuqe7GuRVjHELoUfK61zQcTw7LoYI0gf
- p85RJTd/HQ3VlRTedVAs9p6AjkV6XzBW2nzLCOVJ6UxGWz+apLHPhjVkr
- qNDuFhNTFvZKZGFpy/iiEZYNcWix04jbdcJbzipZPN2pLgSeUzSuYLwrf w==;
-X-IronPort-AV: E=McAfee;i="6400,9594,10386"; a="342231949"
-X-IronPort-AV: E=Sophos;i="5.92,212,1650956400"; d="scan'208";a="342231949"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
- by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 22 Jun 2022 14:11:04 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.92,212,1650956400"; d="scan'208";a="644395860"
-Received: from lkp-server02.sh.intel.com (HELO a67cc04a5eeb) ([10.239.97.151])
- by fmsmga008.fm.intel.com with ESMTP; 22 Jun 2022 14:11:02 -0700
-Received: from kbuild by a67cc04a5eeb with local (Exim 4.95)
- (envelope-from <lkp@intel.com>) id 1o47cr-0001gv-Go;
- Wed, 22 Jun 2022 21:11:01 +0000
-Date: Thu, 23 Jun 2022 05:10:37 +0800
-From: kernel test robot <lkp@intel.com>
-To: Stefan Binding <sbinding@opensource.cirrus.com>,
- "Rafael J . Wysocki" <rafael@kernel.org>,
- Len Brown <lenb@kernel.org>, Mark Brown <broonie@kernel.org>,
- Liam Girdwood <lgirdwood@gmail.com>
-Subject: Re: [PATCH v1 1/2] ACPI: utils: Add api to read _SUB from ACPI
-Message-ID: <202206230402.9xK6YlsY-lkp@intel.com>
-References: <20220622130730.1573747-2-sbinding@opensource.cirrus.com>
+ dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org
+ header.b="BR2naSce"
+Received: by mail-pj1-x102c.google.com with SMTP id
+ g16-20020a17090a7d1000b001ea9f820449so1104428pjl.5
+ for <alsa-devel@alsa-project.org>; Wed, 22 Jun 2022 19:12:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=chromium.org; s=google;
+ h=from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=hRLTpselmSzOmfEMzptO0DKyWBgV2uZm8FqGFEjaV8s=;
+ b=BR2naSce8Q38Guq9+xSEESPiRtMPfWntr5oX3C6t9VIHlwzBOfmM9RhSLX9CWTsMYW
+ 2gUyBX0+UTMKdPEfxtmCJ4CA1pEbwNKXe4xcp3Vq2XvN3KCbwROgQnoECWpG9Sb6mwL5
+ ysQgodcgLMBdNiZaq+cVygPxvvgpSBqG3a8w0=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=hRLTpselmSzOmfEMzptO0DKyWBgV2uZm8FqGFEjaV8s=;
+ b=JlycReZMnGzRGrAiw9UXD8sFxDuSYgG3CCuj3OHx+KZ4QIgUI6lQkpkQz388H/F7XS
+ 0qF94Xtz3czvrwA2+frpIf2d3eNNVkvzgubiS2LeIU0n1rK1iAIB4pqrQl/93WWP2qjd
+ ZKvSJ5exrN7+wZKLMkJ1VcpkVZ3qS7PZ8knCXOYfaViYmanJ7JQbXwWbbloF7DkLm5Zq
+ KKofGd5T3e0oZCHLuTkUPWRhDV06iymvfFQ9wZm6bn2PslGUa/kqODktNcqQXG2SzjLm
+ v1r4dGvAoc6W/fQRE8l/lwd5DOGLT7bXrbizeBr85dKr//Oo04SFVaQWQgM/ASdFqES/
+ iTpg==
+X-Gm-Message-State: AJIora/nOCsmdttOAU9DiL+ZcZfYMvUFiafuSB9TyfNNOFZKx428bA9u
+ PmNM1k5t4mfXRRS9as4Avp9hiw==
+X-Google-Smtp-Source: AGRyM1to8GFgYWhfCWzgrps3P2NpjJ8gdP3iEDZCUi592P2vqic1MM8S2D55xH9pxFCZWiiBnYgG1A==
+X-Received: by 2002:a17:902:e848:b0:167:6ef7:b093 with SMTP id
+ t8-20020a170902e84800b001676ef7b093mr36677142plg.154.1655950320778; 
+ Wed, 22 Jun 2022 19:12:00 -0700 (PDT)
+Received: from judyhsiao0523.c.googlers.com.com
+ (0.223.81.34.bc.googleusercontent.com. [34.81.223.0])
+ by smtp.gmail.com with ESMTPSA id
+ m6-20020a170902768600b0016196bd15f4sm6194000pll.15.2022.06.22.19.11.58
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Wed, 22 Jun 2022 19:12:00 -0700 (PDT)
+From: Judy Hsiao <judyhsiao@chromium.org>
+To: Heiko Stuebner <heiko@sntech.de>
+Subject: [PATCH v5 0/3] ASoC: rockchip: i2s: switch BCLK to GPIO
+Date: Thu, 23 Jun 2022 02:11:50 +0000
+Message-Id: <20220623021153.587423-1-judyhsiao@chromium.org>
+X-Mailer: git-send-email 2.37.0.rc0.104.g0611611a94-goog
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220622130730.1573747-2-sbinding@opensource.cirrus.com>
-Cc: alsa-devel@alsa-project.org, kbuild-all@lists.01.org,
- patches@opensource.cirrus.com, linux-kernel@vger.kernel.org,
- Stefan Binding <sbinding@opensource.cirrus.com>, linux-acpi@vger.kernel.org
+Content-Transfer-Encoding: 8bit
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+ Brian Norris <briannorris@chromium.org>, Liam Girdwood <lgirdwood@gmail.com>,
+ Rob Herring <robh+dt@kernel.org>, linux-rockchip@lists.infradead.org,
+ Mark Brown <broonie@kernel.org>, Chen-Yu Tsai <wenst@chromium.org>,
+ Judy Hsiao <judyhsiao@chromium.org>, linux-arm-kernel@lists.infradead.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -90,56 +96,38 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Hi Stefan,
+The patches series is to fix the unexpected large DC output
+voltage of Max98357a that burns the speakers on the rockchip
+platform when BCLK and SD_MODE are ON but LRCLK is OFF.
 
-Thank you for the patch! Yet something to improve:
+Changes Since V5:
+    -- Check i2s->pinctrl is valid before using pinctrl_lookup_state.
+Changes Since V4:
+    -- Fix indentation in the driver. (Align parameters with the parenthesis
+       placement.)
+    -- Fix incorrect return type of rockchip_snd_rxctrl.
+Changes Since V3:
+    -- Fix indentation in the documentation.
+    -- Put pinctrl-1 right after pinctrl-0 in dtsi.
+    -- Fix indentation in the driver.
+    -- Remove unnecessary dev_dbg() in the driver.
+Changes Since V2:
+    -- Add documents of i2s pinctrl-names.
+    -- Fix dtsi syntax error.
+    -- Include the dtsi change and the driver change in the same series.
+    -- Ensure that driver gets both bclk_on and bclk_off states before using them.
 
-[auto build test ERROR on rafael-pm/linux-next]
-[also build test ERROR on broonie-sound/for-next linus/master v5.19-rc3 next-20220622]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch]
+Judy Hsiao (3):
+  ASoC: rockchip: i2s: switch BCLK to GPIO
+  arm64: dts: rk3399: i2s: switch BCLK to GPIO
+  ASoC: dt-bindings: rockchip: Document pinctrl-names for i2s
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Stefan-Binding/Read-_SUB-from-ACPI-to-be-able-to-identify-firmware/20220622-211004
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm.git linux-next
-config: powerpc-pasemi_defconfig (https://download.01.org/0day-ci/archive/20220623/202206230402.9xK6YlsY-lkp@intel.com/config)
-compiler: powerpc-linux-gcc (GCC) 11.3.0
-reproduce (this is a W=1 build):
-        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
-        chmod +x ~/bin/make.cross
-        # https://github.com/intel-lab-lkp/linux/commit/97b928a895ce3105296f0036393bb9ee04f11ae4
-        git remote add linux-review https://github.com/intel-lab-lkp/linux
-        git fetch --no-tags linux-review Stefan-Binding/Read-_SUB-from-ACPI-to-be-able-to-identify-firmware/20220622-211004
-        git checkout 97b928a895ce3105296f0036393bb9ee04f11ae4
-        # save the config file
-        mkdir build_dir && cp config build_dir/.config
-        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-11.3.0 make.cross W=1 O=build_dir ARCH=powerpc SHELL=/bin/bash
-
-If you fix the issue, kindly add following tag where applicable
-Reported-by: kernel test robot <lkp@intel.com>
-
-All errors (new ones prefixed by >>):
-
-   In file included from include/linux/i2c.h:13,
-                    from include/uapi/linux/fb.h:6,
-                    from include/linux/fb.h:7,
-                    from include/linux/backlight.h:13,
-                    from arch/powerpc/kernel/traps.c:32:
->> include/linux/acpi.h:1029:12: error: 'acpi_get_sub' defined but not used [-Werror=unused-function]
-    1029 | static int acpi_get_sub(acpi_handle handle, char *sub, size_t size)
-         |            ^~~~~~~~~~~~
-   cc1: all warnings being treated as errors
-
-
-vim +/acpi_get_sub +1029 include/linux/acpi.h
-
-  1028	
-> 1029	static int acpi_get_sub(acpi_handle handle, char *sub, size_t size)
-  1030	{
-  1031		return -ENODEV;
-  1032	}
-  1033	
+ .../bindings/sound/rockchip-i2s.yaml          |   7 +
+ .../boot/dts/rockchip/rk3399-gru-scarlet.dtsi |  10 +
+ arch/arm64/boot/dts/rockchip/rk3399.dtsi      |  25 ++-
+ sound/soc/rockchip/rockchip_i2s.c             | 171 +++++++++++++-----
+ 4 files changed, 165 insertions(+), 48 deletions(-)
 
 -- 
-0-DAY CI Kernel Test Service
-https://01.org/lkp
+2.37.0.rc0.104.g0611611a94-goog
+
