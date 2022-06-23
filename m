@@ -4,67 +4,71 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 36BF9C433EF
-	for <alsa-devel@archiver.kernel.org>; Thu, 23 Jun 2022 07:56:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 55614C433EF
+	for <alsa-devel@archiver.kernel.org>; Thu, 23 Jun 2022 08:10:28 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 997EA1B32;
-	Thu, 23 Jun 2022 09:55:41 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 997EA1B32
+	by alsa0.perex.cz (Postfix) with ESMTPS id 8CFB51B0B;
+	Thu, 23 Jun 2022 10:09:36 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8CFB51B0B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1655970991;
-	bh=+mCsuKkg6J4843YgoICH76eZkbbsWWPv4bN1r397BFU=;
+	s=default; t=1655971826;
+	bh=9CPwAY0wWTPEXhM/d0JwDJxAObKhi7qi8HFQ+OM2Lhc=;
 	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Hlt/1R2aOW1s1VuqxXFPIMwnuu+MWcHdw3IIL5gql3tqcBaiNsnZXYTjWennlwCgJ
-	 iuRLwEJvwyeTM/4VXwxNquiZ/WgGr2Qa2yyemRUWy0waV1aS+iLT3aHLQIf947QFqW
-	 yoxOv2BHu+EdmLLZthmvsEq8pJduT9RurySy6r8g=
+	b=kixiqX/9Aqht7eKK0d7+UUr2JYohJbqhb9mOGlP6NFLwZsp3uWl26Z+xRL4d5EMNz
+	 Wf9qrdvFvU2z2sshmLcvFJ/wOWUz/nO67/V5AaW7mTCnLK36OhMlVIQtFOJcUcQoyo
+	 3P9W85GmDraFmEyFEtyQjjTHbIIObupym6fR6Cfs=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 16545F804BB;
-	Thu, 23 Jun 2022 09:55:41 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2F951F800CB;
+	Thu, 23 Jun 2022 10:09:36 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id AC606F804C1; Thu, 23 Jun 2022 09:55:38 +0200 (CEST)
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+ id 0239DF800CB; Thu, 23 Jun 2022 10:09:33 +0200 (CEST)
+Received: from ams.source.kernel.org (ams.source.kernel.org
+ [IPv6:2604:1380:4601:e00::1])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 456B4F800CB
- for <alsa-devel@alsa-project.org>; Thu, 23 Jun 2022 09:55:30 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 456B4F800CB
+ by alsa1.perex.cz (Postfix) with ESMTPS id 90B59F800CB
+ for <alsa-devel@alsa-project.org>; Thu, 23 Jun 2022 10:09:30 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 90B59F800CB
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="ryn/wFyI"
+ header.b="TAEGh09A"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by ams.source.kernel.org (Postfix) with ESMTPS id 86D0AB8204D;
- Thu, 23 Jun 2022 07:55:29 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 96720C3411B;
- Thu, 23 Jun 2022 07:55:27 +0000 (UTC)
+ by ams.source.kernel.org (Postfix) with ESMTPS id 9A4F4B8220A;
+ Thu, 23 Jun 2022 08:09:29 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8E4CBC3411B;
+ Thu, 23 Jun 2022 08:09:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1655970928;
- bh=+mCsuKkg6J4843YgoICH76eZkbbsWWPv4bN1r397BFU=;
+ s=k20201202; t=1655971768;
+ bh=9CPwAY0wWTPEXhM/d0JwDJxAObKhi7qi8HFQ+OM2Lhc=;
  h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=ryn/wFyICQZLHrQUR7HdI9ruJoyDQO4rvJTV6kIaJItCZA7TrYXFQmtn+C1MFr4t0
- Uggw5RZjt97WHgadbomOND0G6IEZVUow7NnL/t9Pb4N8pJp2ZkGR/ii4JnaToVqnUD
- yXqGhU1qM/T3Hhvo+I9ObGBIA9i2oO6j4COS/yg9GliuywGOj4iAqFrizLnQ86AcKw
- sHvytYP4CY/UskGrquWz8o+i05nr3LIv4ffQh3raROCD5oYgeBxE+NKBwzaT95QJZR
- P+FmP3Aaf445fPgIO674cr+tUwXte0DfPKpMNrv00V7FTaqE6FB7hi0e/c1hoXLGe7
- ZYlLam1dG7i+g==
-Date: Thu, 23 Jun 2022 13:25:23 +0530
+ b=TAEGh09A7pGRhh6u2YW7tgA1dGGMglaktDv7oZgjNbSjzs62Xk5Rl9W4fzz3dfAUI
+ qI8HyVkOlkEyZVlYiXzr7NkP4FcrxCGMncjXqUsjXmSRYAYe2k/f3NmRqOtWU7V0Qy
+ tY9p8gkNEKeRI8PUmj1e2m9HkV8ZtF0NuT+RRV22TYHhCzecvhPWySaZ3J/SfR88oG
+ YqHEV5Jv/7wPKTFZ1otfCdgNIOy958K49uxHh+z2Tdhdn8rIexkXfY/3Sq9FG3WRDu
+ R0ErXdifLSnURsVcJYE9WafPjLNWzoYlahAndCeUQJ755kT0D4968kfW3YferCdTs0
+ GSFvuA74CbOjQ==
+Date: Thu, 23 Jun 2022 13:39:23 +0530
 From: Vinod Koul <vkoul@kernel.org>
-To: Bard Liao <yung-chuan.liao@linux.intel.com>
-Subject: Re: [PATCH] soundwire: bus_type: fix remove and shutdown support
-Message-ID: <YrQca7YH8v6XCl02@matsya>
-References: <20220610015105.25987-1-yung-chuan.liao@linux.intel.com>
+To: Srinivasa Rao Mandadapu <quic_srivasam@quicinc.com>
+Subject: Re: [PATCH v5 0/2] Add software clock gating requirement check
+Message-ID: <YrQfs7HUIOV5x8Ub@matsya>
+References: <1654863815-3970-1-git-send-email-quic_srivasam@quicinc.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20220610015105.25987-1-yung-chuan.liao@linux.intel.com>
-Cc: alsa-devel@alsa-project.org, gregkh@linuxfoundation.org,
- linux-kernel@vger.kernel.org, pierre-louis.bossart@linux.intel.com,
- srinivas.kandagatla@linaro.org, sanyog.r.kale@intel.com, bard.liao@intel.com
+In-Reply-To: <1654863815-3970-1-git-send-email-quic_srivasam@quicinc.com>
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
+ quic_rohkumar@quicinc.com, linux-arm-msm@vger.kernel.org, swboyd@chromium.org,
+ tiwai@suse.com, agross@kernel.org, robh+dt@kernel.org, lgirdwood@gmail.com,
+ broonie@kernel.org, srinivas.kandagatla@linaro.org, bgoswami@quicinc.com,
+ quic_plai@quicinc.com, bjorn.andersson@linaro.org, judyhsiao@chromium.org,
+ linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -80,58 +84,11 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On 10-06-22, 09:51, Bard Liao wrote:
-> From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-> 
-> The bus sdw_drv_remove() and sdw_drv_shutdown() helpers are used
-> conditionally, if the driver provides these routines.
-> 
-> These helpers already test if the driver provides a .remove or
-> .shutdown callback, so there's no harm in invoking the
-> sdw_drv_remove() and sdw_drv_shutdown() unconditionally.
+On 10-06-22, 17:53, Srinivasa Rao Mandadapu wrote:
+> This patch set is to add software clock gating requirement check
 
-Okay sounds good
+This fails to apply for me, please rebase on sdw-next and resend
 
-> In addition, the current code is imbalanced with
-> dev_pm_domain_attach() called from sdw_drv_probe(), but
-> dev_pm_domain_detach() called from sdw_drv_remove() only if the driver
-> provides a .remove callback.
-
-Am not sure I follow what is imbalance, pm_domain_attach/detach?
-
-> Fixes: 9251345dca24b ("soundwire: Add SoundWire bus type")
-
-How is this a fix is still unclear to me. At best I think this is code
-optimization and removing checks which maybe redundant.
-
-> Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-> Reviewed-by: Rander Wang <rander.wang@intel.com>
-> Signed-off-by: Bard Liao <yung-chuan.liao@linux.intel.com>
-> ---
->  drivers/soundwire/bus_type.c | 8 ++------
->  1 file changed, 2 insertions(+), 6 deletions(-)
-> 
-> diff --git a/drivers/soundwire/bus_type.c b/drivers/soundwire/bus_type.c
-> index 893296f3fe39..b81e04dd3a9f 100644
-> --- a/drivers/soundwire/bus_type.c
-> +++ b/drivers/soundwire/bus_type.c
-> @@ -193,12 +193,8 @@ int __sdw_register_driver(struct sdw_driver *drv, struct module *owner)
->  
->  	drv->driver.owner = owner;
->  	drv->driver.probe = sdw_drv_probe;
-> -
-> -	if (drv->remove)
-> -		drv->driver.remove = sdw_drv_remove;
-> -
-> -	if (drv->shutdown)
-> -		drv->driver.shutdown = sdw_drv_shutdown;
-> +	drv->driver.remove = sdw_drv_remove;
-> +	drv->driver.shutdown = sdw_drv_shutdown;
->  
->  	return driver_register(&drv->driver);
->  }
-> -- 
-> 2.17.1
-
+Thanks
 -- 
 ~Vinod
