@@ -4,85 +4,75 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 05E06C433EF
-	for <alsa-devel@archiver.kernel.org>; Thu, 23 Jun 2022 11:07:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6D6DEC43334
+	for <alsa-devel@archiver.kernel.org>; Thu, 23 Jun 2022 12:30:58 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id F39AB1EF0;
-	Thu, 23 Jun 2022 13:06:38 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F39AB1EF0
+	by alsa0.perex.cz (Postfix) with ESMTPS id D8C131DE2;
+	Thu, 23 Jun 2022 14:30:05 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D8C131DE2
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1655982449;
-	bh=QWxmpYJIQevrOn+jIA9BiDlZ1Jm6cS7KRCVZB/rj9MU=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	s=default; t=1655987455;
+	bh=kzFX9uPlDUEYsAhV34ZtAjxOc+U6+JKZhTmu1w/6a+Y=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=hHAm/MaNXmkdeBp60DcWqy/mWtf8+QYSLyelqwmRjWbzgTBOb8ryHk8eg5ousSYSJ
-	 wnCP3e4Vq7JTAVldUs8Nqy5oAOsFqd+riJPzysTu9H6LEAupw8ycusBf8V5lI//Kl4
-	 RBIR/vd4DP9LRyciw/4gYRd/sYhF+5nRqemoKYH4=
+	b=DhM9FfU5s0WITOZ9DSIK4N9s4SrnQ7mHmmVAipMm5sq73uf6pn9w+aFJJYDrGaCdx
+	 ZX7JZLNlReHyvbgh+e2sixID38HFNQLbu8kxR83doQi3RmgpVKm1Yt8dEy18WCn1rA
+	 KHAslys/CxyZnqrJbUXx2f1m87ahfVtFjQwY9i6I=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 08DE9F80568;
-	Thu, 23 Jun 2022 13:04:35 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 4F434F804BB;
+	Thu, 23 Jun 2022 14:30:05 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 3D790F800CB; Thu, 23 Jun 2022 13:03:02 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org
- [IPv6:2604:1380:4641:c500::1])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id 31664F804C1; Thu, 23 Jun 2022 14:30:02 +0200 (CEST)
+Received: from mail-yb1-f176.google.com (mail-yb1-f176.google.com
+ [209.85.219.176])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id BCE41F800CB
- for <alsa-devel@alsa-project.org>; Thu, 23 Jun 2022 13:02:53 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BCE41F800CB
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="uQk8I+Jc"
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id D195061ED8;
- Thu, 23 Jun 2022 11:02:51 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1C860C3411B;
- Thu, 23 Jun 2022 11:02:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1655982171;
- bh=QWxmpYJIQevrOn+jIA9BiDlZ1Jm6cS7KRCVZB/rj9MU=;
- h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=uQk8I+JcFVSOI+L8cXE8qm9iQ8k8bUT7pZ8ijL0cSccXLN/EnEJluw10gdhEyLr88
- s6xeP9hTwyT3i50PQskxDM7s5sJ2nLymilcYIEePm8cIm44TRyGaEB2yaLeixVYMrg
- 0mAYkNT2SfaDKlQsjc/t8JthcQT6mrQJK6lEVobXtbCMLERvjkwCLxxYNMtYejSyuS
- HSovhcM4827L2LVHZT2VNMWzjxl7vsjEsFQKWsfL1FBmkr3e3R9PDrzQmE8758RzF+
- yE7Esv/81d3SjOJ4ZNdwrzouWuT87mR+AC21FSj5henoKNvlHs7tJDzCKhtuX9qPOn
- ITMDCSQZB//dg==
-Date: Thu, 23 Jun 2022 12:02:41 +0100
-From: Mark Brown <broonie@kernel.org>
-To: Charles Keepax <ckeepax@opensource.cirrus.com>
-Subject: Re: [PATCH 27/96] ASoC: au1x: Migrate to new style legacy DAI naming
- flag
-Message-ID: <YrRIUef2WAs15/Mg@sirena.org.uk>
-References: <20220616143429.1324494-28-ckeepax@opensource.cirrus.com>
- <202206230910.wUXKFP3z-lkp@intel.com>
- <20220623093951.GG38351@ediswmail.ad.cirrus.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 47287F800D0
+ for <alsa-devel@alsa-project.org>; Thu, 23 Jun 2022 14:29:53 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 47287F800D0
+Received: by mail-yb1-f176.google.com with SMTP id p69so23846516ybc.5
+ for <alsa-devel@alsa-project.org>; Thu, 23 Jun 2022 05:29:53 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc;
+ bh=kzFX9uPlDUEYsAhV34ZtAjxOc+U6+JKZhTmu1w/6a+Y=;
+ b=NFh91Ljq8cNsFWrWxyjSDGsjn2bvRI+kKmJ3rkNVR4mVdTBbN6+IhiEZ/bsPzIlps7
+ Fx41R8LvGLgndfUzvUTxgY8ys56H7XSPlcZSYGJtXmBantpH7HCg0NPYGJXTOs79bKXu
+ 7nJUUWo7YD18xM6nPjvhsZFR3TbiO4cqzO3TgdrBtMFbhVyRX4KdkCXAYix5kR7M+MUW
+ CtUvlqnU7MOc8HfZtEjzoqmX8brXHUl5/8qctMNu9D+5M1xCZRMJw8oINhRW2a+3yfqX
+ RsOL6XeYrxxi46oBLYtg09Wo1aJsMlHGywLnf7qbysipyPB4zZHl8vKPjx7npAHwY3l0
+ JjEw==
+X-Gm-Message-State: AJIora+ZjEMbYK/HSHd6gh4fmLgVLFl00cJQU0npkfL6DR6HzAwl8K7U
+ w+FmGABWaylYJJOuZ6FeDyi1EA1Gfq6CTqpFNCc=
+X-Google-Smtp-Source: AGRyM1tXGaLDWsFNRmpcUvDiQXcvKf5vbvGE0SYSdjd6pSKBEWMK4GtCcbw3Fr8yNYZofzzakRnR88Z81ekER5srYkw=
+X-Received: by 2002:a25:d841:0:b0:668:ab2f:7b01 with SMTP id
+ p62-20020a25d841000000b00668ab2f7b01mr9116719ybg.482.1655987391906; Thu, 23
+ Jun 2022 05:29:51 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature"; boundary="aRjk/oNkrDuhHxkv"
-Content-Disposition: inline
-In-Reply-To: <20220623093951.GG38351@ediswmail.ad.cirrus.com>
-X-Cookie: I had pancake makeup for brunch!
-X-Mailman-Approved-At: Thu, 23 Jun 2022 13:04:32 +0200
-Cc: cezary.rojewski@intel.com, heiko@sntech.de,
- kuninori.morimoto.gx@renesas.com, airlied@linux.ie,
- alsa-devel@alsa-project.org, nicolas.ferre@microchip.com,
- srinivas.kandagatla@linaro.org, peter.ujfalusi@gmail.com,
- linux-stm32@st-md-mailman.stormreply.com, jbrunet@baylibre.com,
- kernel test robot <lkp@intel.com>, pierre-louis.bossart@linux.intel.com,
- krzk@kernel.org, linux-rockchip@lists.infradead.org, linux-imx@nxp.com,
- linux-mips@vger.kernel.org, linux-sunxi@lists.linux.dev,
- linux-xtensa@linux-xtensa.org, nsaenz@kernel.org, kernel@pengutronix.de,
- mripard@kernel.org, linux-tegra@vger.kernel.org,
- linux-amlogic@lists.infradead.org, linux-omap@vger.kernel.org,
- kbuild-all@lists.01.org, lgirdwood@gmail.com, vkoul@kernel.org,
- jarkko.nikula@bitmer.com, daniel@ffwll.ch, shawnguo@kernel.org,
- daniel@zonque.org
+References: <1843211.tdWV9SEqCh@kreacher> <2653857.mvXUDI8C0e@kreacher>
+ <9017824.rMLUfLXkoz@kreacher> <YrQf/W/Kmo954hAm@matsya>
+In-Reply-To: <YrQf/W/Kmo954hAm@matsya>
+From: "Rafael J. Wysocki" <rafael@kernel.org>
+Date: Thu, 23 Jun 2022 14:29:41 +0200
+Message-ID: <CAJZ5v0jY5M-L-XdgY+LT=iSbABzL6cLuSdLiuUEQ+mEjYYk=xA@mail.gmail.com>
+Subject: Re: [PATCH v2 14/16] soundwire: Use acpi_dev_for_each_child()
+To: Vinod Koul <vkoul@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Cc: Hans de Goede <hdegoede@redhat.com>,
+ "moderated list:SOUND - SOC LAYER / DYNAMIC AUDIO POWER MANAGEM..."
+ <alsa-devel@alsa-project.org>, Linux PM <linux-pm@vger.kernel.org>,
+ Bard Liao <yung-chuan.liao@linux.intel.com>,
+ "Rafael J. Wysocki" <rjw@rjwysocki.net>, LKML <linux-kernel@vger.kernel.org>,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ Linux ACPI <linux-acpi@vger.kernel.org>,
+ Sakari Ailus <sakari.ailus@linux.intel.com>,
+ Sanyog Kale <sanyog.r.kale@intel.com>,
+ Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+ Mika Westerberg <mika.westerberg@linux.intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -98,31 +88,24 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+On Thu, Jun 23, 2022 at 10:10 AM Vinod Koul <vkoul@kernel.org> wrote:
+>
+> On 13-06-22, 20:35, Rafael J. Wysocki wrote:
+> > From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+> >
+> > Instead of walking the list of children of an ACPI device directly,
+> > use acpi_dev_for_each_child() to carry out an action for all of
+> > the given ACPI device's children.
+> >
+> > This will help to eliminate the children list head from struct
+> > acpi_device as it is redundant and it is used in questionable ways
+> > in some places (in particular, locking is needed for walking the
+> > list pointed to it safely, but it is often missing).
+>
+> Applied, thanks
 
---aRjk/oNkrDuhHxkv
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Thanks, but the export of acpi_dev_for_each_child() is being added by
+one of the previous patches in the series, so this one will not
+compile without the rest of the series in the modular case.
 
-On Thu, Jun 23, 2022 at 09:39:51AM +0000, Charles Keepax wrote:
-
-> Mark do you want me to send a v2 for the whole series? Or given
-> the size would it be better to just resend this patch?
-
-Series please.
-
---aRjk/oNkrDuhHxkv
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmK0SFEACgkQJNaLcl1U
-h9At5wf6Ax7J+7EqACjWVB1NBLm4Fqt/fn2hmYjsWEp5xg2nu64uAExOpqhd88Ub
-8EiQ8JJ5Yh+LqGAd+ebgMayuxNfGx/YW+EBYI86mKPNt5JUiC9pf7v5IDM8Tdowt
-ItjroWnrAvyu755n93nXekhH53LbekNQZ3r38IqmgYxXfRwuBwo+6LDpWwG+yuZM
-qsKAlnQyapzbY/t5/1ziDvbV9Tu1jRGLpytGhBD3ishspCgdES0U6CAXTAiQbGpc
-MjSi61J4JAE+Xhu37HN97vid7MjwfolyUldVhZBQk80qRTtR78Iu5cv5Mg1kJ1v7
-BEu+WlV4O3xD0frAhInPwl3skpKkHQ==
-=ECPa
------END PGP SIGNATURE-----
-
---aRjk/oNkrDuhHxkv--
+Is this not a problem?
