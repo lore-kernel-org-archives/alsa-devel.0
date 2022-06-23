@@ -4,103 +4,102 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D0F64C43334
-	for <alsa-devel@archiver.kernel.org>; Thu, 23 Jun 2022 11:06:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A52DFC433EF
+	for <alsa-devel@archiver.kernel.org>; Thu, 23 Jun 2022 11:07:13 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 2060D1EDE;
-	Thu, 23 Jun 2022 13:06:07 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2060D1EDE
+	by alsa0.perex.cz (Postfix) with ESMTPS id E65F61EEE;
+	Thu, 23 Jun 2022 13:06:21 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E65F61EEE
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1655982417;
-	bh=m7MZZk96AFlMIvBh5BkmSfCjeTcJKvyFp6SEri010Oo=;
-	h=Date:Subject:To:References:From:In-Reply-To:Cc:List-Id:
+	s=default; t=1655982432;
+	bh=dLoi3KKzuSD+LuC4bRF/Z1ooCSce2SSv1xOKmR3YBwU=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=JrpzSikPmlk11HiR/msLeNWuWcZHJ5kOXxnZ7XRs7cB5iPd4W8nBm0HJQvvjGTWPf
-	 Gqam9X5gdsPWayHsFNoWgs+GD7JXQC9WG0fjv0vxv9F0xpC7MAU/qOF88asPdBrv/L
-	 HHRfVXW3EbE++L78SmH9m7bF46+uBr7HP4GyHFik=
+	b=cCke0tI+ahbJMuGKx9pxXQGUNpYIGb+j6RyLvjIdC1r2LBy3mgARhPmlZqOByWgOv
+	 FoUxxWSXZ/qXss+7ZVEC0Ede3NdoEj8IUzsGbKSJyAoPB5Q3A/uSvqsxKYCF+FxiFU
+	 npe6FuPMiD93Z2a9NfP1TJDaAMkbEvKioMcr+IyM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id E1C56F80559;
-	Thu, 23 Jun 2022 13:04:33 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 71322F8055A;
+	Thu, 23 Jun 2022 13:04:34 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 5004DF804C1; Thu, 23 Jun 2022 11:03:57 +0200 (CEST)
-Received: from mail-lj1-x231.google.com (mail-lj1-x231.google.com
- [IPv6:2a00:1450:4864:20::231])
+ id 06902F804C1; Thu, 23 Jun 2022 12:25:17 +0200 (CEST)
+Received: from mail-lj1-x233.google.com (mail-lj1-x233.google.com
+ [IPv6:2a00:1450:4864:20::233])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 98008F800CB
- for <alsa-devel@alsa-project.org>; Thu, 23 Jun 2022 11:03:50 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 98008F800CB
+ by alsa1.perex.cz (Postfix) with ESMTPS id 910F8F800D0
+ for <alsa-devel@alsa-project.org>; Thu, 23 Jun 2022 12:25:08 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 910F8F800D0
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="N+E4E6aB"
-Received: by mail-lj1-x231.google.com with SMTP id e4so22506798ljl.1
- for <alsa-devel@alsa-project.org>; Thu, 23 Jun 2022 02:03:50 -0700 (PDT)
+ header.b="PIkKFT6M"
+Received: by mail-lj1-x233.google.com with SMTP id bn8so5396486ljb.2
+ for <alsa-devel@alsa-project.org>; Thu, 23 Jun 2022 03:25:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
- h=message-id:date:mime-version:user-agent:subject:content-language:to
- :cc:references:from:in-reply-to:content-transfer-encoding;
- bh=ozaotd6LY3ERvzpwuGvbQZTaC8kPny1azl5sB1Hldp8=;
- b=N+E4E6aBHykbEoIC0lGs7IRiK7feaBLf/CkLd78oSXziwtTtGtoy3tXA3mN4u+M1+H
- 2lEeyKhEQm7uMBzKjVgfV32iv3ycYBLlXefCytlCiYeWvc1vlkkqeVdHyvQa/4I7awPw
- +yqS6OsEIt1tCt5xFxEtaCt0oLEVSvoZwtAwW4dIcdORniXK5c03omQkgHXW3VVUbG5+
- pCxDaxADdI5OOyGHM8VigOdxW8fFm9ClSBdiUkl8+LnNLmV81U1i7QDLpG5qCPGM/ib4
- ezVP1RIDjW8Fye2pDE0ph9F+Vj4aLCnvOMeonKSMKU9+nmoEZVsNcW8/ABtqbLZ0wEk1
- ujjQ==
+ h=date:from:to:cc:subject:message-id:references:mime-version
+ :content-disposition:in-reply-to;
+ bh=WqCHtUCnOvJqjoM2/65DgkYvOyKmc4p+aq7/u8FCyxA=;
+ b=PIkKFT6MmcaUETNYYp/00cGxbMns4B3hZ5K5nmtGI6rNA0GIEW+mljG/Fne1m1MoDJ
+ hEob9rUTJYEcXgm+2VfxUeSgEiCC4beWQTqOtIjvrmPzJY59yY0aQjFSYFq6uZ+yCsBY
+ TkSAwqVecLhSbMBWc2qGK5asYINBDeVKWuZfIJIRPVXH2ooAOk+CilaQasEiFEnBPvo1
+ 9yU7sRGCq0pbvG7DXQEPHm1Bepg/+EXQeJ5lKtflHEWo024/pU+tCE0tyKXp96P7eK6/
+ MtHCviPz6ujkgIRgMZdT9HQ/BMuTmBvX0T0E+5sbw8JvnmtJwX+DR8LPIVdwao4FUT9T
+ fbMA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
- h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
- :content-language:to:cc:references:from:in-reply-to
- :content-transfer-encoding;
- bh=ozaotd6LY3ERvzpwuGvbQZTaC8kPny1azl5sB1Hldp8=;
- b=dhRVNyRq9MN4YnioGjecLLOhZ4oMri+eRewaDK/i+XAi7ZCJnMgXcHa4iSvvnpWOyF
- dEq0i7OMeon7WShZXdPLOgHAFl163r1ufJDfXALSkQS+mfE2zZ616ODuzsyKtbwtM1P5
- DdciDgNixSXBumAL7gndVQR0MOOTXVnhutxU6mPB4/3w5ou632ipt5FhwqKcO2r6hB/y
- 0uHLjPfsOyeGKEl84fCkRw4Oyq2YaIisGYZo3herwd3+6R0QQz2EV11ZOApkT8hktOLa
- MqjYDRVaUq/g121m7s4DZ2iAhvLslaJIly7UfoVDEj59juxbkrjpKlmlM1ht7otVUjbU
- ar0A==
-X-Gm-Message-State: AJIora+GyYmxuWn6mxPclwQj1IXbRjPLs0qvp6N9fd6AMN/T+AWR5zzv
- Cg0sGGgo0tKtBEwb1ZiDErs=
-X-Google-Smtp-Source: AGRyM1vF1zU4Gj87rqZsJvaSlU5/WAIf+VWD8fk9zG8OB0wQ+t7uncoazUPPDPmBI+qN6/ToK7aL7g==
-X-Received: by 2002:a05:651c:1609:b0:25a:86a5:9eab with SMTP id
- f9-20020a05651c160900b0025a86a59eabmr4055972ljq.61.1655975028288; 
- Thu, 23 Jun 2022 02:03:48 -0700 (PDT)
-Received: from [172.16.189.61] ([213.255.186.46])
+ h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+ :mime-version:content-disposition:in-reply-to;
+ bh=WqCHtUCnOvJqjoM2/65DgkYvOyKmc4p+aq7/u8FCyxA=;
+ b=kSM8XIKf45P/UIH3XJ4aAt6PRl3RaZD/mUHlwyQENw+B3i5hG3kTcOp8lE6k0TZlZY
+ 6YJqN0/nKMF6qJXtEmIJwevZm2rouoBPSyMYXupFGcVINMjdzyXdmlMpyjq1DCczE7JG
+ dVpJmXjfLYxcxFwULH/uMkbFsaPMWUSd8E+OTUMxkkGdPgiRiSlKrmcLflACdb36oXrl
+ x7UXfLYfhvjcK+vrS3fkAAIfGO23iG1VluKmjTlg4mJxuNj+oGBtioevJ2qbJ0ZApW8p
+ /DW1XQVQthSX3kVM5rtiWLu39Ow3tLDXDXpxBRtYynm/XO2JlWITEpT0PcknA/NNKTwT
+ wcSA==
+X-Gm-Message-State: AJIora+jN8/1PW8BVl0ediOOuqa93OdSFG8nYZtnuxWMfeB5OBiWxui+
+ fVxmxwVeb7BSukObz4b/llA=
+X-Google-Smtp-Source: AGRyM1uzm9hmF9QK316rJoAfTTvEoAQhcLS5DK1sh8QXwvTquRMs7E5mQ7FvnFV0WtaDWVYa8qbSYg==
+X-Received: by 2002:a2e:a883:0:b0:25a:8d91:27b4 with SMTP id
+ m3-20020a2ea883000000b0025a8d9127b4mr2875724ljq.509.1655979906447; 
+ Thu, 23 Jun 2022 03:25:06 -0700 (PDT)
+Received: from mobilestation ([95.79.189.214])
  by smtp.gmail.com with ESMTPSA id
- s16-20020a05651c201000b0025a73f7aa3bsm1153452ljo.96.2022.06.23.02.03.45
- (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Thu, 23 Jun 2022 02:03:47 -0700 (PDT)
-Message-ID: <415e6876-9304-9493-369e-d5eca0238bea@gmail.com>
-Date: Thu, 23 Jun 2022 12:03:43 +0300
+ z1-20020a2e9641000000b00253deeaeb3dsm2727519ljh.131.2022.06.23.03.25.04
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Thu, 23 Jun 2022 03:25:05 -0700 (PDT)
+Date: Thu, 23 Jun 2022 13:25:02 +0300
+From: Serge Semin <fancer.lancer@gmail.com>
+To: Conor.Dooley@microchip.com
+Subject: Re: [PATCH 06/14] spi: dt-bindings: dw-apb-ssi: update
+ spi-{r,t}x-bus-width for dwc-ssi
+Message-ID: <20220623102502.jiksqr3m6y733haq@mobilestation>
+References: <20220618123035.563070-1-mail@conchuod.ie>
+ <20220618123035.563070-7-mail@conchuod.ie>
+ <20220620205654.g7fyipwytbww5757@mobilestation>
+ <61b0fb86-078d-0262-b142-df2984ce0f97@microchip.com>
+ <9a1fcb40-9267-d8e6-b3b6-3b03fd789822@opensource.wdc.com>
+ <a2d85598-76d1-c9dc-d50d-e5aa815997cf@conchuod.ie>
+ <c272728f-f610-77df-bd9b-c9fee6b727f8@opensource.wdc.com>
+ <bd2547f8-e069-60a2-a223-9f694457636d@microchip.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.9.0
-Subject: Re: [PATCH 02/49] regmap-irq: Fix offset/index mismatch in
- read_sub_irq_data()
-Content-Language: en-US
-To: Aidan MacDonald <aidanmacdonald.0x0@gmail.com>, broonie@kernel.org
-References: <20220620200644.1961936-1-aidanmacdonald.0x0@gmail.com>
- <20220620200644.1961936-3-aidanmacdonald.0x0@gmail.com>
-From: Matti Vaittinen <mazziesaccount@gmail.com>
-In-Reply-To: <20220620200644.1961936-3-aidanmacdonald.0x0@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <bd2547f8-e069-60a2-a223-9f694457636d@microchip.com>
 X-Mailman-Approved-At: Thu, 23 Jun 2022 13:04:32 +0200
-Cc: alsa-devel@alsa-project.org, bgoswami@codeaurora.org, rafael@kernel.org,
- linus.walleij@linaro.org, bjorn.andersson@linaro.org,
- srinivas.kandagatla@linaro.org, myungjoo.ham@samsung.com, lee.jones@linaro.org,
- samuel@sholland.org, maz@kernel.org, brgl@bgdev.pl, mani@kernel.org,
- krzysztof.kozlowski@linaro.org, jernej.skrabec@gmail.com,
- cw00.choi@samsung.com, wens@csie.org, agross@kernel.org, orsonzhai@gmail.com,
- linux-sunxi@lists.linux.dev, b.zolnierkie@samsung.com,
- linux-arm-msm@vger.kernel.org, tharvey@gateworks.com,
- linux-actions@lists.infradead.org, linux-gpio@vger.kernel.org, tiwai@suse.com,
- tglx@linutronix.de, cristian.ciocaltea@gmail.com,
- linux-arm-kernel@lists.infradead.org, rjones@gateworks.com,
- gregkh@linuxfoundation.org, lgirdwood@gmail.com, linux-kernel@vger.kernel.org,
- michael@walle.cc, zhang.lyra@gmail.com, baolin.wang7@gmail.com,
- mazziesaccount@gmail.com
+Cc: niklas.cassel@wdc.com, alsa-devel@alsa-project.org, airlied@linux.ie,
+ palmer@rivosinc.com, linux-kernel@vger.kernel.org, thierry.reding@gmail.com,
+ krzysztof.kozlowski+dt@linaro.org, linux-riscv@lists.infradead.org,
+ sam@ravnborg.org, damien.lemoal@opensource.wdc.com, daniel.lezcano@linaro.org,
+ joabreu@synopsys.com, geert@linux-m68k.org, Eugeniy.Paltsev@synopsys.com,
+ devicetree@vger.kernel.org, aou@eecs.berkeley.edu, robh+dt@kernel.org,
+ dri-devel@lists.freedesktop.org, paul.walmsley@sifive.com, mail@conchuod.ie,
+ tglx@linutronix.de, dillon.minfei@gmail.com, lgirdwood@gmail.com,
+ jee.heng.sia@intel.com, linux-spi@vger.kernel.org, vkoul@kernel.org,
+ broonie@kernel.org, palmer@dabbelt.com, daniel@ffwll.ch,
+ dmaengine@vger.kernel.org, masahiroy@kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -116,47 +115,40 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On 6/20/22 23:05, Aidan MacDonald wrote:
-> We need to divide the sub-irq status register offset by register
-> stride to get an index for the status buffer to avoid an out of
-> bounds write when the register stride is greater than 1.
+On Tue, Jun 21, 2022 at 04:06:21PM +0000, Conor.Dooley@microchip.com wrote:
+> On 21/06/2022 00:17, Damien Le Moal wrote:
+> > EXTERNAL EMAIL: Do not click links or open attachments unless you know the content is safe
+> > 
+> > On 6/21/22 07:49, Conor Dooley wrote:
+> >>
+> ---8<---
+> >>>>
+> >>>> hmm, well I'll leave that up to people that have Canaan hardware!
+> >>>
+> >>> I will test this series.
+> >>>
+> >>
+> >> Cool, thanks.
+> >> I'll try to get a respin out tomorrow w/ the memory node "unfixed".
+> > 
+> > OK. I will test that then :)
 > 
-> Fixes: a2d21848d921 ("regmap: regmap-irq: Add main status register support")
-> Signed-off-by: Aidan MacDonald <aidanmacdonald.0x0@gmail.com>
-> ---
->   drivers/base/regmap/regmap-irq.c | 3 ++-
->   1 file changed, 2 insertions(+), 1 deletion(-)
+> Since the memory node hit that dt-schema snag, I have not sent a v2.
+> Going to be AFK for a few days, so I dropped the memory node change,
+> changed the spi binding & put the series on:
+> git.kernel.org/pub/scm/linux/kernel/git/conor/linux.git/ canaan
 > 
-> diff --git a/drivers/base/regmap/regmap-irq.c b/drivers/base/regmap/regmap-irq.c
-> index 4f785bc7981c..a6db605707b0 100644
-> --- a/drivers/base/regmap/regmap-irq.c
-> +++ b/drivers/base/regmap/regmap-irq.c
-> @@ -387,6 +387,7 @@ static inline int read_sub_irq_data(struct regmap_irq_chip_data *data,
->   		subreg = &chip->sub_reg_offsets[b];
->   		for (i = 0; i < subreg->num_regs; i++) {
->   			unsigned int offset = subreg->offset[i];
-> +			unsigned int index = offset / map->reg_stride;
->   
->   			if (chip->not_fixed_stride)
->   				ret = regmap_read(map,
-> @@ -395,7 +396,7 @@ static inline int read_sub_irq_data(struct regmap_irq_chip_data *data,
->   			else
->   				ret = regmap_read(map,
->   						chip->status_base + offset,
-> -						&data->status_buf[offset]);
-> +						&data->status_buf[index]);
->   
->   			if (ret)
->   				break;
 
-Reviewed-by: Matti Vaittinen <mazziesaccount@gmail.com>
+> If you get a chance to look at it great, if not I'll send a v2 once
+> the memory node is figured out.
 
--- 
-Matti Vaittinen
-Linux kernel developer at ROHM Semiconductors
-Oulu Finland
+commit 84df6ca0f277 ("spi: dt-bindings: dw-apb-ssi: update
+spi-{r,t}x-bus-width") looks good to me. Feel free to add my ack tag
+to v2 of that patch.
 
-~~ When things go utterly wrong vim users can always type :help! ~~
+-Sergey
 
-Discuss - Estimate - Plan - Report and finally accomplish this:
-void do_work(int time) __attribute__ ((const));
+> 
+> Thanks,
+> Conor.
+> 
