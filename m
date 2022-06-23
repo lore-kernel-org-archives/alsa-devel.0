@@ -4,74 +4,71 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 00498C433EF
-	for <alsa-devel@archiver.kernel.org>; Thu, 23 Jun 2022 11:02:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 21584C433EF
+	for <alsa-devel@archiver.kernel.org>; Thu, 23 Jun 2022 11:05:07 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 34D5A1EDC;
-	Thu, 23 Jun 2022 13:01:16 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 34D5A1EDC
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3E9701EDC;
+	Thu, 23 Jun 2022 13:04:16 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3E9701EDC
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1655982126;
-	bh=YtvSlsb5Q7atw4iecr/pkDWUYQmASVHtIjHd6A/1NEs=;
+	s=default; t=1655982306;
+	bh=aIdW+I8dNqFwqnLgbomd19CUJMezjB4BlkNogKF1XZo=;
 	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=W0Xmc9w75MdFPClY/IkujblVm/9RqbHKjnvzEJJcFWxT/60dJk3s3v5Sk6/xs7ZJK
-	 UleHpPFkLijkFv1861Ef3q3d1ws6tn3wneVLTXyF+mnPZR+dGMYSECEA/YZyo4Jyte
-	 4fBQIl+pMEQi2N/H2BugVYemFNn1M2I5BJpHwEdg=
+	b=S+3c2Y5JWGuzBCtFbjeL7vgQrSv/6ct/bX1ChOtrYpfWDbIlkpZKjc8L81oscJIEt
+	 wbec1CzEYhSVS0NDNVb8Uh38t/9xDY/A9lspXqVv8T8hX0nbc2x9i2tFehwJn6JJnj
+	 mvVnE7jO4Hpn4EQ4zBcA96nhJDq+9SrkL6i7LyWQ=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id D0C59F804BB;
-	Thu, 23 Jun 2022 13:01:15 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id DC84AF804BB;
+	Thu, 23 Jun 2022 13:04:15 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id AB896F804C1; Thu, 23 Jun 2022 13:01:14 +0200 (CEST)
-Received: from ams.source.kernel.org (ams.source.kernel.org
- [IPv6:2604:1380:4601:e00::1])
+ id 1E044F804C1; Thu, 23 Jun 2022 13:04:14 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org
+ [IPv6:2604:1380:4641:c500::1])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 57C31F800CB
- for <alsa-devel@alsa-project.org>; Thu, 23 Jun 2022 13:01:12 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 57C31F800CB
+ by alsa1.perex.cz (Postfix) with ESMTPS id A8991F800D0
+ for <alsa-devel@alsa-project.org>; Thu, 23 Jun 2022 13:04:11 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A8991F800D0
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="nhw4Zq46"
+ header.b="f94JHIY2"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by ams.source.kernel.org (Postfix) with ESMTPS id 7A675B82247;
- Thu, 23 Jun 2022 11:01:11 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 90CFFC3411B;
- Thu, 23 Jun 2022 11:01:07 +0000 (UTC)
+ by dfw.source.kernel.org (Postfix) with ESMTPS id 42D8661EC5;
+ Thu, 23 Jun 2022 11:04:10 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4D82FC3411B;
+ Thu, 23 Jun 2022 11:04:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1655982070;
- bh=YtvSlsb5Q7atw4iecr/pkDWUYQmASVHtIjHd6A/1NEs=;
+ s=k20201202; t=1655982249;
+ bh=aIdW+I8dNqFwqnLgbomd19CUJMezjB4BlkNogKF1XZo=;
  h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=nhw4Zq46iiecL8+S7YiG+rOa67ScuNb5azPosxSmLA6WKJIU4N85AjAuj1gcDjZhf
- loeSspMFusxpspo4tNsts1d5dmhcO8XBfrH9GNU0TBgSizf7cjTo4EwN51Orhj23W2
- KuqrpkcER/2bpsH15M3qUbXFuv7bTZMZ/nqVM4PZYgjDP1A6Z0OFaMbbOaxjgYoPN6
- mwN0tQVVh1s4XQOyavg27TXjcw0A4jaTYJOw8BL43grqq4FI8N+TyapZqIdTU5aXnC
- OV4oVD701F3wUpjO8ob7L4VajoVPG/rLsOJQMBi0S7NKUwD12QPGzSz10zk7fWrD5N
- kQqUTV12m2rpQ==
-Date: Thu, 23 Jun 2022 12:01:04 +0100
+ b=f94JHIY2LJbI2Z629AcUkVoFj6tJtMk6c6chxLzm/Y40OJmm/H3oD/tx9PhFDkM+R
+ akJg1h/M78V9YOs135hgonnv43OiVa/CDM/PR3a1YGeQ/5n+hYZLJQhmIaeIR/OOCe
+ w/liblWEHu65ul29/nr2gN8BWFXIuCAw/++yEk3UfAGWrbxzwEldfC99bk84QTNfHJ
+ Sm72tCN2sIz+b+wNKtmui59HDfV2Vx4S6YA1Q2RgN4ke86e/9aHDiF7lqDVRpOsFmS
+ ApZ7rzgErYj75gj/K3Lkw262ujnaGbyq0Q2caYXBeuhL3hc+ZnRSXTUufhqvmBzQ8/
+ FBE+onHEaBEhA==
+Date: Thu, 23 Jun 2022 12:04:03 +0100
 From: Mark Brown <broonie@kernel.org>
-To: Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>
-Subject: Re: [PATCH] ASoC: topology: KUnit: Followup prototype change of
- snd_soc_unregister_card()
-Message-ID: <YrRH8LAU9sBbx/1r@sirena.org.uk>
-References: <20220622210629.286487-1-u.kleine-koenig@pengutronix.de>
+To: Judy Hsiao <judyhsiao@chromium.org>
+Subject: Re: [PATCH v5 0/3] ASoC: rockchip: i2s: switch BCLK to GPIO
+Message-ID: <YrRIo62na5FCCa06@sirena.org.uk>
+References: <20220623021153.587423-1-judyhsiao@chromium.org>
 MIME-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature"; boundary="aGC6+CHMROrsykh3"
+ protocol="application/pgp-signature"; boundary="bAAQzJfUr8Tz2hZ6"
 Content-Disposition: inline
-In-Reply-To: <20220622210629.286487-1-u.kleine-koenig@pengutronix.de>
+In-Reply-To: <20220623021153.587423-1-judyhsiao@chromium.org>
 X-Cookie: I had pancake makeup for brunch!
-Cc: Alexandre Belloni <alexandre.belloni@bootlin.com>,
- kernel test robot <lkp@intel.com>, Liam Girdwood <lgirdwood@gmail.com>,
- Nicolas Ferre <nicolas.ferre@microchip.com>, alsa-devel@alsa-project.org,
- Takashi Iwai <tiwai@suse.com>, Miaoqian Lin <linmq006@gmail.com>,
- kernel@pengutronix.de, Codrin Ciubotariu <codrin.ciubotariu@microchip.com>,
- Claudiu Beznea <claudiu.beznea@microchip.com>,
+Cc: alsa-devel@alsa-project.org, Heiko Stuebner <heiko@sntech.de>,
+ linux-kernel@vger.kernel.org, Brian Norris <briannorris@chromium.org>,
+ Liam Girdwood <lgirdwood@gmail.com>, linux-rockchip@lists.infradead.org,
+ Rob Herring <robh+dt@kernel.org>, Chen-Yu Tsai <wenst@chromium.org>,
  linux-arm-kernel@lists.infradead.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
@@ -89,35 +86,31 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
---aGC6+CHMROrsykh3
-Content-Type: text/plain; charset=iso-8859-1
+--bAAQzJfUr8Tz2hZ6
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Wed, Jun 22, 2022 at 11:06:29PM +0200, Uwe Kleine-K=F6nig wrote:
+On Thu, Jun 23, 2022 at 02:11:50AM +0000, Judy Hsiao wrote:
+> The patches series is to fix the unexpected large DC output
+> voltage of Max98357a that burns the speakers on the rockchip
+> platform when BCLK and SD_MODE are ON but LRCLK is OFF.
 
-> I'm a bit surprised that sound/soc/soc-topology-test.c isn't built for
-> ARCH=3Darm allmodconfig (that was my build test and that's the reason I
-> didn't notice the issue before submission of my change). I didn't look
-> into that though.
+An earlier version was already applied, please send any changes as
+incremental patches.
 
-It's not built for an x86 allmodconfig either, it's only built if you're
-specifically building for kunit which seems like an issue with kunit
-when there's not much automation covering it...
-
---aGC6+CHMROrsykh3
+--bAAQzJfUr8Tz2hZ6
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmK0R+8ACgkQJNaLcl1U
-h9BsQQf/QsxjnB78RgFVxdK6aDlPNCyy3U35tSr1u6ipbRUnQE79ANMQk4BR55cq
-nclm2Ln9z64dFt9gaV9gRwSNYWOctJngoqvWM1qt++SfTe0tfdfy7qRTdsPNuTQT
-zQ1noMq9o2Blz/vO14/L4xzHrndMAxSisDupILacTU5BOnow9I7MS0OFIgK0VqSQ
-pDvGR+Z8WaYEfeDtu6YNXCd2xM+pO/xb4Eb71vora+wYEEPbrFGd47lS5dyn27gc
-wx65hDHP+GHBnQlVdWht/NZu2zPLiY0ktW9qDbTSzLiFKorCr/8TbWN3AorYFlj4
-ko9umVA524RU9FloJEy9rkHXG7b99w==
-=vuZg
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmK0SKMACgkQJNaLcl1U
+h9CrCAf+LQBNxKh07eXpoNhG69/PzuPmq/iy71grFtQtZnGyzGn2Z1HDltI4l5pW
+ac3Pqo+XRj3DYnI6TbysWctR7ZrsootwIfuugKZ4zSLxvC4RX94EnKxKsOSDq+6Q
+2+eFccgAih/GvhGR+RXmtx72jixO0eq2Ywpfinfn3+TsbWQSNL6MbyHX1WsErIqR
++OUii5syBaM8/AlOwbJBz53Ad0beGnKYGk4TvN4mNugXh7QIHNX3tRRomZ95A+Kn
+f33IjTorYaXsJXsi/3OUT9/Jhb5ZBH7gy+2yVUsRbUH5jQzyIgVAYcHvTRSb0B1A
+zP0bwOPq6qUNV60QFV8VXDwMqGzYTQ==
+=K5QJ
 -----END PGP SIGNATURE-----
 
---aGC6+CHMROrsykh3--
+--bAAQzJfUr8Tz2hZ6--
