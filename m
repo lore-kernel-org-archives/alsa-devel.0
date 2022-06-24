@@ -4,78 +4,48 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4976FC433EF
-	for <alsa-devel@archiver.kernel.org>; Fri, 24 Jun 2022 10:31:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 279E4C433EF
+	for <alsa-devel@archiver.kernel.org>; Fri, 24 Jun 2022 10:48:54 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 849981878;
-	Fri, 24 Jun 2022 12:30:18 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 849981878
+	by alsa0.perex.cz (Postfix) with ESMTPS id 9E75A183B;
+	Fri, 24 Jun 2022 12:48:02 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9E75A183B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1656066668;
-	bh=5LCyOsyluBGURt0W/2QyJq3snL7fBV60vuIpfaNIuXA=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
+	s=default; t=1656067732;
+	bh=bBRa8nevTNOZWvilLQ4FsUBKwTmWUgsHXM7MPfQlOVc=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=l6g1WqQGIcRoxe37CO+ajCOyyaIS7LzLf4C2ZvPFIsohae530fnmtTZllf8U/ma9Y
-	 eciPbXJksovQTLyWY6q3GfBhAlmHz0rmdapWTW6sHRuwyaneKeHCG/1N9EnWhbI03E
-	 Fq3cqO3nOFx4cYaqX1JwVjrrSsBod66S/ChJtiCc=
+	b=VfkM2wz/qCp++tI0uUPA9szE/OkBQhfrVHgPRmrhkbtGMZ167BKX74kiRlsTSdkWT
+	 +qZPOpreyAmWkl7Xlm6P1hy2VjwfSLb2RXehN0VkMq06OfKwAwNgFJbcaVVoSNK6lT
+	 R7iyWblDJ4j/CUjpA9kVOtmSEaSNTlPBWUCiI1QQ=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 19D2BF80139;
-	Fri, 24 Jun 2022 12:30:18 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 0C6B1F80107;
+	Fri, 24 Jun 2022 12:48:02 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 1D44FF80165; Fri, 24 Jun 2022 12:30:16 +0200 (CEST)
-Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com
- [IPv6:2607:f8b0:4864:20::429])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 2C434F80109
- for <alsa-devel@alsa-project.org>; Fri, 24 Jun 2022 12:30:08 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2C434F80109
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="D+CzyVFW"
-Received: by mail-pf1-x429.google.com with SMTP id p14so2195227pfh.6
- for <alsa-devel@alsa-project.org>; Fri, 24 Jun 2022 03:30:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
- h=mime-version:references:in-reply-to:from:date:message-id:subject:to
- :cc; bh=5LCyOsyluBGURt0W/2QyJq3snL7fBV60vuIpfaNIuXA=;
- b=D+CzyVFWDKpdUK7ffbpwVF8w+hcO4Z+cVF2Ei4kvbhy93De4B3hvQrM48gAMHEHDGu
- C8/kGNxOzUCSETa1RHJyT/5b4tiFg8e8un/FNHD5xGj5kueJZxTNQsFjU3WD7/4JPsi5
- zZjUSMOt/M26e/Y2RkMxk3xsrC/E7m9psJIhmsykj0A7RKigPTuclhnmqC0UBA6pVFTf
- PkFeSBSEcKuRxwbekNViGswDsrJ0DRlOD5SC/nm4NHmEO2/CxBS4QbTboKbuVIRQzubm
- HsQkcQlujx1ob/6x13/uviFHgfp5W/2wRa+zl8askxA1fQafxHPx4Iyn11s6yrhLdl+/
- 7ajQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc;
- bh=5LCyOsyluBGURt0W/2QyJq3snL7fBV60vuIpfaNIuXA=;
- b=gBDBSSM1xshInq1atIevg4y3bLL03NcVTcjIFm9btotL3dXfzKd/FmmSwCZOHI8MdF
- djNpi6XJljI90/S43Qg3Sh/R+wQcC9eulSg22mvXalg6T7H4WpW6ttl4DBUBxy6fZXsi
- UrGBDBAqxxNQo24kTjZUkTH2VbUeQ8M20HhKsbM/0yDgiMwEYE19W0SIhUftRSFZE46U
- CxJEDlB7wuoMnFj9gPViokELhL2KG57cDiT1V4HI8mLPBXTROo1BIGmRs1lHKOaWwDxl
- uxIkEarCGTbFhFXM1ebhe62yI3Sb8xhl8C7nJsuVFybfQoogEoO5wQw6Bi3Se4AdZy2R
- jHUA==
-X-Gm-Message-State: AJIora+AEkOwR+iyqzpiERt6U6dkHvBbqARu6ASPPbBPPM0jCu/G12fy
- xWirFddYv6g38Pngnzcd0Dd9o/G1dpvngtmThOo=
-X-Google-Smtp-Source: AGRyM1tpeYsiiE0QwiFvULRUjMNnNHNG9ITYa35WIGznME9L7PWJjg2AV9fvc9L+A45NmUs0QF5SztE6+rpMsVNprM4=
-X-Received: by 2002:a05:6a00:792:b0:525:3605:61d2 with SMTP id
- g18-20020a056a00079200b00525360561d2mr18935050pfu.71.1656066605839; Fri, 24
- Jun 2022 03:30:05 -0700 (PDT)
+ id E5BC5F80535; Fri, 24 Jun 2022 12:47:59 +0200 (CEST)
+Received: from mail.bugwerft.de (mail.bugwerft.de [46.23.86.59])
+ by alsa1.perex.cz (Postfix) with ESMTP id C292AF800CB
+ for <alsa-devel@alsa-project.org>; Fri, 24 Jun 2022 12:47:53 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C292AF800CB
+Received: from hq-00021.holoplot.net (unknown [176.126.217.202])
+ by mail.bugwerft.de (Postfix) with ESMTPSA id 79992284B6F;
+ Fri, 24 Jun 2022 10:47:22 +0000 (UTC)
+From: Daniel Mack <daniel@zonque.org>
+To: broonie@kernel.org,
+	ryan.lee.analog@gmail.com
+Subject: [PATCH 1/8] ASoC: dt-bindings: max98396: add voltage supplies
+Date: Fri, 24 Jun 2022 12:47:05 +0200
+Message-Id: <20220624104712.1934484-2-daniel@zonque.org>
+X-Mailer: git-send-email 2.36.1
+In-Reply-To: <20220624104712.1934484-1-daniel@zonque.org>
+References: <20220624104712.1934484-1-daniel@zonque.org>
 MIME-Version: 1.0
-References: <20220624101301.441314-1-francesco.dolcini@toradex.com>
-In-Reply-To: <20220624101301.441314-1-francesco.dolcini@toradex.com>
-From: Fabio Estevam <festevam@gmail.com>
-Date: Fri, 24 Jun 2022 07:29:54 -0300
-Message-ID: <CAOMZO5AmopdssNX9QhsO=_W+y-F3SYFR6LPuSCsH8=bkLaKHnQ@mail.gmail.com>
-Subject: Re: [PATCH v1] ASoC: sgtl5000: Fix noise on shutdown/remove
-To: Francesco Dolcini <francesco.dolcini@toradex.com>
-Content-Type: text/plain; charset="UTF-8"
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Takashi Iwai <tiwai@suse.com>,
- Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
- Zeng Zhaoming <zhaoming.zeng@freescale.com>
+Content-Transfer-Encoding: 8bit
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, robh+dt@kernel.org,
+ Daniel Mack <daniel@zonque.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -91,24 +61,51 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Hi Francesco,
+The device is supplied with 3 core voltages (DVVDIO, DVDD, AVDD), and
+PVDD and/or VBAT.
 
-On Fri, Jun 24, 2022 at 7:13 AM Francesco Dolcini
-<francesco.dolcini@toradex.com> wrote:
->
-> Put the SGTL5000 in a silent/safe state on shutdown/remove, this is
-> required since the SGTL5000 produces a constant noise on its output
-> after it is configured and its clock is removed. Without this change
-> this is happening every time the module is unbound/removed or from
-> reboot till the clock is enabled again.
->
-> The issue was experienced on both a Toradex Colibri/Apalis iMX6, but can
-> be easily reproduced everywhere just playing something on the codec and
-> after that removing/unbinding the driver.
->
-> Fixes: 9b34e6cc3bc2 ("ASoC: Add Freescale SGTL5000 codec support")
-> Signed-off-by: Francesco Dolcini <francesco.dolcini@toradex.com>
+Signed-off-by: Daniel Mack <daniel@zonque.org>
+---
+ .../bindings/sound/adi,max98396.yaml          | 19 +++++++++++++++++++
+ 1 file changed, 19 insertions(+)
 
-Thanks for the fix:
+diff --git a/Documentation/devicetree/bindings/sound/adi,max98396.yaml b/Documentation/devicetree/bindings/sound/adi,max98396.yaml
+index ec4c10c2598a..a23ac8036e1c 100644
+--- a/Documentation/devicetree/bindings/sound/adi,max98396.yaml
++++ b/Documentation/devicetree/bindings/sound/adi,max98396.yaml
+@@ -24,6 +24,21 @@ properties:
+     maxItems: 1
+     description: I2C address of the device.
+ 
++  avdd-supply:
++    description: A 1.8V supply that powers up the AVDD pin.
++
++  dvdd-supply:
++    description: A 1.2V supply that powers up the DVDD pin.
++
++  dvddio-supply:
++    description: A 1.2V or 1.8V supply that powers up the VDDIO pin.
++
++  pvdd-supply:
++    description: A 3.0V to 20V supply that powers up the PVDD pin.
++
++  vbat-supply:
++    description: A 3.3V to 5.5V supply that powers up the VBAT pin.
++
+   adi,vmon-slot-no:
+     description: slot number of the voltage sense monitor
+     $ref: "/schemas/types.yaml#/definitions/uint32"
+@@ -72,6 +87,10 @@ examples:
+         max98396: amplifier@39 {
+             compatible = "adi,max98396";
+             reg = <0x39>;
++            dvdd-supply = <&regulator_1v2>;
++            dvddio-supply = <&regulator_1v8>;
++            avdd-supply = <&regulator_1v8>;
++            pvdd-supply = <&regulator_pvdd>;
+             adi,vmon-slot-no = <0>;
+             adi,imon-slot-no = <1>;
+             reset-gpios = <&gpio 4 GPIO_ACTIVE_LOW>;
+-- 
+2.36.1
 
-Reviewed-by: Fabio Estevam <festevam@denx.de>
