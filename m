@@ -4,72 +4,74 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6BEFCC433EF
-	for <alsa-devel@archiver.kernel.org>; Fri, 24 Jun 2022 13:35:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 19F3DC433EF
+	for <alsa-devel@archiver.kernel.org>; Fri, 24 Jun 2022 14:07:21 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 8E902189B;
-	Fri, 24 Jun 2022 15:34:41 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8E902189B
+	by alsa0.perex.cz (Postfix) with ESMTPS id 8257D17EB;
+	Fri, 24 Jun 2022 16:06:29 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8257D17EB
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1656077731;
-	bh=Vbc1P3WLihXDyzUCv1G7A6/jGuOCNJ2DEGR1xIFmtmc=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1656079639;
+	bh=j4mdRUHWF06xIvdnFh7e+yW16o8vEi1J7F63DLx4Kzc=;
+	h=Date:Subject:To:References:From:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=qP+70t8Wro7mKr3FjARxlkffFynqZ7ICoWALbl4OZGlVyu/VbAFJVdQoeL5VDG+Ln
-	 chv6WZbBBGHacGk+sDKsnWMvBUbPZgfoLFeINbSOW83gzI8SNEP5jDMIBNNMh7WWUq
-	 Fj3cjhvjVkUG75BGggxaeVdjjyxEAo2kRlDVNh8M=
+	b=glHzVV9/ai49DuCcQTgr6dpp2OGJsxD4ZUAOAgT+ujWFugZwYiC1DuiZXunUf5MAf
+	 jll+rt+NZkNUsKctubgFYbdI70NxVTJrntE/bNwIRHxG8mtJPAyjWObRsYX3c9B2SI
+	 aF96ptqVinZgjhZlt6Av1Bb0tIVdud4WqHhIKwsI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 74F8BF8053C;
-	Fri, 24 Jun 2022 15:33:30 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id E21CAF80137;
+	Fri, 24 Jun 2022 16:06:28 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id BAF45F8053D; Fri, 24 Jun 2022 15:33:27 +0200 (CEST)
-Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
+ id 91EB7F80139; Fri, 24 Jun 2022 16:06:26 +0200 (CEST)
+Received: from mga12.intel.com (mga12.intel.com [192.55.52.136])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 758B7F80107
- for <alsa-devel@alsa-project.org>; Fri, 24 Jun 2022 15:33:17 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 758B7F80107
+ by alsa1.perex.cz (Postfix) with ESMTPS id 3F068F80109
+ for <alsa-devel@alsa-project.org>; Fri, 24 Jun 2022 16:06:22 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3F068F80109
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="IknMo1Dr"
+ header.b="OmoSZ4h5"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1656077601; x=1687613601;
- h=from:to:cc:subject:date:message-id:in-reply-to:
- references:mime-version:content-transfer-encoding;
- bh=Vbc1P3WLihXDyzUCv1G7A6/jGuOCNJ2DEGR1xIFmtmc=;
- b=IknMo1DruwLSdvgtON91J0dFNo/0zXv5Br1pFw+TuUZ4A/eS+RJgZrFG
- aQYbr1GQWPg1y3MM1bg6x/Xke0t4YSqrW1oEUXBRJ66jf3QE3hlhuzXz5
- YBu10dWCYQi0a09D6er1+c/iw1976EqL1BMRPiKzvDlTEdPWn/s9hNQMh
- +Xexu2qJfrlZMJfo6COnjsVUO7gB/yWp5vfL/ldG1rtuTNwUVNzBy4mwu
- KstsbXgOe7bHVMZPxQKY6hxvsm4e2Uiu2qzo/zB9Kju34aTLD7a42O4Cz
- xNWp3cVLxQH6/GpLW+pDjBE3wjJwZfD+Dt5id3Km7K4MsM8CWulmGoZZV Q==;
-X-IronPort-AV: E=McAfee;i="6400,9594,10387"; a="344996186"
-X-IronPort-AV: E=Sophos;i="5.92,218,1650956400"; d="scan'208";a="344996186"
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
- by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 24 Jun 2022 06:33:12 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.92,218,1650956400"; d="scan'208";a="835123902"
-Received: from crojewsk-ctrl.igk.intel.com ([10.102.9.28])
- by fmsmga006.fm.intel.com with ESMTP; 24 Jun 2022 06:33:10 -0700
-From: Cezary Rojewski <cezary.rojewski@intel.com>
-To: alsa-devel@alsa-project.org,
-	broonie@kernel.org
-Subject: [PATCH 3/4] ASoC: Intel: bdw_rt5650: Mark BE DAI as nonatomic
-Date: Fri, 24 Jun 2022 15:43:16 +0200
-Message-Id: <20220624134317.3656128-4-cezary.rojewski@intel.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20220624134317.3656128-1-cezary.rojewski@intel.com>
-References: <20220624134317.3656128-1-cezary.rojewski@intel.com>
+ t=1656079584; x=1687615584;
+ h=message-id:date:mime-version:subject:to:cc:references:
+ from:in-reply-to:content-transfer-encoding;
+ bh=j4mdRUHWF06xIvdnFh7e+yW16o8vEi1J7F63DLx4Kzc=;
+ b=OmoSZ4h5mn1fT7RK7AmsvM3D8FGlLJyBklRau7HlQzBu1NRo2Jvy97EA
+ PNeuCLXy06z6X3Iojm2jg8HgYceZeder8sdtJFIzts4TybqkzA1oXE8Pa
+ dp+sbhVsK1XP9XXNmipniNaSJRfQnd0DEO3pyocccgSRAqgLw2ys7R1/B
+ YwPkvYBXfT/GWgCWFzRyEnZ7+SXGJxdEZbOErkIHEOTDo7gOhFUhDxKbK
+ hS0xS/U+Y9uLCWGShoBy/2MBrnbaFufrxHaJJcfATbIFqESTo0fn5I0pn
+ sAF0RGWM3C+jLueZJ5MyxmLf7qIafPABNw3u4RU9aylzDg34SKm6AWyyS A==;
+X-IronPort-AV: E=McAfee;i="6400,9594,10388"; a="260821501"
+X-IronPort-AV: E=Sophos;i="5.92,218,1650956400"; d="scan'208";a="260821501"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+ by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 24 Jun 2022 07:05:58 -0700
+X-IronPort-AV: E=Sophos;i="5.92,218,1650956400"; d="scan'208";a="645285622"
+Received: from jgraeber-mobl2.amr.corp.intel.com (HELO [10.212.113.127])
+ ([10.212.113.127])
+ by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 24 Jun 2022 07:05:57 -0700
+Message-ID: <ac2b7d8b-a5be-4fac-169c-eaca185c9746@linux.intel.com>
+Date: Fri, 24 Jun 2022 08:52:39 -0500
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: Cezary Rojewski <cezary.rojewski@intel.com>,
- pierre-louis.bossart@linux.intel.com, tiwai@suse.com, hdegoede@redhat.com,
- amadeuszx.slawinski@linux.intel.com
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Firefox/91.0 Thunderbird/91.9.1
+Subject: Re: [PATCH 0/4] ASoC: Intel: Mark BE DAIs as nonatomic for hsw and
+Content-Language: en-US
+To: Cezary Rojewski <cezary.rojewski@intel.com>, alsa-devel@alsa-project.org, 
+ broonie@kernel.org
+References: <20220624134317.3656128-1-cezary.rojewski@intel.com>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+In-Reply-To: <20220624134317.3656128-1-cezary.rojewski@intel.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+Cc: hdegoede@redhat.com, tiwai@suse.com, amadeuszx.slawinski@linux.intel.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -85,27 +87,32 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Address the warning: "Codec: dpcm_be_connect: FE is nonatomic but BE is
-not, forcing BE as nonatomic" by marking BE DAI as nonatomic. Aligns
-with what is already done for FE ones.
 
-Signed-off-by: Cezary Rojewski <cezary.rojewski@intel.com>
----
- sound/soc/intel/boards/bdw-rt5650.c | 1 +
- 1 file changed, 1 insertion(+)
 
-diff --git a/sound/soc/intel/boards/bdw-rt5650.c b/sound/soc/intel/boards/bdw-rt5650.c
-index aae857fdcdb8..67c3f49b924c 100644
---- a/sound/soc/intel/boards/bdw-rt5650.c
-+++ b/sound/soc/intel/boards/bdw-rt5650.c
-@@ -249,6 +249,7 @@ static struct snd_soc_dai_link bdw_rt5650_dais[] = {
- 		/* SSP0 - Codec */
- 		.name = "Codec",
- 		.id = 0,
-+		.nonatomic = 1,
- 		.no_pcm = 1,
- 		.dai_fmt = SND_SOC_DAIFMT_DSP_B | SND_SOC_DAIFMT_NB_NF |
- 			SND_SOC_DAIFMT_CBC_CFC,
--- 
-2.25.1
+On 6/24/22 08:43, Cezary Rojewski wrote:
+> Address the warning: "Codec: dpcm_be_connect: FE is nonatomic but BE is
+> not, forcing BE as nonatomic" by marking BE DAI as nonatomic. Aligns
+> with what is already done for FE DAIs.
+> 
+> This patchset iterates the change over all HSW and BDW related machine
+> board drivers.
 
+I don't think this is necessary, I was planning to demote this warning
+to a simple dev_dbg or possibly remove this message entirely.
+
+The BE DAIs can perfectly be declared as non-atomic in all Intel machine
+drivers, except for SoundWire where there's a known delay during the
+.trigger.
+
+> Cezary Rojewski (4):
+>   ASoC: Intel: hsw_rt5640: Mark BE DAI as nonatomic
+>   ASoC: Intel: bdw_rt286: Mark BE DAI as nonatomic
+>   ASoC: Intel: bdw_rt5650: Mark BE DAI as nonatomic
+>   ASoC: Intel: bdw_rt5677: Mark BE DAI as nonatomic
+> 
+>  sound/soc/intel/boards/bdw-rt5650.c | 1 +
+>  sound/soc/intel/boards/bdw-rt5677.c | 1 +
+>  sound/soc/intel/boards/bdw_rt286.c  | 1 +
+>  sound/soc/intel/boards/hsw_rt5640.c | 1 +
+>  4 files changed, 4 insertions(+)
+> 
