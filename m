@@ -4,42 +4,52 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id CF230C433EF
-	for <alsa-devel@archiver.kernel.org>; Fri, 24 Jun 2022 20:07:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 17AC7C433EF
+	for <alsa-devel@archiver.kernel.org>; Fri, 24 Jun 2022 20:34:14 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 7F2C717F7;
-	Fri, 24 Jun 2022 22:06:48 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7F2C717F7
+	by alsa0.perex.cz (Postfix) with ESMTPS id 99F7F1724;
+	Fri, 24 Jun 2022 22:33:22 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 99F7F1724
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1656101258;
-	bh=TAZd7oM1NtfCWCTVMrZc5jkxU0ChSJ7lS6B+Mki79B0=;
-	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=IALMKW3L8vE/C0CF8zLV/1ifqGrxdBkyvKBcWutX18I+RcEmFvf+ud60OKbMiniLO
-	 8wVJT5i1Hn08fhgUKaL+ei6YC1L7vjOSuEUtSAO2PbLUF7WF0Az8Un5narc7oVEsP4
-	 DloAUvRVKKFzbkTXCk6YimRrPWGgGd1bxM7+g6fw=
+	s=default; t=1656102852;
+	bh=c8/+csJat+49jOnpxxwaaYn2eEL87KYIaQX+gYEyrU4=;
+	h=Date:From:Subject:To:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=Isd7FOlxgqwrKfrQb6KpkQ4Vr2rPCPzNM63gQ89PIb4XyXm2oAEJZeZ7n23N4vPs/
+	 rpJ111hTd9gg1cFOyenoEwa2z5lyYdZJI05tkQYUQ7atwo4+zQJ5s+B6LaDUcNQw2Z
+	 3hUr35yknftvk8dGsI4SmsEtepM6jPpskII8+7BM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 0E8C7F80107;
-	Fri, 24 Jun 2022 22:06:48 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 14D73F80137;
+	Fri, 24 Jun 2022 22:33:22 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 42A42F80139; Fri, 24 Jun 2022 22:06:46 +0200 (CEST)
-Received: from webhooks-bot.alsa-project.org (gate.perex.cz [77.48.224.242])
- by alsa1.perex.cz (Postfix) with ESMTP id AFC91F80107
- for <alsa-devel@alsa-project.org>; Fri, 24 Jun 2022 22:06:40 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AFC91F80107
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-From: GitHub issues - opened <github@alsa-project.org>
+ id ECDF1F80139; Fri, 24 Jun 2022 22:33:14 +0200 (CEST)
+Received: from aposti.net (aposti.net [89.234.176.197])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 94882F80107
+ for <alsa-devel@alsa-project.org>; Fri, 24 Jun 2022 22:33:11 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 94882F80107
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (1024-bit key) header.d=crapouillou.net header.i=@crapouillou.net
+ header.b="hKAcRbVz"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=crapouillou.net;
+ s=mail; t=1656102790; h=from:from:sender:reply-to:subject:subject:date:date:
+ message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+ content-type:content-type:content-transfer-encoding:in-reply-to:
+ references; bh=kj4Fwuif2cODOXbKkmYCV+SMHIU8KTDy09L1f6UPQrQ=;
+ b=hKAcRbVzlJmR8YcedyqwYSGiQQISt7H3CKUUWMWf4n1YTZz58FrcB7H6KtDpcCLDF0LdFZ
+ h7jPARNXpf+9m76a8VxzAq7uPouphTMIpIpgwz4stnZ2C+MNb2SxY4xpy6rhQU/mnWMk3c
+ w6hdNE8tYk6Yrf5vBKNx6dPOPee7rJU=
+Date: Fri, 24 Jun 2022 21:33:01 +0100
+From: Paul Cercueil <paul@crapouillou.net>
+Subject: Questions about driver implementation (1 I2S controller to 2 codecs)
 To: alsa-devel@alsa-project.org
-In-Reply-To: <1656101200391197920-webhooks-bot@alsa-project.org>
-References: <1656101200391197920-webhooks-bot@alsa-project.org>
-Subject: sof-soundwire: broken settings for RT711 and RT711-SDCA
-Message-Id: <20220624200646.42A42F80139@alsa1.perex.cz>
-Date: Fri, 24 Jun 2022 22:06:46 +0200 (CEST)
+Message-Id: <1310ER.AOPVK6422Q8P1@crapouillou.net>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Cc: Christophe Branchereau <cbranchereau@gmail.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -55,23 +65,33 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-alsa-project/alsa-ucm-conf issue #179 was opened from plbossart:
+Hi,
 
-[plb@fedora ~]$ alsaucm -c sof-soundwire set _verb HiFi
-ALSA lib main.c:826:(execute_sequence) unable to execute cset 'name='PGA2.0 2 Master Capture Switch' 0'
-ALSA lib main.c:2573:(set_verb_user) error: failed to initialize new use case: HiFi
+I'm trying to add support for a new board that uses the Ingenic JZ4770 
+SoC.
 
-There's not such thing as a switch here:
+This SoC has a I2S/AC97 controller, and has an internal codec. The 
+controller has a register switch to select either the internal codec, 
+or an external codec; both cannot be enabled at the same time.
 
-amixer -Dhw:0 sget 'PGA2.0 2 Master',0 
-Simple mixer control 'PGA2.0 2 Master',0
-  Capabilities: cvolume
-  Capture channels: Front Left - Front Right
-  Limits: Capture 0 - 80
-  Front Left: Capture 80 [100%] [30.00dB]
-  Front Right: Capture 80 [100%] [30.00dB]
+On this board, the external speakers / audio line are wired to the 
+internal codec, while a HDMI chip (ITE66121) is wired as the external 
+codec.
 
-In addition, it makes no sense to use an SOF control to set the volume/switch on the headset codec side. The volume control should be done in the codec, not in the SOF firmware.
+I'm having a hard time trying to figure out how the codec selection 
+switch should be exported. Should it be a regular widget, and the user 
+is responsible for selecting the right codec? Should it be a DAPM, and 
+plugging the HDMI cable auto-enables the switch? Is this configuration 
+(one controller to two codecs) already somehow supported by ALSA?
 
-Issue URL     : https://github.com/alsa-project/alsa-ucm-conf/issues/179
-Repository URL: https://github.com/alsa-project/alsa-ucm-conf
+Right now we're using a "simple-audio-card" in the device tree, and 
+trying to add HDMI sound support. I am not even sure if we should be 
+using one sound card with the two codecs, or one sound card per codec, 
+sharing the same I2S controller?
+
+Any thoughts?
+
+Thanks,
+-Paul
+
+
