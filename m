@@ -4,41 +4,41 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 279E4C433EF
-	for <alsa-devel@archiver.kernel.org>; Fri, 24 Jun 2022 10:48:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6AE75C433EF
+	for <alsa-devel@archiver.kernel.org>; Fri, 24 Jun 2022 10:49:04 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 9E75A183B;
-	Fri, 24 Jun 2022 12:48:02 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9E75A183B
+	by alsa0.perex.cz (Postfix) with ESMTPS id 907AA188F;
+	Fri, 24 Jun 2022 12:48:12 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 907AA188F
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1656067732;
-	bh=bBRa8nevTNOZWvilLQ4FsUBKwTmWUgsHXM7MPfQlOVc=;
+	s=default; t=1656067742;
+	bh=Kkk/85OkEaUuxlqSwYtKeEnayjcgoahYQMQVVwVkBVw=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=VfkM2wz/qCp++tI0uUPA9szE/OkBQhfrVHgPRmrhkbtGMZ167BKX74kiRlsTSdkWT
-	 +qZPOpreyAmWkl7Xlm6P1hy2VjwfSLb2RXehN0VkMq06OfKwAwNgFJbcaVVoSNK6lT
-	 R7iyWblDJ4j/CUjpA9kVOtmSEaSNTlPBWUCiI1QQ=
+	b=jso6s5Vj/KwywwG/1QVtkfEMa6nTvEhQr31jyAuAUFI0JvkiC2QGops+hFgmXkPa7
+	 SceWG4C45UdGcp39S7YEs5nFOp48BPnZUeniUIcARh0eXkxjsUmIWdbv6xLKypsuxH
+	 AapcFDjgv6vyGa8VmnDDqprfZz6Q2hFSe6WOl5nI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 0C6B1F80107;
+	by alsa1.perex.cz (Postfix) with ESMTP id C4E52F80537;
 	Fri, 24 Jun 2022 12:48:02 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id E5BC5F80535; Fri, 24 Jun 2022 12:47:59 +0200 (CEST)
+ id F4188F800CB; Fri, 24 Jun 2022 12:47:59 +0200 (CEST)
 Received: from mail.bugwerft.de (mail.bugwerft.de [46.23.86.59])
- by alsa1.perex.cz (Postfix) with ESMTP id C292AF800CB
- for <alsa-devel@alsa-project.org>; Fri, 24 Jun 2022 12:47:53 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C292AF800CB
+ by alsa1.perex.cz (Postfix) with ESMTP id 9FA9EF80107
+ for <alsa-devel@alsa-project.org>; Fri, 24 Jun 2022 12:47:54 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9FA9EF80107
 Received: from hq-00021.holoplot.net (unknown [176.126.217.202])
- by mail.bugwerft.de (Postfix) with ESMTPSA id 79992284B6F;
- Fri, 24 Jun 2022 10:47:22 +0000 (UTC)
+ by mail.bugwerft.de (Postfix) with ESMTPSA id D3B84504573;
+ Fri, 24 Jun 2022 10:47:23 +0000 (UTC)
 From: Daniel Mack <daniel@zonque.org>
 To: broonie@kernel.org,
 	ryan.lee.analog@gmail.com
-Subject: [PATCH 1/8] ASoC: dt-bindings: max98396: add voltage supplies
-Date: Fri, 24 Jun 2022 12:47:05 +0200
-Message-Id: <20220624104712.1934484-2-daniel@zonque.org>
+Subject: [PATCH 3/8] ASoC: dt-bindings: max98396: Document adi,bypass-slot-no
+Date: Fri, 24 Jun 2022 12:47:07 +0200
+Message-Id: <20220624104712.1934484-4-daniel@zonque.org>
 X-Mailer: git-send-email 2.36.1
 In-Reply-To: <20220624104712.1934484-1-daniel@zonque.org>
 References: <20220624104712.1934484-1-daniel@zonque.org>
@@ -61,51 +61,46 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The device is supplied with 3 core voltages (DVVDIO, DVDD, AVDD), and
-PVDD and/or VBAT.
+This property allows to select the PCM data input channel that is
+routed to the speaker audio processing bypass path.
+
+The driver already implements this property.
+
+While at it, fix the default value for adi,imon-slot-no.
 
 Signed-off-by: Daniel Mack <daniel@zonque.org>
 ---
- .../bindings/sound/adi,max98396.yaml          | 19 +++++++++++++++++++
- 1 file changed, 19 insertions(+)
+ .../devicetree/bindings/sound/adi,max98396.yaml       | 11 ++++++++++-
+ 1 file changed, 10 insertions(+), 1 deletion(-)
 
 diff --git a/Documentation/devicetree/bindings/sound/adi,max98396.yaml b/Documentation/devicetree/bindings/sound/adi,max98396.yaml
-index ec4c10c2598a..a23ac8036e1c 100644
+index 8887e74b7ea5..c848397a7248 100644
 --- a/Documentation/devicetree/bindings/sound/adi,max98396.yaml
 +++ b/Documentation/devicetree/bindings/sound/adi,max98396.yaml
-@@ -24,6 +24,21 @@ properties:
-     maxItems: 1
-     description: I2C address of the device.
- 
-+  avdd-supply:
-+    description: A 1.8V supply that powers up the AVDD pin.
-+
-+  dvdd-supply:
-+    description: A 1.2V supply that powers up the DVDD pin.
-+
-+  dvddio-supply:
-+    description: A 1.2V or 1.8V supply that powers up the VDDIO pin.
-+
-+  pvdd-supply:
-+    description: A 3.0V to 20V supply that powers up the PVDD pin.
-+
-+  vbat-supply:
-+    description: A 3.3V to 5.5V supply that powers up the VBAT pin.
-+
-   adi,vmon-slot-no:
-     description: slot number of the voltage sense monitor
+@@ -51,13 +51,22 @@ properties:
      $ref: "/schemas/types.yaml#/definitions/uint32"
-@@ -72,6 +87,10 @@ examples:
-         max98396: amplifier@39 {
-             compatible = "adi,max98396";
-             reg = <0x39>;
-+            dvdd-supply = <&regulator_1v2>;
-+            dvddio-supply = <&regulator_1v8>;
-+            avdd-supply = <&regulator_1v8>;
-+            pvdd-supply = <&regulator_pvdd>;
-             adi,vmon-slot-no = <0>;
-             adi,imon-slot-no = <1>;
-             reset-gpios = <&gpio 4 GPIO_ACTIVE_LOW>;
+     minimum: 0
+     maximum: 15
+-    default: 0
++    default: 1
+ 
+   adi,spkfb-slot-no:
+     description: slot number of speaker DSP monitor
+     $ref: "/schemas/types.yaml#/definitions/uint32"
+     minimum: 0
+     maximum: 15
++    default: 2
++
++  adi,bypass-slot-no:
++    description:
++      Selects the PCM data input channel that is routed to the speaker
++      audio processing bypass path.
++    $ref: "/schemas/types.yaml#/definitions/uint32"
++    minimum: 0
++    maximum: 15
+     default: 0
+ 
+   adi,interleave-mode:
 -- 
 2.36.1
 
