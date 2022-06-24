@@ -4,70 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id EDC16C43334
-	for <alsa-devel@archiver.kernel.org>; Fri, 24 Jun 2022 12:55:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8B14EC433EF
+	for <alsa-devel@archiver.kernel.org>; Fri, 24 Jun 2022 13:34:18 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id CC3711840;
-	Fri, 24 Jun 2022 14:54:17 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CC3711840
+	by alsa0.perex.cz (Postfix) with ESMTPS id ADB12184E;
+	Fri, 24 Jun 2022 15:33:25 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz ADB12184E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1656075307;
-	bh=Blt4WEdyJt5CXJdrRZBIXF6qj7NFonfG6LIluE7tSFg=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=q3FaUTI8v5yyaVilxLlxgw/VBupMV9THvFBtV3bIQUhOKdRtb048DeUD9TsaJuXXU
-	 4dIEp2RGlBDORvmDnXezTQTJPUG4TN1wQM22rQz1ItpaV9AoWoXiCo5WfFO37cbU/q
-	 7l0wzve+5pnSIpbs2O87xgZn02PLXbuUXHOdcUns=
+	s=default; t=1656077655;
+	bh=jZC4dogNv1onjoP7rNYpJX2D6iFPYXPje8WLzBhus/I=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=LomeL12XExnyU0bc/SKeJ4wQFmGQ2LgB+6Izs0Xz10boWx4LOc7qd/OSB4ribEjpR
+	 vwby4SqlKg/K0SHfKHWHHJAjFXQSC3b/Ym/i0maOQf4QRbKsqfRIOAs5awpEaZlbis
+	 +XlUtKzfNK0kIygMAlzrru8j7HcLmBVmlGp61Fhg=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 5A2CDF80137;
-	Fri, 24 Jun 2022 14:54:17 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 329E8F80139;
+	Fri, 24 Jun 2022 15:33:25 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 9A029F80139; Fri, 24 Jun 2022 14:54:15 +0200 (CEST)
-Received: from ams.source.kernel.org (ams.source.kernel.org
- [IPv6:2604:1380:4601:e00::1])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 6A8EEF800CB
- for <alsa-devel@alsa-project.org>; Fri, 24 Jun 2022 14:54:13 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6A8EEF800CB
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="MeASBDJA"
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+ id 8DD80F8016E; Fri, 24 Jun 2022 15:33:17 +0200 (CEST)
+Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by ams.source.kernel.org (Postfix) with ESMTPS id B856DB826A7;
- Fri, 24 Jun 2022 12:54:12 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C6FD5C34114;
- Fri, 24 Jun 2022 12:54:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1656075251;
- bh=Blt4WEdyJt5CXJdrRZBIXF6qj7NFonfG6LIluE7tSFg=;
- h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=MeASBDJAVnnuFDoHp7vJDt3TTspKDX0bPowRJJaWEP5hxDiiMxmbukGld+7XWuOAd
- xRO/lZ7LERdtjIYOHD5carhu49TJhppBxWfLeF9mhi1SPyItJEbNVKnda8F5T6ErGk
- roC0rR6TLY5rGF18Houl2Ra6LT/vNCQ+xbTxdmTWlcPii8gsveKwAX24EGnHOyFKM1
- MXH8Uj2+YbK+IQb1tOMDNuaYhvClGRKz6LLyZ+79wAyx7agfKZLwGfkHYoG+91VR33
- CRoIyMDF9JLTEeK26oeZJoMrRb2TPsGQVCGsStkhK01uXopAMT+ls5+U5a0fyEJhTY
- o6X1BvLeH2neA==
-Date: Fri, 24 Jun 2022 13:54:06 +0100
-From: Mark Brown <broonie@kernel.org>
-To: Daniel Mack <daniel@zonque.org>
-Subject: Re: [PATCH 8/8] ASoC: max98396: Fix TDM mode BSEL settings
-Message-ID: <YrWz7lNdI63xT0R/@sirena.org.uk>
-References: <20220624104712.1934484-1-daniel@zonque.org>
- <20220624104712.1934484-9-daniel@zonque.org>
+ by alsa1.perex.cz (Postfix) with ESMTPS id AF0B4F800CB
+ for <alsa-devel@alsa-project.org>; Fri, 24 Jun 2022 15:33:10 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AF0B4F800CB
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
+ header.b="nznF2uqp"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+ d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+ t=1656077594; x=1687613594;
+ h=from:to:cc:subject:date:message-id:mime-version:
+ content-transfer-encoding;
+ bh=jZC4dogNv1onjoP7rNYpJX2D6iFPYXPje8WLzBhus/I=;
+ b=nznF2uqp6I9luYr0Ognp4wOT+bBY1I7jIThKk/mdnZfFswuDKfdg4nWu
+ zGlVXByT5SZ9Y1hesg3Pd3aSBHAJQmUTOqMnmtpQhYYA4hYtmOhZnpnsy
+ aDyB5iG0DxC1Z197WwpWwqIj4FLfeo4tNnZ5MLOMrAlxgNcv+FvpEfcgM
+ v8QVSVW2ZURtzcsfadN5pzYrRl3wnaG3WH71iy+quc+JK0wmn6888BkBu
+ EwXwZ4p+BAG1Kewy48ssD3uI8h+IEb+AtVFEZFdEpfiDGf/G5K7YIC0Bc
+ 1ZKRRGhjl8DoLP9ayqpeF2y16wTgtgNq/iS7LJpnyET89dscfHOEcgkqM Q==;
+X-IronPort-AV: E=McAfee;i="6400,9594,10387"; a="344996174"
+X-IronPort-AV: E=Sophos;i="5.92,218,1650956400"; d="scan'208";a="344996174"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+ by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 24 Jun 2022 06:33:06 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.92,218,1650956400"; d="scan'208";a="835123872"
+Received: from crojewsk-ctrl.igk.intel.com ([10.102.9.28])
+ by fmsmga006.fm.intel.com with ESMTP; 24 Jun 2022 06:33:04 -0700
+From: Cezary Rojewski <cezary.rojewski@intel.com>
+To: alsa-devel@alsa-project.org,
+	broonie@kernel.org
+Subject: [PATCH 0/4] ASoC: Intel: Mark BE DAIs as nonatomic for hsw and
+Date: Fri, 24 Jun 2022 15:43:13 +0200
+Message-Id: <20220624134317.3656128-1-cezary.rojewski@intel.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature"; boundary="ueqfVGDcT7oSKScO"
-Content-Disposition: inline
-In-Reply-To: <20220624104712.1934484-9-daniel@zonque.org>
-X-Cookie: Help!  I'm trapped in a PDP 11/70!
-Cc: devicetree@vger.kernel.org, ryan.lee.analog@gmail.com, robh+dt@kernel.org,
- alsa-devel@alsa-project.org
+Content-Transfer-Encoding: 8bit
+Cc: Cezary Rojewski <cezary.rojewski@intel.com>,
+ pierre-louis.bossart@linux.intel.com, tiwai@suse.com, hdegoede@redhat.com,
+ amadeuszx.slawinski@linux.intel.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -83,31 +82,25 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+Address the warning: "Codec: dpcm_be_connect: FE is nonatomic but BE is
+not, forcing BE as nonatomic" by marking BE DAI as nonatomic. Aligns
+with what is already done for FE DAIs.
 
---ueqfVGDcT7oSKScO
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+This patchset iterates the change over all HSW and BDW related machine
+board drivers.
 
-On Fri, Jun 24, 2022 at 12:47:12PM +0200, Daniel Mack wrote:
-> In TDM mode, the BSEL register value must be set according to table 5 in the
-> datasheet. This patch adds a lookup function and uses it in
-> max98396_dai_tdm_slot().
+Cezary Rojewski (4):
+  ASoC: Intel: hsw_rt5640: Mark BE DAI as nonatomic
+  ASoC: Intel: bdw_rt286: Mark BE DAI as nonatomic
+  ASoC: Intel: bdw_rt5650: Mark BE DAI as nonatomic
+  ASoC: Intel: bdw_rt5677: Mark BE DAI as nonatomic
 
-Similar issue here with fixes.
+ sound/soc/intel/boards/bdw-rt5650.c | 1 +
+ sound/soc/intel/boards/bdw-rt5677.c | 1 +
+ sound/soc/intel/boards/bdw_rt286.c  | 1 +
+ sound/soc/intel/boards/hsw_rt5640.c | 1 +
+ 4 files changed, 4 insertions(+)
 
---ueqfVGDcT7oSKScO
-Content-Type: application/pgp-signature; name="signature.asc"
+-- 
+2.25.1
 
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmK1s+0ACgkQJNaLcl1U
-h9Bkfgf/aPjvZgbz6nuHlsuAtJ0UyrQwbMImuGt8tVBiB4YyxPeA0+5feSk4jFO5
-OgDyrBUukAMqaKkXys8Bvm5Jm49j99WhsnPCuYDg1K1i1+i7m3PkgfT0pxS6oYdx
-W+iUYSWb/BI0cA8lyI5f+AlzzQ1EflJAF8q11BzPGBUC61pC9uxOQbUmKYHx6G2R
-2++nnsB50uOI9nfNs8Ji41grG3ZKrjsOBJnbrEUUjmUnWjDeFsnY8e050HZsxgsQ
-YXWH1hzG+am3myAJ8JvkeWvc2LbXIS3ASKQl/Z5/uJucFE9PnEagK3Meq/Q4Hjx5
-9jCmMj8ESeIjetIE1b0/RcoOOy1nrg==
-=jFL6
------END PGP SIGNATURE-----
-
---ueqfVGDcT7oSKScO--
