@@ -4,48 +4,61 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 24AC3C43334
-	for <alsa-devel@archiver.kernel.org>; Fri, 24 Jun 2022 10:51:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6A09CC433EF
+	for <alsa-devel@archiver.kernel.org>; Fri, 24 Jun 2022 10:58:21 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 56743172E;
-	Fri, 24 Jun 2022 12:50:21 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 56743172E
+	by alsa0.perex.cz (Postfix) with ESMTPS id A7A83185A;
+	Fri, 24 Jun 2022 12:57:29 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A7A83185A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1656067871;
-	bh=0bsT6+zl7D9tYSewyoYhG2yQHV7TkzKfgZdf20MGWxY=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=I+LywgYclTvQ/YhHXzLW3p7BPtr/KUTdBTEO3jU/sm7BVrPtdSbtnpTGQtstBO9+V
-	 VxBmbMew/ieXsfXeKzH3DtSxoWIltuDqAoUE88EEERrQTLpL3TDrvcyz1z33aSeyKq
-	 zcQE3GwP/2IopVMC5Zln4SVwPbnlN0o7rse5moa8=
+	s=default; t=1656068299;
+	bh=75TwiXXj96Ju+OwAfgMKGPAMU0f/aLtOShKtc3JONzc=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=BUo09inNSeDr5R0Mqx6PpvrsWe4Fl0NTHGT4vedQL1Vp+r1ZvXWZ02ID1MQaal9DK
+	 8EQ74YtS4h3vnF81vMSu+JD24w1KuIRRh2B+iWp0wBtXXdTZZ7ZsGy49Ys+cPBlzJN
+	 d+AFDgJ78qGg6UaumznbuMULmjK2Sbf2ZnyAM/L0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 20ED6F80571;
-	Fri, 24 Jun 2022 12:48:33 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 3073FF80137;
+	Fri, 24 Jun 2022 12:57:29 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 3B552F80567; Fri, 24 Jun 2022 12:48:32 +0200 (CEST)
-Received: from mail.bugwerft.de (mail.bugwerft.de [46.23.86.59])
- by alsa1.perex.cz (Postfix) with ESMTP id 2EF78F80567
- for <alsa-devel@alsa-project.org>; Fri, 24 Jun 2022 12:48:26 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2EF78F80567
-Received: from hq-00021.holoplot.net (unknown [176.126.217.202])
- by mail.bugwerft.de (Postfix) with ESMTPSA id 7E57F50457B;
- Fri, 24 Jun 2022 10:47:25 +0000 (UTC)
-From: Daniel Mack <daniel@zonque.org>
-To: broonie@kernel.org,
-	ryan.lee.analog@gmail.com
-Subject: [PATCH 7/8] ASoC: max98396: Implement DSP speaker monitor
-Date: Fri, 24 Jun 2022 12:47:11 +0200
-Message-Id: <20220624104712.1934484-8-daniel@zonque.org>
-X-Mailer: git-send-email 2.36.1
-In-Reply-To: <20220624104712.1934484-1-daniel@zonque.org>
-References: <20220624104712.1934484-1-daniel@zonque.org>
+ id DDD35F80139; Fri, 24 Jun 2022 12:57:27 +0200 (CEST)
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de
+ [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id C94FCF800CB
+ for <alsa-devel@alsa-project.org>; Fri, 24 Jun 2022 12:57:21 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C94FCF800CB
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+ by metis.ext.pengutronix.de with esmtps
+ (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92)
+ (envelope-from <sha@pengutronix.de>)
+ id 1o4h03-0007MJ-Oa; Fri, 24 Jun 2022 12:57:19 +0200
+Received: from [2a0a:edc0:0:1101:1d::28] (helo=dude02.red.stw.pengutronix.de)
+ by drehscheibe.grey.stw.pengutronix.de with esmtp (Exim 4.94.2)
+ (envelope-from <sha@pengutronix.de>)
+ id 1o4h01-002PQB-Bi; Fri, 24 Jun 2022 12:57:18 +0200
+Received: from sha by dude02.red.stw.pengutronix.de with local (Exim 4.94.2)
+ (envelope-from <sha@pengutronix.de>)
+ id 1o4h01-00Ap4E-OR; Fri, 24 Jun 2022 12:57:17 +0200
+From: Sascha Hauer <s.hauer@pengutronix.de>
+To: alsa-devel@alsa-project.org
+Subject: [PATCH] ASoC: tlv320adcx140: Fix tx_mask check
+Date: Fri, 24 Jun 2022 12:57:16 +0200
+Message-Id: <20220624105716.2579539-1-s.hauer@pengutronix.de>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, robh+dt@kernel.org,
- Daniel Mack <daniel@zonque.org>
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: sha@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de);
+ SAEximRunCond expanded to false
+X-PTX-Original-Recipient: alsa-devel@alsa-project.org
+Cc: Sascha Hauer <s.hauer@pengutronix.de>, Mark Brown <broonie@kernel.org>,
+ Dan Murphy <dmurphy@ti.com>, kernel@pengutronix.de
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -61,54 +74,67 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Allow the selection of the TDM slot that is used to send back speaker
-monitor data. The DT property adi,spkfb-slot-no can be used to configure
-this setting which defaults to 2.
+The tx_mask check doesn't reflect what the driver and the chip support.
 
-Signed-off-by: Daniel Mack <daniel@zonque.org>
+The check currently checks for exactly two slots being enabled. The
+tlv320adcx140 supports anything between one and eight channels, so relax
+the check accordingly.
+
+The tlv320adcx140 supports arbitrary tx_mask settings, but the driver
+currently only supports adjacent slots beginning with the first slot,
+so extend the check to check that the first slot is being used and that
+there are no holes in the tx_mask.
+
+Leave a comment to make it's the driver that limits the tx_mask
+settings, not the chip itself.
+
+While at it remove the set-but-unused struct adcx140p_priv::tdm_delay
+field.
+
+Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
 ---
- sound/soc/codecs/max98396.c | 8 ++++++++
- sound/soc/codecs/max98396.h | 1 +
- 2 files changed, 9 insertions(+)
+ sound/soc/codecs/tlv320adcx140.c | 13 ++++++-------
+ 1 file changed, 6 insertions(+), 7 deletions(-)
 
-diff --git a/sound/soc/codecs/max98396.c b/sound/soc/codecs/max98396.c
-index 0a1d98279a3e..f28831f4e74b 100644
---- a/sound/soc/codecs/max98396.c
-+++ b/sound/soc/codecs/max98396.c
-@@ -1377,6 +1377,9 @@ static int max98396_probe(struct snd_soc_component *component)
- 	regmap_write(max98396->regmap,
- 		     MAX98396_R2045_PCM_TX_CTRL_2,
- 		     max98396->i_slot);
-+	regmap_write(max98396->regmap,
-+		     MAX98396_R204A_PCM_TX_CTRL_7,
-+		     max98396->spkfb_slot);
+diff --git a/sound/soc/codecs/tlv320adcx140.c b/sound/soc/codecs/tlv320adcx140.c
+index b55f0b836932b..0b729658fde80 100644
+--- a/sound/soc/codecs/tlv320adcx140.c
++++ b/sound/soc/codecs/tlv320adcx140.c
+@@ -33,7 +33,6 @@ struct adcx140_priv {
+ 	bool micbias_vg;
  
- 	if (max98396->v_slot < 8)
- 		if (max98396->device_id == CODEC_TYPE_MAX98396)
-@@ -1552,6 +1555,11 @@ static void max98396_read_device_property(struct device *dev,
- 	else
- 		max98396->i_slot = 1;
+ 	unsigned int dai_fmt;
+-	unsigned int tdm_delay;
+ 	unsigned int slot_width;
+ };
  
-+	if (!device_property_read_u32(dev, "adi,spkfb-slot-no", &value))
-+		max98396->spkfb_slot = value & 0xF;
-+	else
-+		max98396->spkfb_slot = 2;
-+
- 	if (!device_property_read_u32(dev, "adi,bypass-slot-no", &value))
- 		max98396->bypass_slot = value & 0xF;
- 	else
-diff --git a/sound/soc/codecs/max98396.h b/sound/soc/codecs/max98396.h
-index 8fa081f5d2d3..ff330ef61568 100644
---- a/sound/soc/codecs/max98396.h
-+++ b/sound/soc/codecs/max98396.h
-@@ -303,6 +303,7 @@ struct max98396_priv {
- 	struct regulator *pvdd, *vbat;
- 	unsigned int v_slot;
- 	unsigned int i_slot;
-+	unsigned int spkfb_slot;
- 	unsigned int bypass_slot;
- 	bool interleave_mode;
- 	unsigned int ch_size;
+@@ -792,12 +791,13 @@ static int adcx140_set_dai_tdm_slot(struct snd_soc_dai *codec_dai,
+ {
+ 	struct snd_soc_component *component = codec_dai->component;
+ 	struct adcx140_priv *adcx140 = snd_soc_component_get_drvdata(component);
+-	unsigned int lsb;
+ 
+-	/* TDM based on DSP mode requires slots to be adjacent */
+-	lsb = __ffs(tx_mask);
+-	if ((lsb + 1) != __fls(tx_mask)) {
+-		dev_err(component->dev, "Invalid mask, slots must be adjacent\n");
++	/*
++	 * The chip itself supports arbitrary masks, but the driver currently
++	 * only supports adjacent slots beginning at the first slot.
++	 */
++	if (tx_mask != GENMASK(__fls(tx_mask), 0)) {
++		dev_err(component->dev, "Only lower adjacent slots are supported\n");
+ 		return -EINVAL;
+ 	}
+ 
+@@ -812,7 +812,6 @@ static int adcx140_set_dai_tdm_slot(struct snd_soc_dai *codec_dai,
+ 		return -EINVAL;
+ 	}
+ 
+-	adcx140->tdm_delay = lsb;
+ 	adcx140->slot_width = slot_width;
+ 
+ 	return 0;
 -- 
-2.36.1
+2.30.2
 
