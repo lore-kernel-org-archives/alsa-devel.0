@@ -4,42 +4,41 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8005FC43334
-	for <alsa-devel@archiver.kernel.org>; Fri, 24 Jun 2022 10:49:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 67B64C433EF
+	for <alsa-devel@archiver.kernel.org>; Fri, 24 Jun 2022 10:49:59 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 678AD1838;
-	Fri, 24 Jun 2022 12:48:56 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 678AD1838
+	by alsa0.perex.cz (Postfix) with ESMTPS id B4006183E;
+	Fri, 24 Jun 2022 12:49:07 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B4006183E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1656067786;
-	bh=N1Z/0RghyFfehixXn+LE7Fsqk3oKYwhb4qWTgZ+cabQ=;
+	s=default; t=1656067797;
+	bh=sEtRBhxM1rDhwev4tv8Ux2lP84NN8gT9990pnhrLamQ=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=LOJjDICQvizKqgps46CVry4/tSO8sGjitdxV2rMf4K5S/dZdaomx07WJcn8Ivz2Sl
-	 0VnO+iPf1FBBV/HDwcQ+JLKKARQXWqD0EgYxpjpdL6XI20u+9PlOGi7ctKHOaVnbPh
-	 TgW2fvYRdjkuWFpkCaGBaqu5grY2hUHqw+gmJRcQ=
+	b=TmxizHCpaEsFp3vk/SDK5bh6F58+8mKO3nkAoLD/AH+rN9Ix3jZqKYV3hJipb6TrL
+	 NIJBebUbNc4tIFslowzd/MCkZoC7y64VJS/kdG/PUo/Mo4hcZJU3s3nfC6cq3TqRcU
+	 F9iSUnzxpZhLh9as34yUKlcBd9FQxTx8fV5X864g=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 02875F8053E;
-	Fri, 24 Jun 2022 12:48:08 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 9266FF80544;
+	Fri, 24 Jun 2022 12:48:10 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 81671F8053E; Fri, 24 Jun 2022 12:48:04 +0200 (CEST)
+ id 108BEF80139; Fri, 24 Jun 2022 12:48:07 +0200 (CEST)
 Received: from mail.bugwerft.de (mail.bugwerft.de [46.23.86.59])
- by alsa1.perex.cz (Postfix) with ESMTP id 75B4BF80139
+ by alsa1.perex.cz (Postfix) with ESMTP id D3D46F8016E
  for <alsa-devel@alsa-project.org>; Fri, 24 Jun 2022 12:47:55 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 75B4BF80139
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D3D46F8016E
 Received: from hq-00021.holoplot.net (unknown [176.126.217.202])
- by mail.bugwerft.de (Postfix) with ESMTPSA id 1DA5C50457A;
- Fri, 24 Jun 2022 10:47:25 +0000 (UTC)
+ by mail.bugwerft.de (Postfix) with ESMTPSA id C070D504578;
+ Fri, 24 Jun 2022 10:47:24 +0000 (UTC)
 From: Daniel Mack <daniel@zonque.org>
 To: broonie@kernel.org,
 	ryan.lee.analog@gmail.com
-Subject: [PATCH 6/8] ASoC: max98396: Fix register access for PCM format
- settings
-Date: Fri, 24 Jun 2022 12:47:10 +0200
-Message-Id: <20220624104712.1934484-7-daniel@zonque.org>
+Subject: [PATCH 5/8] ASoC: max98396: Improve some error prints
+Date: Fri, 24 Jun 2022 12:47:09 +0200
+Message-Id: <20220624104712.1934484-6-daniel@zonque.org>
 X-Mailer: git-send-email 2.36.1
 In-Reply-To: <20220624104712.1934484-1-daniel@zonque.org>
 References: <20220624104712.1934484-1-daniel@zonque.org>
@@ -62,54 +61,57 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-max98396_dai_set_fmt() modifes register 2041 and touches bits in the mask
-0x3a. Make sure to use the right mask for that operation.
+Let's log what actually failed and log at some more places.
 
 Signed-off-by: Daniel Mack <daniel@zonque.org>
 ---
- sound/soc/codecs/max98396.c | 10 ++++++----
- 1 file changed, 6 insertions(+), 4 deletions(-)
+ sound/soc/codecs/max98396.c | 12 ++++++++----
+ 1 file changed, 8 insertions(+), 4 deletions(-)
 
 diff --git a/sound/soc/codecs/max98396.c b/sound/soc/codecs/max98396.c
-index faa81b4bb709..0a1d98279a3e 100644
+index 06ac637f2696..faa81b4bb709 100644
 --- a/sound/soc/codecs/max98396.c
 +++ b/sound/soc/codecs/max98396.c
-@@ -349,12 +349,15 @@ static int max98396_dai_set_fmt(struct snd_soc_dai *codec_dai, unsigned int fmt)
- {
- 	struct snd_soc_component *component = codec_dai->component;
- 	struct max98396_priv *max98396 = snd_soc_component_get_drvdata(component);
--	unsigned int format = 0;
-+	unsigned int format_mask, format = 0;
- 	unsigned int bclk_pol = 0;
- 	int ret, status;
- 	int reg;
- 	bool update = false;
+@@ -372,7 +372,8 @@ static int max98396_dai_set_fmt(struct snd_soc_dai *codec_dai, unsigned int fmt)
+ 		break;
  
-+	format_mask = MAX98396_PCM_MODE_CFG_FORMAT_MASK |
-+		      MAX98396_PCM_MODE_CFG_LRCLKEDGE;
-+
- 	dev_dbg(component->dev, "%s: fmt 0x%08X\n", __func__, fmt);
+ 	default:
+-		dev_err(component->dev, "DAI invert mode unsupported\n");
++		dev_err(component->dev, "DAI invert mode %d unsupported\n",
++			fmt & SND_SOC_DAIFMT_INV_MASK);
+ 		return -EINVAL;
+ 	}
  
- 	switch (fmt & SND_SOC_DAIFMT_INV_MASK) {
-@@ -405,7 +408,7 @@ static int max98396_dai_set_fmt(struct snd_soc_dai *codec_dai, unsigned int fmt)
- 		ret = regmap_read(max98396->regmap, MAX98396_R2041_PCM_MODE_CFG, &reg);
- 		if (ret < 0)
+@@ -391,6 +392,8 @@ static int max98396_dai_set_fmt(struct snd_soc_dai *codec_dai, unsigned int fmt)
+ 		format |= MAX98396_PCM_FORMAT_TDM_MODE0;
+ 		break;
+ 	default:
++		dev_err(component->dev, "DAI format %d unsupported\n",
++			fmt & SND_SOC_DAIFMT_FORMAT_MASK);
+ 		return -EINVAL;
+ 	}
+ 
+@@ -461,8 +464,9 @@ static int max98396_set_clock(struct snd_soc_component *component,
+ 		/* BCLK configuration */
+ 		value = max98396_get_bclk_sel(blr_clk_ratio);
+ 		if (!value) {
+-			dev_err(component->dev, "format unsupported %d\n",
+-				params_format(params));
++			dev_err(component->dev,
++				"blr_clk_ratio %d unsupported, format %d\n",
++				blr_clk_ratio, params_format(params));
  			return -EINVAL;
--		if (format != (reg & MAX98396_PCM_BCLKEDGE_BSEL_MASK)) {
-+		if (format != (reg & format_mask)) {
- 			update = true;
- 		} else {
- 			ret = regmap_read(max98396->regmap,
-@@ -422,8 +425,7 @@ static int max98396_dai_set_fmt(struct snd_soc_dai *codec_dai, unsigned int fmt)
+ 		}
  
- 	regmap_update_bits(max98396->regmap,
- 			   MAX98396_R2041_PCM_MODE_CFG,
--			   MAX98396_PCM_BCLKEDGE_BSEL_MASK,
--			   format);
-+			   format_mask, format);
- 
- 	regmap_update_bits(max98396->regmap,
- 			   MAX98396_R2042_PCM_CLK_SETUP,
+@@ -647,7 +651,7 @@ static int max98396_dai_tdm_slot(struct snd_soc_dai *dai,
+ 		chan_sz = MAX98396_PCM_MODE_CFG_CHANSZ_32;
+ 		break;
+ 	default:
+-		dev_err(component->dev, "format unsupported %d\n",
++		dev_err(component->dev, "slot width %d unsupported\n",
+ 			slot_width);
+ 		return -EINVAL;
+ 	}
 -- 
 2.36.1
 
