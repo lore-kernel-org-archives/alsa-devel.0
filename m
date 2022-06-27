@@ -4,84 +4,76 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 14B3CC43334
-	for <alsa-devel@archiver.kernel.org>; Mon, 27 Jun 2022 14:36:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 80FF9C43334
+	for <alsa-devel@archiver.kernel.org>; Mon, 27 Jun 2022 14:49:40 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0A56B168D;
-	Mon, 27 Jun 2022 16:35:31 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0A56B168D
+	by alsa0.perex.cz (Postfix) with ESMTPS id 8C6EE164F;
+	Mon, 27 Jun 2022 16:48:48 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8C6EE164F
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1656340581;
-	bh=dYsqsIIK2caBm9IYyiRgUaD+Pttd2IRgivdiGi/W5/c=;
-	h=From:To:Subject:Date:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=UlPAccIdzKAGFMih59ANfArJTpwXKhA5/5+ep/5uLUC+t64ME2PoX22oJSgOOy3lv
-	 /CnvuV+Kdp/Yf2Oo3VmJ7YVrxKe+h7Ljsf9mmE3jIABgaH8Q2+YLyHdiYaKHw+MK5e
-	 +Mjdaj1VJtINGVodMk09I8s4NJdGVjDvk+onLO9Y=
+	s=default; t=1656341378;
+	bh=J/Uyrv9Ml3QuuNq4wbNithLsOoRRJ1NjSYLFb96ze/o=;
+	h=Date:Subject:To:References:From:In-Reply-To:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=BrAbR0Veab4Geh+yG0VY2fguenxYvOX4Wia6fCfmXgSLlVxa1SWMwq3DVrxzJ3leI
+	 0Kf9bAg5FhXfHk+mkN64HRTdnVXVUa2WtJjETtzxXirbqrkAb/6rHM93U7YBAv4jj3
+	 uPQjpvyPRpFoE/lMySPD3QhoIBp+0rsqf8+gkJqM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 40054F804FB;
-	Mon, 27 Jun 2022 16:34:44 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 17151F8012F;
+	Mon, 27 Jun 2022 16:48:48 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 9945BF804FC; Mon, 27 Jun 2022 16:34:40 +0200 (CEST)
-Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com
- [IPv6:2a00:1450:4864:20::42d])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id A05CCF8028B; Mon, 27 Jun 2022 16:48:45 +0200 (CEST)
+Received: from mga18.intel.com (mga18.intel.com [134.134.136.126])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 012E9F8012F
- for <alsa-devel@alsa-project.org>; Mon, 27 Jun 2022 16:34:33 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 012E9F8012F
+ by alsa1.perex.cz (Postfix) with ESMTPS id 26DB7F800E9
+ for <alsa-devel@alsa-project.org>; Mon, 27 Jun 2022 16:48:40 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 26DB7F800E9
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org
- header.b="vRhaRSdG"
-Received: by mail-wr1-x42d.google.com with SMTP id o16so13377428wra.4
- for <alsa-devel@alsa-project.org>; Mon, 27 Jun 2022 07:34:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
- h=from:to:subject:date:message-id:mime-version
- :content-transfer-encoding;
- bh=xHFZz8RZkVB6QrSDdCB+Dgt2NiSqLKXwv65gqyA505k=;
- b=vRhaRSdGeHb3qNVgG98bODYQGIV5R8Xntd1otqLzy9xvwjDNXNc4ycsq4AiYSvNrUx
- RPNT/s++mVAUF/bVaavfPrs8sy123BK+8RvtnkVaEXv1AAumF9j6TTyYP1k26A0EuRs+
- eOY+IdGjdkyvYBXdhuSh/7ZOmCMzUszaIV/W66PpYFVVKvdTnJX9/5MrsGXSslaXlhBH
- ABNGZdDMQa8bGqgi1tu+DCCrDN+EsJpo+JBwkCEaX4NhPWC6HnH1Ysu58rN22VTNYHXE
- w73JVJh1NUVGL9AA0DGuaQ9jVi7ukJ+hMJQcG+kn1ttzgAUYj9+IOU9vNh7zpQDf0bpt
- 1AUg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=x-gm-message-state:from:to:subject:date:message-id:mime-version
- :content-transfer-encoding;
- bh=xHFZz8RZkVB6QrSDdCB+Dgt2NiSqLKXwv65gqyA505k=;
- b=RMWmOIMzgT5jJsvc/rsgnQpSU9I4iwuGmchsBwcESd2qbXLmZspUQNzi6UHiZwc9VL
- plOekGdzK/OQBMIn4qP7XVcsG1juS63uxveR6Ybc2wzMSOdJVKHitg+En0MrL7LZ4ZKS
- E5wVUuOqBsh72sldkymRbIto211tAJpWdoaHLTAzwHqtNWZdheWk+tuILltsNKP0FZk1
- QLnR1JTwP18EmLVF1MBAvBThIPUIOGbBARWFGjy4BFSckhK/O2s2dmZ132knkjLy7Bme
- XCg8QLA16KwU7xxwntDzX2+CZTjGQtetwp0FU9JleONI0LxbQayzEhDDhMtLCDFbmaKH
- ZnJw==
-X-Gm-Message-State: AJIora8CfW6Nx1ASeDVaVFgg5ExCnL65MsbmAn0xDN31yz+RsefcyFEy
- HklFYUE3daqxpWFQ0WeGgAHgfg==
-X-Google-Smtp-Source: AGRyM1vePo96avYvzN+/VbfXPpJbfFzcJOWYoI90juxd+OLG/WT4wbBA6NER5THHL9r98g5G23tATQ==
-X-Received: by 2002:adf:e182:0:b0:21b:92c8:b045 with SMTP id
- az2-20020adfe182000000b0021b92c8b045mr12577551wrb.219.1656340472265; 
- Mon, 27 Jun 2022 07:34:32 -0700 (PDT)
-Received: from localhost.localdomain (xdsl-188-155-176-92.adslplus.ch.
- [188.155.176.92]) by smtp.gmail.com with ESMTPSA id
- g4-20020a5d5544000000b0021a39f5ba3bsm10662853wrw.7.2022.06.27.07.34.31
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Mon, 27 Jun 2022 07:34:31 -0700 (PDT)
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
- Sylwester Nawrocki <s.nawrocki@samsung.com>,
- Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
- Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
- alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 1/3] ASoC: samsung: s3c-i2s-v2: Allow build for unsupported
- hardware
-Date: Mon, 27 Jun 2022 16:34:10 +0200
-Message-Id: <20220627143412.477226-1-krzysztof.kozlowski@linaro.org>
-X-Mailer: git-send-email 2.34.1
+ dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
+ header.b="mvrSRN1e"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+ d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+ t=1656341323; x=1687877323;
+ h=message-id:date:mime-version:subject:to:cc:references:
+ from:in-reply-to:content-transfer-encoding;
+ bh=J/Uyrv9Ml3QuuNq4wbNithLsOoRRJ1NjSYLFb96ze/o=;
+ b=mvrSRN1eegZo03Kf7w2ELdk+F7N0S04d/oKvP/0hPcbV5PVBuXlwm+aF
+ x6chn80u1/lpyGhE55dlAHPXC3RF3eBCmBQb4+93Vtd8vNyCQQjxvdDhh
+ dvo+NwbxT4WyOn0jwrxz33iYspg8U1x3trIrx78kjhp8Em4pEmj2SKaeX
+ saCkJwlPUPoK/z1mcsKQLW94DzEZoGU2hzJjW3AXYpyEhDuXdsDOyZVEt
+ ++v38ojp0uwJQpobeb5/TrY+EbjDxMYY0woZ8WhJcGXfP8d+f2OFt68fR
+ SZ2jaZuJOUN+nWpp8NJBjuR6/SKmXyCXhH4NR0cI2+/IFXADFxGFAu/gj g==;
+X-IronPort-AV: E=McAfee;i="6400,9594,10390"; a="264507427"
+X-IronPort-AV: E=Sophos;i="5.92,226,1650956400"; d="scan'208";a="264507427"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+ by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 27 Jun 2022 07:48:31 -0700
+X-IronPort-AV: E=Sophos;i="5.92,226,1650956400"; d="scan'208";a="622569939"
+Received: from vthayala-mobl.amr.corp.intel.com (HELO [10.209.144.177])
+ ([10.209.144.177])
+ by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 27 Jun 2022 07:48:30 -0700
+Message-ID: <34b54e4e-8997-c2b7-fdf0-24a1b95121ab@linux.intel.com>
+Date: Mon, 27 Jun 2022 09:45:30 -0500
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Firefox/91.0 Thunderbird/91.9.1
+Subject: Re: [PATCH 0/4] ASoC: Intel: Mark BE DAIs as nonatomic for hsw and
+Content-Language: en-US
+To: Cezary Rojewski <cezary.rojewski@intel.com>, alsa-devel@alsa-project.org, 
+ broonie@kernel.org
+References: <20220624134317.3656128-1-cezary.rojewski@intel.com>
+ <ac2b7d8b-a5be-4fac-169c-eaca185c9746@linux.intel.com>
+ <3d9b45c0-b415-21d9-6af5-68fa1001ed17@intel.com>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+In-Reply-To: <3d9b45c0-b415-21d9-6af5-68fa1001ed17@intel.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+Cc: hdegoede@redhat.com, tiwai@suse.com, amadeuszx.slawinski@linux.intel.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -97,38 +89,41 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-There is no particular need to restrict building of S3C I2S driver to
-supported platforms within the C unit, because Kconfig does it.
-Removing such restricting #ifdef from s3c-i2s-v2 allows compile testing
-it on other platforms.
 
-Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
----
- sound/soc/samsung/s3c-i2s-v2.c | 11 -----------
- 1 file changed, 11 deletions(-)
 
-diff --git a/sound/soc/samsung/s3c-i2s-v2.c b/sound/soc/samsung/s3c-i2s-v2.c
-index 1bec72246ed0..2b221cb0ed03 100644
---- a/sound/soc/samsung/s3c-i2s-v2.c
-+++ b/sound/soc/samsung/s3c-i2s-v2.c
-@@ -21,17 +21,6 @@
- #include "regs-i2s-v2.h"
- #include "s3c-i2s-v2.h"
- 
--#undef S3C_IIS_V2_SUPPORTED
--
--#if defined(CONFIG_CPU_S3C2412) \
--	|| defined(CONFIG_ARCH_S3C64XX) || defined(CONFIG_CPU_S5PV210)
--#define S3C_IIS_V2_SUPPORTED
--#endif
--
--#ifndef S3C_IIS_V2_SUPPORTED
--#error Unsupported CPU model
--#endif
--
- #define S3C2412_I2S_DEBUG_CON 0
- 
- static inline struct s3c_i2sv2_info *to_info(struct snd_soc_dai *cpu_dai)
--- 
-2.34.1
+On 6/25/22 03:29, Cezary Rojewski wrote:
+> On 2022-06-24 3:52 PM, Pierre-Louis Bossart wrote:
+>> On 6/24/22 08:43, Cezary Rojewski wrote:
+>>> Address the warning: "Codec: dpcm_be_connect: FE is nonatomic but BE is
+>>> not, forcing BE as nonatomic" by marking BE DAI as nonatomic. Aligns
+>>> with what is already done for FE DAIs.
+>>>
+>>> This patchset iterates the change over all HSW and BDW related machine
+>>> board drivers.
+>>
+>> I don't think this is necessary, I was planning to demote this warning
+>> to a simple dev_dbg or possibly remove this message entirely.
+>>
+>> The BE DAIs can perfectly be declared as non-atomic in all Intel machine
+>> drivers, except for SoundWire where there's a known delay during the
+>> .trigger.
+> 
+> 
+> Hmm.. that's a good feedback. Isn't ASoC's FE<->BE treated as a single
+> PCM substream in sound/core/pcm_native.c though? If so, does it even
+> make sense for card's BE DAI to be atomic, if it's FE counterpart is
+> nonatomic already? Especially if it is specifying platform and cpu_dai
+> that matches Intel's components which we know communicate using IPCs.
 
+I guess it depends on the cpu_dai implementation. Not all
+implementations implement a delay in the .trigger callback and/or rely
+on IPCs.
+
+> Warning is one thing, but will you be also getting rid of the
+> if-statement in soc-pcm.c that actually forces nonatomic=1 on BE when FE
+> is already declared as such? If the if-statement stays, I believe the
+> declaring BE DAIs 'correctly' in the way to go.
+
+I meant just removing the dev_warn() only.
+
+See https://github.com/thesofproject/linux/pull/3723
