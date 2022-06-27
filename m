@@ -4,68 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 95792C433EF
-	for <alsa-devel@archiver.kernel.org>; Mon, 27 Jun 2022 20:20:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C6A4CC433EF
+	for <alsa-devel@archiver.kernel.org>; Mon, 27 Jun 2022 20:21:03 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 90A6716BE;
-	Mon, 27 Jun 2022 22:20:03 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 90A6716BE
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0FA7316C8;
+	Mon, 27 Jun 2022 22:20:12 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0FA7316C8
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1656361253;
-	bh=yXcCDa02Pb/sLH1ELYF8BJG91/X5CPQ+JW86ylnakJQ=;
+	s=default; t=1656361262;
+	bh=+oMVcAo3/DJCNjq6cv5dBPqjaPJsplwyRFcbzoAqNag=;
 	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=QqyPXIxJoiJqQLf8D4PNm2F3Oq8rZuaxJjnMs1ebdma5+T1Dm8rUI2yBR7TzxFdx7
-	 DGpz+1OzPlgc9zi4pjKIGmLc+4/SXyh9Ql/j8oSdjVQFAT0yF4scyb2vtO4CiKQFjF
-	 kHcmu+inZ1hzre9nIoAZ+y+H978qn8N7qW6Jb9I0=
+	b=Ba8rdUFw6jbhlu0kxjSRP7IoyEE7XaffRtQUwqgIkTbftqkN1Jb4RL3tjnHdAWyU8
+	 cOPuJnpOrKL3WhJf+j+YUswhgTA1cKgTY8EXLvfoCsdm9mFyQU4ha0j7CJLfWeKfzA
+	 4yeQvkT1oqx3WZxf6eOlQ+bX3147TAzX1PwteeIU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id C3061F80537;
-	Mon, 27 Jun 2022 22:19:19 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id CF4F7F8053A;
+	Mon, 27 Jun 2022 22:19:21 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 53A21F804FD; Mon, 27 Jun 2022 22:19:16 +0200 (CEST)
-Received: from ams.source.kernel.org (ams.source.kernel.org
- [IPv6:2604:1380:4601:e00::1])
+ id 7AE2FF80537; Mon, 27 Jun 2022 22:19:19 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org
+ [IPv6:2604:1380:4641:c500::1])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id C4FF2F8028B
- for <alsa-devel@alsa-project.org>; Mon, 27 Jun 2022 22:19:13 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C4FF2F8028B
+ by alsa1.perex.cz (Postfix) with ESMTPS id 154CCF8028B
+ for <alsa-devel@alsa-project.org>; Mon, 27 Jun 2022 22:19:16 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 154CCF8028B
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="iXqf5ccL"
+ header.b="KNTTObgN"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by ams.source.kernel.org (Postfix) with ESMTPS id EB320B81B1B;
- Mon, 27 Jun 2022 20:19:11 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B17C7C34115;
- Mon, 27 Jun 2022 20:19:08 +0000 (UTC)
+ by dfw.source.kernel.org (Postfix) with ESMTPS id DC93261750;
+ Mon, 27 Jun 2022 20:19:14 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A30EBC385A5;
+ Mon, 27 Jun 2022 20:19:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1656361150;
- bh=yXcCDa02Pb/sLH1ELYF8BJG91/X5CPQ+JW86ylnakJQ=;
+ s=k20201202; t=1656361154;
+ bh=+oMVcAo3/DJCNjq6cv5dBPqjaPJsplwyRFcbzoAqNag=;
  h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=iXqf5ccLqMwaFW61gUboVSI30DUgWqxa/h12Sm8iyH4BK5cr/cCx0+2tJ8BDZ7bLf
- zETrLvBSbjbgIUGN6bN+x5vh4cGNTsEYly/eBkhF+Qb16aBCPxx38Wo+swxRbLQ1ky
- b5qJNG6DkBCrY+k4UeCV+u26trxtRoD0KTJJnqEH4rfON9P+uSzosduQFUSCKG7Ebz
- 9C78TDqe/pjix1/kjgnKAuKuyXSEdAPjLR4K0lZMbxCpFT6biSE6qfahi44qiaVXI7
- CtwWfGnWOvfb86Hzs4FkyBXYmjN6xLPq20Kv7M+i3kLN1NjO9NOhUYCIBSnTY8KhS3
- IMMPr+9KN3H8Q==
+ b=KNTTObgNBFkHnY1iAE6uBi3tcPzO7S+rsafCt2DVAntrkXz41fv8y8RAEYnB7C0ic
+ VadK6HP5QAvr4UDfmAbiuJAX2Xg7foPTazwhmx+xfK8Wp7K4SOveW/QrTHVPRaaTTM
+ gATyKYTETbnKBQsvhaEuft0RqWEeDh4FWTGMJWBdGcscP9z3iM/REKpzvrsnhlepjT
+ oyqX1S178G1cBVd70pUB8NTmyWLJkxxBGCpamve7N5MZuriDeUf9G+GeJOdeA/CW2K
+ /XDiVK15hpmmvAKZwH1mPkoyctGQYFuj5hJpCtey1Z5Yo/KBQ+d7Mj8KdLVes3beMZ
+ KfntMVNbUZ4sA==
 From: Mark Brown <broonie@kernel.org>
-To: jarkko.nikula@bitmer.com, tiwai@suse.com, perex@perex.cz,
- daowens01@gmail.com, peter.ujfalusi@gmail.com, lgirdwood@gmail.com
-In-Reply-To: <20220620183744.3176557-1-dowens@precisionplanting.com>
-References: <20220620183744.3176557-1-dowens@precisionplanting.com>
-Subject: Re: [PATCH v4] ASoC: ti: omap-mcbsp: duplicate sysfs error
-Message-Id: <165636114844.3997797.17880127627282990674.b4-ty@kernel.org>
-Date: Mon, 27 Jun 2022 21:19:08 +0100
+To: ryan.lee.analog@gmail.com, daniel@zonque.org
+In-Reply-To: <20220624104712.1934484-1-daniel@zonque.org>
+References: <20220624104712.1934484-1-daniel@zonque.org>
+Subject: Re: (subset) [PATCH 0/8] ASoC: max98396: Some assorted fixes and
+ additions
+Message-Id: <165636115333.3997797.6298161546515778991.b4-ty@kernel.org>
+Date: Mon, 27 Jun 2022 21:19:13 +0100
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: dowens@precisionplanting.com, linux-omap@vger.kernel.org,
- linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, robh+dt@kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -81,14 +80,14 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Mon, 20 Jun 2022 13:37:43 -0500, David Owens wrote:
-> From: David Owens <daowens01@gmail.com>
+On Fri, 24 Jun 2022 12:47:04 +0200, Daniel Mack wrote:
+> This is a series of some patches that I collected while using the
+> max98396 driver is a TDM mode setup.
 > 
-> Convert to managed versions of sysfs and clk allocation to simplify
-> unbinding and error handling in probe.  Managed sysfs node
-> creation specifically addresses the following error seen the second time
-> probe is attempted after sdma_pcm_platform_register() previously requsted
-> probe deferral:
+> They correct BSEL and PCM mode configs, add support for power supplies
+> and add some bits to the documentation.
+> 
+> The code is tested in TDM-16 and TDM-8 mode with 32 channel width.
 > 
 > [...]
 
@@ -98,8 +97,20 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: ti: omap-mcbsp: duplicate sysfs error
-      commit: 6d31e225742a1955db8a0c6f6f52beb748a2895e
+[1/8] ASoC: dt-bindings: max98396: add voltage supplies
+      (no commit info)
+[2/8] ASoC: dt-bindings: max98396: Add #sound-dai-cells
+      (no commit info)
+[3/8] ASoC: dt-bindings: max98396: Document adi,bypass-slot-no
+      (no commit info)
+[4/8] ASoC: max98396: add voltage regulators
+      (no commit info)
+[5/8] ASoC: max98396: Improve some error prints
+      (no commit info)
+[6/8] ASoC: max98396: Fix register access for PCM format settings
+      commit: cf5c888539f353cb10e127d3a8754554cacd293a
+[7/8] ASoC: max98396: Implement DSP speaker monitor
+      (no commit info)
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
