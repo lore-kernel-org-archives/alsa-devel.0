@@ -4,79 +4,88 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 489EBC43334
-	for <alsa-devel@archiver.kernel.org>; Mon, 27 Jun 2022 09:44:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C8093C43334
+	for <alsa-devel@archiver.kernel.org>; Mon, 27 Jun 2022 09:50:49 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B339B886;
-	Mon, 27 Jun 2022 11:43:49 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B339B886
+	by alsa0.perex.cz (Postfix) with ESMTPS id D38ED15C2;
+	Mon, 27 Jun 2022 11:49:57 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D38ED15C2
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1656323079;
-	bh=TD/iiG2MGXsHenjYSIQP13D63BfHzSUEDc6jUuJ8AD0=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=Xi6hfv9RxAwSQYlrbhnALEYpbfu80lLg16t0LCsljhSey/7D5xa/X9KMib0+HeJGu
-	 SA8U5XPhzKm3mnA7xvWB02BNJvaaMBMpGtdub4qwNFM9AO1KuzXHrR5Hjqr1eAHsZe
-	 4iA993jXFkY7pOc3F2kEBeUjnn85ilQU7/QqhBk8=
+	s=default; t=1656323447;
+	bh=7wIGKd0iWaqdg+4oKsF1Jbo0sR8k+KFHy/BVwsSdtP4=;
+	h=Date:Subject:To:References:From:In-Reply-To:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=r1czht0BK9gdO9rmV18QrFq6Z2n5WIrFJqrJxyM7boHkB12NgGrmP7Gr1DCLy4NyR
+	 UYWJ0vKreRqCdu0n0MRD9C1bhY7rn7aEQtCnx9OuIj/hNjnBdA5x5nRMhIZesa3T9r
+	 7arxLTT8uV18RuN+MXQ8xAKI0VepM/GrTgw7MIpM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 3DCD3F8012F;
-	Mon, 27 Jun 2022 11:43:49 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 6619EF8012F;
+	Mon, 27 Jun 2022 11:49:57 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 75BABF8028B; Mon, 27 Jun 2022 11:43:46 +0200 (CEST)
-Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
- [67.231.152.168])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 9D885F8028B; Mon, 27 Jun 2022 11:49:55 +0200 (CEST)
+Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com
+ [IPv6:2a00:1450:4864:20::62b])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 0CC7DF80107
- for <alsa-devel@alsa-project.org>; Mon, 27 Jun 2022 11:43:39 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0CC7DF80107
+ by alsa1.perex.cz (Postfix) with ESMTPS id B6BA3F80128
+ for <alsa-devel@alsa-project.org>; Mon, 27 Jun 2022 11:49:49 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B6BA3F80128
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com
- header.b="fFsyzNmK"
-Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
- by mx0b-001ae601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 25R6qLPI026382;
- Mon, 27 Jun 2022 04:43:37 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
- h=from : to : cc :
- subject : date : message-id : mime-version : content-transfer-encoding :
- content-type; s=PODMain02222019;
- bh=yMU0jpROdhFuA14yjuioMus6L/3EfIebG5m6xYIHjn0=;
- b=fFsyzNmKqVuHg+36uywKRm1rw7/WN9EbtPtEEXYlnTpo3I4kV1cU4epi7vQGi0jpLF7x
- XmofCxq77j2+3JZkXRLsl1XkfmEgMroAM3HEhBfpJUTSI2XvyzCF+1idbFOD6pdhHkrM
- /6JQNIJA8LPaB3CNXbXoJpCdoTj4+/FdYZU4tyvBMAw9Pc78ZMMs2SVtGcuKFyrVchAY
- Y/FucMoJQWWMDBxve2Zy7PowJ7ewFshRvI+QOw7gXRuRXkfU0BlW5V/3/rgnd9OU6MeT
- yEAVD0JMLMh1LNW0wJ7siJ0IBgICaiEfwt4aXiWrhzCD/QmLhfby9MdMhWKiVKxBSPnM hg== 
-Received: from ediex01.ad.cirrus.com ([84.19.233.68])
- by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3gwxsq2ege-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
- Mon, 27 Jun 2022 04:43:36 -0500
-Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.28; Mon, 27 Jun
- 2022 10:43:35 +0100
-Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server id 15.1.2375.28 via
- Frontend Transport; Mon, 27 Jun 2022 10:43:35 +0100
-Received: from algalon.ad.cirrus.com (algalon.ad.cirrus.com [198.90.251.122])
- by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 47322458;
- Mon, 27 Jun 2022 09:43:35 +0000 (UTC)
-From: Charles Keepax <ckeepax@opensource.cirrus.com>
-To: <broonie@kernel.org>
-Subject: [PATCH] ASoC: samsung: s3c24xx-i2s: Fix typo in DAIFMT handling
-Date: Mon, 27 Jun 2022 10:43:35 +0100
-Message-ID: <20220627094335.3051210-1-ckeepax@opensource.cirrus.com>
-X-Mailer: git-send-email 2.30.2
+ dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org
+ header.b="RgORuYQJ"
+Received: by mail-ej1-x62b.google.com with SMTP id u12so17918081eja.8
+ for <alsa-devel@alsa-project.org>; Mon, 27 Jun 2022 02:49:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
+ h=message-id:date:mime-version:user-agent:subject:content-language:to
+ :cc:references:from:in-reply-to:content-transfer-encoding;
+ bh=Ql1APVfZd2Lo+GYFdN0rZXs3VSU+UTL0bs7ioEmeviY=;
+ b=RgORuYQJWVOAf9jFc6YuQNX9I75pP1tWgFUCQ2jVynSlJk8qBELir3nObGyYwqCfi2
+ CjiNH4Mo7GKFukpzZxdb5uM6WITxuBYc3PVm2ZeMCzhfWxL4Epei6fnJUR5w+kir5N9o
+ dBcfMbTmplc/onKzMhXESLqay0d7M6Kx5i8UiphW/4V/llRhrPuAp/VerKxmOpSFcf0U
+ 7UrUzacWK5HvAyEAhP0629DZhVmvpZfE3Y3rXmvIygo5adnKsYv3jy/RYALNzAy97P83
+ 5NJSKcdOiXqP0KMYSWoX0p/Co+AoZOt/tKEDij8aSYIw55Rnwy7uggkzUVFv9A3tKTDD
+ A7DA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+ :content-language:to:cc:references:from:in-reply-to
+ :content-transfer-encoding;
+ bh=Ql1APVfZd2Lo+GYFdN0rZXs3VSU+UTL0bs7ioEmeviY=;
+ b=o8+0io/Vv2uBqpqwfS/k+k8H8GZkSDcJlJeFsifxuYYN9EX2F6sttrpVLzNHRUqr/f
+ 1jf1BxJhvWnnUbHGFh+r55Nt+juxoM+wVY3VZxhql6OsIYdUS6+AxtzK0b44SAhOyLCV
+ fvNHz8vP0XRMWfeOFbFdZ/lPSUE5Cb+aY4Oo51euQ0vdn7xDeLDHx/HRdGgOLg4QuwU1
+ PKJKjP+m9HANDQsrsZ6MMl4HPnZn6H7t0jyug1YwikyNhIJ4yqZfCu/ALof3gvIHYUDk
+ r9pngRLlhKogsg66dPcjx+G1isR8BOEHCZoSeLUAbaqffNaDEK41FutA7k6c2KRseKjz
+ 5oQw==
+X-Gm-Message-State: AJIora8JZdUpKqUHz9NX6WXuv1wWEwvNqUEmwmtt6X1dJnnbzLmJpI1D
+ eC9ngub2oduLTrPTUy6+s434TA==
+X-Google-Smtp-Source: AGRyM1sHB77PAiN8CrKv7RFaOd3YlADqGW0XSj5poP0fTywWrKfS7m3vXVhchxnG1OhVfpXG/CZQ5w==
+X-Received: by 2002:a17:907:3e01:b0:722:c339:bde7 with SMTP id
+ hp1-20020a1709073e0100b00722c339bde7mr12071901ejc.285.1656323388038; 
+ Mon, 27 Jun 2022 02:49:48 -0700 (PDT)
+Received: from [192.168.0.247] (xdsl-188-155-176-92.adslplus.ch.
+ [188.155.176.92]) by smtp.gmail.com with ESMTPSA id
+ s10-20020a1709060c0a00b0070beb9401d9sm4860306ejf.171.2022.06.27.02.49.47
+ (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+ Mon, 27 Jun 2022 02:49:47 -0700 (PDT)
+Message-ID: <803785ef-42b7-647c-9653-702067439ae9@linaro.org>
+Date: Mon, 27 Jun 2022 11:49:46 +0200
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Proofpoint-GUID: nY3888gUAWbKeO48SGu51K1Gcyn5iKeZ
-X-Proofpoint-ORIG-GUID: nY3888gUAWbKeO48SGu51K1Gcyn5iKeZ
-X-Proofpoint-Spam-Reason: safe
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.10.0
+Subject: Re: [PATCH] ASoC: samsung: s3c24xx-i2s: Fix typo in DAIFMT handling
+Content-Language: en-US
+To: Charles Keepax <ckeepax@opensource.cirrus.com>, broonie@kernel.org
+References: <20220627094335.3051210-1-ckeepax@opensource.cirrus.com>
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <20220627094335.3051210-1-ckeepax@opensource.cirrus.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 Cc: alsa-devel@alsa-project.org, patches@opensource.cirrus.com,
- lgirdwood@gmail.com, linux-kernel@vger.kernel.org,
- krzysztof.kozlowski@linaro.org, jrdr.linux@gmail.com
+ linux-kernel@vger.kernel.org, lgirdwood@gmail.com, jrdr.linux@gmail.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -92,29 +101,31 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The conversion of the set_fmt callback to direct clock specification
-included a small typo, correct the affected code.
+On 27/06/2022 11:43, Charles Keepax wrote:
+> The conversion of the set_fmt callback to direct clock specification
+> included a small typo, correct the affected code.
+> 
+> Fixes: 91c49199e6d6 ("ASoC: samsung: Update to use set_fmt_new callback")
 
-Fixes: 91c49199e6d6 ("ASoC: samsung: Update to use set_fmt_new callback")
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: Charles Keepax <ckeepax@opensource.cirrus.com>
----
- sound/soc/samsung/s3c24xx-i2s.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Where is this commit from? It's not in next.
 
-diff --git a/sound/soc/samsung/s3c24xx-i2s.c b/sound/soc/samsung/s3c24xx-i2s.c
-index 4082ad7cbcc11..c1a314b86b155 100644
---- a/sound/soc/samsung/s3c24xx-i2s.c
-+++ b/sound/soc/samsung/s3c24xx-i2s.c
-@@ -170,7 +170,7 @@ static int s3c24xx_i2s_set_fmt(struct snd_soc_dai *cpu_dai,
- 	pr_debug("hw_params r: IISMOD: %x \n", iismod);
- 
- 	switch (fmt & SND_SOC_DAIFMT_CLOCK_PROVIDER_MASK) {
--	case SND_SOC_DAIFMT_BC_CFC:
-+	case SND_SOC_DAIFMT_BC_FC:
- 		iismod |= S3C2410_IISMOD_SLAVE;
- 		break;
- 	case SND_SOC_DAIFMT_BP_FP:
--- 
-2.30.2
+> Reported-by: kernel test robot <lkp@intel.com>
 
+You should put such big patchsets in your own repo (e.g. on
+Github/Gitlab) and feed it to linux-next or at least to LKP.
+
+This way you would get build coverage... because it seems the build was
+missing in your case.
+
+If you prefer not to include it in LKP or linux-next, no problem, but
+then you need to build it.
+
+> Signed-off-by: Charles Keepax <ckeepax@opensource.cirrus.com>
+> ---
+
+
+Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+
+
+Best regards,
+Krzysztof
