@@ -4,84 +4,78 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id BBA9FCCA47E
-	for <alsa-devel@archiver.kernel.org>; Mon, 27 Jun 2022 15:53:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7AD89C43334
+	for <alsa-devel@archiver.kernel.org>; Mon, 27 Jun 2022 16:00:31 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id F24091695;
-	Mon, 27 Jun 2022 17:52:48 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F24091695
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3EEFD1698;
+	Mon, 27 Jun 2022 17:59:39 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3EEFD1698
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1656345219;
-	bh=mrTY+LhhQN0SUSD9+W/ZTD+DapxlZFWCRwfvGj9VXGs=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1656345629;
+	bh=ENJbuXj656pbEAK4xDMrx8tuaKh/RuP4LbBqC0yn8/s=;
+	h=Date:Subject:To:References:From:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=vSe1126PkxIT3eEJ7aVmTW7AJ/vpUrBxfsHJV+B50TahADL24FY43wyL838PeyZ9/
-	 rr8cKjvX/71yLYGEdMZt/JuCnRF2Dw9wF8i677R/ex9Fn/BT42G5azaL0XbNzWY/qz
-	 Q5A0UNHlgZXcvlV6j4HRVV1/cchYbrtRiUZZNc6w=
+	b=DDyTVowHGB21sSEqzSKWRy1uGraHrquG1GczQfn/KW6c7fMNNo3nYY9T1MxkO2zmY
+	 1Z7QopkkOWNnIW+z1/e2hSQHpwl65Pu98fd/FEGnsI2eQeh/ld5GYfclVqcQsFLJeh
+	 l/S4j/pWScAivzyLBbUhphBsKyshAhVSAV4lU94w=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id A1DAEF80107;
-	Mon, 27 Jun 2022 17:52:01 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id C5909F80107;
+	Mon, 27 Jun 2022 17:59:38 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id D2C5EF80539; Mon, 27 Jun 2022 17:51:58 +0200 (CEST)
-Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
- [67.231.149.25])
+ id 4D613F8028B; Mon, 27 Jun 2022 17:59:37 +0200 (CEST)
+Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id AFEB6F80107
- for <alsa-devel@alsa-project.org>; Mon, 27 Jun 2022 17:51:47 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AFEB6F80107
+ by alsa1.perex.cz (Postfix) with ESMTPS id 6EDA8F80107
+ for <alsa-devel@alsa-project.org>; Mon, 27 Jun 2022 17:59:27 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6EDA8F80107
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com
- header.b="c0o3P4Pc"
-Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
- by mx0a-001ae601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 25RCSNNN017521;
- Mon, 27 Jun 2022 10:51:45 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
- h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding : content-type; s=PODMain02222019;
- bh=LBdjpKTcBhVvtkLLUBtkb/1VdJ7fQ8gDmZFGNTWayfE=;
- b=c0o3P4PcBbYyxm6ma7UiOlgpOXOy/8kMKDphJvtHrS57G6vD94kqdvWLq3cwIZ5BG1RA
- hZNQua5juIFMrh5mxBSh4e3aDs+EA9lS6ZQujOEeP1N6/fmjlftNE0u/YGSjRo14n+fN
- Igt3Hk05zZuPVcA96ogWYeRc/1Ei35xpDbO72PV7gI4KzE/t5GZJ4UvTTruEEI/RAoVq
- AaNEfm/gz6/aBTRL/4lQCAuyOoTwPvqPx6jEE2iReIYvCmBbSFi3KtDhVBu2BDG1OCQ3
- 55fIF+Ib0sB14k+a92d7SiOTfpYGPajMa56zesP2HEKuw3k7KybCL8gQCsb+ZTTgwDsJ ng== 
-Received: from ediex01.ad.cirrus.com ([84.19.233.68])
- by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3gwys2k0uh-2
- (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
- Mon, 27 Jun 2022 10:51:45 -0500
-Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.28; Mon, 27 Jun
- 2022 16:51:42 +0100
-Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server id 15.1.2375.28 via
- Frontend Transport; Mon, 27 Jun 2022 16:51:42 +0100
-Received: from sbinding-cirrus-dsktp.ad.cirrus.com (unknown [198.90.238.163])
- by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 7A824458;
- Mon, 27 Jun 2022 15:51:42 +0000 (UTC)
-From: Stefan Binding <sbinding@opensource.cirrus.com>
-To: "Rafael J . Wysocki" <rafael@kernel.org>, Len Brown <lenb@kernel.org>,
- Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
-Subject: [PATCH v3 2/2] ASoC: cs35l41: Read System Name from ACPI _SUB to
- identify firmware
-Date: Mon, 27 Jun 2022 16:51:38 +0100
-Message-ID: <20220627155138.807420-3-sbinding@opensource.cirrus.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20220627155138.807420-1-sbinding@opensource.cirrus.com>
-References: <20220627155138.807420-1-sbinding@opensource.cirrus.com>
+ dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
+ header.b="cY1iaIQZ"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+ d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+ t=1656345573; x=1687881573;
+ h=message-id:date:mime-version:subject:to:cc:references:
+ from:in-reply-to:content-transfer-encoding;
+ bh=ENJbuXj656pbEAK4xDMrx8tuaKh/RuP4LbBqC0yn8/s=;
+ b=cY1iaIQZtVoiI+5Unj8V3MNjb3FFU8eBoTsJl6tgwPqpZYBXBCWeHXIA
+ 37nKPgOZ9TGwtbg0bw2Vmculme7uZ6R2bo8RnvQdzSoeMmZAEBPYKhUIU
+ a8uc/VEjRaZFYPfg3M+L547wIbqAnzIUuvxn8sZq1FiQri0D1oUdvfVlW
+ Cb3u+UOibkK/D9wC821n/MbEZ4FFyhliOkltQ1XLU2pXNq1mP3wyfrDM7
+ BDWETfwVAMocblNr+biCZgU0LO+lCR/+l61CswNy/A14uvEjdaSSIAvwB
+ qsGVKENMRkjCq5fOAbtxTeSKIMssYpkRBK7ojQqCEaHLX8yXaLAPfbUJq Q==;
+X-IronPort-AV: E=McAfee;i="6400,9594,10391"; a="280238447"
+X-IronPort-AV: E=Sophos;i="5.92,226,1650956400"; d="scan'208";a="280238447"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+ by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 27 Jun 2022 08:59:25 -0700
+X-IronPort-AV: E=Sophos;i="5.92,226,1650956400"; d="scan'208";a="622589630"
+Received: from vthayala-mobl.amr.corp.intel.com (HELO [10.209.144.177])
+ ([10.209.144.177])
+ by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 27 Jun 2022 08:59:24 -0700
+Message-ID: <650468f2-4a68-d1fa-157c-827fda5f1ed5@linux.intel.com>
+Date: Mon, 27 Jun 2022 10:59:23 -0500
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: M2HzhwYqUWoCzSSn_C-Krx8bqnoCz755
-X-Proofpoint-GUID: M2HzhwYqUWoCzSSn_C-Krx8bqnoCz755
-X-Proofpoint-Spam-Reason: safe
-Cc: linux-acpi@vger.kernel.org, alsa-devel@alsa-project.org,
- Stefan Binding <sbinding@opensource.cirrus.com>, linux-kernel@vger.kernel.org,
- patches@opensource.cirrus.com
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Firefox/91.0 Thunderbird/91.9.1
+Subject: Re: [PATCH 0/4] ASoC: Intel: Mark BE DAIs as nonatomic for hsw and
+Content-Language: en-US
+To: Cezary Rojewski <cezary.rojewski@intel.com>, alsa-devel@alsa-project.org, 
+ broonie@kernel.org
+References: <20220624134317.3656128-1-cezary.rojewski@intel.com>
+ <ac2b7d8b-a5be-4fac-169c-eaca185c9746@linux.intel.com>
+ <3d9b45c0-b415-21d9-6af5-68fa1001ed17@intel.com>
+ <34b54e4e-8997-c2b7-fdf0-24a1b95121ab@linux.intel.com>
+ <c668f83e-d9fb-35dc-a06d-6563d20ddc8c@intel.com>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+In-Reply-To: <c668f83e-d9fb-35dc-a06d-6563d20ddc8c@intel.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+Cc: hdegoede@redhat.com, tiwai@suse.com, amadeuszx.slawinski@linux.intel.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -97,74 +91,39 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-When loading firmware, wm_adsp uses a number of parameters to
-determine the path of the firmware and tuning files to load.
-One of these parameters is system_name.
-Add support in cs35l41 to read this system name from the ACPI
-_SUB ID in order to uniquely identify the firmware and tuning
-mapped to a particular system.
 
-Signed-off-by: Stefan Binding <sbinding@opensource.cirrus.com>
----
- sound/soc/codecs/cs35l41.c | 24 ++++++++++++++++++++++++
- 1 file changed, 24 insertions(+)
 
-diff --git a/sound/soc/codecs/cs35l41.c b/sound/soc/codecs/cs35l41.c
-index 8766e19d85f1..9ab016094b32 100644
---- a/sound/soc/codecs/cs35l41.c
-+++ b/sound/soc/codecs/cs35l41.c
-@@ -6,6 +6,7 @@
- //
- // Author: David Rhodes <david.rhodes@cirrus.com>
- 
-+#include <linux/acpi.h>
- #include <linux/delay.h>
- #include <linux/err.h>
- #include <linux/init.h>
-@@ -1142,6 +1143,24 @@ static int cs35l41_dsp_init(struct cs35l41_private *cs35l41)
- 	return ret;
- }
- 
-+static int cs35l41_probe_acpi(struct cs35l41_private *cs35l41)
-+{
-+	acpi_handle handle = ACPI_HANDLE(cs35l41->dev);
-+	const char *sub;
-+
-+	/* If there is no ACPI_HANDLE, there is no ACPI for this system, return 0 */
-+	if (!handle)
-+		return 0;
-+
-+	sub = acpi_get_subsystem_id(handle);
-+	if (IS_ERR(sub))
-+		return PTR_ERR(sub);
-+
-+	cs35l41->dsp.system_name = sub;
-+	dev_dbg(cs35l41->dev, "Susystem ID: %s\n", cs35l41->dsp.system_name);
-+	return 0;
-+}
-+
- int cs35l41_probe(struct cs35l41_private *cs35l41, const struct cs35l41_hw_cfg *hw_cfg)
- {
- 	u32 regid, reg_revid, i, mtl_revid, int_status, chipid_match;
-@@ -1270,6 +1289,10 @@ int cs35l41_probe(struct cs35l41_private *cs35l41, const struct cs35l41_hw_cfg *
- 		goto err;
- 	}
- 
-+	ret = cs35l41_probe_acpi(cs35l41);
-+	if (ret < 0)
-+		goto err;
-+
- 	ret = cs35l41_dsp_init(cs35l41);
- 	if (ret < 0)
- 		goto err;
-@@ -1316,6 +1339,7 @@ void cs35l41_remove(struct cs35l41_private *cs35l41)
- 	pm_runtime_disable(cs35l41->dev);
- 
- 	regmap_write(cs35l41->regmap, CS35L41_IRQ1_MASK1, 0xFFFFFFFF);
-+	kfree(cs35l41->dsp.system_name);
- 	wm_adsp2_remove(&cs35l41->dsp);
- 	cs35l41_safe_reset(cs35l41->regmap, cs35l41->hw_cfg.bst_type);
- 
--- 
-2.25.1
+On 6/27/22 10:41, Cezary Rojewski wrote:
+> On 2022-06-27 4:45 PM, Pierre-Louis Bossart wrote:
+>> On 6/25/22 03:29, Cezary Rojewski wrote:
+> 
+>>> Hmm.. that's a good feedback. Isn't ASoC's FE<->BE treated as a single
+>>> PCM substream in sound/core/pcm_native.c though? If so, does it even
+>>> make sense for card's BE DAI to be atomic, if it's FE counterpart is
+>>> nonatomic already? Especially if it is specifying platform and cpu_dai
+>>> that matches Intel's components which we know communicate using IPCs.
+>>
+>> I guess it depends on the cpu_dai implementation. Not all
+>> implementations implement a delay in the .trigger callback and/or rely
+>> on IPCs.
+>>
+>>> Warning is one thing, but will you be also getting rid of the
+>>> if-statement in soc-pcm.c that actually forces nonatomic=1 on BE when FE
+>>> is already declared as such? If the if-statement stays, I believe the
+>>> declaring BE DAIs 'correctly' in the way to go.
+>>
+>> I meant just removing the dev_warn() only.
+>>
+>> See https://github.com/thesofproject/linux/pull/3723
+> 
+> So the framework is still fixing the flag for the driver. Ideally we
+> would like to have all the drivers assign correct values to ->nonatomic
+> flag themselves.
+> 
+> Now when I think about it, the message seems useful - at least as
+> dev_dbg(). It _guides_ driver developer to the desired approach: setting
+> the ->nonatomic flag for BE to '1' if the corresponding FE is already
+> configured as such.
 
+that would result in unnecessary changes to all machine drivers to get
+rid of the message...
