@@ -4,83 +4,84 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5F9CDC43334
-	for <alsa-devel@archiver.kernel.org>; Mon, 27 Jun 2022 14:20:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id AC988C433EF
+	for <alsa-devel@archiver.kernel.org>; Mon, 27 Jun 2022 14:35:32 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3A9191657;
-	Mon, 27 Jun 2022 16:19:13 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3A9191657
+	by alsa0.perex.cz (Postfix) with ESMTPS id 4BADA1687;
+	Mon, 27 Jun 2022 16:34:40 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4BADA1687
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1656339603;
-	bh=WmeDp8AjUqBi7MbsbkPUf3eU/MKrNivBTQ86+KSAg9k=;
-	h=From:To:Subject:Date:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=YHJYsxIijmIVUyjq2P34UGesNid/LO/FUMV51Qu+LJI3McUSm0RnB49l+VQ1ZOavK
-	 Wk1w8MH+9lXljMiMoagYj19SsafQ8jFlwt1l3hXSAv1eFx+0iX50yQ99tOcrioc9tU
-	 LlHLRS9G9f4Okozsd20NXiy3H/qC92wEL1sBbbdI=
+	s=default; t=1656340530;
+	bh=BgtpkStqR9PVXGg42VLMj9qORkrXdeVEfLpfd1TMmHo=;
+	h=From:To:Subject:Date:In-Reply-To:References:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=f0ZTPszyUzPIcmTut2PLFv0rQpHm2XTasMoMIjawjy9mqTLflA7JNnO6lRv7Pb7ob
+	 +k1QDqr29wJdDrTUxj4orC+TVNOGZU2ES/XFXOcWA6mjaDI4Q8gM3J5BAPfjmnqPEz
+	 Tnu3VqyP3dHckNVV3d8PA6F4xs2TkvDWEDX0xZUE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id C52AFF80107;
-	Mon, 27 Jun 2022 16:19:12 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id C5817F8028B;
+	Mon, 27 Jun 2022 16:34:39 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id EA29DF8028B; Mon, 27 Jun 2022 16:19:11 +0200 (CEST)
+ id 3A0E5F8028D; Mon, 27 Jun 2022 16:34:38 +0200 (CEST)
 Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com
  [IPv6:2a00:1450:4864:20::42e])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id E9B6BF80107
- for <alsa-devel@alsa-project.org>; Mon, 27 Jun 2022 16:19:04 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E9B6BF80107
+ by alsa1.perex.cz (Postfix) with ESMTPS id 422FDF800E9
+ for <alsa-devel@alsa-project.org>; Mon, 27 Jun 2022 16:34:34 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 422FDF800E9
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org
- header.b="xFR4kWDP"
-Received: by mail-wr1-x42e.google.com with SMTP id d17so7660019wrc.10
- for <alsa-devel@alsa-project.org>; Mon, 27 Jun 2022 07:19:04 -0700 (PDT)
+ header.b="T/5ehi/+"
+Received: by mail-wr1-x42e.google.com with SMTP id w17so13352450wrg.7
+ for <alsa-devel@alsa-project.org>; Mon, 27 Jun 2022 07:34:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
- h=from:to:subject:date:message-id:mime-version
+ h=from:to:subject:date:message-id:in-reply-to:references:mime-version
  :content-transfer-encoding;
- bh=etbyC6+DcjuUYPYEggX53K5pNY+3Oq3KA+YfrpJk3l0=;
- b=xFR4kWDPyiw6BBcuKsZN9XPw30MhlmzCP7Dx7I9hj6EPes9x0Frv1pyCzN/vNpIZB3
- AJTwYUKUKTvULghGgqyFKKeDbSj21OaSafAP1VJ4+dh4KopA5XaBSY9Z8KYs5lur+8MQ
- AGQmp/19c58xwDaH6j+abpT8/q9EWgTefiWPQCRY9VljoqQpdH9dTmEXMlSoZvgQPIEq
- 2D/BK4SCSox+Ci0E4uoqdN5Z36BUPsfqN1dlyIvwLg4vY5Ak1/ROun3eQIsOy6gIvzFV
- +WHhcJvAgPND7/iVJdguMtWtu6qaMHgdG1kK0TSpMjvBVEIumHW/b9fl1vSFcQt51BoR
- o4dg==
+ bh=RulnywGDRCN4Up1alBesmQISI/vXS+eDPdIZtvq/DHE=;
+ b=T/5ehi/+YQa6nBm0drA1PW1R6m5Oo11fA/Ze5NurtYii6uKm8f9uLM5U0/INzxSlDZ
+ Ts40K4Ha+eRjzpRJNfX9zIPHYv856PbSw4/aqvJpf8fY3Ror7+XnVhOO7pWQhd9du6BO
+ kR7qwiNons3UzV6/NS+XvePSlOCBkyr5TYc5e48e1JLOFmeejyczJHqQlTw0RKlf87Ou
+ NqgRziypXltJJqZ8yFg76wt/faQHLusNBPt1U9GrUrlrWXqEGYBktEzirD5lnl8p5sSb
+ bw93L98AaoVoYIVxo0YDsOWC+79yhl8pEmIDY5WvMjnwdueBK/Yg2l3cjXQvhua/AfUC
+ Fj8A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
- h=x-gm-message-state:from:to:subject:date:message-id:mime-version
- :content-transfer-encoding;
- bh=etbyC6+DcjuUYPYEggX53K5pNY+3Oq3KA+YfrpJk3l0=;
- b=bW+nGnVFYzQGX/6lsg5wCJGDbuj9dtter3+xoGuOHezoNl7oTw/WZfq2sT05N1khnL
- wnlBqcUh4eqy4jrGnfRENwlhIsYpmcbI0RkdZ6PVEbCm3FtIjXGayziZbcAQWmKUv4l0
- YtyyfPIEi3/BrAHidv4mk8R19Cc9QUg7pHhKfD8KvQCDJUmhiSfBmdd6qcjA7Iojd3Yr
- TAKttAZQ0D4qfYkFEvEAcas62FDUFtAww7OuVYIaAxzFEWwK2ahvpq6h6+k9N/nugumP
- bj/jp7fRg4tzt5OpRByVXmMrO3iYoc/92DUeqxgOTT0ZR5VEpWAty2imn923Lc8ECbHq
- awSg==
-X-Gm-Message-State: AJIora+w8hkN/EoOql/TqPvYQOuHhefenue4EPxhFDHWpMBZ1XwaRMKL
- +DazdN6riEaA5Pnu1uUeq081Mg==
-X-Google-Smtp-Source: AGRyM1vaYtefBK9d+YZR3or0A5F0tEaouPxAFBusj6zsA6PDz2Hem6+/ZHpDHTfTMQMRdd1A+A0lYQ==
-X-Received: by 2002:a5d:568b:0:b0:21b:995c:eb4e with SMTP id
- f11-20020a5d568b000000b0021b995ceb4emr12762633wrv.325.1656339543211; 
- Mon, 27 Jun 2022 07:19:03 -0700 (PDT)
+ h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
+ :references:mime-version:content-transfer-encoding;
+ bh=RulnywGDRCN4Up1alBesmQISI/vXS+eDPdIZtvq/DHE=;
+ b=b3IIHKVqOh6pk9dGxvaKRWg0Zklsg/YWp76ao9Ny09L4v64uyNOUgC2DIqueWdGKLQ
+ pgW9988H/02QB8UdLFwYvTsKEhMJJkFxG0ukRTzBPYbzA4SkPWEE7h4LRVRa7xv8vnlx
+ 55+mpA0P6SQAvixKpi+kngK1hUdrAdcvhondFIaRu9n+/xT1woushbSQTKEcrvgp4Vof
+ myEcPupLKLKYxGu38KcUPDcpUtwblENrVgKyUbsw9LaHhoLk1BJutdXhJvPsc7g9+7uR
+ 68GQkmx98eOTyL7IrYxsmM7adGlmdIs6hbP8A9PQqPyu0AN+Okm/iLtmjHUZCNCINTrW
+ uyjg==
+X-Gm-Message-State: AJIora8V5NOE6YnSvb/mFpZMDkyHrczaqG/yg52hlw3+JpQdu0IiEjqq
+ RKhaWX4LSkVhDVvPfzgiyUizMg==
+X-Google-Smtp-Source: AGRyM1vPwQLpT1whbo/vMPp0t4ykErcdUKzGyeUSBtjebvJh9JnkbgixAK4/Q/LwHWbjIB/vcN8KwA==
+X-Received: by 2002:adf:dc51:0:b0:21b:a045:9730 with SMTP id
+ m17-20020adfdc51000000b0021ba0459730mr13008944wrj.134.1656340473269; 
+ Mon, 27 Jun 2022 07:34:33 -0700 (PDT)
 Received: from localhost.localdomain (xdsl-188-155-176-92.adslplus.ch.
  [188.155.176.92]) by smtp.gmail.com with ESMTPSA id
- i6-20020a05600c354600b003974a00697esm18944196wmq.38.2022.06.27.07.19.02
+ g4-20020a5d5544000000b0021a39f5ba3bsm10662853wrw.7.2022.06.27.07.34.32
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Mon, 27 Jun 2022 07:19:02 -0700 (PDT)
+ Mon, 27 Jun 2022 07:34:32 -0700 (PDT)
 From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
  Sylwester Nawrocki <s.nawrocki@samsung.com>,
  Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
  Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
- Arnd Bergmann <arnd@arndb.de>, alsa-devel@alsa-project.org,
- linux-kernel@vger.kernel.org
-Subject: [PATCH] ASoC: samsung: h1940_uda1380: include proepr GPIO consumer
- header
-Date: Mon, 27 Jun 2022 16:19:00 +0200
-Message-Id: <20220627141900.470469-1-krzysztof.kozlowski@linaro.org>
+ alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Subject: [PATCH 2/3] ASoC: samsung: s3c24xx-i2s: Drop unneeded gpio.h include
+Date: Mon, 27 Jun 2022 16:34:11 +0200
+Message-Id: <20220627143412.477226-2-krzysztof.kozlowski@linaro.org>
 X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20220627143412.477226-1-krzysztof.kozlowski@linaro.org>
+References: <20220627143412.477226-1-krzysztof.kozlowski@linaro.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-BeenThere: alsa-devel@alsa-project.org
@@ -98,25 +99,22 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-h1940_uda1380 uses gpiod*/GPIOD* so it should include GPIO consumer
-header.
+The module does not use anything from gpio.h header.
 
-Fixes: 9666e27f90b9 ("ASoC: samsung: h1940: turn into platform driver")
 Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 ---
- sound/soc/samsung/h1940_uda1380.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/samsung/s3c24xx-i2s.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/sound/soc/samsung/h1940_uda1380.c b/sound/soc/samsung/h1940_uda1380.c
-index 907266aee839..fa45a54ab18f 100644
---- a/sound/soc/samsung/h1940_uda1380.c
-+++ b/sound/soc/samsung/h1940_uda1380.c
-@@ -8,7 +8,7 @@
- // Based on version from Arnaud Patard <arnaud.patard@rtp-net.org>
- 
- #include <linux/types.h>
+diff --git a/sound/soc/samsung/s3c24xx-i2s.c b/sound/soc/samsung/s3c24xx-i2s.c
+index c1a314b86b15..44e93dc16fc3 100644
+--- a/sound/soc/samsung/s3c24xx-i2s.c
++++ b/sound/soc/samsung/s3c24xx-i2s.c
+@@ -12,7 +12,6 @@
+ #include <linux/delay.h>
+ #include <linux/clk.h>
+ #include <linux/io.h>
 -#include <linux/gpio.h>
-+#include <linux/gpio/consumer.h>
  #include <linux/module.h>
  
  #include <sound/soc.h>
