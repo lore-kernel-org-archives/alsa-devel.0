@@ -4,89 +4,70 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 02BF7C433EF
-	for <alsa-devel@archiver.kernel.org>; Mon, 27 Jun 2022 20:41:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0855EC43334
+	for <alsa-devel@archiver.kernel.org>; Mon, 27 Jun 2022 20:47:32 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 900691661;
-	Mon, 27 Jun 2022 22:40:37 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 900691661
+	by alsa0.perex.cz (Postfix) with ESMTPS id 1CAE11661;
+	Mon, 27 Jun 2022 22:46:41 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1CAE11661
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1656362487;
-	bh=q2zvoDoHLI8vzyBKC6tznqwjhjMUqV3ZFXMuuLWUIXg=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	s=default; t=1656362851;
+	bh=UiaAu/L1sfP4Mx0eMmE72X2gzOVHDTEcJcPI7zKKQ2g=;
+	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=cvQ0wwunt+IRUn4lsycuKMJkt2NPijqk9HFpFi6fcWxBYXBQFzZSnrXyzdKWloJdD
-	 hTHuySQNgOnOvAXJtRftHmWovFob+SLwtPLLy8CDDEHM+oBCJP5bX8gwESlnt0sbVM
-	 2YwgNmR6OTU53LDSxIsDTgPlE/S57XcBvqRwAiNo=
+	b=h7MfVCmpoQHWLOmuuxjd/oNPakfPKhjS5qLOZtItuNNL4Ia1k6wPxa06NiTNt3nDY
+	 wHse7+R4uArbtT47X3JSnS5hn7Tk1pXzfAMPnBDG5/L1AYJ4qwnpNA4VnwPXHxA2NH
+	 h7hW0Mdp1qd2OPgTyKGsAmlgbgIPwCQsteeLekpM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 159DDF8012F;
-	Mon, 27 Jun 2022 22:40:37 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id AC5DBF8028B;
+	Mon, 27 Jun 2022 22:46:40 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id E62D4F8028B; Mon, 27 Jun 2022 22:40:35 +0200 (CEST)
-Received: from mail-oa1-x36.google.com (mail-oa1-x36.google.com
- [IPv6:2001:4860:4864:20::36])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id D32F6F8028B; Mon, 27 Jun 2022 22:46:38 +0200 (CEST)
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id AAFA6F800E9
- for <alsa-devel@alsa-project.org>; Mon, 27 Jun 2022 22:40:27 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AAFA6F800E9
+ by alsa1.perex.cz (Postfix) with ESMTPS id 69F4FF80128
+ for <alsa-devel@alsa-project.org>; Mon, 27 Jun 2022 22:46:35 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 69F4FF80128
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org
- header.b="F0+f2j6f"
-Received: by mail-oa1-x36.google.com with SMTP id
- 586e51a60fabf-fe023ab520so14413165fac.10
- for <alsa-devel@alsa-project.org>; Mon, 27 Jun 2022 13:40:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
- h=date:from:to:cc:subject:message-id:references:mime-version
- :content-disposition:in-reply-to;
- bh=jmzqCLZEusFvK30GUvwarTPAI/2hAGgafpqukT2uCeY=;
- b=F0+f2j6fH/kSwW8e/OqSf1WkPdi/HOLnWsY5Wc11wwGJIJHoHKiCOiRdy0CBi4xpC/
- UjF8PzFLbSdglDlCkSvxR23w6DYPoR4VC8KvlNg6/+q8nXASFfihtjl1ntPTBtdvm0hp
- GYW7SbFIoQ+kMeMbgcn3KJ6yRldtsLD7RvVe72K27HWOXBi/cgvEqJnn82d7Ikcsntuz
- 028Xoy0Q2Xzlfvvt+U8FwqmrZrIrhlL1GME62bwBqNf1FA8+Rz1/h5EJ2CowyRJs9ZPp
- w5xofn+9XZmS2+3Y1W8XMNNk1lyHpBoy5T17Xt6Ut2iQT1WpCXXMG27pNoRSBx4Ic4CC
- jslA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=x-gm-message-state:date:from:to:cc:subject:message-id:references
- :mime-version:content-disposition:in-reply-to;
- bh=jmzqCLZEusFvK30GUvwarTPAI/2hAGgafpqukT2uCeY=;
- b=qKlsEQsfJueNSpf/r0BNmNOviCkuqPIiXIyLvNLSzK8lnjeBOakcIaNJoKABdLBqt4
- ayNRvX4HD1iyoRsiVO/AHoh3AW3F5CKKKD9Qea/ter0vqEtT6j1Tx/xHrL/YgxYxzEE1
- zpaklLaMZeL35T7qkWVshS+jcFbQEjssLDK60bd7PvCwRGwK0SJDd3pH7dj0pUKIcCeM
- dQFVEcABd4KrIcYyitzZ+w2hfSwYt12LV90fL50aBMOl1bYgA788GV7DcCWweBYBe4Id
- Quvw5mfsw6wVWSrBLq5Zf1Q7CDOE5Ztw5+y7vrQ4km7Pv6trVDk1wQt6Z8JZqwDU1kzX
- N7LA==
-X-Gm-Message-State: AJIora/omboET8UDwVRgmYVWlJXQMxvadiwTWotqxklYcSP+wbH9Mw7I
- bBDt0iNO3HQhPusrRxUliuFscg==
-X-Google-Smtp-Source: AGRyM1t6hiie7pEhqg3xvsIsHHhFpIuSUQyQD0JXZnqL06hesjet/y04wFsLleqR34mUqH2RbK0jUQ==
-X-Received: by 2002:a05:6870:f616:b0:f2:dac0:e339 with SMTP id
- ek22-20020a056870f61600b000f2dac0e339mr11702877oab.116.1656362425179; 
- Mon, 27 Jun 2022 13:40:25 -0700 (PDT)
-Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net.
- [104.57.184.186]) by smtp.gmail.com with ESMTPSA id
- c13-20020aca1c0d000000b003351dbf5e36sm5835177oic.43.2022.06.27.13.40.23
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Mon, 27 Jun 2022 13:40:24 -0700 (PDT)
-Date: Mon, 27 Jun 2022 15:40:22 -0500
-From: Bjorn Andersson <bjorn.andersson@linaro.org>
-To: Bryan O'Donoghue <bryan.odonoghue@linaro.org>,
- Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v3 1/2] ASoC: qcom: lpass: Fix apq8016 compat string to
- match yaml
-Message-ID: <YroVtj4zXXcHygxD@builder.lan>
-References: <20220429220349.1142759-1-bryan.odonoghue@linaro.org>
- <20220429220349.1142759-2-bryan.odonoghue@linaro.org>
+ dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="CddB4nZT"
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by ams.source.kernel.org (Postfix) with ESMTPS id 88AC0B81B96;
+ Mon, 27 Jun 2022 20:46:34 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 71EB0C34115;
+ Mon, 27 Jun 2022 20:46:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1656362793;
+ bh=UiaAu/L1sfP4Mx0eMmE72X2gzOVHDTEcJcPI7zKKQ2g=;
+ h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+ b=CddB4nZT6iM+fjCtSN4kqidyQKt3BmutS2erpTUnZvb76JkBD1onosNbSCWZ5jh8L
+ Eq+pzHohiP7IUIwwKfAFBLTiERTPHB7fCtum7nUWUfOl/FwISL2th0E6MZUqRmyIRO
+ ndejmvx4meRiHO9NKIZVktYTWaLD8Iy8sz1OjZDfUYe4LWn6JnqTB7Y7s45CzDQ6zj
+ IFr6h/jxGNpZ6kXwUh3f7O94BLFDg/8POkGz6I3A4bfGTbRJx80VktD7zfcAkTri+C
+ Bdny7eORXbwJx3obunku3cMN2YObFVglah1IDxiNuibajLfRvO+rh4r3IFCnIUKc/M
+ SfIhtXS9wuwbg==
+From: Mark Brown <broonie@kernel.org>
+To: jernej.skrabec@gmail.com, lgirdwood@gmail.com, samuel@sholland.org,
+ wens@csie.org
+In-Reply-To: <20220621035452.60272-1-samuel@sholland.org>
+References: <20220621035452.60272-1-samuel@sholland.org>
+Subject: Re: (subset) [PATCH v2 0/3] ASoC: sun50i-codec-analog: Internal bias
+ support
+Message-Id: <165636279016.4185952.318954133536578049.b4-ty@kernel.org>
+Date: Mon, 27 Jun 2022 21:46:30 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220429220349.1142759-2-bryan.odonoghue@linaro.org>
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
- linux-arm-msm@vger.kernel.org, Takashi Iwai <tiwai@suse.com>,
- robh+dt@kernel.org, srinivas.kandagatla@linaro.org, krzk+dt@kernel.org
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+Cc: devicetree@vger.kernel.org, arnaud.ferraris@collabora.com,
+ alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, tiwai@suse.com,
+ mripard@kernel.org, robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+ linux-sunxi@lists.linux.dev, linux-arm-kernel@lists.infradead.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -102,61 +83,45 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Fri 29 Apr 17:03 CDT 2022, Bryan O'Donoghue wrote:
-
-Adding the sound maintainers to To/Cc, please advice if you would prefer
-Bryan to resubmit the patch with proper recipients.
-
-> The documented yaml compat string for the apq8016 is
-> "qcom,apq8016-lpass-cpu" not "qcom,lpass-cpu-apq8016". Looking at the other
-> lpass compat strings the general form is "qcom,socnum-lpass-cpu".
+On Mon, 20 Jun 2022 22:54:49 -0500, Samuel Holland wrote:
+> This series adds support for enabling the codec's internal microphone
+> bias, which is needed on at least some versions of the PinePhone.
 > 
-> We need to fix both the driver and dts to match.
+> Changes in v2:
+>  - Move register update from component probe to device probe
 > 
-> Fixes: dc1ebd1811e9 ("ASoC: qcom: Add apq8016 lpass driver support")
-> Reviewed-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-> Signed-off-by: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
-
-Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-
-Once this patch is picked up I can merge the dts change.
-
-Regards,
-Bjorn
-
-> ---
->  sound/soc/qcom/lpass-apq8016.c | 1 +
->  sound/soc/qcom/lpass-cpu.c     | 5 +++++
->  2 files changed, 6 insertions(+)
+> Arnaud Ferraris (2):
+>   ASoC: dt-bindings: sun50i-codec: Add binding for internal bias
+>   ASoC: sun50i-codec-analog: Add support for internal bias
 > 
-> diff --git a/sound/soc/qcom/lpass-apq8016.c b/sound/soc/qcom/lpass-apq8016.c
-> index 3efa133d1c64..abaf694ee9a3 100644
-> --- a/sound/soc/qcom/lpass-apq8016.c
-> +++ b/sound/soc/qcom/lpass-apq8016.c
-> @@ -293,6 +293,7 @@ static struct lpass_variant apq8016_data = {
->  
->  static const struct of_device_id apq8016_lpass_cpu_device_id[] __maybe_unused = {
->  	{ .compatible = "qcom,lpass-cpu-apq8016", .data = &apq8016_data },
-> +	{ .compatible = "qcom,apq8016-lpass-cpu", .data = &apq8016_data },
->  	{}
->  };
->  MODULE_DEVICE_TABLE(of, apq8016_lpass_cpu_device_id);
-> diff --git a/sound/soc/qcom/lpass-cpu.c b/sound/soc/qcom/lpass-cpu.c
-> index e6846ad2b5fa..53f9bf6581d3 100644
-> --- a/sound/soc/qcom/lpass-cpu.c
-> +++ b/sound/soc/qcom/lpass-cpu.c
-> @@ -1102,6 +1102,11 @@ int asoc_qcom_lpass_cpu_platform_probe(struct platform_device *pdev)
->  	if (!match || !match->data)
->  		return -EINVAL;
->  
-> +	if (of_device_is_compatible(dev->of_node, "qcom,lpass-cpu-apq8016")) {
-> +		dev_warn(dev, "%s compatible is deprecated\n",
-> +			 match->compatible);
-> +	}
-> +
->  	drvdata->variant = (struct lpass_variant *)match->data;
->  	variant = drvdata->variant;
->  
-> -- 
-> 2.35.1
-> 
+> [...]
+
+Applied to
+
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+
+Thanks!
+
+[1/3] ASoC: dt-bindings: sun50i-codec: Add binding for internal bias
+      commit: 24e0b04dd42be34ec4b18dc1a1e139d66eb572a3
+[2/3] ASoC: sun50i-codec-analog: Add support for internal bias
+      commit: 25ae1a04da0d32c22db0b018e5668129b91fa104
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
