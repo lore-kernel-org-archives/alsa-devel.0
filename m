@@ -4,68 +4,91 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1763BC433EF
-	for <alsa-devel@archiver.kernel.org>; Mon, 27 Jun 2022 20:48:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C3E69C43334
+	for <alsa-devel@archiver.kernel.org>; Mon, 27 Jun 2022 20:54:15 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 4A7B0167E;
-	Mon, 27 Jun 2022 22:47:11 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4A7B0167E
+	by alsa0.perex.cz (Postfix) with ESMTPS id C14FD1664;
+	Mon, 27 Jun 2022 22:53:23 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C14FD1664
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1656362881;
-	bh=L4YuvpMGrnXrS3Vp6XV56Nv9k75SEE7cHPVHrCuYlII=;
-	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
+	s=default; t=1656363253;
+	bh=2us7eO56u9rJbCrrQSCvl8jLSiOlyrXL18kPskJgQ84=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=oujBlmYQ4evXspJvTTQaW3oGXjlJk8QVMWkntwS5VkvyxRATHIw2xnZxq7P4pQ09L
-	 0PApRf9+bUqkFoDOJKyEepAmIVeja8lrsbmkYS6FihWdf0aD2Jgu3KcGnLG0OCCaLo
-	 eKZJxhS6ryzd0mmpXh/nmfrQpbwqBO28knGqiu6w=
+	b=ehGZp2QOWYsthY7+v7Qh8RUFX6zC4xRQWTeApKArqFIZOF2DFfg14veFWwqyuQriw
+	 vwu8rk1QyC9x+KXPJ5/YAANQZ2I+d3B+pOZNZ05O6TRvUX5YNzLKZ65Hm7oCjz9lpW
+	 o+qb+DK+YgN5lvofKXxM4wvnUc1VqQTfVmYg5fZU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 5EBC3F8028D;
-	Mon, 27 Jun 2022 22:46:44 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 4E9A7F8012F;
+	Mon, 27 Jun 2022 22:53:23 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 3F5F9F800E9; Mon, 27 Jun 2022 22:46:41 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org
- [IPv6:2604:1380:4641:c500::1])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id CF563F8028B; Mon, 27 Jun 2022 22:53:21 +0200 (CEST)
+Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com
+ [IPv6:2a00:1450:4864:20::534])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id B3BB4F800E9
- for <alsa-devel@alsa-project.org>; Mon, 27 Jun 2022 22:46:38 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B3BB4F800E9
+ by alsa1.perex.cz (Postfix) with ESMTPS id 97A45F800E9
+ for <alsa-devel@alsa-project.org>; Mon, 27 Jun 2022 22:53:14 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 97A45F800E9
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="TyLYdBD8"
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id 86E0A6179C;
- Mon, 27 Jun 2022 20:46:35 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BBEA3C341CD;
- Mon, 27 Jun 2022 20:46:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1656362795;
- bh=L4YuvpMGrnXrS3Vp6XV56Nv9k75SEE7cHPVHrCuYlII=;
- h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=TyLYdBD8uFSiH32EAQH7pTl9RjQK83mjPiWyJPjZ+sjQ6Lw46+RCTesAM+RnnuyBm
- 45xHgMVAJ3JL57Cpu64+xAQpOei35Y9+BcWG7JX8XcirQ5S4Mj3vGxKyejayatmT28
- NwT53ohmPbmqQneyO+Pu7V6vkaBR27kh3efZa6hMpNLjSTfbicOJP3rWP/w44qYbce
- S7woXG/i9qmxDMXSDo/PgQqSvYe5Ox97L2qA3+oAdo5bVPWOhg2gGIUGat4mGpPRuw
- dSeUNxZ2GIzSsG4KnQnmrU/kiJN7Njn532INOAQMwPffQlKEh+ghj9MA8Md5EMzuEn
- 4KX1D572G2/hg==
-From: Mark Brown <broonie@kernel.org>
-To: ckeepax@opensource.cirrus.com
-In-Reply-To: <20220627094335.3051210-1-ckeepax@opensource.cirrus.com>
-References: <20220627094335.3051210-1-ckeepax@opensource.cirrus.com>
-Subject: Re: [PATCH] ASoC: samsung: s3c24xx-i2s: Fix typo in DAIFMT handling
-Message-Id: <165636279349.4185952.15017228946920740997.b4-ty@kernel.org>
-Date: Mon, 27 Jun 2022 21:46:33 +0100
+ dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
+ header.b="TUVg0HsI"
+Received: by mail-ed1-x534.google.com with SMTP id r18so6904122edb.9
+ for <alsa-devel@alsa-project.org>; Mon, 27 Jun 2022 13:53:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
+ h=from:to:cc:subject:date:message-id:in-reply-to:references
+ :mime-version:content-transfer-encoding;
+ bh=2IA+0VfcVBkch2BU2eYjCNzBquhqaGbstP7Dzuv9Lqo=;
+ b=TUVg0HsIqLw4sApAkHjqnkpFHrds7l7w0mQZVXGCjUxtRg9tT/C0Sbb8yO+tjzsYSY
+ kj6NfSMrW3R9plL5lGlW+mcCCb7SdvQBZo1fRAPrxIlm3LY8ws+enJl7Q2gFbOvlbY/A
+ CZc3kQz7BKYdmhONPxVB8QxIoCs9TLFW1ezxIvteEDCrpx6Y5jE4M5IYLfzQ4p1LFTFB
+ pIMAstdeQ8N7xmpOKec/0SxjfkcK6F2erW4jmyBQv9T/L1OtyWymKO5tOG38e17cUtt4
+ kX7XcNInyC+5oa262lczEiqFMnYEi/YggipKpwgcx6zUS4dmWa4w/09RAh56/EjB9lzv
+ VWog==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+ :references:mime-version:content-transfer-encoding;
+ bh=2IA+0VfcVBkch2BU2eYjCNzBquhqaGbstP7Dzuv9Lqo=;
+ b=GRyIywDScR3JHe7NDAmuy+IcVDMW0ZZtWhOf8R8en89SBYMr/uDPlhmMSMezvQRV62
+ O5WvaYIFHIHU6T3mhh2VXf65meeQrADYN/OHmJd/mMtJI9MzVxloMTxWVkpYTtYYAHuL
+ TiEZLIvXNiWS9H8ecadPut6mnNU2m8AkinbUKHu8gEvxLy655oZefOmnEHx/Wv1hrio3
+ LOfU5FqE5a2FGL4ndR5TBGHVcdM7wG9k89+ED6Vc4MuQ5JBS0nHRzUjboapl51dyb8Jg
+ pn+jrNwUPE1r5FjNfK9T1XsSHlqx1uXY/daSTuLltp++wQEtFbfOCpE19wILSiwzs4/j
+ ZLhw==
+X-Gm-Message-State: AJIora8mKWbstsoGh+ISi84IBxol+epPV/i4M0/qX2m//RppkZ0b47Zn
+ PGk/bGEEYk4yxLe8DJVcALU=
+X-Google-Smtp-Source: AGRyM1sOleAAXiC2Z84z7E23pKGNaf1YN5XBERpRmtfSGUqMPsciG8VWq+vn/Gj8YZVQHS579GHYiA==
+X-Received: by 2002:a05:6402:14c4:b0:435:717a:fd63 with SMTP id
+ f4-20020a05640214c400b00435717afd63mr18902564edx.395.1656363188396; 
+ Mon, 27 Jun 2022 13:53:08 -0700 (PDT)
+Received: from jernej-laptop.localnet (213-161-3-76.dynamic.telemach.net.
+ [213.161.3.76]) by smtp.gmail.com with ESMTPSA id
+ r1-20020a17090638c100b007219c20dcd8sm5447202ejd.196.2022.06.27.13.53.06
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Mon, 27 Jun 2022 13:53:07 -0700 (PDT)
+From: Jernej =?utf-8?B?xaBrcmFiZWM=?= <jernej.skrabec@gmail.com>
+To: Chen-Yu Tsai <wens@csie.org>, Liam Girdwood <lgirdwood@gmail.com>,
+ Mark Brown <broonie@kernel.org>, Samuel Holland <samuel@sholland.org>
+Subject: Re: [PATCH v2 3/3] arm64: dts: allwinner: pinephone: Enable internal
+ HMIC bias
+Date: Mon, 27 Jun 2022 22:53:05 +0200
+Message-ID: <13043007.uLZWGnKmhe@jernej-laptop>
+In-Reply-To: <20220621035452.60272-4-samuel@sholland.org>
+References: <20220621035452.60272-1-samuel@sholland.org>
+ <20220621035452.60272-4-samuel@sholland.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-Cc: alsa-devel@alsa-project.org, patches@opensource.cirrus.com,
- lgirdwood@gmail.com, linux-kernel@vger.kernel.org,
- krzysztof.kozlowski@linaro.org, jrdr.linux@gmail.com
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
+Cc: devicetree@vger.kernel.org, Arnaud Ferraris <arnaud.ferraris@collabora.com>,
+ alsa-devel@alsa-project.org, Samuel Holland <samuel@sholland.org>,
+ linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>,
+ Maxime Ripard <mripard@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ linux-sunxi@lists.linux.dev, linux-arm-kernel@lists.infradead.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -81,36 +104,16 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Mon, 27 Jun 2022 10:43:35 +0100, Charles Keepax wrote:
-> The conversion of the set_fmt callback to direct clock specification
-> included a small typo, correct the affected code.
+Dne torek, 21. junij 2022 ob 05:54:52 CEST je Samuel Holland napisal(a):
+> Revisions 1.0 and 1.1 of the PinePhone mainboard do not have an external
+> resistor connecting HBIAS to MIC2P. Enable the internal resistor to
+> provide the necessary headeset microphone bias.
 > 
-> 
+> Signed-off-by: Samuel Holland <samuel@sholland.org>
 
-Applied to
+Reviewed-by: Jernej Skrabec <jernej.skrabec@gmail.com>
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+Best regards,
+Jernej
 
-Thanks!
 
-[1/1] ASoC: samsung: s3c24xx-i2s: Fix typo in DAIFMT handling
-      commit: ccb0bbe3e93efa1c794176200785737ba65b0131
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
