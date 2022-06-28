@@ -4,69 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2F986C433EF
-	for <alsa-devel@archiver.kernel.org>; Tue, 28 Jun 2022 10:33:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 342DECCA479
+	for <alsa-devel@archiver.kernel.org>; Tue, 28 Jun 2022 10:33:18 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0C08615C2;
-	Tue, 28 Jun 2022 12:32:18 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0C08615C2
+	by alsa0.perex.cz (Postfix) with ESMTPS id 4CE35164E;
+	Tue, 28 Jun 2022 12:32:26 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4CE35164E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1656412388;
-	bh=mcPN7dG6WI58otz+ZI9udh4R7IN2jCr0gOc/tSKYAfw=;
-	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
+	s=default; t=1656412396;
+	bh=FqQbficcDw7vk8SHlBe1Sw1FJiQ7bntADu1nU2HONhA=;
+	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=joibEnzUwvUmXmyZSC2LHiBf7lAWZK8qdbhg9TXcYfocbESNWdv2VvTtIhisn15QP
-	 JvgLgUkNCAH36mRg43OZr/sc4XM3vcETL7gwlFxdlwrkDM8V1cHh5L0GbeOvLn3DgB
-	 r0N1moFOc8KAQmUeRx6x0erG4SdIlR8gMx7u+G6U=
+	b=cPp0dMwd57RY7fd+49jEqsv3Eq4kV67XcaLFaQNjieEj0UoDgI59ouykq58fwdc3P
+	 4BvyKKLg2ornYmw2e0w0OMp4XxITB4NIelw1X+VAQRBIXMGn5QQBQ8PMR+8qVmDVr6
+	 Ypq8wN2UeMJnEgN9e1v7p7d5vB5ldQSjPkSlpD3A=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 1D912F8052D;
+	by alsa1.perex.cz (Postfix) with ESMTP id CA860F80538;
 	Tue, 28 Jun 2022 12:31:34 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 32D81F8049E; Tue, 28 Jun 2022 12:31:26 +0200 (CEST)
+ id D2EF7F8049E; Tue, 28 Jun 2022 12:31:26 +0200 (CEST)
 Received: from dfw.source.kernel.org (dfw.source.kernel.org
  [IPv6:2604:1380:4641:c500::1])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 952C3F80167
- for <alsa-devel@alsa-project.org>; Tue, 28 Jun 2022 12:31:22 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 952C3F80167
+ by alsa1.perex.cz (Postfix) with ESMTPS id 5A154F80115
+ for <alsa-devel@alsa-project.org>; Tue, 28 Jun 2022 12:31:17 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5A154F80115
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="X9rFU3VY"
+ header.b="aPJCGn4i"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id 270796191C;
- Tue, 28 Jun 2022 10:31:21 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5A675C341CB;
- Tue, 28 Jun 2022 10:31:19 +0000 (UTC)
+ by dfw.source.kernel.org (Postfix) with ESMTPS id C48C26186A;
+ Tue, 28 Jun 2022 10:31:14 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 70334C3411D;
+ Tue, 28 Jun 2022 10:31:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1656412281;
- bh=mcPN7dG6WI58otz+ZI9udh4R7IN2jCr0gOc/tSKYAfw=;
- h=From:To:In-Reply-To:References:Subject:Date:From;
- b=X9rFU3VYYeqd5S9pHXRgih16ZwUvg9n3UCsF7+lA+qStGBB0Nr4Xh6d4E4wyL7W5c
- lzIE5hFJyUT0s9q082VKMHFs9SsW/kmEkA40+pEm8EAiUaGU4UYfaqBDIhx9PgZ8N6
- +Ry9kg8tCFosPQl3YNFjYpzhGIRYHcOtST1pa+LAEWkdErQaGrb6zxWpw/KC8GFPAC
- T7DDBYKumCB2eetgonh+XLIege1CZI2+lO59i3PO15MBErszPQLbJ+1OPWnEr/K38N
- wLiA5nTw5cEcnXwcyqIF9MXMOcXN8bCwUa5Lo9TU4y1qmyuDn5LQ/AJV7M3D5tzOTM
- xe5WzBJkoEgtQ==
+ s=k20201202; t=1656412274;
+ bh=FqQbficcDw7vk8SHlBe1Sw1FJiQ7bntADu1nU2HONhA=;
+ h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+ b=aPJCGn4iSnzaPYC52niBVyz2Z5O4eiCmxAI2bupQSBWrMtPxRB7tuerZPab/kJss/
+ owTupPs2hBaZdL8oFrvd9pcB+6WKUmXoKwJSR87JogfQunR1rUCH7uqZPjvJqzqulY
+ Hn0lWgAhasLz2S/ttikVHr8xXLaC+iq5FEVLpK5O9VhTJRPQ7Co84tilhs4J8JKoj+
+ Rhe6QnW81xLMNWmfVOl0llcR9aQxObDkL6XE1dY4Fohk3ZnSq+w7wOFjxuUjIerIOj
+ xz4rRl/snTGJXqnszDHjhvOqsvQYF6AwnykavkNgDJlQGHfF+cDQo5ZLlMpLyP7Zxr
+ pzpTxTRWh6Utg==
 From: Mark Brown <broonie@kernel.org>
-To: Takashi Iwai <tiwai@suse.com>, Arnd Bergmann <arnd@arndb.de>,
- krzysztof.kozlowski@linaro.org, Liam Girdwood <lgirdwood@gmail.com>,
- alsa-devel@alsa-project.org, s.nawrocki@samsung.com,
- linux-kernel@vger.kernel.org, Jaroslav Kysela <perex@perex.cz>
-In-Reply-To: <20220627141900.470469-1-krzysztof.kozlowski@linaro.org>
-References: <20220627141900.470469-1-krzysztof.kozlowski@linaro.org>
-Subject: Re: [PATCH] ASoC: samsung: h1940_uda1380: include proepr GPIO
- consumer header
-Message-Id: <165641227908.254424.11381365474563768174.b4-ty@kernel.org>
-Date: Tue, 28 Jun 2022 11:31:19 +0100
+To: festevam@gmail.com, Xiubo.Lee@gmail.com, nicoleotsuka@gmail.com,
+ shengjiu.wang@gmail.com, alsa-devel@alsa-project.org, perex@perex.cz,
+ krzk+dt@kernel.org, shengjiu.wang@nxp.com, robh+dt@kernel.org,
+ lgirdwood@gmail.com, tiwai@suse.com, devicetree@vger.kernel.org
+In-Reply-To: <1655179884-12278-1-git-send-email-shengjiu.wang@nxp.com>
+References: <1655179884-12278-1-git-send-email-shengjiu.wang@nxp.com>
+Subject: Re: [PATCH 0/7] Add PDM/DSD/dataline configuration support
+Message-Id: <165641227114.254424.14373197929735584783.b4-ty@kernel.org>
+Date: Tue, 28 Jun 2022 11:31:11 +0100
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
+Cc: linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -82,11 +82,22 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Mon, 27 Jun 2022 16:19:00 +0200, Krzysztof Kozlowski wrote:
-> h1940_uda1380 uses gpiod*/GPIOD* so it should include GPIO consumer
-> header.
+On Tue, 14 Jun 2022 12:11:17 +0800, Shengjiu Wang wrote:
+> Support PDM format and DSD format.
+> Add new dts property to configure dataline. The SAI has multiple
+> successive FIFO registers, but in some use
+> case the required dataline/FIFOs are not successive.
 > 
+> Shengjiu Wang (7):
+>   ASoC: fsl_sai: Add PDM daifmt support
+>   ASoC: fsl_sai: Add DSD bit format support
+>   ASoC: fsl_sai: Add support for more sample rates
+>   ASoc: fsl_sai: Add pinctrl operation for PDM and DSD
+>   ASoC: fsl_sai: Move res variable to be global
+>   ASoC: dt-bindings: fsl-sai: Add new property to configure dataline
+>   ASoC: fsl_sai: Configure dataline/FIFO information from dts property
 > 
+> [...]
 
 Applied to
 
@@ -94,8 +105,20 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: samsung: h1940_uda1380: include proepr GPIO consumer header
-      commit: bd10b0dafdcf0ec1677cad70101e1f97b9e28f2e
+[1/7] ASoC: fsl_sai: Add PDM daifmt support
+      commit: c111c2ddb3fdfca06bb5c7a56db7f97d6d9ea640
+[2/7] ASoC: fsl_sai: Add DSD bit format support
+      commit: 4665770407de8af3b24250cec2209eaf58546f8a
+[3/7] ASoC: fsl_sai: Add support for more sample rates
+      commit: 0d11bab8ef3e5540dfba111947dbd8dcfb813150
+[4/7] ASoc: fsl_sai: Add pinctrl operation for PDM and DSD
+      commit: b4ee8a913e617a2d0f19226225bc025c8640bf34
+[5/7] ASoC: fsl_sai: Move res variable to be global
+      (no commit info)
+[6/7] ASoC: dt-bindings: fsl-sai: Add new property to configure dataline
+      commit: 6b878ac2711056dd07c712caf89f58449cf5a592
+[7/7] ASoC: fsl_sai: Configure dataline/FIFO information from dts property
+      commit: e3f4e5b1a3e654d518155b37c7b2084cbce9d1a7
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
