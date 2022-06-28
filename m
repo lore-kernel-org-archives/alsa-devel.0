@@ -4,85 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 070EDC43334
-	for <alsa-devel@archiver.kernel.org>; Tue, 28 Jun 2022 10:13:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9F44FC43334
+	for <alsa-devel@archiver.kernel.org>; Tue, 28 Jun 2022 10:32:19 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 39ADF847;
-	Tue, 28 Jun 2022 12:12:51 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 39ADF847
+	by alsa0.perex.cz (Postfix) with ESMTPS id 45E2E857;
+	Tue, 28 Jun 2022 12:31:27 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 45E2E857
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1656411221;
-	bh=MKtu2Nuq3KWda5jwxjwaBoLOtaZiIXTFOIRJWpS7Ozo=;
-	h=From:To:Subject:Date:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=dADQGhDlU20xtm51Uozi1qUTkjqll3Z/RFVib5PQvZo0FKCVFTZ59bqWuaAgEehgD
-	 yOncYiDczuzwcCTL0c5b04TahLuD1rxSpnQ4aT1cpLp8LYmlfr6NYQV61BOOhmFqMd
-	 Fdr1RT4JK9ykWyOw5oksJcixLN7Ie4/C0hWNsii8=
+	s=default; t=1656412337;
+	bh=haCH7P825Xua46bMHZAIrSou726HuCRKAA+dDp/ShHg=;
+	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=lCcYDrvMHlKXq6TmTxsSVYrMu2cM+eCUuG6BW2PMbuQLRPCV+j7uwF1z4igYIescq
+	 LSPyVSzI65/dC6sr7X+m/ApOPZ5WygGuXq5o+qeCSCbI+pmrW5LODLWaM12hZe35Bz
+	 ngBXVrtD6meSVwVEu3IP/RrEBUr50p7E8RwhJ2fM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id CD501F80115;
-	Tue, 28 Jun 2022 12:12:50 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id ACAC1F8025B;
+	Tue, 28 Jun 2022 12:31:26 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id B32F7F80167; Tue, 28 Jun 2022 12:12:48 +0200 (CEST)
-Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com
- [IPv6:2a00:1450:4864:20::434])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id B01ABF8049E; Tue, 28 Jun 2022 12:31:24 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 8C356F80115
- for <alsa-devel@alsa-project.org>; Tue, 28 Jun 2022 12:12:42 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8C356F80115
+ by alsa1.perex.cz (Postfix) with ESMTPS id B8416F80166
+ for <alsa-devel@alsa-project.org>; Tue, 28 Jun 2022 12:31:20 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B8416F80166
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org
- header.b="e0z+uzEQ"
-Received: by mail-wr1-x434.google.com with SMTP id k22so16937724wrd.6
- for <alsa-devel@alsa-project.org>; Tue, 28 Jun 2022 03:12:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
- h=from:to:subject:date:message-id:mime-version
- :content-transfer-encoding;
- bh=rTu9XAWen9WoHj1yR5c7Lkpd0pwfwXCy8JkwcyJEXh0=;
- b=e0z+uzEQ0z82O34jFflF1Z/uP+hlboiW2wesXrgX9LNyU6j72yAqAdIdmruyVWKMJj
- 45Ez3pLouqJILdv43Jn3QKmhjJ6MlT50n5JqEogop+2q+WveBB2lhwBpuF9E2Rgh+Izs
- oHZBiitOm6aK9vUzh2rVwmpocxE0NyUoKfDrfJFmBNd02pHD00VQNFvREjitCg1Z07F5
- iIGUSDdnihSCUANGK5UDEDsKx44E97geIPm6C0gYrr8gAYQ7zILoigM6oT34GKlQcEjP
- /Ap0cDYMm1/+1l3eNZqlS82PcLRzXm1M7Kl5C6KLADYVJuTKtO0WjCoOm/blbXmIt9pk
- fpOg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=x-gm-message-state:from:to:subject:date:message-id:mime-version
- :content-transfer-encoding;
- bh=rTu9XAWen9WoHj1yR5c7Lkpd0pwfwXCy8JkwcyJEXh0=;
- b=jEA8aZYmT1TiNUtdB8KG9eghS2MgxaKnGKt916/2ijIxtjOHt7QAF+D64Tk0slCPQv
- 1zcgf66JK/dUDK85UjqhS7+Nxk5wEBQ1U8E3Gb1+hpwxhyvBbMuTvqb2PINuhE55Vujh
- vFqsmTw83uDOBK2e9MLi9L7/UDGzTJulLn54zfWQ6oLsEQ93mbFgDfQlENydIQeOjGzn
- QshPtt5fC1bPi4GeMOZJwJ3MQdm4C+i90C1WYzf5v/IfWhxxoMgLk91EIB3jo+SxPtIA
- t+b8Jqv5oKltMONnLFdHdmfR04BTeZqqcCotgU6tyRau5OUXTHZihulOmWHooEK1hsYQ
- nhyQ==
-X-Gm-Message-State: AJIora9qubgM2lEz7a/zu0Mi1cosJUF/P7r26iCHTP+oYFH/+6GoEiQU
- GcUDMyaPLp/IRhOeKRVPsZF97g==
-X-Google-Smtp-Source: AGRyM1uRGv3iuoKnkhxHQdrR1+LULm1cUgtzHMR1gwCAnsz0PMgjk8VPkm4JlKAXFvl+kgHQ/kzUzA==
-X-Received: by 2002:a05:6000:1786:b0:21d:2180:1839 with SMTP id
- e6-20020a056000178600b0021d21801839mr1043810wrg.596.1656411160443; 
- Tue, 28 Jun 2022 03:12:40 -0700 (PDT)
-Received: from localhost.localdomain (xdsl-188-155-176-92.adslplus.ch.
- [188.155.176.92]) by smtp.gmail.com with ESMTPSA id
- n12-20020a5d6b8c000000b0020c5253d8fcsm15750078wrx.72.2022.06.28.03.12.38
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Tue, 28 Jun 2022 03:12:39 -0700 (PDT)
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
- Sylwester Nawrocki <s.nawrocki@samsung.com>,
- Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
- Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
- Arnd Bergmann <arnd@arndb.de>, alsa-devel@alsa-project.org,
- linux-kernel@vger.kernel.org
-Subject: [PATCH v2] ASoC: samsung: h1940_uda1380: Include proper GPIO consumer
- header
-Date: Tue, 28 Jun 2022 12:12:34 +0200
-Message-Id: <20220628101234.34765-1-krzysztof.kozlowski@linaro.org>
-X-Mailer: git-send-email 2.34.1
+ dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="qtXLGa11"
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by dfw.source.kernel.org (Postfix) with ESMTPS id 1512461913;
+ Tue, 28 Jun 2022 10:31:19 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CC83AC341CB;
+ Tue, 28 Jun 2022 10:31:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1656412278;
+ bh=haCH7P825Xua46bMHZAIrSou726HuCRKAA+dDp/ShHg=;
+ h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+ b=qtXLGa11dqrPod7YqaUE+FyvoRZWaFbcbAm2ybUhM3Jz5/LLEl2x3brxq7IsNmXjD
+ TxfwE94BaX7IxY6+FYIhClGqxkkRcbI9zk82Thng9TWLVMYQyieJBdUuBWqoH6fZ+x
+ WGoNbNqF5U7BFxtNu1CYOFSbcdqcDfhBAybnOa+zSwp/7O3BN3UkpNEDFRIYKyrt44
+ t3ZtM9BPQy8Ch+1AETKENK4GCLaTKtbD76bz7CqVOcF05RjF+6Y/i50UW43vpQRJYo
+ UbzArgwv69rJLMLw/9w5F3SqBaO2qNlhtdVhMq6bpxSFLmly3yoQTldmjDArNcfZte
+ CoHVRT+I/aFvg==
+From: Mark Brown <broonie@kernel.org>
+To: alsa-devel@alsa-project.org, pierre-louis.bossart@linux.intel.com
+In-Reply-To: <20220616220427.136036-1-pierre-louis.bossart@linux.intel.com>
+References: <20220616220427.136036-1-pierre-louis.bossart@linux.intel.com>
+Subject: Re: (subset) [PATCH 00/11] ASoC: use pm_runtime_resume_and_get() when
+ possible
+Message-Id: <165641227755.254424.3183160195337631550.b4-ty@kernel.org>
+Date: Tue, 28 Jun 2022 11:31:17 +0100
 MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
+Cc: tiwai@suse.de, cezary.rojewski@intel.com,
+ amadeuszx.slawinski@linux.intel.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -98,33 +80,63 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-h1940_uda1380 uses gpiod*/GPIOD* so it should include GPIO consumer
-header.
+On Thu, 16 Jun 2022 17:04:16 -0500, Pierre-Louis Bossart wrote:
+> After a set of SOF-specific changes, this patchset correct problematic
+> uses of pm_runtime_get_sync() in ASoC, or simplifies the flow with no
+> functional changes. Two patches for Intel platforms also add a test on
+> resume success.
+> 
+> Additional changes were initially suggested to completely remove the
+> use of pm_runtime_get_sync(). These changes were dropped since they
+> are way too invasive, specifically in cases where the return values
+> were not tested, which would lead to duplicate pm_runtime_put(). The
+> remaining uses of pm_runtime_get_sync() cannot really be blindly
+> modified without context and knowledge of each driver.
+> 
+> [...]
 
-Fixes: 9666e27f90b9 ("ASoC: samsung: h1940: turn into platform driver")
-Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Applied to
 
----
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
 
-Changes since v1:
-1. Fix typo in commit subject.
----
- sound/soc/samsung/h1940_uda1380.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Thanks!
 
-diff --git a/sound/soc/samsung/h1940_uda1380.c b/sound/soc/samsung/h1940_uda1380.c
-index 907266aee839..fa45a54ab18f 100644
---- a/sound/soc/samsung/h1940_uda1380.c
-+++ b/sound/soc/samsung/h1940_uda1380.c
-@@ -8,7 +8,7 @@
- // Based on version from Arnaud Patard <arnaud.patard@rtp-net.org>
- 
- #include <linux/types.h>
--#include <linux/gpio.h>
-+#include <linux/gpio/consumer.h>
- #include <linux/module.h>
- 
- #include <sound/soc.h>
--- 
-2.34.1
+[01/11] ASoC: Intel: catpt: use pm_runtime_resume_and_get()
+        commit: 82102a24c930986aedc572f89b437cd9e4d44d7e
+[02/11] ASoC: Intel: skylake: skl-pcm: use pm_runtime_resume_and_get()
+        commit: 7213170a9515109322f75c08b5268d8e9cdad8e4
+[04/11] ASoC: wcd-mbhc-v2: use pm_runtime_resume_and_get()
+        commit: ddea4bbf287b6028eaa15a185d0693856956ecf2
+[05/11] ASoC: wsa881x: use pm_runtime_resume_and_get()
+        commit: 9a1a28610a1c49bf93777d017aa3fe121eef944e
+[06/11] ASoC: rockchip: i2s_tdm: use pm_runtime_resume_and_get()
+        commit: 8c8a13e83c29472044d733dfb1fced2ccd025d35
+[07/11] ASoC: fsl: fsl_sai: use pm_runtime_resume_and_get()
+        commit: 37cb8a58013fc6ca2febaed355f6559012699542
+[08/11] ASoC: img: img-i2s-out: use pm_runtime_resume_and_get()
+        commit: 57d714535051b1baca9ffd92e79fbda1fae3177a
+[09/11] ASoC: rockchip: pdm: use pm_runtime_resume_and_get()
+        commit: 76a6f4537650e6d2211f34661de35630487c7c64
+[10/11] ASoC: tas2552: use pm_runtime_resume_and_get()
+        commit: 05b71fb2a5014d2430ff6c5678db021c67afa9ec
+[11/11] ASoC: ti: davinci-mcasp: use pm_runtime_resume_and_get()
+        commit: cecc81d6a5deb094bdbc6a1d7f2c014ba9b71cf8
 
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
