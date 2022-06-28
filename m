@@ -4,69 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 342DECCA479
-	for <alsa-devel@archiver.kernel.org>; Tue, 28 Jun 2022 10:33:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 79E3CC433EF
+	for <alsa-devel@archiver.kernel.org>; Tue, 28 Jun 2022 10:33:35 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 4CE35164E;
-	Tue, 28 Jun 2022 12:32:26 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4CE35164E
+	by alsa0.perex.cz (Postfix) with ESMTPS id B844986F;
+	Tue, 28 Jun 2022 12:32:43 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B844986F
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1656412396;
-	bh=FqQbficcDw7vk8SHlBe1Sw1FJiQ7bntADu1nU2HONhA=;
-	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
+	s=default; t=1656412413;
+	bh=r76Re/xOvLzrRf/PxMnn/Z5S0c5ucm9VBXxqbgjKa18=;
+	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=cPp0dMwd57RY7fd+49jEqsv3Eq4kV67XcaLFaQNjieEj0UoDgI59ouykq58fwdc3P
-	 4BvyKKLg2ornYmw2e0w0OMp4XxITB4NIelw1X+VAQRBIXMGn5QQBQ8PMR+8qVmDVr6
-	 Ypq8wN2UeMJnEgN9e1v7p7d5vB5ldQSjPkSlpD3A=
+	b=bcrose6oOk4r/xAJK+y3pWA6ovLSKtKGMY33/SMkpc2jz+YnDEqfirlU0lsZRHO24
+	 WC8QLwdH91NzMyoEeudf7AyCtO7w4949U3odv7/7PSephcOLkDsL6HE1N0neEMfX0s
+	 LYUgvppDkBjdG1ok8GZzzfyBY9y76s4sTRHzqhWU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id CA860F80538;
-	Tue, 28 Jun 2022 12:31:34 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 95339F8053C;
+	Tue, 28 Jun 2022 12:31:35 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id D2EF7F8049E; Tue, 28 Jun 2022 12:31:26 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org
- [IPv6:2604:1380:4641:c500::1])
+ id C4571F8049E; Tue, 28 Jun 2022 12:31:27 +0200 (CEST)
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 5A154F80115
- for <alsa-devel@alsa-project.org>; Tue, 28 Jun 2022 12:31:17 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5A154F80115
+ by alsa1.perex.cz (Postfix) with ESMTPS id 0FDE3F80166
+ for <alsa-devel@alsa-project.org>; Tue, 28 Jun 2022 12:31:24 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0FDE3F80166
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="aPJCGn4i"
+ header.b="B9eJcXaj"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id C48C26186A;
- Tue, 28 Jun 2022 10:31:14 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 70334C3411D;
- Tue, 28 Jun 2022 10:31:11 +0000 (UTC)
+ by ams.source.kernel.org (Postfix) with ESMTPS id 110CDB81DCD;
+ Tue, 28 Jun 2022 10:31:24 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 689D8C3411D;
+ Tue, 28 Jun 2022 10:31:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1656412274;
- bh=FqQbficcDw7vk8SHlBe1Sw1FJiQ7bntADu1nU2HONhA=;
- h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=aPJCGn4iSnzaPYC52niBVyz2Z5O4eiCmxAI2bupQSBWrMtPxRB7tuerZPab/kJss/
- owTupPs2hBaZdL8oFrvd9pcB+6WKUmXoKwJSR87JogfQunR1rUCH7uqZPjvJqzqulY
- Hn0lWgAhasLz2S/ttikVHr8xXLaC+iq5FEVLpK5O9VhTJRPQ7Co84tilhs4J8JKoj+
- Rhe6QnW81xLMNWmfVOl0llcR9aQxObDkL6XE1dY4Fohk3ZnSq+w7wOFjxuUjIerIOj
- xz4rRl/snTGJXqnszDHjhvOqsvQYF6AwnykavkNgDJlQGHfF+cDQo5ZLlMpLyP7Zxr
- pzpTxTRWh6Utg==
+ s=k20201202; t=1656412282;
+ bh=r76Re/xOvLzrRf/PxMnn/Z5S0c5ucm9VBXxqbgjKa18=;
+ h=From:To:In-Reply-To:References:Subject:Date:From;
+ b=B9eJcXaj/ZLWGZzuPRwnpDAMZDbCDBYL0iL0qxO6gUiDKzHslZesvupktrwqxMXTb
+ JPgW8KYbOxZb+8Y6Mzsm1sgpB/uLJdChhZgUhyOQe5oOesUgrdePSMmaZAYyPLCaHC
+ 65GXd27NDWIzc29nmaR7QKdRr4juX/ESmKMwBupsKxzCmoEKKdcCFix3HfkiTI326P
+ 4shdcFP1jjdZwf7BHJXtCNAq8a0xb/GPJb0w3dD76tWO8ObZFTGSbJTtatOkCLfDN2
+ obTDbPW/57RFnLo3IPTpEzvXOgPUXYZmpdg94/y+knRcSdEIae3c4uJ5wbNi3/C3s8
+ TXtTyBkQJ4ilA==
 From: Mark Brown <broonie@kernel.org>
-To: festevam@gmail.com, Xiubo.Lee@gmail.com, nicoleotsuka@gmail.com,
- shengjiu.wang@gmail.com, alsa-devel@alsa-project.org, perex@perex.cz,
- krzk+dt@kernel.org, shengjiu.wang@nxp.com, robh+dt@kernel.org,
- lgirdwood@gmail.com, tiwai@suse.com, devicetree@vger.kernel.org
-In-Reply-To: <1655179884-12278-1-git-send-email-shengjiu.wang@nxp.com>
-References: <1655179884-12278-1-git-send-email-shengjiu.wang@nxp.com>
-Subject: Re: [PATCH 0/7] Add PDM/DSD/dataline configuration support
-Message-Id: <165641227114.254424.14373197929735584783.b4-ty@kernel.org>
-Date: Tue, 28 Jun 2022 11:31:11 +0100
+To: Takashi Iwai <tiwai@suse.com>, krzysztof.kozlowski@linaro.org,
+ Liam Girdwood <lgirdwood@gmail.com>, alsa-devel@alsa-project.org,
+ s.nawrocki@samsung.com, linux-kernel@vger.kernel.org,
+ Jaroslav Kysela <perex@perex.cz>
+In-Reply-To: <20220627143412.477226-1-krzysztof.kozlowski@linaro.org>
+References: <20220627143412.477226-1-krzysztof.kozlowski@linaro.org>
+Subject: Re: [PATCH 1/3] ASoC: samsung: s3c-i2s-v2: Allow build for
+ unsupported hardware
+Message-Id: <165641228114.254424.9239114588786840760.b4-ty@kernel.org>
+Date: Tue, 28 Jun 2022 11:31:21 +0100
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -82,22 +81,13 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Tue, 14 Jun 2022 12:11:17 +0800, Shengjiu Wang wrote:
-> Support PDM format and DSD format.
-> Add new dts property to configure dataline. The SAI has multiple
-> successive FIFO registers, but in some use
-> case the required dataline/FIFOs are not successive.
+On Mon, 27 Jun 2022 16:34:10 +0200, Krzysztof Kozlowski wrote:
+> There is no particular need to restrict building of S3C I2S driver to
+> supported platforms within the C unit, because Kconfig does it.
+> Removing such restricting #ifdef from s3c-i2s-v2 allows compile testing
+> it on other platforms.
 > 
-> Shengjiu Wang (7):
->   ASoC: fsl_sai: Add PDM daifmt support
->   ASoC: fsl_sai: Add DSD bit format support
->   ASoC: fsl_sai: Add support for more sample rates
->   ASoc: fsl_sai: Add pinctrl operation for PDM and DSD
->   ASoC: fsl_sai: Move res variable to be global
->   ASoC: dt-bindings: fsl-sai: Add new property to configure dataline
->   ASoC: fsl_sai: Configure dataline/FIFO information from dts property
 > 
-> [...]
 
 Applied to
 
@@ -105,20 +95,12 @@ Applied to
 
 Thanks!
 
-[1/7] ASoC: fsl_sai: Add PDM daifmt support
-      commit: c111c2ddb3fdfca06bb5c7a56db7f97d6d9ea640
-[2/7] ASoC: fsl_sai: Add DSD bit format support
-      commit: 4665770407de8af3b24250cec2209eaf58546f8a
-[3/7] ASoC: fsl_sai: Add support for more sample rates
-      commit: 0d11bab8ef3e5540dfba111947dbd8dcfb813150
-[4/7] ASoc: fsl_sai: Add pinctrl operation for PDM and DSD
-      commit: b4ee8a913e617a2d0f19226225bc025c8640bf34
-[5/7] ASoC: fsl_sai: Move res variable to be global
-      (no commit info)
-[6/7] ASoC: dt-bindings: fsl-sai: Add new property to configure dataline
-      commit: 6b878ac2711056dd07c712caf89f58449cf5a592
-[7/7] ASoC: fsl_sai: Configure dataline/FIFO information from dts property
-      commit: e3f4e5b1a3e654d518155b37c7b2084cbce9d1a7
+[1/3] ASoC: samsung: s3c-i2s-v2: Allow build for unsupported hardware
+      commit: 17a1ffc7bc4d5b4657d0f3fe5c01778d8fcab9a3
+[2/3] ASoC: samsung: s3c24xx-i2s: Drop unneeded gpio.h include
+      commit: 3e4bac7cf06e46225322f264e7387efe6ddd457e
+[3/3] ASoC: samsung: Enable compile test
+      commit: f43ff8038e8289ca811b5b89e8cc15083dafe5c4
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
