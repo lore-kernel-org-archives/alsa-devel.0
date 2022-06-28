@@ -4,69 +4,81 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 51912CCA479
-	for <alsa-devel@archiver.kernel.org>; Tue, 28 Jun 2022 14:18:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2C3ECC433EF
+	for <alsa-devel@archiver.kernel.org>; Tue, 28 Jun 2022 15:35:14 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D3C4A83E;
-	Tue, 28 Jun 2022 16:17:40 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D3C4A83E
+	by alsa0.perex.cz (Postfix) with ESMTPS id 44A12839;
+	Tue, 28 Jun 2022 17:34:22 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 44A12839
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1656425910;
-	bh=/2o6Cn+wlOC6M4+LDwBixIIRgNm0JkPO5/D8l7zwm1w=;
-	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
+	s=default; t=1656430512;
+	bh=z4BMrQIfeR5ED7IepoWbXrI8waTsgS4gFgrQN1N+yu4=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=qu2TMdx8xUq5JIcSPPCCRp75pSRyM+hR90Aumc++LNfwp/a5SVkK4EW2TKy8UE1lL
-	 pt/y0I6E3/JsPALg4P0aOO5fOBzCYfhmVR98UjxUvS3VryEHRGb87w1CiQ2vulsFbU
-	 lWTsoBH/HXY8DsvAYE0VLlk6b/BncpE2dNfBU4yM=
+	b=rXWjJJ0NpXYpFw+4N8dqMDSE4KsdEaRB+xiVTdJzO61ww0fRouIaByYXSxbUmK9qz
+	 fArIWRQGV0vXJqyMk1m8COTYwXguNOgf9NWUZOUOpSHnQUbCiZq1KjHtsM8P4tth+Y
+	 QlIt7za1lm35UbC8gmgn+zrNZqooaHAhZHfTx5Kw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 6EC27F80166;
-	Tue, 28 Jun 2022 16:17:40 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id BA166F80167;
+	Tue, 28 Jun 2022 17:34:21 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 10027F80167; Tue, 28 Jun 2022 16:17:39 +0200 (CEST)
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id BCFE5F80107
- for <alsa-devel@alsa-project.org>; Tue, 28 Jun 2022 16:17:36 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BCFE5F80107
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="jV18BWsK"
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+ id 2E10CF8028B; Tue, 28 Jun 2022 17:34:20 +0200 (CEST)
+Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
+ [67.231.152.168])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by ams.source.kernel.org (Postfix) with ESMTPS id D38D3B81E3B;
- Tue, 28 Jun 2022 14:17:35 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 521CEC3411D;
- Tue, 28 Jun 2022 14:17:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1656425854;
- bh=/2o6Cn+wlOC6M4+LDwBixIIRgNm0JkPO5/D8l7zwm1w=;
- h=From:To:In-Reply-To:References:Subject:Date:From;
- b=jV18BWsK2+4axT3lbN28G1XGohb2mLJv2qK16Odx0NrsY7knbqE+10Ye6BiCSxcFi
- FA9Q42hpZO+IVoErbHYkkdimpm9Wbp9K5taJY9iM/KuPcKBRvM/rLwLF1KsSYreG7U
- 43AxwETYWO/iTsGS2KHOagMI+mATxE6lHvcJhqeoswffLiLqsxEo4mtVNdimpTNsDa
- 9AAdNVn9vj4kz3Kcxw3VthIOGSWbx1OFbOhLgLcvch8vQOZlgt3Nsa6UNDG7JD6SE2
- tu7ofZGzVg1pa/CF0SN2YlGNmHYAwPYFf+XLJUEN8TUI3RKIK6BcNBupNJuO8r9nwa
- DHreUPgMYyG3Q==
-From: Mark Brown <broonie@kernel.org>
-To: quic_plai@quicinc.com, lgirdwood@gmail.com, judyhsiao@chromium.org,
- agross@kernel.org, quic_rohkumar@quicinc.com, bgoswami@quicinc.com,
- quic_srivasam@quicinc.com, bjorn.andersson@linaro.org, robh+dt@kernel.org,
- devicetree@vger.kernel.org, srinivas.kandagatla@linaro.org,
- linux-kernel@vger.kernel.org, swboyd@chromium.org, alsa-devel@alsa-project.org,
- linux-arm-msm@vger.kernel.org, perex@perex.cz, tiwai@suse.com
-In-Reply-To: <1656326662-14524-1-git-send-email-quic_srivasam@quicinc.com>
-References: <1656326662-14524-1-git-send-email-quic_srivasam@quicinc.com>
-Subject: Re: [PATCH v2] ASoC: qcom: Add driver support for audioreach solution
-Message-Id: <165642585106.1712503.17346348780044575252.b4-ty@kernel.org>
-Date: Tue, 28 Jun 2022 15:17:31 +0100
+ by alsa1.perex.cz (Postfix) with ESMTPS id 9974CF80115
+ for <alsa-devel@alsa-project.org>; Tue, 28 Jun 2022 17:34:13 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9974CF80115
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com
+ header.b="UJqV8ldO"
+Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
+ by mx0b-001ae601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 25SAsNkX030341;
+ Tue, 28 Jun 2022 10:34:11 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
+ h=from : to : cc :
+ subject : date : message-id : in-reply-to : references : mime-version :
+ content-transfer-encoding : content-type; s=PODMain02222019;
+ bh=qyhaVfHovcvNFUdPfDSz8auM/k6b9qsac5a7Z/E95V4=;
+ b=UJqV8ldOTGgfeQEjFYWJ47AqgEe9XvT33xyITVNJSRFRa4C90Ys1AGdMG0thCDuacLRo
+ h+BcUhP6rv6/zhNS6hFqZSinFFUDDWNY665PtwBUam505dgSufanKawtUfZ3yy61k/3A
+ mZNHS/C0AIjjNaHSMB0afmjcgf2yunMy+PPq4/ykY+0CR/08jLvELDpWJcfaySaJbj+Q
+ D1EY0UF1nXk/ANbSk9t4j/XriHJvTr49fBLUMv3Ur6EByM4ywaOZr/rq6KH57Pfk3ev2
+ MTO49/olZpCpJ9LP6wguenitfcD32AwBaYSokVuSJ6pHqYs11KW+CAvqxf+Kwa8VXfNc aQ== 
+Received: from ediex01.ad.cirrus.com ([84.19.233.68])
+ by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3gwxsq437w-2
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+ Tue, 28 Jun 2022 10:34:11 -0500
+Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.28; Tue, 28 Jun
+ 2022 16:34:09 +0100
+Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server id 15.1.2375.28 via
+ Frontend Transport; Tue, 28 Jun 2022 16:34:09 +0100
+Received: from algalon.ad.cirrus.com (algalon.ad.cirrus.com [198.90.251.122])
+ by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 4F36A11D1;
+ Tue, 28 Jun 2022 15:34:09 +0000 (UTC)
+From: Charles Keepax <ckeepax@opensource.cirrus.com>
+To: <broonie@kernel.org>
+Subject: [PATCH 3/4] ASoC: cs47l92: Fix event generation for OUT1 demux
+Date: Tue, 28 Jun 2022 16:34:08 +0100
+Message-ID: <20220628153409.3266932-3-ckeepax@opensource.cirrus.com>
+X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20220628153409.3266932-1-ckeepax@opensource.cirrus.com>
+References: <20220628153409.3266932-1-ckeepax@opensource.cirrus.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Proofpoint-GUID: BDhhhikloElbRkz4LhSBnEMk8uGmNTpk
+X-Proofpoint-ORIG-GUID: BDhhhikloElbRkz4LhSBnEMk8uGmNTpk
+X-Proofpoint-Spam-Reason: safe
+Cc: patches@opensource.cirrus.com, alsa-devel@alsa-project.org,
+ lgirdwood@gmail.com, linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -82,36 +94,37 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Mon, 27 Jun 2022 16:14:22 +0530, Srinivasa Rao Mandadapu wrote:
-> Add Machine driver support for audioreach solution, which uses
-> ADSP in SC7280 based paltforms.
-> 
-> 
+cs47l92_put_demux returns the value of snd_soc_dapm_mux_update_power,
+which returns a 1 if a path was found for the kcontrol. This is
+obviously different to the expected return a 1 if the control
+was updated value. This results in spurious notifications to
+user-space. Update the handling to only return a 1 when the value is
+changed.
 
-Applied to
+Signed-off-by: Charles Keepax <ckeepax@opensource.cirrus.com>
+---
+ sound/soc/codecs/cs47l92.c | 8 +++++++-
+ 1 file changed, 7 insertions(+), 1 deletion(-)
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+diff --git a/sound/soc/codecs/cs47l92.c b/sound/soc/codecs/cs47l92.c
+index a1b8dcdb9f7b7..444026b7d54b3 100644
+--- a/sound/soc/codecs/cs47l92.c
++++ b/sound/soc/codecs/cs47l92.c
+@@ -119,7 +119,13 @@ static int cs47l92_put_demux(struct snd_kcontrol *kcontrol,
+ end:
+ 	snd_soc_dapm_mutex_unlock(dapm);
+ 
+-	return snd_soc_dapm_mux_update_power(dapm, kcontrol, mux, e, NULL);
++	ret = snd_soc_dapm_mux_update_power(dapm, kcontrol, mux, e, NULL);
++	if (ret < 0) {
++		dev_err(madera->dev, "Failed to update demux power state: %d\n", ret);
++		return ret;
++	}
++
++	return change;
+ }
+ 
+ static SOC_ENUM_SINGLE_DECL(cs47l92_outdemux_enum,
+-- 
+2.30.2
 
-Thanks!
-
-[1/1] ASoC: qcom: Add driver support for audioreach solution
-      commit: 5f78e1fb7a3ed1acc355145536ddd54f183b635d
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
