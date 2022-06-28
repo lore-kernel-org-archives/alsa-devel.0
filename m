@@ -4,88 +4,75 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 59D04C43334
-	for <alsa-devel@archiver.kernel.org>; Tue, 28 Jun 2022 12:06:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 34F0EC433EF
+	for <alsa-devel@archiver.kernel.org>; Tue, 28 Jun 2022 12:08:11 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A3C43165D;
-	Tue, 28 Jun 2022 14:05:39 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A3C43165D
+	by alsa0.perex.cz (Postfix) with ESMTPS id D33CB15CA;
+	Tue, 28 Jun 2022 14:07:18 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D33CB15CA
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1656417989;
-	bh=1sNbI/dwlklA2M4/Ud9PxRI+qWyCtHcvwBKMIeTIZVo=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1656418088;
+	bh=z5OjCT3nc19eLNtb3bsYhXpvCcbtCznS3whYvyHxodk=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=g4tsKBGmFd/y+1kWZGdk9zgtNqOD6PsOoL3UJkIWswQi8FXhbhRc7c9V7fNJFdNh7
-	 Q4gleGUfwumIkScr3UgRAU4AKxNc/Qrp4HPb1VbFbxX6XVqWzTDPWfl0QUTi30gldx
-	 Yw0BxPvD9xDKKKJEXrxWDtnZF/t0MgM/qS9jqd2o=
+	b=CT3LzkMaAg2Ccv38HKOe0JkG7cPiv2OG2EY2shWQmgY9E1vq65X+c/2+PrTofs/Hk
+	 vbkafd+J/E0A1LHWJTydIuah/CUo300IynHV3Oe8dVq2smlBS9ELOtXW/vYVqJkLDr
+	 x8cVMR7a9PjC8wCFXn5yiokx6K5UQ4/KF8blqISA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id B34A3F8052D;
-	Tue, 28 Jun 2022 14:04:55 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 81A9DF80115;
+	Tue, 28 Jun 2022 14:07:18 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 8304FF80107; Tue, 28 Jun 2022 14:04:54 +0200 (CEST)
-Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com
- [IPv6:2a00:1450:4864:20::429])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id 3A3DFF80167; Tue, 28 Jun 2022 14:07:18 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org
+ [IPv6:2604:1380:4641:c500::1])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id CA3FEF80107
- for <alsa-devel@alsa-project.org>; Tue, 28 Jun 2022 14:04:41 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CA3FEF80107
+ by alsa1.perex.cz (Postfix) with ESMTPS id 462F3F80107
+ for <alsa-devel@alsa-project.org>; Tue, 28 Jun 2022 14:07:15 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 462F3F80107
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org
- header.b="s3A+Tjnt"
-Received: by mail-wr1-x429.google.com with SMTP id o16so17391429wra.4
- for <alsa-devel@alsa-project.org>; Tue, 28 Jun 2022 05:04:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
- h=from:to:cc:subject:date:message-id:in-reply-to:references
- :mime-version:content-transfer-encoding;
- bh=HA9Ju9WiWYMyHFa1RrEaM+Jl1wBHz+W0Kvbk+W2ZI4Q=;
- b=s3A+Tjnt6L5ct+uXElLKqAN+RCi5Q53fO2x4+Lzy+vMSEPrAskYDKsEIbQDI7w7tI+
- BkcCMWR8tlHAfFSk0Qf5L9EFZ5wJr+pMq0V0N5nR+pR4Z5v35M/HZBo6moSF2Rf0cJSF
- MU3va6nFgqpve/F6jHPiKzY+HlZ/EHa05HsVqDGsq5HQJ9sCpVb1oEzepj5TBDdYGZc+
- aWEUJIuF5VpSwwLGimI1H/X8mYZQE0NjZBkbk/vdaj6qcvwedpmJ9bxQqqLHR9OJfkP3
- yR8RfEoyctyjpiEP48XQ+jeeJO2aU4wlCJO4u+p+xN/i2iIWLGtDHLfxycSCX20my76B
- lipw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
- :references:mime-version:content-transfer-encoding;
- bh=HA9Ju9WiWYMyHFa1RrEaM+Jl1wBHz+W0Kvbk+W2ZI4Q=;
- b=vE1Xo6TtQldy+HKKk8slVSStJi7zSPVrUebk2io6w/bJWlJVnwhZnhhAshTx79g6ra
- BXdCvI3m/9vzIjf5vUs4/8ZNv3wQgOUlkELa9kuZrhZslAMxWr/DAqmLHV5K+WJAFJT6
- hP+wtCaASSoNekVzq1FDnThFUTsmzY06k14XVrt531Htr9e8FXfUnOL2YRAZhm37k66n
- wl43Y1GGuEOo4ScapzlTrJ6sj4CeAjPTqRByqSL5ANL9FZ5ARijsfllCJ3OIxJeZvium
- 2IGHNJpG5z8KrBMWZ0J80LWcMrDx9zIQ4lYz2uEeA/XjLJcQRcODcjp2MLyt254zDYlH
- hlSg==
-X-Gm-Message-State: AJIora8t2Ob604hJv6X/PBuMUui/yFJ5zOrTE9BHku8jT/EmVjFn2cVW
- Am88dF66PPLqyP5KIFex30NhRw==
-X-Google-Smtp-Source: AGRyM1sCchwbqLWnT1eNhxSqPMIG3TnWhGdLsWF7fS7Cdz6ZFQdvj+vTi0FG+ORF366s/y1KfIOaXw==
-X-Received: by 2002:a5d:64aa:0:b0:21b:c38b:bb81 with SMTP id
- m10-20020a5d64aa000000b0021bc38bbb81mr14388793wrp.666.1656417879960; 
- Tue, 28 Jun 2022 05:04:39 -0700 (PDT)
-Received: from sagittarius-a.chello.ie (188-141-3-169.dynamic.upc.ie.
- [188.141.3.169]) by smtp.gmail.com with ESMTPSA id
- p20-20020a1c7414000000b003a05621dc53sm1457737wmc.29.2022.06.28.05.04.38
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Tue, 28 Jun 2022 05:04:39 -0700 (PDT)
-From: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
-To: lgirdwood@gmail.com,
-	broonie@kernel.org,
-	bjorn.andersson@linaro.org
-Subject: [PATCH v5 1/2] ASoC: qcom: lpass: Fix apq8016 compat string to match
- yaml
-Date: Tue, 28 Jun 2022 13:04:34 +0100
-Message-Id: <20220628120435.3044939-2-bryan.odonoghue@linaro.org>
-X-Mailer: git-send-email 2.36.1
-In-Reply-To: <20220628120435.3044939-1-bryan.odonoghue@linaro.org>
-References: <20220628120435.3044939-1-bryan.odonoghue@linaro.org>
+ dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="ReN0NpDT"
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by dfw.source.kernel.org (Postfix) with ESMTPS id DA2E660F6A;
+ Tue, 28 Jun 2022 12:07:12 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E91CDC3411D;
+ Tue, 28 Jun 2022 12:07:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1656418032;
+ bh=z5OjCT3nc19eLNtb3bsYhXpvCcbtCznS3whYvyHxodk=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=ReN0NpDTYy0QZEH56krpsxVGks3JFd1kmFVqzjWUMhwTRrVn1gaiv2RjONHbRXvAF
+ HQfpV+AVrJ8rLJyNcHG5qc20TL4C4RyaQDLtJkq/NCo0CPsG4FrqNsHuCxIKaf1uEa
+ zOueVqyFMhKwy7K7J0I6J3MYrfIuHWNR7bA51PlGegwqVHfjU4BmUGxJmIV0AJSagS
+ 1yYN/NWcLQPVZZEbWqvKht5zhnh8atfwyH9TX1QwX9K1S6ryMwk5r5G4JilwwQJoP8
+ SoOGsZcMdOwp8DdKoUv23t6uCkznNTVwBItvM3quyDeMNrAUvLmbXzyUUrOPWTt9lQ
+ KGUegb0D90dLw==
+Date: Tue, 28 Jun 2022 13:07:06 +0100
+From: Mark Brown <broonie@kernel.org>
+To: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
+Subject: Re: [PATCH v4 1/2] ASoC: qcom: lpass: Fix apq8016 compat string to
+ match yaml
+Message-ID: <Yrru6n6HnEAAz/2Y@sirena.org.uk>
+References: <20220628002858.2638442-1-bryan.odonoghue@linaro.org>
+ <20220628002858.2638442-2-bryan.odonoghue@linaro.org>
+ <Yrrf5X8wstW+DXHF@sirena.org.uk>
+ <14f6b7eb-cacb-91a5-ce06-9702618513b9@linaro.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature"; boundary="m6y3rTZ9Hy28L98D"
+Content-Disposition: inline
+In-Reply-To: <14f6b7eb-cacb-91a5-ce06-9702618513b9@linaro.org>
+X-Cookie: I like your SNOOPY POSTER!!
 Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
- linux-arm-msm@vger.kernel.org, tiwai@suse.com, robh+dt@kernel.org,
- srinivas.kandagatla@linaro.org, bryan.odonoghue@linaro.org, krzk+dt@kernel.org
+ lgirdwood@gmail.com, linux-arm-msm@vger.kernel.org, tiwai@suse.com,
+ robh+dt@kernel.org, srinivas.kandagatla@linaro.org, krzk+dt@kernel.org,
+ bjorn.andersson@linaro.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -101,48 +88,33 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The documented yaml compat string for the apq8016 is
-"qcom,apq8016-lpass-cpu" not "qcom,lpass-cpu-apq8016". Looking at the other
-lpass compat strings the general form is "qcom,socnum-lpass-cpu".
 
-We need to fix both the driver and dts to match.
+--m6y3rTZ9Hy28L98D
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Reviewed-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-Signed-off-by: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
----
- sound/soc/qcom/lpass-apq8016.c | 1 +
- sound/soc/qcom/lpass-cpu.c     | 5 +++++
- 2 files changed, 6 insertions(+)
+On Tue, Jun 28, 2022 at 12:48:20PM +0100, Bryan O'Donoghue wrote:
+> On 28/06/2022 12:03, Mark Brown wrote:
 
-diff --git a/sound/soc/qcom/lpass-apq8016.c b/sound/soc/qcom/lpass-apq8016.c
-index 3efa133d1c641..abaf694ee9a3a 100644
---- a/sound/soc/qcom/lpass-apq8016.c
-+++ b/sound/soc/qcom/lpass-apq8016.c
-@@ -293,6 +293,7 @@ static struct lpass_variant apq8016_data = {
- 
- static const struct of_device_id apq8016_lpass_cpu_device_id[] __maybe_unused = {
- 	{ .compatible = "qcom,lpass-cpu-apq8016", .data = &apq8016_data },
-+	{ .compatible = "qcom,apq8016-lpass-cpu", .data = &apq8016_data },
- 	{}
- };
- MODULE_DEVICE_TABLE(of, apq8016_lpass_cpu_device_id);
-diff --git a/sound/soc/qcom/lpass-cpu.c b/sound/soc/qcom/lpass-cpu.c
-index e6846ad2b5fa4..53f9bf6581d33 100644
---- a/sound/soc/qcom/lpass-cpu.c
-+++ b/sound/soc/qcom/lpass-cpu.c
-@@ -1102,6 +1102,11 @@ int asoc_qcom_lpass_cpu_platform_probe(struct platform_device *pdev)
- 	if (!match || !match->data)
- 		return -EINVAL;
- 
-+	if (of_device_is_compatible(dev->of_node, "qcom,lpass-cpu-apq8016")) {
-+		dev_warn(dev, "%s compatible is deprecated\n",
-+			 match->compatible);
-+	}
-+
- 	drvdata->variant = (struct lpass_variant *)match->data;
- 	variant = drvdata->variant;
- 
--- 
-2.36.1
+> > This doesn't apply against current code, please check and resend.
 
+> What's the tree you are applying to here ?
+
+The ASoC tree.
+
+--m6y3rTZ9Hy28L98D
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmK67ukACgkQJNaLcl1U
+h9BxMQf/c11z9HnjtIVAySWTm44Etd3FMGBAUWdP+DRawtcvJxYskI+Nul21MWeW
+QPbH20+sOmrqsaUe2RmUWNOQVS0/utHKdXgsEIZ7Y4RSKsOS1cJVl7I+33p3PPEh
+LkhrieDP5yGuFizHlr03MKgk1dXElQpu+Fa50HsJ0O3EhRwURV0AHXrvjpLI1fCs
+mOmBq/4TcVdXBrB4jQFEzydRc/Q5DE9LdkiNjI+1eLxmqexRN1K0IXrNb4KLb/KI
+Bgb2ESehfL6I2s6U4KD7Y1Zhj+mBf0qYa7ohcLGVSD+GYdQaky9V3nd2xZHqMSkz
+QAs1WZIIqqVKJVFyUwWOwqmxmyFK6g==
+=oIbf
+-----END PGP SIGNATURE-----
+
+--m6y3rTZ9Hy28L98D--
