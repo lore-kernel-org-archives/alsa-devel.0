@@ -4,74 +4,84 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C1D66CCA47B
-	for <alsa-devel@archiver.kernel.org>; Tue, 28 Jun 2022 02:27:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 06A98C433EF
+	for <alsa-devel@archiver.kernel.org>; Tue, 28 Jun 2022 03:22:15 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id F15F31669;
-	Tue, 28 Jun 2022 04:26:32 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F15F31669
+	by alsa0.perex.cz (Postfix) with ESMTPS id 93D39950;
+	Tue, 28 Jun 2022 05:21:23 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 93D39950
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1656383243;
-	bh=zrAyaFapqko+OKphU5GEF1mHMbCDxCUYsWwHGUS7jsg=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1656386533;
+	bh=uYRZHBgHnTR8gnInDb3PqJiCpQOWDnBRfmNDWzodl+U=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=b0KdU44Uz4cW3WkZjuzP/jyWdtoEUdpVaQrkbxVRVq0SI45gFrC8BdZxbK+l3JhlQ
-	 W5g8wO/b26yoV+bCUQ/F850zNjSl5Axz8WTJze/OI6S0n9yY9RyP/j5wiGepHgpo+t
-	 Q3FHWUWCYW1evwj0vduPLGDRGJlq9n0aeCxir8XE=
+	b=XVmmj9vaGIqokl/yJUeqP4nco+Xu3StKKvV0z6Bqw0ezu6KvX9lGCZdVNxWivTkhZ
+	 MQaxsTHI94FwADUZxrTmSJMSPyIxI3kgAFqCTblH9TMGnC66OCqtc3S7+qjokwzZvu
+	 QYjHOuIzAEN0tPSpqWXxDDUaHG9/IwIgYXYjhsjc=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id A12A1F8028B;
-	Tue, 28 Jun 2022 04:26:32 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id F0F13F80166;
+	Tue, 28 Jun 2022 05:21:22 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 6F662F80115; Tue, 28 Jun 2022 04:26:31 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id B5FB0F80167; Tue, 28 Jun 2022 05:21:20 +0200 (CEST)
+Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com
+ [IPv6:2a00:1450:4864:20::130])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id DB450F80167
- for <alsa-devel@alsa-project.org>; Tue, 28 Jun 2022 04:26:28 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DB450F80167
+ by alsa1.perex.cz (Postfix) with ESMTPS id F387BF80115
+ for <alsa-devel@alsa-project.org>; Tue, 28 Jun 2022 05:21:10 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F387BF80115
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="t4hXigOa"
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id 71D196192B;
- Tue, 28 Jun 2022 02:26:27 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 70BCAC385A5;
- Tue, 28 Jun 2022 02:26:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1656383186;
- bh=zrAyaFapqko+OKphU5GEF1mHMbCDxCUYsWwHGUS7jsg=;
- h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=t4hXigOaqTpl/Vb8LEWm8z1b3nJ2Z1amgZgN6k9aKG1aS1JXtp70tJX9ukbrGKtSk
- ZIfU3lMkZ46HA40cT9Vb8O2nQmFNnKhItf1HKe9qF+s8vfOqf05UkyuRnI4WmMZJsg
- bOnfyHoslmPPCF2qKe3xiKpn4HJpfis94GkElJNVHInDR04+N6qhECgwCGdf+XrgUQ
- ERjXP0+mGPtkkqdkD5GDoeVZsORfLvwRIK8xPkD0amhTWus45riDLiOLdZwi4xjEKk
- vURM2JMqw/Ud/20ZP32e0gdN9SMQCYG19tsv3NPKyLUpxsoSTtLCu3usqWK0dQBRGK
- dZcqMalDSwzew==
-From: Sasha Levin <sashal@kernel.org>
-To: linux-kernel@vger.kernel.org,
-	stable@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.14 05/17] ALSA: x86: intel_hdmi_audio: enable
- pm_runtime and set autosuspend delay
-Date: Mon, 27 Jun 2022 22:26:03 -0400
-Message-Id: <20220628022615.596977-5-sashal@kernel.org>
-X-Mailer: git-send-email 2.35.1
-In-Reply-To: <20220628022615.596977-1-sashal@kernel.org>
-References: <20220628022615.596977-1-sashal@kernel.org>
+ dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
+ header.b="SBmsV2jc"
+Received: by mail-lf1-x130.google.com with SMTP id y32so19949680lfa.6
+ for <alsa-devel@alsa-project.org>; Mon, 27 Jun 2022 20:21:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
+ h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+ :cc; bh=x5E3nG2hieqflsrUuk87zpTHZ7TlPuvuzrUGDH/2wr0=;
+ b=SBmsV2jcS1P4vG2MijUAl9P/iOSJFSwvNxWcnaYO64G3kk7di7VxxDqgFR7TCKNGNw
+ Hwasb0ErZuft/ALiD8CHihaT9vZowINi/3PmkrOc0gg44UOcSUMAHeHLxYG9iyEUbEe7
+ BtnNs86P8+mNTlP9O093xfWRQAiSEq2I5cyBDqif0dYBXZ/g65ky+ls5Ki+pSWbkMuKL
+ LX991LXnf8vJVY8mKH8A4BkRJLiy18vJq7O9ldbfOfT2NKEuEI9eCykPNY2vsLSPBPCx
+ PIVErYxOHNIfFDpPovFLfRO8JUEZpkBKoCRf0ZQTk4ynjIC/Etq9C1kEDx56mUfrP+tq
+ USqw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc;
+ bh=x5E3nG2hieqflsrUuk87zpTHZ7TlPuvuzrUGDH/2wr0=;
+ b=Phn5FZpT/67xq/vdt1gTiIgnKsBpJYmsqIiLuES6K1H3sQytwx1i7ptJWpBrGY8tyD
+ CfyXI/jvMaNqkO20EBOIZxzFI/ivnHElwCq4ACUXDdW5LZas2qAC0V+TDnlQeHavjsor
+ D+oek+gv8cjLv3XevkEJI+iRNTKQXzF70LQmaMJtzPYDqbJUaz57BC8jf1O47yCU2pi6
+ T1nmbng4Nw50EkAb2xmI5bKcdOGCdCIehkI5mzhP3s8YJDKZ8tLZIJrEGgx0UsDd2Kmt
+ 5dNZgKJDmP9JYrJEW/ySH+F86F6SxovgPdgNtDWGZFbUPhG59myyKJfMdgzScp/7+a0F
+ Lu8A==
+X-Gm-Message-State: AJIora85swnwugAkGDbVPi2AkxwygJ6r5lWN5sUxyUNKcKCx6FsSZuKj
+ pcbmPCg8L38Zf0H9L6TDeBYpf2X79tc5SavtRbU=
+X-Google-Smtp-Source: AGRyM1uYeW4YzWoQaIwLjXMJBp7K3V4eAAwWgpwd0lrHrvYIcb0F4rerh74yAV4XYOcsYWc1atLWXUTtmJYN23q6+fY=
+X-Received: by 2002:a05:6512:1151:b0:481:1675:f343 with SMTP id
+ m17-20020a056512115100b004811675f343mr6336033lfg.280.1656386467278; Mon, 27
+ Jun 2022 20:21:07 -0700 (PDT)
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-Content-Transfer-Encoding: 8bit
-Cc: Sasha Levin <sashal@kernel.org>, alsa-devel@alsa-project.org,
- jiasheng@iscas.ac.cn, Kai Vehmanen <kai.vehmanen@linux.intel.com>,
- Takashi Iwai <tiwai@suse.de>, tiwai@suse.com,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- Ranjani Sridharan <ranjani.sridharan@linux.intel.com>, nizhen@uniontech.com,
- Bard Liao <yung-chuan.liao@linux.intel.com>, gushengxian@yulong.com
+References: <1656294613-27867-1-git-send-email-shengjiu.wang@nxp.com>
+ <1656336669.670812.2285173.nullmailer@robh.at.kernel.org>
+In-Reply-To: <1656336669.670812.2285173.nullmailer@robh.at.kernel.org>
+From: Shengjiu Wang <shengjiu.wang@gmail.com>
+Date: Tue, 28 Jun 2022 11:20:56 +0800
+Message-ID: <CAA+D8APqpGZhizTwHD8F_qhM=VmugiS+Q-yRvTH8e+K0_Q2dcg@mail.gmail.com>
+Subject: Re: [PATCH v2] ASoC: dt-bindings: fsl,
+ micfil: Convert format to json-schema
+To: Rob Herring <robh@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Content-Filtered-By: Mailman/MimeDel 2.1.15
+Cc: "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS"
+ <devicetree@vger.kernel.org>, alsa-devel@alsa-project.org,
+ Shengjiu Wang <shengjiu.wang@nxp.com>,
+ linux-kernel <linux-kernel@vger.kernel.org>, Rob Herring <robh+dt@kernel.org>,
+ Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
+ krzysztof.kozlowski+dt@linaro.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -87,51 +97,107 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+On Mon, Jun 27, 2022 at 9:31 PM Rob Herring <robh@kernel.org> wrote:
 
-[ Upstream commit e87c65aeb46ca4f5b7dc08531200bcb8a426c62e ]
+> On Mon, 27 Jun 2022 09:50:13 +0800, Shengjiu Wang wrote:
+> > Convert the NXP MICFIL binding to DT schema format using json-schema.
+> >
+> > Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
+> > ---
+> > changes in v2
+> > - add decription of interrupts.
+> >
+> >  .../devicetree/bindings/sound/fsl,micfil.txt  | 33 --------
+> >  .../devicetree/bindings/sound/fsl,micfil.yaml | 77 +++++++++++++++++++
+> >  2 files changed, 77 insertions(+), 33 deletions(-)
+> >  delete mode 100644
+> Documentation/devicetree/bindings/sound/fsl,micfil.txt
+> >  create mode 100644
+> Documentation/devicetree/bindings/sound/fsl,micfil.yaml
+> >
+>
+> Running 'make dtbs_check' with the schema in this patch gives the
+> following warnings. Consider if they are expected or the schema is
+> incorrect. These may not be new warnings.
+>
+> Note that it is not yet a requirement to have 0 warnings for dtbs_check.
+> This will change in the future.
+>
+> Full log is available here: https://patchwork.ozlabs.org/patch/
+>
+>
+> audio-controller@30080000: clock-names: ['ipg_clk', 'ipg_clk_app',
+> 'pll8k', 'pll11k', 'clkext3'] is too long
+>         arch/arm64/boot/dts/freescale/imx8mm-beacon-kit.dtb
+>         arch/arm64/boot/dts/freescale/imx8mm-data-modul-edm-sbc.dtb
+>         arch/arm64/boot/dts/freescale/imx8mm-ddr4-evk.dtb
+>         arch/arm64/boot/dts/freescale/imx8mm-emcon-avari.dtb
+>         arch/arm64/boot/dts/freescale/imx8mm-evk.dtb
+>         arch/arm64/boot/dts/freescale/imx8mm-icore-mx8mm-ctouch2.dtb
+>         arch/arm64/boot/dts/freescale/imx8mm-icore-mx8mm-edimm2.2.dtb
+>         arch/arm64/boot/dts/freescale/imx8mm-kontron-n801x-s.dtb
+>         arch/arm64/boot/dts/freescale/imx8mm-mx8menlo.dtb
+>         arch/arm64/boot/dts/freescale/imx8mm-nitrogen-r2.dtb
+>         arch/arm64/boot/dts/freescale/imx8mm-tqma8mqml-mba8mx.dtb
+>         arch/arm64/boot/dts/freescale/imx8mm-var-som-symphony.dtb
+>         arch/arm64/boot/dts/freescale/imx8mm-venice-gw71xx-0x.dtb
+>         arch/arm64/boot/dts/freescale/imx8mm-venice-gw72xx-0x.dtb
+>         arch/arm64/boot/dts/freescale/imx8mm-venice-gw73xx-0x.dtb
+>         arch/arm64/boot/dts/freescale/imx8mm-venice-gw7901.dtb
+>         arch/arm64/boot/dts/freescale/imx8mm-venice-gw7902.dtb
+>         arch/arm64/boot/dts/freescale/imx8mm-venice-gw7903.dtb
+>         arch/arm64/boot/dts/freescale/imx8mm-verdin-nonwifi-dahlia.dtb
+>         arch/arm64/boot/dts/freescale/imx8mm-verdin-nonwifi-dev.dtb
+>         arch/arm64/boot/dts/freescale/imx8mm-verdin-wifi-dahlia.dtb
+>         arch/arm64/boot/dts/freescale/imx8mm-verdin-wifi-dev.dtb
+>         arch/arm64/boot/dts/freescale/imx8mn-beacon-kit.dtb
+>         arch/arm64/boot/dts/freescale/imx8mn-bsh-smm-s2.dtb
+>         arch/arm64/boot/dts/freescale/imx8mn-bsh-smm-s2pro.dtb
+>         arch/arm64/boot/dts/freescale/imx8mn-ddr3l-evk.dtb
+>         arch/arm64/boot/dts/freescale/imx8mn-ddr4-evk.dtb
+>         arch/arm64/boot/dts/freescale/imx8mn-evk.dtb
+>         arch/arm64/boot/dts/freescale/imx8mn-tqma8mqnl-mba8mx.dtb
+>         arch/arm64/boot/dts/freescale/imx8mn-var-som-symphony.dtb
+>         arch/arm64/boot/dts/freescale/imx8mn-venice-gw7902.dtb
+>
+> audio-controller@30080000: clocks: [[2, 183], [2, 182], [2, 38], [2, 39],
+> [2, 6]] is too long
+>         arch/arm64/boot/dts/freescale/imx8mn-beacon-kit.dtb
+>         arch/arm64/boot/dts/freescale/imx8mn-bsh-smm-s2.dtb
+>         arch/arm64/boot/dts/freescale/imx8mn-bsh-smm-s2pro.dtb
+>         arch/arm64/boot/dts/freescale/imx8mn-ddr3l-evk.dtb
+>         arch/arm64/boot/dts/freescale/imx8mn-ddr4-evk.dtb
+>         arch/arm64/boot/dts/freescale/imx8mn-evk.dtb
+>         arch/arm64/boot/dts/freescale/imx8mn-tqma8mqnl-mba8mx.dtb
+>         arch/arm64/boot/dts/freescale/imx8mn-var-som-symphony.dtb
+>         arch/arm64/boot/dts/freescale/imx8mn-venice-gw7902.dtb
+>
+> audio-controller@30080000: clocks: [[2, 216], [2, 203], [2, 38], [2, 39],
+> [2, 6]] is too long
+>         arch/arm64/boot/dts/freescale/imx8mm-beacon-kit.dtb
+>         arch/arm64/boot/dts/freescale/imx8mm-data-modul-edm-sbc.dtb
+>         arch/arm64/boot/dts/freescale/imx8mm-ddr4-evk.dtb
+>         arch/arm64/boot/dts/freescale/imx8mm-emcon-avari.dtb
+>         arch/arm64/boot/dts/freescale/imx8mm-evk.dtb
+>         arch/arm64/boot/dts/freescale/imx8mm-icore-mx8mm-ctouch2.dtb
+>         arch/arm64/boot/dts/freescale/imx8mm-icore-mx8mm-edimm2.2.dtb
+>         arch/arm64/boot/dts/freescale/imx8mm-kontron-n801x-s.dtb
+>         arch/arm64/boot/dts/freescale/imx8mm-mx8menlo.dtb
+>         arch/arm64/boot/dts/freescale/imx8mm-nitrogen-r2.dtb
+>         arch/arm64/boot/dts/freescale/imx8mm-tqma8mqml-mba8mx.dtb
+>         arch/arm64/boot/dts/freescale/imx8mm-var-som-symphony.dtb
+>         arch/arm64/boot/dts/freescale/imx8mm-venice-gw71xx-0x.dtb
+>         arch/arm64/boot/dts/freescale/imx8mm-venice-gw72xx-0x.dtb
+>         arch/arm64/boot/dts/freescale/imx8mm-venice-gw73xx-0x.dtb
+>         arch/arm64/boot/dts/freescale/imx8mm-venice-gw7901.dtb
+>         arch/arm64/boot/dts/freescale/imx8mm-venice-gw7902.dtb
+>         arch/arm64/boot/dts/freescale/imx8mm-venice-gw7903.dtb
+>         arch/arm64/boot/dts/freescale/imx8mm-verdin-nonwifi-dahlia.dtb
+>         arch/arm64/boot/dts/freescale/imx8mm-verdin-nonwifi-dev.dtb
+>         arch/arm64/boot/dts/freescale/imx8mm-verdin-wifi-dahlia.dtb
+>         arch/arm64/boot/dts/freescale/imx8mm-verdin-wifi-dev.dtb
+>
+> I will fix this issue in v3.
 
-The existing code uses pm_runtime_get_sync/put_autosuspend, but
-pm_runtime was not explicitly enabled. The autosuspend delay was not
-set either, the value is set to 5s since HDMI is rather painful to
-resume.
-
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Reviewed-by: Bard Liao <yung-chuan.liao@linux.intel.com>
-Reviewed-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
-Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-Link: https://lore.kernel.org/r/20220616222910.136854-2-pierre-louis.bossart@linux.intel.com
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- sound/x86/intel_hdmi_audio.c | 5 +++++
- 1 file changed, 5 insertions(+)
-
-diff --git a/sound/x86/intel_hdmi_audio.c b/sound/x86/intel_hdmi_audio.c
-index bf894087e5fa..84ac01b6e93d 100644
---- a/sound/x86/intel_hdmi_audio.c
-+++ b/sound/x86/intel_hdmi_audio.c
-@@ -42,6 +42,8 @@
- #include <drm/intel_lpe_audio.h>
- #include "intel_hdmi_audio.h"
- 
-+#define INTEL_HDMI_AUDIO_SUSPEND_DELAY_MS  5000
-+
- #define for_each_pipe(card_ctx, pipe) \
- 	for ((pipe) = 0; (pipe) < (card_ctx)->num_pipes; (pipe)++)
- #define for_each_port(card_ctx, port) \
-@@ -1885,8 +1887,11 @@ static int hdmi_lpe_audio_probe(struct platform_device *pdev)
- 	pdata->notify_audio_lpe = notify_audio_lpe;
- 	spin_unlock_irq(&pdata->lpe_audio_slock);
- 
-+	pm_runtime_set_autosuspend_delay(&pdev->dev, INTEL_HDMI_AUDIO_SUSPEND_DELAY_MS);
- 	pm_runtime_use_autosuspend(&pdev->dev);
-+	pm_runtime_enable(&pdev->dev);
- 	pm_runtime_mark_last_busy(&pdev->dev);
-+	pm_runtime_idle(&pdev->dev);
- 
- 	dev_dbg(&pdev->dev, "%s: handle pending notification\n", __func__);
- 	for_each_port(card_ctx, port) {
--- 
-2.35.1
-
+best regards
+wang shengjiu
