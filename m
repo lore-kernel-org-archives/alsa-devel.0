@@ -4,81 +4,64 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 47C74C43334
-	for <alsa-devel@archiver.kernel.org>; Tue, 28 Jun 2022 15:36:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 399D2C433EF
+	for <alsa-devel@archiver.kernel.org>; Tue, 28 Jun 2022 16:59:14 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 5BA0C164D;
-	Tue, 28 Jun 2022 17:35:21 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5BA0C164D
+	by alsa0.perex.cz (Postfix) with ESMTPS id 067FB85D;
+	Tue, 28 Jun 2022 18:58:22 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 067FB85D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1656430571;
-	bh=y+uuA7ocOPCTTiFy1MDhiahxv7B0D9Q+XO/Od+uEV3k=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=i8QnCimI9AyROeBXKWgKmjQ7E698hTvDTcoK0XvqfNnxR8Q4ay1N1h17FRkB57Jb/
-	 uPwDkwZNdJ3VjHJMRfTaJCBOu60RGyBq/gJQZpxT+25QrPvsPhYPEaVWgCOPUqnFHf
-	 aTmCUPMW5ri+61WOcryPwfoGDe8mC6ximm6K7VlY=
+	s=default; t=1656435552;
+	bh=e2cA02gK7PqwOzv3YHx6N7DJAibcjk6vOLFm572qvf4=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=ep/rUApzbC5t8j28zCnnXiTJyyMOp5LoN2LZYFdTg4TM1iXvSrRXcnmjuuAcv4PpT
+	 Ok7Gs0uAgVFr80LuqduFF3oqGQZzzdriLXKNXVhZUB4cqqjg9DTVt1CjyFwHwo9CxS
+	 i3aY0u8nJSg6j8eOtBqcxoljIMStzIAogbk74YjI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 78424F80538;
-	Tue, 28 Jun 2022 17:34:26 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 8FCA8F80166;
+	Tue, 28 Jun 2022 18:58:21 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 086ACF8052E; Tue, 28 Jun 2022 17:34:25 +0200 (CEST)
-Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
- [67.231.149.25])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id A2D09F80167; Tue, 28 Jun 2022 18:58:19 +0200 (CEST)
+Received: from phobos.denx.de (phobos.denx.de [85.214.62.61])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id A226DF8052D
- for <alsa-devel@alsa-project.org>; Tue, 28 Jun 2022 17:34:19 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A226DF8052D
+ by alsa1.perex.cz (Postfix) with ESMTPS id BEB40F80163
+ for <alsa-devel@alsa-project.org>; Tue, 28 Jun 2022 18:58:13 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BEB40F80163
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com
- header.b="oIAqj0S1"
-Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
- by mx0a-001ae601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 25SAPO2J011111;
- Tue, 28 Jun 2022 10:34:12 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
- h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding : content-type; s=PODMain02222019;
- bh=Sg5V/JOYV9uhVr4H4c2c+mW3djbmU523MZTj9cu6wV8=;
- b=oIAqj0S1ejeZY/VaOeVQ4r+JEIpbgVNFfDmlItNO4E4k8nlFzM6UQWWbtta6liVJVuGC
- PG1hlOrYQSOWLJcoo1qKyHxttqPg/d+RAZLN9io3KCIjIW80Qc6az4t5Dx5NkYHZ1AAP
- ejOs3uLqBoLHGuONVWy/JdB0ONKJMdZqijxCGm826osH5qo2AOBnMFpq+ZSpPiE9id5n
- Lcx7VJXp92ojjEzVLQPuR5g4lr5mB5mAmXK3Dz19KDrv5bh2FQBoSw/gZzTQprzkbXqE
- Y1LJHjG51tX3GPrwK2KQwZj9I5ddXUaK/8WpPfN6LAMJ4MmmBVjkP6RlxbKwulgrZ97y eg== 
-Received: from ediex02.ad.cirrus.com ([84.19.233.68])
- by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3gwys2mat2-2
- (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
- Tue, 28 Jun 2022 10:34:12 -0500
-Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX02.ad.cirrus.com
- (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.28; Tue, 28 Jun
- 2022 16:34:09 +0100
-Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server id 15.1.2375.28 via
- Frontend Transport; Tue, 28 Jun 2022 16:34:09 +0100
-Received: from algalon.ad.cirrus.com (algalon.ad.cirrus.com [198.90.251.122])
- by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 4BBCA458;
- Tue, 28 Jun 2022 15:34:09 +0000 (UTC)
-From: Charles Keepax <ckeepax@opensource.cirrus.com>
-To: <broonie@kernel.org>
-Subject: [PATCH 2/4] ASoC: wm8998: Fix event generation for input mux
-Date: Tue, 28 Jun 2022 16:34:07 +0100
-Message-ID: <20220628153409.3266932-2-ckeepax@opensource.cirrus.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20220628153409.3266932-1-ckeepax@opensource.cirrus.com>
-References: <20220628153409.3266932-1-ckeepax@opensource.cirrus.com>
+ dkim=pass (2048-bit key) header.d=denx.de header.i=@denx.de
+ header.b="IvzCxh1a"
+Received: from tr.lan (ip-86-49-12-201.bb.vodafone.cz [86.49.12.201])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
+ (No client certificate requested)
+ (Authenticated sender: marex@denx.de)
+ by phobos.denx.de (Postfix) with ESMTPSA id B546F83A31;
+ Tue, 28 Jun 2022 18:58:12 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=denx.de;
+ s=phobos-20191101; t=1656435492;
+ bh=pemWDkXYJYJHkIG427oBju+wORRrZ34sfzIWKrIjjq8=;
+ h=From:To:Cc:Subject:Date:From;
+ b=IvzCxh1aReSffScbyU7MPcoT71j/kqAsBwNudSXLIxDXxgV8fXjkKrQQK2GsZIqRV
+ 9jNEtx2DBahdLghW0yWnQbxgBdr+shycnXKVjDbMpZ0HOt3T0qGYxWMkGSzHwvmT60
+ G3Xg0zt/SlOFP700Ow9+tUX8Ql4soSSs2ZTpDRQ0CwGssI+1mWPcOOv9JTyootYoVm
+ fQGuQi/DmVTHzaMNieXdkBMoLBGUZ4LB9xDUG26v0/BE1thRcFTCFI2GLtUVXOHuj+
+ E3A8nqpnSQsysF/M6U+sP2dlEjr2jQZqGhHJmH+UaQu0lM0LpCEkRXGsRlBik1EM2N
+ RZTn9Ww3LSubA==
+From: Marek Vasut <marex@denx.de>
+To: alsa-devel@alsa-project.org
+Subject: [PATCH] ASoC: doc: Update dead links
+Date: Tue, 28 Jun 2022 18:58:07 +0200
+Message-Id: <20220628165807.152191-1-marex@denx.de>
+X-Mailer: git-send-email 2.35.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: DUAm5S6FSpeKs1rQXALmeksBnOmT4jbF
-X-Proofpoint-GUID: DUAm5S6FSpeKs1rQXALmeksBnOmT4jbF
-X-Proofpoint-Spam-Reason: safe
-Cc: patches@opensource.cirrus.com, alsa-devel@alsa-project.org,
- lgirdwood@gmail.com, linux-kernel@vger.kernel.org
+X-Virus-Scanned: clamav-milter 0.103.6 at phobos.denx.de
+X-Virus-Status: Clean
+Cc: Marek Vasut <marex@denx.de>, Takashi Iwai <tiwai@suse.de>,
+ Mark Brown <broonie@kernel.org>, linux-doc@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -94,58 +77,71 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-wm8998_inmux_put returns the value of snd_soc_dapm_mux_update_power,
-which returns a 1 if a path was found for the kcontrol. This is
-obviously different to the expected return a 1 if the control
-was updated value. This results in spurious notifications to
-user-space. Update the handling to only return a 1 when the value is
-changed.
+The alsa-project documentation is now part of the kernel docs,
+the original links are long dead, update links.
 
-Signed-off-by: Charles Keepax <ckeepax@opensource.cirrus.com>
+Signed-off-by: Marek Vasut <marex@denx.de>
+Cc: Mark Brown <broonie@kernel.org>
+Cc: Takashi Iwai <tiwai@suse.de>
 ---
- sound/soc/codecs/wm8998.c | 21 ++++++++++++++-------
- 1 file changed, 14 insertions(+), 7 deletions(-)
+ Documentation/process/kernel-docs.rst | 2 +-
+ Documentation/sound/soc/codec.rst     | 2 +-
+ Documentation/sound/soc/platform.rst  | 2 +-
+ sound/pci/ens1370.c                   | 2 +-
+ 4 files changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/sound/soc/codecs/wm8998.c b/sound/soc/codecs/wm8998.c
-index 00b59fc9b1fe0..ab5481187c710 100644
---- a/sound/soc/codecs/wm8998.c
-+++ b/sound/soc/codecs/wm8998.c
-@@ -108,6 +108,7 @@ static int wm8998_inmux_put(struct snd_kcontrol *kcontrol,
- 	struct soc_enum *e = (struct soc_enum *)kcontrol->private_value;
- 	unsigned int mode_reg, mode_index;
- 	unsigned int mux, inmode, src_val, mode_val;
-+	int change, ret;
+diff --git a/Documentation/process/kernel-docs.rst b/Documentation/process/kernel-docs.rst
+index da9527502ef0e..644f9200fd919 100644
+--- a/Documentation/process/kernel-docs.rst
++++ b/Documentation/process/kernel-docs.rst
+@@ -108,7 +108,7 @@ On-line docs
+     * Title: **Writing an ALSA Driver**
  
- 	mux = ucontrol->value.enumerated.item[0];
- 	if (mux > 1)
-@@ -137,14 +138,20 @@ static int wm8998_inmux_put(struct snd_kcontrol *kcontrol,
- 	snd_soc_component_update_bits(component, mode_reg,
- 				      ARIZONA_IN1_MODE_MASK, mode_val);
+       :Author: Takashi Iwai <tiwai@suse.de>
+-      :URL: http://www.alsa-project.org/~iwai/writing-an-alsa-driver/index.html
++      :URL: https://www.kernel.org/doc/html/latest/sound/kernel-api/writing-an-alsa-driver.html
+       :Date: 2005
+       :Keywords: ALSA, sound, soundcard, driver, lowlevel, hardware.
+       :Description: Advanced Linux Sound Architecture for developers,
+diff --git a/Documentation/sound/soc/codec.rst b/Documentation/sound/soc/codec.rst
+index 57df149acafc5..af973c4cac930 100644
+--- a/Documentation/sound/soc/codec.rst
++++ b/Documentation/sound/soc/codec.rst
+@@ -132,7 +132,7 @@ The codec driver also supports the following ALSA PCM operations:-
+   };
  
--	snd_soc_component_update_bits(component, e->reg,
--				      ARIZONA_IN1L_SRC_MASK |
--				      ARIZONA_IN1L_SRC_SE_MASK,
--				      src_val);
-+	change = snd_soc_component_update_bits(component, e->reg,
-+					       ARIZONA_IN1L_SRC_MASK |
-+					       ARIZONA_IN1L_SRC_SE_MASK,
-+					       src_val);
+ Please refer to the ALSA driver PCM documentation for details.
+-http://www.alsa-project.org/~iwai/writing-an-alsa-driver/
++https://www.kernel.org/doc/html/latest/sound/kernel-api/writing-an-alsa-driver.html
  
--	return snd_soc_dapm_mux_update_power(dapm, kcontrol,
--					     ucontrol->value.enumerated.item[0],
--					     e, NULL);
-+	ret = snd_soc_dapm_mux_update_power(dapm, kcontrol,
-+					    ucontrol->value.enumerated.item[0],
-+					    e, NULL);
-+	if (ret < 0) {
-+		dev_err(arizona->dev, "Failed to update demux power state: %d\n", ret);
-+		return ret;
-+	}
-+
-+	return change;
- }
  
- static const char * const wm8998_inmux_texts[] = {
+ DAPM description
+diff --git a/Documentation/sound/soc/platform.rst b/Documentation/sound/soc/platform.rst
+index c1badea53d3d3..7036630eaf016 100644
+--- a/Documentation/sound/soc/platform.rst
++++ b/Documentation/sound/soc/platform.rst
+@@ -46,7 +46,7 @@ snd_soc_component_driver:-
+   };
+ 
+ Please refer to the ALSA driver documentation for details of audio DMA.
+-http://www.alsa-project.org/~iwai/writing-an-alsa-driver/
++https://www.kernel.org/doc/html/latest/sound/kernel-api/writing-an-alsa-driver.html
+ 
+ An example DMA driver is soc/pxa/pxa2xx-pcm.c
+ 
+diff --git a/sound/pci/ens1370.c b/sound/pci/ens1370.c
+index 94efe347a97a9..89210b2c73424 100644
+--- a/sound/pci/ens1370.c
++++ b/sound/pci/ens1370.c
+@@ -8,7 +8,7 @@
+ /* Power-Management-Code ( CONFIG_PM )
+  * for ens1371 only ( FIXME )
+  * derived from cs4281.c, atiixp.c and via82xx.c
+- * using http://www.alsa-project.org/~tiwai/writing-an-alsa-driver/ 
++ * using https://www.kernel.org/doc/html/latest/sound/kernel-api/writing-an-alsa-driver.html
+  * by Kurt J. Bosch
+  */
+ 
 -- 
-2.30.2
+2.35.1
 
