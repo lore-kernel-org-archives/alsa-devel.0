@@ -4,63 +4,62 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6F03CC43334
-	for <alsa-devel@archiver.kernel.org>; Wed, 29 Jun 2022 14:08:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C7844C43334
+	for <alsa-devel@archiver.kernel.org>; Wed, 29 Jun 2022 14:08:25 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 86BF3167B;
-	Wed, 29 Jun 2022 16:07:18 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 86BF3167B
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0FB3D1669;
+	Wed, 29 Jun 2022 16:07:34 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0FB3D1669
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1656511688;
-	bh=ZdjWjB54cbHRycxjLjITQrOn43M908WL8or1/9HBUP4=;
+	s=default; t=1656511704;
+	bh=hQ4GAhXdMgF49WKm+/UqfK/ikb/wVg3umyPPuTJc5B4=;
 	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=HZqwtqCIcwrL5TPQBfIG0vBGtErmPLCEYbAaZftfEIFzlJshubvYR2n81tWlfWqsR
-	 aL54qfQo+kkyN/lA1YnRmDv7KcbMBrhu8anx5c+CdKYYr/DMw609xUQasKVkJglYfj
-	 u1VCIxyWu6sQD/No3b49FFah8VOqDucU5egmspeM=
+	b=FQW8QsmSgiKYwTUF2r71GmtXkWVb5sMBOyTeT2fh50hNrxn6HBzxCXVofzqkTOHd/
+	 cNeM8kJ0I9tm7kMHAxPLXAibx1DTM99wzZwzBlHVxl5pkBHQRku78W0SP56ErzMX3Q
+	 WEznE14xqXVTh7ucMLDAC+ABM9/lBtcl9n/1yY7Y=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id AF1D4F8053C;
-	Wed, 29 Jun 2022 16:06:11 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 40772F80543;
+	Wed, 29 Jun 2022 16:06:15 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id D8EC9F80536; Wed, 29 Jun 2022 16:06:06 +0200 (CEST)
-Received: from ams.source.kernel.org (ams.source.kernel.org
- [IPv6:2604:1380:4601:e00::1])
+ id C5B75F80538; Wed, 29 Jun 2022 16:06:10 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id A602FF8020D
- for <alsa-devel@alsa-project.org>; Wed, 29 Jun 2022 16:06:01 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A602FF8020D
+ by alsa1.perex.cz (Postfix) with ESMTPS id E3CF0F800F8
+ for <alsa-devel@alsa-project.org>; Wed, 29 Jun 2022 16:06:03 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E3CF0F800F8
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="fU2BuCn7"
+ header.b="hiVpqZ5o"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by ams.source.kernel.org (Postfix) with ESMTPS id 2F78CB824B3;
- Wed, 29 Jun 2022 14:06:01 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C5FBFC341CB;
- Wed, 29 Jun 2022 14:05:57 +0000 (UTC)
+ by dfw.source.kernel.org (Postfix) with ESMTPS id 9DFBF61EB7;
+ Wed, 29 Jun 2022 14:06:02 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 56FFDC341CC;
+ Wed, 29 Jun 2022 14:06:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1656511559;
- bh=ZdjWjB54cbHRycxjLjITQrOn43M908WL8or1/9HBUP4=;
+ s=k20201202; t=1656511562;
+ bh=hQ4GAhXdMgF49WKm+/UqfK/ikb/wVg3umyPPuTJc5B4=;
  h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=fU2BuCn79mheeDdDSP3MX6LYQ+5ckPhDuYaqjp8b1HSv4cqiAXAJNAeTOa9TyAs6K
- Q3iRARr/muciSSJsFU7N7vAOGSd/FgJB5CqSYLyV26WGaGpUJxPbz1L06vtQyqiCwv
- TVQ3NNbgZM84meUWk09BU+U+4oH39ksuPITo7PGRDqG//Dk6hw/3dUXx7S1RhBhjLk
- Mos9iiiXXADkMbS21xZIL3BCJyIRqkOeafCV6NfGDuC3kw4qzAyc7+hRq1ztBH9hEL
- nhlZeS3sWm1R+6U8JgJXlLy3x6ZqG9/ZsBHhKBsbbAJGf3dqH9pZ/czKHtNKl66bSy
- +ffyJlifgrTrw==
+ b=hiVpqZ5ooSG23Egrz8t0eRL5wRs4x59r5mR3X6pG1Biqem7zx+KjCFGD5aj3bnSLE
+ evU6B9jOfOUqR6VyXKFqDfwxWniVsJmlTh5z7C/TsrAa5j5VwuMv/4xs22e0Uq+N6e
+ bs35PYcgw2+ZnlKf/gPY0IxBi2CVBlIXc0D6fdslkM5VvmIt+eb4PqRCqCb+pEaKBT
+ LJlpyWa0XjiPAF31i9So3nKSCyiLOfMzxUZ6N8awFxNi6529aFAecYXIvtOdbH8gAl
+ hH6UQKeineRn3/Om8AnmpfmZSQwFg3VVcI6LqRDi65zz9k9vZDktcL39E172GJWUiK
+ OQiZcKk7860WA==
 From: Mark Brown <broonie@kernel.org>
 To: heiko@sntech.de, judyhsiao@chromium.org
-In-Reply-To: <20220629080345.2427872-1-judyhsiao@chromium.org>
-References: <20220629080345.2427872-1-judyhsiao@chromium.org>
-Subject: Re: [PATCH v1] ASoC: rockchip: i2s: Fix the debug level on missing
- pinctrl
-Message-Id: <165651155754.1437597.8598340692080624115.b4-ty@kernel.org>
-Date: Wed, 29 Jun 2022 15:05:57 +0100
+In-Reply-To: <20220629080421.2427933-1-judyhsiao@chromium.org>
+References: <20220629080421.2427933-1-judyhsiao@chromium.org>
+Subject: Re: [PATCH v1 1/2] ASoC: rockchip: i2s: Remove unwanted dma settings
+ in rockchip_i2s_probe
+Message-Id: <165651156008.1437597.7188024938057495855.b4-ty@kernel.org>
+Date: Wed, 29 Jun 2022 15:06:00 +0100
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -83,8 +82,8 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, 29 Jun 2022 08:03:45 +0000, Judy Hsiao wrote:
-> Use dev_dbg on missing i2s->pinctrl as the pinctrl property is optional.
+On Wed, 29 Jun 2022 08:04:21 +0000, Judy Hsiao wrote:
+> Remove the unwanted dma settings in rockchip_i2s_probe.
 > 
 > 
 
@@ -94,8 +93,8 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: rockchip: i2s: Fix the debug level on missing pinctrl
-      commit: 48620f17e071060092197a09663a1c1fe6207829
+[1/2] ASoC: rockchip: i2s: Remove unwanted dma settings in rockchip_i2s_probe
+      commit: d6910eaa6fc71c0307e16b310a07cdb347d26d7d
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
