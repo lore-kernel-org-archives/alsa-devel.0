@@ -4,92 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3D3AACCA47C
-	for <alsa-devel@archiver.kernel.org>; Wed, 29 Jun 2022 12:27:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 47DDBC433EF
+	for <alsa-devel@archiver.kernel.org>; Wed, 29 Jun 2022 13:07:04 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B5F1C827;
-	Wed, 29 Jun 2022 14:26:49 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B5F1C827
+	by alsa0.perex.cz (Postfix) with ESMTPS id A2CFEE12;
+	Wed, 29 Jun 2022 15:06:12 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A2CFEE12
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1656505659;
-	bh=a0qiAdflpZ/z7RuhyhsqZuJmfwE8hQ5f4sMaVTiCVT0=;
-	h=Date:Subject:To:References:From:In-Reply-To:Cc:List-Id:
+	s=default; t=1656508022;
+	bh=N32uSPu3EtNEptJhBogV/ogjkAX7TnX7yvm7ck5YAWQ=;
+	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=CbQeox+/ln/amy2iWJR5pVoBmRGZrVCg5NV0j9/gef0tSpO6yJFn5AJW2arhtH+Lh
-	 9G7Y2GD5IHmXHKvrtzfqvDyCfyUd5KuwsiE/UuFZCe53Jf1L3Em46hEmHS5rHyNbNJ
-	 0Zwsp8D6+TTtt8spVyI3Jpmy+ymVC520E7WSGp9o=
+	b=HOnGp8v7XXcywSWX3JVRk+XViMT+GwJ4cTMIHa6udGgpQlfDgpAHnDOunmqPltKB5
+	 iXPQwJiC+S7xbgEBUFg1O5eUSaFKHxWkJrN2bV05J65zYHqRSZnT4TBeoM/044m3wa
+	 /QQ6krjbABSyffhhzmDzmFIGb4DVpCmOscm7SVRQ=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 3FE24F80158;
-	Wed, 29 Jun 2022 14:26:49 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 3BC83F8020D;
+	Wed, 29 Jun 2022 15:06:12 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 089E8F80107; Wed, 29 Jun 2022 14:26:48 +0200 (CEST)
-Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com
- [IPv6:2a00:1450:4864:20::630])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id 265B6F80245; Wed, 29 Jun 2022 15:06:11 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org
+ [IPv6:2604:1380:4641:c500::1])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id B1AF3F80107
- for <alsa-devel@alsa-project.org>; Wed, 29 Jun 2022 14:26:41 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B1AF3F80107
+ by alsa1.perex.cz (Postfix) with ESMTPS id 9E667F80115
+ for <alsa-devel@alsa-project.org>; Wed, 29 Jun 2022 15:06:06 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9E667F80115
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org
- header.b="fdkOLbDN"
-Received: by mail-ej1-x630.google.com with SMTP id u12so32190978eja.8
- for <alsa-devel@alsa-project.org>; Wed, 29 Jun 2022 05:26:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
- h=message-id:date:mime-version:user-agent:subject:content-language:to
- :cc:references:from:in-reply-to:content-transfer-encoding;
- bh=/VK9DE+fjlwvsGyviRj5FG4gJTmtxY9r+zyl+crkUSY=;
- b=fdkOLbDNyEE6sBEjG9IcyIog5z7nlO9H6IcwUn2zxDl0CJArtFrBxq9nX3hW2Roygl
- Q9q5rxX0IJFa0y/bn45c3+HRrS0r9uwdBjoXT7cju27MpxRv/nSKAi2PAF3OQwjbRh8W
- pIPSKFnfyPlng3UtgJuckS6d7OhV76HWFlJswm+fONVqwOBf0Fk73mD2bfalk2mWiL5+
- j2Jh71I/V2G77ynl6S32mX+aNSocMysI/G15zcmzEq0hkjHLw8hxL89yTdzOuhvnF2Wt
- Dlk9Rd9kaOtrM4+XgsIkJDjCaKTgKek6xGE5jcF1WerE2UjRkoqhYM0nDxMqdMXf7ax4
- 1xGA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
- :content-language:to:cc:references:from:in-reply-to
- :content-transfer-encoding;
- bh=/VK9DE+fjlwvsGyviRj5FG4gJTmtxY9r+zyl+crkUSY=;
- b=hwH81ATVsioZR5Y3vevTWpFnbQF3ST08ZwMrp+gyl+0MfkYzz0vWm7nVIeXmbTSVgM
- psHbwFHldhIPqIOWlWtcwtUzC61v090n+c/GMidVjgprGYX/utyaagQcXPBIbZPciJuC
- 44k1NG88Sf69+e9xZRRUgihOM7pXwWtpzPq0O+xahoysLtrV+xTmhnNIOZ+2c9B5RWjT
- hBAGwqbWxn09CWuy1JleO2wumjsGaCHGM1l/Imupu0xsJalWrT9BvwYibVt7gNEFzwxa
- xyRXqLVbBYntlxvP6BjoyHR+OJZYFQPo9x6EIAhrtysqw5cxCxB0WAF2gxGbAGJdLV21
- adGA==
-X-Gm-Message-State: AJIora9AiNmMKkUEExh9gTBd4eF4crf8z0OV0jqFe71Wbshf2SNptv4H
- MD816YmNui6CLhfhGzQrvvriRA==
-X-Google-Smtp-Source: AGRyM1segqOzgXb6PMP455BLIUdg79bBzmtmRagdnqlVA0EpCB3ku6EzDcPZ0q2RMKoDivXkRf+f/A==
-X-Received: by 2002:a17:907:7b87:b0:726:c868:cf38 with SMTP id
- ne7-20020a1709077b8700b00726c868cf38mr3127475ejc.580.1656505578137; 
- Wed, 29 Jun 2022 05:26:18 -0700 (PDT)
-Received: from [192.168.0.184] (xdsl-188-155-176-92.adslplus.ch.
- [188.155.176.92]) by smtp.gmail.com with ESMTPSA id
- u9-20020aa7d989000000b004355cb1e77esm11097013eds.91.2022.06.29.05.26.17
- (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Wed, 29 Jun 2022 05:26:17 -0700 (PDT)
-Message-ID: <2cd3630b-3481-8647-a80b-b6c17a7979db@linaro.org>
-Date: Wed, 29 Jun 2022 14:26:16 +0200
+ dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="gzHWbRkY"
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by dfw.source.kernel.org (Postfix) with ESMTPS id 3C1DE61CB6;
+ Wed, 29 Jun 2022 13:06:03 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9B9DEC341CB;
+ Wed, 29 Jun 2022 13:06:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1656507962;
+ bh=N32uSPu3EtNEptJhBogV/ogjkAX7TnX7yvm7ck5YAWQ=;
+ h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+ b=gzHWbRkYwbx24y9LJruP9AkpJ1CUe6iBcRGu3s7pPuQzUxrTQsd2wpumX9sB+DVYR
+ vh07XufcvGu0qGX1scyh3Lf2B0+PNwjdk2UeYEDy2oraxeWLjF+YTM5yVHx1q7GwuA
+ 4PSmfO/okQFYKTA/THthxGG2yOuIKX812dETW1bHurrK48T373vKmy+tN0IPd/gfaj
+ BVCFdceIpD8Yg79tX4qm41i2DBomJ2NXGDQj8cPh3jnPrJA+WO1yxmaXtN/ui/eW1z
+ e6d2McGrRAKfA9ILnpENOb/kNkWD9tNCwIcXhE5mSvbseP9JNN3V0ZUwwqrXFJQS+v
+ 983G4sCF/2Hrg==
+From: Mark Brown <broonie@kernel.org>
+To: alsa-devel@alsa-project.org, marex@denx.de
+In-Reply-To: <20220628165840.152235-1-marex@denx.de>
+References: <20220628165840.152235-1-marex@denx.de>
+Subject: Re: [PATCH] ASoC: doc: Capitalize RESET line name
+Message-Id: <165650796136.1089020.10280239824537087786.b4-ty@kernel.org>
+Date: Wed, 29 Jun 2022 14:06:01 +0100
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.10.0
-Subject: Re: [PATCH] ASoC: dt-bindings: Fix description for msm8916
-Content-Language: en-US
-To: Bryan O'Donoghue <bryan.odonoghue@linaro.org>, agross@kernel.org,
- bjorn.andersson@linaro.org, lgirdwood@gmail.com, broonie@kernel.org,
- robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
- srinivas.kandagatla@linaro.org
-References: <20220629114012.3282945-1-bryan.odonoghue@linaro.org>
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <20220629114012.3282945-1-bryan.odonoghue@linaro.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
- linux-arm-msm@vger.kernel.org, quic_potturu@quicinc.com,
- rohitkr@codeaurora.org, quic_srivasam@quicinc.com
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+Cc: tiwai@suse.de, linux-doc@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -105,20 +79,36 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On 29/06/2022 13:40, Bryan O'Donoghue wrote:
-> For the existing msm8916 bindings the minimum reg/reg-names is 1 not 2.
-> Similarly the minimum interrupt/interrupt-names is 1 not 2.
+On Tue, 28 Jun 2022 18:58:40 +0200, Marek Vasut wrote:
+> Make sure all AC97 interface lines are spelled in capitals,
+> to avoid confusing readers about where the 5th line is.
 > 
-> Fixes: f3fc4fbfa2d2 ("ASoC: dt-bindings: Add SC7280 lpass cpu bindings")
-> Signed-off-by: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
-> ---
->  .../devicetree/bindings/sound/qcom,lpass-cpu.yaml         | 8 ++++----
->  1 file changed, 4 insertions(+), 4 deletions(-)
 > 
 
+Applied to
 
-Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
 
+Thanks!
 
-Best regards,
-Krzysztof
+[1/1] ASoC: doc: Capitalize RESET line name
+      commit: db7bc2741a2aca91b9a4df1bb03e4997a0e90807
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
