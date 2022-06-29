@@ -4,67 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B094EC433EF
-	for <alsa-devel@archiver.kernel.org>; Wed, 29 Jun 2022 13:07:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id F04B1C433EF
+	for <alsa-devel@archiver.kernel.org>; Wed, 29 Jun 2022 14:06:54 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 9FF15163C;
-	Wed, 29 Jun 2022 15:06:42 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9FF15163C
+	by alsa0.perex.cz (Postfix) with ESMTPS id 2E1B61636;
+	Wed, 29 Jun 2022 16:06:02 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2E1B61636
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1656508052;
-	bh=G1RHu+MQpFit+ddCR7nyFYmDlIv0wOv1rNdxkGGY0uE=;
+	s=default; t=1656511612;
+	bh=7fSXNKAkW4NtuV55Foe1vxjYNS6tiT4nsVWk8VqcIjw=;
 	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=G6xw8AnR9EkWj+wNLtfWBGO2VLbX1D2zoG8OVHXJCuYayBHyYOCs/hfBEhSzJvb1E
-	 EXkEzgpDBr9rQm1RTcT/zt91QR5IvdfMl/8EH+SIdoDi6X2CU6gf/Ih5pbIuwsHdQ8
-	 H+qDH5DW0YHwsLgMlduNkMo2mtZcjpd4ZXZNyTdI=
+	b=mSHijiNbv59S8yTOK7SoN4HUI/AGcSDr7Yo+qPlKsZtxyc82BsWlbz5TDSjJW/tjo
+	 ce8O2GjAnmdvHBXj6mcOybAXD1EzixArTNmK6jK0jlpOEMVseaIKMeYX8+oPJ/C4fs
+	 TSWuJWIqAguq1luMB+SihuVhnpNYkduO8eNR1P+s=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id CE070F8027B;
-	Wed, 29 Jun 2022 15:06:16 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id AB03AF80107;
+	Wed, 29 Jun 2022 16:06:01 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 70B65F8027B; Wed, 29 Jun 2022 15:06:14 +0200 (CEST)
-Received: from sin.source.kernel.org (sin.source.kernel.org [145.40.73.55])
+ id EA5DFF800F8; Wed, 29 Jun 2022 16:05:59 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org
+ [IPv6:2604:1380:4641:c500::1])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id BE3B3F800F8
- for <alsa-devel@alsa-project.org>; Wed, 29 Jun 2022 15:06:07 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BE3B3F800F8
+ by alsa1.perex.cz (Postfix) with ESMTPS id 66318F80158
+ for <alsa-devel@alsa-project.org>; Wed, 29 Jun 2022 16:05:57 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 66318F80158
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="kUeRI/gV"
+ header.b="a0LzRe13"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by sin.source.kernel.org (Postfix) with ESMTPS id D3A17CE26FB;
- Wed, 29 Jun 2022 13:06:02 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1FDCCC34114;
- Wed, 29 Jun 2022 13:05:59 +0000 (UTC)
+ by dfw.source.kernel.org (Postfix) with ESMTPS id DE91861904;
+ Wed, 29 Jun 2022 14:05:55 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9CFBCC34114;
+ Wed, 29 Jun 2022 14:05:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1656507961;
- bh=G1RHu+MQpFit+ddCR7nyFYmDlIv0wOv1rNdxkGGY0uE=;
+ s=k20201202; t=1656511555;
+ bh=7fSXNKAkW4NtuV55Foe1vxjYNS6tiT4nsVWk8VqcIjw=;
  h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=kUeRI/gV6BNLHSRypWDCSHu4puVrewJKBHcepAS55RmuxVBIe4AgMt8VnnJKY3gs2
- MhxOc51Cb4YRW9iA10aqzPt6DY3QHiP7MfDxXtYlqv+HOyebdCIPfVM8k5d0gjYYqY
- ZiDTwYk8wQg4ulw6gQeqKqvZZRNOLtGn914rTl5w182Hk+e32uwGl/zgItQKjioxGa
- 23ZEC4PUEiFGe3gNeKzH2XBhab4s1RhiXt8qc4LGyEkdY0qM9/TOPRVSGMFqiEEkaT
- ezLUvyr0xpj7zYbXs4/9qHkmTYo4xzdl9TvjwpG/vzD8vVdPGKWcvu5pAWFZJm+h1A
- +n8AzKbjiw8wA==
+ b=a0LzRe13LpKG7DkbI4+6Bs3q1ry++6rZGbKMfxDwt0EJavRdNb3awhncJi+RSD4tR
+ fK46caggw9UNlQWqm8sSjXiJyn/j37UENt6px8eCck3J8MKX6dyx3rXbT3dVywx67F
+ hGAd7mB3QxaKYfgS3VbokN+L568oLIhu7o85nofze36nREmg5WrA8HejHryo0BaznI
+ WAI3Wu7k5MTeq/Fn3R3CnEdk4KCRdLUQZn8HVGBBqGXl4iydbZxpeXDXkzJEWmgIRD
+ v2r9dqcLOp5sYEJFQ5n2ee7Ic4ERx+xo/hLWMyFZBCci2hlVSNI1N/FpPBMxdL6z1q
+ O2ZDxoI25mUig==
 From: Mark Brown <broonie@kernel.org>
-To: ckeepax@opensource.cirrus.com
-In-Reply-To: <20220628153409.3266932-1-ckeepax@opensource.cirrus.com>
-References: <20220628153409.3266932-1-ckeepax@opensource.cirrus.com>
-Subject: Re: [PATCH 1/4] ASoC: wm5102: Fix event generation for output
- compensation
-Message-Id: <165650795982.1089020.5711367681769613096.b4-ty@kernel.org>
-Date: Wed, 29 Jun 2022 14:05:59 +0100
+To: daniel@zonque.org, ryan.lee.analog@gmail.com
+In-Reply-To: <20220629050630.2848317-1-daniel@zonque.org>
+References: <20220629050630.2848317-1-daniel@zonque.org>
+Subject: Re: [PATCH] ASoC: max98396: Fix TDM mode BSEL settings
+Message-Id: <165651155437.1437597.1652159248136094201.b4-ty@kernel.org>
+Date: Wed, 29 Jun 2022 15:05:54 +0100
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: patches@opensource.cirrus.com, alsa-devel@alsa-project.org,
- lgirdwood@gmail.com, linux-kernel@vger.kernel.org
+Cc: alsa-devel@alsa-project.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -80,13 +79,15 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Tue, 28 Jun 2022 16:34:06 +0100, Charles Keepax wrote:
-> The output compensation controls always returns zero regardless of if
-> the control value was updated. This results in missing notifications
-> to user-space of the control change. Update the handling to return 1
-> when the value is changed.
+On Wed, 29 Jun 2022 07:06:30 +0200, Daniel Mack wrote:
+> In TDM mode, the BSEL register value must be set according to table 5 in the
+> datasheet. This patch adds a lookup function and uses it in
+> max98396_dai_tdm_slot().
 > 
+> As the first 3 entries can also be used for non-TDM setups, the code re-uses
+> the same table for such scenarios.
 > 
+> [...]
 
 Applied to
 
@@ -94,14 +95,8 @@ Applied to
 
 Thanks!
 
-[1/4] ASoC: wm5102: Fix event generation for output compensation
-      commit: cb41d454b2478a98c831f14e656a34c21418e241
-[2/4] ASoC: wm8998: Fix event generation for input mux
-      commit: a83f511909217a1c2b971a509c992b6327bb18e7
-[3/4] ASoC: cs47l92: Fix event generation for OUT1 demux
-      commit: 2d81cca17329dece1c4f37d1de271bc967439327
-[4/4] ASoC: arizona: Update arizona_aif_cfg_changed to use RX_BCLK_RATE
-      commit: 6f04f1bfe9a4adf750c816f6094878222e496d0e
+[1/1] ASoC: max98396: Fix TDM mode BSEL settings
+      commit: d29e0a6e3631724c0b36786c6d9616b6e4ebeaa4
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
