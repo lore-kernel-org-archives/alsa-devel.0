@@ -4,67 +4,70 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E02D6C43334
-	for <alsa-devel@archiver.kernel.org>; Wed, 29 Jun 2022 14:07:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6F03CC43334
+	for <alsa-devel@archiver.kernel.org>; Wed, 29 Jun 2022 14:08:10 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 360051670;
-	Wed, 29 Jun 2022 16:07:01 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 360051670
+	by alsa0.perex.cz (Postfix) with ESMTPS id 86BF3167B;
+	Wed, 29 Jun 2022 16:07:18 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 86BF3167B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1656511671;
-	bh=UXDs+9EDFfkEqRLNHkEcBDaysFo8turPy2dmuBxmfJ4=;
-	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
+	s=default; t=1656511688;
+	bh=ZdjWjB54cbHRycxjLjITQrOn43M908WL8or1/9HBUP4=;
+	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Mo/Kmvh/vqhuZML4FHS5JlEOSY7d/cYmfXirQlS463tYU4B03yOYt4KraWgb72eTZ
-	 byg6YJV7aOjkeLDYMiAnm+DzNyMY+MSLboii4yNiJvlD57cKA5DD1e+9LNfHDwvb9a
-	 UwfteTnlrgWUZQltSV1KqHJRZ4W0eKga1lvrFjVo=
+	b=HZqwtqCIcwrL5TPQBfIG0vBGtErmPLCEYbAaZftfEIFzlJshubvYR2n81tWlfWqsR
+	 aL54qfQo+kkyN/lA1YnRmDv7KcbMBrhu8anx5c+CdKYYr/DMw609xUQasKVkJglYfj
+	 u1VCIxyWu6sQD/No3b49FFah8VOqDucU5egmspeM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 19FFDF80537;
+	by alsa1.perex.cz (Postfix) with ESMTP id AF1D4F8053C;
 	Wed, 29 Jun 2022 16:06:11 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 84AFFF8052E; Wed, 29 Jun 2022 16:06:02 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+ id D8EC9F80536; Wed, 29 Jun 2022 16:06:06 +0200 (CEST)
+Received: from ams.source.kernel.org (ams.source.kernel.org
+ [IPv6:2604:1380:4601:e00::1])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id B45D2F8020D
- for <alsa-devel@alsa-project.org>; Wed, 29 Jun 2022 16:05:56 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B45D2F8020D
+ by alsa1.perex.cz (Postfix) with ESMTPS id A602FF8020D
+ for <alsa-devel@alsa-project.org>; Wed, 29 Jun 2022 16:06:01 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A602FF8020D
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="f+tSxA9f"
+ header.b="fU2BuCn7"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id C209D61EAD;
- Wed, 29 Jun 2022 14:05:54 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 13D25C341C8;
- Wed, 29 Jun 2022 14:05:51 +0000 (UTC)
+ by ams.source.kernel.org (Postfix) with ESMTPS id 2F78CB824B3;
+ Wed, 29 Jun 2022 14:06:01 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C5FBFC341CB;
+ Wed, 29 Jun 2022 14:05:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1656511554;
- bh=UXDs+9EDFfkEqRLNHkEcBDaysFo8turPy2dmuBxmfJ4=;
- h=From:To:In-Reply-To:References:Subject:Date:From;
- b=f+tSxA9fD18Ch8FstmtZaJmIY64RcpJ1qwT8gvuEvfD9XOQlOEEGGRY27sIUxA0B/
- y3KojJCRSOzB0gfpVG/CJik0zla6JTYj8hcMPW0BstI3Q+LLttSt7zno5q5M7ysXqw
- 6Y/GVEQPFeFjr9sSj708R7U26awNgFs8eIzcerhnds5Pj/+8irzxEj1WNLVc7gpgMo
- tw8zn45LNdLIAJixJ6nkppLw84sfSlp6E0v6N4RaqQ/qOyQ745tA211doMFzNF1w3F
- jsnFzIH2YrDYRlUad5jqq51N/1uE9RfnH94XcZXCf4r9FIAA9eJ6ALt7Ipm1AS3j9S
- D6RBELTngJLyA==
+ s=k20201202; t=1656511559;
+ bh=ZdjWjB54cbHRycxjLjITQrOn43M908WL8or1/9HBUP4=;
+ h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+ b=fU2BuCn79mheeDdDSP3MX6LYQ+5ckPhDuYaqjp8b1HSv4cqiAXAJNAeTOa9TyAs6K
+ Q3iRARr/muciSSJsFU7N7vAOGSd/FgJB5CqSYLyV26WGaGpUJxPbz1L06vtQyqiCwv
+ TVQ3NNbgZM84meUWk09BU+U+4oH39ksuPITo7PGRDqG//Dk6hw/3dUXx7S1RhBhjLk
+ Mos9iiiXXADkMbS21xZIL3BCJyIRqkOeafCV6NfGDuC3kw4qzAyc7+hRq1ztBH9hEL
+ nhlZeS3sWm1R+6U8JgJXlLy3x6ZqG9/ZsBHhKBsbbAJGf3dqH9pZ/czKHtNKl66bSy
+ +ffyJlifgrTrw==
 From: Mark Brown <broonie@kernel.org>
-To: tiwai@suse.com, alsa-devel@alsa-project.org, shengjiu.wang@gmail.com,
- lgirdwood@gmail.com, shengjiu.wang@nxp.com, Xiubo.Lee@gmail.com,
- linuxppc-dev@lists.ozlabs.org, festevam@gmail.com,
- linux-kernel@vger.kernel.org, perex@perex.cz, nicoleotsuka@gmail.com
-In-Reply-To: <1656405589-29850-1-git-send-email-shengjiu.wang@nxp.com>
-References: <1656405589-29850-1-git-send-email-shengjiu.wang@nxp.com>
-Subject: Re: [PATCH] ASoC: fsl_micfil: change micfil default settings
-Message-Id: <165651155180.1437597.12670748028235515625.b4-ty@kernel.org>
-Date: Wed, 29 Jun 2022 15:05:51 +0100
+To: heiko@sntech.de, judyhsiao@chromium.org
+In-Reply-To: <20220629080345.2427872-1-judyhsiao@chromium.org>
+References: <20220629080345.2427872-1-judyhsiao@chromium.org>
+Subject: Re: [PATCH v1] ASoC: rockchip: i2s: Fix the debug level on missing
+ pinctrl
+Message-Id: <165651155754.1437597.8598340692080624115.b4-ty@kernel.org>
+Date: Wed, 29 Jun 2022 15:05:57 +0100
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>,
+ briannorris@chromium.org, linux-kernel@vger.kernel.org,
+ linux-rockchip@lists.infradead.org, Rob Herring <robh+dt@kernel.org>,
+ wenst@chromium.org, linux-arm-kernel@lists.infradead.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -80,15 +83,10 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Tue, 28 Jun 2022 16:39:49 +0800, Shengjiu Wang wrote:
-> Previous default settings resulted in loose dynamic
-> range and low sound level.
-> New default configuration changes:
-> - outgain = 2
-> - quality mode = VLOW0
-> - dc remover = bypass
+On Wed, 29 Jun 2022 08:03:45 +0000, Judy Hsiao wrote:
+> Use dev_dbg on missing i2s->pinctrl as the pinctrl property is optional.
 > 
-> [...]
+> 
 
 Applied to
 
@@ -96,8 +94,8 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: fsl_micfil: change micfil default settings
-      commit: 3b13b1437dcce4469db575c60d1da4fa9ff80694
+[1/1] ASoC: rockchip: i2s: Fix the debug level on missing pinctrl
+      commit: 48620f17e071060092197a09663a1c1fe6207829
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
