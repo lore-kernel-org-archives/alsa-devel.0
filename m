@@ -4,66 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id F04B1C433EF
-	for <alsa-devel@archiver.kernel.org>; Wed, 29 Jun 2022 14:06:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2FC33C43334
+	for <alsa-devel@archiver.kernel.org>; Wed, 29 Jun 2022 14:07:24 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 2E1B61636;
-	Wed, 29 Jun 2022 16:06:02 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2E1B61636
+	by alsa0.perex.cz (Postfix) with ESMTPS id 4BB181657;
+	Wed, 29 Jun 2022 16:06:32 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4BB181657
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1656511612;
-	bh=7fSXNKAkW4NtuV55Foe1vxjYNS6tiT4nsVWk8VqcIjw=;
+	s=default; t=1656511642;
+	bh=UTir4jvtX/Wc9f3wx5siduKUlp1IwFcyfl2zQub0Q54=;
 	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=mSHijiNbv59S8yTOK7SoN4HUI/AGcSDr7Yo+qPlKsZtxyc82BsWlbz5TDSjJW/tjo
-	 ce8O2GjAnmdvHBXj6mcOybAXD1EzixArTNmK6jK0jlpOEMVseaIKMeYX8+oPJ/C4fs
-	 TSWuJWIqAguq1luMB+SihuVhnpNYkduO8eNR1P+s=
+	b=hHE+K5LKpkAmwzUiOF82BKd9CvYZ3jryl0NuZZ/AkYd/apt6biYQ+6g0efk7c2t9m
+	 YRIx71GJC8VSgGZfObOhcBUaGxDiM5c+rgTualE+Ohy74RNq32By6gFOckP4vFLlUl
+	 /LGElLADVRphIl4ZG4W4+SrX33Y1khwWZwJ/LG4o=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id AB03AF80107;
-	Wed, 29 Jun 2022 16:06:01 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 83B6FF80245;
+	Wed, 29 Jun 2022 16:06:02 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id EA5DFF800F8; Wed, 29 Jun 2022 16:05:59 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org
- [IPv6:2604:1380:4641:c500::1])
+ id 6177AF8027B; Wed, 29 Jun 2022 16:06:00 +0200 (CEST)
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 66318F80158
- for <alsa-devel@alsa-project.org>; Wed, 29 Jun 2022 16:05:57 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 66318F80158
+ by alsa1.perex.cz (Postfix) with ESMTPS id 31CFEF80107
+ for <alsa-devel@alsa-project.org>; Wed, 29 Jun 2022 16:05:53 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 31CFEF80107
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="a0LzRe13"
+ header.b="Dw1yUl6j"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id DE91861904;
- Wed, 29 Jun 2022 14:05:55 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9CFBCC34114;
- Wed, 29 Jun 2022 14:05:54 +0000 (UTC)
+ by ams.source.kernel.org (Postfix) with ESMTPS id DC265B824A9;
+ Wed, 29 Jun 2022 14:05:52 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id F1F6FC34114;
+ Wed, 29 Jun 2022 14:05:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1656511555;
- bh=7fSXNKAkW4NtuV55Foe1vxjYNS6tiT4nsVWk8VqcIjw=;
+ s=k20201202; t=1656511551;
+ bh=UTir4jvtX/Wc9f3wx5siduKUlp1IwFcyfl2zQub0Q54=;
  h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=a0LzRe13LpKG7DkbI4+6Bs3q1ry++6rZGbKMfxDwt0EJavRdNb3awhncJi+RSD4tR
- fK46caggw9UNlQWqm8sSjXiJyn/j37UENt6px8eCck3J8MKX6dyx3rXbT3dVywx67F
- hGAd7mB3QxaKYfgS3VbokN+L568oLIhu7o85nofze36nREmg5WrA8HejHryo0BaznI
- WAI3Wu7k5MTeq/Fn3R3CnEdk4KCRdLUQZn8HVGBBqGXl4iydbZxpeXDXkzJEWmgIRD
- v2r9dqcLOp5sYEJFQ5n2ee7Ic4ERx+xo/hLWMyFZBCci2hlVSNI1N/FpPBMxdL6z1q
- O2ZDxoI25mUig==
+ b=Dw1yUl6jJ7er1GoSbOqDxte5EKisctjZQcPmXUyqaQH1bY7xwW7YnFOeaq4U0mXSp
+ G4I02MyNDCl5svJ8CsA9h+q4xVSspolwODPkBvv6QiqTjmAcIkoxPgkE3gfqHs/kt6
+ WSHUJe0BTgDxI5Zvhlo/3ht1+i59FPyJmi1vYLZgznseboWsYn47Dt0RuZU6sSTK8j
+ zFsA9Kxmiil2q3OQTReiEEclNgQADZkTo5hHJjE/ge6bJJ1Mecto2cBwmFsbxetqvk
+ onok6aZT3wRCZHuOHZYOgAmeNkMharNuGXM1s9R/Q03NaQx7C1ca9wU8wj5PM8wgKn
+ px5Etqg2jrL7w==
 From: Mark Brown <broonie@kernel.org>
-To: daniel@zonque.org, ryan.lee.analog@gmail.com
-In-Reply-To: <20220629050630.2848317-1-daniel@zonque.org>
-References: <20220629050630.2848317-1-daniel@zonque.org>
-Subject: Re: [PATCH] ASoC: max98396: Fix TDM mode BSEL settings
-Message-Id: <165651155437.1437597.1652159248136094201.b4-ty@kernel.org>
-Date: Wed, 29 Jun 2022 15:05:54 +0100
+To: alsa-devel@alsa-project.org, lgirdwood@gmail.com,
+ krzysztof.kozlowski+dt@linaro.org, shengjiu.wang@nxp.com,
+ linux-kernel@vger.kernel.org, robh+dt@kernel.org, devicetree@vger.kernel.org
+In-Reply-To: <1655980125-24141-1-git-send-email-shengjiu.wang@nxp.com>
+References: <1655980125-24141-1-git-send-email-shengjiu.wang@nxp.com>
+Subject: Re: [PATCH] ASoC: dt-bindings: fsl,
+ micfil: Convert format to json-schema
+Message-Id: <165651154969.1437597.15028170773257315286.b4-ty@kernel.org>
+Date: Wed, 29 Jun 2022 15:05:49 +0100
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: alsa-devel@alsa-project.org
+Cc: shengjiu.wang@gmail.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -79,15 +81,10 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, 29 Jun 2022 07:06:30 +0200, Daniel Mack wrote:
-> In TDM mode, the BSEL register value must be set according to table 5 in the
-> datasheet. This patch adds a lookup function and uses it in
-> max98396_dai_tdm_slot().
+On Thu, 23 Jun 2022 18:28:45 +0800, Shengjiu Wang wrote:
+> Convert the NXP MICFIL binding to DT schema format using json-schema.
 > 
-> As the first 3 entries can also be used for non-TDM setups, the code re-uses
-> the same table for such scenarios.
 > 
-> [...]
 
 Applied to
 
@@ -95,8 +92,8 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: max98396: Fix TDM mode BSEL settings
-      commit: d29e0a6e3631724c0b36786c6d9616b6e4ebeaa4
+[1/1] ASoC: dt-bindings: fsl,micfil: Convert format to json-schema
+      commit: 02d91fe47100a29a79fcb8798e45c22591ca852d
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
