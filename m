@@ -4,79 +4,78 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 36245C433EF
-	for <alsa-devel@archiver.kernel.org>; Wed, 29 Jun 2022 09:08:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B7E2CC43334
+	for <alsa-devel@archiver.kernel.org>; Wed, 29 Jun 2022 09:08:59 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3A2E3166E;
-	Wed, 29 Jun 2022 11:08:03 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3A2E3166E
+	by alsa0.perex.cz (Postfix) with ESMTPS id 00FA7167A;
+	Wed, 29 Jun 2022 11:08:07 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 00FA7167A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1656493733;
-	bh=gGoAnUaGpkqcWkBLVzRPXWX0EJal6RTl9AugfoboFOo=;
+	s=default; t=1656493738;
+	bh=8bSK41QnSeSfY2mNoFyTLJjaOsrXSyQg0PWgdLAvxCE=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Pr73Bzu0si+vn3+YnqFOQDNHZsEuiPrm7kGIa1R3jU+BEuTozoVJboFNxuKVespWS
-	 Gz9T/aT2trZzGBWdli5Yy/VVJqHZGOE1HOjiBOznZWHSCtpFlvO+9Cj73TWQd3DJ/D
-	 R/Os06PGQsrti2g4EULsbxKWQLjsVuw8oDa/JiU4=
+	b=Rt7mrPeRmI2Qojdc8D2t9L8ChofJU/UdGDRBDdxvJNYGdGPeervu2+Y3hAvniJb7p
+	 y7LhV28vprxkqAzIWTFEgHSJ658DUdU5YOIqXgtrkY1UIRFqDxFRkGzJhr6BWOz14t
+	 YooLOZRU9AUeCe0LPT+sZR5Gd0wVwSR+essWpQaM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 0C559F8053B;
-	Wed, 29 Jun 2022 11:07:20 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 7F0BEF804D9;
+	Wed, 29 Jun 2022 11:07:22 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 4CDD4F8052D; Wed, 29 Jun 2022 11:07:17 +0200 (CEST)
-Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com
- [IPv6:2a00:1450:4864:20::32a])
+ id 2275FF8053C; Wed, 29 Jun 2022 11:07:21 +0200 (CEST)
+Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com
+ [IPv6:2a00:1450:4864:20::335])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 44DBEF80245
- for <alsa-devel@alsa-project.org>; Wed, 29 Jun 2022 11:07:07 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 44DBEF80245
+ by alsa1.perex.cz (Postfix) with ESMTPS id 49163F804D9
+ for <alsa-devel@alsa-project.org>; Wed, 29 Jun 2022 11:07:09 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 49163F804D9
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org
- header.b="MaLVsYck"
-Received: by mail-wm1-x32a.google.com with SMTP id
- o16-20020a05600c379000b003a02eaea815so795958wmr.0
- for <alsa-devel@alsa-project.org>; Wed, 29 Jun 2022 02:07:07 -0700 (PDT)
+ header.b="eIulRGfs"
+Received: by mail-wm1-x335.google.com with SMTP id l68so3893777wml.3
+ for <alsa-devel@alsa-project.org>; Wed, 29 Jun 2022 02:07:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
  h=from:to:cc:subject:date:message-id:in-reply-to:references
  :mime-version:content-transfer-encoding;
- bh=aLqWKbW2jwJoT9mNlPi4MBFHRkwb+jBW6zLXAKBErh8=;
- b=MaLVsYckZFbAjneDp1wl2bbc1COXSVjuKYl2p1EVBs3dtRA5vY4YysKcEfAe03l6lt
- mjGmfJ1lHWvBIHl76k0usAJgjhTdfVxh0nOAB+J/FbWB9tPhdBOJdddZ2nXK3wh18Ihx
- 1YYzEleHO9Rrxnpqmj1jDvnJ3YfVBMqJSAPjpKyZN5mCbSg9d6kzDR+TeqdBssFLDa7i
- ZsgEFV6AN03F3gbA89NV02joCPEen9BeGnRt7V+QsSfQm+1XQfRVpogoOcpt61bIxl9d
- UmUjU/Fvm0iV3e4Pfx3Eci5JMo+WBEn4l7dVeTcV8WlEFTQv8iTYu1eCbSwaOcZAxPMu
- opVw==
+ bh=fvRHpEuM0xL4Ig3rSMG67s5DNIqr9l5dziqEAdf8e6A=;
+ b=eIulRGfsJ6WI4mlYvMyeshFZzNh5ZkRuw8+FjtEGvSZqCfeuFikmx6zqVCBqDuhQuL
+ D4yTPfb5E8K1ZgKjLzh3cWURUI678wg3l8IBeS3fNte3PNmjZdggJHOT0yP2KMCUTJef
+ fMJazeRRHA7/Y017u5jwLZvL12BrqT0b9JsBCdo9ZfDkxXRowOPG0z++mKex9cJZvBC0
+ LeVhuYtJxX1s1bg2vaTqZ0rtm3Z8kzMz+0c9SNVnV+p6i/khpKQnwia0x25xTLLqi8Be
+ bINQq8MoEcdS0MTj86f+Q2xZucwbpy6qN57ry5Iy94bJUc198r8yHebjVbOS9IX7oSpH
+ Nw2A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
  h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
  :references:mime-version:content-transfer-encoding;
- bh=aLqWKbW2jwJoT9mNlPi4MBFHRkwb+jBW6zLXAKBErh8=;
- b=PrPZywpIMCo9dhtZkb9OG8Aj5u0bbjO+q1aoiN/M1hL9BtotD/kznNWpcBme0Ocing
- +DmSoPbaaumFKuhZim3nvJNE9zUfzAj3POSBc3AM0u4vgUZznAaFgqH/9Y8enWVOvjoh
- DZwklZJL0kEeQmrtz0gisbGk4Ojqpkj0SF2WoQYxkBZXsyXWxfvIio6sh2exXFKOi3LS
- BnC42Pbm9lPz7Tz2JoKofcKn6+HAcjF7Rp6WHGQu6K8am2zrN6pu+hbqzjJQ8KRZDaRM
- uePyVL+4PT34bm//6dWozvraQzR8Jy647UvxW9FaOlZGn7yfFZJwCDpgFEtTkzWis4kg
- bGVw==
-X-Gm-Message-State: AJIora9iFG7JiM7DP33yfAtDcdX4PsIeyt292RVvMk7rblk6Uj25h5Dx
- Oqga6BmiDqJ/G4sxTW5EQFi+EA==
-X-Google-Smtp-Source: AGRyM1sDF/x8aEU0SfRrjCu32S9j0ZFkdiKNSRBehEA0uZ6Cr/wxrTUDHyPdd6wQKF7O+2E+9kMjgw==
-X-Received: by 2002:a1c:e907:0:b0:3a0:3e42:9c72 with SMTP id
- q7-20020a1ce907000000b003a03e429c72mr2453247wmc.162.1656493625564; 
- Wed, 29 Jun 2022 02:07:05 -0700 (PDT)
+ bh=fvRHpEuM0xL4Ig3rSMG67s5DNIqr9l5dziqEAdf8e6A=;
+ b=An2oW+dUBu8cWF4ZDBDQid7NSkmVwb/fHjXymzRNhfj/NxBh4XThilM3gNdKJ6cTvq
+ afM/fZskJn8Ai+RvCVGFFl8qagbq5/4OZfFypkMto1SYpq+NQG8H0voRkWpYSMZnwcpm
+ H1iaev+Hs6C3qoZN1o8U3rAQ4Tuho1s4bbrN/15RzaVTFi6n/Df8QKeMJeJ/T/0KUeOB
+ MgJgCC0A1YcAGYuQD8rRRlZttB9abmn1Z5e5EfZTcViOfLY0DcORm/dpdI7a3eu69cV4
+ h4+fEywVjoh4L2R7J1U/iSTmvNiyOiWkafUwjYRbRbQqWR+dbwSkxYL0M7ojBIFSnkQg
+ Ozug==
+X-Gm-Message-State: AJIora95a/JaZFexc96jAuVuCTqmmGC44562cJGB354/Y6RjzWOsFdDY
+ W5Ogyp1jWg39B5PZyapdB7mSMw==
+X-Google-Smtp-Source: AGRyM1sqdcOO67Q4GH6190vNi8+fv2G1XQaln8hbux9UYguV5hoCwnddhrqxegcr9JjW9VuxxYfJbQ==
+X-Received: by 2002:a7b:cf33:0:b0:3a0:5731:1055 with SMTP id
+ m19-20020a7bcf33000000b003a057311055mr2425123wmg.140.1656493628061; 
+ Wed, 29 Jun 2022 02:07:08 -0700 (PDT)
 Received: from srini-hackbase.lan
  (cpc90716-aztw32-2-0-cust825.18-1.cable.virginm.net. [86.26.103.58])
  by smtp.gmail.com with ESMTPSA id
- e12-20020a5d530c000000b002185d79dc7fsm15993341wrv.75.2022.06.29.02.07.04
+ e12-20020a5d530c000000b002185d79dc7fsm15993341wrv.75.2022.06.29.02.07.07
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Wed, 29 Jun 2022 02:07:05 -0700 (PDT)
+ Wed, 29 Jun 2022 02:07:07 -0700 (PDT)
 From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 To: broonie@kernel.org
-Subject: [PATCH 1/4] ASoC: dt-bindings: Add WSA883x bindings
-Date: Wed, 29 Jun 2022 10:06:41 +0100
-Message-Id: <20220629090644.67982-2-srinivas.kandagatla@linaro.org>
+Subject: [PATCH 3/4] ASoC: codecs: wsa883x: add control, dapm widgets and map
+Date: Wed, 29 Jun 2022 10:06:43 +0100
+Message-Id: <20220629090644.67982-4-srinivas.kandagatla@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20220629090644.67982-1-srinivas.kandagatla@linaro.org>
 References: <20220629090644.67982-1-srinivas.kandagatla@linaro.org>
@@ -100,96 +99,238 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-This patch adds bindings for WSA883x Smart Speaker Amplifier.
-This Amplifier also has a simple thermal sensor for temperature
-measurments with speaker protection.
+Add controls, dapm widgets along with route.
 
 Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 ---
- .../bindings/sound/qcom,wsa883x.yaml          | 74 +++++++++++++++++++
- 1 file changed, 74 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/sound/qcom,wsa883x.yaml
+ sound/soc/codecs/wsa883x.c | 197 +++++++++++++++++++++++++++++++++++++
+ 1 file changed, 197 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/sound/qcom,wsa883x.yaml b/Documentation/devicetree/bindings/sound/qcom,wsa883x.yaml
-new file mode 100644
-index 000000000000..6113f65f2990
---- /dev/null
-+++ b/Documentation/devicetree/bindings/sound/qcom,wsa883x.yaml
-@@ -0,0 +1,74 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/sound/qcom,wsa883x.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
+diff --git a/sound/soc/codecs/wsa883x.c b/sound/soc/codecs/wsa883x.c
+index 856709ec017e..800a4dd56b9e 100644
+--- a/sound/soc/codecs/wsa883x.c
++++ b/sound/soc/codecs/wsa883x.c
+@@ -473,6 +473,19 @@ enum wsa_port_ids {
+ 	WSA883X_PORT_VISENSE,
+ };
+ 
++static const char * const wsa_dev_mode_text[] = {
++	"speaker", "receiver", "ultrasound"
++};
 +
-+title: Bindings for The Qualcomm WSA8830/WSA8832/WSA8835
-+  smart speaker amplifier
++enum {
++	SPEAKER,
++	RECEIVER,
++	ULTRASOUND,
++};
 +
-+maintainers:
-+  - Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
++static const struct soc_enum wsa_dev_mode_enum =
++	SOC_ENUM_SINGLE_EXT(ARRAY_SIZE(wsa_dev_mode_text), wsa_dev_mode_text);
 +
-+description: |
-+  WSA883X is the Qualcomm Aqstic smart speaker amplifier
-+  Their primary operating mode uses a SoundWire digital audio
-+  interface. This binding is for SoundWire interface.
+ /* 4 ports */
+ static struct sdw_dpn_prop wsa_sink_dpn_prop[WSA883X_MAX_SWR_PORTS] = {
+ 	{
+@@ -1066,6 +1079,95 @@ static struct sdw_slave_ops wsa883x_slave_ops = {
+ 	.port_prep = wsa883x_port_prep,
+ };
+ 
++static int wsa_dev_mode_get(struct snd_kcontrol *kcontrol,
++			    struct snd_ctl_elem_value *ucontrol)
++{
++	struct snd_soc_component *component = snd_soc_kcontrol_component(kcontrol);
++	struct wsa883x_priv *wsa883x = snd_soc_component_get_drvdata(component);
 +
-+properties:
-+  compatible:
-+    const: sdw10217020200
++	ucontrol->value.enumerated.item[0] = wsa883x->dev_mode;
 +
-+  reg:
-+    maxItems: 1
++	return 0;
++}
 +
-+  powerdown-gpios:
-+    description: GPIO spec for Powerdown/Shutdown line to use
-+    maxItems: 1
++static int wsa_dev_mode_put(struct snd_kcontrol *kcontrol,
++			    struct snd_ctl_elem_value *ucontrol)
++{
++	struct snd_soc_component *component = snd_soc_kcontrol_component(kcontrol);
++	struct wsa883x_priv *wsa883x = snd_soc_component_get_drvdata(component);
 +
-+  vdd-supply:
-+    description: VDD Supply for the Codec
++	if (wsa883x->dev_mode == ucontrol->value.enumerated.item[0])
++		return 0;
 +
-+  '#thermal-sensor-cells':
-+    const: 0
++	wsa883x->dev_mode = ucontrol->value.enumerated.item[0];
 +
-+  '#sound-dai-cells':
-+    const: 0
++	return 0;
++}
 +
-+required:
-+  - compatible
-+  - reg
-+  - vdd-supply
-+  - powerdown-gpios
-+  - "#thermal-sensor-cells"
-+  - "#sound-dai-cells"
++static const DECLARE_TLV_DB_SCALE(pa_gain, -300, 150, -300);
 +
-+additionalProperties: false
++static int wsa883x_get_swr_port(struct snd_kcontrol *kcontrol,
++				struct snd_ctl_elem_value *ucontrol)
++{
++	struct snd_soc_component *comp = snd_soc_kcontrol_component(kcontrol);
++	struct wsa883x_priv *data = snd_soc_component_get_drvdata(comp);
++	struct soc_mixer_control *mixer = (struct soc_mixer_control *)kcontrol->private_value;
++	int portidx = mixer->reg;
 +
-+examples:
-+  - |
-+    soundwire-controller@3250000 {
-+        #address-cells = <2>;
-+        #size-cells = <0>;
-+        reg = <0x3250000 0x2000>;
++	ucontrol->value.integer.value[0] = data->port_enable[portidx];
 +
-+        speaker@0,1 {
-+            compatible = "sdw10217020200";
-+            reg = <0 1>;
-+            powerdown-gpios = <&tlmm 1 0>;
-+            vdd-supply = <&vreg_s10b_1p8>;
-+            #thermal-sensor-cells = <0>;
-+            #sound-dai-cells = <0>;
-+        };
 +
-+        speaker@0,2 {
-+            compatible = "sdw10217020200";
-+            reg = <0 2>;
-+            powerdown-gpios = <&tlmm 89 0>;
-+            vdd-supply = <&vreg_s10b_1p8>;
-+            #thermal-sensor-cells = <0>;
-+            #sound-dai-cells = <0>;
-+        };
-+    };
++	return 0;
++}
 +
-+...
++static int wsa883x_set_swr_port(struct snd_kcontrol *kcontrol,
++				struct snd_ctl_elem_value *ucontrol)
++{
++	struct snd_soc_component *comp = snd_soc_kcontrol_component(kcontrol);
++	struct wsa883x_priv *data = snd_soc_component_get_drvdata(comp);
++	struct soc_mixer_control *mixer = (struct soc_mixer_control *)kcontrol->private_value;
++	int portidx = mixer->reg;
++
++	if (ucontrol->value.integer.value[0]) {
++		if (data->port_enable[portidx])
++			return 0;
++
++		data->port_enable[portidx] = true;
++	} else {
++		if (!data->port_enable[portidx])
++			return 0;
++
++		data->port_enable[portidx] = false;
++	}
++
++	return 1;
++}
++
++static int wsa883x_get_comp_offset(struct snd_kcontrol *kcontrol,
++				   struct snd_ctl_elem_value *ucontrol)
++{
++	struct snd_soc_component *component = snd_soc_kcontrol_component(kcontrol);
++	struct wsa883x_priv *wsa883x = snd_soc_component_get_drvdata(component);
++
++	ucontrol->value.integer.value[0] = wsa883x->comp_offset;
++
++	return 0;
++}
++
++static int wsa883x_set_comp_offset(struct snd_kcontrol *kcontrol,
++				   struct snd_ctl_elem_value *ucontrol)
++{
++	struct snd_soc_component *component = snd_soc_kcontrol_component(kcontrol);
++	struct wsa883x_priv *wsa883x = snd_soc_component_get_drvdata(component);
++
++	if (wsa883x->comp_offset == ucontrol->value.integer.value[0])
++		return 0;
++
++	wsa883x->comp_offset = ucontrol->value.integer.value[0];
++
++	return 1;
++}
++
+ static int wsa883x_codec_probe(struct snd_soc_component *comp)
+ {
+ 	struct wsa883x_priv *wsa883x = snd_soc_component_get_drvdata(comp);
+@@ -1075,9 +1177,104 @@ static int wsa883x_codec_probe(struct snd_soc_component *comp)
+ 	return 0;
+ }
+ 
++static int wsa883x_spkr_event(struct snd_soc_dapm_widget *w,
++			      struct snd_kcontrol *kcontrol, int event)
++{
++	struct snd_soc_component *component = snd_soc_dapm_to_component(w->dapm);
++	struct wsa883x_priv *wsa883x = snd_soc_component_get_drvdata(component);
++
++	switch (event) {
++	case SND_SOC_DAPM_POST_PMU:
++		if (wsa883x->dev_mode == RECEIVER) {
++			snd_soc_component_write_field(component, WSA883X_CDC_PATH_MODE,
++						      WSA883X_RXD_MODE_MASK,
++						      WSA883X_RXD_MODE_HIFI);
++			snd_soc_component_write_field(component, WSA883X_SPKR_PWM_CLK_CTL,
++						      WSA883X_SPKR_PWM_FREQ_SEL_MASK,
++						      WSA883X_SPKR_PWM_FREQ_F600KHZ);
++			snd_soc_component_write_field(component, WSA883X_DRE_CTL_0,
++						       WSA883X_DRE_PROG_DELAY_MASK, 0x0);
++		} else if (wsa883x->dev_mode == SPEAKER) {
++			snd_soc_component_write_field(component, WSA883X_CDC_PATH_MODE,
++						      WSA883X_RXD_MODE_MASK,
++						      WSA883X_RXD_MODE_NORMAL);
++			snd_soc_component_write_field(component, WSA883X_SPKR_PWM_CLK_CTL,
++						      WSA883X_SPKR_PWM_FREQ_SEL_MASK,
++						      WSA883X_SPKR_PWM_FREQ_F300KHZ);
++			snd_soc_component_write_field(component, WSA883X_DRE_CTL_0,
++						       WSA883X_DRE_PROG_DELAY_MASK, 0x9);
++		}
++
++		snd_soc_component_write_field(component, WSA883X_DRE_CTL_1,
++					      WSA883X_DRE_GAIN_EN_MASK,
++					      WSA883X_DRE_GAIN_FROM_CSR);
++		if (wsa883x->port_enable[WSA883X_PORT_COMP])
++			snd_soc_component_write_field(component, WSA883X_DRE_CTL_0,
++						      WSA883X_DRE_OFFSET_MASK,
++						      wsa883x->comp_offset);
++		snd_soc_component_write_field(component, WSA883X_VBAT_ADC_FLT_CTL,
++					      WSA883X_VBAT_ADC_COEF_SEL_MASK,
++					      WSA883X_VBAT_ADC_COEF_F_1DIV16);
++		snd_soc_component_write_field(component, WSA883X_VBAT_ADC_FLT_CTL,
++					      WSA883X_VBAT_ADC_FLT_EN_MASK, 0x1);
++		snd_soc_component_write_field(component, WSA883X_PDM_WD_CTL,
++					      WSA883X_PDM_EN_MASK,
++					      WSA883X_PDM_ENABLE);
++		snd_soc_component_write_field(component, WSA883X_PA_FSM_CTL,
++					      WSA883X_GLOBAL_PA_EN_MASK,
++					      WSA883X_GLOBAL_PA_ENABLE);
++
++		break;
++	case SND_SOC_DAPM_PRE_PMD:
++		snd_soc_component_write_field(component, WSA883X_VBAT_ADC_FLT_CTL,
++					      WSA883X_VBAT_ADC_FLT_EN_MASK, 0x0);
++		snd_soc_component_write_field(component, WSA883X_VBAT_ADC_FLT_CTL,
++					      WSA883X_VBAT_ADC_COEF_SEL_MASK,
++					      WSA883X_VBAT_ADC_COEF_F_1DIV2);
++		snd_soc_component_write_field(component, WSA883X_PA_FSM_CTL,
++					      WSA883X_GLOBAL_PA_EN_MASK, 0);
++		snd_soc_component_write_field(component, WSA883X_PDM_WD_CTL,
++					      WSA883X_PDM_EN_MASK, 0);
++		break;
++	}
++	return 0;
++}
++
++static const struct snd_soc_dapm_widget wsa883x_dapm_widgets[] = {
++	SND_SOC_DAPM_INPUT("IN"),
++	SND_SOC_DAPM_SPK("SPKR", wsa883x_spkr_event),
++};
++
++static const struct snd_kcontrol_new wsa883x_snd_controls[] = {
++	SOC_SINGLE_RANGE_TLV("PA Gain", WSA883X_DRE_CTL_1, 1,
++			     0x0, 0x1f, 1, pa_gain),
++	SOC_ENUM_EXT("WSA MODE", wsa_dev_mode_enum,
++		     wsa_dev_mode_get, wsa_dev_mode_put),
++	SOC_SINGLE_EXT("COMP Offset", SND_SOC_NOPM, 0, 4, 0,
++		       wsa883x_get_comp_offset, wsa883x_set_comp_offset),
++	SOC_SINGLE_EXT("DAC Switch", WSA883X_PORT_DAC, 0, 1, 0,
++		       wsa883x_get_swr_port, wsa883x_set_swr_port),
++	SOC_SINGLE_EXT("COMP Switch", WSA883X_PORT_COMP, 0, 1, 0,
++		       wsa883x_get_swr_port, wsa883x_set_swr_port),
++	SOC_SINGLE_EXT("BOOST Switch", WSA883X_PORT_BOOST, 0, 1, 0,
++		       wsa883x_get_swr_port, wsa883x_set_swr_port),
++	SOC_SINGLE_EXT("VISENSE Switch", WSA883X_PORT_VISENSE, 0, 1, 0,
++		       wsa883x_get_swr_port, wsa883x_set_swr_port),
++};
++
++static const struct snd_soc_dapm_route wsa883x_audio_map[] = {
++	{"SPKR", NULL, "IN"},
++};
++
+ static const struct snd_soc_component_driver wsa883x_component_drv = {
+ 	.name = "WSA883x",
+ 	.probe = wsa883x_codec_probe,
++	.controls = wsa883x_snd_controls,
++	.num_controls = ARRAY_SIZE(wsa883x_snd_controls),
++	.dapm_widgets = wsa883x_dapm_widgets,
++	.num_dapm_widgets = ARRAY_SIZE(wsa883x_dapm_widgets),
++	.dapm_routes = wsa883x_audio_map,
++	.num_dapm_routes = ARRAY_SIZE(wsa883x_audio_map),
+ };
+ 
+ static int wsa883x_hw_params(struct snd_pcm_substream *substream,
 -- 
 2.25.1
 
