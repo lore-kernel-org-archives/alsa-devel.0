@@ -4,68 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 86815C43334
-	for <alsa-devel@archiver.kernel.org>; Wed, 29 Jun 2022 14:07:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E02D6C43334
+	for <alsa-devel@archiver.kernel.org>; Wed, 29 Jun 2022 14:07:52 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C74371660;
-	Wed, 29 Jun 2022 16:06:52 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C74371660
+	by alsa0.perex.cz (Postfix) with ESMTPS id 360051670;
+	Wed, 29 Jun 2022 16:07:01 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 360051670
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1656511662;
-	bh=1LQiXmBKTuoLLVX2WnRC35eSF4hNdTcSZ5mG47kAXVI=;
-	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
+	s=default; t=1656511671;
+	bh=UXDs+9EDFfkEqRLNHkEcBDaysFo8turPy2dmuBxmfJ4=;
+	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=ZESdKTPdIYnXNABZaVjGq0AI3TirPYnpm9UEtdSwmu9lrEw0iiAwnJAfDMDn8Wg+G
-	 5D1APXpL7VX4k8eOkURtOuAfr5TbM+aJj8W8Pqka9FeZYnGsaRNb3uyIdtizy5cDGF
-	 z9BJOAfTEtHW3ChJ6YLJrXE5FaxGTUFsypqC0z8E=
+	b=Mo/Kmvh/vqhuZML4FHS5JlEOSY7d/cYmfXirQlS463tYU4B03yOYt4KraWgb72eTZ
+	 byg6YJV7aOjkeLDYMiAnm+DzNyMY+MSLboii4yNiJvlD57cKA5DD1e+9LNfHDwvb9a
+	 UwfteTnlrgWUZQltSV1KqHJRZ4W0eKga1lvrFjVo=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 60C4FF8052E;
-	Wed, 29 Jun 2022 16:06:10 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 19FFDF80537;
+	Wed, 29 Jun 2022 16:06:11 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 1081EF804E6; Wed, 29 Jun 2022 16:06:02 +0200 (CEST)
+ id 84AFFF8052E; Wed, 29 Jun 2022 16:06:02 +0200 (CEST)
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 76BD2F80158
- for <alsa-devel@alsa-project.org>; Wed, 29 Jun 2022 16:05:59 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 76BD2F80158
+ by alsa1.perex.cz (Postfix) with ESMTPS id B45D2F8020D
+ for <alsa-devel@alsa-project.org>; Wed, 29 Jun 2022 16:05:56 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B45D2F8020D
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="QgK/lOfl"
+ header.b="f+tSxA9f"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id E404E61EB7;
- Wed, 29 Jun 2022 14:05:57 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B9053C341C8;
- Wed, 29 Jun 2022 14:05:55 +0000 (UTC)
+ by dfw.source.kernel.org (Postfix) with ESMTPS id C209D61EAD;
+ Wed, 29 Jun 2022 14:05:54 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 13D25C341C8;
+ Wed, 29 Jun 2022 14:05:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1656511557;
- bh=1LQiXmBKTuoLLVX2WnRC35eSF4hNdTcSZ5mG47kAXVI=;
- h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=QgK/lOflsccYXb2DJBBYJq/7Mf7JKwqYiQmoWe1I31oqon7gn4CZzZRX7yz2bdzwb
- ezXucMoklN8+FlYHS7yTmoStl9c0pwLT0tSWEKF+/F2RuMRhmX64VcTIKw7/pr3SA3
- 1ADgB/CajiR/y6sC8dAXfQ69+ShA57b62pv5wCaYcb1E+71giUjBRcC00lRLBwoLli
- O2QkbR71LCYwIdEC2Ih+b+O9NDpBl6AdpgDReTt9GQ3ZrD1BPx8SZdul65f4cuGNGQ
- HOXL6/IW/YID0a1TFb596BKRZQIfilw3s+6GnaW6EptvB8yInPJNX2YPilmilC9RXn
- yig/IWtz+Y7Kg==
+ s=k20201202; t=1656511554;
+ bh=UXDs+9EDFfkEqRLNHkEcBDaysFo8turPy2dmuBxmfJ4=;
+ h=From:To:In-Reply-To:References:Subject:Date:From;
+ b=f+tSxA9fD18Ch8FstmtZaJmIY64RcpJ1qwT8gvuEvfD9XOQlOEEGGRY27sIUxA0B/
+ y3KojJCRSOzB0gfpVG/CJik0zla6JTYj8hcMPW0BstI3Q+LLttSt7zno5q5M7ysXqw
+ 6Y/GVEQPFeFjr9sSj708R7U26awNgFs8eIzcerhnds5Pj/+8irzxEj1WNLVc7gpgMo
+ tw8zn45LNdLIAJixJ6nkppLw84sfSlp6E0v6N4RaqQ/qOyQ745tA211doMFzNF1w3F
+ jsnFzIH2YrDYRlUad5jqq51N/1uE9RfnH94XcZXCf4r9FIAA9eJ6ALt7Ipm1AS3j9S
+ D6RBELTngJLyA==
 From: Mark Brown <broonie@kernel.org>
-To: alsa-devel@alsa-project.org, lgirdwood@gmail.com,
- krzysztof.kozlowski+dt@linaro.org, shengjiu.wang@nxp.com,
- linux-kernel@vger.kernel.org, robh+dt@kernel.org, devicetree@vger.kernel.org
-In-Reply-To: <1656386005-29376-1-git-send-email-shengjiu.wang@nxp.com>
-References: <1656386005-29376-1-git-send-email-shengjiu.wang@nxp.com>
-Subject: Re: [PATCH v3] ASoC: dt-bindings: fsl,
- micfil: Convert format to json-schema
-Message-Id: <165651155548.1437597.5728269652830788201.b4-ty@kernel.org>
-Date: Wed, 29 Jun 2022 15:05:55 +0100
+To: tiwai@suse.com, alsa-devel@alsa-project.org, shengjiu.wang@gmail.com,
+ lgirdwood@gmail.com, shengjiu.wang@nxp.com, Xiubo.Lee@gmail.com,
+ linuxppc-dev@lists.ozlabs.org, festevam@gmail.com,
+ linux-kernel@vger.kernel.org, perex@perex.cz, nicoleotsuka@gmail.com
+In-Reply-To: <1656405589-29850-1-git-send-email-shengjiu.wang@nxp.com>
+References: <1656405589-29850-1-git-send-email-shengjiu.wang@nxp.com>
+Subject: Re: [PATCH] ASoC: fsl_micfil: change micfil default settings
+Message-Id: <165651155180.1437597.12670748028235515625.b4-ty@kernel.org>
+Date: Wed, 29 Jun 2022 15:05:51 +0100
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: shengjiu.wang@gmail.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -81,10 +80,15 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Tue, 28 Jun 2022 11:13:25 +0800, Shengjiu Wang wrote:
-> Convert the NXP MICFIL binding to DT schema format using json-schema.
+On Tue, 28 Jun 2022 16:39:49 +0800, Shengjiu Wang wrote:
+> Previous default settings resulted in loose dynamic
+> range and low sound level.
+> New default configuration changes:
+> - outgain = 2
+> - quality mode = VLOW0
+> - dc remover = bypass
 > 
-> 
+> [...]
 
 Applied to
 
@@ -92,8 +96,8 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: dt-bindings: fsl,micfil: Convert format to json-schema
-      commit: 02d91fe47100a29a79fcb8798e45c22591ca852d
+[1/1] ASoC: fsl_micfil: change micfil default settings
+      commit: 3b13b1437dcce4469db575c60d1da4fa9ff80694
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
