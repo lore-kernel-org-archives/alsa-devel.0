@@ -4,78 +4,81 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1CC78C43334
-	for <alsa-devel@archiver.kernel.org>; Wed, 29 Jun 2022 10:28:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 444E8C43334
+	for <alsa-devel@archiver.kernel.org>; Wed, 29 Jun 2022 10:29:16 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 84604163C;
-	Wed, 29 Jun 2022 12:27:54 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 84604163C
+	by alsa0.perex.cz (Postfix) with ESMTPS id 6952C1657;
+	Wed, 29 Jun 2022 12:28:24 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6952C1657
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1656498524;
+	s=default; t=1656498554;
 	bh=rUg6LSxBYVA4Rx29bbslooRUsu+HxBu/MDqVAGC4w4g=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=SXYRVrVjONcfKeBv2u/20LzssjIe/bZpO2PD8V9UinJaHbJAJ3Z5tvb0IMZMsFQoZ
-	 4/EFLWz57dpxmNOzFA0s4RHO2FXeYcKoFPdVShsZpg5xbjAFR1yGvMlAMjQXnbu1WX
-	 qVU/pQ7FShfECSQwnKjZVjOHNBBGgGilfGjNPefM=
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=Gn71OjYiP0E/uEbz4UHqYeuAaWFjzkSj9H3tLUjpZIKtdyNcbFaVDEhGhKrvDhAx5
+	 ydegE7GBnFuZBVo4W1Huum9cOQgYWfQse6/6BL+4LHOVysgW6ZY/LSRRaBKn7xC5vI
+	 cqsAOWJGkdNz7dG8QOPN0YHZaZuWVtkehSIDVoD0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 1AA06F80115;
-	Wed, 29 Jun 2022 12:27:54 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id BA8A1F8027B;
+	Wed, 29 Jun 2022 12:27:56 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id D98D8F80245; Wed, 29 Jun 2022 12:27:52 +0200 (CEST)
-Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com
- [IPv6:2a00:1450:4864:20::42f])
+ id D246AF80115; Wed, 29 Jun 2022 12:27:53 +0200 (CEST)
+Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com
+ [IPv6:2a00:1450:4864:20::333])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 4CEEFF80107
- for <alsa-devel@alsa-project.org>; Wed, 29 Jun 2022 12:27:48 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4CEEFF80107
+ by alsa1.perex.cz (Postfix) with ESMTPS id 23420F80115
+ for <alsa-devel@alsa-project.org>; Wed, 29 Jun 2022 12:27:50 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 23420F80115
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="C2+TpVRi"
-Received: by mail-wr1-x42f.google.com with SMTP id o4so17789693wrh.3
- for <alsa-devel@alsa-project.org>; Wed, 29 Jun 2022 03:27:48 -0700 (PDT)
+ header.b="Gbsb5zJu"
+Received: by mail-wm1-x333.google.com with SMTP id n185so9046053wmn.4
+ for <alsa-devel@alsa-project.org>; Wed, 29 Jun 2022 03:27:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
- h=from:to:cc:subject:date:message-id:mime-version
- :content-transfer-encoding;
+ h=from:to:cc:subject:date:message-id:in-reply-to:references
+ :mime-version:content-transfer-encoding;
  bh=Hg8Agbq4mVHkuTg7yeofSNYUTSRLwIyIHLfG6qwLBeg=;
- b=C2+TpVRiRBe2BxVymZqGsxLurT1OGPL4h9CO7oXcP10zEMb9H+IkUGNt009IJBTPIl
- JuaPnxje+CkdkVqBA4DT0qFHjEWuLcYsRtmtri7KMZMoJeMDBTKtBDI6wSiiy9d+N9Kl
- wl677uKYKqdlFB1f0a6Yp2tRuesScdWfAGt1StvCbFTwl7+b+CTBoV6BonSeD/6A5ocG
- cQaPgSQ8QXadw70bCmjkeqpNp78DhvHiqy4uBhfra3whguxCyfv8/CAdwtA2HHolYwaS
- KKwkzdZnHPY4h5CjbD7/UKWWHDpoSP1tK+K54DPPxBAUicXxwDOU1gLI9EcKlXrBPkJJ
- ChMg==
+ b=Gbsb5zJuVLRm7Da9Jr8RdNRb4c18Dy5l/Envmga0FP8skRJl9vegZvr6zWcv3ho0eD
+ OcazvVvO86d9o7aqVpR6fRQZzdQbbgT56o8lqr/Mz6sLVhOumuK+6+S59ITxmWB5uAK1
+ CiAnrf/APbNafVXL0dXfi75d8nd3jo4PTk5O4XipYLtyR0+E6QxbS1IB2VGPbRcLz/aF
+ 0FA0+v6PTERW99mIdv6ITvN6iQQCMK5zcW9yaA+dAmEdXC+ubZ3sLzvF5S6K7E62/tsH
+ CCCx6fM+zTpSxS5wyQFzwnbu74aihqAAX5oYK5nkgXnGcgOdxBMs/szaXUOvSH7L0qEK
+ IHYA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
- h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
- :content-transfer-encoding;
+ h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+ :references:mime-version:content-transfer-encoding;
  bh=Hg8Agbq4mVHkuTg7yeofSNYUTSRLwIyIHLfG6qwLBeg=;
- b=F1O4uPHeaBCcDpdatRVrHWHmQLYJ2FY0hMeHq4D688cHAcy+VqY7+kv1RqM0xW/hCO
- 5wix0EVWIBfOJoauz/MqJgp82m9zqQXRB/oSNUqd9tPFYhY7Qke6aUWz/vhaWJM01Xnk
- xlfuZY/viJTY8AsPqS6WjAXAHO2CYT9DASfFLprn0jyqP5XQZ3B6TsMucY8wASy1up7f
- dxVAJUzT6MM5oWhle9qnajH/cH8Jd3FBYhqyCU0332VGFDXjvqE+s5/LbVGYFjx7cE2S
- 9u3ZXF6zPCT5lkiFvhsKEQDyyVaX0VmmDNptGEHU1MnVhaq88YcrdOrG15KqgVnRtA9o
- Us7g==
-X-Gm-Message-State: AJIora+77afJ6HsNcVG8k2j4rTVaA3X3pPPvuelc4aHofoSwBdTpDU8S
- PPt4ZVw+dvLKAmMSpRcDRh9i9UkVskRqEukD
-X-Google-Smtp-Source: AGRyM1ufw2P/OIzIfF6EchFfqB3P0dWO5nbggmQs0aSA+PHDT+se1HLVPrFSvZuGO2P//WpKNJCfFQ==
-X-Received: by 2002:a5d:43cd:0:b0:21b:8e53:befe with SMTP id
- v13-20020a5d43cd000000b0021b8e53befemr2397726wrr.255.1656498467106; 
- Wed, 29 Jun 2022 03:27:47 -0700 (PDT)
+ b=F3zyvnjmNlyAuFiw0RnoI8DscC38iU/c9J2a9ZGfIICF6GzrjfypV4WD98XoLoBHD2
+ +2EYva1jWuACcLzV+3bzUz8YE7d/kBr/FyURgI+gkX8W+W/Mj1cVOSeTgPHG1v9Lrh6E
+ PiURkTfSximXzENQ9TV5crzjuZ0fgnWcxC/8ldsbgfrQEQe76O+nVlqut1hqqTP+eVAw
+ FPgyERAnF2gjWZ6MkFiZHbIAFX3YupwS1V7e0AegZntSlOVsHIGw+M5pfYIKN1LF8tmz
+ L7Yw7+FbvzHGAVtq5sGZr9heaF4KFLQioDQvqZnkkADBM29EnNvgANv2lZyccgu5bCtG
+ LPNw==
+X-Gm-Message-State: AJIora9g3pPMbvq8DMW07m8JJ1HpqcYULymlx3LJska/G4s8NP4OhHHG
+ 60Jz0nKWmbsoZdE8fbZ8d4LmrabfRLUEZvfG
+X-Google-Smtp-Source: AGRyM1soYIu0yqbLqBPz5blI3gO9sqPT4fLgv1ey2BFKUtMpLfhggg4dGfA55XA5R19+t43NuTDDBg==
+X-Received: by 2002:a05:600c:1d85:b0:3a0:3d28:bdd9 with SMTP id
+ p5-20020a05600c1d8500b003a03d28bdd9mr2962462wms.114.1656498469396; 
+ Wed, 29 Jun 2022 03:27:49 -0700 (PDT)
 Received: from localhost (cpc154979-craw9-2-0-cust193.16-3.cable.virginm.net.
  [80.193.200.194]) by smtp.gmail.com with ESMTPSA id
- q13-20020adfcd8d000000b00219b391c2d2sm19268969wrj.36.2022.06.29.03.27.45
+ r16-20020a05600c35d000b003a0375c4f73sm2765494wmq.44.2022.06.29.03.27.47
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Wed, 29 Jun 2022 03:27:46 -0700 (PDT)
+ Wed, 29 Jun 2022 03:27:48 -0700 (PDT)
 From: Colin Ian King <colin.i.king@gmail.com>
 To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
  alsa-devel@alsa-project.org
 Subject: [PATCH] ALSA: wavefront: remove redundant assignment to pointer end
-Date: Wed, 29 Jun 2022 11:27:43 +0100
-Message-Id: <20220629102744.139673-1-colin.i.king@gmail.com>
+Date: Wed, 29 Jun 2022 11:27:44 +0100
+Message-Id: <20220629102744.139673-2-colin.i.king@gmail.com>
 X-Mailer: git-send-email 2.35.3
+In-Reply-To: <20220629102744.139673-1-colin.i.king@gmail.com>
+References: <20220629102744.139673-1-colin.i.king@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
