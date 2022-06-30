@@ -4,53 +4,53 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id AF402C43334
-	for <alsa-devel@archiver.kernel.org>; Thu, 30 Jun 2022 05:56:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id F39D7CCA47B
+	for <alsa-devel@archiver.kernel.org>; Thu, 30 Jun 2022 05:56:12 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id BAD2016CF;
-	Thu, 30 Jun 2022 07:55:12 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BAD2016CF
+	by alsa0.perex.cz (Postfix) with ESMTPS id 22BF716B2;
+	Thu, 30 Jun 2022 07:55:21 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 22BF716B2
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1656568562;
-	bh=3os+HY8VD7t0Ut/bLLQOLVd0jz4Pmidk5N38hhUboA4=;
+	s=default; t=1656568571;
+	bh=qzIsd3AvVzIfmcdj9ZpGYW379nkEz9vQpN8/b0QQkJo=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=FTHY0x7xGkOxTeD9i7M7Fd1xYK73W93/wM8JDxepN6I2KjKbjYceVwmp80+/jmkkA
-	 GYciZicpk1Pot1Qm9tuEY45L3k9YnPVR9cMxtopgCbEZBWMXJE1TdygX2PcoxbECOE
-	 bwk9JrImDYJEHrk/UvsOK7iLsy8NjTZ6zWe4qiB8=
+	b=lA0C5PZiDxqAX5rbv209HhHqcfColwSl8eBRxlk+3Cc/BcR4vpHjpzUSnlzfCX1n4
+	 kjrvfk4nqnBaaEJCbOKCIprHfvXuSbSDarg6Mre/DifJ+ZRxs/zIJ+/QQpfHjyIKGb
+	 8P2z+ETmnmn0tWjmcgUxx5Ik+DUZZEOYUJOXm5Fc=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id DAA7EF80538;
-	Thu, 30 Jun 2022 07:54:26 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 643F0F8053B;
+	Thu, 30 Jun 2022 07:54:29 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 1CC95F804D2; Thu, 30 Jun 2022 07:54:23 +0200 (CEST)
-Received: from inva021.nxp.com (inva021.nxp.com [92.121.34.21])
+ id 30A00F8053C; Thu, 30 Jun 2022 07:54:28 +0200 (CEST)
+Received: from inva020.nxp.com (inva020.nxp.com [92.121.34.13])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 90F44F8014E
- for <alsa-devel@alsa-project.org>; Thu, 30 Jun 2022 07:54:16 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 90F44F8014E
-Received: from inva021.nxp.com (localhost [127.0.0.1])
- by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 418F22009FE;
- Thu, 30 Jun 2022 07:54:16 +0200 (CEST)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 3AB2EF80107
+ for <alsa-devel@alsa-project.org>; Thu, 30 Jun 2022 07:54:20 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3AB2EF80107
+Received: from inva020.nxp.com (localhost [127.0.0.1])
+ by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id C6A4E1A06F8;
+ Thu, 30 Jun 2022 07:54:19 +0200 (CEST)
 Received: from aprdc01srsp001v.ap-rdc01.nxp.com
  (aprdc01srsp001v.ap-rdc01.nxp.com [165.114.16.16])
- by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id D5D3B2009E5;
- Thu, 30 Jun 2022 07:54:15 +0200 (CEST)
+ by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 89EC41A09D2;
+ Thu, 30 Jun 2022 07:54:19 +0200 (CEST)
 Received: from localhost.localdomain (shlinux2.ap.freescale.net
  [10.192.224.44])
- by aprdc01srsp001v.ap-rdc01.nxp.com (Postfix) with ESMTP id 891EC1820F45;
- Thu, 30 Jun 2022 13:54:14 +0800 (+08)
+ by aprdc01srsp001v.ap-rdc01.nxp.com (Postfix) with ESMTP id 27D57180222C;
+ Thu, 30 Jun 2022 13:54:18 +0800 (+08)
 From: Shengjiu Wang <shengjiu.wang@nxp.com>
 To: nicoleotsuka@gmail.com, Xiubo.Lee@gmail.com, festevam@gmail.com,
  shengjiu.wang@gmail.com, lgirdwood@gmail.com, broonie@kernel.org,
  perex@perex.cz, tiwai@suse.com, alsa-devel@alsa-project.org,
  robh+dt@kernel.org, krzk+dt@kernel.org, devicetree@vger.kernel.org
-Subject: [PATCH 3/6] ASoC: fsl_micfil: Add support for PLL switch at runtime
-Date: Thu, 30 Jun 2022 13:39:11 +0800
-Message-Id: <1656567554-32122-4-git-send-email-shengjiu.wang@nxp.com>
+Subject: [PATCH 6/6] ASoC: dt-bindings: fsl-sai: Add two PLL clock source
+Date: Thu, 30 Jun 2022 13:39:14 +0800
+Message-Id: <1656567554-32122-7-git-send-email-shengjiu.wang@nxp.com>
 X-Mailer: git-send-email 2.7.4
 In-Reply-To: <1656567554-32122-1-git-send-email-shengjiu.wang@nxp.com>
 References: <1656567554-32122-1-git-send-email-shengjiu.wang@nxp.com>
@@ -71,111 +71,30 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-i.MX8MQ/MN/MM/MP platforms typically have 2 AUDIO PLLs being
-configured to handle 8kHz and 11kHz series audio rates.
+Add two PLL clock source, they are the parent clocks of root clock
+one is for 8kHz series rates, another one is for 11kHz series rates.
+They are optional clocks, if there are such clocks, then driver
+can switch between them for supporting more accurate rates.
 
-The patch implements the functionality to select at runtime
-the appropriate AUDIO PLL as function of audio file rate.
-
-Signed-off-by: Viorel Suman <viorel.suman@nxp.com>
 Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
 ---
- sound/soc/fsl/Kconfig      |  1 +
- sound/soc/fsl/fsl_micfil.c | 41 ++++++++++++++++++++++++++++++++++++++
- 2 files changed, 42 insertions(+)
+ Documentation/devicetree/bindings/sound/fsl-sai.txt | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/sound/soc/fsl/Kconfig b/sound/soc/fsl/Kconfig
-index 910b8747b6bd..533937166b4a 100644
---- a/sound/soc/fsl/Kconfig
-+++ b/sound/soc/fsl/Kconfig
-@@ -81,6 +81,7 @@ config SND_SOC_FSL_MICFIL
- 	select REGMAP_MMIO
- 	select SND_SOC_IMX_PCM_DMA if SND_IMX_SOC != n
- 	select SND_SOC_GENERIC_DMAENGINE_PCM
-+	select SND_SOC_FSL_UTILS
- 	help
- 	  Say Y if you want to add Pulse Density Modulation microphone
- 	  interface (MICFIL) support for NXP.
-diff --git a/sound/soc/fsl/fsl_micfil.c b/sound/soc/fsl/fsl_micfil.c
-index 18ab80b68752..9b4baeb0f41d 100644
---- a/sound/soc/fsl/fsl_micfil.c
-+++ b/sound/soc/fsl/fsl_micfil.c
-@@ -24,6 +24,7 @@
- #include <sound/core.h>
+diff --git a/Documentation/devicetree/bindings/sound/fsl-sai.txt b/Documentation/devicetree/bindings/sound/fsl-sai.txt
+index 4c66e6a1a533..fbdefc3fade7 100644
+--- a/Documentation/devicetree/bindings/sound/fsl-sai.txt
++++ b/Documentation/devicetree/bindings/sound/fsl-sai.txt
+@@ -21,6 +21,9 @@ Required properties:
+   - clock-names		: Must include the "bus" for register access and
+ 			  "mclk1", "mclk2", "mclk3" for bit clock and frame
+ 			  clock providing.
++                          "pll8k", "pll11k" are optional, they are the clock
++                          source for root clock, one is for 8kHz series rates
++                          another one is for 11kHz series rates.
+   - dmas		: Generic dma devicetree binding as described in
+ 			  Documentation/devicetree/bindings/dma/dma.txt.
  
- #include "fsl_micfil.h"
-+#include "fsl_utils.h"
- 
- #define MICFIL_OSR_DEFAULT	16
- 
-@@ -42,6 +43,8 @@ struct fsl_micfil {
- 	const struct fsl_micfil_soc_data *soc;
- 	struct clk *busclk;
- 	struct clk *mclk;
-+	struct clk *pll8k_clk;
-+	struct clk *pll11k_clk;
- 	struct snd_dmaengine_dai_dma_data dma_params_rx;
- 	struct sdma_peripheral_config sdmacfg;
- 	unsigned int dataline;
-@@ -283,6 +286,37 @@ static int fsl_micfil_trigger(struct snd_pcm_substream *substream, int cmd,
- 	return 0;
- }
- 
-+static int fsl_micfil_reparent_rootclk(struct fsl_micfil *micfil, unsigned int sample_rate)
-+{
-+	struct device *dev = &micfil->pdev->dev;
-+	u64 ratio = sample_rate;
-+	struct clk *clk;
-+	int ret;
-+
-+	/* Reparent clock if required condition is true */
-+	if (!micfil->pll8k_clk || !micfil->pll11k_clk)
-+		return 0;
-+
-+	ratio = do_div(ratio, 8000) ? CLK_11K_FREQ : CLK_8K_FREQ;
-+
-+	/* Get root clock */
-+	clk = micfil->mclk;
-+	if (IS_ERR_OR_NULL(clk)) {
-+		dev_err(dev, "no mclk clock in devicetree\n");
-+		return PTR_ERR(clk);
-+	}
-+
-+	/* Disable clock first, for it was enabled by pm_runtime */
-+	clk_disable_unprepare(clk);
-+	fsl_asoc_reparent_pll_clocks(dev, clk, micfil->pll8k_clk,
-+				     micfil->pll11k_clk, ratio);
-+	ret = clk_prepare_enable(clk);
-+	if (ret)
-+		return ret;
-+
-+	return 0;
-+}
-+
- static int fsl_micfil_hw_params(struct snd_pcm_substream *substream,
- 				struct snd_pcm_hw_params *params,
- 				struct snd_soc_dai *dai)
-@@ -306,6 +340,10 @@ static int fsl_micfil_hw_params(struct snd_pcm_substream *substream,
- 	if (ret)
- 		return ret;
- 
-+	ret = fsl_micfil_reparent_rootclk(micfil, rate);
-+	if (ret)
-+		return ret;
-+
- 	ret = clk_set_rate(micfil->mclk, rate * clk_div * osr * 8);
- 	if (ret)
- 		return ret;
-@@ -610,6 +648,9 @@ static int fsl_micfil_probe(struct platform_device *pdev)
- 		return PTR_ERR(micfil->busclk);
- 	}
- 
-+	fsl_asoc_get_pll_clocks(&pdev->dev, &micfil->pll8k_clk,
-+				&micfil->pll11k_clk);
-+
- 	/* init regmap */
- 	regs = devm_platform_get_and_ioremap_resource(pdev, 0, &res);
- 	if (IS_ERR(regs))
 -- 
 2.17.1
 
