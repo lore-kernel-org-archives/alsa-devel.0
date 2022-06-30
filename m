@@ -4,73 +4,73 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3A327C433EF
-	for <alsa-devel@archiver.kernel.org>; Thu, 30 Jun 2022 10:38:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5DD5CC43334
+	for <alsa-devel@archiver.kernel.org>; Thu, 30 Jun 2022 11:11:45 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B5E9316AF;
-	Thu, 30 Jun 2022 12:37:39 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B5E9316AF
+	by alsa0.perex.cz (Postfix) with ESMTPS id E0AD716A4;
+	Thu, 30 Jun 2022 13:10:52 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E0AD716A4
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1656585509;
-	bh=iIKs3rpaYPtUZ0eaoQBogoq+V5pKpR1jkSxXnpou/3M=;
+	s=default; t=1656587503;
+	bh=Ocbgb/7jtbPf5c7P3Qu4IS2stjMJzDoFkyyY73hHr2Q=;
 	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=JzN4H5tnEsaimRJYnRhGiUISAYULehgMpjfsO3jcSOLqkiHkD8NryH9lR+W9s/+M7
-	 MmfrjuXVm3Hnour6wpADvQKnOWy9mRpVgGzK+o3bbhjthwm7Y3Z41EikGd8x2exIZQ
-	 BV9HWGe88SqLsj4PWzvr8xY7gPjCgQlt+T0mP9Mw=
+	b=gCFZmuTmKcv6/i3agbYKoF9oMBVt5ikz6HTXocM5W9W0NMltu1eC0l4pIScA/D7nA
+	 nZadKkOJKCskgPgCCENQKQ16n/L8B9+1lrS1axppMqHeeTend7RnDaB0h1J33tinl8
+	 ketgfNiGKUzktqMBMIAjjNcrjNkc+C25tiXVCBTY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 2CF2AF804D2;
-	Thu, 30 Jun 2022 12:37:39 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 7BD5EF804D2;
+	Thu, 30 Jun 2022 13:10:52 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id DB639F804D8; Thu, 30 Jun 2022 12:37:37 +0200 (CEST)
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+ id 69AFAF804D8; Thu, 30 Jun 2022 13:10:51 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org
+ [IPv6:2604:1380:4641:c500::1])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 804B5F8014E
- for <alsa-devel@alsa-project.org>; Thu, 30 Jun 2022 12:37:31 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 804B5F8014E
+ by alsa1.perex.cz (Postfix) with ESMTPS id 08D7FF8014E
+ for <alsa-devel@alsa-project.org>; Thu, 30 Jun 2022 13:10:44 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 08D7FF8014E
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="ke/h3lcP"
+ header.b="KwZCxI1Q"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by ams.source.kernel.org (Postfix) with ESMTPS id BCF3EB82A24;
- Thu, 30 Jun 2022 10:37:30 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8E296C341C8;
- Thu, 30 Jun 2022 10:37:26 +0000 (UTC)
+ by dfw.source.kernel.org (Postfix) with ESMTPS id 43436622AC;
+ Thu, 30 Jun 2022 11:10:42 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 229ECC34115;
+ Thu, 30 Jun 2022 11:10:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1656585449;
- bh=iIKs3rpaYPtUZ0eaoQBogoq+V5pKpR1jkSxXnpou/3M=;
+ s=k20201202; t=1656587441;
+ bh=Ocbgb/7jtbPf5c7P3Qu4IS2stjMJzDoFkyyY73hHr2Q=;
  h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=ke/h3lcPOMIcjmkXSDygaQX/fBnyA5e1eEEUNs8qdP9Dwt+FEhhFsyDc8q1vNT0Wi
- ZIAz4B4huhN4ynq/IVmE8WlnX4UCtgS1koYpNof7PCbUhFM8wlBkAcGs/ex+wRYFRM
- S92Z1bjJKrpgkGsSruKC+H++8Nm4+A5xlLWUnqFMDshpvkdFrdj8wqY1Lf0kJwYwFB
- C3zKHGEVhlMmTkVPMtdbUdFuXQhh/6kNFUq5m0b8uTvTMmZfw96hg/3oUfCHHasld3
- Ve3kCsGl/H4yqXC4WwkFjIVNwlEYa8smOf70ranpv+Vgr465CwFtphi5HVMHjQx4rM
- eyCO2Y7pbAvcQ==
-Date: Thu, 30 Jun 2022 11:37:23 +0100
+ b=KwZCxI1QdcIf76JP3BhOMJdxLR4B6uWo/VApAlYCAbryYteKxpiJDv8mks3WPbn/t
+ PN0nmyRcKqUNvQWLX0i4UeGSFYMJg/aJRPtIItPf5ZbGJFlTgo921PPtaBAkcMOfwS
+ EAviKJu/LaVJQnqEAMkfWG8YsiYjdWOBiCPVkp3jUSN7a/BNoE2dxQcvi6boI8iEE1
+ kG+kDnIwIwvKk2KA7/GI7v7uXdSJUVryiLAvAUno8r+dGCAjnpQrQrIbdvT7znkem2
+ wtbsma0gtl/xN3EfCxjcGT59nTF9hSZ+cjUmMY3rJQ3yjQ16RK16uPcLGCXgC6hRkT
+ fUVm+4Tup/Uiw==
+Date: Thu, 30 Jun 2022 12:10:35 +0100
 From: Mark Brown <broonie@kernel.org>
-To: Shengjiu Wang <shengjiu.wang@nxp.com>
-Subject: Re: [PATCH 3/6] ASoC: fsl_micfil: Add support for PLL switch at
- runtime
-Message-ID: <Yr1842e42P4piYnE@sirena.org.uk>
-References: <1656567554-32122-1-git-send-email-shengjiu.wang@nxp.com>
- <1656567554-32122-4-git-send-email-shengjiu.wang@nxp.com>
+To: Vijendar Mukunda <Vijendar.Mukunda@amd.com>
+Subject: Re: [PATCH 4/5] ASoC: amd: add Machine driver for Jadeite platform
+Message-ID: <Yr2Eq0BUmi6mZsRY@sirena.org.uk>
+References: <20220630031755.1055413-1-Vijendar.Mukunda@amd.com>
+ <20220630031755.1055413-5-Vijendar.Mukunda@amd.com>
 MIME-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature"; boundary="SDyGFineERFKDrrR"
+ protocol="application/pgp-signature"; boundary="VaXjt56hsiVkurul"
 Content-Disposition: inline
-In-Reply-To: <1656567554-32122-4-git-send-email-shengjiu.wang@nxp.com>
+In-Reply-To: <20220630031755.1055413-5-Vijendar.Mukunda@amd.com>
 X-Cookie: Today is what happened to yesterday.
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
- linuxppc-dev@lists.ozlabs.org, Xiubo.Lee@gmail.com, festevam@gmail.com,
- tiwai@suse.com, lgirdwood@gmail.com, nicoleotsuka@gmail.com,
- robh+dt@kernel.org, krzk+dt@kernel.org, shengjiu.wang@gmail.com,
- linux-kernel@vger.kernel.org
+Cc: alsa-devel@alsa-project.org, Sunil-kumar.Dommati@amd.com,
+ open list <linux-kernel@vger.kernel.org>, Basavaraj.Hiregoudar@amd.com,
+ Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>,
+ amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+ Alexander.Deucher@amd.com, zhuning@everest-semi.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -87,59 +87,51 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
---SDyGFineERFKDrrR
+--VaXjt56hsiVkurul
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Thu, Jun 30, 2022 at 01:39:11PM +0800, Shengjiu Wang wrote:
+On Thu, Jun 30, 2022 at 08:47:54AM +0530, Vijendar Mukunda wrote:
 
-> +static int fsl_micfil_reparent_rootclk(struct fsl_micfil *micfil, unsigned int sample_rate)
+> +static int st_es8336_hw_params(struct snd_pcm_substream *substream,
+> +			       struct snd_pcm_hw_params *params)
 > +{
-> +	struct device *dev = &micfil->pdev->dev;
-> +	u64 ratio = sample_rate;
-> +	struct clk *clk;
-> +	int ret;
+> +	int ret = 0;
+> +	struct snd_soc_pcm_runtime *rtd = asoc_substream_to_rtd(substream);
+> +	struct snd_soc_dai *codec_dai = asoc_rtd_to_codec(rtd, 0);
 > +
-> +	/* Reparent clock if required condition is true */
-> +	if (!micfil->pll8k_clk || !micfil->pll11k_clk)
-> +		return 0;
-> +
-> +	ratio = do_div(ratio, 8000) ? CLK_11K_FREQ : CLK_8K_FREQ;
-> +
-> +	/* Get root clock */
-> +	clk = micfil->mclk;
-> +	if (IS_ERR_OR_NULL(clk)) {
-> +		dev_err(dev, "no mclk clock in devicetree\n");
-> +		return PTR_ERR(clk);
-> +	}
-> +
-> +	/* Disable clock first, for it was enabled by pm_runtime */
-> +	clk_disable_unprepare(clk);
-> +	fsl_asoc_reparent_pll_clocks(dev, clk, micfil->pll8k_clk,
-> +				     micfil->pll11k_clk, ratio);
-> +	ret = clk_prepare_enable(clk);
-> +	if (ret)
+> +	ret = snd_soc_dai_set_sysclk(codec_dai, 0, params_rate(params) * 256, SND_SOC_CLOCK_IN);
+> +	if (ret < 0) {
+> +		dev_err(rtd->dev, "can't set codec sysclk: %d\n", ret);
 > +		return ret;
-> +
-> +	return 0;
+> +	}
+> +	return ret;
 > +}
 
-Seems like more of this logic could be factored out into the reparent
-function if the target sample rate is passed in?
+> +static const unsigned int st_channels[] = {
+> +	DUAL_CHANNEL,
+> +};
+> +
+> +static const unsigned int st_rates[] = {
+> +	48000,
+> +};
 
---SDyGFineERFKDrrR
+If the clock rate is fixed why not just set the sysclk once at startup
+too?
+
+--VaXjt56hsiVkurul
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmK9fOIACgkQJNaLcl1U
-h9C68Qf/YX1eL795b+XK2iAIiNLwaLomwMbw0JjNUWxPZS3+wkMhyqOfDxWfq52s
-WZkSoJ7vyDPSIr7R5nCH7QFdwdgdLqck/2GSAaPUndpELFvuLqME+nElf2OlYx6l
-nq33cMqc0OZlIpM757VsPYN6IPPq87rPXI030XM4lmOxzhvV1gE0195pRFSiyiCl
-dWiddG47/R+cRgjm6LaGN0kkVTLWdj16f5E7zlz2VDse8I/CR5w7/U9hQ0yfE/Rr
-oJtQi+ybrw26ELGPHDP/2yljgWzaCuc/+BllHMwQeoTYgjuu+nxpX8m6B5ToffUT
-RpPmDmKDRpeFSTwxqqUVNwCPjHNjqQ==
-=Zj5G
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmK9hKoACgkQJNaLcl1U
+h9D6iQf/cdNWEk90vyAVgMDGpqVrhhgGkycVyqRydGaLYCrCQXsnLdtPqtSpQCyB
+doEqq9MwQGoj/8uz5i/0althh56A2dV2L6k/81LuXbX685XrtdvosvEv9m37y+ru
+ZebtRcmQ668WOgeLYHmthArmVUwjPmUtcOkZ1K7dibKXWm7Elhv0kkXZLTM+UyQs
+MoFY3kjXWMu3vEm+ZTogS+YhilD8EE5Vl3pvGJKZ8NKJxDMrXQbNlO5XMkY+9IaR
+O1U0u8iVoirNM0GWyHbVCwqOPQCIbhqc2g89N1teq8Qs+1WTf8MRAfuo1gnGfbrg
+c0/bwEED3n4t0Rgqqhau7Dq1qPLViA==
+=9h7K
 -----END PGP SIGNATURE-----
 
---SDyGFineERFKDrrR--
+--VaXjt56hsiVkurul--
