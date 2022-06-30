@@ -4,69 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9BF44C433EF
-	for <alsa-devel@archiver.kernel.org>; Thu, 30 Jun 2022 15:12:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A4D4DC433EF
+	for <alsa-devel@archiver.kernel.org>; Thu, 30 Jun 2022 15:12:12 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 8BE9716E5;
-	Thu, 30 Jun 2022 17:11:12 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8BE9716E5
+	by alsa0.perex.cz (Postfix) with ESMTPS id D5CFC16EF;
+	Thu, 30 Jun 2022 17:11:20 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D5CFC16EF
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1656601922;
-	bh=l7KxMBhRvrNgW0srsiaNIvYfDYhR6onbRDyQH5tjYrY=;
+	s=default; t=1656601930;
+	bh=zeFJ3+bVEU+Sxu4AmXvCkorfkIgB7pbCnM8thSAH86I=;
 	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=N84aUE9+B1LGOHCZ5jqXZ5UpIy/ZhfkUQF31+Hr+r1ghKNqSh26ZTHArVr/ku903m
-	 Qs3oqZ6ox5+eaGxsAGVi175lkJg0IlwcCrDLqlsA3ub9DD0ph8g1DxC1AfP/yTK0uo
-	 2QzrLgWeNx5JJeJ4DSCwyJROb3o3YBqfFZQ490Cs=
+	b=hd+nfkPrpDuhwoQzS1Di4HvV3//OSudmgcJlBeH0TZ9u0d/Qbeju9G9MsL5uSrrWk
+	 TT+YeG1SGiaK2GM37cvDpJ1oPoqeCrHHzZRSlFwO8iQsxKyF2yXw/SM7YyXKji5Lbn
+	 DkwuIwPYBC2FguCPcrYodP8aDf6eiRo3ZFkf0aUs=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 5395AF80535;
+	by alsa1.perex.cz (Postfix) with ESMTP id DCF44F80536;
 	Thu, 30 Jun 2022 17:10:27 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 5C197F804FE; Thu, 30 Jun 2022 17:10:23 +0200 (CEST)
+ id A4B57F804FE; Thu, 30 Jun 2022 17:10:24 +0200 (CEST)
 Received: from dfw.source.kernel.org (dfw.source.kernel.org
  [IPv6:2604:1380:4641:c500::1])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 1D9FCF804D2
- for <alsa-devel@alsa-project.org>; Thu, 30 Jun 2022 17:10:17 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1D9FCF804D2
+ by alsa1.perex.cz (Postfix) with ESMTPS id CBC49F804EB
+ for <alsa-devel@alsa-project.org>; Thu, 30 Jun 2022 17:10:21 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CBC49F804EB
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="qbm2u+66"
+ header.b="O68hkQ3/"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id 54BA260E8D;
- Thu, 30 Jun 2022 15:10:16 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id ED6AFC3411E;
- Thu, 30 Jun 2022 15:10:13 +0000 (UTC)
+ by dfw.source.kernel.org (Postfix) with ESMTPS id 1BB5760E84;
+ Thu, 30 Jun 2022 15:10:20 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 77277C3411E;
+ Thu, 30 Jun 2022 15:10:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1656601815;
- bh=l7KxMBhRvrNgW0srsiaNIvYfDYhR6onbRDyQH5tjYrY=;
+ s=k20201202; t=1656601819;
+ bh=zeFJ3+bVEU+Sxu4AmXvCkorfkIgB7pbCnM8thSAH86I=;
  h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=qbm2u+66ATk65SMpLsZsZXOONGGNVrOO3u2KGQ+DXjFczwYDnwYVvV/qViNmxVJl0
- Gl7pqNZtw3Er1FMXGZszn78zFZTVox92IYFqtK6p6pE9ZZ+fbJbC2Kcdf6fCS0zUvC
- Pg6BQGyKpQchJFBB1WdZm5IqiCO92eqJ1L/qfhLdpcVP7762XrZ6D9iNrdeGZ2JpbA
- r/r37P5Rscz7zKHecYdISAb+22HAZChxx3LUSzcppwGyv0MIxakv4EGtYd3FauMghW
- /H58VYSXnziRshuHgMMBxSWphRGy5ZzhHpMAPkmR+yCR4L2gZQuFw1ZZ9rBjmQEJeq
- cc7EF/f0kfoFQ==
+ b=O68hkQ3/IxDKaXUH64kz8FlHdQ7+j4rTN+euMINPLKf0TAbcAkokA4jeih23NGMmd
+ DF7DbKzDJxuTcqxQgHA7UCfe5yNk6YcvMpXunyZ+Bq3xVvxMowe8M7CRbr1xaMbmVN
+ tFodIaM1RiORCOj62wDt+Uba/fa2bm8Eh/SHWWuhWllEM3gin8u6XwQfxnaNCfhBpd
+ tpXcLRx50EvUO2Ab4pcwyjabWlu0Gq4vG1bP1J/RGL7jvZXIBiVdJ8rNrLUuDrK0kQ
+ 5cWdk3fvTqQBR41YdpFVEH5CCsOa3uZ9/YMwTNofWxqsr/zDLxTwHdOATb0j4hukTd
+ fdIQPGM8tAQQQ==
 From: Mark Brown <broonie@kernel.org>
-To: Arnd Bergmann <arnd@arndb.de>, trix@redhat.com, perex@perex.cz,
- krzysztof.kozlowski@linaro.org, lgirdwood@gmail.com, s.nawrocki@samsung.com,
- tiwai@suse.com
-In-Reply-To: <20220629201811.2537853-1-trix@redhat.com>
-References: <20220629201811.2537853-1-trix@redhat.com>
-Subject: Re: [PATCH] ASoC: samsung: change neo1973_audio from a global to
- static
-Message-Id: <165660181358.664251.18405607325309660233.b4-ty@kernel.org>
-Date: Thu, 30 Jun 2022 16:10:13 +0100
+To: ckeepax@opensource.cirrus.com
+In-Reply-To: <20220630101459.3442327-1-ckeepax@opensource.cirrus.com>
+References: <20220630101459.3442327-1-ckeepax@opensource.cirrus.com>
+Subject: Re: [PATCH] ASoC: wm_adsp: Minor clean and redundant code removal
+Message-Id: <165660181820.664251.9414397371469322240.b4-ty@kernel.org>
+Date: Thu, 30 Jun 2022 16:10:18 +0100
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Cc: patches@opensource.cirrus.com, alsa-devel@alsa-project.org,
+ linux-kernel@vger.kernel.org, lgirdwood@gmail.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -82,12 +80,12 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, 29 Jun 2022 16:18:11 -0400, Tom Rix wrote:
-> sparse reports
-> sound/soc/samsung/neo1973_wm8753.c:347:24: warning: symbol 'neo1973_audio' was not declared. Should it be static?
-> 
-> neo1973_audio is only used in neo1973_wm8753.c, so it's
-> storage class specifier should be static.
+On Thu, 30 Jun 2022 11:14:59 +0100, Charles Keepax wrote:
+> The cs_dsp core will return an error if passed a NULL cs_dsp struct so
+> there is no need for the wm_adsp_write|read_ctl functions to manually
+> check that. The cs_dsp core will also check the data is within bounds of
+> the control so the additional bounds check is redundant too. Simplify
+> things a bit by removing said code.
 > 
 > 
 > [...]
@@ -98,8 +96,8 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: samsung: change neo1973_audio from a global to static
-      commit: 871325d800ed532ba5874257f04bb4ae75125bc4
+[1/1] ASoC: wm_adsp: Minor clean and redundant code removal
+      commit: e8010efc7b83038d1c18abe1b8d171e3c7d4ed92
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
