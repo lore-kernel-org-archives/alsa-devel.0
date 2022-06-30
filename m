@@ -4,79 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6ED13C43334
-	for <alsa-devel@archiver.kernel.org>; Thu, 30 Jun 2022 11:13:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 64C2FC43334
+	for <alsa-devel@archiver.kernel.org>; Thu, 30 Jun 2022 11:47:10 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 088CC16BF;
-	Thu, 30 Jun 2022 13:12:08 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 088CC16BF
+	by alsa0.perex.cz (Postfix) with ESMTPS id C7D7C16AE;
+	Thu, 30 Jun 2022 13:46:17 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C7D7C16AE
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1656587578;
-	bh=gY2GwuIoEENdxG1SB1lnnV49S2t2kuQ/2lN1uJIHe7o=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	s=default; t=1656589627;
+	bh=y23dn3xscoxlX2Hr88BQdcfLioVdD06aIUSMoMRHtvA=;
+	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=CaXCJoQ1oPe8y/7Doi9JQm55fg5+9dM3314LrVqIPhQDJe0eP3KVqHCQZTUn9BKQw
-	 /t6vuDI0tjdmXDwsh7qIJHHa1tzq2E1rr4ZwfiB8ioBVgOHYuwJJyNOnzhvbC2niuT
-	 n35hdSuiDujlPxzVEgag9JwNfNwUbmUR7Ey7NChU=
+	b=XhG68TaA43V5MJeVhK0d2icOm86JANYHv3UHkkqm+JX5VVad1MBBr9JNo7l0Huz/K
+	 Yv9WHKrVBP9oSgF7ki5Jm5agqvKLl5VWPEZuxgySdYI9GLDcZ1thgRReJ8JgBnTvC1
+	 /PjQuDd/lRYRJrEJL3mBTUZxEcR1rMdPixKknxPA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id AAFD7F804D2;
-	Thu, 30 Jun 2022 13:12:07 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 63785F804D2;
+	Thu, 30 Jun 2022 13:46:17 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 17745F804D8; Thu, 30 Jun 2022 13:12:01 +0200 (CEST)
-Received: from ams.source.kernel.org (ams.source.kernel.org
- [IPv6:2604:1380:4601:e00::1])
+ id BAE4EF804DA; Thu, 30 Jun 2022 13:46:15 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org
+ [IPv6:2604:1380:4641:c500::1])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id A16B3F80107
- for <alsa-devel@alsa-project.org>; Thu, 30 Jun 2022 13:11:58 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A16B3F80107
+ by alsa1.perex.cz (Postfix) with ESMTPS id 414BBF80107
+ for <alsa-devel@alsa-project.org>; Thu, 30 Jun 2022 13:46:13 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 414BBF80107
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="fVrcb0+6"
+ header.b="rR07Abj/"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by ams.source.kernel.org (Postfix) with ESMTPS id C951FB82A2A;
- Thu, 30 Jun 2022 11:11:57 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E5634C34115;
- Thu, 30 Jun 2022 11:11:52 +0000 (UTC)
+ by dfw.source.kernel.org (Postfix) with ESMTPS id B8EAA6167E;
+ Thu, 30 Jun 2022 11:46:11 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 18990C385A5;
+ Thu, 30 Jun 2022 11:46:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1656587516;
- bh=gY2GwuIoEENdxG1SB1lnnV49S2t2kuQ/2lN1uJIHe7o=;
- h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=fVrcb0+6182VKbB5+5bvi1s47yAwFfK8wb6zyFp/VYh39jS8CJX26v7VDJPXvmt6m
- Sq2aO1HVesfnXCRoOn7xIDqeid4zMoKig2AFowAiyxupDRcEhytjTmgOOHIFxtLXlw
- WnQGX/rMorDO05WZfM2GdvgCHMyaE58VmvJkvF/xcXat99lPVXYetwLQ6IeXcy6B6f
- JUK0/znx1WjGYVUCDVrm+wdH0I0gZjJYAJ33E/C25y9dFkfwom6jJpMDF2fXuNb3lL
- IRkA55V7usztN7WA1+/7khpvE/IZDERTGKcml1CeNR8YLLfUFjZrTIDolXBotPH1oW
- I7lLsShPC8ArA==
-Date: Thu, 30 Jun 2022 12:11:49 +0100
+ s=k20201202; t=1656589571;
+ bh=y23dn3xscoxlX2Hr88BQdcfLioVdD06aIUSMoMRHtvA=;
+ h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+ b=rR07Abj/wDXH5e4AouaREXvtyQrnW87e87tJKq4ZKB4+lzH7po/52SjphelNLbVQ8
+ 3+IuRB7NomXz6e29XsgtnnkJsn5UYgU1FMED9VLrsljdJUMnc/MtbeHqFwLg8Qy6Tb
+ Ev18iKbjdrdlY+BIT7vESYzg6TnyTGYUxTL9Gxl8f8T9etRqSUTJ+7CmPy9S8jFIQ7
+ nsxyGwCHCA/JerbGr37jYF4AB5NbhhyiFiMSA0JPwEPTChWe3Q7BraNyzrZWXLKBjU
+ OU6ybckb419id1xGkYEfVE5bRb2JCWyAt7wUbjoQvruAkuCEL08Hcrq8KnFbsds/Ni
+ 85gXFDP9VfBEg==
 From: Mark Brown <broonie@kernel.org>
-To: Vijendar Mukunda <Vijendar.Mukunda@amd.com>
-Subject: Re: [PATCH 5/5] ASoC: amd: enable machine driver build for Jadeite
- platform
-Message-ID: <Yr2E9SQCtk1u6V+i@sirena.org.uk>
-References: <20220630031755.1055413-1-Vijendar.Mukunda@amd.com>
- <20220630031755.1055413-6-Vijendar.Mukunda@amd.com>
+To: marex@denx.de, alsa-devel@alsa-project.org
+In-Reply-To: <20220628165807.152191-1-marex@denx.de>
+References: <20220628165807.152191-1-marex@denx.de>
+Subject: Re: [PATCH] ASoC: doc: Update dead links
+Message-Id: <165658956982.346792.17836675302325290041.b4-ty@kernel.org>
+Date: Thu, 30 Jun 2022 12:46:09 +0100
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature"; boundary="KL9cDJfR2Dto7H+U"
-Content-Disposition: inline
-In-Reply-To: <20220630031755.1055413-6-Vijendar.Mukunda@amd.com>
-X-Cookie: Today is what happened to yesterday.
-Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- alsa-devel@alsa-project.org, Sunil-kumar.Dommati@amd.com,
- Lucas Tanure <tanureal@opensource.cirrus.com>,
- Ajit Kumar Pandey <AjitKumar.Pandey@amd.com>,
- open list <linux-kernel@vger.kernel.org>, Basavaraj.Hiregoudar@amd.com,
- Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>,
- amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
- Alexander.Deucher@amd.com, zhuning@everest-semi.com,
- Julian Braha <julianbraha@gmail.com>, Daniel Baluta <daniel.baluta@nxp.com>,
- Kai Vehmanen <kai.vehmanen@linux.intel.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+Cc: tiwai@suse.de, linux-doc@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -92,31 +79,36 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+On Tue, 28 Jun 2022 18:58:07 +0200, Marek Vasut wrote:
+> The alsa-project documentation is now part of the kernel docs,
+> the original links are long dead, update links.
+> 
+> 
 
---KL9cDJfR2Dto7H+U
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Applied to
 
-On Thu, Jun 30, 2022 at 08:47:55AM +0530, Vijendar Mukunda wrote:
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
 
-> +	depends on SND_SOC_AMD_ACP && I2C && ACPI
+Thanks!
 
-The code treated ACPI as optional so you could relax the ACPI dependency
-ot be "ACPI || COMPILE_TEST" (I think the same applies to I2C).
+[1/1] ASoC: doc: Update dead links
+      commit: d15534a6f4cff031f1233154f1e275302c03e5d4
 
---KL9cDJfR2Dto7H+U
-Content-Type: application/pgp-signature; name="signature.asc"
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
 
------BEGIN PGP SIGNATURE-----
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmK9hPQACgkQJNaLcl1U
-h9Dsnwf/ceuWdmQ1YUNUCt6hr1dWc8w8GCz8hT5Wl9l1lyRROuKUldbDQWBk2+Ye
-7cCxrDYlIRL09GtZbdu+Ct5uWqDgBEZ6K6RT4eDMrYVTlpRbKe8uCBSQem7NXmqD
-jfIU9Z5b1gpqJsSWuFRY3I48SjN5UM6NclGCfUPv+XMr3QWw6jcSzIAvReP/GX/r
-3VczbScE+g1wZ2jIzEjAkiIdK53sb2+C0Z4PmrI0B4KvLvCSZOXFLIlydLtsTnsG
-OZRUjPW2Lb7mxEksPzmMuUAMQ3bwd4iHK6rqcw1WZ9VvLXJwBcP55U8blR/bNlVE
-MvRRSDyctG4b+sAJy5gA+gwjPQYjOg==
-=Eu76
------END PGP SIGNATURE-----
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
---KL9cDJfR2Dto7H+U--
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
