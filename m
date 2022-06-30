@@ -4,69 +4,73 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5D527C433EF
-	for <alsa-devel@archiver.kernel.org>; Thu, 30 Jun 2022 10:17:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3A327C433EF
+	for <alsa-devel@archiver.kernel.org>; Thu, 30 Jun 2022 10:38:31 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3E94116B5;
-	Thu, 30 Jun 2022 12:16:18 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3E94116B5
+	by alsa0.perex.cz (Postfix) with ESMTPS id B5E9316AF;
+	Thu, 30 Jun 2022 12:37:39 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B5E9316AF
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1656584228;
-	bh=jcZKWVt2cjtK89lhBmxZ8YIRJjZNI/FPZusa5VlI/N0=;
+	s=default; t=1656585509;
+	bh=iIKs3rpaYPtUZ0eaoQBogoq+V5pKpR1jkSxXnpou/3M=;
 	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=fiEK6o1iSfvj7bL1Ys/SIfIgkWw10er2v48uF0Aphr4MmvWOfeN3z22Xm5BV0VrN8
-	 TYrYVMplXI+itaXgv0oIRYZRoZfADV0blch9wGeUlkoopKki8rVMF2rTGvOmR/dRkR
-	 Mz7twjgIgCrUkkX+GUr7AEptq/pWkrPxIiLQGQgI=
+	b=JzN4H5tnEsaimRJYnRhGiUISAYULehgMpjfsO3jcSOLqkiHkD8NryH9lR+W9s/+M7
+	 MmfrjuXVm3Hnour6wpADvQKnOWy9mRpVgGzK+o3bbhjthwm7Y3Z41EikGd8x2exIZQ
+	 BV9HWGe88SqLsj4PWzvr8xY7gPjCgQlt+T0mP9Mw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id E0F7CF804D8;
-	Thu, 30 Jun 2022 12:16:17 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2CF2AF804D2;
+	Thu, 30 Jun 2022 12:37:39 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id E552DF804DA; Thu, 30 Jun 2022 12:16:16 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+ id DB639F804D8; Thu, 30 Jun 2022 12:37:37 +0200 (CEST)
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 326A9F804D8
- for <alsa-devel@alsa-project.org>; Thu, 30 Jun 2022 12:16:11 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 326A9F804D8
+ by alsa1.perex.cz (Postfix) with ESMTPS id 804B5F8014E
+ for <alsa-devel@alsa-project.org>; Thu, 30 Jun 2022 12:37:31 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 804B5F8014E
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="GO1V87FL"
+ header.b="ke/h3lcP"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id 437C862169;
- Thu, 30 Jun 2022 10:16:09 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B0464C34115;
- Thu, 30 Jun 2022 10:16:06 +0000 (UTC)
+ by ams.source.kernel.org (Postfix) with ESMTPS id BCF3EB82A24;
+ Thu, 30 Jun 2022 10:37:30 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8E296C341C8;
+ Thu, 30 Jun 2022 10:37:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1656584168;
- bh=jcZKWVt2cjtK89lhBmxZ8YIRJjZNI/FPZusa5VlI/N0=;
+ s=k20201202; t=1656585449;
+ bh=iIKs3rpaYPtUZ0eaoQBogoq+V5pKpR1jkSxXnpou/3M=;
  h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=GO1V87FLObd07KNLLcwvaWddzRv1K4pv7OXda6p+Tcr3NU92e8x7ep8SESYToljbI
- +sJmDbECw2nWGMMgYuuEoT2mPCaFbckKYLDtd01KZxwKNSnvfO+ZwFxjl6oTwQXXr3
- ZEOXyEXlCrFQx0ra5Hix83+sN5+7ITnBUE3hzjLEBgWTnGDI1FDEjLe1MFckz3JDqv
- e6rBZLnCs/X3NwpJkbQsVGk5GqUn7svZPK/MBctvWcT8j+CdxAH0EQwaaJC3rP/Mn0
- s3YoB8Nf4fK7Rw5OeoQmZMkKLdHP5xrnFiAYzzCr0oq7K8Jgz4WTk7ThKeuGCSPS5e
- rN4NwhQMjLfGg==
-Date: Thu, 30 Jun 2022 11:16:03 +0100
+ b=ke/h3lcPOMIcjmkXSDygaQX/fBnyA5e1eEEUNs8qdP9Dwt+FEhhFsyDc8q1vNT0Wi
+ ZIAz4B4huhN4ynq/IVmE8WlnX4UCtgS1koYpNof7PCbUhFM8wlBkAcGs/ex+wRYFRM
+ S92Z1bjJKrpgkGsSruKC+H++8Nm4+A5xlLWUnqFMDshpvkdFrdj8wqY1Lf0kJwYwFB
+ C3zKHGEVhlMmTkVPMtdbUdFuXQhh/6kNFUq5m0b8uTvTMmZfw96hg/3oUfCHHasld3
+ Ve3kCsGl/H4yqXC4WwkFjIVNwlEYa8smOf70ranpv+Vgr465CwFtphi5HVMHjQx4rM
+ eyCO2Y7pbAvcQ==
+Date: Thu, 30 Jun 2022 11:37:23 +0100
 From: Mark Brown <broonie@kernel.org>
-To: Li kunyu <kunyu@nfschina.com>
-Subject: Re: [PATCH] sound: delete a semicolon
-Message-ID: <Yr1348gai+/fwvfd@sirena.org.uk>
-References: <20220630020347.7148-1-kunyu@nfschina.com>
+To: Shengjiu Wang <shengjiu.wang@nxp.com>
+Subject: Re: [PATCH 3/6] ASoC: fsl_micfil: Add support for PLL switch at
+ runtime
+Message-ID: <Yr1842e42P4piYnE@sirena.org.uk>
+References: <1656567554-32122-1-git-send-email-shengjiu.wang@nxp.com>
+ <1656567554-32122-4-git-send-email-shengjiu.wang@nxp.com>
 MIME-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature"; boundary="eFiyZ/QO4UMV0jds"
+ protocol="application/pgp-signature"; boundary="SDyGFineERFKDrrR"
 Content-Disposition: inline
-In-Reply-To: <20220630020347.7148-1-kunyu@nfschina.com>
+In-Reply-To: <1656567554-32122-4-git-send-email-shengjiu.wang@nxp.com>
 X-Cookie: Today is what happened to yesterday.
-Cc: alsa-devel@alsa-project.org, lgirdwood@gmail.com,
- linux-kernel@vger.kernel.org, tiwai@suse.com, jonathanh@nvidia.com,
- thierry.reding@gmail.com, linux-tegra@vger.kernel.org
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
+ linuxppc-dev@lists.ozlabs.org, Xiubo.Lee@gmail.com, festevam@gmail.com,
+ tiwai@suse.com, lgirdwood@gmail.com, nicoleotsuka@gmail.com,
+ robh+dt@kernel.org, krzk+dt@kernel.org, shengjiu.wang@gmail.com,
+ linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -83,32 +87,59 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
---eFiyZ/QO4UMV0jds
+--SDyGFineERFKDrrR
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Thu, Jun 30, 2022 at 10:03:47AM +0800, Li kunyu wrote:
-> extra semicolons could be deleted.
+On Thu, Jun 30, 2022 at 01:39:11PM +0800, Shengjiu Wang wrote:
 
-Please submit patches using subject lines reflecting the style for the
-subsystem, this makes it easier for people to identify relevant patches.
-Look at what existing commits in the area you're changing are doing and
-make sure your subject lines visually resemble what they're doing.
-There's no need to resubmit to fix this alone.
+> +static int fsl_micfil_reparent_rootclk(struct fsl_micfil *micfil, unsigned int sample_rate)
+> +{
+> +	struct device *dev = &micfil->pdev->dev;
+> +	u64 ratio = sample_rate;
+> +	struct clk *clk;
+> +	int ret;
+> +
+> +	/* Reparent clock if required condition is true */
+> +	if (!micfil->pll8k_clk || !micfil->pll11k_clk)
+> +		return 0;
+> +
+> +	ratio = do_div(ratio, 8000) ? CLK_11K_FREQ : CLK_8K_FREQ;
+> +
+> +	/* Get root clock */
+> +	clk = micfil->mclk;
+> +	if (IS_ERR_OR_NULL(clk)) {
+> +		dev_err(dev, "no mclk clock in devicetree\n");
+> +		return PTR_ERR(clk);
+> +	}
+> +
+> +	/* Disable clock first, for it was enabled by pm_runtime */
+> +	clk_disable_unprepare(clk);
+> +	fsl_asoc_reparent_pll_clocks(dev, clk, micfil->pll8k_clk,
+> +				     micfil->pll11k_clk, ratio);
+> +	ret = clk_prepare_enable(clk);
+> +	if (ret)
+> +		return ret;
+> +
+> +	return 0;
+> +}
 
---eFiyZ/QO4UMV0jds
+Seems like more of this logic could be factored out into the reparent
+function if the target sample rate is passed in?
+
+--SDyGFineERFKDrrR
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmK9d+IACgkQJNaLcl1U
-h9DF7Qf8CAYvofkRcK5v5MvU90SRuDZNQcjuoWbLJ9bGdMBpQRcmMqGmFj1+aP/G
-zXcMRgWG8gFi/MHnzncM8sRVIcubHZZtsNEJ7sAoCqtEwMbCYk3GrW+wgA4gToFa
-sRWySXtIF/sxBXWuDyEWa/ck2G0LzRJHUZzpr1DsPP6mqe00ICHmRLSgXIMIcpIJ
-Xb7uwh1hBKxvBDDkLOEh00deNY/ZgyqWvcFPPXu+DmaN+4D2zHo6il4S9iOonN5M
-cR1PsG2fR5QMTEYsXaAGRYbRdK77LSiGPWYo2nNeTwy9Z/CgLVRlK+4++JojcGsW
-wjsHxT8Rs8paU1+HCuWYf9qq9E5K8w==
-=PsW0
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmK9fOIACgkQJNaLcl1U
+h9C68Qf/YX1eL795b+XK2iAIiNLwaLomwMbw0JjNUWxPZS3+wkMhyqOfDxWfq52s
+WZkSoJ7vyDPSIr7R5nCH7QFdwdgdLqck/2GSAaPUndpELFvuLqME+nElf2OlYx6l
+nq33cMqc0OZlIpM757VsPYN6IPPq87rPXI030XM4lmOxzhvV1gE0195pRFSiyiCl
+dWiddG47/R+cRgjm6LaGN0kkVTLWdj16f5E7zlz2VDse8I/CR5w7/U9hQ0yfE/Rr
+oJtQi+ybrw26ELGPHDP/2yljgWzaCuc/+BllHMwQeoTYgjuu+nxpX8m6B5ToffUT
+RpPmDmKDRpeFSTwxqqUVNwCPjHNjqQ==
+=Zj5G
 -----END PGP SIGNATURE-----
 
---eFiyZ/QO4UMV0jds--
+--SDyGFineERFKDrrR--
