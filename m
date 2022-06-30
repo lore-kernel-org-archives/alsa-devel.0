@@ -4,69 +4,84 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0EFFBC43334
-	for <alsa-devel@archiver.kernel.org>; Thu, 30 Jun 2022 12:50:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 28E0BC43334
+	for <alsa-devel@archiver.kernel.org>; Thu, 30 Jun 2022 13:01:29 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 33C6316C5;
-	Thu, 30 Jun 2022 14:49:24 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 33C6316C5
+	by alsa0.perex.cz (Postfix) with ESMTPS id C35C120C;
+	Thu, 30 Jun 2022 15:00:37 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C35C120C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1656593414;
-	bh=k/q/fhQMiNHwRSXcnMIjj16X53/sqxQxXQ33UBBRBQg=;
-	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=j78wPjGQkUuK3iwTljPHF7UWYYRPjYGm6p5btwBq/+b5ew0Gz9pua+i1TiYhc6adV
-	 FO9NtWvHbhlmfyE69lu57icqNODgqVxQ7vBBG3/uetSM6qqW/d+TxnONd8s2vLskYb
-	 WhqfuCvBF++eASBju+O0A01Dkzk+83P5W5vRoKfM=
+	s=default; t=1656594087;
+	bh=M7FK/98M1MjZHDrciJgIdj/7vtKx2z9WNYWbwzUrqMw=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=kwSg9138hGybfiv7sVjXoNPWcR1EKGu6SubQDLrxhoboKaplFKsJ6RcEgOidR0ZIg
+	 EjFEuYmQ9f/XILv9b+Ck6RW8TNSb9uAlgGbDowKNkX+9Jz2R5ghIDmoxcqE8lYycJA
+	 VmA7y76ZnAR2X7giwo5hz81QzGQdXuY3koLCcseU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 7A8ADF804E5;
-	Thu, 30 Jun 2022 14:48:56 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 565BAF804D2;
+	Thu, 30 Jun 2022 15:00:37 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id C53C3F804D2; Thu, 30 Jun 2022 14:48:53 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id EF8B7F804DA; Thu, 30 Jun 2022 15:00:35 +0200 (CEST)
+Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com
+ [IPv6:2a00:1450:4864:20::32b])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 432D0F80107
- for <alsa-devel@alsa-project.org>; Thu, 30 Jun 2022 14:48:49 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 432D0F80107
+ by alsa1.perex.cz (Postfix) with ESMTPS id CDB79F80107
+ for <alsa-devel@alsa-project.org>; Thu, 30 Jun 2022 15:00:28 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CDB79F80107
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="OWFzgAPi"
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id DC98061E84;
- Thu, 30 Jun 2022 12:48:46 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EAB46C34115;
- Thu, 30 Jun 2022 12:48:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1656593326;
- bh=k/q/fhQMiNHwRSXcnMIjj16X53/sqxQxXQ33UBBRBQg=;
- h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=OWFzgAPisJ3hZoUITVF00FrWji4mXjlyy7SdsD71uKqqobN9B4pAfM11CjhFgChKa
- 73deDyqQDY+CST+2qjun2EBLp9xqPtTacuwGMmWfsHQRmpC7rtW4gqENCP1hpHTf4K
- JCDA5A7eAKdXNklG71V93HR2st/ZYAeZ2m/6GeQ1ivqiYskk4Dj3nlWvV0nbyFPbMN
- 1XaMitcGXlzG9Z8J0plWmCKyrXveMkg73ASnkmOPGxK5TZcNrT6PTqBR9xSu5wZznx
- RaQKJ3HkuCk50EjZ+fYRg9t3kqoYu2hUT/Hn22sIyrUjzNmUZPo+W70ukb2oJ+n8Tp
- Rc+rqHeA+Iv2Q==
-From: Mark Brown <broonie@kernel.org>
-To: agross@kernel.org, krzysztof.kozlowski+dt@linaro.org,
- bjorn.andersson@linaro.org, robh+dt@kernel.org, srinivas.kandagatla@linaro.org,
- bryan.odonoghue@linaro.org, lgirdwood@gmail.com
-In-Reply-To: <20220629114012.3282945-1-bryan.odonoghue@linaro.org>
-References: <20220629114012.3282945-1-bryan.odonoghue@linaro.org>
-Subject: Re: [PATCH] ASoC: dt-bindings: Fix description for msm8916
-Message-Id: <165659332361.455663.5255774878482906847.b4-ty@kernel.org>
-Date: Thu, 30 Jun 2022 13:48:43 +0100
+ dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org
+ header.b="it46n3LR"
+Received: by mail-wm1-x32b.google.com with SMTP id
+ l2-20020a05600c4f0200b0039c55c50482so1674538wmq.0
+ for <alsa-devel@alsa-project.org>; Thu, 30 Jun 2022 06:00:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
+ h=from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=Nh7MOeHqpu+KJjz+AQfMOAMAr6taCyP+a8n4nKC3Ilk=;
+ b=it46n3LRqtbFUNmtsO5pMTfu8XVzRaw4AkZn64FfFqiNM1TD6/fI7WCexAZ0kter1B
+ 8V8OaDXmnLHFEVjmxaS1FdoZ/0Pf84G9bzIqI4QqQjedMkhnBmQBdU+PwdgSJrtv6ILa
+ YojZAZPCS0q0Vzyef/v9d8v/StEujzRRvmdoxuC2JuWaNkyDRB8bjFaK+5U8690VKtQr
+ A+dV+PdyNl/h0Za7ayvfNFEkp5xg/LIVabnTWn9hG40wAoh2NyJdEByXSjWVz2jTA68x
+ 5s7wTsAYHACQpXHMeszYGlsMUuVIWWWm/MTFVxmXg0L7vTMs+K/LI3Fcoc+RyBlDDobT
+ xHLQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=Nh7MOeHqpu+KJjz+AQfMOAMAr6taCyP+a8n4nKC3Ilk=;
+ b=Hf0l90YX4GHOhukE8wjkXaU4Kyedjs/ien15+TRhDb/kYJ+beNiqftJ5I9wFXG27uh
+ YpSKINSFp9z1c+bOqPYP5E5dvov03IatN17NsmPY+x+WivXbLFPqWY7QgJnOLBXRy7WB
+ fRBE6kOJiLtojz0LqeZTCqxzRA62+FGAUBSzF3EQ69BfgxCvtfDqmCAYI3lDSpB3v2MC
+ dCQzHly3miPfpTy0SAeDFK0gsSuA+2ClJ2xYbLlAPonz2WtLarIalxHPE7q68LR069cl
+ SiftdQXGzN5FlIp0z+6DfsMPTpol/2IQAeN52XkSKFH8X2F/3qvuzYOpxGknU47/pKqL
+ eEVg==
+X-Gm-Message-State: AJIora+u5UL+aI3nxjCMm29Y9FU1WOhSqM3H+hiJSDtQB/asnYfyZ4Ct
+ 4R1+SIOI94pl9n1t8oIKpTcvHQ==
+X-Google-Smtp-Source: AGRyM1vJ3ZxH45D8hUgK2tFT90WipVg22meqPE/QRLhl20LRmrNPtv60AoVVnzHUObi1UxrNlko/Gg==
+X-Received: by 2002:a05:600c:27d1:b0:3a1:7e0c:56bf with SMTP id
+ l17-20020a05600c27d100b003a17e0c56bfmr3784642wmb.186.1656594026688; 
+ Thu, 30 Jun 2022 06:00:26 -0700 (PDT)
+Received: from srini-hackbase.lan
+ (cpc90716-aztw32-2-0-cust825.18-1.cable.virginm.net. [86.26.103.58])
+ by smtp.gmail.com with ESMTPSA id
+ o4-20020a5d6484000000b0020d02262664sm19273608wri.25.2022.06.30.06.00.25
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Thu, 30 Jun 2022 06:00:25 -0700 (PDT)
+From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+To: broonie@kernel.org
+Subject: [PATCH 1/2] ASoC: codecs: wsa881x: handle timeouts in resume path
+Date: Thu, 30 Jun 2022 14:00:22 +0100
+Message-Id: <20220630130023.9308-1-srinivas.kandagatla@linaro.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
- quic_potturu@quicinc.com, linux-arm-msm@vger.kernel.org,
- quic_srivasam@quicinc.com
+Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ alsa-devel@alsa-project.org, lgirdwood@gmail.com, linux-kernel@vger.kernel.org,
+ tiwai@suse.com, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -82,36 +97,43 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, 29 Jun 2022 12:40:12 +0100, Bryan O'Donoghue wrote:
-> For the existing msm8916 bindings the minimum reg/reg-names is 1 not 2.
-> Similarly the minimum interrupt/interrupt-names is 1 not 2.
-> 
-> 
+Currently we do not check if SoundWire slave initialization timeout
+expired before continuing to access its registers.
 
-Applied to
+Its possible that the registers are not accessible if timeout is
+expired. Handle this by returning timeout in resume path.
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+Reported-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Fixes: 8dd552458361 ("ASoC: codecs: wsa881x: add runtime pm support")
+Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+---
+ sound/soc/codecs/wsa881x.c | 10 ++++++++--
+ 1 file changed, 8 insertions(+), 2 deletions(-)
 
-Thanks!
+diff --git a/sound/soc/codecs/wsa881x.c b/sound/soc/codecs/wsa881x.c
+index dc954b85a988..6c8b1db649b8 100644
+--- a/sound/soc/codecs/wsa881x.c
++++ b/sound/soc/codecs/wsa881x.c
+@@ -1173,11 +1173,17 @@ static int __maybe_unused wsa881x_runtime_resume(struct device *dev)
+ 	struct sdw_slave *slave = dev_to_sdw_dev(dev);
+ 	struct regmap *regmap = dev_get_regmap(dev, NULL);
+ 	struct wsa881x_priv *wsa881x = dev_get_drvdata(dev);
++	unsigned long time;
+ 
+ 	gpiod_direction_output(wsa881x->sd_n, 1);
+ 
+-	wait_for_completion_timeout(&slave->initialization_complete,
+-				    msecs_to_jiffies(WSA881X_PROBE_TIMEOUT));
++	time = wait_for_completion_timeout(&slave->initialization_complete,
++					   msecs_to_jiffies(WSA881X_PROBE_TIMEOUT));
++	if (!time) {
++		dev_err(dev, "Initialization not complete, timed out\n");
++		gpiod_direction_output(wsa881x->sd_n, 0);
++		return -ETIMEDOUT;
++	}
+ 
+ 	regcache_cache_only(regmap, false);
+ 	regcache_sync(regmap);
+-- 
+2.25.1
 
-[1/1] ASoC: dt-bindings: Fix description for msm8916
-      commit: 59d0319cadff71a74c55fafc6f3cc1f2aeb6538f
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
