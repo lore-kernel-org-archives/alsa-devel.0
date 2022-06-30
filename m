@@ -4,66 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id ABC29C43334
-	for <alsa-devel@archiver.kernel.org>; Thu, 30 Jun 2022 15:11:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 73186C43334
+	for <alsa-devel@archiver.kernel.org>; Thu, 30 Jun 2022 15:11:43 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E8C701687;
-	Thu, 30 Jun 2022 17:10:21 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E8C701687
+	by alsa0.perex.cz (Postfix) with ESMTPS id BE69A16E6;
+	Thu, 30 Jun 2022 17:10:51 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BE69A16E6
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1656601872;
-	bh=xPBVEhqQBU4s7hwKhqo56wNXVbf1Ihg751/zhNw33v0=;
+	s=default; t=1656601901;
+	bh=kns8+0qB725KuYwFrosVJmskFRLv475UVQh24jxqzZw=;
 	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=rwZebzFXkR1psqyvcvmFVRimtDUNkk7yhKnbmjt2GSyGVdgetiwF1Vby1Z7R//UkQ
-	 mnVg1qMuPwfi2PtPgpn4+p1WQm8518kWUXXKG30WXQNHKJgbXSmbmVcmdLCPIDlTPS
-	 O6gq+uabQVTBXyttVwI835R2YcSb5XiigOpllLVI=
+	b=ceJT/o3HEsclqZOLcNWFiUZ7hBCOJYcZcdWhcddHNI1vZ4MyB5wNN0IpE8YX1GrTg
+	 pTGZZk8n8O6DkLD4r7sMgHH5COv4BHmIZd4rd0/Un3roFh0UdaYj4NlQxl3haPHMSF
+	 RZNgpunW4ndf8KvQJ6RtVVXnRSfKJTo6KLlaS+cU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 6CDAAF804D8;
-	Thu, 30 Jun 2022 17:10:21 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id C073BF804EB;
+	Thu, 30 Jun 2022 17:10:26 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 4A083F800F5; Thu, 30 Jun 2022 17:10:19 +0200 (CEST)
-Received: from ams.source.kernel.org (ams.source.kernel.org
- [IPv6:2604:1380:4601:e00::1])
+ id 398F5F8052D; Thu, 30 Jun 2022 17:10:23 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org
+ [IPv6:2604:1380:4641:c500::1])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 953A3F800F5
- for <alsa-devel@alsa-project.org>; Thu, 30 Jun 2022 17:10:15 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 953A3F800F5
+ by alsa1.perex.cz (Postfix) with ESMTPS id 88139F800F5
+ for <alsa-devel@alsa-project.org>; Thu, 30 Jun 2022 17:10:20 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 88139F800F5
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="BfbSq6jP"
+ header.b="WrXzuKEL"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by ams.source.kernel.org (Postfix) with ESMTPS id 933E3B82B73;
- Thu, 30 Jun 2022 15:10:14 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1D2E1C34115;
- Thu, 30 Jun 2022 15:10:11 +0000 (UTC)
+ by dfw.source.kernel.org (Postfix) with ESMTPS id 928CD60E95;
+ Thu, 30 Jun 2022 15:10:18 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 382C2C34115;
+ Thu, 30 Jun 2022 15:10:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1656601813;
- bh=xPBVEhqQBU4s7hwKhqo56wNXVbf1Ihg751/zhNw33v0=;
+ s=k20201202; t=1656601818;
+ bh=kns8+0qB725KuYwFrosVJmskFRLv475UVQh24jxqzZw=;
  h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=BfbSq6jPatzjO3BxBHoMUY56dVzgVmLU+gFleqKxO5kkZQ1Q6iPdsr2s9EclFo1+5
- zI/60Ag9N9xtrQYr4Jp+aa9irp4MZGS4ZS92zJsnrvDvxClxOIg1aImmBHDVm1CIrR
- Xu/waQ0Ow5H2j4e2EplqYILfdG+ZzNjhI5SnvYpnN4kaBB2Z6gm/GCz1Lnz/l7fEgM
- B728YFHgdd3pqwIKPl9QAGN+QfHIGFdl/nbRJ9kw2HRPbFUUlO4v+DVn1oumKzMZnx
- SwpqIdlPN4xFskZtQYfw7Ow3zNUVQNMpOECqCTX6FTfPBiU4KoW4B14KKGRtB2KppL
- +wftcdn4fp9Ow==
+ b=WrXzuKEL8eXydybg6sjJbvmscFiKhPlUHIJpUtZxuOJCd/rTV+d9ja4wH3dd1+H7T
+ ErfJZinZnpjw4d+d4JrFD9T34LMc4CxF/xqXdnqCBZd1DRCDsH9SD49poMgCSnu7Cj
+ Iv4SGD6GdR11jwQ5rLxXKnMrPbsbOnX9O5aQdHIRXeEQCSQavSfP7xBCRtHsD2iAIS
+ vPdbLz9KOs5YVDCP9gQjsmTo9YMi2mj73Az+FICT7h646wa6ASCOR6rKXTfNs55PrZ
+ oecVsVZ3hFiul7itI7kAG4tKsZyCkePxEHYVQRBaGyIZ4QGutRt5rj8y+Fq0F/+Geh
+ /iOZkBn5AoOhg==
 From: Mark Brown <broonie@kernel.org>
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-In-Reply-To: <871qvhqm56.wl-kuninori.morimoto.gx@renesas.com>
-References: <871qvhqm56.wl-kuninori.morimoto.gx@renesas.com>
-Subject: Re: [PATCH 0/2] ASoC: soc-core.c: fixup snd_soc_of_get_dai_link_cpus()
-Message-Id: <165660181165.664251.8953758833473555278.b4-ty@kernel.org>
-Date: Thu, 30 Jun 2022 16:10:11 +0100
+To: perex@perex.cz, thierry.reding@gmail.com, lgirdwood@gmail.com,
+ jonathanh@nvidia.com, kunyu@nfschina.com, tiwai@suse.com
+In-Reply-To: <20220630020347.7148-1-kunyu@nfschina.com>
+References: <20220630020347.7148-1-kunyu@nfschina.com>
+Subject: Re: [PATCH] sound: delete a semicolon
+Message-Id: <165660181594.664251.10913007808464337942.b4-ty@kernel.org>
+Date: Thu, 30 Jun 2022 16:10:15 +0100
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: povik+lin@cutebit.org, alsa-devel@alsa-project.org
+Cc: linux-tegra@vger.kernel.org, alsa-devel@alsa-project.org,
+ linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -79,17 +81,10 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, 22 Jun 2022 05:53:41 +0000, Kuninori Morimoto wrote:
-> Current ASoC has fixup both snd_soc_of_get_dai_link_cpus/codecs().
-> I guess cpu was copied from codec, but it is using "codec" naming everwhere
-> in "cpu" function. It is strange, and thus, error case will be issue
-> (It should call cpu function instead of codec).
+On Thu, 30 Jun 2022 10:03:47 +0800, Li kunyu wrote:
+> extra semicolons could be deleted.
 > 
-> This patch tidyup it, and try to cleanup.
-> [1/2] is for bug-fix,
-> [2/2] is for new feature.
 > 
-> [...]
 
 Applied to
 
@@ -97,10 +92,8 @@ Applied to
 
 Thanks!
 
-[1/2] ASoC: soc-core.c: fixup snd_soc_of_get_dai_link_cpus()
-      commit: f3762ddfa24068cf67bc395cb80a7928306ad1ef
-[2/2] ASoC: soc-core.c: share code for snd_soc_of_get_dai_link_cpus/codecs()
-      commit: 9cc69528188a4e3eb24370f6c05a92791ac249ba
+[1/1] sound: delete a semicolon
+      commit: d8d6253b36f55d199590ef908712fe52bb39ee97
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
