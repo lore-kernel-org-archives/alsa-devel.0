@@ -4,58 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E1626C43334
-	for <alsa-devel@archiver.kernel.org>; Thu, 30 Jun 2022 05:57:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8D17CC43334
+	for <alsa-devel@archiver.kernel.org>; Thu, 30 Jun 2022 06:33:34 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id DFBB716E9;
-	Thu, 30 Jun 2022 07:56:08 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DFBB716E9
+	by alsa0.perex.cz (Postfix) with ESMTPS id E6FDE204;
+	Thu, 30 Jun 2022 08:32:41 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E6FDE204
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1656568619;
-	bh=lQczcA8eOHHKvt1zKRjjMErfZfrMPnC0lo4G2AJ5RKY=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=Jh4QHGM7TUapC+VcCbF50Y+pcS2iTPN6OZoxWEH3PQsR2BKf0zOwH2UCJExCw8b8N
-	 dMipGT1RWJhmuwtsJ0e3g+INbjoNUj+qZ6SgP0kMTSq+zMGEY398nbxwZ/KwuddD7j
-	 21+V9x4HQi9qvZ7YSP4t35nKFx3j5g1HzowQzTp8=
+	s=default; t=1656570812;
+	bh=GNy7ZyUw1fvwqcx3bnDlD52I+eDMuYjT7+APvrK/G7s=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=YmfV+Q9vW0Fer4QCmu78smTZyO4O4kkx1hxKeTmJ/H04A6+Q1uXgjGFi6FNL1n8Oz
+	 0TPdS4Vn74RQZiWUowdPC2Hshy/Z7Z/9K0aCxVJgV5ejotmLkB3Rwc6ywKklF4T2Bf
+	 SbXQshk8K0Pa2m2RI8CjQeqbUivor98jy4akaj+w=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 64C72F80543;
-	Thu, 30 Jun 2022 07:55:07 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 6E41FF804D2;
+	Thu, 30 Jun 2022 08:32:41 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id BDD88F804DA; Thu, 30 Jun 2022 07:55:04 +0200 (CEST)
-Received: from inva021.nxp.com (inva021.nxp.com [92.121.34.21])
+ id D2CE5F804E5; Thu, 30 Jun 2022 08:32:39 +0200 (CEST)
+Received: from mga17.intel.com (mga17.intel.com [192.55.52.151])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 23A52F804D8
- for <alsa-devel@alsa-project.org>; Thu, 30 Jun 2022 07:54:14 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 23A52F804D8
-Received: from inva021.nxp.com (localhost [127.0.0.1])
- by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 41C57200758;
- Thu, 30 Jun 2022 07:54:14 +0200 (CEST)
-Received: from aprdc01srsp001v.ap-rdc01.nxp.com
- (aprdc01srsp001v.ap-rdc01.nxp.com [165.114.16.16])
- by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id CBFCB2009F9;
- Thu, 30 Jun 2022 07:54:13 +0200 (CEST)
-Received: from localhost.localdomain (shlinux2.ap.freescale.net
- [10.192.224.44])
- by aprdc01srsp001v.ap-rdc01.nxp.com (Postfix) with ESMTP id 2D181180222B;
- Thu, 30 Jun 2022 13:54:12 +0800 (+08)
-From: Shengjiu Wang <shengjiu.wang@nxp.com>
-To: nicoleotsuka@gmail.com, Xiubo.Lee@gmail.com, festevam@gmail.com,
- shengjiu.wang@gmail.com, lgirdwood@gmail.com, broonie@kernel.org,
- perex@perex.cz, tiwai@suse.com, alsa-devel@alsa-project.org,
- robh+dt@kernel.org, krzk+dt@kernel.org, devicetree@vger.kernel.org
-Subject: [PATCH 1/6] ASoC: fsl_utils: Add function to handle PLL clock source
-Date: Thu, 30 Jun 2022 13:39:09 +0800
-Message-Id: <1656567554-32122-2-git-send-email-shengjiu.wang@nxp.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1656567554-32122-1-git-send-email-shengjiu.wang@nxp.com>
-References: <1656567554-32122-1-git-send-email-shengjiu.wang@nxp.com>
-X-Virus-Scanned: ClamAV using ClamSMTP
-Cc: linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
+ by alsa1.perex.cz (Postfix) with ESMTPS id 88D9DF80107
+ for <alsa-devel@alsa-project.org>; Thu, 30 Jun 2022 08:32:29 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 88D9DF80107
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
+ header.b="LS4z3NL9"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+ d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+ t=1656570755; x=1688106755;
+ h=from:to:cc:subject:date:message-id:mime-version:
+ content-transfer-encoding;
+ bh=GNy7ZyUw1fvwqcx3bnDlD52I+eDMuYjT7+APvrK/G7s=;
+ b=LS4z3NL9nQ4kfFTxKLM8+iHPNGjDF0GppCxauRirstefhoZuiZ/Vxkx5
+ uMKi2gaFsYrsq43uRhqmHlEysfExwzHK/ewrCYrJI1tMv7b6acP+fD5hu
+ bK+JNoPpMi35Zpf002/xJgZIv4a9eplXNEohQwTbhMD5hEaeYecBB3zjm
+ Nfw3LfCbmcME/abtXh9RjHJDHstOGGHLEr4YTmtA/x0Uaj0Yh6T0seFXo
+ lYbpMZXai0ZY2AK0hd7quTZ8OJyZmh4scyZW/tU9akmtXA9CVn/sCSNn/
+ tS3Pkb1hWEyzZmlByZ9cxHtbcNj67IHmMB0sf/9dXtip4s6SEVAOTMWWa w==;
+X-IronPort-AV: E=McAfee;i="6400,9594,10393"; a="262663732"
+X-IronPort-AV: E=Sophos;i="5.92,233,1650956400"; d="scan'208";a="262663732"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+ by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 29 Jun 2022 23:32:25 -0700
+X-IronPort-AV: E=Sophos;i="5.92,233,1650956400"; d="scan'208";a="658872772"
+Received: from askrzypc-mobl.ger.corp.intel.com (HELO
+ pujfalus-desk.ger.corp.intel.com) ([10.249.254.39])
+ by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 29 Jun 2022 23:32:23 -0700
+From: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
+To: lgirdwood@gmail.com, broonie@kernel.org,
+ pierre-louis.bossart@linux.intel.com, cezary.rojewski@intel.com
+Subject: [PATCH 0/2] ASoC: Intel: Skylake: Fixes for skl_get_ssp_clks()
+Date: Thu, 30 Jun 2022 09:33:05 +0300
+Message-Id: <20220630063307.23568-1-peter.ujfalusi@linux.intel.com>
+X-Mailer: git-send-email 2.37.0
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Cc: alsa-devel@alsa-project.org, yung-chuan.liao@linux.intel.com,
+ tiwai@suse.com, kai.vehmanen@linux.intel.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -71,129 +82,27 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-i.MX8MQ/MN/MM/MP platforms typically have 2 AUDIO PLLs being
-configured to handle 8kHz and 11kHz series audio rates.
-Add common function in fsl_utils to handle these two PLL
-clock source, which are needed by CPU DAI drivers
+Hi,
 
-Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
+while looking at long standing sparse reports regarding to arrays of flexible
+structures (arrays of flexible arrays of flexible structures, really).
+
+I came across these which did not looked right.
+The skl_get_ssp_clks() as some issues and can work under only strict single
+condition.
+
+Regards,
+Peter
 ---
- sound/soc/fsl/fsl_utils.c | 69 +++++++++++++++++++++++++++++++++++++++
- sound/soc/fsl/fsl_utils.h |  9 +++++
- 2 files changed, 78 insertions(+)
+Peter Ujfalusi (2):
+  ASoC: Intel: Skylake: Correct the ssp rate discovery in
+    skl_get_ssp_clks()
+  ASoC: Intel: Skylake: Correct the handling of fmt_config flexible
+    array
 
-diff --git a/sound/soc/fsl/fsl_utils.c b/sound/soc/fsl/fsl_utils.c
-index 9bab202569af..b75843e31f00 100644
---- a/sound/soc/fsl/fsl_utils.c
-+++ b/sound/soc/fsl/fsl_utils.c
-@@ -6,6 +6,8 @@
- //
- // Copyright 2010 Freescale Semiconductor, Inc.
- 
-+#include <linux/clk.h>
-+#include <linux/clk-provider.h>
- #include <linux/module.h>
- #include <linux/of_address.h>
- #include <sound/soc.h>
-@@ -83,6 +85,73 @@ int fsl_asoc_get_dma_channel(struct device_node *ssi_np,
- }
- EXPORT_SYMBOL(fsl_asoc_get_dma_channel);
- 
-+/**
-+ * fsl_asoc_get_pll_clocks - get two PLL clock source
-+ *
-+ * @dev: device pointer
-+ * @pll8k_clk: PLL clock pointer for 8kHz
-+ * @pll11k_clk: PLL clock pointer for 11kHz
-+ *
-+ * This function get two PLL clock source
-+ */
-+void fsl_asoc_get_pll_clocks(struct device *dev, struct clk **pll8k_clk,
-+			     struct clk **pll11k_clk)
-+{
-+	*pll8k_clk = devm_clk_get(dev, "pll8k");
-+	if (IS_ERR(*pll8k_clk))
-+		*pll8k_clk = NULL;
-+
-+	*pll11k_clk = devm_clk_get(dev, "pll11k");
-+	if (IS_ERR(*pll11k_clk))
-+		*pll11k_clk = NULL;
-+}
-+EXPORT_SYMBOL(fsl_asoc_get_pll_clocks);
-+
-+/**
-+ * fsl_asoc_reparent_pll_clocks - set clock parent if necessary
-+ *
-+ * @dev: device pointer
-+ * @clk: root clock pointer
-+ * @pll8k_clk: PLL clock pointer for 8kHz
-+ * @pll11k_clk: PLL clock pointer for 11kHz
-+ * @ratio: target requency for root clock
-+ *
-+ * This function set root clock parent according to the target ratio
-+ */
-+void fsl_asoc_reparent_pll_clocks(struct device *dev, struct clk *clk,
-+				  struct clk *pll8k_clk,
-+				  struct clk *pll11k_clk, u64 ratio)
-+{
-+	struct clk *p, *pll = 0, *npll = 0;
-+	bool reparent = false;
-+	int ret = 0;
-+
-+	if (!clk || !pll8k_clk || !pll11k_clk)
-+		return;
-+
-+	p = clk;
-+	while (p && pll8k_clk && pll11k_clk) {
-+		struct clk *pp = clk_get_parent(p);
-+
-+		if (clk_is_match(pp, pll8k_clk) ||
-+		    clk_is_match(pp, pll11k_clk)) {
-+			pll = pp;
-+			break;
-+		}
-+		p = pp;
-+	}
-+
-+	npll = (do_div(ratio, 8000) ? pll11k_clk : pll8k_clk);
-+	reparent = (pll && !clk_is_match(pll, npll));
-+
-+	if (reparent) {
-+		ret = clk_set_parent(p, npll);
-+		if (ret < 0)
-+			dev_warn(dev, "failed to set parent %s: %d\n", __clk_get_name(npll), ret);
-+	}
-+}
-+EXPORT_SYMBOL(fsl_asoc_reparent_pll_clocks);
-+
- MODULE_AUTHOR("Timur Tabi <timur@freescale.com>");
- MODULE_DESCRIPTION("Freescale ASoC utility code");
- MODULE_LICENSE("GPL v2");
-diff --git a/sound/soc/fsl/fsl_utils.h b/sound/soc/fsl/fsl_utils.h
-index c5dc2a14b492..3fec537edd26 100644
---- a/sound/soc/fsl/fsl_utils.h
-+++ b/sound/soc/fsl/fsl_utils.h
-@@ -11,6 +11,8 @@
- #define _FSL_UTILS_H
- 
- #define DAI_NAME_SIZE	32
-+#define CLK_8K_FREQ            24576000
-+#define CLK_11K_FREQ           22579200
- 
- struct snd_soc_dai_link;
- struct device_node;
-@@ -19,4 +21,11 @@ int fsl_asoc_get_dma_channel(struct device_node *ssi_np, const char *name,
- 			     struct snd_soc_dai_link *dai,
- 			     unsigned int *dma_channel_id,
- 			     unsigned int *dma_id);
-+
-+void fsl_asoc_get_pll_clocks(struct device *dev, struct clk **pll8k_clk,
-+			     struct clk **pll11k_clk);
-+
-+void fsl_asoc_reparent_pll_clocks(struct device *dev, struct clk *clk,
-+				  struct clk *pll8k_clk,
-+				  struct clk *pll11k_clk, u64 ratio);
- #endif /* _FSL_UTILS_H */
+ sound/soc/intel/skylake/skl-nhlt.c | 40 ++++++++++++++++++++----------
+ 1 file changed, 27 insertions(+), 13 deletions(-)
+
 -- 
-2.17.1
+2.37.0
 
