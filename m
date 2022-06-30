@@ -4,84 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9F59BC433EF
-	for <alsa-devel@archiver.kernel.org>; Thu, 30 Jun 2022 12:37:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 29180C433EF
+	for <alsa-devel@archiver.kernel.org>; Thu, 30 Jun 2022 12:49:46 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 1137116B5;
-	Thu, 30 Jun 2022 14:36:50 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1137116B5
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3CC5E169C;
+	Thu, 30 Jun 2022 14:48:54 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3CC5E169C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1656592660;
-	bh=JOklFoDs8CQOJMLbtEFUHrmwX4xmH6Qc67v1fwIBoSc=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=q1JlAwf4+17nP/rty5Fs3e6H3pwjuN+d3gewb+5WcmU3kB2f9CE29xlqVfmbFIlRv
-	 W0SygXtGmbTH0+w+OqD/Ev/23NgZBbyueTFMUwDHHuLjL4xyln5hP3N9FDyx6TmDFJ
-	 tV6nLmqNlVwlajCK444QnVTff3kHZWjFyuhePl18=
+	s=default; t=1656593384;
+	bh=joKbTELu6hfvzcnfhQbg80CH7lGuvl4e0eRNBxTN5D4=;
+	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=HY8GuOHtu0SYjhVDDrg7xgD1FQfVesYA1FApthaRknxu5KVwi6F5GbL+povPY7++v
+	 1Br6xyK8+BVncm4mX3cjthVpXyG18X0nyFPin+9W/WMwyogriY1ApgfUvQ86xU/7Xe
+	 1S4GZXCGS9kzsCM1VWjeFlknqYWJbecrb4xxesjo=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id B5CC2F804D2;
-	Thu, 30 Jun 2022 14:36:49 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id CB935F800F5;
+	Thu, 30 Jun 2022 14:48:53 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id A1016F800F5; Thu, 30 Jun 2022 14:36:47 +0200 (CEST)
-Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com
- [IPv6:2a00:1450:4864:20::32b])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id 440ECF804DA; Thu, 30 Jun 2022 14:48:53 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 23933F800F5
- for <alsa-devel@alsa-project.org>; Thu, 30 Jun 2022 14:36:40 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 23933F800F5
+ by alsa1.perex.cz (Postfix) with ESMTPS id A8C5AF800F5
+ for <alsa-devel@alsa-project.org>; Thu, 30 Jun 2022 14:48:50 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A8C5AF800F5
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org
- header.b="MtYVdhYe"
-Received: by mail-wm1-x32b.google.com with SMTP id
- o16-20020a05600c379000b003a02eaea815so2576984wmr.0
- for <alsa-devel@alsa-project.org>; Thu, 30 Jun 2022 05:36:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
- h=from:to:cc:subject:date:message-id:mime-version
- :content-transfer-encoding;
- bh=nCSOjH1PuVz7ePXYoaMNJhxlzN8X+wOXCrrgiX6Y81E=;
- b=MtYVdhYetN7Bd35GsZbA5nac6CSxeMCF5wY5tOcm+FKgAcrWM8HUeoYSPDNgC9jWOG
- sLQkCl3wq8zXGkCIrlkeMTVAcRONm699mIRHlgnxyhdfezZKoKEdE7pNxtHWSL3VfbxP
- 6ujrCzvHO7OQzEDHGXPd+43AD39cScbJtLftOCk6ATNjZnKIKefRhz3faWtD2Wyri544
- OuHoJJC08ZZnHtcHuRaNxrCzluvGQQ4HULdAPs/PR9wiFlQf2oh/UET4bwHsbjtyqIkf
- ulZouAgJvJ9XMCLkSZAJ8Jr/FcQBukc/CXiI8tTwu3BQEcFydgOiFLcb2AaxALjXW7zc
- huiQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
- :content-transfer-encoding;
- bh=nCSOjH1PuVz7ePXYoaMNJhxlzN8X+wOXCrrgiX6Y81E=;
- b=SLACChfzx4TJdznFQWALzdK5pTV5XS2orV+cSerqsRdRJy9Vo7wWWeiIkeu7mdVDTJ
- 2w9N2bEy5/QGQAEGM47siNTS8+bTIzJfkiS5dskqfMt1HPUHQ5kVrkQuaMKQHWORWYfN
- yteMR2pAEjiOn+roYcVHZ/0uywAb+aCZyH24ExFMfG1fek7NzuqhhYDuok8GagKvyJT2
- Bp8t8MJZ3Zcpzk/BJzd1qNfGLGXOfYtZ3BIpnzCTAnpfBXS3W3O5O91xI33bWZQN8uvc
- Obk0rCdIgOElbMcy98CVwwEjPLq3yivKmL/PSIFG0SfRlm++enquJ6MTPwlIUQArclNh
- bEhw==
-X-Gm-Message-State: AJIora/AFfFMflXb4PmFITMWosHy7hPnZP4zgAa3+NMWflsPxm7Ku7xA
- WZZaaYGevghhyFATwAV/VsZsDA==
-X-Google-Smtp-Source: AGRyM1vnV+qyq94vbIlHHTuN9r1agP/6Tx4U8p9Gh8Ce0+IUEaZtDJH/LazctjXg9922LcB67IFT6Q==
-X-Received: by 2002:a7b:c155:0:b0:3a0:43a2:e1e1 with SMTP id
- z21-20020a7bc155000000b003a043a2e1e1mr12207682wmi.160.1656592599505; 
- Thu, 30 Jun 2022 05:36:39 -0700 (PDT)
-Received: from srini-hackbase.lan
- (cpc90716-aztw32-2-0-cust825.18-1.cable.virginm.net. [86.26.103.58])
- by smtp.gmail.com with ESMTPSA id
- n17-20020a05600c3b9100b0039ee391a024sm2477290wms.14.2022.06.30.05.36.38
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Thu, 30 Jun 2022 05:36:38 -0700 (PDT)
-From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-To: broonie@kernel.org
-Subject: [PATCH v3] ASoC: codecs: wsa883x: add control, dapm widgets and map
-Date: Thu, 30 Jun 2022 13:36:33 +0100
-Message-Id: <20220630123633.8047-1-srinivas.kandagatla@linaro.org>
-X-Mailer: git-send-email 2.25.1
+ dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="Z2BeB0mv"
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by dfw.source.kernel.org (Postfix) with ESMTPS id 27FB361EA2;
+ Thu, 30 Jun 2022 12:48:49 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C4C6BC341CC;
+ Thu, 30 Jun 2022 12:48:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1656593328;
+ bh=joKbTELu6hfvzcnfhQbg80CH7lGuvl4e0eRNBxTN5D4=;
+ h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+ b=Z2BeB0mv23BtGIANeiFMGog6uCqxPx/6Tldn1Tb6BIRFblDI7i9qTfx5CfhQNtRGQ
+ lH6m5okdm6VwhrGa/8W3/Gb6+UpGlrcnTLogtRL6ogRMoXfOMERo7ZN13UU5Vwdn9u
+ TS7YKBq95KNRvnmTFzvfABmLMe/AhqYSOdfHqguw1hmdmXlhaMtC+iPilFGtxOPby9
+ JUsHJUuhcmpRCrFZXtdHLk92j0oUmiPCvF+Bn2Zbs67hZlniVoaKgDecplprN1QyDN
+ n55/qMbov26pOpx1a7jDWSQwDinFgCqQGKgZg/8yv1bwnT5AUkoSeN2nvsVz656Z3+
+ 2BacziQhH7rng==
+From: Mark Brown <broonie@kernel.org>
+To: Liam Girdwood <lgirdwood@gmail.com>, povik+lin@cutebit.org
+In-Reply-To: <20220630075135.2221-1-povik+lin@cutebit.org>
+References: <20220630075135.2221-1-povik+lin@cutebit.org>
+Subject: Re: [PATCH 1/4] ASoC: tas2764: Add post reset delays
+Message-Id: <165659332651.455663.13893837473957568987.b4-ty@kernel.org>
+Date: Thu, 30 Jun 2022 13:48:46 +0100
 MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: alsa-devel@alsa-project.org, lgirdwood@gmail.com,
- linux-kernel@vger.kernel.org, tiwai@suse.com,
- Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Cc: alsa-devel@alsa-project.org, ckeepax@opensource.cirrus.com,
+ marcan@marcan.st, linux-kernel@vger.kernel.org, asahi@lists.linux.dev,
+ steve@sk2.org, dmurphy@ti.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -97,244 +80,43 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Add controls, dapm widgets along with route.
+On Thu, 30 Jun 2022 09:51:32 +0200, Martin Povišer wrote:
+> Make sure there is at least 1 ms delay from reset to first command as
+> is specified in the datasheet. This is a fix similar to commit
+> 307f31452078 ("ASoC: tas2770: Insert post reset delay").
+> 
+> 
 
-Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
----
-Changes since v2:
-	- updated dev mode text entries to start with Capital letter
+Applied to
 
- sound/soc/codecs/wsa883x.c | 200 +++++++++++++++++++++++++++++++++++++
- 1 file changed, 200 insertions(+)
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
 
-diff --git a/sound/soc/codecs/wsa883x.c b/sound/soc/codecs/wsa883x.c
-index 856709ec017e..e8f519e89213 100644
---- a/sound/soc/codecs/wsa883x.c
-+++ b/sound/soc/codecs/wsa883x.c
-@@ -473,6 +473,19 @@ enum wsa_port_ids {
- 	WSA883X_PORT_VISENSE,
- };
- 
-+static const char * const wsa_dev_mode_text[] = {
-+	"Speaker", "Receiver", "Ultrasound"
-+};
-+
-+enum {
-+	SPEAKER,
-+	RECEIVER,
-+	ULTRASOUND,
-+};
-+
-+static const struct soc_enum wsa_dev_mode_enum =
-+	SOC_ENUM_SINGLE_EXT(ARRAY_SIZE(wsa_dev_mode_text), wsa_dev_mode_text);
-+
- /* 4 ports */
- static struct sdw_dpn_prop wsa_sink_dpn_prop[WSA883X_MAX_SWR_PORTS] = {
- 	{
-@@ -1066,6 +1079,94 @@ static struct sdw_slave_ops wsa883x_slave_ops = {
- 	.port_prep = wsa883x_port_prep,
- };
- 
-+static int wsa_dev_mode_get(struct snd_kcontrol *kcontrol,
-+			    struct snd_ctl_elem_value *ucontrol)
-+{
-+	struct snd_soc_component *component = snd_soc_kcontrol_component(kcontrol);
-+	struct wsa883x_priv *wsa883x = snd_soc_component_get_drvdata(component);
-+
-+	ucontrol->value.enumerated.item[0] = wsa883x->dev_mode;
-+
-+	return 0;
-+}
-+
-+static int wsa_dev_mode_put(struct snd_kcontrol *kcontrol,
-+			    struct snd_ctl_elem_value *ucontrol)
-+{
-+	struct snd_soc_component *component = snd_soc_kcontrol_component(kcontrol);
-+	struct wsa883x_priv *wsa883x = snd_soc_component_get_drvdata(component);
-+
-+	if (wsa883x->dev_mode == ucontrol->value.enumerated.item[0])
-+		return 0;
-+
-+	wsa883x->dev_mode = ucontrol->value.enumerated.item[0];
-+
-+	return 1;
-+}
-+
-+static const DECLARE_TLV_DB_SCALE(pa_gain, -300, 150, -300);
-+
-+static int wsa883x_get_swr_port(struct snd_kcontrol *kcontrol,
-+				struct snd_ctl_elem_value *ucontrol)
-+{
-+	struct snd_soc_component *comp = snd_soc_kcontrol_component(kcontrol);
-+	struct wsa883x_priv *data = snd_soc_component_get_drvdata(comp);
-+	struct soc_mixer_control *mixer = (struct soc_mixer_control *)kcontrol->private_value;
-+	int portidx = mixer->reg;
-+
-+	ucontrol->value.integer.value[0] = data->port_enable[portidx];
-+
-+	return 0;
-+}
-+
-+static int wsa883x_set_swr_port(struct snd_kcontrol *kcontrol,
-+				struct snd_ctl_elem_value *ucontrol)
-+{
-+	struct snd_soc_component *comp = snd_soc_kcontrol_component(kcontrol);
-+	struct wsa883x_priv *data = snd_soc_component_get_drvdata(comp);
-+	struct soc_mixer_control *mixer = (struct soc_mixer_control *)kcontrol->private_value;
-+	int portidx = mixer->reg;
-+
-+	if (ucontrol->value.integer.value[0]) {
-+		if (data->port_enable[portidx])
-+			return 0;
-+
-+		data->port_enable[portidx] = true;
-+	} else {
-+		if (!data->port_enable[portidx])
-+			return 0;
-+
-+		data->port_enable[portidx] = false;
-+	}
-+
-+	return 1;
-+}
-+
-+static int wsa883x_get_comp_offset(struct snd_kcontrol *kcontrol,
-+				   struct snd_ctl_elem_value *ucontrol)
-+{
-+	struct snd_soc_component *component = snd_soc_kcontrol_component(kcontrol);
-+	struct wsa883x_priv *wsa883x = snd_soc_component_get_drvdata(component);
-+
-+	ucontrol->value.integer.value[0] = wsa883x->comp_offset;
-+
-+	return 0;
-+}
-+
-+static int wsa883x_set_comp_offset(struct snd_kcontrol *kcontrol,
-+				   struct snd_ctl_elem_value *ucontrol)
-+{
-+	struct snd_soc_component *component = snd_soc_kcontrol_component(kcontrol);
-+	struct wsa883x_priv *wsa883x = snd_soc_component_get_drvdata(component);
-+
-+	if (wsa883x->comp_offset == ucontrol->value.integer.value[0])
-+		return 0;
-+
-+	wsa883x->comp_offset = ucontrol->value.integer.value[0];
-+
-+	return 1;
-+}
-+
- static int wsa883x_codec_probe(struct snd_soc_component *comp)
- {
- 	struct wsa883x_priv *wsa883x = snd_soc_component_get_drvdata(comp);
-@@ -1075,9 +1176,108 @@ static int wsa883x_codec_probe(struct snd_soc_component *comp)
- 	return 0;
- }
- 
-+static int wsa883x_spkr_event(struct snd_soc_dapm_widget *w,
-+			      struct snd_kcontrol *kcontrol, int event)
-+{
-+	struct snd_soc_component *component = snd_soc_dapm_to_component(w->dapm);
-+	struct wsa883x_priv *wsa883x = snd_soc_component_get_drvdata(component);
-+
-+	switch (event) {
-+	case SND_SOC_DAPM_POST_PMU:
-+		switch (wsa883x->dev_mode) {
-+		case RECEIVER:
-+			snd_soc_component_write_field(component, WSA883X_CDC_PATH_MODE,
-+						      WSA883X_RXD_MODE_MASK,
-+						      WSA883X_RXD_MODE_HIFI);
-+			snd_soc_component_write_field(component, WSA883X_SPKR_PWM_CLK_CTL,
-+						      WSA883X_SPKR_PWM_FREQ_SEL_MASK,
-+						      WSA883X_SPKR_PWM_FREQ_F600KHZ);
-+			snd_soc_component_write_field(component, WSA883X_DRE_CTL_0,
-+						       WSA883X_DRE_PROG_DELAY_MASK, 0x0);
-+			break;
-+		case SPEAKER:
-+			snd_soc_component_write_field(component, WSA883X_CDC_PATH_MODE,
-+						      WSA883X_RXD_MODE_MASK,
-+						      WSA883X_RXD_MODE_NORMAL);
-+			snd_soc_component_write_field(component, WSA883X_SPKR_PWM_CLK_CTL,
-+						      WSA883X_SPKR_PWM_FREQ_SEL_MASK,
-+						      WSA883X_SPKR_PWM_FREQ_F300KHZ);
-+			snd_soc_component_write_field(component, WSA883X_DRE_CTL_0,
-+						       WSA883X_DRE_PROG_DELAY_MASK, 0x9);
-+		default:
-+			break;
-+		}
-+
-+		snd_soc_component_write_field(component, WSA883X_DRE_CTL_1,
-+					      WSA883X_DRE_GAIN_EN_MASK,
-+					      WSA883X_DRE_GAIN_FROM_CSR);
-+		if (wsa883x->port_enable[WSA883X_PORT_COMP])
-+			snd_soc_component_write_field(component, WSA883X_DRE_CTL_0,
-+						      WSA883X_DRE_OFFSET_MASK,
-+						      wsa883x->comp_offset);
-+		snd_soc_component_write_field(component, WSA883X_VBAT_ADC_FLT_CTL,
-+					      WSA883X_VBAT_ADC_COEF_SEL_MASK,
-+					      WSA883X_VBAT_ADC_COEF_F_1DIV16);
-+		snd_soc_component_write_field(component, WSA883X_VBAT_ADC_FLT_CTL,
-+					      WSA883X_VBAT_ADC_FLT_EN_MASK, 0x1);
-+		snd_soc_component_write_field(component, WSA883X_PDM_WD_CTL,
-+					      WSA883X_PDM_EN_MASK,
-+					      WSA883X_PDM_ENABLE);
-+		snd_soc_component_write_field(component, WSA883X_PA_FSM_CTL,
-+					      WSA883X_GLOBAL_PA_EN_MASK,
-+					      WSA883X_GLOBAL_PA_ENABLE);
-+
-+		break;
-+	case SND_SOC_DAPM_PRE_PMD:
-+		snd_soc_component_write_field(component, WSA883X_VBAT_ADC_FLT_CTL,
-+					      WSA883X_VBAT_ADC_FLT_EN_MASK, 0x0);
-+		snd_soc_component_write_field(component, WSA883X_VBAT_ADC_FLT_CTL,
-+					      WSA883X_VBAT_ADC_COEF_SEL_MASK,
-+					      WSA883X_VBAT_ADC_COEF_F_1DIV2);
-+		snd_soc_component_write_field(component, WSA883X_PA_FSM_CTL,
-+					      WSA883X_GLOBAL_PA_EN_MASK, 0);
-+		snd_soc_component_write_field(component, WSA883X_PDM_WD_CTL,
-+					      WSA883X_PDM_EN_MASK, 0);
-+		break;
-+	}
-+	return 0;
-+}
-+
-+static const struct snd_soc_dapm_widget wsa883x_dapm_widgets[] = {
-+	SND_SOC_DAPM_INPUT("IN"),
-+	SND_SOC_DAPM_SPK("SPKR", wsa883x_spkr_event),
-+};
-+
-+static const struct snd_kcontrol_new wsa883x_snd_controls[] = {
-+	SOC_SINGLE_RANGE_TLV("PA Volume", WSA883X_DRE_CTL_1, 1,
-+			     0x0, 0x1f, 1, pa_gain),
-+	SOC_ENUM_EXT("WSA MODE", wsa_dev_mode_enum,
-+		     wsa_dev_mode_get, wsa_dev_mode_put),
-+	SOC_SINGLE_EXT("COMP Offset", SND_SOC_NOPM, 0, 4, 0,
-+		       wsa883x_get_comp_offset, wsa883x_set_comp_offset),
-+	SOC_SINGLE_EXT("DAC Switch", WSA883X_PORT_DAC, 0, 1, 0,
-+		       wsa883x_get_swr_port, wsa883x_set_swr_port),
-+	SOC_SINGLE_EXT("COMP Switch", WSA883X_PORT_COMP, 0, 1, 0,
-+		       wsa883x_get_swr_port, wsa883x_set_swr_port),
-+	SOC_SINGLE_EXT("BOOST Switch", WSA883X_PORT_BOOST, 0, 1, 0,
-+		       wsa883x_get_swr_port, wsa883x_set_swr_port),
-+	SOC_SINGLE_EXT("VISENSE Switch", WSA883X_PORT_VISENSE, 0, 1, 0,
-+		       wsa883x_get_swr_port, wsa883x_set_swr_port),
-+};
-+
-+static const struct snd_soc_dapm_route wsa883x_audio_map[] = {
-+	{"SPKR", NULL, "IN"},
-+};
-+
- static const struct snd_soc_component_driver wsa883x_component_drv = {
- 	.name = "WSA883x",
- 	.probe = wsa883x_codec_probe,
-+	.controls = wsa883x_snd_controls,
-+	.num_controls = ARRAY_SIZE(wsa883x_snd_controls),
-+	.dapm_widgets = wsa883x_dapm_widgets,
-+	.num_dapm_widgets = ARRAY_SIZE(wsa883x_dapm_widgets),
-+	.dapm_routes = wsa883x_audio_map,
-+	.num_dapm_routes = ARRAY_SIZE(wsa883x_audio_map),
- };
- 
- static int wsa883x_hw_params(struct snd_pcm_substream *substream,
--- 
-2.25.1
+Thanks!
 
+[1/4] ASoC: tas2764: Add post reset delays
+      commit: 4aeb04227eb4d5de83343cfbad00433019ccfdf5
+[2/4] ASoC: tas2764: Fix and extend FSYNC polarity handling
+      commit: a1b2cfda5616ddccd54fa10b9e72932b3f3bce8b
+[3/4] ASoC: tas2764: Correct playback volume range
+      commit: aea21dbec799d63393b615b73e4708a5d036df99
+[4/4] ASoC: tas2764: Fix amp gain register offset & default
+      commit: cabcd219cee142a0f55516d2e257c8833cbd14f6
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
