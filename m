@@ -4,73 +4,79 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5DD5CC43334
-	for <alsa-devel@archiver.kernel.org>; Thu, 30 Jun 2022 11:11:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6ED13C43334
+	for <alsa-devel@archiver.kernel.org>; Thu, 30 Jun 2022 11:13:00 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E0AD716A4;
-	Thu, 30 Jun 2022 13:10:52 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E0AD716A4
+	by alsa0.perex.cz (Postfix) with ESMTPS id 088CC16BF;
+	Thu, 30 Jun 2022 13:12:08 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 088CC16BF
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1656587503;
-	bh=Ocbgb/7jtbPf5c7P3Qu4IS2stjMJzDoFkyyY73hHr2Q=;
+	s=default; t=1656587578;
+	bh=gY2GwuIoEENdxG1SB1lnnV49S2t2kuQ/2lN1uJIHe7o=;
 	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=gCFZmuTmKcv6/i3agbYKoF9oMBVt5ikz6HTXocM5W9W0NMltu1eC0l4pIScA/D7nA
-	 nZadKkOJKCskgPgCCENQKQ16n/L8B9+1lrS1axppMqHeeTend7RnDaB0h1J33tinl8
-	 ketgfNiGKUzktqMBMIAjjNcrjNkc+C25tiXVCBTY=
+	b=CaXCJoQ1oPe8y/7Doi9JQm55fg5+9dM3314LrVqIPhQDJe0eP3KVqHCQZTUn9BKQw
+	 /t6vuDI0tjdmXDwsh7qIJHHa1tzq2E1rr4ZwfiB8ioBVgOHYuwJJyNOnzhvbC2niuT
+	 n35hdSuiDujlPxzVEgag9JwNfNwUbmUR7Ey7NChU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 7BD5EF804D2;
-	Thu, 30 Jun 2022 13:10:52 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id AAFD7F804D2;
+	Thu, 30 Jun 2022 13:12:07 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 69AFAF804D8; Thu, 30 Jun 2022 13:10:51 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org
- [IPv6:2604:1380:4641:c500::1])
+ id 17745F804D8; Thu, 30 Jun 2022 13:12:01 +0200 (CEST)
+Received: from ams.source.kernel.org (ams.source.kernel.org
+ [IPv6:2604:1380:4601:e00::1])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 08D7FF8014E
- for <alsa-devel@alsa-project.org>; Thu, 30 Jun 2022 13:10:44 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 08D7FF8014E
+ by alsa1.perex.cz (Postfix) with ESMTPS id A16B3F80107
+ for <alsa-devel@alsa-project.org>; Thu, 30 Jun 2022 13:11:58 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A16B3F80107
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="KwZCxI1Q"
+ header.b="fVrcb0+6"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id 43436622AC;
- Thu, 30 Jun 2022 11:10:42 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 229ECC34115;
- Thu, 30 Jun 2022 11:10:38 +0000 (UTC)
+ by ams.source.kernel.org (Postfix) with ESMTPS id C951FB82A2A;
+ Thu, 30 Jun 2022 11:11:57 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E5634C34115;
+ Thu, 30 Jun 2022 11:11:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1656587441;
- bh=Ocbgb/7jtbPf5c7P3Qu4IS2stjMJzDoFkyyY73hHr2Q=;
+ s=k20201202; t=1656587516;
+ bh=gY2GwuIoEENdxG1SB1lnnV49S2t2kuQ/2lN1uJIHe7o=;
  h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=KwZCxI1QdcIf76JP3BhOMJdxLR4B6uWo/VApAlYCAbryYteKxpiJDv8mks3WPbn/t
- PN0nmyRcKqUNvQWLX0i4UeGSFYMJg/aJRPtIItPf5ZbGJFlTgo921PPtaBAkcMOfwS
- EAviKJu/LaVJQnqEAMkfWG8YsiYjdWOBiCPVkp3jUSN7a/BNoE2dxQcvi6boI8iEE1
- kG+kDnIwIwvKk2KA7/GI7v7uXdSJUVryiLAvAUno8r+dGCAjnpQrQrIbdvT7znkem2
- wtbsma0gtl/xN3EfCxjcGT59nTF9hSZ+cjUmMY3rJQ3yjQ16RK16uPcLGCXgC6hRkT
- fUVm+4Tup/Uiw==
-Date: Thu, 30 Jun 2022 12:10:35 +0100
+ b=fVrcb0+6182VKbB5+5bvi1s47yAwFfK8wb6zyFp/VYh39jS8CJX26v7VDJPXvmt6m
+ Sq2aO1HVesfnXCRoOn7xIDqeid4zMoKig2AFowAiyxupDRcEhytjTmgOOHIFxtLXlw
+ WnQGX/rMorDO05WZfM2GdvgCHMyaE58VmvJkvF/xcXat99lPVXYetwLQ6IeXcy6B6f
+ JUK0/znx1WjGYVUCDVrm+wdH0I0gZjJYAJ33E/C25y9dFkfwom6jJpMDF2fXuNb3lL
+ IRkA55V7usztN7WA1+/7khpvE/IZDERTGKcml1CeNR8YLLfUFjZrTIDolXBotPH1oW
+ I7lLsShPC8ArA==
+Date: Thu, 30 Jun 2022 12:11:49 +0100
 From: Mark Brown <broonie@kernel.org>
 To: Vijendar Mukunda <Vijendar.Mukunda@amd.com>
-Subject: Re: [PATCH 4/5] ASoC: amd: add Machine driver for Jadeite platform
-Message-ID: <Yr2Eq0BUmi6mZsRY@sirena.org.uk>
+Subject: Re: [PATCH 5/5] ASoC: amd: enable machine driver build for Jadeite
+ platform
+Message-ID: <Yr2E9SQCtk1u6V+i@sirena.org.uk>
 References: <20220630031755.1055413-1-Vijendar.Mukunda@amd.com>
- <20220630031755.1055413-5-Vijendar.Mukunda@amd.com>
+ <20220630031755.1055413-6-Vijendar.Mukunda@amd.com>
 MIME-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature"; boundary="VaXjt56hsiVkurul"
+ protocol="application/pgp-signature"; boundary="KL9cDJfR2Dto7H+U"
 Content-Disposition: inline
-In-Reply-To: <20220630031755.1055413-5-Vijendar.Mukunda@amd.com>
+In-Reply-To: <20220630031755.1055413-6-Vijendar.Mukunda@amd.com>
 X-Cookie: Today is what happened to yesterday.
-Cc: alsa-devel@alsa-project.org, Sunil-kumar.Dommati@amd.com,
+Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ alsa-devel@alsa-project.org, Sunil-kumar.Dommati@amd.com,
+ Lucas Tanure <tanureal@opensource.cirrus.com>,
+ Ajit Kumar Pandey <AjitKumar.Pandey@amd.com>,
  open list <linux-kernel@vger.kernel.org>, Basavaraj.Hiregoudar@amd.com,
  Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>,
  amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
- Alexander.Deucher@amd.com, zhuning@everest-semi.com
+ Alexander.Deucher@amd.com, zhuning@everest-semi.com,
+ Julian Braha <julianbraha@gmail.com>, Daniel Baluta <daniel.baluta@nxp.com>,
+ Kai Vehmanen <kai.vehmanen@linux.intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -87,51 +93,30 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
---VaXjt56hsiVkurul
+--KL9cDJfR2Dto7H+U
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Thu, Jun 30, 2022 at 08:47:54AM +0530, Vijendar Mukunda wrote:
+On Thu, Jun 30, 2022 at 08:47:55AM +0530, Vijendar Mukunda wrote:
 
-> +static int st_es8336_hw_params(struct snd_pcm_substream *substream,
-> +			       struct snd_pcm_hw_params *params)
-> +{
-> +	int ret = 0;
-> +	struct snd_soc_pcm_runtime *rtd = asoc_substream_to_rtd(substream);
-> +	struct snd_soc_dai *codec_dai = asoc_rtd_to_codec(rtd, 0);
-> +
-> +	ret = snd_soc_dai_set_sysclk(codec_dai, 0, params_rate(params) * 256, SND_SOC_CLOCK_IN);
-> +	if (ret < 0) {
-> +		dev_err(rtd->dev, "can't set codec sysclk: %d\n", ret);
-> +		return ret;
-> +	}
-> +	return ret;
-> +}
+> +	depends on SND_SOC_AMD_ACP && I2C && ACPI
 
-> +static const unsigned int st_channels[] = {
-> +	DUAL_CHANNEL,
-> +};
-> +
-> +static const unsigned int st_rates[] = {
-> +	48000,
-> +};
+The code treated ACPI as optional so you could relax the ACPI dependency
+ot be "ACPI || COMPILE_TEST" (I think the same applies to I2C).
 
-If the clock rate is fixed why not just set the sysclk once at startup
-too?
-
---VaXjt56hsiVkurul
+--KL9cDJfR2Dto7H+U
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmK9hKoACgkQJNaLcl1U
-h9D6iQf/cdNWEk90vyAVgMDGpqVrhhgGkycVyqRydGaLYCrCQXsnLdtPqtSpQCyB
-doEqq9MwQGoj/8uz5i/0althh56A2dV2L6k/81LuXbX685XrtdvosvEv9m37y+ru
-ZebtRcmQ668WOgeLYHmthArmVUwjPmUtcOkZ1K7dibKXWm7Elhv0kkXZLTM+UyQs
-MoFY3kjXWMu3vEm+ZTogS+YhilD8EE5Vl3pvGJKZ8NKJxDMrXQbNlO5XMkY+9IaR
-O1U0u8iVoirNM0GWyHbVCwqOPQCIbhqc2g89N1teq8Qs+1WTf8MRAfuo1gnGfbrg
-c0/bwEED3n4t0Rgqqhau7Dq1qPLViA==
-=9h7K
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmK9hPQACgkQJNaLcl1U
+h9Dsnwf/ceuWdmQ1YUNUCt6hr1dWc8w8GCz8hT5Wl9l1lyRROuKUldbDQWBk2+Ye
+7cCxrDYlIRL09GtZbdu+Ct5uWqDgBEZ6K6RT4eDMrYVTlpRbKe8uCBSQem7NXmqD
+jfIU9Z5b1gpqJsSWuFRY3I48SjN5UM6NclGCfUPv+XMr3QWw6jcSzIAvReP/GX/r
+3VczbScE+g1wZ2jIzEjAkiIdK53sb2+C0Z4PmrI0B4KvLvCSZOXFLIlydLtsTnsG
+OZRUjPW2Lb7mxEksPzmMuUAMQ3bwd4iHK6rqcw1WZ9VvLXJwBcP55U8blR/bNlVE
+MvRRSDyctG4b+sAJy5gA+gwjPQYjOg==
+=Eu76
 -----END PGP SIGNATURE-----
 
---VaXjt56hsiVkurul--
+--KL9cDJfR2Dto7H+U--
