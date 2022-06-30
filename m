@@ -4,83 +4,125 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A4A4EC433EF
-	for <alsa-devel@archiver.kernel.org>; Thu, 30 Jun 2022 00:28:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 99FF4C433EF
+	for <alsa-devel@archiver.kernel.org>; Thu, 30 Jun 2022 03:19:20 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B1F4516E8;
-	Thu, 30 Jun 2022 02:27:49 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B1F4516E8
+	by alsa0.perex.cz (Postfix) with ESMTPS id BFAFF16B3;
+	Thu, 30 Jun 2022 05:18:27 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BFAFF16B3
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1656548919;
-	bh=KGtrlUP72mYuw+Fx0tqqiuiQ7HRQm6+mb/vU/YpFYvs=;
+	s=default; t=1656559157;
+	bh=jc//w8rK9SzkxI6XxOVuEn6YDSvQM2TA0rlByecrjAw=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Z8Ets532tmCIoZB8UGc96PRqLSVUllAT5lhNdCDhwAM0LdVWbhMuTzbo54BXIRH8q
-	 MO4dotcvvEzOayzJ3Uez6XUpB7OvIbjfcdKGaitXx4ph1SyQ+SvjoFt4aiK/eu9mvL
-	 CGr7sYrISeVvwkptSjBRHQX7s1gJJ/TveJLoOtws=
+	b=h+ps81eXuAX9cPGr+RI1gJzRrMBDSqJ7UyAWAkj6cC/ecb8UD49JdwC3JAxCPIDCD
+	 GRNLwzNjBWzE+HmLE2pP88zW0YNkBnaSIR0W9rxbEb9PYiS5oSAhprDXQ2Vn4/eaxV
+	 WzGB54TmV3OMiv6jZJJMIvpqB2snc3LHbC+xlQvg=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 1176EF805BF;
-	Thu, 30 Jun 2022 02:24:19 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 3BF33F804D2;
+	Thu, 30 Jun 2022 05:18:27 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 2AD7BF8053D; Thu, 30 Jun 2022 02:24:14 +0200 (CEST)
-Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
- [67.231.149.25])
+ id D6E9BF804D8; Thu, 30 Jun 2022 05:18:24 +0200 (CEST)
+Received: from NAM04-BN8-obe.outbound.protection.outlook.com
+ (mail-bn8nam04on2063.outbound.protection.outlook.com [40.107.100.63])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 005ECF80538
- for <alsa-devel@alsa-project.org>; Thu, 30 Jun 2022 02:23:51 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 005ECF80538
+ by alsa1.perex.cz (Postfix) with ESMTPS id C3F53F8014E
+ for <alsa-devel@alsa-project.org>; Thu, 30 Jun 2022 05:18:16 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C3F53F8014E
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com
- header.b="F0gjMhqB"
-Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
- by mx0a-001ae601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 25T7p0Om020678;
- Wed, 29 Jun 2022 19:23:49 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
- h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding : content-type; s=PODMain02222019;
- bh=bgC1NW05jQ3Nsh68nNaiy8M0IFDXvQysq5BODA++ovQ=;
- b=F0gjMhqBQGrdIzsQKQIT/dj12v+kkz2SMytfAdHinyq8bMkgEavdxoFVy4Au9vkOdEfE
- HnVUZlksMoxSS25Dh8u/IB9LAokpOwNuFgSOtB9h/pRqGpsRg6nFeIy48x27c7NKVaQq
- AwN81ltrycI5ifAg+lhBrE20l9EPk+rTC8Vg+VJgXyToHOHud9M3YjMz7ZtOLKtTta8J
- mZJSV2Ucn38KXBA7zoJZepk0XyMXVW7q70t7UvnSTTicryDA15jUWGIdXcvZHOi88gDp
- BGErfiGIz5A3N2DSTdPBa2aKsSU4IPGmHr6I1y0ZH6DCteALS+ikz9dnBkZAtcRrqKHV og== 
-Received: from ediex01.ad.cirrus.com ([84.19.233.68])
- by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3gwys2p9gm-4
- (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
- Wed, 29 Jun 2022 19:23:49 -0500
-Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.28; Thu, 30 Jun
- 2022 01:23:46 +0100
-Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server id 15.1.2375.28 via
- Frontend Transport; Thu, 30 Jun 2022 01:23:46 +0100
-Received: from vitaly-Legion-7-16ACHg6.ad.cirrus.com (unknown [198.90.238.125])
- by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 1C3212D4;
- Thu, 30 Jun 2022 00:23:46 +0000 (UTC)
-From: Vitaly Rodionov <vitalyr@opensource.cirrus.com>
-To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Mark
- Brown <broonie@kernel.org>
-Subject: [PATCH v8 07/14] ALSA: hda: cs35l41: Support multiple load paths for
- firmware
-Date: Thu, 30 Jun 2022 01:23:28 +0100
-Message-ID: <20220630002335.366545-8-vitalyr@opensource.cirrus.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20220630002335.366545-1-vitalyr@opensource.cirrus.com>
-References: <20220630002335.366545-1-vitalyr@opensource.cirrus.com>
+ dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com
+ header.b="N1Qw/3at"
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=ASHV2L2pGU+IOTxMkvyWlH7hX+YzI1Mds7b+CFQ7sXHeuzPz8vts86QOpb4CEfA5whqLwfGEAbUjJGWfQdelRAEHspB6Ml2oj3B2xStZwZ5Fis/c4e5F3l0mCi1aTrHhHDELtM6Hgo7Enalr5eJeplDv5Ksf4gVOj2OPRiSABfHlDgcgVeCkG3d4xBHMZfLyW62FWgzJNSEIAmSlr0BUip1D1SI+TPGmtPdtL870QdHqARPL/yVpFoeP2Orq2FVcMnpEsC1tkZEFp6IdvVRRryc4Y/D78s3mIJgU845NcRiqCRl497kc+2+giAdaxl659HKOsBqba13REeFUuuCtug==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=yDWay7Sj9Pa2Pe+w6/x8ULZbYx0ciSj9DA01e1E9MnM=;
+ b=b5rk3bSJvZYfY8824xgDz1WPrtAxExs3E+EOlNhg3tV/lTmSTbZqDcQXJxHoCOqmJsFB2aWYGKwmxuDgcISzmYVJKiAt7+YWJ9NeR6mQ/D3lL53NlqvBdrIpI/vw6eVJosvKPbeWQ0C7rOxMn1ANnKrnaIga6rrvc6lCB9jYPC8iaPfxY24P9+ADbvumUOMZnf1aSOxTbc633Ag6fXka19sC1RoDgmkmXi20RXEYPsy5zIVx7vR+AQwYmHu4Dqi4UEazCntP/AWkmKqmctC2XgWKTxk7h+WKeNUpCI6masrubCmM/bcH1/zvTLwvk7Y+bga3OgR5WP6ESsmgpdr8gQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 165.204.84.17) smtp.rcpttodomain=kernel.org smtp.mailfrom=amd.com; dmarc=pass
+ (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
+ dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1; 
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=yDWay7Sj9Pa2Pe+w6/x8ULZbYx0ciSj9DA01e1E9MnM=;
+ b=N1Qw/3at8JEN7wDxhoftWyePcEEIp9kzy0utVLTHQDc5t01thg3+QhvzGAnwCl9cblQcv4KhqVvyQSKpxd0OyLcnrrIMvfYzJ/YksmL56QGnyz5aW6gIBHFDWqz3+D3tnv4OMmmD4svij52leFUyTUYy21ui8BW2P1A03qQMyh4=
+Received: from DS7PR03CA0357.namprd03.prod.outlook.com (2603:10b6:8:55::10) by
+ BL0PR12MB2820.namprd12.prod.outlook.com (2603:10b6:208:80::11) with
+ Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.5373.18; Thu, 30 Jun 2022 03:18:12 +0000
+Received: from DM6NAM11FT028.eop-nam11.prod.protection.outlook.com
+ (2603:10b6:8:55:cafe::d) by DS7PR03CA0357.outlook.office365.com
+ (2603:10b6:8:55::10) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5395.14 via Frontend
+ Transport; Thu, 30 Jun 2022 03:18:12 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
+ smtp.mailfrom=amd.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=amd.com;
+Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
+ 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
+ client-ip=165.204.84.17; helo=SATLEXMB03.amd.com; pr=C
+Received: from SATLEXMB03.amd.com (165.204.84.17) by
+ DM6NAM11FT028.mail.protection.outlook.com (10.13.173.140) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.5373.15 via Frontend Transport; Thu, 30 Jun 2022 03:18:12 +0000
+Received: from SATLEXMB07.amd.com (10.181.41.45) by SATLEXMB03.amd.com
+ (10.181.40.144) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.28; Wed, 29 Jun
+ 2022 22:18:11 -0500
+Received: from SATLEXMB03.amd.com (10.181.40.144) by SATLEXMB07.amd.com
+ (10.181.41.45) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.28; Wed, 29 Jun
+ 2022 20:18:11 -0700
+Received: from vijendar-X570-GAMING-X.amd.com (10.180.168.240) by
+ SATLEXMB03.amd.com (10.181.40.144) with Microsoft SMTP Server id 15.1.2375.28
+ via Frontend Transport; Wed, 29 Jun 2022 22:18:01 -0500
+From: Vijendar Mukunda <Vijendar.Mukunda@amd.com>
+To: <broonie@kernel.org>, <alsa-devel@alsa-project.org>,
+ <dri-devel@lists.freedesktop.org>, <amd-gfx@lists.freedesktop.org>
+Subject: [PATCH 1/5] drm/amdgpu: add dmi check for jadeite platform
+Date: Thu, 30 Jun 2022 08:47:51 +0530
+Message-ID: <20220630031755.1055413-2-Vijendar.Mukunda@amd.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20220630031755.1055413-1-Vijendar.Mukunda@amd.com>
+References: <20220630031755.1055413-1-Vijendar.Mukunda@amd.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: cWRrf35gDlG3gInBzfP1pqW600dPknBZ
-X-Proofpoint-GUID: cWRrf35gDlG3gInBzfP1pqW600dPknBZ
-X-Proofpoint-Spam-Reason: safe
-Cc: patches@opensource.cirrus.com, alsa-devel@alsa-project.org,
- linux-kernel@vger.kernel.org, Stefan Binding <sbinding@opensource.cirrus.com>
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 3905070b-4cad-403c-7e34-08da5a472a24
+X-MS-TrafficTypeDiagnostic: BL0PR12MB2820:EE_
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: dDBNfS5C+B4d2wPbGEUFpv4DugqfSEK8BBKmpRuGYDPugJopau8cZOVHITLOP7uEdnSZam8wUydwMBJ9dXgjj7KyBVqkttEe9FaVps6X3wGggVA6AtGIhniPQAeHaN58Kzon5EcnZJ1iuHWsI2mMBfJEvkEgK+ehUeQ9+1zIdFw6UtTBvb0VCHtE+kSmKJQmA1fModX5cMe6kFuSBG1ADnoewwKAvOiMI40iBGcABMASAH3W3CYNVbRS5RVhhmglBpQNxb/ngo2cS17O37x8QDAeZn4w4lW/RazGuTELGcDsTYwt3OmgpaZAgn8lf5tqxWKHQe40NGA1Ey7Zumrg20dNPliepBKARrdpiG9pJTkWoaTe7xklcRI0QG0niHaRDMaGYNBe/owfjhkcUNKTncjqLtlyNO6nzoG+HBlRsJsOCl9m2b56wiP9s+xPMwbBdxHAhaoPfZ63eaypAM0ITJ42mkoeaUEknRXokCHAnOGbfTFvBS3OcHH0niy2kTnCFGNglyLgNQp8EgOCFpYnRusjv0FvR8TMg8/yJskSsVbGdJit1S4DndD5Mh0sJQA1CQFs4PedD3zJPGhQINqrR6QHPc58xuBEHm/x1Wn/oauVqyL9fyZ30d4mbCWvr9og4RbNY3YiIp3iNUJ10uBrZ3HZik0pkdSh4Pz9kOGqMyZoYa1Q6LNvSjjoNtXYGxcFi9BuyHz9KHPIAOvHQ2sPYjx8XoEUBOtBpvv2FikE5YWWzAl/ecMkyNT6GyslgJSvDF4EothDf3FvJ+7yvn3EDORO/pCI5IXGUBDVuVfKDMYS5FOl0QIyp6kQkfN/YUQPtKbHrDjOZ04QJT5fiLkM9NKltW+2a6i7uesVneNt/QE=
+X-Forefront-Antispam-Report: CIP:165.204.84.17; CTRY:US; LANG:en; SCL:1; SRV:;
+ IPV:CAL; SFV:NSPM; H:SATLEXMB03.amd.com; PTR:InfoDomainNonexistent; CAT:NONE;
+ SFS:(13230016)(4636009)(346002)(396003)(136003)(376002)(39860400002)(40470700004)(36840700001)(46966006)(5660300002)(36756003)(41300700001)(2616005)(8936002)(86362001)(54906003)(1076003)(83380400001)(316002)(40480700001)(40460700003)(36860700001)(356005)(478600001)(82740400003)(47076005)(426003)(6666004)(186003)(7696005)(336012)(2906002)(8676002)(70206006)(110136005)(4326008)(70586007)(81166007)(26005)(82310400005)(36900700001);
+ DIR:OUT; SFP:1101; 
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Jun 2022 03:18:12.1621 (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 3905070b-4cad-403c-7e34-08da5a472a24
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d; Ip=[165.204.84.17];
+ Helo=[SATLEXMB03.amd.com]
+X-MS-Exchange-CrossTenant-AuthSource: DM6NAM11FT028.eop-nam11.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL0PR12MB2820
+Cc: Sunil-kumar.Dommati@amd.com, David Airlie <airlied@linux.ie>,
+ Basavaraj.Hiregoudar@amd.com, "Pan, Xinhui" <Xinhui.Pan@amd.com>,
+ open list <linux-kernel@vger.kernel.org>,
+ Kai-Heng Feng <kai.heng.feng@canonical.com>, Daniel Vetter <daniel@ffwll.ch>,
+ Vijendar Mukunda <Vijendar.Mukunda@amd.com>,
+ Alex Deucher <alexander.deucher@amd.com>, zhuning@everest-semi.com,
+ =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -96,104 +138,84 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Stefan Binding <sbinding@opensource.cirrus.com>
+DMI check is required to distinguish Jadeite platform from
+Stoney base variant.
+Add DMI check logic for Jadeite platform.
 
-To be able to support different firmwares and tuning
-for different models, the driver needs to be able to
-load a different firmware and coefficient file based
-on its Subsystem ID.
-
-The driver attempts to load the firmware in the
-following order:
-
-/lib/firmware/cirrus/cs35l41-dsp1-<fw-type>-<ssid>-dev<#>.wmfw
-/lib/firmware/cirrus/cs35l41-dsp1-<fw-type>-<ssid>.wmfw
-/lib/firmware/cirrus/cs35l41-dsp1-<fw-type>.wmfw
-
-Signed-off-by: Stefan Binding <sbinding@opensource.cirrus.com>
-Signed-off-by: Vitaly Rodionov <vitalyr@opensource.cirrus.com>
+Signed-off-by: Vijendar Mukunda <Vijendar.Mukunda@amd.com>
+Acked-by: Alex Deucher <alexander.deucher@amd.com>
 ---
- sound/pci/hda/cs35l41_hda.c | 52 ++++++++++++++++++++++++++++++++-----
- 1 file changed, 46 insertions(+), 6 deletions(-)
+ drivers/gpu/drm/amd/amdgpu/amdgpu_acp.c | 36 +++++++++++++++++++++++++
+ 1 file changed, 36 insertions(+)
 
-diff --git a/sound/pci/hda/cs35l41_hda.c b/sound/pci/hda/cs35l41_hda.c
-index 2af3bb5ea1fb..b3561d72df2a 100644
---- a/sound/pci/hda/cs35l41_hda.c
-+++ b/sound/pci/hda/cs35l41_hda.c
-@@ -85,14 +85,23 @@ static const struct cs_dsp_client_ops client_ops = {
+diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_acp.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_acp.c
+index ba1605ff521f..af7b42056a89 100644
+--- a/drivers/gpu/drm/amd/amdgpu/amdgpu_acp.c
++++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_acp.c
+@@ -29,6 +29,8 @@
+ #include <linux/platform_device.h>
+ #include <sound/designware_i2s.h>
+ #include <sound/pcm.h>
++#include <linux/acpi.h>
++#include <linux/dmi.h>
  
- static int cs35l41_request_firmware_file(struct cs35l41_hda *cs35l41,
- 					 const struct firmware **firmware, char **filename,
--					 const char *dir, const char *filetype)
-+					 const char *dir, const char *ssid, const char *amp_name,
-+					 const char *filetype)
- {
- 	const char * const dsp_name = cs35l41->cs_dsp.name;
- 	char *s, c;
- 	int ret = 0;
+ #include "amdgpu.h"
+ #include "atom.h"
+@@ -36,6 +38,7 @@
  
--	*filename = kasprintf(GFP_KERNEL, "%s%s-%s-%s.%s", dir, CS35L41_PART, dsp_name, "spk-prot",
--			      filetype);
-+	if (ssid && amp_name)
-+		*filename = kasprintf(GFP_KERNEL, "%s%s-%s-%s-%s-%s.%s", dir, CS35L41_PART,
-+				      dsp_name, "spk-prot", ssid, amp_name,
-+				      filetype);
-+	else if (ssid)
-+		*filename = kasprintf(GFP_KERNEL, "%s%s-%s-%s-%s.%s", dir, CS35L41_PART,
-+				      dsp_name, "spk-prot", ssid, filetype);
-+	else
-+		*filename = kasprintf(GFP_KERNEL, "%s%s-%s-%s.%s", dir, CS35L41_PART,
-+				      dsp_name, "spk-prot", filetype);
+ #include "acp_gfx_if.h"
  
- 	if (*filename == NULL)
- 		return -ENOMEM;
-@@ -129,12 +138,43 @@ static int cs35l41_request_firmware_files(struct cs35l41_hda *cs35l41,
- {
- 	int ret;
++#define ST_JADEITE 1
+ #define ACP_TILE_ON_MASK			0x03
+ #define ACP_TILE_OFF_MASK			0x02
+ #define ACP_TILE_ON_RETAIN_REG_MASK		0x1f
+@@ -85,6 +88,8 @@
+ #define ACP_DEVS				4
+ #define ACP_SRC_ID				162
  
--	/* cirrus/part-dspN-fwtype.wmfw */
-+	/* try cirrus/part-dspN-fwtype-sub<-ampname>.wmfw */
-+	ret = cs35l41_request_firmware_file(cs35l41, wmfw_firmware, wmfw_filename,
-+					    CS35L41_FIRMWARE_ROOT, cs35l41->acpi_subsystem_id,
-+					    cs35l41->amp_name, "wmfw");
-+	if (!ret) {
-+		/* try cirrus/part-dspN-fwtype-sub<-ampname>.bin */
-+		cs35l41_request_firmware_file(cs35l41, coeff_firmware, coeff_filename,
-+					      CS35L41_FIRMWARE_ROOT, cs35l41->acpi_subsystem_id,
-+					      cs35l41->amp_name, "bin");
-+		return 0;
-+	}
++static unsigned long acp_machine_id;
 +
-+	/* try cirrus/part-dspN-fwtype-sub.wmfw */
-+	ret = cs35l41_request_firmware_file(cs35l41, wmfw_firmware, wmfw_filename,
-+					    CS35L41_FIRMWARE_ROOT, cs35l41->acpi_subsystem_id,
-+					    NULL, "wmfw");
-+	if (!ret) {
-+		/* try cirrus/part-dspN-fwtype-sub<-ampname>.bin */
-+		ret = cs35l41_request_firmware_file(cs35l41, coeff_firmware, coeff_filename,
-+						    CS35L41_FIRMWARE_ROOT,
-+						    cs35l41->acpi_subsystem_id,
-+						    cs35l41->amp_name, "bin");
-+		if (ret)
-+			/* try cirrus/part-dspN-fwtype-sub.bin */
-+			cs35l41_request_firmware_file(cs35l41, coeff_firmware, coeff_filename,
-+						      CS35L41_FIRMWARE_ROOT,
-+						      cs35l41->acpi_subsystem_id, NULL, "bin");
-+		return 0;
-+	}
-+
-+	/* fallback try cirrus/part-dspN-fwtype.wmfw */
- 	ret = cs35l41_request_firmware_file(cs35l41, wmfw_firmware, wmfw_filename,
--					    CS35L41_FIRMWARE_ROOT, "wmfw");
-+					    CS35L41_FIRMWARE_ROOT, NULL, NULL, "wmfw");
- 	if (!ret) {
-+		/* fallback try cirrus/part-dspN-fwtype.bin */
- 		cs35l41_request_firmware_file(cs35l41, coeff_firmware, coeff_filename,
--					      CS35L41_FIRMWARE_ROOT, "bin");
-+					      CS35L41_FIRMWARE_ROOT, NULL, NULL, "bin");
- 		return 0;
- 	}
+ enum {
+ 	ACP_TILE_P1 = 0,
+ 	ACP_TILE_P2,
+@@ -184,6 +189,37 @@ static int acp_genpd_remove_device(struct device *dev, void *data)
+ 	return 0;
+ }
  
++static int acp_quirk_cb(const struct dmi_system_id *id)
++{
++	acp_machine_id = ST_JADEITE;
++	return 1;
++}
++
++static const struct dmi_system_id acp_quirk_table[] = {
++	{
++		.callback = acp_quirk_cb,
++		.matches = {
++			DMI_EXACT_MATCH(DMI_BOARD_VENDOR, "AMD"),
++			DMI_EXACT_MATCH(DMI_PRODUCT_NAME, "Jadeite"),
++		}
++	},
++	{
++		.callback = acp_quirk_cb,
++		.matches = {
++			DMI_EXACT_MATCH(DMI_BOARD_VENDOR, "IP3 Technology CO.,Ltd."),
++			DMI_EXACT_MATCH(DMI_PRODUCT_NAME, "ASN1D"),
++		},
++	},
++	{
++		.callback = acp_quirk_cb,
++		.matches = {
++			DMI_EXACT_MATCH(DMI_BOARD_VENDOR, "Standard"),
++			DMI_EXACT_MATCH(DMI_PRODUCT_NAME, "ASN10"),
++		},
++	},
++	{}
++};
++
+ /**
+  * acp_hw_init - start and test ACP block
+  *
 -- 
-2.34.1
+2.25.1
 
