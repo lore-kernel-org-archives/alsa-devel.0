@@ -4,49 +4,49 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B2446C433EF
-	for <alsa-devel@archiver.kernel.org>; Thu, 30 Jun 2022 07:53:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 31880C43334
+	for <alsa-devel@archiver.kernel.org>; Thu, 30 Jun 2022 07:53:42 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id DB05116DE;
-	Thu, 30 Jun 2022 09:52:47 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DB05116DE
+	by alsa0.perex.cz (Postfix) with ESMTPS id 49C2716E5;
+	Thu, 30 Jun 2022 09:52:50 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 49C2716E5
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1656575617;
-	bh=Acf3pP6gW10YlggtvMFBRzYNaBaupVS6FCVuuj85+94=;
+	s=default; t=1656575620;
+	bh=8JZ//cAozqguvTAS4ocX7wB+WxZrfQKVO197wccRRsk=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=qNsvjvQja+d6qBwUuGhJnE6bqjz0ufVkPlx2F+myUyOfFEy3kpk6n9Yqet5ptbNar
-	 NVU+OuQU9PhH74y5tmaufo0Kpp6AzSCxsd0ZnlUTTsKhKgDigTzeesMlFb0b7h6Imz
-	 csD2iYrTzQ4jwa1RPuP2aDr9VS4D8o4tVlS5U1v4=
+	b=Obdwv4+sA4uaYvCI86OLnUMqa/Q67E9I4+RSvLcwmHJVHkUyn/tL89TI7JV87Y6gb
+	 VRghZQlNDR4TISTCyc99yr6QP9hesC4VAcoF+3ZvI+h2Kx8L1SjBnMvWwFssgtfmEb
+	 QBhS3TPRV/icvGWwfbrlaG7nR1gvSA5FJQb3+8jE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 785BFF8053C;
-	Thu, 30 Jun 2022 09:52:03 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 5747AF80543;
+	Thu, 30 Jun 2022 09:52:06 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 70B08F8053D; Thu, 30 Jun 2022 09:52:00 +0200 (CEST)
-Received: from hutie.ust.cz (hutie.ust.cz [185.8.165.127])
+ id 215C7F80543; Thu, 30 Jun 2022 09:52:05 +0200 (CEST)
+Received: from hutie.ust.cz (unknown [IPv6:2a03:3b40:fe:f0::1])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 71F0DF80107
+ by alsa1.perex.cz (Postfix) with ESMTPS id 11D4BF804D8
  for <alsa-devel@alsa-project.org>; Thu, 30 Jun 2022 09:51:49 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 71F0DF80107
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 11D4BF804D8
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=cutebit.org header.i=@cutebit.org
- header.b="ql8u+nWq"
+ header.b="tHJ3vlEI"
 From: =?UTF-8?q?Martin=20Povi=C5=A1er?= <povik+lin@cutebit.org>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cutebit.org; s=mail;
- t=1656575508; bh=rRoN50bSZ9LjLmVhKTMCvwft+rCdKdFeTqH/6EpOtBY=;
+ t=1656575508; bh=YlXFx0zlqrnvjrP9hA3MXWg06tFvtQmgApZDlwHB8iU=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References;
- b=ql8u+nWqq5kjW7gVW/uuylUM6MGYX2NxpAB79e3Pb4yzVmiYelMJ7A0plzO6q7foR
- aa3ifLUMDXLgE5uDzPZkehT/48vQigGGHZ0gc9ZA3zmtBv/HtwrNgFRPt1gMr/CNqH
- yhlxUCT2WK8v0vLL/r/zSTmCQyHXn9xXINECwJp0=
+ b=tHJ3vlEIy057XjeSJuhaHCxq4EZ9UofyFB9CmXYzGhR/cZKebU5Ky5tpOJvdOJU23
+ NTJLbXLBwf1y9MRxdHbS8b6fxyv19s0G1wZyHf42KdVCICs7F//lzXcaaRjrB9a3VK
+ rvVuNAATM6caBIQkzFsQtbTyMxLSC5vtZaL17ZmU=
 To: Liam Girdwood <lgirdwood@gmail.com>,
 	Mark Brown <broonie@kernel.org>
-Subject: [PATCH 4/4] ASoC: tas2764: Fix amp gain register offset & default
-Date: Thu, 30 Jun 2022 09:51:35 +0200
-Message-Id: <20220630075135.2221-4-povik+lin@cutebit.org>
+Subject: [PATCH 3/4] ASoC: tas2764: Correct playback volume range
+Date: Thu, 30 Jun 2022 09:51:34 +0200
+Message-Id: <20220630075135.2221-3-povik+lin@cutebit.org>
 In-Reply-To: <20220630075135.2221-1-povik+lin@cutebit.org>
 References: <20220630075135.2221-1-povik+lin@cutebit.org>
 MIME-Version: 1.0
@@ -74,40 +74,31 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 From: Hector Martin <marcan@marcan.st>
 
-The register default is 0x28 per the datasheet, and the amp gain field
-is supposed to be shifted left by one. With the wrong default, the ALSA
-controls lie about the power-up state. With the wrong shift, we get only
-half the gain we expect.
+DVC value 0xc8 is -100dB and 0xc9 is mute; this needs to map to
+-100.5dB as far as the dB scale is concerned. Fix that and enable
+the mute flag, so alsamixer correctly shows the control as
+<0 dB .. -100 dB, mute>.
 
 Signed-off-by: Hector Martin <marcan@marcan.st>
 Fixes: 827ed8a0fa50 ("ASoC: tas2764: Add the driver for the TAS2764")
 Signed-off-by: Martin Povišer <povik+lin@cutebit.org>
 ---
- sound/soc/codecs/tas2764.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ sound/soc/codecs/tas2764.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/sound/soc/codecs/tas2764.c b/sound/soc/codecs/tas2764.c
-index 55da1b3440e1..846d9d3ecc9d 100644
+index 0143a55cd33c..55da1b3440e1 100644
 --- a/sound/soc/codecs/tas2764.c
 +++ b/sound/soc/codecs/tas2764.c
-@@ -541,7 +541,7 @@ static DECLARE_TLV_DB_SCALE(tas2764_playback_volume, -10050, 50, 1);
+@@ -536,7 +536,7 @@ static int tas2764_codec_probe(struct snd_soc_component *component)
+ }
+ 
+ static DECLARE_TLV_DB_SCALE(tas2764_digital_tlv, 1100, 50, 0);
+-static DECLARE_TLV_DB_SCALE(tas2764_playback_volume, -10000, 50, 0);
++static DECLARE_TLV_DB_SCALE(tas2764_playback_volume, -10050, 50, 1);
+ 
  static const struct snd_kcontrol_new tas2764_snd_controls[] = {
  	SOC_SINGLE_TLV("Speaker Volume", TAS2764_DVC, 0,
- 		       TAS2764_DVC_MAX, 1, tas2764_playback_volume),
--	SOC_SINGLE_TLV("Amp Gain Volume", TAS2764_CHNL_0, 0, 0x14, 0,
-+	SOC_SINGLE_TLV("Amp Gain Volume", TAS2764_CHNL_0, 1, 0x14, 0,
- 		       tas2764_digital_tlv),
- };
- 
-@@ -565,7 +565,7 @@ static const struct reg_default tas2764_reg_defaults[] = {
- 	{ TAS2764_SW_RST, 0x00 },
- 	{ TAS2764_PWR_CTRL, 0x1a },
- 	{ TAS2764_DVC, 0x00 },
--	{ TAS2764_CHNL_0, 0x00 },
-+	{ TAS2764_CHNL_0, 0x28 },
- 	{ TAS2764_TDM_CFG0, 0x09 },
- 	{ TAS2764_TDM_CFG1, 0x02 },
- 	{ TAS2764_TDM_CFG2, 0x0a },
 -- 
 2.33.0
 
