@@ -4,74 +4,80 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E0834CCA481
-	for <alsa-devel@archiver.kernel.org>; Thu, 30 Jun 2022 13:48:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0652EC43334
+	for <alsa-devel@archiver.kernel.org>; Thu, 30 Jun 2022 15:02:47 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 933FB165E;
-	Thu, 30 Jun 2022 15:47:45 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 933FB165E
+	by alsa0.perex.cz (Postfix) with ESMTPS id 50FCA16A5;
+	Thu, 30 Jun 2022 17:01:55 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 50FCA16A5
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1656596915;
-	bh=K6USsSMJ8UC9wOjFtx6U82V6WBAGj2etKO7gooeB8dw=;
-	h=Date:Subject:To:References:From:In-Reply-To:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=t5MXHaPsf1t+HaN93Fznwjysd2hzyYbaQejA1NrACBYijTUGtkEeoxhEtz3f6u6uV
-	 VL1mnfbAtD7HqsLaQIiGQyNIUFNhkMQ+9BQjAz2musBIBD9HYuR+SMoul3swxyxs22
-	 RksKDAmF0zVHNuPlM5+VIVIvvLsmpOnM9N7Mbns4=
+	s=default; t=1656601365;
+	bh=XqgGJ6MmzmPKOtqvJyrzF0FBmx0mtrj9NZQAPSLZfko=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=C0sqq62m2gGzAYFvBnvOj2I8B/kZuHmjEvgcmh+Hp6TnWMkgMXHkzBshA/CXnAnV9
+	 hhefty88bEP5aw1CBg97bOipdiK4Tn4FAzDY6ycd6uTtUwAwudUEqxzmfcHAPJJVJ2
+	 4K/lfOMcpwtz0FXtLRTqDYVrbypnnyeKasnfjrcI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 380C3F804D2;
-	Thu, 30 Jun 2022 15:47:45 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id B9103F804DA;
+	Thu, 30 Jun 2022 17:01:54 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 77C05F804D8; Thu, 30 Jun 2022 15:47:43 +0200 (CEST)
-Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
+ id 155E9F804DA; Thu, 30 Jun 2022 17:01:53 +0200 (CEST)
+Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
+ [67.231.152.168])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 3B1F0F800F5
- for <alsa-devel@alsa-project.org>; Thu, 30 Jun 2022 15:47:39 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3B1F0F800F5
+ by alsa1.perex.cz (Postfix) with ESMTPS id E033EF800F5
+ for <alsa-devel@alsa-project.org>; Thu, 30 Jun 2022 17:01:45 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E033EF800F5
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="HjrBNSOy"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
- d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1656596861; x=1688132861;
- h=message-id:date:mime-version:subject:to:cc:references:
- from:in-reply-to:content-transfer-encoding;
- bh=K6USsSMJ8UC9wOjFtx6U82V6WBAGj2etKO7gooeB8dw=;
- b=HjrBNSOyBWAY0CIA3YKV/J+lA3QW2JKNNR7B/RmEiCno2R/MEOHe6s7F
- 8LE0Hx2pqd5x+8GMSif6Wf8OmY7OvtrmL0H7ONblu0qU84eBBHfx6RfR0
- bizFTl8QgEyxjZ7ah2ToiXw6gUPXwz4tRUZIOqgrrsU+PY9jLVRDge7f0
- P+roWMSvgTAFDfsihpwVd8OsM5lhbxAljXb6lOUYNCCTDpK4376G3gheg
- 0RCTA7AwYRLkGFnpRBK/kC3ZtbQachozZhDNhVbZIjBUiuRUZpXFyQyiS
- Gv2SO2yYlflt+SLXBbPbJ+9zonWG2zi5qquxkA4YVeas9q451nKjk7wig w==;
-X-IronPort-AV: E=McAfee;i="6400,9594,10393"; a="283450338"
-X-IronPort-AV: E=Sophos;i="5.92,234,1650956400"; d="scan'208";a="283450338"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
- by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 30 Jun 2022 06:47:37 -0700
-X-IronPort-AV: E=Sophos;i="5.92,234,1650956400"; d="scan'208";a="617980754"
-Received: from jhilliar-mobl.amr.corp.intel.com (HELO [10.212.10.157])
- ([10.212.10.157])
- by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 30 Jun 2022 06:47:36 -0700
-Message-ID: <aee14e9b-9d5f-f243-5834-88d18b4a65db@linux.intel.com>
-Date: Thu, 30 Jun 2022 08:09:39 -0500
+ dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com
+ header.b="Kpsx+2b3"
+Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
+ by mx0b-001ae601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 25UDiqaR003941;
+ Thu, 30 Jun 2022 10:01:42 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
+ h=from : to : cc :
+ subject : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=PODMain02222019;
+ bh=tE00initlptw2sRprEoJ6Mg4Fr4Jr2LI3wz+6oohsnw=;
+ b=Kpsx+2b3g0eZiSfOenerOaJbdmisDNhmsyInogeXFMIQES1CyhEQd2Rozz4AcXSFVYa5
+ QvpJIO4LTKH8puJx0sDZu7/hwEj1vr1HW2eNlKClZh8pg/HiXzdzdlDVk+yh2ln7R2Ah
+ ViNwfJXZ/vfvxfopn1Jmknd+eIFvd5YsfHXCJmi9g+9Q8aeUgZzSl7OKV/J5Z+acVJfk
+ KYse+5GTHvCCk9v+ETioSsh/JUM21gpWmOwxlDjRJpnaqv8DNTIHnewkd6LaUqEceH63
+ CqtBnQNCJr2l5Gd3RwTLadPYN/IDrsVkNFrGcWiL4IWRqmjIaRvVoAY4CS10gzp/q77m 4w== 
+Received: from ediex01.ad.cirrus.com ([84.19.233.68])
+ by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3gwxsq6r1g-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+ Thu, 30 Jun 2022 10:01:41 -0500
+Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.28; Thu, 30 Jun
+ 2022 16:01:40 +0100
+Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server id 15.1.2375.28 via
+ Frontend Transport; Thu, 30 Jun 2022 16:01:40 +0100
+Received: from sbinding-cirrus-dsktp.ad.cirrus.com (unknown [198.90.238.163])
+ by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 573062A9;
+ Thu, 30 Jun 2022 15:01:39 +0000 (UTC)
+From: Stefan Binding <sbinding@opensource.cirrus.com>
+To: "Rafael J . Wysocki" <rafael@kernel.org>, Len Brown <lenb@kernel.org>,
+ Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
+Subject: [PATCH v5 0/2] Read _SUB from ACPI to be able to identify firmware
+Date: Thu, 30 Jun 2022 16:01:33 +0100
+Message-ID: <20220630150135.1799535-1-sbinding@opensource.cirrus.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Firefox/91.0 Thunderbird/91.10.0
-Subject: Re: [PATCH 1/2] ASoC: codecs: wsa881x: handle timeouts in resume path
-Content-Language: en-US
-To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, broonie@kernel.org
-References: <20220630130023.9308-1-srinivas.kandagatla@linaro.org>
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-In-Reply-To: <20220630130023.9308-1-srinivas.kandagatla@linaro.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, tiwai@suse.com,
- lgirdwood@gmail.com
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Proofpoint-GUID: qsewX1yu3afAJzCcZISt3uqbIWxdt7hg
+X-Proofpoint-ORIG-GUID: qsewX1yu3afAJzCcZISt3uqbIWxdt7hg
+X-Proofpoint-Spam-Reason: safe
+Cc: linux-acpi@vger.kernel.org, alsa-devel@alsa-project.org,
+ Stefan Binding <sbinding@opensource.cirrus.com>, linux-kernel@vger.kernel.org,
+ patches@opensource.cirrus.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -87,48 +93,43 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+CS35L41 has a DSP which is able to run firmware, as well as a tuning file.
+Different systems may want to use different firmwares and tuning files, and
+some firmwares/tunings may not be compatible with other systems.
+To allow a system to select the correct fimware/tuning, we can read an _SUB
+from the ACPI. This _SUB can then be used to uniquely identify the system
+in the firmware/tuning file name.
 
+Add a helper function which reads the _SUB, so this can be used by other
+parts in the future.
+Add support inside the CS35L41 ASoC driver to read this _SUB, and save it
+appropriately.
 
-On 6/30/22 08:00, Srinivas Kandagatla wrote:
-> Currently we do not check if SoundWire slave initialization timeout
-> expired before continuing to access its registers.
-> 
-> Its possible that the registers are not accessible if timeout is
-> expired. Handle this by returning timeout in resume path.
-> 
-> Reported-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-> Fixes: 8dd552458361 ("ASoC: codecs: wsa881x: add runtime pm support")
-> Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Changes since v4:
+- Rename function
 
-For the two patches
+Changes since v3:
+- Fix 32 bit format string warning
 
-Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Changes since v2:
+- Fix error in function prototype
 
-> ---
->  sound/soc/codecs/wsa881x.c | 10 ++++++++--
->  1 file changed, 8 insertions(+), 2 deletions(-)
-> 
-> diff --git a/sound/soc/codecs/wsa881x.c b/sound/soc/codecs/wsa881x.c
-> index dc954b85a988..6c8b1db649b8 100644
-> --- a/sound/soc/codecs/wsa881x.c
-> +++ b/sound/soc/codecs/wsa881x.c
-> @@ -1173,11 +1173,17 @@ static int __maybe_unused wsa881x_runtime_resume(struct device *dev)
->  	struct sdw_slave *slave = dev_to_sdw_dev(dev);
->  	struct regmap *regmap = dev_get_regmap(dev, NULL);
->  	struct wsa881x_priv *wsa881x = dev_get_drvdata(dev);
-> +	unsigned long time;
->  
->  	gpiod_direction_output(wsa881x->sd_n, 1);
->  
-> -	wait_for_completion_timeout(&slave->initialization_complete,
-> -				    msecs_to_jiffies(WSA881X_PROBE_TIMEOUT));
-> +	time = wait_for_completion_timeout(&slave->initialization_complete,
-> +					   msecs_to_jiffies(WSA881X_PROBE_TIMEOUT));
-> +	if (!time) {
-> +		dev_err(dev, "Initialization not complete, timed out\n");
-> +		gpiod_direction_output(wsa881x->sd_n, 0);
-> +		return -ETIMEDOUT;
-> +	}
->  
->  	regcache_cache_only(regmap, false);
->  	regcache_sync(regmap);
+Changes since v1:
+- Add length validation for SSID String
+- Rename API
+- Allocate memory inside API
+- Use ACPI_HANDLE macro instead of ACPI_COMPANION
+- Improve error handling
+
+Stefan Binding (2):
+  ACPI: utils: Add api to read _SUB from ACPI
+  ASoC: cs35l41: Read System Name from ACPI _SUB to identify firmware
+
+ drivers/acpi/utils.c       | 38 ++++++++++++++++++++++++++++++++++++++
+ include/linux/acpi.h       |  6 ++++++
+ sound/soc/codecs/cs35l41.c | 24 ++++++++++++++++++++++++
+ 3 files changed, 68 insertions(+)
+
+-- 
+2.25.1
+
