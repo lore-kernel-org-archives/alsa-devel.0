@@ -4,71 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B7791C43334
-	for <alsa-devel@archiver.kernel.org>; Thu, 30 Jun 2022 11:47:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6AC4FC433EF
+	for <alsa-devel@archiver.kernel.org>; Thu, 30 Jun 2022 11:48:00 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D6A5216C3;
-	Thu, 30 Jun 2022 13:46:47 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D6A5216C3
+	by alsa0.perex.cz (Postfix) with ESMTPS id 73BCE16CB;
+	Thu, 30 Jun 2022 13:47:08 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 73BCE16CB
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1656589657;
-	bh=KZbwbKY8OlqEXl4fG8750X4KhP+vZADjW8qGjUTlxNQ=;
+	s=default; t=1656589678;
+	bh=0ym2LTs77ZRWFWozd0cF2LZIZ6ITiiE1pQFIzfSs02Y=;
 	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=ugc8aYbb3LHRtg+ywfgQCzf2DJjinR3hCPssNFMiXuE1dhwoigrn1XgeeA8E1Cyct
-	 LZF46o7Ud/zj4iovmWettbHfakzOu/PaaNffo3r8ZV+oMfOxRvvXiiQaQIMM4c0xS+
-	 61rwtitpmo7KT9J3/uq6cGB96sy8312tgntQFuZ8=
+	b=Q23fz7uu5lj+QfBpoZmNLd/fhfhL4UAaEYQn21uRc7tYlkpn8S72p67rvP2MSNkC+
+	 9gQZjj4Z4/be8jyk5o9eyw7yIATJT1JKZstknBOYSCfr+mtp0ZBFUw/V1/UE1ByxkX
+	 AFzpHeZebL/66isH3wRz+uGGarQyBB0g4QRUUPhs=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 29884F804E5;
+	by alsa1.perex.cz (Postfix) with ESMTP id A997BF8052E;
 	Thu, 30 Jun 2022 13:46:22 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id B10CDF804D8; Thu, 30 Jun 2022 13:46:16 +0200 (CEST)
+ id 6F325F804EB; Thu, 30 Jun 2022 13:46:19 +0200 (CEST)
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 521A6F804D2
- for <alsa-devel@alsa-project.org>; Thu, 30 Jun 2022 13:46:12 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 521A6F804D2
+ by alsa1.perex.cz (Postfix) with ESMTPS id D3E66F804E5
+ for <alsa-devel@alsa-project.org>; Thu, 30 Jun 2022 13:46:15 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D3E66F804E5
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="sXP+op3T"
+ header.b="uO1few8y"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id 35E966152F;
- Thu, 30 Jun 2022 11:46:10 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8DB23C3411E;
- Thu, 30 Jun 2022 11:46:06 +0000 (UTC)
+ by dfw.source.kernel.org (Postfix) with ESMTPS id F2B16616B2;
+ Thu, 30 Jun 2022 11:46:13 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9DB84C3411E;
+ Thu, 30 Jun 2022 11:46:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1656589569;
- bh=KZbwbKY8OlqEXl4fG8750X4KhP+vZADjW8qGjUTlxNQ=;
+ s=k20201202; t=1656589573;
+ bh=0ym2LTs77ZRWFWozd0cF2LZIZ6ITiiE1pQFIzfSs02Y=;
  h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=sXP+op3TTdzeum6xf7A0Mw75HgNt1ocO0cyfnr8m79CLzc6pr/5l0cThAnbkE1xNO
- iM8llkQrRpeAJpwTUGojkhXXskFCVKZoFhXUCPLi1aKlGgsDyh2iuRdqfOeye+ekXM
- BjODwm459vvnpwP1UgtUfiG6RL4CgLn7Tck+Rx1e8pIMXUvUI0vB/u00XyiyE5NgKO
- QgTNw9EDDL/2brLXDR3Pyb2qj5Iig2HHLnsBFLcStez0fDJl6g6vEhsmrtk1IR+4TU
- TcczZfxwrHkIuz+xHOxjYYpyfWAUy/UheOO48KN0pMNhNReUdN1JjgU7b1UbFNvjFw
- 9HzBrIHiBjr+Q==
+ b=uO1few8ys8A95Q356DB5H9/5+9MUnUUEB4C5mzkDqZq3BaGmy6409Ed8daWH20QiP
+ KO6lzVtXL5Ex4z7t8xxUTysvnaC0cJfMODkciv1P9vwmkeURdHGrVsWpYeUJybhK3o
+ mcvs0dhfPdc4VEiygsYmqBkWIe5vLCM9D5teMkYUcy5ssjyyPWuCLKGxD+UqTklAg8
+ etToLp0rrE2+v+hPitJyHC1XRexOQ491WoCiORxUdDCxlSTAEJ9XMBf3RktHbOrLhq
+ 7Si87jrs8Tpu/k/AYqE+YZY5HCS4Xbqilkg524vjcmlQq8ZL644u1os5teZHuusgWf
+ YWqtb6H0B7MNA==
 From: Mark Brown <broonie@kernel.org>
-To: yassine.oudjana@gmail.com, bjorn.andersson@linaro.org,
- srinivas.kandagatla@linaro.org, lgirdwood@gmail.com,
- krzysztof.kozlowski+dt@linaro.org, robh+dt@kernel.org, perex@perex.cz,
- bgoswami@quicinc.com, tiwai@suse.com, agross@kernel.org
-In-Reply-To: <20220622161322.168017-1-y.oudjana@protonmail.com>
-References: <20220622161322.168017-1-y.oudjana@protonmail.com>
-Subject: Re: (subset) [PATCH v2 0/3] ASoC: dt-bindings: Add bindings for
- WCD9335 DAIs
-Message-Id: <165658956629.346792.3984245362995741043.b4-ty@kernel.org>
-Date: Thu, 30 Jun 2022 12:46:06 +0100
+To: s.nawrocki@samsung.com, lgirdwood@gmail.com, Arnd Bergmann <arnd@arndb.de>,
+ perex@perex.cz, trix@redhat.com, tiwai@suse.com,
+ krzysztof.kozlowski@linaro.org
+In-Reply-To: <20220629185345.910406-1-trix@redhat.com>
+References: <20220629185345.910406-1-trix@redhat.com>
+Subject: Re: [PATCH] ASoC: samsung: change gpiod_speaker_power and
+ rx1950_audio from global to static variables
+Message-Id: <165658957136.346792.13129934394557088460.b4-ty@kernel.org>
+Date: Thu, 30 Jun 2022 12:46:11 +0100
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
- y.oudjana@protonmail.com, linux-arm-msm@vger.kernel.org,
- linux-kernel@vger.kernel.org, phone-devel@vger.kernel.org
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -84,13 +81,13 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, 22 Jun 2022 20:13:19 +0400, Yassine Oudjana wrote:
-> Add DT bindings for WCD9335 DAIs and use them in the driver as well
-> as all device trees currently using WCD9335.
+On Wed, 29 Jun 2022 14:53:45 -0400, Tom Rix wrote:
+> sparse reports
+> sound/soc/samsung/rx1950_uda1380.c:131:18: warning: symbol 'gpiod_speaker_power' was not declared. Should it be static?
+> sound/soc/samsung/rx1950_uda1380.c:231:24: warning: symbol 'rx1950_audio' was not declared. Should it be static?
 > 
-> Changes since v1:
->  - Make header guard match path
->  - Maintain the alphabetical order in msm8996-xiaomi-gemini includes
+> Both gpiod_speaker_power and rx1950_audio are only used in rx1950_uda1380.c,
+> so their storage class specifiers should be static.
 > 
 > [...]
 
@@ -100,10 +97,8 @@ Applied to
 
 Thanks!
 
-[1/3] ASoC: dt-bindings: Add bindings for WCD9335 DAIs
-      commit: 53447365ccb442bbd3dfffc2d7fd96203770dfb6
-[2/3] ASoC: wcd9335: Use DT bindings instead of local DAI definitions
-      commit: 66348f178d5a842c8afe52c3b743fb4af24cdb2a
+[1/1] ASoC: samsung: change gpiod_speaker_power and rx1950_audio from global to static variables
+      commit: d2294461b90e0c5b3bbfaaf2c8baff4fd3e2bb13
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
