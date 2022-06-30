@@ -4,59 +4,78 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 31880C43334
-	for <alsa-devel@archiver.kernel.org>; Thu, 30 Jun 2022 07:53:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 469C9C433EF
+	for <alsa-devel@archiver.kernel.org>; Thu, 30 Jun 2022 10:16:07 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 49C2716E5;
-	Thu, 30 Jun 2022 09:52:50 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 49C2716E5
+	by alsa0.perex.cz (Postfix) with ESMTPS id 9BD301685;
+	Thu, 30 Jun 2022 12:15:15 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9BD301685
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1656575620;
-	bh=8JZ//cAozqguvTAS4ocX7wB+WxZrfQKVO197wccRRsk=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=Obdwv4+sA4uaYvCI86OLnUMqa/Q67E9I4+RSvLcwmHJVHkUyn/tL89TI7JV87Y6gb
-	 VRghZQlNDR4TISTCyc99yr6QP9hesC4VAcoF+3ZvI+h2Kx8L1SjBnMvWwFssgtfmEb
-	 QBhS3TPRV/icvGWwfbrlaG7nR1gvSA5FJQb3+8jE=
+	s=default; t=1656584165;
+	bh=exjnFHfvLFV+iw6VzO1u74F/vhbC7MakEJ3C6P8I6VM=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=J+0pMzAarUUbnJf5fDwAU7MWnQEpAda0iT6kexkbnquFLAhngmJpYXSZXoZa/koGI
+	 UUd/XKZZFFM2y+57hRuWCkkrjJaq/Wv0NU0WV0p/yaHfVAWSRL7cYhAoJYFobi1TmR
+	 sN03nxai1oqaqnNdgHC0wEfec98ciby9ISkVvJNw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 5747AF80543;
-	Thu, 30 Jun 2022 09:52:06 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2E76BF804D2;
+	Thu, 30 Jun 2022 12:15:15 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 215C7F80543; Thu, 30 Jun 2022 09:52:05 +0200 (CEST)
-Received: from hutie.ust.cz (unknown [IPv6:2a03:3b40:fe:f0::1])
+ id CC01FF804D8; Thu, 30 Jun 2022 12:15:13 +0200 (CEST)
+Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
+ [67.231.149.25])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 11D4BF804D8
- for <alsa-devel@alsa-project.org>; Thu, 30 Jun 2022 09:51:49 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 11D4BF804D8
+ by alsa1.perex.cz (Postfix) with ESMTPS id C7180F800F5
+ for <alsa-devel@alsa-project.org>; Thu, 30 Jun 2022 12:15:03 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C7180F800F5
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=cutebit.org header.i=@cutebit.org
- header.b="tHJ3vlEI"
-From: =?UTF-8?q?Martin=20Povi=C5=A1er?= <povik+lin@cutebit.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cutebit.org; s=mail;
- t=1656575508; bh=YlXFx0zlqrnvjrP9hA3MXWg06tFvtQmgApZDlwHB8iU=;
- h=From:To:Cc:Subject:Date:In-Reply-To:References;
- b=tHJ3vlEIy057XjeSJuhaHCxq4EZ9UofyFB9CmXYzGhR/cZKebU5Ky5tpOJvdOJU23
- NTJLbXLBwf1y9MRxdHbS8b6fxyv19s0G1wZyHf42KdVCICs7F//lzXcaaRjrB9a3VK
- rvVuNAATM6caBIQkzFsQtbTyMxLSC5vtZaL17ZmU=
-To: Liam Girdwood <lgirdwood@gmail.com>,
-	Mark Brown <broonie@kernel.org>
-Subject: [PATCH 3/4] ASoC: tas2764: Correct playback volume range
-Date: Thu, 30 Jun 2022 09:51:34 +0200
-Message-Id: <20220630075135.2221-3-povik+lin@cutebit.org>
-In-Reply-To: <20220630075135.2221-1-povik+lin@cutebit.org>
-References: <20220630075135.2221-1-povik+lin@cutebit.org>
+ dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com
+ header.b="TKuCNcQL"
+Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
+ by mx0a-001ae601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 25U40775015363;
+ Thu, 30 Jun 2022 05:15:01 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
+ h=from : to : cc :
+ subject : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=PODMain02222019;
+ bh=0mmmeX8EpEPHD8XrcSw4Sp8UGBDafDLcok2SpdJ8el8=;
+ b=TKuCNcQLOPT5xP8Or4anqrBJ4TvBnDDVu1A5rfkYgdOqs+3mtWsiaHWkmWkIeDjPgtCI
+ jD5Lk3J5d1eDtxXqLnEzNwADohaWABZL4iabKF2eR3LPh6z9Dzh4t1AuuWE1bfnqn+5O
+ bSuf8+U7OD6mkUfq8F9/gqh/2vOH64VFHhnyJ8dhAA7pzgtWsVjhiq1upudrBXb47vku
+ 4NNMQ/Qepn/+FYEz7ZXHEIAqbJrGzvFj0WlgIUcNLVET8N28u4yGtWfgO3NdppApPsUH
+ yi4cqIry9ZthrHa3yiPUpad++9e0h2yDQQi5wmCs3eESLjqlGsY8u02zzEMPj6eDQmEO 6A== 
+Received: from ediex02.ad.cirrus.com ([84.19.233.68])
+ by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3gwys2pv7g-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+ Thu, 30 Jun 2022 05:15:01 -0500
+Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX02.ad.cirrus.com
+ (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.28; Thu, 30 Jun
+ 2022 11:14:59 +0100
+Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server id 15.1.2375.28 via
+ Frontend Transport; Thu, 30 Jun 2022 11:14:59 +0100
+Received: from algalon.ad.cirrus.com (algalon.ad.cirrus.com [198.90.251.122])
+ by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 24A6C2D4;
+ Thu, 30 Jun 2022 10:14:59 +0000 (UTC)
+From: Charles Keepax <ckeepax@opensource.cirrus.com>
+To: <broonie@kernel.org>
+Subject: [PATCH] ASoC: wm_adsp: Minor clean and redundant code removal
+Date: Thu, 30 Jun 2022 11:14:59 +0100
+Message-ID: <20220630101459.3442327-1-ckeepax@opensource.cirrus.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-Cc: alsa-devel@alsa-project.org, Charles Keepax <ckeepax@opensource.cirrus.com>,
- Hector Martin <marcan@marcan.st>, linux-kernel@vger.kernel.org,
- Dan Murphy <dmurphy@ti.com>,
- =?UTF-8?q?Martin=20Povi=C5=A1er?= <povik+lin@cutebit.org>,
- Stephen Kitt <steve@sk2.org>, asahi@lists.linux.dev
+Content-Type: text/plain
+X-Proofpoint-ORIG-GUID: QVdYrsh-ca0o5avYJJNBQYefF7y699T5
+X-Proofpoint-GUID: QVdYrsh-ca0o5avYJJNBQYefF7y699T5
+X-Proofpoint-Spam-Reason: safe
+Cc: patches@opensource.cirrus.com, alsa-devel@alsa-project.org,
+ lgirdwood@gmail.com, linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -72,33 +91,72 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Hector Martin <marcan@marcan.st>
+The cs_dsp core will return an error if passed a NULL cs_dsp struct so
+there is no need for the wm_adsp_write|read_ctl functions to manually
+check that. The cs_dsp core will also check the data is within bounds of
+the control so the additional bounds check is redundant too. Simplify
+things a bit by removing said code.
 
-DVC value 0xc8 is -100dB and 0xc9 is mute; this needs to map to
--100.5dB as far as the dB scale is concerned. Fix that and enable
-the mute flag, so alsamixer correctly shows the control as
-<0 dB .. -100 dB, mute>.
-
-Signed-off-by: Hector Martin <marcan@marcan.st>
-Fixes: 827ed8a0fa50 ("ASoC: tas2764: Add the driver for the TAS2764")
-Signed-off-by: Martin Povišer <povik+lin@cutebit.org>
+Signed-off-by: Charles Keepax <ckeepax@opensource.cirrus.com>
 ---
- sound/soc/codecs/tas2764.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/codecs/wm_adsp.c | 25 +++++--------------------
+ 1 file changed, 5 insertions(+), 20 deletions(-)
 
-diff --git a/sound/soc/codecs/tas2764.c b/sound/soc/codecs/tas2764.c
-index 0143a55cd33c..55da1b3440e1 100644
---- a/sound/soc/codecs/tas2764.c
-+++ b/sound/soc/codecs/tas2764.c
-@@ -536,7 +536,7 @@ static int tas2764_codec_probe(struct snd_soc_component *component)
+diff --git a/sound/soc/codecs/wm_adsp.c b/sound/soc/codecs/wm_adsp.c
+index a7784ac15dde6..cfaa45ede916a 100644
+--- a/sound/soc/codecs/wm_adsp.c
++++ b/sound/soc/codecs/wm_adsp.c
+@@ -675,21 +675,12 @@ static void wm_adsp_control_remove(struct cs_dsp_coeff_ctl *cs_ctl)
+ int wm_adsp_write_ctl(struct wm_adsp *dsp, const char *name, int type,
+ 		      unsigned int alg, void *buf, size_t len)
+ {
+-	struct cs_dsp_coeff_ctl *cs_ctl;
++	struct cs_dsp_coeff_ctl *cs_ctl = cs_dsp_get_ctl(&dsp->cs_dsp, name, type, alg);
+ 	struct wm_coeff_ctl *ctl;
+ 	struct snd_kcontrol *kcontrol;
+ 	char ctl_name[SNDRV_CTL_ELEM_ID_NAME_MAXLEN];
+ 	int ret;
+ 
+-	cs_ctl = cs_dsp_get_ctl(&dsp->cs_dsp, name, type, alg);
+-	if (!cs_ctl)
+-		return -EINVAL;
+-
+-	ctl = cs_ctl->priv;
+-
+-	if (len > cs_ctl->len)
+-		return -EINVAL;
+-
+ 	ret = cs_dsp_coeff_write_ctrl(cs_ctl, 0, buf, len);
+ 	if (ret)
+ 		return ret;
+@@ -697,6 +688,8 @@ int wm_adsp_write_ctl(struct wm_adsp *dsp, const char *name, int type,
+ 	if (cs_ctl->flags & WMFW_CTL_FLAG_SYS)
+ 		return 0;
+ 
++	ctl = cs_ctl->priv;
++
+ 	if (dsp->component->name_prefix)
+ 		snprintf(ctl_name, SNDRV_CTL_ELEM_ID_NAME_MAXLEN, "%s %s",
+ 			 dsp->component->name_prefix, ctl->name);
+@@ -720,16 +713,8 @@ EXPORT_SYMBOL_GPL(wm_adsp_write_ctl);
+ int wm_adsp_read_ctl(struct wm_adsp *dsp, const char *name, int type,
+ 		     unsigned int alg, void *buf, size_t len)
+ {
+-	struct cs_dsp_coeff_ctl *cs_ctl;
+-
+-	cs_ctl = cs_dsp_get_ctl(&dsp->cs_dsp, name, type, alg);
+-	if (!cs_ctl)
+-		return -EINVAL;
+-
+-	if (len > cs_ctl->len)
+-		return -EINVAL;
+-
+-	return cs_dsp_coeff_read_ctrl(cs_ctl, 0, buf, len);
++	return cs_dsp_coeff_read_ctrl(cs_dsp_get_ctl(&dsp->cs_dsp, name, type, alg),
++				      0, buf, len);
  }
+ EXPORT_SYMBOL_GPL(wm_adsp_read_ctl);
  
- static DECLARE_TLV_DB_SCALE(tas2764_digital_tlv, 1100, 50, 0);
--static DECLARE_TLV_DB_SCALE(tas2764_playback_volume, -10000, 50, 0);
-+static DECLARE_TLV_DB_SCALE(tas2764_playback_volume, -10050, 50, 1);
- 
- static const struct snd_kcontrol_new tas2764_snd_controls[] = {
- 	SOC_SINGLE_TLV("Speaker Volume", TAS2764_DVC, 0,
 -- 
-2.33.0
+2.30.2
 
