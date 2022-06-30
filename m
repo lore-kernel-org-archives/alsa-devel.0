@@ -4,92 +4,73 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C7F1AC43334
-	for <alsa-devel@archiver.kernel.org>; Mon,  4 Jul 2022 11:26:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 66361C433EF
+	for <alsa-devel@archiver.kernel.org>; Mon,  4 Jul 2022 11:27:02 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id EA1831746;
-	Mon,  4 Jul 2022 13:25:52 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EA1831746
+	by alsa0.perex.cz (Postfix) with ESMTPS id A0E711710;
+	Mon,  4 Jul 2022 13:26:10 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A0E711710
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1656934003;
-	bh=xUOMsKjDTA1x1Y92MvlaZyGA95YSgXwQjWm/uO1s1iE=;
+	s=default; t=1656934020;
+	bh=za3XO33u1yQlmTdTvdjOJgu0811DcSf+kMB3vIHPr78=;
 	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=dXMEdvgX9aIvo731dAHUy8I2aM6CxD0/vJUvA9tyuPGGUO6tcSsbGW22+woWKTeyz
-	 v0R5iLCNsojz4BBeJ9UKG0qBv4AtZk4OxvLHa3j9P7U3FdezGP3ZhtTrvjYQdfxM5w
-	 CXirQm6jCIrkTgdjCM9rtkymiujyzEeilc4Qx4i4=
+	b=UOyowysgZzqYRf/bB6cn3DUbw6lEjBSO/zZjs2JxJmm9J1f+NzzQCtFuy66Y1nrmu
+	 aoc2Y0yoE0cNXJHiIEW3l/j3XhC0R+Q1QDKwYunx80NNSA9gZQJAj+FowmpQZwWPNy
+	 TiHFyNMoFfwyva0YCUc8csESl+QrG5YmBDaMsiMw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 1365FF80579;
+	by alsa1.perex.cz (Postfix) with ESMTP id 7D625F8057B;
 	Mon,  4 Jul 2022 13:23:11 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 010F0F804D8; Thu, 30 Jun 2022 18:57:28 +0200 (CEST)
-Received: from mail-il1-f181.google.com (mail-il1-f181.google.com
- [209.85.166.181])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id A0D6EF800F5
- for <alsa-devel@alsa-project.org>; Thu, 30 Jun 2022 18:57:22 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A0D6EF800F5
-Received: by mail-il1-f181.google.com with SMTP id a16so12779270ilr.6
- for <alsa-devel@alsa-project.org>; Thu, 30 Jun 2022 09:57:22 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=x-gm-message-state:date:from:to:cc:subject:message-id:references
- :mime-version:content-disposition:in-reply-to;
- bh=cSCjzkkaYP9MYdWZQafK4xMoYiSrEDWkLIVS/pLNRR8=;
- b=geOEW423ggFaDnj6TDWkb0nnkKWhCju3eTOkAMA1Cugz3IApUiW9GbukLt4TePqxzL
- f9hA8WA9cDmdusXSRI0tT+pRqIj7cAtcqYj5CHtANRONPndS76vEYre3nB1q2k7qeKZ7
- XErUry5WriGYCAw80O7SxFYAjIvAqXSBdmDLuW1QLJL33DzcbSvdJoliaEe7kQfFJAo2
- KTkJieB6pbAiS0CGbkr/7OFV3d3UJmSxopX/TX27lbA9o5IPf4FLDmJMPVFf59pp19cb
- sZZAJoIJpGbUxASZfsYHTKdtwptOQJti+wjE0PHuhtE06paag3Q/FWmHuZi8J29spmc0
- 9nMA==
-X-Gm-Message-State: AJIora8vzZurNI+lo//uAhurjzohevljaK2/KUhz8KKCb7KoM0cqoaOL
- aoiVMorh9yVsENSFZMxpWg==
-X-Google-Smtp-Source: AGRyM1ur4AOc7bK5eVjgml5dO/I1YI3o54vzy9DsjE/7iDAB6CuVvnaI9nMRxVWdksw+oB2ay497Pw==
-X-Received: by 2002:a92:cd8f:0:b0:2d9:5d44:6a53 with SMTP id
- r15-20020a92cd8f000000b002d95d446a53mr5817684ilb.226.1656608240763; 
- Thu, 30 Jun 2022 09:57:20 -0700 (PDT)
-Received: from robh.at.kernel.org ([64.188.179.248])
- by smtp.gmail.com with ESMTPSA id
- q25-20020a05663810d900b0032e1a07228asm8851588jad.26.2022.06.30.09.57.18
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Thu, 30 Jun 2022 09:57:20 -0700 (PDT)
-Received: (nullmailer pid 2895373 invoked by uid 1000);
- Thu, 30 Jun 2022 16:57:17 -0000
-Date: Thu, 30 Jun 2022 10:57:17 -0600
-From: Rob Herring <robh@kernel.org>
-To: Conor Dooley <mail@conchuod.ie>
-Subject: Re: [PATCH v3 04/15] spi: dt-bindings: dw-apb-ssi: update
- spi-{r,t}x-bus-width
-Message-ID: <20220630165717.GA2895317-robh@kernel.org>
+ id 83EEAF804D8; Thu, 30 Jun 2022 19:54:42 +0200 (CEST)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+ by alsa1.perex.cz (Postfix) with ESMTP id A2A43F80107
+ for <alsa-devel@alsa-project.org>; Thu, 30 Jun 2022 19:54:37 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A2A43F80107
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+ by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 3DEB31063;
+ Thu, 30 Jun 2022 10:54:35 -0700 (PDT)
+Received: from bogus (unknown [10.57.39.193])
+ by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 713CA3F5A1;
+ Thu, 30 Jun 2022 10:54:29 -0700 (PDT)
+Date: Thu, 30 Jun 2022 18:53:18 +0100
+From: Sudeep Holla <sudeep.holla@arm.com>
+To: Niklas Cassel <Niklas.Cassel@wdc.com>
+Subject: Re: [PATCH v3 00/15] Canaan devicetree fixes
+Message-ID: <20220630175318.g2zmu6ek7l5iakve@bogus>
 References: <20220629184343.3438856-1-mail@conchuod.ie>
- <20220629184343.3438856-5-mail@conchuod.ie>
+ <Yr3PKR0Uj1bE5Y6O@x1-carbon>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20220629184343.3438856-5-mail@conchuod.ie>
-X-Mailman-Approved-At: Mon, 04 Jul 2022 13:23:02 +0200
-Cc: Niklas Cassel <niklas.cassel@wdc.com>, alsa-devel@alsa-project.org,
- David Airlie <airlied@linux.ie>, dri-devel@lists.freedesktop.org,
- linux-kernel@vger.kernel.org, Conor Dooley <conor.dooley@microchip.com>,
+In-Reply-To: <Yr3PKR0Uj1bE5Y6O@x1-carbon>
+X-Mailman-Approved-At: Mon, 04 Jul 2022 13:23:03 +0200
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
+ David Airlie <airlied@linux.ie>, Palmer Dabbelt <palmer@rivosinc.com>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ Conor Dooley <conor.dooley@microchip.com>,
  Thierry Reding <thierry.reding@gmail.com>,
  Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- linux-riscv@lists.infradead.org, Sam Ravnborg <sam@ravnborg.org>,
- Masahiro Yamada <masahiroy@kernel.org>,
+ "linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>,
+ Sam Ravnborg <sam@ravnborg.org>,
+ Damien Le Moal <damien.lemoal@opensource.wdc.com>,
  Daniel Lezcano <daniel.lezcano@linaro.org>, Jose Abreu <joabreu@synopsys.com>,
  Geert Uytterhoeven <geert@linux-m68k.org>,
- Eugeniy Paltsev <Eugeniy.Paltsev@synopsys.com>, devicetree@vger.kernel.org,
+ Eugeniy Paltsev <Eugeniy.Paltsev@synopsys.com>,
+ "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
  Albert Ou <aou@eecs.berkeley.edu>, Mark Brown <broonie@kernel.org>,
- Palmer Dabbelt <palmer@rivosinc.com>, Paul Walmsley <paul.walmsley@sifive.com>,
+ "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
+ Paul Walmsley <paul.walmsley@sifive.com>, Conor Dooley <mail@conchuod.ie>,
  Thomas Gleixner <tglx@linutronix.de>, Dillon Min <dillon.minfei@gmail.com>,
  Liam Girdwood <lgirdwood@gmail.com>, Serge Semin <fancer.lancer@gmail.com>,
- linux-spi@vger.kernel.org, Vinod Koul <vkoul@kernel.org>,
- Rob Herring <robh+dt@kernel.org>, Palmer Dabbelt <palmer@dabbelt.com>,
- Daniel Vetter <daniel@ffwll.ch>, dmaengine@vger.kernel.org,
- Damien Le Moal <damien.lemoal@opensource.wdc.com>
+ "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>,
+ Vinod Koul <vkoul@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+ Palmer Dabbelt <palmer@dabbelt.com>, Daniel Vetter <daniel@ffwll.ch>,
+ "dmaengine@vger.kernel.org" <dmaengine@vger.kernel.org>,
+ Masahiro Yamada <masahiroy@kernel.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -105,25 +86,49 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, 29 Jun 2022 19:43:33 +0100, Conor Dooley wrote:
-> From: Conor Dooley <conor.dooley@microchip.com>
+On Thu, Jun 30, 2022 at 04:28:26PM +0000, Niklas Cassel wrote:
+> On Wed, Jun 29, 2022 at 07:43:29PM +0100, Conor Dooley wrote:
+> > From: Conor Dooley <conor.dooley@microchip.com>
+> > 
+> > Hey all,
+> > This series should rid us of dtbs_check errors for the RISC-V Canaan k210
+> > based boards. To make keeping it that way a little easier, I changed the
+> > Canaan devicetree Makefile so that it would build all of the devicetrees
+> > in the directory if SOC_CANAAN.
+> > 
+> > I *DO NOT* have any Canaan hardware so I have not tested any of this in
+> > action. Since I sent v1, I tried to buy some since it's cheap - but could
+> > out of the limited stockists none seemed to want to deliver to Ireland :(
+> > I based the series on next-20220617.
+> > 
 > 
-> Most users of dw-apb-ssi use spi-{r,t}x-bus-width of 1, however the
-> Canaan k210 is wired up for a width of 4.
-> Quoting Serge:
-> The modern DW APB SSI controllers of v.4.* and newer also support the
-> enhanced SPI Modes too (Dual, Quad and Octal). Since the IP-core
-> version is auto-detected at run-time there is no way to create a
-> DT-schema correctly constraining the Rx/Tx SPI bus widths.
-> /endquote
-> 
-> As such, drop the restriction on only supporting a bus width of 1.
-> 
-> Link: https://lore.kernel.org/all/20220620205654.g7fyipwytbww5757@mobilestation/
-> Signed-off-by: Conor Dooley <conor.dooley@microchip.com>
-> ---
->  Documentation/devicetree/bindings/spi/snps,dw-apb-ssi.yaml | 6 ------
->  1 file changed, 6 deletions(-)
-> 
+> I first tried to apply your series on top of next-20220630,
+> but was greeted by a bunch of different warnings on boot,
+> including endless RCU stall warnings.
+> However, even when booting next-20220630 without your patches,
+> I got the same warnings and RCU stall.
+>
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+Is it possible to share the boot logs please ?
+Conor is having issues with my arch_topology/cacheinfo updates in -next.
+I would like to know if your issue is related to that or not ?
+
+> So I tested your series on top of v5.19-rc4 +
+> commit 0397d50f4cad ("spi: dt-bindings: Move 'rx-sample-delay-ns' to
+> spi-peripheral-props.yaml") cherry-picked,
+> (in order to avoid conflicts when applying your series,)
+> and the board was working as intended, no warnings or RCU stalls.
+>
+
+If possible can you give this branch[1] a try where my changes are and doesn't
+have any other changes from -next. Sorry to bother you.
+
+Conor seem to have issue with this commit[2], so if you get issues try to
+check if [3] works.
+
+Regards,
+Sudeep
+
+[1] https://git.kernel.org/sudeep.holla/c/ae85abf284e7
+[2] https://git.kernel.org/sudeep.holla/c/155bd845d17b
+[3] https://git.kernel.org/sudeep.holla/c/009297d29faa
