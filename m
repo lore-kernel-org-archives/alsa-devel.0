@@ -4,53 +4,53 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9D938C433EF
-	for <alsa-devel@archiver.kernel.org>; Thu, 30 Jun 2022 05:56:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E1626C43334
+	for <alsa-devel@archiver.kernel.org>; Thu, 30 Jun 2022 05:57:00 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D432316E4;
-	Thu, 30 Jun 2022 07:55:53 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D432316E4
+	by alsa0.perex.cz (Postfix) with ESMTPS id DFBB716E9;
+	Thu, 30 Jun 2022 07:56:08 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DFBB716E9
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1656568603;
-	bh=5/zEUg8fZP8bbMGnegvfvrcgTqTwvceCkZ/nfQrJSFw=;
+	s=default; t=1656568619;
+	bh=lQczcA8eOHHKvt1zKRjjMErfZfrMPnC0lo4G2AJ5RKY=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=ZNRqEaHn3OTde3YVt5KjNqy7pMKdu4cYfBGonglYYuXjY1TGTuNEb7FQTP9y1LB2F
-	 jwwHWHjdaZC+l3pnVvryIWgMOT2ISzXFXxBWwN9Dm4plXw5jFJCTC6h3zlAwIwLmcd
-	 rXmeRJZerYdWX5bDPnR9/boHODMSbDtoES+VK0VA=
+	b=Jh4QHGM7TUapC+VcCbF50Y+pcS2iTPN6OZoxWEH3PQsR2BKf0zOwH2UCJExCw8b8N
+	 dMipGT1RWJhmuwtsJ0e3g+INbjoNUj+qZ6SgP0kMTSq+zMGEY398nbxwZ/KwuddD7j
+	 21+V9x4HQi9qvZ7YSP4t35nKFx3j5g1HzowQzTp8=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id BC0AFF80542;
-	Thu, 30 Jun 2022 07:55:06 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 64C72F80543;
+	Thu, 30 Jun 2022 07:55:07 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id AFB71F804D8; Thu, 30 Jun 2022 07:55:04 +0200 (CEST)
-Received: from inva020.nxp.com (inva020.nxp.com [92.121.34.13])
+ id BDD88F804DA; Thu, 30 Jun 2022 07:55:04 +0200 (CEST)
+Received: from inva021.nxp.com (inva021.nxp.com [92.121.34.21])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 10797F804DA
- for <alsa-devel@alsa-project.org>; Thu, 30 Jun 2022 07:54:19 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 10797F804DA
-Received: from inva020.nxp.com (localhost [127.0.0.1])
- by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id F0F111A09C7;
- Thu, 30 Jun 2022 07:54:18 +0200 (CEST)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 23A52F804D8
+ for <alsa-devel@alsa-project.org>; Thu, 30 Jun 2022 07:54:14 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 23A52F804D8
+Received: from inva021.nxp.com (localhost [127.0.0.1])
+ by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 41C57200758;
+ Thu, 30 Jun 2022 07:54:14 +0200 (CEST)
 Received: from aprdc01srsp001v.ap-rdc01.nxp.com
  (aprdc01srsp001v.ap-rdc01.nxp.com [165.114.16.16])
- by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id B39091A06F8;
- Thu, 30 Jun 2022 07:54:18 +0200 (CEST)
+ by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id CBFCB2009F9;
+ Thu, 30 Jun 2022 07:54:13 +0200 (CEST)
 Received: from localhost.localdomain (shlinux2.ap.freescale.net
  [10.192.224.44])
- by aprdc01srsp001v.ap-rdc01.nxp.com (Postfix) with ESMTP id E527E180222B;
- Thu, 30 Jun 2022 13:54:16 +0800 (+08)
+ by aprdc01srsp001v.ap-rdc01.nxp.com (Postfix) with ESMTP id 2D181180222B;
+ Thu, 30 Jun 2022 13:54:12 +0800 (+08)
 From: Shengjiu Wang <shengjiu.wang@nxp.com>
 To: nicoleotsuka@gmail.com, Xiubo.Lee@gmail.com, festevam@gmail.com,
  shengjiu.wang@gmail.com, lgirdwood@gmail.com, broonie@kernel.org,
  perex@perex.cz, tiwai@suse.com, alsa-devel@alsa-project.org,
  robh+dt@kernel.org, krzk+dt@kernel.org, devicetree@vger.kernel.org
-Subject: [PATCH 5/6] ASoC: dt-bindings: fsl_spdif: Add two PLL clock source
-Date: Thu, 30 Jun 2022 13:39:13 +0800
-Message-Id: <1656567554-32122-6-git-send-email-shengjiu.wang@nxp.com>
+Subject: [PATCH 1/6] ASoC: fsl_utils: Add function to handle PLL clock source
+Date: Thu, 30 Jun 2022 13:39:09 +0800
+Message-Id: <1656567554-32122-2-git-send-email-shengjiu.wang@nxp.com>
 X-Mailer: git-send-email 2.7.4
 In-Reply-To: <1656567554-32122-1-git-send-email-shengjiu.wang@nxp.com>
 References: <1656567554-32122-1-git-send-email-shengjiu.wang@nxp.com>
@@ -71,38 +71,129 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Add two PLL clock source, they are the parent clocks of root clock
-one is for 8kHz series rates, another one is for 11kHz series rates.
-They are optional clocks, if there are such clocks, then driver
-can switch between them for supporting more accurate rates.
+i.MX8MQ/MN/MM/MP platforms typically have 2 AUDIO PLLs being
+configured to handle 8kHz and 11kHz series audio rates.
+Add common function in fsl_utils to handle these two PLL
+clock source, which are needed by CPU DAI drivers
 
 Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
 ---
- Documentation/devicetree/bindings/sound/fsl,spdif.yaml | 4 ++++
- 1 file changed, 4 insertions(+)
+ sound/soc/fsl/fsl_utils.c | 69 +++++++++++++++++++++++++++++++++++++++
+ sound/soc/fsl/fsl_utils.h |  9 +++++
+ 2 files changed, 78 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/sound/fsl,spdif.yaml b/Documentation/devicetree/bindings/sound/fsl,spdif.yaml
-index f226ec13167a..1d64e8337aa4 100644
---- a/Documentation/devicetree/bindings/sound/fsl,spdif.yaml
-+++ b/Documentation/devicetree/bindings/sound/fsl,spdif.yaml
-@@ -58,6 +58,8 @@ properties:
-           slave of the Shared Peripheral Bus and when two or more bus masters
-           (CPU, DMA or DSP) try to access it. This property is optional depending
-           on the SoC design.
-+      - description: PLL clock source for 8kHz series rate, optional.
-+      - description: PLL clock source for 11khz series rate, optional.
-     minItems: 9
+diff --git a/sound/soc/fsl/fsl_utils.c b/sound/soc/fsl/fsl_utils.c
+index 9bab202569af..b75843e31f00 100644
+--- a/sound/soc/fsl/fsl_utils.c
++++ b/sound/soc/fsl/fsl_utils.c
+@@ -6,6 +6,8 @@
+ //
+ // Copyright 2010 Freescale Semiconductor, Inc.
  
-   clock-names:
-@@ -72,6 +74,8 @@ properties:
-       - const: rxtx6
-       - const: rxtx7
-       - const: spba
-+      - const: pll8k
-+      - const: pll11k
-     minItems: 9
++#include <linux/clk.h>
++#include <linux/clk-provider.h>
+ #include <linux/module.h>
+ #include <linux/of_address.h>
+ #include <sound/soc.h>
+@@ -83,6 +85,73 @@ int fsl_asoc_get_dma_channel(struct device_node *ssi_np,
+ }
+ EXPORT_SYMBOL(fsl_asoc_get_dma_channel);
  
-   big-endian:
++/**
++ * fsl_asoc_get_pll_clocks - get two PLL clock source
++ *
++ * @dev: device pointer
++ * @pll8k_clk: PLL clock pointer for 8kHz
++ * @pll11k_clk: PLL clock pointer for 11kHz
++ *
++ * This function get two PLL clock source
++ */
++void fsl_asoc_get_pll_clocks(struct device *dev, struct clk **pll8k_clk,
++			     struct clk **pll11k_clk)
++{
++	*pll8k_clk = devm_clk_get(dev, "pll8k");
++	if (IS_ERR(*pll8k_clk))
++		*pll8k_clk = NULL;
++
++	*pll11k_clk = devm_clk_get(dev, "pll11k");
++	if (IS_ERR(*pll11k_clk))
++		*pll11k_clk = NULL;
++}
++EXPORT_SYMBOL(fsl_asoc_get_pll_clocks);
++
++/**
++ * fsl_asoc_reparent_pll_clocks - set clock parent if necessary
++ *
++ * @dev: device pointer
++ * @clk: root clock pointer
++ * @pll8k_clk: PLL clock pointer for 8kHz
++ * @pll11k_clk: PLL clock pointer for 11kHz
++ * @ratio: target requency for root clock
++ *
++ * This function set root clock parent according to the target ratio
++ */
++void fsl_asoc_reparent_pll_clocks(struct device *dev, struct clk *clk,
++				  struct clk *pll8k_clk,
++				  struct clk *pll11k_clk, u64 ratio)
++{
++	struct clk *p, *pll = 0, *npll = 0;
++	bool reparent = false;
++	int ret = 0;
++
++	if (!clk || !pll8k_clk || !pll11k_clk)
++		return;
++
++	p = clk;
++	while (p && pll8k_clk && pll11k_clk) {
++		struct clk *pp = clk_get_parent(p);
++
++		if (clk_is_match(pp, pll8k_clk) ||
++		    clk_is_match(pp, pll11k_clk)) {
++			pll = pp;
++			break;
++		}
++		p = pp;
++	}
++
++	npll = (do_div(ratio, 8000) ? pll11k_clk : pll8k_clk);
++	reparent = (pll && !clk_is_match(pll, npll));
++
++	if (reparent) {
++		ret = clk_set_parent(p, npll);
++		if (ret < 0)
++			dev_warn(dev, "failed to set parent %s: %d\n", __clk_get_name(npll), ret);
++	}
++}
++EXPORT_SYMBOL(fsl_asoc_reparent_pll_clocks);
++
+ MODULE_AUTHOR("Timur Tabi <timur@freescale.com>");
+ MODULE_DESCRIPTION("Freescale ASoC utility code");
+ MODULE_LICENSE("GPL v2");
+diff --git a/sound/soc/fsl/fsl_utils.h b/sound/soc/fsl/fsl_utils.h
+index c5dc2a14b492..3fec537edd26 100644
+--- a/sound/soc/fsl/fsl_utils.h
++++ b/sound/soc/fsl/fsl_utils.h
+@@ -11,6 +11,8 @@
+ #define _FSL_UTILS_H
+ 
+ #define DAI_NAME_SIZE	32
++#define CLK_8K_FREQ            24576000
++#define CLK_11K_FREQ           22579200
+ 
+ struct snd_soc_dai_link;
+ struct device_node;
+@@ -19,4 +21,11 @@ int fsl_asoc_get_dma_channel(struct device_node *ssi_np, const char *name,
+ 			     struct snd_soc_dai_link *dai,
+ 			     unsigned int *dma_channel_id,
+ 			     unsigned int *dma_id);
++
++void fsl_asoc_get_pll_clocks(struct device *dev, struct clk **pll8k_clk,
++			     struct clk **pll11k_clk);
++
++void fsl_asoc_reparent_pll_clocks(struct device *dev, struct clk *clk,
++				  struct clk *pll8k_clk,
++				  struct clk *pll11k_clk, u64 ratio);
+ #endif /* _FSL_UTILS_H */
 -- 
 2.17.1
 
