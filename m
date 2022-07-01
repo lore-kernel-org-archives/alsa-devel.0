@@ -4,102 +4,82 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 86DB3C43334
-	for <alsa-devel@archiver.kernel.org>; Mon,  4 Jul 2022 11:32:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9CCA1C433EF
+	for <alsa-devel@archiver.kernel.org>; Mon,  4 Jul 2022 11:32:51 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id BD6A8179F;
-	Mon,  4 Jul 2022 13:31:43 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BD6A8179F
+	by alsa0.perex.cz (Postfix) with ESMTPS id D61851779;
+	Mon,  4 Jul 2022 13:31:59 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D61851779
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1656934353;
-	bh=0g1yMbWSv5El5C5U8eKMjmTTQ/CIiD+fZQkvaxYlrMo=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	s=default; t=1656934369;
+	bh=eCsgbeuqchuCIFV9gDLlBeJCPGvuBnnluvULNww/3c0=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=O1Xv41A7nv8iPLxV9XGXRnNABv8lsdXpO3XwuG6XKSdK6P30V7j+JBK4bBu/4Sv54
-	 19s4pG1MKWXSSdNgItkZGKbzfl8F1I3hHIG26KCnySws5EWor/7KTk52EQV8uaZZrD
-	 Q9FtSWDPklb4JphaidZNGHFogrFj1XOhmp1dHrTk=
+	b=clfvcdp5V7Vn6kTC7Ma9GSFt+RZl296cDx+8iOc26VOhlwOG1n8dIV5Oq2JDo146S
+	 3wK3BwLTXao2yIjS2/VCnwQzunje/RjBAxNPYKQK9MneCG8Zlct1ScRFanx+Z0cV6N
+	 L4Ki+bKR6cAkYJloLE7MZrXngtozHFIdF+s4KWHk=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 2A816F80608;
+	by alsa1.perex.cz (Postfix) with ESMTP id A9716F8060C;
 	Mon,  4 Jul 2022 13:23:25 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id A32E7F80249; Sun,  3 Jul 2022 05:26:29 +0200 (CEST)
-Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com
- [IPv6:2607:f8b0:4864:20::1033])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id C7203F80155; Fri,  1 Jul 2022 21:24:19 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id A7388F8014E
- for <alsa-devel@alsa-project.org>; Sun,  3 Jul 2022 05:26:25 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A7388F8014E
+ by alsa1.perex.cz (Postfix) with ESMTPS id BB410F80107
+ for <alsa-devel@alsa-project.org>; Fri,  1 Jul 2022 21:24:13 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BB410F80107
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="Augt3VIV"
-Received: by mail-pj1-x1033.google.com with SMTP id ju17so1123580pjb.3
- for <alsa-devel@alsa-project.org>; Sat, 02 Jul 2022 20:26:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
- h=date:from:to:cc:subject:message-id:references:mime-version
- :content-disposition:in-reply-to;
- bh=/LE3/OvnxwC10hHaqp2JoOJSN7rfZOpUu2WCyCiyCz4=;
- b=Augt3VIV/iWcoU+DHx6Yl7vroOm9Hwz+XtZe2jvyXkhsx95p/JLAo0xcEd6ix1ZIVf
- qIfg68MUyw+xLjl2gBsPYsbv6l3jY94RzOJD92gb6rxdLTyy5Av/dXPYvA/EXIhLOtLz
- svOqPB75mbgpDTnbuNTXc8rdS2DrehpRBgIiYcfLEACt56jQqPD4OYEXOr+iSon97xBH
- KYxD4XfgTiHC/xmDNEPOFfPpT2EHhts4G6H0Pm0fJr3aoQ7VOuwkBeKtFwd1B4K1k9D/
- GdNdQLrWNIKMTC9YgyvhuIjL+GirhGz9Rbn2DEPjhAWabLVNFd+wt0MxRzds1x2rF4/L
- 8aeg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=x-gm-message-state:date:from:to:cc:subject:message-id:references
- :mime-version:content-disposition:in-reply-to;
- bh=/LE3/OvnxwC10hHaqp2JoOJSN7rfZOpUu2WCyCiyCz4=;
- b=dJ4sdfEKjZZ3vF5KlR3kKRXl4C2LwzsxwhJ5NySlz8Lu3FATRp4I1KS7S1NKLHfNq4
- SFJiLn179WTK64JTr8gjNKWr6q2X9WJBQAg2yMucO4d5jDUpFEZSYCWqiVmVXtBqfUT4
- aSErpYUC8vKKlawvj9/OUHLlSnW+tFI59yrh+q6QWBOKjEH4A5xhT8S+mSVL5Pw/fNPl
- smIDUr2/AOHTgD+bfw5GTKgY8q/+j65WSNW6H0KPW7QD4KmjqgfG4ZZ5wr0PIc0NUzQr
- ESVbclnMBiNsHmTKx2h7T1+ce4MIhOpERlc/0lD4BAiL14JzoAclrJmUczy/XbOy5qqp
- tyag==
-X-Gm-Message-State: AJIora/80SWgazuZnoQMtaVXquU0IL8/bo7keU3wEgETTy0cgOeJEe2t
- RRzKGhXx4EBRH6La/n453xyPWgWJGJ6Hig==
-X-Google-Smtp-Source: AGRyM1v/qGK0NX2/G7uiSvuhmywhBxQ+rRzGPCB7tQOWN8p4Gfx3qW4Qvkfllc0ImMReMYjkXPk5jA==
-X-Received: by 2002:a17:903:2c6:b0:16a:276a:ad81 with SMTP id
- s6-20020a17090302c600b0016a276aad81mr29074812plk.65.1656818782428; 
- Sat, 02 Jul 2022 20:26:22 -0700 (PDT)
-Received: from debian.me (subs32-116-206-28-33.three.co.id. [116.206.28.33])
- by smtp.gmail.com with ESMTPSA id
- u17-20020a170902e81100b0016a0db8c5b4sm1866809plg.156.2022.07.02.20.26.20
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Sat, 02 Jul 2022 20:26:21 -0700 (PDT)
-Received: by debian.me (Postfix, from userid 1000)
- id EA78810390C; Sun,  3 Jul 2022 10:26:16 +0700 (WIB)
-Date: Sun, 3 Jul 2022 10:26:16 +0700
-From: Bagas Sanjaya <bagasdotme@gmail.com>
-To: Mauro Carvalho Chehab <mchehab@kernel.org>
-Subject: Re: [PATCH 00/12] Fix several documentation build warnings with
- Sphinx 2.4.4
-Message-ID: <YsEMWDYCdjxiUZ1P@debian.me>
-References: <cover.1656759988.git.mchehab@kernel.org>
+ dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="I7wFmBWz"
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by dfw.source.kernel.org (Postfix) with ESMTPS id 725C061F66;
+ Fri,  1 Jul 2022 19:24:12 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5042FC341CA;
+ Fri,  1 Jul 2022 19:24:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1656703451;
+ bh=eCsgbeuqchuCIFV9gDLlBeJCPGvuBnnluvULNww/3c0=;
+ h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+ b=I7wFmBWzKnbV2a3O8P8xFCl7JuejL2YyhbvlJHIovAocV4oa+UJ3Ql9YbeXBurW81
+ iKT6KNGqonRpbL1rcaKLzrS6tpu4uEtfzymN2sAoVGhZNRg8w+s1wMv+Zz+zabbfLc
+ O33G6aRN4GaUWXvXdws3ueL9L5GBHpo1iibUavODxwiiCfDNTQk2MPlvC00KGdbyKs
+ DCovJAmGUoX4o5Kr4fat1IfjK5HUqWZCDH67Kizpp1b15XSbOMLTiGmK9+8oC7wwvb
+ pLKIGTb/FP551AEoZb8CRlYg9aqcHhTuiRx7neZrc2B4i1IZZG3Qg+gmDtUD7qEwUA
+ IZITfGnote9YQ==
+From: Conor Dooley <conor@kernel.org>
+To: David Airlie <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>,
+ Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Thierry Reding <thierry.reding@gmail.com>, Sam Ravnborg <sam@ravnborg.org>,
+ Eugeniy Paltsev <Eugeniy.Paltsev@synopsys.com>,
+ Vinod Koul <vkoul@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>,
+ Mark Brown <broonie@kernel.org>, Serge Semin <fancer.lancer@gmail.com>,
+ Daniel Lezcano <daniel.lezcano@linaro.org>,
+ Palmer Dabbelt <palmer@dabbelt.com>, Palmer Dabbelt <palmer@rivosinc.com>
+Subject: [PATCH v4 06/14] riscv: dts: canaan: fix the k210's memory node
+Date: Fri,  1 Jul 2022 20:22:52 +0100
+Message-Id: <20220701192300.2293643-7-conor@kernel.org>
+X-Mailer: git-send-email 2.37.0
+In-Reply-To: <20220701192300.2293643-1-conor@kernel.org>
+References: <20220701192300.2293643-1-conor@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <cover.1656759988.git.mchehab@kernel.org>
-X-Mailman-Approved-At: Mon, 04 Jul 2022 13:23:02 +0200
-Cc: Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
- Gwendal Grignou <gwendal@chromium.org>, kvm@vger.kernel.org,
- Linux Doc Mailing List <linux-doc@vger.kernel.org>, linux-pci@vger.kernel.org,
- Brendan Higgins <brendanhiggins@google.com>, alsa-devel@alsa-project.org,
- dm-devel@redhat.com, Andreas Dilger <adilger.kernel@dilger.ca>,
- linux-kselftest@vger.kernel.org, Alasdair Kergon <agk@redhat.com>,
- Jonathan Corbet <corbet@lwn.net>,
- Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
- Takashi Iwai <tiwai@suse.com>, Jakub Kicinski <kuba@kernel.org>,
- Paolo Abeni <pabeni@redhat.com>, Mike Snitzer <snitzer@kernel.org>,
- linux-tegra@vger.kernel.org, kunit-dev@googlegroups.com,
- linux-ext4@vger.kernel.org, Theodore Ts'o <tytso@mit.edu>,
- Eric Dumazet <edumazet@google.com>, Dipen Patel <dipenp@nvidia.com>,
- netdev@vger.kernel.org, linux-wireless@vger.kernel.org,
- linux-kernel@vger.kernel.org, Johannes Berg <johannes@sipsolutions.net>,
- "David S. Miller" <davem@davemloft.net>
+Content-Transfer-Encoding: 8bit
+X-Mailman-Approved-At: Mon, 04 Jul 2022 13:23:03 +0200
+Cc: Niklas Cassel <niklas.cassel@wdc.com>, alsa-devel@alsa-project.org,
+ Albert Ou <aou@eecs.berkeley.edu>, devicetree@vger.kernel.org,
+ Damien Le Moal <damien.lemoal@opensource.wdc.com>,
+ linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+ Conor Dooley <conor.dooley@microchip.com>, Jose Abreu <joabreu@synopsys.com>,
+ Geert Uytterhoeven <geert@linux-m68k.org>,
+ Paul Walmsley <paul.walmsley@sifive.com>, dmaengine@vger.kernel.org,
+ linux-riscv@lists.infradead.org, Dillon Min <dillon.minfei@gmail.com>,
+ Masahiro Yamada <masahiroy@kernel.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -115,47 +95,42 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Sat, Jul 02, 2022 at 12:07:32PM +0100, Mauro Carvalho Chehab wrote:
-> This series is against next-20220701. It fixes several warnings
-> that are currently produced while building html docs.
-> 
-> Each patch in this series is independent from the others, as
-> each one touches a different file.
-> 
-> Mauro Carvalho Chehab (12):
->   docs: ext4: blockmap.rst: fix a broken table
->   docs: tegra194-hte.rst: don't include gpiolib.c twice
->   docs: device-mapper: add a blank line at writecache.rst
->   docs: PCI: pci-vntb-function.rst: Properly include ascii artwork
->   docs: PCI: pci-vntb-howto.rst: fix a title markup
->   docs: virt: kvm: fix a title markup at api.rst
->   docs: ABI: sysfs-bus-nvdimm
->   kunit: test.h: fix a kernel-doc markup
->   net: mac80211: fix a kernel-doc markup
->   docs: alsa: alsa-driver-api.rst: remove a kernel-doc file
->   docs: arm: index.rst: add google/chromebook-boot-flow
->   docs: leds: index.rst: add leds-qcom-lpg to it
-> 
+From: Conor Dooley <conor.dooley@microchip.com>
 
-Hi Mauro,
+The k210 U-Boot port has been using the clocks defined in the
+devicetree to bring up the board's SRAM, but this violates the
+dt-schema. As such, move the clocks to a dedicated node with
+the same compatible string. The regs property does not fit in
+either node, so is replaced by comments.
 
-Thanks for cleaning up these warning above. However, I have already
-submitted some of these cleanups (pending reviews or integration):
+Tested-by: Niklas Cassel <niklas.cassel@wdc.com>
+Signed-off-by: Conor Dooley <conor.dooley@microchip.com>
+---
+ arch/riscv/boot/dts/canaan/k210.dtsi | 10 ++++++----
+ 1 file changed, 6 insertions(+), 4 deletions(-)
 
-[1]: https://lore.kernel.org/linux-doc/20220702042350.23187-1-bagasdotme@gmail.com/
-[2]: https://lore.kernel.org/linux-doc/20220612000125.9777-1-bagasdotme@gmail.com/
-[3]: https://lore.kernel.org/linux-doc/20220627095151.19339-1-bagasdotme@gmail.com/
-[4]: https://lore.kernel.org/linux-doc/20220627082928.11239-1-bagasdotme@gmail.com/
-
-There's still a warning left:
-
-Documentation/ABI/testing/sysfs-bus-iio-sx9324:2: WARNING: Unexpected indentation.
-
-But I think the Date: field that triggered the warning above looks OK.
-
-Regardless of that, the build successed.
-
-Reviewed-by: Bagas Sanjaya <bagasdotme@gmail.com>
-
+diff --git a/arch/riscv/boot/dts/canaan/k210.dtsi b/arch/riscv/boot/dts/canaan/k210.dtsi
+index 44d338514761..cd4eae82d8b2 100644
+--- a/arch/riscv/boot/dts/canaan/k210.dtsi
++++ b/arch/riscv/boot/dts/canaan/k210.dtsi
+@@ -69,11 +69,13 @@ cpu1_intc: interrupt-controller {
+ 
+ 	sram: memory@80000000 {
+ 		device_type = "memory";
++		reg = <0x80000000 0x400000>, /* sram0 4 MiB */
++		      <0x80400000 0x200000>, /* sram1 2 MiB */
++		      <0x80600000 0x200000>; /* aisram 2 MiB */
++	};
++
++	sram_controller: memory-controller {
+ 		compatible = "canaan,k210-sram";
+-		reg = <0x80000000 0x400000>,
+-		      <0x80400000 0x200000>,
+-		      <0x80600000 0x200000>;
+-		reg-names = "sram0", "sram1", "aisram";
+ 		clocks = <&sysclk K210_CLK_SRAM0>,
+ 			 <&sysclk K210_CLK_SRAM1>,
+ 			 <&sysclk K210_CLK_AI>;
 -- 
-An old man doll... just what I always wanted! - Clara
+2.37.0
+
