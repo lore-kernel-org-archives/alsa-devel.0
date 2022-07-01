@@ -4,75 +4,74 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7065CC43334
-	for <alsa-devel@archiver.kernel.org>; Fri,  1 Jul 2022 14:19:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3B725C43334
+	for <alsa-devel@archiver.kernel.org>; Fri,  1 Jul 2022 14:53:07 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 7A5EE16B3;
-	Fri,  1 Jul 2022 16:18:54 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7A5EE16B3
+	by alsa0.perex.cz (Postfix) with ESMTPS id A2D2F169F;
+	Fri,  1 Jul 2022 16:52:15 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A2D2F169F
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1656685184;
-	bh=3wzRj5NJlP7HHnjC6iFDXafrek+CylxTqxEu0SV+jSg=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=aTKyJJK7fPgSw+JnHgMGsE3DiGeG5j6VZPCCYIhlGBewBhfoqjDlnfpL4P6UeQpSw
-	 dZT53AeMb9fHCyhebClH7RrMO9Zo6w2E/cTc5I6BWTM8N8HhchhNzQkQACDJvOldO4
-	 Vw135xAQvwVI3XFcdxF5gnCAb2zle/ITs8b+kesE=
+	s=default; t=1656687185;
+	bh=ADcjVOQEABdFUO8/WCmMSMFW4pzaVj9Tjd29HR8rXDQ=;
+	h=Date:Subject:To:References:From:In-Reply-To:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=B/qyePrbN6Yklh5WrRsOoRYB9g9n07XJJPM43kfzS5+TsxSPrxy3VDDq1/dJ59tWG
+	 UsF/7PMbxCYBsRjSHTYRK0FD//QHLkKB7H3Gjb5lY48G/e5Cl1ribnfBRzTP4plpZw
+	 De6R/8VKapW65ThzkeKYLE+3auYMCwjLB4pfkq/Y=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id C2A95F80152;
-	Fri,  1 Jul 2022 16:18:46 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2C482F80152;
+	Fri,  1 Jul 2022 16:52:15 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 80431F80152; Fri,  1 Jul 2022 16:18:45 +0200 (CEST)
-Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
+ id 3B9FEF80152; Fri,  1 Jul 2022 16:52:13 +0200 (CEST)
+Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id CE172F80152
- for <alsa-devel@alsa-project.org>; Fri,  1 Jul 2022 16:18:38 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CE172F80152
+ by alsa1.perex.cz (Postfix) with ESMTPS id 498B8F8014E
+ for <alsa-devel@alsa-project.org>; Fri,  1 Jul 2022 16:52:09 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 498B8F8014E
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="Zwk+TJ/A"
+ header.b="SBboVPsH"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1656685120; x=1688221120;
- h=from:to:cc:subject:date:message-id:mime-version:
- content-transfer-encoding;
- bh=3wzRj5NJlP7HHnjC6iFDXafrek+CylxTqxEu0SV+jSg=;
- b=Zwk+TJ/A6sUIuLNSgX29MjJgFNBC4RPKvbA5bqVdIOQqJZe+fE18nb9B
- kVC9rq4CNnwuZRSMKNJ5a/DrkYCgmc/6sKcayIOPOjT/MbWK//xDlNfM0
- rHatpIMV1suyV33ZZYvT1t1dzJ4shZ1gpwiZ0zYgSAltaP3sbWgHXUT2A
- 1xRCpcv68PT03ZxZ0Z0DLNULGmsceQk1FtGumLPT0FQvOgieZgP/F/7kS
- alPjMqQDcJ21b2WMT7o0OQg0nQbA67/YhZHIK6cH7AvFYHvQowBL8bE0I
- xypLF1wY0kMtqSUAHAV4Ggrs6urH3Q9lBZs1eIpFLcSOGML6QWEtkl+eS Q==;
-X-IronPort-AV: E=McAfee;i="6400,9594,10394"; a="282690818"
-X-IronPort-AV: E=Sophos;i="5.92,237,1650956400"; d="scan'208";a="282690818"
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
- by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 01 Jul 2022 07:18:36 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.92,237,1650956400"; d="scan'208";a="838058898"
-Received: from brentlu-brix.itwn.intel.com ([10.5.253.25])
- by fmsmga006.fm.intel.com with ESMTP; 01 Jul 2022 07:18:33 -0700
-From: Brent Lu <brent.lu@intel.com>
-To: alsa-devel@alsa-project.org
-Subject: [PATCH v2] ASoC: Intel: sof_rt5682: fix out-of-bounds array access
-Date: Fri,  1 Jul 2022 22:15:17 +0800
-Message-Id: <20220701141517.264070-1-brent.lu@intel.com>
-X-Mailer: git-send-email 2.25.1
+ t=1656687131; x=1688223131;
+ h=message-id:date:mime-version:subject:to:cc:references:
+ from:in-reply-to:content-transfer-encoding;
+ bh=ADcjVOQEABdFUO8/WCmMSMFW4pzaVj9Tjd29HR8rXDQ=;
+ b=SBboVPsHIaalt76SwP5hIm6XE9M14J5Ho8MP8TpTXh6616RCaW7QbmHj
+ 5EjhWRSUf0jAnSu51wQGoR2NoL7S6/9HsrUoJi13UI3RhlHCMaHmgjgUA
+ W/QEVI+RIuoyVTD3KGfws7ns1++GEvrECCk1geFNKClwFdPzUHBxQvU2r
+ cxaCiSxq+Ro9k1yqZj97rRoxCKUx4KOIJ6C52TeYe1NBkv4QdmPebkz+F
+ NeJd4DMJ79K6INbE7A1oMHz+WsWOD/NYxGizBKBOz1I1sztG50PiRUUWt
+ BqJl9eyuhBtsAkoX/kt6LxwKyyBXHHDNCsnQSsA4L++hsheQLS84OYVH4 g==;
+X-IronPort-AV: E=McAfee;i="6400,9594,10394"; a="308183749"
+X-IronPort-AV: E=Sophos;i="5.92,237,1650956400"; d="scan'208";a="308183749"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+ by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 01 Jul 2022 07:52:06 -0700
+X-IronPort-AV: E=Sophos;i="5.92,237,1650956400"; d="scan'208";a="541758285"
+Received: from swathigo-mobl3.amr.corp.intel.com (HELO [10.209.128.76])
+ ([10.209.128.76])
+ by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 01 Jul 2022 07:52:05 -0700
+Message-ID: <068e141c-c0d8-e759-8cb6-36fc27c88465@linux.intel.com>
+Date: Fri, 1 Jul 2022 08:44:24 -0500
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: Cezary Rojewski <cezary.rojewski@intel.com>,
- Kai Vehmanen <kai.vehmanen@linux.intel.com>,
- Peter Ujfalusi <peter.ujfalusi@linux.intel.com>, Takashi Iwai <tiwai@suse.com>,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
- Liam Girdwood <liam.r.girdwood@linux.intel.com>,
- Mac Chiang <mac.chiang@intel.com>, Mark Brown <broonie@kernel.org>,
- Ajye Huang <ajye.huang@gmail.com>, Bard Liao <yung-chuan.liao@linux.intel.com>,
- Brent Lu <brent.lu@intel.com>, linux-kernel@vger.kernel.org,
- Yong Zhi <yong.zhi@intel.com>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Firefox/91.0 Thunderbird/91.10.0
+Subject: Re: [PATCH] ASoC: codes: Add support for ES8316 producer mode
+Content-Language: en-US
+To: Zhu Ning <zhuning0077@gmail.com>, alsa-devel@alsa-project.org
+References: <20220701020537.970950-1-zhuning0077@gmail.com>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+In-Reply-To: <20220701020537.970950-1-zhuning0077@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+Cc: broonie@kernel.org, tiwai@suse.com,
+ David Yang <yangxiaohua@everest-semi.com>, vijendar.mukunda@amd.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -88,63 +87,33 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Starting from ADL platform we have four HDMI PCM devices which exceeds
-the size of sof_hdmi array. Since each sof_hdmi_pcm structure
-represents one HDMI PCM device, we remove the sof_hdmi array and add a
-new member hdmi_jack to the sof_hdmi_pcm structure to fix the
-out-of-bounds problem.
 
-Signed-off-by: Brent Lu <brent.lu@intel.com>
-Reviewed-by: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
----
- sound/soc/intel/boards/sof_rt5682.c | 10 +++-------
- 1 file changed, 3 insertions(+), 7 deletions(-)
+>  	/* Validate supported sample rates that are autodetected from MCLK */
+> @@ -477,19 +478,24 @@ static int es8316_pcm_hw_params(struct snd_pcm_substream *substream,
+>  	}
+>  	if (i == NR_SUPPORTED_MCLK_LRCK_RATIOS)
+>  		return -EINVAL;
+> -
+> +	lrck_divider = es8316->sysclk/params_rate(params);
+> +	bclk_divider = lrck_divider/4;
+>  	switch (params_format(params)) {
+>  	case SNDRV_PCM_FORMAT_S16_LE:
+>  		wordlen = ES8316_SERDATA2_LEN_16;
+> +		bclk_divider/=16;
+>  		break;
+>  	case SNDRV_PCM_FORMAT_S20_3LE:
+>  		wordlen = ES8316_SERDATA2_LEN_20;
+> +		bclk_divider/=32;
 
-diff --git a/sound/soc/intel/boards/sof_rt5682.c b/sound/soc/intel/boards/sof_rt5682.c
-index a24fb71d5ff3..1384716c6360 100644
---- a/sound/soc/intel/boards/sof_rt5682.c
-+++ b/sound/soc/intel/boards/sof_rt5682.c
-@@ -69,11 +69,10 @@ static unsigned long sof_rt5682_quirk = SOF_RT5682_MCLK_EN |
- 
- static int is_legacy_cpu;
- 
--static struct snd_soc_jack sof_hdmi[3];
--
- struct sof_hdmi_pcm {
- 	struct list_head head;
- 	struct snd_soc_dai *codec_dai;
-+	struct snd_soc_jack hdmi_jack;
- 	int device;
- };
- 
-@@ -447,7 +446,6 @@ static int sof_card_late_probe(struct snd_soc_card *card)
- 	char jack_name[NAME_SIZE];
- 	struct sof_hdmi_pcm *pcm;
- 	int err;
--	int i = 0;
- 
- 	/* HDMI is not supported by SOF on Baytrail/CherryTrail */
- 	if (is_legacy_cpu || !ctx->idisp_codec)
-@@ -468,17 +466,15 @@ static int sof_card_late_probe(struct snd_soc_card *card)
- 		snprintf(jack_name, sizeof(jack_name),
- 			 "HDMI/DP, pcm=%d Jack", pcm->device);
- 		err = snd_soc_card_jack_new(card, jack_name,
--					    SND_JACK_AVOUT, &sof_hdmi[i]);
-+					    SND_JACK_AVOUT, &pcm->hdmi_jack);
- 
- 		if (err)
- 			return err;
- 
- 		err = hdac_hdmi_jack_init(pcm->codec_dai, pcm->device,
--					  &sof_hdmi[i]);
-+					  &pcm->hdmi_jack);
- 		if (err < 0)
- 			return err;
--
--		i++;
- 	}
- 
- 	if (sof_rt5682_quirk & SOF_MAX98373_SPEAKER_AMP_PRESENT) {
--- 
-2.25.1
+S20_3LE uses 3 bytes, is the 32 divider correct here?
 
+>  		break;
+>  	case SNDRV_PCM_FORMAT_S24_LE:
+>  		wordlen = ES8316_SERDATA2_LEN_24;
+> +		bclk_divider/=24;>  		break;
+>  	case SNDRV_PCM_FORMAT_S32_LE:
+>  		wordlen = ES8316_SERDATA2_LEN_32;
+> +		bclk_divider/=32;
+>  		break;
+>  	default:
+>  		return -EINVAL;
