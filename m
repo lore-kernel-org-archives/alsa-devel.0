@@ -4,53 +4,53 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 78E80C43334
-	for <alsa-devel@archiver.kernel.org>; Fri,  1 Jul 2022 09:49:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D3D30C43334
+	for <alsa-devel@archiver.kernel.org>; Fri,  1 Jul 2022 09:50:07 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 90EA616B9;
-	Fri,  1 Jul 2022 11:49:02 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 90EA616B9
+	by alsa0.perex.cz (Postfix) with ESMTPS id 1F8C616E3;
+	Fri,  1 Jul 2022 11:49:16 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1F8C616E3
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1656668992;
-	bh=qzIsd3AvVzIfmcdj9ZpGYW379nkEz9vQpN8/b0QQkJo=;
+	s=default; t=1656669006;
+	bh=5/zEUg8fZP8bbMGnegvfvrcgTqTwvceCkZ/nfQrJSFw=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=MjHL97X8zfA/aTSPtOSvJHy+RSC+sno5V/Xr7JmpNtgiouEFgeWO1yUQ0YwTGSrU9
-	 jldDbqkAVvFzbcuvrhPO3kttfwrPdIk0nUH748g2wXjSk4fTYSQUH0NOV3ERAGGGxt
-	 KpUVvzXtfePpio8G99zjtwrRWUvkiIlRfqFy/Q/o=
+	b=CepnuE8RoBtplsC73IVUTVz+U1nOifKxNmDlq5Uwli7mldEYu8jCABqlsNoX5p6wU
+	 P0cBEz6jz5hnfFv+JW6uRwWTNzi0urdfZWK3b4HU54i8ebH2zxO+w3aCxE5KudI1eM
+	 5Zv+U/dpYauCiB30zez+wljiJdvKTRXTKKd3PjkY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 0B062F80548;
+	by alsa1.perex.cz (Postfix) with ESMTP id 875DCF80552;
 	Fri,  1 Jul 2022 11:47:57 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id B32F7F804F3; Fri,  1 Jul 2022 11:47:54 +0200 (CEST)
+ id C14DFF8052E; Fri,  1 Jul 2022 11:47:54 +0200 (CEST)
 Received: from inva021.nxp.com (inva021.nxp.com [92.121.34.21])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 9D077F804F3
- for <alsa-devel@alsa-project.org>; Fri,  1 Jul 2022 11:47:33 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9D077F804F3
+ by alsa1.perex.cz (Postfix) with ESMTPS id D05D3F80256
+ for <alsa-devel@alsa-project.org>; Fri,  1 Jul 2022 11:47:32 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D05D3F80256
 Received: from inva021.nxp.com (localhost [127.0.0.1])
- by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 59C4420139E;
- Fri,  1 Jul 2022 11:47:33 +0200 (CEST)
+ by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 20FF020138B;
+ Fri,  1 Jul 2022 11:47:32 +0200 (CEST)
 Received: from aprdc01srsp001v.ap-rdc01.nxp.com
  (aprdc01srsp001v.ap-rdc01.nxp.com [165.114.16.16])
- by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 228FB20139A;
- Fri,  1 Jul 2022 11:47:33 +0200 (CEST)
+ by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id DE3FE20137C;
+ Fri,  1 Jul 2022 11:47:31 +0200 (CEST)
 Received: from localhost.localdomain (shlinux2.ap.freescale.net
  [10.192.224.44])
- by aprdc01srsp001v.ap-rdc01.nxp.com (Postfix) with ESMTP id 6C0A0181D0CA;
- Fri,  1 Jul 2022 17:47:31 +0800 (+08)
+ by aprdc01srsp001v.ap-rdc01.nxp.com (Postfix) with ESMTP id 359E61820F57;
+ Fri,  1 Jul 2022 17:47:30 +0800 (+08)
 From: Shengjiu Wang <shengjiu.wang@nxp.com>
 To: nicoleotsuka@gmail.com, Xiubo.Lee@gmail.com, festevam@gmail.com,
  shengjiu.wang@gmail.com, lgirdwood@gmail.com, broonie@kernel.org,
  perex@perex.cz, tiwai@suse.com, alsa-devel@alsa-project.org,
  robh+dt@kernel.org, krzk+dt@kernel.org, devicetree@vger.kernel.org
-Subject: [PATCH v2 6/6] ASoC: dt-bindings: fsl-sai: Add two PLL clock source
-Date: Fri,  1 Jul 2022 17:32:41 +0800
-Message-Id: <1656667961-1799-7-git-send-email-shengjiu.wang@nxp.com>
+Subject: [PATCH v2 5/6] ASoC: dt-bindings: fsl_spdif: Add two PLL clock source
+Date: Fri,  1 Jul 2022 17:32:40 +0800
+Message-Id: <1656667961-1799-6-git-send-email-shengjiu.wang@nxp.com>
 X-Mailer: git-send-email 2.7.4
 In-Reply-To: <1656667961-1799-1-git-send-email-shengjiu.wang@nxp.com>
 References: <1656667961-1799-1-git-send-email-shengjiu.wang@nxp.com>
@@ -78,23 +78,31 @@ can switch between them for supporting more accurate rates.
 
 Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
 ---
- Documentation/devicetree/bindings/sound/fsl-sai.txt | 3 +++
- 1 file changed, 3 insertions(+)
+ Documentation/devicetree/bindings/sound/fsl,spdif.yaml | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/sound/fsl-sai.txt b/Documentation/devicetree/bindings/sound/fsl-sai.txt
-index 4c66e6a1a533..fbdefc3fade7 100644
---- a/Documentation/devicetree/bindings/sound/fsl-sai.txt
-+++ b/Documentation/devicetree/bindings/sound/fsl-sai.txt
-@@ -21,6 +21,9 @@ Required properties:
-   - clock-names		: Must include the "bus" for register access and
- 			  "mclk1", "mclk2", "mclk3" for bit clock and frame
- 			  clock providing.
-+                          "pll8k", "pll11k" are optional, they are the clock
-+                          source for root clock, one is for 8kHz series rates
-+                          another one is for 11kHz series rates.
-   - dmas		: Generic dma devicetree binding as described in
- 			  Documentation/devicetree/bindings/dma/dma.txt.
+diff --git a/Documentation/devicetree/bindings/sound/fsl,spdif.yaml b/Documentation/devicetree/bindings/sound/fsl,spdif.yaml
+index f226ec13167a..1d64e8337aa4 100644
+--- a/Documentation/devicetree/bindings/sound/fsl,spdif.yaml
++++ b/Documentation/devicetree/bindings/sound/fsl,spdif.yaml
+@@ -58,6 +58,8 @@ properties:
+           slave of the Shared Peripheral Bus and when two or more bus masters
+           (CPU, DMA or DSP) try to access it. This property is optional depending
+           on the SoC design.
++      - description: PLL clock source for 8kHz series rate, optional.
++      - description: PLL clock source for 11khz series rate, optional.
+     minItems: 9
  
+   clock-names:
+@@ -72,6 +74,8 @@ properties:
+       - const: rxtx6
+       - const: rxtx7
+       - const: spba
++      - const: pll8k
++      - const: pll11k
+     minItems: 9
+ 
+   big-endian:
 -- 
 2.17.1
 
