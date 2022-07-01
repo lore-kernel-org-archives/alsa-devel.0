@@ -4,70 +4,55 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id BCD13C433EF
-	for <alsa-devel@archiver.kernel.org>; Fri,  1 Jul 2022 09:44:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A2589C433EF
+	for <alsa-devel@archiver.kernel.org>; Fri,  1 Jul 2022 09:48:24 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3666616B4;
-	Fri,  1 Jul 2022 11:43:41 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3666616B4
+	by alsa0.perex.cz (Postfix) with ESMTPS id 67B1D166C;
+	Fri,  1 Jul 2022 11:47:32 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 67B1D166C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1656668671;
-	bh=AwvxF6EAZytFEhWRDZzVChNu6O2RS8dZyGJbonSLV2o=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=C8ZmD898247Q8W29Wd25E8b0KUmMw87TtM0cHgF+vAXVZugJCAKWgdxfpjM1XBxPb
-	 w4vx6Wxlrp+ukFs9a/5Jb+H0rHdFXBL9uSjg1EwECzxLdIROhEeW5uXEt/0QejI6jh
-	 vOYz3p1iq1uuwqW8N+/TQOfdD+p393yU93sDdsko=
+	s=default; t=1656668902;
+	bh=E3GxID44ACfrRmydY0xS59U+1UHVvI8Fcwwn+rcSwFU=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=c5HT+nlr2RLSekKcWUgqmT2AY5tLR8NlXHExOLeAgw8yz7YB0/eJwP1SdcGQWkap9
+	 elUfNViAfzTw0SehaUGek4A1x1jmO4ggTyAri4Nc6EWwKGkJ4o19Y+XNQoTIasEFg2
+	 m9A2bCuc7I5kkV/W9nXf27JYI7B/STKBEYpu7VfI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id C3EFBF80152;
-	Fri,  1 Jul 2022 11:43:40 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id EE7EDF8047C;
+	Fri,  1 Jul 2022 11:47:31 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id D4D09F80155; Fri,  1 Jul 2022 11:43:38 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org
- [IPv6:2604:1380:4641:c500::1])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 6DE04F800E8
- for <alsa-devel@alsa-project.org>; Fri,  1 Jul 2022 11:43:36 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6DE04F800E8
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="heXEndUU"
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+ id 73E50F80155; Fri,  1 Jul 2022 11:47:30 +0200 (CEST)
+Received: from inva021.nxp.com (inva021.nxp.com [92.121.34.21])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id 808C36234C;
- Fri,  1 Jul 2022 09:43:33 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6C613C341C6;
- Fri,  1 Jul 2022 09:43:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1656668612;
- bh=AwvxF6EAZytFEhWRDZzVChNu6O2RS8dZyGJbonSLV2o=;
- h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=heXEndUUoCf70nuyGXwL6HPEUaVLXTi6YITwS8SB+gDE6nt8GCthfB2+Vc4OHslnf
- YBddI7YskU0EonrbyFQgX+88U1BjHpIwYmv/fk6h9TRPko1zXq4gYYLmhrFYU4m0fX
- QQUw6OsLYTcxBDU/qfjSZj0MFZRbW7DxG+54vrmL5Nm1b5Qu7xipCXc8VQdlSZT+fH
- yzvq3yl/QKEVzkNRq0Rix2UQTVI8ikx9ha6i0jVDE1r+KZW4V7DsKWPh0iYV3j0cqk
- zXm8cPQ78D+dyTHsQ/o+3gNa/Ek1jYAmBtBDpGFhttBXNwf8kCdaTUWtWqhKdjAbDM
- yQXxFC+JqaxGQ==
-Date: Fri, 1 Jul 2022 10:43:27 +0100
-From: Mark Brown <broonie@kernel.org>
-To: Zhu Ning <zhuning0077@gmail.com>
-Subject: Re: [PATCH] ASoC: codes: Add support for ES8316 producer mode
-Message-ID: <Yr7Bv0q0nEi7WfzM@sirena.org.uk>
-References: <20220701020537.970950-1-zhuning0077@gmail.com>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature"; boundary="wX6US5MogjSFakn6"
-Content-Disposition: inline
-In-Reply-To: <20220701020537.970950-1-zhuning0077@gmail.com>
-X-Cookie: Who is John Galt?
-Cc: alsa-devel@alsa-project.org, vijendar.mukunda@amd.com,
- pierre-louis.bossart@linux.intel.com,
- David Yang <yangxiaohua@everest-semi.com>, tiwai@suse.com
+ by alsa1.perex.cz (Postfix) with ESMTPS id 32BB7F8014E
+ for <alsa-devel@alsa-project.org>; Fri,  1 Jul 2022 11:47:27 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 32BB7F8014E
+Received: from inva021.nxp.com (localhost [127.0.0.1])
+ by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 2AB88201398;
+ Fri,  1 Jul 2022 11:47:26 +0200 (CEST)
+Received: from aprdc01srsp001v.ap-rdc01.nxp.com
+ (aprdc01srsp001v.ap-rdc01.nxp.com [165.114.16.16])
+ by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id E74C620138B;
+ Fri,  1 Jul 2022 11:47:25 +0200 (CEST)
+Received: from localhost.localdomain (shlinux2.ap.freescale.net
+ [10.192.224.44])
+ by aprdc01srsp001v.ap-rdc01.nxp.com (Postfix) with ESMTP id 3D995181D0CA;
+ Fri,  1 Jul 2022 17:47:24 +0800 (+08)
+From: Shengjiu Wang <shengjiu.wang@nxp.com>
+To: nicoleotsuka@gmail.com, Xiubo.Lee@gmail.com, festevam@gmail.com,
+ shengjiu.wang@gmail.com, lgirdwood@gmail.com, broonie@kernel.org,
+ perex@perex.cz, tiwai@suse.com, alsa-devel@alsa-project.org,
+ robh+dt@kernel.org, krzk+dt@kernel.org, devicetree@vger.kernel.org
+Subject: [PATCH v2 0/6] Add support of two Audio PLL source
+Date: Fri,  1 Jul 2022 17:32:35 +0800
+Message-Id: <1656667961-1799-1-git-send-email-shengjiu.wang@nxp.com>
+X-Mailer: git-send-email 2.7.4
+X-Virus-Scanned: ClamAV using ClamSMTP
+Cc: linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -83,50 +68,35 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+i.MX8MQ/MN/MM/MP platforms typically have 2 AUDIO PLLs being
+configured to handle 8kHz and 11kHz series audio rates.
 
---wX6US5MogjSFakn6
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+The patches implement the functionality to select at runtime
+the appropriate AUDIO PLL for root clock, if there is no
+two PLL registered, then no action taken.
 
-On Fri, Jul 01, 2022 at 10:05:37AM +0800, Zhu Ning wrote:
+change in v2:
+- simply the logic for calling reparent function
 
-This looks basically good, a few small things:
+Shengjiu Wang (6):
+  ASoC: fsl_utils: Add function to handle PLL clock source
+  ASoC: fsl_spdif: Add support for PLL switch at runtime.
+  ASoC: fsl_micfil: Add support for PLL switch at runtime
+  ASoC: fsl_sai: Add support for PLL switch at runtime
+  ASoC: dt-bindings: fsl_spdif: Add two PLL clock source
+  ASoC: dt-bindings: fsl-sai: Add two PLL clock source
 
-> -	if ((fmt & SND_SOC_DAIFMT_CLOCK_PROVIDER_MASK) != SND_SOC_DAIFMT_CBC_CFC) {
-> -		dev_err(component->dev, "Codec driver only supports consumer mode\n");
-> -		return -EINVAL;
-> +	if ((fmt & SND_SOC_DAIFMT_MASTER_MASK) == SND_SOC_DAIFMT_CBP_CFP) {
-> +		serdata1|=ES8316_SERDATA1_MASTER;
->  	}
+ .../devicetree/bindings/sound/fsl,spdif.yaml  |  4 ++
+ .../devicetree/bindings/sound/fsl-sai.txt     |  3 +
+ sound/soc/fsl/Kconfig                         |  3 +
+ sound/soc/fsl/fsl_micfil.c                    | 31 +++++++++
+ sound/soc/fsl/fsl_sai.c                       | 38 ++++++++++
+ sound/soc/fsl/fsl_sai.h                       |  2 +
+ sound/soc/fsl/fsl_spdif.c                     | 48 +++++++++++--
+ sound/soc/fsl/fsl_utils.c                     | 69 +++++++++++++++++++
+ sound/soc/fsl/fsl_utils.h                     |  7 ++
+ 9 files changed, 200 insertions(+), 5 deletions(-)
 
-There's lots of small coding style things through this - for example
-here the { } isn't needed and
+-- 
+2.17.1
 
-> +	lrck_divider = es8316->sysclk/params_rate(params);
-> +	bclk_divider = lrck_divider/4;
-
-There's a lot of cases without spaces around /.
-
->  #define ES8316_FORMATS (SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S20_3LE | \
-> -			SNDRV_PCM_FMTBIT_S24_LE)
-> +			SNDRV_PCM_FMTBIT_S24_LE | SNDRV_PCM_FMTBIT_S32_LE)
-
-This is adding S32_LE support which is fine but wasn't mentioned in the
-changelog, it should be a separate patch.
-
---wX6US5MogjSFakn6
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmK+wb8ACgkQJNaLcl1U
-h9BaQQf/VPUMD+o7qxj6rL4zuxUrB0sHoN34RJKn1d08sIhGfvb/gLlXcsk65Byu
-umUPKlcUFfxvZqRIFtLWmFpmJOxgr24HbwTlj+KMmcESWBeTCv/tI/MYcD1NVFpH
-qR/WG57LDVx/VwaFXwk7rOXf6NrdbUUtTOOMrhLwD04X2vULw+xUszjQAcSTDInF
-ptBIjw38mo0vKgIvM6f/sXtabBeyoJTdmI7venSBMvU4BtFaPUzXV/60e6iq4Ffy
-bPVdkVGiJQLekFkB3Fb4gzfuvXHpOIoNwvMfy2FxXOwiVFizI4TqE57Rj2h71A0F
-xqlK76A1NgTgSlJHy/H5XGc595QIGQ==
-=JzQt
------END PGP SIGNATURE-----
-
---wX6US5MogjSFakn6--
