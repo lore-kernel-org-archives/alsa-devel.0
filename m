@@ -4,54 +4,55 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2EF73C43334
-	for <alsa-devel@archiver.kernel.org>; Mon,  4 Jul 2022 11:33:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 59582C433EF
+	for <alsa-devel@archiver.kernel.org>; Mon,  4 Jul 2022 11:34:11 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 6CAA917BF;
-	Mon,  4 Jul 2022 13:33:02 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6CAA917BF
+	by alsa0.perex.cz (Postfix) with ESMTPS id A486B17C5;
+	Mon,  4 Jul 2022 13:33:19 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A486B17C5
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1656934432;
-	bh=4Dw8o4Ni+/DIiNaSaTnUmrQEB08oB1ZRamr7MN1V+tQ=;
+	s=default; t=1656934449;
+	bh=Hx5muWw17Jb0oqDiAd8+qbBnr1W1BbGEsr7q+7oKh+o=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=E8VjX9gGttJ7yeD53K0yzV+JCjYXM/fkcJqPWuZvuH1sZgji2T75qSc1QnJB5DyIm
-	 htnYSe1j5Gbcufjpbw6RsK/MPcxcT9XfvwbJwUFgg58/HJyLqKRmgyQV8UDEsb1ocQ
-	 QBQmKcW4+auveZd3NAn+TBrrX+nJ9zCWPXzqwMjo=
+	b=Hvsl1Fzmq+KmJxth0JCFtXt4KnclbOLwaHnhu496cO+11nblGpRaIFjMIbd3/jXcN
+	 ELiJCFAxhLeMXZOg4jnT5RnixRDYx8Bz2WdIBSv15PWgm85LbmPL0kyJAidAtXDQJY
+	 pQmtqHdA7wlos2dEKR2ziH0RizFNAB3pJNapTEFk=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id C4AB6F8061C;
-	Mon,  4 Jul 2022 13:23:27 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 4BA67F80620;
+	Mon,  4 Jul 2022 13:23:28 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 041B8F80155; Fri,  1 Jul 2022 21:24:40 +0200 (CEST)
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+ id 1945AF80155; Fri,  1 Jul 2022 21:24:46 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org
+ [IPv6:2604:1380:4641:c500::1])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id B93ECF800E8
- for <alsa-devel@alsa-project.org>; Fri,  1 Jul 2022 21:24:37 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B93ECF800E8
+ by alsa1.perex.cz (Postfix) with ESMTPS id A2A55F80152
+ for <alsa-devel@alsa-project.org>; Fri,  1 Jul 2022 21:24:43 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A2A55F80152
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="pMhXY41N"
+ header.b="Lnc/A97N"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by ams.source.kernel.org (Postfix) with ESMTPS id 560ECB831A8;
- Fri,  1 Jul 2022 19:24:37 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4A077C341D0;
- Fri,  1 Jul 2022 19:24:30 +0000 (UTC)
+ by dfw.source.kernel.org (Postfix) with ESMTPS id 64E0C61F89;
+ Fri,  1 Jul 2022 19:24:42 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4B0BBC341CD;
+ Fri,  1 Jul 2022 19:24:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1656703475;
- bh=4Dw8o4Ni+/DIiNaSaTnUmrQEB08oB1ZRamr7MN1V+tQ=;
+ s=k20201202; t=1656703481;
+ bh=Hx5muWw17Jb0oqDiAd8+qbBnr1W1BbGEsr7q+7oKh+o=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=pMhXY41NKw9L9gf7dOedkxHWG7+XTyZ2beNaUFCb9eRP1cTFNQJ2a8889bkSxASUv
- grB2HZL6+SGKndT4SXJHqdPEJ9LIQF/cNti2iBngLDBnwMsDJhjjRV9TxqnJD0D5S3
- WXgT+MtiZxqXDLAAryj09i2+TMFiHYW3Tfh31LxTTsJBLEv9/t6hZDg/7vrIUfbsS9
- pb51wJDldYwXbsChbZVZGBhAYuQWZnoCD1e7clOCXicJ0YC4GnWR29LTDoAsj7g6mv
- GZMs4ITv8bjDFpkyKQUIg5Kqlze4aSU1L3MkxaNqv0/gcQzPeRtGzyFEQ+4k+//1eo
- w7KoJB0k0h/cg==
+ b=Lnc/A97NcUj3poedeyd4maMRBOzjDxYynybF3AhzHkmX2+PNvDX93LK+Dye2Tcfhj
+ W6F9KzI6TN0ISSmu0RU6HprkI/hGEfMl17gHrSMnrJ/XtnmhScTeuA7ncJCsdepcLD
+ mMIjE2XVvGLH8k3sNm7/686bkqm4q13pOYY4gbcL/EnI5gUgbxjBXaDKubCEO8QcZm
+ cCFSv2FwS5A3KzfVx1XgWb+YP2U5Td1PrrW6Rz3c1DZzJiiVBkm9bLkYWcQL36LI7u
+ b+oeZ4rFcUotmSlv62g8y71lrbVka0o9HStErLS965dX5IokL8STNI8rJMIwGv/bTL
+ 6cewHuFvVD+kw==
 From: Conor Dooley <conor@kernel.org>
 To: David Airlie <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>,
  Rob Herring <robh+dt@kernel.org>,
@@ -62,10 +63,10 @@ To: David Airlie <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>,
  Mark Brown <broonie@kernel.org>, Serge Semin <fancer.lancer@gmail.com>,
  Daniel Lezcano <daniel.lezcano@linaro.org>,
  Palmer Dabbelt <palmer@dabbelt.com>, Palmer Dabbelt <palmer@rivosinc.com>
-Subject: [PATCH v4 10/14] riscv: dts: canaan: use custom compatible for k210
- i2s
-Date: Fri,  1 Jul 2022 20:22:56 +0100
-Message-Id: <20220701192300.2293643-11-conor@kernel.org>
+Subject: [PATCH v4 11/14] riscv: dts: canaan: remove spi-max-frequency from
+ controllers
+Date: Fri,  1 Jul 2022 20:22:57 +0100
+Message-Id: <20220701192300.2293643-12-conor@kernel.org>
 X-Mailer: git-send-email 2.37.0
 In-Reply-To: <20220701192300.2293643-1-conor@kernel.org>
 References: <20220701192300.2293643-1-conor@kernel.org>
@@ -98,47 +99,46 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 From: Conor Dooley <conor.dooley@microchip.com>
 
-The devicetrees using the Canaan k210 all have a sound-dai-cells value
-of 1, whereas the standard binding example for the DesignWare i2s and
-other use cases suggest 0. Use a k210 specific compatible which
-supports this difference.
+spi-max-frequency is a device, not a controller  property and should be
+removed.
 
+Link: https://lore.kernel.org/lkml/20220526014141.2872567-1-robh@kernel.org/
+Tested-by: Niklas Cassel <niklas.cassel@wdc.com>
 Signed-off-by: Conor Dooley <conor.dooley@microchip.com>
 ---
- arch/riscv/boot/dts/canaan/k210.dtsi | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ arch/riscv/boot/dts/canaan/k210.dtsi | 5 +----
+ 1 file changed, 1 insertion(+), 4 deletions(-)
 
 diff --git a/arch/riscv/boot/dts/canaan/k210.dtsi b/arch/riscv/boot/dts/canaan/k210.dtsi
-index 72f70128d751..900dc629a945 100644
+index 900dc629a945..948dc235e39d 100644
 --- a/arch/riscv/boot/dts/canaan/k210.dtsi
 +++ b/arch/riscv/boot/dts/canaan/k210.dtsi
-@@ -251,7 +251,7 @@ spi2: spi@50240000 {
+@@ -451,7 +451,6 @@ spi0: spi@52000000 {
+ 				clock-names = "ssi_clk", "pclk";
+ 				resets = <&sysrst K210_RST_SPI0>;
+ 				reset-names = "spi";
+-				spi-max-frequency = <25000000>;
+ 				num-cs = <4>;
+ 				reg-io-width = <4>;
  			};
- 
- 			i2s0: i2s@50250000 {
--				compatible = "snps,designware-i2s";
-+				compatible = "canaan,k210-i2s", "snps,designware-i2s";
- 				reg = <0x50250000 0x200>;
- 				interrupts = <5>;
- 				clocks = <&sysclk K210_CLK_I2S0>;
-@@ -260,7 +260,7 @@ i2s0: i2s@50250000 {
+@@ -467,7 +466,6 @@ spi1: spi@53000000 {
+ 				clock-names = "ssi_clk", "pclk";
+ 				resets = <&sysrst K210_RST_SPI1>;
+ 				reset-names = "spi";
+-				spi-max-frequency = <25000000>;
+ 				num-cs = <4>;
+ 				reg-io-width = <4>;
  			};
- 
- 			i2s1: i2s@50260000 {
--				compatible = "snps,designware-i2s";
-+				compatible = "canaan,k210-i2s", "snps,designware-i2s";
- 				reg = <0x50260000 0x200>;
- 				interrupts = <6>;
- 				clocks = <&sysclk K210_CLK_I2S1>;
-@@ -269,7 +269,7 @@ i2s1: i2s@50260000 {
+@@ -483,8 +481,7 @@ spi3: spi@54000000 {
+ 				clock-names = "ssi_clk", "pclk";
+ 				resets = <&sysrst K210_RST_SPI3>;
+ 				reset-names = "spi";
+-				/* Could possibly go up to 200 MHz */
+-				spi-max-frequency = <100000000>;
++
+ 				num-cs = <4>;
+ 				reg-io-width = <4>;
  			};
- 
- 			i2s2: i2s@50270000 {
--				compatible = "snps,designware-i2s";
-+				compatible = "canaan,k210-i2s", "snps,designware-i2s";
- 				reg = <0x50270000 0x200>;
- 				interrupts = <7>;
- 				clocks = <&sysclk K210_CLK_I2S2>;
 -- 
 2.37.0
 
