@@ -4,93 +4,43 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 72421C43334
-	for <alsa-devel@archiver.kernel.org>; Fri,  1 Jul 2022 16:48:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 93FADC433EF
+	for <alsa-devel@archiver.kernel.org>; Fri,  1 Jul 2022 19:04:07 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 579AD16B6;
-	Fri,  1 Jul 2022 18:47:56 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 579AD16B6
+	by alsa0.perex.cz (Postfix) with ESMTPS id 992CC16A1;
+	Fri,  1 Jul 2022 21:03:14 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 992CC16A1
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1656694126;
-	bh=3aXEKuYhSekfjFf2iaJFFk/57mY9AqJp8+HZ/oMIjzQ=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
+	s=default; t=1656702244;
+	bh=gw6rAINkls/mSPU/lWNbwJ4xsYvSt55iSfSyPsuhM0s=;
+	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=uOQUlk4kXYjW97r/fjqoOjvzUfujz5d3YdhzkatsUEXF0n3UFatsmeGvUMMPQp0tE
-	 rZGU9poHISm8dIK3E2t9gnIcEZMIcP+RDX4mcjaWv0vLGu1mCYwo88nXamW6wjG7dS
-	 rNICNuC/gz+EJdcnXYZQMBFAHnDGMZpvVyqdXrqY=
+	b=SMpylzu5ZW91bDuttxzkLh1y7SIuA3aVdtKNZsXYcNQnQ0JgLpM2PPSETd39IjTuB
+	 TEWHGrHXwO00KthTepqdjyohAjc1RLJNKs4RPcwypn0I3XmcAtdX/5bdRFOR2lei6G
+	 07Nml5QvDOGXHEOFls2PipZHyvxXLIfO9N0xhHpo=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id E3DBCF80107;
-	Fri,  1 Jul 2022 18:47:55 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2B495F80152;
+	Fri,  1 Jul 2022 21:03:14 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id AFC98F800E8; Fri,  1 Jul 2022 18:47:54 +0200 (CEST)
-Received: from mail-oa1-x35.google.com (mail-oa1-x35.google.com
- [IPv6:2001:4860:4864:20::35])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 42215F800E8
- for <alsa-devel@alsa-project.org>; Fri,  1 Jul 2022 18:47:46 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 42215F800E8
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org
- header.b="NFQb1gvP"
-Received: by mail-oa1-x35.google.com with SMTP id
- 586e51a60fabf-fe023ab520so4223586fac.10
- for <alsa-devel@alsa-project.org>; Fri, 01 Jul 2022 09:47:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=chromium.org; s=google;
- h=mime-version:references:in-reply-to:from:date:message-id:subject:to
- :cc; bh=3aXEKuYhSekfjFf2iaJFFk/57mY9AqJp8+HZ/oMIjzQ=;
- b=NFQb1gvPPgh9l6ruExkaXLZ1hFCZfoyPD99CK1HWB7to7E8wSHjtHLAHs8hQK2c5nM
- FpMJM4l43Kc6cdx0S/XcRRbIGzbRiat3w+G1TAfva2q1K0ZtJCzvIuZpQ2lf96iLM/sP
- RXGhwEwsvIQNicNbaidCfit2HC/ghNX/2Rxbg=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc;
- bh=3aXEKuYhSekfjFf2iaJFFk/57mY9AqJp8+HZ/oMIjzQ=;
- b=aegseXvleOudB3jS3AuTOqHxdATgVHrLGjeEwL8RTHBotg5LHFTGTGqHOEVSzAPD/t
- nU5QlDxAVbfO3f/yU09YlTR1gDytO4muj6GpAX4afQArfGQtxd2lx2v2PWoxxw2Anvfm
- RFMpamS9yjWYplK6k4MaQ8LcNIVTaGTGJdjjO+xPL8dSPyIzlbCcSuHH3Tz6dUZB9XA6
- zvcKOvHi6ALhtxQf6HgI9H3u8fMI4He+YgZnhFx8m2OcRyQbDJQ+OV4NNHIrE64DN5ND
- 1719aMfNUDZ/O4YFSM6TPLta8OKLQbUBHMv8sJmIBxh+F6GCy0rmOlhXN2WDWAL7Cs6F
- vxIg==
-X-Gm-Message-State: AJIora9QSe2TZguyP8UBJz/tPOk7+0RMq01GbO7jcA+lkzPgdLRK7U7j
- P6Yx7TCjTCW6nBh234R5ETwL25oMjqkpbA==
-X-Google-Smtp-Source: AGRyM1uNPz/R5Hky58CnKeWEPZlfVDULSOb/gq6KDXDUS9LIt3SKqV5U77llT1B+feL4hIlU0dKGJA==
-X-Received: by 2002:a05:6870:2483:b0:ed:f721:2734 with SMTP id
- s3-20020a056870248300b000edf7212734mr9055233oaq.242.1656694063871; 
- Fri, 01 Jul 2022 09:47:43 -0700 (PDT)
-Received: from mail-oa1-f44.google.com (mail-oa1-f44.google.com.
- [209.85.160.44]) by smtp.gmail.com with ESMTPSA id
- z39-20020a056870d6a700b000f342119f41sm14655073oap.42.2022.07.01.09.47.42
- for <alsa-devel@alsa-project.org>
- (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Fri, 01 Jul 2022 09:47:43 -0700 (PDT)
-Received: by mail-oa1-f44.google.com with SMTP id
- 586e51a60fabf-101dc639636so4254784fac.6
- for <alsa-devel@alsa-project.org>; Fri, 01 Jul 2022 09:47:42 -0700 (PDT)
-X-Received: by 2002:a05:6870:2326:b0:f1:7485:2a92 with SMTP id
- w38-20020a056870232600b000f174852a92mr9593871oao.291.1656694062616; Fri, 01
- Jul 2022 09:47:42 -0700 (PDT)
+ id 6A285F80155; Fri,  1 Jul 2022 21:03:12 +0200 (CEST)
+Received: from webhooks-bot.alsa-project.org (gate.perex.cz [77.48.224.242])
+ by alsa1.perex.cz (Postfix) with ESMTP id CD1F4F800E8
+ for <alsa-devel@alsa-project.org>; Fri,  1 Jul 2022 21:03:09 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CD1F4F800E8
 MIME-Version: 1.0
-References: <20220701021427.3120549-1-judyhsiao@chromium.org>
-In-Reply-To: <20220701021427.3120549-1-judyhsiao@chromium.org>
-From: Brian Norris <briannorris@chromium.org>
-Date: Fri, 1 Jul 2022 09:47:30 -0700
-X-Gmail-Original-Message-ID: <CA+ASDXMof_NA0v_PwD6--ojrsEiMvSOpx48UWS0vmVB4xBc_VA@mail.gmail.com>
-Message-ID: <CA+ASDXMof_NA0v_PwD6--ojrsEiMvSOpx48UWS0vmVB4xBc_VA@mail.gmail.com>
-Subject: Re: [PATCH v1] FROMGIT: ASoC: rockchip: i2s: Fix error code when fail
- to read I2S_CLR
-To: Judy Hsiao <judyhsiao@chromium.org>
-Content-Type: text/plain; charset="UTF-8"
-Cc: alsa-devel@alsa-project.org, Heiko Stuebner <heiko@sntech.de>,
- Linux Kernel <linux-kernel@vger.kernel.org>,
- Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <robh+dt@kernel.org>,
- "open list:ARM/Rockchip SoC..." <linux-rockchip@lists.infradead.org>,
- Mark Brown <broonie@kernel.org>, Chen-Yu Tsai <wenst@chromium.org>,
- linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+From: GitHub issues - opened <github@alsa-project.org>
+To: alsa-devel@alsa-project.org
+In-Reply-To: <1656702188734353065-webhooks-bot@alsa-project.org>
+References: <1656702188734353065-webhooks-bot@alsa-project.org>
+Subject: python3: src/hostapi/alsa/pa_linux_alsa.c:3641:
+ PaAlsaStreamComponent_BeginPolling: Assertion `ret == self->nfds' failed
+Message-Id: <20220701190312.6A285F80155@alsa1.perex.cz>
+Date: Fri,  1 Jul 2022 21:03:12 +0200 (CEST)
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -106,14 +56,11 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Thu, Jun 30, 2022 at 7:14 PM Judy Hsiao <judyhsiao@chromium.org> wrote:
->
-> Add the error code '-EBUSY' when fail to read I2S_CLR
-> in rockchip_snd_rxctrl() and rockchip_snd_txctrl()
->
-> Fixes: 44f362c2cc6d ("ASoC: rockchip: i2s: switch BCLK to GPIO")
-> Signed-off-by: Judy Hsiao <judyhsiao@chromium.org>
+alsa-project/alsa-lib issue #246 was opened from stdcout42:
 
-Apart from the FROMGIT subject:
+Getting `python3: src/hostapi/alsa/pa_linux_alsa.c:3641: PaAlsaStreamComponent_BeginPolling: Assertion `ret == self->nfds' failed` on Ubuntu 20.04 5.13.0-52-generic when trying to run in combination with pyaudio.
 
-Reviewed-by: Brian Norris <briannorris@chromium.org>
+Interestingly enough I'm running this just fine on another Ubuntu 20.04... I've looked up this error and it seems to have been fixed some months to years ago but I don't understand why I'm getting this error on a fresh install ubuntu 20.04... Thanks in advance for any inputs...
+
+Issue URL     : https://github.com/alsa-project/alsa-lib/issues/246
+Repository URL: https://github.com/alsa-project/alsa-lib
