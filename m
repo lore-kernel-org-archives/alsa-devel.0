@@ -4,84 +4,89 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 146F4C43334
-	for <alsa-devel@archiver.kernel.org>; Mon,  4 Jul 2022 11:31:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 23B66C433EF
+	for <alsa-devel@archiver.kernel.org>; Mon,  4 Jul 2022 11:32:05 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 57DEC174E;
-	Mon,  4 Jul 2022 13:30:58 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 57DEC174E
+	by alsa0.perex.cz (Postfix) with ESMTPS id 564AE1777;
+	Mon,  4 Jul 2022 13:31:13 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 564AE1777
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1656934308;
-	bh=p4PQCazigD+xmM5i27kOnGV9rsiuwNDpKW4UIqTXJfI=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1656934323;
+	bh=36uDmK9PH0G8yS6UHFkRmA+PvoilvFykC3HZFSJl2GU=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=ZB8+LNFYr6Bvq3F5iJ8ORyyuRHhIsV40QaiUEjErVMQGksmdeH1x8sVdWaGUenC5v
-	 I6cvjWX+bfrT0F74NZhmFnA3Ft3UFMyNuId6EWgls3aMmdTz7Dnx7GfXcCpDA/0TPX
-	 Xb0Wbf3K/pPm+Ck6RKAQJri1rqpDw9KH91LnHfT0=
+	b=A9PwC3wDFypnanGGje3u0YMZxF7yjaKTUVx97KNIsNtA23GcK5xMecEnXhAbFTpXI
+	 foJjctUvlo7Hl7gB+uHtUJK8XT7yG/g0wO7JIzQDgX8kuoF2xdxJq7MX0c9/V+KMRl
+	 0JyL/H1DWd6iaJ8CsaVjfutFTd2grqVx8w6wvIlY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 91C0EF805FA;
-	Mon,  4 Jul 2022 13:23:23 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 18619F80600;
+	Mon,  4 Jul 2022 13:23:24 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id E060FF80155; Fri,  1 Jul 2022 21:24:14 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org
- [IPv6:2604:1380:4641:c500::1])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id CA1E2F80155; Sat,  2 Jul 2022 00:17:55 +0200 (CEST)
+Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com
+ [IPv6:2607:f8b0:4864:20::431])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id D5ACEF800E8
- for <alsa-devel@alsa-project.org>; Fri,  1 Jul 2022 21:24:08 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D5ACEF800E8
+ by alsa1.perex.cz (Postfix) with ESMTPS id 20D61F8014E
+ for <alsa-devel@alsa-project.org>; Sat,  2 Jul 2022 00:17:52 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 20D61F8014E
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="kUBm2m0/"
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id 02B3261F72;
- Fri,  1 Jul 2022 19:24:07 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4EFC7C341C8;
- Fri,  1 Jul 2022 19:24:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1656703445;
- bh=p4PQCazigD+xmM5i27kOnGV9rsiuwNDpKW4UIqTXJfI=;
- h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=kUBm2m0/La9PmkaEPbAsuSfP6dZwjsuaeiPTbuUAJk5tIsVOpXtDngNwIqrBzt6ut
- mzxx5PsisykiMAj6f5V4p0kGj6Uk74t8zFgFh0cX7/vBvhep7u3IGKnljr6fbA368C
- ZS5SG3jCRkRW1lf3v893YwzS2pslqlh5ANGVF6ze3UNgonSjmumqc90lGKJ/ZjuF+c
- 13AVgK15YjcoJ0o+Wqs40RQAVXuS//1Evjx3MH/hzkRYYPJ+pAxsk5FqNkuIILiHB1
- TUvuEo6eRCFm6SJcJ8PazdbKKMeokz7OxKr4WCT0MyNfaokdWQdbMgWuoLbLadS+3m
- 67c6YRmTiRaBQ==
-From: Conor Dooley <conor@kernel.org>
-To: David Airlie <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>,
- Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Thierry Reding <thierry.reding@gmail.com>, Sam Ravnborg <sam@ravnborg.org>,
- Eugeniy Paltsev <Eugeniy.Paltsev@synopsys.com>,
- Vinod Koul <vkoul@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>,
- Mark Brown <broonie@kernel.org>, Serge Semin <fancer.lancer@gmail.com>,
- Daniel Lezcano <daniel.lezcano@linaro.org>,
- Palmer Dabbelt <palmer@dabbelt.com>, Palmer Dabbelt <palmer@rivosinc.com>
-Subject: [PATCH v4 05/14] dt-bindings: memory-controllers: add canaan k210
- sram controller
-Date: Fri,  1 Jul 2022 20:22:51 +0100
-Message-Id: <20220701192300.2293643-6-conor@kernel.org>
-X-Mailer: git-send-email 2.37.0
-In-Reply-To: <20220701192300.2293643-1-conor@kernel.org>
-References: <20220701192300.2293643-1-conor@kernel.org>
+ dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
+ header.b="XN2WyF1Q"
+Received: by mail-pf1-x431.google.com with SMTP id 128so3628383pfv.12
+ for <alsa-devel@alsa-project.org>; Fri, 01 Jul 2022 15:17:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
+ h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+ :cc; bh=UgWJcwbsoftLUVFHLbhy6IyGKEbqgVdqVlFZm5JpsLw=;
+ b=XN2WyF1QwopFqoEpu5tYQbVBW3Vk+1+wgZIlae/RmcP9K2H902xi3WU51XrcOPSAjp
+ tgJCd7ZHKLWVXKHKXUhPR1qsPOX+pDMhAnXnG0BVkEw/3XGiGzVC+MSkZ4DeK/FS7QPZ
+ 9laKFtESlOlMHPBlzE86AQ08nWxQHoQUVohGOGk235AxQAeGwnh3weyMkKRQP2KeB6PB
+ u7Mc4EWz71cbLV/Eo15AZMKfHMAce4AdQZn4iZ6noOJqVh13zSXsNvlC74Kz8yIjNSsz
+ LDOVQLlIQAc4YjWR4t3T2jLeGru/KZBfNmHZsCIQSq0UDxvBZ2ZpXOprOFDxrhq43zW/
+ ecTg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc;
+ bh=UgWJcwbsoftLUVFHLbhy6IyGKEbqgVdqVlFZm5JpsLw=;
+ b=CbGFXzFdqq/MYPzmO001wxa+qD/DHELLG6kHvd6Vu5aIqyhp/JWQkqvyzMv9rtpjdt
+ XLXiD+vxxvFy5MtHK0yQ0XPNF8tetYH2Un6+BDEgh2hXe85d1DA2NGcFuMA+u61ztqgU
+ qKBD9Iz77JAqCoCSQ1Lcgxj54ewWoC8K+EWe29conOwSNMGSyl+BEO11aycagWN0LUgn
+ iI+GPpRuIdz3EsNtAaO1BLjOwg24ONpiuxaQUd4teKioMbdqHbXUoOzo2JyTwIAbO+zl
+ pHKuEkZZlcaC/ATi6zQ+zNZYduG46WX0glMohJCZDdl0F7Sec4PzYb5SlQ+0aU7bS0Xs
+ sYew==
+X-Gm-Message-State: AJIora9feKzjrRZ7+wToIRUw4bgwd5xCBNs0xR8XoiZDKBcZJl6D6pUc
+ ySbgTFGNSSvFtnBe64o04g5Yd6V9yf5Od4kgs6A=
+X-Google-Smtp-Source: AGRyM1sSwwGtes7c8gkcSPhj3drf8sd+x0cQprxMXHoHTCU4CMwoUm33CQymd8nSzPsQynoaf5uqmufpVkBqWxGBiC8=
+X-Received: by 2002:a05:6a00:1141:b0:528:2479:cc23 with SMTP id
+ b1-20020a056a00114100b005282479cc23mr7638800pfm.27.1656713870620; Fri, 01 Jul
+ 2022 15:17:50 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Mailman-Approved-At: Mon, 04 Jul 2022 13:23:03 +0200
-Cc: Niklas Cassel <niklas.cassel@wdc.com>, alsa-devel@alsa-project.org,
- Albert Ou <aou@eecs.berkeley.edu>, devicetree@vger.kernel.org,
- Damien Le Moal <damien.lemoal@opensource.wdc.com>,
- linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
- Conor Dooley <conor.dooley@microchip.com>, Jose Abreu <joabreu@synopsys.com>,
- Geert Uytterhoeven <geert@linux-m68k.org>,
- Paul Walmsley <paul.walmsley@sifive.com>, dmaengine@vger.kernel.org,
- linux-riscv@lists.infradead.org, Dillon Min <dillon.minfei@gmail.com>,
- Masahiro Yamada <masahiroy@kernel.org>
+References: <CADs9LoPZH_D+eJ9qjTxSLE5jGyhKsjMN7g2NighZ16biVxsyKw@mail.gmail.com>
+ <15259e38-eccf-d294-a330-a48b5bbbdedf@linux.intel.com>
+ <CADs9LoN-L0X1Dr1sP2K7xrcWm7dpHW6MhF47c2eBB0moLNnPRQ@mail.gmail.com>
+ <18d3e724-e43f-c166-e322-26cc5e3890b7@linux.intel.com>
+ <CADs9LoOZjK=cUuNSEELtgxYoA+yHVFKM_Y9YLcY74smqx8XsjQ@mail.gmail.com>
+ <c554b69c-0c73-158d-85d8-95a0375babeb@linux.intel.com>
+ <CADs9LoOOOXVC0p8R=b1y+Kfb1+ESEyMaVe9eoW=F5gdp0_GitQ@mail.gmail.com>
+ <c4d32547-5f99-595e-21d3-fdb22a1af237@linux.intel.com>
+In-Reply-To: <c4d32547-5f99-595e-21d3-fdb22a1af237@linux.intel.com>
+From: Alex Natalsson <harmoniesworlds@gmail.com>
+Date: Sat, 2 Jul 2022 01:17:38 +0300
+Message-ID: <CADs9LoNMuwbiSfgF1buDoY6=ecpR-BuZvTgXbFxe3qyL1=roUQ@mail.gmail.com>
+Subject: Re: Sound not working after commit
+ bbf7d3b1c4f40eb02dd1dffb500ba00b0bff0303 on Amlogic A311D device
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailman-Approved-At: Mon, 04 Jul 2022 13:23:02 +0200
+Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>,
+ Kai Vehmanen <kai.vehmanen@linux.intel.com>, Takashi Iwai <tiwai@suse.de>,
+ Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+ linux-sound@vger.kernel.org, Mark Brown <broonie@kernel.org>,
+ Bard Liao <yung-chuan.liao@linux.intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -97,77 +102,18 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Conor Dooley <conor.dooley@microchip.com>
+> +       if (!fe_substream) {
+> +               dev_err(fe->dev, "%s: fe_substream not initialized\n",
+> __func__);
+> +               return -EINVAL;
+> +       }
+> +       if (!be_substream) {
+> +               dev_err(be->dev, "%s: be_substream not initialized\n",
+> __func__);
+> +               return -EINVAL;
+> +       }
+> +
 
-The k210 U-Boot port has been using the clocks defined in the
-devicetree to bring up the board's SRAM, but this violates the
-dt-schema. As such, move the clocks to a dedicated node with
-the same compatible string & document it.
-
-Signed-off-by: Conor Dooley <conor.dooley@microchip.com>
----
- .../memory-controllers/canaan,k210-sram.yaml  | 52 +++++++++++++++++++
- 1 file changed, 52 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/memory-controllers/canaan,k210-sram.yaml
-
-diff --git a/Documentation/devicetree/bindings/memory-controllers/canaan,k210-sram.yaml b/Documentation/devicetree/bindings/memory-controllers/canaan,k210-sram.yaml
-new file mode 100644
-index 000000000000..82be32757713
---- /dev/null
-+++ b/Documentation/devicetree/bindings/memory-controllers/canaan,k210-sram.yaml
-@@ -0,0 +1,52 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/memory-controllers/canaan,k210-sram.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: Canaan K210 SRAM memory controller
-+
-+description: |
-+  The Canaan K210 SRAM memory controller is initialised and programmed by
-+  firmware, but an OS might want to read its registers for error reporting
-+  purposes and to learn about the DRAM topology.
-+
-+maintainers:
-+  - Conor Dooley <conor@kernel.org>
-+
-+properties:
-+  compatible:
-+    enum:
-+      - canaan,k210-sram
-+
-+  clocks:
-+    minItems: 1
-+    items:
-+      - description: sram0 clock
-+      - description: sram1 clock
-+      - description: aisram clock
-+
-+  clock-names:
-+    minItems: 1
-+    items:
-+      - const: sram0
-+      - const: sram1
-+      - const: aisram
-+
-+required:
-+  - compatible
-+  - clocks
-+  - clock-names
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    #include <dt-bindings/clock/k210-clk.h>
-+    memory-controller {
-+        compatible = "canaan,k210-sram";
-+        clocks = <&sysclk K210_CLK_SRAM0>,
-+                 <&sysclk K210_CLK_SRAM1>,
-+                 <&sysclk K210_CLK_AI>;
-+        clock-names = "sram0", "sram1", "aisram";
-+    };
--- 
-2.37.0
-
+Good) USB-audio is working)
+May be and A311D internal sound card probably to repear too?))
+Big Thanks!
