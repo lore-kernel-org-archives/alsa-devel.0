@@ -4,80 +4,114 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B86D3C433EF
-	for <alsa-devel@archiver.kernel.org>; Fri,  1 Jul 2022 10:59:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8FEF8C43334
+	for <alsa-devel@archiver.kernel.org>; Fri,  1 Jul 2022 11:42:27 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3E8B1167F;
-	Fri,  1 Jul 2022 12:58:28 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3E8B1167F
+	by alsa0.perex.cz (Postfix) with ESMTPS id 2274A823;
+	Fri,  1 Jul 2022 13:41:35 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2274A823
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1656673158;
-	bh=DIRi+6ZaJOFr1zg33DBZQTKB2FcrepdEc5EYUaGlRTI=;
-	h=Date:Subject:To:References:From:In-Reply-To:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=D8NEU4A9U1KXWUBUoSU+7tGQMUlem5UExla0gl4eFeEerwthwg9F8siNnGxJYEwrQ
-	 EAxe6ZWGGkeIotMzdRoTowGXjiv53UVO0EBseZ7jsH3nk3KK9xLV3ldFBy7zJsDb6B
-	 oH1uBawp7fqAkafLyXGsmJilxuUXjmVRSBCpUjmM=
+	s=default; t=1656675745;
+	bh=Jfp9Vrr6BgpJUWHkSusuGMPmnWBqgcz0vtaHeOq8fUA=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=sGuuxWB31ZTMpJrYI+KHhB5zFBvZskLo3F31BwXDX2DNYVxjD+t+mOjmkRrqnXPFm
+	 9m10gL8x9Nu3MrancbZQ5XkY5MLah0HV64lo87Pj+i2Qkd3CkGrNyxvPVnGIdeKV6N
+	 HUv7K8xpxuejKHC3kAJyNXg4jtw/V4O19s3OpR5A=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id CBF27F80152;
-	Fri,  1 Jul 2022 12:58:27 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id AAE32F80152;
+	Fri,  1 Jul 2022 13:41:34 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id BEF8DF80155; Fri,  1 Jul 2022 12:58:26 +0200 (CEST)
-Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
+ id BE169F80155; Fri,  1 Jul 2022 13:41:33 +0200 (CEST)
+Received: from NAM12-DM6-obe.outbound.protection.outlook.com
+ (mail-dm6nam12on2071.outbound.protection.outlook.com [40.107.243.71])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id CF8A1F8014E
- for <alsa-devel@alsa-project.org>; Fri,  1 Jul 2022 12:58:17 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CF8A1F8014E
+ by alsa1.perex.cz (Postfix) with ESMTPS id 80557F800E8
+ for <alsa-devel@alsa-project.org>; Fri,  1 Jul 2022 13:41:30 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 80557F800E8
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="TmL7btSc"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
- d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1656673101; x=1688209101;
- h=message-id:date:mime-version:subject:to:cc:references:
- from:in-reply-to:content-transfer-encoding;
- bh=DIRi+6ZaJOFr1zg33DBZQTKB2FcrepdEc5EYUaGlRTI=;
- b=TmL7btScduIdgYllfgKKopnGuVarX6oHludpqEm3lzFYvA2JlVwbLWyT
- Ad5Impu5adMhDWUBlZ9hieRYDQa9I3yFt2B9jTBQ2wBSdCs3Fuo+VFITG
- qwspjcvYHioPdwJqc5IrIU7aWClIHdLT9Jkmo5OmCFqDmkVO0ZkBVmKNT
- 5PHJXWEKfQVUsE6oCBrwSwDQPgxjxlzC2TSm543JbriHf/GH3R85LjWAJ
- Pp39XTxgUXl4HxWmez6/dRCWtXno2Y+b9fTkdLc+/3vdXRREyRG8btxdZ
- B9NP2JbI82zwfmpcYD6ZersJu1EB71mkBsYmikDMNzozngvMrW1gO0w9K g==;
-X-IronPort-AV: E=McAfee;i="6400,9594,10394"; a="283725111"
-X-IronPort-AV: E=Sophos;i="5.92,236,1650956400"; d="scan'208";a="283725111"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
- by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 01 Jul 2022 03:58:13 -0700
-X-IronPort-AV: E=Sophos;i="5.92,236,1650956400"; d="scan'208";a="596219335"
-Received: from kerva-mobl2.ger.corp.intel.com (HELO [10.249.254.11])
- ([10.249.254.11])
- by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 01 Jul 2022 03:58:09 -0700
-Message-ID: <b38b3159-2d77-f4fd-f269-d708eb1a90a5@linux.intel.com>
-Date: Fri, 1 Jul 2022 13:58:53 +0300
+ dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com
+ header.b="e0jCf7aL"
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=TY98j+2YA99YIEZZUswyDpRHYxeAMDX37NqF8dXI3hbCvqkM4izS9sYmR5+lCKm/gRF2CTXUvJKUaS/6wTSSQJqUjGfCLW1whYqUQfCvyK41QWo2stXGgMeG7QTQjJLGy8FVBn+MZ4oHeJ39aTDnlk5mRlw5N/lYdWbKdh+rrV16kzB+hycyVDnn+uiCRSG/1amXewbEA/iALnQnvcBo87+C/f06x+ILRUxtRIGjB059d/wrcwsXG6dvdzfTKctHVkt/3TOuoCkSt8dTa1cVtNA1X3OoZEfaRd630mhyS6O68qFBhKFAkHDxJ0hjUv0hO26L+wxkbcf0h/97RxyRTg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=xfO6ZexfbifOy9CsChgzCXyiQDL17nn8m4X01ykbPLY=;
+ b=aNK74BPb3b/6oM5Ylo/OPSrXLNGo4MancYL4I+ZOYQVJR8qzGPKkAYq8kAizCvF9mcot/FunukOala3T6s7DAF1vBi7LG768SzxEUBnfdyGbszEVXfa/wrVGrc3ImVnUdZAjSuYJ4VgdTjB0qAjW2sYVN2duU380asReAlPB3qDPFWT3TYyfD5vzDbfY1TnauYT17v+v3Hfi2UGOnkIm+eoDU4XL7ZcgqySesNjK17ZcFj8L9VyDf0Tlp/KVPzZoXYI/umF5ds9SRVo0G1Qc6X0aBkzJFPsnElgaRf8lJiJzuFlGFWvagBmuOjukIkrqZ+5G80yDXWJjiLCciRarrA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 165.204.84.17) smtp.rcpttodomain=kernel.org smtp.mailfrom=amd.com; dmarc=pass
+ (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
+ dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1; 
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=xfO6ZexfbifOy9CsChgzCXyiQDL17nn8m4X01ykbPLY=;
+ b=e0jCf7aLaNtQZEWOyBLLU4ZXw5/QH5kTdSzcBHbZNu5y+xjy9KtQ/qeJ1FhLB45k/0R0CeFDYZTAHLU5DHIHv+2+KPNS6OxBsFjST3IDaVSxlZOfLK+ma46l6n0k9s1RSx7JREQpgUPIn6IHYdhyO2JYVH1CE79seRABaB9Qy4M=
+Received: from DM6PR05CA0055.namprd05.prod.outlook.com (2603:10b6:5:335::24)
+ by MWHPR12MB1296.namprd12.prod.outlook.com (2603:10b6:300:f::20) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5395.15; Fri, 1 Jul
+ 2022 11:41:19 +0000
+Received: from DM6NAM11FT059.eop-nam11.prod.protection.outlook.com
+ (2603:10b6:5:335:cafe::dd) by DM6PR05CA0055.outlook.office365.com
+ (2603:10b6:5:335::24) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5417.11 via Frontend
+ Transport; Fri, 1 Jul 2022 11:41:19 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
+ smtp.mailfrom=amd.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=amd.com;
+Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
+ 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
+ client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
+Received: from SATLEXMB04.amd.com (165.204.84.17) by
+ DM6NAM11FT059.mail.protection.outlook.com (10.13.172.92) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.5395.14 via Frontend Transport; Fri, 1 Jul 2022 11:41:19 +0000
+Received: from SATLEXMB04.amd.com (10.181.40.145) by SATLEXMB04.amd.com
+ (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.28; Fri, 1 Jul
+ 2022 06:41:18 -0500
+Received: from vijendar-X570-GAMING-X.amd.com (10.180.168.240) by
+ SATLEXMB04.amd.com (10.181.40.145) with Microsoft SMTP Server id 15.1.2375.28
+ via Frontend Transport; Fri, 1 Jul 2022 06:41:15 -0500
+From: Vijendar Mukunda <Vijendar.Mukunda@amd.com>
+To: <broonie@kernel.org>, <alsa-devel@alsa-project.org>,
+ <dri-devel@lists.freedesktop.org>, <amd-gfx@lists.freedesktop.org>
+Subject: [PATCH V2 0/5] I2S driver changes for Jadeite platform
+Date: Fri, 1 Jul 2022 17:11:02 +0530
+Message-ID: <20220701114107.1105948-1-Vijendar.Mukunda@amd.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Firefox/91.0 Thunderbird/91.10.0
-Subject: Re: [PATCH] ASoC: Intel: sof_rt5682: fix out-of-bounds array access
-Content-Language: en-US
-To: Brent Lu <brent.lu@intel.com>, alsa-devel@alsa-project.org
-References: <20220701081908.248239-1-brent.lu@intel.com>
-From: =?UTF-8?Q?P=c3=a9ter_Ujfalusi?= <peter.ujfalusi@linux.intel.com>
-In-Reply-To: <20220701081908.248239-1-brent.lu@intel.com>
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- Cezary Rojewski <cezary.rojewski@intel.com>,
- Kai Vehmanen <kai.vehmanen@linux.intel.com>, Ajye Huang <ajye.huang@gmail.com>,
- Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
- Takashi Iwai <tiwai@suse.com>, Liam Girdwood <liam.r.girdwood@linux.intel.com>,
- Mac Chiang <mac.chiang@intel.com>, Mark Brown <broonie@kernel.org>,
- Bard Liao <yung-chuan.liao@linux.intel.com>, linux-kernel@vger.kernel.org,
- Yong Zhi <yong.zhi@intel.com>
+Content-Type: text/plain
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: cee82d45-ab12-48f9-b395-08da5b569d82
+X-MS-TrafficTypeDiagnostic: MWHPR12MB1296:EE_
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: zYWnL0XqykJuXOTTlfjekDSun9yv3EgpuB70wAGeQQ/b8Jdzxtxt9qiie2zF0ZI2GvE0VtCNutsXmItE+brVup0L9ILbK3IjdbZy9njUuREB5zayQH9bv3PaN3MkZTItyEgYvuy9kjR2oQRKUtrMCVtxzx6BqqP3toxAdAuDepyyRCkvk8yjY6Y+Bo6731QSUmZp+ostenCcSEznC+QRrevJoLeDwDDyAr+8WO7DTU3iNR1o5kXBxsCuKioov1IS9EPESSWig0KqHxVIPk4DEWX9cpKvBJUpHGlSjrF8daG0tSP4VYMvzoWhodFv/973IU/pWwEV4X1pQf/pRdIlIipdTSNgdHVzbABtLQVlSkEJwKJoD7W5E7+sNgE2L0TLZ1lBh/NEq8Or1B+YkjQc1mdft4hXnFOGJctNM48XSmIkNdaMFezuawM7rtW0KYr7Xntiqc5SyOMvom5AgIHXjOplLlo8doZvF/WAahP6BN/tbBsv53Axs65jyvlVGHb+cR4cIZ6ydlPneMR8nH3zIwlRDT5giXHRjBTYL5ld77QPt2JajTOXgpajkNpVNcWeZTEfyitumFkg2ig1YS82xGzA1eyjTepbD0KI35SKRnkcbw/3XH5IFEgoMWgZJAuIBMca0ylTymV1qMNdQC+2J95jP0G83z6eGB+A8fn+IQXLNyXr2arcJoZ4HedLig1gSAd6hc8x0CovEtAHmpBSt2RTJBT37ZwGPHAAVSIyqriCGoHBdMd2oipyAVyjDleXWTyEu+ycKRVSbNfr8PRmFtAXdczZqStfFLaN7PKS3CQpA1vvtkOFOau1IonQTcqNegjtbsng6F9FEhquYtu9k8uC1bDFNuYfhepItAuLi7yqgvbA9nPIcVXG1UTZmOYI
+X-Forefront-Antispam-Report: CIP:165.204.84.17; CTRY:US; LANG:en; SCL:1; SRV:;
+ IPV:CAL; SFV:NSPM; H:SATLEXMB04.amd.com; PTR:InfoDomainNonexistent; CAT:NONE;
+ SFS:(13230016)(4636009)(376002)(136003)(346002)(39860400002)(396003)(40470700004)(46966006)(36840700001)(336012)(426003)(1076003)(47076005)(186003)(36860700001)(40460700003)(83380400001)(2616005)(70206006)(70586007)(110136005)(316002)(54906003)(5660300002)(8936002)(8676002)(4326008)(7696005)(2906002)(41300700001)(6666004)(26005)(478600001)(82740400003)(356005)(82310400005)(40480700001)(86362001)(36756003)(81166007)(36900700001);
+ DIR:OUT; SFP:1101; 
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 Jul 2022 11:41:19.3312 (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: cee82d45-ab12-48f9-b395-08da5b569d82
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d; Ip=[165.204.84.17];
+ Helo=[SATLEXMB04.amd.com]
+X-MS-Exchange-CrossTenant-AuthSource: DM6NAM11FT059.eop-nam11.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR12MB1296
+Cc: Alexander.Deucher@amd.com, zhuning@everest-semi.com,
+ Basavaraj.Hiregoudar@amd.com, Sunil-kumar.Dommati@amd.com,
+ Vijendar Mukunda <Vijendar.Mukunda@amd.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -93,71 +127,36 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+Jadeite(JD) platform is Stoney APU varaint which uses I2S MICSP
+instance and ES8336 Codec.
+This patch series creates I2S platform devices for JD platform,
+adds I2S MICSP instance support and Machine driver support
 
+This patch set depends on:
+        --checkpatch warnings patch
+	--https://patchwork.kernel.org/project/alsa-devel/patch/20220627125834.481731-1-Vijendar.Mukunda@amd.com/
 
-On 01/07/2022 11:19, Brent Lu wrote:
-> Starting from ADL platform we have four HDMI PCM devices which exceeds
-> the size of sof_hdmi array. Since each sof_hdmi_pcm structure
-> represents one HDMI PCM device, we remove the sof_hdmi array and add a
-> new member hdmi_jack to the snd_soc_jack structure to fix the
+changes since v1:
+      - removed hw_params() callback in machine driver and
+        moved sysclk programming logic to startup() callback.
+      - Modified ACPI & I2C flag depedency checks in Kconfig file
 
-"new member hdmi_jack to the sof_hdmi_pcm structure to fix the"
+Vijendar Mukunda (5):
+  drm/amdgpu: add dmi check for jadeite platform
+  drm/amdgpu: create I2S platform devices for Jadeite platform
+  ASoC: amd: add I2S MICSP instance support
+  ASoC: amd: add Machine driver for Jadeite platform
+  ASoC: amd: enable machine driver build for Jadeite platform
 
-> out-of-bounds problem.
-
-Other than that:
-Reviewed-by: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
-
-> Signed-off-by: Brent Lu <brent.lu@intel.com>
-> ---
->  sound/soc/intel/boards/sof_rt5682.c | 10 +++-------
->  1 file changed, 3 insertions(+), 7 deletions(-)
-> 
-> diff --git a/sound/soc/intel/boards/sof_rt5682.c b/sound/soc/intel/boards/sof_rt5682.c
-> index a24fb71d5ff3..1384716c6360 100644
-> --- a/sound/soc/intel/boards/sof_rt5682.c
-> +++ b/sound/soc/intel/boards/sof_rt5682.c
-> @@ -69,11 +69,10 @@ static unsigned long sof_rt5682_quirk = SOF_RT5682_MCLK_EN |
->  
->  static int is_legacy_cpu;
->  
-> -static struct snd_soc_jack sof_hdmi[3];
-> -
->  struct sof_hdmi_pcm {
->  	struct list_head head;
->  	struct snd_soc_dai *codec_dai;
-> +	struct snd_soc_jack hdmi_jack;
->  	int device;
->  };
->  
-> @@ -447,7 +446,6 @@ static int sof_card_late_probe(struct snd_soc_card *card)
->  	char jack_name[NAME_SIZE];
->  	struct sof_hdmi_pcm *pcm;
->  	int err;
-> -	int i = 0;
->  
->  	/* HDMI is not supported by SOF on Baytrail/CherryTrail */
->  	if (is_legacy_cpu || !ctx->idisp_codec)
-> @@ -468,17 +466,15 @@ static int sof_card_late_probe(struct snd_soc_card *card)
->  		snprintf(jack_name, sizeof(jack_name),
->  			 "HDMI/DP, pcm=%d Jack", pcm->device);
->  		err = snd_soc_card_jack_new(card, jack_name,
-> -					    SND_JACK_AVOUT, &sof_hdmi[i]);
-> +					    SND_JACK_AVOUT, &pcm->hdmi_jack);
->  
->  		if (err)
->  			return err;
->  
->  		err = hdac_hdmi_jack_init(pcm->codec_dai, pcm->device,
-> -					  &sof_hdmi[i]);
-> +					  &pcm->hdmi_jack);
->  		if (err < 0)
->  			return err;
-> -
-> -		i++;
->  	}
->  
->  	if (sof_rt5682_quirk & SOF_MAX98373_SPEAKER_AMP_PRESENT) {
+ drivers/gpu/drm/amd/amdgpu/amdgpu_acp.c | 329 ++++++++++++++++--------
+ sound/soc/amd/Kconfig                   |  13 +
+ sound/soc/amd/Makefile                  |   2 +
+ sound/soc/amd/acp-es8336.c              | 324 +++++++++++++++++++++++
+ sound/soc/amd/acp-pcm-dma.c             |  50 +++-
+ sound/soc/amd/acp.h                     |  13 +
+ 6 files changed, 620 insertions(+), 111 deletions(-)
+ create mode 100644 sound/soc/amd/acp-es8336.c
 
 -- 
-Péter
+2.25.1
+
