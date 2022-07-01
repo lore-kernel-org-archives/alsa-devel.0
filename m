@@ -4,66 +4,78 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id CA6E1C43334
-	for <alsa-devel@archiver.kernel.org>; Fri,  1 Jul 2022 20:30:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B32B8C43334
+	for <alsa-devel@archiver.kernel.org>; Fri,  1 Jul 2022 20:55:49 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 263F7169A;
-	Fri,  1 Jul 2022 22:29:43 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 263F7169A
+	by alsa0.perex.cz (Postfix) with ESMTPS id ED455169A;
+	Fri,  1 Jul 2022 22:54:56 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz ED455169A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1656707433;
-	bh=LRv/lknPG+TK7cFzeL9s/nW+r/KwFiZfeygFv4ksOgM=;
-	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
+	s=default; t=1656708947;
+	bh=79tqSxViAoC56X9CjYk+Obn8usRTKZy5lbn+53L/JlM=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=CEUtx/yOt5zhgqOxTvyDDzW7vVkt9Rq7ksOG4++M9Hdga1dxh6L9zEyqHBgkKhdUv
-	 paQPS4zjGX92pSvZ8LXD0gwI3f+PcegV+GvF3z5Uhea1/yYyI3V52PXtrj0XFHm7hV
-	 IJMnpU5V9wQ2h/XFsdr+6ZoWtq4HEdFbdB7+uQhg=
+	b=GtHwKwFZ3iCm3KxsjaS3Fd1vBrMZ2bYlOtZU8XiA7aXZ8wkyJdJT7Fb956mueSWW1
+	 GDOTaZJJKTDUljcw6rmotzM645caVGkx3RDk/PxQL8/gVrlAw0n40A+P5I6rmvXYKs
+	 bvs0H4rwYdBHBNEipE/kV+Xs8K6nU/rUjCor0vz0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id ACDF8F80152;
-	Fri,  1 Jul 2022 22:29:42 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 88422F80152;
+	Fri,  1 Jul 2022 22:54:56 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 2196DF80155; Fri,  1 Jul 2022 22:29:38 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id 22A7FF80155; Fri,  1 Jul 2022 22:54:55 +0200 (CEST)
+Received: from mail-il1-f174.google.com (mail-il1-f174.google.com
+ [209.85.166.174])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 4DDA4F80107
- for <alsa-devel@alsa-project.org>; Fri,  1 Jul 2022 22:29:34 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4DDA4F80107
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="fsgRBIer"
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id 3BD1F621D1;
- Fri,  1 Jul 2022 20:29:32 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D122FC3411E;
- Fri,  1 Jul 2022 20:29:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1656707371;
- bh=LRv/lknPG+TK7cFzeL9s/nW+r/KwFiZfeygFv4ksOgM=;
- h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=fsgRBIerB9z5HYWvjNT7XVDV6eu1XnZ62DTm7R+k1unSuDM2okZUd5r6XCYKUBKE7
- L4QsJe9C4I0qHEB7SNl3/QWzbpOtCRR9wPX3meix0mcZCixS1Hcw4+dFPvnX96wwYT
- xeY2tkgbIAAW5yvLojHwYruPVqCXFwZ+Ilxf3QWEbycijAKceuTrU4Dot1K+wAcrfX
- AzS97LP5cr9YOjUXky2shCNdSbU2VggU4toKuvLzYP33K4m4o/df3abvmDV2hEehtp
- SK8UBp3BOwYf+rvihHsHM9L/Nd3aJJRi+y7LGgZLzM61PCF1v63ZFY2ouPYr3RyUi2
- +zdkOjSgs+IMQ==
-From: Mark Brown <broonie@kernel.org>
-To: srinivas.kandagatla@linaro.org
-In-Reply-To: <20220701125515.32332-1-srinivas.kandagatla@linaro.org>
-References: <20220701125515.32332-1-srinivas.kandagatla@linaro.org>
-Subject: Re: [PATCH] ASoC: codecs: wsa883x: add missing break statement
-Message-Id: <165670736945.209342.14096327749907091103.b4-ty@kernel.org>
-Date: Fri, 01 Jul 2022 21:29:29 +0100
+ by alsa1.perex.cz (Postfix) with ESMTPS id D9D94F8014E
+ for <alsa-devel@alsa-project.org>; Fri,  1 Jul 2022 22:54:48 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D9D94F8014E
+Received: by mail-il1-f174.google.com with SMTP id a7so2133820ilj.2
+ for <alsa-devel@alsa-project.org>; Fri, 01 Jul 2022 13:54:48 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+ :mime-version:content-disposition:in-reply-to;
+ bh=HrTG0yud13UmQCFPBZCzpXGEK9vy1R8RoOTRKyUValo=;
+ b=euJA5mZgSQctjD2gMr1lIBgoRWqHYWVXHIyq+t87G8737kDT3O1OKObpKAdpUL75wt
+ 5RILAwHEx5Q0TJn4EzPJpQAUbVMkgWUYGLZw2yK/l1MRsGieahUChSkuNH0pS0kOFnFU
+ lGfJyTf2nJwPmHOtr6tI9v9BN1/ZZ0fp+HcwGHoWUkCCqWnnmrIvVxzYclcSvej57bXh
+ kEI+bFAwoobArrelgnh8ozo0BUABL4c+cWOl4giU4EcTixHZ3Cfv4w9/jrC0zs4Lhikk
+ 1XlDft1CJirjUW2f8p/zD0li8rXLPlCdIDN29I2Vu9tm/HQlGo/oNmMYQaz+vyesBX2+
+ ywag==
+X-Gm-Message-State: AJIora9IBYdqujMN44jAGYOkZrdPHunGuZaTH2V6/rmXrZLieExolWYN
+ n46wGGkEXodrd/AlEhUZDA==
+X-Google-Smtp-Source: AGRyM1tN03ajV9JtjOBB9YmRsmAfhh0DZ3pRb8uoazawRe++MW5uDTrgKNun8JIBUIZsI2Usu7M1NQ==
+X-Received: by 2002:a92:ddd1:0:b0:2d5:4877:65c8 with SMTP id
+ d17-20020a92ddd1000000b002d5487765c8mr9847783ilr.267.1656708886842; 
+ Fri, 01 Jul 2022 13:54:46 -0700 (PDT)
+Received: from robh.at.kernel.org ([64.188.179.248])
+ by smtp.gmail.com with ESMTPSA id
+ f65-20020a0284c7000000b00339ddd8adddsm10257382jai.98.2022.07.01.13.54.45
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Fri, 01 Jul 2022 13:54:46 -0700 (PDT)
+Received: (nullmailer pid 1511267 invoked by uid 1000);
+ Fri, 01 Jul 2022 20:54:44 -0000
+Date: Fri, 1 Jul 2022 14:54:44 -0600
+From: Rob Herring <robh@kernel.org>
+To: Shengjiu Wang <shengjiu.wang@nxp.com>
+Subject: Re: [PATCH v2 5/6] ASoC: dt-bindings: fsl_spdif: Add two PLL clock
+ source
+Message-ID: <20220701205444.GA1511232-robh@kernel.org>
+References: <1656667961-1799-1-git-send-email-shengjiu.wang@nxp.com>
+ <1656667961-1799-6-git-send-email-shengjiu.wang@nxp.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-Cc: alsa-devel@alsa-project.org, lkp@intel.com, linux-kernel@vger.kernel.org,
- tiwai@suse.com, lgirdwood@gmail.com
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1656667961-1799-6-git-send-email-shengjiu.wang@nxp.com>
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
+ Xiubo.Lee@gmail.com, linux-kernel@vger.kernel.org,
+ linuxppc-dev@lists.ozlabs.org, lgirdwood@gmail.com, robh+dt@kernel.org,
+ tiwai@suse.com, nicoleotsuka@gmail.com, broonie@kernel.org, festevam@gmail.com,
+ krzk+dt@kernel.org, shengjiu.wang@gmail.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -79,35 +91,16 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Fri, 1 Jul 2022 13:55:15 +0100, Srinivas Kandagatla wrote:
-> Add missing break in one of the switch statement.
+On Fri, 01 Jul 2022 17:32:40 +0800, Shengjiu Wang wrote:
+> Add two PLL clock source, they are the parent clocks of root clock
+> one is for 8kHz series rates, another one is for 11kHz series rates.
+> They are optional clocks, if there are such clocks, then driver
+> can switch between them for supporting more accurate rates.
 > 
+> Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
+> ---
+>  Documentation/devicetree/bindings/sound/fsl,spdif.yaml | 4 ++++
+>  1 file changed, 4 insertions(+)
 > 
 
-Applied to
-
-   broonie/sound.git for-next
-
-Thanks!
-
-[1/1] ASoC: codecs: wsa883x: add missing break statement
-      commit: 68f26639dc40b5d6aca201f3e250a1538e68eae6
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
+Acked-by: Rob Herring <robh@kernel.org>
