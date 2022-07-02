@@ -4,81 +4,76 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 793EFC433EF
-	for <alsa-devel@archiver.kernel.org>; Sat,  2 Jul 2022 11:09:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D7570C433EF
+	for <alsa-devel@archiver.kernel.org>; Sat,  2 Jul 2022 22:33:50 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 62ECA1685;
-	Sat,  2 Jul 2022 13:08:26 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 62ECA1685
+	by alsa0.perex.cz (Postfix) with ESMTPS id 2DBC0168C;
+	Sun,  3 Jul 2022 00:32:58 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2DBC0168C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1656760156;
-	bh=GXTCFNGJ/qi6q84KgPXHTPGckjOATtaMykjkvdiZ8ns=;
+	s=default; t=1656801228;
+	bh=cGLiC8mmOC+hPN2iurZ2+B4LWJ9RFal0ibK69bgVPuo=;
 	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
 	 List-Post:List-Help:List-Subscribe:From;
-	b=aaTzYNB2V03mINuUMKWHjQ/egqYajGS6Th8KKqbhB65O4GN9T3rZrUsDE46THt0PF
-	 Hq8kuMg6ZkvQzQnusB84IJn8SlBlvBg+XouFswJAavU62uN7kY0J8/rJAyDNlL+Vgb
-	 uEl6SnwgMk+Xpc6Z+GgmAMiWfQrAvU8vmgw6A5Sg=
+	b=lfqD3kyvQeDIr/twb0n9tpJvHcZG57fcSTzY3z2snDo8cSPksKCzPa1MgdJTN1vpW
+	 LB+hB08I182i2ruFi75txiuPRk3ShYieVs9P/bH+kZkhgkKKA8OyTnqvbamHqRmBKz
+	 mtoJATyRO5y3zcX4a68y3guJOlaThmVXkGxVuH1E=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id B9008F80431;
-	Sat,  2 Jul 2022 13:07:57 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id B9D98F802D2;
+	Sun,  3 Jul 2022 00:32:57 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 4B62DF8032D; Sat,  2 Jul 2022 13:07:55 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org
- [IPv6:2604:1380:4641:c500::1])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 9981BF8019B
- for <alsa-devel@alsa-project.org>; Sat,  2 Jul 2022 13:07:52 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9981BF8019B
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="DrrTnbY+"
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+ id 70ACEF8032D; Sun,  3 Jul 2022 00:32:56 +0200 (CEST)
+Received: from mga06.intel.com (mga06b.intel.com [134.134.136.31])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id DC0E560DCC;
- Sat,  2 Jul 2022 11:07:49 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4E09AC341D9;
- Sat,  2 Jul 2022 11:07:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1656760068;
- bh=GXTCFNGJ/qi6q84KgPXHTPGckjOATtaMykjkvdiZ8ns=;
- h=From:To:Cc:Subject:Date:From;
- b=DrrTnbY+g/95s2OoeUYPgsUS7r9KhEaNN9bCC94hZDu/RhdENgPzZoSE1bFGIeu8f
- A7Y7GS2fdeuCvgSTgrN/C3Xk/UA4AOOR8PKrhHb1bqaCJDPjmbmDyW0ool3TYK7/Hd
- CxINUJxSqKohLK3IuucJQULpCltifiDOZOyZyfbIOGyhrjN6eL4nHdwjPVWdsBmNQr
- m10KGXrSflXIA+909EoSQweUfDbpYP0KDii/iawMcZOW08nSgdAA6iekKm5+xmvGOt
- qZOWRpYYA6Df/o1E/Rs8oS6M9Sd+dj4RU3q++vdjNLnLFq1bzTTJ2BD2bq9KC1xlYu
- xlTWaJKAO8emw==
-Received: from mchehab by mail.kernel.org with local (Exim 4.95)
- (envelope-from <mchehab@kernel.org>) id 1o7ayX-007gro-J8;
- Sat, 02 Jul 2022 12:07:45 +0100
-From: Mauro Carvalho Chehab <mchehab@kernel.org>
-To: Linux Doc Mailing List <linux-doc@vger.kernel.org>
-Subject: [PATCH 00/12] Fix several documentation build warnings with Sphinx
- 2.4.4
-Date: Sat,  2 Jul 2022 12:07:32 +0100
-Message-Id: <cover.1656759988.git.mchehab@kernel.org>
-X-Mailer: git-send-email 2.36.1
+ by alsa1.perex.cz (Postfix) with ESMTPS id D5C7EF8019B
+ for <alsa-devel@alsa-project.org>; Sun,  3 Jul 2022 00:32:48 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D5C7EF8019B
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
+ header.b="ARfMW6S5"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+ d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+ t=1656801170; x=1688337170;
+ h=from:to:cc:subject:date:message-id:mime-version:
+ content-transfer-encoding;
+ bh=cGLiC8mmOC+hPN2iurZ2+B4LWJ9RFal0ibK69bgVPuo=;
+ b=ARfMW6S5B+BR2AONxCqTF0+6p5HFtrZUK1kswnuGsyELbN0A2gXOAiSR
+ qgIvjajEJKBlwMdQYPaOu19jEkTYpZA739xizWyYzh+Wv9vPYB2ZQKvRO
+ PdD0cRPY8jnbnoXV5ngt/Pwl8Xgpsp3CyknOTQILGmcXG54dcg5dv+rkW
+ YngmqP1meBB0Rv33P/24dWonoMA9LRFDiTg3MmIAa5YCWftCWv3jEtTuw
+ szKVqisSILEPiXgdSLDejIFCzB5KOL/EtljUdcauE9USJeYexryrf+hBF
+ xUc8OjyTJDN1UtiUPgyr/DPEorI2m1XBr7xd0m45XCQSL/rwaJJE6WDNT g==;
+X-IronPort-AV: E=McAfee;i="6400,9594,10396"; a="344558880"
+X-IronPort-AV: E=Sophos;i="5.92,241,1650956400"; d="scan'208";a="344558880"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+ by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 02 Jul 2022 15:32:43 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.92,241,1650956400"; d="scan'208";a="838434018"
+Received: from black.fi.intel.com ([10.237.72.28])
+ by fmsmga006.fm.intel.com with ESMTP; 02 Jul 2022 15:32:39 -0700
+Received: by black.fi.intel.com (Postfix, from userid 1003)
+ id 5F52711D; Sun,  3 Jul 2022 01:32:46 +0300 (EEST)
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+ alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v1 1/1] ASoC: Intel: catpt: remove duplicating driver data
+ retrieval
+Date: Sun,  3 Jul 2022 01:32:43 +0300
+Message-Id: <20220702223243.51364-1-andriy.shevchenko@linux.intel.com>
+X-Mailer: git-send-email 2.35.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: =?UTF-8?q?Krzysztof=20Wilczy=C5=84ski?= <kw@linux.com>,
- alsa-devel@alsa-project.org, kvm@vger.kernel.org, linux-pci@vger.kernel.org,
- Brendan Higgins <brendanhiggins@google.com>, dm-devel@redhat.com,
- Andreas Dilger <adilger.kernel@dilger.ca>, linux-kselftest@vger.kernel.org,
- Alasdair Kergon <agk@redhat.com>, Jonathan Corbet <corbet@lwn.net>,
- Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
- Takashi Iwai <tiwai@suse.com>, Jakub Kicinski <kuba@kernel.org>,
- Paolo Abeni <pabeni@redhat.com>, Mike Snitzer <snitzer@kernel.org>,
- linux-tegra@vger.kernel.org, Mauro Carvalho Chehab <mchehab@kernel.org>,
- kunit-dev@googlegroups.com, linux-ext4@vger.kernel.org,
- Theodore Ts'o <tytso@mit.edu>, Eric Dumazet <edumazet@google.com>,
- Dipen Patel <dipenp@nvidia.com>, netdev@vger.kernel.org,
- linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org,
- Johannes Berg <johannes@sipsolutions.net>,
- "David S. Miller" <davem@davemloft.net>
+Cc: Cezary Rojewski <cezary.rojewski@intel.com>,
+ Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+ Peter Ujfalusi <peter.ujfalusi@linux.intel.com>, Takashi Iwai <tiwai@suse.com>,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+ Liam Girdwood <liam.r.girdwood@linux.intel.com>,
+ Mark Brown <broonie@kernel.org>, Bard Liao <yung-chuan.liao@linux.intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -94,41 +89,57 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-This series is against next-20220701. It fixes several warnings
-that are currently produced while building html docs.
+device_get_match_data() in ACPI case calls similar to acpi_match_device() API.
+Hence there is no need to duplicate the call. Just check what the former
+returns.
 
-Each patch in this series is independent from the others, as
-each one touches a different file.
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+---
+ sound/soc/intel/catpt/device.c | 11 ++++-------
+ 1 file changed, 4 insertions(+), 7 deletions(-)
 
-Mauro Carvalho Chehab (12):
-  docs: ext4: blockmap.rst: fix a broken table
-  docs: tegra194-hte.rst: don't include gpiolib.c twice
-  docs: device-mapper: add a blank line at writecache.rst
-  docs: PCI: pci-vntb-function.rst: Properly include ascii artwork
-  docs: PCI: pci-vntb-howto.rst: fix a title markup
-  docs: virt: kvm: fix a title markup at api.rst
-  docs: ABI: sysfs-bus-nvdimm
-  kunit: test.h: fix a kernel-doc markup
-  net: mac80211: fix a kernel-doc markup
-  docs: alsa: alsa-driver-api.rst: remove a kernel-doc file
-  docs: arm: index.rst: add google/chromebook-boot-flow
-  docs: leds: index.rst: add leds-qcom-lpg to it
-
- Documentation/ABI/testing/sysfs-bus-nvdimm             | 2 ++
- Documentation/PCI/endpoint/pci-vntb-function.rst       | 2 +-
- Documentation/PCI/endpoint/pci-vntb-howto.rst          | 2 +-
- Documentation/admin-guide/device-mapper/writecache.rst | 1 +
- Documentation/arm/index.rst                            | 2 ++
- Documentation/driver-api/hte/tegra194-hte.rst          | 3 +--
- Documentation/filesystems/ext4/blockmap.rst            | 2 +-
- Documentation/leds/index.rst                           | 1 +
- Documentation/sound/kernel-api/alsa-driver-api.rst     | 1 -
- Documentation/virt/kvm/api.rst                         | 6 +++---
- include/kunit/test.h                                   | 2 +-
- include/net/mac80211.h                                 | 2 +-
- 12 files changed, 15 insertions(+), 11 deletions(-)
-
+diff --git a/sound/soc/intel/catpt/device.c b/sound/soc/intel/catpt/device.c
+index 85a34e37316d..21856a394c3d 100644
+--- a/sound/soc/intel/catpt/device.c
++++ b/sound/soc/intel/catpt/device.c
+@@ -12,13 +12,14 @@
+ // helping backtrack its historical background
+ //
+ 
+-#include <linux/acpi.h>
+ #include <linux/dma-mapping.h>
+ #include <linux/interrupt.h>
++#include <linux/mod_devicetable.h>
+ #include <linux/module.h>
+ #include <linux/pci.h>
+ #include <linux/platform_device.h>
+ #include <linux/pm_runtime.h>
++#include <linux/property.h>
+ #include <sound/intel-dsp-config.h>
+ #include <sound/soc.h>
+ #include <sound/soc-acpi.h>
+@@ -244,8 +245,8 @@ static int catpt_acpi_probe(struct platform_device *pdev)
+ 	struct resource *res;
+ 	int ret;
+ 
+-	id = acpi_match_device(dev->driver->acpi_match_table, dev);
+-	if (!id)
++	spec = device_get_match_data(dev);
++	if (!spec)
+ 		return -ENODEV;
+ 
+ 	ret = snd_intel_acpi_dsp_driver_probe(dev, id->id);
+@@ -254,10 +255,6 @@ static int catpt_acpi_probe(struct platform_device *pdev)
+ 		return -ENODEV;
+ 	}
+ 
+-	spec = device_get_match_data(dev);
+-	if (!spec)
+-		return -ENODEV;
+-
+ 	cdev = devm_kzalloc(dev, sizeof(*cdev), GFP_KERNEL);
+ 	if (!cdev)
+ 		return -ENOMEM;
 -- 
-2.36.1
-
+2.35.1
 
