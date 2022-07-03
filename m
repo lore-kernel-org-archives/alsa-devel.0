@@ -4,78 +4,76 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3B9BCC43334
-	for <alsa-devel@archiver.kernel.org>; Sun,  3 Jul 2022 14:36:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id CC657C43334
+	for <alsa-devel@archiver.kernel.org>; Sun,  3 Jul 2022 14:52:57 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 8712C16FB;
-	Sun,  3 Jul 2022 16:35:51 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8712C16FB
+	by alsa0.perex.cz (Postfix) with ESMTPS id 8E27A16F5;
+	Sun,  3 Jul 2022 16:52:05 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8E27A16F5
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1656859001;
-	bh=nkpPchW34EvDdWNFL8m8ydINV2xi5ujMpaIGIa4Vt2w=;
+	s=default; t=1656859975;
+	bh=1Swa9EyBO2RNDfjUjVHJNEs947l9uCAsdG7L2gwvtBE=;
 	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
 	 List-Post:List-Help:List-Subscribe:From;
-	b=tmuj6bzbMHOCu7KrDT2b5yK1I4MJgw4bTHhpVqfQtdLoijGqCPBpapvnzYT/MsWjB
-	 MsqCObR+wyepL5oku/4utcDMuQ5Vf1ip8nZkELiHh/vWGX6bzh4x0cb4BqCEfkBpMy
-	 abLVPPcBxdyBV39VWK5qYxSMUoLwCpOYj3s+O3po=
+	b=rLefrWpsU9vUp1DHV0hnCXnw39/E7E26xRxZRGixSBDR8FGPV67sB7UKmv1h8bK4M
+	 UxWcMImlzixjHZEvfNZ7Bb6SWEWdka3sPBfgRRS6Ofm4XhNC7ZNVWDE4yznd4pbNso
+	 7ZmA72EZUsr7Fdk5RVHj/SDzn9g8DWGU2aCisT2k=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 05ED8F8019B;
-	Sun,  3 Jul 2022 16:35:50 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 232B1F8019B;
+	Sun,  3 Jul 2022 16:52:05 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 01E41F80249; Sun,  3 Jul 2022 16:35:47 +0200 (CEST)
+ id 7C2A1F80249; Sun,  3 Jul 2022 16:52:03 +0200 (CEST)
 Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 1DD15F80089;
- Sun,  3 Jul 2022 16:35:37 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1DD15F80089
+ by alsa1.perex.cz (Postfix) with ESMTPS id 0BE9CF80089
+ for <alsa-devel@alsa-project.org>; Sun,  3 Jul 2022 16:51:52 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0BE9CF80089
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="jiGymMQ2"
+ header.b="Uil4KhNC"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1656858941; x=1688394941;
+ t=1656859918; x=1688395918;
  h=from:to:cc:subject:date:message-id:mime-version:
  content-transfer-encoding;
- bh=nkpPchW34EvDdWNFL8m8ydINV2xi5ujMpaIGIa4Vt2w=;
- b=jiGymMQ2vtqXLD4sYDV9ZlpRflaBsmk6Jwnd5Vmr85Ksy8Tp+G3hS95E
- V8CP3JQLQn/wp6pz8IC936DRDo2D6/+bc8baAbyzj7mS9rn2k9c6gC30/
- pXQzVMKUmWKZI0PcxtZor1Vlsz8YM+kG2xPnHsUH7tfWOCr9giOCyDMEI
- R0E4nm54SJTawhejS2pslxuzU/G1SQby8VYRSZvUBzUWegOuK8xZNxxG+
- Vq/08hefTkQfQ4loc/jYTFmSBVCqyngvDhpQEcmqDzNJo1PpY7aMbxx3w
- GUqsLL1wsDOXuBAKOYOK1hZS/dN9h1BYSKhaeFbNctNW1jLLX4IcBwpMV Q==;
-X-IronPort-AV: E=McAfee;i="6400,9594,10396"; a="281714382"
-X-IronPort-AV: E=Sophos;i="5.92,241,1650956400"; d="scan'208";a="281714382"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+ bh=1Swa9EyBO2RNDfjUjVHJNEs947l9uCAsdG7L2gwvtBE=;
+ b=Uil4KhNCFZVoftgYaKxY0aawprQcpovzF99ikrRqSM3301jRb4EAEKLP
+ AaaH1bm0G6n57Tx7WIv5YyXReZIloGsmugcSxXTbS+3E1TYiYy5bm3Pcx
+ WCWQ1QqCfwILpiHtqprdB8tvEkMe/GPard6353aaa3W+HsEstRwf89387
+ ms0kkpqZkz+MtpMngpgyF4C7UxHB8cYZuiYZDeFmDl89jBTlQXQEUDm0+
+ eH2MnHvy/Jg/ZOtA9kcFhpAxUFfraBsrzs54KExmTckRnUaO9DPqfmCW+
+ iioc6pfom8B3Av+6XRuOtCwaOvmeAK5GZlzQWP0TP+rIyGuh9xldHdeR4 w==;
+X-IronPort-AV: E=McAfee;i="6400,9594,10396"; a="281715571"
+X-IronPort-AV: E=Sophos;i="5.92,241,1650956400"; d="scan'208";a="281715571"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 03 Jul 2022 07:35:32 -0700
+ 03 Jul 2022 07:51:50 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.92,241,1650956400"; d="scan'208";a="659928882"
+X-IronPort-AV: E=Sophos;i="5.92,241,1650956400"; d="scan'208";a="838564919"
 Received: from black.fi.intel.com ([10.237.72.28])
- by fmsmga004.fm.intel.com with ESMTP; 03 Jul 2022 07:35:29 -0700
+ by fmsmga006.fm.intel.com with ESMTP; 03 Jul 2022 07:51:47 -0700
 Received: by black.fi.intel.com (Postfix, from userid 1003)
- id D4C4E11D; Sun,  3 Jul 2022 17:35:35 +0300 (EEST)
+ id 066E311D; Sun,  3 Jul 2022 17:51:53 +0300 (EEST)
 From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To: Mark Brown <broonie@kernel.org>,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- Peter Ujfalusi <peter.ujfalusi@linux.intel.com>,
- sound-open-firmware@alsa-project.org, alsa-devel@alsa-project.org,
- linux-kernel@vger.kernel.org
-Subject: [PATCH v1 1/1] ASoC: SOF: Intel: bdw: remove duplicating driver data
+To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+ alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v2 1/1] ASoC: Intel: catpt: remove duplicating driver data
  retrieval
-Date: Sun,  3 Jul 2022 17:35:33 +0300
-Message-Id: <20220703143533.62173-1-andriy.shevchenko@linux.intel.com>
+Date: Sun,  3 Jul 2022 17:51:52 +0300
+Message-Id: <20220703145152.62297-1-andriy.shevchenko@linux.intel.com>
 X-Mailer: git-send-email 2.35.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: Kai Vehmanen <kai.vehmanen@linux.intel.com>,
- Bard Liao <yung-chuan.liao@linux.intel.com>, Takashi Iwai <tiwai@suse.com>,
- Liam Girdwood <lgirdwood@gmail.com>,
+Cc: Cezary Rojewski <cezary.rojewski@intel.com>,
+ Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+ Peter Ujfalusi <peter.ujfalusi@linux.intel.com>, Takashi Iwai <tiwai@suse.com>,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
  Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
- Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
- Daniel Baluta <daniel.baluta@nxp.com>
+ Liam Girdwood <liam.r.girdwood@linux.intel.com>,
+ Mark Brown <broonie@kernel.org>, Bard Liao <yung-chuan.liao@linux.intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -97,34 +95,33 @@ the id->driver_data.
 
 Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 ---
- sound/soc/sof/intel/bdw.c | 7 ++-----
- 1 file changed, 2 insertions(+), 5 deletions(-)
+v2: dropped device_get_match_data() and rewrote commit message
+ sound/soc/intel/catpt/device.c | 5 +----
+ 1 file changed, 1 insertion(+), 4 deletions(-)
 
-diff --git a/sound/soc/sof/intel/bdw.c b/sound/soc/sof/intel/bdw.c
-index 26df780c702e..346813aa3768 100644
---- a/sound/soc/sof/intel/bdw.c
-+++ b/sound/soc/sof/intel/bdw.c
-@@ -674,6 +674,7 @@ static int sof_broadwell_probe(struct platform_device *pdev)
+diff --git a/sound/soc/intel/catpt/device.c b/sound/soc/intel/catpt/device.c
+index 85a34e37316d..2eeaeb962532 100644
+--- a/sound/soc/intel/catpt/device.c
++++ b/sound/soc/intel/catpt/device.c
+@@ -247,6 +247,7 @@ static int catpt_acpi_probe(struct platform_device *pdev)
  	id = acpi_match_device(dev->driver->acpi_match_table, dev);
  	if (!id)
  		return -ENODEV;
-+	desc = (const struct sof_dev_desc *)id->driver_data;
++	spec = (const struct catpt_spec *)id->driver_data;
  
  	ret = snd_intel_acpi_dsp_driver_probe(dev, id->id);
- 	if (ret != SND_INTEL_DSP_DRIVER_ANY && ret != SND_INTEL_DSP_DRIVER_SOF) {
-@@ -681,11 +682,7 @@ static int sof_broadwell_probe(struct platform_device *pdev)
+ 	if (ret != SND_INTEL_DSP_DRIVER_ANY && ret != SND_INTEL_DSP_DRIVER_SST) {
+@@ -254,10 +255,6 @@ static int catpt_acpi_probe(struct platform_device *pdev)
  		return -ENODEV;
  	}
  
--	desc = device_get_match_data(dev);
--	if (!desc)
+-	spec = device_get_match_data(dev);
+-	if (!spec)
 -		return -ENODEV;
 -
--	return sof_acpi_probe(pdev, device_get_match_data(dev));
-+	return sof_acpi_probe(pdev, desc);
- }
- 
- /* acpi_driver definition */
+ 	cdev = devm_kzalloc(dev, sizeof(*cdev), GFP_KERNEL);
+ 	if (!cdev)
+ 		return -ENOMEM;
 -- 
 2.35.1
 
