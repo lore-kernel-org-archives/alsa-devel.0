@@ -4,79 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 69869C433EF
-	for <alsa-devel@archiver.kernel.org>; Tue,  5 Jul 2022 07:56:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A3DA1C433EF
+	for <alsa-devel@archiver.kernel.org>; Tue,  5 Jul 2022 09:00:12 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id EB1B916E3;
-	Tue,  5 Jul 2022 09:55:13 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EB1B916E3
+	by alsa0.perex.cz (Postfix) with ESMTPS id 21C3D16D4;
+	Tue,  5 Jul 2022 10:59:19 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 21C3D16D4
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1657007764;
-	bh=NFPdBZyWYMVilC2m0XdJ+zSMYL0JnFAPX+nNRkDHud8=;
-	h=Date:From:To:Subject:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=FTrrMMpGetXmAyEIAmm1xgpKvLj9OBHCRPd0gCk1yY6uzp3K1QOx5Wa/ZY5UXVEXr
-	 5XIJPasm5QNRZwKZE81jziB0XmagOk0/AxUj8lqINkQ89IF7aJ+x6bS0wD3G2iHUE6
-	 CXXMVFZ6uKC/4cyLMFc9NeLErdosmI3yss+6AIwQ=
+	s=default; t=1657011609;
+	bh=SRW0tQcSoOXK/hAJ3I3SM333+ERcODiRofpC7JgNC3o=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=tHTWr3N31a0KtemkyqzINt5RW8LvXvbn/Yik8ah1raiP42PiyvCmcxVQAp0zU3se9
+	 Xyy6P8axde+gvQxXwZUG/yo5sLcX7W3bPghzqSskSBQDMRNBa+WcSS2DbiDhSZ8vhb
+	 9YSx5+HLSzBj5UhlS4saBwZkpT1csZOeXku/qFdI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 87148F80153;
-	Tue,  5 Jul 2022 09:55:13 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id B9136F800CB;
+	Tue,  5 Jul 2022 10:59:18 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 453B7F8015B; Tue,  5 Jul 2022 09:55:12 +0200 (CEST)
-Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com
- [IPv6:2a00:1450:4864:20::52a])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id E636AF80104
- for <alsa-devel@alsa-project.org>; Tue,  5 Jul 2022 09:55:05 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E636AF80104
+ id 1EA73F8014E; Mon,  4 Jul 2022 14:22:55 +0200 (CEST)
+Received: from m1564.mail.126.com (m1564.mail.126.com [220.181.15.64])
+ by alsa1.perex.cz (Postfix) with ESMTP id C4F79F8012A
+ for <alsa-devel@alsa-project.org>; Mon,  4 Jul 2022 14:22:51 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C4F79F8012A
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=amarulasolutions.com
- header.i=@amarulasolutions.com header.b="AC4el096"
-Received: by mail-ed1-x52a.google.com with SMTP id k30so6079160edk.8
- for <alsa-devel@alsa-project.org>; Tue, 05 Jul 2022 00:55:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=amarulasolutions.com; s=google;
- h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
- bh=Dd+03ltwb0A3OCeiLRuPRch6yR6Hqx8MxtfMOc1/kN4=;
- b=AC4el096uzd63l5aciUqinEEpLgrlQWcC38O1EV98cJQ+ByiExghvMKJ5nL3kIlWkL
- YKM1Ob0cdII8rY/1W0Hm2TclvjJTpEyoX/IlUYIJs1a9hWdUn4928i22OObOwAOs6gdT
- 4a/mYN0TvFarKgGV0Dc1njO3U2NRo+Gvd7MMM=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
- :content-disposition;
- bh=Dd+03ltwb0A3OCeiLRuPRch6yR6Hqx8MxtfMOc1/kN4=;
- b=Kp0bWNFZTLNTChA7Odg+wyg7Wu9nWoBUk5lB0/2pTNPrtCqcNB6oYttl0TDwaeBIaf
- hRDBlqEqKFC5xOYsLhGuFICrKJ/Fmv4NJmgOsYK+TjC27Gw5zEo2EVtGiYTTYumxL/E6
- r7UZcnQKUb/BRctqupzdA1dTi46xW1lDiFBSw97VC65HUyyFgmJako9elEMz5xMieUZI
- aFoqHb3HznqkLOc44MyZymUEnTFuXAQIjOv7bffclvfi1C2R9j5q5lXdnKFz9GoSdiYK
- ELUckr+a4zXvl0HESTI+kFvKfbnzmYb5lt8HfLB1SBcLNM9NbVSPXuo/J8RXSb2lSiAR
- pvZw==
-X-Gm-Message-State: AJIora/6w8hj++6puPESannjOqluBW4jJ3oWuN7pW3BhALlBrHygzdad
- JIVqJ4zWP3UPb0ZhsR1IFP1x1Q==
-X-Google-Smtp-Source: AGRyM1vZKXamGSOdwS9rEBAHE6ehIF1mBvlnL7rtFuNKTsGNH8m5LvWDVWe9ZGbwOaYm136qfE84Og==
-X-Received: by 2002:a05:6402:4507:b0:43a:5b42:2be5 with SMTP id
- ez7-20020a056402450700b0043a5b422be5mr11728385edb.392.1657007703459; 
- Tue, 05 Jul 2022 00:55:03 -0700 (PDT)
-Received: from tom-ThinkPad-T14s-Gen-2i
- (net-188-217-58-216.cust.vodafonedsl.it. [188.217.58.216])
- by smtp.gmail.com with ESMTPSA id
- w2-20020a50fa82000000b0043a64eee322sm3421430edr.28.2022.07.05.00.55.02
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Tue, 05 Jul 2022 00:55:02 -0700 (PDT)
-Date: Tue, 5 Jul 2022 09:55:00 +0200
-From: Tommaso Merciai <tommaso.merciai@amarulasolutions.com>
-To: Mark Brown <broonie@kernel.org>
-Subject: equalizer cfg in max98088 driver
-Message-ID: <20220705075500.GA1987744@tom-ThinkPad-T14s-Gen-2i>
+ dkim=fail reason="signature verification failed" (1024-bit key)
+ header.d=126.com header.i=@126.com header.b="pvxJTUsa"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=126.com;
+ s=s110527; h=Date:From:Subject:MIME-Version:Message-ID; bh=2S/0Q
+ Ne/5GZDlUqH1ejYnly5iwK6FxvYYDJxMc9C7SY=; b=pvxJTUsaCnBpsLIKhSB/n
+ pc95Gmss5qXw3TsYvEKVNDY33T3uSRwpELFTaJXZalqiRQuKN0rLRawgPsR6t/Uy
+ CRwPSln2hJ5OGTdmsW3lyATiJSrOBi9R8IDTSKtdlllkkQL3I8VlP51JUNb7uQxt
+ wgpPwqinqwow6D7i7gj6m8=
+Received: from windhl$126.com ( [124.16.139.61] ) by ajax-webmail-wmsvr64
+ (Coremail) ; Mon, 4 Jul 2022 20:22:46 +0800 (CST)
+X-Originating-IP: [124.16.139.61]
+Date: Mon, 4 Jul 2022 20:22:46 +0800 (CST)
+From: "Liang He" <windhl@126.com>
+To: "Mark Brown" <broonie@kernel.org>
+Subject: Re:Re: [PATCH] sound: qcom: Fix missing of_node_put() in
+ asoc_qcom_lpass_cpu_platform_probe()
+X-Priority: 3
+X-Mailer: Coremail Webmail Server Version XT5.0.13 build 20220113(9671e152)
+ Copyright (c) 2002-2022 www.mailtech.cn 126com
+In-Reply-To: <YsLNPbY1snYon8xL@sirena.org.uk>
+References: <20220702020109.263980-1-windhl@126.com>
+ <YsLNPbY1snYon8xL@sirena.org.uk>
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=GBK
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org,
- Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>
+Message-ID: <107379b3.7d54.181c929c397.Coremail.windhl@126.com>
+X-Coremail-Locale: zh_CN
+X-CM-TRANSID: QMqowACntnKX28JiTTNFAA--.48372W
+X-CM-SenderInfo: hzlqvxbo6rjloofrz/1tbi2hA0F1uwMVtShQABs+
+X-Coremail-Antispam: 1U5529EdanIXcx71UUUUU7vcSsGvfC2KfnxnUU==
+X-Mailman-Approved-At: Tue, 05 Jul 2022 10:59:17 +0200
+Cc: alsa-devel@alsa-project.org, bgoswami@codeaurora.org, tiwai@suse.com,
+ lgirdwood@gmail.com, srinivas.kandagatla@linaro.org, linmq006@gmail.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -92,23 +79,15 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Hi Mark, All,
-Just a question. Can you explain me the proper way to configure eq1 and
-eq2 of max98089 using sound/soc/codecs/max98088.c driver?
-Could be a valid solution fetching eq1, eq2 bands params from dts?
-
-Let me know.
-Thanks in advance
-Tommaso
-
--- 
-Tommaso Merciai
-Embedded Linux Engineer
-tommaso.merciai@amarulasolutions.com
-__________________________________
-
-Amarula Solutions SRL
-Via Le Canevare 30, 31100 Treviso, Veneto, IT
-T. +39 042 243 5310
-info@amarulasolutions.com
-www.amarulasolutions.com
+CgoKQXQgMjAyMi0wNy0wNCAxOToyMTozMywgIk1hcmsgQnJvd24iIDxicm9vbmllQGtlcm5lbC5v
+cmc+IHdyb3RlOgo+T24gU2F0LCBKdWwgMDIsIDIwMjIgYXQgMTA6MDE6MDlBTSArMDgwMCwgTGlh
+bmcgSGUgd3JvdGU6Cj4+IFdlIHNob3VsZCBjYWxsIG9mX25vZGVfcHV0KCkgZm9yIHRoZSByZWZl
+cmVuY2UgJ2RzcF9vZl9ub2RlJyByZXR1cm5lZCBieQo+PiBvZl9wYXJzZV9waGFuZGxlKCkgd2hp
+Y2ggd2lsbCBpbmNyZWFzZSB0aGUgcmVmY291bnQuCj4KPlBsZWFzZSBzdWJtaXQgcGF0Y2hlcyB1
+c2luZyBzdWJqZWN0IGxpbmVzIHJlZmxlY3RpbmcgdGhlIHN0eWxlIGZvciB0aGUKPnN1YnN5c3Rl
+bSwgdGhpcyBtYWtlcyBpdCBlYXNpZXIgZm9yIHBlb3BsZSB0byBpZGVudGlmeSByZWxldmFudCBw
+YXRjaGVzLgo+TG9vayBhdCB3aGF0IGV4aXN0aW5nIGNvbW1pdHMgaW4gdGhlIGFyZWEgeW91J3Jl
+IGNoYW5naW5nIGFyZSBkb2luZyBhbmQKPm1ha2Ugc3VyZSB5b3VyIHN1YmplY3QgbGluZXMgdmlz
+dWFsbHkgcmVzZW1ibGUgd2hhdCB0aGV5J3JlIGRvaW5nLgo+VGhlcmUncyBubyBuZWVkIHRvIHJl
+c3VibWl0IHRvIGZpeCB0aGlzIGFsb25lLgoKVGhhbmtzIGZvciB5b3VyIGFkdmljZSwgSSB3aWxs
+IGZvbGxvdyB0aGlzIHJ1bGUgaW4gZnV0dXJlIHBhdGNoIHdvcmsuCgpMaWFuZyAK
