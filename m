@@ -4,75 +4,83 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B2FDFC43334
-	for <alsa-devel@archiver.kernel.org>; Mon,  4 Jul 2022 12:31:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B867AC433EF
+	for <alsa-devel@archiver.kernel.org>; Mon,  4 Jul 2022 12:33:16 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0D427170D;
-	Mon,  4 Jul 2022 14:30:33 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0D427170D
+	by alsa0.perex.cz (Postfix) with ESMTPS id C17FC1717;
+	Mon,  4 Jul 2022 14:32:24 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C17FC1717
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1656937883;
-	bh=rL/dVXu9lFFmv1sy4wiNe9geEPKJ9bDBVQR3zWGDtV4=;
-	h=Date:Subject:To:References:From:In-Reply-To:Cc:List-Id:
+	s=default; t=1656937994;
+	bh=MxPVIdoroKeH+kuZv9vs+X8ggUuCMVki40/PxKb4XK0=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=qgkWzGcNDQvB5CWwhIPu3MytbTIaCq8rfpS9EioqmHIIbqrMpcHM68WsATGVsjxtZ
-	 ky+f+qfNGUIQoOTl9tIV0oKt+aBgsJ4bYGofnVWBgr07CpxNqLFo1m3yKO0ca0HbqM
-	 thmajCp+YjnA4aGDt5FZKl0bAMHKAyHl3NpfCMPw=
+	b=KB3Nm7JDPEsUwQATcP6vF6bW5QbOaK3Offgxwd/VqcpoVmZKePz5feIzk35IMbX2J
+	 BXe7m1wNslwbfGaC1euO2ekgK8UV5cWI5jtAk57936c9emYK7qXZXiUcgwf+sYHifl
+	 TGF5vkOC/QOne3deOjGHb4pKVhVgUPdZWF8yo2go=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 9F6E8F8016E;
-	Mon,  4 Jul 2022 14:30:32 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 64984F80141;
+	Mon,  4 Jul 2022 14:32:24 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 2581CF804AC; Mon,  4 Jul 2022 14:30:31 +0200 (CEST)
-Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 5AED2F8014E; Mon,  4 Jul 2022 14:32:23 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 2F74AF802BE
- for <alsa-devel@alsa-project.org>; Mon,  4 Jul 2022 14:30:21 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2F74AF802BE
+ by alsa1.perex.cz (Postfix) with ESMTPS id 514DDF8012A
+ for <alsa-devel@alsa-project.org>; Mon,  4 Jul 2022 14:32:16 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 514DDF8012A
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="dJFXTDnQ"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
- d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1656937825; x=1688473825;
- h=message-id:date:mime-version:subject:to:cc:references:
- from:in-reply-to:content-transfer-encoding;
- bh=rL/dVXu9lFFmv1sy4wiNe9geEPKJ9bDBVQR3zWGDtV4=;
- b=dJFXTDnQDs606FdHiXGAedNcrn/MmXMbHbbn4iSK2lu/txkvtlqP8rxZ
- S7RqUfCf2UoI0r8xY8annPqOIzgI0UaCxQVVevLWa9EL+GWqmyoivMPw2
- YTBJwOqcMTWWEANEUQ0wU/2aLqRZzto8RWCSYufyofk1St/+qpWLhbFp3
- RjWyQVBhNkwQgYrNRZqwywi/efCqKaNqBvXROwQ8K2rYpc7q3mnSPK2aK
- e2W5udqmFahNAftHRsC2RcDA2YxrPlS5zg9wd74HOu2Dpm06v89ahiJyA
- thPoptIhCQ/28wfr2SnNfpRe1foSifO7i54ZjFITCKs/ExP1CgMUEH+tD w==;
-X-IronPort-AV: E=McAfee;i="6400,9594,10397"; a="284226793"
-X-IronPort-AV: E=Sophos;i="5.92,243,1650956400"; d="scan'208";a="284226793"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
- by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 04 Jul 2022 05:30:14 -0700
-X-IronPort-AV: E=Sophos;i="5.92,243,1650956400"; d="scan'208";a="619276267"
-Received: from aslawinx-mobl.ger.corp.intel.com (HELO [10.99.241.83])
- ([10.99.241.83])
- by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 04 Jul 2022 05:30:12 -0700
-Message-ID: <f1ebe9c6-0809-084e-2361-4d13c09b2037@linux.intel.com>
-Date: Mon, 4 Jul 2022 14:30:09 +0200
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.9.1
-Subject: Re: [PATCH v1] add tas2780
-Content-Language: en-US
-To: Raphael-Xu <13691752556@139.com>, broonie@kernel.org
-References: <20220704104759.21083-1-13691752556@139.com>
-From: =?UTF-8?Q?Amadeusz_S=c5=82awi=c5=84ski?=
- <amadeuszx.slawinski@linux.intel.com>
-In-Reply-To: <20220704104759.21083-1-13691752556@139.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: alsa-devel@alsa-project.org, raphael-xu@ti.com, shenghao-ding@ti.com,
- navada@ti.com
+ dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
+ header.b="iKJ2klxw"; 
+ dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
+ header.b="vqCqFERL"
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 757871FA15;
+ Mon,  4 Jul 2022 12:32:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1656937936; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=/aVghKThxC7vfkel6f6HP8hmWL3YbTk112OS+7ozMbQ=;
+ b=iKJ2klxw3Jcj6S9I7USNrwcYmy95tLEMl3LcNZtppLLsAj7WWD48cdzBao/96v06Wlro66
+ yj2+nV+uqPu1HqYxjnPy3rzF9D84XZX6HoBNNmjCdUdcW3C2ecG8NdaO177CTbXhcW0LzM
+ yNtVSWKTOR/+qMHpO/pEUpD9hVP+zxA=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1656937936;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=/aVghKThxC7vfkel6f6HP8hmWL3YbTk112OS+7ozMbQ=;
+ b=vqCqFERLIKu7iz/PlKLUpIFui45QK4wbJceCv60MIsHBoV5DytmD6XwH1dixKCqGR70IGF
+ HMXbrPYqVrY7UIAw==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 4D0A31342C;
+ Mon,  4 Jul 2022 12:32:16 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+ by imap2.suse-dmz.suse.de with ESMTPSA id ku0JEtDdwmL1LQAAMHmgww
+ (envelope-from <tiwai@suse.de>); Mon, 04 Jul 2022 12:32:16 +0000
+Date: Mon, 04 Jul 2022 14:32:15 +0200
+Message-ID: <871qv1ys6o.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Steven Rostedt <rostedt@goodmis.org>
+Subject: Re: PATCH] tracing: ALSA: hda: Remove string manipulation out of the
+ fast path
+In-Reply-To: <20220703110605.07a86fb2@rorschach.local.home>
+References: <20220703110605.07a86fb2@rorschach.local.home>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.com>,
+ LKML <linux-kernel@vger.kernel.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -88,107 +96,40 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On 7/4/2022 12:47 PM, Raphael-Xu wrote:
-> 1.update Kconfig and Makefile 2.add tas2780.c and tas2780.h
+On Sun, 03 Jul 2022 17:06:05 +0200,
+Steven Rostedt wrote:
 > 
-> Signed-off-by: Raphael-Xu <13691752556@139.com>
-> ---
+> From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
+> 
+> The TRACE_EVENT() macro is broken up into various parts to be efficient.
+> The TP_fast_assign() is just to record the event into the ring buffer, and
+> is to be done as fast as possible as this occurs during the actual running
+> of the code. The slower this is, the slower the code that is being traced
+> becomes.
+> 
+> The TP_printk() is processed when reading the tracing buffer. This is
+> considered the slow path. Any processing that can be moved from the
+> TP_fast_assign() to the TP_printk() should do so.
+> 
+> For some reason, the entire string processing of the trace events
+> hda_send_cmd, hda_get_response, and hda_unsol_event was moved from the
+> TP_printk() into the TP_fast_assign(). On top of that, the
+> __dynamic_array() was used with a fixed size of HDAC_MSG_MAX, which is
+> useless as a dynamic_array as it will always allocate HDAC_MSG_MAX bytes
+> on the ring buffer and even save that amount into the event (as it expects
+> the size to be dynamic, which using a fixed size defeats that purpose).
+> 
+> Instead, just save the necessary elements in the TP_fast_assign() and do
+> the string manipulation in the slow path.
+> 
+> The output should be the same.
+> 
+> Cc: Jaroslav Kysela <perex@perex.cz>
+> Cc: Takashi Iwai <tiwai@suse.com>
+> Cc: alsa-devel@alsa-project.org
+> Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
 
-...
+Thanks, applied now to for-next branch.
 
-> diff --git a/sound/soc/codecs/tas2780.c b/sound/soc/codecs/tas2780.c
-> new file mode 100644
-> index 000000000000..0e452c7464fb
-> --- /dev/null
-> +++ b/sound/soc/codecs/tas2780.c
-> @@ -0,0 +1,726 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +// Driver for the Texas Instruments TAS2780 Mono
-> +//		Audio amplifier
-> +// Copyright (C) 2022 Texas Instruments Inc.
-> +
-> +#include <linux/module.h>
-> +#include <linux/moduleparam.h>
-> +#include <linux/err.h>
-> +#include <linux/init.h>
-> +#include <linux/delay.h>
-> +#include <linux/pm.h>
-> +#include <linux/i2c.h>
-> +#include <linux/gpio.h>
-> +#include <linux/gpio/consumer.h>
-> +#include <linux/regmap.h>
-> +#include <linux/of.h>
-> +#include <linux/of_gpio.h>
-> +#include <sound/soc.h>
-> +#include <sound/pcm.h>
-> +#include <sound/pcm_params.h>
-> +#include <sound/initval.h>
-> +#include <sound/tlv.h>
-> +
-> +#include "tas2780.h"
-> +
-> +struct tas2780_priv {
-> +	struct snd_soc_component *component;
-> +	struct gpio_desc *reset_gpio;
-> +	struct gpio_desc *sdz_gpio;
-> +	struct regmap *regmap;
-> +	struct device *dev;
-> +	int v_sense_slot;
-> +	int i_sense_slot;
-> +
 
-Unnecessary empty line?
-
-> +};
-> +
-> +static void tas2780_reset(struct tas2780_priv *tas2780)
-> +{
-> +	if (tas2780->reset_gpio) {
-> +		gpiod_set_value_cansleep(tas2780->reset_gpio, 0);
-> +		usleep_range(2000, 2050);
-> +		gpiod_set_value_cansleep(tas2780->reset_gpio, 1);
-> +		usleep_range(2000, 2050);
-> +	}
-> +
-> +	snd_soc_component_write(tas2780->component, TAS2780_SW_RST,
-> +				TAS2780_RST);
-> +}
-> +
-
-...
-
-> +
-> +static const struct snd_soc_component_driver soc_component_driver_tas2780 = {
-> +	.probe			= tas2780_codec_probe,
-> +#ifdef CONFIG_PM
-> +	.suspend		= tas2780_codec_suspend,
-> +	.resume			= tas2780_codec_resume,
-> +#endif
-> +	.controls		= tas2780_snd_controls,
-> +	.num_controls		= ARRAY_SIZE(tas2780_snd_controls),
-> +	.dapm_widgets		= tas2780_dapm_widgets,
-> +	.num_dapm_widgets	= ARRAY_SIZE(tas2780_dapm_widgets),
-> +	.dapm_routes		= tas2780_audio_map,
-> +	.num_dapm_routes	= ARRAY_SIZE(tas2780_audio_map),
-> +	.idle_bias_on		= 1,
-> +	.endianness		= 1,
-> +	.non_legacy_dai_naming	= 1,
-
- From what I see change removing non_legacy_dai_naming field is merged 
-in for-next branch, so you can skip it, as it is default now.
-
-> +};
-> +
-> +static const struct reg_default tas2780_reg_defaults[] = {
-> +	{ TAS2780_PAGE, 0x00 },
-> +	{ TAS2780_SW_RST, 0x00 },
-> +	{ TAS2780_PWR_CTRL, 0x1a },
-> +	{ TAS2780_DVC, 0x00 },
-> +	{ TAS2780_CHNL_0, 0x00 },
-> +	{ TAS2780_TDM_CFG0, 0x09 },
-> +	{ TAS2780_TDM_CFG1, 0x02 },
-> +	{ TAS2780_TDM_CFG2, 0x0a },
-> +	{ TAS2780_TDM_CFG3, 0x10 },
-> +	{ TAS2780_TDM_CFG5, 0x42 },
-> +};
-> +
+Takashi
