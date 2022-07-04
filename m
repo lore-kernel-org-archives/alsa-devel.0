@@ -4,85 +4,84 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 16AA4C43334
-	for <alsa-devel@archiver.kernel.org>; Mon,  4 Jul 2022 12:13:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A4263C43334
+	for <alsa-devel@archiver.kernel.org>; Mon,  4 Jul 2022 12:30:11 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 236D916F9;
-	Mon,  4 Jul 2022 14:12:40 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 236D916F9
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3899A1701;
+	Mon,  4 Jul 2022 14:29:19 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3899A1701
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1656936810;
-	bh=CKYC8LgYp3PSj8sXCmdoBwFGhAFYIXBmoPYjCPBlScg=;
+	s=default; t=1656937809;
+	bh=Uzj/tzO1mqwugE25VonXVfE64HN60XkGkvKCkICBP74=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=rAuPLPPv9nh/0cBkxI8GZYjh/mMyt5/pFCaTe25Ed/hcu1YfDU/vGD/V+bSkOmJDq
-	 AZMrHjKwofHXRLAJiOmTPN/+vics31gnCeMGGbxTek69WlvqgSN1cxk2ispdXQ9y1y
-	 3RZNaMQRhZ8Yv+evSucSwTayHPTp9XWe1+NLDCns=
+	b=b2dMe6Bj/hZvyqnnuQ/bDAjIfwvN8C67JEkW7gTkP0r1ga6a4sLh0VMyh9J52hxxB
+	 W83eKY47oM4Oi4gQALWBQCgJKn7I//phiS5BJIa3simcEVS2x7Bq8yS4I/1qWEnr2z
+	 nIhEqWVDL9vvJREFOvv7roMIsIFJX3jH3E9Stddk=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id B9D1AF80141;
-	Mon,  4 Jul 2022 14:12:39 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id C75A4F80139;
+	Mon,  4 Jul 2022 14:29:18 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 4A33FF8012A; Mon,  4 Jul 2022 14:12:38 +0200 (CEST)
+ id 47970F8014E; Mon,  4 Jul 2022 14:29:15 +0200 (CEST)
 Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 4F37EF8012A
- for <alsa-devel@alsa-project.org>; Mon,  4 Jul 2022 14:12:32 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4F37EF8012A
+ by alsa1.perex.cz (Postfix) with ESMTPS id 73FA6F80139
+ for <alsa-devel@alsa-project.org>; Mon,  4 Jul 2022 14:29:07 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 73FA6F80139
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="WEiQUkey"; 
+ header.b="1MnlJP/O"; 
  dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="HTB+NYqf"
+ header.b="y8vn3Xys"
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 13586225ED;
- Mon,  4 Jul 2022 12:12:32 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id A9CF7227E3;
+ Mon,  4 Jul 2022 12:29:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1656936752; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1656937746; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=ax8Is2DyCle/g94ag0zEkK1UqvD95AjNVHCt0WIOo34=;
- b=WEiQUkeyZbfpf3/0QfLDGV+mDx/uuNPtYJYi3oemCMPMdxEK+CNoz5Kk2hofJ/j/0nkalt
- k6C9C8LA5pSMiXkIgScIonmAhGkLyI6HLLmE+kAz8RDQBxKLDbXW8EV0JaF40n2+a005Du
- rxPrOcM3MG9//aob2cCq6GDlbXVunjc=
+ bh=OKC1glIhcMx0XecLi7KWS4MMauWMpH5WiVJgOoHrSqo=;
+ b=1MnlJP/OqncCA/vKgXqbRLkRaclxpI92Nq8Ab0ke/XtZnLPconw5UJSJx4f642mmQUI4EY
+ juyEWMbNJWgtkzXePZhQ+Lb2dBQi4EtMUI8ILD8ChY7nNkbLzKxZZAbQcC0hzCMa58/tFn
+ /dfryxNSn+Vyh+Ey9UTYJqXMaVfQhgE=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1656936752;
+ s=susede2_ed25519; t=1656937746;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=ax8Is2DyCle/g94ag0zEkK1UqvD95AjNVHCt0WIOo34=;
- b=HTB+NYqfZ1jvEBlgB6ui+7dOl6e9CyeAF9OHifs3t9MJYBCbySa+X/xfNxwDjOCqcnM59t
- VsJ+9qKao7aLuFBQ==
+ bh=OKC1glIhcMx0XecLi7KWS4MMauWMpH5WiVJgOoHrSqo=;
+ b=y8vn3XyseDqNwPF2Lr4JO8+nx5f432Dpo1Lo3Fp6hq5UeHyEy6ani2ozfMk+3LrY3e+RmZ
+ FaZYNJGu3adFG4Ag==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id D095E13451;
- Mon,  4 Jul 2022 12:12:31 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 48C131342C;
+ Mon,  4 Jul 2022 12:29:06 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id TBEuMi/ZwmIHJQAAMHmgww
- (envelope-from <tiwai@suse.de>); Mon, 04 Jul 2022 12:12:31 +0000
-Date: Mon, 04 Jul 2022 14:12:31 +0200
-Message-ID: <875ykdyt3k.wl-tiwai@suse.de>
+ by imap2.suse-dmz.suse.de with ESMTPSA id UHDXEBLdwmJELAAAMHmgww
+ (envelope-from <tiwai@suse.de>); Mon, 04 Jul 2022 12:29:06 +0000
+Date: Mon, 04 Jul 2022 14:29:05 +0200
+Message-ID: <874jzxysby.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
-To: Egor Vorontsov <sdoregor@sdore.me>
-Subject: Re: [PATCH 1/2] ALSA: usb-audio: Add quirk for Fiero SC-01
-In-Reply-To: <20220627100041.2861494-1-sdoregor@sdore.me>
-References: <20220627100041.2861494-1-sdoregor@sdore.me>
+To: Jan =?ISO-8859-1?Q?Sch=E4r?= <jan@jschaer.ch>
+Subject: Re: [PATCH 1/2] ALSA: usb-audio: Support jack detection on Dell dock
+In-Reply-To: <20220627171855.42338-1-jan@jschaer.ch>
+References: <20220627171855.42338-1-jan@jschaer.ch>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
 MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
-Cc: "moderated list:SOUND" <alsa-devel@alsa-project.org>,
- open list <linux-kernel@vger.kernel.org>,
- Brendan Grieve <brendan@grieve.com.au>, Takashi Iwai <tiwai@suse.com>,
- William Overton <willovertonuk@gmail.com>, Alexander Tsoy <alexander@tsoy.me>,
- Jonas Hahnfeld <hahnjo@hahnjo.de>
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 8bit
+Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -98,41 +97,102 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Mon, 27 Jun 2022 12:00:34 +0200,
-Egor Vorontsov wrote:
+On Mon, 27 Jun 2022 19:18:54 +0200,
+Jan Schär wrote:
 > 
-> Fiero SC-01 is a USB sound card with two mono inputs and a single
-> stereo output. The inputs are composed into a single stereo stream.
+> The Dell WD15 dock has a headset and a line out port. Add support for
+> detecting if a jack is inserted into one of these ports.
+> For the headset jack, additionally determine if a mic is present.
 > 
-> The device uses a vendor-provided driver on Windows and does not work
-> at all without it. The driver mostly provides ASIO functionality, but
-> also alters the way the sound card is queried for sample rates and
-> clocks.
+> The WD15 contains an ALC4020 USB audio controller and ALC3263 audio codec
+> from Realtek. It is a UAC 1 device, and UAC 1 does not support jack
+> detection. Instead, jack detection works by sending HD Audio commands over
+> vendor-type USB messages.
 > 
-> ALSA queries those failing with an EPIPE (same as Windows 10 does).
-> Presumably, the vendor-provided driver does not query it at all, simply
-> matching by VID:PID. Thus, I consider this a buggy firmware and adhere
-> to a set of fixed endpoint quirks instead.
+> I found out how it works by looking at USB captures on Windows.
+> The audio codec is very similar to the one supported by
+> sound/soc/codecs/rt298.c / rt298.h, some constant names and the mic
+> detection are adapted from there. The realtek_add_jack function is adapted
+> from build_connector_control in sound/usb/mixer.c.
 > 
-> The soundcard has an internal clock. Implicit feedback mode is required
-> for the playback.
+> I tested this on a WD15 dock with the latest firmware.
 > 
-> I have updated my device to v1.1.0 from a Windows 10 VM using a vendor-
-> provided binary prior to the development, hoping for it to just begin
-> working. The device provides no obvious way to downgrade the firmware,
-> and regardless, there's no binary available for v1.0.0 anyway.
+> Signed-off-by: Jan Schär <jan@jschaer.ch>
+> ---
+> For testing this patch, you need to change the content of the file
+> /usr/share/alsa/ucm2/USB-Audio/Dell-WD15-Dock-HiFi.conf to the following:
+> ```
+> SectionDevice."Headphones" {
+> 	Comment "Headphones"
 > 
-> Thus, I will be getting another unit to extend the patch with support
-> for that. Expected to be a simple copy-paste of the existing one,
-> though.
+> 	Value {
+> 		PlaybackPriority 100
+> 		PlaybackPCM "hw:${CardId}"
+> 		JackControl "Headphone Jack"
 > 
-> There were no previous reports of that device in context of Linux
-> anywhere. Other issues have been reported though, but that's out of the
-> scope.
+> 		If.Headphone_ctl {
+> 			Condition {
+> 				Type ControlExists
+> 				Control "name='Headphone Playback Switch'"
+> 			}
+> 			True {
+> 				PlaybackMixerElem "Headphone"
+> 				PlaybackVolume "Headphone Playback Volume"
+> 				PlaybackSwitch "Headphone Playback Switch"
+> 			}
+> 		}
+> 	}
+> }
 > 
-> Signed-off-by: Egor Vorontsov <sdoregor@sdore.me>
+> SectionDevice."Line" {
+> 	Comment "Line Out"
+> 
+> 	Value {
+> 		PlaybackPriority 200
+> 		PlaybackPCM "hw:${CardId},1"
+> 		JackControl "Line Out Jack"
+> 
+> 		If.Line_ctl {
+> 			Condition {
+> 				Type ControlExists
+> 				Control "name='Line Playback Switch'"
+> 			}
+> 			True {
+> 				PlaybackMixerElem "Line"
+> 				PlaybackVolume "Line Playback Volume"
+> 				PlaybackSwitch "Line Playback Switch"
+> 			}
+> 		}
+> 	}
+> }
+> 
+> SectionDevice."Headset" {
+> 	Comment "Headset Microphone"
+> 
+> 	Value {
+> 		CapturePriority 100
+> 		CapturePCM "hw:${CardId}"
+> 		JackControl "Headset Mic Jack"
+> 
+> 		If.Mic_ctl {
+> 			Condition {
+> 				Type ControlExists
+> 				Control "name='Mic Capture Switch'"
+> 			}
+> 			True {
+> 				CaptureMixerElem "Mic"
+> 				CaptureVolume "Mic Capture Volume"
+> 				CaptureSwitch "Mic Capture Switch"
+> 			}
+> 		}
+> 	}
+> }
+> ```
 
-Thanks, now applied both patches.
+This is an interesting finding.
+Applied both patches to for-next branch now.
 
+
+Thanks!
 
 Takashi
