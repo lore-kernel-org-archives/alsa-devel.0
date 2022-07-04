@@ -4,92 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id DFFE4C43334
-	for <alsa-devel@archiver.kernel.org>; Mon,  4 Jul 2022 11:36:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 84E0FC43334
+	for <alsa-devel@archiver.kernel.org>; Mon,  4 Jul 2022 11:44:16 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 23DDD17BC;
-	Mon,  4 Jul 2022 13:35:25 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 23DDD17BC
+	by alsa0.perex.cz (Postfix) with ESMTPS id 33C3F176C;
+	Mon,  4 Jul 2022 13:43:24 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 33C3F176C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1656934575;
-	bh=7JUnMoy4giwcuP6ZA8CZPPGu7TGkMLEhpS/sJq2CBmg=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=q336VFn+R8MXZoMcaZdxMpzRSaH+4aee0BFj0++jH8jf1kwVnXF3YaFAwjNTN4bWS
-	 tc3VGUwo+1D87cWHs4ru62vZ4k5rUVa0Cr2e1SXIYpSmmUdlcBQmgsqu0tBcXz9KCg
-	 FKvx9qBSFbFDHPaYw3XhazwTl3rZi16eEX5yYAUw=
+	s=default; t=1656935054;
+	bh=gzb1hQ5vKWSQOO8RXazjatCcAPCmdkfD+C8CUvHQh+k=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=jIajzQhxEXRI6Vd6jXPwLcDomzNciBwdCUIFNWginbZ8I/WKaNytD2mPS18ndrN9h
+	 q+bQ2A5TzGPcjqOaqG262ZTmIJI1JMmKridwF7PGoiXjc4ghDeNvJ5lGj8iNKpQO5D
+	 L11VcowTgI2uBKVe7WcywnpjakDlgbtBkl1kdaNg=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 66249F8065D;
-	Mon,  4 Jul 2022 13:23:33 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id C9EDFF80141;
+	Mon,  4 Jul 2022 13:43:23 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id D80B8F80249; Sun,  3 Jul 2022 07:33:10 +0200 (CEST)
-Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com
- [IPv6:2607:f8b0:4864:20::102d])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id 582D9F8012A; Mon,  4 Jul 2022 13:43:22 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 55F48F8014E
- for <alsa-devel@alsa-project.org>; Sun,  3 Jul 2022 07:33:02 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 55F48F8014E
+ by alsa1.perex.cz (Postfix) with ESMTPS id 9D40AF8012A
+ for <alsa-devel@alsa-project.org>; Mon,  4 Jul 2022 13:43:19 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9D40AF8012A
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="pHB2278y"
-Received: by mail-pj1-x102d.google.com with SMTP id
- x18-20020a17090a8a9200b001ef83b332f5so52867pjn.0
- for <alsa-devel@alsa-project.org>; Sat, 02 Jul 2022 22:33:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
- h=from:to:cc:subject:date:message-id:mime-version
- :content-transfer-encoding;
- bh=BsiPX2KtJdPnGqWVYZ5PsoFOkPFG/BSZesutbERBSQ0=;
- b=pHB2278yWNvovHSqE8wCj33lriFx16XfuVkuvvOfGzCj6h0ok8qbczqPmJbcUz3Ha5
- FVOtYLqd9+B4fwmk+UhUI7jF34NHb2o7xfYYVUBOPm+eZ6A9uCZtWM/XEDax9q/j+6vY
- so6bwmMEKZq1K2lNI0r8cdfumxLVn4hCnrI+2hR/xuj2FtIW4+112sAEiSQC1PqTaiYh
- D3HUYIdk5wNJjmpzSBCohTYapB714bZtQBE+EhMRWdl65LFcoOVxixJquIYVxXfN+nhO
- Nx/tKMZG4bFSxhfqLqqAHClnalmqHT0kpC+UDLRSqUc9rAwvnvFWqkco08sNutXEhfeP
- IpiA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
- :content-transfer-encoding;
- bh=BsiPX2KtJdPnGqWVYZ5PsoFOkPFG/BSZesutbERBSQ0=;
- b=oS2dv5XxyJ2gQkFaURDtgojDtkxGP91zYr8LBNluAewwC7hlZsPuv/HcKAI/9ISlHG
- AKNBHj8sxeD9RKEY3Wd31hvvEv6n8DhcKCjHbeBLXhHtC7ikP0xSWnMpaPhgXA26FOHI
- u3vPX5aahVwayq3mAvdNVzPvVTZFZ0kwDscA8Fs53wWJ749a597YGBSkUyubb8lnNPuL
- AdHmWeKjp8yEOL1UHYIyI+jlKaS3ACKLeUwpLVK8z0M0sjnt/WXLK7GEdi/2S5uvExiL
- mS5Rbn5Du5dOy+OZ7cgfp5/t/wLHLnWlfw9q6NTtPxRp1blNuYyyd1vyOe5tc53Eb86u
- /YbA==
-X-Gm-Message-State: AJIora8YoLPdZCmbZji8tE1m1AUi+OV2aqH9BpcbpFJbamV0DwmPkIU7
- MprfyXkEjc+BStoz2jEaWso=
-X-Google-Smtp-Source: AGRyM1vC3FjdkteKWfObrEzsO7RZCoKas+zX8IhpUVBdVRBxojZ5RAS3o5pKL7UZ293S7TDTvpRFfw==
-X-Received: by 2002:a17:903:2443:b0:16a:29ac:27c2 with SMTP id
- l3-20020a170903244300b0016a29ac27c2mr28024083pls.46.1656826380197; 
- Sat, 02 Jul 2022 22:33:00 -0700 (PDT)
-Received: from ZEN.. ([23.225.169.79]) by smtp.googlemail.com with ESMTPSA id
- e9-20020a170902784900b001636d95fe59sm18384354pln.172.2022.07.02.22.32.54
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Sat, 02 Jul 2022 22:32:59 -0700 (PDT)
-From: xhe <xw897002528@gmail.com>
-To: 
-Subject: [PATCH] ALSA: hda: add CSC3551 support for UM5302TA
-Date: Sun,  3 Jul 2022 13:32:23 +0800
-Message-Id: <20220703053225.2203-1-xw897002528@gmail.com>
-X-Mailer: git-send-email 2.33.0
+ dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="igIXP3QQ"
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by dfw.source.kernel.org (Postfix) with ESMTPS id BD07B60AE0;
+ Mon,  4 Jul 2022 11:43:16 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DEB0BC3411E;
+ Mon,  4 Jul 2022 11:43:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1656934996;
+ bh=gzb1hQ5vKWSQOO8RXazjatCcAPCmdkfD+C8CUvHQh+k=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=igIXP3QQYKP/cgYrUPGUsirKX/WK+/Nkq1DMWjjTJ5uVPIyVreeC7dkFuoSgcGcFl
+ diuGxHsDqPKJ87hYRq3PHz5bNPkYchqxFufjy8rYYH3lgc9eM/Vm6nBkdK/wMJOYXp
+ bIP+063gWA3qahwV5rwFrJ1ka593C01oCAmRNQd+qU+Vvw3cZ4h/scxNTe/HfS8rwQ
+ eLsrbNtOq1QhdrD1sGynmf2bNNSAOdR2hEsedd9XH3OEuuFRjvVfQGLHsCQ4XsRKEC
+ dPqfXtCGkEXIrGmmuv/6Wnqm3/cYILbQ/re8bt/sfMaoEgLc/qgZ4maWheRUncTjh9
+ XzA8f2GnOsObQ==
+Date: Mon, 4 Jul 2022 12:43:11 +0100
+From: Mark Brown <broonie@kernel.org>
+To: Raphael-Xu <13691752556@139.com>
+Subject: Re: [PATCH v1] add tas2780
+Message-ID: <YsLST3BACPFak2PK@sirena.org.uk>
+References: <20220704104759.21083-1-13691752556@139.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Mailman-Approved-At: Mon, 04 Jul 2022 13:23:03 +0200
-Cc: Kai-Heng Feng <kai.heng.feng@canonical.com>,
- Stefan Binding <sbinding@opensource.cirrus.com>,
- Kailang Yang <kailang@realtek.com>, linux-kernel@vger.kernel.org,
- Lucas Tanure <tanureal@opensource.cirrus.com>, patches@opensource.cirrus.com,
- Takashi Iwai <tiwai@suse.com>, Xiaoyan Li <lxy.lixiaoyan@gmail.com>,
- xw897002528@gmail.com, James Schulman <james.schulman@cirrus.com>,
- alsa-devel@alsa-project.org, Cameron Berkenpas <cam@neo-zeon.de>,
- Richard Fitzgerald <rf@opensource.cirrus.com>,
- Tim Crawford <tcrawford@system76.com>,
- Werner Sembach <wse@tuxedocomputers.com>,
- David Rhodes <david.rhodes@cirrus.com>, Yong Wu <yong.wu@mediatek.com>,
- Andy Chi <andy.chi@canonical.com>
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature"; boundary="osNu5PyZsE+uALZN"
+Content-Disposition: inline
+In-Reply-To: <20220704104759.21083-1-13691752556@139.com>
+X-Cookie: MERYL STREEP is my obstetrician!
+Cc: navada@ti.com, alsa-devel@alsa-project.org, shenghao-ding@ti.com,
+ raphael-xu@ti.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -105,46 +81,145 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: He Wang <xw897002528@gmail.com>
 
-ASUS UM5302TA are using csc3551, or cs35l41, which is connected to the
-laptop by I2C bus. This patch adds quirk for the sound card, and avoid
-ACPI DSD things for i2c-multi-instantiate cases like CLSA0100.
+--osNu5PyZsE+uALZN
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Patch is made by XiaoYan Li. It is tested by us on ASUS UM5302TA.
+On Mon, Jul 04, 2022 at 06:47:59PM +0800, Raphael-Xu wrote:
 
-Signed-off-by: He Wang <xw897002528@gmail.com>
-Signed-off-by: Xiaoyan Li <lxy.lixiaoyan@gmail.com>
----
- sound/pci/hda/cs35l41_hda.c   | 2 +-
- sound/pci/hda/patch_realtek.c | 1 +
- 2 files changed, 2 insertions(+), 1 deletion(-)
+> 1.update Kconfig and Makefile 2.add tas2780.c and tas2780.h
 
-diff --git a/sound/pci/hda/cs35l41_hda.c b/sound/pci/hda/cs35l41_hda.c
-index cce27a86267f..7374565ecf15 100644
---- a/sound/pci/hda/cs35l41_hda.c
-+++ b/sound/pci/hda/cs35l41_hda.c
-@@ -420,7 +420,7 @@ static int cs35l41_hda_read_acpi(struct cs35l41_hda *cs35l41, const char *hid, i
- 	 * And devm functions expect that the device requesting the resource has the correct
- 	 * fwnode.
- 	 */
--	if (strncmp(hid, "CLSA0100", 8) != 0)
-+	if (strncmp(hid, "CLSA0100", 8) != 0 && strncmp(hid, "CSC3551", 7) != 0)
- 		return -EINVAL;
- 
- 	/* check I2C address to assign the index */
-diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-index cee69fa7e246..49c27d948582 100644
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -9138,6 +9138,7 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
- 	SND_PCI_QUIRK(0x1043, 0x1e8e, "ASUS Zephyrus G15", ALC289_FIXUP_ASUS_GA401),
- 	SND_PCI_QUIRK(0x1043, 0x1f11, "ASUS Zephyrus G14", ALC289_FIXUP_ASUS_GA401),
- 	SND_PCI_QUIRK(0x1043, 0x1d42, "ASUS Zephyrus G14 2022", ALC289_FIXUP_ASUS_GA401),
-+	SND_PCI_QUIRK(0x1043, 0x1f12, "ASUS UM5302TA", ALC287_FIXUP_CS35L41_I2C_2),
- 	SND_PCI_QUIRK(0x1043, 0x16b2, "ASUS GU603", ALC289_FIXUP_ASUS_GA401),
- 	SND_PCI_QUIRK(0x1043, 0x3030, "ASUS ZN270IE", ALC256_FIXUP_ASUS_AIO_GPIO2),
- 	SND_PCI_QUIRK(0x1043, 0x831a, "ASUS P901", ALC269_FIXUP_STEREO_DMIC),
--- 
-2.33.0
+This looks pretty good, there's some mostly stylistic things below but
+they're all fairly minor and you also need to provide documentation for
+the DT binding.
 
+>  snd-soc-tas2562-objs := tas2562.o
+>  snd-soc-tas2764-objs := tas2764.o
+> +snd-soc-tas2780-objs := tas2780.o
+>  # Mux
+
+Please preserve these blank lines here.
+
+> +	ret = snd_soc_component_update_bits(component, TAS2780_PWR_CTRL,
+> +					    TAS2780_PWR_CTRL_MASK,
+> +					    TAS2780_PWR_CTRL_SHUTDOWN);
+> +	if (ret < 0) {
+> +		pr_err("%s:errCode:0x%0x:power down error\n",
+> +			__func__, ret);
+
+dev_err(), and the style used in the log message doesn't really match
+the typical kernel style at all.
+
+> +		goto EXIT;
+
+Labels should generally be lower case.
+
+> +static int tas2780_dac_event(struct snd_soc_dapm_widget *w,
+> +			     struct snd_kcontrol *kcontrol, int event)
+> +{
+> +	struct snd_soc_component *component =
+> +		snd_soc_dapm_to_component(w->dapm);
+> +	struct tas2780_priv *tas2780 =
+> +		snd_soc_component_get_drvdata(component);
+> +	int ret = 0;
+> +
+> +	switch (event) {
+> +	case SND_SOC_DAPM_POST_PMU:
+> +		ret = snd_soc_component_update_bits(component,
+> +						TAS2780_PWR_CTRL,
+> +						TAS2780_PWR_CTRL_MASK,
+> +						TAS2780_PWR_CTRL_MUTE);
+> +		break;
+> +	case SND_SOC_DAPM_PRE_PMD:
+> +		ret = snd_soc_component_update_bits(component,
+> +						TAS2780_PWR_CTRL,
+> +						TAS2780_PWR_CTRL_MASK,
+> +						TAS2780_PWR_CTRL_SHUTDOWN);
+> +		break;
+
+This looks like it should perhaps be a mute_stream operation while...
+
+> +static int tas2780_mute(struct snd_soc_dai *dai, int mute, int direction)
+> +{
+> +	struct snd_soc_component *component = dai->component;
+> +	struct tas2780_priv *tas2780 =
+> +		snd_soc_component_get_drvdata(component);
+> +	int ret = 0;
+> +
+> +	if (!mute) {
+> +		ret = snd_soc_component_update_bits(component,
+> +			TAS2780_CLK_CFG, TAS2780_CLK_CFG_MASK,
+> +			TAS2780_CLK_CFG_ENABLE);
+> +
+> +		if (ret < 0) {
+> +			dev_err(tas2780->dev,
+> +				"%s: Failed to CLK_CFG_ENABLE\n",
+> +				__func__);
+> +			goto EXIT;
+> +		}
+> +	}
+> +	ret = snd_soc_component_update_bits(component, TAS2780_PWR_CTRL,
+> +		TAS2780_PWR_CTRL_MASK,
+> +		mute ? TAS2780_PWR_CTRL_MUTE : 0);
+
+...this is managing clocks which doesn't look like what I'd expect for a
+mute operation, that should probably be part of the power management
+(either a DAPM supply or in the bias level handling)?
+
+> +
+> +	switch (fmt & SND_SOC_DAIFMT_FORMAT_MASK) {
+> +	case SND_SOC_DAIFMT_I2S:
+> +	case SND_SOC_DAIFMT_DSP_A:
+> +		iface = TAS2780_TDM_CFG2_SCFG_I2S;
+> +		tdm_rx_start_slot = 1;
+> +		break;
+> +	case SND_SOC_DAIFMT_DSP_B:
+> +	case SND_SOC_DAIFMT_LEFT_J:
+> +		iface = TAS2780_TDM_CFG2_SCFG_LEFT_J;
+> +		tdm_rx_start_slot = 0;
+> +		break;
+
+This doesn't seem right - it's using exactly the same configuration for
+multiple DAI formats.
+
+> +static bool tas2780_volatile(struct device *dev,
+> +	unsigned int reg)
+> +{
+> +			return true;
+> +}
+
+Just don't specify a cache.
+
+> +static int tas2780_parse_dt(struct device *dev, struct tas2780_priv *tas2780)
+> +{
+> +	int ret = 0;
+> +
+> +	tas2780->reset_gpio = devm_gpiod_get_optional(tas2780->dev, "reset",
+> +		GPIOD_OUT_HIGH);
+> +	if (IS_ERR(tas2780->reset_gpio)) {
+> +		if (PTR_ERR(tas2780->reset_gpio) == -EPROBE_DEFER) {
+> +			tas2780->reset_gpio = NULL;
+> +			return -EPROBE_DEFER;
+> +		}
+> +	}
+
+This has a DT binding but there's no DT binding document, any new DT
+bindings need to be documented.
+
+--osNu5PyZsE+uALZN
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmLC0k4ACgkQJNaLcl1U
+h9DPwAf9ED5g1AOo1S+5Pa/9rkePTil/Yb+za/yRRJREwdA8QVnHcLGD5oWe0Z0d
+mYsvR/qZHvnwunO3WDYMDYH6BDmjrfyrQnsZnjLee93caD+F7GGj7z8MYpETbHPl
+P3WuqpXVH/4ihkthvJQear3bSYTrlitIDL2oodkb798HRxkNAVD0RNh7T5rly1E9
+kW8Nq9GV3F7yDYOab6l++PA3J4FA84BDy6JgTq4ma9QdD6AwqIrkJnDoIN8zZgSL
+YIBuQmzafkBh69QwDgSB+Tc2q/Qu3jAfdfRO1z6t0VheCrOebAhBWqNRG3iVCUD+
+eO/yqNIRkZFYH+Rh/bDtBJwqWVjgaA==
+=W76u
+-----END PGP SIGNATURE-----
+
+--osNu5PyZsE+uALZN--
