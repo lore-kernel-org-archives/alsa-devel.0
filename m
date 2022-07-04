@@ -4,80 +4,59 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2C96BC433EF
-	for <alsa-devel@archiver.kernel.org>; Mon,  4 Jul 2022 07:36:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C8AAEC43334
+	for <alsa-devel@archiver.kernel.org>; Mon,  4 Jul 2022 07:42:58 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D4591167D;
-	Mon,  4 Jul 2022 09:36:03 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D4591167D
+	by alsa0.perex.cz (Postfix) with ESMTPS id C4523167F;
+	Mon,  4 Jul 2022 09:42:06 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C4523167F
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1656920213;
-	bh=Q0jhAfVtaXX/0rO/evIVGyVYSNPYOU8ggf+ALIBohTc=;
-	h=Date:Subject:To:References:From:In-Reply-To:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=fsjqcohgZLrc52Q6yXkG+Xn5g7d91kynRPBdjt/VyU4kTQ1AlEIl4aPfXZRTZ2NFZ
-	 s3nQ0BYEn7BbEeKL+7YTg2sA5nRv1qeEnRDky2OX43QChftiFkehfT6x5MjhbQLpY/
-	 eNepz3FGge7xFy36Uo86dO8hW8Xbr1G2bBxiIt3w=
+	s=default; t=1656920576;
+	bh=lnQdswSXMNcdoTnD8G1agDLbpdaDcMjlWda2eKzHhmQ=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=mo6QTyqp6f2OHKP78r1WQVtdWaxT36Ro7aA9ocjmimKQdB95IOURtRArlz9WCDCYR
+	 RoaF5byNb/9AcAw/7dfS30A+2BQLLIpTSebyUQ06BN2SErZA2fm0x7CKEf8CVbw1xR
+	 VUIoe69uZVPa+hqQ5MSHhdGWU2AOQBNtbtUdnCyA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 77296F80139;
-	Mon,  4 Jul 2022 09:36:03 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 4D7F4F80141;
+	Mon,  4 Jul 2022 09:42:06 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id B32A3F8014E; Mon,  4 Jul 2022 09:36:01 +0200 (CEST)
-Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 700C8F80139; Mon,  4 Jul 2022 09:42:05 +0200 (CEST)
+Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id F3330F80139
- for <alsa-devel@alsa-project.org>; Mon,  4 Jul 2022 09:35:52 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F3330F80139
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="RKx4JTAb"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
- d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1656920156; x=1688456156;
- h=message-id:date:mime-version:subject:to:cc:references:
- from:in-reply-to:content-transfer-encoding;
- bh=Q0jhAfVtaXX/0rO/evIVGyVYSNPYOU8ggf+ALIBohTc=;
- b=RKx4JTAbxc8DPIQdNoENFrFXXFVU9gxCBwA/8PaDtLFey+prf5sZFEiE
- OzFQn7A+ZQaWbNS4Ee0+is8SJfWMqF6mpXPAdOM5TSNtLg4KZdbdm/LO/
- B5cUwAg6C9+FOoQTRBtZg81WTuLpZ1Tjg/AXICSWpwKSTN7P+bvkEy7jl
- WeJllE/GvwLTJ7fKXU4KrmJWgHKnRgk4c8th3Y3NJRm/MJXuA52xBjEXy
- /OWqFanUcHBpGTiOEwwhs61RODLCNAFUB05knwgO9Y6TI6D75TVdqcpHY
- jSzJAhU4tdw12RGStDRw6nbFVXtjgu6VcemFTcxIISHW4amUGibksSuUE A==;
-X-IronPort-AV: E=McAfee;i="6400,9594,10397"; a="347039966"
-X-IronPort-AV: E=Sophos;i="5.92,243,1650956400"; d="scan'208";a="347039966"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
- by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 04 Jul 2022 00:35:50 -0700
-X-IronPort-AV: E=Sophos;i="5.92,243,1650956400"; d="scan'208";a="567076613"
-Received: from rogerior-mobl1.ger.corp.intel.com (HELO [10.249.254.21])
- ([10.249.254.21])
- by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 04 Jul 2022 00:35:47 -0700
-Message-ID: <9c67d656-9990-7206-58b4-3de25d8341a0@linux.intel.com>
-Date: Mon, 4 Jul 2022 10:36:33 +0300
+ by alsa1.perex.cz (Postfix) with ESMTPS id 1B755F80139
+ for <alsa-devel@alsa-project.org>; Mon,  4 Jul 2022 09:41:58 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1B755F80139
+Received: from dggpemm500023.china.huawei.com (unknown [172.30.72.56])
+ by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4LbyPj4SJkzkWr2;
+ Mon,  4 Jul 2022 15:39:53 +0800 (CST)
+Received: from dggpemm500007.china.huawei.com (7.185.36.183) by
+ dggpemm500023.china.huawei.com (7.185.36.83) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.24; Mon, 4 Jul 2022 15:41:51 +0800
+Received: from huawei.com (10.175.103.91) by dggpemm500007.china.huawei.com
+ (7.185.36.183) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.24; Mon, 4 Jul
+ 2022 15:41:50 +0800
+From: Yang Yingliang <yangyingliang@huawei.com>
+To: <linux-kernel@vger.kernel.org>, <alsa-devel@alsa-project.org>
+Subject: [PATCH -next] ASoC: fsl: pcm030-audio-fabric: use
+ platform_device_unregsiter()
+Date: Mon, 4 Jul 2022 15:51:34 +0800
+Message-ID: <20220704075134.26230-1-yangyingliang@huawei.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Firefox/91.0 Thunderbird/91.10.0
-Subject: Re: [PATCH v2 1/1] ASoC: Intel: catpt: remove duplicating driver data
- retrieval
-Content-Language: en-US
-To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
- alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
-References: <20220703145152.62297-1-andriy.shevchenko@linux.intel.com>
-From: =?UTF-8?Q?P=c3=a9ter_Ujfalusi?= <peter.ujfalusi@linux.intel.com>
-In-Reply-To: <20220703145152.62297-1-andriy.shevchenko@linux.intel.com>
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-Cc: Cezary Rojewski <cezary.rojewski@intel.com>,
- Kai Vehmanen <kai.vehmanen@linux.intel.com>, Takashi Iwai <tiwai@suse.com>,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
- Liam Girdwood <liam.r.girdwood@linux.intel.com>,
- Mark Brown <broonie@kernel.org>, Bard Liao <yung-chuan.liao@linux.intel.com>
+Content-Type: text/plain
+X-Originating-IP: [10.175.103.91]
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ dggpemm500007.china.huawei.com (7.185.36.183)
+X-CFilter-Loop: Reflected
+Cc: broonie@kernel.org, lgirdwood@gmail.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -93,50 +72,28 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+Replace platform_device_del/put() with platform_device_unregsiter()
+to simplify code.
 
+Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
+---
+ sound/soc/fsl/pcm030-audio-fabric.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-On 03/07/2022 17:51, Andy Shevchenko wrote:
-> device_get_match_data() in ACPI case calls similar to acpi_match_device().
-> Hence there is no need to duplicate the call. Just assign what is in
-> the id->driver_data.
-> 
-> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> ---
-> v2: dropped device_get_match_data() and rewrote commit message
->  sound/soc/intel/catpt/device.c | 5 +----
->  1 file changed, 1 insertion(+), 4 deletions(-)
-> 
-> diff --git a/sound/soc/intel/catpt/device.c b/sound/soc/intel/catpt/device.c
-> index 85a34e37316d..2eeaeb962532 100644
-> --- a/sound/soc/intel/catpt/device.c
-> +++ b/sound/soc/intel/catpt/device.c
-> @@ -247,6 +247,7 @@ static int catpt_acpi_probe(struct platform_device *pdev)
->  	id = acpi_match_device(dev->driver->acpi_match_table, dev);
->  	if (!id)
->  		return -ENODEV;
-> +	spec = (const struct catpt_spec *)id->driver_data;
->  
->  	ret = snd_intel_acpi_dsp_driver_probe(dev, id->id);
->  	if (ret != SND_INTEL_DSP_DRIVER_ANY && ret != SND_INTEL_DSP_DRIVER_SST) {
-> @@ -254,10 +255,6 @@ static int catpt_acpi_probe(struct platform_device *pdev)
->  		return -ENODEV;
->  	}
->  
-> -	spec = device_get_match_data(dev);
-> -	if (!spec)
-> -		return -ENODEV;
-> -
->  	cdev = devm_kzalloc(dev, sizeof(*cdev), GFP_KERNEL);
->  	if (!cdev)
->  		return -ENOMEM;
-
-We could just pass the "(const struct catpt_spec *)id->driver_data" in
-place of spec to catpt_dev_init() and we can get rid of the local
-temporary pointer?
-
-If not, then I would cast out the spec before it's use:
-spec = (const struct catpt_spec *)id->driver_data;
-catpt_dev_init(cdev, dev, spec);
-
+diff --git a/sound/soc/fsl/pcm030-audio-fabric.c b/sound/soc/fsl/pcm030-audio-fabric.c
+index e4c805acc349..997c3e66c636 100644
+--- a/sound/soc/fsl/pcm030-audio-fabric.c
++++ b/sound/soc/fsl/pcm030-audio-fabric.c
+@@ -101,8 +101,7 @@ static int pcm030_fabric_probe(struct platform_device *op)
+ 	ret = snd_soc_register_card(card);
+ 	if (ret) {
+ 		dev_err(&op->dev, "snd_soc_register_card() failed: %d\n", ret);
+-		platform_device_del(pdata->codec_device);
+-		platform_device_put(pdata->codec_device);
++		platform_device_unregister(pdata->codec_device);
+ 	}
+ 
+ 	platform_set_drvdata(op, pdata);
 -- 
-Péter
+2.25.1
+
