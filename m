@@ -4,80 +4,85 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0289DC433EF
-	for <alsa-devel@archiver.kernel.org>; Mon,  4 Jul 2022 14:58:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 011B8C43334
+	for <alsa-devel@archiver.kernel.org>; Mon,  4 Jul 2022 15:32:21 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 63B23171E;
-	Mon,  4 Jul 2022 16:57:36 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 63B23171E
+	by alsa0.perex.cz (Postfix) with ESMTPS id 4857C1710;
+	Mon,  4 Jul 2022 17:31:29 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4857C1710
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1656946706;
-	bh=ZKLiAWk+H1XBmiTsrrlG7iFkrk1JyypPAdX3bL8bSF0=;
-	h=Date:Subject:To:References:From:In-Reply-To:Cc:List-Id:
+	s=default; t=1656948739;
+	bh=FvkEbetfT4jdtj6ZuN6qH4lChFTTrylF+4rYmbulcGA=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=F5Cx8xEHU8OdmOSoTFbTk2Qgv0Q5ZIpPa+Eezh6uqQKwVFar/YMoOlcLGAixz9XKF
-	 RJ3oAkDkdt65MCqpyBWd3ifubvcW13wbJPg30Ip+jj01dgZdjXnurw41/HX8fb0Mw6
-	 /s7CIU2mku7Bjoy/PVE1eAOT7qMpBzCab6GexZu0=
+	b=B0eCPoRBDC43OWeEmupteaUK/AF5DB7tVlOkTYW2thX/hJwzgLFaLkf65+amcAwfC
+	 ffJI5m2yONz+A39lHTbVoBjsIbrQW2vouw85LoIvNSN8kbbbPf2JKeFWBMzQqP5TzZ
+	 3fCdtqSxmSPFEig0rd6nadjXFO1WZgFhnbMz8XJI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id F15A4F8014E;
-	Mon,  4 Jul 2022 16:57:35 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id CBEF0F80141;
+	Mon,  4 Jul 2022 17:31:28 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 7E757F80165; Mon,  4 Jul 2022 16:57:35 +0200 (CEST)
-Received: from mga17.intel.com (mga17.intel.com [192.55.52.151])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 5039DF80139; Mon,  4 Jul 2022 17:31:27 +0200 (CEST)
+Received: from mail-yw1-x112f.google.com (mail-yw1-x112f.google.com
+ [IPv6:2607:f8b0:4864:20::112f])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 8CA20F80139
- for <alsa-devel@alsa-project.org>; Mon,  4 Jul 2022 16:57:28 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8CA20F80139
+ by alsa1.perex.cz (Postfix) with ESMTPS id E9F8BF800ED
+ for <alsa-devel@alsa-project.org>; Mon,  4 Jul 2022 17:31:20 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E9F8BF800ED
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="SYKJqDVf"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
- d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1656946649; x=1688482649;
- h=message-id:date:mime-version:subject:to:cc:references:
- from:in-reply-to:content-transfer-encoding;
- bh=ZKLiAWk+H1XBmiTsrrlG7iFkrk1JyypPAdX3bL8bSF0=;
- b=SYKJqDVf8xoOake6jpB+6sMf4Poq9MkfBKfU7ryv9/TACpLoqb65ufph
- GPJG1yWayC2rmelUssoseeXoJTyBazAJ0LF/cfdqoah8O5zt9apNIgrEY
- /k4aNaTYeRScG6UPn/YVUi2mtDXiffSt4a1oMzjxQ/kqya55J/CNIBfx2
- m1bIpTKjdCNec7u8WLpiBvVI6qaSMkByetzABMnvuaow1KSJHjIUkx757
- Qfx/05QARnUGrN7OVotZf35zojDtRT0lxBmr1gG5p8iWHvGkUTC1Hnmn7
- gFQ8eEG24MJ6U775vZUYHxnOnUCrqNQTwRtoUzKrq0ESpKgX9kCQIiYkW Q==;
-X-IronPort-AV: E=McAfee;i="6400,9594,10398"; a="263571053"
-X-IronPort-AV: E=Sophos;i="5.92,243,1650956400"; d="scan'208";a="263571053"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
- by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 04 Jul 2022 07:57:23 -0700
-X-IronPort-AV: E=Sophos;i="5.92,243,1650956400"; d="scan'208";a="619320137"
-Received: from aslawinx-mobl.ger.corp.intel.com (HELO [10.99.241.83])
- ([10.99.241.83])
- by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 04 Jul 2022 07:57:21 -0700
-Message-ID: <684b0081-5dc7-73c1-67c0-b707941b7043@linux.intel.com>
-Date: Mon, 4 Jul 2022 16:57:18 +0200
+ dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
+ header.b="Fh3le5Kr"
+Received: by mail-yw1-x112f.google.com with SMTP id
+ 00721157ae682-31c9b70c382so22871597b3.6
+ for <alsa-devel@alsa-project.org>; Mon, 04 Jul 2022 08:31:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
+ h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+ :cc; bh=sZp0fTSBviO8sZXMgvxBW5EvrUyZFIdfTYigWhAWP2Q=;
+ b=Fh3le5KrkwCDTcCx2UG80LSVLUXzP+c9Ez6uSsLdhx4K2bk5LNahjVqrsH5dwYh2cp
+ FIL0vcQ5odqvLmmcoA4d2q79rl1XYsf4vJuCLYlJmi19FCMk75qbnyQMu61V5MGcULGh
+ cK/+PHY0erJyo8sLdHTLRDD0jmZkSfL05/bfjmVkjaVf393UqgPy0eLIIdqQPvmwdPkx
+ 1Ql6Z+Zjlbpiuv0NIs9br913KhmDs3H0CX0CWmbgLyg4vgNzGzlCT1zTSC17FL3SbVKa
+ 1FeSi1hePyMQF7Kgxg/jBrZzUhHT29t1nMJ94G0Fbc+095rxQMLlhrn8KalyqrAX8Ruy
+ qrpQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc;
+ bh=sZp0fTSBviO8sZXMgvxBW5EvrUyZFIdfTYigWhAWP2Q=;
+ b=DKYVRMKoT1enTsPr4a4o63aSgg/ntAeRpr1woHp2TAr4Xa73Ln8I5E0dQEMAqBJsvi
+ 6WoNhwmgl8HTAyzG2GzvyZ2GlkAIqP/Mhy+ZsY2JLmwNrQz17sw8lLfNTZFg1IJvEkKQ
+ 9wdNHtooUntZX0iCf10eYqkm58sqIZ0zasniwc+qK9URGVWLX+m6E2zWdu0xMP2Kurdp
+ szRm2+6gIFawSm/ns3uNP1fZJ7hVGRIN8ZvJzrJpYy7GrD/z3z2HRi50KqgsKsdwAxGj
+ WUYRIFVx0p8MBE+KTJ+mdYYsfIq4Mh6f776pGT8TLP0LwcTNFl2NwlKruoB+NgrxPoDg
+ 7XHg==
+X-Gm-Message-State: AJIora9+XGJOs6BHXXcH8n5oJJ36DlCAbAiHf+cIjDK1dB9paqL/kpr0
+ w+tY9HWQVm9NsYPHar5rSnaX4pzcZeH8yBMuMo8=
+X-Google-Smtp-Source: AGRyM1sO+c4a2WrNPrEqCFBa0DXLYQJQgDYky4gEMSV88n3xvnXo3ooAaGqre5Rfrx7klRQI6IRHPHFwT3M/sJIFfrU=
+X-Received: by 2002:a81:5d88:0:b0:318:31c1:56f3 with SMTP id
+ r130-20020a815d88000000b0031831c156f3mr34140330ywb.18.1656948678372; Mon, 04
+ Jul 2022 08:31:18 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.9.1
-Subject: Re: [PATCH RESEND V2 2/3] ASoC: amd: add Machine driver for Jadeite
- platform
-Content-Language: en-US
-To: Vijendar Mukunda <Vijendar.Mukunda@amd.com>, broonie@kernel.org,
- alsa-devel@alsa-project.org
-References: <20220704140837.1215534-1-Vijendar.Mukunda@amd.com>
- <20220704140837.1215534-2-Vijendar.Mukunda@amd.com>
-From: =?UTF-8?Q?Amadeusz_S=c5=82awi=c5=84ski?=
- <amadeuszx.slawinski@linux.intel.com>
-In-Reply-To: <20220704140837.1215534-2-Vijendar.Mukunda@amd.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: Sunil-kumar.Dommati@amd.com, Basavaraj.Hiregoudar@amd.com,
+References: <20220603170707.48728-1-andriy.shevchenko@linux.intel.com>
+ <1b5ba014-44ca-e753-141a-d8ff5fd248bb@opensource.cirrus.com>
+ <YsG3kKwmoqF2MxU2@smile.fi.intel.com> <YsLCwQM0gbhFhSke@sirena.org.uk>
+In-Reply-To: <YsLCwQM0gbhFhSke@sirena.org.uk>
+From: Andy Shevchenko <andy.shevchenko@gmail.com>
+Date: Mon, 4 Jul 2022 17:30:41 +0200
+Message-ID: <CAHp75VeCTEE4-O1LLYNunf_ZU164i8rnqeRf9dvp=R=_eEC=ig@mail.gmail.com>
+Subject: Re: [PATCH v1 1/1] ASoC: madera: Replace kernel.h with the necessary
+ inclusions
+To: Mark Brown <broonie@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>,
+ Charles Keepax <ckeepax@opensource.cirrus.com>, patches@opensource.cirrus.com,
  Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>,
- open list <linux-kernel@vger.kernel.org>, Alexander.Deucher@amd.com,
- zhuning@everest-semi.com
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+ Richard Fitzgerald <rf@opensource.cirrus.com>,
+ Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -93,63 +98,35 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On 7/4/2022 4:08 PM, Vijendar Mukunda wrote:
-> Add Machine driver for Jadeite platform which uses ES8336 codec.
-> 
-> Signed-off-by: Vijendar Mukunda <Vijendar.Mukunda@amd.com>
-> 
-> Changes since v1:
->        - as sysclk is fixed, moved code to startup() callback.
->        - Removed unused macros (ST_PLAT_CLK & ST_ES8336_GPIO_QUIRK) from code.
-> ---
->   sound/soc/amd/acp-es8336.c | 324 +++++++++++++++++++++++++++++++++++++
->   1 file changed, 324 insertions(+)
->   create mode 100644 sound/soc/amd/acp-es8336.c
-> 
-> diff --git a/sound/soc/amd/acp-es8336.c b/sound/soc/amd/acp-es8336.c
-> new file mode 100644
-> index 000000000000..eec3d57092fa
-> --- /dev/null
-> +++ b/sound/soc/amd/acp-es8336.c
-> @@ -0,0 +1,324 @@
-> +// SPDX-License-Identifier: GPL-2.0+
-> +/*
-> + * Machine driver for AMD Stoney platform using ES8336 Codec
-> + *
-> + * Copyright 2022 Advanced Micro Devices, Inc.
-> + */
-> +
-> +#include <sound/core.h>
-> +#include <sound/soc.h>
-> +#include <sound/pcm.h>
-> +#include <sound/pcm_params.h>
-> +#include <sound/soc-dapm.h>
-> +#include <sound/jack.h>
-> +#include <linux/gpio.h>
-> +#include <linux/device.h>
-> +#include <linux/dmi.h>
-> +#include <linux/gpio/consumer.h>
-> +#include <linux/gpio/machine.h>
-> +#include <linux/i2c.h>
-> +#include <linux/input.h>
-> +#include <linux/module.h>
-> +#include <linux/platform_device.h>
-> +#include <linux/module.h>
-> +#include <linux/acpi.h>
-> +
-> +#include "../codecs/es8316.h"
+On Mon, Jul 4, 2022 at 12:45 PM Mark Brown <broonie@kernel.org> wrote:
+>
+> On Sun, Jul 03, 2022 at 06:36:48PM +0300, Andy Shevchenko wrote:
+> > On Mon, Jun 06, 2022 at 10:29:59AM +0100, Richard Fitzgerald wrote:
+> > > On 03/06/2022 18:07, Andy Shevchenko wrote:
+>
+> > > > When kernel.h is used in the headers it adds a lot into dependency hell,
+> > > > especially when there are circular dependencies are involved.
+>
+> > > > Replace kernel.h inclusion with the list of what is really being used.
+>
+> > > Reviewed-by: Richard Fitzgerald <rf@opensource.cirrus.com>
+>
+> > Thanks!
+>
+> > It's a month passed without any other news about this patch.
+> > Is this a problem in the MAINTAINERS database?
+>
+> > Who should take this?
+>
+> > +Cc: Liam, Mark
+>
+> If you needed to add me to the CC I've not seen the patch...
+> for review.  People get busy, go on holiday, attend conferences and so
 
-Any reason to include this header? From quick check I see that it only 
-defines ES8316_* defines and those don't seem to be used anywhere in 
-this driver?
+The question here is about MAINTAINERS. That's why you are in Cc list.
+Do we have an issue in MAINTAINERS that causes you being not see the
+patch?
 
-(...)
-
-> +
-> +static int st_es8336_remove(struct platform_device *pdev)
-> +{
-> +	return 0;
-> +}
-
-No need to provide .remove handler when it only returns.
-
+-- 
+With Best Regards,
+Andy Shevchenko
