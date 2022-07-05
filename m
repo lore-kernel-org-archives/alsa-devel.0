@@ -4,89 +4,82 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 84798C43334
-	for <alsa-devel@archiver.kernel.org>; Tue,  5 Jul 2022 17:48:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 22399C43334
+	for <alsa-devel@archiver.kernel.org>; Tue,  5 Jul 2022 18:00:33 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E474316D5;
-	Tue,  5 Jul 2022 19:47:32 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E474316D5
+	by alsa0.perex.cz (Postfix) with ESMTPS id DA68D16DB;
+	Tue,  5 Jul 2022 19:59:41 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DA68D16DB
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1657043303;
-	bh=G7jSn3dCyR6sDY6JGuVkoygnfvevNVVzrUEL1Hwl+6I=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=cfHakxkZ6rh246cBm7XUquc55EoKLEssiMRahdD+tCIeNZ3DN4j//bAZprkt9GTba
-	 1t5+iUVP5eXS0uyWK1BTRaWUv4bKO/Za1svDx0ucH7c6hKwJoNwaIwE2iWh5sfEeCE
-	 LMP2kjcSaAExHdZwbmOeOis0SmgYD6DPCRx2xIe8=
+	s=default; t=1657044031;
+	bh=jWFMuzOwTF/I32i1P2X0zjw0ibfU/WeavbtARFtZfEg=;
+	h=Date:Subject:To:References:From:In-Reply-To:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=lLg+AwN3jkasHdLeqkkU/vZ1XRlKPaG/Ic9n1UT3CU/HSnonp22zpJSX0ex+h3Ohn
+	 gzSbSnaAWnZJQVFd5NhtssS31YWD1Gecz6f+oymAq+SSqf6cKEzgur+UfIKMpmIbnz
+	 Eeb1WgHCZGN8WPKezOQroV75jXwg8Qcj81OrcQpY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 5824AF8012A;
-	Tue,  5 Jul 2022 19:47:32 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 50FB7F8015B;
+	Tue,  5 Jul 2022 19:59:41 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 49BEFF8015B; Tue,  5 Jul 2022 19:47:30 +0200 (CEST)
-Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com
- [IPv6:2a00:1450:4864:20::129])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id 5188BF8015B; Tue,  5 Jul 2022 19:59:39 +0200 (CEST)
+Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 212B6F8012A
- for <alsa-devel@alsa-project.org>; Tue,  5 Jul 2022 19:47:22 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 212B6F8012A
+ by alsa1.perex.cz (Postfix) with ESMTPS id 2E0E7F8012A;
+ Tue,  5 Jul 2022 19:59:30 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2E0E7F8012A
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org
- header.b="kA0owFX4"
-Received: by mail-lf1-x129.google.com with SMTP id bu42so1975777lfb.0
- for <alsa-devel@alsa-project.org>; Tue, 05 Jul 2022 10:47:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
- h=from:to:cc:subject:date:message-id:mime-version
- :content-transfer-encoding;
- bh=dyLUPLJN1u9FNXgGeiKc1oirfk0kExq8JKvDebi7B0o=;
- b=kA0owFX4H1CXq5w2ZmCHtgZkGCj6mxiaALH75Ugwnd+9XYYDgw45wefTL6cfQ9T1Uj
- mKkMjmzHT5aqjmBpaazGBFimYWNkLJDNqq9MwVU0QBOmY3Z7LCLpDLo1jCMnrALhhXwu
- p4xNYCR6vhUXBoQCFn1DO40XXSsRLZz7uGD7odR7X99PFUbZKr+9UBCWIa/7MLFTfGr/
- Ltbd9bGvA1jb60DUolfxQ1na5GKS/gkMz/whn+9KMwTD+HBksWnc8yZaYb11aiSNj02R
- 4HzTqxUSxy64sEj1FXLv6eUWPL6PLj4UlGO6k1pERWwNF0pjxxDIe7tAcD9GMqh7bvZG
- DWLQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
- :content-transfer-encoding;
- bh=dyLUPLJN1u9FNXgGeiKc1oirfk0kExq8JKvDebi7B0o=;
- b=v6tgyJg7y/2O0usm5sjc6k4gfZN+TfdORt16jzINo0HtZWYZi2G8JJgPPGT89yuLPp
- flXVyo9CRx4x8K5CKWXuIy7y5DZX9uoczJLKgmIqNyqNVnYdppZDEi/njPLjZB6hjzct
- 4QAKJrg4PTK+ZG+dUjIyHZM+2+zatytcWKQtwYQyNViyPrDy880Mdty+C3pcRdAVfwNQ
- bjNGsP5Y6rBM/uAvJrMpVa7JLcSlYe/JfrrIGoWqpzu+/inDz4ybrdzboqOKH3ewkaj8
- 792deYZamxNqRtL3J+p+1uoEJYuOHah0s1H6sOsRfmfWpigPSa5ysuZhEcUDJTIVgZ2T
- orMA==
-X-Gm-Message-State: AJIora+Cp0ZWzdYD634DSTYLy0ashL5/LFQ4DkG+C8OUhtBfo+drqGr9
- wzScYY1SIiIeQllbxkLtUkPddQ==
-X-Google-Smtp-Source: AGRyM1tOs0j44NmjYZgJ6nDoHfOI+ayF9n+MMgK5oRPKWVyJUKLDx1/FaPDxkVeknuOnWQMgzv8RCg==
-X-Received: by 2002:ac2:5d66:0:b0:481:55cb:9b8b with SMTP id
- h6-20020ac25d66000000b0048155cb9b8bmr17860281lft.546.1657043240687; 
- Tue, 05 Jul 2022 10:47:20 -0700 (PDT)
-Received: from krzk-bin.home ([84.20.121.239])
- by smtp.gmail.com with ESMTPSA id
- y22-20020a05651c107600b0025d38eb7390sm315371ljm.43.2022.07.05.10.47.19
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Tue, 05 Jul 2022 10:47:19 -0700 (PDT)
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-To: Andy Gross <agross@kernel.org>,
- Bjorn Andersson <bjorn.andersson@linaro.org>,
- Konrad Dybcio <konrad.dybcio@somainline.org>,
- Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
- Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
- linux-arm-msm@vger.kernel.org, alsa-devel@alsa-project.org,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v2] ASoC: dt-bindings: qcom,sm8250: add SDM845 sound
-Date: Tue,  5 Jul 2022 19:47:02 +0200
-Message-Id: <20220705174702.763247-1-krzysztof.kozlowski@linaro.org>
-X-Mailer: git-send-email 2.34.1
+ dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
+ header.b="MPDymiXW"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+ d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+ t=1657043973; x=1688579973;
+ h=message-id:date:mime-version:subject:to:cc:references:
+ from:in-reply-to:content-transfer-encoding;
+ bh=jWFMuzOwTF/I32i1P2X0zjw0ibfU/WeavbtARFtZfEg=;
+ b=MPDymiXWWZU/7x/VVbJe0SAxlX3Qv5G3g/kfR0/wVlQTF1KvSbtSFDjE
+ v6Z5GG2xiksEWoHIaxAiWlIw0lQRhk++38y5izZsJZw5mU5yzyKCMDTSc
+ 2JXh50K8c7L/vkZMXMU6yld8nhctJgIRsPHf5fOA71TyZoRFAUmtottOW
+ b/ag6Z/0fyUFG0eaW48v/s7fGpGAVTglI0NExFO/hrXT2aIow1WT2MFFK
+ TYphu0zgYJLv0FA9kCB+MXyHFRNX8HF1n2M49ToTSFTtKmPRKAJqmLmW3
+ O7ghOOThX5SS+CTIpygxST+eIU3r4J3vJhTjQCZRv6T4bQiZEw7+aWvof A==;
+X-IronPort-AV: E=McAfee;i="6400,9594,10399"; a="283456727"
+X-IronPort-AV: E=Sophos;i="5.92,247,1650956400"; d="scan'208";a="283456727"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+ by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 05 Jul 2022 10:53:53 -0700
+X-IronPort-AV: E=Sophos;i="5.92,247,1650956400"; d="scan'208";a="682608821"
+Received: from wxu3-mobl1.amr.corp.intel.com (HELO [10.212.54.191])
+ ([10.212.54.191])
+ by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 05 Jul 2022 10:53:52 -0700
+Message-ID: <09a7734c-dc79-21a1-1b24-9639f2a17e58@linux.intel.com>
+Date: Tue, 5 Jul 2022 11:57:09 -0500
 MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Firefox/91.0 Thunderbird/91.10.0
+Subject: Re: [PATCH v2 1/2] ASoC: SOF: Intel: bdw: remove duplicating driver
+ data retrieval
+Content-Language: en-US
+To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+ Mark Brown <broonie@kernel.org>,
+ Peter Ujfalusi <peter.ujfalusi@linux.intel.com>,
+ sound-open-firmware@alsa-project.org, alsa-devel@alsa-project.org,
+ linux-kernel@vger.kernel.org
+References: <20220705161102.76250-1-andriy.shevchenko@linux.intel.com>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+In-Reply-To: <20220705161102.76250-1-andriy.shevchenko@linux.intel.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
- Stephan Gerhold <stephan@gerhold.net>
+Cc: Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+ Liam Girdwood <lgirdwood@gmail.com>,
+ Bard Liao <yung-chuan.liao@linux.intel.com>,
+ Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+ Takashi Iwai <tiwai@suse.com>, Daniel Baluta <daniel.baluta@nxp.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -102,133 +95,37 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The Qualcomm SDM845 sound card bindings are almost the same as SM8250,
-except "pin-switches" and "widgets" properties.  These were not
-documented in SDM845 text bindings but are actually valid for SDM845.
 
-Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 
----
+On 7/5/22 11:11, Andy Shevchenko wrote:
+> device_get_match_data() in ACPI case calls similar to acpi_match_device().
+> Hence there is no need to duplicate the call. Just assign what is in
+> the id->driver_data.
+> 
+> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 
-Changes since v1:
-1. Integrate into SM8250 instead of creating new file (Stephan).
+Acked-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 
-Cc: Stephan Gerhold <stephan@gerhold.net>
----
- .../devicetree/bindings/sound/qcom,sdm845.txt | 91 -------------------
- .../bindings/sound/qcom,sm8250.yaml           |  1 +
- 2 files changed, 1 insertion(+), 91 deletions(-)
- delete mode 100644 Documentation/devicetree/bindings/sound/qcom,sdm845.txt
-
-diff --git a/Documentation/devicetree/bindings/sound/qcom,sdm845.txt b/Documentation/devicetree/bindings/sound/qcom,sdm845.txt
-deleted file mode 100644
-index de4c604641da..000000000000
---- a/Documentation/devicetree/bindings/sound/qcom,sdm845.txt
-+++ /dev/null
-@@ -1,91 +0,0 @@
--* Qualcomm Technologies Inc. SDM845 ASoC sound card driver
--
--This binding describes the SDM845 sound card, which uses qdsp for audio.
--
--- compatible:
--	Usage: required
--	Value type: <stringlist>
--	Definition: must be one of this
--			"qcom,sdm845-sndcard"
--			"qcom,db845c-sndcard"
--			"lenovo,yoga-c630-sndcard"
--
--- audio-routing:
--	Usage: Optional
--	Value type: <stringlist>
--	Definition:  A list of the connections between audio components.
--		  Each entry is a pair of strings, the first being the
--		  connection's sink, the second being the connection's
--		  source. Valid names could be power supplies, MicBias
--		  of codec and the jacks on the board.
--
--- model:
--	Usage: required
--	Value type: <stringlist>
--	Definition: The user-visible name of this sound card.
--
--- aux-devs
--	Usage: optional
--	Value type: <array of phandles>
--	Definition: A list of phandles for auxiliary devices (e.g. analog
--		    amplifiers) that do not appear directly within the DAI
--		    links. Should be connected to another audio component
--		    using "audio-routing".
--
--= dailinks
--Each subnode of sndcard represents either a dailink, and subnodes of each
--dailinks would be cpu/codec/platform dais.
--
--- link-name:
--	Usage: required
--	Value type: <string>
--	Definition: User friendly name for dai link
--
--= CPU, PLATFORM, CODEC dais subnodes
--- cpu:
--	Usage: required
--	Value type: <subnode>
--	Definition: cpu dai sub-node
--
--- codec:
--	Usage: required
--	Value type: <subnode>
--	Definition: codec dai sub-node
--
--- platform:
--	Usage: Optional
--	Value type: <subnode>
--	Definition: platform dai sub-node
--
--- sound-dai:
--	Usage: required
--	Value type: <phandle>
--	Definition: dai phandle/s and port of CPU/CODEC/PLATFORM node.
--
--Example:
--
--audio {
--	compatible = "qcom,sdm845-sndcard";
--	model = "sdm845-snd-card";
--	pinctrl-names = "default", "sleep";
--	pinctrl-0 = <&pri_mi2s_active &pri_mi2s_ws_active>;
--	pinctrl-1 = <&pri_mi2s_sleep &pri_mi2s_ws_sleep>;
--
--	mm1-dai-link {
--		link-name = "MultiMedia1";
--		cpu {
--			sound-dai = <&q6asmdai MSM_FRONTEND_DAI_MULTIMEDIA1>;
--		};
--	};
--
--	pri-mi2s-dai-link {
--		link-name = "PRI MI2S Playback";
--		cpu {
--			sound-dai = <&q6afedai PRIMARY_MI2S_RX>;
--		};
--
--		platform {
--			sound-dai = <&q6routing>;
--		};
--	};
--};
-diff --git a/Documentation/devicetree/bindings/sound/qcom,sm8250.yaml b/Documentation/devicetree/bindings/sound/qcom,sm8250.yaml
-index 4ecd4080bb96..7cdf9e9f4dd3 100644
---- a/Documentation/devicetree/bindings/sound/qcom,sm8250.yaml
-+++ b/Documentation/devicetree/bindings/sound/qcom,sm8250.yaml
-@@ -18,6 +18,7 @@ properties:
-     enum:
-       - qcom,apq8016-sbc-sndcard
-       - qcom,msm8916-qdsp6-sndcard
-+      - qcom,sdm845-sndcard
-       - qcom,sm8250-sndcard
-       - qcom,qrb5165-rb5-sndcard
- 
--- 
-2.34.1
-
+> ---
+> v2: moved desc assignment closer to its user (Péter)
+>  sound/soc/sof/intel/bdw.c | 7 ++-----
+>  1 file changed, 2 insertions(+), 5 deletions(-)
+> 
+> diff --git a/sound/soc/sof/intel/bdw.c b/sound/soc/sof/intel/bdw.c
+> index 26df780c702e..a446154f2803 100644
+> --- a/sound/soc/sof/intel/bdw.c
+> +++ b/sound/soc/sof/intel/bdw.c
+> @@ -681,11 +681,8 @@ static int sof_broadwell_probe(struct platform_device *pdev)
+>  		return -ENODEV;
+>  	}
+>  
+> -	desc = device_get_match_data(dev);
+> -	if (!desc)
+> -		return -ENODEV;
+> -
+> -	return sof_acpi_probe(pdev, device_get_match_data(dev));
+> +	desc = (const struct sof_dev_desc *)id->driver_data;
+> +	return sof_acpi_probe(pdev, desc);
+>  }
+>  
+>  /* acpi_driver definition */
