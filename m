@@ -4,70 +4,77 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4C91AC433EF
-	for <alsa-devel@archiver.kernel.org>; Tue,  5 Jul 2022 16:33:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id F1FEFC433EF
+	for <alsa-devel@archiver.kernel.org>; Tue,  5 Jul 2022 17:23:39 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 1D1FC16DC;
-	Tue,  5 Jul 2022 18:32:31 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1D1FC16DC
+	by alsa0.perex.cz (Postfix) with ESMTPS id 187E316C2;
+	Tue,  5 Jul 2022 19:22:47 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 187E316C2
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1657038801;
-	bh=ELTHKRlGh2TFVwLiCwnTc8wlXdeQ+pD6rYi563gQQ6k=;
+	s=default; t=1657041817;
+	bh=n34WtJdH1aD0+wLJG5QJCb9izo1xt3VZGBDRFhbgyQ8=;
 	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=DVBLtSK5tP2Bi5W5dSXemKGl0Y6FtaZ2a625yt12Ze1RBzNYLcOrgfj3O7HhGfQqD
-	 KHNHpk6kBpQhteFbLA3WXI7obNVPygTROOQ2JvMwoEl1qiBL8k9n71Co8k+PpRbFnl
-	 lXQKssC3fgjrV1O6ND34TrjHKr8imCQYDu8gYGQc=
+	b=GoU3eBNJKmx5RVBuGnTXY5Uvtpwd9rqtLTTcdTzDcRqTMOgHYb5fEyT9AqMTev+CX
+	 DL3shINihd6SBBdNv1kCobC3HL3c1UJMGLpssPeYcZMDMLjBJoHwwN4ODkMsNRq0W8
+	 yq3cJyA/rIE/P0pcuHVE7gPs0IQEFb54/F3sDFhY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 98551F80153;
-	Tue,  5 Jul 2022 18:32:30 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id AAEE9F80153;
+	Tue,  5 Jul 2022 19:22:46 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id C4E7EF8015B; Tue,  5 Jul 2022 18:32:29 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 70712F8012A
- for <alsa-devel@alsa-project.org>; Tue,  5 Jul 2022 18:32:27 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 70712F8012A
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="mgT7xZwl"
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+ id B5187F8015B; Tue,  5 Jul 2022 19:22:44 +0200 (CEST)
+Received: from mo4-p02-ob.smtp.rzone.de (mo4-p02-ob.smtp.rzone.de
+ [81.169.146.171])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id E286C61BC8;
- Tue,  5 Jul 2022 16:32:24 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DDC40C341C7;
- Tue,  5 Jul 2022 16:32:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1657038744;
- bh=ELTHKRlGh2TFVwLiCwnTc8wlXdeQ+pD6rYi563gQQ6k=;
- h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=mgT7xZwlPFkbHzVDL4FfLEz+K3+F0eqFtJeBULjpARFv44dCZBP8Tm6Jfvg5o9/AH
- 6zvB4+zEv9Y40JhDbbNDKTmOzP50QvvQdLfjaZVVXMBJr6q2E+f8XHTIDrBzc00Obc
- lyDwMpFlmhH3HQB8FrHioEdFazMU3NPn2KoSlFzIDzdxPm/DKcjY7kKg27PJ+m3kd4
- IPvWjPL5pHPcNMJx1tyLZRFC1H0+8S481xJSzRo8ZaJQRPdv/MMfZpN3MBORe3SI8D
- 9QZJR9HqKtsQNcBV+p03sNN8eg/2A2wAPsc/iVY6+wxAMEg+YtKCEQ+fHPVX54z2iB
- cp6E822nyYKxQ==
-Date: Tue, 5 Jul 2022 17:32:19 +0100
-From: Mark Brown <broonie@kernel.org>
-To: Tommaso Merciai <tommaso.merciai@amarulasolutions.com>
-Subject: Re: equalizer cfg in max98088 driver
-Message-ID: <YsRnkxcBWCgtRIn7@sirena.org.uk>
-References: <20220705075500.GA1987744@tom-ThinkPad-T14s-Gen-2i>
- <YsQd7mub0KJdYUDw@sirena.org.uk>
- <20220705162956.GA2676656@tom-ThinkPad-T14s-Gen-2i>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 5639BF8012A
+ for <alsa-devel@alsa-project.org>; Tue,  5 Jul 2022 19:22:41 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5639BF8012A
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=gerhold.net header.i=@gerhold.net
+ header.b="RwfwTDgJ"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1657041761;
+ s=strato-dkim-0002; d=gerhold.net;
+ h=In-Reply-To:References:Message-ID:Subject:Cc:To:From:Date:Cc:Date:
+ From:Subject:Sender;
+ bh=HFYLwNx1H8mjeDZMNkwynQXaKLcSPoHxU5fEPC/aXCs=;
+ b=RwfwTDgJhnm3cucVgXUdFD6HkllRAJSb0TRzees0NoNV1aUDKowYOeFBGPOMzGjxuD
+ uwgjWj0pTFoesUCzGIjFiUpONMvEwxpOu28CMTNUkp8KoUFX877OK8GzQ4u1A4JNTS9g
+ wM3N8BnsZecYypOIooAhAUlwBpQRQKuEbTTZxIL7rVlTO1+9RcNHsaFrhgCNAHGYbuQ7
+ bTX66XAAyBxwccZqpFnIopcujY+7ICZRiejuIMDtEdu/gtlG0ZD74qMCsvNv38h/VYAu
+ fKbPcnxIlG5I2I+v/wyOB5G6fsEIJcFcmEG3ArdyxJAyTc/b/LZBEKa3llzPekS0X7dT
+ 57Wg==
+Authentication-Results: strato.com;
+    dkim=none
+X-RZG-AUTH: ":P3gBZUipdd93FF5ZZvYFPugejmSTVR2nRPhVOQ/OcYgojyw4j34+u267FZF9PwpcNKLVrK85/aY="
+X-RZG-CLASS-ID: mo00
+Received: from gerhold.net by smtp.strato.de (RZmta 47.46.1 AUTH)
+ with ESMTPSA id yfdd30y65HMfJ52
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
+ (Client did not present a certificate);
+ Tue, 5 Jul 2022 19:22:41 +0200 (CEST)
+Date: Tue, 5 Jul 2022 19:22:40 +0200
+From: Stephan Gerhold <stephan@gerhold.net>
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Subject: Re: [PATCH] ASoC: dt-bindings: qcom,sdm845: convert to dtschema
+Message-ID: <YsRzYKAjA7LBVf86@gerhold.net>
+References: <20220704153824.23226-1-krzysztof.kozlowski@linaro.org>
+ <YsMaW6cO2fEfTGPz@gerhold.net>
+ <61708384-6c29-6bb6-aef0-8bad061c1f7c@linaro.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature"; boundary="LoH50+dDeMaAE155"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20220705162956.GA2676656@tom-ThinkPad-T14s-Gen-2i>
-X-Cookie: Only God can make random selections.
-Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org,
- Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>
+In-Reply-To: <61708384-6c29-6bb6-aef0-8bad061c1f7c@linaro.org>
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
+ linux-arm-msm@vger.kernel.org, Konrad Dybcio <konrad.dybcio@somainline.org>,
+ Andy Gross <agross@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+ Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
+ Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Bjorn Andersson <bjorn.andersson@linaro.org>, linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -83,38 +90,26 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+On Tue, Jul 05, 2022 at 09:32:07AM +0200, Krzysztof Kozlowski wrote:
+> On 04/07/2022 18:50, Stephan Gerhold wrote:
+> > Can you check if you can just add the compatibles to the existing
+> > qcom,sm8250.yaml? It should be more or less identical given that the DT
+> > parsing code in the driver is shared between all these SoCs.
+> > I already added the MSM8916 compatibles there a while ago.
+> > 
+> > It also documents some additional properties ("pin-switches", "widgets")
+> > that are supported for SDM845 through the common code but are missing
+> > in its binding documentation.
+> 
+> I thought about merging these but then I would have to disallow these
+> properties, as I assumed these are not valid for SDM845. Are you saying
+> that pin-switches and widgets are actually valid for SDM845?
+> 
 
---LoH50+dDeMaAE155
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Yes. I haven't tested it but it's implemented in the common DT parsing
+code and I don't see why it wouldn't work. These are optional properties
+that are only needed in certain special audio configurations. There
+might be a SDM845 board out there that needs them. :)
 
-On Tue, Jul 05, 2022 at 06:29:56PM +0200, Tommaso Merciai wrote:
-> On Tue, Jul 05, 2022 at 12:18:06PM +0100, Mark Brown wrote:
-
-> > There's plenty of examples of equalisers in the code already.  I don't
-> > know how this specific device works but generally these are either
-> > exposed as a series of volume like sliders or as binary controls.  This
-> > doesn't restrict people to settings from the firmware, making
-> > development of new configuraitons much easier.
-
-> Thanks for your reply.
-> I meant somethings like this:
-
-I understood what you meant, like I say this should be a runtime control.
-
---LoH50+dDeMaAE155
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmLEZ5IACgkQJNaLcl1U
-h9AiKQf+McrQlmTh3R3eoil6IjzxS5r8PRIouf93sdRTuAKMBxPiVDQyl+zbeywm
-976+jJEsliyD7V3tJqBivh1bNsbn0Ai3WJ+5wpKqOy0LZdFvCyQgWI+84BrGBzKz
-dkITYXpzVNFOChRNaWjh/LOgpebSATjvwUFpcM0oSxygn8Kez7sdXgZA8Mzxj7Ws
-37/OUPASXphF2cYpiKVx2N+FN63S0a5ZWoRrkd136Zf83bwnzsAZ7jgy3vFwfVd3
-jy6s6biSmxzAEiV2YLvPpJtH3z558y3ILqmtV1HbjtU1LrB9f9sL0F+iBIov66R2
-FpKjgyoX0TEJ7ku7aCKiB5LV32v/2A==
-=nQpp
------END PGP SIGNATURE-----
-
---LoH50+dDeMaAE155--
+Thanks,
+Stephan
