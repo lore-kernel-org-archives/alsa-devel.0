@@ -4,84 +4,79 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id DC967C433EF
-	for <alsa-devel@archiver.kernel.org>; Tue,  5 Jul 2022 07:46:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 69869C433EF
+	for <alsa-devel@archiver.kernel.org>; Tue,  5 Jul 2022 07:56:06 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 1D3FD16E4;
-	Tue,  5 Jul 2022 09:46:00 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1D3FD16E4
+	by alsa0.perex.cz (Postfix) with ESMTPS id EB1B916E3;
+	Tue,  5 Jul 2022 09:55:13 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EB1B916E3
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1657007210;
-	bh=e9jdrgWcFByN9d0lAxUh7xEepgGqwyRulI8nB5yIkTQ=;
-	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=lWD6SxD18MdSB68qHaXqZ/k2tLe+gQaFHTTAZRlbjJWjHCN9O+8/alBL1N6nuA65f
-	 fBot1Y+pYeZpWUmhMbpiEk5D4ihqhOYgmmtzGxPPxS7fPvox9Bw+3w1Qs0nSIkq8W2
-	 aoSE2CTJLclUnrppVb0gndKx7oytOcCTgAdRpUwY=
+	s=default; t=1657007764;
+	bh=NFPdBZyWYMVilC2m0XdJ+zSMYL0JnFAPX+nNRkDHud8=;
+	h=Date:From:To:Subject:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=FTrrMMpGetXmAyEIAmm1xgpKvLj9OBHCRPd0gCk1yY6uzp3K1QOx5Wa/ZY5UXVEXr
+	 5XIJPasm5QNRZwKZE81jziB0XmagOk0/AxUj8lqINkQ89IF7aJ+x6bS0wD3G2iHUE6
+	 CXXMVFZ6uKC/4cyLMFc9NeLErdosmI3yss+6AIwQ=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id B1FA3F80153;
-	Tue,  5 Jul 2022 09:45:59 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 87148F80153;
+	Tue,  5 Jul 2022 09:55:13 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 6D249F8015B; Tue,  5 Jul 2022 09:45:57 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+ id 453B7F8015B; Tue,  5 Jul 2022 09:55:12 +0200 (CEST)
+Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com
+ [IPv6:2a00:1450:4864:20::52a])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 090EBF80104
- for <alsa-devel@alsa-project.org>; Tue,  5 Jul 2022 09:45:52 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 090EBF80104
+ by alsa1.perex.cz (Postfix) with ESMTPS id E636AF80104
+ for <alsa-devel@alsa-project.org>; Tue,  5 Jul 2022 09:55:05 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E636AF80104
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="LmXShlcc"; 
- dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="Y4egdOKO"
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 4AE2E1FF94;
- Tue,  5 Jul 2022 07:45:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1657007152; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=FEag9uALBA30HMk0xF+XkRZffndMZupU843m2tnEhng=;
- b=LmXShlcc/1CNRNcnfrtr+MIjql/bLnkiUaNAmN1oKeTITPwMNGPj6geID0YKWBNwsWyF3b
- yLFDS+FdBM4JkaK6+joqwLPdOQ3akPxyzrEB8nUau75WHMeT7yAHvRrKiNSuEAIAmyAW9Y
- eztziPjeOqA4oo1i1+gL+ojbn9RvvT0=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1657007152;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=FEag9uALBA30HMk0xF+XkRZffndMZupU843m2tnEhng=;
- b=Y4egdOKOETqNAtBllMjJwGae7YiOETLVylij3CFgfehTxeofgFzqCTEIEog836GQjnBuHX
- 0rVv1Ar7EjfGf9DQ==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 1D3361339A;
- Tue,  5 Jul 2022 07:45:52 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id i4RVBjDsw2IJPwAAMHmgww
- (envelope-from <tiwai@suse.de>); Tue, 05 Jul 2022 07:45:52 +0000
-Date: Tue, 05 Jul 2022 09:45:51 +0200
-Message-ID: <87r130vw7k.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Tom Rix <trix@redhat.com>
-Subject: Re: [PATCH] ALSA: hda/cs8409: change cs8409_fixups v.pins
- initializers to static
-In-Reply-To: <20220704142836.636204-1-trix@redhat.com>
-References: <20220704142836.636204-1-trix@redhat.com>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
-Cc: sbinding@opensource.cirrus.com, tanureal@opensource.cirrus.com,
- vitalyr@opensource.cirrus.com, linux-kernel@vger.kernel.org,
- alsa-devel@alsa-project.org, tiwai@suse.com
+ dkim=pass (1024-bit key) header.d=amarulasolutions.com
+ header.i=@amarulasolutions.com header.b="AC4el096"
+Received: by mail-ed1-x52a.google.com with SMTP id k30so6079160edk.8
+ for <alsa-devel@alsa-project.org>; Tue, 05 Jul 2022 00:55:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=amarulasolutions.com; s=google;
+ h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
+ bh=Dd+03ltwb0A3OCeiLRuPRch6yR6Hqx8MxtfMOc1/kN4=;
+ b=AC4el096uzd63l5aciUqinEEpLgrlQWcC38O1EV98cJQ+ByiExghvMKJ5nL3kIlWkL
+ YKM1Ob0cdII8rY/1W0Hm2TclvjJTpEyoX/IlUYIJs1a9hWdUn4928i22OObOwAOs6gdT
+ 4a/mYN0TvFarKgGV0Dc1njO3U2NRo+Gvd7MMM=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+ :content-disposition;
+ bh=Dd+03ltwb0A3OCeiLRuPRch6yR6Hqx8MxtfMOc1/kN4=;
+ b=Kp0bWNFZTLNTChA7Odg+wyg7Wu9nWoBUk5lB0/2pTNPrtCqcNB6oYttl0TDwaeBIaf
+ hRDBlqEqKFC5xOYsLhGuFICrKJ/Fmv4NJmgOsYK+TjC27Gw5zEo2EVtGiYTTYumxL/E6
+ r7UZcnQKUb/BRctqupzdA1dTi46xW1lDiFBSw97VC65HUyyFgmJako9elEMz5xMieUZI
+ aFoqHb3HznqkLOc44MyZymUEnTFuXAQIjOv7bffclvfi1C2R9j5q5lXdnKFz9GoSdiYK
+ ELUckr+a4zXvl0HESTI+kFvKfbnzmYb5lt8HfLB1SBcLNM9NbVSPXuo/J8RXSb2lSiAR
+ pvZw==
+X-Gm-Message-State: AJIora/6w8hj++6puPESannjOqluBW4jJ3oWuN7pW3BhALlBrHygzdad
+ JIVqJ4zWP3UPb0ZhsR1IFP1x1Q==
+X-Google-Smtp-Source: AGRyM1vZKXamGSOdwS9rEBAHE6ehIF1mBvlnL7rtFuNKTsGNH8m5LvWDVWe9ZGbwOaYm136qfE84Og==
+X-Received: by 2002:a05:6402:4507:b0:43a:5b42:2be5 with SMTP id
+ ez7-20020a056402450700b0043a5b422be5mr11728385edb.392.1657007703459; 
+ Tue, 05 Jul 2022 00:55:03 -0700 (PDT)
+Received: from tom-ThinkPad-T14s-Gen-2i
+ (net-188-217-58-216.cust.vodafonedsl.it. [188.217.58.216])
+ by smtp.gmail.com with ESMTPSA id
+ w2-20020a50fa82000000b0043a64eee322sm3421430edr.28.2022.07.05.00.55.02
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Tue, 05 Jul 2022 00:55:02 -0700 (PDT)
+Date: Tue, 5 Jul 2022 09:55:00 +0200
+From: Tommaso Merciai <tommaso.merciai@amarulasolutions.com>
+To: Mark Brown <broonie@kernel.org>
+Subject: equalizer cfg in max98088 driver
+Message-ID: <20220705075500.GA1987744@tom-ThinkPad-T14s-Gen-2i>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org,
+ Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -97,26 +92,23 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Mon, 04 Jul 2022 16:28:36 +0200,
-Tom Rix wrote:
-> 
-> sparse reports
-> sound/pci/hda/patch_cs8409-tables.c:79:25: warning: symbol 'cs8409_cs42l42_pincfgs_no_dmic' was not declared. Should it be static?
-> 
-> cs8409_cs42l42_pincfgs_no_dmic is only used by cs8409_fixups table as an
-> initializer for the hda_fixup element v.pins.  Both are defined in the
-> patch_cs8408-table.c file but only cs8409_fixups is used externally in
-> patch_cs8409.c.  So cs8409_cs42l42_pincfgs_no_dmic should have a static
-> storage class specifier.
-> 
-> The other v.pins initializers in cs8409_fixups table, though declared
-> extern in patch_cs8409.h are also only used in patch_cs8409-tables.c.
-> So change all the v.pins initializers to static.
-> 
-> Fixes: 9e7647b5070f ("ALSA: hda/cs8409: Move arrays of configuration to a new file")
-> Signed-off-by: Tom Rix <trix@redhat.com>
+Hi Mark, All,
+Just a question. Can you explain me the proper way to configure eq1 and
+eq2 of max98089 using sound/soc/codecs/max98088.c driver?
+Could be a valid solution fetching eq1, eq2 bands params from dts?
 
-Thanks, applied now.
+Let me know.
+Thanks in advance
+Tommaso
 
+-- 
+Tommaso Merciai
+Embedded Linux Engineer
+tommaso.merciai@amarulasolutions.com
+__________________________________
 
-Takashi
+Amarula Solutions SRL
+Via Le Canevare 30, 31100 Treviso, Veneto, IT
+T. +39 042 243 5310
+info@amarulasolutions.com
+www.amarulasolutions.com
