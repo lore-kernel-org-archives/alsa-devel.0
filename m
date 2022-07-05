@@ -4,81 +4,105 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8C46EC43334
-	for <alsa-devel@archiver.kernel.org>; Tue,  5 Jul 2022 11:57:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id CA6D5C43334
+	for <alsa-devel@archiver.kernel.org>; Tue,  5 Jul 2022 11:59:42 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 17CB616BC;
-	Tue,  5 Jul 2022 13:56:50 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 17CB616BC
+	by alsa0.perex.cz (Postfix) with ESMTPS id D789716B9;
+	Tue,  5 Jul 2022 13:58:47 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D789716B9
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1657022260;
-	bh=s2TRPnouG/R8YQugG5nOT0ZNmX1whp2QW+4rIXCYJu8=;
+	s=default; t=1657022377;
+	bh=Hbhbc9CQbUIrE2cq66V1F0y8qKD+61gVMn98exOc8vU=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=iXWSO1zzbZJZL4lpqixii7ozAwTeSkjzjdvqV0p9b5eqszfgzzz/zFIq6vFUUJMfq
-	 Jfl1nCcv70yCh1AZSEQpVVsOfOf6gmsQ4b3dw6deoExCv091Bwfwdz9qjnmY8SKP9n
-	 jWDJYqi1adFenoZcfPCNU1hleuI4Wdqr8RFmL/Vg=
+	b=CsUbjY0HR6gJ5AEeDt0gu8VYyxw5mtqKGwIQGEcNAyjWuRrrzjAe25/2T4NyWlbbW
+	 A8bYlbGsVwO4yZjekQjeP2LoEbOW0kPfCpFBxeLPZ2KlKYQ1NmHyKn8yTpJt+Y4oqc
+	 6NSbhB/zTKVZyq3HB/eHDYFukxt6B5Er6XMKtWNI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 9CCC4F80153;
-	Tue,  5 Jul 2022 13:56:49 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 865C1F80153;
+	Tue,  5 Jul 2022 13:58:47 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id D10A8F8015B; Tue,  5 Jul 2022 13:56:47 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+ id 1542CF80104; Tue,  5 Jul 2022 12:09:03 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id D3F2EF80104
- for <alsa-devel@alsa-project.org>; Tue,  5 Jul 2022 13:56:41 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D3F2EF80104
+ by alsa1.perex.cz (Postfix) with ESMTPS id 21DCBF80104
+ for <alsa-devel@alsa-project.org>; Tue,  5 Jul 2022 12:08:56 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 21DCBF80104
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="ue0BvSHj"; 
+ header.b="eByb4sSP"; 
  dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="TCo5RIKr"
+ header.b="jKWTp5GM"
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id CC73E21892;
- Tue,  5 Jul 2022 11:56:40 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 4BB4A1F91F;
+ Tue,  5 Jul 2022 10:08:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1657022200; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1657015735; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=cLuoK5JGT2eXHO0cJ7kh2a9mXgAReW4i3StHieVHhGs=;
- b=ue0BvSHjzwoHqrvid+ks0qbJQmdvExbaHJqu5NM9N9h+P15qaX3l28bWldbc28EZe4WtPR
- clB1EwQWU6YWwgK/IDu9GECjuXpQaJGxQPjUncZWooS8iI4ziqaUwcFXe/tCLwyQQ0C0hJ
- FAJVshNCdcjHUi4JKF+KxZW1b43srLk=
+ bh=qvMJ4J1/LuqJ2bm7BlZIoOLJOYmWh+4Rpvkk33SZGOA=;
+ b=eByb4sSPqg6rRuVWR7Uyol2qkXUh2FlAJZJl6kQB2+c8EEhcdaxtq/jkX0dVzdvL/5s6D3
+ /efNTsY/bdasP3pVQxu6qP4nvHO+zcS4O9fblGgs1NR89rSYgTvYETM292rGHy3CrhOSj+
+ qGcOFU+GGl+mKHAF54mbZA9ZrTUJOaY=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1657022200;
+ s=susede2_ed25519; t=1657015735;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=cLuoK5JGT2eXHO0cJ7kh2a9mXgAReW4i3StHieVHhGs=;
- b=TCo5RIKr8fpRMBzdOB8xCQn+NPDIPX7KvJWKhSu+irwiBl0AlaWZg48a8oSY9WnDvBjpNq
- 5lfhiI678nFw6DCQ==
+ bh=qvMJ4J1/LuqJ2bm7BlZIoOLJOYmWh+4Rpvkk33SZGOA=;
+ b=jKWTp5GMggeoLloojImrUvPvKkYL+8GQzQSR8Qi8VzqCYEK46zUKh7GMjl/cO3qvfPDiP7
+ DHXFfHIde+vxx5CQ==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id ADEC51339A;
- Tue,  5 Jul 2022 11:56:40 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 2E2AF1339A;
+ Tue,  5 Jul 2022 10:08:54 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id vcmrKfgmxGKrOAAAMHmgww
- (envelope-from <tiwai@suse.de>); Tue, 05 Jul 2022 11:56:40 +0000
-Date: Tue, 05 Jul 2022 13:56:40 +0200
-Message-ID: <875ykbvklj.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Jan Engelhardt <jengelh@inai.de>
-Subject: Re: snd_cs46xx regression, producing Oops
-In-Reply-To: <p2p1s96o-746-74p4-s95-61qo1p7782pn@vanv.qr>
-References: <p2p1s96o-746-74p4-s95-61qo1p7782pn@vanv.qr>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+ by imap2.suse-dmz.suse.de with ESMTPSA id VBGsCbYNxGK1BQAAMHmgww
+ (envelope-from <jdelvare@suse.de>); Tue, 05 Jul 2022 10:08:54 +0000
+Date: Tue, 5 Jul 2022 12:08:52 +0200
+From: Jean Delvare <jdelvare@suse.de>
+To: Uwe =?UTF-8?B?S2xlaW5lLUvDtm5pZw==?= <u.kleine-koenig@pengutronix.de>
+Subject: Re: [PATCH 6/6] i2c: Make remove callback return void
+Message-ID: <20220705120852.049dc235@endymion.delvare>
+In-Reply-To: <20220628140313.74984-7-u.kleine-koenig@pengutronix.de>
+References: <20220628140313.74984-1-u.kleine-koenig@pengutronix.de>
+ <20220628140313.74984-7-u.kleine-koenig@pengutronix.de>
+Organization: SUSE Linux
+X-Mailer: Claws Mail 3.18.0 (GTK+ 2.24.32; x86_64-suse-linux-gnu)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-Mailman-Approved-At: Tue, 05 Jul 2022 13:58:46 +0200
+Cc: alsa-devel@alsa-project.org, linux-pwm@vger.kernel.org,
+ linux-iio@vger.kernel.org, linux-fbdev@vger.kernel.org,
+ dri-devel@lists.freedesktop.org, platform-driver-x86@vger.kernel.org,
+ linux-mtd@lists.infradead.org, linux-i2c@vger.kernel.org,
+ Guenter Roeck <groeck@chromium.org>, linux-stm32@st-md-mailman.stormreply.com,
+ linux-leds@vger.kernel.org, linux-rtc@vger.kernel.org,
+ chrome-platform@lists.linux.dev, linux-staging@lists.linux.dev,
+ kasan-dev@googlegroups.com, linux-clk@vger.kernel.org,
+ linux-serial@vger.kernel.org, linux-input@vger.kernel.org,
+ linux-media@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-watchdog@vger.kernel.org, linux-pm@vger.kernel.org,
+ acpi4asus-user@lists.sourceforge.net, linux-gpio@vger.kernel.org,
+ linux-mediatek@lists.infradead.org, linux-rpi-kernel@lists.infradead.org,
+ openipmi-developer@lists.sourceforge.net, linux-omap@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, linux-hwmon@vger.kernel.org,
+ patches@opensource.cirrus.com, linux-usb@vger.kernel.org,
+ Wolfram Sang <wsa@kernel.org>, linux-crypto@vger.kernel.org,
+ netdev@vger.kernel.org, linux-integrity@vger.kernel.org,
+ linuxppc-dev@lists.ozlabs.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -94,122 +118,57 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Tue, 05 Jul 2022 12:56:14 +0200,
-Jan Engelhardt wrote:
-> 
-> 
-> Commit v5.14-rc1-39-g5bff69b3645d introduced a breakage into
-> snd_cs46xx. When loading the module, an Oops is thrown. The system
-> works fine afterwards, but the final reboot/poweroff message to ACPI
-> has no effect after such Oops occurred. (Blacklisting snd_cs46xx
-> works around the reboot problem.)
-> 
-> bisected to:
-> commit 5bff69b3645db7b3018ecbc26218d8866aeaf214
-> Author: Takashi Iwai <tiwai@suse.de>
-> Date:   Thu Jul 15 09:58:52 2021 +0200
-> 
->     ALSA: cs46xx: Allocate resources with device-managed APIs
->     
->     This patch converts the resource management in PCI cs46xx driver with
->     devres as a clean up.  Each manual resource management is converted
->     with the corresponding devres helper, and the card object release is
->     managed now via card->private_free instead of a lowlevel snd_device.
+On Tue, 28 Jun 2022 16:03:12 +0200, Uwe Kleine-K=C3=B6nig wrote:
+> From: Uwe Kleine-K=C3=B6nig <uwe@kleine-koenig.org>
+>=20
+> The value returned by an i2c driver's remove function is mostly ignored.
+> (Only an error message is printed if the value is non-zero that the
+> error is ignored.)
+>=20
+> So change the prototype of the remove function to return no value. This
+> way driver authors are not tempted to assume that passing an error to
+> the upper layer is a good idea. All drivers are adapted accordingly.
+> There is no intended change of behaviour, all callbacks were prepared to
+> return 0 before.
+>=20
+> Signed-off-by: Uwe Kleine-K=C3=B6nig <u.kleine-koenig@pengutronix.de>
+> ---
 
-Could you try the patch below?
+That's a huge change for a relatively small benefit, but if this is
+approved by the I2C core maintainer then fine with me. For:
 
+>  drivers/hwmon/adc128d818.c                                | 4 +---
+>  drivers/hwmon/adt7470.c                                   | 3 +--
+>  drivers/hwmon/asb100.c                                    | 6 ++----
+>  drivers/hwmon/asc7621.c                                   | 4 +---
+>  drivers/hwmon/dme1737.c                                   | 4 +---
+>  drivers/hwmon/f75375s.c                                   | 5 ++---
+>  drivers/hwmon/fschmd.c                                    | 6 ++----
+>  drivers/hwmon/ftsteutates.c                               | 3 +--
+>  drivers/hwmon/ina209.c                                    | 4 +---
+>  drivers/hwmon/ina3221.c                                   | 4 +---
+>  drivers/hwmon/jc42.c                                      | 3 +--
+>  drivers/hwmon/mcp3021.c                                   | 4 +---
+>  drivers/hwmon/occ/p8_i2c.c                                | 4 +---
+>  drivers/hwmon/pcf8591.c                                   | 3 +--
+>  drivers/hwmon/smm665.c                                    | 3 +--
+>  drivers/hwmon/tps23861.c                                  | 4 +---
+>  drivers/hwmon/w83781d.c                                   | 4 +---
+>  drivers/hwmon/w83791d.c                                   | 6 ++----
+>  drivers/hwmon/w83792d.c                                   | 6 ++----
+>  drivers/hwmon/w83793.c                                    | 6 ++----
+>  drivers/hwmon/w83795.c                                    | 4 +---
+>  drivers/hwmon/w83l785ts.c                                 | 6 ++----
+>  drivers/i2c/i2c-core-base.c                               | 6 +-----
+>  drivers/i2c/i2c-slave-eeprom.c                            | 4 +---
+>  drivers/i2c/i2c-slave-testunit.c                          | 3 +--
+>  drivers/i2c/i2c-smbus.c                                   | 3 +--
+>  drivers/i2c/muxes/i2c-mux-ltc4306.c                       | 4 +---
+>  drivers/i2c/muxes/i2c-mux-pca9541.c                       | 3 +--
+>  drivers/i2c/muxes/i2c-mux-pca954x.c                       | 3 +--
 
-thanks,
+Reviewed-by: Jean Delvare <jdelvare@suse.de>
 
-Takashi
-
--- 8< --
-From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH] ALSA: cs46xx: Fix missing snd_card_free() call at probe error
-
-The previous cleanup with devres may lead to the incorrect release
-orders at the probe error handling due to the devres's nature.  Until
-we register the card, snd_card_free() has to be called at first for
-releasing the stuff properly when the driver tries to manage and
-release the stuff via card->private_free().
-
-This patch fixes it by calling snd_card_free() manually on the error
-from the probe callback.
-
-Fixes: 5bff69b3645d ("ALSA: cs46xx: Allocate resources with device-managed APIs")
-Cc: <stable@vger.kernel.org>
-Reported-by: Jan Engelhardt <jengelh@inai.de>
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
----
- sound/pci/cs46xx/cs46xx.c | 22 +++++++++++++---------
- 1 file changed, 13 insertions(+), 9 deletions(-)
-
-diff --git a/sound/pci/cs46xx/cs46xx.c b/sound/pci/cs46xx/cs46xx.c
-index bd60308769ff..8634004a606b 100644
---- a/sound/pci/cs46xx/cs46xx.c
-+++ b/sound/pci/cs46xx/cs46xx.c
-@@ -74,36 +74,36 @@ static int snd_card_cs46xx_probe(struct pci_dev *pci,
- 	err = snd_cs46xx_create(card, pci,
- 				external_amp[dev], thinkpad[dev]);
- 	if (err < 0)
--		return err;
-+		goto error;
- 	card->private_data = chip;
- 	chip->accept_valid = mmap_valid[dev];
- 	err = snd_cs46xx_pcm(chip, 0);
- 	if (err < 0)
--		return err;
-+		goto error;
- #ifdef CONFIG_SND_CS46XX_NEW_DSP
- 	err = snd_cs46xx_pcm_rear(chip, 1);
- 	if (err < 0)
--		return err;
-+		goto error;
- 	err = snd_cs46xx_pcm_iec958(chip, 2);
- 	if (err < 0)
--		return err;
-+		goto error;
- #endif
- 	err = snd_cs46xx_mixer(chip, 2);
- 	if (err < 0)
--		return err;
-+		goto error;
- #ifdef CONFIG_SND_CS46XX_NEW_DSP
- 	if (chip->nr_ac97_codecs ==2) {
- 		err = snd_cs46xx_pcm_center_lfe(chip, 3);
- 		if (err < 0)
--			return err;
-+			goto error;
- 	}
- #endif
- 	err = snd_cs46xx_midi(chip, 0);
- 	if (err < 0)
--		return err;
-+		goto error;
- 	err = snd_cs46xx_start_dsp(chip);
- 	if (err < 0)
--		return err;
-+		goto error;
- 
- 	snd_cs46xx_gameport(chip);
- 
-@@ -117,11 +117,15 @@ static int snd_card_cs46xx_probe(struct pci_dev *pci,
- 
- 	err = snd_card_register(card);
- 	if (err < 0)
--		return err;
-+		goto error;
- 
- 	pci_set_drvdata(pci, card);
- 	dev++;
- 	return 0;
-+
-+ error:
-+	snd_card_free(card);
-+	return err;
- }
- 
- static struct pci_driver cs46xx_driver = {
--- 
-2.35.3
-
+--=20
+Jean Delvare
+SUSE L3 Support
