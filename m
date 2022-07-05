@@ -4,70 +4,182 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E865EC43334
-	for <alsa-devel@archiver.kernel.org>; Wed,  6 Jul 2022 11:10:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 51272C433EF
+	for <alsa-devel@archiver.kernel.org>; Wed,  6 Jul 2022 11:41:43 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 36AEF168B;
-	Wed,  6 Jul 2022 13:09:53 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 36AEF168B
+	by alsa0.perex.cz (Postfix) with ESMTPS id C505D1686;
+	Wed,  6 Jul 2022 13:40:51 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C505D1686
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1657105843;
-	bh=BZCKP5tZSxu06QM9jLVz19aqimTq9g4sT3WFL7FeJ4E=;
-	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
+	s=default; t=1657107701;
+	bh=KyU+TVxCEmJC4JoWMbYN8JUevrSyEkXuYgCgnA4znO8=;
+	h=From:To:Subject:Date:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=vih3trTKcMnnGMXBIzQVfnIUx1Tx+3WQ85eeWydASVvXYBWd9IAraF7qxhVLZ7t4F
-	 IKAqNAv2WWGlvGX0ILnnuivKK8zIFzbLRS3KpUm5R47VJRfKffnLOTvLv2D0TNq0K3
-	 t+z7ur8Dehs9BdK2XoERU27Avxh+VN6iDmXaFN2Q=
+	b=AtJfVS+i4x7/ypypj443k4dJSeKRZmPrzXPqVJegxe27xErxvtyBC9e/379mocuiF
+	 5uBgvv6EMvvL9+60Jtkaj/FsYlVrpbb4VXC2AG1xezU1ac86t0W3TW24jcAcisvC9l
+	 +KCr4W3okitrWcTB4N8xlepz4oJ+4NbQhgT4WSdU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 9A3ECF8055B;
-	Wed,  6 Jul 2022 13:08:11 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 67D9EF80104;
+	Wed,  6 Jul 2022 13:40:51 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id AB78BF80557; Wed,  6 Jul 2022 13:08:10 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 818DBF80549;
- Wed,  6 Jul 2022 13:08:05 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 818DBF80549
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="O/7alNDv"
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+ id 46363F8015B; Tue,  5 Jul 2022 14:51:04 +0200 (CEST)
+Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com
+ [68.232.153.233])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id 4651C61E82;
- Wed,  6 Jul 2022 11:08:04 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 96D17C341CE;
- Wed,  6 Jul 2022 11:08:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1657105684;
- bh=BZCKP5tZSxu06QM9jLVz19aqimTq9g4sT3WFL7FeJ4E=;
- h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=O/7alNDvspGn+ZqprEjuMKPkSKP26SZSop292NkkrTG8BsJx5GMSdUjndI/d1X7ZQ
- Ycz/B4nBUt9dBclWPJmC7QlzEsPRcWrSyDnwfdyTYBUxd0SkODNAX2Ig1EPUu3FNOi
- 2Xq/0pBw5ft+FMxg/YujRFrE9TpOvWlyKfO/4AILfzhOHdaWnuR1Nqos7QTTnBAAk6
- T6pO++OEfDcVUorOvziBsXRn9ks3qxLyz5yCiRqCdwCCD265bGGB4tKhb4n6EUciNw
- Tx2L9yE4z7ZYKo73ICdTCKMrJFEd5Me+HvUf+bgO9m3o5EBR1os8F0bDO9s9/qog8N
- AJ2C6Qu+NeqHA==
-From: Mark Brown <broonie@kernel.org>
-To: linux-kernel@vger.kernel.org, peter.ujfalusi@linux.intel.com,
- pierre-louis.bossart@linux.intel.com, alsa-devel@alsa-project.org,
- andriy.shevchenko@linux.intel.com, sound-open-firmware@alsa-project.org
-In-Reply-To: <20220705161102.76250-1-andriy.shevchenko@linux.intel.com>
-References: <20220705161102.76250-1-andriy.shevchenko@linux.intel.com>
-Subject: Re: [PATCH v2 1/2] ASoC: SOF: Intel: bdw: remove duplicating driver
- data retrieval
-Message-Id: <165710568133.237380.11160938064727349127.b4-ty@kernel.org>
-Date: Wed, 06 Jul 2022 12:08:01 +0100
-MIME-Version: 1.0
+ by alsa1.perex.cz (Postfix) with ESMTPS id 51E83F8012A
+ for <alsa-devel@alsa-project.org>; Tue,  5 Jul 2022 14:50:54 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 51E83F8012A
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com
+ header.b="Njlx4NAh"; 
+ dkim=pass (1024-bit key) header.d=microchiptechnology.onmicrosoft.com
+ header.i=@microchiptechnology.onmicrosoft.com header.b="i/CeW5Od"
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+ d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+ t=1657025458; x=1688561458;
+ h=from:to:cc:subject:date:message-id:references:
+ in-reply-to:content-id:content-transfer-encoding: mime-version;
+ bh=KyU+TVxCEmJC4JoWMbYN8JUevrSyEkXuYgCgnA4znO8=;
+ b=Njlx4NAhS7Wr6zSdDkZJ9STpPtrV+SGbFbEvkGoM7EQlMkx2Un6hAuKc
+ YHB/5oxtq0dbhCxeHfDtiQVSRH9/JiamBHhYBArzNvPyAmmwXyp1f08wp
+ hOXusKb8zGmLJuHVa6rGmTxDNbufOrK3YpU3+SNoNf1lVzsyffjblTcGO
+ 4eYxCUDiIczRZS5j4pT9IvlwckC5CFczIOflkKUiN/ilhXTTCptwEPiht
+ wdls8Gaj+f5hS/9LciBJnOuyysxcbwDA1LqPe9ewkFMxlY3Ft7aacCxO6
+ q0ukECyR+IsUvlz8ehNTtKezeEX/pLs83sDoNSPHBlQPiJnf1l5nyRVFC Q==;
+X-IronPort-AV: E=Sophos;i="5.92,245,1650956400"; d="scan'208";a="171082069"
+Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
+ by esa3.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256;
+ 05 Jul 2022 05:50:52 -0700
+Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
+ chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.17; Tue, 5 Jul 2022 05:50:49 -0700
+Received: from NAM12-BN8-obe.outbound.protection.outlook.com (10.10.215.89) by
+ email.microchip.com (10.10.87.151) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.17 via Frontend Transport; Tue, 5 Jul 2022 05:50:49 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=ZUaSKMqLjcMOsCwYivMpmuprkB/JALiNHRwMcivNHEhKkppmTu/77oTbD/glujIflsYaxsnvrUZztL2bE5cMYB/MxKz/hTCcCzVfM9Pu93VdLyItHcWwqsj/XVRx2W9SHOPEHOL79qyJ1C140HNAblTTvBXPUljZVOL0+A8+v1/N9d5eA+3aCasWbzBdjLl1uvugwqziMrwNhMrUDNfMLaKxi8sXhHMh3rnhs1wfNk0cWdQHQ0v1GXdKN8yyjMy5g5JH3OdNOINLvpOShk72RXi4JGq/aSJjftanIV5eFzy55WSMkEzA8jRUMi0DApcwpS2GFvumikT/6+3tZBwoBA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=KyU+TVxCEmJC4JoWMbYN8JUevrSyEkXuYgCgnA4znO8=;
+ b=GJ5RwJnYLX0v0XywlbfxdwvvqW2OhcmNq0vYdUffChlZeLMVIS8+pWrDhQVZ1q772de1bNueSL8P9sBOaypWwD7Q7mJRvrUWK+RefaklLJldY2fzegaFWIlUaM83/Rp6Pygqe8N28NR3JusMA62VWlEtavjc4mJOFlNt2+MUTnz0YuW3AOAPqiU8lLHiXIAiS/o+td1iyk1bvuk1YjZcemMbQPrGAswgsVtinItlWGOmUfflMtLFGfPjxL0M21WKKweqdLhHyVrpRJ+4dfJqdOLH3l25P001MgAXji57hNVMUGFr/8XL+C28YHpSmH9zFfYQcTgc7j719SQPD5jgbA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=microchip.com; dmarc=pass action=none
+ header.from=microchip.com; dkim=pass header.d=microchip.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=microchiptechnology.onmicrosoft.com;
+ s=selector2-microchiptechnology-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=KyU+TVxCEmJC4JoWMbYN8JUevrSyEkXuYgCgnA4znO8=;
+ b=i/CeW5Odms5J9QI4296tgc3YO2Q8m/QwMFCw8QXuyzN4rTVO63eylsv26IK9MkGXo5sTv3d7HbQWJ9US9yl5wXB/psu8f/Anad+RhEobN9nai1H5JeKWCBGzJ85m7XnzGppYvqWpRpTp82j1z/oR9t7TtRocoXCkRGQb2kKC8S4=
+Received: from CO1PR11MB5154.namprd11.prod.outlook.com (2603:10b6:303:99::15)
+ by DM6PR11MB3356.namprd11.prod.outlook.com (2603:10b6:5:58::30) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5395.15; Tue, 5 Jul
+ 2022 12:50:47 +0000
+Received: from CO1PR11MB5154.namprd11.prod.outlook.com
+ ([fe80::699b:5c23:de4f:2bfa]) by CO1PR11MB5154.namprd11.prod.outlook.com
+ ([fe80::699b:5c23:de4f:2bfa%4]) with mapi id 15.20.5395.021; Tue, 5 Jul 2022
+ 12:50:47 +0000
+From: <Conor.Dooley@microchip.com>
+To: <vkoul@kernel.org>, <conor@kernel.org>
+Subject: Re: [PATCH v4 04/14] dt-bindings: dma: dw-axi-dmac: extend the number
+ of interrupts
+Thread-Topic: [PATCH v4 04/14] dt-bindings: dma: dw-axi-dmac: extend the
+ number of interrupts
+Thread-Index: AQHYjYAsB9J8K4kr7Eu231T8omMXfa1vv16AgAABVYA=
+Date: Tue, 5 Jul 2022 12:50:47 +0000
+Message-ID: <6feefba9-8807-5f35-35e4-4b0d549c506b@microchip.com>
+References: <20220701192300.2293643-1-conor@kernel.org>
+ <20220701192300.2293643-5-conor@kernel.org> <YsQyi3Mx99m8fnGu@matsya>
+In-Reply-To: <YsQyi3Mx99m8fnGu@matsya>
+Accept-Language: en-IE, en-US
+Content-Language: en-IE
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+user-agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.9.1
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=microchip.com;
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: afe20792-cdbb-4539-a2f8-08da5e84fb43
+x-ms-traffictypediagnostic: DM6PR11MB3356:EE_
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: KwlmzrYLsbEl03Zz5+hOPx1xLwNZ8tsWyiwCKi9rALKxG8vwLiSlks/aQYqvLkdIFEnKSS+l63Biw1Yp8zXsoUIJaAUZ2iYer0VQlhX3oMi3DDp2yb3FiyBsFQ0i3I4cd8g/PmJSYTgXW/2knA2vMFOu60udNEI1WRqsxFV+T35tmbfMqdBi2ZrkIbOo3dLp54qxdibSrw1gw6Piji+2IjhHkfJGMCywSUvLnJmkINvLo0zmQZaG/VPRsw7DUACNiN0hr7yR3lE7RS6qjS4GJdMjFkmyrzMKa6tkflI7hDnrgwUVgGdGMqPh1ZKQcJ9CdZ8aZ+k1ASGmvDGvETjF7KOk3YG00LZUbFVuRw+J9SCGr187Fib1pN/NZqrWEWekc4MjIUheKAFAMovPghu8rmxRpqghJZoRiDl33YDt5DueQqvelwTcJdROIoyXKeia7BxVKj3AncTltv859pXzOJyMQzoUL8rqhOmSDY3uAcfN7qjMf8UDNpryhVPj013A3vxyP1unD/U7UTPKx2T46NJsdIhJIPVH6HDO08AA12YBN3DmiCYz35gx6iwAT/Ws6QE9JORfBN1hycUhaV9cil5VBlyS1xYfrTvcsN4GHrzyp2W9cvgfg2DqjlHfZxi7tQRZ7HqUKJh+MwNibk20CN0UlUuSQPwMSOmm0f7KlR+oL0qxCsyOJyepeDFjoVV27NasM/CQLPvMdunIGsn2v6fYjF+TeXBQwfbHzreKQpEymoHGPaLG7jcEDxG5Tg4tzYwM4m/x5L3fOD5lPCCtGBS3Tgtakec9g3m50e01tzgCZIkdHuirB5eatOKT6mjWNJmA3aMZDP0xJFnRgvF08RDjIXV52VUGhe+RB9YdfhSoyHXLoF5pkApJnO/vsk5N+X8FQVQTCO7Uaiqad/9sPgV6lVuMhpuvpsQ9lSX3RHll4mLSzFkyOv61VBotVTFg
+x-forefront-antispam-report: CIP:255.255.255.255; CTRY:; LANG:en; SCL:1; SRV:;
+ IPV:NLI; SFV:NSPM; H:CO1PR11MB5154.namprd11.prod.outlook.com; PTR:; CAT:NONE;
+ SFS:(13230016)(366004)(376002)(39860400002)(396003)(136003)(346002)(38070700005)(2616005)(186003)(122000001)(31686004)(2906002)(8936002)(36756003)(7416002)(5660300002)(66946007)(66556008)(66476007)(66446008)(316002)(54906003)(64756008)(8676002)(478600001)(91956017)(6486002)(966005)(4326008)(76116006)(6506007)(53546011)(41300700001)(26005)(6512007)(38100700002)(110136005)(71200400001)(31696002)(86362001)(83380400001)(43740500002)(45980500001)(15398625002);
+ DIR:OUT; SFP:1101; 
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?utf-8?B?V2d4aTBMNXh4OU43QmlvbzZNbVorZFRPeFp0aitJcE84dG8rRDIwWmtyaldX?=
+ =?utf-8?B?aXJRaC9WcTVETVBEWnBxUnFUelRRcVZPT1FDVm5DKzZCN3ZFR3FmSnBkMmp3?=
+ =?utf-8?B?SzBxeUZLOEtqSUxXbjBRelRVaWRUTjJXVXdUVU83cFA0eEVrQW1oeThPek5j?=
+ =?utf-8?B?R2IwVlB3YUFJb0tBZGFnc1dkV2d1blFnTzBUOVB0UGRSM3R3QzZaM2VBcW5t?=
+ =?utf-8?B?Y2dxSXRHeFYwSFBkZ2VKZDE2WkM0UEFWblIxZHhURUJuREFpOHdnSFBibmxE?=
+ =?utf-8?B?cGhIQmhNWUVuTFBMODJCWEZXNlRtUzlVd3VZekt3WFE5VnZLMCtMcGpnNHR3?=
+ =?utf-8?B?eUVxQW1PNWtjWVViajBIUjg4NWxNSytYUWF0RDYwNXFwN3lCU1RRdHlHOUR6?=
+ =?utf-8?B?amxoTUVRT243S0R6aEwzZWVZTTJvVElDMUlONiswOTBwUFloYmg1Rmh4TSs3?=
+ =?utf-8?B?T1p5Z1VkcTAvU2x3Q3g1TGhvUlpzbzA1ZWZaeis2MVdVamx1Q1QzVEwzREVi?=
+ =?utf-8?B?SEdXZCtuMXdWRGlGUUVVZ3RTamViTmQvejFmRGZQLy9FZDd6Rk9PNnBtbkZC?=
+ =?utf-8?B?MGNRSTFGcmdITkw3ZkJyMHBIaXNrZWtBYnY0ZHNnVDU4R3RrUVA5d2dsZ1ZM?=
+ =?utf-8?B?VTlOTUI4WEswemYyZ3I0RWV5VVFzSFMvMUpzdEM0YUFkaGcvd2ZqV2xMSE5Y?=
+ =?utf-8?B?dTRMdXdUZERnN3hrWGwwQWF6L3VneUJZdTRuN3pEdHBweHhLbkZlKzd4RWFp?=
+ =?utf-8?B?NVRtWEZBWGRqb20vcEdyQ29hK0RTeXZhTlNhNmhVWXcrdGp6aHI5dEM4WHg0?=
+ =?utf-8?B?M3prN3ZKckNHbGNORUdZdmIvRk9uT2hScjVuODM0RVJIUXdWMmYvN2QzV1ND?=
+ =?utf-8?B?cDBRelBIL1RCODBiaEpGdWhYR3E3UkxxRXVTK3pPUDVROEl5cVM3TTdUaDgx?=
+ =?utf-8?B?SVpkMEJ1TGsxckNCaTlRUDJuUlV0R056QmcyTmhvYmtSK3pVeXUwU0QrNWVl?=
+ =?utf-8?B?dXV4NFh3Y3MyakkveGI4K3A1cS96MEF0TFN0KzVUTTJvY1lmbDJwWTJJZ3Z1?=
+ =?utf-8?B?QzYwQ1NWSFVuNXlPcncxaExCaWRIUXRRbmw5bHdzcVVYcUlVTXlvMUFGMVJ0?=
+ =?utf-8?B?Y1Z1R1M3QnpXWGZzY0tRa2srZHFuTmZvZEkzNlBwR0lhOHRnNC9IbFIvZXgw?=
+ =?utf-8?B?QjR1K0E2MGk0eW5sRWwrd2grWWpyRm90NGg0MHRQRkdrUVo0M0ExTSt2Zzcv?=
+ =?utf-8?B?dlBqVFAwUmU3SW9LR0ZlSXMyMnhnNGtuWkdDSXRicWlHbENqZmtFZlNlUHFB?=
+ =?utf-8?B?aE96RW1NdmsyV0JXN1BiS1B3L3VjNVVyQ0N5M0pid2YzM2tIcnhONHV6eFB4?=
+ =?utf-8?B?a2laUnF5dVVRd0ZTamFuMnZobm1KV1RyQmRBd2lKTERNSFFOU3RhMHU4Smpn?=
+ =?utf-8?B?akMvcHVVdkl6dFdTOFNKT3RLRmF3VExpYzAzWDZNclROV01ya1RyVlhpM1RZ?=
+ =?utf-8?B?T05YM3R1LzVxdHhGUS9LbjJ2cGRKZVRZYWh6ZnlMTmY0b1RkREROazZrNlRj?=
+ =?utf-8?B?eVc5anFpMTB6OHkxYzJ0aCt1QmNXMEwrV0FqcUFNN3lzK21SZ2xiaVFrcks5?=
+ =?utf-8?B?MzE3THNKUnBlV1ZRYTZuRnZtaE9CRjRGRkUvd2dUL2lqWGZBTjhMWFNXb1Fv?=
+ =?utf-8?B?RGZtUGJ6THY3UXFRcUVFZWNuY2NVZkN6MVdlMC9BcitEOWFJVnROMmNwSkZs?=
+ =?utf-8?B?RTArZ1ZGN2NNMWpLZG5pQitTdTZ6TUdmTzZhWkdNenRKK3FDcld2em9tc0NS?=
+ =?utf-8?B?dFEydzcvZHZ3Z0dSNU9pbkZsNEowZFZWMU16dkM2aHhNODdJTkd6SnpXck5o?=
+ =?utf-8?B?Z0xmYUh5UlJyRGhpaWJ3WGErYVJUbW9yQ0JQT2VxSXlVK1FXM0k2QVArcFoy?=
+ =?utf-8?B?UGxpRVJralhPNGFIVmU3U1REdHJyd2U3cmdHVGJJMzROUDJaNWJnbVBMakc0?=
+ =?utf-8?B?V1hVaGtXSEk3UzRoQUVMWUNrMlJvVVd2QkFEdkVlNXltVWlOOGE0eG1RenJD?=
+ =?utf-8?B?cVo1VGwrVFpCSXdva3lQaThFRnUrckpVaXhLSEh1NTlCektFODhPdXhnaXQ3?=
+ =?utf-8?Q?t/yWzPgi4Ea5QUYN+nyD7MePz?=
 Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-Cc: kai.vehmanen@linux.intel.com, yung-chuan.liao@linux.intel.com,
- Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>,
- ranjani.sridharan@linux.intel.com, daniel.baluta@nxp.com
+Content-ID: <8C6A1B5C593A984992891DA09442087C@namprd11.prod.outlook.com>
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: CO1PR11MB5154.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: afe20792-cdbb-4539-a2f8-08da5e84fb43
+X-MS-Exchange-CrossTenant-originalarrivaltime: 05 Jul 2022 12:50:47.0242 (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 3f4057f3-b418-4d4e-ba84-d55b4e897d88
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: 4J7HrSeVT+Ig0VzNVr/xICaQLT303u1kqvh9Pzp2RMgPxXF9v+mDTufHQPbH9i4XUB0DEWksWyFzpo1BjD3y4lKY6Oy+y5H5AVurKd+tw4Q=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR11MB3356
+X-Mailman-Approved-At: Wed, 06 Jul 2022 13:40:50 +0200
+Cc: niklas.cassel@wdc.com, alsa-devel@alsa-project.org, airlied@linux.ie,
+ palmer@rivosinc.com, linux-kernel@vger.kernel.org, Conor.Dooley@microchip.com,
+ thierry.reding@gmail.com, krzysztof.kozlowski+dt@linaro.org,
+ linux-riscv@lists.infradead.org, sam@ravnborg.org,
+ damien.lemoal@opensource.wdc.com, daniel.lezcano@linaro.org,
+ joabreu@synopsys.com, geert@linux-m68k.org, Eugeniy.Paltsev@synopsys.com,
+ devicetree@vger.kernel.org, aou@eecs.berkeley.edu, broonie@kernel.org,
+ dri-devel@lists.freedesktop.org, paul.walmsley@sifive.com,
+ dillon.minfei@gmail.com, lgirdwood@gmail.com, fancer.lancer@gmail.com,
+ robh+dt@kernel.org, palmer@dabbelt.com, daniel@ffwll.ch,
+ dmaengine@vger.kernel.org, masahiroy@kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -83,39 +195,37 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Tue, 5 Jul 2022 19:11:01 +0300, Andy Shevchenko wrote:
-> device_get_match_data() in ACPI case calls similar to acpi_match_device().
-> Hence there is no need to duplicate the call. Just assign what is in
-> the id->driver_data.
-> 
-> 
-
-Applied to
-
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
-
-Thanks!
-
-[1/2] ASoC: SOF: Intel: bdw: remove duplicating driver data retrieval
-      commit: 0d356c186ffd6d4c3e10abb283379d09a93d2515
-[2/2] ASoC: SOF: Intel: byt: remove duplicating driver data retrieval
-      commit: 65b6851d243ff54cbd4adfb887a8af9d04b7f286
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
+T24gMDUvMDcvMjAyMiAxMzo0NiwgVmlub2QgS291bCB3cm90ZToNCj4gT24gMDEtMDctMjIsIDIw
+OjIyLCBDb25vciBEb29sZXkgd3JvdGU6DQo+PiBGcm9tOiBDb25vciBEb29sZXkgPGNvbm9yLmRv
+b2xleUBtaWNyb2NoaXAuY29tPg0KPj4NCj4+IFRoZSBDYW5hYW4gazIxMCBhcHBhcmVudGx5IGhh
+cyBhIFN5c25vcHN5cyBEZXNpZ253YXJlIEFYSSBETUENCj4+IGNvbnRyb2xsZXIsIGJ1dCBhY2Nv
+cmRpbmcgdG8gdGhlIGRvY3VtZW50YXRpb24gJiBkZXZpY2V0cmVlIGl0IGhhcyA2DQo+PiBpbnRl
+cnJ1cHRzIHJhdGhlciB0aGFuIHRoZSBzdGFuZGFyZCBvbmUuIFN1cHBvcnQgdGhlIDYgaW50ZXJy
+dXB0DQo+PiBjb25maWd1cmF0aW9uIGJ5IHVuY29uZGl0aW9uYWxseSBleHRlbmRpbmcgdGhlIGJp
+bmRpbmcgdG8gYSBtYXhpbXVtIG9mDQo+PiA4IHBlci1jaGFubmVsIGludGVycnVwdHMgdGhlcmVi
+eSBtYXRjaGluZyB0aGUgbnVtYmVyIG9mIHBvc3NpYmxlDQo+PiBjaGFubmVscy4NCj4+DQo+PiBM
+aW5rOiBodHRwczovL2NhbmFhbi1jcmVhdGl2ZS5jb20vd3AtY29udGVudC91cGxvYWRzLzIwMjAv
+MDMva2VuZHJ5dGVfc3RhbmRhbG9uZV9wcm9ncmFtbWluZ19ndWlkZV8yMDE5MDMxMTE0NDE1OF9l
+bi5wZGYgI1BhZ2UgNTENCj4+IFJldmlld2VkLWJ5OiBTZXJnZSBTZW1pbiA8ZmFuY2VyLmxhbmNl
+ckBnbWFpbC5jb20+DQo+PiBTaWduZWQtb2ZmLWJ5OiBDb25vciBEb29sZXkgPGNvbm9yLmRvb2xl
+eUBtaWNyb2NoaXAuY29tPg0KPj4gLS0tDQo+PiAgIC4uLi9kZXZpY2V0cmVlL2JpbmRpbmdzL2Rt
+YS9zbnBzLGR3LWF4aS1kbWFjLnlhbWwgICAgICAgICAgfCA3ICsrKysrKy0NCj4+ICAgMSBmaWxl
+IGNoYW5nZWQsIDYgaW5zZXJ0aW9ucygrKSwgMSBkZWxldGlvbigtKQ0KPj4NCj4+IGRpZmYgLS1n
+aXQgYS9Eb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3MvZG1hL3NucHMsZHctYXhpLWRt
+YWMueWFtbCBiL0RvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9kbWEvc25wcyxkdy1h
+eGktZG1hYy55YW1sDQo+PiBpbmRleCA0MzI0YTk0YjI2YjIuLjk4YzJhYjE4ZDA0ZiAxMDA2NDQN
+Cj4+IC0tLSBhL0RvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9kbWEvc25wcyxkdy1h
+eGktZG1hYy55YW1sDQo+PiArKysgYi9Eb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3Mv
+ZG1hL3NucHMsZHctYXhpLWRtYWMueWFtbA0KPj4gQEAgLTM0LDcgKzM0LDEyIEBAIHByb3BlcnRp
+ZXM6DQo+PiAgICAgICAgIC0gY29uc3Q6IGF4aWRtYV9hcGJfcmVncw0KPj4gICANCj4+ICAgICBp
+bnRlcnJ1cHRzOg0KPj4gLSAgICBtYXhJdGVtczogMQ0KPj4gKyAgICBkZXNjcmlwdGlvbjogfA0K
+PiANCj4gcm9iIGFza2VkIHlvdSB0byBkcm9wIHRoaXMgaW4gbGFzdCBwYXRjaCwgcGxzIGZpeCB0
+aGF0IGFuZCBzZW5kIHdpdGggaGlzDQo+IGFjaw0KDQpZZWFoLCBJIHdhcyBhIGJpdCBndW5nLWhv
+ICYgc2VudCBiZWZvcmUgdjQgd2l0aCBvdGhlciBmaXhlcyBwcmlvcg0KdG8gaGlzIHJldmlldyBv
+ZiB2My4gSSBkaWRuJ3QgaW50ZW50aW9uYWxseSBpZ25vcmUgaGltIDopDQoNCkknbGwgcmVzZW5k
+IGxhdGVyIHRvbmlnaHQuDQoNClRoYW5rcywNCkNvbm9yLg0KDQo+IA0KPj4gKyAgICAgIElmIHRo
+ZSBJUC1jb3JlIHN5bnRoZXNpcyBwYXJhbWV0ZXIgRE1BWF9JTlRSX0lPX1RZUEUgaXMgc2V0IHRv
+IDEsIHRoaXMNCj4+ICsgICAgICB3aWxsIGJlIHBlci1jaGFubmVsIGludGVycnVwdHMuIE90aGVy
+d2lzZSwgdGhpcyBpcyBhIHNpbmdsZSBjb21iaW5lZCBJUlENCj4+ICsgICAgICBmb3IgYWxsIGNo
+YW5uZWxzLg0KPj4gKyAgICBtaW5JdGVtczogMQ0KPj4gKyAgICBtYXhJdGVtczogOA0KPj4gICAN
+Cj4+ICAgICBjbG9ja3M6DQo+PiAgICAgICBpdGVtczoNCj4+IC0tIA0KPj4gMi4zNy4wDQo+IA0K
