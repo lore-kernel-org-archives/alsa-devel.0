@@ -4,42 +4,42 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 75674C433EF
-	for <alsa-devel@archiver.kernel.org>; Tue,  5 Jul 2022 14:59:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7781EC433EF
+	for <alsa-devel@archiver.kernel.org>; Tue,  5 Jul 2022 15:00:31 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 2A06416F9;
-	Tue,  5 Jul 2022 16:58:57 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2A06416F9
+	by alsa0.perex.cz (Postfix) with ESMTPS id A7E621703;
+	Tue,  5 Jul 2022 16:59:39 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A7E621703
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1657033187;
-	bh=rYtaP6Gn7ucTz2ulHbBzdWodxfbfuhUv5bpUi6Wq5mo=;
+	s=default; t=1657033229;
+	bh=SRu4uRJz/J94OVf9uAUuV26vz/PsQrg6JyRbeTV6alQ=;
 	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=iryK6EyVvOWQGG0kYvZ7W0bXXy6GGTYVjexZ5NR/pCIx1cjhjs1XaP9FytuVY1MbD
-	 0GgdnzGtIAY20puHcyjO9DdGrA8oSOKGgrTFVN+Lxd63cQMFqG9o5H8B4BgdOabcKd
-	 uko9C0AJram4F0i6uv++4qAAxZl5Y+bUAXoZ6O1g=
+	b=cZsyXC3ih6dO1fIh4K1uSZkxUT+9yMPM48ir2EpM/z6B1oda27mEcBTfxidL1LuJ9
+	 bjJyvD/5H/lU/YYfq7CpRzxJHsGTUUkQScKPs/fE4D36aXX1ggYwsixN2XlILWxPs6
+	 /BAdEdMnTy1aL/2Sc151eoLK0G68uF8A2SyR/76k=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id BBE12F80153;
-	Tue,  5 Jul 2022 16:58:56 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 56587F804B2;
+	Tue,  5 Jul 2022 16:59:39 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 288E9F800CB; Tue,  5 Jul 2022 16:58:56 +0200 (CEST)
+ id 3187EF80515; Tue,  5 Jul 2022 16:59:38 +0200 (CEST)
 Received: from webhooks-bot.alsa-project.org (gate.perex.cz [77.48.224.242])
- by alsa1.perex.cz (Postfix) with ESMTP id A3A68F800CB
- for <alsa-devel@alsa-project.org>; Tue,  5 Jul 2022 16:58:53 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A3A68F800CB
+ by alsa1.perex.cz (Postfix) with ESMTP id BDBB1F80212
+ for <alsa-devel@alsa-project.org>; Tue,  5 Jul 2022 16:59:35 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BDBB1F80212
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-From: GitHub issues - opened <github@alsa-project.org>
+From: GitHub issues - edited <github@alsa-project.org>
 To: alsa-devel@alsa-project.org
-In-Reply-To: <1657033132968010902-webhooks-bot@alsa-project.org>
-References: <1657033132968010902-webhooks-bot@alsa-project.org>
+In-Reply-To: <1657033175572649956-webhooks-bot@alsa-project.org>
+References: <1657033175572649956-webhooks-bot@alsa-project.org>
 Subject: Scarlett 18i20 USB, USB Audio
-Message-Id: <20220705145856.288E9F800CB@alsa1.perex.cz>
-Date: Tue,  5 Jul 2022 16:58:56 +0200 (CEST)
+Message-Id: <20220705145938.3187EF80515@alsa1.perex.cz>
+Date: Tue,  5 Jul 2022 16:59:38 +0200 (CEST)
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -55,7 +55,7 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-alsa-project/alsa-topology-conf issue #2 was opened from juanpc2018:
+alsa-project/alsa-topology-conf issue #2 was edited from juanpc2018:
 
 Problems:
 $ alsamixer
@@ -75,8 +75,8 @@ i go to OSX, change the Sample Rate.
 reboot and go back to Kubuntu 21.10,
 Kubuntu changes the SR to 44.1Khz at boot,
 
-problems #2.
-SampleRateConverter does Not work well,
+problem #2.
+SampleRateConverter does Not work well Down,
 
 if i play a 48khz file in VLC,
 does Not play in 44.1Khz SR.
