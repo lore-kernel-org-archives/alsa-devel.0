@@ -4,83 +4,75 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B6FCDC433EF
-	for <alsa-devel@archiver.kernel.org>; Tue,  5 Jul 2022 18:01:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B53D8C433EF
+	for <alsa-devel@archiver.kernel.org>; Tue,  5 Jul 2022 18:22:22 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id DACCA16FB;
-	Tue,  5 Jul 2022 20:00:16 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DACCA16FB
+	by alsa0.perex.cz (Postfix) with ESMTPS id 088C216B8;
+	Tue,  5 Jul 2022 20:21:30 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 088C216B8
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1657044066;
-	bh=Pfm/RYAueDuO2Oi8EfsfQLxSrg3TUplLuLB+vxlNeh0=;
-	h=Date:Subject:To:References:From:In-Reply-To:Cc:List-Id:
+	s=default; t=1657045340;
+	bh=g5TAZtxdOGWHu775VKiNDmn3jJuzFVt2Fl4OTJ2b+eQ=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=m7moOly5VPPBQsLuP4LT7lWzdmZpvxASuW1+T84U7HShI6wYhg6H1R2uN1pvpwDZU
-	 d8GQBzstEt8M5zErJZH3E4x50tpHYwQVZx4S5IVvZXXpP8L/Vvrunxhvt8GidgYXXx
-	 9Y9NtNsPuueVosyAm99L2c79tNOkC4+dBYWQ65Lo=
+	b=W6VpM1xZLgFvPH6PMLxGo201aKd2BgwfOf7dAlM7ogJW5zq2LAnxVkwFba4eQX5Te
+	 pB2zxjsubhSDJOuYsPzEqYrR1UJ5DkoVJRx7/4piho+aTaTANptnM/8MpH2fvYVyGv
+	 bAxaPAlDjj3GdNivlBbO0/N+dyGtnmkosdFKm+50=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 691A7F80153;
-	Tue,  5 Jul 2022 19:59:45 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 991EAF80153;
+	Tue,  5 Jul 2022 20:21:29 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 59103F80537; Tue,  5 Jul 2022 19:59:43 +0200 (CEST)
-Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
+ id 1D072F8015B; Tue,  5 Jul 2022 20:21:28 +0200 (CEST)
+Received: from mo4-p01-ob.smtp.rzone.de (mo4-p01-ob.smtp.rzone.de
+ [85.215.255.52])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id D680CF80153;
- Tue,  5 Jul 2022 19:59:34 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D680CF80153
+ by alsa1.perex.cz (Postfix) with ESMTPS id 3384BF800CB
+ for <alsa-devel@alsa-project.org>; Tue,  5 Jul 2022 20:21:21 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3384BF800CB
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="nYAfzLjn"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
- d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1657043977; x=1688579977;
- h=message-id:date:mime-version:subject:to:cc:references:
- from:in-reply-to:content-transfer-encoding;
- bh=Pfm/RYAueDuO2Oi8EfsfQLxSrg3TUplLuLB+vxlNeh0=;
- b=nYAfzLjnITBD8b54zOpyRwgYK3RvTOIGMIt1Ck90j09C8G+Df4pqRsax
- 5hm4mmFq7EZD0TAmW8ULuObQzYXTYPSBza6VWQovIegUeTM4Bosqo60aS
- BguzC5EabFp1odXhdfxp8OKkBsqJN85pcKZCQAL6PE7bpSA/kKNc+euKk
- nwd5thfXbYp2/UnaPKPHt3wI3j1KqP0VzMcKgMuTaDqHv95kd5BIuuatJ
- C66/I3+5JgNaw8ODtDcIsSDe5ubadbb6xYDgXFw5d8Q7+YgqPakyMeZ5v
- H7HFXiacBfYWDug7xtWdd32lZQCKP59gz5+tX8ABf0j09FkCMhl70hvO3 A==;
-X-IronPort-AV: E=McAfee;i="6400,9594,10399"; a="283456731"
-X-IronPort-AV: E=Sophos;i="5.92,247,1650956400"; d="scan'208";a="283456731"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
- by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 05 Jul 2022 10:53:54 -0700
-X-IronPort-AV: E=Sophos;i="5.92,247,1650956400"; d="scan'208";a="682608856"
-Received: from wxu3-mobl1.amr.corp.intel.com (HELO [10.212.54.191])
- ([10.212.54.191])
- by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 05 Jul 2022 10:53:53 -0700
-Message-ID: <377f2c4a-562b-9384-adfc-8180964c2b42@linux.intel.com>
-Date: Tue, 5 Jul 2022 11:57:37 -0500
+ dkim=pass (2048-bit key) header.d=gerhold.net header.i=@gerhold.net
+ header.b="F3fNQ79b"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1657045281;
+ s=strato-dkim-0002; d=gerhold.net;
+ h=In-Reply-To:References:Message-ID:Subject:Cc:To:From:Date:Cc:Date:
+ From:Subject:Sender;
+ bh=UQh/AeOwYOytT9lqqjisAb47n38WBxn//wzctNCCTb8=;
+ b=F3fNQ79by2v5AKFvK+zRv9SKkf0apyfCvsx+N92TJvadUYg7J0WihSKHGF9SiaL8kU
+ DyAksPcDRyWyDkk8ZcZcygD38a76rQLfJHWhmY2OgOT7F55LQFy7uRMWOS13gM5P0Rak
+ BTvLhejkSg8OjDfw8eAE5cRgSKreJcAzixCwZmbf/mrryMy0/iGgk/O6DnODBp3Sl3ew
+ 9l3T5ujxr+/3DzoYJxNsjI3Fw5P2y5p8Suc/6ug/kiUcCsAoVHRKEmRN6hdjsg5OyonK
+ YMKOTP6fWL4uaywR4oL1Vo95Q71c+QPrpNplngB1uVeVGIAAJVHMkWDJcncjw8lQFqlw
+ Isrw==
+Authentication-Results: strato.com;
+    dkim=none
+X-RZG-AUTH: ":P3gBZUipdd93FF5ZZvYFPugejmSTVR2nRPhVOQ/OcYgojyw4j34+u267FZF9PwpcNKLVrK85/aY="
+X-RZG-CLASS-ID: mo00
+Received: from gerhold.net by smtp.strato.de (RZmta 47.46.1 AUTH)
+ with ESMTPSA id yfdd30y65ILKJAG
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
+ (Client did not present a certificate);
+ Tue, 5 Jul 2022 20:21:20 +0200 (CEST)
+Date: Tue, 5 Jul 2022 20:21:10 +0200
+From: Stephan Gerhold <stephan@gerhold.net>
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Subject: Re: [PATCH v2] ASoC: dt-bindings: qcom,sm8250: add SDM845 sound
+Message-ID: <YsSBFjW6riKOZZcz@gerhold.net>
+References: <20220705174702.763247-1-krzysztof.kozlowski@linaro.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Firefox/91.0 Thunderbird/91.10.0
-Subject: Re: [PATCH v2 2/2] ASoC: SOF: Intel: byt: remove duplicating driver
- data retrieval
-Content-Language: en-US
-To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
- Mark Brown <broonie@kernel.org>,
- Peter Ujfalusi <peter.ujfalusi@linux.intel.com>,
- sound-open-firmware@alsa-project.org, alsa-devel@alsa-project.org,
- linux-kernel@vger.kernel.org
-References: <20220705161102.76250-1-andriy.shevchenko@linux.intel.com>
- <20220705161102.76250-2-andriy.shevchenko@linux.intel.com>
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-In-Reply-To: <20220705161102.76250-2-andriy.shevchenko@linux.intel.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-Cc: Kai Vehmanen <kai.vehmanen@linux.intel.com>,
- Bard Liao <yung-chuan.liao@linux.intel.com>, Takashi Iwai <tiwai@suse.com>,
- Liam Girdwood <lgirdwood@gmail.com>,
- Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
- Daniel Baluta <daniel.baluta@nxp.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220705174702.763247-1-krzysztof.kozlowski@linaro.org>
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
+ linux-arm-msm@vger.kernel.org, Konrad Dybcio <konrad.dybcio@somainline.org>,
+ Andy Gross <agross@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+ Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
+ Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Bjorn Andersson <bjorn.andersson@linaro.org>, linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -96,37 +88,57 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-
-
-On 7/5/22 11:11, Andy Shevchenko wrote:
-> device_get_match_data() in ACPI case calls similar to acpi_match_device().
-> Hence there is no need to duplicate the call. Just assign what is in
-> the id->driver_data.
+On Tue, Jul 05, 2022 at 07:47:02PM +0200, Krzysztof Kozlowski wrote:
+> The Qualcomm SDM845 sound card bindings are almost the same as SM8250,
+> except "pin-switches" and "widgets" properties.  These were not
+> documented in SDM845 text bindings but are actually valid for SDM845.
 > 
-> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-
-Acked-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-
-Thanks Andy!
-
+> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+> 
 > ---
-> v2: new patch (Pierre)
->  sound/soc/sof/intel/byt.c | 5 +----
->  1 file changed, 1 insertion(+), 4 deletions(-)
 > 
-> diff --git a/sound/soc/sof/intel/byt.c b/sound/soc/sof/intel/byt.c
-> index 4ed8381eceda..e6dc4ff531c3 100644
-> --- a/sound/soc/sof/intel/byt.c
-> +++ b/sound/soc/sof/intel/byt.c
-> @@ -465,10 +465,7 @@ static int sof_baytrail_probe(struct platform_device *pdev)
->  		return -ENODEV;
->  	}
+> Changes since v1:
+> 1. Integrate into SM8250 instead of creating new file (Stephan).
+> 
+> Cc: Stephan Gerhold <stephan@gerhold.net>
+> ---
+>  .../devicetree/bindings/sound/qcom,sdm845.txt | 91 -------------------
+>  .../bindings/sound/qcom,sm8250.yaml           |  1 +
+>  2 files changed, 1 insertion(+), 91 deletions(-)
+>  delete mode 100644 Documentation/devicetree/bindings/sound/qcom,sdm845.txt
+> 
+> diff --git a/Documentation/devicetree/bindings/sound/qcom,sdm845.txt b/Documentation/devicetree/bindings/sound/qcom,sdm845.txt
+> deleted file mode 100644
+> index de4c604641da..000000000000
+> --- a/Documentation/devicetree/bindings/sound/qcom,sdm845.txt
+> +++ /dev/null
+> @@ -1,91 +0,0 @@
+[...]
+> -- compatible:
+> -	Usage: required
+> -	Value type: <stringlist>
+> -	Definition: must be one of this
+> -			"qcom,sdm845-sndcard"
+> -			"qcom,db845c-sndcard"
+> -			"lenovo,yoga-c630-sndcard"
+[...]
+> diff --git a/Documentation/devicetree/bindings/sound/qcom,sm8250.yaml b/Documentation/devicetree/bindings/sound/qcom,sm8250.yaml
+> index 4ecd4080bb96..7cdf9e9f4dd3 100644
+> --- a/Documentation/devicetree/bindings/sound/qcom,sm8250.yaml
+> +++ b/Documentation/devicetree/bindings/sound/qcom,sm8250.yaml
+> @@ -18,6 +18,7 @@ properties:
+>      enum:
+>        - qcom,apq8016-sbc-sndcard
+>        - qcom,msm8916-qdsp6-sndcard
+> +      - qcom,sdm845-sndcard
+>        - qcom,sm8250-sndcard
+>        - qcom,qrb5165-rb5-sndcard
 >  
-> -	desc = device_get_match_data(&pdev->dev);
-> -	if (!desc)
-> -		return -ENODEV;
-> -
-> +	desc = (const struct sof_dev_desc *)id->driver_data;
->  	if (desc == &sof_acpi_baytrail_desc && soc_intel_is_byt_cr(pdev))
->  		desc = &sof_acpi_baytrailcr_desc;
->  
+
+Looks like you forgot the db845c and lenovo compatible? :)
+
+If you add them feel free to add my:
+Reviewed-by: Stephan Gerhold <stephan@gerhold.net>
+
+Thanks!
+Stephan
