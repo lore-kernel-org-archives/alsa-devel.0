@@ -4,75 +4,79 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9BC35C43334
-	for <alsa-devel@archiver.kernel.org>; Tue,  5 Jul 2022 09:28:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0762FC433EF
+	for <alsa-devel@archiver.kernel.org>; Tue,  5 Jul 2022 10:12:52 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3A92B16E3;
-	Tue,  5 Jul 2022 11:27:23 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3A92B16E3
+	by alsa0.perex.cz (Postfix) with ESMTPS id 28CB416CE;
+	Tue,  5 Jul 2022 12:12:00 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 28CB416CE
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1657013293;
-	bh=qDxgHKU+doIhEne6ScFlapgjylf1pJ+0Tr9JEKNAYEY=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=L+JV00eQdE2umtZrs/sXsUZLZ4AY8KVPBjM8CNG6HzR99b2G5dTAlYr1/iIQL4Cut
-	 7e1fBY6huMQLx0RSC3fHfY2hrVhn4Bs3hxZNyC3+biorwY7rvReD7HkARLGMJ1aCbF
-	 0PuWLTdFg1l5RRN5wFkzcq+LwrN0xoQZhFNPcnmc=
+	s=default; t=1657015970;
+	bh=4MQqUXwQ/gPnCm5Qh436mIFFVbaEebP+Nu2/p5LIQhs=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=BWhz1o56rKl2QrPHV2nDyr2n598EU16vSvfHjeYOfs6yEpgaEhiSlYaco+xUdk6tU
+	 9CgWNflQgmAvqkMsEY5vvCFcH5qpZGQqxkyaQDuyiJ92vU7hZDrr4ER6GqBB7rN2Vh
+	 4ENC9ZaVqMOchmynT0HiT2X7HKtd5vTDd0EtkRv0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id CB162F80153;
-	Tue,  5 Jul 2022 11:27:22 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id BC01DF8015B;
+	Tue,  5 Jul 2022 12:11:59 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 7A3C0F800CB; Tue,  5 Jul 2022 11:27:21 +0200 (CEST)
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de
- [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 7E084F800CB
- for <alsa-devel@alsa-project.org>; Tue,  5 Jul 2022 11:27:15 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7E084F800CB
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
- by metis.ext.pengutronix.de with esmtps
- (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92)
- (envelope-from <ukl@pengutronix.de>)
- id 1o8epq-0006Bm-KO; Tue, 05 Jul 2022 11:27:10 +0200
-Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
- by drehscheibe.grey.stw.pengutronix.de with esmtp (Exim 4.94.2)
- (envelope-from <ukl@pengutronix.de>)
- id 1o8epk-004XSE-Ay; Tue, 05 Jul 2022 11:27:07 +0200
-Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.94.2)
- (envelope-from <ukl@pengutronix.de>)
- id 1o8epn-0037i9-3c; Tue, 05 Jul 2022 11:27:07 +0200
-From: =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To: Liam Girdwood <lgirdwood@gmail.com>,
-	Mark Brown <broonie@kernel.org>
-Subject: [PATCH] ASoC: xilinx: Suppress second error message about reset
- failure in .remove()
-Date: Tue,  5 Jul 2022 11:26:45 +0200
-Message-Id: <20220705092645.101343-1-u.kleine-koenig@pengutronix.de>
-X-Mailer: git-send-email 2.36.1
+ id D66F7F8015B; Tue,  5 Jul 2022 12:11:57 +0200 (CEST)
+Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
+ by alsa1.perex.cz (Postfix) with ESMTP id AB53FF8012A
+ for <alsa-devel@alsa-project.org>; Tue,  5 Jul 2022 12:11:51 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AB53FF8012A
+Authenticated-By: 
+X-SpamFilter-By: ArmorX SpamTrap 5.77 with qID 265ABiET2024370,
+ This message is accepted by code: ctloc85258
+Received: from mail.realtek.com (rtexh36504.realtek.com.tw[172.21.6.27])
+ by rtits2.realtek.com.tw (8.15.2/2.81/5.90) with ESMTPS id 265ABiET2024370
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=FAIL);
+ Tue, 5 Jul 2022 18:11:44 +0800
+Received: from RTEXMBS01.realtek.com.tw (172.21.6.94) by
+ RTEXH36504.realtek.com.tw (172.21.6.27) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.7; Tue, 5 Jul 2022 18:11:45 +0800
+Received: from localhost.localdomain (172.22.102.1) by
+ RTEXMBS01.realtek.com.tw (172.21.6.94) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.27; Tue, 5 Jul 2022 18:11:44 +0800
+From: Oder Chiou <oder_chiou@realtek.com>
+To: <broonie@kernel.org>, <lgirdwood@gmail.com>
+Subject: [PATCH 2/2] ASoC: rt5640: Add the MICBIAS1 to the dapm routing
+Date: Tue, 5 Jul 2022 18:11:34 +0800
+Message-ID: <20220705101134.16792-2-oder_chiou@realtek.com>
+X-Mailer: git-send-email 2.37.0
+In-Reply-To: <20220705101134.16792-1-oder_chiou@realtek.com>
+References: <20220705101134.16792-1-oder_chiou@realtek.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1129; h=from:subject;
- bh=qDxgHKU+doIhEne6ScFlapgjylf1pJ+0Tr9JEKNAYEY=;
- b=owEBbQGS/pANAwAKAcH8FHityuwJAcsmYgBixAPS7RESMsGyow+QX+KR/Iz7pFWBq2U40Ie995C+
- k3NwGYGJATMEAAEKAB0WIQR+cioWkBis/z50pAvB/BR4rcrsCQUCYsQD0gAKCRDB/BR4rcrsCU32CA
- CClenbIgn9YVIMowqp2NKMgCNBkpQ8mICVwgFsnXx04PhpgCsdXWrLfTX5/R8F+qDYzyubbNpQiN50
- uoQwuiNbhGdDz7X71OdOyH0jRpupNU2pZZYHsJwR4ANMuHS5Y/10w2dha5L1tRgk1o6j50t3AePyyN
- fdq7ixn2PM2q5aET5S5Oh2VtFkmhuJiGki/PDZj7pPo3ZJ+jCM21qlmnlr/N3I7/a/aqBLRqGPBhxw
- xh+JovndIyiQFMGeoSToXeb3IDzJlSfWa1hCttqnabWX0O8j7ns2iOzxPBjzyyRTd1XCOPKokgU3Ca
- f4FanvAapQKFgWwAWXiePqNE/7Clp7
-X-Developer-Key: i=u.kleine-koenig@pengutronix.de; a=openpgp;
- fpr=0D2511F322BFAB1C1580266BE2DCDD9132669BD6
 Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de);
- SAEximRunCond expanded to false
-X-PTX-Original-Recipient: alsa-devel@alsa-project.org
-Cc: linux-arm-kernel@lists.infradead.org, alsa-devel@alsa-project.org,
- Michal Simek <michal.simek@xilinx.com>, kernel@pengutronix.de
+Content-Type: text/plain
+X-Originating-IP: [172.22.102.1]
+X-ClientProxiedBy: RTEXH36504.realtek.com.tw (172.21.6.27) To
+ RTEXMBS01.realtek.com.tw (172.21.6.94)
+X-KSE-ServerInfo: RTEXMBS01.realtek.com.tw, 9
+X-KSE-AntiSpam-Interceptor-Info: trusted connection
+X-KSE-Antiphishing-Info: Clean
+X-KSE-Antiphishing-ScanningType: Deterministic
+X-KSE-Antiphishing-Method: None
+X-KSE-Antiphishing-Bases: 07/05/2022 09:56:00
+X-KSE-AttachmentFiltering-Interceptor-Info: no applicable attachment filtering
+ rules found
+X-KSE-Antivirus-Interceptor-Info: scan successful
+X-KSE-Antivirus-Info: =?big5?B?Q2xlYW4sIGJhc2VzOiAyMDIyLzcvNSCkV6TIIDA3OjA5OjAw?=
+X-KSE-BulkMessagesFiltering-Scan-Result: protection disabled
+X-KSE-ServerInfo: RTEXH36504.realtek.com.tw, 9
+X-KSE-AntiSpam-Interceptor-Info: fallback
+X-KSE-Antivirus-Interceptor-Info: fallback
+X-KSE-AntiSpam-Interceptor-Info: fallback
+Cc: Oder Chiou <oder_chiou@realtek.com>, jack.yu@realtek.com,
+ alsa-devel@alsa-project.org, Sameer Pujar <spujar@nvidia.com>,
+ derek.fang@realtek.com, shumingf@realtek.com, flove@realtek.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -88,33 +92,47 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Returning an error value in a platform remove callback results in an error
-message being emitted by the platform core, but otherwise it doesn't make
-a difference. If ret is != 0, there is already an error message and another
-very generic doesn't add any value, so return 0 unconditionally.
+The patch adds the MICBIAS1 to the dapm routing while the HDA header used.
 
-This is a preparation for making platform remove callbacks return void.
-
-Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
+Signed-off-by: Oder Chiou <oder_chiou@realtek.com>
+Reported-by: Sameer Pujar <spujar@nvidia.com>
 ---
- sound/soc/xilinx/xlnx_formatter_pcm.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/codecs/rt5640.c | 11 +++++++++++
+ 1 file changed, 11 insertions(+)
 
-diff --git a/sound/soc/xilinx/xlnx_formatter_pcm.c b/sound/soc/xilinx/xlnx_formatter_pcm.c
-index 5c4158069a5a..c42de48caea5 100644
---- a/sound/soc/xilinx/xlnx_formatter_pcm.c
-+++ b/sound/soc/xilinx/xlnx_formatter_pcm.c
-@@ -703,7 +703,7 @@ static int xlnx_formatter_pcm_remove(struct platform_device *pdev)
- 		dev_err(&pdev->dev, "audio formatter reset failed\n");
- 
- 	clk_disable_unprepare(adata->axi_clk);
--	return ret;
-+	return 0;
+diff --git a/sound/soc/codecs/rt5640.c b/sound/soc/codecs/rt5640.c
+index 19bdb6d0f5a9..38ab8d4291c2 100644
+--- a/sound/soc/codecs/rt5640.c
++++ b/sound/soc/codecs/rt5640.c
+@@ -2567,10 +2567,18 @@ static void rt5640_enable_jack_detect(struct snd_soc_component *component,
+ 	queue_delayed_work(system_long_wq, &rt5640->jack_work, 0);
  }
  
- static const struct of_device_id xlnx_formatter_pcm_of_match[] = {
-
-base-commit: f2906aa863381afb0015a9eb7fefad885d4e5a56
++static const struct snd_soc_dapm_route rt5640_hda_jack_dapm_routes[] = {
++	{"IN1P", NULL, "MICBIAS1"},
++	{"IN2P", NULL, "MICBIAS1"},
++	{"IN3P", NULL, "MICBIAS1"},
++};
++
+ static void rt5640_enable_hda_jack_detect(
+ 	struct snd_soc_component *component, struct snd_soc_jack *jack)
+ {
+ 	struct rt5640_priv *rt5640 = snd_soc_component_get_drvdata(component);
++	struct snd_soc_dapm_context *dapm =
++		snd_soc_component_get_dapm(component);
+ 	int ret;
+ 
+ 	/* Select JD1 for Mic */
+@@ -2609,6 +2617,9 @@ static void rt5640_enable_hda_jack_detect(
+ 
+ 	/* sync initial jack state */
+ 	queue_delayed_work(system_long_wq, &rt5640->jack_work, 0);
++
++	snd_soc_dapm_add_routes(dapm, rt5640_hda_jack_dapm_routes,
++		ARRAY_SIZE(rt5640_hda_jack_dapm_routes));
+ }
+ 
+ static int rt5640_set_jack(struct snd_soc_component *component,
 -- 
-2.36.1
+2.37.0
 
