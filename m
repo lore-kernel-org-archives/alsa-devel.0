@@ -4,68 +4,82 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 614A5C43334
-	for <alsa-devel@archiver.kernel.org>; Tue,  5 Jul 2022 18:54:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 00793C43334
+	for <alsa-devel@archiver.kernel.org>; Tue,  5 Jul 2022 19:06:39 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 828581703;
-	Tue,  5 Jul 2022 20:53:25 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 828581703
+	by alsa0.perex.cz (Postfix) with ESMTPS id 00B9C16DC;
+	Tue,  5 Jul 2022 21:05:48 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 00B9C16DC
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1657047255;
-	bh=z07d3tWCKO2PfBMX5iSdt+wsSGLf1g86UPV/UNCk/p8=;
-	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
+	s=default; t=1657047998;
+	bh=uN8KXVOk4s9eT77BVQYQIGgvMLWSsjxoHpaZkGcRssE=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=HNPjPDoZiVtpqTMJEYbJeISwEEn8WntQvVtno1d0oIIicDJm1/OU62m9wH1wJ4jqW
-	 T/kYtE1Z3JXHIuUwOT9LK2h9RLU9R8hTm9SqR3OdzqUN/mbs6MqhfR9oypaC31bTlu
-	 +vLOBT2ZsuvdllHnr1WmMOtR6y5R3y+2+mun9xg8=
+	b=P1/AuO81locA9bV6bNU0EqzTIQmJftv4G7vR5orQdQFzbpBkLN+ocKPdpTM1N+LBv
+	 4LpE3JqknNsR7a6reSTE3DYCCWzoFzLXj4U/34H7dcg/hNIgS9pB/y6XUg5IV1Pye7
+	 F1+dvbMy3ZKfK9vfZGX7vnzOd3LEfl7arM0WXiPs=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id A2806F8053B;
-	Tue,  5 Jul 2022 20:52:29 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id A29BDF80153;
+	Tue,  5 Jul 2022 21:05:47 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 28317F80515; Tue,  5 Jul 2022 20:52:28 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org
- [IPv6:2604:1380:4641:c500::1])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id 37D65F8015B; Tue,  5 Jul 2022 21:05:46 +0200 (CEST)
+Received: from mail-yb1-xb2f.google.com (mail-yb1-xb2f.google.com
+ [IPv6:2607:f8b0:4864:20::b2f])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 1C92AF8015B
- for <alsa-devel@alsa-project.org>; Tue,  5 Jul 2022 20:52:25 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1C92AF8015B
+ by alsa1.perex.cz (Postfix) with ESMTPS id EEAFEF80104
+ for <alsa-devel@alsa-project.org>; Tue,  5 Jul 2022 21:05:38 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EEAFEF80104
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="seMwPtb/"
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id BBE7A61A33;
- Tue,  5 Jul 2022 18:52:23 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 545ABC341CB;
- Tue,  5 Jul 2022 18:52:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1657047143;
- bh=z07d3tWCKO2PfBMX5iSdt+wsSGLf1g86UPV/UNCk/p8=;
- h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=seMwPtb/+zKHmTc5VW84T6lNXiB3jKym3rlwZHR8mWiFd+ADQgJM1BWsyTxXQAJvX
- XFNPSMA9mQjmjHXOtvFelTJl7iR2VxyuKHHv5xyXg6OnsWWn66+Mb7Ij5ZA/yXkdt/
- SbEYsaN/5xc1uYTFtrNguXV8tlme/rKt0ea4drExUuVPan1YKbwSQ4e+wLeqifefhA
- hSVIJopLc437HG1Nu19P2sFmupe6Nlojs/jMzyQYSbQCUQ8PtUk5SRpJcu9zODSbzP
- ovDeVjyI0o1pRVMdj9gzFJ9+p2oJcok3/N6Crs9/qUfYrbmOxWXf2Eal8DN6YGGhI5
- 6uN8tbawM5Big==
-From: Mark Brown <broonie@kernel.org>
-To: Liam Girdwood <lgirdwood@gmail.com>, Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
-In-Reply-To: <20220705092645.101343-1-u.kleine-koenig@pengutronix.de>
-References: <20220705092645.101343-1-u.kleine-koenig@pengutronix.de>
-Subject: Re: [PATCH] ASoC: xilinx: Suppress second error message about reset
- failure in .remove()
-Message-Id: <165704714203.1050281.1377470823499304869.b4-ty@kernel.org>
-Date: Tue, 05 Jul 2022 19:52:22 +0100
+ dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
+ header.b="AJW8PNgt"
+Received: by mail-yb1-xb2f.google.com with SMTP id 76so7910230ybd.0
+ for <alsa-devel@alsa-project.org>; Tue, 05 Jul 2022 12:05:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
+ h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+ :cc; bh=Wk3DM317Ts86B0YftrStlYUZ4gz4TN2yIrO1HE5SXl4=;
+ b=AJW8PNgt3MYe/AxNWntixYEyUSSq5JjLx/5UzSNlKMvoDQ08DKKJSIJMcV7hoU+zbW
+ NYqzNsJK1J/CVBQZ7lhFDmv2CmJLT9IKOCdUSfQ8ccK1TdwiuKmq0muvLKoOvnjVVsXt
+ 4QnyHGecqlgD8g0RLbvnFQv9AiivRVRLanBKV2wgf5Fd0Kda4pX4OxN043PvSQ7FH3AU
+ v5NIyDN8HP3D8wjR4LF72vIlw6rZ1s7ZXk64bahLHRC6IWQwguOY4E/xO0EpF1Qov6SO
+ 78likgj10byap+eWOWBDWQpjvl2oZJm2EqdXzRMb7VwpUnNh/eljY9IDsEbxj8gmByjJ
+ DdBA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc;
+ bh=Wk3DM317Ts86B0YftrStlYUZ4gz4TN2yIrO1HE5SXl4=;
+ b=SntOoe/AGuaP8VJPK6p67fMREmRuDDqoI3bbhcdyaXeiq0hrn28lB+dapJm77YJ6jK
+ arNf5RamFI0xk+MsBGN+JlAwvXFDBXPjBx35t35ZBeoddxppuXA2gyLC4Ps0TbsoJgvL
+ SZrQSZG4q6bPLWSnBZEcKbISraoMBgYJ4aSsTlBMxPvwh0KayfogsEUuyzonKyyCthxM
+ 4YmhlHxJBb787bvTCTr8wuPA4kcich8ahrr8WhnGT7vXjUEghEnOS8KTfyN44eNko4wK
+ 3ykPJqG/ZbLUE6vyNYm41TVSA2sgjlRYXnBN3c+cVT6pu4gbcgfPlYVIeS+0Jq4wF7vX
+ Klwg==
+X-Gm-Message-State: AJIora9K1/mn4ZlSeDusmXnPnNmaWnK8nhLTWHtp7jIaYsO/YcMXHhn+
+ 0cAKQcRUFTIMdvhfeab29QgGfh4Imtu3ftk5MSg=
+X-Google-Smtp-Source: AGRyM1s2Sd4IFAjGDPznLJLfpZnMRgUbI3cKO3MrAuHWwKFMdU/ubcvbnJzWQUHHrKNFbCGEuuydrijbIkdEQkXxKm4=
+X-Received: by 2002:a05:6902:c4:b0:64b:4677:331b with SMTP id
+ i4-20020a05690200c400b0064b4677331bmr39416609ybs.93.1657047935999; Tue, 05
+ Jul 2022 12:05:35 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-Cc: alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org,
- kernel@pengutronix.de, michal.simek@xilinx.com
+References: <20220630150135.1799535-1-sbinding@opensource.cirrus.com>
+ <20220630150135.1799535-2-sbinding@opensource.cirrus.com>
+In-Reply-To: <20220630150135.1799535-2-sbinding@opensource.cirrus.com>
+From: Andy Shevchenko <andy.shevchenko@gmail.com>
+Date: Tue, 5 Jul 2022 21:04:59 +0200
+Message-ID: <CAHp75VfXwDAwwmzbcx4g1uEuzhzMJ31K1bsTrwYFZGbz3tLMBw@mail.gmail.com>
+Subject: Re: [PATCH v5 1/2] ACPI: utils: Add api to read _SUB from ACPI
+To: Stefan Binding <sbinding@opensource.cirrus.com>
+Content-Type: text/plain; charset="UTF-8"
+Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>,
+ "Rafael J . Wysocki" <rafael@kernel.org>, patches@opensource.cirrus.com,
+ Liam Girdwood <lgirdwood@gmail.com>,
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+ ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+ Mark Brown <broonie@kernel.org>, Len Brown <lenb@kernel.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -81,40 +95,32 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Tue, 5 Jul 2022 11:26:45 +0200, Uwe Kleine-König wrote:
-> Returning an error value in a platform remove callback results in an error
-> message being emitted by the platform core, but otherwise it doesn't make
-> a difference. If ret is != 0, there is already an error message and another
-> very generic doesn't add any value, so return 0 unconditionally.
-> 
-> This is a preparation for making platform remove callbacks return void.
-> 
-> [...]
+On Thu, Jun 30, 2022 at 5:17 PM Stefan Binding
+<sbinding@opensource.cirrus.com> wrote:
+>
+> Add a wrapper function to read the _SUB string from ACPI.
 
-Applied to
+...
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+> +       if (obj->type == ACPI_TYPE_STRING) {
+> +               if (strlen(obj->string.pointer) < ACPI_MAX_SUB_BUF_SIZE &&
+> +                   strlen(obj->string.pointer) > 0) {
+> +                       sub = kstrdup(obj->string.pointer, GFP_KERNEL);
+> +                       if (!sub)
+> +                               sub = ERR_PTR(-ENOMEM);
+> +               } else {
+> +                       acpi_handle_err(handle, "ACPI _SUB Length %zu is Invalid\n",
+> +                                       strlen(obj->string.pointer));
 
-Thanks!
+Three times to evaluate strlen()... Can we do better, please?
 
-[1/1] ASoC: xilinx: Suppress second error message about reset failure in .remove()
-      commit: 275cc7f5bd6f60565672ce339505b77fd47a8157
+> +                       sub = ERR_PTR(-EINVAL);
+> +               }
+> +       } else {
+> +               acpi_handle_warn(handle, "Warning ACPI _SUB did not return a string\n");
+> +               sub = ERR_PTR(-EINVAL);
+> +       }
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
+-- 
+With Best Regards,
+Andy Shevchenko
