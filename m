@@ -4,85 +4,174 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3F0FECCA47B
-	for <alsa-devel@archiver.kernel.org>; Tue,  5 Jul 2022 12:00:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 08307C43334
+	for <alsa-devel@archiver.kernel.org>; Tue,  5 Jul 2022 12:03:51 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 5F9CB16EC;
-	Tue,  5 Jul 2022 13:59:20 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5F9CB16EC
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3026716CA;
+	Tue,  5 Jul 2022 14:02:52 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3026716CA
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1657022410;
-	bh=95LY5+qJGtghE+KPUxRvTlrikxpyhWepoRD0B1kqI0M=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	s=default; t=1657022624;
+	bh=gCkQYT6nXowoXv9bKzb0aaLlc49SqaCoPZz+tDnFXzo=;
+	h=Date:Subject:To:References:From:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=oIKLIssviwlwoZziTo8hz3qC1/TqBg4y0vx7DsCrpljpgJGjXmeIsCCjSwvRWbqBM
-	 QJAunyF2nNeP6BZjrg6q1GP5BmHbGjoz4+Ck2sE53Gte/mzcYGllqSA0Ha2Pj/uNd2
-	 bwiym5/XQTjgW+t2XkkfhOZ71pdz+L0aGEWycgt4=
+	b=OyMeezwoWodyAwfA7/SY14M30QCrIrqZzaarHl1ce0fFzDHqV7LmeI0kM3D+V8TY1
+	 c/j+D6QW4NU/c5ESwmVkFQhDX9Fw9NiO5DJGNyZCYcTPjH/5X6i5XgVN62SkiogqMG
+	 2DxQ61f3M5OVeq0W8ykFOyXgDDXbKYiLyXWgDedw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 03E16F80515;
-	Tue,  5 Jul 2022 13:58:48 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id E7237F80153;
+	Tue,  5 Jul 2022 14:02:51 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 830D9F8015B; Tue,  5 Jul 2022 12:36:41 +0200 (CEST)
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de
- [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+ id 1E728F8015B; Tue,  5 Jul 2022 14:02:51 +0200 (CEST)
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id C646AF8012A
- for <alsa-devel@alsa-project.org>; Tue,  5 Jul 2022 12:36:35 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C646AF8012A
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
- by metis.ext.pengutronix.de with esmtps
- (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92)
- (envelope-from <ukl@pengutronix.de>)
- id 1o8fuq-0001LC-19; Tue, 05 Jul 2022 12:36:24 +0200
-Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
- by drehscheibe.grey.stw.pengutronix.de with esmtp (Exim 4.94.2)
- (envelope-from <ukl@pengutronix.de>)
- id 1o8fue-004XxA-J7; Tue, 05 Jul 2022 12:36:16 +0200
-Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.94.2)
- (envelope-from <ukl@pengutronix.de>)
- id 1o8fuh-0038F6-8t; Tue, 05 Jul 2022 12:36:15 +0200
-Date: Tue, 5 Jul 2022 12:36:15 +0200
-From: Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To: Jean Delvare <jdelvare@suse.de>
-Subject: Re: [PATCH 6/6] i2c: Make remove callback return void
-Message-ID: <20220705103615.ceeq7rku53x743ps@pengutronix.de>
-References: <20220628140313.74984-1-u.kleine-koenig@pengutronix.de>
- <20220628140313.74984-7-u.kleine-koenig@pengutronix.de>
- <20220705120852.049dc235@endymion.delvare>
+ by alsa1.perex.cz (Postfix) with ESMTPS id A1A19F80104
+ for <alsa-devel@alsa-project.org>; Tue,  5 Jul 2022 14:02:44 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A1A19F80104
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
+ header.b="nuxGRaJy"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+ d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+ t=1657022564; x=1688558564;
+ h=message-id:date:subject:to:cc:references:from:
+ in-reply-to:content-transfer-encoding:mime-version;
+ bh=gCkQYT6nXowoXv9bKzb0aaLlc49SqaCoPZz+tDnFXzo=;
+ b=nuxGRaJy53X8je2HBLf7uaXfUs2UydZMEz40e8nEEe/+VlZ9CSxGM55Q
+ Drp+Wa1gd+cmq9s4+6VRbhfm/dwMrDClexzW8eXSfJ73bf/F3S225uCvb
+ A95KdBFZ37S3vLBrZThot9VOozMCvdlYErLRI/jQs1HO6oj2UGY6S3c5+
+ NPDdY5fgwKPkEh1ljMW+Enhz8mt/dcBARK2iIcfl5FJO7Ep0wSzG282NP
+ dgZV/4YgahELF+mP7ifnJpGkK2bKglZ5NYU9HP3IVJafAQHWWD1urquIU
+ 3UUB94p/2DI937CjjSRw9S3k5XUMRSPF1ChTsUn6HASQ5BoufkXRGVrc0 w==;
+X-IronPort-AV: E=McAfee;i="6400,9594,10398"; a="284066973"
+X-IronPort-AV: E=Sophos;i="5.92,245,1650956400"; d="scan'208";a="284066973"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+ by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 05 Jul 2022 05:02:08 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.92,245,1650956400"; d="scan'208";a="567587745"
+Received: from fmsmsx605.amr.corp.intel.com ([10.18.126.85])
+ by orsmga006.jf.intel.com with ESMTP; 05 Jul 2022 05:02:06 -0700
+Received: from fmsmsx602.amr.corp.intel.com (10.18.126.82) by
+ fmsmsx605.amr.corp.intel.com (10.18.126.85) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.27; Tue, 5 Jul 2022 05:02:05 -0700
+Received: from FMSEDG603.ED.cps.intel.com (10.1.192.133) by
+ fmsmsx602.amr.corp.intel.com (10.18.126.82) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.27 via Frontend Transport; Tue, 5 Jul 2022 05:02:05 -0700
+Received: from NAM10-DM6-obe.outbound.protection.outlook.com (104.47.58.101)
+ by edgegateway.intel.com (192.55.55.68) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2308.27; Tue, 5 Jul 2022 05:02:05 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=IeP6imMC7FHHBow+JmbQMh8oO5xo6BBjQDCUseZ7a9LMDm5n7eDDSJS1ecqYvYsSQi1XZOGGjmyEf6CX+9Ut75wKXSR2A3Vq2rhT/UpY6zykKdsGsNZ2cT/Ie2tO1wM450qEuLZAvj96ypMXOGWmhNiMjsDjszLcXKjxwljmEsO7RmRea8EHkHnW35tPP869mWtkn9UxtOQEesW9gCqXCXQYLWUAPbmkHcFof2QzEtcsHGyxODg/l31t7qwiUyvGir44ATFyzOyz991FtZmyYYQJeAr/6n3WqYeODkb/r3l1K4+nEGBvPdjNlx4azwcUMcTxTnHMsQz3+u/Lf38Rcg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=bYvlX8utYe1JbilHK05OzlopbhRWnq6+WKMJ8ImxvZ8=;
+ b=bvF0uffpMBJa7M8o6JpEkm8lXah8VqL8QOdhsdX1muCC3fagU+bJuoqIz8/VchVIghF5Uix3Z60AnzJK8VzAImcoxI9vObPOA4XDAOnEJux6b7l5zARXhdcDJrt8swmi4muEpptP+GrCsg1ShAR5uWgZzUVrzHRUE4GI9oAuJa4SfCfpisUbP8sYlTzzNLI/K4KzClRYXsEw3IblM7yNbi9lCHF+nhhE44zcczzqXAuCQEcF2mcGxUYNNk7A826kEwL+ncxlFYzGL2Br6KS/78rJlw6b3YTnH0W7TyumRJoGH9DfY8UBtUODgMZ45RsN91stsO+RS/HCgxFZBugKlg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from DS0PR11MB6375.namprd11.prod.outlook.com (2603:10b6:8:c9::21) by
+ MN2PR11MB4317.namprd11.prod.outlook.com (2603:10b6:208:179::33) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5395.15; Tue, 5 Jul
+ 2022 12:02:03 +0000
+Received: from DS0PR11MB6375.namprd11.prod.outlook.com
+ ([fe80::8b5:ae20:1c12:421b]) by DS0PR11MB6375.namprd11.prod.outlook.com
+ ([fe80::8b5:ae20:1c12:421b%6]) with mapi id 15.20.5395.021; Tue, 5 Jul 2022
+ 12:02:03 +0000
+Message-ID: <f0deca9d-3089-a84e-17bc-fe12587771a8@intel.com>
+Date: Tue, 5 Jul 2022 14:01:50 +0200
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Firefox/91.0 Thunderbird/91.10.0
+Subject: Re: [PATCH v2 02/14] ASoC: codecs: Add HD-Audio codec driver
+Content-Language: en-US
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+References: <20220511162403.3987658-1-cezary.rojewski@intel.com>
+ <20220511162403.3987658-3-cezary.rojewski@intel.com>
+ <alpine.DEB.2.22.394.2207051218200.513966@ramsan.of.borg>
+From: Cezary Rojewski <cezary.rojewski@intel.com>
+In-Reply-To: <alpine.DEB.2.22.394.2207051218200.513966@ramsan.of.borg>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: AM5PR0502CA0012.eurprd05.prod.outlook.com
+ (2603:10a6:203:91::22) To DS0PR11MB6375.namprd11.prod.outlook.com
+ (2603:10b6:8:c9::21)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature"; boundary="gut2agzhpaayxotv"
-Content-Disposition: inline
-In-Reply-To: <20220705120852.049dc235@endymion.delvare>
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de);
- SAEximRunCond expanded to false
-X-PTX-Original-Recipient: alsa-devel@alsa-project.org
-X-Mailman-Approved-At: Tue, 05 Jul 2022 13:58:46 +0200
-Cc: alsa-devel@alsa-project.org, linux-pwm@vger.kernel.org,
- linux-iio@vger.kernel.org, linux-fbdev@vger.kernel.org,
- dri-devel@lists.freedesktop.org, platform-driver-x86@vger.kernel.org,
- linux-mtd@lists.infradead.org, linux-i2c@vger.kernel.org,
- Guenter Roeck <groeck@chromium.org>, linux-stm32@st-md-mailman.stormreply.com,
- linux-leds@vger.kernel.org, linux-rtc@vger.kernel.org,
- chrome-platform@lists.linux.dev, linux-staging@lists.linux.dev,
- kasan-dev@googlegroups.com, linux-clk@vger.kernel.org,
- linux-serial@vger.kernel.org, linux-input@vger.kernel.org,
- linux-media@vger.kernel.org, devicetree@vger.kernel.org,
- linux-watchdog@vger.kernel.org, linux-pm@vger.kernel.org,
- acpi4asus-user@lists.sourceforge.net, linux-gpio@vger.kernel.org,
- linux-mediatek@lists.infradead.org, linux-rpi-kernel@lists.infradead.org,
- openipmi-developer@lists.sourceforge.net, linux-omap@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, linux-hwmon@vger.kernel.org,
- patches@opensource.cirrus.com, linux-usb@vger.kernel.org,
- Wolfram Sang <wsa@kernel.org>, linux-crypto@vger.kernel.org,
- netdev@vger.kernel.org, linux-integrity@vger.kernel.org,
- linuxppc-dev@lists.ozlabs.org
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 75e72a2a-29fb-4467-8ca4-08da5e7e2cbe
+X-MS-TrafficTypeDiagnostic: MN2PR11MB4317:EE_
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: Tsb6lvWZ/eeyXEc7NW27xsHwhZykEzfZm1qy6SEfdhiUZWbX2NBRV5HOkq/DSrOm3QzeTsfkinFsUSqDES2+C7qHFIYaa3BYE8KAbhLj9FKGPWZxpwDuCx+eZ4k8Mr0gXAzAs2+h9sxxarYqA4tBWzN5A3FOeCSl/4JiZBb87yKnq6jJFG9CRj5CnL+zKm3imt2J5uht1u0YkuO6hZy0nrPS8MROTrLtChCS4Csml4bSNrjkN3qAiYO3peMEQ0AbsPMh1cl8DUp8DkdY9gHnj1xVrbM0CmOQWYlHCeZrzmbkpxLn4wHAJxB9Ph0VeJfGCaBAmUJXMfkunkvIuX7qO43UChS1Ys3rUapFIRU3SDjBwMVCdY/5QR7rLCgEJ/0p8CfDHH2nDaa1PCfnWsdGKhF0f8i4gPqyfGEFXc3CXbpANtCqMMpr+c+NtVCmBzC2VwYkon3ULZgfQ0JqnDiucvMTpPZdcLL3IiZLa9CJ+FDCqO4mCK72ud0ZjNVBo+nzTevU350jBr0ChpRYqFcUioBLl8o20JksqwLgbKohBAMnOc0lRFrHqrOgMwgsL5asYcV1eb+g81NCAXyA4dcuKA8tkuwH0vvlz2/JkJvg3n47g/Av9D4v96g6RCBzK6Pqt5MDfuKyr794gfE8BQzUx0JHktZ9h2fZ5mCqjI7kuBL9M264HGHULEe9RsN1lT9EZAYZ1oTs7dsr8cTGXeiMwzKcOqKIG7StB+6tnPR2lFwXxkg/49qOtpoKcc682F3LV+aKRPdOqb1Yw3K7fv6MVnVvdU//TtB4MYVTdPGpt6Go9Q5eWg3oIpS7Qt8ZoPCiuFjOmkyR7bjl/Rre8qyWWA==
+X-Forefront-Antispam-Report: CIP:255.255.255.255; CTRY:; LANG:en; SCL:1; SRV:;
+ IPV:NLI; SFV:NSPM; H:DS0PR11MB6375.namprd11.prod.outlook.com; PTR:; CAT:NONE;
+ SFS:(13230016)(39860400002)(396003)(376002)(346002)(136003)(366004)(8936002)(86362001)(4326008)(66556008)(66476007)(6916009)(8676002)(31696002)(316002)(66946007)(186003)(38100700002)(2616005)(41300700001)(82960400001)(478600001)(6666004)(6486002)(6506007)(26005)(53546011)(6512007)(5660300002)(44832011)(36756003)(2906002)(7416002)(31686004)(43740500002)(45980500001);
+ DIR:OUT; SFP:1102; 
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?WnRLdlhja25KSTlXVWQxK2hiV1J4elRZSU5EWFUzemFrV3dPQzE1dS80ZklB?=
+ =?utf-8?B?akRzc3ppcWllVGRjdjF1MTlWeGxZa2ltckVkWkphNTJBNFB5UU0vb292MzJT?=
+ =?utf-8?B?U1BvSjg2NFNrTUJra0M3TkpGOXBEZkFVVFRVM1ZRYWpUMUFzTW91UExFaHpY?=
+ =?utf-8?B?WU90MHJGT2p6NXBKOGNKQncrNmtFV2hmc3Z1WmhTRTZ5V2VLTlNiK2tpL3Fj?=
+ =?utf-8?B?c1plNkc5WDdTUTQ2WnMzZkRrRHZBcDA3bk9NWGlMQURucWEyK29ibDFTWjVo?=
+ =?utf-8?B?bE01dWdXTkR1RVM0bXdqV1N4cTlBenhRUXlUOENIeG0zUmJ1bTV0RWhsQTJT?=
+ =?utf-8?B?cXp4NEZvYzFNV3NFclRFeldMeG5Hd1hQWnVEak5jL2lMc05WclBuVml3dVht?=
+ =?utf-8?B?bC9aQktWenl5em1LT0RSQjZlN2hLUy9XaHlMRHlOblc1NG5jYzR0ZGY0QU9W?=
+ =?utf-8?B?MFg2N0NFbFo0Yms3dlpyUWJtcm4vSW54ZC8rMjk3VEdiTVloNitveDFJdVFV?=
+ =?utf-8?B?czN0N3VHYncxZXZvMlVydFFCeklSdUkvRjhERkhaN3B6T0JoRk4vRWoyeUg0?=
+ =?utf-8?B?NXdKTDVuRHZpTmFiQkZ3clU1QUV0Z3RIb0N2Nnprdk1aZTFwYk82RTZpRy9U?=
+ =?utf-8?B?UXhIa2kyK01yck9hN0Z5WnVoTjh2NWQ3b0lmRnBrazJuU1NLYU9uZHFtdGtB?=
+ =?utf-8?B?d3dEc3NDU0p2K1psRDBYc2xWSDM3L1h4N3M2TEFoUGZYN3lSVmtONGg3VGNv?=
+ =?utf-8?B?OFRicHEvZ1BTVDNzTWhOOUhVS0tDZkJMVzl6b0YveUpUZmdpZHV2M2xpTnBn?=
+ =?utf-8?B?dzJyMldMSTNkZVVyMndKeGNaNThKZDA2Zlo0cnRkc3hVRzVhQ1dsT1BtYlVX?=
+ =?utf-8?B?YStDS25XL1d0eWFheVRnb0VzamxPeXhuMDZ5Sm43a2Y3Tks1MFczL21Ya2F4?=
+ =?utf-8?B?aUIramkvQWlWNDJWcUQvSE9FMm93dTkxbDRJU2hZZWovSytWeVAzSXNtellz?=
+ =?utf-8?B?YUJYajlWSCtmL2lHVExLWk4rdFFFNWU0eUY1MmhlRHc3N2RVZHlxUFNMYmkw?=
+ =?utf-8?B?QjBhVWdrSXE4cVFMSmxNVWVVOUJvQWhhZ1FUQmZDY0cxSVEvS2FPWks2dTAr?=
+ =?utf-8?B?TVdXWWUyMEFrbXJ6V0wyZ1NwMEhGaVU4S2c3dUJnYUtwU0EvdEh2b29GZGFD?=
+ =?utf-8?B?amd1SWdiQ3c3eUtubjNVT0ZscC9mamt3U2tZem0rR2htcEdyWC9SZGM4Mllw?=
+ =?utf-8?B?Um52blR0NGRPMXk5NG9MSVVwbW5tMzBwcXpQaWNqNTdRaWw4Rm55REcwRm1i?=
+ =?utf-8?B?Q0daLzRmeFNXL1FaajlPUWNPeHYzdTloekxVT05pcm9YdGMwU3Yxc3hEazY2?=
+ =?utf-8?B?L0Q4b1ZUQWhpR2ZnbklmeTFLeERlYTB1VWxnMEo4NUNmZzhOZzkvdTBvY1Ba?=
+ =?utf-8?B?aEpMcnBTTkV5cmkvNDBWTEVERmdYcm9pREc4LzFIOEUrVENDYlc4YzU2dmIz?=
+ =?utf-8?B?ZXhvaG8zOFBERUtvcmlHTEVmQUJycDdjeVlYUWZERkVLNWlnUEo2U1FOVmtz?=
+ =?utf-8?B?SC9nR25nUVY0Smk4MWNqajROMVRpOU9meUdGTEdGRUNRcElRYzUzTmkvRERE?=
+ =?utf-8?B?M2tJL05WK1FubmcvbHEyNlpoYVMweXFGaFdzc1RPMGxLd24yZ0ZFWHJGUjBI?=
+ =?utf-8?B?S2czcVdUbEExSVZaQWoyT1cyTUMxc1NWd3NzSk9TU2JaYXpySTk4cDFmMVMy?=
+ =?utf-8?B?M05xRzVyYVBpalZSK1JKZGhlQUdGMFZ4NnZrdDBCQi8zS1JwcURMMUVod2JC?=
+ =?utf-8?B?a0dnQ3hSQ1Q1bHJ4aWNBa2Fmdnh0YlV5Ykk0cEg4MTNmczlkVTJ4WXg1dGZN?=
+ =?utf-8?B?VGVpdDB0WWJzRUhoQ2pSWldVcklybWx0aC9LVUJNYThaRlUwTnZpWlFsOTVo?=
+ =?utf-8?B?L2xSNUJtNU1HVkpaS0pseUZ1dVBqbE1wRDU0TW1BK2pvR2xOV2wxMlk5Yk51?=
+ =?utf-8?B?SytkN1BTMElxOVQ5WXBRSnliNG1zd09aQ2dRQmZsQjRJajNRWmY0Q21HbkVu?=
+ =?utf-8?B?OXpIcVlFVXpRNE9FY3ZvbjBVTVJybXg0dW13WHhad3lCaURvMk9hTGFzVnNV?=
+ =?utf-8?B?Z0p4SE0yc3VMQjRCYzg3ZWpoS0UrUmRNM09RaVNacW9HU3NPR3dpc1hodXYw?=
+ =?utf-8?B?aHc9PQ==?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 75e72a2a-29fb-4467-8ca4-08da5e7e2cbe
+X-MS-Exchange-CrossTenant-AuthSource: DS0PR11MB6375.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 05 Jul 2022 12:02:03.8111 (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 2WgHFCgFs5aKNiWaUco6Al/GsKob82EkG2/ZzAoQuvG7yRGx+RkD4CZud6hJ2rbb7koWQfADAPJP+mamIIPpkHKlG3D33yUcInTztquxcdY=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR11MB4317
+X-OriginatorOrg: intel.com
+Cc: alsa-devel@alsa-project.org, upstream@semihalf.com,
+ kai.vehmanen@linux.intel.com, harshapriya.n@intel.com,
+ linux-kernel@vger.kernel.org, rad@semihalf.com,
+ pierre-louis.bossart@linux.intel.com, tiwai@suse.com, hdegoede@redhat.com,
+ broonie@kernel.org, amadeuszx.slawinski@linux.intel.com,
+ cujomalainey@chromium.org, lma@semihalf.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -98,90 +187,64 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+On 2022-07-05 12:20 PM, Geert Uytterhoeven wrote:
+>      Hi Cezary,
+> 
+> On Wed, 11 May 2022, Cezary Rojewski wrote:
 
---gut2agzhpaayxotv
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+...
 
-On Tue, Jul 05, 2022 at 12:08:52PM +0200, Jean Delvare wrote:
-> On Tue, 28 Jun 2022 16:03:12 +0200, Uwe Kleine-K=F6nig wrote:
-> > From: Uwe Kleine-K=F6nig <uwe@kleine-koenig.org>
-> >=20
-> > The value returned by an i2c driver's remove function is mostly ignored.
-> > (Only an error message is printed if the value is non-zero that the
-> > error is ignored.)
-> >=20
-> > So change the prototype of the remove function to return no value. This
-> > way driver authors are not tempted to assume that passing an error to
-> > the upper layer is a good idea. All drivers are adapted accordingly.
-> > There is no intended change of behaviour, all callbacks were prepared to
-> > return 0 before.
-> >=20
-> > Signed-off-by: Uwe Kleine-K=F6nig <u.kleine-koenig@pengutronix.de>
-> > ---
->=20
-> That's a huge change for a relatively small benefit, but if this is
-> approved by the I2C core maintainer then fine with me. For:
+>>
+>> Relation with hdac_hda:
+>>
+>> Addition of parallel solution is motivated by behavioral differences
+>> between hdac_hda.c and its legacy equivalent found in sound/pci/hda
+>> e.g.: lack of dynamic, based on codec capabilities, resource allocation
+>> and high cost of removing such differences on actively used targets.
+>> Major goal of codec driver presented here is to follow HD-Audio legacy
+>> behavior in 1:1 fashion by becoming a wrapper. Doing so increases code
+>> coverage of the legacy code and reduces the maintenance cost for both
+>> solutions.
+>>
+>> Signed-off-by: Cezary Rojewski <cezary.rojewski@intel.com>
+> 
+> Thanks for your patch, which is now commit b5df2a7dca1cc6c6 ("ASoC:
+> codecs: Add HD-Audio codec driver") in sound-asoc/for-next.
+> 
+>> --- a/sound/soc/codecs/Kconfig
+>> +++ b/sound/soc/codecs/Kconfig
+>> @@ -937,6 +937,16 @@ config SND_SOC_HDAC_HDA
+>>     tristate
+>>     select SND_HDA
+>>
+>> +config SND_SOC_HDA
+>> +    tristate "HD-Audio codec driver"
+>> +    select SND_HDA_EXT_CORE
+>> +    select SND_HDA
+> 
+> I am wondering if this needs a platform dependency?
+> Or perhaps this symbol should be made invisible, as it is selected by
+> SND_SOC_INTEL_AVS_MACH_HDAUDIO?  Are there any other users?
 
-Agreed, it's huge. The benefit isn't really measureable, the motivation
-is to improve the situation for driver authors who with the change
-cannot make wrong assumptions about what to return in .remove(). During
-the preparation this uncovered a few bugs. See for example
-bbc126ae381cf0a27822c1f822d0aeed74cc40d9.
 
-> >  drivers/hwmon/adc128d818.c                                | 4 +---
-> >  drivers/hwmon/adt7470.c                                   | 3 +--
-> >  drivers/hwmon/asb100.c                                    | 6 ++----
-> >  drivers/hwmon/asc7621.c                                   | 4 +---
-> >  drivers/hwmon/dme1737.c                                   | 4 +---
-> >  drivers/hwmon/f75375s.c                                   | 5 ++---
-> >  drivers/hwmon/fschmd.c                                    | 6 ++----
-> >  drivers/hwmon/ftsteutates.c                               | 3 +--
-> >  drivers/hwmon/ina209.c                                    | 4 +---
-> >  drivers/hwmon/ina3221.c                                   | 4 +---
-> >  drivers/hwmon/jc42.c                                      | 3 +--
-> >  drivers/hwmon/mcp3021.c                                   | 4 +---
-> >  drivers/hwmon/occ/p8_i2c.c                                | 4 +---
-> >  drivers/hwmon/pcf8591.c                                   | 3 +--
-> >  drivers/hwmon/smm665.c                                    | 3 +--
-> >  drivers/hwmon/tps23861.c                                  | 4 +---
-> >  drivers/hwmon/w83781d.c                                   | 4 +---
-> >  drivers/hwmon/w83791d.c                                   | 6 ++----
-> >  drivers/hwmon/w83792d.c                                   | 6 ++----
-> >  drivers/hwmon/w83793.c                                    | 6 ++----
-> >  drivers/hwmon/w83795.c                                    | 4 +---
-> >  drivers/hwmon/w83l785ts.c                                 | 6 ++----
-> >  drivers/i2c/i2c-core-base.c                               | 6 +-----
-> >  drivers/i2c/i2c-slave-eeprom.c                            | 4 +---
-> >  drivers/i2c/i2c-slave-testunit.c                          | 3 +--
-> >  drivers/i2c/i2c-smbus.c                                   | 3 +--
-> >  drivers/i2c/muxes/i2c-mux-ltc4306.c                       | 4 +---
-> >  drivers/i2c/muxes/i2c-mux-pca9541.c                       | 3 +--
-> >  drivers/i2c/muxes/i2c-mux-pca954x.c                       | 3 +--
->=20
-> Reviewed-by: Jean Delvare <jdelvare@suse.de>
+Your feedback is much appreciated!
 
-Thanks
-Uwe
+So, this codec-driver - HDAudio codec driver to be strict - is _generic_ 
+i.e. works with any HDAudio codec type, be it Cirrus, Maxim, Conexant or 
+anything else.
 
---=20
-Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
-Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+It makes heavy use of HDAudio library found in sound/hda/ and re-uses a 
+lot of non-DSP HDAudio related code found in sound/pci/hda. It's 
+basically a wrapper for logic present in ALSA (sound/) so ASoC 
+(sound/soc/) users can have first class HDAudio codec support without us 
+duplicating the entire implementation.
 
---gut2agzhpaayxotv
-Content-Type: application/pgp-signature; name="signature.asc"
+Right now the only user is avs-driver found in sound/soc/intel/avs. By 
+design, any HDAudio bus driver in ASoC framework can make use of it 
+though. Because of that, we decided not to couple avs-driver and this 
+HDAudio codec driver tightly.
 
------BEGIN PGP SIGNATURE-----
 
-iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAmLEFBwACgkQwfwUeK3K
-7AkavggAgLmynakXX/rOF4Jwy2OuBXH29kecKqPd6xj4yHsu3ggy8kd/hlU4jJib
-vV0H9ioq69hhMqjme5AHJJsueLFi/t/iwuQwuWUKluCBBlx0RXBsVx8qxV7A0uWa
-mdKU3ApPaN7y0cS1jccdN7ydsL3H2ayzIwfQuNqx1G3P/uqXfkusV0fjwQ/rQct3
-qs4t2/QiHUd0tStlGw2eSKxp1z5KRrDMstK17fiZSsw/SYoMyldV8Ame6+gaxx0X
-e93FqM5jj67ovjD3jJanfOwI5vesu4+szu4GK6vHRWvpsieHsSeyS+GNgfM5oLA7
-iguZ0rauzy0je3hrHuKgp1maJ59ibQ==
-=fYiS
------END PGP SIGNATURE-----
+> Gr{oetje,eeting}s,
 
---gut2agzhpaayxotv--
+This made my day :) it's wonderful!
