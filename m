@@ -4,64 +4,65 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2915FCCA473
-	for <alsa-devel@archiver.kernel.org>; Wed,  6 Jul 2022 11:55:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id ECDABC43334
+	for <alsa-devel@archiver.kernel.org>; Wed,  6 Jul 2022 11:56:13 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 6A9DF16D5;
-	Wed,  6 Jul 2022 13:55:06 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6A9DF16D5
+	by alsa0.perex.cz (Postfix) with ESMTPS id 39F8A16EA;
+	Wed,  6 Jul 2022 13:55:22 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 39F8A16EA
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1657108556;
-	bh=0QRNt+1qf6ahxvwm4IA9D0yF6GEVpZjS+dnXOeTslDg=;
+	s=default; t=1657108572;
+	bh=bQ+aAZlbc5HXs25ux9Ak17W/MeBwcyWe5vefkvQKEpk=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=J+kjiRfUjDh9C5ePjTAjmxoV0ODjonAXJKDf4Rto2YfLPIx/peB8SYySIL+CbKody
-	 +EoCi28Z/CJPwVbf4SDkCUk5Knl2Z08zwbszi+bOSRGYEyFciY0p7FaK1RJC6Fa1Sb
-	 2/dAqpFBjHFeqMrXjQRuucugI2mwkyhNQEhrFgns=
+	b=kjzIGwvZ0GeePKaYiVAvS9jeoU7XbnwuWTUoKDvohDVN7T/1vLAXdQ4L+Ccq0yImd
+	 seZ9+Fcff0qAobG5Mk2HdD3akgbt7ajlELWW6Nzh607hnAVDW9xHPHr43czDUbuwQU
+	 SXOXJTWP1+dKIDaB+y00bouQR+77PGfnZIQaGvgw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 53B20F80567;
+	by alsa1.perex.cz (Postfix) with ESMTP id C3240F8057A;
 	Wed,  6 Jul 2022 13:52:57 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 60F8CF80557; Wed,  6 Jul 2022 13:52:54 +0200 (CEST)
+ id C4B69F80553; Wed,  6 Jul 2022 13:52:54 +0200 (CEST)
 Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 86381F8053A
- for <alsa-devel@alsa-project.org>; Wed,  6 Jul 2022 13:52:46 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 86381F8053A
+ by alsa1.perex.cz (Postfix) with ESMTPS id 0A487F80551
+ for <alsa-devel@alsa-project.org>; Wed,  6 Jul 2022 13:52:51 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0A487F80551
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="mFP/GQDk"
+ header.b="kbxgKL3n"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1657108369; x=1688644369;
+ t=1657108373; x=1688644373;
  h=from:to:cc:subject:date:message-id:in-reply-to:
  references:mime-version:content-transfer-encoding;
- bh=0QRNt+1qf6ahxvwm4IA9D0yF6GEVpZjS+dnXOeTslDg=;
- b=mFP/GQDk5ArrATTH9YRwmAffOi/kRGn+wum9ygVnLILdQG45JeqfdGGN
- WEacB/tct7cFXneLtSjf1EG2cw6df48q7+2MCf6sElxaN9450Kw+i/op7
- oS71ryPaoFZz36GZDRpwPxQkny6LJZi7ilzHMXj+xqLT27HH5x4HUX6zb
- +eOkj2qZKP8jG+37S0Cq2lL7FbsItcUPSpRQrjmi8dXRYHe+r5K4UlcTS
- VyWmIMKFBpvWjh8CA/zQbR8MYfrRYR5HlxwAGUJXwjEAGKiX73nO8q0WB
- Hqnhcdo/DZYFmLMLkbUVhWudCItYXbrixgoUpnRlB1O3dOFPlCHOjSiCy A==;
-X-IronPort-AV: E=McAfee;i="6400,9594,10399"; a="370042626"
-X-IronPort-AV: E=Sophos;i="5.92,249,1650956400"; d="scan'208";a="370042626"
+ bh=bQ+aAZlbc5HXs25ux9Ak17W/MeBwcyWe5vefkvQKEpk=;
+ b=kbxgKL3nKrHBjPzq8gloKJdHz48SMRlshv6hOPdx3Cww20z0rvqUFR9o
+ CwSq6yQVuHo8Q1BPmSUEzHRiuZook4PzgRWb0uTEPH/qa19Dx1y9oTUwX
+ dCE5s3DHO2Ym5P1+ME2kOr5G+WJILjbfH70bShk5U+cFIP5m1aHoHUb7W
+ s0selGfjQZCqf3WXUl90FRqvjGBI82PgzwrcuHhwd3g86iCp8nOEmbEqk
+ YXUSezqTldMTD4tKqSz5BX8goL/3xxnbmQRmlvBRYsQ2C9W8IsXi8wrGt
+ BHS4/czX2Nhol6vM5bOxUc2bhdxg26O/A7nSYg/erIFWGxtYUOZpoPILw A==;
+X-IronPort-AV: E=McAfee;i="6400,9594,10399"; a="370042666"
+X-IronPort-AV: E=Sophos;i="5.92,249,1650956400"; d="scan'208";a="370042666"
 Received: from fmsmga005.fm.intel.com ([10.253.24.32])
  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 06 Jul 2022 04:52:43 -0700
+ 06 Jul 2022 04:52:51 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.92,249,1650956400"; d="scan'208";a="920136275"
+X-IronPort-AV: E=Sophos;i="5.92,249,1650956400"; d="scan'208";a="920136326"
 Received: from crojewsk-ctrl.igk.intel.com ([10.102.9.28])
- by fmsmga005.fm.intel.com with ESMTP; 06 Jul 2022 04:52:39 -0700
+ by fmsmga005.fm.intel.com with ESMTP; 06 Jul 2022 04:52:49 -0700
 From: Cezary Rojewski <cezary.rojewski@intel.com>
 To: alsa-devel@alsa-project.org,
 	tiwai@suse.com
-Subject: [PATCH 4/9] ALSA: hda: Fix put_device() inconsistency in error path
-Date: Wed,  6 Jul 2022 14:02:25 +0200
-Message-Id: <20220706120230.427296-5-cezary.rojewski@intel.com>
+Subject: [PATCH 9/9] ALSA: hda/realtek: Remove redundant init_hook() in
+ alc_default_init()
+Date: Wed,  6 Jul 2022 14:02:30 +0200
+Message-Id: <20220706120230.427296-10-cezary.rojewski@intel.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20220706120230.427296-1-cezary.rojewski@intel.com>
 References: <20220706120230.427296-1-cezary.rojewski@intel.com>
@@ -85,89 +86,27 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-AVS HDAudio bus driver does not tie with codec drivers tighly. Codec
-device and its respective driver cleanup procedures are split and may
-not occur one after the other. Device cleanup is performed only on
-snd_hdac_ext_bus_device_remove() i.e. it's the bus driver's
-responsibility. If codec component probing fails, put_device() found in
-snd_hda_codec_device_new() may lead to page fault. Relocate it to
-snd_hda_codec_new() to address the problem on ASoC side while keeping
-status quo for snd_hda_intel.
+snd_hda_gen_init() does that for every codec already.
 
 Signed-off-by: Cezary Rojewski <cezary.rojewski@intel.com>
 ---
- sound/pci/hda/hda_codec.c | 23 +++++++++++------------
- 1 file changed, 11 insertions(+), 12 deletions(-)
+ sound/pci/hda/patch_realtek.c | 3 ---
+ 1 file changed, 3 deletions(-)
 
-diff --git a/sound/pci/hda/hda_codec.c b/sound/pci/hda/hda_codec.c
-index 83d954ab056f..2381aced492f 100644
---- a/sound/pci/hda/hda_codec.c
-+++ b/sound/pci/hda/hda_codec.c
-@@ -949,6 +949,7 @@ int snd_hda_codec_new(struct hda_bus *bus, struct snd_card *card,
- 		      unsigned int codec_addr, struct hda_codec **codecp)
- {
- 	struct hda_codec *codec;
-+	int ret;
+diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+index f3ad454b3fbf..a8688025352d 100644
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -923,9 +923,6 @@ static int alc_init(struct hda_codec *codec)
+ 	if (is_s4_resume(codec))
+ 		alc_pre_init(codec);
  
- 	codec = snd_hda_codec_device_init(bus, codec_addr, "hdaudioC%dD%d",
- 					  card->number, codec_addr);
-@@ -956,7 +957,11 @@ int snd_hda_codec_new(struct hda_bus *bus, struct snd_card *card,
- 		return PTR_ERR(codec);
- 	*codecp = codec;
- 
--	return snd_hda_codec_device_new(bus, card, codec_addr, *codecp, true);
-+	ret = snd_hda_codec_device_new(bus, card, codec_addr, *codecp, true);
-+	if (ret)
-+		put_device(hda_codec_dev(*codecp));
-+
-+	return ret;
- }
- EXPORT_SYMBOL_GPL(snd_hda_codec_new);
- 
-@@ -1011,19 +1016,17 @@ int snd_hda_codec_device_new(struct hda_bus *bus, struct snd_card *card,
- 
- 	if (codec->bus->modelname) {
- 		codec->modelname = kstrdup(codec->bus->modelname, GFP_KERNEL);
--		if (!codec->modelname) {
--			err = -ENOMEM;
--			goto error;
--		}
-+		if (!codec->modelname)
-+			return -ENOMEM;
- 	}
- 
- 	fg = codec->core.afg ? codec->core.afg : codec->core.mfg;
- 	err = read_widget_caps(codec, fg);
- 	if (err < 0)
--		goto error;
-+		return err;
- 	err = read_pin_defaults(codec);
- 	if (err < 0)
--		goto error;
-+		return err;
- 
- 	/* power-up all before initialization */
- 	hda_set_power_state(codec, AC_PWRST_D0);
-@@ -1041,7 +1044,7 @@ int snd_hda_codec_device_new(struct hda_bus *bus, struct snd_card *card,
- 		/* ASoC features component management instead */
- 		err = snd_device_new(card, SNDRV_DEV_CODEC, codec, &dev_ops);
- 		if (err < 0)
--			goto error;
-+			return err;
- 	}
- 
- #ifdef CONFIG_PM
-@@ -1054,10 +1057,6 @@ int snd_hda_codec_device_new(struct hda_bus *bus, struct snd_card *card,
- #endif
- 
- 	return 0;
+-	if (spec->init_hook)
+-		spec->init_hook(codec);
 -
-- error:
--	put_device(hda_codec_dev(codec));
--	return err;
- }
- EXPORT_SYMBOL_GPL(snd_hda_codec_device_new);
- 
+ 	spec->gen.skip_verbs = 1; /* applied in below */
+ 	snd_hda_gen_init(codec);
+ 	alc_fix_pll(codec);
 -- 
 2.25.1
 
