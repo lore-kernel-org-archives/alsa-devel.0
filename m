@@ -4,69 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C8390C43334
-	for <alsa-devel@archiver.kernel.org>; Wed,  6 Jul 2022 11:55:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 20956C43334
+	for <alsa-devel@archiver.kernel.org>; Wed,  6 Jul 2022 11:55:28 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E7EB516C2;
-	Wed,  6 Jul 2022 13:54:23 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E7EB516C2
+	by alsa0.perex.cz (Postfix) with ESMTPS id 6E87D1696;
+	Wed,  6 Jul 2022 13:54:36 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6E87D1696
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1657108514;
-	bh=1eXT+G98E/o3gr3OosP9Y9JKjt6nvh8Gu8NXUG2kDOY=;
+	s=default; t=1657108526;
+	bh=SEjS9Eii0++oY3C8utx4IDlU6UrCPdIH13zix8eJYhE=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=bOygOzWsTB99adB+2NXZ9RWJxpWpDUNl9pn4InkW5IbNugf5LOk/88tiWx0RTV808
-	 yvy37sEzGkWm4xUnPzUVt2MP/oheXOwz267F+DNg1EEu8hjP5TsPL/s7P7tprdNdlE
-	 qnFQwWs1YOzcQfuA0aZBWmEX5shtoFzg8g2G7j0E=
+	b=iZjaZ6HbiZjR5+L1i6qPqDb6oD/KHHhv+rWC8+igAYVUHfelM+Phi+UGKqBAm5sR+
+	 LXv1PTO3hOIy8vpFXAP2gTdK0dv6QVJtNGL5axcUEB1AHtLemrWxAgzX1YyU5Pyd0I
+	 HoWmYqc1J6BoxA01YIAj/+nxQKFhkI6KeNA9gTEs=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 9ED50F8053A;
-	Wed,  6 Jul 2022 13:52:55 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 37C2AF8055B;
+	Wed,  6 Jul 2022 13:52:56 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 0340FF8055B; Wed,  6 Jul 2022 13:52:53 +0200 (CEST)
+ id 11A59F80552; Wed,  6 Jul 2022 13:52:52 +0200 (CEST)
 Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id B780AF80552
- for <alsa-devel@alsa-project.org>; Wed,  6 Jul 2022 13:52:49 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B780AF80552
+ by alsa1.perex.cz (Postfix) with ESMTPS id 033D9F80551
+ for <alsa-devel@alsa-project.org>; Wed,  6 Jul 2022 13:52:46 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 033D9F80551
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="MnrL2o9M"
+ header.b="Xim0cUxf"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
  t=1657108370; x=1688644370;
  h=from:to:cc:subject:date:message-id:in-reply-to:
  references:mime-version:content-transfer-encoding;
- bh=1eXT+G98E/o3gr3OosP9Y9JKjt6nvh8Gu8NXUG2kDOY=;
- b=MnrL2o9M4Q+A9ZAs3LGguGK9AjB0VfZvmqOJ/uVGICljzkRozhYOMSdm
- kHXvHh+dTlJWOzIv5GI3yaMvaCQgKSX7IUlZjtyJJo9URq4V0Gt8auIC6
- hg5Wy4cf1jwCvA9mgc4wRHFcEjl9rrZy3qcfjjAaUloTDmPrclDAdCYXu
- HuHMjc7ohVxBEE3yGxG1jOVfmMFENEjAv2xmtGSnpFpgQVTQUJ0pW+vNk
- xOog+eh/UDEhYIL9oCPmMm83lNfLxok02/ha+AevtTNBDQIiFoLa406X8
- CPMT5E5VMPlQbWmAh7WQx9tbbG7Er4mTuiYA2Ol0Cd74RpkyIXnu2hkuA w==;
-X-IronPort-AV: E=McAfee;i="6400,9594,10399"; a="370042649"
-X-IronPort-AV: E=Sophos;i="5.92,249,1650956400"; d="scan'208";a="370042649"
+ bh=SEjS9Eii0++oY3C8utx4IDlU6UrCPdIH13zix8eJYhE=;
+ b=Xim0cUxfMvnLjV0+a/C5Dl3/4rSq7v2fZwhFsTCLu/mM9yd+rzDSGWXY
+ AuJGUaAzb8HPojgdbXGdtO9zBmCBgh8eyo/P4uh5HW1rXpZlGvAB6UbU1
+ qS1ZiA+5RQ7cTmNtWUDww3SfvJkjY7Mu8HpLmichF4iaXEOy0S0h1BU5y
+ 0A1x7nYzUmX8ekDKHzmKYcrNLK7BpiTTzX/++CyYCqhFOqjzNeJ4EIsL9
+ 9zB2nZIkIe4+6hp7VTUHKkHPIP1fWhWlaXZEmIIMKFLSG8Zny6igL6VW4
+ 3BfDGw0qPA30EUuiRAK5b3pLlla/TetIWToCzpaGTUUdO3pNB1UxbQAzu g==;
+X-IronPort-AV: E=McAfee;i="6400,9594,10399"; a="370042645"
+X-IronPort-AV: E=Sophos;i="5.92,249,1650956400"; d="scan'208";a="370042645"
 Received: from fmsmga005.fm.intel.com ([10.253.24.32])
  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 06 Jul 2022 04:52:48 -0700
+ 06 Jul 2022 04:52:45 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.92,249,1650956400"; d="scan'208";a="920136306"
+X-IronPort-AV: E=Sophos;i="5.92,249,1650956400"; d="scan'208";a="920136299"
 Received: from crojewsk-ctrl.igk.intel.com ([10.102.9.28])
- by fmsmga005.fm.intel.com with ESMTP; 06 Jul 2022 04:52:46 -0700
+ by fmsmga005.fm.intel.com with ESMTP; 06 Jul 2022 04:52:43 -0700
 From: Cezary Rojewski <cezary.rojewski@intel.com>
 To: alsa-devel@alsa-project.org,
 	tiwai@suse.com
-Subject: [PATCH 7/9] ALSA: hda: Reset all SIE bits in INTCTL
-Date: Wed,  6 Jul 2022 14:02:28 +0200
-Message-Id: <20220706120230.427296-8-cezary.rojewski@intel.com>
+Subject: [PATCH 6/9] ALSA: hda: Fix page fault in snd_hda_codec_shutdown()
+Date: Wed,  6 Jul 2022 14:02:27 +0200
+Message-Id: <20220706120230.427296-7-cezary.rojewski@intel.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20220706120230.427296-1-cezary.rojewski@intel.com>
 References: <20220706120230.427296-1-cezary.rojewski@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Cc: Cezary Rojewski <cezary.rojewski@intel.com>,
  pierre-louis.bossart@linux.intel.com, hdegoede@redhat.com, broonie@kernel.org,
@@ -86,44 +85,97 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Amadeusz Sławiński <amadeuszx.slawinski@linux.intel.com>
+If early probe of HDAudio bus driver fails e.g.: due to missing
+firmware file, snd_hda_codec_shutdown() ends in manipulating
+uninitialized codec->pcm_list_head causing page fault.
 
-Old code resets SIE for up to 8 streams using byte accessor, but
-register is laid out in following way:
+Iinitialization of HDAudio codec in ASoC is split in two:
+- snd_hda_codec_device_init()
+- snd_hda_codec_device_new()
 
-31 GIE
-30 CIE
-29:x Reserved
-x-1:0 SIE
+snd_hda_codec_device_init() is called during probe_codecs() by HDAudio
+bus driver while snd_hda_codec_device_new() is called by
+codec-component's ->probe(). The second call will not happen until all
+components required by related sound card are present within the ASoC
+framework. With firmware failing to load during the PCI's deferred
+initialization i.e.: probe_work(), no platform components are ever
+registered. HDAudio codec enumeration is done at that point though, so
+the codec components became registered to ASoC framework, calling
+snd_hda_codec_device_init() in the process.
 
-If there is more than 8 streams, some of them may and up with enabled
-interrupts. To fix this just clear whole INTCTL register when disabling
-interrupts.
+Now, during platform reboot snd_hda_codec_shutdown() is called for every
+codec found on the HDAudio bus causing oops if any of them has not
+completed both of their initialization steps. Relocating field
+initialization fixes the issue.
 
-Signed-off-by: Amadeusz Sławiński <amadeuszx.slawinski@linux.intel.com>
 Signed-off-by: Cezary Rojewski <cezary.rojewski@intel.com>
 ---
- sound/hda/hdac_controller.c | 7 ++-----
- 1 file changed, 2 insertions(+), 5 deletions(-)
+ sound/pci/hda/hda_codec.c | 41 +++++++++++++++++++--------------------
+ 1 file changed, 20 insertions(+), 21 deletions(-)
 
-diff --git a/sound/hda/hdac_controller.c b/sound/hda/hdac_controller.c
-index f7bd6e2db085..9a60bfdb39ba 100644
---- a/sound/hda/hdac_controller.c
-+++ b/sound/hda/hdac_controller.c
-@@ -474,11 +474,8 @@ static void azx_int_disable(struct hdac_bus *bus)
- 	list_for_each_entry(azx_dev, &bus->stream_list, list)
- 		snd_hdac_stream_updateb(azx_dev, SD_CTL, SD_INT_MASK, 0);
+diff --git a/sound/pci/hda/hda_codec.c b/sound/pci/hda/hda_codec.c
+index 75e85bf58681..677d0a78f19c 100644
+--- a/sound/pci/hda/hda_codec.c
++++ b/sound/pci/hda/hda_codec.c
+@@ -930,8 +930,28 @@ snd_hda_codec_device_init(struct hda_bus *bus, unsigned int codec_addr,
+ 	}
  
--	/* disable SIE for all streams */
--	snd_hdac_chip_writeb(bus, INTCTL, 0);
--
--	/* disable controller CIE and GIE */
--	snd_hdac_chip_updatel(bus, INTCTL, AZX_INT_CTRL_EN | AZX_INT_GLOBAL_EN, 0);
-+	/* disable SIE for all streams & disable controller CIE and GIE */
-+	snd_hdac_chip_writel(bus, INTCTL, 0);
+ 	codec->bus = bus;
++	codec->depop_delay = -1;
++	codec->fixup_id = HDA_FIXUP_ID_NOT_SET;
++	codec->core.dev.release = snd_hda_codec_dev_release;
++	codec->core.exec_verb = codec_exec_verb;
+ 	codec->core.type = HDA_DEV_LEGACY;
+ 
++	mutex_init(&codec->spdif_mutex);
++	mutex_init(&codec->control_mutex);
++	snd_array_init(&codec->mixers, sizeof(struct hda_nid_item), 32);
++	snd_array_init(&codec->nids, sizeof(struct hda_nid_item), 32);
++	snd_array_init(&codec->init_pins, sizeof(struct hda_pincfg), 16);
++	snd_array_init(&codec->driver_pins, sizeof(struct hda_pincfg), 16);
++	snd_array_init(&codec->cvt_setups, sizeof(struct hda_cvt_setup), 8);
++	snd_array_init(&codec->spdif_out, sizeof(struct hda_spdif_out), 16);
++	snd_array_init(&codec->jacktbl, sizeof(struct hda_jack_tbl), 16);
++	snd_array_init(&codec->verbs, sizeof(struct hda_verb *), 8);
++	INIT_LIST_HEAD(&codec->conn_list);
++	INIT_LIST_HEAD(&codec->pcm_list_head);
++	INIT_DELAYED_WORK(&codec->jackpoll_work, hda_jackpoll_work);
++	refcount_set(&codec->pcm_ref, 1);
++	init_waitqueue_head(&codec->remove_sleep);
++
+ 	return codec;
  }
+ EXPORT_SYMBOL_GPL(snd_hda_codec_device_init);
+@@ -984,29 +1004,8 @@ int snd_hda_codec_device_new(struct hda_bus *bus, struct snd_card *card,
+ 	if (snd_BUG_ON(codec_addr > HDA_MAX_CODEC_ADDRESS))
+ 		return -EINVAL;
  
- /* clear interrupts */
+-	codec->core.dev.release = snd_hda_codec_dev_release;
+-	codec->core.exec_verb = codec_exec_verb;
+-
+ 	codec->card = card;
+ 	codec->addr = codec_addr;
+-	mutex_init(&codec->spdif_mutex);
+-	mutex_init(&codec->control_mutex);
+-	snd_array_init(&codec->mixers, sizeof(struct hda_nid_item), 32);
+-	snd_array_init(&codec->nids, sizeof(struct hda_nid_item), 32);
+-	snd_array_init(&codec->init_pins, sizeof(struct hda_pincfg), 16);
+-	snd_array_init(&codec->driver_pins, sizeof(struct hda_pincfg), 16);
+-	snd_array_init(&codec->cvt_setups, sizeof(struct hda_cvt_setup), 8);
+-	snd_array_init(&codec->spdif_out, sizeof(struct hda_spdif_out), 16);
+-	snd_array_init(&codec->jacktbl, sizeof(struct hda_jack_tbl), 16);
+-	snd_array_init(&codec->verbs, sizeof(struct hda_verb *), 8);
+-	INIT_LIST_HEAD(&codec->conn_list);
+-	INIT_LIST_HEAD(&codec->pcm_list_head);
+-	refcount_set(&codec->pcm_ref, 1);
+-	init_waitqueue_head(&codec->remove_sleep);
+-
+-	INIT_DELAYED_WORK(&codec->jackpoll_work, hda_jackpoll_work);
+-	codec->depop_delay = -1;
+-	codec->fixup_id = HDA_FIXUP_ID_NOT_SET;
+ 
+ #ifdef CONFIG_PM
+ 	codec->power_jiffies = jiffies;
 -- 
 2.25.1
 
