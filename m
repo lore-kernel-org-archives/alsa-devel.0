@@ -4,69 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8E930C43334
-	for <alsa-devel@archiver.kernel.org>; Wed,  6 Jul 2022 11:55:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2915FCCA473
+	for <alsa-devel@archiver.kernel.org>; Wed,  6 Jul 2022 11:55:58 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id CE5F916DC;
-	Wed,  6 Jul 2022 13:54:49 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CE5F916DC
+	by alsa0.perex.cz (Postfix) with ESMTPS id 6A9DF16D5;
+	Wed,  6 Jul 2022 13:55:06 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6A9DF16D5
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1657108539;
-	bh=X6gV7qcpoldUW0X/zLIOxmQwvsTDnn/XfYDWUERJDe0=;
+	s=default; t=1657108556;
+	bh=0QRNt+1qf6ahxvwm4IA9D0yF6GEVpZjS+dnXOeTslDg=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=j1ZPcl7beA99o2O0N97YIDs4IGvdk1CLJ/GgSFuMMXuMyp/ifx4VaQRCE60H31exu
-	 BwODJzK9CTjFQLGe3m2jM5/uhjtRnnZTFwQ+7TYG7F/tkcUUZED32lQ487eIrBivyj
-	 D/YYSDr9x/VBiGEoFlwjKedeFm5NoJq7oKSbqAbI=
+	b=J+kjiRfUjDh9C5ePjTAjmxoV0ODjonAXJKDf4Rto2YfLPIx/peB8SYySIL+CbKody
+	 +EoCi28Z/CJPwVbf4SDkCUk5Knl2Z08zwbszi+bOSRGYEyFciY0p7FaK1RJC6Fa1Sb
+	 2/dAqpFBjHFeqMrXjQRuucugI2mwkyhNQEhrFgns=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id BDE2AF80566;
-	Wed,  6 Jul 2022 13:52:56 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 53B20F80567;
+	Wed,  6 Jul 2022 13:52:57 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id B4425F8055A; Wed,  6 Jul 2022 13:52:53 +0200 (CEST)
+ id 60F8CF80557; Wed,  6 Jul 2022 13:52:54 +0200 (CEST)
 Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 1B0FBF80553
- for <alsa-devel@alsa-project.org>; Wed,  6 Jul 2022 13:52:49 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1B0FBF80553
+ by alsa1.perex.cz (Postfix) with ESMTPS id 86381F8053A
+ for <alsa-devel@alsa-project.org>; Wed,  6 Jul 2022 13:52:46 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 86381F8053A
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="SHO8rESg"
+ header.b="mFP/GQDk"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1657108371; x=1688644371;
+ t=1657108369; x=1688644369;
  h=from:to:cc:subject:date:message-id:in-reply-to:
  references:mime-version:content-transfer-encoding;
- bh=X6gV7qcpoldUW0X/zLIOxmQwvsTDnn/XfYDWUERJDe0=;
- b=SHO8rESgKytKGgv1U/5RN4lKAE3PeVV+8s2PZpMU8jwr/0RdjvG1zkPF
- TwenMhbGFkzQT/pDJ2Vi7P5oQfnmVPqa13tC6rY8RpZKUL2QOg47yr+oI
- C7tBvo5KK4PTTVl5lOPZeK4LtSXbM2LPj6NnTq0cx+H+XYKP8U38qY76T
- EpQ/foObr6otRq9g7hpYYtnToNQQxxmk1fIbYLg4T5ZI680sPUO0gpmyw
- 3ZnorvmbkR/bpnlpjM8HdFFlf+BtVjLwYOUlbCXgjft/yzDf3TNC/vZWA
- Qnn7Xu3BMHA4IkC9NAAem+QMRFsLz46iXn9ppCbjOPnnJPNJIczjhMuKn g==;
-X-IronPort-AV: E=McAfee;i="6400,9594,10399"; a="370042658"
-X-IronPort-AV: E=Sophos;i="5.92,249,1650956400"; d="scan'208";a="370042658"
+ bh=0QRNt+1qf6ahxvwm4IA9D0yF6GEVpZjS+dnXOeTslDg=;
+ b=mFP/GQDk5ArrATTH9YRwmAffOi/kRGn+wum9ygVnLILdQG45JeqfdGGN
+ WEacB/tct7cFXneLtSjf1EG2cw6df48q7+2MCf6sElxaN9450Kw+i/op7
+ oS71ryPaoFZz36GZDRpwPxQkny6LJZi7ilzHMXj+xqLT27HH5x4HUX6zb
+ +eOkj2qZKP8jG+37S0Cq2lL7FbsItcUPSpRQrjmi8dXRYHe+r5K4UlcTS
+ VyWmIMKFBpvWjh8CA/zQbR8MYfrRYR5HlxwAGUJXwjEAGKiX73nO8q0WB
+ Hqnhcdo/DZYFmLMLkbUVhWudCItYXbrixgoUpnRlB1O3dOFPlCHOjSiCy A==;
+X-IronPort-AV: E=McAfee;i="6400,9594,10399"; a="370042626"
+X-IronPort-AV: E=Sophos;i="5.92,249,1650956400"; d="scan'208";a="370042626"
 Received: from fmsmga005.fm.intel.com ([10.253.24.32])
  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 06 Jul 2022 04:52:49 -0700
+ 06 Jul 2022 04:52:43 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.92,249,1650956400"; d="scan'208";a="920136316"
+X-IronPort-AV: E=Sophos;i="5.92,249,1650956400"; d="scan'208";a="920136275"
 Received: from crojewsk-ctrl.igk.intel.com ([10.102.9.28])
- by fmsmga005.fm.intel.com with ESMTP; 06 Jul 2022 04:52:47 -0700
+ by fmsmga005.fm.intel.com with ESMTP; 06 Jul 2022 04:52:39 -0700
 From: Cezary Rojewski <cezary.rojewski@intel.com>
 To: alsa-devel@alsa-project.org,
 	tiwai@suse.com
-Subject: [PATCH 8/9] ALSA: hda: Remove unused macro definition
-Date: Wed,  6 Jul 2022 14:02:29 +0200
-Message-Id: <20220706120230.427296-9-cezary.rojewski@intel.com>
+Subject: [PATCH 4/9] ALSA: hda: Fix put_device() inconsistency in error path
+Date: Wed,  6 Jul 2022 14:02:25 +0200
+Message-Id: <20220706120230.427296-5-cezary.rojewski@intel.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20220706120230.427296-1-cezary.rojewski@intel.com>
 References: <20220706120230.427296-1-cezary.rojewski@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Cc: Cezary Rojewski <cezary.rojewski@intel.com>,
  pierre-louis.bossart@linux.intel.com, hdegoede@redhat.com, broonie@kernel.org,
@@ -86,34 +85,89 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Amadeusz Sławiński <amadeuszx.slawinski@linux.intel.com>
+AVS HDAudio bus driver does not tie with codec drivers tighly. Codec
+device and its respective driver cleanup procedures are split and may
+not occur one after the other. Device cleanup is performed only on
+snd_hdac_ext_bus_device_remove() i.e. it's the bus driver's
+responsibility. If codec component probing fails, put_device() found in
+snd_hda_codec_device_new() may lead to page fault. Relocate it to
+snd_hda_codec_new() to address the problem on ASoC side while keeping
+status quo for snd_hda_intel.
 
-It is not used anywhere in the file, so there is no need to keep it.
-
-Signed-off-by: Amadeusz Sławiński <amadeuszx.slawinski@linux.intel.com>
 Signed-off-by: Cezary Rojewski <cezary.rojewski@intel.com>
 ---
- sound/hda/ext/hdac_ext_controller.c | 7 -------
- 1 file changed, 7 deletions(-)
+ sound/pci/hda/hda_codec.c | 23 +++++++++++------------
+ 1 file changed, 11 insertions(+), 12 deletions(-)
 
-diff --git a/sound/hda/ext/hdac_ext_controller.c b/sound/hda/ext/hdac_ext_controller.c
-index b072392725c7..a42f66f561f5 100644
---- a/sound/hda/ext/hdac_ext_controller.c
-+++ b/sound/hda/ext/hdac_ext_controller.c
-@@ -14,13 +14,6 @@
- #include <sound/hda_register.h>
- #include <sound/hdaudio_ext.h>
+diff --git a/sound/pci/hda/hda_codec.c b/sound/pci/hda/hda_codec.c
+index 83d954ab056f..2381aced492f 100644
+--- a/sound/pci/hda/hda_codec.c
++++ b/sound/pci/hda/hda_codec.c
+@@ -949,6 +949,7 @@ int snd_hda_codec_new(struct hda_bus *bus, struct snd_card *card,
+ 		      unsigned int codec_addr, struct hda_codec **codecp)
+ {
+ 	struct hda_codec *codec;
++	int ret;
  
--/*
-- * maximum HDAC capablities we should parse to avoid endless looping:
-- * currently we have 4 extended caps, so this is future proof for now.
-- * extend when this limit is seen meeting in real HW
-- */
--#define HDAC_MAX_CAPS 10
+ 	codec = snd_hda_codec_device_init(bus, codec_addr, "hdaudioC%dD%d",
+ 					  card->number, codec_addr);
+@@ -956,7 +957,11 @@ int snd_hda_codec_new(struct hda_bus *bus, struct snd_card *card,
+ 		return PTR_ERR(codec);
+ 	*codecp = codec;
+ 
+-	return snd_hda_codec_device_new(bus, card, codec_addr, *codecp, true);
++	ret = snd_hda_codec_device_new(bus, card, codec_addr, *codecp, true);
++	if (ret)
++		put_device(hda_codec_dev(*codecp));
++
++	return ret;
+ }
+ EXPORT_SYMBOL_GPL(snd_hda_codec_new);
+ 
+@@ -1011,19 +1016,17 @@ int snd_hda_codec_device_new(struct hda_bus *bus, struct snd_card *card,
+ 
+ 	if (codec->bus->modelname) {
+ 		codec->modelname = kstrdup(codec->bus->modelname, GFP_KERNEL);
+-		if (!codec->modelname) {
+-			err = -ENOMEM;
+-			goto error;
+-		}
++		if (!codec->modelname)
++			return -ENOMEM;
+ 	}
+ 
+ 	fg = codec->core.afg ? codec->core.afg : codec->core.mfg;
+ 	err = read_widget_caps(codec, fg);
+ 	if (err < 0)
+-		goto error;
++		return err;
+ 	err = read_pin_defaults(codec);
+ 	if (err < 0)
+-		goto error;
++		return err;
+ 
+ 	/* power-up all before initialization */
+ 	hda_set_power_state(codec, AC_PWRST_D0);
+@@ -1041,7 +1044,7 @@ int snd_hda_codec_device_new(struct hda_bus *bus, struct snd_card *card,
+ 		/* ASoC features component management instead */
+ 		err = snd_device_new(card, SNDRV_DEV_CODEC, codec, &dev_ops);
+ 		if (err < 0)
+-			goto error;
++			return err;
+ 	}
+ 
+ #ifdef CONFIG_PM
+@@ -1054,10 +1057,6 @@ int snd_hda_codec_device_new(struct hda_bus *bus, struct snd_card *card,
+ #endif
+ 
+ 	return 0;
 -
- /*
-  * processing pipe helpers - these helpers are useful for dealing with HDA
-  * new capability of processing pipelines
+- error:
+-	put_device(hda_codec_dev(codec));
+-	return err;
+ }
+ EXPORT_SYMBOL_GPL(snd_hda_codec_device_new);
+ 
 -- 
 2.25.1
 
