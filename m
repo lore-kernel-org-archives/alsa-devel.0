@@ -4,67 +4,70 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id BA8C5C433EF
-	for <alsa-devel@archiver.kernel.org>; Wed,  6 Jul 2022 05:12:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4E299C43334
+	for <alsa-devel@archiver.kernel.org>; Wed,  6 Jul 2022 06:21:46 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E7186164E;
-	Wed,  6 Jul 2022 07:11:21 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E7186164E
+	by alsa0.perex.cz (Postfix) with ESMTPS id 8C6BF1640;
+	Wed,  6 Jul 2022 08:20:54 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8C6BF1640
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1657084332;
-	bh=VTVDAzmvFZeLwmVSF2l4CuD4DI0rMKlYWh26whbQ5dw=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=bq7OnSUR2aFJufBkQbkoOl7J3d6YDJHqi/QO4Tsc4s/UzHtzh0PEOGzkoBi5BXYKO
-	 g0nDdaY3kyqYYwCvWJ84BHU34WQeiCJs797OiTG+MGRFLZZflFbx4wSxUeZyRMbgaS
-	 nwy6WkRDs1kNuzZjuLLlcmCpZos6+WUJlEHaZbRY=
+	s=default; t=1657088504;
+	bh=WCNFrp3GBFE7vxeb/x0ph+v6bM71Q3gAe1RlvA/BV6U=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=QriwFpIrxZZGdf0/JdIiglRsG0eGD+fdRhcnvnHzoA6bDnONStgQMSA+RfyGO6Wp4
+	 suPVxaJOFuLA+/WGYAAxcS5k3yppewiwie/l/U1CPCdvlm2loFzTII64zRjdUe00CR
+	 9WRaZhJyugTpy7GFEcQT4M1BxY17xCFdwipO9oB4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 76BB8F800C5;
-	Wed,  6 Jul 2022 07:11:21 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 282C2F80104;
+	Wed,  6 Jul 2022 08:20:54 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id CE765F8023A; Wed,  6 Jul 2022 07:11:19 +0200 (CEST)
-Received: from sin.source.kernel.org (sin.source.kernel.org [145.40.73.55])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 1C41EF800C5
- for <alsa-devel@alsa-project.org>; Wed,  6 Jul 2022 07:11:14 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1C41EF800C5
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="RZxdkOx0"
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+ id 4A6CDF8023A; Wed,  6 Jul 2022 08:20:52 +0200 (CEST)
+Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by sin.source.kernel.org (Postfix) with ESMTPS id 505C7CE1BE3;
- Wed,  6 Jul 2022 05:11:09 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D39F3C3411C;
- Wed,  6 Jul 2022 05:11:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1657084267;
- bh=VTVDAzmvFZeLwmVSF2l4CuD4DI0rMKlYWh26whbQ5dw=;
- h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=RZxdkOx0vdbUwkuiphEfMul7Tvcnq0bhvIHfYtZY5tO+aEpVmCTep8DiymI9FVWGB
- cQb/sWYI1pGeOCkvMh2jfQoP+imE9qefA58JaGOlK7K27cEpaHysUj9wIN5jUiLJL3
- AFJu2WqcfLiVSJhLPZUL4L2gd/uSZdxLfKQz2cX/fdeM31712yryWKai3UyLtp+PaX
- 2A+I2nYt9t6tnlAUETWbb9mAHjUAHlTUglPduuGaLTVDlw4i0m89u+F7HL7WZVdDIs
- 1jAOuu8TIUTRdeHB81BBvjGujdfqeQp3HapYm1jDIaIK2q9MJM62b1JBLlhYAdoGB7
- Pm0oIgLVqk1aw==
-Date: Wed, 6 Jul 2022 10:41:02 +0530
-From: Vinod Koul <vkoul@kernel.org>
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH 0/3] soundwire: revisit peripheral driver bind/unbind
-Message-ID: <YsUZZmQsz25YNfM/@matsya>
-References: <20220621225641.221170-1-pierre-louis.bossart@linux.intel.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 9B317F80104
+ for <alsa-devel@alsa-project.org>; Wed,  6 Jul 2022 08:20:43 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9B317F80104
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
+ header.b="J2r9YYxm"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+ d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+ t=1657088446; x=1688624446;
+ h=from:to:cc:subject:date:message-id:mime-version:
+ content-transfer-encoding;
+ bh=WCNFrp3GBFE7vxeb/x0ph+v6bM71Q3gAe1RlvA/BV6U=;
+ b=J2r9YYxm8PsPkUxAmG1tQrgC9Wj+oQOxjlSmrB7hFa3pGMK2KJ4k5pa4
+ 9HGcBVSUn8Xh9I/XTcOq3WSqbv6GCVRivzNYZp35aquczG4lNBhZtDjyl
+ aKuol/7q6Lx6S4beo7W8FEnYpdWjfAJlDZNMVj95WrEJvc9wsC3846Krh
+ nrOAp71o0HmcJVicZP6oQxoqWayAdxpws11jXzFnNAmvam50yDwQ9JM2H
+ Nr+JX4j8/dTQAc+A5RYYstHnDogpQLYBZxLkQOCyPImYbjHq+yoDChzZ8
+ P9w6lu9sq5hxyliNhrgsSJQ39BmTaVs3LTGbRyl7P1hyb+aEUPIUwl4gN Q==;
+X-IronPort-AV: E=McAfee;i="6400,9594,10399"; a="272441552"
+X-IronPort-AV: E=Sophos;i="5.92,249,1650956400"; d="scan'208";a="272441552"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+ by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 05 Jul 2022 23:20:39 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.92,249,1650956400"; d="scan'208";a="650520723"
+Received: from crojewsk-ctrl.igk.intel.com ([10.102.9.28])
+ by fmsmga008.fm.intel.com with ESMTP; 05 Jul 2022 23:20:36 -0700
+From: Cezary Rojewski <cezary.rojewski@intel.com>
+To: alsa-devel@alsa-project.org,
+	broonie@kernel.org
+Subject: [PATCH] ASoC: Intel: avs: Fix i2s_test card name initialization
+Date: Wed,  6 Jul 2022 08:29:52 +0200
+Message-Id: <20220706062952.251704-1-cezary.rojewski@intel.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220621225641.221170-1-pierre-louis.bossart@linux.intel.com>
-Cc: alsa-devel@alsa-project.org, tiwai@suse.de, gregkh@linuxfoundation.org,
- broonie@kernel.org, srinivas.kandagatla@linaro.org,
- Bard liao <yung-chuan.liao@linux.intel.com>
+Content-Transfer-Encoding: 8bit
+Cc: sfr@canb.auug.org.au, Cezary Rojewski <cezary.rojewski@intel.com>,
+ kernel test robot <lkp@intel.com>, linux-kernel@vger.kernel.org,
+ pierre-louis.bossart@linux.intel.com, tiwai@suse.com, hdegoede@redhat.com,
+ amadeuszx.slawinski@linux.intel.com, lukas.bulwahn@gmail.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -80,22 +83,29 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On 21-06-22, 17:56, Pierre-Louis Bossart wrote:
-> This patchset fixes the driver bind/unbind cases which are not
-> well-supported today. I initially reported a race condition in March
-> 2022 [1] and the more tests I ran the more timing assumptions crept to
-> the surface.
-> 
-> With this patchset, I've been able to bind the drivers in any order,
-> and when all dependencies were available the card is
-> created/registered. Likewise I was able to remove codec drivers while
-> the bus was still running. The initial suggestion to use
-> device_lock()/unlock() led to system hangs in suspend-resume that I
-> was unable to root-cause after weeks of tests, hence this patchset
-> relies on a SoundWire-specific lock doesn't interfere with other core
-> device locking.
+Update printf formatting as 'ssp_port' argument is of type 'int', not
+'long int'.
 
-Applied, thanks for this cleanup.
+Fixes: e39acc4cfd92 ("ASoC: Intel: avs: Add I2S-test machine board")
+Reported-by: kernel test robot <lkp@intel.com>
+Signed-off-by: Cezary Rojewski <cezary.rojewski@intel.com>
+---
+ sound/soc/intel/avs/boards/i2s_test.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
+diff --git a/sound/soc/intel/avs/boards/i2s_test.c b/sound/soc/intel/avs/boards/i2s_test.c
+index 461b651cd331..8f0fd87bc866 100644
+--- a/sound/soc/intel/avs/boards/i2s_test.c
++++ b/sound/soc/intel/avs/boards/i2s_test.c
+@@ -127,7 +127,7 @@ static int avs_i2s_test_probe(struct platform_device *pdev)
+ 	if (!card)
+ 		return -ENOMEM;
+ 
+-	card->name = devm_kasprintf(dev, GFP_KERNEL, "ssp%ld-loopback", ssp_port);
++	card->name = devm_kasprintf(dev, GFP_KERNEL, "ssp%d-loopback", ssp_port);
+ 	if (!card->name)
+ 		return -ENOMEM;
+ 
 -- 
-~Vinod
+2.25.1
+
