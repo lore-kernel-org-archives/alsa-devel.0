@@ -4,79 +4,85 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0CB0AC43334
-	for <alsa-devel@archiver.kernel.org>; Wed,  6 Jul 2022 09:28:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0371EC43334
+	for <alsa-devel@archiver.kernel.org>; Wed,  6 Jul 2022 09:57:56 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 38D26168B;
-	Wed,  6 Jul 2022 11:27:38 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 38D26168B
+	by alsa0.perex.cz (Postfix) with ESMTPS id 77E48163C;
+	Wed,  6 Jul 2022 11:57:04 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 77E48163C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1657099708;
-	bh=OqoSbqDwwOzRRi8jeyun12rYrQP6dVrQCq0Pp8SDvgk=;
-	h=Date:Subject:To:References:From:In-Reply-To:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=GLTZcw4ROnDeCMbqsvy/y+jTxjfUPQjj+/rhnrptm2Byj0IyvhtGHTzpdC6vJ/lTl
-	 HVxGp9egRGoQBgAOCFuRTaO97i6NaH2+SsaewCXWA9gruw+jw4hapHWYUd2N5QTery
-	 Ww0DuQzmWgLa6BnshMWBUt1qNU2txJcMhCTk2Qw0=
+	s=default; t=1657101474;
+	bh=GNydRqjUFil4bhSfWIBYbIUjRA6dHjr/6J2GRlE0dDc=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=Dz4bVz2sOsOaRNWoAS50XRvDTzPEM4cBCCxSKuLs+ANOzpKxu0kLgPyrDto5Joaev
+	 AKf8KhFk0kIyYp4LaB+RAo7ZrJ2KmnfJCsdUVrrISFIlf52dyRqhlFhemlcwMD0VGs
+	 9yAXdcxgko0wos2tT+io+G7c3YbwFiAOnkr7aCX8=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 8BBC9F8023A;
-	Wed,  6 Jul 2022 11:27:36 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 0B3F9F8016B;
+	Wed,  6 Jul 2022 11:57:04 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 38A14F8023A; Wed,  6 Jul 2022 11:27:34 +0200 (CEST)
-Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 2B9EDF8023A; Wed,  6 Jul 2022 11:57:02 +0200 (CEST)
+Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com
+ [IPv6:2a00:1450:4864:20::331])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id A9EB4F80104;
- Wed,  6 Jul 2022 11:27:27 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A9EB4F80104
+ by alsa1.perex.cz (Postfix) with ESMTPS id 96031F800C5
+ for <alsa-devel@alsa-project.org>; Wed,  6 Jul 2022 11:56:58 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 96031F800C5
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="bLk4+1Ca"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
- d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1657099652; x=1688635652;
- h=message-id:date:mime-version:subject:to:cc:references:
- from:in-reply-to:content-transfer-encoding;
- bh=OqoSbqDwwOzRRi8jeyun12rYrQP6dVrQCq0Pp8SDvgk=;
- b=bLk4+1CaauII4ubFY7hIF4CaxVGBG8MnWg9/PY2MENFdIrw8DmL4hgJs
- ULRJ7yU4VYKtmOk/X/U/eWgtuoIfYqDHfRpP0E9tDKtzdHYdRMSEvx2OK
- 6jR02fLI+ABEB/1o09SwUFO1gsIrtl/9Bp5O2jtr6/5OKnU3ZIPB17EmK
- 1nLY1qyGrhrL+7qQOvzD0IdDX4e18ptAJStZds95jlOLPXEZxAlSO0/Xq
- XTJpLUALhPe466v3MCHih0gQAuj9JLyf/f+6Y3FDYeWOUHxcvKj5CU5pQ
- JwhevX/TD1Y4zA5E8iwdHzZ03hXzCoLoA5hom82vCwEtRrp0ZdhBfawRh Q==;
-X-IronPort-AV: E=McAfee;i="6400,9594,10399"; a="282445811"
-X-IronPort-AV: E=Sophos;i="5.92,249,1650956400"; d="scan'208";a="282445811"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
- by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 06 Jul 2022 02:27:05 -0700
-X-IronPort-AV: E=Sophos;i="5.92,249,1650956400"; d="scan'208";a="920089289"
-Received: from gguerra-mobl1.ger.corp.intel.com (HELO [10.249.254.46])
- ([10.249.254.46])
- by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 06 Jul 2022 02:27:02 -0700
-Message-ID: <2d7bb9f7-a316-16d8-b290-e0cae9b28127@linux.intel.com>
-Date: Wed, 6 Jul 2022 12:27:49 +0300
+ dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org
+ header.b="xcHKPZCF"
+Received: by mail-wm1-x331.google.com with SMTP id
+ m6-20020a05600c3b0600b003a0489f412cso8529058wms.1
+ for <alsa-devel@alsa-project.org>; Wed, 06 Jul 2022 02:56:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
+ h=from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=oQmMEm8R63yDBFMVBDKxeDcvs7uNNmm4G/6GcZxeIkg=;
+ b=xcHKPZCFLH+4W4z7z/H/8MzyO4wHmtY3vAz2gkL5sf6QCFGE9oJDTPO/YnSyjqDqu3
+ hFZHoSxsOVrkUgYG1IEuzZ1nmebOOkeJwH1hTDcWBRoS2dLx9I0T7BH/AuI60qMMIJ5+
+ hho9Mb97ejPk8C8lUl+bZi7mfCMWZwPQ3KvuMUvrbCJHIXDKloFc1OmFiIQ0LgRy7OXK
+ EPEw+rMKAxmgZc57xFDdWNQaTUVwb0h9hudbnlF+gqVLNaDUATveSyEcpYUsWDtEhyKP
+ VFcSUtb4xRBx2rW5wo+h+kkQopISxtJlX/rh3TpNBt+6k5vLet1wwoaU+TNO8LCRfcz1
+ YtVA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=oQmMEm8R63yDBFMVBDKxeDcvs7uNNmm4G/6GcZxeIkg=;
+ b=DNTHWIFe8n2/IH8LOWAWvPBI06GuCJZ/e5LN8AegQ1j3FMRq6wW3ubAr4Q4KT5/V1c
+ /1BgdTF9DgFfXjAcQdto4zCfXSNGgobXYhUH+Un9jgm+IvXuQwiozxxLL2qZqwfZPZ77
+ rAf+bFSNpcd7q+xMY/cdOUASd1juIMHEQYTNECoDSFkhkXRLPPj2A2vv0j44UU3FvhlK
+ djJODHlaW308JqlY+Ks98FioPr/DK/KLCmWrprQQa22oV1X3WymSF07jq3CUYywgeCGs
+ 3TlD7ClhzzCcmxdGpC39j/0CpnL20Jae5ufNgejoQ5YnuTZorx147xdEhNDvk3P7XX/3
+ kBeg==
+X-Gm-Message-State: AJIora9sqFnYBsZqR8hhHLnJbDBK+IWuquu7ICEb7Wj9GzD21odQ1tSY
+ ftGQXcAArCASk0dcJN8QrfETAA==
+X-Google-Smtp-Source: AGRyM1uU55Ngph1vNp6yKEA3e3ftMEDUT75j78jU8Ow98uLQ55SnXHsTE3ElD47QQ82ShMCXfG10NQ==
+X-Received: by 2002:a05:600c:4f48:b0:3a0:45dd:8bd5 with SMTP id
+ m8-20020a05600c4f4800b003a045dd8bd5mr43952822wmq.80.1657101417104; 
+ Wed, 06 Jul 2022 02:56:57 -0700 (PDT)
+Received: from srini-hackbase.lan
+ (cpc90716-aztw32-2-0-cust825.18-1.cable.virginm.net. [86.26.103.58])
+ by smtp.gmail.com with ESMTPSA id
+ u1-20020a5d6ac1000000b0021b95bcaf7fsm7723390wrw.59.2022.07.06.02.56.55
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Wed, 06 Jul 2022 02:56:56 -0700 (PDT)
+From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+To: vkoul@kernel.org
+Subject: [PATCH] soundwire: qcom: Check device status before reading devid
+Date: Wed,  6 Jul 2022 10:56:44 +0100
+Message-Id: <20220706095644.5852-1-srinivas.kandagatla@linaro.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Firefox/91.0 Thunderbird/91.10.0
-Subject: Re: [PATCH 2/2] ASoC: SOF: sof-client-probes: cleanup tokenize_input()
-Content-Language: en-US
-To: Dan Carpenter <dan.carpenter@oracle.com>,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-References: <YsU4zCpaV7GBpHci@kili>
-From: =?UTF-8?Q?P=c3=a9ter_Ujfalusi?= <peter.ujfalusi@linux.intel.com>
-In-Reply-To: <YsU4zCpaV7GBpHci@kili>
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-Cc: alsa-devel@alsa-project.org, Kai Vehmanen <kai.vehmanen@linux.intel.com>,
- Bard Liao <yung-chuan.liao@linux.intel.com>, Takashi Iwai <tiwai@suse.com>,
- kernel-janitors@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>,
- Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
- Mark Brown <broonie@kernel.org>, Daniel Baluta <daniel.baluta@nxp.com>,
- sound-open-firmware@alsa-project.org
+Cc: alsa-devel@alsa-project.org, linux-arm-msm@vger.kernel.org,
+ pierre-louis.bossart@linux.intel.com, stable@vger.kernel.org,
+ Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+ yung-chuan.liao@linux.intel.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -92,94 +98,34 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+As per hardware datasheet its recommended that we check the device
+status before reading devid assigned by auto-enumeration.
 
+Without this patch we see SoundWire devices with invalid enumeration
+addresses on the bus.
 
-On 06/07/2022 10:25, Dan Carpenter wrote:
-> The tokenize_input() function is cleaner if it uses strndup_user()
-> instead of simple_write_to_buffer().  The way it's written now, if
-> *ppos is non-zero then it returns -EIO but normally we would return
-> 0 in that case.  It's easier to handle that in the callers.
+Cc: stable@vger.kernel.org
+Fixes: a6e6581942ca ("soundwire: qcom: add auto enumeration support")
+Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+---
+ drivers/soundwire/qcom.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-This patch breaks the probe point settings:
-
-# echo 52,1,0 > /sys/kernel/debug/sof/probe_points
--bash: echo: write error: Invalid argument
-
-I did not looked for the exact reason, but something is not correct.
-
-> Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
-> ---
->  sound/soc/sof/sof-client-probes.c | 27 +++++++++++++--------------
->  1 file changed, 13 insertions(+), 14 deletions(-)
-> 
-> diff --git a/sound/soc/sof/sof-client-probes.c b/sound/soc/sof/sof-client-probes.c
-> index 679bc7d371fc..6c922b683f67 100644
-> --- a/sound/soc/sof/sof-client-probes.c
-> +++ b/sound/soc/sof/sof-client-probes.c
-> @@ -461,24 +461,17 @@ static int strsplit_u32(char *buf, const char *delim, u32 **tkns, size_t *num_tk
->  }
->  
->  static int tokenize_input(const char __user *from, size_t count,
-> -			  loff_t *ppos, u32 **tkns, size_t *num_tkns)
-> +			  u32 **tkns, size_t *num_tkns)
->  {
->  	char *buf;
->  	int ret;
->  
-> -	buf = kmalloc(count + 1, GFP_KERNEL);
-> -	if (!buf)
-> -		return -ENOMEM;
-> -
-> -	ret = simple_write_to_buffer(buf, count, ppos, from, count);
-> -	if (ret != count) {
-> -		ret = ret >= 0 ? -EIO : ret;
-> -		goto exit;
-> -	}
-> +	buf = strndup_user(from, count + 1);
-> +	if (IS_ERR(buf))
-> +		return PTR_ERR(buf);
->  
-> -	buf[count] = '\0';
->  	ret = strsplit_u32(buf, ",", tkns, num_tkns);
-> -exit:
-> +
->  	kfree(buf);
->  	return ret;
->  }
-> @@ -552,12 +545,15 @@ sof_probes_dfs_points_write(struct file *file, const char __user *from,
->  	u32 *tkns;
->  	int ret, err;
->  
-> +	if (*ppos)
-> +		return 0;
-> +
->  	if (priv->extractor_stream_tag == SOF_PROBES_INVALID_NODE_ID) {
->  		dev_warn(dev, "no extractor stream running\n");
->  		return -ENOENT;
->  	}
->  
-> -	ret = tokenize_input(from, count, ppos, &tkns, &num_tkns);
-> +	ret = tokenize_input(from, count, &tkns, &num_tkns);
->  	if (ret < 0)
->  		return ret;
->  	bytes = sizeof(*tkns) * num_tkns;
-> @@ -607,12 +603,15 @@ sof_probes_dfs_points_remove_write(struct file *file, const char __user *from,
->  	u32 *tkns;
->  	int ret, err;
->  
-> +	if (*ppos)
-> +		return 0;
-> +
->  	if (priv->extractor_stream_tag == SOF_PROBES_INVALID_NODE_ID) {
->  		dev_warn(dev, "no extractor stream running\n");
->  		return -ENOENT;
->  	}
->  
-> -	ret = tokenize_input(from, count, ppos, &tkns, &num_tkns);
-> +	ret = tokenize_input(from, count, &tkns, &num_tkns);
->  	if (ret < 0)
->  		return ret;
->  	if (!num_tkns) {
-
+diff --git a/drivers/soundwire/qcom.c b/drivers/soundwire/qcom.c
+index dbf793e7e5d7..9df970eeca45 100644
+--- a/drivers/soundwire/qcom.c
++++ b/drivers/soundwire/qcom.c
+@@ -480,6 +480,10 @@ static int qcom_swrm_enumerate(struct sdw_bus *bus)
+ 	char *buf1 = (char *)&val1, *buf2 = (char *)&val2;
+ 
+ 	for (i = 1; i <= SDW_MAX_DEVICES; i++) {
++		/* do not continue if the status is Not Present  */
++		if (!ctrl->status[i])
++			continue;
++
+ 		/*SCP_Devid5 - Devid 4*/
+ 		ctrl->reg_read(ctrl, SWRM_ENUMERATOR_SLAVE_DEV_ID_1(i), &val1);
+ 
 -- 
-Péter
+2.25.1
+
