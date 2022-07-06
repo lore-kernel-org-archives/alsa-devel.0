@@ -4,68 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 14053C433EF
-	for <alsa-devel@archiver.kernel.org>; Wed,  6 Jul 2022 11:54:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C8390C43334
+	for <alsa-devel@archiver.kernel.org>; Wed,  6 Jul 2022 11:55:15 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 4EA0016F9;
-	Wed,  6 Jul 2022 13:54:01 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4EA0016F9
+	by alsa0.perex.cz (Postfix) with ESMTPS id E7EB516C2;
+	Wed,  6 Jul 2022 13:54:23 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E7EB516C2
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1657108491;
-	bh=V/NEJiSKyl2dZbJEEGzCFIniY3CIOqOoa980IyjNtQc=;
+	s=default; t=1657108514;
+	bh=1eXT+G98E/o3gr3OosP9Y9JKjt6nvh8Gu8NXUG2kDOY=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=mIkQJ0mIcjebbsSKjsiFzYIeUpnPB9vgxXVFZke7jUs2XP29pwFi7g8WSF0lticHa
-	 daaTXXiu1VZwCVhQmiTqMVCdFJQ0EhuxhNo9FKMiVU90nu1M+pSeAk61Lxwuc0nQqI
-	 KeL8HsTm+ZEktbwMWcBrJGHK+Gi6UK3P4mjqvbYo=
+	b=bOygOzWsTB99adB+2NXZ9RWJxpWpDUNl9pn4InkW5IbNugf5LOk/88tiWx0RTV808
+	 yvy37sEzGkWm4xUnPzUVt2MP/oheXOwz267F+DNg1EEu8hjP5TsPL/s7P7tprdNdlE
+	 qnFQwWs1YOzcQfuA0aZBWmEX5shtoFzg8g2G7j0E=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id D341EF80104;
-	Wed,  6 Jul 2022 13:52:52 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 9ED50F8053A;
+	Wed,  6 Jul 2022 13:52:55 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 3811CF80558; Wed,  6 Jul 2022 13:52:51 +0200 (CEST)
+ id 0340FF8055B; Wed,  6 Jul 2022 13:52:53 +0200 (CEST)
 Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 5B6A2F80104
- for <alsa-devel@alsa-project.org>; Wed,  6 Jul 2022 13:52:44 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5B6A2F80104
+ by alsa1.perex.cz (Postfix) with ESMTPS id B780AF80552
+ for <alsa-devel@alsa-project.org>; Wed,  6 Jul 2022 13:52:49 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B780AF80552
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="DaISjZa0"
+ header.b="MnrL2o9M"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1657108365; x=1688644365;
+ t=1657108370; x=1688644370;
  h=from:to:cc:subject:date:message-id:in-reply-to:
  references:mime-version:content-transfer-encoding;
- bh=V/NEJiSKyl2dZbJEEGzCFIniY3CIOqOoa980IyjNtQc=;
- b=DaISjZa01sqoEMqUyeZpee+ka05Io4L2VP/HP3pww3OtKGs9Dzroa4fc
- a2QWNq/DO777OjOv4kq3B+PbX0Albp6cSHV6EoVKM/PNy4jgpmGTL1pkR
- vwKitA6u6BGNoR4RYinXsRK2wRR9pNYU1qpcrXoumimeRQjD3MxsfgDq3
- uvOEFVnH+FzOjfONyqwOkNbfQj3eXfHaAwRPagbaDXZJlRZWOJwzNY8Xc
- xDtEPKZTf6TKM6pAyCKCTNjSag2qqJpSe2OvE8hdJxx2I3wVdrYEY0KHV
- KtdOuR37owu1uskLZOkqSQ5waBjEBZwSJaCwJnxmu7MqqB0r3ixhBXj5C A==;
-X-IronPort-AV: E=McAfee;i="6400,9594,10399"; a="370042630"
-X-IronPort-AV: E=Sophos;i="5.92,249,1650956400"; d="scan'208";a="370042630"
+ bh=1eXT+G98E/o3gr3OosP9Y9JKjt6nvh8Gu8NXUG2kDOY=;
+ b=MnrL2o9M4Q+A9ZAs3LGguGK9AjB0VfZvmqOJ/uVGICljzkRozhYOMSdm
+ kHXvHh+dTlJWOzIv5GI3yaMvaCQgKSX7IUlZjtyJJo9URq4V0Gt8auIC6
+ hg5Wy4cf1jwCvA9mgc4wRHFcEjl9rrZy3qcfjjAaUloTDmPrclDAdCYXu
+ HuHMjc7ohVxBEE3yGxG1jOVfmMFENEjAv2xmtGSnpFpgQVTQUJ0pW+vNk
+ xOog+eh/UDEhYIL9oCPmMm83lNfLxok02/ha+AevtTNBDQIiFoLa406X8
+ CPMT5E5VMPlQbWmAh7WQx9tbbG7Er4mTuiYA2Ol0Cd74RpkyIXnu2hkuA w==;
+X-IronPort-AV: E=McAfee;i="6400,9594,10399"; a="370042649"
+X-IronPort-AV: E=Sophos;i="5.92,249,1650956400"; d="scan'208";a="370042649"
 Received: from fmsmga005.fm.intel.com ([10.253.24.32])
  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 06 Jul 2022 04:52:43 -0700
+ 06 Jul 2022 04:52:48 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.92,249,1650956400"; d="scan'208";a="920136284"
+X-IronPort-AV: E=Sophos;i="5.92,249,1650956400"; d="scan'208";a="920136306"
 Received: from crojewsk-ctrl.igk.intel.com ([10.102.9.28])
- by fmsmga005.fm.intel.com with ESMTP; 06 Jul 2022 04:52:41 -0700
+ by fmsmga005.fm.intel.com with ESMTP; 06 Jul 2022 04:52:46 -0700
 From: Cezary Rojewski <cezary.rojewski@intel.com>
 To: alsa-devel@alsa-project.org,
 	tiwai@suse.com
-Subject: [PATCH 5/9] ALSA: hda: Skip event processing for unregistered codecs
-Date: Wed,  6 Jul 2022 14:02:26 +0200
-Message-Id: <20220706120230.427296-6-cezary.rojewski@intel.com>
+Subject: [PATCH 7/9] ALSA: hda: Reset all SIE bits in INTCTL
+Date: Wed,  6 Jul 2022 14:02:28 +0200
+Message-Id: <20220706120230.427296-8-cezary.rojewski@intel.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20220706120230.427296-1-cezary.rojewski@intel.com>
 References: <20220706120230.427296-1-cezary.rojewski@intel.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Cc: Cezary Rojewski <cezary.rojewski@intel.com>,
  pierre-louis.bossart@linux.intel.com, hdegoede@redhat.com, broonie@kernel.org,
@@ -85,123 +86,44 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-When codec is unbound but not yet removed, in the eyes of
-snd_hdac_bus_process_unsol_events() it is still a valid target to
-delegate work to. Such behaviour may lead to use-after-free errors.
-Address by verifying if codec is actually registered.
+From: Amadeusz Sławiński <amadeuszx.slawinski@linux.intel.com>
 
+Old code resets SIE for up to 8 streams using byte accessor, but
+register is laid out in following way:
+
+31 GIE
+30 CIE
+29:x Reserved
+x-1:0 SIE
+
+If there is more than 8 streams, some of them may and up with enabled
+interrupts. To fix this just clear whole INTCTL register when disabling
+interrupts.
+
+Signed-off-by: Amadeusz Sławiński <amadeuszx.slawinski@linux.intel.com>
 Signed-off-by: Cezary Rojewski <cezary.rojewski@intel.com>
 ---
- include/sound/hda_codec.h |  1 -
- include/sound/hdaudio.h   |  1 +
- sound/hda/hdac_bus.c      |  2 +-
- sound/pci/hda/hda_codec.c | 10 +++++-----
- sound/soc/codecs/hda.c    |  4 ++--
- 5 files changed, 9 insertions(+), 9 deletions(-)
+ sound/hda/hdac_controller.c | 7 ++-----
+ 1 file changed, 2 insertions(+), 5 deletions(-)
 
-diff --git a/include/sound/hda_codec.h b/include/sound/hda_codec.h
-index b7be300b6b18..6d3c82c4b6ac 100644
---- a/include/sound/hda_codec.h
-+++ b/include/sound/hda_codec.h
-@@ -231,7 +231,6 @@ struct hda_codec {
- 	/* misc flags */
- 	unsigned int configured:1; /* codec was configured */
- 	unsigned int in_freeing:1; /* being released */
--	unsigned int registered:1; /* codec was registered */
- 	unsigned int display_power_control:1; /* needs display power */
- 	unsigned int spdif_status_reset :1; /* needs to toggle SPDIF for each
- 					     * status change
-diff --git a/include/sound/hdaudio.h b/include/sound/hdaudio.h
-index 15f15075238d..797bf67a164d 100644
---- a/include/sound/hdaudio.h
-+++ b/include/sound/hdaudio.h
-@@ -93,6 +93,7 @@ struct hdac_device {
- 	bool lazy_cache:1;	/* don't wake up for writes */
- 	bool caps_overwriting:1; /* caps overwrite being in process */
- 	bool cache_coef:1;	/* cache COEF read/write too */
-+	unsigned int registered:1; /* codec was registered */
- };
+diff --git a/sound/hda/hdac_controller.c b/sound/hda/hdac_controller.c
+index f7bd6e2db085..9a60bfdb39ba 100644
+--- a/sound/hda/hdac_controller.c
++++ b/sound/hda/hdac_controller.c
+@@ -474,11 +474,8 @@ static void azx_int_disable(struct hdac_bus *bus)
+ 	list_for_each_entry(azx_dev, &bus->stream_list, list)
+ 		snd_hdac_stream_updateb(azx_dev, SD_CTL, SD_INT_MASK, 0);
  
- /* device/driver type used for matching */
-diff --git a/sound/hda/hdac_bus.c b/sound/hda/hdac_bus.c
-index 71db8592b33d..d497414a5538 100644
---- a/sound/hda/hdac_bus.c
-+++ b/sound/hda/hdac_bus.c
-@@ -183,7 +183,7 @@ static void snd_hdac_bus_process_unsol_events(struct work_struct *work)
- 		if (!(caddr & (1 << 4))) /* no unsolicited event? */
- 			continue;
- 		codec = bus->caddr_tbl[caddr & 0x0f];
--		if (!codec || !codec->dev.driver)
-+		if (!codec || !codec->registered)
- 			continue;
- 		spin_unlock_irq(&bus->reg_lock);
- 		drv = drv_to_hdac_driver(codec->dev.driver);
-diff --git a/sound/pci/hda/hda_codec.c b/sound/pci/hda/hda_codec.c
-index 2381aced492f..75e85bf58681 100644
---- a/sound/pci/hda/hda_codec.c
-+++ b/sound/pci/hda/hda_codec.c
-@@ -772,11 +772,11 @@ static void codec_release_pcms(struct hda_codec *codec)
-  */
- void snd_hda_codec_cleanup_for_unbind(struct hda_codec *codec)
- {
--	if (codec->registered) {
-+	if (codec->core.registered) {
- 		/* pm_runtime_put() is called in snd_hdac_device_exit() */
- 		pm_runtime_get_noresume(hda_codec_dev(codec));
- 		pm_runtime_disable(hda_codec_dev(codec));
--		codec->registered = 0;
-+		codec->core.registered = 0;
- 	}
- 
- 	snd_hda_codec_disconnect_pcms(codec);
-@@ -824,14 +824,14 @@ void snd_hda_codec_display_power(struct hda_codec *codec, bool enable)
-  */
- void snd_hda_codec_register(struct hda_codec *codec)
- {
--	if (codec->registered)
-+	if (codec->core.registered)
- 		return;
- 	if (device_is_registered(hda_codec_dev(codec))) {
- 		snd_hda_codec_display_power(codec, true);
- 		pm_runtime_enable(hda_codec_dev(codec));
- 		/* it was powered up in snd_hda_codec_new(), now all done */
- 		snd_hda_power_down(codec);
--		codec->registered = 1;
-+		codec->core.registered = 1;
- 	}
+-	/* disable SIE for all streams */
+-	snd_hdac_chip_writeb(bus, INTCTL, 0);
+-
+-	/* disable controller CIE and GIE */
+-	snd_hdac_chip_updatel(bus, INTCTL, AZX_INT_CTRL_EN | AZX_INT_GLOBAL_EN, 0);
++	/* disable SIE for all streams & disable controller CIE and GIE */
++	snd_hdac_chip_writel(bus, INTCTL, 0);
  }
- EXPORT_SYMBOL_GPL(snd_hda_codec_register);
-@@ -3047,7 +3047,7 @@ void snd_hda_codec_shutdown(struct hda_codec *codec)
- 	struct hda_pcm *cpcm;
  
- 	/* Skip the shutdown if codec is not registered */
--	if (!codec->registered)
-+	if (!codec->core.registered)
- 		return;
- 
- 	cancel_delayed_work_sync(&codec->jackpoll_work);
-diff --git a/sound/soc/codecs/hda.c b/sound/soc/codecs/hda.c
-index edcb8bc6806b..ad20a3dff9b7 100644
---- a/sound/soc/codecs/hda.c
-+++ b/sound/soc/codecs/hda.c
-@@ -274,7 +274,7 @@ static void hda_codec_remove(struct snd_soc_component *component)
- 	struct hdac_device *hdev = &codec->core;
- 	struct hdac_bus *bus = hdev->bus;
- 	struct hdac_ext_link *hlink;
--	bool was_registered = codec->registered;
-+	bool was_registered = codec->core.registered;
- 
- 	/* Don't allow any more runtime suspends */
- 	pm_runtime_forbid(&hdev->dev);
-@@ -376,7 +376,7 @@ static int hda_hdev_detach(struct hdac_device *hdev)
- {
- 	struct hda_codec *codec = dev_to_hda_codec(&hdev->dev);
- 
--	if (codec->registered)
-+	if (codec->core.registered)
- 		cancel_delayed_work_sync(&codec->jackpoll_work);
- 
- 	snd_soc_unregister_component(&hdev->dev);
+ /* clear interrupts */
 -- 
 2.25.1
 
