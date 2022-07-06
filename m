@@ -4,82 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A5574C43334
-	for <alsa-devel@archiver.kernel.org>; Wed,  6 Jul 2022 10:01:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0002FC433EF
+	for <alsa-devel@archiver.kernel.org>; Wed,  6 Jul 2022 10:18:00 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E91C716B8;
-	Wed,  6 Jul 2022 12:00:25 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E91C716B8
+	by alsa0.perex.cz (Postfix) with ESMTPS id 7B4E71678;
+	Wed,  6 Jul 2022 12:17:08 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7B4E71678
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1657101676;
-	bh=v5Jtw8TNJ86g2xK++XtxFf439WA0tQUMSwkUzcPYJD8=;
-	h=Date:Subject:From:To:References:In-Reply-To:Cc:List-Id:
+	s=default; t=1657102678;
+	bh=7bPjA96rRPT+DGytlEDSgU0khPF5mhmCE+N6Sj/+pX0=;
+	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Kk81Bu6oXm9XJkImlaPrSzCoHMD2YBUYMqyxi9uJV6H911fh2+1LIpgRfHjRkcK4z
-	 OvQsxTcwSYFTx/qdUFFSiYe+aKlJEMtR/FgiHiIzqhlj1zpwYMpMKCMr/kinM1hDqp
-	 Aa6WHtbQbilq2msb1z2jXXvKh83+4OSYMrmvFMWA=
+	b=q54TLeYnJIp/HQwA3E+dZaNlNkCQZHjsxtYZ+Jtzf/B/lZFIS4+mt7/arJDRfbyY/
+	 XEyUDe0WRFNhc7DwCrM8pMyy0D9uvC59C4EsLlCZtxH+xFldlZ/lRrmwNQ99UBBkvu
+	 Ab+ScGS4YwB6AM8lrIb4Bc/XC+2m3Lh4hSWGAD7A=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 90B3CF8016B;
-	Wed,  6 Jul 2022 12:00:25 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 16366F8016B;
+	Wed,  6 Jul 2022 12:17:08 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 66027F8032B; Wed,  6 Jul 2022 12:00:24 +0200 (CEST)
-Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
+ id A597BF8023A; Wed,  6 Jul 2022 12:17:06 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 09F1EF8012A
+ for <alsa-devel@alsa-project.org>; Wed,  6 Jul 2022 12:17:03 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 09F1EF8012A
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="MUgKma1P"
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 77393F8012A;
- Wed,  6 Jul 2022 12:00:16 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 77393F8012A
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="iq+IiRE/"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
- d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1657101622; x=1688637622;
- h=message-id:date:mime-version:subject:from:to:cc:
- references:in-reply-to:content-transfer-encoding;
- bh=v5Jtw8TNJ86g2xK++XtxFf439WA0tQUMSwkUzcPYJD8=;
- b=iq+IiRE/3EAfpdqkR2Pjp0m7nzU/8eM6iKOLOQELG5bW19dd9zs3MByH
- I4Wzbpbmvxn0qXMxLhAWulVJX2CnSzETZO/enyYvIdsAHyyM0VdLLdJlg
- 8KeqOdTFjQjSAImpG01+nxOHEtap/pG5UKdrLTXYgrKbGFAzgie8zwQJf
- ZF/qLrNyLmu7ZVDDjRNG+DObYGEZHkHq+lJiQaWzZmmsNPIp3q5VKI9IX
- 8VS7G5DaBJAHan5NA1e5HgtakVFxlVIpKcZDN1nHbsMe1cBwWULDLyyRt
- TDJf3zTrmx/J+ZHmZnTZxX1T+TyHzjcrDFdHtbXzs9ASMtzSU4F7IOSLK Q==;
-X-IronPort-AV: E=McAfee;i="6400,9594,10399"; a="282452676"
-X-IronPort-AV: E=Sophos;i="5.92,249,1650956400"; d="scan'208";a="282452676"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
- by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 06 Jul 2022 03:00:01 -0700
-X-IronPort-AV: E=Sophos;i="5.92,249,1650956400"; d="scan'208";a="920098852"
-Received: from gguerra-mobl1.ger.corp.intel.com (HELO [10.249.254.46])
- ([10.249.254.46])
- by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 06 Jul 2022 02:59:58 -0700
-Message-ID: <61def9b6-b6bf-c2c0-2a75-54d10003c7ca@linux.intel.com>
-Date: Wed, 6 Jul 2022 13:00:44 +0300
+ by dfw.source.kernel.org (Postfix) with ESMTPS id 65EB661DCD;
+ Wed,  6 Jul 2022 10:17:01 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3CCBAC3411C;
+ Wed,  6 Jul 2022 10:16:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1657102620;
+ bh=7bPjA96rRPT+DGytlEDSgU0khPF5mhmCE+N6Sj/+pX0=;
+ h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+ b=MUgKma1PWpnpMDghIZQh8EtTZFc0uHhnnLOGcO4WLW01/ALctT9T0mGXb/UZ4ycFh
+ FMnFOYEkGiLfFj53DHKhkmZqjEKcBr9BxqV2o7jxVnT2uY+bXlwxzw9Z35ZE07Ic6W
+ btPm953snmkTQJQRCqWwJrTp4aLbTApep3TD3Kg7XVYV5lMTi/vbUZIOJwtVgc732L
+ TdFTQqLAv3XrPECQEJ2JEX4Kg608uTSesLozNmO574Le+Wedby0DBstl4sXSIocraG
+ H5s4M2KwmpYNRXJsTwV7FKPCRfI3tbOoLeMUrirVvdK8KMnez0rZ9SXorZxYH5GhBk
+ VDayWLkrOc9yg==
+From: Mark Brown <broonie@kernel.org>
+To: pierre-louis.bossart@linux.intel.com, lgirdwood@gmail.com,
+ peter.ujfalusi@linux.intel.com, cezary.rojewski@intel.com
+In-Reply-To: <20220630065638.11183-1-peter.ujfalusi@linux.intel.com>
+References: <20220630065638.11183-1-peter.ujfalusi@linux.intel.com>
+Subject: Re: [PATCH v2 0/2] ASoC: Intel: Skylake: Fixes for skl_get_ssp_clks()
+Message-Id: <165710261895.218646.13648148801407891657.b4-ty@kernel.org>
+Date: Wed, 06 Jul 2022 11:16:58 +0100
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Firefox/91.0 Thunderbird/91.10.0
-Subject: Re: [PATCH 1/2] ASoC: SOF: sof-client-probes: fix error codes in
- sof_probes_compr_copy()
-Content-Language: en-US
-From: =?UTF-8?Q?P=c3=a9ter_Ujfalusi?= <peter.ujfalusi@linux.intel.com>
-To: Dan Carpenter <dan.carpenter@oracle.com>,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-References: <YsU4dYXYYVsfs92J@kili>
- <26db7e60-51d1-444a-7620-8225239ad7bf@linux.intel.com>
-In-Reply-To: <26db7e60-51d1-444a-7620-8225239ad7bf@linux.intel.com>
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: alsa-devel@alsa-project.org, Kai Vehmanen <kai.vehmanen@linux.intel.com>,
- Daniel Baluta <daniel.baluta@nxp.com>, kernel-janitors@vger.kernel.org,
- Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>,
- Mark Brown <broonie@kernel.org>,
- Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
- Bard Liao <yung-chuan.liao@linux.intel.com>,
- sound-open-firmware@alsa-project.org
+Cc: alsa-devel@alsa-project.org, yung-chuan.liao@linux.intel.com,
+ tiwai@suse.com, kai.vehmanen@linux.intel.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -95,67 +80,43 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-
-
-On 06/07/2022 12:05, Péter Ujfalusi wrote:
+On Thu, 30 Jun 2022 09:56:36 +0300, Peter Ujfalusi wrote:
+> Changes since v1:
+> - drop reference to a might never happening patch from the commit message of
+>   patch 2.
 > 
+> Cover letter:
+> while looking at long standing sparse reports regarding to arrays of flexible
+> structures (arrays of flexible arrays of flexible structures, really).
 > 
-> On 06/07/2022 10:23, Dan Carpenter wrote:
->> This function tries to return the number of bytes that it was able to
->> copy to the user.  However, because there are multiple calls to
->> copy_to_user() in a row that means the bytes are not necessarily
->> consecutive so it's not useful.  Just return -EFAULT instead.
-> 
-> The function is copying data from a circular buffer to a use buffer.
-> The single copy_to_user() is used when we don't have wrapping, the
-> 'double' copy_to_user() is when we wrap, so first copy is from the end
-> of the buffer then we copy the data from the start of the buffer to get
-> all data.
+> [...]
 
-What I wanted to say is that the original code is correct, this patch
-would break the functionality.
+Applied to
 
-> 
->> Fixes: 3dc0d7091778 ("ASoC: SOF: Convert the generic probe support to SOF client")
->> Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
->> ---
->>  sound/soc/sof/sof-client-probes.c | 12 ++++++------
->>  1 file changed, 6 insertions(+), 6 deletions(-)
->>
->> diff --git a/sound/soc/sof/sof-client-probes.c b/sound/soc/sof/sof-client-probes.c
->> index 1f1ea93a7fbf..679bc7d371fc 100644
->> --- a/sound/soc/sof/sof-client-probes.c
->> +++ b/sound/soc/sof/sof-client-probes.c
->> @@ -385,7 +385,6 @@ static int sof_probes_compr_copy(struct snd_soc_component *component,
->>  	struct snd_compr_runtime *rtd = cstream->runtime;
->>  	unsigned int offset, n;
->>  	void *ptr;
->> -	int ret;
->>  
->>  	if (count > rtd->buffer_size)
->>  		count = rtd->buffer_size;
->> @@ -395,14 +394,15 @@ static int sof_probes_compr_copy(struct snd_soc_component *component,
->>  	n = rtd->buffer_size - offset;
->>  
->>  	if (count < n) {
->> -		ret = copy_to_user(buf, ptr, count);
->> +		if (copy_to_user(buf, ptr, count))
->> +			return -EFAULT;
->>  	} else {
->> -		ret = copy_to_user(buf, ptr, n);
->> -		ret += copy_to_user(buf + n, rtd->dma_area, count - n);
->> +		if (copy_to_user(buf, ptr, n))
->> +			return -EFAULT;
->> +		if (copy_to_user(buf + n, rtd->dma_area, count - n))
->> +			return -EFAULT;
->>  	}
->>  
->> -	if (ret)
->> -		return count - ret;
->>  	return count;
->>  }
->>  
-> 
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
 
--- 
-Péter
+Thanks!
+
+[1/2] ASoC: Intel: Skylake: Correct the ssp rate discovery in skl_get_ssp_clks()
+      commit: 35981d51fe5a3310a8c895cf0daf1809f143b8ac
+[2/2] ASoC: Intel: Skylake: Correct the handling of fmt_config flexible array
+      commit: 564025b9fe472a7a62895c55a66edd2abeea88a1
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
