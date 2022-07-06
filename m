@@ -4,85 +4,72 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id F11C4C433EF
-	for <alsa-devel@archiver.kernel.org>; Wed,  6 Jul 2022 11:43:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 990F5C433EF
+	for <alsa-devel@archiver.kernel.org>; Wed,  6 Jul 2022 11:53:35 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 1FDF216C3;
-	Wed,  6 Jul 2022 13:42:55 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1FDF216C3
+	by alsa0.perex.cz (Postfix) with ESMTPS id 78C5F169C;
+	Wed,  6 Jul 2022 13:52:43 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 78C5F169C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1657107825;
-	bh=bEmv51BUgtlaQPVXINzijWhRoPuXz+jBd5s0FCRQDRE=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	s=default; t=1657108413;
+	bh=BHmWG6c0VB2XxZFlHPPmiVu4GAR7HgrBVzWFqZOxawc=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=soR8/mvI+aSEfvGo6KsWTN3uSN7jk+R2q6hPKhYJ69CG3dvseigxiLJ3pf8MY328q
-	 7x/b7wdBzAcGxSuHdTTRjzuGC5RJrVHmscy6nWouyPzIvE+luu3Q4Q4/OynBPWZSxG
-	 M4pCAoQ0lYXOvRACCxI8vMAWmcflHg6dYyU9/piA=
+	b=uZGMdhPLHe4JhQdmoODdc4F4xQ6z+qZA4vpwOGV7IecKbtYFxI56wBYYZmrKsqlmj
+	 KfA7KBB42+DZEw7FW01DL3e7xfMoKrf6A73Cope6n9aDC/f7OJmSLJUh/VmUfCljlL
+	 oGo/5m4kz7DPVeNx3yuWT6JDLtItlRWaWYKcxkKU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 07111F8055A;
-	Wed,  6 Jul 2022 13:40:56 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 12755F804B4;
+	Wed,  6 Jul 2022 13:52:43 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id A5C0EF8023A; Wed,  6 Jul 2022 11:31:56 +0200 (CEST)
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de
- [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+ id 51792F804B4; Wed,  6 Jul 2022 13:52:41 +0200 (CEST)
+Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id DD4B7F800C5
- for <alsa-devel@alsa-project.org>; Wed,  6 Jul 2022 11:31:50 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DD4B7F800C5
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
- by metis.ext.pengutronix.de with esmtps
- (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92)
- (envelope-from <ukl@pengutronix.de>)
- id 1o91Nj-0005lo-Ss; Wed, 06 Jul 2022 11:31:39 +0200
-Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
- by drehscheibe.grey.stw.pengutronix.de with esmtp (Exim 4.94.2)
- (envelope-from <ukl@pengutronix.de>)
- id 1o91Na-004jSK-Sg; Wed, 06 Jul 2022 11:31:34 +0200
-Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.94.2)
- (envelope-from <ukl@pengutronix.de>)
- id 1o91Nd-003KbY-Gm; Wed, 06 Jul 2022 11:31:33 +0200
-Date: Wed, 6 Jul 2022 11:31:30 +0200
-From: Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To: Vladimir Oltean <olteanv@gmail.com>
-Subject: Re: [PATCH 6/6] i2c: Make remove callback return void
-Message-ID: <20220706093130.cet7y7upl76rp6ug@pengutronix.de>
-References: <20220628140313.74984-1-u.kleine-koenig@pengutronix.de>
- <20220628140313.74984-7-u.kleine-koenig@pengutronix.de>
- <20220706091315.p5k2jck3rmyjhvqw@skbuf>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 976FCF8012A
+ for <alsa-devel@alsa-project.org>; Wed,  6 Jul 2022 13:52:38 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 976FCF8012A
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
+ header.b="RGTmDp8B"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+ d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+ t=1657108359; x=1688644359;
+ h=from:to:cc:subject:date:message-id:in-reply-to:
+ references:mime-version:content-transfer-encoding;
+ bh=BHmWG6c0VB2XxZFlHPPmiVu4GAR7HgrBVzWFqZOxawc=;
+ b=RGTmDp8BYOIKJg0mbVu9I0uDeHykj/ppALz7j5r6aFmAhHuhgj1gj9ec
+ gMQTUrHI+xkYz+4aMx2KevZkbh/qGI3gE5NnhVhwr4ogtj22CDcEOa6dx
+ YW6MIpLUUQE8ZFA469hE3NjlahVJVd6KXfz6ftG8UmVy3Eg4xL9xebHI8
+ Mgq2aOyX3/51vhwXbVE+ma37O2JSBOVzVaIIhpUipNPipmwda8Nt9uDpK
+ M/vVg0Ys8CopYlC8jyiqb9dpFUZUQPifqUaLKOWvJ2gViXnUXMPbno/Cy
+ Dr3fsSmZBIv45w7SnLIZzNYZpYryB81N/6shyiFRlK3iTQsbLSSssgYtj A==;
+X-IronPort-AV: E=McAfee;i="6400,9594,10399"; a="370042598"
+X-IronPort-AV: E=Sophos;i="5.92,249,1650956400"; d="scan'208";a="370042598"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+ by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 06 Jul 2022 04:52:35 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.92,249,1650956400"; d="scan'208";a="920136253"
+Received: from crojewsk-ctrl.igk.intel.com ([10.102.9.28])
+ by fmsmga005.fm.intel.com with ESMTP; 06 Jul 2022 04:52:34 -0700
+From: Cezary Rojewski <cezary.rojewski@intel.com>
+To: alsa-devel@alsa-project.org,
+	tiwai@suse.com
+Subject: [PATCH 1/9] ALSA: hda: Do not unset preset when cleaning up codec
+Date: Wed,  6 Jul 2022 14:02:22 +0200
+Message-Id: <20220706120230.427296-2-cezary.rojewski@intel.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20220706120230.427296-1-cezary.rojewski@intel.com>
+References: <20220706120230.427296-1-cezary.rojewski@intel.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature"; boundary="yp3ilhvx53xygi7l"
-Content-Disposition: inline
-In-Reply-To: <20220706091315.p5k2jck3rmyjhvqw@skbuf>
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de);
- SAEximRunCond expanded to false
-X-PTX-Original-Recipient: alsa-devel@alsa-project.org
-X-Mailman-Approved-At: Wed, 06 Jul 2022 13:40:50 +0200
-Cc: alsa-devel@alsa-project.org, linux-pwm@vger.kernel.org,
- linux-iio@vger.kernel.org, linux-fbdev@vger.kernel.org,
- dri-devel@lists.freedesktop.org, platform-driver-x86@vger.kernel.org,
- linux-mtd@lists.infradead.org, linux-i2c@vger.kernel.org,
- linux-stm32@st-md-mailman.stormreply.com, linux-leds@vger.kernel.org,
- linux-rtc@vger.kernel.org, chrome-platform@lists.linux.dev,
- linux-staging@lists.linux.dev, kasan-dev@googlegroups.com,
- linux-clk@vger.kernel.org, linux-serial@vger.kernel.org,
- linux-input@vger.kernel.org, linux-media@vger.kernel.org,
- devicetree@vger.kernel.org, linux-watchdog@vger.kernel.org,
- Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <uwe@kleine-koenig.org>,
- linux-pm@vger.kernel.org, acpi4asus-user@lists.sourceforge.net,
- linux-gpio@vger.kernel.org, linux-mediatek@lists.infradead.org,
- linux-rpi-kernel@lists.infradead.org, openipmi-developer@lists.sourceforge.net,
- linux-omap@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- linux-hwmon@vger.kernel.org, patches@opensource.cirrus.com,
- linux-usb@vger.kernel.org, Wolfram Sang <wsa@kernel.org>,
- linux-crypto@vger.kernel.org, netdev@vger.kernel.org,
- linux-integrity@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+Content-Transfer-Encoding: 8bit
+Cc: Cezary Rojewski <cezary.rojewski@intel.com>,
+ pierre-louis.bossart@linux.intel.com, hdegoede@redhat.com, broonie@kernel.org,
+ amadeuszx.slawinski@linux.intel.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -98,56 +85,30 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+snd_hda_codec_cleanup_for_unbind() unsets preset what interferes with
+module unloading and triggers null-ptr-deref. Preset is assigned only
+once, during device/driver matching whereas module reload and unload
+follow completely different path and may occur several times during
+runtime.
 
---yp3ilhvx53xygi7l
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Fixes: 9a6246ff78ac ("ALSA: hda - Implement unbind more safely")
+Signed-off-by: Cezary Rojewski <cezary.rojewski@intel.com>
+---
+ sound/pci/hda/hda_codec.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-On Wed, Jul 06, 2022 at 12:13:15PM +0300, Vladimir Oltean wrote:
-> On Tue, Jun 28, 2022 at 04:03:12PM +0200, Uwe Kleine-K=F6nig wrote:
-> > From: Uwe Kleine-K=F6nig <uwe@kleine-koenig.org>
-> >=20
-> > The value returned by an i2c driver's remove function is mostly ignored.
-> > (Only an error message is printed if the value is non-zero that the
-> > error is ignored.)
-> >=20
-> > So change the prototype of the remove function to return no value. This
-> > way driver authors are not tempted to assume that passing an error to
-> > the upper layer is a good idea. All drivers are adapted accordingly.
-> > There is no intended change of behaviour, all callbacks were prepared to
-> > return 0 before.
-> >=20
-> > Signed-off-by: Uwe Kleine-K=F6nig <u.kleine-koenig@pengutronix.de>
-> > ---
->=20
-> Assuming you remove the spurious kasan change:
+diff --git a/sound/pci/hda/hda_codec.c b/sound/pci/hda/hda_codec.c
+index 7579a6982f47..9ceb642ac819 100644
+--- a/sound/pci/hda/hda_codec.c
++++ b/sound/pci/hda/hda_codec.c
+@@ -795,7 +795,6 @@ void snd_hda_codec_cleanup_for_unbind(struct hda_codec *codec)
+ 	snd_array_free(&codec->cvt_setups);
+ 	snd_array_free(&codec->spdif_out);
+ 	snd_array_free(&codec->verbs);
+-	codec->preset = NULL;
+ 	codec->follower_dig_outs = NULL;
+ 	codec->spdif_status_reset = 0;
+ 	snd_array_free(&codec->mixers);
+-- 
+2.25.1
 
-It's already gone in my tree, see
-https://git.pengutronix.de/cgit/ukl/linux/commit/?h=3Di2c-remove-void
-
-> Reviewed-by: Vladimir Oltean <olteanv@gmail.com>
-
-Thanks
-Uwe
-
---=20
-Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
-Industrial Linux Solutions                 | https://www.pengutronix.de/ |
-
---yp3ilhvx53xygi7l
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAmLFVmcACgkQwfwUeK3K
-7AkOwAgAkt7aZ38n1lpOoBzXslSDQyp/lKc47Ehs+a1LTESfOP6+4frSHSJhaIMw
-WX2bIAZO2kfHd2GJJ1+miP0YO3eys+YJus7vlVp9LsZCtTrR7uUlJ9PhG4eVmYxD
-ZPZMbP533Mkp9Tj201PJRSbnOlhRhKnwpl4kQfj9nXD478yP1zbT/7CDh4Im1isE
-dOUnNdPTAnT17u0fIRREu6TIC/hKy5Lh772ukCBsHwkBWQD4WTtLmdL1uZrspPa3
-fKxI4tIGoKufFCNMNNzK8li/dghhpkn4uy8iNwyjkkmjfCXAkNdwNJiCDlo6qPwb
-idJ3DvpJEEx44L8KdcjzBYUHdSNUkQ==
-=ZnQL
------END PGP SIGNATURE-----
-
---yp3ilhvx53xygi7l--
