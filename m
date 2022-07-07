@@ -4,76 +4,115 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 571F0C433EF
-	for <alsa-devel@archiver.kernel.org>; Thu,  7 Jul 2022 12:59:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 42802C43334
+	for <alsa-devel@archiver.kernel.org>; Thu,  7 Jul 2022 13:27:32 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3658F1622;
-	Thu,  7 Jul 2022 14:58:18 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3658F1622
+	by alsa0.perex.cz (Postfix) with ESMTPS id 970DCAE9;
+	Thu,  7 Jul 2022 15:26:40 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 970DCAE9
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1657198748;
-	bh=AzTM3SmQRFfNYnQkQRvC+We0enMtYhZMtZYvOWjpu3w=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=JB9v23qqvQONQt1EgClM8EzAXKlPlq80tJJLWMbXGpjVv/vggat30FPFr5lOz7GHp
-	 pi1hr71hVSIrri+QqtqUKn7abYNvF4gbXjDGr051cI/U/7URwYsm5/gBnl5FkVql/d
-	 8jy3nfLVOwfvGTld7tT8KEoBE0PWkUUUmHOWpvRc=
+	s=default; t=1657200450;
+	bh=UyNDd2Xy5ZQ3z1UYEdDCvysH0oLAZM4c3IewCQkMw6Q=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=PXw80WpfM6INHjzquQx+sHdZvbSSH6Bt6avECsuDonKJ79vMdhidkTnHGKxSd2PqQ
+	 tztRaQDa1VNsbGjXS23Vg75axKPGduN9ZGMa1N7qkFr8ByqRDY/xm9Z89Me4vr72rM
+	 GO8WdtBrVXCB0q19gD9d/VFos4OmlT3ty5cblcIU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 7AB72F80549;
-	Thu,  7 Jul 2022 14:56:55 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 35FEEF80137;
+	Thu,  7 Jul 2022 15:26:40 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id E99B2F80544; Thu,  7 Jul 2022 14:56:54 +0200 (CEST)
-Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
+ id 46AC5F80104; Thu,  7 Jul 2022 15:26:39 +0200 (CEST)
+Received: from NAM02-BN1-obe.outbound.protection.outlook.com
+ (mail-bn1nam07on2056.outbound.protection.outlook.com [40.107.212.56])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 6DE74F804FA
- for <alsa-devel@alsa-project.org>; Thu,  7 Jul 2022 14:56:48 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6DE74F804FA
+ by alsa1.perex.cz (Postfix) with ESMTPS id 5E2A9F80104
+ for <alsa-devel@alsa-project.org>; Thu,  7 Jul 2022 15:26:31 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5E2A9F80104
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="lH81vuB5"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
- d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1657198609; x=1688734609;
- h=from:to:cc:subject:date:message-id:in-reply-to:
- references:mime-version:content-transfer-encoding;
- bh=AzTM3SmQRFfNYnQkQRvC+We0enMtYhZMtZYvOWjpu3w=;
- b=lH81vuB5qyZg1sbF7ktcFjHnL0WnZ2TOizECA9qnmB7gW169avtbXYkQ
- vlFRE3pIgN/SvIbrNhjNcrMWp4mePEX2a4IdD3qPaPVPwVmZP/rx4W0jP
- EEOyztVCsv9wpInepBATuTZhNOOf4d1zxzIip5RM9DWJh4atQW8+nDV4x
- lk9h5+Xo+uowPCrqs2EcSsUrI3XnmXT1su0+jjMWwLoKxc6FYqXbrqvZ6
- g62nrSASjegGsxy4MhMArNWuDoVbHPQ9Er/R8zc0mN687+LhrR2SUf5i/
- zJtODyr0OE7I5lqx3nk5Lg1ukXrCcqElwAWwb9tYStPGDgy3HvlMXNuRA A==;
-X-IronPort-AV: E=McAfee;i="6400,9594,10400"; a="272810626"
-X-IronPort-AV: E=Sophos;i="5.92,252,1650956400"; d="scan'208";a="272810626"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
- by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 07 Jul 2022 05:56:46 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.92,252,1650956400"; d="scan'208";a="620781769"
-Received: from dev2 (HELO DEV2.igk.intel.com) ([10.237.148.94])
- by orsmga008.jf.intel.com with ESMTP; 07 Jul 2022 05:56:44 -0700
-From: =?UTF-8?q?Amadeusz=20S=C5=82awi=C5=84ski?=
- <amadeuszx.slawinski@linux.intel.com>
-To: Oder Chiou <oder_chiou@realtek.com>,
-	Mark Brown <broonie@kernel.org>
-Subject: [PATCH v2 4/5] ASoC: codecs: rt298: Set component to NULL on remove
-Date: Thu,  7 Jul 2022 14:57:00 +0200
-Message-Id: <20220707125701.3518263-5-amadeuszx.slawinski@linux.intel.com>
+ dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com
+ header.b="yrHkpd8s"
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=V24/EtVEf7tm31+FcrX2yTejksO/H+CG4BlYtlmJ1BvrdIA2ZV+ObgKZWr+mCJ2MfYmVutxvmctIO5AhUz4CBAY18MOAWFwb88VeBjfH12Z0ajOto5moKLvNUgpnedwlz1OqgngcuGsYpQvTHxv1+BzSnhB5af7AazfttPn6e4kOYV9pVcAqVZ9OQGdqdMWPk/xOuXxneq78Orms0JGrnP6Hn6MwvgU6UuZmRE6oaXIhzKhRZSiybrzZznHEftw/i0h2fr/HVYOTg4sUXclM4iHW//aKx2ffKvtYT6JGoip44FwGBqzvb1maoxbHk03MrYmfGmrJirvTmA89nCc4Bg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=HfMly5rDRIY47P6XSIpWR64TGn5M3TgXr/DrSkfpN1I=;
+ b=kDii3V5hJyPOQScdNcfaQoDKqIpGKGgnRtwWYffzn+DWDOrm6qpwbPcSq6A99avCQP59a83aaXQIih0FZGDOMsbXuEOdfy+/gUvzAtVSEORGsbFiK02gG/GN8fvWvdFQq99+tuuu4G9ojdXrIiSU9q5+9S/aCyCpLubldsjpwjbfXLtEyZyyRKemkGuCICFAw9NTcxQyns8mv/MyqXowtFebLGCLUUr8rXCJRlOSGKhcj2zz0SLgCdmhVFdDn5PrBiJhhMzpERhUzz3dpsISbucA3KJO56Dp8fGRAjXCi5kqWH6cxJtV9INfAOJvsJo5OqctF5302N2G7PTg5JJRKg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 165.204.84.17) smtp.rcpttodomain=kernel.org smtp.mailfrom=amd.com; dmarc=pass
+ (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
+ dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1; 
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=HfMly5rDRIY47P6XSIpWR64TGn5M3TgXr/DrSkfpN1I=;
+ b=yrHkpd8syZuFSSC3IQXWaCXlry5uZPFaYNAvrRUoprvtyBj+vU0vi/td9TP3BRi1HNfYF3dYQVmtrkqnKi2jTjnBkrQP7d1CyXdNbj6BJwtvfl2/r9jDuhXRioO6wJXeXlgmT7U6ahLFP4PS44d5drTnm5oYAu0/QiS4N1jrBRg=
+Received: from MWHPR14CA0012.namprd14.prod.outlook.com (2603:10b6:300:ae::22)
+ by CH2PR12MB4200.namprd12.prod.outlook.com (2603:10b6:610:ac::16)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5395.15; Thu, 7 Jul
+ 2022 13:26:27 +0000
+Received: from CO1NAM11FT007.eop-nam11.prod.protection.outlook.com
+ (2603:10b6:300:ae:cafe::74) by MWHPR14CA0012.outlook.office365.com
+ (2603:10b6:300:ae::22) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5417.17 via Frontend
+ Transport; Thu, 7 Jul 2022 13:26:26 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
+ smtp.mailfrom=amd.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=amd.com;
+Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
+ 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
+ client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
+Received: from SATLEXMB04.amd.com (165.204.84.17) by
+ CO1NAM11FT007.mail.protection.outlook.com (10.13.174.131) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.5417.15 via Frontend Transport; Thu, 7 Jul 2022 13:26:26 +0000
+Received: from SATLEXMB03.amd.com (10.181.40.144) by SATLEXMB04.amd.com
+ (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.28; Thu, 7 Jul
+ 2022 08:26:26 -0500
+Received: from vijendar-X570-GAMING-X.amd.com (10.180.168.240) by
+ SATLEXMB03.amd.com (10.181.40.144) with Microsoft SMTP Server id 15.1.2375.28
+ via Frontend Transport; Thu, 7 Jul 2022 08:26:22 -0500
+From: Vijendar Mukunda <Vijendar.Mukunda@amd.com>
+To: <broonie@kernel.org>, <alsa-devel@alsa-project.org>
+Subject: [PATCH 1/3] ASoC: amd: remove unused header file inclusion
+Date: Thu, 7 Jul 2022 18:56:08 +0530
+Message-ID: <20220707132613.3150931-1-Vijendar.Mukunda@amd.com>
 X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20220707125701.3518263-1-amadeuszx.slawinski@linux.intel.com>
-References: <20220707125701.3518263-1-amadeuszx.slawinski@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- Cezary Rojewski <cezary.rojewski@intel.com>, alsa-devel@alsa-project.org,
- Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>,
- =?UTF-8?q?Amadeusz=20S=C5=82awi=C5=84ski?=
- <amadeuszx.slawinski@linux.intel.com>
+Content-Type: text/plain
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 45566763-9762-4d9c-1cea-08da601c4b6f
+X-MS-TrafficTypeDiagnostic: CH2PR12MB4200:EE_
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: W8nqQr6/lPb6QPC98LFvNKhX8bsSl3EUgByW5kxotNNv32kon8cO8luVEla2CLb/LGUtoRGNPtmwXg3YVtoXGGa9+zW4FS7PaiUpx58SiqX87L7afLndLfx9CYoX3SuFqPmFXS4KvXDAbsfGh4WElXichpEjaiFtezYTcOEkGqCNxn09CaghmhlPi2YYM46gsPt7Iq8Cc9Wj8FR4Rrz/Y77gcH/uWINV65eVhsQ3o3TgwaAMRnsICVHAJa3f+FsKWeQDfvi3O3JgFZSJJkw5lHHIEL2SXDICZIfL7T05pmjnnPeIa4+0yNqEVYDsYt9xyRj/VFyAJVHBhZajYqUQy775wIavxh7eXF6wE7BPfq0aGSxdvpa1fHBFFDf63piovOvqhGJGY1AaEMDDbnORp3r12k/d+/FZnFGTQtq0clvn8simMw9hJGE7G6TSBsXghj4BIe9AMkm7rvkUe0XZRDfTy2LtUP7hFzxZAc7wntuJdbzDiMXts90xFL+IqFiqGKVH7wFUw6gqivFJGH47ZUTs3Y75L5qlQW2utVldQWQ/cK/SwqDClH8tLO9gE9/t12R26BzOyqamVn4bDBy1RPLn7Ll1JNCf3IxreOBCMX5xnm6TX+R9Nm+/vK7UVKaYXW5QILjOVjw7jM49bgurAMW7X903EqJO6/Nd9ZlX3gBQxMfzk124n76HAyjCYLt7vJ7sOhazog7Xy+VJuteuQDgXpecLOX2TQMt7XQt/kYAW67JNbsZkBdz4eGBki4JH3zE3QeQY3S5fGOeZAvclVDk9pDVzGOcTxMXIVvUJizMULEAJDNEoVyacN0Se8mJPx98MIJ5TuPaJIgEhcEOPlCcEth92IWf9jc3WSlD0NoHccj6aRfFiDhvLwoVWT7Rd
+X-Forefront-Antispam-Report: CIP:165.204.84.17; CTRY:US; LANG:en; SCL:1; SRV:;
+ IPV:CAL; SFV:NSPM; H:SATLEXMB04.amd.com; PTR:InfoDomainNonexistent; CAT:NONE;
+ SFS:(13230016)(4636009)(136003)(39860400002)(346002)(396003)(376002)(40470700004)(36840700001)(46966006)(82310400005)(426003)(5660300002)(81166007)(8936002)(54906003)(70206006)(8676002)(86362001)(36860700001)(6666004)(4326008)(4744005)(110136005)(70586007)(356005)(41300700001)(316002)(40480700001)(2906002)(40460700003)(34020700004)(47076005)(7696005)(36756003)(26005)(2616005)(336012)(1076003)(82740400003)(186003)(83380400001)(478600001)(36900700001);
+ DIR:OUT; SFP:1101; 
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Jul 2022 13:26:26.5395 (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 45566763-9762-4d9c-1cea-08da601c4b6f
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d; Ip=[165.204.84.17];
+ Helo=[SATLEXMB04.amd.com]
+X-MS-Exchange-CrossTenant-AuthSource: CO1NAM11FT007.eop-nam11.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH2PR12MB4200
+Cc: Sunil-kumar.Dommati@amd.com, open list <linux-kernel@vger.kernel.org>,
+ Basavaraj.Hiregoudar@amd.com, amadeuszx.slawinski@linux.intel.com,
+ Liam Girdwood <lgirdwood@gmail.com>,
+ Vijendar Mukunda <Vijendar.Mukunda@amd.com>, zhuning@everest-semi.com,
+ Takashi Iwai <tiwai@suse.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -89,27 +128,26 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Make sure that component is set to proper value, otherwise we may
-dereference freed component in interrupt.
+Removed unused header file inclusion from Jadeite platform machine
+driver.
 
-Signed-off-by: Amadeusz Sławiński <amadeuszx.slawinski@linux.intel.com>
-Reviewed-by: Cezary Rojewski <cezary.rojewski@intel.com>
+Signed-off-by: Vijendar Mukunda <Vijendar.Mukunda@amd.com>
 ---
- sound/soc/codecs/rt298.c | 1 +
- 1 file changed, 1 insertion(+)
+ sound/soc/amd/acp-es8336.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/sound/soc/codecs/rt298.c b/sound/soc/codecs/rt298.c
-index e1d94f128fd9..b0b53d4f07df 100644
---- a/sound/soc/codecs/rt298.c
-+++ b/sound/soc/codecs/rt298.c
-@@ -1022,6 +1022,7 @@ static void rt298_remove(struct snd_soc_component *component)
- 	struct rt298_priv *rt298 = snd_soc_component_get_drvdata(component);
+diff --git a/sound/soc/amd/acp-es8336.c b/sound/soc/amd/acp-es8336.c
+index eec3d57092fa..8ce26c9b3ead 100644
+--- a/sound/soc/amd/acp-es8336.c
++++ b/sound/soc/amd/acp-es8336.c
+@@ -23,7 +23,6 @@
+ #include <linux/module.h>
+ #include <linux/acpi.h>
  
- 	cancel_delayed_work_sync(&rt298->jack_detect_work);
-+	rt298->component = NULL;
- }
+-#include "../codecs/es8316.h"
+ #include "acp.h"
  
- #ifdef CONFIG_PM
+ #define DUAL_CHANNEL	2
 -- 
 2.25.1
 
