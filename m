@@ -4,69 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 09112C433EF
-	for <alsa-devel@archiver.kernel.org>; Thu,  7 Jul 2022 12:34:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 67104C43334
+	for <alsa-devel@archiver.kernel.org>; Thu,  7 Jul 2022 12:34:25 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3AFA9167B;
-	Thu,  7 Jul 2022 14:33:16 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3AFA9167B
+	by alsa0.perex.cz (Postfix) with ESMTPS id AE6761687;
+	Thu,  7 Jul 2022 14:33:33 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AE6761687
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1657197246;
-	bh=uS+0VWHXUQV5mh/tay14hAtlkp9rOL81zNIc7hjh5Uw=;
+	s=default; t=1657197263;
+	bh=cEr1qSq7uKowCwXgd1HR85ENYkIp1VPbiFZkUH73JkU=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=F99Gf8GEzUXpLYaYbMYD1eBPerI1qiArP38yRIkhjlaQPefGe3WhX/BXcEhqSrz5H
-	 VRuAWF9QuyNIEj1ToCidYCcNXF2P9G0OKWrcbD6aQTrChz1s2MHMH2/eVf7jXn7VaN
-	 CRbSZQz31B5aqEk/xm2mX61mAtG2lqzXVpbrZEAk=
+	b=VGSAJsgIhWxZHRm3hmeJcY0r0YgtGENsg10MJ7YCRvtOizoX1OVWa70kze8o/bzc6
+	 8Puceegv+zzVB3kyge5eM6AuuYm+Qd5Ij0v5qCj4JUl8B1Q06UA+unI0T1vpN+J2z2
+	 YkZZvPElNFiCOlhK7FbaynR0YmwNGF2ssuED8l08=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 29D9DF80549;
-	Thu,  7 Jul 2022 14:32:10 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id B6EE3F80542;
+	Thu,  7 Jul 2022 14:32:12 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 0E693F80551; Thu,  7 Jul 2022 14:32:09 +0200 (CEST)
+ id 630D0F80557; Thu,  7 Jul 2022 14:32:10 +0200 (CEST)
 Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 83827F8053A
- for <alsa-devel@alsa-project.org>; Thu,  7 Jul 2022 14:32:02 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 83827F8053A
+ by alsa1.perex.cz (Postfix) with ESMTPS id A1874F80542
+ for <alsa-devel@alsa-project.org>; Thu,  7 Jul 2022 14:32:06 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A1874F80542
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="c5ZZPcaU"
+ header.b="Uy1z60XU"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1657197123; x=1688733123;
+ t=1657197127; x=1688733127;
  h=from:to:cc:subject:date:message-id:in-reply-to:
  references:mime-version:content-transfer-encoding;
- bh=uS+0VWHXUQV5mh/tay14hAtlkp9rOL81zNIc7hjh5Uw=;
- b=c5ZZPcaUo82dmWF/Gy+VXXgOxruFKd0geZG/Z4aBzi0wjfFdZR7dPJNV
- 2XMVgvffvyIeiim9TnCUkV96oDRq7drLflKmyHBQfqRtMWKQ320zINoPd
- 9YTBsf8famV3cyLg4DRBEUVVXGTBqvg0hZxen026QQgOxfuV0A/7yz91b
- 17zvo2VPwLD+ZsahiyxDBmoGly0aepYAi2BiwatrClOhNanqD96Cr1a79
- Swp7gJD2uJ+ViJVccWemZifg0VDJNkpVrqtwSbhVsU4XmvV+6V79Dv+Z8
- GBWw72I+IERFEkD+lWEEpr0OjblfkiITLvn5qTHOfzXFUSW98NQ2MoDMA w==;
-X-IronPort-AV: E=McAfee;i="6400,9594,10400"; a="272805929"
-X-IronPort-AV: E=Sophos;i="5.92,252,1650956400"; d="scan'208";a="272805929"
+ bh=cEr1qSq7uKowCwXgd1HR85ENYkIp1VPbiFZkUH73JkU=;
+ b=Uy1z60XUCqaqO02DH/RJv6a+wJOk8LlQqvkffzI2xetBcxJpAeaoCxFe
+ feUFGq0gtLck9ma93XT/EM0cWwxeyEU9FB9dS9GHNQijjrGq6SWP/8RXd
+ mbnupT97B3qfDJWZrJAxkLO2HYUmg57nEeBz/8/Cb4lAhNMnv9rYSPrua
+ cYlmIVgenpuVzyIHSSGWAqrMp60HenrDKF4/uWpaqXIsum9BJjV9lT89S
+ +qlc+PRiuITQZRf79tZsnUy/aaJYC9onSGpvwanEC+MR3tKnO1WKIrEqz
+ bpCfHAR80IWMWEmoujKDfJ3Nl0TtlxPDyawX4VhZa5M4gj+VobxVV1tl1 w==;
+X-IronPort-AV: E=McAfee;i="6400,9594,10400"; a="272805940"
+X-IronPort-AV: E=Sophos;i="5.92,252,1650956400"; d="scan'208";a="272805940"
 Received: from orsmga002.jf.intel.com ([10.7.209.21])
  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 07 Jul 2022 05:32:02 -0700
+ 07 Jul 2022 05:32:06 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.92,252,1650956400"; d="scan'208";a="593720640"
+X-IronPort-AV: E=Sophos;i="5.92,252,1650956400"; d="scan'208";a="593720668"
 Received: from crojewsk-ctrl.igk.intel.com ([10.102.9.28])
- by orsmga002.jf.intel.com with ESMTP; 07 Jul 2022 05:32:00 -0700
+ by orsmga002.jf.intel.com with ESMTP; 07 Jul 2022 05:32:04 -0700
 From: Cezary Rojewski <cezary.rojewski@intel.com>
 To: alsa-devel@alsa-project.org,
 	broonie@kernel.org
-Subject: [PATCH 07/12] ASoC: Intel: avs: Set max DMA segment size
-Date: Thu,  7 Jul 2022 14:41:48 +0200
-Message-Id: <20220707124153.1858249-8-cezary.rojewski@intel.com>
+Subject: [PATCH 09/12] ASoC: Intel: avs: Recognize FW_CFG_RESERVED
+Date: Thu,  7 Jul 2022 14:41:50 +0200
+Message-Id: <20220707124153.1858249-10-cezary.rojewski@intel.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20220707124153.1858249-1-cezary.rojewski@intel.com>
 References: <20220707124153.1858249-1-cezary.rojewski@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Cc: Cezary Rojewski <cezary.rojewski@intel.com>,
  pierre-louis.bossart@linux.intel.com, tiwai@suse.com, hdegoede@redhat.com,
@@ -86,33 +85,26 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Amadeusz Sławiński <amadeuszx.slawinski@linux.intel.com>
+If exposed by firmware, count RESERVED parameter as known one to avoid
+dumping noise in kernel logs.
 
-Apparently it is possible for code to allocate large buffers which may
-cause warnings as reported in [1]. This was fixed for HDA, SOF and
-skylake in patchset [2], fix it also for avs driver.
-
-[1] https://github.com/thesofproject/linux/issues/3430
-[2] https://lore.kernel.org/all/20220215132756.31236-1-tiwai@suse.de/
-
-Signed-off-by: Amadeusz Sławiński <amadeuszx.slawinski@linux.intel.com>
 Signed-off-by: Cezary Rojewski <cezary.rojewski@intel.com>
 ---
- sound/soc/intel/avs/core.c | 1 +
+ sound/soc/intel/avs/messages.c | 1 +
  1 file changed, 1 insertion(+)
 
-diff --git a/sound/soc/intel/avs/core.c b/sound/soc/intel/avs/core.c
-index 4234adeb3d1c..6a35bf45efcb 100644
---- a/sound/soc/intel/avs/core.c
-+++ b/sound/soc/intel/avs/core.c
-@@ -446,6 +446,7 @@ static int avs_pci_probe(struct pci_dev *pci, const struct pci_device_id *id)
- 		dma_set_mask(dev, DMA_BIT_MASK(32));
- 		dma_set_coherent_mask(dev, DMA_BIT_MASK(32));
- 	}
-+	dma_set_max_seg_size(dev, UINT_MAX);
+diff --git a/sound/soc/intel/avs/messages.c b/sound/soc/intel/avs/messages.c
+index 9cf621eaec5a..28a948cf790f 100644
+--- a/sound/soc/intel/avs/messages.c
++++ b/sound/soc/intel/avs/messages.c
+@@ -562,6 +562,7 @@ int avs_ipc_get_fw_config(struct avs_dev *adev, struct avs_fw_cfg *cfg)
+ 		case AVS_FW_CFG_DMA_BUFFER_CONFIG:
+ 		case AVS_FW_CFG_SCHEDULER_CONFIG:
+ 		case AVS_FW_CFG_CLOCKS_CONFIG:
++		case AVS_FW_CFG_RESERVED:
+ 			break;
  
- 	ret = avs_hdac_bus_init_streams(bus);
- 	if (ret < 0) {
+ 		default:
 -- 
 2.25.1
 
