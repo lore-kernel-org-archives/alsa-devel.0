@@ -4,65 +4,65 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 891C8C43334
-	for <alsa-devel@archiver.kernel.org>; Thu,  7 Jul 2022 12:33:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id F0343C433EF
+	for <alsa-devel@archiver.kernel.org>; Thu,  7 Jul 2022 12:33:52 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 9EC27162F;
-	Thu,  7 Jul 2022 14:32:50 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9EC27162F
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3830D166F;
+	Thu,  7 Jul 2022 14:33:01 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3830D166F
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1657197220;
-	bh=lXvpWcDjkZVCDIYvO9U+SgSDw9/2CcD+i1vW3uk7mQQ=;
+	s=default; t=1657197231;
+	bh=T2E0Q5fFnkdrzMkBZrVO1W+FKXmZjaVF5kOzboU7Is8=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=f9A9t4Vd5UvnfJFmG7JkvLQ+Oy+bdHMkovz4oK4l/SzDU/A/+qolE0L2YCFIq16Fa
-	 Y+GSCpApjyzDemUBCxifhwLyYNMM5a8SoyU3eO6AwJ7iG7NHLX+sWevHF4nE/ZXE7r
-	 0pizkWDOGcxAX5jNpIs0ksFvKs9FCtiGFm+g6wgA=
+	b=FyxNij2YsDMX9esgSe1E3SwTMTr3U4gTKW6cLMP43OGoryzU0unyeDMEs3YRIWUzR
+	 qSvtFCNpcnBqxgJe7Q7KuTGNwUZS/+5Vy/nx9nUSiP2/QABxWLFPHdfVEkqfpJy18G
+	 /8MBxlrJqBpVXwyLQE2F1XY46I/NuDlmOQYVYLDw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id F20F3F80538;
-	Thu,  7 Jul 2022 14:32:04 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 92FFDF80544;
+	Thu,  7 Jul 2022 14:32:08 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id C196FF8053D; Thu,  7 Jul 2022 14:32:03 +0200 (CEST)
+ id 872B1F800DF; Thu,  7 Jul 2022 14:32:07 +0200 (CEST)
 Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id F0058F80137
- for <alsa-devel@alsa-project.org>; Thu,  7 Jul 2022 14:31:56 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F0058F80137
+ by alsa1.perex.cz (Postfix) with ESMTPS id C9AADF800DF
+ for <alsa-devel@alsa-project.org>; Thu,  7 Jul 2022 14:31:57 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C9AADF800DF
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="JYJEpd1d"
+ header.b="mzF8mQpx"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1657197118; x=1688733118;
+ t=1657197119; x=1688733119;
  h=from:to:cc:subject:date:message-id:in-reply-to:
  references:mime-version:content-transfer-encoding;
- bh=lXvpWcDjkZVCDIYvO9U+SgSDw9/2CcD+i1vW3uk7mQQ=;
- b=JYJEpd1dblfpV68hnq38Jit6iFhkVngCTvABsRGTvLwfQKl8S2+w1/Eo
- 14XFds6McNH7nzyZcgSJqZ2ERRe+Sj2xzK07nlLfRys5OSGf3TjHVKA1j
- emHR5IvQYsAWt8Avu+oO3wjRNPGpTwB5xMWnEMVaf6hz8icpgvXGT74lA
- MWvKAh4Dzafto+F77GQPBiXlCA/b0EtV5m6mt9mK/p+DuzEAxBStgYLTy
- SsmVGXYQPqM2ji85hnCiqxDr2flAbbB4kWnkfk6VEO1zkQHHoW037fMKc
- m4AiaTaByxiN1NnjPsG4zEIagm2YRCxpwW3NOq7mOsqaw72DLztJUrjCi A==;
-X-IronPort-AV: E=McAfee;i="6400,9594,10400"; a="272805888"
-X-IronPort-AV: E=Sophos;i="5.92,252,1650956400"; d="scan'208";a="272805888"
+ bh=T2E0Q5fFnkdrzMkBZrVO1W+FKXmZjaVF5kOzboU7Is8=;
+ b=mzF8mQpxoLWm4yORtmr/TFncpxawIYVG6/6aZZyAqcuV5YuJ8ZnMbVk2
+ LygaSO3LLCw4oebvha6zpGgXb2bbx8H+cJp93LoGPlNGXAvwG1jqVCRgw
+ 5mHsx9hbiD2xVVFa9fdWeZ1RObUDmoe2EG7ln5MA2UVv+JOfQSmmusTmA
+ atEKbAMVUVb85nDpxuUF2M8nfYvxAL0m+km4Dr7rXJEjRB/H2c4Jpn6ZY
+ tU0CAV68cPeUrHM0rNzEUxADywOAuX8Pr/zgugGEjoq9ocsaTwhgoaJC7
+ UXZC/6vQlu3rr0dPmkLt5xViQUv129/jgRcByi6asp6KWTj26XL80pnJ0 g==;
+X-IronPort-AV: E=McAfee;i="6400,9594,10400"; a="272805907"
+X-IronPort-AV: E=Sophos;i="5.92,252,1650956400"; d="scan'208";a="272805907"
 Received: from orsmga002.jf.intel.com ([10.7.209.21])
  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 07 Jul 2022 05:31:51 -0700
+ 07 Jul 2022 05:31:56 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.92,252,1650956400"; d="scan'208";a="593720559"
+X-IronPort-AV: E=Sophos;i="5.92,252,1650956400"; d="scan'208";a="593720576"
 Received: from crojewsk-ctrl.igk.intel.com ([10.102.9.28])
- by orsmga002.jf.intel.com with ESMTP; 07 Jul 2022 05:31:50 -0700
+ by orsmga002.jf.intel.com with ESMTP; 07 Jul 2022 05:31:54 -0700
 From: Cezary Rojewski <cezary.rojewski@intel.com>
 To: alsa-devel@alsa-project.org,
 	broonie@kernel.org
-Subject: [PATCH 02/12] ASoC: Intel: avs: Assign I2S gateway when parsing
- topology
-Date: Thu,  7 Jul 2022 14:41:43 +0200
-Message-Id: <20220707124153.1858249-3-cezary.rojewski@intel.com>
+Subject: [PATCH 04/12] ASoC: Intel: avs: Copy only as many RX bytes as
+ necessary
+Date: Thu,  7 Jul 2022 14:41:45 +0200
+Message-Id: <20220707124153.1858249-5-cezary.rojewski@intel.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20220707124153.1858249-1-cezary.rojewski@intel.com>
 References: <20220707124153.1858249-1-cezary.rojewski@intel.com>
@@ -86,61 +86,58 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-For formatted port - ssp%d - descriptions to have an effect, copier
-module templates need to be updated with specified port value. This
-value is later propagated to the firmware when module instances are
-being instantiated.
+There is no need to copy number of bytes specified by IPC message caller
+if DSP firmware returned lower number. In consequence, LARGE_CONFIG_GET
+handler is simplified.
 
 Signed-off-by: Cezary Rojewski <cezary.rojewski@intel.com>
 ---
- sound/soc/intel/avs/topology.c | 27 +++++++++++++++++++++++++++
- 1 file changed, 27 insertions(+)
+ sound/soc/intel/avs/ipc.c      | 1 +
+ sound/soc/intel/avs/messages.c | 6 ++----
+ 2 files changed, 3 insertions(+), 4 deletions(-)
 
-diff --git a/sound/soc/intel/avs/topology.c b/sound/soc/intel/avs/topology.c
-index 6a06fe387d13..8a9f9fc48938 100644
---- a/sound/soc/intel/avs/topology.c
-+++ b/sound/soc/intel/avs/topology.c
-@@ -808,6 +808,30 @@ static const struct avs_tplg_token_parser pin_format_parsers[] = {
- 	},
- };
+diff --git a/sound/soc/intel/avs/ipc.c b/sound/soc/intel/avs/ipc.c
+index d755ba8b8518..020d85c7520d 100644
+--- a/sound/soc/intel/avs/ipc.c
++++ b/sound/soc/intel/avs/ipc.c
+@@ -480,6 +480,7 @@ static int avs_dsp_do_send_msg(struct avs_dev *adev, struct avs_ipc_msg *request
+ 	ret = ipc->rx.rsp.status;
+ 	if (reply) {
+ 		reply->header = ipc->rx.header;
++		reply->size = ipc->rx.size;
+ 		if (reply->data && ipc->rx.size)
+ 			memcpy(reply->data, ipc->rx.data, reply->size);
+ 	}
+diff --git a/sound/soc/intel/avs/messages.c b/sound/soc/intel/avs/messages.c
+index 6404fce8cde4..3559fb496e0b 100644
+--- a/sound/soc/intel/avs/messages.c
++++ b/sound/soc/intel/avs/messages.c
+@@ -378,7 +378,6 @@ int avs_ipc_get_large_config(struct avs_dev *adev, u16 module_id, u8 instance_id
+ 	union avs_module_msg msg = AVS_MODULE_REQUEST(LARGE_CONFIG_GET);
+ 	struct avs_ipc_msg request;
+ 	struct avs_ipc_msg reply = {{0}};
+-	size_t size;
+ 	void *buf;
+ 	int ret;
  
-+static void
-+assign_copier_gtw_instance(struct snd_soc_component *comp, struct avs_tplg_modcfg_ext *cfg)
-+{
-+	struct snd_soc_acpi_mach *mach;
-+
-+	if (!guid_equal(&cfg->type, &AVS_COPIER_MOD_UUID))
-+		return;
-+
-+	/* Only I2S boards assign port instance in ->i2s_link_mask. */
-+	switch (cfg->copier.dma_type) {
-+	case AVS_DMA_I2S_LINK_OUTPUT:
-+	case AVS_DMA_I2S_LINK_INPUT:
-+		break;
-+	default:
-+		return;
-+	}
-+
-+	mach = dev_get_platdata(comp->card->dev);
-+
-+	/* Automatic assignment only when board describes single SSP. */
-+	if (hweight_long(mach->mach_params.i2s_link_mask) == 1 && !cfg->copier.vindex.i2s.instance)
-+		cfg->copier.vindex.i2s.instance = __ffs(mach->mach_params.i2s_link_mask);
-+}
-+
- static int avs_tplg_parse_modcfg_ext(struct snd_soc_component *comp,
- 				     struct avs_tplg_modcfg_ext *cfg,
- 				     struct snd_soc_tplg_vendor_array *tuples,
-@@ -827,6 +851,9 @@ static int avs_tplg_parse_modcfg_ext(struct snd_soc_component *comp,
- 	if (ret)
+@@ -406,15 +405,14 @@ int avs_ipc_get_large_config(struct avs_dev *adev, u16 module_id, u8 instance_id
  		return ret;
+ 	}
  
-+	/* Update copier gateway based on board's i2s_link_mask. */
-+	assign_copier_gtw_instance(comp, cfg);
-+
- 	block_size -= esize;
- 	/* Parse trailing in/out pin formats if any. */
- 	if (block_size) {
+-	size = reply.rsp.ext.large_config.data_off_size;
+-	buf = krealloc(reply.data, size, GFP_KERNEL);
++	buf = krealloc(reply.data, reply.size, GFP_KERNEL);
+ 	if (!buf) {
+ 		kfree(reply.data);
+ 		return -ENOMEM;
+ 	}
+ 
+ 	*reply_data = buf;
+-	*reply_size = size;
++	*reply_size = reply.size;
+ 
+ 	return 0;
+ }
 -- 
 2.25.1
 
