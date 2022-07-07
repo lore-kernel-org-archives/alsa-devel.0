@@ -4,84 +4,61 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id EC09FC433EF
-	for <alsa-devel@archiver.kernel.org>; Thu,  7 Jul 2022 19:50:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 93B75C43334
+	for <alsa-devel@archiver.kernel.org>; Thu,  7 Jul 2022 20:20:40 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 377B21652;
-	Thu,  7 Jul 2022 21:50:02 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 377B21652
+	by alsa0.perex.cz (Postfix) with ESMTPS id 2B2EE15CA;
+	Thu,  7 Jul 2022 22:19:48 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2B2EE15CA
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1657223452;
-	bh=T5jJbEnazMVcoItbd2r700U06xzxu9Fs29EqH4dqJYM=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1657225238;
+	bh=rZaWyO+gpqHD3NkhTN+vyIH9HHwCVAuShvIMp29Upn8=;
+	h=Date:From:Subject:To:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=gMXyQ6D2nSYMT5/LtwgRWSIEBwUqLkMDOGROZKIiMJ7U3wOoyBLYYJH+g7mNO/OBx
-	 fW51laFm3wPk2e3vlgVLVud1W2waiFMkrYD9J0s+hGVvZ+OkE8lI1J53D0VedmwK0b
-	 PoBxoTFjOxBQJ66UuBqHAgzPO96qPIPFKDOFjslI=
+	b=b3hgCn0/z0mFwzj5YyquVcOJilp40vyMb5/HgiyosutCgtTlBt9TGCoGfdfHAxK8a
+	 iQckZxCiuWM5I3HFh0XA7a8gLNno9qgQCWyPqq1Q1ZPvom5A4Nt64soxfy+LHZsmvX
+	 r0LReteAZViyuZk2w2fW0ZJh0lA0BzT49kGpxo5g=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 1383DF805AB;
-	Thu,  7 Jul 2022 21:47:05 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id BB467F80137;
+	Thu,  7 Jul 2022 22:19:47 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 77B3EF8057B; Thu,  7 Jul 2022 21:47:03 +0200 (CEST)
-Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com
- [IPv6:2a00:1450:4864:20::536])
+ id 22A82F8016A; Thu,  7 Jul 2022 22:19:47 +0200 (CEST)
+Received: from aposti.net (aposti.net [89.234.176.197])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 01ADEF80551
- for <alsa-devel@alsa-project.org>; Thu,  7 Jul 2022 21:46:54 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 01ADEF80551
+ by alsa1.perex.cz (Postfix) with ESMTPS id 0A9DDF800DF
+ for <alsa-devel@alsa-project.org>; Thu,  7 Jul 2022 22:19:40 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0A9DDF800DF
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="QN0fskPg"
-Received: by mail-ed1-x536.google.com with SMTP id m16so8957925edb.11
- for <alsa-devel@alsa-project.org>; Thu, 07 Jul 2022 12:46:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
- h=from:to:cc:subject:date:message-id:in-reply-to:references
- :mime-version:content-transfer-encoding;
- bh=G5dmS78zz1zwy89jfeWA97TI8jj2tS8e0cDJN/8sutk=;
- b=QN0fskPgk1K9lhN3aO2dm5FSQxJQ/Yi9ty3yx86aq8RWe0W2ujYIfeNZ54HzCh+KZf
- H/4GBrWRcKSIn1cdwUfBFLh85Koj9MduC44GtMF5GQ1W3ykhQAU9BMdMTTF8AVAByfxW
- ovcl56s64uqWxO0zpKfCTVSc1r1rmroGVVEyCEoDW125R12eyJOdDpHpOMyUc/szWkqK
- VKmITqT1taSJRAA4GyLxR8znJIm2P1bq5M9m8zx/QBdeWsjQtowrvbc5ofqZTi1l/vRM
- RZWusfTtL+FNIFlZcLdKbCrYxarWmwRa1FWnG9KpLvzcH5yZlik9nE5/ccp9bz3/Aiar
- 7kgg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
- :references:mime-version:content-transfer-encoding;
- bh=G5dmS78zz1zwy89jfeWA97TI8jj2tS8e0cDJN/8sutk=;
- b=v+7CP22yv45VCeea9ZDEAekfTyCOhfpOQlz4vKHFs7NS1A7pyAG86LMpOt3wUVMIqP
- nXAw3Vct+DlQYibz00etnQYvPVsu4jl8z2vcMcR68s42bf901ZnfpRNoXkCrDupkFDVH
- veMyywZGFMdXrYPTtyrBG2rFaqMZGcK6btVZYajk5WzE/nKpzK4r3jjNMDt3GvNCQJ8k
- lqo69IBuoxKHXiKaNobXOHNBjAb5RJs7kRXvnAb6P7LITbgXFOeIq7pPcQaIcHpOCAQc
- BU2oV2kP5eb7fAOOnbsd4JPVql47kwOeDu8V24yPongK6B3uEFEDwabTmZPd2kdP9hSk
- oNbg==
-X-Gm-Message-State: AJIora9gfi9/iTSOfrdUw+/S4IJ00l8PIDU8StQQf/MKwvDeWn1X7Pzh
- h4DzAEDimGhjJqQNdpb3OdI=
-X-Google-Smtp-Source: AGRyM1tazEHDxc6kwjfkZuNdpd1A3Q2t59CObFU0/AXY62YGlqvsdleAQ1yghbC2dS996dH6A7LnrA==
-X-Received: by 2002:a05:6402:1d53:b0:43a:9ba7:315b with SMTP id
- dz19-20020a0564021d5300b0043a9ba7315bmr6425080edb.350.1657223213482; 
- Thu, 07 Jul 2022 12:46:53 -0700 (PDT)
-Received: from localhost (92.40.202.166.threembb.co.uk. [92.40.202.166])
- by smtp.gmail.com with ESMTPSA id
- g3-20020a1709061c8300b0070759e37183sm19311041ejh.59.2022.07.07.12.46.52
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Thu, 07 Jul 2022 12:46:53 -0700 (PDT)
-From: Aidan MacDonald <aidanmacdonald.0x0@gmail.com>
-To: paul@crapouillou.net, lgirdwood@gmail.com, broonie@kernel.org,
- perex@perex.cz, tiwai@suse.com
-Subject: [PATCH v2 09/11] ASoC: jz4740-i2s: Support continuous sample rate
-Date: Thu,  7 Jul 2022 20:46:53 +0100
-Message-Id: <20220707194655.312892-10-aidanmacdonald.0x0@gmail.com>
-In-Reply-To: <20220707194655.312892-1-aidanmacdonald.0x0@gmail.com>
+ dkim=pass (1024-bit key) header.d=crapouillou.net header.i=@crapouillou.net
+ header.b="KaHF4/9j"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=crapouillou.net;
+ s=mail; t=1657225179; h=from:from:sender:reply-to:subject:subject:date:date:
+ message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+ content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=XjIa6VCGeD+ksTrcQqfh2dLYucU0urZhX3yUpGkF3xc=;
+ b=KaHF4/9ji/Pl7Q4Ldp9NVY0eJMtvhriRAjKe+0mLozVZ8pA64lkWk+Vl/gNmda2gSJAWan
+ zLrPhWQWW3wj+lSm3DxLXUHSIJERZ4Re6/5fyuGMWQP/qdD/SApuiAVPtS1StzuvITTCCT
+ zLclWuo5r7i4xqyKf1rK0+mJiNfiwig=
+Date: Thu, 07 Jul 2022 21:19:24 +0100
+From: Paul Cercueil <paul@crapouillou.net>
+Subject: Re: [PATCH v2 01/11] ASoC: jz4740-i2s: Remove unused 'mem' resource
+To: Aidan MacDonald <aidanmacdonald.0x0@gmail.com>
+Message-Id: <C43OER.T16CTN9Q6E0U1@crapouillou.net>
+In-Reply-To: <20220707194655.312892-2-aidanmacdonald.0x0@gmail.com>
 References: <20220707194655.312892-1-aidanmacdonald.0x0@gmail.com>
+ <20220707194655.312892-2-aidanmacdonald.0x0@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: alsa-devel@alsa-project.org, linux-mips@vger.kernel.org,
- linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset=iso-8859-1; format=flowed
+Content-Transfer-Encoding: quoted-printable
+Cc: alsa-devel@alsa-project.org, lgirdwood@gmail.com,
+ linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org, tiwai@suse.com,
+ broonie@kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -97,52 +74,38 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The I2S controller on JZ47xx SoCs doesn't impose restrictions on
-sample rate and the driver doesn't make any assumptions about it,
-so the DAI should advertise a continuous sample rate range.
+Hi Aidan,
+
+Le jeu., juil. 7 2022 at 20:46:45 +0100, Aidan MacDonald=20
+<aidanmacdonald.0x0@gmail.com> a =E9crit :
+> This isn't used and doesn't need to be in the private data struct.
+>=20
+> Signed-off-by: Aidan MacDonald <aidanmacdonald.0x0@gmail.com>
 
 Acked-by: Paul Cercueil <paul@crapouillou.net>
-Signed-off-by: Aidan MacDonald <aidanmacdonald.0x0@gmail.com>
----
- sound/soc/jz4740/jz4740-i2s.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/sound/soc/jz4740/jz4740-i2s.c b/sound/soc/jz4740/jz4740-i2s.c
-index 9be2f3f1b376..70b9d28a40ce 100644
---- a/sound/soc/jz4740/jz4740-i2s.c
-+++ b/sound/soc/jz4740/jz4740-i2s.c
-@@ -391,13 +391,13 @@ static struct snd_soc_dai_driver jz4740_i2s_dai = {
- 	.playback = {
- 		.channels_min = 1,
- 		.channels_max = 2,
--		.rates = SNDRV_PCM_RATE_8000_48000,
-+		.rates = SNDRV_PCM_RATE_CONTINUOUS,
- 		.formats = JZ4740_I2S_FMTS,
- 	},
- 	.capture = {
- 		.channels_min = 2,
- 		.channels_max = 2,
--		.rates = SNDRV_PCM_RATE_8000_48000,
-+		.rates = SNDRV_PCM_RATE_CONTINUOUS,
- 		.formats = JZ4740_I2S_FMTS,
- 	},
- 	.symmetric_rate = 1,
-@@ -429,13 +429,13 @@ static struct snd_soc_dai_driver jz4770_i2s_dai = {
- 	.playback = {
- 		.channels_min = 1,
- 		.channels_max = 2,
--		.rates = SNDRV_PCM_RATE_8000_48000,
-+		.rates = SNDRV_PCM_RATE_CONTINUOUS,
- 		.formats = JZ4740_I2S_FMTS,
- 	},
- 	.capture = {
- 		.channels_min = 2,
- 		.channels_max = 2,
--		.rates = SNDRV_PCM_RATE_8000_48000,
-+		.rates = SNDRV_PCM_RATE_CONTINUOUS,
- 		.formats = JZ4740_I2S_FMTS,
- 	},
- 	.ops = &jz4740_i2s_dai_ops,
--- 
-2.35.1
+Cheers,
+-Paul
+
+> ---
+>  sound/soc/jz4740/jz4740-i2s.c | 1 -
+>  1 file changed, 1 deletion(-)
+>=20
+> diff --git a/sound/soc/jz4740/jz4740-i2s.c=20
+> b/sound/soc/jz4740/jz4740-i2s.c
+> index ecd8df70d39c..c4c1e89b47c1 100644
+> --- a/sound/soc/jz4740/jz4740-i2s.c
+> +++ b/sound/soc/jz4740/jz4740-i2s.c
+> @@ -93,7 +93,6 @@ struct i2s_soc_info {
+>  };
+>=20
+>  struct jz4740_i2s {
+> -	struct resource *mem;
+>  	void __iomem *base;
+>=20
+>  	struct clk *clk_aic;
+> --
+> 2.35.1
+>=20
+
 
