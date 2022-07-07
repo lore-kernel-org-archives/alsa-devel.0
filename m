@@ -4,65 +4,64 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C54D1C43334
-	for <alsa-devel@archiver.kernel.org>; Thu,  7 Jul 2022 12:36:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D97E9C433EF
+	for <alsa-devel@archiver.kernel.org>; Thu,  7 Jul 2022 12:36:17 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 02D2B167B;
-	Thu,  7 Jul 2022 14:35:11 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 02D2B167B
+	by alsa0.perex.cz (Postfix) with ESMTPS id 2BBD51687;
+	Thu,  7 Jul 2022 14:35:26 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2BBD51687
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1657197361;
-	bh=CNXKc1141cIxL1CggFk+aekG0XSLbDs/PG7XDdSjcmQ=;
+	s=default; t=1657197376;
+	bh=n846Hs3c9MgbTP/DPAz9yuXRlEggHqNa7XZGEypGi/s=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=IBG0Sdn6Rt3utNxd+rHBmUjQlBQFlxwj/dOyFvqmAvKjzCiRP0TDCHIbZNZT8uawN
-	 y2zPBOlIVPCAMrswZdzQGs2M4NWn8G7EJIsl53uMoaZuiY++6xReECnZ/lk/SX7cQe
-	 4EyV7NtXT4JD9IbSlllB+7l+gLq2nAVpl6/Xj6pI=
+	b=Fr5D1diPR/D0ATw+71TM4PTN2yiiCZWt2RklzAhRn0HlbcRSqB0wFNAK9VJd55Fo1
+	 cF8tq+XSpSyBVqwNbi6T1+PDU4HOLff5Z2bHKZxok/N6BRuCyaOuo3nAiieUF4mI8I
+	 cy7JXEUFgTxjLckzqSaAPW5BYBQ2smPE/ZY1lWbg=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 5C6A0F8052E;
+	by alsa1.perex.cz (Postfix) with ESMTP id DD2C5F805A0;
 	Thu,  7 Jul 2022 14:32:59 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 1F797F80137; Thu,  7 Jul 2022 14:32:57 +0200 (CEST)
+ id 28067F804F1; Thu,  7 Jul 2022 14:32:57 +0200 (CEST)
 Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id E3A0AF80537
- for <alsa-devel@alsa-project.org>; Thu,  7 Jul 2022 14:31:58 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E3A0AF80537
+ by alsa1.perex.cz (Postfix) with ESMTPS id 30D28F8028D
+ for <alsa-devel@alsa-project.org>; Thu,  7 Jul 2022 14:31:57 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 30D28F8028D
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="RXWxHLHF"
+ header.b="hvgAwjhh"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1657197120; x=1688733120;
+ t=1657197119; x=1688733119;
  h=from:to:cc:subject:date:message-id:in-reply-to:
  references:mime-version:content-transfer-encoding;
- bh=CNXKc1141cIxL1CggFk+aekG0XSLbDs/PG7XDdSjcmQ=;
- b=RXWxHLHFQLwmg2umSfT02FmYDpjv2RoI355MtPCCl2kNGuGN0LAT/l8T
- qzCJNbQnUox6/Sv7Gtu22ha/ezahZ4Dq/ktXpCYdqQF3Ho7EKkE8K7t/e
- oWbNL3r99LSouV+VgNEd4pZ/QAuPE/wg2lo4vkSSAvn26EIRFWgU/2DGU
- JtQq0EMG3UmYE1tB+rWVDVLOCLwVsRMO70ijIDnKgVMRhHVfFxStld8mS
- C3SU1wUVdiKqgsn6/4GVTA6o5allRKXzEd0vD3tjErK3ppTf2eYAeGU3e
- M5P2D3JRv0B8DPAcWuyK1HgM7unVWxI2OstbNrRiV5TbBWPXPNx0oH6tn A==;
-X-IronPort-AV: E=McAfee;i="6400,9594,10400"; a="272805912"
-X-IronPort-AV: E=Sophos;i="5.92,252,1650956400"; d="scan'208";a="272805912"
+ bh=n846Hs3c9MgbTP/DPAz9yuXRlEggHqNa7XZGEypGi/s=;
+ b=hvgAwjhhD2TCgVbnEKtoxpzVdhXVOtfsiYpIGlknxpKnkcipkmkJag2Z
+ NY1ap4kpD57z8EGVgbtYHSBz2YdvneTbIMGWIv1W7U9xa0f5/YT6VZvxH
+ iogkFbWsoOrWppBz+pWQ5lsgSuVJWYMxhmzfBfgJLh+FbPMFNEK1/MVaB
+ ArYXgAutIjFzPi1qwTZdYpcgewVztk7GpPRvSMTx6uwGV6Md53mQqger8
+ wcrsM/0GD9t8tjXedaIvi9lyYslwV0+DI4HPZ1pEmNj26sIqe6Wi2Bkkx
+ NN8dR1CoA5ekJIiG8+4uFvk1X9vGakrafIWG+RHQhsdU8qUO4xhsr/ur2 g==;
+X-IronPort-AV: E=McAfee;i="6400,9594,10400"; a="272805898"
+X-IronPort-AV: E=Sophos;i="5.92,252,1650956400"; d="scan'208";a="272805898"
 Received: from orsmga002.jf.intel.com ([10.7.209.21])
  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 07 Jul 2022 05:31:58 -0700
+ 07 Jul 2022 05:31:54 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.92,252,1650956400"; d="scan'208";a="593720599"
+X-IronPort-AV: E=Sophos;i="5.92,252,1650956400"; d="scan'208";a="593720567"
 Received: from crojewsk-ctrl.igk.intel.com ([10.102.9.28])
- by orsmga002.jf.intel.com with ESMTP; 07 Jul 2022 05:31:56 -0700
+ by orsmga002.jf.intel.com with ESMTP; 07 Jul 2022 05:31:52 -0700
 From: Cezary Rojewski <cezary.rojewski@intel.com>
 To: alsa-devel@alsa-project.org,
 	broonie@kernel.org
-Subject: [PATCH 05/12] ASoC: Intel: avs: Shield LARGE_CONFIG_GETs against zero
- payload_size
-Date: Thu,  7 Jul 2022 14:41:46 +0200
-Message-Id: <20220707124153.1858249-6-cezary.rojewski@intel.com>
+Subject: [PATCH 03/12] ASoC: Intel: avs: Relax DSP core transition timings
+Date: Thu,  7 Jul 2022 14:41:44 +0200
+Message-Id: <20220707124153.1858249-4-cezary.rojewski@intel.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20220707124153.1858249-1-cezary.rojewski@intel.com>
 References: <20220707124153.1858249-1-cezary.rojewski@intel.com>
@@ -86,48 +85,54 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Some LARGE_CONFIG_GETs are never expected to return payload of size 0.
-Check for such situation and collapse if met.
+To avoid any false positives when checking CPA after setting SPA, do a
+short wait. For stall operation, give HW more time to propagate the
+change before moving on.
 
 Signed-off-by: Cezary Rojewski <cezary.rojewski@intel.com>
 ---
- sound/soc/intel/avs/messages.c | 9 +++++++++
- 1 file changed, 9 insertions(+)
+ sound/soc/intel/avs/dsp.c | 11 +++++++++--
+ 1 file changed, 9 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/intel/avs/messages.c b/sound/soc/intel/avs/messages.c
-index 3559fb496e0b..9cf621eaec5a 100644
---- a/sound/soc/intel/avs/messages.c
-+++ b/sound/soc/intel/avs/messages.c
-@@ -474,6 +474,9 @@ int avs_ipc_get_fw_config(struct avs_dev *adev, struct avs_fw_cfg *cfg)
- 				       &payload, &payload_size);
- 	if (ret)
- 		return ret;
-+	/* Non-zero payload expected for FIRMWARE_CONFIG. */
-+	if (!payload_size)
-+		return -EREMOTEIO;
+diff --git a/sound/soc/intel/avs/dsp.c b/sound/soc/intel/avs/dsp.c
+index 06d2f7af520f..b881100d3e02 100644
+--- a/sound/soc/intel/avs/dsp.c
++++ b/sound/soc/intel/avs/dsp.c
+@@ -13,6 +13,7 @@
  
- 	while (offset < payload_size) {
- 		tlv = (struct avs_tlv *)(payload + offset);
-@@ -587,6 +590,9 @@ int avs_ipc_get_hw_config(struct avs_dev *adev, struct avs_hw_cfg *cfg)
- 				       &payload, &payload_size);
- 	if (ret)
- 		return ret;
-+	/* Non-zero payload expected for HARDWARE_CONFIG. */
-+	if (!payload_size)
-+		return -EREMOTEIO;
+ #define AVS_ADSPCS_INTERVAL_US		500
+ #define AVS_ADSPCS_TIMEOUT_US		50000
++#define AVS_ADSPCS_DELAY_US		1000
  
- 	while (offset < payload_size) {
- 		tlv = (struct avs_tlv *)(payload + offset);
-@@ -670,6 +676,9 @@ int avs_ipc_get_modules_info(struct avs_dev *adev, struct avs_mods_info **info)
- 				       &payload, &payload_size);
- 	if (ret)
- 		return ret;
-+	/* Non-zero payload expected for MODULES_INFO. */
-+	if (!payload_size)
-+		return -EREMOTEIO;
+ int avs_dsp_core_power(struct avs_dev *adev, u32 core_mask, bool power)
+ {
+@@ -26,6 +27,8 @@ int avs_dsp_core_power(struct avs_dev *adev, u32 core_mask, bool power)
+ 	value = power ? mask : 0;
  
- 	*info = (struct avs_mods_info *)payload;
- 	return 0;
+ 	snd_hdac_adsp_updatel(adev, AVS_ADSP_REG_ADSPCS, mask, value);
++	/* Delay the polling to avoid false positives. */
++	usleep_range(AVS_ADSPCS_DELAY_US, 2 * AVS_ADSPCS_DELAY_US);
+ 
+ 	mask = AVS_ADSPCS_CPA_MASK(core_mask);
+ 	value = power ? mask : 0;
+@@ -82,11 +85,15 @@ int avs_dsp_core_stall(struct avs_dev *adev, u32 core_mask, bool stall)
+ 				       reg, (reg & mask) == value,
+ 				       AVS_ADSPCS_INTERVAL_US,
+ 				       AVS_ADSPCS_TIMEOUT_US);
+-	if (ret)
++	if (ret) {
+ 		dev_err(adev->dev, "core_mask %d %sstall failed: %d\n",
+ 			core_mask, stall ? "" : "un", ret);
++		return ret;
++	}
+ 
+-	return ret;
++	/* Give HW time to propagate the change. */
++	usleep_range(AVS_ADSPCS_DELAY_US, 2 * AVS_ADSPCS_DELAY_US);
++	return 0;
+ }
+ 
+ int avs_dsp_core_enable(struct avs_dev *adev, u32 core_mask)
 -- 
 2.25.1
 
