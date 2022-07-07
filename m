@@ -4,88 +4,145 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C8439C433EF
-	for <alsa-devel@archiver.kernel.org>; Thu,  7 Jul 2022 15:12:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1084EC433EF
+	for <alsa-devel@archiver.kernel.org>; Thu,  7 Jul 2022 16:06:33 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 11E0F1651;
-	Thu,  7 Jul 2022 17:11:47 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 11E0F1651
+	by alsa0.perex.cz (Postfix) with ESMTPS id 557CA1660;
+	Thu,  7 Jul 2022 18:05:41 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 557CA1660
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1657206757;
-	bh=kmc3wc6ajY9BcICOK/nkuA5qJD8diOKXxI31X5YKy7g=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1657209991;
+	bh=ydnhtaXvqIGTbF+6DRu+n/R7u69uICAweXknbYp9XAs=;
+	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=IYHTl9gAvxmgHoZhaDkLjbadTLJ+3wHyCLaW/tnUiTtQesu6MxgX6UT6CgrIOluCW
-	 6e2IpteDFu4ZGLlLXcyjEhLFoGLZBqow5HRw2nNb3a+adiQgGLPfAyGFjCu3yh82ra
-	 +yhPCGsp+xNEynIB2sGNly4eTEv2rrxJmzgKA1ok=
+	b=vvSVljRitzKJ3YIcRHqPHXmEvGbzGjxSmY6emy4czS4s0YggO+kR11GWrbQo4E7Ko
+	 NA45McwfdqpBUVAobmFYmUz+PiL2xK4lFS9b3EBxsjhu2lut4cr9Jeq2Z+a8huBddr
+	 N7MrYchArjiSFB9OUzdHkBTmsVQFTxo4Wzd7RzLs=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 02919F80537;
-	Thu,  7 Jul 2022 17:11:02 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id D54F1F8016A;
+	Thu,  7 Jul 2022 18:05:40 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 51769F80538; Thu,  7 Jul 2022 17:11:00 +0200 (CEST)
-Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
- [67.231.149.25])
+ id E6519F8028D; Thu,  7 Jul 2022 18:05:39 +0200 (CEST)
+Received: from NAM11-CO1-obe.outbound.protection.outlook.com
+ (mail-co1nam11on2052.outbound.protection.outlook.com [40.107.220.52])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 2D161F80137
- for <alsa-devel@alsa-project.org>; Thu,  7 Jul 2022 17:10:49 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2D161F80137
+ by alsa1.perex.cz (Postfix) with ESMTPS id CC4E7F80104
+ for <alsa-devel@alsa-project.org>; Thu,  7 Jul 2022 18:05:32 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CC4E7F80104
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com
- header.b="EM4+LfwL"
-Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
- by mx0a-001ae601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 267BU6Ji020187;
- Thu, 7 Jul 2022 10:10:47 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
- h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding : content-type; s=PODMain02222019;
- bh=eI3etg7tS+4dRtyIr56IkjyI/lNnf1+cKi1Idvp6WZ4=;
- b=EM4+LfwLChmNPZqRm9P/dN3McEwRhzyTIcFsUPyeaHPtz7tG7ra5hhgHjXaSKdykhNWl
- jP5doNJbi7XsDnveFSd79Lji/sHT1LrVJxE4v8oR4kXSWOjj1eKwYVhLpVwmDFwulk/R
- WHkI+OOKkMZwyV2qq9YSjURQ+PVTZ6TRsxm17H1xYb7ivCQfIYVLzQF3U4OAqOBkCijB
- XSlLqbx1D8JMjuHSexc8r/Ez57Gx84g17ZSpvIx2i3clKPJ47soxjo5EBtMFRq39KbtO
- ydJGYd/2riMV0+WO4kygzMuH3PR5RUVTZbx8WalNaIlmBbC96y8LGxshUhRmAIcfD0pF 2g== 
-Received: from ediex01.ad.cirrus.com ([84.19.233.68])
- by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3h4ucmjr6f-2
- (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
- Thu, 07 Jul 2022 10:10:47 -0500
-Received: from ediex02.ad.cirrus.com (198.61.84.81) by EDIEX01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.28; Thu, 7 Jul
- 2022 16:10:44 +0100
-Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by ediex02.ad.cirrus.com
- (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.2.1118.9; Thu, 7 Jul 2022
- 10:10:44 -0500
-Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server id 15.1.2375.28 via
- Frontend Transport; Thu, 7 Jul 2022 16:10:44 +0100
-Received: from sbinding-cirrus-dsktp.ad.cirrus.com
- (NEWBNB750653-PC.ad.cirrus.com [198.90.238.195])
- by ediswmail.ad.cirrus.com (Postfix) with ESMTP id EB38446A;
- Thu,  7 Jul 2022 15:10:43 +0000 (UTC)
-From: Stefan Binding <sbinding@opensource.cirrus.com>
-To: "Rafael J . Wysocki" <rafael@kernel.org>, Len Brown <lenb@kernel.org>,
- Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
-Subject: [PATCH v6 1/2] ACPI: utils: Add api to read _SUB from ACPI
-Date: Thu, 7 Jul 2022 16:10:36 +0100
-Message-ID: <20220707151037.3901050-2-sbinding@opensource.cirrus.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20220707151037.3901050-1-sbinding@opensource.cirrus.com>
-References: <20220707151037.3901050-1-sbinding@opensource.cirrus.com>
+ dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com
+ header.b="kycrIupe"
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=UBSZibm5+mvBiFAXUqF/qNLcMTvEYIItalVyN+zPHxYJ5Y2R1vA4Tsu35jSzq1F/AmN6czts8DLhlG4b0mTWXhVx/Zf/UkkLcQda/fa0QqC69csw8YyUKZlDZEd4bEM1SvKJ4gW33stMqEE6yfmEX0mgu+HHKajJZbMcW/o/ZDcpkOCMy5OgzjCTpwutBce1+iLeanLBFV91u9vMLMzyCdY3pxYf1vYSL2MwFvl7HZ258J2Z3sNbLGkWp9PHwiVGFp926hCJnyUleNlREdZfyZ9oQ3tWdFMNjDnnrbbtxRVw/jKODXp1IhL/fW1Oe+maXroAMavjxvPf8F2wa5toDg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=j4evU0ogssq2KFcBxHGA/ASw+kuHbTLwg51gJuhkp9Y=;
+ b=mU8l/3CzK7BQP3HPc4PdaW2vROppSUuLxxs8v/+TRGl96FYA6merRIDhNlpyf+x2KCp7ds5CulDX3nykZpOriLyTIAa4deTPmWDngQbLWcXPgVTBPHL5/lr2wPPolBF02tEJQbBbShwV0qB71YhUn3piRh/fg6M1JdZPyBJ8F1jfsYmrU8arm8AqpJ0jNDAegQQMGByr/8Tm7I7TmRNAA2b9I1cy2G6ktY7cal6ZiPC0QT7mTUyr44FpBb8WS3NPvA7PsTjX5u214DNQugJuezdn1HfJ6R4Z+6QOPu+ZW4NVukQywToxV1FCGkbDq3Dpdp9wzwwXmi2VQhhxKfry9w==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1; 
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=j4evU0ogssq2KFcBxHGA/ASw+kuHbTLwg51gJuhkp9Y=;
+ b=kycrIupeRKhbs1cMXhg/UqmfMz5rpObrpuTAR+mWtcBWTgWZ1XwGejxX4e71EMuTOCPGONVGxly7NlQy/lNllx0s7+0N7G9LKsNX6DvhBqqFWBDHSM2uoPZWZ0fQ/oIqmIQpoO9gYJ76xSxWqtJ5erVoZjKWl/w5NrrY+MBEXpo=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amd.com;
+Received: from DM6PR12MB4171.namprd12.prod.outlook.com (2603:10b6:5:21f::18)
+ by PH7PR12MB6420.namprd12.prod.outlook.com (2603:10b6:510:1fc::18) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5417.16; Thu, 7 Jul
+ 2022 16:05:25 +0000
+Received: from DM6PR12MB4171.namprd12.prod.outlook.com
+ ([fe80::e127:3aff:e853:414d]) by DM6PR12MB4171.namprd12.prod.outlook.com
+ ([fe80::e127:3aff:e853:414d%3]) with mapi id 15.20.5395.021; Thu, 7 Jul 2022
+ 16:05:24 +0000
+Subject: Re: [PATCH 3/3] ASoC: amd: acp: Add legacy audio driver support for
+ Rembrandt platform
+To: kernel test robot <lkp@intel.com>, broonie@kernel.org,
+ alsa-devel@alsa-project.org
+References: <20220624194821.287462-4-Vsujithkumar.Reddy@amd.com>
+ <202206250650.DKkqPR4A-lkp@intel.com>
+From: "Reddy, V sujith kumar" <vsujithkumar.reddy@amd.com>
+Message-ID: <e468ad64-468d-20df-70cd-ccf6148fe557@amd.com>
+Date: Thu, 7 Jul 2022 21:35:09 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
+In-Reply-To: <202206250650.DKkqPR4A-lkp@intel.com>
+Content-Language: en-US
+X-ClientProxiedBy: PN3PR01CA0105.INDPRD01.PROD.OUTLOOK.COM
+ (2603:1096:c01:9b::9) To DM6PR12MB4171.namprd12.prod.outlook.com
+ (2603:10b6:5:21f::18)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Proofpoint-GUID: nXzdEGsX5TRFa1bZ1Bt_e7IGnOHN5v0e
-X-Proofpoint-ORIG-GUID: nXzdEGsX5TRFa1bZ1Bt_e7IGnOHN5v0e
-X-Proofpoint-Spam-Reason: safe
-Cc: linux-acpi@vger.kernel.org, alsa-devel@alsa-project.org, Stefan
- Binding <sbinding@opensource.cirrus.com>, linux-kernel@vger.kernel.org,
- patches@opensource.cirrus.com
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 914bbcc6-5f37-4b64-2245-08da60328066
+X-MS-TrafficTypeDiagnostic: PH7PR12MB6420:EE_
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 01yRCostOVnFiR2M5EX2NKRsR4OXDpKXqK0DrVEiQH1jrJVGv/9UXm/6HzYJv40ch095MC508ISjYGzB+N+H4hGOZwqlO7CGQrPFcDfKugUFnnX/9GuPh/FKwb2h3LpCZb4OJ6J7n4c5s7VLqlc8yOCEASlzGPcWt49lpAdUo4ePI4LIY07q3Np+nN/+3cQ3wkFDQXCGJ5PTRYqEAF/x2ZoAoYXml1sEa5ZdMvWRnO0tC7vi6P+ENeZoXHqu8FdQf4ikd9e/9x7jTeEV7CiSbV25JjiYyy/Tt26NCO1vRd7iaEioU8kLoNV8i8CLL/8aZE2Xv8dN7RIB9SFC0FGk4WECW9jL9lh4iPlr7Xu9qnieLuLXG+wgnp3JeW4luOJQ9BqH6Dy7FgtKxziqg5KvYzIgdzHeWUIhunov7YGJlKXwVoCp/sBOBOMFM5Y6zmwh0HZ9KGLrYX9YBqNU5fve5JttYyUQlzsgsLRza9+OO4lIQvhv2ENcM65ALZvzC158SDAVzo/u2Nyk+ftItghGGoOqkqF14D4nmGwhYaORZ1VEwvxIFrhbtkoshor6S6696fDU4BvHKrWSwKKuJgDIuUL6Lmn7Cpf76eykIhsUFZXLcAa+ZjeRZSJFgzX94yFQ1dyIaT9ivq6AqwSLGR7e40wLRDQcGowEX7M6/OHgjmjfecAZ0JjWw5jr21VRkOrZwMPj0nJyK77GbidllpA5tkwLKyKESJV2l+EDlIGNtrGvjqQcv+2M+q6SG9PbckTi7PvP02DnKU9GmMM8gPlvYYHIT0dtIHMmP898DRCcFRqhC8UY+Kdsj9C/nBc3Hx3jCN2OEQfB4ffbOWFErdXFPaC3j3AkGVUSkQxxDuiHiKdokNVTEnITOSmyzEQTgRbO3gcUQRW685VqvJb1mi80mZ3RNrNGJ7OunjfjNUgQYK0=
+X-Forefront-Antispam-Report: CIP:255.255.255.255; CTRY:; LANG:en; SCL:1; SRV:;
+ IPV:NLI; SFV:NSPM; H:DM6PR12MB4171.namprd12.prod.outlook.com; PTR:; CAT:NONE;
+ SFS:(13230016)(4636009)(39860400002)(396003)(366004)(136003)(376002)(346002)(41300700001)(7416002)(478600001)(6666004)(5660300002)(31696002)(45080400002)(6486002)(8936002)(30864003)(316002)(86362001)(966005)(2906002)(54906003)(38100700002)(66946007)(166002)(31686004)(186003)(66556008)(8676002)(66476007)(2616005)(36756003)(26005)(83380400001)(4326008)(6506007)(6512007)(53546011)(45980500001)(43740500002);
+ DIR:OUT; SFP:1101; 
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?Windows-1252?Q?vV66q+7gXOS1hqOu4S9DsgCKaTMFJKKRmejewolLPVRRLSctpiwampmA?=
+ =?Windows-1252?Q?HjiWpsCP1km8L+fnPccHOOLPRquqMVSV8cQqJHjpgD1M3mmAHWmVqbaY?=
+ =?Windows-1252?Q?j8siJEnDhTF9v9wYgX+T/B8uNMUpqm48bEe3ntYVPcAPf5g8bD6nl1LU?=
+ =?Windows-1252?Q?Qm0OADZ0q7bbEacnmcS1H4oFG0GicdFrNnPq9t7oSm8pT2i7tSMXztSW?=
+ =?Windows-1252?Q?3niSeu2yGHk6ekH0K4bHq8jYuCACcZMFntmqpUwdek+a3cwqhjwBT7Zh?=
+ =?Windows-1252?Q?wIbLcPmiwDG3KD6OI+/J8NawKePX26KLyaZ96+O0e7Tal8BOY9X+4QzV?=
+ =?Windows-1252?Q?43eTC9lzdz5nxBMr2Y9gsMaR5YOFF09HrvjQ3Ypeovlv1UGjdNjgaXiG?=
+ =?Windows-1252?Q?rhBfr2GQbXrVVoAQLXAhVkGeWF5cUIWnk/A2MWh/C8wc5tMYL4ot6iJl?=
+ =?Windows-1252?Q?Ou0erPkzRwNcoHvD9rvOJ5nCFEp7mzqvT/Yr2yyz4+CovwDq9IG6HfCy?=
+ =?Windows-1252?Q?Pz2He1d0nNenVuSFA/dj/Xc0R5g0+wJtL1d+wLoCe7YqinreFXQbGdQz?=
+ =?Windows-1252?Q?1GRrtBwYcJb/lcYBbjOUDFTLYmyqiE5J98H4i2qxDC4U6w8n53l9UqGa?=
+ =?Windows-1252?Q?Fgvvh5XTkqN5KjkZdZjS8eHqWJ74+OwukFWy2X3W36p28WGQa5vYv+yD?=
+ =?Windows-1252?Q?RBDbyRNfk0uaH7b6x7elNotU4tJ6qCO/r2WJdSa1chAxFd8lPCFBLNiu?=
+ =?Windows-1252?Q?dITVb97OYOIoZ/dRU8c04OUcrm78F08FTUUhh1jdsQfxgJDBHRGe6fYi?=
+ =?Windows-1252?Q?H+nlFNqfL73KnUwsBYKwofSfK6bskiU174sDh+QgFClmXYJSScEpBJIw?=
+ =?Windows-1252?Q?39oqb2QIvwIuuBWMDoC6YIcV+PIroP/RfcCFow8EhoA1pK9bxcIFKAJF?=
+ =?Windows-1252?Q?J78/vlQ5PkTpMSmZ9zbOfN+yXgDqPK1QYRdDUmUf0P+Tdf8oUHH++Kwg?=
+ =?Windows-1252?Q?5oPOPYPMiEkvvS2osuAvL1iUKCJuYpptysy8TG4kzke4ONjgdTdRT9Hi?=
+ =?Windows-1252?Q?CDwi2JrXacIMMqSAYC+O6XQkJvj7IW5TUyzh4l4aWEmQJLpBPrvf9AWg?=
+ =?Windows-1252?Q?uUNfGbjH9K7qwfyATcdhLYMK4H/DlQRB7FIBhXpxNMaQ2h+s+0W8L14/?=
+ =?Windows-1252?Q?PDsdObW9eHjDevdyWcZkYO8DeBF94Uj0yrsSoXiyI7OZcfxI0M/+imej?=
+ =?Windows-1252?Q?cUNV9rGeYawIOer2+bnqpDV7ymksDOzg2lMK9KEMacTuoMbQOZhLDQcE?=
+ =?Windows-1252?Q?wuwiOtB3MAavUYiEYQykGQ5zZlwqV7vpJs1VkPjiuwwg7eBpyNfNjJuQ?=
+ =?Windows-1252?Q?0hRPHGdgNwl/CaC1UIYdUrgWSzTG6fBt3+n+ADIUZXNKmdhGpDenieMg?=
+ =?Windows-1252?Q?NMlglFIA6Doe3iVtsSOI/BaukflOhGuKY0wWRQyv4bg/MowKAG+Gybjk?=
+ =?Windows-1252?Q?8lUI7vhiO2DS582w30pcdPXC3z43cf11O1goH0N55GLyUgwT20kQJa7x?=
+ =?Windows-1252?Q?2p8MLg1sGEYJ3QU7+NLovdoEWIhPeWplZ5bOqP9qOT8wQWJibR3rXI16?=
+ =?Windows-1252?Q?UeQLoUdVCw9XBA/IcOQTH/nss5ynStms8v0XMKEA1XFOaIZCvjV9jTF6?=
+ =?Windows-1252?Q?Bb9nPMW3m1CJTp1LzQ4XNy5aAY89soAT?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 914bbcc6-5f37-4b64-2245-08da60328066
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR12MB4171.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Jul 2022 16:05:24.9385 (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: DAR/U0GmKloUQtfy9zL4Tif/4BjO9dBnNBSy+aG62nxqtu/mjKrG+KdpZ6g6PHJE
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR12MB6420
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Content-Filtered-By: Mailman/MimeDel 2.1.15
+Cc: Sunil-kumar.Dommati@amd.com, kbuild-all@lists.01.org,
+ Ajit Kumar Pandey <AjitKumar.Pandey@amd.com>,
+ Geert Uytterhoeven <geert+renesas@glider.be>,
+ Liam Girdwood <lgirdwood@gmail.com>, venkataprasad.potturu@amd.com,
+ Meng Tang <tangmeng@uniontech.com>, Basavaraj.Hiregoudar@amd.com,
+ Vijendar.Mukunda@amd.com, open list <linux-kernel@vger.kernel.org>,
+ Takashi Iwai <tiwai@suse.com>, Jia-Ju Bai <baijiaju1990@gmail.com>,
+ Arnd Bergmann <arnd@arndb.de>, Akihiko Odaki <akihiko.odaki@gmail.com>,
+ Yang Yingliang <yangyingliang@huawei.com>,
+ =?UTF-8?Q?Uwe_Kleine-K=c3=b6nig?= <u.kleine-koenig@pengutronix.de>,
+ Syed Saba kareem <ssabakar@amd.com>, Dan Carpenter <error27@gmail.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -101,87 +158,100 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Add a wrapper function to read the _SUB string from ACPI.
 
-Signed-off-by: Stefan Binding <sbinding@opensource.cirrus.com>
----
- drivers/acpi/utils.c | 38 ++++++++++++++++++++++++++++++++++++++
- include/linux/acpi.h |  6 ++++++
- 2 files changed, 44 insertions(+)
+On 6/25/2022 8:29 AM, kernel test robot wrote:
+> [CAUTION: External Email]
+>
+> Hi sujith,
+>
+> Thank you for the patch! Perhaps something to improve:
+>
+> [auto build test WARNING on broonie-sound/for-next]
+> [also build test WARNING on next-20220624]
+> [cannot apply to linus/master v5.19-rc3]
+> [If your patch is applied to the wrong git tree, kindly drop us a note.
+> And when submitting patch, we suggest to use '--base' as documented in
+> https://nam11.safelinks.protection.outlook.com/?url=https%3A%2F%2Fgit-scm.com%2Fdocs%2Fgit-format-patch&amp;data=05%7C01%7CVsujithkumar.Reddy%40amd.com%7C76b71f6bc0b64a93432508da5656c7e4%7C3dd8961fe4884e608e11a82d994e183d%7C0%7C0%7C637917228020649435%7CUnknown%7CTWFpbGZsb3d8eyJWIjoiMC4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0%3D%7C3000%7C%7C%7C&amp;sdata=dMgKJPdC1Wozc8Fyvb%2BCGvAkKb4dxwlC%2BcEIsLTUwd0%3D&amp;reserved=0]
+>
+> url:https://nam11.safelinks.protection.outlook.com/?url=https%3A%2F%2Fgithub.com%2Fintel-lab-lkp%2Flinux%2Fcommits%2FV-sujith-kumar-Reddy%2FADD-legacy-audio-driver-support-for-rembrandt%2F20220625-035009&amp;data=05%7C01%7CVsujithkumar.Reddy%40amd.com%7C76b71f6bc0b64a93432508da5656c7e4%7C3dd8961fe4884e608e11a82d994e183d%7C0%7C0%7C637917228020649435%7CUnknown%7CTWFpbGZsb3d8eyJWIjoiMC4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0%3D%7C3000%7C%7C%7C&amp;sdata=hzTz9xhAhBAJ9usYOfc1IN0cmHiHREgtttyvUlDOoJs%3D&amp;reserved=0
+> base:https://nam11.safelinks.protection.outlook.com/?url=https%3A%2F%2Fgit.kernel.org%2Fpub%2Fscm%2Flinux%2Fkernel%2Fgit%2Fbroonie%2Fsound.git&amp;data=05%7C01%7CVsujithkumar.Reddy%40amd.com%7C76b71f6bc0b64a93432508da5656c7e4%7C3dd8961fe4884e608e11a82d994e183d%7C0%7C0%7C637917228020649435%7CUnknown%7CTWFpbGZsb3d8eyJWIjoiMC4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0%3D%7C3000%7C%7C%7C&amp;sdata=awvLx0T4gFToItcVHMNqkUZ%2FaS120MOg15Jr1PGsumA%3D&amp;reserved=0  for-next
+> config: i386-allyesconfig
+> compiler: gcc-11 (Debian 11.3.0-3) 11.3.0
+> reproduce (this is a W=1 build):
+>          #https://nam11.safelinks.protection.outlook.com/?url=https%3A%2F%2Fgithub.com%2Fintel-lab-lkp%2Flinux%2Fcommit%2F32f53f63fb2ba0bbf7e8e145879a7340f28ebfbd&amp;data=05%7C01%7CVsujithkumar.Reddy%40amd.com%7C76b71f6bc0b64a93432508da5656c7e4%7C3dd8961fe4884e608e11a82d994e183d%7C0%7C0%7C637917228020649435%7CUnknown%7CTWFpbGZsb3d8eyJWIjoiMC4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0%3D%7C3000%7C%7C%7C&amp;sdata=4t5GdErDyUSzvhP1uW8KdxwCoE6MUPS1mjsg7HjDbYo%3D&amp;reserved=0
+>          git remote add linux-reviewhttps://nam11.safelinks.protection.outlook.com/?url=https%3A%2F%2Fgithub.com%2Fintel-lab-lkp%2Flinux&amp;data=05%7C01%7CVsujithkumar.Reddy%40amd.com%7C76b71f6bc0b64a93432508da5656c7e4%7C3dd8961fe4884e608e11a82d994e183d%7C0%7C0%7C637917228020649435%7CUnknown%7CTWFpbGZsb3d8eyJWIjoiMC4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0%3D%7C3000%7C%7C%7C&amp;sdata=UjYTqFiuuaxQkLTThINcEzgzwCB%2Fl87%2B%2FYIiHGfCIl0%3D&amp;reserved=0
+>          git fetch --no-tags linux-review V-sujith-kumar-Reddy/ADD-legacy-audio-driver-support-for-rembrandt/20220625-035009
+>          git checkout 32f53f63fb2ba0bbf7e8e145879a7340f28ebfbd
+>          # save the config file
+>          mkdir build_dir && cp config build_dir/.config
+>          make W=1 O=build_dir ARCH=i386 SHELL=/bin/bash sound/soc/amd/acp/
+>
+> If you fix the issue, kindly add following tag where applicable
+> Reported-by: kernel test robot<lkp@intel.com>
+>
+> All warnings (new ones prefixed by >>):
+>
+>>> sound/soc/amd/acp/acp-rembrandt.c:264:5: warning: no previous prototype for 'rmb_acp_init' [-Wmissing-prototypes]
+>       264 | int rmb_acp_init(void __iomem *base)
+>           |     ^~~~~~~~~~~~
 
-diff --git a/drivers/acpi/utils.c b/drivers/acpi/utils.c
-index 3a9773a09e19..5a7b8065e77f 100644
---- a/drivers/acpi/utils.c
-+++ b/drivers/acpi/utils.c
-@@ -291,6 +291,44 @@ int acpi_get_local_address(acpi_handle handle, u32 *addr)
- }
- EXPORT_SYMBOL(acpi_get_local_address);
- 
-+#define ACPI_MAX_SUB_BUF_SIZE	9
-+
-+const char *acpi_get_subsystem_id(acpi_handle handle)
-+{
-+	struct acpi_buffer buffer = { ACPI_ALLOCATE_BUFFER, NULL };
-+	union acpi_object *obj;
-+	acpi_status status;
-+	const char *sub;
-+	size_t len;
-+
-+	status = acpi_evaluate_object(handle, METHOD_NAME__SUB, NULL, &buffer);
-+	if (ACPI_FAILURE(status)) {
-+		acpi_handle_debug(handle, "Reading ACPI _SUB failed: %#x\n", status);
-+		return ERR_PTR(-ENODATA);
-+	}
-+
-+	obj = buffer.pointer;
-+	if (obj->type == ACPI_TYPE_STRING) {
-+		len = strlen(obj->string.pointer);
-+		if (len < ACPI_MAX_SUB_BUF_SIZE && len > 0) {
-+			sub = kstrdup(obj->string.pointer, GFP_KERNEL);
-+			if (!sub)
-+				sub = ERR_PTR(-ENOMEM);
-+		} else {
-+			acpi_handle_err(handle, "ACPI _SUB Length %zu is Invalid\n", len);
-+			sub = ERR_PTR(-ENODATA);
-+		}
-+	} else {
-+		acpi_handle_warn(handle, "Warning ACPI _SUB did not return a string\n");
-+		sub = ERR_PTR(-ENODATA);
-+	}
-+
-+	acpi_os_free(buffer.pointer);
-+
-+	return sub;
-+}
-+EXPORT_SYMBOL_GPL(acpi_get_subsystem_id);
-+
- acpi_status
- acpi_evaluate_reference(acpi_handle handle,
- 			acpi_string pathname,
-diff --git a/include/linux/acpi.h b/include/linux/acpi.h
-index 2a0e95336094..447898685e09 100644
---- a/include/linux/acpi.h
-+++ b/include/linux/acpi.h
-@@ -762,6 +762,7 @@ static inline u64 acpi_arch_get_root_pointer(void)
- #endif
- 
- int acpi_get_local_address(acpi_handle handle, u32 *addr);
-+const char *acpi_get_subsystem_id(acpi_handle handle);
- 
- #else	/* !CONFIG_ACPI */
- 
-@@ -1023,6 +1024,11 @@ static inline int acpi_get_local_address(acpi_handle handle, u32 *addr)
- 	return -ENODEV;
- }
- 
-+static inline const char *acpi_get_subsystem_id(acpi_handle handle)
-+{
-+	return ERR_PTR(-ENODEV);
-+}
-+
- static inline int acpi_register_wakeup_handler(int wake_irq,
- 	bool (*wakeup)(void *context), void *context)
- {
--- 
-2.25.1
 
+Done
+
+>>> sound/soc/amd/acp/acp-rembrandt.c:286:5: warning: no previous prototype for 'rmb_acp_deinit' [-Wmissing-prototypes]
+>       286 | int rmb_acp_deinit(void __iomem *base)
+>           |     ^~~~~~~~~~~~~~
+>
+Done
+> vim +/rmb_acp_init +264 sound/soc/amd/acp/acp-rembrandt.c
+>
+>     263
+>   > 264  int rmb_acp_init(void __iomem *base)
+>     265  {
+>     266          int ret;
+>     267
+>     268          /* power on */
+>     269          ret = acp6x_power_on(base);
+>     270          if (ret) {
+>     271                  pr_err("ACP power on failed\n");
+>     272                  return ret;
+>     273          }
+>     274          writel(0x01, base + ACP_CONTROL);
+>     275
+>     276          /* Reset */
+>     277          ret = acp6x_reset(base);
+>     278          if (ret) {
+>     279                  pr_err("ACP reset failed\n");
+>     280                  return ret;
+>     281          }
+>     282
+>     283          return 0;
+>     284  }
+>     285
+>   > 286  int rmb_acp_deinit(void __iomem *base)
+>     287  {
+>     288          int ret = 0;
+>     289
+>     290          /* Reset */
+>     291          ret = acp6x_reset(base);
+>     292          if (ret) {
+>     293                  pr_err("ACP reset failed\n");
+>     294                  return ret;
+>     295          }
+>     296
+>     297          writel(0x00, base + ACP_CONTROL);
+>     298
+>     299          /* power off */
+>     300          ret = acp6x_power_off(base);
+>     301          if (ret) {
+>     302                  pr_err("ACP power off failed\n");
+>     303                  return ret;
+>     304          }
+>     305
+>     306          return 0;
+>     307  }
+>     308
+>
+> --
+> 0-DAY CI Kernel Test Service
+> https://nam11.safelinks.protection.outlook.com/?url=https%3A%2F%2F01.org%2Flkp&amp;data=05%7C01%7CVsujithkumar.Reddy%40amd.com%7C76b71f6bc0b64a93432508da5656c7e4%7C3dd8961fe4884e608e11a82d994e183d%7C0%7C0%7C637917228020649435%7CUnknown%7CTWFpbGZsb3d8eyJWIjoiMC4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0%3D%7C3000%7C%7C%7C&amp;sdata=H4qJDbhtyu9BGhMCtQvEe%2FvVZiueS2j%2F%2Fda%2BpwUOuLo%3D&amp;reserved=0
