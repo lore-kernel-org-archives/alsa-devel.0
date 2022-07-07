@@ -4,72 +4,53 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D97E9C433EF
-	for <alsa-devel@archiver.kernel.org>; Thu,  7 Jul 2022 12:36:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id EE22EC43334
+	for <alsa-devel@archiver.kernel.org>; Thu,  7 Jul 2022 12:36:33 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 2BBD51687;
-	Thu,  7 Jul 2022 14:35:26 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2BBD51687
+	by alsa0.perex.cz (Postfix) with ESMTPS id 2879F1622;
+	Thu,  7 Jul 2022 14:35:42 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2879F1622
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1657197376;
-	bh=n846Hs3c9MgbTP/DPAz9yuXRlEggHqNa7XZGEypGi/s=;
+	s=default; t=1657197392;
+	bh=YGK/T2LoyRY6N+v/ayv7e9EiQ/pWyRZObOgpahfmH+c=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Fr5D1diPR/D0ATw+71TM4PTN2yiiCZWt2RklzAhRn0HlbcRSqB0wFNAK9VJd55Fo1
-	 cF8tq+XSpSyBVqwNbi6T1+PDU4HOLff5Z2bHKZxok/N6BRuCyaOuo3nAiieUF4mI8I
-	 cy7JXEUFgTxjLckzqSaAPW5BYBQ2smPE/ZY1lWbg=
+	b=rZpcSucN3WGJz9frg2CuI1XAso14RxfSktL1vK1oqzllZSEfe9iI737/rF+F2Hata
+	 R+47KOP8LMHLb46haMCcG6xSjWK+gBwlf6XNHlUbuR6eHG2pJBJXLz5q9+5ik3edUr
+	 72K6JBTXywa5dUNsX36u4KGNMfJBlUWsNTjuxb00=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id DD2C5F805A0;
-	Thu,  7 Jul 2022 14:32:59 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 73600F800DF;
+	Thu,  7 Jul 2022 14:34:18 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 28067F804F1; Thu,  7 Jul 2022 14:32:57 +0200 (CEST)
-Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 30D28F8028D
- for <alsa-devel@alsa-project.org>; Thu,  7 Jul 2022 14:31:57 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 30D28F8028D
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="hvgAwjhh"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
- d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1657197119; x=1688733119;
- h=from:to:cc:subject:date:message-id:in-reply-to:
- references:mime-version:content-transfer-encoding;
- bh=n846Hs3c9MgbTP/DPAz9yuXRlEggHqNa7XZGEypGi/s=;
- b=hvgAwjhhD2TCgVbnEKtoxpzVdhXVOtfsiYpIGlknxpKnkcipkmkJag2Z
- NY1ap4kpD57z8EGVgbtYHSBz2YdvneTbIMGWIv1W7U9xa0f5/YT6VZvxH
- iogkFbWsoOrWppBz+pWQ5lsgSuVJWYMxhmzfBfgJLh+FbPMFNEK1/MVaB
- ArYXgAutIjFzPi1qwTZdYpcgewVztk7GpPRvSMTx6uwGV6Md53mQqger8
- wcrsM/0GD9t8tjXedaIvi9lyYslwV0+DI4HPZ1pEmNj26sIqe6Wi2Bkkx
- NN8dR1CoA5ekJIiG8+4uFvk1X9vGakrafIWG+RHQhsdU8qUO4xhsr/ur2 g==;
-X-IronPort-AV: E=McAfee;i="6400,9594,10400"; a="272805898"
-X-IronPort-AV: E=Sophos;i="5.92,252,1650956400"; d="scan'208";a="272805898"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
- by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 07 Jul 2022 05:31:54 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.92,252,1650956400"; d="scan'208";a="593720567"
-Received: from crojewsk-ctrl.igk.intel.com ([10.102.9.28])
- by orsmga002.jf.intel.com with ESMTP; 07 Jul 2022 05:31:52 -0700
-From: Cezary Rojewski <cezary.rojewski@intel.com>
-To: alsa-devel@alsa-project.org,
-	broonie@kernel.org
-Subject: [PATCH 03/12] ASoC: Intel: avs: Relax DSP core transition timings
-Date: Thu,  7 Jul 2022 14:41:44 +0200
-Message-Id: <20220707124153.1858249-4-cezary.rojewski@intel.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20220707124153.1858249-1-cezary.rojewski@intel.com>
-References: <20220707124153.1858249-1-cezary.rojewski@intel.com>
+ id 04595F80538; Thu,  7 Jul 2022 14:34:17 +0200 (CEST)
+Received: from n169-114.mail.139.com (n169-114.mail.139.com [120.232.169.114])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256
+ bits)) (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id E233AF800DF
+ for <alsa-devel@alsa-project.org>; Thu,  7 Jul 2022 14:34:08 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E233AF800DF
+X-RM-TagInfo: emlType=0                                       
+X-RM-SPAM: 
+X-RM-SPAM-FLAG: 00000000
+Received: from LAPTOP-39QA2GAC.localdomain (unknown[192.163.20.102])
+ by rmsmtp-lg-appmail-38-12052 (RichMail) with SMTP id 2f1462c6d2a972e-19759;
+ Thu, 07 Jul 2022 20:34:04 +0800 (CST)
+X-RM-TRANSID: 2f1462c6d2a972e-19759
+From: Raphael-Xu <13691752556@139.com>
+To: broonie@kernel.org
+Subject: [PATCH v4 2/2] add tas2780
+Date: Thu,  7 Jul 2022 20:33:43 +0800
+Message-Id: <20220707123343.2403-2-13691752556@139.com>
+X-Mailer: git-send-email 2.35.1
+In-Reply-To: <20220707123343.2403-1-13691752556@139.com>
+References: <20220707123343.2403-1-13691752556@139.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: Cezary Rojewski <cezary.rojewski@intel.com>,
- pierre-louis.bossart@linux.intel.com, tiwai@suse.com, hdegoede@redhat.com,
- amadeuszx.slawinski@linux.intel.com
+Cc: alsa-devel@alsa-project.org, navada@ti.com, asyrus@ti.com,
+ raphael-xu@ti.com, shenghao-ding@ti.com, Raphael-Xu <13691752556@139.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -85,54 +66,93 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-To avoid any false positives when checking CPA after setting SPA, do a
-short wait. For stall operation, give HW more time to propagate the
-change before moving on.
+add tas2780.yaml
 
-Signed-off-by: Cezary Rojewski <cezary.rojewski@intel.com>
+Signed-off-by: Raphael-Xu <13691752556@139.com>
 ---
- sound/soc/intel/avs/dsp.c | 11 +++++++++--
- 1 file changed, 9 insertions(+), 2 deletions(-)
+ .../devicetree/bindings/sound/tas2780.yaml    | 72 +++++++++++++++++++
+ 1 file changed, 72 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/sound/tas2780.yaml
 
-diff --git a/sound/soc/intel/avs/dsp.c b/sound/soc/intel/avs/dsp.c
-index 06d2f7af520f..b881100d3e02 100644
---- a/sound/soc/intel/avs/dsp.c
-+++ b/sound/soc/intel/avs/dsp.c
-@@ -13,6 +13,7 @@
- 
- #define AVS_ADSPCS_INTERVAL_US		500
- #define AVS_ADSPCS_TIMEOUT_US		50000
-+#define AVS_ADSPCS_DELAY_US		1000
- 
- int avs_dsp_core_power(struct avs_dev *adev, u32 core_mask, bool power)
- {
-@@ -26,6 +27,8 @@ int avs_dsp_core_power(struct avs_dev *adev, u32 core_mask, bool power)
- 	value = power ? mask : 0;
- 
- 	snd_hdac_adsp_updatel(adev, AVS_ADSP_REG_ADSPCS, mask, value);
-+	/* Delay the polling to avoid false positives. */
-+	usleep_range(AVS_ADSPCS_DELAY_US, 2 * AVS_ADSPCS_DELAY_US);
- 
- 	mask = AVS_ADSPCS_CPA_MASK(core_mask);
- 	value = power ? mask : 0;
-@@ -82,11 +85,15 @@ int avs_dsp_core_stall(struct avs_dev *adev, u32 core_mask, bool stall)
- 				       reg, (reg & mask) == value,
- 				       AVS_ADSPCS_INTERVAL_US,
- 				       AVS_ADSPCS_TIMEOUT_US);
--	if (ret)
-+	if (ret) {
- 		dev_err(adev->dev, "core_mask %d %sstall failed: %d\n",
- 			core_mask, stall ? "" : "un", ret);
-+		return ret;
-+	}
- 
--	return ret;
-+	/* Give HW time to propagate the change. */
-+	usleep_range(AVS_ADSPCS_DELAY_US, 2 * AVS_ADSPCS_DELAY_US);
-+	return 0;
- }
- 
- int avs_dsp_core_enable(struct avs_dev *adev, u32 core_mask)
+diff --git a/Documentation/devicetree/bindings/sound/tas2780.yaml b/Documentation/devicetree/bindings/sound/tas2780.yaml
+new file mode 100644
+index 000000000000..5a0de0995066
+--- /dev/null
++++ b/Documentation/devicetree/bindings/sound/tas2780.yaml
+@@ -0,0 +1,72 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++# Copyright (C) 2020-2022 Texas Instruments Incorporated
++%YAML 1.2
++---
++$id: "http://devicetree.org/schemas/sound/tas2780.yaml#"
++$schema: "http://devicetree.org/meta-schemas/core.yaml#"
++
++title: Texas Instruments TAS2780 Smart PA
++
++maintainers:
++  - Raphael Xu <raphael-xu@ti.com>
++
++description: |
++  The TAS2780 is a mono, digital input Class-D audio amplifier optimized for
++  efficiently driving high peak power into small loudspeakers.
++  Integrated speaker voltage and current sense provides for
++  real time monitoring of loudspeaker behavior.
++
++properties:
++  compatible:
++    enum:
++      - ti,tas2780
++
++  reg:
++    maxItems: 1
++    description: |
++       I2C address of the device can be between 0x38 to 0x45.
++
++  reset-gpios:
++    maxItems: 1
++    description: GPIO used to reset the device.
++
++  interrupts:
++    maxItems: 1
++
++  ti,imon-slot-no:
++    $ref: /schemas/types.yaml#/definitions/uint32
++    description: TDM TX current sense time slot.
++
++  ti,vmon-slot-no:
++    $ref: /schemas/types.yaml#/definitions/uint32
++    description: TDM TX voltage sense time slot.
++
++  '#sound-dai-cells':
++    const: 1
++
++required:
++  - compatible
++  - reg
++
++additionalProperties: false
++
++examples:
++  - |
++   #include <dt-bindings/gpio/gpio.h>
++   i2c0 {
++     #address-cells = <1>;
++     #size-cells = <0>;
++     codec: codec@38 {
++       compatible = "ti,tas2780";
++       reg = <0x38>;
++       #sound-dai-cells = <1>;
++       interrupt-parent = <&gpio1>;
++       interrupts = <14>;
++       reset-gpios = <&gpio1 15 0>;
++       shutdown-gpios = <&gpio1 15 0>;
++       ti,imon-slot-no = <0>;
++       ti,vmon-slot-no = <2>;
++     };
++   };
++
++...
 -- 
-2.25.1
+2.35.1
+
 
