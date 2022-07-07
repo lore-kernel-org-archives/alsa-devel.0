@@ -4,54 +4,70 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1AA10C43334
-	for <alsa-devel@archiver.kernel.org>; Thu,  7 Jul 2022 11:36:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C40E7C43334
+	for <alsa-devel@archiver.kernel.org>; Thu,  7 Jul 2022 12:32:52 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 6B2EE852;
-	Thu,  7 Jul 2022 13:35:19 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6B2EE852
+	by alsa0.perex.cz (Postfix) with ESMTPS id EDF7315C1;
+	Thu,  7 Jul 2022 14:31:59 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EDF7315C1
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1657193769;
-	bh=RdNHxxq3ffQpnlGC/hOq3tVA1+6OS810kSBbnKyYOT0=;
+	s=default; t=1657197170;
+	bh=ronQZ58/aFgrCDHwVB+d0ImxLvXec4YmLyhAlHjogIM=;
 	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
 	 List-Post:List-Help:List-Subscribe:From;
-	b=aHjPSHvrZljCXi7jQghAZQZvtW9Endg9Mpw6u5Lt8+GYkHrWHrqWtO1ZN39urKS0l
-	 cx/1LNg+gopZuDH3kHSruFGRT2OuffBY0lndBI6He29LGbAS7JbRaITWjqxMsEl9PF
-	 g9d+74mIGD841BOVThF3O9RhLygxuwNJlxVQhY2s=
+	b=RYHh+HzC3mjnVNQvr/fRJz81coXvbTgjh2D2fxvDrTAuVoH+toiCdOKHaOFrRresC
+	 2d4oX6EeRz+ytNDRavMZhb25irL8RfjRzWCX1JpEEhrqQ5UVajGh+5v0/JcA0/5Civ
+	 7L260vHYwfPmnumOalfMq8swMGe8t2dQ7mx+W3Sw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 0F1A6F80137;
-	Thu,  7 Jul 2022 13:35:19 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 76C5AF804F1;
+	Thu,  7 Jul 2022 14:31:59 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 72E86F8016A; Thu,  7 Jul 2022 13:35:17 +0200 (CEST)
-Received: from inva020.nxp.com (inva020.nxp.com [92.121.34.13])
+ id 48BA4F8028D; Thu,  7 Jul 2022 14:31:57 +0200 (CEST)
+Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 8AB17F800DF
- for <alsa-devel@alsa-project.org>; Thu,  7 Jul 2022 13:35:11 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8AB17F800DF
-Received: from inva020.nxp.com (localhost [127.0.0.1])
- by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id A66EE1A1437;
- Thu,  7 Jul 2022 13:35:10 +0200 (CEST)
-Received: from aprdc01srsp001v.ap-rdc01.nxp.com
- (aprdc01srsp001v.ap-rdc01.nxp.com [165.114.16.16])
- by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 6F0861A1432;
- Thu,  7 Jul 2022 13:35:10 +0200 (CEST)
-Received: from localhost.localdomain (shlinux2.ap.freescale.net
- [10.192.224.44])
- by aprdc01srsp001v.ap-rdc01.nxp.com (Postfix) with ESMTP id DA0F51802204;
- Thu,  7 Jul 2022 19:35:08 +0800 (+08)
-From: Shengjiu Wang <shengjiu.wang@nxp.com>
-To: nicoleotsuka@gmail.com, Xiubo.Lee@gmail.com, festevam@gmail.com,
- shengjiu.wang@gmail.com, lgirdwood@gmail.com, broonie@kernel.org,
- perex@perex.cz, tiwai@suse.com, alsa-devel@alsa-project.org
-Subject: [PATCH] ASoC: fsl_utils: Don't use plain integer as NULL pointer
-Date: Thu,  7 Jul 2022 19:20:06 +0800
-Message-Id: <1657192806-10569-1-git-send-email-shengjiu.wang@nxp.com>
-X-Mailer: git-send-email 2.7.4
-X-Virus-Scanned: ClamAV using ClamSMTP
-Cc: linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
+ by alsa1.perex.cz (Postfix) with ESMTPS id 82329F800DF
+ for <alsa-devel@alsa-project.org>; Thu,  7 Jul 2022 14:31:52 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 82329F800DF
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
+ header.b="aUZxjTIk"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+ d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+ t=1657197114; x=1688733114;
+ h=from:to:cc:subject:date:message-id:mime-version:
+ content-transfer-encoding;
+ bh=ronQZ58/aFgrCDHwVB+d0ImxLvXec4YmLyhAlHjogIM=;
+ b=aUZxjTIkApytHXalvJvUg3zh1KUmipyFeajLcilEsp/SJlRRkApDPcSA
+ K9yVZ4R516ZGvsRFpRTcSQjEELd+lB4FQPyC9LufztCbtuq/VK5GzTKSG
+ 9JEXTll3W7rhagaqwJHamEXzLsdmqOtjO447cpEvSdjqp+Ve3rD6Tkhco
+ 4aq/WKzZzXyaQegFTcrWeSN4mdR7hkY+ZfWgv95vgzTGpJiJQj5PXqGDU
+ D54BUWCGg5DJX6l/7Y/hONDZjI8gPHk7clLQtie48JlvgM0pTGrgziplL
+ Ohit+HMCr99eTmthdwj3r3DlFnK/IJIN6UM1oyn2xR/yV6swI3kZEyLTa Q==;
+X-IronPort-AV: E=McAfee;i="6400,9594,10400"; a="272805879"
+X-IronPort-AV: E=Sophos;i="5.92,252,1650956400"; d="scan'208";a="272805879"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+ by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 07 Jul 2022 05:31:47 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.92,252,1650956400"; d="scan'208";a="593720543"
+Received: from crojewsk-ctrl.igk.intel.com ([10.102.9.28])
+ by orsmga002.jf.intel.com with ESMTP; 07 Jul 2022 05:31:46 -0700
+From: Cezary Rojewski <cezary.rojewski@intel.com>
+To: alsa-devel@alsa-project.org,
+	broonie@kernel.org
+Subject: [PATCH 00/12] ASoC: Intel: avs: Updates and cleanups
+Date: Thu,  7 Jul 2022 14:41:41 +0200
+Message-Id: <20220707124153.1858249-1-cezary.rojewski@intel.com>
+X-Mailer: git-send-email 2.25.1
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+Cc: Cezary Rojewski <cezary.rojewski@intel.com>,
+ pierre-louis.bossart@linux.intel.com, tiwai@suse.com, hdegoede@redhat.com,
+ amadeuszx.slawinski@linux.intel.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -67,30 +83,52 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Fix sparse warning:
-sound/soc/fsl/fsl_utils.c:125:31: sparse: warning: Using plain integer as NULL pointer
-sound/soc/fsl/fsl_utils.c:125:42: sparse: warning: Using plain integer as NULL pointer
+Series consists of loosely connected patches and does not concentrate on
+one specific subject.
 
-Fixes: 7bad8125549c ("ASoC: fsl_utils: Add function to handle PLL clock source")
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
----
- sound/soc/fsl/fsl_utils.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+First, as generic HDAudio codec driver is now part of ASoC, avs-driver
+core is updated to register missing ext_bus operations. This completes
+driver's core implementation.
 
-diff --git a/sound/soc/fsl/fsl_utils.c b/sound/soc/fsl/fsl_utils.c
-index b75843e31f00..3e969c7bc1c5 100644
---- a/sound/soc/fsl/fsl_utils.c
-+++ b/sound/soc/fsl/fsl_utils.c
-@@ -122,7 +122,7 @@ void fsl_asoc_reparent_pll_clocks(struct device *dev, struct clk *clk,
- 				  struct clk *pll8k_clk,
- 				  struct clk *pll11k_clk, u64 ratio)
- {
--	struct clk *p, *pll = 0, *npll = 0;
-+	struct clk *p, *pll = NULL, *npll = NULL;
- 	bool reparent = false;
- 	int ret = 0;
- 
+The next change adds the last missing piece for port descriptions coming
+from topology in formatted string format e.g.: ssp%d have full
+effect. To do that, the port value needs to be provided to respective
+copier configuration.
+
+Third change relaxes core transition timings so that scenarios where
+modules are interfering with each other while being on separate cores
+are not occasionally causing trouble.
+
+All other changes are addressing warnings, cleaning things up a little
+and protecting driver from invalid firmware behavior - while not
+expected in release binaries, does not hurt to add them.
+
+Amadeusz Sławiński (2):
+  ASoC: Intel: avs: Set max DMA segment size
+  ASoC: Intel: avs: Use helper function to set up DMA
+
+Cezary Rojewski (10):
+  ASoC: Intel: avs: Register HDAudio ext-bus operations
+  ASoC: Intel: avs: Assign I2S gateway when parsing topology
+  ASoC: Intel: avs: Relax DSP core transition timings
+  ASoC: Intel: avs: Copy only as many RX bytes as necessary
+  ASoC: Intel: avs: Shield LARGE_CONFIG_GETs against zero payload_size
+  ASoC: Intel: avs: Block IPC channel on suspend
+  ASoC: Intel: avs: Recognize FW_CFG_RESERVED
+  ASoC: Intel: avs: Replace hardcodes with SD_CTL_STREAM_RESET
+  ASoC: Intel: avs: Lower UNLOAD_MULTIPLE_MODULES IPC timeout
+  ASoC: Intel: avs: Update AVS_FW_INIT_TIMEOUT_US declaration
+
+ sound/soc/intel/Kconfig        |  2 +-
+ sound/soc/intel/avs/cldma.c    | 12 ++++++------
+ sound/soc/intel/avs/core.c     | 13 ++++++-------
+ sound/soc/intel/avs/dsp.c      | 11 +++++++++--
+ sound/soc/intel/avs/ipc.c      |  1 +
+ sound/soc/intel/avs/loader.c   |  2 +-
+ sound/soc/intel/avs/messages.c | 18 +++++++++++++-----
+ sound/soc/intel/avs/topology.c | 27 +++++++++++++++++++++++++++
+ 8 files changed, 64 insertions(+), 22 deletions(-)
+
 -- 
-2.34.1
+2.25.1
 
