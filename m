@@ -4,65 +4,65 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id AC91EC433EF
-	for <alsa-devel@archiver.kernel.org>; Thu,  7 Jul 2022 12:35:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C83C2C433EF
+	for <alsa-devel@archiver.kernel.org>; Thu,  7 Jul 2022 12:35:15 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id DB81D1695;
-	Thu,  7 Jul 2022 14:34:10 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DB81D1695
+	by alsa0.perex.cz (Postfix) with ESMTPS id 1430B1697;
+	Thu,  7 Jul 2022 14:34:24 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1430B1697
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1657197300;
-	bh=eYWgRGi6e/Ub6oh43K9nix22n8tIvk0eb5TlZU/18qA=;
+	s=default; t=1657197314;
+	bh=oPLP+ZZtjRuK42T15AQw9BYYGFEFD/IZVA8eaOBiwKM=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=RwV3V97ahl3dm6KvQUNVV4jyycznaBnOVXGhojDQxwIx5c8wTb+VUJAQdHXkHirTJ
-	 AtM/Sllu2ne0qKmooCrVvOR1M+BT4vmfPdo3lJYAgQVCvrCfyWhpC83tF6jlMJZnop
-	 zI98zhTu9HtHGmh0hlJajM8h/9IsvhEAfIdt4Rg4=
+	b=FPVLVYP8rWimX+ZuGJRVawV19In4u7q0/KX/bVrAi5LMy8p/afF6D0u7xAHDdVsAS
+	 d7sWyC99VtUIKkBpLArRGEaC0CZ3LECfrw9ZcAvAcFEm0mEYlCDUKQVn1FIuqjK7sF
+	 yGtI6sGp8BuB2ky/qRlM7P7vEy5ZVSSGGzIr6ui8=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 8DE61F80570;
-	Thu,  7 Jul 2022 14:32:17 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 0E165F8057A;
+	Thu,  7 Jul 2022 14:32:18 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 9D9C5F80566; Thu,  7 Jul 2022 14:32:15 +0200 (CEST)
+ id CE450F80567; Thu,  7 Jul 2022 14:32:15 +0200 (CEST)
 Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 821D5F8053A
- for <alsa-devel@alsa-project.org>; Thu,  7 Jul 2022 14:32:08 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 821D5F8053A
+ by alsa1.perex.cz (Postfix) with ESMTPS id A27A5F8055A
+ for <alsa-devel@alsa-project.org>; Thu,  7 Jul 2022 14:32:12 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A27A5F8055A
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="n4lbGY1L"
+ header.b="ha8fQrHv"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1657197129; x=1688733129;
+ t=1657197133; x=1688733133;
  h=from:to:cc:subject:date:message-id:in-reply-to:
  references:mime-version:content-transfer-encoding;
- bh=eYWgRGi6e/Ub6oh43K9nix22n8tIvk0eb5TlZU/18qA=;
- b=n4lbGY1LrLn47Hx9o6MX7dJo3a54I8UK38nuwk7S1MAB3+5zIneuKAWW
- XSGBNU4wSs2jBs7TWBI34jGcUfYe2RaykTrGT4g8jh9tFNCIlErCfg1Dc
- 6dRB3hKUtQofvSnry7NlA8ydch5c+903qZIcfzeof3mjXLbeYhu0AHI0t
- hy6htaw65Puxyvmuaob57PNu9LvzCTTrkZrrUYTkcQaIWO0syzSih9Eii
- rOlDgmhFY7sP8XomRViPFjk/yQ2Cs28M0BijkXM79+UrL57nM+SIm+vRo
- iwVU4HQlxKijM8CMwa+WGd3jWEX31n4iXgRwpuMjTyXuR2ns2GIoK+nIi Q==;
-X-IronPort-AV: E=McAfee;i="6400,9594,10400"; a="272805949"
-X-IronPort-AV: E=Sophos;i="5.92,252,1650956400"; d="scan'208";a="272805949"
+ bh=oPLP+ZZtjRuK42T15AQw9BYYGFEFD/IZVA8eaOBiwKM=;
+ b=ha8fQrHv1B43xyBk7eFERuPWAdjt/IcJBNTAqy2wlT1hHkrfYUHpazJg
+ euG1TppMTooEOXoU8IuZHjqJjUiJQVElOGFJF1Jvbcqc2AyygqpARACEM
+ p3X/vciKZA3FgUA8qQE4mFrF5P/u0dT4K1lZHjI/Yj8qrVnEX6ixB80Sg
+ KGcRXDADx7J8p0LynaqbnSp94Hca2zZ5/iSJHOy6PO9pYqc6YOcinTGVk
+ IXNhN45ewKqhRO1a1y/JsoBJti+4R39My2dPonyLx8FKdLNkks3Yui/f8
+ bQL8zjD80nUnGCogaQde8sxZqmZk386A+SDRMc5EpcUmMPA7/R5U6egBd w==;
+X-IronPort-AV: E=McAfee;i="6400,9594,10400"; a="272805962"
+X-IronPort-AV: E=Sophos;i="5.92,252,1650956400"; d="scan'208";a="272805962"
 Received: from orsmga002.jf.intel.com ([10.7.209.21])
  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 07 Jul 2022 05:32:08 -0700
+ 07 Jul 2022 05:32:12 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.92,252,1650956400"; d="scan'208";a="593720678"
+X-IronPort-AV: E=Sophos;i="5.92,252,1650956400"; d="scan'208";a="593720708"
 Received: from crojewsk-ctrl.igk.intel.com ([10.102.9.28])
- by orsmga002.jf.intel.com with ESMTP; 07 Jul 2022 05:32:06 -0700
+ by orsmga002.jf.intel.com with ESMTP; 07 Jul 2022 05:32:10 -0700
 From: Cezary Rojewski <cezary.rojewski@intel.com>
 To: alsa-devel@alsa-project.org,
 	broonie@kernel.org
-Subject: [PATCH 10/12] ASoC: Intel: avs: Replace hardcodes with
- SD_CTL_STREAM_RESET
-Date: Thu,  7 Jul 2022 14:41:51 +0200
-Message-Id: <20220707124153.1858249-11-cezary.rojewski@intel.com>
+Subject: [PATCH 12/12] ASoC: Intel: avs: Update AVS_FW_INIT_TIMEOUT_US
+ declaration
+Date: Thu,  7 Jul 2022 14:41:53 +0200
+Message-Id: <20220707124153.1858249-13-cezary.rojewski@intel.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20220707124153.1858249-1-cezary.rojewski@intel.com>
 References: <20220707124153.1858249-1-cezary.rojewski@intel.com>
@@ -86,42 +86,28 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Improve readability of CLDMA reset operation by making use of
-already defined SD_CTL_STREAM_RESET.
+To reduce the number of places to update if timeouts would have to
+change, modify the constant declaration.
 
 Signed-off-by: Cezary Rojewski <cezary.rojewski@intel.com>
 ---
- sound/soc/intel/avs/cldma.c | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
+ sound/soc/intel/avs/loader.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/intel/avs/cldma.c b/sound/soc/intel/avs/cldma.c
-index d100c6ba4d8a..d7a9390b5e48 100644
---- a/sound/soc/intel/avs/cldma.c
-+++ b/sound/soc/intel/avs/cldma.c
-@@ -176,17 +176,17 @@ int hda_cldma_reset(struct hda_cldma *cl)
- 		return ret;
- 	}
+diff --git a/sound/soc/intel/avs/loader.c b/sound/soc/intel/avs/loader.c
+index 542fd44aa501..9e3f8ff33a87 100644
+--- a/sound/soc/intel/avs/loader.c
++++ b/sound/soc/intel/avs/loader.c
+@@ -27,8 +27,8 @@
+ #define APL_ROM_INIT_RETRIES		3
  
--	snd_hdac_stream_updateb(cl, SD_CTL, 1, 1);
--	ret = snd_hdac_stream_readb_poll(cl, SD_CTL, reg, (reg & 1), AVS_CL_OP_INTERVAL_US,
--					 AVS_CL_OP_TIMEOUT_US);
-+	snd_hdac_stream_updateb(cl, SD_CTL, SD_CTL_STREAM_RESET, SD_CTL_STREAM_RESET);
-+	ret = snd_hdac_stream_readb_poll(cl, SD_CTL, reg, (reg & SD_CTL_STREAM_RESET),
-+					 AVS_CL_OP_INTERVAL_US, AVS_CL_OP_TIMEOUT_US);
- 	if (ret < 0) {
- 		dev_err(cl->dev, "cldma set SRST failed: %d\n", ret);
- 		return ret;
- 	}
+ #define AVS_FW_INIT_POLLING_US		500
+-#define AVS_FW_INIT_TIMEOUT_US		3000000
+ #define AVS_FW_INIT_TIMEOUT_MS		3000
++#define AVS_FW_INIT_TIMEOUT_US		(AVS_FW_INIT_TIMEOUT_MS * 1000)
  
--	snd_hdac_stream_updateb(cl, SD_CTL, 1, 0);
--	ret = snd_hdac_stream_readb_poll(cl, SD_CTL, reg, !(reg & 1), AVS_CL_OP_INTERVAL_US,
--					 AVS_CL_OP_TIMEOUT_US);
-+	snd_hdac_stream_updateb(cl, SD_CTL, SD_CTL_STREAM_RESET, 0);
-+	ret = snd_hdac_stream_readb_poll(cl, SD_CTL, reg, !(reg & SD_CTL_STREAM_RESET),
-+					 AVS_CL_OP_INTERVAL_US, AVS_CL_OP_TIMEOUT_US);
- 	if (ret < 0) {
- 		dev_err(cl->dev, "cldma unset SRST failed: %d\n", ret);
- 		return ret;
+ #define AVS_CLDMA_START_DELAY_MS	100
+ 
 -- 
 2.25.1
 
