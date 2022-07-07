@@ -4,79 +4,79 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D4D0DC433EF
-	for <alsa-devel@archiver.kernel.org>; Thu,  7 Jul 2022 19:49:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 96DB7C433EF
+	for <alsa-devel@archiver.kernel.org>; Thu,  7 Jul 2022 19:49:14 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 12F681631;
-	Thu,  7 Jul 2022 21:48:09 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 12F681631
+	by alsa0.perex.cz (Postfix) with ESMTPS id D7B8C15CA;
+	Thu,  7 Jul 2022 21:48:22 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D7B8C15CA
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1657223339;
-	bh=dzCxSrv8ljaSGGZ6QMINaHagXiEqZqRIMpm6c/3kxqY=;
+	s=default; t=1657223352;
+	bh=q7SGFURN6OWTFS7jV6UtMO3TG+rGiSt9rd1y7KEvRxM=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=ubo2wbrMdLbTdNbhYlq//UBOfImaAtBGUUAKmz8UptFPZa96K11ixRmZ3kzZeAuB/
-	 iLygK665KeDj35N++2IMc3/00ssydE6MZNnnW4WX5l1rZ1EtePkHrq2/6anWwYVh/k
-	 7555iJc0Fg6LgzXhbCWkraqt4XxhdugQVyyqAcJA=
+	b=DcAL+60vPkNkrQthE0K69reSUQHxXiQoHbsWpK61BotNCFsUOnhA8eehgUJyDbpLk
+	 gxsyH9JWbZBlfCDQi0enh3qhSkjEKUwNBCBFI0V/tV5JSMuIVmNjIJ+3Wc/zUONNQY
+	 AOCtKWUllHWMFO+a8utID0cw2kHEEO+ikpJ++nY8=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 901E2F80558;
-	Thu,  7 Jul 2022 21:46:56 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 78C3DF80553;
+	Thu,  7 Jul 2022 21:46:59 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 8D2CDF80557; Thu,  7 Jul 2022 21:46:55 +0200 (CEST)
-Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com
- [IPv6:2a00:1450:4864:20::635])
+ id 5E661F8055C; Thu,  7 Jul 2022 21:46:57 +0200 (CEST)
+Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com
+ [IPv6:2a00:1450:4864:20::62b])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 1ED74F800C5
- for <alsa-devel@alsa-project.org>; Thu,  7 Jul 2022 21:46:48 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1ED74F800C5
+ by alsa1.perex.cz (Postfix) with ESMTPS id E9B7DF80551
+ for <alsa-devel@alsa-project.org>; Thu,  7 Jul 2022 21:46:51 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E9B7DF80551
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="eHPt7vqw"
-Received: by mail-ej1-x635.google.com with SMTP id n4so14930312ejz.10
- for <alsa-devel@alsa-project.org>; Thu, 07 Jul 2022 12:46:48 -0700 (PDT)
+ header.b="GZODA6os"
+Received: by mail-ej1-x62b.google.com with SMTP id os14so3968862ejb.4
+ for <alsa-devel@alsa-project.org>; Thu, 07 Jul 2022 12:46:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
  h=from:to:cc:subject:date:message-id:in-reply-to:references
  :mime-version:content-transfer-encoding;
- bh=15R8fRtnipOyDZjBwDRNBD+rUnFt8ovWDJg/qvPn+8w=;
- b=eHPt7vqwXh1wCGADEJNAowKT4uYpPhdJCl2JI/BVjbITn1J6xk0YTHFOLRz2bBVMf6
- iHLttoama6OrqnbmwCIZLUndzjK9dqq9pS6rjXFfThBI4IDN38Zzqonh/DySOh5BZCp8
- oGDRgN8dVSes1DfDPXQc+0d0grg5TqfRpl1oplyx7ju1QJgxJ9QOZM9uqk9w6jnaUZ4X
- bgjrMsOeUrZ2d6W1cBJUaX6gsi69h9iTFQ6IE8Xw0TUOwi5ldLPGnwBXbdWCQ/vXCBm2
- ZSEKnl6wTO2Q5GbdnYMRpmjssovgDxmyVnfpgOqCTrg1NM4FdVhcA+6rqDXYzrAwwhDq
- jRuw==
+ bh=rg4jRfiWMbzTLHtEYWUNXlGuNm181rxgiYhLfRcL2n4=;
+ b=GZODA6os0O0k/RDmnN1YoESrEawU4kNIwY17jbWZHv4lTvy56NzD/La48Z6KsvMgMr
+ Fb72xC0X6pvV2FIjLO8TUWnqMz9tvGrGf5OZVvRZ5ZGpuA7NNMZOh9EjC0RLkc0VHXRE
+ hZnC4H6bnsCpqniYov2JBKX4QWKb8n9PslzsNlKLwvHBq22SY0xjRcsqdV98xrTwGHSX
+ CEU3Ca44FlbbHoazhW7Bqe/vG0P7n80g0TVBiqqkfz6eQ4usxsRnCAkiRBHan7jVS2ZC
+ tG96hGLwkY0GDKM9CaoJee+/FpXxc1OUl4FYWL7epUX16mcnhtKewkzwTnYCwNzcmm7+
+ 9OSA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
  h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
  :references:mime-version:content-transfer-encoding;
- bh=15R8fRtnipOyDZjBwDRNBD+rUnFt8ovWDJg/qvPn+8w=;
- b=22qHTK+/Hc5A1W3Ax4wpf7ZvIzlBUGA3vX9La4zOo8Gc0lwC95+bo53R4pG9wd07S+
- 42lcsUDJr8AwA7ouDv3JQVuqhOeYlHCPWCDWOFHu7eRZJ2tcmSKKIoNnUQuR0VXiA1ZH
- s3Riq+UzWvjAx7vINh+2n20FZ/Ufy24TZGnIpVjWSGNOdZixEJLWFpil052PjG2bU/kV
- Ue8dE5QPtfDE9kgelKlEe8rM/qs/Gw1e/Rj6jqVy7DQB6EAIrBvoGTc8Wh3vB9X0V1JR
- /RgHt2xR3NV7AQ4nAHKe9S/3cpZf6Vyu7v9Lo1FcUEe5OMWsbpp5p3t6uoDc6tb3pLU5
- /juA==
-X-Gm-Message-State: AJIora/chFDvbavIIjWqRnjj0VW7yXlnuLo2jWkXdlbTREts8OagSRoo
- i4YBHGe37gMF8RGPRYe6JBc=
-X-Google-Smtp-Source: AGRyM1vVBv4eichqt1pd+vj1n08RTifhwRB37lBYx7JArzeALYd899GQ5F2fkeIxJc0Jrz/wJBHNRg==
-X-Received: by 2002:a17:907:1dc6:b0:72a:5e9a:91be with SMTP id
- og6-20020a1709071dc600b0072a5e9a91bemr41769203ejc.730.1657223207214; 
- Thu, 07 Jul 2022 12:46:47 -0700 (PDT)
+ bh=rg4jRfiWMbzTLHtEYWUNXlGuNm181rxgiYhLfRcL2n4=;
+ b=yknR/wNhhdZmnDLVCk2Bcgr2FNztyk62GQdK6B4l8XmwaEPLTRIjmI8ftrMkbMj+gW
+ R0rx/WtKhKkvDeV+m8il3kRI3vyEWenkb6bB97UO8G6S//CijviHpsmiRqXFa7GhRMol
+ DHF+F9onncY+xKKLC5oNtmHoGU4JMdYuzx5ni0aEs0sSdo99FcqD5a49fG6K2VHfHGpG
+ WsjOpBwhhMwQF0E2gedbHmueLnd9hgixmUe3/Od0HxYAG6jGC33fTfRVK6yhFFSrKoDv
+ lmlItbH3McUamYcyqGVI7FfJYTaKGLQcgX/tYqnvZ/7uMQscYvpN9jgrVk6XTPHMA4H1
+ s+xw==
+X-Gm-Message-State: AJIora+7aFmxx6QpcF7RW38RVScGDyX5x+Xg8eKE8VryqIxiVnWqpnEp
+ UCGV2yl/YPNS+axnQFjcjAQ=
+X-Google-Smtp-Source: AGRyM1vqherMkkYjnDGn1qFz1siMjpXjfmuUweFSfcTPlPUxypppZhncBKQpkBZOG/p+YMc0VDcjeg==
+X-Received: by 2002:a17:906:9b09:b0:72b:d70:32a6 with SMTP id
+ eo9-20020a1709069b0900b0072b0d7032a6mr5090889ejc.723.1657223210437; 
+ Thu, 07 Jul 2022 12:46:50 -0700 (PDT)
 Received: from localhost (92.40.202.166.threembb.co.uk. [92.40.202.166])
  by smtp.gmail.com with ESMTPSA id
- d8-20020a056402000800b0043a71c376a2sm8283494edu.33.2022.07.07.12.46.46
+ rl4-20020a170907216400b0071cef6c53aesm19258336ejb.0.2022.07.07.12.46.49
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Thu, 07 Jul 2022 12:46:46 -0700 (PDT)
+ Thu, 07 Jul 2022 12:46:49 -0700 (PDT)
 From: Aidan MacDonald <aidanmacdonald.0x0@gmail.com>
 To: paul@crapouillou.net, lgirdwood@gmail.com, broonie@kernel.org,
  perex@perex.cz, tiwai@suse.com
-Subject: [PATCH v2 05/11] ASoC: jz4740-i2s: Use FIELD_PREP() macros in
- hw_params callback
-Date: Thu,  7 Jul 2022 20:46:49 +0100
-Message-Id: <20220707194655.312892-6-aidanmacdonald.0x0@gmail.com>
+Subject: [PATCH v2 07/11] ASoC: jz4740-i2s: Make the PLL clock name
+ SoC-specific
+Date: Thu,  7 Jul 2022 20:46:51 +0100
+Message-Id: <20220707194655.312892-8-aidanmacdonald.0x0@gmail.com>
 In-Reply-To: <20220707194655.312892-1-aidanmacdonald.0x0@gmail.com>
 References: <20220707194655.312892-1-aidanmacdonald.0x0@gmail.com>
 MIME-Version: 1.0
@@ -98,71 +98,71 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Get rid of a couple of macros and improve readability by using
-FIELD_PREP() and GENMASK() for the sample size setting.
+On some Ingenic SoCs, such as the X1000, there is a programmable
+divider used to generate the I2S system clock from a PLL, rather
+than a fixed PLL/2 clock. It doesn't make much sense to call the
+clock "pll half" on those SoCs, so the clock name should really be
+a SoC-dependent value.
 
-Acked-by: Paul Cercueil <paul@crapouillou.net>
 Signed-off-by: Aidan MacDonald <aidanmacdonald.0x0@gmail.com>
 ---
- sound/soc/jz4740/jz4740-i2s.c | 17 ++++++++---------
- 1 file changed, 8 insertions(+), 9 deletions(-)
+ sound/soc/jz4740/jz4740-i2s.c | 8 +++++++-
+ 1 file changed, 7 insertions(+), 1 deletion(-)
 
 diff --git a/sound/soc/jz4740/jz4740-i2s.c b/sound/soc/jz4740/jz4740-i2s.c
-index 043f100a9cfa..d0791dfa9c7b 100644
+index 0dcc658b3784..a41398c24d0e 100644
 --- a/sound/soc/jz4740/jz4740-i2s.c
 +++ b/sound/soc/jz4740/jz4740-i2s.c
-@@ -3,6 +3,7 @@
-  *  Copyright (C) 2010, Lars-Peter Clausen <lars@metafoo.de>
-  */
+@@ -75,6 +75,8 @@ struct i2s_soc_info {
+ 	struct reg_field field_i2sdiv_capture;
+ 	struct reg_field field_i2sdiv_playback;
  
-+#include <linux/bitfield.h>
- #include <linux/init.h>
- #include <linux/io.h>
- #include <linux/kernel.h>
-@@ -42,8 +43,8 @@
- #define JZ_AIC_CONF_SYNC_CLK_MASTER BIT(1)
- #define JZ_AIC_CONF_ENABLE BIT(0)
- 
--#define JZ_AIC_CTRL_OUTPUT_SAMPLE_SIZE_MASK (0x7 << 19)
--#define JZ_AIC_CTRL_INPUT_SAMPLE_SIZE_MASK (0x7 << 16)
-+#define JZ_AIC_CTRL_OUTPUT_SAMPLE_SIZE GENMASK(21, 19)
-+#define JZ_AIC_CTRL_INPUT_SAMPLE_SIZE GENMASK(18, 16)
- #define JZ_AIC_CTRL_ENABLE_RX_DMA BIT(15)
- #define JZ_AIC_CTRL_ENABLE_TX_DMA BIT(14)
- #define JZ_AIC_CTRL_MONO_TO_STEREO BIT(11)
-@@ -61,9 +62,6 @@
- #define JZ4760_AIC_CTRL_TFLUSH BIT(8)
- #define JZ4760_AIC_CTRL_RFLUSH BIT(7)
- 
--#define JZ_AIC_CTRL_OUTPUT_SAMPLE_SIZE_OFFSET 19
--#define JZ_AIC_CTRL_INPUT_SAMPLE_SIZE_OFFSET  16
--
- #define JZ_AIC_I2S_FMT_DISABLE_BIT_CLK BIT(12)
- #define JZ_AIC_I2S_FMT_DISABLE_BIT_ICLK BIT(13)
- #define JZ_AIC_I2S_FMT_ENABLE_SYS_CLK BIT(4)
-@@ -248,8 +246,9 @@ static int jz4740_i2s_hw_params(struct snd_pcm_substream *substream,
- 	}
- 
- 	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
--		ctrl &= ~JZ_AIC_CTRL_OUTPUT_SAMPLE_SIZE_MASK;
--		ctrl |= sample_size << JZ_AIC_CTRL_OUTPUT_SAMPLE_SIZE_OFFSET;
-+		ctrl &= ~JZ_AIC_CTRL_OUTPUT_SAMPLE_SIZE;
-+		ctrl |= FIELD_PREP(JZ_AIC_CTRL_OUTPUT_SAMPLE_SIZE, sample_size);
++	const char *pll_clk_name;
 +
- 		if (params_channels(params) == 1)
- 			ctrl |= JZ_AIC_CTRL_MONO_TO_STEREO;
- 		else
-@@ -257,8 +256,8 @@ static int jz4740_i2s_hw_params(struct snd_pcm_substream *substream,
+ 	bool shared_fifo_flush;
+ };
  
- 		div_field = i2s->field_i2sdiv_playback;
- 	} else {
--		ctrl &= ~JZ_AIC_CTRL_INPUT_SAMPLE_SIZE_MASK;
--		ctrl |= sample_size << JZ_AIC_CTRL_INPUT_SAMPLE_SIZE_OFFSET;
-+		ctrl &= ~JZ_AIC_CTRL_INPUT_SAMPLE_SIZE;
-+		ctrl |= FIELD_PREP(JZ_AIC_CTRL_INPUT_SAMPLE_SIZE, sample_size);
+@@ -281,7 +283,7 @@ static int jz4740_i2s_set_sysclk(struct snd_soc_dai *dai, int clk_id,
+ 		clk_set_parent(i2s->clk_i2s, parent);
+ 		break;
+ 	case JZ4740_I2S_CLKSRC_PLL:
+-		parent = clk_get(NULL, "pll half");
++		parent = clk_get(NULL, i2s->soc_info->pll_clk_name);
+ 		if (IS_ERR(parent))
+ 			return PTR_ERR(parent);
+ 		clk_set_parent(i2s->clk_i2s, parent);
+@@ -400,6 +402,7 @@ static const struct i2s_soc_info jz4740_i2s_soc_info = {
+ 	.field_tx_fifo_thresh	= REG_FIELD(JZ_REG_AIC_CONF, 8, 11),
+ 	.field_i2sdiv_capture	= REG_FIELD(JZ_REG_AIC_CLK_DIV, 0, 3),
+ 	.field_i2sdiv_playback	= REG_FIELD(JZ_REG_AIC_CLK_DIV, 0, 3),
++	.pll_clk_name		= "pll half",
+ 	.shared_fifo_flush	= true,
+ };
  
- 		div_field = i2s->field_i2sdiv_capture;
- 	}
+@@ -409,6 +412,7 @@ static const struct i2s_soc_info jz4760_i2s_soc_info = {
+ 	.field_tx_fifo_thresh	= REG_FIELD(JZ_REG_AIC_CONF, 16, 20),
+ 	.field_i2sdiv_capture	= REG_FIELD(JZ_REG_AIC_CLK_DIV, 0, 3),
+ 	.field_i2sdiv_playback	= REG_FIELD(JZ_REG_AIC_CLK_DIV, 0, 3),
++	.pll_clk_name		= "pll half",
+ };
+ 
+ static struct snd_soc_dai_driver jz4770_i2s_dai = {
+@@ -435,6 +439,7 @@ static const struct i2s_soc_info jz4770_i2s_soc_info = {
+ 	.field_tx_fifo_thresh	= REG_FIELD(JZ_REG_AIC_CONF, 16, 20),
+ 	.field_i2sdiv_capture	= REG_FIELD(JZ_REG_AIC_CLK_DIV, 8, 11),
+ 	.field_i2sdiv_playback	= REG_FIELD(JZ_REG_AIC_CLK_DIV, 0, 3),
++	.pll_clk_name		= "pll half",
+ };
+ 
+ static const struct i2s_soc_info jz4780_i2s_soc_info = {
+@@ -443,6 +448,7 @@ static const struct i2s_soc_info jz4780_i2s_soc_info = {
+ 	.field_tx_fifo_thresh	= REG_FIELD(JZ_REG_AIC_CONF, 16, 20),
+ 	.field_i2sdiv_capture	= REG_FIELD(JZ_REG_AIC_CLK_DIV, 8, 11),
+ 	.field_i2sdiv_playback	= REG_FIELD(JZ_REG_AIC_CLK_DIV, 0, 3),
++	.pll_clk_name		= "pll half",
+ };
+ 
+ static const struct snd_soc_component_driver jz4740_i2s_component = {
 -- 
 2.35.1
 
