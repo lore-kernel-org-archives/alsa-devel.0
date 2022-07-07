@@ -4,78 +4,79 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7855EC43334
-	for <alsa-devel@archiver.kernel.org>; Thu,  7 Jul 2022 19:48:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D4D0DC433EF
+	for <alsa-devel@archiver.kernel.org>; Thu,  7 Jul 2022 19:49:00 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 79AB5166D;
-	Thu,  7 Jul 2022 21:47:47 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 79AB5166D
+	by alsa0.perex.cz (Postfix) with ESMTPS id 12F681631;
+	Thu,  7 Jul 2022 21:48:09 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 12F681631
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1657223317;
-	bh=t/7kRYr3xPNkeljF+EKLpPGRL6HZ5csNnSg2Mue3hNE=;
+	s=default; t=1657223339;
+	bh=dzCxSrv8ljaSGGZ6QMINaHagXiEqZqRIMpm6c/3kxqY=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=dXczr8fbIrNAxmHIBovqgwpArckBJhI9IToNgya5/h/fdP4nB84TBqcOhq7F0Pwng
-	 8/SGLLcIky3sxRSbcGK79XPoSGBUOSQOhLup+7ruC7fwoJ9SjB+ha/zAHf0zL3M+VL
-	 yzPG8kuKBJRQ6GxCt7/UtEDrYOxYf+II5PoEZg6g=
+	b=ubo2wbrMdLbTdNbhYlq//UBOfImaAtBGUUAKmz8UptFPZa96K11ixRmZ3kzZeAuB/
+	 iLygK665KeDj35N++2IMc3/00ssydE6MZNnnW4WX5l1rZ1EtePkHrq2/6anWwYVh/k
+	 7555iJc0Fg6LgzXhbCWkraqt4XxhdugQVyyqAcJA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 90EABF8053B;
-	Thu,  7 Jul 2022 21:46:51 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 901E2F80558;
+	Thu,  7 Jul 2022 21:46:56 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 016EEF8052E; Thu,  7 Jul 2022 21:46:48 +0200 (CEST)
-Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com
- [IPv6:2a00:1450:4864:20::529])
+ id 8D2CDF80557; Thu,  7 Jul 2022 21:46:55 +0200 (CEST)
+Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com
+ [IPv6:2a00:1450:4864:20::635])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id EE3D4F80538
- for <alsa-devel@alsa-project.org>; Thu,  7 Jul 2022 21:46:44 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EE3D4F80538
+ by alsa1.perex.cz (Postfix) with ESMTPS id 1ED74F800C5
+ for <alsa-devel@alsa-project.org>; Thu,  7 Jul 2022 21:46:48 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1ED74F800C5
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="SaFueFK2"
-Received: by mail-ed1-x529.google.com with SMTP id fd6so24436806edb.5
- for <alsa-devel@alsa-project.org>; Thu, 07 Jul 2022 12:46:44 -0700 (PDT)
+ header.b="eHPt7vqw"
+Received: by mail-ej1-x635.google.com with SMTP id n4so14930312ejz.10
+ for <alsa-devel@alsa-project.org>; Thu, 07 Jul 2022 12:46:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
  h=from:to:cc:subject:date:message-id:in-reply-to:references
  :mime-version:content-transfer-encoding;
- bh=0mdd5cSa/TBxKXWevDn49tiFgg+XLtvko/YRF3UBtto=;
- b=SaFueFK2Rp17AmZYAIrAFrVOvcK8I+o6no3XKUTlc3bxffH9jwVYbjCNNciNTDgyH6
- jDGGzF+bYtElmL+JJqWVZZKNe+uB926yt7YeB+YiXAHhViAQazsxioQLoyaRb5Eu3+TG
- GbzQkbMVtqphvNNVad8g7u/mNT9VHmU1eyJimyD8AhVwOz9zaHbunyWBs+5rnGI/kmyb
- GfjgRztB7F7+wN35+CXr71H8Dn+M7D1g8MVdpppmouvEM1DDhoojC9iGadCZbUXqGl7U
- lz3QskWuVKvRnpgSbsXSyy3fCVJPNzUqrVtUCi/MPDKAYoircPxEOkIAWdRrsHDQ7O+X
- O+IQ==
+ bh=15R8fRtnipOyDZjBwDRNBD+rUnFt8ovWDJg/qvPn+8w=;
+ b=eHPt7vqwXh1wCGADEJNAowKT4uYpPhdJCl2JI/BVjbITn1J6xk0YTHFOLRz2bBVMf6
+ iHLttoama6OrqnbmwCIZLUndzjK9dqq9pS6rjXFfThBI4IDN38Zzqonh/DySOh5BZCp8
+ oGDRgN8dVSes1DfDPXQc+0d0grg5TqfRpl1oplyx7ju1QJgxJ9QOZM9uqk9w6jnaUZ4X
+ bgjrMsOeUrZ2d6W1cBJUaX6gsi69h9iTFQ6IE8Xw0TUOwi5ldLPGnwBXbdWCQ/vXCBm2
+ ZSEKnl6wTO2Q5GbdnYMRpmjssovgDxmyVnfpgOqCTrg1NM4FdVhcA+6rqDXYzrAwwhDq
+ jRuw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
  h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
  :references:mime-version:content-transfer-encoding;
- bh=0mdd5cSa/TBxKXWevDn49tiFgg+XLtvko/YRF3UBtto=;
- b=1y8uVqAdLH8KQRn5JfDG1IiL0WSu/a6H0/v2IOI/9sXyyZY7+vaPHYKnoY0T/LOgag
- rU19BfuOIUb0ffrwGoXUe4IV0cA1pwr3r7o4x8q+aKrrhlZmIuiDn4x+JZKYD0BSPdSm
- Eoe7qJy0ELermnjiza7O+dq5I2AHDQxbSpCY94YfuRXGNIVOv6jqY7Fael4hnPyH1GFo
- R9tWVZQh+hEPhZ0Q3QfULAmfSDRrR5uBb5++x1NEddUMFvqF3hmgO0YK45bF5vND1aRY
- BdeM3eWVT+X3zWeLzfUbD306OYN3hXcyifzIAd2/AsYnx/mpcVOgnxvEr8FgcQGLhYmo
- BprA==
-X-Gm-Message-State: AJIora+3411n4c1YJja5LxR3B1M3YzjUmWrZNQ6zOBTdOJuux3/Dk0oy
- c0XCzOl6nwUaAayuKSD5kfU=
-X-Google-Smtp-Source: AGRyM1s7S15RQmaTlD29kgA0K/NWo1lclHwERBAaqF51PGvLIVKb1ZhkGkBZVdDNlQksQnuAFdhKUg==
-X-Received: by 2002:a05:6402:1d48:b0:437:5708:d6fc with SMTP id
- dz8-20020a0564021d4800b004375708d6fcmr62432428edb.409.1657223202248; 
- Thu, 07 Jul 2022 12:46:42 -0700 (PDT)
+ bh=15R8fRtnipOyDZjBwDRNBD+rUnFt8ovWDJg/qvPn+8w=;
+ b=22qHTK+/Hc5A1W3Ax4wpf7ZvIzlBUGA3vX9La4zOo8Gc0lwC95+bo53R4pG9wd07S+
+ 42lcsUDJr8AwA7ouDv3JQVuqhOeYlHCPWCDWOFHu7eRZJ2tcmSKKIoNnUQuR0VXiA1ZH
+ s3Riq+UzWvjAx7vINh+2n20FZ/Ufy24TZGnIpVjWSGNOdZixEJLWFpil052PjG2bU/kV
+ Ue8dE5QPtfDE9kgelKlEe8rM/qs/Gw1e/Rj6jqVy7DQB6EAIrBvoGTc8Wh3vB9X0V1JR
+ /RgHt2xR3NV7AQ4nAHKe9S/3cpZf6Vyu7v9Lo1FcUEe5OMWsbpp5p3t6uoDc6tb3pLU5
+ /juA==
+X-Gm-Message-State: AJIora/chFDvbavIIjWqRnjj0VW7yXlnuLo2jWkXdlbTREts8OagSRoo
+ i4YBHGe37gMF8RGPRYe6JBc=
+X-Google-Smtp-Source: AGRyM1vVBv4eichqt1pd+vj1n08RTifhwRB37lBYx7JArzeALYd899GQ5F2fkeIxJc0Jrz/wJBHNRg==
+X-Received: by 2002:a17:907:1dc6:b0:72a:5e9a:91be with SMTP id
+ og6-20020a1709071dc600b0072a5e9a91bemr41769203ejc.730.1657223207214; 
+ Thu, 07 Jul 2022 12:46:47 -0700 (PDT)
 Received: from localhost (92.40.202.166.threembb.co.uk. [92.40.202.166])
  by smtp.gmail.com with ESMTPSA id
- h7-20020a1709070b0700b00711d8696de9sm19282792ejl.70.2022.07.07.12.46.41
+ d8-20020a056402000800b0043a71c376a2sm8283494edu.33.2022.07.07.12.46.46
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Thu, 07 Jul 2022 12:46:41 -0700 (PDT)
+ Thu, 07 Jul 2022 12:46:46 -0700 (PDT)
 From: Aidan MacDonald <aidanmacdonald.0x0@gmail.com>
 To: paul@crapouillou.net, lgirdwood@gmail.com, broonie@kernel.org,
  perex@perex.cz, tiwai@suse.com
-Subject: [PATCH v2 02/11] ASoC: jz4740-i2s: Convert to regmap API
-Date: Thu,  7 Jul 2022 20:46:46 +0100
-Message-Id: <20220707194655.312892-3-aidanmacdonald.0x0@gmail.com>
+Subject: [PATCH v2 05/11] ASoC: jz4740-i2s: Use FIELD_PREP() macros in
+ hw_params callback
+Date: Thu,  7 Jul 2022 20:46:49 +0100
+Message-Id: <20220707194655.312892-6-aidanmacdonald.0x0@gmail.com>
 In-Reply-To: <20220707194655.312892-1-aidanmacdonald.0x0@gmail.com>
 References: <20220707194655.312892-1-aidanmacdonald.0x0@gmail.com>
 MIME-Version: 1.0
@@ -97,285 +98,71 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Using regmap for accessing the AIC registers makes the driver a
-little easier to read, and later refactors can take advantage of
-regmap APIs to further simplify the driver.
+Get rid of a couple of macros and improve readability by using
+FIELD_PREP() and GENMASK() for the sample size setting.
 
+Acked-by: Paul Cercueil <paul@crapouillou.net>
 Signed-off-by: Aidan MacDonald <aidanmacdonald.0x0@gmail.com>
 ---
- sound/soc/jz4740/Kconfig      |  1 +
- sound/soc/jz4740/jz4740-i2s.c | 96 +++++++++++++----------------------
- 2 files changed, 37 insertions(+), 60 deletions(-)
+ sound/soc/jz4740/jz4740-i2s.c | 17 ++++++++---------
+ 1 file changed, 8 insertions(+), 9 deletions(-)
 
-diff --git a/sound/soc/jz4740/Kconfig b/sound/soc/jz4740/Kconfig
-index e72f826062e9..dd3b4507fbe6 100644
---- a/sound/soc/jz4740/Kconfig
-+++ b/sound/soc/jz4740/Kconfig
-@@ -3,6 +3,7 @@ config SND_JZ4740_SOC_I2S
- 	tristate "SoC Audio (I2S protocol) for Ingenic JZ4740 SoC"
- 	depends on MIPS || COMPILE_TEST
- 	depends on HAS_IOMEM
-+	select REGMAP_MMIO
- 	select SND_SOC_GENERIC_DMAENGINE_PCM
- 	help
- 	  Say Y if you want to use I2S protocol and I2S codec on Ingenic JZ4740
 diff --git a/sound/soc/jz4740/jz4740-i2s.c b/sound/soc/jz4740/jz4740-i2s.c
-index c4c1e89b47c1..69ccec0f09d9 100644
+index 043f100a9cfa..d0791dfa9c7b 100644
 --- a/sound/soc/jz4740/jz4740-i2s.c
 +++ b/sound/soc/jz4740/jz4740-i2s.c
-@@ -9,6 +9,7 @@
- #include <linux/module.h>
- #include <linux/mod_devicetable.h>
- #include <linux/platform_device.h>
-+#include <linux/regmap.h>
- #include <linux/slab.h>
+@@ -3,6 +3,7 @@
+  *  Copyright (C) 2010, Lars-Peter Clausen <lars@metafoo.de>
+  */
  
- #include <linux/clk.h>
-@@ -93,7 +94,7 @@ struct i2s_soc_info {
- };
++#include <linux/bitfield.h>
+ #include <linux/init.h>
+ #include <linux/io.h>
+ #include <linux/kernel.h>
+@@ -42,8 +43,8 @@
+ #define JZ_AIC_CONF_SYNC_CLK_MASTER BIT(1)
+ #define JZ_AIC_CONF_ENABLE BIT(0)
  
- struct jz4740_i2s {
--	void __iomem *base;
-+	struct regmap *regmap;
+-#define JZ_AIC_CTRL_OUTPUT_SAMPLE_SIZE_MASK (0x7 << 19)
+-#define JZ_AIC_CTRL_INPUT_SAMPLE_SIZE_MASK (0x7 << 16)
++#define JZ_AIC_CTRL_OUTPUT_SAMPLE_SIZE GENMASK(21, 19)
++#define JZ_AIC_CTRL_INPUT_SAMPLE_SIZE GENMASK(18, 16)
+ #define JZ_AIC_CTRL_ENABLE_RX_DMA BIT(15)
+ #define JZ_AIC_CTRL_ENABLE_TX_DMA BIT(14)
+ #define JZ_AIC_CTRL_MONO_TO_STEREO BIT(11)
+@@ -61,9 +62,6 @@
+ #define JZ4760_AIC_CTRL_TFLUSH BIT(8)
+ #define JZ4760_AIC_CTRL_RFLUSH BIT(7)
  
- 	struct clk *clk_aic;
- 	struct clk *clk_i2s;
-@@ -104,40 +105,22 @@ struct jz4740_i2s {
- 	const struct i2s_soc_info *soc_info;
- };
- 
--static inline uint32_t jz4740_i2s_read(const struct jz4740_i2s *i2s,
--	unsigned int reg)
--{
--	return readl(i2s->base + reg);
--}
+-#define JZ_AIC_CTRL_OUTPUT_SAMPLE_SIZE_OFFSET 19
+-#define JZ_AIC_CTRL_INPUT_SAMPLE_SIZE_OFFSET  16
 -
--static inline void jz4740_i2s_write(const struct jz4740_i2s *i2s,
--	unsigned int reg, uint32_t value)
--{
--	writel(value, i2s->base + reg);
--}
--
- static int jz4740_i2s_startup(struct snd_pcm_substream *substream,
- 	struct snd_soc_dai *dai)
- {
- 	struct jz4740_i2s *i2s = snd_soc_dai_get_drvdata(dai);
--	uint32_t conf, ctrl;
- 	int ret;
- 
- 	if (snd_soc_dai_active(dai))
- 		return 0;
- 
--	ctrl = jz4740_i2s_read(i2s, JZ_REG_AIC_CTRL);
--	ctrl |= JZ_AIC_CTRL_FLUSH;
--	jz4740_i2s_write(i2s, JZ_REG_AIC_CTRL, ctrl);
-+	regmap_set_bits(i2s->regmap, JZ_REG_AIC_CTRL, JZ_AIC_CTRL_FLUSH);
- 
- 	ret = clk_prepare_enable(i2s->clk_i2s);
- 	if (ret)
- 		return ret;
- 
--	conf = jz4740_i2s_read(i2s, JZ_REG_AIC_CONF);
--	conf |= JZ_AIC_CONF_ENABLE;
--	jz4740_i2s_write(i2s, JZ_REG_AIC_CONF, conf);
--
-+	regmap_set_bits(i2s->regmap, JZ_REG_AIC_CONF, JZ_AIC_CONF_ENABLE);
- 	return 0;
- }
- 
-@@ -145,14 +128,11 @@ static void jz4740_i2s_shutdown(struct snd_pcm_substream *substream,
- 	struct snd_soc_dai *dai)
- {
- 	struct jz4740_i2s *i2s = snd_soc_dai_get_drvdata(dai);
--	uint32_t conf;
- 
- 	if (snd_soc_dai_active(dai))
- 		return;
- 
--	conf = jz4740_i2s_read(i2s, JZ_REG_AIC_CONF);
--	conf &= ~JZ_AIC_CONF_ENABLE;
--	jz4740_i2s_write(i2s, JZ_REG_AIC_CONF, conf);
-+	regmap_clear_bits(i2s->regmap, JZ_REG_AIC_CONF, JZ_AIC_CONF_ENABLE);
- 
- 	clk_disable_unprepare(i2s->clk_i2s);
- }
-@@ -161,8 +141,6 @@ static int jz4740_i2s_trigger(struct snd_pcm_substream *substream, int cmd,
- 	struct snd_soc_dai *dai)
- {
- 	struct jz4740_i2s *i2s = snd_soc_dai_get_drvdata(dai);
--
--	uint32_t ctrl;
- 	uint32_t mask;
- 
- 	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
-@@ -170,38 +148,30 @@ static int jz4740_i2s_trigger(struct snd_pcm_substream *substream, int cmd,
- 	else
- 		mask = JZ_AIC_CTRL_ENABLE_CAPTURE | JZ_AIC_CTRL_ENABLE_RX_DMA;
- 
--	ctrl = jz4740_i2s_read(i2s, JZ_REG_AIC_CTRL);
--
- 	switch (cmd) {
- 	case SNDRV_PCM_TRIGGER_START:
- 	case SNDRV_PCM_TRIGGER_RESUME:
- 	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
--		ctrl |= mask;
-+		regmap_set_bits(i2s->regmap, JZ_REG_AIC_CTRL, mask);
- 		break;
- 	case SNDRV_PCM_TRIGGER_STOP:
- 	case SNDRV_PCM_TRIGGER_SUSPEND:
- 	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
--		ctrl &= ~mask;
-+		regmap_clear_bits(i2s->regmap, JZ_REG_AIC_CTRL, mask);
- 		break;
- 	default:
- 		return -EINVAL;
+ #define JZ_AIC_I2S_FMT_DISABLE_BIT_CLK BIT(12)
+ #define JZ_AIC_I2S_FMT_DISABLE_BIT_ICLK BIT(13)
+ #define JZ_AIC_I2S_FMT_ENABLE_SYS_CLK BIT(4)
+@@ -248,8 +246,9 @@ static int jz4740_i2s_hw_params(struct snd_pcm_substream *substream,
  	}
  
--	jz4740_i2s_write(i2s, JZ_REG_AIC_CTRL, ctrl);
--
- 	return 0;
- }
- 
- static int jz4740_i2s_set_fmt(struct snd_soc_dai *dai, unsigned int fmt)
- {
- 	struct jz4740_i2s *i2s = snd_soc_dai_get_drvdata(dai);
--
--	uint32_t format = 0;
--	uint32_t conf;
--
--	conf = jz4740_i2s_read(i2s, JZ_REG_AIC_CONF);
--
--	conf &= ~(JZ_AIC_CONF_BIT_CLK_MASTER | JZ_AIC_CONF_SYNC_CLK_MASTER);
-+	const unsigned int conf_mask = JZ_AIC_CONF_BIT_CLK_MASTER |
-+				       JZ_AIC_CONF_SYNC_CLK_MASTER;
-+	unsigned int conf = 0, format = 0;
- 
- 	switch (fmt & SND_SOC_DAIFMT_CLOCK_PROVIDER_MASK) {
- 	case SND_SOC_DAIFMT_BP_FP:
-@@ -237,8 +207,8 @@ static int jz4740_i2s_set_fmt(struct snd_soc_dai *dai, unsigned int fmt)
- 		return -EINVAL;
- 	}
- 
--	jz4740_i2s_write(i2s, JZ_REG_AIC_CONF, conf);
--	jz4740_i2s_write(i2s, JZ_REG_AIC_I2S_FMT, format);
-+	regmap_update_bits(i2s->regmap, JZ_REG_AIC_CONF, conf_mask, conf);
-+	regmap_write(i2s->regmap, JZ_REG_AIC_I2S_FMT, format);
- 
- 	return 0;
- }
-@@ -251,9 +221,9 @@ static int jz4740_i2s_hw_params(struct snd_pcm_substream *substream,
- 	uint32_t ctrl, div_reg;
- 	int div;
- 
--	ctrl = jz4740_i2s_read(i2s, JZ_REG_AIC_CTRL);
-+	regmap_read(i2s->regmap, JZ_REG_AIC_CTRL, &ctrl);
-+	regmap_read(i2s->regmap, JZ_REG_AIC_CLK_DIV, &div_reg);
- 
--	div_reg = jz4740_i2s_read(i2s, JZ_REG_AIC_CLK_DIV);
- 	div = clk_get_rate(i2s->clk_i2s) / (64 * params_rate(params));
- 
- 	switch (params_format(params)) {
-@@ -290,8 +260,8 @@ static int jz4740_i2s_hw_params(struct snd_pcm_substream *substream,
- 		}
- 	}
- 
--	jz4740_i2s_write(i2s, JZ_REG_AIC_CTRL, ctrl);
--	jz4740_i2s_write(i2s, JZ_REG_AIC_CLK_DIV, div_reg);
-+	regmap_write(i2s->regmap, JZ_REG_AIC_CTRL, ctrl);
-+	regmap_write(i2s->regmap, JZ_REG_AIC_CLK_DIV, div_reg);
- 
- 	return 0;
- }
-@@ -328,13 +298,9 @@ static int jz4740_i2s_set_sysclk(struct snd_soc_dai *dai, int clk_id,
- static int jz4740_i2s_suspend(struct snd_soc_component *component)
- {
- 	struct jz4740_i2s *i2s = snd_soc_component_get_drvdata(component);
--	uint32_t conf;
- 
- 	if (snd_soc_component_active(component)) {
--		conf = jz4740_i2s_read(i2s, JZ_REG_AIC_CONF);
--		conf &= ~JZ_AIC_CONF_ENABLE;
--		jz4740_i2s_write(i2s, JZ_REG_AIC_CONF, conf);
--
-+		regmap_clear_bits(i2s->regmap, JZ_REG_AIC_CONF, JZ_AIC_CONF_ENABLE);
- 		clk_disable_unprepare(i2s->clk_i2s);
- 	}
- 
-@@ -346,7 +312,6 @@ static int jz4740_i2s_suspend(struct snd_soc_component *component)
- static int jz4740_i2s_resume(struct snd_soc_component *component)
- {
- 	struct jz4740_i2s *i2s = snd_soc_component_get_drvdata(component);
--	uint32_t conf;
- 	int ret;
- 
- 	ret = clk_prepare_enable(i2s->clk_aic);
-@@ -360,9 +325,7 @@ static int jz4740_i2s_resume(struct snd_soc_component *component)
- 			return ret;
- 		}
- 
--		conf = jz4740_i2s_read(i2s, JZ_REG_AIC_CONF);
--		conf |= JZ_AIC_CONF_ENABLE;
--		jz4740_i2s_write(i2s, JZ_REG_AIC_CONF, conf);
-+		regmap_set_bits(i2s->regmap, JZ_REG_AIC_CONF, JZ_AIC_CONF_ENABLE);
- 	}
- 
- 	return 0;
-@@ -395,8 +358,8 @@ static int jz4740_i2s_dai_probe(struct snd_soc_dai *dai)
- 			JZ_AIC_CONF_INTERNAL_CODEC;
- 	}
- 
--	jz4740_i2s_write(i2s, JZ_REG_AIC_CONF, JZ_AIC_CONF_RESET);
--	jz4740_i2s_write(i2s, JZ_REG_AIC_CONF, conf);
-+	regmap_write(i2s->regmap, JZ_REG_AIC_CONF, JZ_AIC_CONF_RESET);
-+	regmap_write(i2s->regmap, JZ_REG_AIC_CONF, conf);
- 
- 	return 0;
- }
-@@ -494,11 +457,19 @@ static const struct of_device_id jz4740_of_matches[] = {
- };
- MODULE_DEVICE_TABLE(of, jz4740_of_matches);
- 
-+static const struct regmap_config jz4740_i2s_regmap_config = {
-+	.reg_bits	= 32,
-+	.reg_stride	= 4,
-+	.val_bits	= 32,
-+	.max_register	= JZ_REG_AIC_FIFO,
-+};
+ 	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
+-		ctrl &= ~JZ_AIC_CTRL_OUTPUT_SAMPLE_SIZE_MASK;
+-		ctrl |= sample_size << JZ_AIC_CTRL_OUTPUT_SAMPLE_SIZE_OFFSET;
++		ctrl &= ~JZ_AIC_CTRL_OUTPUT_SAMPLE_SIZE;
++		ctrl |= FIELD_PREP(JZ_AIC_CTRL_OUTPUT_SAMPLE_SIZE, sample_size);
 +
- static int jz4740_i2s_dev_probe(struct platform_device *pdev)
- {
- 	struct device *dev = &pdev->dev;
- 	struct jz4740_i2s *i2s;
- 	struct resource *mem;
-+	void __iomem *regs;
- 	int ret;
+ 		if (params_channels(params) == 1)
+ 			ctrl |= JZ_AIC_CTRL_MONO_TO_STEREO;
+ 		else
+@@ -257,8 +256,8 @@ static int jz4740_i2s_hw_params(struct snd_pcm_substream *substream,
  
- 	i2s = devm_kzalloc(dev, sizeof(*i2s), GFP_KERNEL);
-@@ -507,9 +478,9 @@ static int jz4740_i2s_dev_probe(struct platform_device *pdev)
+ 		div_field = i2s->field_i2sdiv_playback;
+ 	} else {
+-		ctrl &= ~JZ_AIC_CTRL_INPUT_SAMPLE_SIZE_MASK;
+-		ctrl |= sample_size << JZ_AIC_CTRL_INPUT_SAMPLE_SIZE_OFFSET;
++		ctrl &= ~JZ_AIC_CTRL_INPUT_SAMPLE_SIZE;
++		ctrl |= FIELD_PREP(JZ_AIC_CTRL_INPUT_SAMPLE_SIZE, sample_size);
  
- 	i2s->soc_info = device_get_match_data(dev);
- 
--	i2s->base = devm_platform_get_and_ioremap_resource(pdev, 0, &mem);
--	if (IS_ERR(i2s->base))
--		return PTR_ERR(i2s->base);
-+	regs = devm_platform_get_and_ioremap_resource(pdev, 0, &mem);
-+	if (IS_ERR(regs))
-+		return PTR_ERR(regs);
- 
- 	i2s->playback_dma_data.maxburst = 16;
- 	i2s->playback_dma_data.addr = mem->start + JZ_REG_AIC_FIFO;
-@@ -525,6 +496,11 @@ static int jz4740_i2s_dev_probe(struct platform_device *pdev)
- 	if (IS_ERR(i2s->clk_i2s))
- 		return PTR_ERR(i2s->clk_i2s);
- 
-+	i2s->regmap = devm_regmap_init_mmio(&pdev->dev, regs,
-+					    &jz4740_i2s_regmap_config);
-+	if (IS_ERR(i2s->regmap))
-+		return PTR_ERR(i2s->regmap);
-+
- 	platform_set_drvdata(pdev, i2s);
- 
- 	ret = devm_snd_soc_register_component(dev, &jz4740_i2s_component,
+ 		div_field = i2s->field_i2sdiv_capture;
+ 	}
 -- 
 2.35.1
 
