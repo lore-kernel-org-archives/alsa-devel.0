@@ -4,64 +4,65 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9000AC43334
-	for <alsa-devel@archiver.kernel.org>; Thu,  7 Jul 2022 12:35:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C54D1C43334
+	for <alsa-devel@archiver.kernel.org>; Thu,  7 Jul 2022 12:36:02 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id BC6E515CA;
-	Thu,  7 Jul 2022 14:34:58 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BC6E515CA
+	by alsa0.perex.cz (Postfix) with ESMTPS id 02D2B167B;
+	Thu,  7 Jul 2022 14:35:11 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 02D2B167B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1657197348;
-	bh=FcS/5pO861udjUryGuB3jacwCNWcBYXzpZo9rEa6svc=;
+	s=default; t=1657197361;
+	bh=CNXKc1141cIxL1CggFk+aekG0XSLbDs/PG7XDdSjcmQ=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=OFukVafDiMFiv8a7Lyes+nFAMgPN+e2rB6r759E6OqIN3JKREQJDs3wTuTcMlqJKS
-	 rWTCPsetfq7+ZmzGRpcFQMqsbfk/nmeu4RsK88y5d3fgUXvlIVt0oAnnwGC/qggU3j
-	 WxHUnaEbX1nIZ0fJq/Uj/Re1SVp/GiR2nzn9Bhdk=
+	b=IBG0Sdn6Rt3utNxd+rHBmUjQlBQFlxwj/dOyFvqmAvKjzCiRP0TDCHIbZNZT8uawN
+	 y2zPBOlIVPCAMrswZdzQGs2M4NWn8G7EJIsl53uMoaZuiY++6xReECnZ/lk/SX7cQe
+	 4EyV7NtXT4JD9IbSlllB+7l+gLq2nAVpl6/Xj6pI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 453F3F8028D;
-	Thu,  7 Jul 2022 14:32:58 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 5C6A0F8052E;
+	Thu,  7 Jul 2022 14:32:59 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 16A06F80589; Thu,  7 Jul 2022 14:32:57 +0200 (CEST)
+ id 1F797F80137; Thu,  7 Jul 2022 14:32:57 +0200 (CEST)
 Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 105DDF8052E
- for <alsa-devel@alsa-project.org>; Thu,  7 Jul 2022 14:32:00 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 105DDF8052E
+ by alsa1.perex.cz (Postfix) with ESMTPS id E3A0AF80537
+ for <alsa-devel@alsa-project.org>; Thu,  7 Jul 2022 14:31:58 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E3A0AF80537
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="Ath5xWYM"
+ header.b="RXWxHLHF"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1657197122; x=1688733122;
+ t=1657197120; x=1688733120;
  h=from:to:cc:subject:date:message-id:in-reply-to:
  references:mime-version:content-transfer-encoding;
- bh=FcS/5pO861udjUryGuB3jacwCNWcBYXzpZo9rEa6svc=;
- b=Ath5xWYMkx8hxUdbHizHG65q535gRn5mLv5iVdE5jxH3HG/wXD4cBZlR
- mBKB7BFiRN7Pwd9ojxVla3rkNV5q/QiCXafC8pkkxAUeKlZywzl3auvdY
- MnU++nUnTbw91Y2oymCIkcU2nvAPUV97cIreD83b0SyvdZsIcR1m9Pjja
- M/B3fGlrgbLoWZCDs4McgYhjN3qTkm+nxL3jIspthpc+6hg0f5rk40eCF
- Pz2o+yy0lucqSQmZPKeBHwWJS8rV3EN4wrm/+mnJmuEYauntB8LmTeQRa
- qCNHZU/Lz+TyBjP9fmzlFjOlfv8VdowdCi7Wzby/bXB0YguzdXkgwy9AZ Q==;
-X-IronPort-AV: E=McAfee;i="6400,9594,10400"; a="272805920"
-X-IronPort-AV: E=Sophos;i="5.92,252,1650956400"; d="scan'208";a="272805920"
+ bh=CNXKc1141cIxL1CggFk+aekG0XSLbDs/PG7XDdSjcmQ=;
+ b=RXWxHLHFQLwmg2umSfT02FmYDpjv2RoI355MtPCCl2kNGuGN0LAT/l8T
+ qzCJNbQnUox6/Sv7Gtu22ha/ezahZ4Dq/ktXpCYdqQF3Ho7EKkE8K7t/e
+ oWbNL3r99LSouV+VgNEd4pZ/QAuPE/wg2lo4vkSSAvn26EIRFWgU/2DGU
+ JtQq0EMG3UmYE1tB+rWVDVLOCLwVsRMO70ijIDnKgVMRhHVfFxStld8mS
+ C3SU1wUVdiKqgsn6/4GVTA6o5allRKXzEd0vD3tjErK3ppTf2eYAeGU3e
+ M5P2D3JRv0B8DPAcWuyK1HgM7unVWxI2OstbNrRiV5TbBWPXPNx0oH6tn A==;
+X-IronPort-AV: E=McAfee;i="6400,9594,10400"; a="272805912"
+X-IronPort-AV: E=Sophos;i="5.92,252,1650956400"; d="scan'208";a="272805912"
 Received: from orsmga002.jf.intel.com ([10.7.209.21])
  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 07 Jul 2022 05:32:00 -0700
+ 07 Jul 2022 05:31:58 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.92,252,1650956400"; d="scan'208";a="593720618"
+X-IronPort-AV: E=Sophos;i="5.92,252,1650956400"; d="scan'208";a="593720599"
 Received: from crojewsk-ctrl.igk.intel.com ([10.102.9.28])
- by orsmga002.jf.intel.com with ESMTP; 07 Jul 2022 05:31:58 -0700
+ by orsmga002.jf.intel.com with ESMTP; 07 Jul 2022 05:31:56 -0700
 From: Cezary Rojewski <cezary.rojewski@intel.com>
 To: alsa-devel@alsa-project.org,
 	broonie@kernel.org
-Subject: [PATCH 06/12] ASoC: Intel: avs: Block IPC channel on suspend
-Date: Thu,  7 Jul 2022 14:41:47 +0200
-Message-Id: <20220707124153.1858249-7-cezary.rojewski@intel.com>
+Subject: [PATCH 05/12] ASoC: Intel: avs: Shield LARGE_CONFIG_GETs against zero
+ payload_size
+Date: Thu,  7 Jul 2022 14:41:46 +0200
+Message-Id: <20220707124153.1858249-6-cezary.rojewski@intel.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20220707124153.1858249-1-cezary.rojewski@intel.com>
 References: <20220707124153.1858249-1-cezary.rojewski@intel.com>
@@ -85,29 +86,48 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-To allow for driver's filesystem interfaces e.g.: debugfs, to be touched
-even when the device is asleep, mark IPC-channel as blocked when the
-device is suspended. This causes any invocation of said interfaces that
-do not toggle PM themselves to gracefully fail with "Operation not
-permitted" message.
+Some LARGE_CONFIG_GETs are never expected to return payload of size 0.
+Check for such situation and collapse if met.
 
 Signed-off-by: Cezary Rojewski <cezary.rojewski@intel.com>
 ---
- sound/soc/intel/avs/core.c | 1 +
- 1 file changed, 1 insertion(+)
+ sound/soc/intel/avs/messages.c | 9 +++++++++
+ 1 file changed, 9 insertions(+)
 
-diff --git a/sound/soc/intel/avs/core.c b/sound/soc/intel/avs/core.c
-index 664f87c33e9d..4234adeb3d1c 100644
---- a/sound/soc/intel/avs/core.c
-+++ b/sound/soc/intel/avs/core.c
-@@ -556,6 +556,7 @@ static int __maybe_unused avs_suspend_common(struct avs_dev *adev)
- 		return AVS_IPC_RET(ret);
- 	}
+diff --git a/sound/soc/intel/avs/messages.c b/sound/soc/intel/avs/messages.c
+index 3559fb496e0b..9cf621eaec5a 100644
+--- a/sound/soc/intel/avs/messages.c
++++ b/sound/soc/intel/avs/messages.c
+@@ -474,6 +474,9 @@ int avs_ipc_get_fw_config(struct avs_dev *adev, struct avs_fw_cfg *cfg)
+ 				       &payload, &payload_size);
+ 	if (ret)
+ 		return ret;
++	/* Non-zero payload expected for FIRMWARE_CONFIG. */
++	if (!payload_size)
++		return -EREMOTEIO;
  
-+	avs_ipc_block(adev->ipc);
- 	avs_dsp_op(adev, int_control, false);
- 	snd_hdac_ext_bus_ppcap_int_enable(bus, false);
+ 	while (offset < payload_size) {
+ 		tlv = (struct avs_tlv *)(payload + offset);
+@@ -587,6 +590,9 @@ int avs_ipc_get_hw_config(struct avs_dev *adev, struct avs_hw_cfg *cfg)
+ 				       &payload, &payload_size);
+ 	if (ret)
+ 		return ret;
++	/* Non-zero payload expected for HARDWARE_CONFIG. */
++	if (!payload_size)
++		return -EREMOTEIO;
  
+ 	while (offset < payload_size) {
+ 		tlv = (struct avs_tlv *)(payload + offset);
+@@ -670,6 +676,9 @@ int avs_ipc_get_modules_info(struct avs_dev *adev, struct avs_mods_info **info)
+ 				       &payload, &payload_size);
+ 	if (ret)
+ 		return ret;
++	/* Non-zero payload expected for MODULES_INFO. */
++	if (!payload_size)
++		return -EREMOTEIO;
+ 
+ 	*info = (struct avs_mods_info *)payload;
+ 	return 0;
 -- 
 2.25.1
 
