@@ -4,78 +4,87 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id EEB6BC43334
-	for <alsa-devel@archiver.kernel.org>; Fri,  8 Jul 2022 10:20:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E840FC43334
+	for <alsa-devel@archiver.kernel.org>; Fri,  8 Jul 2022 10:23:44 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id AB01B844;
-	Fri,  8 Jul 2022 12:19:52 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AB01B844
+	by alsa0.perex.cz (Postfix) with ESMTPS id 7EF1483E;
+	Fri,  8 Jul 2022 12:22:52 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7EF1483E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1657275642;
-	bh=/S6lee9+c3VqJLQgOj/yfCLmaqBFbL50U8pKZd/Mye0=;
-	h=Subject:From:To:Date:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1657275822;
+	bh=6KzkschGKTWTaHNsKQJYX8KTGYcO/FDTJpySLd9Ijk0=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=OdPAfi8dDfNNS0oxqTQDe+/oOdggWjEbuE+UVdTr+mDTQRLoBy6O4AncyY2hqOc6G
-	 sVl/o1zMb4eNNbg59Vzne1TOarDzOfvnkKsjcvjHKANWrPCjuiBr1uB7/wEn3MY3AZ
-	 ak3/X+XqqKkqTtJyU8nBQSEtMUYCb3f9C3BZIRmo=
+	b=q1wKVuBmjCFqDXg14c/86l8Tun7/CWDBdMApEhT0yWXDzKwfs4r3R4h1oogvnfUIo
+	 UU6urAZGl1BtK8+GGgiWwky5UcyryL6R9vxeNH8GKr6ENwNfKijCSR8e3EtU0fSvdZ
+	 /lr8X5MBXUVJK680vTOT/lLAvGO5g+Z5WmJ1B/zM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 46C6AF80166;
-	Fri,  8 Jul 2022 12:19:52 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 1688FF80166;
+	Fri,  8 Jul 2022 12:22:52 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 4BA41F80167; Fri,  8 Jul 2022 12:19:51 +0200 (CEST)
-Received: from mailgw02.mediatek.com (unknown [210.61.82.184])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 6A484F80167; Fri,  8 Jul 2022 12:22:50 +0200 (CEST)
+Received: from mail-yw1-x1131.google.com (mail-yw1-x1131.google.com
+ [IPv6:2607:f8b0:4864:20::1131])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id A827BF800C5
- for <alsa-devel@alsa-project.org>; Fri,  8 Jul 2022 12:19:42 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A827BF800C5
-X-UUID: 5ea76bf79d4347eb8ae3e5837ccc9c23-20220708
-X-CID-P-RULE: Release_Ham
-X-CID-O-INFO: VERSION:1.1.8, REQID:72b01edd-371d-4e54-bccb-3147bd92f8f8, OB:0,
- LO
- B:0,IP:0,URL:0,TC:0,Content:0,EDM:0,RT:0,SF:45,FILE:0,RULE:Release_Ham,ACT
- ION:release,TS:45
-X-CID-INFO: VERSION:1.1.8, REQID:72b01edd-371d-4e54-bccb-3147bd92f8f8, OB:0,
- LOB:
- 0,IP:0,URL:0,TC:0,Content:0,EDM:0,RT:0,SF:45,FILE:0,RULE:Release_Ham,ACTIO
- N:release,TS:45
-X-CID-META: VersionHash:0f94e32, CLOUDID:4fd9e886-57f0-47ca-ba27-fe8c57fbf305,
- C
- OID:bbab08a824a8,Recheck:0,SF:28|17|19|48,TC:nil,Content:0,EDM:-3,IP:nil,U
- RL:0,File:nil,QS:nil,BEC:nil,COL:0
-X-UUID: 5ea76bf79d4347eb8ae3e5837ccc9c23-20220708
-Received: from mtkmbs10n1.mediatek.inc [(172.21.101.34)] by
- mailgw02.mediatek.com (envelope-from <jiaxin.yu@mediatek.com>)
- (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
- with ESMTP id 1902605378; Fri, 08 Jul 2022 18:19:31 +0800
-Received: from mtkmbs11n2.mediatek.inc (172.21.101.187) by
- mtkmbs10n2.mediatek.inc (172.21.101.183) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.792.3; 
- Fri, 8 Jul 2022 18:19:30 +0800
-Received: from mhfsdcap04 (10.17.3.154) by mtkmbs11n2.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.2.792.3 via Frontend
- Transport; Fri, 8 Jul 2022 18:19:29 +0800
-Message-ID: <503a71aa95b8e4b75eb7e9e5de03a013f5155036.camel@mediatek.com>
-Subject: Re: [PATCH] ASoC: mediatek: mt8186: Remove condition with no effect
-From: Jiaxin Yu <jiaxin.yu@mediatek.com>
-To: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
- Zhongjun Tan <hbut_tan@163.com>, <lgirdwood@gmail.com>, <broonie@kernel.org>, 
- <perex@perex.c>, <tiwai@suse.com>, <matthias.bgg@gmail.com>,
- <tanzhongjun@coolpad.com>, <colin.king@intel.com>
-Date: Fri, 8 Jul 2022 18:19:29 +0800
-In-Reply-To: <ee0d9788-b742-21bb-9cc5-7b729897408b@collabora.com>
-References: <20220708024651.42999-1-hbut_tan@163.com>
- <ee0d9788-b742-21bb-9cc5-7b729897408b@collabora.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
+ by alsa1.perex.cz (Postfix) with ESMTPS id 3E885F800C5
+ for <alsa-devel@alsa-project.org>; Fri,  8 Jul 2022 12:22:43 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3E885F800C5
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
+ header.b="X3O0NXyh"
+Received: by mail-yw1-x1131.google.com with SMTP id
+ 00721157ae682-31cac89d8d6so124586957b3.2
+ for <alsa-devel@alsa-project.org>; Fri, 08 Jul 2022 03:22:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
+ h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+ :cc; bh=XZ4IbpkhTt7N5QdvdcRfv0LETZPalI9AnqCWUmPEgog=;
+ b=X3O0NXyho2Ze70IR2+FhfW0cRMjUsjsmkHjyiiNZ2Ph1zTaLUx4Nz1WJ20nk9BBS8E
+ Rr3plbtojjCdfENUItK5Ik0H64DQqJzGPLyJTWWnAWObahAwp+bpglbZBepGzeouMp0c
+ cFPcoohMwZCTsbQn/gyLHeFmNaRqnxANrSF28HFe56kgUwVPGOj3A0mgeRB9TQv4ErKT
+ zttGd0xDSPSXPTYLAA2rk/ZspSRi96vEp5Wl+VG/gjNep7XzG6pywaoUIFTH4rHLprAb
+ bI7BExV8B83ZaROMgzzPQFAumDbnSrx90e5VP4Dkc1D89VpEZuPEI3ME5ANp0Haia8jG
+ RY/w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc;
+ bh=XZ4IbpkhTt7N5QdvdcRfv0LETZPalI9AnqCWUmPEgog=;
+ b=4+cGXiTyh4CFWITA9Ks9xIoLk5Qk1yOgUFPe7aHxz/8OOrh3ExSVaqKSS5x2xQdPcu
+ 4wq2BP/ntzQVeWJaLJiL5WhMWfhdxJwO2Uwz58fmO8jmEbm2FSsOhHKWient2OhXf+OV
+ gboaJaV0GIsp9hQf9yuKmFH1pAp/rATUThpBYJkOKaB0y8M3Ovzk5hu0iohUgwjMiihj
+ DZEXfUB5r1duw4TaiKgIT3ysRRKPLNiB1UCw0954k0UqV3XNBio7K56GNamag/fMA+yq
+ dPulRuGJC2Hq04DDNCH3b7a+eXmgDrMWDjcsEJc8dJ0GT0iXWc7jLCoCAJjeTJvFqBS3
+ R8Gg==
+X-Gm-Message-State: AJIora9oLB+bI1f2MjXC3lF5R0TjLdikM60fLip6RaZjBIWwhi4/3y8Y
+ FfMfoGZKvBC/RvFUV1oloO0JLxF474/g8XeLfQ8=
+X-Google-Smtp-Source: AGRyM1tl6c85dccTAnzvDTTnQkyHZS0mobUXNvZdBvp7v+R3SZa6ILtw7kdYwTzsLgFK9dnfMyZhIYJxwyBJJk2Mdso=
+X-Received: by 2002:a81:72c4:0:b0:31c:b309:c4e8 with SMTP id
+ n187-20020a8172c4000000b0031cb309c4e8mr3133190ywc.520.1657275762117; Fri, 08
+ Jul 2022 03:22:42 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-MTK: N
-Cc: alsa-devel@alsa-project.org, linux-mediatek@lists.infradead.org,
- linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+References: <20220707091301.1282291-1-cezary.rojewski@intel.com>
+In-Reply-To: <20220707091301.1282291-1-cezary.rojewski@intel.com>
+From: Andy Shevchenko <andy.shevchenko@gmail.com>
+Date: Fri, 8 Jul 2022 12:22:05 +0200
+Message-ID: <CAHp75VceKBoxXVPP4dRYb8LQqHMMDHFp6-E2iuZ-h2RTK8PWQQ@mail.gmail.com>
+Subject: Re: [PATCH 1/2] lib/string_helpers: Introduce strsplit_u32()
+To: Cezary Rojewski <cezary.rojewski@intel.com>
+Content-Type: text/plain; charset="UTF-8"
+Cc: Andy Shevchenko <andy@kernel.org>,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ ALSA Development Mailing List <alsa-devel@alsa-project.org>,
+ Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+ Liam Girdwood <lgirdwood@gmail.com>,
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+ Takashi Iwai <tiwai@suse.com>, Hans de Goede <hdegoede@redhat.com>,
+ Mark Brown <broonie@kernel.org>, Bard Liao <yung-chuan.liao@linux.intel.com>,
+ Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+ amadeuszx.slawinski@linux.intel.com,
+ =?UTF-8?Q?P=C3=A9ter_Ujfalusi?= <peter.ujfalusi@linux.intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -91,52 +100,21 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Fri, 2022-07-08 at 10:01 +0200, AngeloGioacchino Del Regno wrote:
-> Il 08/07/22 04:46, Zhongjun Tan ha scritto:
-> > From: Zhongjun Tan <tanzhongjun@coolpad.com>
-> > 
-> > Remove condition with no effect
-> > 
-> > Signed-off-by: Zhongjun Tan <tanzhongjun@coolpad.com>
-> > ---
-> >   sound/soc/mediatek/mt8186/mt8186-dai-adda.c | 2 --
-> >   1 file changed, 2 deletions(-)
-> > 
-> > diff --git a/sound/soc/mediatek/mt8186/mt8186-dai-adda.c
-> > b/sound/soc/mediatek/mt8186/mt8186-dai-adda.c
-> > index db71b032770d..6be6d4f3b585 100644
-> > --- a/sound/soc/mediatek/mt8186/mt8186-dai-adda.c
-> > +++ b/sound/soc/mediatek/mt8186/mt8186-dai-adda.c
-> > @@ -295,8 +295,6 @@ static int mtk_adda_pad_top_event(struct
-> > snd_soc_dapm_widget *w,
-> >   	case SND_SOC_DAPM_PRE_PMU:
-> >   		if (afe_priv->mtkaif_protocol ==
-> > MTKAIF_PROTOCOL_2_CLK_P2)
-> >   			regmap_write(afe->regmap, AFE_AUD_PAD_TOP,
-> > 0x39);
-> > -		else if (afe_priv->mtkaif_protocol ==
-> > MTKAIF_PROTOCOL_2)
-> > -			regmap_write(afe->regmap, AFE_AUD_PAD_TOP,
-> > 0x31);
-> 
-> I think that this needs some clarification from MediaTek: was 0x31 a
-> typo here?
-> 
-> Regards,
-> Angelo
-> 
-Hi Angelo,
+On Thu, Jul 7, 2022 at 11:03 AM Cezary Rojewski
+<cezary.rojewski@intel.com> wrote:
+>
+> Add strsplit_u32() and its __user variant to allow for splitting
+> specified string into array of u32 tokens.
 
-This patch can be accepted. The 0x31 is not typo, the logic of this
-code is not concise enough.
+And I believe we have more of this done in old code.
+Since all callers use ',' as a delimiter, have you considered using
+get_options()?
 
-Thanks,
-Jiaxin.Yu
+> Originally this functionality was added for the SOF sound driver. As
+> more users are on the horizon, relocate it so it becomes a common good.
 
-> >   		else
-> >   			regmap_write(afe->regmap, AFE_AUD_PAD_TOP,
-> > 0x31);
-> >   		break;
-> 
-> 
+Maybe it can be fixed just there.
 
+-- 
+With Best Regards,
+Andy Shevchenko
