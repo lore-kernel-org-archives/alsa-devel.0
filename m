@@ -4,73 +4,72 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 475EAC433EF
-	for <alsa-devel@archiver.kernel.org>; Fri,  8 Jul 2022 15:45:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6AC69C433EF
+	for <alsa-devel@archiver.kernel.org>; Fri,  8 Jul 2022 15:45:57 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 1B45C210;
-	Fri,  8 Jul 2022 17:44:23 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1B45C210
+	by alsa0.perex.cz (Postfix) with ESMTPS id 7D5A41614;
+	Fri,  8 Jul 2022 17:45:05 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7D5A41614
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1657295113;
-	bh=C9e8etBg/94GadxYv8MdzYOOgITsxTDLOb+J9ydTXUI=;
-	h=Date:Subject:To:References:From:In-Reply-To:Cc:List-Id:
+	s=default; t=1657295155;
+	bh=C2o8pnQg49NHc81qJegDak3fh/DbNuvU6TDy4IEp1nA=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=bnwo1Hea0RuBQrw0+7/Y2idLPcmWu3eZla8NS0vJn9SE9J/bnvCzdsdp0otNGkQeK
-	 lM3L5fT0yW0vZaRTAwKYdAB0oFeX0tiHEN0N72//RtI2HLLmbaqjsRuA+VzlTbM8Sw
-	 FCwEv0saV9QV4R8JIpP25CdZjZLdTcWnhkbjj4nE=
+	b=TkUCuAvrC4Wpr4sP2ZTOT66FCWSSyO6aY4u7WgYU3y4IyUNrFAl4dqaM9h/h1s5St
+	 84lPS+VRPAh0c6eDoPa7xNC3R1C+DlLt7G6FTl4B3zxIrsphheIXnroCuz0N++IGMD
+	 TZs17HQg4NnuqSHJR2wyGsMxCzCTPFzf9wL7PzcM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id AA5DFF8028B;
-	Fri,  8 Jul 2022 17:44:22 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id DC4A5F8053B;
+	Fri,  8 Jul 2022 17:45:03 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 98646F804CF; Fri,  8 Jul 2022 17:44:21 +0200 (CEST)
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
+ id 88221F80166; Fri,  8 Jul 2022 17:45:02 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id ADE40F80166
+ for <alsa-devel@alsa-project.org>; Fri,  8 Jul 2022 17:44:59 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz ADE40F80166
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="p7HdZb2I"
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id C2C91F8028B
- for <alsa-devel@alsa-project.org>; Fri,  8 Jul 2022 17:44:15 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C2C91F8028B
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com
- header.b="bogbx1s1"
-Received: from [192.168.1.100] (2-237-20-237.ip236.fastwebnet.it
- [2.237.20.237])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
- key-exchange X25519 server-signature RSA-PSS (4096 bits))
- (No client certificate requested) (Authenticated sender: kholk11)
- by madras.collabora.co.uk (Postfix) with ESMTPSA id B8C85660191B;
- Fri,  8 Jul 2022 16:44:13 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
- s=mail; t=1657295054;
- bh=C9e8etBg/94GadxYv8MdzYOOgITsxTDLOb+J9ydTXUI=;
- h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
- b=bogbx1s19Ny4+aonY/okvHFLJtBHdmRxtkEfd1xOkVJPG/pCRbiXuDyiQZt+3sEpv
- 0MP0rJ7WxFIvF6O0LTlWTmpnVQtAcA0pQYxjzyquj3HcBm9CmVi+wOarpRO4oZ1zhv
- h3OnP1zB6fnKVqj2lDInyqfDRRKtqTdG75rQ33ZuAO7DjhxtkX71Zke4XqBfXPf6pk
- /xZK7Y8sm+CRVgvv0ozMkwpUa2cLD/HfuG/HhYHT2TmnB1U2RSxr3qYxkBOzVdT0z1
- /Y6udKRV95q1mMx15ceWrXvR/rsAYvS5abCrFCsGK4WiI/pYTMAZ0K4w8fT0Y/DBhR
- vpasooaBoS8VA==
-Message-ID: <ac4179e3-decf-f620-c5c8-5f8ec28fc69f@collabora.com>
-Date: Fri, 8 Jul 2022 17:44:11 +0200
+ by dfw.source.kernel.org (Postfix) with ESMTPS id CBABB60EAD;
+ Fri,  8 Jul 2022 15:44:56 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 35E99C341C0;
+ Fri,  8 Jul 2022 15:44:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1657295096;
+ bh=C2o8pnQg49NHc81qJegDak3fh/DbNuvU6TDy4IEp1nA=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=p7HdZb2IKyKj9aV2OP461sfgSCAkq3EKwTxkbBaYF/Szefi7nIFHxlyaMEsx7+F6D
+ UZU9X7z0fq+M+W5iJMpZilXRCizHYQuf3ibCdW0cIpmO+9q8BQpv9iygbLvDCYO51u
+ aaAG/0YXh13eQmaNE28AKgL/zz3pUS4g6iHrAV81stosCBlrtlrqalGWgOsBENvONF
+ swb1jyVXKyUypm7jLgoTdHeXzfRjuoBFlvFdAjZPRXFJYK4XUmf4QJVpzYZguWw5Lg
+ 4cdbRX1s8GUSjh0sJOqO1KoB3sKtEQZrKGNqRT2hi8RxJNfA8FfaC0yacpq7Pp777N
+ h+xBq5OuLDAwA==
+Date: Fri, 8 Jul 2022 16:44:48 +0100
+From: Mark Brown <broonie@kernel.org>
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: Re: [PATCH 0/4] ASoC: Intel: Mark BE DAIs as nonatomic for hsw and
+Message-ID: <YshQ8N8Rx7Hizk8B@sirena.org.uk>
+References: <20220624134317.3656128-1-cezary.rojewski@intel.com>
+ <ac2b7d8b-a5be-4fac-169c-eaca185c9746@linux.intel.com>
+ <3d9b45c0-b415-21d9-6af5-68fa1001ed17@intel.com>
+ <34b54e4e-8997-c2b7-fdf0-24a1b95121ab@linux.intel.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.10.0
-Subject: Re: [PATCH] ASoC: mediatek: mt8186: Remove condition with no effect
-Content-Language: en-US
-To: Jiaxin Yu <jiaxin.yu@mediatek.com>, Zhongjun Tan <hbut_tan@163.com>,
- lgirdwood@gmail.com, broonie@kernel.org, perex@perex.c, tiwai@suse.com,
- matthias.bgg@gmail.com, tanzhongjun@coolpad.com, colin.king@intel.com
-References: <20220708024651.42999-1-hbut_tan@163.com>
- <ee0d9788-b742-21bb-9cc5-7b729897408b@collabora.com>
- <503a71aa95b8e4b75eb7e9e5de03a013f5155036.camel@mediatek.com>
-From: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-In-Reply-To: <503a71aa95b8e4b75eb7e9e5de03a013f5155036.camel@mediatek.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: alsa-devel@alsa-project.org, linux-mediatek@lists.infradead.org,
- linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature"; boundary="bcVYb0lY7rinzLlw"
+Content-Disposition: inline
+In-Reply-To: <34b54e4e-8997-c2b7-fdf0-24a1b95121ab@linux.intel.com>
+X-Cookie: Baby On Board.
+Cc: hdegoede@redhat.com, Cezary Rojewski <cezary.rojewski@intel.com>,
+ amadeuszx.slawinski@linux.intel.com, alsa-devel@alsa-project.org,
+ tiwai@suse.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -86,61 +85,40 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Il 08/07/22 12:19, Jiaxin Yu ha scritto:
-> On Fri, 2022-07-08 at 10:01 +0200, AngeloGioacchino Del Regno wrote:
->> Il 08/07/22 04:46, Zhongjun Tan ha scritto:
->>> From: Zhongjun Tan <tanzhongjun@coolpad.com>
->>>
->>> Remove condition with no effect
->>>
->>> Signed-off-by: Zhongjun Tan <tanzhongjun@coolpad.com>
->>> ---
->>>    sound/soc/mediatek/mt8186/mt8186-dai-adda.c | 2 --
->>>    1 file changed, 2 deletions(-)
->>>
->>> diff --git a/sound/soc/mediatek/mt8186/mt8186-dai-adda.c
->>> b/sound/soc/mediatek/mt8186/mt8186-dai-adda.c
->>> index db71b032770d..6be6d4f3b585 100644
->>> --- a/sound/soc/mediatek/mt8186/mt8186-dai-adda.c
->>> +++ b/sound/soc/mediatek/mt8186/mt8186-dai-adda.c
->>> @@ -295,8 +295,6 @@ static int mtk_adda_pad_top_event(struct
->>> snd_soc_dapm_widget *w,
->>>    	case SND_SOC_DAPM_PRE_PMU:
->>>    		if (afe_priv->mtkaif_protocol ==
->>> MTKAIF_PROTOCOL_2_CLK_P2)
->>>    			regmap_write(afe->regmap, AFE_AUD_PAD_TOP,
->>> 0x39);
->>> -		else if (afe_priv->mtkaif_protocol ==
->>> MTKAIF_PROTOCOL_2)
->>> -			regmap_write(afe->regmap, AFE_AUD_PAD_TOP,
->>> 0x31);
->>
->> I think that this needs some clarification from MediaTek: was 0x31 a
->> typo here?
->>
->> Regards,
->> Angelo
->>
-> Hi Angelo,
-> 
-> This patch can be accepted. The 0x31 is not typo, the logic of this
-> code is not concise enough.
-> 
-> Thanks,
-> Jiaxin.Yu
 
-Thank you for the clarification. In this case:
+--bcVYb0lY7rinzLlw
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Reviewed-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+On Mon, Jun 27, 2022 at 09:45:30AM -0500, Pierre-Louis Bossart wrote:
+> On 6/25/22 03:29, Cezary Rojewski wrote:
 
-Cheers!
+> > Warning is one thing, but will you be also getting rid of the
+> > if-statement in soc-pcm.c that actually forces nonatomic=1 on BE when FE
+> > is already declared as such? If the if-statement stays, I believe the
+> > declaring BE DAIs 'correctly' in the way to go.
 
-> 
->>>    		else
->>>    			regmap_write(afe->regmap, AFE_AUD_PAD_TOP,
->>> 0x31);
->>>    		break;
->>
->>
-> 
+> I meant just removing the dev_warn() only.
 
+> See https://github.com/thesofproject/linux/pull/3723
+
+Is something going to be upstreamed here?  I don't really mind which
+solution is adopted here but right now Cezary's patches are the ones
+that were posted upstream.
+
+--bcVYb0lY7rinzLlw
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmLIUO8ACgkQJNaLcl1U
+h9Ckgwf+Irg6zg2BsL8c1Oiv+50hqBPXRBjaBs3OV1bfLZC+BdndYzLyY1gyO2qC
+ty7mmAskWzLVTp9+ofRukWK/6hPt6SQkGp2JMxaxHXgU+tnV+GeGttRDfzgqnh9d
+TeZFZAsMWrJIPE3GYdx1KJyke9g4nNCPh+N5e184XMss/Tn1r2ozomvEubnBOBaE
+wyfP60qhNjKqihTFzr1lXEBMUShqrifhIIzGwPp8A+PeDzRSXEwsKGoSyoxU1n36
+1TaqdnG+S7EIvH+9liMZ0HYlt3iYX12f0N9VWVhcIWW6SpDG90XeY7wtvH/apZz0
+kahZqQ1zmuTPBBFSksFdn1GXXnC5WA==
+=teEq
+-----END PGP SIGNATURE-----
+
+--bcVYb0lY7rinzLlw--
