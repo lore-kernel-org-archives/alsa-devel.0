@@ -4,82 +4,83 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 531AEC43334
-	for <alsa-devel@archiver.kernel.org>; Sat,  9 Jul 2022 16:48:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id BB446C43334
+	for <alsa-devel@archiver.kernel.org>; Sat,  9 Jul 2022 16:51:43 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C42DD1E8;
-	Sat,  9 Jul 2022 18:47:50 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C42DD1E8
+	by alsa0.perex.cz (Postfix) with ESMTPS id D67D91EA;
+	Sat,  9 Jul 2022 18:50:51 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D67D91EA
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1657385320;
-	bh=unFvUyKuSogPZ1rvtHzcsrPQdtSBvPY2oNU1hFgXCHo=;
+	s=default; t=1657385501;
+	bh=DftDdpxBMqZDiVTj9zRLsLTASeFcrz47ITkEmcTMjFY=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=MMWGE7Z685KjmVBjk4SAU7DR6S33/PSnQHd7/BuGqsTaathoARVWujuOY/IJ0lA+p
-	 9jGfJYiTvOEVpuu5EVbLz+SyEqHejQXjixvWxfMwvCmsf8wDQh0+0cYL8qP35nUHam
-	 juyOprCaPco3WgUgqsDEpBClI1CF5i2yjlXs2G7s=
+	b=REeEAyyscpMkGINTtHy1jhOCjFAP1eOGLsouBQUA2HZ2qYmFF70n4G+hsZAZooQtU
+	 wPXeNER4gkl63RD66ATr7BLdCHimmBg0lzvQsR47VOhJkh8IGlkM9spkaNWwcEtKpf
+	 nZDWEDNjPnhtH8tuzXNIGx4Q+mPRw4CGVvLED93E=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 1A0DAF8027B;
-	Sat,  9 Jul 2022 18:47:50 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 724D0F8020D;
+	Sat,  9 Jul 2022 18:50:51 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 9B4AAF8027B; Sat,  9 Jul 2022 18:47:48 +0200 (CEST)
+ id 76CCEF80166; Sat,  9 Jul 2022 18:50:49 +0200 (CEST)
 Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 77B22F80166
- for <alsa-devel@alsa-project.org>; Sat,  9 Jul 2022 18:47:42 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 77B22F80166
+ by alsa1.perex.cz (Postfix) with ESMTPS id 021EDF80166
+ for <alsa-devel@alsa-project.org>; Sat,  9 Jul 2022 18:50:46 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 021EDF80166
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="ZyPdQejZ"; 
+ header.b="fReeCo2U"; 
  dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="jrpEnNL4"
+ header.b="E2dpivmK"
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 1F2B521F3D;
- Sat,  9 Jul 2022 16:47:42 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id CD87221F78;
+ Sat,  9 Jul 2022 16:50:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1657385262; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1657385446; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=yaVPh/0/mNpP3XnCEYbIpgPBzkPKj8Bce7MjBpYrrtc=;
- b=ZyPdQejZoo2/o4pOhqeIPyEMSvZ7ihvYkjoeZHvKrZFD2G7gwBFza8xDJSpqErESB5YR8r
- xSlI67+szj1LQK0N2GB5llsK2ffGgsuO+KdhCRPwWLo+j/wZ51bKKfg/j76z8HQP2+mnq6
- MpwayTBtBfb272nZROo+Y4oDfKew5vk=
+ bh=h1cwZHnc8M+Avfl14vI7UBicXlGI7LYCAz+gHf34Fes=;
+ b=fReeCo2UN01fOK406RLK9pDbSatZnSNPkn9c7IMacz8ieHl/t2aap+aLyHrYzXLQcmOYux
+ lZqdiNTlBAbNShDH5EbeefsRJ6RljAeJXL6/6uBi26PAg99y89ZNzjHl3MOD1zkYCpCjlm
+ WVEWjS/IslBhDOBaJNMonoOKEK5i9V0=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1657385262;
+ s=susede2_ed25519; t=1657385446;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=yaVPh/0/mNpP3XnCEYbIpgPBzkPKj8Bce7MjBpYrrtc=;
- b=jrpEnNL4PJ5d98f4XiKkyJ0mu84UizSbp7z06idBFkY5ArjWM0QQO7hi/mCuSnsitoJ525
- eIiRgg7RM+feErDg==
+ bh=h1cwZHnc8M+Avfl14vI7UBicXlGI7LYCAz+gHf34Fes=;
+ b=E2dpivmKtM1gHqswBuwcwzkX1SE9kAjt5gXEpsKh3+94Pzv1IIk8ufZWWvBCHYzc4sPtP4
+ i+K8b3NSfxQWIpBQ==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id E12BB13482;
- Sat,  9 Jul 2022 16:47:41 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 9E26013482;
+ Sat,  9 Jul 2022 16:50:46 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id 4e8YNi2xyWJ+aQAAMHmgww
- (envelope-from <tiwai@suse.de>); Sat, 09 Jul 2022 16:47:41 +0000
-Date: Sat, 09 Jul 2022 18:47:41 +0200
-Message-ID: <875yk6i66q.wl-tiwai@suse.de>
+ by imap2.suse-dmz.suse.de with ESMTPSA id 8jTgJeaxyWKUagAAMHmgww
+ (envelope-from <tiwai@suse.de>); Sat, 09 Jul 2022 16:50:46 +0000
+Date: Sat, 09 Jul 2022 18:50:46 +0200
+Message-ID: <874jzqi61l.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
 To: Cezary Rojewski <cezary.rojewski@intel.com>
-Subject: Re: [PATCH 5/9] ALSA: hda: Skip event processing for unregistered
- codecs
-In-Reply-To: <20220706120230.427296-6-cezary.rojewski@intel.com>
+Subject: Re: [PATCH 0/9] ALSA: hda: Codec-reload bug fixes and cleanups
+In-Reply-To: <20220706120230.427296-1-cezary.rojewski@intel.com>
 References: <20220706120230.427296-1-cezary.rojewski@intel.com>
- <20220706120230.427296-6-cezary.rojewski@intel.com>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
 MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset=ISO-8859-2
+Content-Transfer-Encoding: 8bit
 Cc: alsa-devel@alsa-project.org, pierre-louis.bossart@linux.intel.com,
  tiwai@suse.com, hdegoede@redhat.com, broonie@kernel.org,
  amadeuszx.slawinski@linux.intel.com
@@ -98,26 +99,38 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, 06 Jul 2022 14:02:26 +0200,
+On Wed, 06 Jul 2022 14:02:21 +0200,
 Cezary Rojewski wrote:
 > 
-> When codec is unbound but not yet removed, in the eyes of
-> snd_hdac_bus_process_unsol_events() it is still a valid target to
-> delegate work to. Such behaviour may lead to use-after-free errors.
-> Address by verifying if codec is actually registered.
+> Total of 6 fixes and 3 cleanups - cleanups are last.
 > 
-> Signed-off-by: Cezary Rojewski <cezary.rojewski@intel.com>
-> ---
->  include/sound/hda_codec.h |  1 -
->  include/sound/hdaudio.h   |  1 +
->  sound/hda/hdac_bus.c      |  2 +-
->  sound/pci/hda/hda_codec.c | 10 +++++-----
->  sound/soc/codecs/hda.c    |  4 ++--
+> All of the fixes address problems that present themselves in situation
+> when user engages in codec driver reload. Second condition to reproduce
+> is two-step initialization of HDAudio codec - this is the case only for
+> ASoC HDAudio bus driver as snd_hda_intel calls only compound function
+> snd_hda_codec_new(). Once these conditions are met, several
+> reload/unload scenarios end with null-ptr-deref and page faults. Goal of
+> the series is to allow codec/bus driver reloading without any errors.
+> 
+> Amadeusz S³awiñski (2):
+>   ALSA: hda: Reset all SIE bits in INTCTL
+>   ALSA: hda: Remove unused macro definition
+> 
+> Cezary Rojewski (7):
+>   ALSA: hda: Do not unset preset when cleaning up codec
+>   ALSA: hda: Fix null-ptr-deref when i915 fails and hdmi is denylisted
+>   ALSA: hda: Make device usage_count consistent across subsequent
+>     probing
+>   ALSA: hda: Fix put_device() inconsistency in error path
+>   ALSA: hda: Skip event processing for unregistered codecs
+>   ALSA: hda: Fix page fault in snd_hda_codec_shutdown()
+>   ALSA: hda/realtek: Remove redundant init_hook() in alc_default_init()
 
-This patch doesn't apply cleanly because the change in
-sound/soc/codecs/hda.c still not included in my tree.
+Now applied partially what are applicable and look correct: patches
+2, 3, 4, 6, 7, and 8.
 
-Mark, there's yet one case we need the merge of asoc-next :)
+Patch 5 waits for Mark's PR of ASoC changes, and patch 1 needs a bit
+more clarification and investigation.
 
 
 thanks,
