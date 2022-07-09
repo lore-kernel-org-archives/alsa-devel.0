@@ -4,83 +4,81 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 68777C43334
-	for <alsa-devel@archiver.kernel.org>; Sat,  9 Jul 2022 16:24:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 13A2AC43334
+	for <alsa-devel@archiver.kernel.org>; Sat,  9 Jul 2022 16:27:07 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 9FDA4FA;
-	Sat,  9 Jul 2022 18:23:17 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9FDA4FA
+	by alsa0.perex.cz (Postfix) with ESMTPS id 075B9FA;
+	Sat,  9 Jul 2022 18:26:15 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 075B9FA
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1657383847;
-	bh=3qfN9O9kcekhPyHAIRNn+2AIAW/6o3si/jD6A4RDGis=;
+	s=default; t=1657384025;
+	bh=KWaChAyKbyZk/PjJpaYXZwKqvWAY/p0cF5e+9OKW2EU=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=XjnmRSw0IswUpWp86Mx/HuQhvwGoq7x14QmReXPIxhzeLjG5RdoAFbQuq6EnWJt6a
-	 xe5ZF/J8xALbojEkli4yCjErHhxMR3oBTWxalQdjjDtNDq3exTC80aSn/LiQI3pYKF
-	 ipSR892LGTQwkHZDm59IfqHTrO28h3CMHRtK7XHk=
+	b=bq9bEADV3ZBPuNfIbiDvUKA0Kpn25/tJQn0MuxdqkfWPMPOJLlzIJ61rTIcthtSP8
+	 BU5hGM9xi1uH0zU91tHwFFcDT5QRi0eR6Sjj6aRaXitv1EYJl+xSX1NtsWJ68XqOcI
+	 N6egWkocEoke8CmjXhF2XDDgZ57mIIEkDCdOOEdc=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 3D601F8020D;
-	Sat,  9 Jul 2022 18:23:17 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 96DF9F80158;
+	Sat,  9 Jul 2022 18:26:14 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 449E7F80245; Sat,  9 Jul 2022 18:23:15 +0200 (CEST)
+ id 7DB6DF80245; Sat,  9 Jul 2022 18:26:12 +0200 (CEST)
 Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 9E5C6F80158
- for <alsa-devel@alsa-project.org>; Sat,  9 Jul 2022 18:23:08 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9E5C6F80158
+ by alsa1.perex.cz (Postfix) with ESMTPS id 1AFEEF80158
+ for <alsa-devel@alsa-project.org>; Sat,  9 Jul 2022 18:26:10 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1AFEEF80158
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="PoCr8ULc"; 
+ header.b="CAlciWwu"; 
  dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="ZpUFrRm0"
+ header.b="hOf18scS"
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id C4C921FF52;
- Sat,  9 Jul 2022 16:23:07 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id E11CF1FF52;
+ Sat,  9 Jul 2022 16:26:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1657383787; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1657383969; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=CU0AXdQ/GwE/UPzZAwfSJLI0DKLpcPGzXZLD8Ld35Js=;
- b=PoCr8ULcJ8K98O85umIWfms6TpsRnXcWet71W+/rXPFzuGA7Z/idlCky05NODeOeOxc14F
- 8UQbOzpeZKEmLts40ZY/E76syKIAK8tnX2DxVt6xBmQg4Uhl1A5Yx+l+K50fuWS8CwS2gW
- aJ+MI4HDCSCyC5gICB/Lw51DkDbC+I0=
+ bh=KetsqRB6USEsJHloDO9ASHycr63nJY/LivtmR+qAmms=;
+ b=CAlciWwurAxaaHOsrD1iIv6s4A/JmE4bHvIEPoe85N1209Wtq+PzH9pMXSIqgcoU4T2sR4
+ 4ogx8rdscy9hSYeqGJ+JgrbJA0UQesTFM2HFjcxVpd9YTHYxxeJoEPgrxaL6A/23Itm9q3
+ BQAKbXjj859U8OgJGXDsq96q+GgxlU8=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1657383787;
+ s=susede2_ed25519; t=1657383969;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=CU0AXdQ/GwE/UPzZAwfSJLI0DKLpcPGzXZLD8Ld35Js=;
- b=ZpUFrRm0Kta55r0tkISYJIj9cYD4qHNgPNZ/A6bBjVLKDowkBgO9ROOetGD8/aE1P3yAc/
- 2vF9qHPKZruANuAA==
+ bh=KetsqRB6USEsJHloDO9ASHycr63nJY/LivtmR+qAmms=;
+ b=hOf18scSbn2Jffp2x7b5KWeG66YAixDB99cn6TrMnJ8C5FOYPfim/4OQHnkNC7ITcaoH3p
+ 8odYpe+ynG8hJSBQ==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 9FECA13482;
- Sat,  9 Jul 2022 16:23:07 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id C007113482;
+ Sat,  9 Jul 2022 16:26:09 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id 6VBXJmuryWJLYgAAMHmgww
- (envelope-from <tiwai@suse.de>); Sat, 09 Jul 2022 16:23:07 +0000
-Date: Sat, 09 Jul 2022 18:23:06 +0200
-Message-ID: <87czeei7bp.wl-tiwai@suse.de>
+ by imap2.suse-dmz.suse.de with ESMTPSA id qPHzLSGsyWIfYwAAMHmgww
+ (envelope-from <tiwai@suse.de>); Sat, 09 Jul 2022 16:26:09 +0000
+Date: Sat, 09 Jul 2022 18:26:09 +0200
+Message-ID: <87bktyi76m.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
-To: Zhongjun Tan <hbut_tan@163.com>
-Subject: Re: [PATCH] ALSA: usb-audio: Fix unsigned expression compared with
- zero
-In-Reply-To: <20220706070627.16764-1-hbut_tan@163.com>
-References: <20220706070627.16764-1-hbut_tan@163.com>
+To: Mark Brown <broonie@kernel.org>
+Subject: Re: [GIT PULL] ASoC fixes for v5.19-rc4
+In-Reply-To: <20220707170314.1B7EAC341C0@smtp.kernel.org>
+References: <20220707170314.1B7EAC341C0@smtp.kernel.org>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
 MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
 Content-Type: text/plain; charset=US-ASCII
-Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, tiwai@suse.com,
- Zhongjun Tan <tanzhongjun@coolpad.com>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -96,20 +94,28 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, 06 Jul 2022 09:06:27 +0200,
-Zhongjun Tan wrote:
+On Thu, 07 Jul 2022 19:03:09 +0200,
+Mark Brown wrote:
 > 
-> From: Zhongjun Tan <tanzhongjun@coolpad.com>
+> The following changes since commit 980555e95f7cabdc9c80a07107622b097ba23703:
 > 
-> Fix unsigned expression compared with zero
+>   ASoC: madera: Fix event generation for rate controls (2022-06-24 16:22:01 +0100)
 > 
-> Signed-off-by: Zhongjun Tan <tanzhongjun@coolpad.com>
+> are available in the Git repository at:
+> 
+>   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git tags/asoc-fix-v5.19-rc4
+> 
+> for you to fetch changes up to fc976f5629afb4160ee77798b14a693eac903ffd:
+> 
+>   ASoC: Intel: Skylake: Correct the handling of fmt_config flexible array (2022-07-07 17:16:40 +0100)
+> 
+> ----------------------------------------------------------------
+> ASoC: Fixes for v5.19
+> 
+> Quite a large batch due to things building up for a couple of weeks but
+> all driver specific apart from Marek's documentation fix.
 
-Could you give more detailed description about what you're trying to
-fix?  The patch itself looks rather problematic as 0day bot already
-reported.
+Thanks, pulled now.
 
-
-thanks,
 
 Takashi
