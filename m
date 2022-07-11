@@ -4,71 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id DBB01C43334
-	for <alsa-devel@archiver.kernel.org>; Mon, 11 Jul 2022 13:25:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8BDCAC433EF
+	for <alsa-devel@archiver.kernel.org>; Mon, 11 Jul 2022 13:43:18 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0A5C474C;
-	Mon, 11 Jul 2022 15:24:13 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0A5C474C
+	by alsa0.perex.cz (Postfix) with ESMTPS id E82ED826;
+	Mon, 11 Jul 2022 15:42:25 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E82ED826
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1657545903;
-	bh=G70xBG379C6f8fJ4Hi2cSSohFChcI3TzIWyJTrOHcRU=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	s=default; t=1657546996;
+	bh=KqT9jXk7gPcHs0OREpA0JbWzkxkbkXw/FOHUWxufhRo=;
+	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=TKbbOwlvL3Rhd5pgPoOHsJLimAoOZzeRVMm/Jitf6COfnP0CLihueK3aN8AkwCrmY
-	 Y2NksacIooTDH7AHzjfrtW1V5vyAh6u0jUzveIqNkaiX6GEZkYLvkp1DobBTDsImu7
-	 3n6Dctk096KVAWdcNHwaef56Luw6xxYlCtBQCHDI=
+	b=Rgf/aZUUVkx1MqkMiRfCFH8FpqEbGMV3d0Lt9ydNX7fkDgIaSuTWdLphyupHgnRUY
+	 zmRDM+gHfgVSEa5SqsbBMtcriDt2AjqyhpkkV5Kvi97ZJdgR2j7FVbJQLGMiaKOUJq
+	 i4YXeItzyjz0tLahLhCjdziQuLJXP2G8SP+37USY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 99018F80155;
-	Mon, 11 Jul 2022 15:24:12 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 8779CF80155;
+	Mon, 11 Jul 2022 15:42:25 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 5A576F80163; Mon, 11 Jul 2022 15:24:11 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org
- [IPv6:2604:1380:4641:c500::1])
+ id 379F5F80256; Mon, 11 Jul 2022 15:42:24 +0200 (CEST)
+Received: from ams.source.kernel.org (ams.source.kernel.org
+ [IPv6:2604:1380:4601:e00::1])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id D2DD3F80152
- for <alsa-devel@alsa-project.org>; Mon, 11 Jul 2022 15:24:08 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D2DD3F80152
+ by alsa1.perex.cz (Postfix) with ESMTPS id D3794F800E1
+ for <alsa-devel@alsa-project.org>; Mon, 11 Jul 2022 15:42:20 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D3794F800E1
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="jP1Zn0WW"
+ header.b="Yh4+12vn"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id 63F2D6143F;
- Mon, 11 Jul 2022 13:24:06 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 459DFC34115;
- Mon, 11 Jul 2022 13:24:03 +0000 (UTC)
+ by ams.source.kernel.org (Postfix) with ESMTPS id EFF68B80F10;
+ Mon, 11 Jul 2022 13:42:19 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A1876C3411C;
+ Mon, 11 Jul 2022 13:42:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1657545845;
- bh=G70xBG379C6f8fJ4Hi2cSSohFChcI3TzIWyJTrOHcRU=;
- h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=jP1Zn0WWw4060K6LRNqkqIVb0fNrKWYIEtemq9b7lxU2Ed4QbszNV7H9tImg57LBp
- lknP1pVJza3KXF4mLs6Zqd9J8gJ3KXmXg0RBqnwEttJVGSSzptaIp70UbREzJPAykq
- 3vo1gyzOkb6msiZdQfLwQa9ENLvwiduGQF/XSY7FhWkvPU84dFjygQNP61SZf29BPp
- n/exw/dSDqizck/dAA/hmQrqfP/a8e3OvxIf8i2yutOWJnzW+zZLjZ+vBYl9H6+HER
- BhcxlUFEW7TUqPRnI0r6fLKjAFEXTexuIROV8fIZD06D4Cat84xiR1A7NToT8sWBeb
- Dn7953VK+tAVw==
-Date: Mon, 11 Jul 2022 14:23:59 +0100
+ s=k20201202; t=1657546938;
+ bh=KqT9jXk7gPcHs0OREpA0JbWzkxkbkXw/FOHUWxufhRo=;
+ h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+ b=Yh4+12vnfz/2k7t73GAfVvazukytAqGwPao+x+u63zCaZL4Ed1Et6Pd6qTMkTuVhH
+ G62ZGbXc5ca1lpNJmS4AHKmiSO1cGZFv7A5Ez/skc2P/E4ib4x6Nm8F1GGYFGmlKUe
+ jdqg9f8RZ0m5m1jQQn4TwF4Dy/68gsc4RcbQg4J4Ic+yxz5Hx5J14pZeGgSnGZjxwe
+ YWwtmifKVmuztiw6SJzq4vmtONW1aXJE1mA2qZqstUuVhFqdX//Wv9UNXgKpHB0iNT
+ Q4se9Xx61BaiigNoUqPFsE09l9Lsp1fQQg3kM5pkv2xy829N7Qnf7uHPzWwq5j0K5t
+ wDC8Sbj6efthQ==
 From: Mark Brown <broonie@kernel.org>
-To: Alexandru Elisei <alexandru.elisei@arm.com>
-Subject: Re: [PATCH] ASoC: rockchip: i2s: Fix NULL pointer dereference when
- pinctrl is not found
-Message-ID: <Yswkb6mvwUywOTLg@sirena.org.uk>
-References: <20220711130522.401551-1-alexandru.elisei@arm.com>
+To: shengjiu.wang@nxp.com, perex@perex.cz, festevam@gmail.com,
+ lgirdwood@gmail.com, shengjiu.wang@gmail.com, Xiubo.Lee@gmail.com,
+ nicoleotsuka@gmail.com, alsa-devel@alsa-project.org, tiwai@suse.com
+In-Reply-To: <1657507190-14546-1-git-send-email-shengjiu.wang@nxp.com>
+References: <1657507190-14546-1-git-send-email-shengjiu.wang@nxp.com>
+Subject: Re: [PATCH] ASoC: fsl_utils: Drop usage of __clk_get_name()
+Message-Id: <165754693638.334539.15476852072708408930.b4-ty@kernel.org>
+Date: Mon, 11 Jul 2022 14:42:16 +0100
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature"; boundary="8nxuGyPlmzXFliIn"
-Content-Disposition: inline
-In-Reply-To: <20220711130522.401551-1-alexandru.elisei@arm.com>
-X-Cookie: I am NOMAD!
-Cc: alsa-devel@alsa-project.org, heiko@sntech.de, linux-kernel@vger.kernel.org,
- tiwai@suse.com, lgirdwood@gmail.com, linux-rockchip@lists.infradead.org,
- judyhsiao@chromium.org, linux-arm-kernel@lists.infradead.org
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+Cc: linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -84,46 +81,37 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+On Mon, 11 Jul 2022 10:39:50 +0800, Shengjiu Wang wrote:
+> Avoid build errors when CONFIG_COMMON_CLK is not set/enabled.
+> 
+> ERROR: modpost: "__clk_get_name" [sound/soc/fsl/snd-soc-fsl-utils.ko] undefined!
+> 
+> 
 
---8nxuGyPlmzXFliIn
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Applied to
 
-On Mon, Jul 11, 2022 at 02:05:22PM +0100, Alexandru Elisei wrote:
-> Commit a5450aba737d ("ASoC: rockchip: i2s: switch BCLK to GPIO") switched
-> BCLK to GPIO functions when probing the i2s bus interface, but missed
-> adding a check for when devm_pinctrl_get() returns an error.  This can le=
-ad
-> to the following NULL pointer dereference on a rockpro64-v2 if there are =
-no
-> "pinctrl" properties in the i2s device tree node:
->=20
-> [    0.658381] rockchip-i2s ff880000.i2s: failed to find i2s default state
-> [    0.658993] rockchip-i2s ff880000.i2s: failed to find i2s gpio state
-> [    0.660072] rockchip-i2s ff890000.i2s: failed to find i2s default state
-> [    0.660670] rockchip-i2s ff890000.i2s: failed to find i2s gpio state
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
 
-Please think hard before including complete backtraces in upstream
-reports, they are very large and contain almost no useful information
-relative to their size so often obscure the relevant content in your
-message. If part of the backtrace is usefully illustrative (it often is
-for search engines if nothing else) then it's usually better to pull out
-the relevant sections.
+Thanks!
 
---8nxuGyPlmzXFliIn
-Content-Type: application/pgp-signature; name="signature.asc"
+[1/1] ASoC: fsl_utils: Drop usage of __clk_get_name()
+      commit: eaa27e7fe43f16fe587c3e93fd5c25ce86be3c43
 
------BEGIN PGP SIGNATURE-----
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmLMJG4ACgkQJNaLcl1U
-h9B/nAf+Kvf5A4KB+uPO75jiVyCWYLkssKsw3HPjAgF8EBe+8IPSH4bMdRcdnkQH
-/pZO3j8srxvMN1ABFQcuRSwjkxGjKYw6JGKo7W0BjV20qZ8PwLWPIOb9VVEROFiP
-ky6OFpD3u5KGXVx95J8syIOrgskyM+CQ+eczZQCezEVti0W/WeysP2nm96HChhQB
-9CogIqhh3ta5E7G7aq74o2o9reistKq1WNh94UfjDGGmj62d8RWdCVkLTrHjqY5n
-sMAZHBBjIFybtao7r1NtcwUwTsvGcUWqX1u5xFhBx8i3T8aWbC5M9a1wdNGGzAtM
-dGv7Ol9LRhreIVWgVe63OzthpynCSg==
-=AqBY
------END PGP SIGNATURE-----
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
---8nxuGyPlmzXFliIn--
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
