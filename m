@@ -4,85 +4,83 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id CA2FBC433EF
-	for <alsa-devel@archiver.kernel.org>; Mon, 11 Jul 2022 14:17:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3FD96C433EF
+	for <alsa-devel@archiver.kernel.org>; Mon, 11 Jul 2022 14:17:41 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 8A5B591;
-	Mon, 11 Jul 2022 16:16:19 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8A5B591
+	by alsa0.perex.cz (Postfix) with ESMTPS id 71147844;
+	Mon, 11 Jul 2022 16:16:49 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 71147844
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1657549029;
-	bh=NnRbv5sNsKxlZlj9P+n7ykLAdDFVLn1BkbdOxtVgdg8=;
+	s=default; t=1657549059;
+	bh=wnCR00U09AuGlC3q5ch0UPsfC7qGf5YKBWL6oqlEN/c=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=SmMknxqg27y9idYBXl+MPm1ncTQhiio8uWYcAC6eXqeLg4QDFgOJ13BL0S57zdiNT
-	 yen9X/lnDKAUiYUNWWTRop9U1Aw4kAdBLfAuSruBYlJDqtE3HH44/aB1e8PX15tTtB
-	 5bitmLd6veBLF12RCdRfMhvUKxskfRjo/FNGka2w=
+	b=dHzJGXvVaCi5cd0hol9iFYTnfajOsIkjqGrVD6joA2maUpsZ9E7krS/GcF7EAfIXN
+	 EGS9392ONF1iIag2YoLP0ZcncIBC+1UKotx9E9kjeLwSNuzzyexkGxczxoFaKIPEtJ
+	 iZ4swXyt5Cfj8qPcE7bVCnrE18fIVXB8NCGV4F18=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 2CEA8F800E8;
-	Mon, 11 Jul 2022 16:16:19 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id AB700F8047C;
+	Mon, 11 Jul 2022 16:16:32 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id DEB42F80163; Mon, 11 Jul 2022 16:16:17 +0200 (CEST)
+ id 98C43F804D6; Mon, 11 Jul 2022 16:16:30 +0200 (CEST)
 Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id CCFF8F800E8
- for <alsa-devel@alsa-project.org>; Mon, 11 Jul 2022 16:16:10 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CCFF8F800E8
+ by alsa1.perex.cz (Postfix) with ESMTPS id 81A4AF80155
+ for <alsa-devel@alsa-project.org>; Mon, 11 Jul 2022 16:16:24 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 81A4AF80155
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="rwOP9zAy"; 
+ header.b="lBt3mDyt"; 
  dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="sv+CwfuB"
+ header.b="znA+WMRQ"
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id AD7E0219BF;
- Mon, 11 Jul 2022 14:16:10 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 2FB57228AA;
+ Mon, 11 Jul 2022 14:16:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1657548970; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1657548984; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=bhu7mMfCBKSi34I+LiabL66xPJnTcxnPoeL1wKjwWMc=;
- b=rwOP9zAyQZoAZZo3+B2W1bDCtmnqtq15H4SwEEM5Q+bWpfbkh53xtA4tXqa/6xRKlcwuip
- b/FXW3j5RZBJ11vxGZ7BvWnseyGYOtz5fPfeYar2etzR/UzGe70AmQlAdBaFt8rTPNrC6E
- inxU/pUnSuMhvfVoBLqyv3WkJg2RGfM=
+ bh=LnaUwC1V778BrnOkpMfrGCk/UXjmmJC0GPZbtQq9GHc=;
+ b=lBt3mDyt3MEnbvgzE3NtldrWP0gplouoKN5pdunNHS3b6GlPnHxSmQrJXUD/sr7ElqgO/i
+ tMOXNiBXKdgFK1zElSv0iwdtDI4Ea9Gw0VJ69Jd0sNe/1mQFmazwrCmCQPuUGoOFT28GZ7
+ 3jd6AoG9NXyHIahtpSnRfWasNBYBla4=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1657548970;
+ s=susede2_ed25519; t=1657548984;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=bhu7mMfCBKSi34I+LiabL66xPJnTcxnPoeL1wKjwWMc=;
- b=sv+CwfuBhWA3DW95no93xt4xFYAC9XVfN6rZ1H4zUwerAyGlTgVKJK51p2ZJOWIO1DWnQ/
- ThFlhcqnNy83FjBg==
+ bh=LnaUwC1V778BrnOkpMfrGCk/UXjmmJC0GPZbtQq9GHc=;
+ b=znA+WMRQt2FhsG9RBonwJ2ylyms/TpPDM9n1jE/R2qOAZpAe9QXNxJN/E0QK4hKhHkm6cV
+ DT8jQdeZA5lUqwCA==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 7007B13524;
- Mon, 11 Jul 2022 14:16:10 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 04A0913524;
+ Mon, 11 Jul 2022 14:16:23 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id q1G2GqowzGJpRAAAMHmgww
- (envelope-from <tiwai@suse.de>); Mon, 11 Jul 2022 14:16:10 +0000
-Date: Mon, 11 Jul 2022 16:16:10 +0200
-Message-ID: <875yk3spjp.wl-tiwai@suse.de>
+ by imap2.suse-dmz.suse.de with ESMTPSA id ptZhO7cwzGKKRAAAMHmgww
+ (envelope-from <tiwai@suse.de>); Mon, 11 Jul 2022 14:16:23 +0000
+Date: Mon, 11 Jul 2022 16:16:23 +0200
+Message-ID: <874jznspjc.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
 To: Meng Tang <tangmeng@uniontech.com>
-Subject: Re: [PATCH] ALSA: hda/realtek: Fix headset mic for Acer SF313-51
-In-Reply-To: <20220711081527.6254-1-tangmeng@uniontech.com>
-References: <20220711081527.6254-1-tangmeng@uniontech.com>
+Subject: Re: [PATCH v2] ALSA: hda/conexant: Apply quirk for another HP ProDesk
+ 600 G3 model
+In-Reply-To: <20220711101744.25189-1-tangmeng@uniontech.com>
+References: <20220711101744.25189-1-tangmeng@uniontech.com>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
 MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
 Content-Type: text/plain; charset=US-ASCII
-Cc: kai.heng.feng@canonical.com, alsa-devel@alsa-project.org,
- kailang@realtek.com, tanureal@opensource.cirrus.com, tiwai@suse.com,
- linux-kernel@vger.kernel.org, wse@tuxedocomputers.com,
- sbinding@opensource.cirrus.com, tcrawford@system76.com, andy.chi@canonical.com,
- cam@neo-zeon.de, yong.wu@mediatek.com
+Cc: huangwenhuia@uniontech.com, alsa-devel@alsa-project.org,
+ linux-kernel@vger.kernel.org, tiwai@suse.com, bo.liu@senarytech.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -98,17 +96,16 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Mon, 11 Jul 2022 10:15:27 +0200,
+On Mon, 11 Jul 2022 12:17:44 +0200,
 Meng Tang wrote:
 > 
-> The issue on Acer SWIFT SF313-51 is that headset microphone
-> doesn't work. The following quirk fixed headset microphone issue.
-> Note that the fixup of SF314-54/55 (ALC256_FIXUP_ACER_HEADSET_MIC)
-> was not successful on my SF313-51.
+> There is another HP ProDesk 600 G3 model with the PCI SSID 103c:82b4
+> that requires the quirk HP_MIC_NO_PRESENCE. Add the corresponding
+> entry to the quirk table.
 > 
 > Signed-off-by: Meng Tang <tangmeng@uniontech.com>
 
-Thanks, applied now.
+Applied, thanks.
 
 
 Takashi
