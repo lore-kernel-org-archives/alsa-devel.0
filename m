@@ -4,70 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 17EF7C433EF
-	for <alsa-devel@archiver.kernel.org>; Mon, 11 Jul 2022 09:53:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 69841C43334
+	for <alsa-devel@archiver.kernel.org>; Mon, 11 Jul 2022 09:54:17 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 2AA39828;
-	Mon, 11 Jul 2022 11:53:05 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2AA39828
+	by alsa0.perex.cz (Postfix) with ESMTPS id B1D5082C;
+	Mon, 11 Jul 2022 11:53:25 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B1D5082C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1657533235;
-	bh=IFixV8KBTV+chD2hbw0USw+m4VI10depIHGAYgCIDEc=;
+	s=default; t=1657533255;
+	bh=mioNk0tvPDP7UvyjGTwFiy0EVcTJtI65Soj89fFF8yE=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=j0S7ZeuOZpUdtjxFeJH9h/KHQgW/CVNtdtf2hjVYxQhKQC8inry2EID+oThvSxAw3
-	 jGtCAM3aDH2OSPkYSE0ZAwtBt0joEbc53ER0VeLvVrkzUoIIYJ/YqK16Z3/wOg1PAs
-	 iurE/fJ1D34JjZHSqHdXtbz6p0b6/cxZKsBLVjIg=
+	b=navxZXYNGWcqomR5VmLhYQX5l5JbRxVGrH61Y1Gbecm3jTYSlxD5HKoEY1MHbbKKe
+	 09ETdPnoY1vzMvj6J6aHPKoQlJ0ibejsK3cTEXumO3zT9UDDvZx5XvEoMGne6pl2/z
+	 1pCB7Jl3xFixCwP51/FALn6s+H6kcNpWtITxsaIU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 5956AF80155;
-	Mon, 11 Jul 2022 11:52:35 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2F9A4F804FC;
+	Mon, 11 Jul 2022 11:52:38 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id C11D4F8047C; Mon, 11 Jul 2022 11:52:33 +0200 (CEST)
-Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
+ id 5EEEAF804FC; Mon, 11 Jul 2022 11:52:36 +0200 (CEST)
+Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id F2FAFF80152
+ by alsa1.perex.cz (Postfix) with ESMTPS id B8136F80256
  for <alsa-devel@alsa-project.org>; Mon, 11 Jul 2022 11:52:25 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F2FAFF80152
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B8136F80256
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="EzDOFAAL"
+ header.b="Io9n1Nm1"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1657533148; x=1689069148;
+ t=1657533150; x=1689069150;
  h=from:to:cc:subject:date:message-id:in-reply-to:
  references:mime-version:content-transfer-encoding;
- bh=IFixV8KBTV+chD2hbw0USw+m4VI10depIHGAYgCIDEc=;
- b=EzDOFAALLZ9Md5zznK/U8Wz9MRDGZYYL+QsdvdyUIz06Xd2R6UT81kCz
- RuV5Im5QyvX2TQhp6OOrAt/29vJPXSDSrSXVNUYaFfVsE9M1G4C0nesnB
- G03lEw6Z3knu4cRxeQZOjozYY2apQmKdUFbuHRIuIWqejRnkARaEaxMoX
- CEZeyrDsSCZgie0XjXSOI7IxOFyn/wo6CF8X6C4QyBHcMqHJUjrPhR6oZ
- cIX2J2cTWKZyBI5+DV6FmyZwWmbJkF8rfnqGi7Pe9hM3Y3MboZ6ZAkMbZ
- bUyuS6bt/35uc1ctV0venlrr/g9hmY7VWeYP3T1xz1wSv0nY2tMJRqy7T Q==;
-X-IronPort-AV: E=McAfee;i="6400,9594,10404"; a="370930113"
-X-IronPort-AV: E=Sophos;i="5.92,262,1650956400"; d="scan'208";a="370930113"
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
- by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ bh=mioNk0tvPDP7UvyjGTwFiy0EVcTJtI65Soj89fFF8yE=;
+ b=Io9n1Nm1mHWvcF1qN6HBh+EeOjJJIr5YcoLjUblyHrT2Y3jiIRjppDWO
+ uCkvn6Bx5HaSAv3rAc+CTCIU4UY405w1TCg5NJtF4BtIJ3oax7j9O9wVt
+ NS8KYHxkTv/X1Mqgliw6uV5PDcWfsjkq6esvUeOjX9cKYPmWxA8xn6zjM
+ akKvqYs+K+k5nx4WRXKUZnqN0EONcgvuqE3dGlQB1S7LqL7mJW6Ib+9Aa
+ 6hLX4oBu04O840kEDxGiPAUJnG5fP29CbrvyyYx9dHfKd5S94xfokQ1Ss
+ XS0dOMyThovsMb3i9qFw3zEdi1w6yyCIiPw3aOPVa2fPkp0zCvoPIOCaE g==;
+X-IronPort-AV: E=McAfee;i="6400,9594,10404"; a="283374562"
+X-IronPort-AV: E=Sophos;i="5.92,262,1650956400"; d="scan'208";a="283374562"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+ by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
  11 Jul 2022 02:52:21 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.92,262,1650956400"; d="scan'208";a="840953939"
+X-IronPort-AV: E=Sophos;i="5.92,262,1650956400"; d="scan'208";a="737035121"
 Received: from black.fi.intel.com ([10.237.72.28])
- by fmsmga006.fm.intel.com with ESMTP; 11 Jul 2022 02:52:18 -0700
+ by fmsmga001.fm.intel.com with ESMTP; 11 Jul 2022 02:52:18 -0700
 Received: by black.fi.intel.com (Postfix, from userid 1003)
- id 73BD5AD; Mon, 11 Jul 2022 12:52:26 +0300 (EEST)
+ id 7C029481; Mon, 11 Jul 2022 12:52:26 +0300 (EEST)
 From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 To: Takashi Iwai <tiwai@suse.de>,
  Lucas Tanure <tanureal@opensource.cirrus.com>,
  Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
  alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
  patches@opensource.cirrus.com
-Subject: [PATCH v1 2/4] ALSA: hda: cs35l41: Allow compilation test on non-ACPI
- configurations
-Date: Mon, 11 Jul 2022 12:52:17 +0300
-Message-Id: <20220711095219.36915-2-andriy.shevchenko@linux.intel.com>
+Subject: [PATCH v1 3/4] ALSA: hda: cs35l41: Drop wrong use of ACPI_PTR()
+Date: Mon, 11 Jul 2022 12:52:18 +0300
+Message-Id: <20220711095219.36915-3-andriy.shevchenko@linux.intel.com>
 X-Mailer: git-send-email 2.35.1
 In-Reply-To: <20220711095219.36915-1-andriy.shevchenko@linux.intel.com>
 References: <20220711095219.36915-1-andriy.shevchenko@linux.intel.com>
@@ -91,36 +90,88 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-ACPI is needed only for functioning of this codec on some platforms,
-there is no compilation dependency, so make it optional
+ACPI_PTR() is more harmful than helpful. For example, in this case
+if CONFIG_ACPI=n, the ID table left unused which is not what we want.
+
+Instead of adding ifdeffery or attribute here and there, drop ACPI_PTR().
 
 Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 ---
- sound/pci/hda/Kconfig | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ sound/pci/hda/cs35l41_hda_i2c.c | 8 +++-----
+ sound/pci/hda/cs35l41_hda_spi.c | 8 +++-----
+ 2 files changed, 6 insertions(+), 10 deletions(-)
 
-diff --git a/sound/pci/hda/Kconfig b/sound/pci/hda/Kconfig
-index 79ade4787d95..e86cf80bdf96 100644
---- a/sound/pci/hda/Kconfig
-+++ b/sound/pci/hda/Kconfig
-@@ -97,7 +97,7 @@ config SND_HDA_SCODEC_CS35L41
- config SND_HDA_SCODEC_CS35L41_I2C
- 	tristate "Build CS35L41 HD-audio side codec support for I2C Bus"
- 	depends on I2C
--	depends on ACPI
-+	depends on ACPI || COMPILE_TEST
- 	depends on SND_SOC
- 	select SND_HDA_GENERIC
- 	select SND_SOC_CS35L41_LIB
-@@ -113,7 +113,7 @@ comment "Set to Y if you want auto-loading the side codec driver"
- config SND_HDA_SCODEC_CS35L41_SPI
- 	tristate "Build CS35L41 HD-audio codec support for SPI Bus"
- 	depends on SPI_MASTER
--	depends on ACPI
-+	depends on ACPI || COMPILE_TEST
- 	depends on SND_SOC
- 	select SND_HDA_GENERIC
- 	select SND_SOC_CS35L41_LIB
+diff --git a/sound/pci/hda/cs35l41_hda_i2c.c b/sound/pci/hda/cs35l41_hda_i2c.c
+index e810b278fb91..5cfb5aac37ac 100644
+--- a/sound/pci/hda/cs35l41_hda_i2c.c
++++ b/sound/pci/hda/cs35l41_hda_i2c.c
+@@ -6,9 +6,9 @@
+ //
+ // Author: Lucas Tanure <tanureal@opensource.cirrus.com>
+ 
++#include <linux/mod_devicetable.h>
+ #include <linux/module.h>
+ #include <linux/i2c.h>
+-#include <linux/acpi.h>
+ 
+ #include "cs35l41_hda.h"
+ 
+@@ -42,19 +42,17 @@ static const struct i2c_device_id cs35l41_hda_i2c_id[] = {
+ 	{}
+ };
+ 
+-#ifdef CONFIG_ACPI
+ static const struct acpi_device_id cs35l41_acpi_hda_match[] = {
+ 	{"CLSA0100", 0 },
+ 	{"CSC3551", 0 },
+-	{ },
++	{}
+ };
+ MODULE_DEVICE_TABLE(acpi, cs35l41_acpi_hda_match);
+-#endif
+ 
+ static struct i2c_driver cs35l41_i2c_driver = {
+ 	.driver = {
+ 		.name		= "cs35l41-hda",
+-		.acpi_match_table = ACPI_PTR(cs35l41_acpi_hda_match),
++		.acpi_match_table = cs35l41_acpi_hda_match,
+ 	},
+ 	.id_table	= cs35l41_hda_i2c_id,
+ 	.probe		= cs35l41_hda_i2c_probe,
+diff --git a/sound/pci/hda/cs35l41_hda_spi.c b/sound/pci/hda/cs35l41_hda_spi.c
+index 22e088f28438..c9a61675c4fd 100644
+--- a/sound/pci/hda/cs35l41_hda_spi.c
++++ b/sound/pci/hda/cs35l41_hda_spi.c
+@@ -6,7 +6,7 @@
+ //
+ // Author: Lucas Tanure <tanureal@opensource.cirrus.com>
+ 
+-#include <linux/acpi.h>
++#include <linux/mod_devicetable.h>
+ #include <linux/module.h>
+ #include <linux/spi/spi.h>
+ 
+@@ -38,18 +38,16 @@ static const struct spi_device_id cs35l41_hda_spi_id[] = {
+ 	{}
+ };
+ 
+-#ifdef CONFIG_ACPI
+ static const struct acpi_device_id cs35l41_acpi_hda_match[] = {
+ 	{ "CSC3551", 0 },
+-	{},
++	{}
+ };
+ MODULE_DEVICE_TABLE(acpi, cs35l41_acpi_hda_match);
+-#endif
+ 
+ static struct spi_driver cs35l41_spi_driver = {
+ 	.driver = {
+ 		.name		= "cs35l41-hda",
+-		.acpi_match_table = ACPI_PTR(cs35l41_acpi_hda_match),
++		.acpi_match_table = cs35l41_acpi_hda_match,
+ 	},
+ 	.id_table	= cs35l41_hda_spi_id,
+ 	.probe		= cs35l41_hda_spi_probe,
 -- 
 2.35.1
 
