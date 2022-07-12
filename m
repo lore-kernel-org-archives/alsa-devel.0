@@ -4,69 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 400CBC43334
-	for <alsa-devel@archiver.kernel.org>; Tue, 12 Jul 2022 15:11:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5DAD1C43334
+	for <alsa-devel@archiver.kernel.org>; Tue, 12 Jul 2022 15:12:14 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 7F39D16B8;
-	Tue, 12 Jul 2022 17:10:51 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7F39D16B8
+	by alsa0.perex.cz (Postfix) with ESMTPS id 9FA1816DA;
+	Tue, 12 Jul 2022 17:11:22 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9FA1816DA
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1657638701;
-	bh=ifRkOgelqa3fr65CEP58Anchmf8+PHTy6G+yVt7lMfg=;
+	s=default; t=1657638732;
+	bh=zSFWr/8AMdztNTLu+DJURPNFrc33gkjjAiHEX3lpiSM=;
 	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=tahze14RmQ31NAdgnJ5Cn0Y34yokT6eQMkmY5Ve2Vllu0911Pejqy9hT2f3PZRgC9
-	 +TgqAUFtrBL+Ji1PFN+SE1Oyth/h9LjASeERFeFVGpnRRdfmm8Ws668dbMCb+/V2yI
-	 ou8jxM9KUgWV9T8LF+l5rv6TzxZ+6ZkmcM2hS5Us=
+	b=HsdjZhQ3ItJt0Y7WtW7AJeoT/MTBZL4/c3Wv/+lqoR5mHQ9BPbyYc7ZkGQF5XXaaE
+	 NtLVG/l4i69HhacGXjba62GC1TnSYvtIbl0Q+sDU0mgE90tqvbp7E4ysFqk4he0VQn
+	 Ce3knJFxIMYQWa7pfFrvCQYOMUsErF8SLUGbuwTQ=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 1107EF80246;
-	Tue, 12 Jul 2022 17:10:51 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 02268F80279;
+	Tue, 12 Jul 2022 17:10:56 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id A5339F80246; Tue, 12 Jul 2022 17:10:49 +0200 (CEST)
+ id 33B00F80506; Tue, 12 Jul 2022 17:10:54 +0200 (CEST)
 Received: from dfw.source.kernel.org (dfw.source.kernel.org
  [IPv6:2604:1380:4641:c500::1])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 4B6E7F8012B
- for <alsa-devel@alsa-project.org>; Tue, 12 Jul 2022 17:10:47 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4B6E7F8012B
+ by alsa1.perex.cz (Postfix) with ESMTPS id B65C7F8012B
+ for <alsa-devel@alsa-project.org>; Tue, 12 Jul 2022 17:10:49 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B65C7F8012B
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="rH9y4prE"
+ header.b="mDbZqMwV"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id B6591615D4;
- Tue, 12 Jul 2022 15:10:44 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E5E65C341C0;
- Tue, 12 Jul 2022 15:10:42 +0000 (UTC)
+ by dfw.source.kernel.org (Postfix) with ESMTPS id ADF3F6156A;
+ Tue, 12 Jul 2022 15:10:47 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 73981C3411C;
+ Tue, 12 Jul 2022 15:10:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1657638644;
- bh=ifRkOgelqa3fr65CEP58Anchmf8+PHTy6G+yVt7lMfg=;
+ s=k20201202; t=1657638647;
+ bh=zSFWr/8AMdztNTLu+DJURPNFrc33gkjjAiHEX3lpiSM=;
  h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=rH9y4prEm6osKNz8VFrXXaaktrFRxA0wIMFr4ghP42GPFWhgvE4/WSwoqpsL9kSCC
- +uH/r1RfBGmxTRg/iJr6iqCbbHxtWdKKLueedvY7NxAaVoB8LzpEIwseHNP69MrCID
- AT6+zGgx7XHVfxg1KeIZYoQm0Vl8WUB3JRurghlLQ5iDN728IP2TWXldsPnHeXQqu5
- bGmS7K+cRZ01CwpdbASjSf1n0n1wE28Q+//Tp1OMz1ADiNcyzrputqR1AUotMGLwKk
- 1NwEtOsNyv3jWZPZDsAaMtB0Lfib7UlhdCfYYPFa0sJdiDQyyzJkbRoPDpnbgOggoE
- jwil3FTHWoxbg==
+ b=mDbZqMwVSJWWWsNMUKWry4TfkVCwRSCRv48FobJdpienIbgAKjAjw1vWviBtmAwkh
+ n/eO0/gJ03hAMWz6Z+6kdqpITV/VsiysUzDxzafbr4ifDYfavMIPyKY6LS+2JjC461
+ eS/OEJ8BuevVh5fDWIf2/HrfdheaByPXlYnLmkHksMgKFKCIyc3EUQ0ZYEPyWpcFtY
+ j/MKHyhmpcRhDyWFuh+u3H8Vwy0jG723tiJt08ZRaFMi/7Hch4pOfHNbhLQyV+F9lG
+ JQaT4zN+wWWz8f75TgtbuxuJ/4+mbT4swWe5JaX0vW57d8fcpyM2+Nib3WrshwfFXl
+ agDRPEIAxR1MQ==
 From: Mark Brown <broonie@kernel.org>
-To: pierre-louis.bossart@linux.intel.com, lgirdwood@gmail.com,
- peter.ujfalusi@linux.intel.com
-In-Reply-To: <20220712120936.28072-1-peter.ujfalusi@linux.intel.com>
-References: <20220712120936.28072-1-peter.ujfalusi@linux.intel.com>
-Subject: Re: [PATCH 0/2] ASoC: SOF: Intel: hda: Use cold/purge boot after
- firmware crash
-Message-Id: <165763864266.336976.10310029854812588021.b4-ty@kernel.org>
-Date: Tue, 12 Jul 2022 16:10:42 +0100
+To: alsa-devel@alsa-project.org,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+In-Reply-To: <20220708200641.26923-1-pierre-louis.bossart@linux.intel.com>
+References: <20220708200641.26923-1-pierre-louis.bossart@linux.intel.com>
+Subject: Re: [PATCH] ASoC: soc-pcm: demote warnings on non-atomic BE connection
+Message-Id: <165763864619.336976.6886641314043623582.b4-ty@kernel.org>
+Date: Tue, 12 Jul 2022 16:10:46 +0100
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: alsa-devel@alsa-project.org, ranjani.sridharan@linux.intel.com,
- kai.vehmanen@linux.intel.com
+Cc: tiwai@suse.de, peter.ujfalusi@linux.intel.com,
+ Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -82,13 +81,13 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Tue, 12 Jul 2022 15:09:34 +0300, Peter Ujfalusi wrote:
-> In case of a firmware crash we force the DSP to be powered down and rebooted.
-> To make sure that the next boot is going to be clean, force the boot process to
-> skip the IMR booting and re-download the firmware.
+On Fri, 8 Jul 2022 15:06:41 -0500, Pierre-Louis Bossart wrote:
+> When an FE, typically non-atomic, is connected to an atomic BE, we
+> force the BE as non-atomic. There's no reason to throw a warning, this
+> is a perfectly fine configuration and a conversion that's required
+> by-design.
 > 
-> Regards,
-> Peter
+> This removes the unconditional warnings such as
 > 
 > [...]
 
@@ -98,8 +97,8 @@ Applied to
 
 Thanks!
 
-[1/2] ASoC: SOF: Intel: hda: Introduce skip_imr_boot flag
-      commit: 57724db17a946476f11c1b1be9750bc0cf877adc
+[1/1] ASoC: soc-pcm: demote warnings on non-atomic BE connection
+      commit: 4ccf0949cd364811217a0e61754ff7e52cb4f0e4
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
