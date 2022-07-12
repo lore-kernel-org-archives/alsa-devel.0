@@ -4,70 +4,94 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0DE85C43334
-	for <alsa-devel@archiver.kernel.org>; Tue, 12 Jul 2022 13:01:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0DE10C433EF
+	for <alsa-devel@archiver.kernel.org>; Tue, 12 Jul 2022 13:06:41 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 50ED816A9;
-	Tue, 12 Jul 2022 15:00:26 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 50ED816A9
+	by alsa0.perex.cz (Postfix) with ESMTPS id D292EE11;
+	Tue, 12 Jul 2022 15:05:49 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D292EE11
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1657630876;
-	bh=JaFVclrcD64NUOa+8XVObRCVQViS+O81pvwAl12wZ04=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=KI+WtLFZcQOcMnMJviTc4knoMjd7EYaQOan+ixd1jP6H977JLkl8ggI23/hCEFYeG
-	 s2wOy8PkceGsIupPQgZKdgjJjRaqJHR4u/EunGH12KxtlwcoZClqv/sVQ+UYsO5dov
-	 /9gYI85U9eNkdrZDOy4YeDan2LFXPLGy3moYaghc=
+	s=default; t=1657631199;
+	bh=6Iz5iXIRB+mMx6gOjvj3JoapiCL97QYIIOBgJxU3pmI=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=E9UFe+Ck//Pzs1yWOajcsEI7mpVLwsxh2+wijP4nI2L8kiTzTFxcbSh4u+YGGOfxe
+	 j9ZRB3vauh4yIzWIkf9bH1ScHJQbuwa6HJHcbIjCxjHPMkZwH/C2Uyr5JxJm/Eas0j
+	 mNGxdISuDymB+tzMcnThg8hBeBIFvWoJ0H6nogYo=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 00BC0F800BD;
-	Tue, 12 Jul 2022 15:00:26 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 64F47F8023B;
+	Tue, 12 Jul 2022 15:05:49 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id B6EB0F80246; Tue, 12 Jul 2022 15:00:24 +0200 (CEST)
-Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id C4BC3F80246; Tue, 12 Jul 2022 15:05:47 +0200 (CEST)
+Received: from mail-pg1-x52e.google.com (mail-pg1-x52e.google.com
+ [IPv6:2607:f8b0:4864:20::52e])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 706F1F8012B
- for <alsa-devel@alsa-project.org>; Tue, 12 Jul 2022 15:00:21 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 706F1F8012B
+ by alsa1.perex.cz (Postfix) with ESMTPS id 35E59F8012B
+ for <alsa-devel@alsa-project.org>; Tue, 12 Jul 2022 15:05:44 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 35E59F8012B
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="ZoF6dOu9"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
- d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1657630822; x=1689166822;
- h=from:to:cc:subject:date:message-id:mime-version:
- content-transfer-encoding;
- bh=JaFVclrcD64NUOa+8XVObRCVQViS+O81pvwAl12wZ04=;
- b=ZoF6dOu9NaJpsyEf0w5DMwUrCxRw1ETI78AdiY53XjdYB3i8aR195DIh
- i7GeQ3dv3/lUYbbIJqT/fGZJyh+dqvJPsZybo0QSpn6tPytKlctGW8BuA
- 4N+5IhUPsK9QHrWB2xVameRhD3HrOiumNorOKrjQzAxXlP2F5GqMXlTCb
- ZgeGQlpLHrZfzpVtN0ywADRMtOlFYyzo3agymQo2fmWqZvrjiYT7dagrJ
- y/qs7RbYbE5ew8CKtTfqGtY/x2lkm0VcWXJE7fw04BfR5W60SEd4PRYvv
- 8UaVvUumwW7VhC33M0umjZ7zYvkFTg8Lv044W+q2XUTR/L0LhiiP3PAVK g==;
-X-IronPort-AV: E=McAfee;i="6400,9594,10405"; a="371235312"
-X-IronPort-AV: E=Sophos;i="5.92,265,1650956400"; d="scan'208";a="371235312"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
- by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 12 Jul 2022 06:00:18 -0700
-X-IronPort-AV: E=Sophos;i="5.92,265,1650956400"; d="scan'208";a="662943891"
-Received: from ahedstro-mobl.ger.corp.intel.com (HELO
- pujfalus-desk.ger.corp.intel.com) ([10.249.254.175])
- by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 12 Jul 2022 06:00:16 -0700
-From: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
-To: lgirdwood@gmail.com, broonie@kernel.org,
- pierre-louis.bossart@linux.intel.com
-Subject: [PATCH] ASoC: SOF: ipc3-topology: Prevent double freeing of
- ipc_control_data via load_bytes
-Date: Tue, 12 Jul 2022 16:01:03 +0300
-Message-Id: <20220712130103.31514-1-peter.ujfalusi@linux.intel.com>
-X-Mailer: git-send-email 2.37.0
+ dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
+ header.b="JDT3tzpa"
+Received: by mail-pg1-x52e.google.com with SMTP id g4so7546135pgc.1
+ for <alsa-devel@alsa-project.org>; Tue, 12 Jul 2022 06:05:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
+ h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+ :cc; bh=7imqj63btt7D4zx/bwWujC0xJp+NL1hLcSWeuhzgv/A=;
+ b=JDT3tzpaOMFzx/U43cl1SCrqmZUjm7ZJdKf7jNRmXUjP4oGvyWlfYcmnvjhcsQ8oyW
+ xkjFvO7HqE8/CQKyjj5ae2bnwfjFOWKL//V/RIvJwrXIa1/czt5qGilZFGlyFY9flClU
+ IfU5dR7fxXDwe750YbjvBZX1NUngD/TA88w/YaYUX8TimFkKT3l+DU89xjGWwcm4dDqY
+ YULqWABb+PJLuvOaiIULfvtBg9LxBd2YPYCfre7QVecQCJVC1Ogf4aDFmEXlRM3yxr7t
+ MmOBeIEuLNKoEbR440nTwKRVqy0CG/6+y4mw5iD0eqoGhAA/Zs5njpdelk3Jt9EON2hL
+ Vf+A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc;
+ bh=7imqj63btt7D4zx/bwWujC0xJp+NL1hLcSWeuhzgv/A=;
+ b=235YquZKUMVPCxmp2kroS7voLOPANSRGdKk60+fY5ahq6eIS2g4hQAoFeGDMXNyY2k
+ a0nurnffnhcwMfzno8Ah2XdquOr6cJoGJheGR/lA4zaXtSwDK8H01OnA5mA1SIR7G/2D
+ iu8KPuYGBFk2z4oR5QMk6hbuOrxIz0s+V+Mq+kbOqbX6Z+905rDnex14gYtG19/HkHc9
+ BVXDBtL2KPg5VgI7uK42K6E+GHbBqKbDyVrF0Wqkhx19iFsNwKa6BzHCclIJCNH5PoeX
+ Q224HqZuwmTwyUZwVp6J2DZoPFMhjZvsV0XKK0CEkpiyI+hSauuZJ3o/MsohdJEKWSb6
+ /qGQ==
+X-Gm-Message-State: AJIora9UOI61k8FOVJGaCu4/hsvx1deThySU8pkks2dixZpsTIKJqt/V
+ SBQZS1xCk1B9eVhrYszbhtJcbT344KN7zY7Immk=
+X-Google-Smtp-Source: AGRyM1sLBHUSNveOCAeR6Qbn1TH2Bvj2/onf64vXQypwoAOs02M/vzkRJ9uroAQYe7wxhHhBUGidhv/ZMvxZUwd2dXQ=
+X-Received: by 2002:a05:6a00:f85:b0:52a:c718:ff9 with SMTP id
+ ct5-20020a056a000f8500b0052ac7180ff9mr13305499pfb.85.1657631143033; Tue, 12
+ Jul 2022 06:05:43 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: alsa-devel@alsa-project.org, seppo.ingalsuo@linux.intel.com,
- ranjani.sridharan@linux.intel.com, kai.vehmanen@linux.intel.com
+References: <CADs9LoPZH_D+eJ9qjTxSLE5jGyhKsjMN7g2NighZ16biVxsyKw@mail.gmail.com>
+ <15259e38-eccf-d294-a330-a48b5bbbdedf@linux.intel.com>
+ <CADs9LoN-L0X1Dr1sP2K7xrcWm7dpHW6MhF47c2eBB0moLNnPRQ@mail.gmail.com>
+ <18d3e724-e43f-c166-e322-26cc5e3890b7@linux.intel.com>
+ <CADs9LoOZjK=cUuNSEELtgxYoA+yHVFKM_Y9YLcY74smqx8XsjQ@mail.gmail.com>
+ <c554b69c-0c73-158d-85d8-95a0375babeb@linux.intel.com>
+ <CADs9LoOOOXVC0p8R=b1y+Kfb1+ESEyMaVe9eoW=F5gdp0_GitQ@mail.gmail.com>
+ <c4d32547-5f99-595e-21d3-fdb22a1af237@linux.intel.com>
+ <CADs9LoNMuwbiSfgF1buDoY6=ecpR-BuZvTgXbFxe3qyL1=roUQ@mail.gmail.com>
+ <CADs9LoOJu-NYxPhDL+N+xBtocPNw2y0nRHbSaO-NmGO284GPfA@mail.gmail.com>
+ <b3e3d969-606f-dede-0319-7b8ed2a975f7@linux.intel.com>
+ <87fsj6r84u.wl-tiwai@suse.de>
+In-Reply-To: <87fsj6r84u.wl-tiwai@suse.de>
+From: Alex Natalsson <harmoniesworlds@gmail.com>
+Date: Tue, 12 Jul 2022 16:05:31 +0300
+Message-ID: <CADs9LoOOLYXm=dmGswrAcSoQ0NaRXz1ify=H=vq+Onh8v+hizg@mail.gmail.com>
+Subject: Re: Sound not working after commit
+ bbf7d3b1c4f40eb02dd1dffb500ba00b0bff0303 on Amlogic A311D device
+To: Takashi Iwai <tiwai@suse.de>
+Content-Type: text/plain; charset="UTF-8"
+Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>,
+ Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+ =?UTF-8?Q?P=C3=A9ter_Ujfalusi?= <peter.ujfalusi@linux.intel.com>,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ linux-sound@vger.kernel.org,
+ Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+ Mark Brown <broonie@kernel.org>, Bard Liao <yung-chuan.liao@linux.intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -83,35 +107,7 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-We have sanity checks for byte controls and if any of the fail the locally
-allocated scontrol->ipc_control_data is freed up, but not set to NULL.
-
-On a rollback path of the error the higher level code will also try to free
-the scontrol->ipc_control_data which will eventually going to lead to
-memory corruption as double freeing memory is not a good thing.
-
-Fixes: b5cee8feb1d4 ("ASoC: SOF: topology: Make control parsing IPC agnostic")
-Reported-by: Seppo Ingalsuo <seppo.ingalsuo@linux.intel.com>
-Signed-off-by: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
-Reviewed-by: Seppo Ingalsuo <seppo.ingalsuo@linux.intel.com>
-Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
----
- sound/soc/sof/ipc3-topology.c | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/sound/soc/sof/ipc3-topology.c b/sound/soc/sof/ipc3-topology.c
-index 9448d5338423..b2cc046b9f60 100644
---- a/sound/soc/sof/ipc3-topology.c
-+++ b/sound/soc/sof/ipc3-topology.c
-@@ -1644,6 +1644,7 @@ static int sof_ipc3_control_load_bytes(struct snd_sof_dev *sdev, struct snd_sof_
- 	return 0;
- err:
- 	kfree(scontrol->ipc_control_data);
-+	scontrol->ipc_control_data = NULL;
- 	return ret;
- }
- 
--- 
-2.37.0
-
+> +               if (!snd_soc_dpcm_get_substream(be, stream))
+> +                       continue;
+> +
+And this good works for me too and kernel not oopsing)
