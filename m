@@ -4,42 +4,81 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 72DF9C43334
-	for <alsa-devel@archiver.kernel.org>; Tue, 12 Jul 2022 14:44:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4AF02C433EF
+	for <alsa-devel@archiver.kernel.org>; Tue, 12 Jul 2022 15:05:58 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 9084D16CF;
-	Tue, 12 Jul 2022 16:43:34 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9084D16CF
+	by alsa0.perex.cz (Postfix) with ESMTPS id C2625169B;
+	Tue, 12 Jul 2022 17:05:06 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C2625169B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1657637064;
-	bh=S6KmLA5Szxb3QY4NoPKwW3FlLDkSxZ2KdD/1+jygRJw=;
-	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
+	s=default; t=1657638356;
+	bh=nEeQqOHdk0a4+K5H0YK7XzUMkGY6pTdrV24LeVhtcOM=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=efwiOCD3RkShCiM0Y8wkQQQGEPxYq+W6jnXePPofMuNsUwBeHDlATllSKLMO3Rjwo
-	 pvT4cmk7dDjaE9z0T/pEaJILwmXPZlEikg8NwPjI2MhLw0l2i7xXtTpSUu2g735o1z
-	 i0Vp5uF62mwLLFf0emjQW6D0FuZQeKq6wrxpsl+Y=
+	b=gIL6+HXUWpvElicSQKVFQbmfIeOPNmDMvIvx8XSdOniFko39PUGrmejaU46sZ+Aqz
+	 NSKvfJCud1ucqDRlwfA/Pk8ER+mzXcQ1Z2xLf1WUCG5kNmP4dVN6I/rK4m8V7h86Ux
+	 Mf3ScJxfhJP6vUJJBTyocEZIVOjBHCbpUchUJOEA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 79C88F80543;
-	Tue, 12 Jul 2022 16:43:21 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 26547F80542;
+	Tue, 12 Jul 2022 17:05:06 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 2DCBEF80543; Tue, 12 Jul 2022 16:43:20 +0200 (CEST)
-Received: from webhooks-bot.alsa-project.org (gate.perex.cz [77.48.224.242])
- by alsa1.perex.cz (Postfix) with ESMTP id 856C2F80543
- for <alsa-devel@alsa-project.org>; Tue, 12 Jul 2022 16:43:17 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 856C2F80543
+ id 0A4C6F80542; Tue, 12 Jul 2022 17:05:04 +0200 (CEST)
+Received: from mailgw01.mediatek.com (unknown [60.244.123.138])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 7353BF800BD
+ for <alsa-devel@alsa-project.org>; Tue, 12 Jul 2022 17:04:56 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7353BF800BD
+X-UUID: bacb0c0d17144bb1abbf7eb88858d92b-20220712
+X-CID-P-RULE: Release_Ham
+X-CID-O-INFO: VERSION:1.1.8, REQID:4b9a8a85-76db-47dc-8190-b13aaf506654, OB:0,
+ LO
+ B:10,IP:0,URL:0,TC:0,Content:0,EDM:0,RT:0,SF:95,FILE:0,RULE:Release_Ham,AC
+ TION:release,TS:95
+X-CID-INFO: VERSION:1.1.8, REQID:4b9a8a85-76db-47dc-8190-b13aaf506654, OB:0,
+ LOB:
+ 10,IP:0,URL:0,TC:0,Content:0,EDM:0,RT:0,SF:95,FILE:0,RULE:Spam_GS981B3D,AC
+ TION:quarantine,TS:95
+X-CID-META: VersionHash:0f94e32, CLOUDID:0aa2c632-b9e4-42b8-b28a-6364427c76bb,
+ C
+ OID:5d46f14866eb,Recheck:0,SF:28|17|19|48,TC:nil,Content:0,EDM:-3,IP:nil,U
+ RL:0,File:nil,QS:nil,BEC:nil,COL:0
+X-UUID: bacb0c0d17144bb1abbf7eb88858d92b-20220712
+Received: from mtkcas11.mediatek.inc [(172.21.101.40)] by mailgw01.mediatek.com
+ (envelope-from <jiaxin.yu@mediatek.com>)
+ (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+ with ESMTP id 95174345; Tue, 12 Jul 2022 23:04:45 +0800
+Received: from mtkcas11.mediatek.inc (172.21.101.40) by
+ mtkmbs10n1.mediatek.inc (172.21.101.34) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ 15.2.792.15; Tue, 12 Jul 2022 23:04:45 +0800
+Received: from localhost.localdomain (10.17.3.154) by mtkcas11.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Tue, 12 Jul 2022 23:04:44 +0800
+From: Jiaxin Yu <jiaxin.yu@mediatek.com>
+To: <broonie@kernel.org>, <robh+dt@kernel.org>,
+ <angelogioacchino.delregno@collabora.com>
+Subject: [PATCH v9 1/8] dt-bindings: mediatek: mt6358: add new compatible for
+ using mt6366
+Date: Tue, 12 Jul 2022 23:04:35 +0800
+Message-ID: <20220712150442.32504-2-jiaxin.yu@mediatek.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20220712150442.32504-1-jiaxin.yu@mediatek.com>
+References: <20220712150442.32504-1-jiaxin.yu@mediatek.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-From: GitHub pull_request - opened <github@alsa-project.org>
-To: alsa-devel@alsa-project.org
-In-Reply-To: <1657636996929972887-webhooks-bot@alsa-project.org>
-References: <1657636996929972887-webhooks-bot@alsa-project.org>
-Subject: Add profile for Behringer UMC202HD
-Message-Id: <20220712144320.2DCBEF80543@alsa1.perex.cz>
-Date: Tue, 12 Jul 2022 16:43:20 +0200 (CEST)
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-MTK: N
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
+ Rob Herring <robh@kernel.org>, linux-kernel@vger.kernel.org,
+ Jiaxin Yu <jiaxin.yu@mediatek.com>,
+ Project_Global_Chrome_Upstream_Group@mediatek.com, tzungbi@google.com,
+ linux-mediatek@lists.infradead.org, trevor.wu@mediatek.com,
+ matthias.bgg@gmail.com, aaronyu@google.com, julianbraha@gmail.com,
+ linux-arm-kernel@lists.infradead.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -55,13 +94,29 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-alsa-project/alsa-ucm-conf pull request #188 was opened from Eiseiche:
+Add new compatible string "mediatek,mt6366-sound" for using mt6366.
 
-Edited #128 for UMC202HD support (thx @brndd for initial work).
+Signed-off-by: Jiaxin Yu <jiaxin.yu@mediatek.com>
+Acked-by: Rob Herring <robh@kernel.org>
+---
+ Documentation/devicetree/bindings/sound/mt6358.txt | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-[alsa-info.txt](https://github.com/alsa-project/alsa-ucm-conf/files/9094061/alsa-info.txt)
-[spa-acp-tool.txt](https://github.com/alsa-project/alsa-ucm-conf/files/9094064/spa-acp-tool.txt)
+diff --git a/Documentation/devicetree/bindings/sound/mt6358.txt b/Documentation/devicetree/bindings/sound/mt6358.txt
+index 59a73ffdf1d3..fbe9e55c68f5 100644
+--- a/Documentation/devicetree/bindings/sound/mt6358.txt
++++ b/Documentation/devicetree/bindings/sound/mt6358.txt
+@@ -7,7 +7,9 @@ Must be a child node of PMIC wrapper.
+ 
+ Required properties:
+ 
+-- compatible : "mediatek,mt6358-sound".
++- compatible - "string" - One of:
++    "mediatek,mt6358-sound"
++    "mediatek,mt6366-sound"
+ - Avdd-supply : power source of AVDD
+ 
+ Optional properties:
+-- 
+2.18.0
 
-Request URL   : https://github.com/alsa-project/alsa-ucm-conf/pull/188
-Patch URL     : https://github.com/alsa-project/alsa-ucm-conf/pull/188.patch
-Repository URL: https://github.com/alsa-project/alsa-ucm-conf
