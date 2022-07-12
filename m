@@ -4,77 +4,42 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D8AD7C43334
-	for <alsa-devel@archiver.kernel.org>; Tue, 12 Jul 2022 15:37:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id DC4F1C43334
+	for <alsa-devel@archiver.kernel.org>; Tue, 12 Jul 2022 17:46:24 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id DDB4016DF;
-	Tue, 12 Jul 2022 17:36:29 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DDB4016DF
+	by alsa0.perex.cz (Postfix) with ESMTPS id E7A3D16BF;
+	Tue, 12 Jul 2022 19:45:31 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E7A3D16BF
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1657640239;
-	bh=S2GftDn+xorE6UM3YzlFwuDAbmRpEb7074YgFP8dxNY=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1657647982;
+	bh=Z8zho8qvLVEUPrzwMwvj8qviOMfvArIeTk3r7UE5pAs=;
+	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=gHB+lw0Vu7PWDGM6Elq9oXdMfeO6Ak3sleNJ1wX+s+XHgolReEoH87sbaQmDAFSNX
-	 T+YqT3GMy6iUbEk0AuDOy5ODcXX1lpkSL+DLjQJuYxc6DuIets4x7T7j0wZa4nrzny
-	 hL/o3ixBRNZ2r8tYAY6EGZ/4H90bAsYumOP0tUYE=
+	b=PB+vG4l7Rjv8MekNHI/fA0Ra3WqJakM51Zk0FxsPpfDqaJ7z1x2pxldDWLVQz6AeT
+	 jifR8RE7U+ClRIuOuiWPseAoUD7bZPLKXv3HtrB0cMm1LDhBmguet/iR0CZ9DndZWv
+	 wL+90VgO0ng13VnbaAeEc6TjgwAAPitUJ6qv+8CY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id B85E3F80548;
-	Tue, 12 Jul 2022 17:35:35 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 755DEF8023B;
+	Tue, 12 Jul 2022 19:45:31 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 438C8F8023B; Tue, 12 Jul 2022 17:35:34 +0200 (CEST)
-Received: from mga06.intel.com (mga06b.intel.com [134.134.136.31])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id D94A4F8023B
- for <alsa-devel@alsa-project.org>; Tue, 12 Jul 2022 17:35:22 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D94A4F8023B
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="XFL7yt+d"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
- d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1657640128; x=1689176128;
- h=from:to:cc:subject:date:message-id:in-reply-to:
- references:mime-version:content-transfer-encoding;
- bh=S2GftDn+xorE6UM3YzlFwuDAbmRpEb7074YgFP8dxNY=;
- b=XFL7yt+dOttuxK2oT5lwzxJEK+lzaIZLgAgC1WK9hkolXXLplHnEBLS2
- bcOrWWUKV/KOAjPlZA+BLkPpTpqZuniZmMAm4hmx5dHYGQVzLGTJmV+HX
- TYJE7MWjek7bMcTCwJvo5L73FmQKEf6DP1aMGixrW8/M1Ru7yeX0LK4He
- uXKmNk6NInBdeRRTnntZChFtBJbHZI918nzVyDaGItrZTjeRYuHgbxMTx
- Nug4kjio+yv5KFemw6cVvLN5wgWpXTIU65ZoV4hxxPi8213FBQS1CW4a+
- nQTMcwQCdJsZUK+MJhNX2VCu6UQiv3Uhl4SbNOmjWcHNabTI+8Svk/7dw Q==;
-X-IronPort-AV: E=McAfee;i="6400,9594,10406"; a="346651821"
-X-IronPort-AV: E=Sophos;i="5.92,266,1650956400"; d="scan'208";a="346651821"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
- by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 12 Jul 2022 08:35:15 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.92,266,1650956400"; d="scan'208";a="771922134"
-Received: from black.fi.intel.com ([10.237.72.28])
- by orsmga005.jf.intel.com with ESMTP; 12 Jul 2022 08:35:12 -0700
-Received: by black.fi.intel.com (Postfix, from userid 1003)
- id 3234E18E; Tue, 12 Jul 2022 18:35:20 +0300 (EEST)
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To: Takashi Iwai <tiwai@suse.de>,
- Lucas Tanure <tanureal@opensource.cirrus.com>,
- Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
- alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
- patches@opensource.cirrus.com
-Subject: [PATCH v2 3/4] ALSA: hda: cs35l41: Drop wrong use of ACPI_PTR()
-Date: Tue, 12 Jul 2022 18:35:18 +0300
-Message-Id: <20220712153519.35692-3-andriy.shevchenko@linux.intel.com>
-X-Mailer: git-send-email 2.35.1
-In-Reply-To: <20220712153519.35692-1-andriy.shevchenko@linux.intel.com>
-References: <20220712153519.35692-1-andriy.shevchenko@linux.intel.com>
+ id D909EF80246; Tue, 12 Jul 2022 19:45:28 +0200 (CEST)
+Received: from webhooks-bot.alsa-project.org (gate.perex.cz [77.48.224.242])
+ by alsa1.perex.cz (Postfix) with ESMTP id B8618F800E8
+ for <alsa-devel@alsa-project.org>; Tue, 12 Jul 2022 19:45:25 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B8618F800E8
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: Richard Fitzgerald <rf@opensource.cirrus.com>,
- James Schulman <james.schulman@cirrus.com>,
- David Rhodes <david.rhodes@cirrus.com>, Takashi Iwai <tiwai@suse.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+From: GitHub issues - opened <github@alsa-project.org>
+To: alsa-devel@alsa-project.org
+In-Reply-To: <1657647924899426937-webhooks-bot@alsa-project.org>
+References: <1657647924899426937-webhooks-bot@alsa-project.org>
+Subject: alsalib assertion using plug+dmix
+Message-Id: <20220712174528.D909EF80246@alsa1.perex.cz>
+Date: Tue, 12 Jul 2022 19:45:28 +0200 (CEST)
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -90,89 +55,213 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-ACPI_PTR() is more harmful than helpful. For example, in this case
-if CONFIG_ACPI=n, the ID table left unused which is not what we want.
+alsa-project/alsa-plugins issue #46 was opened from npitre:
 
-Instead of adding ifdeffery or attribute here and there, drop ACPI_PTR().
+The espeak program is crashing randomly here. I've been able to isolate 
+the issue in a small test program demonstrating the crash 100% of the time, 
+ending in:
 
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
----
-v2: no changes
- sound/pci/hda/cs35l41_hda_i2c.c | 8 +++-----
- sound/pci/hda/cs35l41_hda_spi.c | 8 +++-----
- 2 files changed, 6 insertions(+), 10 deletions(-)
+```
+alsa_quickcrash: pcm.c:3236: snd_pcm_area_copy: Assertion `src < dst || src >= dst + bytes' failed.
+Aborted (core dumped)
+```
 
-diff --git a/sound/pci/hda/cs35l41_hda_i2c.c b/sound/pci/hda/cs35l41_hda_i2c.c
-index ec626e0fbedc..df39fc76e6be 100644
---- a/sound/pci/hda/cs35l41_hda_i2c.c
-+++ b/sound/pci/hda/cs35l41_hda_i2c.c
-@@ -6,9 +6,9 @@
- //
- // Author: Lucas Tanure <tanureal@opensource.cirrus.com>
- 
-+#include <linux/mod_devicetable.h>
- #include <linux/module.h>
- #include <linux/i2c.h>
--#include <linux/acpi.h>
- 
- #include "cs35l41_hda.h"
- 
-@@ -43,19 +43,17 @@ static const struct i2c_device_id cs35l41_hda_i2c_id[] = {
- 	{}
- };
- 
--#ifdef CONFIG_ACPI
- static const struct acpi_device_id cs35l41_acpi_hda_match[] = {
- 	{"CLSA0100", 0 },
- 	{"CSC3551", 0 },
--	{ },
-+	{}
- };
- MODULE_DEVICE_TABLE(acpi, cs35l41_acpi_hda_match);
--#endif
- 
- static struct i2c_driver cs35l41_i2c_driver = {
- 	.driver = {
- 		.name		= "cs35l41-hda",
--		.acpi_match_table = ACPI_PTR(cs35l41_acpi_hda_match),
-+		.acpi_match_table = cs35l41_acpi_hda_match,
- 	},
- 	.id_table	= cs35l41_hda_i2c_id,
- 	.probe		= cs35l41_hda_i2c_probe,
-diff --git a/sound/pci/hda/cs35l41_hda_spi.c b/sound/pci/hda/cs35l41_hda_spi.c
-index 3a1472e1bc24..2f5afad3719e 100644
---- a/sound/pci/hda/cs35l41_hda_spi.c
-+++ b/sound/pci/hda/cs35l41_hda_spi.c
-@@ -6,7 +6,7 @@
- //
- // Author: Lucas Tanure <tanureal@opensource.cirrus.com>
- 
--#include <linux/acpi.h>
-+#include <linux/mod_devicetable.h>
- #include <linux/module.h>
- #include <linux/spi/spi.h>
- 
-@@ -39,18 +39,16 @@ static const struct spi_device_id cs35l41_hda_spi_id[] = {
- 	{}
- };
- 
--#ifdef CONFIG_ACPI
- static const struct acpi_device_id cs35l41_acpi_hda_match[] = {
- 	{ "CSC3551", 0 },
--	{},
-+	{}
- };
- MODULE_DEVICE_TABLE(acpi, cs35l41_acpi_hda_match);
--#endif
- 
- static struct spi_driver cs35l41_spi_driver = {
- 	.driver = {
- 		.name		= "cs35l41-hda",
--		.acpi_match_table = ACPI_PTR(cs35l41_acpi_hda_match),
-+		.acpi_match_table = cs35l41_acpi_hda_match,
- 	},
- 	.id_table	= cs35l41_hda_spi_id,
- 	.probe		= cs35l41_hda_spi_probe,
--- 
-2.35.1
+Here's the test code:
 
+```
+/* to compile: gcc -O2 -Wall -o alsa_quickcrash alsa_quickcrash.c -lasound */
+
+#include <alsa/asoundlib.h>
+#include <stdio.h>
+#include <string.h>
+
+#define DEVICE "test_dummy"
+#define RATE 22050
+#define CHANNELS 1
+#define FORMAT SND_PCM_FORMAT_S16_LE
+#define BUF_MS 60
+
+#define DO(x) if (x < 0) { fprintf(stderr, "%s failed\n", #x); exit(1); }
+
+int main()
+{
+	unsigned int rate = RATE;
+	snd_pcm_uframes_t frames = RATE * BUF_MS / 1000;
+	snd_pcm_t *handle;
+	snd_pcm_hw_params_t *params;
+
+	DO(snd_pcm_hw_params_malloc(&params));
+	DO(snd_pcm_open(&handle, DEVICE, SND_PCM_STREAM_PLAYBACK, 0));
+	DO(snd_pcm_hw_params_any(handle, params));
+	DO(snd_pcm_hw_params_set_access(handle, params, SND_PCM_ACCESS_RW_INTERLEAVED));
+	DO(snd_pcm_hw_params_set_format(handle, params, FORMAT));
+	DO(snd_pcm_hw_params_set_rate_near(handle, params, &rate, 0));
+	DO(snd_pcm_hw_params_set_channels(handle, params, CHANNELS));
+	DO(snd_pcm_hw_params_set_buffer_size_near(handle, params, &frames));
+	DO(snd_pcm_hw_params(handle, params));
+	DO(snd_pcm_prepare(handle));
+
+	printf("PCM config dump:\n");
+	snd_output_t *output = NULL;
+	DO(snd_output_stdio_attach(&output, stdout, 0));
+	DO(snd_pcm_dump(handle, output));
+	printf("\n");
+
+	printf("frames = %ld\n", (long)frames);
+	short data[frames * CHANNELS];
+	memset(data, 0, sizeof(data));
+
+	printf("writing whole buffer\n");
+	DO(snd_pcm_writei(handle, data, frames));
+	printf("writing whole buffer\n");
+	DO(snd_pcm_writei(handle, data, frames));
+	printf("writing whole buffer minus 1 frame\n");
+	DO(snd_pcm_writei(handle, data, frames - 1));
+
+	printf("draining audio\n");
+	DO(snd_pcm_drain(handle));
+	
+	printf("done\n");
+	DO(snd_pcm_close(handle));
+	return 0;
+}
+```
+
+Here's the corresponding .asoundrc content:
+
+```
+pcm.test_dummy {
+    type plug
+    slave.pcm "mix_dummy"
+}
+
+pcm.mix_dummy {
+    type dmix
+    ipc_key 1024
+    ipc_key_add_uid false
+    ipc_perm 0666
+    slave {
+        pcm "hw:0"
+        period_size 1024
+        buffer_size 4096
+        format "S16_LE"
+        rate 48000
+    }
+}
+```
+
+And here's the complete test output:
+
+```
+PCM config dump:
+Plug PCM: Rate conversion PCM (48000, sformat=S16_LE)
+Converter: linear-interpolation
+Protocol version: 10003
+Its setup is:
+  stream       : PLAYBACK
+  access       : RW_INTERLEAVED
+  format       : S16_LE
+  subformat    : STD
+  channels     : 1
+  rate         : 22050
+  exact rate   : 22050 (22050/1)
+  msbits       : 16
+  buffer_size  : 1411
+  period_size  : 470
+  period_time  : 21333
+  tstamp_mode  : NONE
+  tstamp_type  : MONOTONIC
+  period_step  : 1
+  avail_min    : 470
+  period_event : 0
+  start_threshold  : 1
+  stop_threshold   : 1411
+  silence_threshold: 0
+  silence_size : 0
+  boundary     : 3177289537109884928
+Slave: Route conversion PCM (sformat=S16_LE)
+  Transformation table:
+    0 <- 0
+    1 <- 0
+Its setup is:
+  stream       : PLAYBACK
+  access       : MMAP_INTERLEAVED
+  format       : S16_LE
+  subformat    : STD
+  channels     : 1
+  rate         : 48000
+  exact rate   : 48000 (48000/1)
+  msbits       : 16
+  buffer_size  : 3072
+  period_size  : 1024
+  period_time  : 21333
+  tstamp_mode  : NONE
+  tstamp_type  : MONOTONIC
+  period_step  : 1
+  avail_min    : 1024
+  period_event : 0
+  start_threshold  : 2
+  stop_threshold   : 3072
+  silence_threshold: 0
+  silence_size : 0
+  boundary     : 6917529027641081856
+Slave: Direct Stream Mixing PCM
+Its setup is:
+  stream       : PLAYBACK
+  access       : MMAP_INTERLEAVED
+  format       : S16_LE
+  subformat    : STD
+  channels     : 2
+  rate         : 48000
+  exact rate   : 48000 (48000/1)
+  msbits       : 16
+  buffer_size  : 3072
+  period_size  : 1024
+  period_time  : 21333
+  tstamp_mode  : NONE
+  tstamp_type  : MONOTONIC
+  period_step  : 1
+  avail_min    : 1024
+  period_event : 0
+  start_threshold  : 2
+  stop_threshold   : 3072
+  silence_threshold: 0
+  silence_size : 0
+  boundary     : 6917529027641081856
+Hardware PCM card 1 'HDA Intel PCH' device 0 subdevice 0
+Its setup is:
+  stream       : PLAYBACK
+  access       : MMAP_INTERLEAVED
+  format       : S16_LE
+  subformat    : STD
+  channels     : 2
+  rate         : 48000
+  exact rate   : 48000 (48000/1)
+  msbits       : 16
+  buffer_size  : 4096
+  period_size  : 1024
+  period_time  : 21333
+  tstamp_mode  : ENABLE
+  tstamp_type  : MONOTONIC
+  period_step  : 1
+  avail_min    : 1024
+  period_event : 0
+  start_threshold  : 1
+  stop_threshold   : 0
+  silence_threshold: 0
+  silence_size : 0
+  boundary     : 4611686018427387904
+  appl_ptr     : 0
+  hw_ptr       : 2734916609
+
+frames = 1411
+writing whole buffer
+writing whole buffer
+writing whole buffer minus 1 frame
+draining audio
+alsa_quickcrash: pcm.c:3236: snd_pcm_area_copy: Assertion `src < dst || src >= dst + bytes' failed.
+Aborted (core dumped)
+```
+
+Issue URL     : https://github.com/alsa-project/alsa-plugins/issues/46
+Repository URL: https://github.com/alsa-project/alsa-plugins
