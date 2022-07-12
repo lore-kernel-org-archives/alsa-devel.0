@@ -4,42 +4,70 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9DE5CCCA482
-	for <alsa-devel@archiver.kernel.org>; Tue, 12 Jul 2022 11:54:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1DFF4C43334
+	for <alsa-devel@archiver.kernel.org>; Tue, 12 Jul 2022 12:09:51 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 26F721654;
-	Tue, 12 Jul 2022 13:53:42 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 26F721654
+	by alsa0.perex.cz (Postfix) with ESMTPS id C8F1F161E;
+	Tue, 12 Jul 2022 14:08:59 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C8F1F161E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1657626872;
-	bh=kMayY13lS8wPkfl7o0T2/VRc9Cze5g2oSue1Me5WoAM=;
-	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=N1t49IaBvliZfMu54stJfWZGpaR/PgOnhsHtUWWe1xNfHw9cZ7FeQQEKERJUwjqPm
-	 DYyZQAacJ83BMcXiTOrjp7diPgWWrDkAqnR6P1lcDvFLQBsO9HSfJhrUYNGCQHgKEb
-	 PIe0MnPINmBxYMtIWzQvsH7nOQJ6XCZQ3RHH0gW4=
+	s=default; t=1657627789;
+	bh=U5QkyWxKma0sjnkiZstiSlMfiY2fFJ0dabBi+8wO3CQ=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=BwbS6S0O/twpmBY+OAWQYQW6AgPyrFA1HYJqYOqGRT/uTFKJygYsV4RPXMd8Dqg6Q
+	 D0uZqxxCbdlUC8iIA8dCpA6O9iwNvnBCJUO2JIsciJiQxYiz4tIeL6ICJ5ZBYcgsRe
+	 VJNZVQ15XGWGQ6U0Y5TcAlLBjqMbn0IePW2Ao1hQ=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id B777EF8023B;
-	Tue, 12 Jul 2022 13:53:41 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 520C3F8023B;
+	Tue, 12 Jul 2022 14:08:59 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 7A01BF80246; Tue, 12 Jul 2022 13:53:40 +0200 (CEST)
-Received: from webhooks-bot.alsa-project.org (gate.perex.cz [77.48.224.242])
- by alsa1.perex.cz (Postfix) with ESMTP id 20409F800BD
- for <alsa-devel@alsa-project.org>; Tue, 12 Jul 2022 13:53:35 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 20409F800BD
+ id 1ADAFF80279; Tue, 12 Jul 2022 14:08:58 +0200 (CEST)
+Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id E53B4F8012B
+ for <alsa-devel@alsa-project.org>; Tue, 12 Jul 2022 14:08:53 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E53B4F8012B
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
+ header.b="f1hiTTvT"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+ d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+ t=1657627736; x=1689163736;
+ h=from:to:cc:subject:date:message-id:mime-version:
+ content-transfer-encoding;
+ bh=U5QkyWxKma0sjnkiZstiSlMfiY2fFJ0dabBi+8wO3CQ=;
+ b=f1hiTTvTguV5ZwP5g6W8yEtbVuFUNbvxFu9OoAltehNOKCeKYj8NLIXf
+ lrwSUObkahg7415aPJe10y64HUPMp3AzlHTtq1BVujg9XxV0MSwcbHd2+
+ Z4oK48MAT/G8wo9owcdBTeC5eUuVpTej/PK9HvzyZxdPs8qP2a4IVtQCS
+ MeA7oZQd8GWIsyn8PywJSy7l5BeXBmEfR8XZKBVsAnfgm+Tl/8np0ISGV
+ XZk52YQqhdVY5/6oup4JgcCf5pcvUp2HcO7OMVd8lwyUXKYXuCaW7IluA
+ QM645l0coB1jLu0ytTz8gUYPEciX9AYka0uYoxKWj7ee6S2xSjuyzq278 Q==;
+X-IronPort-AV: E=McAfee;i="6400,9594,10405"; a="371225543"
+X-IronPort-AV: E=Sophos;i="5.92,265,1650956400"; d="scan'208";a="371225543"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+ by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 12 Jul 2022 05:08:51 -0700
+X-IronPort-AV: E=Sophos;i="5.92,265,1650956400"; d="scan'208";a="545403343"
+Received: from ahedstro-mobl.ger.corp.intel.com (HELO
+ pujfalus-desk.ger.corp.intel.com) ([10.249.254.175])
+ by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 12 Jul 2022 05:08:48 -0700
+From: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
+To: lgirdwood@gmail.com, broonie@kernel.org,
+ pierre-louis.bossart@linux.intel.com
+Subject: [PATCH 0/2] ASoC: SOF: Intel: hda: Use cold/purge boot after firmware
+ crash
+Date: Tue, 12 Jul 2022 15:09:34 +0300
+Message-Id: <20220712120936.28072-1-peter.ujfalusi@linux.intel.com>
+X-Mailer: git-send-email 2.37.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-From: GitHub pull_request - opened <github@alsa-project.org>
-To: alsa-devel@alsa-project.org
-In-Reply-To: <1657626815520700932-webhooks-bot@alsa-project.org>
-References: <1657626815520700932-webhooks-bot@alsa-project.org>
-Subject: NetBSD/OpenBSD/FreeBSD build support
-Message-Id: <20220712115340.7A01BF80246@alsa1.perex.cz>
-Date: Tue, 12 Jul 2022 13:53:40 +0200 (CEST)
+Content-Transfer-Encoding: 8bit
+Cc: alsa-devel@alsa-project.org, ranjani.sridharan@linux.intel.com,
+ kai.vehmanen@linux.intel.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -55,13 +83,25 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-alsa-project/alsa-lib pull request #250 was opened from jg1uaa:
+Hi,
 
-to build alsa-lib on *BSD, small fix is required.
-(reference: FreeBSD/NetBSD ports diff)
+In case of a firmware crash we force the DSP to be powered down and rebooted.
+To make sure that the next boot is going to be clean, force the boot process to
+skip the IMR booting and re-download the firmware.
 
-There is no problem to compile modified code on Linux(Debian-11), FreeBSD-13.1, NetBSD-current and OpenBSD-7.1.
+Regards,
+Peter
+---
+Peter Ujfalusi (2):
+  ASoC: SOF: Intel: hda: Introduce skip_imr_boot flag
+  ASoC: SOF: Intel: hda: Skip IMR boot after a firmware crash or boot
+    failure
 
-Request URL   : https://github.com/alsa-project/alsa-lib/pull/250
-Patch URL     : https://github.com/alsa-project/alsa-lib/pull/250.patch
-Repository URL: https://github.com/alsa-project/alsa-lib
+ sound/soc/sof/intel/hda-dsp.c    | 12 ++++++++++++
+ sound/soc/sof/intel/hda-loader.c | 10 ++++++----
+ sound/soc/sof/intel/hda.h        |  1 +
+ 3 files changed, 19 insertions(+), 4 deletions(-)
+
+-- 
+2.37.0
+
