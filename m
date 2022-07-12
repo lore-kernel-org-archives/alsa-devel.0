@@ -4,70 +4,70 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1D342C43334
-	for <alsa-devel@archiver.kernel.org>; Tue, 12 Jul 2022 13:10:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id ACCF2C43334
+	for <alsa-devel@archiver.kernel.org>; Tue, 12 Jul 2022 13:16:37 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id ED33416AF;
-	Tue, 12 Jul 2022 15:09:47 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz ED33416AF
+	by alsa0.perex.cz (Postfix) with ESMTPS id 9B53D74C;
+	Tue, 12 Jul 2022 15:15:45 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9B53D74C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1657631438;
-	bh=fIbebunkRkEi/QaWtIhVG21h2SSrFjbadtNMoUw+DpM=;
+	s=default; t=1657631795;
+	bh=3JZeLvEqLA7HCay7Ye9tZnByF/msBgijiCPFkf2CVKA=;
 	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
 	 List-Post:List-Help:List-Subscribe:From;
-	b=NtrViu1QRKN6jTxqt0taH1+K+2zHFEEM/EvsuXldMeuYrlj2LrxRY8NvEi4yyMKx8
-	 I3yvKgiIdSd9zwXoFW2fINh1WPh+3S7BA3fjj+xMFK4RoveP4naE5swaqnXgSRo/gO
-	 +BNUv3Y7/RhSJWbCLnKHs6VpxRATFJpLWers8qe0=
+	b=aTJ0RcEduB9Zp/EEzAksK/DuGTTqnn+Eg2AFC/e5XqKNGrz0Wy6JQlYEFQPnpwnjA
+	 +OoyqQZhv9m3/sxi1Z2cIZypCFEQ8OF5P2zNppHYBFIM2/Up3BW9xXH63Vne58qA1A
+	 OfAYb7qMpRtSUW4cXeI+uMwBasCdnNrabW4gfbeo=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 8811BF8023B;
-	Tue, 12 Jul 2022 15:09:47 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 35085F800E8;
+	Tue, 12 Jul 2022 15:15:45 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id B6933F80246; Tue, 12 Jul 2022 15:09:46 +0200 (CEST)
-Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
+ id E6AFCF800E8; Tue, 12 Jul 2022 15:15:43 +0200 (CEST)
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 398A8F800E8
- for <alsa-devel@alsa-project.org>; Tue, 12 Jul 2022 15:09:39 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 398A8F800E8
+ by alsa1.perex.cz (Postfix) with ESMTPS id 827D6F800E8
+ for <alsa-devel@alsa-project.org>; Tue, 12 Jul 2022 15:15:37 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 827D6F800E8
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="DnvQPBxX"
+ header.b="i39v6meI"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1657631381; x=1689167381;
+ t=1657631741; x=1689167741;
  h=from:to:cc:subject:date:message-id:mime-version:
  content-transfer-encoding;
- bh=fIbebunkRkEi/QaWtIhVG21h2SSrFjbadtNMoUw+DpM=;
- b=DnvQPBxXG4FmkQqHJMwXYQ8dKp6fHqXcd6JJSkTaNSlGgjFsDkORKuBx
- 7MtEiR/adX+6wxo0VJpUj0gAuLOMBRfhrerhfg2Vmv2yuH6ACTjQZBPRd
- LJDv7Qv6aPwtqqdOvqTCmmr40+SPP6L8Bn0e/f6GkMGklHSYrtVXxqGJZ
- iboMposK8HxDYe95MzO0P5UUcI7oypZQ0bwTvj6/gAKo53fveDxgLQRFi
- E/5lp48+Jnt6kPNb8hbCmIZM6nrpyd5dKlRshjiZCoGHmK3csdFuX2Kdw
- 9lIHTrie3OunUiP90qrJC+8X/lf/WpXSa7GTXdpJ16IgLWIsy1z1Z1Dh7 A==;
-X-IronPort-AV: E=McAfee;i="6400,9594,10405"; a="286056889"
-X-IronPort-AV: E=Sophos;i="5.92,265,1650956400"; d="scan'208";a="286056889"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
- by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 12 Jul 2022 06:09:38 -0700
-X-IronPort-AV: E=Sophos;i="5.92,265,1650956400"; d="scan'208";a="627882378"
+ bh=3JZeLvEqLA7HCay7Ye9tZnByF/msBgijiCPFkf2CVKA=;
+ b=i39v6meI+jhByWCCW4cQNc8J3aq9REMienE+hrAwmdZhtQsJrZGDSMF7
+ srZSncCzr2rO5R+Ed4J3xvSmACDkGm2bKaRKpKn5mrD/EbToYRW4Gierz
+ 6UAhg5ioEil8cL5E9gymTVcEtS5hHvJSAKZVha1jCg8SAL/EL3epaAh32
+ kt6gCSBqfVhnCR5ut9aLMaSzmiuiY3dTucI9lK/LrBTNmONuJX2wZgrXK
+ r+yV9BBMGJzd+IK0scM3zy+K/nt02nBFS6Eme8xrByBB55lqR32WPZnRM
+ Z+DJSLf66ly9Ier1T+m0Sm1sUV7bLufY2fXVbmT+B+ACxi/hDRLxN02N4 Q==;
+X-IronPort-AV: E=McAfee;i="6400,9594,10405"; a="285671084"
+X-IronPort-AV: E=Sophos;i="5.92,265,1650956400"; d="scan'208";a="285671084"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+ by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 12 Jul 2022 06:15:35 -0700
+X-IronPort-AV: E=Sophos;i="5.92,265,1650956400"; d="scan'208";a="545421024"
 Received: from ahedstro-mobl.ger.corp.intel.com (HELO
  pujfalus-desk.ger.corp.intel.com) ([10.249.254.175])
- by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 12 Jul 2022 06:09:35 -0700
+ by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 12 Jul 2022 06:15:32 -0700
 From: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
 To: lgirdwood@gmail.com, broonie@kernel.org,
  pierre-louis.bossart@linux.intel.com
-Subject: [PATCH] ASoC: SOF: sof-client-probes: Only load the driver if IPC3 is
- used
-Date: Tue, 12 Jul 2022 16:10:22 +0300
-Message-Id: <20220712131022.1124-1-peter.ujfalusi@linux.intel.com>
+Subject: [PATCH 0/2] ASoC: SOF: Intel: hda-dai: No need to decouple host/link
+ DMA twice
+Date: Tue, 12 Jul 2022 16:16:18 +0300
+Message-Id: <20220712131620.13365-1-peter.ujfalusi@linux.intel.com>
 X-Mailer: git-send-email 2.37.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Cc: alsa-devel@alsa-project.org, ranjani.sridharan@linux.intel.com,
- kai.vehmanen@linux.intel.com
+ kai.vehmanen@linux.intel.com, rander.wang@intel.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -83,31 +83,25 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The current implementation of probes only supports IPC3 and should not be
-loaded for other IPC implementation.
+Hi,
 
-Signed-off-by: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
-Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+There is no need to decouple a decoupled stream twice.
+Keep the decoupling in hda_link_stream_assign() only as it is going to be
+executed in all cases.
+
+Drop the outdated comment from hda_link_dma_hw_params() as well since the code
+has changed around it.
+
+Regards,
+Peter
 ---
- sound/soc/sof/sof-client-probes.c | 4 ++++
- 1 file changed, 4 insertions(+)
+Peter Ujfalusi (2):
+  ASoC: SOF: Intel: hda-dai: Drop misleading comment regarding dma_data
+  ASoC: SOF: Intel: hda-dai: Do snd_hdac_ext_stream_decouple() only once
 
-diff --git a/sound/soc/sof/sof-client-probes.c b/sound/soc/sof/sof-client-probes.c
-index 1f1ea93a7fbf..e7e78d1a8ec3 100644
---- a/sound/soc/sof/sof-client-probes.c
-+++ b/sound/soc/sof/sof-client-probes.c
-@@ -694,6 +694,10 @@ static int sof_probes_client_probe(struct auxiliary_device *auxdev,
- 	if (!sof_probes_enabled)
- 		return -ENXIO;
- 
-+	/* only ipc3 is supported */
-+	if (sof_client_get_ipc_type(cdev) != SOF_IPC)
-+		return -ENXIO;
-+
- 	if (!dev->platform_data) {
- 		dev_err(dev, "missing platform data\n");
- 		return -ENODEV;
+ sound/soc/sof/intel/hda-dai.c | 10 ++--------
+ 1 file changed, 2 insertions(+), 8 deletions(-)
+
 -- 
 2.37.0
 
