@@ -4,68 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 16A48C43334
-	for <alsa-devel@archiver.kernel.org>; Tue, 12 Jul 2022 18:24:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 57657C43334
+	for <alsa-devel@archiver.kernel.org>; Tue, 12 Jul 2022 18:24:39 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 5C80416F0;
-	Tue, 12 Jul 2022 20:23:22 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5C80416F0
+	by alsa0.perex.cz (Postfix) with ESMTPS id 805B116F9;
+	Tue, 12 Jul 2022 20:23:47 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 805B116F9
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1657650252;
-	bh=VLRubhjL7y27NdF7YVEb5Ddc0uUdgYRMTym9ib6gI9Y=;
+	s=default; t=1657650277;
+	bh=nGOKuStphhti0Q5Aqqk68PdUBxY4ccy0ayZhVjgTheM=;
 	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=bxnciyLQiHgb33cvLLR0PA87Adu4+BAk6MJAVACgr8TTmVPXgISTwCLKkJuruPsdT
-	 ZoCf04brBCAwf5KD6Aj8DeguH1W5lHiC80s2Kwp2k3T9/D5MhuMpwV8eo8uZKz2eQI
-	 BvVGoeuJTnxBe5GpiyxAVWctKva5LxK4K+BO0iY4=
+	b=azOeo4oLSMKeMW4mDS3YSoV30NfETs5HvO3O0fIwY/ruwEyU+JdGXTTCwdf9SXenE
+	 cup3YCc5CGIdilgoa8/UNnLMYwX7ujZ9CXxdK6wfrEq0PXSi92NubHgyVo5N/UTRjp
+	 FNHmyFein4Dd2oLZkfr3XnUGhWg0o8GNp2CzX6RI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 4E27EF80557;
-	Tue, 12 Jul 2022 20:22:35 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 1CB20F800E8;
+	Tue, 12 Jul 2022 20:22:37 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 882D2F8054A; Tue, 12 Jul 2022 20:22:34 +0200 (CEST)
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+ id 85FBDF8055C; Tue, 12 Jul 2022 20:22:36 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id E1E22F800E8
- for <alsa-devel@alsa-project.org>; Tue, 12 Jul 2022 20:22:27 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E1E22F800E8
+ by alsa1.perex.cz (Postfix) with ESMTPS id 99DB4F800E8
+ for <alsa-devel@alsa-project.org>; Tue, 12 Jul 2022 20:22:33 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 99DB4F800E8
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="ni+XIbZ1"
+ header.b="OB6LSpXa"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by ams.source.kernel.org (Postfix) with ESMTPS id A2580B81B94;
- Tue, 12 Jul 2022 18:22:26 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E5091C3411C;
- Tue, 12 Jul 2022 18:22:24 +0000 (UTC)
+ by dfw.source.kernel.org (Postfix) with ESMTPS id 703DC61A6D;
+ Tue, 12 Jul 2022 18:22:30 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6CDBFC3411C;
+ Tue, 12 Jul 2022 18:22:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1657650146;
- bh=VLRubhjL7y27NdF7YVEb5Ddc0uUdgYRMTym9ib6gI9Y=;
+ s=k20201202; t=1657650149;
+ bh=nGOKuStphhti0Q5Aqqk68PdUBxY4ccy0ayZhVjgTheM=;
  h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=ni+XIbZ1/lddFoZctjviMfFbqKOVw83VtgIlvJwwtEtQvOZE4xmTWZh2HZi4AD2Q5
- y3cKD+ci5lR56PaRojzq0kFm6r4CzI4XweMJ1GjPbZBQsnWnM2wAssu5Apgl8VZzLF
- sNhvIcrl8u9zga8QYtrXt6g73rVXoYi08q/R/dgn7RQ9lZZ1k8H1wdiOGRDl1y1XRD
- j8AFaEhaFed3T1MBya6pukoH4IZ5+/hHbaPEAMYQHQXrlhDal2i/wGS0W+9yxcwlfa
- l5l1cVF8uzP3G7GuE2xWBQ97TZb8f62U90+lSY0PmjVWNPko5YRjAGShE6+DDHzy8M
- Hud7OZzT76F4Q==
+ b=OB6LSpXakBJG6ZGrxu1Fzu/5rq6xuI1NZU9/Y8VBK0MeRS+Fg9lmNQeRw1c5416Jo
+ M5r8Zk0si1o2aa01Jv+eKzrCtHHC4O4AK7UMCWrziHb+eA2i1r5kNJD69yr/aD0y/a
+ NQgxR8TvnE1j8T76CZhuJRdWppb3BtHrsP1raikjVlOtFhbXh/W50dGQnVLNjC2lTO
+ +jM4ykc68XKthBTHjXYs4McSp79JicqJfRewimUVUiR4c3fterV/HP79SWwyExYMzF
+ qi/nlG+FF9CrsoZaNqLH81+0RcfXPk2E/jjOBxKgsFYudoLWG3vg69PVn/EqXLdmi3
+ zQ/kKS3l3pU6w==
 From: Mark Brown <broonie@kernel.org>
 To: peter.ujfalusi@linux.intel.com, pierre-louis.bossart@linux.intel.com,
  lgirdwood@gmail.com
-In-Reply-To: <20220712130103.31514-1-peter.ujfalusi@linux.intel.com>
-References: <20220712130103.31514-1-peter.ujfalusi@linux.intel.com>
-Subject: Re: [PATCH] ASoC: SOF: ipc3-topology: Prevent double freeing of
- ipc_control_data via load_bytes
-Message-Id: <165765014466.502248.4536508731495125083.b4-ty@kernel.org>
-Date: Tue, 12 Jul 2022 19:22:24 +0100
+In-Reply-To: <20220712131620.13365-1-peter.ujfalusi@linux.intel.com>
+References: <20220712131620.13365-1-peter.ujfalusi@linux.intel.com>
+Subject: Re: [PATCH 0/2] ASoC: SOF: Intel: hda-dai: No need to decouple
+ host/link DMA twice
+Message-Id: <165765014817.502248.6303361350167270148.b4-ty@kernel.org>
+Date: Tue, 12 Jul 2022 19:22:28 +0100
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: alsa-devel@alsa-project.org, seppo.ingalsuo@linux.intel.com,
- ranjani.sridharan@linux.intel.com, kai.vehmanen@linux.intel.com
+Cc: alsa-devel@alsa-project.org, ranjani.sridharan@linux.intel.com,
+ kai.vehmanen@linux.intel.com, rander.wang@intel.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -81,13 +81,13 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Tue, 12 Jul 2022 16:01:03 +0300, Peter Ujfalusi wrote:
-> We have sanity checks for byte controls and if any of the fail the locally
-> allocated scontrol->ipc_control_data is freed up, but not set to NULL.
+On Tue, 12 Jul 2022 16:16:18 +0300, Peter Ujfalusi wrote:
+> There is no need to decouple a decoupled stream twice.
+> Keep the decoupling in hda_link_stream_assign() only as it is going to be
+> executed in all cases.
 > 
-> On a rollback path of the error the higher level code will also try to free
-> the scontrol->ipc_control_data which will eventually going to lead to
-> memory corruption as double freeing memory is not a good thing.
+> Drop the outdated comment from hda_link_dma_hw_params() as well since the code
+> has changed around it.
 > 
 > [...]
 
@@ -97,8 +97,10 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: SOF: ipc3-topology: Prevent double freeing of ipc_control_data via load_bytes
-      commit: d5bd47f3ca124058a8e87eae4508afeda2132611
+[1/2] ASoC: SOF: Intel: hda-dai: Drop misleading comment regarding dma_data
+      commit: 402355e6cdbebf15f2c40cd9469b924c97b94b32
+[2/2] ASoC: SOF: Intel: hda-dai: Do snd_hdac_ext_stream_decouple() only once
+      commit: fbabebfb26a8130c10fd91cca687bac87944580d
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
