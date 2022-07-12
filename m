@@ -4,86 +4,86 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id F2233C433EF
-	for <alsa-devel@archiver.kernel.org>; Tue, 12 Jul 2022 09:16:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7A3FEC43334
+	for <alsa-devel@archiver.kernel.org>; Tue, 12 Jul 2022 09:19:36 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B9D6BE11;
-	Tue, 12 Jul 2022 11:16:03 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B9D6BE11
+	by alsa0.perex.cz (Postfix) with ESMTPS id 937C515F9;
+	Tue, 12 Jul 2022 11:18:44 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 937C515F9
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1657617413;
-	bh=0z3EsGpRFoXvArNILsAJGmy4YjcTwTrZd0zlRKVf2HM=;
+	s=default; t=1657617574;
+	bh=paq2E2hjAFVPWE71DuEXhk5EnnirYJBUrVIug1g29UQ=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=tMrNluCnaIboBmuAQod1o2sS4P96Qxza5Fo9ZqVmqNFQvV+mF4qH/9HzqgYkbHu81
-	 A4tDiPDpNxMFfyTsxIPqpb/lmF4YMRHPehoz3ExueE3bWstDxxiRrRfbUOZo/+NKVq
-	 LngpEbgPQAwooF2yb2G162UvH0anWdWjIhXE+w6Q=
+	b=Cy93Sk7CwA3z+2T969O8MZKPs1PDfw5R7nzqtzho6DgJRLv1UZxvNhZl8Q0Vkhbd/
+	 S7GwLUjK0fdOS/y2lCfMyC+aw76YP0YxsIn3YoyoQ3ZYV2zYTkIyXZknc+OoZvv58N
+	 MNAq8u233VxbzHhtLaoaW7iipBL+wYiEs2pXFR6w=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 62836F8023B;
-	Tue, 12 Jul 2022 11:16:03 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 20881F8023B;
+	Tue, 12 Jul 2022 11:18:44 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 34E8FF80246; Tue, 12 Jul 2022 11:16:02 +0200 (CEST)
+ id 2CB7FF800BD; Tue, 12 Jul 2022 11:18:43 +0200 (CEST)
 Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 2F049F8012B
- for <alsa-devel@alsa-project.org>; Tue, 12 Jul 2022 11:15:53 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2F049F8012B
+ by alsa1.perex.cz (Postfix) with ESMTPS id 23A36F800BD
+ for <alsa-devel@alsa-project.org>; Tue, 12 Jul 2022 11:18:34 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 23A36F800BD
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="rt5F525c"; 
+ header.b="WShVvl2S"; 
  dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="rtrZI+wu"
+ header.b="HkhDDdzy"
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 709AC22520;
- Tue, 12 Jul 2022 09:15:53 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id A9A5C226E8;
+ Tue, 12 Jul 2022 09:18:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1657617353; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1657617514; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=mtX4+wWx2BSke+RPOxZjGAC3lYTyx1tefy9q5MTzTGI=;
- b=rt5F525c4JTmM+cqmZvhBS82zJiO5dmL5VUeu4SQoXP7Y48I159dx8lhLHX7rTs/c+NEjT
- HQjATAeS38iyw4Qo8ZGV/fflj2uJZLCRACDaO4d6ZclHDpgAyHs1tbiwB15q6p4al6a5q5
- wE+cn3LHD+00X3XN+T1+12vg3pCC3xQ=
+ bh=BHkv+wVH0+5BhajIzHhmRhyC1uuY+oWD7G1zz0Gh9Gs=;
+ b=WShVvl2Stck4lp6cIKrrKSB+FrBJpw40E88XTpCP6fG36w3b/q50px+Joh5ZWjPk5QVXY3
+ ckJ4Q2qVM4PmieaN6znjSYB2h+invzLZT6KrBP2h42lAt6ILxGyoBEPhuDMrCwam6NPYYt
+ iM3jh3MHh3Jz234S7eGRvps85j7RPHg=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1657617353;
+ s=susede2_ed25519; t=1657617514;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=mtX4+wWx2BSke+RPOxZjGAC3lYTyx1tefy9q5MTzTGI=;
- b=rtrZI+wuDAv9TRh4tCxiQ04HXXozsjWA4obxD5ol0haXk0gEAaLJjXSC5InohkDKokRsfm
- ZQPRSCNTOCJpSfAw==
+ bh=BHkv+wVH0+5BhajIzHhmRhyC1uuY+oWD7G1zz0Gh9Gs=;
+ b=HkhDDdzycLf6wDVb10rq7GqTi3RYW0+XwKacwFFzJIU7wIgxAZyqoTFu5s00L9afHEdsf0
+ FRqXl+QVZIwbZaBA==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 0684613A94;
- Tue, 12 Jul 2022 09:15:52 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 7AAF213A94;
+ Tue, 12 Jul 2022 09:18:34 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id b5jdAMg7zWL8SQAAMHmgww
- (envelope-from <tiwai@suse.de>); Tue, 12 Jul 2022 09:15:52 +0000
-Date: Tue, 12 Jul 2022 11:15:50 +0200
-Message-ID: <87k08ir8s9.wl-tiwai@suse.de>
+ by imap2.suse-dmz.suse.de with ESMTPSA id eAFXHWo8zWJBSwAAMHmgww
+ (envelope-from <tiwai@suse.de>); Tue, 12 Jul 2022 09:18:34 +0000
+Date: Tue, 12 Jul 2022 11:18:34 +0200
+Message-ID: <87ilo2r8np.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
 To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Subject: Re: [PATCH v1 1/1] ALSA: hda: cs35l41: Fix comments wrt
- serial-multi-instantiate reference
-In-Reply-To: <20220711100129.37326-1-andriy.shevchenko@linux.intel.com>
-References: <20220711100129.37326-1-andriy.shevchenko@linux.intel.com>
+Subject: Re: [PATCH v1 1/4] ALSA: hda: cs35l41: Improve dev_err_probe()
+ messaging
+In-Reply-To: <20220711095219.36915-1-andriy.shevchenko@linux.intel.com>
+References: <20220711095219.36915-1-andriy.shevchenko@linux.intel.com>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
 MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
 Content-Type: text/plain; charset=US-ASCII
 Cc: alsa-devel@alsa-project.org, Lucas Tanure <tanureal@opensource.cirrus.com>,
  patches@opensource.cirrus.com, Takashi Iwai <tiwai@suse.com>,
- linux-kernel@vger.kernel.org, David Rhodes <david.rhodes@cirrus.com>,
- Richard Fitzgerald <rf@opensource.cirrus.com>,
- James Schulman <james.schulman@cirrus.com>
+ linux-kernel@vger.kernel.org, Richard Fitzgerald <rf@opensource.cirrus.com>,
+ James Schulman <james.schulman@cirrus.com>,
+ David Rhodes <david.rhodes@cirrus.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -99,21 +99,18 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Mon, 11 Jul 2022 12:01:29 +0200,
+On Mon, 11 Jul 2022 11:52:16 +0200,
 Andy Shevchenko wrote:
 > 
-> The comments are inconsistent and point to the wrong driver name.
-> The initially named i2c-multi-instantiate it was renamed to the
-> serial-multi-instantiate exactly due to support of the platforms
-> with multiple CS35L41 codecs.
-> 
-> Fix comments accordingly.
-> 
-> While at it, drop file names from the files.
+> Drop duplicate print of returned value in the messages and use pattern
+> return dev_err_probe(...) where it's possible.
 > 
 > Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 
-Thanks, applied.
+Applied this one, but postpone the rest three patches, as there seems
+a build regression according 0day bot.
 
+
+thanks,
 
 Takashi
