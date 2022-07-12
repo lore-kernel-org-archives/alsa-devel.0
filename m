@@ -4,66 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4C8A1C43334
-	for <alsa-devel@archiver.kernel.org>; Tue, 12 Jul 2022 13:17:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4C474C43334
+	for <alsa-devel@archiver.kernel.org>; Tue, 12 Jul 2022 13:17:28 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 9570816BE;
-	Tue, 12 Jul 2022 15:16:15 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9570816BE
+	by alsa0.perex.cz (Postfix) with ESMTPS id 5DFB516C2;
+	Tue, 12 Jul 2022 15:16:36 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5DFB516C2
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1657631825;
-	bh=E8FgT82F1bdKqowLGwPaaq/9POqi+DBva6OzdITWGJQ=;
+	s=default; t=1657631846;
+	bh=d1i/lmKcK/nb7SY1FQztbfenpWiYwYh4lqWt6J1giEA=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=GGWT2ti0mDf3QbYyd3GW918dupzwNfNz1BQC8BcPNkXd/nCEUuHpogrBZ5aIsSWwO
-	 l2fLDR0NtmvbpMg/M00ZxEKz3TIMOyq7zUl5v4F7hgWhfM8zRYZD2EymfElqMT9otZ
-	 8777NXXr5d0Q7FlEXYXGrFFkK6Tky/X+62rknRj8=
+	b=cvQfXMWfblG9ayyc7Esb3jK9xH5NAsvl0kD/1yi+DLNJHZuDKW06QaozCToQ5BdIg
+	 YvgNjt97o/wfjF6QbwuA5JSIYK46DIDSWx6/SMer1Wtoy1BK7AzNF3UJo4yMYOQCO1
+	 9Bfd5qgn2AlIe+2+0fpDV2vCrOZOHbjrtQ2ciCB8=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id CD202F802DF;
-	Tue, 12 Jul 2022 15:15:48 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 5C6B8F8053D;
+	Tue, 12 Jul 2022 15:15:52 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id EE6C2F80506; Tue, 12 Jul 2022 15:15:45 +0200 (CEST)
+ id 5AA72F80542; Tue, 12 Jul 2022 15:15:50 +0200 (CEST)
 Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 72675F8023B
- for <alsa-devel@alsa-project.org>; Tue, 12 Jul 2022 15:15:42 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 72675F8023B
+ by alsa1.perex.cz (Postfix) with ESMTPS id 9AE38F8012B
+ for <alsa-devel@alsa-project.org>; Tue, 12 Jul 2022 15:15:40 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9AE38F8012B
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="f8uFx2Ig"
+ header.b="Z7vexO7k"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1657631743; x=1689167743;
+ t=1657631744; x=1689167744;
  h=from:to:cc:subject:date:message-id:in-reply-to:
  references:mime-version:content-transfer-encoding;
- bh=E8FgT82F1bdKqowLGwPaaq/9POqi+DBva6OzdITWGJQ=;
- b=f8uFx2Ig0lLbW0PVv23Q6efs2+iQMIG5LVuDbqkliaxZs89NV0uccXAN
- Egm7QG+44fW2FvZz63nFL68XsIy8Oyukg7SgFxIUnIeJTmqCdRT8MnjhD
- aOurwGIx6UEAp8Uid/FdIP0Jp0uMXlgKt+qGHeSuv5YXBiL4vPdL14xNt
- mrs95zW21NaC4jwKLPrztn3NBiVMk83aLOzNxrpN+YZlu+7lLAwSwNGc9
- TFmmw5gS0qwp1PbC09Potkn0jn9yFFZuqsriXQ5e85FNGj1Wb7jwdRYdC
- QoShBJvo2nUP6XKLwuBSpWsgdoKaaRc7A34WKIvpeJeZHXXkLRXp2lWc3 w==;
-X-IronPort-AV: E=McAfee;i="6400,9594,10405"; a="285671100"
-X-IronPort-AV: E=Sophos;i="5.92,265,1650956400"; d="scan'208";a="285671100"
+ bh=d1i/lmKcK/nb7SY1FQztbfenpWiYwYh4lqWt6J1giEA=;
+ b=Z7vexO7kCRxaGwgI/O252K3coMo0dUaDofQLRmm5HRUD3LmpHhz3l0/u
+ jf8K5k9jIaXXM+fVpaM89kiGgOU81OoT3mj+0PSLA60Sf/q+9ggjtIXFX
+ cm1ml1BRFWpKBXdlp1L8JlUCSrk+h2TIg0psaysVrCQjDqHmZU7L9VqUR
+ 3B5Vu+Vw9KZdVh/VYcweeFN/Lbwx96c/oZZTj6JdUZlmJ2pnfo/OcBbYV
+ Op0aFmYzBUlHEZMyj7XsMPfyUAKCodWx8qPF2q+ps3VPx34T4PSIMGFFA
+ m2VVb4mtbmJQKnu0xeiVReOjau+XcOfKEUuc5R3Hu9CgS81HsxMZwS5Lv g==;
+X-IronPort-AV: E=McAfee;i="6400,9594,10405"; a="285671095"
+X-IronPort-AV: E=Sophos;i="5.92,265,1650956400"; d="scan'208";a="285671095"
 Received: from orsmga003.jf.intel.com ([10.7.209.27])
  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 12 Jul 2022 06:15:41 -0700
-X-IronPort-AV: E=Sophos;i="5.92,265,1650956400"; d="scan'208";a="545421070"
+ 12 Jul 2022 06:15:38 -0700
+X-IronPort-AV: E=Sophos;i="5.92,265,1650956400"; d="scan'208";a="545421054"
 Received: from ahedstro-mobl.ger.corp.intel.com (HELO
  pujfalus-desk.ger.corp.intel.com) ([10.249.254.175])
  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 12 Jul 2022 06:15:38 -0700
+ 12 Jul 2022 06:15:35 -0700
 From: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
 To: lgirdwood@gmail.com, broonie@kernel.org,
  pierre-louis.bossart@linux.intel.com
-Subject: [PATCH 2/2] ASoC: SOF: Intel: hda-dai: Do
- snd_hdac_ext_stream_decouple() only once
-Date: Tue, 12 Jul 2022 16:16:20 +0300
-Message-Id: <20220712131620.13365-3-peter.ujfalusi@linux.intel.com>
+Subject: [PATCH 1/2] ASoC: SOF: Intel: hda-dai: Drop misleading comment
+ regarding dma_data
+Date: Tue, 12 Jul 2022 16:16:19 +0300
+Message-Id: <20220712131620.13365-2-peter.ujfalusi@linux.intel.com>
 X-Mailer: git-send-email 2.37.0
 In-Reply-To: <20220712131620.13365-1-peter.ujfalusi@linux.intel.com>
 References: <20220712131620.13365-1-peter.ujfalusi@linux.intel.com>
@@ -86,50 +86,33 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Call snd_hdac_ext_stream_decouple_locked() unconditionally in
-hda_link_stream_assign(), the snd_hdac_ext_stream_decouple_locked() have
-internal checks to avoid re-configuring.
+The comment in hda_link_dma_hw_params() is no longer valid as the dma_data
+is set to NULL at system suspend as well.
 
-There is no need to call snd_hdac_ext_stream_decouple() via
-hda_link_dma_params() as the stream must have been set to decoupled when
-it got assigned (even if it used local condition to call
-snd_hdac_ext_stream_decouple_locked()).
+Instead of rewording the comment to state the obvious: try to take the
+hext_stream from the dma_data and if it is not set then assign a new one
+and store it as dma_data.
 
 Signed-off-by: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
 Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Reviewed-by: Rander Wang <rander.wang@intel.com>
 Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 ---
- sound/soc/sof/intel/hda-dai.c | 9 ++-------
- 1 file changed, 2 insertions(+), 7 deletions(-)
+ sound/soc/sof/intel/hda-dai.c | 1 -
+ 1 file changed, 1 deletion(-)
 
 diff --git a/sound/soc/sof/intel/hda-dai.c b/sound/soc/sof/intel/hda-dai.c
-index 9015ca2024bc..c5b65e4a06be 100644
+index ed74a1f264e8..9015ca2024bc 100644
 --- a/sound/soc/sof/intel/hda-dai.c
 +++ b/sound/soc/sof/intel/hda-dai.c
-@@ -126,12 +126,8 @@ hda_link_stream_assign(struct hdac_bus *bus,
- 	}
- 
- 	if (res) {
--		/*
--		 * Decouple host and link DMA. The decoupled flag
--		 * is updated in snd_hdac_ext_stream_decouple().
--		 */
--		if (!res->decoupled)
--			snd_hdac_ext_stream_decouple_locked(bus, res, true);
-+		/* Make sure that host and link DMA is decoupled. */
-+		snd_hdac_ext_stream_decouple_locked(bus, res, true);
- 
- 		res->link_locked = 1;
- 		res->link_substream = substream;
-@@ -184,7 +180,6 @@ static int hda_link_dma_params(struct hdac_ext_stream *hext_stream,
+@@ -221,7 +221,6 @@ static int hda_link_dma_hw_params(struct snd_pcm_substream *substream,
+ 	struct hdac_bus *bus = hstream->bus;
  	struct hdac_ext_link *link;
- 	unsigned int format_val;
  
--	snd_hdac_ext_stream_decouple(bus, hext_stream, true);
- 	snd_hdac_ext_link_stream_reset(hext_stream);
- 
- 	format_val = snd_hdac_calc_stream_format(params->s_freq, params->ch,
+-	/* get stored dma data if resuming from system suspend */
+ 	hext_stream = snd_soc_dai_get_dma_data(cpu_dai, substream);
+ 	if (!hext_stream) {
+ 		hext_stream = hda_link_stream_assign(bus, substream);
 -- 
 2.37.0
 
