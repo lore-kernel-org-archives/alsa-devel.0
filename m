@@ -4,42 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id DC4F1C43334
-	for <alsa-devel@archiver.kernel.org>; Tue, 12 Jul 2022 17:46:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 16A9CC43334
+	for <alsa-devel@archiver.kernel.org>; Tue, 12 Jul 2022 18:23:23 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E7A3D16BF;
-	Tue, 12 Jul 2022 19:45:31 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E7A3D16BF
+	by alsa0.perex.cz (Postfix) with ESMTPS id 7913116B8;
+	Tue, 12 Jul 2022 20:22:31 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7913116B8
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1657647982;
-	bh=Z8zho8qvLVEUPrzwMwvj8qviOMfvArIeTk3r7UE5pAs=;
-	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
+	s=default; t=1657650201;
+	bh=do/TRq2oML5DtBONUvQXu585DRHe18zNwLUUdn3ZRtw=;
+	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=PB+vG4l7Rjv8MekNHI/fA0Ra3WqJakM51Zk0FxsPpfDqaJ7z1x2pxldDWLVQz6AeT
-	 jifR8RE7U+ClRIuOuiWPseAoUD7bZPLKXv3HtrB0cMm1LDhBmguet/iR0CZ9DndZWv
-	 wL+90VgO0ng13VnbaAeEc6TjgwAAPitUJ6qv+8CY=
+	b=isCRTSuGa3Q8CrOhK0k5pDI1tm8Q28E9JuEPIIG9euGv0OuyHYvHdet06d3I1sOl0
+	 IOQy0i7KCzq5Tnad9f4ic59lZ5wP1K5CClK6bqt+gMqO/7N8dejLFwIpjIL/lYXVxi
+	 SXKp2Q2mbWpsBCa5dHAR4z+V+6DWE3vdapqFD/cI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 755DEF8023B;
-	Tue, 12 Jul 2022 19:45:31 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id E3F0EF80246;
+	Tue, 12 Jul 2022 20:22:30 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id D909EF80246; Tue, 12 Jul 2022 19:45:28 +0200 (CEST)
-Received: from webhooks-bot.alsa-project.org (gate.perex.cz [77.48.224.242])
- by alsa1.perex.cz (Postfix) with ESMTP id B8618F800E8
- for <alsa-devel@alsa-project.org>; Tue, 12 Jul 2022 19:45:25 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B8618F800E8
+ id 6D3D7F800BD; Tue, 12 Jul 2022 20:22:29 +0200 (CEST)
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 203C7F800BD
+ for <alsa-devel@alsa-project.org>; Tue, 12 Jul 2022 20:22:24 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 203C7F800BD
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="vA7cvLvT"
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by ams.source.kernel.org (Postfix) with ESMTPS id CA3F6B81B93;
+ Tue, 12 Jul 2022 18:22:23 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6053BC341CA;
+ Tue, 12 Jul 2022 18:22:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1657650142;
+ bh=do/TRq2oML5DtBONUvQXu585DRHe18zNwLUUdn3ZRtw=;
+ h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+ b=vA7cvLvTW86OFmMNLHw2mY2+4OQMr80RVGVdV0I8bt9GkTmjlqLyWDOY76PMm03RP
+ UiX7WqYHqVgO7JCIl/PAM/y713SrqXLYZ2GC/OnviOJkvcXF4OuHeYmiP2rby95Eol
+ /u6fgvI/5V8VyK7+IkYTKcH3EMqCg5NMufg1+DrWCmaSS+RD9P3SLx3qWX+GwfXECX
+ /GkhiRJnxfXXgb8BtKFg3cLnMHox03j8Ji22lzb9Bb4D4w3ov6JpPnZ4tjU0bz+ro8
+ EjVS7ZQoLDLwqZOHyu/mK2gmYLZ2bJRggKLljy6Mh+7fhfLCRS/UCoKH1VG0b5uK56
+ E4YE1CQvYkERA==
+From: Mark Brown <broonie@kernel.org>
+To: peter.ujfalusi@linux.intel.com, pierre-louis.bossart@linux.intel.com,
+ lgirdwood@gmail.com
+In-Reply-To: <20220712122357.31282-1-peter.ujfalusi@linux.intel.com>
+References: <20220712122357.31282-1-peter.ujfalusi@linux.intel.com>
+Subject: Re: [PATCH 0/3] ASoC: SOF: Intel: Do not process IPC reply before
+ firmware boot
+Message-Id: <165765014108.502248.13560911536744263994.b4-ty@kernel.org>
+Date: Tue, 12 Jul 2022 19:22:21 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-From: GitHub issues - opened <github@alsa-project.org>
-To: alsa-devel@alsa-project.org
-In-Reply-To: <1657647924899426937-webhooks-bot@alsa-project.org>
-References: <1657647924899426937-webhooks-bot@alsa-project.org>
-Subject: alsalib assertion using plug+dmix
-Message-Id: <20220712174528.D909EF80246@alsa1.perex.cz>
-Date: Tue, 12 Jul 2022 19:45:28 +0200 (CEST)
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+Cc: alsa-devel@alsa-project.org, ranjani.sridharan@linux.intel.com,
+ kai.vehmanen@linux.intel.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -55,213 +81,44 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-alsa-project/alsa-plugins issue #46 was opened from npitre:
+On Tue, 12 Jul 2022 15:23:54 +0300, Peter Ujfalusi wrote:
+> By mistake a developer managed to create a 'corrupted' IPC4 firmware image which
+> loaded fine to the DSP and after boot it sent an IPC reply before we would have
+> received the FW_READY message.
+> It turned out that the image was an IPC3 firmware and the IPC reply was the IPC3
+> FW_READY notification message which got understood as an IPC4 reply message due
+> to the difference between the two IPC mechanism.
+> 
+> [...]
 
-The espeak program is crashing randomly here. I've been able to isolate 
-the issue in a small test program demonstrating the crash 100% of the time, 
-ending in:
+Applied to
 
-```
-alsa_quickcrash: pcm.c:3236: snd_pcm_area_copy: Assertion `src < dst || src >= dst + bytes' failed.
-Aborted (core dumped)
-```
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
 
-Here's the test code:
+Thanks!
 
-```
-/* to compile: gcc -O2 -Wall -o alsa_quickcrash alsa_quickcrash.c -lasound */
+[1/3] ASoC: SOF: Intel: cnl: Do not process IPC reply before firmware boot
+      commit: acacd9eefd0def5a83244d88e5483b5f38ee7287
+[2/3] ASoC: SOF: Intel: hda-ipc: Do not process IPC reply before firmware boot
+      commit: 499cc881b09c8283ab5e75b0d6d21cb427722161
+[3/3] ASoC: SOF: Intel: mtl: Do not process IPC reply before firmware boot
+      commit: 1549a69b89b7e5b1b830da897529344766728a4b
 
-#include <alsa/asoundlib.h>
-#include <stdio.h>
-#include <string.h>
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
 
-#define DEVICE "test_dummy"
-#define RATE 22050
-#define CHANNELS 1
-#define FORMAT SND_PCM_FORMAT_S16_LE
-#define BUF_MS 60
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
-#define DO(x) if (x < 0) { fprintf(stderr, "%s failed\n", #x); exit(1); }
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
-int main()
-{
-	unsigned int rate = RATE;
-	snd_pcm_uframes_t frames = RATE * BUF_MS / 1000;
-	snd_pcm_t *handle;
-	snd_pcm_hw_params_t *params;
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
-	DO(snd_pcm_hw_params_malloc(&params));
-	DO(snd_pcm_open(&handle, DEVICE, SND_PCM_STREAM_PLAYBACK, 0));
-	DO(snd_pcm_hw_params_any(handle, params));
-	DO(snd_pcm_hw_params_set_access(handle, params, SND_PCM_ACCESS_RW_INTERLEAVED));
-	DO(snd_pcm_hw_params_set_format(handle, params, FORMAT));
-	DO(snd_pcm_hw_params_set_rate_near(handle, params, &rate, 0));
-	DO(snd_pcm_hw_params_set_channels(handle, params, CHANNELS));
-	DO(snd_pcm_hw_params_set_buffer_size_near(handle, params, &frames));
-	DO(snd_pcm_hw_params(handle, params));
-	DO(snd_pcm_prepare(handle));
-
-	printf("PCM config dump:\n");
-	snd_output_t *output = NULL;
-	DO(snd_output_stdio_attach(&output, stdout, 0));
-	DO(snd_pcm_dump(handle, output));
-	printf("\n");
-
-	printf("frames = %ld\n", (long)frames);
-	short data[frames * CHANNELS];
-	memset(data, 0, sizeof(data));
-
-	printf("writing whole buffer\n");
-	DO(snd_pcm_writei(handle, data, frames));
-	printf("writing whole buffer\n");
-	DO(snd_pcm_writei(handle, data, frames));
-	printf("writing whole buffer minus 1 frame\n");
-	DO(snd_pcm_writei(handle, data, frames - 1));
-
-	printf("draining audio\n");
-	DO(snd_pcm_drain(handle));
-	
-	printf("done\n");
-	DO(snd_pcm_close(handle));
-	return 0;
-}
-```
-
-Here's the corresponding .asoundrc content:
-
-```
-pcm.test_dummy {
-    type plug
-    slave.pcm "mix_dummy"
-}
-
-pcm.mix_dummy {
-    type dmix
-    ipc_key 1024
-    ipc_key_add_uid false
-    ipc_perm 0666
-    slave {
-        pcm "hw:0"
-        period_size 1024
-        buffer_size 4096
-        format "S16_LE"
-        rate 48000
-    }
-}
-```
-
-And here's the complete test output:
-
-```
-PCM config dump:
-Plug PCM: Rate conversion PCM (48000, sformat=S16_LE)
-Converter: linear-interpolation
-Protocol version: 10003
-Its setup is:
-  stream       : PLAYBACK
-  access       : RW_INTERLEAVED
-  format       : S16_LE
-  subformat    : STD
-  channels     : 1
-  rate         : 22050
-  exact rate   : 22050 (22050/1)
-  msbits       : 16
-  buffer_size  : 1411
-  period_size  : 470
-  period_time  : 21333
-  tstamp_mode  : NONE
-  tstamp_type  : MONOTONIC
-  period_step  : 1
-  avail_min    : 470
-  period_event : 0
-  start_threshold  : 1
-  stop_threshold   : 1411
-  silence_threshold: 0
-  silence_size : 0
-  boundary     : 3177289537109884928
-Slave: Route conversion PCM (sformat=S16_LE)
-  Transformation table:
-    0 <- 0
-    1 <- 0
-Its setup is:
-  stream       : PLAYBACK
-  access       : MMAP_INTERLEAVED
-  format       : S16_LE
-  subformat    : STD
-  channels     : 1
-  rate         : 48000
-  exact rate   : 48000 (48000/1)
-  msbits       : 16
-  buffer_size  : 3072
-  period_size  : 1024
-  period_time  : 21333
-  tstamp_mode  : NONE
-  tstamp_type  : MONOTONIC
-  period_step  : 1
-  avail_min    : 1024
-  period_event : 0
-  start_threshold  : 2
-  stop_threshold   : 3072
-  silence_threshold: 0
-  silence_size : 0
-  boundary     : 6917529027641081856
-Slave: Direct Stream Mixing PCM
-Its setup is:
-  stream       : PLAYBACK
-  access       : MMAP_INTERLEAVED
-  format       : S16_LE
-  subformat    : STD
-  channels     : 2
-  rate         : 48000
-  exact rate   : 48000 (48000/1)
-  msbits       : 16
-  buffer_size  : 3072
-  period_size  : 1024
-  period_time  : 21333
-  tstamp_mode  : NONE
-  tstamp_type  : MONOTONIC
-  period_step  : 1
-  avail_min    : 1024
-  period_event : 0
-  start_threshold  : 2
-  stop_threshold   : 3072
-  silence_threshold: 0
-  silence_size : 0
-  boundary     : 6917529027641081856
-Hardware PCM card 1 'HDA Intel PCH' device 0 subdevice 0
-Its setup is:
-  stream       : PLAYBACK
-  access       : MMAP_INTERLEAVED
-  format       : S16_LE
-  subformat    : STD
-  channels     : 2
-  rate         : 48000
-  exact rate   : 48000 (48000/1)
-  msbits       : 16
-  buffer_size  : 4096
-  period_size  : 1024
-  period_time  : 21333
-  tstamp_mode  : ENABLE
-  tstamp_type  : MONOTONIC
-  period_step  : 1
-  avail_min    : 1024
-  period_event : 0
-  start_threshold  : 1
-  stop_threshold   : 0
-  silence_threshold: 0
-  silence_size : 0
-  boundary     : 4611686018427387904
-  appl_ptr     : 0
-  hw_ptr       : 2734916609
-
-frames = 1411
-writing whole buffer
-writing whole buffer
-writing whole buffer minus 1 frame
-draining audio
-alsa_quickcrash: pcm.c:3236: snd_pcm_area_copy: Assertion `src < dst || src >= dst + bytes' failed.
-Aborted (core dumped)
-```
-
-Issue URL     : https://github.com/alsa-project/alsa-plugins/issues/46
-Repository URL: https://github.com/alsa-project/alsa-plugins
+Thanks,
+Mark
