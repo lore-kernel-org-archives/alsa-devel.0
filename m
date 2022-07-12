@@ -4,71 +4,61 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9335AC43334
-	for <alsa-devel@archiver.kernel.org>; Tue, 12 Jul 2022 14:01:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 16216C43334
+	for <alsa-devel@archiver.kernel.org>; Tue, 12 Jul 2022 14:03:29 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id AD47E166E;
-	Tue, 12 Jul 2022 16:00:42 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AD47E166E
+	by alsa0.perex.cz (Postfix) with ESMTPS id 5F95E1673;
+	Tue, 12 Jul 2022 16:02:37 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5F95E1673
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1657634492;
-	bh=PLCS0fgFTi6fkR+zw+1nEmAjrdXYGMkZbPY4PaSOZYQ=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
+	s=default; t=1657634607;
+	bh=+zN1GNGCIL6+YVEG7IbxuOhZlEY06u/BIUm+9zyo8wI=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=t5Jc4Zqs81b9dWrKtYIz/4n4kEjUBtx7XHLX5j932ySp0vdg12NS9zf0p4MwUrcBN
-	 pil+LFRVyeAK5FEWQ7JZJwFygREcF8d+juqjN0DycB5TnIYjJSsjAbnxVAR5mPg9TP
-	 nQr0tEbsgJjW+Dt2oe+V4xgWDIJQkzYZQ0HxoYI8=
+	b=Poq2gb8DdS9NJXa6jac2QTS4tULPeK56nZzx2m+IoouLi1nde8KnEIXeUXIXbOBWr
+	 W/sKg/5rNODgIiB0Z3dHBfd2BGMjK0KSVar/5VtCHEWh0/lFoJsYuyppbyMAdbmw6y
+	 LdvegXtXXSblKpytLdsqORKgn8ph25dV8UIjgPJI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 3F457F8012B;
-	Tue, 12 Jul 2022 16:00:42 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id EEA54F8023B;
+	Tue, 12 Jul 2022 16:02:36 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id AE1E4F80246; Tue, 12 Jul 2022 16:00:40 +0200 (CEST)
-Received: from mail-yb1-xb31.google.com (mail-yb1-xb31.google.com
- [IPv6:2607:f8b0:4864:20::b31])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id 9B5BBF8012B; Tue, 12 Jul 2022 16:02:35 +0200 (CEST)
+Received: from ams.source.kernel.org (ams.source.kernel.org
+ [IPv6:2604:1380:4601:e00::1])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 167AEF8012B
- for <alsa-devel@alsa-project.org>; Tue, 12 Jul 2022 16:00:33 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 167AEF8012B
+ by alsa1.perex.cz (Postfix) with ESMTPS id 6A24EF8012B
+ for <alsa-devel@alsa-project.org>; Tue, 12 Jul 2022 16:02:31 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6A24EF8012B
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="k8HJGhE9"
-Received: by mail-yb1-xb31.google.com with SMTP id 136so14073592ybl.5
- for <alsa-devel@alsa-project.org>; Tue, 12 Jul 2022 07:00:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
- h=mime-version:references:in-reply-to:from:date:message-id:subject:to
- :cc:content-transfer-encoding;
- bh=sYY6nXCKD6t30QeXZzY/iyGlqBqf+vc2z0phNL/Eg5g=;
- b=k8HJGhE9i7B3f6fXvhZ3P0HZBKpKwDS1pIja6IaScsD/R4cHnW/TfG0WC2C/yGAR0H
- lW83iJwH0EyDvfLzP9E+VKMVCEnWEEoR6GrJPtGn1utXHOoX/4ADJariDHDERwoniiOc
- DWPMIjXUca8RrVQceMUeI0KBsTI7oMAo1XuXoMuLCD4KixLFKsePYP1wwfQY2xo6EE2w
- vxBSuUpmkDFV+WgLqc45N1VfEAtHfARRedGII5h4s5EmWfwGUi4X++V4U30TJr1tHb1K
- sabpmRyvwLsIPOS8Zjpcxwg9t5NckJil5NJcITxrM0cCE/f95Z+wi15uKyCcWybfjaCS
- Wo+A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc:content-transfer-encoding;
- bh=sYY6nXCKD6t30QeXZzY/iyGlqBqf+vc2z0phNL/Eg5g=;
- b=j1VhtjyrUe7Ah9U305iBFwXdA7Wfon38hqkPYnHgtekgad/ysPmp2j5WvqckjNK2RE
- gpfMitlEvcYLqCRGj1PPr9S0DNSYSoo4rimJgcnlhkUAZcZy65gbjpc/1mS8NQixLO1f
- K1iIFWWL2WATxfZj5yZKQqgdiRE4XJZ2W8rJ4j77/2PWlqhBDFG9iWkIvo8KiLM2SWTe
- Rp3tFfrayUql097Sso5w2l4HStzsg8FE/DDl48IwUvq6hdFNb2LQNahKOBtpI3FEYqTy
- gdqxO3pgbKcaXGoE6WQ5EKafAqi9ftXpuezZKeuSisT50sePOVviGhkhitD7c6qJWEXj
- fy8w==
-X-Gm-Message-State: AJIora/rYmRZgxbYh3VGQJICTKAvyBfnfoHwXtFqUWGoX47f/ddp25B+
- hBlJZux8Vh0HjIr9na0xCw/R4IpbuEYQHOnegGQ=
-X-Google-Smtp-Source: AGRyM1vQ/Z4slZe3IQ0KDjUeluH6AIisNX0us5ZbdFvcLrNpwdlkbv9EzKh42yNUn6me2yh2cb0KyBpRhi8gL8FLkMY=
-X-Received: by 2002:a05:6902:686:b0:66e:627f:4d29 with SMTP id
- i6-20020a056902068600b0066e627f4d29mr21041851ybt.385.1657634432032; Tue, 12
- Jul 2022 07:00:32 -0700 (PDT)
-MIME-Version: 1.0
-References: <CAHp75VceKBoxXVPP4dRYb8LQqHMMDHFp6-E2iuZ-h2RTK8PWQQ@mail.gmail.com>
- <e0c7d254-ace3-625c-cc83-52ca0b45e9fc@intel.com>
- <CAHp75VckU2ZraLJ-frjWXjUu9pFW+-XmWgTbYqUXOUNAD-1HGA@mail.gmail.com>
+ dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="a6BSQCwx"
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by ams.source.kernel.org (Postfix) with ESMTPS id ADF16B8181E;
+ Tue, 12 Jul 2022 14:02:28 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 29559C341C8;
+ Tue, 12 Jul 2022 14:02:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1657634547;
+ bh=+zN1GNGCIL6+YVEG7IbxuOhZlEY06u/BIUm+9zyo8wI=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=a6BSQCwxx8ttq402GPYNi4QvOmYUM+e67eYC0xleIyy6mb0YpM3YZL3DUlSS9VVzN
+ ggmi9qUpPLVy90FlUcBacN7u+Rg35MhmNgoKegrQkpPym8aQJq1LHUzhqNn18e+SGL
+ n4mbTvpctfRbzJbqcpYH9/6hq1WL2Ahw+L0llxNRrwc3WXBkiYkxAUHZ+vbeTTWKp6
+ 99e8F1NpeXe65A8XT9Lzmv2a6ttfMz6vhdkyRHqqN7SDXjikl+UDqnRecik67fLHta
+ h6HHglostPy8fy863cHS9y/sE9KUW5q/Wcy/aEcM+ZbDajXo+kIRprvr4Xr/0DBsG2
+ rp7HxCGIeZGiw==
+Date: Tue, 12 Jul 2022 15:02:20 +0100
+From: Mark Brown <broonie@kernel.org>
+To: Cezary Rojewski <cezary.rojewski@intel.com>
+Subject: Re: [PATCH 1/2] lib/string_helpers: Introduce strsplit_u32()
+Message-ID: <Ys1+7P5zN4irxKW3@sirena.org.uk>
+References: <CAHp75VckU2ZraLJ-frjWXjUu9pFW+-XmWgTbYqUXOUNAD-1HGA@mail.gmail.com>
  <6c8e4104-2239-a188-649d-585f059cabdd@intel.com>
  <YsgjdKEtE7pMDTnZ@smile.fi.intel.com>
  <a73b3ec0-5abb-ddfd-414b-b9807f05413e@linux.intel.com>
@@ -78,14 +68,12 @@ References: <CAHp75VceKBoxXVPP4dRYb8LQqHMMDHFp6-E2iuZ-h2RTK8PWQQ@mail.gmail.com>
  <c19ed4a6-6a96-b4a4-0f5a-7ca1dba925d1@intel.com>
  <YsnoH64cKCT7gndw@smile.fi.intel.com>
  <2c6a4a61-e6c8-0487-8d29-dc3fbb90bbe2@intel.com>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature"; boundary="VOtkm5XuX2adiHc/"
+Content-Disposition: inline
 In-Reply-To: <2c6a4a61-e6c8-0487-8d29-dc3fbb90bbe2@intel.com>
-From: Andy Shevchenko <andy.shevchenko@gmail.com>
-Date: Tue, 12 Jul 2022 15:59:54 +0200
-Message-ID: <CAHp75VejUSXoGsvCP6Mrf9Ypi4f93-fWLr_AwsOu-0=fvZ8eYg@mail.gmail.com>
-Subject: Re: [PATCH 1/2] lib/string_helpers: Introduce strsplit_u32()
-To: Cezary Rojewski <cezary.rojewski@intel.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+X-Cookie: I like your SNOOPY POSTER!!
 Cc: Andy Shevchenko <andy@kernel.org>,
  Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
  ALSA Development Mailing List <alsa-devel@alsa-project.org>,
@@ -93,10 +81,11 @@ Cc: Andy Shevchenko <andy@kernel.org>,
  Liam Girdwood <lgirdwood@gmail.com>,
  Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
  Takashi Iwai <tiwai@suse.com>, Hans de Goede <hdegoede@redhat.com>,
- Mark Brown <broonie@kernel.org>, Bard Liao <yung-chuan.liao@linux.intel.com>,
+ Andy Shevchenko <andy.shevchenko@gmail.com>,
+ Bard Liao <yung-chuan.liao@linux.intel.com>,
  Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
  amadeuszx.slawinski@linux.intel.com,
- =?UTF-8?Q?P=C3=A9ter_Ujfalusi?= <peter.ujfalusi@linux.intel.com>
+ =?iso-8859-1?Q?P=E9ter?= Ujfalusi <peter.ujfalusi@linux.intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -112,106 +101,32 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Tue, Jul 12, 2022 at 3:51 PM Cezary Rojewski
-<cezary.rojewski@intel.com> wrote:
-> On 2022-07-09 10:42 PM, Andy Shevchenko wrote:
-> > On Sat, Jul 09, 2022 at 10:45:49AM +0200, Cezary Rojewski wrote:
-> >> On 2022-07-08 6:49 PM, Andy Shevchenko wrote:
-> >>> On Fri, Jul 8, 2022 at 6:32 PM Cezary Rojewski
-> >>> <cezary.rojewski@intel.com> wrote:
-> >>>> On 2022-07-08 5:25 PM, Andy Shevchenko wrote:
-> >>>>> On Fri, Jul 8, 2022 at 2:34 PM P=C3=A9ter Ujfalusi
-> >>>>> <peter.ujfalusi@linux.intel.com> wrote:
 
-...
+--VOtkm5XuX2adiHc/
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-> >>>> A long shot, but what if we were to modify get_options() so it takes
-> >>>> additional element-size parameter instead?
-> >>>
-> >>> But why? int / unsigned int, u32 / s32  are all compatible in the cur=
-rent cases.
-> >>
-> >> I'd like to avoid any additional operations, so that the retrieved pay=
-load
-> >> can be provided to the IPC handler directly. The IPC handlers for Audi=
-oDSP
-> >> drivers are expecting payload in u32s.
-> >>
-> >> // u32 **tkns, size_t *num_tkns as foo() arguments
-> >> // u32 *ints, int nints as locals
-> >>
-> >>      get_options(buf, 0, &nints);
-> >>      if (!nints) {
-> >>              ret =3D -ENOENT;
-> >>              goto free_buf;
-> >>      }
-> >>
-> >>      ints =3D kcalloc(nints + 1, sizeof(*ints), GFP_KERNEL);
-> >>      if (!ints) {
-> >>              ret =3D -ENOMEM;
-> >>              goto free_buf;
-> >>      }
-> >>
-> >>      get_num_options(buf, nints + 1, ints, sizeof(*ints));
-> >>
-> >>      *tkns =3D ints;
-> >>      *num_tkns =3D nints;
-> >>
-> >> No additional operations in between. The intermediate IPC handler can =
-later
-> >> refer to the actual payload via &tkns[1] before passing it to the gene=
-ric
-> >> one.
-> >>
-> >> Casting int array into u32 array does not feel right, or perhaps I'm m=
-issing
-> >> something like in the doc case.
-> >
-> > C standard.
-> >
-> > int to unsigned int is not promoted. And standard says that "The rank o=
-f any
-> > unsigned integer type shall equal the rank of the corresponding signed =
-integer
-> > type, if any."
-> >
-> > I don't know why one needs to have an additional churn here. int and un=
-signed
-> > int are interoperable with the adjustment to the sign when the other ar=
-gument
-> > is signed or lesser rank of.
->
-> I still believe that casting blindly is not the way to go. I did
-> explicitly ask about int vs u32,
+On Tue, Jul 12, 2022 at 03:51:04PM +0200, Cezary Rojewski wrote:
 
-There is no such type in the C standard.
+> Please correct me if I'm wrong, but there is no guarantee that int is always
+> 32bits long. What is guaranteed though, is that int holds at least -/+
+> 32,767. Also, values larger than INT_MAX are allowed in the IPC payload.
 
-> not int vs unsigned int. Please note
-> that these values are later passed to the IPC handlers, and this changes
-> the context a bit. If hw expects u32, then u32 it shall be.
+Right, int is just the natural size for an integer on the platform.
 
-H/W doesn't expect u32, HW expects bytes or group of bytes with:
-1) dedicated address alignment (if required);
-2) dedicated byte order;
-3) dedicated padding (if required).
+--VOtkm5XuX2adiHc/
+Content-Type: application/pgp-signature; name="signature.asc"
 
-Correct me if I'm wrong.
+-----BEGIN PGP SIGNATURE-----
 
-> Please correct me if I'm wrong, but there is no guarantee that int is
-> always 32bits long.
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmLNfuwACgkQJNaLcl1U
+h9C/QQf9FtMNLt7fY7kTHfnJjxoc2xRbWmtmteMI/X1xnpa0sAS30hZrAP5o49ri
+tl19bcPCbpY15Ih/BJlE7TOW358K5CxVlICUZdZ088SVbKN+tTAig9DVnCk4cjoI
+53fscUp8y/saZ3R0HnDZY+KQhoh9j60bMWs3ff3ciAHx6HXVOdJ6qgKbWgsnxo5A
+viX6XmKmA0tPnn69FBCHz7ooJE9R8I+Wh1oWjL02rJMrWwARzqpyt8yubvHL1tSo
+4EU+DCDtCYimR9nzs1/m4jdK3J2T7FpX2NQgO1NNDmRbcAqkiu4Gd0Ek+ydaIcym
+uIOTy5RjhQb41oJUTlQvfqfdQ0tsMA==
+=JOe6
+-----END PGP SIGNATURE-----
 
-There is no guarantee by the C standard, indeed, but there is an upper
-level guarantee, by the Linux kernel.
-
-> What is guaranteed though, is that int holds at
-> least -/+ 32,767. Also, values larger than INT_MAX are allowed in the
-> IPC payload.
-
-Yeah... this is binary protocol, right? So, what limits are you
-talking about here if they are not applicable there anyway. It's
-simply different dimension of limits (i.e. bytes and bits and not C
-language types).
-
---=20
-With Best Regards,
-Andy Shevchenko
+--VOtkm5XuX2adiHc/--
