@@ -4,68 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5DAD1C43334
-	for <alsa-devel@archiver.kernel.org>; Tue, 12 Jul 2022 15:12:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B76E6C43334
+	for <alsa-devel@archiver.kernel.org>; Tue, 12 Jul 2022 15:12:33 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 9FA1816DA;
-	Tue, 12 Jul 2022 17:11:22 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9FA1816DA
+	by alsa0.perex.cz (Postfix) with ESMTPS id 019AF16E3;
+	Tue, 12 Jul 2022 17:11:42 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 019AF16E3
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1657638732;
-	bh=zSFWr/8AMdztNTLu+DJURPNFrc33gkjjAiHEX3lpiSM=;
+	s=default; t=1657638752;
+	bh=VLQ/wAybFPAaFC9wplm5wvcA7gn9k2Mw5C/q0A8VLYU=;
 	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=HsdjZhQ3ItJt0Y7WtW7AJeoT/MTBZL4/c3Wv/+lqoR5mHQ9BPbyYc7ZkGQF5XXaaE
-	 NtLVG/l4i69HhacGXjba62GC1TnSYvtIbl0Q+sDU0mgE90tqvbp7E4ysFqk4he0VQn
-	 Ce3knJFxIMYQWa7pfFrvCQYOMUsErF8SLUGbuwTQ=
+	b=X4sON2Ae29S/In/4Xx+KaJVuao52sXaUGRB01joSmxLE9BpnjyJUN3G7kgkxg9dZD
+	 8epDn+nPdPShTDuPiwTMMBtfYBS2bIETWbuu3FRefYokWE42ofEmKnXRunkgD/qfiF
+	 OBTxpCDLGHDMhp0kZhZCng1mOTKm0hhm15Yg9e6U=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 02268F80279;
+	by alsa1.perex.cz (Postfix) with ESMTP id 8F670F80542;
 	Tue, 12 Jul 2022 17:10:56 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 33B00F80506; Tue, 12 Jul 2022 17:10:54 +0200 (CEST)
+ id BA5E0F804FF; Tue, 12 Jul 2022 17:10:55 +0200 (CEST)
 Received: from dfw.source.kernel.org (dfw.source.kernel.org
  [IPv6:2604:1380:4641:c500::1])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id B65C7F8012B
- for <alsa-devel@alsa-project.org>; Tue, 12 Jul 2022 17:10:49 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B65C7F8012B
+ by alsa1.perex.cz (Postfix) with ESMTPS id 1E14BF800BD
+ for <alsa-devel@alsa-project.org>; Tue, 12 Jul 2022 17:10:48 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1E14BF800BD
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="mDbZqMwV"
+ header.b="nflFEqF6"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id ADF3F6156A;
- Tue, 12 Jul 2022 15:10:47 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 73981C3411C;
+ by dfw.source.kernel.org (Postfix) with ESMTPS id 92765615D1;
  Tue, 12 Jul 2022 15:10:46 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 96C3AC341CA;
+ Tue, 12 Jul 2022 15:10:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1657638647;
- bh=zSFWr/8AMdztNTLu+DJURPNFrc33gkjjAiHEX3lpiSM=;
+ s=k20201202; t=1657638646;
+ bh=VLQ/wAybFPAaFC9wplm5wvcA7gn9k2Mw5C/q0A8VLYU=;
  h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=mDbZqMwVSJWWWsNMUKWry4TfkVCwRSCRv48FobJdpienIbgAKjAjw1vWviBtmAwkh
- n/eO0/gJ03hAMWz6Z+6kdqpITV/VsiysUzDxzafbr4ifDYfavMIPyKY6LS+2JjC461
- eS/OEJ8BuevVh5fDWIf2/HrfdheaByPXlYnLmkHksMgKFKCIyc3EUQ0ZYEPyWpcFtY
- j/MKHyhmpcRhDyWFuh+u3H8Vwy0jG723tiJt08ZRaFMi/7Hch4pOfHNbhLQyV+F9lG
- JQaT4zN+wWWz8f75TgtbuxuJ/4+mbT4swWe5JaX0vW57d8fcpyM2+Nib3WrshwfFXl
- agDRPEIAxR1MQ==
+ b=nflFEqF6ZDusCFBy1lwhDP9xO0ZivY5CjZFfWLZ5F3dXYNG9lVQCugaNEyj4t4OkY
+ RGJEyG33OC1o5+X/lFjtiGnwCrBs4/Lz7eXMtFnxcA9jYQiJNKI0CmSSsRI3qPLkyI
+ /Gr65TMPv5yPcQuvUSNOj2TQ2PHZKhFiXRowqsAb2sLne8VK1iBBUjO12VO1DHk/YM
+ 3URXXcSLikq1IbQ1Rn2JWdBP7RST/c2+sWFVI3wauUnWtZ/gHINhNJXU2MyESd+QZ7
+ uruBODuCIFIMlWvro+QKvFtIfolkgVD58uAGmLcx1lGqc6IIHmDK5PILSXLJt4d4Nn
+ cxRI4pYBmpVAw==
 From: Mark Brown <broonie@kernel.org>
-To: alsa-devel@alsa-project.org,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-In-Reply-To: <20220708200641.26923-1-pierre-louis.bossart@linux.intel.com>
-References: <20220708200641.26923-1-pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH] ASoC: soc-pcm: demote warnings on non-atomic BE connection
-Message-Id: <165763864619.336976.6886641314043623582.b4-ty@kernel.org>
-Date: Tue, 12 Jul 2022 16:10:46 +0100
+To: pierre-louis.bossart@linux.intel.com, lgirdwood@gmail.com,
+ peter.ujfalusi@linux.intel.com
+In-Reply-To: <20220712123902.14696-1-peter.ujfalusi@linux.intel.com>
+References: <20220712123902.14696-1-peter.ujfalusi@linux.intel.com>
+Subject: Re: [PATCH] ASoC: SOF: topology: remove unused variable
+Message-Id: <165763864434.336976.1403203290735408320.b4-ty@kernel.org>
+Date: Tue, 12 Jul 2022 16:10:44 +0100
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: tiwai@suse.de, peter.ujfalusi@linux.intel.com,
- Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+Cc: alsa-devel@alsa-project.org, yung-chuan.liao@linux.intel.com,
+ ranjani.sridharan@linux.intel.com, kai.vehmanen@linux.intel.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -81,15 +81,12 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Fri, 8 Jul 2022 15:06:41 -0500, Pierre-Louis Bossart wrote:
-> When an FE, typically non-atomic, is connected to an atomic BE, we
-> force the BE as non-atomic. There's no reason to throw a warning, this
-> is a perfectly fine configuration and a conversion that's required
-> by-design.
+On Tue, 12 Jul 2022 15:39:02 +0300, Peter Ujfalusi wrote:
+> From: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 > 
-> This removes the unconditional warnings such as
+> 'ret' is never used. Remove it and return 0 instead.
 > 
-> [...]
+> 
 
 Applied to
 
@@ -97,8 +94,8 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: soc-pcm: demote warnings on non-atomic BE connection
-      commit: 4ccf0949cd364811217a0e61754ff7e52cb4f0e4
+[1/1] ASoC: SOF: topology: remove unused variable
+      commit: 98418a08a20d3a72e14d88ccb3a48d0bf961ab6a
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
