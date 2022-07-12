@@ -4,88 +4,144 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 16216C43334
-	for <alsa-devel@archiver.kernel.org>; Tue, 12 Jul 2022 14:03:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id BCAF0C433EF
+	for <alsa-devel@archiver.kernel.org>; Tue, 12 Jul 2022 14:17:12 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 5F95E1673;
-	Tue, 12 Jul 2022 16:02:37 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5F95E1673
+	by alsa0.perex.cz (Postfix) with ESMTPS id 55F6F42;
+	Tue, 12 Jul 2022 16:16:20 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 55F6F42
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1657634607;
-	bh=+zN1GNGCIL6+YVEG7IbxuOhZlEY06u/BIUm+9zyo8wI=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	s=default; t=1657635430;
+	bh=QdHcpzyoNuLnIYeF/Kx+Fi+xYpM6uMQAwoGyOHmKp+g=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Poq2gb8DdS9NJXa6jac2QTS4tULPeK56nZzx2m+IoouLi1nde8KnEIXeUXIXbOBWr
-	 W/sKg/5rNODgIiB0Z3dHBfd2BGMjK0KSVar/5VtCHEWh0/lFoJsYuyppbyMAdbmw6y
-	 LdvegXtXXSblKpytLdsqORKgn8ph25dV8UIjgPJI=
+	b=TEtaUEE8YkkAntS9iisAdvQqw6fX+SaJfXKHfifqFSvyKNU5yeUOlfly9nZv82VSJ
+	 ST8UW+JERZC478enKL/Iw8lkEUNJbXQr79pg+KeofSHxTupeeWfQEzpU0X6tSxrXul
+	 JI0bO7P+25TB8/qHKS1EfSHkOlvOl4Tnq/FtrYzY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id EEA54F8023B;
-	Tue, 12 Jul 2022 16:02:36 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id B56C8F800BD;
+	Tue, 12 Jul 2022 16:16:19 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 9B5BBF8012B; Tue, 12 Jul 2022 16:02:35 +0200 (CEST)
-Received: from ams.source.kernel.org (ams.source.kernel.org
- [IPv6:2604:1380:4601:e00::1])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 6A24EF8012B
- for <alsa-devel@alsa-project.org>; Tue, 12 Jul 2022 16:02:31 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6A24EF8012B
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="a6BSQCwx"
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+ id C2E69F804FF; Tue, 12 Jul 2022 16:16:17 +0200 (CEST)
+Received: from EUR05-DB8-obe.outbound.protection.outlook.com
+ (mail-db8eur05on2055.outbound.protection.outlook.com [40.107.20.55])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by ams.source.kernel.org (Postfix) with ESMTPS id ADF16B8181E;
- Tue, 12 Jul 2022 14:02:28 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 29559C341C8;
- Tue, 12 Jul 2022 14:02:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1657634547;
- bh=+zN1GNGCIL6+YVEG7IbxuOhZlEY06u/BIUm+9zyo8wI=;
- h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=a6BSQCwxx8ttq402GPYNi4QvOmYUM+e67eYC0xleIyy6mb0YpM3YZL3DUlSS9VVzN
- ggmi9qUpPLVy90FlUcBacN7u+Rg35MhmNgoKegrQkpPym8aQJq1LHUzhqNn18e+SGL
- n4mbTvpctfRbzJbqcpYH9/6hq1WL2Ahw+L0llxNRrwc3WXBkiYkxAUHZ+vbeTTWKp6
- 99e8F1NpeXe65A8XT9Lzmv2a6ttfMz6vhdkyRHqqN7SDXjikl+UDqnRecik67fLHta
- h6HHglostPy8fy863cHS9y/sE9KUW5q/Wcy/aEcM+ZbDajXo+kIRprvr4Xr/0DBsG2
- rp7HxCGIeZGiw==
-Date: Tue, 12 Jul 2022 15:02:20 +0100
-From: Mark Brown <broonie@kernel.org>
-To: Cezary Rojewski <cezary.rojewski@intel.com>
-Subject: Re: [PATCH 1/2] lib/string_helpers: Introduce strsplit_u32()
-Message-ID: <Ys1+7P5zN4irxKW3@sirena.org.uk>
-References: <CAHp75VckU2ZraLJ-frjWXjUu9pFW+-XmWgTbYqUXOUNAD-1HGA@mail.gmail.com>
- <6c8e4104-2239-a188-649d-585f059cabdd@intel.com>
- <YsgjdKEtE7pMDTnZ@smile.fi.intel.com>
- <a73b3ec0-5abb-ddfd-414b-b9807f05413e@linux.intel.com>
- <CAHp75Vd4D0KF7ik+aMOwv-+bofWja_tDe4YUmihQBF+RiHZTmA@mail.gmail.com>
- <e2fe6351-f9ee-48eb-ad7f-280249f7f3f7@intel.com>
- <CAHp75VfvN-iJTpgg6JeKhOqJLhtYSieo7d7SOCBoUu-81FtSqg@mail.gmail.com>
- <c19ed4a6-6a96-b4a4-0f5a-7ca1dba925d1@intel.com>
- <YsnoH64cKCT7gndw@smile.fi.intel.com>
- <2c6a4a61-e6c8-0487-8d29-dc3fbb90bbe2@intel.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id A888FF8012B
+ for <alsa-devel@alsa-project.org>; Tue, 12 Jul 2022 16:16:11 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A888FF8012B
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (1024-bit key) header.d=NXP1.onmicrosoft.com
+ header.i=@NXP1.onmicrosoft.com header.b="joNb5Q/Y"
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=IjwM5HnQm3n2Gb8YF3EEZ05vLl64BFCvrMXEcnNlmsYwRdEHEAdwTcez1Ykg0yNzF77yBsWFTlihb3wwvoc6TlyWcOJwMrLUTGSrwomxQbdknTCnC1Cdy+Wx63Hcxe+tUlTN3aoE5do3FsLbLVGqMytHIjCBuIOsg0n/KDouItuQYSTs/NdWtzYu9R4aXkkoZETaQBQW9sZNL64IDuz+AEaS0M7NNMxHCIiGVvMxeDEfnE5QeeTXQsM6lbir/Iikn3b0BMH///SEjXIsxT+MnqQoPDgMi/6hkoGBwnxrWlqX0cOxVHX5CmUKZ84mQXKalQaEUQORa0ltL7vmlUynzQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=Jbbl/cv+q2cw9BCYTXHn0REGjMf8Qz2rYqtLgmOKznA=;
+ b=nhFcd2zkfFfBdu+NxEHlHHpziEVfFFzG6zvwk8AP/NFRIwYhmxRmD2cwoFh6jcNNUc84kCLPHMHtiUVaT33YfzpNDAPtCfVGr5gW4NpfxMpEoOdIl/8evc2bxX8hpJ0q45AbpMfxEfQii6rSFvMZqIImECQHip2ak5CnQzJ5lnKs5cXR2uH4ccj1hmPSmJ0o9ajT49H6inG+OrLJZ9+qjFOML4hqZVGy+xk0T0S9mguiNH0OPPHoTiWYm7SlxeBo22AzgoF100IZiiyLe/IuYGO5nAT81xPzHYrzFd9bBHWfZbxQSNx6DA3SzgLaW2Y1IGZ0CfcxbcD/y8dxBHV8Iw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oss.nxp.com; dmarc=pass action=none header.from=oss.nxp.com;
+ dkim=pass header.d=oss.nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=NXP1.onmicrosoft.com; 
+ s=selector2-NXP1-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Jbbl/cv+q2cw9BCYTXHn0REGjMf8Qz2rYqtLgmOKznA=;
+ b=joNb5Q/YplZSvmxCRCFnKwmWcjgm4y+jzDwIgvet3Y8m7iZuyyXwFdWKyWBzem4j7OOYOqeIpXj8+Wwl8PMHOj9/JFH7zrP0EYic5e5u6+7kPwzZylSJwvOazfzSAZT1dOYprVnolN5Pp6i9m4NrWaAdfnM4zQvl7boIF9tv4iA=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=oss.nxp.com;
+Received: from AM0PR04MB5140.eurprd04.prod.outlook.com (2603:10a6:208:ca::21)
+ by PAXPR04MB8559.eurprd04.prod.outlook.com (2603:10a6:102:216::19)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5417.26; Tue, 12 Jul
+ 2022 14:16:08 +0000
+Received: from AM0PR04MB5140.eurprd04.prod.outlook.com
+ ([fe80::15ba:4274:2df4:8928]) by AM0PR04MB5140.eurprd04.prod.outlook.com
+ ([fe80::15ba:4274:2df4:8928%5]) with mapi id 15.20.5417.026; Tue, 12 Jul 2022
+ 14:16:08 +0000
+From: Daniel Baluta <daniel.baluta@oss.nxp.com>
+To: broonie@kernel.org,
+	alsa-devel@alsa-project.org
+Subject: [PATCH 2/4] ASoC: SOF: Copy compress parameters into extended data
+Date: Tue, 12 Jul 2022 17:15:29 +0300
+Message-Id: <20220712141531.14599-3-daniel.baluta@oss.nxp.com>
+X-Mailer: git-send-email 2.27.0
+In-Reply-To: <20220712141531.14599-1-daniel.baluta@oss.nxp.com>
+References: <20220712141531.14599-1-daniel.baluta@oss.nxp.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: AM3PR07CA0141.eurprd07.prod.outlook.com
+ (2603:10a6:207:8::27) To AM0PR04MB5140.eurprd04.prod.outlook.com
+ (2603:10a6:208:ca::21)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature"; boundary="VOtkm5XuX2adiHc/"
-Content-Disposition: inline
-In-Reply-To: <2c6a4a61-e6c8-0487-8d29-dc3fbb90bbe2@intel.com>
-X-Cookie: I like your SNOOPY POSTER!!
-Cc: Andy Shevchenko <andy@kernel.org>,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- ALSA Development Mailing List <alsa-devel@alsa-project.org>,
- Kai Vehmanen <kai.vehmanen@linux.intel.com>,
- Liam Girdwood <lgirdwood@gmail.com>,
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
- Takashi Iwai <tiwai@suse.com>, Hans de Goede <hdegoede@redhat.com>,
- Andy Shevchenko <andy.shevchenko@gmail.com>,
- Bard Liao <yung-chuan.liao@linux.intel.com>,
- Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
- amadeuszx.slawinski@linux.intel.com,
- =?iso-8859-1?Q?P=E9ter?= Ujfalusi <peter.ujfalusi@linux.intel.com>
+X-MS-Exchange-MessageSentRepresentingType: 1
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 177ee0df-89c5-4ec1-32cf-08da641110c2
+X-MS-TrafficTypeDiagnostic: PAXPR04MB8559:EE_
+X-MS-Exchange-SharedMailbox-RoutingAgent-Processed: True
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: NJvVAzbVHGKdy6avCGqUfMj/iYgKM9pyMEM+XC7puC2EbSm0p6SwrfpV6TZPQ4IJgMmqT6xcogPyaDGJHHmwzZxAWzayGCEFysnRVlSLDexq12AQFY8BVmx+VdOr992zYDh6Lri6gR0EZ9dNwh64hOptrELj+Dp6x41FityGd65ig/lQfXRd/EWEa28z6oJ5yQmCAI0DfJhRj75kKtOCuh8ygcU1jCm9RAWqRM2ArthNxYkXQFRKcZ2hb3NEjlGqmCqo9kdCP4TMCiTwvE0TgGk2zvLBrCMYFL4/w6924o1dDVhaEbiYo38KaZd8h+wzFHfVFW1zAlSKKFIAwhalxWG/Nj0kGq+XCg54qGTQkHrVDKupIc+iMqW0/mkWeD6wEiFkIYTfqrtN7z0PW6kKb1TuMkbdzuTTr5EWSw3lSfOtnkIkSscgo8z23/kfVZIqf6jrm9V4UAZUwslHQjfQzh/sglIEU0r8Q8ijDl4Vmo2eTrQKB+trX4MnKDBx3LoJSTI68B/l0hiWEf9Yyxq2gA1taJME0dBevXlf+bnEmMmrBs6R2lhk0xSo47z+dPsU13uADplWAMFuEZz3u+fH+Gb+A8+AGQJvO6N26i2RkFyQWt6lv5FQnu0WeEj2TQ5eCEEHwC0aHUJzvmcfAOxVqdE00bNiHKEobwKDJtpgowqixnqD2ZylGXBfq4QzuIe8ff3+xfJypomBXqa3iDdoYm7aPnpyJcg8AcAcRWuztTPPooP/5KN7L5fBwlabl92H8aDsGC9Afqvuf42fC+Umpbw3IjnzydjBJlSt3OF7ZK1Pfxxc93iykmDXeEZT1QFF
+X-Forefront-Antispam-Report: CIP:255.255.255.255; CTRY:; LANG:en; SCL:1; SRV:;
+ IPV:NLI; SFV:NSPM; H:AM0PR04MB5140.eurprd04.prod.outlook.com; PTR:; CAT:NONE;
+ SFS:(13230016)(4636009)(366004)(136003)(396003)(39860400002)(346002)(376002)(478600001)(8676002)(66946007)(66476007)(4326008)(2616005)(66556008)(83380400001)(52116002)(86362001)(2906002)(6666004)(6486002)(186003)(44832011)(6506007)(26005)(5660300002)(7416002)(316002)(41300700001)(8936002)(1076003)(38100700002)(38350700002)(66574015)(6512007);
+ DIR:OUT; SFP:1101; 
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?S0kwUHllVUdLSW1lS2tPcm1rL0VHczVxcUdrQUt3UXJRemo4VVJCVFlSbXFs?=
+ =?utf-8?B?cHdubnlzSUhOcERTdmZlUlE2cXYzNWpqUU84RkhiUG9jazFhdGEwRUR6VGN4?=
+ =?utf-8?B?L1l4S0M0T25ydm9JYXVnakZPdHJaR0xKbzZSek9sdThhekVtS1kvZ2NjZXdx?=
+ =?utf-8?B?dzhGS2ttamZIYWpSSkFRVWV6akx5Mi9QVFZJcElYY2ZtS215RlNHNWJzUWJ5?=
+ =?utf-8?B?aEpGT2FxUUVnSkI3OGczNXE1RE9FVldDNEttRGRQOFprN21iSXVNejhXRHRp?=
+ =?utf-8?B?TWNkYVU0S0NYQW45K1FZakZQNld4cnJBVlpmTEFsaEdOZjBCaUlxbHdLQjd6?=
+ =?utf-8?B?QjFFalVDbFRQUXFBWnZDc213V2p6WCtDZzRjd0ZBK2Q0RmVLOFU4TkVHM0xl?=
+ =?utf-8?B?alhNUVREUWRVaU8rWGd2NVpSSmhrUnBGVlpRWHNOMFdKemlHRjhhbFEwUkk0?=
+ =?utf-8?B?VFU4QStEb1pUT0llaWZ3biszbXhjZEdOSXVaQTliM0dFbldKNHN1Q0JiUG5L?=
+ =?utf-8?B?ZFMvWTZSak1HSmhCa3YzVmpFQ2ZncmdGTFlXb3oxTU42NlRZZ3pGU0Q1L1dL?=
+ =?utf-8?B?Q2k0cWRXRktWUXMwZ1dRS2RCY05MODM1WHVZZFdSbTR3cWlDQ0xFS3Y4WHg4?=
+ =?utf-8?B?RDgyb1ZkWEcrNHpuc3BtQ3lsOHdSVDM4aUhONnVlUzA4ZElKY2h5TmoxTUxV?=
+ =?utf-8?B?OUhManFpa2pkc3JzbVdRWXdPME5NYW82cGozVFhWbWRudUlGaktnZ2VCVEJ1?=
+ =?utf-8?B?UWlWbmZ3Tytkd3E5dTdEWUZtejJncHBlOTM0YW8wdW1TdVc4TnkvL2JtaXZK?=
+ =?utf-8?B?cEtQS1pOeVdNRDJpd0Zlb1pyOVVxNnk1c3YwWFJwMjNZSVdyY1REdW9McXd3?=
+ =?utf-8?B?eFZWWDJFT2JVWDhRZjZSY2dHRlJBUHpmWm5qWDNvUzhkTU0wam1lUExJeUhY?=
+ =?utf-8?B?RDF1V2FaT2REdHlSd0xaRng0OFVFYVVWYjNhVnJ6L2JoRExxeDRLSkNnM1l6?=
+ =?utf-8?B?MnJoQXJXSC8vWVBHK1ZudHdYbVhhcnUyR2dmMVdMem1YOE5xKzVIUFRIcnJj?=
+ =?utf-8?B?dmVaaDV3S1NtTEQzMFlqaG1wR1pJcXZxV2pwVlZ4YnBseW9lTTI0MHEwUFVu?=
+ =?utf-8?B?aFd6VHdOM2RzT0x0dCtyWEtMcytlZXJQMXQ2TExKUlpUbndRZ3ZjdkZxT1JV?=
+ =?utf-8?B?TTU4K1F4NFVHbFdtRmpZL1Z5dUN1akZHZmNvMGZJNU1iSk5TSXd5ZkxBYmt2?=
+ =?utf-8?B?dThtZ1NOM2VPUlNzcEJpYk8wUisraXdwZFR4aFpON1orWVUwRnRtTCsxcnF0?=
+ =?utf-8?B?SEpySVlMUnhMSnd0ZXZ0T1FJbmdaK2YyVmw0c0IzY2lMa2gyVGNEdjZTTWhF?=
+ =?utf-8?B?RlFhZ2krWHdqZVo1bzM5Y1FtOHVNZVJLc2VMUjFpMTcvOEtjOG1iRWZrNGd1?=
+ =?utf-8?B?cnVNY3g2dkxqNkhFNnRYKzVhOXFQbTNoK2F0YVR2MEtNRUpoYUVNNHpkVmFM?=
+ =?utf-8?B?bklWa2tQZm5weVdtQ2UyZDJOdHovQ3VqZkM5OFBseGFGaVQ5bmFES1YxUUho?=
+ =?utf-8?B?WXN5SEZoWUVhL09YWisxczA0SkwxRHFpcE85YlBCR0UzNGJhTHBLd3YvT25l?=
+ =?utf-8?B?d0JvR0swdTd3eHJlV1pZaWpwOXRCeVlkNGF5dkx2bXhGRisxbFBUU05tTmtW?=
+ =?utf-8?B?cDNYQTBmZG5UWGJBYzVvUzdqTldEWFpqZTlaSWQwSm54V0UyU0kwNmNRa3Bq?=
+ =?utf-8?B?dGRBb2NlNk0wNTljYXNvTVk1Ri9wZndnU2o3UEdCWmhrZU1Dbk5VZU4zNHhG?=
+ =?utf-8?B?WW1Da0NRTk4vbDdVZXQ5MmxLcmFnS2dIZ25lMTVWSHFrT2Z2ZUlOT3JrcGV4?=
+ =?utf-8?B?ZHR1YzJFRG5qMmYwYXNZVElrWWNjbzIyNUlNbXUyVVRXazhJMEgzSVpwZCtz?=
+ =?utf-8?B?SDk1N08vV0tHd2MrdHNWVGozZ2xxM2dHRFRYa1Y2WTRpai9adkZETVJtTERv?=
+ =?utf-8?B?Ums4QXpSK0FESG5vMkVTL3ZabEhPVTRpUmJWOFF1ek5UcWNpcy9PVDZ0bHhJ?=
+ =?utf-8?B?a1N5ajlHekpPVHFmUWJkaU5ISW1adE5Kc3VuOTVxYVJQYm1SY09meTFmMXRq?=
+ =?utf-8?Q?IVyyiKWcEWgWOvRK0hj/n88QY?=
+X-OriginatorOrg: oss.nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 177ee0df-89c5-4ec1-32cf-08da641110c2
+X-MS-Exchange-CrossTenant-AuthSource: AM0PR04MB5140.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 Jul 2022 14:16:08.6449 (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 5s8DEo80eKNFce6qZN04EvzkLCfpps0r0a/125MTrKwWSWA9BvOJRPDCF/fLgPbzSEKHA7+doiyjTdk7SUW6SQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PAXPR04MB8559
+Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ kai.vehmanen@linux.intel.com, yung-chuan.liao@linux.intel.com,
+ daniel.baluta@nxp.com, ranjani.sridharan@linux.intel.com, lgirdwood@gmail.com,
+ linux-imx@nxp.com, yc.hung@mediatek.com, peter.ujfalusi@linux.intel.com,
+ linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -101,32 +157,97 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+From: Daniel Baluta <daniel.baluta@nxp.com>
 
---VOtkm5XuX2adiHc/
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Allocate memory at the end of sof_ipc_stream_params to store
+snd_compr_params in order to be sent them to SOF firmware.
 
-On Tue, Jul 12, 2022 at 03:51:04PM +0200, Cezary Rojewski wrote:
+This will help firmware correctly configure codecs parameters.
 
-> Please correct me if I'm wrong, but there is no guarantee that int is always
-> 32bits long. What is guaranteed though, is that int holds at least -/+
-> 32,767. Also, values larger than INT_MAX are allowed in the IPC payload.
+Notice, that we use 2 bytes from the reserved pool in order to store
+the extended data length. This is compatible with older FWs where
+there was no extended data.
 
-Right, int is just the natural size for an integer on the platform.
+Signed-off-by: Daniel Baluta <daniel.baluta@nxp.com>
+Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+Reviewed-by: Péter Ujfalusi <peter.ujfalusi@linux.intel.com>
+---
+ include/sound/sof/stream.h |  6 ++++--
+ sound/soc/sof/compress.c   | 17 +++++++++++++----
+ 2 files changed, 17 insertions(+), 6 deletions(-)
 
---VOtkm5XuX2adiHc/
-Content-Type: application/pgp-signature; name="signature.asc"
+diff --git a/include/sound/sof/stream.h b/include/sound/sof/stream.h
+index 1db3bbc3e65d..9377113f13e4 100644
+--- a/include/sound/sof/stream.h
++++ b/include/sound/sof/stream.h
+@@ -86,9 +86,11 @@ struct sof_ipc_stream_params {
+ 	uint32_t host_period_bytes;
+ 	uint16_t no_stream_position; /**< 1 means don't send stream position */
+ 	uint8_t cont_update_posn; /**< 1 means continuous update stream position */
+-
+-	uint8_t reserved[5];
++	uint8_t reserved0;
++	int16_t ext_data_length; /**< 0, means no extended data */
++	uint8_t reserved[2];
+ 	uint16_t chmap[SOF_IPC_MAX_CHANNELS];	/**< channel map - SOF_CHMAP_ */
++	uint8_t ext_data[]; /**< extended data */
+ } __packed;
+ 
+ /* PCM params info - SOF_IPC_STREAM_PCM_PARAMS */
+diff --git a/sound/soc/sof/compress.c b/sound/soc/sof/compress.c
+index 45c2ff61ee4d..1204dce29ef9 100644
+--- a/sound/soc/sof/compress.c
++++ b/sound/soc/sof/compress.c
+@@ -170,6 +170,7 @@ static int sof_compr_set_params(struct snd_soc_component *component,
+ 	struct snd_compr_tstamp *tstamp;
+ 	struct sof_ipc_pcm_params *pcm;
+ 	struct snd_sof_pcm *spcm;
++	size_t ext_data_size;
+ 	int ret;
+ 
+ 	tstamp = crtd->private_data;
+@@ -179,7 +180,12 @@ static int sof_compr_set_params(struct snd_soc_component *component,
+ 	if (!spcm)
+ 		return -EINVAL;
+ 
+-	pcm = kzalloc(sizeof(*pcm), GFP_KERNEL);
++	ext_data_size = sizeof(params->codec);
++
++	if (sizeof(*pcm) + ext_data_size > sdev->ipc->max_payload_size)
++		return -EINVAL;
++
++	pcm = kzalloc(sizeof(*pcm) + ext_data_size, GFP_KERNEL);
+ 	if (!pcm)
+ 		return -ENOMEM;
+ 
+@@ -194,11 +200,11 @@ static int sof_compr_set_params(struct snd_soc_component *component,
+ 		goto out;
+ 
+ 	pcm->params.buffer.pages = PFN_UP(crtd->dma_bytes);
+-	pcm->hdr.size = sizeof(*pcm);
++	pcm->hdr.size = sizeof(*pcm) + ext_data_size;
+ 	pcm->hdr.cmd = SOF_IPC_GLB_STREAM_MSG | SOF_IPC_STREAM_PCM_PARAMS;
+ 
+ 	pcm->comp_id = spcm->stream[cstream->direction].comp_id;
+-	pcm->params.hdr.size = sizeof(pcm->params);
++	pcm->params.hdr.size = sizeof(pcm->params) + ext_data_size;
+ 	pcm->params.buffer.phy_addr = spcm->stream[cstream->direction].page_table.addr;
+ 	pcm->params.buffer.size = crtd->dma_bytes;
+ 	pcm->params.direction = cstream->direction;
+@@ -209,8 +215,11 @@ static int sof_compr_set_params(struct snd_soc_component *component,
+ 	pcm->params.sample_container_bytes =
+ 		snd_pcm_format_physical_width(SNDRV_PCM_FORMAT_S32) >> 3;
+ 	pcm->params.host_period_bytes = params->buffer.fragment_size;
++	pcm->params.ext_data_length = ext_data_size;
++
++	memcpy((u8 *)pcm->params.ext_data, &params->codec, ext_data_size);
+ 
+-	ret = sof_ipc_tx_message(sdev->ipc, pcm, sizeof(*pcm),
++	ret = sof_ipc_tx_message(sdev->ipc, pcm, sizeof(*pcm) + ext_data_size,
+ 				 &ipc_params_reply, sizeof(ipc_params_reply));
+ 	if (ret < 0) {
+ 		dev_err(component->dev, "error ipc failed\n");
+-- 
+2.27.0
 
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmLNfuwACgkQJNaLcl1U
-h9C/QQf9FtMNLt7fY7kTHfnJjxoc2xRbWmtmteMI/X1xnpa0sAS30hZrAP5o49ri
-tl19bcPCbpY15Ih/BJlE7TOW358K5CxVlICUZdZ088SVbKN+tTAig9DVnCk4cjoI
-53fscUp8y/saZ3R0HnDZY+KQhoh9j60bMWs3ff3ciAHx6HXVOdJ6qgKbWgsnxo5A
-viX6XmKmA0tPnn69FBCHz7ooJE9R8I+Wh1oWjL02rJMrWwARzqpyt8yubvHL1tSo
-4EU+DCDtCYimR9nzs1/m4jdK3J2T7FpX2NQgO1NNDmRbcAqkiu4Gd0Ek+ydaIcym
-uIOTy5RjhQb41oJUTlQvfqfdQ0tsMA==
-=JOe6
------END PGP SIGNATURE-----
-
---VOtkm5XuX2adiHc/--
