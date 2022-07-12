@@ -4,66 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0F34CC43334
-	for <alsa-devel@archiver.kernel.org>; Tue, 12 Jul 2022 12:24:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6054AC433EF
+	for <alsa-devel@archiver.kernel.org>; Tue, 12 Jul 2022 12:25:04 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 2F167168B;
-	Tue, 12 Jul 2022 14:23:53 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2F167168B
+	by alsa0.perex.cz (Postfix) with ESMTPS id 32F651683;
+	Tue, 12 Jul 2022 14:24:12 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 32F651683
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1657628683;
-	bh=3d4mAq7owzg6AlbTOhlLET60zO9JyD046eHzvhlalCs=;
+	s=default; t=1657628702;
+	bh=3WhREe0ejtgl2ZdjfM+ZJiWyXQ4Xgunx1CZ9dpQfQfw=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=e/i0zLkX6qr/zc2iasmz9NGzjln680GA05zcRXfUmdtdKTJSuJiiCv/Rw08ihEuBh
-	 bQhOafoIgpdb++yY3X0LdGPPoqKqZ/FlzVsVjNAiU7ULdD7PJc8yFKrlxmI90jQHug
-	 oTJWQiAQg9s7dzIGDib/rgMzlmYrahYAJc+8VT4Q=
+	b=pNrNMjfEXaYWc11jmytRiOh4EFPS2N2PvqezQns2e0NeelGI09WurY+x6EOgkgD0j
+	 iDT/QyIr3gMjS2Ecvz6EvOdrf8eJXrZSNXhNpjOC9Y3YtsKT5Scosfp5fEUaKAAmGu
+	 a/nyeympjmOJJVcLAC624nbBt1LcQZiUpIQCGEqc=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 4E50AF8023B;
-	Tue, 12 Jul 2022 14:23:25 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 097E7F80542;
+	Tue, 12 Jul 2022 14:23:27 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 34B6BF800BD; Tue, 12 Jul 2022 14:23:23 +0200 (CEST)
+ id 454B7F8053D; Tue, 12 Jul 2022 14:23:25 +0200 (CEST)
 Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 672C7F800BD
- for <alsa-devel@alsa-project.org>; Tue, 12 Jul 2022 14:23:15 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 672C7F800BD
+ by alsa1.perex.cz (Postfix) with ESMTPS id 505A0F8023B
+ for <alsa-devel@alsa-project.org>; Tue, 12 Jul 2022 14:23:17 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 505A0F8023B
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="Pm2v+wPl"
+ header.b="mSpjIw35"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1657628597; x=1689164597;
+ t=1657628599; x=1689164599;
  h=from:to:cc:subject:date:message-id:in-reply-to:
  references:mime-version:content-transfer-encoding;
- bh=3d4mAq7owzg6AlbTOhlLET60zO9JyD046eHzvhlalCs=;
- b=Pm2v+wPlWfZ8WAD604lVQYYggkXeQGnutT96bPl/QGB39IiIMSmST48k
- MANBux9fKAT7gUs12dXPvOBlDaLMuzvimPFa1bBHZgpx3eV5D0gpAOSvr
- S8iEUH8V6SqmH6Z3rW9yrQCOBqThWC2qQvrkIsWxYcgpNRZMmWFzTlDml
- B7zK7jLXHjHO8vD93GL82Ma6fA+kiU7Dev+sp0pJgkh8aeQ4CogYdpCKK
- SM58stwNJSWCfIBg4sweUhaYZWh1nUZcdurzemEZMnmWpRtXLcgxNKFrs
- i+7NLcV6MkBWsRBELLZtou7sUJ2FUsNi0aalFRT6jROxjDHc54+UswTU7 Q==;
-X-IronPort-AV: E=McAfee;i="6400,9594,10405"; a="284945768"
-X-IronPort-AV: E=Sophos;i="5.92,265,1650956400"; d="scan'208";a="284945768"
+ bh=3WhREe0ejtgl2ZdjfM+ZJiWyXQ4Xgunx1CZ9dpQfQfw=;
+ b=mSpjIw355z2G6+efomfQHnyQNgric3daMrgFUx78bgwgjL64jW23EFZh
+ gI//Yj36I/QGEfLBU9JhDyNO/CDRQqUouFNYFkBIQbYu+OeIyJbhmWdKF
+ 8gtTN8YxZ9cYrM7yFtfEh5OwLGM1Gsdyr6rfLWQIuoRSRq5V9GHmTk9Jp
+ ukq4akbUQIXuXvW63lRX1J9uuBeFDtw+lDwvH6agLg2IHDM4BgSeuy2XB
+ 5wu6SdK39vhW7S95E8sMhG+ra1XQnM/+uZXGTiDCP88YfTIeCo5j60oBH
+ BDZbgZw7mDKfe4GMxMTzfq+YvfAXD7ThySAgZIVVIkDDeVnDlfgYUJXs+ g==;
+X-IronPort-AV: E=McAfee;i="6400,9594,10405"; a="284945774"
+X-IronPort-AV: E=Sophos;i="5.92,265,1650956400"; d="scan'208";a="284945774"
 Received: from fmsmga005.fm.intel.com ([10.253.24.32])
  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 12 Jul 2022 05:23:13 -0700
-X-IronPort-AV: E=Sophos;i="5.92,265,1650956400"; d="scan'208";a="922178909"
+ 12 Jul 2022 05:23:15 -0700
+X-IronPort-AV: E=Sophos;i="5.92,265,1650956400"; d="scan'208";a="922178911"
 Received: from ahedstro-mobl.ger.corp.intel.com (HELO
  pujfalus-desk.ger.corp.intel.com) ([10.249.254.175])
  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 12 Jul 2022 05:23:11 -0700
+ 12 Jul 2022 05:23:14 -0700
 From: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
 To: lgirdwood@gmail.com, broonie@kernel.org,
  pierre-louis.bossart@linux.intel.com
-Subject: [PATCH 1/3] ASoC: SOF: Intel: cnl: Do not process IPC reply before
- firmware boot
-Date: Tue, 12 Jul 2022 15:23:55 +0300
-Message-Id: <20220712122357.31282-2-peter.ujfalusi@linux.intel.com>
+Subject: [PATCH 2/3] ASoC: SOF: Intel: hda-ipc: Do not process IPC reply
+ before firmware boot
+Date: Tue, 12 Jul 2022 15:23:56 +0300
+Message-Id: <20220712122357.31282-3-peter.ujfalusi@linux.intel.com>
 X-Mailer: git-send-email 2.37.0
 In-Reply-To: <20220712122357.31282-1-peter.ujfalusi@linux.intel.com>
 References: <20220712122357.31282-1-peter.ujfalusi@linux.intel.com>
@@ -100,14 +100,14 @@ Signed-off-by: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
 Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- sound/soc/sof/intel/cnl.c | 37 ++++++++++++++++++++++++-------------
- 1 file changed, 24 insertions(+), 13 deletions(-)
+ sound/soc/sof/intel/hda-ipc.c | 39 ++++++++++++++++++++++-------------
+ 1 file changed, 25 insertions(+), 14 deletions(-)
 
-diff --git a/sound/soc/sof/intel/cnl.c b/sound/soc/sof/intel/cnl.c
-index ccf46fcd6c9a..a064453f0bc3 100644
---- a/sound/soc/sof/intel/cnl.c
-+++ b/sound/soc/sof/intel/cnl.c
-@@ -60,17 +60,23 @@ irqreturn_t cnl_ipc4_irq_thread(int irq, void *context)
+diff --git a/sound/soc/sof/intel/hda-ipc.c b/sound/soc/sof/intel/hda-ipc.c
+index f08011249955..65e688f749ea 100644
+--- a/sound/soc/sof/intel/hda-ipc.c
++++ b/sound/soc/sof/intel/hda-ipc.c
+@@ -148,17 +148,23 @@ irqreturn_t hda_dsp_ipc4_irq_thread(int irq, void *context)
  
  		if (primary & SOF_IPC4_MSG_DIR_MASK) {
  			/* Reply received */
@@ -137,11 +137,11 @@ index ccf46fcd6c9a..a064453f0bc3 100644
 +			}
  		} else {
  			/* Notification received */
- 			notification_data.primary = primary;
-@@ -124,15 +130,20 @@ irqreturn_t cnl_ipc_irq_thread(int irq, void *context)
- 					CNL_DSP_REG_HIPCCTL,
- 					CNL_DSP_REG_HIPCCTL_DONE, 0);
  
+@@ -225,16 +231,21 @@ irqreturn_t hda_dsp_ipc_irq_thread(int irq, void *context)
+ 		 * place, the message might not yet be marked as expecting a
+ 		 * reply.
+ 		 */
 -		spin_lock_irq(&sdev->ipc_lock);
 +		if (likely(sdev->fw_state == SOF_FW_BOOT_COMPLETE)) {
 +			spin_lock_irq(&sdev->ipc_lock);
@@ -153,8 +153,10 @@ index ccf46fcd6c9a..a064453f0bc3 100644
 +			hda_dsp_ipc_get_reply(sdev);
 +			snd_sof_ipc_reply(sdev, msg);
  
--		cnl_ipc_dsp_done(sdev);
-+			cnl_ipc_dsp_done(sdev);
+-		/* set the done bit */
+-		hda_dsp_ipc_dsp_done(sdev);
++			/* set the done bit */
++			hda_dsp_ipc_dsp_done(sdev);
  
 -		spin_unlock_irq(&sdev->ipc_lock);
 +			spin_unlock_irq(&sdev->ipc_lock);
