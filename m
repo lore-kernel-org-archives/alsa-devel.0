@@ -4,72 +4,72 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C9595C43334
-	for <alsa-devel@archiver.kernel.org>; Wed, 13 Jul 2022 14:27:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id DBD36C43334
+	for <alsa-devel@archiver.kernel.org>; Wed, 13 Jul 2022 14:30:49 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 160FB1736;
-	Wed, 13 Jul 2022 16:26:50 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 160FB1736
+	by alsa0.perex.cz (Postfix) with ESMTPS id CBCBB1689;
+	Wed, 13 Jul 2022 16:29:57 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CBCBB1689
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1657722460;
-	bh=ge8z9tQugUy9cTnjB8duw2RGaf7wv9bBNLATuLcW9CY=;
+	s=default; t=1657722647;
+	bh=79R+cGH+W8fdanIcU1gar7tgsMfMkUvcNYAcmuJq6rY=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=p5TuIH/Qz2it3CRoXLGAR15ZR6smjJXNDVp2dZSI9zTzycWKktaEp7MoNGBaEfQYM
-	 nGb6m1eMq7fYZdLEJW+xPoB9vid51I4zKRYhbyZK34OPMUVTa33S1CXAtyDrB3rmxd
-	 T5y1IU9BnKYIGzl33wn2oOg+57DfKRh4D1DOkeQw=
+	b=Bohok1M/WgXJUL9GXsTAxUOSJOBXysRns4E1siZFXS94G2uX40/IZLTfVv4iBip/a
+	 ycYzRX/IykIvqgDMSolxxdMJLzq43QMNMgSQ0HBeP2zUQUOLlNYlMUTeP5Y/o+FP5M
+	 Tm8kRsEg471Q/EYGupcYeKo8Ph/Hl0KyUFcXoJmU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 26970F80553;
-	Wed, 13 Jul 2022 16:25:56 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 7B7D9F80134;
+	Wed, 13 Jul 2022 16:29:57 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 92136F80134; Wed, 13 Jul 2022 16:25:55 +0200 (CEST)
-Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
+ id C2FD2F80310; Wed, 13 Jul 2022 16:29:55 +0200 (CEST)
+Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 99D9EF80134
- for <alsa-devel@alsa-project.org>; Wed, 13 Jul 2022 16:25:45 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 99D9EF80134
+ by alsa1.perex.cz (Postfix) with ESMTPS id 8C6C4F8019B
+ for <alsa-devel@alsa-project.org>; Wed, 13 Jul 2022 16:29:51 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8C6C4F8019B
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="eLrXQ2V0"
+ header.b="VlNjHssN"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1657722349; x=1689258349;
+ t=1657722592; x=1689258592;
  h=from:to:cc:subject:date:message-id:in-reply-to:
  references:mime-version:content-transfer-encoding;
- bh=ge8z9tQugUy9cTnjB8duw2RGaf7wv9bBNLATuLcW9CY=;
- b=eLrXQ2V04dbTS4j8V1sb5EqEgi6HAmIRoc2NoISAmw4kDsz9BDEn4ntc
- 8C6guDtLp/OBgfUMvUsh3yWmx0nJBn6CfVRiyqNUtIwEK53E58yAt4hhK
- R/KXjZl9smhkRM5/jWm4SJtr1tqtRwJ0hrkf8UPcNi6ZKmo8kFSDE8OES
- 5SXQwcKP1KfuWxRA8TIDFo31dOj5xhIHg6HZUfVOgg1ODXFeAp5wzhQZo
- w9DpHDRLf4JZWPqxVzECyLCjBb0ijvzIU72hOBqPvFvOAW/mKME7ctHRs
- F+nPMZDDZUKwRQ0SQWES6L5qtgyZ2z0WjPb2DVBHaGVWeCUAHq6EbXfpb w==;
-X-IronPort-AV: E=McAfee;i="6400,9594,10407"; a="349195674"
-X-IronPort-AV: E=Sophos;i="5.92,267,1650956400"; d="scan'208";a="349195674"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
- by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 13 Jul 2022 07:25:42 -0700
-X-IronPort-AV: E=Sophos;i="5.92,267,1650956400"; d="scan'208";a="570643756"
+ bh=79R+cGH+W8fdanIcU1gar7tgsMfMkUvcNYAcmuJq6rY=;
+ b=VlNjHssN+MWGm4Ejdk1MMO6jo8aNerFy+1crVcge8Es7e/H2JyXZdWNu
+ j/1kdXvY8t5g2e43j6ceXWRcKDAiTBr9gpO+5FObaX4kIevZITZNZXVos
+ EOLBnywXHa8UJ7EKQnPyT4LrF6TenLXYYlRG4sbGHrhqJGotAQa8lY+Mi
+ F+5dVlF7uZxKqqdyQi17sBv7/JbkJE6dCZFnMYIaH/ao4WrJX1N+XR+k1
+ kvN0mERRMD+T83mQP121VJ4zrbqLedXjLFfA7z7a/41fA2YsJMnfu4sg/
+ huE09OayUx0TXL62t5vF6VeTvJpqDmRjVZPsD/IlE8ejMsPxA3afOcomK g==;
+X-IronPort-AV: E=McAfee;i="6400,9594,10407"; a="285251403"
+X-IronPort-AV: E=Sophos;i="5.92,267,1650956400"; d="scan'208";a="285251403"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+ by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 13 Jul 2022 07:29:48 -0700
+X-IronPort-AV: E=Sophos;i="5.92,267,1650956400"; d="scan'208";a="622966734"
 Received: from bard-ubuntu.sh.intel.com ([10.239.185.57])
- by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 13 Jul 2022 07:25:40 -0700
+ by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 13 Jul 2022 07:29:47 -0700
 From: Bard Liao <yung-chuan.liao@linux.intel.com>
 To: alsa-devel@alsa-project.org,
 	vkoul@kernel.org
-Subject: [PATCH 2/3] soundwire: bus: allow device number to be unique at
- system level
-Date: Wed, 13 Jul 2022 22:25:28 +0800
-Message-Id: <20220713142529.17323-3-yung-chuan.liao@linux.intel.com>
+Subject: [PATCH 2/2] soundwire: intel: remove use of __func__ in dev_dbg
+Date: Wed, 13 Jul 2022 22:29:37 +0800
+Message-Id: <20220713142937.17562-2-yung-chuan.liao@linux.intel.com>
 X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20220713142529.17323-1-yung-chuan.liao@linux.intel.com>
-References: <20220713142529.17323-1-yung-chuan.liao@linux.intel.com>
+In-Reply-To: <20220713142937.17562-1-yung-chuan.liao@linux.intel.com>
+References: <20220713142937.17562-1-yung-chuan.liao@linux.intel.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-Cc: pierre-louis.bossart@linux.intel.com, vinod.koul@linaro.org,
- bard.liao@intel.com, linux-kernel@vger.kernel.org
+Cc: pierre-louis.bossart@linux.intel.com, gregkh@linuxfoundation.org,
+ vinod.koul@linaro.org, bard.liao@intel.com, linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -87,100 +87,77 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 
-The SoundWire specification allows the device number to be allocated
-at will. When a system includes multiple SoundWire links, the device
-number scope is limited to the link to which the device is attached.
+The module and function information can be added with
+'modprobe foo dyndbg=+pmf'
 
-However, for integration/debug it can be convenient to have a unique
-device number across the system. This patch adds a 'dev_num_ida_min'
-field at the bus level, which when set will be used to allocate an
-IDA.
-
-The allocation happens when a hardware device reports as ATTACHED. If
-any error happens during the enumeration, the allocated IDA is not
-freed - the device number will be reused if/when the device re-joins
-the bus. The IDA is only freed when the Linux device is unregistered.
-
+Suggested-by: Greg KH <gregkh@linuxfoundation.org>
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-Reviewed-by: Rander Wang <rander.wang@intel.com>
+Reviewed-by: Péter Ujfalusi <peter.ujfalusi@linux.intel.com>
 Signed-off-by: Bard Liao <yung-chuan.liao@linux.intel.com>
 ---
- drivers/soundwire/bus.c       | 23 +++++++++++++++++------
- include/linux/soundwire/sdw.h |  4 ++++
- 2 files changed, 21 insertions(+), 6 deletions(-)
+ drivers/soundwire/intel.c | 14 +++++++-------
+ 1 file changed, 7 insertions(+), 7 deletions(-)
 
-diff --git a/drivers/soundwire/bus.c b/drivers/soundwire/bus.c
-index 37638c20c804..8970f8560766 100644
---- a/drivers/soundwire/bus.c
-+++ b/drivers/soundwire/bus.c
-@@ -12,6 +12,7 @@
- #include "sysfs_local.h"
+diff --git a/drivers/soundwire/intel.c b/drivers/soundwire/intel.c
+index 85d4268eea65..25b27cd1be1d 100644
+--- a/drivers/soundwire/intel.c
++++ b/drivers/soundwire/intel.c
+@@ -293,11 +293,11 @@ static int intel_link_power_up(struct sdw_intel *sdw)
+ 		syncprd = SDW_SHIM_SYNC_SYNCPRD_VAL_24;
  
- static DEFINE_IDA(sdw_bus_ida);
-+static DEFINE_IDA(sdw_peripheral_ida);
+ 	if (!*shim_mask) {
+-		dev_dbg(sdw->cdns.dev, "%s: powering up all links\n", __func__);
++		dev_dbg(sdw->cdns.dev, "powering up all links\n");
  
- static int sdw_get_id(struct sdw_bus *bus)
- {
-@@ -157,9 +158,11 @@ static int sdw_delete_slave(struct device *dev, void *data)
+ 		/* we first need to program the SyncPRD/CPU registers */
+ 		dev_dbg(sdw->cdns.dev,
+-			"%s: first link up, programming SYNCPRD\n", __func__);
++			"first link up, programming SYNCPRD\n");
  
- 	mutex_lock(&bus->bus_lock);
+ 		/* set SyncPRD period */
+ 		sync_reg = intel_readl(shim, SDW_SHIM_SYNC);
+@@ -479,7 +479,7 @@ static int intel_link_power_down(struct sdw_intel *sdw)
  
--	if (slave->dev_num) /* clear dev_num if assigned */
-+	if (slave->dev_num) { /* clear dev_num if assigned */
- 		clear_bit(slave->dev_num, bus->assigned);
--
-+		if (bus->dev_num_ida_min)
-+			ida_free(&sdw_peripheral_ida, slave->dev_num);
-+	}
- 	list_del_init(&slave->node);
- 	mutex_unlock(&bus->bus_lock);
+ 	if (!*shim_mask) {
  
-@@ -639,10 +642,18 @@ static int sdw_get_device_num(struct sdw_slave *slave)
- {
- 	int bit;
+-		dev_dbg(sdw->cdns.dev, "%s: powering down all links\n", __func__);
++		dev_dbg(sdw->cdns.dev, "powering down all links\n");
  
--	bit = find_first_zero_bit(slave->bus->assigned, SDW_MAX_DEVICES);
--	if (bit == SDW_MAX_DEVICES) {
--		bit = -ENODEV;
--		goto err;
-+	if (slave->bus->dev_num_ida_min) {
-+		bit = ida_alloc_range(&sdw_peripheral_ida,
-+				      slave->bus->dev_num_ida_min, SDW_MAX_DEVICES,
-+				      GFP_KERNEL);
-+		if (bit < 0)
-+			goto err;
-+	} else {
-+		bit = find_first_zero_bit(slave->bus->assigned, SDW_MAX_DEVICES);
-+		if (bit == SDW_MAX_DEVICES) {
-+			bit = -ENODEV;
-+			goto err;
-+		}
+ 		/* Link power down sequence */
+ 		link_control = intel_readl(shim, SDW_SHIM_LCTL);
+@@ -1547,11 +1547,11 @@ static int intel_resume_child_device(struct device *dev, void *data)
+ 	struct sdw_slave *slave = dev_to_sdw_dev(dev);
+ 
+ 	if (!slave->probed) {
+-		dev_dbg(dev, "%s: skipping device, no probed driver\n", __func__);
++		dev_dbg(dev, "skipping device, no probed driver\n");
+ 		return 0;
+ 	}
+ 	if (!slave->dev_num_sticky) {
+-		dev_dbg(dev, "%s: skipping device, never detected on bus\n", __func__);
++		dev_dbg(dev, "skipping device, never detected on bus\n");
+ 		return 0;
  	}
  
- 	/*
-diff --git a/include/linux/soundwire/sdw.h b/include/linux/soundwire/sdw.h
-index 39058c841469..a2b31d25ea27 100644
---- a/include/linux/soundwire/sdw.h
-+++ b/include/linux/soundwire/sdw.h
-@@ -889,6 +889,9 @@ struct sdw_master_ops {
-  * meaningful if multi_link is set. If set to 1, hardware-based
-  * synchronization will be used even if a stream only uses a single
-  * SoundWire segment.
-+ * @dev_num_ida_min: if set, defines the minimum values for the IDA
-+ * used to allocate system-unique device numbers. This value needs to be
-+ * identical across all SoundWire bus in the system.
-  */
- struct sdw_bus {
- 	struct device *dev;
-@@ -913,6 +916,7 @@ struct sdw_bus {
- 	u32 bank_switch_timeout;
- 	bool multi_link;
- 	int hw_sync_min_links;
-+	int dev_num_ida_min;
- };
+@@ -1637,7 +1637,7 @@ static int __maybe_unused intel_suspend(struct device *dev)
+ 	}
  
- int sdw_bus_master_add(struct sdw_bus *bus, struct device *parent,
+ 	if (pm_runtime_suspended(dev)) {
+-		dev_dbg(dev, "%s: pm_runtime status: suspended\n", __func__);
++		dev_dbg(dev, "pm_runtime status: suspended\n");
+ 
+ 		clock_stop_quirks = sdw->link_res->clock_stop_quirks;
+ 
+@@ -1758,7 +1758,7 @@ static int __maybe_unused intel_resume(struct device *dev)
+ 	multi_link = !(link_flags & SDW_INTEL_MASTER_DISABLE_MULTI_LINK);
+ 
+ 	if (pm_runtime_suspended(dev)) {
+-		dev_dbg(dev, "%s: pm_runtime status was suspended, forcing active\n", __func__);
++		dev_dbg(dev, "pm_runtime status was suspended, forcing active\n");
+ 
+ 		/* follow required sequence from runtime_pm.rst */
+ 		pm_runtime_disable(dev);
 -- 
 2.25.1
 
