@@ -4,67 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 230F1C43334
-	for <alsa-devel@archiver.kernel.org>; Wed, 13 Jul 2022 14:32:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3FC3AC433EF
+	for <alsa-devel@archiver.kernel.org>; Wed, 13 Jul 2022 14:32:11 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 05594173D;
-	Wed, 13 Jul 2022 16:31:09 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 05594173D
+	by alsa0.perex.cz (Postfix) with ESMTPS id 84C101746;
+	Wed, 13 Jul 2022 16:31:19 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 84C101746
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1657722719;
-	bh=m65ju1eBUrKQs14mEqgPvnSbDjpwIWUCfEMPByfIU5g=;
-	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
+	s=default; t=1657722729;
+	bh=t8fIVopFw1scYtgSMTsw0uvBlyue03PrQLAZCZlxZ/I=;
+	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=TF9bvTS1TRJU6RhjOpS4Y1hmC+G7bpem6A80e0lL2DE+TRZweteXRk5FJfYmsYrlh
-	 FGn8BjE6YUJo3IXTCoqeBMnEe0lpz/YP6QVZYB6AXJxD6IHYs5TRDtq7tiEHJDByTu
-	 kQWdyGL6C0Ev0jOu8nvupH00tMmVXZ4vX+aF2wMU=
+	b=t1/LpPOsWqc4kAGE/xcbwO+sttX3gs34zp09GuebWE3+jiu3i/LB95CkRHueoS/+D
+	 yqAUFX4hRQ1GSjuue/KKIA0l9nLIt0svHB6kQyWP5mySBFYOwjcROo0eml4rnp0tBf
+	 zKHSibcXTFFxFv5QRnStLUbmxiy+bYDCpqrjM5NY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 9503AF804CA;
-	Wed, 13 Jul 2022 16:31:08 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 47F94F80543;
+	Wed, 13 Jul 2022 16:31:09 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 75FBBF80249; Wed, 13 Jul 2022 16:31:05 +0200 (CEST)
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+ id D0657F80249; Wed, 13 Jul 2022 16:31:05 +0200 (CEST)
+Received: from ams.source.kernel.org (ams.source.kernel.org
+ [IPv6:2604:1380:4601:e00::1])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id D2DE6F80134
- for <alsa-devel@alsa-project.org>; Wed, 13 Jul 2022 16:30:59 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D2DE6F80134
+ by alsa1.perex.cz (Postfix) with ESMTPS id DD84CF80254
+ for <alsa-devel@alsa-project.org>; Wed, 13 Jul 2022 16:30:55 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DD84CF80254
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="qZ4xj6xG"
+ header.b="jr1e0JzI"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by ams.source.kernel.org (Postfix) with ESMTPS id A2789B82018;
- Wed, 13 Jul 2022 14:30:58 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A45C2C34114;
+ by ams.source.kernel.org (Postfix) with ESMTPS id 0B798B82016;
  Wed, 13 Jul 2022 14:30:55 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 77DC9C34114;
+ Wed, 13 Jul 2022 14:30:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1657722657;
- bh=m65ju1eBUrKQs14mEqgPvnSbDjpwIWUCfEMPByfIU5g=;
- h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=qZ4xj6xGMqoovXDCeentESv+5VY55WwldlwuwIy312351Ae85knj5+iPjhTU2Z007
- s9atahdoGkG38VyoD80QGqf+L3wd/K00FEaQhp5wLC9RgqlNV4ovyLMbCBapmv2vBV
- NhVg7uBUdrEOnnwmjBKnBIBpAkBI0sX/Qjd1bBq4YTK9NSe5oN5V3w8avrYFreEZ3L
- f7IC6n8l/64WCJhG4iiY8BhZu/EkTszyyri6YSQBPYfY54wPjXRYhObMCO426Bg/oM
- G7GOwwI2fLEi2H0wyofVdIs+N6gOu7Hm9AcZ0fLfuULeDwOsXxJReaws2EDLVFfkF7
- WRpbjQL3QqHnQ==
+ s=k20201202; t=1657722653;
+ bh=t8fIVopFw1scYtgSMTsw0uvBlyue03PrQLAZCZlxZ/I=;
+ h=From:To:In-Reply-To:References:Subject:Date:From;
+ b=jr1e0JzIMhCF311XdRUyeVZ3SdFEjupFRE9kgRAMTuRP7tXuqdESvptSWknpiiKHX
+ Bj10yiKzl0UgkIBGxk4al4/b9Z4GHyKB9EojRjsPAWpHKXsHhsO+e9i457pznSFk4Q
+ qqxPL9R0QfxDfsUGE6eke+b/FpFOcJHNr9C7EB1nx/Z/zLRKO0pBjF16Hh9QdEdBdo
+ YiP7Vam32xNMjl6DxHN9uMQUAKi8RyGPyhpgzoBKK2nxSJfxFaJflCk6UiuaPXksuq
+ tIZRalBu+MLj+NF/i3yUaY0ndX084eDr39B5llHubANmoWvKm1dWrJQ1g5uvSsSQGd
+ LZFC4w7GJyesg==
 From: Mark Brown <broonie@kernel.org>
-To: Liam Girdwood <lgirdwood@gmail.com>, dan.carpenter@oracle.com
-In-Reply-To: <Ys2IRPHWGIwuVs21@kili>
-References: <Ys2IRPHWGIwuVs21@kili>
-Subject: Re: [PATCH] ASoC: amd: Fix error pointer dereference
-Message-Id: <165772265539.116109.6232452976191452367.b4-ty@kernel.org>
-Date: Wed, 13 Jul 2022 15:30:55 +0100
+To: perex@perex.cz, windhl@126.com, lgirdwood@gmail.com, tiwai@suse.com,
+ alsa-devel@alsa-project.org, matthias.bgg@gmail.com
+In-Reply-To: <20220713102013.367336-1-windhl@126.com>
+References: <20220713102013.367336-1-windhl@126.com>
+Subject: Re: [PATCH] ASoC: mt6359: Fix refcount leak bug
+Message-Id: <165772265219.116109.17965989340023594785.b4-ty@kernel.org>
+Date: Wed, 13 Jul 2022 15:30:52 +0100
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: pierre-louis.bossart@linux.intel.com, alsa-devel@alsa-project.org,
- kernel-janitors@vger.kernel.org, Takashi Iwai <tiwai@suse.com>,
- yang.lee@linux.alibaba.com, Vijendar.Mukunda@amd.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -80,10 +79,10 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Tue, 12 Jul 2022 17:42:12 +0300, Dan Carpenter wrote:
-> The "gpio_pa" pointer is an error pointer, there is no need to try
-> put it.  Calling gpiod_put() on it will lead to an error pointer
-> dereference.
+On Wed, 13 Jul 2022 18:20:13 +0800, Liang He wrote:
+> In mt6359_parse_dt() and mt6359_accdet_parse_dt(), we should call
+> of_node_put() for the reference returned by of_get_child_by_name()
+> which has increased the refcount.
 > 
 > 
 
@@ -93,8 +92,8 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: amd: Fix error pointer dereference
-      commit: 73acfba792b06156b7c805162fcd89fdb71646f9
+[1/1] ASoC: mt6359: Fix refcount leak bug
+      commit: a8d5df69e2ec702d979f7d04ed519caf8691a032
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
