@@ -4,64 +4,65 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1C86EC433EF
-	for <alsa-devel@archiver.kernel.org>; Wed, 13 Jul 2022 14:27:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C9595C43334
+	for <alsa-devel@archiver.kernel.org>; Wed, 13 Jul 2022 14:27:41 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 329741725;
-	Wed, 13 Jul 2022 16:26:38 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 329741725
+	by alsa0.perex.cz (Postfix) with ESMTPS id 160FB1736;
+	Wed, 13 Jul 2022 16:26:50 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 160FB1736
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1657722448;
-	bh=tYwVi73XEXhFXoO6kNb2ZMDbR48obx7haFf1QGVKu6o=;
+	s=default; t=1657722460;
+	bh=ge8z9tQugUy9cTnjB8duw2RGaf7wv9bBNLATuLcW9CY=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=MnWXLUzYh+ETm9p5Ar2X828EJV3HcIsjUEhTL8IU6O4RUNP0r3gXCd912GhAzNwbt
-	 cU7ANRb1k9bZjLuuLg5UTsT5eE3CgrRiQrpmjiaTdXJ/g/jT4Tmr7zsze/RdJHXhr0
-	 crbZtJLOg+1Xc1Nm4jcN8KfzQqlWg3EVLUS3PHPw=
+	b=p5TuIH/Qz2it3CRoXLGAR15ZR6smjJXNDVp2dZSI9zTzycWKktaEp7MoNGBaEfQYM
+	 nGb6m1eMq7fYZdLEJW+xPoB9vid51I4zKRYhbyZK34OPMUVTa33S1CXAtyDrB3rmxd
+	 T5y1IU9BnKYIGzl33wn2oOg+57DfKRh4D1DOkeQw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 420F8F80542;
-	Wed, 13 Jul 2022 16:25:53 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 26970F80553;
+	Wed, 13 Jul 2022 16:25:56 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 1AD7AF80249; Wed, 13 Jul 2022 16:25:52 +0200 (CEST)
+ id 92136F80134; Wed, 13 Jul 2022 16:25:55 +0200 (CEST)
 Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 82CA7F80249
+ by alsa1.perex.cz (Postfix) with ESMTPS id 99D9EF80134
  for <alsa-devel@alsa-project.org>; Wed, 13 Jul 2022 16:25:45 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 82CA7F80249
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 99D9EF80134
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="naNLSpaM"
+ header.b="eLrXQ2V0"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1657722346; x=1689258346;
+ t=1657722349; x=1689258349;
  h=from:to:cc:subject:date:message-id:in-reply-to:
  references:mime-version:content-transfer-encoding;
- bh=tYwVi73XEXhFXoO6kNb2ZMDbR48obx7haFf1QGVKu6o=;
- b=naNLSpaMCiScAmgrlDBo2jwFW7vKukWrCmWW2cP5s5Pul4w4fRUQbuQU
- D11zklJNnMu8yu8r0rads1hSAg+adKtCy5YenfmqPE31VS4pyLt1B2wWJ
- zfGR6/QxR6ZeDfUkICPjBu2/Aaz0EinhT+sZ94X+jPWweAV4shICM1FeP
- Kt8FwCf3kglM81C1UAAiEK5JtJ8ArYEaihMtrZLA6VECGLYhI0li8/lPG
- 1rJQrEu90O0DI4f2YJjGokguMpKnDIq3Nn7KzWM4SXiOIJm6IU669+ujb
- RsgstrFlLZnJ4UevBxG6YUwT50Y+4gkRQT3B895OXTa2M2bXu94JmX2Hd Q==;
-X-IronPort-AV: E=McAfee;i="6400,9594,10407"; a="349195686"
-X-IronPort-AV: E=Sophos;i="5.92,267,1650956400"; d="scan'208";a="349195686"
+ bh=ge8z9tQugUy9cTnjB8duw2RGaf7wv9bBNLATuLcW9CY=;
+ b=eLrXQ2V04dbTS4j8V1sb5EqEgi6HAmIRoc2NoISAmw4kDsz9BDEn4ntc
+ 8C6guDtLp/OBgfUMvUsh3yWmx0nJBn6CfVRiyqNUtIwEK53E58yAt4hhK
+ R/KXjZl9smhkRM5/jWm4SJtr1tqtRwJ0hrkf8UPcNi6ZKmo8kFSDE8OES
+ 5SXQwcKP1KfuWxRA8TIDFo31dOj5xhIHg6HZUfVOgg1ODXFeAp5wzhQZo
+ w9DpHDRLf4JZWPqxVzECyLCjBb0ijvzIU72hOBqPvFvOAW/mKME7ctHRs
+ F+nPMZDDZUKwRQ0SQWES6L5qtgyZ2z0WjPb2DVBHaGVWeCUAHq6EbXfpb w==;
+X-IronPort-AV: E=McAfee;i="6400,9594,10407"; a="349195674"
+X-IronPort-AV: E=Sophos;i="5.92,267,1650956400"; d="scan'208";a="349195674"
 Received: from orsmga006.jf.intel.com ([10.7.209.51])
  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 13 Jul 2022 07:25:44 -0700
-X-IronPort-AV: E=Sophos;i="5.92,267,1650956400"; d="scan'208";a="570643761"
+ 13 Jul 2022 07:25:42 -0700
+X-IronPort-AV: E=Sophos;i="5.92,267,1650956400"; d="scan'208";a="570643756"
 Received: from bard-ubuntu.sh.intel.com ([10.239.185.57])
  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 13 Jul 2022 07:25:42 -0700
+ 13 Jul 2022 07:25:40 -0700
 From: Bard Liao <yung-chuan.liao@linux.intel.com>
 To: alsa-devel@alsa-project.org,
 	vkoul@kernel.org
-Subject: [PATCH 3/3] soundwire: intel: set dev_num_ida_min
-Date: Wed, 13 Jul 2022 22:25:29 +0800
-Message-Id: <20220713142529.17323-4-yung-chuan.liao@linux.intel.com>
+Subject: [PATCH 2/3] soundwire: bus: allow device number to be unique at
+ system level
+Date: Wed, 13 Jul 2022 22:25:28 +0800
+Message-Id: <20220713142529.17323-3-yung-chuan.liao@linux.intel.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20220713142529.17323-1-yung-chuan.liao@linux.intel.com>
 References: <20220713142529.17323-1-yung-chuan.liao@linux.intel.com>
@@ -86,43 +87,100 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 
-The allowed values for SoundWire device numbers are between 1 and 11
-(inclusive). HDaudio/iDISP codecs typically use SDI values 0..3
-(inclusive). To allow for a unique peripheral SDI/dev_number across
-HDaudio and SoundWire buses, we set the minimum base to 4. This still
-allows for 8 SoundWire peripherals in the system, currently more than
-needed in actual products.
+The SoundWire specification allows the device number to be allocated
+at will. When a system includes multiple SoundWire links, the device
+number scope is limited to the link to which the device is attached.
+
+However, for integration/debug it can be convenient to have a unique
+device number across the system. This patch adds a 'dev_num_ida_min'
+field at the bus level, which when set will be used to allocate an
+IDA.
+
+The allocation happens when a hardware device reports as ATTACHED. If
+any error happens during the enumeration, the allocated IDA is not
+freed - the device number will be reused if/when the device re-joins
+the bus. The IDA is only freed when the Linux device is unregistered.
 
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 Reviewed-by: Rander Wang <rander.wang@intel.com>
 Signed-off-by: Bard Liao <yung-chuan.liao@linux.intel.com>
 ---
- drivers/soundwire/intel.c | 4 ++++
- 1 file changed, 4 insertions(+)
+ drivers/soundwire/bus.c       | 23 +++++++++++++++++------
+ include/linux/soundwire/sdw.h |  4 ++++
+ 2 files changed, 21 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/soundwire/intel.c b/drivers/soundwire/intel.c
-index 95ce292994cc..85d4268eea65 100644
---- a/drivers/soundwire/intel.c
-+++ b/drivers/soundwire/intel.c
-@@ -22,6 +22,9 @@
- #include "bus.h"
- #include "intel.h"
+diff --git a/drivers/soundwire/bus.c b/drivers/soundwire/bus.c
+index 37638c20c804..8970f8560766 100644
+--- a/drivers/soundwire/bus.c
++++ b/drivers/soundwire/bus.c
+@@ -12,6 +12,7 @@
+ #include "sysfs_local.h"
  
-+/* IDA min selected to avoid conflicts with HDaudio/iDISP SDI values */
-+#define INTEL_DEV_NUM_IDA_MIN           4
-+
- #define INTEL_MASTER_SUSPEND_DELAY_MS	3000
- #define INTEL_MASTER_RESET_ITERATIONS	10
+ static DEFINE_IDA(sdw_bus_ida);
++static DEFINE_IDA(sdw_peripheral_ida);
  
-@@ -1297,6 +1300,7 @@ static int intel_link_probe(struct auxiliary_device *auxdev,
- 	cdns->msg_count = 0;
+ static int sdw_get_id(struct sdw_bus *bus)
+ {
+@@ -157,9 +158,11 @@ static int sdw_delete_slave(struct device *dev, void *data)
  
- 	bus->link_id = auxdev->id;
-+	bus->dev_num_ida_min = INTEL_DEV_NUM_IDA_MIN;
+ 	mutex_lock(&bus->bus_lock);
  
- 	sdw_cdns_probe(cdns);
+-	if (slave->dev_num) /* clear dev_num if assigned */
++	if (slave->dev_num) { /* clear dev_num if assigned */
+ 		clear_bit(slave->dev_num, bus->assigned);
+-
++		if (bus->dev_num_ida_min)
++			ida_free(&sdw_peripheral_ida, slave->dev_num);
++	}
+ 	list_del_init(&slave->node);
+ 	mutex_unlock(&bus->bus_lock);
  
+@@ -639,10 +642,18 @@ static int sdw_get_device_num(struct sdw_slave *slave)
+ {
+ 	int bit;
+ 
+-	bit = find_first_zero_bit(slave->bus->assigned, SDW_MAX_DEVICES);
+-	if (bit == SDW_MAX_DEVICES) {
+-		bit = -ENODEV;
+-		goto err;
++	if (slave->bus->dev_num_ida_min) {
++		bit = ida_alloc_range(&sdw_peripheral_ida,
++				      slave->bus->dev_num_ida_min, SDW_MAX_DEVICES,
++				      GFP_KERNEL);
++		if (bit < 0)
++			goto err;
++	} else {
++		bit = find_first_zero_bit(slave->bus->assigned, SDW_MAX_DEVICES);
++		if (bit == SDW_MAX_DEVICES) {
++			bit = -ENODEV;
++			goto err;
++		}
+ 	}
+ 
+ 	/*
+diff --git a/include/linux/soundwire/sdw.h b/include/linux/soundwire/sdw.h
+index 39058c841469..a2b31d25ea27 100644
+--- a/include/linux/soundwire/sdw.h
++++ b/include/linux/soundwire/sdw.h
+@@ -889,6 +889,9 @@ struct sdw_master_ops {
+  * meaningful if multi_link is set. If set to 1, hardware-based
+  * synchronization will be used even if a stream only uses a single
+  * SoundWire segment.
++ * @dev_num_ida_min: if set, defines the minimum values for the IDA
++ * used to allocate system-unique device numbers. This value needs to be
++ * identical across all SoundWire bus in the system.
+  */
+ struct sdw_bus {
+ 	struct device *dev;
+@@ -913,6 +916,7 @@ struct sdw_bus {
+ 	u32 bank_switch_timeout;
+ 	bool multi_link;
+ 	int hw_sync_min_links;
++	int dev_num_ida_min;
+ };
+ 
+ int sdw_bus_master_add(struct sdw_bus *bus, struct device *parent,
 -- 
 2.25.1
 
