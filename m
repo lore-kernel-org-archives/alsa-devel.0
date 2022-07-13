@@ -4,42 +4,42 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 007C5CCA482
-	for <alsa-devel@archiver.kernel.org>; Wed, 13 Jul 2022 11:36:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8446DC433EF
+	for <alsa-devel@archiver.kernel.org>; Wed, 13 Jul 2022 11:37:38 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id EC8C31704;
-	Wed, 13 Jul 2022 13:35:43 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EC8C31704
+	by alsa0.perex.cz (Postfix) with ESMTPS id 82AFA1712;
+	Wed, 13 Jul 2022 13:36:46 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 82AFA1712
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1657712194;
-	bh=EEIse5FW+hldw/PuESnguoeEJH+P/ELbUP4KX3dQoJo=;
+	s=default; t=1657712256;
+	bh=xUQXTZeKM+08R/Y+/9WBudO3ZGDbGLydyLyiwqK/ucI=;
 	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=RgLW6ueolFu4uk1odmtgAn2hYxEyy9lpPukz0JdbrLVS6ZaNv1SEaoWIKca8kIoSA
-	 oIh6QfpIY0XAZ8sZivlu8gILWV+DPXFbb0hSWp04fSqNLiSuP4qj6Ynk0/ugt2iTp+
-	 Wkfy4FFY8LMo5bqkHDDEL/g0ICf2ezq6ryqrrwfs=
+	b=tlYN+DiU4BXv0h3LXtp076rt5AB0VUQvydTQlGGGjNPVm9RYHTDgZeaKKLJYldSDG
+	 T/cBkP+5kTF6/I2+Fl8RRRiOvRx99PZhAki/e5NfX0BBjhaOmdi3U3JacS4km78FD6
+	 CpAnpsJD9PPYKRGW4ru1PBeVVh6uSKheWgRhQXfs=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 916C2F8012B;
-	Wed, 13 Jul 2022 13:35:43 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2CF0CF8012B;
+	Wed, 13 Jul 2022 13:36:46 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 8AA68F80249; Wed, 13 Jul 2022 13:35:41 +0200 (CEST)
+ id 7664CF80249; Wed, 13 Jul 2022 13:36:45 +0200 (CEST)
 Received: from webhooks-bot.alsa-project.org (gate.perex.cz [77.48.224.242])
- by alsa1.perex.cz (Postfix) with ESMTP id 6436DF8012B
- for <alsa-devel@alsa-project.org>; Wed, 13 Jul 2022 13:35:35 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6436DF8012B
+ by alsa1.perex.cz (Postfix) with ESMTP id 4C432F8019B
+ for <alsa-devel@alsa-project.org>; Wed, 13 Jul 2022 13:36:36 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4C432F8019B
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 From: GitHub issues - edited <github@alsa-project.org>
 To: alsa-devel@alsa-project.org
-In-Reply-To: <1657712135184772968-webhooks-bot@alsa-project.org>
-References: <1657712135184772968-webhooks-bot@alsa-project.org>
+In-Reply-To: <1657712196650583029-webhooks-bot@alsa-project.org>
+References: <1657712196650583029-webhooks-bot@alsa-project.org>
 Subject: snd-aloop working no more on 1.2.7.1
-Message-Id: <20220713113541.8AA68F80249@alsa1.perex.cz>
-Date: Wed, 13 Jul 2022 13:35:41 +0200 (CEST)
+Message-Id: <20220713113645.7664CF80249@alsa1.perex.cz>
+Date: Wed, 13 Jul 2022 13:36:45 +0200 (CEST)
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -98,6 +98,30 @@ ctl.er4s {
 This is the .asoundrc I'm using, it worked before this update.
 Now aplay -L doesn't show this device.
 Using mpd to play to the Loopback gets `snd_pcm_hw_params() failed: Invalid argument`.
+Here's my mpd config:
+
+```
+audio_output {
+    type "alsa"
+    name "Etymotic ER4S"
+    device "er4s"
+    format "48000:f:2"
+    mixer_type "none"
+    replay_gain_handler "none"
+    auto_resample "no"
+    auto_format "no"
+}
+
+resampler {
+  plugin "soxr"
+  quality "custom"
+  precision "28"
+  phase_response "50"
+  passband_end "91"
+  stopband_begin "100"
+  attenu
+```
+
 
 Btw, alsa should really have a detailed specification on asoundrc file. The value of the format option I specify is from a dsp project, otherwise I have no idea what to write here. And according to [https://www.alsa-project.org/alsa-doc/alsa-lib/group___p_c_m.html#gaa14b7f26877a812acbb39811364177f8](snd_pcm_format_t) it's in a totally different format.
 
