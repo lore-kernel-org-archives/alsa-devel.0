@@ -4,78 +4,78 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 43450C43334
-	for <alsa-devel@archiver.kernel.org>; Wed, 13 Jul 2022 10:49:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C675DCCA479
+	for <alsa-devel@archiver.kernel.org>; Wed, 13 Jul 2022 10:49:54 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 34AC31706;
-	Wed, 13 Jul 2022 12:48:42 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 34AC31706
+	by alsa0.perex.cz (Postfix) with ESMTPS id 021B916FB;
+	Wed, 13 Jul 2022 12:49:03 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 021B916FB
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1657709372;
-	bh=pcSaHUGaHctQpErNQRm/n/CA5oMX/pN6S8SoYf7uaEk=;
+	s=default; t=1657709393;
+	bh=UEyk8JuDi6V/x283xrIEzuTYvfogpgRzqD9y63XFQbA=;
 	h=From:To:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=LH0zY+89i6LY1SR6SnGYdhf0cX87MJ10fmA2bB2EuSp180MpRhtdRJDP99e2+EcWh
-	 JOjGVg/B/gpaoJIJPK4w+d9g+QcWj1kHPMzqsDxVgkRKYcgm/ke4Sg9hZ7lqVW0XTM
-	 6fLen515viIlgggaYY8WwvtiPFdrV/3JJIBF3ms0=
+	b=MNHOxWi4H7j5327EzF9S/wVB1+dHOjtvFZefUzzUEcRFt1It1AC4Zab5caS4iJfr4
+	 2Fjod5XvPdSImw1/mtIzl5a/FQF6qT1uVAlk/eWN2xWO4AbGnn4wMlJ4b92ey8mSI1
+	 nQAsWhz4hU5o/BJR9rKx8oCaaIumOJlZPwMSHAlc=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 7C50FF80542;
-	Wed, 13 Jul 2022 12:48:14 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 34A3AF80544;
+	Wed, 13 Jul 2022 12:48:16 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 9CC47F80542; Wed, 13 Jul 2022 12:48:13 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+ id EB880F8054A; Wed, 13 Jul 2022 12:48:14 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 08C13F8019B
+ by alsa1.perex.cz (Postfix) with ESMTPS id 525B4F80249
  for <alsa-devel@alsa-project.org>; Wed, 13 Jul 2022 12:48:06 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 08C13F8019B
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 525B4F80249
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="BH3hyzK/"; 
+ header.b="tgrIS4Vv"; 
  dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="k+JQlUmL"
+ header.b="EtrbJFpj"
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 6BA0333B0E;
+ by smtp-out2.suse.de (Postfix) with ESMTPS id A9F921FF8A;
  Wed, 13 Jul 2022 10:48:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
  t=1657709286; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=E5HGNIQ4kQeUNjtKil0agkuchDbqc5ag8+MBkFoMXwc=;
- b=BH3hyzK/T6J/DkovYnFGeCu4n0nF5uc+BiDZAAeqdthLZ0CSiioAPyEQJda/2llf3HrJbU
- eOpi9Fl7grUtlswXRzTsunLGAz9bE6G0DJKswzpQcnRWsLFjs9vhwkYWwcYkyDvbXdmNCJ
- rO16PufSqcd2nWF0IYiorg3RlVqVm9A=
+ bh=AmjIkuBX+i+NgsG8xs2kb1yrkedswGeklfJm2ndQK78=;
+ b=tgrIS4Vv9TdnGDj2M3gbR6ajQ6gHGfB/DhYNgBoNmcll5AYDbVnU/4HAM4TvbhRrZXH75P
+ N2gxEmiZGuSXDpYSdI7aIWP3EH45UcEroY5tG+c+23TkBqGMh0jscTFTqGxJgwpeBW7SH1
+ H287Ge+tvX2p691KkXeZ+Or1I7CNVrs=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
  s=susede2_ed25519; t=1657709286;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=E5HGNIQ4kQeUNjtKil0agkuchDbqc5ag8+MBkFoMXwc=;
- b=k+JQlUmLtioDTi3r3qNxB/lR4WA+gawGdyFUONC2QivAzidIPJYVD2AGiZ9mgVRoQ0Imk3
- ZcbwXhK6WEEBCoAw==
+ bh=AmjIkuBX+i+NgsG8xs2kb1yrkedswGeklfJm2ndQK78=;
+ b=EtrbJFpjaOaX11Ea5nrCRB2WQINh6Nlh5hXoobIJgqnruik4dIr1BNq08J0gXerGhutpFf
+ MlOjkKTB6N53IdDg==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 4CEF713AC7;
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 8FD6713AC7;
  Wed, 13 Jul 2022 10:48:06 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id OHoJEuaizmLceAAAMHmgww
+ by imap2.suse-dmz.suse.de with ESMTPSA id qAVnIuaizmLceAAAMHmgww
  (envelope-from <tiwai@suse.de>); Wed, 13 Jul 2022 10:48:06 +0000
 From: Takashi Iwai <tiwai@suse.de>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH 1/7] ALSA: compress: Enable kernel doc markers for some
- functions
-Date: Wed, 13 Jul 2022 12:47:53 +0200
-Message-Id: <20220713104759.4365-2-tiwai@suse.de>
+Subject: [PATCH 3/7] ALSA: dmaengine: Fix missing return value comments for
+ kernel docs
+Date: Wed, 13 Jul 2022 12:47:55 +0200
+Message-Id: <20220713104759.4365-4-tiwai@suse.de>
 X-Mailer: git-send-email 2.35.3
 In-Reply-To: <20220713104759.4365-1-tiwai@suse.de>
 References: <20220713104759.4365-1-tiwai@suse.de>
@@ -96,47 +96,145 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The exported functions snd_compress_new() and snd_compr_stop_error()
-had already kernel-doc-style comments but they were not processed as
-they weren't marked properly.  Let's enable them.
+Each kernel doc comment expects the definition of the return value in
+a proper format.  This patch adds or fixes the missing entries for PCM
+dmaengine API.
 
-This patch also fixes the missing argument id for snd_compress_new
-comments, too.
-
-Reported-by: Mauro Carvalho Chehab <mchehab@kernel.org>
-Link: https://lore.kernel.org/r/3cd6b93b36b32ad6ae160931aaa00b20688e241a.1656759989.git.mchehab@kernel.org
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/core/compress_offload.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+ include/sound/dmaengine_pcm.h |  2 ++
+ sound/core/pcm_dmaengine.c    | 30 ++++++++++++++++++++----------
+ 2 files changed, 22 insertions(+), 10 deletions(-)
 
-diff --git a/sound/core/compress_offload.c b/sound/core/compress_offload.c
-index de514ec8c83d..cf415fe231ed 100644
---- a/sound/core/compress_offload.c
-+++ b/sound/core/compress_offload.c
-@@ -810,7 +810,7 @@ static void error_delayed_work(struct work_struct *work)
- 	mutex_unlock(&stream->device->lock);
- }
- 
--/*
-+/**
-  * snd_compr_stop_error: Report a fatal error on a stream
-  * @stream: pointer to stream
-  * @state: state to transition the stream to
-@@ -1157,11 +1157,12 @@ static int snd_compress_dev_free(struct snd_device *device)
- 	return 0;
- }
- 
--/*
-+/**
-  * snd_compress_new: create new compress device
-  * @card: sound card pointer
-  * @device: device number
-  * @dirn: device direction, should be of type enum snd_compr_direction
-+ * @id: ID string
-  * @compr: compress device pointer
+diff --git a/include/sound/dmaengine_pcm.h b/include/sound/dmaengine_pcm.h
+index 38ea046e653c..2df54cf02cb3 100644
+--- a/include/sound/dmaengine_pcm.h
++++ b/include/sound/dmaengine_pcm.h
+@@ -15,6 +15,8 @@
+  * snd_pcm_substream_to_dma_direction - Get dma_transfer_direction for a PCM
+  *   substream
+  * @substream: PCM substream
++ *
++ * Return: DMA transfer direction
   */
- int snd_compress_new(struct snd_card *card, int device,
+ static inline enum dma_transfer_direction
+ snd_pcm_substream_to_dma_direction(const struct snd_pcm_substream *substream)
+diff --git a/sound/core/pcm_dmaengine.c b/sound/core/pcm_dmaengine.c
+index af6f717e1e7e..5b2ca028f5aa 100644
+--- a/sound/core/pcm_dmaengine.c
++++ b/sound/core/pcm_dmaengine.c
+@@ -48,6 +48,8 @@ EXPORT_SYMBOL_GPL(snd_dmaengine_pcm_get_chan);
+  *
+  * This function can be used to initialize a dma_slave_config from a substream
+  * and hw_params in a dmaengine based PCM driver implementation.
++ *
++ * Return: zero if successful, or a negative error code
+  */
+ int snd_hwparams_to_dma_slave_config(const struct snd_pcm_substream *substream,
+ 	const struct snd_pcm_hw_params *params,
+@@ -175,10 +177,10 @@ static int dmaengine_pcm_prepare_and_submit(struct snd_pcm_substream *substream)
+  * @substream: PCM substream
+  * @cmd: Trigger command
+  *
+- * Returns 0 on success, a negative error code otherwise.
+- *
+  * This function can be used as the PCM trigger callback for dmaengine based PCM
+  * driver implementations.
++ *
++ * Return: 0 on success, a negative error code otherwise
+  */
+ int snd_dmaengine_pcm_trigger(struct snd_pcm_substream *substream, int cmd)
+ {
+@@ -223,6 +225,8 @@ EXPORT_SYMBOL_GPL(snd_dmaengine_pcm_trigger);
+  *
+  * This function is deprecated and should not be used by new drivers, as its
+  * results may be unreliable.
++ *
++ * Return: PCM position in frames
+  */
+ snd_pcm_uframes_t snd_dmaengine_pcm_pointer_no_residue(struct snd_pcm_substream *substream)
+ {
+@@ -237,6 +241,8 @@ EXPORT_SYMBOL_GPL(snd_dmaengine_pcm_pointer_no_residue);
+  *
+  * This function can be used as the PCM pointer callback for dmaengine based PCM
+  * driver implementations.
++ *
++ * Return: PCM position in frames
+  */
+ snd_pcm_uframes_t snd_dmaengine_pcm_pointer(struct snd_pcm_substream *substream)
+ {
+@@ -266,9 +272,9 @@ EXPORT_SYMBOL_GPL(snd_dmaengine_pcm_pointer);
+  * @filter_fn: Filter function used to request the DMA channel
+  * @filter_data: Data passed to the DMA filter function
+  *
+- * Returns NULL or the requested DMA channel.
+- *
+  * This function request a DMA channel for usage with dmaengine PCM.
++ *
++ * Return: NULL or the requested DMA channel
+  */
+ struct dma_chan *snd_dmaengine_pcm_request_channel(dma_filter_fn filter_fn,
+ 	void *filter_data)
+@@ -288,11 +294,11 @@ EXPORT_SYMBOL_GPL(snd_dmaengine_pcm_request_channel);
+  * @substream: PCM substream
+  * @chan: DMA channel to use for data transfers
+  *
+- * Returns 0 on success, a negative error code otherwise.
+- *
+  * The function should usually be called from the pcm open callback. Note that
+  * this function will use private_data field of the substream's runtime. So it
+  * is not available to your pcm driver implementation.
++ *
++ * Return: 0 on success, a negative error code otherwise
+  */
+ int snd_dmaengine_pcm_open(struct snd_pcm_substream *substream,
+ 	struct dma_chan *chan)
+@@ -326,12 +332,12 @@ EXPORT_SYMBOL_GPL(snd_dmaengine_pcm_open);
+  * @filter_fn: Filter function used to request the DMA channel
+  * @filter_data: Data passed to the DMA filter function
+  *
+- * Returns 0 on success, a negative error code otherwise.
+- *
+  * This function will request a DMA channel using the passed filter function and
+  * data. The function should usually be called from the pcm open callback. Note
+  * that this function will use private_data field of the substream's runtime. So
+  * it is not available to your pcm driver implementation.
++ *
++ * Return: 0 on success, a negative error code otherwise
+  */
+ int snd_dmaengine_pcm_open_request_chan(struct snd_pcm_substream *substream,
+ 	dma_filter_fn filter_fn, void *filter_data)
+@@ -344,6 +350,8 @@ EXPORT_SYMBOL_GPL(snd_dmaengine_pcm_open_request_chan);
+ /**
+  * snd_dmaengine_pcm_close - Close a dmaengine based PCM substream
+  * @substream: PCM substream
++ *
++ * Return: 0 on success, a negative error code otherwise
+  */
+ int snd_dmaengine_pcm_close(struct snd_pcm_substream *substream)
+ {
+@@ -362,6 +370,8 @@ EXPORT_SYMBOL_GPL(snd_dmaengine_pcm_close);
+  * @substream: PCM substream
+  *
+  * Releases the DMA channel associated with the PCM substream.
++ *
++ * Return: zero if successful, or a negative error code
+  */
+ int snd_dmaengine_pcm_close_release_chan(struct snd_pcm_substream *substream)
+ {
+@@ -382,10 +392,10 @@ EXPORT_SYMBOL_GPL(snd_dmaengine_pcm_close_release_chan);
+  * @hw: PCM hw params
+  * @chan: DMA channel to use for data transfers
+  *
+- * Returns 0 on success, a negative error code otherwise.
+- *
+  * This function will query DMA capability, then refine the pcm hardware
+  * parameters.
++ *
++ * Return: 0 on success, a negative error code otherwise
+  */
+ int snd_dmaengine_pcm_refine_runtime_hwparams(
+ 	struct snd_pcm_substream *substream,
 -- 
 2.35.3
 
