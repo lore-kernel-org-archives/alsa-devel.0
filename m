@@ -4,78 +4,77 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0D9E4C43334
-	for <alsa-devel@archiver.kernel.org>; Wed, 13 Jul 2022 10:50:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id DDADAC43334
+	for <alsa-devel@archiver.kernel.org>; Wed, 13 Jul 2022 10:50:25 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 4B7E91712;
-	Wed, 13 Jul 2022 12:49:13 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4B7E91712
+	by alsa0.perex.cz (Postfix) with ESMTPS id 2C433171C;
+	Wed, 13 Jul 2022 12:49:34 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2C433171C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1657709403;
-	bh=IM8qdXi+I/9rIPcR3tJXcX6bshwB3fsP1DPEi58Aaps=;
+	s=default; t=1657709424;
+	bh=Mz8F6MA6JHUdDR6Na8NpZ8BO2P3BL5YxOuEKvEHjN0E=;
 	h=From:To:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Xb9aS0IjbDVycaqd2IHiE7l0jbXPw2fZf9YneGvAXj5SoKXRvLBUX7S+zroIJ7t5T
-	 h6MpMqikmSIrbM2lVOxAvSDLcqgMPo6Nxe0JcNBJHJ/GXrxqts3XStR6YCc6qcc6MB
-	 aUM/FXjBTZZ1lfJ5MV+NR88tMsijd9kbWVz7wRzw=
+	b=j3DgzF4CWPnD8VHws1zvT5nj2TP5pyWWZOcsT/W/+K/+JmqmJeejd2T2rnljI5/vX
+	 /yDJS47Cml1lykDO+kyEsxAh/aAUzrkgy+A7iG4njt3n/k5e6SVU+yDuAVViHhN2jY
+	 VlEJXtvCI3U9Ls/zW6Jckf98X/9ZfNtQTtTH+Vc0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id CF1A1F80551;
-	Wed, 13 Jul 2022 12:48:18 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id B5433F80563;
+	Wed, 13 Jul 2022 12:48:21 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id BCEBAF80549; Wed, 13 Jul 2022 12:48:15 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+ id 57395F8055B; Wed, 13 Jul 2022 12:48:20 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 83A12F80310
- for <alsa-devel@alsa-project.org>; Wed, 13 Jul 2022 12:48:08 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 83A12F80310
+ by alsa1.perex.cz (Postfix) with ESMTPS id 9DC68F8047B
+ for <alsa-devel@alsa-project.org>; Wed, 13 Jul 2022 12:48:07 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9DC68F8047B
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="ieHGlOqR"; 
+ header.b="Fr7IU1W9"; 
  dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="VXpk5chO"
+ header.b="X7k4Yt6m"
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 2844C1FF8B;
- Wed, 13 Jul 2022 10:48:07 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id C8ED733B0F;
+ Wed, 13 Jul 2022 10:48:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1657709287; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ t=1657709286; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=VL8P53bpeYgADq7XC2L6nh0MeXQ4UCFPQdJ4rmkm/HA=;
- b=ieHGlOqRyOgcYnubkEVIxYlzIQIMMiWNw40IR2ROeUAIx3InCMz5h1Ml+S1VCDwTMwC72C
- L6y3XDL5TFlXsTL65u3Q5subwL2fQfWMYMEfm3xra72VXRTptm1ne4G9aovwguYFdnInkJ
- w2rzAJMaTokpJ7ZsTwWwUEjikRsjI88=
+ bh=8MJ45r2MsP5AkjEd91CoXpS8Un3y+WzzinILPYTpmCk=;
+ b=Fr7IU1W9WmfBKgsBRyVMnIJU4tQziezFF4KUHMOaakzEBOebWnXzF1gFjo326+4w8fJyB0
+ qsZ3m4GYgJVd6RBe+X/JpDAxdEiWI6p0S+4RzB91fN/FUdpiscvDjQcFCgn3K8Zp31IOiS
+ sp/m8rML42sEHEBxKLbewnMd8uG80DQ=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1657709287;
+ s=susede2_ed25519; t=1657709286;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=VL8P53bpeYgADq7XC2L6nh0MeXQ4UCFPQdJ4rmkm/HA=;
- b=VXpk5chO2PuUktLeagTev3zclJUfqNLhBmw44M9o9/fsGEqflu9jGbkN9V+uuUOUksCpwz
- gqhyvQxSGVNaxODA==
+ bh=8MJ45r2MsP5AkjEd91CoXpS8Un3y+WzzinILPYTpmCk=;
+ b=X7k4Yt6mTT2+Aj0PQYxZdNgpexPkNFLk8rDjIH0EF7fDyJt8LUe4PXEmpanccTYbVNvSEB
+ Fe5qpKRP9VePZiCg==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 0EF5A13AC7;
- Wed, 13 Jul 2022 10:48:07 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id AC65F13754;
+ Wed, 13 Jul 2022 10:48:06 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id wBv5AueizmLceAAAMHmgww
- (envelope-from <tiwai@suse.de>); Wed, 13 Jul 2022 10:48:07 +0000
+ by imap2.suse-dmz.suse.de with ESMTPSA id aFZUKeaizmLceAAAMHmgww
+ (envelope-from <tiwai@suse.de>); Wed, 13 Jul 2022 10:48:06 +0000
 From: Takashi Iwai <tiwai@suse.de>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH 7/7] ALSA: core: Fix missing return value comments for kernel
- docs
-Date: Wed, 13 Jul 2022 12:47:59 +0200
-Message-Id: <20220713104759.4365-8-tiwai@suse.de>
+Subject: [PATCH 4/7] ALSA: compress: Fix kernel doc warnings
+Date: Wed, 13 Jul 2022 12:47:56 +0200
+Message-Id: <20220713104759.4365-5-tiwai@suse.de>
 X-Mailer: git-send-email 2.35.3
 In-Reply-To: <20220713104759.4365-1-tiwai@suse.de>
 References: <20220713104759.4365-1-tiwai@suse.de>
@@ -96,123 +95,83 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Each kernel doc comment expects the definition of the return value in
-a proper format.  This patch adds or fixes the missing entries for the
-remaining ALSA core API functions.
+Each kernel doc comment expects the definition of the return value and
+the summary for each struct / enum in a proper format.  This patch
+adds or fixes the missing entries for compress-offload API.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/core/device.c  |  2 ++
- sound/core/info.c    |  2 ++
- sound/core/init.c    | 10 ++++++++++
- sound/core/isadma.c  |  3 ++-
- sound/core/vmaster.c |  3 ++-
- 5 files changed, 18 insertions(+), 2 deletions(-)
+ include/uapi/sound/compress_offload.h | 2 +-
+ include/uapi/sound/compress_params.h  | 6 +++---
+ sound/core/compress_offload.c         | 4 ++++
+ 3 files changed, 8 insertions(+), 4 deletions(-)
 
-diff --git a/sound/core/device.c b/sound/core/device.c
-index bf0b04a7ee79..b57d80a17052 100644
---- a/sound/core/device.c
-+++ b/sound/core/device.c
-@@ -247,6 +247,8 @@ void snd_device_free_all(struct snd_card *card)
-  * device, either @SNDRV_DEV_BUILD, @SNDRV_DEV_REGISTERED or
-  * @SNDRV_DEV_DISCONNECTED is returned.
-  * Or for a non-existing device, -1 is returned as an error.
-+ *
-+ * Return: the current state, or -1 if not found
-  */
- int snd_device_get_state(struct snd_card *card, void *device_data)
- {
-diff --git a/sound/core/info.c b/sound/core/info.c
-index 782fba87cc04..b8058b341178 100644
---- a/sound/core/info.c
-+++ b/sound/core/info.c
-@@ -868,6 +868,8 @@ EXPORT_SYMBOL(snd_info_register);
+diff --git a/include/uapi/sound/compress_offload.h b/include/uapi/sound/compress_offload.h
+index 9555f31c8425..3aef123dbd7f 100644
+--- a/include/uapi/sound/compress_offload.h
++++ b/include/uapi/sound/compress_offload.h
+@@ -123,7 +123,7 @@ struct snd_compr_codec_caps {
+ } __attribute__((packed, aligned(4)));
+ 
+ /**
+- * enum sndrv_compress_encoder
++ * enum sndrv_compress_encoder - encoder metadata key
+  * @SNDRV_COMPRESS_ENCODER_PADDING: no of samples appended by the encoder at the
+  * end of the track
+  * @SNDRV_COMPRESS_ENCODER_DELAY: no of samples inserted by the encoder at the
+diff --git a/include/uapi/sound/compress_params.h b/include/uapi/sound/compress_params.h
+index 79b14389ae41..726361716919 100644
+--- a/include/uapi/sound/compress_params.h
++++ b/include/uapi/sound/compress_params.h
+@@ -250,7 +250,7 @@ struct snd_enc_wma {
+ 
+ 
+ /**
+- * struct snd_enc_vorbis
++ * struct snd_enc_vorbis - Vorbis encoder parameters
+  * @quality: Sets encoding quality to n, between -1 (low) and 10 (high).
+  * In the default mode of operation, the quality level is 3.
+  * Normal quality range is 0 - 10.
+@@ -279,7 +279,7 @@ struct snd_enc_vorbis {
+ 
+ 
+ /**
+- * struct snd_enc_real
++ * struct snd_enc_real - RealAudio encoder parameters
+  * @quant_bits: number of coupling quantization bits in the stream
+  * @start_region: coupling start region in the stream
+  * @num_regions: number of regions value
+@@ -294,7 +294,7 @@ struct snd_enc_real {
+ } __attribute__((packed, aligned(4)));
+ 
+ /**
+- * struct snd_enc_flac
++ * struct snd_enc_flac - FLAC encoder parameters
+  * @num: serial number, valid only for OGG formats
+  *	needs to be set by application
+  * @gain: Add replay gain tags
+diff --git a/sound/core/compress_offload.c b/sound/core/compress_offload.c
+index cf415fe231ed..243acad89fd3 100644
+--- a/sound/core/compress_offload.c
++++ b/sound/core/compress_offload.c
+@@ -818,6 +818,8 @@ static void error_delayed_work(struct work_struct *work)
+  * Stop the stream and set its state.
   *
-  * This proc file entry will be registered via snd_card_register() call, and
-  * it will be removed automatically at the card removal, too.
+  * Should be called with compressed device lock held.
 + *
 + * Return: zero if successful, or a negative error code
   */
- int snd_card_rw_proc_new(struct snd_card *card, const char *name,
- 			 void *private_data,
-diff --git a/sound/core/init.c b/sound/core/init.c
-index 1870aee7b64f..3ac95c66a4b5 100644
---- a/sound/core/init.c
-+++ b/sound/core/init.c
-@@ -215,6 +215,8 @@ static void __snd_card_release(struct device *dev, void *data)
-  * via snd_card_free() call in the error; otherwise it may lead to UAF due to
-  * devres call orders.  You can use snd_card_free_on_error() helper for
-  * handling it more easily.
+ int snd_compr_stop_error(struct snd_compr_stream *stream,
+ 			 snd_pcm_state_t state)
+@@ -1164,6 +1166,8 @@ static int snd_compress_dev_free(struct snd_device *device)
+  * @dirn: device direction, should be of type enum snd_compr_direction
+  * @id: ID string
+  * @compr: compress device pointer
 + *
 + * Return: zero if successful, or a negative error code
   */
- int snd_devm_card_new(struct device *parent, int idx, const char *xid,
- 		      struct module *module, size_t extra_size,
-@@ -249,6 +251,8 @@ EXPORT_SYMBOL_GPL(snd_devm_card_new);
-  * This function handles the explicit snd_card_free() call at the error from
-  * the probe callback.  It's just a small helper for simplifying the error
-  * handling with the managed devices.
-+ *
-+ * Return: zero if successful, or a negative error code
-  */
- int snd_card_free_on_error(struct device *dev, int ret)
- {
-@@ -370,6 +374,8 @@ static int snd_card_init(struct snd_card *card, struct device *parent,
-  *
-  * Returns a card object corresponding to the given index or NULL if not found.
-  * Release the object via snd_card_unref().
-+ *
-+ * Return: a card object or NULL
-  */
- struct snd_card *snd_card_ref(int idx)
- {
-@@ -608,6 +614,8 @@ static int snd_card_do_free(struct snd_card *card)
-  * resource immediately, but tries to disconnect at first.  When the card
-  * is still in use, the function returns before freeing the resources.
-  * The card resources will be freed when the refcount gets to zero.
-+ *
-+ * Return: zero if successful, or a negative error code
-  */
- int snd_card_free_when_closed(struct snd_card *card)
- {
-@@ -833,6 +841,8 @@ static const struct attribute_group card_dev_attr_group = {
-  * snd_card_add_dev_attr - Append a new sysfs attribute group to card
-  * @card: card instance
-  * @group: attribute group to append
-+ *
-+ * Return: zero if successful, or a negative error code
-  */
- int snd_card_add_dev_attr(struct snd_card *card,
- 			  const struct attribute_group *group)
-diff --git a/sound/core/isadma.c b/sound/core/isadma.c
-index 1f45ede023b4..2602246bd5a0 100644
---- a/sound/core/isadma.c
-+++ b/sound/core/isadma.c
-@@ -116,8 +116,9 @@ static void __snd_release_dma(struct device *dev, void *data)
-  * @dma: the dma number
-  * @name: the name string of the requester
-  *
-- * Returns zero on success, or a negative error code.
-  * The requested DMA will be automatically released at unbinding via devres.
-+ *
-+ * Return: zero on success, or a negative error code
-  */
- int snd_devm_request_dma(struct device *dev, int dma, const char *name)
- {
-diff --git a/sound/core/vmaster.c b/sound/core/vmaster.c
-index ab36f9898711..d0f11f37889b 100644
---- a/sound/core/vmaster.c
-+++ b/sound/core/vmaster.c
-@@ -494,7 +494,8 @@ EXPORT_SYMBOL_GPL(snd_ctl_sync_vmaster);
-  * @arg: optional function argument
-  *
-  * Apply the function @func to each follower kctl of the given vmaster kctl.
-- * Returns 0 if successful, or a negative error code.
-+ *
-+ * Return: 0 if successful, or a negative error code
-  */
- int snd_ctl_apply_vmaster_followers(struct snd_kcontrol *kctl,
- 				    int (*func)(struct snd_kcontrol *vfollower,
+ int snd_compress_new(struct snd_card *card, int device,
+ 			int dirn, const char *id, struct snd_compr *compr)
 -- 
 2.35.3
 
