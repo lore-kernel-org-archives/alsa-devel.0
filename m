@@ -4,69 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 67294C433EF
-	for <alsa-devel@archiver.kernel.org>; Wed, 13 Jul 2022 14:31:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2AE6BC43334
+	for <alsa-devel@archiver.kernel.org>; Wed, 13 Jul 2022 14:31:58 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A5CA01725;
-	Wed, 13 Jul 2022 16:30:27 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A5CA01725
+	by alsa0.perex.cz (Postfix) with ESMTPS id 58D4B172A;
+	Wed, 13 Jul 2022 16:31:06 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 58D4B172A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1657722677;
-	bh=c+A6ixbjMYao4eit3+mRKLLFN97auJ3zXE3KZtIv1l4=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=lPjvG1V0aCVVLksSSDBH0yJdysOMCcwvgwFwBwpAOb/3mhstJzRSNnFJMsZifVZSm
-	 IvWEOIr7GeAZCDYNAJMdOefQYQPinSsI1quTXF1o1g+UzQTfC0LKbQtzDOaQduFGbA
-	 IKUHuPLtpjMs4/f5Kv33YfZ6hhfYdgPP6MMuDtVs=
+	s=default; t=1657722716;
+	bh=6nZ1TG8+FX7o9uUu9puByYsWCfEB7XzK8cXS4yDrZ7c=;
+	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=dWVYTb1B1+z8BGflMfmT4LALgfpXxW2DMuDUMSVr6M+lzcHvnA4P1tTvKsFqnHQo2
+	 80aAK6ocZK+KMAun7IoDfO048BiqLn4i0nOwGicrXmvakZ5dv/cmQO9c4lTZNoZE3/
+	 zrf6/zhi9hU+e7w36t6hOUkiae+6hvqNfIyNuOQg=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 288E5F8047B;
-	Wed, 13 Jul 2022 16:29:58 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id D76F3F8019B;
+	Wed, 13 Jul 2022 16:31:05 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id CD424F80134; Wed, 13 Jul 2022 16:29:55 +0200 (CEST)
-Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
+ id D9D9DF804CA; Wed, 13 Jul 2022 16:31:04 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 5F174F80249
+ for <alsa-devel@alsa-project.org>; Wed, 13 Jul 2022 16:30:58 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5F174F80249
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="ZzgVs6+L"
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id B9FCFF800AA
- for <alsa-devel@alsa-project.org>; Wed, 13 Jul 2022 16:29:49 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B9FCFF800AA
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="ctQh2upM"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
- d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1657722591; x=1689258591;
- h=from:to:cc:subject:date:message-id:mime-version:
- content-transfer-encoding;
- bh=c+A6ixbjMYao4eit3+mRKLLFN97auJ3zXE3KZtIv1l4=;
- b=ctQh2upMNb31v4Qrf1fXRd7H6A+FajU8oDKCFOFqzfbRWnMmgS31CehE
- x7JWJjtZ4DAmKGaFAC0ofUCI8ho3+bhGhYwx8jLXl/QUqFbIBuCH34RUF
- sX9aBpheqiszAwhD9Gtmov6ZqNJSuJXebUkaqhKQ+MbgQnVs58Y0DJTCK
- /s19YHEGFP9BSdTd1Z8xp1oaxpiYVhUqR8KC1BOR5ydKaOItTp4YNbZG1
- Xjtood4dO5zkW82G0MjNttFWtgExdTH5wk4KHDw0jm4YRtdHv4wb+2VsU
- 3svzfJ1HkZR/NHSN0PJzlfCYlIDPUKZj0hKPaZ43v967Kiy4N324FnN5r A==;
-X-IronPort-AV: E=McAfee;i="6400,9594,10407"; a="285251384"
-X-IronPort-AV: E=Sophos;i="5.92,267,1650956400"; d="scan'208";a="285251384"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
- by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 13 Jul 2022 07:29:47 -0700
-X-IronPort-AV: E=Sophos;i="5.92,267,1650956400"; d="scan'208";a="622966715"
-Received: from bard-ubuntu.sh.intel.com ([10.239.185.57])
- by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 13 Jul 2022 07:29:44 -0700
-From: Bard Liao <yung-chuan.liao@linux.intel.com>
-To: alsa-devel@alsa-project.org,
-	vkoul@kernel.org
-Subject: [PATCH 1/2] soundwire: bus: remove use of __func__ in dev_dbg
-Date: Wed, 13 Jul 2022 22:29:36 +0800
-Message-Id: <20220713142937.17562-1-yung-chuan.liao@linux.intel.com>
-X-Mailer: git-send-email 2.25.1
+ by dfw.source.kernel.org (Postfix) with ESMTPS id BFA7A61DE6;
+ Wed, 13 Jul 2022 14:30:55 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 26EDFC3411E;
+ Wed, 13 Jul 2022 14:30:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1657722655;
+ bh=6nZ1TG8+FX7o9uUu9puByYsWCfEB7XzK8cXS4yDrZ7c=;
+ h=From:To:In-Reply-To:References:Subject:Date:From;
+ b=ZzgVs6+LW/RrGqeOsJ0CKqZeje/PndobfJWHYvVuYpbHw5ekedzkBc9vfuAmboqg8
+ 5p8qW45tarcY+UNrdgf27q/oLGdY2k5UUhcxT2imDxR34yv3I56tOjFyBfbBtzu0mh
+ dGuedP9uvoyRkG2hP9Gt/Lc4Ft8aR03Q8MiNRiM0TtFZANM/OkpAMf2Z6vJluZXoGS
+ RFad7owiyL4Mj7D7CeW18P3caM09tMgUIii+SKD2ha1LUSOJhAt0zAokM+zsYNUnGp
+ PKWNhhT8BVEvvKF7w0KvkeJPZhVqbjmj8iD70wRZVbsSs0hCp9FXB5Ptt8zfi4xvwr
+ C5yywJcbvkJ1A==
+From: Mark Brown <broonie@kernel.org>
+To: perex@perex.cz, windhl@126.com, lgirdwood@gmail.com, tiwai@suse.com,
+ alsa-devel@alsa-project.org
+In-Reply-To: <20220713071200.366729-1-windhl@126.com>
+References: <20220713071200.366729-1-windhl@126.com>
+Subject: Re: [PATCH] ASoc: audio-graph-card2: Fix refcount leak bug in
+ __graph_get_type()
+Message-Id: <165772265387.116109.8832104294002903684.b4-ty@kernel.org>
+Date: Wed, 13 Jul 2022 15:30:53 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: pierre-louis.bossart@linux.intel.com, gregkh@linuxfoundation.org,
- vinod.koul@linaro.org, bard.liao@intel.com, linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -82,64 +79,37 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+On Wed, 13 Jul 2022 15:12:00 +0800, Liang He wrote:
+> We should call of_node_put() for the reference before its replacement
+> as it returned by of_get_parent() which has increased the refcount.
+> Besides, we should also call of_node_put() before return.
+> 
+> 
 
-The module and function information can be added with
-'modprobe foo dyndbg=+pmf'
+Applied to
 
-Suggested-by: Greg KH <gregkh@linuxfoundation.org>
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-Reviewed-by: Péter Ujfalusi <peter.ujfalusi@linux.intel.com>
-Signed-off-by: Bard Liao <yung-chuan.liao@linux.intel.com>
----
- drivers/soundwire/bus.c | 16 ++++++++--------
- 1 file changed, 8 insertions(+), 8 deletions(-)
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
 
-diff --git a/drivers/soundwire/bus.c b/drivers/soundwire/bus.c
-index 8970f8560766..2772973eebb1 100644
---- a/drivers/soundwire/bus.c
-+++ b/drivers/soundwire/bus.c
-@@ -827,13 +827,13 @@ static void sdw_modify_slave_status(struct sdw_slave *slave,
- 	mutex_lock(&bus->bus_lock);
- 
- 	dev_vdbg(bus->dev,
--		 "%s: changing status slave %d status %d new status %d\n",
--		 __func__, slave->dev_num, slave->status, status);
-+		 "changing status slave %d status %d new status %d\n",
-+		 slave->dev_num, slave->status, status);
- 
- 	if (status == SDW_SLAVE_UNATTACHED) {
- 		dev_dbg(&slave->dev,
--			"%s: initializing enumeration and init completion for Slave %d\n",
--			__func__, slave->dev_num);
-+			"initializing enumeration and init completion for Slave %d\n",
-+			slave->dev_num);
- 
- 		init_completion(&slave->enumeration_complete);
- 		init_completion(&slave->initialization_complete);
-@@ -841,8 +841,8 @@ static void sdw_modify_slave_status(struct sdw_slave *slave,
- 	} else if ((status == SDW_SLAVE_ATTACHED) &&
- 		   (slave->status == SDW_SLAVE_UNATTACHED)) {
- 		dev_dbg(&slave->dev,
--			"%s: signaling enumeration completion for Slave %d\n",
--			__func__, slave->dev_num);
-+			"signaling enumeration completion for Slave %d\n",
-+			slave->dev_num);
- 
- 		complete(&slave->enumeration_complete);
- 	}
-@@ -1849,8 +1849,8 @@ int sdw_handle_slave_status(struct sdw_bus *bus,
- 				"Update Slave status failed:%d\n", ret);
- 		if (attached_initializing) {
- 			dev_dbg(&slave->dev,
--				"%s: signaling initialization completion for Slave %d\n",
--				__func__, slave->dev_num);
-+				"signaling initialization completion for Slave %d\n",
-+				slave->dev_num);
- 
- 			complete(&slave->initialization_complete);
- 
--- 
-2.25.1
+Thanks!
 
+[1/1] ASoc: audio-graph-card2: Fix refcount leak bug in __graph_get_type()
+      commit: eda26893dabfc6da7a1e1ff5f8628ed9faab3ab9
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
