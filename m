@@ -4,75 +4,53 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0F2D2C433EF
-	for <alsa-devel@archiver.kernel.org>; Thu, 14 Jul 2022 16:39:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0FA82C433EF
+	for <alsa-devel@archiver.kernel.org>; Thu, 14 Jul 2022 16:39:40 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 1810B18BB;
-	Thu, 14 Jul 2022 18:38:32 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1810B18BB
+	by alsa0.perex.cz (Postfix) with ESMTPS id 421D3181D;
+	Thu, 14 Jul 2022 18:38:48 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 421D3181D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1657816762;
-	bh=RktsUe463dGeJ6JVuFeGZ56J3iA/MJCDqhL6VP3o8oc=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=ir1Dey8LcaAALcWtPOsJKkIyRZZTt6axHr8SBoth262r4PTd7QzOblkDtkRvLy66W
-	 Awgn0B9OdqRVdeY3GnsltDTnPAu3BpOE80fUsu8nOUnI8uNvDEkPTqAqyAFfz+kYPD
-	 6pJxPBIYrwc+oEcVtfPkSMTIAe+20xh0KZvznCz0=
+	s=default; t=1657816778;
+	bh=/etxzpekk2QNgyQ/cjmZnPyu9TymXIBHWqE6IPl+5pA=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=Hehda4vlJZ2nHxI8slqXiX0elJMFp18BmwuGPGy5N12fgaLBx109jHb1NzyyXrTSD
+	 S4+UVagLnkBRcXE3dztU10Ml1XAJPJ6AWuk3thZCrHMI5JngRDdDP9L5d2WsXzCMDF
+	 6e+HseQUTzTa3TICC2itv/iUvK/JK1UzrIDqhIoU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id D5218F805B6;
-	Thu, 14 Jul 2022 18:34:47 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 65E03F805BE;
+	Thu, 14 Jul 2022 18:34:48 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 38AF3F80134; Wed, 13 Jul 2022 18:25:53 +0200 (CEST)
-Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com
- [68.232.153.233])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 7F0C9F80134
- for <alsa-devel@alsa-project.org>; Wed, 13 Jul 2022 18:25:45 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7F0C9F80134
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com
- header.b="ri06AYWx"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
- d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
- t=1657729548; x=1689265548;
- h=from:to:cc:subject:date:message-id:mime-version:
- content-transfer-encoding;
- bh=RktsUe463dGeJ6JVuFeGZ56J3iA/MJCDqhL6VP3o8oc=;
- b=ri06AYWxsBiIOKSOLIbW4MVoMyzLsCz59qpIaHYFjtqAT3K4HnSkHQWv
- gh/7gJrcrs/V1oMqTskVSKLTB3dr6JKG8AER/aO4SCwyqt/MtIKGIA4O0
- yeUcsdhBj9eQrDvbdOp2gktEvprKx9fLHOo5g9rpK4g1p+n49vz2J1FFJ
- BwyUw+/1qpP3mBOCfLjRhFD8dygpWSLFIaGVA9UfGPO0pv9qAgL6WXRrY
- 25zR361PEWUxqqA8KoUuQhCX/m1Zp7RNZHdBBeCQNopol2n7+9UBVMvSl
- wDOf4MtFSYSxFj3oSaEElGN25XWCtoidvZlgC4kRgNVd41psl72KgQOkf A==;
-X-IronPort-AV: E=Sophos;i="5.92,267,1650956400"; d="scan'208";a="171953385"
-Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
- by esa5.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256;
- 13 Jul 2022 09:25:29 -0700
-Received: from chn-vm-ex03.mchp-main.com (10.10.85.151) by
- chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.17; Wed, 13 Jul 2022 09:25:27 -0700
-Received: from ryan-Precision-5560.microchip.com (10.10.115.15) by
- chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server id
- 15.1.2375.17 via Frontend Transport; Wed, 13 Jul 2022 09:25:27 -0700
-From: <Ryan.Wanner@microchip.com>
-To: <lgirdwood@gmail.com>, <broonie@kernel.org>, <robh+dt@kernel.org>,
- <krzysztof.kozlowski+dt@linaro.org>, <nicolas.ferre@microchip.com>,
- <alexandre.belloni@bootlin.com>, <claudiu.beznea@microchip.com>
-Subject: [PATCH] ASoC: dt-bindings: atmel-i2s: Convert to json-schema
-Date: Wed, 13 Jul 2022 09:25:38 -0700
-Message-ID: <20220713162538.139115-1-Ryan.Wanner@microchip.com>
-X-Mailer: git-send-email 2.34.1
+ id 5C3B2F80254; Wed, 13 Jul 2022 18:48:10 +0200 (CEST)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+ by alsa1.perex.cz (Postfix) with ESMTP id 42EBEF8019B
+ for <alsa-devel@alsa-project.org>; Wed, 13 Jul 2022 18:48:03 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 42EBEF8019B
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+ by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A800615A1;
+ Wed, 13 Jul 2022 09:48:01 -0700 (PDT)
+Received: from monolith.localdoman (unknown [172.31.20.19])
+ by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 5FEE93F792;
+ Wed, 13 Jul 2022 09:48:00 -0700 (PDT)
+Date: Wed, 13 Jul 2022 17:48:26 +0100
+From: Alexandru Elisei <alexandru.elisei@arm.com>
+To: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH] ASoC: rockchip-i2s: Undo BCLK pinctrl changes
+Message-ID: <Ys73WtpaZLdpsCdL@monolith.localdoman>
+References: <20220713130451.31481-1-broonie@kernel.org>
+ <Ys7SS/ueE66CBpZK@monolith.localdoman>
+ <Ys7n+/9v+CygvODo@sirena.org.uk>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <Ys7n+/9v+CygvODo@sirena.org.uk>
 X-Mailman-Approved-At: Thu, 14 Jul 2022 18:34:36 +0200
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Ryan
- Wanner <Ryan.Wanner@microchip.com>, linux-kernel@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>,
+ Chen-Yu Tsai <wenst@chromium.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -88,160 +66,22 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Ryan Wanner <Ryan.Wanner@microchip.com>
+On Wed, Jul 13, 2022 at 04:42:51PM +0100, Mark Brown wrote:
+> On Wed, Jul 13, 2022 at 03:25:27PM +0100, Alexandru Elisei wrote:
+> > On Wed, Jul 13, 2022 at 02:04:51PM +0100, Mark Brown wrote:
+> > > The version of the BCLK pinctrl management changes that made it into
+> > > v5.19 has caused problems on some systems due to overly strict DT
+> > > requirements but attempts to fix it have caused further breakage on
+> > > other platforms.  Just drop the changes for this release, we already
+> > > have a better version queued for -next.
+> 
+> > For what it's worth, I am now able to boot my rockpro64-v2 with this patch.
+> 
+> So Tested-by: then?
 
-Convert atmel i2s devicetree binding to json-schema.
-Change file name to match json-schema naming.
+Yes, please:
 
-Signed-off-by: Ryan Wanner <Ryan.Wanner@microchip.com>
----
- .../bindings/sound/atmel,sama5d2-i2s.yaml     | 83 +++++++++++++++++++
- .../devicetree/bindings/sound/atmel-i2s.txt   | 46 ----------
- 2 files changed, 83 insertions(+), 46 deletions(-)
- create mode 100644 Documentation/devicetree/bindings/sound/atmel,sama5d2-i2s.yaml
- delete mode 100644 Documentation/devicetree/bindings/sound/atmel-i2s.txt
+Tested-by: Alexandru Elisei <alexandru.elisei@arm.com>
 
-diff --git a/Documentation/devicetree/bindings/sound/atmel,sama5d2-i2s.yaml b/Documentation/devicetree/bindings/sound/atmel,sama5d2-i2s.yaml
-new file mode 100644
-index 000000000000..1cadc476565c
---- /dev/null
-+++ b/Documentation/devicetree/bindings/sound/atmel,sama5d2-i2s.yaml
-@@ -0,0 +1,83 @@
-+# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
-+# Copyright (C) 2022 Microchip Technology, Inc. and its subsidiaries
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/sound/atmel,sama5d2-i2s.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: Atmel I2S controller
-+
-+maintainers:
-+  - Nicolas Ferre <nicolas.ferre@microchip.com>
-+  - Alexandre Belloni <alexandre.belloni@bootlin.com>
-+  - Claudiu Beznea <claudiu.beznea@microchip.com>
-+
-+description:
-+  Atmel I2S (Inter-IC Sound Controller) bus is the standard
-+  interface for connecting audio devices, such as audio codecs.
-+
-+properties:
-+  compatible:
-+    const: atmel,sama5d2-i2s
-+
-+  reg:
-+    maxItems: 1
-+
-+  interrupts:
-+    maxItems: 1
-+
-+  clocks:
-+    description:
-+      Only the peripheral clock (pclk) is required. The generated clock (gclk)
-+      and the I2S mux clock (muxclk) are optional and should only be set together,
-+      when Master Mode is required.
-+
-+  clock-names:
-+    items:
-+      - const: pclk
-+      - const: gclk
-+      - const: muxclk
-+    minItems: 1
-+
-+  dmas:
-+    description:
-+      Should be one per channel name listed in the dma-names property.
-+    maxItems: 2
-+
-+  dma-names:
-+    items:
-+      - const: tx
-+      - const: rx
-+
-+required:
-+  - compatible
-+  - reg
-+  - interrupts
-+  - dmas
-+  - dma-names
-+  - clocks
-+  - clock-names
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    #include <dt-bindings/dma/at91.h>
-+    #include <dt-bindings/interrupt-controller/arm-gic.h>
-+
-+    i2s@f8050000 {
-+        compatible = "atmel,sama5d2-i2s";
-+        reg = <0xf8050000 0x300>;
-+        interrupts = <54 IRQ_TYPE_LEVEL_HIGH 7>;
-+        dmas = <&dma0
-+                (AT91_XDMAC_DT_MEM_IF(0) | AT91_XDMAC_DT_PER_IF(1) |
-+                AT91_XDMAC_DT_PERID(31))>,
-+               <&dma0
-+                (AT91_XDMAC_DT_MEM_IF(0) | AT91_XDMAC_DT_PER_IF(1) |
-+                AT91_XDMAC_DT_PERID(32))>;
-+        dma-names = "tx", "rx";
-+        clocks = <&i2s0_clk>, <&i2s0_gclk>, <&i2s0muxck>;
-+        clock-names = "pclk", "gclk", "muxclk";
-+        pinctrl-names = "default";
-+        pinctrl-0 = <&pinctrl_i2s0_default>;
-+    };
-diff --git a/Documentation/devicetree/bindings/sound/atmel-i2s.txt b/Documentation/devicetree/bindings/sound/atmel-i2s.txt
-deleted file mode 100644
-index 40549f496a81..000000000000
---- a/Documentation/devicetree/bindings/sound/atmel-i2s.txt
-+++ /dev/null
-@@ -1,46 +0,0 @@
--* Atmel I2S controller
--
--Required properties:
--- compatible:     Should be "atmel,sama5d2-i2s".
--- reg:            Should be the physical base address of the controller and the
--                  length of memory mapped region.
--- interrupts:     Should contain the interrupt for the controller.
--- dmas:           Should be one per channel name listed in the dma-names property,
--                  as described in atmel-dma.txt and dma.txt files.
--- dma-names:      Two dmas have to be defined, "tx" and "rx".
--                  This IP also supports one shared channel for both rx and tx;
--                  if this mode is used, one "rx-tx" name must be used.
--- clocks:         Must contain an entry for each entry in clock-names.
--                  Please refer to clock-bindings.txt.
--- clock-names:    Should be one of each entry matching the clocks phandles list:
--                  - "pclk" (peripheral clock) Required.
--                  - "gclk" (generated clock) Optional (1).
--                  - "muxclk" (I2S mux clock) Optional (1).
--
--Optional properties:
--- pinctrl-0:      Should specify pin control groups used for this controller.
--- princtrl-names: Should contain only one value - "default".
--
--
--(1) : Only the peripheral clock is required. The generated clock and the I2S
--      mux clock are optional and should only be set together, when Master Mode
--      is required.
--
--Example:
--
--	i2s@f8050000 {
--		compatible = "atmel,sama5d2-i2s";
--		reg = <0xf8050000 0x300>;
--		interrupts = <54 IRQ_TYPE_LEVEL_HIGH 7>;
--		dmas = <&dma0
--			(AT91_XDMAC_DT_MEM_IF(0) | AT91_XDMAC_DT_PER_IF(1) |
--			 AT91_XDMAC_DT_PERID(31))>,
--		       <&dma0
--			(AT91_XDMAC_DT_MEM_IF(0) | AT91_XDMAC_DT_PER_IF(1) |
--			 AT91_XDMAC_DT_PERID(32))>;
--		dma-names = "tx", "rx";
--		clocks = <&i2s0_clk>, <&i2s0_gclk>, <&i2s0muxck>;
--		clock-names = "pclk", "gclk", "muxclk";
--		pinctrl-names = "default";
--		pinctrl-0 = <&pinctrl_i2s0_default>;
--	};
--- 
-2.34.1
-
+Thanks,
+Alex
