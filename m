@@ -4,65 +4,65 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 763FEC43334
-	for <alsa-devel@archiver.kernel.org>; Thu, 14 Jul 2022 01:12:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2D7F3C433EF
+	for <alsa-devel@archiver.kernel.org>; Thu, 14 Jul 2022 01:12:41 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 9552A1755;
-	Thu, 14 Jul 2022 03:11:28 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9552A1755
+	by alsa0.perex.cz (Postfix) with ESMTPS id 47E78174C;
+	Thu, 14 Jul 2022 03:11:49 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 47E78174C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1657761138;
-	bh=XgIzkdg1w/45yFVa+8wnGc4HfPgO64m5VVNu5kFaai4=;
+	s=default; t=1657761159;
+	bh=64zHAd0VO/In2o8u2a2F5KFDhUcSaQ7u0ws37chHb6o=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=rBG8fGh1uI5F4d/4CzmK7RnxeTXuJN6paWnUdCDEZ96SQZlTIt4KDmLuI+Ov5jrLX
-	 9NXuFgfFTgLPn82nxo4ZDYETrL23U177RvLjNhxX1b1LYdnICHTPe+oqqnuzSbWyKr
-	 HzFGwlZ9/gqEyHgvAAQRsVKa2BW8TpYw7QpnwKzY=
+	b=OK0jBhvjHBPWM3BGBdXvWD1G6gxljvAk6Gc9Z5Q360jSW5jdqzMAmf7AHxeCbaf9d
+	 hnvUlLxdGhXXnMQMSgj563BuHZn4oy6eCeduRufATNNDdm8mJ9N0+31x8VAf8ZSB9F
+	 gGOrbEETpp1OUSmAJbURIh5B178tveCxfQlY9O9Q=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id D5B53F804EC;
-	Thu, 14 Jul 2022 03:11:04 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 83DC9F8047B;
+	Thu, 14 Jul 2022 03:11:06 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 77D68F8053D; Thu, 14 Jul 2022 03:11:03 +0200 (CEST)
+ id 6C52BF80544; Thu, 14 Jul 2022 03:11:05 +0200 (CEST)
 Received: from mga06.intel.com (mga06b.intel.com [134.134.136.31])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 92083F800AA
- for <alsa-devel@alsa-project.org>; Thu, 14 Jul 2022 03:10:56 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 92083F800AA
+ by alsa1.perex.cz (Postfix) with ESMTPS id 446EFF80254
+ for <alsa-devel@alsa-project.org>; Thu, 14 Jul 2022 03:10:57 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 446EFF80254
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="kbQwpOrl"
+ header.b="d+tHlUmi"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1657761057; x=1689297057;
+ t=1657761059; x=1689297059;
  h=from:to:cc:subject:date:message-id:in-reply-to:
  references:mime-version:content-transfer-encoding;
- bh=XgIzkdg1w/45yFVa+8wnGc4HfPgO64m5VVNu5kFaai4=;
- b=kbQwpOrlkygNWzBK6E+07OD6IIQT9d+x2uJpxCLzwBDPGIoHBFAJieWW
- q+Nn8LitXb3QTpLGW1l/ZhjbXPPw0yJGss7aBWrjMa2abCjq6pJTx5hyZ
- GPkrhA8buWURrn4wAx6QPfmdzHeSZj7uj3vvRHdtDFCZB28BLu98oYdIF
- wCeOk6YHr9+5jB3cJF7fGb3bcq+28WR96D2s7+fz+jWzCkYRRn07NO91k
- PuszfKDOn2EspE5DGPCn4bDEy5B9Xcit8eDPEvto8uPKNlnwsONun1Sro
- TljyL3KyNIDZvijdHcthBO68xEiOiuOc0vPAv6+0S4q4r+PT9cNWQxLQm w==;
-X-IronPort-AV: E=McAfee;i="6400,9594,10407"; a="347066127"
-X-IronPort-AV: E=Sophos;i="5.92,269,1650956400"; d="scan'208";a="347066127"
+ bh=64zHAd0VO/In2o8u2a2F5KFDhUcSaQ7u0ws37chHb6o=;
+ b=d+tHlUmi5Gb7ai7+q9B4mFddh9IC+6KpRvW1+RZJngby2nJnVUxVh3V5
+ mlPhipO7V8eFKJFvYoQ2cCpYsG0oWN9wm66Sa4CFDu8zcrW7Zu19BJbaB
+ +Wg7R0BvdBWGx/Do8l50AytXp1EzrYa3pl1CzWFPN6VjtvK5r7qn2bDHm
+ PTlwwzx6nL11tHfK8Ko5MlxyoWFbzcquI4tQaTp1aPkByd1o3SR+ZvGkq
+ edwAya8UmCkMKFhZeX1eOZ3S/gx7I+YgHZgg6cBRS/Htzde8wvAd8YBVE
+ 96C2fdWsTQF9eVHKTqXrHyMXsZxDAMtF1C9gkFlRN7VSflMAhbtl7uhXp Q==;
+X-IronPort-AV: E=McAfee;i="6400,9594,10407"; a="347066132"
+X-IronPort-AV: E=Sophos;i="5.92,269,1650956400"; d="scan'208";a="347066132"
 Received: from orsmga007.jf.intel.com ([10.7.209.58])
  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 13 Jul 2022 18:10:52 -0700
-X-IronPort-AV: E=Sophos;i="5.92,269,1650956400"; d="scan'208";a="593192510"
+ 13 Jul 2022 18:10:54 -0700
+X-IronPort-AV: E=Sophos;i="5.92,269,1650956400"; d="scan'208";a="593192522"
 Received: from bard-ubuntu.sh.intel.com ([10.239.185.57])
  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 13 Jul 2022 18:10:49 -0700
+ 13 Jul 2022 18:10:52 -0700
 From: Bard Liao <yung-chuan.liao@linux.intel.com>
 To: alsa-devel@alsa-project.org,
 	vkoul@kernel.org
-Subject: [PATCH 1/4] soundwire: add read_ping_status helper definition in
- manager ops
-Date: Thu, 14 Jul 2022 09:10:40 +0800
-Message-Id: <20220714011043.46059-2-yung-chuan.liao@linux.intel.com>
+Subject: [PATCH 2/4] soundwire: intel/cadence: expose PING status in manager
+ ops
+Date: Thu, 14 Jul 2022 09:10:41 +0800
+Message-Id: <20220714011043.46059-3-yung-chuan.liao@linux.intel.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20220714011043.46059-1-yung-chuan.liao@linux.intel.com>
 References: <20220714011043.46059-1-yung-chuan.liao@linux.intel.com>
@@ -87,40 +87,61 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 
-The existing manager ops provide callbacks to transfer read/write
-commands, but don't allow for direct access to PING status
-register. This is accessible in all existing IP, and would help
-diagnose timeouts or resume issues by reporting the 'true' status
-instead of the internal status reported by the IP.
+Simple indirection to existing register.
 
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Reviewed-by: Rander Wang <rander.wang@intel.com>
 Signed-off-by: Bard Liao <yung-chuan.liao@linux.intel.com>
 ---
- include/linux/soundwire/sdw.h | 3 +++
- 1 file changed, 3 insertions(+)
+ drivers/soundwire/cadence_master.c | 8 ++++++++
+ drivers/soundwire/cadence_master.h | 2 ++
+ drivers/soundwire/intel.c          | 1 +
+ 3 files changed, 11 insertions(+)
 
-diff --git a/include/linux/soundwire/sdw.h b/include/linux/soundwire/sdw.h
-index a2b31d25ea27..a85cf829bb77 100644
---- a/include/linux/soundwire/sdw.h
-+++ b/include/linux/soundwire/sdw.h
-@@ -839,6 +839,8 @@ struct sdw_defer {
-  * @set_bus_conf: Set the bus configuration
-  * @pre_bank_switch: Callback for pre bank switch
-  * @post_bank_switch: Callback for post bank switch
-+ * @read_ping_status: Read status from PING frames, reported with two bits per Device.
-+ * Bits 31:24 are reserved.
-  */
- struct sdw_master_ops {
- 	int (*read_prop)(struct sdw_bus *bus);
-@@ -855,6 +857,7 @@ struct sdw_master_ops {
- 			struct sdw_bus_params *params);
- 	int (*pre_bank_switch)(struct sdw_bus *bus);
- 	int (*post_bank_switch)(struct sdw_bus *bus);
-+	u32 (*read_ping_status)(struct sdw_bus *bus);
+diff --git a/drivers/soundwire/cadence_master.c b/drivers/soundwire/cadence_master.c
+index 4fbb19557f5e..615b0b63a3e1 100644
+--- a/drivers/soundwire/cadence_master.c
++++ b/drivers/soundwire/cadence_master.c
+@@ -756,6 +756,14 @@ cdns_reset_page_addr(struct sdw_bus *bus, unsigned int dev_num)
+ }
+ EXPORT_SYMBOL(cdns_reset_page_addr);
  
++u32 cdns_read_ping_status(struct sdw_bus *bus)
++{
++	struct sdw_cdns *cdns = bus_to_cdns(bus);
++
++	return cdns_readl(cdns, CDNS_MCP_SLAVE_STAT);
++}
++EXPORT_SYMBOL(cdns_read_ping_status);
++
+ /*
+  * IRQ handling
+  */
+diff --git a/drivers/soundwire/cadence_master.h b/drivers/soundwire/cadence_master.h
+index 595d72c15d97..ca9e805bab88 100644
+--- a/drivers/soundwire/cadence_master.h
++++ b/drivers/soundwire/cadence_master.h
+@@ -177,6 +177,8 @@ enum sdw_command_response
+ cdns_xfer_msg_defer(struct sdw_bus *bus,
+ 		    struct sdw_msg *msg, struct sdw_defer *defer);
+ 
++u32 cdns_read_ping_status(struct sdw_bus *bus);
++
+ int cdns_bus_conf(struct sdw_bus *bus, struct sdw_bus_params *params);
+ 
+ int cdns_set_sdw_stream(struct snd_soc_dai *dai,
+diff --git a/drivers/soundwire/intel.c b/drivers/soundwire/intel.c
+index 25b27cd1be1d..e1e943396e36 100644
+--- a/drivers/soundwire/intel.c
++++ b/drivers/soundwire/intel.c
+@@ -1255,6 +1255,7 @@ static struct sdw_master_ops sdw_intel_ops = {
+ 	.set_bus_conf = cdns_bus_conf,
+ 	.pre_bank_switch = intel_pre_bank_switch,
+ 	.post_bank_switch = intel_post_bank_switch,
++	.read_ping_status = cdns_read_ping_status,
  };
  
+ static int intel_init(struct sdw_intel *sdw)
 -- 
 2.25.1
 
