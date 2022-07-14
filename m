@@ -4,62 +4,61 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 325C5C433EF
-	for <alsa-devel@archiver.kernel.org>; Thu, 14 Jul 2022 04:29:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 290AFC43334
+	for <alsa-devel@archiver.kernel.org>; Thu, 14 Jul 2022 04:29:49 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 6D5DE1833;
-	Thu, 14 Jul 2022 06:28:44 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6D5DE1833
+	by alsa0.perex.cz (Postfix) with ESMTPS id 605731890;
+	Thu, 14 Jul 2022 06:28:57 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 605731890
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1657772974;
-	bh=Nw9GIA0IvSM+nBcMCdX3mSHyRJJF5jJYhfuCJ1FOG6M=;
+	s=default; t=1657772987;
+	bh=wOFnb+h38ZHkQ71ZrI57raY9yE4kjjI4LOL96pxBNUs=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=VnK02gtKGDdH8xTsdbybL7QmJ535ACXD5r1hU4GEbbGQNrOxV6JIkes9qvJGD++Hg
-	 BPArTm9Hjh+uymGdUU0ZLSsRBP+SYpKG3iZ/cH8iLZU/iRQ42DvjK9pL9Zxpx2dURY
-	 jJF+Eb7x7PvAhvLS+CFGfep+mYzGyakeniTOi7HY=
+	b=HhStyTseJ+HKqe+4zt/5ABStLUGfNxoK3SaC+KaQLBwxYXjBLXfghT5OYjYYFf6pR
+	 /sYk9KjghWdthkzBh83Vk7fdUVtYqpNB+gf4B9FLZHYZx0y+flNp/iqc7H5u8QKoq7
+	 93yEGDbM/vuvCTsBuQj7RZzEh36A6fWJ3cnmMDgA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 0A6C9F805FD;
+	by alsa1.perex.cz (Postfix) with ESMTP id A6E7EF80600;
 	Thu, 14 Jul 2022 06:23:33 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 903A0F805F5; Thu, 14 Jul 2022 06:23:29 +0200 (CEST)
-Received: from ams.source.kernel.org (ams.source.kernel.org
- [IPv6:2604:1380:4601:e00::1])
+ id B1835F805F6; Thu, 14 Jul 2022 06:23:30 +0200 (CEST)
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 16F52F80165
- for <alsa-devel@alsa-project.org>; Thu, 14 Jul 2022 06:23:23 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 16F52F80165
+ by alsa1.perex.cz (Postfix) with ESMTPS id 85520F805F2
+ for <alsa-devel@alsa-project.org>; Thu, 14 Jul 2022 06:23:26 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 85520F805F2
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="FN6lHruF"
+ header.b="cYIUnM73"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by ams.source.kernel.org (Postfix) with ESMTPS id 20AB1B82372;
+ by ams.source.kernel.org (Postfix) with ESMTPS id 015DEB82335;
+ Thu, 14 Jul 2022 04:23:26 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C9917C341C6;
  Thu, 14 Jul 2022 04:23:22 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4A848C341CA;
- Thu, 14 Jul 2022 04:23:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1657772600;
- bh=Nw9GIA0IvSM+nBcMCdX3mSHyRJJF5jJYhfuCJ1FOG6M=;
+ s=k20201202; t=1657772603;
+ bh=wOFnb+h38ZHkQ71ZrI57raY9yE4kjjI4LOL96pxBNUs=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=FN6lHruFurAlfettCHqY5368hLDdmKTHMUOU5DDhOklGaAwyCjNdAb/X95SscnkHx
- 9+eKYNhADG6rqaoaG6YRwVB5o74vRN1Kto136aOkGaUzj7ntf2fmGIdthiH4YTyqFz
- WRoT+eQz08Zra401DtWAxFUgu9Dyb0EMHQEQ/7Iy0tOQgno5FbqctcFyxuxFbMhYYM
- TdZQtMrt1NSXk8WO8L0i8248xWuOXOuKpWOnaqX+tgCR1Xd6ttNNSpvQAmSBrgOj+E
- x78cS0p5oF6mjV67QRR2WjUP+nZwYLAca0MKngLA/2iaKoqQ1QWj8wic7ZH6Xr9aH3
- uIMoS7Bn30Tow==
+ b=cYIUnM73PZbYHx1aMg+vbC7gx2LIDl/ODkO0uhfukx9jgSED1EnPi5gIbrJDX46e6
+ L8H2oqwe3xaKACFg7FHSwq9homeEV8gIRolyd+n+c6sFayDL2W5GX7W5I14QqlY/I0
+ IjY7Jf3eL+7/bMSP0mIts/hKsR6iltyF6JOw8g7s+NxdRHt3SorY089M60bEbFDT2z
+ 9liOOXMqisnOnMzaFw0+rXWEwFZRRkJS7yxVb0HlZmueIx+qpOj+myMi5L2CFZqGjy
+ Wjo4AnyRPvvnDqfEPEb0HQ2xBHVF/RNeFn90Kp9rvZFkkBofw1oeqUpZXBbwoZZ+4c
+ vJE1l68WpGozw==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.18 23/41] ASoC: cs47l15: Fix event generation for
- low power mux control
-Date: Thu, 14 Jul 2022 00:22:03 -0400
-Message-Id: <20220714042221.281187-23-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.18 25/41] ASoC: madera: Fix event generation for
+ rate controls
+Date: Thu, 14 Jul 2022 00:22:05 -0400
+Message-Id: <20220714042221.281187-25-sashal@kernel.org>
 X-Mailer: git-send-email 2.35.1
 In-Reply-To: <20220714042221.281187-1-sashal@kernel.org>
 References: <20220714042221.281187-1-sashal@kernel.org>
@@ -68,10 +67,9 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 Cc: Sasha Levin <sashal@kernel.org>, alsa-devel@alsa-project.org,
- Charles Keepax <ckeepax@opensource.cirrus.com>, tanureal@opensource.cirrus.com,
- patches@opensource.cirrus.com, tiwai@suse.com, lgirdwood@gmail.com,
- david.rhodes@cirrus.com, rf@opensource.cirrus.com,
- Mark Brown <broonie@kernel.org>, james.schulman@cirrus.com
+ Charles Keepax <ckeepax@opensource.cirrus.com>, patches@opensource.cirrus.com,
+ tiwai@suse.com, lgirdwood@gmail.com, rf@opensource.cirrus.com,
+ Mark Brown <broonie@kernel.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -89,44 +87,47 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 From: Charles Keepax <ckeepax@opensource.cirrus.com>
 
-[ Upstream commit 7f103af4a10f375b9b346b4d0b730f6a66b8c451 ]
+[ Upstream commit 980555e95f7cabdc9c80a07107622b097ba23703 ]
 
-cs47l15_in1_adc_put always returns zero regardless of if the control
+madera_adsp_rate_put always returns zero regardless of if the control
 value was updated. This results in missing notifications to user-space
-of the control change. Update the handling to return 1 when the value is
-changed.
+of the control change. Update the handling to return 1 when the
+value is changed.
 
 Signed-off-by: Charles Keepax <ckeepax@opensource.cirrus.com>
-Link: https://lore.kernel.org/r/20220623105120.1981154-3-ckeepax@opensource.cirrus.com
+Link: https://lore.kernel.org/r/20220623105120.1981154-5-ckeepax@opensource.cirrus.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/codecs/cs47l15.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+ sound/soc/codecs/madera.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/sound/soc/codecs/cs47l15.c b/sound/soc/codecs/cs47l15.c
-index 391fd7da331f..1c7d52bef893 100644
---- a/sound/soc/codecs/cs47l15.c
-+++ b/sound/soc/codecs/cs47l15.c
-@@ -122,6 +122,9 @@ static int cs47l15_in1_adc_put(struct snd_kcontrol *kcontrol,
- 		snd_soc_kcontrol_component(kcontrol);
- 	struct cs47l15 *cs47l15 = snd_soc_component_get_drvdata(component);
+diff --git a/sound/soc/codecs/madera.c b/sound/soc/codecs/madera.c
+index 8095a87117cf..b9f19fbd2911 100644
+--- a/sound/soc/codecs/madera.c
++++ b/sound/soc/codecs/madera.c
+@@ -899,7 +899,7 @@ static int madera_adsp_rate_put(struct snd_kcontrol *kcontrol,
+ 	struct soc_enum *e = (struct soc_enum *)kcontrol->private_value;
+ 	const int adsp_num = e->shift_l;
+ 	const unsigned int item = ucontrol->value.enumerated.item[0];
+-	int ret;
++	int ret = 0;
  
-+	if (!!ucontrol->value.integer.value[0] == cs47l15->in1_lp_mode)
-+		return 0;
-+
- 	switch (ucontrol->value.integer.value[0]) {
- 	case 0:
- 		/* Set IN1 to normal mode */
-@@ -150,7 +153,7 @@ static int cs47l15_in1_adc_put(struct snd_kcontrol *kcontrol,
- 		break;
+ 	if (item >= e->items)
+ 		return -EINVAL;
+@@ -916,10 +916,10 @@ static int madera_adsp_rate_put(struct snd_kcontrol *kcontrol,
+ 			 "Cannot change '%s' while in use by active audio paths\n",
+ 			 kcontrol->id.name);
+ 		ret = -EBUSY;
+-	} else {
++	} else if (priv->adsp_rate_cache[adsp_num] != e->values[item]) {
+ 		/* Volatile register so defer until the codec is powered up */
+ 		priv->adsp_rate_cache[adsp_num] = e->values[item];
+-		ret = 0;
++		ret = 1;
  	}
  
--	return 0;
-+	return 1;
- }
- 
- static const struct snd_kcontrol_new cs47l15_snd_controls[] = {
+ 	mutex_unlock(&priv->rate_lock);
 -- 
 2.35.1
 
