@@ -4,67 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 228ADC43334
-	for <alsa-devel@archiver.kernel.org>; Thu, 14 Jul 2022 14:32:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 70C80C43334
+	for <alsa-devel@archiver.kernel.org>; Thu, 14 Jul 2022 15:47:24 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 338241959;
-	Thu, 14 Jul 2022 16:31:56 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 338241959
+	by alsa0.perex.cz (Postfix) with ESMTPS id D4C571904;
+	Thu, 14 Jul 2022 17:46:31 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D4C571904
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1657809166;
-	bh=EiqO1A6/I9zAt4h51+JBiqm/YYyr2kWxsGR7un0Pnqg=;
+	s=default; t=1657813641;
+	bh=ywjOcy0Fngl3ieYdZPaglANph/+aXsiQuKBuI/Ow9Oc=;
 	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=WIzUSnGRfOotkCqoM+HETRpXyc0qkSKijjFE4NxDszstqpW2vq027heBhigoMZIlq
-	 sKE12NPXr6inQxYmFTjfejIzzi8CDVhifooq1p8g3ZqrFd/jQlrJWbsfqkxh4FGs66
-	 HHcW4nS+GQaaNtiPh8I7glL/reFuobHdBBVHEo90=
+	b=Ebott+ZVauUCtznHQd1ZWXxJ/jjWvM8ybJo+uhpOHTHpn3CJeZR8piL0MGXFQVrud
+	 IWWPIoFOqD1w9VjMAL0ttPaRdynl1fcsFiNkpO9sPmWUmeR6xvlX3NxZoohlMbYRsa
+	 OYc2E2csjPWPb51KEDw9zUx3gsxmezz7pVKtAOeg=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 1B422F80548;
-	Thu, 14 Jul 2022 16:31:21 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 7CB3DF800B0;
+	Thu, 14 Jul 2022 17:46:31 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 6E4B2F8053D; Thu, 14 Jul 2022 16:31:20 +0200 (CEST)
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+ id 0AEB3F800AA; Thu, 14 Jul 2022 17:46:30 +0200 (CEST)
+Received: from ams.source.kernel.org (ams.source.kernel.org
+ [IPv6:2604:1380:4601:e00::1])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 61F7BF800B0
- for <alsa-devel@alsa-project.org>; Thu, 14 Jul 2022 16:31:12 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 61F7BF800B0
+ by alsa1.perex.cz (Postfix) with ESMTPS id A2EAEF800AA
+ for <alsa-devel@alsa-project.org>; Thu, 14 Jul 2022 17:46:26 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A2EAEF800AA
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="N8cyHSM6"
+ header.b="TSGZR5M1"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by ams.source.kernel.org (Postfix) with ESMTPS id 82E60B823A2;
- Thu, 14 Jul 2022 14:31:11 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 40333C341CA;
- Thu, 14 Jul 2022 14:31:09 +0000 (UTC)
+ by ams.source.kernel.org (Postfix) with ESMTPS id 34807B823DE;
+ Thu, 14 Jul 2022 15:46:25 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9BEE7C34114;
+ Thu, 14 Jul 2022 15:46:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1657809070;
- bh=EiqO1A6/I9zAt4h51+JBiqm/YYyr2kWxsGR7un0Pnqg=;
+ s=k20201202; t=1657813583;
+ bh=ywjOcy0Fngl3ieYdZPaglANph/+aXsiQuKBuI/Ow9Oc=;
  h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=N8cyHSM6ni8jwPibibKpTGS1PpMQJc04KyTAe2yLrpydCus24ilFx+PrS147YOEB9
- 8/UbqFMoSw3vf+dsAN7TBy6OnI732xUrPvvr2fkRiw3SsHJB1aUg2L0q8HvwmcCy6V
- VeokQys4JjcLAQan2MSzMA9/VwulHZmu7mbAcT3TnEvpEK0kIP7PEVIVX1BnbGwrM+
- l0gtp5fuqnclthcQLRr5GmbdS0DoCL3q82vE8b+luU+u4SArvED6s7XGpy5opyvHOE
- cTRiMQYi0p6FXmJksth+Enz450KQIuOV8l0q02BI28ZE0RsibtY5ZVyIw3JizDdD1Q
- OWqytpPRtZ11g==
+ b=TSGZR5M11flWI+w2N6MRUzQwF4tM9W3oDoiHNLbP9R2T7Akup1KXtS/xA8WpDcRnA
+ dzamh/fvOzhxvdZ9ok4/GZKwBBbDQ0i/Uyd1Nho/XVQuU0Vhi6Amk6wnTX+D6sOwWC
+ O0e+c1iANc3S0M9iZfF2h8NbNWXetq0C6o1b51XXYV7aFXn/QS9niaSjaoHF1qTKGY
+ xTQY8lAr8IKOyvvPZN+Cri/MO26UKxoJx4y7WMU2y24K6NYSxrGlPL3+Gw/2FL80XD
+ jZjR4Z9Eu4FZPJjr+pLknV+TN600CFlEBvVfaahiw0M3Rc2KoTqWFcuI7JpQCnDnA1
+ Up8jBUKqHvZ/w==
 From: Mark Brown <broonie@kernel.org>
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-In-Reply-To: <871quocio1.wl-kuninori.morimoto.gx@renesas.com>
-References: <871quocio1.wl-kuninori.morimoto.gx@renesas.com>
-Subject: Re: [PATCH] ASoC: rsnd: care default case on
- rsnd_ssiu_busif_err_irq_ctrl()
-Message-Id: <165780906899.93789.11935019608818262283.b4-ty@kernel.org>
-Date: Thu, 14 Jul 2022 15:31:08 +0100
+To: wenst@chromium.org, alexandru.elisei@arm.com, broonie@kernel.org,
+ lgirdwood@gmail.com
+In-Reply-To: <20220713130451.31481-1-broonie@kernel.org>
+References: <20220713130451.31481-1-broonie@kernel.org>
+Subject: Re: [PATCH] ASoC: rockchip-i2s: Undo BCLK pinctrl changes
+Message-Id: <165781358234.103890.813501297551869982.b4-ty@kernel.org>
+Date: Thu, 14 Jul 2022 16:46:22 +0100
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>, kunihiko.nishiyama.dn@renesas.com,
- nguyen.nguyen.yj@renesas.com
+Cc: alsa-devel@alsa-project.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -80,15 +80,13 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Thu, 14 Jul 2022 06:28:15 +0000, Kuninori Morimoto wrote:
-> From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+On Wed, 13 Jul 2022 14:04:51 +0100, Mark Brown wrote:
+> The version of the BCLK pinctrl management changes that made it into
+> v5.19 has caused problems on some systems due to overly strict DT
+> requirements but attempts to fix it have caused further breakage on
+> other platforms.  Just drop the changes for this release, we already
+> have a better version queued for -next.
 > 
-> Before, ssiu.c didn't care SSI5-8, thus,
-> commit b1384d4c95088d0 ("ASoC: rsnd: care default case on
-> rsnd_ssiu_busif_err_status_clear()") cares it for status clear.
-> 
-> But we should care it for error irq handling, too.
-> This patch cares it.
 > 
 > [...]
 
@@ -98,8 +96,8 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: rsnd: care default case on rsnd_ssiu_busif_err_irq_ctrl()
-      commit: ef30911d3c39fd57884c348c29b9cbff88def155
+[1/1] ASoC: rockchip-i2s: Undo BCLK pinctrl changes
+      commit: 1e347f861da8ddb17e1d1b3113cb6c188e0de3e5
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
