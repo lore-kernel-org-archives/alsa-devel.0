@@ -4,61 +4,61 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id F28F4C43334
-	for <alsa-devel@archiver.kernel.org>; Thu, 14 Jul 2022 04:25:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C2C2ACCA486
+	for <alsa-devel@archiver.kernel.org>; Thu, 14 Jul 2022 04:25:57 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3570317E5;
-	Thu, 14 Jul 2022 06:24:44 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3570317E5
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0E96317EB;
+	Thu, 14 Jul 2022 06:25:06 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0E96317EB
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1657772734;
-	bh=14XCnMkq1arqiNi6FR7twGUnaj1vfw1y++YI1I9tfEc=;
+	s=default; t=1657772756;
+	bh=dt8pDqk8iKTyANiXWzkfAhvww3xMsxUF+gbazu59Dis=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=kwKsu73sMQZ13e996QLj1nPHUQ3oG5TByJ5L4bHWk5b8dha2JRzKmoUlnsFFkuaq1
-	 Uam0IQeXlmU4gnM0QZUguK16YwqacqfwNMlvljAICBF0FF2f8MeVpAq2mOWTjOa9xV
-	 5TAzjxhtkDKTWZCYGb52cbSahCI8GUA4hZsgX8CM=
+	b=h9VBvMHmTzDXD1FzZuKOOL8ZaiW616gzA51np38rscjvESk0l4klwyMJiyinFYxGp
+	 9DVjQKYqzffkUvjSG1dyR6cMtgExzo0t18m+vpDz4dHARWlOnJ6reyXjKNpPB1/fJ3
+	 zYHtod4VUnPdphAjWXrjnNeLQ7vm0BXFC6Z1MspU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 4E7D3F8057A;
-	Thu, 14 Jul 2022 06:23:01 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 6B8D9F805AE;
+	Thu, 14 Jul 2022 06:23:04 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 91558F805A0; Thu, 14 Jul 2022 06:22:59 +0200 (CEST)
+ id 157ADF805AF; Thu, 14 Jul 2022 06:23:03 +0200 (CEST)
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 68CA8F8057A;
- Thu, 14 Jul 2022 06:22:55 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 68CA8F8057A
+ by alsa1.perex.cz (Postfix) with ESMTPS id 5FEB0F805A0
+ for <alsa-devel@alsa-project.org>; Thu, 14 Jul 2022 06:22:58 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5FEB0F805A0
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="F0Z4iWOr"
+ header.b="PSJXdR4C"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id 597F661E93;
- Thu, 14 Jul 2022 04:22:54 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 32763C34114;
- Thu, 14 Jul 2022 04:22:52 +0000 (UTC)
+ by dfw.source.kernel.org (Postfix) with ESMTPS id 13F2661E59;
+ Thu, 14 Jul 2022 04:22:57 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CF5B4C341C6;
+ Thu, 14 Jul 2022 04:22:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1657772573;
- bh=14XCnMkq1arqiNi6FR7twGUnaj1vfw1y++YI1I9tfEc=;
+ s=k20201202; t=1657772576;
+ bh=dt8pDqk8iKTyANiXWzkfAhvww3xMsxUF+gbazu59Dis=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=F0Z4iWOrTV20fGjM94zK7D9kCZ5Kfxg+VeOCdeQpSMhOVOpLJ3BM8P8AeSk2SATSe
- dsEqKgksUVrUQsaojZFgfExFeUTKxTAWZjXtakilYYdiCTgjFx2gEK9uHW8+CkBXhx
- yNJPz4O5Te7PyebFDenJiSLHz5gINQOuvBu8P/Rti+Dm8LGlhHxYJtzTNZ2SbVcrJ/
- 90/uROe9NZkLO1bp2+SLcEeOLu/eu2UgG7VZx6AOF7Cz2/0vGQGDnlSGgumJnsJ9Tr
- 9izMmRrI99ecNobES0S2lMTVczWl/3hJa+6MzSfMTmNH0lTJr+7HFvgb/AlPPGuQ0g
- I9pudgAygHHCg==
+ b=PSJXdR4CKJlvx9qYNN4saKAJCdyWWxGsD3HTFG9eZi5rz82LQhSsOOBNXDqXJ75eN
+ YWg9uYXKAmcPYYiTVWqu3tTHYxwi9+0p+W5H8TD+jJY50lNSAKfT4M22K4axex4tWY
+ XJ/QLuu2uiZ1LbxPN4EUSGFNb9imPCg4IiY0Ljh+SqgKUxlaMwsh4uWLjuTzgwT8sW
+ DpINz5cZT9Oc1IozTknGlobU/p7Di7oD1jCyVeMiYtJQlS63kGSHSPy8CTcUrBHcrE
+ hzkEMNAhWanOT8aYp9Fm5CjzM0DnzvA/YCirejGS6HbK/tSXqjmuh1UerZ0e4dzw9a
+ bKDw1u0XfIieA==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.18 11/41] ASoC: SOF: Intel: hda-loader: Clarify the
- cl_dsp_init() flow
-Date: Thu, 14 Jul 2022 00:21:51 -0400
-Message-Id: <20220714042221.281187-11-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.18 13/41] ASoC: wcd9335: Fix spurious event
+ generation
+Date: Thu, 14 Jul 2022 00:21:53 -0400
+Message-Id: <20220714042221.281187-13-sashal@kernel.org>
 X-Mailer: git-send-email 2.35.1
 In-Reply-To: <20220714042221.281187-1-sashal@kernel.org>
 References: <20220714042221.281187-1-sashal@kernel.org>
@@ -67,13 +67,8 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 Cc: Sasha Levin <sashal@kernel.org>, alsa-devel@alsa-project.org,
- kai.vehmanen@linux.intel.com, lgirdwood@gmail.com,
- Peter Ujfalusi <peter.ujfalusi@linux.intel.com>, tiwai@suse.com,
- yang.jie@linux.intel.com,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- daniel.baluta@nxp.com, Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
- Mark Brown <broonie@kernel.org>, Bard Liao <yung-chuan.liao@linux.intel.com>,
- sound-open-firmware@alsa-project.org
+ tiwai@suse.com, lgirdwood@gmail.com, Mark Brown <broonie@kernel.org>,
+ srinivas.kandagatla@linaro.org, bgoswami@quicinc.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -89,52 +84,36 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
+From: Mark Brown <broonie@kernel.org>
 
-[ Upstream commit bbfef046c6613404c01aeb9e9928bebb78dd327a ]
+[ Upstream commit a7786cbae4b2732815da98efa39df96746b5bd0d ]
 
-Update the comment for the cl_dsp_init() to clarify what is done by the
-function and use the chip->init_core_mask instead of BIT(0) when
-unstalling/running the init core.
+The slimbus mux put operation unconditionally reports a change in value
+which means that spurious events are generated. Fix this by exiting early
+in that case.
 
-Complements: 2a68ff846164 ("ASoC: SOF: Intel: hda: Revisit IMR boot sequence")
-Signed-off-by: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
-Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Reviewed-by: Bard Liao <yung-chuan.liao@linux.intel.com>
-Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-Link: https://lore.kernel.org/r/20220609085949.29062-4-peter.ujfalusi@linux.intel.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
+Link: https://lore.kernel.org/r/20220603124609.4024666-1-broonie@kernel.org
 Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/sof/intel/hda-loader.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ sound/soc/codecs/wcd9335.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/sound/soc/sof/intel/hda-loader.c b/sound/soc/sof/intel/hda-loader.c
-index 9f624a84182b..88d23924e1bf 100644
---- a/sound/soc/sof/intel/hda-loader.c
-+++ b/sound/soc/sof/intel/hda-loader.c
-@@ -97,9 +97,9 @@ static struct hdac_ext_stream *cl_stream_prepare(struct snd_sof_dev *sdev, unsig
- }
+diff --git a/sound/soc/codecs/wcd9335.c b/sound/soc/codecs/wcd9335.c
+index 12be043ee9a3..aa685980a97b 100644
+--- a/sound/soc/codecs/wcd9335.c
++++ b/sound/soc/codecs/wcd9335.c
+@@ -1287,6 +1287,9 @@ static int slim_rx_mux_put(struct snd_kcontrol *kc,
+ 	struct snd_soc_dapm_update *update = NULL;
+ 	u32 port_id = w->shift;
  
- /*
-- * first boot sequence has some extra steps. core 0 waits for power
-- * status on core 1, so power up core 1 also momentarily, keep it in
-- * reset/stall and then turn it off
-+ * first boot sequence has some extra steps.
-+ * power on all host managed cores and only unstall/run the boot core to boot the
-+ * DSP then turn off all non boot cores (if any) is powered on.
-  */
- static int cl_dsp_init(struct snd_sof_dev *sdev, int stream_tag)
- {
-@@ -127,7 +127,7 @@ static int cl_dsp_init(struct snd_sof_dev *sdev, int stream_tag)
- 			  ((stream_tag - 1) << 9)));
++	if (wcd->rx_port_value[port_id] == ucontrol->value.enumerated.item[0])
++		return 0;
++
+ 	wcd->rx_port_value[port_id] = ucontrol->value.enumerated.item[0];
  
- 	/* step 3: unset core 0 reset state & unstall/run core 0 */
--	ret = hda_dsp_core_run(sdev, BIT(0));
-+	ret = hda_dsp_core_run(sdev, chip->init_core_mask);
- 	if (ret < 0) {
- 		if (hda->boot_iteration == HDA_FW_BOOT_ATTEMPTS)
- 			dev_err(sdev->dev,
+ 	/* Remove channel from any list it's in before adding it to a new one */
 -- 
 2.35.1
 
