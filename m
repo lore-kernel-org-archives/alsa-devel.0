@@ -4,62 +4,61 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id AAF10C43334
-	for <alsa-devel@archiver.kernel.org>; Thu, 14 Jul 2022 04:26:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3349FC433EF
+	for <alsa-devel@archiver.kernel.org>; Thu, 14 Jul 2022 04:27:06 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id DF98117ED;
-	Thu, 14 Jul 2022 06:25:57 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DF98117ED
+	by alsa0.perex.cz (Postfix) with ESMTPS id 4FEC71813;
+	Thu, 14 Jul 2022 06:26:14 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4FEC71813
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1657772807;
-	bh=U3MgG21b5SazhZDFf0lLfuAYMuBp9MqEc7e1BPZoKXY=;
+	s=default; t=1657772824;
+	bh=SlrhLM8CiLrapZm3BcyHGoU9JGNSw8/TZ+SDGIgRx/c=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=NkU6wsEY5Keg/Nrra7x/IWxFnllQSVywjHoIPc6tvzvFLmqcX6HlfoagpuIGA831J
-	 /wXd+gAVFEgiCQSYWLpwOd3153yvgYy5f3TXRjdcO3/nCqEiZ++q49orW1/eoke7O7
-	 SKxubTA9HjRXuXCjhNREFcId+CTvvlUrxiFwOOU4=
+	b=CawllzoGv2TX7NGwLBsLePaXQKNwZhCyzMCVG+ITMW9eAiua5/rJQmwOtQEnFZrRd
+	 F18r4rlnpkyt81JtPI2AYA9y6WWPv8t/WYELYM/Yw67oywCNNZg39ZH00ASogDsnXq
+	 L95dUu/9bZczGG+m3tiJMRXznbJWBf96jyEytvME=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 0BA5FF805C0;
-	Thu, 14 Jul 2022 06:23:10 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id E3A18F8053B;
+	Thu, 14 Jul 2022 06:23:11 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 1D209F805C0; Thu, 14 Jul 2022 06:23:08 +0200 (CEST)
-Received: from ams.source.kernel.org (ams.source.kernel.org
- [IPv6:2604:1380:4601:e00::1])
+ id 3CA13F805C3; Thu, 14 Jul 2022 06:23:09 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org
+ [IPv6:2604:1380:4641:c500::1])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 1E0B4F805B5
- for <alsa-devel@alsa-project.org>; Thu, 14 Jul 2022 06:23:05 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1E0B4F805B5
+ by alsa1.perex.cz (Postfix) with ESMTPS id 540FDF804D0
+ for <alsa-devel@alsa-project.org>; Thu, 14 Jul 2022 06:22:41 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 540FDF804D0
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="incIr6Yb"
+ header.b="spNymYqV"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by ams.source.kernel.org (Postfix) with ESMTPS id 63556B82378;
- Thu, 14 Jul 2022 04:23:04 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5C398C34114;
- Thu, 14 Jul 2022 04:23:02 +0000 (UTC)
+ by dfw.source.kernel.org (Postfix) with ESMTPS id 0906A61E17;
+ Thu, 14 Jul 2022 04:22:40 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 97FFDC34114;
+ Thu, 14 Jul 2022 04:22:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1657772584;
- bh=U3MgG21b5SazhZDFf0lLfuAYMuBp9MqEc7e1BPZoKXY=;
+ s=k20201202; t=1657772559;
+ bh=SlrhLM8CiLrapZm3BcyHGoU9JGNSw8/TZ+SDGIgRx/c=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=incIr6Yb1kuIym+Onkrklx4Szpjn16g6ilN8ivXHMdD2QvOCPshbDhS81FJfPjA8+
- Q3M1AEOcur2TiLx5vX1aeKJEuQRfiRq4yZG1O4DKSM2mzsKRwlO9IkddV0vI9f7j01
- dR4Adp6grI9N/98j9i+5uod+1bMXywG9KpvjdQarTpSjw484MWEy/PbH0nO92GFEH9
- s3o8TvtFd1LaAAYZXzO8AXBP/CglQ/+WYhgzHxsiByJ0FID6S9JVGqTu8wrj0Dv005
- zGNumtGEx8cUsv27Z20yWnQzPDWCnLFhe2nYUM1eMIvYGsNZj2jAj2DVDGmratLICa
- Tcx+z+wQauUYQ==
+ b=spNymYqVCh0VaMWmPYn/TkX9P2j5PXyuXnOCmp/AyAeeXffPbtrGqj++I7FD25LN9
+ V+JwoJuhYWt8ApvcRCuPcJ7c8MNg+g4vW4okKGlgmSU8T5dfg+Y/pXcl0sYpR0Als1
+ sA3O+SPwGsg7lwd7XpNO3KNwmN4S7JO3Ob3JQB038NsgYSmcYXsUD0k8TtQsqyNLgd
+ EmaZsmdrb/aivrV1BjN8hwcxgxv2s7pR7BAdMy+OK3/yHcZb0Bq/rHzy9t4SredoWd
+ +KrBtGjsSDuu/MeQbCen3QuAwHoMiHS5iLwDWOYVBGLhQ004UHxKXh8qYj+J+7Suqt
+ mQBiNB/m45u0A==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.18 15/41] ASoC: Intel: bytcr_wm5102: Fix GPIO
- related probe-ordering problem
-Date: Thu, 14 Jul 2022 00:21:55 -0400
-Message-Id: <20220714042221.281187-15-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.18 07/41] ASoC: rt7*-sdw: harden jack_detect_handler
+Date: Thu, 14 Jul 2022 00:21:47 -0400
+Message-Id: <20220714042221.281187-7-sashal@kernel.org>
 X-Mailer: git-send-email 2.35.1
 In-Reply-To: <20220714042221.281187-1-sashal@kernel.org>
 References: <20220714042221.281187-1-sashal@kernel.org>
@@ -67,13 +66,11 @@ MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
-Cc: Sasha Levin <sashal@kernel.org>, Julia.Lawall@inria.fr,
- cezary.rojewski@intel.com, kai.vehmanen@linux.intel.com,
- yung-chuan.liao@linux.intel.com, tiwai@suse.com, alsa-devel@alsa-project.org,
+Cc: Sasha Levin <sashal@kernel.org>, oder_chiou@realtek.com,
+ alsa-devel@alsa-project.org, lgirdwood@gmail.com, tiwai@suse.com,
  Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- ranjani.sridharan@linux.intel.com, liam.r.girdwood@linux.intel.com,
- Hans de Goede <hdegoede@redhat.com>, Mark Brown <broonie@kernel.org>,
- akihiko.odaki@gmail.com, peter.ujfalusi@linux.intel.com
+ Rander Wang <rander.wang@intel.com>, Mark Brown <broonie@kernel.org>,
+ Bard Liao <yung-chuan.liao@linux.intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -89,53 +86,68 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Hans de Goede <hdegoede@redhat.com>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 
-[ Upstream commit 4e07479eab8a044cc9542414ccb4aeb8eb033bde ]
+[ Upstream commit 0484271ab0ce50649329fa9dc23c50853c5b26a4 ]
 
-The "wlf,spkvdd-ena" GPIO needed by the bytcr_wm5102 driver
-is made available through a gpio-lookup table.
+Realtek headset codec drivers typically check if the card is
+instantiated before proceeding with the jack detection.
 
-This gpio-lookup table is registered by drivers/mfd/arizona-spi.c, which
-may get probed after the bytcr_wm5102 driver.
+The rt700, rt711 and rt711-sdca are however missing a check on the
+card pointer, which can lead to NULL dereferences encountered in
+driver bind/unbind tests.
 
-If the gpio-lookup table has not registered yet then the gpiod_get()
-will return -ENOENT. Treat -ENOENT as -EPROBE_DEFER to still keep
-things working in this case.
-
-Signed-off-by: Hans de Goede <hdegoede@redhat.com>
-Acked-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Link: https://lore.kernel.org/r/20220612155652.107310-1-hdegoede@redhat.com
+Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Reviewed-by: Rander Wang <rander.wang@intel.com>
+Reviewed-by: Bard Liao <yung-chuan.liao@linux.intel.com>
+Link: https://lore.kernel.org/r/20220606203752.144159-6-pierre-louis.bossart@linux.intel.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/intel/boards/bytcr_wm5102.c | 13 +++++++++++--
- 1 file changed, 11 insertions(+), 2 deletions(-)
+ sound/soc/codecs/rt700.c      | 2 +-
+ sound/soc/codecs/rt711-sdca.c | 2 +-
+ sound/soc/codecs/rt711.c      | 2 +-
+ 3 files changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/sound/soc/intel/boards/bytcr_wm5102.c b/sound/soc/intel/boards/bytcr_wm5102.c
-index 8d8e96e3cd2d..f6d0cef1b28c 100644
---- a/sound/soc/intel/boards/bytcr_wm5102.c
-+++ b/sound/soc/intel/boards/bytcr_wm5102.c
-@@ -421,8 +421,17 @@ static int snd_byt_wm5102_mc_probe(struct platform_device *pdev)
- 	priv->spkvdd_en_gpio = gpiod_get(codec_dev, "wlf,spkvdd-ena", GPIOD_OUT_LOW);
- 	put_device(codec_dev);
+diff --git a/sound/soc/codecs/rt700.c b/sound/soc/codecs/rt700.c
+index e61a8257bf64..1f4da32639d4 100644
+--- a/sound/soc/codecs/rt700.c
++++ b/sound/soc/codecs/rt700.c
+@@ -162,7 +162,7 @@ static void rt700_jack_detect_handler(struct work_struct *work)
+ 	if (!rt700->hs_jack)
+ 		return;
  
--	if (IS_ERR(priv->spkvdd_en_gpio))
--		return dev_err_probe(dev, PTR_ERR(priv->spkvdd_en_gpio), "getting spkvdd-GPIO\n");
-+	if (IS_ERR(priv->spkvdd_en_gpio)) {
-+		ret = PTR_ERR(priv->spkvdd_en_gpio);
-+		/*
-+		 * The spkvdd gpio-lookup is registered by: drivers/mfd/arizona-spi.c,
-+		 * so -ENOENT means that arizona-spi hasn't probed yet.
-+		 */
-+		if (ret == -ENOENT)
-+			ret = -EPROBE_DEFER;
-+
-+		return dev_err_probe(dev, ret, "getting spkvdd-GPIO\n");
-+	}
+-	if (!rt700->component->card->instantiated)
++	if (!rt700->component->card || !rt700->component->card->instantiated)
+ 		return;
  
- 	/* override platform name, if required */
- 	byt_wm5102_card.dev = dev;
+ 	reg = RT700_VERB_GET_PIN_SENSE | RT700_HP_OUT;
+diff --git a/sound/soc/codecs/rt711-sdca.c b/sound/soc/codecs/rt711-sdca.c
+index e5a0ec984bdd..9c88c92c0abc 100644
+--- a/sound/soc/codecs/rt711-sdca.c
++++ b/sound/soc/codecs/rt711-sdca.c
+@@ -294,7 +294,7 @@ static void rt711_sdca_jack_detect_handler(struct work_struct *work)
+ 	if (!rt711->hs_jack)
+ 		return;
+ 
+-	if (!rt711->component->card->instantiated)
++	if (!rt711->component->card || !rt711->component->card->instantiated)
+ 		return;
+ 
+ 	/* SDW_SCP_SDCA_INT_SDCA_0 is used for jack detection */
+diff --git a/sound/soc/codecs/rt711.c b/sound/soc/codecs/rt711.c
+index 39f7ded1371e..3cb4bf76c021 100644
+--- a/sound/soc/codecs/rt711.c
++++ b/sound/soc/codecs/rt711.c
+@@ -242,7 +242,7 @@ static void rt711_jack_detect_handler(struct work_struct *work)
+ 	if (!rt711->hs_jack)
+ 		return;
+ 
+-	if (!rt711->component->card->instantiated)
++	if (!rt711->component->card || !rt711->component->card->instantiated)
+ 		return;
+ 
+ 	if (pm_runtime_status_suspended(rt711->slave->dev.parent)) {
 -- 
 2.35.1
 
