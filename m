@@ -4,71 +4,42 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id F1582CCA479
-	for <alsa-devel@archiver.kernel.org>; Thu, 14 Jul 2022 01:13:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8586AC433EF
+	for <alsa-devel@archiver.kernel.org>; Thu, 14 Jul 2022 02:08:59 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 14E30176C;
-	Thu, 14 Jul 2022 03:12:14 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 14E30176C
+	by alsa0.perex.cz (Postfix) with ESMTPS id E4C66174C;
+	Thu, 14 Jul 2022 04:08:07 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E4C66174C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1657761184;
-	bh=Y1J5nWNOz+sncSR+Y9wqNIrStrFxV1lay+BampiPlQo=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1657764538;
+	bh=ur7+8tdcnWf8Ps7m4KlMxD+5+2e8hcO05zs8mHf7oAo=;
+	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=sCJYZya/dLq90Xqxs7Bo8fFkzJTqsX8NmRvnu5GIljkzZPoW7WuIAykGnFYNZN10W
-	 x/b7Yp7yZzW8keecFlRt+xNBIbETRr9hWznn33ff/wEOmbfYzdc98PReYvAxYtEHO9
-	 wZIWE5ZRjEW0/B3mapPoQtvvdZCtayLA2samL4JA=
+	b=h+wcCB8zNw11LVmjFqt4URUTj8+4g6OpMEnR7p2NW+C22Q2EYTgEHQAprDCxKo+KR
+	 grWZNPV+BrGkUVgE8h74CuVK0ZU4/xuniiugsWXsCrQ5OwnYStqWJZ1qY30K+RPg9d
+	 CQ5veswhfsfYWvegHOGj2ohGflml9MbAtZRLqiHA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 75428F80552;
-	Thu, 14 Jul 2022 03:11:10 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 41A7BF8014E;
+	Thu, 14 Jul 2022 04:08:07 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 811D7F80549; Thu, 14 Jul 2022 03:11:08 +0200 (CEST)
-Received: from mga06.intel.com (mga06b.intel.com [134.134.136.31])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id B42F5F80134
- for <alsa-devel@alsa-project.org>; Thu, 14 Jul 2022 03:10:58 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B42F5F80134
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="XNcYMl1m"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
- d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1657761059; x=1689297059;
- h=from:to:cc:subject:date:message-id:in-reply-to:
- references:mime-version:content-transfer-encoding;
- bh=Y1J5nWNOz+sncSR+Y9wqNIrStrFxV1lay+BampiPlQo=;
- b=XNcYMl1mlJ01kQyJosMCQFVgg7QHzTiJ2w7ZR8o/JHwtO5iXQi64MKDQ
- XQbuiygRUrwWPTdVt2tJqVb3YT9/YK79JttBG05hqiywSCtE3A3iZD8lb
- LMCvipWCfoop8Ib+N4Vzg0K22vBNXC6WkuxylSv9OmRmNPMS3bNgdmaW6
- NxL5Hm62j1oEyUfVgiVEEsyZI3sponqUBV3HZ6tse0SyXz9LQCe/hh+CQ
- vQ7ku5TOw2TcPz5Uge3/pyx3J1cvkKHN9SihqLZiqHC7YJpm4edi5b0bX
- Ftm4HtmiKrDvyEqIi7MuvmJ2wa6fOYjseHei/Se6JKKi2UbfjAFvdhA1b Q==;
-X-IronPort-AV: E=McAfee;i="6400,9594,10407"; a="347066139"
-X-IronPort-AV: E=Sophos;i="5.92,269,1650956400"; d="scan'208";a="347066139"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
- by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 13 Jul 2022 18:10:57 -0700
-X-IronPort-AV: E=Sophos;i="5.92,269,1650956400"; d="scan'208";a="593192532"
-Received: from bard-ubuntu.sh.intel.com ([10.239.185.57])
- by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 13 Jul 2022 18:10:55 -0700
-From: Bard Liao <yung-chuan.liao@linux.intel.com>
-To: alsa-devel@alsa-project.org,
-	vkoul@kernel.org
-Subject: [PATCH 3/4] soundwire: add sdw_show_ping_status() helper
-Date: Thu, 14 Jul 2022 09:10:42 +0800
-Message-Id: <20220714011043.46059-4-yung-chuan.liao@linux.intel.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20220714011043.46059-1-yung-chuan.liao@linux.intel.com>
-References: <20220714011043.46059-1-yung-chuan.liao@linux.intel.com>
+ id B6297F80152; Thu, 14 Jul 2022 04:08:05 +0200 (CEST)
+Received: from webhooks-bot.alsa-project.org (gate.perex.cz [77.48.224.242])
+ by alsa1.perex.cz (Postfix) with ESMTP id 606E0F800AA
+ for <alsa-devel@alsa-project.org>; Thu, 14 Jul 2022 04:07:56 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 606E0F800AA
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: vinod.koul@linaro.org, tiwai@suse.de, pierre-louis.bossart@linux.intel.com,
- linux-kernel@vger.kernel.org, broonie@kernel.org, bard.liao@intel.com
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+From: GitHub issues - opened <github@alsa-project.org>
+To: alsa-devel@alsa-project.org
+In-Reply-To: <1657764476274471998-webhooks-bot@alsa-project.org>
+References: <1657764476274471998-webhooks-bot@alsa-project.org>
+Subject: [Enhancement] axfer: survive system suspend/resume while streaming
+Message-Id: <20220714020805.B6297F80152@alsa1.perex.cz>
+Date: Thu, 14 Jul 2022 04:08:05 +0200 (CEST)
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -84,76 +55,21 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+alsa-project/alsa-utils issue #157 was opened from aiChaoSONG:
 
-This helper provides an optional delay parameter to wait for devices
-to resync in case of errors, and checks that devices are indeed
-attached on the bus.
+If we suspend the system while axfer is doing playback/capture, after system resumed, axfer stopped playbak/capture with:
+```
+Fail to process frames: Streams pipe error
+PLAYBACK: Expected 4611686018427387903frames, Actual 143392frames
+snd_pcm_drain(): File descriptor in bad state
+snd_pcm_hw_free(): File descriptor in bad state
+```
 
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Reviewed-by: Rander Wang <rander.wang@intel.com>
-Signed-off-by: Bard Liao <yung-chuan.liao@linux.intel.com>
----
- drivers/soundwire/bus.c       | 32 ++++++++++++++++++++++++++++++++
- include/linux/soundwire/sdw.h |  2 ++
- 2 files changed, 34 insertions(+)
+You can get the failure by playing in a terminal with `axfer transfer playback -Dhw:0,0 -f dat -i -vvv -c 2 /dev/zero`,  and run `sudo rtcwake -m mem -s 5` in another terminal.
 
-diff --git a/drivers/soundwire/bus.c b/drivers/soundwire/bus.c
-index 2772973eebb1..0a99ac791c7e 100644
---- a/drivers/soundwire/bus.c
-+++ b/drivers/soundwire/bus.c
-@@ -300,6 +300,38 @@ int sdw_transfer(struct sdw_bus *bus, struct sdw_msg *msg)
- 	return ret;
- }
- 
-+/**
-+ * sdw_show_ping_status() - Direct report of PING status, to be used by Peripheral drivers
-+ * @bus: SDW bus
-+ * @sync_delay: Delay before reading status
-+ */
-+void sdw_show_ping_status(struct sdw_bus *bus, bool sync_delay)
-+{
-+	u32 status;
-+
-+	if (!bus->ops->read_ping_status)
-+		return;
-+
-+	/*
-+	 * wait for peripheral to sync if desired. 10-15ms should be more than
-+	 * enough in most cases.
-+	 */
-+	if (sync_delay)
-+		usleep_range(10000, 15000);
-+
-+	mutex_lock(&bus->msg_lock);
-+
-+	status = bus->ops->read_ping_status(bus);
-+
-+	mutex_unlock(&bus->msg_lock);
-+
-+	if (!status)
-+		dev_warn(bus->dev, "%s: no peripherals attached\n", __func__);
-+	else
-+		dev_dbg(bus->dev, "PING status: %#x\n", status);
-+}
-+EXPORT_SYMBOL(sdw_show_ping_status);
-+
- /**
-  * sdw_transfer_defer() - Asynchronously transfer message to a SDW Slave device
-  * @bus: SDW bus
-diff --git a/include/linux/soundwire/sdw.h b/include/linux/soundwire/sdw.h
-index a85cf829bb77..9e4537f409c2 100644
---- a/include/linux/soundwire/sdw.h
-+++ b/include/linux/soundwire/sdw.h
-@@ -926,6 +926,8 @@ int sdw_bus_master_add(struct sdw_bus *bus, struct device *parent,
- 		       struct fwnode_handle *fwnode);
- void sdw_bus_master_delete(struct sdw_bus *bus);
- 
-+void sdw_show_ping_status(struct sdw_bus *bus, bool sync_delay);
-+
- /**
-  * sdw_port_config: Master or Slave Port configuration
-  *
--- 
-2.25.1
+axfer should survive system suspend/resume, just like aplay.
 
+@takaswie FYI, thank you for creating this tool. here is how aplay handle this: https://github.com/alsa-project/alsa-utils/blob/a566f8a0ed6d7ca5fd6ae2d224f3f28654a2f3be/aplay/aplay.c#L1738
+
+Issue URL     : https://github.com/alsa-project/alsa-utils/issues/157
+Repository URL: https://github.com/alsa-project/alsa-utils
