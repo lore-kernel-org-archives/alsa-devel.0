@@ -4,61 +4,62 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9B11EC433EF
-	for <alsa-devel@archiver.kernel.org>; Thu, 14 Jul 2022 04:29:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 325C5C433EF
+	for <alsa-devel@archiver.kernel.org>; Thu, 14 Jul 2022 04:29:36 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id CFB401845;
-	Thu, 14 Jul 2022 06:28:20 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CFB401845
+	by alsa0.perex.cz (Postfix) with ESMTPS id 6D5DE1833;
+	Thu, 14 Jul 2022 06:28:44 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6D5DE1833
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1657772950;
-	bh=vG5/S0jHNPkDTGbunE+u84kCtFkDf6SxU2TdPXyQjuE=;
+	s=default; t=1657772974;
+	bh=Nw9GIA0IvSM+nBcMCdX3mSHyRJJF5jJYhfuCJ1FOG6M=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Wp7JwmL6zCsoUVU3AJl3gbjVFxgZK5lVA4gTAFlbZ5GXSF89enFP9fA2BnscQLXGF
-	 HMlaJnu6cekKW1Ro5YCD/09pPGoVDwODgbbZc1jOzE09Is6vYGPvjf29Ca9VrUQtgj
-	 dz7YhT5YVqa492sDRY00c9x0Xw4b+QZGjExP1Zn0=
+	b=VnK02gtKGDdH8xTsdbybL7QmJ535ACXD5r1hU4GEbbGQNrOxV6JIkes9qvJGD++Hg
+	 BPArTm9Hjh+uymGdUU0ZLSsRBP+SYpKG3iZ/cH8iLZU/iRQ42DvjK9pL9Zxpx2dURY
+	 jJF+Eb7x7PvAhvLS+CFGfep+mYzGyakeniTOi7HY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 534FDF805F5;
-	Thu, 14 Jul 2022 06:23:30 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 0A6C9F805FD;
+	Thu, 14 Jul 2022 06:23:33 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 2FC92F805F4; Thu, 14 Jul 2022 06:23:28 +0200 (CEST)
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+ id 903A0F805F5; Thu, 14 Jul 2022 06:23:29 +0200 (CEST)
+Received: from ams.source.kernel.org (ams.source.kernel.org
+ [IPv6:2604:1380:4601:e00::1])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id B04C5F805CB
- for <alsa-devel@alsa-project.org>; Thu, 14 Jul 2022 06:23:18 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B04C5F805CB
+ by alsa1.perex.cz (Postfix) with ESMTPS id 16F52F80165
+ for <alsa-devel@alsa-project.org>; Thu, 14 Jul 2022 06:23:23 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 16F52F80165
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="OchJE6Hu"
+ header.b="FN6lHruF"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by ams.source.kernel.org (Postfix) with ESMTPS id 6F6A9B82333;
- Thu, 14 Jul 2022 04:23:18 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id F3F2BC385A5;
- Thu, 14 Jul 2022 04:23:15 +0000 (UTC)
+ by ams.source.kernel.org (Postfix) with ESMTPS id 20AB1B82372;
+ Thu, 14 Jul 2022 04:23:22 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4A848C341CA;
+ Thu, 14 Jul 2022 04:23:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1657772596;
- bh=vG5/S0jHNPkDTGbunE+u84kCtFkDf6SxU2TdPXyQjuE=;
+ s=k20201202; t=1657772600;
+ bh=Nw9GIA0IvSM+nBcMCdX3mSHyRJJF5jJYhfuCJ1FOG6M=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=OchJE6Hu7jAtPMq8QwB2GS4HCjx06v6Vz4TVqIsc8B5aqyotM7N1qx+XdMUX+NjZ/
- F3nLEpTJ/9CuIlfyHFAbe6ZcBGLMEFt0DVza2gNx8IeX3iVZIQs0OavJ6hFh2btQhe
- ++saeJ/dpimBo0d8DipXpVGE706zQNiBBuJNOFK2xGpDcC4iTxij3Rr5Pq5tUig0AT
- 2rHSQxxu4a21KsYN5HZpACCkGcaTw29FyFiVwPb3Gl0HEOP8uufbHLkNd2E3hyM8ha
- cp/atG8KXRNjRqFyegNcp4NsGS8tPzvJuHnDMqh7e4eyrtJcwcfYrCd8z1/ZtaFtjv
- xs4qZE5UuI5Ig==
+ b=FN6lHruFurAlfettCHqY5368hLDdmKTHMUOU5DDhOklGaAwyCjNdAb/X95SscnkHx
+ 9+eKYNhADG6rqaoaG6YRwVB5o74vRN1Kto136aOkGaUzj7ntf2fmGIdthiH4YTyqFz
+ WRoT+eQz08Zra401DtWAxFUgu9Dyb0EMHQEQ/7Iy0tOQgno5FbqctcFyxuxFbMhYYM
+ TdZQtMrt1NSXk8WO8L0i8248xWuOXOuKpWOnaqX+tgCR1Xd6ttNNSpvQAmSBrgOj+E
+ x78cS0p5oF6mjV67QRR2WjUP+nZwYLAca0MKngLA/2iaKoqQ1QWj8wic7ZH6Xr9aH3
+ uIMoS7Bn30Tow==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.18 21/41] ASoC: dapm: Initialise kcontrol data for
- mux/demux controls
-Date: Thu, 14 Jul 2022 00:22:01 -0400
-Message-Id: <20220714042221.281187-21-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.18 23/41] ASoC: cs47l15: Fix event generation for
+ low power mux control
+Date: Thu, 14 Jul 2022 00:22:03 -0400
+Message-Id: <20220714042221.281187-23-sashal@kernel.org>
 X-Mailer: git-send-email 2.35.1
 In-Reply-To: <20220714042221.281187-1-sashal@kernel.org>
 References: <20220714042221.281187-1-sashal@kernel.org>
@@ -67,8 +68,10 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 Cc: Sasha Levin <sashal@kernel.org>, alsa-devel@alsa-project.org,
- Charles Keepax <ckeepax@opensource.cirrus.com>, tiwai@suse.com,
- lgirdwood@gmail.com, Mark Brown <broonie@kernel.org>
+ Charles Keepax <ckeepax@opensource.cirrus.com>, tanureal@opensource.cirrus.com,
+ patches@opensource.cirrus.com, tiwai@suse.com, lgirdwood@gmail.com,
+ david.rhodes@cirrus.com, rf@opensource.cirrus.com,
+ Mark Brown <broonie@kernel.org>, james.schulman@cirrus.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -86,55 +89,44 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 From: Charles Keepax <ckeepax@opensource.cirrus.com>
 
-[ Upstream commit 11d7a12f7f50baa5af9090b131c9b03af59503e7 ]
+[ Upstream commit 7f103af4a10f375b9b346b4d0b730f6a66b8c451 ]
 
-DAPM keeps a copy of the current value of mux/demux controls,
-however this value is only initialised in the case of autodisable
-controls. This leads to false notification events when first
-modifying a DAPM kcontrol that has a non-zero default.
-
-Autodisable controls are left as they are, since they already
-initialise the value, and there would be more work required to
-support autodisable muxes where the first option isn't disabled
-and/or that isn't the default.
-
-Technically this issue could affect mixer/switch elements as well,
-although not on any of the devices I am currently running. There
-is also a little more work to do to address the issue there due to
-that side supporting stereo controls, so that has not been tackled
-in this patch.
+cs47l15_in1_adc_put always returns zero regardless of if the control
+value was updated. This results in missing notifications to user-space
+of the control change. Update the handling to return 1 when the value is
+changed.
 
 Signed-off-by: Charles Keepax <ckeepax@opensource.cirrus.com>
-Link: https://lore.kernel.org/r/20220623105120.1981154-1-ckeepax@opensource.cirrus.com
+Link: https://lore.kernel.org/r/20220623105120.1981154-3-ckeepax@opensource.cirrus.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/soc-dapm.c | 5 +++++
- 1 file changed, 5 insertions(+)
+ sound/soc/codecs/cs47l15.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
-index 869c76506b66..a8e842e02cdc 100644
---- a/sound/soc/soc-dapm.c
-+++ b/sound/soc/soc-dapm.c
-@@ -62,6 +62,8 @@ struct snd_soc_dapm_widget *
- snd_soc_dapm_new_control_unlocked(struct snd_soc_dapm_context *dapm,
- 			 const struct snd_soc_dapm_widget *widget);
+diff --git a/sound/soc/codecs/cs47l15.c b/sound/soc/codecs/cs47l15.c
+index 391fd7da331f..1c7d52bef893 100644
+--- a/sound/soc/codecs/cs47l15.c
++++ b/sound/soc/codecs/cs47l15.c
+@@ -122,6 +122,9 @@ static int cs47l15_in1_adc_put(struct snd_kcontrol *kcontrol,
+ 		snd_soc_kcontrol_component(kcontrol);
+ 	struct cs47l15 *cs47l15 = snd_soc_component_get_drvdata(component);
  
-+static unsigned int soc_dapm_read(struct snd_soc_dapm_context *dapm, int reg);
++	if (!!ucontrol->value.integer.value[0] == cs47l15->in1_lp_mode)
++		return 0;
 +
- /* dapm power sequences - make this per codec in the future */
- static int dapm_up_seq[] = {
- 	[snd_soc_dapm_pre] = 1,
-@@ -442,6 +444,9 @@ static int dapm_kcontrol_data_alloc(struct snd_soc_dapm_widget *widget,
- 
- 			snd_soc_dapm_add_path(widget->dapm, data->widget,
- 					      widget, NULL, NULL);
-+		} else if (e->reg != SND_SOC_NOPM) {
-+			data->value = soc_dapm_read(widget->dapm, e->reg) &
-+				      (e->mask << e->shift_l);
- 		}
+ 	switch (ucontrol->value.integer.value[0]) {
+ 	case 0:
+ 		/* Set IN1 to normal mode */
+@@ -150,7 +153,7 @@ static int cs47l15_in1_adc_put(struct snd_kcontrol *kcontrol,
  		break;
- 	default:
+ 	}
+ 
+-	return 0;
++	return 1;
+ }
+ 
+ static const struct snd_kcontrol_new cs47l15_snd_controls[] = {
 -- 
 2.35.1
 
