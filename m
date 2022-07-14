@@ -4,61 +4,62 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 83577C433EF
-	for <alsa-devel@archiver.kernel.org>; Thu, 14 Jul 2022 04:24:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id EC8F5C433EF
+	for <alsa-devel@archiver.kernel.org>; Thu, 14 Jul 2022 04:25:02 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A9C8E17C1;
-	Thu, 14 Jul 2022 06:23:48 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A9C8E17C1
+	by alsa0.perex.cz (Postfix) with ESMTPS id 2CC1F1786;
+	Thu, 14 Jul 2022 06:24:11 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2CC1F1786
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1657772678;
-	bh=/yLYH+geq49XNoPjucPvvOS5nstF1WxYkuZ8Nv55o/k=;
+	s=default; t=1657772701;
+	bh=UpQ/PiWTfgffrul+4T3wofLjGERA+VhB84Fv6WEr838=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=r8+G51fvp51oRjMf156YP/t5LukuqWdv1RAalDUGzVc+eBfvMaZizMD21xWhaI3lb
-	 Dp6Aml9G9dLeXTA7P2W0/HzRJR9BShVYMNP91x2oq1muws1DRKjrqUh1WQsJ7Jqe3j
-	 abaWFoAaD5GVbatFgNmm+yqIS74a3/McWUFd1JmI=
+	b=GDEJ22hBNWl/My3I26e6a7V6Hzs/gaa1UvXFayrugkW65z68p0MpY5JyAwB/E0754
+	 4t4/pPxSfvPUs/x04VcuyyzOBYgU+ieQuBs3dVGaV3AGAfYUYyqt8x+YO0ecEmxFCD
+	 2FKRSnWRqI7J9v8i0AJvQecXt7ytUcPXrZkTEAZM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id AC8CCF8055C;
-	Thu, 14 Jul 2022 06:22:49 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 51192F80568;
+	Thu, 14 Jul 2022 06:22:55 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 8270DF80563; Thu, 14 Jul 2022 06:22:48 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+ id B0F41F80568; Thu, 14 Jul 2022 06:22:53 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org
+ [IPv6:2604:1380:4641:c500::1])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 06A31F804AC
- for <alsa-devel@alsa-project.org>; Thu, 14 Jul 2022 06:22:39 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 06A31F804AC
+ by alsa1.perex.cz (Postfix) with ESMTPS id B1ED6F80563;
+ Thu, 14 Jul 2022 06:22:48 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B1ED6F80563
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="eMz+4A+t"
+ header.b="AF+qLsVY"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id 3F7AB61E90;
- Thu, 14 Jul 2022 04:22:38 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CD409C341CF;
- Thu, 14 Jul 2022 04:22:36 +0000 (UTC)
+ by dfw.source.kernel.org (Postfix) with ESMTPS id 8944261E98;
+ Thu, 14 Jul 2022 04:22:47 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 263A0C36AE2;
+ Thu, 14 Jul 2022 04:22:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1657772558;
- bh=/yLYH+geq49XNoPjucPvvOS5nstF1WxYkuZ8Nv55o/k=;
+ s=k20201202; t=1657772566;
+ bh=UpQ/PiWTfgffrul+4T3wofLjGERA+VhB84Fv6WEr838=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=eMz+4A+tdHtqXjB51ndYNqaoxrg06wvBDdMRg+V/Vcv9MFO8SYGf2Ziug5CvCeFzi
- BPcxQPpK8tAcxJ45FZCFUEAUimx9yL+7HcFZAjKXnib3sz5X27NmzU9kEqAgHivAbB
- jONhtcmLih92YuyWR3lIE7wCkosIXHRJbxQnW2/YHN6gWwR75wSNgoeHKAETMh3RUX
- 0GNXSwPqMtEwL/JEf3a1YgatK4uJCPaxIk/1dWQAv8WLiG85Bf2RJ9zfLphtfE+eh4
- Cp5imureJbgxIhe5WGKnOS43/a+hRg1xOJFyjQznwl5+/PXKy5nt0I5dD2DxUI5Odu
- J+TKjVjYcl9MA==
+ b=AF+qLsVYO5U36JlcR9SornLMYDsaHT45SYmaLCM9wFg9416bUBV+VJpJiNIvn+HUZ
+ 8mDUlsySbH1Cw0EgkytlMFYhQfiDiLth90Rh8MiLbfUqYoJPvcvC7kLbISX/9aOUA7
+ 5wICy0BWGpRbT+BxokbK7sVUlN0KzExvxWnhGZNLYZFmWhnfpDOxADZ6JglYzhuuUb
+ td2c9xKJf0nluRCLQQUlgJP7EXlg/RsOB8Tothp6M+3oRmRwT4Xzt7WCfl/uv8cJIq
+ mOmyOOcRrpMx5l/LWvQ/hCLwR1WQcR51j5nVJ3rbu4JrEdQFyPFI/oCCtcoZM9A5lp
+ HnA4bBig21emA==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.18 06/41] ASoC: rt711: fix calibrate mutex
- initialization
-Date: Thu, 14 Jul 2022 00:21:46 -0400
-Message-Id: <20220714042221.281187-6-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.18 09/41] ASoC: SOF: Intel: hda-dsp: Expose
+ hda_dsp_core_power_up()
+Date: Thu, 14 Jul 2022 00:21:49 -0400
+Message-Id: <20220714042221.281187-9-sashal@kernel.org>
 X-Mailer: git-send-email 2.35.1
 In-Reply-To: <20220714042221.281187-1-sashal@kernel.org>
 References: <20220714042221.281187-1-sashal@kernel.org>
@@ -66,11 +67,13 @@ MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
-Cc: Sasha Levin <sashal@kernel.org>, oder_chiou@realtek.com,
- alsa-devel@alsa-project.org, lgirdwood@gmail.com, tiwai@suse.com,
+Cc: Sasha Levin <sashal@kernel.org>, guennadi.liakhovetski@linux.intel.com,
+ alsa-devel@alsa-project.org, kai.vehmanen@linux.intel.com, lgirdwood@gmail.com,
+ Peter Ujfalusi <peter.ujfalusi@linux.intel.com>, tiwai@suse.com,
  Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- Rander Wang <rander.wang@intel.com>, Mark Brown <broonie@kernel.org>,
- Bard Liao <yung-chuan.liao@linux.intel.com>
+ daniel.baluta@nxp.com, Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+ Mark Brown <broonie@kernel.org>, Bard Liao <yung-chuan.liao@linux.intel.com>,
+ sound-open-firmware@alsa-project.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -86,58 +89,68 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+From: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
 
-[ Upstream commit 08bb5dc6ce02374169213cea772b1c297eaf32d5 ]
+[ Upstream commit 08f8a93198e300dff9649bbae424cd805d313326 ]
 
-Follow the same flow as rt711-sdca and initialize all mutexes at probe
-time.
+The hda_dsp_core_power_up() needs to be exposed so that it can be used in
+hda-loader.c to correct the boot flow.
+The first step must not unstall the core, it should only power up the
+core(s).
 
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Reviewed-by: Rander Wang <rander.wang@intel.com>
+Add sanity check for the core_mask while exposing it to be safe.
+
+Complements: 2a68ff846164 ("ASoC: SOF: Intel: hda: Revisit IMR boot sequence")
+Signed-off-by: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
+Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Reviewed-by: Bard Liao <yung-chuan.liao@linux.intel.com>
-Link: https://lore.kernel.org/r/20220606203752.144159-5-pierre-louis.bossart@linux.intel.com
+Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+Link: https://lore.kernel.org/r/20220609085949.29062-2-peter.ujfalusi@linux.intel.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/codecs/rt711-sdw.c | 3 +++
- sound/soc/codecs/rt711.c     | 2 +-
- 2 files changed, 4 insertions(+), 1 deletion(-)
+ sound/soc/sof/intel/hda-dsp.c | 10 +++++++++-
+ sound/soc/sof/intel/hda.h     |  1 +
+ 2 files changed, 10 insertions(+), 1 deletion(-)
 
-diff --git a/sound/soc/codecs/rt711-sdw.c b/sound/soc/codecs/rt711-sdw.c
-index f49c94baa37c..4fe68bcf2a7c 100644
---- a/sound/soc/codecs/rt711-sdw.c
-+++ b/sound/soc/codecs/rt711-sdw.c
-@@ -474,6 +474,9 @@ static int rt711_sdw_remove(struct sdw_slave *slave)
- 	if (rt711->first_hw_init)
- 		pm_runtime_disable(&slave->dev);
+diff --git a/sound/soc/sof/intel/hda-dsp.c b/sound/soc/sof/intel/hda-dsp.c
+index 8ddde60c56b3..68a8074c956a 100644
+--- a/sound/soc/sof/intel/hda-dsp.c
++++ b/sound/soc/sof/intel/hda-dsp.c
+@@ -181,12 +181,20 @@ int hda_dsp_core_run(struct snd_sof_dev *sdev, unsigned int core_mask)
+  * Power Management.
+  */
  
-+	mutex_destroy(&rt711->calibrate_mutex);
-+	mutex_destroy(&rt711->disable_irq_lock);
+-static int hda_dsp_core_power_up(struct snd_sof_dev *sdev, unsigned int core_mask)
++int hda_dsp_core_power_up(struct snd_sof_dev *sdev, unsigned int core_mask)
+ {
++	struct sof_intel_hda_dev *hda = sdev->pdata->hw_pdata;
++	const struct sof_intel_dsp_desc *chip = hda->desc;
+ 	unsigned int cpa;
+ 	u32 adspcs;
+ 	int ret;
+ 
++	/* restrict core_mask to host managed cores mask */
++	core_mask &= chip->host_managed_cores_mask;
++	/* return if core_mask is not valid */
++	if (!core_mask)
++		return 0;
 +
- 	return 0;
- }
- 
-diff --git a/sound/soc/codecs/rt711.c b/sound/soc/codecs/rt711.c
-index ea25fd58d43a..39f7ded1371e 100644
---- a/sound/soc/codecs/rt711.c
-+++ b/sound/soc/codecs/rt711.c
-@@ -1203,6 +1203,7 @@ int rt711_init(struct device *dev, struct regmap *sdw_regmap,
- 	rt711->sdw_regmap = sdw_regmap;
- 	rt711->regmap = regmap;
- 
-+	mutex_init(&rt711->calibrate_mutex);
- 	mutex_init(&rt711->disable_irq_lock);
- 
- 	/*
-@@ -1317,7 +1318,6 @@ int rt711_io_init(struct device *dev, struct sdw_slave *slave)
- 			rt711_jack_detect_handler);
- 		INIT_DELAYED_WORK(&rt711->jack_btn_check_work,
- 			rt711_btn_check_handler);
--		mutex_init(&rt711->calibrate_mutex);
- 		INIT_WORK(&rt711->calibration_work, rt711_calibration_work);
- 		schedule_work(&rt711->calibration_work);
- 	}
+ 	/* update bits */
+ 	snd_sof_dsp_update_bits(sdev, HDA_DSP_BAR, HDA_DSP_REG_ADSPCS,
+ 				HDA_DSP_ADSPCS_SPA_MASK(core_mask),
+diff --git a/sound/soc/sof/intel/hda.h b/sound/soc/sof/intel/hda.h
+index 05e5e158614a..b80fa5c77cf7 100644
+--- a/sound/soc/sof/intel/hda.h
++++ b/sound/soc/sof/intel/hda.h
+@@ -490,6 +490,7 @@ struct sof_intel_hda_stream {
+  */
+ int hda_dsp_probe(struct snd_sof_dev *sdev);
+ int hda_dsp_remove(struct snd_sof_dev *sdev);
++int hda_dsp_core_power_up(struct snd_sof_dev *sdev, unsigned int core_mask);
+ int hda_dsp_core_run(struct snd_sof_dev *sdev, unsigned int core_mask);
+ int hda_dsp_enable_core(struct snd_sof_dev *sdev, unsigned int core_mask);
+ int hda_dsp_core_reset_power_down(struct snd_sof_dev *sdev,
 -- 
 2.35.1
 
