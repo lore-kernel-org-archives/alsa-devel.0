@@ -4,73 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id AA97CC433EF
-	for <alsa-devel@archiver.kernel.org>; Thu, 14 Jul 2022 04:39:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0847DC43334
+	for <alsa-devel@archiver.kernel.org>; Thu, 14 Jul 2022 04:40:01 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D88071A96;
-	Thu, 14 Jul 2022 06:38:54 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D88071A96
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3AA411932;
+	Thu, 14 Jul 2022 06:39:09 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3AA411932
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1657773584;
-	bh=yq3en7uJrOMsKfoyfIqOia6edMmizWg+luTeklrv0dg=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=vfgzJ0+8Cgc7aLpDnXvVKYBTMNwzDQ1hfhivXufJZO5794O6qIrU/k5uCpMl8rPbZ
-	 nymuFA+0sixtaeyqlsaHE9b4H+kx5F4vkI9jQvFt5kdPArgZ4Ft9Bn53+1qFDTf+nG
-	 xAe+XO2YZeKmxtznm/tNP1QQql0pmUchi6ivXdTg=
+	s=default; t=1657773599;
+	bh=XqlTd4nTiZWMDUpAlCHbBSebnj0dDtBFRM1zS2k8yng=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=TcEYNHEVg0CrWCQAJLkzR5DzkCRcX+Bwwv9efeihKxQBOJt0sFcyBpIeoHRzSsLA/
+	 xYCvwOJKv/FBxSJJXKRvpY40pEqojFXOuugQmnQWfTCx8G3CxG8yUgaiB0FP+oj3/k
+	 8yt84r/JtZc26NajfQGjrp2kgPLRYKisc7j53tes=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id AD82AF80720;
-	Thu, 14 Jul 2022 06:26:37 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 67E0CF805BF;
+	Thu, 14 Jul 2022 06:26:52 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 7FC2FF80722; Thu, 14 Jul 2022 06:26:35 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org
- [IPv6:2604:1380:4641:c500::1])
+ id DFA7DF805B5; Thu, 14 Jul 2022 06:26:50 +0200 (CEST)
+Received: from sin.source.kernel.org (sin.source.kernel.org
+ [IPv6:2604:1380:40e1:4800::1])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 9DAB1F805C5
- for <alsa-devel@alsa-project.org>; Thu, 14 Jul 2022 06:26:26 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9DAB1F805C5
+ by alsa1.perex.cz (Postfix) with ESMTPS id 4FAD1F805BF
+ for <alsa-devel@alsa-project.org>; Thu, 14 Jul 2022 06:26:47 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4FAD1F805BF
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="bhpmAk+T"
+ header.b="Fn3+jHct"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id 84AC361ECC;
- Thu, 14 Jul 2022 04:26:25 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 985ECC34115;
- Thu, 14 Jul 2022 04:26:23 +0000 (UTC)
+ by sin.source.kernel.org (Postfix) with ESMTPS id 64F10CE24F8;
+ Thu, 14 Jul 2022 04:26:41 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CCFF5C34114;
+ Thu, 14 Jul 2022 04:26:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1657772784;
- bh=yq3en7uJrOMsKfoyfIqOia6edMmizWg+luTeklrv0dg=;
- h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=bhpmAk+TrtDI78ujxgpYy1b31r6v4otZTfjZWUrefW/a4g3LTvfFmgkgmX72A+pBK
- lcfvnoHknnBu9ZhzYIAqsDmZmvzBne+czWGx9VHUPmZxPpoSgWvL6InxHDgIEHXR7M
- soewmfU6w3+ia0N5NDzrWkH6AkEYoLKIGfISPQuj4Iz1szdBbg1UlaO7i7QVZBgMzu
- hi+c5kAVo01wS/aTXtN7F0WvnUmc29Srp5RJdVN4HyqanonSQqa5KWYZYUzWBm1ByZ
- rE3R2n63g9rUiWTd/332hSQeZjFCPn/KplHOgdwgLLAqx1aFPmmIKcWAWRXArFuk/a
- P27ZaQPiZ5ifQ==
+ s=k20201202; t=1657772799;
+ bh=XqlTd4nTiZWMDUpAlCHbBSebnj0dDtBFRM1zS2k8yng=;
+ h=From:To:Cc:Subject:Date:From;
+ b=Fn3+jHct+LX0xrawNMPbu6bEtJTeGXtwTlumoEIBwMhBdKQa480h14LxI06QdvPKk
+ SHriekNS8J4Ggy5P7IyMqwfolwwWLGTyn14fNNdiuZFK9t/pA3CwnAd9rACeyF2mYd
+ 9utzOEwz7l7m2gvxYGKxSCszcpaAs/+MEHWws5wMQ+wqHosl2aHH0rte9jGjBgiUBc
+ IvFyd3KgbE6F6Q1mI4+JkO4L2mHdlJRhZQYIczO65kh74NqivigWRbkTVs/b32skf2
+ kH/DVa1TclN9AyfWV6Qa7169ZUL7SkUBQbS1z00LQ1oyZSybGN7AvyENB9Y7uA9OZe
+ n4oXnsGm6QuWQ==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.4 05/10] ASoC: madera: Fix event generation for rate
- controls
-Date: Thu, 14 Jul 2022 00:26:07 -0400
-Message-Id: <20220714042612.282378-5-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 4.19 1/6] ASoC: ops: Fix off by one in range control
+ validation
+Date: Thu, 14 Jul 2022 00:26:31 -0400
+Message-Id: <20220714042637.282511-1-sashal@kernel.org>
 X-Mailer: git-send-email 2.35.1
-In-Reply-To: <20220714042612.282378-1-sashal@kernel.org>
-References: <20220714042612.282378-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 Cc: Sasha Levin <sashal@kernel.org>, alsa-devel@alsa-project.org,
- Charles Keepax <ckeepax@opensource.cirrus.com>, patches@opensource.cirrus.com,
- tiwai@suse.com, lgirdwood@gmail.com, rf@opensource.cirrus.com,
- Mark Brown <broonie@kernel.org>
+ tiwai@suse.com, lgirdwood@gmail.com, Mark Brown <broonie@kernel.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -86,49 +81,43 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Charles Keepax <ckeepax@opensource.cirrus.com>
+From: Mark Brown <broonie@kernel.org>
 
-[ Upstream commit 980555e95f7cabdc9c80a07107622b097ba23703 ]
+[ Upstream commit 5871321fb4558c55bf9567052b618ff0be6b975e ]
 
-madera_adsp_rate_put always returns zero regardless of if the control
-value was updated. This results in missing notifications to user-space
-of the control change. Update the handling to return 1 when the
-value is changed.
+We currently report that range controls accept a range of 0..(max-min) but
+accept writes in the range 0..(max-min+1). Remove that extra +1.
 
-Signed-off-by: Charles Keepax <ckeepax@opensource.cirrus.com>
-Link: https://lore.kernel.org/r/20220623105120.1981154-5-ckeepax@opensource.cirrus.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
+Link: https://lore.kernel.org/r/20220604105246.4055214-1-broonie@kernel.org
 Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/codecs/madera.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ sound/soc/soc-ops.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/codecs/madera.c b/sound/soc/codecs/madera.c
-index e375dca9ba8d..4a56082a4c43 100644
---- a/sound/soc/codecs/madera.c
-+++ b/sound/soc/codecs/madera.c
-@@ -853,7 +853,7 @@ static int madera_adsp_rate_put(struct snd_kcontrol *kcontrol,
- 	struct soc_enum *e = (struct soc_enum *)kcontrol->private_value;
- 	const int adsp_num = e->shift_l;
- 	const unsigned int item = ucontrol->value.enumerated.item[0];
--	int ret;
-+	int ret = 0;
- 
- 	if (item >= e->items)
+diff --git a/sound/soc/soc-ops.c b/sound/soc/soc-ops.c
+index 7a37312c8e0c..453b61b42dd9 100644
+--- a/sound/soc/soc-ops.c
++++ b/sound/soc/soc-ops.c
+@@ -530,7 +530,7 @@ int snd_soc_put_volsw_range(struct snd_kcontrol *kcontrol,
  		return -EINVAL;
-@@ -870,10 +870,10 @@ static int madera_adsp_rate_put(struct snd_kcontrol *kcontrol,
- 			 "Cannot change '%s' while in use by active audio paths\n",
- 			 kcontrol->id.name);
- 		ret = -EBUSY;
--	} else {
-+	} else if (priv->adsp_rate_cache[adsp_num] != e->values[item]) {
- 		/* Volatile register so defer until the codec is powered up */
- 		priv->adsp_rate_cache[adsp_num] = e->values[item];
--		ret = 0;
-+		ret = 1;
- 	}
+ 	if (mc->platform_max && tmp > mc->platform_max)
+ 		return -EINVAL;
+-	if (tmp > mc->max - mc->min + 1)
++	if (tmp > mc->max - mc->min)
+ 		return -EINVAL;
  
- 	mutex_unlock(&priv->rate_lock);
+ 	if (invert)
+@@ -551,7 +551,7 @@ int snd_soc_put_volsw_range(struct snd_kcontrol *kcontrol,
+ 			return -EINVAL;
+ 		if (mc->platform_max && tmp > mc->platform_max)
+ 			return -EINVAL;
+-		if (tmp > mc->max - mc->min + 1)
++		if (tmp > mc->max - mc->min)
+ 			return -EINVAL;
+ 
+ 		if (invert)
 -- 
 2.35.1
 
