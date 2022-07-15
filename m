@@ -4,69 +4,82 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4DA15C43334
-	for <alsa-devel@archiver.kernel.org>; Fri, 15 Jul 2022 10:27:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A875DC433EF
+	for <alsa-devel@archiver.kernel.org>; Fri, 15 Jul 2022 10:30:41 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 54C241890;
-	Fri, 15 Jul 2022 12:26:08 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 54C241890
+	by alsa0.perex.cz (Postfix) with ESMTPS id 22F5B1890;
+	Fri, 15 Jul 2022 12:29:49 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 22F5B1890
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1657880818;
-	bh=4qDYU+0yzXqXOE+KJ7vxXemGz2ME/t1/0EmqotRWG60=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	s=default; t=1657881039;
+	bh=Gd4Jyoo3B4R2r1nDJWUOLBOFwkZemzHMKyFlgLnedTs=;
+	h=From:To:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=gjBHw3kyFAjNaRxrOq65Dcn05etJjM2kLqQHGx6HKmEIOJqBTDQwkmWYzeU3sBaDV
-	 tbscyFTz++38mQZjOhzCD05NSsPpjjM+7gNKxd459bxybmHJnUTZibshbRW7LnE2sN
-	 U0fqThGBpZiFEGSyB5WIMlfHmdPCMiVdyzJwOMPg=
+	b=mmoKv68pcvjDSL5shKIgCLzxdDIB/4u6xyMlcgu7Ctz6Hk2k47RJSMPvaffA827R7
+	 XNnCoUEvWcS4gV6llLU0tKG82b/z/Okv7KWbRj2JCQKzcmaudvUqWpqpRn/2u68bV+
+	 jVoStXReFVd1rIc3fMUkEGHim0fzifFrhUnZpZJ0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id DD864F8014E;
-	Fri, 15 Jul 2022 12:26:07 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id A27A6F804FD;
+	Fri, 15 Jul 2022 12:29:48 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 2F9C2F8015B; Fri, 15 Jul 2022 12:26:06 +0200 (CEST)
-Received: from ams.source.kernel.org (ams.source.kernel.org
- [IPv6:2604:1380:4601:e00::1])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id 83B40F80153; Fri, 15 Jul 2022 12:29:45 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id C54FFF8014E
- for <alsa-devel@alsa-project.org>; Fri, 15 Jul 2022 12:26:03 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C54FFF8014E
+ by alsa1.perex.cz (Postfix) with ESMTPS id DC9EFF8014E
+ for <alsa-devel@alsa-project.org>; Fri, 15 Jul 2022 12:29:38 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DC9EFF8014E
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="jOmGAOKz"
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
+ header.b="Zqdrid3Y"; 
+ dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
+ header.b="GgdAs6bO"
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by ams.source.kernel.org (Postfix) with ESMTPS id 82B25B82B67;
- Fri, 15 Jul 2022 10:26:02 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D935DC34115;
- Fri, 15 Jul 2022 10:25:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1657880761;
- bh=4qDYU+0yzXqXOE+KJ7vxXemGz2ME/t1/0EmqotRWG60=;
- h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=jOmGAOKz18t0vAVrK8dHZfDCOUyXS/E7XShvv3IvLbsWwl3J43q59//IYimTKu+uK
- wM5pg5fpJg5I2Mo6l5LEPkJF2LGA7bFNYCQQOKZku+st/U85NNb0b6+Gj4CZ/8mUdR
- rbLlPy89z3Sq1P+6eiuL9IB12/KUj61DhIK0+hnJZH3zfYFD22rdxENQuhvcX18TZE
- Cqh9WtGmxvphXAD/U8pUquqYsFjUXz/ItfpTkN9f0MU/QZuHOWIcdSxQWnP3iH4DLZ
- z0VvGL5eAyqq4JtcovhloRf63TycAat0IZn4jnDhbMVC8WH9qs5mJEaZTEKaW2WACF
- OGsb8XZPfuGCQ==
-Date: Fri, 15 Jul 2022 11:25:56 +0100
-From: Mark Brown <broonie@kernel.org>
-To: Takashi Iwai <tiwai@suse.de>
-Subject: Re: [GIT PULL] ASoC fixes for v5.19-rc4-2
-Message-ID: <YtFAtL9hdT57Hb4n@sirena.org.uk>
-References: <20220714180007.C9835C34114@smtp.kernel.org>
- <87edymx4bn.wl-tiwai@suse.de>
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 4A2F91FA89;
+ Fri, 15 Jul 2022 10:29:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1657880978; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=MGy8ZzpyH9uJRkZOdNs/yppyPP8ZQ6qKlUm4VrMnTa0=;
+ b=Zqdrid3YiqchI0y+E8Y/Yo5v2LBuaycywPielJlv1fcevfTjlTMQDCu6KeExqNd+ZVwxYB
+ I7x5g9WhekJ8zKA/6Ix8IxaIX3TTFGWvThXw+2Yo8lWnZ1M3J87OH+JSw8y/r5ERy3+LFQ
+ CExIWw6zQc7Ply4TP3lGK79UjwlgDus=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1657880978;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=MGy8ZzpyH9uJRkZOdNs/yppyPP8ZQ6qKlUm4VrMnTa0=;
+ b=GgdAs6bOpuz4cye4oB0tGxsPPBu3i0/31F8C5Z6i7Qvd5UInS100xAVTd7HBxGtz7th3Ox
+ x0b7Q2bAFcCdOyDQ==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 3218E13B28;
+ Fri, 15 Jul 2022 10:29:38 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+ by imap2.suse-dmz.suse.de with ESMTPSA id 8GxMC5JB0WI+WwAAMHmgww
+ (envelope-from <tiwai@suse.de>); Fri, 15 Jul 2022 10:29:38 +0000
+From: Takashi Iwai <tiwai@suse.de>
+To: alsa-devel@alsa-project.org
+Subject: [PATCH 1/5] ALSA: timer: Drop async signal support
+Date: Fri, 15 Jul 2022 12:29:31 +0200
+Message-Id: <20220715102935.4695-2-tiwai@suse.de>
+X-Mailer: git-send-email 2.35.3
+In-Reply-To: <20220715102935.4695-1-tiwai@suse.de>
+References: <20220715102935.4695-1-tiwai@suse.de>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature"; boundary="70YtuBT7hRcMt5WF"
-Content-Disposition: inline
-In-Reply-To: <87edymx4bn.wl-tiwai@suse.de>
-X-Cookie: You dialed 5483.
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
+Content-Transfer-Encoding: 8bit
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -82,71 +95,78 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+The async signal (SIGIO) support for ALSA timer API has been never
+used by real applications, but yet it can be a cause of various
+potential deadlocks, as spotted by syzkaller.  Let's drop the feature
+as the simplest solution.
 
---70YtuBT7hRcMt5WF
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Reported-by: syzbot+1ee0910eca9c94f71f25@syzkaller.appspotmail.com
+Reported-by: syzbot+49b10793b867871ee26f@syzkaller.appspotmail.com
+Reported-by: syzbot+8285e973a41b5aa68902@syzkaller.appspotmail.com
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+---
+ sound/core/timer.c | 13 -------------
+ 1 file changed, 13 deletions(-)
 
-On Fri, Jul 15, 2022 at 08:44:44AM +0200, Takashi Iwai wrote:
-> Mark Brown wrote:
+diff --git a/sound/core/timer.c b/sound/core/timer.c
+index b3214baa8919..4ac3ab2cf575 100644
+--- a/sound/core/timer.c
++++ b/sound/core/timer.c
+@@ -83,7 +83,6 @@ struct snd_timer_user {
+ 	unsigned int filter;
+ 	struct timespec64 tstamp;		/* trigger tstamp */
+ 	wait_queue_head_t qchange_sleep;
+-	struct fasync_struct *fasync;
+ 	struct mutex ioctl_lock;
+ };
+ 
+@@ -1345,7 +1344,6 @@ static void snd_timer_user_interrupt(struct snd_timer_instance *timeri,
+ 	}
+       __wake:
+ 	spin_unlock(&tu->qlock);
+-	kill_fasync(&tu->fasync, SIGIO, POLL_IN);
+ 	wake_up(&tu->qchange_sleep);
+ }
+ 
+@@ -1383,7 +1381,6 @@ static void snd_timer_user_ccallback(struct snd_timer_instance *timeri,
+ 	spin_lock_irqsave(&tu->qlock, flags);
+ 	snd_timer_user_append_to_tqueue(tu, &r1);
+ 	spin_unlock_irqrestore(&tu->qlock, flags);
+-	kill_fasync(&tu->fasync, SIGIO, POLL_IN);
+ 	wake_up(&tu->qchange_sleep);
+ }
+ 
+@@ -1453,7 +1450,6 @@ static void snd_timer_user_tinterrupt(struct snd_timer_instance *timeri,
+ 	spin_unlock(&tu->qlock);
+ 	if (append == 0)
+ 		return;
+-	kill_fasync(&tu->fasync, SIGIO, POLL_IN);
+ 	wake_up(&tu->qchange_sleep);
+ }
+ 
+@@ -2130,14 +2126,6 @@ static long snd_timer_user_ioctl(struct file *file, unsigned int cmd,
+ 	return ret;
+ }
+ 
+-static int snd_timer_user_fasync(int fd, struct file * file, int on)
+-{
+-	struct snd_timer_user *tu;
+-
+-	tu = file->private_data;
+-	return fasync_helper(fd, file, on, &tu->fasync);
+-}
+-
+ static ssize_t snd_timer_user_read(struct file *file, char __user *buffer,
+ 				   size_t count, loff_t *offset)
+ {
+@@ -2280,7 +2268,6 @@ static const struct file_operations snd_timer_f_ops =
+ 	.poll =		snd_timer_user_poll,
+ 	.unlocked_ioctl =	snd_timer_user_ioctl,
+ 	.compat_ioctl =	snd_timer_user_ioctl_compat,
+-	.fasync = 	snd_timer_user_fasync,
+ };
+ 
+ /* unregister the system timer */
+-- 
+2.35.3
 
-> > As covered in the second revert commit in this pull request the version
-> > of the BCLK muxing that's in v5.19 is causing issues, let's just revert
-> > it and wait for the more complete support in v5.20 instead.
-
-> Hmm, this revert itself is fine, but the PR contains way too many
-> changes than expected as a *very* late stage.  Are all those really
-> mandatory as 5.19 fixes?  e.g. regressions that have been introduced
-> in 5.19-rc or such?  Otherwise I prefer cherry-picking only the really
-> needed one for now for the merge to 5.19-final.
-
-Ah, I suspect what's gone wrong here is that my script generated it
-against Linus' tree but you'd not yet sent your pull request since the
-last time I sent you changes so it has all the changes you already have
-in it.  Regenerating it against asoc-fix-v5.19-rc4 gives:
-
-The following changes since commit fc976f5629afb4160ee77798b14a693eac903ffd:
-
-  ASoC: Intel: Skylake: Correct the handling of fmt_config flexible array (2022-07-07 17:16:40 +0100)
-
-are available in the Git repository at:
-
-  https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git tags/asoc-fix-v5.19-rc4-2
-
-for you to fetch changes up to 1e347f861da8ddb17e1d1b3113cb6c188e0de3e5:
-
-  ASoC: rockchip-i2s: Undo BCLK pinctrl changes (2022-07-14 13:25:52 +0100)
-
-----------------------------------------------------------------
-ASoC: Drop Rockchip BCLK management for v5.19
-
-As covered in the second revert commit in this pull request the version
-of the BCLK muxing that's in v5.19 is causing issues, let's just revert
-it and wait for the more complete support in v5.20 instead.
-
-----------------------------------------------------------------
-Alexandru Elisei (1):
-      ASoC: rockchip: i2s: Fix NULL pointer dereference when pinctrl is not found
-
-Mark Brown (1):
-      ASoC: rockchip-i2s: Undo BCLK pinctrl changes
-
- sound/soc/rockchip/rockchip_i2s.c | 160 ++++++++------------------------------
- 1 file changed, 31 insertions(+), 129 deletions(-)
-
---70YtuBT7hRcMt5WF
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmLRQLMACgkQJNaLcl1U
-h9Bdpgf/Xtti12EjVH3KK6o1DJYXKwmndU8dz+slyjiN5dBFH+iNfd41gFdeROc0
-wutYJV8B3SojtwHEZdnGEziBkHFAgh/jaBcJk/kcc2aS/vNfsPvTeaPaBGsnpg8+
-c9J/PwGwOf2dJLCkJlkvUTlh6COKr8tfyPC8rc9E+O3vEunCELI97umBankTeEwf
-J1bwwYQAMeE0hs0vSv+ZeV966a+Mj0MyzvFZ4Hb3zOpK+zhiIQ5aHf4ThOyL66+S
-gdPiT3EHclOLkkfxR88pL38X++ANZMeFQpJOl7KtQRF+AqvtEyCLcdyYsYTCWP2g
-o+1yVo9cIwxFvq9Sx+DhBC+f1Ynwcw==
-=6RZx
------END PGP SIGNATURE-----
-
---70YtuBT7hRcMt5WF--
