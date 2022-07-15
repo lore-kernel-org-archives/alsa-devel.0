@@ -4,80 +4,73 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C7E2AC433EF
-	for <alsa-devel@archiver.kernel.org>; Fri, 15 Jul 2022 10:32:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8474BC43334
+	for <alsa-devel@archiver.kernel.org>; Fri, 15 Jul 2022 10:32:17 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 00B9D18DE;
-	Fri, 15 Jul 2022 12:31:11 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 00B9D18DE
+	by alsa0.perex.cz (Postfix) with ESMTPS id 6BF6418CF;
+	Fri, 15 Jul 2022 12:31:25 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6BF6418CF
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1657881121;
-	bh=1mp7zjznDtY2bDiu5AQR1NcrSYxpNvQ8cufvuEFXF1Y=;
-	h=From:To:Subject:Date:In-Reply-To:References:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=Lnaf2PMKGiHxeV3M7KKls+gM1bb4cpQDXbOlic7UpmuI8hVZV9oHtpglZSrYYEhwT
-	 MOwtkSEIhYZ7rDOCwwsAiKPgErW9MMCEhJ80zCh/9F7qmNfIKEczcnYgIxJ8CLubxD
-	 8GsGl38ypZi9Rlh3bYa+xVueDJZngEcGhvESpn1s=
+	s=default; t=1657881135;
+	bh=DGcQmCbuhzsWEiJYVi+RzpkjhouCyhi6DIHJOjUgvXU=;
+	h=From:To:Subject:Date:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=rK/04UdA9KaP1oTvB7T+KgwhVNVeLKuNznpvFS5xLjwoXnS2MFRFXxDNDN6gBa6a4
+	 wB1m292dddSZrYEAikzBa9t62MjJj9xtdLjrqWuJnevLJZr9zezdnI4zBxUb5dotA7
+	 EvVY3VOsQzswYaPMQiSnJyaYHHmjk+E7TnOnk2l8=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 63C61F8055B;
-	Fri, 15 Jul 2022 12:29:57 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id DC6EDF80564;
+	Fri, 15 Jul 2022 12:30:00 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id ACD15F8055C; Fri, 15 Jul 2022 12:29:55 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+ id 4E4AEF80566; Fri, 15 Jul 2022 12:29:59 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 2B951F8015B
+ by alsa1.perex.cz (Postfix) with ESMTPS id A206DF80212
  for <alsa-devel@alsa-project.org>; Fri, 15 Jul 2022 12:29:39 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2B951F8015B
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A206DF80212
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="VQMNUdS6"; 
+ header.b="VAuyPn7I"; 
  dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="L8phx62L"
+ header.b="pXlbCfXx"
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id A0DFA1FB8D;
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 3044A3410C;
  Fri, 15 Jul 2022 10:29:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
  t=1657880978; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
- mime-version:mime-version:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=BZ7EkE8hMGx2fYCUAZQnWtSmYzro4b8woBAPzMUPSIM=;
- b=VQMNUdS6FaPmvDB7qWXmOCv0mApTkaY7ddGR5mZzWAJAc6S2Wy1Cs4HE6OU4o11Nd6IKMX
- rftM4ZbpX7knS43izoq9knE4c+63/yW9Cwmm9EWy5Iqov99CLBkBr0lqdstSSMy5Ve7/gK
- xZS2dUYPW3/xI+2evBIRG5Lb6nFPNVk=
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=8nYTSwW25/b/m69kBE7dy50+tcFxUtZRzrCmdMNBIgQ=;
+ b=VAuyPn7IUPLd1YgNysKaQz6o4cxynQupOD0rlrAztMlWewt/Fy3zrM7UjLyxiosCHoeU3+
+ vGBz0Ed6DWK5tIJf0Fwnjqh/JMUq8I/Z/6S1dL3hQa5+deCsVwTmLeQaoxuAKuH0MuXmHf
+ QjaUXl6OUA6lZGGc9zI9FQiR1d+hw9o=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
  s=susede2_ed25519; t=1657880978;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
- mime-version:mime-version:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=BZ7EkE8hMGx2fYCUAZQnWtSmYzro4b8woBAPzMUPSIM=;
- b=L8phx62LVdkz+hil2gfsGyawH59R69K3W/p7lKNinavBHSgjhtiXOm0UmaUQ5J83Y8zUUF
- xje3GopuXl9bLtCA==
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=8nYTSwW25/b/m69kBE7dy50+tcFxUtZRzrCmdMNBIgQ=;
+ b=pXlbCfXxENGv/b9f3HANerd/lrWwaIXij8yZ3dJ5r+IsbOI1rAndH0K6L+Ns6khnrV4uMv
+ 4QCt1UlCJmEeJgAg==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 847F213AC3;
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 18C7213AC3;
  Fri, 15 Jul 2022 10:29:38 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id iCalH5JB0WI+WwAAMHmgww
+ by imap2.suse-dmz.suse.de with ESMTPSA id fbfUBJJB0WI+WwAAMHmgww
  (envelope-from <tiwai@suse.de>); Fri, 15 Jul 2022 10:29:38 +0000
 From: Takashi Iwai <tiwai@suse.de>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH 4/5] ALSA: core: Drop async signal support
-Date: Fri, 15 Jul 2022 12:29:34 +0200
-Message-Id: <20220715102935.4695-5-tiwai@suse.de>
+Subject: [PATCH 0/5] ALSA: Drop async signal support
+Date: Fri, 15 Jul 2022 12:29:30 +0200
+Message-Id: <20220715102935.4695-1-tiwai@suse.de>
 X-Mailer: git-send-email 2.35.3
-In-Reply-To: <20220715102935.4695-1-tiwai@suse.de>
-References: <20220715102935.4695-1-tiwai@suse.de>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-BeenThere: alsa-devel@alsa-project.org
@@ -95,51 +88,46 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Now fasync support is dropped from all ALSA interfaces, and we can
-drop the fasync workaround at the card disconnection code, too.
+Hi,
 
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
----
- sound/core/init.c | 11 +----------
- 1 file changed, 1 insertion(+), 10 deletions(-)
+this is a patch series to drop one of unused features, the async
+signal support, from ALSA core.  The async signal itself is very
+difficult to use properly due to various restrictions (e.g. you cannot
+perform any I/O in the context), hence it's a feature that has been
+never used by real applications.
 
-diff --git a/sound/core/init.c b/sound/core/init.c
-index 3ac95c66a4b5..899bfe838a91 100644
---- a/sound/core/init.c
-+++ b/sound/core/init.c
-@@ -432,11 +432,8 @@ static int snd_disconnect_release(struct inode *inode, struct file *file)
- 	}
- 	spin_unlock(&shutdown_lock);
- 
--	if (likely(df)) {
--		if ((file->f_flags & FASYNC) && df->disconnected_f_op->fasync)
--			df->disconnected_f_op->fasync(-1, file, 0);
-+	if (likely(df))
- 		return df->disconnected_f_op->release(inode, file);
--	}
- 
- 	panic("%s(%p, %p) failed!", __func__, inode, file);
- }
-@@ -457,11 +454,6 @@ static int snd_disconnect_mmap(struct file *file, struct vm_area_struct *vma)
- 	return -ENODEV;
- }
- 
--static int snd_disconnect_fasync(int fd, struct file *file, int on)
--{
--	return -ENODEV;
--}
--
- static const struct file_operations snd_shutdown_f_ops =
- {
- 	.owner = 	THIS_MODULE,
-@@ -475,7 +467,6 @@ static const struct file_operations snd_shutdown_f_ops =
- 	.compat_ioctl = snd_disconnect_ioctl,
- #endif
- 	.mmap =		snd_disconnect_mmap,
--	.fasync =	snd_disconnect_fasync
- };
- 
- /**
+OTOH, the real problem is that there have been quite a few syzcaller
+reports indicating that fasync code path may lead to some potential
+deadlocks for long time.  Dropping the feature is the easiest
+solution, obviously.
+
+The corresponding update for alsa-lib will follow once when we agree
+with this approach.
+
+
+thanks,
+
+Takashi
+
+===
+
+Takashi Iwai (5):
+  ALSA: timer: Drop async signal support
+  ALSA: pcm: Drop async signal support
+  ALSA: control: Drop async signal support
+  ALSA: core: Drop async signal support
+  ALSA: doc: Drop stale fasync entry
+
+ .../kernel-api/writing-an-alsa-driver.rst      |  1 -
+ include/sound/control.h                        |  1 -
+ include/sound/pcm.h                            |  1 -
+ sound/core/control.c                           | 11 -----------
+ sound/core/init.c                              | 11 +----------
+ sound/core/pcm_lib.c                           |  4 +---
+ sound/core/pcm_native.c                        | 18 ------------------
+ sound/core/timer.c                             | 13 -------------
+ 8 files changed, 2 insertions(+), 58 deletions(-)
+
 -- 
 2.35.3
 
