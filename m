@@ -4,76 +4,77 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id CD3BFC433EF
-	for <alsa-devel@archiver.kernel.org>; Fri, 15 Jul 2022 05:30:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 88EF0C43334
+	for <alsa-devel@archiver.kernel.org>; Fri, 15 Jul 2022 05:42:15 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id EE480177C;
-	Fri, 15 Jul 2022 07:29:33 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EE480177C
+	by alsa0.perex.cz (Postfix) with ESMTPS id 2A64618AB;
+	Fri, 15 Jul 2022 07:41:23 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2A64618AB
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1657863024;
+	s=default; t=1657863733;
 	bh=Np4PwmNuvsXCwa0kr6JsJpIUv4DAChE3fuwIkqKsLHc=;
 	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
 	 List-Post:List-Help:List-Subscribe:From;
-	b=cZkfLG+BVDsEYvpUhUMF7w5mb7YvTbtnygz6r9yMPtGFfqc8t323KCSAewpqBZLWT
-	 duLFwZh7JBgm1JfIsRAhkx0xZD7MQ6BGnxS3fGuDbLHdvJMgx7ZIT1PuSBGeTKsphr
-	 IojcIQoGObUAwY2iTgmmzbJXG4HuWUPYK8Kk5cmI=
+	b=ookfCkmlyx8XqylC9RmjzyZeKHBBdUgMCxNAIic3+qi0c9UXR4ISJ3VZcFO2QVBVB
+	 UKb0FsZIVHjvpxi0IUI3TyRsRiUQFMbELtryUFlI0JL6mR5gUTmLN93PhNsl3W0OY7
+	 EPpaSe/+/DWN9dMhQbRgiyj7hHKXDmU8fD9NND8w=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 29FCDF80153;
-	Fri, 15 Jul 2022 07:29:33 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id BF240F800AA;
+	Fri, 15 Jul 2022 07:41:22 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 576DEF8015B; Fri, 15 Jul 2022 07:29:28 +0200 (CEST)
-Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com
- [IPv6:2607:f8b0:4864:20::52b])
+ id 9ED79F8015B; Fri, 15 Jul 2022 07:41:19 +0200 (CEST)
+Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com
+ [IPv6:2607:f8b0:4864:20::102e])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 22566F8012F
- for <alsa-devel@alsa-project.org>; Fri, 15 Jul 2022 07:29:20 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 22566F8012F
+ by alsa1.perex.cz (Postfix) with ESMTPS id 7C459F8012F
+ for <alsa-devel@alsa-project.org>; Fri, 15 Jul 2022 07:41:10 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7C459F8012F
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="m9QrK0Fe"
-Received: by mail-pg1-x52b.google.com with SMTP id s27so3468579pga.13
- for <alsa-devel@alsa-project.org>; Thu, 14 Jul 2022 22:29:20 -0700 (PDT)
+ header.b="AFps6/N8"
+Received: by mail-pj1-x102e.google.com with SMTP id
+ v4-20020a17090abb8400b001ef966652a3so10575352pjr.4
+ for <alsa-devel@alsa-project.org>; Thu, 14 Jul 2022 22:41:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
  h=from:to:cc:subject:date:message-id:mime-version
  :content-transfer-encoding;
  bh=2ixGSTEkWjW/R4X0Wmz9LAbZkRBVixDfOzTELUMeny8=;
- b=m9QrK0FeZPnrYkKe5E9iF5jEYmRKvzHzbRPGO7R+FdAgWBSHwwli4FS8tispZBHETx
- bDyV2mK8VXik7OiejJSHIgZqr0O6vv1BCF7Z6u1fkn+CARGJPRx4GGNzBO/O/VFupBEf
- MP8Lc/0d6AxUq5mY1JZjdKpw8Pybd5UPi6k3YTl5rKzHQEV/U1lF6219d8/ERECRx2sT
- KRnf1zhks0jZqluU5veEjW2WKdthVUy5xHZYfwewmKzmvtCznWJYflPp0LZ47DNoSDHJ
- LjECWbHivCfalaCQ8G2+TDZLpUr6bVFLaxbgKAqijUPNygwxU4GqzH3VRQs3RSkNKFho
- GZXA==
+ b=AFps6/N8sotLhuXXQED8t2MpnSFueBx+yNgnGP5PJj2OJ37ArE/CPlyJgXIkF/1Mo/
+ Ztg8OgRha8KOzleb/4AWlmDqLmO49+wdnh7vk+R3aw+0fBNQI2H2VVSa5gALsG0YdI4h
+ NCQAAB/Ey5jdHbIdWJ5YTCiUS3AVSiF9in6L8zjNH6JYSIVxkRH38cwpHQCUr7s9bgXX
+ wT1j1PB6zcaxxr/J60ngMMRlJQPdXusd7dAeDiPQzgkrlh7WdVCjkT06bk9U3HG0GroQ
+ wJjt0CKABNqWlC0J9ToFeRlBkBYi9VY8q4+sKQwdaTrGiOSlcAjzrMurmSXX1U7qJaOs
+ OrFA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
  h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
  :content-transfer-encoding;
  bh=2ixGSTEkWjW/R4X0Wmz9LAbZkRBVixDfOzTELUMeny8=;
- b=x1snPK7/Kx+H7lP7DptrInuHsbSWpmZrSXUnoYo0+ShHl+gHdJKgkAYjAjAal6jSSq
- gbSZgwDW1ZFPOEoRlZ0p3ymM9ztdFae/Qt4pAshTrT7bankEAmtLs1uzjc/oElVC1zQp
- fqznbQsXfR6Xnu5rlTjEmE3ucukei6IuYAkbulDYqyllDYqh6rcOv9FcxPe2L41dEKKr
- N1HRJlOIf5vssg7+0lqcYLDjrnpKh/I7iOLezVZezqXYyLgBA0dL6zdtX62Fzu7Dai+1
- TtkavE8fabIj2IomwC/7AcJL9k6QbxbQK1GTIWpCwX+uG5Fh+xZn98ULWs7MjWlhVMwU
- QC3A==
-X-Gm-Message-State: AJIora9zegstXFcZTfHXMOeEpDZk1vkMsSGU34KFulqAZPa6pkfLNqB0
- 9ojdSfOtHTzVDRC3ZMypryekoNMAcF20XQ==
-X-Google-Smtp-Source: AGRyM1vxxXamgkifuXJP5h37B5GwdYMwQpvxQWuHM3EOa6NK6zRmqGOvEdCXCEcVD7r4auvRaSUZpA==
-X-Received: by 2002:a63:1e5f:0:b0:419:d6bf:b9d7 with SMTP id
- p31-20020a631e5f000000b00419d6bfb9d7mr2636903pgm.593.1657862957700; 
- Thu, 14 Jul 2022 22:29:17 -0700 (PDT)
+ b=FJUA2zdTbcwTU9qKjlTTdTlLPok1qFU1RH1sYzESrgf4cFo/xI+CH7HSkvq/czIe/u
+ REpBdnlIJDlZGzocs6DO4c3Og2UQSxmxi97zdnrg9fOR0ZR4/rTuyyv/oJBCc3n8oOKz
+ K7QYXwrBkUbrVDZsYnu8QJ8E6lz9pzSC8n9K29/o60CFN2w1RxYqD3UCUw2KfTNh/4YD
+ loFqSTEZFO1l5WIz6eKCqx52lyauaqVbmzowUWBubcRWQ6RsSM2fHE3ZzcJt2GAARPjD
+ wzw1vNgjBAGLHxfyjUkEbB9PVv0MXHIMM7WzJbFwXjXFZOxvWCEI7L3ytDg9aEp+pHtk
+ eVMQ==
+X-Gm-Message-State: AJIora9tASP3cDMeVlzMnjwc9r3YvmwyKtvolG7OFIubolsV94fuKyfs
+ L6pHgzPhSzR4gQSQG+FFb/6iXEKk5Gw3urHz
+X-Google-Smtp-Source: AGRyM1tTPzDv1wTgzVMt9e1yF+lb+qkhEhDHeSWRT1lFicNzTkFpJpK/puWVinkUU49y5GO+G6ch8Q==
+X-Received: by 2002:a17:90b:3e8a:b0:1f0:6e06:92e7 with SMTP id
+ rj10-20020a17090b3e8a00b001f06e0692e7mr17361800pjb.155.1657863668205; 
+ Thu, 14 Jul 2022 22:41:08 -0700 (PDT)
 Received: from a-VirtualBox.. ([116.232.54.164])
  by smtp.gmail.com with ESMTPSA id
- w15-20020a17090a15cf00b001f03287f704sm4583313pjd.57.2022.07.14.22.28.54
+ z9-20020a631909000000b0041992864d69sm2279711pgl.77.2022.07.14.22.41.05
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Thu, 14 Jul 2022 22:29:17 -0700 (PDT)
+ Thu, 14 Jul 2022 22:41:07 -0700 (PDT)
 From: Zhu Ning <zhuning0077@gmail.com>
 To: alsa-devel@alsa-project.org
 Subject: [PATCH] ASoC: codecs: add support for ES8326
-Date: Fri, 15 Jul 2022 13:25:58 +0800
-Message-Id: <20220715052558.4633-1-zhuning0077@gmail.com>
+Date: Fri, 15 Jul 2022 13:41:00 +0800
+Message-Id: <20220715054100.9240-1-zhuning0077@gmail.com>
 X-Mailer: git-send-email 2.36.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
