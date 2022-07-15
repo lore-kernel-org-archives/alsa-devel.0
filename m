@@ -4,64 +4,64 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 36F4EC433EF
-	for <alsa-devel@archiver.kernel.org>; Fri, 15 Jul 2022 14:43:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 850D5C43334
+	for <alsa-devel@archiver.kernel.org>; Fri, 15 Jul 2022 14:43:43 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 43CBF18F0;
-	Fri, 15 Jul 2022 16:42:13 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 43CBF18F0
+	by alsa0.perex.cz (Postfix) with ESMTPS id B770218EE;
+	Fri, 15 Jul 2022 16:42:51 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B770218EE
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1657896183;
-	bh=LYhgQYejIMibgkXKpbjW2lvF8KUmZM7QFN1CczAXbm0=;
+	s=default; t=1657896221;
+	bh=+MMIquig5cpoyfTPaYiOzpz2GbcUScDh41aFsbkQyz8=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Hj+/XzwJ0dhDyASLMwm1ZJlKjxJ2GEQfYS8l3gRudbFF1TLqipZaNqNQp9rZX3YEt
-	 PEa7xB5/6/P4vwCuQqTrJxiAZnwWJDylD/CgeYFoGq0lR6CMKG3mqJ7YcxalnDAmT9
-	 sxVWHBruqqi8luELWghzzomiNUcMR4VxGD9By0FU=
+	b=Xl8ONMUZ8IQj8ZXV64MbY+e31H6WGEraRwsZOMFpU3hdoCcfUjfVrQFZ+331Q2Im0
+	 XChLNZnTZmbwIfSiKWVmTvTECeUmDhWUl6ueTdiWJGJVbdiBN5DNM8Z+GWzdl6PoPH
+	 dabpP2QJ8fFbJFFe4BLIZP6qWt/FNh3W6C1DuQAE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id B0D28F8014E;
-	Fri, 15 Jul 2022 16:42:06 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 7BDA7F80544;
+	Fri, 15 Jul 2022 16:42:09 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id EEACBF80542; Fri, 15 Jul 2022 16:42:04 +0200 (CEST)
+ id 5C270F8053D; Fri, 15 Jul 2022 16:42:06 +0200 (CEST)
 Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 23C63F8014E
+ by alsa1.perex.cz (Postfix) with ESMTPS id 2B5C1F800AA
  for <alsa-devel@alsa-project.org>; Fri, 15 Jul 2022 16:41:57 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 23C63F8014E
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2B5C1F800AA
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="ScPlcG21"
+ header.b="DsSXMm1r"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1657896119; x=1689432119;
+ t=1657896120; x=1689432120;
  h=from:to:cc:subject:date:message-id:in-reply-to:
  references:mime-version:content-transfer-encoding;
- bh=LYhgQYejIMibgkXKpbjW2lvF8KUmZM7QFN1CczAXbm0=;
- b=ScPlcG21euwQvDWunCkO463palnM9p0HMeG0gz+TyUSAd+7qHQ+kW0C5
- bI6uddKW4LAVfinm0qrT0Lm2/AQIZs8fdJUV9waLOIHgfzGHEnVlWHPGV
- V1Lb91KIRFhPHAzPGB4rMdACzsxROuhxEwQprjWEY4H5MgjISo/VKovMN
- jvgKsiNUAqgoFW72nIfqtLCiY2zNpFEFPYu5GM3/2EwQD8YqC2IaB8nN7
- LSzAW3k71bIJvDQAlEpZpqZ+oMmWRwjkrxzLBAdqzHho3KXHRpbHQ4lBr
- 3StKw/f79F/7/dEN4E3/j8NQFLGonbSXJUJsHrKSVJl0Q185WpfD0woK3 g==;
-X-IronPort-AV: E=McAfee;i="6400,9594,10408"; a="286947094"
-X-IronPort-AV: E=Sophos;i="5.92,274,1650956400"; d="scan'208";a="286947094"
+ bh=+MMIquig5cpoyfTPaYiOzpz2GbcUScDh41aFsbkQyz8=;
+ b=DsSXMm1rXufgbAppkppazPX6vOME0FZZjUq4N2ZTxh7bBvANbxoAL+2r
+ ZApgX4l2tN2TabUN8jtqkM5qahxNCtJWgF7jpiVgtthgyoGGF2Hx7uAyp
+ Uqiv1kkwMXJW71S2It+DzRUx4xI4q6zoF5nnFhPu1UhN+OeeOvq6uRWv/
+ IoJNZ2Rj0u2I2pA45YrsHX/GmidC07HE1W+n9AH0u/LOIXf7OdSFcY1yt
+ 0tAR/ClwxKD0K+Fz+xs4rTzNkcO6Ed37ucX7oCB/96JKG0xZdH4h/gJK6
+ uKpAH/3ZLXLfwGQ1K7hJPCRHpqPu/iWcnQzPo92JSv30RQ5w+B0Bh594P Q==;
+X-IronPort-AV: E=McAfee;i="6400,9594,10408"; a="286947087"
+X-IronPort-AV: E=Sophos;i="5.92,274,1650956400"; d="scan'208";a="286947087"
 Received: from orsmga007.jf.intel.com ([10.7.209.58])
  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 15 Jul 2022 07:41:53 -0700
-X-IronPort-AV: E=Sophos;i="5.92,274,1650956400"; d="scan'208";a="593756522"
+ 15 Jul 2022 07:41:52 -0700
+X-IronPort-AV: E=Sophos;i="5.92,274,1650956400"; d="scan'208";a="593756519"
 Received: from lgonzal1-mobl02.amr.corp.intel.com (HELO
  pbossart-mobl3.intel.com) ([10.212.14.184])
  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 15 Jul 2022 07:41:52 -0700
+ 15 Jul 2022 07:41:51 -0700
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH 2/4] ASoC: Intel: soc-acpi: add table for HP Omen 16-k0005TX
-Date: Fri, 15 Jul 2022 09:41:42 -0500
-Message-Id: <20220715144144.274770-3-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH 1/4] ASoC: Intel: sof_sdw: avoid oops in error handling
+Date: Fri, 15 Jul 2022 09:41:41 -0500
+Message-Id: <20220715144144.274770-2-pierre-louis.bossart@linux.intel.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20220715144144.274770-1-pierre-louis.bossart@linux.intel.com>
 References: <20220715144144.274770-1-pierre-louis.bossart@linux.intel.com>
@@ -86,71 +86,64 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-This device has an RT711-SDCA headset codec on link0 and an RT1316
-amplifier on link3.
+While tinkering with ACPI work-arounds for the HP Omen 16 support, we
+identified a corner case where the headset codec device properties are
+not set in the codec .init when -EPROBE_DEFER is returned, but
+released unconditionally in the .exit().
 
-BugLink: https://github.com/thesofproject/sof/issues/5955
+This leads to a kernel oops
+
+[    4.186891] sof_sdw sof_sdw: snd_soc_register_card failed -517
+[    4.186896] BUG: kernel NULL pointer dereference, address: 00000000000003f0
+[    4.186914] Oops: 0000 [#1] PREEMPT SMP NOPTI
+[    4.186926] RIP: 0010:dev_fwnode+0x5/0x20
+[    4.186974]  device_remove_software_node+0x10/0x80
+[    4.186982]  sof_sdw_rt711_exit+0x19/0x30 [snd_soc_sof_sdw]
+[    4.186990]  mc_dailink_exit_loop+0x94/0xc0 [snd_soc_sof_sdw]
+[    4.186996]  ? rt711_rtd_init+0x170/0x170 [snd_soc_sof_sdw]
+
+A similar error case can occur if the addition of the device property
+fails. We need to test if the property was successfully added before
+removing it.
+
+BugLink: https://github.com/thesofproject/linux/issues/3727
+Fixes: 768ad6d80db2d ("ASoC: Intel: sof_sdw: handle errors on card registration")
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 Reviewed-by: Bard Liao <yung-chuan.liao@linux.intel.com>
 ---
- .../intel/common/soc-acpi-intel-adl-match.c   | 29 +++++++++++++++++++
- 1 file changed, 29 insertions(+)
+ sound/soc/intel/boards/sof_sdw_rt711.c      | 3 +++
+ sound/soc/intel/boards/sof_sdw_rt711_sdca.c | 3 +++
+ 2 files changed, 6 insertions(+)
 
-diff --git a/sound/soc/intel/common/soc-acpi-intel-adl-match.c b/sound/soc/intel/common/soc-acpi-intel-adl-match.c
-index fea087d3fa15..6957d801f241 100644
---- a/sound/soc/intel/common/soc-acpi-intel-adl-match.c
-+++ b/sound/soc/intel/common/soc-acpi-intel-adl-match.c
-@@ -137,6 +137,15 @@ static const struct snd_soc_acpi_adr_device rt1316_2_single_adr[] = {
- 	}
- };
+diff --git a/sound/soc/intel/boards/sof_sdw_rt711.c b/sound/soc/intel/boards/sof_sdw_rt711.c
+index 49ff0871e9e7..8291967f23f3 100644
+--- a/sound/soc/intel/boards/sof_sdw_rt711.c
++++ b/sound/soc/intel/boards/sof_sdw_rt711.c
+@@ -139,6 +139,9 @@ int sof_sdw_rt711_exit(struct snd_soc_card *card, struct snd_soc_dai_link *dai_l
+ {
+ 	struct mc_private *ctx = snd_soc_card_get_drvdata(card);
  
-+static const struct snd_soc_acpi_adr_device rt1316_3_single_adr[] = {
-+	{
-+		.adr = 0x000330025D131601ull,
-+		.num_endpoints = 1,
-+		.endpoints = &single_endpoint,
-+		.name_prefix = "rt1316-1"
-+	}
-+};
++	if (!ctx->headset_codec_dev)
++		return 0;
 +
- static const struct snd_soc_acpi_adr_device rt714_0_adr[] = {
- 	{
- 		.adr = 0x000030025D071401ull,
-@@ -326,6 +335,20 @@ static const struct snd_soc_acpi_link_adr adl_sdw_rt1316_link2_rt714_link0[] = {
- 	{}
- };
+ 	device_remove_software_node(ctx->headset_codec_dev);
+ 	put_device(ctx->headset_codec_dev);
  
-+static const struct snd_soc_acpi_link_adr adl_sdw_rt711_link0_rt1316_link3[] = {
-+	{
-+		.mask = BIT(0),
-+		.num_adr = ARRAY_SIZE(rt711_sdca_0_adr),
-+		.adr_d = rt711_sdca_0_adr,
-+	},
-+	{
-+		.mask = BIT(3),
-+		.num_adr = ARRAY_SIZE(rt1316_3_single_adr),
-+		.adr_d = rt1316_3_single_adr,
-+	},
-+	{}
-+};
+diff --git a/sound/soc/intel/boards/sof_sdw_rt711_sdca.c b/sound/soc/intel/boards/sof_sdw_rt711_sdca.c
+index b3fc32bacfa8..7f16304d025b 100644
+--- a/sound/soc/intel/boards/sof_sdw_rt711_sdca.c
++++ b/sound/soc/intel/boards/sof_sdw_rt711_sdca.c
+@@ -140,6 +140,9 @@ int sof_sdw_rt711_sdca_exit(struct snd_soc_card *card, struct snd_soc_dai_link *
+ {
+ 	struct mc_private *ctx = snd_soc_card_get_drvdata(card);
+ 
++	if (!ctx->headset_codec_dev)
++		return 0;
 +
- static const struct snd_soc_acpi_adr_device mx8373_2_adr[] = {
- 	{
- 		.adr = 0x000223019F837300ull,
-@@ -546,6 +569,12 @@ struct snd_soc_acpi_mach snd_soc_acpi_intel_adl_sdw_machines[] = {
- 		.drv_name = "sof_sdw",
- 		.sof_tplg_filename = "sof-adl-rt1316-l2-mono-rt714-l0.tplg",
- 	},
-+	{
-+		.link_mask = 0x9, /* 2 active links required */
-+		.links = adl_sdw_rt711_link0_rt1316_link3,
-+		.drv_name = "sof_sdw",
-+		.sof_tplg_filename = "sof-adl-rt711-l0-rt1316-l3.tplg",
-+	},
- 	{
- 		.link_mask = 0x1, /* link0 required */
- 		.links = adl_rvp,
+ 	device_remove_software_node(ctx->headset_codec_dev);
+ 	put_device(ctx->headset_codec_dev);
+ 
 -- 
 2.34.1
 
