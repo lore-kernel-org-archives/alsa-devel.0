@@ -4,42 +4,83 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C6DA5C43334
-	for <alsa-devel@archiver.kernel.org>; Thu, 14 Jul 2022 22:00:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2FD44C433EF
+	for <alsa-devel@archiver.kernel.org>; Fri, 15 Jul 2022 01:06:32 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 5178418A1;
-	Fri, 15 Jul 2022 00:00:00 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5178418A1
+	by alsa0.perex.cz (Postfix) with ESMTPS id 7550C189C;
+	Fri, 15 Jul 2022 03:05:40 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7550C189C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1657836050;
-	bh=amERYQVc3tKsvsWA3FseYJ1rmoxRNe504shpYsBW1Gk=;
-	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=EpEnmJ3qCGzYBH6+9x+NDyzPJi5mJXc4prKynModXqzOlCY3t5lOtFjRE3Kk1EWUu
-	 p60i2+28RQC0ySnQAZwVR1MkYeInk6obsldgdb1fc4AGCuHvQI/YbkKndRPeWYOhwI
-	 9ywLhAti71KG0dc+wIRH+vP/R+xz5XmCw1TSej8E=
+	s=default; t=1657847190;
+	bh=VRrW4oLF4NkK0onXfyD9WpjLReLYrqiTglDvADCiLRw=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=u6pJqBdoT3Dsn9IghCUqVGF+fsV1iDy9NdUrZyx0ajo57Aqf5ImDim5GpzGdblWn2
+	 iq8uwAQNERWX1NwzJH++DeJ8NM9+wkt83RpqRoa1jGwRXRpr0VDttL0U2BAC0K2Mld
+	 jp1zhQkRqmPdmkuphtFPTEItXexGGLM5cj3NKjjk=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 8DB72F80165;
-	Thu, 14 Jul 2022 23:59:59 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 1326BF80152;
+	Fri, 15 Jul 2022 03:05:40 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 0C707F8014E; Thu, 14 Jul 2022 23:59:58 +0200 (CEST)
-Received: from webhooks-bot.alsa-project.org (gate.perex.cz [77.48.224.242])
- by alsa1.perex.cz (Postfix) with ESMTP id B974BF800AA
- for <alsa-devel@alsa-project.org>; Thu, 14 Jul 2022 23:59:55 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B974BF800AA
+ id EBFC6F80165; Fri, 15 Jul 2022 03:05:38 +0200 (CEST)
+Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com
+ [IPv6:2607:f8b0:4864:20::1036])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 75AC8F800B0
+ for <alsa-devel@alsa-project.org>; Fri, 15 Jul 2022 03:05:30 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 75AC8F800B0
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
+ header.b="bLRYriYf"
+Received: by mail-pj1-x1036.google.com with SMTP id
+ v4-20020a17090abb8400b001ef966652a3so10142040pjr.4
+ for <alsa-devel@alsa-project.org>; Thu, 14 Jul 2022 18:05:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
+ h=from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=bMOaZjPOn7LiquFMJQ2CXw2tm+jQRrs558CGBk7ulfo=;
+ b=bLRYriYf5s7UQ/7X05zIPibEf2AowOD7S1AeGIFEUYUiontcazQytHEDFm5AMwD7Jd
+ VtCJdkBFLj+RTUVp7AqOSB0b0QRlkGLXysDfwIxtNa4cwB7U/hm4G0FmLnXCTRfoa1H3
+ 5gj6tuT3/ndw0w0YmLzxWkHImdMAct6eqdJvvfU59ObMTJk1vitayP1ItkBy/LvLJDqu
+ p5AlTMyKgRVRyqNpIfOMb/fEFhmDLtTTVcKH/9geUYOGgVtpe914ygD0UTdqEsiSoSxT
+ qr4aHnwd2R36jao2d0xJgODe1MqDVmtlWV39NwR6A+K8PsZjeDIOSVY2Yy8uaVgnJWtp
+ yV+A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=bMOaZjPOn7LiquFMJQ2CXw2tm+jQRrs558CGBk7ulfo=;
+ b=sF4c5G/HvXIecan+qK8KZ0P5jHiIjeY14HGzx5ivS3QNmlsSil1s/CUoRNrpAQfCM6
+ tZARecDfsMImHfw17tqkZ/Dej2f9YEZUeBtSkZbWmyFxHJK21gGJtra3LzeNZQ+thNwx
+ eFnKmmbI8mTGMVME2Kd6Ihu2aWhThR9Ys3uAJZPTuH8+wZm1aROCjKjWNan7onFhpKRH
+ DV7dt5kd9G1pgaYwC2+HqBwXE3lZcW8ms9PCoptULdmB8fAZGodaRJws1FzJsor0Olgu
+ 9UBg5eLEEXfLLa4IzPn9ES3BJGKU1dG8KRDd8PAJnfMm/FBfokOG2w4lIKqgwyXusvu8
+ EBjg==
+X-Gm-Message-State: AJIora+ceYhCB4wTTJxdjgrnD3kVBnLWlY8HJNy3192eERUxmZoWDbO+
+ ib7Btd5kEOFJwItAVxuc2w==
+X-Google-Smtp-Source: AGRyM1twV7U8txW9uqIswjHAUWHS1tkOsGchB7TYe8k6E3/W/dwm7czkvcZjMOj1Yu40M1A57av/HQ==
+X-Received: by 2002:a17:90b:4a83:b0:1ef:de4c:660f with SMTP id
+ lp3-20020a17090b4a8300b001efde4c660fmr12412585pjb.213.1657847127947; 
+ Thu, 14 Jul 2022 18:05:27 -0700 (PDT)
+Received: from localhost.localdomain ([144.202.91.207])
+ by smtp.gmail.com with ESMTPSA id
+ n13-20020a170903110d00b0016c27561454sm2163541plh.283.2022.07.14.18.05.24
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Thu, 14 Jul 2022 18:05:27 -0700 (PDT)
+From: Zheyu Ma <zheyuma97@gmail.com>
+To: perex@perex.cz,
+	tiwai@suse.com
+Subject: [PATCH] ALSA: bcd2000: Fix a UAF bug on the error path of probing
+Date: Fri, 15 Jul 2022 09:05:15 +0800
+Message-Id: <20220715010515.2087925-1-zheyuma97@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-From: GitHub issues - edited <github@alsa-project.org>
-To: alsa-devel@alsa-project.org
-In-Reply-To: <1657835995166182041-webhooks-bot@alsa-project.org>
-References: <1657835995166182041-webhooks-bot@alsa-project.org>
-Subject: No Audio: MAG Z690 TOMAHAWK WIFI DDR4 & how to build info request
-Message-Id: <20220714215958.0C707F8014E@alsa1.perex.cz>
-Date: Thu, 14 Jul 2022 23:59:58 +0200 (CEST)
+Content-Transfer-Encoding: 8bit
+Cc: alsa-devel@alsa-project.org, Zheyu Ma <zheyuma97@gmail.com>,
+ linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -55,21 +96,38 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-alsa-project/alsa-ucm-conf issue #189 was edited from Dave--G:
+When the driver fails in snd_card_register() at probe time, it will free
+the 'bcd2k->midi_out_urb' before killing it, which may cause a UAF bug.
 
-My MAG Z690 TOMAHAWK WIFI DDR4 motherboard has no alsa audio support.
+The following log can reveal it:
 
-It looks like the realtek-alc4080 audio chip is supported, just not on this motherboard due to a missing entry in `USB-Audio.conf`.
-The USB audio device id is `0db0:b202`.
-Currently it just displays as `USB Audio` and doesn't function at all.
-This device works under windows so the hardware is functioning but no linux distro I've tried.
+[   50.727020] BUG: KASAN: use-after-free in bcd2000_input_complete+0x1f1/0x2e0 [snd_bcd2000]
+[   50.727623] Read of size 8 at addr ffff88810fab0e88 by task swapper/4/0
+[   50.729530] Call Trace:
+[   50.732899]  bcd2000_input_complete+0x1f1/0x2e0 [snd_bcd2000]
 
-I attempted to address this myself, by downloading `https://github.com/alsa-project/alsa-ucm-conf/releases/tag/v1.2.7.2`, copying it to `/usr/share/alsa` (preserving simlinks of course) and editing `ucm2/USB-Audio/USB-Audio.conf`, changing line 46 to read `		Regex "USB((0b05:(1996|1a2[07]))|(0db0:(1feb|419c|a073|b202)))"`.
-However, when I execute `sudo alsa force-reload` it generates parsing errors and `pactl list sinks` does not show any changes to the device properties as expected.
+Fix this by adding usb_kill_urb() before usb_free_urb().
 
-Can someone please explain what I need to do to get this device working?  Am I on the right track?  Do I need to rebuild alsa from github?  It's not clear and I'm not seeing build instructions.  I've been struggling with this for quite some time so any help would be appreciated.
+Fixes: b47a22290d58 ("ALSA: MIDI driver for Behringer BCD2000 USB device")
+Signed-off-by: Zheyu Ma <zheyuma97@gmail.com>
+---
+ sound/usb/bcd2000/bcd2000.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-I will PR the fix back to this repo once its working.
+diff --git a/sound/usb/bcd2000/bcd2000.c b/sound/usb/bcd2000/bcd2000.c
+index cd4a0bc6d278..7aec0a95c609 100644
+--- a/sound/usb/bcd2000/bcd2000.c
++++ b/sound/usb/bcd2000/bcd2000.c
+@@ -348,7 +348,8 @@ static int bcd2000_init_midi(struct bcd2000 *bcd2k)
+ static void bcd2000_free_usb_related_resources(struct bcd2000 *bcd2k,
+ 						struct usb_interface *interface)
+ {
+-	/* usb_kill_urb not necessary, urb is aborted automatically */
++	usb_kill_urb(bcd2k->midi_out_urb);
++	usb_kill_urb(bcd2k->midi_in_urb);
+ 
+ 	usb_free_urb(bcd2k->midi_out_urb);
+ 	usb_free_urb(bcd2k->midi_in_urb);
+-- 
+2.25.1
 
-Issue URL     : https://github.com/alsa-project/alsa-ucm-conf/issues/189
-Repository URL: https://github.com/alsa-project/alsa-ucm-conf
