@@ -4,69 +4,76 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3D78AC43334
-	for <alsa-devel@archiver.kernel.org>; Fri, 15 Jul 2022 14:53:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 898FDC43334
+	for <alsa-devel@archiver.kernel.org>; Fri, 15 Jul 2022 14:54:16 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id EC3CC18F8;
-	Fri, 15 Jul 2022 16:52:54 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EC3CC18F8
+	by alsa0.perex.cz (Postfix) with ESMTPS id B65A61925;
+	Fri, 15 Jul 2022 16:53:24 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B65A61925
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1657896825;
-	bh=aYAXNNzbJ9lFVOu1sujOPjVsoCFY0nvS0lejc2Fq6gc=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=m+tb/Uadlvun1PgUj8ESrnG9HzwT39RK0QE9q1b/xRVAzE+i9+P2AEJ0tQXf4YmfO
-	 o+SN9TK+XAEMecYoqrdvwwaRixz9Njm1cdMtmeVBST1rnVuBdqmvB5Sad6FjGKyekf
-	 IAPo9koKa+plrYaL4H/3W5W9sadiK83g4Xd6J6mw=
+	s=default; t=1657896854;
+	bh=gWtVptkaALOxSAlnOR2YDyUzmsGfWKaOXU5/P6w4bWA=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=rikZnVFVCLI06Dua5SNFdDoukOlBKep7XNFyId9ACdcwH10lEHiH43qUoGc8JzqRZ
+	 z/6HSHWNwD4I5qeEae+uidAlZs/x7hqBtIV5vICLHdxmTCg+C+bXvapQfVlS9qXQQv
+	 iSpJqpeLm3yj4O1Is9+YYBwOgZMxrpxuoVIyrtuk=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 6C643F80212;
-	Fri, 15 Jul 2022 16:52:54 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 7A80DF8012F;
+	Fri, 15 Jul 2022 16:52:59 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id B79FEF800AA; Fri, 15 Jul 2022 16:52:52 +0200 (CEST)
+ id 2F415F80544; Fri, 15 Jul 2022 16:52:58 +0200 (CEST)
 Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id E018BF800AA
- for <alsa-devel@alsa-project.org>; Fri, 15 Jul 2022 16:52:49 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E018BF800AA
+ by alsa1.perex.cz (Postfix) with ESMTPS id 94AD5F8014E
+ for <alsa-devel@alsa-project.org>; Fri, 15 Jul 2022 16:52:51 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 94AD5F8014E
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="MuLZ0sBH"
+ header.b="nBgwQWca"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1657896771; x=1689432771;
- h=from:to:cc:subject:date:message-id:mime-version:
- content-transfer-encoding;
- bh=aYAXNNzbJ9lFVOu1sujOPjVsoCFY0nvS0lejc2Fq6gc=;
- b=MuLZ0sBHdVj4LLfwTvKLKgqnQR2yzAoLB0oXQFGx7vm8SfMUR3Cz9jPQ
- z8HrSO7XBAT/OWsw1jUma6+5B+jrWji0tYLiNkDYmGhFanjTqWxa0PCDt
- TkmCEQg/W0AkEUhKC3le1ocFiim/pANljDb/0m1AKTsvEh+wRIJLo1+8A
- rs5y+f3nQhQmfeyJjbCv/d5NRlxpLSJrmIVlG9IK78ts83ggqyns5AOxk
- Me5dAs+6Ok2JiJCY73nA8/U+KV9RnKUo6D2DCFmyo5dUIDbGs8zah02nx
- s5Yd4inFQFUovbfxAw50k59TM/876lag7Mu6CyoHxrLRilCJQuFD91VWw Q==;
-X-IronPort-AV: E=McAfee;i="6400,9594,10408"; a="311476896"
-X-IronPort-AV: E=Sophos;i="5.92,274,1650956400"; d="scan'208";a="311476896"
+ t=1657896772; x=1689432772;
+ h=from:to:cc:subject:date:message-id:in-reply-to:
+ references:mime-version:content-transfer-encoding;
+ bh=gWtVptkaALOxSAlnOR2YDyUzmsGfWKaOXU5/P6w4bWA=;
+ b=nBgwQWcaEs+5hvZkHsO179prsroPXPJN4wfYuxvntGoJCjV8246jerx+
+ yLv3klxhgedVB4qRD1ts9iqTNO1vpVQvTIwdMZAuoijZUel15aeEh2oqK
+ URbqkr5gO9L4iWNOdRuavVpnNzn4XRe84wb4l8miR8W/AvW8+TsWG3mnf
+ pdBjCsQhs0NAqF3Wxuk0OPZk8RqZ6TxqW8Zz9AHXww7w9AwtBhmbUYl7k
+ dDUD1W8WouK7vqrxg3hFKklVoZCoLNC1FO26Se3VVvb7mIiaVw0l+dawB
+ 0UszZzqLIKRn0PABw+XfPjv5Z0h7U2cZT6eZnUjGaH90Esa29li6wH+V5 g==;
+X-IronPort-AV: E=McAfee;i="6400,9594,10408"; a="311476903"
+X-IronPort-AV: E=Sophos;i="5.92,274,1650956400"; d="scan'208";a="311476903"
 Received: from fmsmga005.fm.intel.com ([10.253.24.32])
  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 15 Jul 2022 07:52:30 -0700
-X-IronPort-AV: E=Sophos;i="5.92,274,1650956400"; d="scan'208";a="923533100"
+ 15 Jul 2022 07:52:31 -0700
+X-IronPort-AV: E=Sophos;i="5.92,274,1650956400"; d="scan'208";a="923533105"
 Received: from jmurope-mobl.amr.corp.intel.com (HELO pbossart-mobl3.intel.com)
  ([10.212.14.184])
  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 15 Jul 2022 07:52:29 -0700
+ 15 Jul 2022 07:52:31 -0700
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH 00/11]  ASoC: SOF: Intel: updates and cleanups
-Date: Fri, 15 Jul 2022 09:52:05 -0500
-Message-Id: <20220715145216.277003-1-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH 02/11] ASoC: SOF: ipc4-topology: move ida allocate/free to
+ widget_setup/free
+Date: Fri, 15 Jul 2022 09:52:07 -0500
+Message-Id: <20220715145216.277003-3-pierre-louis.bossart@linux.intel.com>
 X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20220715145216.277003-1-pierre-louis.bossart@linux.intel.com>
+References: <20220715145216.277003-1-pierre-louis.bossart@linux.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-Cc: tiwai@suse.de, broonie@kernel.org,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: tiwai@suse.de, Bard Liao <yung-chuan.liao@linux.intel.com>,
+ Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ broonie@kernel.org,
+ =?UTF-8?q?P=C3=A9ter=20Ujfalusi?= <peter.ujfalusi@linux.intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -82,52 +89,147 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Set of updates for IPC3, IPC4, MTL support and cleanups for the
-topology filename override which was broken for HDaudio platforms.
+From: Bard Liao <yung-chuan.liao@linux.intel.com>
 
-It may be too late for 5.20, it's ok if these patches are applied in
-the next cycle.
+The existing code allocate/release instance_id in widget ipc_prepare/
+ipc_unprepare callbacks and creating widget with the instance_id in
+tplg widget_setup callback. In the case of multiple widgets connecting
+to one widget, the ipc_unprepare will be invoked for all the widgets
+in the path including the widget which is still in use.
+As a result, the instance_id is released in the ipc_unprepare callback,
+but the widget is still in use and the instance_id will be reused by
+a new widget when we start the PCM again.
+Moving the ida work from ipc_prepare/ipc_unprepare to widget_setup/free
+can avoid such problem.
 
-The topology override depends on the patch "ASoC: SOF: Intel: enable
-dmic handling with 2 or fewer SoundWire links" shared in a separate
-patchset.
+Reviewed-by: Péter Ujfalusi <peter.ujfalusi@linux.intel.com>
+Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+Signed-off-by: Bard Liao <yung-chuan.liao@linux.intel.com>
+Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+---
+ sound/soc/sof/ipc4-topology.c | 36 ++++++++++++++++-------------------
+ 1 file changed, 16 insertions(+), 20 deletions(-)
 
-Bard Liao (1):
-  ASoC: SOF: ipc4-topology: move ida allocate/free to widget_setup/free
-
-Peter Ujfalusi (2):
-  ASoC: SOF: ipc3-loader: Print out the non matching ext_man magic
-    number
-  ASoC: SOF: Intel: atom: don't keep a temporary string in
-    fixup_tplg_name
-
-Pierre-Louis Bossart (4):
-  ASoC: SOF: Intel: hda: don't set fw_filename
-  ASoC: SOF: Intel: hda: only fixup topology name if not set already
-  ASoC: SOF: probes: rename assign/free callbacks as startup/shutdown
-  ASoC: SOF: Intel: hda-stream: test DMA buffer first in hw_params
-
-Rander Wang (3):
-  ASoC: SOF: ipc4-pcm: set pcm rate to dai setting
-  ASoC: SOF: add ipc4 SRC module support
-  ASoC: SOF: ipc4-topology: set domain bit based on dp domain type
-
-Yong Zhi (1):
-  ASoC: SOF: Intel: MTL: remove redundant snd_sof_dsp_read() call
-
- sound/soc/sof/intel/atom.c        |  16 +--
- sound/soc/sof/intel/hda-probes.c  |  16 +--
- sound/soc/sof/intel/hda-stream.c  |  15 ++-
- sound/soc/sof/intel/hda.c         |  71 +++++++++-----
- sound/soc/sof/intel/mtl.c         |  13 +--
- sound/soc/sof/ipc3-loader.c       |   6 +-
- sound/soc/sof/ipc4-pcm.c          |   4 +
- sound/soc/sof/ipc4-topology.c     | 156 +++++++++++++++++++++++++-----
- sound/soc/sof/ipc4-topology.h     |  27 +++++-
- sound/soc/sof/sof-client-probes.c |   8 +-
- sound/soc/sof/sof-client-probes.h |   8 +-
- 11 files changed, 250 insertions(+), 90 deletions(-)
-
+diff --git a/sound/soc/sof/ipc4-topology.c b/sound/soc/sof/ipc4-topology.c
+index 22ea628d78d0..f77091918118 100644
+--- a/sound/soc/sof/ipc4-topology.c
++++ b/sound/soc/sof/ipc4-topology.c
+@@ -891,7 +891,6 @@ static int sof_ipc4_init_audio_fmt(struct snd_sof_dev *sdev,
+ 
+ static void sof_ipc4_unprepare_copier_module(struct snd_sof_widget *swidget)
+ {
+-	struct sof_ipc4_fw_module *fw_module = swidget->module_info;
+ 	struct sof_ipc4_copier *ipc4_copier = NULL;
+ 	struct snd_sof_widget *pipe_widget;
+ 	struct sof_ipc4_pipeline *pipeline;
+@@ -925,8 +924,6 @@ static void sof_ipc4_unprepare_copier_module(struct snd_sof_widget *swidget)
+ 		ipc4_copier->ipc_config_data = NULL;
+ 		ipc4_copier->ipc_config_size = 0;
+ 	}
+-
+-	ida_free(&fw_module->m_ida, swidget->instance_id);
+ }
+ 
+ #if IS_ENABLED(CONFIG_ACPI) && IS_ENABLED(CONFIG_SND_INTEL_NHLT)
+@@ -1254,15 +1251,7 @@ sof_ipc4_prepare_copier_module(struct snd_sof_widget *swidget,
+ 	/* update pipeline memory usage */
+ 	sof_ipc4_update_pipeline_mem_usage(sdev, swidget, &copier_data->base_config);
+ 
+-	/* assign instance ID */
+-	return sof_ipc4_widget_assign_instance_id(sdev, swidget);
+-}
+-
+-static void sof_ipc4_unprepare_generic_module(struct snd_sof_widget *swidget)
+-{
+-	struct sof_ipc4_fw_module *fw_module = swidget->module_info;
+-
+-	ida_free(&fw_module->m_ida, swidget->instance_id);
++	return 0;
+ }
+ 
+ static int sof_ipc4_prepare_gain_module(struct snd_sof_widget *swidget,
+@@ -1287,8 +1276,7 @@ static int sof_ipc4_prepare_gain_module(struct snd_sof_widget *swidget,
+ 	/* update pipeline memory usage */
+ 	sof_ipc4_update_pipeline_mem_usage(sdev, swidget, &gain->base_config);
+ 
+-	/* assign instance ID */
+-	return sof_ipc4_widget_assign_instance_id(sdev, swidget);
++	return 0;
+ }
+ 
+ static int sof_ipc4_prepare_mixer_module(struct snd_sof_widget *swidget,
+@@ -1314,8 +1302,7 @@ static int sof_ipc4_prepare_mixer_module(struct snd_sof_widget *swidget,
+ 	/* update pipeline memory usage */
+ 	sof_ipc4_update_pipeline_mem_usage(sdev, swidget, &mixer->base_config);
+ 
+-	/* assign instance ID */
+-	return sof_ipc4_widget_assign_instance_id(sdev, swidget);
++	return 0;
+ }
+ 
+ static int sof_ipc4_control_load_volume(struct snd_sof_dev *sdev, struct snd_sof_control *scontrol)
+@@ -1373,8 +1360,6 @@ static int sof_ipc4_widget_setup(struct snd_sof_dev *sdev, struct snd_sof_widget
+ 	u32 ipc_size = 0;
+ 	int ret;
+ 
+-	dev_dbg(sdev->dev, "Create widget %s instance %d - pipe %d - core %d\n",
+-		swidget->widget->name, swidget->instance_id, swidget->pipeline_id, swidget->core);
+ 
+ 	switch (swidget->id) {
+ 	case snd_soc_dapm_scheduler:
+@@ -1436,6 +1421,12 @@ static int sof_ipc4_widget_setup(struct snd_sof_dev *sdev, struct snd_sof_widget
+ 	}
+ 
+ 	if (swidget->id != snd_soc_dapm_scheduler) {
++		ret = sof_ipc4_widget_assign_instance_id(sdev, swidget);
++		if (ret < 0) {
++			dev_err(sdev->dev, "failed to assign instance id for %s\n",
++				swidget->widget->name);
++			return ret;
++		}
+ 		pipeline = pipe_widget->private;
+ 		msg->primary &= ~SOF_IPC4_MOD_INSTANCE_MASK;
+ 		msg->primary |= SOF_IPC4_MOD_INSTANCE(swidget->instance_id);
+@@ -1445,6 +1436,8 @@ static int sof_ipc4_widget_setup(struct snd_sof_dev *sdev, struct snd_sof_widget
+ 		msg->extension &= ~SOF_IPC4_MOD_EXT_DOMAIN_MASK;
+ 		msg->extension |= SOF_IPC4_MOD_EXT_DOMAIN(pipeline->lp_mode);
+ 	}
++	dev_dbg(sdev->dev, "Create widget %s instance %d - pipe %d - core %d\n",
++		swidget->widget->name, swidget->instance_id, swidget->pipeline_id, swidget->core);
+ 
+ 	msg->data_size = ipc_size;
+ 	msg->data_ptr = ipc_data;
+@@ -1458,6 +1451,7 @@ static int sof_ipc4_widget_setup(struct snd_sof_dev *sdev, struct snd_sof_widget
+ 
+ static int sof_ipc4_widget_free(struct snd_sof_dev *sdev, struct snd_sof_widget *swidget)
+ {
++	struct sof_ipc4_fw_module *fw_module = swidget->module_info;
+ 	int ret = 0;
+ 
+ 	/* freeing a pipeline frees all the widgets associated with it */
+@@ -1480,6 +1474,8 @@ static int sof_ipc4_widget_free(struct snd_sof_dev *sdev, struct snd_sof_widget
+ 
+ 		pipeline->mem_usage = 0;
+ 		pipeline->state = SOF_IPC4_PIPE_UNINITIALIZED;
++	} else {
++		ida_free(&fw_module->m_ida, swidget->instance_id);
+ 	}
+ 
+ 	return ret;
+@@ -1789,11 +1785,11 @@ static const struct sof_ipc_tplg_widget_ops tplg_ipc4_widget_ops[SND_SOC_DAPM_TY
+ 	[snd_soc_dapm_pga] = {sof_ipc4_widget_setup_comp_pga, sof_ipc4_widget_free_comp_pga,
+ 			      pga_token_list, ARRAY_SIZE(pga_token_list), NULL,
+ 			      sof_ipc4_prepare_gain_module,
+-			      sof_ipc4_unprepare_generic_module},
++			      NULL},
+ 	[snd_soc_dapm_mixer] = {sof_ipc4_widget_setup_comp_mixer, sof_ipc4_widget_free_comp_mixer,
+ 				mixer_token_list, ARRAY_SIZE(mixer_token_list),
+ 				NULL, sof_ipc4_prepare_mixer_module,
+-				sof_ipc4_unprepare_generic_module},
++				NULL},
+ };
+ 
+ const struct sof_ipc_tplg_ops ipc4_tplg_ops = {
 -- 
 2.34.1
 
