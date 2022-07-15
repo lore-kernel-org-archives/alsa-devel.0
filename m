@@ -4,65 +4,65 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D4A4AC433EF
-	for <alsa-devel@archiver.kernel.org>; Fri, 15 Jul 2022 14:55:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id DFF42C433EF
+	for <alsa-devel@archiver.kernel.org>; Fri, 15 Jul 2022 14:55:30 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 101F718F8;
-	Fri, 15 Jul 2022 16:54:27 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 101F718F8
+	by alsa0.perex.cz (Postfix) with ESMTPS id 1B24918FD;
+	Fri, 15 Jul 2022 16:54:39 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1B24918FD
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1657896917;
-	bh=cxi2HTTANjMVI/FK+y13QqBb1a5xPeHX0id079YJnXo=;
+	s=default; t=1657896929;
+	bh=sZ54xulv0edJ+YOzbrzxq/4OMsGlUM2TXXrHB9xyb9w=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=BKxQ+fYn6Y/0TLuOXdtmSD6I8BrmJXs/YtFoQ4itDAIqaSErvSp6SFEbNOHhjlT0z
-	 xvtky/AmQzuZUtGS5kax5h4xVNMWz/kKuMKftc0FGiLj1hxct+XVz4eUmGJ7rOb153
-	 yglCXkfWVMrbXQwwiUXultTXdVXi1cUAVJYqDpGs=
+	b=I7tsRKq/G86eh4xquvf9gWxaiWBITxNbNt1Tf7OVXyWDAptl3ijK4ZGF3HYuE9Rp6
+	 Ld5bA00ISFjBfqB0KMMsI3JcTrD9sl/gjTSKrPaNbkrobapwSLjVSy7W8UsY5vSwKS
+	 hZGBi64glPcDeDUvFEqbnyUOAuYDyelJXF+/6ggM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 6DE6BF80543;
-	Fri, 15 Jul 2022 16:53:09 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id D60A8F80544;
+	Fri, 15 Jul 2022 16:53:10 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id A81EAF80507; Fri, 15 Jul 2022 16:53:05 +0200 (CEST)
+ id BA459F8053C; Fri, 15 Jul 2022 16:53:05 +0200 (CEST)
 Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id B211FF800AA
- for <alsa-devel@alsa-project.org>; Fri, 15 Jul 2022 16:52:55 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B211FF800AA
+ by alsa1.perex.cz (Postfix) with ESMTPS id 0103DF8053C
+ for <alsa-devel@alsa-project.org>; Fri, 15 Jul 2022 16:52:53 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0103DF8053C
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="HMWmVKPe"
+ header.b="JCZ0zB0K"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1657896776; x=1689432776;
+ t=1657896775; x=1689432775;
  h=from:to:cc:subject:date:message-id:in-reply-to:
  references:mime-version:content-transfer-encoding;
- bh=cxi2HTTANjMVI/FK+y13QqBb1a5xPeHX0id079YJnXo=;
- b=HMWmVKPeIJgHAbYAuDxzsGXHDn+6WtAHc3IGvQ9kuCI/vOjKn2ezDk0r
- YEpDSzT7qyscdIb4Pm+clxgLUce3KkDa6BD3rx9WkzS3GWHn0iUNlg9W8
- A0O8r/KU6kAmFweNCQ8QgzYfgm0sj0wBtwGi5daxV1a+NDSGpCbuwtMJK
- 30F6bNHy1XNiL6lG1X8bRdQSQAuqWA10hM9AUyRVNshFZ6tTEEC/owc9D
- sLGZDpwPNY8vk4yOB7bgp/ifLu4nQBWPKFs/PD5S/TDHeDFzJ7XoWxjdb
- 8CjEXSgJkZQILx/78bfg6D9VEq2NSjEqC+34e+F9/zEzJ3dLNTWKmtvki w==;
-X-IronPort-AV: E=McAfee;i="6400,9594,10408"; a="311476917"
-X-IronPort-AV: E=Sophos;i="5.92,274,1650956400"; d="scan'208";a="311476917"
+ bh=sZ54xulv0edJ+YOzbrzxq/4OMsGlUM2TXXrHB9xyb9w=;
+ b=JCZ0zB0KKrTrGQiNnpDz3XpMcDog1NXhmEs6cPh6Cg+5DNMeID3IceeA
+ /pcQqPHXM4DmsGv28aq8SdwltN4iHzJCwUpdKeCvhvL+4Gao2pneqb8Sv
+ 0KdHGvy+cSStE+QcSJelrXf0kbgMdfcCg633yMYNohSiFBQBrqkAPX8Sx
+ i35zmsV8gJ9S3aTqiNub4+Flw1IzYvI9ODg2J0Xj8vigVibNnpjw6GDIs
+ CfxsYu6qgi66J+qrBwMh+zAEAGRMwzso5mpXs6Zxc44V3Yx9pM7coRvXj
+ g3b3b1FWde/kWz3r28gAohz4UH6B67C9WMs18yQaPPF3AL9d7X/yRCC42 Q==;
+X-IronPort-AV: E=McAfee;i="6400,9594,10408"; a="311476922"
+X-IronPort-AV: E=Sophos;i="5.92,274,1650956400"; d="scan'208";a="311476922"
 Received: from fmsmga005.fm.intel.com ([10.253.24.32])
  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 15 Jul 2022 07:52:35 -0700
-X-IronPort-AV: E=Sophos;i="5.92,274,1650956400"; d="scan'208";a="923533128"
+ 15 Jul 2022 07:52:36 -0700
+X-IronPort-AV: E=Sophos;i="5.92,274,1650956400"; d="scan'208";a="923533133"
 Received: from jmurope-mobl.amr.corp.intel.com (HELO pbossart-mobl3.intel.com)
  ([10.212.14.184])
  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 15 Jul 2022 07:52:35 -0700
+ 15 Jul 2022 07:52:36 -0700
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH 09/11] ASoC: SOF: Intel: hda: only fixup topology name if not
- set already
-Date: Fri, 15 Jul 2022 09:52:14 -0500
-Message-Id: <20220715145216.277003-10-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH 11/11] ASoC: SOF: Intel: hda-stream: test DMA buffer first in
+ hw_params
+Date: Fri, 15 Jul 2022 09:52:16 -0500
+Message-Id: <20220715145216.277003-12-pierre-louis.bossart@linux.intel.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20220715145216.277003-1-pierre-louis.bossart@linux.intel.com>
 References: <20220715145216.277003-1-pierre-louis.bossart@linux.intel.com>
@@ -71,8 +71,9 @@ Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Cc: tiwai@suse.de,
  =?UTF-8?q?P=C3=A9ter=20Ujfalusi?= <peter.ujfalusi@linux.intel.com>,
- broonie@kernel.org, Bard Liao <yung-chuan.liao@linux.intel.com>,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ Ranjani Sridharan <ranjani.sridharan@linux.intel.com>, broonie@kernel.org,
+ Bard Liao <yung-chuan.liao@linux.intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -88,180 +89,55 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-We do all kinds of renaming tricks that get in the way of kernel
-parameter and DMI quirk overrides at a higher level.
-
-Tested on UpExtreme board with
-
-options snd-sof-pci tplg_filename=sof-hda-generic.tplg
+We should be consistent and always test that the DMA buffer is
+allocated before continuing with the hw_params setup.
 
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Reviewed-by: Bard Liao <yung-chuan.liao@linux.intel.com>
+Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 Reviewed-by: Péter Ujfalusi <peter.ujfalusi@linux.intel.com>
+Reviewed-by: Bard Liao <yung-chuan.liao@linux.intel.com>
 ---
- sound/soc/sof/intel/hda.c | 70 +++++++++++++++++++++++++++------------
- 1 file changed, 48 insertions(+), 22 deletions(-)
+ sound/soc/sof/intel/hda-stream.c | 15 ++++++++++-----
+ 1 file changed, 10 insertions(+), 5 deletions(-)
 
-diff --git a/sound/soc/sof/intel/hda.c b/sound/soc/sof/intel/hda.c
-index b702412e2a17..d337d55050e2 100644
---- a/sound/soc/sof/intel/hda.c
-+++ b/sound/soc/sof/intel/hda.c
-@@ -776,13 +776,12 @@ static const char *fixup_tplg_name(struct snd_sof_dev *sdev,
- 	return tplg_filename;
- }
- 
--static int dmic_topology_fixup(struct snd_sof_dev *sdev,
--			       const char **tplg_filename,
--			       const char *idisp_str,
--			       int *dmic_found)
-+static int dmic_detect_topology_fixup(struct snd_sof_dev *sdev,
-+				      const char **tplg_filename,
-+				      const char *idisp_str,
-+				      int *dmic_found,
-+				      bool tplg_fixup)
- {
--	const char *default_tplg_filename = *tplg_filename;
--	const char *fixed_tplg_filename;
- 	const char *dmic_str;
- 	int dmic_num;
- 
-@@ -808,14 +807,19 @@ static int dmic_topology_fixup(struct snd_sof_dev *sdev,
- 		break;
+diff --git a/sound/soc/sof/intel/hda-stream.c b/sound/soc/sof/intel/hda-stream.c
+index 4531e1ee5ed0..b58662faa4aa 100644
+--- a/sound/soc/sof/intel/hda-stream.c
++++ b/sound/soc/sof/intel/hda-stream.c
+@@ -411,6 +411,11 @@ int hda_dsp_iccmax_stream_hw_params(struct snd_sof_dev *sdev, struct hdac_ext_st
+ 		return -ENODEV;
  	}
  
--	fixed_tplg_filename = fixup_tplg_name(sdev, default_tplg_filename,
--					      idisp_str, dmic_str);
--	if (!fixed_tplg_filename)
--		return -ENOMEM;
-+	if (tplg_fixup) {
-+		const char *default_tplg_filename = *tplg_filename;
-+		const char *fixed_tplg_filename;
-+
-+		fixed_tplg_filename = fixup_tplg_name(sdev, default_tplg_filename,
-+						      idisp_str, dmic_str);
-+		if (!fixed_tplg_filename)
-+			return -ENOMEM;
-+		*tplg_filename = fixed_tplg_filename;
++	if (!dmab) {
++		dev_err(sdev->dev, "error: no dma buffer allocated!\n");
++		return -ENODEV;
 +	}
- 
- 	dev_info(sdev->dev, "DMICs detected in NHLT tables: %d\n", dmic_num);
- 	*dmic_found = dmic_num;
--	*tplg_filename = fixed_tplg_filename;
- 
- 	return 0;
- }
-@@ -1221,6 +1225,8 @@ static void hda_generic_machine_select(struct snd_sof_dev *sdev,
- 		 *  - one external HDAudio codec
- 		 */
- 		if (!*mach && codec_num <= 2) {
-+			bool tplg_fixup;
 +
- 			hda_mach = snd_soc_acpi_intel_hda_machines;
+ 	if (hstream->posbuf)
+ 		*hstream->posbuf = 0;
  
- 			dev_info(bus->dev, "using HDA machine driver %s now\n",
-@@ -1232,8 +1238,15 @@ static void hda_generic_machine_select(struct snd_sof_dev *sdev,
- 				idisp_str = "";
+@@ -485,16 +490,16 @@ int hda_dsp_stream_hw_params(struct snd_sof_dev *sdev,
+ 		return -ENODEV;
+ 	}
  
- 			/* topology: use the info from hda_machines */
--			tplg_filename = hda_mach->sof_tplg_filename;
--			ret = dmic_topology_fixup(sdev, &tplg_filename, idisp_str, &dmic_num);
-+			if (pdata->tplg_filename) {
-+				tplg_fixup = false;
-+				tplg_filename = pdata->tplg_filename;
-+			} else {
-+				tplg_fixup = true;
-+				tplg_filename = hda_mach->sof_tplg_filename;
-+			}
-+			ret = dmic_detect_topology_fixup(sdev, &tplg_filename, idisp_str, &dmic_num,
-+							 tplg_fixup);
- 			if (ret < 0)
- 				return;
- 
-@@ -1397,11 +1410,19 @@ static struct snd_soc_acpi_mach *hda_sdw_machine_select(struct snd_sof_dev *sdev
- 		}
- 		if (mach && mach->link_mask) {
- 			int dmic_num = 0;
-+			bool tplg_fixup;
-+			const char *tplg_filename;
- 
- 			mach->mach_params.links = mach->links;
- 			mach->mach_params.link_mask = mach->link_mask;
- 			mach->mach_params.platform = dev_name(sdev->dev);
--			pdata->tplg_filename = mach->sof_tplg_filename;
-+
-+			if (pdata->tplg_filename) {
-+				tplg_fixup = false;
-+			} else {
-+				tplg_fixup = true;
-+				tplg_filename = mach->sof_tplg_filename;
-+			}
- 
- 			/*
- 			 * DMICs use up to 4 pins and are typically pin-muxed with SoundWire
-@@ -1411,15 +1432,15 @@ static struct snd_soc_acpi_mach *hda_sdw_machine_select(struct snd_sof_dev *sdev
- 			 * b) the NHLT table reports the presence of microphones
- 			 */
- 			if (hweight_long(mach->link_mask) <= 2) {
--				const char *tplg_filename = mach->sof_tplg_filename;
- 				int ret;
- 
--				ret = dmic_topology_fixup(sdev, &tplg_filename, "", &dmic_num);
-+				ret = dmic_detect_topology_fixup(sdev, &tplg_filename, "",
-+								 &dmic_num, tplg_fixup);
- 				if (ret < 0)
- 					return NULL;
+-	/* decouple host and link DMA */
+-	mask = 0x1 << hstream->index;
+-	snd_sof_dsp_update_bits(sdev, HDA_DSP_PP_BAR, SOF_HDA_REG_PP_PPCTL,
+-				mask, mask);
 -
--				pdata->tplg_filename = tplg_filename;
- 			}
-+			if (tplg_fixup)
-+				pdata->tplg_filename = tplg_filename;
- 			mach->mach_params.dmic_num = dmic_num;
+ 	if (!dmab) {
+ 		dev_err(sdev->dev, "error: no dma buffer allocated!\n");
+ 		return -ENODEV;
+ 	}
  
- 			dev_dbg(sdev->dev,
-@@ -1465,18 +1486,22 @@ struct snd_soc_acpi_mach *hda_machine_select(struct snd_sof_dev *sdev)
- 	mach = snd_soc_acpi_find_machine(desc->machines);
- 	if (mach) {
- 		bool add_extension = false;
-+		bool tplg_fixup = false;
- 
- 		/*
- 		 * If tplg file name is overridden, use it instead of
- 		 * the one set in mach table
- 		 */
--		if (!sof_pdata->tplg_filename)
-+		if (!sof_pdata->tplg_filename) {
- 			sof_pdata->tplg_filename = mach->sof_tplg_filename;
-+			tplg_fixup = true;
-+		}
- 
- 		/* report to machine driver if any DMICs are found */
- 		mach->mach_params.dmic_num = check_dmic_num(sdev);
- 
--		if (mach->tplg_quirk_mask & SND_SOC_ACPI_TPLG_INTEL_DMIC_NUMBER &&
-+		if (tplg_fixup &&
-+		    mach->tplg_quirk_mask & SND_SOC_ACPI_TPLG_INTEL_DMIC_NUMBER &&
- 		    mach->mach_params.dmic_num) {
- 			tplg_filename = devm_kasprintf(sdev->dev, GFP_KERNEL,
- 						       "%s%s%d%s",
-@@ -1499,7 +1524,8 @@ struct snd_soc_acpi_mach *hda_machine_select(struct snd_sof_dev *sdev)
- 		/* report SSP link mask to machine driver */
- 		mach->mach_params.i2s_link_mask = check_nhlt_ssp_mask(sdev);
- 
--		if (mach->tplg_quirk_mask & SND_SOC_ACPI_TPLG_INTEL_SSP_NUMBER &&
-+		if (tplg_fixup &&
-+		    mach->tplg_quirk_mask & SND_SOC_ACPI_TPLG_INTEL_SSP_NUMBER &&
- 		    mach->mach_params.i2s_link_mask) {
- 			int ssp_num;
- 
-@@ -1522,7 +1548,7 @@ struct snd_soc_acpi_mach *hda_machine_select(struct snd_sof_dev *sdev)
- 			add_extension = true;
- 		}
- 
--		if (add_extension) {
-+		if (tplg_fixup && add_extension) {
- 			tplg_filename = devm_kasprintf(sdev->dev, GFP_KERNEL,
- 						       "%s%s",
- 						       sof_pdata->tplg_filename,
++	/* decouple host and link DMA */
++	mask = 0x1 << hstream->index;
++	snd_sof_dsp_update_bits(sdev, HDA_DSP_PP_BAR, SOF_HDA_REG_PP_PPCTL,
++				mask, mask);
++
+ 	/* clear stream status */
+ 	snd_sof_dsp_update_bits(sdev, HDA_DSP_HDA_BAR, sd_offset,
+ 				SOF_HDA_CL_DMA_SD_INT_MASK |
 -- 
 2.34.1
 
