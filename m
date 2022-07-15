@@ -4,74 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id F1639C43334
-	for <alsa-devel@archiver.kernel.org>; Fri, 15 Jul 2022 14:43:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3D78AC43334
+	for <alsa-devel@archiver.kernel.org>; Fri, 15 Jul 2022 14:53:46 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 016A618EB;
-	Fri, 15 Jul 2022 16:43:05 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 016A618EB
+	by alsa0.perex.cz (Postfix) with ESMTPS id EC3CC18F8;
+	Fri, 15 Jul 2022 16:52:54 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EC3CC18F8
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1657896235;
-	bh=uR4D154ji/q8k8s+V7N+R8nQGUUkvsmHJvY2q9FVFW8=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=jGxr9YMc9C7/JhxeZejGtBQxzfDbPPduXzNeIrEwi27NPo4kpCSfl8D2fPcB5MuM4
-	 cORIEVAKVahJAhn85BGXBq12XIYqLhAW7UaSFMBNaYGeYsBP2qkk9qdahYlQbdi6EU
-	 cOMllGfe6vDpXb8sx9e+SPn6dkkvwywUwK3NENqI=
+	s=default; t=1657896825;
+	bh=aYAXNNzbJ9lFVOu1sujOPjVsoCFY0nvS0lejc2Fq6gc=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=m+tb/Uadlvun1PgUj8ESrnG9HzwT39RK0QE9q1b/xRVAzE+i9+P2AEJ0tQXf4YmfO
+	 o+SN9TK+XAEMecYoqrdvwwaRixz9Njm1cdMtmeVBST1rnVuBdqmvB5Sad6FjGKyekf
+	 IAPo9koKa+plrYaL4H/3W5W9sadiK83g4Xd6J6mw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 9F62FF80552;
-	Fri, 15 Jul 2022 16:42:13 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 6C643F80212;
+	Fri, 15 Jul 2022 16:52:54 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 94A95F8012F; Fri, 15 Jul 2022 16:42:11 +0200 (CEST)
-Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
+ id B79FEF800AA; Fri, 15 Jul 2022 16:52:52 +0200 (CEST)
+Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 44ABFF80507
- for <alsa-devel@alsa-project.org>; Fri, 15 Jul 2022 16:42:00 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 44ABFF80507
+ by alsa1.perex.cz (Postfix) with ESMTPS id E018BF800AA
+ for <alsa-devel@alsa-project.org>; Fri, 15 Jul 2022 16:52:49 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E018BF800AA
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="BA2PjMc7"
+ header.b="MuLZ0sBH"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1657896121; x=1689432121;
- h=from:to:cc:subject:date:message-id:in-reply-to:
- references:mime-version:content-transfer-encoding;
- bh=uR4D154ji/q8k8s+V7N+R8nQGUUkvsmHJvY2q9FVFW8=;
- b=BA2PjMc7NHgLkpCH68phJC9PvqYDOPkhDps/CHFTXtSzBTcCyjrwQYlh
- 8IAWLCAVRvbZiTHQpYcDvC8opq1sXbyYZ/e90sPy7D0O1i5Cl1dlBI0wh
- XOmwGPtcNroSN/yfKv1vbNMOL/z/ICwDgJYjbQdqdYAqMs1mxYrheTl6u
- Mi8Ga/kIsWxU2tlZf56KKT1BBkNrv9676cbzXa7yiQtjwDwhiblvyokwY
- WCXScrBWKXLm3Ewt6LlIQmRtEZtCbIzCN4bLpsK60/AouDhdIH0av0G0M
- o9O+bhAkxIR9ExU6pgVEXmUZpfzvXwC12qS9meUh3KJZgxl+RmUGe3qyT A==;
-X-IronPort-AV: E=McAfee;i="6400,9594,10408"; a="286947102"
-X-IronPort-AV: E=Sophos;i="5.92,274,1650956400"; d="scan'208";a="286947102"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
- by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 15 Jul 2022 07:41:55 -0700
-X-IronPort-AV: E=Sophos;i="5.92,274,1650956400"; d="scan'208";a="593756524"
-Received: from lgonzal1-mobl02.amr.corp.intel.com (HELO
- pbossart-mobl3.intel.com) ([10.212.14.184])
- by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 15 Jul 2022 07:41:54 -0700
+ t=1657896771; x=1689432771;
+ h=from:to:cc:subject:date:message-id:mime-version:
+ content-transfer-encoding;
+ bh=aYAXNNzbJ9lFVOu1sujOPjVsoCFY0nvS0lejc2Fq6gc=;
+ b=MuLZ0sBHdVj4LLfwTvKLKgqnQR2yzAoLB0oXQFGx7vm8SfMUR3Cz9jPQ
+ z8HrSO7XBAT/OWsw1jUma6+5B+jrWji0tYLiNkDYmGhFanjTqWxa0PCDt
+ TkmCEQg/W0AkEUhKC3le1ocFiim/pANljDb/0m1AKTsvEh+wRIJLo1+8A
+ rs5y+f3nQhQmfeyJjbCv/d5NRlxpLSJrmIVlG9IK78ts83ggqyns5AOxk
+ Me5dAs+6Ok2JiJCY73nA8/U+KV9RnKUo6D2DCFmyo5dUIDbGs8zah02nx
+ s5Yd4inFQFUovbfxAw50k59TM/876lag7Mu6CyoHxrLRilCJQuFD91VWw Q==;
+X-IronPort-AV: E=McAfee;i="6400,9594,10408"; a="311476896"
+X-IronPort-AV: E=Sophos;i="5.92,274,1650956400"; d="scan'208";a="311476896"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+ by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 15 Jul 2022 07:52:30 -0700
+X-IronPort-AV: E=Sophos;i="5.92,274,1650956400"; d="scan'208";a="923533100"
+Received: from jmurope-mobl.amr.corp.intel.com (HELO pbossart-mobl3.intel.com)
+ ([10.212.14.184])
+ by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 15 Jul 2022 07:52:29 -0700
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH 4/4] ASoC: SOF: Intel: enable dmic handling with 2 or fewer
- SoundWire links
-Date: Fri, 15 Jul 2022 09:41:44 -0500
-Message-Id: <20220715144144.274770-5-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH 00/11]  ASoC: SOF: Intel: updates and cleanups
+Date: Fri, 15 Jul 2022 09:52:05 -0500
+Message-Id: <20220715145216.277003-1-pierre-louis.bossart@linux.intel.com>
 X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20220715144144.274770-1-pierre-louis.bossart@linux.intel.com>
-References: <20220715144144.274770-1-pierre-louis.bossart@linux.intel.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-Cc: tiwai@suse.de, gregkh@linuxfoundation.org,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- Ranjani Sridharan <ranjani.sridharan@linux.intel.com>, vkoul@kernel.org,
- broonie@kernel.org, Bard liao <yung-chuan.liao@linux.intel.com>
+Cc: tiwai@suse.de, broonie@kernel.org,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -87,43 +82,52 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-When PCH-attached DMICs are used on a SoundWire-based platform, all
-known devices pin-mux SoundWire link2 and link3 with DMIC, and only
-use link0 and link1 for SoundWire.
+Set of updates for IPC3, IPC4, MTL support and cleanups for the
+topology filename override which was broken for HDaudio platforms.
 
-The HP Omen16 is the first exception to the rule, with SoundWire using
-link0 and link3. Rather than using a fixed mask, let's count the
-number of SoundWire links used.
+It may be too late for 5.20, it's ok if these patches are applied in
+the next cycle.
 
-BugLink: https://github.com/thesofproject/sof/issues/5966
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-Reviewed-by: Bard Liao <yung-chuan.liao@linux.intel.com>
----
- sound/soc/sof/intel/hda.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+The topology override depends on the patch "ASoC: SOF: Intel: enable
+dmic handling with 2 or fewer SoundWire links" shared in a separate
+patchset.
 
-diff --git a/sound/soc/sof/intel/hda.c b/sound/soc/sof/intel/hda.c
-index b7fa95ea1090..be3c4f1d8ff5 100644
---- a/sound/soc/sof/intel/hda.c
-+++ b/sound/soc/sof/intel/hda.c
-@@ -1406,12 +1406,12 @@ static struct snd_soc_acpi_mach *hda_sdw_machine_select(struct snd_sof_dev *sdev
- 
- 			/*
- 			 * DMICs use up to 4 pins and are typically pin-muxed with SoundWire
--			 * link 2 and 3, thus we only try to enable dmics if all conditions
--			 * are true:
--			 * a) link 2 and 3 are not used by SoundWire
-+			 * link 2 and 3, or link 1 and 2, thus we only try to enable dmics
-+			 * if all conditions are true:
-+			 * a) 2 or fewer links are used by SoundWire
- 			 * b) the NHLT table reports the presence of microphones
- 			 */
--			if (!(mach->link_mask & GENMASK(3, 2))) {
-+			if (hweight_long(mach->link_mask) <= 2) {
- 				const char *tplg_filename = mach->sof_tplg_filename;
- 				int ret;
- 
+Bard Liao (1):
+  ASoC: SOF: ipc4-topology: move ida allocate/free to widget_setup/free
+
+Peter Ujfalusi (2):
+  ASoC: SOF: ipc3-loader: Print out the non matching ext_man magic
+    number
+  ASoC: SOF: Intel: atom: don't keep a temporary string in
+    fixup_tplg_name
+
+Pierre-Louis Bossart (4):
+  ASoC: SOF: Intel: hda: don't set fw_filename
+  ASoC: SOF: Intel: hda: only fixup topology name if not set already
+  ASoC: SOF: probes: rename assign/free callbacks as startup/shutdown
+  ASoC: SOF: Intel: hda-stream: test DMA buffer first in hw_params
+
+Rander Wang (3):
+  ASoC: SOF: ipc4-pcm: set pcm rate to dai setting
+  ASoC: SOF: add ipc4 SRC module support
+  ASoC: SOF: ipc4-topology: set domain bit based on dp domain type
+
+Yong Zhi (1):
+  ASoC: SOF: Intel: MTL: remove redundant snd_sof_dsp_read() call
+
+ sound/soc/sof/intel/atom.c        |  16 +--
+ sound/soc/sof/intel/hda-probes.c  |  16 +--
+ sound/soc/sof/intel/hda-stream.c  |  15 ++-
+ sound/soc/sof/intel/hda.c         |  71 +++++++++-----
+ sound/soc/sof/intel/mtl.c         |  13 +--
+ sound/soc/sof/ipc3-loader.c       |   6 +-
+ sound/soc/sof/ipc4-pcm.c          |   4 +
+ sound/soc/sof/ipc4-topology.c     | 156 +++++++++++++++++++++++++-----
+ sound/soc/sof/ipc4-topology.h     |  27 +++++-
+ sound/soc/sof/sof-client-probes.c |   8 +-
+ sound/soc/sof/sof-client-probes.h |   8 +-
+ 11 files changed, 250 insertions(+), 90 deletions(-)
+
 -- 
 2.34.1
 
