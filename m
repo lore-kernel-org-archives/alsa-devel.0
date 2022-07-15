@@ -4,64 +4,64 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 850D5C43334
-	for <alsa-devel@archiver.kernel.org>; Fri, 15 Jul 2022 14:43:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B7740C433EF
+	for <alsa-devel@archiver.kernel.org>; Fri, 15 Jul 2022 14:43:45 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B770218EE;
-	Fri, 15 Jul 2022 16:42:51 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B770218EE
+	by alsa0.perex.cz (Postfix) with ESMTPS id 2A900190B;
+	Fri, 15 Jul 2022 16:42:53 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2A900190B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1657896221;
-	bh=+MMIquig5cpoyfTPaYiOzpz2GbcUScDh41aFsbkQyz8=;
+	s=default; t=1657896223;
+	bh=pCQbHLgw1NRcqqkKOmkYCz17BD4nXuKQX11Xx3ntNOo=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Xl8ONMUZ8IQj8ZXV64MbY+e31H6WGEraRwsZOMFpU3hdoCcfUjfVrQFZ+331Q2Im0
-	 XChLNZnTZmbwIfSiKWVmTvTECeUmDhWUl6ueTdiWJGJVbdiBN5DNM8Z+GWzdl6PoPH
-	 dabpP2QJ8fFbJFFe4BLIZP6qWt/FNh3W6C1DuQAE=
+	b=ikCb704v9IaF3YOZxsmYbNbgGABZ0zB0YOLAW1Pi1UsAaRkmF1FUYvPbSj50p4eZ2
+	 qXHCP0Zz/m3ngiTJZj7ThnuC5++DbcjkkhaL8FVcadHy2DPXM2ASVivmKn3+qFTEwv
+	 1OSW/Fz/1AYS3wzbyw0liu0l6pUX0+4Zb/IcjaKE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 7BDA7F80544;
-	Fri, 15 Jul 2022 16:42:09 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2C9FFF80507;
+	Fri, 15 Jul 2022 16:42:13 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 5C270F8053D; Fri, 15 Jul 2022 16:42:06 +0200 (CEST)
+ id 75EC0F80551; Fri, 15 Jul 2022 16:42:11 +0200 (CEST)
 Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 2B5C1F800AA
- for <alsa-devel@alsa-project.org>; Fri, 15 Jul 2022 16:41:57 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2B5C1F800AA
+ by alsa1.perex.cz (Postfix) with ESMTPS id 55250F8053C
+ for <alsa-devel@alsa-project.org>; Fri, 15 Jul 2022 16:41:59 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 55250F8053C
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="DsSXMm1r"
+ header.b="ED9f2/yR"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1657896120; x=1689432120;
+ t=1657896121; x=1689432121;
  h=from:to:cc:subject:date:message-id:in-reply-to:
  references:mime-version:content-transfer-encoding;
- bh=+MMIquig5cpoyfTPaYiOzpz2GbcUScDh41aFsbkQyz8=;
- b=DsSXMm1rXufgbAppkppazPX6vOME0FZZjUq4N2ZTxh7bBvANbxoAL+2r
- ZApgX4l2tN2TabUN8jtqkM5qahxNCtJWgF7jpiVgtthgyoGGF2Hx7uAyp
- Uqiv1kkwMXJW71S2It+DzRUx4xI4q6zoF5nnFhPu1UhN+OeeOvq6uRWv/
- IoJNZ2Rj0u2I2pA45YrsHX/GmidC07HE1W+n9AH0u/LOIXf7OdSFcY1yt
- 0tAR/ClwxKD0K+Fz+xs4rTzNkcO6Ed37ucX7oCB/96JKG0xZdH4h/gJK6
- uKpAH/3ZLXLfwGQ1K7hJPCRHpqPu/iWcnQzPo92JSv30RQ5w+B0Bh594P Q==;
-X-IronPort-AV: E=McAfee;i="6400,9594,10408"; a="286947087"
-X-IronPort-AV: E=Sophos;i="5.92,274,1650956400"; d="scan'208";a="286947087"
+ bh=pCQbHLgw1NRcqqkKOmkYCz17BD4nXuKQX11Xx3ntNOo=;
+ b=ED9f2/yRS86R54oCK4LmgKtMJ9keeHQsa36gvkUdKj+4AsXH1cB4eNsV
+ +g9fX164R/5ifecuuafWQQ6EF9urN386HEWOWa/LoPu6zX4rZb6b4ImfC
+ 9LHp95WKB1krm9yxh+5Ln7O9y9HHxo47ixFXgZ/XlnjbKD0LPLssqAZ3o
+ xOGhTjMASpgFH0iZggXuW1E14Cxh1i6WUyhcMyGMBkPs36UwNte4r00db
+ KiCi+S5DIcO7Or7LUf1EPdZS5T2v7isaCXCTQfbXeDbwsPGpT3BJyDeq9
+ ygQgeYnPtGBWcJ+vkxSHTIZA+ZpAW55lTGOrv9svMQcjuo9Uy7xT7EaZa A==;
+X-IronPort-AV: E=McAfee;i="6400,9594,10408"; a="286947099"
+X-IronPort-AV: E=Sophos;i="5.92,274,1650956400"; d="scan'208";a="286947099"
 Received: from orsmga007.jf.intel.com ([10.7.209.58])
  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 15 Jul 2022 07:41:52 -0700
-X-IronPort-AV: E=Sophos;i="5.92,274,1650956400"; d="scan'208";a="593756519"
+ 15 Jul 2022 07:41:54 -0700
+X-IronPort-AV: E=Sophos;i="5.92,274,1650956400"; d="scan'208";a="593756523"
 Received: from lgonzal1-mobl02.amr.corp.intel.com (HELO
  pbossart-mobl3.intel.com) ([10.212.14.184])
  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 15 Jul 2022 07:41:51 -0700
+ 15 Jul 2022 07:41:53 -0700
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH 1/4] ASoC: Intel: sof_sdw: avoid oops in error handling
-Date: Fri, 15 Jul 2022 09:41:41 -0500
-Message-Id: <20220715144144.274770-2-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH 3/4] ASoC: Intel: sof_sdw: add quirk for HP Omen 16-k0005TX
+Date: Fri, 15 Jul 2022 09:41:43 -0500
+Message-Id: <20220715144144.274770-4-pierre-louis.bossart@linux.intel.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20220715144144.274770-1-pierre-louis.bossart@linux.intel.com>
 References: <20220715144144.274770-1-pierre-louis.bossart@linux.intel.com>
@@ -86,64 +86,37 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-While tinkering with ACPI work-arounds for the HP Omen 16 support, we
-identified a corner case where the headset codec device properties are
-not set in the codec .init when -EPROBE_DEFER is returned, but
-released unconditionally in the .exit().
+The JD2 jack detection was selected based on similar settings from
+other platforms based on RT711-SDCA.
 
-This leads to a kernel oops
-
-[    4.186891] sof_sdw sof_sdw: snd_soc_register_card failed -517
-[    4.186896] BUG: kernel NULL pointer dereference, address: 00000000000003f0
-[    4.186914] Oops: 0000 [#1] PREEMPT SMP NOPTI
-[    4.186926] RIP: 0010:dev_fwnode+0x5/0x20
-[    4.186974]  device_remove_software_node+0x10/0x80
-[    4.186982]  sof_sdw_rt711_exit+0x19/0x30 [snd_soc_sof_sdw]
-[    4.186990]  mc_dailink_exit_loop+0x94/0xc0 [snd_soc_sof_sdw]
-[    4.186996]  ? rt711_rtd_init+0x170/0x170 [snd_soc_sof_sdw]
-
-A similar error case can occur if the addition of the device property
-fails. We need to test if the property was successfully added before
-removing it.
-
-BugLink: https://github.com/thesofproject/linux/issues/3727
-Fixes: 768ad6d80db2d ("ASoC: Intel: sof_sdw: handle errors on card registration")
+BugLink: https://github.com/thesofproject/sof/issues/5955
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 Reviewed-by: Bard Liao <yung-chuan.liao@linux.intel.com>
 ---
- sound/soc/intel/boards/sof_sdw_rt711.c      | 3 +++
- sound/soc/intel/boards/sof_sdw_rt711_sdca.c | 3 +++
- 2 files changed, 6 insertions(+)
+ sound/soc/intel/boards/sof_sdw.c | 9 +++++++++
+ 1 file changed, 9 insertions(+)
 
-diff --git a/sound/soc/intel/boards/sof_sdw_rt711.c b/sound/soc/intel/boards/sof_sdw_rt711.c
-index 49ff0871e9e7..8291967f23f3 100644
---- a/sound/soc/intel/boards/sof_sdw_rt711.c
-+++ b/sound/soc/intel/boards/sof_sdw_rt711.c
-@@ -139,6 +139,9 @@ int sof_sdw_rt711_exit(struct snd_soc_card *card, struct snd_soc_dai_link *dai_l
- {
- 	struct mc_private *ctx = snd_soc_card_get_drvdata(card);
- 
-+	if (!ctx->headset_codec_dev)
-+		return 0;
-+
- 	device_remove_software_node(ctx->headset_codec_dev);
- 	put_device(ctx->headset_codec_dev);
- 
-diff --git a/sound/soc/intel/boards/sof_sdw_rt711_sdca.c b/sound/soc/intel/boards/sof_sdw_rt711_sdca.c
-index b3fc32bacfa8..7f16304d025b 100644
---- a/sound/soc/intel/boards/sof_sdw_rt711_sdca.c
-+++ b/sound/soc/intel/boards/sof_sdw_rt711_sdca.c
-@@ -140,6 +140,9 @@ int sof_sdw_rt711_sdca_exit(struct snd_soc_card *card, struct snd_soc_dai_link *
- {
- 	struct mc_private *ctx = snd_soc_card_get_drvdata(card);
- 
-+	if (!ctx->headset_codec_dev)
-+		return 0;
-+
- 	device_remove_software_node(ctx->headset_codec_dev);
- 	put_device(ctx->headset_codec_dev);
- 
+diff --git a/sound/soc/intel/boards/sof_sdw.c b/sound/soc/intel/boards/sof_sdw.c
+index 0c47d76a79e2..12f243ef04bf 100644
+--- a/sound/soc/intel/boards/sof_sdw.c
++++ b/sound/soc/intel/boards/sof_sdw.c
+@@ -315,6 +315,15 @@ static const struct dmi_system_id sof_sdw_quirk_table[] = {
+ 					RT711_JD2 |
+ 					SOF_SDW_FOUR_SPK),
+ 	},
++	{
++		.callback = sof_sdw_quirk_cb,
++		.matches = {
++			DMI_MATCH(DMI_SYS_VENDOR, "HP"),
++			DMI_MATCH(DMI_PRODUCT_NAME, "OMEN by HP Gaming Laptop 16-k0xxx"),
++		},
++		.driver_data = (void *)(SOF_SDW_TGL_HDMI |
++					RT711_JD2),
++	},
+ 	/* MeteorLake devices */
+ 	{
+ 		.callback = sof_sdw_quirk_cb,
 -- 
 2.34.1
 
