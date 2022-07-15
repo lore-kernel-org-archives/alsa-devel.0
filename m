@@ -4,77 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C1DFEC43334
-	for <alsa-devel@archiver.kernel.org>; Fri, 15 Jul 2022 18:30:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0DA37C43334
+	for <alsa-devel@archiver.kernel.org>; Fri, 15 Jul 2022 18:57:45 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 880A21939;
-	Fri, 15 Jul 2022 20:29:13 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 880A21939
+	by alsa0.perex.cz (Postfix) with ESMTPS id 7111217A5;
+	Fri, 15 Jul 2022 20:56:53 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7111217A5
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1657909803;
-	bh=M9TznGim7iC9n6RwBKVTG3PkJXNbCiPLXiCMUjiaBOY=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=FFOmDgGyj5sxWUgY61Yj8AWFFixlWkGKAHkX1Vd7BZ2OcCJf5r33gHStcVBMv1nqH
-	 EJUdbQuXJBDP58n293+EJzel92DXa+3hEKKP6TZ4fR4LPlgzhzXgAWAjD8d9RKTDSX
-	 tCv5sHnrktHUBmEuJpm+W0j6lyOwZfULi1TRCSKk=
+	s=default; t=1657911463;
+	bh=/ILBLXahCZh5xZY7AbUdKhWXtjqXHIPDWzAycNBCnd8=;
+	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=YjHSgdO+QFF4H9z9Rm4gPYmUfx5EpmZPHBzdS+FZBSiyATZgtSSpXTTjLZo9r/x/R
+	 /Oz0m4fbDMqKmfx3fsdbzZsKRPEohsstYjD2bNHlB2LgU5swKbmpJ2YorJx4ViESap
+	 TrAjqWAUfUdpHbTKBIbY1VJViRVs3MqiJKvMoQ8A=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 21BA3F800AA;
-	Fri, 15 Jul 2022 20:29:13 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 1E8E7F80153;
+	Fri, 15 Jul 2022 20:56:53 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 7C43CF8015B; Fri, 15 Jul 2022 20:29:11 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id 44BDCF8015B; Fri, 15 Jul 2022 20:56:52 +0200 (CEST)
+Received: from ams.source.kernel.org (ams.source.kernel.org
+ [IPv6:2604:1380:4601:e00::1])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 3F75DF800AA
- for <alsa-devel@alsa-project.org>; Fri, 15 Jul 2022 20:29:05 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3F75DF800AA
+ by alsa1.perex.cz (Postfix) with ESMTPS id EEEBAF8012F
+ for <alsa-devel@alsa-project.org>; Fri, 15 Jul 2022 20:56:48 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EEEBAF8012F
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="G3C97Auc"; 
- dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="WTw70L/0"
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="lhlYV1YM"
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id DA64B1FB3B;
- Fri, 15 Jul 2022 18:29:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1657909744; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=jsQ+fkwjrO9HjlX4Z5mXLbqy5VJEjIGssATk5dgR2tM=;
- b=G3C97Auc6sWl5dU4WkaMtdXeaysri7h64aq1OMylCCSbnAGIgatab4DdPr6L1uDDZYtoQ6
- sc2wqy0KOyB+mMSFNStaBDOqo5aNe4SLUkKbmTira+Sf1xzeaUow7BEJlf4fxAFGaXPc9s
- ALzh/OhbkA95pv1K3QgWMrxTWwFm0OU=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1657909744;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=jsQ+fkwjrO9HjlX4Z5mXLbqy5VJEjIGssATk5dgR2tM=;
- b=WTw70L/0H16TB2OxCXcxGN9U5wtly37nSkL8dRLFjsUB5BK94wmlM2t8j4+KDGjpReiKmp
- 5gmC31UhjPppKNBg==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id B018D13754;
- Fri, 15 Jul 2022 18:29:04 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id pek9KvCx0WKmGgAAMHmgww
- (envelope-from <tiwai@suse.de>); Fri, 15 Jul 2022 18:29:04 +0000
-From: Takashi Iwai <tiwai@suse.de>
-To: alsa-devel@alsa-project.org
-Subject: [PATCH] Revert "ALSA: hda: Fix page fault in snd_hda_codec_shutdown()"
-Date: Fri, 15 Jul 2022 20:29:03 +0200
-Message-Id: <20220715182903.19594-1-tiwai@suse.de>
-X-Mailer: git-send-email 2.35.3
+ by ams.source.kernel.org (Postfix) with ESMTPS id 31571B82DFC;
+ Fri, 15 Jul 2022 18:56:47 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AD1EEC3411E;
+ Fri, 15 Jul 2022 18:56:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1657911405;
+ bh=/ILBLXahCZh5xZY7AbUdKhWXtjqXHIPDWzAycNBCnd8=;
+ h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+ b=lhlYV1YM2AsiR2dthrEBBciieJQVl+v14BXprdcm4XPaFulcz8ILgr0wxSC9OllBF
+ GNXojYGyAGyYvElm90+Ozz3J63KhwF2E+AM1PzjoUAjajujKbQ6mkz2jzBm+5v48zx
+ SCYmRzLyciZnN4EbLwF+Sxo2bINYf8rRpYNltFcH6x8W+rmlT8kf02e1wbqkeBrzCE
+ ez+UxHAHCdYiqGtM5jqtL2OO6LQGIWVG1MBCn6nvHLKTDBUJVdEEqxuqUsHnL8zG8J
+ fD9EHoPnhQ4NOHGLuJGpMwWlj1AWaLbiPqqureqsbGMcIXtYXgMsB4zYh4c83mvsDj
+ +JeBl87xzT0wg==
+From: Mark Brown <broonie@kernel.org>
+To: cezary.rojewski@intel.com, alsa-devel@alsa-project.org
+In-Reply-To: <20220624134317.3656128-1-cezary.rojewski@intel.com>
+References: <20220624134317.3656128-1-cezary.rojewski@intel.com>
+Subject: Re: [PATCH 0/4] ASoC: Intel: Mark BE DAIs as nonatomic for hsw and
+Message-Id: <165791140443.4025820.796867311883167473.b4-ty@kernel.org>
+Date: Fri, 15 Jul 2022 19:56:44 +0100
 MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: Cezary Rojewski <cezary.rojewski@intel.com>,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: hdegoede@redhat.com, tiwai@suse.com, pierre-louis.bossart@linux.intel.com,
+ amadeuszx.slawinski@linux.intel.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -90,85 +80,46 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-This reverts commit 980b3a8790b402e959a6d773b38b771019682be1.
+On Fri, 24 Jun 2022 15:43:13 +0200, Cezary Rojewski wrote:
+> Address the warning: "Codec: dpcm_be_connect: FE is nonatomic but BE is
+> not, forcing BE as nonatomic" by marking BE DAI as nonatomic. Aligns
+> with what is already done for FE DAIs.
+> 
+> This patchset iterates the change over all HSW and BDW related machine
+> board drivers.
+> 
+> [...]
 
-The commit didn't consider the fact that ASoC hdac-hda driver
-initializes the HD-audio stuff without calling
-snd_hda_codec_device_init().  Hence this caused a regression leading
-to Oops.
+Applied to
 
-Revert the commit to restore the behavior.
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
 
-Fixes: 980b3a8790b4 ("ALSA: hda: Fix page fault in snd_hda_codec_shutdown()")
-Link: https://lore.kernel.org/r/3c40df55-3aee-1e08-493b-7b30cd84dc00@linux.intel.com
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
----
- sound/pci/hda/hda_codec.c | 41 ++++++++++++++++++++-------------------
- 1 file changed, 21 insertions(+), 20 deletions(-)
+Thanks!
 
-diff --git a/sound/pci/hda/hda_codec.c b/sound/pci/hda/hda_codec.c
-index 7be74227bf19..7b2e62fa82d5 100644
---- a/sound/pci/hda/hda_codec.c
-+++ b/sound/pci/hda/hda_codec.c
-@@ -931,28 +931,8 @@ snd_hda_codec_device_init(struct hda_bus *bus, unsigned int codec_addr,
- 	}
- 
- 	codec->bus = bus;
--	codec->depop_delay = -1;
--	codec->fixup_id = HDA_FIXUP_ID_NOT_SET;
--	codec->core.dev.release = snd_hda_codec_dev_release;
--	codec->core.exec_verb = codec_exec_verb;
- 	codec->core.type = HDA_DEV_LEGACY;
- 
--	mutex_init(&codec->spdif_mutex);
--	mutex_init(&codec->control_mutex);
--	snd_array_init(&codec->mixers, sizeof(struct hda_nid_item), 32);
--	snd_array_init(&codec->nids, sizeof(struct hda_nid_item), 32);
--	snd_array_init(&codec->init_pins, sizeof(struct hda_pincfg), 16);
--	snd_array_init(&codec->driver_pins, sizeof(struct hda_pincfg), 16);
--	snd_array_init(&codec->cvt_setups, sizeof(struct hda_cvt_setup), 8);
--	snd_array_init(&codec->spdif_out, sizeof(struct hda_spdif_out), 16);
--	snd_array_init(&codec->jacktbl, sizeof(struct hda_jack_tbl), 16);
--	snd_array_init(&codec->verbs, sizeof(struct hda_verb *), 8);
--	INIT_LIST_HEAD(&codec->conn_list);
--	INIT_LIST_HEAD(&codec->pcm_list_head);
--	INIT_DELAYED_WORK(&codec->jackpoll_work, hda_jackpoll_work);
--	refcount_set(&codec->pcm_ref, 1);
--	init_waitqueue_head(&codec->remove_sleep);
--
- 	return codec;
- }
- EXPORT_SYMBOL_GPL(snd_hda_codec_device_init);
-@@ -1005,8 +985,29 @@ int snd_hda_codec_device_new(struct hda_bus *bus, struct snd_card *card,
- 	if (snd_BUG_ON(codec_addr > HDA_MAX_CODEC_ADDRESS))
- 		return -EINVAL;
- 
-+	codec->core.dev.release = snd_hda_codec_dev_release;
-+	codec->core.exec_verb = codec_exec_verb;
-+
- 	codec->card = card;
- 	codec->addr = codec_addr;
-+	mutex_init(&codec->spdif_mutex);
-+	mutex_init(&codec->control_mutex);
-+	snd_array_init(&codec->mixers, sizeof(struct hda_nid_item), 32);
-+	snd_array_init(&codec->nids, sizeof(struct hda_nid_item), 32);
-+	snd_array_init(&codec->init_pins, sizeof(struct hda_pincfg), 16);
-+	snd_array_init(&codec->driver_pins, sizeof(struct hda_pincfg), 16);
-+	snd_array_init(&codec->cvt_setups, sizeof(struct hda_cvt_setup), 8);
-+	snd_array_init(&codec->spdif_out, sizeof(struct hda_spdif_out), 16);
-+	snd_array_init(&codec->jacktbl, sizeof(struct hda_jack_tbl), 16);
-+	snd_array_init(&codec->verbs, sizeof(struct hda_verb *), 8);
-+	INIT_LIST_HEAD(&codec->conn_list);
-+	INIT_LIST_HEAD(&codec->pcm_list_head);
-+	refcount_set(&codec->pcm_ref, 1);
-+	init_waitqueue_head(&codec->remove_sleep);
-+
-+	INIT_DELAYED_WORK(&codec->jackpoll_work, hda_jackpoll_work);
-+	codec->depop_delay = -1;
-+	codec->fixup_id = HDA_FIXUP_ID_NOT_SET;
- 
- #ifdef CONFIG_PM
- 	codec->power_jiffies = jiffies;
--- 
-2.35.3
+[1/4] ASoC: Intel: hsw_rt5640: Mark BE DAI as nonatomic
+      commit: 58ef0d3d5716000c153acc5401109fd90afbdf09
+[2/4] ASoC: Intel: bdw_rt286: Mark BE DAI as nonatomic
+      commit: 6d7e011808504e0aabbbf3b66d4c14982394abae
+[3/4] ASoC: Intel: bdw_rt5650: Mark BE DAI as nonatomic
+      commit: 5c4ef9529b12865c2402784a7506c880178effda
+[4/4] ASoC: Intel: bdw_rt5677: Mark BE DAI as nonatomic
+      commit: bdd15ec4888a375848030cbf7d9fc16c7f430f48
 
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
