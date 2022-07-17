@@ -4,42 +4,75 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 37098C43334
-	for <alsa-devel@archiver.kernel.org>; Sun, 17 Jul 2022 04:37:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B9FA0C433EF
+	for <alsa-devel@archiver.kernel.org>; Sun, 17 Jul 2022 07:06:53 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 8E37716D1;
-	Sun, 17 Jul 2022 06:36:55 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8E37716D1
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0C86618AB;
+	Sun, 17 Jul 2022 09:06:01 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0C86618AB
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1658032665;
-	bh=kURSKN3vj0bs8mQ5q4RtKlgSnJ5TH3R0OXRYANcgwTg=;
-	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=dhpcDkUM2kQ0Ui7Q4TpdanJyZdGN00hcALMulNYPlcK0yZMD+OObyKs8tD8P6J8t/
-	 ZHrtgQiWJa4H+CAUU5eOIZ5+LUyePUKE0fjr03E605gIPHQ+JTQ+IdaiFOcPY9o3y+
-	 +B+xZpB07D+ocVQXAsgf7u7U9onRAUveLUSZhzos=
+	s=default; t=1658041611;
+	bh=KrIdsxXukDuSn334+OO9WF3UK52qdZHc8icCr3QYke0=;
+	h=From:To:Subject:Date:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=SWj8kJ9LQqiJ+tMNwb2BxbTW2rLz+G9vrAvnnjkzFBFVPs+pg52UU6AqQU/rX/60l
+	 2mqAQz9UU98XFqdTOTbbxHjhQhHaYExiNR8f2lr8Q/mliDPLMP7U9ssBMW8MvzBsRV
+	 PnNpbxjWvy+o0uhAdl00AAZuZ6C5LX/ChuxqkTtM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 26A42F8012A;
-	Sun, 17 Jul 2022 06:36:55 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 9B0BCF8015B;
+	Sun, 17 Jul 2022 09:06:00 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 0164AF8015B; Sun, 17 Jul 2022 06:36:53 +0200 (CEST)
-Received: from webhooks-bot.alsa-project.org (gate.perex.cz [77.48.224.242])
- by alsa1.perex.cz (Postfix) with ESMTP id 2A0E6F800CB
- for <alsa-devel@alsa-project.org>; Sun, 17 Jul 2022 06:36:45 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2A0E6F800CB
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-From: GitHub issues - opened <github@alsa-project.org>
+ id 0394BF804D2; Sun, 17 Jul 2022 09:05:59 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id ABAF6F800FB
+ for <alsa-devel@alsa-project.org>; Sun, 17 Jul 2022 09:05:52 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz ABAF6F800FB
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
+ header.b="0FSGd77v"; 
+ dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
+ header.b="sZ55YAwt"
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 321B01F952;
+ Sun, 17 Jul 2022 07:05:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1658041552; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=IUw18PvQemOwnIL4BRaYR45aIQ/7JkmUqCP1j5PfJJM=;
+ b=0FSGd77vXBcsJmSGBWDWogdw5kRIgLiwee3AzcLWjfT0iAcQY97ky3y071YUiuQYE3Uz5c
+ a6WnmifNPA3RyX6JLkaEB438OVXKbuEQjKk6etmBvyJLviA8qkpGA4gayFpeH7YxQ6309z
+ rQoCymKskVmUJAi1llgzR0E+kECgPFs=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1658041552;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=IUw18PvQemOwnIL4BRaYR45aIQ/7JkmUqCP1j5PfJJM=;
+ b=sZ55YAwtPJMw9Y5Caa+5UVfi2rHlg8Mhz3DSKeFZlHUzU8l80nql+PUcaHA3EE5VBhdJK2
+ 0aPAug2NV4RVLlCw==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 0FDE413A89;
+ Sun, 17 Jul 2022 07:05:52 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+ by imap2.suse-dmz.suse.de with ESMTPSA id AodjAtC002LDawAAMHmgww
+ (envelope-from <tiwai@suse.de>); Sun, 17 Jul 2022 07:05:52 +0000
+From: Takashi Iwai <tiwai@suse.de>
 To: alsa-devel@alsa-project.org
-In-Reply-To: <1658032605648432970-webhooks-bot@alsa-project.org>
-References: <1658032605648432970-webhooks-bot@alsa-project.org>
-Subject: Audio interface unable to be loaded in 1.2.7.2
-Message-Id: <20220717043653.0164AF8015B@alsa1.perex.cz>
-Date: Sun, 17 Jul 2022 06:36:53 +0200 (CEST)
+Subject: [PATCH v2 0/5] ALSA: Drop async signal support
+Date: Sun, 17 Jul 2022 09:05:44 +0200
+Message-Id: <20220717070549.5993-1-tiwai@suse.de>
+X-Mailer: git-send-email 2.35.3
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -55,15 +88,52 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-alsa-project/alsa-lib issue #254 was opened from KevHg:
+Hi,
 
-I upgraded from 1.2.6.1 to 1.2.7.2 and found that pulseaudio no longer detects my Motu M2 interface.
+this is a revised patch set for dropping fasync support from ALSA
+core.
 
-Main error log seems to be:
-`module-alsa-card.c: Failed to find a working profile.`
-`failed to load module module-alsa-card`
+The async signal itself is very difficult to use properly due to
+various restrictions (e.g. you cannot perform any I/O in the context),
+hence it's a feature that has been never used by real applications.
 
-I'm new to debugging Linux issues, let me know what other info I can provide to help out on this topic.
+OTOH, the real problem is that there have been quite a few syzcaller
+reports indicating that fasync code path may lead to some potential
+deadlocks for long time.  Dropping the feature is the easiest
+solution, obviously.
 
-Issue URL     : https://github.com/alsa-project/alsa-lib/issues/254
-Repository URL: https://github.com/alsa-project/alsa-lib
+The corresponding update for alsa-lib will follow once when we agree
+with this approach.
+
+
+thanks,
+
+Takashi
+
+===
+
+v1: https://lore.kernel.org/r/20220715102935.4695-1-tiwai@suse.de
+v1->v2: Fix unused variable warning in patch 2
+
+===
+
+Takashi Iwai (5):
+  ALSA: timer: Drop async signal support
+  ALSA: pcm: Drop async signal support
+  ALSA: control: Drop async signal support
+  ALSA: core: Drop async signal support
+  ALSA: doc: Drop stale fasync entry
+
+ .../kernel-api/writing-an-alsa-driver.rst      |  1 -
+ include/sound/control.h                        |  1 -
+ include/sound/pcm.h                            |  1 -
+ sound/core/control.c                           | 11 -----------
+ sound/core/init.c                              | 11 +----------
+ sound/core/pcm_lib.c                           |  8 +-------
+ sound/core/pcm_native.c                        | 18 ------------------
+ sound/core/timer.c                             | 13 -------------
+ 8 files changed, 2 insertions(+), 62 deletions(-)
+
+-- 
+2.35.3
+
