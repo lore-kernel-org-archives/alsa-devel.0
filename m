@@ -4,73 +4,80 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B9FA0C433EF
-	for <alsa-devel@archiver.kernel.org>; Sun, 17 Jul 2022 07:06:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0126EC43334
+	for <alsa-devel@archiver.kernel.org>; Sun, 17 Jul 2022 07:07:22 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0C86618AB;
-	Sun, 17 Jul 2022 09:06:01 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0C86618AB
+	by alsa0.perex.cz (Postfix) with ESMTPS id F04CA18DA;
+	Sun, 17 Jul 2022 09:06:30 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F04CA18DA
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1658041611;
-	bh=KrIdsxXukDuSn334+OO9WF3UK52qdZHc8icCr3QYke0=;
-	h=From:To:Subject:Date:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=SWj8kJ9LQqiJ+tMNwb2BxbTW2rLz+G9vrAvnnjkzFBFVPs+pg52UU6AqQU/rX/60l
-	 2mqAQz9UU98XFqdTOTbbxHjhQhHaYExiNR8f2lr8Q/mliDPLMP7U9ssBMW8MvzBsRV
-	 PnNpbxjWvy+o0uhAdl00AAZuZ6C5LX/ChuxqkTtM=
+	s=default; t=1658041641;
+	bh=Gd4Jyoo3B4R2r1nDJWUOLBOFwkZemzHMKyFlgLnedTs=;
+	h=From:To:Subject:Date:In-Reply-To:References:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=jffBTFvi7EGgebFWaul2U5/qIF1jaodGWVOmlIZhTlPIUgQN/WmmZ6T1X3gAKTkUo
+	 9cAXxMSLvtQQ6737MtkiqSK87J/hS9BVAl7Jt6tmFKjiwy9GGBg7H9IkOL5hXr9Bew
+	 bVSx5JJ2zHT18VIi3ioNunqhebM9IiymzOtAEFp4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 9B0BCF8015B;
-	Sun, 17 Jul 2022 09:06:00 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 7BC3CF804DA;
+	Sun, 17 Jul 2022 09:06:03 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 0394BF804D2; Sun, 17 Jul 2022 09:05:59 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+ id 0787EF804FB; Sun, 17 Jul 2022 09:06:00 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id ABAF6F800FB
- for <alsa-devel@alsa-project.org>; Sun, 17 Jul 2022 09:05:52 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz ABAF6F800FB
+ by alsa1.perex.cz (Postfix) with ESMTPS id D6139F800CB
+ for <alsa-devel@alsa-project.org>; Sun, 17 Jul 2022 09:05:54 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D6139F800CB
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="0FSGd77v"; 
+ header.b="KwvwA6li"; 
  dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="sZ55YAwt"
+ header.b="7yvOoXNK"
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 321B01F952;
- Sun, 17 Jul 2022 07:05:52 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 0AEF03438F;
+ Sun, 17 Jul 2022 07:05:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1658041552; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=IUw18PvQemOwnIL4BRaYR45aIQ/7JkmUqCP1j5PfJJM=;
- b=0FSGd77vXBcsJmSGBWDWogdw5kRIgLiwee3AzcLWjfT0iAcQY97ky3y071YUiuQYE3Uz5c
- a6WnmifNPA3RyX6JLkaEB438OVXKbuEQjKk6etmBvyJLviA8qkpGA4gayFpeH7YxQ6309z
- rQoCymKskVmUJAi1llgzR0E+kECgPFs=
+ t=1658041554; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=MGy8ZzpyH9uJRkZOdNs/yppyPP8ZQ6qKlUm4VrMnTa0=;
+ b=KwvwA6liKIrnmPAlanIIuJRNQAiam9unJocjDXZlRlOUdnv6uh2jq2Ld4vg5GnilfCMAiq
+ +ulwTVkboxIKeiT0M2SDAhddyNK/f5E5QCsJkZHNDqfImknm/CJtam/rOz5mW7GY2vbfDi
+ V2HRDIJfTxyxrqN2vpYKqTB99nxGBOM=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1658041552;
+ s=susede2_ed25519; t=1658041554;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=IUw18PvQemOwnIL4BRaYR45aIQ/7JkmUqCP1j5PfJJM=;
- b=sZ55YAwtPJMw9Y5Caa+5UVfi2rHlg8Mhz3DSKeFZlHUzU8l80nql+PUcaHA3EE5VBhdJK2
- 0aPAug2NV4RVLlCw==
+ mime-version:mime-version:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=MGy8ZzpyH9uJRkZOdNs/yppyPP8ZQ6qKlUm4VrMnTa0=;
+ b=7yvOoXNKGWmyc1xvj4L+tcCG8pMZ4OtRlM92+fOmv4ldJVvHlBwLGuFXxDY8c83YzpJBKk
+ +tvsWv2O63fJrsBg==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 0FDE413A89;
- Sun, 17 Jul 2022 07:05:52 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id E5B1113A89;
+ Sun, 17 Jul 2022 07:05:53 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id AodjAtC002LDawAAMHmgww
- (envelope-from <tiwai@suse.de>); Sun, 17 Jul 2022 07:05:52 +0000
+ by imap2.suse-dmz.suse.de with ESMTPSA id eJoQN9G002LDawAAMHmgww
+ (envelope-from <tiwai@suse.de>); Sun, 17 Jul 2022 07:05:53 +0000
 From: Takashi Iwai <tiwai@suse.de>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH v2 0/5] ALSA: Drop async signal support
-Date: Sun, 17 Jul 2022 09:05:44 +0200
-Message-Id: <20220717070549.5993-1-tiwai@suse.de>
+Subject: [PATCH v2 1/5] ALSA: timer: Drop async signal support
+Date: Sun, 17 Jul 2022 09:05:45 +0200
+Message-Id: <20220717070549.5993-2-tiwai@suse.de>
 X-Mailer: git-send-email 2.35.3
+In-Reply-To: <20220717070549.5993-1-tiwai@suse.de>
+References: <20220717070549.5993-1-tiwai@suse.de>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-BeenThere: alsa-devel@alsa-project.org
@@ -88,52 +95,78 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Hi,
+The async signal (SIGIO) support for ALSA timer API has been never
+used by real applications, but yet it can be a cause of various
+potential deadlocks, as spotted by syzkaller.  Let's drop the feature
+as the simplest solution.
 
-this is a revised patch set for dropping fasync support from ALSA
-core.
+Reported-by: syzbot+1ee0910eca9c94f71f25@syzkaller.appspotmail.com
+Reported-by: syzbot+49b10793b867871ee26f@syzkaller.appspotmail.com
+Reported-by: syzbot+8285e973a41b5aa68902@syzkaller.appspotmail.com
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+---
+ sound/core/timer.c | 13 -------------
+ 1 file changed, 13 deletions(-)
 
-The async signal itself is very difficult to use properly due to
-various restrictions (e.g. you cannot perform any I/O in the context),
-hence it's a feature that has been never used by real applications.
-
-OTOH, the real problem is that there have been quite a few syzcaller
-reports indicating that fasync code path may lead to some potential
-deadlocks for long time.  Dropping the feature is the easiest
-solution, obviously.
-
-The corresponding update for alsa-lib will follow once when we agree
-with this approach.
-
-
-thanks,
-
-Takashi
-
-===
-
-v1: https://lore.kernel.org/r/20220715102935.4695-1-tiwai@suse.de
-v1->v2: Fix unused variable warning in patch 2
-
-===
-
-Takashi Iwai (5):
-  ALSA: timer: Drop async signal support
-  ALSA: pcm: Drop async signal support
-  ALSA: control: Drop async signal support
-  ALSA: core: Drop async signal support
-  ALSA: doc: Drop stale fasync entry
-
- .../kernel-api/writing-an-alsa-driver.rst      |  1 -
- include/sound/control.h                        |  1 -
- include/sound/pcm.h                            |  1 -
- sound/core/control.c                           | 11 -----------
- sound/core/init.c                              | 11 +----------
- sound/core/pcm_lib.c                           |  8 +-------
- sound/core/pcm_native.c                        | 18 ------------------
- sound/core/timer.c                             | 13 -------------
- 8 files changed, 2 insertions(+), 62 deletions(-)
-
+diff --git a/sound/core/timer.c b/sound/core/timer.c
+index b3214baa8919..4ac3ab2cf575 100644
+--- a/sound/core/timer.c
++++ b/sound/core/timer.c
+@@ -83,7 +83,6 @@ struct snd_timer_user {
+ 	unsigned int filter;
+ 	struct timespec64 tstamp;		/* trigger tstamp */
+ 	wait_queue_head_t qchange_sleep;
+-	struct fasync_struct *fasync;
+ 	struct mutex ioctl_lock;
+ };
+ 
+@@ -1345,7 +1344,6 @@ static void snd_timer_user_interrupt(struct snd_timer_instance *timeri,
+ 	}
+       __wake:
+ 	spin_unlock(&tu->qlock);
+-	kill_fasync(&tu->fasync, SIGIO, POLL_IN);
+ 	wake_up(&tu->qchange_sleep);
+ }
+ 
+@@ -1383,7 +1381,6 @@ static void snd_timer_user_ccallback(struct snd_timer_instance *timeri,
+ 	spin_lock_irqsave(&tu->qlock, flags);
+ 	snd_timer_user_append_to_tqueue(tu, &r1);
+ 	spin_unlock_irqrestore(&tu->qlock, flags);
+-	kill_fasync(&tu->fasync, SIGIO, POLL_IN);
+ 	wake_up(&tu->qchange_sleep);
+ }
+ 
+@@ -1453,7 +1450,6 @@ static void snd_timer_user_tinterrupt(struct snd_timer_instance *timeri,
+ 	spin_unlock(&tu->qlock);
+ 	if (append == 0)
+ 		return;
+-	kill_fasync(&tu->fasync, SIGIO, POLL_IN);
+ 	wake_up(&tu->qchange_sleep);
+ }
+ 
+@@ -2130,14 +2126,6 @@ static long snd_timer_user_ioctl(struct file *file, unsigned int cmd,
+ 	return ret;
+ }
+ 
+-static int snd_timer_user_fasync(int fd, struct file * file, int on)
+-{
+-	struct snd_timer_user *tu;
+-
+-	tu = file->private_data;
+-	return fasync_helper(fd, file, on, &tu->fasync);
+-}
+-
+ static ssize_t snd_timer_user_read(struct file *file, char __user *buffer,
+ 				   size_t count, loff_t *offset)
+ {
+@@ -2280,7 +2268,6 @@ static const struct file_operations snd_timer_f_ops =
+ 	.poll =		snd_timer_user_poll,
+ 	.unlocked_ioctl =	snd_timer_user_ioctl,
+ 	.compat_ioctl =	snd_timer_user_ioctl_compat,
+-	.fasync = 	snd_timer_user_fasync,
+ };
+ 
+ /* unregister the system timer */
 -- 
 2.35.3
 
