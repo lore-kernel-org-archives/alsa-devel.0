@@ -4,63 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 09311C433EF
-	for <alsa-devel@archiver.kernel.org>; Mon, 18 Jul 2022 16:23:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7EB68C43334
+	for <alsa-devel@archiver.kernel.org>; Mon, 18 Jul 2022 16:23:59 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 727F51700;
-	Mon, 18 Jul 2022 18:23:00 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 727F51700
+	by alsa0.perex.cz (Postfix) with ESMTPS id B2D76170B;
+	Mon, 18 Jul 2022 18:23:07 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B2D76170B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1658161430;
-	bh=nEeQqOHdk0a4+K5H0YK7XzUMkGY6pTdrV24LeVhtcOM=;
+	s=default; t=1658161437;
+	bh=mZyYul5JuYSRCP9DhWsT74KkaJXa/Pg3Ki4F5x2CZGw=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=evNTOd5uJLry2g93O64YuIB4iY/LR/gMBXK8SjtK/mW8TJ5HjyNL1GEjfU0vJySdA
-	 MqZlflO37LHIPT2Vs5iCNprye/XzY9WIxyILGQrwMS0Q1cclnhDHqXFg8KMZtc0lEA
-	 uI0dCWSIKo4brrI4toCnUsDOd+5Kj0F7tU7KOqB4=
+	b=PSeaZ8W10DZCKn1ImIM78hk1YDnOmMaP6tSsSFsAswXRcZpBqojiZgz7X3t1kGKak
+	 uW0FZHZIlHUenYFjNA+ilBjFk/NJDWEmp1IviJF5BIlkYmXUp4IhT61MLmM/kNiCG0
+	 IacTYVWXmbn9QxvgBkRlfZKWgUbY5RbNQXi3MnQY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 70893F80508;
-	Mon, 18 Jul 2022 18:22:30 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 729CCF80553;
+	Mon, 18 Jul 2022 18:22:35 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id D3965F80544; Mon, 18 Jul 2022 18:22:28 +0200 (CEST)
-Received: from mailgw02.mediatek.com (unknown [210.61.82.184])
+ id 686F5F80552; Mon, 18 Jul 2022 18:22:29 +0200 (CEST)
+Received: from mailgw01.mediatek.com (unknown [60.244.123.138])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 089A0F80430
+ by alsa1.perex.cz (Postfix) with ESMTPS id 214A8F80508
  for <alsa-devel@alsa-project.org>; Mon, 18 Jul 2022 18:22:21 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 089A0F80430
-X-UUID: ce45f953bcc44cb19c82c873c918aead-20220719
-X-CID-P-RULE: Release_Ham
-X-CID-O-INFO: VERSION:1.1.8, REQID:c8afdb3d-969a-4084-a066-d0793bc83e27, OB:0,
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 214A8F80508
+X-UUID: 22d542a5770b4ceab1c4998f9492f5a2-20220719
+X-CID-P-RULE: Spam_GS6885AD
+X-CID-O-INFO: VERSION:1.1.8, REQID:5b38d9dc-deff-48e8-b431-b037a9e31f33, OB:0,
  LO
- B:0,IP:0,URL:0,TC:0,Content:0,EDM:0,RT:0,SF:0,FILE:0,RULE:Release_Ham,ACTI
- ON:release,TS:0
-X-CID-META: VersionHash:0f94e32, CLOUDID:4d9f4b33-b9e4-42b8-b28a-6364427c76bb,
+ B:10,IP:0,URL:25,TC:0,Content:0,EDM:0,RT:0,SF:95,FILE:0,RULE:Spam_GS6885AD
+ ,ACTION:quarantine,TS:120
+X-CID-INFO: VERSION:1.1.8, REQID:5b38d9dc-deff-48e8-b431-b037a9e31f33, OB:0,
+ LOB:
+ 10,IP:0,URL:25,TC:0,Content:0,EDM:0,RT:0,SF:95,FILE:0,RULE:Spam_GS981B3D,A
+ CTION:quarantine,TS:120
+X-CID-META: VersionHash:0f94e32, CLOUDID:919f4b33-b9e4-42b8-b28a-6364427c76bb,
  C
- OID:IGNORED,Recheck:0,SF:nil,TC:nil,Content:0,EDM:-3,IP:nil,URL:0,File:nil
- ,QS:nil,BEC:nil,COL:0
-X-UUID: ce45f953bcc44cb19c82c873c918aead-20220719
-Received: from mtkmbs10n2.mediatek.inc [(172.21.101.183)] by
- mailgw02.mediatek.com (envelope-from <jiaxin.yu@mediatek.com>)
+ OID:9be0420331b7,Recheck:0,SF:28|17|19|48,TC:nil,Content:0,EDM:-3,IP:nil,U
+ RL:1,File:nil,QS:nil,BEC:nil,COL:0
+X-UUID: 22d542a5770b4ceab1c4998f9492f5a2-20220719
+Received: from mtkmbs10n1.mediatek.inc [(172.21.101.34)] by
+ mailgw01.mediatek.com (envelope-from <jiaxin.yu@mediatek.com>)
  (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
- with ESMTP id 1792772628; Tue, 19 Jul 2022 00:22:09 +0800
+ with ESMTP id 302805271; Tue, 19 Jul 2022 00:22:13 +0800
 Received: from mtkmbs11n2.mediatek.inc (172.21.101.187) by
- mtkmbs11n2.mediatek.inc (172.21.101.187) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.792.3; 
- Tue, 19 Jul 2022 00:22:07 +0800
+ mtkmbs10n1.mediatek.inc (172.21.101.34) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.792.15; Tue, 19 Jul 2022 00:22:12 +0800
 Received: from localhost.localdomain (10.17.3.154) by mtkmbs11n2.mediatek.inc
  (172.21.101.73) with Microsoft SMTP Server id 15.2.792.3 via Frontend
- Transport; Tue, 19 Jul 2022 00:22:06 +0800
+ Transport; Tue, 19 Jul 2022 00:22:11 +0800
 From: Jiaxin Yu <jiaxin.yu@mediatek.com>
 To: <broonie@kernel.org>, <robh+dt@kernel.org>,
  <angelogioacchino.delregno@collabora.com>
-Subject: [PATCH v10 1/8] dt-bindings: mediatek: mt6358: add new compatible for
- using mt6366
-Date: Tue, 19 Jul 2022 00:21:57 +0800
-Message-ID: <20220718162204.26238-2-jiaxin.yu@mediatek.com>
+Subject: [PATCH v10 6/8] dt-bindings: mediatek: mt8186: add
+ mt8186-mt6366-da7219-max98357 document
+Date: Tue, 19 Jul 2022 00:22:02 +0800
+Message-ID: <20220718162204.26238-7-jiaxin.yu@mediatek.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20220718162204.26238-1-jiaxin.yu@mediatek.com>
 References: <20220718162204.26238-1-jiaxin.yu@mediatek.com>
@@ -90,29 +94,96 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Add new compatible string "mediatek,mt6366-sound" for using mt6366.
+Add document for mt8186 board with mt6366, da7219 and max98357.
 
 Signed-off-by: Jiaxin Yu <jiaxin.yu@mediatek.com>
 Acked-by: Rob Herring <robh@kernel.org>
 ---
- Documentation/devicetree/bindings/sound/mt6358.txt | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ .../sound/mt8186-mt6366-da7219-max98357.yaml  | 75 +++++++++++++++++++
+ 1 file changed, 75 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/sound/mt8186-mt6366-da7219-max98357.yaml
 
-diff --git a/Documentation/devicetree/bindings/sound/mt6358.txt b/Documentation/devicetree/bindings/sound/mt6358.txt
-index 59a73ffdf1d3..fbe9e55c68f5 100644
---- a/Documentation/devicetree/bindings/sound/mt6358.txt
-+++ b/Documentation/devicetree/bindings/sound/mt6358.txt
-@@ -7,7 +7,9 @@ Must be a child node of PMIC wrapper.
- 
- Required properties:
- 
--- compatible : "mediatek,mt6358-sound".
-+- compatible - "string" - One of:
-+    "mediatek,mt6358-sound"
-+    "mediatek,mt6366-sound"
- - Avdd-supply : power source of AVDD
- 
- Optional properties:
+diff --git a/Documentation/devicetree/bindings/sound/mt8186-mt6366-da7219-max98357.yaml b/Documentation/devicetree/bindings/sound/mt8186-mt6366-da7219-max98357.yaml
+new file mode 100644
+index 000000000000..513cd28b2027
+--- /dev/null
++++ b/Documentation/devicetree/bindings/sound/mt8186-mt6366-da7219-max98357.yaml
+@@ -0,0 +1,75 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/sound/mt8186-mt6366-da7219-max98357.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Mediatek MT8186 with MT6366, DA7219 and MAX98357 ASoC sound card driver
++
++maintainers:
++  - Jiaxin Yu <jiaxin.yu@mediatek.com>
++
++description:
++  This binding describes the MT8186 sound card.
++
++properties:
++  compatible:
++    enum:
++      - mediatek,mt8186-mt6366-da7219-max98357-sound
++
++  mediatek,platform:
++    $ref: "/schemas/types.yaml#/definitions/phandle"
++    description: The phandle of MT8186 ASoC platform.
++
++  headset-codec:
++    type: object
++    additionalProperties: false
++    properties:
++      sound-dai:
++        maxItems: 1
++    required:
++      - sound-dai
++
++  playback-codecs:
++    type: object
++    additionalProperties: false
++    properties:
++      sound-dai:
++        items:
++          - description: phandle of dp codec
++          - description: phandle of l channel speaker codec
++          - description: phandle of r channel speaker codec
++        minItems: 2
++    required:
++      - sound-dai
++
++additionalProperties: false
++
++required:
++  - compatible
++  - mediatek,platform
++  - headset-codec
++  - playback-codecs
++
++examples:
++  - |
++
++    sound: mt8186-sound {
++        compatible = "mediatek,mt8186-mt6366-da7219-max98357-sound";
++        mediatek,platform = <&afe>;
++        pinctrl-names = "aud_clk_mosi_off",
++                        "aud_clk_mosi_on";
++        pinctrl-0 = <&aud_clk_mosi_off>;
++        pinctrl-1 = <&aud_clk_mosi_on>;
++
++        headset-codec {
++            sound-dai = <&da7219>;
++        };
++
++        playback-codecs {
++            sound-dai = <&anx_bridge_dp>,
++                        <&max98357a>;
++        };
++    };
++
++...
 -- 
 2.18.0
 
