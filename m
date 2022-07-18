@@ -4,91 +4,114 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 86024C433EF
-	for <alsa-devel@archiver.kernel.org>; Fri, 22 Jul 2022 18:11:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 58DF3C433EF
+	for <alsa-devel@archiver.kernel.org>; Mon, 18 Jul 2022 14:20:19 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D643A9F6;
-	Fri, 22 Jul 2022 20:10:52 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D643A9F6
+	by alsa0.perex.cz (Postfix) with ESMTPS id 7E4C71706;
+	Mon, 18 Jul 2022 16:19:27 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7E4C71706
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1658513502;
-	bh=1B9gzofVr5kc0GvOXtcg8hf0EYtymLH8ssqS2QQFHl4=;
-	h=Date:Subject:To:References:From:In-Reply-To:Cc:List-Id:
+	s=default; t=1658154017;
+	bh=HyChJOPRuk/0qbeKqOLmxqV6Llt7Wlk7uu/scDDWoVM=;
+	h=Resent-From:Resent-Date:Resent-To:From:To:Date:Subject:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=CthYm8c3UPMcGiJVAp4WDIk3RHtJWoU4hqdrvQV/5O6zx+hw8C+tqeWj7Ft0aTLFr
-	 fB6QsC44Je6qlqsdDg7m+HimXK8g4Ell5WeWvwvkUKBQvVTW2IL8ho6Vr4oL9bDod3
-	 e0MsXQKnO8fWUEfBynQOkNNZl0XHjqmGwlLv1A5Q=
+	b=StZPCI45xoB24XHJJvbvXzONTYLhy4IMyqstfvSRsMXRRvKBun/GdJYw4vIfr1diL
+	 PempyN3B+ULaYEDmKWRUjqgxCM9gnDUbSCdSCzw62+cBz8TiYzq6U+k+pOqmFWHwX7
+	 9s4Hn3+k9Ls/g7rIdC8goU2lDcVwVTKzDn2ndtqs=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 677D8F8023B;
-	Fri, 22 Jul 2022 20:10:52 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 04465F80095;
+	Mon, 18 Jul 2022 16:19:27 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id D07FFF8016D; Fri, 22 Jul 2022 20:10:50 +0200 (CEST)
-Received: from mail-lj1-x22c.google.com (mail-lj1-x22c.google.com
- [IPv6:2a00:1450:4864:20::22c])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id 9FD26F80508; Mon, 18 Jul 2022 16:19:25 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org
+ [IPv6:2604:1380:4641:c500::1])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 9B00CF8016D
- for <alsa-devel@alsa-project.org>; Fri, 22 Jul 2022 20:10:42 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9B00CF8016D
+ by alsa1.perex.cz (Postfix) with ESMTPS id F01E3F80095
+ for <alsa-devel@alsa-project.org>; Mon, 18 Jul 2022 16:19:22 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F01E3F80095
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org
- header.b="wXaQaOec"
-Received: by mail-lj1-x22c.google.com with SMTP id q7so6291556lji.12
- for <alsa-devel@alsa-project.org>; Fri, 22 Jul 2022 11:10:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
- h=message-id:date:mime-version:user-agent:subject:content-language:to
- :cc:references:from:in-reply-to:content-transfer-encoding;
- bh=VAU6tgd7nCtwghNmO7f0d3fFyhG1h4AEauJuDoEQdi8=;
- b=wXaQaOec609oVa4eWdHw2f4aaPyceXdJIl2j6WNYR+OCc2863eVHQgVQyqZktje32H
- wPEKJOMgHGK+nT/ixbc9WhBs4EKDKsgAfZgHbHBcsxmBkOQDmdJsnZEZU6qlAKlFxRjA
- 5QcpMttI072K3lZmMrpmb93zAOd+h8pn9rTVHLG19QsN0bLH56CgBGP5n/7oNWEVMwel
- 96cC5DYd6kn9Op+529gzO/2py153w2NjuS4hTeFdkFP6E1WWro0yZQBKO5QziCCN8PLu
- nhDUQlqW0wqkLN3tc5jVxe64I89F7om+4F+NgpWX1QksNxTZBxUJ1rz3yuS2iIkT3Psx
- ME9g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
- :content-language:to:cc:references:from:in-reply-to
- :content-transfer-encoding;
- bh=VAU6tgd7nCtwghNmO7f0d3fFyhG1h4AEauJuDoEQdi8=;
- b=VIp3IQLbzERNq4DzNyi/BdaJSvJIoq3cL4YC5AOchuY+j/Dw5RqcQPl4AG166mWDGS
- uDLHnzqrxgjsRekSRy+D1PZltqiEnnTTysMkuVmJx0yHzjoxqI7cdawBivL6hQZuZ8Lo
- bfjTUjXAP3pbpnTfcw+JrhOzdesMLtM9hqyl8PLvfA3vq2B5B54S9chvhWCt2HMm11tm
- oLRaKQ1uT6KbVgiIQ3hAtrXkTxExzEfe+tS+biiaJmiAiVrWnhOtQTv19rzP7tKkaYLJ
- 3CHzCL5blr2CwuKG2YwfmkOAo1nAdyUFjIuz72N/BkYWS/9DA3alXzyLuqzI0qW0JVXT
- ge+Q==
-X-Gm-Message-State: AJIora8dJjtvy2CZfSEv6sfUDRyMSmVIzIbcTgbAy3fpGKti7x3+zCU/
- yXDxEYk0WgRYuqHNvwi2neEDHg==
-X-Google-Smtp-Source: AGRyM1tib2blqsuZkhwaPPSkLkmTgx7QUcFJmRPVCx1EMFcG2dQ0dbMNuMywjaLtY/YDAYsIIwPJpA==
-X-Received: by 2002:a2e:a162:0:b0:25d:9c00:2834 with SMTP id
- u2-20020a2ea162000000b0025d9c002834mr414805ljl.437.1658513440500; 
- Fri, 22 Jul 2022 11:10:40 -0700 (PDT)
-Received: from [192.168.10.173] (93.81-167-86.customer.lyse.net.
- [81.167.86.93]) by smtp.gmail.com with ESMTPSA id
- t8-20020a192d48000000b0047f8132d10bsm1168989lft.281.2022.07.22.11.10.39
- (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Fri, 22 Jul 2022 11:10:40 -0700 (PDT)
-Message-ID: <36b3b0f0-b4fd-c3fe-f16d-0c23778e3c35@linaro.org>
-Date: Fri, 22 Jul 2022 20:10:38 +0200
+ dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="No8bpqTy"; 
+ dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="Cxx3ggvv"
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by dfw.source.kernel.org (Postfix) with ESMTPS id EAC6D60906
+ for <alsa-devel@alsa-project.org>; Mon, 18 Jul 2022 14:19:19 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A6DBFC341C0
+ for <alsa-devel@alsa-project.org>; Mon, 18 Jul 2022 14:19:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1658153959;
+ bh=HyChJOPRuk/0qbeKqOLmxqV6Llt7Wlk7uu/scDDWoVM=;
+ h=Resent-From:Resent-Date:Resent-To:From:To:Cc:Date:Subject:From;
+ b=No8bpqTybFNCvgNJ1k/GkOKs3qmSBd7J6o8g9WKmjVIVaUFhBLZr9rSA/hnCgBLNZ
+ 03HIgaBm5Fa/j9x9l5uV7uvkuLeA3BMs+2V56LHc+EcPoaOEAOYIumUobLvdhu18F6
+ 94TB5TaECugEu0v0ld1X7roKUykMmqaM1FG4zGplDhb01lMvVjgx5kiogZkdoUr/uz
+ 489FJombOMETAP31abmPq85NRiKK16dbIg3QzjnqQUjl2PJzD8VGMLg4cZIqUNEZu0
+ nQwjPfQ76ZYD/yCj/BFc+gG13KYLmpzdkj0DyHQgo2BQO9zsISseV5Q5ZTPZ+zMUxs
+ e21NzQb6AKWHg==
+Resent-From: Mark Brown <broonie@kernel.org>
+Resent-Date: Mon, 18 Jul 2022 15:19:15 +0100
+Resent-Message-ID: <YtVr45gYUoHv1pqv@sirena.org.uk>
+Resent-To: alsa-devel@alsa-project.org
+Envelope-to: broonie@sirena.co.uk
+Delivery-date: Mon, 18 Jul 2022 15:10:05 +0100
+Received: from ams.source.kernel.org ([2604:1380:4601:e00::1])
+ by cassiel.sirena.org.uk with esmtps (TLS1.2) tls
+ TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384 (Exim 4.94.2)
+ (envelope-from <broonie@kernel.org>) id 1oDRRj-005H9N-Ff
+ for broonie@sirena.co.uk; Mon, 18 Jul 2022 15:10:05 +0100
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by ams.source.kernel.org (Postfix) with ESMTPS id 1FBA6B81612
+ for <broonie@sirena.co.uk>; Mon, 18 Jul 2022 14:10:03 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix)
+ id D9987C341CB; Mon, 18 Jul 2022 14:10:01 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 826D8C341C0;
+ Mon, 18 Jul 2022 14:10:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1658153401;
+ bh=HyChJOPRuk/0qbeKqOLmxqV6Llt7Wlk7uu/scDDWoVM=;
+ h=From:To:Cc:Subject:Date:From;
+ b=Cxx3ggvvPUygzkDCQEO0HSWBSh+q8YcbLwD/VDb0J2ApXBQCIeyQiLV38TLKgPSwI
+ oukDF6U+MCK9FmUhEsStqPoQQ+s+9RYZM5B23V++fghjJw9qR3zSn2zd1nxLWO7i5V
+ uWj6a8SNxQHF52LW+G8xiU544VZ0xbVtAFalzMK9RG1gvF6ua+j/Dn1iGsnhipJRNN
+ 6czSekaUIRhofNSl4l3aE+wcLKXp84qUQFKnzEPjY5DkFbjFiGY2D06Le7PNQ8OOxF
+ 5EXQCLHRjjtg7hwejZja61mbAjE8PGwTghXFTGV+W2IIYR2J4ZPrA6BQRk8V58llUY
+ ZmIQ1b8oxnBag==
+From: Mark Brown <broonie@kernel.org>
+To: Zheyu Ma <zheyuma97@gmail.com>,
+	Liam Girdwood <lgirdwood@gmail.com>
+Date: Mon, 18 Jul 2022 15:04:05 +0100
+Message-Id: <20220718140405.57233-1-broonie@kernel.org>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.11.0
-Subject: Re: [PATCH v2] ASoC: dt-bindings: atmel-i2s: Convert to json-schema
-Content-Language: en-US
-To: Ryan.Wanner@microchip.com, lgirdwood@gmail.com, broonie@kernel.org,
- robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
- nicolas.ferre@microchip.com, alexandre.belloni@bootlin.com,
- claudiu.beznea@microchip.com
-References: <20220722152945.2950807-1-Ryan.Wanner@microchip.com>
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <20220722152945.2950807-1-Ryan.Wanner@microchip.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
- linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1398; h=from:subject;
+ bh=HyChJOPRuk/0qbeKqOLmxqV6Llt7Wlk7uu/scDDWoVM=;
+ b=owEBbQGS/pANAwAKASTWi3JdVIfQAcsmYgBi1WedfrbfTXLWVa7/hNwrZIBjz6/GEhen9j1acW/B
+ mX0U1LuJATMEAAEKAB0WIQSt5miqZ1cYtZ/in+ok1otyXVSH0AUCYtVnnQAKCRAk1otyXVSH0KM6B/
+ 9vtEg4FHNo+m3IDZM33UeDko58WHk4lEY4daRRZ01j5/vCkuzDoePPp20N9ffB++NEPDj0FNYgn+//
+ t+GORpD6SSVUAVZOooSI07vzjammxMOXvY1KSCgM000jZY+fhlTTxta3ssuBMZjJDR7oip3d+oKbBz
+ gYVvLKpEBmuq6awtcBpqcCYQzwYzL1Kin+jU83A24ZEAvVykJcWxY1lHuu3AFqLxiZEikzlwyLDVeL
+ otsEdrX5J1kVYwITw0byFQeC65G1MtArPPGbPLqWIDolMaJ72WNHK1S77hwcmQPPP/wVes6ean4NbC
+ nOtkV2HZa2VhJJggwFwmO2NHcCbXDQ
+X-Developer-Key: i=broonie@kernel.org; a=openpgp;
+ fpr=3F2568AAC26998F9E813A1C5C3F436CA30F5D8EB
+Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 2604:1380:4601:e00::1
+X-SA-Exim-Mail-From: broonie@kernel.org
+Subject: [PATCH] ASoC: nau8821: Don't unconditionally free interrupt
+X-SA-Exim-Version: 4.2.1 (built Sat, 13 Feb 2021 17:57:42 +0000)
+X-SA-Exim-Scanned: No (on cassiel.sirena.org.uk); Unknown failure
+X-TUID: MK3gvon7Q+C1
+Cc: wtli@nuvoton.com, Mark Brown <broonie@kernel.org>,
+ alsa-deve@alsa-project.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -104,21 +127,46 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On 22/07/2022 17:29, Ryan.Wanner@microchip.com wrote:
-> From: Ryan Wanner <Ryan.Wanner@microchip.com>
-> 
-> Convert atmel i2s devicetree binding to json-schema.
-> Change file name to match json-schema naming.
-> 
-> Signed-off-by: Ryan Wanner <Ryan.Wanner@microchip.com>
-> ---
-> Note: running dtbs_check will fail unless updated with this patch,
-> https://lore.kernel.org/linux-arm-kernel/20220707215812.193008-1-Ryan.Wanner@microchip.com/
-> 
+The remove() operation unconditionally frees the interrupt for the device
+but we may not actually have an interrupt so there might be nothing to
+free. Since the interrupt is requested after all other resources we don't
+need the explicit free anyway, unwinding is guaranteed to be safe, so just
+delete the remove() function and let devm take care of things.
 
+Reported-by: Zheyu Ma <zheyuma97@gmail.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/codecs/nau8821.c | 10 ----------
+ 1 file changed, 10 deletions(-)
 
-Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+diff --git a/sound/soc/codecs/nau8821.c b/sound/soc/codecs/nau8821.c
+index 2600be250a3c..3ce23c20eca9 100644
+--- a/sound/soc/codecs/nau8821.c
++++ b/sound/soc/codecs/nau8821.c
+@@ -1699,15 +1699,6 @@ static int nau8821_i2c_probe(struct i2c_client *i2c)
+ 	return ret;
+ }
+ 
+-static int nau8821_i2c_remove(struct i2c_client *i2c_client)
+-{
+-	struct nau8821 *nau8821 = i2c_get_clientdata(i2c_client);
+-
+-	devm_free_irq(nau8821->dev, nau8821->irq, nau8821);
+-
+-	return 0;
+-}
+-
+ static const struct i2c_device_id nau8821_i2c_ids[] = {
+ 	{ "nau8821", 0 },
+ 	{ }
+@@ -1737,7 +1728,6 @@ static struct i2c_driver nau8821_driver = {
+ 		.acpi_match_table = ACPI_PTR(nau8821_acpi_match),
+ 	},
+ 	.probe_new = nau8821_i2c_probe,
+-	.remove = nau8821_i2c_remove,
+ 	.id_table = nau8821_i2c_ids,
+ };
+ module_i2c_driver(nau8821_driver);
+-- 
+2.30.2
 
-
-Best regards,
-Krzysztof
