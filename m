@@ -4,79 +4,79 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B718AC433EF
-	for <alsa-devel@archiver.kernel.org>; Tue, 19 Jul 2022 11:05:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D5A52C43334
+	for <alsa-devel@archiver.kernel.org>; Tue, 19 Jul 2022 11:05:56 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 1B62016BD;
-	Tue, 19 Jul 2022 13:04:12 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1B62016BD
+	by alsa0.perex.cz (Postfix) with ESMTPS id CB78016D0;
+	Tue, 19 Jul 2022 13:05:04 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CB78016D0
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1658228702;
-	bh=/iPqU057OPlr5ueGX0H3uiPtqd38mkubixT2hXyfCL8=;
+	s=default; t=1658228754;
+	bh=IbqsdSjWATKN+YNE/+Qb/CMCqHoCdth+9xUa4POZgNk=;
 	h=Date:Subject:To:References:From:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=ClNK+y2h4wayiiqZAfZjds7ZGh8t7CzQlZZr968oXJEkTEkWsq2ULtyl7El/d9Flu
-	 J6CQvhGNPnvZruFLPV5ITFL3gL5et2gz+Uf/NRBoliESWHuqRk41E4gy8LrnrQNfMP
-	 Gw8WqYxPaZ+BBWcn0P5UCUnSujsMkxgh05uBNpcI=
+	b=SyqAx7x9AdoOySM/VikHVTgv2HrD9Vd/WPnQ1+0OnswHbISH3yYTdl6hsOgNknbBL
+	 Eb8OQTYcZ/fxTR+W0gwiRH3tvlG/i7oTHoP+R2A8R95uNiJNN7zeqdZF6oeK3/bWoN
+	 UcKNDK2dH6W5ea3Fisn7l7UvMSvXf1pGRwMOeSPI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 8D341F8016D;
-	Tue, 19 Jul 2022 13:04:11 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 71E68F801EC;
+	Tue, 19 Jul 2022 13:05:04 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 6EE94F801EC; Tue, 19 Jul 2022 13:04:09 +0200 (CEST)
-Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com
- [IPv6:2a00:1450:4864:20::130])
+ id 16875F8028B; Tue, 19 Jul 2022 13:05:03 +0200 (CEST)
+Received: from mail-lj1-x229.google.com (mail-lj1-x229.google.com
+ [IPv6:2a00:1450:4864:20::229])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 28552F80118
- for <alsa-devel@alsa-project.org>; Tue, 19 Jul 2022 13:03:58 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 28552F80118
+ by alsa1.perex.cz (Postfix) with ESMTPS id 70A26F80224
+ for <alsa-devel@alsa-project.org>; Tue, 19 Jul 2022 13:04:54 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 70A26F80224
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org
- header.b="F5hG1ciI"
-Received: by mail-lf1-x130.google.com with SMTP id o7so24129661lfq.9
- for <alsa-devel@alsa-project.org>; Tue, 19 Jul 2022 04:03:58 -0700 (PDT)
+ header.b="s3SRJ6/k"
+Received: by mail-lj1-x229.google.com with SMTP id 19so16967971ljz.4
+ for <alsa-devel@alsa-project.org>; Tue, 19 Jul 2022 04:04:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
  h=message-id:date:mime-version:user-agent:subject:content-language:to
  :cc:references:from:in-reply-to:content-transfer-encoding;
- bh=F+YPwJ3OalhF2uEWkjDZQjPsGGtm1z0ZYbOsdNSmeBk=;
- b=F5hG1ciIO8BTpnanp2tu67fMURJ1JoFRQAsbWNKS+Qy3/N5k6mavM+zpyEWnGsIdWo
- RuWXixPtQoYxXTpoEJEe4UmuQsWuNyrbXP3aDttJRQ1sVDbH3Wz/oxyWpwpMCmb/r4PZ
- nd3hgz4cjIwihxH3xKIxaZ8hN2H0Be8q6COFpq8YhvYFXfSx7X+d5xBilNwzVM0bOyAL
- CxyPr+gXDfqFvXtkwLPNFm2YVc14Z3kTlgbq7/iPHhyaGoGYZAGEreuNGxOzPLvttrrT
- vLL/krA71tiQdyfBRhDgwlSWNAj42JQDyJtqEOPpM+nIdA7QU8DMmGC8MWhzrlzlyFue
- YXPg==
+ bh=EX19RpTLgpzKcCJO8mDxPYr2eZCUlJJYLs40GJ/aDtE=;
+ b=s3SRJ6/kPB9R99UVkk665l3uCz1jjAO4bxRMm6Mp1nfnXdVeb6zW6map6ov6BrtRCZ
+ clj/jGjEay1UIEB1sXQgCKGLyOAFolccLC8dyjBzdoS8q5v0O9fmM6h2cdkLj/hvtpLt
+ MrAHDSxWRVUBZwwnJ7sQCrnJSdNvMmu2xV89kRvtGFq+IZ9Q6uYqmOBRJ4d1WUQkkYPP
+ WSBkkv8JHfyf0O887nmYU9G7zbMBaymD9ajnX6OprjEJi2PnNfVqr19PijTrcfPx0qcU
+ PxeQ68n7NpjWOpI56FSSX04lOw9L8TZk+CuySjX3CbQY+BZrIQLkrXt8AWwhEphwa90R
+ ti6g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
  h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
  :content-language:to:cc:references:from:in-reply-to
  :content-transfer-encoding;
- bh=F+YPwJ3OalhF2uEWkjDZQjPsGGtm1z0ZYbOsdNSmeBk=;
- b=1iRF946Ne2i7ZIQvtjQry7S5xMndhawGClGBCA27PdTzDSc5+2pUVAj3UfgINT6MwS
- pSQdU0nN5gHTTGpn9P0GedyaBP7XNMnZ4qHLrP5QzqccgF5WwQjL9nNrzjwhQVlf8uuK
- K8sPOk8KsfHpXwG3ybLAkO5tUHcIY9kEmechWTOzL7nh2gFSDW1RRT9mIWfmZi4ZYkWY
- hfpkK9NdlHF+377CHxgknl0LtaeCaLPZiBWFqcKw8IcyWYJDjmB3J53lryyy96PIUS4n
- ALM6WQImTTKCD0NCPia3On4h+/5wdbX0zqvhnmg2KDx9r3zJ75fu9jAhH5FRRJbVpGvO
- JLHA==
-X-Gm-Message-State: AJIora9VkgwlkZ1mcSzQUlG50OMLoHj6jEr/GqcmplQA0B2TUCSSyn25
- wuI2iJ3afBF0DiR+6WTZK87img==
-X-Google-Smtp-Source: AGRyM1ttFWfCdMSUUs3sHQIw2bbRarjjsjCbfQfhB4v3yEDUBVXvq/IImwKAuowuawz9yl8kOULpcg==
-X-Received: by 2002:a05:6512:3b9f:b0:489:e009:ae0c with SMTP id
- g31-20020a0565123b9f00b00489e009ae0cmr18648844lfv.213.1658228637111; 
- Tue, 19 Jul 2022 04:03:57 -0700 (PDT)
+ bh=EX19RpTLgpzKcCJO8mDxPYr2eZCUlJJYLs40GJ/aDtE=;
+ b=E4EEb3xRMBSupQoVJR9WXvw1nHRL+yOwYMHBez3zwQv/O4HfBEjKtFr0QUL3TK1A4P
+ H5CZFmWdzAaDADOliS+DKbD/DecIcV7QYQu98FjhUlZ82QkhgzbCO7smQPzetZbmUO3+
+ MK2I6PTNFKSS9zBDp9rtSqof85HXxbbRTp6q11RTU6IdqysnGd2gKyEUaGk/URaWp1+A
+ w7TjhwTab6uiUV3CIZJfeJybc1J4Bp+uL01rWlluUR3W9sKURQPWvQQaV2ajWAGLzHe/
+ 2CwyKLIwzanunS+yOxJolzUudd8VRq5JFt+1t8OJvF7rQcLKPCacBw9apiZu0UVW+Jk0
+ xzog==
+X-Gm-Message-State: AJIora+Nge+MMLXQxe814VT8ECFPygc2xdeCF612oWBMzac9eqhPnHD/
+ oq4VC0FmrBS5XYnifQqqzrBDPg==
+X-Google-Smtp-Source: AGRyM1t1ByyKQvuvfe41Tkvj/zYbbhsK14gV6ydWq1VeAlZ4j7rEjFY23wSBgIriw+qgh2nbPfxQnA==
+X-Received: by 2002:a2e:a490:0:b0:25d:7609:1fbf with SMTP id
+ h16-20020a2ea490000000b0025d76091fbfmr14767979lji.432.1658228692354; 
+ Tue, 19 Jul 2022 04:04:52 -0700 (PDT)
 Received: from [192.168.115.193] (89-162-31-138.fiber.signal.no.
  [89.162.31.138]) by smtp.gmail.com with ESMTPSA id
- 11-20020ac25f0b000000b0047862287498sm3153889lfq.208.2022.07.19.04.03.55
+ c3-20020a2ebf03000000b0025dabcba63csm1659273ljr.17.2022.07.19.04.04.50
  (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Tue, 19 Jul 2022 04:03:56 -0700 (PDT)
-Message-ID: <ba62b5a9-cf95-8ad2-3bd1-e2f2de5ab6d1@linaro.org>
-Date: Tue, 19 Jul 2022 13:03:54 +0200
+ Tue, 19 Jul 2022 04:04:51 -0700 (PDT)
+Message-ID: <13fd6d44-c645-0935-9fc6-aeebcb96b9cf@linaro.org>
+Date: Tue, 19 Jul 2022 13:04:50 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
  Thunderbird/91.11.0
-Subject: Re: [PATCH v3 1/2] ASoC: dt-bindings: atmel-classd: Convert to
+Subject: Re: [PATCH v3 2/2] ASoC: dt-bindings: atmel-classd: PDMIC convert to
  json-schema
 Content-Language: en-US
 To: Ryan.Wanner@microchip.com, lgirdwood@gmail.com, broonie@kernel.org,
@@ -84,9 +84,9 @@ To: Ryan.Wanner@microchip.com, lgirdwood@gmail.com, broonie@kernel.org,
  nicolas.ferre@microchip.com, alexandre.belloni@bootlin.com,
  claudiu.beznea@microchip.com
 References: <20220715162922.660859-1-Ryan.Wanner@microchip.com>
- <20220715162922.660859-2-Ryan.Wanner@microchip.com>
+ <20220715162922.660859-3-Ryan.Wanner@microchip.com>
 From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <20220715162922.660859-2-Ryan.Wanner@microchip.com>
+In-Reply-To: <20220715162922.660859-3-Ryan.Wanner@microchip.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
@@ -109,14 +109,15 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 On 15/07/2022 18:29, Ryan.Wanner@microchip.com wrote:
 > From: Ryan Wanner <Ryan.Wanner@microchip.com>
 > 
-> Convert atmel CLASSD devicetree binding to json-schema.
-> Change file name to match json-scheme naming.
+> Convert Atmel PDMIC devicetree binding to json-schema.
+> Change file naming to match json-schema naming.
 > 
 > Signed-off-by: Ryan Wanner <Ryan.Wanner@microchip.com>
+> ---
+> v1 -> v2:
 
 
 Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-
 
 Best regards,
 Krzysztof
