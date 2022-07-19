@@ -4,42 +4,64 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D331EC43334
-	for <alsa-devel@archiver.kernel.org>; Tue, 19 Jul 2022 01:34:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E755AC43334
+	for <alsa-devel@archiver.kernel.org>; Tue, 19 Jul 2022 05:43:03 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 096CB16A4;
-	Tue, 19 Jul 2022 03:34:04 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 096CB16A4
+	by alsa0.perex.cz (Postfix) with ESMTPS id 41690169D;
+	Tue, 19 Jul 2022 07:42:11 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 41690169D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1658194494;
-	bh=YYfloqsq+vEbk7WHrEc4GcsJrM2Ro3rs5IgHfsewWzA=;
-	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
+	s=default; t=1658209381;
+	bh=uqft1h3/c3POK7mzjbP7BIPk5TKLnIPVF90OYwa3zOY=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=o75OknhA+KOjBHG5rwNmw0gz10nz5gJxTYWQWBxQhdnuEqdraBs7AePayTumryym6
-	 rIq4vog81CXiRisejKLjZJoplOPqA+PbplZqT7p9HW/0NK1XHq9oHQE3fXmWhtNg5A
-	 o/dWj+PQ+5SRTzE0rtL1ruELh2PL/K6A9lzo840g=
+	b=Yvxk6MxYwnY1ZmEHwL3X8h8oR+WM48fDpzqm0B3IYQqCarvqWjldoT/Om7FLp2cxX
+	 6CMZgJiOU4y0mBTA+CnJHTvaxYhZVFqHRuoT/zB9vFUJtARNFtuLkeR32yUUo2GR6+
+	 5/i8mfExxco5G8yAQIBdbSl8XsZISdf9mpE8KvMU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 92387F8016D;
-	Tue, 19 Jul 2022 03:34:03 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id ACA28F801EC;
+	Tue, 19 Jul 2022 07:42:10 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 0BF44F801EC; Tue, 19 Jul 2022 03:34:02 +0200 (CEST)
-Received: from webhooks-bot.alsa-project.org (gate.perex.cz [77.48.224.242])
- by alsa1.perex.cz (Postfix) with ESMTP id 63238F80169
- for <alsa-devel@alsa-project.org>; Tue, 19 Jul 2022 03:33:58 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 63238F80169
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-From: GitHub issues - opened <github@alsa-project.org>
-To: alsa-devel@alsa-project.org
-In-Reply-To: <1658194438061773062-webhooks-bot@alsa-project.org>
-References: <1658194438061773062-webhooks-bot@alsa-project.org>
-Subject: speaker-test channel descriptions don't match expectations
-Message-Id: <20220719013402.0BF44F801EC@alsa1.perex.cz>
-Date: Tue, 19 Jul 2022 03:34:02 +0200 (CEST)
+ id 3C235F80224; Tue, 19 Jul 2022 07:42:08 +0200 (CEST)
+Received: from inva020.nxp.com (inva020.nxp.com [92.121.34.13])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id ADD2EF80169;
+ Tue, 19 Jul 2022 07:42:00 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz ADD2EF80169
+Received: from inva020.nxp.com (localhost [127.0.0.1])
+ by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 03F3B1A08A2;
+ Tue, 19 Jul 2022 07:42:00 +0200 (CEST)
+Received: from aprdc01srsp001v.ap-rdc01.nxp.com
+ (aprdc01srsp001v.ap-rdc01.nxp.com [165.114.16.16])
+ by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id B0CB31A08B6;
+ Tue, 19 Jul 2022 07:41:59 +0200 (CEST)
+Received: from localhost.localdomain (shlinux2.ap.freescale.net
+ [10.192.224.44])
+ by aprdc01srsp001v.ap-rdc01.nxp.com (Postfix) with ESMTP id 3C3C3181D0CA;
+ Tue, 19 Jul 2022 13:41:57 +0800 (+08)
+From: Shengjiu Wang <shengjiu.wang@nxp.com>
+To: pierre-louis.bossart@linux.intel.com, lgirdwood@gmail.com,
+ peter.ujfalusi@linux.intel.com, yung-chuan.liao@linux.intel.com,
+ ranjani.sridharan@linux.intel.com, kai.vehmanen@linux.intel.com,
+ daniel.baluta@nxp.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com,
+ shawnguo@kernel.org, s.hauer@pengutronix.de, kernel@pengutronix.de,
+ festevam@gmail.com, linux-imx@nxp.com, robh+dt@kernel.org,
+ krzysztof.kozlowski+dt@linaro.org, devicetree@vger.kernel.org
+Subject: [PATCH 2/2] dt-bindings: dsp: fsl: Add SOF compatile string for
+ i.MX8ULP
+Date: Tue, 19 Jul 2022 13:26:07 +0800
+Message-Id: <1658208367-24376-2-git-send-email-shengjiu.wang@nxp.com>
+X-Mailer: git-send-email 2.7.4
+In-Reply-To: <1658208367-24376-1-git-send-email-shengjiu.wang@nxp.com>
+References: <1658208367-24376-1-git-send-email-shengjiu.wang@nxp.com>
+X-Virus-Scanned: ClamAV using ClamSMTP
+Cc: alsa-devel@alsa-project.org, shengjiu.wang@gmail.com,
+ linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ sound-open-firmware@alsa-project.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -55,11 +77,26 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-alsa-project/alsa-utils issue #159 was opened from pfps:
+Add SOF compatile string "fsl,imx8ulp-dsp" for supporting DSP
+device on i.MX8ULP platform.
 
-The text output of speaker-test for -c6 appears to indicate that it is using 5+1 channels, with FL, FR, RL, RR, FC, LFE channels (output in a different order).  But the wav files that it uses say FL, FR, RL, ??, FC, Rear Center.  And this channel order doesn't seem correct, as the channels are not down-mixed to stereo correctly on my system with pipewire and pipewire-media-session.
+Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
+---
+ Documentation/devicetree/bindings/dsp/fsl,dsp.yaml | 1 +
+ 1 file changed, 1 insertion(+)
 
-What can be done to get speaker-test and pipewire to agree on the channels?
+diff --git a/Documentation/devicetree/bindings/dsp/fsl,dsp.yaml b/Documentation/devicetree/bindings/dsp/fsl,dsp.yaml
+index e66ef2da7879..9af40da5688e 100644
+--- a/Documentation/devicetree/bindings/dsp/fsl,dsp.yaml
++++ b/Documentation/devicetree/bindings/dsp/fsl,dsp.yaml
+@@ -20,6 +20,7 @@ properties:
+       - fsl,imx8qxp-dsp
+       - fsl,imx8qm-dsp
+       - fsl,imx8mp-dsp
++      - fsl,imx8ulp-dsp
+       - fsl,imx8qxp-hifi4
+       - fsl,imx8qm-hifi4
+       - fsl,imx8mp-hifi4
+-- 
+2.34.1
 
-Issue URL     : https://github.com/alsa-project/alsa-utils/issues/159
-Repository URL: https://github.com/alsa-project/alsa-utils
