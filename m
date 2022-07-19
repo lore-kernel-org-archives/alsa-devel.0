@@ -4,82 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 38A6DCCA47F
-	for <alsa-devel@archiver.kernel.org>; Tue, 19 Jul 2022 15:55:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 153ECC43334
+	for <alsa-devel@archiver.kernel.org>; Tue, 19 Jul 2022 17:13:07 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 978411686;
-	Tue, 19 Jul 2022 17:54:51 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 978411686
+	by alsa0.perex.cz (Postfix) with ESMTPS id 50EC316A9;
+	Tue, 19 Jul 2022 19:12:15 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 50EC316A9
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1658246141;
-	bh=CvuqKzLW8z/oBJmCq4X8fDD9L8499sdFh/qoYJ5CYPo=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	s=default; t=1658250785;
+	bh=5iVcq8tomxnH4tiYclWNXIGQuQpwgkJRPWeb2ZiE01A=;
+	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Y//vhNa+96xvNa7CwSkzb0LSQdqqHrWm4F39PWGM4N52NhgSEiM2CkKuPDjEctaDW
-	 UT9hICqFnL+x7oanxZiaQPBiZY48PDg/fo24zawkzf/L2hqhnBfN0oI/G1jfkhFxX7
-	 spvvO7VV7eVa9xjZ3ll9q/hPmmfsmylhN4oQhECI=
+	b=nTUNXsZkQmNQNFmTaeloqW5YPhEiK2GSMLpKR/GeH3AzPKoiIwckPALVubODcvy0A
+	 AfcPda77cN49cHpaZ6pYKHPDzGiCcbKnhICQkmnubNcNZ0r/wS/Tf2DD6gR7TmmHSI
+	 57aVk2GY81g2puMTjzyUgEDKpTAkC68Tc9w0CiQU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 302A0F8016D;
-	Tue, 19 Jul 2022 17:54:51 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id DA1BBF8016D;
+	Tue, 19 Jul 2022 19:12:14 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id C6AA4F801EC; Tue, 19 Jul 2022 17:54:49 +0200 (CEST)
-Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
- [67.231.149.25])
+ id 5AAADF80125; Tue, 19 Jul 2022 19:12:13 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id D7DFAF80118
+ for <alsa-devel@alsa-project.org>; Tue, 19 Jul 2022 19:11:59 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D7DFAF80118
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="MPAvBpo6"
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 2C827F80118
- for <alsa-devel@alsa-project.org>; Tue, 19 Jul 2022 17:54:44 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2C827F80118
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com
- header.b="pu4IfSAu"
-Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
- by mx0a-001ae601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 26JASFEo009799;
- Tue, 19 Jul 2022 10:54:42 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
- h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=PODMain02222019;
- bh=nxj0BWv0JUj+DLYX8W3ZX/5fDJ5e7VgoDYp+YPmbytk=;
- b=pu4IfSAunWHKyI6sOHeEpbfoNBxHhNUitGyfpa+wccIerMlKo9F7xNAEhX7y4R5rrjhk
- d5ovH3oephXf+XK9QpWB1wf3mgnaIz4qJ5SIVRyoEiVKsRKi2aEkXcfrDv2fNbItd4TG
- xYgdP/aHMeP15qRb8jxTeLikSHcKdg++Zk6RkyCpUWk7KktlN5DfifMEfLhfr0aplkH4
- hjtG9Wx7ah9PvsYD4MjjlRUP+a2s2gI6bBUhJ/7ZyMWHEW9niGWolV/qURZovf6DyUav
- bTwO4xX4FB4PXi0hOV4ODnQpTaGzH4O2h8x7AHW3VnN0WlSe86UYubNPet150gXYW8O0 ng== 
-Received: from ediex02.ad.cirrus.com ([84.19.233.68])
- by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3hdrqfgkd6-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
- Tue, 19 Jul 2022 10:54:42 -0500
-Received: from ediex01.ad.cirrus.com (198.61.84.80) by ediex02.ad.cirrus.com
- (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.9; Tue, 19 Jul
- 2022 10:54:40 -0500
-Received: from ediswmail.ad.cirrus.com (198.61.86.93) by
- anon-ediex01.ad.cirrus.com (198.61.84.80) with Microsoft SMTP Server id
- 15.2.1118.9 via Frontend Transport; Tue, 19 Jul 2022 10:54:40 -0500
-Received: from ediswmail.ad.cirrus.com (ediswmail.ad.cirrus.com [198.61.86.93])
- by ediswmail.ad.cirrus.com (Postfix) with ESMTP id B0751475;
- Tue, 19 Jul 2022 15:54:40 +0000 (UTC)
-Date: Tue, 19 Jul 2022 15:54:40 +0000
-From: Charles Keepax <ckeepax@opensource.cirrus.com>
-To: Lars-Peter Clausen <lars@metafoo.de>
-Subject: Re: ASoC: Is this bug ? DAPM source vs sink
-Message-ID: <20220719155440.GC92394@ediswmail.ad.cirrus.com>
-References: <87o7xloca2.wl-kuninori.morimoto.gx@renesas.com>
- <d7307c80-47e1-ef4b-42a9-dcbb8f555789@metafoo.de>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <d7307c80-47e1-ef4b-42a9-dcbb8f555789@metafoo.de>
-User-Agent: Mutt/1.5.21 (2010-09-15)
-X-Proofpoint-ORIG-GUID: eyITfN3SmTyJDL7WIAWebKgOKC8D9hWH
-X-Proofpoint-GUID: eyITfN3SmTyJDL7WIAWebKgOKC8D9hWH
-X-Proofpoint-Spam-Reason: safe
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>,
+ by dfw.source.kernel.org (Postfix) with ESMTPS id 2902361021;
+ Tue, 19 Jul 2022 17:11:57 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 55A60C341C6;
+ Tue, 19 Jul 2022 17:11:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1658250716;
+ bh=5iVcq8tomxnH4tiYclWNXIGQuQpwgkJRPWeb2ZiE01A=;
+ h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+ b=MPAvBpo64jh3a8A+OlzLppzXqbuzrZVCnoPU4KDrhloSbf/6Km0YyCiSAWBiRIg3M
+ u2qCSlFjitInByiBd3M995qJwwwmhs3U87n6sYevpxiSS+h1cTG9AvErk0sMDDSef5
+ H3H6a6TRK4NHeQwPQIQmw9+ZqE5vh+SFrcwmw2HMV0kLJ00uMthx6pTWS44IrBYNAU
+ TmJo+OptvGHwU5dEkUg0HXD704s3xOCicw2v9laJkMFAWU9MLUpUKbSHlxvYlkUZLg
+ OMtgUqXC1ouFZMciTmSCLNxUypYqJEgAe75Q15aRh8zuUg2EmYdijad3A9ldApJl4h
+ Nh6qj9UY9o9jw==
+From: Mark Brown <broonie@kernel.org>
+To: lgirdwood@gmail.com, tiwai@suse.com, jiwang_wang@mentor.com, perex@perex.cz,
  Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+In-Reply-To: <20220718110404.1529085-1-jiwang_wang@mentor.com>
+References: <20220718110404.1529085-1-jiwang_wang@mentor.com>
+Subject: Re: [PATCH v1 1/1] rsnd: ssiu: add missing .quit callback for gen2
+Message-Id: <165825071404.372578.3185771887733235033.b4-ty@kernel.org>
+Date: Tue, 19 Jul 2022 18:11:54 +0100
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+Cc: Dean_Jenkins@mentor.com, jiada_wang@mentor.com, alsa-devel@alsa-project.org,
+ erosca@de.adit-jv.com, linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -95,20 +80,40 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Tue, Jul 19, 2022 at 10:50:57AM +0200, Lars-Peter Clausen wrote:
-> On 7/19/22 08:19, Kuninori Morimoto wrote:
-> >So, I guess current for_each is wrong, but I'm not 100% sure
-> >
-> >
-> I don't think DAPM would work if this was wrong. If you look at that
-> patch it consistently converted
+On Mon, 18 Jul 2022 20:04:04 +0900, Jiada Wang wrote:
+> From: Wang Jiada <jiada_wang@mentor.com>
 > 
-> `sources` to `edges[SND_SOC_DAPM_DIR_OUT]` and `sinks` to
-> `edges[SND_SOC_DAPM_DIR_IN]`
+> commit 83b220cf8eb2a ("ASoC: rsnd: implement BUSIF related
+> code in ssiu.c") moved BUSIF related code in ssiu.c
+> which added .quit callback in ssiu.c to disable error irq
+> when ssiu quits.
+> 
+> [...]
 
-I think this is just one of those perspective things, OUT ->
-audio comes out of the node ie. is a source. IN -> audio goes into
-the node, ie. is a sink.
+Applied to
+
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+
+Thanks!
+
+[1/1] rsnd: ssiu: add missing .quit callback for gen2
+      commit: 11e9318ff7486f375cf246c172c3206a731a2254
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
 Thanks,
-Charles
+Mark
