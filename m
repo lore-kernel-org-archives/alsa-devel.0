@@ -4,53 +4,54 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7AA27C433EF
-	for <alsa-devel@archiver.kernel.org>; Tue, 19 Jul 2022 09:46:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5CD4CC43334
+	for <alsa-devel@archiver.kernel.org>; Tue, 19 Jul 2022 09:46:36 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id BAD6D16D9;
-	Tue, 19 Jul 2022 11:45:19 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BAD6D16D9
+	by alsa0.perex.cz (Postfix) with ESMTPS id 952C916D1;
+	Tue, 19 Jul 2022 11:45:44 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 952C916D1
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1658223969;
-	bh=36ICGYrtvF7Ty8e8VB08wM/riCa3xLtIQApietZ3vS0=;
+	s=default; t=1658223994;
+	bh=CWnlr5Kp2m0gMFaEXapNrYwf2e6tViIImaSPKVfZq2U=;
 	h=From:To:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=F/SAtCe93C86gaeXJdymn9znv4iXY1fiAUkHlBO1Fd9ha2841xUCVXkEgOWPCXPyJ
-	 lKO/RaOke8+QAL8YbuikDdDHO3bJgV2pIdpVW/GjuzdcHdraFarhscjky9v1Bo6/nl
-	 tc68/TR8XzCWrS1AL+o40farki/gB2A1+aNAZpjU=
+	b=bGURHMtaCUcrl+5qIoyTvJdiQRt9QEZh1AwHUyMalA+p0lHFnmzo5L3PSeKFeUG+M
+	 leyNEgFnKDSW5QFyxaOzcR8eFVkFkpIfp+K/0ACrFG8ndb72s9n4yN13r6/fqmF8/g
+	 aqNYiUeHZZ8fH3/tSlxVksESHort8EEtlMKHFTtU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 402E1F80558;
-	Tue, 19 Jul 2022 11:44:36 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id D991DF80559;
+	Tue, 19 Jul 2022 11:44:56 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 961ECF80559; Tue, 19 Jul 2022 11:44:35 +0200 (CEST)
+ id E43FEF80563; Tue, 19 Jul 2022 11:44:54 +0200 (CEST)
 Received: from inva021.nxp.com (inva021.nxp.com [92.121.34.21])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 7A6F5F8016D
- for <alsa-devel@alsa-project.org>; Tue, 19 Jul 2022 11:44:22 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7A6F5F8016D
+ by alsa1.perex.cz (Postfix) with ESMTPS id 00DDEF80118
+ for <alsa-devel@alsa-project.org>; Tue, 19 Jul 2022 11:44:24 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 00DDEF80118
 Received: from inva021.nxp.com (localhost [127.0.0.1])
- by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id A247E200C11;
- Tue, 19 Jul 2022 11:44:21 +0200 (CEST)
+ by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id A799C200C20;
+ Tue, 19 Jul 2022 11:44:24 +0200 (CEST)
 Received: from aprdc01srsp001v.ap-rdc01.nxp.com
  (aprdc01srsp001v.ap-rdc01.nxp.com [165.114.16.16])
- by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 5BAA1200C05;
- Tue, 19 Jul 2022 11:44:21 +0200 (CEST)
+ by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 61940200C19;
+ Tue, 19 Jul 2022 11:44:24 +0200 (CEST)
 Received: from localhost.localdomain (shlinux2.ap.freescale.net
  [10.192.224.44])
- by aprdc01srsp001v.ap-rdc01.nxp.com (Postfix) with ESMTP id AFE23181D0CA;
- Tue, 19 Jul 2022 17:44:19 +0800 (+08)
+ by aprdc01srsp001v.ap-rdc01.nxp.com (Postfix) with ESMTP id B5D4A180222D;
+ Tue, 19 Jul 2022 17:44:22 +0800 (+08)
 From: Shengjiu Wang <shengjiu.wang@nxp.com>
 To: shengjiu.wang@gmail.com, Xiubo.Lee@gmail.com, festevam@gmail.com,
  nicoleotsuka@gmail.com, lgirdwood@gmail.com, broonie@kernel.org,
  perex@perex.cz, tiwai@suse.com, alsa-devel@alsa-project.org,
  linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
-Subject: [PATCH -next 2/5] ASoC: fsl_asrc: force cast the asrc_format type
-Date: Tue, 19 Jul 2022 17:27:41 +0800
-Message-Id: <1658222864-25378-3-git-send-email-shengjiu.wang@nxp.com>
+Subject: [PATCH -next 5/5] ASoC: imx-card: use snd_pcm_format_t type for
+ asrc_format
+Date: Tue, 19 Jul 2022 17:27:44 +0800
+Message-Id: <1658222864-25378-6-git-send-email-shengjiu.wang@nxp.com>
 X-Mailer: git-send-email 2.7.4
 In-Reply-To: <1658222864-25378-1-git-send-email-shengjiu.wang@nxp.com>
 References: <1658222864-25378-1-git-send-email-shengjiu.wang@nxp.com>
@@ -71,39 +72,51 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 Fix sparse warning:
-sound/soc/fsl/fsl_asrc.c:1177:60: sparse: warning: incorrect type in argument 3 (different base types)
-sound/soc/fsl/fsl_asrc.c:1177:60: sparse:    expected unsigned int [usertype] *out_value
-sound/soc/fsl/fsl_asrc.c:1177:60: sparse:    got restricted snd_pcm_format_t *
-sound/soc/fsl/fsl_asrc.c:1200:47: sparse: warning: restricted snd_pcm_format_t degrades to integer
+sound/soc/fsl/imx-card.c:653:59: sparse: warning: incorrect type in assignment (different base types)
+sound/soc/fsl/imx-card.c:653:59: sparse:    expected unsigned int [usertype] asrc_format
+sound/soc/fsl/imx-card.c:653:59: sparse:    got restricted snd_pcm_format_t [usertype]
+sound/soc/fsl/imx-card.c:655:59: sparse: warning: incorrect type in assignment (different base types)
+sound/soc/fsl/imx-card.c:655:59: sparse:    expected unsigned int [usertype] asrc_format
+sound/soc/fsl/imx-card.c:655:59: sparse:    got restricted snd_pcm_format_t [usertype]
 
-Fixes: 4520af41fd21 ("ASoC: fsl_asrc: Support new property fsl,asrc-format")
+Fixes: aa736700f42f ("ASoC: imx-card: Add imx-card machine driver")
 Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
 ---
- sound/soc/fsl/fsl_asrc.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ sound/soc/fsl/imx-card.c | 7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
 
-diff --git a/sound/soc/fsl/fsl_asrc.c b/sound/soc/fsl/fsl_asrc.c
-index 20a9f8e924b3..544395efd605 100644
---- a/sound/soc/fsl/fsl_asrc.c
-+++ b/sound/soc/fsl/fsl_asrc.c
-@@ -1174,7 +1174,7 @@ static int fsl_asrc_probe(struct platform_device *pdev)
- 		return ret;
- 	}
+diff --git a/sound/soc/fsl/imx-card.c b/sound/soc/fsl/imx-card.c
+index ccc4194dc5e7..bd7e489e96a1 100644
+--- a/sound/soc/fsl/imx-card.c
++++ b/sound/soc/fsl/imx-card.c
+@@ -118,7 +118,7 @@ struct imx_card_data {
+ 	struct snd_soc_card card;
+ 	int num_dapm_routes;
+ 	u32 asrc_rate;
+-	u32 asrc_format;
++	snd_pcm_format_t asrc_format;
+ };
  
--	ret = of_property_read_u32(np, "fsl,asrc-format", &asrc->asrc_format);
-+	ret = of_property_read_u32(np, "fsl,asrc-format", (u32 *)&asrc->asrc_format);
- 	if (ret) {
- 		ret = of_property_read_u32(np, "fsl,asrc-width", &width);
- 		if (ret) {
-@@ -1197,7 +1197,7 @@ static int fsl_asrc_probe(struct platform_device *pdev)
- 		}
- 	}
+ static struct imx_akcodec_fs_mul ak4458_fs_mul[] = {
+@@ -474,7 +474,7 @@ static int be_hw_params_fixup(struct snd_soc_pcm_runtime *rtd,
  
--	if (!(FSL_ASRC_FORMATS & (1ULL << asrc->asrc_format))) {
-+	if (!(FSL_ASRC_FORMATS & (1ULL << (__force u32)asrc->asrc_format))) {
- 		dev_warn(&pdev->dev, "unsupported width, use default S24_LE\n");
- 		asrc->asrc_format = SNDRV_PCM_FORMAT_S24_LE;
- 	}
+ 	mask = hw_param_mask(params, SNDRV_PCM_HW_PARAM_FORMAT);
+ 	snd_mask_none(mask);
+-	snd_mask_set(mask, data->asrc_format);
++	snd_mask_set(mask, (__force unsigned int)data->asrc_format);
+ 
+ 	return 0;
+ }
+@@ -639,7 +639,8 @@ static int imx_card_parse_of(struct imx_card_data *data)
+ 				goto err;
+ 			}
+ 
+-			ret = of_property_read_u32(args.np, "fsl,asrc-format", &data->asrc_format);
++			ret = of_property_read_u32(args.np, "fsl,asrc-format",
++						   (u32 *)&data->asrc_format);
+ 			if (ret) {
+ 				/* Fallback to old binding; translate to asrc_format */
+ 				ret = of_property_read_u32(args.np, "fsl,asrc-width", &width);
 -- 
 2.34.1
 
