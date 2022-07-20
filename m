@@ -4,61 +4,62 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 02C6FCCA47F
-	for <alsa-devel@archiver.kernel.org>; Wed, 20 Jul 2022 01:17:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B43E3C433EF
+	for <alsa-devel@archiver.kernel.org>; Wed, 20 Jul 2022 01:17:23 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 4AADB1724;
-	Wed, 20 Jul 2022 03:16:17 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4AADB1724
+	by alsa0.perex.cz (Postfix) with ESMTPS id E0A6F1700;
+	Wed, 20 Jul 2022 03:16:31 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E0A6F1700
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1658279827;
-	bh=kJrQBRgcHwPrceGKRT8UGUQb08ZTG9IZ5DwasvAIodQ=;
+	s=default; t=1658279842;
+	bh=NV2ynk2YaJoTDPoyAUDPJqIw4qadRJfcBh0URspxv/k=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=QEVtuIGKSQpQ1qjGW9nyF17TD05inzMAv0pKFaGZmi8e7s4wJHHgxb0IcAlkOYkyb
-	 312sgBk9rzI/8c5od8LK/oSC4yySRZ3k2/ccpRZphGQ8/t35i6w+HSXlCO5c5XbwE1
-	 N652MkKMnb6+DwpA44vwW0TXCTf+X5ciSfr/46T0=
+	b=QVaNpTB8UrKKNhPf5MbcmlIBZoG/KYbmAxJwqbAAk3wBfVRciUk9pkv/86anGIumE
+	 OJIkCKTaoJNPnCq8LN0JkY3SaE/AB35sgYp0QUJmZyxF7CgP8k+vatcSBvZItn4f0I
+	 1Q2DX+lsT3hYrHl8MPFTeOCc4xhEcS4C0Rt8Gcmg=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 1A500F80549;
-	Wed, 20 Jul 2022 03:16:00 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 0FBD0F80551;
+	Wed, 20 Jul 2022 03:16:02 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id AE46EF8028B; Wed, 20 Jul 2022 03:15:58 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+ id 67C96F80517; Wed, 20 Jul 2022 03:16:00 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org
+ [IPv6:2604:1380:4641:c500::1])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id F203AF8028B
- for <alsa-devel@alsa-project.org>; Wed, 20 Jul 2022 03:15:47 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F203AF8028B
+ by alsa1.perex.cz (Postfix) with ESMTPS id C9E51F80517
+ for <alsa-devel@alsa-project.org>; Wed, 20 Jul 2022 03:15:53 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C9E51F80517
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="iZW/q1oy"
+ header.b="g5p9sLX6"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id A4492616F6;
- Wed, 20 Jul 2022 01:15:46 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EC1E7C385A2;
- Wed, 20 Jul 2022 01:15:44 +0000 (UTC)
+ by dfw.source.kernel.org (Postfix) with ESMTPS id B27A66176A;
+ Wed, 20 Jul 2022 01:15:52 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8354BC341CA;
+ Wed, 20 Jul 2022 01:15:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1658279746;
- bh=kJrQBRgcHwPrceGKRT8UGUQb08ZTG9IZ5DwasvAIodQ=;
+ s=k20201202; t=1658279750;
+ bh=NV2ynk2YaJoTDPoyAUDPJqIw4qadRJfcBh0URspxv/k=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=iZW/q1oy1EJvnnNoklZpvn6+zAysnU5j1kz3kPGkAyFazbWrgvPn9SswjvX8qjair
- tGKDR/PHLulGsBXXe2vrPLNmmoZ4btbOJwu2xNpCMMxBJFcRBSe4GhjOtmWFgw7MH+
- GJwjW4obYEAv4kpY4P1zuAu/pafwmGrQtyuJSSoYJmu0Gww/uLrvLcGHb8KNLzzFEH
- jgf3DTKq7MJhG9VuzYJQcx7LtH8MgZ6VcXHHmHBDhlLVvt5NhOSSL0lpamKOA/B1Bv
- M0BgENes3SBiQCsKDGSpCwPCrZGMBCqV9yesI6rdJAHM78QaWO96a5p7JHXjFE16QG
- SPHlV6m+oTjhQ==
+ b=g5p9sLX6/7bFYlFcSLKBQmv5bk9pjsotoEyfZ+Ya6q5VDF8EcQjWivRljWT/0PKHQ
+ 8mAAVj0y9cmUf+bLRvFN/sFWdPbNpXFOjxNA3luobPZ3nYRvgXvYMbJvG+z1RIgE3w
+ K6Pzvor68lkjPODXoJ/uxL2A8KYElRZxr0bCD+1+idNx8YfmzZsCzN6lw3riBmkEqm
+ dCFzpj6MVaVs9dlSc70HXku07N3O+/g9/bETjq+EjTXZvZEe478IaLiKFDGZs/TXkM
+ UL/xYjZuX2JdoIG15zxoZNLgNhjL4ZjxgaZXZGZwLO08yWGHjaHJdYloMQEvMG+GpC
+ b46DicRhdUKHg==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.15 30/42] ASoC: wm5102: Fix event generation for
- output compensation
-Date: Tue, 19 Jul 2022 21:13:38 -0400
-Message-Id: <20220720011350.1024134-30-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.15 32/42] ASoC: cs47l92: Fix event generation for
+ OUT1 demux
+Date: Tue, 19 Jul 2022 21:13:40 -0400
+Message-Id: <20220720011350.1024134-32-sashal@kernel.org>
 X-Mailer: git-send-email 2.35.1
 In-Reply-To: <20220720011350.1024134-1-sashal@kernel.org>
 References: <20220720011350.1024134-1-sashal@kernel.org>
@@ -67,9 +68,10 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 Cc: Sasha Levin <sashal@kernel.org>, alsa-devel@alsa-project.org,
- Charles Keepax <ckeepax@opensource.cirrus.com>, patches@opensource.cirrus.com,
- simont@opensource.cirrus.com, tiwai@suse.com, lgirdwood@gmail.com,
- Mark Brown <broonie@kernel.org>
+ Charles Keepax <ckeepax@opensource.cirrus.com>, tanureal@opensource.cirrus.com,
+ patches@opensource.cirrus.com, tiwai@suse.com, lgirdwood@gmail.com,
+ david.rhodes@cirrus.com, rf@opensource.cirrus.com,
+ Mark Brown <broonie@kernel.org>, james.schulman@cirrus.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -87,68 +89,42 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 From: Charles Keepax <ckeepax@opensource.cirrus.com>
 
-[ Upstream commit 71b5ab96ffe6589abe7a2e302b83f7a426ebe099 ]
+[ Upstream commit 870d72ab9228575b2f005c9a23ea08787e0f63e6 ]
 
-The output compensation controls always returns zero regardless of if
-the control value was updated. This results in missing notifications
-to user-space of the control change. Update the handling to return 1
-when the value is changed.
+cs47l92_put_demux returns the value of snd_soc_dapm_mux_update_power,
+which returns a 1 if a path was found for the kcontrol. This is
+obviously different to the expected return a 1 if the control
+was updated value. This results in spurious notifications to
+user-space. Update the handling to only return a 1 when the value is
+changed.
 
 Signed-off-by: Charles Keepax <ckeepax@opensource.cirrus.com>
-Link: https://lore.kernel.org/r/20220628153409.3266932-1-ckeepax@opensource.cirrus.com
+Link: https://lore.kernel.org/r/20220628153409.3266932-3-ckeepax@opensource.cirrus.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/codecs/wm5102.c | 21 +++++++++++++++++----
- 1 file changed, 17 insertions(+), 4 deletions(-)
+ sound/soc/codecs/cs47l92.c | 8 +++++++-
+ 1 file changed, 7 insertions(+), 1 deletion(-)
 
-diff --git a/sound/soc/codecs/wm5102.c b/sound/soc/codecs/wm5102.c
-index 621598608bf0..fc3d4e1a9c55 100644
---- a/sound/soc/codecs/wm5102.c
-+++ b/sound/soc/codecs/wm5102.c
-@@ -680,12 +680,17 @@ static int wm5102_out_comp_coeff_put(struct snd_kcontrol *kcontrol,
- {
- 	struct snd_soc_component *component = snd_soc_kcontrol_component(kcontrol);
- 	struct arizona *arizona = dev_get_drvdata(component->dev->parent);
-+	uint16_t dac_comp_coeff = get_unaligned_be16(ucontrol->value.bytes.data);
-+	int ret = 0;
+diff --git a/sound/soc/codecs/cs47l92.c b/sound/soc/codecs/cs47l92.c
+index 1a0280416d92..ad6f41741372 100644
+--- a/sound/soc/codecs/cs47l92.c
++++ b/sound/soc/codecs/cs47l92.c
+@@ -119,7 +119,13 @@ static int cs47l92_put_demux(struct snd_kcontrol *kcontrol,
+ end:
+ 	snd_soc_dapm_mutex_unlock(dapm);
  
- 	mutex_lock(&arizona->dac_comp_lock);
--	arizona->dac_comp_coeff = get_unaligned_be16(ucontrol->value.bytes.data);
-+	if (arizona->dac_comp_coeff != dac_comp_coeff) {
-+		arizona->dac_comp_coeff = dac_comp_coeff;
-+		ret = 1;
+-	return snd_soc_dapm_mux_update_power(dapm, kcontrol, mux, e, NULL);
++	ret = snd_soc_dapm_mux_update_power(dapm, kcontrol, mux, e, NULL);
++	if (ret < 0) {
++		dev_err(madera->dev, "Failed to update demux power state: %d\n", ret);
++		return ret;
 +	}
- 	mutex_unlock(&arizona->dac_comp_lock);
- 
--	return 0;
-+	return ret;
- }
- 
- static int wm5102_out_comp_switch_get(struct snd_kcontrol *kcontrol,
-@@ -706,12 +711,20 @@ static int wm5102_out_comp_switch_put(struct snd_kcontrol *kcontrol,
- {
- 	struct snd_soc_component *component = snd_soc_kcontrol_component(kcontrol);
- 	struct arizona *arizona = dev_get_drvdata(component->dev->parent);
-+	struct soc_mixer_control *mc = (struct soc_mixer_control *)kcontrol->private_value;
-+	int ret = 0;
 +
-+	if (ucontrol->value.integer.value[0] > mc->max)
-+		return -EINVAL;
- 
- 	mutex_lock(&arizona->dac_comp_lock);
--	arizona->dac_comp_enabled = ucontrol->value.integer.value[0];
-+	if (arizona->dac_comp_enabled != ucontrol->value.integer.value[0]) {
-+		arizona->dac_comp_enabled = ucontrol->value.integer.value[0];
-+		ret = 1;
-+	}
- 	mutex_unlock(&arizona->dac_comp_lock);
- 
--	return 0;
-+	return ret;
++	return change;
  }
  
- static const char * const wm5102_osr_text[] = {
+ static SOC_ENUM_SINGLE_DECL(cs47l92_outdemux_enum,
 -- 
 2.35.1
 
