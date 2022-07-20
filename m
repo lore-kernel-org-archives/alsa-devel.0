@@ -4,61 +4,61 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id DE5CDC43334
-	for <alsa-devel@archiver.kernel.org>; Wed, 20 Jul 2022 01:15:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id DE5AFC433EF
+	for <alsa-devel@archiver.kernel.org>; Wed, 20 Jul 2022 01:15:45 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 209E51675;
-	Wed, 20 Jul 2022 03:14:40 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 209E51675
+	by alsa0.perex.cz (Postfix) with ESMTPS id 277511718;
+	Wed, 20 Jul 2022 03:14:54 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 277511718
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1658279730;
-	bh=4j684ydNnDY2FnLOno8VZSN1YwtwifMKEKDHjbqAIUk=;
+	s=default; t=1658279744;
+	bh=zpto+oeNiWjXnod2Q4EhyPbxGSUuEeTxG/WNDLCYAkc=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=ji0E1y8BX40lnWLeenWv+7eMRHNUFqSfS4BRrK+fnfZZv9sNkK3VBNHXgGNWEzxEQ
-	 OXOHfpNsVawiWcagt+W2mt0oxsfEw379W9OgzgiqEx1uAp3qu25BE1MqlCQgT6Vr6D
-	 20qxaSSV5cyZ8nnQ6XVe6d/PWsSucm90UobIN7Ec=
+	b=urXZMN7yqAy8du/+CPJcmJyo8ePa2hv5DqPTFD6lZ791GuaSIU5jeiHTPkJDkPCvw
+	 0MR1rVKOdE4Vm83UNDA7oFMIllZTM3pRh8U1N5aeT90l02ARXjJnbQa3Md5Jw65zKP
+	 +b8gb4Jvu8Ug16EIPn0vzTCllb9AiOw3S+/BftGg=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 8E34AF80559;
-	Wed, 20 Jul 2022 03:13:24 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 21618F80563;
+	Wed, 20 Jul 2022 03:13:25 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id DA3A6F80551; Wed, 20 Jul 2022 03:13:22 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+ id 18824F8055A; Wed, 20 Jul 2022 03:13:23 +0200 (CEST)
+Received: from sin.source.kernel.org (sin.source.kernel.org [145.40.73.55])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 751C7F80551
+ by alsa1.perex.cz (Postfix) with ESMTPS id 29B8BF80553
  for <alsa-devel@alsa-project.org>; Wed, 20 Jul 2022 03:13:14 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 751C7F80551
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 29B8BF80553
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="A8AJeRUR"
+ header.b="cnrmNIBf"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id 27B8B6172E;
- Wed, 20 Jul 2022 01:13:13 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4136FC341C6;
- Wed, 20 Jul 2022 01:13:11 +0000 (UTC)
+ by sin.source.kernel.org (Postfix) with ESMTPS id 6E833CE1E8C;
+ Wed, 20 Jul 2022 01:13:08 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D1C7BC341C6;
+ Wed, 20 Jul 2022 01:13:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1658279592;
- bh=4j684ydNnDY2FnLOno8VZSN1YwtwifMKEKDHjbqAIUk=;
+ s=k20201202; t=1658279586;
+ bh=zpto+oeNiWjXnod2Q4EhyPbxGSUuEeTxG/WNDLCYAkc=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=A8AJeRURe5zAqqXXQLubPdQXBXUO8hnV8EDXY9qkpMSPoEGgxalI0PolPd0FdCHuU
- as0wUhvD6K3g4arSf73QMuQ47wndvmraJ1tuv0QB69PfH8XMh7jFx3+0/CwlxfFKIy
- coiisX5Pe8a7psDW+AKNlfgizwEb6uTmo3zMOMi80ot5t3o251ELtKy+2Q9sEpAVpR
- VjjyHj51/8QzfCSiWglkAVKnvVAMJUD02PWFP+LpQqsaqxLhHqPFSb6PkL3VOyGztK
- ZtLwOuauPSsKugDlb9O8JEcTVr05kiiL83GcOnRiIZTrbdJ4Vel3Bd+acQplUPvfAa
- U/bdgVGN5qA5w==
+ b=cnrmNIBfLTVvIXdBwOFJdVO9qaSfVEGsdacH8wqBgqPwpS8Y2UGwT6Mekhh8eG4nw
+ KTF9xfJy1r3oH60/DJEwm+OKaus/k+TzrL6IHG7RS8mip/8RbXzHKnHpZEXkNpfw5M
+ BOZE5BciVYvyGILgo7QLaOwP9KmJJkWYKw99IcWpC7sqEFPHSMtuW30pU1xnv2eGnD
+ Fwy+WI+f80Nvh8vQOP39mPwdz/upA3vSJG7ITc6mvN6Cg8dKFoeOSEalxFP83CxDtZ
+ xPZw32mw/3okBJ0FP0OG9/jZXG9OdCYS21n+BfAADFXrxRg8E1Jq3RxAEkfIJESdO4
+ U+rySAvHGMIgg==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.18 42/54] ASoC: arizona: Update
- arizona_aif_cfg_changed to use RX_BCLK_RATE
-Date: Tue, 19 Jul 2022 21:10:19 -0400
-Message-Id: <20220720011031.1023305-42-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.18 40/54] ASoC: wm8998: Fix event generation for
+ input mux
+Date: Tue, 19 Jul 2022 21:10:17 -0400
+Message-Id: <20220720011031.1023305-40-sashal@kernel.org>
 X-Mailer: git-send-email 2.35.1
 In-Reply-To: <20220720011031.1023305-1-sashal@kernel.org>
 References: <20220720011031.1023305-1-sashal@kernel.org>
@@ -86,41 +86,63 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 From: Charles Keepax <ckeepax@opensource.cirrus.com>
 
-[ Upstream commit f99e930655f411453170a5f332e12c2d2748822e ]
+[ Upstream commit 15b2e5d10ccf32a1a1ae7c636511e2f51320fdb5 ]
 
-Currently the function arizona_aif_cfg_changed uses the TX_BCLK_RATE,
-however this register is not used on wm8998. This was not noticed as
-previously snd_soc_component_read did not print an error message.
-However, now the log gets filled with error messages, further more the
-test for if the LRCLK changed will return spurious results.
-
-Update the code to use the RX_BCLK_RATE register, the LRCLK parameters
-are written to both registers and the RX_BCLK_RATE register is used
-across all Arizona devices.
+wm8998_inmux_put returns the value of snd_soc_dapm_mux_update_power,
+which returns a 1 if a path was found for the kcontrol. This is
+obviously different to the expected return a 1 if the control
+was updated value. This results in spurious notifications to
+user-space. Update the handling to only return a 1 when the value is
+changed.
 
 Signed-off-by: Charles Keepax <ckeepax@opensource.cirrus.com>
-Link: https://lore.kernel.org/r/20220628153409.3266932-4-ckeepax@opensource.cirrus.com
+Link: https://lore.kernel.org/r/20220628153409.3266932-2-ckeepax@opensource.cirrus.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/codecs/arizona.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ sound/soc/codecs/wm8998.c | 21 ++++++++++++++-------
+ 1 file changed, 14 insertions(+), 7 deletions(-)
 
-diff --git a/sound/soc/codecs/arizona.c b/sound/soc/codecs/arizona.c
-index e32871b3f68a..7434aeeda292 100644
---- a/sound/soc/codecs/arizona.c
-+++ b/sound/soc/codecs/arizona.c
-@@ -1760,8 +1760,8 @@ static bool arizona_aif_cfg_changed(struct snd_soc_component *component,
- 	if (bclk != (val & ARIZONA_AIF1_BCLK_FREQ_MASK))
- 		return true;
+diff --git a/sound/soc/codecs/wm8998.c b/sound/soc/codecs/wm8998.c
+index 00b59fc9b1fe..ab5481187c71 100644
+--- a/sound/soc/codecs/wm8998.c
++++ b/sound/soc/codecs/wm8998.c
+@@ -108,6 +108,7 @@ static int wm8998_inmux_put(struct snd_kcontrol *kcontrol,
+ 	struct soc_enum *e = (struct soc_enum *)kcontrol->private_value;
+ 	unsigned int mode_reg, mode_index;
+ 	unsigned int mux, inmode, src_val, mode_val;
++	int change, ret;
  
--	val = snd_soc_component_read(component, base + ARIZONA_AIF_TX_BCLK_RATE);
--	if (lrclk != (val & ARIZONA_AIF1TX_BCPF_MASK))
-+	val = snd_soc_component_read(component, base + ARIZONA_AIF_RX_BCLK_RATE);
-+	if (lrclk != (val & ARIZONA_AIF1RX_BCPF_MASK))
- 		return true;
+ 	mux = ucontrol->value.enumerated.item[0];
+ 	if (mux > 1)
+@@ -137,14 +138,20 @@ static int wm8998_inmux_put(struct snd_kcontrol *kcontrol,
+ 	snd_soc_component_update_bits(component, mode_reg,
+ 				      ARIZONA_IN1_MODE_MASK, mode_val);
  
- 	val = snd_soc_component_read(component, base + ARIZONA_AIF_FRAME_CTRL_1);
+-	snd_soc_component_update_bits(component, e->reg,
+-				      ARIZONA_IN1L_SRC_MASK |
+-				      ARIZONA_IN1L_SRC_SE_MASK,
+-				      src_val);
++	change = snd_soc_component_update_bits(component, e->reg,
++					       ARIZONA_IN1L_SRC_MASK |
++					       ARIZONA_IN1L_SRC_SE_MASK,
++					       src_val);
+ 
+-	return snd_soc_dapm_mux_update_power(dapm, kcontrol,
+-					     ucontrol->value.enumerated.item[0],
+-					     e, NULL);
++	ret = snd_soc_dapm_mux_update_power(dapm, kcontrol,
++					    ucontrol->value.enumerated.item[0],
++					    e, NULL);
++	if (ret < 0) {
++		dev_err(arizona->dev, "Failed to update demux power state: %d\n", ret);
++		return ret;
++	}
++
++	return change;
+ }
+ 
+ static const char * const wm8998_inmux_texts[] = {
 -- 
 2.35.1
 
