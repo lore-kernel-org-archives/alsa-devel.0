@@ -4,74 +4,74 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 45632C433EF
-	for <alsa-devel@archiver.kernel.org>; Wed, 20 Jul 2022 13:57:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B90D3C433EF
+	for <alsa-devel@archiver.kernel.org>; Wed, 20 Jul 2022 13:58:18 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 706FE1620;
-	Wed, 20 Jul 2022 15:56:56 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 706FE1620
+	by alsa0.perex.cz (Postfix) with ESMTPS id E5A991785;
+	Wed, 20 Jul 2022 15:57:26 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E5A991785
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1658325466;
-	bh=Z4oDYkFj6iJIsZAYxl0B0cyyWM0IYHneh00JcZSbwIU=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	s=default; t=1658325497;
+	bh=esxkJuy0ztRji0enQV4Wfph2iwMAK2BWM7TRhVIuhpw=;
+	h=Date:Subject:To:References:From:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=au6xZAd3kDTb3T2NNRQA7MGwyTKbPRpbBCmmaYt33tXu0oBaeb8QHxAt7CCqUl3CM
-	 Gs87RqDDM4RKaBt5YuHsEhftRyGLOWvsehlf9OqjhM+4o1UJjPE48dzfikdAT0bVPa
-	 5X4WwIMIKfbYtlw1L9PfZRbSKGIGXbnwuWonYkKA=
+	b=mGwgoJ8oEDIAsIwOcVrR8l7iDzOfzMAZ9pUmkuqkho5oK+V7ThhMgBkk6TK7K6/p1
+	 MlQQOIuk/CZeM1BdLqgnzFfD/lKOi+EhcramHB30ORpoFHivRN6BwRuHe9Q4SMAnpl
+	 y9TdIDtehJyTOoSYeYDqa/NvF7Y1LjGzsSHuxmrI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 0CEC0F80169;
-	Wed, 20 Jul 2022 15:56:56 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id C0FA9F8027D;
+	Wed, 20 Jul 2022 15:57:02 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 6B5E3F80139; Wed, 20 Jul 2022 15:56:55 +0200 (CEST)
-Received: from ams.source.kernel.org (ams.source.kernel.org
- [IPv6:2604:1380:4601:e00::1])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 4B98DF800BA
- for <alsa-devel@alsa-project.org>; Wed, 20 Jul 2022 15:56:52 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4B98DF800BA
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="Uaq8WKE4"
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+ id 5ED9AF8028B; Wed, 20 Jul 2022 15:57:01 +0200 (CEST)
+Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by ams.source.kernel.org (Postfix) with ESMTPS id CA9C1B81F6A;
- Wed, 20 Jul 2022 13:56:51 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 10822C3411E;
- Wed, 20 Jul 2022 13:56:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1658325410;
- bh=Z4oDYkFj6iJIsZAYxl0B0cyyWM0IYHneh00JcZSbwIU=;
- h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=Uaq8WKE4exwQcP7FvFIlQ//WR9nHGbtW+PidIPumNZWVfqtIK/LH2Uv6h7N0+8DYS
- wTT0JiY76p76S2qShYV9qd5+eX207EB086RA6U6TrZZQrisj5iqBlpZVPwHWdN4gUJ
- 3uI0G9MfnDSQ4TtChxOAaQnOaICXKN78ezNkAprIcgfaOvgzAF1qdwldkMbd50DJr1
- HqRTYOv40d8FgTSzrZ/1rqYL2MemLRiIdSs3u6kav5OiPNKmyNHemCkfkgLmiVHQOH
- gB9fdHFmVu5LjPW/HNy0os+rrKuaZH7POhQoMICPdK9l1cTrY63/zdE90g7vFHzw19
- tkWk5Pmp1lmNQ==
-Date: Wed, 20 Jul 2022 14:56:41 +0100
-From: Mark Brown <broonie@kernel.org>
-To: Cezary Rojewski <cezary.rojewski@intel.com>
-Subject: Re: [PATCH 1/4] ASoC: hdac_hda: Disconnect struct hdac_hda_priv and
- hda_codec
-Message-ID: <YtgJmQOGQ+CvwJfz@sirena.org.uk>
-References: <20220720130622.146973-1-cezary.rojewski@intel.com>
- <20220720130622.146973-2-cezary.rojewski@intel.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id DBE89F800BA
+ for <alsa-devel@alsa-project.org>; Wed, 20 Jul 2022 15:56:52 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DBE89F800BA
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
+ header.b="PxiXOzU/"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+ d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+ t=1658325416; x=1689861416;
+ h=message-id:date:mime-version:subject:to:cc:references:
+ from:in-reply-to:content-transfer-encoding;
+ bh=esxkJuy0ztRji0enQV4Wfph2iwMAK2BWM7TRhVIuhpw=;
+ b=PxiXOzU/xr7mwvOb4d000WigplswzaNi5xaZL9yddENBpgG/O2T68zAj
+ DdRjltDUy5iuo/15aV9bWmR6um60kOGMc1ugznEuP04wkKOT7uBxFTyww
+ 6gKj+EbfkDph9FdMQ3OnBz9X16qe7rb71JSyVrFTGEUP2lFI3+aYkUTEM
+ iY8JgHjbEG6K+2uM5VzgcC7hOgYqFAzsZe2Lu5+sCDGSEhfIsB+E+qlbQ
+ lrCL4XEJEjxxDk7bcJEXG9nd+/Kc4NAcog9+x34gXfSMEfa2o13mXHMB4
+ JJKC+FT1n6zfqcyoMBNT3Hw1y+EBzrXWSqQxfGZA7M2lWuz8Z9fs7D8BJ w==;
+X-IronPort-AV: E=McAfee;i="6400,9594,10414"; a="284340038"
+X-IronPort-AV: E=Sophos;i="5.92,286,1650956400"; d="scan'208";a="284340038"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+ by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 20 Jul 2022 06:56:39 -0700
+X-IronPort-AV: E=Sophos;i="5.92,286,1650956400"; d="scan'208";a="573312437"
+Received: from tgeorge1-mobl.amr.corp.intel.com (HELO [10.212.79.208])
+ ([10.212.79.208])
+ by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 20 Jul 2022 06:56:38 -0700
+Message-ID: <14b84004-0c0b-64d4-dce3-96c7c8d96c28@linux.intel.com>
+Date: Wed, 20 Jul 2022 08:56:37 -0500
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature"; boundary="yPPf5XnrCWXwOTF3"
-Content-Disposition: inline
-In-Reply-To: <20220720130622.146973-2-cezary.rojewski@intel.com>
-X-Cookie: I exist, therefore I am paid.
-Cc: alsa-devel@alsa-project.org, kai.vehmanen@linux.intel.com,
- lgirdwood@gmail.com, yung-chuan.liao@linux.intel.com,
- pierre-louis.bossart@linux.intel.com, tiwai@suse.com, hdegoede@redhat.com,
- ranjani.sridharan@linux.intel.com, amadeuszx.slawinski@linux.intel.com,
- peter.ujfalusi@linux.intel.com
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Firefox/91.0 Thunderbird/91.11.0
+Subject: Re: [PATCH] soundwire:repeated word: 'state'.
+Content-Language: en-US
+To: Xin Gao <gaoxin@cdjrlc.com>,
+ ALSA Development Mailing List <alsa-devel@alsa-project.org>
+References: <20220719183902.9231-1-gaoxin@cdjrlc.com>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+In-Reply-To: <20220719183902.9231-1-gaoxin@cdjrlc.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+Cc: vkoul@kernel.org, yung-chuan.liao@linux.intel.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -88,30 +88,37 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
---yPPf5XnrCWXwOTF3
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
 
-On Wed, Jul 20, 2022 at 03:06:19PM +0200, Cezary Rojewski wrote:
-> Preliminary step in making snd_hda_codec_device_init() the only
-> constructor for struct hda_codec instances. To do that, no struct may
-> wrap struct hda_codec as its base type.
+On 7/19/22 13:39, Xin Gao wrote:
+> repeated word: 'state'.
+> 
+> Signed-off-by: Xin Gao <gaoxin@cdjrlc.com>
+> ---
+>  drivers/soundwire/stream.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/soundwire/stream.c b/drivers/soundwire/stream.c
+> index d34150559142..f0312b99e3de 100644
+> --- a/drivers/soundwire/stream.c
+> +++ b/drivers/soundwire/stream.c
+> @@ -1424,7 +1424,7 @@ int sdw_prepare_stream(struct sdw_stream_runtime *stream)
+>  	if (stream->state != SDW_STREAM_CONFIGURED &&
+>  	    stream->state != SDW_STREAM_DEPREPARED &&
+>  	    stream->state != SDW_STREAM_DISABLED) {
+> -		pr_err("%s: %s: inconsistent state state %d\n",
+> +		pr_err("%s: %s: inconsistent state %d\n",
+>  		       __func__, stream->name, stream->state);
+>  		ret = -EINVAL;
+>  		goto state_err;
 
-Acked-by: Mark Brown <broonie@kernel.org>
+There are other occurrences of this repetition, you may want to correct
+them all in the same patch?
 
---yPPf5XnrCWXwOTF3
-Content-Type: application/pgp-signature; name="signature.asc"
+stream.c:1444:          pr_err("%s: %s: inconsistent state state %d\n",
 
------BEGIN PGP SIGNATURE-----
+stream.c:1533:          pr_err("%s: %s: inconsistent state state %d\n",
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmLYCZgACgkQJNaLcl1U
-h9B5nAf/el0MY0afFppeEXBxBhVZEFYnoLtbo18k4H6Dni+PvxPdiW8GRVl6KSvO
-RzVGuKq9PF6yGR8KONUepj0H8xOQZspDGiwOCIJadPf2PuszsdTfiG5DpogEco1T
-CXI4s11lEB0z+9LjzMUdpMJCDwcGBxjzgpaRpLdVnISbvznLZB9joLdk0koktK6S
-mE3SZf1ef4joUZS+CGdmM31aUqVi8kYD0G8toZfqXjp8wkSnJ+ndmBKc1EcUUXWY
-+ObBcOc6aLFx93IDA53IQLuj54dXhEymqvzP5mXtvoNxZpTDrPKxf1/GbAA9onQp
-mq0p8tC+8sBafMwL+2T4eWmavTyjsA==
-=aM9a
------END PGP SIGNATURE-----
+stream.c:1620:          pr_err("%s: %s: inconsistent state state %d\n",
 
---yPPf5XnrCWXwOTF3--
+stream.c:1701:          pr_err("%s: %s: inconsistent state state %d\n",
+
