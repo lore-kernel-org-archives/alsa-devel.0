@@ -4,92 +4,74 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D5198C43334
-	for <alsa-devel@archiver.kernel.org>; Wed, 20 Jul 2022 13:51:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 45632C433EF
+	for <alsa-devel@archiver.kernel.org>; Wed, 20 Jul 2022 13:57:48 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 5BCD31786;
-	Wed, 20 Jul 2022 15:50:10 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5BCD31786
+	by alsa0.perex.cz (Postfix) with ESMTPS id 706FE1620;
+	Wed, 20 Jul 2022 15:56:56 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 706FE1620
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1658325060;
-	bh=S3t/0aFuiEsbtsnA6nu2eAla4EuKjBw+IvPvV5JNPVs=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
+	s=default; t=1658325466;
+	bh=Z4oDYkFj6iJIsZAYxl0B0cyyWM0IYHneh00JcZSbwIU=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=hL5Oj+NgJ4SKtT7mO3tJd8uOZOgmdavBA5e0I1aXkDIbAqMMm7KaBQZ4IBXuy5raD
-	 pjoCWQjYvV14CY94Klag7bfBU723q3OELpHln6wJtR414CuOg2ktdjZscm8rh/Fk/a
-	 oARPwLS6MnCK/MunKu3HF7MVcQHqxVaaRdUcceJU=
+	b=au6xZAd3kDTb3T2NNRQA7MGwyTKbPRpbBCmmaYt33tXu0oBaeb8QHxAt7CCqUl3CM
+	 Gs87RqDDM4RKaBt5YuHsEhftRyGLOWvsehlf9OqjhM+4o1UJjPE48dzfikdAT0bVPa
+	 5X4WwIMIKfbYtlw1L9PfZRbSKGIGXbnwuWonYkKA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 01112F80139;
-	Wed, 20 Jul 2022 15:50:10 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 0CEC0F80169;
+	Wed, 20 Jul 2022 15:56:56 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 312DCF80169; Wed, 20 Jul 2022 15:50:08 +0200 (CEST)
-Received: from mail-lj1-x233.google.com (mail-lj1-x233.google.com
- [IPv6:2a00:1450:4864:20::233])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id 6B5E3F80139; Wed, 20 Jul 2022 15:56:55 +0200 (CEST)
+Received: from ams.source.kernel.org (ams.source.kernel.org
+ [IPv6:2604:1380:4601:e00::1])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id C5644F80125;
- Wed, 20 Jul 2022 15:50:00 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C5644F80125
+ by alsa1.perex.cz (Postfix) with ESMTPS id 4B98DF800BA
+ for <alsa-devel@alsa-project.org>; Wed, 20 Jul 2022 15:56:52 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4B98DF800BA
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="qFNp1cw9"
-Received: by mail-lj1-x233.google.com with SMTP id x10so20739508ljj.11;
- Wed, 20 Jul 2022 06:50:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
- h=mime-version:references:in-reply-to:from:date:message-id:subject:to
- :cc; bh=p4N/IbjkWbMhvwJvHe9dbmW9mAWjywr/pYkgdy0MEiE=;
- b=qFNp1cw9rdOfaGf2HY6rErZ6SVILD6bVPvOzF4YkhOOeHNS3AKSd1y5uIlUzV5aqSP
- xhRQ/s7mczSskiCEO/7B29eFbXP6FE24foK5FYpWm6kU8nVe0huL1JlqtKc3cgCU92HT
- PQ8h2rq2w0K9kZMBfMVFVDEbDLum1Ku+LXnItAOCnHX503524Sw1K9PBJr2t2QkQJWox
- GgrADIjnwtPqhukQPLmR5rhKDZ9qwmZGRkURuzrI7G2nN4vzbVoNCcmsh7W2Pg56Wrmv
- ksnaUetwHuzNjxABcONt4GfsA0urfmnBuQetFLwK4Il8DaqiZfLO00Vcm3brbDrJmvZ+
- cCEg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=x-gm-message-state:mime-version:references:in-reply-to:from:date
- :message-id:subject:to:cc;
- bh=p4N/IbjkWbMhvwJvHe9dbmW9mAWjywr/pYkgdy0MEiE=;
- b=lgHOJVcbNUbFEdHFdBPlpQeR/RJDPzGXMn8ktqFRqFTmGO8lLHsAHHktvyr9TEkdBp
- 5B0/p9CTQDkid+3Xo7CEgTsMRdrs/FEslwAmcMBGLYMkZqQn0jyUr1Hrh5+BTqrF+gu5
- AOk/iHqgPcsTIx/rMJYmh9pozHFiaNVYAsltcjyBh+0ZC5/SGeCEFCvGE1Mbv+RBeWPt
- RsePiAa7G+WuamlEZsGtq7ujYHelH6YHAJ5f1Ea1fQMNg4NY6JOrx46nKBob6UQhgr+m
- QSE79hoYdgUFGO+g5y/Jh/+5s/7iPWXoqVI3jTY1XAdyZ0kE+rWnqE/MqDvustylHp2T
- unAQ==
-X-Gm-Message-State: AJIora8joMn0PW2h0QdRYsExcRIhx0pJTYcgGJbo/jywAGuesU6J7ab3
- BsmtIc7hWeWM6EmKq9FlY4XTTAQ+aownAC4/H6k=
-X-Google-Smtp-Source: AGRyM1tvWZjKGxSOZwba2cJOBsVLA1UPHwtczp/Qsq5Jt09gWeQa6jT8KfDdnbkeFd2z+jRNeWMqbjegcEuSNHdE+v4=
-X-Received: by 2002:a2e:895a:0:b0:25d:6815:98ff with SMTP id
- b26-20020a2e895a000000b0025d681598ffmr16184153ljk.189.1658324998407; Wed, 20
- Jul 2022 06:49:58 -0700 (PDT)
+ dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="Uaq8WKE4"
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by ams.source.kernel.org (Postfix) with ESMTPS id CA9C1B81F6A;
+ Wed, 20 Jul 2022 13:56:51 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 10822C3411E;
+ Wed, 20 Jul 2022 13:56:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1658325410;
+ bh=Z4oDYkFj6iJIsZAYxl0B0cyyWM0IYHneh00JcZSbwIU=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=Uaq8WKE4exwQcP7FvFIlQ//WR9nHGbtW+PidIPumNZWVfqtIK/LH2Uv6h7N0+8DYS
+ wTT0JiY76p76S2qShYV9qd5+eX207EB086RA6U6TrZZQrisj5iqBlpZVPwHWdN4gUJ
+ 3uI0G9MfnDSQ4TtChxOAaQnOaICXKN78ezNkAprIcgfaOvgzAF1qdwldkMbd50DJr1
+ HqRTYOv40d8FgTSzrZ/1rqYL2MemLRiIdSs3u6kav5OiPNKmyNHemCkfkgLmiVHQOH
+ gB9fdHFmVu5LjPW/HNy0os+rrKuaZH7POhQoMICPdK9l1cTrY63/zdE90g7vFHzw19
+ tkWk5Pmp1lmNQ==
+Date: Wed, 20 Jul 2022 14:56:41 +0100
+From: Mark Brown <broonie@kernel.org>
+To: Cezary Rojewski <cezary.rojewski@intel.com>
+Subject: Re: [PATCH 1/4] ASoC: hdac_hda: Disconnect struct hdac_hda_priv and
+ hda_codec
+Message-ID: <YtgJmQOGQ+CvwJfz@sirena.org.uk>
+References: <20220720130622.146973-1-cezary.rojewski@intel.com>
+ <20220720130622.146973-2-cezary.rojewski@intel.com>
 MIME-Version: 1.0
-References: <1658208367-24376-1-git-send-email-shengjiu.wang@nxp.com>
- <a2fd9907-d098-7a38-c423-aeb167ab6d37@linux.intel.com>
- <CAA+D8AM3xwacUg2C-W-TFB4AHbvqd-4bSqRqeFAsmFKseT0zVA@mail.gmail.com>
- <8c839963-4244-3e22-3dea-f060603883c1@linux.intel.com>
-In-Reply-To: <8c839963-4244-3e22-3dea-f060603883c1@linux.intel.com>
-From: Shengjiu Wang <shengjiu.wang@gmail.com>
-Date: Wed, 20 Jul 2022 21:49:47 +0800
-Message-ID: <CAA+D8AO4HoO-_LadXONLLkN+9Oz_9AvSUiV=n1E=q6xrM-KNfQ@mail.gmail.com>
-Subject: Re: [PATCH 1/2] ASoC: SOF: imx: Add i.MX8ULP HW support
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Content-Filtered-By: Mailman/MimeDel 2.1.15
-Cc: alsa-devel@alsa-project.org, yung-chuan.liao@linux.intel.com,
- Liam Girdwood <lgirdwood@gmail.com>, krzysztof.kozlowski+dt@linaro.org,
- Fabio Estevam <festevam@gmail.com>, sound-open-firmware@alsa-project.org,
- peter.ujfalusi@linux.intel.com, ranjani.sridharan@linux.intel.com,
- NXP Linux Team <linux-imx@nxp.com>,
- "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS"
- <devicetree@vger.kernel.org>, Sascha Hauer <s.hauer@pengutronix.de>,
- Rob Herring <robh+dt@kernel.org>, Daniel Baluta <daniel.baluta@nxp.com>,
- "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE"
- <linux-arm-kernel@lists.infradead.org>, kai.vehmanen@linux.intel.com,
- Shengjiu Wang <shengjiu.wang@nxp.com>, Takashi Iwai <tiwai@suse.com>,
- linux-kernel <linux-kernel@vger.kernel.org>, Mark Brown <broonie@kernel.org>,
- Sascha Hauer <kernel@pengutronix.de>, Shawn Guo <shawnguo@kernel.org>
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature"; boundary="yPPf5XnrCWXwOTF3"
+Content-Disposition: inline
+In-Reply-To: <20220720130622.146973-2-cezary.rojewski@intel.com>
+X-Cookie: I exist, therefore I am paid.
+Cc: alsa-devel@alsa-project.org, kai.vehmanen@linux.intel.com,
+ lgirdwood@gmail.com, yung-chuan.liao@linux.intel.com,
+ pierre-louis.bossart@linux.intel.com, tiwai@suse.com, hdegoede@redhat.com,
+ ranjani.sridharan@linux.intel.com, amadeuszx.slawinski@linux.intel.com,
+ peter.ujfalusi@linux.intel.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -105,37 +87,31 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, Jul 20, 2022 at 9:25 PM Pierre-Louis Bossart <
-pierre-louis.bossart@linux.intel.com> wrote:
 
->
->
-> On 7/20/22 03:57, Shengjiu Wang wrote:
-> >     > +static int imx8ulp_resume(struct snd_sof_dev *sdev)
-> >     > +{
-> >     > +     struct imx8ulp_priv *priv = (struct imx8ulp_priv
-> >     *)sdev->pdata->hw_pdata;
-> >     > +     int i;
-> >     > +
-> >     > +     imx8_enable_clocks(sdev, priv->clks);
-> >     > +
-> >     > +     for (i = 0; i < DSP_MU_CHAN_NUM; i++)
-> >     > +             imx_dsp_request_channel(priv->dsp_ipc, i);
-> >     > +
-> >     > +     return 0;
-> >
-> >     is the assymetry between suspend and resume intentional? You are
-> missing
-> >     the update_bit for EXECUTE_BIT?
-> >
-> >
-> > Yes, intentional. After resume the firmware is reloaded and  EXECUTE_BIT
-> > will be updated at trigger DSP start.
->
-> That's worthy of a comment to help reviewers, thanks.
->
+--yPPf5XnrCWXwOTF3
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-ok, thanks.
+On Wed, Jul 20, 2022 at 03:06:19PM +0200, Cezary Rojewski wrote:
+> Preliminary step in making snd_hda_codec_device_init() the only
+> constructor for struct hda_codec instances. To do that, no struct may
+> wrap struct hda_codec as its base type.
 
-best regards
-wang shengjiu
+Acked-by: Mark Brown <broonie@kernel.org>
+
+--yPPf5XnrCWXwOTF3
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmLYCZgACgkQJNaLcl1U
+h9B5nAf/el0MY0afFppeEXBxBhVZEFYnoLtbo18k4H6Dni+PvxPdiW8GRVl6KSvO
+RzVGuKq9PF6yGR8KONUepj0H8xOQZspDGiwOCIJadPf2PuszsdTfiG5DpogEco1T
+CXI4s11lEB0z+9LjzMUdpMJCDwcGBxjzgpaRpLdVnISbvznLZB9joLdk0koktK6S
+mE3SZf1ef4joUZS+CGdmM31aUqVi8kYD0G8toZfqXjp8wkSnJ+ndmBKc1EcUUXWY
++ObBcOc6aLFx93IDA53IQLuj54dXhEymqvzP5mXtvoNxZpTDrPKxf1/GbAA9onQp
+mq0p8tC+8sBafMwL+2T4eWmavTyjsA==
+=aM9a
+-----END PGP SIGNATURE-----
+
+--yPPf5XnrCWXwOTF3--
