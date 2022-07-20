@@ -4,72 +4,71 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D8D23C433EF
-	for <alsa-devel@archiver.kernel.org>; Wed, 20 Jul 2022 01:18:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id AA088C433EF
+	for <alsa-devel@archiver.kernel.org>; Wed, 20 Jul 2022 01:18:15 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 26CB41735;
-	Wed, 20 Jul 2022 03:17:09 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 26CB41735
+	by alsa0.perex.cz (Postfix) with ESMTPS id ED8A5174B;
+	Wed, 20 Jul 2022 03:17:23 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz ED8A5174B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1658279879;
-	bh=zpto+oeNiWjXnod2Q4EhyPbxGSUuEeTxG/WNDLCYAkc=;
+	s=default; t=1658279894;
+	bh=RqGXJUEV+udnJj0vft105RkHj94e+5R2bTLqMsjWMAE=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=J6irrnuHB3edjrwCxktm8okTYmCzwt5XbbHuTxpJTmjMeo/kHg0Epn9mjB+CRc+eB
-	 anpfELLWTH51iRO6QsSMsjOzwwfJIVU0ku3tN8ZZVyVVDQ1RaTzExYqmI1jVS2RuUG
-	 ZwXrGc/oYyYwYKuNFlPTC5TNHsSe8lOxLD6kOZjs=
+	b=XgNwL3qH3+h2/t+pnlRCDi6tglqVqPN1eAwvCkO886EPWgA9/6y6l//gtX3g4bLXA
+	 K3nyR4JdU8BYOc7/9UTMvGDxjYyUVs9xnNiLEJuHd4zGL1tBUV2+Ketwz3HyzguEe2
+	 8INbe3gHHkfrKLGCkFw50hB6va9ghEHTLkC9pIbQ=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id A3DFCF80564;
-	Wed, 20 Jul 2022 03:16:05 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 73A6DF8027D;
+	Wed, 20 Jul 2022 03:17:17 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 61ABCF80563; Wed, 20 Jul 2022 03:16:03 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org
- [IPv6:2604:1380:4641:c500::1])
+ id 48609F80269; Wed, 20 Jul 2022 03:17:16 +0200 (CEST)
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id DD2F0F804FA
- for <alsa-devel@alsa-project.org>; Wed, 20 Jul 2022 03:15:50 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DD2F0F804FA
+ by alsa1.perex.cz (Postfix) with ESMTPS id BC7B7F8025D
+ for <alsa-devel@alsa-project.org>; Wed, 20 Jul 2022 03:17:09 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BC7B7F8025D
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="oJHJnu59"
+ header.b="sBpJ+LRU"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id 46511617BF;
- Wed, 20 Jul 2022 01:15:49 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0CFE6C341C6;
- Wed, 20 Jul 2022 01:15:47 +0000 (UTC)
+ by ams.source.kernel.org (Postfix) with ESMTPS id B4C3CB81DF3;
+ Wed, 20 Jul 2022 01:17:08 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 14ACEC36AE2;
+ Wed, 20 Jul 2022 01:17:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1658279749;
- bh=zpto+oeNiWjXnod2Q4EhyPbxGSUuEeTxG/WNDLCYAkc=;
+ s=k20201202; t=1658279827;
+ bh=RqGXJUEV+udnJj0vft105RkHj94e+5R2bTLqMsjWMAE=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=oJHJnu59Xbj4LOfhpk4QbJ8AYKw2lnNZ7sqFXVQha7RRL8yCFAC1o0sUvD5DjqnYb
- V8UF/f8tIOwtwlg8wVgZFq1iPcUzYyjcKVca37MPbXKiRztVDnwP1+MEezRmgD7qbE
- qjzLmC6Mzhd1U88j/++jNqGVvueCmuSq39wvfcJJHFbFgXw+Zk4hCWjWNP1QbWWprf
- bk4fCJz/U98v/0Iv6+ZwHoNB3Qj4lcl9hr+VkyhQ/S6rpkYtsFWzT7ievW3CDryAcN
- zJX86uoc8/F/UEwM9Da3NZMZD25P92hpU66SXL20zryIwFCl2z97BuIhG+LgX+q/dK
- dLBpwBswXjRSg==
+ b=sBpJ+LRUOXFaGCzpWKOGSfxTGtHdifWnGBXj0/VY3YYyZSLWWE2AFMg2sF9V+0IBZ
+ NIKCRq14oRJDrzcdRBmYhOzuKD56erbARc/Ke9//S1EaWxc4IKJwJQUixmVmwHKmY3
+ 3QiBtrN3XjGoOSKdHSKKPnkc3XTaKIO5YxQQMTiWYGF32HQBOUx7GV4sfVNhPnDRJ/
+ X5FHzbObUQMXk+P3o/T5AUi96mHo3E6GZUMXqV67b0EPNGzQ6aXjV96zFR1pxt5Ph/
+ k9JjPBuW+scqT+qmNr8KYx2laaelfKYJLuYR+Jn+fczx0VCRaVBNyH9bGsArraf5bf
+ MGBW9MMcfOYZA==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.15 31/42] ASoC: wm8998: Fix event generation for
- input mux
-Date: Tue, 19 Jul 2022 21:13:39 -0400
-Message-Id: <20220720011350.1024134-31-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.10 15/25] ASoC: ti: omap-mcbsp: duplicate sysfs error
+Date: Tue, 19 Jul 2022 21:16:06 -0400
+Message-Id: <20220720011616.1024753-15-sashal@kernel.org>
 X-Mailer: git-send-email 2.35.1
-In-Reply-To: <20220720011350.1024134-1-sashal@kernel.org>
-References: <20220720011350.1024134-1-sashal@kernel.org>
+In-Reply-To: <20220720011616.1024753-1-sashal@kernel.org>
+References: <20220720011616.1024753-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 Cc: Sasha Levin <sashal@kernel.org>, alsa-devel@alsa-project.org,
- Charles Keepax <ckeepax@opensource.cirrus.com>, patches@opensource.cirrus.com,
- tiwai@suse.com, lgirdwood@gmail.com, Mark Brown <broonie@kernel.org>
+ David Owens <daowens01@gmail.com>, David Owens <dowens@precisionplanting.com>,
+ tiwai@suse.com, lgirdwood@gmail.com, Mark Brown <broonie@kernel.org>,
+ linux-omap@vger.kernel.org, peter.ujfalusi@gmail.com, jarkko.nikula@bitmer.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -85,65 +84,124 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Charles Keepax <ckeepax@opensource.cirrus.com>
+From: David Owens <daowens01@gmail.com>
 
-[ Upstream commit 15b2e5d10ccf32a1a1ae7c636511e2f51320fdb5 ]
+[ Upstream commit f0d96937d31c4615a6418e4bed5cee50a952040e ]
 
-wm8998_inmux_put returns the value of snd_soc_dapm_mux_update_power,
-which returns a 1 if a path was found for the kcontrol. This is
-obviously different to the expected return a 1 if the control
-was updated value. This results in spurious notifications to
-user-space. Update the handling to only return a 1 when the value is
-changed.
+Convert to managed versions of sysfs and clk allocation to simplify
+unbinding and error handling in probe.  Managed sysfs node
+creation specifically addresses the following error seen the second time
+probe is attempted after sdma_pcm_platform_register() previously requsted
+probe deferral:
 
-Signed-off-by: Charles Keepax <ckeepax@opensource.cirrus.com>
-Link: https://lore.kernel.org/r/20220628153409.3266932-2-ckeepax@opensource.cirrus.com
+sysfs: cannot create duplicate filename '/devices/platform/68000000.ocp/49022000.mcbsp/max_tx_thres'
+
+Signed-off-by: David Owens <dowens@precisionplanting.com>
+Link: https://lore.kernel.org/r/20220620183744.3176557-1-dowens@precisionplanting.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/codecs/wm8998.c | 21 ++++++++++++++-------
- 1 file changed, 14 insertions(+), 7 deletions(-)
+ sound/soc/ti/omap-mcbsp-priv.h |  2 --
+ sound/soc/ti/omap-mcbsp-st.c   | 14 ++------------
+ sound/soc/ti/omap-mcbsp.c      | 19 ++-----------------
+ 3 files changed, 4 insertions(+), 31 deletions(-)
 
-diff --git a/sound/soc/codecs/wm8998.c b/sound/soc/codecs/wm8998.c
-index 00b59fc9b1fe..ab5481187c71 100644
---- a/sound/soc/codecs/wm8998.c
-+++ b/sound/soc/codecs/wm8998.c
-@@ -108,6 +108,7 @@ static int wm8998_inmux_put(struct snd_kcontrol *kcontrol,
- 	struct soc_enum *e = (struct soc_enum *)kcontrol->private_value;
- 	unsigned int mode_reg, mode_index;
- 	unsigned int mux, inmode, src_val, mode_val;
-+	int change, ret;
+diff --git a/sound/soc/ti/omap-mcbsp-priv.h b/sound/soc/ti/omap-mcbsp-priv.h
+index 7865cda4bf0a..da519ea1f303 100644
+--- a/sound/soc/ti/omap-mcbsp-priv.h
++++ b/sound/soc/ti/omap-mcbsp-priv.h
+@@ -316,8 +316,6 @@ static inline int omap_mcbsp_read(struct omap_mcbsp *mcbsp, u16 reg,
  
- 	mux = ucontrol->value.enumerated.item[0];
- 	if (mux > 1)
-@@ -137,14 +138,20 @@ static int wm8998_inmux_put(struct snd_kcontrol *kcontrol,
- 	snd_soc_component_update_bits(component, mode_reg,
- 				      ARIZONA_IN1_MODE_MASK, mode_val);
+ /* Sidetone specific API */
+ int omap_mcbsp_st_init(struct platform_device *pdev);
+-void omap_mcbsp_st_cleanup(struct platform_device *pdev);
+-
+ int omap_mcbsp_st_start(struct omap_mcbsp *mcbsp);
+ int omap_mcbsp_st_stop(struct omap_mcbsp *mcbsp);
  
--	snd_soc_component_update_bits(component, e->reg,
--				      ARIZONA_IN1L_SRC_MASK |
--				      ARIZONA_IN1L_SRC_SE_MASK,
--				      src_val);
-+	change = snd_soc_component_update_bits(component, e->reg,
-+					       ARIZONA_IN1L_SRC_MASK |
-+					       ARIZONA_IN1L_SRC_SE_MASK,
-+					       src_val);
+diff --git a/sound/soc/ti/omap-mcbsp-st.c b/sound/soc/ti/omap-mcbsp-st.c
+index 0bc7d26c660a..7e8179cae92e 100644
+--- a/sound/soc/ti/omap-mcbsp-st.c
++++ b/sound/soc/ti/omap-mcbsp-st.c
+@@ -347,7 +347,7 @@ int omap_mcbsp_st_init(struct platform_device *pdev)
+ 	if (!st_data)
+ 		return -ENOMEM;
  
--	return snd_soc_dapm_mux_update_power(dapm, kcontrol,
--					     ucontrol->value.enumerated.item[0],
--					     e, NULL);
-+	ret = snd_soc_dapm_mux_update_power(dapm, kcontrol,
-+					    ucontrol->value.enumerated.item[0],
-+					    e, NULL);
-+	if (ret < 0) {
-+		dev_err(arizona->dev, "Failed to update demux power state: %d\n", ret);
-+		return ret;
-+	}
-+
-+	return change;
+-	st_data->mcbsp_iclk = clk_get(mcbsp->dev, "ick");
++	st_data->mcbsp_iclk = devm_clk_get(mcbsp->dev, "ick");
+ 	if (IS_ERR(st_data->mcbsp_iclk)) {
+ 		dev_warn(mcbsp->dev,
+ 			 "Failed to get ick, sidetone might be broken\n");
+@@ -359,7 +359,7 @@ int omap_mcbsp_st_init(struct platform_device *pdev)
+ 	if (!st_data->io_base_st)
+ 		return -ENOMEM;
+ 
+-	ret = sysfs_create_group(&mcbsp->dev->kobj, &sidetone_attr_group);
++	ret = devm_device_add_group(mcbsp->dev, &sidetone_attr_group);
+ 	if (ret)
+ 		return ret;
+ 
+@@ -368,16 +368,6 @@ int omap_mcbsp_st_init(struct platform_device *pdev)
+ 	return 0;
  }
  
- static const char * const wm8998_inmux_texts[] = {
+-void omap_mcbsp_st_cleanup(struct platform_device *pdev)
+-{
+-	struct omap_mcbsp *mcbsp = platform_get_drvdata(pdev);
+-
+-	if (mcbsp->st_data) {
+-		sysfs_remove_group(&mcbsp->dev->kobj, &sidetone_attr_group);
+-		clk_put(mcbsp->st_data->mcbsp_iclk);
+-	}
+-}
+-
+ static int omap_mcbsp_st_info_volsw(struct snd_kcontrol *kcontrol,
+ 				    struct snd_ctl_elem_info *uinfo)
+ {
+diff --git a/sound/soc/ti/omap-mcbsp.c b/sound/soc/ti/omap-mcbsp.c
+index 6025b30bbe77..119e9053d83f 100644
+--- a/sound/soc/ti/omap-mcbsp.c
++++ b/sound/soc/ti/omap-mcbsp.c
+@@ -703,8 +703,7 @@ static int omap_mcbsp_init(struct platform_device *pdev)
+ 		mcbsp->max_tx_thres = max_thres(mcbsp) - 0x10;
+ 		mcbsp->max_rx_thres = max_thres(mcbsp) - 0x10;
+ 
+-		ret = sysfs_create_group(&mcbsp->dev->kobj,
+-					 &additional_attr_group);
++		ret = devm_device_add_group(mcbsp->dev, &additional_attr_group);
+ 		if (ret) {
+ 			dev_err(mcbsp->dev,
+ 				"Unable to create additional controls\n");
+@@ -712,16 +711,7 @@ static int omap_mcbsp_init(struct platform_device *pdev)
+ 		}
+ 	}
+ 
+-	ret = omap_mcbsp_st_init(pdev);
+-	if (ret)
+-		goto err_st;
+-
+-	return 0;
+-
+-err_st:
+-	if (mcbsp->pdata->buffer_size)
+-		sysfs_remove_group(&mcbsp->dev->kobj, &additional_attr_group);
+-	return ret;
++	return omap_mcbsp_st_init(pdev);
+ }
+ 
+ /*
+@@ -1432,11 +1422,6 @@ static int asoc_mcbsp_remove(struct platform_device *pdev)
+ 	if (cpu_latency_qos_request_active(&mcbsp->pm_qos_req))
+ 		cpu_latency_qos_remove_request(&mcbsp->pm_qos_req);
+ 
+-	if (mcbsp->pdata->buffer_size)
+-		sysfs_remove_group(&mcbsp->dev->kobj, &additional_attr_group);
+-
+-	omap_mcbsp_st_cleanup(pdev);
+-
+ 	return 0;
+ }
+ 
 -- 
 2.35.1
 
