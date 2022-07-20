@@ -4,62 +4,62 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B43E3C433EF
-	for <alsa-devel@archiver.kernel.org>; Wed, 20 Jul 2022 01:17:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id ABE46C433EF
+	for <alsa-devel@archiver.kernel.org>; Wed, 20 Jul 2022 01:17:48 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E0A6F1700;
-	Wed, 20 Jul 2022 03:16:31 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E0A6F1700
+	by alsa0.perex.cz (Postfix) with ESMTPS id EC4321731;
+	Wed, 20 Jul 2022 03:16:56 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EC4321731
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1658279842;
-	bh=NV2ynk2YaJoTDPoyAUDPJqIw4qadRJfcBh0URspxv/k=;
+	s=default; t=1658279867;
+	bh=4j684ydNnDY2FnLOno8VZSN1YwtwifMKEKDHjbqAIUk=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=QVaNpTB8UrKKNhPf5MbcmlIBZoG/KYbmAxJwqbAAk3wBfVRciUk9pkv/86anGIumE
-	 OJIkCKTaoJNPnCq8LN0JkY3SaE/AB35sgYp0QUJmZyxF7CgP8k+vatcSBvZItn4f0I
-	 1Q2DX+lsT3hYrHl8MPFTeOCc4xhEcS4C0Rt8Gcmg=
+	b=HG0I/DMu6s8QHoGtxJVxc6RfLjK//g9SHS8BWujSoQb4P3+kbmDRa8mFCTlWnzzIL
+	 paxEpoczhxcFRuevx0Y09Izle0nX+5gArG2bzLXjSICUTCH2jxteCeFTdK5JHmsh+c
+	 Q9THIpo2vgrIDm1R8lba5QfobLXSZM9+vwE8L+r8=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 0FBD0F80551;
-	Wed, 20 Jul 2022 03:16:02 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 06783F804FA;
+	Wed, 20 Jul 2022 03:16:05 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 67C96F80517; Wed, 20 Jul 2022 03:16:00 +0200 (CEST)
+ id B56E5F80552; Wed, 20 Jul 2022 03:16:01 +0200 (CEST)
 Received: from dfw.source.kernel.org (dfw.source.kernel.org
  [IPv6:2604:1380:4641:c500::1])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id C9E51F80517
- for <alsa-devel@alsa-project.org>; Wed, 20 Jul 2022 03:15:53 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C9E51F80517
+ by alsa1.perex.cz (Postfix) with ESMTPS id 6805EF80169
+ for <alsa-devel@alsa-project.org>; Wed, 20 Jul 2022 03:15:56 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6805EF80169
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="g5p9sLX6"
+ header.b="Ait0Ohib"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id B27A66176A;
+ by dfw.source.kernel.org (Postfix) with ESMTPS id 7BEFC617B4;
+ Wed, 20 Jul 2022 01:15:54 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D32CAC341CA;
  Wed, 20 Jul 2022 01:15:52 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8354BC341CA;
- Wed, 20 Jul 2022 01:15:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1658279750;
- bh=NV2ynk2YaJoTDPoyAUDPJqIw4qadRJfcBh0URspxv/k=;
+ s=k20201202; t=1658279753;
+ bh=4j684ydNnDY2FnLOno8VZSN1YwtwifMKEKDHjbqAIUk=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=g5p9sLX6/7bFYlFcSLKBQmv5bk9pjsotoEyfZ+Ya6q5VDF8EcQjWivRljWT/0PKHQ
- 8mAAVj0y9cmUf+bLRvFN/sFWdPbNpXFOjxNA3luobPZ3nYRvgXvYMbJvG+z1RIgE3w
- K6Pzvor68lkjPODXoJ/uxL2A8KYElRZxr0bCD+1+idNx8YfmzZsCzN6lw3riBmkEqm
- dCFzpj6MVaVs9dlSc70HXku07N3O+/g9/bETjq+EjTXZvZEe478IaLiKFDGZs/TXkM
- UL/xYjZuX2JdoIG15zxoZNLgNhjL4ZjxgaZXZGZwLO08yWGHjaHJdYloMQEvMG+GpC
- b46DicRhdUKHg==
+ b=Ait0Ohibllvcf9d9B/YR4t7DcFPnzXzgiEsKGNrXoqw82+JJmk8wVYo9fJZNqnhtu
+ i06ZTyHhgm+jqRQbjUz0yrKX9lA+JsSIObhkR8RBv/JCajH7fCvGE0QaPUbpcEVDrG
+ QsPp1+dlPf5Mfr/FxvzKRKyTh46rJW6eU5bfs34JmVE0+9ZjXTyNR1l0K10GzbJlqg
+ T7DjRWwAVwv5lLEqx8TNBmKmtWwpqAKjm64bFVLKM0DLIu9CEbQToAvR9DqYZoAFAs
+ kcanBceLVzWicOJ/PT6vJ/TovvfugSlL1CwBIpCpQi02xyqenSbriVhaht2gb2bgIL
+ ipMH/QZOxRs3Q==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.15 32/42] ASoC: cs47l92: Fix event generation for
- OUT1 demux
-Date: Tue, 19 Jul 2022 21:13:40 -0400
-Message-Id: <20220720011350.1024134-32-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.15 33/42] ASoC: arizona: Update
+ arizona_aif_cfg_changed to use RX_BCLK_RATE
+Date: Tue, 19 Jul 2022 21:13:41 -0400
+Message-Id: <20220720011350.1024134-33-sashal@kernel.org>
 X-Mailer: git-send-email 2.35.1
 In-Reply-To: <20220720011350.1024134-1-sashal@kernel.org>
 References: <20220720011350.1024134-1-sashal@kernel.org>
@@ -68,10 +68,8 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 Cc: Sasha Levin <sashal@kernel.org>, alsa-devel@alsa-project.org,
- Charles Keepax <ckeepax@opensource.cirrus.com>, tanureal@opensource.cirrus.com,
- patches@opensource.cirrus.com, tiwai@suse.com, lgirdwood@gmail.com,
- david.rhodes@cirrus.com, rf@opensource.cirrus.com,
- Mark Brown <broonie@kernel.org>, james.schulman@cirrus.com
+ Charles Keepax <ckeepax@opensource.cirrus.com>, patches@opensource.cirrus.com,
+ tiwai@suse.com, lgirdwood@gmail.com, Mark Brown <broonie@kernel.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -89,42 +87,41 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 From: Charles Keepax <ckeepax@opensource.cirrus.com>
 
-[ Upstream commit 870d72ab9228575b2f005c9a23ea08787e0f63e6 ]
+[ Upstream commit f99e930655f411453170a5f332e12c2d2748822e ]
 
-cs47l92_put_demux returns the value of snd_soc_dapm_mux_update_power,
-which returns a 1 if a path was found for the kcontrol. This is
-obviously different to the expected return a 1 if the control
-was updated value. This results in spurious notifications to
-user-space. Update the handling to only return a 1 when the value is
-changed.
+Currently the function arizona_aif_cfg_changed uses the TX_BCLK_RATE,
+however this register is not used on wm8998. This was not noticed as
+previously snd_soc_component_read did not print an error message.
+However, now the log gets filled with error messages, further more the
+test for if the LRCLK changed will return spurious results.
+
+Update the code to use the RX_BCLK_RATE register, the LRCLK parameters
+are written to both registers and the RX_BCLK_RATE register is used
+across all Arizona devices.
 
 Signed-off-by: Charles Keepax <ckeepax@opensource.cirrus.com>
-Link: https://lore.kernel.org/r/20220628153409.3266932-3-ckeepax@opensource.cirrus.com
+Link: https://lore.kernel.org/r/20220628153409.3266932-4-ckeepax@opensource.cirrus.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/codecs/cs47l92.c | 8 +++++++-
- 1 file changed, 7 insertions(+), 1 deletion(-)
+ sound/soc/codecs/arizona.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/codecs/cs47l92.c b/sound/soc/codecs/cs47l92.c
-index 1a0280416d92..ad6f41741372 100644
---- a/sound/soc/codecs/cs47l92.c
-+++ b/sound/soc/codecs/cs47l92.c
-@@ -119,7 +119,13 @@ static int cs47l92_put_demux(struct snd_kcontrol *kcontrol,
- end:
- 	snd_soc_dapm_mutex_unlock(dapm);
+diff --git a/sound/soc/codecs/arizona.c b/sound/soc/codecs/arizona.c
+index e32871b3f68a..7434aeeda292 100644
+--- a/sound/soc/codecs/arizona.c
++++ b/sound/soc/codecs/arizona.c
+@@ -1760,8 +1760,8 @@ static bool arizona_aif_cfg_changed(struct snd_soc_component *component,
+ 	if (bclk != (val & ARIZONA_AIF1_BCLK_FREQ_MASK))
+ 		return true;
  
--	return snd_soc_dapm_mux_update_power(dapm, kcontrol, mux, e, NULL);
-+	ret = snd_soc_dapm_mux_update_power(dapm, kcontrol, mux, e, NULL);
-+	if (ret < 0) {
-+		dev_err(madera->dev, "Failed to update demux power state: %d\n", ret);
-+		return ret;
-+	}
-+
-+	return change;
- }
+-	val = snd_soc_component_read(component, base + ARIZONA_AIF_TX_BCLK_RATE);
+-	if (lrclk != (val & ARIZONA_AIF1TX_BCPF_MASK))
++	val = snd_soc_component_read(component, base + ARIZONA_AIF_RX_BCLK_RATE);
++	if (lrclk != (val & ARIZONA_AIF1RX_BCPF_MASK))
+ 		return true;
  
- static SOC_ENUM_SINGLE_DECL(cs47l92_outdemux_enum,
+ 	val = snd_soc_component_read(component, base + ARIZONA_AIF_FRAME_CTRL_1);
 -- 
 2.35.1
 
