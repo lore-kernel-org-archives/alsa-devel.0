@@ -4,71 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id CDDDBC43334
-	for <alsa-devel@archiver.kernel.org>; Wed, 20 Jul 2022 23:13:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id BEE29C433EF
+	for <alsa-devel@archiver.kernel.org>; Wed, 20 Jul 2022 23:14:06 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B145B1779;
-	Thu, 21 Jul 2022 01:12:52 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B145B1779
+	by alsa0.perex.cz (Postfix) with ESMTPS id D7F4A17A0;
+	Thu, 21 Jul 2022 01:13:14 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D7F4A17A0
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1658358822;
-	bh=aOLwg6/EISYMyb84RQNgohTNXRsQHE5/pdLsiinq944=;
+	s=default; t=1658358844;
+	bh=tkIAwLdRLlKrtzjlA/APq42GsWiNdQp09ixV23X/Y0A=;
 	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=ZoBc9zGlP83iAHG76VxtpkTEkb7hbumTzjC6NUbazRMV7pV0tx3yk8WV7Kzrq/QNR
-	 q4a4O+POnrH8AgYAHSYd4ZHt69l3GY8lwz+cdfiA+UjDDS5SFjYlQkZrjl8/PCjfXs
-	 5YS2X9kK7fhZW+D9Fh34i3bAygkgbVXxfK26Vmms=
+	b=HmohCoMkOMjvU3snwu36KOwCesnO6bkURjgbbshaUpAhZ+7JFV7Fjv463CGIg1VfX
+	 xCh9/6E62JTsb5IIwek8vNQ5t7bmjD1RsptKN+erSUaB/VEKsLDUFpv9bzf/71Pco+
+	 2/w1EQZNPqnv2spdg2d4Hk4w/wLL3BHiX3J1HTXw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 4C053F80269;
-	Thu, 21 Jul 2022 01:12:26 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id C03B6F804FA;
+	Thu, 21 Jul 2022 01:12:27 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 3BAE7F8028B; Thu, 21 Jul 2022 01:12:25 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+ id DC852F80269; Thu, 21 Jul 2022 01:12:25 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org
+ [IPv6:2604:1380:4641:c500::1])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 0C896F800BA
- for <alsa-devel@alsa-project.org>; Thu, 21 Jul 2022 01:12:22 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0C896F800BA
+ by alsa1.perex.cz (Postfix) with ESMTPS id 17EA7F8027D
+ for <alsa-devel@alsa-project.org>; Thu, 21 Jul 2022 01:12:18 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 17EA7F8027D
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="g3dcb437"
+ header.b="ffPRcU+O"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id 9B87161DE6;
- Wed, 20 Jul 2022 23:12:20 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5ECBAC3411E;
+ by dfw.source.kernel.org (Postfix) with ESMTPS id 4F50A61DDC;
  Wed, 20 Jul 2022 23:12:17 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 04523C341D0;
+ Wed, 20 Jul 2022 23:12:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1658358740;
- bh=aOLwg6/EISYMyb84RQNgohTNXRsQHE5/pdLsiinq944=;
+ s=k20201202; t=1658358736;
+ bh=tkIAwLdRLlKrtzjlA/APq42GsWiNdQp09ixV23X/Y0A=;
  h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=g3dcb437XYFf4PzH68vCmRlXnNdvzvZEvE/Bp7DI3beYSjS9yXZzMcVlVt7gW1Qja
- pAzR67tUFuZt0bmB+LnNEhiNyxKO8jA+jWHs8I3Wge0rsUMrHkQ2pQSURuq7Mt68Cf
- 1nzG2+VTUYk7lfzP+xe9Ja88+XgqAf+PrQBFwxrRtbwL7A/hC8+TQXcwgGEvYRDvvX
- Yj7CkvaTtFxNJG4Ns/9BJ6n2T0V2Lq5w4KrydwuBbzdd9JQTRl2vDgcTYZseeJ/jqO
- qweTTsAkaq89uLLpzXyC5v2gXm/Nae9oQwVE0PcJ+JCYMu7wAttbzLthQkpUA07me9
- BbwSjOAtCTl3w==
+ b=ffPRcU+OPp7EMgkx+QqIwS+b6gFBjuR7vxPCXU1BDNgOc0WFvq0UBKI/w6vtF8t7v
+ WhaW+BWSJP6FgFJFkC/ujfH8SeNoOCIUjfTcsGhNziirtxP3ZDX5GgU7KcjSMVvnFX
+ jieK5b5NMA5hPP1D1Eua17LNp7WMwOijLJ/XNx35ZT7xAwag+rjdWDWYIaSg4jNCwB
+ +VPeAcxblFpRgPMXpgor10j7ln720X0Gc8F0bP9jppUFNRen2/u2/3D4LJqHtWsCoR
+ GGg+VMWJfmGAnugQM2JYeD8ggQY8DXozrLjEMaP0XieToVXxeOvlu9BaioLk8sbpnY
+ e0LQVNOVpsHBQ==
 From: Mark Brown <broonie@kernel.org>
-To: jiaxin.yu@mediatek.com, angelogioacchino.delregno@collabora.com,
- robh+dt@kernel.org
-In-Reply-To: <20220718162204.26238-1-jiaxin.yu@mediatek.com>
-References: <20220718162204.26238-1-jiaxin.yu@mediatek.com>
-Subject: Re: [PATCH v10 0/8] ASoC: mediatek: Add support for MT8186 SoC
-Message-Id: <165835873701.1007579.13802197177165168890.b4-ty@kernel.org>
-Date: Thu, 21 Jul 2022 00:12:17 +0100
+To: perex@perex.cz, tiwai@suse.com, paul@crapouillou.net, lgirdwood@gmail.com,
+ aidanmacdonald.0x0@gmail.com
+In-Reply-To: <20220708160244.21933-1-aidanmacdonald.0x0@gmail.com>
+References: <20220708160244.21933-1-aidanmacdonald.0x0@gmail.com>
+Subject: Re: (subset) [PATCH v4 00/11] ASoC: cleanups and improvements for
+ jz4740-i2s
+Message-Id: <165835873474.1007579.2143422827851423635.b4-ty@kernel.org>
+Date: Thu, 21 Jul 2022 00:12:14 +0100
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
- linux-kernel@vger.kernel.org,
- Project_Global_Chrome_Upstream_Group@mediatek.com, tzungbi@google.com,
- linux-mediatek@lists.infradead.org, trevor.wu@mediatek.com,
- matthias.bgg@gmail.com, aaronyu@google.com, julianbraha@gmail.com,
- linux-arm-kernel@lists.infradead.org
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+ linux-mips@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -84,13 +82,15 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Tue, 19 Jul 2022 00:21:56 +0800, Jiaxin Yu wrote:
-> This series of patches adds support for Mediatek AFE of MT8186 Soc.
-> Patches are based on broonie tree "for-next" branch.
+On Fri, 8 Jul 2022 17:02:33 +0100, Aidan MacDonald wrote:
+> This series is a preparatory cleanup of the jz4740-i2s driver before
+> adding support for a new SoC. The two improvements are lifting
+> unnecessary restrictions on sample rates and formats -- the existing
+> ones appear to be derived from the limitations of the JZ4740's internal
+> codec and don't reflect the actual capabilities of the I2S controller.
 > 
-> Changes since v9:
->   - Drop the definitions that unused in mt8186-afe-common.h.
->   - Use device_get_match_data() instead of of_device_get_match_data().
+> I'm unable to test the series on any JZ47xx SoCs, but I have tested
+> on an X1000 (which is the SoC I'll be adding in a followup series).
 > 
 > [...]
 
@@ -100,22 +100,22 @@ Applied to
 
 Thanks!
 
-[1/8] dt-bindings: mediatek: mt6358: add new compatible for using mt6366
-      commit: 8f57d8b149b1e46b4ffa707634fe76532ec89e83
-[2/8] ASoC: mediatek: mt8186: add platform driver
-      commit: 097e874ad3fc69601e2b142ff3b638893c355b41
-[3/8] ASoC: mediatek: mt8186: add mt8186-mt6366 common driver
-      commit: a809ded89d1d982ac05d8a3c6c943b49ff1b94fa
-[4/8] dt-bindings: mediatek: mt8186: add audio afe document
-      commit: 344afef6b980be569f4e9325778ca6869fed82cd
-[5/8] ASoC: mediatek: mt8186: add machine driver with mt6366, da7219 and max98357
-      commit: 3c6e24b65b53ce22c30492b9f239853b01d2d5b2
-[6/8] dt-bindings: mediatek: mt8186: add mt8186-mt6366-da7219-max98357 document
-      commit: 8a8da1e6af18f51b719a142fde92e5db56a129a0
-[7/8] ASoC: mediatek: mt8186: add machine driver with mt6366, rt1019 and rt5682s
-      commit: 0da16e370dd7a17b33b6fa2769ad9536389a0e12
-[8/8] dt-bindings: mediatek: mt8186: add mt8186-mt6366-rt1019-rt5682s document
-      commit: 1bcca73ee596e46e84782514621062c0ddf9d24f
+[02/11] ASoC: jz4740-i2s: Remove unused 'mem' resource
+        commit: cd57272c4e686d4ad2d2e775a40a3eac9f96ec7c
+[04/11] ASoC: jz4740-i2s: Simplify using regmap fields
+        (no commit info)
+[05/11] ASoC: jz4740-i2s: Use FIELD_PREP() macros in hw_params callback
+        (no commit info)
+[06/11] ASoC: jz4740-i2s: Align macro values and sort includes
+        (no commit info)
+[07/11] ASoC: jz4740-i2s: Make the PLL clock name SoC-specific
+        (no commit info)
+[08/11] ASoC: jz4740-i2s: Support S20_LE and S24_LE sample formats
+        (no commit info)
+[09/11] ASoC: jz4740-i2s: Support continuous sample rate
+        (no commit info)
+[10/11] ASoC: jz4740-i2s: Move component functions near the component driver
+        (no commit info)
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
