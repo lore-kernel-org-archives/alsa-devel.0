@@ -4,66 +4,71 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C438AC43334
-	for <alsa-devel@archiver.kernel.org>; Wed, 20 Jul 2022 23:13:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id CDDDBC43334
+	for <alsa-devel@archiver.kernel.org>; Wed, 20 Jul 2022 23:13:44 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 218F61756;
-	Thu, 21 Jul 2022 01:12:24 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 218F61756
+	by alsa0.perex.cz (Postfix) with ESMTPS id B145B1779;
+	Thu, 21 Jul 2022 01:12:52 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B145B1779
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1658358794;
-	bh=6N20nPdhA7cnmw52vxGg/h4TChKXuAhehp5uDE59jhE=;
+	s=default; t=1658358822;
+	bh=aOLwg6/EISYMyb84RQNgohTNXRsQHE5/pdLsiinq944=;
 	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=loXyI4BCkZIh2wmfutMce7q98U/3J1DoKQdg9TCy3XXbFWpb/m/MhEg2sxcMkNv4l
-	 PyqGLfNCE6omynDQS6Xy7E8FGHP0hlQXSkfi744et2OYukxWrdLZ3eIzketJA5Mkle
-	 OXgiQ77xnos9E+ZC3KNS+x0PqjqnU0crQucCDuJE=
+	b=ZoBc9zGlP83iAHG76VxtpkTEkb7hbumTzjC6NUbazRMV7pV0tx3yk8WV7Kzrq/QNR
+	 q4a4O+POnrH8AgYAHSYd4ZHt69l3GY8lwz+cdfiA+UjDDS5SFjYlQkZrjl8/PCjfXs
+	 5YS2X9kK7fhZW+D9Fh34i3bAygkgbVXxfK26Vmms=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 80551F80125;
-	Thu, 21 Jul 2022 01:12:23 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 4C053F80269;
+	Thu, 21 Jul 2022 01:12:26 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 9CB51F80169; Thu, 21 Jul 2022 01:12:21 +0200 (CEST)
+ id 3BAE7F8028B; Thu, 21 Jul 2022 01:12:25 +0200 (CEST)
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 2F2D4F80125
- for <alsa-devel@alsa-project.org>; Thu, 21 Jul 2022 01:12:16 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2F2D4F80125
+ by alsa1.perex.cz (Postfix) with ESMTPS id 0C896F800BA
+ for <alsa-devel@alsa-project.org>; Thu, 21 Jul 2022 01:12:22 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0C896F800BA
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="PAFLOnrE"
+ header.b="g3dcb437"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id 1F8E861DDB;
- Wed, 20 Jul 2022 23:12:15 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D10EBC341CB;
- Wed, 20 Jul 2022 23:12:12 +0000 (UTC)
+ by dfw.source.kernel.org (Postfix) with ESMTPS id 9B87161DE6;
+ Wed, 20 Jul 2022 23:12:20 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5ECBAC3411E;
+ Wed, 20 Jul 2022 23:12:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1658358734;
- bh=6N20nPdhA7cnmw52vxGg/h4TChKXuAhehp5uDE59jhE=;
+ s=k20201202; t=1658358740;
+ bh=aOLwg6/EISYMyb84RQNgohTNXRsQHE5/pdLsiinq944=;
  h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=PAFLOnrEYcKNA7X1l0qNhgHjwOoeKuzb/P0c5qte7N83yajlp+eC4TPPzf1ImYhTS
- 5JOMmxQnyfmU5EpuedCdh1uhIkXWVDvQ9V1ln/k0s//iFvFopIa6hWTkoyK6JCyvPf
- dBgznJXPSr5601YiE77uvWPpQBfpfJoljMKMh5fCEiD/xkO2/MT3oE/nceU/G7S8qb
- qHnZJbYV905jSdlUyrgiBTx9rECv7HG8Dq2zN4cNsj679KLiSG1WCWZU8tQ8YDsurj
- B60Yv8iR2Gz/0ztdcG/nmMsMAzKoGn6+W0/0TuVuya+hl2oKrkjvNAKeYKswx0cigT
- te3x4lsoeZYXg==
+ b=g3dcb437XYFf4PzH68vCmRlXnNdvzvZEvE/Bp7DI3beYSjS9yXZzMcVlVt7gW1Qja
+ pAzR67tUFuZt0bmB+LnNEhiNyxKO8jA+jWHs8I3Wge0rsUMrHkQ2pQSURuq7Mt68Cf
+ 1nzG2+VTUYk7lfzP+xe9Ja88+XgqAf+PrQBFwxrRtbwL7A/hC8+TQXcwgGEvYRDvvX
+ Yj7CkvaTtFxNJG4Ns/9BJ6n2T0V2Lq5w4KrydwuBbzdd9JQTRl2vDgcTYZseeJ/jqO
+ qweTTsAkaq89uLLpzXyC5v2gXm/Nae9oQwVE0PcJ+JCYMu7wAttbzLthQkpUA07me9
+ BbwSjOAtCTl3w==
 From: Mark Brown <broonie@kernel.org>
-To: amadeuszx.slawinski@linux.intel.com
-In-Reply-To: <20220720125115.1785426-1-amadeuszx.slawinski@linux.intel.com>
-References: <20220720125115.1785426-1-amadeuszx.slawinski@linux.intel.com>
-Subject: Re: [PATCH] ASoC: Makefile: Fix simultaneous build of KUNIT tests
-Message-Id: <165835873241.1007579.14996903345532143350.b4-ty@kernel.org>
-Date: Thu, 21 Jul 2022 00:12:12 +0100
+To: jiaxin.yu@mediatek.com, angelogioacchino.delregno@collabora.com,
+ robh+dt@kernel.org
+In-Reply-To: <20220718162204.26238-1-jiaxin.yu@mediatek.com>
+References: <20220718162204.26238-1-jiaxin.yu@mediatek.com>
+Subject: Re: [PATCH v10 0/8] ASoC: mediatek: Add support for MT8186 SoC
+Message-Id: <165835873701.1007579.13802197177165168890.b4-ty@kernel.org>
+Date: Thu, 21 Jul 2022 00:12:17 +0100
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: cezary.rojewski@intel.com, alsa-devel@alsa-project.org, tiwai@suse.com,
- lgirdwood@gmail.com
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
+ linux-kernel@vger.kernel.org,
+ Project_Global_Chrome_Upstream_Group@mediatek.com, tzungbi@google.com,
+ linux-mediatek@lists.infradead.org, trevor.wu@mediatek.com,
+ matthias.bgg@gmail.com, aaronyu@google.com, julianbraha@gmail.com,
+ linux-arm-kernel@lists.infradead.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -79,12 +84,15 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, 20 Jul 2022 14:51:15 +0200, Amadeusz Sławiński wrote:
-> Using obj-$() := instead of obj-$() += leads to the latter assignment
-> overwriting earlier value. Fix this by using incremental assignment to
-> add additional objects to build.
+On Tue, 19 Jul 2022 00:21:56 +0800, Jiaxin Yu wrote:
+> This series of patches adds support for Mediatek AFE of MT8186 Soc.
+> Patches are based on broonie tree "for-next" branch.
 > 
+> Changes since v9:
+>   - Drop the definitions that unused in mt8186-afe-common.h.
+>   - Use device_get_match_data() instead of of_device_get_match_data().
 > 
+> [...]
 
 Applied to
 
@@ -92,8 +100,22 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: Makefile: Fix simultaneous build of KUNIT tests
-      commit: f4d92d9757e6b0adf24d227e414dac867555c9e2
+[1/8] dt-bindings: mediatek: mt6358: add new compatible for using mt6366
+      commit: 8f57d8b149b1e46b4ffa707634fe76532ec89e83
+[2/8] ASoC: mediatek: mt8186: add platform driver
+      commit: 097e874ad3fc69601e2b142ff3b638893c355b41
+[3/8] ASoC: mediatek: mt8186: add mt8186-mt6366 common driver
+      commit: a809ded89d1d982ac05d8a3c6c943b49ff1b94fa
+[4/8] dt-bindings: mediatek: mt8186: add audio afe document
+      commit: 344afef6b980be569f4e9325778ca6869fed82cd
+[5/8] ASoC: mediatek: mt8186: add machine driver with mt6366, da7219 and max98357
+      commit: 3c6e24b65b53ce22c30492b9f239853b01d2d5b2
+[6/8] dt-bindings: mediatek: mt8186: add mt8186-mt6366-da7219-max98357 document
+      commit: 8a8da1e6af18f51b719a142fde92e5db56a129a0
+[7/8] ASoC: mediatek: mt8186: add machine driver with mt6366, rt1019 and rt5682s
+      commit: 0da16e370dd7a17b33b6fa2769ad9536389a0e12
+[8/8] dt-bindings: mediatek: mt8186: add mt8186-mt6366-rt1019-rt5682s document
+      commit: 1bcca73ee596e46e84782514621062c0ddf9d24f
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
