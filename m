@@ -4,61 +4,62 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id DE5AFC433EF
-	for <alsa-devel@archiver.kernel.org>; Wed, 20 Jul 2022 01:15:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 113F8C43334
+	for <alsa-devel@archiver.kernel.org>; Wed, 20 Jul 2022 01:16:09 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 277511718;
-	Wed, 20 Jul 2022 03:14:54 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 277511718
+	by alsa0.perex.cz (Postfix) with ESMTPS id 5ADBB1727;
+	Wed, 20 Jul 2022 03:15:17 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5ADBB1727
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1658279744;
-	bh=zpto+oeNiWjXnod2Q4EhyPbxGSUuEeTxG/WNDLCYAkc=;
+	s=default; t=1658279767;
+	bh=H6+CHYRVq143W7sez+eI90XwcYLzJ7SJBwXBuJodYv8=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=urXZMN7yqAy8du/+CPJcmJyo8ePa2hv5DqPTFD6lZ791GuaSIU5jeiHTPkJDkPCvw
-	 0MR1rVKOdE4Vm83UNDA7oFMIllZTM3pRh8U1N5aeT90l02ARXjJnbQa3Md5Jw65zKP
-	 +b8gb4Jvu8Ug16EIPn0vzTCllb9AiOw3S+/BftGg=
+	b=ll1MV5pc9th4r/s4ARj4cXJQrSO695iC5jjSXYVv24Zg0DN/KnLiFmOXBeJBGf1Ey
+	 Pu2UbWqYYZyBPH7HXndeRnFVGx8Zt/BUOgRBALUZuqf4ZHvfsXtPJo28jF1O3Di20F
+	 9Br0XVq3na2zPt2fTgsdjEm+/vp7juIwJMiKtgOc=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 21618F80563;
-	Wed, 20 Jul 2022 03:13:25 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 18D68F80570;
+	Wed, 20 Jul 2022 03:13:34 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 18824F8055A; Wed, 20 Jul 2022 03:13:23 +0200 (CEST)
-Received: from sin.source.kernel.org (sin.source.kernel.org [145.40.73.55])
+ id D416BF80570; Wed, 20 Jul 2022 03:13:32 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org
+ [IPv6:2604:1380:4641:c500::1])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 29B8BF80553
- for <alsa-devel@alsa-project.org>; Wed, 20 Jul 2022 03:13:14 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 29B8BF80553
+ by alsa1.perex.cz (Postfix) with ESMTPS id B7241F80570
+ for <alsa-devel@alsa-project.org>; Wed, 20 Jul 2022 03:13:26 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B7241F80570
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="cnrmNIBf"
+ header.b="IMm+7z0x"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by sin.source.kernel.org (Postfix) with ESMTPS id 6E833CE1E8C;
- Wed, 20 Jul 2022 01:13:08 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D1C7BC341C6;
- Wed, 20 Jul 2022 01:13:05 +0000 (UTC)
+ by dfw.source.kernel.org (Postfix) with ESMTPS id D8BEF6176A;
+ Wed, 20 Jul 2022 01:13:24 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id F18AFC341CA;
+ Wed, 20 Jul 2022 01:13:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1658279586;
- bh=zpto+oeNiWjXnod2Q4EhyPbxGSUuEeTxG/WNDLCYAkc=;
+ s=k20201202; t=1658279604;
+ bh=H6+CHYRVq143W7sez+eI90XwcYLzJ7SJBwXBuJodYv8=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=cnrmNIBfLTVvIXdBwOFJdVO9qaSfVEGsdacH8wqBgqPwpS8Y2UGwT6Mekhh8eG4nw
- KTF9xfJy1r3oH60/DJEwm+OKaus/k+TzrL6IHG7RS8mip/8RbXzHKnHpZEXkNpfw5M
- BOZE5BciVYvyGILgo7QLaOwP9KmJJkWYKw99IcWpC7sqEFPHSMtuW30pU1xnv2eGnD
- Fwy+WI+f80Nvh8vQOP39mPwdz/upA3vSJG7ITc6mvN6Cg8dKFoeOSEalxFP83CxDtZ
- xPZw32mw/3okBJ0FP0OG9/jZXG9OdCYS21n+BfAADFXrxRg8E1Jq3RxAEkfIJESdO4
- U+rySAvHGMIgg==
+ b=IMm+7z0xAi+zQevlsNVKelfiNNlNvxn8tFHKIa/pHKvZx0JluXN032fUurVxGCDGH
+ vVa6eYlOmMrP/LuDlwvtwCE+S/JHdbvjzPWttyg9dhaHiO7/qqLPedYhCBIvG/j+tI
+ YGsPePG+frqYksCha6grmnrbaoEQWYDziaj6NksNnwYEcUeI1NwBN64bA6wM84F04x
+ t7T3T0aGH+VJrmJRw/QiBFfZn1me/j0bGhotDMHaQnhf2XAbdMwHRsVnhXrto5XYk5
+ 4mPKc35dfFq8JYN8iZAchcG3FTxvBOxq+wbuvcUXEjJLSl4ussyhgBJQ8jsGgl8Bb4
+ h7auRsB4rwabw==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.18 40/54] ASoC: wm8998: Fix event generation for
- input mux
-Date: Tue, 19 Jul 2022 21:10:17 -0400
-Message-Id: <20220720011031.1023305-40-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.18 43/54] ASoC: qdsp6: fix potential memory leak in
+ q6apm_get_audioreach_graph()
+Date: Tue, 19 Jul 2022 21:10:20 -0400
+Message-Id: <20220720011031.1023305-43-sashal@kernel.org>
 X-Mailer: git-send-email 2.35.1
 In-Reply-To: <20220720011031.1023305-1-sashal@kernel.org>
 References: <20220720011031.1023305-1-sashal@kernel.org>
@@ -66,9 +67,12 @@ MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
-Cc: Sasha Levin <sashal@kernel.org>, alsa-devel@alsa-project.org,
- Charles Keepax <ckeepax@opensource.cirrus.com>, patches@opensource.cirrus.com,
- tiwai@suse.com, lgirdwood@gmail.com, Mark Brown <broonie@kernel.org>
+Cc: Sasha Levin <sashal@kernel.org>, pierre-louis.bossart@linux.intel.com,
+ linmq006@gmail.com, Jianglei Nie <niejianglei2021@163.com>,
+ alsa-devel@alsa-project.org, tiwai@suse.com, lgirdwood@gmail.com,
+ Mark Brown <broonie@kernel.org>,
+ Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, bgoswami@quicinc.com,
+ dan.carpenter@oracle.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -84,65 +88,38 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Charles Keepax <ckeepax@opensource.cirrus.com>
+From: Jianglei Nie <niejianglei2021@163.com>
 
-[ Upstream commit 15b2e5d10ccf32a1a1ae7c636511e2f51320fdb5 ]
+[ Upstream commit df5b4aca7248dc5a5cae93f162eae0decf972e48 ]
 
-wm8998_inmux_put returns the value of snd_soc_dapm_mux_update_power,
-which returns a 1 if a path was found for the kcontrol. This is
-obviously different to the expected return a 1 if the control
-was updated value. This results in spurious notifications to
-user-space. Update the handling to only return a 1 when the value is
-changed.
+q6apm_get_audioreach_graph() allocates a memory chunk for graph->graph
+with audioreach_alloc_graph_pkt(). When idr_alloc() fails, graph->graph
+is not released, which will lead to a memory leak.
 
-Signed-off-by: Charles Keepax <ckeepax@opensource.cirrus.com>
-Link: https://lore.kernel.org/r/20220628153409.3266932-2-ckeepax@opensource.cirrus.com
+We can release the graph->graph with kfree() when idr_alloc() fails to
+fix the memory leak.
+
+Signed-off-by: Jianglei Nie <niejianglei2021@163.com>
+Reviewed-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Link: https://lore.kernel.org/r/20220629182520.2164409-1-niejianglei2021@163.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/codecs/wm8998.c | 21 ++++++++++++++-------
- 1 file changed, 14 insertions(+), 7 deletions(-)
+ sound/soc/qcom/qdsp6/q6apm.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/sound/soc/codecs/wm8998.c b/sound/soc/codecs/wm8998.c
-index 00b59fc9b1fe..ab5481187c71 100644
---- a/sound/soc/codecs/wm8998.c
-+++ b/sound/soc/codecs/wm8998.c
-@@ -108,6 +108,7 @@ static int wm8998_inmux_put(struct snd_kcontrol *kcontrol,
- 	struct soc_enum *e = (struct soc_enum *)kcontrol->private_value;
- 	unsigned int mode_reg, mode_index;
- 	unsigned int mux, inmode, src_val, mode_val;
-+	int change, ret;
- 
- 	mux = ucontrol->value.enumerated.item[0];
- 	if (mux > 1)
-@@ -137,14 +138,20 @@ static int wm8998_inmux_put(struct snd_kcontrol *kcontrol,
- 	snd_soc_component_update_bits(component, mode_reg,
- 				      ARIZONA_IN1_MODE_MASK, mode_val);
- 
--	snd_soc_component_update_bits(component, e->reg,
--				      ARIZONA_IN1L_SRC_MASK |
--				      ARIZONA_IN1L_SRC_SE_MASK,
--				      src_val);
-+	change = snd_soc_component_update_bits(component, e->reg,
-+					       ARIZONA_IN1L_SRC_MASK |
-+					       ARIZONA_IN1L_SRC_SE_MASK,
-+					       src_val);
- 
--	return snd_soc_dapm_mux_update_power(dapm, kcontrol,
--					     ucontrol->value.enumerated.item[0],
--					     e, NULL);
-+	ret = snd_soc_dapm_mux_update_power(dapm, kcontrol,
-+					    ucontrol->value.enumerated.item[0],
-+					    e, NULL);
-+	if (ret < 0) {
-+		dev_err(arizona->dev, "Failed to update demux power state: %d\n", ret);
-+		return ret;
-+	}
-+
-+	return change;
- }
- 
- static const char * const wm8998_inmux_texts[] = {
+diff --git a/sound/soc/qcom/qdsp6/q6apm.c b/sound/soc/qcom/qdsp6/q6apm.c
+index f424d7aa389a..794019286c70 100644
+--- a/sound/soc/qcom/qdsp6/q6apm.c
++++ b/sound/soc/qcom/qdsp6/q6apm.c
+@@ -75,6 +75,7 @@ static struct audioreach_graph *q6apm_get_audioreach_graph(struct q6apm *apm, ui
+ 	id = idr_alloc(&apm->graph_idr, graph, graph_id, graph_id + 1, GFP_KERNEL);
+ 	if (id < 0) {
+ 		dev_err(apm->dev, "Unable to allocate graph id (%d)\n", graph_id);
++		kfree(graph->graph);
+ 		kfree(graph);
+ 		mutex_unlock(&apm->lock);
+ 		return ERR_PTR(id);
 -- 
 2.35.1
 
