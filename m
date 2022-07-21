@@ -4,59 +4,74 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B7A66C433EF
-	for <alsa-devel@archiver.kernel.org>; Thu, 21 Jul 2022 14:44:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A1D18C433EF
+	for <alsa-devel@archiver.kernel.org>; Thu, 21 Jul 2022 14:55:22 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id BC19017F8;
-	Thu, 21 Jul 2022 16:43:20 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BC19017F8
+	by alsa0.perex.cz (Postfix) with ESMTPS id 644AC17ED;
+	Thu, 21 Jul 2022 16:54:30 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 644AC17ED
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1658414650;
-	bh=/OyDrgbz3hO7dv2QxV24GvZuoa+m8SDw/R4QwX6KL+w=;
-	h=From:To:Subject:Date:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=DiSnPoRPjGDAoT4jAUK0qdZfn1MV4dmYRX4t532qmzMeTIYO8BDh78hkx56VPO7JZ
-	 3lN8zo4rM4GsT8UIUFj3+nEG66IFw5ApSIe0wcsbEBcyWBnnEm0IxKv2EGibJu0pnE
-	 fajI7mPkzghdAMrh5R2XXjt2je0RChPAQyX3IF3U=
+	s=default; t=1658415320;
+	bh=WHsvqu7hShD6Quppt84R/Z5x1/NTIchqeQJ9NSjFbQM=;
+	h=Date:Subject:To:References:From:In-Reply-To:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=jqjgeDiUZYlHjJq5vzogaoms7rnsF6SPusPsQx89wxlednSnFyGoeNgQH3nuAqkqo
+	 +EjrBtoXUgSwgndBRxZxRITW+LPAyokcxi1ZLq5I8Jv66qrl/Cndul6moXqUG9KxAp
+	 lp9/nYdJqydhWlh9XOjIGkyADQ8zTxUognqMvwg8=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 48DFDF8047C;
-	Thu, 21 Jul 2022 16:43:20 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id C4841F800BA;
+	Thu, 21 Jul 2022 16:54:29 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id ABD47F80527; Thu, 21 Jul 2022 16:43:19 +0200 (CEST)
-Received: from mail-m964.mail.126.com (mail-m964.mail.126.com [123.126.96.4])
- by alsa1.perex.cz (Postfix) with ESMTP id A3FA5F80169
- for <alsa-devel@alsa-project.org>; Thu, 21 Jul 2022 16:43:14 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A3FA5F80169
+ id 0DEA2F8016D; Thu, 21 Jul 2022 16:54:28 +0200 (CEST)
+Received: from madras.collabora.co.uk (madras.collabora.co.uk
+ [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id A7CF8F800BA
+ for <alsa-devel@alsa-project.org>; Thu, 21 Jul 2022 16:54:21 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A7CF8F800BA
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=126.com header.i=@126.com
- header.b="Q+O/D9sd"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=126.com;
- s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=Z5PtN
- 1kHcISuOf1nFu5ActQZEVYPQ2YKp1UhFggOWzA=; b=Q+O/D9sdJOsep9vbV7CcK
- PrM5StoS5rmdHEgwUjl1iXMA4QSYiZPEaFuNFNqRZrFRFPtfRwMxfxZuzZU2ch+b
- 0BknbNNckpiJwIg8JHuxm2HUO3nxZiD7JpUCViRbnK+P6zgo/wRQXLYlUkBDAkkH
- v5nl6/SC2k51lSFvV9hbAU=
-Received: from localhost.localdomain (unknown [124.16.139.61])
- by smtp9 (Coremail) with SMTP id NeRpCgC3Q9z8Zdli417TGw--.14730S2;
- Thu, 21 Jul 2022 22:43:10 +0800 (CST)
-From: Liang He <windhl@126.com>
-To: lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com,
- alsa-devel@alsa-project.org, windhl@126.com
-Subject: [PATCH] ASoC: audio-graph-card: Add of_node_put() in fail path
-Date: Thu, 21 Jul 2022 22:43:08 +0800
-Message-Id: <20220721144308.1301587-1-windhl@126.com>
-X-Mailer: git-send-email 2.25.1
+ dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com
+ header.b="ZBJg7o5f"
+Received: from [192.168.1.90] (unknown [188.24.146.105])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+ (No client certificate requested) (Authenticated sender: cristicc)
+ by madras.collabora.co.uk (Postfix) with ESMTPSA id D08266601AAA;
+ Thu, 21 Jul 2022 15:54:18 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+ s=mail; t=1658415259;
+ bh=WHsvqu7hShD6Quppt84R/Z5x1/NTIchqeQJ9NSjFbQM=;
+ h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+ b=ZBJg7o5flzdNNqPrDOEwtFfxH18TzIO47VjIO4Mx7qf5/sFQSd2aXe5QWCyrAtPAg
+ 3EScNF0f8dEXcZgLv8OddftcR5S/v/9BRjtm6BJw7Bci46Lb+WfrSsf70BUisLuB6R
+ aQQmevF9P4SDn6U86rrHKAHYmYNEGpqkW0t8Tuz8cNmlEQSCTf923OPro8pCG5y4MS
+ BwV5NC35UAoQrry0uXOKpUlM5IR7ehnxZlqJNKQemLbshogNp7ItdNCEU1FLWhnlQu
+ ncpnDTUOjP4jS78ob4YCMo/aJWD/em4jlEi7KnIQSGj5DzQcD/cCZJs6BPc/XFLjO0
+ JkOEG003I77Fw==
+Message-ID: <0f413cf5-fadc-6fe8-cadc-2c9526d4a2e2@collabora.com>
+Date: Thu, 21 Jul 2022 17:54:15 +0300
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: NeRpCgC3Q9z8Zdli417TGw--.14730S2
-X-Coremail-Antispam: 1Uf129KBjvdXoW7Wr48KF4kAr4rGr1xury5twb_yoWfWFcEya
- y8u39rXF48KrWIkrsxWay3Gw1I9F18WFyxCFWSgF17CayDKF1Sy3Z8Jr93Cr97u3y5CFWx
- W34DZ3yvvrWayjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
- 9fnUUvcSsGvfC2KfnxnUUI43ZEXa7sRuHq73UUUUU==
-X-Originating-IP: [124.16.139.61]
-X-CM-SenderInfo: hzlqvxbo6rjloofrz/1tbi2h5FF1uwMcZ1OwAAsE
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.11.0
+Subject: Re: [PATCH] ASoC: cs35l41: Set the new legacy DAI naming flag
+Content-Language: en-US
+To: Charles Keepax <ckeepax@opensource.cirrus.com>
+References: <20220721121454.1378945-1-cristian.ciocaltea@collabora.com>
+ <20220721131928.GD92394@ediswmail.ad.cirrus.com>
+From: Cristian Ciocaltea <cristian.ciocaltea@collabora.com>
+In-Reply-To: <20220721131928.GD92394@ediswmail.ad.cirrus.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Cc: alsa-devel@alsa-project.org, kernel@collabora.com,
+ Lucas Tanure <tanureal@opensource.cirrus.com>, patches@opensource.cirrus.com,
+ Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>,
+ David Rhodes <david.rhodes@cirrus.com>,
+ Richard Fitzgerald <rf@opensource.cirrus.com>, Mark Brown <broonie@kernel.org>,
+ James Schulman <james.schulman@cirrus.com>, linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -72,31 +87,32 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-In asoc_simple_parse_dai(), we should call of_node_put() for the
-reference returned by of_graph_get_port_parent() in fail path.
+Hi Charles,
 
-Fixes: ae30a694da4c ("ASoC: simple-card-utils: add asoc_simple_card_parse_dai()")
-Signed-off-by: Liang He <windhl@126.com>
----
- sound/soc/generic/audio-graph-card.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+On 7/21/22 16:19, Charles Keepax wrote:
+> On Thu, Jul 21, 2022 at 03:14:54PM +0300, Cristian Ciocaltea wrote:
+>> Unlike most CODEC drivers, the CS35L41 driver did not have the
+>> non_legacy_dai_naming set, meaning it uses the legacy naming.
+>>
+>> The recent migration to the new legacy DAI naming style has broken
+>> driver functionality because it is now expected to set the new legacy
+>> DAI naming flag in order to instruct the core subsystem to use the
+>> legacy name format on DAI registration.
+>>
+>> Let's fix this by setting the legacy_dai_naming flag accordingly.
+>>
+>> Fixes: bc949a3b4af3 ("ASoC: core: Switch core to new DAI naming flag")
+>> Signed-off-by: Cristian Ciocaltea <cristian.ciocaltea@collabora.com>
+>> ---
+> 
+> It is really not intended for any CODECs to be using the legacy
+> DAI naming, it was only intended for platform side components.
+> Would be good if you had some details on the affected system and
+> if that could be updated to use the non legacy DAI naming?
 
-diff --git a/sound/soc/generic/audio-graph-card.c b/sound/soc/generic/audio-graph-card.c
-index 2b598af8feef..b327372f2e4a 100644
---- a/sound/soc/generic/audio-graph-card.c
-+++ b/sound/soc/generic/audio-graph-card.c
-@@ -158,8 +158,10 @@ static int asoc_simple_parse_dai(struct device_node *ep,
- 	 *    if he unbinded CPU or Codec.
- 	 */
- 	ret = snd_soc_get_dai_name(&args, &dlc->dai_name);
--	if (ret < 0)
-+	if (ret < 0) {
-+		of_node_put(node);
- 		return ret;
-+	}
- 
- 	dlc->of_node = node;
- 
--- 
-2.25.1
+I'm currently testing this on Valve's Steam Deck. Let me also check what 
+would be the required changes in order to switch to using a non-legacy 
+DAI naming.
 
+> Thanks,
+> Charles
