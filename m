@@ -4,70 +4,70 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B9360C43334
-	for <alsa-devel@archiver.kernel.org>; Fri, 22 Jul 2022 12:50:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 683AEC433EF
+	for <alsa-devel@archiver.kernel.org>; Fri, 22 Jul 2022 12:50:29 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id EFDD318B9;
-	Fri, 22 Jul 2022 14:49:22 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EFDD318B9
+	by alsa0.perex.cz (Postfix) with ESMTPS id 73C3C18CB;
+	Fri, 22 Jul 2022 14:49:37 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 73C3C18CB
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1658494213;
-	bh=sr9TSpthQysYY2JifDw21pcWDlAmyQ036571H/CVHyg=;
+	s=default; t=1658494227;
+	bh=A3PD/iBpdUVc6XMGatL8EReF7qKXiMvSVxBYCt3N/IQ=;
 	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=FSdz6MciGfXbJDpUw3Y1Fm9TPbDyc8N1t1+x0XyUZm8FOkm/5lnoVXRJ75KE9KQAt
-	 IvCLvLWtWHupC3ICmLImdEVUA4kEhyVz7zJHh/5ZTtG515QCK9kegDPpginAiFx/e8
-	 ylnH+gnoqhaHbmL/MS3RsbBnOe9l03f1QfOuYxZg=
+	b=m08P9V/P6+DfW9gLkf6UbDoq/hWlz4JRzzOq4IVaguur9/BqXHm0kp26sdV/2auBK
+	 EVD/b02/48MqyOhRWeKt8dqAKgYNC3EDP7nru0JyWrP4i1ILDHztXYq4lpB1PAKzNv
+	 /I7T0GmmTnF4FHU+CccRE+cP+nyxVU7yEe1HxdH8=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 1E1A4F80549;
-	Fri, 22 Jul 2022 14:48:28 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 0B87DF80552;
+	Fri, 22 Jul 2022 14:48:31 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 18CA4F80538; Fri, 22 Jul 2022 14:48:25 +0200 (CEST)
+ id 72AECF80553; Fri, 22 Jul 2022 14:48:29 +0200 (CEST)
 Received: from ams.source.kernel.org (ams.source.kernel.org
  [IPv6:2604:1380:4601:e00::1])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id A80BCF80166
- for <alsa-devel@alsa-project.org>; Fri, 22 Jul 2022 14:48:15 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A80BCF80166
+ by alsa1.perex.cz (Postfix) with ESMTPS id 036EBF80246
+ for <alsa-devel@alsa-project.org>; Fri, 22 Jul 2022 14:48:23 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 036EBF80246
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="RH7urC7y"
+ header.b="WNXXEhny"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by ams.source.kernel.org (Postfix) with ESMTPS id 53F98B828E4;
- Fri, 22 Jul 2022 12:48:14 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4FC56C341C7;
- Fri, 22 Jul 2022 12:48:10 +0000 (UTC)
+ by ams.source.kernel.org (Postfix) with ESMTPS id 56C04B828E2;
+ Fri, 22 Jul 2022 12:48:22 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D49D4C341C6;
+ Fri, 22 Jul 2022 12:48:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1658494093;
- bh=sr9TSpthQysYY2JifDw21pcWDlAmyQ036571H/CVHyg=;
+ s=k20201202; t=1658494101;
+ bh=A3PD/iBpdUVc6XMGatL8EReF7qKXiMvSVxBYCt3N/IQ=;
  h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=RH7urC7yBKGTFFfwLG4KbGtTb+z7BhVtkivw7AssselmbptlC5Yg+lmnfM4eU4+zC
- e2PusPZfv8iGYtjS3egOVr27kMgOe+ftMkOsI/3r1BiYp8FJtSy7o7A0FoDTHLJapH
- iNlxuMI6ZN3eOIw0IblRNSLEILqOMF4ZkpiLv1i15dTZA7e5Wh7irWSLB0kgH/lIi5
- kzc8JGV4OdwyewhQlFatR5hiFldBfLMfZqvcV0hjlkUwhnhY2Ce7cSHh/Zxm6TFD9s
- esxoKS5/OMxnE4+LfXQ+i4EkpuiVS64Yi/y6aO1x0AoGnVoPC8TY5I2Bd7veZvPLcY
- ixIRISZTp05mQ==
+ b=WNXXEhny9JV3eScg/Pmy2l/tXCbGqDYAPW1nz2h14NzN7eMlNrw2Og7z7oqwKtcUb
+ RIksLa2sljIzaD/RqBbd8wuDvt1ogo+UYJEy9ImtFInc0TsNH838fcennlfrMZ5HhR
+ tLIPltZIqyvGWrZN0z27s13vtg+7GKzLOX99E8FLISiZ8jaDareXDZ/uzwqdJUOBVX
+ VmsJvTmz5uc/UnqJnu2WNQx0L6OhemJGcoWY0ga4gxfadicqDN//IAtSpB4uN9QCcy
+ ueZLUDqEipKBnytIxnaUF8OEnDR2Gol6vxjPiFxrFq5rRD7rorrBoT+Zh57lnUIgak
+ dx2LsBuhy56EQ==
 From: Mark Brown <broonie@kernel.org>
-To: shengjiu.wang@gmail.com, alsa-devel@alsa-project.org, tiwai@suse.com,
- Xiubo.Lee@gmail.com, lgirdwood@gmail.com, 
- nicoleotsuka@gmail.com, festevam@gmail.com, perex@perex.cz,
- Shengjiu Wang <shengjiu.wang@nxp.com>
-In-Reply-To: <1658399393-28777-1-git-send-email-shengjiu.wang@nxp.com>
-References: <1658399393-28777-1-git-send-email-shengjiu.wang@nxp.com>
-Subject: Re: [PATCH v2 -next 0/5] ASoC: fsl: Fix sparse warning
-Message-Id: <165849408996.139149.2173688518682124551.b4-ty@kernel.org>
-Date: Fri, 22 Jul 2022 13:48:09 +0100
+To: alsa-devel@alsa-project.org, syed sabakareem <Syed.SabaKareem@amd.com>
+In-Reply-To: <20220721061035.91139-1-Syed.SabaKareem@amd.com>
+References: <20220721061035.91139-1-Syed.SabaKareem@amd.com>
+Subject: Re: [PATCH 1/5] ASoC: amd: add RPL Platform acp header file
+Message-Id: <165849409858.139149.7568411438322284849.b4-ty@kernel.org>
+Date: Fri, 22 Jul 2022 13:48:18 +0100
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 X-Mailer: b4 0.10.0-dev-d952f
-Cc: linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
+Cc: Sunil-kumar.Dommati@amd.com, Liam Girdwood <lgirdwood@gmail.com>,
+ Basavaraj.Hiregoudar@amd.com, open list <linux-kernel@vger.kernel.org>,
+ Takashi Iwai <tiwai@suse.com>, Vijendar Mukunda <Vijendar.Mukunda@amd.com>,
+ Alexander.Deucher@amd.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -83,21 +83,12 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Thu, 21 Jul 2022 18:29:48 +0800, Shengjiu Wang wrote:
-> Fix sparse warning
+On Thu, 21 Jul 2022 11:39:58 +0530, syed sabakareem wrote:
+> From: Syed Saba Kareem <Syed.SabaKareem@amd.com>
 > 
-> changes in v2:
-> - use pcm_format_to_bits
-> - use u32 asrc_fmt, then convert it to snd_pcm_format_t
+> Add ACP register header file for RPL platform.
 > 
-> Shengjiu Wang (5):
->   ASoC: fsl_sai: Don't use plain integer as NULL pointer
->   ASoC: fsl_asrc: force cast the asrc_format type
->   ASoC: fsl-asoc-card: force cast the asrc_format type
->   ASoC: fsl_easrc: use snd_pcm_format_t type for sample_format
->   ASoC: imx-card: use snd_pcm_format_t type for asrc_format
 > 
-> [...]
 
 Applied to
 
@@ -105,16 +96,16 @@ Applied to
 
 Thanks!
 
-[1/5] ASoC: fsl_sai: Don't use plain integer as NULL pointer
-      commit: b17079d37fe1570019d7defd9e341d5c18aba8f5
-[2/5] ASoC: fsl_asrc: force cast the asrc_format type
-      commit: c49932726de24405d45516b3f8ad2735714fdf05
-[3/5] ASoC: fsl-asoc-card: force cast the asrc_format type
-      commit: 6c7b077dad62178c33f9a3ae17f90d6b0bf6e2e5
-[4/5] ASoC: fsl_easrc: use snd_pcm_format_t type for sample_format
-      commit: de27216cf2d645c2fd14e513707bdcd54e5b1de4
-[5/5] ASoC: imx-card: use snd_pcm_format_t type for asrc_format
-      commit: 409a8652e909e323c715f3088e6c3133e37c8881
+[1/5] ASoC: amd: add RPL Platform acp header file
+      commit: d6a2cc9a80c2fdc10f7fde3f5f57c72e99f3bd5e
+[2/5] ASoC: amd: add ACP PCI driver for RPL platform
+      commit: 003b9a96f27635e534452b174733c5f1ceec0b56
+[3/5] ASoC: amd: add RPL Platform init/de-init functions
+      commit: 10599205417ee3b1d29093c85bc210c9040a6bd4
+[4/5] ASoC: amd: add RPL Platform pci driver pm-ops
+      commit: bc1100f29d1d0bfcd36ba3690a945235ffe149c8
+[5/5] ASoC: amd: enable RPL Platform acp drivers build
+      commit: 4fb35936a374758d5065b0a015c565436685c378
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
