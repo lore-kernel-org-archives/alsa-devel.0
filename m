@@ -4,73 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 732C9C43334
-	for <alsa-devel@archiver.kernel.org>; Fri, 22 Jul 2022 12:49:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 43179C433EF
+	for <alsa-devel@archiver.kernel.org>; Fri, 22 Jul 2022 12:50:05 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id EFA5B18B3;
-	Fri, 22 Jul 2022 14:48:51 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EFA5B18B3
+	by alsa0.perex.cz (Postfix) with ESMTPS id 8142418AB;
+	Fri, 22 Jul 2022 14:49:13 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8142418AB
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1658494182;
-	bh=lcEC2kCCCKbO1yjbDbyfX8qWq8HYcFr/tlhbvJ8XuHI=;
-	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
+	s=default; t=1658494203;
+	bh=dL30FDACnD/Tq8mIqMC/8m+71oRFtBVoo6U4J4KCW9E=;
+	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=OM2ZRUxWFj7TVxELOaut0+7s3Ss7CwUOIazv9i5o3m9Yt7Yapp2JLRHvcdX8GerCs
-	 DGIh+4VMrfRvpjmptUW1lK2EViO8ppZcvj0GV79wFr6mOAn1HxoFwDx9J4cLdodwog
-	 RY57uclxT6t+NLr+YZ2Xz+F5RJRj0AUYgyjaYieg=
+	b=vhidBUCs9aTk4QwDvY61gllmzx60x6raSn1sCuXObtAvaW4r+8Ev71bvr2xtsdjnV
+	 1kQUMyVAoRFCgJo3lUtNaiV/a1GZH+5o+R1jX/LRDiljcXYG1VMqz+rxkmw4H2MkQO
+	 HkKE3pYO2Oirr6Qs1O+oFm0bAu9Ocl8uip5GP54o=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 3A2AAF80506;
-	Fri, 22 Jul 2022 14:48:25 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 6F3ACF80539;
+	Fri, 22 Jul 2022 14:48:26 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id EF4B5F80506; Fri, 22 Jul 2022 14:48:22 +0200 (CEST)
-Received: from ams.source.kernel.org (ams.source.kernel.org
- [IPv6:2604:1380:4601:e00::1])
+ id 8D12FF802DB; Fri, 22 Jul 2022 14:48:23 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id D0E69F8016D
- for <alsa-devel@alsa-project.org>; Fri, 22 Jul 2022 14:48:18 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D0E69F8016D
+ by alsa1.perex.cz (Postfix) with ESMTPS id 0C20DF80166
+ for <alsa-devel@alsa-project.org>; Fri, 22 Jul 2022 14:48:20 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0C20DF80166
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="eraogMMy"
+ header.b="NDFK0zuV"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by ams.source.kernel.org (Postfix) with ESMTPS id 14DDAB828EA;
+ by dfw.source.kernel.org (Postfix) with ESMTPS id 9E98C61F5B;
  Fri, 22 Jul 2022 12:48:18 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9A290C341CA;
- Fri, 22 Jul 2022 12:48:13 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 483B2C341C6;
+ Fri, 22 Jul 2022 12:48:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1658494096;
- bh=lcEC2kCCCKbO1yjbDbyfX8qWq8HYcFr/tlhbvJ8XuHI=;
- h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=eraogMMyWRM05UkIcrgH2Jet2YLCblC54Gjgn/qqaLdS7jN8hg9jZcniK3hegC6C1
- 7BZ5DTQkdoFXiFz6lJEyN0CU7h8u1Oa1CFB99AyF7P9MQxmTMB5NxZJjstbzSLf6IM
- 2ZhzvN8uJEMVQvyLor6UuLx9Hex90dfZizAwCcIHjoziVUa1R++EHhfx3Zj3JHxk3X
- Pd5Gfx1KkKCWhhBXJCyhd7ItKCsFEl3TXaBpWrYFKyeR5UjCvuOJWHN5UsuleIJEPE
- xr60HY6gEax+/41XXSBlHHf6X0Bb0wgTVNHfSLAv4ABxWwaovdqR/qAI2qoN4ICzI6
- QRjgRs/oBuEGw==
+ s=k20201202; t=1658494098;
+ bh=dL30FDACnD/Tq8mIqMC/8m+71oRFtBVoo6U4J4KCW9E=;
+ h=From:To:In-Reply-To:References:Subject:Date:From;
+ b=NDFK0zuVbb2ynDYvkw77nNGRoHBGQ4W02qbm2KLOBEvf2gyxkBrQWax7xuVD3qzYO
+ +WdDLaq8d8HZczMcG3rpVeFuEukvEz9pFIMq5wfnayiBgtoXHpjXbMely1vj+YKa29
+ T5fbL11yl/7n1WunVVKruaIztzVL2VOaT04BNdEEgmJWBsYeyUGPze5dZlR9Wu8yem
+ PrEo0liUHhYX74fKEXiPENsi6vrYi364izS/ygcRrEd97KaVjyjC/vaT2+M4Oi46WQ
+ Bik3wBbI07ZYH761B+Kf9DqlO5GpGhXYd5Yx73ze3cmLWB10bxR4gl30kaahKdlROu
+ oO//9v4z2Xk3w==
 From: Mark Brown <broonie@kernel.org>
-To: alsa-devel@alsa-project.org,
- Venkata Prasad Potturu <venkataprasad.potturu@amd.com>
-In-Reply-To: <20220721062043.3016985-1-venkataprasad.potturu@amd.com>
-References: <20220721062043.3016985-1-venkataprasad.potturu@amd.com>
-Subject: Re: [PATCH 1/5] ASoC: amd: acp: Modify local variables name to generic
-Message-Id: <165849409334.139149.4436089052962761200.b4-ty@kernel.org>
-Date: Fri, 22 Jul 2022 13:48:13 +0100
+To: alsa-devel@alsa-project.org, tiwai@suse.com, lgirdwood@gmail.com,
+ Liang He <windhl@126.com>, perex@perex.cz
+In-Reply-To: <20220721144308.1301587-1-windhl@126.com>
+References: <20220721144308.1301587-1-windhl@126.com>
+Subject: Re: [PATCH] ASoC: audio-graph-card: Add of_node_put() in fail path
+Message-Id: <165849409700.139149.11262963028531305739.b4-ty@kernel.org>
+Date: Fri, 22 Jul 2022 13:48:17 +0100
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 X-Mailer: b4 0.10.0-dev-d952f
-Cc: Sunil-kumar.Dommati@amd.com, Charles Keepax <ckeepax@opensource.cirrus.com>,
- ssabakar@amd.com, Ajit Kumar Pandey <AjitKumar.Pandey@amd.com>,
- Liam Girdwood <lgirdwood@gmail.com>, Basavaraj.Hiregoudar@amd.com,
- Vijendar.Mukunda@amd.com, open list <linux-kernel@vger.kernel.org>,
- Takashi Iwai <tiwai@suse.com>, Yang Yingliang <yangyingliang@huawei.com>,
- vsujithkumar.reddy@amd.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -86,8 +79,9 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Thu, 21 Jul 2022 11:50:33 +0530, Venkata Prasad Potturu wrote:
-> Change local variables name to be generic in irq handler.
+On Thu, 21 Jul 2022 22:43:08 +0800, Liang He wrote:
+> In asoc_simple_parse_dai(), we should call of_node_put() for the
+> reference returned by of_graph_get_port_parent() in fail path.
 > 
 > 
 
@@ -97,16 +91,8 @@ Applied to
 
 Thanks!
 
-[1/5] ASoC: amd: acp: Modify local variables name to generic
-      commit: 93f53881473cbf6a364be36ccbb99568e04ffe59
-[2/5] ASoC: amd: acp: Drop superfluous mmap callback
-      commit: afde6727a9b66ff96e20d74ac392f3efdae1ceaf
-[3/5] ASoC: amd: acp: Initialize list to store acp_stream during pcm_open
-      (no commit info)
-[4/5] ASoC: amd: acp: Modify const resource struct variable to generic
-      commit: 96b008a1c2e9f455d982e9cfb7117a3a0fc8f550
-[5/5] ASoC: amd: acp: Add error handling cases
-      commit: c49f5e74a11e3909c424cada0f5d52345084933f
+[1/1] ASoC: audio-graph-card: Add of_node_put() in fail path
+      commit: 65fb8e2ef3531a6e950060fca6e551c923fb0f0e
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
