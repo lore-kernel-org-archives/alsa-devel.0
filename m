@@ -4,67 +4,70 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id DD71AC43334
-	for <alsa-devel@archiver.kernel.org>; Fri, 22 Jul 2022 22:06:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id ABFE1C43334
+	for <alsa-devel@archiver.kernel.org>; Fri, 22 Jul 2022 22:07:17 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 26A7D74C;
-	Sat, 23 Jul 2022 00:05:54 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 26A7D74C
+	by alsa0.perex.cz (Postfix) with ESMTPS id BB65018D3;
+	Sat, 23 Jul 2022 00:06:24 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BB65018D3
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1658527604;
-	bh=rtUUWzqigEAhevG/HmR8d2v0CTiqo8Ua1liTqMPr4QA=;
-	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
+	s=default; t=1658527634;
+	bh=oU/aXEm4nJoyqONNRlbDnt9H4TtoyZTFmxF9qtTL25w=;
+	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Iapm1WgWctvWIdwcN6PYPPhI/SI2oDPx0rnfC7LlEblgxkGoERyudSXC4fPEqzAkm
-	 ZKw8yRH7zv6wk/a3G48bVHpqUjnNUuH84sDlgrEnFR/5M33+SCZQMhSiZ8AN/Rv+Wv
-	 BwCRwxLKuVbzRbfu49BKYCZJKtFPlVaNTB80h+/k=
+	b=EscphjnIjaOtlp9jFmVeZf5XuG/q5rVAwDJuq/vtgVugEQBUulsaQPytIHmxtcdOz
+	 I4Ir/mcy+ByslBpiTrSPNDc0VCCj+CFfm85HTeXRDeOlM04UsaSj0fCv+XgUeg7JQq
+	 SecB/ymH0yUZVaqdqM2GJ051gfudFc2n8U0hkahc=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id AD957F80246;
-	Sat, 23 Jul 2022 00:05:53 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 66D10F80279;
+	Sat, 23 Jul 2022 00:05:56 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 1D4EAF80279; Sat, 23 Jul 2022 00:05:52 +0200 (CEST)
-Received: from sin.source.kernel.org (sin.source.kernel.org
- [IPv6:2604:1380:40e1:4800::1])
+ id 8C193F80279; Sat, 23 Jul 2022 00:05:53 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 8E4FAF8016D
- for <alsa-devel@alsa-project.org>; Sat, 23 Jul 2022 00:05:48 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8E4FAF8016D
+ by alsa1.perex.cz (Postfix) with ESMTPS id 2A6E7F80246
+ for <alsa-devel@alsa-project.org>; Sat, 23 Jul 2022 00:05:50 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2A6E7F80246
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="KgcjxdT4"
+ header.b="D/cuEjPr"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by sin.source.kernel.org (Postfix) with ESMTPS id B8AD8CE2BC1;
- Fri, 22 Jul 2022 22:05:44 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C0327C341C6;
- Fri, 22 Jul 2022 22:05:41 +0000 (UTC)
+ by dfw.source.kernel.org (Postfix) with ESMTPS id 251F8621E2;
+ Fri, 22 Jul 2022 22:05:49 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1B925C341CE;
+ Fri, 22 Jul 2022 22:05:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1658527543;
- bh=rtUUWzqigEAhevG/HmR8d2v0CTiqo8Ua1liTqMPr4QA=;
- h=From:To:In-Reply-To:References:Subject:Date:From;
- b=KgcjxdT4cmxGUcvtTEkjQ+8NEp1Wq+CK03O1U6eivdOpTocH85GIsxkWv5XynCZjR
- tqjdzNhEqopQMCP5XmAOxrezTSK1A0suoyfsccfAyup6C/ouNmEh7TPSG55/RAD6UX
- jW6FLq3i/61i81XQ+iXHSFyuteVwscpqVdsSjvpqs9FQX6oC1zn8wDzNhbhoUO9Blf
- Qg1IuXVE77hHFimNSCgKgNF7fIXB8Fkn0PscfW7rPgk1DQnXAC1eNvWxglRN0FWin5
- GtWCcjfTFwAzQWb4Xy1EyQ5NwPahNaKZzUmx/Xi/Ur98XRF3o/Brt+WWjuePcUrScW
- zx8KagOBFbbHw==
+ s=k20201202; t=1658527548;
+ bh=oU/aXEm4nJoyqONNRlbDnt9H4TtoyZTFmxF9qtTL25w=;
+ h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+ b=D/cuEjPr3ARaTBbeeLJyFTN981UU44GqLg/VbzfQWmk5sdYSjMxvejQxyKg9aBQTW
+ DZganrXGblOtY6BFf3ahqTgSDcZzmA5h0iAclGx0rpIUJxHYQmVVzuf+I9Fd1JCFVz
+ PGurpeKaJSBpFamkef1HElOFijqpJ97p5Va32Pi4CwTiJhIWypaUTtRCDa5JSfYdhq
+ ANtbL/9LICjXxTeWi41X6F+41IxyZtU6bhYIRl33aHZk3H7QFO+PG+6TwGwfdQAV8w
+ xXzYFyx7Nxvjyxe5dIb+zclOh/jnhB6oOQcjHgdl87vqoAVEkfKpOcgjB4fl0hcEUu
+ koUNRNe3o8Pew==
 From: Mark Brown <broonie@kernel.org>
-To: lgirdwood@gmail.com, tiwai@suse.com, ckeepax@opensource.cirrus.com,
- Liang He <windhl@126.com>, alsa-devel@alsa-project.org, perex@perex.cz
-In-Reply-To: <20220722141801.1304854-1-windhl@126.com>
-References: <20220722141801.1304854-1-windhl@126.com>
-Subject: Re: [PATCH] ASoC: audio-graph-card2: Add of_node_put() in fail path
-Message-Id: <165852754151.1234289.3968759856616544921.b4-ty@kernel.org>
-Date: Fri, 22 Jul 2022 23:05:41 +0100
+To: syed sabakareem <Syed.SabaKareem@amd.com>, alsa-devel@alsa-project.org
+In-Reply-To: <20220722134603.316668-1-Syed.SabaKareem@amd.com>
+References: <20220722134603.316668-1-Syed.SabaKareem@amd.com>
+Subject: Re: [PATCH] ASoC: amd: yc: Update DMI table entries
+Message-Id: <165852754583.1234289.15095760330208840152.b4-ty@kernel.org>
+Date: Fri, 22 Jul 2022 23:05:45 +0100
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 X-Mailer: b4 0.10.0-dev-c7731
+Cc: Sunil-kumar.Dommati@amd.com, Liam Girdwood <lgirdwood@gmail.com>,
+ Basavaraj.Hiregoudar@amd.com, Takashi Iwai <tiwai@suse.com>,
+ open list <linux-kernel@vger.kernel.org>, mario.limonciello@amd.com,
+ Vijendar Mukunda <Vijendar.Mukunda@amd.com>, Alexander.Deucher@amd.com,
+ markpearson@lenovo.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -80,11 +83,15 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Fri, 22 Jul 2022 22:18:01 +0800, Liang He wrote:
-> In asoc_simple_parse_dai(), we should call of_node_put() for the
-> reference returned by of_graph_get_port_parent() in fail path.
+On Fri, 22 Jul 2022 19:15:32 +0530, syed sabakareem wrote:
+> Removed intel DMI product id's 21AW/21AX/21D8/21D9/21BN/21BQ
+> in DMI table and updated DMI entry for AMD platform X13 Gen 3
+> platform 21CM/21CN.
+> 
+> Link: https://bugzilla.kernel.org/show_bug.cgi?id=216267
 > 
 > 
+> [...]
 
 Applied to
 
@@ -92,8 +99,8 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: audio-graph-card2: Add of_node_put() in fail path
-      commit: 8ebc4dd8250fd1cb5da2869c0fe6ae3686fe41e9
+[1/1] ASoC: amd: yc: Update DMI table entries
+      commit: be0aa8d4b0fcb4532bf7973141e911998ab39508
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
