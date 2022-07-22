@@ -4,77 +4,77 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 14F42C43334
-	for <alsa-devel@archiver.kernel.org>; Fri, 22 Jul 2022 07:41:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 872A0C43334
+	for <alsa-devel@archiver.kernel.org>; Fri, 22 Jul 2022 07:42:29 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3A451185A;
-	Fri, 22 Jul 2022 09:41:07 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3A451185A
+	by alsa0.perex.cz (Postfix) with ESMTPS id 64FFE186B;
+	Fri, 22 Jul 2022 09:41:37 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 64FFE186B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1658475717;
-	bh=CVFkUD0ELyeML7K+oWIUAv09eERf+7kehR8ezrWZaiw=;
+	s=default; t=1658475747;
+	bh=ES/vfbt3ezzgEUpyi900hp/407ezPHSfLwMhw3daXpY=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=pEaTcJrMJJ94W2Zzxt5ZCjaurGvjm7SwK3XXTkuL/p7z8orJ8dYz+PtR1cF3poudI
-	 Cm35YDkzEDdPLV8wj4vLCE5QsPJ3+3UIxeWFdqIynCczYz/2e638PoqfapY/KvwD9Y
-	 l2VyIwNxfQwqUEsh7z5Di0aThuaYnibazRCNgsH0=
+	b=iGHbxpno1i2oEOlA1EVw5Fp4FogmIlmN+MBUkMwKGkmcAx8aXhGQDN+FyRVspAICH
+	 u9Vd8XGb/o7x8vSsSJWAMDSkKk8Teib1B7UgPmPi7KqN7wqdEUYNA3cv5dc+ggc65h
+	 mKemc4RiHRwbMMdI9q6eES8hh+1zabmoyKpKzEZU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 97E7FF8012A;
-	Fri, 22 Jul 2022 09:41:06 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id B33E4F804FF;
+	Fri, 22 Jul 2022 09:41:14 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 63A38F80279; Fri, 22 Jul 2022 09:41:05 +0200 (CEST)
+ id 2BDFBF80506; Fri, 22 Jul 2022 09:41:13 +0200 (CEST)
 Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 210DFF8012A
- for <alsa-devel@alsa-project.org>; Fri, 22 Jul 2022 09:40:56 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 210DFF8012A
+ by alsa1.perex.cz (Postfix) with ESMTPS id DD153F804FF
+ for <alsa-devel@alsa-project.org>; Fri, 22 Jul 2022 09:41:06 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DD153F804FF
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="ZdDgKCyl"; 
+ header.b="I4nGwyHw"; 
  dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="vy2r+0Bs"
+ header.b="RijFl/Lu"
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id BDE071F939;
- Fri, 22 Jul 2022 07:40:55 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 1A9881FA92;
+ Fri, 22 Jul 2022 07:41:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1658475655; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1658475666; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=OOK9jeAkpSAAXIPdi6m/dY3irn4Jx4DFH4XWFPvYvuo=;
- b=ZdDgKCyldkGfkvXNAEk7PVSq8MWc4ksmiE5Z1UbcAD5rmTK6OIGjBt17ZcjH73QrELUN+l
- VqsUnLLb4OQ1X3ui0khZl74qsn6cwHExce/pxXD8wqEErxCdP4qlVXhxl1GqeubXWYeHUJ
- 5zXQL9w7FjTDzvoQ5edWzOwn5JQ8eJs=
+ bh=CnUN+XqAHOK8ejFr0N76bGTcfWmGXZPNXDRVVL/b/LE=;
+ b=I4nGwyHwVp8jzVjwYuIslRxwt9cXyv64WNcDECIgqqO9ThcefSaMIehFs5lIDiFoglKVPx
+ V5KMDw5LpX1jG725hWSMBocDzk21CVVH8+JgRsNpB5xRLbJY8j4XyIludbdl/QHSZVtKQ5
+ +7/tC7l35R6wsRvHHy+4skW9O58ksno=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1658475655;
+ s=susede2_ed25519; t=1658475666;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=OOK9jeAkpSAAXIPdi6m/dY3irn4Jx4DFH4XWFPvYvuo=;
- b=vy2r+0BsyNHmsc4UJFDGBBa1ZrXC5jJCEoy40VcrOCzZ5jhFVMwaHZmNEgD6a2fqTWDana
- tx7Wwbc/nOH+fYCA==
+ bh=CnUN+XqAHOK8ejFr0N76bGTcfWmGXZPNXDRVVL/b/LE=;
+ b=RijFl/LuyfizoSbN/IKT/v7/r3HPQf678UrRCuDsN5O5BWkJZJ/Bn6XwAy3VoHATWbTmUk
+ wfP0s5REe2FH5GDw==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 922C113ABC;
- Fri, 22 Jul 2022 07:40:55 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id CC12D13ABC;
+ Fri, 22 Jul 2022 07:41:05 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id lnjQIodU2mKnNAAAMHmgww
- (envelope-from <tiwai@suse.de>); Fri, 22 Jul 2022 07:40:55 +0000
-Date: Fri, 22 Jul 2022 09:40:55 +0200
-Message-ID: <871qud61dk.wl-tiwai@suse.de>
+ by imap2.suse-dmz.suse.de with ESMTPSA id I00WMZFU2mLFNAAAMHmgww
+ (envelope-from <tiwai@suse.de>); Fri, 22 Jul 2022 07:41:05 +0000
+Date: Fri, 22 Jul 2022 09:41:05 +0200
+Message-ID: <87zgh14msu.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
 To: shaomin Deng <dengshaomin@cdjrlc.com>
-Subject: Re: [PATCH] ALSA: emu10k1: Fix typo in comments
-In-Reply-To: <20220721150528.22099-1-dengshaomin@cdjrlc.com>
-References: <20220721150528.22099-1-dengshaomin@cdjrlc.com>
+Subject: Re: [PATCH] ALSA: asihpi: Fix typo in comments
+In-Reply-To: <20220721155517.2438-1-dengshaomin@cdjrlc.com>
+References: <20220721155517.2438-1-dengshaomin@cdjrlc.com>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
 MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
 Content-Type: text/plain; charset=US-ASCII
@@ -94,10 +94,10 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Thu, 21 Jul 2022 17:05:28 +0200,
+On Thu, 21 Jul 2022 17:55:17 +0200,
 shaomin Deng wrote:
 > 
-> Remove the rebundant word "in" in comments.
+> Delete the repeated word "in" in comments.
 > 
 > Signed-off-by: shaomin Deng <dengshaomin@cdjrlc.com>
 
