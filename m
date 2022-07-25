@@ -4,78 +4,78 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id DBAE0C43334
-	for <alsa-devel@archiver.kernel.org>; Mon, 25 Jul 2022 12:03:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 310A6C43334
+	for <alsa-devel@archiver.kernel.org>; Mon, 25 Jul 2022 13:08:10 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0D728201;
-	Mon, 25 Jul 2022 14:02:51 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0D728201
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0998EFA;
+	Mon, 25 Jul 2022 15:07:18 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0998EFA
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1658750621;
-	bh=GwbjS3c13lg8fZPA7wDzaCJ7BO5g1uJau5vPd/VCIMk=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	s=default; t=1658754488;
+	bh=pfFlYQJ46XkjUNiMAdcxTdm9mH/GEjmoBFYjs3nO3f0=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=XakILp3GhvKKbacbddOeKnEu/C0QTtdSZq1qkhtbtU0mA3SotgwppJn0euy1s2vNh
-	 TQRZr1YtGzunZ0clGsh2qBnXhVQByvoGa1lM4mvPtefvqvQH8N/xqSgNSaPg1ctRG6
-	 989r0h0v9qAkK2ExeZF7Pn/DJxOKNrLqJg2AFbZU=
+	b=EcjhvNl7EelW2K8aQ2uyF3VPBJrfnL0+Ob3u4oqvzhuP/f+EWU61Sydxq8tnS/5PX
+	 CUAqbbuy6JjvhTnOYC6NHWS3oLg9HeifbJS+5mYWC8PeoAL0+wXFP5C4W7TvsyPXo8
+	 zYXJ59rmbb/zR6p7CzyTKQjlZd8zVwyDy8Lyz9JY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 71DBFF80155;
-	Mon, 25 Jul 2022 14:02:50 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 8A32CF80163;
+	Mon, 25 Jul 2022 15:07:17 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id CD73FF80163; Mon, 25 Jul 2022 14:02:47 +0200 (CEST)
-Received: from ams.source.kernel.org (ams.source.kernel.org
- [IPv6:2604:1380:4601:e00::1])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id AF475F80115
- for <alsa-devel@alsa-project.org>; Mon, 25 Jul 2022 14:02:44 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AF475F80115
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="Vw/15Tdp"
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+ id 246ACF80088; Mon, 25 Jul 2022 15:07:16 +0200 (CEST)
+Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com
+ [68.232.153.233])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by ams.source.kernel.org (Postfix) with ESMTPS id 252E5B80E30;
- Mon, 25 Jul 2022 12:02:43 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6374CC341C6;
- Mon, 25 Jul 2022 12:02:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1658750561;
- bh=GwbjS3c13lg8fZPA7wDzaCJ7BO5g1uJau5vPd/VCIMk=;
- h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=Vw/15TdpwY/XY9VymvbWBN+R50Q+Ox6qLxjQmrvp2bCmODZDfNNehi83cm+eE0Xwc
- QRL5jwGQYNEyoX3OgztWnaNhhuLNIUPiZX0HlVRCkfyHNTgkJFAZ364iJtfgWHUgo3
- WWCo1mYwDZWi3sF/6DDaTk+jtdb94kQQzAXj/+kI9y6HWt36GRLsrse1Gmt34uAIKh
- +v23Ri6I2IQFnM0B1QRAvnhjSpmE9P3AjvSADdWs0z8C6lt6wUXxEb5irNCPKeAH/W
- oRLTlCrCtemLXqTBWzB3EcF0P3jfixV0HuY3k9oGMeOP+L5rl5BNYTuKOqWdrU7KOJ
- ANeYXmryr4fjQ==
-Date: Mon, 25 Jul 2022 13:02:35 +0100
-From: Mark Brown <broonie@kernel.org>
-To: "Prasad, Prasad" <venkataprasad.potturu@amd.com>
-Subject: Re: [PATCH] ASoC: amd: acp: Modify dai_id macros to be more generic
-Message-ID: <Yt6GW/29wJ9081rh@sirena.org.uk>
-References: <20220722141705.3340440-1-venkataprasad.potturu@amd.com>
- <Ytq5rlr/er0wDTae@sirena.org.uk>
- <PH7PR12MB595106BC93458F31B2D8C5A9E9959@PH7PR12MB5951.namprd12.prod.outlook.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 36A8EF80088
+ for <alsa-devel@alsa-project.org>; Mon, 25 Jul 2022 15:07:07 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 36A8EF80088
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com
+ header.b="vOiSpwwQ"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+ d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+ t=1658754431; x=1690290431;
+ h=from:to:cc:subject:date:message-id:in-reply-to:
+ references:mime-version:content-transfer-encoding;
+ bh=pfFlYQJ46XkjUNiMAdcxTdm9mH/GEjmoBFYjs3nO3f0=;
+ b=vOiSpwwQgTFMk6IR+JeeKysnBURiJLwb1nKWOcnlX64r6gX5nIeoUkZ3
+ /PjxM/fvv6Ukbwe4fDHAbAZUo0+BJ+rTiILLQAdrOpLBI3AnR3ZjC0VMU
+ yf6CV4BPetm/EO8VTJIlOqlknWUlZ89wXZL+AUUXbYRZVRQesM4HLb7LS
+ dJVCE9vzmZY5j+z3oj9bd13VSQz4IY3J6PuwRCGc80kj4ezcLRbv9yGQ2
+ r7AKxiS8rJdjpSTJJ1T2qnGgYYYPZNH/yj6HFqXoL1QX0U1RoLeAwNPxM
+ eoT6T+N7ocw5LMZGY0mMjDgKe/uQyjpxsE5K33UFVY/EC9285EFcrMGlj g==;
+X-IronPort-AV: E=Sophos;i="5.93,192,1654585200"; d="scan'208";a="173519274"
+Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
+ by esa5.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256;
+ 25 Jul 2022 06:07:06 -0700
+Received: from chn-vm-ex01.mchp-main.com (10.10.85.143) by
+ chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.28; Mon, 25 Jul 2022 06:07:04 -0700
+Received: from localhost.localdomain (10.10.115.15) by
+ chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server id
+ 15.1.2375.17 via Frontend Transport; Mon, 25 Jul 2022 06:07:02 -0700
+From: Claudiu Beznea <claudiu.beznea@microchip.com>
+To: <lgirdwood@gmail.com>, <broonie@kernel.org>, <perex@perex.cz>,
+ <tiwai@suse.com>, <nicolas.ferre@microchip.com>,
+ <alexandre.belloni@bootlin.com>
+Subject: [PATCH v2 1/5] ASoC: mchp-spdifrx: disable end of block interrupt on
+ failures
+Date: Mon, 25 Jul 2022 16:09:21 +0300
+Message-ID: <20220725130925.1781791-2-claudiu.beznea@microchip.com>
+X-Mailer: git-send-email 2.33.0
+In-Reply-To: <20220725130925.1781791-1-claudiu.beznea@microchip.com>
+References: <20220725130925.1781791-1-claudiu.beznea@microchip.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature"; boundary="PIF0Y6NPkJF5WZtF"
-Content-Disposition: inline
-In-Reply-To: <PH7PR12MB595106BC93458F31B2D8C5A9E9959@PH7PR12MB5951.namprd12.prod.outlook.com>
-X-Cookie: Replace with same type.
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Dommati,
- Sunil-kumar" <Sunil-kumar.Dommati@amd.com>,
- Ajit Kumar Pandey <AjitKumar.Pandey@amd.com>,
- open list <linux-kernel@vger.kernel.org>, "Hiregoudar,
- Basavaraj" <Basavaraj.Hiregoudar@amd.com>, Takashi Iwai <tiwai@suse.com>,
- Liam Girdwood <lgirdwood@gmail.com>, "Saba Kareem,
- Syed" <Syed.SabaKareem@amd.com>, "Mukunda,
- Vijendar" <Vijendar.Mukunda@amd.com>, "Reddy,
- V sujith kumar" <Vsujithkumar.Reddy@amd.com>
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org,
+ Claudiu Beznea <claudiu.beznea@microchip.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -91,43 +91,50 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+Disable end of block interrupt in case of wait for completion timeout
+or errors to undo previously enable operation (done in
+mchp_spdifrx_isr_blockend_en()). Otherwise we can end up with an
+unbalanced reference counter for this interrupt.
 
---PIF0Y6NPkJF5WZtF
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Fixes: ef265c55c1ac ("ASoC: mchp-spdifrx: add driver for SPDIF RX")
+Signed-off-by: Claudiu Beznea <claudiu.beznea@microchip.com>
+---
+ sound/soc/atmel/mchp-spdifrx.c | 9 ++++++---
+ 1 file changed, 6 insertions(+), 3 deletions(-)
 
-On Mon, Jul 25, 2022 at 10:27:19AM +0000, Prasad, Prasad wrote:
+diff --git a/sound/soc/atmel/mchp-spdifrx.c b/sound/soc/atmel/mchp-spdifrx.c
+index 0d37b78b94a0..b6a753893d90 100644
+--- a/sound/soc/atmel/mchp-spdifrx.c
++++ b/sound/soc/atmel/mchp-spdifrx.c
+@@ -288,15 +288,17 @@ static void mchp_spdifrx_isr_blockend_en(struct mchp_spdifrx_dev *dev)
+ 	spin_unlock_irqrestore(&dev->blockend_lock, flags);
+ }
+ 
+-/* called from atomic context only */
++/* called from atomic/non-atomic context */
+ static void mchp_spdifrx_isr_blockend_dis(struct mchp_spdifrx_dev *dev)
+ {
+-	spin_lock(&dev->blockend_lock);
++	unsigned int flags;
++
++	spin_lock_irqsave(&dev->blockend_lock);
+ 	dev->blockend_refcount--;
+ 	/* don't enable BLOCKEND interrupt if it's already enabled */
+ 	if (dev->blockend_refcount == 0)
+ 		regmap_write(dev->regmap, SPDIFRX_IDR, SPDIFRX_IR_BLOCKEND);
+-	spin_unlock(&dev->blockend_lock);
++	spin_unlock_irqrestore(&dev->blockend_lock);
+ }
+ 
+ static irqreturn_t mchp_spdif_interrupt(int irq, void *dev_id)
+@@ -575,6 +577,7 @@ static int mchp_spdifrx_subcode_ch_get(struct mchp_spdifrx_dev *dev,
+ 	if (ret <= 0) {
+ 		dev_dbg(dev->dev, "user data for channel %d timeout\n",
+ 			channel);
++		mchp_spdifrx_isr_blockend_dis(dev);
+ 		return ret;
+ 	}
+ 
+-- 
+2.34.1
 
-> This looks like it's just an indentation/formatting change which isn't
->=20
-> what the changelog said?
-
-> We are changing dai_id macro numbers, as renoir platform has 2 I2S instan=
-ces and Rembrandt platform has 3 I2S instances.
->=20
-> To make I2S instances as order, change DMIC_INSTANCE to 0x00, I2S_SP_INST=
-ANCE to 0x01 and I2S_BT_INSTANCE to 0x02.
-> I2S_HS_INSTANCE is already 0x03.
-
-Please write a better changelog which makes this clear.
-
-Please fix your e-mail client to clearly distinguish between quoted and
-non-quoted text, it's very hard to find your new text in your mail.
-
---PIF0Y6NPkJF5WZtF
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmLehlsACgkQJNaLcl1U
-h9CgKwf/fMKV9x3binr3akdQUf2tCBjy5NssqkTHNgnFmlRZR16apmsVym3vFcBm
-alf/DJPe6ulDvdyWpaE0pFRby0SMno2QcMAtVBFGqQND6RJj6DIpgCZNkn1ArAH0
-oAK9+7qnpyDEvtBjW5DP1T64t1ODNThOtPqtvRGmNDXZsJzhFq+/Xf/YMd4bsQCK
-Dah7YpjggjmlNcYMV6aFJcrUIOArSRtEtkUb1aeoFPGSFV2FhHiNp7/KXLSCha6F
-kOfTQgoGKrsJ8y0DSMY2j6y49GMK6k8A9H5i7f4lvYIxGpbRspvxjiC+Ch0YF17L
-wA3NhWAIDUvz/EwTQLJUeqbnY2X9Uw==
-=Q0Fq
------END PGP SIGNATURE-----
-
---PIF0Y6NPkJF5WZtF--
