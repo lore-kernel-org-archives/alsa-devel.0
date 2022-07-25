@@ -4,86 +4,80 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9F2C0C19F21
-	for <alsa-devel@archiver.kernel.org>; Wed, 27 Jul 2022 05:26:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7D8DCC19F28
+	for <alsa-devel@archiver.kernel.org>; Wed, 27 Jul 2022 05:42:00 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id F35E984B;
-	Wed, 27 Jul 2022 07:25:47 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F35E984B
+	by alsa0.perex.cz (Postfix) with ESMTPS id B669320B;
+	Wed, 27 Jul 2022 07:41:07 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B669320B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1658899598;
-	bh=sVh6ABbamvq3k6yhY+MCoVBwmnUR+u9St2BDuFh3xS0=;
-	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=Udc4DiBeP9gNYDNpIuXcp5i8+BuuLB7751Qxx1kssHbkNKYyJQqsUczdwV5HJIx0R
-	 bahx/8lbJDGJU2XViU5vAmANcAB5DaVj9aqJ/2FbDiOfWugPb+tEWKtkadWGCH+VNL
-	 LzepFMgz32xJpL2NSpoC/JGJ4Ovg55JRHeLkvXlM=
+	s=default; t=1658900517;
+	bh=ZykHilbaIsVR1jGsFUV7J/1ZBCbkia6ZB2qmlDaIPTk=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=LMd6GYPuClsT9VSZSW3vWKsqXNHEiPTsy7FMNu3W8owj/iukiat5bmKWYa6Q2vY1L
+	 081M43vXW5M/8TjosgfQ4uYQ8MHt9IHOry3N/7nG38Q3WIZ+hzbeD8GyJyEo9jS/xG
+	 PmXixfKWQQrLCfnLiBbAm7LvZb0g5AyXxZbWxO2I=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 4B5C2F80155;
-	Wed, 27 Jul 2022 07:25:47 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2BBADF80155;
+	Wed, 27 Jul 2022 07:41:07 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 247F7F8015B; Wed, 27 Jul 2022 07:25:45 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id EB376F80155; Mon, 25 Jul 2022 13:11:17 +0200 (CEST)
+Received: from sender4-op-o18.zoho.com (sender4-op-o18.zoho.com
+ [136.143.188.18])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 0A5BFF800FA
- for <alsa-devel@alsa-project.org>; Wed, 27 Jul 2022 07:25:36 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0A5BFF800FA
+ by alsa1.perex.cz (Postfix) with ESMTPS id EAC77F80088
+ for <alsa-devel@alsa-project.org>; Mon, 25 Jul 2022 13:11:10 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EAC77F80088
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="UvMxtc8L"; 
- dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="yu0yTJPq"
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 1FA0820156;
- Wed, 27 Jul 2022 05:25:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1658899534; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=bdqmQ5p2ejZx38NuBZXzRSiBR0XeVRrw8M3dUjIZMMw=;
- b=UvMxtc8LNEj6R91u/dPgYCdwo81tvHkxZHFcc5ChPMt6KGXFEh5ZazTsiTYgGUUKdht70S
- ZBNK/V/prwer8fk6Ef/L4arzxq/Ejb6ovKOUj1HeVWAiwaHJSxXcQJ3L6UXVvE7CjDUuXU
- RpocNP/tRbeaUhXCsyS54EiRHL5+37Q=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1658899534;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=bdqmQ5p2ejZx38NuBZXzRSiBR0XeVRrw8M3dUjIZMMw=;
- b=yu0yTJPq1NYJt+Rw/fdkL6xr9Uq6K6UfnKT1yAWtwPbiJDzGYALauCC7nIMWm1vfVPDOmg
- /+0lxs6uQVVERHBA==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id D9A8213A7C;
- Wed, 27 Jul 2022 05:25:33 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id bFNyNE3M4GJjZQAAMHmgww
- (envelope-from <tiwai@suse.de>); Wed, 27 Jul 2022 05:25:33 +0000
-Date: Wed, 27 Jul 2022 07:25:33 +0200
-Message-ID: <87tu73p1o2.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Dipanjan Das <mail.dipanjan.das@gmail.com>
-Subject: Re: KASAN: vmalloc-out-of-bounds Write in snd_pcm_hw_params
-In-Reply-To: <CANX2M5Ywm+GpYY3+GsOWCLH24Nhy0M0LjBE-pHC8wFcd7SO=wQ@mail.gmail.com>
-References: <CANX2M5Zw_zW6ez0_wvaXL1pbLnR2jWY=T7MgkT=4a-zNkiwVig@mail.gmail.com>
- <YtuceCr5OCJcDatJ@kroah.com> <874jz82kx0.wl-tiwai@suse.de>
- <CANX2M5Ywm+GpYY3+GsOWCLH24Nhy0M0LjBE-pHC8wFcd7SO=wQ@mail.gmail.com>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
-Cc: alsa-devel@alsa-project.org, fleischermarius@googlemail.com,
- Greg KH <gregkh@linuxfoundation.org>, linux-kernel@vger.kernel.org,
- tiwai@suse.com, consult.awy@gmail.com, syzkaller@googlegroups.com,
- its.priyanka.bose@gmail.com
+ dkim=pass (1024-bit key) header.d=icenowy.me header.i=uwu@icenowy.me
+ header.b="IUt4JzvZ"
+ARC-Seal: i=1; a=rsa-sha256; t=1658747415; cv=none; 
+ d=zohomail.com; s=zohoarc; 
+ b=fByinlQtj3jM8pGcdQhkBTz3yEYHgopvAsss8Fvbd1iNfVZL1SjjIWrKRmIUAxtngJT/GxkBIhv4VL1w95A2C1f3trDCyAkexJk/TAaLewo+jSfiC53UznPZ/XuTELDSdpIWTapKrBNF819937vW8Kzn7UuM6NXwgRR5HPkYwFg=
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=zohomail.com;
+ s=zohoarc; t=1658747415;
+ h=Content-Transfer-Encoding:Cc:Date:From:MIME-Version:Message-ID:Subject:To; 
+ bh=Vw8o+PvqiksN2gP8/VvlaOtw5GwqSrnHaBqgfUiELlY=; 
+ b=n7NI7C66JvDd8m+LljyeWkLLfom/IbMYRYG5kqpbfondXP3S7TIapce9R+Uc3couwN5GJ7tyYXOfe1joQ/BXf1WngNld91SYk6tJDDkQWkW0djWhaOP7iQ7xDUOn2o37w7C9YG9u05jotOuCxlTw31ZdUnpoodYZmCDbD+LqfuA=
+ARC-Authentication-Results: i=1; mx.zohomail.com;
+ dkim=pass  header.i=icenowy.me;
+ spf=pass  smtp.mailfrom=uwu@icenowy.me;
+ dmarc=pass header.from=<uwu@icenowy.me>
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1658747415; 
+ s=zmail; d=icenowy.me; i=uwu@icenowy.me;
+ h=From:From:To:To:Cc:Cc:Subject:Subject:Date:Date:Message-Id:Message-Id:MIME-Version:Content-Transfer-Encoding:Reply-To;
+ bh=Vw8o+PvqiksN2gP8/VvlaOtw5GwqSrnHaBqgfUiELlY=;
+ b=IUt4JzvZIwxHEvuj94kvZVinjoTDaWc8aiizDGKJV6kDZGzCmASJJhQ4HuMtdXnI
+ aNfwfHm9/5KIucBttU/sqrYg7wb9h+i6E3gvWsgY5veBpyPHeH42uag9+ymBDQ+IOg0
+ ZFWXkqvYErEBUFDR+BxXHjtQGoCIkfKF8c88OiSo=
+Received: from edelgard.icenowy.me (59.41.162.230 [59.41.162.230]) by
+ mx.zohomail.com with SMTPS id 1658747413181482.9075417342268;
+ Mon, 25 Jul 2022 04:10:13 -0700 (PDT)
+From: Icenowy Zheng <uwu@icenowy.me>
+To: Cezary Rojewski <cezary.rojewski@intel.com>,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ Liam Girdwood <liam.r.girdwood@linux.intel.com>,
+ Peter Ujfalusi <peter.ujfalusi@linux.intel.com>,
+ Bard Liao <yung-chuan.liao@linux.intel.com>,
+ Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+ Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+ Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>,
+ Takashi Iwai <tiwai@suse.com>
+Subject: [PATCH 1/2] ASoC: Intel: Skylake: fix error message of NHLT blob
+ selection
+Date: Mon, 25 Jul 2022 19:10:01 +0800
+Message-Id: <20220725111002.143765-1-uwu@icenowy.me>
+X-Mailer: git-send-email 2.37.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-ZohoMailClient: External
+X-Mailman-Approved-At: Wed, 27 Jul 2022 07:41:04 +0200
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+ Icenowy Zheng <uwu@icenowy.me>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -99,56 +93,32 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Tue, 26 Jul 2022 23:40:48 +0200,
-Dipanjan Das wrote:
-> 
-> On Sat, Jul 23, 2022 at 3:17 AM Takashi Iwai <tiwai@suse.de> wrote:
-> >
-> > On Sat, 23 Jul 2022 09:00:08 +0200,
-> > Greg KH wrote:
-> > >
-> > > Wondeful, do you have a fix for this that solves the reported problem
-> > > that you have tested with the reproducer?
-> >
-> > ... or at least more detailed information.
-> 
-> Here is our analysis of the bug in the kernel v5.10.131.
-> 
-> During allocation, the `size` of the DMA buffer is not page-aligned:
-> https://elixir.bootlin.com/linux/v5.10.131/source/sound/core/memalloc.c#L149.
-> However, in sound/core/pcm_native.c:798
-> (https://elixir.bootlin.com/linux/v5.10.131/source/sound/core/pcm_native.c#L798),
-> the `size` variable is page-aligned before memset-ing the `dma_area`.
-> >From the other BUG_ON assertions in other parts of the code, it looks
-> like the DMA area is not supposed to be equal to or greater than
-> 0x200000 bytes. However, due to page-alignment, the `size` can indeed
-> get rounded up to 0x200000 which causes the out of bound access.
-> 
-> > Last but not least, you should check whether it's specific to your
-> > 5.10.x kernel or it's also seen with the latest upstream, too.
-> 
-> The bug is not reproducible on the latest mainline, because in
-> sound/core/memalloc.c:66
-> (https://github.com/torvalds/linux/blob/5de64d44968e4ae66ebdb0a2d08b443f189d3651/sound/core/memalloc.c#L66)
-> the allocation function `snd_dma_alloc_dir_pages()` now page-aligns
-> the `size` right before allocating the DMA buffer. Therefore, any
-> subsequent page-alignment, like the one in `snd_pcm_hw_params()` does
-> not cause an out of bound access.
+The query to select NHLT blob had been changed to use parameters of the
+pipeline instead of PCM, however the error message returned when it fails
+still uses PCM properties.
 
-Thanks for the analysis.  A good news is that, at least for the
-vmalloc() case, it's a kind of false-positive; vmalloc() always takes
-the full pages, so practically seen, the size is page-aligned.  It's
-fooling the memory checker, though.
+Fix this inconsistency.
 
-But the similar problem could be seen with genalloc calls, and this
-was fixed by the upstream commit
-5c1733e33c888a3cb7f576564d8ad543d5ad4a9e
-    ALSA: memalloc: Align buffer allocations in page size
+Fixes: 87b265260046 ("ASoC: Intel: Skylake: Select proper format for NHLT blob")
+Signed-off-by: Icenowy Zheng <uwu@icenowy.me>
+---
+ sound/soc/intel/skylake/skl-topology.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-I suppose you can simply backport this commit to 5.10.y.  Could you
-confirm that this fixes your problem?
+diff --git a/sound/soc/intel/skylake/skl-topology.c b/sound/soc/intel/skylake/skl-topology.c
+index 9bdf020a2b64..19994ec8bba1 100644
+--- a/sound/soc/intel/skylake/skl-topology.c
++++ b/sound/soc/intel/skylake/skl-topology.c
+@@ -1864,7 +1864,8 @@ static int skl_tplg_be_fill_pipe_params(struct snd_soc_dai *dai,
+ 	} else {
+ 		dev_err(dai->dev, "Blob NULL for id:%d type:%d dirn:%d ch:%d, freq:%d, fmt:%d\n",
+ 			mconfig->vbus_id, link_type, params->stream,
+-			params->ch, params->s_freq, params->s_fmt);
++			pipe_fmt->channels, pipe_fmt->freq,
++			pipe_fmt->bps);
+ 		return -EINVAL;
+ 	}
+ 
+-- 
+2.37.1
 
-
-thanks,
-
-Takashi
