@@ -4,73 +4,73 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 01230C433EF
-	for <alsa-devel@archiver.kernel.org>; Mon, 25 Jul 2022 19:52:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 37D9FC43334
+	for <alsa-devel@archiver.kernel.org>; Mon, 25 Jul 2022 19:52:56 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 053EE83A;
-	Mon, 25 Jul 2022 21:51:49 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 053EE83A
+	by alsa0.perex.cz (Postfix) with ESMTPS id 8427715E2;
+	Mon, 25 Jul 2022 21:52:03 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8427715E2
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1658778759;
-	bh=hcRPlfM5Td+EcU0ePZyUz156ScV9SVPDnCAIVARwEbw=;
+	s=default; t=1658778773;
+	bh=sR2nMAJh/Oh5HFkamKzd0LLPpXja7GQgLCCLlAzkC5I=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=hL7R9UheDKD7GqVZuI/OmYf8LovGBoQcuu+gVlCnVbn56OW2MgV1CTep9yYYSHzyp
-	 P83P+HNEoMyzsWcPBQ9HzJL4e8MgqSmLI8TX5z/53WcvgDq7MZbW8e0UNFzCxUh1UN
-	 yWqpwR4p1gHS8KWLODI+B02p3YrPDzrgMQkZwwFk=
+	b=dKuoROhY9Kt9wk+rOQaj1iMnI2SYw3W/b8M3kE2F2eClozWdA/43z2IZg3Hqz71dn
+	 +MhOi6cSBYXF3Pr0EAc959ilz3BMAvHyXRjChaQKDTJu089utVcBIyH/QQUQ1H5Iuz
+	 uT27f6cM9G3gthR3oveVKxCFEzBg3zaMe5YIkLME=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 7D53FF80543;
-	Mon, 25 Jul 2022 21:49:50 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 43F69F8057C;
+	Mon, 25 Jul 2022 21:49:51 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 9D64FF80551; Mon, 25 Jul 2022 21:49:44 +0200 (CEST)
+ id 2EF0CF80563; Mon, 25 Jul 2022 21:49:47 +0200 (CEST)
 Received: from mga12.intel.com (mga12.intel.com [192.55.52.136])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 4D158F804FC
- for <alsa-devel@alsa-project.org>; Mon, 25 Jul 2022 21:49:33 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4D158F804FC
+ by alsa1.perex.cz (Postfix) with ESMTPS id 76948F80539
+ for <alsa-devel@alsa-project.org>; Mon, 25 Jul 2022 21:49:34 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 76948F80539
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="UBFJMAtG"
+ header.b="lSxFQF82"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
  t=1658778575; x=1690314575;
  h=from:to:cc:subject:date:message-id:in-reply-to:
  references:mime-version:content-transfer-encoding;
- bh=hcRPlfM5Td+EcU0ePZyUz156ScV9SVPDnCAIVARwEbw=;
- b=UBFJMAtGgSuDKSqJ0iyLX+BNyX4eyq4prGLOpl7QOXmKsQg3WuglvJCa
- cg4IVj+n39jIlbSfH/8RYhq2otlPgbKIkTQ8lhdxO4Skpbu7gkZjyAKdD
- bJcvj9nVe2OUOCVMxWMg6/Grvg3g+MVO3T1g5gs1MEu4l7xRvF83AvmIO
- IYHxBsMlr3B8J39V+39fTl+fcvwjM32vdNeI0V8X0ypsUqB7HFjjvSa22
- rZYuocrpIvRrab8KzAINOVf/RGMKgXdYBVUQT52vSfSnQsEKGIhsJOj7H
- dv9QUgeqTzosOy4uGPVfmMa08G6o4HnB5R/PBuI2k6s0zl+s+yZ6I1gxJ w==;
-X-IronPort-AV: E=McAfee;i="6400,9594,10419"; a="267553913"
-X-IronPort-AV: E=Sophos;i="5.93,193,1654585200"; d="scan'208";a="267553913"
+ bh=sR2nMAJh/Oh5HFkamKzd0LLPpXja7GQgLCCLlAzkC5I=;
+ b=lSxFQF82ikfSyoKfJXV7cAy34zBzR0v7UY4uZSdrZxO9FYxsT1p22v8d
+ Q0ZpjCgSpO1gxsvgi+QZjhOzrTO6+uPdqRxvsA00vWWCO2T4VS4BDLAy6
+ nz/1y2beGDZsdkCh72ZgoT1OJB7do8kTxHW9wdaJWZaS1L5BYYNyh0OSJ
+ QWHiYHUAKYj2Tf6Uij1N+tywOa3pMYL6eyvCrHS6WuG+mnGp8NJmxlgZ6
+ nGv44kdTDN26EjstGz9QHdTo4bETBCyLoOENge0Ph3+e6PlDaAFPHRRPF
+ ZyP/Zk1KKhZEMCyLH/2JCGnmTo+VQXw8EFIy329Ap5kWbhPSpIBCRvlHG Q==;
+X-IronPort-AV: E=McAfee;i="6400,9594,10419"; a="267553921"
+X-IronPort-AV: E=Sophos;i="5.93,193,1654585200"; d="scan'208";a="267553921"
 Received: from orsmga001.jf.intel.com ([10.7.209.18])
  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 25 Jul 2022 12:49:25 -0700
-X-IronPort-AV: E=Sophos;i="5.93,193,1654585200"; d="scan'208";a="632479468"
+ 25 Jul 2022 12:49:26 -0700
+X-IronPort-AV: E=Sophos;i="5.93,193,1654585200"; d="scan'208";a="632479472"
 Received: from mbianco-mobl1.amr.corp.intel.com (HELO
  pbossart-mobl3.intel.com) ([10.212.71.159])
  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 25 Jul 2022 12:49:24 -0700
+ 25 Jul 2022 12:49:25 -0700
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH 06/10] ASoC: Intel: sof_es8336: reset the num_links during
- probe
-Date: Mon, 25 Jul 2022 14:49:05 -0500
-Message-Id: <20220725194909.145418-7-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH 08/10] ASoC: Intel: sof_rt5682: Add support for
+ mtl_mx98357_rt5682
+Date: Mon, 25 Jul 2022 14:49:07 -0500
+Message-Id: <20220725194909.145418-9-pierre-louis.bossart@linux.intel.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20220725194909.145418-1-pierre-louis.bossart@linux.intel.com>
 References: <20220725194909.145418-1-pierre-louis.bossart@linux.intel.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: tiwai@suse.de, Bard Liao <yung-chuan.liao@linux.intel.com>,
- broonie@kernel.org, Muralidhar Reddy <muralidhar.reddy@intel.com>,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: tiwai@suse.de, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ Ranjani Sridharan <ranjani.sridharan@linux.intel.com>, broonie@kernel.org,
+ Bard Liao <yung-chuan.liao@linux.intel.com>, Yong Zhi <yong.zhi@intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -86,32 +86,68 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Muralidhar Reddy <muralidhar.reddy@intel.com>
+From: Yong Zhi <yong.zhi@intel.com>
 
-The number of dai_links for sound cards needs to be reset during
-probe. This is done in all machine drivers except this one.
+This patch adds the driver data for rt5682 codec on SSP0 and
+max98357a speaker amplifiers on SSP1 for MTL platform.
 
+Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 Reviewed-by: Bard Liao <yung-chuan.liao@linux.intel.com>
-Signed-off-by: Muralidhar Reddy <muralidhar.reddy@intel.com>
+Signed-off-by: Yong Zhi <yong.zhi@intel.com>
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- sound/soc/intel/boards/sof_es8336.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ sound/soc/intel/boards/sof_rt5682.c             |  8 ++++++++
+ .../soc/intel/common/soc-acpi-intel-mtl-match.c | 17 +++++++++++++++++
+ 2 files changed, 25 insertions(+)
 
-diff --git a/sound/soc/intel/boards/sof_es8336.c b/sound/soc/intel/boards/sof_es8336.c
-index f6a003d2da29..b616d22bc0fa 100644
---- a/sound/soc/intel/boards/sof_es8336.c
-+++ b/sound/soc/intel/boards/sof_es8336.c
-@@ -634,7 +634,8 @@ static int sof_es8336_probe(struct platform_device *pdev)
- 	if (quirk & SOF_ES8336_ENABLE_DMIC)
- 		dmic_be_num = 2;
+diff --git a/sound/soc/intel/boards/sof_rt5682.c b/sound/soc/intel/boards/sof_rt5682.c
+index 1384716c6360..b79d8a497e1d 100644
+--- a/sound/soc/intel/boards/sof_rt5682.c
++++ b/sound/soc/intel/boards/sof_rt5682.c
+@@ -1092,6 +1092,14 @@ static const struct platform_device_id board_ids[] = {
+ 					SOF_RT5682_SSP_AMP(1) |
+ 					SOF_RT5682_NUM_HDMIDEV(4)),
+ 	},
++	{
++		.name = "mtl_mx98357_rt5682",
++		.driver_data = (kernel_ulong_t)(SOF_RT5682_MCLK_EN |
++					SOF_RT5682_SSP_CODEC(0) |
++					SOF_SPEAKER_AMP_PRESENT |
++					SOF_RT5682_SSP_AMP(1) |
++					SOF_RT5682_NUM_HDMIDEV(4)),
++	},
+ 	{ }
+ };
+ MODULE_DEVICE_TABLE(platform, board_ids);
+diff --git a/sound/soc/intel/common/soc-acpi-intel-mtl-match.c b/sound/soc/intel/common/soc-acpi-intel-mtl-match.c
+index 74d3b82f8d35..36c361fb28a4 100644
+--- a/sound/soc/intel/common/soc-acpi-intel-mtl-match.c
++++ b/sound/soc/intel/common/soc-acpi-intel-mtl-match.c
+@@ -10,7 +10,24 @@
+ #include <sound/soc-acpi-intel-match.h>
+ #include "soc-acpi-intel-sdw-mockup-match.h"
  
--	sof_es8336_card.num_links += dmic_be_num + hdmi_num;
-+	/* compute number of dai links */
-+	sof_es8336_card.num_links = 1 + dmic_be_num + hdmi_num;
- 
- 	if (quirk & SOF_SSP_HDMI_CAPTURE_PRESENT)
- 		sof_es8336_card.num_links += (quirk & SOF_NO_OF_HDMI_CAPTURE_SSP_MASK) >>
++static const struct snd_soc_acpi_codecs mtl_max98357a_amp = {
++	.num_codecs = 1,
++	.codecs = {"MX98357A"}
++};
++
++static const struct snd_soc_acpi_codecs mtl_rt5682_rt5682s_hp = {
++	.num_codecs = 2,
++	.codecs = {"10EC5682", "RTL5682"},
++};
++
+ struct snd_soc_acpi_mach snd_soc_acpi_intel_mtl_machines[] = {
++	{
++		.comp_ids = &mtl_rt5682_rt5682s_hp,
++		.drv_name = "mtl_mx98357_rt5682",
++		.machine_quirk = snd_soc_acpi_codec_list,
++		.quirk_data = &mtl_max98357a_amp,
++		.sof_tplg_filename = "sof-mtl-max98357a-rt5682.tplg",
++	},
+ 	{},
+ };
+ EXPORT_SYMBOL_GPL(snd_soc_acpi_intel_mtl_machines);
 -- 
 2.34.1
 
