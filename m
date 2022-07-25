@@ -4,68 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 69523CCA48B
-	for <alsa-devel@archiver.kernel.org>; Mon, 25 Jul 2022 13:09:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A622CC433EF
+	for <alsa-devel@archiver.kernel.org>; Mon, 25 Jul 2022 13:09:42 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 6E479886;
-	Mon, 25 Jul 2022 15:08:33 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6E479886
+	by alsa0.perex.cz (Postfix) with ESMTPS id E4740844;
+	Mon, 25 Jul 2022 15:08:50 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E4740844
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1658754563;
-	bh=WwU9nxdctQsI4jH9K6IXqln2aORb9QSIuV6qe2LWzS8=;
+	s=default; t=1658754581;
+	bh=zVQNjZCZbrx7YBoEsGRPaUn9ETcmC+pt2UNxfnvHVEk=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=mCv0i1wlg9uhnGKXMe33rFK0jhbZpCODj4kj4wu3U2bpAIoUHM1VsQhIohyS166fI
-	 HdnYyDQJ1o5wtUKJubc8NMcSrXZqm8dQE/ZCol6fpeRM4SWPMygzqnwifomco3hH/f
-	 A2RHGXgonwLvtwhzWSZnMmplE6w/nX+KWWcmEEvE=
+	b=JXlT5hx84kJjSdh+B8H965/O3lRtFGWSes4jcF6sIQ9HTuYfDZFqg9PGSLNUNVIcn
+	 gbTeJqTVjNDXfy83OzAkDu+TGsuUeV6clbfgofxMsXzGkxxzJtpoYoDSS1OKNqLk2h
+	 Fn7GmVlqbJBgj8QkN+8ttaNAaOTOpPc0q7N2Yn2M=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 72CB4F80553;
-	Mon, 25 Jul 2022 15:07:30 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id F009FF80559;
+	Mon, 25 Jul 2022 15:07:33 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id DD9E0F80557; Mon, 25 Jul 2022 15:07:29 +0200 (CEST)
+ id 277A9F8055A; Mon, 25 Jul 2022 15:07:32 +0200 (CEST)
 Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com
  [68.232.154.123])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 0613AF80548
- for <alsa-devel@alsa-project.org>; Mon, 25 Jul 2022 15:07:20 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0613AF80548
+ by alsa1.perex.cz (Postfix) with ESMTPS id 3DD16F80088
+ for <alsa-devel@alsa-project.org>; Mon, 25 Jul 2022 15:07:25 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3DD16F80088
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com
- header.b="wDJLWzqj"
+ header.b="mtmSmXft"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
- t=1658754444; x=1690290444;
+ t=1658754446; x=1690290446;
  h=from:to:cc:subject:date:message-id:in-reply-to:
  references:mime-version:content-transfer-encoding;
- bh=WwU9nxdctQsI4jH9K6IXqln2aORb9QSIuV6qe2LWzS8=;
- b=wDJLWzqj79H4s186lYUxvP0WAIiD3vEfdKId2yB+NelUMKXIijI/Fify
- HFAznVexbmnvOzg9z7X6fESLJkgBESWc0gYPMlUab0c7ryiLRF6RuYwBB
- g50TtUh4gcLQcOV3DhJ9gXel0+hcqOq9vZVyFOtTTsGJcptidDbjJO5V+
- e8wbF0jChIc43cEy36YCXNsKAc1mJciWEbufAcj9kNHaDfjuqUPniucXs
- KYQ0P7Tx0n4HfGgXUu1O21PeqtX8F8Oke5jHiC1Uv9q28VEtaOnbuQSsV
- Hrfu++cmpxoMGQTW4OE/u3j4Y9hsBFXoyOVVX2S76ACMrNRtwJqS+bcbT g==;
-X-IronPort-AV: E=Sophos;i="5.93,192,1654585200"; d="scan'208";a="166265269"
+ bh=zVQNjZCZbrx7YBoEsGRPaUn9ETcmC+pt2UNxfnvHVEk=;
+ b=mtmSmXftibXdF82iIYR+z9himamx0bSTNOQ6C43LcLbsKP5H15ziw/nG
+ np8WL/caX4f2V/mmfrTrO5HcSSgnkkH2WJkpHVQoMmJpXi+orWeb6T8ji
+ +g6Y5RSrduaLEveu/jrLLOxsun6ULwj38Yt4WxIoiywfVK2B9S7yjfZYT
+ H9mRzL5lmbqlWttr7irZTvyu33vtwoQcOQA1ZVZ+jAE6INGsXFVKqNtRE
+ my61rCOkUxG3OmyO7YgNPGUmcZUprid/cLEYtRz0l7gfCgaIMVLNTVuBY
+ Xrvoc0ctF760ziITrl854gvkQxMz4xaJbYE3u4gW27vMonkdZ0pcHw2EX w==;
+X-IronPort-AV: E=Sophos;i="5.93,192,1654585200"; d="scan'208";a="166265300"
 Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
  by esa4.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256;
- 25 Jul 2022 06:07:13 -0700
+ 25 Jul 2022 06:07:16 -0700
 Received: from chn-vm-ex01.mchp-main.com (10.10.85.143) by
  chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.17; Mon, 25 Jul 2022 06:07:13 -0700
+ 15.1.2375.17; Mon, 25 Jul 2022 06:07:15 -0700
 Received: from localhost.localdomain (10.10.115.15) by
  chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server id
- 15.1.2375.17 via Frontend Transport; Mon, 25 Jul 2022 06:07:10 -0700
+ 15.1.2375.17 via Frontend Transport; Mon, 25 Jul 2022 06:07:13 -0700
 From: Claudiu Beznea <claudiu.beznea@microchip.com>
 To: <lgirdwood@gmail.com>, <broonie@kernel.org>, <perex@perex.cz>,
  <tiwai@suse.com>, <nicolas.ferre@microchip.com>,
  <alexandre.belloni@bootlin.com>
-Subject: [PATCH v2 4/5] ASoC: mchp-spdiftx: return directly ret
-Date: Mon, 25 Jul 2022 16:09:24 +0300
-Message-ID: <20220725130925.1781791-5-claudiu.beznea@microchip.com>
+Subject: [PATCH v2 5/5] ASoC: mchp-spdiftx: add and remove black line around
+ MODULE_DEVICE_TABLE()
+Date: Mon, 25 Jul 2022 16:09:25 +0300
+Message-ID: <20220725130925.1781791-6-claudiu.beznea@microchip.com>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20220725130925.1781791-1-claudiu.beznea@microchip.com>
 References: <20220725130925.1781791-1-claudiu.beznea@microchip.com>
@@ -90,61 +91,28 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Avoid having patterns like:
-
-int ret;
-
-// ...
-ret = 0;
-// ...
-
-ret = call_function();
-if (ret)
-	return ret;
-
-return 0;
-
-and return directly ret for all cases.
+Add blank line after MODULE_DEVICE_TABLE() and remove the one
+before it.
 
 Signed-off-by: Claudiu Beznea <claudiu.beznea@microchip.com>
 ---
- sound/soc/atmel/mchp-spdiftx.c | 12 ++++--------
- 1 file changed, 4 insertions(+), 8 deletions(-)
+ sound/soc/atmel/mchp-spdiftx.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/sound/soc/atmel/mchp-spdiftx.c b/sound/soc/atmel/mchp-spdiftx.c
-index 20e77b374f7e..74729ec8423b 100644
+index 74729ec8423b..e8f4ff1b7c7c 100644
 --- a/sound/soc/atmel/mchp-spdiftx.c
 +++ b/sound/soc/atmel/mchp-spdiftx.c
-@@ -340,12 +340,10 @@ static int mchp_spdiftx_trigger(struct snd_pcm_substream *substream, int cmd,
- 
- 	ret = regmap_write(dev->regmap, SPDIFTX_MR, mr);
- 	spin_unlock(&ctrl->lock);
--	if (ret) {
-+	if (ret)
- 		dev_err(dev->dev, "unable to disable TX: %d\n", ret);
--		return ret;
--	}
- 
--	return 0;
-+	return ret;
- }
- 
- static int mchp_spdiftx_hw_params(struct snd_pcm_substream *substream,
-@@ -841,12 +839,10 @@ static int mchp_spdiftx_probe(struct platform_device *pdev)
- 	err = devm_snd_soc_register_component(&pdev->dev,
- 					      &mchp_spdiftx_component,
- 					      &mchp_spdiftx_dai, 1);
--	if (err) {
-+	if (err)
- 		dev_err(&pdev->dev, "failed to register component: %d\n", err);
--		return err;
--	}
- 
--	return 0;
-+	return err;
- }
- 
- static struct platform_driver mchp_spdiftx_driver = {
+@@ -760,8 +760,8 @@ static const struct of_device_id mchp_spdiftx_dt_ids[] = {
+ 	},
+ 	{ /* sentinel */ }
+ };
+-
+ MODULE_DEVICE_TABLE(of, mchp_spdiftx_dt_ids);
++
+ static int mchp_spdiftx_probe(struct platform_device *pdev)
+ {
+ 	struct device_node *np = pdev->dev.of_node;
 -- 
 2.34.1
 
