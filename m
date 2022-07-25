@@ -4,88 +4,89 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D587BC433EF
-	for <alsa-devel@archiver.kernel.org>; Mon, 25 Jul 2022 06:33:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 47203C433EF
+	for <alsa-devel@archiver.kernel.org>; Mon, 25 Jul 2022 06:40:02 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 15BF03E7;
-	Mon, 25 Jul 2022 08:33:04 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 15BF03E7
+	by alsa0.perex.cz (Postfix) with ESMTPS id 7C1671F2;
+	Mon, 25 Jul 2022 08:39:10 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7C1671F2
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1658730834;
-	bh=VO1C4q6J5oK8n2X5d/+3rkTP82sTeoHJCu3uJvOuPOs=;
+	s=default; t=1658731200;
+	bh=QuJqfrScMRJ+RQtxA0oAjD3fc9/OfaMbkrDxLvoH6Ws=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=o/3+TwCWHm5LCBynRUsa6SnozEVSqqQ/Ox+2j/VbTrek24xQOimayWdQBjWgdfDoi
-	 FB9HygCNFBGqliQ7KwL02dsju74l9yaoeWrvoWQnUzxvmZkXJYPtVssGY46HiD8ZEL
-	 KKNAzks3Gw9cfSVc1tGARz1xVTAHq6JsacHB2INE=
+	b=AaxJQJdUE2VSHMg+NCtbpTtB0wuXHkr7TXVQLupzRCg0syGatoOSsu2pNKdeJ38yQ
+	 FO0W52hxbGaqVX49KyFhKUa6XYx2lD8ErNbMT3x9lZrR0JZZiQiPZRCGniq4EO066B
+	 S1MMmCmoCJmF/7USsRBJXSd/qY3WQ/azgt/z+Yu0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 93B91F80128;
-	Mon, 25 Jul 2022 08:33:03 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 64A22F80155;
+	Mon, 25 Jul 2022 08:39:09 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 17A96F80163; Mon, 25 Jul 2022 08:33:02 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+ id 23FF4F80163; Mon, 25 Jul 2022 08:39:02 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 92043F80128
- for <alsa-devel@alsa-project.org>; Mon, 25 Jul 2022 08:32:57 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 92043F80128
+ by alsa1.perex.cz (Postfix) with ESMTPS id 0912EF80088
+ for <alsa-devel@alsa-project.org>; Mon, 25 Jul 2022 08:38:49 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0912EF80088
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="oUJy5dpT"; 
+ header.b="Chw5Lj6b"; 
  dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="1dHrctAw"
+ header.b="I8Q9LWkq"
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 7F13135214;
- Mon, 25 Jul 2022 06:32:56 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id B2FEE37391;
+ Mon, 25 Jul 2022 06:38:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1658730776; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1658731128; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=P1LXcn+hKt49MBdlgeZ82zxYZFLVTBrIq3FWrHSmwmA=;
- b=oUJy5dpT1PfTeMsYPEbfWNYwllEopChogBV53EDYgX9V++PiZj/MfKAaNT0CH8QiemvC6e
- NFpSvk6FDhi3UX1SEdLYVBdgwkV33l4rfnN3ZF92dee0D5EwilJp8Am22+mVaaV5XCmTJX
- L8iN92/KeScuxwnwnFJ86I8b5s12T6k=
+ bh=4QNYQfwkxb6ZlNz4+C+qX4+Dov6VTn/1xmgR6w94hGc=;
+ b=Chw5Lj6bwmXBT5AwkpTCPrirBDJAi9Cj1bjJIplE50b7cdTlmncvP2LVCumjQmOUuZXP8m
+ q3BQWnYUjOlA/EZZVZsZj+qWXkxJT1WWtIBg1F7dmxKzx4zjAI1ZY8Efw/IPhMlwQlxO/1
+ YjcSLVP8FirRdI60GJi/fRpJ8tlgS4Y=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1658730776;
+ s=susede2_ed25519; t=1658731128;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=P1LXcn+hKt49MBdlgeZ82zxYZFLVTBrIq3FWrHSmwmA=;
- b=1dHrctAwEAi++CA4JlU4TjuL3O24usA1XTAzFSzEorlZLO8Qr2MWRr1fVp2yE6Ui/MFc7v
- JG1i2QihP2rWA8AQ==
+ bh=4QNYQfwkxb6ZlNz4+C+qX4+Dov6VTn/1xmgR6w94hGc=;
+ b=I8Q9LWkqd08cOGNZIKVVlX0Rg+XikW6PVHyl3E4VuYbleA7QtO+VPFGLaygQE2xz+wsLyT
+ tHDUbB/92SpTk7CA==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 448FD13AD7;
- Mon, 25 Jul 2022 06:32:56 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 6AC8813AD7;
+ Mon, 25 Jul 2022 06:38:48 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id DM0XEBg53mIdQAAAMHmgww
- (envelope-from <tiwai@suse.de>); Mon, 25 Jul 2022 06:32:56 +0000
-Date: Mon, 25 Jul 2022 08:32:55 +0200
-Message-ID: <871qu9em7c.wl-tiwai@suse.de>
+ by imap2.suse-dmz.suse.de with ESMTPSA id X95KGXg63mL7QQAAMHmgww
+ (envelope-from <tiwai@suse.de>); Mon, 25 Jul 2022 06:38:48 +0000
+Date: Mon, 25 Jul 2022 08:38:47 +0200
+Message-ID: <87y1whd7d4.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
-To: Ren Zhijie <renzhijie2@huawei.com>
-Subject: Re: [PATCH -next] ALSA: hda: cs35l41: Fix build error unused-function
-In-Reply-To: <20220725023611.57055-1-renzhijie2@huawei.com>
-References: <20220725023611.57055-1-renzhijie2@huawei.com>
+To: Kai-Heng Feng <kai.heng.feng@canonical.com>
+Subject: Re: [PATCH] ALSA: hda/realtek: Enable speaker and mute LEDs for HP
+ laptops
+In-Reply-To: <20220719142015.244426-1-kai.heng.feng@canonical.com>
+References: <20220719142015.244426-1-kai.heng.feng@canonical.com>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
 MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=ISO-8859-7
-Content-Transfer-Encoding: 8bit
-Cc: alsa-devel@alsa-project.org, sbinding@opensource.cirrus.com, arnd@arndb.de,
- tanureal@opensource.cirrus.com, vitalyr@opensource.cirrus.com,
- patches@opensource.cirrus.com, tiwai@suse.com, rf@opensource.cirrus.com,
- james.schulman@cirrus.com, david.rhodes@cirrus.com,
- linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset=US-ASCII
+Cc: Stefan Binding <sbinding@opensource.cirrus.com>,
+ Kailang Yang <kailang@realtek.com>,
+ Lucas Tanure <tanureal@opensource.cirrus.com>,
+ Meng Tang <tangmeng@uniontech.com>, tiwai@suse.com,
+ Werner Sembach <wse@tuxedocomputers.com>, linux-kernel@vger.kernel.org,
+ Tim Crawford <tcrawford@system76.com>, Andy Chi <andy.chi@canonical.com>,
+ Cameron Berkenpas <cam@neo-zeon.de>, alsa-devel@alsa-project.org,
+ Yong Wu <yong.wu@mediatek.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -101,28 +102,19 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Mon, 25 Jul 2022 04:36:11 +0200,
-Ren Zhijie wrote:
+On Tue, 19 Jul 2022 16:20:14 +0200,
+Kai-Heng Feng wrote:
 > 
-> If CONFIG_PM_SLEEP is not set,
-> make ARCH=x86_64 CROSS_COMPILE=x86_64-linux-gnu-, will be failed, like this:
+> Two more HP laptops that use cs35l41 AMP for speaker and GPIO for mute
+> LEDs.
 > 
-> sound/pci/hda/cs35l41_hda.c:583:12: error: ¡cs35l41_runtime_resume¢ defined but not used [-Werror=unused-function]
->  static int cs35l41_runtime_resume(struct device *dev)
->             ^~~~~~~~~~~~~~~~~~~~~~
-> sound/pci/hda/cs35l41_hda.c:565:12: error: ¡cs35l41_runtime_suspend¢ defined but not used [-Werror=unused-function]
->  static int cs35l41_runtime_suspend(struct device *dev)
->             ^~~~~~~~~~~~~~~~~~~~~~~
-> cc1: all warnings being treated as errors
-> make[3]: *** [sound/pci/hda/cs35l41_hda.o] Error 1
+> So use the existing quirk to enable them accordingly.
 > 
-> commit 1a3c7bb08826 ("PM: core: Add new *_PM_OPS macros,
-> deprecate old ones"), add new marco RUNTIME_PM_OPS to fix this unused-function problem.
-> 
-> Fixes: 1873ebd30cc8 ("ALSA: hda: cs35l41: Support Hibernation during Suspend")
-> Signed-off-by: Ren Zhijie <renzhijie2@huawei.com>
+> Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
 
-Thanks, applied.
+Applied now (with re-sort of the entries in SSID order).
 
+
+thanks,
 
 Takashi
