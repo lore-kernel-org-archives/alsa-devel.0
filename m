@@ -4,73 +4,73 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 57AECC433EF
-	for <alsa-devel@archiver.kernel.org>; Mon, 25 Jul 2022 19:51:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id F0C00C433EF
+	for <alsa-devel@archiver.kernel.org>; Mon, 25 Jul 2022 19:52:07 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 31FB583E;
-	Mon, 25 Jul 2022 21:51:01 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 31FB583E
+	by alsa0.perex.cz (Postfix) with ESMTPS id 2EFC5836;
+	Mon, 25 Jul 2022 21:51:16 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2EFC5836
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1658778711;
-	bh=Cld38TDwFXbd4bolwslRFZZTrFhrJQR3Bh/Nfbz1B8I=;
+	s=default; t=1658778726;
+	bh=Cyz1Gq/bBHP6OKTSrOGJ7+S7n//6X2IakzhawUS+PCI=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Ol4iJ0fBJ/buYFBGyILt0K9j8LIPszWedadftnkfUiRQZmN2pvw3Mlqeuw/a8XNHH
-	 P8wZUbyb4XnMhZ5Hd+TSfO2LtqcTn7FFwNK9tjUv+V4Vo2ms59caPqguxGJwHvwKUj
-	 2XzbiXYL98cyq6uC9Ke4LUYgI6w0DEzDVZTym7wo=
+	b=Cg1ontylTh3YlC0BiexpKQ86AbWLBmctyImujLfiZBGXhFOC4Nl+0V3oxkTldcpOE
+	 Gywbi6SOv39WT1vpr/hYFRipNFQlH8Wp5BE/RMEkTCesaOZsQtKzK1LKXdOQqJcDse
+	 2txp6XoqfZqkPpmRib45yYFL0VcM/tOCAboz4UF4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id C6A73F8055C;
-	Mon, 25 Jul 2022 21:49:48 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 4E875F80563;
+	Mon, 25 Jul 2022 21:49:49 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 63A41F80549; Mon, 25 Jul 2022 21:49:43 +0200 (CEST)
+ id 32B7DF80553; Mon, 25 Jul 2022 21:49:44 +0200 (CEST)
 Received: from mga12.intel.com (mga12.intel.com [192.55.52.136])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 760D9F802DF
- for <alsa-devel@alsa-project.org>; Mon, 25 Jul 2022 21:49:32 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 760D9F802DF
+ by alsa1.perex.cz (Postfix) with ESMTPS id 5C1C2F804FD
+ for <alsa-devel@alsa-project.org>; Mon, 25 Jul 2022 21:49:34 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5C1C2F804FD
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="MuP/LcEr"
+ header.b="Q4f+zPxv"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1658778573; x=1690314573;
+ t=1658778575; x=1690314575;
  h=from:to:cc:subject:date:message-id:in-reply-to:
  references:mime-version:content-transfer-encoding;
- bh=Cld38TDwFXbd4bolwslRFZZTrFhrJQR3Bh/Nfbz1B8I=;
- b=MuP/LcErAsnFJDeq3Q1Taa7n7QyS51cGspDFQFmi3Hjrq9Yyhth+TEw6
- I6mje/ZkpyozOXjNQsXgL1EjNTbLt6tuI6uUHzXy1Q//dtVnyISeZbqZl
- +Q+Ut5SCjDQxTb+5hGl6tt6pjnOUDZ6edX34o5N3p4Gmpv24hTwNQ7hS9
- wZ4LtsdzRGBYQXiyzPixroRBHwjBVIXGi/TRCte8t5zxI4eqrDL0hS3sY
- 0GZIr6K+9nIJPYO4yWbk1AyhUBapqLmjjrVbFxhR3AcmTRdiqgloZLsMH
- Y931cL31xpEJ3ELme+PK4eFAGR5MFG9yhkVOWOg7XE6vuncenbN9ozBgd A==;
-X-IronPort-AV: E=McAfee;i="6400,9594,10419"; a="267553909"
-X-IronPort-AV: E=Sophos;i="5.93,193,1654585200"; d="scan'208";a="267553909"
+ bh=Cyz1Gq/bBHP6OKTSrOGJ7+S7n//6X2IakzhawUS+PCI=;
+ b=Q4f+zPxvLRV1OAPsYs8DjV5KpLplbj+f1k1uYV1P7cVIGw3pwgMIRgQ2
+ AjhO5XoLiYmcYNwQtEm634cBDt3/fgshWgSxi50sGKVew25pEfYQeL/O8
+ DRvCgDl/WOpWFYEzgGmO5mqRWk9EVvVyLHsHIyowsdKAybW2bwVqAXYYB
+ rVp7tjjl/UT6et4/FgeC9tjK07R9ToHAuzVGGObUltizOfgP70a3HzEd7
+ hJo5LPM8rnknhLGaTmwalM+kTEFlmukfs0By8Z1fG/Df9lXhBUJang0J1
+ feJvIk0OoU+mhLtmi4Ibynklc0dwYCjyVh6F5hxHVvW19NMUjAtOFJBUW Q==;
+X-IronPort-AV: E=McAfee;i="6400,9594,10419"; a="267553915"
+X-IronPort-AV: E=Sophos;i="5.93,193,1654585200"; d="scan'208";a="267553915"
 Received: from orsmga001.jf.intel.com ([10.7.209.18])
  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 25 Jul 2022 12:49:23 -0700
-X-IronPort-AV: E=Sophos;i="5.93,193,1654585200"; d="scan'208";a="632479449"
+ 25 Jul 2022 12:49:25 -0700
+X-IronPort-AV: E=Sophos;i="5.93,193,1654585200"; d="scan'208";a="632479469"
 Received: from mbianco-mobl1.amr.corp.intel.com (HELO
  pbossart-mobl3.intel.com) ([10.212.71.159])
  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 25 Jul 2022 12:49:23 -0700
+ 25 Jul 2022 12:49:25 -0700
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH 04/10] ASoC: Intel: sof_es8336: ignore GpioInt when looking
- for speaker/headset GPIO lines
-Date: Mon, 25 Jul 2022 14:49:03 -0500
-Message-Id: <20220725194909.145418-5-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH 07/10] ASoC: Intel: sof_es8336: remove hard-coded SSP selection
+Date: Mon, 25 Jul 2022 14:49:06 -0500
+Message-Id: <20220725194909.145418-8-pierre-louis.bossart@linux.intel.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20220725194909.145418-1-pierre-louis.bossart@linux.intel.com>
 References: <20220725194909.145418-1-pierre-louis.bossart@linux.intel.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: tiwai@suse.de, broonie@kernel.org, Andrey Turkin <andrey.turkin@gmail.com>,
+Cc: tiwai@suse.de, broonie@kernel.org,
+ Bard Liao <yung-chuan.liao@linux.intel.com>,
  Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+ Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -86,54 +86,49 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Andrey Turkin <andrey.turkin@gmail.com>
+For some reason we open-coded the SSP selection and only supported
+SSP0, 1 and 2. On ApolloLake platforms, the SSP5 can be used as well
+for the ES8336 hardware link.
 
-This fixes speaker GPIO detection on machines those ACPI tables
-list their jack detection GpioInt before output GpioIo.
-GpioInt entry can never be the speaker/headphone amplifier control
-so it makes sense to only look for GpioIo entries when looking for them.
+Remove hard-coded if/else code and align with same code already used
+in the SOF driver.
 
-Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Signed-off-by: Andrey Turkin <andrey.turkin@gmail.com>
+BugLink: https://github.com/thesofproject/sof/issues/6015
+Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+Reviewed-by: Bard Liao <yung-chuan.liao@linux.intel.com>
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- sound/soc/intel/boards/sof_es8336.c | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
+ sound/soc/intel/boards/sof_es8336.c | 14 +++++---------
+ 1 file changed, 5 insertions(+), 9 deletions(-)
 
 diff --git a/sound/soc/intel/boards/sof_es8336.c b/sound/soc/intel/boards/sof_es8336.c
-index 4d0c361fc277..d70d8255b8c7 100644
+index b616d22bc0fa..c7f33c89588e 100644
 --- a/sound/soc/intel/boards/sof_es8336.c
 +++ b/sound/soc/intel/boards/sof_es8336.c
-@@ -57,23 +57,23 @@ static const struct acpi_gpio_params enable_gpio0 = { 0, 0, true };
- static const struct acpi_gpio_params enable_gpio1 = { 1, 0, true };
+@@ -604,18 +604,14 @@ static int sof_es8336_probe(struct platform_device *pdev)
+ 			/*
+ 			 * Set configuration based on platform NHLT.
+ 			 * In this machine driver, we can only support one SSP for the
+-			 * ES8336 link, the else-if below are intentional.
++			 * ES8336 link.
+ 			 * In some cases multiple SSPs can be reported by NHLT, starting MSB-first
+ 			 * seems to pick the right connection.
+ 			 */
+-			unsigned long ssp = 0;
+-
+-			if (mach->mach_params.i2s_link_mask & BIT(2))
+-				ssp = SOF_ES8336_SSP_CODEC(2);
+-			else if (mach->mach_params.i2s_link_mask & BIT(1))
+-				ssp = SOF_ES8336_SSP_CODEC(1);
+-			else  if (mach->mach_params.i2s_link_mask & BIT(0))
+-				ssp = SOF_ES8336_SSP_CODEC(0);
++			unsigned long ssp;
++
++			/* fls returns 1-based results, SSPs indices are 0-based */
++			ssp = fls(mach->mach_params.i2s_link_mask) - 1;
  
- static const struct acpi_gpio_mapping acpi_speakers_enable_gpio0[] = {
--	{ "speakers-enable-gpios", &enable_gpio0, 1 },
-+	{ "speakers-enable-gpios", &enable_gpio0, 1, ACPI_GPIO_QUIRK_ONLY_GPIOIO },
- 	{ }
- };
- 
- static const struct acpi_gpio_mapping acpi_speakers_enable_gpio1[] = {
--	{ "speakers-enable-gpios", &enable_gpio1, 1 },
-+	{ "speakers-enable-gpios", &enable_gpio1, 1, ACPI_GPIO_QUIRK_ONLY_GPIOIO },
- };
- 
- static const struct acpi_gpio_mapping acpi_enable_both_gpios[] = {
--	{ "speakers-enable-gpios", &enable_gpio0, 1 },
--	{ "headphone-enable-gpios", &enable_gpio1, 1 },
-+	{ "speakers-enable-gpios", &enable_gpio0, 1, ACPI_GPIO_QUIRK_ONLY_GPIOIO },
-+	{ "headphone-enable-gpios", &enable_gpio1, 1, ACPI_GPIO_QUIRK_ONLY_GPIOIO },
- 	{ }
- };
- 
- static const struct acpi_gpio_mapping acpi_enable_both_gpios_rev_order[] = {
--	{ "speakers-enable-gpios", &enable_gpio1, 1 },
--	{ "headphone-enable-gpios", &enable_gpio0, 1 },
-+	{ "speakers-enable-gpios", &enable_gpio1, 1, ACPI_GPIO_QUIRK_ONLY_GPIOIO },
-+	{ "headphone-enable-gpios", &enable_gpio0, 1, ACPI_GPIO_QUIRK_ONLY_GPIOIO },
- 	{ }
- };
- 
+ 			quirk |= ssp;
+ 		}
 -- 
 2.34.1
 
