@@ -4,73 +4,72 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 96FA0C43334
-	for <alsa-devel@archiver.kernel.org>; Mon, 25 Jul 2022 19:55:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B7690C433EF
+	for <alsa-devel@archiver.kernel.org>; Mon, 25 Jul 2022 19:55:51 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id BBC4EAE8;
-	Mon, 25 Jul 2022 21:54:49 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BBC4EAE8
+	by alsa0.perex.cz (Postfix) with ESMTPS id F1128847;
+	Mon, 25 Jul 2022 21:54:59 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F1128847
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1658778939;
-	bh=/igeBZwE6dzF0iNudQYu7rD4hBbaXOoTcWrbYWEUHoU=;
+	s=default; t=1658778950;
+	bh=9ekmslf8bxQ/U9/EoCRc9GSVbn1UK1QRTwUKHGL3Atw=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=XUMTHzN31iKXlcgeZGFVbp9ARfADyfI+/5uv0W/SR25BscfSO8IunX95Vcu/c/4nV
-	 1/GjzsBtEfJFQIXWqUFkuRRHzkA2UnQASFRgols5LamCVGubbdjIJxlXyalG50UEmC
-	 XIXIKgHmAYkOUla82zlGWE27R+xTZyLKdApYE8WU=
+	b=t9vmtCtKpOX/mY4AbclIXi+7/BV9Z0MckFY38fNJDL9+6H7KRrPJCGOk3yHOrYKtk
+	 ZeTqR5Lor21ushRO97zSiwEGr1A5+5Lwbx/LyJfL6pyvlOshcNfXORttr1zfUUMj62
+	 Pk68USCGWccH8NEQUsy0TOTIlsP8wWfhI1RmTxhM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 16324F804FD;
-	Mon, 25 Jul 2022 21:54:04 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id B9111F80548;
+	Mon, 25 Jul 2022 21:54:06 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 88D81F80543; Mon, 25 Jul 2022 21:54:02 +0200 (CEST)
+ id 0711DF8053C; Mon, 25 Jul 2022 21:54:03 +0200 (CEST)
 Received: from mga18.intel.com (mga18.intel.com [134.134.136.126])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id EAB58F80128
- for <alsa-devel@alsa-project.org>; Mon, 25 Jul 2022 21:53:55 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EAB58F80128
+ by alsa1.perex.cz (Postfix) with ESMTPS id 96B67F80163
+ for <alsa-devel@alsa-project.org>; Mon, 25 Jul 2022 21:53:57 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 96B67F80163
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="H5SeM+v/"
+ header.b="Lw1vLjWG"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1658778837; x=1690314837;
+ t=1658778840; x=1690314840;
  h=from:to:cc:subject:date:message-id:in-reply-to:
  references:mime-version:content-transfer-encoding;
- bh=/igeBZwE6dzF0iNudQYu7rD4hBbaXOoTcWrbYWEUHoU=;
- b=H5SeM+v/yjJUthiUIL5Xvt8jo2BpQNVHksrIW7uff3tTOVBGWjKxjB6u
- mm7225/IYfJU/ZrxiER8aM0dVrmOxbThWwfM/OyLXQOVyEvd2sJoSiyks
- CXnT7vs0T2F+eo25ZmpNJiPXcxIGUB1WOmn9q27qTW7C4DUn34ob2/+G8
- wezQKAsT9b5yJ7K+tQctfKG6rk9pbpkpZIlj7DcVTnIAHLpXKyV6obXe5
- +XIOtR89ALaJzAhE97cFZauamAmgSjkld+eXV01YzV/J/QVBPXSR3bqP+
- xL0cE3/ElO+bR0fOYmZoIE8VFlM2teZ3QtuBQwrsXItVMCKZoCwqu5dq+ A==;
-X-IronPort-AV: E=McAfee;i="6400,9594,10419"; a="270820359"
-X-IronPort-AV: E=Sophos;i="5.93,193,1654585200"; d="scan'208";a="270820359"
+ bh=9ekmslf8bxQ/U9/EoCRc9GSVbn1UK1QRTwUKHGL3Atw=;
+ b=Lw1vLjWGvc/+COpv1yX1XB8R+lpS2qKkuUrLcCSjFmj7Cy8e80ebegFu
+ 2Oe1TdAjZNAkvdhLO7AEHiJ4pE5tEes7MtFzL2PMtPIhtreKwiq6Kus/f
+ 2EsvTkWZLB+SvEIa+KEY3ygKmmfD1ms30Vu1PxSEYWKhwTjk67DofxWOq
+ BkHGOHXIlHJPWpGDz9v+Od1SfKXuepGSaRYW9w2flB0hrAkJ8GUaV340p
+ AROKd23wEHrdHm7rjd6t5LP/R68Axj6txzf0J8LEfA0MKMVshn7brsZw4
+ uvu4f8uueKCShbLrrfcaCC0ycBi2KHqfLUT3xlmmJjlafpTfE/dTYlZGe Q==;
+X-IronPort-AV: E=McAfee;i="6400,9594,10419"; a="270820367"
+X-IronPort-AV: E=Sophos;i="5.93,193,1654585200"; d="scan'208";a="270820367"
 Received: from orsmga008.jf.intel.com ([10.7.209.65])
  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 25 Jul 2022 12:53:51 -0700
-X-IronPort-AV: E=Sophos;i="5.93,193,1654585200"; d="scan'208";a="627593492"
+ 25 Jul 2022 12:53:53 -0700
+X-IronPort-AV: E=Sophos;i="5.93,193,1654585200"; d="scan'208";a="627593519"
 Received: from mbianco-mobl1.amr.corp.intel.com (HELO
  pbossart-mobl3.intel.com) ([10.212.71.159])
  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 25 Jul 2022 12:53:51 -0700
+ 25 Jul 2022 12:53:52 -0700
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH 1/3] ASoC: SOF: Intel: hda: add sanity check on SSP index
- reported by NHLT
-Date: Mon, 25 Jul 2022 14:53:41 -0500
-Message-Id: <20220725195343.145603-2-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH 3/3] ASoC: SOF: dai-intel: add
+ SOF_DAI_INTEL_SSP_CLKCTRL_MCLK_AON bit
+Date: Mon, 25 Jul 2022 14:53:43 -0500
+Message-Id: <20220725195343.145603-4-pierre-louis.bossart@linux.intel.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20220725195343.145603-1-pierre-louis.bossart@linux.intel.com>
 References: <20220725195343.145603-1-pierre-louis.bossart@linux.intel.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: tiwai@suse.de, broonie@kernel.org,
- Bard Liao <yung-chuan.liao@linux.intel.com>,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+Cc: tiwai@suse.de, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ broonie@kernel.org, Brent Lu <brent.lu@intel.com>,
  Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
@@ -87,41 +86,45 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-We should have a limited trust in the BIOS and verify that the SSP
-index reported in NHLT is valid for each platform.
+From: Brent Lu <brent.lu@intel.com>
 
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Update definition for mclk always-on feature and increase the
+SOF_ABI_MINOR number for interface change.
+
 Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-Reviewed-by: Bard Liao <yung-chuan.liao@linux.intel.com>
+Signed-off-by: Brent Lu <brent.lu@intel.com>
+Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- sound/soc/sof/intel/hda.c | 7 +++++++
- 1 file changed, 7 insertions(+)
+ include/sound/sof/dai-intel.h | 2 ++
+ include/uapi/sound/sof/abi.h  | 2 +-
+ 2 files changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/sound/soc/sof/intel/hda.c b/sound/soc/sof/intel/hda.c
-index d337d55050e2..8639ea63a10d 100644
---- a/sound/soc/sof/intel/hda.c
-+++ b/sound/soc/sof/intel/hda.c
-@@ -1527,6 +1527,7 @@ struct snd_soc_acpi_mach *hda_machine_select(struct snd_sof_dev *sdev)
- 		if (tplg_fixup &&
- 		    mach->tplg_quirk_mask & SND_SOC_ACPI_TPLG_INTEL_SSP_NUMBER &&
- 		    mach->mach_params.i2s_link_mask) {
-+			const struct sof_intel_dsp_desc *chip = get_chip_info(sdev->pdata);
- 			int ssp_num;
+diff --git a/include/sound/sof/dai-intel.h b/include/sound/sof/dai-intel.h
+index 7a266f41983c..5b93b7292f5e 100644
+--- a/include/sound/sof/dai-intel.h
++++ b/include/sound/sof/dai-intel.h
+@@ -52,6 +52,8 @@
+ #define SOF_DAI_INTEL_SSP_CLKCTRL_MCLK_ES               BIT(6)
+ /* bclk early start */
+ #define SOF_DAI_INTEL_SSP_CLKCTRL_BCLK_ES               BIT(7)
++/* mclk always on */
++#define SOF_DAI_INTEL_SSP_CLKCTRL_MCLK_AON		BIT(8)
  
- 			if (hweight_long(mach->mach_params.i2s_link_mask) > 1 &&
-@@ -1536,6 +1537,12 @@ struct snd_soc_acpi_mach *hda_machine_select(struct snd_sof_dev *sdev)
- 			/* fls returns 1-based results, SSPs indices are 0-based */
- 			ssp_num = fls(mach->mach_params.i2s_link_mask) - 1;
+ /* DMIC max. four controllers for eight microphone channels */
+ #define SOF_DAI_INTEL_DMIC_NUM_CTRL			4
+diff --git a/include/uapi/sound/sof/abi.h b/include/uapi/sound/sof/abi.h
+index b7dce4df7ecd..3566630ca965 100644
+--- a/include/uapi/sound/sof/abi.h
++++ b/include/uapi/sound/sof/abi.h
+@@ -28,7 +28,7 @@
  
-+			if (ssp_num >= chip->ssp_count) {
-+				dev_err(sdev->dev, "Invalid SSP %d, max on this platform is %d\n",
-+					ssp_num, chip->ssp_count);
-+				return NULL;
-+			}
-+
- 			tplg_filename = devm_kasprintf(sdev->dev, GFP_KERNEL,
- 						       "%s%s%d",
- 						       sof_pdata->tplg_filename,
+ /* SOF ABI version major, minor and patch numbers */
+ #define SOF_ABI_MAJOR 3
+-#define SOF_ABI_MINOR 22
++#define SOF_ABI_MINOR 23
+ #define SOF_ABI_PATCH 0
+ 
+ /* SOF ABI version number. Format within 32bit word is MMmmmppp */
 -- 
 2.34.1
 
