@@ -4,67 +4,64 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 61209C43334
-	for <alsa-devel@archiver.kernel.org>; Mon, 25 Jul 2022 19:51:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 087FBC433EF
+	for <alsa-devel@archiver.kernel.org>; Mon, 25 Jul 2022 19:51:23 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 433E984B;
-	Mon, 25 Jul 2022 21:50:09 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 433E984B
+	by alsa0.perex.cz (Postfix) with ESMTPS id 13C4983B;
+	Mon, 25 Jul 2022 21:50:31 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 13C4983B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1658778659;
-	bh=FCb2kFpneo6sqFK69O9mGm79+7DzT1NcajCiS6u/eAI=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=Yr3mLe/TBGS346huO6CG+AckYx6Flijp/Ff5RxT+U+dGcYlv9Qk1xBsQEksEFh4SW
-	 XM20Amqu5TP11vOf1vU2RLUNdHzxPSf3S1i4ZUdOCY01/DiZIbeMv1BTv/mSPJ0b3b
-	 lHhK8BKOPaRMXOEk90DVljoD7AOMcJJR43pn4uYw=
+	s=default; t=1658778681;
+	bh=Dn+ASodmQ2OjCt8f/XrHlqmWJ/eN5Is/eRnn+N0laiQ=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=lx8g7sb0jlrjl+nK7kKzmb0pfIja/mRbWtqX9AO3zknsawL4nm39Cg62ZQOtWh94Z
+	 5b1zwAwVWAjvXxT8Fo+wz0+MDaS2KPndvlN+U7Nm9rZnBElymhRvvs7zkC3ObXwfeN
+	 dyKl1BpQBL0wt+YS/LmwW1iYywmxkEoGrh4jbGqQ=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 630AAF8053C;
-	Mon, 25 Jul 2022 21:49:43 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 18D69F80549;
+	Mon, 25 Jul 2022 21:49:44 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 60A4FF80155; Mon, 25 Jul 2022 21:49:37 +0200 (CEST)
+ id 013E6F8054A; Mon, 25 Jul 2022 21:49:40 +0200 (CEST)
 Received: from mga12.intel.com (mga12.intel.com [192.55.52.136])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id CD896F80128
- for <alsa-devel@alsa-project.org>; Mon, 25 Jul 2022 21:49:28 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CD896F80128
+ by alsa1.perex.cz (Postfix) with ESMTPS id 507E7F80163
+ for <alsa-devel@alsa-project.org>; Mon, 25 Jul 2022 21:49:25 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 507E7F80163
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="CNfP4mMz"
+ header.b="FWAMVqNU"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
  t=1658778571; x=1690314571;
- h=from:to:cc:subject:date:message-id:in-reply-to:
- references:mime-version:content-transfer-encoding;
- bh=FCb2kFpneo6sqFK69O9mGm79+7DzT1NcajCiS6u/eAI=;
- b=CNfP4mMzxWMSAwMOMNTKwk5olHph5klge3JNa00+4yaJ6K+s6zuupssz
- P8MdtqvbZygynPs7uCQkuTqLqwlDhj95TAEwADKoMa8iLy5wrHlbQUduA
- nE4TMyTJysjxYUr89IMtu5mMpezSrhbB10dS5XzJhJOLFlADjQH7wwacd
- Wyxd3sV7yZ75wPKX3T4uWZ0HGM3+JDUOFEZ9XFEzFIy1723gGIRwLfQam
- IIHCCXjk9YUiKhtBOZZ+y/VHfpAd00sYQOxDHLbmnmXubASPoqPQHBehz
- 8ncsqJbWXx1+sUvu1DPGMHvCvchM7piVDt03tm2oIxonKQFHz4X3PeuUr A==;
-X-IronPort-AV: E=McAfee;i="6400,9594,10419"; a="267553899"
-X-IronPort-AV: E=Sophos;i="5.93,193,1654585200"; d="scan'208";a="267553899"
+ h=from:to:cc:subject:date:message-id:mime-version:
+ content-transfer-encoding;
+ bh=Dn+ASodmQ2OjCt8f/XrHlqmWJ/eN5Is/eRnn+N0laiQ=;
+ b=FWAMVqNUuZErwWeeBrJ1n50e/8XDAZqyRaIVNCG1w0TWMemmG6DSZo/L
+ dDkAyfEs0qc+S1td1YqdJtirwfkxyzUP03b9BupxHgS9qfg9a38thYfCP
+ heNzJZQwwjTlp8NH/4HX5rRdwD3BfcFplMl42pZUQz4ehNWJ2tqS27Vzq
+ UPAIMsz+0/kjR+ftBwM+lBUnrqAlveMFbFgEHzlvCk9mUsMbl0hI6Qoc2
+ dMoluhXetpbTFEf7ruFHkykJ3D+5kaIdJwHMfnUjsOrIz2hgAig8BiAb+
+ vuPK2IroSnxLoBl+5N1wbL/Kk5IWx8O+gIZooNUEVrT8mtvhRg+3PE0fG A==;
+X-IronPort-AV: E=McAfee;i="6400,9594,10419"; a="267553894"
+X-IronPort-AV: E=Sophos;i="5.93,193,1654585200"; d="scan'208";a="267553894"
 Received: from orsmga001.jf.intel.com ([10.7.209.18])
  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
  25 Jul 2022 12:49:21 -0700
-X-IronPort-AV: E=Sophos;i="5.93,193,1654585200"; d="scan'208";a="632479429"
+X-IronPort-AV: E=Sophos;i="5.93,193,1654585200"; d="scan'208";a="632479427"
 Received: from mbianco-mobl1.amr.corp.intel.com (HELO
  pbossart-mobl3.intel.com) ([10.212.71.159])
  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 25 Jul 2022 12:49:21 -0700
+ 25 Jul 2022 12:49:20 -0700
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH 01/10] ASoC: Intel: sof_sdw: add support for Dell SKU 0AF0
-Date: Mon, 25 Jul 2022 14:49:00 -0500
-Message-Id: <20220725194909.145418-2-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH 00/10] ASoC: Intel: machine driver updates for 5.20
+Date: Mon, 25 Jul 2022 14:48:59 -0500
+Message-Id: <20220725194909.145418-1-pierre-louis.bossart@linux.intel.com>
 X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20220725194909.145418-1-pierre-louis.bossart@linux.intel.com>
-References: <20220725194909.145418-1-pierre-louis.bossart@linux.intel.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Cc: tiwai@suse.de, broonie@kernel.org,
@@ -84,37 +81,37 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Somehow this device was not added in the initial AlderLake batch.
-From the ACPI definition this looks like a standard SDCA version with
-RT711 on link0, RT1316 on link1/2 and RT714 on link3.
+A couple of minor updates contributed and tested by Intel teams or end-users.
+Ideally these should be applied for 5.20, time-permitting.
 
-BugLink: https://github.com/thesofproject/linux/issues/3772
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
----
- sound/soc/intel/boards/sof_sdw.c | 10 ++++++++++
- 1 file changed, 10 insertions(+)
+Andrey Turkin (2):
+  ASoC: Intel: sof_es8336: Fix GPIO quirks set via module option
+  ASoC: Intel: sof_es8336: ignore GpioInt when looking for
+    speaker/headset GPIO lines
 
-diff --git a/sound/soc/intel/boards/sof_sdw.c b/sound/soc/intel/boards/sof_sdw.c
-index 12f243ef04bf..a49bfaab6b21 100644
---- a/sound/soc/intel/boards/sof_sdw.c
-+++ b/sound/soc/intel/boards/sof_sdw.c
-@@ -246,6 +246,16 @@ static const struct dmi_system_id sof_sdw_quirk_table[] = {
- 					SOF_BT_OFFLOAD_SSP(2) |
- 					SOF_SSP_BT_OFFLOAD_PRESENT),
- 	},
-+	{
-+		.callback = sof_sdw_quirk_cb,
-+		.matches = {
-+			DMI_MATCH(DMI_SYS_VENDOR, "Dell Inc"),
-+			DMI_EXACT_MATCH(DMI_PRODUCT_SKU, "0AF0")
-+		},
-+		.driver_data = (void *)(SOF_SDW_TGL_HDMI |
-+					RT711_JD2 |
-+					SOF_SDW_FOUR_SPK),
-+	},
- 	{
- 		.callback = sof_sdw_quirk_cb,
- 		.matches = {
+Muralidhar Reddy (3):
+  ASoC: Intel: soc-acpi: Add entry for sof_es8336 in ADL match table
+  ASoC: Intel: sof_es8336: add support for HDMI_In capture
+  ASoC: Intel: sof_es8336: reset the num_links during probe
+
+Pierre-Louis Bossart (2):
+  ASoC: Intel: sof_sdw: add support for Dell SKU 0AF0
+  ASoC: Intel: sof_es8336: remove hard-coded SSP selection
+
+Yong Zhi (3):
+  ASoC: Intel: sof_rt5682: Add support for mtl_mx98357_rt5682
+  ASoC: Intel: sof_rt5682: Perform quirk check first in card late probe
+  ASoC: Intel: sof_nau8825: Move quirk check to the front in late probe
+
+ sound/hda/intel-dsp-config.c                  |   5 +
+ sound/soc/intel/boards/sof_es8336.c           | 160 +++++++++++++-----
+ sound/soc/intel/boards/sof_nau8825.c          |  10 +-
+ sound/soc/intel/boards/sof_rt5682.c           |  26 ++-
+ sound/soc/intel/boards/sof_sdw.c              |  10 ++
+ .../intel/common/soc-acpi-intel-adl-match.c   |  25 +++
+ .../intel/common/soc-acpi-intel-mtl-match.c   |  17 ++
+ 7 files changed, 201 insertions(+), 52 deletions(-)
+
 -- 
 2.34.1
 
