@@ -4,64 +4,81 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6E2A8C43334
-	for <alsa-devel@archiver.kernel.org>; Mon, 25 Jul 2022 06:28:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7E369C43334
+	for <alsa-devel@archiver.kernel.org>; Mon, 25 Jul 2022 06:30:06 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 76CBE15C3;
-	Mon, 25 Jul 2022 08:27:38 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 76CBE15C3
+	by alsa0.perex.cz (Postfix) with ESMTPS id A61273E7;
+	Mon, 25 Jul 2022 08:29:14 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A61273E7
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1658730508;
-	bh=3/8+Ab0XNi6QKfyElDxG4egDmLpUkNURjxV4cLNde8k=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=Ctn8crzLZXLRZ5NlEFLKLMTK8kU585OK2x6BvTzSN6YeCoyq454bZyl1tYoEwDU/d
-	 l0sIoYgbG90BC8G9UhYjuWh3d3g11EH51jEEeKkIU7Pj8AlLGsw1FhPKmyNe9q6r56
-	 R+AqS8xMQPXlVmG8P6PPMKV8bniqfAJgSRVXWnDk=
+	s=default; t=1658730604;
+	bh=2OSvgZhrLF9JtVZ8Gf74K03HAEs/ubATLZG7siA5vhU=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=UX1xDyv/yO7YjzmPuvAYAhofUlLCiRQOEyP7hSQUJQj0tupBc9Pf1nyDP3D1XHDac
+	 EOK9eXpqzLmFkcufmRq4ksy/4jSnZ/NPq9YoV7BT/qTHQaW2HUy2IBtq1KrHom8oVT
+	 RhvBHQQF0r28LJHSZ/D2GLhOwmPMSQJmSCLOs5F8=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 2D800F80563;
-	Mon, 25 Jul 2022 08:25:55 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 4568BF80212;
+	Mon, 25 Jul 2022 08:29:14 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 759F0F80128; Mon, 25 Jul 2022 04:38:36 +0200 (CEST)
-Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id 8B920F802DF; Mon, 25 Jul 2022 08:29:12 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 1F42DF80128
- for <alsa-devel@alsa-project.org>; Mon, 25 Jul 2022 04:38:28 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1F42DF80128
-Received: from dggpeml500024.china.huawei.com (unknown [172.30.72.56])
- by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4Lrkdf58wgz923g;
- Mon, 25 Jul 2022 10:34:30 +0800 (CST)
-Received: from dggpeml500008.china.huawei.com (7.185.36.147) by
- dggpeml500024.china.huawei.com (7.185.36.10) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.24; Mon, 25 Jul 2022 10:38:17 +0800
-Received: from huawei.com (10.67.175.34) by dggpeml500008.china.huawei.com
- (7.185.36.147) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.24; Mon, 25 Jul
- 2022 10:38:16 +0800
-From: Ren Zhijie <renzhijie2@huawei.com>
-To: <james.schulman@cirrus.com>, <david.rhodes@cirrus.com>,
- <tanureal@opensource.cirrus.com>, <rf@opensource.cirrus.com>,
- <perex@perex.cz>, <tiwai@suse.com>, <sbinding@opensource.cirrus.com>,
- <vitalyr@opensource.cirrus.com>
-Subject: [PATCH -next] ALSA: hda: cs35l41: Fix build error unused-function
-Date: Mon, 25 Jul 2022 10:36:11 +0800
-Message-ID: <20220725023611.57055-1-renzhijie2@huawei.com>
-X-Mailer: git-send-email 2.17.1
-MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.67.175.34]
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
- dggpeml500008.china.huawei.com (7.185.36.147)
-X-CFilter-Loop: Reflected
-X-Mailman-Approved-At: Mon, 25 Jul 2022 08:25:50 +0200
-Cc: patches@opensource.cirrus.com, alsa-devel@alsa-project.org,
- Ren Zhijie <renzhijie2@huawei.com>, linux-kernel@vger.kernel.org,
- arnd@arndb.de
+ by alsa1.perex.cz (Postfix) with ESMTPS id 5C9B2F80155
+ for <alsa-devel@alsa-project.org>; Mon, 25 Jul 2022 08:29:02 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5C9B2F80155
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
+ header.b="iR3ZvE5g"; 
+ dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
+ header.b="uHPCMj/F"
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id E148834EF3;
+ Mon, 25 Jul 2022 06:29:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1658730541; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=icJyOG6Kk0efBApMlzM9lIqJOmnfZ2R6I61gDaJp9Qo=;
+ b=iR3ZvE5gTGKJFg8M8njUWepAM+NZr2vQ5zel3/IIniopGlCIULJSkEjFioU15p/7J0SdZH
+ Ad7DOqUKZo5+JFR66ef5VBpauHFikBXQ9F5WhsncNtJPSnesn3I2wmdY7Bl7dSbOKIuswr
+ hQcui5QgjrDvXaJwoaLougklFtfXAKI=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1658730541;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=icJyOG6Kk0efBApMlzM9lIqJOmnfZ2R6I61gDaJp9Qo=;
+ b=uHPCMj/F4aFqo+KjZR1D1H8jeQdCvtur50VQj21J3ClSxH1ynysGFUQTY9Z7nlrSPnKQtM
+ pL8LbJCEw/3oF2Bw==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id B21C813AD7;
+ Mon, 25 Jul 2022 06:29:01 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+ by imap2.suse-dmz.suse.de with ESMTPSA id S4HPKi043mJaPgAAMHmgww
+ (envelope-from <tiwai@suse.de>); Mon, 25 Jul 2022 06:29:01 +0000
+Date: Mon, 25 Jul 2022 08:29:01 +0200
+Message-ID: <877d41emdu.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: wangjianli <wangjianli@cdjrlc.com>
+Subject: Re: [PATCH] pci/asihpi: fix repeated words in comments
+In-Reply-To: <20220724071413.10085-1-wangjianli@cdjrlc.com>
+References: <20220724071413.10085-1-wangjianli@cdjrlc.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, tiwai@suse.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -77,40 +94,14 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-If CONFIG_PM_SLEEP is not set,
-make ARCH=x86_64 CROSS_COMPILE=x86_64-linux-gnu-, will be failed, like this:
+On Sun, 24 Jul 2022 09:14:13 +0200,
+wangjianli wrote:
+> 
+>  Delete the redundant word 'in'.
+> 
+> Signed-off-by: wangjianli <wangjianli@cdjrlc.com>
 
-sound/pci/hda/cs35l41_hda.c:583:12: error: ‘cs35l41_runtime_resume’ defined but not used [-Werror=unused-function]
- static int cs35l41_runtime_resume(struct device *dev)
-            ^~~~~~~~~~~~~~~~~~~~~~
-sound/pci/hda/cs35l41_hda.c:565:12: error: ‘cs35l41_runtime_suspend’ defined but not used [-Werror=unused-function]
- static int cs35l41_runtime_suspend(struct device *dev)
-            ^~~~~~~~~~~~~~~~~~~~~~~
-cc1: all warnings being treated as errors
-make[3]: *** [sound/pci/hda/cs35l41_hda.o] Error 1
+Thanks, applied (with correction of the subject prefix).
 
-commit 1a3c7bb08826 ("PM: core: Add new *_PM_OPS macros,
-deprecate old ones"), add new marco RUNTIME_PM_OPS to fix this unused-function problem.
 
-Fixes: 1873ebd30cc8 ("ALSA: hda: cs35l41: Support Hibernation during Suspend")
-Signed-off-by: Ren Zhijie <renzhijie2@huawei.com>
----
- sound/pci/hda/cs35l41_hda.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/sound/pci/hda/cs35l41_hda.c b/sound/pci/hda/cs35l41_hda.c
-index 28798d5c1cf1..93cf039abb02 100644
---- a/sound/pci/hda/cs35l41_hda.c
-+++ b/sound/pci/hda/cs35l41_hda.c
-@@ -1439,7 +1439,7 @@ void cs35l41_hda_remove(struct device *dev)
- EXPORT_SYMBOL_NS_GPL(cs35l41_hda_remove, SND_HDA_SCODEC_CS35L41);
- 
- const struct dev_pm_ops cs35l41_hda_pm_ops = {
--	SET_RUNTIME_PM_OPS(cs35l41_runtime_suspend, cs35l41_runtime_resume, NULL)
-+	RUNTIME_PM_OPS(cs35l41_runtime_suspend, cs35l41_runtime_resume, NULL)
- };
- EXPORT_SYMBOL_NS_GPL(cs35l41_hda_pm_ops, SND_HDA_SCODEC_CS35L41);
- 
--- 
-2.17.1
-
+Takashi
