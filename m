@@ -4,68 +4,71 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id AC6B3C433EF
-	for <alsa-devel@archiver.kernel.org>; Mon, 25 Jul 2022 13:09:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E386BC43334
+	for <alsa-devel@archiver.kernel.org>; Mon, 25 Jul 2022 13:09:10 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B564684B;
-	Mon, 25 Jul 2022 15:08:08 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B564684B
+	by alsa0.perex.cz (Postfix) with ESMTPS id 1B913847;
+	Mon, 25 Jul 2022 15:08:19 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1B913847
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1658754538;
-	bh=4MVD07uVz8TokT7Qhzd/sDyjjIjUsb7epkzs9go0QoM=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=iNM48cZgYYyrEEVumsN+KMMTPa5/itPEh8zmNuKSsNGJuyJOtMDCymrRlXkp90QGS
-	 NsVYJylNwXCmIn0ne7kK/p/x6iAEzfkuk72iRJkj16quyvfC8n646d2WAkLIx9cFfe
-	 QfmxH+1juFcE4UowB0Y4HpwC+vBNvc5X89CJGp3o=
+	s=default; t=1658754549;
+	bh=YaWb7yZxkGG+zBnJL2IFm2f4uUx2GkI4cjt6VNqnQM4=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=BmXKtKB1YKLLhB4QG1yyoZF5Zeagopeqvipg5Xw8oC87lgX8ZHxU9f6oZWfrySeCZ
+	 urMN1C5biF+y5tXcGrdSBrrMbDRbyIhBBkeCGLTezJeh52M1TeLolmuyZFD0FXQe9o
+	 IvVwT54sfOOrK7V38NFLFOtpqx96RCXiQCxjGjwE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 529F0F8053C;
-	Mon, 25 Jul 2022 15:07:23 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 76800F80549;
+	Mon, 25 Jul 2022 15:07:27 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 34471F804FD; Mon, 25 Jul 2022 15:07:20 +0200 (CEST)
+ id 798F1F8054A; Mon, 25 Jul 2022 15:07:25 +0200 (CEST)
 Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com
- [68.232.154.123])
+ [68.232.153.233])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 0DC2CF80155
- for <alsa-devel@alsa-project.org>; Mon, 25 Jul 2022 15:07:12 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0DC2CF80155
+ by alsa1.perex.cz (Postfix) with ESMTPS id DF476F80088
+ for <alsa-devel@alsa-project.org>; Mon, 25 Jul 2022 15:07:18 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DF476F80088
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com
- header.b="tT9qy+YD"
+ header.b="THHciaFR"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
- t=1658754436; x=1690290436;
- h=from:to:cc:subject:date:message-id:mime-version:
- content-transfer-encoding;
- bh=4MVD07uVz8TokT7Qhzd/sDyjjIjUsb7epkzs9go0QoM=;
- b=tT9qy+YDoJF/CfQC83Otzy0mW3xMHfGdrgo/vAgfFoJVdUzRaMuq47a5
- JFh6YHdC9ULTPhjTFq25DWY8r/vt8OVo+pz5zhBeHWobVTUxCLb//UacT
- eJdJ/ngNRO5jm5WnaU0E6s+xbtn9pjCi93NC5VJHFPVR4g4NZ2nbyLdDn
- qnQEwF3O4aIcmwB9NO867yaHIicXvlkCq3BXBDwFzfBW3kAkVm/HOh9Z0
- l/9/eahrYxgZH+7zkVYSUQ+ENrSEfpKaogm8DP53/inmNVZ73U7mBqrys
- 2skm3LWDPPuAbuzCNvcxTqGdSu54wSsyyvucFbYIAlk4ulU+EaPR8gt+k w==;
-X-IronPort-AV: E=Sophos;i="5.93,192,1654585200"; d="scan'208";a="106005848"
+ t=1658754441; x=1690290441;
+ h=from:to:cc:subject:date:message-id:in-reply-to:
+ references:mime-version:content-transfer-encoding;
+ bh=YaWb7yZxkGG+zBnJL2IFm2f4uUx2GkI4cjt6VNqnQM4=;
+ b=THHciaFRMGDenwvvJ9tPuzOtjBOwfUEwrsDXXEIy7TZ8nUl7om53UoJc
+ q/hxX+fHxyGn0lpc72bBnb6iy2QO3aYsuVm9qXAIQ1E0Z/GuIE1LbmjrY
+ XvHX13BzeTPmjF+tm0IB5DCYZbW5SsjbiMNBjf9605v6uwKJr6Hlum0N+
+ NJ8OfrhZwnACzErpK9Vd3KPvxW8uhmpVXDFgNWw8FoXbGt3ECTU7XrZt9
+ OJm6Dbr+qLiAZNHl5p3Nl38scI4w+jWKKK3DFDN4DYEqmtsfPQ457zQOK
+ FasnDfgIX0BSOtnvrXP8XV397iv5ur17qJSXbOPpMYYubuNL9HZ7UFU35 g==;
+X-IronPort-AV: E=Sophos;i="5.93,192,1654585200"; d="scan'208";a="173519429"
 Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
- by esa6.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256;
- 25 Jul 2022 06:07:03 -0700
+ by esa5.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256;
+ 25 Jul 2022 06:07:17 -0700
 Received: from chn-vm-ex01.mchp-main.com (10.10.85.143) by
- chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server
+ chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.17; Mon, 25 Jul 2022 06:07:02 -0700
+ 15.1.2375.28; Mon, 25 Jul 2022 06:07:10 -0700
 Received: from localhost.localdomain (10.10.115.15) by
  chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server id
- 15.1.2375.17 via Frontend Transport; Mon, 25 Jul 2022 06:07:00 -0700
+ 15.1.2375.17 via Frontend Transport; Mon, 25 Jul 2022 06:07:07 -0700
 From: Claudiu Beznea <claudiu.beznea@microchip.com>
 To: <lgirdwood@gmail.com>, <broonie@kernel.org>, <perex@perex.cz>,
  <tiwai@suse.com>, <nicolas.ferre@microchip.com>,
  <alexandre.belloni@bootlin.com>
-Subject: [PATCH v2 0/5] ASoC: atmel: one fix and few cleanups
-Date: Mon, 25 Jul 2022 16:09:20 +0300
-Message-ID: <20220725130925.1781791-1-claudiu.beznea@microchip.com>
+Subject: [PATCH v2 3/5] ASoC: mchp-spdiftx: remove references to mchp_i2s_caps
+Date: Mon, 25 Jul 2022 16:09:23 +0300
+Message-ID: <20220725130925.1781791-4-claudiu.beznea@microchip.com>
 X-Mailer: git-send-email 2.33.0
+In-Reply-To: <20220725130925.1781791-1-claudiu.beznea@microchip.com>
+References: <20220725130925.1781791-1-claudiu.beznea@microchip.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
@@ -87,29 +90,45 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Hi,
+Remove references to struct mchp_i2s_caps as they are not used.
 
-The series adds one fix for mchp-spdifrx and few cleanups for
-mchp-spdifrx and mchp-spdifrx drivers.
+Signed-off-by: Claudiu Beznea <claudiu.beznea@microchip.com>
+---
+ sound/soc/atmel/mchp-spdiftx.c | 7 -------
+ 1 file changed, 7 deletions(-)
 
-Thank you,
-Claudiu Beznea
-
-Changes in v2:
-- s/tag/tab in the title of patch 2/5
-
-Claudiu Beznea (5):
-  ASoC: mchp-spdifrx: disable end of block interrupt on failures
-  ASoC: mchp-spdifrx: use single tag indent for structure
-  ASoC: mchp-spdiftx: remove references to mchp_i2s_caps
-  ASoC: mchp-spdiftx: return directly ret
-  ASoC: mchp-spdiftx: add and remove black line around
-    MODULE_DEVICE_TABLE()
-
- sound/soc/atmel/mchp-spdifrx.c | 19 +++++++++++--------
- sound/soc/atmel/mchp-spdiftx.c | 21 +++++----------------
- 2 files changed, 16 insertions(+), 24 deletions(-)
-
+diff --git a/sound/soc/atmel/mchp-spdiftx.c b/sound/soc/atmel/mchp-spdiftx.c
+index 78d5bcf0819a..20e77b374f7e 100644
+--- a/sound/soc/atmel/mchp-spdiftx.c
++++ b/sound/soc/atmel/mchp-spdiftx.c
+@@ -196,7 +196,6 @@ struct mchp_spdiftx_dev {
+ 	struct clk				*pclk;
+ 	struct clk				*gclk;
+ 	unsigned int				fmt;
+-	const struct mchp_i2s_caps		*caps;
+ 	int					gclk_enabled:1;
+ };
+ 
+@@ -768,7 +767,6 @@ MODULE_DEVICE_TABLE(of, mchp_spdiftx_dt_ids);
+ static int mchp_spdiftx_probe(struct platform_device *pdev)
+ {
+ 	struct device_node *np = pdev->dev.of_node;
+-	const struct of_device_id *match;
+ 	struct mchp_spdiftx_dev *dev;
+ 	struct resource *mem;
+ 	struct regmap *regmap;
+@@ -782,11 +780,6 @@ static int mchp_spdiftx_probe(struct platform_device *pdev)
+ 	if (!dev)
+ 		return -ENOMEM;
+ 
+-	/* Get hardware capabilities. */
+-	match = of_match_node(mchp_spdiftx_dt_ids, np);
+-	if (match)
+-		dev->caps = match->data;
+-
+ 	/* Map I/O registers. */
+ 	base = devm_platform_get_and_ioremap_resource(pdev, 0, &mem);
+ 	if (IS_ERR(base))
 -- 
 2.34.1
 
