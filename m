@@ -4,71 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6775EC43334
-	for <alsa-devel@archiver.kernel.org>; Tue, 26 Jul 2022 11:31:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1F2AAC43334
+	for <alsa-devel@archiver.kernel.org>; Tue, 26 Jul 2022 11:32:08 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E6F0883B;
-	Tue, 26 Jul 2022 13:30:47 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E6F0883B
+	by alsa0.perex.cz (Postfix) with ESMTPS id EF18015E5;
+	Tue, 26 Jul 2022 13:31:16 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EF18015E5
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1658835098;
-	bh=5S7SIX8+8VYQEQQKBE0504g9SamLUXfQF0wD+GwQE6E=;
+	s=default; t=1658835127;
+	bh=CuKVHLTsrfP4RuoS+xQOvvQp2NiCHeHx4Cgj1DXuw8M=;
 	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=WF7oNKCXgx+B8IMECe/DUjcQmBgeHIOnLPYlKw3P1B1CM6nO7ZhZ9mdwRKocTvkWV
-	 7iO2sYr+DvXWewNeoEpUp6ibFRLnAMypmvfJyYdY2yXgsLpZyduiQk/NBbKz1bUTHI
-	 et7NFCofr8Ai5A9prV3Qzuw/WrSQMLo59hB1sNgw=
+	b=UwslXxiUwK/xgsq+xwIOHUwwnX2o7oRIeB8/uvqwCyI6rrLJPvckNyRdnYI5yBFkd
+	 qtW1EQq2XQqjzhmGbuQFZ/SMjBoa1U56e8xOrTrl+x5WLfhjgEbFOOKaD5iTx5xjNh
+	 fngBqwfoOkUAvmgTZvL3J6DeJVx4NNWP9/gQnYwU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 73B42F80238;
-	Tue, 26 Jul 2022 13:30:47 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2E797F804E4;
+	Tue, 26 Jul 2022 13:30:48 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id C3317F804C3; Tue, 26 Jul 2022 13:30:45 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+ id E630EF80155; Tue, 26 Jul 2022 13:30:45 +0200 (CEST)
+Received: from ams.source.kernel.org (ams.source.kernel.org
+ [IPv6:2604:1380:4601:e00::1])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id F2750F80155
- for <alsa-devel@alsa-project.org>; Tue, 26 Jul 2022 13:30:40 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F2750F80155
+ by alsa1.perex.cz (Postfix) with ESMTPS id 2DD82F800FA
+ for <alsa-devel@alsa-project.org>; Tue, 26 Jul 2022 13:30:42 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2DD82F800FA
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="If6nt4Pn"
+ header.b="Tgli/tZL"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id F341161349;
- Tue, 26 Jul 2022 11:30:38 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 92203C341C0;
- Tue, 26 Jul 2022 11:30:35 +0000 (UTC)
+ by ams.source.kernel.org (Postfix) with ESMTPS id E6641B81608;
+ Tue, 26 Jul 2022 11:30:41 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id ECB94C341C0;
+ Tue, 26 Jul 2022 11:30:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1658835038;
- bh=5S7SIX8+8VYQEQQKBE0504g9SamLUXfQF0wD+GwQE6E=;
+ s=k20201202; t=1658835040;
+ bh=CuKVHLTsrfP4RuoS+xQOvvQp2NiCHeHx4Cgj1DXuw8M=;
  h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=If6nt4Pne47+rniua7hVbGMTUWoakTPT4G2XWlzFjBmt3SHHB9pdlMwDkjjaDpDON
- k+/nDHRz7+ZNd3ULc+Ac3HPb32+AK8ofzZ8Qp8cdTdfUzhWVUZ18IgTWrZq9c9ONS7
- N80SgCwZsFGGxYOyeWByRcUx50tNTt/q0N1SnyYunee2RCZAfyKKuMoTRZGifVnCOi
- igoi19ltxvQYwuMToUjlEqV/AP040hMjddBLUor89Dl22pPcSzeMmgbjbwk3SeqD5y
- IhhK2XCXKX+a5RXE4Td+AcDgTEupG2u2F7KhdHZrdq6KXpyVBzqvUTKO0DbSa2sFDm
- tDBgtv/QcSkow==
+ b=Tgli/tZLWdwbA9DowozRItw+Sx1zKhTM8Ky7SJDqTb3sKIL4Z7sLL6K96fjdPo/r3
+ 6YR5o8NvLzCqBVR3F9FsuSgstW+uSPMRSyAaPaIXcLlmINN3GWc0XXrFasx6dkgbsc
+ hq/r1LJ9ZKw7t9l9gXXB97T0peVJqocWZA/mBRHtbNc+fHxyJXKkVUlFgYIFQoJ4a2
+ n+vJ+B+PsJCAfiFfVSzdju+buvj+KPc/AmGIaMky8g37eW3YlULhMlhmlDc1TmZ0f0
+ +8lpl3DhntwPA3q/t18KEJhPRkVEP4gvzju/ujtX9UfhtdxKgg7IeqrhL5prk5Uqis
+ zadiZQDFre0Ww==
 From: Mark Brown <broonie@kernel.org>
-To: tiwai@suse.com, julianbraha@gmail.com, perex@perex.cz,
- geert+renesas@glider.be, matthias.bgg@gmail.com, 
- lgirdwood@gmail.com, tzungbi@kernel.org,
- angelogioacchino.delregno@collabora.com, Ren Zhijie <renzhijie2@huawei.com>, 
- trevor.wu@mediatek.com, jiaxin.yu@mediatek.com
-In-Reply-To: <20220724110619.212774-1-renzhijie2@huawei.com>
-References: <20220724110619.212774-1-renzhijie2@huawei.com>
-Subject: Re: [PATCH -next] ASoC: mediatek: mt8186: fix Kconfig dependency
-Message-Id: <165883503527.86475.6043755927851181413.b4-ty@kernel.org>
-Date: Tue, 26 Jul 2022 12:30:35 +0100
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ alsa-devel@alsa-project.org
+In-Reply-To: <20220725195343.145603-1-pierre-louis.bossart@linux.intel.com>
+References: <20220725195343.145603-1-pierre-louis.bossart@linux.intel.com>
+Subject: Re: [PATCH 0/3] ASoC: SOF: minor updates for 5.20
+Message-Id: <165883503969.86475.6560928147582916261.b4-ty@kernel.org>
+Date: Tue, 26 Jul 2022 12:30:39 +0100
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 X-Mailer: b4 0.10.0-dev-c7731
-Cc: alsa-devel@alsa-project.org, linux-mediatek@lists.infradead.org,
- linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Cc: tiwai@suse.de
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -84,13 +81,15 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Sun, 24 Jul 2022 19:06:19 +0800, Ren Zhijie wrote:
-> If CONFIG_SND_SOC_MT8186=y and CONFIG_SND_SOC_MT6358 is not set,
-> make ARCH=x86_64 CROSS_COMPILE=x86_64-linux-gnu-, will be failed, like this:
+On Mon, 25 Jul 2022 14:53:40 -0500, Pierre-Louis Bossart wrote:
+> One sanity check for SSP index reported by NHLT/BIOS and two updates for
+> Mediatek and Intel Chromebooks related to already-merged firmware
+> changes.
 > 
-> sound/soc/mediatek/mt8186/mt8186-mt6366-common.o: In function `mt8186_mt6366_init':
-> mt8186-mt6366-common.c:(.text+0x4d): undefined reference to `mt6358_set_mtkaif_protocol'
-> make: *** [vmlinux] Error 1
+> Ideally this should go in 5.20, time-permitting.
+> 
+> Brent Lu (1):
+>   ASoC: SOF: dai-intel: add SOF_DAI_INTEL_SSP_CLKCTRL_MCLK_AON bit
 > 
 > [...]
 
@@ -100,8 +99,12 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: mediatek: mt8186: fix Kconfig dependency
-      commit: f20d5116b7f3d8d40e1248a59be89e667eaabd62
+[1/3] ASoC: SOF: Intel: hda: add sanity check on SSP index reported by NHLT
+      commit: e51699505042fb365df3a0ce68b850ccd9ad0108
+[2/3] ASoC: SOF: Add cont_update_posn to platform parameters
+      commit: d95610a1832993c539be22f0ec3ea8e34a29acff
+[3/3] ASoC: SOF: dai-intel: add SOF_DAI_INTEL_SSP_CLKCTRL_MCLK_AON bit
+      commit: af468aadf00485a2f5e804fe97db4731bc7a9c24
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
