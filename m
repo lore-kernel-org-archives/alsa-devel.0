@@ -4,82 +4,75 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 104E6C04A68
-	for <alsa-devel@archiver.kernel.org>; Tue, 26 Jul 2022 13:56:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 88EF9C00140
+	for <alsa-devel@archiver.kernel.org>; Tue, 26 Jul 2022 14:11:39 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 93259D8;
-	Tue, 26 Jul 2022 15:46:56 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 93259D8
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0393C15E2;
+	Tue, 26 Jul 2022 16:10:47 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0393C15E2
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1658843266;
-	bh=ojhq/m4w8zHjOEY7DYramnZ2WBg1Hn3avY/pcVJRe+A=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=Mrwmr0ip3cVoPNaX2dhnhGU4l1va2g+Ir3NG12gVYEphEafwPlW1cqb+IIqO3D+qf
-	 o76Vnb4RwQPKoAn9qMmXp8cFQvIKhZ7VHbuSepWYoU/N1PJIfAwj4hpFe42iymyC0t
-	 qkkVbJow/QG6JSb/SV7FQlCoRIhovXBQAMM1V/DM=
+	s=default; t=1658844697;
+	bh=1d7qbWDQuZYAD2sGVg+HmWM5hj2n/J9MkNAK0ie+JsI=;
+	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=syFNHLAdMFExP7SJz5BGYRifJWGPg+m5Tnq00L7tnfJ8Pw8/RxYzNkP9cTzLnHFFk
+	 dfP+SlfRMZ69XT8JwPJif5XG8c7kS5qUVzeyX+kML0qsDORAKJjYDFolv36O3ie5t1
+	 gV/UNPFEJTI7k+7Ln8kFmBDVCe0wk5UlzgGU139A=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 39503F800FA;
-	Tue, 26 Jul 2022 15:46:56 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 7FE3DF80153;
+	Tue, 26 Jul 2022 16:10:46 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 9C49AF8025A; Tue, 26 Jul 2022 15:46:55 +0200 (CEST)
-Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
- [67.231.152.168])
+ id F2AF6F8025A; Tue, 26 Jul 2022 16:10:44 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org
+ [IPv6:2604:1380:4641:c500::1])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 91988F80153
+ for <alsa-devel@alsa-project.org>; Tue, 26 Jul 2022 16:10:42 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 91988F80153
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="ZY+ik8K7"
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id B6673F800FA
- for <alsa-devel@alsa-project.org>; Tue, 26 Jul 2022 15:46:47 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B6673F800FA
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com
- header.b="YVMiMawT"
-Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
- by mx0b-001ae601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 26Q4TPHH032253;
- Tue, 26 Jul 2022 08:46:46 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
- h=from : to : cc :
- subject : date : message-id : mime-version : content-transfer-encoding :
- content-type; s=PODMain02222019;
- bh=4HZ77gT3UYugSEYibBUwTnGXjWmBzs6W8apWPc7c5Z0=;
- b=YVMiMawTj9DjUVHXvy0UOqVxcotn4AD7IsTPhEs87H9uqPshujWfTaW/rmbZjthlQAlS
- LGLIoEgV/+Qvzh/lD6trnWBtEmLgYRxH4rt8NxShKRimSNXeLffeKdW1Nmazccl7+Z/N
- BFPCaNoYUqMCZnDnnMXfqJv57C9ibgtpWm/RLmiARLc2ufLN8TadvLeir0zzWHwFaijn
- md7YYhiyHC+1Y4SNE2aod+b7/uDT9VC1UB7cliR/GQMKiGcU6sqmLz9DLoDsI8HnA1BB
- WXgalP48EPhhNDsCK/4mIw/f84y+tFiHCh2BeElPpquSofYdai56dZncZvt6pNXocIRW MQ== 
-Received: from ediex01.ad.cirrus.com ([84.19.233.68])
- by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3hgddp3hg6-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
- Tue, 26 Jul 2022 08:46:45 -0500
-Received: from ediex01.ad.cirrus.com (198.61.84.80) by ediex01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.9; Tue, 26 Jul
- 2022 08:46:44 -0500
-Received: from ediswmail.ad.cirrus.com (198.61.86.93) by
- anon-ediex01.ad.cirrus.com (198.61.84.80) with Microsoft SMTP Server id
- 15.2.1118.9 via Frontend Transport; Tue, 26 Jul 2022 08:46:44 -0500
-Received: from sbinding-cirrus-dsktp2.ad.cirrus.com (unknown [198.90.202.160])
- by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 05E4E2C5;
- Tue, 26 Jul 2022 13:46:44 +0000 (UTC)
-From: Stefan Binding <sbinding@opensource.cirrus.com>
-To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Brent Lu
- <brent.lu@intel.com>, xliu <xiang.liu@cirrus.com>
-Subject: [PATCH v1] ASoC: Intel: cirrus-common: Use UID to map correct amp to
- prefix
-Date: Tue, 26 Jul 2022 14:46:34 +0100
-Message-ID: <20220726134634.2842185-1-sbinding@opensource.cirrus.com>
-X-Mailer: git-send-email 2.34.1
+ by dfw.source.kernel.org (Postfix) with ESMTPS id 6F88E61601;
+ Tue, 26 Jul 2022 14:10:39 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 32A90C433C1;
+ Tue, 26 Jul 2022 14:10:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1658844638;
+ bh=1d7qbWDQuZYAD2sGVg+HmWM5hj2n/J9MkNAK0ie+JsI=;
+ h=From:To:In-Reply-To:References:Subject:Date:From;
+ b=ZY+ik8K7+ds9Bc6ALidqN6eBYk4ekWWqvNqhozyoYPuMyoMEw5aThMTn/aA/xZpAv
+ uVhIyD62nyt65WHeftNaR3WoTk4FCLwjeFoqA0uTx/CqccQLxRZW8zpEea1mXYEmBG
+ CTgwY16GLXM3RUZuAuMfZczsVfS4RzmglBTo5eDzZJBeDptdBicXJlVZdkaSMtGrP/
+ swTng4fUny+UtoTtdudmc6AQQO1SuUqdhFdL1IGix3KnJUCm+r9jm5moT3gf1//Tgl
+ JiPHzPrj9lnr8GYoH5AGfb4okgkpzraeWjJU3AoqN9KX8PZYPE88eSpo3FSqKKy5Lx
+ QtpZaVVa9ly+w==
+From: Mark Brown <broonie@kernel.org>
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+ linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org, 
+ Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+ devicetree@vger.kernel.org, Andy Gross <agross@kernel.org>, 
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Liam Girdwood <lgirdwood@gmail.com>, 
+ Konrad Dybcio <konrad.dybcio@somainline.org>, alsa-devel@alsa-project.org,
+ Bjorn Andersson <bjorn.andersson@linaro.org>, 
+ Rob Herring <robh+dt@kernel.org>
+In-Reply-To: <20220726115917.101371-1-krzysztof.kozlowski@linaro.org>
+References: <20220726115917.101371-1-krzysztof.kozlowski@linaro.org>
+Subject: Re: [PATCH] ASoC: dt-bindings: qcom,
+ wcd934x: use absolute path to other schema
+Message-Id: <165884463590.37334.6138510290775984808.b4-ty@kernel.org>
+Date: Tue, 26 Jul 2022 15:10:35 +0100
 MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Proofpoint-GUID: tray4QtAiO20RqjTC30X5rerLhFMTwQN
-X-Proofpoint-ORIG-GUID: tray4QtAiO20RqjTC30X5rerLhFMTwQN
-X-Proofpoint-Spam-Reason: safe
-Cc: Vitaly Rodionov <vitalyr@opensource.cirrus.com>,
- patches@opensource.cirrus.com, alsa-devel@alsa-project.org,
- linux-kernel@vger.kernel.org, Stefan Binding <sbinding@opensource.cirrus.com>
+X-Mailer: b4 0.10.0-dev-c7731
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -95,130 +88,35 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Since the order of the amps in the ACPI determines the device name,
-and the ACPI order may change depending on hardware configuration,
-use UID to dynamically compute the dai links, allowing dynamic
-assignment of the name_prefix.
+On Tue, 26 Jul 2022 13:59:17 +0200, Krzysztof Kozlowski wrote:
+> Absolute path to other DT schema is preferred over relative one.
+> 
+> 
 
-Signed-off-by: Stefan Binding <sbinding@opensource.cirrus.com>
-Signed-off-by: Vitaly Rodionov <vitalyr@opensource.cirrus.com>
----
- sound/soc/intel/boards/sof_cirrus_common.c | 73 +++++++++-------------
- 1 file changed, 31 insertions(+), 42 deletions(-)
+Applied to
 
-diff --git a/sound/soc/intel/boards/sof_cirrus_common.c b/sound/soc/intel/boards/sof_cirrus_common.c
-index f4192df962d6..a96bc70a34d7 100644
---- a/sound/soc/intel/boards/sof_cirrus_common.c
-+++ b/sound/soc/intel/boards/sof_cirrus_common.c
-@@ -10,6 +10,9 @@
- #include "../../codecs/cs35l41.h"
- #include "sof_cirrus_common.h"
- 
-+#define CS35L41_HID "CSC3541"
-+#define CS35L41_MAX_AMPS 4
-+
- /*
-  * Cirrus Logic CS35L41/CS35L53
-  */
-@@ -35,50 +38,12 @@ static const struct snd_soc_dapm_route cs35l41_dapm_routes[] = {
- 	{"TR Spk", NULL, "TR SPK"},
- };
- 
--static struct snd_soc_dai_link_component cs35l41_components[] = {
--	{
--		.name = CS35L41_DEV0_NAME,
--		.dai_name = CS35L41_CODEC_DAI,
--	},
--	{
--		.name = CS35L41_DEV1_NAME,
--		.dai_name = CS35L41_CODEC_DAI,
--	},
--	{
--		.name = CS35L41_DEV2_NAME,
--		.dai_name = CS35L41_CODEC_DAI,
--	},
--	{
--		.name = CS35L41_DEV3_NAME,
--		.dai_name = CS35L41_CODEC_DAI,
--	},
--};
-+static struct snd_soc_dai_link_component cs35l41_components[CS35L41_MAX_AMPS];
- 
- /*
-  * Mapping between ACPI instance id and speaker position.
-- *
-- * Four speakers:
-- *         0: Tweeter left, 1: Woofer left
-- *         2: Tweeter right, 3: Woofer right
-  */
--static struct snd_soc_codec_conf cs35l41_codec_conf[] = {
--	{
--		.dlc = COMP_CODEC_CONF(CS35L41_DEV0_NAME),
--		.name_prefix = "TL",
--	},
--	{
--		.dlc = COMP_CODEC_CONF(CS35L41_DEV1_NAME),
--		.name_prefix = "WL",
--	},
--	{
--		.dlc = COMP_CODEC_CONF(CS35L41_DEV2_NAME),
--		.name_prefix = "TR",
--	},
--	{
--		.dlc = COMP_CODEC_CONF(CS35L41_DEV3_NAME),
--		.name_prefix = "WR",
--	},
--};
-+static struct snd_soc_codec_conf cs35l41_codec_conf[CS35L41_MAX_AMPS];
- 
- static int cs35l41_init(struct snd_soc_pcm_runtime *rtd)
- {
-@@ -117,10 +82,10 @@ static int cs35l41_init(struct snd_soc_pcm_runtime *rtd)
- static const struct {
- 	unsigned int rx[2];
- } cs35l41_channel_map[] = {
--	{.rx = {0, 1}}, /* TL */
- 	{.rx = {0, 1}}, /* WL */
--	{.rx = {1, 0}}, /* TR */
- 	{.rx = {1, 0}}, /* WR */
-+	{.rx = {0, 1}}, /* TL */
-+	{.rx = {1, 0}}, /* TR */
- };
- 
- static int cs35l41_hw_params(struct snd_pcm_substream *substream,
-@@ -175,8 +140,32 @@ static const struct snd_soc_ops cs35l41_ops = {
- 	.hw_params = cs35l41_hw_params,
- };
- 
-+static const char * const cs35l41_name_prefixes[] = { "WL", "WR", "TL", "TR" };
-+
-+static const char * const cs35l41_uid_strings[] = { "0", "1", "2", "3" };
-+
-+static void cs35l41_compute_codec_conf(void)
-+{
-+	int uid;
-+	struct acpi_device *adev;
-+	struct device *physdev;
-+
-+	for (uid = 0; uid < CS35L41_MAX_AMPS; uid++) {
-+		adev = acpi_dev_get_first_match_dev(CS35L41_HID, cs35l41_uid_strings[uid], -1);
-+		if (!adev)
-+			return;
-+		physdev = get_device(acpi_get_first_physical_node(adev));
-+		cs35l41_components[uid].name = dev_name(physdev);
-+		cs35l41_components[uid].dai_name = CS35L41_CODEC_DAI;
-+		cs35l41_codec_conf[uid].dlc.name = dev_name(physdev);
-+		cs35l41_codec_conf[uid].name_prefix = cs35l41_name_prefixes[uid];
-+		acpi_dev_put(adev);
-+	}
-+}
-+
- void cs35l41_set_dai_link(struct snd_soc_dai_link *link)
- {
-+	cs35l41_compute_codec_conf();
- 	link->codecs = cs35l41_components;
- 	link->num_codecs = ARRAY_SIZE(cs35l41_components);
- 	link->init = cs35l41_init;
--- 
-2.34.1
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
 
+Thanks!
+
+[1/1] ASoC: dt-bindings: qcom,wcd934x: use absolute path to other schema
+      commit: ffe71829574a4848e9a376010a2ea74ae6d2d211
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
