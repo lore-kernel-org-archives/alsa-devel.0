@@ -4,67 +4,89 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C8E03C43334
-	for <alsa-devel@archiver.kernel.org>; Tue, 26 Jul 2022 11:32:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 43B90CCA490
+	for <alsa-devel@archiver.kernel.org>; Tue, 26 Jul 2022 12:00:23 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A34F8161D;
-	Tue, 26 Jul 2022 13:31:38 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A34F8161D
+	by alsa0.perex.cz (Postfix) with ESMTPS id BF90383B;
+	Tue, 26 Jul 2022 13:59:30 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BF90383B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1658835148;
-	bh=9mBKT4CUztHPbACPtumnHi+2cAODmk8EgE62B/2yFZs=;
-	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=lV56llJTpQC2v0PaqPh2fdYwRzFwhNbp6pGF3pTTrU1g43ouzGEGqzi0lObalEI9A
-	 nTZ9U/6uAlFAQ8t9+00KnDsh2+MjS7ue95phEPObdOobTOdaRIFuJ3VrLTfD8JioHF
-	 zMkrAM2fqW23qYklgNxlNdC/tNx6pJjJL35N/ZfU=
+	s=default; t=1658836820;
+	bh=WZvy09BUqvQyGGFNjyz9Dx7DNLSBPxtBMngA9bHN1qo=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=ePmnKiVAbMyS95P3oxTZ2Wgu/K5qgfXmsb7vJ8erPgRhtGX8IZKVkaryEQs2v4yjk
+	 smQJAJfdiyTIAhHrBOv/g9p+OH1OTDH/HXW0uFGRIqkcRFgQczFfqMtCSx/oPml1jV
+	 wdhoLNmrsPrA6+YHZArNBz8kLrSXw5PySISF9ST8=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id AB35BF8053C;
-	Tue, 26 Jul 2022 13:30:51 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 4C3F6F80238;
+	Tue, 26 Jul 2022 13:59:30 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 32F02F8025A; Tue, 26 Jul 2022 13:30:47 +0200 (CEST)
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id 0AD13F8025A; Tue, 26 Jul 2022 13:59:29 +0200 (CEST)
+Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com
+ [IPv6:2a00:1450:4864:20::135])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id AD37CF80238
- for <alsa-devel@alsa-project.org>; Tue, 26 Jul 2022 13:30:41 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AD37CF80238
+ by alsa1.perex.cz (Postfix) with ESMTPS id 93C19F80155
+ for <alsa-devel@alsa-project.org>; Tue, 26 Jul 2022 13:59:22 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 93C19F80155
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="OMlb1sq1"
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by ams.source.kernel.org (Postfix) with ESMTPS id BE6C1B815FB;
- Tue, 26 Jul 2022 11:30:40 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D1E6CC341CE;
- Tue, 26 Jul 2022 11:30:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1658835039;
- bh=9mBKT4CUztHPbACPtumnHi+2cAODmk8EgE62B/2yFZs=;
- h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=OMlb1sq1LbkVeeyDeCZR6hA0fDgaPeGCA67Mw94v8/o5DTwcDYkOx5L5xzj5TEKzn
- dVPRshQ4gesHPJBKot8HXMoEZVgw0CiMkRyLS5tNK4zUoCw62MfNPeTYaae36qFmnW
- nVsMdzZLLJeaSr159y1pyClyzO1GlyY7OnHSTYZ0ZEyTsgviU17f9nxB8z6dWNznx+
- 9rg4q4v0odUvJ2G7jEie193EzX/HIBSEyZFYBxOpe+4QnrTcdK9B8W9V0Ot/0cTRTN
- GM29nkUHiH+qsDO+2fEZmyc0LKJR7+hXaXJv1w9xuMp2PPtdPLwdkD94Fyg9nBh2wR
- Wz85iPixf2jdQ==
-From: Mark Brown <broonie@kernel.org>
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- alsa-devel@alsa-project.org
-In-Reply-To: <20220725194909.145418-1-pierre-louis.bossart@linux.intel.com>
-References: <20220725194909.145418-1-pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH 00/10] ASoC: Intel: machine driver updates for 5.20
-Message-Id: <165883503858.86475.15637772744939881177.b4-ty@kernel.org>
-Date: Tue, 26 Jul 2022 12:30:38 +0100
+ dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org
+ header.b="YpYQNziS"
+Received: by mail-lf1-x135.google.com with SMTP id bf9so22203090lfb.13
+ for <alsa-devel@alsa-project.org>; Tue, 26 Jul 2022 04:59:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
+ h=from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=nbbLcikMYE+MXnxTE0IyRsnB8YfOQz4wU6j1hL6TVU8=;
+ b=YpYQNziSNDPi/wCGg+oi9mzB1khFmS1f2mCTeoJv0v+/BzUYE7V6QinXkBB2EbTgL2
+ +iuqpbaCJbr7n8q126iTIFdfdWCQGPSYMVVS29YYOJ70C/G+y/Y4TOqG+pKs02DXXJdv
+ frRe28nip5IbgU1wkNVKaAx3ZU7UyVouxxESfuSjnSKg0OpNEiVOBEUoyb1WioxMY/XD
+ vR9/BKAHjQX06WNHLQtBhhokf6sS+VkM3W7IM7+AgnjRJ74ULeDs7cAiMXAXQSmk+0hX
+ cqNYcdjQPqp4Dsx3frEJ46+TaXnhug5COomcA2T65UcW73Ioqzf6feEy88o8nnSg/rKZ
+ 0orA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=nbbLcikMYE+MXnxTE0IyRsnB8YfOQz4wU6j1hL6TVU8=;
+ b=lJYvUJ/J5i/WFQGHdalfYmxPAua3KgkqxyAOaC49t9ZeEp0+QOiBVoJhQO68OuSP59
+ KxGgBs0qQ8pqzncdBIr8urKXOLIUbLsXmLo4gv4WXdYvWjxOeadshz4nAJ3FgFAEhDnn
+ 2GouiJfeKg9GT0ethHfiZGZoTUdhsmNWoBo6/2N7a1zmncOW6E6VDj6adPfht84ipIjz
+ 7kmY6kU7x5cdEz5vyu3ULD8rfLPyyPZ4kiEj9qd+bvX6hz4YY97xTP8FDIWpvGPhLwVQ
+ h8iCwgVRj3DZeqPxhMa9QTswNuJQPoDj/9Q42wkBG6km3jzBFpUAJrfp4Bhq7eTgejBy
+ EQpA==
+X-Gm-Message-State: AJIora+IBIDuEkJWda2uDeh69sHbzU3gCXFR2Udfuo5fDmvY9r2Q6dnH
+ zKYejkShmYz3B+4oXuSunW0lrg==
+X-Google-Smtp-Source: AGRyM1v35pQlIFP8uSIuV2zi3VN9h5Rd7ZWXuyHKdh5pu2MYS3VHcv19oFsTnHfEbYATIMcatndESw==
+X-Received: by 2002:a05:6512:44b:b0:48a:855e:266a with SMTP id
+ y11-20020a056512044b00b0048a855e266amr4488849lfk.23.1658836760485; 
+ Tue, 26 Jul 2022 04:59:20 -0700 (PDT)
+Received: from krzk-bin.lan (78-26-46-173.network.trollfjord.no.
+ [78.26.46.173]) by smtp.gmail.com with ESMTPSA id
+ t4-20020a192d44000000b0048a751c966dsm2697050lft.224.2022.07.26.04.59.19
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Tue, 26 Jul 2022 04:59:20 -0700 (PDT)
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+To: Andy Gross <agross@kernel.org>,
+ Bjorn Andersson <bjorn.andersson@linaro.org>,
+ Konrad Dybcio <konrad.dybcio@somainline.org>,
+ Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
+ Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+ linux-arm-msm@vger.kernel.org, alsa-devel@alsa-project.org,
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] ASoC: dt-bindings: qcom,
+ wcd934x: use absolute path to other schema
+Date: Tue, 26 Jul 2022 13:59:17 +0200
+Message-Id: <20220726115917.101371-1-krzysztof.kozlowski@linaro.org>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-X-Mailer: b4 0.10.0-dev-c7731
-Cc: tiwai@suse.de
+Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -80,59 +102,26 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Mon, 25 Jul 2022 14:48:59 -0500, Pierre-Louis Bossart wrote:
-> A couple of minor updates contributed and tested by Intel teams or end-users.
-> Ideally these should be applied for 5.20, time-permitting.
-> 
-> Andrey Turkin (2):
->   ASoC: Intel: sof_es8336: Fix GPIO quirks set via module option
->   ASoC: Intel: sof_es8336: ignore GpioInt when looking for
->     speaker/headset GPIO lines
-> 
-> [...]
+Absolute path to other DT schema is preferred over relative one.
 
-Applied to
+Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+---
+ Documentation/devicetree/bindings/sound/qcom,wcd934x.yaml | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+diff --git a/Documentation/devicetree/bindings/sound/qcom,wcd934x.yaml b/Documentation/devicetree/bindings/sound/qcom,wcd934x.yaml
+index 9b225dbf8b79..8ca19f2b0b3d 100644
+--- a/Documentation/devicetree/bindings/sound/qcom,wcd934x.yaml
++++ b/Documentation/devicetree/bindings/sound/qcom,wcd934x.yaml
+@@ -127,7 +127,7 @@ properties:
+ 
+   gpio@42:
+     type: object
+-    $ref: ../gpio/qcom,wcd934x-gpio.yaml#
++    $ref: /schemas/gpio/qcom,wcd934x-gpio.yaml#
+ 
+ patternProperties:
+   "^.*@[0-9a-f]+$":
+-- 
+2.34.1
 
-Thanks!
-
-[01/10] ASoC: Intel: sof_sdw: add support for Dell SKU 0AF0
-        commit: 4e68eef41966771d0a109adaab2a632dbca2a983
-[02/10] ASoC: Intel: soc-acpi: Add entry for sof_es8336 in ADL match table
-        commit: 2ec8b081d59f5c39eb262f09ebc9e81178d222be
-[03/10] ASoC: Intel: sof_es8336: Fix GPIO quirks set via module option
-        commit: 5e60f1cfb830342304200437121f440b72b54f54
-[04/10] ASoC: Intel: sof_es8336: ignore GpioInt when looking for speaker/headset GPIO lines
-        commit: 751e77011f7a43a204bf2a5d02fbf5f8219bc531
-[05/10] ASoC: Intel: sof_es8336: add support for HDMI_In capture
-        commit: 86b1959a2ccb1cd3c91f99a6ad06dcd0940a2058
-[06/10] ASoC: Intel: sof_es8336: reset the num_links during probe
-        commit: fae93e3b952aeb0bad1a3d80ed9592cfc24aa8c6
-[07/10] ASoC: Intel: sof_es8336: remove hard-coded SSP selection
-        commit: 24913664b5103c3dd454081f79ba663ec18f65a1
-[08/10] ASoC: Intel: sof_rt5682: Add support for mtl_mx98357_rt5682
-        commit: 1f6645b1ee792fcb5bd621af7845430cc0de1531
-[09/10] ASoC: Intel: sof_rt5682: Perform quirk check first in card late probe
-        commit: 371a3f01fc1862c23fae35cb2c98ffb2eec143f1
-[10/10] ASoC: Intel: sof_nau8825: Move quirk check to the front in late probe
-        commit: 5b56db90bbaf9d8581e5e6268727d8ad706555e4
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
