@@ -4,79 +4,72 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id CE637C433EF
-	for <alsa-devel@archiver.kernel.org>; Tue, 26 Jul 2022 10:13:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A6BCFC433EF
+	for <alsa-devel@archiver.kernel.org>; Tue, 26 Jul 2022 10:46:37 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 8B257868;
-	Tue, 26 Jul 2022 12:12:13 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8B257868
+	by alsa0.perex.cz (Postfix) with ESMTPS id 92C20AE8;
+	Tue, 26 Jul 2022 12:45:44 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 92C20AE8
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1658830383;
-	bh=yiD2RSSe6JNE7IfD2phiQgU1QPj9dXpDa03KF90uMXo=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=RbOJs3e+8zfvvqbEiwnVtt36jLXhyKr0r1v59C6it5AyLXCcrdJ3lRxtxltVu95K8
-	 ZmTz5hMc8ss/JM5yQhT6mkuLfx774eYyz/qDQuKXDE5kTvycQf+swUz39OaN+yAkJD
-	 AfIMQOi9IMZEqZsyqXmjguciyds6zGqwTOOHkpaE=
+	s=default; t=1658832394;
+	bh=nbaVwL4kXjzhCUBIrQX/hG3/Kht2aI2sNMsVa672Ivc=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=pO80axG+OUz2gFk91DVP9T6ZxJVVmTpdMzggRx71jtb4uK/KsUaFUZnUvVIy6x9wU
+	 ZkjtUGmdG+SCi2UCYfh+dtGn4zItWz/GZ37Rh/aBQDnSsCqz3xMERWLwcycwAw5V9c
+	 6BswRakgOVW0CQTVRXSxusmmvd8cIuuDlfehN/6Q=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 33C96F800FA;
-	Tue, 26 Jul 2022 12:12:13 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2E890F80238;
+	Tue, 26 Jul 2022 12:45:44 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 8FA7CF804C3; Tue, 26 Jul 2022 12:12:11 +0200 (CEST)
-Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
- [67.231.152.168])
+ id E0EB0F80155; Tue, 26 Jul 2022 12:45:41 +0200 (CEST)
+Received: from ams.source.kernel.org (ams.source.kernel.org
+ [IPv6:2604:1380:4601:e00::1])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 7A288F80155
+ for <alsa-devel@alsa-project.org>; Tue, 26 Jul 2022 12:45:38 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7A288F80155
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="XxOLpDEZ"
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 03DDFF800FA
- for <alsa-devel@alsa-project.org>; Tue, 26 Jul 2022 12:12:08 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 03DDFF800FA
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com
- header.b="Xd864KQb"
-Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
- by mx0b-001ae601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 26Q4TP8N032253;
- Tue, 26 Jul 2022 05:12:07 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
- h=from : to : cc :
- subject : date : message-id : mime-version : content-transfer-encoding :
- content-type; s=PODMain02222019;
- bh=lR4sbE6cBVTFNXJo/Ef8C3UIe40HJQG18tvv1wPDk08=;
- b=Xd864KQbsz3ExeGGVbLL5JRuB/1m7Yc6wEuZXzDU/4+xYvgquLwjGS99VNsPjXpGxEZo
- 7nEiWRVJ34QaYCHmXBwrnl9CWcEK7NfuhO4Do1RJFBwo6l9LVDc4JqW8AWhUZ0rpowyM
- wdJOUlhrq38TkWZ738+pWu2NpL++dziLZguQG37faiOez7yKgUoNPCIm1r5lKazr1MiT
- 8Y7OJashDgdn335sGw+CZF10rcklE8dUUrE9qtQ3M5bkOIev0kj/757D5dLAu9YRheUq
- WY++KM95354LaC96KcU5TpHGj4KkbO0Fsmn0JhxR6mLo6SKgr7E2xaB/65mu6OXlwIOj pg== 
-Received: from ediex02.ad.cirrus.com ([84.19.233.68])
- by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3hgddp3a2m-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
- Tue, 26 Jul 2022 05:12:04 -0500
-Received: from ediex01.ad.cirrus.com (198.61.84.80) by ediex02.ad.cirrus.com
- (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.9; Tue, 26 Jul
- 2022 05:11:35 -0500
-Received: from ediswmail.ad.cirrus.com (198.61.86.93) by
- anon-ediex01.ad.cirrus.com (198.61.84.80) with Microsoft SMTP Server id
- 15.2.1118.9 via Frontend Transport; Tue, 26 Jul 2022 05:11:35 -0500
-Received: from aryzen.ad.cirrus.com (unknown [198.61.65.94])
- by ediswmail.ad.cirrus.com (Postfix) with ESMTP id A27FD2C5;
- Tue, 26 Jul 2022 10:11:32 +0000 (UTC)
-From: Lucas Tanure <tanureal@opensource.cirrus.com>
-To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Cameron
- Berkenpas <cam@neo-zeon.de>
-Subject: [PATCH 0/2] Add support for CLSA0101
-Date: Tue, 26 Jul 2022 11:11:29 +0100
-Message-ID: <20220726101131.68058-1-tanureal@opensource.cirrus.com>
-X-Mailer: git-send-email 2.37.1
+ by ams.source.kernel.org (Postfix) with ESMTPS id 9A6FCB811F9;
+ Tue, 26 Jul 2022 10:45:37 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5D251C341C0;
+ Tue, 26 Jul 2022 10:45:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1658832336;
+ bh=nbaVwL4kXjzhCUBIrQX/hG3/Kht2aI2sNMsVa672Ivc=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=XxOLpDEZYuQ9XfYA65yY3O2OtXyOKXgUy9DqmCAwmF2ysmC/2KBkogK6CeMrrESGR
+ tFTsHI2EfF4r2GClYoGqrj3ayZdqOvNdaR7hHEDz4cmC1Ws5Ivjg2Dqyf750ROG22e
+ LguP347esIRLrWyY8sRpdaBRJs4H9AuxPM6CL9j9rjyvoH0411YEChpWd7IDeXLyyX
+ aAQykjNgPasrtLHvNT3IDWbk08cJXJQ4loBdfZep4NzG6LazZGAKqx3n8z37fBP8qG
+ BAU1A/dAy2COPUzcZRTBx8QxfOMTfsm518kd6wIr3VVnbGRjmbYgBAKLsFXXdOXoXz
+ Ov8F7odvyihqg==
+Date: Tue, 26 Jul 2022 11:45:31 +0100
+From: Mark Brown <broonie@kernel.org>
+To: Claudiu Beznea <claudiu.beznea@microchip.com>
+Subject: Re: [PATCH v2 1/5] ASoC: mchp-spdifrx: disable end of block
+ interrupt on failures
+Message-ID: <Yt/Fy1xWUHtpbGMn@sirena.org.uk>
+References: <20220725130925.1781791-1-claudiu.beznea@microchip.com>
+ <20220725130925.1781791-2-claudiu.beznea@microchip.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Proofpoint-GUID: 2Mup4KydkpKEMchmdm81MhcBgOT1OBlb
-X-Proofpoint-ORIG-GUID: 2Mup4KydkpKEMchmdm81MhcBgOT1OBlb
-X-Proofpoint-Spam-Reason: safe
-Cc: patches@opensource.cirrus.com, alsa-devel@alsa-project.org,
- linux-kernel@vger.kernel.org, Lucas Tanure <tanureal@opensource.cirrus.com>
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature"; boundary="b+XP6nxpxfg5BBfu"
+Content-Disposition: inline
+In-Reply-To: <20220725130925.1781791-2-claudiu.beznea@microchip.com>
+X-Cookie: Save energy:  Drive a smaller shell.
+Cc: alsa-devel@alsa-project.org, alexandre.belloni@bootlin.com,
+ lgirdwood@gmail.com, linux-kernel@vger.kernel.org, nicolas.ferre@microchip.com,
+ tiwai@suse.com, linux-arm-kernel@lists.infradead.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -92,20 +85,91 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Add Support for the CLSA0101 laptop, an Intel version of CLSA0100.
-This patch has been tested using the CLSA0100, ensuring it
-doesn't break the sound for it.
-We appreciate it if someone with CLSA0101 could verify that this
-the patch works for them.
 
-Lucas Tanure (2):
-  ALSA: hda: cs35l41: Use the CS35L41 HDA internal define
-  ALSA: hda: cs35l41: Support CLSA0101
+--b+XP6nxpxfg5BBfu
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
- sound/pci/hda/cs35l41_hda.c   | 67 +++++++++++++++++++++--------------
- sound/pci/hda/patch_realtek.c | 12 +++++++
- 2 files changed, 53 insertions(+), 26 deletions(-)
+On Mon, Jul 25, 2022 at 04:09:21PM +0300, Claudiu Beznea wrote:
 
--- 
-2.37.1
+> +++ b/sound/soc/atmel/mchp-spdifrx.c
+> @@ -288,15 +288,17 @@ static void mchp_spdifrx_isr_blockend_en(struct mch=
+p_spdifrx_dev *dev)
+>  	spin_unlock_irqrestore(&dev->blockend_lock, flags);
+>  }
+> =20
+> -/* called from atomic context only */
+> +/* called from atomic/non-atomic context */
+>  static void mchp_spdifrx_isr_blockend_dis(struct mchp_spdifrx_dev *dev)
+>  {
+> -	spin_lock(&dev->blockend_lock);
+> +	unsigned int flags;
+> +
+> +	spin_lock_irqsave(&dev->blockend_lock);
+>  	dev->blockend_refcount--;
+>  	/* don't enable BLOCKEND interrupt if it's already enabled */
+>  	if (dev->blockend_refcount =3D=3D 0)
+>  		regmap_write(dev->regmap, SPDIFRX_IDR, SPDIFRX_IR_BLOCKEND);
+> -	spin_unlock(&dev->blockend_lock);
+> +	spin_unlock_irqrestore(&dev->blockend_lock);
+>  }
 
+This breaks an x86_64 allmodconfig build:
+
+/build/stage/linux/sound/soc/atmel/mchp-spdifrx.c: In function =E2=80=98mch=
+p_spdifrx_isr_blockend_dis=E2=80=99:
+/build/stage/linux/sound/soc/atmel/mchp-spdifrx.c:296:46: error: macro "spi=
+n_lock_irqsave" requires 2 arguments, but only 1 given
+  296 |         spin_lock_irqsave(&dev->blockend_lock);
+      |                                              ^
+In file included from /build/stage/linux/include/linux/rwsem.h:15,
+                 from /build/stage/linux/include/linux/notifier.h:15,
+                 from /build/stage/linux/include/linux/clk.h:14,
+                 from /build/stage/linux/sound/soc/atmel/mchp-spdifrx.c:9:
+/build/stage/linux/include/linux/spinlock.h:377: note: macro "spin_lock_irq=
+save" defined here
+  377 | #define spin_lock_irqsave(lock, flags)                          \
+      |=20
+/build/stage/linux/sound/soc/atmel/mchp-spdifrx.c:296:9: error: =E2=80=98sp=
+in_lock_irqsave=E2=80=99 undeclared (first use in this function); did you m=
+ean =E2=80=98spin_lock_irq=E2=80=99?
+  296 |         spin_lock_irqsave(&dev->blockend_lock);
+      |         ^~~~~~~~~~~~~~~~~
+      |         spin_lock_irq
+/build/stage/linux/sound/soc/atmel/mchp-spdifrx.c:296:9: note: each undecla=
+red identifier is reported only once for each function it appears in
+/build/stage/linux/sound/soc/atmel/mchp-spdifrx.c:301:9: error: too few arg=
+uments to function =E2=80=98spin_unlock_irqrestore=E2=80=99
+  301 |         spin_unlock_irqrestore(&dev->blockend_lock);
+      |         ^~~~~~~~~~~~~~~~~~~~~~
+In file included from /build/stage/linux/include/linux/rwsem.h:15,
+                 from /build/stage/linux/include/linux/notifier.h:15,
+                 from /build/stage/linux/include/linux/clk.h:14,
+                 from /build/stage/linux/sound/soc/atmel/mchp-spdifrx.c:9:
+/build/stage/linux/include/linux/spinlock.h:402:29: note: declared here
+  402 | static __always_inline void spin_unlock_irqrestore(spinlock_t *lock=
+, unsigned long flags)
+      |                             ^~~~~~~~~~~~~~~~~~~~~~
+/build/stage/linux/sound/soc/atmel/mchp-spdifrx.c:294:22: error: unused var=
+iable =E2=80=98flags=E2=80=99 [-Werror=3Dunused-variable]
+  294 |         unsigned int flags;
+      |                      ^~~~~
+cc1: all warnings being treated as errors
+
+--b+XP6nxpxfg5BBfu
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmLfxcoACgkQJNaLcl1U
+h9AMAQf/ZTHs18/rfqRU4HJc6KLOkajyRypWYU9T41QMxDa2A/tPhxvFZcVAWOlH
+gTxXGPpvcAci0LFAQVRZAB0Qwe4BIe9Bp11pbpADIIzmbRd9ibaChu2tljfssarr
+q05TE4AElzpG1OVce+KmSpxzB8AewceRojlkhnDr3FPmklhNmmKZZCKqrJIZ5rQ5
+HHbPTlO4n568YQxYoTgINEfvgTqIK/XrEpZsVRlAbw3OHbmZksnxXPi/kJRs86rd
+/USNouYj8KNr208jceC57O8uqmE7nP0dzig3OjIcNPZ+xps863Uw03nTqFfnOtIW
+uRXTrfgj80cNEWr2+ddok6ev5vf3zQ==
+=BLt+
+-----END PGP SIGNATURE-----
+
+--b+XP6nxpxfg5BBfu--
