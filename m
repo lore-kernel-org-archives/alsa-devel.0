@@ -4,85 +4,84 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id CFEF3C19F29
-	for <alsa-devel@archiver.kernel.org>; Wed, 27 Jul 2022 10:01:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2A6E4C04A68
+	for <alsa-devel@archiver.kernel.org>; Wed, 27 Jul 2022 12:48:57 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 16F1E164E;
-	Wed, 27 Jul 2022 12:00:56 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 16F1E164E
+	by alsa0.perex.cz (Postfix) with ESMTPS id BD6A31634;
+	Wed, 27 Jul 2022 14:48:05 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BD6A31634
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1658916106;
-	bh=rEwepkHm2EPch0pBXKRxv0Hv/vO+u9iTqCswBh/PC8c=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=eQvP+pH5dFopRWACLP+X23JQr+t0j6Z3hpvKPpDe4JpuYuc5tTeheJ+j1Fs5SuoQQ
-	 iBiVB6fAmN0YEueR3hBCGVVo/2q0rsNSC1cybvYZndFZ1JzA9m3snMDnpBAm+NmXFq
-	 SHugL6PlBg+iKYiD4UGfzEDFJiljGxf8lDEhIJLs=
+	s=default; t=1658926135;
+	bh=RIaQDJvZO/AMVboYMKhm+UG93mkw7vRPU1RCUOd36aU=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=KWcEKm303oycAwzohWG/NEX0UIwZoRiVxYVOmkC+bvNcwLau5soI/mqosevpw1Xm6
+	 I8NQElPKj2lUOK0WaULgAYzZBl0og16q6hb/RZznaZGlC1g6tMZe1rAMSua+rfUf1B
+	 +lqn3hw2tAemnn4GZi7W4H+cJTkYRYQZnci73554=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 2CA72F80553;
-	Wed, 27 Jul 2022 11:59:47 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 42372F800C9;
+	Wed, 27 Jul 2022 14:48:05 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 9140DF801D5; Wed, 27 Jul 2022 11:59:44 +0200 (CEST)
-Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
- [67.231.149.25])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 1F8B5F80171; Wed, 27 Jul 2022 14:48:03 +0200 (CEST)
+Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com
+ [IPv6:2a00:1450:4864:20::430])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id D7B1DF80171
- for <alsa-devel@alsa-project.org>; Wed, 27 Jul 2022 11:59:34 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D7B1DF80171
+ by alsa1.perex.cz (Postfix) with ESMTPS id DAD60F800C9
+ for <alsa-devel@alsa-project.org>; Wed, 27 Jul 2022 14:47:56 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DAD60F800C9
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com
- header.b="mRbjPnM4"
-Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
- by mx0a-001ae601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 26R4SNEg032560;
- Wed, 27 Jul 2022 04:59:32 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
- h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding : content-type; s=PODMain02222019;
- bh=OVWLOViijHvZ0gyrsr6sZosQT9smEiGwvFnRB0/TaRY=;
- b=mRbjPnM414VhyBwRFy9PC6SYYkXxG9KZHx50DRageHYP29fol+z3rOCN4NH4SluNwVPS
- Sl29+Ica17m9URmQU237sVDdieEvVJlOXM3IHctJN42WSKmBtqToO2vAlUmPMr+G50T4
- mdgYRf+57DBKJTzX81GCkIMy+QVVnI7qkZtFqfuD/SvexyJ6XWx6FmkYeHkDEQ0Jesh0
- 713+YUqO9bGG4vWUyJfjWxLXRzy8x0nKSsOuiob0f1OUzD7+P9HgQnM6e+hb25EIdWka
- MFz9O0xzXMQBqIf6O2QJs0z6ILEU03RWj9GCpa0+uAMMs8ZtrZrLLdYqC7vRtQGGpbUv 5Q== 
-Received: from ediex02.ad.cirrus.com ([84.19.233.68])
- by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3hged1vtk6-3
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
- Wed, 27 Jul 2022 04:59:32 -0500
-Received: from ediex01.ad.cirrus.com (198.61.84.80) by ediex02.ad.cirrus.com
- (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.9; Wed, 27 Jul
- 2022 04:59:29 -0500
-Received: from ediswmail.ad.cirrus.com (198.61.86.93) by
- anon-ediex01.ad.cirrus.com (198.61.84.80) with Microsoft SMTP Server id
- 15.2.1118.9 via Frontend Transport; Wed, 27 Jul 2022 04:59:29 -0500
-Received: from aryzen.ad.cirrus.com (unknown [198.61.65.94])
- by ediswmail.ad.cirrus.com (Postfix) with ESMTP id E041E477;
- Wed, 27 Jul 2022 09:59:28 +0000 (UTC)
-From: Lucas Tanure <tanureal@opensource.cirrus.com>
-To: Jaroslav Kysela <perex@perex.cz>, "Rafael J . Wysocki"
- <rafael@kernel.org>, Len Brown <lenb@kernel.org>, Hans de Goede
- <hdegoede@redhat.com>, Mark Gross <markgross@kernel.org>, Takashi Iwai
- <tiwai@suse.com>, Cameron Berkenpas <cam@neo-zeon.de>
-Subject: [PATCH v2 3/4] ACPI: scan: Add CLSA0101 Laptop Support
-Date: Wed, 27 Jul 2022 10:59:23 +0100
-Message-ID: <20220727095924.80884-4-tanureal@opensource.cirrus.com>
-X-Mailer: git-send-email 2.37.1
-In-Reply-To: <20220727095924.80884-1-tanureal@opensource.cirrus.com>
-References: <20220727095924.80884-1-tanureal@opensource.cirrus.com>
+ dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org
+ header.b="ASvzG8Go"
+Received: by mail-wr1-x430.google.com with SMTP id bn9so13127629wrb.9
+ for <alsa-devel@alsa-project.org>; Wed, 27 Jul 2022 05:47:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
+ h=from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=IbIXmqIjdkMi2JSciZ0bPMUrJ9m41pWmErdo7Yp7XLI=;
+ b=ASvzG8Gogpot3oN8wT5STKfQTyFMb/mSVeq6Q5nSqyg5mfmI6rJMduP+YYpYKgdRFk
+ Jc0adbLOucoOl90q+2gOcollCJYDz2Ii3cSbRW5FIiAhj2rIg+QLU3p/NrOvD2UlsOUm
+ mcEHMZj4ZLuOab+BeDzbbeeHUHJKZ/n3bCL8kG03mb9MaYTdTtRrEUcrkPcXKv5CH6fg
+ mkzDlRfO/ZyKypfvjvL9OX+PYD9PKcOGCAbaVr0/1YxzTzkjy2ViLV02dZWigtIVqABP
+ kFvI7p9UFFatzuk0XpqA3urAJKKhUXHmR3Y6SzM58/SdrKJoHqVOrgGCOdFQexIY774j
+ Sjtg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=IbIXmqIjdkMi2JSciZ0bPMUrJ9m41pWmErdo7Yp7XLI=;
+ b=z3ckOReLI7ZnTQIPoe0yQF/fHjrtMBM53vxdWt3HiJWs07UIVKWTLIF9PF5H9WmohN
+ 8ZsMjg5E5pQxk79XcYErObAE78wB63iHx0ImrM8AkMLvYcyb6QIgHWfndPJXdZRboK/h
+ KrA58GPNxDFjj3QxL3C7NLLJMhqfNf8BQhHYZLlxpRGeRpiDjqJ/sOSX1mAw2/mEd4bo
+ 5yPXVy4t2473gO4QAhzirzAYd+BwajA3dfAH7dohnEUqMxHiAD59CE3Negj/mc3lKcEj
+ ROsolS+pu7i8HHieEiApaeVbhd1SxrcLh+mH1W5Id+ETrXOYDVc7h721QyxudXDZZ595
+ /xVA==
+X-Gm-Message-State: AJIora/zA8y65hcf3frC4S/5MHJMoXq4E7QUPeDwnT3MBkbu8RAaJ6Go
+ BN1XW+OgYB8CJcXhbmotvo8+bg==
+X-Google-Smtp-Source: AGRyM1s64lTTZ728IL9ytTtfwVIyDnGmVDjh6LGF9RFAtf7d7cwiHHV6yYwE/uUmhVFkFnJ24zoCxA==
+X-Received: by 2002:a5d:58c9:0:b0:21d:9374:1373 with SMTP id
+ o9-20020a5d58c9000000b0021d93741373mr13987359wrf.20.1658926074695; 
+ Wed, 27 Jul 2022 05:47:54 -0700 (PDT)
+Received: from srini-hackbase.lan
+ (cpc90716-aztw32-2-0-cust825.18-1.cable.virginm.net. [86.26.103.58])
+ by smtp.gmail.com with ESMTPSA id
+ n40-20020a05600c3ba800b003a2ed2a40e4sm2459559wms.17.2022.07.27.05.47.53
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Wed, 27 Jul 2022 05:47:54 -0700 (PDT)
+From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+To: broonie@kernel.org
+Subject: [PATCH] ASoC: codecs: va-macro: use fsgen as clock
+Date: Wed, 27 Jul 2022 13:47:49 +0100
+Message-Id: <20220727124749.4604-1-srinivas.kandagatla@linaro.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Proofpoint-GUID: AtdIxN_CFm9gOicAvdNFl88eKK2K7cCh
-X-Proofpoint-ORIG-GUID: AtdIxN_CFm9gOicAvdNFl88eKK2K7cCh
-X-Proofpoint-Spam-Reason: safe
-Cc: alsa-devel@alsa-project.org, Lucas Tanure <tanureal@opensource.cirrus.com>,
- patches@opensource.cirrus.com, linux-kernel@vger.kernel.org,
- platform-driver-x86@vger.kernel.org, linux-acpi@vger.kernel.org
+Cc: alsa-devel@alsa-project.org, lgirdwood@gmail.com,
+ linux-kernel@vger.kernel.org, tiwai@suse.com,
+ Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+ Srinivasa Rao Mandadapu <quic_srivasam@quicinc.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -98,27 +97,60 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Add CLSA0101 id to the ignore_serial_bus_ids
-so serial-multi-instantiate can correctly
-instantiate the driver.
+VA Macro fsgen clock is supplied to other LPASS Macros using proper
+clock apis, however the internal user uses the registers directly without
+clk apis. This approch has race condition where in external users of
+the clock might cut the clock while VA macro is actively using this.
 
-Signed-off-by: Lucas Tanure <tanureal@opensource.cirrus.com>
+Moving the internal usage to clk apis would provide a proper refcounting
+and avoid such race conditions.
+
+This issue was noticed while headset was pulled out while recording is
+in progress and shifting record patch to DMIC.
+
+Reported-by: Srinivasa Rao Mandadapu <quic_srivasam@quicinc.com>
+Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 ---
- drivers/acpi/scan.c | 1 +
- 1 file changed, 1 insertion(+)
+ sound/soc/codecs/lpass-va-macro.c | 11 +++++++++--
+ 1 file changed, 9 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/acpi/scan.c b/drivers/acpi/scan.c
-index b100e6ca9bb4..42cec8120f18 100644
---- a/drivers/acpi/scan.c
-+++ b/drivers/acpi/scan.c
-@@ -1722,6 +1722,7 @@ static bool acpi_device_enumeration_by_parent(struct acpi_device *device)
- 		{"INT3515", },
- 		/* Non-conforming _HID for Cirrus Logic already released */
- 		{"CLSA0100", },
-+		{"CLSA0101", },
- 	/*
- 	 * Some ACPI devs contain SerialBus resources even though they are not
- 	 * attached to a serial bus at all.
+diff --git a/sound/soc/codecs/lpass-va-macro.c b/sound/soc/codecs/lpass-va-macro.c
+index d18b56e60433..1ea10dc70748 100644
+--- a/sound/soc/codecs/lpass-va-macro.c
++++ b/sound/soc/codecs/lpass-va-macro.c
+@@ -199,6 +199,7 @@ struct va_macro {
+ 	struct clk *mclk;
+ 	struct clk *macro;
+ 	struct clk *dcodec;
++	struct clk *fsgen;
+ 	struct clk_hw hw;
+ 	struct lpass_macro *pds;
+ 
+@@ -467,9 +468,9 @@ static int va_macro_mclk_event(struct snd_soc_dapm_widget *w,
+ 
+ 	switch (event) {
+ 	case SND_SOC_DAPM_PRE_PMU:
+-		return va_macro_mclk_enable(va, true);
++		return clk_prepare_enable(va->fsgen);
+ 	case SND_SOC_DAPM_POST_PMD:
+-		return va_macro_mclk_enable(va, false);
++		clk_disable_unprepare(va->fsgen);
+ 	}
+ 
+ 	return 0;
+@@ -1473,6 +1474,12 @@ static int va_macro_probe(struct platform_device *pdev)
+ 	if (ret)
+ 		goto err_clkout;
+ 
++	va->fsgen = clk_hw_get_clk(&va->hw, "fsgen");
++	if (IS_ERR(va->fsgen)) {
++		ret = PTR_ERR(va->fsgen);
++		goto err_clkout;
++	}
++
+ 	ret = devm_snd_soc_register_component(dev, &va_macro_component_drv,
+ 					      va_macro_dais,
+ 					      ARRAY_SIZE(va_macro_dais));
 -- 
-2.37.1
+2.25.1
 
