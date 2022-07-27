@@ -4,66 +4,82 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B6E2DC19F21
-	for <alsa-devel@archiver.kernel.org>; Wed, 27 Jul 2022 05:42:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4E289C04A68
+	for <alsa-devel@archiver.kernel.org>; Wed, 27 Jul 2022 06:51:17 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A699015E0;
-	Wed, 27 Jul 2022 07:41:58 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A699015E0
+	by alsa0.perex.cz (Postfix) with ESMTPS id C781A201;
+	Wed, 27 Jul 2022 08:50:25 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C781A201
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1658900568;
-	bh=BaNXWWFyt8OAhwYMd7BZk9if4XfVS7PbdDcVuhzK89w=;
-	h=Date:Subject:To:References:From:In-Reply-To:Cc:List-Id:
+	s=default; t=1658904675;
+	bh=aRvcaGLNpW8wOdn3Oyn3uCRvPEuEac8UUVQ5hkTL4hM=;
+	h=Date:From:To:Subject:In-Reply-To:References:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=CD1Qp2usGVgdHfYP075JOlZO0lyWkbCivGxcn/wZ5h1JfwEzPYU03Xr/f0JI0ODMh
-	 VU5nhlC0xPuva6y7dFeQL0kVQ7vKi0crnlKbccEEyvFteukPC3weK9yMfzcKC1PTiZ
-	 H6IfRUYyAWzm2OiPXveuOdvt0uPUlY9Jz+vBvLUQ=
+	b=MZ9JppeeFvdvwx+/9EpYlrQAvW3E9EQeeFCAYGOdvi28if3vIYkuscSwymYcuxCb2
+	 kbKNR9cuBrmXuj9CeHnYNLWKI8OF3DyxDHlWZlFaF4Nxm+FQlF/QTBWizkiCAnEKFn
+	 leX4PlK1FQzRCoZOBKoX7Q31ltTT27HeABUcUWZQ=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 5FACAF8053C;
-	Wed, 27 Jul 2022 07:41:09 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 3F9CCF80155;
+	Wed, 27 Jul 2022 08:50:25 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 2FB9DF804C3; Tue, 26 Jul 2022 17:36:01 +0200 (CEST)
-Received: from neo-zeon.de (neo-zeon.de [70.229.12.130])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id E7E2EF8015B; Wed, 27 Jul 2022 08:50:23 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 855F8F800FA
- for <alsa-devel@alsa-project.org>; Tue, 26 Jul 2022 17:35:53 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 855F8F800FA
+ by alsa1.perex.cz (Postfix) with ESMTPS id C39FCF8014E
+ for <alsa-devel@alsa-project.org>; Wed, 27 Jul 2022 08:50:14 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C39FCF8014E
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=neo-zeon.de header.i=@neo-zeon.de
- header.b="hwHjKqLQ"
-Received: from neo-zeon.de (localhost [::1])
- by neo-zeon.de (OpenSMTPD) with ESMTP id 359904d2;
- Tue, 26 Jul 2022 08:35:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha1; c=relaxed; d=neo-zeon.de; h=message-id
- :date:mime-version:subject:to:cc:references:from:in-reply-to
- :content-type:content-transfer-encoding; s=1; bh=eSQmzwMTJyGTFWU
- 8+xC/HAoUcSc=; b=hwHjKqLQtvX6aMEmlgrDFEwCCjnMP+TNrFVXy/1irFT4sco
- dhQusQUjsbqySE89nq876HqiYJPE0VLmOuIev4cJ/oKoz0iq2McPGSM6nFLQkd9D
- QVvOfuf4TDVXrG/HFXNiouq8mEpKKVEGggZQYrYU8ItQs9u647ODy+6KSMEI=
-Received: by neo-zeon.de (OpenSMTPD) with ESMTPSA id 24759ee6
- (TLSv1.3:AEAD-AES256-GCM-SHA384:256:NO); 
- Tue, 26 Jul 2022 08:35:49 -0700 (PDT)
-Message-ID: <91e34de4-1c85-073f-9c24-ce3133394fe6@neo-zeon.de>
-Date: Tue, 26 Jul 2022 08:35:49 -0700
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.11.0
-Subject: Re: [PATCH 0/2] Add support for CLSA0101
-Content-Language: en-US
-To: Lucas Tanure <tanureal@opensource.cirrus.com>,
- Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
-References: <20220726101131.68058-1-tanureal@opensource.cirrus.com>
-From: Cameron Berkenpas <cam@neo-zeon.de>
-In-Reply-To: <20220726101131.68058-1-tanureal@opensource.cirrus.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Mailman-Approved-At: Wed, 27 Jul 2022 07:41:04 +0200
-Cc: patches@opensource.cirrus.com, alsa-devel@alsa-project.org,
- linux-kernel@vger.kernel.org
+ dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
+ header.b="t1OlMCG9"; 
+ dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
+ header.b="9rnMWeLN"
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 089F92041C
+ for <alsa-devel@alsa-project.org>; Wed, 27 Jul 2022 06:50:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1658904614; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=xyq7LHcByybjtQmQEjTQXcUng1ZAyOrPCGTvAacK5Sk=;
+ b=t1OlMCG9u0pbWt/l8wtydh6DNcLuJ4Mt67H0XtDAAR8p/KFSrZ8v+LAz0CABtU4O2G+vdr
+ 7aTjxItplyFMp9YULkMUjrIDEb8M/Ns5t3W4aA1ByblOdgibsjQw2E8noCzFqr0UMlGLqu
+ keuUlcVoL+NQ/E7OGCEmO8SSvjxs4iM=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1658904614;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=xyq7LHcByybjtQmQEjTQXcUng1ZAyOrPCGTvAacK5Sk=;
+ b=9rnMWeLNr2n1FpKM3cPKm26dn1qUakOPY+gX8NtG56E3zk40CqTQ1JLWEMf6dICaKvSehO
+ LbksJH4eAZ92ocDA==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id D809F13A8E
+ for <alsa-devel@alsa-project.org>; Wed, 27 Jul 2022 06:50:13 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+ by imap2.suse-dmz.suse.de with ESMTPSA id kJbuMyXg4GIiAwAAMHmgww
+ (envelope-from <tiwai@suse.de>)
+ for <alsa-devel@alsa-project.org>; Wed, 27 Jul 2022 06:50:13 +0000
+Date: Wed, 27 Jul 2022 08:50:13 +0200
+Message-ID: <87fsinoxqy.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: alsa-devel@alsa-project.org
+Subject: Re: [PATCH 1/4] ALSA: core: Add async signal helpers
+In-Reply-To: <202207270950.zWfcvyEK-lkp@intel.com>
+References: <20220726153420.3403-2-tiwai@suse.de>
+ <202207270950.zWfcvyEK-lkp@intel.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -79,33 +95,43 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Hello,
+On Wed, 27 Jul 2022 03:14:53 +0200,
+kernel test robot wrote:
+> 
+> Hi Takashi,
+> 
+> I love your patch! Yet something to improve:
+> 
+> [auto build test ERROR on tiwai-sound/for-next]
+> [also build test ERROR on linus/master v5.19-rc8 next-20220726]
+> [If your patch is applied to the wrong git tree, kindly drop us a note.
+> And when submitting patch, we suggest to use '--base' as documented in
+> https://git-scm.com/docs/git-format-patch#_base_tree_information]
+> 
+> url:    https://github.com/intel-lab-lkp/linux/commits/Takashi-Iwai/ALSA-Defer-async-signal-handling/20220726-233840
+> base:   https://git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound.git for-next
+> config: csky-randconfig-r014-20220726 (https://download.01.org/0day-ci/archive/20220727/202207270950.zWfcvyEK-lkp@intel.com/config)
+> compiler: csky-linux-gcc (GCC) 12.1.0
+> reproduce (this is a W=1 build):
+>         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+>         chmod +x ~/bin/make.cross
+>         # https://github.com/intel-lab-lkp/linux/commit/e5977c421331e16237bf3ebd283981757e03f433
+>         git remote add linux-review https://github.com/intel-lab-lkp/linux
+>         git fetch --no-tags linux-review Takashi-Iwai/ALSA-Defer-async-signal-handling/20220726-233840
+>         git checkout e5977c421331e16237bf3ebd283981757e03f433
+>         # save the config file
+>         mkdir build_dir && cp config build_dir/.config
+>         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-12.1.0 make.cross W=1 O=build_dir ARCH=csky SHELL=/bin/bash sound/core/
+> 
+> If you fix the issue, kindly add following tag where applicable
+> Reported-by: kernel test robot <lkp@intel.com>
+> 
+> All errors (new ones prefixed by >>):
+> 
+>    sound/core/misc.c: In function 'snd_fasync_work_fn':
+> >> sound/core/misc.c:180:25: error: implicit declaration of function 'kill_fasync'; did you mean 'snd_kill_fasync'? [-Werror=implicit-function-declaration]
 
-I can confirm this does _not_ work.
+It needs the inclusion of linux/fs.h.  Will fix up in v2 series.
 
-More specifically, with these patches, the original behavior still occurs:
-1. You get left channel audio from the right speaker only.
-2. No sound at all after resuming from sleep.
-3. You get sound after resuming from hibernate, but only as described in #1.
 
-If you apply a patch like this: https://paste-bin.xyz/71355
-
-You  get properly working audio until you put the laptop to sleep or 
-hibernate. Upon resuming from either state, you get no audio at all.
-
-On 7/26/22 03:11, Lucas Tanure wrote:
-> Add Support for the CLSA0101 laptop, an Intel version of CLSA0100.
-> This patch has been tested using the CLSA0100, ensuring it
-> doesn't break the sound for it.
-> We appreciate it if someone with CLSA0101 could verify that this
-> the patch works for them.
->
-> Lucas Tanure (2):
->    ALSA: hda: cs35l41: Use the CS35L41 HDA internal define
->    ALSA: hda: cs35l41: Support CLSA0101
->
->   sound/pci/hda/cs35l41_hda.c   | 67 +++++++++++++++++++++--------------
->   sound/pci/hda/patch_realtek.c | 12 +++++++
->   2 files changed, 53 insertions(+), 26 deletions(-)
->
-
+Takashi
