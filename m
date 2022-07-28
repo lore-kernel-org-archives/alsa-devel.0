@@ -4,73 +4,78 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2EDB1C04A68
-	for <alsa-devel@archiver.kernel.org>; Thu, 28 Jul 2022 10:50:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 13378C19F29
+	for <alsa-devel@archiver.kernel.org>; Thu, 28 Jul 2022 11:15:24 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B93691651;
-	Thu, 28 Jul 2022 12:49:56 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B93691651
+	by alsa0.perex.cz (Postfix) with ESMTPS id 393B886E;
+	Thu, 28 Jul 2022 13:14:32 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 393B886E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1659005446;
-	bh=c/xTkxRbWD4FTJsS0u1tXoSZ7j2nlmXNxawdaZwg6Ms=;
+	s=default; t=1659006922;
+	bh=oXhKn484H8C4pSVsSAWT8FrTdxHfNXnO2/Oj96hh46g=;
 	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=QwZ04x6m/K1RpKMHY4kH29mA2IZiUwBhr/yewOHkFrZ9FDFaCEpt/Dsr3WedNJSa+
-	 of6tkzS+qsTEg4EuSgnbrRKTHFZe7qk0CpAwDU+5CMpaKYdt/JBAHhnErmFwlPdwzi
-	 mo79Y3Thp1WAO9iAUvzKjhTmwdnOu8p+fK+pXWSg=
+	b=r3UYpMqCTZ6DY5r4akrQzmHFx+1yBhAbVfonK43YSmY/KjSiocI0QTad0pCMvciTS
+	 bIZ0z85GW8H27L/r5hHHut8wgLcvEOOO7NeqNojcpt/OsAxAJ9u8zxASYtt4nD68bJ
+	 OACBFdC6GZLGRd+yhrhqtuT61y38ajs3GSM7n2B8=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 582E8F80430;
-	Thu, 28 Jul 2022 12:49:56 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id BB52AF80430;
+	Thu, 28 Jul 2022 13:14:31 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 41172F800FA; Thu, 28 Jul 2022 12:49:55 +0200 (CEST)
+ id 0068DF804EC; Thu, 28 Jul 2022 13:14:29 +0200 (CEST)
 Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id E5C4BF800FA
- for <alsa-devel@alsa-project.org>; Thu, 28 Jul 2022 12:49:50 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E5C4BF800FA
+ by alsa1.perex.cz (Postfix) with ESMTPS id BA925F800FA
+ for <alsa-devel@alsa-project.org>; Thu, 28 Jul 2022 13:14:27 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BA925F800FA
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="EuPBj5Qb"
+ header.b="ecLDfjwf"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by ams.source.kernel.org (Postfix) with ESMTPS id 52386B823DC;
- Thu, 28 Jul 2022 10:49:49 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id ABB2EC433C1;
- Thu, 28 Jul 2022 10:49:44 +0000 (UTC)
+ by ams.source.kernel.org (Postfix) with ESMTPS id CD556B82398;
+ Thu, 28 Jul 2022 11:14:26 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 768CAC433D6;
+ Thu, 28 Jul 2022 11:14:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1659005388;
- bh=c/xTkxRbWD4FTJsS0u1tXoSZ7j2nlmXNxawdaZwg6Ms=;
+ s=k20201202; t=1659006865;
+ bh=oXhKn484H8C4pSVsSAWT8FrTdxHfNXnO2/Oj96hh46g=;
  h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=EuPBj5QbHdjkGUBWJJ6hQ+NZfpW65W+gjBZYMO5dwZGGQmnfViFK4YTJ0ScPf/18u
- grSS/ZSb2vZQfDw35zgn3xdME5hLtn2SXwjhpNZnm36TtD97k7iaQhyeUcRumDc4Oe
- YrJnFmvdtXlqPgx5sNI42r8uwYwKwT5af83+42LxTjuub/W9cUChEZGTVm/vg6vpWv
- E0DEOhLq3ZK6X6Dy6bgNn5nnZISii6PY+wEiqjvYL7x98SeebmzUY/xbgDxUYapiCJ
- Vi9I+7pBEPxKgCoc+jdEfKe0x6a0qlPoPVvTk/LkBIUGr8O0OV1xBnbSSBwLBgS1z9
- 8r583cZ1J1MuQ==
-Date: Thu, 28 Jul 2022 11:49:41 +0100
+ b=ecLDfjwfJxwxl7WL4Paa0dE9dnRnnddjlcSZ5n7EytRN8TpOVVUzlbYgO5njHL4uL
+ FCpXsWxfjmdoqcX8cwxnN+XMiJTBZPm2i7Bs1kv+jvtOEuJTQQoHcPXv3aAa47SE4G
+ PkxRIClibkhbMKJTF3jxT62/AshODfms/IA+1zds2vSoRyci+nVCaaDeFPOYUM4ve9
+ 7ck3gppV/uCUadE3BN+hMbddSeqp0rBBOJg4EkYgO6ZvKsH0tC/qqSwFD/eU9psQCp
+ m2Tr9bd4tRyt8OJR/TzHrrAM6sSQB/EecxcgLFp4rHrsZg1ZjsnbHttkz+XwA/5hDS
+ 8U+zgAsmgx8cQ==
+Date: Thu, 28 Jul 2022 12:14:19 +0100
 From: Mark Brown <broonie@kernel.org>
-To: Srinivasa Rao Mandadapu <quic_srivasam@quicinc.com>
-Subject: Re: [PATCH] ASoC: qcom: SC7280: Add support for external DMIC bias
- supply
-Message-ID: <YuJpxSuPBB++pl/o@sirena.org.uk>
-References: <1658992233-28372-1-git-send-email-quic_srivasam@quicinc.com>
+To: "Prasad, Prasad" <venkataprasad.potturu@amd.com>
+Subject: Re: [PATCH v2] ASoC: amd: acp: Initialize list to store acp_stream
+ during pcm_open
+Message-ID: <YuJvi6IdbPyJWKUq@sirena.org.uk>
+References: <20220722133530.3314087-1-venkataprasad.potturu@amd.com>
+ <87h739464x.wl-tiwai@suse.de>
+ <PH7PR12MB5951A322E8613E1A782ACCF3E9969@PH7PR12MB5951.namprd12.prod.outlook.com>
 MIME-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature"; boundary="19Amlz8gj2K5TooV"
+ protocol="application/pgp-signature"; boundary="djlTOc+vqayQK83P"
 Content-Disposition: inline
-In-Reply-To: <1658992233-28372-1-git-send-email-quic_srivasam@quicinc.com>
+In-Reply-To: <PH7PR12MB5951A322E8613E1A782ACCF3E9969@PH7PR12MB5951.namprd12.prod.outlook.com>
 X-Cookie: People respond to people who respond.
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
- quic_rohkumar@quicinc.com, linux-arm-msm@vger.kernel.org, swboyd@chromium.org,
- tiwai@suse.com, lgirdwood@gmail.com, robh+dt@kernel.org,
- bjorn.andersson@linaro.org, agross@kernel.org, srinivas.kandagatla@linaro.org,
- bgoswami@quicinc.com, quic_plai@quicinc.com, judyhsiao@chromium.org,
- linux-kernel@vger.kernel.org
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Dommati,
+ Sunil-kumar" <Sunil-kumar.Dommati@amd.com>,
+ Charles Keepax <ckeepax@opensource.cirrus.com>, Takashi Iwai <tiwai@suse.de>,
+ open list <linux-kernel@vger.kernel.org>, "Hiregoudar,
+ Basavaraj" <Basavaraj.Hiregoudar@amd.com>, Takashi Iwai <tiwai@suse.com>,
+ Liam Girdwood <lgirdwood@gmail.com>, Yang Yingliang <yangyingliang@huawei.com>,
+ "Saba Kareem, Syed" <Syed.SabaKareem@amd.com>, "Mukunda,
+ Vijendar" <Vijendar.Mukunda@amd.com>, "Reddy,
+ V sujith kumar" <Vsujithkumar.Reddy@amd.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -87,36 +92,46 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
---19Amlz8gj2K5TooV
+--djlTOc+vqayQK83P
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On Thu, Jul 28, 2022 at 12:40:33PM +0530, Srinivasa Rao Mandadapu wrote:
+On Thu, Jul 28, 2022 at 07:52:25AM +0000, Prasad, Prasad wrote:
 
-> +static int sc7280_dmic_micbias(struct snd_soc_dapm_widget *w,
+> linked to multiple pcm device as we will have same dai->driver id
+>=20
+> or array index for multiple pcm open. Initialize new linked list
+>=20
+> stream_list to store opened pcm stream info dynamically.
+>=20
+>=20
+>=20
+> If an IRQ handler refers to the linked list, make sure that no list
+>=20
+> change will happen concurrently during the IRQ handling.  It seems
+>=20
+> that you have no protection for it yet.
+> Yes, linked list may changes concurrently during IRQ handling, we will us=
+e spin locks in the next version of patch.
 
-> +				struct snd_kcontrol *kcontrol, int event)
-> +{
-> +	struct snd_soc_card *card = w->dapm->card;
-> +	struct sc7280_snd_data *data = snd_soc_card_get_drvdata(card);
-> +	int ret = 0;
-> +
+Please fix your mail client to clearly identify quoted text, it's very
+hard to read your mails since (among other things) it's hard to tell
+what text you added.
 
-This is open coding SND_SOC_DAPM_REGULATOR_SUPPLY() isn't it?
-
---19Amlz8gj2K5TooV
+--djlTOc+vqayQK83P
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmLiacQACgkQJNaLcl1U
-h9C81gf9Ga+tG1jtopYoO2vybAFTSEv9+weEyQYVfWYlV/dr54/mFfs5thvXdkQy
-C4ZHp1P2Pvc0Zz21fKPITIZ/oUJvMHAFsUN1OvD5QDn9tXyn3QTYjnQvxuKYC9iF
-QuwAqQClFBn+VdUNev78ZC8alwfezPpz3RfFVHg6gO22v9w+tsOe6YPeZYU915is
-0jI/vXl4PYcb7PYgYp7k0Uyr7wdU8Ju6z9HqRC2KRhwasNRZjndt6XRfGF2QpybG
-VOQtO49CDUOLxdDtNfC+hu25oeI4Hi+1WVVpHxmKtzLHlraQkbRf9C94jSyS75qa
-4h/gpJnIHzoUwOmrWzLg3ZS8L/vGyA==
-=k9u9
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmLib4oACgkQJNaLcl1U
+h9CUMQf7BkXcYCSXzOPB2U5KyrOlXFxo/iePJ+LMnwXcK6XPHGwNqfIl3iQ2kBzz
+HNgn7TA4mo7cKULBTZrXb3yx7Gn+lRYsZ/PfMQLbOX5hjUhGqEJEZA/6HxQkiP6J
+++vIRGFtrqlNXV8emSJAurT1m6IikCD4PAmJOPyTzNHWHV9j1U7dfEwfY2XSxfSb
+j9cB3geRNNb+jHxls+s8KTa/3E83/Krkyq1sAKH1UklL7X71KR4R9k1M3RU2ZP3o
+4jAXneq6kLpEog7YnKsnASVbRZfdhxvO6WiISeHygrtESt5UvwTTWK68uh6QowvZ
+cfDSAD0IJDBtvzFofrJ5HDbVfQgU4Q==
+=/414
 -----END PGP SIGNATURE-----
 
---19Amlz8gj2K5TooV--
+--djlTOc+vqayQK83P--
