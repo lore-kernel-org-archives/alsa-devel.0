@@ -4,77 +4,77 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C6B51C04A68
-	for <alsa-devel@archiver.kernel.org>; Thu, 28 Jul 2022 13:01:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B4496C04A68
+	for <alsa-devel@archiver.kernel.org>; Thu, 28 Jul 2022 13:01:28 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0735F1671;
-	Thu, 28 Jul 2022 15:00:26 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0735F1671
+	by alsa0.perex.cz (Postfix) with ESMTPS id DFAF41661;
+	Thu, 28 Jul 2022 15:00:36 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DFAF41661
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1659013276;
-	bh=4kNVtdRJOmawOMkxkxDWpZWhruQejYAtZaNeV3+zR1Y=;
+	s=default; t=1659013287;
+	bh=bOkhuqHZMZ0Axw8zORyhPpRXV39vnmbQXnlYFyB7rU4=;
 	h=From:To:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=gIAzJXXNb3MqEeFqYiMGADsgdtPpnqF/3fpLLqJTFp9ASAFuhTXGxHGbERZL57os4
-	 vFOMpqHAa6N+JVUoilfT431HYnTwp5DO9pfe/IqBSF/cpMVTGETvHJEDxGZV9cCghh
-	 ORl/olfddI45SPPBRNNHfQPYwXtKY62cpqkRUji0=
+	b=NlA1jrXswDRzpvH/QSVJTar6+DoZbgb8OiX/fvh9YtLPbYctM5mORAhJ7T4diqGe+
+	 YHZWUQM4bANogX7EEUKmmMwus9V3gX3qR5kVCsrK8hpYyJaVeqzxrXIzGyw3fSNO0U
+	 SeREO1n0ejsrYkw12aRm+Z3YvIddYg9+aV1r/F9A=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 2E286F80549;
-	Thu, 28 Jul 2022 15:00:01 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2DF3DF80551;
+	Thu, 28 Jul 2022 15:00:02 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 6D1F1F80141; Thu, 28 Jul 2022 14:59:57 +0200 (CEST)
+ id 237A8F8053C; Thu, 28 Jul 2022 14:59:58 +0200 (CEST)
 Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id D73D0F8053C
- for <alsa-devel@alsa-project.org>; Thu, 28 Jul 2022 14:59:50 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D73D0F8053C
+ by alsa1.perex.cz (Postfix) with ESMTPS id 3224BF8051C
+ for <alsa-devel@alsa-project.org>; Thu, 28 Jul 2022 14:59:48 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3224BF8051C
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="RaEyhzAt"; 
+ header.b="wAux2RZA"; 
  dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="QhumCdQp"
+ header.b="Uk2dt4Br"
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id ACA47344C6;
- Thu, 28 Jul 2022 12:59:47 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 09380344CD;
+ Thu, 28 Jul 2022 12:59:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1659013187; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1659013188; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=2BUsYOAhyE5wLbYSagh1qo8iii+SMaIjscKb8dQDBbc=;
- b=RaEyhzAttLWSxdboyg+LTLj0J6+ESfWSgmPuvbzlV/JuNw+o1ssFMP3DMcM/j5ojzRXXTb
- 896RuMnaRUIF2X2wq+V+vfgaigAKKWLaG25rP32mL//vjHoSRu7ajc+Sa5eDcAcTjMIS1w
- ZukwBWRtgmz4+YJ1BQV7Eq3UgvKiXkI=
+ bh=Av4M3w3bvfDchec1QtsFKO6kq8iWGSQbAapWPI1XJrI=;
+ b=wAux2RZArbYKdcSXSMh3fJakhKGHCHVYKi/eTIdltYukNUZ3SFMLhnCdEuB8diowdtIPlB
+ TQg0NqHDpCNp6ZheBV5Bw38gQwozQiWatRXqM6jq00yQNV9HMf6nrg34sRoNrEaWpHqRID
+ oGd5ctgbrZ8I9U7i/RtURfBdDJT7dzM=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1659013187;
+ s=susede2_ed25519; t=1659013188;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=2BUsYOAhyE5wLbYSagh1qo8iii+SMaIjscKb8dQDBbc=;
- b=QhumCdQp8EGHrd6qzQYZEVN0uZHQ+G9x9FTq646FUJerykBxz9aufz/6zytvJ7QpK+pIkA
- WjBD3zoH0aDUK3CQ==
+ bh=Av4M3w3bvfDchec1QtsFKO6kq8iWGSQbAapWPI1XJrI=;
+ b=Uk2dt4Br9hsf7wbJdKQlop+eno5U7hS4FWgFLxOtlALQFsTuGgjp6+8gpIIVepzgKjxF5x
+ Ie1nnK6boV2OU6Dg==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 8729E13AB4;
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id DA65913AB4;
  Thu, 28 Jul 2022 12:59:47 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id UFdMIEOI4mJmOQAAMHmgww
+ by imap2.suse-dmz.suse.de with ESMTPSA id QD6iNEOI4mJmOQAAMHmgww
  (envelope-from <tiwai@suse.de>); Thu, 28 Jul 2022 12:59:47 +0000
 From: Takashi Iwai <tiwai@suse.de>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH v2 1/4] ALSA: core: Add async signal helpers
-Date: Thu, 28 Jul 2022 14:59:42 +0200
-Message-Id: <20220728125945.29533-2-tiwai@suse.de>
+Subject: [PATCH v2 3/4] ALSA: pcm: Use deferred fasync helper
+Date: Thu, 28 Jul 2022 14:59:44 +0200
+Message-Id: <20220728125945.29533-4-tiwai@suse.de>
 X-Mailer: git-send-email 2.35.3
 In-Reply-To: <20220728125945.29533-1-tiwai@suse.de>
 References: <20220728125945.29533-1-tiwai@suse.de>
@@ -95,150 +95,71 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Currently the call of kill_fasync() from an interrupt handler might
-lead to potential spin deadlocks, as spotted by syzkaller.
-Unfortunately, it's not so trivial to fix this lock chain as it's
-involved with the tasklist_lock that is touched in allover places.
+For avoiding the potential deadlock via kill_fasync() call, use the
+new fasync helpers to defer the invocation from timer API.  Note that
+it's merely a workaround.
 
-As a temporary workaround, this patch provides the way to defer the
-async signal notification in a work.  The new helper functions,
-snd_fasync_helper() and snd_kill_faync() are replacements for
-fasync_helper() and kill_fasync(), respectively.  In addition,
-snd_fasync_free() needs to be called at the destructor of the relevant
-file object.
-
+Reported-by: syzbot+8285e973a41b5aa68902@syzkaller.appspotmail.com
+Reported-by: syzbot+669c9abf11a6a011dd09@syzkaller.appspotmail.com
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- include/sound/core.h |  8 ++++
- sound/core/misc.c    | 94 ++++++++++++++++++++++++++++++++++++++++++++
- 2 files changed, 102 insertions(+)
+ include/sound/pcm.h     | 2 +-
+ sound/core/pcm.c        | 1 +
+ sound/core/pcm_lib.c    | 2 +-
+ sound/core/pcm_native.c | 2 +-
+ 4 files changed, 4 insertions(+), 3 deletions(-)
 
-diff --git a/include/sound/core.h b/include/sound/core.h
-index dd28de2343b8..4365c35d038b 100644
---- a/include/sound/core.h
-+++ b/include/sound/core.h
-@@ -507,4 +507,12 @@ snd_pci_quirk_lookup_id(u16 vendor, u16 device,
- }
- #endif
- 
-+/* async signal helpers */
-+struct snd_fasync;
-+
-+int snd_fasync_helper(int fd, struct file *file, int on,
-+		      struct snd_fasync **fasyncp);
-+void snd_kill_fasync(struct snd_fasync *fasync, int signal, int poll);
-+void snd_fasync_free(struct snd_fasync *fasync);
-+
- #endif /* __SOUND_CORE_H */
-diff --git a/sound/core/misc.c b/sound/core/misc.c
-index 50e4aaa6270d..d32a19976a2b 100644
---- a/sound/core/misc.c
-+++ b/sound/core/misc.c
-@@ -10,6 +10,7 @@
- #include <linux/time.h>
- #include <linux/slab.h>
- #include <linux/ioport.h>
-+#include <linux/fs.h>
- #include <sound/core.h>
- 
- #ifdef CONFIG_SND_DEBUG
-@@ -145,3 +146,96 @@ snd_pci_quirk_lookup(struct pci_dev *pci, const struct snd_pci_quirk *list)
- }
- EXPORT_SYMBOL(snd_pci_quirk_lookup);
- #endif
-+
-+/*
-+ * Deferred async signal helpers
-+ *
-+ * Below are a few helper functions to wrap the async signal handling
-+ * in the deferred work.  The main purpose is to avoid the messy deadlock
-+ * around tasklist_lock and co at the kill_fasync() invocation.
-+ * fasync_helper() and kill_fasync() are replaced with snd_fasync_helper()
-+ * and snd_kill_fasync(), respectively.  In addition, snd_fasync_free() has
-+ * to be called at releasing the relevant file object.
-+ */
-+struct snd_fasync {
-+	struct fasync_struct *fasync;
-+	int signal;
-+	int poll;
-+	int on;
-+	struct list_head list;
-+};
-+
-+static DEFINE_SPINLOCK(snd_fasync_lock);
-+static LIST_HEAD(snd_fasync_list);
-+
-+static void snd_fasync_work_fn(struct work_struct *work)
-+{
+diff --git a/include/sound/pcm.h b/include/sound/pcm.h
+index 2d03c10f6a36..8c48a5bce88c 100644
+--- a/include/sound/pcm.h
++++ b/include/sound/pcm.h
+@@ -399,7 +399,7 @@ struct snd_pcm_runtime {
+ 	snd_pcm_uframes_t twake; 	/* do transfer (!poll) wakeup if non-zero */
+ 	wait_queue_head_t sleep;	/* poll sleep */
+ 	wait_queue_head_t tsleep;	/* transfer sleep */
+-	struct fasync_struct *fasync;
 +	struct snd_fasync *fasync;
-+
-+	spin_lock_irq(&snd_fasync_lock);
-+	while (!list_empty(&snd_fasync_list)) {
-+		fasync = list_first_entry(&snd_fasync_list, struct snd_fasync, list);
-+		list_del_init(&fasync->list);
-+		spin_unlock_irq(&snd_fasync_lock);
-+		if (fasync->on)
-+			kill_fasync(&fasync->fasync, fasync->signal, fasync->poll);
-+		spin_lock_irq(&snd_fasync_lock);
-+	}
-+	spin_unlock_irq(&snd_fasync_lock);
-+}
-+
-+static DECLARE_WORK(snd_fasync_work, snd_fasync_work_fn);
-+
-+int snd_fasync_helper(int fd, struct file *file, int on,
-+		      struct snd_fasync **fasyncp)
-+{
-+	struct snd_fasync *fasync = NULL;
-+
-+	if (on) {
-+		fasync = kzalloc(sizeof(*fasync), GFP_KERNEL);
-+		if (!fasync)
-+			return -ENOMEM;
-+		INIT_LIST_HEAD(&fasync->list);
-+	}
-+
-+	spin_lock_irq(&snd_fasync_lock);
-+	if (*fasyncp) {
-+		kfree(fasync);
-+		fasync = *fasyncp;
-+	} else {
-+		if (!fasync) {
-+			spin_unlock_irq(&snd_fasync_lock);
-+			return 0;
-+		}
-+		*fasyncp = fasync;
-+	}
-+	fasync->on = on;
-+	spin_unlock_irq(&snd_fasync_lock);
-+	return fasync_helper(fd, file, on, &fasync->fasync);
-+}
-+EXPORT_SYMBOL_GPL(snd_fasync_helper);
-+
-+void snd_kill_fasync(struct snd_fasync *fasync, int signal, int poll)
-+{
-+	unsigned long flags;
-+
-+	if (!fasync || !fasync->on)
-+		return;
-+	spin_lock_irqsave(&snd_fasync_lock, flags);
-+	fasync->signal = signal;
-+	fasync->poll = poll;
-+	list_move(&fasync->list, &snd_fasync_list);
-+	schedule_work(&snd_fasync_work);
-+	spin_unlock_irqrestore(&snd_fasync_lock, flags);
-+}
-+EXPORT_SYMBOL_GPL(snd_kill_fasync);
-+
-+void snd_fasync_free(struct snd_fasync *fasync)
-+{
-+	if (!fasync)
-+		return;
-+	fasync->on = 0;
-+	flush_work(&snd_fasync_work);
-+	kfree(fasync);
-+}
-+EXPORT_SYMBOL_GPL(snd_fasync_free);
+ 	bool stop_operating;		/* sync_stop will be called */
+ 	struct mutex buffer_mutex;	/* protect for buffer changes */
+ 	atomic_t buffer_accessing;	/* >0: in r/w operation, <0: blocked */
+diff --git a/sound/core/pcm.c b/sound/core/pcm.c
+index 03fc5fa5813e..2ac742035310 100644
+--- a/sound/core/pcm.c
++++ b/sound/core/pcm.c
+@@ -1007,6 +1007,7 @@ void snd_pcm_detach_substream(struct snd_pcm_substream *substream)
+ 		substream->runtime = NULL;
+ 	}
+ 	mutex_destroy(&runtime->buffer_mutex);
++	snd_fasync_free(runtime->fasync);
+ 	kfree(runtime);
+ 	put_pid(substream->pid);
+ 	substream->pid = NULL;
+diff --git a/sound/core/pcm_lib.c b/sound/core/pcm_lib.c
+index 1fc7c50ffa62..40751e5aff09 100644
+--- a/sound/core/pcm_lib.c
++++ b/sound/core/pcm_lib.c
+@@ -1822,7 +1822,7 @@ void snd_pcm_period_elapsed_under_stream_lock(struct snd_pcm_substream *substrea
+ 		snd_timer_interrupt(substream->timer, 1);
+ #endif
+  _end:
+-	kill_fasync(&runtime->fasync, SIGIO, POLL_IN);
++	snd_kill_fasync(runtime->fasync, SIGIO, POLL_IN);
+ }
+ EXPORT_SYMBOL(snd_pcm_period_elapsed_under_stream_lock);
+ 
+diff --git a/sound/core/pcm_native.c b/sound/core/pcm_native.c
+index aa0453e51595..ad0541e9e888 100644
+--- a/sound/core/pcm_native.c
++++ b/sound/core/pcm_native.c
+@@ -3951,7 +3951,7 @@ static int snd_pcm_fasync(int fd, struct file * file, int on)
+ 	runtime = substream->runtime;
+ 	if (runtime->status->state == SNDRV_PCM_STATE_DISCONNECTED)
+ 		return -EBADFD;
+-	return fasync_helper(fd, file, on, &runtime->fasync);
++	return snd_fasync_helper(fd, file, on, &runtime->fasync);
+ }
+ 
+ /*
 -- 
 2.35.3
 
