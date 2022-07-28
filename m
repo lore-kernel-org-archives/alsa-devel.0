@@ -4,77 +4,77 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B4496C04A68
-	for <alsa-devel@archiver.kernel.org>; Thu, 28 Jul 2022 13:01:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4E4CBC19F2C
+	for <alsa-devel@archiver.kernel.org>; Thu, 28 Jul 2022 13:01:42 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id DFAF41661;
-	Thu, 28 Jul 2022 15:00:36 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DFAF41661
+	by alsa0.perex.cz (Postfix) with ESMTPS id 746DD1660;
+	Thu, 28 Jul 2022 15:00:50 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 746DD1660
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1659013287;
-	bh=bOkhuqHZMZ0Axw8zORyhPpRXV39vnmbQXnlYFyB7rU4=;
+	s=default; t=1659013300;
+	bh=g0xwvfCQjK6jl5kRUgz2LsSmg86rr3gVF3LjWEqPW8k=;
 	h=From:To:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=NlA1jrXswDRzpvH/QSVJTar6+DoZbgb8OiX/fvh9YtLPbYctM5mORAhJ7T4diqGe+
-	 YHZWUQM4bANogX7EEUKmmMwus9V3gX3qR5kVCsrK8hpYyJaVeqzxrXIzGyw3fSNO0U
-	 SeREO1n0ejsrYkw12aRm+Z3YvIddYg9+aV1r/F9A=
+	b=H5MsyJQmkVi8gFVidEa1wCTL/3tcEe37AI0ooP1MpMpMxjA6D3ovWYHJ3QR6ewfQB
+	 lcGnh/kshjP8rqZ2Zxt+bgZOXz8+FRiU5hcrEj8WaARpzJlaL3HyTuSjMYtnqkAxqP
+	 8fJc+7V4ibJQr7k5xAYwyQFDelZERdA+Su6OTW/Y=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 2DF3DF80551;
-	Thu, 28 Jul 2022 15:00:02 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 353F9F80559;
+	Thu, 28 Jul 2022 15:00:03 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 237A8F8053C; Thu, 28 Jul 2022 14:59:58 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+ id F1864F8051C; Thu, 28 Jul 2022 14:59:58 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 3224BF8051C
- for <alsa-devel@alsa-project.org>; Thu, 28 Jul 2022 14:59:48 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3224BF8051C
+ by alsa1.perex.cz (Postfix) with ESMTPS id C037EF80430
+ for <alsa-devel@alsa-project.org>; Thu, 28 Jul 2022 14:59:50 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C037EF80430
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="wAux2RZA"; 
+ header.b="EhtERJ7q"; 
  dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="Uk2dt4Br"
+ header.b="OQ8Zr38Y"
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 09380344CD;
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 2816820677;
  Thu, 28 Jul 2022 12:59:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
  t=1659013188; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=Av4M3w3bvfDchec1QtsFKO6kq8iWGSQbAapWPI1XJrI=;
- b=wAux2RZArbYKdcSXSMh3fJakhKGHCHVYKi/eTIdltYukNUZ3SFMLhnCdEuB8diowdtIPlB
- TQg0NqHDpCNp6ZheBV5Bw38gQwozQiWatRXqM6jq00yQNV9HMf6nrg34sRoNrEaWpHqRID
- oGd5ctgbrZ8I9U7i/RtURfBdDJT7dzM=
+ bh=7iuRQ2leetPJMX0VdaUUT5+7Gf6IbWbIxaPQQh9gbC0=;
+ b=EhtERJ7q7oyn+JViH2oKdSKC+YsD5fyRv6UloweYDJ75Mm37enu6Bp4dn+E3x0isDc9J24
+ 5nbGFlXAGz5RFDKmy3lAdPjc5gX0R4bjWUYUPQ3TgR5E9SdmL/gy9ppqqPdjIn5V8C5lk2
+ Psu9jVrsowMNoes2bjdXH48rlMIr2DQ=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
  s=susede2_ed25519; t=1659013188;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=Av4M3w3bvfDchec1QtsFKO6kq8iWGSQbAapWPI1XJrI=;
- b=Uk2dt4Br9hsf7wbJdKQlop+eno5U7hS4FWgFLxOtlALQFsTuGgjp6+8gpIIVepzgKjxF5x
- Ie1nnK6boV2OU6Dg==
+ bh=7iuRQ2leetPJMX0VdaUUT5+7Gf6IbWbIxaPQQh9gbC0=;
+ b=OQ8Zr38YTzh7c01qA9aRhnoY6DbKOjz88pPk48aaKGmS0gh5zyS4Mx2D/7CpKecrXtYQy6
+ eo8CDFY0ZqkQE4Cg==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id DA65913AB4;
- Thu, 28 Jul 2022 12:59:47 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 0BB6B13427;
+ Thu, 28 Jul 2022 12:59:48 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id QD6iNEOI4mJmOQAAMHmgww
- (envelope-from <tiwai@suse.de>); Thu, 28 Jul 2022 12:59:47 +0000
+ by imap2.suse-dmz.suse.de with ESMTPSA id +F6YAUSI4mJmOQAAMHmgww
+ (envelope-from <tiwai@suse.de>); Thu, 28 Jul 2022 12:59:48 +0000
 From: Takashi Iwai <tiwai@suse.de>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH v2 3/4] ALSA: pcm: Use deferred fasync helper
-Date: Thu, 28 Jul 2022 14:59:44 +0200
-Message-Id: <20220728125945.29533-4-tiwai@suse.de>
+Subject: [PATCH v2 4/4] ALSA: control: Use deferred fasync helper
+Date: Thu, 28 Jul 2022 14:59:45 +0200
+Message-Id: <20220728125945.29533-5-tiwai@suse.de>
 X-Mailer: git-send-email 2.35.3
 In-Reply-To: <20220728125945.29533-1-tiwai@suse.de>
 References: <20220728125945.29533-1-tiwai@suse.de>
@@ -96,70 +96,72 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 For avoiding the potential deadlock via kill_fasync() call, use the
-new fasync helpers to defer the invocation from timer API.  Note that
-it's merely a workaround.
+new fasync helpers to defer the invocation from the control API.  Note
+that it's merely a workaround.
 
-Reported-by: syzbot+8285e973a41b5aa68902@syzkaller.appspotmail.com
-Reported-by: syzbot+669c9abf11a6a011dd09@syzkaller.appspotmail.com
+Another note: although we haven't received reports about the deadlock
+with the control API, the deadlock is still potentially possible, and
+it's better to align the behavior with other core APIs (PCM and
+timer); so let's move altogether.
+
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- include/sound/pcm.h     | 2 +-
- sound/core/pcm.c        | 1 +
- sound/core/pcm_lib.c    | 2 +-
- sound/core/pcm_native.c | 2 +-
- 4 files changed, 4 insertions(+), 3 deletions(-)
+ include/sound/control.h | 2 +-
+ sound/core/control.c    | 7 ++++---
+ 2 files changed, 5 insertions(+), 4 deletions(-)
 
-diff --git a/include/sound/pcm.h b/include/sound/pcm.h
-index 2d03c10f6a36..8c48a5bce88c 100644
---- a/include/sound/pcm.h
-+++ b/include/sound/pcm.h
-@@ -399,7 +399,7 @@ struct snd_pcm_runtime {
- 	snd_pcm_uframes_t twake; 	/* do transfer (!poll) wakeup if non-zero */
- 	wait_queue_head_t sleep;	/* poll sleep */
- 	wait_queue_head_t tsleep;	/* transfer sleep */
+diff --git a/include/sound/control.h b/include/sound/control.h
+index fcd3cce673ec..eae443ba79ba 100644
+--- a/include/sound/control.h
++++ b/include/sound/control.h
+@@ -109,7 +109,7 @@ struct snd_ctl_file {
+ 	int preferred_subdevice[SND_CTL_SUBDEV_ITEMS];
+ 	wait_queue_head_t change_sleep;
+ 	spinlock_t read_lock;
 -	struct fasync_struct *fasync;
 +	struct snd_fasync *fasync;
- 	bool stop_operating;		/* sync_stop will be called */
- 	struct mutex buffer_mutex;	/* protect for buffer changes */
- 	atomic_t buffer_accessing;	/* >0: in r/w operation, <0: blocked */
-diff --git a/sound/core/pcm.c b/sound/core/pcm.c
-index 03fc5fa5813e..2ac742035310 100644
---- a/sound/core/pcm.c
-+++ b/sound/core/pcm.c
-@@ -1007,6 +1007,7 @@ void snd_pcm_detach_substream(struct snd_pcm_substream *substream)
- 		substream->runtime = NULL;
+ 	int subscribed;			/* read interface is activated */
+ 	struct list_head events;	/* waiting events for read */
+ };
+diff --git a/sound/core/control.c b/sound/core/control.c
+index 4dba3a342458..f3e893715369 100644
+--- a/sound/core/control.c
++++ b/sound/core/control.c
+@@ -127,6 +127,7 @@ static int snd_ctl_release(struct inode *inode, struct file *file)
+ 			if (control->vd[idx].owner == ctl)
+ 				control->vd[idx].owner = NULL;
+ 	up_write(&card->controls_rwsem);
++	snd_fasync_free(ctl->fasync);
+ 	snd_ctl_empty_read_queue(ctl);
+ 	put_pid(ctl->pid);
+ 	kfree(ctl);
+@@ -181,7 +182,7 @@ void snd_ctl_notify(struct snd_card *card, unsigned int mask,
+ 	_found:
+ 		wake_up(&ctl->change_sleep);
+ 		spin_unlock(&ctl->read_lock);
+-		kill_fasync(&ctl->fasync, SIGIO, POLL_IN);
++		snd_kill_fasync(ctl->fasync, SIGIO, POLL_IN);
  	}
- 	mutex_destroy(&runtime->buffer_mutex);
-+	snd_fasync_free(runtime->fasync);
- 	kfree(runtime);
- 	put_pid(substream->pid);
- 	substream->pid = NULL;
-diff --git a/sound/core/pcm_lib.c b/sound/core/pcm_lib.c
-index 1fc7c50ffa62..40751e5aff09 100644
---- a/sound/core/pcm_lib.c
-+++ b/sound/core/pcm_lib.c
-@@ -1822,7 +1822,7 @@ void snd_pcm_period_elapsed_under_stream_lock(struct snd_pcm_substream *substrea
- 		snd_timer_interrupt(substream->timer, 1);
- #endif
-  _end:
--	kill_fasync(&runtime->fasync, SIGIO, POLL_IN);
-+	snd_kill_fasync(runtime->fasync, SIGIO, POLL_IN);
+ 	read_unlock_irqrestore(&card->ctl_files_rwlock, flags);
  }
- EXPORT_SYMBOL(snd_pcm_period_elapsed_under_stream_lock);
+@@ -2134,7 +2135,7 @@ static int snd_ctl_fasync(int fd, struct file * file, int on)
+ 	struct snd_ctl_file *ctl;
  
-diff --git a/sound/core/pcm_native.c b/sound/core/pcm_native.c
-index aa0453e51595..ad0541e9e888 100644
---- a/sound/core/pcm_native.c
-+++ b/sound/core/pcm_native.c
-@@ -3951,7 +3951,7 @@ static int snd_pcm_fasync(int fd, struct file * file, int on)
- 	runtime = substream->runtime;
- 	if (runtime->status->state == SNDRV_PCM_STATE_DISCONNECTED)
- 		return -EBADFD;
--	return fasync_helper(fd, file, on, &runtime->fasync);
-+	return snd_fasync_helper(fd, file, on, &runtime->fasync);
+ 	ctl = file->private_data;
+-	return fasync_helper(fd, file, on, &ctl->fasync);
++	return snd_fasync_helper(fd, file, on, &ctl->fasync);
  }
  
- /*
+ /* return the preferred subdevice number if already assigned;
+@@ -2302,7 +2303,7 @@ static int snd_ctl_dev_disconnect(struct snd_device *device)
+ 	read_lock_irqsave(&card->ctl_files_rwlock, flags);
+ 	list_for_each_entry(ctl, &card->ctl_files, list) {
+ 		wake_up(&ctl->change_sleep);
+-		kill_fasync(&ctl->fasync, SIGIO, POLL_ERR);
++		snd_kill_fasync(ctl->fasync, SIGIO, POLL_ERR);
+ 	}
+ 	read_unlock_irqrestore(&card->ctl_files_rwlock, flags);
+ 
 -- 
 2.35.3
 
