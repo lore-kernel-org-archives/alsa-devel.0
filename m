@@ -4,66 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6D379C00144
-	for <alsa-devel@archiver.kernel.org>; Fri, 29 Jul 2022 13:52:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5A2E3C00144
+	for <alsa-devel@archiver.kernel.org>; Fri, 29 Jul 2022 13:52:51 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B833A1636;
-	Fri, 29 Jul 2022 15:51:48 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B833A1636
+	by alsa0.perex.cz (Postfix) with ESMTPS id 689AC1666;
+	Fri, 29 Jul 2022 15:51:59 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 689AC1666
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1659102758;
-	bh=yojOPZoTKheFf2ni0ppawlxqu2ggwKuIvE5XhUcUJCM=;
+	s=default; t=1659102769;
+	bh=Xi/suYWq5yRzsGd5eqkdgLrr3CqV7gd+MC6h1EUQO6c=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=HSl6S8AER//cFaKppthVd/799gs4cbnyYFtoeN+1Oj6Qm5iVIdOEF4hIAAtGeTD24
-	 wfXAuDNrNYYzJQJ6W6NWbo8aPkQFJKqFNoQjVgDWC6O3lESMNalqKfpm/Ll0Ae2bPT
-	 JzM0Xdg52BcU3npQ2e9CpSACXDlVzQ5lUpI2J4jc=
+	b=vBLv1egxGSS+uxSijFKsericq2OuyyWoOWB3LhFtviOKDyyHyebs42DbvYym698QS
+	 tGYdIyCkg7c2epxc4S/uIFYKv5OCaxri2iLnqL4GFNPwrgh5dTcSVuoz8iY84lpud0
+	 ER9r0KVy/g71Scfum3lBoTzm7hzceNa+P59gwb8Q=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 592B1F80543;
-	Fri, 29 Jul 2022 15:51:02 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 8F3E2F80553;
+	Fri, 29 Jul 2022 15:51:04 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 4D0F9F80544; Fri, 29 Jul 2022 15:51:01 +0200 (CEST)
+ id 3C37CF80558; Fri, 29 Jul 2022 15:51:03 +0200 (CEST)
 Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id B74A5F800BD
- for <alsa-devel@alsa-project.org>; Fri, 29 Jul 2022 15:50:58 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B74A5F800BD
+ by alsa1.perex.cz (Postfix) with ESMTPS id 62D9FF804E5
+ for <alsa-devel@alsa-project.org>; Fri, 29 Jul 2022 15:50:55 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 62D9FF804E5
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=linuxfoundation.org
- header.i=@linuxfoundation.org header.b="SuXfI5tQ"
+ header.i=@linuxfoundation.org header.b="zW/P9Bcv"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by ams.source.kernel.org (Postfix) with ESMTPS id 088B4B827C6;
- Fri, 29 Jul 2022 13:50:58 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5ED0AC433D6;
- Fri, 29 Jul 2022 13:50:56 +0000 (UTC)
+ by ams.source.kernel.org (Postfix) with ESMTPS id 25365B827E0;
+ Fri, 29 Jul 2022 13:50:55 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 49381C433C1;
+ Fri, 29 Jul 2022 13:50:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
- s=korg; t=1659102656;
- bh=yojOPZoTKheFf2ni0ppawlxqu2ggwKuIvE5XhUcUJCM=;
+ s=korg; t=1659102653;
+ bh=Xi/suYWq5yRzsGd5eqkdgLrr3CqV7gd+MC6h1EUQO6c=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=SuXfI5tQZr6jJk4WuwayrgknirEpIxWPl6mSb/HJqNoG3O2mNY4zB0ld4bN4z80xZ
- KXkrik80gNUdRZ6bXhqx+a2UBE/N2SPAP7sShONnrh66sWnaZ/HOOkqxkrSfCE9YvR
- pc76atEvOYZ2n5cpFSlPnfDR/nlStYEGbwPWdHEk=
+ b=zW/P9BcvxuXQG/nj4vKXKn27AqgRPEXH+PyQL/1e9uxxEihUmwncXHzB4uGPKDpaN
+ eihpB0EsgHA0As6n36gcGWBmB3tPeASifzER7qSjrwJ35U+C+WRAjU6BhVA7HZOihS
+ ShBvUvhsJNwXQkmR0BHFKJIJj5Z/qslXTQUJRDrE=
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH 4/5] soundwire: sysfs: remove sdw_slave_sysfs_init()
-Date: Fri, 29 Jul 2022 15:50:40 +0200
-Message-Id: <20220729135041.2285908-4-gregkh@linuxfoundation.org>
+Subject: [PATCH 3/5] soundwire: sysfs: have the driver core handle the
+ creation of the device groups
+Date: Fri, 29 Jul 2022 15:50:39 +0200
+Message-Id: <20220729135041.2285908-3-gregkh@linuxfoundation.org>
 X-Mailer: git-send-email 2.37.1
 In-Reply-To: <20220729135041.2285908-1-gregkh@linuxfoundation.org>
 References: <20220729135041.2285908-1-gregkh@linuxfoundation.org>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=3135;
+X-Developer-Signature: v=1; a=openpgp-sha256; l=2699;
  i=gregkh@linuxfoundation.org; h=from:subject;
- bh=yojOPZoTKheFf2ni0ppawlxqu2ggwKuIvE5XhUcUJCM=;
- b=owGbwMvMwCRo6H6F97bub03G02pJDEmPn25gnOgcea7Qsy25ufD431Wn5t/h79Lerhe6U1z/tGhL
- Yf2DjlgWBkEmBlkxRZYv23iO7q84pOhlaHsaZg4rE8gQBi5OAZjIaiaG+dk7FLV+xx2Ik6xkk7wr25
- vPsyjmN8OCszXLS949EGc9zha9I5WVe35rL1sVAA==
+ bh=Xi/suYWq5yRzsGd5eqkdgLrr3CqV7gd+MC6h1EUQO6c=;
+ b=owGbwMvMwCRo6H6F97bub03G02pJDEmPn274xhL0prnw/j+zp17aHMu6MsJadO7lfVg1/UKfdXrq
+ tCD+jlgWBkEmBlkxRZYv23iO7q84pOhlaHsaZg4rE8gQBi5OAZhIxVSG+aHnu3Wdv5unsKiH3V3TFN
+ e/bsfiSQyzWTwPz8heoLCvMoKzro7163fPuKvuAA==
 X-Developer-Key: i=gregkh@linuxfoundation.org; a=openpgp;
  fpr=F4B60CC5BF78C2214A313DCB3147D40DDB2DFB29
 Content-Transfer-Encoding: 8bit
@@ -87,9 +88,10 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Now that sdw_slave_sysfs_init() only calls sdw_slave_sysfs_dpn_init(),
-just do that instead and remove sdw_slave_sysfs_init() to get it out of
-the way to save a bit of logic and code size.
+The driver core supports the ability to handle the creation and removal
+of device-specific sysfs files in a race-free manner.  Take advantage of
+that by converting this driver to use this by moving the sysfs
+attributes into a group and assigning the dev_groups pointer to it.
 
 Cc: Vinod Koul <vkoul@kernel.org>
 Cc: Bard Liao <yung-chuan.liao@linux.intel.com>
@@ -99,77 +101,61 @@ Cc: alsa-devel@alsa-project.org
 Cc: linux-kernel@vger.kernel.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/soundwire/bus_type.c        |  4 ++--
- drivers/soundwire/sysfs_local.h     |  1 -
- drivers/soundwire/sysfs_slave.c     | 13 -------------
- drivers/soundwire/sysfs_slave_dpn.c |  3 +++
- 4 files changed, 5 insertions(+), 16 deletions(-)
+ drivers/soundwire/bus_type.c    | 1 +
+ drivers/soundwire/sysfs_local.h | 3 +++
+ drivers/soundwire/sysfs_slave.c | 6 +-----
+ 3 files changed, 5 insertions(+), 5 deletions(-)
 
 diff --git a/drivers/soundwire/bus_type.c b/drivers/soundwire/bus_type.c
-index 81c77e6ddbad..4e4e62d1e475 100644
+index 893296f3fe39..81c77e6ddbad 100644
 --- a/drivers/soundwire/bus_type.c
 +++ b/drivers/soundwire/bus_type.c
-@@ -121,8 +121,8 @@ static int sdw_drv_probe(struct device *dev)
- 	if (slave->ops && slave->ops->read_prop)
- 		slave->ops->read_prop(slave);
+@@ -193,6 +193,7 @@ int __sdw_register_driver(struct sdw_driver *drv, struct module *owner)
  
--	/* init the sysfs as we have properties now */
--	ret = sdw_slave_sysfs_init(slave);
-+	/* init the dynamic sysfs attributes we need */
-+	ret = sdw_slave_sysfs_dpn_init(slave);
- 	if (ret < 0)
- 		dev_warn(dev, "Slave sysfs init failed:%d\n", ret);
+ 	drv->driver.owner = owner;
+ 	drv->driver.probe = sdw_drv_probe;
++	drv->driver.dev_groups = sdw_attr_groups;
  
+ 	if (drv->remove)
+ 		drv->driver.remove = sdw_drv_remove;
 diff --git a/drivers/soundwire/sysfs_local.h b/drivers/soundwire/sysfs_local.h
-index 3ab8658a7782..fa048e112629 100644
+index 7268bc24c538..3ab8658a7782 100644
 --- a/drivers/soundwire/sysfs_local.h
 +++ b/drivers/soundwire/sysfs_local.h
-@@ -15,7 +15,6 @@ extern const struct attribute_group *sdw_slave_status_attr_groups[];
- extern const struct attribute_group *sdw_attr_groups[];
+@@ -11,6 +11,9 @@
+ /* basic attributes to report status of Slave (attachment, dev_num) */
+ extern const struct attribute_group *sdw_slave_status_attr_groups[];
  
++/* attributes for all soundwire devices */
++extern const struct attribute_group *sdw_attr_groups[];
++
  /* additional device-managed properties reported after driver probe */
--int sdw_slave_sysfs_init(struct sdw_slave *slave);
+ int sdw_slave_sysfs_init(struct sdw_slave *slave);
  int sdw_slave_sysfs_dpn_init(struct sdw_slave *slave);
- 
- #endif /* __SDW_SYSFS_LOCAL_H */
 diff --git a/drivers/soundwire/sysfs_slave.c b/drivers/soundwire/sysfs_slave.c
-index 4c716c167493..070e0d84be94 100644
+index 3723333a5c2b..4c716c167493 100644
 --- a/drivers/soundwire/sysfs_slave.c
 +++ b/drivers/soundwire/sysfs_slave.c
-@@ -211,19 +211,6 @@ const struct attribute_group *sdw_attr_groups[] = {
- 	NULL,
+@@ -204,7 +204,7 @@ static const struct attribute_group dp0_group = {
+ 	.name = "dp0",
  };
  
--int sdw_slave_sysfs_init(struct sdw_slave *slave)
--{
--	int ret;
--
--	if (slave->prop.source_ports || slave->prop.sink_ports) {
--		ret = sdw_slave_sysfs_dpn_init(slave);
--		if (ret < 0)
--			return ret;
--	}
--
--	return 0;
--}
--
- /*
-  * the status is shown in capital letters for UNATTACHED and RESERVED
-  * on purpose, to highligh users to the fact that these status values
-diff --git a/drivers/soundwire/sysfs_slave_dpn.c b/drivers/soundwire/sysfs_slave_dpn.c
-index c4b6543c09fd..a3fb380ee519 100644
---- a/drivers/soundwire/sysfs_slave_dpn.c
-+++ b/drivers/soundwire/sysfs_slave_dpn.c
-@@ -283,6 +283,9 @@ int sdw_slave_sysfs_dpn_init(struct sdw_slave *slave)
+-static const struct attribute_group *slave_groups[] = {
++const struct attribute_group *sdw_attr_groups[] = {
+ 	&slave_attr_group,
+ 	&sdw_slave_dev_attr_group,
+ 	&dp0_group,
+@@ -215,10 +215,6 @@ int sdw_slave_sysfs_init(struct sdw_slave *slave)
+ {
  	int ret;
- 	int i;
  
-+	if (!slave->prop.source_ports && !slave->prop.sink_ports)
-+		return 0;
-+
- 	mask = slave->prop.source_ports;
- 	for_each_set_bit(i, &mask, 32) {
- 		ret = add_all_attributes(&slave->dev, i, 1);
+-	ret = devm_device_add_groups(&slave->dev, slave_groups);
+-	if (ret < 0)
+-		return ret;
+-
+ 	if (slave->prop.source_ports || slave->prop.sink_ports) {
+ 		ret = sdw_slave_sysfs_dpn_init(slave);
+ 		if (ret < 0)
 -- 
 2.37.1
 
