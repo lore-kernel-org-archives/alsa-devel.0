@@ -4,84 +4,86 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3ADA2C00144
-	for <alsa-devel@archiver.kernel.org>; Fri, 29 Jul 2022 07:25:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 369CCC00144
+	for <alsa-devel@archiver.kernel.org>; Fri, 29 Jul 2022 07:28:43 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 6E4841651;
-	Fri, 29 Jul 2022 09:25:04 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6E4841651
+	by alsa0.perex.cz (Postfix) with ESMTPS id 2C17E1652;
+	Fri, 29 Jul 2022 09:27:51 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2C17E1652
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1659079554;
-	bh=h4m+Uaoa6vgF7mNRpKnllqhl3yvzFlezzPoFT9TDilU=;
+	s=default; t=1659079721;
+	bh=+WH5mU8q2Ij5OPsTzYlvhec3B8h9VtopZ4xAeWNWUVg=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=V8QpSh0NwjWDNMWJLX9VkGLmkM3hh8k2B/L3TARdpTtGW+sWCnEWCa4SLsqjh5me5
-	 pT9gYwEYe+VbC68Y0bglssJBcMWPpNmNKOrUymQM+1SIDH3DvgOdKI6m4d+YcaHALB
-	 4qFh+TGmEHYdKB8VEZu3iaHLmOBAI0g2kCuLVdtM=
+	b=TLtwK6q5dmyDid3qywJFXHwJEBBRdO8zwGl+A6mB2Xbrj8yIoGh9cmNf5ns4aRo86
+	 k1C/7PGgbMBcJGWEoQa/UM2A4sj0y5GyCoyQ0MsccYylqKfHxkJ75ATAWMGsSQID+K
+	 RWpvXdirqOHbF2bm4Hv28r0b88FXuX9kewiWo67w=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id E6B1AF80430;
-	Fri, 29 Jul 2022 09:25:03 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id C2A66F80430;
+	Fri, 29 Jul 2022 09:27:50 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 40092F8049C; Fri, 29 Jul 2022 09:25:02 +0200 (CEST)
-Received: from mail-pg1-x531.google.com (mail-pg1-x531.google.com
- [IPv6:2607:f8b0:4864:20::531])
+ id 93E3AF8049C; Fri, 29 Jul 2022 09:27:49 +0200 (CEST)
+Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com
+ [IPv6:2607:f8b0:4864:20::436])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 163C0F80224
- for <alsa-devel@alsa-project.org>; Fri, 29 Jul 2022 09:24:58 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 163C0F80224
+ by alsa1.perex.cz (Postfix) with ESMTPS id 205D1F80224
+ for <alsa-devel@alsa-project.org>; Fri, 29 Jul 2022 09:27:45 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 205D1F80224
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="n60DdHcg"
-Received: by mail-pg1-x531.google.com with SMTP id f11so3378892pgj.7
- for <alsa-devel@alsa-project.org>; Fri, 29 Jul 2022 00:24:58 -0700 (PDT)
+ header.b="T0oOJNOq"
+Received: by mail-pf1-x436.google.com with SMTP id w185so3932541pfb.4
+ for <alsa-devel@alsa-project.org>; Fri, 29 Jul 2022 00:27:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
  h=content-transfer-encoding:mime-version:references:in-reply-to
  :message-id:date:subject:cc:to:from:from:to:cc;
- bh=33Rwnskq4erAqUnyXAPvYs71+w14N7qF8scWU/F/gks=;
- b=n60DdHcgdMIJAPs+PXLRf5QYgbNy36Us6fBNsNRIpHwIy0eJuaCzzWdvBxHzcqjwR4
- QR6NnaRPFuJReZIG/CJ2SBwazV9gBPrzRvbOPAmBLH+z/nhkEiUT7/kXqD1aXRrQZeEr
- +FYtI4nDoH4VAWUrnr8ZLbBvjSTT8cjVsJ+ngk4T04gXhpFQa+Q+KsHFxR5T/mGQ0OXT
- BgT+Q9LUHMWwWRJrFk0ynwNKZDE57E7JpskoTfS02pDAGLjh6XX7sZvd+Zq6PIDyNJ+W
- ut90IVebm/+eXfbNEymJAnfrL5G4C1sqJC7BrQtGVXlaWa7wlBOrHPrnxrhrZH7x3Jfa
- X5sA==
+ bh=qgng3/T4C960A2jx6DUhT1LSO8g9Z6SZgik1QGNnmbg=;
+ b=T0oOJNOqKvB+cUaYgHmlgIzemEcsamYmiA64B7IzQbS58fahZ4n3599AHAw9i2ztbT
+ 4hXGKq6bCIlRDzzYXGB87YmDrLWrKfWoiAPXfCz1IGF5ksk4HSaS3ghpjmPxu8Xwgr+H
+ 0DebLyGLHr89E5Z5AGLa3ys2Ta0iheRQNwd3VnIvdhrthfZrLhAu7k2N1z253Ww5XykG
+ WGLSpj+QyXBxr0WVClkJ00aIhMvTRgTQX75I7uBmRXj4+9BZfZY+J2SZ1/YQdYqOghjj
+ 9WBhoNYAmQHv2wpqEOS9Xb1//BqkWFG4kk6KQVzU1+LWRIcUjAI67s2zlsqLv1F4okDT
+ GIfw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
  h=content-transfer-encoding:mime-version:references:in-reply-to
  :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc;
- bh=33Rwnskq4erAqUnyXAPvYs71+w14N7qF8scWU/F/gks=;
- b=Kggji6F9Khy/CL2dI51sEgncsrAt93xiSp3ICMvv4PBEGcQx63gk7c+spob2PYbwvO
- 0ENx9kyD9SDgcyYnTps7sf6QF0x5bsO4AOcYOLFCvaO4GnpKbyjWBrI1AjNr4m+/DNi+
- ReO+qpJUf/PqAHxqhJmc3pCzgl/J/nMvJIK2U9yx+XMtuHDd61JsG0kt4Vr8+qsDtD9j
- CQL87rNH17y3b/+8lR3Z8iCONUjXMYATMWbgn3G8PBpTYKo6XeU9vWNF1Ltsf3cN/rJE
- l309HW1dbWysJqueVElfwpS/vbbitKaPtgFU8gaF2624sPkZxaRc5XE5iRCIsmFLS4GO
- V+Pw==
-X-Gm-Message-State: AJIora/z66X0mWCrILXq95Kmq3GL3v3nfU4QJx0Hr7g4r+PYJrDtErJj
- Jfwej5PE9Ro8kgbRpIwZm10=
-X-Google-Smtp-Source: AGRyM1swaG+M9jG8eYgP/1eOjgJpvz6r5DhtEDqSpqH53hsYL78+cWnJzPcurS6fJ/lUsw6uur2VFw==
-X-Received: by 2002:a05:6a00:3498:b0:52a:f8f4:ca7c with SMTP id
- cp24-20020a056a00349800b0052af8f4ca7cmr2197912pfb.5.1659079496615; 
- Fri, 29 Jul 2022 00:24:56 -0700 (PDT)
+ bh=qgng3/T4C960A2jx6DUhT1LSO8g9Z6SZgik1QGNnmbg=;
+ b=PqQ6r3mQL2HJYC2AThRgFnVQD1hL8An/X03++0vQowgo7A2WLfe35RCIkoGkSVL36F
+ fjyYYQ6CF+RuMqhIsq+U7OsNRjj/HgcEC1QESc/pk97ppzN1Q1c1mwWN0XBsO+CCkK6i
+ DKo8neNbbinCHkPC5y2AJWSjG8ztGVB6DEM7zztE+biTBGJFpvr5mmQZtHV2sFwC/UL4
+ vBjejd8cIV5Y88H4ICl9h5aH/MCPL0bDbVmA3tjlKXWr1pCJn1oIETS7T8zU1780/05K
+ 8p/9LDy2yGoegg8PMXbWypRaP4VAhwP/vxFIWetAFJ1/rGNiEbQxKllzs+OHOwjwwTtP
+ P8XQ==
+X-Gm-Message-State: AJIora+3P+RhMdavsXrwL//WeMa0vmSAwypF1tWpmggXRGto//wZWjkM
+ Ngqk5s5QPJPYqC4Hvb4VkmA=
+X-Google-Smtp-Source: AGRyM1sU7YhyoEZzOyHZR2+mx4WVkzlZTd7s3bZU9krZgp+j5KHK/LoAcEPTB1TnCgglkW0Ux36d2Q==
+X-Received: by 2002:a63:4e04:0:b0:41b:955a:35d3 with SMTP id
+ c4-20020a634e04000000b0041b955a35d3mr551988pgb.383.1659079663282; 
+ Fri, 29 Jul 2022 00:27:43 -0700 (PDT)
 Received: from a-VirtualBox.. ([116.233.75.140])
  by smtp.gmail.com with ESMTPSA id
- 4-20020a620604000000b0052b6277df9esm2085533pfg.43.2022.07.29.00.24.53
+ b12-20020a1709027e0c00b0016d3a354cffsm2677137plm.89.2022.07.29.00.27.40
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Fri, 29 Jul 2022 00:24:56 -0700 (PDT)
+ Fri, 29 Jul 2022 00:27:43 -0700 (PDT)
 From: Zhu Ning <zhuning0077@gmail.com>
 To: pierre-louis.bossart@linux.intel.com
-Subject: Re: [PATCH v3 1/2] ASoC: codecs: add support for ES8326
-Date: Fri, 29 Jul 2022 15:24:45 +0800
-Message-Id: <20220729072445.420129-1-zhuning0077@gmail.com>
+Subject: Subject: Re: [PATCH v3 2/2] ASoC: dt-bindings: Add Everest ES8326
+ audio CODEC
+Date: Fri, 29 Jul 2022 15:27:21 +0800
+Message-Id: <20220729072720.420184-1-zhuning0077@gmail.com>
 X-Mailer: git-send-email 2.36.1
-In-Reply-To: <372a1c8c-b70c-c5f9-3a0b-a4d554d5acf2@linux.intel.com>
-References: <372a1c8c-b70c-c5f9-3a0b-a4d554d5acf2@linux.intel.com>
+In-Reply-To: <20220727152203.GA2681685-robh@kernel.org>
+References: <20220727152203.GA2681685-robh@kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Cc: alsa-devel@alsa-project.org, zhuning0077@gmail.com, tiwai@suse.com,
- broonie@kernel.org, zhuning@everest-semi.com, yangxiaohua@everest-semi.com
+ 20220727152203.GA2681685-robh@kernel.org, broonie@kernel.org,
+ zhuning@everest-semi.com, yangxiaohua@everest-semi.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -97,36 +99,21 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
->Nothing ever restores the constraints if a clock is specified again, and=0D
->in general it's odd that the enable/disable don't match up - if we're=0D
->setting variable constraints I'd expect that in the freq =3D=3D 0 case we=
-=0D
->should be setting ->sysclk_constraints to NULL rather than the contents.=0D
->Indeed, we'll segfault here if the frequency is set to 0 without having=0D
->first been set to some actual value.  It's also bad to modify static=0D
->data potentially shared between multiple instances of the device in a=0D
->system.=0D
+>> +  everest,jack-detect-inverted:=0D
+>> +    description:=0D
+>> +      Defined to invert the jack detection.=0D
 >=0D
->Having said all that though I'm not clear why we're doing this=0D
->constraint stuff at all, we never reference sysclk_constraints during=0D
->startup and teardown and you'd usually do this because you want to set=0D
->constraints that depend on the sysclk but this is just a constant set of=0D
->constraints that should be set in the DAI desription.=0D
-=0D
-Comes from 8316.c. Will remove the constraints. Will submit a patch later=0D
-to remove the constraints in es8316.c. We can assume that the producer(mast=
-er)=0D
-provides correct mclk(sysclk) rate.=0D
-=0D
->>> One question on the interrupt handling: should there be an interrupt=0D
->>> disable on suspend and conversely an interrupt enable on resume?=0D
->>=0D
->> That shouldn't be needed (in general the interrupt enable/disable stuff=
-=0D
->> shouldn't be needed at all).=0D
+>What's the difference with this and bit 3 of everest,jack-pol?=0D
 >=0D
->isn't there a risk of an interrupt being triggered after all the jack=0D
->detection resources are disabled?=0D
+>We already have numerous vendor properties for jack detect. Can we come =0D
+>up with something common?=0D
+>=0D
+>The problem with 'inverted' is it assumes you know the non-inverted =0D
+>state. Better to just state high or low.=0D
 =0D
-The jack detection resources are only disabled after codec power down?=0D
-=0D
+This property is in compatible with the property in es8316.c and sof_essx83=
+36.c.=0D
+(which is not documented in es8316.yaml, another problem)=0D
+There is a quirk in sof_essx8336.c so that when the user find they're havin=
+g a =0D
+wrong jack insert configuration, they can set the quirk to invert it.=
