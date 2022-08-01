@@ -4,87 +4,81 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 97F7AC00144
-	for <alsa-devel@archiver.kernel.org>; Mon,  1 Aug 2022 17:04:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 657E8C00144
+	for <alsa-devel@archiver.kernel.org>; Mon,  1 Aug 2022 17:06:15 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C1C05164E;
-	Mon,  1 Aug 2022 19:03:37 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C1C05164E
+	by alsa0.perex.cz (Postfix) with ESMTPS id 79235E12;
+	Mon,  1 Aug 2022 19:05:23 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 79235E12
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1659373467;
-	bh=8dhR7VJYR4XTYpOSUZKCQmcXstgpWkPl+twIh26P7jM=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=GfMUKRRde0uJ4d5+qq+vFKg82x44dB2OJpiPy9x9iWFRHwQZTrn58r4vshWYxtnT2
-	 lnETEpKOZpzUy7QoIl34bxheIkcRhHAAfeWfFSepidzTDyaoNdHkS7QuOteYt4I9rM
-	 xj7ZD6Tray+Fj1Ypks/WTpbJdH5ilxM478Q5h9f4=
+	s=default; t=1659373573;
+	bh=Uo2LarJgcRxMyywBPq3QZOMxIPZ1N3xGnOd6Uz1oWso=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=nl68gIHluoZH2exOKDqsX6Gn8G1RnmpxkwOy1Gp6t4GcTNkZ3gaplQ2fR0SQ8nETv
+	 6cQlADAaOUhEmf7B6wvKi/64cMRYDERa762O8BRs7Wu1J0xX4NZVAyR5YJ1QSa5FTW
+	 9jjuEJX8FrW1BN0kATjhiCdeBosMWQYgKmwhqpmM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 67A4AF80588;
-	Mon,  1 Aug 2022 19:01:33 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2A7DCF80152;
+	Mon,  1 Aug 2022 19:05:23 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 65F66F80589; Mon,  1 Aug 2022 19:01:31 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+ id 634D2F8023B; Mon,  1 Aug 2022 19:05:22 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id BDB94F8013D
- for <alsa-devel@alsa-project.org>; Mon,  1 Aug 2022 19:01:13 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BDB94F8013D
+ by alsa1.perex.cz (Postfix) with ESMTPS id 82149F8014B
+ for <alsa-devel@alsa-project.org>; Mon,  1 Aug 2022 19:05:16 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 82149F8014B
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="E1ZDdyC/"; 
+ header.b="MlP/QA71"; 
  dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="VVJAl8Gs"
+ header.b="J8iLdXPW"
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id AABDF20684;
- Mon,  1 Aug 2022 17:01:12 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id E0E6633E75;
+ Mon,  1 Aug 2022 17:05:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1659373272; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=flm3EAid1FyYWaoC5b48xbvqyVtFEOLFTTsVO4ZK0tM=;
- b=E1ZDdyC/SxzGUbL3x7PVM4IJv1BVUw0w+QECRf1lAWM284/pdZSvADY0B22JwnS2Xe50pK
- xuIvv73I4jPZfGu3idzNSY3TnK3MedOzp/rRX+6M+W4YwaX15QKszeqMUnow2KdXx4HfAI
- KMU34qKFZKm4HFnWfMwY3jILIiX4F0M=
+ t=1659373515; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding;
+ bh=j7k5WjULvgQS6YE+/h1lvN6IpP7jBtpoDLkaOLubwgk=;
+ b=MlP/QA71p+7QSqtmZn3Bvuj4G6EFPac+aQvct2gIgBnGRaT2SUF/2oAQ8yCjaO6QzsfN2H
+ VI23/L4et8tZdl/TX9AerFI5D2Cl6QdkQlgbvWCB/+mPEIfxQWlSXF+KxdwRrbXFS8bB+l
+ eEiqs2qfGSvZJM9cR9amd83inc+bY7c=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1659373272;
+ s=susede2_ed25519; t=1659373515;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=flm3EAid1FyYWaoC5b48xbvqyVtFEOLFTTsVO4ZK0tM=;
- b=VVJAl8Gs07h7CS9SDCcHRP1LaCP5/gqDkDyDSMbjCzI6MS1mVE5aqibYMk7C0yyoc+Nf+9
- jsjmZk9eX4z/pvAg==
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding;
+ bh=j7k5WjULvgQS6YE+/h1lvN6IpP7jBtpoDLkaOLubwgk=;
+ b=J8iLdXPWKPvuWyGC0IJNrZZO7rYg0S+KkLfPKkB8Hh4X5cvGr1hXpHfFRMhni8b29j/kaf
+ W1mpi1fZWBFQtrBQ==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 73B3813ADF;
- Mon,  1 Aug 2022 17:01:12 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id A33C513AAE;
+ Mon,  1 Aug 2022 17:05:15 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id oEKOG9gG6GKJHAAAMHmgww
- (envelope-from <tiwai@suse.de>); Mon, 01 Aug 2022 17:01:12 +0000
+ by imap2.suse-dmz.suse.de with ESMTPSA id FiywJssH6GICHgAAMHmgww
+ (envelope-from <tiwai@suse.de>); Mon, 01 Aug 2022 17:05:15 +0000
 From: Takashi Iwai <tiwai@suse.de>
 To: Mark Brown <broonie@kernel.org>
-Subject: [PATCH 6/8] ASoC: core: Replace sprintf() with sysfs_emit()
-Date: Mon,  1 Aug 2022 19:01:06 +0200
-Message-Id: <20220801170108.26340-7-tiwai@suse.de>
+Subject: [PATCH resent] ASoC: DPCM: Don't pick up BE without substream
+Date: Mon,  1 Aug 2022 19:05:10 +0200
+Message-Id: <20220801170510.26582-1-tiwai@suse.de>
 X-Mailer: git-send-email 2.35.3
-In-Reply-To: <20220801170108.26340-1-tiwai@suse.de>
-References: <20220801170108.26340-1-tiwai@suse.de>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-Cc: alsa-devel@alsa-project.org, Lucas Tanure <tanureal@opensource.cirrus.com>,
- Cezary Rojewski <cezary.rojewski@intel.com>,
- Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
+Cc: alsa-devel@alsa-project.org,
+ =?UTF-8?q?P=C3=A9ter=20Ujfalusi?= <peter.ujfalusi@linux.intel.com>,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -100,28 +94,50 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-For sysfs outputs, it's safer to use a new helper, sysfs_emit(),
-instead of the raw sprintf() & co.  This patch replaces the sprintf()
-usage straightforwardly with a new helper, sysfs_emit().
+When DPCM tries to add valid BE connections at dpcm_add_paths(), it
+doesn't check whether the picked BE actually supports for the given
+stream direction.  Due to that, when an asymmetric BE stream is
+present, it picks up wrongly and this may result in a NULL dereference
+at a later point where the code assumes the existence of a
+corresponding BE substream.
 
+This patch adds the check for the presence of the substream for the
+target BE for avoiding the problem above.
+
+Note that we have already some fix for non-existing BE substream at
+commit 6246f283d5e0 ("ASoC: dpcm: skip missing substream while
+applying symmetry").  But the code path we've hit recently is rather
+happening before the previous fix.  So this patch tries to fix at
+picking up a BE instead of parsing BE lists.
+
+Fixes: bbf7d3b1c4f4 ("ASoC: soc-pcm: align BE 'atomicity' with that of the FE")
+Reported-by: Alex Natalsson <harmoniesworlds@gmail.com>
+Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: Péter Ujfalusi <peter.ujfalusi@linux.intel.com>
+Link: https://lore.kernel.org/r/CADs9LoPZH_D+eJ9qjTxSLE5jGyhKsjMN7g2NighZ16biVxsyKw@mail.gmail.com
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/soc/soc-core.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index e824ff1a9fc0..e020ab49cfb1 100644
---- a/sound/soc/soc-core.c
-+++ b/sound/soc/soc-core.c
-@@ -72,7 +72,7 @@ static ssize_t pmdown_time_show(struct device *dev,
- {
- 	struct snd_soc_pcm_runtime *rtd = dev_get_drvdata(dev);
+Seems that the previous submission was overlooked since I forgot to
+put Cc to Mark.  Resubmitted...
+
+ sound/soc/soc-pcm.c | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
+index a827cc3c158a..0c1de5624842 100644
+--- a/sound/soc/soc-pcm.c
++++ b/sound/soc/soc-pcm.c
+@@ -1318,6 +1318,9 @@ static struct snd_soc_pcm_runtime *dpcm_get_be(struct snd_soc_card *card,
+ 		if (!be->dai_link->no_pcm)
+ 			continue;
  
--	return sprintf(buf, "%ld\n", rtd->pmdown_time);
-+	return sysfs_emit(buf, "%ld\n", rtd->pmdown_time);
- }
++		if (!snd_soc_dpcm_get_substream(be, stream))
++			continue;
++
+ 		for_each_rtd_dais(be, i, dai) {
+ 			w = snd_soc_dai_get_widget(dai, stream);
  
- static ssize_t pmdown_time_store(struct device *dev,
 -- 
 2.35.3
 
