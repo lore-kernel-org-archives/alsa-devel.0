@@ -4,87 +4,82 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E9A4DC19F2B
-	for <alsa-devel@archiver.kernel.org>; Mon,  1 Aug 2022 16:56:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2ECAEC00144
+	for <alsa-devel@archiver.kernel.org>; Mon,  1 Aug 2022 16:57:40 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C6F4D1620;
-	Mon,  1 Aug 2022 18:55:32 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C6F4D1620
+	by alsa0.perex.cz (Postfix) with ESMTPS id EE1E7844;
+	Mon,  1 Aug 2022 18:56:48 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EE1E7844
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1659372982;
-	bh=2jHYyStPBaM6ExUAuQxqnLHAgKPJvwUE/RNRYABTsfI=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1659373059;
+	bh=wop0Z3RRD1c82qJpdEiyWFgl5ZoFiXjk6kMbqlhxgnk=;
+	h=From:To:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=bqRPi1d05hSN+y6IKvEIY6nez3nNH5I5QdkPBre2WsYl46Jl5DYechop9M71ZxSKm
-	 txvGDsHOSr8vkq09jsW56/krlGCwZu7mzXYcg5eRsDYQj3PU4xDOBuVuyBNSyWfNvy
-	 f2k9zgIrGCnF8U4mjo5ny088rLbQ/4eTtrbHWVOY=
+	b=mbbDS0ZRv1hnYnjsYOPKU3qw6cgmzA8ZVA9UXBuBRfZeQl2BsPXmOO/uJ/qEtav+6
+	 Ip12Ug/C3J2i6ucxgyZD/+oqz6mMT14M9SUt5AXSs5u7BQLKY9+dq545CB14vMByoV
+	 wVUOk8KzIP/m5Qv94IQa1/2nfa++a9alxPjYQOzM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id C9B28F80544;
-	Mon,  1 Aug 2022 18:54:36 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 864ACF80152;
+	Mon,  1 Aug 2022 18:56:48 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 36EBFF8023B; Mon,  1 Aug 2022 18:54:34 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+ id 09DFBF804FF; Mon,  1 Aug 2022 18:56:47 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 73869F8013D
- for <alsa-devel@alsa-project.org>; Mon,  1 Aug 2022 18:54:24 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 73869F8013D
+ by alsa1.perex.cz (Postfix) with ESMTPS id 2AD97F80246
+ for <alsa-devel@alsa-project.org>; Mon,  1 Aug 2022 18:56:42 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2AD97F80246
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="d0GgLurg"; 
+ header.b="PQP4IGU0"; 
  dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="a9APOek0"
+ header.b="+a7BjUo/"
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 3376C38185;
- Mon,  1 Aug 2022 16:54:24 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id D0FD820539;
+ Mon,  1 Aug 2022 16:56:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1659372864; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1659373002; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=KUlsJL+/qpK5RNgkAKYwPa5yYkTanfcriOJKB+1B0sw=;
- b=d0GgLurgv8/5GxiU1Dm7ciQs8qD14lpCnbanyG0adrdtNENn67Rd990PWHkJjClm/980Dl
- I0G//2QQJjjfMcaXKdX+nf/wgrKapH2c/TKt5mz1kKqObCPVbBLT/RIrTSqHBM0PMZtfvI
- H8K09ZN9wl7kU0mIbU7ROP6KMmfLGMQ=
+ bh=/ovhgxr1ApFJXH9LbFiK1bb/hnw+jJ/+jjORILyeWn4=;
+ b=PQP4IGU0kNuhN72RBjrzUNi3Ym5xvKUxSpZYkNH0JPs/kWqQDuMKZ1IH6Kcn5ZPou39tUn
+ o1kSZhukInWS5ySsO3U2KVuKgKbeg718b4M6F8xFE4vetfGt1slbIx8nd7/qxDM9XlEpWg
+ 8es8DPw6O8+LfWPn52Qww/eq6oD3iuc=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1659372864;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ s=susede2_ed25519; t=1659373002;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=KUlsJL+/qpK5RNgkAKYwPa5yYkTanfcriOJKB+1B0sw=;
- b=a9APOek09YwwmotlGcBrc0R07Xq7nW/7B+47YEoViHmvWPbj55r0oJmE2GGCp6PydpGKD9
- HFDtGhTdLdpztYAQ==
+ bh=/ovhgxr1ApFJXH9LbFiK1bb/hnw+jJ/+jjORILyeWn4=;
+ b=+a7BjUo/TIv9bMu/1lDfjDH/0hHVSGsDczkACwfyAnpBSrApjs0Z5pTXLCGm8OjjJkXLIq
+ LYZkA+JdX6QgnVBA==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id F1AC913AAE;
- Mon,  1 Aug 2022 16:54:23 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id AF1E913ADF;
+ Mon,  1 Aug 2022 16:56:42 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id ULwxOj8F6GL9GQAAMHmgww
- (envelope-from <tiwai@suse.de>); Mon, 01 Aug 2022 16:54:23 +0000
+ by imap2.suse-dmz.suse.de with ESMTPSA id WP0CKsoF6GLXGgAAMHmgww
+ (envelope-from <tiwai@suse.de>); Mon, 01 Aug 2022 16:56:42 +0000
 From: Takashi Iwai <tiwai@suse.de>
-To: Mark Brown <broonie@kernel.org>
-Subject: [PATCH 2/3] ASoC: SOF: debug: Fix potential buffer overflow by
- snprintf()
-Date: Mon,  1 Aug 2022 18:54:19 +0200
-Message-Id: <20220801165420.25978-3-tiwai@suse.de>
+To: alsa-devel@alsa-project.org
+Subject: [PATCH 1/7] ALSA: ac97: Replace sprintf() with sysfs_emit()
+Date: Mon,  1 Aug 2022 18:56:33 +0200
+Message-Id: <20220801165639.26030-2-tiwai@suse.de>
 X-Mailer: git-send-email 2.35.3
-In-Reply-To: <20220801165420.25978-1-tiwai@suse.de>
-References: <20220801165420.25978-1-tiwai@suse.de>
+In-Reply-To: <20220801165639.26030-1-tiwai@suse.de>
+References: <20220801165639.26030-1-tiwai@suse.de>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
- alsa-devel@alsa-project.org, Peter Ujfalusi <peter.ujfalusi@linux.intel.com>,
- Cezary Rojewski <cezary.rojewski@intel.com>,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -100,36 +95,28 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-snprintf() returns the would-be-filled size when the string overflows
-the given buffer size, hence using this value may result in the buffer
-overflow (although it's unrealistic).
+For sysfs outputs, it's safer to use a new helper, sysfs_emit(),
+instead of the raw sprintf() & co.  This patch replaces the open code
+straightforwardly with a new helper.
 
-This patch replaces with a safer version, scnprintf() for papering
-over such a potential issue.
-
-Fixes: 5b10b6298921 ("ASoC: SOF: Add `memory_info` file to debugfs")
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/soc/sof/debug.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ sound/ac97/bus.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/sof/debug.c b/sound/soc/sof/debug.c
-index c5d797e97c02..d9a3ce7b69e1 100644
---- a/sound/soc/sof/debug.c
-+++ b/sound/soc/sof/debug.c
-@@ -252,9 +252,9 @@ static int memory_info_update(struct snd_sof_dev *sdev, char *buf, size_t buff_s
- 	}
+diff --git a/sound/ac97/bus.c b/sound/ac97/bus.c
+index 0d31a6d71468..045330883a96 100644
+--- a/sound/ac97/bus.c
++++ b/sound/ac97/bus.c
+@@ -460,7 +460,7 @@ static ssize_t vendor_id_show(struct device *dev,
+ {
+ 	struct ac97_codec_device *codec = to_ac97_device(dev);
  
- 	for (i = 0, len = 0; i < reply->num_elems; i++) {
--		ret = snprintf(buf + len, buff_size - len, "zone %d.%d used %#8x free %#8x\n",
--			       reply->elems[i].zone, reply->elems[i].id,
--			       reply->elems[i].used, reply->elems[i].free);
-+		ret = scnprintf(buf + len, buff_size - len, "zone %d.%d used %#8x free %#8x\n",
-+				reply->elems[i].zone, reply->elems[i].id,
-+				reply->elems[i].used, reply->elems[i].free);
- 		if (ret < 0)
- 			goto error;
- 		len += ret;
+-	return sprintf(buf, "%08x", codec->vendor_id);
++	return sysfs_emit(buf, "%08x", codec->vendor_id);
+ }
+ DEVICE_ATTR_RO(vendor_id);
+ 
 -- 
 2.35.3
 
