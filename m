@@ -4,80 +4,73 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2ECAEC00144
-	for <alsa-devel@archiver.kernel.org>; Mon,  1 Aug 2022 16:57:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 875ECC00144
+	for <alsa-devel@archiver.kernel.org>; Mon,  1 Aug 2022 16:58:08 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id EE1E7844;
-	Mon,  1 Aug 2022 18:56:48 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EE1E7844
+	by alsa0.perex.cz (Postfix) with ESMTPS id B8E411614;
+	Mon,  1 Aug 2022 18:57:16 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B8E411614
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1659373059;
-	bh=wop0Z3RRD1c82qJpdEiyWFgl5ZoFiXjk6kMbqlhxgnk=;
-	h=From:To:Subject:Date:In-Reply-To:References:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=mbbDS0ZRv1hnYnjsYOPKU3qw6cgmzA8ZVA9UXBuBRfZeQl2BsPXmOO/uJ/qEtav+6
-	 Ip12Ug/C3J2i6ucxgyZD/+oqz6mMT14M9SUt5AXSs5u7BQLKY9+dq545CB14vMByoV
-	 wVUOk8KzIP/m5Qv94IQa1/2nfa++a9alxPjYQOzM=
+	s=default; t=1659373086;
+	bh=7WhqoNVMbv6/8vfQ5O10vvAbDbGN10EcX5x+WQReOVQ=;
+	h=From:To:Subject:Date:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=Rm7NVSb0DV8BImK7tsAYCD09cu2qeobf6ylAKxAuBA9CPk08UvU4YKnLpgGya60X2
+	 JPwa9PbYjm4yKSC0eqZUyZKbuonaRq3+iw48Xr3HRgAh7YdYIkn2Xu+yt0KPbTPQEA
+	 jI/lALqayiAQpssY8xh7o5lZXBbcGLBOmhBIeh/k=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 864ACF80152;
-	Mon,  1 Aug 2022 18:56:48 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 32DDBF80548;
+	Mon,  1 Aug 2022 18:56:51 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 09DFBF804FF; Mon,  1 Aug 2022 18:56:47 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+ id 937AEF80548; Mon,  1 Aug 2022 18:56:50 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 2AD97F80246
- for <alsa-devel@alsa-project.org>; Mon,  1 Aug 2022 18:56:42 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2AD97F80246
+ by alsa1.perex.cz (Postfix) with ESMTPS id 216BBF8013D
+ for <alsa-devel@alsa-project.org>; Mon,  1 Aug 2022 18:56:43 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 216BBF8013D
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="PQP4IGU0"; 
+ header.b="peEGv+HA"; 
  dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="+a7BjUo/"
+ header.b="LQDD5O6F"
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id D0FD820539;
+ by smtp-out2.suse.de (Postfix) with ESMTPS id AC8EE2034C;
  Mon,  1 Aug 2022 16:56:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
  t=1659373002; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
- mime-version:mime-version:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=/ovhgxr1ApFJXH9LbFiK1bb/hnw+jJ/+jjORILyeWn4=;
- b=PQP4IGU0kNuhN72RBjrzUNi3Ym5xvKUxSpZYkNH0JPs/kWqQDuMKZ1IH6Kcn5ZPou39tUn
- o1kSZhukInWS5ySsO3U2KVuKgKbeg718b4M6F8xFE4vetfGt1slbIx8nd7/qxDM9XlEpWg
- 8es8DPw6O8+LfWPn52Qww/eq6oD3iuc=
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=Ox+NX2UumkPRUJQlb9xJJ3UDWIZq8aMhYEoGy7jyqH0=;
+ b=peEGv+HAbc8nKZDUb8hevQNqvZiyjsrqj5OroJsExkoT97mQibtnP8o8cOOOxd2GxS77yu
+ CZCgHFA0sfNvKkZWPm6X/DrnplVPbY6alKBXPytlS5cPHYXYvznyDJ0DE0YNhpsV8zY976
+ MlyXWxz6JCr1HxE015h6+rcAGSA6ID8=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
  s=susede2_ed25519; t=1659373002;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
- mime-version:mime-version:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=/ovhgxr1ApFJXH9LbFiK1bb/hnw+jJ/+jjORILyeWn4=;
- b=+a7BjUo/TIv9bMu/1lDfjDH/0hHVSGsDczkACwfyAnpBSrApjs0Z5pTXLCGm8OjjJkXLIq
- LYZkA+JdX6QgnVBA==
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=Ox+NX2UumkPRUJQlb9xJJ3UDWIZq8aMhYEoGy7jyqH0=;
+ b=LQDD5O6Fbl6k1qR8iKuzEQxVYcHjrUbkShpRTKYxTVSnLPHt86s+s225ckgSzYfZwi/aTe
+ CWkZXCpRT3fN7tAA==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id AF1E913ADF;
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 8EE6113AAE;
  Mon,  1 Aug 2022 16:56:42 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id WP0CKsoF6GLXGgAAMHmgww
+ by imap2.suse-dmz.suse.de with ESMTPSA id sl/CIcoF6GLXGgAAMHmgww
  (envelope-from <tiwai@suse.de>); Mon, 01 Aug 2022 16:56:42 +0000
 From: Takashi Iwai <tiwai@suse.de>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH 1/7] ALSA: ac97: Replace sprintf() with sysfs_emit()
-Date: Mon,  1 Aug 2022 18:56:33 +0200
-Message-Id: <20220801165639.26030-2-tiwai@suse.de>
+Subject: [PATCH 0/7] ALSA: Replace sprintf() with sysfs_emit()
+Date: Mon,  1 Aug 2022 18:56:32 +0200
+Message-Id: <20220801165639.26030-1-tiwai@suse.de>
 X-Mailer: git-send-email 2.35.3
-In-Reply-To: <20220801165639.26030-1-tiwai@suse.de>
-References: <20220801165639.26030-1-tiwai@suse.de>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-BeenThere: alsa-devel@alsa-project.org
@@ -95,28 +88,37 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-For sysfs outputs, it's safer to use a new helper, sysfs_emit(),
-instead of the raw sprintf() & co.  This patch replaces the open code
-straightforwardly with a new helper.
+Hi,
 
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
----
- sound/ac97/bus.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+this is a patch set for rather simple conversions from the plain
+sprintf() & co to the new helpers, sysfs_emit() and sysfs_emit_at().
+No functional changes are expected.
 
-diff --git a/sound/ac97/bus.c b/sound/ac97/bus.c
-index 0d31a6d71468..045330883a96 100644
---- a/sound/ac97/bus.c
-+++ b/sound/ac97/bus.c
-@@ -460,7 +460,7 @@ static ssize_t vendor_id_show(struct device *dev,
- {
- 	struct ac97_codec_device *codec = to_ac97_device(dev);
- 
--	return sprintf(buf, "%08x", codec->vendor_id);
-+	return sysfs_emit(buf, "%08x", codec->vendor_id);
- }
- DEVICE_ATTR_RO(vendor_id);
- 
+
+Takashi
+
+===
+
+Takashi Iwai (7):
+  ALSA: ac97: Replace sprintf() with sysfs_emit()
+  ALSA: aoa: Replace sprintf() with sysfs_emit()
+  ALSA: control-led: Replace sprintf() with sysfs_emit()
+  ALSA: core: Replace scnprintf() with sysfs_emit()
+  ALSA: pcm: Replace sprintf() with sysfs_emit()
+  ALSA: hda: Replace sprintf() with sysfs_emit()
+  ALSA: line6: Replace sprintf() with sysfs_emit()
+
+ sound/ac97/bus.c           |  2 +-
+ sound/aoa/soundbus/sysfs.c | 22 ++++++++------------
+ sound/core/control_led.c   | 29 +++++++++++---------------
+ sound/core/init.c          |  4 ++--
+ sound/core/pcm.c           |  2 +-
+ sound/hda/hdac_sysfs.c     | 42 +++++++++++++++++++-------------------
+ sound/pci/hda/hda_sysfs.c  | 23 ++++++++++-----------
+ sound/usb/line6/pod.c      |  8 ++++----
+ sound/usb/line6/podhd.c    |  4 ++--
+ 9 files changed, 62 insertions(+), 74 deletions(-)
+
 -- 
 2.35.3
 
