@@ -4,54 +4,81 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E31CDC19F2C
-	for <alsa-devel@archiver.kernel.org>; Mon,  1 Aug 2022 12:43:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D20D1C00144
+	for <alsa-devel@archiver.kernel.org>; Mon,  1 Aug 2022 13:32:04 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id AB2AA84D;
-	Mon,  1 Aug 2022 14:42:42 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AB2AA84D
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0DD3A84B;
+	Mon,  1 Aug 2022 15:31:12 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0DD3A84B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1659357812;
-	bh=Psqus1GXa7Y0rzUkyCWkI7P5MQJU805msxDKsvE3iDM=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=n4oEH3KZ2UspVqflCNhf/INcUglXuiU9WoAZ7jd/LvqA8BO1DPNI80TLYYWpLNshR
-	 QIrqhI85y5ktx5F0YWRudLQJumi0N9SrygC2l//lsEcUn2wGo182/Oaog4MUmi19XX
-	 nAAEU71Mz64ZIPgkyrFgxl3xwasnU5SugtLXCMFY=
+	s=default; t=1659360722;
+	bh=kYA9+Y8RBv1lgdJtNEVxDf4eIJ1y1d1VyJ4pnr2InV4=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=W8gJDKEDY2TZ0HMZMkWc91XkpDPx1Bs5GidonrCw8uWtfmLB2KqFvNUCUU+rrE9T4
+	 v6lRYCYgDEJD77bvTdpdNBKZ8x2indSLr9MD2p4H+N1p0qitLf9KpJ29bpg1vLMqgQ
+	 DtP+HWx1CxO0nBOoIyQA/Z5kT5MItI3a74Ug6Ouo=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 53560F80152;
-	Mon,  1 Aug 2022 14:42:42 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 7E650F80152;
+	Mon,  1 Aug 2022 15:31:11 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id B9BA9F8013D; Mon,  1 Aug 2022 14:42:40 +0200 (CEST)
-Received: from inva021.nxp.com (inva021.nxp.com [92.121.34.21])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 60A09F8023B; Mon,  1 Aug 2022 15:31:09 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id AEAB0F8013D
- for <alsa-devel@alsa-project.org>; Mon,  1 Aug 2022 14:42:34 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AEAB0F8013D
-Received: from inva021.nxp.com (localhost [127.0.0.1])
- by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 0228A20148F;
- Mon,  1 Aug 2022 14:42:34 +0200 (CEST)
-Received: from aprdc01srsp001v.ap-rdc01.nxp.com
- (aprdc01srsp001v.ap-rdc01.nxp.com [165.114.16.16])
- by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id BEB9220130A;
- Mon,  1 Aug 2022 14:42:33 +0200 (CEST)
-Received: from localhost.localdomain (shlinux2.ap.freescale.net
- [10.192.224.44])
- by aprdc01srsp001v.ap-rdc01.nxp.com (Postfix) with ESMTP id 4C22A180031C;
- Mon,  1 Aug 2022 20:42:32 +0800 (+08)
-From: Shengjiu Wang <shengjiu.wang@nxp.com>
-To: nicoleotsuka@gmail.com, Xiubo.Lee@gmail.com, festevam@gmail.com,
- shengjiu.wang@gmail.com, lgirdwood@gmail.com, broonie@kernel.org,
- perex@perex.cz, tiwai@suse.com, alsa-devel@alsa-project.org
-Subject: [PATCH] ASoC: imx-rpmsg: Support configure sysclk for codec dai
-Date: Mon,  1 Aug 2022 20:26:13 +0800
-Message-Id: <1659356773-8315-1-git-send-email-shengjiu.wang@nxp.com>
-X-Mailer: git-send-email 2.7.4
-X-Virus-Scanned: ClamAV using ClamSMTP
-Cc: linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
+ by alsa1.perex.cz (Postfix) with ESMTPS id 8E57BF8013D
+ for <alsa-devel@alsa-project.org>; Mon,  1 Aug 2022 15:31:06 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8E57BF8013D
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
+ header.b="ls+J/kR6"; 
+ dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
+ header.b="i4cg8i0b"
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 88B413407A;
+ Mon,  1 Aug 2022 13:31:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1659360663; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=3RnhSisJDK/H+rnxL7jLensmDzJ0gIp+GQt70D2/MyI=;
+ b=ls+J/kR6jzCzJ2mu+/4Tk8ueQXYJwOPk52PUShGQHaIJWCGXb+/HAEWNg1M4cyE9RG0UTl
+ nIV97q/IYdQasPuV1lxIbjOV/rpeNL2J4Y7NML9MTizNv6yf0NALPcCZM/xt4hJ3gLIdFK
+ 3JSSAdLXyyY03tRio7rg89Tm6JDmGLw=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1659360663;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=3RnhSisJDK/H+rnxL7jLensmDzJ0gIp+GQt70D2/MyI=;
+ b=i4cg8i0bGDBttJMqBPYTJ6UkPMIOyPgwGZeVpJ7GC9JVN+NSIB3pOyT33iTQ6BsrccE5he
+ tVnr7NjknHL3HLBw==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 6E60A13A72;
+ Mon,  1 Aug 2022 13:31:03 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+ by imap2.suse-dmz.suse.de with ESMTPSA id ySpSGpfV52IHPgAAMHmgww
+ (envelope-from <tiwai@suse.de>); Mon, 01 Aug 2022 13:31:03 +0000
+Date: Mon, 01 Aug 2022 15:31:02 +0200
+Message-ID: <87ilncm6p5.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Mark Brown <broonie@kernel.org>
+Subject: Re: [GIT PULL] ASoC updates for v5.20-2
+In-Reply-To: <20220801123734.29C86C433C1@smtp.kernel.org>
+References: <20220801123734.29C86C433C1@smtp.kernel.org>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -67,84 +94,30 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Some codecs need to configure the sysclk even with slave
-mode, otherwise it may not work properly with some case.
+On Mon, 01 Aug 2022 14:37:20 +0200,
+Mark Brown wrote:
+> 
+> The following changes since commit 1e347f861da8ddb17e1d1b3113cb6c188e0de3e5:
+> 
+>   ASoC: rockchip-i2s: Undo BCLK pinctrl changes (2022-07-14 13:25:52 +0100)
+> 
+> are available in the Git repository at:
+> 
+>   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git tags/asoc-v5.20-2
+> 
+> for you to fetch changes up to 40d060b8158e26438398bf1132925f666e3b6480:
+> 
+>   ASoC: q6asm: use kcalloc() instead of kzalloc() (2022-07-28 11:59:10 +0100)
+> 
+> ----------------------------------------------------------------
+> ASoC: More updates for v5.20
+> 
+> More updates that came in since the last pull request I sent, a series
+> of driver specific changes:
+> 
+>  - Support for AMD RPL, some Intel platforms and Mediatek MT8186.
 
-wm8960 is the one that need sysclk be configured, so add
-late_probe() to call the snd_soc_dai_set_sysclk() of codec
+Thanks, pulled now.
 
-Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
----
- sound/soc/fsl/imx-rpmsg.c | 29 +++++++++++++++++++++++++++++
- 1 file changed, 29 insertions(+)
 
-diff --git a/sound/soc/fsl/imx-rpmsg.c b/sound/soc/fsl/imx-rpmsg.c
-index 2e117311e582..bef4bd997c98 100644
---- a/sound/soc/fsl/imx-rpmsg.c
-+++ b/sound/soc/fsl/imx-rpmsg.c
-@@ -19,6 +19,7 @@
- struct imx_rpmsg {
- 	struct snd_soc_dai_link dai;
- 	struct snd_soc_card card;
-+	unsigned int sysclk;
- };
- 
- static const struct snd_soc_dapm_widget imx_rpmsg_dapm_widgets[] = {
-@@ -28,6 +29,27 @@ static const struct snd_soc_dapm_widget imx_rpmsg_dapm_widgets[] = {
- 	SND_SOC_DAPM_MIC("Main MIC", NULL),
- };
- 
-+static int imx_rpmsg_late_probe(struct snd_soc_card *card)
-+{
-+	struct imx_rpmsg *data = snd_soc_card_get_drvdata(card);
-+	struct snd_soc_pcm_runtime *rtd = list_first_entry(&card->rtd_list,
-+							   struct snd_soc_pcm_runtime, list);
-+	struct snd_soc_dai *codec_dai = asoc_rtd_to_codec(rtd, 0);
-+	struct device *dev = card->dev;
-+	int ret;
-+
-+	if (!data->sysclk)
-+		return 0;
-+
-+	ret = snd_soc_dai_set_sysclk(codec_dai, 0, data->sysclk, SND_SOC_CLOCK_IN);
-+	if (ret && ret != -ENOTSUPP) {
-+		dev_err(dev, "failed to set sysclk in %s\n", __func__);
-+		return ret;
-+	}
-+
-+	return 0;
-+}
-+
- static int imx_rpmsg_probe(struct platform_device *pdev)
- {
- 	struct snd_soc_dai_link_component *dlc;
-@@ -72,12 +94,18 @@ static int imx_rpmsg_probe(struct platform_device *pdev)
- 		data->dai.codecs->dai_name = "snd-soc-dummy-dai";
- 		data->dai.codecs->name = "snd-soc-dummy";
- 	} else {
-+		struct clk *clk;
-+
- 		data->dai.codecs->of_node = args.np;
- 		ret = snd_soc_get_dai_name(&args, &data->dai.codecs->dai_name);
- 		if (ret) {
- 			dev_err(&pdev->dev, "Unable to get codec_dai_name\n");
- 			goto fail;
- 		}
-+
-+		clk = devm_get_clk_from_child(&pdev->dev, args.np, NULL);
-+		if (!IS_ERR(clk))
-+			data->sysclk = clk_get_rate(clk);
- 	}
- 
- 	data->dai.cpus->dai_name = dev_name(&rpmsg_pdev->dev);
-@@ -103,6 +131,7 @@ static int imx_rpmsg_probe(struct platform_device *pdev)
- 	data->card.owner = THIS_MODULE;
- 	data->card.dapm_widgets = imx_rpmsg_dapm_widgets;
- 	data->card.num_dapm_widgets = ARRAY_SIZE(imx_rpmsg_dapm_widgets);
-+	data->card.late_probe = imx_rpmsg_late_probe;
- 	/*
- 	 * Inoder to use common api to get card name and audio routing.
- 	 * Use parent of_node for this device, revert it after finishing using
--- 
-2.34.1
-
+Takashi
