@@ -4,77 +4,77 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 12153C00144
-	for <alsa-devel@archiver.kernel.org>; Mon,  1 Aug 2022 17:04:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 97F7AC00144
+	for <alsa-devel@archiver.kernel.org>; Mon,  1 Aug 2022 17:04:29 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 529FD1630;
-	Mon,  1 Aug 2022 19:03:29 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 529FD1630
+	by alsa0.perex.cz (Postfix) with ESMTPS id C1C05164E;
+	Mon,  1 Aug 2022 19:03:37 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C1C05164E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1659373459;
-	bh=EsuAK2Py9IEdekhK8r4IurU8YmKVytrd94RzVmRqM+A=;
+	s=default; t=1659373467;
+	bh=8dhR7VJYR4XTYpOSUZKCQmcXstgpWkPl+twIh26P7jM=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=MeSv5TApoILQVcAKUCVEOsn5ytsOzXrRLkhuTGIDUMzlbB+b0we5EKvintMi8aBSN
-	 fjR73h5uGQ4M+gAeUN1GWARWvNugV3ozWarW+Cjc/6LmWOafXUHkApyWj/5R++G2JX
-	 t+vrqU9XpoiOL26hRyjspzKE9wljm/V2eM+CbK5k=
+	b=GfMUKRRde0uJ4d5+qq+vFKg82x44dB2OJpiPy9x9iWFRHwQZTrn58r4vshWYxtnT2
+	 lnETEpKOZpzUy7QoIl34bxheIkcRhHAAfeWfFSepidzTDyaoNdHkS7QuOteYt4I9rM
+	 xj7ZD6Tray+Fj1Ypks/WTpbJdH5ilxM478Q5h9f4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id E0EFDF8057C;
-	Mon,  1 Aug 2022 19:01:30 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 67A4AF80588;
+	Mon,  1 Aug 2022 19:01:33 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 99C4AF804FF; Mon,  1 Aug 2022 19:01:27 +0200 (CEST)
+ id 65F66F80589; Mon,  1 Aug 2022 19:01:31 +0200 (CEST)
 Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 59627F804FA
+ by alsa1.perex.cz (Postfix) with ESMTPS id BDB94F8013D
  for <alsa-devel@alsa-project.org>; Mon,  1 Aug 2022 19:01:13 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 59627F804FA
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BDB94F8013D
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="ByE01QfT"; 
+ header.b="E1ZDdyC/"; 
  dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="6+W6s/y8"
+ header.b="VVJAl8Gs"
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 1D918206D7;
- Mon,  1 Aug 2022 17:01:13 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id AABDF20684;
+ Mon,  1 Aug 2022 17:01:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1659373273; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1659373272; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=DHdO/a3WKOwt9nY5QGWELProlniXPv17HHwPIiMxhpM=;
- b=ByE01QfT06SLGCa81rS6Fdvc9j5LzS4tkhSz/t0MF8yn9q/p+47Rn4dZvMLLgXSd6pmxQu
- LPJLfNoGaFLJzRh99fGXD3GcaVA64vx9AD/ihRcgOlqTN2z3NTH7ET5DjsOYiLl26udwZ2
- f9udZ/dUtwJ3HAzFojiCjQD1syy2SRo=
+ bh=flm3EAid1FyYWaoC5b48xbvqyVtFEOLFTTsVO4ZK0tM=;
+ b=E1ZDdyC/SxzGUbL3x7PVM4IJv1BVUw0w+QECRf1lAWM284/pdZSvADY0B22JwnS2Xe50pK
+ xuIvv73I4jPZfGu3idzNSY3TnK3MedOzp/rRX+6M+W4YwaX15QKszeqMUnow2KdXx4HfAI
+ KMU34qKFZKm4HFnWfMwY3jILIiX4F0M=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1659373273;
+ s=susede2_ed25519; t=1659373272;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=DHdO/a3WKOwt9nY5QGWELProlniXPv17HHwPIiMxhpM=;
- b=6+W6s/y8dLPjmT2ximuLw1Dzm9RgigdILN0IHC7/GIM4+8rD8D/gUXXvipcFm/faCHjxoJ
- i29tOpqu6E1WI2DA==
+ bh=flm3EAid1FyYWaoC5b48xbvqyVtFEOLFTTsVO4ZK0tM=;
+ b=VVJAl8Gs07h7CS9SDCcHRP1LaCP5/gqDkDyDSMbjCzI6MS1mVE5aqibYMk7C0yyoc+Nf+9
+ jsjmZk9eX4z/pvAg==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id E09E913ADF;
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 73B3813ADF;
  Mon,  1 Aug 2022 17:01:12 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id METTNdgG6GKJHAAAMHmgww
+ by imap2.suse-dmz.suse.de with ESMTPSA id oEKOG9gG6GKJHAAAMHmgww
  (envelope-from <tiwai@suse.de>); Mon, 01 Aug 2022 17:01:12 +0000
 From: Takashi Iwai <tiwai@suse.de>
 To: Mark Brown <broonie@kernel.org>
-Subject: [PATCH 8/8] ASoC: omap: Replace sprintf() with sysfs_emit()
-Date: Mon,  1 Aug 2022 19:01:08 +0200
-Message-Id: <20220801170108.26340-9-tiwai@suse.de>
+Subject: [PATCH 6/8] ASoC: core: Replace sprintf() with sysfs_emit()
+Date: Mon,  1 Aug 2022 19:01:06 +0200
+Message-Id: <20220801170108.26340-7-tiwai@suse.de>
 X-Mailer: git-send-email 2.35.3
 In-Reply-To: <20220801170108.26340-1-tiwai@suse.de>
 References: <20220801170108.26340-1-tiwai@suse.de>
@@ -101,62 +101,27 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 For sysfs outputs, it's safer to use a new helper, sysfs_emit(),
-instead of the raw sprintf() & co.  This patch replaces the open code
-with new helpers, sysfs_emit() and sysfs_emit_at(), with the proper
-string offset.
+instead of the raw sprintf() & co.  This patch replaces the sprintf()
+usage straightforwardly with a new helper, sysfs_emit().
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/soc/ti/omap-mcbsp-st.c | 6 +++---
- sound/soc/ti/omap-mcbsp.c    | 8 ++++----
- 2 files changed, 7 insertions(+), 7 deletions(-)
+ sound/soc/soc-core.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/ti/omap-mcbsp-st.c b/sound/soc/ti/omap-mcbsp-st.c
-index 7e8179cae92e..8163f453bf36 100644
---- a/sound/soc/ti/omap-mcbsp-st.c
-+++ b/sound/soc/ti/omap-mcbsp-st.c
-@@ -244,10 +244,10 @@ static ssize_t st_taps_show(struct device *dev,
+diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
+index e824ff1a9fc0..e020ab49cfb1 100644
+--- a/sound/soc/soc-core.c
++++ b/sound/soc/soc-core.c
+@@ -72,7 +72,7 @@ static ssize_t pmdown_time_show(struct device *dev,
+ {
+ 	struct snd_soc_pcm_runtime *rtd = dev_get_drvdata(dev);
  
- 	spin_lock_irq(&mcbsp->lock);
- 	for (i = 0; i < st_data->nr_taps; i++)
--		status += sprintf(&buf[status], (i ? ", %d" : "%d"),
--				  st_data->taps[i]);
-+		status += sysfs_emit_at(buf, status, (i ? ", %d" : "%d"),
-+					st_data->taps[i]);
- 	if (i)
--		status += sprintf(&buf[status], "\n");
-+		status += sysfs_emit_at(buf, status, "\n");
- 	spin_unlock_irq(&mcbsp->lock);
- 
- 	return status;
-diff --git a/sound/soc/ti/omap-mcbsp.c b/sound/soc/ti/omap-mcbsp.c
-index c4ac1f30b9fe..0b377bb7737f 100644
---- a/sound/soc/ti/omap-mcbsp.c
-+++ b/sound/soc/ti/omap-mcbsp.c
-@@ -517,7 +517,7 @@ static ssize_t prop##_show(struct device *dev,				\
- {									\
- 	struct omap_mcbsp *mcbsp = dev_get_drvdata(dev);		\
- 									\
--	return sprintf(buf, "%u\n", mcbsp->prop);			\
-+	return sysfs_emit(buf, "%u\n", mcbsp->prop);			\
- }									\
- 									\
- static ssize_t prop##_store(struct device *dev,				\
-@@ -560,11 +560,11 @@ static ssize_t dma_op_mode_show(struct device *dev,
- 
- 	for (s = &dma_op_modes[i]; i < ARRAY_SIZE(dma_op_modes); s++, i++) {
- 		if (dma_op_mode == i)
--			len += sprintf(buf + len, "[%s] ", *s);
-+			len += sysfs_emit_at(buf, len, "[%s] ", *s);
- 		else
--			len += sprintf(buf + len, "%s ", *s);
-+			len += sysfs_emit_at(buf, len, "%s ", *s);
- 	}
--	len += sprintf(buf + len, "\n");
-+	len += sysfs_emit_at(buf, len, "\n");
- 
- 	return len;
+-	return sprintf(buf, "%ld\n", rtd->pmdown_time);
++	return sysfs_emit(buf, "%ld\n", rtd->pmdown_time);
  }
+ 
+ static ssize_t pmdown_time_store(struct device *dev,
 -- 
 2.35.3
 
