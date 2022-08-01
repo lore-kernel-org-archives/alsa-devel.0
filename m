@@ -4,77 +4,77 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D1668C00144
-	for <alsa-devel@archiver.kernel.org>; Mon,  1 Aug 2022 17:03:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 13555C00144
+	for <alsa-devel@archiver.kernel.org>; Mon,  1 Aug 2022 17:03:41 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 2A59983D;
-	Mon,  1 Aug 2022 19:02:36 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2A59983D
+	by alsa0.perex.cz (Postfix) with ESMTPS id 50CAD163C;
+	Mon,  1 Aug 2022 19:02:49 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 50CAD163C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1659373406;
-	bh=mSCEgwgwqUm+T5Kzsb4eL82dDVYjvhHiuR9WQKdFVl4=;
+	s=default; t=1659373419;
+	bh=62kRVi47VP39fc4UM0vDJdSlVJ6prrw2pwQ+5HKlYFc=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=PRdDmklOPfhgnsy2IMTCt986OSX6Ebf3RcllrebG6tqgyFfPodexXy9smwBOKVq7U
-	 BPblKhOkLLMGOLHOQAop6Q/9eQoNum5TOxzwK0BfQV63lLDpQoQhxy+yGgqTq9Emkr
-	 a2nzLvMMcxJ+g36oPC1XUvY4etBNorsYASn9E6mY=
+	b=ojMTPj+t13gTZbaGznUDz9gpfJmey1sqR3euXji4pf+UVEiJ+eDyW2NHBaGA9T0Wg
+	 8GwDOidHNBp23VMI2c1cPpvNfqTYPa2W/BEb9vQdM55KdIXiwV9dHXFDocIaS12yvp
+	 rrQ1fv0zud7Wt1OuANMnwPVviDpbKtYqG5oZOT9A=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id CEC0EF80558;
-	Mon,  1 Aug 2022 19:01:28 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 71E39F8055C;
+	Mon,  1 Aug 2022 19:01:29 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id E7649F80246; Mon,  1 Aug 2022 19:01:25 +0200 (CEST)
+ id 1E8AAF804FF; Mon,  1 Aug 2022 19:01:25 +0200 (CEST)
 Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 80CD6F80539
+ by alsa1.perex.cz (Postfix) with ESMTPS id 15F31F802DB
  for <alsa-devel@alsa-project.org>; Mon,  1 Aug 2022 19:01:12 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 80CD6F80539
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 15F31F802DB
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="v03Wvzn/"; 
+ header.b="urGT69B6"; 
  dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="LkR0gpHg"
+ header.b="ZfU366yC"
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id CEA13342B1;
- Mon,  1 Aug 2022 17:01:11 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 7C285344D3;
+ Mon,  1 Aug 2022 17:01:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1659373271; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1659373272; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=Fs+hVbf6ds8PX7hHZ+c2gnIARgFFrL2+rz25aWMfyys=;
- b=v03Wvzn/3dRep2TxtcFen2ZJJ7Of3xk8MufGJkT5KT0wr6tjYIpfNs1RtrYWyaxBmnpCHA
- 7xsDf8dB9w44RWk0Jnnska1aPoAuAIvhGqukYrdNpcMDQLd98mNwSNCqNSGzJJNDNKINFo
- qSo8jwy9cpXp/M9nZGPEO4egjnPTT4o=
+ bh=Ea4zw7Zh6YgY3V1kPtjXOZ+zT5Gg/ukKFYk9CWFVyNs=;
+ b=urGT69B6qz4Ov3jgHQzbgOpg15gyOyvsI4QHFOVqq7KM6+Vkfy5GvwuPJ0lyrV7+YQDaHW
+ nkc4lFexJgf1azAsp27DZn5LJ3se0UspRoBztN+0opfNXyZoOirCi3Q+hLlehPNpXewBv+
+ IRNEctr+QTcSCAMUGAn3bsWkdxyeCww=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1659373271;
+ s=susede2_ed25519; t=1659373272;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=Fs+hVbf6ds8PX7hHZ+c2gnIARgFFrL2+rz25aWMfyys=;
- b=LkR0gpHggdRsqsMLs38TeK3iwWATw9E14Xl1QUZYGETxyAypYAPqToHPlKwuLlynKiWjqn
- m5/i2aJoB8AoqyDQ==
+ bh=Ea4zw7Zh6YgY3V1kPtjXOZ+zT5Gg/ukKFYk9CWFVyNs=;
+ b=ZfU366yC1Qdhcx/Qh5LpPZPz/97dlmA8yUT3zu6HpzIzoEt/Coqc8ErFHzkJMqkxp5QP4/
+ ARFXYLxvp0CMxECA==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 9DE2113AAE;
- Mon,  1 Aug 2022 17:01:11 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 4266613AAE;
+ Mon,  1 Aug 2022 17:01:12 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id kJLQJdcG6GKJHAAAMHmgww
- (envelope-from <tiwai@suse.de>); Mon, 01 Aug 2022 17:01:11 +0000
+ by imap2.suse-dmz.suse.de with ESMTPSA id yNdGD9gG6GKJHAAAMHmgww
+ (envelope-from <tiwai@suse.de>); Mon, 01 Aug 2022 17:01:12 +0000
 From: Takashi Iwai <tiwai@suse.de>
 To: Mark Brown <broonie@kernel.org>
-Subject: [PATCH 2/8] ASoC: tlv320aic26: Replace sprintf() with sysfs_emit()
-Date: Mon,  1 Aug 2022 19:01:02 +0200
-Message-Id: <20220801170108.26340-3-tiwai@suse.de>
+Subject: [PATCH 5/8] ASoC: Intel: skylake: Replace sprintf() with sysfs_emit()
+Date: Mon,  1 Aug 2022 19:01:05 +0200
+Message-Id: <20220801170108.26340-6-tiwai@suse.de>
 X-Mailer: git-send-email 2.35.3
 In-Reply-To: <20220801170108.26340-1-tiwai@suse.de>
 References: <20220801170108.26340-1-tiwai@suse.de>
@@ -101,27 +101,27 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 For sysfs outputs, it's safer to use a new helper, sysfs_emit(),
-instead of the raw sprintf() & co.  This patch replaces the sprintf()
-usage straightforwardly with a new helper, sysfs_emit().
+instead of the raw sprintf() & co.  This patch replaces those usages
+straightforwardly with a new helper, sysfs_emit().
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/soc/codecs/tlv320aic26.c | 2 +-
+ sound/soc/intel/skylake/skl-nhlt.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/codecs/tlv320aic26.c b/sound/soc/codecs/tlv320aic26.c
-index 8bae4b475068..e5dfb3d752a3 100644
---- a/sound/soc/codecs/tlv320aic26.c
-+++ b/sound/soc/codecs/tlv320aic26.c
-@@ -271,7 +271,7 @@ static ssize_t keyclick_show(struct device *dev,
- 	freq = (125 << ((val >> 8) & 0x7)) >> 1;
- 	len = 2 * (1 + ((val >> 4) & 0xf));
+diff --git a/sound/soc/intel/skylake/skl-nhlt.c b/sound/soc/intel/skylake/skl-nhlt.c
+index deb7b820325e..e617b4c335a4 100644
+--- a/sound/soc/intel/skylake/skl-nhlt.c
++++ b/sound/soc/intel/skylake/skl-nhlt.c
+@@ -61,7 +61,7 @@ static ssize_t platform_id_show(struct device *dev,
+ 			nhlt->header.oem_revision);
  
--	return sprintf(buf, "amp=%x freq=%iHz len=%iclks\n", amp, freq, len);
-+	return sysfs_emit(buf, "amp=%x freq=%iHz len=%iclks\n", amp, freq, len);
+ 	skl_nhlt_trim_space(platform_id);
+-	return sprintf(buf, "%s\n", platform_id);
++	return sysfs_emit(buf, "%s\n", platform_id);
  }
  
- /* Any write to the keyclick attribute will trigger the keyclick event */
+ static DEVICE_ATTR_RO(platform_id);
 -- 
 2.35.3
 
