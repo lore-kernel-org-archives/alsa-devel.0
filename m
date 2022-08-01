@@ -4,74 +4,117 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1E7F3C00144
-	for <alsa-devel@archiver.kernel.org>; Mon,  1 Aug 2022 15:59:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 30122C00144
+	for <alsa-devel@archiver.kernel.org>; Mon,  1 Aug 2022 16:09:11 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 6FD33844;
-	Mon,  1 Aug 2022 17:58:15 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6FD33844
+	by alsa0.perex.cz (Postfix) with ESMTPS id 09142844;
+	Mon,  1 Aug 2022 18:08:19 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 09142844
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1659369545;
-	bh=rmHwKdV9lnVM+ZhQRC9IpOj7o9J1CdDw1IowlF1itGI=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=mjgO+U4iyzejCVTChsamTNmLR1srdjo56zfL0pjsSSA0IQPiLOpVZGY6Lejjbe0pg
-	 Ex7jROZMn3xCHbrRRCN0ZxBCxE1bmoMS77YLGReACrouaFGATfnpGfuHBg+Q0p7tR2
-	 f4RLnb05WDKSh7ph/Nvjb4upIA8chAiLn3yiYP8w=
+	s=default; t=1659370149;
+	bh=i1UETo8NHsUKHWVAZL1XRC4GfRCy1c2tr0QG4/k02ag=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=DM/T9pz4LN5Jr1FmbkSdpUcyx64e5yEE3vuVF+YOVIE09LkxM1LBbrDHRZ+7DMdK2
+	 Bk4Pz/roljXVSq2TDkzscC47oRCaC95oGUn45t2b6Cnn0B4aXXF2ldMMsFrmVLOtEJ
+	 SPbosRB3qbH61NiwTWLPuZZrCS2oMeDar8yZ1kJk=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 100A4F8023B;
-	Mon,  1 Aug 2022 17:58:15 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 9A756F80152;
+	Mon,  1 Aug 2022 18:08:18 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id C38C0F80246; Mon,  1 Aug 2022 17:58:13 +0200 (CEST)
-Received: from mail-il1-f172.google.com (mail-il1-f172.google.com
- [209.85.166.172])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id 51C78F8023B; Mon,  1 Aug 2022 18:08:17 +0200 (CEST)
+Received: from NAM12-BN8-obe.outbound.protection.outlook.com
+ (mail-bn8nam12on2080.outbound.protection.outlook.com [40.107.237.80])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id B0C39F8014B
- for <alsa-devel@alsa-project.org>; Mon,  1 Aug 2022 17:58:07 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B0C39F8014B
-Received: by mail-il1-f172.google.com with SMTP id b12so5046959ils.9
- for <alsa-devel@alsa-project.org>; Mon, 01 Aug 2022 08:58:07 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=in-reply-to:content-disposition:mime-version:references:message-id
- :subject:cc:to:from:date:x-gm-message-state:from:to:cc;
- bh=hz7nXHEq1F85KPRnekV1M2XaUBYmmbucYnVIbXgpzws=;
- b=jWSrpddhjZX3h0+JLDCRW2PZxgjb+RUQlaAJbJJxYtjxCj+F3nH3BUrQInhLX9cmvH
- 4FIU+4ojAuQecB/Js0O1TWkVhFfcJHBV3aJdQPupXKXnCR7DMcc1ziesz334M6H+ssET
- 2cCBH5t29vNVyRekLRUzYCqsobIHhbVaU2CViZ9H5/XqLgRmC4bc1Mo73XcQbD/w6I4+
- D18RR0YIowcgeGIRSodBQDgPisd0tYZNamID1LSnDj7F4wsYqUvevAKZGvQMURUJLRP2
- ylQlduBSWruE9yM6Vhzb25Xpi8ty1lDZop+Y+XOuQNg9VHqn450FrDydB9zbtK7j4rnX
- B+YQ==
-X-Gm-Message-State: AJIora9N+c0dvmW1vS0tpI/QaX7yAs0+2m16DUuAK85W/crbVGqgOgh4
- 6GAUyDo6I4kooT9xbAif2A==
-X-Google-Smtp-Source: AGRyM1tj25NZhfphWqwROi3f80JZ6aZpzFI1C0At4lGs4DKytgAiBXKMF13d8KsBa/cQmcDnU9zAlw==
-X-Received: by 2002:a05:6e02:1aab:b0:2dd:1c2e:c495 with SMTP id
- l11-20020a056e021aab00b002dd1c2ec495mr6566304ilv.166.1659369485607; 
- Mon, 01 Aug 2022 08:58:05 -0700 (PDT)
-Received: from robh.at.kernel.org ([64.188.179.248])
- by smtp.gmail.com with ESMTPSA id
- r15-20020a92d44f000000b002de8a37ceccsm1833683ilm.70.2022.08.01.08.58.04
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Mon, 01 Aug 2022 08:58:05 -0700 (PDT)
-Received: (nullmailer pid 1091762 invoked by uid 1000);
- Mon, 01 Aug 2022 15:58:03 -0000
-Date: Mon, 1 Aug 2022 09:58:03 -0600
-From: Rob Herring <robh@kernel.org>
-To: Raphael-Xu <13691752556@139.com>
-Subject: Re: [PATCH v1] ASoc: dt-bindings: tas27xx: update maximum I2C
- address and revise the format
-Message-ID: <20220801155803.GA1090009-robh@kernel.org>
-References: <20220728035610.158-1-13691752556@139.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id BF2FAF80139
+ for <alsa-devel@alsa-project.org>; Mon,  1 Aug 2022 18:08:12 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BF2FAF80139
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com
+ header.b="kGbHbHV5"
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=gxRyMKWIhxgNYaoIFOHxbOkKKiB31nsrF394MhdeW4+dfyUe1uE2uxs/1CV5cy4ve+8VPsat55iOh0e/9SNI9obidNKloPoonSHLhuytRoa5Za3xDni4r8fu/APmC6reHPXnEivexaYxlo6v3k7YH+5UBtKsqJXqFtdohNpcX6uWmivY+NTaNoQJQZc385zqT0PALSNxraCNgyHJUs25uNfx9FFWPN5ATO318RfmBnkNLpGr9R0XSKwayed2tImGnX8d5rWAwI25FISreTZ/28SkkPDHuSE96UvZ5w8Zfxh5dMaW9t1kM7tO9u66X+TiSnH6M5eEV1KlskEcpDk0dQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=ihmimuOvhmFJpa30MFHQQoKzRcLaE88/5uXq1XikdTo=;
+ b=CVVU9mchN4i/hugE2Ln8CGIyZTDLZDT1M354yK6XJyqTvLVl9jBitFM6tkWXG2RlqZCYusHb5ze2Qwqek08JRNSH0nUtDXATYf74QgJUPwA8x8JZaBUKWO7iy8NsO7wTIXF/05SAdctrzPun5mwPC/WHZqG0E/ip4D1IrfADmyMZ7OrMyA0Y+d9fdAofDkScGiyBVQ0/9Hb6vgSw9/3Wm7RYfowP/NSNpiMuqJ7FENmUiO/jzKWpaw3zmJ8rroTwRhCQ6SuKBHodElAu+TQ7uzA4htLuEKooFbJIXUfRArzpcLNP3OhxCAVfApEgD6j+kDEsX6pLteInvMaJp8+svA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 12.22.5.236) smtp.rcpttodomain=renesas.com smtp.mailfrom=nvidia.com;
+ dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
+ dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ihmimuOvhmFJpa30MFHQQoKzRcLaE88/5uXq1XikdTo=;
+ b=kGbHbHV5DlW0MhJ3WPZfngAmdMH+mQ7WcpoFM0MrLdPoTlEopvWEkz+eGkbcvbU2+wDRH747HwOl/oxb+yHJE9mmSr9sx1rEquIZBqBfpjFSKxtF3+FVf2tcpCM/iJetOOocOsKXV4EVpMLTWzFcgcxYHm08XwB6q6ruL51TWD3clXDMRORlKGSxmx3QIX30l9fpLDhYw6L63NI05qdy7VV3/VggTxKk3zqLA5aj8Q8YpjtVu72tVoW63lqQJJdpd9s8vAuNMC6drNKvysaziOol5M+fHAGwEENTKuAGPxNt582FjuoWcJNBTNp646Mn190hHzO4H5c//B2eokdLvw==
+Received: from BN9PR03CA0101.namprd03.prod.outlook.com (2603:10b6:408:fd::16)
+ by BN8PR12MB3409.namprd12.prod.outlook.com (2603:10b6:408:46::25)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5482.12; Mon, 1 Aug
+ 2022 16:08:08 +0000
+Received: from BN8NAM11FT067.eop-nam11.prod.protection.outlook.com
+ (2603:10b6:408:fd:cafe::72) by BN9PR03CA0101.outlook.office365.com
+ (2603:10b6:408:fd::16) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5482.14 via Frontend
+ Transport; Mon, 1 Aug 2022 16:08:08 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 12.22.5.236)
+ smtp.mailfrom=nvidia.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 12.22.5.236 as permitted sender) receiver=protection.outlook.com;
+ client-ip=12.22.5.236; helo=mail.nvidia.com; pr=C
+Received: from mail.nvidia.com (12.22.5.236) by
+ BN8NAM11FT067.mail.protection.outlook.com (10.13.177.159) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ 15.20.5482.10 via Frontend Transport; Mon, 1 Aug 2022 16:08:08 +0000
+Received: from drhqmail203.nvidia.com (10.126.190.182) by
+ DRHQMAIL109.nvidia.com (10.27.9.19) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.32; Mon, 1 Aug 2022 16:08:07 +0000
+Received: from drhqmail203.nvidia.com (10.126.190.182) by
+ drhqmail203.nvidia.com (10.126.190.182) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.986.26; Mon, 1 Aug 2022 09:08:06 -0700
+Received: from audio.nvidia.com (10.127.8.10) by mail.nvidia.com
+ (10.126.190.182) with Microsoft SMTP Server id 15.2.986.26 via Frontend
+ Transport; Mon, 1 Aug 2022 09:08:04 -0700
+From: Sameer Pujar <spujar@nvidia.com>
+To: <broonie@kernel.org>, <lgirdwood@gmail.com>, <robh+dt@kernel.org>,
+ <krzysztof.kozlowski+dt@linaro.org>, <perex@perex.cz>, <tiwai@suse.com>,
+ <kuninori.morimoto.gx@renesas.com>
+Subject: [PATCH v2 0/3] DT binding for sample format conversion
+Date: Mon, 1 Aug 2022 21:37:29 +0530
+Message-ID: <1659370052-18966-1-git-send-email-spujar@nvidia.com>
+X-Mailer: git-send-email 2.7.4
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220728035610.158-1-13691752556@139.com>
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
- shenghao-ding@ti.com, kevin-lu@ti.com, broonie@kernel.org, raphael-xu@ti.com
+Content-Type: text/plain
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 90ef133c-58fd-4476-b6fc-08da73d8065d
+X-MS-TrafficTypeDiagnostic: BN8PR12MB3409:EE_
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: Fw8qK1yYj39IEwaTlKnHXyZmrt6Ek/5JVr0cVrTfKDziooYmmDjaSLWW35EUrztRyfPAmiKcEF7itEbpqKEW9it9/Ax7MJXFp9XMYQsKtmEsyneLM4cqDcXZOTmrckrALwMbG9r9x8x28BSlNg6bYuU0aUhiOtro/fn+hdLGCAsktGhcKsXp1fBOfjwg4G3Ga2E9cAvDH2U0hjB9ecpxIOzZ5U20dVphLe8NvBeSfXOoCgnIfAt1lqlpm6BBUUvLJUBiiVdIUGa73rx5JNx2vUGfHpJapw2gnEx0jJwxeEzCaz6lIEOPWhq9jI7YPRGB2TJqft36XerhuljW9vv6UiXsgjwMQYfdKyoF2OHjyvWvwa/0PBLUT5ncwe3d+q/5IH09GwNTpglpf2gkoABEDE/NBFrjPiEJDG/CA3ipWoSYa0kBVdYfmXrgz2R+LOaKw6lJaztg3Ro3kQ1O2wT7oz/umw7Q24t0e/4ZNNWLQvncP7xtb4KeW6BPVXMuyOGWVEkSoX0LFGFU9L0BIic5OoC19ZseA8h1fCJLzT3yxURHM8Ll6jOQfHfZauQ6cY+jCgJBsHXtsaSSpBz3VokiLVtajC4pYOcb5uU38pqW/tvatLujAKzO8lJDQsWAOKjHSz05IO+ziKKJRrwdN2EfSNXEdd45D+q9JhXVDrPuy+Ubz2tMSXrc+CZ8sqRogopW3mNlTxY3ShNVbbZZpbCc53kpwWEp9dDOFfxp7wqNIspvLFwTfP/l8JanFaPQPNWeLqzHX+FkrMk1hGi2thdMgYSNgNimgKkgN/m1a3sYGZMxssNwb0KHpSYofDZgRmp/Nsd96mJ8g2co1KdqFuhAXw==
+X-Forefront-Antispam-Report: CIP:12.22.5.236; CTRY:US; LANG:en; SCL:1; SRV:;
+ IPV:NLI; SFV:NSPM; H:mail.nvidia.com; PTR:InfoNoRecords; CAT:NONE;
+ SFS:(13230016)(4636009)(396003)(346002)(39860400002)(136003)(376002)(46966006)(40470700004)(36840700001)(107886003)(186003)(336012)(2616005)(426003)(47076005)(7696005)(86362001)(6666004)(40460700003)(41300700001)(2906002)(26005)(82310400005)(36860700001)(83380400001)(356005)(82740400003)(110136005)(81166007)(5660300002)(36756003)(316002)(7416002)(70586007)(70206006)(40480700001)(4326008)(8936002)(8676002)(54906003)(478600001)(36900700001);
+ DIR:OUT; SFP:1101; 
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 Aug 2022 16:08:08.1406 (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 90ef133c-58fd-4476-b6fc-08da73d8065d
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a; Ip=[12.22.5.236];
+ Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource: BN8NAM11FT067.eop-nam11.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN8PR12MB3409
+Cc: Sameer Pujar <spujar@nvidia.com>, devicetree@vger.kernel.org,
+ alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -87,71 +130,35 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Thu, Jul 28, 2022 at 11:56:10AM +0800, Raphael-Xu wrote:
-> 1.use correct maximum I2C address 2.revise the format
+DT binding properties are available to fixup rate and channel
+parameters of a DAI. This series extends this to sample format
+conversion as well. With this now DAI PCM parameters (channels,
+sample rate and sample format) can be fixed up as necessary
+in an audio path.
 
-Same comments from v8 apply.
+Changelog:
+==========
+  v1->v2:
+  -------
+    * Move DAI params properties to a new schema and re-use this
+      for simple-card and audio-graph-card.
+    * Use string type for DAI format binding as suggested by
+      Krzysztof.
 
-> 
-> Signed-off-by: Raphael-Xu <13691752556@139.com>
-> ---
->  .../devicetree/bindings/sound/tas27xx.yaml       | 16 +++++++++++-----
->  1 file changed, 11 insertions(+), 5 deletions(-)
-> 
-> diff --git a/Documentation/devicetree/bindings/sound/tas27xx.yaml b/Documentation/devicetree/bindings/sound/tas27xx.yaml
-> index 66a0df8850ea..573652577462 100644
-> --- a/Documentation/devicetree/bindings/sound/tas27xx.yaml
-> +++ b/Documentation/devicetree/bindings/sound/tas27xx.yaml
-> @@ -8,7 +8,7 @@ $schema: "http://devicetree.org/meta-schemas/core.yaml#"
->  title: Texas Instruments TAS2764/TAS2780 Smart PA
->  
->  maintainers:
-> -  - Shenghao Ding <shenghao-ding@ti.com>
-> +  - Raphael Xu <raphael-xu@ti.com>
->  
->  description: |
->    The TAS2764/TAS2780 is a mono, digital input Class-D audio amplifier
-> @@ -23,17 +23,19 @@ properties:
->        - ti,tas2780
->  
->    reg:
-> -    maxItems: 1
->      description: |
-> -       I2C address of the device can be between 0x38 to 0x45.
-> +       I2C address of the device can be between 0x38 to 0x3f.
-> +    minimum: 0x38
-> +    maximum: 0x3f
->  
->    reset-gpios:
-> -    maxItems: 1
->      description: GPIO used to reset the device.
-> +    maxItems: 1
->  
->    shutdown-gpios:
-> +    description: |
-> +       GPIO used to control the state of the device.Only for TAS2764.
->      maxItems: 1
-> -    description: GPIO used to control the state of the device.
->  
->    interrupts:
->      maxItems: 1
-> @@ -41,10 +43,14 @@ properties:
->    ti,imon-slot-no:
->      $ref: /schemas/types.yaml#/definitions/uint32
->      description: TDM TX current sense time slot.
-> +    minimum: 0
-> +    maximum: 3
->  
->    ti,vmon-slot-no:
->      $ref: /schemas/types.yaml#/definitions/uint32
->      description: TDM TX voltage sense time slot.
-> +    minimum: 0
-> +    maximum: 3
->  
->    '#sound-dai-cells':
->      const: 1
-> -- 
-> 2.35.1
-> 
-> 
-> 
+Sameer Pujar (3):
+  ASoC: dt-bindings: Add schema for common DAI params
+  ASoC: dt-bindings: Add sample format conversion
+  ASoC: simple-card-utils: Fixup DAI sample format
+
+ .../bindings/sound/audio-graph-port.yaml           | 17 +++++-----
+ .../devicetree/bindings/sound/audio-graph.yaml     |  9 ++---
+ .../devicetree/bindings/sound/dai-params.yaml      | 38 ++++++++++++++++++++++
+ .../devicetree/bindings/sound/simple-card.yaml     | 20 +++++-------
+ include/sound/simple_card_utils.h                  |  1 +
+ sound/soc/generic/simple-card-utils.c              | 34 +++++++++++++++++++
+ 6 files changed, 95 insertions(+), 24 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/sound/dai-params.yaml
+
+-- 
+2.7.4
+
