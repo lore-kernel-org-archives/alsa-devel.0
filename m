@@ -4,77 +4,77 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B9623C00144
-	for <alsa-devel@archiver.kernel.org>; Mon,  1 Aug 2022 16:58:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3EB7EC00144
+	for <alsa-devel@archiver.kernel.org>; Mon,  1 Aug 2022 16:59:00 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id EA7ED84B;
-	Mon,  1 Aug 2022 18:57:46 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EA7ED84B
+	by alsa0.perex.cz (Postfix) with ESMTPS id 81E52886;
+	Mon,  1 Aug 2022 18:58:08 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 81E52886
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1659373117;
-	bh=Pj4jAb7sL0SqF6uyJQgVC/vuxgkcpTxLNPFNd7687wk=;
+	s=default; t=1659373138;
+	bh=qRve12a+z13PtRHdSIb5MeWO1AydoJzCJ5gB8ec8GZg=;
 	h=From:To:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=mDe9seW/zF1UUrg5tJn56EwuN24yBPA3Nx26ATMC6uhFrtXdxmWLuwTqrLbjCLcM7
-	 61cwDpJAeUSUVcC/JU5Z9GsfHXjrukRLMGOPuMuROvugDOELKXQP/+oKl8p3vzkTmY
-	 im2Q87g/o0ugksxw1h+hLwoOj/q2Cnk8Dmb9K2A8=
+	b=RW70CFirdIpQBbyNVe/YF2jgvNVfvaT4GQCDtwgDoLNQtgph7Zq1zvIia79mVmjLB
+	 pl8GsGvYwNuuCXBgbMjHifV+8r8veebRXWCKQTxMgwtnJwFUGY7DHzpBdRI6EuY/Qv
+	 v7q6x2h1rz+fz8MKShRQMwi6BUJPnFequun8KLy0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id AD716F80558;
-	Mon,  1 Aug 2022 18:57:02 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2A7E7F8055A;
+	Mon,  1 Aug 2022 18:57:03 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id BEDBCF80552; Mon,  1 Aug 2022 18:56:51 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+ id 5B51FF8054A; Mon,  1 Aug 2022 18:56:52 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id A1903F8023B
- for <alsa-devel@alsa-project.org>; Mon,  1 Aug 2022 18:56:43 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A1903F8023B
+ by alsa1.perex.cz (Postfix) with ESMTPS id 1181FF802DB
+ for <alsa-devel@alsa-project.org>; Mon,  1 Aug 2022 18:56:44 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1181FF802DB
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="JBJOtxep"; 
+ header.b="SkHaj1gi"; 
  dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="GdBUxXTC"
+ header.b="50HwP7n/"
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 7F25C4D854;
+ by smtp-out2.suse.de (Postfix) with ESMTPS id EA78B2067B;
  Mon,  1 Aug 2022 16:56:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
  t=1659373003; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=Ww5jnaPCduGtXwHHgUSwExhF9QL4PYRD+iwmJrblojM=;
- b=JBJOtxepuX7NKXu7mJURUUq8hB+BuIC4+y2K9duvTa5LxlWsvpPZmo7DrtAU3ds7hHfAH8
- MHpuFCdeEHGFv2V0NWOTaaCa884mgDPkoFSBqw+QdCYhVima5yCqaQo0edJGi9XJOa/Y5C
- NJ5hjG0jQQFkVrLuSZhtqkIF8P/lJh8=
+ bh=toBsslfWCJJPflnUPbfZxL81dQGX6k4XqJBtdCj+KWk=;
+ b=SkHaj1giv8XEdpdpioeVK2pYE9vrHoXbITJRgvdo1CuzRmAal8a10zITiTT3x99mqKWbfw
+ TtJGG6EjYs8lK/EgdSBEk69oZeo46h/3hVn12iygHFjxs06RfDP7S5skV4L1O+hc2TS9Kl
+ YllcN/MLaojc11lILyyx7paCPdoqnQc=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
  s=susede2_ed25519; t=1659373003;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=Ww5jnaPCduGtXwHHgUSwExhF9QL4PYRD+iwmJrblojM=;
- b=GdBUxXTCPaTmE3xioirIy3yhxEeTHb9SU6PI2m4G1dL88tiGfEx0Yqs/lLurKVXAZAoxIn
- q0OsGqkkTgnGGHBg==
+ bh=toBsslfWCJJPflnUPbfZxL81dQGX6k4XqJBtdCj+KWk=;
+ b=50HwP7n/Zma5GbBZ+wdl9bQycZSlY565dtx7ioaFViQxOHkNYuKnKaZJI9HOE+dvJP+6Zw
+ 0CtjZA3pCmgrjeCw==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 436AB13ADF;
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id B1ACD13AAE;
  Mon,  1 Aug 2022 16:56:43 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id qK+TD8sF6GLXGgAAMHmgww
+ by imap2.suse-dmz.suse.de with ESMTPSA id ODYxKcsF6GLXGgAAMHmgww
  (envelope-from <tiwai@suse.de>); Mon, 01 Aug 2022 16:56:43 +0000
 From: Takashi Iwai <tiwai@suse.de>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH 5/7] ALSA: pcm: Replace sprintf() with sysfs_emit()
-Date: Mon,  1 Aug 2022 18:56:37 +0200
-Message-Id: <20220801165639.26030-6-tiwai@suse.de>
+Subject: [PATCH 7/7] ALSA: line6: Replace sprintf() with sysfs_emit()
+Date: Mon,  1 Aug 2022 18:56:39 +0200
+Message-Id: <20220801165639.26030-8-tiwai@suse.de>
 X-Mailer: git-send-email 2.35.3
 In-Reply-To: <20220801165639.26030-1-tiwai@suse.de>
 References: <20220801165639.26030-1-tiwai@suse.de>
@@ -96,27 +96,70 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 For sysfs outputs, it's safer to use a new helper, sysfs_emit(),
-instead of the raw sprintf() & co.  This patch replaces such a
-sprintf() call straightforwardly with the new helper.
+instead of the raw sprintf() & co.  This patch replaces those usages
+straightforwardly with a new helper, sysfs_emit().
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/core/pcm.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/usb/line6/pod.c   | 8 ++++----
+ sound/usb/line6/podhd.c | 4 ++--
+ 2 files changed, 6 insertions(+), 6 deletions(-)
 
-diff --git a/sound/core/pcm.c b/sound/core/pcm.c
-index 2ac742035310..82925709fa12 100644
---- a/sound/core/pcm.c
-+++ b/sound/core/pcm.c
-@@ -1031,7 +1031,7 @@ static ssize_t pcm_class_show(struct device *dev,
- 		str = "none";
- 	else
- 		str = strs[pcm->dev_class];
--	return sprintf(buf, "%s\n", str);
-+	return sysfs_emit(buf, "%s\n", str);
+diff --git a/sound/usb/line6/pod.c b/sound/usb/line6/pod.c
+index 16e644330c4d..cd41aa7f0385 100644
+--- a/sound/usb/line6/pod.c
++++ b/sound/usb/line6/pod.c
+@@ -235,7 +235,7 @@ static ssize_t serial_number_show(struct device *dev,
+ 	struct snd_card *card = dev_to_snd_card(dev);
+ 	struct usb_line6_pod *pod = card->private_data;
+ 
+-	return sprintf(buf, "%u\n", pod->serial_number);
++	return sysfs_emit(buf, "%u\n", pod->serial_number);
  }
  
- static DEVICE_ATTR_RO(pcm_class);
+ /*
+@@ -247,8 +247,8 @@ static ssize_t firmware_version_show(struct device *dev,
+ 	struct snd_card *card = dev_to_snd_card(dev);
+ 	struct usb_line6_pod *pod = card->private_data;
+ 
+-	return sprintf(buf, "%d.%02d\n", pod->firmware_version / 100,
+-		       pod->firmware_version % 100);
++	return sysfs_emit(buf, "%d.%02d\n", pod->firmware_version / 100,
++			  pod->firmware_version % 100);
+ }
+ 
+ /*
+@@ -260,7 +260,7 @@ static ssize_t device_id_show(struct device *dev,
+ 	struct snd_card *card = dev_to_snd_card(dev);
+ 	struct usb_line6_pod *pod = card->private_data;
+ 
+-	return sprintf(buf, "%d\n", pod->device_id);
++	return sysfs_emit(buf, "%d\n", pod->device_id);
+ }
+ 
+ /*
+diff --git a/sound/usb/line6/podhd.c b/sound/usb/line6/podhd.c
+index b24bc82f89e3..ffd8c157a281 100644
+--- a/sound/usb/line6/podhd.c
++++ b/sound/usb/line6/podhd.c
+@@ -146,7 +146,7 @@ static ssize_t serial_number_show(struct device *dev,
+ 	struct snd_card *card = dev_to_snd_card(dev);
+ 	struct usb_line6_podhd *pod = card->private_data;
+ 
+-	return sprintf(buf, "%u\n", pod->serial_number);
++	return sysfs_emit(buf, "%u\n", pod->serial_number);
+ }
+ 
+ static ssize_t firmware_version_show(struct device *dev,
+@@ -155,7 +155,7 @@ static ssize_t firmware_version_show(struct device *dev,
+ 	struct snd_card *card = dev_to_snd_card(dev);
+ 	struct usb_line6_podhd *pod = card->private_data;
+ 
+-	return sprintf(buf, "%06x\n", pod->firmware_version);
++	return sysfs_emit(buf, "%06x\n", pod->firmware_version);
+ }
+ 
+ static DEVICE_ATTR_RO(firmware_version);
 -- 
 2.35.3
 
