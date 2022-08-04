@@ -4,92 +4,77 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 020FCC19F2A
-	for <alsa-devel@archiver.kernel.org>; Thu,  4 Aug 2022 14:49:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 25129C19F2A
+	for <alsa-devel@archiver.kernel.org>; Thu,  4 Aug 2022 15:00:38 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id CDEE584A;
-	Thu,  4 Aug 2022 16:48:08 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CDEE584A
+	by alsa0.perex.cz (Postfix) with ESMTPS id 9740AF3;
+	Thu,  4 Aug 2022 16:59:46 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9740AF3
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1659624538;
-	bh=6Luo3nVKnhm9MS9mMcDSj2czS31Q4KNJHbWXKMu0OmI=;
-	h=Subject:From:To:Date:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1659625236;
+	bh=MG/OLbjvUhmhCpOzmNodao8upPyMUSDGDlCf4g1Eh8w=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=q9kadah6ymZ1ER0t9eaSmK+zznP9bjcbmrogqJW5IxkurYNKUNh3UIK1PYqgp0DwR
-	 EqQQjodFIVUgz5bMfpRq3p7FQR4eDA/Gsi9JijykNlL0cLfr06WEqiUbwqopVk5uQO
-	 BT5x1wvqttmjHo2BnJ7/0ZE7iRJAeWpf7ui81IIA=
+	b=JoMYqdrFz4B96i1PfCmnwjHYVHj3YVZECwaCVcIqzIB0BNz7bR6fgp3k6T23fmCDN
+	 34Lz3l6IPBTQLDQieUEB/ip4T7I/g3nlhUck66tcSXYS+0K+xEg7vMyVRcNf7b2yGa
+	 Vm1ctdpPAFQon1LfzHhhXQB3m5AvErrunga1dnpk=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 63DEBF8016A;
-	Thu,  4 Aug 2022 16:48:07 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 3AFA9F8012F;
+	Thu,  4 Aug 2022 16:59:46 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id F1636F8016A; Thu,  4 Aug 2022 16:48:05 +0200 (CEST)
-Received: from mailgw01.mediatek.com (unknown [60.244.123.138])
+ id 8E33EF8016A; Thu,  4 Aug 2022 16:59:44 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 6C3ABF8012F;
+ Thu,  4 Aug 2022 16:59:35 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6C3ABF8012F
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="c0CgKr7e"
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 97338F8012F;
- Thu,  4 Aug 2022 16:47:56 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 97338F8012F
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=mediatek.com header.i=@mediatek.com
- header.b="e3ke6iX7"
-X-UUID: 88886b0a3159428a819f01cd0fb36f80-20220804
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com;
- s=dk; 
- h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID;
- bh=h3l/BjGiDj7ogx0ua5ecB5Kqs/UfoZIgMYIj4zv4hAo=; 
- b=e3ke6iX7yZ5bzvLap5EolVJUlV/LsYivTXrxaX6IVbOjDp//aMU4EJPY+7MMl14cfsLnjPORi0qejFPvbgqLIJSJ88JweqkUVBTff3XVC/u4obw3hrl5+1jeIwGOfNBgTBGAx/gKyeqR0k8StpgNNvf7KC9/9XUY/pmMJjpQREY=;
-X-CID-P-RULE: Release_Ham
-X-CID-O-INFO: VERSION:1.1.8, REQID:dff183f7-8962-4890-97f3-7da4c178d3ab, OB:0,
- LO
- B:0,IP:0,URL:5,TC:0,Content:0,EDM:0,RT:0,SF:45,FILE:0,RULE:Release_Ham,ACT
- ION:release,TS:50
-X-CID-INFO: VERSION:1.1.8, REQID:dff183f7-8962-4890-97f3-7da4c178d3ab, OB:0,
- LOB:
- 0,IP:0,URL:5,TC:0,Content:0,EDM:0,RT:0,SF:45,FILE:0,RULE:Release_Ham,ACTIO
- N:release,TS:50
-X-CID-META: VersionHash:0f94e32, CLOUDID:4c503ed1-841b-4e95-ad42-8f86e18f54fc,
- C
- OID:32c24ad63680,Recheck:0,SF:28|17|19|48,TC:nil,Content:0,EDM:-3,IP:nil,U
- RL:1,File:nil,QS:nil,BEC:nil,COL:0
-X-UUID: 88886b0a3159428a819f01cd0fb36f80-20220804
-Received: from mtkmbs10n1.mediatek.inc [(172.21.101.34)] by
- mailgw01.mediatek.com (envelope-from <chunxu.li@mediatek.com>)
- (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
- with ESMTP id 1803292040; Thu, 04 Aug 2022 22:47:50 +0800
-Received: from mtkcas11.mediatek.inc (172.21.101.40) by
- mtkmbs10n1.mediatek.inc (172.21.101.34) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- 15.2.792.15; Thu, 4 Aug 2022 22:47:49 +0800
-Received: from mhfsdcap04 (10.17.3.154) by mtkcas11.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Thu, 4 Aug 2022 22:47:48 +0800
-Message-ID: <767ff0f7f40711b8ecda545e43e87036e88f0f22.camel@mediatek.com>
-Subject: Re: [PATCH 2/2] ASoC: SOF: mediatek: Add .of_machine_select field
- for mt8186
-From: chunxu.li <chunxu.li@mediatek.com>
-To: Mark Brown <broonie@kernel.org>
-Date: Thu, 4 Aug 2022 22:47:48 +0800
-In-Reply-To: <YuvKjn3cW5im2Yw9@sirena.org.uk>
+ by dfw.source.kernel.org (Postfix) with ESMTPS id 5EC0560DF4;
+ Thu,  4 Aug 2022 14:59:33 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BA3F7C433C1;
+ Thu,  4 Aug 2022 14:59:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1659625172;
+ bh=MG/OLbjvUhmhCpOzmNodao8upPyMUSDGDlCf4g1Eh8w=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=c0CgKr7ehUtGuS3wp8y8m8OtWbhfEOxk49tcM/MH4FlGcXmpiu6UyWwDl9JQLoS8U
+ HNGhEvCTp4Ux90AuEx9zSWQLTkXTo5P1EZL9RJEUbFELp6pjuIqPjvieYGGJ3EMXi8
+ jGO+iVCvN14kxXkFuuorjPcXDUUzlo0LHgWvcybGLswb4Ie/FstY+nsdybl8IxPPpz
+ tkxl53aibDN5URDHncyDCfT3sVlxslwrQXBOZx99tGeH5lY7fu4KFi7ts5522MIV7X
+ htz2sr7xYv82aOqR8tmW7XQDtQC4EdRb/h1Q6XqW8RcSo8PlevvXVrTQZ9j59UJ+Mk
+ vE5znSwjnW5mw==
+Date: Thu, 4 Aug 2022 15:59:26 +0100
+From: Mark Brown <broonie@kernel.org>
+To: "chunxu.li" <chunxu.li@mediatek.com>
+Subject: Re: [PATCH 1/2] ASoC: SOF: Introduce optional callback
+ of_machine_select
+Message-ID: <YuvezrxOnAJTLKt9@sirena.org.uk>
 References: <20220804091359.31449-1-chunxu.li@mediatek.com>
- <20220804091359.31449-3-chunxu.li@mediatek.com>
- <Yuu+elYxBv3xZ1O2@sirena.org.uk>
- <46f972f41a8c1bbfc2bfa42c431308f6b5fe2234.camel@mediatek.com>
- <YuvKjn3cW5im2Yw9@sirena.org.uk>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
+ <20220804091359.31449-2-chunxu.li@mediatek.com>
+ <YuvG4drwG/rYoozp@sirena.org.uk>
+ <644d24503899e6ed8b6a7321979e11e46577a610.camel@mediatek.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
- daniel.baluta@nxp.com, tinghan.shen@mediatek.com,
- pierre-louis.bossart@linux.intel.com, lgirdwood@gmail.com,
- project_global_chrome_upstream_group@mediatek.com,
- linux-mediatek@lists.infradead.org, yc.hung@mediatek.com,
- matthias.bgg@gmail.com, angelogioacchino.delregno@collabora.com,
- peter.ujfalusi@linux.intel.com, linux-arm-kernel@lists.infradead.org,
- sound-open-firmware@alsa-project.org
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature"; boundary="h0hDaRGCHYmaxJ2S"
+Content-Disposition: inline
+In-Reply-To: <644d24503899e6ed8b6a7321979e11e46577a610.camel@mediatek.com>
+X-Cookie: Did I say 2?  I lied.
+Cc: alsa-devel@alsa-project.org, peter.ujfalusi@linux.intel.com,
+ tinghan.shen@mediatek.com, pierre-louis.bossart@linux.intel.com,
+ lgirdwood@gmail.com, project_global_chrome_upstream_group@mediatek.com,
+ linux-mediatek@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
+ yc.hung@mediatek.com, matthias.bgg@gmail.com,
+ sound-open-firmware@alsa-project.org, daniel.baluta@nxp.com,
+ linux-kernel@vger.kernel.org, angelogioacchino.delregno@collabora.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -105,36 +90,43 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Thu, 2022-08-04 at 14:33 +0100, Mark Brown wrote:
-> On Thu, Aug 04, 2022 at 09:21:37PM +0800, chunxu.li wrote:
-> > On Thu, 2022-08-04 at 13:41 +0100, Mark Brown wrote:
-> > > On Thu, Aug 04, 2022 at 05:13:59PM +0800, Chunxu Li wrote:
-> > > > +		.board = "mediatek,mt8186",
-> > > > +		.sof_tplg_filename = "sof-mt8186.tplg",
-> > > The mediatek,mt8186 compatible looks like a SoC compatible not a
-> > > board
-> > > compatible...
-> > Our dts config as below:
-> > kingler board:
-> > compatible = "google,corsola", "google,kingler", "mediatek,mt8186";
-> > krabby board:
-> > compatible = "google,corsola", "google,krabby", "mediatek,mt8186";
-> 
-> So the SoC is listed as a fallback for the board and things work out
-> fine.
-> 
-> > Which of the two approaches do you prefer?
-> 
-> I think it would be clearer to keep what's being matched the same but
-> rename the .board field to be .compatible, or possibly
-> .system_compatible
-> or something if it's unclear what's being matched.  That'd be more
-> normal for specifying a compatible string anyway.
 
-Appreciated for you advice, I'll rename the .board to .compatible as
-following:
+--h0hDaRGCHYmaxJ2S
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-+	.compatible = "mediatek,mt8186",
-+	.sof_tplg_filename = "sof-mt8186.tplg",
+On Thu, Aug 04, 2022 at 10:36:07PM +0800, chunxu.li wrote:
 
+> Thanks for you advice, I'll remove the callback function, and directly
+> call sof_of_machine_select() in sof_machine_check() as following.
+>=20
+> int sof_machine_check(struct snd_sof_dev *sdev)
+> {
+> 	}
+>=20
+> =09
+> +	of_mach =3D sof_of_machine_select(sdev);
+> +	if (of_mach) {
+> +		sof_pdata->of_machine =3D of_mach;
+> +		return 0;
+> +	}
 
+Looks good.
+
+--h0hDaRGCHYmaxJ2S
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmLr3s0ACgkQJNaLcl1U
+h9CNtgf/XRsA3q6DYLqEaEXV4tXIlM8fA/R/M0YDmHq6Ue+jq26vdS+Af5jl77wB
+FIpNpuihB4hPSw02XTLtF7vyGr2FovaTLOCQcYI1YFv/HdKvw2e/F7CGKbopburY
+DaP2S1j4l5n/cEGFht//jtFMR1wlmgLPcjcSCx62mZpAqvUulCjnjL5EMhyygC2W
+n+80WJg3AH1EzsDtYEsvjs7xI7zswHcamarrPa3Wgl/FIiAS99nk1PH17AKIlncB
+Gl/wOsK9p5nDKqiKGrLmVuC80G6DOC2NcvMmu+zgElXU6SmUsytHQQWuWxfJ9jpr
+PQ16skJvJ9CihoHwi7dYaA8P6h3J5Q==
+=uDFa
+-----END PGP SIGNATURE-----
+
+--h0hDaRGCHYmaxJ2S--
