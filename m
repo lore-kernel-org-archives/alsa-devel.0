@@ -4,87 +4,63 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 36B45C00140
-	for <alsa-devel@archiver.kernel.org>; Fri,  5 Aug 2022 07:06:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 906C7C25B08
+	for <alsa-devel@archiver.kernel.org>; Fri,  5 Aug 2022 07:46:51 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 5BC211630;
-	Fri,  5 Aug 2022 09:06:07 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5BC211630
+	by alsa0.perex.cz (Postfix) with ESMTPS id 9B54F15C2;
+	Fri,  5 Aug 2022 09:45:58 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9B54F15C2
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1659683217;
-	bh=YbSr4Cp2THDI1yko8lyV6CVSZJd5LU5o3ROx8M6Ix5s=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=FEkkZn90pKlJtyCVyAscNUKwotxrm/xfN3lmtvAW9tvKUIcupnq4AsETSz+1K01wD
-	 4Ipn7AtWqyKo0GGhzwMlfUyL2NlR6KT6nC79bBNzDQmW5aIiK1ussQROTnRE9kc6bN
-	 OhUcs1aqZ4Ryq+0S9YMw9jjm7crF0aLvZK27iMEA=
+	s=default; t=1659685608;
+	bh=5eZYJcYE2pZI63e0ivWb7leDxfHyUYgUN8dfBXqBeZo=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=B96fWDVmQC3k5Fl+MwQuwwBKOYugp5LEK6gnQMUjNdePHOlZo4HjkiTmWxDmLozhx
+	 4BUp4aJp4YYyYf55FAu7cWLlOG0nudfKRca3RSwSYSAln6fIWuijDbkrR1mjBchE1A
+	 5aLzF+YYx9p2BuU9OjHQhu/ElVdIXgFhOyR8Xosk=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 5C525F80558;
-	Fri,  5 Aug 2022 09:05:19 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 33F24F80238;
+	Fri,  5 Aug 2022 09:45:58 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 5F384F8012F; Fri,  5 Aug 2022 09:05:16 +0200 (CEST)
-Received: from mailgw01.mediatek.com (unknown [60.244.123.138])
+ id 0AF5BF8013D; Fri,  5 Aug 2022 09:45:57 +0200 (CEST)
+Received: from smtpbg151.qq.com (smtpbg151.qq.com [18.169.211.239])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id E8A6DF8012F;
- Fri,  5 Aug 2022 09:05:08 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E8A6DF8012F
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=mediatek.com header.i=@mediatek.com
- header.b="s+VlJNWo"
-X-UUID: fb8e1fcd46554807be8d616afd1a9963-20220805
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com;
- s=dk; 
- h=Content-Type:Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:CC:To:From;
- bh=c8d98ZPnkJa5Q3JBWEZNhlWEdoy2djENWFgIugL7mo0=; 
- b=s+VlJNWocZU48bUwpUDN5SQrn8N54zJ7SHJb9978nNbcwFVp3xFhFKYOfy9JOukAW5BekOWRgncuF08vicFvUJ9V6LYbahkjzFOE5Hc5Gpk7KhUMVDKL1gJLJfEFxX3RxLsrU3wQsZuv0WD/7con9muIQTC4W+OlWoTxrFFbUi8=;
-X-CID-P-RULE: Release_Ham
-X-CID-O-INFO: VERSION:1.1.8, REQID:9e5a06de-8958-42a4-87a2-10d3949ebc58, OB:0,
- LO
- B:0,IP:0,URL:5,TC:0,Content:-5,EDM:0,RT:0,SF:95,FILE:0,RULE:Release_Ham,AC
- TION:release,TS:95
-X-CID-INFO: VERSION:1.1.8, REQID:9e5a06de-8958-42a4-87a2-10d3949ebc58, OB:0,
- LOB:
- 0,IP:0,URL:5,TC:0,Content:-5,EDM:0,RT:0,SF:95,FILE:0,RULE:Spam_GS981B3D,AC
- TION:quarantine,TS:95
-X-CID-META: VersionHash:0f94e32, CLOUDID:c22fdb9b-da39-4e3b-a854-56c7d2111b46,
- C
- OID:97c6a64f7efe,Recheck:0,SF:28|17|19|48,TC:nil,Content:0,EDM:-3,IP:nil,U
- RL:1,File:nil,QS:nil,BEC:nil,COL:0
-X-UUID: fb8e1fcd46554807be8d616afd1a9963-20220805
-Received: from mtkmbs10n1.mediatek.inc [(172.21.101.34)] by
- mailgw01.mediatek.com (envelope-from <chunxu.li@mediatek.com>)
- (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
- with ESMTP id 561736286; Fri, 05 Aug 2022 15:04:59 +0800
-Received: from mtkcas10.mediatek.inc (172.21.101.39) by
- mtkmbs10n1.mediatek.inc (172.21.101.34) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- 15.2.792.15; Fri, 5 Aug 2022 15:04:57 +0800
-Received: from localhost.localdomain (10.17.3.154) by mtkcas10.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Fri, 5 Aug 2022 15:04:56 +0800
-From: Chunxu Li <chunxu.li@mediatek.com>
-To: <pierre-louis.bossart@linux.intel.com>, <peter.ujfalusi@linux.intel.com>, 
- <lgirdwood@gmail.com>, <broonie@kernel.org>,
- <angelogioacchino.delregno@collabora.com>, <daniel.baluta@nxp.com>
-Subject: [PATCH v2 1/2] ASoC: SOF: Introduce function sof_of_machine_select
-Date: Fri, 5 Aug 2022 15:04:48 +0800
-Message-ID: <20220805070449.6611-2-chunxu.li@mediatek.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20220805070449.6611-1-chunxu.li@mediatek.com>
-References: <20220805070449.6611-1-chunxu.li@mediatek.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 3007DF8013D
+ for <alsa-devel@alsa-project.org>; Fri,  5 Aug 2022 09:45:49 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3007DF8013D
+X-QQ-mid: bizesmtp77t1659685542t4v7n1qq
+Received: from localhost.localdomain ( [58.240.82.166])
+ by bizesmtp.qq.com (ESMTP) with 
+ id ; Fri, 05 Aug 2022 15:45:35 +0800 (CST)
+X-QQ-SSF: 01400000002000G0T000B00A0000000
+X-QQ-FEAT: uGhnJwy6xZL//SSZC3HXd/LF7Y+7O4moIWupnV6N5uQNk3UE1T8Ttyb6tSIbA
+ J+ewUm1c5SOaXZxL+/Ue2QUIIJSBS7/p7BIr0E1nquVgyQ4v/bgPPzcq0IkF3GMARxp1CBd
+ 4srJOxvnadce8LximV4oOk9vhukNgDTU/CItX08Yqfyu0GvayvQx9xWz/zJn9qWrcfg701h
+ G0Yb0YkvwL2xtIT0BjNq9qllZbUtD0UwoO319A9XozhIRPZPhKmo10XDjWF127ZLCrokSxt
+ Qfz/Flok4eAeSjt9rkgFhKO2pcC9nLi30JmYg4/m3S39qH30u9FrmWp4pvoHUJ6qa37pWvC
+ /NH+qCTboKcZ0C8IhAyXHtHzJ09azuEQsTAF5jpnA4Z/7YDXzDGUjVvYnkclYpsMBy5U76X
+ +knTQluTscY=
+X-QQ-GoodBg: 2
+From: Meng Tang <tangmeng@uniontech.com>
+To: perex@perex.cz,
+	tiwai@suse.com
+Subject: [PATCH v2] ALSA: hda/realtek: Add quirk for another Asus K42JZ model
+Date: Fri,  5 Aug 2022 15:45:34 +0800
+Message-Id: <20220805074534.20003-1-tangmeng@uniontech.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-Cc: alsa-devel@alsa-project.org, Chunxu Li <chunxu.li@mediatek.com>,
- tinghan.shen@mediatek.com, linux-kernel@vger.kernel.org,
- project_global_chrome_upstream_group@mediatek.com,
- linux-mediatek@lists.infradead.org, yc.hung@mediatek.com,
- matthias.bgg@gmail.com, linux-arm-kernel@lists.infradead.org,
- sound-open-firmware@alsa-project.org
+X-QQ-SENDSIZE: 520
+Feedback-ID: bizesmtp:uniontech.com:qybglogicsvr:qybglogicsvr7
+Cc: sbinding@opensource.cirrus.com, kailang@realtek.com,
+ tanureal@opensource.cirrus.com, tcrawford@system76.com,
+ alsa-devel@alsa-project.org, wse@tuxedocomputers.com,
+ linux-kernel@vger.kernel.org, kai.heng.feng@canonical.com,
+ andy.chi@canonical.com, Meng Tang <tangmeng@uniontech.com>, cam@neo-zeon.de,
+ yong.wu@mediatek.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -100,157 +76,51 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From current design in sof_machine_check and snd_sof_new_platform_drv,
-the SOF can only support ACPI type machine.
+There is another Asus K42JZ model with the PCI SSID 1043:1313
+that requires the quirk ALC269VB_FIXUP_ASUS_MIC_NO_PRESENCE.
+Add the corresponding entry to the quirk table.
 
-1. In sof_machine_check if there is no ACPI machine exist, the function
-will return -ENODEV directly, that's we don't expected if we do not
-base on ACPI machine.
-
-2. In snd_sof_new_platform_drv the component driver need a driver name
-to do ignore_machine, currently the driver name is obtained from
-machine->drv_name, and the type of machine is snd_soc_acpi_mach.
-
-So we add a new function named sof_of_machine_select that we can pass
-sof_machine_check and obtain info required by snd_sof_new_platform_drv.
-
-Signed-off-by: Chunxu Li <chunxu.li@mediatek.com>
+Signed-off-by: Meng Tang <tangmeng@uniontech.com>
 ---
- include/sound/sof.h        |  2 ++
- sound/soc/sof/pcm.c        |  8 +++++++-
- sound/soc/sof/sof-audio.c  | 30 ++++++++++++++++++++++++++++++
- sound/soc/sof/sof-of-dev.h |  7 +++++++
- 4 files changed, 46 insertions(+), 1 deletion(-)
+ sound/pci/hda/patch_realtek.c | 11 +++++++++++
+ 1 file changed, 11 insertions(+)
 
-diff --git a/include/sound/sof.h b/include/sound/sof.h
-index 367dccfea7ad..341fef19e612 100644
---- a/include/sound/sof.h
-+++ b/include/sound/sof.h
-@@ -89,6 +89,7 @@ struct snd_sof_pdata {
- 	/* machine */
- 	struct platform_device *pdev_mach;
- 	const struct snd_soc_acpi_mach *machine;
-+	const struct snd_sof_of_mach *of_machine;
- 
- 	void *hw_pdata;
- 
-@@ -102,6 +103,7 @@ struct snd_sof_pdata {
- struct sof_dev_desc {
- 	/* list of machines using this configuration */
- 	struct snd_soc_acpi_mach *machines;
-+	struct snd_sof_of_mach *of_machines;
- 
- 	/* alternate list of machines using this configuration */
- 	struct snd_soc_acpi_mach *alt_machines;
-diff --git a/sound/soc/sof/pcm.c b/sound/soc/sof/pcm.c
-index 6cb6a432be5e..49f7cb049f62 100644
---- a/sound/soc/sof/pcm.c
-+++ b/sound/soc/sof/pcm.c
-@@ -13,6 +13,7 @@
- #include <linux/pm_runtime.h>
- #include <sound/pcm_params.h>
- #include <sound/sof.h>
-+#include "sof-of-dev.h"
- #include "sof-priv.h"
- #include "sof-audio.h"
- #include "sof-utils.h"
-@@ -655,7 +656,12 @@ void snd_sof_new_platform_drv(struct snd_sof_dev *sdev)
- 	struct snd_sof_pdata *plat_data = sdev->pdata;
- 	const char *drv_name;
- 
--	drv_name = plat_data->machine->drv_name;
-+	if (plat_data->machine)
-+		drv_name = plat_data->machine->drv_name;
-+	else if (plat_data->of_machine)
-+		drv_name = plat_data->of_machine->drv_name;
-+	else
-+		drv_name = NULL;
- 
- 	pd->name = "sof-audio-component";
- 	pd->probe = sof_pcm_probe;
-diff --git a/sound/soc/sof/sof-audio.c b/sound/soc/sof/sof-audio.c
-index 28976098a89e..ea9663d448eb 100644
---- a/sound/soc/sof/sof-audio.c
-+++ b/sound/soc/sof/sof-audio.c
-@@ -10,6 +10,7 @@
- 
- #include <linux/bitfield.h>
- #include "sof-audio.h"
-+#include "sof-of-dev.h"
- #include "ops.h"
- 
- static void sof_reset_route_setup_status(struct snd_sof_dev *sdev, struct
- snd_sof_widget *widget)
-@@ -784,6 +785,28 @@ int sof_dai_get_bclk(struct snd_soc_pcm_runtime *rtd)
- }
- EXPORT_SYMBOL(sof_dai_get_bclk);
- 
-+static struct snd_sof_of_mach *sof_of_machine_select(struct snd_sof_dev
- *sdev)
-+{
-+	struct snd_sof_pdata *sof_pdata = sdev->pdata;
-+	const struct sof_dev_desc *desc = sof_pdata->desc;
-+	struct snd_sof_of_mach *mach = desc->of_machines;
-+
-+	if (!mach)
-+		return NULL;
-+
-+	for (; mach->compatible; mach++) {
-+		if (of_machine_is_compatible(mach->compatible)) {
-+			sof_pdata->tplg_filename = mach->sof_tplg_filename;
-+			if (mach->fw_filename)
-+				sof_pdata->fw_filename = mach->fw_filename;
-+
-+			return mach;
-+		}
-+	}
-+
-+	return NULL;
-+}
-+
- /*
-  * SOF Driver enumeration.
-  */
-@@ -794,6 +817,7 @@ int sof_machine_check(struct snd_sof_dev *sdev)
- 	struct snd_soc_acpi_mach *mach;
- 
- 	if (!IS_ENABLED(CONFIG_SND_SOC_SOF_FORCE_NOCODEC_MODE)) {
-+		const struct snd_sof_of_mach *of_mach;
- 
- 		/* find machine */
- 		mach = snd_sof_machine_select(sdev);
-@@ -803,6 +827,12 @@ int sof_machine_check(struct snd_sof_dev *sdev)
- 			return 0;
- 		}
- 
-+		of_mach = sof_of_machine_select(sdev);
-+		if (of_mach) {
-+			sof_pdata->of_machine = of_mach;
-+			return 0;
-+		}
-+
- 		if (!IS_ENABLED(CONFIG_SND_SOC_SOF_NOCODEC)) {
- 			dev_err(sdev->dev, "error: no matching ASoC machine driver found -
- aborting probe\n");
- 			return -ENODEV;
-diff --git a/sound/soc/sof/sof-of-dev.h b/sound/soc/sof/sof-of-dev.h
-index fd950a222ba4..2948b3a0d9fe 100644
---- a/sound/soc/sof/sof-of-dev.h
-+++ b/sound/soc/sof/sof-of-dev.h
-@@ -9,6 +9,13 @@
- #ifndef __SOUND_SOC_SOF_OF_H
- #define __SOUND_SOC_SOF_OF_H
- 
-+struct snd_sof_of_mach {
-+	const char *compatible;
-+	const char *drv_name;
-+	const char *fw_filename;
-+	const char *sof_tplg_filename;
-+};
-+
- extern const struct dev_pm_ops sof_of_pm;
- 
- int sof_of_probe(struct platform_device *pdev);
+diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+index 383a814b8539..4461237a3474 100644
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -6842,6 +6842,7 @@ enum {
+ 	ALC269_FIXUP_LIMIT_INT_MIC_BOOST,
+ 	ALC269VB_FIXUP_ASUS_ZENBOOK,
+ 	ALC269VB_FIXUP_ASUS_ZENBOOK_UX31A,
++	ALC269VB_FIXUP_ASUS_MIC_NO_PRESENCE,
+ 	ALC269_FIXUP_LIMIT_INT_MIC_BOOST_MUTE_LED,
+ 	ALC269VB_FIXUP_ORDISSIMO_EVE2,
+ 	ALC283_FIXUP_CHROME_BOOK,
+@@ -7427,6 +7428,15 @@ static const struct hda_fixup alc269_fixups[] = {
+ 		.chained = true,
+ 		.chain_id = ALC269VB_FIXUP_ASUS_ZENBOOK,
+ 	},
++	[ALC269VB_FIXUP_ASUS_MIC_NO_PRESENCE] = {
++		.type = HDA_FIXUP_PINS,
++		.v.pins = (const struct hda_pintbl[]) {
++			{ 0x18, 0x01a110f0 },  /* use as headset mic */
++			{ }
++		},
++		.chained = true,
++		.chain_id = ALC269_FIXUP_HEADSET_MIC
++	},
+ 	[ALC269_FIXUP_LIMIT_INT_MIC_BOOST_MUTE_LED] = {
+ 		.type = HDA_FIXUP_FUNC,
+ 		.v.func = alc269_fixup_limit_int_mic_boost,
+@@ -9124,6 +9134,7 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
+ 	SND_PCI_QUIRK(0x1043, 0x12a0, "ASUS X441UV", ALC233_FIXUP_EAPD_COEF_AND_MIC_NO_PRESENCE),
+ 	SND_PCI_QUIRK(0x1043, 0x12e0, "ASUS X541SA", ALC256_FIXUP_ASUS_MIC),
+ 	SND_PCI_QUIRK(0x1043, 0x12f0, "ASUS X541UV", ALC256_FIXUP_ASUS_MIC),
++	SND_PCI_QUIRK(0x1043, 0x1313, "Asus K42JZ", ALC269VB_FIXUP_ASUS_MIC_NO_PRESENCE),
+ 	SND_PCI_QUIRK(0x1043, 0x13b0, "ASUS Z550SA", ALC256_FIXUP_ASUS_MIC),
+ 	SND_PCI_QUIRK(0x1043, 0x1427, "Asus Zenbook UX31E", ALC269VB_FIXUP_ASUS_ZENBOOK),
+ 	SND_PCI_QUIRK(0x1043, 0x1517, "Asus Zenbook UX31A", ALC269VB_FIXUP_ASUS_ZENBOOK_UX31A),
 -- 
-2.25.1
+2.20.1
 
