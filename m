@@ -4,48 +4,51 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2AB78C00140
-	for <alsa-devel@archiver.kernel.org>; Mon,  8 Aug 2022 14:15:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C989EC00140
+	for <alsa-devel@archiver.kernel.org>; Mon,  8 Aug 2022 14:15:49 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 7806784B;
-	Mon,  8 Aug 2022 16:14:49 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7806784B
+	by alsa0.perex.cz (Postfix) with ESMTPS id E4B89886;
+	Mon,  8 Aug 2022 16:14:57 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E4B89886
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1659968139;
-	bh=oPU0DLUkxdK8Emxv+//8HM0A8E6lB2CiTQ9FK//iHTk=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=fvpomtF9lLTRatBBZH3uhdE9CgjoFSIjotar3DJrK2Of1BJa8N3BzVpmq/8TF5cj1
-	 xkT3gGZMNGvu5HXNLYEGYP9SjNe1p/+VvRbx31UThdhi0fidfnOXObiVwFQ9r2gexe
-	 CQ5C67j2ri4VO3nDkVxWjSZHO+BngRbA4fv4ue1w=
+	s=default; t=1659968148;
+	bh=NeUx+pSo12xPra5B6qJ2I6DGFGzYl2ySN/qXHG/DyXQ=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=gB9GM1BW8ue69CQtQEsUMvJqessPYs+2sAFT5cjgsjdOlBPW7wFzFzMwipcqQ64bc
+	 Ky03NKAfoWgTUv3/DHgfmigy8m8wE1R7Mc41fDIudZnve2xuxNMo0g1dkGgIy1A1XB
+	 BmsKEY5+Dcw3PSj63sz4NhodmRMIHkKZUia6VtI8=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 8A689F80539;
-	Mon,  8 Aug 2022 16:14:02 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 1B5F5F80544;
+	Mon,  8 Aug 2022 16:14:04 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 61517F80510; Mon,  8 Aug 2022 16:13:58 +0200 (CEST)
-Received: from hutie.ust.cz (hutie.ust.cz [185.8.165.127])
+ id ACDB8F80510; Mon,  8 Aug 2022 16:14:01 +0200 (CEST)
+Received: from hutie.ust.cz (unknown [IPv6:2a03:3b40:fe:f0::1])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id EF4F3F80430
- for <alsa-devel@alsa-project.org>; Mon,  8 Aug 2022 16:13:48 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EF4F3F80430
+ by alsa1.perex.cz (Postfix) with ESMTPS id 88B2CF804B1
+ for <alsa-devel@alsa-project.org>; Mon,  8 Aug 2022 16:13:50 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 88B2CF804B1
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=cutebit.org header.i=@cutebit.org
- header.b="GGUn9Xxh"
+ header.b="GrHmrpuW"
 From: =?UTF-8?q?Martin=20Povi=C5=A1er?= <povik+lin@cutebit.org>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cutebit.org; s=mail;
- t=1659968028; bh=tKWeu11aeXQ63OTvc9oUPZOVNW4tJ0tCoIcgd5/QzcY=;
- h=From:To:Cc:Subject:Date;
- b=GGUn9Xxh2AOR8fCPJgCDChOVNwKnSOyuiqs3uIgw/vAXBqML5KNhp08xKmHIplmbG
- u+1g3fkMUTJoNwJlKhId87MCk28tPqAaCnv7TxQerQ8+pOUV+hrvEqO2Gx/b0HYI8E
- 9plHX3cuKzWMlrjbVBdJaOYFSg4UL2HW3uKGKUzM=
+ t=1659968029; bh=Twygo1GqjUrP9qhVckfjeeq1VoZv2+ub4qhDvapf23c=;
+ h=From:To:Cc:Subject:Date:In-Reply-To:References;
+ b=GrHmrpuW2i2/ft0rjPTmoSjkHqyKouNA8vrAj3KKl/i+zGvkV37Yl0or9Vb65+mUM
+ 5mdKN8yHVaYSWFooK5LA+uMoujK1AuZbBSIdqQwdXQCKf8RWdv+256NeHbB9OcczWn
+ ptqkvWzL3rs2uKf2r5Bz279uDE9Q8/pjfu+e11wY=
 To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
  Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
-Subject: [PATCH 0/4] TAS2770 fixes
-Date: Mon,  8 Aug 2022 16:12:42 +0200
-Message-Id: <20220808141246.5749-1-povik+lin@cutebit.org>
+Subject: [PATCH 4/4] ASoC: tas2770: Fix handling of mute/unmute
+Date: Mon,  8 Aug 2022 16:12:46 +0200
+Message-Id: <20220808141246.5749-5-povik+lin@cutebit.org>
+In-Reply-To: <20220808141246.5749-1-povik+lin@cutebit.org>
+References: <20220808141246.5749-1-povik+lin@cutebit.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -68,23 +71,130 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The first two fixes should be straightforward.
+Because the PWR_CTRL field is modeled as the power state of the DAC
+widget, and at the same time it is used to implement mute/unmute, we
+need some additional book-keeping to have the right end result no matter
+the sequence of calls. Without this fix, one can mute an ongoing stream
+by toggling a speaker pin control.
 
-The latter two clean up what looks to me like a mess in the setting of
-power levels. However we settle it, we should then do the same changes
-to TAS2764, which has the same template (and maybe there are other
-drivers).
+Fixes: 1a476abc723e ("tas2770: add tas2770 smart PA kernel driver")
+Signed-off-by: Martin Povišer <povik+lin@cutebit.org>
+---
+ sound/soc/codecs/tas2770.c | 57 ++++++++++++++++++++------------------
+ sound/soc/codecs/tas2770.h |  2 ++
+ 2 files changed, 32 insertions(+), 27 deletions(-)
 
-Martin Povišer (4):
-  ASoC: tas2770: Set correct FSYNC polarity
-  ASoC: tas2770: Allow mono streams
-  ASoC: tas2770: Drop conflicting set_bias_level power setting
-  ASoC: tas2770: Fix handling of mute/unmute
-
- sound/soc/codecs/tas2770.c | 98 +++++++++++++++++---------------------
- sound/soc/codecs/tas2770.h |  5 ++
- 2 files changed, 48 insertions(+), 55 deletions(-)
-
+diff --git a/sound/soc/codecs/tas2770.c b/sound/soc/codecs/tas2770.c
+index 10a79f8139be..9ea2aca65e89 100644
+--- a/sound/soc/codecs/tas2770.c
++++ b/sound/soc/codecs/tas2770.c
+@@ -46,6 +46,26 @@ static void tas2770_reset(struct tas2770_priv *tas2770)
+ 	usleep_range(1000, 2000);
+ }
+ 
++static int tas2770_update_pwr_ctrl(struct tas2770_priv *tas2770)
++{
++	struct snd_soc_component *component = tas2770->component;
++	unsigned int val;
++	int ret;
++
++	if (tas2770->dac_powered)
++		val = tas2770->unmuted ?
++			TAS2770_PWR_CTRL_ACTIVE : TAS2770_PWR_CTRL_MUTE;
++	else
++		val = TAS2770_PWR_CTRL_SHUTDOWN;
++
++	ret = snd_soc_component_update_bits(component, TAS2770_PWR_CTRL,
++					    TAS2770_PWR_CTRL_MASK, val);
++	if (ret < 0)
++		return ret;
++
++	return 0;
++}
++
+ #ifdef CONFIG_PM
+ static int tas2770_codec_suspend(struct snd_soc_component *component)
+ {
+@@ -82,9 +102,7 @@ static int tas2770_codec_resume(struct snd_soc_component *component)
+ 		gpiod_set_value_cansleep(tas2770->sdz_gpio, 1);
+ 		usleep_range(1000, 2000);
+ 	} else {
+-		ret = snd_soc_component_update_bits(component, TAS2770_PWR_CTRL,
+-						    TAS2770_PWR_CTRL_MASK,
+-						    TAS2770_PWR_CTRL_ACTIVE);
++		ret = tas2770_update_pwr_ctrl(tas2770);
+ 		if (ret < 0)
+ 			return ret;
+ 	}
+@@ -120,24 +138,19 @@ static int tas2770_dac_event(struct snd_soc_dapm_widget *w,
+ 
+ 	switch (event) {
+ 	case SND_SOC_DAPM_POST_PMU:
+-		ret = snd_soc_component_update_bits(component, TAS2770_PWR_CTRL,
+-						    TAS2770_PWR_CTRL_MASK,
+-						    TAS2770_PWR_CTRL_MUTE);
++		tas2770->dac_powered = 1;
++		ret = tas2770_update_pwr_ctrl(tas2770);
+ 		break;
+ 	case SND_SOC_DAPM_PRE_PMD:
+-		ret = snd_soc_component_update_bits(component, TAS2770_PWR_CTRL,
+-						    TAS2770_PWR_CTRL_MASK,
+-						    TAS2770_PWR_CTRL_SHUTDOWN);
++		tas2770->dac_powered = 0;
++		ret = tas2770_update_pwr_ctrl(tas2770);
+ 		break;
+ 	default:
+ 		dev_err(tas2770->dev, "Not supported evevt\n");
+ 		return -EINVAL;
+ 	}
+ 
+-	if (ret < 0)
+-		return ret;
+-
+-	return 0;
++	return ret;
+ }
+ 
+ static const struct snd_kcontrol_new isense_switch =
+@@ -171,21 +184,11 @@ static const struct snd_soc_dapm_route tas2770_audio_map[] = {
+ static int tas2770_mute(struct snd_soc_dai *dai, int mute, int direction)
+ {
+ 	struct snd_soc_component *component = dai->component;
+-	int ret;
+-
+-	if (mute)
+-		ret = snd_soc_component_update_bits(component, TAS2770_PWR_CTRL,
+-						    TAS2770_PWR_CTRL_MASK,
+-						    TAS2770_PWR_CTRL_MUTE);
+-	else
+-		ret = snd_soc_component_update_bits(component, TAS2770_PWR_CTRL,
+-						    TAS2770_PWR_CTRL_MASK,
+-						    TAS2770_PWR_CTRL_ACTIVE);
+-
+-	if (ret < 0)
+-		return ret;
++	struct tas2770_priv *tas2770 =
++			snd_soc_component_get_drvdata(component);
+ 
+-	return 0;
++	tas2770->unmuted = !mute;
++	return tas2770_update_pwr_ctrl(tas2770);
+ }
+ 
+ static int tas2770_set_bitwidth(struct tas2770_priv *tas2770, int bitwidth)
+diff --git a/sound/soc/codecs/tas2770.h b/sound/soc/codecs/tas2770.h
+index d51e88d8c338..f75f40781ab1 100644
+--- a/sound/soc/codecs/tas2770.h
++++ b/sound/soc/codecs/tas2770.h
+@@ -138,6 +138,8 @@ struct tas2770_priv {
+ 	struct device *dev;
+ 	int v_sense_slot;
+ 	int i_sense_slot;
++	bool dac_powered;
++	bool unmuted;
+ };
+ 
+ #endif /* __TAS2770__ */
 -- 
 2.33.0
 
