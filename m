@@ -4,81 +4,95 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 35DD1C19F2D
-	for <alsa-devel@archiver.kernel.org>; Tue,  9 Aug 2022 15:29:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 02D91C19F2D
+	for <alsa-devel@archiver.kernel.org>; Tue,  9 Aug 2022 16:28:57 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 036FE1E4;
-	Tue,  9 Aug 2022 17:28:36 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 036FE1E4
+	by alsa0.perex.cz (Postfix) with ESMTPS id 4FF2241;
+	Tue,  9 Aug 2022 18:28:05 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4FF2241
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1660058966;
-	bh=qpjNymdaV5K8kMbMWsB43Wr3eHMwPf3UBa8DYYVoWRk=;
+	s=default; t=1660062535;
+	bh=94EN2fWak2Vn+rIy8dnl3hC2a1mGFJhjPRUw2q/StGA=;
 	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
 	 List-Post:List-Help:List-Subscribe:From;
-	b=D0pOH6cAFeiDlDq+LjHw2IQv7pP9eP2psD35susnxHpIxUNMz6TNXlXotUEXbEDXL
-	 PoQPxgQ6QvvAcEA3at6aqX0DfFUoGEFweNN1385eIMAa/ciuwKhIEk3ROAskjH4D1S
-	 LAK1bHCqfyNxlZ5zjrOhtrlXOmT3NQwgUJJlH6L8=
+	b=t0UeSG32X4anvwT0cpi0Y8s2lYACFC8BZMU4qIweeBxqnMZVprWbrq6KjCZ5Rtw5k
+	 2ib5yMF7QPoDrqQd70DKuPVjYQu/0F3sqn3dGJgwqTyZorkswKKva0MzYQvN2b4pxN
+	 hFd4TehmCTi2fSOMBpXYoSYnZIOVUw62YR+jiTAs=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 90EC7F80162;
-	Tue,  9 Aug 2022 17:28:35 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 97A84F801F7;
+	Tue,  9 Aug 2022 18:28:04 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 49445F8016C; Tue,  9 Aug 2022 16:33:15 +0200 (CEST)
-Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com
- [IPv6:2607:f8b0:4864:20::436])
+ id 75299F8016C; Tue,  9 Aug 2022 18:28:01 +0200 (CEST)
+Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com
+ [IPv6:2a00:1450:4864:20::131])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 21ED8F80132
- for <alsa-devel@alsa-project.org>; Tue,  9 Aug 2022 16:33:10 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 21ED8F80132
+ by alsa1.perex.cz (Postfix) with ESMTPS id B1084F80132
+ for <alsa-devel@alsa-project.org>; Tue,  9 Aug 2022 18:27:58 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B1084F80132
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="Zlr8ViCe"
-Received: by mail-pf1-x436.google.com with SMTP id p125so7414218pfp.2
- for <alsa-devel@alsa-project.org>; Tue, 09 Aug 2022 07:33:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
- h=content-transfer-encoding:mime-version:message-id:date:subject:cc
- :to:from:from:to:cc;
- bh=qAB7e1aa5XTYU8Wjij15vVYsEMZh8Pf+4KUmlTy3JTI=;
- b=Zlr8ViCe4vY4wGGKUGuiDHN9kPbp/RZmnoNlZUKj2UOGFGlqaD2PiYwMqFKEIeZhGH
- nHg/wzy+2jP3ZxYUJqxyhoVDUZvi2In01TMA8oXK5XPd9tsHW9A/6EYqjY5pLoWv3EfT
- 4n7XjJOqawkYCoS605H9anHUdUBZ0h6yFnTz002ESqaNeGNF9ZcHvttRCdaHEV9WP6XD
- 7V4mgijNaUPae8/YDJHC1pxrTnpjVfbrvNuFS0DOEf4SBoqChmrswdJZhV96NjPOiKmv
- u10oWYy0bmgeavT4/u+M3wFC0C73TZ0YjWlKmMyjg9NEY1hc3wrMrBkwBBUL+FWZ8hJc
- ttyQ==
+ dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org
+ header.b="scwhCRJP"
+Received: by mail-lf1-x131.google.com with SMTP id o2so10389422lfb.1
+ for <alsa-devel@alsa-project.org>; Tue, 09 Aug 2022 09:27:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
+ h=from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=AR+nnS9UZD6P2Hs8ZDImw5TD7p9NQC+KnqHa3zocRvk=;
+ b=scwhCRJP2cX92hQGoRkNYm1CP1o41FrEej53GLl6u8y5tLL91RoPRZ7d6703rgd6z4
+ y4xGg04FcmAIUHsFZQoz3WCYKNxzaLl/PR8KdfKG3pssC1Ay0wa0QlWGw/CoiJHSId30
+ hd2EyCkjzIer0sV5O8xkfFRvGUJS2udkZLP+LgpUOsffdh6Ohnu9uFOfrWIMHTe8lNIt
+ DcZEoqWOYX3F4kMr76HXbsT2Moht6G1fCn39Xyon/Lq04771JDKk12dmYO1wKfeq7bEo
+ IAX75aMK5gnpn0hTmsCJekxKFQfTF8tAtJGgWwg6FDMsH6NiNiY5SGBvidLvPPdbFP1v
+ gydA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
- h=content-transfer-encoding:mime-version:message-id:date:subject:cc
- :to:from:x-gm-message-state:from:to:cc;
- bh=qAB7e1aa5XTYU8Wjij15vVYsEMZh8Pf+4KUmlTy3JTI=;
- b=KxgTbi+KHq49nzH5SbJE9apeRmFMFRgARhOMrEIha3ZPTn9K7z2X5hc3EPwOrt+IOg
- 3fpPIA6h66OCQ7JsshVx4hotDDCz+vUkc28pzyaHPJ7zXNC9+WHWDp3C+7tQp5IT/0OC
- 3kaLYt3JUaiI7L6aHz4ydXsv1agYe43AWa5Pqz9Rj2K6urqNPLRLoWpP/Q6/OHcFsd0d
- fzKf3V2o6Pgzjs3Iaqk11I+VcRwDSiZ1x3jdV+WSXADsUP5qtbQ6Y9hxfRjF+iKMrGkJ
- vw5WZE0c/azVWPw353oda0s46Lq/qQI2+73H88uR9MA+MyKPhHSFTjKqvnugFPcJRUii
- v3hw==
-X-Gm-Message-State: ACgBeo3QkX1GWFKE7ntnWEhw4hCaBytPKRvn+dWa8w694FCOxjmCm0xE
- mpBrEtFP+NWUPwM5oF1aujSRaKq0AqecYw==
-X-Google-Smtp-Source: AA6agR45fggjE8T1r77sN+mWaiFwaVWGyQ48ahBRVpt3NAOG/akHSAfoayv7MWQHRq2uIh0zjJaQUA==
-X-Received: by 2002:a17:902:d4d2:b0:16f:8311:54ba with SMTP id
- o18-20020a170902d4d200b0016f831154bamr23171122plg.15.1660055128832; 
- Tue, 09 Aug 2022 07:25:28 -0700 (PDT)
-Received: from archlinux.. ([136.233.9.102]) by smtp.gmail.com with ESMTPSA id
- 38-20020a630c66000000b00419acadde52sm8097674pgm.46.2022.08.09.07.25.22
+ h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+ :content-transfer-encoding;
+ bh=AR+nnS9UZD6P2Hs8ZDImw5TD7p9NQC+KnqHa3zocRvk=;
+ b=GSUH1i3kUMLJIGSaAgV4F6ouPRpiIVaPQlDUJ2ptfg1Pg0VKi7XLdW795KF//Q7HXc
+ hY2qqeXZZuVp6bHE/EPxVEi+E1XTCKIb2NfA/BgDhISgOkM9CjTbXd8HYsRjtVIrGWFi
+ Da8/kZxniWuDsFaEbi4V/aPqnMmapGAeBieheogUd7XUEuUSZxHDJW0WyR42CcMpL3Xk
+ /JZtu0UBoXWzXN753GKSPedXy6UmFxJuvIWxj3UtQ51uOBK3tfT7vlPpoDCwyTDJl3os
+ 0bAwrJ5AUxWGINqSAIVyQyWgNF8wEZkaEwYV8q26Drybgc9WANCyOMEGRn4cr3fXZp2E
+ l+tA==
+X-Gm-Message-State: ACgBeo3rgta/dBWij4BXYsMjfJBBiOGEFTKZYgRW4BvERqd41V45ldKK
+ Uzvx97PUgZxs+xn79syn5obsKA==
+X-Google-Smtp-Source: AA6agR5TRVjeZwahd7WkFhqyuhqfwiPBYep94z8LyDAT7HAxO3MZrTjHFZMuFjki+w1nYUDsee4f8A==
+X-Received: by 2002:a05:6512:2a8d:b0:48b:7f1:fe46 with SMTP id
+ dt13-20020a0565122a8d00b0048b07f1fe46mr7624887lfb.261.1660062476861; 
+ Tue, 09 Aug 2022 09:27:56 -0700 (PDT)
+Received: from localhost.localdomain ([83.146.140.105])
+ by smtp.gmail.com with ESMTPSA id
+ h7-20020ac24d27000000b0048a8c907fe9sm20999lfk.167.2022.08.09.09.27.55
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Tue, 09 Aug 2022 07:25:28 -0700 (PDT)
-From: Bedant <bedant.patnaik@gmail.com>
-To: perex@perex.cz,
-	tiwai@suse.com
-Subject: [PATCH] ALSA: hda/realtek: Add a quirk for HP OMEN 15 (8786) mute LED
-Date: Tue,  9 Aug 2022 19:54:55 +0530
-Message-Id: <20220809142455.6473-1-bedant.patnaik@gmail.com>
-X-Mailer: git-send-email 2.37.1
+ Tue, 09 Aug 2022 09:27:56 -0700 (PDT)
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+To: Michael Hennerich <Michael.Hennerich@analog.com>,
+ Jean Delvare <jdelvare@suse.com>, Guenter Roeck <linux@roeck-us.net>,
+ Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Jonathan Cameron <jic23@kernel.org>, Lars-Peter Clausen <lars@metafoo.de>,
+ Pavel Machek <pavel@ucw.cz>, Tim Harvey <tharvey@gateworks.com>,
+ Lee Jones <lee@kernel.org>, "David S. Miller" <davem@davemloft.net>,
+ Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
+ Paolo Abeni <pabeni@redhat.com>, Sebastian Reichel <sre@kernel.org>,
+ Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
+ Andrew Davis <afd@ti.com>, linux-hwmon@vger.kernel.org,
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-iio@vger.kernel.org, linux-fbdev@vger.kernel.org,
+ linux-leds@vger.kernel.org, netdev@vger.kernel.org,
+ linux-pm@vger.kernel.org, alsa-devel@alsa-project.org
+Subject: [PATCH v2 0/5] iio/hwmon/mfd/leds/net/power/ASoC: dt-bindings: few
+ stale maintainers cleanup
+Date: Tue,  9 Aug 2022 19:27:47 +0300
+Message-Id: <20220809162752.10186-1-krzysztof.kozlowski@linaro.org>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Mailman-Approved-At: Tue, 09 Aug 2022 17:28:33 +0200
-Cc: Bedant Patnaik <bedant.patnaik@gmail.com>, alsa-devel@alsa-project.org
+Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -94,28 +108,57 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Bedant Patnaik <bedant.patnaik@gmail.com>
+Hi,
 
-Board ID 8786 seems to be another variant of the Omen 15 that needs
-ALC285_FIXUP_HP_MUTE_LED for working mute LED.
+Changes since v1
+================
+1. Patch #5: Drop also Ricardo Rivera-Matos and assign TI bindings to Andrew Davis
+2. Add acks.
 
-Signed-off-by: Bedant Patnaik <bedant.patnaik@gmail.com>
----
- sound/pci/hda/patch_realtek.c | 1 +
- 1 file changed, 1 insertion(+)
+A question
+==========
 
-diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-index 8a57636f6..258f4e490 100644
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -9203,6 +9203,7 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
- 		      ALC285_FIXUP_HP_GPIO_AMP_INIT),
- 	SND_PCI_QUIRK(0x103c, 0x8783, "HP ZBook Fury 15 G7 Mobile Workstation",
- 		      ALC285_FIXUP_HP_GPIO_AMP_INIT),
-+	SND_PCI_QUIRK(0x103c, 0x8786, "HP OMEN 15", ALC285_FIXUP_HP_MUTE_LED),
- 	SND_PCI_QUIRK(0x103c, 0x8787, "HP OMEN 15", ALC285_FIXUP_HP_MUTE_LED),
- 	SND_PCI_QUIRK(0x103c, 0x8788, "HP OMEN 15", ALC285_FIXUP_HP_MUTE_LED),
- 	SND_PCI_QUIRK(0x103c, 0x87c8, "HP", ALC287_FIXUP_HP_GPIO_LED),
+Several of the bindings here had only one maintainer and history does not
+always point to a new one (although I did not perform extensive digging). I
+added subsystem maintainer, because dtschema requires an entry with valid email address.
+
+This is not the best choice as simply subsystem maintainer might not have the
+actual device (or its datasheets or any interest in it).
+
+Maybe we could add some "orphaned" entry in such case?
+
+Best regards,
+Krzysztof
+
+Krzysztof Kozlowski (5):
+  dt-bindings: iio: Drop Joachim Eastwood
+  dt-bindings: iio: Drop Bogdan Pricop
+  dt-bindings: Drop Beniamin Bia and Stefan Popa
+  dt-bindings: Drop Robert Jones
+  dt-bindings: Drop Dan Murphy and Ricardo Rivera-Matos
+
+ Documentation/devicetree/bindings/hwmon/adi,adm1177.yaml       | 1 -
+ Documentation/devicetree/bindings/iio/accel/fsl,mma7455.yaml   | 1 -
+ Documentation/devicetree/bindings/iio/adc/adi,ad7091r5.yaml    | 2 +-
+ Documentation/devicetree/bindings/iio/adc/adi,ad7606.yaml      | 3 +--
+ Documentation/devicetree/bindings/iio/adc/nxp,lpc1850-adc.yaml | 2 +-
+ Documentation/devicetree/bindings/iio/adc/ti,adc108s102.yaml   | 2 +-
+ Documentation/devicetree/bindings/iio/adc/ti,ads124s08.yaml    | 2 +-
+ .../devicetree/bindings/iio/amplifiers/adi,hmc425a.yaml        | 1 -
+ Documentation/devicetree/bindings/iio/imu/nxp,fxos8700.yaml    | 2 +-
+ .../devicetree/bindings/leds/leds-class-multicolor.yaml        | 2 +-
+ Documentation/devicetree/bindings/leds/leds-lp50xx.yaml        | 2 +-
+ Documentation/devicetree/bindings/mfd/gateworks-gsc.yaml       | 1 -
+ Documentation/devicetree/bindings/net/ti,dp83822.yaml          | 2 +-
+ Documentation/devicetree/bindings/net/ti,dp83867.yaml          | 2 +-
+ Documentation/devicetree/bindings/net/ti,dp83869.yaml          | 2 +-
+ Documentation/devicetree/bindings/power/supply/bq2515x.yaml    | 3 +--
+ Documentation/devicetree/bindings/power/supply/bq256xx.yaml    | 2 +-
+ Documentation/devicetree/bindings/power/supply/bq25980.yaml    | 3 +--
+ Documentation/devicetree/bindings/sound/tas2562.yaml           | 2 +-
+ Documentation/devicetree/bindings/sound/tlv320adcx140.yaml     | 2 +-
+ 20 files changed, 16 insertions(+), 23 deletions(-)
+
 -- 
-2.37.1
+2.34.1
 
