@@ -4,60 +4,73 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id CCB0FC00140
-	for <alsa-devel@archiver.kernel.org>; Mon,  8 Aug 2022 22:44:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3517FC00140
+	for <alsa-devel@archiver.kernel.org>; Tue,  9 Aug 2022 01:51:44 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id EDFAA84B;
-	Tue,  9 Aug 2022 00:43:45 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EDFAA84B
+	by alsa0.perex.cz (Postfix) with ESMTPS id 44C49826;
+	Tue,  9 Aug 2022 03:50:52 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 44C49826
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1659998676;
-	bh=rA7khSS4FRU8M9opjD7r6qBARp6oinQRIUJ63YBCDU8=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1660009902;
+	bh=Bfm+Hy5TRMfKh/iN9Ih6MfMX7Ek+cF8yQCd31yggBVo=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=aZVw36d6PwftW0uiWpKF2PucXiE2fdT4UWuQMTkBjJetiYh7lmwzO5kWZFnXjt3xO
-	 cwsYgEcBiuF5OIOBZgmxHIJg5080yiGwyB23l36K2uERSq6l5bN619OueSl4JQgBU+
-	 OChOG1F9PW3ycGNqHO6ZndApGM6XaD9KkuDIGlXA=
+	b=mrYZYkEt/e0btQW3N1/+rOpmpheqFx3GZdNoGM77t29BQ+a/GMVCnEFrKtsqYHk8r
+	 5B6QXqbyJhjBRaPYppD++X0PKZSDfLaYEnOsEuMKvRcZAE/+vIlGUQPkU0mfpN0GaE
+	 RtwjzHYnX7kQTAE0AP8uG+zchDIqZNjwNyjLSz8w=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 76F4CF8055B;
-	Tue,  9 Aug 2022 00:43:13 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id B8814F80162;
+	Tue,  9 Aug 2022 03:50:51 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 8377AF80549; Tue,  9 Aug 2022 00:43:05 +0200 (CEST)
-Received: from hutie.ust.cz (hutie.ust.cz [185.8.165.127])
+ id 2AC29F8016C; Tue,  9 Aug 2022 03:50:50 +0200 (CEST)
+Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 09912F8012B
- for <alsa-devel@alsa-project.org>; Tue,  9 Aug 2022 00:42:56 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 09912F8012B
+ by alsa1.perex.cz (Postfix) with ESMTPS id B0626F80132
+ for <alsa-devel@alsa-project.org>; Tue,  9 Aug 2022 03:50:43 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B0626F80132
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=cutebit.org header.i=@cutebit.org
- header.b="qHtMZstZ"
-From: =?UTF-8?q?Martin=20Povi=C5=A1er?= <povik+lin@cutebit.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cutebit.org; s=mail;
- t=1659998576; bh=J/tXOc4gJzf4l3jN3HeF5qZ43cNwfPnYOJyQtAI7qR8=;
- h=From:To:Cc:Subject:Date:In-Reply-To:References;
- b=qHtMZstZ+im9Tfkqo6RtXCTnaYPeWqHfIhZArUb3vR6AaWKeuDy6mw6jXjyTv2qAI
- 947CKL3D/YP4OLwjmEqMzD8zcInZe06fHZRhLLM0Se905oQp+ftgMfetgW5p5ybByp
- UP8DfAxVl2QgrzFNksYAl21P9WuD37doi1B1z0vU=
-To: =?UTF-8?q?Martin=20Povi=C5=A1er?= <povik+lin@cutebit.org>,
- Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
- Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
- Philipp Zabel <p.zabel@pengutronix.de>
-Subject: [PATCH 1/3] dt-bindings: sound: Add Apple MCA I2S transceiver
-Date: Tue,  9 Aug 2022 00:41:51 +0200
-Message-Id: <20220808224153.3634-2-povik+lin@cutebit.org>
-In-Reply-To: <20220808224153.3634-1-povik+lin@cutebit.org>
-References: <20220808224153.3634-1-povik+lin@cutebit.org>
+ dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
+ header.b="cXEmN/GT"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+ d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+ t=1660009844; x=1691545844;
+ h=date:from:to:cc:subject:message-id:references:
+ mime-version:in-reply-to;
+ bh=Bfm+Hy5TRMfKh/iN9Ih6MfMX7Ek+cF8yQCd31yggBVo=;
+ b=cXEmN/GTzlBYlaSpJUpcxTWHHBxwwGA5bpk8aVlxqcA+F0B1Azv2M23Z
+ LlausX9lkmNpcxUB5am2RT+qM2l/xX22pzF4UlyVLR9JROV9M8xvb04Qe
+ ok/w54qDjy6LwDtH/5PKgZYdH3pOI2PXb7iKVtiHPd9lauAkdBBgvk/h1
+ wdxWkGr8dDuiX6rMF5pUG3SgjjpmAm5t9Gdg4C3nx3g774GUbU5HrTL3J
+ VO9MMtF2OKiAqYjuQIk8yAzsigLFZnz3FSzCZtTCN7TpVWROplyCGXAjJ
+ 0Shbp6DlN6WODgwl3G5+eeaEg/IZ7l0nD8L0fyybz/dyhB6VkE0OZpZd8 Q==;
+X-IronPort-AV: E=McAfee;i="6400,9594,10433"; a="277665897"
+X-IronPort-AV: E=Sophos;i="5.93,223,1654585200"; d="scan'208";a="277665897"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+ by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 08 Aug 2022 18:50:39 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.93,223,1654585200"; d="scan'208";a="932298311"
+Received: from lkp-server01.sh.intel.com (HELO e0eace57cfef) ([10.239.97.150])
+ by fmsmga005.fm.intel.com with ESMTP; 08 Aug 2022 18:50:37 -0700
+Received: from kbuild by e0eace57cfef with local (Exim 4.96)
+ (envelope-from <lkp@intel.com>) id 1oLEOD-000Me9-0A;
+ Tue, 09 Aug 2022 01:50:37 +0000
+Date: Tue, 9 Aug 2022 09:49:38 +0800
+From: kernel test robot <lkp@intel.com>
+To: Matt Flax <flatmax@flatmax.com>, alsa-devel@alsa-project.org
+Subject: Re: [PATCH v2] ASoC: codecs: add uspport for the TI SRC4392 codec
+Message-ID: <202208090909.Pg0BZGie-lkp@intel.com>
+References: <20220808214028.2502801-1-flatmax@flatmax.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
- asahi@lists.linux.dev, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220808214028.2502801-1-flatmax@flatmax.com>
+Cc: broonie@kernel.org, llvm@lists.linux.dev, kbuild-all@lists.01.org,
+ Matt Flax <flatmax@flatmax.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -73,130 +86,183 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Add binding schema for MCA I2S transceiver found on Apple M1 and other
-chips.
+Hi Matt,
 
-Signed-off-by: Martin Povišer <povik+lin@cutebit.org>
----
- .../devicetree/bindings/sound/apple,mca.yaml  | 109 ++++++++++++++++++
- 1 file changed, 109 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/sound/apple,mca.yaml
+Thank you for the patch! Perhaps something to improve:
 
-diff --git a/Documentation/devicetree/bindings/sound/apple,mca.yaml b/Documentation/devicetree/bindings/sound/apple,mca.yaml
-new file mode 100644
-index 000000000000..f64119c5d8d1
---- /dev/null
-+++ b/Documentation/devicetree/bindings/sound/apple,mca.yaml
-@@ -0,0 +1,109 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/sound/apple,mca.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: Apple MCA I2S transceiver
-+
-+description: |
-+  MCA is an I2S transceiver peripheral found on M1 and other Apple chips. It is
-+  composed of a number of identical clusters which can operate independently
-+  or in an interlinked fashion. Up to 6 clusters have been seen on an MCA.
-+
-+maintainers:
-+  - Martin Povišer <povik+lin@cutebit.org>
-+
-+properties:
-+  compatible:
-+    items:
-+      - enum:
-+          - apple,t8103-mca
-+          - apple,t6000-mca
-+      - const: apple,mca
-+
-+  reg:
-+    items:
-+      - description: Register region of the MCA clusters proper
-+      - description: Register region of the DMA glue and its FIFOs
-+
-+  interrupts:
-+    minItems: 4
-+    maxItems: 6
-+    description:
-+      One interrupt per each cluster
-+
-+  "#address-cells":
-+    const: 1
-+
-+  "#size-cells":
-+    const: 0
-+
-+  dmas:
-+    minItems: 16
-+    maxItems: 24
-+    description:
-+      DMA channels corresponding to the SERDES units in the peripheral. They are
-+      listed in groups of four per cluster, and within the group they are given
-+      as associated to the TXA, RXA, TXB, RXB units.
-+
-+  dma-names:
-+    minItems: 16
-+    maxItems: 24
-+    items:
-+      pattern: '^(tx|rx)[0-5][ab]$'
-+    description: |
-+      Names for the DMA channels: 'tx'/'rx', then cluster number, then 'a'/'b'
-+      based on the associated SERDES unit.
-+
-+  clocks:
-+    minItems: 4
-+    maxItems: 6
-+    description:
-+      Clusters' input reference clock.
-+
-+  resets:
-+    maxItems: 1
-+
-+  power-domains:
-+    minItems: 5
-+    maxItems: 7
-+    description:
-+      First a general power domain for register access, then the power
-+      domains of individual clusters for their operation.
-+
-+  "#sound-dai-cells":
-+    const: 1
-+
-+required:
-+  - compatible
-+  - reg
-+  - dmas
-+  - dma-names
-+  - clocks
-+  - power-domains
-+  - '#sound-dai-cells'
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    mca: mca@9b600000 {
-+      compatible = "apple,t6000-mca", "apple,mca";
-+      reg = <0x9b600000 0x10000>,
-+            <0x9b200000 0x20000>;
-+
-+      clocks = <&nco 0>, <&nco 1>, <&nco 2>, <&nco 3>;
-+      power-domains = <&ps_audio_p>, <&ps_mca0>, <&ps_mca1>,
-+                      <&ps_mca2>, <&ps_mca3>;
-+      dmas = <&admac 0>, <&admac 1>, <&admac 2>, <&admac 3>,
-+             <&admac 4>, <&admac 5>, <&admac 6>, <&admac 7>,
-+             <&admac 8>, <&admac 9>, <&admac 10>, <&admac 11>,
-+             <&admac 12>, <&admac 13>, <&admac 14>, <&admac 15>;
-+      dma-names = "tx0a", "rx0a", "tx0b", "rx0b",
-+                  "tx1a", "rx1a", "tx1b", "rx1b",
-+                  "tx2a", "rx2a", "tx2b", "rx2b",
-+                  "tx3a", "rx3a", "tx3b", "rx3b";
-+
-+      #sound-dai-cells = <1>;
-+    };
+[auto build test WARNING on broonie-sound/for-next]
+[also build test WARNING on tiwai-sound/for-next linus/master v5.19 next-20220808]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
+
+url:    https://github.com/intel-lab-lkp/linux/commits/Matt-Flax/ASoC-codecs-add-uspport-for-the-TI-SRC4392-codec/20220809-054524
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+config: hexagon-randconfig-r002-20220808 (https://download.01.org/0day-ci/archive/20220809/202208090909.Pg0BZGie-lkp@intel.com/config)
+compiler: clang version 16.0.0 (https://github.com/llvm/llvm-project 5f1c7e2cc5a3c07cbc2412e851a7283c1841f520)
+reproduce (this is a W=1 build):
+        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+        chmod +x ~/bin/make.cross
+        # https://github.com/intel-lab-lkp/linux/commit/7a9219a8431d7740c0958e53078820cbfef4f3f7
+        git remote add linux-review https://github.com/intel-lab-lkp/linux
+        git fetch --no-tags linux-review Matt-Flax/ASoC-codecs-add-uspport-for-the-TI-SRC4392-codec/20220809-054524
+        git checkout 7a9219a8431d7740c0958e53078820cbfef4f3f7
+        # save the config file
+        mkdir build_dir && cp config build_dir/.config
+        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross W=1 O=build_dir ARCH=hexagon SHELL=/bin/bash sound/soc/codecs/
+
+If you fix the issue, kindly add following tag where applicable
+Reported-by: kernel test robot <lkp@intel.com>
+
+All warnings (new ones prefixed by >>):
+
+>> sound/soc/codecs/src4xxx.c:277:3: warning: variable 'd' is used uninitialized whenever switch default is taken [-Wsometimes-uninitialized]
+                   default:
+                   ^~~~~~~
+   sound/soc/codecs/src4xxx.c:294:59: note: uninitialized use occurs here
+                   ret = regmap_write(src4xxx->regmap, SRC4XXX_RCV_PLL_11, d);
+                                                                           ^
+   sound/soc/codecs/src4xxx.c:221:20: note: initialize the variable 'd' to silence this warning
+           int val, pj, jd, d;
+                             ^
+                              = 0
+>> sound/soc/codecs/src4xxx.c:277:3: warning: variable 'jd' is used uninitialized whenever switch default is taken [-Wsometimes-uninitialized]
+                   default:
+                   ^~~~~~~
+   sound/soc/codecs/src4xxx.c:289:59: note: uninitialized use occurs here
+                   ret = regmap_write(src4xxx->regmap, SRC4XXX_RCV_PLL_10, jd);
+                                                                           ^~
+   sound/soc/codecs/src4xxx.c:221:17: note: initialize the variable 'jd' to silence this warning
+           int val, pj, jd, d;
+                          ^
+                           = 0
+>> sound/soc/codecs/src4xxx.c:277:3: warning: variable 'pj' is used uninitialized whenever switch default is taken [-Wsometimes-uninitialized]
+                   default:
+                   ^~~~~~~
+   sound/soc/codecs/src4xxx.c:284:59: note: uninitialized use occurs here
+                   ret = regmap_write(src4xxx->regmap, SRC4XXX_RCV_PLL_0F, pj);
+                                                                           ^~
+   sound/soc/codecs/src4xxx.c:221:13: note: initialize the variable 'pj' to silence this warning
+           int val, pj, jd, d;
+                      ^
+                       = 0
+   3 warnings generated.
+--
+>> sound/soc/codecs/src4xxx-i2c.c:35:34: warning: unused variable 'src4xxx_of_match' [-Wunused-const-variable]
+   static const struct of_device_id src4xxx_of_match[] = {
+                                    ^
+   1 warning generated.
+
+
+vim +/d +277 sound/soc/codecs/src4xxx.c
+
+   213	
+   214	static int src4xxx_hw_params(struct snd_pcm_substream *substream,
+   215				struct snd_pcm_hw_params *params,
+   216				struct snd_soc_dai *dai)
+   217	{
+   218		struct snd_soc_component *component = dai->component;
+   219		struct src4xxx *src4xxx = snd_soc_component_get_drvdata(component);
+   220		unsigned int mclk_div;
+   221		int val, pj, jd, d;
+   222		int reg;
+   223		int ret;
+   224	
+   225		switch (dai->id) {
+   226		case SRC4XXX_PORTB:
+   227			reg = SRC4XXX_PORTB_CTL_06;
+   228			break;
+   229		default:
+   230			reg = SRC4XXX_PORTA_CTL_04;
+   231		}
+   232	
+   233		if (src4xxx->master[dai->id]) {
+   234			mclk_div = src4xxx->mclk_hz/params_rate(params);
+   235			if (src4xxx->mclk_hz != mclk_div*params_rate(params)) {
+   236				dev_err(component->dev,
+   237					"mclk %d / rate %d has a remainder.\n",
+   238					src4xxx->mclk_hz, params_rate(params));
+   239				return -EINVAL;
+   240			}
+   241	
+   242			val = ((int)mclk_div - 128) / 128;
+   243			if ((val < 0) | (val > 3)) {
+   244				dev_err(component->dev,
+   245					"div register setting %d is out of range\n",
+   246					val);
+   247				dev_err(component->dev,
+   248					"unsupported sample rate %d Hz for the master clock of %d Hz\n",
+   249					params_rate(params), src4xxx->mclk_hz);
+   250				return -EINVAL;
+   251			}
+   252	
+   253			/* set the TX DIV */
+   254			ret = regmap_update_bits(src4xxx->regmap,
+   255				SRC4XXX_TX_CTL_07, SRC4XXX_TX_MCLK_DIV_MASK,
+   256				val<<SRC4XXX_TX_MCLK_DIV_SHIFT);
+   257			if (ret) {
+   258				dev_err(component->dev,
+   259					"Couldn't set the TX's div register to %d << %d = 0x%x\n",
+   260					val, SRC4XXX_TX_MCLK_DIV_SHIFT,
+   261					val<<SRC4XXX_TX_MCLK_DIV_SHIFT);
+   262				return ret;
+   263			}
+   264	
+   265			/* set the PLL for the digital receiver */
+   266			switch (src4xxx->mclk_hz) {
+   267			case 24576000:
+   268				pj = 0x22;
+   269				jd = 0x00;
+   270				d = 0x00;
+   271				break;
+   272			case 22579200:
+   273				pj = 0x22;
+   274				jd = 0x1b;
+   275				d = 0xa3;
+   276				break;
+ > 277			default:
+   278				/* don't error out here,
+   279				 * other parts of the chip are still functional
+   280				 */
+   281				dev_info(component->dev,
+   282					"Couldn't set the RCV PLL as this master clock rate is unknown\n");
+   283			}
+   284			ret = regmap_write(src4xxx->regmap, SRC4XXX_RCV_PLL_0F, pj);
+   285			if (ret < 0)
+   286				dev_err(component->dev,
+   287					"Failed to update PLL register 0x%x\n",
+   288					SRC4XXX_RCV_PLL_0F);
+ > 289			ret = regmap_write(src4xxx->regmap, SRC4XXX_RCV_PLL_10, jd);
+   290			if (ret < 0)
+   291				dev_err(component->dev,
+   292					"Failed to update PLL register 0x%x\n",
+   293					SRC4XXX_RCV_PLL_10);
+ > 294			ret = regmap_write(src4xxx->regmap, SRC4XXX_RCV_PLL_11, d);
+   295			if (ret < 0)
+   296				dev_err(component->dev,
+   297					"Failed to update PLL register 0x%x\n",
+   298					SRC4XXX_RCV_PLL_11);
+   299	
+   300			ret = regmap_update_bits(src4xxx->regmap,
+   301				SRC4XXX_TX_CTL_07, SRC4XXX_TX_MCLK_DIV_MASK,
+   302				val<<SRC4XXX_TX_MCLK_DIV_SHIFT);
+   303			if (ret < 0) {
+   304				dev_err(component->dev,
+   305					"Couldn't set the TX's div register to %d << %d = 0x%x\n",
+   306					val, SRC4XXX_TX_MCLK_DIV_SHIFT,
+   307					val<<SRC4XXX_TX_MCLK_DIV_SHIFT);
+   308				return ret;
+   309			}
+   310	
+   311			return regmap_update_bits(src4xxx->regmap, reg,
+   312						SRC4XXX_MCLK_DIV_MASK, val);
+   313		} else
+   314			dev_info(dai->dev, "not setting up MCLK as not master\n");
+   315	
+   316		return 0;
+   317	};
+   318	
+
 -- 
-2.33.0
-
+0-DAY CI Kernel Test Service
+https://01.org/lkp
