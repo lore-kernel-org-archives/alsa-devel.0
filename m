@@ -4,98 +4,81 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1A1A7C19F2D
-	for <alsa-devel@archiver.kernel.org>; Tue,  9 Aug 2022 15:24:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 35DD1C19F2D
+	for <alsa-devel@archiver.kernel.org>; Tue,  9 Aug 2022 15:29:28 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 164081E2;
-	Tue,  9 Aug 2022 17:23:54 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 164081E2
+	by alsa0.perex.cz (Postfix) with ESMTPS id 036FE1E4;
+	Tue,  9 Aug 2022 17:28:36 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 036FE1E4
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1660058684;
-	bh=DDTqDEz1Gwtvz8xuRpbhV4vEtOX0rcM77ObMu7zxIIU=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=XDEyBmacUmxIpgFKgOtF1VIbYQ8legfUHAZiA8Q3rWXaCGIxgXRP6zzISzPHJLGs6
-	 V7iOWSly+ep0grbfChdQwI5zina4IjFxq+JcQgrm6p+nnKunWJVb/ZhyPqGJcd+F/J
-	 fVJnSXIi3m6EGquyKCALuAHXkjOiDs7be3pAme5c=
+	s=default; t=1660058966;
+	bh=qpjNymdaV5K8kMbMWsB43Wr3eHMwPf3UBa8DYYVoWRk=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=D0pOH6cAFeiDlDq+LjHw2IQv7pP9eP2psD35susnxHpIxUNMz6TNXlXotUEXbEDXL
+	 PoQPxgQ6QvvAcEA3at6aqX0DfFUoGEFweNN1385eIMAa/ciuwKhIEk3ROAskjH4D1S
+	 LAK1bHCqfyNxlZ5zjrOhtrlXOmT3NQwgUJJlH6L8=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id A9F5CF80162;
-	Tue,  9 Aug 2022 17:23:53 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 90EC7F80162;
+	Tue,  9 Aug 2022 17:28:35 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 5D5EAF8016C; Tue,  9 Aug 2022 17:23:52 +0200 (CEST)
-Received: from mail-qt1-x82a.google.com (mail-qt1-x82a.google.com
- [IPv6:2607:f8b0:4864:20::82a])
+ id 49445F8016C; Tue,  9 Aug 2022 16:33:15 +0200 (CEST)
+Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com
+ [IPv6:2607:f8b0:4864:20::436])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 01D0BF8012A
- for <alsa-devel@alsa-project.org>; Tue,  9 Aug 2022 17:23:45 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 01D0BF8012A
+ by alsa1.perex.cz (Postfix) with ESMTPS id 21ED8F80132
+ for <alsa-devel@alsa-project.org>; Tue,  9 Aug 2022 16:33:10 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 21ED8F80132
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="A2SxNph/"
-Received: by mail-qt1-x82a.google.com with SMTP id e28so926008qts.1
- for <alsa-devel@alsa-project.org>; Tue, 09 Aug 2022 08:23:45 -0700 (PDT)
+ header.b="Zlr8ViCe"
+Received: by mail-pf1-x436.google.com with SMTP id p125so7414218pfp.2
+ for <alsa-devel@alsa-project.org>; Tue, 09 Aug 2022 07:33:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
- h=cc:to:subject:message-id:date:from:in-reply-to:references
- :mime-version:from:to:cc;
- bh=A5REIXPZhx2QvQynwWaByU5xDx6beRgsM1q7t3M3QIc=;
- b=A2SxNph/DNpdrT9d3hveZB91fLfSAP4PkBx0flA7BTnis9Ybo6vd5+lOioDg+TZ0Ri
- UQXG2pBoHeTKCKeD415ZXXB5GWUv7NxTfeZNIK9crwiLoYhbiKX+JToa4SGqgAXWIIJc
- g26La4rUgq/xtdJNAyy0KfalOqEaD5+d4Llx1bemL99Oqk+5WARcSBiZDEI0t+vXFF04
- jFDPS6JycPQH4FYLHi944/szEz5e5Sz73adaax9pmd/4AH9NYDw9PgbxO3i4T//u0t8/
- PZ1ZBAlmtXlQsjMITCrfaxckXef1/o+lKmNcU/N7gmO39+qBPOFN05XmP4w56jgPRU1o
- V3mA==
+ h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+ :to:from:from:to:cc;
+ bh=qAB7e1aa5XTYU8Wjij15vVYsEMZh8Pf+4KUmlTy3JTI=;
+ b=Zlr8ViCe4vY4wGGKUGuiDHN9kPbp/RZmnoNlZUKj2UOGFGlqaD2PiYwMqFKEIeZhGH
+ nHg/wzy+2jP3ZxYUJqxyhoVDUZvi2In01TMA8oXK5XPd9tsHW9A/6EYqjY5pLoWv3EfT
+ 4n7XjJOqawkYCoS605H9anHUdUBZ0h6yFnTz002ESqaNeGNF9ZcHvttRCdaHEV9WP6XD
+ 7V4mgijNaUPae8/YDJHC1pxrTnpjVfbrvNuFS0DOEf4SBoqChmrswdJZhV96NjPOiKmv
+ u10oWYy0bmgeavT4/u+M3wFC0C73TZ0YjWlKmMyjg9NEY1hc3wrMrBkwBBUL+FWZ8hJc
+ ttyQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
- h=cc:to:subject:message-id:date:from:in-reply-to:references
- :mime-version:x-gm-message-state:from:to:cc;
- bh=A5REIXPZhx2QvQynwWaByU5xDx6beRgsM1q7t3M3QIc=;
- b=kMNVPVtpJEwsuQD2ISdQ5N+v2x/fRVZQxmODqgDocYg4wdmdDdkdlV6bOaYRHUAU9j
- xfynya8WSGu+KmKxJZFYzwlTMK8D+SGYv9rolbb7olAAoH3G/mLSWJYfM9ebhDIxccFN
- CQLqF75QnPdJU9FVkH5sWhhxiSvbL0b/JGkxLexI+bvFjIP767TyOvx+pBXwHtoGr/gY
- pPOqeW+X0Yxgj5Bu8L98gHndIJVSVQXQbHkczFtmoeihpeY868ugOTR7wB1jJh3Pi3JG
- g3cgFLl6RZ3kLEmgGWOQjC5KLq2zXtgc6M+OkivRbPC17y+6E07MO6RvyS1tadBx5NWM
- Bxig==
-X-Gm-Message-State: ACgBeo0d294xuTkJ7vaXcve4FOFl8mPOFTRdajU5PCzAV7z5heHzxe9q
- jKPcZl84EUCIDB5f2oBp02PDKVMkLZSCNQmRWo0=
-X-Google-Smtp-Source: AA6agR5loxxYmWvOgY8IXER/onlN3o9Ts+lZi/Bv9dxls1CXuWv+Mw2vX/HgD4wWr4V10pqteJ/VYouRIQsN8BxPWUM=
-X-Received: by 2002:ac8:7f88:0:b0:342:e9dc:ee77 with SMTP id
- z8-20020ac87f88000000b00342e9dcee77mr14870523qtj.384.1660058623938; Tue, 09
- Aug 2022 08:23:43 -0700 (PDT)
+ h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+ :to:from:x-gm-message-state:from:to:cc;
+ bh=qAB7e1aa5XTYU8Wjij15vVYsEMZh8Pf+4KUmlTy3JTI=;
+ b=KxgTbi+KHq49nzH5SbJE9apeRmFMFRgARhOMrEIha3ZPTn9K7z2X5hc3EPwOrt+IOg
+ 3fpPIA6h66OCQ7JsshVx4hotDDCz+vUkc28pzyaHPJ7zXNC9+WHWDp3C+7tQp5IT/0OC
+ 3kaLYt3JUaiI7L6aHz4ydXsv1agYe43AWa5Pqz9Rj2K6urqNPLRLoWpP/Q6/OHcFsd0d
+ fzKf3V2o6Pgzjs3Iaqk11I+VcRwDSiZ1x3jdV+WSXADsUP5qtbQ6Y9hxfRjF+iKMrGkJ
+ vw5WZE0c/azVWPw353oda0s46Lq/qQI2+73H88uR9MA+MyKPhHSFTjKqvnugFPcJRUii
+ v3hw==
+X-Gm-Message-State: ACgBeo3QkX1GWFKE7ntnWEhw4hCaBytPKRvn+dWa8w694FCOxjmCm0xE
+ mpBrEtFP+NWUPwM5oF1aujSRaKq0AqecYw==
+X-Google-Smtp-Source: AA6agR45fggjE8T1r77sN+mWaiFwaVWGyQ48ahBRVpt3NAOG/akHSAfoayv7MWQHRq2uIh0zjJaQUA==
+X-Received: by 2002:a17:902:d4d2:b0:16f:8311:54ba with SMTP id
+ o18-20020a170902d4d200b0016f831154bamr23171122plg.15.1660055128832; 
+ Tue, 09 Aug 2022 07:25:28 -0700 (PDT)
+Received: from archlinux.. ([136.233.9.102]) by smtp.gmail.com with ESMTPSA id
+ 38-20020a630c66000000b00419acadde52sm8097674pgm.46.2022.08.09.07.25.22
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Tue, 09 Aug 2022 07:25:28 -0700 (PDT)
+From: Bedant <bedant.patnaik@gmail.com>
+To: perex@perex.cz,
+	tiwai@suse.com
+Subject: [PATCH] ALSA: hda/realtek: Add a quirk for HP OMEN 15 (8786) mute LED
+Date: Tue,  9 Aug 2022 19:54:55 +0530
+Message-Id: <20220809142455.6473-1-bedant.patnaik@gmail.com>
+X-Mailer: git-send-email 2.37.1
 MIME-Version: 1.0
-References: <CAHp75VckU2ZraLJ-frjWXjUu9pFW+-XmWgTbYqUXOUNAD-1HGA@mail.gmail.com>
- <6c8e4104-2239-a188-649d-585f059cabdd@intel.com>
- <YsgjdKEtE7pMDTnZ@smile.fi.intel.com>
- <a73b3ec0-5abb-ddfd-414b-b9807f05413e@linux.intel.com>
- <CAHp75Vd4D0KF7ik+aMOwv-+bofWja_tDe4YUmihQBF+RiHZTmA@mail.gmail.com>
- <e2fe6351-f9ee-48eb-ad7f-280249f7f3f7@intel.com>
- <CAHp75VfvN-iJTpgg6JeKhOqJLhtYSieo7d7SOCBoUu-81FtSqg@mail.gmail.com>
- <c19ed4a6-6a96-b4a4-0f5a-7ca1dba925d1@intel.com>
- <YsnoH64cKCT7gndw@smile.fi.intel.com>
- <2c6a4a61-e6c8-0487-8d29-dc3fbb90bbe2@intel.com>
- <Ys2EFtNVL8ZALQ5Q@smile.fi.intel.com>
- <acbaf339-2fd9-5b19-06e8-62e66c324dc6@intel.com>
-In-Reply-To: <acbaf339-2fd9-5b19-06e8-62e66c324dc6@intel.com>
-From: Andy Shevchenko <andy.shevchenko@gmail.com>
-Date: Tue, 9 Aug 2022 17:23:06 +0200
-Message-ID: <CAHp75VcVEEUYf2YZLVMby_v4fNpA0upAB+YkWwrPxqV9R+-YZQ@mail.gmail.com>
-Subject: Re: [PATCH 1/2] lib/string_helpers: Introduce strsplit_u32()
-To: Cezary Rojewski <cezary.rojewski@intel.com>
-Content-Type: text/plain; charset="UTF-8"
-Cc: Andy Shevchenko <andy@kernel.org>,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- ALSA Development Mailing List <alsa-devel@alsa-project.org>,
- Kai Vehmanen <kai.vehmanen@linux.intel.com>,
- Liam Girdwood <lgirdwood@gmail.com>,
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
- Takashi Iwai <tiwai@suse.com>, Hans de Goede <hdegoede@redhat.com>,
- Mark Brown <broonie@kernel.org>, Bard Liao <yung-chuan.liao@linux.intel.com>,
- Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
- amadeuszx.slawinski@linux.intel.com,
- =?UTF-8?Q?P=C3=A9ter_Ujfalusi?= <peter.ujfalusi@linux.intel.com>
+Content-Transfer-Encoding: 8bit
+X-Mailman-Approved-At: Tue, 09 Aug 2022 17:28:33 +0200
+Cc: Bedant Patnaik <bedant.patnaik@gmail.com>, alsa-devel@alsa-project.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -111,85 +94,28 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Tue, Aug 9, 2022 at 11:55 AM Cezary Rojewski
-<cezary.rojewski@intel.com> wrote:
-> On 2022-07-12 4:24 PM, Andy Shevchenko wrote:
+From: Bedant Patnaik <bedant.patnaik@gmail.com>
 
-...
+Board ID 8786 seems to be another variant of the Omen 15 that needs
+ALC285_FIXUP_HP_MUTE_LED for working mute LED.
 
-> I've spent some time analyzing possible utilization of _Generic() in
-> context of get_options() but in my opinion get_range() complicates
-> things enough that get_range() and get_option() would basically need a
-> copy per type.
+Signed-off-by: Bedant Patnaik <bedant.patnaik@gmail.com>
+---
+ sound/pci/hda/patch_realtek.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-Thanks for keeping us updated.
-
-> If Linux kernel guarantees that sizeof(int), sizeof(unsigned int),
-> sizeof(s32) and sizeof(u32) are all equal (given the currently supported
-> arch set), then indeed modifying get_options() may not be necessary.
-> This plus shamelessly casting (u32 *) to (int *) of course.
-
-I think as long as Linux kernel states that it requires (at least)
-32-bit architecture to run, we are fine. I have heard of course about
-a funny project of running Linux on 8-bit microcontrollers, but it's
-such a fun niche, which by the way uses emulation without changing
-actual 32-bit code, that I won't even talk about.
-
-> What's left to do is the __user helper function. What I have in mind is:
->
-> int tokenize_user_input(const char __user *from, size_t count, loff_t
-> *ppos, int **tkns)
-> {
->         int *ints, nints;
->         char *buf;
->         int ret;
->
->         buf = kmalloc(count + 1, GFP_KERNEL);
->         if (!buf)
->                 return -ENOMEM;
->
->         ret = simple_write_to_buffer(buf, count, ppos, from, count);
->         if (ret != count) {
->                 ret = (ret < 0) ? ret : -EIO;
->                 goto free_buf;
->         }
->
->         buf[count] = '\0';
-
-I guess this may be simplified with memdup_user(). Otherwise it looks like that.
-
->         get_options(buf, 0, &nints);
-
-(You don't use ppos here, so it's pointless to use
-simple_write_to_buffer(), right? I have noticed this pattern in SOF
-code, which might be simplified the same way as I suggested above)
-
->         if (!nints) {
->                 ret = -ENOENT;
->                 goto free_buf;
->         }
->
->         ints = kcalloc(nints + 1, sizeof(*ints), GFP_KERNEL);
->         if (!ints) {
->                 ret = -ENOMEM;
->                 goto free_buf;
->         }
->
->         get_options(buf, nints + 1, ints);
->         *tkns = ints;
->         ret = 0;
->
-> free_buf:
->         kfree(buf);
->         return ret;
-> }
-
-...
-
-> as a part of fs/libfs.c not lib/cmdline.c. Is such approach acceptable?
-
-I think so.
-
+diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+index 8a57636f6..258f4e490 100644
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -9203,6 +9203,7 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
+ 		      ALC285_FIXUP_HP_GPIO_AMP_INIT),
+ 	SND_PCI_QUIRK(0x103c, 0x8783, "HP ZBook Fury 15 G7 Mobile Workstation",
+ 		      ALC285_FIXUP_HP_GPIO_AMP_INIT),
++	SND_PCI_QUIRK(0x103c, 0x8786, "HP OMEN 15", ALC285_FIXUP_HP_MUTE_LED),
+ 	SND_PCI_QUIRK(0x103c, 0x8787, "HP OMEN 15", ALC285_FIXUP_HP_MUTE_LED),
+ 	SND_PCI_QUIRK(0x103c, 0x8788, "HP OMEN 15", ALC285_FIXUP_HP_MUTE_LED),
+ 	SND_PCI_QUIRK(0x103c, 0x87c8, "HP", ALC287_FIXUP_HP_GPIO_LED),
 -- 
-With Best Regards,
-Andy Shevchenko
+2.37.1
+
