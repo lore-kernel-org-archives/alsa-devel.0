@@ -4,98 +4,91 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7788FC19F2D
-	for <alsa-devel@archiver.kernel.org>; Tue,  9 Aug 2022 16:30:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 258FAC19F2D
+	for <alsa-devel@archiver.kernel.org>; Tue,  9 Aug 2022 17:24:41 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B2805826;
-	Tue,  9 Aug 2022 18:29:20 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B2805826
+	by alsa0.perex.cz (Postfix) with ESMTPS id 5D8C5822;
+	Tue,  9 Aug 2022 19:23:49 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5D8C5822
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1660062610;
-	bh=BtpKcVcrr5hdO9O/+H2IXIWux8xJbFNxxsj5VZBK2fI=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1660065879;
+	bh=yqU30285ED9AxJKhoiXJ+grwRUq8CCzsgCJmohF548o=;
+	h=Date:Subject:To:References:From:In-Reply-To:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=rTU4qy1vPDxRRGFfApYKiKPSYUN5AxxyvL2/fKFdQeBmYN+J1EFroFRflUESWV6Mt
-	 0qMSY8BhPBYk8r088IZ7C1yQL9x6AG7jYSyyNmXMT4UPO0ispAIejm3fn8v/AqvXAe
-	 FkR3rxx0zaAzo3+z5roHbXLqZ/ZsWnQpCNnXflGw=
+	b=kuGxLOW3zvO0EqpYlBsGhWHFBqodkMON0CwA94OdA9uTABZ4caC0TLa5FuhPAb/fa
+	 edZpmE4r0iH16OpWlS5c3sAUFXm0Bvyjas2KbAPeBsizB8ZjoMEsywO+dnXOO9Bffk
+	 IJYLXWP2YyZOEGGnQm0tkEjuuu+3zAqDa61XY4PY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 54A37F8055B;
-	Tue,  9 Aug 2022 18:28:13 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id E3739F80162;
+	Tue,  9 Aug 2022 19:23:48 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id C9D36F8055B; Tue,  9 Aug 2022 18:28:11 +0200 (CEST)
-Received: from mail-lj1-x22c.google.com (mail-lj1-x22c.google.com
- [IPv6:2a00:1450:4864:20::22c])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id 99186F8016C; Tue,  9 Aug 2022 19:23:47 +0200 (CEST)
+Received: from fllv0015.ext.ti.com (fllv0015.ext.ti.com [198.47.19.141])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id AC1AFF80548
- for <alsa-devel@alsa-project.org>; Tue,  9 Aug 2022 18:28:05 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AC1AFF80548
+ by alsa1.perex.cz (Postfix) with ESMTPS id 2B4B0F80132
+ for <alsa-devel@alsa-project.org>; Tue,  9 Aug 2022 19:23:38 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2B4B0F80132
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org
- header.b="mlu+D/EM"
-Received: by mail-lj1-x22c.google.com with SMTP id bx38so13487236ljb.10
- for <alsa-devel@alsa-project.org>; Tue, 09 Aug 2022 09:28:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
- h=from:to:cc:subject:date:message-id:in-reply-to:references
- :mime-version:content-transfer-encoding;
- bh=Ga227+XjHKmXNlFWhnddLRopISEjRlyyZsIFo+W6TcM=;
- b=mlu+D/EMEEHlsnta+8nZjM0nCqo+gd1HvEXHMt62Z74w1o2AtTP5JFxw1CnAN20pZY
- EZY2VFYMSQKXzeuEjiLr4a4LIrZFNY4ixXvQ8oL5W5qXYH85nDxeu7eC3zrpD42akHek
- S5HLu5bSfKgpIMSZt0NhyyJ6x6ImIkXMnNwmmh+7zACr/8GLxQ6DzxUpLCKILO2NlVIL
- dgho7fuH5A8ok9nIND+dcEl7PIhUCaWKrffwPlHp2XrsXFSyGZuSPF1DGrwDqNXFEJMS
- MoIKDpYb1wMhceALamx0BueFXHlzlWdu0ZS4LY67cpbz8X1jbsg2KJ2awajWOldBSgbG
- upNQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
- :references:mime-version:content-transfer-encoding;
- bh=Ga227+XjHKmXNlFWhnddLRopISEjRlyyZsIFo+W6TcM=;
- b=HRFvpbYa98vSIbywvqlMJSOaj9xqa+NEYYbWSbY5exOeiIAuv5S6FwOyeOhkRPz/DB
- sGXA1xIddJ3L0vnoHZrqMHu0am86g+wzOMnKCKeF17uZ59EVLBh6+LtatCQS5lURPt5W
- Yl+SfSpD5YTv299S1WimQajhom6d4EFiiHqUBquwb8EOyhDpCkoY0xrKeLP0QAvvdPMk
- OBmpRSQNJBsnhPDqxR9OWN8IY/m02Bvmw1IshCjxwVyYSKB3WAUrLkA/v5tTIvHuOW0Q
- DQSYlAr8w23sEbHdLT6wDyU6jYI2+jiA8XazsP7FTJRJ3g3nvpjIOo5mamGHLNQ/rcHs
- n6wg==
-X-Gm-Message-State: ACgBeo2/hj+nAnHDUlfJScEneHvtIotPp1veYfO6bae9UCmbkc50KSN/
- It4iYi4wWdrKrHl6musfUTgmcWgUd0cJwcSh
-X-Google-Smtp-Source: AA6agR68t7e6d0SYEAm2VxRd0F+y6tYKyy/R418cX2x3f087AlM7cpFl57QIeo13lmkWFE5jzF41Gw==
-X-Received: by 2002:a2e:7804:0:b0:25e:5b54:74ae with SMTP id
- t4-20020a2e7804000000b0025e5b5474aemr7133252ljc.173.1660062481891; 
- Tue, 09 Aug 2022 09:28:01 -0700 (PDT)
-Received: from localhost.localdomain ([83.146.140.105])
- by smtp.gmail.com with ESMTPSA id
- h7-20020ac24d27000000b0048a8c907fe9sm20999lfk.167.2022.08.09.09.28.00
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Tue, 09 Aug 2022 09:28:01 -0700 (PDT)
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-To: Michael Hennerich <Michael.Hennerich@analog.com>,
- Jean Delvare <jdelvare@suse.com>, Guenter Roeck <linux@roeck-us.net>,
- Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Jonathan Cameron <jic23@kernel.org>, Lars-Peter Clausen <lars@metafoo.de>,
- Pavel Machek <pavel@ucw.cz>, Tim Harvey <tharvey@gateworks.com>,
- Lee Jones <lee@kernel.org>, "David S. Miller" <davem@davemloft.net>,
- Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
- Paolo Abeni <pabeni@redhat.com>, Sebastian Reichel <sre@kernel.org>,
- Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
- Andrew Davis <afd@ti.com>, linux-hwmon@vger.kernel.org,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-iio@vger.kernel.org, linux-fbdev@vger.kernel.org,
- linux-leds@vger.kernel.org, netdev@vger.kernel.org,
- linux-pm@vger.kernel.org, alsa-devel@alsa-project.org
-Subject: [PATCH v2 3/5] dt-bindings: Drop Beniamin Bia and Stefan Popa
-Date: Tue,  9 Aug 2022 19:27:50 +0300
-Message-Id: <20220809162752.10186-4-krzysztof.kozlowski@linaro.org>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20220809162752.10186-1-krzysztof.kozlowski@linaro.org>
-References: <20220809162752.10186-1-krzysztof.kozlowski@linaro.org>
+ dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="cO9UAe5t"
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+ by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 279HNain087452;
+ Tue, 9 Aug 2022 12:23:36 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+ s=ti-com-17Q1; t=1660065816;
+ bh=yoTLywAgULuoGNZ7bhMPPAJI7pF8iH6SRXoNXp+7tqc=;
+ h=Date:Subject:To:References:From:In-Reply-To;
+ b=cO9UAe5t4roY5qLiIXyCjkB36zTn0SxOf4FcLd2qtO3anq/O1V/4VwmhbHVZW30ay
+ w8ISC2zHsFuV4d2EKiYYLsk8yCnX7BE7LZu90EQTkg5akzd4KD8ZEtZu5wh2h1w0qC
+ xyagtjxtbOREyb1aXvRc/3Ax/AcONsv4GycAXbKM=
+Received: from DFLE115.ent.ti.com (dfle115.ent.ti.com [10.64.6.36])
+ by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 279HNaZu058489
+ (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+ Tue, 9 Aug 2022 12:23:36 -0500
+Received: from DFLE105.ent.ti.com (10.64.6.26) by DFLE115.ent.ti.com
+ (10.64.6.36) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14; Tue, 9
+ Aug 2022 12:23:35 -0500
+Received: from fllv0040.itg.ti.com (10.64.41.20) by DFLE105.ent.ti.com
+ (10.64.6.26) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14 via
+ Frontend Transport; Tue, 9 Aug 2022 12:23:35 -0500
+Received: from [10.250.34.173] (ileax41-snat.itg.ti.com [10.172.224.153])
+ by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 279HNY6o035439;
+ Tue, 9 Aug 2022 12:23:34 -0500
+Message-ID: <2f5af424-4567-c843-d406-f67b53ec049d@ti.com>
+Date: Tue, 9 Aug 2022 12:23:34 -0500
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
- Jonathan Cameron <Jonathan.Cameron@huawei.com>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.11.0
+Subject: Re: [PATCH v2 5/5] dt-bindings: Drop Dan Murphy and Ricardo
+ Rivera-Matos
+Content-Language: en-US
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>, Michael Hennerich
+ <Michael.Hennerich@analog.com>, Jean Delvare <jdelvare@suse.com>, Guenter
+ Roeck <linux@roeck-us.net>, Rob Herring <robh+dt@kernel.org>, Krzysztof
+ Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Jonathan Cameron
+ <jic23@kernel.org>, Lars-Peter Clausen <lars@metafoo.de>, Pavel Machek
+ <pavel@ucw.cz>, Tim Harvey <tharvey@gateworks.com>, Lee Jones
+ <lee@kernel.org>, "David S. Miller" <davem@davemloft.net>, Eric Dumazet
+ <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni
+ <pabeni@redhat.com>, Sebastian Reichel <sre@kernel.org>, Liam Girdwood
+ <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
+ <linux-hwmon@vger.kernel.org>, <devicetree@vger.kernel.org>,
+ <linux-kernel@vger.kernel.org>, <linux-iio@vger.kernel.org>,
+ <linux-fbdev@vger.kernel.org>, <linux-leds@vger.kernel.org>,
+ <netdev@vger.kernel.org>, <linux-pm@vger.kernel.org>,
+ <alsa-devel@alsa-project.org>
+References: <20220809162752.10186-1-krzysztof.kozlowski@linaro.org>
+ <20220809162752.10186-6-krzysztof.kozlowski@linaro.org>
+From: Andrew Davis <afd@ti.com>
+In-Reply-To: <20220809162752.10186-6-krzysztof.kozlowski@linaro.org>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -111,70 +104,12 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Emails to Beniamin Bia and Stefan Popa bounce ("550 5.1.10
-RESOLVER.ADR.RecipientNotFound; Recipient not found by SMTP address
-lookup").
+On 8/9/22 11:27 AM, Krzysztof Kozlowski wrote:
+> Emails to Dan Murphy and Ricardo Rivera-Matos bounce ("550 Invalid
+> recipient").  Andrew Davis agreed to take over the bindings.
+> 
+> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+> 
+> ---
 
-Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Acked-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
----
- Documentation/devicetree/bindings/hwmon/adi,adm1177.yaml       | 1 -
- Documentation/devicetree/bindings/iio/adc/adi,ad7091r5.yaml    | 2 +-
- Documentation/devicetree/bindings/iio/adc/adi,ad7606.yaml      | 3 +--
- .../devicetree/bindings/iio/amplifiers/adi,hmc425a.yaml        | 1 -
- 4 files changed, 2 insertions(+), 5 deletions(-)
-
-diff --git a/Documentation/devicetree/bindings/hwmon/adi,adm1177.yaml b/Documentation/devicetree/bindings/hwmon/adi,adm1177.yaml
-index 154bee851139..d794deb08bb7 100644
---- a/Documentation/devicetree/bindings/hwmon/adi,adm1177.yaml
-+++ b/Documentation/devicetree/bindings/hwmon/adi,adm1177.yaml
-@@ -8,7 +8,6 @@ title: Analog Devices ADM1177 Hot Swap Controller and Digital Power Monitor
- 
- maintainers:
-   - Michael Hennerich <michael.hennerich@analog.com>
--  - Beniamin Bia <beniamin.bia@analog.com>
- 
- description: |
-   Analog Devices ADM1177 Hot Swap Controller and Digital Power Monitor
-diff --git a/Documentation/devicetree/bindings/iio/adc/adi,ad7091r5.yaml b/Documentation/devicetree/bindings/iio/adc/adi,ad7091r5.yaml
-index 31ffa275f5fa..b97559f23b3a 100644
---- a/Documentation/devicetree/bindings/iio/adc/adi,ad7091r5.yaml
-+++ b/Documentation/devicetree/bindings/iio/adc/adi,ad7091r5.yaml
-@@ -7,7 +7,7 @@ $schema: http://devicetree.org/meta-schemas/core.yaml#
- title: Analog Devices AD7091R5 4-Channel 12-Bit ADC
- 
- maintainers:
--  - Beniamin Bia <beniamin.bia@analog.com>
-+  - Michael Hennerich <michael.hennerich@analog.com>
- 
- description: |
-   Analog Devices AD7091R5 4-Channel 12-Bit ADC
-diff --git a/Documentation/devicetree/bindings/iio/adc/adi,ad7606.yaml b/Documentation/devicetree/bindings/iio/adc/adi,ad7606.yaml
-index 73775174cf57..516fc24d3346 100644
---- a/Documentation/devicetree/bindings/iio/adc/adi,ad7606.yaml
-+++ b/Documentation/devicetree/bindings/iio/adc/adi,ad7606.yaml
-@@ -7,8 +7,7 @@ $schema: http://devicetree.org/meta-schemas/core.yaml#
- title: Analog Devices AD7606 Simultaneous Sampling ADC
- 
- maintainers:
--  - Beniamin Bia <beniamin.bia@analog.com>
--  - Stefan Popa <stefan.popa@analog.com>
-+  - Michael Hennerich <michael.hennerich@analog.com>
- 
- description: |
-   Analog Devices AD7606 Simultaneous Sampling ADC
-diff --git a/Documentation/devicetree/bindings/iio/amplifiers/adi,hmc425a.yaml b/Documentation/devicetree/bindings/iio/amplifiers/adi,hmc425a.yaml
-index a557761d8016..9fda56fa49c3 100644
---- a/Documentation/devicetree/bindings/iio/amplifiers/adi,hmc425a.yaml
-+++ b/Documentation/devicetree/bindings/iio/amplifiers/adi,hmc425a.yaml
-@@ -8,7 +8,6 @@ title: HMC425A 6-bit Digital Step Attenuator
- 
- maintainers:
-   - Michael Hennerich <michael.hennerich@analog.com>
--  - Beniamin Bia <beniamin.bia@analog.com>
- 
- description: |
-   Digital Step Attenuator IIO device with gpio interface.
--- 
-2.34.1
-
+Acked-by: Andrew Davis <afd@ti.com>
