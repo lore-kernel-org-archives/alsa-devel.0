@@ -4,72 +4,72 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4D733C19F2D
-	for <alsa-devel@archiver.kernel.org>; Tue,  9 Aug 2022 16:29:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 83442C19F2D
+	for <alsa-devel@archiver.kernel.org>; Tue,  9 Aug 2022 16:29:38 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 5E4BD84B;
-	Tue,  9 Aug 2022 18:28:37 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5E4BD84B
+	by alsa0.perex.cz (Postfix) with ESMTPS id 9FD7B83D;
+	Tue,  9 Aug 2022 18:28:46 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9FD7B83D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1660062567;
-	bh=7bvYpzB1jMllPb6WTP3CWIV6IdikHOwX8Pl9cDgNZTw=;
+	s=default; t=1660062576;
+	bh=3TD4LmnEcqhZov+8pJNe/fVEMfRWmiLi+39y56h+xR8=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=met01GkwVxR2KG1hefmY40KFnjXkre7nmZsu7jwnlWw0SagpCCG14CopWSh7xUGKW
-	 ypYExMGusm/7T0Kb2wNUfwRjrC8uB197vO0TPNOicNgobQ5YRavEOhwqjUoa/mNsrb
-	 gi4fcmgIgZzlc2SCv/xEgdZso5SU3rtJjiD2vI0M=
+	b=CgAGUa9oyJw4fgnHgSvmQlhr4wZO0RDC5l/Lb3YhMCyNlki4sdNpiSQ5yGMFrMyjn
+	 9vROPXEiLryxOCqqHqnITfe1ly13+ihnrcQ09Acfl2nK1PVBisESqQXYQ7OdJ0vSWH
+	 3F5ubY4P/SxJGZOM8oeYsZ2k1SQdemHHkOSt9nn0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id C52A0F802A0;
-	Tue,  9 Aug 2022 18:28:10 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 40382F80552;
+	Tue,  9 Aug 2022 18:28:11 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id CCC23F80551; Tue,  9 Aug 2022 18:28:06 +0200 (CEST)
-Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com
- [IPv6:2a00:1450:4864:20::12a])
+ id 35455F8054A; Tue,  9 Aug 2022 18:28:08 +0200 (CEST)
+Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com
+ [IPv6:2a00:1450:4864:20::131])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 6171FF80132
- for <alsa-devel@alsa-project.org>; Tue,  9 Aug 2022 18:28:01 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6171FF80132
+ by alsa1.perex.cz (Postfix) with ESMTPS id AF465F802A0
+ for <alsa-devel@alsa-project.org>; Tue,  9 Aug 2022 18:28:04 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AF465F802A0
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org
- header.b="j79cXYWF"
-Received: by mail-lf1-x12a.google.com with SMTP id d14so17668258lfl.13
- for <alsa-devel@alsa-project.org>; Tue, 09 Aug 2022 09:28:01 -0700 (PDT)
+ header.b="n9b8Cvea"
+Received: by mail-lf1-x131.google.com with SMTP id o2so10389805lfb.1
+ for <alsa-devel@alsa-project.org>; Tue, 09 Aug 2022 09:28:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
  h=from:to:cc:subject:date:message-id:in-reply-to:references
  :mime-version:content-transfer-encoding;
- bh=VQqWBeEw3qmpRlqqPzE7ts9pNLZupNqxFvrZxuptWIw=;
- b=j79cXYWF8zWqA57u666uDxDQhQSxVG4iHrBRVvIitGuWL3K37eFf18TlAp2CYAcAvf
- k/cvVQQag/Jn2M+i8GJ41Ar4NcO7nre1mhTl3A36V6Xpsz5Bni6NO6pWjwavxsWPrVKH
- tI2kusCmuH3F6Uj10cVQ7EftmfmtzZqnopM958bWnpYTWKObaSzu8zXuyOITi5j/onEB
- Z5plD+zVaKsjLLhb1QmZOqK/3L6VJq4eVxpgqk2QwugxZCTU4evWptwT62bEmnhwWHa3
- npd0xSDsOVJhgvboIJTo/8h8iegXTYZgZPwn74VBjOtej/oGhF6hMzRQwVs/4J0epcPt
- 5XAQ==
+ bh=FskYPTv76833n+1Hq30omnxb9L5MZLnaEUwuBASTaa0=;
+ b=n9b8Cvea5EVIT7ZHPBapKzhf/u8xMO3geKItvh4tXL5VfoRjWNI0D2590zpirb8aPY
+ T6Qhg9ZxvmhiQZt94wtqCAOdbxAyeYNu720/AI9yUJES8KaGF0Xe2/EltRejIw/bs6CJ
+ OWqBJZfbYEOClWPMwzI4Rp8pTeVnZv/F1nDJCJQg9dlD9layQ6Ni+I/DedxKO1fdf7lJ
+ L6cEBSbhbSuwxg9TdWGECrJwq5UFvA6tt4ZUoLz4oboMxMfzccOAkHM1CUEI7ZGk3GTk
+ UgQOveV1H6a2yLhKI65F7ePdq5dusok+lHZFEWDtmAqxGILLEhWQWprWrBUHBPusdbtz
+ vy8g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
  h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
  :references:mime-version:content-transfer-encoding;
- bh=VQqWBeEw3qmpRlqqPzE7ts9pNLZupNqxFvrZxuptWIw=;
- b=HAs6SKJrPOaxOnMOP7tuC/2/MW/D+miLAaqndgtPRmXfInr7NmikiUvO/zlIEDF/nL
- GzSkgzQLVisoAu9Eiq4VGnCSxTFomhyUX2LcUJyIGXXpjD41ht2b5VS2YFwfK2AV6xKN
- 3+DvVAs9aucgueVZM5xv3PspiqHkXbAlk7yCMGSz9dd9gMDGyN1y6jDW0CpBEMmtegAM
- CrbX0f91W/Hb6/SlsLzbgQ7kWKzEt1VOuwW7NxziMXLaBVuA+2qCDP87A3EMEFUPA+7f
- f3eq3hNGZyWB5uieb9PXCkQyLBpxnuH5A79izWZTU4OFQx9xRNQ6FJVIUwnA4786jPIx
- qO1g==
-X-Gm-Message-State: ACgBeo0l1eAZvxJQ7YGgjUF+MbYe4CBHyIeQzzcbn3XZ5QPO7pFK3rLD
- zk/8jTncHPEdIrBHaiwrnJk3Lw==
-X-Google-Smtp-Source: AA6agR7eDE6idEdhMhZWlMx2pyUpEsLs29Q4eIc0ackncepXx/MXNZjkccFDQoE9WCyEbZAey+9A4A==
-X-Received: by 2002:a05:6512:3b06:b0:48b:239e:be with SMTP id
- f6-20020a0565123b0600b0048b239e00bemr8058254lfv.586.1660062480249; 
- Tue, 09 Aug 2022 09:28:00 -0700 (PDT)
+ bh=FskYPTv76833n+1Hq30omnxb9L5MZLnaEUwuBASTaa0=;
+ b=XM8vXXAJVhZ/2UXxEp21l2FAespNyJB6ri3iuoyQfmKBbSHpHclO29ExUpDDXZIIlo
+ AHu2LvbWYpNm2Z7OVsO/Zooa/ok4E6zRQVPjqDwmTGly4Jqgd5XbnyYX0vKvKrlwzAXB
+ x9fkFZyjA4RXSRRJjJJPFqiWIfMeyOOdiCD/kDQ0ztbaBlVKK46m7WBcp2Z8qOK7yw+S
+ EoGFT0Zfkehht0UMCjDzQS8Q4HQHfu7czy/vfxKCKCeSVbue8mowliDGnns6oHXCakR5
+ uyCB4o1KpxEYp7/9mkwf8dN9wz3n4AnD0t0fNrlAZpctDvhQaAu+VaCXuK4uC3WiTm/r
+ LL5w==
+X-Gm-Message-State: ACgBeo34lcdXuGx28X2IHET5y/D6KGqD3diiKVHRpka11HnzenPkp2ut
+ AXix8eHHjEJ1aA/ogbf60v3/lA==
+X-Google-Smtp-Source: AA6agR767hSt1vi/jf4SWD0G245jpJ0a3tCpFTASnOz48JrJ7rf8nR0ufvWHqiESt46jw+PhIubt1Q==
+X-Received: by 2002:a05:6512:13a4:b0:479:3b9f:f13c with SMTP id
+ p36-20020a05651213a400b004793b9ff13cmr7842204lfa.380.1660062483418; 
+ Tue, 09 Aug 2022 09:28:03 -0700 (PDT)
 Received: from localhost.localdomain ([83.146.140.105])
  by smtp.gmail.com with ESMTPSA id
- h7-20020ac24d27000000b0048a8c907fe9sm20999lfk.167.2022.08.09.09.27.58
+ h7-20020ac24d27000000b0048a8c907fe9sm20999lfk.167.2022.08.09.09.28.02
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Tue, 09 Aug 2022 09:27:59 -0700 (PDT)
+ Tue, 09 Aug 2022 09:28:02 -0700 (PDT)
 From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 To: Michael Hennerich <Michael.Hennerich@analog.com>,
  Jean Delvare <jdelvare@suse.com>, Guenter Roeck <linux@roeck-us.net>,
@@ -86,9 +86,9 @@ To: Michael Hennerich <Michael.Hennerich@analog.com>,
  linux-iio@vger.kernel.org, linux-fbdev@vger.kernel.org,
  linux-leds@vger.kernel.org, netdev@vger.kernel.org,
  linux-pm@vger.kernel.org, alsa-devel@alsa-project.org
-Subject: [PATCH v2 2/5] dt-bindings: iio: Drop Bogdan Pricop
-Date: Tue,  9 Aug 2022 19:27:49 +0300
-Message-Id: <20220809162752.10186-3-krzysztof.kozlowski@linaro.org>
+Subject: [PATCH v2 4/5] dt-bindings: Drop Robert Jones
+Date: Tue,  9 Aug 2022 19:27:51 +0300
+Message-Id: <20220809162752.10186-5-krzysztof.kozlowski@linaro.org>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20220809162752.10186-1-krzysztof.kozlowski@linaro.org>
 References: <20220809162752.10186-1-krzysztof.kozlowski@linaro.org>
@@ -111,28 +111,46 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Emails to Bogdan Pricop bounce ("550 5.4.1 Recipient address rejected:
-Access denied. AS(201806281)").
+Emails to Robert Jones bounce ("550 5.2.1 The email account that you
+tried to reach is disabled").
 
 Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 Acked-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
----
- Documentation/devicetree/bindings/iio/adc/ti,adc108s102.yaml | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/Documentation/devicetree/bindings/iio/adc/ti,adc108s102.yaml b/Documentation/devicetree/bindings/iio/adc/ti,adc108s102.yaml
-index 54955f03df93..ae5ce60987fe 100644
---- a/Documentation/devicetree/bindings/iio/adc/ti,adc108s102.yaml
-+++ b/Documentation/devicetree/bindings/iio/adc/ti,adc108s102.yaml
+---
+
+For maintainers entry see:
+https://lore.kernel.org/all/20220808111113.71890-1-krzysztof.kozlowski@linaro.org/
+---
+ Documentation/devicetree/bindings/iio/imu/nxp,fxos8700.yaml | 2 +-
+ Documentation/devicetree/bindings/mfd/gateworks-gsc.yaml    | 1 -
+ 2 files changed, 1 insertion(+), 2 deletions(-)
+
+diff --git a/Documentation/devicetree/bindings/iio/imu/nxp,fxos8700.yaml b/Documentation/devicetree/bindings/iio/imu/nxp,fxos8700.yaml
+index 479e7065d4eb..0203b83b8587 100644
+--- a/Documentation/devicetree/bindings/iio/imu/nxp,fxos8700.yaml
++++ b/Documentation/devicetree/bindings/iio/imu/nxp,fxos8700.yaml
 @@ -7,7 +7,7 @@ $schema: http://devicetree.org/meta-schemas/core.yaml#
- title: Texas Instruments ADC108S102 and ADC128S102
+ title: Freescale FXOS8700 Inertial Measurement Unit
  
  maintainers:
--  - Bogdan Pricop <bogdan.pricop@emutex.com>
+-  - Robert Jones <rjones@gateworks.com>
 +  - Jonathan Cameron <jic23@kernel.org>
  
  description: |
-   Family of 8 channel, 10/12 bit, SPI, single ended ADCs.
+   Accelerometer and magnetometer combo device with an i2c and SPI interface.
+diff --git a/Documentation/devicetree/bindings/mfd/gateworks-gsc.yaml b/Documentation/devicetree/bindings/mfd/gateworks-gsc.yaml
+index 5a1e8d21f7a0..5e0fe3ebe1d2 100644
+--- a/Documentation/devicetree/bindings/mfd/gateworks-gsc.yaml
++++ b/Documentation/devicetree/bindings/mfd/gateworks-gsc.yaml
+@@ -19,7 +19,6 @@ description: |
+ 
+ maintainers:
+   - Tim Harvey <tharvey@gateworks.com>
+-  - Robert Jones <rjones@gateworks.com>
+ 
+ properties:
+   $nodename:
 -- 
 2.34.1
 
