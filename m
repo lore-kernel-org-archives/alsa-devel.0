@@ -4,66 +4,85 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 29B5BC00140
-	for <alsa-devel@archiver.kernel.org>; Wed, 10 Aug 2022 19:07:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 50BA8C25B06
+	for <alsa-devel@archiver.kernel.org>; Wed, 10 Aug 2022 21:15:28 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 43AEB161F;
-	Wed, 10 Aug 2022 21:06:38 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 43AEB161F
+	by alsa0.perex.cz (Postfix) with ESMTPS id 4BADF1620;
+	Wed, 10 Aug 2022 23:14:36 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4BADF1620
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1660158448;
-	bh=3hktzyefNFYmrDFOKxdlsBI+G4sCDacx7mqd4TMm5Q4=;
-	h=Date:Subject:To:References:From:In-Reply-To:Cc:List-Id:
+	s=default; t=1660166126;
+	bh=Ts/d+cRmtNwBeSqjjFS8WsqAprXaB6Sww8TLdHP7LJw=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=anp70g+hcxrCxn5knhiRG7XB3Lp1pIOLlF6Z8nr3z4LAZ/Hf3pl1J76Dhy9XIgyCl
-	 zz1wzEikMyrQo+NiCcPySGd8W/Y4Cztu0VgdJUFg1fPPh76zZ71lVzlRSxDoSA9V7q
-	 oS9Nam8ZJj1f/rCEBy9G1uyvbn7rCRkh8PFqt6RA=
+	b=m9NFwEyi9DKENuStrf8HHzDwk1CMGgxiHIgXry9wfYL1g6VZXmnSZJrpWH0TlSjwh
+	 tdbLfu6oJZm5DZe0P8immT7ZxWFpn/FXBkNHxTKv+PKgQdobl/wbTCe9XCOuUXRQ7s
+	 +o/F8+g2j8OV/cXWYKGtCmtntpOZbY66xyEZA/5Y=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id BB44FF80154;
-	Wed, 10 Aug 2022 21:06:37 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id D97C9F80154;
+	Wed, 10 Aug 2022 23:14:35 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 40A55F801F5; Wed, 10 Aug 2022 21:06:36 +0200 (CEST)
-Received: from smtp.smtpout.orange.fr (smtp01.smtpout.orange.fr
- [80.12.242.123])
+ id 27345F80132; Wed, 10 Aug 2022 23:14:33 +0200 (CEST)
+Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com
+ [IPv6:2a00:1450:4864:20::134])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 938C6F800FB
- for <alsa-devel@alsa-project.org>; Wed, 10 Aug 2022 21:06:28 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 938C6F800FB
-Received: from [192.168.1.18] ([90.11.190.129]) by smtp.orange.fr with ESMTPA
- id Lr2AooOzc0DonLr2Aorj5l; Wed, 10 Aug 2022 21:06:28 +0200
-X-ME-Helo: [192.168.1.18]
-X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
-X-ME-Date: Wed, 10 Aug 2022 21:06:28 +0200
-X-ME-IP: 90.11.190.129
-Message-ID: <59ae9a23-4314-dc52-92da-78cefa0eb919@wanadoo.fr>
-Date: Wed, 10 Aug 2022 21:06:25 +0200
+ by alsa1.perex.cz (Postfix) with ESMTPS id 6C338F80132
+ for <alsa-devel@alsa-project.org>; Wed, 10 Aug 2022 23:14:30 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6C338F80132
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=google.com header.i=@google.com
+ header.b="mJ2qrO5M"
+Received: by mail-lf1-x134.google.com with SMTP id bq11so22968644lfb.5
+ for <alsa-devel@alsa-project.org>; Wed, 10 Aug 2022 14:14:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=20210112;
+ h=cc:to:subject:message-id:date:from:in-reply-to:references
+ :mime-version:from:to:cc;
+ bh=KstM2C1nqWzbgiq4lXjESSIV1F+sGBJqXZBKfIDDeII=;
+ b=mJ2qrO5MX6fYku8PgLw5AnOtIoBprrurL+nSadvPZ/nI6zBSOd74G8iKYlHjlxhSGK
+ USn07FxYrgyBuEIA+f2Mxh4Oa/e+iiBOCs19euWtk22Fu/Z9qw8oaRo30nQiHAkryS6Y
+ OkGFpD8kk5juBZ0pa8b2rWt/+dgD8gCXmdnRvQK+0MF8N9K8OaD4UraP7imW+XgEtrf+
+ eVDcIqCbW5EuGYwj2bh4+gx/7LwAiCviv4k3pi6iA8Z/WIOSMsyBb/O9EBsYHE7ukUS8
+ xokR0vi2c3FQE9t2Udn3bU0+uZ3i4ejbYLZGKdMm/LrvNqJ66BM5i1pvxlXY91KPTSBE
+ Nynw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=cc:to:subject:message-id:date:from:in-reply-to:references
+ :mime-version:x-gm-message-state:from:to:cc;
+ bh=KstM2C1nqWzbgiq4lXjESSIV1F+sGBJqXZBKfIDDeII=;
+ b=41rnsoObz8KX6fnAlYeqCpiLAJ0l+APn6zEP4ShJpLWU3JasX9Q0GMq1IOP7krNkXb
+ /zeouX+LR1TfJ3JZbrLmz4adD5gtuUxJltxAf7ioP6lGx6mQW0NF7QwWQgaWLgF32FaY
+ StmuWCNehH9Q+jFzCWmhUZlaqKlazQnbjKbBVv5oaXUB+4VMgV56g1kRtfRSmgnuM0ei
+ /CkeijLQ/mUOXG1Rayae/D9XZwrWfAQecnxPpFoD5k+pRmaCqrIfsBMI5k0sFpMb/9Xj
+ UlsPjlHbhwAVq+QgsDpIZvUmVAI4lGjEXR9uJ4CioFVXjwlpESrOAiNTWDCk6YkkAWUP
+ dY6w==
+X-Gm-Message-State: ACgBeo1k2RkG9k9JTmGQZumblsW70RoJnNlao1IrRnf+WVuHf1/zokAK
+ P4Ime0PPPYt8Fy02Cv5qN39CaGPt/xh+7rD4p1iLJw==
+X-Google-Smtp-Source: AA6agR7XAy8+dRFXr1tYRU78D2cRU1qIJone22+JuKdzodOZmAEH3tkfVSaACFucoUikH/AMCJJ0BTbB6CoPorjLq5E=
+X-Received: by 2002:ac2:4f03:0:b0:48a:6061:bd8e with SMTP id
+ k3-20020ac24f03000000b0048a6061bd8emr11290623lfr.647.1660166068361; Wed, 10
+ Aug 2022 14:14:28 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.11.0
-Subject: Re: [PATCH] ASoC: Intel: kbl_rt5663_max98927: Simplify clk_get() usage
-Content-Language: en-US
-To: Mark Brown <broonie@kernel.org>
-References: <55e59c4792d64ff6336fcaa85ec15590553e9d63.1659903516.git.christophe.jaillet@wanadoo.fr>
- <YvO3ip3LPw2QhADB@sirena.org.uk>
-From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-In-Reply-To: <YvO3ip3LPw2QhADB@sirena.org.uk>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Cc: alsa-devel@alsa-project.org, Cezary Rojewski <cezary.rojewski@intel.com>,
- Kai Vehmanen <kai.vehmanen@linux.intel.com>,
- Harsha Priya <harshapriya.n@intel.com>,
- Peter Ujfalusi <peter.ujfalusi@linux.intel.com>, Takashi Iwai <tiwai@suse.com>,
- kernel-janitors@vger.kernel.org,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
- Liam Girdwood <liam.r.girdwood@linux.intel.com>, Vinod Koul <vkoul@kernel.org>,
- "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>,
- Bard Liao <yung-chuan.liao@linux.intel.com>,
- Sriram Periyasamy <sriramx.periyasamy@intel.com>, linux-kernel@vger.kernel.org
+References: <20220810010809.2024482-1-nathan@kernel.org>
+In-Reply-To: <20220810010809.2024482-1-nathan@kernel.org>
+From: Nick Desaulniers <ndesaulniers@google.com>
+Date: Wed, 10 Aug 2022 14:14:16 -0700
+Message-ID: <CAKwvOdmZvB_=JTeLg08uMFhEMpWga4FJey50QHjzCv_jMVpwkg@mail.gmail.com>
+Subject: Re: [PATCH] ASoC: mchp-spdiftx: Fix clang
+ -Wbitfield-constant-conversion
+To: Nathan Chancellor <nathan@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Cc: Alexandre Belloni <alexandre.belloni@bootlin.com>,
+ linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org,
+ Tom Rix <trix@redhat.com>, llvm@lists.linux.dev,
+ Liam Girdwood <lgirdwood@gmail.com>,
+ Nicolas Ferre <nicolas.ferre@microchip.com>, Mark Brown <broonie@kernel.org>,
+ Codrin Ciubotariu <codrin.ciubotariu@microchip.com>,
+ Claudiu Beznea <claudiu.beznea@microchip.com>,
+ linux-arm-kernel@lists.infradead.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -79,23 +98,66 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Le 10/08/2022 à 15:50, Mark Brown a écrit :
-> On Sun, Aug 07, 2022 at 10:18:54PM +0200, Christophe JAILLET wrote:
->> If clk_get() returns -ENOENT, there is no need to defer the driver, -ENOENT
->> will be returned the same for each retries.
->> So, return the error code directly instead of -EPROBE_DEFER.
-> 
-> Are you *sure* that this is the case on Intel platforms where we don't
-> have a full firmware description for clocks and therefore can't identify
-> cases where we expect a clock to at some point to become available.
+On Tue, Aug 9, 2022 at 6:08 PM Nathan Chancellor <nathan@kernel.org> wrote:
+>
+> A recent change in clang strengthened its -Wbitfield-constant-conversion
+> to warn when 1 is assigned to a 1-bit signed integer bitfield, as it can
+> only be 0 or -1, not 1:
+>
+>   sound/soc/atmel/mchp-spdiftx.c:505:20: error: implicit truncation from 'int' to bit-field changes value from 1 to -1 [-Werror,-Wbitfield-constant-conversion]
+>           dev->gclk_enabled = 1;
+>                             ^ ~
+>   1 error generated.
+>
+> The actual value of the field is never checked, just that it is not
+> zero, so there is not a real bug here. However, it is simple enough to
+> silence the warning by making the bitfield unsigned, which matches the
+> mchp-spdifrx driver.
+>
+> Fixes: 06ca24e98e6b ("ASoC: mchp-spdiftx: add driver for S/PDIF TX Controller")
+> Link: https://github.com/ClangBuiltLinux/linux/issues/1686
+> Link: https://github.com/llvm/llvm-project/commit/82afc9b169a67e8b8a1862fb9c41a2cd974d6691
+> Signed-off-by: Nathan Chancellor <nathan@kernel.org>
 
-No, I'm *not* sure.
+Ah yes, my favorite, signed one bit integers...thanks for the patch.
+Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
 
-This looked odd enough to deserve a patch proposal, that's all.
-(based on my grep and coccinelle scripts, this is the only place in the 
-kernel where the result of a clk_get() is handled that way)
+grepping for `gclk_enabled`, we see three drivers with similar
+duplication (single bit bitfields):
 
-There are many intel.com in cc:.
-Would be nice if s.o. could confirm if the patch is valid or not.
+sound/soc/atmel/mchp-spdifrx.c
+241: unsigned int gclk_enabled:1;
 
-CJ
+sound/soc/atmel/mchp-pdmc.c
+118: u8 gclk_enabled:1;
+
+sound/soc/atmel/mchp-spdiftx.c
+200: int gclk_enabled:1;
+
+> ---
+>  sound/soc/atmel/mchp-spdiftx.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/sound/soc/atmel/mchp-spdiftx.c b/sound/soc/atmel/mchp-spdiftx.c
+> index 4850a177803d..ab2d7a791f39 100644
+> --- a/sound/soc/atmel/mchp-spdiftx.c
+> +++ b/sound/soc/atmel/mchp-spdiftx.c
+> @@ -196,7 +196,7 @@ struct mchp_spdiftx_dev {
+>         struct clk                              *pclk;
+>         struct clk                              *gclk;
+>         unsigned int                            fmt;
+> -       int                                     gclk_enabled:1;
+> +       unsigned int                            gclk_enabled:1;
+>  };
+>
+>  static inline int mchp_spdiftx_is_running(struct mchp_spdiftx_dev *dev)
+>
+> base-commit: 15205c2829ca2cbb5ece5ceaafe1171a8470e62b
+> --
+> 2.37.1
+>
+
+
+-- 
+Thanks,
+~Nick Desaulniers
