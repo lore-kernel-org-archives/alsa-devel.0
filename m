@@ -4,83 +4,43 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id AA308C19F2D
-	for <alsa-devel@archiver.kernel.org>; Thu, 11 Aug 2022 05:43:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9F83BC19F2A
+	for <alsa-devel@archiver.kernel.org>; Thu, 11 Aug 2022 10:46:13 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3B26F41;
-	Thu, 11 Aug 2022 07:42:41 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3B26F41
+	by alsa0.perex.cz (Postfix) with ESMTPS id D242614E;
+	Thu, 11 Aug 2022 12:45:20 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D242614E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1660196611;
-	bh=Ryp3QMNaJpXX5ClqJRdvfsLPZRvszUJJkbjvXcwzhZ4=;
-	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1660214770;
+	bh=H61td1qt4uOuQl9C9WSfD/5OWnwPWpUoZVtG9+brf1U=;
+	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=oth2y5GLky4pdwn2IzCxfJe0I3WRBjyVQkx5yWBX0VidItUDRsBRniJoxBNYqH2aQ
-	 m2CqBjoSD92+Npu0H66Ls3p6s7bB8ai5BpmKEaLved1buRWfVgloeBNosCQNusNcOh
-	 15CEnHjOF1Sy9uWAkj2vh/evFXToscBrtcqA4whg=
+	b=gYELA+NYqaj/2kp3f9YIva1OoPfT+cD0YrYfFM8cU9TAzIN3V+/tYdVJ2eR+aeM0A
+	 u8ZI+gS1d2BMSG80Ea9AdGoN8hyoN5N5BGr6eTQ1KXRxMb8EJPnu/KDCdpfE1jxqB8
+	 O6xUeQS033NHCXUaj+O5VB8jFbU95Lm+Umsjc14Q=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id A6A02F8023B;
-	Thu, 11 Aug 2022 07:42:40 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 5C739F800FB;
+	Thu, 11 Aug 2022 12:45:20 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id B3AD4F80246; Thu, 11 Aug 2022 07:42:38 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 3FF98F8012A
- for <alsa-devel@alsa-project.org>; Thu, 11 Aug 2022 07:42:31 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3FF98F8012A
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="UV6dTL63"; 
- dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="C5CelYMC"
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 5C588386FE;
- Thu, 11 Aug 2022 05:42:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1660196551; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=ZZ7n64d6BSjvSsfGjkEFwCEos9wPH9fs0blTqRRuxSg=;
- b=UV6dTL63HySMHgTPkgrmvLX+AEkN5HLphU9+Bx4oJzcSLpwwkyBhhy5dKlCm7b9EtQ0Alh
- Q6vndoM5jPdEf2hM+n4b06T9kvrrat1F4CFCtQED9IiyqXHnfijSI6znmjVYVT2xssGiJz
- G4qyAWruWsyfiZ++eDlbV0N/3NpFv1M=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1660196551;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=ZZ7n64d6BSjvSsfGjkEFwCEos9wPH9fs0blTqRRuxSg=;
- b=C5CelYMCHc/69dKHg/GEJvUBrHtSnOqxZ0YGJdGihlpKn8sDdnRxzquXXMw+pshIjAKSbK
- FbNThOwVrYPdeeBg==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 2BA5013A89;
- Thu, 11 Aug 2022 05:42:31 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id 4qGRCMeW9GLSDgAAMHmgww
- (envelope-from <tiwai@suse.de>); Thu, 11 Aug 2022 05:42:31 +0000
-Date: Thu, 11 Aug 2022 07:42:30 +0200
-Message-ID: <87a68buyih.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Allen Ballway <ballway@chromium.org>
-Subject: Re: [PATCH] ALSA: hda/cirrus - support for iMac 12,1 model
-In-Reply-To: <20220810152701.1.I902c2e591bbf8de9acb649d1322fa1f291849266@changeid>
-References: <20220810152701.1.I902c2e591bbf8de9acb649d1322fa1f291849266@changeid>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
-Cc: alsa-devel@alsa-project.org, Lucas Tanure <tanureal@opensource.cirrus.com>,
- Vitaly Rodionov <vitalyr@opensource.cirrus.com>, Takashi Iwai <tiwai@suse.com>,
- LKML <linux-kernel@vger.kernel.org>
+ id C15BCF80246; Thu, 11 Aug 2022 12:45:17 +0200 (CEST)
+Received: from webhooks-bot.alsa-project.org (gate.perex.cz [77.48.224.242])
+ by alsa1.perex.cz (Postfix) with ESMTP id 4F2E7F800FB
+ for <alsa-devel@alsa-project.org>; Thu, 11 Aug 2022 12:45:14 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4F2E7F800FB
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+From: GitHub issues - opened <github@alsa-project.org>
+To: alsa-devel@alsa-project.org
+In-Reply-To: <1660214714498842955-webhooks-bot@alsa-project.org>
+References: <1660214714498842955-webhooks-bot@alsa-project.org>
+Subject: snd_pcm_hw_params_current() always returning zero for periods and
+ buffer_time
+Message-Id: <20220811104517.C15BCF80246@alsa1.perex.cz>
+Date: Thu, 11 Aug 2022 12:45:17 +0200 (CEST)
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -96,17 +56,29 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, 10 Aug 2022 17:27:22 +0200,
-Allen Ballway wrote:
-> 
-> The 12,1 model requires the same configuration as the 12,2 model
-> to enable headphones but has a different codec SSID. Adds
-> 12,1 SSID for matching quirk.
-> 
-> Signed-off-by: Allen Ballway <ballway@chromium.org>
+alsa-project/alsa-lib issue #258 was opened from ossilator:
 
-Thanks, applied now with a minor modification to re-arrange the entry
-in the SSID order.
+as can be reproduced rather easily using pyalsaaudio's pcm.dumpinfo(), snd_pcm_hw_params_current() seems to always return zero for periods and buffer_time, at least for playback streams (i didn't test capture).
 
+the sequence is basically this:
+```
+snd_pcm_hw_params_any(...);
+...
+unsigned periods = 4;
+snd_pcm_hw_params_set_periods_near(..., &periods, ...);
+// periods is still fine here
+snd_pcm_hw_params(...);
 
-Takashi
+snd_pcm_hw_params_current(...);
+snd_pcm_hw_params_get_periods(..., &periods, ...);
+// nope, zero periods
+```
+
+i tested this with two completely different setups on two different machines (one a raw driver, another one with pipewire), so it doesn't appear related to the driver.
+
+from the other returned parameters it can be inferred that the period count is actually fine.
+
+one thing i noticed is that snd_pcm_hw_params_current() uses snd_interval_copy() instead of snd_interval_set_value() for exactly these two parameters. but min & max are both zero. i wasn't able to trace it down so far; both the library and the kernel code look fine.
+
+Issue URL     : https://github.com/alsa-project/alsa-lib/issues/258
+Repository URL: https://github.com/alsa-project/alsa-lib
