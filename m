@@ -4,61 +4,62 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 55E28C25B0F
-	for <alsa-devel@archiver.kernel.org>; Sun, 14 Aug 2022 16:27:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id CC25EC25B06
+	for <alsa-devel@archiver.kernel.org>; Sun, 14 Aug 2022 16:27:23 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 7FDF1886;
-	Sun, 14 Aug 2022 18:26:12 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7FDF1886
+	by alsa0.perex.cz (Postfix) with ESMTPS id F3B131671;
+	Sun, 14 Aug 2022 18:26:31 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F3B131671
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1660494422;
-	bh=5l5V9Grk51FTQ9f0kCCkBO1vSt+OBwU5YNq0pBwO10w=;
+	s=default; t=1660494442;
+	bh=m1gZKUi5CUVetOpsW4uBv/BC7EhgMfjkz6GU/+/uQk0=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Yt5mFtgy90OoPqsKAasDJ/zk4A+/h49NMNaM0YnjsF7lhs8q99vFLdrEDWwpN/aww
-	 jA2zwGVcUzsDQ8QtJFxjXMaqMsJpYtQgDDLEDA5/ZTvyUDGRy1EgIO4IIcyu2IUbRX
-	 aYI6AX8G04chqvNpa+Y7I/RnGEj1iMYBLZjin4LA=
+	b=AMageMzvrksiph+tqtPRata7KfTAaKkgkttNYmxpFjYRmZYhftGJW3s8XCd3j025T
+	 jyYxEi2x19qC6xSICZSvYoMYXB0ujtrN5fXXdDtTK59vCGuzAdWFb8B28jLAyNqWPe
+	 U4OxyGNdsVZRtR6XnBXx4bqZ/nz4oaiGnMoM5Ovg=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 61D24F80588;
-	Sun, 14 Aug 2022 18:24:46 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 422A2F8055A;
+	Sun, 14 Aug 2022 18:24:58 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id DDDD2F8059F; Sun, 14 Aug 2022 18:24:45 +0200 (CEST)
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+ id AD0EDF80587; Sun, 14 Aug 2022 18:24:56 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org
+ [IPv6:2604:1380:4641:c500::1])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id B2658F80588
- for <alsa-devel@alsa-project.org>; Sun, 14 Aug 2022 18:24:39 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B2658F80588
+ by alsa1.perex.cz (Postfix) with ESMTPS id 7884CF80559
+ for <alsa-devel@alsa-project.org>; Sun, 14 Aug 2022 18:24:50 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7884CF80559
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="fclcJGxF"
+ header.b="WrbtPrFO"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by ams.source.kernel.org (Postfix) with ESMTPS id CB4A3B80B3F;
- Sun, 14 Aug 2022 16:24:38 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B2C1FC433D7;
- Sun, 14 Aug 2022 16:24:35 +0000 (UTC)
+ by dfw.source.kernel.org (Postfix) with ESMTPS id 07E9D60F9D;
+ Sun, 14 Aug 2022 16:24:49 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 900AAC433D7;
+ Sun, 14 Aug 2022 16:24:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1660494277;
- bh=5l5V9Grk51FTQ9f0kCCkBO1vSt+OBwU5YNq0pBwO10w=;
+ s=k20201202; t=1660494288;
+ bh=m1gZKUi5CUVetOpsW4uBv/BC7EhgMfjkz6GU/+/uQk0=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=fclcJGxFAPtSRZ9CmYIMLMjvmTzv+mR1eXDTs150BpLCleyvVAUAe7sFgJRlFG+6s
- /yC2buZfWYy5M9uuI1/bvVImDQ70wJPYL1GJIFsBm6HZp0Z96MspY2TwHXCaL07aXf
- UixblrjoV9n3PNUYeNM/sdK99jsy5//GJip1NjKqI5JVxJ0hcqG/bE2q+dBCddueu0
- 6PdhahiOZBllJRoNNzyDdh/+E6PWe+xIW/eo0bvEiX3R9yIUcPxgNhfrDA0LUzfRhH
- UUBSFqrFd55d+LSRZhoQabo4hEpq6tZLcp+cjaHiv/MtfWggXJYAOjh7t/YW0StMnj
- Bw2vw14Nqd/tQ==
+ b=WrbtPrFO0r9TBFvYUXcn8BZ0E35wtRUChjtzMNNxWY8rRPEpjc5Z+Oz+M54AfEn+l
+ 4uncqgNHyhSthh0g0yvHYlglnvIiAa5oU/JC/DzNPAvKCWYiKLtBqnrNcc/NnK5wYv
+ 3UsCJryQ4ii5WSAa1xqWpfeJG0dsmPo6DOhcasz6cKuWLr9l2qRL6EqbyNbrmYT4Uw
+ z9bukY4gmY1N7dm7tsq9QBL4A142ncGC7mrHryOp/FZ3yB28ZuSlTjca1ZMYj7Iy29
+ hzbuwev92fZSW9KtWwuPPBL6T1BJVy5mleaeGSO5z9RY/LXevuatD1BCihR22EyN8/
+ KH/eQ+UwBxNJA==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.18 18/39] ASoC: Intel: sof_es8336: Fix GPIO quirks
- set via module option
-Date: Sun, 14 Aug 2022 12:23:07 -0400
-Message-Id: <20220814162332.2396012-18-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.18 19/39] ASoC: Intel: sof_es8336: ignore GpioInt
+ when looking for speaker/headset GPIO lines
+Date: Sun, 14 Aug 2022 12:23:08 -0400
+Message-Id: <20220814162332.2396012-19-sashal@kernel.org>
 X-Mailer: git-send-email 2.35.1
 In-Reply-To: <20220814162332.2396012-1-sashal@kernel.org>
 References: <20220814162332.2396012-1-sashal@kernel.org>
@@ -91,77 +92,57 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 From: Andrey Turkin <andrey.turkin@gmail.com>
 
-[ Upstream commit 5e60f1cfb830342304200437121f440b72b54f54 ]
+[ Upstream commit 751e77011f7a43a204bf2a5d02fbf5f8219bc531 ]
 
-The two GPIO quirk bits only affected actual GPIO selection
-when set by the quirks table. They were reported as being
-in effect when set via module options but actually did nothing.
+This fixes speaker GPIO detection on machines those ACPI tables
+list their jack detection GpioInt before output GpioIo.
+GpioInt entry can never be the speaker/headphone amplifier control
+so it makes sense to only look for GpioIo entries when looking for them.
 
 Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 Signed-off-by: Andrey Turkin <andrey.turkin@gmail.com>
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Link: https://lore.kernel.org/r/20220725194909.145418-4-pierre-louis.bossart@linux.intel.com
+Link: https://lore.kernel.org/r/20220725194909.145418-5-pierre-louis.bossart@linux.intel.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/intel/boards/sof_es8336.c | 23 ++++++++++++-----------
- 1 file changed, 12 insertions(+), 11 deletions(-)
+ sound/soc/intel/boards/sof_es8336.c | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
 
 diff --git a/sound/soc/intel/boards/sof_es8336.c b/sound/soc/intel/boards/sof_es8336.c
-index 9d617831dd20..81e12f03ec97 100644
+index 81e12f03ec97..dade1749c444 100644
 --- a/sound/soc/intel/boards/sof_es8336.c
 +++ b/sound/soc/intel/boards/sof_es8336.c
-@@ -77,8 +77,6 @@ static const struct acpi_gpio_mapping acpi_enable_both_gpios_rev_order[] = {
+@@ -57,23 +57,23 @@ static const struct acpi_gpio_params enable_gpio0 = { 0, 0, true };
+ static const struct acpi_gpio_params enable_gpio1 = { 1, 0, true };
+ 
+ static const struct acpi_gpio_mapping acpi_speakers_enable_gpio0[] = {
+-	{ "speakers-enable-gpios", &enable_gpio0, 1 },
++	{ "speakers-enable-gpios", &enable_gpio0, 1, ACPI_GPIO_QUIRK_ONLY_GPIOIO },
  	{ }
  };
  
--static const struct acpi_gpio_mapping *gpio_mapping = acpi_speakers_enable_gpio0;
--
- static void log_quirks(struct device *dev)
- {
- 	dev_info(dev, "quirk mask %#lx\n", quirk);
-@@ -272,15 +270,6 @@ static int sof_es8336_quirk_cb(const struct dmi_system_id *id)
- {
- 	quirk = (unsigned long)id->driver_data;
+ static const struct acpi_gpio_mapping acpi_speakers_enable_gpio1[] = {
+-	{ "speakers-enable-gpios", &enable_gpio1, 1 },
++	{ "speakers-enable-gpios", &enable_gpio1, 1, ACPI_GPIO_QUIRK_ONLY_GPIOIO },
+ };
  
--	if (quirk & SOF_ES8336_HEADPHONE_GPIO) {
--		if (quirk & SOF_ES8336_SPEAKERS_EN_GPIO1_QUIRK)
--			gpio_mapping = acpi_enable_both_gpios;
--		else
--			gpio_mapping = acpi_enable_both_gpios_rev_order;
--	} else if (quirk & SOF_ES8336_SPEAKERS_EN_GPIO1_QUIRK) {
--		gpio_mapping = acpi_speakers_enable_gpio1;
--	}
--
- 	return 1;
- }
+ static const struct acpi_gpio_mapping acpi_enable_both_gpios[] = {
+-	{ "speakers-enable-gpios", &enable_gpio0, 1 },
+-	{ "headphone-enable-gpios", &enable_gpio1, 1 },
++	{ "speakers-enable-gpios", &enable_gpio0, 1, ACPI_GPIO_QUIRK_ONLY_GPIOIO },
++	{ "headphone-enable-gpios", &enable_gpio1, 1, ACPI_GPIO_QUIRK_ONLY_GPIOIO },
+ 	{ }
+ };
  
-@@ -529,6 +518,7 @@ static int sof_es8336_probe(struct platform_device *pdev)
- 	struct acpi_device *adev;
- 	struct snd_soc_dai_link *dai_links;
- 	struct device *codec_dev;
-+	const struct acpi_gpio_mapping *gpio_mapping;
- 	unsigned int cnt = 0;
- 	int dmic_be_num = 0;
- 	int hdmi_num = 3;
-@@ -635,6 +625,17 @@ static int sof_es8336_probe(struct platform_device *pdev)
- 	}
+ static const struct acpi_gpio_mapping acpi_enable_both_gpios_rev_order[] = {
+-	{ "speakers-enable-gpios", &enable_gpio1, 1 },
+-	{ "headphone-enable-gpios", &enable_gpio0, 1 },
++	{ "speakers-enable-gpios", &enable_gpio1, 1, ACPI_GPIO_QUIRK_ONLY_GPIOIO },
++	{ "headphone-enable-gpios", &enable_gpio0, 1, ACPI_GPIO_QUIRK_ONLY_GPIOIO },
+ 	{ }
+ };
  
- 	/* get speaker enable GPIO */
-+	if (quirk & SOF_ES8336_HEADPHONE_GPIO) {
-+		if (quirk & SOF_ES8336_SPEAKERS_EN_GPIO1_QUIRK)
-+			gpio_mapping = acpi_enable_both_gpios;
-+		else
-+			gpio_mapping = acpi_enable_both_gpios_rev_order;
-+	} else if (quirk & SOF_ES8336_SPEAKERS_EN_GPIO1_QUIRK) {
-+		gpio_mapping = acpi_speakers_enable_gpio1;
-+	} else {
-+		gpio_mapping = acpi_speakers_enable_gpio0;
-+	}
-+
- 	ret = devm_acpi_dev_add_driver_gpios(codec_dev, gpio_mapping);
- 	if (ret)
- 		dev_warn(codec_dev, "unable to add GPIO mapping table\n");
 -- 
 2.35.1
 
