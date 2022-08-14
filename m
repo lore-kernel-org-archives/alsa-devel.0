@@ -4,64 +4,63 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5C852C25B06
-	for <alsa-devel@archiver.kernel.org>; Sun, 14 Aug 2022 16:31:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B12B2C25B06
+	for <alsa-devel@archiver.kernel.org>; Sun, 14 Aug 2022 16:31:47 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 6F8C616AE;
-	Sun, 14 Aug 2022 18:30:30 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6F8C616AE
+	by alsa0.perex.cz (Postfix) with ESMTPS id C6A6F16B1;
+	Sun, 14 Aug 2022 18:30:55 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C6A6F16B1
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1660494680;
-	bh=Nned1RlZpWiZahe4FRxH3L5S5eEsVREKwZPn00BfNAE=;
+	s=default; t=1660494705;
+	bh=fkS0yNqWNFUiOtkYMouC7Nw4WkF0NzDt3nXIozKSnWU=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Ck6UW7W1lsBfBNmLukeLmCbPGR2HfvBNVpPDsx3gbLHehNyKtiJThsSN5R+bxSduM
-	 HspzP4jgfE8er8bGR5Musktn9MRlhF5xZIv+MJ4zbuYvb+TcVb9gLqXMKUQNdgt9G2
-	 xaT0o6R4f2hrcVab/9+bq+lA+OX2pOFTFYMjBgFs=
+	b=GsXci9vlm/L5LE/8h+oje+iE+6RIqy1I/LnX+aWU1YCq1gcLunqlclZtPHfGBzDq2
+	 oGHGWIWW6yRwoTEPOJZgX2bpDUVSTrBQEr78p2wWuG4dPSOO+H9WPU3ZVZ/n20icau
+	 cQHbxmFDMR/rrX7vl5YyCbtELreEFvCbr/jjFZQU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id BECE7F80553;
-	Sun, 14 Aug 2022 18:29:17 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id BC5F6F80544;
+	Sun, 14 Aug 2022 18:29:52 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 153AEF80567; Sun, 14 Aug 2022 18:29:15 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org
- [IPv6:2604:1380:4641:c500::1])
+ id DD672F8053E; Sun, 14 Aug 2022 18:29:51 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id B05D5F80563
- for <alsa-devel@alsa-project.org>; Sun, 14 Aug 2022 18:29:08 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B05D5F80563
+ by alsa1.perex.cz (Postfix) with ESMTPS id 1AB01F8053E
+ for <alsa-devel@alsa-project.org>; Sun, 14 Aug 2022 18:29:49 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1AB01F8053E
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="RkYZ5ilQ"
+ header.b="jDgn2ZFT"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id 9FD6860C98;
- Sun, 14 Aug 2022 16:29:07 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2502BC433C1;
- Sun, 14 Aug 2022 16:29:06 +0000 (UTC)
+ by dfw.source.kernel.org (Postfix) with ESMTPS id BD95860FBC;
+ Sun, 14 Aug 2022 16:29:47 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0BF1CC433D7;
+ Sun, 14 Aug 2022 16:29:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1660494547;
- bh=Nned1RlZpWiZahe4FRxH3L5S5eEsVREKwZPn00BfNAE=;
+ s=k20201202; t=1660494587;
+ bh=fkS0yNqWNFUiOtkYMouC7Nw4WkF0NzDt3nXIozKSnWU=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=RkYZ5ilQyK+GBR+c1opsXj1U866BKkC99hg2EEAxa+NroHwPQirjTxQDqV8jQQj1d
- Eqe1BSHVesedzXRgQ8RV5Xj7BCe+S2XxnmqOcRJFSgOsBOuXbC5dFswOUjzVj/zGGL
- SuHOE4riMmFSeijl6OrMXX+F9e82q9oG+KnNewLG/8KlHWK+ChszoO8wq+8Zar/Cmz
- 40apVNOVGA+8kEDRrwze9gClggm/ZE+M0FJ5sHR/jxu1SsmaP0WQWKWZLZos2eke5T
- n+q/ZCkLyridg/TEBjQixw/6WYhjk9oLEK7PBK0M78nGZU6+raoJV3VK5f7bqAVXNU
- iGk3K6n1Q8yRg==
+ b=jDgn2ZFTkFZEm81jrYcJZRgUqYYL3u2buZqLlhfBUtuXNbiDfyudpdq6IgrayMVFA
+ uq6Cg9GA3x1y+dASWTV8pv9m8oUnnTkauDB8waejAqrMKy+JmcsFtu3Z5OfyTOMWZz
+ e+5a8AnDzOIfJ7YtBrhBuO9CdO9xKFPNcaem7m2W7M15kPvy7/VLAkZTJSJ1qZSlOe
+ AtzrVl/BJEaiKiaFYyl4BQFHP/Cv6PjOJskHR6AwyHAX+0f0V+XMWEZijtQX6PgRqh
+ GsHDYiVGCB7MBCq2xI6vIHJfoQGI1I2n4FaIjedC1QPexNpIFrel5HuijdRzSmfYBO
+ AF9BxwCE6uaNw==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.4 11/16] ALSA: timer: Use deferred fasync helper
-Date: Sun, 14 Aug 2022 12:28:26 -0400
-Message-Id: <20220814162833.2398478-11-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 4.19 09/14] ALSA: timer: Use deferred fasync helper
+Date: Sun, 14 Aug 2022 12:29:15 -0400
+Message-Id: <20220814162922.2398723-9-sashal@kernel.org>
 X-Mailer: git-send-email 2.35.1
-In-Reply-To: <20220814162833.2398478-1-sashal@kernel.org>
-References: <20220814162833.2398478-1-sashal@kernel.org>
+In-Reply-To: <20220814162922.2398723-1-sashal@kernel.org>
+References: <20220814162922.2398723-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -105,10 +104,10 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 6 insertions(+), 5 deletions(-)
 
 diff --git a/sound/core/timer.c b/sound/core/timer.c
-index d684aa4150aa..420cc07a7f88 100644
+index 4920ec4f4594..f0e8b98f346e 100644
 --- a/sound/core/timer.c
 +++ b/sound/core/timer.c
-@@ -61,7 +61,7 @@ struct snd_timer_user {
+@@ -75,7 +75,7 @@ struct snd_timer_user {
  	unsigned int filter;
  	struct timespec tstamp;		/* trigger tstamp */
  	wait_queue_head_t qchange_sleep;
@@ -117,7 +116,7 @@ index d684aa4150aa..420cc07a7f88 100644
  	struct mutex ioctl_lock;
  };
  
-@@ -1317,7 +1317,7 @@ static void snd_timer_user_interrupt(struct snd_timer_instance *timeri,
+@@ -1306,7 +1306,7 @@ static void snd_timer_user_interrupt(struct snd_timer_instance *timeri,
  	}
        __wake:
  	spin_unlock(&tu->qlock);
@@ -126,7 +125,7 @@ index d684aa4150aa..420cc07a7f88 100644
  	wake_up(&tu->qchange_sleep);
  }
  
-@@ -1354,7 +1354,7 @@ static void snd_timer_user_ccallback(struct snd_timer_instance *timeri,
+@@ -1343,7 +1343,7 @@ static void snd_timer_user_ccallback(struct snd_timer_instance *timeri,
  	spin_lock_irqsave(&tu->qlock, flags);
  	snd_timer_user_append_to_tqueue(tu, &r1);
  	spin_unlock_irqrestore(&tu->qlock, flags);
@@ -135,7 +134,7 @@ index d684aa4150aa..420cc07a7f88 100644
  	wake_up(&tu->qchange_sleep);
  }
  
-@@ -1421,7 +1421,7 @@ static void snd_timer_user_tinterrupt(struct snd_timer_instance *timeri,
+@@ -1410,7 +1410,7 @@ static void snd_timer_user_tinterrupt(struct snd_timer_instance *timeri,
  	spin_unlock(&tu->qlock);
  	if (append == 0)
  		return;
@@ -144,7 +143,7 @@ index d684aa4150aa..420cc07a7f88 100644
  	wake_up(&tu->qchange_sleep);
  }
  
-@@ -1487,6 +1487,7 @@ static int snd_timer_user_release(struct inode *inode, struct file *file)
+@@ -1476,6 +1476,7 @@ static int snd_timer_user_release(struct inode *inode, struct file *file)
  		if (tu->timeri)
  			snd_timer_close(tu->timeri);
  		mutex_unlock(&tu->ioctl_lock);
@@ -152,7 +151,7 @@ index d684aa4150aa..420cc07a7f88 100644
  		kfree(tu->queue);
  		kfree(tu->tqueue);
  		kfree(tu);
-@@ -2050,7 +2051,7 @@ static int snd_timer_user_fasync(int fd, struct file * file, int on)
+@@ -2027,7 +2028,7 @@ static int snd_timer_user_fasync(int fd, struct file * file, int on)
  	struct snd_timer_user *tu;
  
  	tu = file->private_data;
