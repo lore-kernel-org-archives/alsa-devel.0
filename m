@@ -4,41 +4,41 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 98FA0C25B06
-	for <alsa-devel@archiver.kernel.org>; Sun, 14 Aug 2022 22:19:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 23AE1C25B06
+	for <alsa-devel@archiver.kernel.org>; Sun, 14 Aug 2022 22:23:27 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D9209851;
-	Mon, 15 Aug 2022 00:18:44 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D9209851
+	by alsa0.perex.cz (Postfix) with ESMTPS id B4022851;
+	Mon, 15 Aug 2022 00:22:35 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B4022851
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1660515574;
-	bh=xbUf1EysWWebQDcWzBwIhvh61mtImi2N6Yve26PDhIo=;
+	s=default; t=1660515805;
+	bh=bJ7BfIaLJlgeSzNtvLPt7rWBhl3AP0T3EcWf2OtroUs=;
 	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
 	 List-Post:List-Help:List-Subscribe:From;
-	b=lClstESvhJXxU13E9rIQoAm9YlSHMJQYZBNZb9lGVIydv1zVl1eLw9j4g8r9uwSro
-	 ZkI1xrPZJeug+yJiYCfuVDVIqvCa2qDsLYkkQkW1BxpuLKSRXvv5rD87cs6a7L34Ql
-	 DYRK7BtRjEh3YQo2CYdl7v4iw2LMruM+nfsg2qNM=
+	b=NcGdd7Ves4TitNjBLX34kpkLgseqFAs8Gq+Xd8PlKJhJLxSX5m8zJIc7ad2nEdg1e
+	 BqcBq69jcMGOIMUEfqRncYPjFo/9osWsvmHz/oe/8fizZx1eZApDsYy24bNTBsNr5G
+	 cOrOGt8s9fBTOda8JwiUEQIZgrGdiKI2OpQYGgOU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 7081EF80245;
-	Mon, 15 Aug 2022 00:18:44 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 516CEF80245;
+	Mon, 15 Aug 2022 00:22:35 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id B0B81F804BD; Mon, 15 Aug 2022 00:18:42 +0200 (CEST)
-Received: from dev.flatmax.com (41.68.233.220.static.exetel.com.au
- [220.233.68.41])
+ id 134C8F804BD; Mon, 15 Aug 2022 00:22:34 +0200 (CEST)
+Received: from dev.flatmax.com (unknown
+ [IPv6:2406:3400:213:70c0:9df6:7e57:88ce:1bea])
  (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 63CFFF800B8
- for <alsa-devel@alsa-project.org>; Mon, 15 Aug 2022 00:18:36 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 63CFFF800B8
+ by alsa1.perex.cz (Postfix) with ESMTPS id C4B0DF800B8
+ for <alsa-devel@alsa-project.org>; Mon, 15 Aug 2022 00:22:25 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C4B0DF800B8
 Received: by dev.flatmax.com (Postfix, from userid 1000)
- id A5E7D3846E8C; Mon, 15 Aug 2022 08:18:30 +1000 (AEST)
+ id EB2263846E8C; Mon, 15 Aug 2022 08:22:21 +1000 (AEST)
 From: Matt Flax <flatmax@flatmax.com>
 To: devicetree@vger.kernel.org
-Subject: [PATCH v3] ASoC: codecs: dt bind. doc for the new TI SRC4392 codec
-Date: Mon, 15 Aug 2022 08:18:28 +1000
-Message-Id: <20220814221828.118643-1-flatmax@flatmax.com>
+Subject: [PATCH v4] ASoC: codecs: dt bind. doc for the new TI SRC4392 codec
+Date: Mon, 15 Aug 2022 08:22:18 +1000
+Message-Id: <20220814222218.119786-1-flatmax@flatmax.com>
 X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -63,6 +63,8 @@ Signed-off-by: Matt Flax <flatmax@flatmax.com>
 ---
 
 Notes:
+    v4:
+    * updated the id to have the correct path
     v3:
     * Renamed to include ti,
     * fixed license to include BSD-2-Clause
@@ -77,14 +79,14 @@ Notes:
 
 diff --git a/Documentation/devicetree/bindings/sound/ti,src4xxx.yaml b/Documentation/devicetree/bindings/sound/ti,src4xxx.yaml
 new file mode 100644
-index 000000000000..807b9e35b9b9
+index 000000000000..9681b72b4918
 --- /dev/null
 +++ b/Documentation/devicetree/bindings/sound/ti,src4xxx.yaml
 @@ -0,0 +1,48 @@
 +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
 +%YAML 1.2
 +---
-+$id: http://devicetree.org/schemas/sound/src4xxx.yaml#
++$id: http://devicetree.org/schemas/sound/ti,src4xxx.yaml#
 +$schema: http://devicetree.org/meta-schemas/core.yaml#
 +
 +title: Texas Instruments SRC4392 Device Tree Bindings
