@@ -4,62 +4,62 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id CC25EC25B06
-	for <alsa-devel@archiver.kernel.org>; Sun, 14 Aug 2022 16:27:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E6ED1C25B0F
+	for <alsa-devel@archiver.kernel.org>; Sun, 14 Aug 2022 16:27:36 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id F3B131671;
-	Sun, 14 Aug 2022 18:26:31 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F3B131671
+	by alsa0.perex.cz (Postfix) with ESMTPS id 25B9C166F;
+	Sun, 14 Aug 2022 18:26:45 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 25B9C166F
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1660494442;
-	bh=m1gZKUi5CUVetOpsW4uBv/BC7EhgMfjkz6GU/+/uQk0=;
+	s=default; t=1660494455;
+	bh=d8mo+pUCA+EwvmdxNIIz0GM6OrtFvpdgmGfI6+Xn3cs=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=AMageMzvrksiph+tqtPRata7KfTAaKkgkttNYmxpFjYRmZYhftGJW3s8XCd3j025T
-	 jyYxEi2x19qC6xSICZSvYoMYXB0ujtrN5fXXdDtTK59vCGuzAdWFb8B28jLAyNqWPe
-	 U4OxyGNdsVZRtR6XnBXx4bqZ/nz4oaiGnMoM5Ovg=
+	b=TLQ10aT1RPAyP4V9w7hdTwpEu+s15/CaNpVuOecuBuCdlOvyLBWDdhGfNGwWpFcaD
+	 AgjlsRtHfXXJvPeqXe3a9hLVEhbie+TH8Rut/cc2nHIZdlZILWHz0EbsEvTQGLKoBe
+	 Y1BLP5d45oLyTlb4J19Nev7ce+S3R8elqENXt+IY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 422A2F8055A;
-	Sun, 14 Aug 2022 18:24:58 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id C0616F80508;
+	Sun, 14 Aug 2022 18:25:08 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id AD0EDF80587; Sun, 14 Aug 2022 18:24:56 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org
- [IPv6:2604:1380:4641:c500::1])
+ id 62833F8055C; Sun, 14 Aug 2022 18:25:07 +0200 (CEST)
+Received: from ams.source.kernel.org (ams.source.kernel.org
+ [IPv6:2604:1380:4601:e00::1])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 7884CF80559
- for <alsa-devel@alsa-project.org>; Sun, 14 Aug 2022 18:24:50 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7884CF80559
+ by alsa1.perex.cz (Postfix) with ESMTPS id 75CB9F80508
+ for <alsa-devel@alsa-project.org>; Sun, 14 Aug 2022 18:25:01 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 75CB9F80508
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="WrbtPrFO"
+ header.b="Ocm0ZYBj"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id 07E9D60F9D;
- Sun, 14 Aug 2022 16:24:49 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 900AAC433D7;
- Sun, 14 Aug 2022 16:24:46 +0000 (UTC)
+ by ams.source.kernel.org (Postfix) with ESMTPS id 874BCB80B7C;
+ Sun, 14 Aug 2022 16:25:00 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7785EC433C1;
+ Sun, 14 Aug 2022 16:24:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1660494288;
- bh=m1gZKUi5CUVetOpsW4uBv/BC7EhgMfjkz6GU/+/uQk0=;
+ s=k20201202; t=1660494299;
+ bh=d8mo+pUCA+EwvmdxNIIz0GM6OrtFvpdgmGfI6+Xn3cs=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=WrbtPrFO0r9TBFvYUXcn8BZ0E35wtRUChjtzMNNxWY8rRPEpjc5Z+Oz+M54AfEn+l
- 4uncqgNHyhSthh0g0yvHYlglnvIiAa5oU/JC/DzNPAvKCWYiKLtBqnrNcc/NnK5wYv
- 3UsCJryQ4ii5WSAa1xqWpfeJG0dsmPo6DOhcasz6cKuWLr9l2qRL6EqbyNbrmYT4Uw
- z9bukY4gmY1N7dm7tsq9QBL4A142ncGC7mrHryOp/FZ3yB28ZuSlTjca1ZMYj7Iy29
- hzbuwev92fZSW9KtWwuPPBL6T1BJVy5mleaeGSO5z9RY/LXevuatD1BCihR22EyN8/
- KH/eQ+UwBxNJA==
+ b=Ocm0ZYBjEtzpYwQjcjl0O9BxHuuy9337KbgNPJBz3T+RGeulVmPbMO0s0pMEU9080
+ 40TRo1i0gkrMuR+9F2WvC9zq13+BgMXaxhAWrBIMlPJvalAagn/1F2jALgXQcVWGCb
+ 4RsrGLJ60fZpJwrFYouMw77VxAL0CskD/5QxdGhT1OS8bozz+U4/mfxQg77AHz4tR7
+ SV2LaqEeD43UQQHQg666GxPkWm6e4UloHqTowhbrSJ/3ESvYZwhAUOC/sJPM8QXJmj
+ Hx0jE7hsaG5f+rSOPWwsEsMn7p64KuMYYkg3IUGW6A8jNEQUfEVhApZ4XhuI/crV3Z
+ acNk/LUVAEU1A==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.18 19/39] ASoC: Intel: sof_es8336: ignore GpioInt
- when looking for speaker/headset GPIO lines
-Date: Sun, 14 Aug 2022 12:23:08 -0400
-Message-Id: <20220814162332.2396012-19-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.18 20/39] ASoC: Intel: sof_nau8825: Move quirk check
+ to the front in late probe
+Date: Sun, 14 Aug 2022 12:23:09 -0400
+Message-Id: <20220814162332.2396012-20-sashal@kernel.org>
 X-Mailer: git-send-email 2.35.1
 In-Reply-To: <20220814162332.2396012-1-sashal@kernel.org>
 References: <20220814162332.2396012-1-sashal@kernel.org>
@@ -68,13 +68,13 @@ X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 Cc: Sasha Levin <sashal@kernel.org>, cezary.rojewski@intel.com,
- mchehab@kernel.org, Andrey Turkin <andrey.turkin@gmail.com>,
  kai.vehmanen@linux.intel.com, yung-chuan.liao@linux.intel.com, tiwai@suse.com,
  Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- ranjani.sridharan@linux.intel.com, liam.r.girdwood@linux.intel.com,
- alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>,
- akihiko.odaki@gmail.com, Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
- peter.ujfalusi@linux.intel.com
+ Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+ liam.r.girdwood@linux.intel.com, alsa-devel@alsa-project.org,
+ mac.chiang@intel.com, Mark Brown <broonie@kernel.org>, CTLIN0@nuvoton.com,
+ akihiko.odaki@gmail.com, peter.ujfalusi@linux.intel.com,
+ Yong Zhi <yong.zhi@intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -90,58 +90,51 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Andrey Turkin <andrey.turkin@gmail.com>
+From: Yong Zhi <yong.zhi@intel.com>
 
-[ Upstream commit 751e77011f7a43a204bf2a5d02fbf5f8219bc531 ]
+[ Upstream commit 5b56db90bbaf9d8581e5e6268727d8ad706555e4 ]
 
-This fixes speaker GPIO detection on machines those ACPI tables
-list their jack detection GpioInt before output GpioIo.
-GpioInt entry can never be the speaker/headphone amplifier control
-so it makes sense to only look for GpioIo entries when looking for them.
+The sof_rt5682_quirk check was placed in the middle of
+hdmi handling code, move it to the front to be consistent
+with sof_rt5682.c/sof_card_late_probe().
 
-Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Signed-off-by: Andrey Turkin <andrey.turkin@gmail.com>
+Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+Signed-off-by: Yong Zhi <yong.zhi@intel.com>
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Link: https://lore.kernel.org/r/20220725194909.145418-5-pierre-louis.bossart@linux.intel.com
+Link: https://lore.kernel.org/r/20220725194909.145418-11-pierre-louis.bossart@linux.intel.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/intel/boards/sof_es8336.c | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
+ sound/soc/intel/boards/sof_nau8825.c | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
-diff --git a/sound/soc/intel/boards/sof_es8336.c b/sound/soc/intel/boards/sof_es8336.c
-index 81e12f03ec97..dade1749c444 100644
---- a/sound/soc/intel/boards/sof_es8336.c
-+++ b/sound/soc/intel/boards/sof_es8336.c
-@@ -57,23 +57,23 @@ static const struct acpi_gpio_params enable_gpio0 = { 0, 0, true };
- static const struct acpi_gpio_params enable_gpio1 = { 1, 0, true };
+diff --git a/sound/soc/intel/boards/sof_nau8825.c b/sound/soc/intel/boards/sof_nau8825.c
+index 33de043b66c6..b6826d6572b8 100644
+--- a/sound/soc/intel/boards/sof_nau8825.c
++++ b/sound/soc/intel/boards/sof_nau8825.c
+@@ -177,11 +177,6 @@ static int sof_card_late_probe(struct snd_soc_card *card)
+ 	struct sof_hdmi_pcm *pcm;
+ 	int err;
  
- static const struct acpi_gpio_mapping acpi_speakers_enable_gpio0[] = {
--	{ "speakers-enable-gpios", &enable_gpio0, 1 },
-+	{ "speakers-enable-gpios", &enable_gpio0, 1, ACPI_GPIO_QUIRK_ONLY_GPIOIO },
- 	{ }
- };
+-	if (list_empty(&ctx->hdmi_pcm_list))
+-		return -EINVAL;
+-
+-	pcm = list_first_entry(&ctx->hdmi_pcm_list, struct sof_hdmi_pcm, head);
+-
+ 	if (sof_nau8825_quirk & SOF_MAX98373_SPEAKER_AMP_PRESENT) {
+ 		/* Disable Left and Right Spk pin after boot */
+ 		snd_soc_dapm_disable_pin(dapm, "Left Spk");
+@@ -191,6 +186,11 @@ static int sof_card_late_probe(struct snd_soc_card *card)
+ 			return err;
+ 	}
  
- static const struct acpi_gpio_mapping acpi_speakers_enable_gpio1[] = {
--	{ "speakers-enable-gpios", &enable_gpio1, 1 },
-+	{ "speakers-enable-gpios", &enable_gpio1, 1, ACPI_GPIO_QUIRK_ONLY_GPIOIO },
- };
- 
- static const struct acpi_gpio_mapping acpi_enable_both_gpios[] = {
--	{ "speakers-enable-gpios", &enable_gpio0, 1 },
--	{ "headphone-enable-gpios", &enable_gpio1, 1 },
-+	{ "speakers-enable-gpios", &enable_gpio0, 1, ACPI_GPIO_QUIRK_ONLY_GPIOIO },
-+	{ "headphone-enable-gpios", &enable_gpio1, 1, ACPI_GPIO_QUIRK_ONLY_GPIOIO },
- 	{ }
- };
- 
- static const struct acpi_gpio_mapping acpi_enable_both_gpios_rev_order[] = {
--	{ "speakers-enable-gpios", &enable_gpio1, 1 },
--	{ "headphone-enable-gpios", &enable_gpio0, 1 },
-+	{ "speakers-enable-gpios", &enable_gpio1, 1, ACPI_GPIO_QUIRK_ONLY_GPIOIO },
-+	{ "headphone-enable-gpios", &enable_gpio0, 1, ACPI_GPIO_QUIRK_ONLY_GPIOIO },
- 	{ }
- };
++	if (list_empty(&ctx->hdmi_pcm_list))
++		return -EINVAL;
++
++	pcm = list_first_entry(&ctx->hdmi_pcm_list, struct sof_hdmi_pcm, head);
++
+ 	return hda_dsp_hdmi_build_controls(card, pcm->codec_dai->component);
+ }
  
 -- 
 2.35.1
