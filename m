@@ -4,61 +4,61 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5DDBFC25B06
-	for <alsa-devel@archiver.kernel.org>; Sun, 14 Aug 2022 16:25:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id F3315C25B06
+	for <alsa-devel@archiver.kernel.org>; Sun, 14 Aug 2022 16:25:35 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 924821630;
-	Sun, 14 Aug 2022 18:24:31 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 924821630
+	by alsa0.perex.cz (Postfix) with ESMTPS id 20A741637;
+	Sun, 14 Aug 2022 18:24:44 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 20A741637
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1660494321;
-	bh=ShuwgENlE/EI+6Nzcu62eOBuU19hQbRvJ9/8rsU0Q8s=;
+	s=default; t=1660494334;
+	bh=X/ZLYxxDnih0e0paGcYJ4tSJ7KVpOyF0ATP2RLTK/q4=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=PYbQatMjvrVcHCLYg6QLIIdLm0GvqG/ZcPDOriAn5TMY+SHxXWWyWPs/XjeeinPbC
-	 SR+hFLz40n+WKNMl3OtWOqXNZJ+ZpI3t1WzXpYzDEKINwWHlEUeRvNpw6E377Q/gcq
-	 oasd1Zc29/pf7bk/Qhd3ZL/GwC3VQEft7dbGMoIQ=
+	b=u9dNdy03IeU67TvxhpA46bpzZIMjEuZ296SVh+phraJZ+k9fKon8OOmn2TbQ10If9
+	 o2xUZq3ltDNp+lC1qrVoUZe/5BFWLPgYHhG5MfROuvutMNxnspxmhSd0czpPGW+/hE
+	 7Is/9TvgMhLv4rXr6Fl95NwjvzxXsjanvzNzRH9k=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 317C5F80515;
+	by alsa1.perex.cz (Postfix) with ESMTP id DF6FDF80564;
 	Sun, 14 Aug 2022 18:23:49 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 22D38F804CC; Sun, 14 Aug 2022 18:23:48 +0200 (CEST)
-Received: from sin.source.kernel.org (sin.source.kernel.org
- [IPv6:2604:1380:40e1:4800::1])
+ id 200BEF80515; Sun, 14 Aug 2022 18:23:48 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org
+ [IPv6:2604:1380:4641:c500::1])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 855C7F80552
- for <alsa-devel@alsa-project.org>; Sun, 14 Aug 2022 18:22:50 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 855C7F80552
+ by alsa1.perex.cz (Postfix) with ESMTPS id 56F9EF80564
+ for <alsa-devel@alsa-project.org>; Sun, 14 Aug 2022 18:23:02 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 56F9EF80564
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="CHI3zlrO"
+ header.b="rNgkc2Ed"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by sin.source.kernel.org (Postfix) with ESMTPS id 36715CE0B84;
- Sun, 14 Aug 2022 16:22:45 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9A605C433D6;
- Sun, 14 Aug 2022 16:22:42 +0000 (UTC)
+ by dfw.source.kernel.org (Postfix) with ESMTPS id 1BFEA60F72;
+ Sun, 14 Aug 2022 16:23:01 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8EB38C433D6;
+ Sun, 14 Aug 2022 16:22:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1660494163;
- bh=ShuwgENlE/EI+6Nzcu62eOBuU19hQbRvJ9/8rsU0Q8s=;
+ s=k20201202; t=1660494180;
+ bh=X/ZLYxxDnih0e0paGcYJ4tSJ7KVpOyF0ATP2RLTK/q4=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=CHI3zlrOUs6Jn+lDqE2um9i9DiLKeP4o4zcQrHZ2u7UNcAZJDSHCK9q1kQWeIOl20
- qwNTsvO1sZMHNJSYWyQGFPRhoiiZFO2sEYi4lFZ0ayYLVRpr3UB+eA5xH3V/GPTIVQ
- 3vNLORHyD4OqVuKDX6IRS4oZms7dvONhzpdYnB1vzZ/rLXCiu50k4KBeNuhJHeWTpS
- 2rCIu7AT695BryJoBWTRumL7S1ruOQNW43FpDLVSavueKnbEzEhFd4rdsH+ZVfTXmD
- Erv/D/RBn7ayP5wgwjD9koJROQxkt/DKdCmiiZPeGSFFq59xWVF0vcMPaYM8ONciV3
- J37Gbgw1bayUA==
+ b=rNgkc2Edr6CfIHuHJc0SdqZusSZJr1+kG3+2ZemK1K9pqrpYY3dxv7O+IFtY2hHNe
+ aeDp/32LVz4Eq+Ac4u6wjXKOtu8dKlqeuNLqMDP/KKNtGJbHiG2fhus4N2cFd1iVGJ
+ Z3/m28Jk9bUre8TjrC9jLy6hBRhTY2DCCnu9Ck1KXgnpVQeH+UrGCHTsBRRg5ztcR9
+ tffaUDv2ogdL/G7iMR+UsoZdqYwZ21EGXVB5vY3o8mKXuaEyC6OohhbZDHgIQhx/6Y
+ 7V4IECdlP0uDaryzL4MVsXjeUrd3X0+oeCjqf5d1kAEzsY5oudheC6sR+uXZbcGYLm
+ z39kUQ8PXbj0w==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.19 36/48] ALSA: core: Add async signal helpers
-Date: Sun, 14 Aug 2022 12:19:29 -0400
-Message-Id: <20220814161943.2394452-36-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.19 39/48] ALSA: control: Use deferred fasync helper
+Date: Sun, 14 Aug 2022 12:19:32 -0400
+Message-Id: <20220814161943.2394452-39-sashal@kernel.org>
 X-Mailer: git-send-email 2.35.1
 In-Reply-To: <20220814161943.2394452-1-sashal@kernel.org>
 References: <20220814161943.2394452-1-sashal@kernel.org>
@@ -85,154 +85,77 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 From: Takashi Iwai <tiwai@suse.de>
 
-[ Upstream commit ef34a0ae7a2654bc9e58675e36898217fb2799d8 ]
+[ Upstream commit 4a971e84a7ae10a38d875cd2d4e487c8d1682ca3 ]
 
-Currently the call of kill_fasync() from an interrupt handler might
-lead to potential spin deadlocks, as spotted by syzkaller.
-Unfortunately, it's not so trivial to fix this lock chain as it's
-involved with the tasklist_lock that is touched in allover places.
+For avoiding the potential deadlock via kill_fasync() call, use the
+new fasync helpers to defer the invocation from the control API.  Note
+that it's merely a workaround.
 
-As a temporary workaround, this patch provides the way to defer the
-async signal notification in a work.  The new helper functions,
-snd_fasync_helper() and snd_kill_faync() are replacements for
-fasync_helper() and kill_fasync(), respectively.  In addition,
-snd_fasync_free() needs to be called at the destructor of the relevant
-file object.
+Another note: although we haven't received reports about the deadlock
+with the control API, the deadlock is still potentially possible, and
+it's better to align the behavior with other core APIs (PCM and
+timer); so let's move altogether.
 
-Link: https://lore.kernel.org/r/20220728125945.29533-2-tiwai@suse.de
+Link: https://lore.kernel.org/r/20220728125945.29533-5-tiwai@suse.de
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- include/sound/core.h |  8 ++++
- sound/core/misc.c    | 94 ++++++++++++++++++++++++++++++++++++++++++++
- 2 files changed, 102 insertions(+)
+ include/sound/control.h | 2 +-
+ sound/core/control.c    | 7 ++++---
+ 2 files changed, 5 insertions(+), 4 deletions(-)
 
-diff --git a/include/sound/core.h b/include/sound/core.h
-index 6d4cc49584c6..39cee40ac22e 100644
---- a/include/sound/core.h
-+++ b/include/sound/core.h
-@@ -501,4 +501,12 @@ snd_pci_quirk_lookup_id(u16 vendor, u16 device,
- }
- #endif
- 
-+/* async signal helpers */
-+struct snd_fasync;
-+
-+int snd_fasync_helper(int fd, struct file *file, int on,
-+		      struct snd_fasync **fasyncp);
-+void snd_kill_fasync(struct snd_fasync *fasync, int signal, int poll);
-+void snd_fasync_free(struct snd_fasync *fasync);
-+
- #endif /* __SOUND_CORE_H */
-diff --git a/sound/core/misc.c b/sound/core/misc.c
-index 50e4aaa6270d..d32a19976a2b 100644
---- a/sound/core/misc.c
-+++ b/sound/core/misc.c
-@@ -10,6 +10,7 @@
- #include <linux/time.h>
- #include <linux/slab.h>
- #include <linux/ioport.h>
-+#include <linux/fs.h>
- #include <sound/core.h>
- 
- #ifdef CONFIG_SND_DEBUG
-@@ -145,3 +146,96 @@ snd_pci_quirk_lookup(struct pci_dev *pci, const struct snd_pci_quirk *list)
- }
- EXPORT_SYMBOL(snd_pci_quirk_lookup);
- #endif
-+
-+/*
-+ * Deferred async signal helpers
-+ *
-+ * Below are a few helper functions to wrap the async signal handling
-+ * in the deferred work.  The main purpose is to avoid the messy deadlock
-+ * around tasklist_lock and co at the kill_fasync() invocation.
-+ * fasync_helper() and kill_fasync() are replaced with snd_fasync_helper()
-+ * and snd_kill_fasync(), respectively.  In addition, snd_fasync_free() has
-+ * to be called at releasing the relevant file object.
-+ */
-+struct snd_fasync {
-+	struct fasync_struct *fasync;
-+	int signal;
-+	int poll;
-+	int on;
-+	struct list_head list;
-+};
-+
-+static DEFINE_SPINLOCK(snd_fasync_lock);
-+static LIST_HEAD(snd_fasync_list);
-+
-+static void snd_fasync_work_fn(struct work_struct *work)
-+{
+diff --git a/include/sound/control.h b/include/sound/control.h
+index 985c51a8fb74..a1fc7e0a47d9 100644
+--- a/include/sound/control.h
++++ b/include/sound/control.h
+@@ -109,7 +109,7 @@ struct snd_ctl_file {
+ 	int preferred_subdevice[SND_CTL_SUBDEV_ITEMS];
+ 	wait_queue_head_t change_sleep;
+ 	spinlock_t read_lock;
+-	struct fasync_struct *fasync;
 +	struct snd_fasync *fasync;
-+
-+	spin_lock_irq(&snd_fasync_lock);
-+	while (!list_empty(&snd_fasync_list)) {
-+		fasync = list_first_entry(&snd_fasync_list, struct snd_fasync, list);
-+		list_del_init(&fasync->list);
-+		spin_unlock_irq(&snd_fasync_lock);
-+		if (fasync->on)
-+			kill_fasync(&fasync->fasync, fasync->signal, fasync->poll);
-+		spin_lock_irq(&snd_fasync_lock);
-+	}
-+	spin_unlock_irq(&snd_fasync_lock);
-+}
-+
-+static DECLARE_WORK(snd_fasync_work, snd_fasync_work_fn);
-+
-+int snd_fasync_helper(int fd, struct file *file, int on,
-+		      struct snd_fasync **fasyncp)
-+{
-+	struct snd_fasync *fasync = NULL;
-+
-+	if (on) {
-+		fasync = kzalloc(sizeof(*fasync), GFP_KERNEL);
-+		if (!fasync)
-+			return -ENOMEM;
-+		INIT_LIST_HEAD(&fasync->list);
-+	}
-+
-+	spin_lock_irq(&snd_fasync_lock);
-+	if (*fasyncp) {
-+		kfree(fasync);
-+		fasync = *fasyncp;
-+	} else {
-+		if (!fasync) {
-+			spin_unlock_irq(&snd_fasync_lock);
-+			return 0;
-+		}
-+		*fasyncp = fasync;
-+	}
-+	fasync->on = on;
-+	spin_unlock_irq(&snd_fasync_lock);
-+	return fasync_helper(fd, file, on, &fasync->fasync);
-+}
-+EXPORT_SYMBOL_GPL(snd_fasync_helper);
-+
-+void snd_kill_fasync(struct snd_fasync *fasync, int signal, int poll)
-+{
-+	unsigned long flags;
-+
-+	if (!fasync || !fasync->on)
-+		return;
-+	spin_lock_irqsave(&snd_fasync_lock, flags);
-+	fasync->signal = signal;
-+	fasync->poll = poll;
-+	list_move(&fasync->list, &snd_fasync_list);
-+	schedule_work(&snd_fasync_work);
-+	spin_unlock_irqrestore(&snd_fasync_lock, flags);
-+}
-+EXPORT_SYMBOL_GPL(snd_kill_fasync);
-+
-+void snd_fasync_free(struct snd_fasync *fasync)
-+{
-+	if (!fasync)
-+		return;
-+	fasync->on = 0;
-+	flush_work(&snd_fasync_work);
-+	kfree(fasync);
-+}
-+EXPORT_SYMBOL_GPL(snd_fasync_free);
+ 	int subscribed;			/* read interface is activated */
+ 	struct list_head events;	/* waiting events for read */
+ };
+diff --git a/sound/core/control.c b/sound/core/control.c
+index a25c0d64d104..f66fe4be30d3 100644
+--- a/sound/core/control.c
++++ b/sound/core/control.c
+@@ -127,6 +127,7 @@ static int snd_ctl_release(struct inode *inode, struct file *file)
+ 			if (control->vd[idx].owner == ctl)
+ 				control->vd[idx].owner = NULL;
+ 	up_write(&card->controls_rwsem);
++	snd_fasync_free(ctl->fasync);
+ 	snd_ctl_empty_read_queue(ctl);
+ 	put_pid(ctl->pid);
+ 	kfree(ctl);
+@@ -181,7 +182,7 @@ void snd_ctl_notify(struct snd_card *card, unsigned int mask,
+ 	_found:
+ 		wake_up(&ctl->change_sleep);
+ 		spin_unlock(&ctl->read_lock);
+-		kill_fasync(&ctl->fasync, SIGIO, POLL_IN);
++		snd_kill_fasync(ctl->fasync, SIGIO, POLL_IN);
+ 	}
+ 	read_unlock_irqrestore(&card->ctl_files_rwlock, flags);
+ }
+@@ -2002,7 +2003,7 @@ static int snd_ctl_fasync(int fd, struct file * file, int on)
+ 	struct snd_ctl_file *ctl;
+ 
+ 	ctl = file->private_data;
+-	return fasync_helper(fd, file, on, &ctl->fasync);
++	return snd_fasync_helper(fd, file, on, &ctl->fasync);
+ }
+ 
+ /* return the preferred subdevice number if already assigned;
+@@ -2170,7 +2171,7 @@ static int snd_ctl_dev_disconnect(struct snd_device *device)
+ 	read_lock_irqsave(&card->ctl_files_rwlock, flags);
+ 	list_for_each_entry(ctl, &card->ctl_files, list) {
+ 		wake_up(&ctl->change_sleep);
+-		kill_fasync(&ctl->fasync, SIGIO, POLL_ERR);
++		snd_kill_fasync(ctl->fasync, SIGIO, POLL_ERR);
+ 	}
+ 	read_unlock_irqrestore(&card->ctl_files_rwlock, flags);
+ 
 -- 
 2.35.1
 
