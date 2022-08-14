@@ -4,63 +4,63 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 34AAEC25B06
-	for <alsa-devel@archiver.kernel.org>; Sun, 14 Aug 2022 16:31:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1DE93C25B06
+	for <alsa-devel@archiver.kernel.org>; Sun, 14 Aug 2022 16:32:14 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 5FB601687;
-	Sun, 14 Aug 2022 18:31:07 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5FB601687
+	by alsa0.perex.cz (Postfix) with ESMTPS id 5188016AB;
+	Sun, 14 Aug 2022 18:31:22 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5188016AB
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1660494717;
-	bh=qKyR4/slPDJJoCo9vd2LuqYW5vB81KL8yoJ+W0mWyZ4=;
+	s=default; t=1660494732;
+	bh=52X8ueirCEs1RRLjzB6/6HU1F5t+GkJ8GyQeQKlbkq8=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=ZIrMPmPLM7flFoJhjAhCUNLAyQEOPqlDITuWJjkF5yBjAZVamcFURItyQy5U/Ce/n
-	 h+XBatGV4jIcIX74zTgpb8OMcD/ZG12rB466h1S9cEek0cdtBCN6nEM8DrWvSQ3IHv
-	 k7GoVjuUxRnzq7OFy3LUfc07wJBA4C85E+D1RyZQ=
+	b=vA84ZF30HgZ/jh6TAMQYUofi3HY+zXrrjFclH7PCCqTqtIhRpl32NyAMH3S3D8zAV
+	 HUYGV5pLfhBrY88/OxGtqgHFtcP5drTQFmDuof9ZgS3cynXRrc9IdU1N6vkVYgmOc/
+	 AineQYL73YoamTOt32Pl0a0CIHMProQA0XtSNvdY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 42548F80557;
-	Sun, 14 Aug 2022 18:29:56 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id C928CF8055A;
+	Sun, 14 Aug 2022 18:30:22 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 40EEEF8055A; Sun, 14 Aug 2022 18:29:55 +0200 (CEST)
-Received: from sin.source.kernel.org (sin.source.kernel.org [145.40.73.55])
+ id C33C4F8056F; Sun, 14 Aug 2022 18:30:21 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id CF2A6F804CC
- for <alsa-devel@alsa-project.org>; Sun, 14 Aug 2022 18:29:48 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CF2A6F804CC
+ by alsa1.perex.cz (Postfix) with ESMTPS id 69A63F80559
+ for <alsa-devel@alsa-project.org>; Sun, 14 Aug 2022 18:30:15 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 69A63F80559
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="aprHU16D"
+ header.b="JYZgMmZN"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by sin.source.kernel.org (Postfix) with ESMTPS id E8871CE0B5E;
- Sun, 14 Aug 2022 16:29:45 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 725A2C433C1;
- Sun, 14 Aug 2022 16:29:43 +0000 (UTC)
+ by dfw.source.kernel.org (Postfix) with ESMTPS id 5DC4E60FC5;
+ Sun, 14 Aug 2022 16:30:14 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 02057C433C1;
+ Sun, 14 Aug 2022 16:30:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1660494584;
- bh=qKyR4/slPDJJoCo9vd2LuqYW5vB81KL8yoJ+W0mWyZ4=;
+ s=k20201202; t=1660494613;
+ bh=52X8ueirCEs1RRLjzB6/6HU1F5t+GkJ8GyQeQKlbkq8=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=aprHU16DOM8NJZibjN2HDdjX6WlCTNYzZgbOwjfCx7e1QM7NLytA/lDFrJtqsSotk
- lBvoS4iZNS9H/CCMXQ5xgDQF0PA8jjhDSd9AUx9KWbONWFapbFRIZt1Vbjtc+iW+hd
- xqytTfSUKTXGRoEfK8HRINwTPLMpzNf7rTOwMtL0NAJL1FaVtXaEX0yiIrGxe7ulVM
- h1cVl3dN3I7jq2RMdTKj2G9WbNEe58rbRQHL7uu68ZLnjNebBA5RY7Uzf7lfbIpdFF
- 9g3jl7Jjuxh2vgXvI5+qYLo2Q9wOoEhZtVVhOBtF7eG38fqSwu2RnZhICq0p99Cx/k
- EAxn+K4AoIfJA==
+ b=JYZgMmZNHbd1TfkFWWolVnup6i3H9qHXLDpUHp0wlZWhA1mkHazgNr50+F1WHFHCi
+ nrD4hZwsk888adwXe44jupVAWUrvJFrL6tnKkRzA00U4d1pZdpX0jlKcE3I8RIhWZI
+ HVJQNYBqaJLGWR0cbBijAHG6KLI5LsdubFefiX5aanJ8NVzGCnLoOrChN2c7oO++b5
+ uPooIaSEEL1559KF4rH7mrT3YwPud+0vgQRoWMbOzUbjTZG3HekS506+9VOL0M/o8w
+ +jyosLqwUOsCWOaCztRIolw4Ub/YLZT1n9TI69OjwUo90WoVHVNgcWYPfHtVHFPndy
+ 7+z2Q+lq7yhYw==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.19 08/14] ALSA: core: Add async signal helpers
-Date: Sun, 14 Aug 2022 12:29:14 -0400
-Message-Id: <20220814162922.2398723-8-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 4.14 4/9] ALSA: core: Add async signal helpers
+Date: Sun, 14 Aug 2022 12:29:54 -0400
+Message-Id: <20220814162959.2399011-4-sashal@kernel.org>
 X-Mailer: git-send-email 2.35.1
-In-Reply-To: <20220814162922.2398723-1-sashal@kernel.org>
-References: <20220814162922.2398723-1-sashal@kernel.org>
+In-Reply-To: <20220814162959.2399011-1-sashal@kernel.org>
+References: <20220814162959.2399011-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -107,10 +107,10 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  2 files changed, 102 insertions(+)
 
 diff --git a/include/sound/core.h b/include/sound/core.h
-index 36a5934cf4b1..b5a8cc4d02cc 100644
+index 4104a9d1001f..9d04e700b855 100644
 --- a/include/sound/core.h
 +++ b/include/sound/core.h
-@@ -444,4 +444,12 @@ snd_pci_quirk_lookup_id(u16 vendor, u16 device,
+@@ -442,4 +442,12 @@ snd_pci_quirk_lookup_id(u16 vendor, u16 device,
  }
  #endif
  
