@@ -4,62 +4,60 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3AA9CC25B06
-	for <alsa-devel@archiver.kernel.org>; Sun, 14 Aug 2022 16:24:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8827AC25B0F
+	for <alsa-devel@archiver.kernel.org>; Sun, 14 Aug 2022 16:24:47 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 726FD1631;
-	Sun, 14 Aug 2022 18:23:43 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 726FD1631
+	by alsa0.perex.cz (Postfix) with ESMTPS id A89E515E5;
+	Sun, 14 Aug 2022 18:23:55 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A89E515E5
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1660494273;
-	bh=R02L0ZCJjmtfN54L9LyXEzxy81yp/EaA6NDAEoEHBw8=;
+	s=default; t=1660494285;
+	bh=dJICxAXUVqoAvRcs1iEYL7jr+zKhXIpbPrZJ96/wyv0=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=K7/LM9VCPg6ihdXRv21RlVsOfN+9Gf199akAcFpaCOnY2GWdCFQq/t96mBwLaUp8b
-	 RZVuOGSvR9jF1zTvR+/wpjpPmsGGy5I5KdxbUMVb0kqa2Z0ZgDEAYI9XIBahGlcwa3
-	 EAYL4BRMDnBxl9O13eHFIW4UctO/y68wC9mx37IA=
+	b=YGqvQqnLP5WKeb8Zj694F3MGdIjPxUhEf+chYnZJlZDlh7dNMjvBk8jAm3h9APXpw
+	 OdWrqi4q2iEyHb4LG0pzh2toRW50GDf/nWp8RoK2tP3tEpmPSmA/ft2BKHIoT38vBG
+	 dzDmnSGmvlIFLldMuW9OoRKx3Yac1BhgE590l1gw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 6A4A7F8054A;
-	Sun, 14 Aug 2022 18:22:04 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 18F4FF804BD;
+	Sun, 14 Aug 2022 18:23:01 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 813DBF80548; Sun, 14 Aug 2022 18:22:02 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org
- [IPv6:2604:1380:4641:c500::1])
+ id 6F1AEF804BD; Sun, 14 Aug 2022 18:22:59 +0200 (CEST)
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 520D9F80564
- for <alsa-devel@alsa-project.org>; Sun, 14 Aug 2022 18:21:56 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 520D9F80564
+ by alsa1.perex.cz (Postfix) with ESMTPS id B2F5EF80559
+ for <alsa-devel@alsa-project.org>; Sun, 14 Aug 2022 18:22:49 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B2F5EF80559
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="VCvwlBGr"
+ header.b="bpNnjalP"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id 47A1E60F78;
- Sun, 14 Aug 2022 16:21:55 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AE86BC433C1;
- Sun, 14 Aug 2022 16:21:52 +0000 (UTC)
+ by ams.source.kernel.org (Postfix) with ESMTPS id 19340B80B79;
+ Sun, 14 Aug 2022 16:22:49 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 689DAC433C1;
+ Sun, 14 Aug 2022 16:22:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1660494114;
- bh=R02L0ZCJjmtfN54L9LyXEzxy81yp/EaA6NDAEoEHBw8=;
+ s=k20201202; t=1660494167;
+ bh=dJICxAXUVqoAvRcs1iEYL7jr+zKhXIpbPrZJ96/wyv0=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=VCvwlBGrF/AqLGT0G/nOqtUootNTXhhGd7kwtzDReBU4r5JJk4QlnGVmnkla/Dk0u
- xxhaH6isvDRhySikagqkgCfzfsXXxVZU58i7WLBD5EateXvc8HAmHL69CA0X6AUaKQ
- qb1kX6RIGZLQzgkyJCKP3FTfGr2tdkewzDHhgCgGBZ68sg06Q0yh75xKBi7iXrEWqi
- oYfd8EXVmywaUEhBTqD5TNeibohlBsUqQ1OK1WEanvA6pJ83jdF2j9smkBUEhO5waA
- FqFEa4dYElUBRGnRMzBm7CkapgXAv0JDUkWwgddyV03tfmIfuBfIOW195Uj6Wqdjp4
- CO8hfudvI1D9w==
+ b=bpNnjalPpQvAV48K/VGswdZgoSjSAchT//1UiI1s8qir+hCTtmp19/9PngRHLfeL5
+ j/fqe1s02SrHb1qVGU27ZQ7YVk6dxjPFROZ5e1DRXRgfxFMWSfCqRP+ACpY9RxLxdy
+ gNOqRSiYeH8tBgbn3yCbBVHATdpUkqrquABH7hzPL+7L07coO+3iTKxWBCeacGZalz
+ PL8ndRW4/4rJA1/Al/SJxIe2umNqx7zKTFL2noalhh/OokUzYgk0+08GoLJTQDpFoP
+ s2HcNK9OEf+ZZ30ue3r6aDFo4BzAADBvo1q6WUdcNpu7NjiH4hEay+0Wa1Sr0DjiJo
+ wWiyU7+nXfpuA==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.19 27/48] ASoC: Intel: sof_nau8825: Move quirk check
- to the front in late probe
-Date: Sun, 14 Aug 2022 12:19:20 -0400
-Message-Id: <20220814161943.2394452-27-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.19 37/48] ALSA: timer: Use deferred fasync helper
+Date: Sun, 14 Aug 2022 12:19:30 -0400
+Message-Id: <20220814161943.2394452-37-sashal@kernel.org>
 X-Mailer: git-send-email 2.35.1
 In-Reply-To: <20220814161943.2394452-1-sashal@kernel.org>
 References: <20220814161943.2394452-1-sashal@kernel.org>
@@ -67,14 +65,11 @@ MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
-Cc: Sasha Levin <sashal@kernel.org>, cezary.rojewski@intel.com,
- kai.vehmanen@linux.intel.com, yung-chuan.liao@linux.intel.com, tiwai@suse.com,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
- liam.r.girdwood@linux.intel.com, alsa-devel@alsa-project.org,
- mac.chiang@intel.com, Mark Brown <broonie@kernel.org>, CTLIN0@nuvoton.com,
- akihiko.odaki@gmail.com, peter.ujfalusi@linux.intel.com,
- Yong Zhi <yong.zhi@intel.com>
+Cc: Sasha Levin <sashal@kernel.org>, alsa-devel@alsa-project.org,
+ Takashi Iwai <tiwai@suse.de>, wangwensheng4@huawei.com,
+ syzbot+49b10793b867871ee26f@syzkaller.appspotmail.com, tiwai@suse.com,
+ syzbot+1ee0910eca9c94f71f25@syzkaller.appspotmail.com,
+ syzbot+8285e973a41b5aa68902@syzkaller.appspotmail.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -90,52 +85,81 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Yong Zhi <yong.zhi@intel.com>
+From: Takashi Iwai <tiwai@suse.de>
 
-[ Upstream commit 5b56db90bbaf9d8581e5e6268727d8ad706555e4 ]
+[ Upstream commit 95cc637c1afd83fb7dd3d7c8a53710488f4caf9c ]
 
-The sof_rt5682_quirk check was placed in the middle of
-hdmi handling code, move it to the front to be consistent
-with sof_rt5682.c/sof_card_late_probe().
+For avoiding the potential deadlock via kill_fasync() call, use the
+new fasync helpers to defer the invocation from PCI API.  Note that
+it's merely a workaround.
 
-Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-Signed-off-by: Yong Zhi <yong.zhi@intel.com>
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Link: https://lore.kernel.org/r/20220725194909.145418-11-pierre-louis.bossart@linux.intel.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Reported-by: syzbot+1ee0910eca9c94f71f25@syzkaller.appspotmail.com
+Reported-by: syzbot+49b10793b867871ee26f@syzkaller.appspotmail.com
+Reported-by: syzbot+8285e973a41b5aa68902@syzkaller.appspotmail.com
+Link: https://lore.kernel.org/r/20220728125945.29533-3-tiwai@suse.de
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/intel/boards/sof_nau8825.c | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+ sound/core/timer.c | 11 ++++++-----
+ 1 file changed, 6 insertions(+), 5 deletions(-)
 
-diff --git a/sound/soc/intel/boards/sof_nau8825.c b/sound/soc/intel/boards/sof_nau8825.c
-index 97dcd204a246..9b3a2ff4d9cd 100644
---- a/sound/soc/intel/boards/sof_nau8825.c
-+++ b/sound/soc/intel/boards/sof_nau8825.c
-@@ -177,11 +177,6 @@ static int sof_card_late_probe(struct snd_soc_card *card)
- 	struct sof_hdmi_pcm *pcm;
- 	int err;
+diff --git a/sound/core/timer.c b/sound/core/timer.c
+index b3214baa8919..e08a37c23add 100644
+--- a/sound/core/timer.c
++++ b/sound/core/timer.c
+@@ -83,7 +83,7 @@ struct snd_timer_user {
+ 	unsigned int filter;
+ 	struct timespec64 tstamp;		/* trigger tstamp */
+ 	wait_queue_head_t qchange_sleep;
+-	struct fasync_struct *fasync;
++	struct snd_fasync *fasync;
+ 	struct mutex ioctl_lock;
+ };
  
--	if (list_empty(&ctx->hdmi_pcm_list))
--		return -EINVAL;
--
--	pcm = list_first_entry(&ctx->hdmi_pcm_list, struct sof_hdmi_pcm, head);
--
- 	if (sof_nau8825_quirk & SOF_MAX98373_SPEAKER_AMP_PRESENT) {
- 		/* Disable Left and Right Spk pin after boot */
- 		snd_soc_dapm_disable_pin(dapm, "Left Spk");
-@@ -191,6 +186,11 @@ static int sof_card_late_probe(struct snd_soc_card *card)
- 			return err;
+@@ -1345,7 +1345,7 @@ static void snd_timer_user_interrupt(struct snd_timer_instance *timeri,
  	}
- 
-+	if (list_empty(&ctx->hdmi_pcm_list))
-+		return -EINVAL;
-+
-+	pcm = list_first_entry(&ctx->hdmi_pcm_list, struct sof_hdmi_pcm, head);
-+
- 	return hda_dsp_hdmi_build_controls(card, pcm->codec_dai->component);
+       __wake:
+ 	spin_unlock(&tu->qlock);
+-	kill_fasync(&tu->fasync, SIGIO, POLL_IN);
++	snd_kill_fasync(tu->fasync, SIGIO, POLL_IN);
+ 	wake_up(&tu->qchange_sleep);
  }
  
+@@ -1383,7 +1383,7 @@ static void snd_timer_user_ccallback(struct snd_timer_instance *timeri,
+ 	spin_lock_irqsave(&tu->qlock, flags);
+ 	snd_timer_user_append_to_tqueue(tu, &r1);
+ 	spin_unlock_irqrestore(&tu->qlock, flags);
+-	kill_fasync(&tu->fasync, SIGIO, POLL_IN);
++	snd_kill_fasync(tu->fasync, SIGIO, POLL_IN);
+ 	wake_up(&tu->qchange_sleep);
+ }
+ 
+@@ -1453,7 +1453,7 @@ static void snd_timer_user_tinterrupt(struct snd_timer_instance *timeri,
+ 	spin_unlock(&tu->qlock);
+ 	if (append == 0)
+ 		return;
+-	kill_fasync(&tu->fasync, SIGIO, POLL_IN);
++	snd_kill_fasync(tu->fasync, SIGIO, POLL_IN);
+ 	wake_up(&tu->qchange_sleep);
+ }
+ 
+@@ -1521,6 +1521,7 @@ static int snd_timer_user_release(struct inode *inode, struct file *file)
+ 			snd_timer_instance_free(tu->timeri);
+ 		}
+ 		mutex_unlock(&tu->ioctl_lock);
++		snd_fasync_free(tu->fasync);
+ 		kfree(tu->queue);
+ 		kfree(tu->tqueue);
+ 		kfree(tu);
+@@ -2135,7 +2136,7 @@ static int snd_timer_user_fasync(int fd, struct file * file, int on)
+ 	struct snd_timer_user *tu;
+ 
+ 	tu = file->private_data;
+-	return fasync_helper(fd, file, on, &tu->fasync);
++	return snd_fasync_helper(fd, file, on, &tu->fasync);
+ }
+ 
+ static ssize_t snd_timer_user_read(struct file *file, char __user *buffer,
 -- 
 2.35.1
 
