@@ -4,69 +4,72 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 81101C00140
-	for <alsa-devel@archiver.kernel.org>; Mon, 15 Aug 2022 16:23:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9F359C00140
+	for <alsa-devel@archiver.kernel.org>; Mon, 15 Aug 2022 16:24:27 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id CF25682A;
-	Mon, 15 Aug 2022 18:23:02 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CF25682A
+	by alsa0.perex.cz (Postfix) with ESMTPS id 4B404163C;
+	Mon, 15 Aug 2022 18:23:35 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4B404163C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1660580632;
-	bh=/jQptsa4xgzWZEvnJ9uvP+IDUVWRoipnTaZOjbWZetQ=;
+	s=default; t=1660580665;
+	bh=txviIWtgKTn8W5exAoYk95kSN70u4fkOZHI4CSdKYT8=;
 	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=PbOEMA+OI+HTGa3kHcCWLjUcwN07FYwEoYuXT/LzgiuTWLwu4KQoscx4FUX0fMwVt
-	 ypLMtcjxnuI1cdeJr+SEox3w5hZmg7emUsTGfyGUgfy68pI8rmon5XAFZmIz4qFk0j
-	 eATUBwwbZFnb31ObjeUgcvH/we3ltEySkPy3yWmk=
+	b=esw2LO74/segeyPC1g2ZRHRUi7bA7gCmCidLQ0OtOFKp6O26WODvzlPq2GAt839GO
+	 LzhP5QjzQFRE4ON7qDC/pkxiJTkpyCVXb13nZGbpL8DvS8NSkrjiSY2emqIEQiqij8
+	 g/2Ii1XIKQXWZUIGxGw5XmOQN2vNMshbps814QGY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 6474AF80245;
-	Mon, 15 Aug 2022 18:23:02 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id C4788F80548;
+	Mon, 15 Aug 2022 18:23:05 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 32A79F8025A; Mon, 15 Aug 2022 18:23:00 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+ id F070FF8025A; Mon, 15 Aug 2022 18:23:01 +0200 (CEST)
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id A3CDEF80082
- for <alsa-devel@alsa-project.org>; Mon, 15 Aug 2022 18:22:57 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A3CDEF80082
+ by alsa1.perex.cz (Postfix) with ESMTPS id 8F0FAF80125
+ for <alsa-devel@alsa-project.org>; Mon, 15 Aug 2022 18:22:59 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8F0FAF80125
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="Xkl3G4VV"
+ header.b="Cg3MlLbK"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id A9544611BF;
+ by ams.source.kernel.org (Postfix) with ESMTPS id A40B2B80FAE;
+ Mon, 15 Aug 2022 16:22:58 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8F04EC433C1;
  Mon, 15 Aug 2022 16:22:55 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E38C0C433D6;
- Mon, 15 Aug 2022 16:22:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1660580575;
- bh=/jQptsa4xgzWZEvnJ9uvP+IDUVWRoipnTaZOjbWZetQ=;
+ s=k20201202; t=1660580577;
+ bh=txviIWtgKTn8W5exAoYk95kSN70u4fkOZHI4CSdKYT8=;
  h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=Xkl3G4VVfMhFwfVmfm1WItZg6fbzw8NGA3p7MNJexkuVZ0yiz00YqqiL7qvWkySN3
- +bHtQe5pGw7GIiNro5BqEpk5X+ul121rFXYixCzFncS3xHVI1dJFtfGARhS2jBhnll
- IzfCnXPVXUaoUspb24Wr8JpKbH79NqkV0PgrJGYtreeTlkpVUYozX06w4zgtlnQIQa
- H3pqVDZ7mi5hp8LRYpV1HCQQ0YoPQX3GYG1mMrp8gafSO5r2yQJVUoI+pcaKNsRsDv
- 3VB5zxhAqP9lViRQatxvXI2V7SJK55WHD9r9uLKOQeo1AgXPWxLO1H38XEivizzhyX
- PQGOlQrRReaAQ==
+ b=Cg3MlLbKmC3avMOv0ogKD3gV6WtTd0JHOptirGE/1EP4DR4rU92emDbPnaE8MIBqM
+ LaNLN0RRIjl6jWU3Ruvv5ptdqHalrK5y88utWRDS0cE1NQzHcDfwCVtGWxx07lWeXi
+ d/BzYj3bMA6f48KwrPw4NiLqPhHGkOwSbfxX22eeoQYqublqmmFebixnQjXisP3oGP
+ iW1Je/RRWEXO+fdAFUrS8CoAg+sCVPntu+1pEsz892H20anFL9K1eMMO3YmYpU4umk
+ W58vjGVXX6ryhDGlAXXVYVgzSi41DwOzmzYolMKochsWadAnkT0A1EPyhVl+SLc9fB
+ ZZeze+B6qVPDQ==
 From: Mark Brown <broonie@kernel.org>
-To: lgirdwood@gmail.com, nicoleotsuka@gmail.com, shengjiu.wang@gmail.com,
- Xiubo.Lee@gmail.com, 
- alsa-devel@alsa-project.org, tiwai@suse.com, festevam@gmail.com,
- Shengjiu Wang <shengjiu.wang@nxp.com>, perex@perex.cz
-In-Reply-To: <1659356773-8315-1-git-send-email-shengjiu.wang@nxp.com>
-References: <1659356773-8315-1-git-send-email-shengjiu.wang@nxp.com>
-Subject: Re: [PATCH] ASoC: imx-rpmsg: Support configure sysclk for codec dai
-Message-Id: <166058057263.769843.18204053953176733855.b4-ty@kernel.org>
-Date: Mon, 15 Aug 2022 17:22:52 +0100
+To: Stefan Binding <sbinding@opensource.cirrus.com>,
+ Brent Lu <brent.lu@intel.com>, xliu <xiang.liu@cirrus.com>, 
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ Liam Girdwood <lgirdwood@gmail.com>
+In-Reply-To: <20220801094034.3927841-1-sbinding@opensource.cirrus.com>
+References: <20220801094034.3927841-1-sbinding@opensource.cirrus.com>
+Subject: Re: [PATCH v3] ASoC: Intel: cirrus-common: Use UID to map correct amp
+ to prefix
+Message-Id: <166058057529.769843.6686706298009723312.b4-ty@kernel.org>
+Date: Mon, 15 Aug 2022 17:22:55 +0100
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 X-Mailer: b4 0.10.0-dev-fe10a
-Cc: linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
+Cc: Vitaly Rodionov <vitalyr@opensource.cirrus.com>,
+ patches@opensource.cirrus.com, alsa-devel@alsa-project.org,
+ linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -82,13 +85,18 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Mon, 1 Aug 2022 20:26:13 +0800, Shengjiu Wang wrote:
-> Some codecs need to configure the sysclk even with slave
-> mode, otherwise it may not work properly with some case.
+On Mon, 1 Aug 2022 10:40:34 +0100, Stefan Binding wrote:
+> Since the order of the amps in the ACPI determines the device name,
+> and the ACPI order may change depending on hardware configuration,
+> use UID to dynamically compute the dai links, allowing dynamic
+> assignment of the name_prefix.
 > 
-> wm8960 is the one that need sysclk be configured, so add
-> late_probe() to call the snd_soc_dai_set_sysclk() of codec
-> 
+> The UIDs for these amps in ACPI are fixed, and map to a name_prefix,
+> where:
+> UID 0x0 -> WL
+> UID 0x1 -> WR
+> UID 0x2 -> TL
+> UID 0x3 -> TR
 > 
 > [...]
 
@@ -98,8 +106,8 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: imx-rpmsg: Support configure sysclk for codec dai
-      commit: 088f115c6ff664c8afe003bd542e1e662a72aaed
+[1/1] ASoC: Intel: cirrus-common: Use UID to map correct amp to prefix
+      commit: 1ca726424a12962f2c2656cc9cdd0b8668117e8f
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
