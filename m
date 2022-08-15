@@ -4,43 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id EAE43C00140
-	for <alsa-devel@archiver.kernel.org>; Mon, 15 Aug 2022 16:46:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4F4F7C00140
+	for <alsa-devel@archiver.kernel.org>; Mon, 15 Aug 2022 16:49:17 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 30985163F;
-	Mon, 15 Aug 2022 18:46:06 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 30985163F
+	by alsa0.perex.cz (Postfix) with ESMTPS id 8D2EC1622;
+	Mon, 15 Aug 2022 18:48:25 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8D2EC1622
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1660582016;
-	bh=Z3xwrm71ypzsaFnQ83a/MI9EUvXO2OWRO7nXKqpgdAA=;
-	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=aWTfQI9whl3jUHSAEDxhN7V6afO0xqSwNn/DqExi3lusfBnVGJKI8Z2q+7bJmgXNt
-	 A/p9v2hAbw7yOLU5nUNYs+VHOCZ6ODJ9l/nvfXbx9HE2iJrNsawe5EMU29VwJoBX1Z
-	 H130KLuHjWZ5kkMoOeBGFk9dbdhX9rzedKbsdbIk=
+	s=default; t=1660582155;
+	bh=0u9mg9hIB2IBzUb87Hn3pKfSj3/uhofvxtwWJfgbYms=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=AJIlM9BF0kYG0e7eJEBd/Dq/YZ113RjWvvEFd4Nuhb8zMHSRW3XCELHDFOKcP3K3T
+	 a27xgBC/ZOfDURDPBn1wTNpENQuFnB3tZUF5RMgvRCxgJod1GILCB5Ac70cHeGyAMy
+	 mk/jpxAfEWgqiw5PJOntBig6w6QqXCdXWC1rmFc4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 83D29F80271;
-	Mon, 15 Aug 2022 18:45:42 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 3DDBBF8025A;
+	Mon, 15 Aug 2022 18:48:25 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id DC5FCF804AE; Mon, 15 Aug 2022 18:45:41 +0200 (CEST)
-Received: from webhooks-bot.alsa-project.org (gate.perex.cz [77.48.224.242])
- by alsa1.perex.cz (Postfix) with ESMTP id BCB64F80125
- for <alsa-devel@alsa-project.org>; Mon, 15 Aug 2022 18:45:35 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BCB64F80125
+ id 50CAEF80082; Mon, 15 Aug 2022 18:48:23 +0200 (CEST)
+Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id E341DF80082
+ for <alsa-devel@alsa-project.org>; Mon, 15 Aug 2022 18:48:19 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E341DF80082
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
+ header.b="bOu+SVJD"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+ d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+ t=1660582101; x=1692118101;
+ h=from:to:cc:subject:date:message-id:mime-version:
+ content-transfer-encoding;
+ bh=0u9mg9hIB2IBzUb87Hn3pKfSj3/uhofvxtwWJfgbYms=;
+ b=bOu+SVJDDAYiBldDf8+GfVhM4Y5/uh3ZKRCOmc3G7hIU7INpI9qyaGtc
+ UpflzahhXvwJvejC7X4S5P7X49cCHywCi1+epNXeApQRUslFazphIlBTd
+ doAJ2NOTlciuEufLHGcXzAa5a1vx4wdYpOsBwtm073AvHghIPss5CEepZ
+ JNX1so7MWp7f2Ksc6fuHFm7G5OUnRv+sJc8u2KtlPACFDm7tc5ZMaH9o0
+ OmkPRc4JknSBdWAWIn/ptwvuI0XuPpt1cKy0yYJlo/7AzHsBJe3Njs+6+
+ 719dARSTmikKelGDVwIJh0NtkQ3Skw3jZUq9IM0MRynTQhwERl0I3EBYM A==;
+X-IronPort-AV: E=McAfee;i="6400,9594,10440"; a="289570687"
+X-IronPort-AV: E=Sophos;i="5.93,238,1654585200"; d="scan'208";a="289570687"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+ by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 15 Aug 2022 09:48:16 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.93,238,1654585200"; d="scan'208";a="582946836"
+Received: from crojewsk-ctrl.igk.intel.com ([10.102.9.28])
+ by orsmga006.jf.intel.com with ESMTP; 15 Aug 2022 09:48:14 -0700
+From: Cezary Rojewski <cezary.rojewski@intel.com>
+To: alsa-devel@alsa-project.org,
+	broonie@kernel.org
+Subject: [PATCH 0/4] ASoC: Intel: HSW and BDW updates
+Date: Mon, 15 Aug 2022 18:58:14 +0200
+Message-Id: <20220815165818.3050649-1-cezary.rojewski@intel.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-From: GitHub issues - edited <github@alsa-project.org>
-To: alsa-devel@alsa-project.org
-In-Reply-To: <1660581935143290997-webhooks-bot@alsa-project.org>
-References: <1660581935143290997-webhooks-bot@alsa-project.org>
-Subject: trying to open ucm2/conf.d/simple-card/Unknown-UnknownProduct-.conf
- for PinePhonePro
-Message-Id: <20220815164541.DC5FCF804AE@alsa1.perex.cz>
-Date: Mon, 15 Aug 2022 18:45:41 +0200 (CEST)
+Content-Transfer-Encoding: 8bit
+Cc: Cezary Rojewski <cezary.rojewski@intel.com>, kai.vehmanen@linux.intel.co,
+ pierre-louis.bossart@linux.intel.com, tiwai@suse.com, hdegoede@redhat.com,
+ amadeuszx.slawinski@linux.intel.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -56,17 +82,47 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-alsa-project/alsa-ucm-conf issue #199 was edited from ollieparanoid:
+Sharing this PR as it touches on cross-driver subjects. Four commits yet
+two subject. Given the small delta, decided to combine within single PR
+here. I plan to send these subjects separately to the mailing list
+though.
 
-Hi,
+1. Rename hsw_rt5640 and bdw_rt286 module names
+2. Drop SND_SOC_INTEL_ACPI_MATCH dependency for catpt-driver
 
-we are trying to narrow down why alsa-lib tries to open `/usr/share/alsa/ucm2/conf.d/simple-card/Unknown-UnknownProduct-.conf` instead of the proper path `/usr/share/alsa/ucm2/PinePhonePro/PINE64-PinePhonePro-.conf` with custom (to-be-upstreamed to alsa-ucm-conf.git) ucm configurations we are using in postmarketOS for the PinePhonePro: https://gitlab.com/postmarketOS/pmaports/-/tree/master/device/community/device-pine64-pinephonepro/ucm
+In regard to 1), this is a followup to discussion that has already
+happened on upstream [1]. Goal is to align kernel module names for hsw
+and bdw boards with their siblings found in /intel/boards and
+/intel/avs/boards.
 
-It only happens for some users, but not for everybody. I've taken a quick look at the code but didn't see right away where the wrong path is built, `git grep UnknownProduct` gives no results.
+In regard to 2), this is yet another followup [2]. Given the fact that
+/intel/avs/boards are already their on upstream, intention is to align
+catpt-driver to approach found in the avs-driver. This is also my
+suggestion for existing sof-boards: most should be listed under
+/sof/intel/boards/ as they're not common, really - they're are SOF
+specific. I believe that in time /intel/common and /intel/boards should
+be either limited or completely removed.
 
-Could somebody give us a hint where to look? I don't really have a clue how this works. Thanks!
+As subject touches code used by the sof-driver, additional review has
+been conducted on thesofproject/linux [3].
 
-Downstream discussion: https://gitlab.com/postmarketOS/pmaports/-/merge_requests/3356
+[1]: https://lore.kernel.org/alsa-devel/54fcdedc-278c-06b8-5402-28880597d3f4@intel.com/
+[2]: https://lore.kernel.org/alsa-devel/d9fd60e0-a157-bda7-a918-5548918d1552@intel.com/
+[3]: https://github.com/thesofproject/linux/pull/3799
 
-Issue URL     : https://github.com/alsa-project/alsa-ucm-conf/issues/199
-Repository URL: https://github.com/alsa-project/alsa-ucm-conf
+Cezary Rojewski (4):
+  ASoC: Intel: hsw_rt5640: Rename module
+  ASoC: Intel: bdw_rt286: Rename module
+  ASoC: Intel: catpt: Drop SND_SOC_ACPI_INTEL_MATCH dependency
+  ASoC: Intel: Drop legacy HSW/BDW board-match information
+
+ include/sound/soc-acpi-intel-match.h          |  1 -
+ sound/soc/intel/Kconfig                       |  2 +-
+ sound/soc/intel/boards/Makefile               |  8 ++---
+ sound/soc/intel/catpt/device.c                | 33 +++++++++++++++++--
+ .../common/soc-acpi-intel-hsw-bdw-match.c     | 15 ---------
+ 5 files changed, 35 insertions(+), 24 deletions(-)
+
+-- 
+2.25.1
+
