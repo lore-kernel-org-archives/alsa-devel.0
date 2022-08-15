@@ -4,68 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D3C8FC00140
-	for <alsa-devel@archiver.kernel.org>; Mon, 15 Aug 2022 22:15:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6882AC00140
+	for <alsa-devel@archiver.kernel.org>; Mon, 15 Aug 2022 22:16:20 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 21B67100;
-	Tue, 16 Aug 2022 00:15:00 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 21B67100
+	by alsa0.perex.cz (Postfix) with ESMTPS id B2D781607;
+	Tue, 16 Aug 2022 00:15:28 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B2D781607
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1660601750;
-	bh=cR4MSEwpqikQ9b18WozkbTaFwd6lhSnVAeh3CtQyXlI=;
+	s=default; t=1660601778;
+	bh=smt8+V+UWQJvE9FdyFv1zy4gk5r1BUwiMSoCZ4hBVjU=;
 	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=cMIT+GLvtJHVX8X4824dqQXele8UtBQmRPmBnQNsEIvWe0qqoO9GavtPyhnFa5cgt
-	 cI1UDo5XcbeTRqI96G+4GmuwK0xQShqgXVc75DmlIIA7C7H3BwgU+sgTk4VfI47tZy
-	 7lemq+h5RqxsIFKemuPDJc4nTgoqIA7ZVAPgx3EQ=
+	b=TiiMtAXOtzyEpZ8Y1vWsCv3BUaB2yuzP57sP9Cp8zHk+v5prc/QxsPR9tJKzqezzx
+	 PGs6JPAM3CoweWiqEog40cum2qKK0tJdSblSNDXEncR9g0gVlseSM9M6MoeN6w8Lh1
+	 24cjdtNgUw/4jPIKGEsjGq5AnK5zfk31zuhG+u1Y=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id B1006F80245;
-	Tue, 16 Aug 2022 00:14:59 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 5B182F8027C;
+	Tue, 16 Aug 2022 00:15:28 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 6ECF8F80082; Tue, 16 Aug 2022 00:14:58 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org
- [IPv6:2604:1380:4641:c500::1])
+ id 586CAF804AE; Tue, 16 Aug 2022 00:15:27 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 4E2C0F80082
- for <alsa-devel@alsa-project.org>; Tue, 16 Aug 2022 00:14:50 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4E2C0F80082
+ by alsa1.perex.cz (Postfix) with ESMTPS id 0FC3AF80095
+ for <alsa-devel@alsa-project.org>; Tue, 16 Aug 2022 00:15:20 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0FC3AF80095
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="s7bZBqv3"
+ header.b="a63vsign"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id 198B460F9F;
- Mon, 15 Aug 2022 22:14:49 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B18E9C433D6;
- Mon, 15 Aug 2022 22:14:46 +0000 (UTC)
+ by dfw.source.kernel.org (Postfix) with ESMTPS id 92D4460FDA;
+ Mon, 15 Aug 2022 22:15:19 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 16201C433D6;
+ Mon, 15 Aug 2022 22:15:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1660601688;
- bh=cR4MSEwpqikQ9b18WozkbTaFwd6lhSnVAeh3CtQyXlI=;
+ s=k20201202; t=1660601717;
+ bh=smt8+V+UWQJvE9FdyFv1zy4gk5r1BUwiMSoCZ4hBVjU=;
  h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=s7bZBqv356zva5qYY2lylE2geDgPUmVCgYZrTFr0jke2XLcRx/cirq5BmDokFm6Vj
- ZM61lioj87NkG92swOCjdWDf6RJOU/dLNPrZ32+OJxtSPR4/Cka/YQlTHZtemp3fpU
- A54B6K/rx0T7by98kiYkcjBEm7ICO3gDqgTQ5hMnDiwuSIRL7EZ6+0WWqEniXypJOa
- qP+iBkVHGF/tnGmbJtVd0bI+tlEQdTX0BbIrNjaHagI7mDtGgTjIDSLQl1jB98qvbC
- m9vgwGWiMonV6aIb16NyNz6zQTpcdllfizJssm6GV3VgXP8DuEV0H9jh6tfX2TWWnR
- vtsT/GhUSpFVA==
-Date: Mon, 15 Aug 2022 23:14:43 +0100
+ b=a63vsignmGFTeXya19UCflc82YfEnrVRPUgzHTFE7GWju9yj2OMtqTrgIMhXzugeJ
+ ICM67FZ4DD+V48UIujwhPO5EcLfiA42xyctj4R+DptILJkIDce2zvDvuE0J0q4VClA
+ UlsHGJhot9oPnFKLXWnN5+4UuI5kjUi/oaNNylQcg3/ugjUNOqTtVysnQ+sN6zMmdY
+ AU9tLU8NqSqx1IPngwlBtD38ByauskdYtEa4auekQ6N+xbeVnNcSH5yxeiFYYqTyG+
+ LVMnzQ9Ig9m+TjZHoRjZLFYIJ2amFQ/SQjiHPwLt2Wsc+JsW9SIVRBeiaxH99d0882
+ jq3RgUEZWUdVA==
+Date: Mon, 15 Aug 2022 23:15:12 +0100
 From: Mark Brown <broonie@kernel.org>
 To: Cezary Rojewski <cezary.rojewski@intel.com>
-Subject: Re: [PATCH v2 2/6] ASoC: SOF: Intel: Introduce HDA codec init and
- exit routines
-Message-ID: <YvrFUwPq/dAG8H7S@sirena.org.uk>
+Subject: Re: [PATCH v2 3/6] ASoC: Intel: Drop hdac_ext usage for codec device
+ creation
+Message-ID: <YvrFcIpKsDp6VLoQ@sirena.org.uk>
 References: <20220815174227.3071323-1-cezary.rojewski@intel.com>
- <20220815174227.3071323-3-cezary.rojewski@intel.com>
+ <20220815174227.3071323-4-cezary.rojewski@intel.com>
 MIME-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature"; boundary="qZSOYumMUF1yc4SY"
+ protocol="application/pgp-signature"; boundary="Wb0YEZLy0/MmeUwI"
 Content-Disposition: inline
-In-Reply-To: <20220815174227.3071323-3-cezary.rojewski@intel.com>
+In-Reply-To: <20220815174227.3071323-4-cezary.rojewski@intel.com>
 X-Cookie: We have ears, earther...FOUR OF THEM!
 Cc: alsa-devel@alsa-project.org, kai.vehmanen@linux.intel.com,
  pierre-louis.bossart@linux.intel.com, tiwai@suse.com, hdegoede@redhat.com,
@@ -86,35 +85,29 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
---qZSOYumMUF1yc4SY
+--Wb0YEZLy0/MmeUwI
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Mon, Aug 15, 2022 at 07:42:23PM +0200, Cezary Rojewski wrote:
-> Preliminary step in making snd_hda_codec_device_init() the only
-> constructor for struct hda_codec instances. To do that, existing usage
-> of hdac_ext equivalents has to be dropped.
->=20
-> Reviewed-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
-> Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-> Signed-off-by: Cezary Rojewski <cezary.rojewski@intel.com>
+On Mon, Aug 15, 2022 at 07:42:24PM +0200, Cezary Rojewski wrote:
+> To make snd_hda_codec_device_init() the only constructor for struct
+> hda_codec instances remaining tasks are:
 
 Acked-by: Mark Brown <broonie@kernel.org>
 
---qZSOYumMUF1yc4SY
+--Wb0YEZLy0/MmeUwI
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmL6xVIACgkQJNaLcl1U
-h9D93Qf9EQbN2e1nR9Xv+DhpubnxtCSQGYsg2MQUZjfSXtho5v4NJxXAsVXDRt4y
-Dlg7kuGcouUEtT/Imbcvs8F91qgOaVRivavKRgkzLUgrcZ04c9JqWFS9wU9QcpyM
-DG2zL5SEPCnMnPdvruiJGoRO8eL2JHOzZ7LHwEER2wpqt+x7Zzlyx/ieOtBuuvk0
-CQekpiLLUqk8dpppQzsidZ+10u9w1MN6XUblkBz+syutXyyB4flZBK97se9zKGqT
-nyJ0l6lha5TjbJeuB4zF9OhVjkQrGsz7qtOISrQkdd0pYmS/zcswMeXdprAq/6KG
-iQgNrASNz4ANUC44Ujw774MbVGWQ8Q==
-=S+0E
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmL6xXAACgkQJNaLcl1U
+h9Dfcwf+PVZYoULzaMUfY4znzaPa2nDXdp+7qtUrXgNGUccDkHurmhhDvF1QBOuy
+nf2KTVHkh9Wt7Fm3otSskLqWD0ZHdRfMJ8qledoTlCRk8c8l1aJlqHnz2wz+TUbf
+lvcmvfiUXbH/vgicji8tacxKhY3bhmN70M55SLhWyC3dP+KOfUi+MAW6iI3FO3Es
+kCcVvzeVTat1pYCO+UlhoNO20uxh/eiNEq8gvLBvAeTfbz7cNVPsl7SvRusWG73S
+GxX48zEMpJZd+hzj3zN80bP3+JOXcKdjtPbOX82SszCTHo99WwCcDUyucGFR+fEt
+lvi18UQ+MSiLVURn5qelSl70vTKfJg==
+=8sSn
 -----END PGP SIGNATURE-----
 
---qZSOYumMUF1yc4SY--
+--Wb0YEZLy0/MmeUwI--
