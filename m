@@ -4,69 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 39AC9C00140
-	for <alsa-devel@archiver.kernel.org>; Mon, 15 Aug 2022 16:25:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id EC695C00140
+	for <alsa-devel@archiver.kernel.org>; Mon, 15 Aug 2022 16:25:48 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 1C2E6165E;
-	Mon, 15 Aug 2022 18:24:44 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1C2E6165E
+	by alsa0.perex.cz (Postfix) with ESMTPS id F225A1637;
+	Mon, 15 Aug 2022 18:24:56 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F225A1637
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1660580734;
-	bh=sVw0jX2MDbbtxdw3C7N48E1ZHL6zGdjBiKamZBFLaoA=;
+	s=default; t=1660580747;
+	bh=a1McajjZBLg4+o4Mngq4Nas6xSzpje4QIdi9DWARZwM=;
 	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=hdEpX42swGoSwMDrhmz+DLuO8xlEIxwa8a314cTPOHUnf+4UgUeDKDuONmRfcDu+m
-	 HjnTovytx4c1B/3u6f9CgyWPhQuUhj7rgk++HpzQaHqnuPlbqTNIulOa4nTr814F2K
-	 2NrH7TSWfc4OV8tF0/6Osdbc8aYw3KRwX/8v8ods=
+	b=JlBKHxIHZVhTqSHrsALLw9JrLo00ZkwX5EMfAAGQ0WdQUYo4saU/IxSWWtcs7+3Ai
+	 Ly533v1ykltwMmwfKIQoHC67FpJyMGvY0f7bI8PfhZJg+D2ba2QTrai/YlePXST1Cg
+	 Gyfb/qLfO2gCUqNSF1sqDinO1rOB+/+wdZJstUJI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 47E4AF80571;
-	Mon, 15 Aug 2022 18:23:17 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id D8EF5F8057A;
+	Mon, 15 Aug 2022 18:23:21 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 00AD8F80578; Mon, 15 Aug 2022 18:23:14 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org
- [IPv6:2604:1380:4641:c500::1])
+ id B18A0F80578; Mon, 15 Aug 2022 18:23:16 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 93650F8055C
- for <alsa-devel@alsa-project.org>; Mon, 15 Aug 2022 18:23:10 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 93650F8055C
+ by alsa1.perex.cz (Postfix) with ESMTPS id 6E241F8055C
+ for <alsa-devel@alsa-project.org>; Mon, 15 Aug 2022 18:23:14 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6E241F8055C
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="o9tAnFaE"
+ header.b="KTyTi2cN"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id DC37D611B7;
- Mon, 15 Aug 2022 16:23:08 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DCD97C433D7;
- Mon, 15 Aug 2022 16:23:06 +0000 (UTC)
+ by dfw.source.kernel.org (Postfix) with ESMTPS id 65514611D6;
+ Mon, 15 Aug 2022 16:23:13 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8DBDDC433D6;
+ Mon, 15 Aug 2022 16:23:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1660580588;
- bh=sVw0jX2MDbbtxdw3C7N48E1ZHL6zGdjBiKamZBFLaoA=;
+ s=k20201202; t=1660580592;
+ bh=a1McajjZBLg4+o4Mngq4Nas6xSzpje4QIdi9DWARZwM=;
  h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=o9tAnFaExPSXTyRBiAxWXv+fgfGnQRgJIs4/Y+AT47nw+QMibM9bsfkUSr23qz7i4
- EpJrNbvhV+sEZdnS3yWNFXDbMYWW5VKphYVIe3Lp2M1dCX98SnW1J5cCnfFFlcG8LU
- i3Xtnei8VmL0yF9og2KubxN4tgPXY/NwBdQfEZjk3KZ0ALnB+5xhR0XYSP+XKCVqSq
- j6dqLl2SJG30+ImCqHWIevyheqhSqcv9wyQhzLHklDiX6pYPRbvF6098NlVHSvfpHe
- Fi0ppRp3S/Ww2eK+pJTNICA1MQvUX47gyNi4vrn5RhySJ2Evu5aOpmhEPuJWyKlSnF
- RPgTvzlN5cz5A==
+ b=KTyTi2cNmB6+pC4+OPuS2mbjWu8IDcyxjABlJtbJOstVXP7Cnc/rs/LwzQTIoO7RJ
+ EOpQIpktn4q5kOV4HL/haotJ1w1HQxRPEtmxsacZsny8fHkWpxr0kBlou3Cn/KH3Xa
+ sZhrRfjWbENvpFu7tC61plXSlg2mCv5kpXXaJIkFZw+UMfAF4zZMLd55mKkkb6KPUs
+ BPYSNEt1RYz70SnsiYjV+yV1ntMMM5NO7HNThK2AfSwfHPi63vYKuzxPvXvmN6KA+r
+ xnJWtH9u6XXplZz7Q91K2iNcjP9QJvFRpG7FKBV6MzYqU5qGUcjrqo6jNeNVqrryXw
+ f9/fQIj68dk8g==
 From: Mark Brown <broonie@kernel.org>
-To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
- Christophe JAILLET <christophe.jaillet@wanadoo.fr>, 
- Liam Girdwood <lgirdwood@gmail.com>
-In-Reply-To: <63efe8fe4e25a8ac386762d2d7cfe9bb9482333f.1659814389.git.christophe.jaillet@wanadoo.fr>
-References: <63efe8fe4e25a8ac386762d2d7cfe9bb9482333f.1659814389.git.christophe.jaillet@wanadoo.fr>
-Subject: Re: [PATCH] ASoC: tlv320adcx140: Fix a typo in a comment
-Message-Id: <166058058662.769843.9592183911230477031.b4-ty@kernel.org>
-Date: Mon, 15 Aug 2022 17:23:06 +0100
+To: Xin Gao <gaoxin@cdjrlc.com>, perex@perex.cz, tiwai@suse.com
+In-Reply-To: <20220808153910.59545-1-gaoxin@cdjrlc.com>
+References: <20220808153910.59545-1-gaoxin@cdjrlc.com>
+Subject: Re: [PATCH] ASoC: Variable type completion
+Message-Id: <166058059129.769843.571852618081031336.b4-ty@kernel.org>
+Date: Mon, 15 Aug 2022 17:23:11 +0100
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 X-Mailer: b4 0.10.0-dev-fe10a
-Cc: alsa-devel@alsa-project.org, kernel-janitors@vger.kernel.org,
+Cc: alsa-devel@alsa-project.org, lgirdwood@gmail.com,
  linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
@@ -83,8 +80,8 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Sat, 6 Aug 2022 21:33:22 +0200, Christophe JAILLET wrote:
-> s/TLV320ADCX104/TLV320ADCX140/
+On Mon, 8 Aug 2022 23:39:10 +0800, Xin Gao wrote:
+> 'unsigned int' is better than 'unsigned'.
 > 
 > 
 
@@ -94,8 +91,8 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: tlv320adcx140: Fix a typo in a comment
-      commit: 98c17a01bc5965047890bd30c95966007234e6d1
+[1/1] ASoC: Variable type completion
+      commit: 1b5efeabf75a74043f1eb509ca3ac183b3ffaf89
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
