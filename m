@@ -4,74 +4,71 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2E0FDC00140
-	for <alsa-devel@archiver.kernel.org>; Mon, 15 Aug 2022 16:26:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id AA847C00140
+	for <alsa-devel@archiver.kernel.org>; Mon, 15 Aug 2022 16:26:22 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 6EBF5163E;
-	Mon, 15 Aug 2022 18:25:18 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6EBF5163E
+	by alsa0.perex.cz (Postfix) with ESMTPS id E1469163F;
+	Mon, 15 Aug 2022 18:25:30 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E1469163F
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1660580768;
-	bh=LmpGns7c5wLoId8LSEZ+UEolch41Y3wjGy4mOteOmBE=;
+	s=default; t=1660580781;
+	bh=klkdRZjVUCbKPYpLrXmZGgCw2bm0eoGm07/vH67fHm0=;
 	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=stncOdAfDO3j5awKGf0jGDdCSMS0/U7POfOFjwfF2RoE+AGhuI7udFsiGCA+q6ioT
-	 DSH7IFla177FpyuNB5jor29v1WbvsvFLV8Mohdr85WdOjs5NXfcDD0hkDD6p4pSB/V
-	 mRsZoObh19d7dnYo8LcPnhHstSG0BD3ayHGPr4EM=
+	b=lfGsWroypaGGM//+3xVuc+sVs7GytKMXQMq31gjPVJasa7dHub07heNwO5lGJMqtz
+	 eeIpMbiHhY6a1lP1Ap3CEimZZEI/ys46w79qR6Q1frYccKq3NRpV4p+HdGOZXgfnn1
+	 0FWFIlm+VVnLfnu0jgnN74Twpx0P5dIPAKdR61wE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 97179F8058C;
-	Mon, 15 Aug 2022 18:23:22 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 51F58F805A8;
+	Mon, 15 Aug 2022 18:23:23 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id D5A0BF8057C; Mon, 15 Aug 2022 18:23:18 +0200 (CEST)
-Received: from sin.source.kernel.org (sin.source.kernel.org
- [IPv6:2604:1380:40e1:4800::1])
+ id D34B4F8057C; Mon, 15 Aug 2022 18:23:19 +0200 (CEST)
+Received: from ams.source.kernel.org (ams.source.kernel.org
+ [IPv6:2604:1380:4601:e00::1])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 5911BF80578
- for <alsa-devel@alsa-project.org>; Mon, 15 Aug 2022 18:23:16 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5911BF80578
+ by alsa1.perex.cz (Postfix) with ESMTPS id 4E3ACF8057A
+ for <alsa-devel@alsa-project.org>; Mon, 15 Aug 2022 18:23:17 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4E3ACF8057A
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="IMAiOSv3"
+ header.b="BMdZqWCx"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by sin.source.kernel.org (Postfix) with ESMTPS id D46AECE1176;
- Mon, 15 Aug 2022 16:23:12 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C375FC433C1;
- Mon, 15 Aug 2022 16:23:08 +0000 (UTC)
+ by ams.source.kernel.org (Postfix) with ESMTPS id 88C28B80FE3;
+ Mon, 15 Aug 2022 16:23:16 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4280CC433C1;
+ Mon, 15 Aug 2022 16:23:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1660580591;
- bh=LmpGns7c5wLoId8LSEZ+UEolch41Y3wjGy4mOteOmBE=;
+ s=k20201202; t=1660580595;
+ bh=klkdRZjVUCbKPYpLrXmZGgCw2bm0eoGm07/vH67fHm0=;
  h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=IMAiOSv3VHv6/nNPdcMyK5VmhwP5QuIWADxtgV9ax/xQb3nqmUS3h4QniqMkXpSAk
- zXEiX5DngrWuz8mT+sNsut/FFBGEFRF+XmU3AfR++4P8+tM/Z0fOKPMDEXoolJz0Pv
- EwII4+u6PoHS/3RuEX8PxT8iczF6n0jryTf5QDs2+Ram8ZhwtCnSyjNAVSEYjTUXtj
- 2zHH9rgAPb/yKy1rigi2YBN15XAUtn03PRNcPcBeh4LBdZZw5XMzMtEXX199GD8EFk
- 0CdfEgpXowpOP1EUVBlxqofhjrJRuc8HDlyDOiAiiCimlMxQAz1MQVDFSkRmTe91+I
- MUVRnNpu73N3w==
+ b=BMdZqWCxmbAZX9JDyxke8qQpRlT4L+NPW1DcofI0qztzENni/UHoGA4svFEfyS8eW
+ RqXzeZb/7U98PyFyDzofA4055jKsxu6Hcwvo+nla/MLrvX61504i+UrtPpAF27M3/j
+ RnQdzNuauvgthRMCZij2EVvk3stf8NFty1+Iojwfrod7oHg5HMSoliBpVrzmi4e9ro
+ dL3rQJG+efXyn6eCW8dBDYL0GGoIs+ZWjsg9f9wDuZ2Q+/4IcJQJ6NAKIp5avGaoyI
+ POgTa3GKjiCzJraX0miXU5ZDd8NRAV/YqDR6VLYzpuDW8K+WJ3hz/TGaW9gJTxgnMD
+ F/Qkb+C00iJuw==
 From: Mark Brown <broonie@kernel.org>
-To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
- Claudiu Beznea <claudiu.beznea@microchip.com>, 
- Codrin Ciubotariu <codrin.ciubotariu@microchip.com>,
- Nicolas Ferre <nicolas.ferre@microchip.com>, 
- Alexandre Belloni <alexandre.belloni@bootlin.com>,
- Christophe JAILLET <christophe.jaillet@wanadoo.fr>, 
- Liam Girdwood <lgirdwood@gmail.com>
-In-Reply-To: <fb959b3bda689aa47e1fbe9948de957b77530b24.1659764734.git.christophe.jaillet@wanadoo.fr>
-References: <fb959b3bda689aa47e1fbe9948de957b77530b24.1659764734.git.christophe.jaillet@wanadoo.fr>
-Subject: Re: [PATCH] ASoC: sam9g20_wm8731: Simplify some error message
-Message-Id: <166058058851.769843.12342144572880656518.b4-ty@kernel.org>
-Date: Mon, 15 Aug 2022 17:23:08 +0100
+To: lgirdwood@gmail.com, Sameer Pujar <spujar@nvidia.com>, robh+dt@kernel.org,
+ tiwai@suse.com, 
+ krzysztof.kozlowski+dt@linaro.org, kuninori.morimoto.gx@renesas.com,
+ perex@perex.cz
+In-Reply-To: <1659936452-2254-1-git-send-email-spujar@nvidia.com>
+References: <1659936452-2254-1-git-send-email-spujar@nvidia.com>
+Subject: Re: [PATCH v3 0/3] DT binding for sample format conversion
+Message-Id: <166058059299.769843.16903933604865911201.b4-ty@kernel.org>
+Date: Mon, 15 Aug 2022 17:23:12 +0100
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 X-Mailer: b4 0.10.0-dev-fe10a
-Cc: alsa-devel@alsa-project.org, kernel-janitors@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
+ linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -87,12 +84,25 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Sat, 6 Aug 2022 07:45:48 +0200, Christophe JAILLET wrote:
-> dev_err_probe() already prints the error code in a human readable way, so
-> there is no need to duplicate it as a numerical value at the end of the
-> message.
+On Mon, 8 Aug 2022 10:57:29 +0530, Sameer Pujar wrote:
+> DT binding properties are available to fixup rate and channel
+> parameters of a DAI. This series extends this to sample format
+> conversion as well. With this now DAI PCM parameters (channels,
+> sample rate and sample format) can be fixed up as necessary in
+> an audio path.
 > 
+> Changelog:
+> ==========
+>   v2->v3:
+>   -------
+>     * Fix DT binding errors in simple-card.yaml
+>     * Drop simple-card binding changes from the series since
+>       there is no usage requirement. It can be extended later
+>       when necessary.
+>     * Use definitions instead of properties in the common schema
+>       and re-use this in audio-graph related bindings.
 > 
+> [...]
 
 Applied to
 
@@ -100,8 +110,12 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: sam9g20_wm8731: Simplify some error message
-      commit: 7d67657cb472a80d54457362bc421f2b57ee250b
+[1/3] ASoC: dt-bindings: Definitions for DAI params
+      commit: b79b6220a753995b80054916f1f8f037113d8d93
+[2/3] ASoC: dt-bindings: Add sample format conversion
+      commit: 955927873d82c5127e31e618703d804033a93e4f
+[3/3] ASoC: simple-card-utils: Fixup DAI sample format
+      commit: 047a05366f4bb2e32eabbd3c8990d1d91ab87c89
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
