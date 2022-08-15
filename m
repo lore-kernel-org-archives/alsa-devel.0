@@ -4,65 +4,65 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 25299C00140
-	for <alsa-devel@archiver.kernel.org>; Mon, 15 Aug 2022 17:35:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 08EF6C25B0E
+	for <alsa-devel@archiver.kernel.org>; Mon, 15 Aug 2022 17:35:20 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3CC39164F;
-	Mon, 15 Aug 2022 19:34:21 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3CC39164F
+	by alsa0.perex.cz (Postfix) with ESMTPS id 5091C165E;
+	Mon, 15 Aug 2022 19:34:28 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5091C165E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1660584911;
-	bh=aEDCzx9MLrKU8fuOM9E3qwn8DN9miUx+B2bRPqDnZKg=;
+	s=default; t=1660584918;
+	bh=d3d+nlhKuxZMjpExiSQXOJQRXtJy+TDAuRNRN5fT154=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Uq0S1UO2y4bf7/z6V+07b8S4TTyL9BGpBnfGedIXRKSyvxhEAcjFF6HScsxi63R+4
-	 dq/OB0fhNwMz1hKI6Ozuk+Qr7ln1vDp2/FmHEfy7/i5g8AGRIhI1BFddBgWS9OJG95
-	 LMIl6H1IQa1IhYUoVnKMfp2N9NWXt2cl3ksAUOPU=
+	b=KZMpvl4oEcsTYsHwEr+lJ4ZvxyFDdO/l2I+n+utBF89qKl1RO1l0vok3TNRzK83PZ
+	 19pzlJAKf63Vf5G1ebFN99OMAyUsQ3iF3rkDpLdKGM5xfIf44BY8DugA7MfKCqZ7/G
+	 WI3YvwR8RSrYlvXndS+QQQe/V7KZnBWxPPEV8ekQ=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 87F85F80552;
-	Mon, 15 Aug 2022 19:33:35 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 08859F80558;
+	Mon, 15 Aug 2022 19:33:39 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 2C56AF80548; Mon, 15 Aug 2022 19:33:34 +0200 (CEST)
+ id 7E097F80557; Mon, 15 Aug 2022 19:33:37 +0200 (CEST)
 Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 76EBCF80245
- for <alsa-devel@alsa-project.org>; Mon, 15 Aug 2022 19:33:26 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 76EBCF80245
+ by alsa1.perex.cz (Postfix) with ESMTPS id DC37AF804FD
+ for <alsa-devel@alsa-project.org>; Mon, 15 Aug 2022 19:33:28 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DC37AF804FD
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="id6f9eOq"
+ header.b="PogTtYG2"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1660584808; x=1692120808;
+ t=1660584810; x=1692120810;
  h=from:to:cc:subject:date:message-id:in-reply-to:
  references:mime-version:content-transfer-encoding;
- bh=aEDCzx9MLrKU8fuOM9E3qwn8DN9miUx+B2bRPqDnZKg=;
- b=id6f9eOqoi6SItZtQUPw3Q5m0sqaXYn0NCeWtZPkbfp7LuO1vaFyfmFp
- DIhHzjz2Um/99uguRA+Ocfs2SlcbWnD77t6PW5D/zuqVKK2oaxveQoWjB
- T1Of0bROIh7vQe3VVOKnqh8VFoNh0dv4aMZjrNGsoX3WfdqnM3mWBactI
- zJko6I7yjMyz4G8kHsPiEnXe0LecEtJzd5JF5OPuFfTOnMQuShuf0nWG6
- 3qV6Tqn5yuqhi7X0SIrT/4ZFDBJNXT62T52pjUUJY6Jp6Y/8DKGucFbam
- AwgQnm66rDA/T0EmvUhg+BxTI+KwZVRn3zsqq8rJiBPT3M4UTiy8c343K A==;
-X-IronPort-AV: E=McAfee;i="6400,9594,10440"; a="356024282"
-X-IronPort-AV: E=Sophos;i="5.93,238,1654585200"; d="scan'208";a="356024282"
+ bh=d3d+nlhKuxZMjpExiSQXOJQRXtJy+TDAuRNRN5fT154=;
+ b=PogTtYG2SFIfCzYMXhg0ePG6mbIuNycOzXm1zIOGeGiT2ZGa4d3BFXw1
+ 7TYXMN43Xc/xjyh1Ls+zkhIK4tFCwZX/qM7rZpiPhRyCw7STS3PpoAcDF
+ A3M/i6dqcq7EDjvTWYlVW38BoskNGpbHAWHJraQilfuOdiFobEpiP7cj7
+ q4Yc8DZpUtAUAUZp6XXt3Xf0KJoBfOU27i5T0Onv6g4MlEYtdZcXaVnAs
+ HoJZ5/7kKe7MFnvCGTHr6KTWCev4EJ24155Ta7+mPhd5rPrhBV4sk10J9
+ v62PbJK9pfrNvUc0BtM87txgzPXCIX5x21pMAEVyus1DAfHBnbm1++oLA A==;
+X-IronPort-AV: E=McAfee;i="6400,9594,10440"; a="356024297"
+X-IronPort-AV: E=Sophos;i="5.93,238,1654585200"; d="scan'208";a="356024297"
 Received: from fmsmga003.fm.intel.com ([10.253.24.29])
  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 15 Aug 2022 10:33:26 -0700
+ 15 Aug 2022 10:33:28 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.93,238,1654585200"; d="scan'208";a="696049366"
+X-IronPort-AV: E=Sophos;i="5.93,238,1654585200"; d="scan'208";a="696049388"
 Received: from crojewsk-ctrl.igk.intel.com ([10.102.9.28])
- by FMSMGA003.fm.intel.com with ESMTP; 15 Aug 2022 10:33:24 -0700
+ by FMSMGA003.fm.intel.com with ESMTP; 15 Aug 2022 10:33:26 -0700
 From: Cezary Rojewski <cezary.rojewski@intel.com>
 To: alsa-devel@alsa-project.org,
 	broonie@kernel.org,
 	tiwai@suse.com
-Subject: [PATCH v2 4/6] ALSA: hda: Always free codec on the device release
-Date: Mon, 15 Aug 2022 19:42:25 +0200
-Message-Id: <20220815174227.3071323-5-cezary.rojewski@intel.com>
+Subject: [PATCH v2 5/6] ALSA: hda: Remove codec init and exit routines
+Date: Mon, 15 Aug 2022 19:42:26 +0200
+Message-Id: <20220815174227.3071323-6-cezary.rojewski@intel.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20220815174227.3071323-1-cezary.rojewski@intel.com>
 References: <20220815174227.3071323-1-cezary.rojewski@intel.com>
@@ -86,35 +86,111 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-With all HDAudio drivers aligned to make use of the same constructor,
-have codec freed on the device release regardless of its type.
+There are no users for snd_hdac_ext_bus_device_init() and
+snd_hdac_ext_bus_device_exit().
+
+While at it, remove hdac_to_hda_priv() too for the exact same reason.
 
 Reviewed-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
 Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Signed-off-by: Cezary Rojewski <cezary.rojewski@intel.com>
 ---
- sound/pci/hda/hda_codec.c | 8 +-------
- 1 file changed, 1 insertion(+), 7 deletions(-)
+ include/sound/hda_codec.h    |  2 --
+ include/sound/hdaudio_ext.h  |  3 --
+ sound/hda/ext/hdac_ext_bus.c | 53 ------------------------------------
+ 3 files changed, 58 deletions(-)
 
-diff --git a/sound/pci/hda/hda_codec.c b/sound/pci/hda/hda_codec.c
-index 384426d7e9dd..aa7a362be290 100644
---- a/sound/pci/hda/hda_codec.c
-+++ b/sound/pci/hda/hda_codec.c
-@@ -883,13 +883,7 @@ static void snd_hda_codec_dev_release(struct device *dev)
- 	snd_hda_sysfs_clear(codec);
- 	kfree(codec->modelname);
- 	kfree(codec->wcaps);
--
--	/*
--	 * In the case of ASoC HD-audio, hda_codec is device managed.
--	 * It will be freed when the ASoC device is removed.
--	 */
--	if (codec->core.type == HDA_DEV_LEGACY)
--		kfree(codec);
-+	kfree(codec);
- }
+diff --git a/include/sound/hda_codec.h b/include/sound/hda_codec.h
+index 6d3c82c4b6ac..2a8fe7240f10 100644
+--- a/include/sound/hda_codec.h
++++ b/include/sound/hda_codec.h
+@@ -293,8 +293,6 @@ struct hda_codec {
+ #define dev_to_hda_codec(_dev)	container_of(_dev, struct hda_codec, core.dev)
+ #define hda_codec_dev(_dev)	(&(_dev)->core.dev)
  
- #define DEV_NAME_LEN 31
+-#define hdac_to_hda_priv(_hdac) \
+-			container_of(_hdac, struct hdac_hda_priv, codec.core)
+ #define hdac_to_hda_codec(_hdac) container_of(_hdac, struct hda_codec, core)
+ 
+ #define list_for_each_codec(c, bus) \
+diff --git a/include/sound/hdaudio_ext.h b/include/sound/hdaudio_ext.h
+index d26234f9ee46..88ebb64fd8a5 100644
+--- a/include/sound/hdaudio_ext.h
++++ b/include/sound/hdaudio_ext.h
+@@ -11,9 +11,6 @@ int snd_hdac_ext_bus_init(struct hdac_bus *bus, struct device *dev,
+ 		      const struct hdac_ext_bus_ops *ext_ops);
+ 
+ void snd_hdac_ext_bus_exit(struct hdac_bus *bus);
+-int snd_hdac_ext_bus_device_init(struct hdac_bus *bus, int addr,
+-				struct hdac_device *hdev, int type);
+-void snd_hdac_ext_bus_device_exit(struct hdac_device *hdev);
+ void snd_hdac_ext_bus_device_remove(struct hdac_bus *bus);
+ 
+ #define HDA_CODEC_REV_EXT_ENTRY(_vid, _rev, _name, drv_data) \
+diff --git a/sound/hda/ext/hdac_ext_bus.c b/sound/hda/ext/hdac_ext_bus.c
+index 765c40a6ccba..6004ea1c373e 100644
+--- a/sound/hda/ext/hdac_ext_bus.c
++++ b/sound/hda/ext/hdac_ext_bus.c
+@@ -60,59 +60,6 @@ void snd_hdac_ext_bus_exit(struct hdac_bus *bus)
+ }
+ EXPORT_SYMBOL_GPL(snd_hdac_ext_bus_exit);
+ 
+-static void default_release(struct device *dev)
+-{
+-	snd_hdac_ext_bus_device_exit(dev_to_hdac_dev(dev));
+-}
+-
+-/**
+- * snd_hdac_ext_bus_device_init - initialize the HDA extended codec base device
+- * @bus: hdac bus to attach to
+- * @addr: codec address
+- * @hdev: hdac device to init
+- * @type: codec type (HDAC_DEV_*) to use for this device
+- *
+- * Returns zero for success or a negative error code.
+- */
+-int snd_hdac_ext_bus_device_init(struct hdac_bus *bus, int addr,
+-				 struct hdac_device *hdev, int type)
+-{
+-	char name[15];
+-	int ret;
+-
+-	hdev->bus = bus;
+-
+-	snprintf(name, sizeof(name), "ehdaudio%dD%d", bus->idx, addr);
+-
+-	ret  = snd_hdac_device_init(hdev, bus, name, addr);
+-	if (ret < 0) {
+-		dev_err(bus->dev, "device init failed for hdac device\n");
+-		return ret;
+-	}
+-	hdev->type = type;
+-	hdev->dev.release = default_release;
+-
+-	ret = snd_hdac_device_register(hdev);
+-	if (ret) {
+-		dev_err(bus->dev, "failed to register hdac device\n");
+-		snd_hdac_ext_bus_device_exit(hdev);
+-		return ret;
+-	}
+-
+-	return 0;
+-}
+-EXPORT_SYMBOL_GPL(snd_hdac_ext_bus_device_init);
+-
+-/**
+- * snd_hdac_ext_bus_device_exit - clean up a HD-audio extended codec base device
+- * @hdev: hdac device to clean up
+- */
+-void snd_hdac_ext_bus_device_exit(struct hdac_device *hdev)
+-{
+-	snd_hdac_device_exit(hdev);
+-}
+-EXPORT_SYMBOL_GPL(snd_hdac_ext_bus_device_exit);
+-
+ /**
+  * snd_hdac_ext_bus_device_remove - remove HD-audio extended codec base devices
+  *
 -- 
 2.25.1
 
