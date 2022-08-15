@@ -4,66 +4,65 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id BEAE2C00140
-	for <alsa-devel@archiver.kernel.org>; Mon, 15 Aug 2022 16:26:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B23CEC00140
+	for <alsa-devel@archiver.kernel.org>; Mon, 15 Aug 2022 16:27:14 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id ECF0A1669;
-	Mon, 15 Aug 2022 18:26:06 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz ECF0A1669
+	by alsa0.perex.cz (Postfix) with ESMTPS id E498F82A;
+	Mon, 15 Aug 2022 18:26:22 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E498F82A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1660580817;
-	bh=hIIo0z+3KwDSuhaQ0bt33I03p9WztHHhLDAR3Hd8u4o=;
-	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
+	s=default; t=1660580833;
+	bh=NLj3drDFoylAnrTJ8Zq1ndKBRRVsZxwEPD9CppwVHsw=;
+	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=BvY8A0xaqSAc8v6q/8R2SDmLea6bBQscDbP35PQ3KND02j2RiJe5nzLxHL+3RFm/Y
-	 k0PAUsjZEXU1HhmBz9gSnUaxsKtlja/rz102B+F8mTq8wYv6eyjR2vO8eL/5UB7oLm
-	 7lgqkLBKJ9CdTNQPso9NZAM9jznsy5pN6V1K77eQ=
+	b=sK6JevIfypWiLXoOW4HATUL6sPXV4/4RuaNvVyBkkqUVKhfX2djoQFMbcUzw3JLcD
+	 95HuFyfCRrRL7UkJNeA6kpDcofGDTjNulfIunvnplEzSKhmOmqW6qkrwd5W+8W7Cwh
+	 Ncvy7Ok0ApZ4PVG7qDu9GiIHqiw6hEfPGKmk71SE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id D590BF805B5;
-	Mon, 15 Aug 2022 18:23:27 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id A6668F805B2;
+	Mon, 15 Aug 2022 18:23:28 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 698BBF805AF; Mon, 15 Aug 2022 18:23:24 +0200 (CEST)
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+ id 21E7BF805B3; Mon, 15 Aug 2022 18:23:25 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id BFF70F8057B
- for <alsa-devel@alsa-project.org>; Mon, 15 Aug 2022 18:23:20 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BFF70F8057B
+ by alsa1.perex.cz (Postfix) with ESMTPS id 099ABF8057D
+ for <alsa-devel@alsa-project.org>; Mon, 15 Aug 2022 18:23:21 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 099ABF8057D
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="BZrOxYcU"
+ header.b="lXFJrYBy"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by ams.source.kernel.org (Postfix) with ESMTPS id 6530CB80FEE;
+ by dfw.source.kernel.org (Postfix) with ESMTPS id B6E81611E7;
  Mon, 15 Aug 2022 16:23:20 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 75D38C43470;
- Mon, 15 Aug 2022 16:23:18 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 98E2FC433D6;
+ Mon, 15 Aug 2022 16:23:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1660580599;
- bh=hIIo0z+3KwDSuhaQ0bt33I03p9WztHHhLDAR3Hd8u4o=;
- h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=BZrOxYcUQ87A3EgjfSeVNzAqxg0gsVbP3Y+BGix42qydLdVvWSV6WPjyVzrhU9mYI
- /MbYmdnH2wnKceZeXPNblSGipV+k+idlINwFuIhE0PBlFUo6lf573+lgF218RcT8ry
- aivBBRUJL7dck1H65+S5Yp/48sr6kJ57x0+u06EGXe5oQLAGud15Ovc1Y7AS/lJ1wK
- 6QZRHN9Vk4aMUuCnMkMiCFP1OlEhcFtO0XrdX/W04vajGlbQ8wxt78rthYOzpT6d4l
- XC6xosDZHHiZIIFFDU7NmE5r+NkZlLaDdT/JWNZeh40Oj+gim84v1rbdW+qBLgQvez
- cNfadXxFtN2Wg==
+ s=k20201202; t=1660580600;
+ bh=NLj3drDFoylAnrTJ8Zq1ndKBRRVsZxwEPD9CppwVHsw=;
+ h=From:To:In-Reply-To:References:Subject:Date:From;
+ b=lXFJrYByHqVdC+nL6RtYcuxRXRgD5whlJSlSuiuwLWxvVD/EDiFvby1piCh5bT05S
+ Vvz3P5G/g4F2wqxKmmrN9sNm9BZeia5xNU1bfyx+BxNCrmEGhSojFGQMqAcnx3Thui
+ qpzkFHK5VqkEx1PGf3pwt8Qcb3CLIYQhfZh02108e5bc48Mk1WZ+9El/l4ozKkzAnt
+ fXUvQFauCbCVP9p8LsWlbCfdVlRMdS6kwGO+0MLSfcUx9YSXlgQvm7lgIezEx58ucr
+ 7JiW7APYXT5nAb+5+CZ+KnYxsLeaPlZm7jvU8KxP8PfH7gMLCjbS7vPT2WpvKkExRv
+ tDcwglakJlkXw==
 From: Mark Brown <broonie@kernel.org>
-To: devicetree@vger.kernel.org, Matt Flax <flatmax@flatmax.com>
-In-Reply-To: <20220810221232.1596488-1-flatmax@flatmax.com>
-References: <20220810221232.1596488-1-flatmax@flatmax.com>
-Subject: Re: [PATCH v2] ASoC: codecs: dt bind. doc for the new TI SRC4392 codec
-Message-Id: <166058059820.769843.6109173047576888362.b4-ty@kernel.org>
-Date: Mon, 15 Aug 2022 17:23:18 +0100
+To: alsa-devel@alsa-project.org, Matt Flax <flatmax@flatmax.com>
+In-Reply-To: <20220810013213.1544645-1-flatmax@flatmax.com>
+References: <20220810013213.1544645-1-flatmax@flatmax.com>
+Subject: Re: [PATCH v3] ASoC: codecs: add support for the TI SRC4392 codec
+Message-Id: <166058059934.769843.13135269788667346106.b4-ty@kernel.org>
+Date: Mon, 15 Aug 2022 17:23:19 +0100
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 X-Mailer: b4 0.10.0-dev-fe10a
-Cc: alsa-devel@alsa-project.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -79,9 +78,11 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Thu, 11 Aug 2022 08:12:32 +1000, Matt Flax wrote:
+On Wed, 10 Aug 2022 11:32:13 +1000, Matt Flax wrote:
+> The src4xxx keyword is used for	future capability to integrate
+> other codecs similar to the src4392 to the same	code base.
 > 
-
+> 
 
 Applied to
 
@@ -89,8 +90,8 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: codecs: dt bind. doc for the new TI SRC4392 codec
-      commit: 020adbfb2edae4dd90d7774d08936261e218c171
+[1/1] ASoC: codecs: add support for the TI SRC4392 codec
+      commit: 4e6bedd3c396014ba70de2b4c9995c8e024e82b3
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
