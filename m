@@ -4,71 +4,74 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id AA847C00140
-	for <alsa-devel@archiver.kernel.org>; Mon, 15 Aug 2022 16:26:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A3FA4C25B0E
+	for <alsa-devel@archiver.kernel.org>; Mon, 15 Aug 2022 16:26:45 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E1469163F;
-	Mon, 15 Aug 2022 18:25:30 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E1469163F
+	by alsa0.perex.cz (Postfix) with ESMTPS id D233515C2;
+	Mon, 15 Aug 2022 18:25:53 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D233515C2
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1660580781;
-	bh=klkdRZjVUCbKPYpLrXmZGgCw2bm0eoGm07/vH67fHm0=;
+	s=default; t=1660580803;
+	bh=CQ8GnYQ4x+INFVVCSYPZ42+atVmQLvhXcUHF093NxoI=;
 	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=lfGsWroypaGGM//+3xVuc+sVs7GytKMXQMq31gjPVJasa7dHub07heNwO5lGJMqtz
-	 eeIpMbiHhY6a1lP1Ap3CEimZZEI/ys46w79qR6Q1frYccKq3NRpV4p+HdGOZXgfnn1
-	 0FWFIlm+VVnLfnu0jgnN74Twpx0P5dIPAKdR61wE=
+	b=KMvcbSKMx1RCQCktrD1pDgFj+LSuYIiskEsWnfByjT7JocMpxADqKfk5TRCKGhQAB
+	 4xLErGusFyuyKWRRP8B8RJYNoDVJp4B6orn6u+M3ih+5F63+0C+J5m0boa4iiOuTNy
+	 xw9aPolkCw6lHg/+DV+RkKkngZbZzUHCrlbTZXO8=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 51F58F805A8;
-	Mon, 15 Aug 2022 18:23:23 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 41D90F805B3;
+	Mon, 15 Aug 2022 18:23:27 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id D34B4F8057C; Mon, 15 Aug 2022 18:23:19 +0200 (CEST)
-Received: from ams.source.kernel.org (ams.source.kernel.org
- [IPv6:2604:1380:4601:e00::1])
+ id BF305F805A1; Mon, 15 Aug 2022 18:23:22 +0200 (CEST)
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 4E3ACF8057A
- for <alsa-devel@alsa-project.org>; Mon, 15 Aug 2022 18:23:17 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4E3ACF8057A
+ by alsa1.perex.cz (Postfix) with ESMTPS id E46CEF80578
+ for <alsa-devel@alsa-project.org>; Mon, 15 Aug 2022 18:23:19 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E46CEF80578
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="BMdZqWCx"
+ header.b="Db3WCW7Q"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by ams.source.kernel.org (Postfix) with ESMTPS id 88C28B80FE3;
- Mon, 15 Aug 2022 16:23:16 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4280CC433C1;
- Mon, 15 Aug 2022 16:23:13 +0000 (UTC)
+ by ams.source.kernel.org (Postfix) with ESMTPS id 520D3B80FED;
+ Mon, 15 Aug 2022 16:23:19 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AD978C433D7;
+ Mon, 15 Aug 2022 16:23:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1660580595;
- bh=klkdRZjVUCbKPYpLrXmZGgCw2bm0eoGm07/vH67fHm0=;
+ s=k20201202; t=1660580598;
+ bh=CQ8GnYQ4x+INFVVCSYPZ42+atVmQLvhXcUHF093NxoI=;
  h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=BMdZqWCxmbAZX9JDyxke8qQpRlT4L+NPW1DcofI0qztzENni/UHoGA4svFEfyS8eW
- RqXzeZb/7U98PyFyDzofA4055jKsxu6Hcwvo+nla/MLrvX61504i+UrtPpAF27M3/j
- RnQdzNuauvgthRMCZij2EVvk3stf8NFty1+Iojwfrod7oHg5HMSoliBpVrzmi4e9ro
- dL3rQJG+efXyn6eCW8dBDYL0GGoIs+ZWjsg9f9wDuZ2Q+/4IcJQJ6NAKIp5avGaoyI
- POgTa3GKjiCzJraX0miXU5ZDd8NRAV/YqDR6VLYzpuDW8K+WJ3hz/TGaW9gJTxgnMD
- F/Qkb+C00iJuw==
+ b=Db3WCW7QvkizfRr3+w9C7o7vjJbRK9vF+ZSd23yZLdTZ/10gf0s8Pje+E39i0XbOX
+ lg9eCSB6p505XCQ9VjqmBVkzEGmAmN5X+qjPQkJDrDEPHf0x7I/I9LsnRbrmrQzNr0
+ PBtbtLM8cJwZI1bRn46zJkj/6tyu/74vsI7w7f5xg3xUpQQ88bqEvTdRS1kZPx+bn7
+ rEoQGxuMNnCpmjt9RmSmSZoMIUTh065hDwct9yo4qKx7MdQn4mr+D641a7sMk9lqnH
+ V607nOms2sSxp1ScIuqInvySqb4j6Mprows1oj/pBKxdrzzN40RAeycR4g4S5C3nlE
+ W5NhUgBLJtqFw==
 From: Mark Brown <broonie@kernel.org>
-To: lgirdwood@gmail.com, Sameer Pujar <spujar@nvidia.com>, robh+dt@kernel.org,
- tiwai@suse.com, 
- krzysztof.kozlowski+dt@linaro.org, kuninori.morimoto.gx@renesas.com,
- perex@perex.cz
-In-Reply-To: <1659936452-2254-1-git-send-email-spujar@nvidia.com>
-References: <1659936452-2254-1-git-send-email-spujar@nvidia.com>
-Subject: Re: [PATCH v3 0/3] DT binding for sample format conversion
-Message-Id: <166058059299.769843.16903933604865911201.b4-ty@kernel.org>
-Date: Mon, 15 Aug 2022 17:23:12 +0100
+To: Nathan Chancellor <nathan@kernel.org>,
+ Codrin Ciubotariu <codrin.ciubotariu@microchip.com>, 
+ Liam Girdwood <lgirdwood@gmail.com>
+In-Reply-To: <20220810010809.2024482-1-nathan@kernel.org>
+References: <20220810010809.2024482-1-nathan@kernel.org>
+Subject: Re: [PATCH] ASoC: mchp-spdiftx: Fix clang
+ -Wbitfield-constant-conversion
+Message-Id: <166058059542.769843.4941839393289864947.b4-ty@kernel.org>
+Date: Mon, 15 Aug 2022 17:23:15 +0100
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 X-Mailer: b4 0.10.0-dev-fe10a
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
- linux-kernel@vger.kernel.org
+Cc: alsa-devel@alsa-project.org,
+ Alexandre Belloni <alexandre.belloni@bootlin.com>, Tom Rix <trix@redhat.com>,
+ llvm@lists.linux.dev, Nick Desaulniers <ndesaulniers@google.com>,
+ Nicolas Ferre <nicolas.ferre@microchip.com>, linux-kernel@vger.kernel.org,
+ Claudiu Beznea <claudiu.beznea@microchip.com>,
+ linux-arm-kernel@lists.infradead.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -84,23 +87,15 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Mon, 8 Aug 2022 10:57:29 +0530, Sameer Pujar wrote:
-> DT binding properties are available to fixup rate and channel
-> parameters of a DAI. This series extends this to sample format
-> conversion as well. With this now DAI PCM parameters (channels,
-> sample rate and sample format) can be fixed up as necessary in
-> an audio path.
+On Tue, 9 Aug 2022 18:08:09 -0700, Nathan Chancellor wrote:
+> A recent change in clang strengthened its -Wbitfield-constant-conversion
+> to warn when 1 is assigned to a 1-bit signed integer bitfield, as it can
+> only be 0 or -1, not 1:
 > 
-> Changelog:
-> ==========
->   v2->v3:
->   -------
->     * Fix DT binding errors in simple-card.yaml
->     * Drop simple-card binding changes from the series since
->       there is no usage requirement. It can be extended later
->       when necessary.
->     * Use definitions instead of properties in the common schema
->       and re-use this in audio-graph related bindings.
+>   sound/soc/atmel/mchp-spdiftx.c:505:20: error: implicit truncation from 'int' to bit-field changes value from 1 to -1 [-Werror,-Wbitfield-constant-conversion]
+>           dev->gclk_enabled = 1;
+>                             ^ ~
+>   1 error generated.
 > 
 > [...]
 
@@ -110,12 +105,8 @@ Applied to
 
 Thanks!
 
-[1/3] ASoC: dt-bindings: Definitions for DAI params
-      commit: b79b6220a753995b80054916f1f8f037113d8d93
-[2/3] ASoC: dt-bindings: Add sample format conversion
-      commit: 955927873d82c5127e31e618703d804033a93e4f
-[3/3] ASoC: simple-card-utils: Fixup DAI sample format
-      commit: 047a05366f4bb2e32eabbd3c8990d1d91ab87c89
+[1/1] ASoC: mchp-spdiftx: Fix clang -Wbitfield-constant-conversion
+      commit: eab9100d9898cbd37882b04415b12156f8942f18
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
