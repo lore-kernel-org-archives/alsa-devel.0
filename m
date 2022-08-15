@@ -4,80 +4,83 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 44DEBC00140
-	for <alsa-devel@archiver.kernel.org>; Mon, 15 Aug 2022 12:32:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 78966C00140
+	for <alsa-devel@archiver.kernel.org>; Mon, 15 Aug 2022 15:20:11 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 7457774C;
-	Mon, 15 Aug 2022 14:31:51 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7457774C
+	by alsa0.perex.cz (Postfix) with ESMTPS id 9798FE11;
+	Mon, 15 Aug 2022 17:19:19 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9798FE11
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1660566761;
-	bh=UuYI8aOqqBuEr+xoeEMhb8qN20DCblXDVxKvQBMjWu4=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=Fh7PANpqAmmPN4mGN4BYsvlsKJF2v1ft2W8Xo0nfg8U292m0N0bnJsyx/OtBBzL43
-	 ccAi5j7rgds67CpAxazummxzf63qikq8umq26xB/l9HFqD9KrLTfSOywEpfXDsalL/
-	 Hr8PXgX7fu/LY8IZ2SkD4EHiSy3ZACdIDSO7cKcE=
+	s=default; t=1660576809;
+	bh=I9zcX/LcmKgKlkUs/+GQeFxT5Wx/cQUIGxRkFGLavVE=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=AAwkDN8qr9n4a6w/rN8N/V65LbkBccAPuoVZodiVtTrdBBzTWcQBOzINIvejcRSWy
+	 yJytuDq1Q7o/KanEWf7Z6sgsi7WF840WCnP3NLBGv7kwAdAUVCWO9p0hVUIa/CXBZl
+	 L1LpS5agcVPa7Qn1cCe4zLS2lyp0m8IkYMQngOeY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 20017F80245;
-	Mon, 15 Aug 2022 14:31:51 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 37208F80082;
+	Mon, 15 Aug 2022 17:19:19 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id A928DF8025A; Mon, 15 Aug 2022 14:31:49 +0200 (CEST)
-Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
- [67.231.149.25])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 7B1A6F8025A; Mon, 15 Aug 2022 17:19:17 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 817ABF80125
- for <alsa-devel@alsa-project.org>; Mon, 15 Aug 2022 14:31:43 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 817ABF80125
+ by alsa1.perex.cz (Postfix) with ESMTPS id 344C8F80082
+ for <alsa-devel@alsa-project.org>; Mon, 15 Aug 2022 17:19:06 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 344C8F80082
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com
- header.b="QcHfyj/j"
-Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
- by mx0a-001ae601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 27F6QtCv017052;
- Mon, 15 Aug 2022 07:31:40 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
- h=from : to : cc :
- subject : date : message-id : mime-version : content-transfer-encoding :
- content-type; s=PODMain02222019;
- bh=3jJJbEOLk9a85ZAnddY3kLGQt7HVvvSjcbc++nxi5dw=;
- b=QcHfyj/jhfrHVbK2jBFqzsp1L7wkn7IMEOvEnQ2jcKKM+SaTFhDs44Z8IOy0yPbEkujz
- Ss4LEuEJNhUrMBTqwoAy094bP1bH8dmkyEV/CNYYoI4HRbgq679+QS3BrbN431iV/qKg
- JuwwGjfXliYtGglL70wF3F5zGZXaD2aI5j9kWbF1CeVUirL+p1Rhv1CfX0jElO2jZ7t0
- boSwVvyLc2ofeKrJS3ZdrQs0zdV5tbFbTVLBHgOzfEBJ9aBcMTn9gBV504Fwn++9XaZx
- d9CLVHD8RWCerc+uEYzuqpjzygFTCwvzw9DzLB3IP3RZdg2C6Tw4RmVgN0b4kY1qrJlt hg== 
-Received: from ediex02.ad.cirrus.com ([84.19.233.68])
- by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3hx9c1t5vj-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
- Mon, 15 Aug 2022 07:31:40 -0500
-Received: from ediex01.ad.cirrus.com (198.61.84.80) by ediex02.ad.cirrus.com
- (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.9; Mon, 15 Aug
- 2022 07:31:38 -0500
-Received: from ediswmail.ad.cirrus.com (198.61.86.93) by ediex01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server id 15.2.1118.9 via Frontend
- Transport; Mon, 15 Aug 2022 07:31:38 -0500
-Received: from edi-sw-dsktp-006.ad.cirrus.com (edi-sw-dsktp-006.ad.cirrus.com
- [198.90.251.95])
- by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 4889A477;
- Mon, 15 Aug 2022 12:31:38 +0000 (UTC)
-From: Richard Fitzgerald <rf@opensource.cirrus.com>
-To: <broonie@kernel.org>
-Subject: [PATCH] ASoC: cs42l42: Only report button state if there was a button
- interrupt
-Date: Mon, 15 Aug 2022 13:31:38 +0100
-Message-ID: <20220815123138.3810249-1-rf@opensource.cirrus.com>
-X-Mailer: git-send-email 2.30.2
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: 26028QheQjMJl6GpH4o4NGv2KXOaQw67
-X-Proofpoint-GUID: 26028QheQjMJl6GpH4o4NGv2KXOaQw67
-X-Proofpoint-Spam-Reason: safe
-Cc: patches@opensource.cirrus.com, alsa-devel@alsa-project.org,
- Richard Fitzgerald <rf@opensource.cirrus.com>, linux-kernel@vger.kernel.org
+ dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
+ header.b="EAHm/2B0"; 
+ dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
+ header.b="Wc8lPiMY"
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id BB70420209;
+ Mon, 15 Aug 2022 15:19:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1660576746; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=PHuZX/o2RBtk2XrU2nbYd3fDm7Xozll01DHtCSAtpI0=;
+ b=EAHm/2B0++5n/EHw/2LB3dRhY1kXS5oYSnNdShlg+t7zIlvXyJEsORetBu/7FuUIZQB5T4
+ cTPfLelaJQfKbOYg/p2o3RmU6vB3uXCiCNfVjxBVX2/WM6gWBzBEFqkUs1gLwh5DJXOAlH
+ B3gv1FEqCF7qubeX+QfrXz5LfveUFNM=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1660576746;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=PHuZX/o2RBtk2XrU2nbYd3fDm7Xozll01DHtCSAtpI0=;
+ b=Wc8lPiMYs+q5sfQdEQXuodOhdIPYD39mHgjQhk3Jbwbm8YRUxDtzBg+gKnW0goIiSfo4Ym
+ ub2NTQbbm7Cg8BDQ==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 9430B13A99;
+ Mon, 15 Aug 2022 15:19:06 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+ by imap2.suse-dmz.suse.de with ESMTPSA id uNg6I+pj+mI0dgAAMHmgww
+ (envelope-from <tiwai@suse.de>); Mon, 15 Aug 2022 15:19:06 +0000
+Date: Mon, 15 Aug 2022 17:19:06 +0200
+Message-ID: <87ilmtzg9h.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Stefan Binding <sbinding@opensource.cirrus.com>
+Subject: Re: [PATCH v1] ALSA: hda/realtek: Add quirks for ASUS Zenbooks using
+ CS35L41
+In-Reply-To: <20220815141953.25197-1-sbinding@opensource.cirrus.com>
+References: <20220815141953.25197-1-sbinding@opensource.cirrus.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org,
+ patches@opensource.cirrus.com, Takashi Iwai <tiwai@suse.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -93,54 +96,15 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Only report a button state change if the interrupt status shows that
-there was a button event.
+On Mon, 15 Aug 2022 16:19:53 +0200,
+Stefan Binding wrote:
+> 
+> These Asus Zenbook laptop use Realtek HDA codec combined with
+> 2xCS35L41 Amplifiers using SPI.
+> 
+> Signed-off-by: Stefan Binding <sbinding@opensource.cirrus.com>
 
-Previously the code would always drop into the button reporting at the
-end of interrupt handling if the jack was present. If neither of the
-button report interrupts were pending it would report all buttons
-released. This could then lead to a button being reported as released
-while it is still pressed.
+Thanks, applied.
 
-Fixes: c5b8ee0879bc ("ASoC: cs42l42: Report jack and button detection")
-Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
----
- sound/soc/codecs/cs42l42.c | 13 +++++++------
- 1 file changed, 7 insertions(+), 6 deletions(-)
 
-diff --git a/sound/soc/codecs/cs42l42.c b/sound/soc/codecs/cs42l42.c
-index d545a593a251..daafd4251ce6 100644
---- a/sound/soc/codecs/cs42l42.c
-+++ b/sound/soc/codecs/cs42l42.c
-@@ -1617,7 +1617,6 @@ static irqreturn_t cs42l42_irq_thread(int irq, void *data)
- 	unsigned int current_plug_status;
- 	unsigned int current_button_status;
- 	unsigned int i;
--	int report = 0;
- 
- 	mutex_lock(&cs42l42->irq_lock);
- 	if (cs42l42->suspended) {
-@@ -1711,13 +1710,15 @@ static irqreturn_t cs42l42_irq_thread(int irq, void *data)
- 
- 			if (current_button_status & CS42L42_M_DETECT_TF_MASK) {
- 				dev_dbg(cs42l42->dev, "Button released\n");
--				report = 0;
-+				snd_soc_jack_report(cs42l42->jack, 0,
-+						    SND_JACK_BTN_0 | SND_JACK_BTN_1 |
-+						    SND_JACK_BTN_2 | SND_JACK_BTN_3);
- 			} else if (current_button_status & CS42L42_M_DETECT_FT_MASK) {
--				report = cs42l42_handle_button_press(cs42l42);
--
-+				snd_soc_jack_report(cs42l42->jack,
-+						    cs42l42_handle_button_press(cs42l42),
-+						    SND_JACK_BTN_0 | SND_JACK_BTN_1 |
-+						    SND_JACK_BTN_2 | SND_JACK_BTN_3);
- 			}
--			snd_soc_jack_report(cs42l42->jack, report, SND_JACK_BTN_0 | SND_JACK_BTN_1 |
--								   SND_JACK_BTN_2 | SND_JACK_BTN_3);
- 		}
- 	}
- 
--- 
-2.30.2
-
+Takashi
