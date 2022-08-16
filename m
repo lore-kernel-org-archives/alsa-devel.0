@@ -4,63 +4,79 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 03607C2BB41
-	for <alsa-devel@archiver.kernel.org>; Tue, 16 Aug 2022 09:52:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8D4D8C2BB41
+	for <alsa-devel@archiver.kernel.org>; Tue, 16 Aug 2022 09:56:33 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 7127D1637;
-	Tue, 16 Aug 2022 11:52:07 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7127D1637
+	by alsa0.perex.cz (Postfix) with ESMTPS id 2FD1520B;
+	Tue, 16 Aug 2022 11:55:41 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2FD1520B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1660643577;
-	bh=zm7wuWhUdBYsU+jESMa+goFmxWUZE4GpfIYr5Trwj4Q=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=SbYYxiXVb1JR+U/5/ocZFEnyJMQklLZZc3dbS1iWPhaHAPIJurhQ7QyOo5F1CwlGf
-	 AkGBFj9R6Cu7D76bhf2C39ONAdd7kqWBf5CC2TPxYGJIx5RH6quDObCFI9ruI1azyG
-	 G5IbcEtQWs0bZPH0Z2pAhcgvH0cbBjUz7l7KqIxU=
+	s=default; t=1660643791;
+	bh=Qs5JcP0DyxdDr2M+TfNbeXHgZMZJ7UyRrbaQPUfUtUw=;
+	h=Date:Subject:To:References:From:In-Reply-To:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=Bdx/a4N04+sVTTTsOuay9M6kHQ324xUobO3pJmedBDT3c1QR/peMtTdebtHxlh7Tg
+	 SLLRmdcE2kZDwhWf8S6j0egh0GgwOiySWTTuBdeNmXwAE5yAnlIPMKrfrj7dKRijUd
+	 sDXnW2hgbtg/kr0T0l3nD7tQGzYOhY3my6zo+Pyg=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 05238F80238;
-	Tue, 16 Aug 2022 11:52:07 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id C2D8DF80238;
+	Tue, 16 Aug 2022 11:55:40 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id A2C27F80238; Tue, 16 Aug 2022 10:55:22 +0200 (CEST)
-Received: from smtpbgsg2.qq.com (smtpbgsg2.qq.com [54.254.200.128])
+ id 824FAF8032D; Tue, 16 Aug 2022 11:55:39 +0200 (CEST)
+Received: from mga17.intel.com (mga17.intel.com [192.55.52.151])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id B7680F80082
- for <alsa-devel@alsa-project.org>; Tue, 16 Aug 2022 10:55:13 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B7680F80082
-X-QQ-mid: bizesmtp75t1660640107t9u3xd1f
-Received: from localhost.localdomain ( [123.114.60.34])
- by bizesmtp.qq.com (ESMTP) with 
- id ; Tue, 16 Aug 2022 16:55:04 +0800 (CST)
-X-QQ-SSF: 01400000002000D0T000B00A0000000
-X-QQ-FEAT: 6aXALTFZqPsYTigoi/pJHQIrfEjlbZTVVo4ceE/miflM2QL0ScN/MLKWd9pj/
- GpI0Y0g4qovfiem9q3Z4SWKP5MlRzDTno+u3GL4PM5mbtBXO1WJo87SgDryelNO5b+KbCo1
- NDdEC7iYKBCJIT0zjx28cAXU3afo3bcJHpKQb+2xypQmKjrX3+PeqMkUlok2zrH4YSP6Xof
- P3ocSKToVuCM5NhP6UKY0j5U0XyEvbkqt2W0HGR4i3ACGDI2sCY6IUEAEDzg9Guy1VXWsYn
- 0JNzO3WBs1tO1hvkNDIpnW6zFIBetn4QxfGTB6REcvv59IkDvcTLffgOOQkscmi22zR2iCW
- 23sOHumGks+sjSme0AjnLWeAEAfLBIVMJUhoPNL8cSi/hAbBEWF2FigQ7QXiw==
-X-QQ-GoodBg: 2
-From: zhaoxiao <zhaoxiao@uniontech.com>
-To: perex@perex.cz,
-	tiwai@suse.com
-Subject: [PATCH] ASoC: intel: Replace scnprintf() calls with sysfs_emit_at()
-Date: Tue, 16 Aug 2022 16:55:02 +0800
-Message-Id: <20220816085502.25295-1-zhaoxiao@uniontech.com>
-X-Mailer: git-send-email 2.20.1
+ by alsa1.perex.cz (Postfix) with ESMTPS id 3A3AEF80118
+ for <alsa-devel@alsa-project.org>; Tue, 16 Aug 2022 11:55:31 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3A3AEF80118
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
+ header.b="k9i7RThu"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+ d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+ t=1660643737; x=1692179737;
+ h=message-id:date:mime-version:subject:to:cc:references:
+ from:in-reply-to:content-transfer-encoding;
+ bh=Qs5JcP0DyxdDr2M+TfNbeXHgZMZJ7UyRrbaQPUfUtUw=;
+ b=k9i7RThu52bQXek4IzIiiYLHqpiYWauBfEljES2ON186uoN6DShK5AzS
+ r3OkjkdT3/mRAWIO0fRqUNQBnHeEiqb7ukvWRF9obfr/o3oBaScXX0T/X
+ grzqYwtvcKOlS7XkZyBHPBwEsbPa/aaN7eGOsXu9pq/XzQy40/j+KxFWC
+ P+6Nc25G4tOKmd3uRSl7YOGqTIMzxXUKzYdDV89TdYqMsFNM4N74Ck/Bq
+ cVpDveOOHI4PiVdAxl6MRu1hQ2fF8jKCDdcxYNYMtLHEsDYAMO4j2z9IZ
+ kDmmCsksjkReIM7WFNo5w6APEgCM2sGPVQYPocoQtCuTi6Y9W0VlcgAo3 g==;
+X-IronPort-AV: E=McAfee;i="6400,9594,10440"; a="272569533"
+X-IronPort-AV: E=Sophos;i="5.93,240,1654585200"; d="scan'208";a="272569533"
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+ by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 16 Aug 2022 02:55:29 -0700
+X-IronPort-AV: E=Sophos;i="5.93,240,1654585200"; d="scan'208";a="610208209"
+Received: from kroegerb-mobl1.ger.corp.intel.com (HELO [10.252.51.43])
+ ([10.252.51.43])
+ by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 16 Aug 2022 02:55:24 -0700
+Message-ID: <f6baa98e-af46-7ca8-397a-2e762cd444c6@linux.intel.com>
+Date: Tue, 16 Aug 2022 11:55:21 +0200
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-QQ-SENDSIZE: 520
-Feedback-ID: bizesmtp:uniontech.com:qybglogicsvr:qybglogicsvr1
-X-Mailman-Approved-At: Tue, 16 Aug 2022 11:52:05 +0200
-Cc: daniel.baluta@nxp.com, guennadi.liakhovetski@linux.intel.com,
- alsa-devel@alsa-project.org, kai.vehmanen@linux.intel.com, lgirdwood@gmail.com,
- peter.ujfalusi@linux.intel.com, ranjani.sridharan@linux.intel.com,
- pierre-louis.bossart@linux.intel.com, zhaoxiao <zhaoxiao@uniontech.com>,
- broonie@kernel.org, yung-chuan.liao@linux.intel.com,
- linux-kernel@vger.kernel.org, sound-open-firmware@alsa-project.org
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Firefox/91.0 Thunderbird/91.11.0
+Subject: Re: [PATCH v2] ASoC: Intel: sof_rt5682: Add support for
+ jsl_rt5682_rt1019
+Content-Language: en-US
+To: Sean Hong <sean.hong@quanta.corp-partner.google.com>, perex@perex.cz,
+ tiwai@suse.com, brent.lu@intel.com
+References: <20220816075424.1245593-1-sean.hong@quanta.corp-partner.google.com>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+In-Reply-To: <20220816075424.1245593-1-sean.hong@quanta.corp-partner.google.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+Cc: cezary.rojewski@intel.com, kai.vehmanen@linux.intel.com,
+ yung-chuan.liao@linux.intel.com, ranjani.sridharan@linux.intel.com,
+ linux-kernel@vger.kernel.org, liam.r.girdwood@linux.intel.com,
+ broonie@kernel.org, alsa-devel@alsa-project.org,
+ peter.ujfalusi@linux.intel.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -76,28 +92,72 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-For sysfs outputs, it's safer to use a new helper, sysfs_emit(),
-instead of the raw sprintf() & co.  This patch replaces the open-code
-with a new helper, sysfs_emit_at(), by passing the string offset.
 
-Signed-off-by: zhaoxiao <zhaoxiao@uniontech.com>
----
- sound/soc/sof/intel/hda.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/sof/intel/hda.c b/sound/soc/sof/intel/hda.c
-index 6d4ecbe14adf..917d639671a7 100644
---- a/sound/soc/sof/intel/hda.c
-+++ b/sound/soc/sof/intel/hda.c
-@@ -574,7 +574,7 @@ static void hda_dsp_dump_ext_rom_status(struct snd_sof_dev *sdev, const char *le
- 	chip = get_chip_info(sdev->pdata);
- 	for (i = 0; i < HDA_EXT_ROM_STATUS_SIZE; i++) {
- 		value = snd_sof_dsp_read(sdev, HDA_DSP_BAR, chip->rom_status_reg + i * 0x4);
--		len += scnprintf(msg + len, sizeof(msg) - len, " 0x%x", value);
-+		len += sysfs_emit_at(msg, len, " 0x%x", value);
- 	}
- 
- 	dev_printk(level, sdev->dev, "extended rom status: %s", msg);
--- 
-2.20.1
+On 8/16/22 09:54, Sean Hong wrote:
+> This patch adds the driver data for rt5682 support jsl_rt5682_rt1019.
+> 
+> Signed-off-by: Sean Hong <sean.hong@quanta.corp-partner.google.com>
+> ---
+>  sound/soc/intel/boards/sof_rt5682.c               |  9 +++++++++
+>  sound/soc/intel/common/soc-acpi-intel-jsl-match.c | 12 ++++++++++++
+>  2 files changed, 21 insertions(+)
+> 
+> diff --git a/sound/soc/intel/boards/sof_rt5682.c b/sound/soc/intel/boards/sof_rt5682.c
+> index 045965312..3a840f3a9 100644
+> --- a/sound/soc/intel/boards/sof_rt5682.c
+> +++ b/sound/soc/intel/boards/sof_rt5682.c
+> @@ -1100,6 +1100,15 @@ static const struct platform_device_id board_ids[] = {
+>  					SOF_RT5682_SSP_AMP(1) |
+>  					SOF_RT5682_NUM_HDMIDEV(4)),
+>  	},
+> +	{
+> +		.name = "jsl_rt5682_rt1019",
+> +		.driver_data = (kernel_ulong_t)(SOF_RT5682_MCLK_EN |
+> +					SOF_RT5682_MCLK_24MHZ |
 
+I see it's the same setting for all JSL devices but I am having doubts
+on this MCLK.  Is this 24MHz value correct for JSL? It's derived from
+ICL so in theory the MCLK should be a multiple of 19.2MHz if the root
+frequency was the oscillator.
+
+Is this intentional?
+
+> +					SOF_RT5682_SSP_CODEC(0) |
+> +					SOF_SPEAKER_AMP_PRESENT |
+> +					SOF_RT1019_SPEAKER_AMP_PRESENT |
+> +					SOF_RT5682_SSP_AMP(1)),
+> +	},
+>  	{ }
+>  };
+>  MODULE_DEVICE_TABLE(platform, board_ids);
+> diff --git a/sound/soc/intel/common/soc-acpi-intel-jsl-match.c b/sound/soc/intel/common/soc-acpi-intel-jsl-match.c
+> index b95c4b2cd..e374bf163 100644
+> --- a/sound/soc/intel/common/soc-acpi-intel-jsl-match.c
+> +++ b/sound/soc/intel/common/soc-acpi-intel-jsl-match.c
+> @@ -29,6 +29,11 @@ static const struct snd_soc_acpi_codecs rt1015p_spk = {
+>  	.codecs = {"RTL1015"}
+>  };
+>  
+> +static struct snd_soc_acpi_codecs rt1019p_spk = {
+> +	.num_codecs = 1,
+> +	.codecs = {"RTL1019"}
+> +};
+> +
+>  static const struct snd_soc_acpi_codecs mx98360a_spk = {
+>  	.num_codecs = 1,
+>  	.codecs = {"MX98360A"}
+> @@ -78,6 +83,13 @@ struct snd_soc_acpi_mach snd_soc_acpi_intel_jsl_machines[] = {
+>  		.quirk_data = &mx98360a_spk,
+>  		.sof_tplg_filename = "sof-jsl-rt5682-mx98360a.tplg",
+>  	},
+> +	{
+> +		.comp_ids = &rt5682_rt5682s_hp,
+> +		.drv_name = "jsl_rt5682_rt1019",
+> +		.machine_quirk = snd_soc_acpi_codec_list,
+> +		.quirk_data = &rt1019p_spk,
+> +		.sof_tplg_filename = "sof-jsl-rt5682-rt1019.tplg",
+> +	},
+>  	{
+>  		.id = "10134242",
+>  		.drv_name = "jsl_cs4242_mx98360a",
