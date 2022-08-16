@@ -4,146 +4,82 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1849CC19F2C
-	for <alsa-devel@archiver.kernel.org>; Tue, 16 Aug 2022 06:03:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 772B9C19F2C
+	for <alsa-devel@archiver.kernel.org>; Tue, 16 Aug 2022 06:05:42 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id CDB91850;
-	Tue, 16 Aug 2022 08:02:34 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CDB91850
+	by alsa0.perex.cz (Postfix) with ESMTPS id 409F9868;
+	Tue, 16 Aug 2022 08:04:50 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 409F9868
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1660629804;
-	bh=cMB81E4OeF3tXjSJn+qQlx6FlspEX3jhRUbE7Q8PaJY=;
-	h=Date:Subject:To:References:From:In-Reply-To:Cc:List-Id:
+	s=default; t=1660629940;
+	bh=hoiHJHv+fdUsrFL+BpcB94R7A2792UnoLLGExXkO4TI=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=R5/hxkNlvcaW1HGP+obxsXiUzBd7aLxiK1icAUoDiQ8nvVFkeZi/uBzg1kgZ3BatW
-	 GIzUYFovKffxmuJo2qWnXqLnti8c5emPY9WB0lac35fhApdwLyI5hTRs8JbKZaYL/N
-	 N32fxdGpUN5XRIcihwQUKLctqatvTOfXffDNODSk=
+	b=f8Au3mY54nqWGN5wxhq2SsdU/x2uBcHULwps5oNC/LglTo/ti6eJyFaS8kcItt4LO
+	 yJqR7ykKqe4T5dI1wBN/4yzKIzwH9fMsuZ9XUgOhgW7yMOA631ZE8vKK662f3o5koK
+	 cgJdAglG6gMuk2haXejmZGO3xjm2b/FaKkCk6dwM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 70116F80238;
-	Tue, 16 Aug 2022 08:02:34 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id D383FF80118;
+	Tue, 16 Aug 2022 08:04:49 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 42A39F8032D; Tue, 16 Aug 2022 08:02:32 +0200 (CEST)
-Received: from NAM10-MW2-obe.outbound.protection.outlook.com
- (mail-mw2nam10on2085.outbound.protection.outlook.com [40.107.94.85])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 3BC6BF8032D; Tue, 16 Aug 2022 08:04:48 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id A0C68F80082
- for <alsa-devel@alsa-project.org>; Tue, 16 Aug 2022 08:02:25 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A0C68F80082
+ by alsa1.perex.cz (Postfix) with ESMTPS id 5F776F80118
+ for <alsa-devel@alsa-project.org>; Tue, 16 Aug 2022 08:04:45 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5F776F80118
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com
- header.b="l9xS/YmL"
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Cs4wayvyrMoy2i7KyXjP+v1H/2NwxmL65QKL+efGy9gSg5D8lVSYf/qiMXnVDhcyzJFPBVal6E1YJHXwZ3F0ER9xqrQbht4VwoDP8Z8KYOjo4n3EVxNEcXcpSro9d3ZLEDoJ+j1BgByviSUx7KWEmbyv1MkSngOBZ/0Cu5a6/wNxEbz9PBz9zReHymGOiY52nYa/Gn3KHndoR6egeGAQMIbys2dTC99RYmT7IPhV0V2i3ipoZPWhSC7MA7Tr8dTYD0fG2o6KTF+tO0ti8JDTwUGgai0IjmENd1qjT0UoQMBP7ni17qpS3n/rIxSIc4NwPHHvtz0gPOhSNSEAgsHR2A==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=OsqvMkinim/OVw9uBs5g4nqqLOB9j1w8rHc5w2/f2mE=;
- b=VzZQmYV67hi4GNvie2rY1Udqsh6+4+J0/yUu6J/Gjnxs5SWw8q0yX0IyGNjGmjcVVFJu9jb3+yS0SPyR7V+NkTQkv11iHOeMO9Y0ex2xwpL6KzDDxcfCzuUsCA7LmSFOaFDk2Vwfcn21gBVtXYmpqGip7MSS/kEmYJdQqunBEkXAYlmcnKFC/2KYNxu0k2Aft4vL8DJBXCH66u8dCXWRnBUs6PBB6awKeQvmxadkQiKmBeC2Vr5anTAFlhbz55iEUWdE0hvHqz0FIIJIg7jLjT/C3TXhqMa2aOqX26XxIu7SfhfGjX2K3eBvOyBm/aiay8J5DZzkZXnrH1DzVVpRjA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1; 
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=OsqvMkinim/OVw9uBs5g4nqqLOB9j1w8rHc5w2/f2mE=;
- b=l9xS/YmLE4BIvDaWakDkyPiB+jUvTZPKoYgulr518YoT8DPpoIUt8iB4XIXfZbA1d1dnS+1xTHZ1sh8NLO+wH9xXUOvjyBPMhug1XSZEL/kYxMXrz9iLpMCZK6iR+HID9Gi7qTHEAXB2+kbGpq15tDXf9e/iMW2G6by0KGFSLLo=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amd.com;
-Received: from MN2PR12MB3661.namprd12.prod.outlook.com (2603:10b6:208:169::31)
- by DM6PR12MB4234.namprd12.prod.outlook.com (2603:10b6:5:213::18) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5504.15; Tue, 16 Aug
- 2022 06:02:20 +0000
-Received: from MN2PR12MB3661.namprd12.prod.outlook.com
- ([fe80::bc80:d6e7:d73f:d955]) by MN2PR12MB3661.namprd12.prod.outlook.com
- ([fe80::bc80:d6e7:d73f:d955%5]) with mapi id 15.20.5504.027; Tue, 16 Aug 2022
- 06:02:20 +0000
-Message-ID: <6ca2134d-1b82-f8c3-3faa-b2a56f7ce36b@amd.com>
-Date: Tue, 16 Aug 2022 11:30:21 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.11.0
-Subject: Re: [PATCH 02/13] ASoC: amd: add Pink Sardine ACP PCI driver
-Content-Language: en-US
-To: =?UTF-8?Q?Amadeusz_S=c5=82awi=c5=84ski?=
- <amadeuszx.slawinski@linux.intel.com>,
- Syed Saba kareem <Syed.SabaKareem@amd.com>, broonie@kernel.org,
- alsa-devel@alsa-project.org
-References: <20220812120731.788052-1-Syed.SabaKareem@amd.com>
- <20220812120731.788052-3-Syed.SabaKareem@amd.com>
- <01c068ec-1cd4-f91a-53d6-9bcba6ae6873@linux.intel.com>
-From: Syed Saba Kareem <ssabakar@amd.com>
-In-Reply-To: <01c068ec-1cd4-f91a-53d6-9bcba6ae6873@linux.intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: PN2PR01CA0149.INDPRD01.PROD.OUTLOOK.COM
- (2603:1096:c01:6::34) To MN2PR12MB3661.namprd12.prod.outlook.com
- (2603:10b6:208:169::31)
-MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: f1b084b6-bf72-4dc8-bece-08da7f4ce121
-X-MS-TrafficTypeDiagnostic: DM6PR12MB4234:EE_
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: je5r7/FSwZ0TgApeHWglHb/LPuBXihL4XJ0/ZKdHPu8MwANzJTS0KQpA5fGOb92bChRUkJOlNxn1hhI6X+vrDPIiuzSz0XiNReov6jabPF79buP/f8l71LbjDKYIeUh072ZscYgPyBInP9/Y4rwyh5hOF40+jDZvbnEFEe58CaybhLbRz3ETcnAUUtzyWtF2292VNiyB/LzEjVx8C/1ABSB0g4mvX2xC2NNvH7RWRWjxe1Oa6lbRVMnMdv+3MsmOU/F9Li65dg+/xDMxB21097WW/63//S794ulbJKtn1PId/Kg7Iv/+TP0YuW7BoXsH9WtDGGYemG/OvPeUXLHpj2vyqCFg3eR6dGHQ8q//s65J1uJ3q7XLp1yys3UgI0bXG84eFrYYtlWBDZqOf8yeyrfMM/ocQpPBKEtljL5J3e83a/8y7Wn2LtjrTH0T0AFv4vVekBhNOvR5y0DPUsX8/s62Ehq+/iGcMM770xdFCWJvIsAOrs3DhhTiTKfmI4VHnbsbqqrNEI4lbTJE+AuL16c2tf3kkx5BFtt3r+2C0+s6UwcdDiAqIBtI1fXOFTK4SLNGjxU/Gy/WiZ3rHvZLXPVigBHgXidM0Vp/tE2Ro5FIZfD3F/8jPaJXx8404MqiJGtcyKOWYaUH/2YRGYP+qXPsOQK4p9vkGtkA7fbErDDCpSgB6ktrjbRXyXDVj2wdJ6/5efZEeQZGso/Dc7Dyafv6XQkf+yLTRwDj3gviwRQtPxbbtN0V0e5Rf/mmNsLA0SLEsRWDKVxG55wzS5+VevK+cuy6QLHMqDRQdQiAxpPFJYINgBjQ+I+US4/RTS9LCGweVnu76pWdYWwouuS1qg==
-X-Forefront-Antispam-Report: CIP:255.255.255.255; CTRY:; LANG:en; SCL:1; SRV:;
- IPV:NLI; SFV:NSPM; H:MN2PR12MB3661.namprd12.prod.outlook.com; PTR:; CAT:NONE;
- SFS:(13230016)(4636009)(346002)(136003)(396003)(366004)(39860400002)(376002)(8936002)(5660300002)(2906002)(31696002)(38100700002)(478600001)(6486002)(6506007)(41300700001)(110136005)(54906003)(83380400001)(8676002)(316002)(66476007)(66556008)(66574015)(53546011)(66946007)(2616005)(4326008)(26005)(6512007)(186003)(36756003)(31686004)(43740500002)(45980500001);
- DIR:OUT; SFP:1101; 
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?T3ZZenU4ZUEvSnFKVVVJUENWMDhYWkFya0ptd2t5cDJ1K25lKyttZFBrUmMz?=
- =?utf-8?B?V0Q2SXppQUZlZ1RpcEVFaGtJSFJjeGRpSnFCR2JnQU5NUXRlUGNBdzd0VVZp?=
- =?utf-8?B?b2xmNGVWRCtQcVpkalFzd3ZJUGoxKzBHL2l6bFdUdVFkbUJzc0xsbjYxcUpM?=
- =?utf-8?B?eDhiK3hBMEVLZEUzL1lUYmpGZWxpNFlBQ0Q4eFF2VEF0UnFINzVZYWVQMHJk?=
- =?utf-8?B?RDlDU0RpNWRXRTlWamZMTitCVlEwMXBzSU5DcHRsanJYbEpVbEJTRjhRYllW?=
- =?utf-8?B?alRTeDc4WnVGOVZyeXFwSGxZVE9BWjNzVU92OWhydmdNbEcreXdvUzRnMWV1?=
- =?utf-8?B?b3hjZ3l6MjR3QlVKNDAyeHlnaDdEZlBvc3hkc1JvOEJjQXVHOVJ2TDA1cVZr?=
- =?utf-8?B?cVBLWGpra0Z1V1J6Mmx1dTYyZVdyNjkzRDdqTWN1QUl6SXVIVVJURFdxdTYw?=
- =?utf-8?B?REJzNFFmT0lHSHNYSGV5U1lROGdrNThVS2N4Rkl2dzh3SlhZeUpOMGxIM2ZJ?=
- =?utf-8?B?TkcxNTJEdDdvckdRSlh5TkdBRnl5eTNqS0dsRUlodWM3S1ZzZkF2aFJsZkM1?=
- =?utf-8?B?TTg0S0gyV0RhZHZtWU9WaTQ4QlUwMldOR20zUGN0cTZiM01icnp3L2JPdkVT?=
- =?utf-8?B?Ujh4QXR3MC9Wam5BaGtqK0tySFhWd3VoNDZEd2w4ZDVuSXFzdnNVamNpNmx6?=
- =?utf-8?B?ZTlWRGc2WDBWMHA2R2hHZURETEhaMzV2QVFKR2hka1IzYkdhSVNLTE9XUmZ5?=
- =?utf-8?B?SjI0MlAvMTl1RmFNS2VteWpPK1laYWIxbWg3NnpBd2RDRE1ZSzQzOTMvVUxv?=
- =?utf-8?B?OGNhWDJDMU1DcVBmQmFsenh5cWRmWXVNcjhqMTU1VlF4anp5bW96bVVaVGFo?=
- =?utf-8?B?WGFIRU5hRGl6N2p1MTEyc3JZNEZ0bSs4MFAyeFlZTmVmSWtCMWxUSWlpc0Zq?=
- =?utf-8?B?YWlkU1p1MUJUZHJXVFcvTUtodEVqbHpaTjB4VUtER0ViZjVJY1Q4bDFmV1Ni?=
- =?utf-8?B?cnJ0Y0FNNzdRWEJ4R0ErNEhTZ2FqUmdwUnY5RXVOS2VtQ1lWQTcvSWRtYm11?=
- =?utf-8?B?cVlPZkV1TDA0cnRIMjZPQ3R3RE84R2ZqN2pPMTZ6WU9RQitVd2hLMVRlYmZD?=
- =?utf-8?B?endUK1dGR2pZdlhaWVo0bHZxNElqUDJlREVrQUJpZzlQc1lBREt4Wll2NHU5?=
- =?utf-8?B?dXA4eVdKbWxkeFRVL1FCUWUzbm5POVUvSGFWYTdWTDNWSDlsUmMvTkR1Q0pJ?=
- =?utf-8?B?cUVid2FPQTZGZk9mR3RhNHJnbDU3cUpMM3cyYlVoVmpiaGM1a0JLVDBIV2ts?=
- =?utf-8?B?ZEdZSkRUTFhhOGhoQ2pPOHdTYTlxZGx3d2pnc2xpVXNRdVBQYnFnUy84VXNj?=
- =?utf-8?B?RWlyQUV3aWV1eGh2RDdMZkdhV2JtbmVxWElqUVprKzh2a1RHVjl3TXBBS3Bi?=
- =?utf-8?B?TUM3YVhYVnVYRytXNFI0Z3NFelI0S2pNSGxITUdzY29NZW5JZ2JrUjVjbEwr?=
- =?utf-8?B?TVpTYUZCb2doQ2NqZ3VxdzR1RTRvV0w3cmM2VHlSc3BHS2pWU0xhbmVrRGRj?=
- =?utf-8?B?b2c5bVVGV3Z4TWVWVXl4WXRKeU9RdHlBSWF1bmM1bHpENDNqVUpUTHRtWUZv?=
- =?utf-8?B?VDkxU0dpSEVQdWo2bVRwMm0yMXQ0bVAzVHZjMkhGZEJNYXlIMHc4YjhQL21N?=
- =?utf-8?B?MmNkM1l0Y1BlM3JTS29OdzZtNEp3OS9ud0ZGNm51eDNBQitselA2T2Q2RVVZ?=
- =?utf-8?B?WEFGRXRSUWtjMVZLcjVGTU96UVZ6bnJlaGsxZnNvRU0zZm9wSEg5K2xDbkZC?=
- =?utf-8?B?M1FDQW5UTGVkMVdmeENJeDIvUHBSemJ2NUxhbksvWFF5bEtVeW1YaVlIUER4?=
- =?utf-8?B?cDBKNVRnbEdVOWhBYk41WXZvWFRjcGptczIzcmRpODF5MzZoay8rNjl1UWhU?=
- =?utf-8?B?ejQzcTZhZWdyVkVRcThMOEhuSEwvaWN0Ynk1d1psOHF3QWF3RysvZFNMZG9R?=
- =?utf-8?B?TVBVV0x5bThCekRaN3Q4NG9vejZ1YytZT2F1a2RsMW05dVlSTTFDSXJidVQ1?=
- =?utf-8?B?b0JoWkV1eTBJZ21mdUVGL3NUQ0c1UUV2S0lrNXlmcitkaTJNdmxQMzhHMlFh?=
- =?utf-8?Q?9e7zQ5b47TqJM+S9LqSeJNeCf?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: f1b084b6-bf72-4dc8-bece-08da7f4ce121
-X-MS-Exchange-CrossTenant-AuthSource: MN2PR12MB3661.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Aug 2022 06:02:20.1735 (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 9ai21iN9yMfHALuRxTtRcfg8PpeakdbcXGMzLJ8G7p+Cf/Nd+B+Ss4DYOgzGMZy2unF/STfDYvLEoTVi7R3OQA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB4234
-Cc: Sunil-kumar.Dommati@amd.com, Basavaraj.Hiregoudar@amd.com,
- Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>,
- open list <linux-kernel@vger.kernel.org>, mario.limonciello@amd.com,
- Vijendar.Mukunda@amd.com
+ dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
+ header.b="rgC87uJV"; 
+ dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
+ header.b="OMWB+2UU"
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id A6C0A3823F;
+ Tue, 16 Aug 2022 06:04:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1660629884; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=12yHrPLyIFmjXZoB0vLhJ9YWMdxlx4Ue/DTpR8lbBS8=;
+ b=rgC87uJVyuNSjWDxla9j/ihTzFJ1VSld85Q+8//1nMapA+PTaJP7faDMSM4z3dW+iVvrGL
+ hu7CKqebi/r7Md2bRF8jhSSHHYuicUAIfEZRdXTQjeLi149w6H/NaCDdNEg68kVDIsZ/wu
+ B2wXGUdo2OITur3lIPTPoOzlgMMI/g8=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1660629884;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=12yHrPLyIFmjXZoB0vLhJ9YWMdxlx4Ue/DTpR8lbBS8=;
+ b=OMWB+2UUcfTrgdkYZo69b4ezTUAF8SbdLtAYpmoSKR/t0doCrabE5v/2ITxJd/7NSb7SM/
+ og8+8NeWRug9p6BA==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 8C7AF1345B;
+ Tue, 16 Aug 2022 06:04:44 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+ by imap2.suse-dmz.suse.de with ESMTPSA id fLWhIXwz+2IYJwAAMHmgww
+ (envelope-from <tiwai@suse.de>); Tue, 16 Aug 2022 06:04:44 +0000
+Date: Tue, 16 Aug 2022 08:04:44 +0200
+Message-ID: <874jyczptv.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: mbarriolinares <mbarriolinares@gmail.com>
+Subject: Re: [PATCH] Add quirk to enable Avid Mbox 3 support
+In-Reply-To: <20220816004427.7117-1-mbarriolinares@gmail.com>
+References: <20220417025459.8105-1-connerknoxpublic@gmail.com>
+ <20220816004427.7117-1-mbarriolinares@gmail.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+Cc: alsa-devel@alsa-project.org, tiwai@suse.com, connerknoxpublic@gmail.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -159,181 +95,44 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+On Tue, 16 Aug 2022 02:44:27 +0200,
+mbarriolinares wrote:
+> 
+> > Hi all,
+> > 
+> > I believe these are the right emails to send this patch to,
+> > but if I've missed something please let me know.
+> > 
+> > This patch enables the Avid Mbox 3 audio interface to
+> > be used through ALSA.  It locks the device at a 48khz sample rate.
+> > Then it mutes and raises the appropriate channels/inputs to allow
+> > for expected functionality.
+> > 
+> > Thanks for your time.
+> 
+> Thanks Conner for taking the time to write and submit this!
+> 
+> I have an MBox 3 (USB) and I've tested the patch:
+> 
+> 1. Have not tested S/PDIF i/o because I don't have hardware to plug it.
+> 2. Output is in mono. It seems the monitor outputs work only in MONO. 
+>    (with and without the front mono button switched on or off).
+> 3. Haven't tested if Headphones output work in stereo because I don't
+>    have hardware for testing.
+> 3. Inputs work great. 
+> 
+> I'll get a stereo 1/4'' jack to 3.5mm for testing the headphones out.
+> You can contact me directly if needed.
 
-On 8/12/22 19:49, Amadeusz Sławiński wrote:
-> [CAUTION: External Email]
->
-> On 8/12/2022 2:07 PM, Syed Saba kareem wrote:
->> ACP is a PCI audio device.
->> This patch adds PCI driver to bind to this device and get
->> PCI resources for Pink Sardine Platform.
->>
->> Signed-off-by: Syed Saba Kareem <Syed.SabaKareem@amd.com>
->> Signed-off-by: Vijendar Mukunda <Vijendar.Mukunda@amd.com>
->> ---
->>   sound/soc/amd/ps/acp62.h  | 21 +++++++++
->>   sound/soc/amd/ps/pci-ps.c | 94 +++++++++++++++++++++++++++++++++++++++
->>   2 files changed, 115 insertions(+)
->>   create mode 100644 sound/soc/amd/ps/acp62.h
->>   create mode 100644 sound/soc/amd/ps/pci-ps.c
->>
->> diff --git a/sound/soc/amd/ps/acp62.h b/sound/soc/amd/ps/acp62.h
->> new file mode 100644
->> index 000000000000..e91762240c93
->> --- /dev/null
->> +++ b/sound/soc/amd/ps/acp62.h
->> @@ -0,0 +1,21 @@
->> +/* SPDX-License-Identifier: GPL-2.0+ */
->> +/*
->> + * AMD ALSA SoC PDM Driver
->> + *
->> + * Copyright (C) 2022 Advanced Micro Devices, Inc. All rights reserved.
->> + */
->> +
->> +#include <sound/acp62_chip_offset_byte.h>
->> +
->> +#define ACP_DEVICE_ID 0x15E2
->> +#define ACP62_PHY_BASE_ADDRESS 0x1240000
->> +
->> +static inline u32 acp62_readl(void __iomem *base_addr)
->> +{
->> +     return readl(base_addr - ACP62_PHY_BASE_ADDRESS);
->
-> Can't you just define offsets in header, without ACP62_PHY_BASE_ADDRESS?
-> Then you won't need to subtract the value here?
-> I mean like:
-> #define ACP_DMA_CNTL_0                                0x0000
-> #define ACP_DMA_CNTL_1                                0x0004
-> ...
-> instead of
-> #define ACP_DMA_CNTL_0                                0x1240000
-> #define ACP_DMA_CNTL_1                                0x1240004
-> ...
-> Seems a bit weird to me, to just define values with offset if it is not
-> needed...
->
-Will fix it.
+It seems that I overlooked this patch some how.
 
->> +}
->> +
->> +static inline void acp62_writel(u32 val, void __iomem *base_addr)
->> +{
->> +     writel(val, base_addr - ACP62_PHY_BASE_ADDRESS);
->> +}
->
-> Same here
->
-Will fix it.
+Through a quick glance, the patch needs the proper Signed-off-by line,
+at least, for merging to the upstream.  Also, simple memset() with
+zero could be used for clearing the com_buf.  Otherwise, it's fine to
+apply as long as the stuff works more or less (at least improving
+things).
 
->> diff --git a/sound/soc/amd/ps/pci-ps.c b/sound/soc/amd/ps/pci-ps.c
->> new file mode 100644
->> index 000000000000..25169797275c
->> --- /dev/null
->> +++ b/sound/soc/amd/ps/pci-ps.c
->> @@ -0,0 +1,94 @@
->> +// SPDX-License-Identifier: GPL-2.0+
->> +/*
->> + * AMD Pink Sardine ACP PCI Driver
->> + *
->> + * Copyright 2022 Advanced Micro Devices, Inc.
->> + */
->> +
->> +#include <linux/pci.h>
->> +#include <linux/module.h>
->> +#include <linux/io.h>
->> +
->> +#include "acp62.h"
->> +
->> +struct acp62_dev_data {
->> +     void __iomem *acp62_base;
->> +};
->> +
->> +static int snd_acp62_probe(struct pci_dev *pci,
->> +                        const struct pci_device_id *pci_id)
->> +{
->> +     struct acp62_dev_data *adata;
->> +     u32 addr;
->> +     int ret;
->> +
->> +     /* Pink Sardine device check */
->> +     switch (pci->revision) {
->> +     case 0x63:
->> +             break;
->> +     default:
->> +             dev_dbg(&pci->dev, "acp62 pci device not found\n");
->> +             return -ENODEV;
->> +     }
->> +     if (pci_enable_device(pci)) {
->> +             dev_err(&pci->dev, "pci_enable_device failed\n");
->> +             return -ENODEV;
->> +     }
->> +
->> +     ret = pci_request_regions(pci, "AMD ACP6.2 audio");
->> +     if (ret < 0) {
->> +             dev_err(&pci->dev, "pci_request_regions failed\n");
->> +             goto disable_pci;
->> +     }
->> +             adata = devm_kzalloc(&pci->dev, sizeof(struct 
->> acp62_dev_data),
->> +                                  GFP_KERNEL);
->
-> Wrong indentation in assignment above?
->
-Will fix it.
 
->> +     if (!adata) {
->> +             ret = -ENOMEM;
->> +             goto release_regions;
->> +     }
->> +
->> +     addr = pci_resource_start(pci, 0);
->> +     adata->acp62_base = devm_ioremap(&pci->dev, addr,
->> +                                      pci_resource_len(pci, 0));
->> +     if (!adata->acp62_base) {
->> +             ret = -ENOMEM;
->> +             goto release_regions;
->> +     }
->> +     pci_set_master(pci);
->> +     pci_set_drvdata(pci, adata);
->> +     return 0;
->> +release_regions:
->> +     pci_release_regions(pci);
->> +disable_pci:
->> +     pci_disable_device(pci);
->> +
->> +     return ret;
->> +}
->> +
->> +static void snd_acp62_remove(struct pci_dev *pci)
->> +{
->> +     pci_release_regions(pci);
->> +     pci_disable_device(pci);
->> +}
->> +
->> +static const struct pci_device_id snd_acp62_ids[] = {
->> +     { PCI_DEVICE(PCI_VENDOR_ID_AMD, ACP_DEVICE_ID),
->
-> This one is optional, but you could also use:
-> PCI_VDEVICE(AMD, ACP_DEVICE_ID)
-> which is bit shorter and at least to me seems a bit more readable.
-Okay will use this.
->> +     .class = PCI_CLASS_MULTIMEDIA_OTHER << 8,
->> +     .class_mask = 0xffffff },
->> +     { 0, },
->> +};
->> +MODULE_DEVICE_TABLE(pci, snd_acp62_ids);
->> +
->> +static struct pci_driver ps_acp62_driver  = {
->> +     .name = KBUILD_MODNAME,
->> +     .id_table = snd_acp62_ids,
->> +     .probe = snd_acp62_probe,
->> +     .remove = snd_acp62_remove,
->> +};
->> +
->> +module_pci_driver(ps_acp62_driver);
->> +
->> +MODULE_AUTHOR("Vijendar.Mukunda@amd.com");
->> +MODULE_AUTHOR("Syed.SabaKareem@amd.com");
->> +MODULE_DESCRIPTION("AMD ACP Pink Sardine PCI driver");
->> +MODULE_LICENSE("GPL v2");
->
+thanks,
+
+Takashi
