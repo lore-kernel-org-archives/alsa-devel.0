@@ -4,89 +4,59 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 50AEEC19F2C
-	for <alsa-devel@archiver.kernel.org>; Tue, 16 Aug 2022 06:06:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6879DC32772
+	for <alsa-devel@archiver.kernel.org>; Tue, 16 Aug 2022 06:46:53 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id F3A2F15E5;
-	Tue, 16 Aug 2022 08:05:17 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F3A2F15E5
+	by alsa0.perex.cz (Postfix) with ESMTPS id 96640E12;
+	Tue, 16 Aug 2022 08:46:01 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 96640E12
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1660629968;
-	bh=NtZrxGx8u3F5Nu9icrtIv0EYfyzaI8zfOVOGFMO6WmM=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	s=default; t=1660632411;
+	bh=1d7IVjjySk1qzuT30yUJoLHoNmBSXstwNPnen1ySt+0=;
+	h=Date:From:To:Subject:List-Id:List-Unsubscribe:List-Archive:
 	 List-Post:List-Help:List-Subscribe:From;
-	b=aNLr8rie32irTw+ZAJGOXYYAvxFgLSKuLgo0zeqCwqCls9uzxTR7rcy5JZx2NLFmy
-	 G9VlPwfIrOz/vadlJbZyMld2NOCpbpDpMaY+BeF/6tNea0X150Mi7g+lVfu+XOkwtc
-	 KMpzFigch3/oNySjugrvw4W9PDOmsV8tGkxoftx0=
+	b=gZj1DB9j4GgByeXvewJVihO+Zo6cN7PB92HnuOCuhnfaPNBUmDMLTPsvdgKj5wwGM
+	 TjinC+g4AOi/D8Ng4HMyeIzPuM4y0N6h5B+P1/qX3qEhsu0P94xdB0pBqkkECIoeqJ
+	 oq3aGWEZmqVM0bwk69RvuODjJfRCoCjzeEAt58vw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 83692F80424;
-	Tue, 16 Aug 2022 08:04:52 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2F905F80238;
+	Tue, 16 Aug 2022 08:46:01 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 5DF03F804AB; Tue, 16 Aug 2022 08:04:51 +0200 (CEST)
-Received: from mail-pg1-x52a.google.com (mail-pg1-x52a.google.com
- [IPv6:2607:f8b0:4864:20::52a])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id 636CDF8032D; Tue, 16 Aug 2022 07:53:43 +0200 (CEST)
+Received: from w4.tutanota.de (w4.tutanota.de [81.3.6.165])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 72C74F80082
- for <alsa-devel@alsa-project.org>; Tue, 16 Aug 2022 08:04:48 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 72C74F80082
-Authentication-Results: alsa1.perex.cz; dkim=pass (2048-bit key)
- header.d=quanta-corp-partner-google-com.20210112.gappssmtp.com
- header.i=@quanta-corp-partner-google-com.20210112.gappssmtp.com
- header.b="LBtmGVtA"
-Received: by mail-pg1-x52a.google.com with SMTP id l64so8437317pge.0
- for <alsa-devel@alsa-project.org>; Mon, 15 Aug 2022 23:04:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=quanta-corp-partner-google-com.20210112.gappssmtp.com; s=20210112;
- h=content-transfer-encoding:mime-version:message-id:date:subject:cc
- :to:from:from:to:cc;
- bh=Q+2OJPxyAh41VkQNVhVIveQFr71J1YrrJRjA24sZS6s=;
- b=LBtmGVtAw3vAkbdCYeYLO7DRihAkgZRYcRd+blZGRm7YNgcVdGNaxzsz3tOGMGs32z
- BC12FPIjoEAGufi88HkburDDZtqbZNXGrDrOwsE/OpEi2PnDk0ugeNCLN+hlAr8sr+TZ
- nzHA8XUAl7nVN1GWflmzYtK05v0KsbuVtENxYSxGtQrJ0O2JToqqTZ9RRoVNBwIYjtGm
- VW1sTXpJZgJX84bCStEfQ62b1UyvK2gi91lKgHqc3BuhkBu7gYKZ2rViKSanruavuQa/
- EHq0kWM2U1B7bLN+ozHDJhKY01MKaO+88bBomsHgX80iXcoH1bz3sO3JYhjM02oCADTS
- r5XA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=content-transfer-encoding:mime-version:message-id:date:subject:cc
- :to:from:x-gm-message-state:from:to:cc;
- bh=Q+2OJPxyAh41VkQNVhVIveQFr71J1YrrJRjA24sZS6s=;
- b=Ljt953sYtGRjzPLf4My52qkN41PhUQkwIPuYORZfLUINdKYWyBc8rfqV1D4vMM9Ipn
- AL2BFsGG05Z0stG1UH3fAdWnPJzQZC5HIUZ6fT4vtnL/6dJGu7WwNk1t4IuSer0VqNCy
- yQziR4NVCpJCohadr49+V8O/Wc1oOoLbFyz63rMT1AsqT1zOEfFhAhZXSzxPuQnN+pvw
- DEBMSqtK0JkN35v00IxzqM/dbg1JsBEWYnYwzsV//oB9VvitufmTA+MV5vog6/f1NkCp
- Lwx7c68slH/+nMHcCkiocVyDIKrwW5xh4PmrvXxTyttMMKs7aj/2Op1+p+4/LJ0riqIS
- zlPQ==
-X-Gm-Message-State: ACgBeo1hUvHyM/bDm/FbXjrxwDib4K2ZBMv3C8cD2Exn9yr3IxzGJPMf
- JmUg1AAbXg0BYxmJyQ249BeQzg==
-X-Google-Smtp-Source: AA6agR5dfOx1zMXF/vjwOZNL/T/IdfH4UimFNyngVvdR9B5C+3FuWTaFVAoB9PRN48Uyqdcm8ZDYLA==
-X-Received: by 2002:a63:8b44:0:b0:41c:df4c:7275 with SMTP id
- j65-20020a638b44000000b0041cdf4c7275mr17003557pge.434.1660629886100; 
- Mon, 15 Aug 2022 23:04:46 -0700 (PDT)
-Received: from sean-biuld-server.itotolink.net
- (1-34-200-211.hinet-ip.hinet.net. [1.34.200.211])
- by smtp.gmail.com with ESMTPSA id
- r23-20020a170902be1700b001714e7608fdsm7994549pls.256.2022.08.15.23.04.42
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Mon, 15 Aug 2022 23:04:45 -0700 (PDT)
-From: Sean Hong <sean.hong@quanta.corp-partner.google.com>
-To: pierre-louis.bossart@linux.intel.com, perex@perex.cz, tiwai@suse.com,
- brent.lu@intel.com
-Subject: [PATCH] ASoC: Intel: sof_rt5682: Add support for jsl_rt5682_rt1019
-Date: Tue, 16 Aug 2022 14:04:37 +0800
-Message-Id: <20220816060437.1115039-1-sean.hong@quanta.corp-partner.google.com>
-X-Mailer: git-send-email 2.25.1
+ by alsa1.perex.cz (Postfix) with ESMTPS id C2AB2F80118
+ for <alsa-devel@alsa-project.org>; Tue, 16 Aug 2022 07:53:38 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C2AB2F80118
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=tutanota.com header.i=@tutanota.com
+ header.b="opuEGb1/"
+Received: from w3.tutanota.de (unknown [192.168.1.164])
+ by w4.tutanota.de (Postfix) with ESMTP id 6A880106019B
+ for <alsa-devel@alsa-project.org>; Tue, 16 Aug 2022 05:53:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1660629218; 
+ s=s1; d=tutanota.com;
+ h=From:From:To:To:Subject:Subject:Content-Description:Content-ID:Content-Type:Content-Type:Content-Transfer-Encoding:Cc:Date:Date:In-Reply-To:MIME-Version:MIME-Version:Message-ID:Message-ID:Reply-To:References:Sender;
+ bh=kkbW6KkGfpwEi1NgxLb8vt1bjZSo/rOFmNokx6/mgl8=;
+ b=opuEGb1/77jk71H2+t+JkikIWyBvrXqkOmd1rvKoldiZrYdeGIgYTN0PIRq5dS7E
+ SfzIpXK0JO+cAner4x2K5wsOUjSUhtRMBtTlNzuFv9YXuTg4Wo4pZwvJTmN7YJRW94E
+ /DrYolNk4InHRzLLyw+TLJ+Lshsha1j5tDLqrgPzTUnBsUYa601L7p2nMq9L0I7e6GJ
+ /OU1f5kN2563lYRWx/pM2PC1Ohrxi/QIqa+4gBtl/QlKR4cmkPQ/5sLwkoqU1YCzI/9
+ 1OsaeBkSsxuJdrxwaIlRLK2drzQTsVo5keedH9RT0w7qtzSiHr9SLDD2Sr9puCa0R9C
+ gmyjASw8tw==
+Date: Tue, 16 Aug 2022 07:53:38 +0200 (CEST)
+From: Pascal Gross <baipush@tutanota.com>
+To: Alsa Devel <alsa-devel@alsa-project.org>
+Message-ID: <N9_CjBz--3-2@tutanota.com>
+Subject: 6.0-RC1 new module for lenovo yoga
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: cezary.rojewski@intel.com, kai.vehmanen@linux.intel.com,
- Sean Hong <sean.hong@quanta.corp-partner.google.com>,
- peter.ujfalusi@linux.intel.com, ranjani.sridharan@linux.intel.com,
- linux-kernel@vger.kernel.org, liam.r.girdwood@linux.intel.com,
- broonie@kernel.org, alsa-devel@alsa-project.org,
- yung-chuan.liao@linux.intel.com
+X-Mailman-Approved-At: Tue, 16 Aug 2022 08:45:59 +0200
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-Content-Filtered-By: Mailman/MimeDel 2.1.15
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -102,64 +72,27 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-This patch adds the driver data for rt5682 support jsl_rt5682_rt1019.
+Hello everybody
 
-Signed-off-by: Sean Hong <sean.hong@quanta.corp-partner.google.com>
----
- sound/soc/intel/boards/sof_rt5682.c               |  9 +++++++++
- sound/soc/intel/common/soc-acpi-intel-jsl-match.c | 12 ++++++++++++
- 2 files changed, 21 insertions(+)
+I've seen that there's a module in the new Kernel-RC for bass speaker probl=
+ems with new Lenovo (written by Philipp Jungkamp):=20
 
-diff --git a/sound/soc/intel/boards/sof_rt5682.c b/sound/soc/intel/boards/sof_rt5682.c
-index 045965312..3a840f3a9 100644
---- a/sound/soc/intel/boards/sof_rt5682.c
-+++ b/sound/soc/intel/boards/sof_rt5682.c
-@@ -1100,6 +1100,15 @@ static const struct platform_device_id board_ids[] = {
- 					SOF_RT5682_SSP_AMP(1) |
- 					SOF_RT5682_NUM_HDMIDEV(4)),
- 	},
-+	{
-+		.name = "jsl_rt5682_rt1019",
-+		.driver_data = (kernel_ulong_t)(SOF_RT5682_MCLK_EN |
-+					SOF_RT5682_MCLK_24MHZ |
-+					SOF_RT5682_SSP_CODEC(0) |
-+					SOF_SPEAKER_AMP_PRESENT |
-+					SOF_RT1019_SPEAKER_AMP_PRESENT |
-+					SOF_RT5682_SSP_AMP(1)),
-+	},
- 	{ }
- };
- MODULE_DEVICE_TABLE(platform, board_ids);
-diff --git a/sound/soc/intel/common/soc-acpi-intel-jsl-match.c b/sound/soc/intel/common/soc-acpi-intel-jsl-match.c
-index b95c4b2cd..e374bf163 100644
---- a/sound/soc/intel/common/soc-acpi-intel-jsl-match.c
-+++ b/sound/soc/intel/common/soc-acpi-intel-jsl-match.c
-@@ -29,6 +29,11 @@ static const struct snd_soc_acpi_codecs rt1015p_spk = {
- 	.codecs = {"RTL1015"}
- };
- 
-+static struct snd_soc_acpi_codecs rt1019p_spk = {
-+	.num_codecs = 1,
-+	.codecs = {"RTL1019"}
-+};
-+
- static const struct snd_soc_acpi_codecs mx98360a_spk = {
- 	.num_codecs = 1,
- 	.codecs = {"MX98360A"}
-@@ -78,6 +83,13 @@ struct snd_soc_acpi_mach snd_soc_acpi_intel_jsl_machines[] = {
- 		.quirk_data = &mx98360a_spk,
- 		.sof_tplg_filename = "sof-jsl-rt5682-mx98360a.tplg",
- 	},
-+	{
-+		.comp_ids = &rt5682_rt5682s_hp,
-+		.drv_name = "jsl_rt5682_rt1019",
-+		.machine_quirk = snd_soc_acpi_codec_list,
-+		.quirk_data = &rt1019p_spk,
-+		.sof_tplg_filename = "sof-jsl-rt5682-rt1019.tplg",
-+	},
- 	{
- 		.id = "10134242",
- 		.drv_name = "jsl_cs4242_mx98360a",
--- 
-2.25.1
+SND_PCI_QUIRK(0x17aa, 0x3801, "Lenovo Yoga9 14IAP7",=C2=A0 ALC287_FIXUP_YOG=
+A9_14IAP7_BASS_SPK_PIN)=20
 
+Could you please add the exact same line for a similar model with the same =
+Problem?=20
+
+SND_PCI_QUIRK(0x17aa, 0x3869, "Lenovo Yoga7 14IAL7", ALC287_FIXUP_YOGA7_14I=
+AL7_BASS_SPK_PIN)=20
+
+I'm neither a developer nor a coder so I don't know how to contribute to th=
+e Kernel, I just played around with Philipps patch, changed the lines accor=
+ding to my model and it works now.=20
+
+I would really appreciate your help and of course, if you have any question=
+s feel free to contact me.
+
+Thanks in advance,
+
+Pascal
