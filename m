@@ -4,83 +4,81 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 430A0C25B0E
-	for <alsa-devel@archiver.kernel.org>; Tue, 16 Aug 2022 13:14:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 04AFAC25B0E
+	for <alsa-devel@archiver.kernel.org>; Tue, 16 Aug 2022 13:14:45 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 6A5E9164E;
-	Tue, 16 Aug 2022 15:13:25 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6A5E9164E
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3C3BA1660;
+	Tue, 16 Aug 2022 15:13:53 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3C3BA1660
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1660655655;
-	bh=dOXUflVD9f07X2WaL9Y0SMRDwCtv6BPpp/NjjrLE8Gs=;
+	s=default; t=1660655683;
+	bh=HXoY8Ph2fsFn5K2byKqFcNuDNfJilEEKViah9Wq1oiY=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=ksn2q1I+/v9fcdyn/sgp8KcGm0+ON+BJxPpTVw6eydZwb8yjPZqYJ5XnQrINEhacY
-	 kjLtCwPlkfu1+x9324xEv06nHtm+gClKhZJK4Z0yVHea/kMgdV5sMR91PJD+3Hwv51
-	 zqR436lye/QZxXbxg6NgnN5L84k0g8xVZvMyeR6s=
+	b=J59r8fsCjSwy3jAD92NiQMdEXgJ49OOjAL+mmmEYKSpSZSPTfuW6R3CtZX2+EFT1g
+	 qJISFri9kF/jPkPHjYbEm7bTeJD2k9l4r6bngFtdXqkRNAbIsOVBBBYq7HArKdSTHH
+	 seCMs2NVcW3R5XAZpV4f8pjUKPeSXPVXw+F+Gl+U=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 15DF2F80118;
-	Tue, 16 Aug 2022 15:13:25 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 98B68F80431;
+	Tue, 16 Aug 2022 15:13:38 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id AF297F8032D; Tue, 16 Aug 2022 15:13:23 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+ id 03723F804AB; Tue, 16 Aug 2022 15:13:37 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 6FB5AF80118
- for <alsa-devel@alsa-project.org>; Tue, 16 Aug 2022 15:13:17 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6FB5AF80118
+ by alsa1.perex.cz (Postfix) with ESMTPS id 06F2AF80082
+ for <alsa-devel@alsa-project.org>; Tue, 16 Aug 2022 15:13:30 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 06F2AF80082
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="1cvkgkm9"; 
+ header.b="rspgXsz9"; 
  dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="waBM/WlS"
+ header.b="jt/Zzo6r"
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id AFE73374D9;
- Tue, 16 Aug 2022 13:13:16 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 24BC1374EA;
+ Tue, 16 Aug 2022 13:13:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1660655596; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1660655610; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=IAP9j1FVRL618bmJKu/k7CTvjlM1wVJZrzBn/hxLLTg=;
- b=1cvkgkm9grzO3bel8FLTgJD/YwGI+PqMFxtu00ZiqNXoe7AJ6127e4HIGZ98dBikFV7l9j
- qal2gpSGswH5n71MfY2C6Lku2WryvVRUjqBfhKq7L/tWNrOkf62okLqRDrUXLvgXlwJbBc
- D3mRDoWKt2uPMgY+FtXYBD2DaJhyccA=
+ bh=OqLQ1ov1K9g8PiLCAIU0CKXCl/xXEiXwGzhf0BKp6r0=;
+ b=rspgXsz9k/0BzmkiLX18txfywaJciHvwTcP9jhRAb7RuanFMXohFMVNJBHt7LT9fHgt29q
+ DcFvudhZ+sIW3ROcDNhpXJbLQ6M4574m4QV2oKxh4S1EjRqDHMz3UU9Y4L5WEiSSCiY0kl
+ 1b33NLeEjYTmHHhZJ84rlMRmvvXHeEY=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1660655596;
+ s=susede2_ed25519; t=1660655610;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=IAP9j1FVRL618bmJKu/k7CTvjlM1wVJZrzBn/hxLLTg=;
- b=waBM/WlSU95pbdduwfwhjzUFstolG2jAyJgGhg8QSqv/kF0pnUSEU43GP3RBGZivtDV/3+
- 9oHunnrvo2Y5SxAQ==
+ bh=OqLQ1ov1K9g8PiLCAIU0CKXCl/xXEiXwGzhf0BKp6r0=;
+ b=jt/Zzo6r09nejTMShuLI2dP0fDJTkWatRHyy/I5KQ3/AoTsLHu483EDroLFZmqREgDBfm9
+ TwIgUKD2OfmR3ACg==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 906BB1345B;
- Tue, 16 Aug 2022 13:13:16 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 0A91B1345B;
+ Tue, 16 Aug 2022 13:13:30 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id Tj+jIuyX+2ISYgAAMHmgww
- (envelope-from <tiwai@suse.de>); Tue, 16 Aug 2022 13:13:16 +0000
-Date: Tue, 16 Aug 2022 15:13:16 +0200
-Message-ID: <87mtc4xrf7.wl-tiwai@suse.de>
+ by imap2.suse-dmz.suse.de with ESMTPSA id ZWjZAfqX+2I6YgAAMHmgww
+ (envelope-from <tiwai@suse.de>); Tue, 16 Aug 2022 13:13:30 +0000
+Date: Tue, 16 Aug 2022 15:13:29 +0200
+Message-ID: <87leroxreu.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
-To: Stefan Binding <sbinding@opensource.cirrus.com>
-Subject: Re: [PATCH v2] ALSA: hda: cs35l41: Clarify support for CSC3551
- without _DSD Properties
-In-Reply-To: <20220815162906.463108-1-sbinding@opensource.cirrus.com>
-References: <20220815162906.463108-1-sbinding@opensource.cirrus.com>
+To: Mark Brown <broonie@kernel.org>
+Subject: Re: [GIT PULL] ASoC fixes for v6.0-rc1
+In-Reply-To: <20220816112237.99086C433B5@smtp.kernel.org>
+References: <20220816112237.99086C433B5@smtp.kernel.org>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
 MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
 Content-Type: text/plain; charset=US-ASCII
-Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org,
- patches@opensource.cirrus.com, Takashi Iwai <tiwai@suse.com>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -96,16 +94,29 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Mon, 15 Aug 2022 18:29:06 +0200,
-Stefan Binding wrote:
+On Tue, 16 Aug 2022 13:22:22 +0200,
+Mark Brown wrote:
 > 
-> For devices which use HID CSC3551, correct ACPI _DSD properties are
-> required to be able support those systems.
-> Add error message to clarify this.
+> The following changes since commit 40d060b8158e26438398bf1132925f666e3b6480:
 > 
-> Signed-off-by: Stefan Binding <sbinding@opensource.cirrus.com>
+>   ASoC: q6asm: use kcalloc() instead of kzalloc() (2022-07-28 11:59:10 +0100)
+> 
+> are available in the Git repository at:
+> 
+>   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git tags/asoc-fix-v6.0-rc1
+> 
+> for you to fetch changes up to b4b5f29a076e52181f63e45a2ad1bc88593072e3:
+> 
+>   ASoC: codec: tlv320aic32x4: fix mono playback via I2S (2022-08-10 14:52:05 +0100)
+> 
+> ----------------------------------------------------------------
+> ASoC: Fixes for v6.0
+> 
+> A relatively large batch of fixes that came in since my pull request,
+> none of them too major and mostly device specific apart from a series of
+> security/robustness improvements from Takashi.
 
-Thanks, applied.
+Pulled now.  Thanks.
 
 
 Takashi
