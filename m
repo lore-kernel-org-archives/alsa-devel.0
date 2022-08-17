@@ -4,65 +4,84 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E15E0C2BB41
-	for <alsa-devel@archiver.kernel.org>; Wed, 17 Aug 2022 06:27:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C3CC4C2BB41
+	for <alsa-devel@archiver.kernel.org>; Wed, 17 Aug 2022 06:31:00 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A528DAE9;
-	Wed, 17 Aug 2022 03:00:58 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A528DAE9
+	by alsa0.perex.cz (Postfix) with ESMTPS id C0A58209;
+	Wed, 17 Aug 2022 08:30:08 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C0A58209
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1660698108;
-	bh=kfFOtD+3dn0C6xB+jG+/jXs2FUPps0s0mzAQZ2f2oDY=;
-	h=Date:Subject:To:References:From:In-Reply-To:List-Id:
+	s=default; t=1660717858;
+	bh=XOhamjozzZxgAmjkTYm7PEQWk2uXfDqloArjHEEv/OI=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=YwY6Nh3woC+1kBRl8J87dItjGyNraxMMXT3mcr3A+xgHa+lZyj7BPeqCtm6FNF+z/
-	 8kyKZOZsdH5WnybHyFSfZEm7nWAf/znV4+9v7xvFCzNxkMAkU3gCN62nlOhtjcqpxU
-	 oU/dEkXpZ+HloR7owmvAH8xeCtVg1qLDoM8xzSjc=
+	b=QfW4UmEkIJpvgVwpErAb25qwxaAWd7tkZ9GF5li8YFhP/0pYdciSqGISLFKcTTfHw
+	 fbOn9IJTABBDtRwldi87yI8MTtPdYci+UbkEwskaQMKBJ8wDnegTDxA4SvpHjTlVs0
+	 CFX4IVM4Vt8l9BZHw87PxPgjXkDVEQ5ITB6uBoAM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 32708F80118;
-	Wed, 17 Aug 2022 03:00:58 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 5393EF80237;
+	Wed, 17 Aug 2022 08:30:08 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 96A1FF8032D; Wed, 17 Aug 2022 03:00:55 +0200 (CEST)
-Received: from neo-zeon.de (neo-zeon.de [70.229.12.130])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 53447F8025C; Wed, 17 Aug 2022 08:30:05 +0200 (CEST)
+Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com
+ [IPv6:2a00:1450:4864:20::12a])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 92333F80118
- for <alsa-devel@alsa-project.org>; Wed, 17 Aug 2022 03:00:47 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 92333F80118
+ by alsa1.perex.cz (Postfix) with ESMTPS id 21735F80088
+ for <alsa-devel@alsa-project.org>; Wed, 17 Aug 2022 08:29:55 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 21735F80088
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=neo-zeon.de header.i=@neo-zeon.de
- header.b="mwd+V8sl"
-Received: from neo-zeon.de (localhost [::1])
- by neo-zeon.de (OpenSMTPD) with ESMTP id c0818424
- for <alsa-devel@alsa-project.org>;
- Tue, 16 Aug 2022 18:00:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha1; c=relaxed; d=neo-zeon.de; h=message-id
- :date:mime-version:subject:to:references:from:in-reply-to
- :content-type:content-transfer-encoding; s=1; bh=028U5yB0pnmE6Kt
- hqEK9BQ9kECY=; b=mwd+V8sl+D9jTzcxrcONAVzXv4Vc3AYzCzg1Xd/ATTdvZGP
- v8hWVfE6d070qzpuhN8KJUn8OZ5vnYwjqBhF4jUrRdt4CovW9d8LcNJiGK8z6YxN
- iJmELOsne0+lsPG/q1QIkwTV87XRAvvkmr77+PSe7lpBTSgHU9xcqSGoaBhU=
-Received: by neo-zeon.de (OpenSMTPD) with ESMTPSA id afa06b45
- (TLSv1.3:AEAD-AES256-GCM-SHA384:256:NO)
- for <alsa-devel@alsa-project.org>;
- Tue, 16 Aug 2022 18:00:43 -0700 (PDT)
-Message-ID: <b62e6b1c-a804-531a-c3bc-d9415805e4c6@neo-zeon.de>
-Date: Tue, 16 Aug 2022 18:00:43 -0700
+ dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
+ header.b="ZmXBDgwk"
+Received: by mail-lf1-x12a.google.com with SMTP id e15so17862885lfs.0
+ for <alsa-devel@alsa-project.org>; Tue, 16 Aug 2022 23:29:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
+ h=cc:to:subject:message-id:date:from:in-reply-to:references
+ :mime-version:from:to:cc;
+ bh=4SgT5pbfJV5jtJwVT4KwHHssFjdmNFDrkGYbVTjUcI4=;
+ b=ZmXBDgwkrprFGVxsEY4qibZB3VjHuNlq4XjdghCFnOaBZ53JmPzG7BafN4OgI/Gwkx
+ CXztmoYQ+53wU6DfDSZNMkNxE9VNQauQ8Ej+yEVdSnBT/KFeRk1tUQAJPT+YXPcGr2bm
+ O9qB9UORy2btknxh4MYkRDdSIQUcnuEwy2fxAbL0fIlJ0ZzJUs7U/oN+P4c4fh5X9u2E
+ 6vz81EROflEzMZcWXTQvSY+gpMfzcy4niST1Xl+ixpGBTFgEgnhw6mabdUZ2oxMEBwku
+ KqvqsSykbrfDgCFBB1M6BnO9Ba84mf8myQjq1CRDzNiIPhVk0qMXwOelfbQ2PkAv/DLi
+ LbHQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=cc:to:subject:message-id:date:from:in-reply-to:references
+ :mime-version:x-gm-message-state:from:to:cc;
+ bh=4SgT5pbfJV5jtJwVT4KwHHssFjdmNFDrkGYbVTjUcI4=;
+ b=GgdZtHf99Wz6+f5ElpshwiG2sj0RtxBxadhhpyQ/fuq3VB1k6ZYEAH7JpYTBpKT/KA
+ 2L0eCVCPLTZCOk0EA31vxk7ibfZ4qUs3oicrzRAvqiQd3C9mOVJtgNAIk9CLGB/OZk31
+ L6SuUJozcT6BqsliEzkjtaWgVUf1KBb7NJWH1plRn9ApXEeyJ4NJE6piK3OOkg1NPqcH
+ +W70X5UXzlPKn1zjHgqmWfGdbvugDtUKAHAz6CF7Zppoy8lACozG0LUnrhPjIL+kPpFV
+ iGrWY5CA3YMuDBwGHBQ7r4X895zcE4vxNsGI6kZJBKz5lXL+Sk3ITROAea7CJdCEH/c/
+ 0ZTg==
+X-Gm-Message-State: ACgBeo3ewpQmhGnib8oH6FuNcJKrdlPdwkubWHeRy+kADwSHo0qiS0+9
+ m0CkU5XpWPVLtIEjYVUTKVr4HqH1TifdQdQZHOc=
+X-Google-Smtp-Source: AA6agR5EzgrxNpww9gn0/xR+gDsl8dDNkhTd/sqnxn6Vcy711148ZU+ZAloY5lzTRs4TqxZArtDaiCapmgDOUexQdls=
+X-Received: by 2002:a05:6512:3d26:b0:48b:40d4:2ce0 with SMTP id
+ d38-20020a0565123d2600b0048b40d42ce0mr9100158lfv.531.1660717793694; Tue, 16
+ Aug 2022 23:29:53 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.11.0
-Subject: Re: [PATCH] ALSA: hda/realtek: Add CLSA0101 to
- serial-multi-instantiate.
-Content-Language: en-US
-To: alsa-devel@alsa-project.org
-References: <20220816194639.13870-1-cam@neo-zeon.de>
-From: Cameron Berkenpas <cam@neo-zeon.de>
-In-Reply-To: <20220816194639.13870-1-cam@neo-zeon.de>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+References: <1660713867-26921-1-git-send-email-shengjiu.wang@nxp.com>
+ <CAGoOwPT1tP-HP+0J1ddZ0Ea+67zzLzFFTeptTpNwkzxRK45b5g@mail.gmail.com>
+In-Reply-To: <CAGoOwPT1tP-HP+0J1ddZ0Ea+67zzLzFFTeptTpNwkzxRK45b5g@mail.gmail.com>
+From: Shengjiu Wang <shengjiu.wang@gmail.com>
+Date: Wed, 17 Aug 2022 14:29:42 +0800
+Message-ID: <CAA+D8AP2okZdD0YBWrxKGAxvp014S+R-dUSrPqbQN_ja3U5D2Q@mail.gmail.com>
+Subject: Re: [PATCH] ASoC: fsl_sai: Remove unnecessary FIFO reset in ISR
+To: Nicolin Chen <nicoleotsuka@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Content-Filtered-By: Mailman/MimeDel 2.1.15
+Cc: alsa-devel@alsa-project.org, Xiubo Li <Xiubo.Lee@gmail.com>,
+ linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+ Shengjiu Wang <shengjiu.wang@nxp.com>, Takashi Iwai <tiwai@suse.com>,
+ Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
+ Fabio Estevam <festevam@gmail.com>,
+ linux-kernel <linux-kernel@vger.kernel.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -78,33 +97,31 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-To add to this, it seems this patch was originally included but was 
-somehow lost at some point:
-https://www.spinics.net/lists/alsa-devel/msg145711.html
+On Wed, Aug 17, 2022 at 2:21 PM Nicolin Chen <nicoleotsuka@gmail.com> wrote:
 
-It seems the rest of the patch series made it in intact.
-
-On 8/16/22 12:46, Cameron Berkenpas wrote:
-> Added CLSA0101 to serial-multi-instantiate.c.
+> On Tue, Aug 16, 2022 at 10:41 PM Shengjiu Wang <shengjiu.wang@nxp.com>
+> wrote:
+> >
+> > The FIFO reset drops the words in the FIFO, which may cause
+> > channel swap when SAI module is running, especially when the
+> > DMA speed is low. So it is not good to do FIFO reset in ISR,
+> > then remove the operation.
 >
-> Signed-off-by: Cameron Berkenpas <cam@neo-zeon.de>
-> ---
->   drivers/platform/x86/serial-multi-instantiate.c | 3 ++-
->   1 file changed, 2 insertions(+), 1 deletion(-)
+> I don't recall the details of adding this many years ago, but
+> leaving underrun/overrun errors unhandled does not sound right
+> to me either. Would it result in a channel swap also? Perhaps
+> there needs to be a reset routine that stops and restarts the
+> DMA as well?
 >
-> diff --git a/drivers/platform/x86/serial-multi-instantiate.c b/drivers/platform/x86/serial-multi-instantiate.c
-> index 1e8063b7c169..bc9bf591dd10 100644
-> --- a/drivers/platform/x86/serial-multi-instantiate.c
-> +++ b/drivers/platform/x86/serial-multi-instantiate.c
-> @@ -327,8 +327,9 @@ static const struct acpi_device_id smi_acpi_ids[] = {
->   	{ "BSG2150", (unsigned long)&bsg2150_data },
->   	{ "INT3515", (unsigned long)&int3515_data },
->   	{ "CSC3551", (unsigned long)&cs35l41_hda },
-> -	/* Non-conforming _HID for Cirrus Logic already released */
-> +	/* Non-conforming _HIDs for Cirrus Logic already released */
->   	{ "CLSA0100", (unsigned long)&cs35l41_hda },
-> +	{ "CLSA0101", (unsigned long)&cs35l41_hda },
->   	{ }
->   };
->   MODULE_DEVICE_TABLE(acpi, smi_acpi_ids);
 
+Remove the reset, the channel swap is gone.
+
+IMO, no need to handle the underrun/overrun in driver, the SAI
+hardware can handle the read/write pointer itself when xrun happen,
+and we don't need reset routine.
+
+For ESAI, because it can't handle read/write pointer correctly when
+xrun happen, so we need reset routine.
+
+Best regards
+Wang shengjiu
