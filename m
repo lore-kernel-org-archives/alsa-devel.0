@@ -4,71 +4,70 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 85E81C25B08
-	for <alsa-devel@archiver.kernel.org>; Wed, 17 Aug 2022 15:46:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id EB37CC25B08
+	for <alsa-devel@archiver.kernel.org>; Wed, 17 Aug 2022 16:22:31 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D9355164E;
-	Wed, 17 Aug 2022 17:46:01 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D9355164E
+	by alsa0.perex.cz (Postfix) with ESMTPS id 102DC1640;
+	Wed, 17 Aug 2022 18:21:39 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 102DC1640
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1660751211;
-	bh=prGIqLTjJea4Mm1/Op+Xn1poe2U0hwQIrV+hVaACtXs=;
+	s=default; t=1660753349;
+	bh=EB8auf1uFAtLTf+Qxg+8QHDmcneYTnfJMO/MXWK/HTg=;
 	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=WOlEBAvr7BHKIvbg6SjWyxpj3rJ8Pd42iexnkjleWPqfszWOygvUv/O9iXSmCruOD
-	 d5regkctruepXOgK/ex/ZP7BzpZg5GOERZL4/w3Cax6ZmIgJPFUsba2pi2tjPj3p18
-	 6XUy2sXh1GBWdM6gLTLbA2ikX+0O5rmNE8pxvI/o=
+	b=NyJMrD+KMxEJTPjXnjw1HDqjwAUp6/BIXQ5TruhmBZBvS7kTFsON63izxQ+6PfmmQ
+	 NK04Sc2VzmBLzLS3Yg2qXuz1f4IIlcM2sBEGrDzmsR0e//HZrtmI/Mq+F/Oq+i4zer
+	 iK6QV3HT0h9OQItXAB5eUAFntapGULR4GWqe+NDg=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 6A164F800FE;
-	Wed, 17 Aug 2022 17:46:01 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id A454EF800FE;
+	Wed, 17 Aug 2022 18:21:38 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id C6E01F80130; Wed, 17 Aug 2022 17:45:59 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org
- [IPv6:2604:1380:4641:c500::1])
+ id D7B9FF80130; Wed, 17 Aug 2022 18:21:37 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id D5920F800E9
- for <alsa-devel@alsa-project.org>; Wed, 17 Aug 2022 17:45:56 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D5920F800E9
+ by alsa1.perex.cz (Postfix) with ESMTPS id C1DC4F80088
+ for <alsa-devel@alsa-project.org>; Wed, 17 Aug 2022 18:21:31 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C1DC4F80088
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="NVm6zsWe"
+ header.b="To7zHbx3"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id 35C37614E5;
- Wed, 17 Aug 2022 15:45:54 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 32CACC433C1;
- Wed, 17 Aug 2022 15:45:53 +0000 (UTC)
+ by dfw.source.kernel.org (Postfix) with ESMTPS id 4AB8F615AF;
+ Wed, 17 Aug 2022 16:21:29 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 45444C433C1;
+ Wed, 17 Aug 2022 16:21:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1660751153;
- bh=prGIqLTjJea4Mm1/Op+Xn1poe2U0hwQIrV+hVaACtXs=;
+ s=k20201202; t=1660753288;
+ bh=EB8auf1uFAtLTf+Qxg+8QHDmcneYTnfJMO/MXWK/HTg=;
  h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=NVm6zsWeYPt6buQTKUQM0HzWxyugtBwuEiwezWaOvx8/e6h13ThJfHVHCFRue+dtS
- cbFBlBtg8vuUA1LRaLrC96lnvCEdPMmpu62H9oAn7NfoV4V5ArDtLVXVzONGk6uOaI
- MZgzD2ovQMT4sEx3JS4ZCG9LGVddZHYKYlxs8h5kLs5fMK7c9y8Q5J6x3i9qwg6nU7
- WcsSiLwVcpnV/EH4U7GBv7U1E/rmN8clnzHgYrBIDVuNw1eEbopKWd7T03ALlyP3xI
- HTPuxc6CHbQd1PMNnlvMqi2RwcpB0Znbt4L5xTmqOMiw2BeuFWuPpYfDL/sjvTSP8X
- RjfhevUz6LFPw==
-Date: Wed, 17 Aug 2022 08:45:51 -0700
-From: Nathan Chancellor <nathan@kernel.org>
-To: Matt Flax <flatmax@flatmax.com>
+ b=To7zHbx34gaUT874XZ5fU+azhtjIBXbXyPh3os46m8LAwShwg5CHmKwhu0gcdoFDW
+ wgvYRnWvpOZMymwhtqCyjK7MXkryyAmrRcfnyfnQXqZGvrJ4WdIkLim7etvWw49bml
+ 11v8kh+mHHqrckZar5PD8UgtEb1dr4psZzL4EyUujkGme7/9hf5LofvhaTvYs+jtKi
+ kQTTl8loDyBmnYckdbFuRaUWviMW3efv61VNTD6J5SBHHZKfFPxFcs7pMI9OVXIHu/
+ 1gTpisunFqCou1sJy8q/MmIEQFsVvB8KR81DvWracAHx6dCdMIN8D7UEb+Nh/Sx9aj
+ NNBzL7fDfJMCw==
+Date: Wed, 17 Aug 2022 17:21:23 +0100
+From: Mark Brown <broonie@kernel.org>
+To: Nathan Chancellor <nathan@kernel.org>
 Subject: Re: [PATCH v2] ASoC: codecs: add uspport for the TI SRC4392 codec
-Message-ID: <Yv0NLxzwqdBaZ3Jf@dev-arch.thelio-3990X>
+Message-ID: <Yv0Vg2bkmlEqTSVk@sirena.org.uk>
 References: <20220808214028.2502801-1-flatmax@flatmax.com>
  <202208090909.Pg0BZGie-lkp@intel.com>
  <YvvbKry5FVFbNdcI@dev-arch.thelio-3990X>
- <f8439531-897a-c25a-688b-be01290b006d@flatmax.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature"; boundary="J34F5h37Q62QuYk3"
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <f8439531-897a-c25a-688b-be01290b006d@flatmax.com>
+In-Reply-To: <YvvbKry5FVFbNdcI@dev-arch.thelio-3990X>
+X-Cookie: Use extra care when cleaning on stairs.
 Cc: alsa-devel@alsa-project.org, llvm@lists.linux.dev, kbuild-all@lists.01.org,
- kernel test robot <lkp@intel.com>, broonie@kernel.org
+ kernel test robot <lkp@intel.com>, Matt Flax <flatmax@flatmax.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -84,71 +83,39 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, Aug 17, 2022 at 03:44:33PM +1000, Matt Flax wrote:
-> 
-> On 17/8/22 04:00, Nathan Chancellor wrote:
-> 
-> > >     265			/* set the PLL for the digital receiver */
-> > >     266			switch (src4xxx->mclk_hz) {
-> > >     267			case 24576000:
-> > >     268				pj = 0x22;
-> > >     269				jd = 0x00;
-> > >     270				d = 0x00;
-> > >     271				break;
-> > >     272			case 22579200:
-> > >     273				pj = 0x22;
-> > >     274				jd = 0x1b;
-> > >     275				d = 0xa3;
-> > >     276				break;
-> > >   > 277			default:
-> > >     278				/* don't error out here,
-> > >     279				 * other parts of the chip are still functional
-> > >     280				 */
-> > >     281				dev_info(component->dev,
-> > >     282					"Couldn't set the RCV PLL as this master clock rate is unknown\n");
-> > In the final commit, there is a 'break' here. Should it be a 'return 0'
-> > instead? Or should there be a different fix for these warnings?
-> 
-> The data sheet for the src4392 doesn't list defaults for these registers
-> (loaded with pj, jd and d). The actual state of these registers is not known
-> until we load them with something, arbitrary or not.
-> 
-> 	{  SRC4XXX_RCV_PLL_0F,		0x00  },  /* not spec. in the datasheet */
-> 	{  SRC4XXX_RCV_PLL_10,		0xff  },  /* not spec. in the datasheet */
-> 	{  SRC4XXX_RCV_PLL_11,		0xff  },  /* not spec. in the datasheet */
-> 
-> The state of DIR PLL registers aren't important if the user doesn't specify
-> a known mclk frequency.  The implication is that the DIR will not function,
-> however that is already implied by the user lacking to specify a known mclk
-> frequency.
-> 
-> The other functions on the chip (port A/B I2S, SRC, DIT, etc) will behave as
-> per usual, only the DIR will be dysfunctional.
 
-So I suppose there is little point to all of the calls to regmap_write()
-and regmap_update_bits() in the default case then, meaning a 'return 0'
-would be appropriate? Sorry, I am having a hard time parsing what should
-be done about the warnings, which are fatal for allmodconfig due to
-CONFIG_WERROR.
+--J34F5h37Q62QuYk3
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Cheers,
-Nathan
+On Tue, Aug 16, 2022 at 11:00:10AM -0700, Nathan Chancellor wrote:
+> On Tue, Aug 09, 2022 at 09:49:38AM +0800, kernel test robot wrote:
 
-> > >     283			}
-> > >     284			ret = regmap_write(src4xxx->regmap, SRC4XXX_RCV_PLL_0F, pj);
-> > >     285			if (ret < 0)
-> > >     286				dev_err(component->dev,
-> > >     287					"Failed to update PLL register 0x%x\n",
-> > >     288					SRC4XXX_RCV_PLL_0F);
-> > >   > 289			ret = regmap_write(src4xxx->regmap, SRC4XXX_RCV_PLL_10, jd);
-> > >     290			if (ret < 0)
-> > >     291				dev_err(component->dev,
-> > >     292					"Failed to update PLL register 0x%x\n",
-> > >     293					SRC4XXX_RCV_PLL_10);
-> > >   > 294			ret = regmap_write(src4xxx->regmap, SRC4XXX_RCV_PLL_11, d);
-> > >     295			if (ret < 0)
-> > >     296				dev_err(component->dev,
-> > >     297					"Failed to update PLL register 0x%x\n",
-> > >     298					SRC4XXX_RCV_PLL_11);
-> > Cheers,
-> > Nathan
+> > config: hexagon-randconfig-r002-20220808 (https://download.01.org/0day-ci/archive/20220809/202208090909.Pg0BZGie-lkp@intel.com/config)
+> > compiler: clang version 16.0.0 (https://github.com/llvm/llvm-project 5f1c7e2cc5a3c07cbc2412e851a7283c1841f520)
+
+> It doesn't look like these warnings were addressed before the change was
+> applied to -next as commit 4e6bedd3c396 ("ASoC: codecs: add support for
+> the TI SRC4392 codec"). I now see them in next-20220816.
+
+It's probably worth talking to the 0day people about prioritising what
+they're reporting against, especially given that the reports have
+evolved into a bit of an eye chart - this was reported against a Hexagon
+randconfig with an unreleased compiler which is underselling it rather.
+
+--J34F5h37Q62QuYk3
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmL9FYMACgkQJNaLcl1U
+h9DIXQf/ftJfs+bHR8zt5BTlHyxCQFhZuBic3PscdVU4Y1E2gtjAt6vLmUAYYlva
+o7Wlwf3oiOjThS5EgUZNRNltyiZT1TJQE2Zoo/xeYRx/gfAof+sBsM6f1xFxuv4+
+7Vh7flrmYhjUTBuSqflZszQ5kbXJyXVkfq4NdiOFsIDEzFZeR6YDfYLEnjhcTV8Y
+YfmQdgHt1hBhk7Dt9sA8YXJMlcLbbGAVYiFb9qVC6uvnhwTdoXSKB3LBn0GKGsuo
+2QA1zqT4TdymsMzIAEbpHih7mli4pEs/eDVHfc4Co7+0B4wuZmLg7SKZOlIVjniH
+taL7aCXWp+LNvaFC2sk5331kwoM1kw==
+=zux7
+-----END PGP SIGNATURE-----
+
+--J34F5h37Q62QuYk3--
