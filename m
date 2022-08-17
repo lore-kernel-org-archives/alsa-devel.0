@@ -4,56 +4,57 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3B195C25B08
-	for <alsa-devel@archiver.kernel.org>; Wed, 17 Aug 2022 12:24:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9DFE1C25B08
+	for <alsa-devel@archiver.kernel.org>; Wed, 17 Aug 2022 12:25:18 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 7F8B715E5;
-	Wed, 17 Aug 2022 14:23:58 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7F8B715E5
+	by alsa0.perex.cz (Postfix) with ESMTPS id 8D1651636;
+	Wed, 17 Aug 2022 14:24:26 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8D1651636
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1660739088;
-	bh=Xpfh4Ge5tNBLXqkpkUF2npnJy2wIoY6HsUXvdG/G9J4=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=nXwQlkVKXmMU07FSMi9YrAklANh+JnWd8/EzfBWGTDTd+I9xIeCaM4rhUH2LwDaO2
-	 qKMH0JDfCOwAEh2V/IvjYKn5D0koumxFpQPh1YZk43t675AIadJO8rqAqSAI5i9uok
-	 ZiU4H9aZn+oSVBqpvW/B9xooB54Ff1GToG04NzDk=
+	s=default; t=1660739116;
+	bh=FAaBokrkz6MznhaVd2OUYsKyJbdnwkGZnz65dzhCVtY=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=Trs+97+Ua+G/T0X0FX71OBUwDlGC45ZR8vBfrF8pnVOHzL+zGUiTqxxXJu6FuuXHd
+	 X5KhPHymDKFz+yNHMfxk1R72RqeCijfozR5HSVwLe34KwlWTe/1v3uTtMnX2WVcqo7
+	 NCL6jQbh8jEE/3wpaKcVFdipi5G9N51w3YuKVLOs=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 0CE01F802D2;
-	Wed, 17 Aug 2022 14:23:58 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id AE003F80518;
+	Wed, 17 Aug 2022 14:24:00 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 50CCAF802D2; Wed, 17 Aug 2022 14:23:56 +0200 (CEST)
+ id 9D7B2F80534; Wed, 17 Aug 2022 14:23:59 +0200 (CEST)
 Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
  [67.231.152.168])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 28E54F800DA
+ by alsa1.perex.cz (Postfix) with ESMTPS id 3ACE8F80088
  for <alsa-devel@alsa-project.org>; Wed, 17 Aug 2022 14:23:51 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 28E54F800DA
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3ACE8F80088
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com
- header.b="BhnX2kXk"
+ header.b="ZsG/wqn2"
 Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
- by mx0b-001ae601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 27HBro3R026619;
- Wed, 17 Aug 2022 07:23:49 -0500
+ by mx0b-001ae601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 27H4vLJd010755;
+ Wed, 17 Aug 2022 07:23:50 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
  h=from : to : cc :
- subject : date : message-id : mime-version : content-transfer-encoding :
- content-type; s=PODMain02222019;
- bh=VA5vWp42DoWBFcE2Kvw+j15+d9nh9dAmeHthWqfIebQ=;
- b=BhnX2kXkirBkHX+pfvQCTZ8YW6M0xcH7JnbycwnYiCuMJWzFTexoxnkhHGHkMB+qF8x+
- MMzx/168z4ZuLbAaiz2xpgKgXJYZ2rOf1JGogVO62t8Kp6dKZ3vUqvQMpGVx9RtNPSv1
- +u7R6CKWaNQ7PQ8ISN00y/2pEzIW/gYi9umn9Npub9y5OYssRGYamfP3Y6b5o6DcIDkz
- 6I0rriuP7+oB8GQkRU1/SkomSrssW0H6W16QijNWvoct9ojaNCVLHvi++Vn397ySkFN/
- Y1NxJERkMPToidKb5KEiR5iJ7+SBm2d5id7lhmAAHHy/iKklx/H0dj0ONfULfFUc8qaP mg== 
-Received: from ediex02.ad.cirrus.com ([84.19.233.68])
- by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3hx8cpcueb-1
+ subject : date : message-id : in-reply-to : references : mime-version :
+ content-transfer-encoding : content-type; s=PODMain02222019;
+ bh=fo2EGunu8bsAB6527X+mSVSKQLth99Br3x4ca9Xnrow=;
+ b=ZsG/wqn2+bIrzzJP+t/OZPsPnDjqMJZEvcfh5PZdvKYjLfCGHzTeNQQbhd3yCjFJkB98
+ kYpzqSPDZrQUVqkWj1QCRqCpOjIFNgwG9AFpJ8ijEPq+MnVbjIQINEQGU/XuFvCOY9mR
+ iTbPLaqx25BkbW4Kbf75fZhVsEwIJqm/SPmMkdajZ11ZLl6rVMttEU8hbrOLwyxPJrQI
+ rXRCqNaNai/rWlLQx0+vHdOAarqrDijumXq8cOudmblUJv4Uypl5XAWoWW88DiPjikvj
+ EYINjpUeUselpDIq5JYVTI7MtfE8CDXfOlmc1DGDH63IFOMJf3rzcjf35jNlJoJnCWlG XQ== 
+Received: from ediex01.ad.cirrus.com ([84.19.233.68])
+ by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3hx8cpcuec-2
  (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
  Wed, 17 Aug 2022 07:23:49 -0500
-Received: from ediex01.ad.cirrus.com (198.61.84.80) by ediex02.ad.cirrus.com
- (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
+Received: from ediex01.ad.cirrus.com (198.61.84.80) by ediex01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.9; Wed, 17 Aug
  2022 07:23:47 -0500
 Received: from ediswmail.ad.cirrus.com (198.61.86.93) by ediex01.ad.cirrus.com
@@ -61,19 +62,21 @@ Received: from ediswmail.ad.cirrus.com (198.61.86.93) by ediex01.ad.cirrus.com
  Transport; Wed, 17 Aug 2022 07:23:47 -0500
 Received: from edi-sw-dsktp-006.ad.cirrus.com (edi-sw-dsktp-006.ad.cirrus.com
  [198.90.251.95])
- by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 9AF887C;
+ by ediswmail.ad.cirrus.com (Postfix) with ESMTP id E8290459;
  Wed, 17 Aug 2022 12:23:47 +0000 (UTC)
 From: Richard Fitzgerald <rf@opensource.cirrus.com>
 To: <broonie@kernel.org>
-Subject: [PATCH 0/5] ASoC: cs42l42: Some small code improvements
-Date: Wed, 17 Aug 2022 13:23:42 +0100
-Message-ID: <20220817122347.1356773-1-rf@opensource.cirrus.com>
+Subject: [PATCH 5/5] ASoC: cs42l42: Use snd_soc_tdm_params_to_bclk()
+Date: Wed, 17 Aug 2022 13:23:47 +0100
+Message-ID: <20220817122347.1356773-6-rf@opensource.cirrus.com>
 X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20220817122347.1356773-1-rf@opensource.cirrus.com>
+References: <20220817122347.1356773-1-rf@opensource.cirrus.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: TwERGpnE9xlKupjCGNCzyGKLaWKW5XbJ
-X-Proofpoint-GUID: TwERGpnE9xlKupjCGNCzyGKLaWKW5XbJ
+X-Proofpoint-ORIG-GUID: i55BiZiuETI5FMbZ4F4wNDydevJOqvag
+X-Proofpoint-GUID: i55BiZiuETI5FMbZ4F4wNDydevJOqvag
 X-Proofpoint-Spam-Reason: safe
 Cc: patches@opensource.cirrus.com, alsa-devel@alsa-project.org,
  Richard Fitzgerald <rf@opensource.cirrus.com>, linux-kernel@vger.kernel.org
@@ -92,19 +95,47 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-This is a collection of minor improvements to the code or comments.
+Use the new snd_soc_tdm_params_to_bclk() helper function to
+calculate the bclk. This function handles most of the previous
+manipulation and makes the code tidier.
 
-Richard Fitzgerald (5):
-  ASoC: cs42l42: Don't include kernel.h
-  ASoC: cs42l42: Add include dependencies to cs42l42.h
-  ASoC: cs42l42: Move cs42l42_supply_names to .c file
-  ASoC: cs42l42: Fix comment typo in cs42l42_slow_start_put()
-  ASoC: cs42l42: Use snd_soc_tdm_params_to_bclk()
+Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
+---
+ sound/soc/codecs/cs42l42.c | 11 +++++------
+ 1 file changed, 5 insertions(+), 6 deletions(-)
 
- sound/soc/codecs/cs42l42.c | 24 ++++++++++++++++--------
- sound/soc/codecs/cs42l42.h | 13 +++++--------
- 2 files changed, 21 insertions(+), 16 deletions(-)
-
+diff --git a/sound/soc/codecs/cs42l42.c b/sound/soc/codecs/cs42l42.c
+index a84d873e29df..42cdb051e0fb 100644
+--- a/sound/soc/codecs/cs42l42.c
++++ b/sound/soc/codecs/cs42l42.c
+@@ -893,22 +893,21 @@ static int cs42l42_pcm_hw_params(struct snd_pcm_substream *substream,
+ 	struct cs42l42_private *cs42l42 = snd_soc_component_get_drvdata(component);
+ 	unsigned int channels = params_channels(params);
+ 	unsigned int width = (params_width(params) / 8) - 1;
++	unsigned int slot_width = 0;
+ 	unsigned int val = 0;
+ 	int ret;
+ 
+ 	cs42l42->srate = params_rate(params);
+-	cs42l42->bclk = snd_soc_params_to_bclk(params);
+-
+-	/* I2S frame always has 2 channels even for mono audio */
+-	if (channels == 1)
+-		cs42l42->bclk *= 2;
+ 
+ 	/*
+ 	 * Assume 24-bit samples are in 32-bit slots, to prevent SCLK being
+ 	 * more than assumed (which would result in overclocking).
+ 	 */
+ 	if (params_width(params) == 24)
+-		cs42l42->bclk = (cs42l42->bclk / 3) * 4;
++		slot_width = 32;
++
++	/* I2S frame always has multiple of 2 channels */
++	cs42l42->bclk = snd_soc_tdm_params_to_bclk(params, slot_width, 0, 2);
+ 
+ 	switch (substream->stream) {
+ 	case SNDRV_PCM_STREAM_CAPTURE:
 -- 
 2.30.2
 
