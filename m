@@ -4,61 +4,62 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C8ED0C25B08
-	for <alsa-devel@archiver.kernel.org>; Wed, 17 Aug 2022 17:06:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id EA45DC25B08
+	for <alsa-devel@archiver.kernel.org>; Wed, 17 Aug 2022 17:07:14 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id EC8FF164E;
-	Wed, 17 Aug 2022 19:05:55 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EC8FF164E
+	by alsa0.perex.cz (Postfix) with ESMTPS id DE215165E;
+	Wed, 17 Aug 2022 19:06:22 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DE215165E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1660756006;
-	bh=Xg5LiDPzkPQzU8ExdTp8O5VM1GoQ2K7H+Z2oHuhkWD0=;
+	s=default; t=1660756033;
+	bh=Yn4G40jkutTkprAgt1jA1gv9HiNNbx0FrohF6j9SElE=;
 	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=hS0yIJxaBV1Bw9t67CUKUsGspT1TiPcugllQ77E4O6VzUHYW7oTNCQ6/+Wt0P3iSn
-	 4SpY0D3zwWDzy8tQXYiM7AJ5RHgsffAD9+l6D4mRBhR8MFu49hGBnBMexbF54vC4FP
-	 RJk9zSaaTK/OnZ7hcDNg2PH/T0CbtHZzW1wAJMwg=
+	b=e4qebsOpz/+fIRh/e3a8wqifQWOD2/Rq+NhxC2ZgjSoAcpLb2F3/rxKUH4AOhp8pe
+	 VzkFuhRB35iJS65ffm/CNx668fRzxO5soztsVZrgftq7GhT83IqtpmjnhJneOJ23hU
+	 gsHAJXqrgPAynP0FKSLQevqNFcTIwFZFyVDd3ad4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 86462F800FE;
-	Wed, 17 Aug 2022 19:05:55 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 09057F802E8;
+	Wed, 17 Aug 2022 19:05:56 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 81160F8021D; Wed, 17 Aug 2022 19:05:54 +0200 (CEST)
+ id B35BAF80130; Wed, 17 Aug 2022 19:05:54 +0200 (CEST)
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 0B239F800EE
+ by alsa1.perex.cz (Postfix) with ESMTPS id 58AAFF80088
  for <alsa-devel@alsa-project.org>; Wed, 17 Aug 2022 19:05:51 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0B239F800EE
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 58AAFF80088
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="IshtAORF"
+ header.b="JHMiiRft"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id 4DBCA6121D;
- Wed, 17 Aug 2022 17:05:49 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CF0DDC433D6;
- Wed, 17 Aug 2022 17:05:47 +0000 (UTC)
+ by dfw.source.kernel.org (Postfix) with ESMTPS id 96BF561226;
+ Wed, 17 Aug 2022 17:05:50 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2272CC433D7;
+ Wed, 17 Aug 2022 17:05:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1660755948;
- bh=Xg5LiDPzkPQzU8ExdTp8O5VM1GoQ2K7H+Z2oHuhkWD0=;
+ s=k20201202; t=1660755950;
+ bh=Yn4G40jkutTkprAgt1jA1gv9HiNNbx0FrohF6j9SElE=;
  h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=IshtAORFEenqWgi/fygyaLiAXU1G80EdkzNJm8s7dH6Q9hYeay2N+lCl5JZt7grlr
- eMIS1yEUieQL2xQ/p08CXsU2eF9j1lCVIuaKROKeEyg18zYkAemyVMLF3/+5jwqlR2
- qLVw+nAZPl7eFwI3It3JZDED7WM0CECUKxD8CvBk6tCHtwtR5hi5h0fjjqllGR8xQU
- EcrgdJ86kYdeSV+kk44v/hdlJPxrjFWzYM68Hhmk/+qFOpYGDKlmAbVnGh7RlpuMn/
- 7nGAvy+ZQsGdKV5RPYjwwN04IHRqMep3U2GFPahCgPPKfqTHY92uOdnDiJiRF7Ef6+
- 2UtyAB1pkvyqQ==
+ b=JHMiiRftde4ztyr+xYc/KByPBkP/hAf2Be2S6ME3hvu5Ci9CsJ7Fy9MF/r5RLyYlv
+ KjcuiIj/+S+bzm8ZE9XnX9VLomegsXPQYC/RaruLK6qbram82CO8poNvxWv7bhh0Ym
+ BsHzz3EgQ/F2MKgOiZlvoNGsWaLyzHRSOQXRH+2SiNNj6xb0HcXo/aOlSwxqpqTPGh
+ hdzVQA5RYrhCcpc87CwV1vEM1TMWt5ccnW/FaI92eRVdjDBAtMvjblvBxPUBVmMQ3q
+ IvqBXrbDxirVEq3Fy/JlDrQpNisdQqto+uOGLhU5dJIxmkzPSCDvqPRPHBQNQfwzLf
+ sFuQhBqWTJsww==
 From: Mark Brown <broonie@kernel.org>
 To: Richard Fitzgerald <rf@opensource.cirrus.com>
-In-Reply-To: <20220817122347.1356773-1-rf@opensource.cirrus.com>
-References: <20220817122347.1356773-1-rf@opensource.cirrus.com>
-Subject: Re: [PATCH 0/5] ASoC: cs42l42: Some small code improvements
-Message-Id: <166075594756.566556.10171156201538682053.b4-ty@kernel.org>
-Date: Wed, 17 Aug 2022 18:05:47 +0100
+In-Reply-To: <20220817125508.1406651-1-rf@opensource.cirrus.com>
+References: <20220817125508.1406651-1-rf@opensource.cirrus.com>
+Subject: Re: [PATCH] ASoC: soc-utils-test: Add test for
+ snd_soc_params_to_bclk()
+Message-Id: <166075594887.566556.11485960261417126250.b4-ty@kernel.org>
+Date: Wed, 17 Aug 2022 18:05:48 +0100
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -80,17 +81,12 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, 17 Aug 2022 13:23:42 +0100, Richard Fitzgerald wrote:
-> This is a collection of minor improvements to the code or comments.
+On Wed, 17 Aug 2022 13:55:08 +0100, Richard Fitzgerald wrote:
+> snd_soc_params_to_bclk() calculates the BCLK from only the information in
+> snd_pcm_hw_params. It is therefore a subset of the functionality of
+> snd_soc_tdm_params_to_bclk() so can use a subset of the test case table.
 > 
-> Richard Fitzgerald (5):
->   ASoC: cs42l42: Don't include kernel.h
->   ASoC: cs42l42: Add include dependencies to cs42l42.h
->   ASoC: cs42l42: Move cs42l42_supply_names to .c file
->   ASoC: cs42l42: Fix comment typo in cs42l42_slow_start_put()
->   ASoC: cs42l42: Use snd_soc_tdm_params_to_bclk()
 > 
-> [...]
 
 Applied to
 
@@ -98,16 +94,8 @@ Applied to
 
 Thanks!
 
-[1/5] ASoC: cs42l42: Don't include kernel.h
-      commit: 8ccaa7eb76742579864ddf834a8ea9c036c2cc5a
-[2/5] ASoC: cs42l42: Add include dependencies to cs42l42.h
-      commit: b48d1da00fc8f32f7f75b8a34eb484f08b39ffaa
-[3/5] ASoC: cs42l42: Move cs42l42_supply_names to .c file
-      commit: dbd231732c99e336c2ece4a70896139e7f5a51a7
-[4/5] ASoC: cs42l42: Fix comment typo in cs42l42_slow_start_put()
-      commit: db568aab37c1af80057c12c97e6af049495c3e4a
-[5/5] ASoC: cs42l42: Use snd_soc_tdm_params_to_bclk()
-      commit: c2683ecfd1850cc99829691b2e1d90f1a6d75b8b
+[1/1] ASoC: soc-utils-test: Add test for snd_soc_params_to_bclk()
+      commit: e32e23a2b588424aec0c4c4435530f8022318b8f
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
