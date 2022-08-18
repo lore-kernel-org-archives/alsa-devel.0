@@ -4,42 +4,61 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5FCA1C25B08
-	for <alsa-devel@archiver.kernel.org>; Wed, 17 Aug 2022 22:34:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D030EC25B08
+	for <alsa-devel@archiver.kernel.org>; Thu, 18 Aug 2022 02:12:04 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 6C21B164E;
-	Thu, 18 Aug 2022 00:34:03 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6C21B164E
+	by alsa0.perex.cz (Postfix) with ESMTPS id E56EA1651;
+	Thu, 18 Aug 2022 04:11:12 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E56EA1651
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1660775693;
-	bh=xV6QPMtBoBG3MPXdYhPydNPLU90gTnwNcUB/xOq3RnY=;
-	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=vC7P7fxHZdpX6FZrz4URku5IfRFtv9KsqYbmxlLnyBZge/t/7SAl3YpSSSMbX74bF
-	 a7I2uY15Zv9WkW0h/I4mHi+C76aGpjq5fprlnLCoUQq+ePFO9bzSAWHGg+tHLp5MoR
-	 jm2kwZrXU0G2muqqhC/0cPc8i+3zo/kJJgMYXv2w=
+	s=default; t=1660788723;
+	bh=+Tg8MMyAXhntRogrZC66oxlnnzLrm8fTAInQAWUQZwI=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=HycU5sjoGFhfjR/6sJaEZYCHJM9U//J0uoDUaoAjS75M0+4BvrXNJRT1cYUD6Cq/8
+	 k6KdM8d8MV8I4J3MVhB+0d4ZRht+CBCSdzT7jMCQ4YSAzxLbi6aN8pcf0NBLd3IoVp
+	 OwvQugeJ75ZkUiysCiEV4Lz+TfRruuZArr4ZQnAU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id D3823F800FE;
-	Thu, 18 Aug 2022 00:34:02 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 6EA95F800B5;
+	Thu, 18 Aug 2022 04:11:12 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 44BB0F80130; Thu, 18 Aug 2022 00:34:01 +0200 (CEST)
-Received: from webhooks-bot.alsa-project.org (gate.perex.cz [77.48.224.242])
- by alsa1.perex.cz (Postfix) with ESMTP id D1C88F80088
- for <alsa-devel@alsa-project.org>; Thu, 18 Aug 2022 00:33:57 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D1C88F80088
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-From: GitHub issues - edited <github@alsa-project.org>
-To: alsa-devel@alsa-project.org
-In-Reply-To: <1660775636983509064-webhooks-bot@alsa-project.org>
-References: <1660775636983509064-webhooks-bot@alsa-project.org>
-Subject: snd_hda_intel: Woke up but no data
-Message-Id: <20220817223401.44BB0F80130@alsa1.perex.cz>
-Date: Thu, 18 Aug 2022 00:34:01 +0200 (CEST)
+ id 8A9DBF80495; Thu, 18 Aug 2022 04:11:10 +0200 (CEST)
+Received: from inva020.nxp.com (inva020.nxp.com [92.121.34.13])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id ED415F800EE;
+ Thu, 18 Aug 2022 04:11:02 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz ED415F800EE
+Received: from inva020.nxp.com (localhost [127.0.0.1])
+ by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 9BCDA1A2CB0;
+ Thu, 18 Aug 2022 04:11:01 +0200 (CEST)
+Received: from aprdc01srsp001v.ap-rdc01.nxp.com
+ (aprdc01srsp001v.ap-rdc01.nxp.com [165.114.16.16])
+ by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 6CFD81A2CA3;
+ Thu, 18 Aug 2022 04:11:01 +0200 (CEST)
+Received: from localhost.localdomain (shlinux2.ap.freescale.net
+ [10.192.224.44])
+ by aprdc01srsp001v.ap-rdc01.nxp.com (Postfix) with ESMTP id 229661820F57;
+ Thu, 18 Aug 2022 10:10:59 +0800 (+08)
+From: Shengjiu Wang <shengjiu.wang@nxp.com>
+To: pierre-louis.bossart@linux.intel.com, lgirdwood@gmail.com,
+ peter.ujfalusi@linux.intel.com, yung-chuan.liao@linux.intel.com,
+ ranjani.sridharan@linux.intel.com, kai.vehmanen@linux.intel.com,
+ daniel.baluta@nxp.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com,
+ shawnguo@kernel.org, s.hauer@pengutronix.de, kernel@pengutronix.de,
+ festevam@gmail.com, linux-imx@nxp.com, robh+dt@kernel.org,
+ krzysztof.kozlowski+dt@linaro.org, devicetree@vger.kernel.org
+Subject: [RESEND PATCH v2 1/2] dt-bindings: dsp: fsl: Add SOF compatile string
+ for i.MX8ULP
+Date: Thu, 18 Aug 2022 09:53:53 +0800
+Message-Id: <1660787634-28550-1-git-send-email-shengjiu.wang@nxp.com>
+X-Mailer: git-send-email 2.7.4
+X-Virus-Scanned: ClamAV using ClamSMTP
+Cc: alsa-devel@alsa-project.org, shengjiu.wang@gmail.com,
+ linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ sound-open-firmware@alsa-project.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -55,19 +74,30 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-alsa-project/alsa-lib issue #262 was edited from shmohawk:
+Add SOF compatile string "fsl,imx8ulp-dsp" for supporting DSP
+device on i.MX8ULP platform.
 
-```
-Aug 17 01:11:23 hellokitty pulseaudio[12938]: [alsa-sink-CX20590 Analog] alsa-sink.c: ALSA woke us up to write new data to the device, but there was actually nothing to write.
-Aug 17 01:11:23 hellokitty pulseaudio[12938]: [alsa-sink-CX20590 Analog] alsa-sink.c: Most likely this is a bug in the ALSA driver 'snd_hda_intel'. Please report this issue to the ALSA developers.
-Aug 17 01:11:23 hellokitty pulseaudio[12938]: [alsa-sink-CX20590 Analog] alsa-sink.c: We were woken up with POLLOUT set -- however a subsequent snd_pcm_avail() returned 0 or another value < min_avail.
-```
+Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
+Acked-by: Rob Herring <robh@kernel.org>
+---
+changes in v2
+- add acked-by Rob
 
-It is symptomous with a crackling sound for ~5 seconds after any playback starts. 
+ Documentation/devicetree/bindings/dsp/fsl,dsp.yaml | 1 +
+ 1 file changed, 1 insertion(+)
 
-alsa-lib 1.2.7.2
-alsa-utils 1.2.7
-alsa-plugins 1.2.2
+diff --git a/Documentation/devicetree/bindings/dsp/fsl,dsp.yaml b/Documentation/devicetree/bindings/dsp/fsl,dsp.yaml
+index e66ef2da7879..9af40da5688e 100644
+--- a/Documentation/devicetree/bindings/dsp/fsl,dsp.yaml
++++ b/Documentation/devicetree/bindings/dsp/fsl,dsp.yaml
+@@ -20,6 +20,7 @@ properties:
+       - fsl,imx8qxp-dsp
+       - fsl,imx8qm-dsp
+       - fsl,imx8mp-dsp
++      - fsl,imx8ulp-dsp
+       - fsl,imx8qxp-hifi4
+       - fsl,imx8qm-hifi4
+       - fsl,imx8mp-hifi4
+-- 
+2.34.1
 
-Issue URL     : https://github.com/alsa-project/alsa-lib/issues/262
-Repository URL: https://github.com/alsa-project/alsa-lib
