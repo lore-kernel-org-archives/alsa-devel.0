@@ -4,76 +4,88 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id CA608C00140
-	for <alsa-devel@archiver.kernel.org>; Thu, 18 Aug 2022 08:15:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1A025C00140
+	for <alsa-devel@archiver.kernel.org>; Thu, 18 Aug 2022 09:26:56 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B54431664;
-	Thu, 18 Aug 2022 10:15:02 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B54431664
+	by alsa0.perex.cz (Postfix) with ESMTPS id 47E291658;
+	Thu, 18 Aug 2022 11:26:04 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 47E291658
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1660810552;
-	bh=1pMu3yuAB0gQ8wwcQ/V5v3DSCGyeUtyrelY95YGU83k=;
-	h=Date:Subject:To:References:From:In-Reply-To:Cc:List-Id:
+	s=default; t=1660814814;
+	bh=n/YmpnnI3jusujPQQ0H9VdujOiT8un6Nr19J1PBA+/o=;
+	h=Subject:From:To:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=MJrz4l38sChPJ830FoXN/s7t/NlcyYUYOHvRBytP+b34N0tDQWhB7GvbcOkJx5R1n
-	 gKKUVMDT/hnwtlswshDfmRbiufVZjWNP1i3p7FO3UIc1cVDzgmioclvPxrjRiXoKNw
-	 U7lGc1ObGG9KDVqdAoAfVsCoWBKyOPNW3Gl6m814=
+	b=nIuqSjmbXAEIzGrb8YKzql1fV/17NCjtpCDMUguG+LKhvYb4MWhKh176PWAR7p4Sl
+	 qjp397G2WstRrknf3froeYitWbya7hc/sxsOoapSiF+OhAO8kW8x5zNSB9116kMQ8G
+	 9HFkvenDb8zpuNj8UX9LDd9ibOBC/zI3L7sG2ovU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 3AF2FF8013D;
-	Thu, 18 Aug 2022 10:15:02 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id DDCBAF8013D;
+	Thu, 18 Aug 2022 11:26:03 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 298EFF80430; Thu, 18 Aug 2022 10:15:01 +0200 (CEST)
-Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
+ id 4FF9EF80430; Thu, 18 Aug 2022 11:26:02 +0200 (CEST)
+Received: from sender4-op-o18.zoho.com (sender4-op-o18.zoho.com
+ [136.143.188.18])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 606B3F800B5;
- Thu, 18 Aug 2022 10:14:52 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 606B3F800B5
+ by alsa1.perex.cz (Postfix) with ESMTPS id DF344F800E9
+ for <alsa-devel@alsa-project.org>; Thu, 18 Aug 2022 11:25:56 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DF344F800E9
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="dPzINHps"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
- d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1660810495; x=1692346495;
- h=message-id:date:mime-version:subject:to:cc:references:
- from:in-reply-to:content-transfer-encoding;
- bh=1pMu3yuAB0gQ8wwcQ/V5v3DSCGyeUtyrelY95YGU83k=;
- b=dPzINHps5X9WIkJriNdCiiDpRNPiMK9VTmtfTc/L18u5XxwcQ+Tnwn//
- m8/txSluNrznfAAjNeUF47Tv9CpyJjTndQyQVCVE2gJ/xsqumUwiAeDUS
- l3Jmejm7JI5J1F1tAtFcyzSaVVNcfUxVhoe4pHLWFbjKoraYCjh1TCTx+
- CCCkgol/7eP5bYHSB7DtiA2Ue7caJrztVQbXZ0312w4IThhinW47+a8ib
- ulqLpJlx3cWtm6ZJi1QSG0lEbOBY7qAvE6EAWN9XLyOsv9THV8caAQh/d
- BRxji+cgnnkwAvfYxUz+9EHRF4qUllZpx03IfZo3oFZCfELJhPDQ/8J5z g==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10442"; a="378992287"
-X-IronPort-AV: E=Sophos;i="5.93,245,1654585200"; d="scan'208";a="378992287"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
- by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 18 Aug 2022 01:14:50 -0700
-X-IronPort-AV: E=Sophos;i="5.93,245,1654585200"; d="scan'208";a="604176061"
-Received: from jiayiwan-mobl1.ccr.corp.intel.com (HELO [10.249.254.115])
- ([10.249.254.115])
- by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 18 Aug 2022 01:14:48 -0700
-Message-ID: <afcaffc6-aa07-d95f-6823-a858b53ee978@linux.intel.com>
-Date: Thu, 18 Aug 2022 11:14:41 +0300
+ dkim=pass (1024-bit key) header.d=icenowy.me header.i=uwu@icenowy.me
+ header.b="YtYiL2JD"
+ARC-Seal: i=1; a=rsa-sha256; t=1660814717; cv=none; 
+ d=zohomail.com; s=zohoarc; 
+ b=ecp+b6q9LKlC+2Tp45CO/kCN49M5kVOiRygPDX41MpmcwikQX6nAIfw2WcTqDsosaCBFMqyKvlJ1CzpE+qzRYNAhtXJKr5uXrQNAhfVFq3SFLi6rh/Cu7dTRRvh2LFuc62G4ltcyh16IIhZH8oUxlTOcIAVo20bTCZgs0DlRejE=
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=zohomail.com;
+ s=zohoarc; t=1660814717;
+ h=Content-Type:Content-Transfer-Encoding:Cc:Date:From:In-Reply-To:MIME-Version:Message-ID:References:Subject:To;
+ bh=n/YmpnnI3jusujPQQ0H9VdujOiT8un6Nr19J1PBA+/o=; 
+ b=XnnInuT+ymHQpZb+cpb3rXDGpnLIQ3VfOZrgawaSHRFCxXc3u/etCa6YlZhy6WivsCbVmCuM3o39IoJN6eg1BRt46+HZc5rSOgdUmzppHjg+/HU9pVX1RqvRJrdjJwRCovSzwzMyW/YXDlxweR1RIyFOq74KpdL8ral2uiH3T8Y=
+ARC-Authentication-Results: i=1; mx.zohomail.com;
+ dkim=pass  header.i=icenowy.me;
+ spf=pass  smtp.mailfrom=uwu@icenowy.me;
+ dmarc=pass header.from=<uwu@icenowy.me>
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1660814717; 
+ s=zmail; d=icenowy.me; i=uwu@icenowy.me;
+ h=Message-ID:Subject:Subject:From:From:To:To:Cc:Cc:Date:Date:In-Reply-To:References:Content-Type:MIME-Version:Content-Transfer-Encoding:Message-Id:Reply-To;
+ bh=n/YmpnnI3jusujPQQ0H9VdujOiT8un6Nr19J1PBA+/o=;
+ b=YtYiL2JDifjW/6x7jRqIpLsGi9447JDxwCN1PQJ0W2nO9e0fNfCxHEswjoaSZe76
+ tOCdfSNG9rddc6Zw7OuU8b08OSWW2wVXpVIaltQTHj1qyPe5DtUE78g0tXd63Gog7MM
+ SZN3pLWNeHbzoKfiPBKidsVXFEZsdI6A/oe/AbEE=
+Received: from edelgard.icenowy.me (112.94.101.156 [112.94.101.156]) by
+ mx.zohomail.com with SMTPS id 1660814714900671.9352722842973;
+ Thu, 18 Aug 2022 02:25:14 -0700 (PDT)
+Message-ID: <24882ec3fed5c9772e1b04088cecece1b2477b23.camel@icenowy.me>
+Subject: Re: [PATCH 2/2] ASoC: Intel: Skylake: try to get NHLT blob with PCM
+ params as fallback
+From: Icenowy Zheng <uwu@icenowy.me>
+To: Cezary Rojewski <cezary.rojewski@intel.com>
+Date: Thu, 18 Aug 2022 17:25:09 +0800
+In-Reply-To: <c3386d45-b643-b4aa-c868-5c113cd2955f@intel.com>
+References: <20220725111002.143765-1-uwu@icenowy.me>
+ <20220725111002.143765-2-uwu@icenowy.me>
+ <4208aece-0aea-ba86-9a00-9e217546e1dd@intel.com>
+ <3346b62c3cd7e07766457c9140849a31d6d8775c.camel@icenowy.me>
+ <85648922-27df-051d-8ae8-d0e4e810198a@intel.com>
+ <1891bc72834cb6e25d479c3968c04bcef94c3ad5.camel@icenowy.me>
+ <c3386d45-b643-b4aa-c868-5c113cd2955f@intel.com>
+Organization: Anthon Open-Source Community
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.40.4 
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Firefox/91.0 Thunderbird/91.12.0
-Subject: Re: [PATCH -next] ASoC: SOF: ipc4-topology: fix wrong use of sizeof
- in sof_ipc4_widget_setup_comp_src()
-Content-Language: en-US
-To: Yang Yingliang <yangyingliang@huawei.com>, linux-kernel@vger.kernel.org,
- alsa-devel@alsa-project.org, sound-open-firmware@alsa-project.org
-References: <20220818081751.2407066-1-yangyingliang@huawei.com>
-From: =?UTF-8?Q?P=c3=a9ter_Ujfalusi?= <peter.ujfalusi@linux.intel.com>
-In-Reply-To: <20220818081751.2407066-1-yangyingliang@huawei.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-Cc: broonie@kernel.org, ranjani.sridharan@linux.intel.com,
- pierre-louis.bossart@linux.intel.com, rander.wang@intel.com
+Content-Transfer-Encoding: quoted-printable
+X-ZohoMailClient: External
+Cc: alsa-devel@alsa-project.org, Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+ Peter Ujfalusi <peter.ujfalusi@linux.intel.com>, Takashi Iwai <tiwai@suse.com>,
+ linux-kernel@vger.kernel.org,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ Liam Girdwood <liam.r.girdwood@linux.intel.com>,
+ Mark Brown <broonie@kernel.org>,
+ Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+ Bard Liao <yung-chuan.liao@linux.intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -89,35 +101,65 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+=E5=9C=A8 2022-08-17=E6=98=9F=E6=9C=9F=E4=B8=89=E7=9A=84 15:19 +0200=EF=BC=
+=8CCezary Rojewski=E5=86=99=E9=81=93=EF=BC=9A
+> On 2022-08-17 2:48 PM, Icenowy Zheng wrote:
+> > =E5=9C=A8 2022-08-16=E6=98=9F=E6=9C=9F=E4=BA=8C=E7=9A=84 21:08 +0200=EF=
+=BC=8CCezary Rojewski=E5=86=99=E9=81=93=EF=BC=9A
+>=20
+> ...
+>=20
+> >=20
+> > Yes, it's Chell.
+> >=20
+> > BTW do you need other ACPI tables?
+>=20
+> At this point, no. Thanks for confirming the platform's name.
+>=20
+> > >=20
+> > > ..and at this point I probably know more than enough. We have
+> > > tested
+> > > basically all of the KBL and AML configurations when fixing
+> > > regressions
+> > > during recent skylake-driver up-revs. But Chell (and Lars for
+> > > that
+> > > matter) families were not among them as these are based on SKL.
+> > > I'll
+> > > follow up on this with our partners and come back here. I'm
+> > > almost
+> > > certain topology files for the two families mentioned were not
+> > > updated
+> > > along the way.
+> >=20
+> > Could this be an issue of Coreboot, which generates the NHLT table?
+>=20
+> NHLT was left alone across all the updates. Updating it is one way of
+> fixing problems but I don't believe it's necessary in your case.=20
+> Topology update is more desirable approach.
+
+BTW how could I fix the topology?
+
+I now use topology files from GalliumOS (which, I assume, is extracted
+from ChromeOS).
+
+>=20
+> > BTW I think Google pinned the official OS of this hardware to a
+> > much
+> > lower kernel version (but I don't want to use the official OS
+> > because
+> > of limited storage of Chell and lack of VM ability of the OS on
+> > Chell).
+>=20
+> That clarifies things out. Guess the kernel version used there is
+> v4.4=20
+> (plus a ton of un-upstreamed patches). Again, will propagate the=20
+> information up the chain. Perhaps one of the solutions for end-users=20
+> would be providing working UCM files to alsa-topology-conf repo so
+> users=20
+> are not powerless in situations such as this one.
+>=20
+>=20
+> Regards,
+> Czarek
 
 
-On 18/08/2022 11:17, Yang Yingliang wrote:
-> It should be size of the struct sof_ipc4_src, not data pointer pass to
-> sof_update_ipc_object().
-
-Good find, thank you.
-
-Acked-by: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
-
-> Fixes: b85f4fc40d56 ("ASoC: SOF: add ipc4 SRC module support")
-> Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
-> ---
->  sound/soc/sof/ipc4-topology.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/sound/soc/sof/ipc4-topology.c b/sound/soc/sof/ipc4-topology.c
-> index af072b484a60..c6abfaf5d532 100644
-> --- a/sound/soc/sof/ipc4-topology.c
-> +++ b/sound/soc/sof/ipc4-topology.c
-> @@ -771,7 +771,7 @@ static int sof_ipc4_widget_setup_comp_src(struct snd_sof_widget *swidget)
->  		goto err;
->  
->  	ret = sof_update_ipc_object(scomp, src, SOF_SRC_TOKENS, swidget->tuples,
-> -				    swidget->num_tuples, sizeof(src), 1);
-> +				    swidget->num_tuples, sizeof(*src), 1);
->  	if (ret) {
->  		dev_err(scomp->dev, "Parsing SRC tokens failed\n");
->  		goto err;
-
--- 
-Péter
