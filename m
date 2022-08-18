@@ -4,75 +4,70 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 379C2C00140
-	for <alsa-devel@archiver.kernel.org>; Thu, 18 Aug 2022 14:17:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 66F42C2BB41
+	for <alsa-devel@archiver.kernel.org>; Thu, 18 Aug 2022 15:12:10 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 7D5E71691;
-	Thu, 18 Aug 2022 16:16:08 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7D5E71691
+	by alsa0.perex.cz (Postfix) with ESMTPS id 1404C1670;
+	Thu, 18 Aug 2022 17:11:18 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1404C1670
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1660832218;
-	bh=EW0ARkTrK0sgs3zaXFUnHfDqPW/DNwNAumfLEbrEiZ4=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1660835528;
+	bh=jEaSi3//ZcjcSJYCTtWKOStKXxh0VlQ4sbaPnZZ6OwI=;
+	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=aYv5FQUcYhgZy8EFhM+LwrQ+TYWp2mEqvvxPHUtzxXyxIrCGQlwD5+yWyTG6h55zR
-	 B0M84fbm2Ydx3l65oPQPQIU4ShO+sakMDh3th2iCfgVFKXs7DFw72OGoajdbkqfwQk
-	 8ZvaloiKlICAG//lf4RVXGXWz6gRYeRJxRG/2aLA=
+	b=EtnX5lsqeUfkYp/Vpi4gIGiAgBLmioLAlfJfwjINi6qLsAwaDHhRXpqLfiI5Ip3ic
+	 xwhOha5FLbNVtXGPsBicuHhyIB/OCc9hdiuPpKj8TxRlYByucJbuobg0msu+RQxEI9
+	 BH5cMmjfajdx8RKMSWgickBRAINBOVEcj4fihsFE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 0AA42F80529;
-	Thu, 18 Aug 2022 16:15:22 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id A6417F8013D;
+	Thu, 18 Aug 2022 17:11:17 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 60954F804C2; Thu, 18 Aug 2022 16:15:21 +0200 (CEST)
-Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
+ id 0B253F80430; Thu, 18 Aug 2022 17:11:16 +0200 (CEST)
+Received: from ams.source.kernel.org (ams.source.kernel.org
+ [IPv6:2604:1380:4601:e00::1])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 99005F800E9;
+ Thu, 18 Aug 2022 17:11:12 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 99005F800E9
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="jo4OYGwk"
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id CD848F804C2
- for <alsa-devel@alsa-project.org>; Thu, 18 Aug 2022 16:15:11 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CD848F804C2
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="d9AiKLri"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
- d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1660832113; x=1692368113;
- h=from:to:cc:subject:date:message-id:in-reply-to:
- references:mime-version:content-transfer-encoding;
- bh=EW0ARkTrK0sgs3zaXFUnHfDqPW/DNwNAumfLEbrEiZ4=;
- b=d9AiKLri4mTTD/OJEiAHqTMbGY8LsRJXpVNpYToDwwj73rOR5zPQvoQ1
- JIXQACY6+6xPvLXYtkYsVk8F0UpyE5I9OE3RHXRmzyQomEYytxpgSVP2P
- UohTt4t4AzpYNu5T7cScUf/e8TqLgzQq/Tp9YXOpzX1E8TKwN+Fm03/gb
- QYNU+/UL4QtZ9EcwmlyDuclkF+s21ZX+ZbrS/rQWl2rdJKmlmvc/iICUg
- XvQ9vzUUq7in+dEhQtLQVgaqpogVpzoxPEFJ+sOqYvXXHsmauNBXNgvZz
- LA7awd1H5nPNXdg4YNMwO3nwt7qcoGtSkY2fkk8S/pooux1X6wJeRw9tX w==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10443"; a="292764766"
-X-IronPort-AV: E=Sophos;i="5.93,246,1654585200"; d="scan'208";a="292764766"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
- by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 18 Aug 2022 07:14:49 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.93,246,1654585200"; d="scan'208";a="584222252"
-Received: from dev2.igk.intel.com ([10.237.148.94])
- by orsmga006.jf.intel.com with ESMTP; 18 Aug 2022 07:14:47 -0700
-From: =?UTF-8?q?Amadeusz=20S=C5=82awi=C5=84ski?=
- <amadeuszx.slawinski@linux.intel.com>
-To: Takashi Iwai <tiwai@suse.com>,
-	alsa-devel@alsa-project.org
-Subject: [PATCH v2 3/4] ALSA: hda: Remove unused MAX_PIN_CONFIGS constant
-Date: Thu, 18 Aug 2022 16:15:16 +0200
-Message-Id: <20220818141517.109280-4-amadeuszx.slawinski@linux.intel.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20220818141517.109280-1-amadeuszx.slawinski@linux.intel.com>
-References: <20220818141517.109280-1-amadeuszx.slawinski@linux.intel.com>
+ by ams.source.kernel.org (Postfix) with ESMTPS id 3A404B821E3;
+ Thu, 18 Aug 2022 15:11:07 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 83C6EC433D7;
+ Thu, 18 Aug 2022 15:11:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1660835466;
+ bh=jEaSi3//ZcjcSJYCTtWKOStKXxh0VlQ4sbaPnZZ6OwI=;
+ h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+ b=jo4OYGwk/jSlf28wKYzzhjOGpVpdyfENoT6QGXc4wMosFOAEQh3hPqERuX88JYG+/
+ jG6Vb4m5uebWNPmTrLnU7IiQxykWAv7Gn7Y/DuOtEllEoHgWap4vLPxCEtg8JmfxM8
+ ciOIPOjk3r824OoSssFKeGA/Dfu3pDcB63UScGcGXV/2IxpJN249hkWsGtx2TYHdRc
+ FmuYEIq15iDFuGBnaIvNCzVo0L1SSVywNPmZt+OJ/DrEnJIXMy2I9sd9kwtibrI9pn
+ kkscqt/2s4sJpTFBRosK1GjdHaYAOGS/JFYZ97U40KolHvOt435U8zAKxi1gjbRE52
+ 2z1tk55KOi1wg==
+From: Mark Brown <broonie@kernel.org>
+To: linux-kernel@vger.kernel.org, sound-open-firmware@alsa-project.org,
+ Yang Yingliang <yangyingliang@huawei.com>, alsa-devel@alsa-project.org
+In-Reply-To: <20220818081751.2407066-1-yangyingliang@huawei.com>
+References: <20220818081751.2407066-1-yangyingliang@huawei.com>
+Subject: Re: [PATCH -next] ASoC: SOF: ipc4-topology: fix wrong use of sizeof
+ in sof_ipc4_widget_setup_comp_src()
+Message-Id: <166083546318.130965.12497020446854226805.b4-ty@kernel.org>
+Date: Thu, 18 Aug 2022 16:11:03 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: Cezary Rojewski <cezary.rojewski@intel.com>, linux-kernel@vger.kernel.org,
- =?UTF-8?q?Amadeusz=20S=C5=82awi=C5=84ski?=
- <amadeuszx.slawinski@linux.intel.com>,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+X-Mailer: b4 0.10.0-dev-fe10a
+Cc: ranjani.sridharan@linux.intel.com, peter.ujfalusi@linux.intel.com,
+ pierre-louis.bossart@linux.intel.com, rander.wang@intel.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -88,29 +83,36 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Since it was introduced around v2.6.30 it was never used. Also HDA
-specification does not mention any limitation on number of PIN
-configurations.
+On Thu, 18 Aug 2022 16:17:51 +0800, Yang Yingliang wrote:
+> It should be size of the struct sof_ipc4_src, not data pointer pass to
+> sof_update_ipc_object().
+> 
+> 
 
-Reviewed-by: Cezary Rojewski <cezary.rojewski@intel.com>
-Signed-off-by: Amadeusz Sławiński <amadeuszx.slawinski@linux.intel.com>
----
- sound/pci/hda/hda_sysfs.c | 2 --
- 1 file changed, 2 deletions(-)
+Applied to
 
-diff --git a/sound/pci/hda/hda_sysfs.c b/sound/pci/hda/hda_sysfs.c
-index bf951c10ae61..69ebc37a4d6f 100644
---- a/sound/pci/hda/hda_sysfs.c
-+++ b/sound/pci/hda/hda_sysfs.c
-@@ -375,8 +375,6 @@ static ssize_t user_pin_configs_show(struct device *dev,
- 	return pin_configs_show(codec, &codec->user_pins, buf);
- }
- 
--#define MAX_PIN_CONFIGS		32
--
- static int parse_user_pin_configs(struct hda_codec *codec, const char *buf)
- {
- 	int nid, cfg, err;
--- 
-2.25.1
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
 
+Thanks!
+
+[1/1] ASoC: SOF: ipc4-topology: fix wrong use of sizeof in sof_ipc4_widget_setup_comp_src()
+      commit: ecdb10df7e0d83bfd12fb8f71e28ea4753e3716a
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
