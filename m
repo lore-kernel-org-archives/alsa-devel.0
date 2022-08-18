@@ -4,88 +4,72 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id CB72BC00140
-	for <alsa-devel@archiver.kernel.org>; Thu, 18 Aug 2022 14:00:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 25BBCC00140
+	for <alsa-devel@archiver.kernel.org>; Thu, 18 Aug 2022 14:15:46 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 43F761681;
-	Thu, 18 Aug 2022 15:59:34 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 43F761681
+	by alsa0.perex.cz (Postfix) with ESMTPS id 26099165E;
+	Thu, 18 Aug 2022 16:14:54 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 26099165E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1660831224;
-	bh=lpsNaA5R8zGla6oBVzchUClEQnkUeRu1IeEOI2L5rrk=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=r5FYcGhNdj/VOfZDD/R83Yw+r7MIAKR6pbf8fYKNFoI3Df/3RrTH4G9T5SWQZZh9y
-	 /rkpJCifuCBmygJqCkRVHnY44y+yQM/O+IUYZk469HnBVsvtGpD7O4ooEEisDeki+q
-	 N8sazEDgGtQNwfP6nJmBFIu7edxOsm1zG8QcEWYk=
+	s=default; t=1660832144;
+	bh=ZhOBlyLmWbCSd5npf+S55l4gbzaVMkSPYKPfp8DWzD0=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=De6HgVoZTRPVG4Tj6I8RUWf9FGORB44VQgfcaiRCN/QgXvoZV+80wewxhiconKn0k
+	 r/S63G7u4CpVkgNSko5IphrlL1EE2RxSyQk1QRKg3EEk7FJyQegcwix4jS+wDSRhlw
+	 ReuaAEeMXKU5GH7fnIBPqr5AtqHW9YBcEdMR6C64=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 88DA7F804CB;
-	Thu, 18 Aug 2022 15:58:42 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id B3CA4F80430;
+	Thu, 18 Aug 2022 16:14:53 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 921ADF800EE; Thu, 18 Aug 2022 15:58:40 +0200 (CEST)
-Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com
- [IPv6:2a00:1450:4864:20::432])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id 641C8F8013D; Thu, 18 Aug 2022 16:14:52 +0200 (CEST)
+Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id CF12DF800EE
- for <alsa-devel@alsa-project.org>; Thu, 18 Aug 2022 15:58:33 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CF12DF800EE
+ by alsa1.perex.cz (Postfix) with ESMTPS id 2F39DF800EE
+ for <alsa-devel@alsa-project.org>; Thu, 18 Aug 2022 16:14:48 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2F39DF800EE
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org
- header.b="ZaD7AN1Z"
-Received: by mail-wr1-x432.google.com with SMTP id n7so1844986wrv.4
- for <alsa-devel@alsa-project.org>; Thu, 18 Aug 2022 06:58:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
- h=content-transfer-encoding:mime-version:references:in-reply-to
- :message-id:date:subject:cc:to:from:from:to:cc;
- bh=ctM38jQuzTHb3zbHExnXZUiYZ27GKCoC7SghpDpizGc=;
- b=ZaD7AN1ZDubBR4YYPXmt/RZTONQHByz5UdRXorp9bxAKFQiGKYU6NXef/pipoO6Q5o
- E1QSWws5YRTKphqRpVCgePOyq7ajFokIJAWqoYqqj8qaPgS7rl9kwYkf3ct2+DDujAtD
- qRlVWPjJn/HYepT2t0GRawr72slTzyboC1uWdemMf6ZQI5ASchwtjqrXbDZMgjq7sWGh
- UB74JwZvo7BpPLYPKOqMkwOwLQqVPWgVAiMnXyXV7++xceFm1Pj88Zyc9sbK4tYbIRWl
- HHVulTCtABx7B8tWPXxsUR/0PBuxOQunfafQiGhU+/fBpp8QoO6uQss2Of2YxlPUHgdh
- RUAg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=content-transfer-encoding:mime-version:references:in-reply-to
- :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc;
- bh=ctM38jQuzTHb3zbHExnXZUiYZ27GKCoC7SghpDpizGc=;
- b=sBqtlBmjOjVCpYrzVMjJw20/bRK2ClZW1o5se/Vwn2xQ8XIxHHgiO5Q1CIwNuBcV6x
- WhBTSOzT6rnXSSKTkkorZ7LdgslgqKNGBXAzv4a4uZ+j4M3Ahjq8C/16zXLhhTspKNpt
- /dycPVsT4RYZsVH/Gc9X9d66wXfUYf04rL1c30FT9E8TkAE3f+guQGQtqt0oUfZWd4Y4
- R73qRek6axaeGurQPw3l9hb2Oi3czCJb0rvA8Cg+dLXKZHozY+S7gRUIYlIeIDNFPtUF
- 6YZmhhn3zQNNOuTswsO/QjdQlgkg5utpHmzq+gVka1wBYzCngxOKtMzsDu+XzwNq8uxH
- N1SA==
-X-Gm-Message-State: ACgBeo1vCbaLKyhs6T+GnjEMoSV7wGdivd5MlIF3XIF5BmO/u3ZizaNI
- YVxRZwFABSdwxJ8QsfeIn+IyeQ==
-X-Google-Smtp-Source: AA6agR6OA9GQc/IGwpgE2EtGk02i/Pv0SbcQwLbD1cZHnT2+8Rq3Iow74FarEYgGW4U+3OPNZP+QgQ==
-X-Received: by 2002:a5d:4649:0:b0:225:309d:1d51 with SMTP id
- j9-20020a5d4649000000b00225309d1d51mr1313370wrs.450.1660831112000; 
- Thu, 18 Aug 2022 06:58:32 -0700 (PDT)
-Received: from srini-hackbox.lan
- (cpc90716-aztw32-2-0-cust825.18-1.cable.virginm.net. [86.26.103.58])
- by smtp.gmail.com with ESMTPSA id
- l24-20020a1c7918000000b003a5ca627333sm5335937wme.8.2022.08.18.06.58.30
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Thu, 18 Aug 2022 06:58:31 -0700 (PDT)
-From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-To: broonie@kernel.org
-Subject: [PATCH 2/3] ASoC: qcom: sm8250: move some code to common
-Date: Thu, 18 Aug 2022 14:58:16 +0100
-Message-Id: <20220818135817.10142-3-srinivas.kandagatla@linaro.org>
-X-Mailer: git-send-email 2.21.0
-In-Reply-To: <20220818135817.10142-1-srinivas.kandagatla@linaro.org>
-References: <20220818135817.10142-1-srinivas.kandagatla@linaro.org>
+ dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
+ header.b="IllGO4Ic"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+ d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+ t=1660832090; x=1692368090;
+ h=from:to:cc:subject:date:message-id:mime-version:
+ content-transfer-encoding;
+ bh=ZhOBlyLmWbCSd5npf+S55l4gbzaVMkSPYKPfp8DWzD0=;
+ b=IllGO4IciWOS3ItCSmwd3JKfpSNQ4Z4IyDi0hQooxh50MJR/anqqO8oG
+ GaDpGzl6USW9ElbWCipP/s7dVejJuvhCNGF9yKmB0vi7jWGExnHSP8jRe
+ TmcmpKBQUS/L5OXCz7F2eKr31KqTwmLC5v8UfTImOPVPnszAtuCzXJEUX
+ 2TieMrlP5cUajdX2TwaV7JQW5sK7h3W/UEFR5asqo5jtHhXi1ZahWteiF
+ RnrIbY9e1sxD7ZldOGLvO8RwZAN4YWD9KmD6DFFBieSIPRZZFQq+WBm56
+ 23ExZyQ32zj/dQ8eddLcaTuvMyyUfkjveJnnky7hruWOJUDeIZMlakOBz w==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10443"; a="292764743"
+X-IronPort-AV: E=Sophos;i="5.93,246,1654585200"; d="scan'208";a="292764743"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+ by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 18 Aug 2022 07:14:43 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.93,246,1654585200"; d="scan'208";a="584222210"
+Received: from dev2.igk.intel.com ([10.237.148.94])
+ by orsmga006.jf.intel.com with ESMTP; 18 Aug 2022 07:14:41 -0700
+From: =?UTF-8?q?Amadeusz=20S=C5=82awi=C5=84ski?=
+ <amadeuszx.slawinski@linux.intel.com>
+To: Takashi Iwai <tiwai@suse.com>,
+	alsa-devel@alsa-project.org
+Subject: [PATCH v2 0/4] hda: Minor cleanups
+Date: Thu, 18 Aug 2022 16:15:13 +0200
+Message-Id: <20220818141517.109280-1-amadeuszx.slawinski@linux.intel.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
- linux-arm-msm@vger.kernel.org, pierre-louis.bossart@linux.intel.com,
- tiwai@suse.com, robh+dt@kernel.org,
- Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
- krzysztof.kozlowski+dt@linaro.org, linux-kernel@vger.kernel.org
+Cc: Cezary Rojewski <cezary.rojewski@intel.com>, linux-kernel@vger.kernel.org,
+ =?UTF-8?q?Amadeusz=20S=C5=82awi=C5=84ski?=
+ <amadeuszx.slawinski@linux.intel.com>,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -101,420 +85,26 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-SM8450 machine driver code can be reused across multiple Qualcomm SoCs,
-Atleast another 2 of them for now (SM8450 and SM8250XP).
+First two patches are small refactoring of code to use poll macros
+instead of open coding register checks.
+Following two patches remove unused defines from code.
 
-Move some of the common SoundWire stream specific code to common file
-so that other drivers can use it instead of duplicating.
+v2:
+ * Fix includes
 
-This patch is to prepare the common driver to be able to add new SoCs support
-with less dupication.
+Amadeusz Sławiński (4):
+  ALSA: hda: Move stream-register polling macros
+  ALSA: hda: Rework snd_hdac_stream_reset() to use macros
+  ALSA: hda: Remove unused MAX_PIN_CONFIGS constant
+  ALSA: hda: Remove unused defines
 
-Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
----
- sound/soc/qcom/common.c | 169 ++++++++++++++++++++++++++++++++++++++++
- sound/soc/qcom/common.h |  12 +++
- sound/soc/qcom/sm8250.c | 152 ++----------------------------------
- 3 files changed, 188 insertions(+), 145 deletions(-)
+ include/sound/hdaudio.h     |  7 +++++++
+ include/sound/hdaudio_ext.h |  6 ------
+ sound/hda/hdac_stream.c     | 26 ++++++--------------------
+ sound/pci/hda/hda_intel.c   |  7 -------
+ sound/pci/hda/hda_sysfs.c   |  2 --
+ 5 files changed, 13 insertions(+), 35 deletions(-)
 
-diff --git a/sound/soc/qcom/common.c b/sound/soc/qcom/common.c
-index c407684ce1a2..8d1582733b6c 100644
---- a/sound/soc/qcom/common.c
-+++ b/sound/soc/qcom/common.c
-@@ -3,6 +3,9 @@
- // Copyright (c) 2018, The Linux Foundation. All rights reserved.
- 
- #include <linux/module.h>
-+#include <sound/jack.h>
-+#include <linux/input-event-codes.h>
-+#include "qdsp6/q6afe.h"
- #include "common.h"
- 
- int qcom_snd_parse_of(struct snd_soc_card *card)
-@@ -177,4 +180,170 @@ int qcom_snd_parse_of(struct snd_soc_card *card)
- }
- EXPORT_SYMBOL(qcom_snd_parse_of);
- 
-+int qcom_snd_sdw_prepare(struct snd_pcm_substream *substream,
-+			 struct sdw_stream_runtime *sruntime,
-+			 bool *stream_prepared)
-+{
-+	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct snd_soc_dai *cpu_dai = asoc_rtd_to_cpu(rtd, 0);
-+	int ret;
-+
-+	if (!sruntime)
-+		return 0;
-+
-+	switch (cpu_dai->id) {
-+	case WSA_CODEC_DMA_RX_0:
-+	case WSA_CODEC_DMA_RX_1:
-+	case RX_CODEC_DMA_RX_0:
-+	case RX_CODEC_DMA_RX_1:
-+	case TX_CODEC_DMA_TX_0:
-+	case TX_CODEC_DMA_TX_1:
-+	case TX_CODEC_DMA_TX_2:
-+	case TX_CODEC_DMA_TX_3:
-+		break;
-+	default:
-+		return 0;
-+	}
-+
-+	if (*stream_prepared) {
-+		sdw_disable_stream(sruntime);
-+		sdw_deprepare_stream(sruntime);
-+		*stream_prepared = false;
-+	}
-+
-+	ret = sdw_prepare_stream(sruntime);
-+	if (ret)
-+		return ret;
-+
-+	/**
-+	 * NOTE: there is a strict hw requirement about the ordering of port
-+	 * enables and actual WSA881x PA enable. PA enable should only happen
-+	 * after soundwire ports are enabled if not DC on the line is
-+	 * accumulated resulting in Click/Pop Noise
-+	 * PA enable/mute are handled as part of codec DAPM and digital mute.
-+	 */
-+
-+	ret = sdw_enable_stream(sruntime);
-+	if (ret) {
-+		sdw_deprepare_stream(sruntime);
-+		return ret;
-+	}
-+	*stream_prepared  = true;
-+
-+	return ret;
-+}
-+EXPORT_SYMBOL(qcom_snd_sdw_prepare);
-+
-+int qcom_snd_sdw_hw_params(struct snd_pcm_substream *substream,
-+			   struct snd_pcm_hw_params *params,
-+			   struct sdw_stream_runtime **psruntime)
-+{
-+	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct snd_soc_dai *codec_dai;
-+	struct snd_soc_dai *cpu_dai = asoc_rtd_to_cpu(rtd, 0);
-+	struct sdw_stream_runtime *sruntime;
-+	int i;
-+
-+	switch (cpu_dai->id) {
-+	case WSA_CODEC_DMA_RX_0:
-+	case RX_CODEC_DMA_RX_0:
-+	case RX_CODEC_DMA_RX_1:
-+	case TX_CODEC_DMA_TX_0:
-+	case TX_CODEC_DMA_TX_1:
-+	case TX_CODEC_DMA_TX_2:
-+	case TX_CODEC_DMA_TX_3:
-+		for_each_rtd_codec_dais(rtd, i, codec_dai) {
-+			sruntime = snd_soc_dai_get_stream(codec_dai, substream->stream);
-+			if (sruntime != ERR_PTR(-ENOTSUPP))
-+				*psruntime = sruntime;
-+		}
-+		break;
-+	}
-+
-+	return 0;
-+
-+}
-+EXPORT_SYMBOL(qcom_snd_sdw_hw_params);
-+
-+int qcom_snd_sdw_hw_free(struct snd_pcm_substream *substream,
-+			 struct sdw_stream_runtime *sruntime, bool *stream_prepared)
-+{
-+	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct snd_soc_dai *cpu_dai = asoc_rtd_to_cpu(rtd, 0);
-+
-+	switch (cpu_dai->id) {
-+	case WSA_CODEC_DMA_RX_0:
-+	case WSA_CODEC_DMA_RX_1:
-+	case RX_CODEC_DMA_RX_0:
-+	case RX_CODEC_DMA_RX_1:
-+	case TX_CODEC_DMA_TX_0:
-+	case TX_CODEC_DMA_TX_1:
-+	case TX_CODEC_DMA_TX_2:
-+	case TX_CODEC_DMA_TX_3:
-+		if (sruntime && *stream_prepared) {
-+			sdw_disable_stream(sruntime);
-+			sdw_deprepare_stream(sruntime);
-+			*stream_prepared = false;
-+		}
-+		break;
-+	default:
-+		break;
-+	}
-+
-+	return 0;
-+}
-+EXPORT_SYMBOL(qcom_snd_sdw_hw_free);
-+
-+int qcom_snd_wcd_jack_setup(struct snd_soc_pcm_runtime *rtd,
-+			    struct snd_soc_jack *jack, bool *jack_setup)
-+{
-+	struct snd_soc_dai *cpu_dai = asoc_rtd_to_cpu(rtd, 0);
-+	struct snd_soc_dai *codec_dai = asoc_rtd_to_codec(rtd, 0);
-+	struct snd_soc_card *card = rtd->card;
-+	int rval, i;
-+
-+	if (!*jack_setup) {
-+		rval = snd_soc_card_jack_new(card, "Headset Jack",
-+					     SND_JACK_HEADSET | SND_JACK_LINEOUT |
-+					     SND_JACK_MECHANICAL |
-+					     SND_JACK_BTN_0 | SND_JACK_BTN_1 |
-+					     SND_JACK_BTN_2 | SND_JACK_BTN_3 |
-+					     SND_JACK_BTN_4 | SND_JACK_BTN_5,
-+					     jack);
-+
-+		if (rval < 0) {
-+			dev_err(card->dev, "Unable to add Headphone Jack\n");
-+			return rval;
-+		}
-+
-+		snd_jack_set_key(jack->jack, SND_JACK_BTN_0, KEY_MEDIA);
-+		snd_jack_set_key(jack->jack, SND_JACK_BTN_1, KEY_VOICECOMMAND);
-+		snd_jack_set_key(jack->jack, SND_JACK_BTN_2, KEY_VOLUMEUP);
-+		snd_jack_set_key(jack->jack, SND_JACK_BTN_3, KEY_VOLUMEDOWN);
-+		*jack_setup = true;
-+	}
-+
-+	switch (cpu_dai->id) {
-+	case TX_CODEC_DMA_TX_0:
-+	case TX_CODEC_DMA_TX_1:
-+	case TX_CODEC_DMA_TX_2:
-+	case TX_CODEC_DMA_TX_3:
-+		for_each_rtd_codec_dais(rtd, i, codec_dai) {
-+			rval = snd_soc_component_set_jack(codec_dai->component,
-+							  jack, NULL);
-+			if (rval != 0 && rval != -ENOTSUPP) {
-+				dev_warn(card->dev, "Failed to set jack: %d\n", rval);
-+				return rval;
-+			}
-+		}
-+
-+		break;
-+	default:
-+		break;
-+	}
-+
-+
-+	return 0;
-+}
-+EXPORT_SYMBOL(qcom_snd_wcd_jack_setup);
- MODULE_LICENSE("GPL v2");
-diff --git a/sound/soc/qcom/common.h b/sound/soc/qcom/common.h
-index f05c05b12bd7..0ab8d13ef44e 100644
---- a/sound/soc/qcom/common.h
-+++ b/sound/soc/qcom/common.h
-@@ -5,7 +5,19 @@
- #define __QCOM_SND_COMMON_H__
- 
- #include <sound/soc.h>
-+#include <linux/soundwire/sdw.h>
- 
- int qcom_snd_parse_of(struct snd_soc_card *card);
-+int qcom_snd_sdw_prepare(struct snd_pcm_substream *substream,
-+			 struct sdw_stream_runtime *runtime,
-+			 bool *stream_prepared);
-+int qcom_snd_sdw_hw_params(struct snd_pcm_substream *substream,
-+			   struct snd_pcm_hw_params *params,
-+			   struct sdw_stream_runtime **psruntime);
-+int qcom_snd_sdw_hw_free(struct snd_pcm_substream *substream,
-+			 struct sdw_stream_runtime *sruntime,
-+			 bool *stream_prepared);
-+int qcom_snd_wcd_jack_setup(struct snd_soc_pcm_runtime *rtd,
-+			    struct snd_soc_jack *jack, bool *jack_setup);
- 
- #endif
-diff --git a/sound/soc/qcom/sm8250.c b/sound/soc/qcom/sm8250.c
-index 98a2fde9e004..8dbe9ef41b1c 100644
---- a/sound/soc/qcom/sm8250.c
-+++ b/sound/soc/qcom/sm8250.c
-@@ -27,57 +27,8 @@ struct sm8250_snd_data {
- static int sm8250_snd_init(struct snd_soc_pcm_runtime *rtd)
- {
- 	struct sm8250_snd_data *data = snd_soc_card_get_drvdata(rtd->card);
--	struct snd_soc_dai *cpu_dai = asoc_rtd_to_cpu(rtd, 0);
--	struct snd_soc_dai *codec_dai = asoc_rtd_to_codec(rtd, 0);
--	struct snd_soc_card *card = rtd->card;
--	int rval, i;
--
--	if (!data->jack_setup) {
--		struct snd_jack *jack;
--
--		rval = snd_soc_card_jack_new(card, "Headset Jack",
--					     SND_JACK_HEADSET | SND_JACK_LINEOUT |
--					     SND_JACK_MECHANICAL |
--					     SND_JACK_BTN_0 | SND_JACK_BTN_1 |
--					     SND_JACK_BTN_2 | SND_JACK_BTN_3 |
--					     SND_JACK_BTN_4 | SND_JACK_BTN_5,
--					     &data->jack);
--
--		if (rval < 0) {
--			dev_err(card->dev, "Unable to add Headphone Jack\n");
--			return rval;
--		}
--
--		jack = data->jack.jack;
--
--		snd_jack_set_key(jack, SND_JACK_BTN_0, KEY_MEDIA);
--		snd_jack_set_key(jack, SND_JACK_BTN_1, KEY_VOICECOMMAND);
--		snd_jack_set_key(jack, SND_JACK_BTN_2, KEY_VOLUMEUP);
--		snd_jack_set_key(jack, SND_JACK_BTN_3, KEY_VOLUMEDOWN);
--		data->jack_setup = true;
--	}
--
--	switch (cpu_dai->id) {
--	case TX_CODEC_DMA_TX_0:
--	case TX_CODEC_DMA_TX_1:
--	case TX_CODEC_DMA_TX_2:
--	case TX_CODEC_DMA_TX_3:
--		for_each_rtd_codec_dais(rtd, i, codec_dai) {
--			rval = snd_soc_component_set_jack(codec_dai->component,
--							  &data->jack, NULL);
--			if (rval != 0 && rval != -ENOTSUPP) {
--				dev_warn(card->dev, "Failed to set jack: %d\n", rval);
--				return rval;
--			}
--		}
--
--		break;
--	default:
--		break;
--	}
- 
--
--	return 0;
-+	return qcom_snd_wcd_jack_setup(rtd, &data->jack, &data->jack_setup);
- }
- 
- static int sm8250_be_hw_params_fixup(struct snd_soc_pcm_runtime *rtd,
-@@ -121,92 +72,21 @@ static int sm8250_snd_hw_params(struct snd_pcm_substream *substream,
- 				struct snd_pcm_hw_params *params)
- {
- 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
--	struct snd_soc_dai *codec_dai;
- 	struct snd_soc_dai *cpu_dai = asoc_rtd_to_cpu(rtd, 0);
- 	struct sm8250_snd_data *pdata = snd_soc_card_get_drvdata(rtd->card);
--	struct sdw_stream_runtime *sruntime;
--	int i;
--
--	switch (cpu_dai->id) {
--	case WSA_CODEC_DMA_RX_0:
--	case RX_CODEC_DMA_RX_0:
--	case RX_CODEC_DMA_RX_1:
--	case TX_CODEC_DMA_TX_0:
--	case TX_CODEC_DMA_TX_1:
--	case TX_CODEC_DMA_TX_2:
--	case TX_CODEC_DMA_TX_3:
--		for_each_rtd_codec_dais(rtd, i, codec_dai) {
--			sruntime = snd_soc_dai_get_stream(codec_dai,
--							  substream->stream);
--			if (sruntime != ERR_PTR(-ENOTSUPP))
--				pdata->sruntime[cpu_dai->id] = sruntime;
--		}
--		break;
--	}
--
--	return 0;
- 
-+	return qcom_snd_sdw_hw_params(substream, params, &pdata->sruntime[cpu_dai->id]);
- }
- 
--static int sm8250_snd_wsa_dma_prepare(struct snd_pcm_substream *substream)
-+static int sm8250_snd_prepare(struct snd_pcm_substream *substream)
- {
- 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
- 	struct snd_soc_dai *cpu_dai = asoc_rtd_to_cpu(rtd, 0);
- 	struct sm8250_snd_data *data = snd_soc_card_get_drvdata(rtd->card);
- 	struct sdw_stream_runtime *sruntime = data->sruntime[cpu_dai->id];
--	int ret;
--
--	if (!sruntime)
--		return 0;
- 
--	if (data->stream_prepared[cpu_dai->id]) {
--		sdw_disable_stream(sruntime);
--		sdw_deprepare_stream(sruntime);
--		data->stream_prepared[cpu_dai->id] = false;
--	}
--
--	ret = sdw_prepare_stream(sruntime);
--	if (ret)
--		return ret;
--
--	/**
--	 * NOTE: there is a strict hw requirement about the ordering of port
--	 * enables and actual WSA881x PA enable. PA enable should only happen
--	 * after soundwire ports are enabled if not DC on the line is
--	 * accumulated resulting in Click/Pop Noise
--	 * PA enable/mute are handled as part of codec DAPM and digital mute.
--	 */
--
--	ret = sdw_enable_stream(sruntime);
--	if (ret) {
--		sdw_deprepare_stream(sruntime);
--		return ret;
--	}
--	data->stream_prepared[cpu_dai->id]  = true;
--
--	return ret;
--}
--
--static int sm8250_snd_prepare(struct snd_pcm_substream *substream)
--{
--	struct snd_soc_pcm_runtime *rtd = substream->private_data;
--	struct snd_soc_dai *cpu_dai = asoc_rtd_to_cpu(rtd, 0);
--
--	switch (cpu_dai->id) {
--	case WSA_CODEC_DMA_RX_0:
--	case WSA_CODEC_DMA_RX_1:
--	case RX_CODEC_DMA_RX_0:
--	case RX_CODEC_DMA_RX_1:
--	case TX_CODEC_DMA_TX_0:
--	case TX_CODEC_DMA_TX_1:
--	case TX_CODEC_DMA_TX_2:
--	case TX_CODEC_DMA_TX_3:
--		return sm8250_snd_wsa_dma_prepare(substream);
--	default:
--		break;
--	}
--
--	return 0;
-+	return qcom_snd_sdw_prepare(substream, sruntime,
-+				    &data->stream_prepared[cpu_dai->id]);
- }
- 
- static int sm8250_snd_hw_free(struct snd_pcm_substream *substream)
-@@ -216,26 +96,8 @@ static int sm8250_snd_hw_free(struct snd_pcm_substream *substream)
- 	struct snd_soc_dai *cpu_dai = asoc_rtd_to_cpu(rtd, 0);
- 	struct sdw_stream_runtime *sruntime = data->sruntime[cpu_dai->id];
- 
--	switch (cpu_dai->id) {
--	case WSA_CODEC_DMA_RX_0:
--	case WSA_CODEC_DMA_RX_1:
--	case RX_CODEC_DMA_RX_0:
--	case RX_CODEC_DMA_RX_1:
--	case TX_CODEC_DMA_TX_0:
--	case TX_CODEC_DMA_TX_1:
--	case TX_CODEC_DMA_TX_2:
--	case TX_CODEC_DMA_TX_3:
--		if (sruntime && data->stream_prepared[cpu_dai->id]) {
--			sdw_disable_stream(sruntime);
--			sdw_deprepare_stream(sruntime);
--			data->stream_prepared[cpu_dai->id] = false;
--		}
--		break;
--	default:
--		break;
--	}
--
--	return 0;
-+	return qcom_snd_sdw_hw_free(substream, sruntime,
-+				    &data->stream_prepared[cpu_dai->id]);
- }
- 
- static const struct snd_soc_ops sm8250_be_ops = {
 -- 
-2.21.0
+2.25.1
 
