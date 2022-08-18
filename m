@@ -4,42 +4,42 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4BE7EC00140
-	for <alsa-devel@archiver.kernel.org>; Thu, 18 Aug 2022 22:14:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id BA742C00140
+	for <alsa-devel@archiver.kernel.org>; Thu, 18 Aug 2022 22:20:34 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 9DF24829;
-	Fri, 19 Aug 2022 00:13:16 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9DF24829
+	by alsa0.perex.cz (Postfix) with ESMTPS id B7991950;
+	Fri, 19 Aug 2022 00:19:42 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B7991950
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1660860846;
-	bh=XciOTR/Wkwkohf5UM8AvQbDKTHccIMrNx6IU1ASDYs4=;
+	s=default; t=1660861232;
+	bh=xV6QPMtBoBG3MPXdYhPydNPLU90gTnwNcUB/xOq3RnY=;
 	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=R9041UcS5/6SNvlTzGJVQl/C+IBX3Bst3B2/FZ3KKWcI0xi4F+gHQH+lsBRfeXE7S
-	 UQSyIgAMKssO05g+dtXn9DXkWNu3yszH5ignyybEBHWsxuuyVTvKxyBjDJAWnWr6iW
-	 PW4+NnbR9z4YQZCykxoheOx2kTHEDsTiwcJ8Hwc8=
+	b=JnMbp82pGss84L/oGtEFEsxgk038jnigumvxNXV8nIWeX1cTC6F9bTToY/fJxEBR/
+	 r/zL+QsagnTFYKnm6l63UFrprOM0MNV3Bm54Jbba4MO2xQXqFHGmPmOaNPhAPSyVWB
+	 nTAR1z3StxaEHPaYIwIWd0bck4AYRA/iZHeBgTY0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 3EDD9F8013D;
-	Fri, 19 Aug 2022 00:13:16 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 53F20F8013D;
+	Fri, 19 Aug 2022 00:19:42 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 8A198F800E9; Fri, 19 Aug 2022 00:13:14 +0200 (CEST)
+ id A8048F80430; Fri, 19 Aug 2022 00:19:41 +0200 (CEST)
 Received: from webhooks-bot.alsa-project.org (gate.perex.cz [77.48.224.242])
- by alsa1.perex.cz (Postfix) with ESMTP id 17B64F800B5
- for <alsa-devel@alsa-project.org>; Fri, 19 Aug 2022 00:13:11 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 17B64F800B5
+ by alsa1.perex.cz (Postfix) with ESMTP id 36F3AF800E9
+ for <alsa-devel@alsa-project.org>; Fri, 19 Aug 2022 00:19:38 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 36F3AF800E9
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-From: GitHub issues - reopened <github@alsa-project.org>
+From: GitHub issues - edited <github@alsa-project.org>
 To: alsa-devel@alsa-project.org
-In-Reply-To: <1660860791542484045-webhooks-bot@alsa-project.org>
-References: <1660860791542484045-webhooks-bot@alsa-project.org>
-Subject: snd_hda_intel: Woke up but no data
-Message-Id: <20220818221314.8A198F800E9@alsa1.perex.cz>
-Date: Fri, 19 Aug 2022 00:13:14 +0200 (CEST)
+In-Reply-To: <1660861178776273966-webhooks-bot@alsa-project.org>
+References: <1660861178776273966-webhooks-bot@alsa-project.org>
+Subject: cracking pulseaudio issue
+Message-Id: <20220818221941.A8048F80430@alsa1.perex.cz>
+Date: Fri, 19 Aug 2022 00:19:41 +0200 (CEST)
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -55,7 +55,7 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-alsa-project/alsa-lib issue #262 was reopened from shmohawk:
+alsa-project/alsa-lib issue #262 was edited from shmohawk:
 
 ```
 Aug 17 01:11:23 hellokitty pulseaudio[12938]: [alsa-sink-CX20590 Analog] alsa-sink.c: ALSA woke us up to write new data to the device, but there was actually nothing to write.
