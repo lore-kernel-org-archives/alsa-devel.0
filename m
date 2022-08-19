@@ -4,57 +4,57 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id AF643C32771
-	for <alsa-devel@archiver.kernel.org>; Fri, 19 Aug 2022 12:54:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id EE88DC32771
+	for <alsa-devel@archiver.kernel.org>; Fri, 19 Aug 2022 12:55:03 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D2A41166A;
-	Fri, 19 Aug 2022 14:54:00 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D2A41166A
+	by alsa0.perex.cz (Postfix) with ESMTPS id 10E05163B;
+	Fri, 19 Aug 2022 14:54:12 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 10E05163B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1660913690;
-	bh=RTyrZjbhQwuV6HNwtdQTfYlJip7B5O5VlDA4stZStqs=;
+	s=default; t=1660913702;
+	bh=fDTJj0sR+CjoWeLcOuLLzFTy1HUVVzg/9gEXCyhL6e0=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=mMwHSaz2M+136aPtQNthVeZDAkmyBGj9COHgb15fSQSKR7Z3Um34Hpu1pz9p5PGMi
-	 Q6GaOq3UdGBxn1ub3I/OiTA9LkJyM/mO5GX3NlY2fhYy6BzLBcC+LR4cvffqm8Mt6F
-	 SPpn9y3XlWw//RdHt5JMyNutK8Ej+WI/sXCc84K4=
+	b=KLb/5u/0ZBa9xahZyWC0+B9fbbbDJV6QlahuLzQKbVNYlSDVng0H1EiAg2GeVjp+h
+	 Mr30Qu8HWdqhKFtLlOVzL8cXwoXqr/Lfx8laCAgN1OTuuB9aZcQCtOvBk3lmc6HmOO
+	 XK6uwd/WgyFpQvxh/bHvUU2xqFaky9om7DFUXdxs=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 195E7F80536;
+	by alsa1.perex.cz (Postfix) with ESMTP id 964F0F80551;
 	Fri, 19 Aug 2022 14:53:00 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id E2311F80537; Fri, 19 Aug 2022 14:52:50 +0200 (CEST)
-Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
- [67.231.152.168])
+ id 24340F80533; Fri, 19 Aug 2022 14:52:51 +0200 (CEST)
+Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
+ [67.231.149.25])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 48BDBF801F7
- for <alsa-devel@alsa-project.org>; Fri, 19 Aug 2022 14:52:38 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 48BDBF801F7
+ by alsa1.perex.cz (Postfix) with ESMTPS id 97635F802A0
+ for <alsa-devel@alsa-project.org>; Fri, 19 Aug 2022 14:52:39 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 97635F802A0
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com
- header.b="En1JpMJp"
-Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
- by mx0b-001ae601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 27JBix0R020060;
+ header.b="hseGJlHF"
+Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
+ by mx0a-001ae601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 27J5opPo018534;
  Fri, 19 Aug 2022 07:52:37 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
  h=from : to : cc :
  subject : date : message-id : in-reply-to : references : mime-version :
  content-transfer-encoding : content-type; s=PODMain02222019;
- bh=lx4GAB9Um5dfe7Rhlz40yyU1J88HrCUqmJv6PhWbfXU=;
- b=En1JpMJpH3HLLQKPGiD/l8+t5r2Y+PQwGq41J853g82pjHy7cdqgkgI72vcvBsukGfoi
- PvDyouNqj+QWSHYyVLCqW+f6ExD0kYfzOL9bMrftPtuR7zbP0hT89eQX9M3vcHi1BDMp
- kCxXJLS1TPiWsnI8lirI1zMnn/xQ0KBcBAIwO5hCJTWtyXjKfLv/E/NpVr3VLUwzgjcq
- UONodQUIX7eK2Nyf/ETLmnudHmM/yLp4Bf0NnG1YORscVBS+pZqaFHcVeC4WJBiEqMUr
- zYX4wlGKNJ/WpYR5r4I9zv+v//wzs49oiN8pZUrdAhyZc54PctChiXkGoUzplfmDsl+c RQ== 
-Received: from ediex02.ad.cirrus.com ([84.19.233.68])
- by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3hx8cpfuvn-3
+ bh=VG7YSU/cYAKrW65aE8mh5zeQwZiWTAjDbpKQXBnwCro=;
+ b=hseGJlHFyKI4oLN8yXRxvhLzeh3FUYZ8P6CN4jHUqJvdL5nDsQsztJqri5yFpiHBoPQj
+ 1s40Km0Z2AFV/4JYNUkVu/JCf5eIpS4AJqroAv7z543MaHkCtjRI5Au5zYTlt+/n/Ey6
+ Nd4X5p/QutuH0WuHdU8psI7kXumEDemUlg5ebjap9hXXs0Bc1TqVihPjJQSkBYdX0tJP
+ +0DvckFxd8s98GlLagE0Wx9g0RMjjR+HNF6weN0lombIKCqEmwXje6yatavQ0lVG0sTv
+ ZV/3tFcxDDmiLqUrVr1Q5n0SZzyInbUlmdWRiMWOofw/+fKkGkV9Y8plv4QRHs4FvA5m 1Q== 
+Received: from ediex01.ad.cirrus.com ([84.19.233.68])
+ by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3hx9c1yrtp-2
  (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
  Fri, 19 Aug 2022 07:52:37 -0500
-Received: from ediex01.ad.cirrus.com (198.61.84.80) by ediex02.ad.cirrus.com
- (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
+Received: from ediex01.ad.cirrus.com (198.61.84.80) by ediex01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.9; Fri, 19 Aug
  2022 07:52:34 -0500
 Received: from ediswmail.ad.cirrus.com (198.61.86.93) by ediex01.ad.cirrus.com
@@ -62,22 +62,22 @@ Received: from ediswmail.ad.cirrus.com (198.61.86.93) by ediex01.ad.cirrus.com
  Transport; Fri, 19 Aug 2022 07:52:34 -0500
 Received: from edi-sw-dsktp-006.ad.cirrus.com (edi-sw-dsktp-006.ad.cirrus.com
  [198.90.251.95])
- by ediswmail.ad.cirrus.com (Postfix) with ESMTP id B2874476;
+ by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 9515C11DA;
  Fri, 19 Aug 2022 12:52:34 +0000 (UTC)
 From: Richard Fitzgerald <rf@opensource.cirrus.com>
 To: <broonie@kernel.org>
-Subject: [PATCH 05/12] ASoC: cs42l42: Use cs42l42->dev instead of
- &i2c_client->dev
-Date: Fri, 19 Aug 2022 13:52:23 +0100
-Message-ID: <20220819125230.42731-6-rf@opensource.cirrus.com>
+Subject: [PATCH 03/12] ASoC: cs42l42: Ensure MCLKint is a multiple of the
+ sample rate
+Date: Fri, 19 Aug 2022 13:52:21 +0100
+Message-ID: <20220819125230.42731-4-rf@opensource.cirrus.com>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20220819125230.42731-1-rf@opensource.cirrus.com>
 References: <20220819125230.42731-1-rf@opensource.cirrus.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: osanZQ1CaN8e6fU7t7wsdiq0TeoF9Ic9
-X-Proofpoint-GUID: osanZQ1CaN8e6fU7t7wsdiq0TeoF9Ic9
+X-Proofpoint-ORIG-GUID: CENTUxRxpjrLobtgkyOYKYw1H2jZ2Pyj
+X-Proofpoint-GUID: CENTUxRxpjrLobtgkyOYKYw1H2jZ2Pyj
 X-Proofpoint-Spam-Reason: safe
 Cc: patches@opensource.cirrus.com, alsa-devel@alsa-project.org,
  Richard Fitzgerald <rf@opensource.cirrus.com>, linux-kernel@vger.kernel.org
@@ -96,124 +96,71 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-In preparation for splitting cs42l42_i2c_probe() into multiple functions
-replace use of &i2c_client->dev with cs42l42->dev. This reduces diff
-clutter in the patch that splits the function.
+The chosen clocking configuration must give an internal MCLK (MCLKint)
+that is an integer multiple of the sample rate.
+
+On I2S each of the supported bit clock frequencies can only be generated
+from one sample rate group (either the 44100 or the 48000) so the code
+could use only the bitclock to look up a PLL config.
+
+The relationship between sample rate and bitclock frequency is more
+complex on Soundwire and so it is possible to set a frame shape to
+generate a bitclock from the "wrong" group. For example 2*147 with a
+48000 sample rate would give a bitclock of 14112000 which on I2S
+could only be derived from a 44100 sample rate.
 
 Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
 ---
- sound/soc/codecs/cs42l42.c | 26 +++++++++++++-------------
- 1 file changed, 13 insertions(+), 13 deletions(-)
+ sound/soc/codecs/cs42l42.c | 12 +++++++++---
+ 1 file changed, 9 insertions(+), 3 deletions(-)
 
 diff --git a/sound/soc/codecs/cs42l42.c b/sound/soc/codecs/cs42l42.c
-index 946b2a935256..4c81bda6b593 100644
+index 1745b83310ac..66c10d24169d 100644
 --- a/sound/soc/codecs/cs42l42.c
 +++ b/sound/soc/codecs/cs42l42.c
-@@ -2233,7 +2233,7 @@ static int cs42l42_i2c_probe(struct i2c_client *i2c_client)
- 	cs42l42->regmap = devm_regmap_init_i2c(i2c_client, &cs42l42_regmap);
- 	if (IS_ERR(cs42l42->regmap)) {
- 		ret = PTR_ERR(cs42l42->regmap);
--		dev_err(&i2c_client->dev, "regmap_init() failed: %d\n", ret);
-+		dev_err(cs42l42->dev, "regmap_init() failed: %d\n", ret);
+@@ -649,7 +649,8 @@ static const struct cs42l42_pll_params pll_ratio_table[] = {
+ 	{ 24576000, 1, 0x03, 0x40, 0x000000, 0x03, 0x10, 12288000, 128, 1}
+ };
+ 
+-static int cs42l42_pll_config(struct snd_soc_component *component, unsigned int clk)
++static int cs42l42_pll_config(struct snd_soc_component *component, unsigned int clk,
++			      unsigned int sample_rate)
+ {
+ 	struct cs42l42_private *cs42l42 = snd_soc_component_get_drvdata(component);
+ 	int i;
+@@ -664,6 +665,10 @@ static int cs42l42_pll_config(struct snd_soc_component *component, unsigned int
+ 	}
+ 
+ 	for (i = 0; i < ARRAY_SIZE(pll_ratio_table); i++) {
++		/* MCLKint must be a multiple of the sample rate */
++		if (pll_ratio_table[i].mclk_int % sample_rate)
++			continue;
++
+ 		if (pll_ratio_table[i].sclk == clk) {
+ 			cs42l42->pll_config = i;
+ 
+@@ -889,6 +894,7 @@ static int cs42l42_pcm_hw_params(struct snd_pcm_substream *substream,
+ 	struct cs42l42_private *cs42l42 = snd_soc_component_get_drvdata(component);
+ 	unsigned int channels = params_channels(params);
+ 	unsigned int width = (params_width(params) / 8) - 1;
++	unsigned int sample_rate = params_rate(params);
+ 	unsigned int slot_width = 0;
+ 	unsigned int val = 0;
+ 	unsigned int bclk;
+@@ -949,11 +955,11 @@ static int cs42l42_pcm_hw_params(struct snd_pcm_substream *substream,
+ 		break;
+ 	}
+ 
+-	ret = cs42l42_pll_config(component, bclk);
++	ret = cs42l42_pll_config(component, bclk, sample_rate);
+ 	if (ret)
  		return ret;
- 	}
  
-@@ -2241,11 +2241,11 @@ static int cs42l42_i2c_probe(struct i2c_client *i2c_client)
- 	for (i = 0; i < ARRAY_SIZE(cs42l42->supplies); i++)
- 		cs42l42->supplies[i].supply = cs42l42_supply_names[i];
+-	cs42l42_src_config(component, params_rate(params));
++	cs42l42_src_config(component, sample_rate);
  
--	ret = devm_regulator_bulk_get(&i2c_client->dev,
-+	ret = devm_regulator_bulk_get(cs42l42->dev,
- 				      ARRAY_SIZE(cs42l42->supplies),
- 				      cs42l42->supplies);
- 	if (ret != 0) {
--		dev_err(&i2c_client->dev,
-+		dev_err(cs42l42->dev,
- 			"Failed to request supplies: %d\n", ret);
- 		return ret;
- 	}
-@@ -2253,13 +2253,13 @@ static int cs42l42_i2c_probe(struct i2c_client *i2c_client)
- 	ret = regulator_bulk_enable(ARRAY_SIZE(cs42l42->supplies),
- 				    cs42l42->supplies);
- 	if (ret != 0) {
--		dev_err(&i2c_client->dev,
-+		dev_err(cs42l42->dev,
- 			"Failed to enable supplies: %d\n", ret);
- 		return ret;
- 	}
- 
- 	/* Reset the Device */
--	cs42l42->reset_gpio = devm_gpiod_get_optional(&i2c_client->dev,
-+	cs42l42->reset_gpio = devm_gpiod_get_optional(cs42l42->dev,
- 		"reset", GPIOD_OUT_LOW);
- 	if (IS_ERR(cs42l42->reset_gpio)) {
- 		ret = PTR_ERR(cs42l42->reset_gpio);
-@@ -2267,7 +2267,7 @@ static int cs42l42_i2c_probe(struct i2c_client *i2c_client)
- 	}
- 
- 	if (cs42l42->reset_gpio) {
--		dev_dbg(&i2c_client->dev, "Found reset GPIO\n");
-+		dev_dbg(cs42l42->dev, "Found reset GPIO\n");
- 		gpiod_set_value_cansleep(cs42l42->reset_gpio, 1);
- 	}
- 	usleep_range(CS42L42_BOOT_TIME_US, CS42L42_BOOT_TIME_US * 2);
-@@ -2281,7 +2281,7 @@ static int cs42l42_i2c_probe(struct i2c_client *i2c_client)
- 		if (ret == -EPROBE_DEFER) {
- 			goto err_disable_noirq;
- 		} else if (ret != 0) {
--			dev_err(&i2c_client->dev,
-+			dev_err(cs42l42->dev,
- 				"Failed to request IRQ: %d\n", ret);
- 			goto err_disable_noirq;
- 		}
-@@ -2291,13 +2291,13 @@ static int cs42l42_i2c_probe(struct i2c_client *i2c_client)
- 	devid = cirrus_read_device_id(cs42l42->regmap, CS42L42_DEVID_AB);
- 	if (devid < 0) {
- 		ret = devid;
--		dev_err(&i2c_client->dev, "Failed to read device ID: %d\n", ret);
-+		dev_err(cs42l42->dev, "Failed to read device ID: %d\n", ret);
- 		goto err_disable;
- 	}
- 
- 	if (devid != CS42L42_CHIP_ID) {
- 		ret = -ENODEV;
--		dev_err(&i2c_client->dev,
-+		dev_err(cs42l42->dev,
- 			"CS42L42 Device ID (%X). Expected %X\n",
- 			devid, CS42L42_CHIP_ID);
- 		goto err_disable;
-@@ -2305,11 +2305,11 @@ static int cs42l42_i2c_probe(struct i2c_client *i2c_client)
- 
- 	ret = regmap_read(cs42l42->regmap, CS42L42_REVID, &reg);
- 	if (ret < 0) {
--		dev_err(&i2c_client->dev, "Get Revision ID failed\n");
-+		dev_err(cs42l42->dev, "Get Revision ID failed\n");
- 		goto err_shutdown;
- 	}
- 
--	dev_info(&i2c_client->dev,
-+	dev_info(cs42l42->dev,
- 		 "Cirrus Logic CS42L42, Revision: %02X\n", reg & 0xFF);
- 
- 	/* Power up the codec */
-@@ -2329,7 +2329,7 @@ static int cs42l42_i2c_probe(struct i2c_client *i2c_client)
- 			(1 << CS42L42_ADC_PDN_SHIFT) |
- 			(0 << CS42L42_PDN_ALL_SHIFT));
- 
--	ret = cs42l42_handle_device_data(&i2c_client->dev, cs42l42);
-+	ret = cs42l42_handle_device_data(cs42l42->dev, cs42l42);
- 	if (ret != 0)
- 		goto err_shutdown;
- 
-@@ -2340,7 +2340,7 @@ static int cs42l42_i2c_probe(struct i2c_client *i2c_client)
- 	cs42l42_set_interrupt_masks(cs42l42);
- 
- 	/* Register codec for machine driver */
--	ret = devm_snd_soc_register_component(&i2c_client->dev,
-+	ret = devm_snd_soc_register_component(cs42l42->dev,
- 			&soc_component_dev_cs42l42, &cs42l42_dai, 1);
- 	if (ret < 0)
- 		goto err_shutdown;
+ 	return 0;
+ }
 -- 
 2.30.2
 
