@@ -4,54 +4,51 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id DBD32C28B2B
-	for <alsa-devel@archiver.kernel.org>; Fri, 19 Aug 2022 07:30:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5E6FFC25B0E
+	for <alsa-devel@archiver.kernel.org>; Fri, 19 Aug 2022 07:31:27 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 20DDB210;
-	Fri, 19 Aug 2022 09:30:06 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 20DDB210
+	by alsa0.perex.cz (Postfix) with ESMTPS id 36FE0165E;
+	Fri, 19 Aug 2022 09:30:33 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 36FE0165E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1660894256;
-	bh=MqSi1rb4lcXs5mKYgNI9ZOJHPcqFhs81g9qEg4CLgqM=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=D5w/ieSHtlj9hQwOwljAYqOvOZMvOeVtE6SiY9+errxeEo22dnSP5Myi2oTm1KmVk
-	 ofWisIe51I0voFx90eSo9UFcsdidD1TFmkP1ESFEbXw/MFR3ZNFVQ2gum8kwMw3FnZ
-	 FCMJSWHdBgv568I3uX/qBTPVYHXhhvoeC1g/qQYY=
+	s=default; t=1660894283;
+	bh=lJxAv01amAERXP4WV5YZQkFHwxd4fy5mYc+ArQAUmuA=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=EvkrDjCwo/yhP1HiJ5vdm1RnchNE8YjfurBuksn99Y4qbI+ZNtu/sW9IKKNAFEi7I
+	 ml5Jq4Tn5Srt/Jzlw+m2REELvJNxR0/ahkyVZ0U2IZoxr3kfFrS2t/amulaBnYuNIK
+	 7IO63cz+M75f3fhIqpo2uGTAHzG+FSegj3aa5pjQ=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 77167F80128;
-	Fri, 19 Aug 2022 09:30:05 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 89BFCF802A0;
+	Fri, 19 Aug 2022 09:30:06 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id EF71CF802A0; Fri, 19 Aug 2022 09:30:02 +0200 (CEST)
+ id 313F9F800B5; Fri, 19 Aug 2022 09:30:02 +0200 (CEST)
 Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 15571F8016C
+ by alsa1.perex.cz (Postfix) with ESMTPS id 12EECF80128
  for <alsa-devel@alsa-project.org>; Fri, 19 Aug 2022 09:29:55 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 15571F8016C
-Received: from dggpemm500021.china.huawei.com (unknown [172.30.72.55])
- by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4M8Cz44qSnzGpgt;
- Fri, 19 Aug 2022 15:28:16 +0800 (CST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 12EECF80128
+Received: from dggpemm500023.china.huawei.com (unknown [172.30.72.53])
+ by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4M8Cz367lBzGpZ7;
+ Fri, 19 Aug 2022 15:28:15 +0800 (CST)
 Received: from dggpemm500007.china.huawei.com (7.185.36.183) by
- dggpemm500021.china.huawei.com (7.185.36.109) with Microsoft SMTP Server
+ dggpemm500023.china.huawei.com (7.185.36.83) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.24; Fri, 19 Aug 2022 15:29:51 +0800
+ 15.1.2375.24; Fri, 19 Aug 2022 15:29:50 +0800
 Received: from huawei.com (10.175.103.91) by dggpemm500007.china.huawei.com
  (7.185.36.183) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.24; Fri, 19 Aug
- 2022 15:29:50 +0800
+ 2022 15:29:49 +0800
 From: Yang Yingliang <yangyingliang@huawei.com>
 To: <linux-kernel@vger.kernel.org>, <alsa-devel@alsa-project.org>
-Subject: [PATCH -next 3/3] ASoC: amd: acp: add a label to make error path more
- clean
-Date: Fri, 19 Aug 2022 15:37:58 +0800
-Message-ID: <20220819073758.1273160-3-yangyingliang@huawei.com>
+Subject: [PATCH -next 1/3] ASoC: amd: acp: add missing
+ platform_device_unregister() in acp_pci_probe()
+Date: Fri, 19 Aug 2022 15:37:56 +0800
+Message-ID: <20220819073758.1273160-1-yangyingliang@huawei.com>
 X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20220819073758.1273160-1-yangyingliang@huawei.com>
-References: <20220819073758.1273160-1-yangyingliang@huawei.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
@@ -75,53 +72,26 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Move platform_device_unregister() to a new label to make code more clean.
+Add missing platform_device_unregister() in error path in acp_pci_probe().
 
+Fixes: c49f5e74a11e ("ASoC: amd: acp: Add error handling cases")
 Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
 ---
- sound/soc/amd/acp/acp-pci.c | 11 +++++------
- 1 file changed, 5 insertions(+), 6 deletions(-)
+ sound/soc/amd/acp/acp-pci.c | 1 +
+ 1 file changed, 1 insertion(+)
 
 diff --git a/sound/soc/amd/acp/acp-pci.c b/sound/soc/amd/acp/acp-pci.c
-index 691350646f1b..ef2ce083521e 100644
+index 2c8e960cc9a6..5bb23ebe1216 100644
 --- a/sound/soc/amd/acp/acp-pci.c
 +++ b/sound/soc/amd/acp/acp-pci.c
-@@ -103,16 +103,14 @@ static int acp_pci_probe(struct pci_dev *pci, const struct pci_device_id *pci_id
+@@ -104,6 +104,7 @@ static int acp_pci_probe(struct pci_dev *pci, const struct pci_device_id *pci_id
  	addr = pci_resource_start(pci, 0);
  	chip->base = devm_ioremap(&pci->dev, addr, pci_resource_len(pci, 0));
  	if (!chip->base) {
--		platform_device_unregister(dmic_dev);
++		platform_device_unregister(dmic_dev);
  		ret = -ENOMEM;
--		goto release_regions;
-+		goto unregister_dmic_dev;
+ 		goto release_regions;
  	}
- 
- 	res = devm_kzalloc(&pci->dev, sizeof(struct resource) * num_res, GFP_KERNEL);
- 	if (!res) {
--		platform_device_unregister(dmic_dev);
- 		ret = -ENOMEM;
--		goto release_regions;
-+		goto unregister_dmic_dev;
- 	}
- 
- 	for (i = 0; i < num_res; i++, res_acp++) {
-@@ -139,13 +137,14 @@ static int acp_pci_probe(struct pci_dev *pci, const struct pci_device_id *pci_id
- 	pdev = platform_device_register_full(&pdevinfo);
- 	if (IS_ERR(pdev)) {
- 		dev_err(&pci->dev, "cannot register %s device\n", pdevinfo.name);
--		platform_device_unregister(dmic_dev);
- 		ret = PTR_ERR(pdev);
--		goto release_regions;
-+		goto unregister_dmic_dev;
- 	}
- 
- 	return ret;
- 
-+unregister_dmic_dev:
-+	platform_device_unregister(dmic_dev);
- release_regions:
- 	pci_release_regions(pci);
- disable_pci:
 -- 
 2.25.1
 
