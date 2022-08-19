@@ -4,53 +4,53 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0D7AFC32771
-	for <alsa-devel@archiver.kernel.org>; Fri, 19 Aug 2022 12:58:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 99C9AC32771
+	for <alsa-devel@archiver.kernel.org>; Fri, 19 Aug 2022 12:58:31 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 5B3F71670;
-	Fri, 19 Aug 2022 14:57:20 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5B3F71670
+	by alsa0.perex.cz (Postfix) with ESMTPS id D5ECE168F;
+	Fri, 19 Aug 2022 14:57:39 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D5ECE168F
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1660913890;
-	bh=SC4xkX4xVaqplEcf48L7Fj9EsIaAzAGHmQi7PkAdY10=;
+	s=default; t=1660913909;
+	bh=HExHRlCfoJA8Hvk4S2/b96fVSlzqho+loYM0uzydOsw=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=QfCSoIZnZVNOmfPhqzI+FkWJ3Do1pYKpBI8W30V6eVsO3FpZHUKSr701hf8WbVsLu
-	 /T64WJlWGGKlvF9CzMi8OPIij0GoLFE/kGYk7SSTva4IgnNUrnoTpFu8oIVcJ+iL2G
-	 jcPF1rHAGLTB0mRRnNJYyn+fOwpoDoL0epv5T0uY=
+	b=cdaYxcR/2Sd/IMVbPp+MjLdS2PAXjh8SptWQRuy59b5UHeirJHEFD3mc0C0YnMMka
+	 udeDjmnFIg2BZ0oNcl8R3SLX0Le94drY/IgMRJDozS58HBQ1NRTcZ11TAJmZFb6Zjq
+	 Qvt6bUfI0TClolhtCTPu8nJ9r5gZ6e8G9byoeDFI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id AC8C8F80529;
-	Fri, 19 Aug 2022 14:54:54 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 376FFF805BD;
+	Fri, 19 Aug 2022 14:54:56 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id C26D2F8051F; Fri, 19 Aug 2022 14:54:50 +0200 (CEST)
+ id 1F0A8F80527; Fri, 19 Aug 2022 14:54:53 +0200 (CEST)
 Received: from hutie.ust.cz (hutie.ust.cz [185.8.165.127])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 37B09F801F7
- for <alsa-devel@alsa-project.org>; Fri, 19 Aug 2022 14:54:39 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 37B09F801F7
+ by alsa1.perex.cz (Postfix) with ESMTPS id 60E23F80128
+ for <alsa-devel@alsa-project.org>; Fri, 19 Aug 2022 14:54:42 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 60E23F80128
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=cutebit.org header.i=@cutebit.org
- header.b="keSH+EIT"
+ header.b="APle2JQa"
 From: =?UTF-8?q?Martin=20Povi=C5=A1er?= <povik+lin@cutebit.org>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cutebit.org; s=mail;
- t=1660913679; bh=Gkj3zv8/AM0qe5Jje8Bp7iYtlxqcO626XnrNO1Cj3wY=;
+ t=1660913682; bh=2SOWr4VpKIL4+yFIcvj9W1Ov0L7TpqwW5UhXYyqxpq8=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References;
- b=keSH+EIT5pxyg9zlrBLaHmVDb0kTl6hmA4nfblgxgR4YNeHQlAYHfO+l5qvJo926l
- G9Om5eu9TQLcHcs+FkrzPNSsXU20Bf3avCCdsnMsch0yEscQbl4clP1ruBz1cZe1VK
- nzshyHi6HRupXMQfwDwie9Gxv5mlbJEUe/EUxwes=
+ b=APle2JQaRzCRHzjopNhqUZaK9Dep2TJVRUBv/S4SkGgwDURtokY20qDDoc3NIseJQ
+ 6jEh5kt1OkDx5oD1wSyqrrZycD5XkcbPQre7p+B2D8x5y7g7vHlD2sWjjPytfw178z
+ DDO9ecYUNUOWqBLx572OfD7VPD8hZaQJuAj7afvs=
 To: =?UTF-8?q?Martin=20Povi=C5=A1er?= <povik+lin@cutebit.org>,
  Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
  Rob Herring <robh+dt@kernel.org>,
  Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
  Hector Martin <marcan@marcan.st>, Sven Peter <sven@svenpeter.dev>,
  Philipp Zabel <p.zabel@pengutronix.de>
-Subject: [PATCH v2 1/4] dt-bindings: sound: Add Apple MCA I2S transceiver
-Date: Fri, 19 Aug 2022 14:54:27 +0200
-Message-Id: <20220819125430.4920-2-povik+lin@cutebit.org>
+Subject: [PATCH v2 4/4] ASoC: apple: mca: Add locks on foreign cluster access
+Date: Fri, 19 Aug 2022 14:54:30 +0200
+Message-Id: <20220819125430.4920-5-povik+lin@cutebit.org>
 In-Reply-To: <20220819125430.4920-1-povik+lin@cutebit.org>
 References: <20220819125430.4920-1-povik+lin@cutebit.org>
 MIME-Version: 1.0
@@ -74,152 +74,118 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Add binding schema for MCA I2S transceiver found on Apple M1 and other
-chips.
+In DAI ops, accesses to the native cluster (of the DAI), and to data of
+clusters related to it by a DPCM frontend-backend link, should have
+been synchronized by the 'pcm_mutex' lock at ASoC level.
+
+What is not covered are the 'port_driver' accesses on foreign clusters
+to which the current cluster has no a priori relation, so fill in
+locking for that. (This should only matter in bizarre configurations of
+sharing one MCA peripheral between ASoC cards.)
 
 Signed-off-by: Martin Povišer <povik+lin@cutebit.org>
 ---
- .../devicetree/bindings/sound/apple,mca.yaml  | 131 ++++++++++++++++++
- 1 file changed, 131 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/sound/apple,mca.yaml
+ sound/soc/apple/mca.c | 27 ++++++++++++++++++++++++---
+ 1 file changed, 24 insertions(+), 3 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/sound/apple,mca.yaml b/Documentation/devicetree/bindings/sound/apple,mca.yaml
-new file mode 100644
-index 000000000000..7b4f348c2be3
---- /dev/null
-+++ b/Documentation/devicetree/bindings/sound/apple,mca.yaml
-@@ -0,0 +1,131 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/sound/apple,mca.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
+diff --git a/sound/soc/apple/mca.c b/sound/soc/apple/mca.c
+index 6eeb35d49986..659631772d38 100644
+--- a/sound/soc/apple/mca.c
++++ b/sound/soc/apple/mca.c
+@@ -159,6 +159,9 @@ struct mca_data {
+ 	struct reset_control *rstc;
+ 	struct device_link *pd_link;
+ 
++	/* Mutex for accessing port_driver of foreign clusters */
++	struct mutex port_mutex;
 +
-+title: Apple MCA I2S transceiver
-+
-+description: |
-+  MCA is an I2S transceiver peripheral found on M1 and other Apple chips. It is
-+  composed of a number of identical clusters which can operate independently
-+  or in an interlinked fashion. Up to 6 clusters have been seen on an MCA.
-+
-+maintainers:
-+  - Martin Povišer <povik+lin@cutebit.org>
-+
-+properties:
-+  compatible:
-+    items:
-+      - enum:
-+          - apple,t8103-mca
-+          - apple,t6000-mca
-+      - const: apple,mca
-+
-+  reg:
-+    items:
-+      - description: Register region of the MCA clusters proper
-+      - description: Register region of the DMA glue and its FIFOs
-+
-+  interrupts:
-+    minItems: 4
-+    maxItems: 6
-+    description:
-+      One interrupt per each cluster
-+
-+  '#address-cells':
-+    const: 1
-+
-+  '#size-cells':
-+    const: 0
-+
-+  dmas:
-+    minItems: 16
-+    maxItems: 24
-+    description:
-+      DMA channels corresponding to the SERDES units in the peripheral. They are
-+      listed in groups of four per cluster, and within the group they are given
-+      as associated to the TXA, RXA, TXB, RXB units.
-+
-+  dma-names:
-+    minItems: 16
-+    items:
-+      - const: tx0a
-+      - const: rx0a
-+      - const: tx0b
-+      - const: rx0b
-+      - const: tx1a
-+      - const: rx1a
-+      - const: tx1b
-+      - const: rx1b
-+      - const: tx2a
-+      - const: rx2a
-+      - const: tx2b
-+      - const: rx2b
-+      - const: tx3a
-+      - const: rx3a
-+      - const: tx3b
-+      - const: rx3b
-+      - const: tx4a
-+      - const: rx4a
-+      - const: tx4b
-+      - const: rx4b
-+      - const: tx5a
-+      - const: rx5a
-+      - const: tx5b
-+      - const: rx5b
-+    description: |
-+      Names for the DMA channels: 'tx'/'rx', then cluster number, then 'a'/'b'
-+      based on the associated SERDES unit.
-+
-+  clocks:
-+    minItems: 4
-+    maxItems: 6
-+    description:
-+      Clusters' input reference clock.
-+
-+  resets:
-+    maxItems: 1
-+
-+  power-domains:
-+    minItems: 5
-+    maxItems: 7
-+    description:
-+      First a general power domain for register access, then the power
-+      domains of individual clusters for their operation.
-+
-+  '#sound-dai-cells':
-+    const: 1
-+
-+required:
-+  - compatible
-+  - reg
-+  - dmas
-+  - dma-names
-+  - clocks
-+  - power-domains
-+  - '#sound-dai-cells'
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    mca: i2s@9b600000 {
-+      compatible = "apple,t6000-mca", "apple,mca";
-+      reg = <0x9b600000 0x10000>,
-+            <0x9b200000 0x20000>;
-+
-+      clocks = <&nco 0>, <&nco 1>, <&nco 2>, <&nco 3>;
-+      power-domains = <&ps_audio_p>, <&ps_mca0>, <&ps_mca1>,
-+                      <&ps_mca2>, <&ps_mca3>;
-+      dmas = <&admac 0>, <&admac 1>, <&admac 2>, <&admac 3>,
-+             <&admac 4>, <&admac 5>, <&admac 6>, <&admac 7>,
-+             <&admac 8>, <&admac 9>, <&admac 10>, <&admac 11>,
-+             <&admac 12>, <&admac 13>, <&admac 14>, <&admac 15>;
-+      dma-names = "tx0a", "rx0a", "tx0b", "rx0b",
-+                  "tx1a", "rx1a", "tx1b", "rx1b",
-+                  "tx2a", "rx2a", "tx2b", "rx2b",
-+                  "tx3a", "rx3a", "tx3b", "rx3b";
-+
-+      #sound-dai-cells = <1>;
-+    };
+ 	int nclusters;
+ 	struct mca_cluster clusters[];
+ };
+@@ -297,16 +300,21 @@ static bool mca_fe_clocks_in_use(struct mca_cluster *cl)
+ 	struct mca_cluster *be_cl;
+ 	int stream, i;
+ 
++	mutex_lock(&mca->port_mutex);
+ 	for (i = 0; i < mca->nclusters; i++) {
+ 		be_cl = &mca->clusters[i];
+ 
+ 		if (be_cl->port_driver != cl->no)
+ 			continue;
+ 
+-		for_each_pcm_streams(stream)
+-			if (be_cl->clocks_in_use[stream])
++		for_each_pcm_streams(stream) {
++			if (be_cl->clocks_in_use[stream]) {
++				mutex_unlock(&mca->port_mutex);
+ 				return true;
++			}
++		}
+ 	}
++	mutex_unlock(&mca->port_mutex);
+ 	return false;
+ }
+ 
+@@ -331,8 +339,10 @@ static int mca_be_prepare(struct snd_pcm_substream *substream,
+ 	 */
+ 	if (!mca_fe_clocks_in_use(fe_cl)) {
+ 		ret = mca_fe_enable_clocks(fe_cl);
+-		if (ret < 0)
++		if (ret < 0) {
++			mutex_unlock(&mca->port_mutex);
+ 			return ret;
++		}
+ 	}
+ 
+ 	cl->clocks_in_use[substream->stream] = true;
+@@ -350,6 +360,11 @@ static int mca_be_hw_free(struct snd_pcm_substream *substream,
+ 	if (cl->port_driver < 0)
+ 		return -EINVAL;
+ 
++	/*
++	 * We are operating on a foreign cluster here, but since we
++	 * belong to the same PCM, accesses should have been
++	 * synchronized at ASoC level.
++	 */
+ 	fe_cl = &mca->clusters[cl->port_driver];
+ 	if (!mca_fe_clocks_in_use(fe_cl))
+ 		return 0; /* Nothing to do */
+@@ -722,7 +737,9 @@ static int mca_be_startup(struct snd_pcm_substream *substream,
+ 		       cl->base + REG_PORT_CLOCK_SEL);
+ 	writel_relaxed(PORT_DATA_SEL_TXA(fe_cl->no),
+ 		       cl->base + REG_PORT_DATA_SEL);
++	mutex_lock(&mca->port_mutex);
+ 	cl->port_driver = fe_cl->no;
++	mutex_unlock(&mca->port_mutex);
+ 	cl->port_started[substream->stream] = true;
+ 
+ 	return 0;
+@@ -732,6 +749,7 @@ static void mca_be_shutdown(struct snd_pcm_substream *substream,
+ 			    struct snd_soc_dai *dai)
+ {
+ 	struct mca_cluster *cl = mca_dai_to_cluster(dai);
++	struct mca_data *mca = cl->host;
+ 
+ 	cl->port_started[substream->stream] = false;
+ 
+@@ -742,7 +760,9 @@ static void mca_be_shutdown(struct snd_pcm_substream *substream,
+ 		 */
+ 		writel_relaxed(0, cl->base + REG_PORT_ENABLES);
+ 		writel_relaxed(0, cl->base + REG_PORT_DATA_SEL);
++		mutex_lock(&mca->port_mutex);
+ 		cl->port_driver = -1;
++		mutex_unlock(&mca->port_mutex);
+ 	}
+ }
+ 
+@@ -963,6 +983,7 @@ static int apple_mca_probe(struct platform_device *pdev)
+ 		return -ENOMEM;
+ 	mca->dev = &pdev->dev;
+ 	mca->nclusters = nclusters;
++	mutex_init(&mca->port_mutex);
+ 	platform_set_drvdata(pdev, mca);
+ 	clusters = mca->clusters;
+ 
 -- 
 2.33.0
 
