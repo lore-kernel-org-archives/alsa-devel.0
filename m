@@ -4,87 +4,72 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id CA58EC32771
-	for <alsa-devel@archiver.kernel.org>; Fri, 19 Aug 2022 12:06:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 40B5AC32771
+	for <alsa-devel@archiver.kernel.org>; Fri, 19 Aug 2022 12:20:12 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 100CAE0E;
-	Fri, 19 Aug 2022 14:05:48 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 100CAE0E
+	by alsa0.perex.cz (Postfix) with ESMTPS id A2F9E210;
+	Fri, 19 Aug 2022 14:19:20 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A2F9E210
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1660910798;
-	bh=GeUuUlm2/54TszPHr2/Os9rCZbLwynL3Ys9K/c9TRHo=;
-	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=CBCG0dlhx7Nhqutb8/RNrVenyRA+K+9Nw6PzXM5dxOaV43wLkGCj9RzCoum9mm9Hn
-	 OpaxII8rhR2bmjZ2UsAAne8WLQmpgt10Owp8wRcKzyDQkc7f6DEBYf7S7qafpol+W7
-	 lXGdLY+UsmJYJJAjax/yOSZNQJIVlT+G0kqvy2nQ=
+	s=default; t=1660911610;
+	bh=s3zyPhwBOgrjSaC2xcdzm96IEOFGLcHf990suEYQQJg=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=Wdo93UPUxZESMAMGtYohqi/AkZfJ1jngux+x1zQWdxgT6Ludp4Xgd7VNWz8zxuAcx
+	 bU4t9WKP8pmwYwp9+LGx+T6Ab5hKUtnzSfOMtF3gsd09MKzcbJ7KVpgxqqwIozawRy
+	 7/JZKtMKBO90LW39K/mqVo2+avcMf8DOZMQVMmBI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 91B56F800EE;
-	Fri, 19 Aug 2022 14:05:47 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 37624F8016C;
+	Fri, 19 Aug 2022 14:19:20 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 4784DF801F7; Fri, 19 Aug 2022 14:05:45 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id EF4B7F801F7; Fri, 19 Aug 2022 14:19:18 +0200 (CEST)
+Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id C4EFBF800EE
- for <alsa-devel@alsa-project.org>; Fri, 19 Aug 2022 14:05:42 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C4EFBF800EE
+ by alsa1.perex.cz (Postfix) with ESMTPS id 549BEF80128
+ for <alsa-devel@alsa-project.org>; Fri, 19 Aug 2022 14:19:11 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 549BEF80128
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="zYSPi4tv"; 
- dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="ROP8sjPt"
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 58716352FF;
- Fri, 19 Aug 2022 12:05:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1660910742; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=Da9ibTQcKE40AQfRCOZrvs+8F21E+Wv8031Z1+Wthkw=;
- b=zYSPi4tvNYlRU9Ppl9GQL+BXOdgP34XYoAG2VBZHPymM7Nb+cWPUv1K+TwV1DZjRTKsqO0
- k+1NMtxkT4hNu0dDeji8eEdOn7n92gv+dBEGZX2grVRh0i2Eyc/CXASNTqwuc411/tKQ/J
- Zvh6PXw2Lfe8bnE7u3FVcVybjVAGdHk=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1660910742;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=Da9ibTQcKE40AQfRCOZrvs+8F21E+Wv8031Z1+Wthkw=;
- b=ROP8sjPtS2ED69Uca3zrbuopCWdHyU+42owgAZnmznQaaJF1Z3Tqp0eh67VmKYZPYgtMgz
- CdB+hPRi8cUCvcDg==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 2ABD013AC1;
- Fri, 19 Aug 2022 12:05:42 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id xRHJCZZ8/2JOPQAAMHmgww
- (envelope-from <tiwai@suse.de>); Fri, 19 Aug 2022 12:05:42 +0000
-Date: Fri, 19 Aug 2022 14:05:41 +0200
-Message-ID: <87ilmoo2ui.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Amadeusz =?ISO-8859-2?Q?S=B3awi=F1ski?=
- <amadeuszx.slawinski@linux.intel.com>
-Subject: Re: [PATCH v2 0/4] hda: Minor cleanups
-In-Reply-To: <20220818141517.109280-1-amadeuszx.slawinski@linux.intel.com>
-References: <20220818141517.109280-1-amadeuszx.slawinski@linux.intel.com>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=ISO-8859-2
+ dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
+ header.b="MQryPSAb"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+ d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+ t=1660911553; x=1692447553;
+ h=from:to:cc:subject:date:message-id:mime-version:
+ content-transfer-encoding;
+ bh=s3zyPhwBOgrjSaC2xcdzm96IEOFGLcHf990suEYQQJg=;
+ b=MQryPSAbPy/e29v4Vt+crHQjJaRUBK59KgAeaMJLHuMlvpEaB8zFH1T5
+ LcZLb4PcfmwjrTJHvFoBuPbjj3HGWxY1J1A+4OxFFs3Nl4M0CKmEMdym9
+ 4W5jDfhJOVXPkB1ANn6d6PeKJrzU7Say88rVmqJnsJRvMPxPxo3jh3PtS
+ w9w8CG7g6YNCkl7apsc0gXg/gtk1eUdr0yEcraD/5JbZ62xncZgx8KUkA
+ XQm/U56KipN9QkyysuepLo8y+M0OZWbsvImM68WluMv/hnPxo/cVfkfAW
+ 5K9t+DpmEa9Y+3KBJhPoFYzON0e6rJDZhnOd7RkIUxiUfIpQP/AncFDOn g==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10443"; a="379295374"
+X-IronPort-AV: E=Sophos;i="5.93,247,1654585200"; d="scan'208";a="379295374"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+ by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 19 Aug 2022 05:19:07 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.93,247,1654585200"; d="scan'208";a="637260228"
+Received: from crojewsk-ctrl.igk.intel.com ([10.102.9.28])
+ by orsmga008.jf.intel.com with ESMTP; 19 Aug 2022 05:19:05 -0700
+From: Cezary Rojewski <cezary.rojewski@intel.com>
+To: alsa-devel@alsa-project.org,
+	broonie@kernel.org,
+	tiwai@suse.com
+Subject: [PATCH] ASoC: SOF: Fix compilation when HDA_AUDIO_CODEC config is
+ disabled
+Date: Fri, 19 Aug 2022 14:29:08 +0200
+Message-Id: <20220819122908.3563930-1-cezary.rojewski@intel.com>
+X-Mailer: git-send-email 2.25.1
+MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- Cezary Rojewski <cezary.rojewski@intel.com>, linux-kernel@vger.kernel.org,
- Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org
+Cc: Cezary Rojewski <cezary.rojewski@intel.com>,
+ kernel test robot <lkp@intel.com>, kai.vehmanen@linux.intel.com,
+ pierre-louis.bossart@linux.intel.com, hdegoede@redhat.com,
+ amadeuszx.slawinski@linux.intel.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -100,23 +85,28 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Thu, 18 Aug 2022 16:15:13 +0200,
-Amadeusz S³awiñski wrote:
-> 
-> First two patches are small refactoring of code to use poll macros
-> instead of open coding register checks.
-> Following two patches remove unused defines from code.
-> 
-> v2:
->  * Fix includes
-> 
-> Amadeusz S³awiñski (4):
->   ALSA: hda: Move stream-register polling macros
->   ALSA: hda: Rework snd_hdac_stream_reset() to use macros
->   ALSA: hda: Remove unused MAX_PIN_CONFIGS constant
->   ALSA: hda: Remove unused defines
+hda_codec_device_init() expects three parameters, not two.
 
-Thanks, applied now to for-next branch.
+Fixes: f2183b08c81a ("ASoC: Intel: Drop hdac_ext usage for codec device creation")
+Reported-by: kernel test robot <lkp@intel.com>
+Signed-off-by: Cezary Rojewski <cezary.rojewski@intel.com>
+---
+ sound/soc/sof/intel/hda-codec.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
+diff --git a/sound/soc/sof/intel/hda-codec.c b/sound/soc/sof/intel/hda-codec.c
+index 73336648cd25..1e9afc48394c 100644
+--- a/sound/soc/sof/intel/hda-codec.c
++++ b/sound/soc/sof/intel/hda-codec.c
+@@ -213,7 +213,7 @@ static int hda_codec_probe(struct snd_sof_dev *sdev, int address,
+ 		put_device(&codec->core.dev);
+ 	}
+ #else
+-	codec = hda_codec_device_init(&hbus->core, address);
++	codec = hda_codec_device_init(&hbus->core, address, HDA_DEV_ASOC);
+ 	ret = PTR_ERR_OR_ZERO(codec);
+ #endif
+ 
+-- 
+2.25.1
 
-Takashi
