@@ -4,68 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4F6D1C32774
-	for <alsa-devel@archiver.kernel.org>; Mon, 22 Aug 2022 16:17:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C5285C28D13
+	for <alsa-devel@archiver.kernel.org>; Mon, 22 Aug 2022 16:18:12 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 16F853E7;
-	Mon, 22 Aug 2022 18:16:52 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 16F853E7
+	by alsa0.perex.cz (Postfix) with ESMTPS id 08DB215E5;
+	Mon, 22 Aug 2022 18:17:21 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 08DB215E5
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1661185062;
-	bh=n7Tpver0wlHE1YaslCR3Alcl2cXodLRbPnZl+eclhYQ=;
+	s=default; t=1661185091;
+	bh=u35J4IpHSFEfh+GYLrukSlUjmHxOKq2CFdVZojhZiak=;
 	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=FrQ9Jzs3ei7UaYvfvIQ1B4owMq0XHjBbRlT1pgRvTD300uAQpO1qqte7SfKxNQufy
-	 CrchU89mprE0ZWneoSZ3Hqg5sategLulD+AWpRtdbVQAJsjrsUdrUHtLwuHdRbW6Z1
-	 yfoFnnLNJFv1x+D9NcqXCKeE9sJsXGhx/IA9h9wE=
+	b=AsAEib3z6oA9jrqFa9+6GXiNz/nNAqtKDqNSZ5ZeTWuNc8na5yilgF2OozTlAaS6F
+	 SZ87cy3ox4OP1ZNb1PiqYvwiH2w5lJ8xXyBvmFOJZ2OmGfyWW9Hp9XXX/qis34Y8jU
+	 Tt6XdF85ilTUEnd+PNQzOt/S0PGQuur3xAyH7/nc=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id B9727F8026A;
-	Mon, 22 Aug 2022 18:16:51 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 323C7F804A9;
+	Mon, 22 Aug 2022 18:16:56 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id C485BF800A7; Mon, 22 Aug 2022 18:16:50 +0200 (CEST)
-Received: from ams.source.kernel.org (ams.source.kernel.org
- [IPv6:2604:1380:4601:e00::1])
+ id 37972F804D1; Mon, 22 Aug 2022 18:16:54 +0200 (CEST)
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 84780F800A7
- for <alsa-devel@alsa-project.org>; Mon, 22 Aug 2022 18:16:48 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 84780F800A7
+ by alsa1.perex.cz (Postfix) with ESMTPS id 516D2F800ED
+ for <alsa-devel@alsa-project.org>; Mon, 22 Aug 2022 18:16:47 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 516D2F800ED
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="dQFGoLa4"
+ header.b="OGr4nayo"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by ams.source.kernel.org (Postfix) with ESMTPS id 870D6B815F6;
- Mon, 22 Aug 2022 16:16:47 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B54EAC433B5;
- Mon, 22 Aug 2022 16:16:45 +0000 (UTC)
+ by ams.source.kernel.org (Postfix) with ESMTPS id 9F689B815F3;
+ Mon, 22 Aug 2022 16:16:46 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DACB0C433D6;
+ Mon, 22 Aug 2022 16:16:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1661185006;
- bh=n7Tpver0wlHE1YaslCR3Alcl2cXodLRbPnZl+eclhYQ=;
+ s=k20201202; t=1661185005;
+ bh=u35J4IpHSFEfh+GYLrukSlUjmHxOKq2CFdVZojhZiak=;
  h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=dQFGoLa4I/7Pg4+WVIvk6MPByOouURJkVMMW+O0rTaULtjH8KvZHQhi/Ly42aCmv7
- /WOmRqEvbHy2EU9/HVZ8n9RfeX4vvKSdwazsdh1HeCc098bidiTwN65zZ9Q9Jy9JNa
- KzJtVYWyTI4lcDRHMmMjPkKyyAxCsAJBYvX5ZFM54x4oJgusCNKhAP5J8j4SWyAF4Z
- eHyNRyO5uvZlaFvGoL3NV9BiGs0f5GxmtSz6AyhJa4H6m5NcffjmzXDY+93II+XzvW
- sNULCnPdsRItbNEh+4YqHeKnTj3G67cH43pdbIfeAbFgKQc3ttEP6+Jj5JhUXSdKtR
- B51JKcfwsnp4w==
+ b=OGr4nayobT6fT8ydoU5LaYZCf1MEoWJVF9F9YmHC7hO56OMJpwx+AyNNt4o7KVqiF
+ x57Bv/LtnMW8C7gcV3uqwyiZQweD07AZ7wmFX16zjILwaF2SxjU+JyZujFcAx18ztk
+ d+bHBKHVw7FRlxhtTPIfdOvzlMORUUa+e5UbGkFksjve2vIQZB+N3wQdRErwYaQBcd
+ EFcSDq9eB+QBQ4GxA4GTN+egSUCfTF8GlnpskD5pE3ehyWMhgsfpWFwAaE/j6o1ERd
+ GwmqQo1kWXPESQ58hduyI2bEnAWtNrR2MX7s2O7eVsUvwu0Xhwj5TikzIAA9Vfenun
+ uHln2YHXB2/Ww==
 From: Mark Brown <broonie@kernel.org>
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-In-Reply-To: <87bksdgflq.wl-kuninori.morimoto.gx@renesas.com>
-References: <87bksdgflq.wl-kuninori.morimoto.gx@renesas.com>
-Subject: Re: [PATCH] ASoC: soc-pcm.c: summarize related settings at
- soc_new_pcm()
-Message-Id: <166118500548.214851.12498019885352073607.b4-ty@kernel.org>
-Date: Mon, 22 Aug 2022 17:16:45 +0100
+To: Jonathan Cameron <jic23@kernel.org>, linux-samsung-soc@vger.kernel.org,
+ alsa-devel@alsa-project.org
+In-Reply-To: <20220821160914.2207116-1-jic23@kernel.org>
+References: <20220821160914.2207116-1-jic23@kernel.org>
+Subject: Re: [PATCH] ASoC: samsung: Use iio_get_channel_type() accessor.
+Message-Id: <166118500362.214851.13933856221972874063.b4-ty@kernel.org>
+Date: Mon, 22 Aug 2022 17:16:43 +0100
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 X-Mailer: b4 0.10.0-dev-fe10a
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>
+Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+ Liam Girdwood <lgirdwood@gmail.com>,
+ Jonathan Cameron <Jonathan.Cameron@huawei.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -81,12 +82,15 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Mon, 22 Aug 2022 02:46:25 +0000, Kuninori Morimoto wrote:
-> soc_new_pcm() sets pcm->no_device_suspend, but it sets other pcm->xxx
-> at the same function with different timing.
-> pcm->no_device_suspend setup timing has no effect. This patch tidyup it.
+On Sun, 21 Aug 2022 17:09:14 +0100, Jonathan Cameron wrote:
+> From: Jonathan Cameron <Jonathan.Cameron@huawei.com>
 > 
+> struct iio_chan_spec is meant to be opaque to IIO consumer drivers
+> which should only use the interfaces in linux/iio/consumer.h.
+> Use the provided accessor function to find get the type of the
+> channel instead of directly reading it form the structure.
 > 
+> [...]
 
 Applied to
 
@@ -94,8 +98,8 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: soc-pcm.c: summarize related settings at soc_new_pcm()
-      commit: 4d45d944e885e1bf4341a8cbb9b69584477880e3
+[1/1] ASoC: samsung: Use iio_get_channel_type() accessor.
+      commit: 94f072748337424c9cf92cd018532a34db3a5516
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
