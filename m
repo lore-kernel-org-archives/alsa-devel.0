@@ -4,77 +4,86 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E1AE5C28D13
-	for <alsa-devel@archiver.kernel.org>; Mon, 22 Aug 2022 18:45:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B58CCC28D13
+	for <alsa-devel@archiver.kernel.org>; Mon, 22 Aug 2022 19:00:27 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 19CB8168F;
-	Mon, 22 Aug 2022 20:44:37 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 19CB8168F
+	by alsa0.perex.cz (Postfix) with ESMTPS id 26149839;
+	Mon, 22 Aug 2022 20:59:35 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 26149839
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1661193927;
-	bh=ysLY52QIaymnVb5gk/TwZwHIvVe0JIPygRIZPu439/o=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1661194825;
+	bh=bwzvwojmSgtuoyWuFH+V8diEXG0uVqK9Nqw8er34tCw=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=CEc2u2NLxmaBsROCeSnXn50y54iz09vhbbbaEK0cWNVDpXhax9cEfi7M82x/uBFI5
-	 sieSvfiDGL0kFQFXLl7MCVwJ/Sl++EcndvYPuLOA5VXFXMRppE4jGO+oFxUcwjfJeJ
-	 yXoIuu9TWhq68hzXnPsceAEsEUeRWqUqnsE3hMpA=
+	b=NHZlB8A27i+p27Z9yRVoj2osesiYinyxZmuMrfosJlghANHpvz0pYd2RsETSMOQ9L
+	 P0o8aeDcGbT/RpDmyMA3P20nnhr8zTCVh/w7rFIPO9uaXijn9YMG0IRZQTH2SwefuL
+	 gbDlR5FT01MvBAj6/n80x3DgQFBDlUIhvY02nsHs=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id C4730F80542;
-	Mon, 22 Aug 2022 20:43:30 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 9A6F1F800ED;
+	Mon, 22 Aug 2022 20:59:34 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 90EE0F8054A; Mon, 22 Aug 2022 20:43:29 +0200 (CEST)
-Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 437E0F8026A; Mon, 22 Aug 2022 20:59:32 +0200 (CEST)
+Received: from mail-ot1-f51.google.com (mail-ot1-f51.google.com
+ [209.85.210.51])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 072DEF80542
- for <alsa-devel@alsa-project.org>; Mon, 22 Aug 2022 20:43:22 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 072DEF80542
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="M7plYHlP"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
- d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1661193804; x=1692729804;
- h=from:to:cc:subject:date:message-id:in-reply-to:
- references:mime-version:content-transfer-encoding;
- bh=ysLY52QIaymnVb5gk/TwZwHIvVe0JIPygRIZPu439/o=;
- b=M7plYHlP6qe13+zGrQL6g92iFepQZuhI5ujRHqKF5GoNP4jNNQTiNyzL
- pym6EnBHMQVYuoax3OeSLWmkHAN2O6CdoDVddmXYJp+6rTLD4VJ68VLHZ
- hT8XEs32Fy4caLQl8l9TL59VS3UPrCz/eOZRpGnvejUzLPUQdiNSFJ8ww
- n1hi4vXO1YC1fbEaNWamwL8Q8M5d0GYgWNTQq+dslwIWSkCVMjWAPJ9ZQ
- ikhhayUpqz+vvOzVC7fLAtP4Fu4kSMzkZEBqXHXSC09oiUp7ePbz6Mb9c
- p11OfoIoWARN78AhWSyHefhKy4GHLptSIB+wNfZCk566nRBPLdmKpGAWE Q==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10447"; a="293489010"
-X-IronPort-AV: E=Sophos;i="5.93,255,1654585200"; d="scan'208";a="293489010"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
- by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 22 Aug 2022 11:43:22 -0700
-X-IronPort-AV: E=Sophos;i="5.93,255,1654585200"; d="scan'208";a="669671123"
-Received: from apascali-mobl2.ger.corp.intel.com (HELO pbossart-mobl3.home)
- ([10.252.42.21])
- by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 22 Aug 2022 11:43:19 -0700
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-To: alsa-devel@alsa-project.org
-Subject: [PATCH 5/5] ASoC: ti: omap-mcbsp: remove useless assignment
-Date: Mon, 22 Aug 2022 20:42:39 +0200
-Message-Id: <20220822184239.169757-6-pierre-louis.bossart@linux.intel.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20220822184239.169757-1-pierre-louis.bossart@linux.intel.com>
-References: <20220822184239.169757-1-pierre-louis.bossart@linux.intel.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 8AC44F800ED
+ for <alsa-devel@alsa-project.org>; Mon, 22 Aug 2022 20:59:29 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8AC44F800ED
+Received: by mail-ot1-f51.google.com with SMTP id
+ m21-20020a9d6ad5000000b00638df677850so8320266otq.5
+ for <alsa-devel@alsa-project.org>; Mon, 22 Aug 2022 11:59:29 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=in-reply-to:content-transfer-encoding:content-disposition
+ :mime-version:references:message-id:subject:cc:to:from:date
+ :x-gm-message-state:from:to:cc;
+ bh=KC3mSExT2980nvsUpi0Nta2kzUEej10EfwvbkK4Vxig=;
+ b=ZOsi10FlosvLmPt4CtpkpVvIEeJdUFwsXLsYkjNhaLLO7aLNIyfBxQET6MSUCFmroD
+ 7Cto4I/fkhior5ylDPUenJwwdQ7VRytzSXymbZc1U4e0Svm/H8sFpPAe/6P0IPSn9DUJ
+ Gj91eInH3prN+Yp9eYuIt7LkYxfIAjtoBmu2Ex/PK7rZiTPRA8KfjEuxNkO35B4hl70G
+ BRDaI/JwbjpvvgAJIw2fQu3CpeB4w3nELAYcCjdhIShPKbcGRdJsCJ6C2RW5x0bkJwCH
+ GNHPzWr4oBGJREJXxzwoAM7vHyvJQdpzEwkhgukR4PDkxFArOTqR2ViBKTuFkCsXYVhK
+ Qhrg==
+X-Gm-Message-State: ACgBeo2BycFCKqwliPahFgGxr8FUObBrYH/QijToVJiIE7coALMN7WTr
+ 5BfCZNrH2qGsAe2q9YEyog==
+X-Google-Smtp-Source: AA6agR7btQFmvQq0Xy9/DuWu4SwhzJqPzpfHfJhyCbe3cPr8MjiKVjCR+AbUoPv1GGenu7V4Fr40aw==
+X-Received: by 2002:a05:6830:19a:b0:636:dbfe:4c36 with SMTP id
+ q26-20020a056830019a00b00636dbfe4c36mr8070226ota.257.1661194767772; 
+ Mon, 22 Aug 2022 11:59:27 -0700 (PDT)
+Received: from robh.at.kernel.org (66-90-144-107.dyn.grandenetworks.net.
+ [66.90.144.107]) by smtp.gmail.com with ESMTPSA id
+ z24-20020a4a8e58000000b004357ccfc8bfsm2633078ook.7.2022.08.22.11.59.26
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Mon, 22 Aug 2022 11:59:27 -0700 (PDT)
+Received: (nullmailer pid 170179 invoked by uid 1000);
+ Mon, 22 Aug 2022 18:59:26 -0000
+Date: Mon, 22 Aug 2022 13:59:26 -0500
+From: Rob Herring <robh@kernel.org>
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Subject: Re: [PATCH v2 1/4] dt-bindings: sound: Add Apple MCA I2S transceiver
+Message-ID: <20220822185926.GA146730-robh@kernel.org>
+References: <20220819125430.4920-1-povik+lin@cutebit.org>
+ <20220819125430.4920-2-povik+lin@cutebit.org>
+ <AE646B68-CA14-483C-A1AB-30358560DAAD@cutebit.org>
+ <8472463e-d99a-d0f6-9551-45a79a15f567@linaro.org>
+ <737767DD-CB70-4941-8CF5-497333D3A801@cutebit.org>
+ <a0a34ac8-4b62-4e69-f16f-7a51132a3987@linaro.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-Cc: "open list:OMAP AUDIO SUPPORT" <linux-omap@vger.kernel.org>,
- open list <linux-kernel@vger.kernel.org>,
- Kai Vehmanen <kai.vehmanen@linux.intel.com>, tiwai@suse.de,
- Peter Ujfalusi <peter.ujfalusi@gmail.com>, Takashi Iwai <tiwai@suse.com>,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- Liam Girdwood <lgirdwood@gmail.com>, broonie@kernel.org,
- Chao Song <chao.song@intel.com>, Bard Liao <yung-chuan.liao@linux.intel.com>,
- Jarkko Nikula <jarkko.nikula@bitmer.com>
+In-Reply-To: <a0a34ac8-4b62-4e69-f16f-7a51132a3987@linaro.org>
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
+ Philipp Zabel <p.zabel@pengutronix.de>, Sven Peter <sven@svenpeter.dev>,
+ Hector Martin <marcan@marcan.st>, Liam Girdwood <lgirdwood@gmail.com>,
+ linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>,
+ asahi@lists.linux.dev, Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Martin =?utf-8?Q?Povi=C5=A1er?= <povik+lin@cutebit.org>,
+ Alyssa Rosenzweig <alyssa@rosenzweig.io>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -90,32 +99,36 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-sound/soc/ti/omap-mcbsp.c:617:10: style: Variable 'ret' is assigned a
-value that is never used. [unreadVariable]
- int ret = 0;
-         ^
+On Fri, Aug 19, 2022 at 05:17:17PM +0300, Krzysztof Kozlowski wrote:
+> On 19/08/2022 17:14, Martin Povišer wrote:
+> >>> Since it was brought up last time but I didn’t respond: the
+> >>> nonalphabetical order is as the chips were introduced (and
+> >>> matches other schemas).
+> >>
+> >> Sure, just keep that order for future compatibles as well - so always
+> >> put them according to verifiable time of market introduction...
+> >>
+> >> This is very poor reason, instead of alphabetical order. Even worse
+> >> reason is repeating wrong pattern just because someone else did it.
+> >>
+> >> Best regards,
+> >> Krzysztof
+> >>
+> > 
+> > I don’t see it nearly as clear-cut. Adding to the end seems pretty
+> > foolproof too, but OK, next submission will have it alphabet. ordered.
+> 
+> The concept is the same everywhere, be it Kconfig, Makefile or other
+> lists. If everyone adds at the end, you increase the chances of
+> conflicts. Having alphabetical order usually means simultaneous edits
+> will happen in different places.
 
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Reviewed-by: Bard Liao <yung-chuan.liao@linux.intel.com>
-Reviewed-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
-Reviewed-by: Chao Song <chao.song@intel.com>
----
- sound/soc/ti/omap-mcbsp.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+The difference for those cases is there is 0 control of when things are 
+added with the source being all independent (different companies). For 
+these, it's all one platform family and there's limits as to when one 
+source can produce new entries.
 
-diff --git a/sound/soc/ti/omap-mcbsp.c b/sound/soc/ti/omap-mcbsp.c
-index 0b377bb7737fd..7c539a41a6a34 100644
---- a/sound/soc/ti/omap-mcbsp.c
-+++ b/sound/soc/ti/omap-mcbsp.c
-@@ -614,7 +614,7 @@ static int omap_mcbsp_init(struct platform_device *pdev)
- {
- 	struct omap_mcbsp *mcbsp = platform_get_drvdata(pdev);
- 	struct resource *res;
--	int ret = 0;
-+	int ret;
- 
- 	spin_lock_init(&mcbsp->lock);
- 	mcbsp->free = true;
--- 
-2.34.1
+I'd kind of like to know timeline order, but alphabetical is the only 
+thing we can ever check easily and possibly automate (hint). 
 
+Rob
