@@ -4,74 +4,70 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E8FF5C32774
-	for <alsa-devel@archiver.kernel.org>; Mon, 22 Aug 2022 19:01:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id CA474C28D13
+	for <alsa-devel@archiver.kernel.org>; Mon, 22 Aug 2022 19:02:17 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 1875CE11;
-	Mon, 22 Aug 2022 21:01:03 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1875CE11
+	by alsa0.perex.cz (Postfix) with ESMTPS id E1860168A;
+	Mon, 22 Aug 2022 21:01:25 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E1860168A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1661194913;
-	bh=eOpm986iXtVUkDVU20tDY31pNcq5sSSBsntUs7MV7+8=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=iKysj2PwzriQRdurE3zKfRs47LNtdGZ9F6RKyPvPL3WElIvZTuSzlVR1JTrcJ5NNl
-	 a8qP2Ycywcg+LU3fRUXl1BbLoIdYJzUcuzIaPeyNrHPG2hDR8QSsGMw5X2yyGHOufT
-	 8KchhMra3WaXTDPA5JT84bmgqMq09U8txk1S9fWg=
+	s=default; t=1661194936;
+	bh=KVLcAmKQkQdgfCx9DB/jymBvamzRz+1Ev4oau7IRKjQ=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=vUNpOXGbX6tIks6Ys4uKq9hpsQor/NMdIkQ/om1jjTPLlulOYkCDpVc6qvRPNNptQ
+	 Chf+flrVoJv3enpy2cD956KBuDbLlT44oGTSP4IgElogWZ44n1jwLItsM+ugS96jpt
+	 kR9JcQja3JhkPFSNH/Jc9vbiOXRciKfxgViIUld8=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id D68EAF80551;
-	Mon, 22 Aug 2022 20:59:52 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id ED340F800ED;
+	Mon, 22 Aug 2022 21:01:13 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id BDA56F80552; Mon, 22 Aug 2022 20:59:50 +0200 (CEST)
-Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
+ id 0205EF800ED; Mon, 22 Aug 2022 21:01:11 +0200 (CEST)
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 244B0F8052F
- for <alsa-devel@alsa-project.org>; Mon, 22 Aug 2022 20:59:43 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 244B0F8052F
+ by alsa1.perex.cz (Postfix) with ESMTPS id 6608DF800ED
+ for <alsa-devel@alsa-project.org>; Mon, 22 Aug 2022 21:01:04 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6608DF800ED
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="L6r7igR+"
+ header.b="N5EzvdHT"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1661194785; x=1692730785;
- h=from:to:cc:subject:date:message-id:in-reply-to:
- references:mime-version:content-transfer-encoding;
- bh=eOpm986iXtVUkDVU20tDY31pNcq5sSSBsntUs7MV7+8=;
- b=L6r7igR+IkcT4HrcRmfI4V7UrpGMESYeDcebG6ISNa1P3cDbyNSFQS2E
- qkbRK1gQVY3CUxzqNf5X1nyzCeefHrERb/xbvjVhdoRM985cRuv9LfU/5
- TwZfgu3xl6PfQQZcltXtlQvu1Y8PGlmwSl3OyT1omXNlM5th6aDX7bNL1
- bqyuzxMnjl7NfAcTupKQ70v6+sx0jwLmV2DxJMY3jv1Ee94wRYzp6kRZd
- jET58cVn9biqfz1oe7zpp6silm2EeyQM18NN80/yB4Y1COoUtBqPXXh4J
- 9JAzAwjzK1+oMuYyqZFdAYgSCsTpMYOWwEmHko3A7yoPaXZF+qrKa4X7Z g==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10447"; a="379786513"
-X-IronPort-AV: E=Sophos;i="5.93,255,1654585200"; d="scan'208";a="379786513"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
- by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 22 Aug 2022 11:59:42 -0700
-X-IronPort-AV: E=Sophos;i="5.93,255,1654585200"; d="scan'208";a="669676562"
+ t=1661194866; x=1692730866;
+ h=from:to:cc:subject:date:message-id:mime-version:
+ content-transfer-encoding;
+ bh=KVLcAmKQkQdgfCx9DB/jymBvamzRz+1Ev4oau7IRKjQ=;
+ b=N5EzvdHTKiI5yPPb73MV0yt7HDabtqeRNMNIAgwVIrMradGtdfjidCA+
+ oM+Z3LjHk29N1uOyZUQbKeCnPGMF7shzCw6jgKGA7xMJUuXd0Gvql507Z
+ ya/k+NLYrLmZlTCzJvqGTtCFyv2Mru/YlaaYaa4ga2y7QnrJf3VG+n5EI
+ glwfpGVH5nCOyddurl8DBBy2LdibOdAN8E/HBH8LnnCi39msa4gZSOCiQ
+ i/4UEsbOHQe+NV2SSPoMTLMJuGHnPVhzbc9RyQ80bTks7QewW2Zmkvmhs
+ JiuC+YryQ7LMADZaDk5Q7OnIuj5fZQPxwo6w88iOHewCTPI4BAhpX58SK A==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10447"; a="294285675"
+X-IronPort-AV: E=Sophos;i="5.93,255,1654585200"; d="scan'208";a="294285675"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+ by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 22 Aug 2022 12:01:02 -0700
+X-IronPort-AV: E=Sophos;i="5.93,255,1654585200"; d="scan'208";a="751398898"
 Received: from apascali-mobl2.ger.corp.intel.com (HELO pbossart-mobl3.home)
  ([10.252.42.21])
- by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 22 Aug 2022 11:59:39 -0700
+ by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 22 Aug 2022 12:00:59 -0700
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH 3/4] ASoC: SOF: Intel: hda: override mclk_id after parsing
- NHLT SSP blob
-Date: Mon, 22 Aug 2022 20:59:10 +0200
-Message-Id: <20220822185911.170440-4-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH] ALSA: hda: cleanup definitions for multi-link registers
+Date: Mon, 22 Aug 2022 21:00:44 +0200
+Message-Id: <20220822190044.170495-1-pierre-louis.bossart@linux.intel.com>
 X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20220822185911.170440-1-pierre-louis.bossart@linux.intel.com>
-References: <20220822185911.170440-1-pierre-louis.bossart@linux.intel.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: Cezary Rojewski <cezary.rojewski@intel.com>,
- Kai Vehmanen <kai.vehmanen@linux.intel.com>, tiwai@suse.de,
+Cc: Cezary Rojewski <cezary.rojewski@intel.com>, tiwai@suse.de,
  Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- broonie@kernel.org, Bard Liao <yung-chuan.liao@linux.intel.com>
+ Rander Wang <rander.wang@intel.com>, broonie@kernel.org,
+ Bard Liao <yung-chuan.liao@linux.intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -87,64 +83,180 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The NHLT is already used to determine which SSP is connected to an
-audio codec, we can parse the SSP blob to get the mclk_id from NHLT.
+For some reason two masks are used without the AZX prefix, and the
+pattern MLCLT should be ML_LCTL for consistency.
+
+Pure rename, no functionality change.
 
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Reviewed-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
+Reviewed-by: Rander Wang <rander.wang@intel.com>
 Reviewed-by: Bard Liao <yung-chuan.liao@linux.intel.com>
 ---
- sound/soc/sof/intel/hda.c | 23 +++++++++++++++++++++++
- 1 file changed, 23 insertions(+)
+ include/sound/hda_register.h        | 20 +++++++++++---------
+ sound/hda/ext/hdac_ext_controller.c | 16 ++++++++--------
+ sound/pci/hda/hda_intel.c           | 14 +++++++-------
+ 3 files changed, 26 insertions(+), 24 deletions(-)
 
-diff --git a/sound/soc/sof/intel/hda.c b/sound/soc/sof/intel/hda.c
-index ada2e67757494..9048cc842d3f2 100644
---- a/sound/soc/sof/intel/hda.c
-+++ b/sound/soc/sof/intel/hda.c
-@@ -753,6 +753,18 @@ static int check_nhlt_ssp_mask(struct snd_sof_dev *sdev)
- 	return ssp_mask;
- }
+diff --git a/include/sound/hda_register.h b/include/sound/hda_register.h
+index ad8b71b1dbb67..d37cf43546eba 100644
+--- a/include/sound/hda_register.h
++++ b/include/sound/hda_register.h
+@@ -260,7 +260,18 @@ enum { SDI0, SDI1, SDI2, SDI3, SDO0, SDO1, SDO2, SDO3 };
  
-+static int check_nhlt_ssp_mclk_mask(struct snd_sof_dev *sdev, int ssp_num)
-+{
-+	struct sof_intel_hda_dev *hdev = sdev->pdata->hw_pdata;
-+	struct nhlt_acpi_table *nhlt;
+ #define AZX_REG_ML_LCAP			0x00
+ #define AZX_REG_ML_LCTL			0x04
 +
-+	nhlt = hdev->nhlt;
-+	if (!nhlt)
-+		return 0;
++#define AZX_ML_LCTL_CPA			BIT(23)
++#define AZX_ML_LCTL_CPA_SHIFT		23
++#define AZX_ML_LCTL_SPA			BIT(16)
++#define AZX_ML_LCTL_SPA_SHIFT		16
++#define AZX_ML_LCTL_SCF			GENMASK(3, 0)
 +
-+	return intel_nhlt_ssp_mclk_mask(nhlt, ssp_num);
-+}
+ #define AZX_REG_ML_LOSIDV		0x08
 +
- #if IS_ENABLED(CONFIG_SND_SOC_SOF_HDA) || IS_ENABLED(CONFIG_SND_SOC_SOF_INTEL_SOUNDWIRE)
++/* bit0 is reserved, with BIT(1) mapping to stream1 */
++#define AZX_ML_LOSIDV_STREAM_MASK	0xFFFE
++
+ #define AZX_REG_ML_LSDIID		0x0C
+ #define AZX_REG_ML_LPSOO		0x10
+ #define AZX_REG_ML_LPSIO		0x12
+@@ -268,15 +279,6 @@ enum { SDI0, SDI1, SDI2, SDI3, SDO0, SDO1, SDO2, SDO3 };
+ #define AZX_REG_ML_LOUTPAY		0x20
+ #define AZX_REG_ML_LINPAY		0x30
  
- static const char *fixup_tplg_name(struct snd_sof_dev *sdev,
-@@ -1533,6 +1545,7 @@ struct snd_soc_acpi_mach *hda_machine_select(struct snd_sof_dev *sdev)
- 		    mach->mach_params.i2s_link_mask) {
- 			const struct sof_intel_dsp_desc *chip = get_chip_info(sdev->pdata);
- 			int ssp_num;
-+			int mclk_mask;
+-/* bit0 is reserved, with BIT(1) mapping to stream1 */
+-#define ML_LOSIDV_STREAM_MASK		0xFFFE
+-
+-#define ML_LCTL_SCF_MASK			0xF
+-#define AZX_MLCTL_SPA				(0x1 << 16)
+-#define AZX_MLCTL_CPA				(0x1 << 23)
+-#define AZX_MLCTL_SPA_SHIFT			16
+-#define AZX_MLCTL_CPA_SHIFT			23
+-
+ /* registers for DMA Resume Capability Structure */
+ #define AZX_DRSM_CAP_ID			0x5
+ #define AZX_REG_DRSM_CTL		0x4
+diff --git a/sound/hda/ext/hdac_ext_controller.c b/sound/hda/ext/hdac_ext_controller.c
+index a42f66f561f57..80876b9a87f46 100644
+--- a/sound/hda/ext/hdac_ext_controller.c
++++ b/sound/hda/ext/hdac_ext_controller.c
+@@ -170,7 +170,7 @@ static int check_hdac_link_power_active(struct hdac_ext_link *link, bool enable)
+ {
+ 	int timeout;
+ 	u32 val;
+-	int mask = (1 << AZX_MLCTL_CPA_SHIFT);
++	int mask = (1 << AZX_ML_LCTL_CPA_SHIFT);
  
- 			if (hweight_long(mach->mach_params.i2s_link_mask) > 1 &&
- 			    !(mach->tplg_quirk_mask & SND_SOC_ACPI_TPLG_INTEL_SSP_MSB))
-@@ -1557,6 +1570,16 @@ struct snd_soc_acpi_mach *hda_machine_select(struct snd_sof_dev *sdev)
- 
- 			sof_pdata->tplg_filename = tplg_filename;
- 			add_extension = true;
-+
-+			mclk_mask = check_nhlt_ssp_mclk_mask(sdev, ssp_num);
-+
-+			dev_dbg(sdev->dev, "MCLK mask %#x found in NHLT\n", mclk_mask);
-+
-+			if (mclk_mask && mclk_mask != GENMASK(1, 0)) {
-+				dev_info(sdev->dev, "Overriding topology with MCLK mask %#x from NHLT\n", mclk_mask);
-+				sdev->mclk_id_override = true;
-+				sdev->mclk_id_quirk = (mclk_mask & BIT(0)) ? 0 : 1;
-+			}
+ 	udelay(3);
+ 	timeout = 150;
+@@ -178,10 +178,10 @@ static int check_hdac_link_power_active(struct hdac_ext_link *link, bool enable)
+ 	do {
+ 		val = readl(link->ml_addr + AZX_REG_ML_LCTL);
+ 		if (enable) {
+-			if (((val & mask) >> AZX_MLCTL_CPA_SHIFT))
++			if (((val & mask) >> AZX_ML_LCTL_CPA_SHIFT))
+ 				return 0;
+ 		} else {
+-			if (!((val & mask) >> AZX_MLCTL_CPA_SHIFT))
++			if (!((val & mask) >> AZX_ML_LCTL_CPA_SHIFT))
+ 				return 0;
  		}
+ 		udelay(3);
+@@ -197,7 +197,7 @@ static int check_hdac_link_power_active(struct hdac_ext_link *link, bool enable)
+ int snd_hdac_ext_bus_link_power_up(struct hdac_ext_link *link)
+ {
+ 	snd_hdac_updatel(link->ml_addr, AZX_REG_ML_LCTL,
+-			 AZX_MLCTL_SPA, AZX_MLCTL_SPA);
++			 AZX_ML_LCTL_SPA, AZX_ML_LCTL_SPA);
  
- 		if (tplg_fixup && add_extension) {
+ 	return check_hdac_link_power_active(link, true);
+ }
+@@ -209,7 +209,7 @@ EXPORT_SYMBOL_GPL(snd_hdac_ext_bus_link_power_up);
+  */
+ int snd_hdac_ext_bus_link_power_down(struct hdac_ext_link *link)
+ {
+-	snd_hdac_updatel(link->ml_addr, AZX_REG_ML_LCTL, AZX_MLCTL_SPA, 0);
++	snd_hdac_updatel(link->ml_addr, AZX_REG_ML_LCTL, AZX_ML_LCTL_SPA, 0);
+ 
+ 	return check_hdac_link_power_active(link, false);
+ }
+@@ -226,7 +226,7 @@ int snd_hdac_ext_bus_link_power_up_all(struct hdac_bus *bus)
+ 
+ 	list_for_each_entry(hlink, &bus->hlink_list, list) {
+ 		snd_hdac_updatel(hlink->ml_addr, AZX_REG_ML_LCTL,
+-				 AZX_MLCTL_SPA, AZX_MLCTL_SPA);
++				 AZX_ML_LCTL_SPA, AZX_ML_LCTL_SPA);
+ 		ret = check_hdac_link_power_active(hlink, true);
+ 		if (ret < 0)
+ 			return ret;
+@@ -247,7 +247,7 @@ int snd_hdac_ext_bus_link_power_down_all(struct hdac_bus *bus)
+ 
+ 	list_for_each_entry(hlink, &bus->hlink_list, list) {
+ 		snd_hdac_updatel(hlink->ml_addr, AZX_REG_ML_LCTL,
+-				 AZX_MLCTL_SPA, 0);
++				 AZX_ML_LCTL_SPA, 0);
+ 		ret = check_hdac_link_power_active(hlink, false);
+ 		if (ret < 0)
+ 			return ret;
+@@ -281,7 +281,7 @@ int snd_hdac_ext_bus_link_get(struct hdac_bus *bus,
+ 		 * clear the register to invalidate all the output streams
+ 		 */
+ 		snd_hdac_updatew(link->ml_addr, AZX_REG_ML_LOSIDV,
+-				 ML_LOSIDV_STREAM_MASK, 0);
++				 AZX_ML_LOSIDV_STREAM_MASK, 0);
+ 		/*
+ 		 *  wait for 521usec for codec to report status
+ 		 *  HDA spec section 4.3 - Codec Discovery
+diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
+index 7720978dc1326..bf9df9bc8f1bf 100644
+--- a/sound/pci/hda/hda_intel.c
++++ b/sound/pci/hda/hda_intel.c
+@@ -489,14 +489,14 @@ static int intel_ml_lctl_set_power(struct azx *chip, int state)
+ 	 * If other links are enabled for stream, they need similar fix
+ 	 */
+ 	val = readl(bus->mlcap + AZX_ML_BASE + AZX_REG_ML_LCTL);
+-	val &= ~AZX_MLCTL_SPA;
+-	val |= state << AZX_MLCTL_SPA_SHIFT;
++	val &= ~AZX_ML_LCTL_SPA;
++	val |= state << AZX_ML_LCTL_SPA_SHIFT;
+ 	writel(val, bus->mlcap + AZX_ML_BASE + AZX_REG_ML_LCTL);
+ 	/* wait for CPA */
+ 	timeout = 50;
+ 	while (timeout) {
+ 		if (((readl(bus->mlcap + AZX_ML_BASE + AZX_REG_ML_LCTL)) &
+-		    AZX_MLCTL_CPA) == (state << AZX_MLCTL_CPA_SHIFT))
++		    AZX_ML_LCTL_CPA) == (state << AZX_ML_LCTL_CPA_SHIFT))
+ 			return 0;
+ 		timeout--;
+ 		udelay(10);
+@@ -514,15 +514,15 @@ static void intel_init_lctl(struct azx *chip)
+ 	/* 0. check lctl register value is correct or not */
+ 	val = readl(bus->mlcap + AZX_ML_BASE + AZX_REG_ML_LCTL);
+ 	/* if SCF is already set, let's use it */
+-	if ((val & ML_LCTL_SCF_MASK) != 0)
++	if ((val & AZX_ML_LCTL_SCF) != 0)
+ 		return;
+ 
+ 	/*
+ 	 * Before operating on SPA, CPA must match SPA.
+ 	 * Any deviation may result in undefined behavior.
+ 	 */
+-	if (((val & AZX_MLCTL_SPA) >> AZX_MLCTL_SPA_SHIFT) !=
+-		((val & AZX_MLCTL_CPA) >> AZX_MLCTL_CPA_SHIFT))
++	if (((val & AZX_ML_LCTL_SPA) >> AZX_ML_LCTL_SPA_SHIFT) !=
++		((val & AZX_ML_LCTL_CPA) >> AZX_ML_LCTL_CPA_SHIFT))
+ 		return;
+ 
+ 	/* 1. turn link down: set SPA to 0 and wait CPA to 0 */
+@@ -532,7 +532,7 @@ static void intel_init_lctl(struct azx *chip)
+ 		goto set_spa;
+ 
+ 	/* 2. update SCF to select a properly audio clock*/
+-	val &= ~ML_LCTL_SCF_MASK;
++	val &= ~AZX_ML_LCTL_SCF;
+ 	val |= intel_get_lctl_scf(chip);
+ 	writel(val, bus->mlcap + AZX_ML_BASE + AZX_REG_ML_LCTL);
+ 
 -- 
 2.34.1
 
