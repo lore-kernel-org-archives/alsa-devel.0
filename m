@@ -4,73 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A52B6C28D13
-	for <alsa-devel@archiver.kernel.org>; Mon, 22 Aug 2022 18:33:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id ECA20C32774
+	for <alsa-devel@archiver.kernel.org>; Mon, 22 Aug 2022 18:44:00 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C06F51622;
-	Mon, 22 Aug 2022 20:32:09 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C06F51622
+	by alsa0.perex.cz (Postfix) with ESMTPS id 126DB839;
+	Mon, 22 Aug 2022 20:43:09 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 126DB839
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1661193179;
-	bh=gfZjPJT5G7lpjIu/0Jy28SoaFgeZIqpxf0POXqDEnMQ=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=Ft8PC+uXmGkaKfc3F36o/m+iEAE/6o2I/C4+LqymrNKOpr6PB672n2xQXdkkj5F9d
-	 7uoFh+pQSWBZHEN3C6P2vEPNyhyRwe0OUTM2u/xTUjf8igKGhvqv6dDpUi7KKoX+hy
-	 ZEIj6WkQDRd/c8P9m4BggmL2dmL3hv/xP8NBsLGM=
+	s=default; t=1661193839;
+	bh=Kbss1+JFwLtb0GEmgL7j9Rfb2dyxymy/4juddSkwcoE=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=QJgThp5Tl0AgXM4EpX7dLcyD7Sr+955ieC/PX1FGv6OnGvQ/OSjr30SjelZffEyIa
+	 6JvEIuGV/r1kRrY36/Ltp4QSxei+hRZ2tU/hdwgxz4KfC5zu8/e7I4Qy3AgFx1Tc2w
+	 ao/5dVChoAV6rMF1A5F+fboPVDNlzfXZAnNbVhjo=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 5618DF80154;
-	Mon, 22 Aug 2022 20:32:09 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id A77EAF80154;
+	Mon, 22 Aug 2022 20:43:08 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id A48E2F80152; Mon, 22 Aug 2022 20:32:08 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org
- [IPv6:2604:1380:4641:c500::1])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 2767BF80152
- for <alsa-devel@alsa-project.org>; Mon, 22 Aug 2022 20:32:05 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2767BF80152
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="V7UOEFle"
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+ id E7178F8026A; Mon, 22 Aug 2022 20:43:06 +0200 (CEST)
+Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id 7A6826090A;
- Mon, 22 Aug 2022 18:32:04 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7EBE0C433C1;
- Mon, 22 Aug 2022 18:32:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1661193123;
- bh=gfZjPJT5G7lpjIu/0Jy28SoaFgeZIqpxf0POXqDEnMQ=;
- h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=V7UOEFled3s96Est+17agM3GtQ6UvjepLkC8J4vcoBFlVFLEU/vF1CCXXIJTxb2aa
- s5ZiGbhY9yzE6XqyuTX8vZbpd0+xE1hubC7trUqz5Dz6UbCGzw6wFWn4k6xAXH6sQ9
- hFRgwGjcJ+gCg28wDCKYyDt5Qz2RX35oFlOYNjeRRG/I+ilCSEVqYMFHVzl6O0U81E
- YBGu9yeH+3wRhgj6ALfl0NkAOy6lPF+w71RbBBe91doRY+BTi8ZNl1Nz1Ac4YKJF2i
- x6nFfnPmb8QfrgcLvoUFOrW4VUv5c3vRjfwCRGhOzVdgjFucHliXFhap+VcfAYgs72
- Vi5NKaGikPFbg==
-Date: Mon, 22 Aug 2022 11:32:01 -0700
-From: Nathan Chancellor <nathan@kernel.org>
-To: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v2] ASoC: codecs: add uspport for the TI SRC4392 codec
-Message-ID: <YwPLoSWuYzsJ6Bhp@dev-arch.thelio-3990X>
-References: <20220808214028.2502801-1-flatmax@flatmax.com>
- <202208090909.Pg0BZGie-lkp@intel.com>
- <YvvbKry5FVFbNdcI@dev-arch.thelio-3990X>
- <f8439531-897a-c25a-688b-be01290b006d@flatmax.com>
- <Yv0NLxzwqdBaZ3Jf@dev-arch.thelio-3990X>
- <YwPGQZHs1o0jsv2m@sirena.org.uk>
+ by alsa1.perex.cz (Postfix) with ESMTPS id D9EE5F80152
+ for <alsa-devel@alsa-project.org>; Mon, 22 Aug 2022 20:43:02 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D9EE5F80152
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
+ header.b="Sp0mPdY+"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+ d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+ t=1661193784; x=1692729784;
+ h=from:to:cc:subject:date:message-id:mime-version:
+ content-transfer-encoding;
+ bh=Kbss1+JFwLtb0GEmgL7j9Rfb2dyxymy/4juddSkwcoE=;
+ b=Sp0mPdY+YMUlBkaqfZQKY0DDuHEn7u2Ty6j+Rf1UlHejhwUYL8IRz8fN
+ ADplwE5/HbSj9sE2mtAczxchJFtUywXQRwqP730ByUg+PHE+vdDa/U2yG
+ rzM0xuiRBTORbnm4irTjRWc79WMgoacMNP7wkqJgrUVfs9FTiL2PKAh3y
+ WUFWOO1ZiNTSULwEiIBYphBxOV7g28Tz1AK7SjKgHqgWHAXBvPwCgKmHX
+ ZYS/2vNxEB2/LaGysfg6LYOiS8byiCkxAPH7DdoQ9quMreIr73nUPmlHv
+ 0w7sPftyrswnQ1SP5Yqi3oFx+oV+HjANG9/rZlHuwzREyHom8z14VpMsL Q==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10447"; a="293488936"
+X-IronPort-AV: E=Sophos;i="5.93,255,1654585200"; d="scan'208";a="293488936"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+ by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 22 Aug 2022 11:43:00 -0700
+X-IronPort-AV: E=Sophos;i="5.93,255,1654585200"; d="scan'208";a="669671017"
+Received: from apascali-mobl2.ger.corp.intel.com (HELO pbossart-mobl3.home)
+ ([10.252.42.21])
+ by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 22 Aug 2022 11:42:59 -0700
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+To: alsa-devel@alsa-project.org
+Subject: [PATCH 0/5] ASoC: codecs: minor cppcheck cleanups
+Date: Mon, 22 Aug 2022 20:42:34 +0200
+Message-Id: <20220822184239.169757-1-pierre-louis.bossart@linux.intel.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <YwPGQZHs1o0jsv2m@sirena.org.uk>
-Cc: alsa-devel@alsa-project.org, llvm@lists.linux.dev, kbuild-all@lists.01.org,
- kernel test robot <lkp@intel.com>, Matt Flax <flatmax@flatmax.com>
+Cc: tiwai@suse.de, broonie@kernel.org,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -86,33 +81,23 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Mon, Aug 22, 2022 at 07:09:05PM +0100, Mark Brown wrote:
-> On Wed, Aug 17, 2022 at 08:45:51AM -0700, Nathan Chancellor wrote:
-> > On Wed, Aug 17, 2022 at 03:44:33PM +1000, Matt Flax wrote:
-> > > On 17/8/22 04:00, Nathan Chancellor wrote:
-> 
-> > > > In the final commit, there is a 'break' here. Should it be a 'return 0'
-> > > > instead? Or should there be a different fix for these warnings?
-> 
-> > > The state of DIR PLL registers aren't important if the user doesn't specify
-> > > a known mclk frequency.  The implication is that the DIR will not function,
-> > > however that is already implied by the user lacking to specify a known mclk
-> > > frequency.
-> 
-> > > The other functions on the chip (port A/B I2S, SRC, DIT, etc) will behave as
-> > > per usual, only the DIR will be dysfunctional.
-> 
-> > So I suppose there is little point to all of the calls to regmap_write()
-> > and regmap_update_bits() in the default case then, meaning a 'return 0'
-> > would be appropriate? Sorry, I am having a hard time parsing what should
-> > be done about the warnings, which are fatal for allmodconfig due to
-> > CONFIG_WERROR.
-> 
-> Are either of you still looking at fixing this?
+Small number of cleanups that were either missed in previous versions
+or detected by new cppcheck version.
 
-I sent https://lore.kernel.org/20220822183101.1115095-1-nathan@kernel.org/.
+Pierre-Louis Bossart (5):
+  ASoC: hdmi-codec: remove unused definitions
+  ASoC: wcd-mbhc-v2: remove always-true condition
+  ASoC: wcd9335: remove always-true condition
+  ASoC: fsl: fsl-utils: remove useless assignment
+  ASoC: ti: omap-mcbsp: remove useless assignment
 
-If that is not the right fix, I need some guidance on what it should be.
+ sound/soc/codecs/hdmi-codec.c  | 4 ----
+ sound/soc/codecs/wcd-mbhc-v2.c | 2 +-
+ sound/soc/codecs/wcd9335.c     | 4 +---
+ sound/soc/fsl/fsl_utils.c      | 2 +-
+ sound/soc/ti/omap-mcbsp.c      | 2 +-
+ 5 files changed, 4 insertions(+), 10 deletions(-)
 
-Cheers,
-Nathan
+-- 
+2.34.1
+
