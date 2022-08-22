@@ -4,56 +4,70 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0A134C28D13
-	for <alsa-devel@archiver.kernel.org>; Mon, 22 Aug 2022 12:39:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 91430C28D13
+	for <alsa-devel@archiver.kernel.org>; Mon, 22 Aug 2022 12:48:20 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 5046C1638;
-	Mon, 22 Aug 2022 14:38:16 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5046C1638
+	by alsa0.perex.cz (Postfix) with ESMTPS id 566A01679;
+	Mon, 22 Aug 2022 14:47:28 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 566A01679
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1661171946;
-	bh=wS7eBcU6IrGgczgQRn/ar+Ts2JGTgJKTlU4UR4ZP25U=;
-	h=Subject:From:In-Reply-To:Date:References:To:Cc:List-Id:
+	s=default; t=1661172498;
+	bh=45sAp7NJ5Cp2njuLK4XNvKlRVvcRksGwnpjWb0Min2U=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=D9YFwPJEc1cS6U36AvBP9jBQgY1nStdoYb6jmy7DEn85xUGprhteiPUA/6a+kAqSv
-	 9glLOYebgSFe209dZUX6/SqzoY9/MxJAfKHQyW/1DVfsTzvezRpQxyZ5MPHSm3lDNz
-	 f3+4A9hxABxOJRDTfq8E40qmEFBvl6ndk1wsLZN8=
+	b=lX5RwM8nkFHZ/Ld4hJMYFbr5nYRbA1cn5j28mbJKdqq+SPkJad8MFrZXhA304/1UI
+	 /3Y6prtUAcL/mNKM7sORODFtAqbmiVCT7Sybpf0k4siYyT52vs/mWLJGQWFdy7Vo1g
+	 6lm1f6BIbmVNnocE1iwKHQRsuARPZSP9u5xQgJOY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id E8683F80152;
-	Mon, 22 Aug 2022 14:38:15 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id DC46EF80154;
+	Mon, 22 Aug 2022 14:47:27 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id E3C5BF8026A; Mon, 22 Aug 2022 14:38:14 +0200 (CEST)
-Received: from hutie.ust.cz (unknown [IPv6:2a03:3b40:fe:f0::1])
+ id E0659F8026A; Mon, 22 Aug 2022 14:47:26 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org
+ [IPv6:2604:1380:4641:c500::1])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 73C07F800A7
+ for <alsa-devel@alsa-project.org>; Mon, 22 Aug 2022 14:47:24 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 73C07F800A7
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="QPHQHw7X"
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id E3606F80152
- for <alsa-devel@alsa-project.org>; Mon, 22 Aug 2022 14:38:11 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E3606F80152
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=cutebit.org header.i=@cutebit.org
- header.b="bzkKcz9a"
-Content-Type: text/plain;
-	charset=utf-8
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cutebit.org; s=mail;
- t=1661171890; bh=wS7eBcU6IrGgczgQRn/ar+Ts2JGTgJKTlU4UR4ZP25U=;
- h=Subject:From:In-Reply-To:Date:Cc:References:To;
- b=bzkKcz9aP0I6aeaU5C1aSTqv5/6IwA5HePKFdPxuaNr0X09HB12RFYLdDjGvKHbLI
- Im5zOhghXB6T4gVQMpk+IpcIBkcOQTaJdnbfoKRWr+Gn6nCWvq1N3gcxnRiAzVOJtG
- zVmVJXE0fP6qDFTxoOVix9nG9fk7IOsRP9q5DzsE=
-Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3696.80.82.1.1\))
+ by dfw.source.kernel.org (Postfix) with ESMTPS id D34A361148;
+ Mon, 22 Aug 2022 12:47:21 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D44D0C433C1;
+ Mon, 22 Aug 2022 12:47:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1661172441;
+ bh=45sAp7NJ5Cp2njuLK4XNvKlRVvcRksGwnpjWb0Min2U=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=QPHQHw7XYZrenAs5qCyREmmfBceoRLmbWQfwLqlBQ5wzQrSkwqG9UNT1sx4QOb1Wy
+ vRcEuTYz9n6tbcfncVaVkf5melaONOwjsKdn+GuyUEvrhEpNewYQa5MlOKqUrL1+h2
+ eemx8iPdaOVmHOFbL+S+cuNaVC6TCpQwsvyJZ3GEXnCcUBS0GdnI3hwwnepn1sNKDe
+ 51J7i5j1rrY/yQJkd6eni20Uu3z3SCQGCEN4JhmVNWwOhav6qVOeVDqS2DoNk2v7mk
+ tzxBqBajClRF1iZP28HfmOBok0poMQwGdpKri/HrCHRl0qvwvEp6mtAxpAyxeiaEP4
+ 4WPjBIFuZYQpw==
+Date: Mon, 22 Aug 2022 13:47:16 +0100
+From: Mark Brown <broonie@kernel.org>
+To: Takashi Iwai <tiwai@suse.de>
 Subject: Re: [PATCH] ASoC: dapm: Export new 'graph.dot' file in debugfs
-From: =?utf-8?Q?Martin_Povi=C5=A1er?= <povik+lin@cutebit.org>
-In-Reply-To: <YwN2Pd4Ez08yDFno@sirena.org.uk>
-Date: Mon, 22 Aug 2022 14:38:09 +0200
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <3234D74E-0DFF-4BB5-87ED-6135BAC1F31D@cutebit.org>
+Message-ID: <YwN61JsJZNqCT/Vf@sirena.org.uk>
 References: <20220822095242.3779-1-povik+lin@cutebit.org>
- <YwN2Pd4Ez08yDFno@sirena.org.uk>
-To: Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>,
+ <YwN2Pd4Ez08yDFno@sirena.org.uk> <87bksccv7x.wl-tiwai@suse.de>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature"; boundary="WIOPiZGstgIytBzh"
+Content-Disposition: inline
+In-Reply-To: <87bksccv7x.wl-tiwai@suse.de>
+X-Cookie: Do not write in this space.
+Cc: Martin =?utf-8?Q?Povi=C5=A1er?= <povik+lin@cutebit.org>,
+ alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>,
  Alyssa Rosenzweig <alyssa@rosenzweig.io>, linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
@@ -71,24 +85,40 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
-> On 22. 8. 2022, at 14:27, Mark Brown <broonie@kernel.org> wrote:
->=20
-> On Mon, Aug 22, 2022 at 11:52:42AM +0200, Martin Povi=C5=A1er wrote:
->=20
->> Provide a DOT summary of the DAPM graph in a newly added 'graph.dot'
->> file in debugfs, placed in the card's DAPM directory.
->=20
-> There was a tool floating about in the past (last copy I knew about =
-was
-> on Wolfson's git but they took that down) - can we not just continue =
-to
-> do that?
+--WIOPiZGstgIytBzh
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-I don=E2=80=99t know the tool or where would I find it. I think it=E2=80=99=
-s neat
-simply having a =E2=80=98graph.dot=E2=80=99 at hand, especially since it =
-requires
-little code. (Although sure there=E2=80=99s the danger of it growing.)
+On Mon, Aug 22, 2022 at 02:34:58PM +0200, Takashi Iwai wrote:
+> Mark Brown wrote:
 
-Martin
+> > There was a tool floating about in the past (last copy I knew about was
+> > on Wolfson's git but they took that down) - can we not just continue to
+> > do that?
 
+> IMO such a conversion could be done in user-space gracefully.
+> Or is any info missing in debugfs as of now to achieve that?
+
+Yes, we should fill any blanks in the data that's present already.
+
+> If any, we may put such a tool in the standard repo (e.g. alsa-tools),
+> too.
+
+Indeed.
+
+--WIOPiZGstgIytBzh
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmMDetMACgkQJNaLcl1U
+h9Ac+QgAhdjWb5JcUjMSz6beTHlNa/jbsyJiL7IKyCYZc11ipw8TpfGug2pwad6K
+jGTPMuJielQfFZoaYZP1cEMiuxTilJrnQbxRuDEIf6lp6c2X/UNyHe0UIp/ZAuKX
+Ef9eIHN9IrLII+gcmhhmN0jU7YY3PcrmCUmI5lFvHkXmPMR/JjLjLL0DEHu5S5Jl
+Wq1/osIrHEjDGhxd8Z5ZPRS+MPBm7AD/1jyaGj4jlse0JqEq3hoQM3S3cuqLyevn
+jbTrItUrfiWIZDWOmUk9bN7VIfDUg1TI3orZczGOD7719/wah0fy57PVczV5kRpA
+HEjPVfJjap+2OuH1zL7tHARKZGs8iw==
+=D+yb
+-----END PGP SIGNATURE-----
+
+--WIOPiZGstgIytBzh--
