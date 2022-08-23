@@ -4,77 +4,77 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 24EAEC32792
-	for <alsa-devel@archiver.kernel.org>; Tue, 23 Aug 2022 11:59:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5168DC32772
+	for <alsa-devel@archiver.kernel.org>; Tue, 23 Aug 2022 11:59:55 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 2EDAE163D;
-	Tue, 23 Aug 2022 13:58:49 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2EDAE163D
+	by alsa0.perex.cz (Postfix) with ESMTPS id 99CCD1654;
+	Tue, 23 Aug 2022 13:59:03 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 99CCD1654
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1661255979;
-	bh=xZRkHEqI3K8OqHp4glIeN+A9hKbDPjErRa130PN2J/Q=;
+	s=default; t=1661255993;
+	bh=xL4KA/wZrY4kZmBA8+zjMIZqW0SsFCgEW76L1igVqWE=;
 	h=From:To:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=XY8nXIvp0c0bd2LRzqkcylknjiwocdukfN4zDqtyHa80IkyEtDRnnp8GMoto04UpI
-	 QOjGKyTERYKN7MrOMnv/UgTuigcEHwIvdUks63g48WvFyx8YMKx6yJjBwB0in03kdw
-	 7rdetDRNgV0q7oVtgrs45cpHjE/1SfdNIcRmubnY=
+	b=hUJg/kDTV+kj2UNpPsCD1ju0dZU7WtURGblVS4KDJIEV3c9VsAXjgeT2ruD/d8YDu
+	 29+2NEKlI1T1/p0JZiMhIl4L+Jh/qt78IueyfQ2MSYp5xU2+SmNL0KG+3vsmC/1AUm
+	 y/2Mi8VW+bHwyZwk4vwGp6RkyjD7ECctXvvHSYyI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id E3FF0F804E6;
-	Tue, 23 Aug 2022 13:57:55 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 69916F80536;
+	Tue, 23 Aug 2022 13:57:56 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 1566CF80529; Tue, 23 Aug 2022 13:57:53 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+ id 9BE1DF8020D; Tue, 23 Aug 2022 13:57:53 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 9E2A8F8027B
+ by alsa1.perex.cz (Postfix) with ESMTPS id D9FB8F804E6
  for <alsa-devel@alsa-project.org>; Tue, 23 Aug 2022 13:57:44 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9E2A8F8027B
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D9FB8F804E6
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="LLwYSgkA"; 
+ header.b="dgHVwyQP"; 
  dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="K/+xy1Wk"
+ header.b="+SaJrFe7"
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 19DA61FA73;
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 68862336D3;
  Tue, 23 Aug 2022 11:57:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
  t=1661255864; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=PI/wZdbUkYjQ+d0u4cmEjRKQ6hCMKwq058yCf3kBdzY=;
- b=LLwYSgkApXESesMaJb4BVlvepwWONfegMf9jDk4jBAMFJ3M9o0jWk+88jzXNCwmW+Sf4ql
- xQk94mj60b4sfonKtUW5ZocUQzRqiFx2kX9wq8ZLVWZSAN/6dcVrwjN4tOKsOEWPV73hFF
- 76gRIvuhIUTmwSCQBfl0paVTqzGJAX0=
+ bh=QExBB+fUDys4PhhPdbLolaTTUnFQ4aogbQI4fJNZXfE=;
+ b=dgHVwyQPiEnM1SngscGTXzaP/BAT19sl5c9kj7TDF7z9D24Qm2mRFeSud8oNvDknR8/2JZ
+ tJH9hDK+S1qNLFSktI+sMe/bUrrwsue4bTbotWwRmkkDdReijg+VbFDJUlcCiHpV6mt3kT
+ /61FRRoOYz3fvQoO/5GTulZOwhh0FuA=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
  s=susede2_ed25519; t=1661255864;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=PI/wZdbUkYjQ+d0u4cmEjRKQ6hCMKwq058yCf3kBdzY=;
- b=K/+xy1WkAnDEllOCMQafCAa4GaKsQRsHBZiTQbGenAHFM2Khh02skrYmzV7Pcc2vt/CPhy
- /Pybk+UCRnIq1dBA==
+ bh=QExBB+fUDys4PhhPdbLolaTTUnFQ4aogbQI4fJNZXfE=;
+ b=+SaJrFe7VkWlr/ltDzyswGmfnb8KLcl9K6jQNM701DC60txA/vWfknXrKB97HNfS9nIZgd
+ Iiu1SXDRM7NWPdAQ==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id F380C13AB7;
- Tue, 23 Aug 2022 11:57:43 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 4D43913AE6;
+ Tue, 23 Aug 2022 11:57:44 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id aCLHOrfABGP1OAAAMHmgww
- (envelope-from <tiwai@suse.de>); Tue, 23 Aug 2022 11:57:43 +0000
+ by imap2.suse-dmz.suse.de with ESMTPSA id gC9SErjABGP1OAAAMHmgww
+ (envelope-from <tiwai@suse.de>); Tue, 23 Aug 2022 11:57:44 +0000
 From: Takashi Iwai <tiwai@suse.de>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH 2/5] ALSA: pdaudiocf: Drop superfluous GFP setup
-Date: Tue, 23 Aug 2022 13:57:37 +0200
-Message-Id: <20220823115740.14123-3-tiwai@suse.de>
+Subject: [PATCH 5/5] ALSA: doc: Drop snd_dma_continuous_data() usages
+Date: Tue, 23 Aug 2022 13:57:40 +0200
+Message-Id: <20220823115740.14123-6-tiwai@suse.de>
 X-Mailer: git-send-email 2.35.3
 In-Reply-To: <20220823115740.14123-1-tiwai@suse.de>
 References: <20220823115740.14123-1-tiwai@suse.de>
@@ -95,29 +95,58 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The extra setup with GFP_DMA32 is superfluous for this driver.  The
-whole operation is a simple copy loop, and there is no memory address
-restriction at all.  Drop the useless GFP setup.
+Update the documentation to follow the recent change of the memory
+allocation helpers.  The macro snd_dma_continuous_data() is gone, and
+the driver needs to set up the coherent dma mask for allocating in the
+lower memory addresses, instead.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/pcmcia/pdaudiocf/pdaudiocf_pcm.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ .../kernel-api/writing-an-alsa-driver.rst     | 21 +++++++------------
+ 1 file changed, 8 insertions(+), 13 deletions(-)
 
-diff --git a/sound/pcmcia/pdaudiocf/pdaudiocf_pcm.c b/sound/pcmcia/pdaudiocf/pdaudiocf_pcm.c
-index dfc4295b69c4..aaa82ec36540 100644
---- a/sound/pcmcia/pdaudiocf/pdaudiocf_pcm.c
-+++ b/sound/pcmcia/pdaudiocf/pdaudiocf_pcm.c
-@@ -257,8 +257,7 @@ int snd_pdacf_pcm_new(struct snd_pdacf *chip)
- 		return err;
- 		
- 	snd_pcm_set_ops(pcm, SNDRV_PCM_STREAM_CAPTURE, &pdacf_pcm_capture_ops);
--	snd_pcm_set_managed_buffer_all(pcm, SNDRV_DMA_TYPE_VMALLOC,
--				       snd_dma_continuous_data(GFP_KERNEL | GFP_DMA32),
-+	snd_pcm_set_managed_buffer_all(pcm, SNDRV_DMA_TYPE_VMALLOC, NULL,
- 				       0, 0);
+diff --git a/Documentation/sound/kernel-api/writing-an-alsa-driver.rst b/Documentation/sound/kernel-api/writing-an-alsa-driver.rst
+index 176b73583b7a..07a620c5ca74 100644
+--- a/Documentation/sound/kernel-api/writing-an-alsa-driver.rst
++++ b/Documentation/sound/kernel-api/writing-an-alsa-driver.rst
+@@ -3565,13 +3565,17 @@ given size.
+ The second argument (type) and the third argument (device pointer) are
+ dependent on the bus. For normal devices, pass the device pointer
+ (typically identical as ``card->dev``) to the third argument with
+-``SNDRV_DMA_TYPE_DEV`` type. For the continuous buffer unrelated to the
++``SNDRV_DMA_TYPE_DEV`` type.
++
++For the continuous buffer unrelated to the
+ bus can be pre-allocated with ``SNDRV_DMA_TYPE_CONTINUOUS`` type.
+ You can pass NULL to the device pointer in that case, which is the
+ default mode implying to allocate with ``GFP_KERNEL`` flag.
+-If you need a different GFP flag, you can pass it by encoding the flag
+-into the device pointer via a special macro
+-:c:func:`snd_dma_continuous_data()`.
++If you need a restricted (lower) address, set up the coherent DMA mask
++bits for the device, and pass the device pointer, like the normal
++device memory allocations.  For this type, it's still allowed to pass
++NULL to the device pointer, too, if no address restriction is needed.
++
+ For the scatter-gather buffers, use ``SNDRV_DMA_TYPE_DEV_SG`` with the
+ device pointer (see the `Non-Contiguous Buffers`_ section).
  
- 	pcm->private_data = chip;
+@@ -3811,15 +3815,6 @@ arguments here.  Since each vmalloc call should succeed at any time,
+ we don't need to pre-allocate the buffers like other continuous
+ pages.
+ 
+-If you need the 32bit DMA allocation, pass the device pointer encoded
+-by :c:func:`snd_dma_continuous_data()` with ``GFP_KERNEL|__GFP_DMA32``
+-argument.
+-
+-::
+-
+-  snd_pcm_set_managed_buffer_all(pcm, SNDRV_DMA_TYPE_VMALLOC,
+-          snd_dma_continuous_data(GFP_KERNEL | __GFP_DMA32), 0, 0);
+-
+ Proc Interface
+ ==============
+ 
 -- 
 2.35.3
 
