@@ -4,70 +4,70 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 92034C32772
-	for <alsa-devel@archiver.kernel.org>; Tue, 23 Aug 2022 12:44:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4C651C32772
+	for <alsa-devel@archiver.kernel.org>; Tue, 23 Aug 2022 12:45:28 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 1EABD886;
-	Tue, 23 Aug 2022 14:44:06 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1EABD886
+	by alsa0.perex.cz (Postfix) with ESMTPS id C67D915C3;
+	Tue, 23 Aug 2022 14:44:36 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C67D915C3
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1661258696;
-	bh=msqfEFG/qPmDDHa8wCYdT/4Cffz64mcnfpeNxaJpZkk=;
+	s=default; t=1661258726;
+	bh=jYV4b6OYBJ3uW2Nj+NTNmh8S3HuxxqbU8PSV6956dJc=;
 	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
 	 List-Post:List-Help:List-Subscribe:From;
-	b=NjuWWy4BbcZALQd6+uJl+lyRcmpy8BKeQKYZQSHvGFYNkuip8X1ZpovSi1+vweZRa
-	 qmRp/KFOCtMEIrcMC42orRhP6riGCe1DVfJpdeyBW5iXSHDzmBCeira0FBMNiJyX21
-	 vfDF7YHCADHCSv8yquuJl1h3NzGjRBgWVtXbfuNM=
+	b=qROKbHuBxLcV6O0D2DtkuRU6aDDxEX6wagQsfQlVrIs1xERdj1xNJ76t08QEzp7aB
+	 TDvWMAy5C9QXqHFkTId6yEo/jIMBjJomRtE3SjKdU+1RRIdGCKyj1Zt8hpFZ2bFLM4
+	 2Ky27SEK1FH3Vj5XYQAC8YhzhOuvVo7L6fIYIR7Y=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 9A439F80152;
-	Tue, 23 Aug 2022 14:44:05 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 67A66F8030F;
+	Tue, 23 Aug 2022 14:44:36 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 85A50F8020D; Tue, 23 Aug 2022 14:44:03 +0200 (CEST)
-Received: from mga06.intel.com (mga06b.intel.com [134.134.136.31])
+ id CA175F804E6; Tue, 23 Aug 2022 14:44:34 +0200 (CEST)
+Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id C7504F800C9
- for <alsa-devel@alsa-project.org>; Tue, 23 Aug 2022 14:43:56 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C7504F800C9
+ by alsa1.perex.cz (Postfix) with ESMTPS id 39FB1F8020D
+ for <alsa-devel@alsa-project.org>; Tue, 23 Aug 2022 14:44:27 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 39FB1F8020D
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="K8elsm3Z"
+ header.b="UL4TtnQx"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1661258638; x=1692794638;
+ t=1661258669; x=1692794669;
  h=from:to:cc:subject:date:message-id:mime-version:
  content-transfer-encoding;
- bh=msqfEFG/qPmDDHa8wCYdT/4Cffz64mcnfpeNxaJpZkk=;
- b=K8elsm3ZOBvHhMnD1pTdvCcdvSzepU2MAlOHnwnkpZ3V8hia16K5KVvw
- ptO4L/PNKM/t+jtuVqFVh3ETGdFfeEqomCyFHU6GlmNQ/AE0WkkeV+zJd
- yO6YiJs1kDG58YBYpDw7ItOYshCc31+W1kCUw1khgZ6QjrcKnbWW1iFCk
- 3yiglc28fqbyVwaSy2ao4YM1t96y1zon0/F0p2YuaUb260Kkwb+LFyglf
- rb6pB3dMAa5X/Z8iWlGvH3hRWiaN+Qku2utcTeJDkfp8OzzoS/s7EebYx
- GglbUxATS7W6O+G7wt9lA9XxoFcPZDNT8HuWP27YZEnGDpa4SsXFrzJ6q w==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10447"; a="355406613"
-X-IronPort-AV: E=Sophos;i="5.93,257,1654585200"; d="scan'208";a="355406613"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
- by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 23 Aug 2022 05:42:28 -0700
-X-IronPort-AV: E=Sophos;i="5.93,257,1654585200"; d="scan'208";a="560147662"
+ bh=jYV4b6OYBJ3uW2Nj+NTNmh8S3HuxxqbU8PSV6956dJc=;
+ b=UL4TtnQxqzj0PPfN8RKQl8eLCnLjRxZu0CBXjesSc5XjFzWEAx1aud5c
+ QTF97CwE37eEvD+P2dOakyszUdQyGgEDYdqSOD+MnEGx5w9akuj9H9233
+ RPWEwQwdzdupr/Yg35Np0SP8uFbUFU8ILe+PiwRJt/OtGy+Nnw7PTWuKx
+ D/2PrWIqJj21U/n0eApONM34e8DZU7YOapFN2aR32JBw3EDQRo1c0AeGT
+ PP1aJvPvdNB6RjX//hfdoNIvhIXo6w3sOi0F8FzcGXs29q6qZEx2Tkhwp
+ LXCROqzlKqh97fsY3wISf1ZsI7Il7Dz97flZ0JpWVhploSqbjThuToo2H g==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10448"; a="319722437"
+X-IronPort-AV: E=Sophos;i="5.93,257,1654585200"; d="scan'208";a="319722437"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+ by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 23 Aug 2022 05:44:08 -0700
+X-IronPort-AV: E=Sophos;i="5.93,257,1654585200"; d="scan'208";a="937447622"
 Received: from mjglynn-mobl2.ger.corp.intel.com (HELO
  pujfalus-desk.ger.corp.intel.com) ([10.252.28.206])
- by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 23 Aug 2022 05:42:26 -0700
+ by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 23 Aug 2022 05:44:06 -0700
 From: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
 To: lgirdwood@gmail.com, broonie@kernel.org,
  pierre-louis.bossart@linux.intel.com
-Subject: [PATCH] ASoC: SOF: ipc4-loader: Verify ext manifest magic number
-Date: Tue, 23 Aug 2022 15:42:19 +0300
-Message-Id: <20220823124219.927-1-peter.ujfalusi@linux.intel.com>
+Subject: [PATCH] ASoC: SOF: Intel: hda: Skip IMR boot after a firmware crash
+ or boot failure
+Date: Tue, 23 Aug 2022 15:43:59 +0300
+Message-Id: <20220823124359.24865-1-peter.ujfalusi@linux.intel.com>
 X-Mailer: git-send-email 2.37.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: alsa-devel@alsa-project.org, yung-chuan.liao@linux.intel.com,
- ranjani.sridharan@linux.intel.com, kai.vehmanen@linux.intel.com,
- rander.wang@intel.com
+Cc: alsa-devel@alsa-project.org, ranjani.sridharan@linux.intel.com,
+ kai.vehmanen@linux.intel.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -83,42 +83,36 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Firmware image must start with an extended manifest. Add a check to make
-sure that the image does contain it.
-
-The magic number (the first u32 of a firmware image if manifest is present)
-for an IPC4 image must be 0x31454124 (ASCI "$AE1").
+To make sure that we start from a clean state next time when the DSP is
+powered up after a firmware crash or boot failure we must skip the IMR
+booting attempt.
 
 Signed-off-by: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
-Reviewed-by: Rander Wang <rander.wang@intel.com>
 Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Reviewed-by: Bard Liao <yung-chuan.liao@linux.intel.com>
+Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 ---
- sound/soc/sof/ipc4-loader.c | 11 +++++++++++
- 1 file changed, 11 insertions(+)
+ sound/soc/sof/intel/hda-dsp.c | 7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
 
-diff --git a/sound/soc/sof/ipc4-loader.c b/sound/soc/sof/ipc4-loader.c
-index 9fadae8fd011..8bd2132b4f41 100644
---- a/sound/soc/sof/ipc4-loader.c
-+++ b/sound/soc/sof/ipc4-loader.c
-@@ -40,6 +40,17 @@ static size_t sof_ipc4_fw_parse_ext_man(struct snd_sof_dev *sdev)
+diff --git a/sound/soc/sof/intel/hda-dsp.c b/sound/soc/sof/intel/hda-dsp.c
+index eddfd77ad90f..671c3e02d7df 100644
+--- a/sound/soc/sof/intel/hda-dsp.c
++++ b/sound/soc/sof/intel/hda-dsp.c
+@@ -620,8 +620,13 @@ static int hda_suspend(struct snd_sof_dev *sdev, bool runtime_suspend)
+ 	/*
+ 	 * The memory used for IMR boot loses its content in deeper than S3 state
+ 	 * We must not try IMR boot on next power up (as it will fail).
++	 *
++	 * In case of firmware crash or boot failure set the skip_imr_boot to true
++	 * as well in order to try to re-load the firmware to do a 'cold' boot.
+ 	 */
+-	if (sdev->system_suspend_target > SOF_SUSPEND_S3)
++	if (sdev->system_suspend_target > SOF_SUSPEND_S3 ||
++	    sdev->fw_state == SOF_FW_CRASHED ||
++	    sdev->fw_state == SOF_FW_BOOT_FAILED)
+ 		hda->skip_imr_boot = true;
  
- 	ext_man_hdr = (struct sof_ext_manifest4_hdr *)fw->data;
- 
-+	/*
-+	 * At the start of the firmware image we must have an extended manifest.
-+	 * Verify that the magic number is correct.
-+	 */
-+	if (ext_man_hdr->id != SOF_EXT_MAN4_MAGIC_NUMBER) {
-+		dev_err(sdev->dev,
-+			"Unexpected extended manifest magic number: %#x\n",
-+			ext_man_hdr->id);
-+		return -EINVAL;
-+	}
-+
- 	fw_hdr_offset = ipc4_data->manifest_fw_hdr_offset;
- 	if (!fw_hdr_offset)
- 		return -EINVAL;
+ 	hda_sdw_int_enable(sdev, false);
 -- 
 2.37.2
 
