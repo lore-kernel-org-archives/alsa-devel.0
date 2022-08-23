@@ -4,70 +4,70 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id CB870C32774
-	for <alsa-devel@archiver.kernel.org>; Tue, 23 Aug 2022 16:34:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A6305C32772
+	for <alsa-devel@archiver.kernel.org>; Tue, 23 Aug 2022 16:55:34 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E89531688;
-	Tue, 23 Aug 2022 18:33:23 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E89531688
+	by alsa0.perex.cz (Postfix) with ESMTPS id 4C50516A5;
+	Tue, 23 Aug 2022 18:54:42 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4C50516A5
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1661272454;
-	bh=iShwDF1LvUqQUhnFrVSrO45fBJAdBU9+ZEnxoDBD0qQ=;
+	s=default; t=1661273732;
+	bh=p88vJDhjNhP/UYOBR252hX3zvo246PNcPZEo6vSfkQI=;
 	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=jg7FqCau7kpw+SZ+fDPCafoWNour6BVXA4LEKR8nXltsem08WLRmOiAYgOjpymvuL
-	 7mELk8FbhBP2b/Wxqt/o0qoivvyCg9FfyIf/m0dvGr7saBuX0qHTwzh4wqYXSzoS1B
-	 7FcgOsxDYzTtBpcfzsoM7VrI/xGbDAviM82E+RwA=
+	b=s16JsYl5PDM0rKDyjOZ3nrEdipImwsvY2UwpK0cb0c59QwyoDfU4JqHaNHgNLqndc
+	 7NHAqJqEJgrBQsjkR8jKNI2V4ULywOy+7Zvmjegt93LYJPHUB18NnQCVKjCvEqtQbg
+	 tLvKVsVHgvdaOFqnk1GGEUF5xo7tFM45rJ93N9aQ=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 8E089F80152;
-	Tue, 23 Aug 2022 18:33:23 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id D5EACF80152;
+	Tue, 23 Aug 2022 18:54:41 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 6FC5BF8014E; Tue, 23 Aug 2022 18:33:22 +0200 (CEST)
+ id D4237F8014E; Tue, 23 Aug 2022 18:54:40 +0200 (CEST)
 Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 5C4BFF8014E
- for <alsa-devel@alsa-project.org>; Tue, 23 Aug 2022 18:33:15 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5C4BFF8014E
+ by alsa1.perex.cz (Postfix) with ESMTPS id 9F9AAF8014E
+ for <alsa-devel@alsa-project.org>; Tue, 23 Aug 2022 18:54:35 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9F9AAF8014E
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="VoAyWUMJ"
+ header.b="gydzuzv2"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by ams.source.kernel.org (Postfix) with ESMTPS id 664B7B81CD5;
- Tue, 23 Aug 2022 16:33:15 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 759E9C433C1;
- Tue, 23 Aug 2022 16:33:12 +0000 (UTC)
+ by ams.source.kernel.org (Postfix) with ESMTPS id 938B7B81F3D;
+ Tue, 23 Aug 2022 16:54:34 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 769E3C433D6;
+ Tue, 23 Aug 2022 16:54:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1661272394;
- bh=iShwDF1LvUqQUhnFrVSrO45fBJAdBU9+ZEnxoDBD0qQ=;
+ s=k20201202; t=1661273673;
+ bh=p88vJDhjNhP/UYOBR252hX3zvo246PNcPZEo6vSfkQI=;
  h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=VoAyWUMJRbqFkLF/T1meoER25n/fOiimaZmsqj1bileYdAhvQYloc1k0nc7mYCS8x
- Phbhi4L7zV7v9ZJL1wwBeR+Eg1gYniZVwfGy3DuiB0NVRUE2czIXE72IUicW8XMyJG
- K5UplrltHjMJktACUBoQDTw3ys4Bxgg9VD0/CsJrpIYuf9meNklSmGKVnLIt3wRR4/
- CQgeegDmyUWFRgW5QDhY5S4VRXQg4GRJ1lHNsJjAzrhwp3MRRsL4yl8G+fGhNPRpww
- mv99AJ7VqUWhvIFzu+51uxqY8O2OJ0iULbDRzeoyhNy47L85sRQqPtCKc7phGR1/v2
- RJzgpsIpu9hiA==
-Date: Tue, 23 Aug 2022 17:33:08 +0100
-From: Mark Brown <broonie@kernel.org>
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH] ASoC: SOF: ipc4-topology: fix alh_group_ida max value
-Message-ID: <YwUBRMqD3E1/TqyU@sirena.org.uk>
-References: <20220822190211.170537-1-pierre-louis.bossart@linux.intel.com>
+ b=gydzuzv2SgN9i5w0v/C1Irov18C7R5zy2J67Oa4qbnQtUDhgXPWFYfRS5vXr9tD6I
+ SHFsJKJODBTncZsOApYE3ILI2kDQZz06ky+ivm5qe/kLbNZgZHldBuHtGuSci209gZ
+ DBQhlPFlNP6TBCQL1jlGQhcBK7yPbfck9YHg31LvyXY8choe/7kLqS4hzWP4E9QQVZ
+ QdU/Og8fB4Th+6Ra1f3Rt+n+Y6lgsRCLdxNFya01U//GQH5BNpNPE/4pIGrywDfdMO
+ syfmLGPSUIoIonGdTdzZqkfI0CR53NqQFRjzYGrN8MWvjtjy8ewbqvT30FpVs4Kavp
+ DRKJyB5PjBHEQ==
+Date: Tue, 23 Aug 2022 22:24:28 +0530
+From: Vinod Koul <vkoul@kernel.org>
+To: Srinivasa Rao Mandadapu <quic_srivasam@quicinc.com>
+Subject: Re: [PATCH v2] soundwire: qcom: Update error prints to debug prints
+Message-ID: <YwUGRGhDCXbhrHVn@matsya>
+References: <1657724067-19004-1-git-send-email-quic_srivasam@quicinc.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature"; boundary="RTZFQNjilJYdMnzE"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20220822190211.170537-1-pierre-louis.bossart@linux.intel.com>
-X-Cookie: (null cookie
-Cc: alsa-devel@alsa-project.org, kernel test robot <lkp@intel.com>,
- tiwai@suse.de, Rander Wang <rander.wang@intel.com>,
- Bard Liao <yung-chuan.liao@linux.intel.com>,
- Dan Carpenter <dan.carpenter@oracle.com>
+In-Reply-To: <1657724067-19004-1-git-send-email-quic_srivasam@quicinc.com>
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
+ quic_rohkumar@quicinc.com, linux-arm-msm@vger.kernel.org, swboyd@chromium.org,
+ tiwai@suse.com, agross@kernel.org, robh+dt@kernel.org, lgirdwood@gmail.com,
+ broonie@kernel.org, srinivas.kandagatla@linaro.org, bgoswami@quicinc.com,
+ quic_plai@quicinc.com, bjorn.andersson@linaro.org, judyhsiao@chromium.org,
+ linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -83,37 +83,11 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+On 13-07-22, 20:24, Srinivasa Rao Mandadapu wrote:
+> Update error prints to debug prints to avoid redundant logging in kernel
+> boot time, as these prints are informative prints in irq handler.
 
---RTZFQNjilJYdMnzE
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Applied, thanks
 
-On Mon, Aug 22, 2022 at 09:02:11PM +0200, Pierre-Louis Bossart wrote:
-> From: Bard Liao <yung-chuan.liao@linux.intel.com>
->=20
-> group_id is from 0 ~ ALH_MULTI_GTW_COUNT - 1, not 0 ~
-> ALH_MULTI_GTW_COUNT.
->=20
-> Fixes: 0e357b5290532 ("ASoC: SOF: ipc4-topology: add SoundWire/ALH aggreg=
-ation support"
-
-This commit doesn't exist upstream, you probably meant
-a150345aa758492e05d2934f318ce7c2566b1cfe.
-
---RTZFQNjilJYdMnzE
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmMFAUMACgkQJNaLcl1U
-h9D1Zwf/Zy913HRjpypDBZxxeEPBFtPXyZITuwe876/TOsJBk5z+KFHURIQy8/37
-2ifaFbyhjgFNbBdhiw07s1karXvSbsTKmktK1qm0wL7EuW90VRA2/s3PbpK3Vi3V
-/GLHDlgn7e1diW/d60CpM4B1B1YRbCVbml8epCMe0oLaJKj5zdlhSJYmapgAcsjb
-glv6hVvV/0FuZ5QxyesvFFqnJlcUd0DvbYXnW7DhNj92Pt/RrYHGWHdWcUGo8sF6
-ktE5i2sKuhQjeBu7pbUh5I6Pay5S2P4/78RgvXNhvi8MmvoMjVzLAD0/wwlV+sh3
-QjOxHPWMhLdqkqeqqDZDrnLkpPXPJg==
-=G8jS
------END PGP SIGNATURE-----
-
---RTZFQNjilJYdMnzE--
+-- 
+~Vinod
