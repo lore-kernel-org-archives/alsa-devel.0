@@ -4,63 +4,63 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B3898C28D13
-	for <alsa-devel@archiver.kernel.org>; Tue, 23 Aug 2022 03:06:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1AE03C25B08
+	for <alsa-devel@archiver.kernel.org>; Tue, 23 Aug 2022 04:47:42 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id EF0373E7;
-	Tue, 23 Aug 2022 05:06:02 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EF0373E7
+	by alsa0.perex.cz (Postfix) with ESMTPS id 2E78E1636;
+	Tue, 23 Aug 2022 06:46:50 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2E78E1636
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1661224013;
-	bh=dFchl2bmcRn49wmin1I4Kwm9RG7Qfuh91pAl14MRq5w=;
+	s=default; t=1661230060;
+	bh=1hk3vPLt5LF/hGQ/U9Opw9PivdsoVIeWfL5vgv/ftqY=;
 	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
 	 List-Post:List-Help:List-Subscribe:From;
-	b=dKl9Q+Sx5jhwYliaebCmuvnorf5v6KM/kAQngi/EWKkybWSeqLOs8+uz9t+zwXDPL
-	 ytz+VebsQhIasWOsuRcqY+9BvMT3vXLP4+Om9nrjgZEOS/Cf1YAIp6skuEVr4Hpfs5
-	 HDQx1f2Q/tApBK+9i8BWeuD89LSCMQmA0kEY397g=
+	b=ezIRaZraHQTpG+YJD29Z0COC7gDJU6+xtCSiiqnlX957nclw7HtYuDbqhqgWUgk42
+	 hiBENWQct2vmdfjOsMgn2yf2W+3bYfFRf52kdF1NXN3msh+gZGkd5ZCERQRiDF5O1U
+	 fLuM/PN9vNsxj+nWYbseghjS9MwdIeSgiDuKqLJg=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 4C291F8014E;
-	Tue, 23 Aug 2022 05:06:02 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 92F0AF8030F;
+	Tue, 23 Aug 2022 06:46:49 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 38DB3F8020D; Tue, 23 Aug 2022 05:06:00 +0200 (CEST)
-Received: from mga06.intel.com (mga06b.intel.com [134.134.136.31])
+ id 94B06F8027B; Tue, 23 Aug 2022 06:46:47 +0200 (CEST)
+Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id E2B99F8014E
- for <alsa-devel@alsa-project.org>; Tue, 23 Aug 2022 05:05:51 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E2B99F8014E
+ by alsa1.perex.cz (Postfix) with ESMTPS id 2E042F800C9
+ for <alsa-devel@alsa-project.org>; Tue, 23 Aug 2022 06:46:43 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2E042F800C9
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="BCRrw0N9"
+ header.b="ci6lOk/u"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1661223953; x=1692759953;
+ t=1661230005; x=1692766005;
  h=from:to:cc:subject:date:message-id:mime-version:
  content-transfer-encoding;
- bh=dFchl2bmcRn49wmin1I4Kwm9RG7Qfuh91pAl14MRq5w=;
- b=BCRrw0N9QEngZDIpZDGjQcBK4+252gmq48yWihfQov+P9jZoe+nhGxPR
- O0MrDqUFgFcpVa/13V3xaXFvFLa5gH2e2iQwOsjOxhv0EsNr5/u7H1uE7
- zwmBft7XbJGGrvWoAnuf9nGpNjxJZKN8ujvOvefQapHfJXRpM7BRzyjqs
- 4xukgqalqpjFSbp7Ws+k/HZccR3kaWyzHx2W7MuiaFjQOZQEr5jLQyKMh
- g7baTfjrGqbk7reyierYBJir9ceWp+Jx8w33Lg/UFgADBarvMUwr3Y10s
- dGgu3Z706dvdA9m7rlbGv5nIaRbjYn2v6EF8y9KuLfsZepzCdL5QC9peR A==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10447"; a="355307155"
-X-IronPort-AV: E=Sophos;i="5.93,256,1654585200"; d="scan'208";a="355307155"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
- by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 22 Aug 2022 20:05:24 -0700
-X-IronPort-AV: E=Sophos;i="5.93,256,1654585200"; d="scan'208";a="638470575"
+ bh=1hk3vPLt5LF/hGQ/U9Opw9PivdsoVIeWfL5vgv/ftqY=;
+ b=ci6lOk/uPD8DCJQoPZEegWHmIojgV84ytHPA3fxjTl4ObEDFwMlqT4uY
+ hCO34ThgCf5+oLurBdGDEHi7sTGAMPJcr+pUa+YnT95hybiORWvzOO7wX
+ GSTDiBUkStc0anJvpb80/kMNQL/NHCBLHasPbw+SlHhcsQNrbjZVhiFvi
+ xTB/+TiIWsGxYabVBT/DnsufJL5N69bWov3V9j2gNejsL3h2YaRpOhWsJ
+ JjnWr6mxyczqzkbAu7VPVPQNAnhb6g1HXpl3TRTopHXGlKyq3FCJ5mwwy
+ vsOlWxITGzvnsKWMB1YK91wTm3WkrpYV0JNvx6b8CzkQv3KaV4ThmKfxS A==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10447"; a="319629716"
+X-IronPort-AV: E=Sophos;i="5.93,256,1654585200"; d="scan'208";a="319629716"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+ by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 22 Aug 2022 21:46:14 -0700
+X-IronPort-AV: E=Sophos;i="5.93,256,1654585200"; d="scan'208";a="669855088"
 Received: from bard-ubuntu.sh.intel.com ([10.239.185.57])
- by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 22 Aug 2022 20:05:22 -0700
+ by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 22 Aug 2022 21:46:13 -0700
 From: Bard Liao <yung-chuan.liao@linux.intel.com>
 To: alsa-devel@alsa-project.org,
 	vkoul@kernel.org
-Subject: [PATCH] soundwire: dmi-quirks: add remapping for HP Omen 16-k0005TX
-Date: Tue, 23 Aug 2022 11:09:19 +0800
-Message-Id: <20220823030919.2346629-1-yung-chuan.liao@linux.intel.com>
+Subject: [PATCH 0/3] soundwire: allocate device_number with IDA
+Date: Tue, 23 Aug 2022 12:50:01 +0800
+Message-Id: <20220823045004.2670658-1-yung-chuan.liao@linux.intel.com>
 X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -81,69 +81,23 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+The device_number is currently allocated in the scope of each bus and does
+not need to be unique at the system level.
+This leads e.g. on Dell devices with three or four Device1 on different
+bus segments. To make the device_number unique at the system level, and
+unified with the HDaudio/iDISP SDI values, this series allocates the
+dev_number with an IDA restricted between 4 and 11 (inclusive).
 
-The DSDT for this device has a number of problems:
-a) it lists rt711 on link0 and link1, but link1 is disabled
-b) the rt711 entry on link0 uses the wrong v2 instead of v3 (SDCA)
-c) the rt1316 amplifier on link3 is not listed.
+Pierre-Louis Bossart (3):
+  soundwire: bus: rename sdw_ida as sdw_bus_ida
+  soundwire: bus: allow device number to be unique at system level
+  soundwire: intel: set dev_num_ida_min
 
-Add a remapping table to work-around these BIOS shenanigans.
+ drivers/soundwire/bus.c       | 29 ++++++++++++++++++++---------
+ drivers/soundwire/intel.c     |  4 ++++
+ include/linux/soundwire/sdw.h |  4 ++++
+ 3 files changed, 28 insertions(+), 9 deletions(-)
 
-BugLink: https://github.com/thesofproject/sof/issues/5955
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-Signed-off-by: Bard Liao <yung-chuan.liao@linux.intel.com>
----
- drivers/soundwire/dmi-quirks.c | 27 +++++++++++++++++++++++++++
- 1 file changed, 27 insertions(+)
-
-diff --git a/drivers/soundwire/dmi-quirks.c b/drivers/soundwire/dmi-quirks.c
-index 747983743a14..f81cdd83ec26 100644
---- a/drivers/soundwire/dmi-quirks.c
-+++ b/drivers/soundwire/dmi-quirks.c
-@@ -55,7 +55,26 @@ static const struct adr_remap dell_sku_0A3E[] = {
- 	{}
- };
- 
-+/*
-+ * The HP Omen 16-k0005TX does not expose the correct version of RT711 on link0
-+ * and does not expose a RT1316 on link3
-+ */
-+static const struct adr_remap hp_omen_16[] = {
-+	/* rt711-sdca on link0 */
-+	{
-+		0x000020025d071100ull,
-+		0x000030025d071101ull
-+	},
-+	/* rt1316-sdca on link3 */
-+	{
-+		0x000120025d071100ull,
-+		0x000330025d131601ull
-+	},
-+	{}
-+};
-+
- static const struct dmi_system_id adr_remap_quirk_table[] = {
-+	/* TGL devices */
- 	{
- 		.matches = {
- 			DMI_MATCH(DMI_SYS_VENDOR, "HP"),
-@@ -78,6 +97,14 @@ static const struct dmi_system_id adr_remap_quirk_table[] = {
- 		},
- 		.driver_data = (void *)dell_sku_0A3E,
- 	},
-+	/* ADL devices */
-+	{
-+		.matches = {
-+			DMI_MATCH(DMI_SYS_VENDOR, "HP"),
-+			DMI_MATCH(DMI_PRODUCT_NAME, "OMEN by HP Gaming Laptop 16-k0xxx"),
-+		},
-+		.driver_data = (void *)hp_omen_16,
-+	},
- 	{}
- };
- 
 -- 
 2.25.1
 
