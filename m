@@ -4,77 +4,77 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E4EFEC32792
-	for <alsa-devel@archiver.kernel.org>; Tue, 23 Aug 2022 11:59:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 20221C32772
+	for <alsa-devel@archiver.kernel.org>; Tue, 23 Aug 2022 11:59:32 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0789A161E;
-	Tue, 23 Aug 2022 13:58:18 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0789A161E
+	by alsa0.perex.cz (Postfix) with ESMTPS id 5B35715E5;
+	Tue, 23 Aug 2022 13:58:40 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5B35715E5
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1661255948;
-	bh=+dqqshU0ljAmVZyhTYG7iiU8fb91m8OUnHtfmn7v4d0=;
+	s=default; t=1661255970;
+	bh=C1BMA+oajfykmDSKVt/GGLxX3Segr9izj69AIN4edBI=;
 	h=From:To:Subject:Date:In-Reply-To:References:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=fcCw0adiAdGmF+D1fOw8hrP45c6GbaLh08HKY5qOXA/9aAtga0ugtd9ehIyq2vvFa
-	 M8+IyWGItBU/ChwnA6xzvK7L1nTonDcvQCZ0NsIT1GSHkuS6EPi7eL8MzFb4k7Lxel
-	 eUuH2wvlNx4jbREGMa/4SV49BW/8p2lYAhm9XGnM=
+	b=tATYY/NUUPy2DPLLh9k8UAUg7/fv1xMo9MSSn4681a9ndPIOOLSUDM7ngLlYHDuKg
+	 CqbhzV2Z3W3lRgZUB5oxs6f2OCwVayf5G6DvOJEA7envkRYvI9WqNP5nmWSbQtFR3W
+	 5z1qDlPW+k9KP3nvyqwD/RXudf89YwzJswyO+q2g=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id ED4C5F804E7;
-	Tue, 23 Aug 2022 13:57:51 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 670B9F80528;
+	Tue, 23 Aug 2022 13:57:53 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 7CCA1F804E7; Tue, 23 Aug 2022 13:57:50 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+ id 75AB8F8052D; Tue, 23 Aug 2022 13:57:52 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 4091EF80152
+ by alsa1.perex.cz (Postfix) with ESMTPS id 758CAF8020D
  for <alsa-devel@alsa-project.org>; Tue, 23 Aug 2022 13:57:44 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4091EF80152
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 758CAF8020D
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="G4CU3WxE"; 
+ header.b="JCPBQ5OU"; 
  dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="o1tlDPQf"
+ header.b="4b7tptFp"
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id F21631F94D;
- Tue, 23 Aug 2022 11:57:43 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 31CCC336D1;
+ Tue, 23 Aug 2022 11:57:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1661255863; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ t=1661255864; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=BXF00BisYHzylICag8YIUs03V+Q8c/qjPMlGSFey5XY=;
- b=G4CU3WxEhhmWhR18rQD/sMR+mlZ1SQwIxDLNMV7qKj23K2dKGDwsO6eUB6O99aeD4oIhC1
- NBuiTQkEnRCpTKXqhZmerh+gsXP1Kb0qA1DsxO+UHiNgQ6LZTG9EsROZgKj+e0sDHApSHy
- syKkGrNxjRAH82bcidTTSEFrg28hnLk=
+ bh=Gxr8Ly5IK/o0TT3qgwNuWi7ShMLbZpLRgUMkaHLTuV0=;
+ b=JCPBQ5OUjkRsg8TIfieWG0x7tExAong8obZ90uFgTWXBtVvzzB+z991LqKhXJy7RARO4fS
+ Ls+kR6lnZcqaCUzUJkLugwrfLoFNiSBLhg8PBwnz+jdWuZr+ouLrBbpn0jSq4PeqU2lsUT
+ k6qrgvzzdjvcxPj1s5vkFEkctPqGRxg=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1661255863;
+ s=susede2_ed25519; t=1661255864;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=BXF00BisYHzylICag8YIUs03V+Q8c/qjPMlGSFey5XY=;
- b=o1tlDPQfEFkQ8nYoFHc0ZpARE1QdxNoK0ye/zPPDSiHKmiaRYFgCFt9QzF1h7Y2Y+uWsoR
- /ip31CDLKJPeLXDQ==
+ bh=Gxr8Ly5IK/o0TT3qgwNuWi7ShMLbZpLRgUMkaHLTuV0=;
+ b=4b7tptFp8L3u0RbCtynJCICW0+EYqFmpDMxSHUyeaqalkKEmP38VxUnGNrbcekCp4GxyJE
+ uY73JYjXq4wtgyCQ==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id D5B0613AE6;
- Tue, 23 Aug 2022 11:57:43 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 1A75013AE6;
+ Tue, 23 Aug 2022 11:57:44 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id eAGAM7fABGP1OAAAMHmgww
- (envelope-from <tiwai@suse.de>); Tue, 23 Aug 2022 11:57:43 +0000
+ by imap2.suse-dmz.suse.de with ESMTPSA id gMfaBbjABGP1OAAAMHmgww
+ (envelope-from <tiwai@suse.de>); Tue, 23 Aug 2022 11:57:44 +0000
 From: Takashi Iwai <tiwai@suse.de>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH 1/5] ALSA: vx: Drop superfluous GFP setup
-Date: Tue, 23 Aug 2022 13:57:36 +0200
-Message-Id: <20220823115740.14123-2-tiwai@suse.de>
+Subject: [PATCH 3/5] ASoC: Intel: sst: Switch to standard device pages
+Date: Tue, 23 Aug 2022 13:57:38 +0200
+Message-Id: <20220823115740.14123-4-tiwai@suse.de>
 X-Mailer: git-send-email 2.35.3
 In-Reply-To: <20220823115740.14123-1-tiwai@suse.de>
 References: <20220823115740.14123-1-tiwai@suse.de>
@@ -95,29 +95,34 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The extra setup with GFP_DMA32 is superfluous for this driver.  The
-whole operation is a simple copy loop, and there is no memory address
-restriction at all.  Drop the useless GFP setup.
+ASoC Atom SST driver is using the continuous RAM pages with GFP_DMA
+flag for its PCM buffer, but this should work fine with the standard
+DMA pages.  As a part of cleanup work, this patch replaces the buffer
+allocation to the standard device pages with SNDRV_DMA_TYPE_DEV.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/drivers/vx/vx_pcm.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ sound/soc/intel/atom/sst-mfld-platform-pcm.c | 7 +++----
+ 1 file changed, 3 insertions(+), 4 deletions(-)
 
-diff --git a/sound/drivers/vx/vx_pcm.c b/sound/drivers/vx/vx_pcm.c
-index 3924f5283745..ceaeb257003b 100644
---- a/sound/drivers/vx/vx_pcm.c
-+++ b/sound/drivers/vx/vx_pcm.c
-@@ -1215,8 +1215,7 @@ int snd_vx_pcm_new(struct vx_core *chip)
- 		if (ins)
- 			snd_pcm_set_ops(pcm, SNDRV_PCM_STREAM_CAPTURE, &vx_pcm_capture_ops);
- 		snd_pcm_set_managed_buffer_all(pcm, SNDRV_DMA_TYPE_VMALLOC,
--					       snd_dma_continuous_data(GFP_KERNEL | GFP_DMA32),
--					       0, 0);
-+					       NULL, 0, 0);
+diff --git a/sound/soc/intel/atom/sst-mfld-platform-pcm.c b/sound/soc/intel/atom/sst-mfld-platform-pcm.c
+index a56dd48c045f..c75616a5fd0a 100644
+--- a/sound/soc/intel/atom/sst-mfld-platform-pcm.c
++++ b/sound/soc/intel/atom/sst-mfld-platform-pcm.c
+@@ -676,10 +676,9 @@ static int sst_soc_pcm_new(struct snd_soc_component *component,
  
- 		pcm->private_data = chip;
- 		pcm->private_free = snd_vx_pcm_free;
+ 	if (dai->driver->playback.channels_min ||
+ 			dai->driver->capture.channels_min) {
+-		snd_pcm_set_managed_buffer_all(pcm,
+-			SNDRV_DMA_TYPE_CONTINUOUS,
+-			snd_dma_continuous_data(GFP_DMA),
+-			SST_MIN_BUFFER, SST_MAX_BUFFER);
++		snd_pcm_set_managed_buffer_all(pcm, SNDRV_DMA_TYPE_DEV,
++					       pcm->card->dev,
++					       SST_MIN_BUFFER, SST_MAX_BUFFER);
+ 	}
+ 	return 0;
+ }
 -- 
 2.35.3
 
