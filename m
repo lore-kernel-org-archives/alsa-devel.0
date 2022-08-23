@@ -4,84 +4,85 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7181CC32774
-	for <alsa-devel@archiver.kernel.org>; Tue, 23 Aug 2022 08:15:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 77F0EC32774
+	for <alsa-devel@archiver.kernel.org>; Tue, 23 Aug 2022 08:33:02 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id AF989886;
-	Tue, 23 Aug 2022 10:15:07 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AF989886
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0CBB0844;
+	Tue, 23 Aug 2022 10:32:10 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0CBB0844
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1661242557;
-	bh=+dgQfkQ/tLzu+g2Xno51GODiqaIscxcIboSepcXk8xc=;
+	s=default; t=1661243580;
+	bh=e4Y15s91Sv1nMyFkgZ8VUl9CivRGp9cxWQEU0nLz+s0=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=RfolrphV4MCGzIMp3/i/VoImGBHU29dxdtoXmChfSW+FwS6vpTVXrcEQrShiXnPfl
-	 GptKjiNW1iM2Cg3Chw4SQZQBg1V93GkX2DzpmBet5j98qY47AcGxHKBnTy6mf53OiL
-	 Hzi8/a6sYHzFCGa3RH12bqMSSaepOaJzQwktwXow=
+	b=XbbPpNikQxCEH6Hk4DGmXtcD7VeO3+fIKW+vYZPuHH3zV4yTgIyvA255qH7g20soV
+	 4DRe1t8ndN+OCqbgxRtR1ooO8zEyUWgB4Hr0Kk6DPe8X3r6Em+NbJg5AdcDJxyw08f
+	 lHjtsI63b6UUiw9AtfxKfmTeRwwYYCaHmAA8+uKg=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 5CB88F800A7;
-	Tue, 23 Aug 2022 10:15:07 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 913BDF80152;
+	Tue, 23 Aug 2022 10:32:09 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 429A2F8020D; Tue, 23 Aug 2022 10:15:06 +0200 (CEST)
+ id 45E2BF8020D; Tue, 23 Aug 2022 10:32:07 +0200 (CEST)
 Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id F2E19F800A7
- for <alsa-devel@alsa-project.org>; Tue, 23 Aug 2022 10:14:59 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F2E19F800A7
+ by alsa1.perex.cz (Postfix) with ESMTPS id 11800F800A7
+ for <alsa-devel@alsa-project.org>; Tue, 23 Aug 2022 10:32:03 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 11800F800A7
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="iBCktTV/"; 
+ header.b="vpYxNWHQ"; 
  dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="9FksrMj0"
+ header.b="8OgpA9wK"
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id C448E340FD;
- Tue, 23 Aug 2022 08:14:58 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 095EC34028;
+ Tue, 23 Aug 2022 08:32:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1661242498; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1661243523; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=45nYALg3CBzfRY7VCXIPhSzUYg+aoNwstugPaiJcNkA=;
- b=iBCktTV/Io5epUxoiewLMdKhBav63SFl2MMNCeAwOOS7be0mudm997chDw2VaVOKfQFKCr
- PxUbnIIxd6ThApr7Ux5FtT5qR67ZAZtm4hTAmMFHc8O/9eDGbhHbR1aybgJa9CQhvnrAZL
- WDLbrF4yaVynIr0cZVX3p+7hK1on+BA=
+ bh=7EVgLhj3JvIZxfYMo/+71MoEaCdeWKA1j5fajAPDUog=;
+ b=vpYxNWHQXCRwkdm2qKkYh9zjHIyaJh/uNKVAbmDBwT55IXx/OxibP+PR+Qy8cMgrcV5cN6
+ dGvn7WLvzrCYS9zDIyTRUv+HW3e8Jnk71MEHMhORctgm+91yt/o+6C3oLBoW/treJhXWUS
+ P6qaJ5qdWQWEYWTgQdK60AgnZu/f7FA=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1661242498;
+ s=susede2_ed25519; t=1661243523;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=45nYALg3CBzfRY7VCXIPhSzUYg+aoNwstugPaiJcNkA=;
- b=9FksrMj0Lu7uOWSA7aS3CuHYE/TE66OqR81DH715GzmgZ2W4rJgJ14GUPoz7DbQymM5mkW
- eKQ5p4AYt89KUBAQ==
+ bh=7EVgLhj3JvIZxfYMo/+71MoEaCdeWKA1j5fajAPDUog=;
+ b=8OgpA9wKhwsKAuOANgwrOW5NUKMvLfOL6o+jCgA9AqOj1HaMXs4q+Ny+FjbMtjoeRHKAlw
+ oZ3xN5Vbk1Co2cBA==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 7FF3E13A89;
- Tue, 23 Aug 2022 08:14:58 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id D044013A89;
+ Tue, 23 Aug 2022 08:32:02 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id 0eC+HYKMBGOaUAAAMHmgww
- (envelope-from <tiwai@suse.de>); Tue, 23 Aug 2022 08:14:58 +0000
-Date: Tue, 23 Aug 2022 10:14:57 +0200
-Message-ID: <871qt7s7em.wl-tiwai@suse.de>
+ by imap2.suse-dmz.suse.de with ESMTPSA id gSkqMoKQBGMSWAAAMHmgww
+ (envelope-from <tiwai@suse.de>); Tue, 23 Aug 2022 08:32:02 +0000
+Date: Tue, 23 Aug 2022 10:32:02 +0200
+Message-ID: <87zgfvqs1p.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
 To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH] ALSA: hda: cleanup definitions for multi-link registers
-In-Reply-To: <20220822190044.170495-1-pierre-louis.bossart@linux.intel.com>
-References: <20220822190044.170495-1-pierre-louis.bossart@linux.intel.com>
+Subject: Re: [PATCH 2/4] ALSA: hda: intel-nhlt: add intel_nhlt_ssp_mclk_mask()
+In-Reply-To: <20220822185911.170440-3-pierre-louis.bossart@linux.intel.com>
+References: <20220822185911.170440-1-pierre-louis.bossart@linux.intel.com>
+ <20220822185911.170440-3-pierre-louis.bossart@linux.intel.com>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
 MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
 Content-Type: text/plain; charset=US-ASCII
 Cc: alsa-devel@alsa-project.org, broonie@kernel.org,
  Bard Liao <yung-chuan.liao@linux.intel.com>,
  Cezary Rojewski <cezary.rojewski@intel.com>,
- Rander Wang <rander.wang@intel.com>
+ Kai Vehmanen <kai.vehmanen@linux.intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -97,19 +98,31 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Mon, 22 Aug 2022 21:00:44 +0200,
+On Mon, 22 Aug 2022 20:59:09 +0200,
 Pierre-Louis Bossart wrote:
 > 
-> For some reason two masks are used without the AZX prefix, and the
-> pattern MLCLT should be ML_LCTL for consistency.
-> 
-> Pure rename, no functionality change.
-> 
-> Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-> Reviewed-by: Rander Wang <rander.wang@intel.com>
-> Reviewed-by: Bard Liao <yung-chuan.liao@linux.intel.com>
+> +#define SSP_BLOB_V1_0_SIZE		84
+> +#define SSP_BLOB_V1_0_MDIVC_OFFSET	19 /* offset in u32 */
+> +#define SSP_BLOB_V1_5_SIZE		96
+> +#define SSP_BLOB_V1_5_MDIVC_OFFSET	21 /* offset in u32 */
 
-Thanks, applied to for-next branch.
+This is 84 in bytes, which is equal with SSP_BLOB_V1_0_size.
+So...
 
+> +			for (j = 0; j < fmt->fmt_count; j++) {
+> +				u32 *blob;
+> +				int mdivc_offset;
+> +
+> +				if (cfg->config.size >= SSP_BLOB_V1_0_SIZE) {
+> +					blob = (u32 *)cfg->config.caps;
+
+... the size check is >= 84.  If cfg->config.size==84, it may be an
+out-of-bound read at blob[SSP_BLOB_V1_5_MDIVC_OFFSET]?
+
+I don't think this would really matter in practice, but it's better to
+have a proper check, of course.
+
+
+thanks,
 
 Takashi
