@@ -4,88 +4,83 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D9740C32774
-	for <alsa-devel@archiver.kernel.org>; Tue, 23 Aug 2022 07:54:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id BC584C32774
+	for <alsa-devel@archiver.kernel.org>; Tue, 23 Aug 2022 08:11:03 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 4B56DE11;
-	Tue, 23 Aug 2022 09:53:51 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4B56DE11
+	by alsa0.perex.cz (Postfix) with ESMTPS id 28B9B886;
+	Tue, 23 Aug 2022 10:10:11 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 28B9B886
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1661241281;
-	bh=uTHzAOlflnncB0AVIs1NaFWU5IGCA+eykL/274P7Irs=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=R7gmWqZWGxaFlerLArSA4Do2XHeCfOAg643pAgXNRgDpRTU09Y74j1/+C0PJTX68x
-	 AGn9B7fpcWYBz0hfiEyXJFDpSS+VW+BwVBX3FRUDOz5gbTpWaWMc+pjeVLVd1A1J8w
-	 9qB/0fBO2zTcVv//vw4d3pBY5CTqgeoGoAihQJSU=
+	s=default; t=1661242261;
+	bh=CpJA1pTgAaVGrHPOf7GI6aqMPV1GFwVKpa+x8QcC2cU=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=XfGr6KF7nGvO1NksadONN1hAZFPWzkeXKvSWWJ9T9D/P65bcwzgOKb7ZL9oVHm1M2
+	 i9pq9gT/1o7MYPW/C9EiqJU9X0Vew8onaFyfFWopsI7LHVyIas+9mGe1vxmaffdrqs
+	 oRDaK307x708R5UxLUaOIJZqnDKD6Rwm2SqCaSwI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id E7A6EF80152;
-	Tue, 23 Aug 2022 09:53:50 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id A432CF80152;
+	Tue, 23 Aug 2022 10:10:10 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 9FCC8F8020D; Tue, 23 Aug 2022 09:53:49 +0200 (CEST)
-Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com
- [IPv6:2607:f8b0:4864:20::1030])
+ id AA22BF804E6; Tue, 23 Aug 2022 10:10:09 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 76FEBF800C9
- for <alsa-devel@alsa-project.org>; Tue, 23 Aug 2022 09:53:42 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 76FEBF800C9
+ by alsa1.perex.cz (Postfix) with ESMTPS id 46E11F80152
+ for <alsa-devel@alsa-project.org>; Tue, 23 Aug 2022 10:10:02 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 46E11F80152
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="H6eHdQC9"
-Received: by mail-pj1-x1030.google.com with SMTP id
- r14-20020a17090a4dce00b001faa76931beso16424558pjl.1
- for <alsa-devel@alsa-project.org>; Tue, 23 Aug 2022 00:53:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
- h=content-transfer-encoding:mime-version:message-id:date:subject:cc
- :to:from:from:to:cc;
- bh=nEf9h9B8XFcsw7F7FHaP4rxVimh4AhqGZN0e/h8tVmE=;
- b=H6eHdQC9nfpqxyFvScDKeIUMxPQixxwngCfLH06PzVsCieuC0wFtRfbviaHQJOZ2no
- KCFxhv8QDvdg2lmpGanCvawqQssmfLAG/0dof0Milu2TexViPWyQPk7YGFVyCzEYdlt6
- mmjUQqBLQRHNtzu0ceLLg4CKTcLb4WV/i7RWRuJ89FQHYSg1I3Tp8wP/alrEx2Vu3lzG
- MuOiBfI2cgWGEeDFOQg/DxB0fMAMDQpn7qndnPxjbPRKmEawHG+E/cf1iq4ONtmvZZBt
- SbM+vuVZbcUIpHNYo+NvsSPo/mCThabsQNYNurxvrvdB+wNJRtPH2tBuP4K/KXk4VDw3
- hyxA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=content-transfer-encoding:mime-version:message-id:date:subject:cc
- :to:from:x-gm-message-state:from:to:cc;
- bh=nEf9h9B8XFcsw7F7FHaP4rxVimh4AhqGZN0e/h8tVmE=;
- b=jeJdIMGvmlPwVtJ6tDooQzr03nN3XeMEqamoP2MEzXxRKhUPLshptA+NKFwA4ISC18
- 4efuk5b0a9arqW4aci7LACtUaWBNELta3AFGd12VKvb7lACd26hJNB7xCW+TNQmoGcS4
- DDCX/Pxjp/8VJ9keLRzpiAawRf/dzvWhV/qBBzYBRZKgvV9h2PBSIc8PGOZ9hqE9oOxJ
- jiURUNq7sye3SFUjHLmvomcWNS6ysJqKZqr3j47wk8VYUG9+74SyKpcoqtF47ySL8SYe
- Cdy6FccxyMzQa4lneJGD6lAoUi6qJ4EQtusdJYaneD08y5wnTuLFVaaGGBn9oP1haL4O
- /klg==
-X-Gm-Message-State: ACgBeo3GFi8jTOKcQDTaeQMt9SB4NACGSd++1WsdbbWNRoONHqp8m7wP
- rqVymeXmuMVL2tx61nqXsl4=
-X-Google-Smtp-Source: AA6agR5PV7F4Fv1F70NJL2LVcXFE9N4pQkIOk+6vloijP9gA6TFUajv72QAWRFmdHKbokWoX6ssYYg==
-X-Received: by 2002:a17:90b:4c08:b0:1fb:66d3:79c with SMTP id
- na8-20020a17090b4c0800b001fb66d3079cmr1269718pjb.121.1661241220134; 
- Tue, 23 Aug 2022 00:53:40 -0700 (PDT)
-Received: from localhost.localdomain ([193.203.214.57])
- by smtp.gmail.com with ESMTPSA id
- q12-20020a170902dacc00b0017269cc60d7sm9737931plx.214.2022.08.23.00.53.37
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Tue, 23 Aug 2022 00:53:39 -0700 (PDT)
-From: cgel.zte@gmail.com
-X-Google-Original-From: ye.xingchen@zte.com.cn
-To: broonie@kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH linux-next] ASoC: atmel_ssc_dai: Remove the unneeded result
- variable
-Date: Tue, 23 Aug 2022 07:53:35 +0000
-Message-Id: <20220823075335.209072-1-ye.xingchen@zte.com.cn>
-X-Mailer: git-send-email 2.25.1
+ dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
+ header.b="v8TYlN/Q"; 
+ dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
+ header.b="Y7ccPsB8"
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id B58C8340E9;
+ Tue, 23 Aug 2022 08:10:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1661242202; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=p0AIX3UvBfcUEXB8VClmLOWcWPfET+Zw+fPv/d/vLD4=;
+ b=v8TYlN/Q0CdGsTUMKeATcRSGgqDLj+eXlPdS905g96LnJNGnf6Eh4hlSPgB26hjBeHWO/3
+ V8Zwm3r9mZQieIsTkjUeYUuVz7aRBxr2iPjo7weghxfhsuligbbL/PVzuZq2nPpVCJLS49
+ CxDshkvHDos7u+9UBb7VhOnsNrbYkaA=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1661242202;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=p0AIX3UvBfcUEXB8VClmLOWcWPfET+Zw+fPv/d/vLD4=;
+ b=Y7ccPsB8yZrzE5u7y/Z8bb3ZX7iRPaX1W/9JdD4/O/GpYhfVUk5XAjTe0bWVYemWdLp46A
+ +qy1qxgnnUMLS9AQ==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 91B7513AE9;
+ Tue, 23 Aug 2022 08:10:02 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+ by imap2.suse-dmz.suse.de with ESMTPSA id UMHVIlqLBGMxTgAAMHmgww
+ (envelope-from <tiwai@suse.de>); Tue, 23 Aug 2022 08:10:02 +0000
+From: Takashi Iwai <tiwai@suse.de>
+To: Mark Brown <broonie@kernel.org>
+Subject: [PATCH 4/5] ASoC: nau8825: Implement hw constraint for rates
+Date: Tue, 23 Aug 2022 10:09:59 +0200
+Message-Id: <20220823081000.2965-5-tiwai@suse.de>
+X-Mailer: git-send-email 2.35.3
+In-Reply-To: <20220823081000.2965-1-tiwai@suse.de>
+References: <20220823081000.2965-1-tiwai@suse.de>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: alexandre.belloni@bootlin.com, alsa-devel@alsa-project.org,
- lgirdwood@gmail.com, ye xingchen <ye.xingchen@zte.com.cn>,
- Zeal Robot <zealci@zte.com.cn>, nicolas.ferre@microchip.com, tiwai@suse.com,
- codrin.ciubotariu@microchip.com, claudiu.beznea@microchip.com,
- linux-arm-kernel@lists.infradead.org
+Cc: alsa-devel@alsa-project.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -101,39 +96,173 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: ye xingchen <ye.xingchen@zte.com.cn>
+nau8825 driver restricts the sample rate with over sampling rate, but
+currently it barely bails out at hw_params with -EINVAL error (with a
+kernel message); this doesn't help for user-space to recognize which
+rate can be actually used.
 
-Return the value from asoc_ssc_init() directly instead of storing it
-in another redundant variable.
+This patch introduces the proper hw constraint for adjusting the
+available range of the sample rate depending on the OSR setup, as well
+as some code cleanup, for improving the communication with
+user-space.  Now applications can know the valid rate beforehand and
+reduces the rate appropriately without errors.
 
-Reported-by: Zeal Robot <zealci@zte.com.cn>
-Signed-off-by: ye xingchen <ye.xingchen@zte.com.cn>
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/soc/atmel/atmel_ssc_dai.c | 5 +----
- 1 file changed, 1 insertion(+), 4 deletions(-)
+ sound/soc/codecs/nau8825.c | 83 +++++++++++++++++++++-----------------
+ 1 file changed, 45 insertions(+), 38 deletions(-)
 
-diff --git a/sound/soc/atmel/atmel_ssc_dai.c b/sound/soc/atmel/atmel_ssc_dai.c
-index e868b7e028d6..3763454436c1 100644
---- a/sound/soc/atmel/atmel_ssc_dai.c
-+++ b/sound/soc/atmel/atmel_ssc_dai.c
-@@ -891,7 +891,6 @@ static int asoc_ssc_init(struct device *dev)
- int atmel_ssc_set_audio(int ssc_id)
- {
- 	struct ssc_device *ssc;
--	int ret;
+diff --git a/sound/soc/codecs/nau8825.c b/sound/soc/codecs/nau8825.c
+index 54ef7b0fa878..8213273f501e 100644
+--- a/sound/soc/codecs/nau8825.c
++++ b/sound/soc/codecs/nau8825.c
+@@ -1247,27 +1247,42 @@ static const struct snd_soc_dapm_route nau8825_dapm_routes[] = {
+ 	{"HPOR", NULL, "Class G"},
+ };
  
- 	/* If we can grab the SSC briefly to parent the DAI device off it */
- 	ssc = ssc_request(ssc_id);
-@@ -903,9 +902,7 @@ int atmel_ssc_set_audio(int ssc_id)
- 		ssc_info[ssc_id].ssc = ssc;
+-static int nau8825_clock_check(struct nau8825 *nau8825,
+-	int stream, int rate, int osr)
++static const struct nau8825_osr_attr *
++nau8825_get_osr(struct nau8825 *nau8825, int stream)
+ {
+-	int osrate;
++	unsigned int osr;
+ 
+ 	if (stream == SNDRV_PCM_STREAM_PLAYBACK) {
++		regmap_read(nau8825->regmap,
++			    NAU8825_REG_DAC_CTRL1, &osr);
++		osr &= NAU8825_DAC_OVERSAMPLE_MASK;
+ 		if (osr >= ARRAY_SIZE(osr_dac_sel))
+-			return -EINVAL;
+-		osrate = osr_dac_sel[osr].osr;
++			return NULL;
++		return &osr_dac_sel[osr];
+ 	} else {
++		regmap_read(nau8825->regmap,
++			    NAU8825_REG_ADC_RATE, &osr);
++		osr &= NAU8825_ADC_SYNC_DOWN_MASK;
+ 		if (osr >= ARRAY_SIZE(osr_adc_sel))
+-			return -EINVAL;
+-		osrate = osr_adc_sel[osr].osr;
++			return NULL;
++		return &osr_adc_sel[osr];
+ 	}
++}
+ 
+-	if (!osrate || rate * osr > CLK_DA_AD_MAX) {
+-		dev_err(nau8825->dev, "exceed the maximum frequency of CLK_ADC or CLK_DAC\n");
++static int nau8825_dai_startup(struct snd_pcm_substream *substream,
++			       struct snd_soc_dai *dai)
++{
++	struct snd_soc_component *component = dai->component;
++	struct nau8825 *nau8825 = snd_soc_component_get_drvdata(component);
++	const struct nau8825_osr_attr *osr;
++
++	osr = nau8825_get_osr(nau8825, substream->stream);
++	if (!osr || !osr->osr)
+ 		return -EINVAL;
+-	}
+ 
+-	return 0;
++	return snd_pcm_hw_constraint_minmax(substream->runtime,
++					    SNDRV_PCM_HW_PARAM_RATE,
++					    0, CLK_DA_AD_MAX / osr->osr);
+ }
+ 
+ static int nau8825_hw_params(struct snd_pcm_substream *substream,
+@@ -1276,7 +1291,9 @@ static int nau8825_hw_params(struct snd_pcm_substream *substream,
+ {
+ 	struct snd_soc_component *component = dai->component;
+ 	struct nau8825 *nau8825 = snd_soc_component_get_drvdata(component);
+-	unsigned int val_len = 0, osr, ctrl_val, bclk_fs, bclk_div;
++	unsigned int val_len = 0, ctrl_val, bclk_fs, bclk_div;
++	const struct nau8825_osr_attr *osr;
++	int err = -EINVAL;
+ 
+ 	nau8825_sema_acquire(nau8825, 3 * HZ);
+ 
+@@ -1286,29 +1303,19 @@ static int nau8825_hw_params(struct snd_pcm_substream *substream,
+ 	 * values must be selected such that the maximum frequency is less
+ 	 * than 6.144 MHz.
+ 	 */
+-	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
+-		regmap_read(nau8825->regmap, NAU8825_REG_DAC_CTRL1, &osr);
+-		osr &= NAU8825_DAC_OVERSAMPLE_MASK;
+-		if (nau8825_clock_check(nau8825, substream->stream,
+-			params_rate(params), osr)) {
+-			nau8825_sema_release(nau8825);
+-			return -EINVAL;
+-		}
++	osr = nau8825_get_osr(nau8825, substream->stream);
++	if (!osr || !osr->osr)
++		goto error;
++	if (params_rate(params) * osr->osr > CLK_DA_AD_MAX)
++		goto error;
++	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
+ 		regmap_update_bits(nau8825->regmap, NAU8825_REG_CLK_DIVIDER,
+ 			NAU8825_CLK_DAC_SRC_MASK,
+-			osr_dac_sel[osr].clk_src << NAU8825_CLK_DAC_SRC_SFT);
+-	} else {
+-		regmap_read(nau8825->regmap, NAU8825_REG_ADC_RATE, &osr);
+-		osr &= NAU8825_ADC_SYNC_DOWN_MASK;
+-		if (nau8825_clock_check(nau8825, substream->stream,
+-			params_rate(params), osr)) {
+-			nau8825_sema_release(nau8825);
+-			return -EINVAL;
+-		}
++			osr->clk_src << NAU8825_CLK_DAC_SRC_SFT);
++	else
+ 		regmap_update_bits(nau8825->regmap, NAU8825_REG_CLK_DIVIDER,
+ 			NAU8825_CLK_ADC_SRC_MASK,
+-			osr_adc_sel[osr].clk_src << NAU8825_CLK_ADC_SRC_SFT);
+-	}
++			osr->clk_src << NAU8825_CLK_ADC_SRC_SFT);
+ 
+ 	/* make BCLK and LRC divde configuration if the codec as master. */
+ 	regmap_read(nau8825->regmap, NAU8825_REG_I2S_PCM_CTRL2, &ctrl_val);
+@@ -1321,10 +1328,8 @@ static int nau8825_hw_params(struct snd_pcm_substream *substream,
+ 			bclk_div = 1;
+ 		else if (bclk_fs <= 128)
+ 			bclk_div = 0;
+-		else {
+-			nau8825_sema_release(nau8825);
+-			return -EINVAL;
+-		}
++		else
++			goto error;
+ 		regmap_update_bits(nau8825->regmap, NAU8825_REG_I2S_PCM_CTRL2,
+ 			NAU8825_I2S_LRC_DIV_MASK | NAU8825_I2S_BLK_DIV_MASK,
+ 			((bclk_div + 1) << NAU8825_I2S_LRC_DIV_SFT) | bclk_div);
+@@ -1344,17 +1349,18 @@ static int nau8825_hw_params(struct snd_pcm_substream *substream,
+ 		val_len |= NAU8825_I2S_DL_32;
+ 		break;
+ 	default:
+-		nau8825_sema_release(nau8825);
+-		return -EINVAL;
++		goto error;
  	}
  
--	ret = asoc_ssc_init(&ssc->pdev->dev);
--
--	return ret;
-+	return asoc_ssc_init(&ssc->pdev->dev);
- }
- EXPORT_SYMBOL_GPL(atmel_ssc_set_audio);
+ 	regmap_update_bits(nau8825->regmap, NAU8825_REG_I2S_PCM_CTRL1,
+ 		NAU8825_I2S_DL_MASK, val_len);
++	err = 0;
  
++ error:
+ 	/* Release the semaphore. */
+ 	nau8825_sema_release(nau8825);
+ 
+-	return 0;
++	return err;
+ }
+ 
+ static int nau8825_set_dai_fmt(struct snd_soc_dai *codec_dai, unsigned int fmt)
+@@ -1420,6 +1426,7 @@ static int nau8825_set_dai_fmt(struct snd_soc_dai *codec_dai, unsigned int fmt)
+ }
+ 
+ static const struct snd_soc_dai_ops nau8825_dai_ops = {
++	.startup	= nau8825_dai_startup,
+ 	.hw_params	= nau8825_hw_params,
+ 	.set_fmt	= nau8825_set_dai_fmt,
+ };
 -- 
-2.25.1
+2.35.3
+
