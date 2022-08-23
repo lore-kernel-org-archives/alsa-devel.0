@@ -4,68 +4,65 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3AB9AC32772
-	for <alsa-devel@archiver.kernel.org>; Tue, 23 Aug 2022 15:41:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id EA35DC32772
+	for <alsa-devel@archiver.kernel.org>; Tue, 23 Aug 2022 15:59:05 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3635310E;
-	Tue, 23 Aug 2022 17:40:59 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3635310E
+	by alsa0.perex.cz (Postfix) with ESMTPS id 74BDC1675;
+	Tue, 23 Aug 2022 17:58:13 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 74BDC1675
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1661269309;
-	bh=tqw/1FuEaMsbDG2LaRA4qhPbyUkRfV51pkZPRsSjnp4=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=pMKySgRboSXU094v9YsWoL/2m/lDxJHfTa91btYdjUqH2bpczs0dIvs2zWMpD8M8c
-	 erGNHL4nCjd+1gFDq703dnRJcWuLDhs4x+GukDYaoZ87AqwD9w4bNinprSBdXvL0rt
-	 JgLdw+Fe9frBhRM5f4dQNFFCpdsoGU4JdREgGZvs=
+	s=default; t=1661270343;
+	bh=SUC+lByAZGgqLU/3Cl0PMwl2vVOmjw7akh8B3lf9yTs=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=L/864HPjtkjkFDse+2cnTeiCypUjIov96LhBjr+QO/yb5W1OPwk77zcuh0VLw8DVT
+	 z708x8oPwa9J5P6M6n9SmT8L0OoNHrO3uOucoWsbcLm4QROHheIIItbBR5JjpOOWIY
+	 OZffkbg8AzanFFEDomQ0Y0z4RMVcTgu2X6Yg0r9E=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id CCD93F80152;
-	Tue, 23 Aug 2022 17:40:58 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id EE607F80152;
+	Tue, 23 Aug 2022 17:58:12 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 18E20F8020D; Tue, 23 Aug 2022 17:40:58 +0200 (CEST)
-Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
+ id 9531AF8020D; Tue, 23 Aug 2022 17:58:11 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 2A0B3F800A7
+ for <alsa-devel@alsa-project.org>; Tue, 23 Aug 2022 17:58:08 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2A0B3F800A7
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="ElfF6JCi"
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 67E04F800A7
- for <alsa-devel@alsa-project.org>; Tue, 23 Aug 2022 17:40:50 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 67E04F800A7
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="idn5Ql9R"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
- d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1661269252; x=1692805252;
- h=from:to:cc:subject:date:message-id:mime-version:
- content-transfer-encoding;
- bh=tqw/1FuEaMsbDG2LaRA4qhPbyUkRfV51pkZPRsSjnp4=;
- b=idn5Ql9RRO7NrSD5eu92QDE/qTpZ2F5o/l8f26hXpSytKzNQ6kc+2Zew
- t54XPVhafQr8XJ+bpmEOkQ2neYQ/iR3Zejicq2zCjPTkh8qWPdViMijbB
- cZ3oQsLzkVwV1/1Ob51sRfUBlvaCM1tjRyd+XhL/nS97uVSKIEtJuzUab
- ZQRgKlbuGHDNCdng4e+F6AZXhgL0z/mVF/S8uQoVGOBwSR/MH3/uieT6T
- Q/TO6nD/sCs3gUfc7RKjMaaI0Y42IpMHLJ7F1yGUWi+k5s8QnDZYWsysi
- psVprwMdpFBBKzOZevWD73mxk/H02TBpiLPPai+pfnCbW5FT0pSVgQjJb w==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10448"; a="295004712"
-X-IronPort-AV: E=Sophos;i="5.93,258,1654585200"; d="scan'208";a="295004712"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
- by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 23 Aug 2022 08:40:41 -0700
-X-IronPort-AV: E=Sophos;i="5.93,258,1654585200"; d="scan'208";a="670081351"
-Received: from pnystrom-mobl1.ger.corp.intel.com (HELO pbossart-mobl3.home)
- ([10.252.50.219])
- by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 23 Aug 2022 08:40:39 -0700
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-To: alsa-devel@alsa-project.org
-Subject: [PATCH] ASoC: SOF: imx: imx8ulp: declare ops structure as static
-Date: Tue, 23 Aug 2022 17:40:27 +0200
-Message-Id: <20220823154027.762889-1-pierre-louis.bossart@linux.intel.com>
-X-Mailer: git-send-email 2.34.1
+ by dfw.source.kernel.org (Postfix) with ESMTPS id E05FC615DD;
+ Tue, 23 Aug 2022 15:58:05 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B71AEC433D6;
+ Tue, 23 Aug 2022 15:58:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1661270285;
+ bh=SUC+lByAZGgqLU/3Cl0PMwl2vVOmjw7akh8B3lf9yTs=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=ElfF6JCiI2kve4i5kiT/diqWECRFKWTZzcPSh0nUVuVAmygRWK14Re9Y9ilZdNM/P
+ 2VCuSE+y9eHW/khYM4+kHDStvtoKqj/YBbHhWFEbGZvZxIvaiUVvipq85E05PXPmMW
+ yBv1CsfE5dkYRxFC2u5017TASKisvUTf5PEE2Kzzhxlxr0hRSLin0lJYtcps7HyRnj
+ J4TTMSWE4YxlXNOagR32DAuAfuTaoJFTMXzHdk0rDwGzz6AM/bCWWqeNbd3znuEU1p
+ ECMGMk3/NLdtVHl2Rmv9CRCpybYO/aXIM6HK8K6t+CQodHZo6nhaaefDjTNafRjdfm
+ NwAwuWihbUKQg==
+Date: Tue, 23 Aug 2022 21:28:00 +0530
+From: Vinod Koul <vkoul@kernel.org>
+To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Subject: Re: [PATCH] soundwire: qcom: remove duplicate reset control get
+Message-ID: <YwT5COjQAvFUB+LA@matsya>
+References: <20220814123800.31200-1-srinivas.kandagatla@linaro.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: tiwai@suse.de, broonie@kernel.org,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220814123800.31200-1-srinivas.kandagatla@linaro.org>
+Cc: amit.pundir@linaro.org, alsa-devel@alsa-project.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -81,29 +78,27 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Sparse warning:
+On 14-08-22, 13:38, Srinivas Kandagatla wrote:
+> Looks like adding clock gate flag patch forgot to remove the old code that
+> gets reset control.
+> 
+> This causes below crash on platforms that do not need reset.
+> 
+> [   15.653501]  reset_control_reset+0x124/0x170
+> [   15.653508]  qcom_swrm_init+0x50/0x1a0
+> [   15.653514]  qcom_swrm_probe+0x320/0x668
+> [   15.653519]  platform_probe+0x68/0xe0
+> [   15.653529]  really_probe+0xbc/0x2a8
+> [   15.653535]  __driver_probe_device+0x7c/0xe8
+> [   15.653541]  driver_probe_device+0x40/0x110
+> [   15.653547]  __device_attach_driver+0x98/0xd0
+> [   15.653553]  bus_for_each_drv+0x68/0xd0
+> [   15.653559]  __device_attach+0xf4/0x188
+> [   15.653565]  device_initial_probe+0x14/0x20
+> 
+> Fix this by removing old code.
 
-sound/soc/sof/imx/imx8ulp.c:416:24: error: symbol 'sof_imx8ulp_ops'
-was not declared. Should it be static?
+Applied, thanks
 
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
----
- sound/soc/sof/imx/imx8ulp.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/sound/soc/sof/imx/imx8ulp.c b/sound/soc/sof/imx/imx8ulp.c
-index 02b496165acc3..afab7feab5fb3 100644
---- a/sound/soc/sof/imx/imx8ulp.c
-+++ b/sound/soc/sof/imx/imx8ulp.c
-@@ -413,7 +413,7 @@ static int imx8ulp_dsp_set_power_state(struct snd_sof_dev *sdev,
- }
- 
- /* i.MX8 ops */
--struct snd_sof_dsp_ops sof_imx8ulp_ops = {
-+static struct snd_sof_dsp_ops sof_imx8ulp_ops = {
- 	/* probe and remove */
- 	.probe		= imx8ulp_probe,
- 	.remove		= imx8ulp_remove,
 -- 
-2.34.1
-
+~Vinod
