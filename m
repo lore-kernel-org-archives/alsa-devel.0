@@ -4,67 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1D913C32772
-	for <alsa-devel@archiver.kernel.org>; Tue, 23 Aug 2022 18:38:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 51BC3C32772
+	for <alsa-devel@archiver.kernel.org>; Tue, 23 Aug 2022 18:38:44 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 075611657;
-	Tue, 23 Aug 2022 20:37:23 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 075611657
+	by alsa0.perex.cz (Postfix) with ESMTPS id 1EDDE1691;
+	Tue, 23 Aug 2022 20:37:52 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1EDDE1691
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1661279893;
-	bh=8VJaDM+gCcwlXccf9auZntmnqjppj23P/NhrfUgjIcI=;
+	s=default; t=1661279922;
+	bh=l2nHu3gveFD2gonWT9Uf2SbvswRg2/zPnfi/nmWcZOo=;
 	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=qgN9PXtaftY0zPct6bPL3do5dsvvHAnQX9FPNDge+SIWVIQQDAF9HefOV8VJRTOJu
-	 /y2I1xxgdNbmhNIRa2jXmrTBRCaaWcxtM7Jv7LXJTVpqwNYj+wUHa36uOC05Qpxlp5
-	 Ad66d7w92lPnsmGQ9ZEskdkomJnvwcK1aUe8zoHg=
+	b=ELi89awOOg1Jrkm5Bb9l37b7XbfpjaFhqllpn5GFd8WGKK2NG2+mflUXRB4QRJ+T5
+	 JNswQMx7CxRIrRKmt6gRQabGjqhJj2tuRRizoOwzfjC+l8VLdaU5k7tMCGDii4baga
+	 oQzMacDV3Z1hG3xA9SNWmcwqNO6LCtvEfJCAoUHw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 8F3E5F8020D;
-	Tue, 23 Aug 2022 20:37:22 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 266D2F8027B;
+	Tue, 23 Aug 2022 20:37:25 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 88342F8030F; Tue, 23 Aug 2022 20:37:20 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org
- [IPv6:2604:1380:4641:c500::1])
+ id EA7F2F8027B; Tue, 23 Aug 2022 20:37:21 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 10385F8014E
- for <alsa-devel@alsa-project.org>; Tue, 23 Aug 2022 20:37:16 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 10385F8014E
+ by alsa1.perex.cz (Postfix) with ESMTPS id AB212F8020D
+ for <alsa-devel@alsa-project.org>; Tue, 23 Aug 2022 20:37:17 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AB212F8020D
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="HSoYlCUY"
+ header.b="kIj6HHZq"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id 09710616FE;
- Tue, 23 Aug 2022 18:37:13 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E27B9C433C1;
- Tue, 23 Aug 2022 18:37:11 +0000 (UTC)
+ by dfw.source.kernel.org (Postfix) with ESMTPS id A8D7F616D8;
+ Tue, 23 Aug 2022 18:37:16 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D5670C433C1;
+ Tue, 23 Aug 2022 18:37:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1661279832;
- bh=8VJaDM+gCcwlXccf9auZntmnqjppj23P/NhrfUgjIcI=;
+ s=k20201202; t=1661279836;
+ bh=l2nHu3gveFD2gonWT9Uf2SbvswRg2/zPnfi/nmWcZOo=;
  h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=HSoYlCUYNjWakr2mnhVw3X+csasLlKBm0fnE11FZc7IvSvd0pCCWiGq4MgUEjgEKX
- a+EFwTuE6zUbdl31g+deEd2T3EBtAUExH8bJL15kRxwo4BWo0db3JWu2RM9q7iHlw6
- Wt4xqEJhITaXaTzSxMIFvJpV6dc5pbhajFe+QlOxLjrH6EH91mNQWfwxusFuRlMj21
- GUiY8CZePEH3ISNWMvAAu++pkFZHowywPZv9SzKAYZwNBrV2eotObXNJIq5r1IeGXZ
- bUrVxwihIKCtElcOI9qctT90bgb9dYTeuK2Wf25bFcQc7U3cU0blTsD+sDzrzj6l69
- YNYqU43im3Tng==
+ b=kIj6HHZqPvcPIYxV9ZxsZE95/W/AvUwwdj4lY8BrXGJBDh4aIwgfHnEmzDURBt3Bo
+ Qzm8rCPPX/E4OA+RUwuR14anv+tb9XPXFU19AFMoVHiGalAb8wSIaHyY7C9CKFi+FF
+ MG7ucrsA6qrLcLE1u5nI6QGk6xw0xOQACjGpHzJPSi9K0k4kA6Vp59kmUFy/tQIpPn
+ Gcd2iCalwNOrzHIrSFpaZNoLeF69SjD8W2XeLO8IdUbNaZAxPqjsx+m5pI0f6PmXVB
+ jzuURks0hDwpLf1QfPHn9ErK2lX7GieZw37JWOCxl4yizTzhJeVT2czvj60mPLKbZw
+ zKKE3aHHnK+Ng==
 From: Mark Brown <broonie@kernel.org>
-To: Takashi Iwai <tiwai@suse.de>
-In-Reply-To: <20220823081000.2965-1-tiwai@suse.de>
-References: <20220823081000.2965-1-tiwai@suse.de>
-Subject: Re: [PATCH 0/5] ASoC: nau8xxx: Implement hw constraint for rates
-Message-Id: <166127983165.711152.16554154070241524592.b4-ty@kernel.org>
-Date: Tue, 23 Aug 2022 19:37:11 +0100
+To: pierre-louis.bossart@linux.intel.com,
+ Peter Ujfalusi <peter.ujfalusi@linux.intel.com>, lgirdwood@gmail.com
+In-Reply-To: <20220823121554.4255-1-peter.ujfalusi@linux.intel.com>
+References: <20220823121554.4255-1-peter.ujfalusi@linux.intel.com>
+Subject: Re: [PATCH 0/2] ASoC: SOF: Kconfig: Fix the dependency for client
+ modules
+Message-Id: <166127983458.711152.668539616548226774.b4-ty@kernel.org>
+Date: Tue, 23 Aug 2022 19:37:14 +0100
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 X-Mailer: b4 0.10.0-dev-0c1df
-Cc: alsa-devel@alsa-project.org
+Cc: alsa-devel@alsa-project.org, ranjani.sridharan@linux.intel.com,
+ kai.vehmanen@linux.intel.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -80,13 +82,14 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Tue, 23 Aug 2022 10:09:55 +0200, Takashi Iwai wrote:
-> this is a series of patches to address the issues on nau8xxx codecs
-> I've stumbled upon while dealing with a bug report for Steam Deck.
-> Most of them are to implement the missing hw constraint for rate
-> restrictions while one patch is to fix the semaphore unbalance in
-> nau8824 driver.
+On Tue, 23 Aug 2022 15:15:52 +0300, Peter Ujfalusi wrote:
+> There is still a chance to end up with a client driver selected as built in
+> while the core SOF is as module.
 > 
+> Fix this by making the client drivers depend on SND_SOC_SOF.
+> 
+> Regards,
+> Peter
 > 
 > [...]
 
@@ -96,16 +99,10 @@ Applied to
 
 Thanks!
 
-[1/5] ASoC: nau8821: Implement hw constraint for rates
-      commit: cf5071876baf995f8f98e86ef06f85a58feda63c
-[2/5] ASoC: nau8824: Fix semaphore unbalance at error paths
-      commit: 5628560e90395d3812800a8e44a01c32ffa429ec
-[3/5] ASoC: nau8824: Implement hw constraint for rates
-      commit: 92283c86260d8712b55f97eada13b3c8b2f469b2
-[4/5] ASoC: nau8825: Implement hw constraint for rates
-      commit: bed41de0f679c516de45cfeb2c40c412bc5e0c0b
-[5/5] ASoC: nau8540: Implement hw constraint for rates
-      commit: be919239fbcab19290bfd6802c7ad1dc946c515b
+[1/2] ASoC: SOF: Kconfig: Make IPC_FLOOD_TEST depend on SND_SOC_SOF
+      commit: 3942499fba11de048c3ac1390b808e9e6ae88de5
+[2/2] ASoC: SOF: Kconfig: Make IPC_MESSAGE_INJECTOR depend on SND_SOC_SOF
+      commit: 2cf520ffbcbd55c0f2b4276065444d7526d9d197
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
