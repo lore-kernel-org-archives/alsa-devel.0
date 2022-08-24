@@ -4,74 +4,76 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id EA7FFC00140
-	for <alsa-devel@archiver.kernel.org>; Wed, 24 Aug 2022 13:56:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C9BAFC32796
+	for <alsa-devel@archiver.kernel.org>; Wed, 24 Aug 2022 14:00:58 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 607964E;
-	Wed, 24 Aug 2022 15:55:31 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 607964E
+	by alsa0.perex.cz (Postfix) with ESMTPS id 692451F7;
+	Wed, 24 Aug 2022 16:00:06 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 692451F7
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1661349381;
-	bh=msSU3qQ+X15SSeIqCsAOSxxkZ8mz3Vrx2NgqrNMhMQc=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	s=default; t=1661349656;
+	bh=24DO39uVA59fhWMiW4WyrPflQTYFQ4KqBhlx29/uJp4=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=uuNzxB96wlu4dbkWKGIYo4F0TcPNbwUFrfzsDcbfkNrddba5ilaM7f+M/bTJnefgk
-	 beENeMdBYpPE4tUgga1biCyN2F07uRa1+mBqUrlLIY5W5SqZJYQpFUaDrVPOyYcr8J
-	 nva0Sn82TOc504lOXJsUdHb2GED2ymwnAcyo1gNY=
+	b=bQLdsKDoJMk4gmilOqVYxUTNp/sVF738FzBSB7KQXX4eXO1F+MpY2QEI0uWhc2PRD
+	 Rdu6IQOWnU7f9oDGe0oVTg2wgvKHp4zOdsolAclC0rs4Dru5FeF18rVR+pcHOGLglG
+	 HIWQgfzkordRNm3myk6P6n6BnEKQ/nWSzB3bJs5Y=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id E7168F800A7;
-	Wed, 24 Aug 2022 15:55:30 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id E946AF800A7;
+	Wed, 24 Aug 2022 16:00:05 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 4AA45F804C1; Wed, 24 Aug 2022 15:55:29 +0200 (CEST)
+ id 1605FF800A7; Wed, 24 Aug 2022 16:00:04 +0200 (CEST)
 Received: from dfw.source.kernel.org (dfw.source.kernel.org
  [IPv6:2604:1380:4641:c500::1])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 7D0F4F800A7
- for <alsa-devel@alsa-project.org>; Wed, 24 Aug 2022 15:55:26 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7D0F4F800A7
+ by alsa1.perex.cz (Postfix) with ESMTPS id 378D3F800A7
+ for <alsa-devel@alsa-project.org>; Wed, 24 Aug 2022 15:59:57 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 378D3F800A7
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=linuxfoundation.org
- header.i=@linuxfoundation.org header.b="YCV+o6IZ"
+ header.i=@linuxfoundation.org header.b="2T2JmI0z"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id 1B45E6125B;
- Wed, 24 Aug 2022 13:55:23 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 08FC7C433D6;
- Wed, 24 Aug 2022 13:55:21 +0000 (UTC)
+ by dfw.source.kernel.org (Postfix) with ESMTPS id 61BE8617C9;
+ Wed, 24 Aug 2022 13:59:56 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3F440C433D6;
+ Wed, 24 Aug 2022 13:59:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
- s=korg; t=1661349322;
- bh=msSU3qQ+X15SSeIqCsAOSxxkZ8mz3Vrx2NgqrNMhMQc=;
- h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=YCV+o6IZUkVbur93pUP5AD9xZlPAOSFZjDFhpaQb/YTJXxVk5uRHejQKoYsy5aSO6
- xdb+B1cua2FH2O2RzGEcs7IXVxzyFClxE50L2vukzC9O1iO0eRKBp2Xs4k6NCOYqW+
- 1dhDsruobAQgMlmYIqWnZMtevflm0vioKX9WwpmQ=
-Date: Wed, 24 Aug 2022 15:55:19 +0200
+ s=korg; t=1661349595;
+ bh=24DO39uVA59fhWMiW4WyrPflQTYFQ4KqBhlx29/uJp4=;
+ h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+ b=2T2JmI0z0fv+ODoHwI1oQFEI2OwvNRKK8g84LuADy3UKW8QWNDP7WNQUVIOPFBpJh
+ FtFoGrrFpKt+Dv6L/+AJwpbeW7hqgigdS7mBNVMZAxDtEJC7tcr3lqiyFIxUlTU9ri
+ 9z5YgUP8y1NmXSHYebJVExKR5RQqXBwrRnV86zd8=
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH 2/5] soundwire: sysfs: cleanup the logic for creating the
- dp0 sysfs attributes
-Message-ID: <YwYtxy3auMhDE6y/@kroah.com>
-References: <20220729135041.2285908-1-gregkh@linuxfoundation.org>
- <20220729135041.2285908-2-gregkh@linuxfoundation.org>
- <9365e038-2146-98f8-f989-02827f221c34@linux.intel.com>
- <YuP0Ffs3G7ZBR0AC@kroah.com>
- <cfacb124-a9ff-0a93-8f92-93d164b15966@linux.intel.com>
- <YuP2pjhyKTTfpXQq@kroah.com>
- <5caffe2a-f5a6-e312-a564-5fe29c4e2323@linux.intel.com>
- <YuQMYRYFo9gTk1yL@kroah.com>
- <701aa1ba-9b25-51eb-8bd7-2389b501d79c@linux.intel.com>
+To: alsa-devel@alsa-project.org
+Subject: [PATCH v2 2/6] soundwire: sysfs: move sdw_slave_dev_attr_group into
+ the existing list of groups
+Date: Wed, 24 Aug 2022 15:59:47 +0200
+Message-Id: <20220824135951.3604059-2-gregkh@linuxfoundation.org>
+X-Mailer: git-send-email 2.37.2
+In-Reply-To: <20220824135951.3604059-1-gregkh@linuxfoundation.org>
+References: <20220824135951.3604059-1-gregkh@linuxfoundation.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <701aa1ba-9b25-51eb-8bd7-2389b501d79c@linux.intel.com>
-Cc: Sanyog Kale <sanyog.r.kale@intel.com>, Vinod Koul <vkoul@kernel.org>,
- Bard Liao <yung-chuan.liao@linux.intel.com>, alsa-devel@alsa-project.org,
- linux-kernel@vger.kernel.org
+X-Developer-Signature: v=1; a=openpgp-sha256; l=2014;
+ i=gregkh@linuxfoundation.org; h=from:subject;
+ bh=24DO39uVA59fhWMiW4WyrPflQTYFQ4KqBhlx29/uJp4=;
+ b=owGbwMvMwCRo6H6F97bub03G02pJDMlsetfCHyy783/1utsBHi5e17/fSjMsZ/ngMPWIZsvcc+zd
+ D0IcOmJZGASZGGTFFFm+bOM5ur/ikKKXoe1pmDmsTCBDGLg4BWAi2/YyLJi+b9UNS7471xatk7y6IN
+ pSb7/Q0v8M84wO3aj+8Ha6SY2no5uHQ23KBtXnuQA=
+X-Developer-Key: i=gregkh@linuxfoundation.org; a=openpgp;
+ fpr=F4B60CC5BF78C2214A313DCB3147D40DDB2DFB29
+Content-Transfer-Encoding: 8bit
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ linux-kernel@vger.kernel.org, Vinod Koul <vkoul@kernel.org>,
+ Sanyog Kale <sanyog.r.kale@intel.com>,
+ Bard Liao <yung-chuan.liao@linux.intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -87,55 +89,67 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Fri, Jul 29, 2022 at 11:46:32AM -0500, Pierre-Louis Bossart wrote:
-> 
-> >>>>> That should be fine, tools should just be looking for the attributes,
-> >>>>> not the existance of a directory, right?
-> >>>>
-> >>>> The idea what that we would only expose ports that actually exist.
-> >>>> That's helpful information anyone with a basic knowledge of the
-> >>>> SoundWire specification would understand.
-> >>>
-> >>> Is "dp0" a port?  If so, why isn't it a real device?
-> >>
-> >> The SoundWire spec defines the concept of 'data port'. The valid ranges
-> >> are 1..14, but in all existing devices the number of data ports is way
-> >> smaller, typically 2 to 4. Data ports (DPn) are source or sink, and
-> >> there's no firm rule that data ports needs to be contiguous.
-> >>
-> >> DP0 is a 'special case' where the data transport is used for control
-> >> information, e.g. programming large set of registers or firmware
-> >> download. DP0 is completely optional in hardware, and not handled in
-> >> Linux for now.
-> >>
-> >> DP0 and DPn expose low-level transport registers, which define how the
-> >> contents of a FIFO will be written or read from the bus. Think of it as
-> >> a generalization of the concept of TDM slots, where instead of having a
-> >> fixed slot per frame the slot position/repetition/runlength can be
-> >> programmed.
-> >>
-> >> The data ports could be as simple as 1-bit PDM, or support 8ch PCM
-> >> 24-bits. That's the sort of information reported in attributes.
-> > 
-> > Why not make them a real device like we do for USB endpoints?
-> 
-> I don't see what adding another layer of hierarchy would bring. In their
-> simplest configuration, there are 6 registers 8-bit exposed. And the
-> port registers, when present, are accessed with a plain vanilla offset.
-> 
-> > What uses these sysfs files today that would be confused about an empty
-> > directory?
-> 
-> That's a good question. I am not aware of any tools making use of those
-> attributes. To a large degree, they are helpful only for debug and
-> support, all these read-only attributes could be moved to debugfs. That
-> could be a way to simplify everyone's life....
+The sysfs logic already creates a list of groups for the device, so add
+the sdw_slave_dev_attr_group group to that list instead of having to do
+a two-step process of adding a group list and then an individual group.
 
-Ok, this is why I didn't just rebase and resend.  I've now worked on
-sysfs to NOT create the directory if no attributes were present.  I'll
-send out this series rebased along with that commit as well which should
-help with this issue.
+This is a step on the way to moving all of the sysfs attribute handling
+into the default driver core attribute group logic so that the soundwire
+core does not have to do any of it manually.
 
-thanks,
+Cc: Vinod Koul <vkoul@kernel.org>
+Cc: Bard Liao <yung-chuan.liao@linux.intel.com>
+Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: Sanyog Kale <sanyog.r.kale@intel.com>
+Cc: alsa-devel@alsa-project.org
+Cc: linux-kernel@vger.kernel.org
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+---
+v2: rebased on 6.0-rc1
 
-greg k-h
+ drivers/soundwire/sysfs_slave.c | 15 ++++++++++-----
+ 1 file changed, 10 insertions(+), 5 deletions(-)
+
+diff --git a/drivers/soundwire/sysfs_slave.c b/drivers/soundwire/sysfs_slave.c
+index 3210359cd944..83e3f6cc3250 100644
+--- a/drivers/soundwire/sysfs_slave.c
++++ b/drivers/soundwire/sysfs_slave.c
+@@ -105,7 +105,10 @@ static struct attribute *slave_attrs[] = {
+ 	&dev_attr_modalias.attr,
+ 	NULL,
+ };
+-ATTRIBUTE_GROUPS(slave);
++
++static const struct attribute_group slave_attr_group = {
++	.attrs = slave_attrs,
++};
+ 
+ static struct attribute *slave_dev_attrs[] = {
+ 	&dev_attr_mipi_revision.attr,
+@@ -190,6 +193,12 @@ static const struct attribute_group dp0_group = {
+ 	.name = "dp0",
+ };
+ 
++static const struct attribute_group *slave_groups[] = {
++	&slave_attr_group,
++	&sdw_slave_dev_attr_group,
++	NULL,
++};
++
+ int sdw_slave_sysfs_init(struct sdw_slave *slave)
+ {
+ 	int ret;
+@@ -198,10 +207,6 @@ int sdw_slave_sysfs_init(struct sdw_slave *slave)
+ 	if (ret < 0)
+ 		return ret;
+ 
+-	ret = devm_device_add_group(&slave->dev, &sdw_slave_dev_attr_group);
+-	if (ret < 0)
+-		return ret;
+-
+ 	if (slave->prop.dp0_prop) {
+ 		ret = devm_device_add_group(&slave->dev, &dp0_group);
+ 		if (ret < 0)
+-- 
+2.37.2
+
