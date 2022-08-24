@@ -4,70 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 81912C32793
-	for <alsa-devel@archiver.kernel.org>; Wed, 24 Aug 2022 11:13:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 63FD8C00140
+	for <alsa-devel@archiver.kernel.org>; Wed, 24 Aug 2022 11:14:06 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id ABC021637;
-	Wed, 24 Aug 2022 13:12:52 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz ABC021637
+	by alsa0.perex.cz (Postfix) with ESMTPS id 560731650;
+	Wed, 24 Aug 2022 13:13:14 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 560731650
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1661339622;
-	bh=WN2bNE7LCOmWySlUEEWLIkJNJKcud+TzDqPnjTAbMsg=;
+	s=default; t=1661339644;
+	bh=OGlg8pv6kHT4dTZmIiN7JaN/Td1DIt3ykmROSVhjXKk=;
 	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=r3YpsjfefDirgJ74Xjurt/9rdBirAbJaNipt+aLfv8THY661SVyDb+KO+KeDjewrz
-	 iQRV7TlO0/owLfUADTkx9EeGmvLYucwNAHS/QSd5p1irCQ294fki9cSWK1rgeGYWET
-	 qWSe4GPUXyCTQHrsVpS0Eapg1ZPETZvHicLEJN6w=
+	b=WFOJoNu0IQw4uGx9fHp0BZIxUbEgemIjDxzU2YKQI00rCYd9eipSFZAJPd8s0iCqa
+	 jK9A9WQ3Cpwxz0HuByt51XH6IW4l8BBtVJhBNje8J2jGuJ0Fg7yNOlUsL2VLoUgXiA
+	 hRZIaF9W5pljzWzRHlznwYguW0dMMpHN/Bpt+R0w=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id DE4A3F8014E;
-	Wed, 24 Aug 2022 13:12:25 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id DBC25F80526;
+	Wed, 24 Aug 2022 13:12:35 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 74AFFF8014E; Wed, 24 Aug 2022 13:12:22 +0200 (CEST)
-Received: from ams.source.kernel.org (ams.source.kernel.org
- [IPv6:2604:1380:4601:e00::1])
+ id 7C7D5F80529; Wed, 24 Aug 2022 13:12:34 +0200 (CEST)
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 03D08F8014E
- for <alsa-devel@alsa-project.org>; Wed, 24 Aug 2022 13:12:19 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 03D08F8014E
+ by alsa1.perex.cz (Postfix) with ESMTPS id E88DFF80526
+ for <alsa-devel@alsa-project.org>; Wed, 24 Aug 2022 13:12:30 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E88DFF80526
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="s1BbX4zp"
+ header.b="R89AQjm5"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by ams.source.kernel.org (Postfix) with ESMTPS id 37CA5B823A6;
- Wed, 24 Aug 2022 11:12:19 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id ABE19C433D7;
- Wed, 24 Aug 2022 11:12:16 +0000 (UTC)
+ by ams.source.kernel.org (Postfix) with ESMTPS id B5403B8238B;
+ Wed, 24 Aug 2022 11:12:29 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5F6E5C433D6;
+ Wed, 24 Aug 2022 11:12:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1661339537;
- bh=WN2bNE7LCOmWySlUEEWLIkJNJKcud+TzDqPnjTAbMsg=;
+ s=k20201202; t=1661339548;
+ bh=OGlg8pv6kHT4dTZmIiN7JaN/Td1DIt3ykmROSVhjXKk=;
  h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=s1BbX4zp04DOfkshyVXnAv78gF+UR1DDeXcbnQAW89ZJYk8ubed8PMRnNHHcXUwsN
- StSBms6vHOYCOC+0qB7TRFKlSoGk2ZgQC112ocwodLbfSsJk0/7UoVXu9LkY9IGWFD
- QSHddN0LXyGS9DnyzrMrn7QVnWF3CnQNMl5ANZqBAjJJPa6NVom5azBx71sQWgi7yj
- wVeKvFux5wKeiLTPhKGT/3eqdRSoHIV7HJf25+L+MvrC9LAol0WDFRiMFgwITwi3q5
- tCq6GXs1wDxxXPDiKTIaaYXx2xqBN+1u2Hd7O6f01THAe9DlS4CKEiMBajIlirVNVN
- hS8pPiuWsJJ2Q==
+ b=R89AQjm5QIFEy1m4KLw/y3y2fnUtsahYYAiDRrKZ7ZVutepzYsjI3j649BIhmpVt6
+ BIWFJ24zWf8uKJTwO1LANI064i3Q62jQ+yYvw/u/dnBJKdhi5e9QydoifyCwe/MjHM
+ 0ZVAG30iOKEHOZovM7etDo7b/5+D6FUkhYJ6YFS+7ltBW9GEgC7dxVTEOxHr6NBk5l
+ EVmUTe5SOqjkkKpguYiDGPkIu3jt7uEhMNl09oAVmExm700bo6jZGgahl7SyVHDnNW
+ +J3qiIHFrMv7UBLBAOjdyFF6h+h2kufzi4Qm5U2kc1FrbqERx9edy/uS/1BORps4Ju
+ WAy5d2T1nRQfw==
 From: Mark Brown <broonie@kernel.org>
-To: pierre-louis.bossart@linux.intel.com, lgirdwood@gmail.com,
- Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
-In-Reply-To: <20220823124359.24865-1-peter.ujfalusi@linux.intel.com>
-References: <20220823124359.24865-1-peter.ujfalusi@linux.intel.com>
-Subject: Re: [PATCH] ASoC: SOF: Intel: hda: Skip IMR boot after a firmware
- crash or boot failure
-Message-Id: <166133953643.17904.7544751600598124284.b4-ty@kernel.org>
-Date: Wed, 24 Aug 2022 12:12:16 +0100
+To: alsa-devel@alsa-project.org, perex@perex.cz, Xiubo.Lee@gmail.com,
+ lgirdwood@gmail.com, nicoleotsuka@gmail.com, 
+ shengjiu.wang@gmail.com, Shengjiu Wang <shengjiu.wang@nxp.com>,
+ festevam@gmail.com, tiwai@suse.com
+In-Reply-To: <1659681926-13493-1-git-send-email-shengjiu.wang@nxp.com>
+References: <1659681926-13493-1-git-send-email-shengjiu.wang@nxp.com>
+Subject: Re: [PATCH] ASoC: fsl_sai: Update slots number according to bclk_ratio
+Message-Id: <166133954610.17904.8655688757494279362.b4-ty@kernel.org>
+Date: Wed, 24 Aug 2022 12:12:26 +0100
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 X-Mailer: b4 0.10.0-dev-0c1df
-Cc: alsa-devel@alsa-project.org, ranjani.sridharan@linux.intel.com,
- kai.vehmanen@linux.intel.com
+Cc: linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -83,10 +82,11 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Tue, 23 Aug 2022 15:43:59 +0300, Peter Ujfalusi wrote:
-> To make sure that we start from a clean state next time when the DSP is
-> powered up after a firmware crash or boot failure we must skip the IMR
-> booting attempt.
+On Fri, 5 Aug 2022 14:45:26 +0800, Shengjiu Wang wrote:
+> The bclk_ratio is set by .set_bclk_ratio API.
+> bclk_ratio = slots * slot_width
+> So if slots is not set by .set_tdm_slot, then it can be calculated
+> by bclk_ratio.
 > 
 > 
 
@@ -96,8 +96,8 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: SOF: Intel: hda: Skip IMR boot after a firmware crash or boot failure
-      commit: 3b99852f4c874062295704dd483b03cab61301fe
+[1/1] ASoC: fsl_sai: Update slots number according to bclk_ratio
+      commit: 837b40293de66a5b96f883f540512ec5c3867610
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
