@@ -4,65 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id EEEA7C38142
-	for <alsa-devel@archiver.kernel.org>; Wed, 24 Aug 2022 14:01:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 30C7BC32796
+	for <alsa-devel@archiver.kernel.org>; Wed, 24 Aug 2022 14:01:50 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 42C3015C2;
-	Wed, 24 Aug 2022 16:00:35 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 42C3015C2
+	by alsa0.perex.cz (Postfix) with ESMTPS id 55DC21622;
+	Wed, 24 Aug 2022 16:00:58 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 55DC21622
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1661349685;
-	bh=KWnwJ1zMa3C2CDw6Y/OMLmmwDWaJ+biZe3MkwUbZHYs=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=PcdwNZJ+kRvAhfM1IX29qoi1Z3c4bbEGxHLKHSuQ4J8JSVEnrqwjBJ6GHytE+4Ptu
-	 hVeatg8952Tl/N3GexxKb40ZNZSn2l1Bm+Q0djFwYMbwWnhEC3tK5iqsDxhtJtyuMu
-	 M5YhzQnoa5NS/mHSyAbWz32DnQKSVyODbM+HJFvo=
+	s=default; t=1661349708;
+	bh=dUTwXXFu5PCz/IzkEcwjndg31DOpffH9A3ry/4de9h8=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=l7wUbYCvyCOLtyyTFU1nK9OPmhSWp2bWX4KktXpPRDdzE2mE3YurPTdTTvwpLuH2t
+	 cajZzq/WqPfTnIl40t3oIETzUAe5NbYI9OuPLJA9fVPAqu2H3qbuYhV4gMPd/pGJf7
+	 nuikjaUg6ghcF4y9NJJ7kUaX8jAdKS6EwLWCusTY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 86AF0F80508;
-	Wed, 24 Aug 2022 16:00:08 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id CA558F804BD;
+	Wed, 24 Aug 2022 16:00:12 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 3CF32F8014E; Wed, 24 Aug 2022 16:00:07 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org
- [IPv6:2604:1380:4641:c500::1])
+ id 7D46EF80533; Wed, 24 Aug 2022 16:00:11 +0200 (CEST)
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 153E1F8014E
- for <alsa-devel@alsa-project.org>; Wed, 24 Aug 2022 16:00:01 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 153E1F8014E
+ by alsa1.perex.cz (Postfix) with ESMTPS id A5F0AF804BD
+ for <alsa-devel@alsa-project.org>; Wed, 24 Aug 2022 16:00:05 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A5F0AF804BD
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=linuxfoundation.org
- header.i=@linuxfoundation.org header.b="xYytor4R"
+ header.i=@linuxfoundation.org header.b="wW9jIJcI"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id 78BE9617CA;
- Wed, 24 Aug 2022 13:59:59 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 65A3EC433D7;
- Wed, 24 Aug 2022 13:59:58 +0000 (UTC)
+ by ams.source.kernel.org (Postfix) with ESMTPS id A9CD0B823B5;
+ Wed, 24 Aug 2022 14:00:04 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 01517C433C1;
+ Wed, 24 Aug 2022 14:00:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
- s=korg; t=1661349598;
- bh=KWnwJ1zMa3C2CDw6Y/OMLmmwDWaJ+biZe3MkwUbZHYs=;
- h=From:To:Cc:Subject:Date:From;
- b=xYytor4RJ8GRoHDLUA3TaZ9L/xtJ0TSzUzd8eYZwFZUYTlZJoyJzIX6VPNQ4kWlvB
- /mEkcpnn+u4OEMEyOfh3v66v2TtHwlgpU7ErpY+5PPGzX5QJL9s2ECgzO8NG4T4p10
- ECDFw+dnybc0XE1nrvBqsyelkp3AwXbRJSEyI2sQ=
+ s=korg; t=1661349603;
+ bh=dUTwXXFu5PCz/IzkEcwjndg31DOpffH9A3ry/4de9h8=;
+ h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+ b=wW9jIJcIUdQlKMtLr5BuYINEhp9PaZ1EQFI3HuwI5xviVxoM9YPCjYmlb8AxWeQar
+ VEFCI1SrVjZPW/1jCuhMc5dvmVoYT7sulJIqZ+cdWvEmeOeRFNc+dO7wzeFZhXIFcl
+ ejij0boP1PLor8nBHb2/4WlfvOEN1qKNiCbzPY50=
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH v2 1/6] sysfs: do not create empty directories if no
- attributes are present
-Date: Wed, 24 Aug 2022 15:59:46 +0200
-Message-Id: <20220824135951.3604059-1-gregkh@linuxfoundation.org>
+Subject: [PATCH v2 3/6] soundwire: sysfs: cleanup the logic for creating the
+ dp0 sysfs attributes
+Date: Wed, 24 Aug 2022 15:59:48 +0200
+Message-Id: <20220824135951.3604059-3-gregkh@linuxfoundation.org>
 X-Mailer: git-send-email 2.37.2
+In-Reply-To: <20220824135951.3604059-1-gregkh@linuxfoundation.org>
+References: <20220824135951.3604059-1-gregkh@linuxfoundation.org>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=2703;
+X-Developer-Signature: v=1; a=openpgp-sha256; l=2244;
  i=gregkh@linuxfoundation.org; h=from:subject;
- bh=KWnwJ1zMa3C2CDw6Y/OMLmmwDWaJ+biZe3MkwUbZHYs=;
- b=owGbwMvMwCRo6H6F97bub03G02pJDMlseleWz0p77dt8m1tRzqymifO7SvSa+rS3M/3+ef91PVd/
- 565YRywLgyATg6yYIsuXbTxH91ccUvQytD0NM4eVCWQIAxenAExkvwDDPPUPRss8Dk0ItLX7e80gh0
- 32681eC4YFM9ZNVL4f/e7no65TiZp5vyfVvXaWAwA=
+ bh=dUTwXXFu5PCz/IzkEcwjndg31DOpffH9A3ry/4de9h8=;
+ b=owGbwMvMwCRo6H6F97bub03G02pJDMlseteef/mh/zH/b9e7visGKimyzaIfutadlrgbIrRVbulC
+ yY1NHbEsDIJMDLJiiixftvEc3V9xSNHL0PY0zBxWJpAhDFycAjCRt6YMC9ZHOc5U8ObLOvxx/sRp+0
+ +L5HhkLGKYn9Yf7dNVz5my54TV3Y0iD+1YL3WrAwA=
 X-Developer-Key: i=gregkh@linuxfoundation.org; a=openpgp;
  fpr=F4B60CC5BF78C2214A313DCB3147D40DDB2DFB29
 Content-Transfer-Encoding: 8bit
@@ -86,11 +88,14 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-When creating an attribute group, if it is named a subdirectory is
-created and the sysfs files are placed into that subdirectory.  If no
-files are created, normally the directory would still be present, but it
-would be empty.  Clean this up by removing the directory if no files
-were successfully created in the group at all.
+There's no need to special-case the dp0 sysfs attributes, the
+is_visible() callback in the attribute group can handle that for us, so
+add that and add it to the attribute group list making the logic simpler
+overall.
+
+This is a step on the way to moving all of the sysfs attribute handling
+into the default driver core attribute group logic so that the soundwire
+core does not have to do any of it manually.
 
 Cc: Vinod Koul <vkoul@kernel.org>
 Cc: Bard Liao <yung-chuan.liao@linux.intel.com>
@@ -100,79 +105,60 @@ Cc: alsa-devel@alsa-project.org
 Cc: linux-kernel@vger.kernel.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
-v2: new patch
+v2: rebased on 6.0-rc1
 
-Note, totally untested!  The following soundwire patches will need this,
-if a soundwire developer could test this out, it would be most
-apreciated.
+ drivers/soundwire/sysfs_slave.c | 18 ++++++++++++------
+ 1 file changed, 12 insertions(+), 6 deletions(-)
 
-fs/sysfs/group.c | 19 ++++++++++++++++---
- 1 file changed, 16 insertions(+), 3 deletions(-)
-
-diff --git a/fs/sysfs/group.c b/fs/sysfs/group.c
-index eeb0e3099421..9fe0b47db47f 100644
---- a/fs/sysfs/group.c
-+++ b/fs/sysfs/group.c
-@@ -31,12 +31,14 @@ static void remove_files(struct kernfs_node *parent,
- 			kernfs_remove_by_name(parent, (*bin_attr)->attr.name);
+diff --git a/drivers/soundwire/sysfs_slave.c b/drivers/soundwire/sysfs_slave.c
+index 83e3f6cc3250..3723333a5c2b 100644
+--- a/drivers/soundwire/sysfs_slave.c
++++ b/drivers/soundwire/sysfs_slave.c
+@@ -174,6 +174,16 @@ static ssize_t words_show(struct device *dev,
  }
+ static DEVICE_ATTR_RO(words);
  
-+/* returns -ERROR if error, or >= 0 for number of files actually created */
- static int create_files(struct kernfs_node *parent, struct kobject *kobj,
- 			kuid_t uid, kgid_t gid,
- 			const struct attribute_group *grp, int update)
- {
- 	struct attribute *const *attr;
- 	struct bin_attribute *const *bin_attr;
-+	int files_created = 0;
- 	int error = 0, i;
- 
- 	if (grp->attrs) {
-@@ -65,6 +67,8 @@ static int create_files(struct kernfs_node *parent, struct kobject *kobj,
- 						       gid, NULL);
- 			if (unlikely(error))
- 				break;
++static umode_t dp0_is_visible(struct kobject *kobj, struct attribute *attr,
++			      int n)
++{
++	struct sdw_slave *slave = dev_to_sdw_dev(kobj_to_dev(kobj));
 +
-+			files_created++;
- 		}
- 		if (error) {
- 			remove_files(parent, grp);
-@@ -95,12 +99,15 @@ static int create_files(struct kernfs_node *parent, struct kobject *kobj,
- 							   NULL);
- 			if (error)
- 				break;
-+			files_created++;
- 		}
- 		if (error)
- 			remove_files(parent, grp);
- 	}
- exit:
--	return error;
-+	if (error)
-+		return error;
-+	return files_created;
- }
++	if (slave->prop.dp0_prop)
++		return attr->mode;
++	return 0;
++}
++
+ static struct attribute *dp0_attrs[] = {
+ 	&dev_attr_max_word.attr,
+ 	&dev_attr_min_word.attr,
+@@ -190,12 +200,14 @@ static struct attribute *dp0_attrs[] = {
+  */
+ static const struct attribute_group dp0_group = {
+ 	.attrs = dp0_attrs,
++	.is_visible = dp0_is_visible,
+ 	.name = "dp0",
+ };
  
+ static const struct attribute_group *slave_groups[] = {
+ 	&slave_attr_group,
+ 	&sdw_slave_dev_attr_group,
++	&dp0_group,
+ 	NULL,
+ };
  
-@@ -146,10 +153,16 @@ static int internal_create_group(struct kobject *kobj, int update,
- 		kn = kobj->sd;
- 	kernfs_get(kn);
- 	error = create_files(kn, kobj, uid, gid, grp, update);
--	if (error) {
-+	if (error <= 0) {
-+		/*
-+		 * If an error happened _OR_ if no files were created in the
-+		 * attribute group, and we have a name for this group, delete
-+		 * the name so there's not an empty directory.
-+		 */
- 		if (grp->name)
- 			kernfs_remove(kn);
+@@ -207,12 +219,6 @@ int sdw_slave_sysfs_init(struct sdw_slave *slave)
+ 	if (ret < 0)
+ 		return ret;
+ 
+-	if (slave->prop.dp0_prop) {
+-		ret = devm_device_add_group(&slave->dev, &dp0_group);
+-		if (ret < 0)
+-			return ret;
 -	}
-+	} else
-+		error = 0;
- 	kernfs_put(kn);
- 
- 	if (grp->name && update)
+-
+ 	if (slave->prop.source_ports || slave->prop.sink_ports) {
+ 		ret = sdw_slave_sysfs_dpn_init(slave);
+ 		if (ret < 0)
 -- 
 2.37.2
 
