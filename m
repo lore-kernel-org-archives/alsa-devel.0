@@ -4,52 +4,55 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 16408C32793
-	for <alsa-devel@archiver.kernel.org>; Wed, 24 Aug 2022 01:25:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D3742C32793
+	for <alsa-devel@archiver.kernel.org>; Wed, 24 Aug 2022 01:26:05 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3B5B1E11;
-	Wed, 24 Aug 2022 03:24:48 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3B5B1E11
+	by alsa0.perex.cz (Postfix) with ESMTPS id 00CFB857;
+	Wed, 24 Aug 2022 03:25:13 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 00CFB857
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1661304338;
-	bh=vlMhQu2O+6t6jEpPddzibwIpXP/pZ0Uj/Ffalxrd6kg=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=YHGgiW3xm8OAYQWJGS8FBiu2PoQ1jrGq0uRYqzT2W83g/flIGVjYg8Gm8P6dk9vlQ
-	 pFE8Dm0cyjI4gNFBdOKgtMBqedzNJLcbmN+KJ2mZJYmIXp+/uaR8MqX8UUqhA0nRRA
-	 QN22tRP+5ZvCd+D4HGaATyM/0+QAWeIYkS1SWFjE=
+	s=default; t=1661304364;
+	bh=ZyDhA/O4UbjCipr3tv9l5MU/KyIdJId3cdwSGbP8yaA=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=lDg1bUGdsgDkTIeVpLaDalFXy9uF+guXkF+DmcF3pAGQOkBMestvFC9HoWuXmrGu9
+	 KoVoyxaqBDGlH48j/7w1J7Q6v7xaWApTa5jeMyGS1CDuCkanGY6SkrftHiGmt11JTY
+	 LqLudj7Xa6t5/EeQQgyBehFNJZ8/QZ23pyeY0nTY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 751B5F804E6;
-	Wed, 24 Aug 2022 03:24:46 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 4EBE0F804E7;
+	Wed, 24 Aug 2022 03:24:49 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 16D92F8027B; Wed, 24 Aug 2022 03:24:44 +0200 (CEST)
-Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
+ id 9050DF80527; Wed, 24 Aug 2022 03:24:47 +0200 (CEST)
+Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 0A354F800C9;
+ by alsa1.perex.cz (Postfix) with ESMTPS id 0D316F80152;
  Wed, 24 Aug 2022 03:24:39 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0A354F800C9
-Received: from dggpemm500021.china.huawei.com (unknown [172.30.72.54])
- by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4MC7bP2w0JzlWQX;
- Wed, 24 Aug 2022 09:21:21 +0800 (CST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0D316F80152
+Received: from dggpemm500020.china.huawei.com (unknown [172.30.72.56])
+ by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4MC7b61TBrz1N7Hq;
+ Wed, 24 Aug 2022 09:21:06 +0800 (CST)
 Received: from dggpemm500007.china.huawei.com (7.185.36.183) by
- dggpemm500021.china.huawei.com (7.185.36.109) with Microsoft SMTP Server
+ dggpemm500020.china.huawei.com (7.185.36.49) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
  15.1.2375.24; Wed, 24 Aug 2022 09:24:35 +0800
 Received: from huawei.com (10.175.103.91) by dggpemm500007.china.huawei.com
  (7.185.36.183) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.24; Wed, 24 Aug
- 2022 09:24:34 +0800
+ 2022 09:24:35 +0800
 From: Yang Yingliang <yangyingliang@huawei.com>
 To: <linux-kernel@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
  <alsa-devel@alsa-project.org>, <sound-open-firmware@alsa-project.org>
-Subject: [PATCH -next 1/2] ASoC: SOF: imx8ulp: change es8326_regmap_config to
- static
-Date: Wed, 24 Aug 2022 09:32:33 +0800
-Message-ID: <20220824013234.375738-1-yangyingliang@huawei.com>
+Subject: [PATCH -next 2/2] ASoC: SOF: imx8ulp: add missing of_node_put() in
+ imx8ulp_probe()
+Date: Wed, 24 Aug 2022 09:32:34 +0800
+Message-ID: <20220824013234.375738-2-yangyingliang@huawei.com>
 X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20220824013234.375738-1-yangyingliang@huawei.com>
+References: <20220824013234.375738-1-yangyingliang@huawei.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
@@ -74,26 +77,27 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-sof_imx8ulp_ops is only used in imx8ulp.c now, change it to static.
+After using 'res_node' returned by of_parse_phandle(), of_node_put()
+need be called to decrease the refcount.
 
+Fixes: fb5319af6ad8 ("ASoC: SOF: imx: Add i.MX8ULP HW support")
 Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
 ---
- sound/soc/sof/imx/imx8ulp.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/sof/imx/imx8ulp.c | 1 +
+ 1 file changed, 1 insertion(+)
 
 diff --git a/sound/soc/sof/imx/imx8ulp.c b/sound/soc/sof/imx/imx8ulp.c
-index 02b496165acc..afab7feab5fb 100644
+index afab7feab5fb..4a562c9856e9 100644
 --- a/sound/soc/sof/imx/imx8ulp.c
 +++ b/sound/soc/sof/imx/imx8ulp.c
-@@ -413,7 +413,7 @@ static int imx8ulp_dsp_set_power_state(struct snd_sof_dev *sdev,
- }
+@@ -234,6 +234,7 @@ static int imx8ulp_probe(struct snd_sof_dev *sdev)
+ 	}
  
- /* i.MX8 ops */
--struct snd_sof_dsp_ops sof_imx8ulp_ops = {
-+static struct snd_sof_dsp_ops sof_imx8ulp_ops = {
- 	/* probe and remove */
- 	.probe		= imx8ulp_probe,
- 	.remove		= imx8ulp_remove,
+ 	ret = of_address_to_resource(res_node, 0, &res);
++	of_node_put(res_node);
+ 	if (ret) {
+ 		dev_err(&pdev->dev, "failed to get reserved region address\n");
+ 		goto exit_pdev_unregister;
 -- 
 2.25.1
 
