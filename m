@@ -4,67 +4,73 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 220FBC32796
-	for <alsa-devel@archiver.kernel.org>; Wed, 24 Aug 2022 11:14:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id F2E1EC00140
+	for <alsa-devel@archiver.kernel.org>; Wed, 24 Aug 2022 11:14:29 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 49E3C1636;
-	Wed, 24 Aug 2022 13:13:17 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 49E3C1636
+	by alsa0.perex.cz (Postfix) with ESMTPS id 42E271683;
+	Wed, 24 Aug 2022 13:13:38 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 42E271683
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1661339647;
-	bh=ztMbvDS4X4BtPDHqKb6pkC5N4tWIWYmDZbAVJe7LfNw=;
+	s=default; t=1661339668;
+	bh=0jQSAV+e3DFpfOT8Uw+ldmXyihIQw4KJzWHoCN/nq/I=;
 	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=StlvD/u7u6VMKgUgAXyt815oOixBjJYMSJjk66whvkXLA1i/27cViBO3E1T8thw9B
-	 snF4Q/kiOJMHp0c3UzynRBjdQOM/g4lPWCbaHTUWAk5CxoIHKm8JzPXFzG/9q7+Lab
-	 XhllMuyGihHBz1P+nsFvTPdkNvVagM9+YFeKNYwI=
+	b=cQsE0sh14SP+pIhSFV7OHxZC5kKfv9Bph7eq8nU3/yn7Av15kM+Jz9cxbe0oF0pwY
+	 YHe2VS9cqUEPrhL/BiidGHDCR3q0bipfc6+Nw8f0wR1BC9x/Q8KmlYCwEhdimeedVp
+	 MlRBIyA2J61XzexG+XZzQBAkeN1L2xv5ZPYUCY20=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 92B11F8052F;
-	Wed, 24 Aug 2022 13:12:41 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 40163F8053A;
+	Wed, 24 Aug 2022 13:12:42 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 9DC04F804CC; Wed, 24 Aug 2022 13:12:35 +0200 (CEST)
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+ id 7C759F80533; Wed, 24 Aug 2022 13:12:36 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org
+ [IPv6:2604:1380:4641:c500::1])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 0BDF4F804CC
- for <alsa-devel@alsa-project.org>; Wed, 24 Aug 2022 13:12:27 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0BDF4F804CC
+ by alsa1.perex.cz (Postfix) with ESMTPS id 172F2F80525
+ for <alsa-devel@alsa-project.org>; Wed, 24 Aug 2022 13:12:32 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 172F2F80525
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="sm/Du/6O"
+ header.b="HemH+J2+"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by ams.source.kernel.org (Postfix) with ESMTPS id 380FDB8238E;
- Wed, 24 Aug 2022 11:12:27 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2C3EDC43140;
- Wed, 24 Aug 2022 11:12:24 +0000 (UTC)
+ by dfw.source.kernel.org (Postfix) with ESMTPS id 534286192C;
+ Wed, 24 Aug 2022 11:12:31 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 03FDCC433D7;
+ Wed, 24 Aug 2022 11:12:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1661339545;
- bh=ztMbvDS4X4BtPDHqKb6pkC5N4tWIWYmDZbAVJe7LfNw=;
+ s=k20201202; t=1661339551;
+ bh=0jQSAV+e3DFpfOT8Uw+ldmXyihIQw4KJzWHoCN/nq/I=;
  h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=sm/Du/6O3fsXUDDcVtgVLQDYE2Wak6eXSpRwhyK9OUoipTKaxGWLar3NX2ej1VY9m
- 7BJSeQSlzw7MVRNPkodk6JTQ9gMOn35gpOSMG2ZVbsy6t5KwPmvWhygJFEoecvcr9y
- hj7mS3yNLIWxU6fW/yfDhKFRZqBR6J9urWsnrdHGv8pC3EMD+dlholIlSkGSKFeegD
- lsjlNBY7t05Bq759daGH3gCAVPqZhmHXv1jgZMWm0J9GswPIJv3SqLJVVeknpSS+20
- 9grgEGb+1ffLqvlM1NruEgjq5gohyEFIPo+EapVJp/AMlnG7Ys8cASKknu/6IhaLh+
- 01XPrbHfQNlaQ==
+ b=HemH+J2+CHNXyNDfyzK+72NI/FKUv8yMkZzWvDC9kgRfsQu9d/8Kuuuiq/cH/hHkw
+ 3G5oaRIGJZ+iO6BYj8tyHXzMmuJF2OuzZHLcrHmJ4yJW5iQIYpXdpkncT4pijcfKDJ
+ wF60ZLLUCWVUAhp0zqjlr4fVW7Bh3gN0ZtJZIMQO+CumUt69dQpEoLf79JKq2lWWYO
+ +vIhABC9ACC9FaPvV2wf/QWdLAd78w16aDQgSipv+/n7Fg7P1yr5B97CE6/VG+6a/W
+ LtEEAfzpYy+hBY6OkBcCr+Ncfe2gqEkyIHAagiwwwvu8H6t6R34NlHTMm9t+j7Tz61
+ u5LUb3K63sRSQ==
 From: Mark Brown <broonie@kernel.org>
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- alsa-devel@alsa-project.org
-In-Reply-To: <20220823154027.762889-1-pierre-louis.bossart@linux.intel.com>
-References: <20220823154027.762889-1-pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH] ASoC: SOF: imx: imx8ulp: declare ops structure as static
-Message-Id: <166133954489.17904.12581598154434603889.b4-ty@kernel.org>
-Date: Wed, 24 Aug 2022 12:12:24 +0100
+To: Nathan Chancellor <nathan@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>,
+ Matt Flax <flatmax@flatmax.com>
+In-Reply-To: <20220823151939.2493697-1-nathan@kernel.org>
+References: <20220823151939.2493697-1-nathan@kernel.org>
+Subject: Re: [PATCH v2] ASoC: codes: src4xxx: Avoid clang
+ -Wsometimes-uninitialized in src4xxx_hw_params()
+Message-Id: <166133954873.17904.8458082648861330231.b4-ty@kernel.org>
+Date: Wed, 24 Aug 2022 12:12:28 +0100
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 X-Mailer: b4 0.10.0-dev-0c1df
-Cc: tiwai@suse.de
+Cc: alsa-devel@alsa-project.org, kernel test robot <lkp@intel.com>,
+ Tom Rix <trix@redhat.com>, llvm@lists.linux.dev,
+ Nick Desaulniers <ndesaulniers@google.com>, patches@lists.linux.dev,
+ linux-kernel@vger.kernel.org,
+ "Sudip Mukherjee \(Codethink\)" <sudipm.mukherjee@gmail.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -80,13 +86,42 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Tue, 23 Aug 2022 17:40:27 +0200, Pierre-Louis Bossart wrote:
-> Sparse warning:
+On Tue, 23 Aug 2022 08:19:40 -0700, Nathan Chancellor wrote:
+> Clang warns:
 > 
-> sound/soc/sof/imx/imx8ulp.c:416:24: error: symbol 'sof_imx8ulp_ops'
-> was not declared. Should it be static?
+>   sound/soc/codecs/src4xxx.c:280:3: error: variable 'd' is used uninitialized whenever switch default is taken [-Werror,-Wsometimes-uninitialized]
+>                   default:
+>                   ^~~~~~~
+>   sound/soc/codecs/src4xxx.c:298:59: note: uninitialized use occurs here
+>                   ret = regmap_write(src4xxx->regmap, SRC4XXX_RCV_PLL_11, d);
+>                                                                           ^
+>   sound/soc/codecs/src4xxx.c:223:20: note: initialize the variable 'd' to silence this warning
+>           int val, pj, jd, d;
+>                             ^
+>                             = 0
+>   sound/soc/codecs/src4xxx.c:280:3: error: variable 'jd' is used uninitialized whenever switch default is taken [-Werror,-Wsometimes-uninitialized]
+>                   default:
+>                   ^~~~~~~
+>   sound/soc/codecs/src4xxx.c:293:59: note: uninitialized use occurs here
+>                   ret = regmap_write(src4xxx->regmap, SRC4XXX_RCV_PLL_10, jd);
+>                                                                           ^~
+>   sound/soc/codecs/src4xxx.c:223:17: note: initialize the variable 'jd' to silence this warning
+>           int val, pj, jd, d;
+>                         ^
+>                           = 0
+>   sound/soc/codecs/src4xxx.c:280:3: error: variable 'pj' is used uninitialized whenever switch default is taken [-Werror,-Wsometimes-uninitialized]
+>                   default:
+>                   ^~~~~~~
+>   sound/soc/codecs/src4xxx.c:288:59: note: uninitialized use occurs here
+>                   ret = regmap_write(src4xxx->regmap, SRC4XXX_RCV_PLL_0F, pj);
+>                                                                           ^~
+>   sound/soc/codecs/src4xxx.c:223:13: note: initialize the variable 'pj' to silence this warning
+>           int val, pj, jd, d;
+>                     ^
+>                       = 0
+>   3 errors generated.
 > 
-> 
+> [...]
 
 Applied to
 
@@ -94,8 +129,8 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: SOF: imx: imx8ulp: declare ops structure as static
-      commit: 1332d2078a839b371b3d541c3653a800d12a763d
+[1/1] ASoC: codes: src4xxx: Avoid clang -Wsometimes-uninitialized in src4xxx_hw_params()
+      commit: 7d3ac70d82080f7a934402d66c5238e1d99be412
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
