@@ -4,83 +4,70 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 68503C00140
-	for <alsa-devel@archiver.kernel.org>; Wed, 24 Aug 2022 09:43:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 782E4C32796
+	for <alsa-devel@archiver.kernel.org>; Wed, 24 Aug 2022 11:13:16 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id AF5D4844;
-	Wed, 24 Aug 2022 11:42:30 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AF5D4844
+	by alsa0.perex.cz (Postfix) with ESMTPS id A91251635;
+	Wed, 24 Aug 2022 13:12:23 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A91251635
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1661334200;
-	bh=LnJ+sYaAQ4faiNAorfvoQeQL+OF2n2y3GNCvS/0qfBk=;
-	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1661339593;
+	bh=VOqnFDyiEIqBZ8w37kaq14ND+nysAVqM1VyiC0YUPno=;
+	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Q2yOCBS+eiVm8P0rP7utsMB9cym3c+IDLEQgpFSYthQeS1PvS+L4zeShxugxaa5LG
-	 uBvCt4kYLJuZKv3EOiIkxumjs3BPpDVCyYb+7omHwA/5zbl6AYh+8CyX8fzs2eQ0mi
-	 +Pg+TJSGMq1JsKKWyz4ToE18BIOpnD9tiFLbLLJY=
+	b=pCD4ebuasJIhX4dZQZ81O6UVaZW9ZTa0ckX9oWbcQYSELKXAhbfPaxmZxepKyjW+c
+	 v5QPGpF9t3EkX3h0KRQ0CMoF0nkSIVrutKPlCkFarkFrZwjMQqBnO/OjhSXlq1zPSv
+	 g1RVV75qP8LJpE4aWIw96vs9VIhQ1L3EoW20cWJU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 3D455F8014E;
-	Wed, 24 Aug 2022 11:42:30 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 4CBDEF800C8;
+	Wed, 24 Aug 2022 13:12:23 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id EB48BF804BD; Wed, 24 Aug 2022 11:42:28 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id 1AD64F804C1; Wed, 24 Aug 2022 13:12:22 +0200 (CEST)
+Received: from ams.source.kernel.org (ams.source.kernel.org
+ [IPv6:2604:1380:4601:e00::1])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 943A1F800C8
- for <alsa-devel@alsa-project.org>; Wed, 24 Aug 2022 11:42:26 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 943A1F800C8
+ by alsa1.perex.cz (Postfix) with ESMTPS id 770F4F800A7
+ for <alsa-devel@alsa-project.org>; Wed, 24 Aug 2022 13:12:19 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 770F4F800A7
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="c4eX8iwj"; 
- dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="2buHS59w"
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="OHGQoR9T"
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id D5A9C202C6;
- Wed, 24 Aug 2022 09:42:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1661334145; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=k9tdDx4tevBZYu34e0FF1R86AaQXWWnuGILrZlABPYM=;
- b=c4eX8iwj8ypAzqBbhKzQKGdr8e015OslV4uHMG9Pk6kAOZ8HsHjcDO4gLgIlty73r6DCnz
- fBUbMl7K0BK4+bYMD9Bi+d06O6ay/aN2zmPIQ8m8AbEZe+y2fqJHouR/WP9rYVFCx2xOAz
- yaEuyLHp8ibeGaID4Eun2ireQhVL9nU=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1661334145;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=k9tdDx4tevBZYu34e0FF1R86AaQXWWnuGILrZlABPYM=;
- b=2buHS59whnuzB1XJFK0qUyOj8cXsoShBx1M1LXR1oVtf8qiQDKT4BxJIMlgEA4UcFsg4KS
- CJRiHNg2pzdjmrBw==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id B210B13AC0;
- Wed, 24 Aug 2022 09:42:25 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id 52zsKoHyBWMkCAAAMHmgww
- (envelope-from <tiwai@suse.de>); Wed, 24 Aug 2022 09:42:25 +0000
-Date: Wed, 24 Aug 2022 11:42:25 +0200
-Message-ID: <87ilmirn9a.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Zheyu Ma <zheyuma97@gmail.com>
-Subject: Re: [PATCH] ALSA: control: Fix an out-of-bounds bug in
- get_ctl_id_hash()
-In-Reply-To: <20220824081654.3767739-1-zheyuma97@gmail.com>
-References: <20220824081654.3767739-1-zheyuma97@gmail.com>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
-Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org,
- Takashi Iwai <tiwai@suse.com>
+ by ams.source.kernel.org (Postfix) with ESMTPS id 8DD03B823A2;
+ Wed, 24 Aug 2022 11:12:17 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A5168C43140;
+ Wed, 24 Aug 2022 11:12:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1661339536;
+ bh=VOqnFDyiEIqBZ8w37kaq14ND+nysAVqM1VyiC0YUPno=;
+ h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+ b=OHGQoR9TTPNXQKj/m0hbr9KMZlWqQYL1TmXYmCGkJ7hXkjg/yTmKwLudpN0cWh639
+ wGCQTYZIFRH/j8O+mC6Ddl+/EbI2yYIxzsSr8dWaXoNtNoV1k0jgphHsDBZ/xKI8XV
+ iTjcn8x/285L74LFwRWP6XlgREAi1AkPenTAXk2UNaL5W6WqX0wah/B412t1cdy+Za
+ xEoLcodCop8ESOQWEtBlDf/Fbka+NDiFEDvhvcvWE9I2coHBN9jMxXqjiJIMEOJmQq
+ I52itM5+w0luE+J8rFSJXSfYHj09ssHEIEMgnn5fFWZNvtjz8QnY7kUxNrD1riNTOx
+ xpPRbPZlzeSgQ==
+From: Mark Brown <broonie@kernel.org>
+To: pierre-louis.bossart@linux.intel.com, lgirdwood@gmail.com,
+ Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
+In-Reply-To: <20220823124219.927-1-peter.ujfalusi@linux.intel.com>
+References: <20220823124219.927-1-peter.ujfalusi@linux.intel.com>
+Subject: Re: [PATCH] ASoC: SOF: ipc4-loader: Verify ext manifest magic number
+Message-Id: <166133953439.17904.16209764128409365284.b4-ty@kernel.org>
+Date: Wed, 24 Aug 2022 12:12:14 +0100
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+X-Mailer: b4 0.10.0-dev-0c1df
+Cc: alsa-devel@alsa-project.org, yung-chuan.liao@linux.intel.com,
+ ranjani.sridharan@linux.intel.com, kai.vehmanen@linux.intel.com,
+ rander.wang@intel.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -96,27 +83,40 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, 24 Aug 2022 10:16:54 +0200,
-Zheyu Ma wrote:
+On Tue, 23 Aug 2022 15:42:19 +0300, Peter Ujfalusi wrote:
+> Firmware image must start with an extended manifest. Add a check to make
+> sure that the image does contain it.
 > 
-> Since the user can control the arguments provided to the kernel by the
-> ioctl() system call, an out-of-bounds bug occurs when the 'id->name'
-> provided by the user does not end with '\0'.
+> The magic number (the first u32 of a firmware image if manifest is present)
+> for an IPC4 image must be 0x31454124 (ASCI "$AE1").
 > 
-> The following log can reveal it:
 > 
-> [    10.002313] BUG: KASAN: stack-out-of-bounds in snd_ctl_find_id+0x36c/0x3a0
-> [    10.002895] Read of size 1 at addr ffff888109f5fe28 by task snd/439
-> [    10.004934] Call Trace:
-> [    10.007140]  snd_ctl_find_id+0x36c/0x3a0
-> [    10.007489]  snd_ctl_ioctl+0x6cf/0x10e0
-> 
-> Fix this by checking the bound of 'id->name' in the loop.
-> 
-> Fixes: c27e1efb61c5 ("ALSA: control: Use xarray for faster lookups")
-> Signed-off-by: Zheyu Ma <zheyuma97@gmail.com>
+> [...]
 
-Thanks, applied now.
+Applied to
 
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
 
-Takashi
+Thanks!
+
+[1/1] ASoC: SOF: ipc4-loader: Verify ext manifest magic number
+      commit: a337c2012774d588fcab318c42edc2601d90e549
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
