@@ -4,71 +4,76 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6447EC28D13
-	for <alsa-devel@archiver.kernel.org>; Thu, 25 Aug 2022 15:30:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 878C7ECAA25
+	for <alsa-devel@archiver.kernel.org>; Thu, 25 Aug 2022 16:40:01 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 84BF31658;
-	Thu, 25 Aug 2022 17:29:17 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 84BF31658
+	by alsa0.perex.cz (Postfix) with ESMTPS id CCDCF15F9;
+	Thu, 25 Aug 2022 18:39:08 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CCDCF15F9
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1661441407;
-	bh=yKyrbvscUxBwrXmqG5oLczuAvPaScnAReCHkvRnGolI=;
-	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
+	s=default; t=1661445598;
+	bh=liGkXhlAm+VXFh8bREExCiBE1UTrJqRblYdv6sZW+iA=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=LhBklfApCA1E+Q6ULv32AVVFs7hMKgry8bqWaMVX6GQSYifs6I7SA1+JRu+BUeJQ/
-	 KX35PF1ADTgH6Hvhyjju23mR9acd24ZdGicdPW5JuOn5G/JxyyLdbw9R+szjbKXkHL
-	 zzePt/dVCLvoXqoAmB6qZW5ofktN/bo/fE8lW3ug=
+	b=O4MbEBB/NvRWVBwStZXc+qgqu8Vonu2dXUn8aomyU13vehdUWkt0KmXgdbqHxilo1
+	 HiFhjU026x0kETR1hVHdGSjG81A8jElDTIOH1uX1+nHrJ4wzlIbmf9yAkcy9JOD0x/
+	 oGHUhbpxXeJzLkusVV+rHxnndHtuFMyHDfHWbiBU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id BF58AF80537;
-	Thu, 25 Aug 2022 17:28:33 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 54908F8025A;
+	Thu, 25 Aug 2022 18:39:08 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id AD717F80506; Thu, 25 Aug 2022 17:28:30 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org
- [IPv6:2604:1380:4641:c500::1])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 48885F8014B
- for <alsa-devel@alsa-project.org>; Thu, 25 Aug 2022 17:28:24 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 48885F8014B
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="Cd1w5Anz"
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+ id 9F394F80271; Thu, 25 Aug 2022 18:39:06 +0200 (CEST)
+Received: from mga06.intel.com (mga06b.intel.com [134.134.136.31])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id B4DBD61A9C;
- Thu, 25 Aug 2022 15:28:22 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id F1217C43470;
- Thu, 25 Aug 2022 15:28:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1661441302;
- bh=yKyrbvscUxBwrXmqG5oLczuAvPaScnAReCHkvRnGolI=;
- h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=Cd1w5Anzs8A92wu9QLzQRLi2mmaTdtLxtA0SiMVUgcDjfqgy/OW1BTq629FuYNPWB
- AHwLSRCL3JIsaqE1USVAwSlQVho6W1tvURq098/xRi0XRLtc5/JKmsBRsh5tU1yuwj
- WoKDmxwOf3zes0JL14l1SVdA7XzM81jc2su/zEwzH3Nk1Iq+dYBiaRvNiLml0xM0+S
- DtwvO1ags0IrXU4vyfQBUsWpqn+NhiExewo62RLqXCSgj3s5YZyEaoEC9Y4Jo4CB+T
- +1U9VabK9CaRmOmZahgTfdBTv3GuDLehcLiv32HGP+QkWWPPX3tyjFsCszcv7gPYMB
- qLhvsO63w40Hw==
-From: Mark Brown <broonie@kernel.org>
-To: chunxu.li@mediatek.com, nfraprado@collabora.com,
- krzysztof.kozlowski+dt@linaro.org, robh+dt@kernel.org
-In-Reply-To: <20220824122319.23918-1-chunxu.li@mediatek.com>
-References: <20220824122319.23918-1-chunxu.li@mediatek.com>
-Subject: Re: [PATCH v2 0/2] ASoC: mediatek: dt-bindings: modify machine
-Message-Id: <166144129763.526663.3235477335040031977.b4-ty@kernel.org>
-Date: Thu, 25 Aug 2022 16:28:17 +0100
+ by alsa1.perex.cz (Postfix) with ESMTPS id 91B93F800C8
+ for <alsa-devel@alsa-project.org>; Thu, 25 Aug 2022 18:38:59 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 91B93F800C8
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
+ header.b="LZ7EyQHg"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+ d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+ t=1661445541; x=1692981541;
+ h=from:to:cc:subject:date:message-id:in-reply-to:
+ references:mime-version:content-transfer-encoding;
+ bh=liGkXhlAm+VXFh8bREExCiBE1UTrJqRblYdv6sZW+iA=;
+ b=LZ7EyQHgsC2YxJ/ozSOV3rQfZyT8Q+bXj5qZsPxb93yBaUGIMlscyFMS
+ hToduK0ryYHHMwafNe/FmcbEYR3UC6BhU06AvvCXb/VfdOlmo33WK6BKa
+ ifreGRJBBkLMERt0QiJ9IuVeZTe1npeBJUFVkQwlhsKid+6s4TmInQmef
+ j5Tw9FuE1475+Z3ymdsNrm20wqmnHpEry5LYGytyr5n7/cDv6E2zWhGP3
+ kxZmhkqTH2K9cgm2NtLAi1vwWlBLA37YiAkMNbGTIzGB7ObUbWmfewTGJ
+ Spc6ju+v7oc6MhFRfgfAEgg2nUNPINw5T/+mgvaTo2nLCD5kqOAfuAzjZ A==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10450"; a="356013033"
+X-IronPort-AV: E=Sophos;i="5.93,263,1654585200"; d="scan'208";a="356013033"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+ by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 25 Aug 2022 09:38:55 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.93,263,1654585200"; d="scan'208";a="671070433"
+Received: from crojewsk-ctrl.igk.intel.com ([10.102.9.28])
+ by fmsmga008.fm.intel.com with ESMTP; 25 Aug 2022 09:38:51 -0700
+From: Cezary Rojewski <cezary.rojewski@intel.com>
+To: alsa-devel@alsa-project.org,
+	broonie@kernel.org
+Subject: [PATCH v2 1/2] libfs: Introduce tokenize_user_input()
+Date: Thu, 25 Aug 2022 18:48:32 +0200
+Message-Id: <20220825164833.3923454-2-cezary.rojewski@intel.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20220825164833.3923454-1-cezary.rojewski@intel.com>
+References: <20220825164833.3923454-1-cezary.rojewski@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
- lgirdwood@gmail.com, jiaxin.yu@mediatek.com, linux-kernel@vger.kernel.org,
- project_global_chrome_upstream_group@mediatek.com,
- linux-mediatek@lists.infradead.org, matthias.bgg@gmail.com,
- linux-arm-kernel@lists.infradead.org
+Cc: Cezary Rojewski <cezary.rojewski@intel.com>, kai.vehmanen@linux.intel.com,
+ yung-chuan.liao@linux.intel.com, tiwai@suse.com,
+ pierre-louis.bossart@linux.intel.com, lgirdwood@gmail.com, hdegoede@redhat.com,
+ andy.shevchenko@gmail.com, ranjani.sridharan@linux.intel.com,
+ amadeuszx.slawinski@linux.intel.com, linux-fsdevel@vger.kernel.org,
+ peter.ujfalusi@linux.intel.com, linux-kernel@vger.kernel.org,
+ viro@zeniv.linux.org.uk
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -84,46 +89,86 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, 24 Aug 2022 20:23:17 +0800, Chunxu Li wrote:
-> From: "chunxu.li" <chunxu.li@mediatek.com>
-> 
-> Changes since V1:
->   - remove unnecessary quotes
-> 
-> Add SOF related field.
-> 1. Add a property "mediatek,adsp", Only when adsp phandle could be retrieved,
->  from DTS, the SOF related part of machine driver is executed.
-> 2. Add a property "mediatek,dai-link" to support dai-links could be specified
->  from DTS
-> 
-> [...]
+Add new helper function to allow for splitting specified user string
+into a sequence of integers. Internally it makes use of get_options() so
+the returned sequence contains the integers extracted plus an additional
+element that begins the sequence and specifies the integers count.
 
-Applied to
+Suggested-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+Signed-off-by: Cezary Rojewski <cezary.rojewski@intel.com>
+---
+ fs/libfs.c         | 45 +++++++++++++++++++++++++++++++++++++++++++++
+ include/linux/fs.h |  1 +
+ 2 files changed, 46 insertions(+)
 
-   broonie/sound.git for-next
+diff --git a/fs/libfs.c b/fs/libfs.c
+index 31b0ddf01c31..078b23e26741 100644
+--- a/fs/libfs.c
++++ b/fs/libfs.c
+@@ -809,6 +809,51 @@ ssize_t simple_write_to_buffer(void *to, size_t available, loff_t *ppos,
+ }
+ EXPORT_SYMBOL(simple_write_to_buffer);
+ 
++/**
++ * tokenize_user_input - Split string into a sequence of integers
++ * @from:	The user space buffer to read from
++ * @ppos:	The current position in the buffer
++ * @count:	The maximum number of bytes to read
++ * @tkns:	Returned pointer to sequence of integers
++ *
++ * On success @tkns is allocated and initialized with a sequence of
++ * integers extracted from the @from plus an additional element that
++ * begins the sequence and specifies the integers count.
++ *
++ * Caller takes responsibility for freeing @tkns when it is no longer
++ * needed.
++ */
++int tokenize_user_input(const char __user *from, size_t count, int **tkns)
++{
++	int *ints, nints;
++	char *buf;
++	int ret = 0;
++
++	buf = memdup_user_nul(from, count);
++	if (IS_ERR(buf))
++		return PTR_ERR(buf);
++
++	get_options(buf, 0, &nints);
++	if (!nints) {
++		ret = -ENOENT;
++		goto free_buf;
++	}
++
++	ints = kcalloc(nints + 1, sizeof(*ints), GFP_KERNEL);
++	if (!ints) {
++		ret = -ENOMEM;
++		goto free_buf;
++	}
++
++	get_options(buf, nints + 1, ints);
++	*tkns = ints;
++
++free_buf:
++	kfree(buf);
++	return ret;
++}
++EXPORT_SYMBOL(tokenize_user_input);
++
+ /**
+  * memory_read_from_buffer - copy data from the buffer
+  * @to: the kernel space buffer to read to
+diff --git a/include/linux/fs.h b/include/linux/fs.h
+index 9eced4cc286e..ab04cc7f9efa 100644
+--- a/include/linux/fs.h
++++ b/include/linux/fs.h
+@@ -3345,6 +3345,7 @@ extern ssize_t simple_read_from_buffer(void __user *to, size_t count,
+ 			loff_t *ppos, const void *from, size_t available);
+ extern ssize_t simple_write_to_buffer(void *to, size_t available, loff_t *ppos,
+ 		const void __user *from, size_t count);
++extern int tokenize_user_input(const char __user *from, size_t count, int **tkns);
+ 
+ extern int __generic_file_fsync(struct file *, loff_t, loff_t, int);
+ extern int generic_file_fsync(struct file *, loff_t, loff_t, int);
+-- 
+2.25.1
 
-Thanks!
-
-[1/2] ASoC: mediatek: dt-bindings: modify machine bindings for SOF
-      commit: 1173107d7c129ff87224814fd38fce5db023aaa0
-[2/2] ASoC: mediatek: dt-bindings: modify machine bindings for SOF
-      commit: 1173107d7c129ff87224814fd38fce5db023aaa0
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
