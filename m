@@ -4,83 +4,59 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7C42EC28D13
-	for <alsa-devel@archiver.kernel.org>; Thu, 25 Aug 2022 12:24:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9CE1AC04AA5
+	for <alsa-devel@archiver.kernel.org>; Thu, 25 Aug 2022 12:28:38 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C3D71851;
-	Thu, 25 Aug 2022 14:23:52 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C3D71851
+	by alsa0.perex.cz (Postfix) with ESMTPS id EBB2F847;
+	Thu, 25 Aug 2022 14:27:46 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EBB2F847
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1661430282;
-	bh=stvFanKyLDybGaL4h+bwjsgr+UvZp8o56U6CYvWA4N0=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=WfXw8xY/k6tEULuWlPmAJFvSRvHTIepTmBClIHuBCFvJLRKVsHVDHWNkw2Qj4BisB
-	 UN6IbkiGnXrWcrhnz6SESgbRTrnfuTZuBCUHB8P2K4v1GtZEP14Wbjh11Xpw+7QQ7d
-	 iGur39DUyEHf5ZR9JdNALYjMClYWBvPglHkOu2cs=
+	s=default; t=1661430517;
+	bh=pB8cmuV+Frw8S6iUyO1Kh2pxm4Mg1M2XOgAxrIyxCUs=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=ZHtXf4FstSl1dkDlAzZWNGxk4gxPRzVHPV6MtIZnk3BEoyQwXsP5N4jnXOuHG4pvS
+	 CQE2UwVOBtRAOOzLP2ExbydJYMKawUFmqmoUhJ64tU29YShyhoijXmgGDIXuil+JlO
+	 Dviv3ITlI9IWEIgCZ+/s+C/TRoYfCGwWVZT+0Klk=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 17656F80527;
-	Thu, 25 Aug 2022 14:23:01 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 7D088F80245;
+	Thu, 25 Aug 2022 14:27:46 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id DBC38F8025A; Thu, 25 Aug 2022 14:22:54 +0200 (CEST)
-Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
- [67.231.149.25])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id C70EBF8025A; Thu, 25 Aug 2022 14:27:44 +0200 (CEST)
+Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 55E81F80271
- for <alsa-devel@alsa-project.org>; Thu, 25 Aug 2022 14:22:46 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 55E81F80271
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com
- header.b="hZdnWo58"
-Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
- by mx0a-001ae601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 27P5nj9d003635;
- Thu, 25 Aug 2022 07:22:45 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
- h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding : content-type; s=PODMain02222019;
- bh=F89FFReRi1zqDj//baBjB5HIEbobACoV3vAIIeNB3ec=;
- b=hZdnWo58dExaHs8WhdAWFx8hNyyvGy8ZRmqBNWX6Ja6iGhDzHPZimIZuHoAjfcG56gZo
- 5QzsBl2t8x13BruiFYft9FQHXkkba1PuA4HRJ2Q6qKKj64OiU9TVz0WoYWkQctBOLsrn
- f3S/2mLBMGltzUVcXxRTDZ/B6pHQe333GCg+lrXPLxdLOI1t3xOm/txUHEm1zeb+MEs2
- NGc7D8dCMNhEEZfqBGo1AigbJKKG+qPu+ywB+GdvzHV8WTiHgPJM+xXSewNMzOhOUurB
- P5LxKySA55kvgH31fvT6qsgE4UGL6wTYc6phZMdXN+Fok0OkXcnNp1dx+maB6RNtHgAV gw== 
-Received: from ediex01.ad.cirrus.com ([84.19.233.68])
- by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3j4dgmbu3r-2
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
- Thu, 25 Aug 2022 07:22:44 -0500
-Received: from ediex01.ad.cirrus.com (198.61.84.80) by ediex01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.9; Thu, 25 Aug
- 2022 07:22:41 -0500
-Received: from ediswmail.ad.cirrus.com (198.61.86.93) by ediex01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server id 15.2.1118.9 via Frontend
- Transport; Thu, 25 Aug 2022 07:22:41 -0500
-Received: from edi-sw-dsktp-006.ad.cirrus.com (edi-sw-dsktp-006.ad.cirrus.com
- [198.90.251.95])
- by ediswmail.ad.cirrus.com (Postfix) with ESMTP id AAA18B16;
- Thu, 25 Aug 2022 12:22:41 +0000 (UTC)
-From: Richard Fitzgerald <rf@opensource.cirrus.com>
-To: <vkoul@kernel.org>, <yung-chuan.liao@linux.intel.com>,
- <pierre-louis.bossart@linux.intel.com>, <sanyog.r.kale@intel.com>
-Subject: [PATCH 2/3] soundwire: bus: Don't lose unattach notifications
-Date: Thu, 25 Aug 2022 13:22:40 +0100
-Message-ID: <20220825122241.273090-3-rf@opensource.cirrus.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20220825122241.273090-1-rf@opensource.cirrus.com>
-References: <20220825122241.273090-1-rf@opensource.cirrus.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 062C5F800BD
+ for <alsa-devel@alsa-project.org>; Thu, 25 Aug 2022 14:27:37 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 062C5F800BD
+Received: from dggpemm500024.china.huawei.com (unknown [172.30.72.56])
+ by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4MD2FX30tTz1N7Rv;
+ Thu, 25 Aug 2022 20:24:00 +0800 (CST)
+Received: from dggpemm500007.china.huawei.com (7.185.36.183) by
+ dggpemm500024.china.huawei.com (7.185.36.203) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.24; Thu, 25 Aug 2022 20:27:31 +0800
+Received: from huawei.com (10.175.103.91) by dggpemm500007.china.huawei.com
+ (7.185.36.183) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.24; Thu, 25 Aug
+ 2022 20:27:31 +0800
+From: Yang Yingliang <yangyingliang@huawei.com>
+To: <linux-kernel@vger.kernel.org>, <alsa-devel@alsa-project.org>
+Subject: [PATCH -next] ASoC: sigmadsp: switch to use kmemdup_nul() helper
+Date: Thu, 25 Aug 2022 20:35:25 +0800
+Message-ID: <20220825123525.1845695-1-yangyingliang@huawei.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: R4M0MCMXsa_dW2vMEZQ1Wk1YwQqcZd6P
-X-Proofpoint-GUID: R4M0MCMXsa_dW2vMEZQ1Wk1YwQqcZd6P
-X-Proofpoint-Spam-Reason: safe
-Cc: patches@opensource.cirrus.com, alsa-devel@alsa-project.org,
- Richard Fitzgerald <rf@opensource.cirrus.com>, linux-kernel@vger.kernel.org
+X-Originating-IP: [10.175.103.91]
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ dggpemm500007.china.huawei.com (7.185.36.183)
+X-CFilter-Loop: Reflected
+Cc: broonie@kernel.org, lars@metafoo.de, lgirdwood@gmail.com,
+ nuno.sa@analog.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -96,50 +72,33 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Ensure that if sdw_handle_slave_status() sees a peripheral
-has dropped off the bus it reports it to the client driver.
+Use kmemdup_nul() helper instead of open-coding to
+simplify the code.
 
-If there are any devices reporting on address 0 it bails out
-after programming the device IDs. So it never reaches the second
-loop that calls sdw_update_slave_status().
-
-If the missing device is one that is now showing as unenumerated
-it has been given a device ID so will report as attached next
-time sdw_handle_slave_status() runs.
-
-With the previous code the client driver would only see another
-ATTACHED notification because the UNATTACHED state was lost when
-sdw_handle_slave_status() bailed out after programming the
-device ID.
-
-This shows up most when the peripheral has to be reset after
-downloading updated firmware and there are multiple of these
-peripherals on the bus. They will all return to unenumerated state
-after the reset, and then there is a mix of unattached, attached
-and unenumerated PING states from the peripherals, as each is reset
-and they reboot.
-
-Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
+Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
 ---
- drivers/soundwire/bus.c | 5 +++++
- 1 file changed, 5 insertions(+)
+ sound/soc/codecs/sigmadsp.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
-diff --git a/drivers/soundwire/bus.c b/drivers/soundwire/bus.c
-index 704f75c0bae2..bb8ce26c68b3 100644
---- a/drivers/soundwire/bus.c
-+++ b/drivers/soundwire/bus.c
-@@ -1756,6 +1756,11 @@ int sdw_handle_slave_status(struct sdw_bus *bus,
- 			dev_warn(&slave->dev, "Slave %d state check1: UNATTACHED, status was %d\n",
- 				 i, slave->status);
- 			sdw_modify_slave_status(slave, SDW_SLAVE_UNATTACHED);
-+
-+			/* Ensure driver knows that peripheral unattached */
-+			ret = sdw_update_slave_status(slave, status[i]);
-+			if (ret < 0)
-+				dev_warn(&slave->dev, "Update Slave status failed:%d\n", ret);
- 		}
- 	}
+diff --git a/sound/soc/codecs/sigmadsp.c b/sound/soc/codecs/sigmadsp.c
+index b992216aee55..3047a6fbb380 100644
+--- a/sound/soc/codecs/sigmadsp.c
++++ b/sound/soc/codecs/sigmadsp.c
+@@ -227,13 +227,11 @@ static int sigma_fw_load_control(struct sigmadsp *sigmadsp,
+ 	if (!ctrl)
+ 		return -ENOMEM;
  
+-	name = kzalloc(name_len + 1, GFP_KERNEL);
++	name = kmemdup_nul(ctrl_chunk->name, name_len, GFP_KERNEL);
+ 	if (!name) {
+ 		ret = -ENOMEM;
+ 		goto err_free_ctrl;
+ 	}
+-	memcpy(name, ctrl_chunk->name, name_len);
+-	name[name_len] = '\0';
+ 	ctrl->name = name;
+ 
+ 	/*
 -- 
-2.30.2
+2.25.1
 
