@@ -4,82 +4,84 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 84EFAC28D13
-	for <alsa-devel@archiver.kernel.org>; Thu, 25 Aug 2022 10:18:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7799BC28D13
+	for <alsa-devel@archiver.kernel.org>; Thu, 25 Aug 2022 11:00:26 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D543B210;
-	Thu, 25 Aug 2022 12:17:32 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D543B210
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0172A210;
+	Thu, 25 Aug 2022 12:59:33 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0172A210
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1661422702;
-	bh=12fTG4cZBvXMtI67O3L36sTdb+JYC6vInBRPzsI4gKQ=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=lqNs/vI1bw3ZzFUnQLbSW3cAyy7Hq91/ek2ireMMqxHqK1YYJI2Hi11DT4WB6AZE3
-	 ByWcqYJ7x1W5ANB1LMYlIfKVod0WnNlV+6uKC2P6ZgDMejtNKF2OdMSO+jomwRNOzC
-	 FrIwOneDyhzUMc0FvtzmmMNcCEVUJ0nIXNDwrdEg=
+	s=default; t=1661425224;
+	bh=I8P8iGuwf/qW2+fcMAUjed0VH7QB5Vnco3rPkLS1FCQ=;
+	h=Date:From:To:To:Subject:In-Reply-To:References:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=crVP6ATtL7X1mMIfNG2lmth7U9sR3RNFTHLGJm/A4wBDnUOL6ts7FUcYBjjwBcNof
+	 CE1xdFKdASoG2R/6zMae0jqGdHc0CJjhdxDIApM2vTmjeNCtZwqpIxsXtcccWr8UMe
+	 W8Sz1VeLFPiZBRCHgK7xSKCxP6HfH+XO4h9RV1q0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 70FE8F80245;
-	Thu, 25 Aug 2022 12:17:32 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 7FF5FF80245;
+	Thu, 25 Aug 2022 12:59:33 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 88C5BF8025A; Thu, 25 Aug 2022 12:17:30 +0200 (CEST)
-Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com
- [IPv6:2a00:1450:4864:20::530])
+ id 5DCDFF800C8; Thu, 25 Aug 2022 12:59:32 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 533EFF800C8
- for <alsa-devel@alsa-project.org>; Thu, 25 Aug 2022 12:17:23 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 533EFF800C8
+ by alsa1.perex.cz (Postfix) with ESMTPS id 0D954F800C8
+ for <alsa-devel@alsa-project.org>; Thu, 25 Aug 2022 12:59:25 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0D954F800C8
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=amarulasolutions.com
- header.i=@amarulasolutions.com header.b="MkA5Ertc"
-Received: by mail-ed1-x530.google.com with SMTP id b16so25479643edd.4
- for <alsa-devel@alsa-project.org>; Thu, 25 Aug 2022 03:17:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=amarulasolutions.com; s=google;
- h=content-transfer-encoding:mime-version:message-id:date:subject:cc
- :to:from:from:to:cc;
- bh=GRYnjCoOv7fVbYVCxvtIrJ8TN8JZyVqLZt43NaKxUoM=;
- b=MkA5Ertcl0rV0VTl6MFoxunlFKjgNYw4ii9oZZFjiQ9nbVkpNJ846hByN55W3qH+y2
- xmi3SY8zqPgJwRleEDWX3UqzBWw4xec0nu5OmJh18SXuDOsymlLxry5XVR19uu/5R3V5
- GZAcmhkfiszfhazV5kOLPzNPugYybWoy1zF1M=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=content-transfer-encoding:mime-version:message-id:date:subject:cc
- :to:from:x-gm-message-state:from:to:cc;
- bh=GRYnjCoOv7fVbYVCxvtIrJ8TN8JZyVqLZt43NaKxUoM=;
- b=GFQMzadYCOqrtg3qQTolT34bMg4fai1KRySq5Mb2AmlSIIA2k9XZzT7+/aQypV9h5n
- 5nL9tLQ/5QQPRHqa6iiQwCK1XmVuYc0pjH9YVR9o4pA88jxfrmYFLqvWw26LPEy9yiuv
- MY0bcG8NRF/DkU5HYDzZsq1KcOCzMGLkqPCVO6flGSGS/Co7AsOGZJ3PPzfygCwQzLFB
- p7omuFWLjxJONL7ZnU/iTS6ZoZYzljJgbNhgYZGG+56kZdTjrMIBZWJ+/5Qht7c65J0m
- 9p7b4fCI32rC3ePCs4J2FwQT0rtatQDvAKvmsLdf6JGomT1MQdfGe/+t4oz1y+6RBg1o
- gS7Q==
-X-Gm-Message-State: ACgBeo39kInCaqpD0L3BUkykoEITxp9p45o+7jV4xZF4pZybaakf4s3R
- kxCNjbSP9qax/utt5NhqPSlTDw==
-X-Google-Smtp-Source: AA6agR4VZr+45kHmpz4/CpzPzba03L/xyCKRO3rzRdai4aPfScrrrb8n6XRGo0La5yDq6ZtGPbJbyQ==
-X-Received: by 2002:a05:6402:1d4d:b0:447:67b:2631 with SMTP id
- dz13-20020a0564021d4d00b00447067b2631mr2519353edb.243.1661422642447; 
- Thu, 25 Aug 2022 03:17:22 -0700 (PDT)
-Received: from tom-ThinkPad-T14s-Gen-2i.station
- (net-188-217-57-252.cust.vodafonedsl.it. [188.217.57.252])
- by smtp.gmail.com with ESMTPSA id
- i12-20020a170906698c00b0073c23616cb1sm2320314ejr.12.2022.08.25.03.17.21
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Thu, 25 Aug 2022 03:17:22 -0700 (PDT)
-From: Tommaso Merciai <tommaso.merciai@amarulasolutions.com>
-To: tommaso.merciai@amarulasolutions.com
-Subject: [PATCH] ASoC: max98088: add support for noise gate reg
-Date: Thu, 25 Aug 2022 12:17:13 +0200
-Message-Id: <20220825101714.81580-1-tommaso.merciai@amarulasolutions.com>
-X-Mailer: git-send-email 2.25.1
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: alsa-devel@alsa-project.org, Stephen Kitt <steve@sk2.org>,
- linuxfancy@googlegroups.com, Takashi Iwai <tiwai@suse.com>,
- Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
- linux-amarula@amarulasolutions.com, linux-kernel@vger.kernel.org
+ dkim=fail reason="signature verification failed" (1024-bit key)
+ header.d=suse.de header.i=@suse.de header.b="YY+kgIjz"; 
+ dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
+ header.b="SmcUsnCs"
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 43F71203C3;
+ Thu, 25 Aug 2022 10:58:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1661425137; h=from:from:reply-to:date:date:message-id:message-id:to:to:to:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=DTFmvMyvl2axqPVRA130ZAksfN/kT649Q4+LyakY65c=;
+ b=YY+kgIjzV3BFmfmLWBEQHV4J1LNn1cRdIxj383dQNrbrQdyYglZw5JuXERVQkBjXiJGT5z
+ WhbtO9eidPzXR9hYO++QbbVwm8Ed6lvPmxMNugcIKHh6hhLvMa7aJ0XBgmCsKs2LQ2X8E1
+ N2RaSEdayhrJW+MamT9UcsfegeUKifM=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1661425137;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:to:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=DTFmvMyvl2axqPVRA130ZAksfN/kT649Q4+LyakY65c=;
+ b=SmcUsnCs/iWxsbtc9kN3kN+BeGXgx5W+wdTTSQOm5bldOj1rsMhVRWI0zz15lZLFP667MJ
+ QDDa326+0fE8QICQ==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 0D7F013517;
+ Thu, 25 Aug 2022 10:58:57 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+ by imap2.suse-dmz.suse.de with ESMTPSA id LBedAfFVB2O0bQAAMHmgww
+ (envelope-from <tiwai@suse.de>); Thu, 25 Aug 2022 10:58:57 +0000
+Date: Thu, 25 Aug 2022 12:58:56 +0200
+Message-ID: <874jy0mvwv.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Lennert Van Alboom <lennert@vanalboom.org>
+To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
+ "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: USB DAC broken since commit
+ bf6313a0ff766925462e97b4e733d5952de02367 (5.10.0-rc5)
+In-Reply-To: <T3VPXtCc4uFws9Gfh2RjX6OdwM1RqfC6VqQr--_LMDyB2x5N3p9_q6AtPna17IXhHwBtcJVdXuS80ZZSCMjh_BafIbnzJPhbrkmhmWS6DlI=@vanalboom.org>
+References: <T3VPXtCc4uFws9Gfh2RjX6OdwM1RqfC6VqQr--_LMDyB2x5N3p9_q6AtPna17IXhHwBtcJVdXuS80ZZSCMjh_BafIbnzJPhbrkmhmWS6DlI=@vanalboom.org>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -95,30 +97,138 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Add support for Noise Gate Threshold reg (ANTH reg 0x40 bit 4 to 7)
+On Thu, 25 Aug 2022 12:45:27 +0200,
+Lennert Van Alboom wrote:
+> 
+> Hi,
+> 
+> 
+> My USB DAC fails to work on recent kernels (anything past 5.10). The device is the following:
+> 
+> Bus 003 Device 005: ID 2522:0007 LH Labs Geek Out HD Audio 1V5
+> 
+> 
+> 
+> Syslog shows error messages which have changed over the different kernel versions - this is the output from debian's 5.17.0-2-amd64:
+> 
+> [66136.185642] usb 3-6: uac_clock_source_is_valid(): cannot get clock validity for id 41
+> [66136.185643] usb 3-6: clock source 41 is not valid, cannot use
+> [66136.185956] usb 3-6: 1:0: usb_set_interface failed (-71)
+> [66136.186183] usb 3-6: 1:0: usb_set_interface failed (-71)
+> 
+> 
+> >From the first point in git where it fails (5.10.0-rc5-00025-gbf6313a0ff76):
+> 
+> Aug 25 12:39:37 Nesbitt kernel: [ 5295.633079] usb 3-3: new high-speed USB device number 8 using xhci_hcd
+> Aug 25 12:39:37 Nesbitt kernel: [ 5295.782144] usb 3-3: New USB device found, idVendor=2522, idProduct=0007, bcdDevice=15.02
+> Aug 25 12:39:37 Nesbitt kernel: [ 5295.782148] usb 3-3: New USB device strings: Mfr=1, Product=3, SerialNumber=0
+> Aug 25 12:39:37 Nesbitt kernel: [ 5295.782150] usb 3-3: Product: Geek Out HD Audio 1V5
+> Aug 25 12:39:37 Nesbitt kernel: [ 5295.782151] usb 3-3: Manufacturer: LH Labs
+> Aug 25 12:39:37 Nesbitt kernel: [ 5296.162338] usb 3-3: 1:2 : unsupported format bits 0x100000000
+> Aug 25 12:39:38 Nesbitt mtp-probe: checking bus 3, device 8: "/sys/devices/pci0000:00/0000:00:14.0/usb3/3-3"
+> Aug 25 12:39:38 Nesbitt mtp-probe: bus: 3, device: 8 was not an MTP device
+> Aug 25 12:39:38 Nesbitt systemd-udevd[10311]: controlC1: Process '/usr/sbin/alsactl -E HOME=/run/alsa -E XDG_RUNTIME_DIR=/run/alsa/runtime restore 1' failed with exit code 99.
+> Aug 25 12:39:38 Nesbitt mtp-probe: checking bus 3, device 8: "/sys/devices/pci0000:00/0000:00:14.0/usb3/3-3"
+> Aug 25 12:39:38 Nesbitt mtp-probe: bus: 3, device: 8 was not an MTP device
+> Aug 25 12:39:43 Nesbitt kernel: [ 5301.921810] usb 3-3: 1:1: usb_set_interface failed (-110)
+> Aug 25 12:39:43 Nesbitt kernel: [ 5301.922047] usb 3-3: 1:0: usb_set_interface failed (-71)
+> Aug 25 12:39:43 Nesbitt kernel: [ 5301.922354] usb 3-3: 1:0: usb_set_interface failed (-71)
+> Aug 25 12:39:43 Nesbitt kernel: [ 5301.922915] usb 3-3: 1:0: usb_set_interface failed (-71)
+> 
+> 
+> I did a git bisect (from kernel source, not on debian-specific) and the offending commit has been found:
+> 
+> # git bisect bad
+> bf6313a0ff766925462e97b4e733d5952de02367 is the first bad commit
+> commit bf6313a0ff766925462e97b4e733d5952de02367
+> Author: Takashi Iwai <tiwai@suse.de>
+> Date:   Mon Nov 23 09:53:31 2020 +0100
+> 
+>     ALSA: usb-audio: Refactor endpoint management
+>     
+> 
+>     This is an intensive surgery for the endpoint and stream management
+>     for achieving more robust and clean code.
+>     
+> 
+>     The goals of this patch are:
+>     - More clear endpoint resource changes
+>     - The interface altsetting control in a single place
+>     Below are brief description of the whole changes.
+>     
+> 
+>     First off, most of the endpoint operations are moved into endpoint.c,
+>     so that the snd_usb_endpoint object is only referred in other places.
+>     The endpoint object is acquired and released via the new functions
+>     snd_usb_endpoint_open() and snd_usb_endpoint_close() that are called
+>     at PCM hw_params and hw_free callbacks, respectively.  Those are
+>     ref-counted and EPs can manage the multiple opens.
+>     
+> 
+>     The open callback receives the audioformat and hw_params arguments,
+>     and those are used for initializing the EP parameters; especially the
+>     endpoint, interface and altset numbers are read from there, as well as
+>     the PCM parameters like the format, rate and channels.  Those are
+>     stored in snd_usb_endpoint object.  If it's the secondary open, the
+>     function checks whether the given parameters are compatible with the
+>     already opened EP setup, too.
+>     
+> 
+>     The coupling with a sync EP (including an implicit feedback sync) is
+>     done by the sole snd_usb_endpoint_set_sync() call.
+>     
+> 
+>     The configuration of each endpoint is done in a single shot via
+>     snd_usb_endpoint_configure() call.  This is the place where most of
+>     PCM configurations are done.  A few flags and special handling in the
+>     snd_usb_substream are dropped along with this change.
+>     
+> 
+>     A significant difference wrt the configuration from the previous code
+>     is the order of USB host interface setups.  Now the interface is
+>     always disabled at beginning and (re-)enabled at the last step of
+>     snd_usb_endpoint_configure(), in order to be compliant with the
+>     standard UAC2/3.  For UAC1, the interface is set before the parameter
+>     setups since there seem devices that require it (e.g. Yamaha THR10),
+>     just like how it was done in the previous driver code.
+>     
+> 
+>     The start/stop are almost same as before, also single-shots.  The URB
+>     callbacks need to be set via snd_usb_endpoint_set_callback() like the
+>     previous code at the trigger phase, too.
+>     
+> 
+>     Finally, the flag for the re-setup is set at the device suspend
+>     through the full EP list, instead of PCM trigger.  This catches the
+>     overlooked cases where the PCM hasn't been running yet but the device
+>     needs the full setup after resume.
+>     
+> 
+>     Tested-by: Keith Milner <kamilner@superlative.org>
+>     Tested-by: Dylan Robinson <dylan_robinson@motu.com>
+>     Link: https://lore.kernel.org/r/20201123085347.19667-26-tiwai@suse.de
+>     Signed-off-by: Takashi Iwai <tiwai@suse.de>
+> 
+>  sound/usb/card.c     |   8 +-
+>  sound/usb/card.h     |  11 +-
+>  sound/usb/clock.c    |  13 +-
+>  sound/usb/endpoint.c | 662 ++++++++++++++++++++++++++-------------------------
+>  sound/usb/endpoint.h |  40 ++--
+>  sound/usb/pcm.c      | 616 +++++++++++++++++++----------------------------
+>  6 files changed, 616 insertions(+), 734 deletions(-)
+> 
+> 
+> That's a lot of code though. I'd like to be able to use my DAC on kernels newer than 5.10 so any hints on how to debug and fix this would be greatly appreciated. After doing this 17-point bisect I absolutely don't mind building a few more to fix this.
+> 
+> For info, the debian bug report: https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=1011196 
+> 
+> For info, a related report from Arch linux for the same device vendor: https://bugs.archlinux.org/task/70636
 
-References:
- - https://datasheets.maximintegrated.com/en/ds/MAX98089.pdf, p75
+There are lots of workarounds for the buggy USB audio firmware, and
+the latest kernel allows to enable the quirks via quirk_flags module
+option of snd-usb-audio driver.  See
+Documentation/sound/alsa-configuration.rst.
+You can try the bit 16 at first, for example.
 
-Signed-off-by: Tommaso Merciai <tommaso.merciai@amarulasolutions.com>
----
- sound/soc/codecs/max98088.c | 3 +++
- 1 file changed, 3 insertions(+)
 
-diff --git a/sound/soc/codecs/max98088.c b/sound/soc/codecs/max98088.c
-index 5ef2e1279ee7..76ef71ab9c83 100644
---- a/sound/soc/codecs/max98088.c
-+++ b/sound/soc/codecs/max98088.c
-@@ -474,6 +474,9 @@ static const struct snd_kcontrol_new max98088_snd_controls[] = {
-                        max98088_mic2pre_get, max98088_mic2pre_set,
-                        max98088_micboost_tlv),
- 
-+        SOC_SINGLE("Noise Gate Threshold", M98088_REG_40_MICAGC_THRESH,
-+               4, 15, 0),
-+
-        SOC_SINGLE("INA Volume", M98088_REG_37_LVL_INA, 0, 7, 1),
-        SOC_SINGLE("INB Volume", M98088_REG_38_LVL_INB, 0, 7, 1),
- 
--- 
-2.25.1
-
+Takashi
