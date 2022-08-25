@@ -4,57 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4E995C28D13
-	for <alsa-devel@archiver.kernel.org>; Thu, 25 Aug 2022 12:47:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1BD1FC3F6B0
+	for <alsa-devel@archiver.kernel.org>; Thu, 25 Aug 2022 12:47:27 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 8D2A91622;
-	Thu, 25 Aug 2022 14:46:17 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8D2A91622
+	by alsa0.perex.cz (Postfix) with ESMTPS id 66FB186F;
+	Thu, 25 Aug 2022 14:46:35 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 66FB186F
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1661431627;
-	bh=IyLEU5NyDX4J5Cgr+zcGZ9Qa7+TalhVrs95WmHTIh2g=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1661431645;
+	bh=ElHYmszbwnSEnunCPdIUSiZIw9jDr1XaG2phyYXOQts=;
+	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=j5iUamzsztGA7neidpargElq3PyRWlw079yTKC7sIKbNgaGsEvzdAXyWNzImcpNnD
-	 rsXOGFyYOxyDzxnZiOul+NwH3RRi7cM1ZWCJMVfBwthTPhCOVUL1orq38EThOkfv6r
-	 QzfatFVFcrVdGNx9zsmvAYkWbOtZoLzbhwty6Cns=
+	b=M2z8g6LRUNLjy60gwNnyQD1vg/EQzxWt2LfPpdpkM2nxMjwZXLFd9bD38cOFO9dqk
+	 H78wn13iFnU/5Fhv83N3lAT1k6iapxy5b4tC5GawbSU2ebJLAAf0cIZHLieOyK8hzi
+	 0vBfHdS9ZNe63pQcB48P7xcJswy/qZ933MLREatE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 823F6F80536;
-	Thu, 25 Aug 2022 14:45:22 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 11C37F8053B;
+	Thu, 25 Aug 2022 14:45:24 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id ECF66F80537; Thu, 25 Aug 2022 14:45:20 +0200 (CEST)
-Received: from inva020.nxp.com (inva020.nxp.com [92.121.34.13])
+ id 7A766F800BD; Thu, 25 Aug 2022 14:45:23 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id D934EF800BD
+ for <alsa-devel@alsa-project.org>; Thu, 25 Aug 2022 14:45:16 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D934EF800BD
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="NcCCQ6h/"
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 7E64DF8025A
- for <alsa-devel@alsa-project.org>; Thu, 25 Aug 2022 14:45:13 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7E64DF8025A
-Received: from inva020.nxp.com (localhost [127.0.0.1])
- by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 841371A1835;
- Thu, 25 Aug 2022 14:45:13 +0200 (CEST)
-Received: from aprdc01srsp001v.ap-rdc01.nxp.com
- (aprdc01srsp001v.ap-rdc01.nxp.com [165.114.16.16])
- by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 4D94C1A1833;
- Thu, 25 Aug 2022 14:45:13 +0200 (CEST)
-Received: from localhost.localdomain (shlinux2.ap.freescale.net
- [10.192.224.44])
- by aprdc01srsp001v.ap-rdc01.nxp.com (Postfix) with ESMTP id C44C21820F5D;
- Thu, 25 Aug 2022 20:45:11 +0800 (+08)
-From: Shengjiu Wang <shengjiu.wang@nxp.com>
-To: nicoleotsuka@gmail.com, Xiubo.Lee@gmail.com, festevam@gmail.com,
- shengjiu.wang@gmail.com, lgirdwood@gmail.com, broonie@kernel.org,
- perex@perex.cz, tiwai@suse.com, alsa-devel@alsa-project.org
-Subject: [PATCH 2/2] ASoC: fsl_aud2htx: Add error handler for pm_runtime_enable
-Date: Thu, 25 Aug 2022 20:27:40 +0800
-Message-Id: <1661430460-5234-2-git-send-email-shengjiu.wang@nxp.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1661430460-5234-1-git-send-email-shengjiu.wang@nxp.com>
-References: <1661430460-5234-1-git-send-email-shengjiu.wang@nxp.com>
-X-Virus-Scanned: ClamAV using ClamSMTP
-Cc: linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
+ by dfw.source.kernel.org (Postfix) with ESMTPS id 4E5D861C01;
+ Thu, 25 Aug 2022 12:45:15 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B6653C433D7;
+ Thu, 25 Aug 2022 12:45:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1661431514;
+ bh=ElHYmszbwnSEnunCPdIUSiZIw9jDr1XaG2phyYXOQts=;
+ h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+ b=NcCCQ6h/n3nIxjvQEHGsHGwZTHi7S0oQbaYzgNXgNsxRH8/vR6NQw+xPLU8qaeJ0f
+ TwoPbvqXZBmjN92JannXJ5Dv8FmZl4e4YZYmLbdQLmrDeXo0ynbD2fCECqH10eyA/k
+ 3XXQlTDTpScLdJM0La2gaxbbSMUqHoU749QPqk/Y+o6qGlMarEHtznZN4ydfBpEcB5
+ bh1UEqZ49xzInzxr+LHk05C+pWW8H1Ij6Zlx9akJ+qlIraboihP8nfXi8XN7qlqYQ1
+ pfgEzRDQQmTNpazM7dmc0GYiOwQSB4fWg9k3HZGZJSTEezFCocUcSKcW6zgYQQ1KI/
+ LxblKQD4Q+7fg==
+From: Mark Brown <broonie@kernel.org>
+To: Tommaso Merciai <tommaso.merciai@amarulasolutions.com>
+In-Reply-To: <20220825101714.81580-1-tommaso.merciai@amarulasolutions.com>
+References: <20220825101714.81580-1-tommaso.merciai@amarulasolutions.com>
+Subject: Re: [PATCH] ASoC: max98088: add support for noise gate reg
+Message-Id: <166143151246.98448.3045084214547332329.b4-ty@kernel.org>
+Date: Thu, 25 Aug 2022 13:45:12 +0100
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+X-Mailer: b4 0.10.0-dev-0c1df
+Cc: alsa-devel@alsa-project.org, Stephen Kitt <steve@sk2.org>,
+ linuxfancy@googlegroups.com, Takashi Iwai <tiwai@suse.com>,
+ Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org,
+ linux-amarula@amarulasolutions.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -70,33 +82,38 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Call pm_runtime_disable() when error happens in probe()
+On Thu, 25 Aug 2022 12:17:13 +0200, Tommaso Merciai wrote:
+> Add support for Noise Gate Threshold reg (ANTH reg 0x40 bit 4 to 7)
+> 
+> References:
+>  - https://datasheets.maximintegrated.com/en/ds/MAX98089.pdf, p75
+> 
+> 
 
-Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
----
- sound/soc/fsl/fsl_aud2htx.c | 2 ++
- 1 file changed, 2 insertions(+)
+Applied to
 
-diff --git a/sound/soc/fsl/fsl_aud2htx.c b/sound/soc/fsl/fsl_aud2htx.c
-index bc1b9c6df95c..1e421d9a03fb 100644
---- a/sound/soc/fsl/fsl_aud2htx.c
-+++ b/sound/soc/fsl/fsl_aud2htx.c
-@@ -241,6 +241,7 @@ static int fsl_aud2htx_probe(struct platform_device *pdev)
- 	ret = devm_snd_dmaengine_pcm_register(&pdev->dev, NULL, 0);
- 	if (ret) {
- 		dev_err(&pdev->dev, "failed to pcm register\n");
-+		pm_runtime_disable(&pdev->dev);
- 		return ret;
- 	}
- 
-@@ -249,6 +250,7 @@ static int fsl_aud2htx_probe(struct platform_device *pdev)
- 					      &fsl_aud2htx_dai, 1);
- 	if (ret) {
- 		dev_err(&pdev->dev, "failed to register ASoC DAI\n");
-+		pm_runtime_disable(&pdev->dev);
- 		return ret;
- 	}
- 
--- 
-2.34.1
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
 
+Thanks!
+
+[1/1] ASoC: max98088: add support for noise gate reg
+      commit: 671d119e75c8dfbf25c1813a167eeb2616c8acd5
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
