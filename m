@@ -4,49 +4,49 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A4AF8C64990
-	for <alsa-devel@archiver.kernel.org>; Thu, 25 Aug 2022 14:04:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 12B7AC28D13
+	for <alsa-devel@archiver.kernel.org>; Thu, 25 Aug 2022 14:04:48 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id F01891635;
-	Thu, 25 Aug 2022 16:03:49 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F01891635
+	by alsa0.perex.cz (Postfix) with ESMTPS id 58208163D;
+	Thu, 25 Aug 2022 16:03:56 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 58208163D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1661436280;
-	bh=Yd3nJRcA+h+KQ+HC/lgUi2YNwRGRzAOZt0pKJh3rolA=;
+	s=default; t=1661436286;
+	bh=/6pwMJxl4kz3mtesV4CUmCFqTAB1jZKIxRXUvAmZQdQ=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=WYqSDhlbk6aiUIdIFw/9jBTsrnx4NiznPVxIrRkZ/ynpA60pI+7CSzBwG8XwuPK9C
-	 DszYK1ocPheCtuXWBJghYTIgR4sXNM1ZLOoI/lusJqYWxiSKTGze8UxjE+mbiqbpZI
-	 Q/ExZuFPYjIlIAtVP7mVZr8bh4ul+btzN44dtt+Y=
+	b=WBsNEPttGWcQwMf3kB1K8mfvJHxQ5DOFHyeIG92+Nm1LY4vqcvWGXZqm16BBltvuj
+	 3btF99WbR2AdxF+YtAPvvO1HyI/hyzOkROnWVY33JJh2NTvlP6WefN3UtmA9voiCuQ
+	 YJTY99099RCdukDeRoy6FnSpNzUuYf7h0TYGp1D0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id B5701F8025A;
-	Thu, 25 Aug 2022 16:03:02 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 7A951F8053D;
+	Thu, 25 Aug 2022 16:03:04 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 87FD1F8053A; Thu, 25 Aug 2022 16:03:01 +0200 (CEST)
+ id F39C6F80245; Thu, 25 Aug 2022 16:03:01 +0200 (CEST)
 Received: from hutie.ust.cz (unknown [IPv6:2a03:3b40:fe:f0::1])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 25C85F80245
- for <alsa-devel@alsa-project.org>; Thu, 25 Aug 2022 16:02:52 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 25C85F80245
+ by alsa1.perex.cz (Postfix) with ESMTPS id B6ED0F800C8
+ for <alsa-devel@alsa-project.org>; Thu, 25 Aug 2022 16:02:54 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B6ED0F800C8
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=cutebit.org header.i=@cutebit.org
- header.b="WGTOf7S4"
+ header.b="DGrIQhoR"
 From: =?UTF-8?q?Martin=20Povi=C5=A1er?= <povik+lin@cutebit.org>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cutebit.org; s=mail;
- t=1661436171; bh=k4JY6gIRcC+FC13JFoBjpofoYgJ49CT9VL+rB5MoeWc=;
+ t=1661436172; bh=l8JOb0hAWhVJH3nSwe474gz70FVSVhQNrSMoKlGL5NE=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References;
- b=WGTOf7S4c+SoeUUUcqErZTjpI0ULWQGgn7XDtYBYDqUOmswbmAhpPQxv3b7/v5B2L
- l6cODorEj2q1wJ6UvpO2O1abdISoeV1yXguMNrw6Zie2FJyLc54nr5t5Z89jKiu8Xm
- x3QfKElNGJkbgq75Fvor2eiyqK/lH8ntyIFTMzxo=
+ b=DGrIQhoRsIrW6NeEmOuD5vnKGvGau5m3L5zCZyZQoUzJ4++Obr6tjp31EDTIDVBEH
+ TlSSOvrhZl0DB/Axv0/GvdZDBh9Z+vK0WGxvVs4nksjHbQPrAjpbMQS+HQiCbKubhC
+ CC/7BN32D69v6dlKIeo2vKWi0fDQ1ZfQzTxJrWmQ=
 To: Liam Girdwood <lgirdwood@gmail.com>,
 	Mark Brown <broonie@kernel.org>
-Subject: [PATCH 1/5] ASoC: tas2764: Allow mono streams
-Date: Thu, 25 Aug 2022 16:02:37 +0200
-Message-Id: <20220825140241.53963-2-povik+lin@cutebit.org>
+Subject: [PATCH 5/5] ASoC: tas2764: Export highpass filter setting
+Date: Thu, 25 Aug 2022 16:02:41 +0200
+Message-Id: <20220825140241.53963-6-povik+lin@cutebit.org>
 In-Reply-To: <20220825140241.53963-1-povik+lin@cutebit.org>
 References: <20220825140241.53963-1-povik+lin@cutebit.org>
 MIME-Version: 1.0
@@ -72,31 +72,56 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The part is a mono speaker amp, but it can do downmix and switch between
-left and right channel, so the right channel range is 1 to 2.
+Expose a control for the setting of 'DC blocker' highpass filter in the
+playback path of TAS2764.
 
-(This mirrors commit bf54d97a835d ("ASoC: tas2770: Allow mono streams")
-which was a fix to the tas2770 driver.)
-
-Fixes: 827ed8a0fa50 ("ASoC: tas2764: Add the driver for the TAS2764")
 Signed-off-by: Martin Povišer <povik+lin@cutebit.org>
 ---
- sound/soc/codecs/tas2764.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/codecs/tas2764.c | 10 ++++++++++
+ sound/soc/codecs/tas2764.h |  4 ++++
+ 2 files changed, 14 insertions(+)
 
 diff --git a/sound/soc/codecs/tas2764.c b/sound/soc/codecs/tas2764.c
-index 846d9d3ecc9d..0df5d975c3c9 100644
+index e99a46fb503f..51b87a936179 100644
 --- a/sound/soc/codecs/tas2764.c
 +++ b/sound/soc/codecs/tas2764.c
-@@ -485,7 +485,7 @@ static struct snd_soc_dai_driver tas2764_dai_driver[] = {
- 		.id = 0,
- 		.playback = {
- 			.stream_name    = "ASI1 Playback",
--			.channels_min   = 2,
-+			.channels_min   = 1,
- 			.channels_max   = 2,
- 			.rates      = TAS2764_RATES,
- 			.formats    = TAS2764_FORMATS,
+@@ -593,11 +593,21 @@ static int tas2764_codec_probe(struct snd_soc_component *component)
+ static DECLARE_TLV_DB_SCALE(tas2764_digital_tlv, 1100, 50, 0);
+ static DECLARE_TLV_DB_SCALE(tas2764_playback_volume, -10050, 50, 1);
+ 
++static const char * const tas2764_hpf_texts[] = {
++	"Disabled", "2 Hz", "50 Hz", "100 Hz", "200 Hz",
++	"400 Hz", "800 Hz"
++};
++
++static SOC_ENUM_SINGLE_DECL(
++	tas2764_hpf_enum, TAS2764_DC_BLK0,
++	TAS2764_DC_BLK0_HPF_FREQ_PB_SHIFT, tas2764_hpf_texts);
++
+ static const struct snd_kcontrol_new tas2764_snd_controls[] = {
+ 	SOC_SINGLE_TLV("Speaker Volume", TAS2764_DVC, 0,
+ 		       TAS2764_DVC_MAX, 1, tas2764_playback_volume),
+ 	SOC_SINGLE_TLV("Amp Gain Volume", TAS2764_CHNL_0, 1, 0x14, 0,
+ 		       tas2764_digital_tlv),
++	SOC_ENUM("HPF Corner Frequency", tas2764_hpf_enum),
+ };
+ 
+ static const struct snd_soc_component_driver soc_component_driver_tas2764 = {
+diff --git a/sound/soc/codecs/tas2764.h b/sound/soc/codecs/tas2764.h
+index 960b337ed0fc..168af772a898 100644
+--- a/sound/soc/codecs/tas2764.h
++++ b/sound/soc/codecs/tas2764.h
+@@ -33,6 +33,10 @@
+ #define TAS2764_VSENSE_POWER_EN		3
+ #define TAS2764_ISENSE_POWER_EN		4
+ 
++/* DC Blocker Control */
++#define TAS2764_DC_BLK0			TAS2764_REG(0x0, 0x04)
++#define TAS2764_DC_BLK0_HPF_FREQ_PB_SHIFT  0
++
+ /* Digital Volume Control */
+ #define TAS2764_DVC	TAS2764_REG(0X0, 0x1a)
+ #define TAS2764_DVC_MAX	0xc9
 -- 
 2.33.0
 
