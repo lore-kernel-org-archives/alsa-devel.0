@@ -4,68 +4,55 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6C565C28D13
-	for <alsa-devel@archiver.kernel.org>; Thu, 25 Aug 2022 12:46:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id F0867C28D13
+	for <alsa-devel@archiver.kernel.org>; Thu, 25 Aug 2022 12:46:36 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 1B99D84C;
-	Thu, 25 Aug 2022 14:45:16 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1B99D84C
+	by alsa0.perex.cz (Postfix) with ESMTPS id E7333E11;
+	Thu, 25 Aug 2022 14:45:44 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E7333E11
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1661431566;
-	bh=Xwq1z8qZZw3qRrxoqGgWqlBuL1CljE25d5xlyMvsaUQ=;
-	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=VjCwubC+njaNLRF3KjTniCBm4xsRiPKFxcw06cDpAJNHMRQm0eJrqSOiHXsJOdlRj
-	 gCcH4uqTWYHKAp/qXFRYnR8ZdagMrT/gCxhJ1rrN+TB15RNozsVMyIJO77KeIMkn77
-	 pqTJ9JjxB0k9ZMxfAKJqqxK+Wc2xbCk1p/Qkmc4g=
+	s=default; t=1661431595;
+	bh=uc9Pvfp/EcoKVXM8x9kyl43ZeW14Fn7E/vbs8bNoMSY=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=Www/DSYShHPpCdos6Oz6Z2QNi6Dv87uc5o8k9rkt04UnC8/tZHpQ98GbpMiDowhTO
+	 d60czKfGzqJdNUFv3jzpzwboPE0qPLndybfKV4v5AB7QtEwNStKFCwOaX2sk7iCe07
+	 /7idc6FD5E1QqvZC/FLHwOo28zbD9BxQeqQV0jWQ=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 823D9F8027C;
-	Thu, 25 Aug 2022 14:45:15 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 29D74F80245;
+	Thu, 25 Aug 2022 14:45:18 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 8FEB0F8014B; Thu, 25 Aug 2022 14:45:13 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org
- [IPv6:2604:1380:4641:c500::1])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id AA330F8014B
- for <alsa-devel@alsa-project.org>; Thu, 25 Aug 2022 14:45:09 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AA330F8014B
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="QMt3rpw5"
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+ id D063CF80526; Thu, 25 Aug 2022 14:45:16 +0200 (CEST)
+Received: from inva020.nxp.com (inva020.nxp.com [92.121.34.13])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id E8ED561C2E;
- Thu, 25 Aug 2022 12:45:07 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A9D95C433D6;
- Thu, 25 Aug 2022 12:45:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1661431507;
- bh=Xwq1z8qZZw3qRrxoqGgWqlBuL1CljE25d5xlyMvsaUQ=;
- h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=QMt3rpw53qYBhwO8KVEvW3brNNWezm69ZzHy738ktbGeoKWor7W/Mmg/NCtshpxK4
- j+XEvie8weh47vY7z6Sn6Qv2/CsMUUJ2z7IADQKBVVHPHnAzWtewnef8oYP52FZvAF
- P9uGnwvdVis19Pe7Hl68oVmo2rS+Gq/tqGaoZePDkuM9g2UfCOPVrCHLwzih8XwkWF
- Khj/OAV/15gPBIVtgNtpCkfIHqqlCjkGm6laE5tL6VabSUWDLQ63wGjQYh19ZWHrIT
- oFDuRgDqPIXY7c1ke1gdWb3nCkeHUHrneF8QozCOhPLaood7zXfeIMwZdsOtMqzpd+
- hK6vcr4cFo5Hg==
-From: Mark Brown <broonie@kernel.org>
-To: alsa-devel@alsa-project.org, Zhu Ning <zhuning0077@gmail.com>
-In-Reply-To: <20220825014952.1038508-1-zhuning0077@gmail.com>
-References: <20220825014952.1038508-1-zhuning0077@gmail.com>
-Subject: Re: [PATCH] ASoC: codecs: add suspend and resume for ES8316
-Message-Id: <166143150633.98448.8112036464729539661.b4-ty@kernel.org>
-Date: Thu, 25 Aug 2022 13:45:06 +0100
-MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-X-Mailer: b4 0.10.0-dev-0c1df
-Cc: Zhu Ning <zhuning@everest-semi.com>, tiwai@suse.com,
- pierre-louis.bossart@linux.intel.com
+ by alsa1.perex.cz (Postfix) with ESMTPS id 8E505F800BD
+ for <alsa-devel@alsa-project.org>; Thu, 25 Aug 2022 14:45:10 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8E505F800BD
+Received: from inva020.nxp.com (localhost [127.0.0.1])
+ by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id E98AB1A182F;
+ Thu, 25 Aug 2022 14:45:09 +0200 (CEST)
+Received: from aprdc01srsp001v.ap-rdc01.nxp.com
+ (aprdc01srsp001v.ap-rdc01.nxp.com [165.114.16.16])
+ by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id B36191A181F;
+ Thu, 25 Aug 2022 14:45:09 +0200 (CEST)
+Received: from localhost.localdomain (shlinux2.ap.freescale.net
+ [10.192.224.44])
+ by aprdc01srsp001v.ap-rdc01.nxp.com (Postfix) with ESMTP id 43AF7180222C;
+ Thu, 25 Aug 2022 20:45:08 +0800 (+08)
+From: Shengjiu Wang <shengjiu.wang@nxp.com>
+To: nicoleotsuka@gmail.com, Xiubo.Lee@gmail.com, festevam@gmail.com,
+ shengjiu.wang@gmail.com, lgirdwood@gmail.com, broonie@kernel.org,
+ perex@perex.cz, tiwai@suse.com, alsa-devel@alsa-project.org
+Subject: [PATCH 1/2] ASoC: fsl_aud2htx: register platform component before
+ registering cpu dai
+Date: Thu, 25 Aug 2022 20:27:39 +0800
+Message-Id: <1661430460-5234-1-git-send-email-shengjiu.wang@nxp.com>
+X-Mailer: git-send-email 2.7.4
+X-Virus-Scanned: ClamAV using ClamSMTP
+Cc: linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -81,36 +68,64 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Thu, 25 Aug 2022 09:49:52 +0800, Zhu Ning wrote:
-> The registers may be lost after suspend due to powerdown.
-> regcache_sync solves this issue.
-> 
-> 
+There is no defer probe when adding platform component to
+snd_soc_pcm_runtime(rtd), the code is in snd_soc_add_pcm_runtime()
 
-Applied to
+snd_soc_register_card()
+  -> snd_soc_bind_card()
+    -> snd_soc_add_pcm_runtime()
+      -> adding cpu dai
+      -> adding codec dai
+      -> adding platform component.
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+So if the platform component is not ready at that time, then the
+sound card still registered successfully, but platform component
+is empty, the sound card can't be used.
 
-Thanks!
+As there is defer probe checking for cpu dai component, then register
+platform component before cpu dai to avoid such issue.
 
-[1/1] ASoC: codecs: add suspend and resume for ES8316
-      commit: 4bac47a7b2f9f0c84411cb06944bab8f85c08757
+And the behavior of imx_pcm_dma_init() is same as common
+devm_snd_dmaengine_pcm_register(), so use
+devm_snd_dmaengine_pcm_register() instead
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
+Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
+---
+ sound/soc/fsl/fsl_aud2htx.c | 14 ++++++++++----
+ 1 file changed, 10 insertions(+), 4 deletions(-)
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+diff --git a/sound/soc/fsl/fsl_aud2htx.c b/sound/soc/fsl/fsl_aud2htx.c
+index 873295f59ad7..bc1b9c6df95c 100644
+--- a/sound/soc/fsl/fsl_aud2htx.c
++++ b/sound/soc/fsl/fsl_aud2htx.c
+@@ -234,6 +234,16 @@ static int fsl_aud2htx_probe(struct platform_device *pdev)
+ 
+ 	regcache_cache_only(aud2htx->regmap, true);
+ 
++	/*
++	 * Register platform component before registering cpu dai for there
++	 * is not defer probe for platform component in snd_soc_add_pcm_runtime().
++	 */
++	ret = devm_snd_dmaengine_pcm_register(&pdev->dev, NULL, 0);
++	if (ret) {
++		dev_err(&pdev->dev, "failed to pcm register\n");
++		return ret;
++	}
++
+ 	ret = devm_snd_soc_register_component(&pdev->dev,
+ 					      &fsl_aud2htx_component,
+ 					      &fsl_aud2htx_dai, 1);
+@@ -242,10 +252,6 @@ static int fsl_aud2htx_probe(struct platform_device *pdev)
+ 		return ret;
+ 	}
+ 
+-	ret = imx_pcm_dma_init(pdev);
+-	if (ret)
+-		dev_err(&pdev->dev, "failed to init imx pcm dma: %d\n", ret);
+-
+ 	return ret;
+ }
+ 
+-- 
+2.34.1
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
