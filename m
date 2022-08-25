@@ -4,47 +4,55 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6D066C28D13
-	for <alsa-devel@archiver.kernel.org>; Thu, 25 Aug 2022 14:06:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 51310C28D13
+	for <alsa-devel@archiver.kernel.org>; Thu, 25 Aug 2022 14:23:41 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 453A915E5;
-	Thu, 25 Aug 2022 16:05:09 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 453A915E5
+	by alsa0.perex.cz (Postfix) with ESMTPS id 1D083E0E;
+	Thu, 25 Aug 2022 16:22:49 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1D083E0E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1661436359;
-	bh=lKx4eqhOZ7bV32gAHAxM3bz8qurI2i74vxW4Y0JQzgI=;
+	s=default; t=1661437419;
+	bh=0ZNdpS2JdKU3yzUJRNuglsQTmPQkBW22xM5304TdKpA=;
 	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
 	 List-Post:List-Help:List-Subscribe:From;
-	b=AdAGjHA07eVJ17aKiVD4DEWsXyTrKBfqEIYSyiv9EVi70/6xO2JxlefYGkXa7StUX
-	 kTc2ayE0LN3hZD3yV+3PreRESF/PXjagxtktKej7atUtLG4YIqZcmAdUw92E0DGNo8
-	 U4vb/1ZKWXCbc1Y65pYn4HIoUvcvIzOIIjPrXjGU=
+	b=sMttjIx/GXK1ss+cSvoTLb/HGlMabDTlrYva1gMBGw00opGdnEzSUuZpk346n9Q6L
+	 yj9Lqqf7SUob1GUlQfGJY1k0I8lgqbKViTJv/3pgpFIPy42IPTY2WZCfuhsLwCjFqf
+	 ZJY22QnnITm3JKhgNmDr5+DsSIehYrhU2OhlJ8us=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 97C42F8025A;
-	Thu, 25 Aug 2022 16:04:56 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 9D99BF80245;
+	Thu, 25 Aug 2022 16:22:48 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 0B150F8052D; Thu, 25 Aug 2022 16:04:55 +0200 (CEST)
-Received: from mail.bugwerft.de (mail.bugwerft.de [46.23.86.59])
- by alsa1.perex.cz (Postfix) with ESMTP id DA205F80245
- for <alsa-devel@alsa-project.org>; Thu, 25 Aug 2022 16:04:48 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DA205F80245
-Received: from hq-00021.fritz.box (p57bc9ceb.dip0.t-ipconnect.de
- [87.188.156.235])
- by mail.bugwerft.de (Postfix) with ESMTPSA id EEEEF4210DB;
- Thu, 25 Aug 2022 14:04:17 +0000 (UTC)
-From: Daniel Mack <daniel@zonque.org>
-To: broonie@kernel.org,
-	ryan.lee.analog@gmail.com
-Subject: [PATCH v2 1/2] ASoC: dt-bindings: max98396: Document data monitor
- properties
-Date: Thu, 25 Aug 2022 16:04:11 +0200
-Message-Id: <20220825140412.2297211-1-daniel@zonque.org>
-X-Mailer: git-send-email 2.37.2
+ id BA0BCF8027C; Thu, 25 Aug 2022 16:22:47 +0200 (CEST)
+Received: from hutie.ust.cz (hutie.ust.cz [185.8.165.127])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 89968F800BD
+ for <alsa-devel@alsa-project.org>; Thu, 25 Aug 2022 16:22:41 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 89968F800BD
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (1024-bit key) header.d=cutebit.org header.i=@cutebit.org
+ header.b="XVN2bs+S"
+From: =?UTF-8?q?Martin=20Povi=C5=A1er?= <povik+lin@cutebit.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cutebit.org; s=mail;
+ t=1661437361; bh=NxfL7BUBZRZjKHn+bafHeFTQ77WmuTUX7XmfRatnADw=;
+ h=From:To:Cc:Subject:Date;
+ b=XVN2bs+ShScc4q35n+QEmIl1CFddsNl4YBBB7w5G+nPRV7TqYwH01sWNG6lG/OEvv
+ q0Fl63hfCvsWMrKjlUrW0La30vD+ndF1aKyuCpSEZeJmOeFMoUGUPHJP5ljH2FFOvl
+ boWq2pdFvlJfGcubwzzy1LeddXEo5OHc3n1pdMGY=
+To: Liam Girdwood <lgirdwood@gmail.com>,
+	Mark Brown <broonie@kernel.org>
+Subject: [PATCH 0/2] Untested TAS2562 power setting fixes
+Date: Thu, 25 Aug 2022 16:22:24 +0200
+Message-Id: <20220825142226.80929-1-povik+lin@cutebit.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, robh+dt@kernel.org,
- Daniel Mack <daniel@zonque.org>
+Cc: alsa-devel@alsa-project.org, Stephen Kitt <steve@sk2.org>, navada@ti.com,
+ linux-kernel@vger.kernel.org, asyrus@ti.com, shenghao-ding@ti.com,
+ raphael-xu@ti.com, =?UTF-8?q?Martin=20Povi=C5=A1er?= <povik+lin@cutebit.org>,
+ Charles Keepax <ckeepax@opensource.cirrus.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -60,64 +68,23 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-This device features a data monitor that puts the device in software reset
-upon a configurable set of events.
+The tas2562 driver does the same thing with the setting of PWR_CTRL
+field as the tas2764/tas2770 drivers were doing.
+Link: https://lore.kernel.org/alsa-devel/20220808141246.5749-1-povik+lin@cutebit.org/T/#t
+Link: https://lore.kernel.org/alsa-devel/20220825140241.53963-1-povik+lin@cutebit.org/T/#t
 
-Signed-off-by: Daniel Mack <daniel@zonque.org>
----
-v1 -> v2: fix a typo and remove a stray blank line
+These are blindly written patches without testing since I don't have
+the hardware. (I even tried TI's formal sample request program but
+was refused there. CCing @ti.com addresses I found on other series
+recently submitted.)
 
- .../bindings/sound/adi,max98396.yaml          | 37 +++++++++++++++++++
- 1 file changed, 37 insertions(+)
+Martin Povišer (2):
+  ASoC: tas2562: Drop conflicting set_bias_level power setting
+  ASoC: tas2562: Fix mute/unmute
 
-diff --git a/Documentation/devicetree/bindings/sound/adi,max98396.yaml b/Documentation/devicetree/bindings/sound/adi,max98396.yaml
-index 8d2ef991db40..f4eefe10c494 100644
---- a/Documentation/devicetree/bindings/sound/adi,max98396.yaml
-+++ b/Documentation/devicetree/bindings/sound/adi,max98396.yaml
-@@ -78,6 +78,43 @@ properties:
-       interleaved on a single output channel.
-     type: boolean
- 
-+  adi,dmon-stuck-enable:
-+    description:
-+      Enables the "data monitor stuck" feature. Once the data monitor is
-+      enabled, it actively monitors the selected input data (from DIN) to the
-+      speaker amplifier. Once a data error is detected, the data monitor
-+      automatically places the device into software shutdown.
-+    type: boolean
-+
-+  adi,dmon-stuck-threshold-bits:
-+    description:
-+      Sets the threshold for the "data monitor stuck" feature, in bits.
-+    $ref: "/schemas/types.yaml#/definitions/uint32"
-+    enum: [9, 11, 13, 15]
-+    default: 15
-+
-+  adi,dmon-magnitude-enable:
-+    description:
-+      Enables the "data monitor magnitude" feature. Once the data monitor is
-+      enabled, it actively monitors the selected input data (from DIN) to the
-+      speaker amplifier. Once a data error is detected, the data monitor
-+      automatically places the device into software shutdown.
-+    type: boolean
-+
-+  adi,dmon-magnitude-threshold-bits:
-+    description:
-+      Sets the threshold for the "data monitor magnitude" feature, in bits.
-+    $ref: "/schemas/types.yaml#/definitions/uint32"
-+    enum: [2, 3, 4, 5]
-+    default: 5
-+
-+  adi,dmon-duration-msecs:
-+    description:
-+      Sets the duration for the "data monitor" feature, in milliseconds.
-+    $ref: "/schemas/types.yaml#/definitions/uint32"
-+    enum: [64, 256, 1024, 4096]
-+    default: 64
-+
-   reset-gpios:
-     maxItems: 1
- 
+ sound/soc/codecs/tas2562.c | 90 ++++++++++++--------------------------
+ 1 file changed, 29 insertions(+), 61 deletions(-)
+
 -- 
-2.37.2
+2.33.0
 
