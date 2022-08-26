@@ -4,42 +4,42 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 432D7ECAAD6
-	for <alsa-devel@archiver.kernel.org>; Fri, 26 Aug 2022 19:47:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5D6B2ECAAA3
+	for <alsa-devel@archiver.kernel.org>; Fri, 26 Aug 2022 19:56:57 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 56F29164D;
-	Fri, 26 Aug 2022 21:47:00 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 56F29164D
+	by alsa0.perex.cz (Postfix) with ESMTPS id 9D9921638;
+	Fri, 26 Aug 2022 21:56:05 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9D9921638
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1661543270;
-	bh=nvtgj/G7QG4T7cIXo4dxwp6+ZqYEOKZLj96VynfSZbg=;
+	s=default; t=1661543815;
+	bh=h+9NMndrdxVdbMDmNrkug5cdHDybyG98mFwjLqWaLkk=;
 	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=lqiIi7UZN01Z6KpjJVce+04BKkZPvGRNMsb6Wr2NB/jV2kYrJFdqUq6RV6sETy4Pa
-	 e5RG/ROBXCF2zCFrxxusKGlZH5lZVLl82FlfbJzqPXhGRZzWWV8nfxAHiv3oGM3eVy
-	 Q6LtyOYF+oelhXlyVFlWsFYCEhu8+CtY7aR8BjQU=
+	b=iNUcqCuGVO0b/u4jtpLimjf+dmoghjR0Vr5HxGg6F4ADI6n4xzBjbyq3qeNRuZy73
+	 74uZ190T+Cdo9a4juXAyBrmM35g3s0gG6QRu4202olQJ93nHPpZhPYelbS2BPx4y5j
+	 bEQitsk4umGzvmAIhDS+olLrOOjMxZTw9x048Q4w=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 5B73CF80238;
-	Fri, 26 Aug 2022 21:46:59 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 41C93F8014B;
+	Fri, 26 Aug 2022 21:56:05 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id D10ABF800BD; Fri, 26 Aug 2022 21:46:57 +0200 (CEST)
+ id 5E49BF80238; Fri, 26 Aug 2022 21:56:03 +0200 (CEST)
 Received: from webhooks-bot.alsa-project.org (gate.perex.cz [77.48.224.242])
- by alsa1.perex.cz (Postfix) with ESMTP id AF409F800BD
- for <alsa-devel@alsa-project.org>; Fri, 26 Aug 2022 21:46:51 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AF409F800BD
+ by alsa1.perex.cz (Postfix) with ESMTP id 378D8F80105
+ for <alsa-devel@alsa-project.org>; Fri, 26 Aug 2022 21:55:56 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 378D8F80105
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 From: GitHub issues - edited <github@alsa-project.org>
 To: alsa-devel@alsa-project.org
-In-Reply-To: <1661543211363966942-webhooks-bot@alsa-project.org>
-References: <1661543211363966942-webhooks-bot@alsa-project.org>
+In-Reply-To: <1661543756558514118-webhooks-bot@alsa-project.org>
+References: <1661543756558514118-webhooks-bot@alsa-project.org>
 Subject: MPG X570S EDGE MAX WIFI compatibility
-Message-Id: <20220826194657.D10ABF800BD@alsa1.perex.cz>
-Date: Fri, 26 Aug 2022 21:46:57 +0200 (CEST)
+Message-Id: <20220826195603.5E49BF80238@alsa1.perex.cz>
+Date: Fri, 26 Aug 2022 21:56:03 +0200 (CEST)
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -81,7 +81,7 @@ My Motherboard is MSI X570S and output audio works fine but:
 - When plug headphone in frontal plug the gnome setting change automaticaly to the headphone item, but the sound play in speakers, not in headphone.
 - On Audacity when capture Alsa + `USB Audio: #2 (hw: 1,2)` works fine!, but can not set on gnome settings.
 
-My alsa data: http://alsa-project.org/db/?f=df4d1f6c126260eabc5f159e64cff37efa064a38
+My alsa data: http://alsa-project.org/db/?f=e29a6593e48350efeba75f69d5ece62379973c35
 
 Issue URL     : https://github.com/alsa-project/alsa-ucm-conf/issues/172
 Repository URL: https://github.com/alsa-project/alsa-ucm-conf
