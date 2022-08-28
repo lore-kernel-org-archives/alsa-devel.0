@@ -4,84 +4,42 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C6D6EC0502C
-	for <alsa-devel@archiver.kernel.org>; Sun, 28 Aug 2022 07:50:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0B568ECAAD2
+	for <alsa-devel@archiver.kernel.org>; Sun, 28 Aug 2022 13:16:48 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E46C084D;
-	Sun, 28 Aug 2022 09:49:42 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E46C084D
+	by alsa0.perex.cz (Postfix) with ESMTPS id 4F36B82A;
+	Sun, 28 Aug 2022 15:15:56 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4F36B82A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1661673033;
-	bh=H8GtG7fhscSg0Wm0nqnZHEEns6VkBSkpS+ud8E+J0bk=;
-	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1661692606;
+	bh=ErfVKxjjGCCT5CWWGfUjamx2xO/gi+tMNK5FeJWxLpA=;
+	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=O8MK5SE0QInqQgXHMKb2p79nTYkiJtYfBHFlAuH8ICZ3dCpTy9crv/cHEZh/br1v3
-	 z1mKHfV0UHf7kOy+hiU/t/++8MqTDynHbH04QgiymEUeF9xP3dI6PkoC4RzaLC0vOz
-	 fUsD6WOkIe7WzfW3TyooRpPcKcjyrB9QH0TQw2ws=
+	b=joLOcAoe1nbhl88myTbcTwvRMQs2foEq/jm6yyg7aRij2eXvReuWOMlnSFHbO0JU7
+	 WTa19ARmaBojhqHz4jeNhjxYNbak/CWbxWd2FaZcC4JoniPtNZifvPKYk+WDmqYWww
+	 XCfcJIsqYDUWormkJ2FH0xxAPqKSVJ6e6DkWwVx0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 7ADB9F8023B;
-	Sun, 28 Aug 2022 09:49:42 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id BE55FF8023B;
+	Sun, 28 Aug 2022 15:15:55 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id ECD2DF800AA; Sun, 28 Aug 2022 09:49:40 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 0D2E1F800AA
- for <alsa-devel@alsa-project.org>; Sun, 28 Aug 2022 09:49:36 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0D2E1F800AA
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="bq/8iHPQ"; 
- dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="GigM/Qmv"
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 705F733686;
- Sun, 28 Aug 2022 07:49:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1661672976; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=DJVPwI1SQW1ugxTkbUHGFWs/aY/52eay/l04VrZPyTM=;
- b=bq/8iHPQw5+JhEo7UduZr1wtM5gSgjb/LbHPkT2dJ2movE/eE3Gie3I2eUfk8xSpbxs13p
- p1bIoxlginjUrpBeJDgadw3xDTpJwnCXC++ftSgWhV8XoMcKm+pw72Co1zxKiqOCNK4fJU
- u9UoPloFHaLd4TXnNR4upLH9w9GC1dk=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1661672976;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=DJVPwI1SQW1ugxTkbUHGFWs/aY/52eay/l04VrZPyTM=;
- b=GigM/Qmv3yE+y+XWxx0802Ez5+5qkX8U3uTdT5tY+myptJVTeFZEVnraRc0Rk/Z55tm5eq
- xhskzc0TT2IeULCw==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 4936213A65;
- Sun, 28 Aug 2022 07:49:36 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id y94pERAeC2MGcgAAMHmgww
- (envelope-from <tiwai@suse.de>); Sun, 28 Aug 2022 07:49:36 +0000
-Date: Sun, 28 Aug 2022 09:49:35 +0200
-Message-ID: <87r110iz8w.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Sean Anderson <sean.anderson@seco.com>
-Subject: Re: retire_capture_urb: Corrected urb data len
-In-Reply-To: <9d41eda1-1172-ea60-dd87-b3e38a529170@seco.com>
-References: <68a97d61-21bf-b45e-f6ed-c0906dd4b197@seco.com>
- <87ilmfj72j.wl-tiwai@suse.de>
- <9d41eda1-1172-ea60-dd87-b3e38a529170@seco.com>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
-Cc: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
- alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.com>
+ id EE34BF8028D; Sun, 28 Aug 2022 15:15:53 +0200 (CEST)
+Received: from webhooks-bot.alsa-project.org (gate.perex.cz [77.48.224.242])
+ by alsa1.perex.cz (Postfix) with ESMTP id 9CEE5F8012B
+ for <alsa-devel@alsa-project.org>; Sun, 28 Aug 2022 15:15:49 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9CEE5F8012B
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+From: GitHub pull_request - opened <github@alsa-project.org>
+To: alsa-devel@alsa-project.org
+In-Reply-To: <1661692548706208944-webhooks-bot@alsa-project.org>
+References: <1661692548706208944-webhooks-bot@alsa-project.org>
+Subject: ucm2: HDA - add support for Internal Mic
+Message-Id: <20220828131553.EE34BF8028D@alsa1.perex.cz>
+Date: Sun, 28 Aug 2022 15:15:53 +0200 (CEST)
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -97,58 +55,14 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Fri, 26 Aug 2022 20:57:53 +0200,
-Sean Anderson wrote:
-> 
-> On 8/26/22 12:36 PM, Takashi Iwai wrote:
-> > On Fri, 26 Aug 2022 18:22:24 +0200,
-> > Sean Anderson wrote:
-> >> 
-> >> Hi all,
-> >> 
-> >> I have a "FiiO DigiHug USB Audio" sound card (1852:7022) [3]. I have had
-> >> no problems with the audio, but I did notice a large number of message
-> >> like 
-> >> 
-> >> retire_capture_urb: 4992 callbacks suppressed
-> >> 
-> >> in my dmesg [1]. This is caused by the "Corrected urb data len."
-> >> warning.
-> > 
-> > What exact values are shown there?
-> 
-> Unfortunately, as detailed below, I was unable to turn off ratelimiting.
-> 
-> > The problem is that your hardware
-> > (likely a buggy firmware) returns the unaligned size of bytes as the
-> > data.  Maybe it's worth to replace dev_warn_ratelimited() there with
-> > dev_warn() and take all warnings once.  Then we can see what kind of
-> > values are delivered from the hardware.
-> 
-> I'll have an attempt at that next week
-> 
-> >> The patch adding this warning [2] makes it seem like
-> >> this warning should be an uncommon occurance. However, based on the
-> >> number of suppressed callbacks, this seems to be happening at a rate of
-> >> around 500 Hz.
-> >> 
-> >> Is this buggy hardware? Or is this a bug in the driver? Does there need
-> >> to be a quirk? Or perhaps the warning above should be a debug instead?
-> > 
-> > There is no quirk for that.  As long as the device works with that
-> > workaround (except for messages), we can simply add a quirk to not
-> > warn but always apply the workaround silently for such devices.
-> 
-> OK. I wasn't sure what the correct resolution would be.
+alsa-project/alsa-ucm-conf pull request #207 was opened from kasper93:
 
-Actually I was wrong: the existing quirk QUIRK_FLAG_ALIGN_TRANSFER
-should cover that.
+Simple patch to support also "Internal Mic".
 
-Could you try to pass quirk_flags=0x04 for the corresponding card slot
-(the option takes an array) to snd-usb-audio module?  Alternatively,
-try to pass quirk_alias=18557022:0e510408 to snd-usb-audio?
+Everything seems to be working fine after this change, except that I don't have "Internal Mic Jack", I'm lying there a little to set it as such. Everything switches nicely when connecting/disconnecting headphones mic. But there are two input devices to select and selection doesn't have effect. I believe when headphone mic is connected the internal one should be hidden, but there is no Jack and I don't know how to handle it properly. (It is marked as conflicting device with the other one though) Except this minor annoyance it is fine.  
 
+For reference: [alsa-info.txt](https://github.com/alsa-project/alsa-ucm-conf/files/9439697/alsa-info.txt)
 
-thanks,
-
-Takashi
+Request URL   : https://github.com/alsa-project/alsa-ucm-conf/pull/207
+Patch URL     : https://github.com/alsa-project/alsa-ucm-conf/pull/207.patch
+Repository URL: https://github.com/alsa-project/alsa-ucm-conf
