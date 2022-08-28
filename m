@@ -4,42 +4,84 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id AFC10ECAAD5
-	for <alsa-devel@archiver.kernel.org>; Sun, 28 Aug 2022 13:27:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 712E1ECAAA2
+	for <alsa-devel@archiver.kernel.org>; Sun, 28 Aug 2022 17:37:10 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 6B89584D;
-	Sun, 28 Aug 2022 15:26:52 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6B89584D
+	by alsa0.perex.cz (Postfix) with ESMTPS id A669A82C;
+	Sun, 28 Aug 2022 19:36:17 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A669A82C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1661693262;
-	bh=LzxGfK0ZoX+Ro/CMAuaxwZbnGAOUPEvCQPCxPz/1OU8=;
-	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
+	s=default; t=1661708227;
+	bh=zk0aZVHiItxWxC0upniYjtmDuwhHEaADU5YLRrj+ZxE=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=PPuR954iGTSmsaY0dHF2aYeRQAxVoHtVW15cW9DWtTCtfiZg42fAtqJZjes+vvAcY
-	 v/ftrPnaKgms7DSvt2aKFcGjyUkL3uS/cxgC2WIGFcT37DAIWOm6Zz6eS1u/XQ4C8t
-	 JuT1xb+9WQnTGCwCVAw7s0UC53jbVO8vjZQ2OzU4=
+	b=RqtkkD6TAvo/k/f6N1bd8jeOgelGcIIoOYw0DtPCErGcfXghx6V6aRixsq1hDV1DD
+	 lw+JgmlCoNA9ZxWyUlXrdwnDUs4L9IfpQEJh1bH7oyPCBTF3QqlRG09L7jdInvJLvF
+	 4wyEvQEQpSD7ZL8NCF89KZTWhoVqCP4GUz7CaUSg=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 0E099F8023B;
-	Sun, 28 Aug 2022 15:26:52 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 0521BF8023B;
+	Sun, 28 Aug 2022 19:36:17 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 04F57F8028D; Sun, 28 Aug 2022 15:26:51 +0200 (CEST)
-Received: from webhooks-bot.alsa-project.org (gate.perex.cz [77.48.224.242])
- by alsa1.perex.cz (Postfix) with ESMTP id 8464AF8012A
- for <alsa-devel@alsa-project.org>; Sun, 28 Aug 2022 15:26:47 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8464AF8012A
+ id 1502EF8028D; Sun, 28 Aug 2022 19:36:16 +0200 (CEST)
+Received: from ams.source.kernel.org (ams.source.kernel.org
+ [IPv6:2604:1380:4601:e00::1])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 8CC6DF8012A
+ for <alsa-devel@alsa-project.org>; Sun, 28 Aug 2022 19:36:08 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8CC6DF8012A
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="ZeTrYGel"
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by ams.source.kernel.org (Postfix) with ESMTPS id A2C37B80B18;
+ Sun, 28 Aug 2022 17:36:07 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DC922C433C1;
+ Sun, 28 Aug 2022 17:36:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1661708166;
+ bh=zk0aZVHiItxWxC0upniYjtmDuwhHEaADU5YLRrj+ZxE=;
+ h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+ b=ZeTrYGelgpW8o1guW26ZZlNZjQaFs6rtHOOR6aJNM3xKbHt4g4Z8R9wld8xFLxAJx
+ wVIsW37alkXZzNwzXxtnnqVm3KdkFL5uqPJ+T7OmYlN8qeuBok0Nl8pX4QbCuwnxFj
+ AoBhJs7DjSPN0UtcDTdcZ4zJe9Ao2G550k/r0o0dPzkntvFlR8KR3pOBbCbLnt2tdV
+ 1pKuSUQ+/aHfwEvTk8JWf+hfovsx12KQ/PthVLDMzvo9sImIv/vcyAQIUReNk/zj03
+ AFSH6xA1No/e/MZXgBIKHjE2tljQqWtt/QmLDmI3hkTMeIpThZl/a7mc5Ycywj24Fk
+ rOSWld2vCFv3Q==
+Date: Sun, 28 Aug 2022 18:01:41 +0100
+From: Jonathan Cameron <jic23@kernel.org>
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Subject: Re: [PATCH] dt-bindings: iio: Add missing
+ (unevaluated|additional)Properties on child nodes
+Message-ID: <20220828180050.51c3e857@jic23-huawei>
+In-Reply-To: <99dfcc39-ab1b-1b24-c6b2-67de5509f5ac@linaro.org>
+References: <20220823145649.3118479-2-robh@kernel.org>
+ <99dfcc39-ab1b-1b24-c6b2-67de5509f5ac@linaro.org>
+X-Mailer: Claws Mail 4.1.0 (GTK 3.24.34; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-From: GitHub pull_request - edited <github@alsa-project.org>
-To: alsa-devel@alsa-project.org
-In-Reply-To: <1661693206975050926-webhooks-bot@alsa-project.org>
-References: <1661693206975050926-webhooks-bot@alsa-project.org>
-Subject: ucm2: HDA - add support for Internal Mic
-Message-Id: <20220828132651.04F57F8028D@alsa1.perex.cz>
-Date: Sun, 28 Aug 2022 15:26:50 +0200 (CEST)
+Cc: alsa-devel@alsa-project.org, linux-iio@vger.kernel.org,
+ Alexandre Torgue <alexandre.torgue@foss.st.com>,
+ Bjorn Andersson <bjorn.andersson@linaro.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ linux-stm32@st-md-mailman.stormreply.com, Rob Herring <robh@kernel.org>,
+ Lars-Peter Clausen <lars@metafoo.de>, Michal Simek <michal.simek@xilinx.com>,
+ Andy Gross <agross@kernel.org>, Olivier Moysan <olivier.moysan@foss.st.com>,
+ Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>,
+ Alexandru Tachici <alexandru.tachici@analog.com>, devicetree@vger.kernel.org,
+ Michael Hennerich <Michael.Hennerich@analog.com>,
+ Cosmin Tanislav <cosmin.tanislav@analog.com>,
+ Anand Ashok Dumbre <anand.ashok.dumbre@xilinx.com>,
+ Fabrice Gasnier <fabrice.gasnier@foss.st.com>,
+ Nuno =?UTF-8?B?U8Oh?= <nuno.sa@analog.com>,
+ Daniel Baluta <daniel.baluta@nxp.com>, linux-arm-kernel@lists.infradead.org,
+ linux-kernel@vger.kernel.org, Maxime Coquelin <mcoquelin.stm32@gmail.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -55,14 +97,29 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-alsa-project/alsa-ucm-conf pull request #207 was edited from kasper93:
+On Thu, 25 Aug 2022 15:04:33 +0300
+Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org> wrote:
 
-Simple patch to support also "Internal Mic".
+> On 23/08/2022 17:56, Rob Herring wrote:
+> > In order to ensure only documented properties are present, node schemas
+> > must have unevaluatedProperties or additionalProperties set to false
+> > (typically).
+> >   
+> 
+> 
+> Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 
-Everything seems to be working fine after this change, except that I don't have "Internal Mic Jack", I'm lying there a little to set it as such. Everything switches nicely when connecting/disconnecting headphones mic. But there are two input devices to select and selection doesn't have effect. When headphone mic is connected the internal one should be hidden (it is handled somehow when using HDA driver), but there is no Jack and I don't know how to handle it properly. (It is marked as conflicting device with the other one though) Except this minor annoyance it is fine.  
+Applied to the togreg branch of iio.git and pushed out as testing for 0-day
+to poke at it before I push out as togreg for linux-next to pick up.
 
-For reference: [alsa-info.txt](https://github.com/alsa-project/alsa-ucm-conf/files/9439697/alsa-info.txt)
+Side note. Some odd entries in your cc list...  alsa-devel?
 
-Request URL   : https://github.com/alsa-project/alsa-ucm-conf/pull/207
-Patch URL     : https://github.com/alsa-project/alsa-ucm-conf/pull/207.patch
-Repository URL: https://github.com/alsa-project/alsa-ucm-conf
+Thanks,
+
+Jonathan
+
+> 
+> 
+> Best regards,
+> Krzysztof
+
