@@ -4,87 +4,86 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id BB5E1ECAAD2
-	for <alsa-devel@archiver.kernel.org>; Mon, 29 Aug 2022 16:35:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id DDD18ECAAA4
+	for <alsa-devel@archiver.kernel.org>; Mon, 29 Aug 2022 18:16:31 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 788FB1621;
-	Mon, 29 Aug 2022 18:34:28 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 788FB1621
+	by alsa0.perex.cz (Postfix) with ESMTPS id 1A703163B;
+	Mon, 29 Aug 2022 20:15:39 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1A703163B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1661790918;
-	bh=EHNP4RzQnuQOX+7RxLEAqc1syZDl49UGa8ehhKTXRQg=;
+	s=default; t=1661796989;
+	bh=lnMZ+lqA2y5QIblfT11UOymKwvnwzPTOM1Wt9YEevT0=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=fJyqirQRWVk/1E5Mydx2WkXORj9Cvr9IL+twtzTNM7XXt58gVVK/VhNRKsPuXtq6H
-	 Fy6akZyG4EsfVbRwQ+7PK8utXE1WzfNHJ9Lz/bApOE63mvuAR2CAVJMLTA0iTFSdU3
-	 sOqnKq22C4Fr7kJsPDweCQAjslKOiLoL984fLkFU=
+	b=Rwn22iIRfPqrbyu9LcPSyu+/dYCn+3OWGdt5mK+E0qfyV3pGCUQJ5QoJDCafD8UqX
+	 1l9OGj0JUarLKW314Q0tnPQvhfIgCT4ObaFvi04H1LEJDGE4UhdiApBXyd3MGlGpqO
+	 ZPdI2yFLP9oOXgBtyDQH/qX2FV3RylQP+4eta/Bk=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id EAB91F800AA;
-	Mon, 29 Aug 2022 18:34:27 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 97D58F8012A;
+	Mon, 29 Aug 2022 20:15:38 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 06047F801F7; Mon, 29 Aug 2022 18:34:26 +0200 (CEST)
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id 80328F801F7; Mon, 29 Aug 2022 20:15:37 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id C2659F800AA
- for <alsa-devel@alsa-project.org>; Mon, 29 Aug 2022 18:34:19 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C2659F800AA
+ by alsa1.perex.cz (Postfix) with ESMTPS id B4324F8012A
+ for <alsa-devel@alsa-project.org>; Mon, 29 Aug 2022 20:15:34 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B4324F8012A
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="cDp7X8gB"
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
+ header.b="JPQodGUF"; 
+ dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
+ header.b="ND4p53l5"
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by ams.source.kernel.org (Postfix) with ESMTPS id 3B31EB81160;
- Mon, 29 Aug 2022 16:34:18 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 79BADC433C1;
- Mon, 29 Aug 2022 16:34:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1661790853;
- bh=EHNP4RzQnuQOX+7RxLEAqc1syZDl49UGa8ehhKTXRQg=;
- h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
- b=cDp7X8gBmpAOAKJ8Rlu6UmYCh/TwfAd+Jwhm1G1Jt0ADl/0+xpDQqwt1xfPELrpMx
- ldgBmtZYVf7Ppsyy3Pytt6xBmXCK6ejuba3d7PxD8NolqsJPBsZepd0w9dBLtnRFfV
- ONSDgqTK/PV84hBTcRtABTBs1RaIeKNRoOpAa3CJOPACNNqoRQ8KCvkDNT7jCAuU0S
- kb2ekjtAWyRQD1WjoPZRpVw+FP+Oe+/QVHD6QAmMR/6FyMdCw2MqByS5BbA8lB9y4G
- 04a3AvVZ9ZNMS6LkZqYUQinoBzbvgdpDDaze8B1XDISXxfQSH8AviJsLmWtCdeHzfX
- fOJH30FPzz/NQ==
-Date: Mon, 29 Aug 2022 16:59:50 +0100
-From: Jonathan Cameron <jic23@kernel.org>
-To: Rob Herring <robh@kernel.org>
-Subject: Re: [PATCH] dt-bindings: iio: Add missing
- (unevaluated|additional)Properties on child nodes
-Message-ID: <20220829165950.268433ca@jic23-huawei>
-In-Reply-To: <20220829141029.GA1470207-robh@kernel.org>
-References: <20220823145649.3118479-2-robh@kernel.org>
- <99dfcc39-ab1b-1b24-c6b2-67de5509f5ac@linaro.org>
- <20220828180050.51c3e857@jic23-huawei>
- <20220829141029.GA1470207-robh@kernel.org>
-X-Mailer: Claws Mail 4.1.0 (GTK 3.24.34; x86_64-pc-linux-gnu)
-MIME-Version: 1.0
+ by smtp-out1.suse.de (Postfix) with ESMTPS id D9FF421D3B;
+ Mon, 29 Aug 2022 18:15:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1661796933; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=xUyN2NPL5vh4/XuvBuJMVDF6P8+v/eN+fG0+bZmPvFg=;
+ b=JPQodGUFNMwvQvVqX2ZoaMfuVBQvkVEPbuWhYciA5PlrCZj+OPH2Fd1ckLp7E9bNzOe79m
+ 4SeHK8kwXycMWmkQMQL9NGHyHdu7C4/1U5rDMvoS3OGVrt9Bbp1Od40Vu60c03i4B2EoeU
+ b1PbRi/RrQY7r1iXWcJduNnJAeAUeoI=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1661796933;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=xUyN2NPL5vh4/XuvBuJMVDF6P8+v/eN+fG0+bZmPvFg=;
+ b=ND4p53l5Oux/9LominGcMHLNcZmhOTRv5jxKNsduBm53HZCl5Me7nX4bLhR5qviBhoTTBf
+ R7RegBlmTPiP5QAA==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id BD0F01352A;
+ Mon, 29 Aug 2022 18:15:33 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+ by imap2.suse-dmz.suse.de with ESMTPSA id OHVZLUUCDWO7SAAAMHmgww
+ (envelope-from <tiwai@suse.de>); Mon, 29 Aug 2022 18:15:33 +0000
+Date: Mon, 29 Aug 2022 20:15:33 +0200
+Message-ID: <87r10y9are.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: chihhao chen <chihhao.chen@mediatek.com>
+Subject: Re: missing sound on kernel-5.15
+In-Reply-To: <87a67nb5yc.wl-tiwai@suse.de>
+References: <87e6d6ae69d68dc588ac9acc8c0f24d6188375c3.camel@mediatek.com>
+ <YwNvQaNNIKB8ELhR@geday>
+ <120e52d94c00aab2cf1f3d611b06f03356e8229f.camel@mediatek.com>
+ <87r10zxyml.wl-tiwai@suse.de>
+ <dcd647b6b5833e08e3ac588685bcdd9f5c625bbb.camel@mediatek.com>
+ <87a67nb5yc.wl-tiwai@suse.de>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
 Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-Cc: alsa-devel@alsa-project.org, linux-iio@vger.kernel.org,
- Alexandre Torgue <alexandre.torgue@foss.st.com>,
- Bjorn Andersson <bjorn.andersson@linaro.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- linux-stm32@st-md-mailman.stormreply.com, Lars-Peter Clausen <lars@metafoo.de>,
- Michal Simek <michal.simek@xilinx.com>, Andy Gross <agross@kernel.org>,
- Olivier Moysan <olivier.moysan@foss.st.com>,
- Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>,
- Alexandru Tachici <alexandru.tachici@analog.com>, devicetree@vger.kernel.org,
- Michael Hennerich <Michael.Hennerich@analog.com>,
- Cosmin Tanislav <cosmin.tanislav@analog.com>,
- Anand Ashok Dumbre <anand.ashok.dumbre@xilinx.com>,
- Fabrice Gasnier <fabrice.gasnier@foss.st.com>,
- Nuno =?UTF-8?B?U8Oh?= <nuno.sa@analog.com>,
- Daniel Baluta <daniel.baluta@nxp.com>, linux-arm-kernel@lists.infradead.org,
- linux-kernel@vger.kernel.org,
- Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
- Maxime Coquelin <mcoquelin.stm32@gmail.com>
+Cc: alsa-devel@alsa-project.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -100,42 +99,89 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Mon, 29 Aug 2022 09:10:29 -0500
-Rob Herring <robh@kernel.org> wrote:
-
-> On Sun, Aug 28, 2022 at 06:01:41PM +0100, Jonathan Cameron wrote:
-> > On Thu, 25 Aug 2022 15:04:33 +0300
-> > Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org> wrote:
-> >   
-> > > On 23/08/2022 17:56, Rob Herring wrote:  
-> > > > In order to ensure only documented properties are present, node schemas
-> > > > must have unevaluatedProperties or additionalProperties set to false
-> > > > (typically).
-> > > >     
-> > > 
-> > > 
-> > > Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>  
+On Mon, 29 Aug 2022 14:16:27 +0200,
+Takashi Iwai wrote:
+> 
+> On Mon, 29 Aug 2022 10:50:58 +0200,
+> chihhao chen wrote:
 > > 
-> > Applied to the togreg branch of iio.git and pushed out as testing for 0-day
-> > to poke at it before I push out as togreg for linux-next to pick up.  
+> > Hi Takashi,
+> > 
+> > Yes.
+> > 
+> > To issue SAMPLING_FREQ_CONTROL USB request two times is root cause of
+> > this issue.
 > 
-> Thanks.
+> Hm, is it a UAC1 device?  Such a device should work with multiple
+> SAMPLING_FREQ_CONTROL invocations, but some device might be not
+> tolerant or buggy...  The multiple init_sample_rate() invocations may
+> happen with the older kernel under certain situations, so maybe we
+> need a different fix.
 > 
-> > Side note. Some odd entries in your cc list...  alsa-devel?  
-> 
-> Blame MAINTAINERS:
-> 
-> STM32 AUDIO (ASoC) DRIVERS
-> M:      Olivier Moysan <olivier.moysan@foss.st.com>
-> M:      Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
-> L:      alsa-devel@alsa-project.org (moderated for non-subscribers)
-> S:      Maintained
-> F:      Documentation/devicetree/bindings/iio/adc/st,stm32-dfsdm-adc.yaml
-> F:      Documentation/devicetree/bindings/sound/st,stm32-*.yaml
-> F:      sound/soc/stm/
+> How about the patch like below?
 
-There is some logic to that entry I suppose.
+It's missing the clearance for suspend/resume.
+The revised patch is below.
 
-Thanks for explanation!
 
-Jonathan
+Takashi
+
+-- 8< --
+diff --git a/sound/usb/card.h b/sound/usb/card.h
+index ca75f2206170..507cd62f0ff8 100644
+--- a/sound/usb/card.h
++++ b/sound/usb/card.h
+@@ -134,6 +134,7 @@ struct snd_usb_endpoint {
+ 	/* for hw constraints */
+ 	const struct audioformat *cur_audiofmt;
+ 	unsigned int cur_rate;
++	unsigned int cur_rate_setup;
+ 	snd_pcm_format_t cur_format;
+ 	unsigned int cur_channels;
+ 	unsigned int cur_frame_bytes;
+diff --git a/sound/usb/endpoint.c b/sound/usb/endpoint.c
+index 0d7b73bf7945..58ca1f920972 100644
+--- a/sound/usb/endpoint.c
++++ b/sound/usb/endpoint.c
+@@ -806,6 +806,7 @@ snd_usb_endpoint_open(struct snd_usb_audio *chip,
+ 		ep->cur_audiofmt = fp;
+ 		ep->cur_channels = fp->channels;
+ 		ep->cur_rate = params_rate(params);
++		ep->cur_rate_setup = 0;
+ 		ep->cur_format = params_format(params);
+ 		ep->cur_frame_bytes = snd_pcm_format_physical_width(ep->cur_format) *
+ 			ep->cur_channels / 8;
+@@ -928,6 +929,7 @@ void snd_usb_endpoint_close(struct snd_usb_audio *chip,
+ 		ep->altsetting = 0;
+ 		ep->cur_audiofmt = NULL;
+ 		ep->cur_rate = 0;
++		ep->cur_rate_setup = 0;
+ 		ep->iface_ref = NULL;
+ 		ep->clock_ref = NULL;
+ 		usb_audio_dbg(chip, "EP 0x%x closed\n", ep->ep_num);
+@@ -943,6 +945,7 @@ void snd_usb_endpoint_suspend(struct snd_usb_endpoint *ep)
+ 		ep->iface_ref->need_setup = true;
+ 	if (ep->clock_ref)
+ 		ep->clock_ref->rate = 0;
++	ep->cur_rate_setup = 0;
+ }
+ 
+ /*
+@@ -1356,6 +1359,9 @@ static int init_sample_rate(struct snd_usb_audio *chip,
+ 	struct snd_usb_clock_ref *clock = ep->clock_ref;
+ 	int err;
+ 
++	if (ep->cur_rate == ep->cur_rate_setup)
++		return 0;
++
+ 	if (clock) {
+ 		if (atomic_read(&clock->locked))
+ 			return 0;
+@@ -1374,6 +1380,7 @@ static int init_sample_rate(struct snd_usb_audio *chip,
+ 
+ 	if (clock)
+ 		clock->rate = ep->cur_rate;
++	ep->cur_rate_setup = ep->cur_rate;
+ 	return 0;
+ }
+ 
