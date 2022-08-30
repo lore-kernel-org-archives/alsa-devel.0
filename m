@@ -4,49 +4,104 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B49E1ECAAA1
-	for <alsa-devel@archiver.kernel.org>; Fri,  2 Sep 2022 06:03:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 390A5C54EE9
+	for <alsa-devel@archiver.kernel.org>; Fri,  2 Sep 2022 06:04:14 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 9F3A71630;
-	Fri,  2 Sep 2022 08:02:52 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9F3A71630
+	by alsa0.perex.cz (Postfix) with ESMTPS id 82E90164E;
+	Fri,  2 Sep 2022 08:03:22 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 82E90164E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1662098622;
-	bh=VetbOzof6aLXxmltfifFTKX6aMKDbev/eE8VPkjVHsg=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=Sc2uP6maJObqrMphBTlegN7xLZXSTHn308SCEAjHX8M1ExlB8XL9ZMSOn5VY7Q1SG
-	 fbHPim9yWyJanMdtB71BC/FDKDFVsnZ+QUCbraKyLSLEB9OE33bjQZV4eTcf196/nB
-	 GxxeMEirNHSPDKWRYZ5Zv+jnRY6kn3cVUlMWlAjk=
+	s=default; t=1662098652;
+	bh=Dsk0SooBKPf/Lft7q4oFtVz2Ky3ndRgdAtoP4xCNe2E=;
+	h=Date:Subject:To:References:From:In-Reply-To:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=TYK9R4OVBzgfJ/erQoZ2Nj/FQpIyob/c5OZmcyPixeIMPf8BW9t5Rpjq3RCdyE8XJ
+	 HUw9OTe4t7PTZG3q06A0Dq1iUn9cEPLuD5zY7f27YXAJDhXTzMVZzGRH1fgp5POSkF
+	 r+jZiiGCvqJ2php0PGv8GDQQeMH95q7z/gYX91O0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 40762F8020D;
+	by alsa1.perex.cz (Postfix) with ESMTP id BC1ADF804E6;
 	Fri,  2 Sep 2022 08:02:52 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id B2ADFF8026D; Thu,  1 Sep 2022 12:28:46 +0200 (CEST)
-Received: from mail.ispras.ru (mail.ispras.ru [83.149.199.84])
- (using TLSv1.2 with cipher DHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 804CDF8023A; Tue, 30 Aug 2022 19:34:11 +0200 (CEST)
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com
+ [205.220.168.131])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id CE9CBF800EB
- for <alsa-devel@alsa-project.org>; Thu,  1 Sep 2022 12:28:33 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CE9CBF800EB
-Received: from localhost.localdomain (unknown [83.149.199.65])
- by mail.ispras.ru (Postfix) with ESMTPSA id E5B9B40D403D;
- Thu,  1 Sep 2022 10:28:31 +0000 (UTC)
-From: Valentina Goncharenko <goncharenko.vp@ispras.ru>
-To: Jaroslav Kysela <perex@perex.cz>
-Subject: [PATCH] ALSA: asihpi - Remove useless code in hpi_meter_get_peak()
-Date: Thu,  1 Sep 2022 13:28:14 +0300
-Message-Id: <20220901102814.131855-1-goncharenko.vp@ispras.ru>
-X-Mailer: git-send-email 2.25.1
+ by alsa1.perex.cz (Postfix) with ESMTPS id 9B800F800F2
+ for <alsa-devel@alsa-project.org>; Tue, 30 Aug 2022 19:34:03 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9B800F800F2
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com
+ header.b="Q6aVkRA3"
+Received: from pps.filterd (m0279862.ppops.net [127.0.0.1])
+ by mx0a-0031df01.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 27UFx294005591;
+ Tue, 30 Aug 2022 17:34:00 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com;
+ h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=F+JHeRN8PToozitBrhdv/oNgrBd/V/BN8qJ5YgZ6y3A=;
+ b=Q6aVkRA3hwQE7Dx4uV30w0WB0adFEdbn0/BIURgSZjy6fFOK/PMuDjqRYp3zml7h7lzY
+ HuM51aBFO2aCbT1d3bheglCJIrM6bkDYqDlfwJ3PCoIid5kqFuRb7CEJNLybd8w7vZ6x
+ o2d+cs/TrvcT4oyRRlDdjl5dbjhi2urRZ+WKJ/OuMu6iv6A1zbE0QSOAS2T/IsBGMdyG
+ 1j7isLrrj9fL/7WDKRMja3Wru1hS/0vtVTOnZlGxiYfyI/wb53uCwvLq4R8SaqycjrFk
+ QKKFeA6c7cEHlejyk/71m6KLYspVoLW0nj5IptNWKpKFHc9U39Lb6InA0s4wkNTgIf3X Ug== 
+Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com
+ [129.46.96.20])
+ by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3j9m2t0m8y-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+ Tue, 30 Aug 2022 17:34:00 +0000
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com
+ [10.47.209.196])
+ by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 27UHXxOg005519
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+ Tue, 30 Aug 2022 17:33:59 GMT
+Received: from [10.110.39.132] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.29; Tue, 30 Aug
+ 2022 10:33:58 -0700
+Message-ID: <a437b91a-281d-56b3-41bf-15d9593ece74@quicinc.com>
+Date: Tue, 30 Aug 2022 10:33:58 -0700
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.13.0
+Subject: Re: [PATCH 1/3] slimbus: qcom-ngd: use correct error in message of
+ pdr_add_lookup() failure
+Content-Language: en-US
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>, Andy Gross
+ <agross@kernel.org>, Bjorn Andersson <andersson@kernel.org>, Konrad Dybcio
+ <konrad.dybcio@somainline.org>, Srinivas Kandagatla
+ <srinivas.kandagatla@linaro.org>, Greg Kroah-Hartman
+ <gregkh@linuxfoundation.org>,
+ <linux-arm-msm@vger.kernel.org>, <alsa-devel@alsa-project.org>,
+ <linux-kernel@vger.kernel.org>
+References: <20220830121359.634344-1-krzysztof.kozlowski@linaro.org>
+From: Jeff Johnson <quic_jjohnson@quicinc.com>
+In-Reply-To: <20220830121359.634344-1-krzysztof.kozlowski@linaro.org>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800
+ signatures=585085
+X-Proofpoint-GUID: kCyURfhdLxmWT3BuVaOOtQftpVhRUuqZ
+X-Proofpoint-ORIG-GUID: kCyURfhdLxmWT3BuVaOOtQftpVhRUuqZ
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.895,Hydra:6.0.517,FMLib:17.11.122.1
+ definitions=2022-08-30_10,2022-08-30_01,2022-06-22_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
+ lowpriorityscore=0
+ phishscore=0 adultscore=0 mlxlogscore=963 bulkscore=0 suspectscore=0
+ mlxscore=0 clxscore=1011 spamscore=0 malwarescore=0 impostorscore=0
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2207270000 definitions=main-2208300081
 X-Mailman-Approved-At: Fri, 02 Sep 2022 08:02:51 +0200
-Cc: ldv-project@linuxtesting.org, alsa-devel@alsa-project.org,
- Takashi Iwai <tiwai@suse.com>,
- Valentina Goncharenko <goncharenko.vp@ispras.ru>, linux-kernel@vger.kernel.org,
- Eliot Blennerhassett <eblennerhassett@audioscience.com>
+Cc: stable@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -62,29 +117,33 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The hpi_meter_get_peak() function contains the expression
-"hm.obj_index = hm.obj_index", which does not carry any semantic load.
+On 8/30/2022 5:13 AM, Krzysztof Kozlowski wrote:
+> Use cprrect error code, instead of previous 'ret' value, when printing
 
-Found by Linux Verification Center (linuxtesting.org) with SVACE.
+s/cprrect/correct/
 
-Fixes: 719f82d3987a ("ALSA: Add support of AudioScience ASI boards")
-Signed-off-by: Valentina Goncharenko <goncharenko.vp@ispras.ru>
----
- sound/pci/asihpi/hpifunc.c | 1 -
- 1 file changed, 1 deletion(-)
+> error from pdr_add_lookup() failure.
+> 
+> Cc: <stable@vger.kernel.org>
+> Fixes: e1ae85e1830e ("slimbus: qcom-ngd-ctrl: add Protection Domain Restart Support")
+> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+> ---
+>   drivers/slimbus/qcom-ngd-ctrl.c | 1 +
+>   1 file changed, 1 insertion(+)
+> 
+> diff --git a/drivers/slimbus/qcom-ngd-ctrl.c b/drivers/slimbus/qcom-ngd-ctrl.c
+> index 0aa8408464ad..6fe6abb86061 100644
+> --- a/drivers/slimbus/qcom-ngd-ctrl.c
+> +++ b/drivers/slimbus/qcom-ngd-ctrl.c
+> @@ -1581,6 +1581,7 @@ static int qcom_slim_ngd_ctrl_probe(struct platform_device *pdev)
+>   
+>   	pds = pdr_add_lookup(ctrl->pdr, "avs/audio", "msm/adsp/audio_pd");
+>   	if (IS_ERR(pds) && PTR_ERR(pds) != -EALREADY) {
+> +		ret = PTR_ERR(pds);
+>   		dev_err(dev, "pdr add lookup failed: %d\n", ret);
+>   		return PTR_ERR(pds);
 
-diff --git a/sound/pci/asihpi/hpifunc.c b/sound/pci/asihpi/hpifunc.c
-index 1de05383126a..24047fafef51 100644
---- a/sound/pci/asihpi/hpifunc.c
-+++ b/sound/pci/asihpi/hpifunc.c
-@@ -2020,7 +2020,6 @@ u16 hpi_meter_get_peak(u32 h_control, short an_peakdB[HPI_MAX_CHANNELS]
- 		HPI_CONTROL_GET_STATE);
- 	if (hpi_handle_indexes(h_control, &hm.adapter_index, &hm.obj_index))
- 		return HPI_ERROR_INVALID_HANDLE;
--	hm.obj_index = hm.obj_index;
- 	hm.u.c.attribute = HPI_METER_PEAK;
- 
- 	hpi_send_recv(&hm, &hr);
--- 
-2.25.1
+return ret?
+
+>   	}
 
