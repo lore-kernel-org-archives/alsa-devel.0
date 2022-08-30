@@ -4,68 +4,72 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 15C45ECAAA1
-	for <alsa-devel@archiver.kernel.org>; Tue, 30 Aug 2022 18:34:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B6EDCECAAD5
+	for <alsa-devel@archiver.kernel.org>; Tue, 30 Aug 2022 19:05:44 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 633C5169D;
-	Tue, 30 Aug 2022 20:33:16 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 633C5169D
+	by alsa0.perex.cz (Postfix) with ESMTPS id CD22916A3;
+	Tue, 30 Aug 2022 21:04:51 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CD22916A3
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1661884446;
-	bh=XsUE1WX2iPvSslSTLpbqIWw0tekCnX+Peis1JK0+aMI=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	s=default; t=1661886341;
+	bh=eFPF/n6jVsSaGykmhj+28XDu8sEBKuaI1h0KdA5loS4=;
+	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=f+Aj4TQrMyLbUL0iE6QYhaEaodqU58K1SsvMeUjV0r0j1uzwMIiR3ZxcTKaFmZTMy
-	 CWd4h5Do8jVfAAgZ5sIBtlGgrer09VDlN6Jc+7Z6rFV3M3s487cKZFfohdvGQxuqgA
-	 dZIxYFdI5GySvdUa3tbmlKqJfmPr/5F1He3VAADE=
+	b=X/F+EcNB4eYTLDQvrvco79Jq3B6oCoiLa1dY1RZ7C4FpnV20Kt1h6OQ7uX/M/T+89
+	 0IsLXA7n1xH8XoLJapa030HMUjZjsk3rt8BDWcqxu9P6kGhZLSfpc9XUyst8WueXWR
+	 SdlhdjY9d6zBtqWqfe9bdnjFw2EcjDyp4nhvy7S4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id E3DA7F8016B;
-	Tue, 30 Aug 2022 20:33:15 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 099AAF8016B;
+	Tue, 30 Aug 2022 21:04:51 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id C163AF8023A; Tue, 30 Aug 2022 20:33:13 +0200 (CEST)
-Received: from casper.infradead.org (casper.infradead.org
- [IPv6:2001:8b0:10b:1236::1])
+ id F3E72F800F2; Tue, 30 Aug 2022 21:04:49 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id DC00FF800F2
+ for <alsa-devel@alsa-project.org>; Tue, 30 Aug 2022 21:04:43 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DC00FF800F2
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="b18RNr1x"
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 2C35EF8012A
- for <alsa-devel@alsa-project.org>; Tue, 30 Aug 2022 20:33:06 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2C35EF8012A
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org
- header.b="oPO8HBOu"
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
- d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
- References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
- Content-Transfer-Encoding:Content-ID:Content-Description;
- bh=WEmQN+6Nw20owgW81yaoQaqKOSVpiLyZb3sg8Y1rIiw=; b=oPO8HBOuU4ELWQw0nJ93ViKWT0
- yyEf9j8EVAGjU+Mgm+4W3xATroP2LLFq3ZKBZuyRF6optEsL1uplSH+28bKdhvJeYLA2rlqBMq/ia
- UHgOtVLzm96UdmYim94H1rxEVddp4xubb2i7gP7XLO2qhyY4KI+tBQzWTAoH0BON0glx7myauqHSX
- jTl/6HdQKyk/d+hJXlzDczGI4fVjsm2rq/8c4JM897q+so9IHHkDwm2YYRvB5aVQjLPrkrwte9Pd7
- 0mL9I+sXyk7T2oxLx1T92EC7F2OkVuWAzFoFkex93tsvPDYpOht8dqkfsLQhf/aaSTUxVda7QbFMN
- 0WSFEzww==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red
- Hat Linux)) id 1oT62p-004K31-S7; Tue, 30 Aug 2022 18:33:03 +0000
-Date: Tue, 30 Aug 2022 19:33:03 +0100
-From: Matthew Wilcox <willy@infradead.org>
-To: Cezary Rojewski <cezary.rojewski@intel.com>
-Subject: Re: [PATCH v2 1/2] libfs: Introduce tokenize_user_input()
-Message-ID: <Yw5X379ct1PK6wZO@casper.infradead.org>
-References: <20220825164833.3923454-1-cezary.rojewski@intel.com>
- <20220825164833.3923454-2-cezary.rojewski@intel.com>
+ by dfw.source.kernel.org (Postfix) with ESMTPS id A618361614;
+ Tue, 30 Aug 2022 19:04:41 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9D7ACC433D7;
+ Tue, 30 Aug 2022 19:04:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1661886281;
+ bh=eFPF/n6jVsSaGykmhj+28XDu8sEBKuaI1h0KdA5loS4=;
+ h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+ b=b18RNr1xIJMS30q6OSmh3Ztnx1M0lzSkW/gpBHTFX+Bcdwc4Hi87MqM7TFSrQaWaZ
+ cCiMg0SF2H0WEFWnvk/b9zhjo/Ui5kTWNVL4t+nLc68qszjPH/W+QY+EaiKGnIIy3D
+ T6VS75xwavRnhaoiAs8NMwrZRAZYapiIXrUsviGf8SNPTB3MNNCWtsJ1ftv2tcG0iI
+ FDNcl4vy0bcZgJN0slgKWDAtmmMZVlrBufEf/NkH/4xC2Irr/zLr9gGREonyZFQN+P
+ R9ZDpxa8oXFRl9WCNJ+OfHSrgaEfYPMH/hS2IjVJtqc0AZAWCIK6SkS/lNMTRhRQvE
+ zf1mfLJxt5lQA==
+From: Mark Brown <broonie@kernel.org>
+To: Syed Saba Kareem <Syed.SabaKareem@amd.com>, alsa-devel@alsa-project.org
+In-Reply-To: <20220830132259.7759-1-Syed.SabaKareem@amd.com>
+References: <20220830132259.7759-1-Syed.SabaKareem@amd.com>
+Subject: Re: [PATCH] ASoC: amd: fix spelling mistake: "i.e" -> "i.e."
+Message-Id: <166188627628.1152207.14297370595024106059.b4-ty@kernel.org>
+Date: Tue, 30 Aug 2022 20:04:36 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220825164833.3923454-2-cezary.rojewski@intel.com>
-Cc: alsa-devel@alsa-project.org, kai.vehmanen@linux.intel.com,
- lgirdwood@gmail.com, yung-chuan.liao@linux.intel.com,
- pierre-louis.bossart@linux.intel.com, tiwai@suse.com, hdegoede@redhat.com,
- andy.shevchenko@gmail.com, broonie@kernel.org,
- ranjani.sridharan@linux.intel.com, amadeuszx.slawinski@linux.intel.com,
- linux-fsdevel@vger.kernel.org, peter.ujfalusi@linux.intel.com,
- linux-kernel@vger.kernel.org, viro@zeniv.linux.org.uk
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+X-Mailer: b4 0.10.0-dev-65ba7
+Cc: Sunil-kumar.Dommati@amd.com, Ajit Kumar Pandey <AjitKumar.Pandey@amd.com>,
+ Lucas Tanure <tanureal@opensource.cirrus.com>,
+ open list <linux-kernel@vger.kernel.org>, Basavaraj.Hiregoudar@amd.com,
+ Randy Dunlap <rdunlap@infradead.org>, Liam Girdwood <lgirdwood@gmail.com>,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ Julian Braha <julianbraha@gmail.com>, Vijendar.Mukunda@amd.com,
+ Takashi Iwai <tiwai@suse.com>, Daniel Baluta <daniel.baluta@nxp.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -81,19 +85,40 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Thu, Aug 25, 2022 at 06:48:32PM +0200, Cezary Rojewski wrote:
-> Add new helper function to allow for splitting specified user string
-> into a sequence of integers. Internally it makes use of get_options() so
-> the returned sequence contains the integers extracted plus an additional
-> element that begins the sequence and specifies the integers count.
+On Tue, 30 Aug 2022 18:52:55 +0530, Syed Saba Kareem wrote:
+> From: Syed Saba kareem <Syed.SabaKareem@amd.com>
 > 
-> Suggested-by: Andy Shevchenko <andy.shevchenko@gmail.com>
-> Signed-off-by: Cezary Rojewski <cezary.rojewski@intel.com>
-> ---
->  fs/libfs.c         | 45 +++++++++++++++++++++++++++++++++++++++++++++
->  include/linux/fs.h |  1 +
+> trivial fix to spelling mistake in Kconfig File.
+> 
+> Reported by : Randy Dunlap <rdunlap@infradead.org>
+> 
+> 
+> [...]
 
-This really has nothing to do with filesystems.  Surely
-string_helpers.[ch] is the appropriate place for this code?
-Also get_options() should probably move its prototype from kernel.h to
-string_helpers.h.
+Applied to
+
+   broonie/sound.git for-next
+
+Thanks!
+
+[1/1] ASoC: amd: fix spelling mistake: "i.e" -> "i.e."
+      commit: ced579dcaaa45fe16ac6c12fe847d650734af7bb
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
