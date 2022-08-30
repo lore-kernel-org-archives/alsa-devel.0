@@ -4,67 +4,83 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 20C15ECAAD1
-	for <alsa-devel@archiver.kernel.org>; Tue, 30 Aug 2022 04:50:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2B676ECAAD1
+	for <alsa-devel@archiver.kernel.org>; Tue, 30 Aug 2022 05:46:54 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 8A5BC1640;
-	Tue, 30 Aug 2022 06:49:32 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8A5BC1640
+	by alsa0.perex.cz (Postfix) with ESMTPS id 8FED81622;
+	Tue, 30 Aug 2022 07:46:02 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8FED81622
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1661835022;
-	bh=MX3HxKSSop3rjgdhjGuG13nF1e38sAvQKoCTUvhyoj8=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	s=default; t=1661838412;
+	bh=SOTud9sUJ5W2godhwQQtGidLtHr5u9iTzMlSieTbB8k=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=u4U4e4MX/eOODSshkRpHatdKJmZt/rDUVFYHG7MSd1VXX32VwXx0LnfiEBRufO2P3
-	 bFufb+KEoux4fQSRMfJBLxz3z4NlBSfxzq2wozqWrE1xzzgkgEAoOqxje+2aepyFlv
-	 +yFnxvtjGNUq1QrGpOTk7LaA8gNpJI1Yl8lNoJDU=
+	b=NoyVxEROjOXY8IrOCGXcqrTGVXjWsW9+0rtEOOmGnHIkt/IyC6P9Jna0KYmtLEAJY
+	 2jcngY1fEVXhDm2VmSSBfiTeITGcIKVTM7/Hz+jQ2X+NK4UIyMrGRXfnRY/e8NeXNy
+	 JUqgW5btOuxEy4jHzynl0xtH9KpGupwJ0rWdSGCY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 0816BF8016B;
-	Tue, 30 Aug 2022 06:49:31 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id D4B48F8016B;
+	Tue, 30 Aug 2022 07:46:01 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 27D15F8023A; Tue, 30 Aug 2022 06:49:30 +0200 (CEST)
-Received: from ams.source.kernel.org (ams.source.kernel.org
- [IPv6:2604:1380:4601:e00::1])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id A4061F8023A; Tue, 30 Aug 2022 07:45:59 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id BC9DAF800AA
- for <alsa-devel@alsa-project.org>; Tue, 30 Aug 2022 06:49:27 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BC9DAF800AA
+ by alsa1.perex.cz (Postfix) with ESMTPS id 3C774F800AA
+ for <alsa-devel@alsa-project.org>; Tue, 30 Aug 2022 07:45:52 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3C774F800AA
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="t9Ngg8Oz"
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
+ header.b="utjal12Z"; 
+ dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
+ header.b="PVcHLGIj"
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by ams.source.kernel.org (Postfix) with ESMTPS id D0A87B8166E;
- Tue, 30 Aug 2022 04:49:26 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 04247C433C1;
- Tue, 30 Aug 2022 04:49:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1661834965;
- bh=MX3HxKSSop3rjgdhjGuG13nF1e38sAvQKoCTUvhyoj8=;
- h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=t9Ngg8Oz+9ub/LTUoxB5A7w2yb5j3iCV11c37OUcfd0/dKaWglX5MTcpxH1kRb0JB
- FJwpEb10EalJ8DWnYiNoZN08vesNBzBybRy8O163m9h4g224XJEypOdeZKmF1Q3rtJ
- KMMeTaksT20lG1YvTK/DVPf3b+OxgZr02HHMasVDYNsHSxdgbfzfWuyATTA54TutZE
- xfey/PuiLBe6AkcCLxJg4Ou/pfnFpkP9IcOjkVRy/PIaV4VfPXa/fyxkh59NjH1vZ0
- XBKci6P28xMu6BvoV9Gl1vz2uI3hgB07IbYE1cFgnYJ1nlh99/ZQNZlXDgrMLw79C+
- Z0ZR84HTHNRMg==
-Date: Tue, 30 Aug 2022 10:19:20 +0530
-From: Vinod Koul <vkoul@kernel.org>
-To: Bard Liao <yung-chuan.liao@linux.intel.com>
-Subject: Re: [PATCH 00/11] soundwire: register cleanups
-Message-ID: <Yw2W0GYriUZIE2k6@matsya>
-References: <20220823053846.2684635-1-yung-chuan.liao@linux.intel.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220823053846.2684635-1-yung-chuan.liao@linux.intel.com>
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
- bard.liao@intel.com, pierre-louis.bossart@linux.intel.com
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 39FCC1F933;
+ Tue, 30 Aug 2022 05:45:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1661838352; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=YqbKorGtuIS3BoLpIndm2XA4B0mkE7zTYWV5+s4iNc0=;
+ b=utjal12Z5c+zv9kKTNeiz4jaS87QaR8lmDZh5tNRvUA4FEuWWdHjg+QJnUft3AQuqbxt/m
+ A9ListbRCAXm+GZqXx5b677Q/lcqcTFlBk6a9C9aT+i++U10gy0TCDgLGV+NYPz4o9p2An
+ 5d2LTPkro9vodqcXr5Ijg8iHMMLz11A=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1661838352;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=YqbKorGtuIS3BoLpIndm2XA4B0mkE7zTYWV5+s4iNc0=;
+ b=PVcHLGIjQ31s8tWq5tBokcK9vyIjleKtLb+YQQZ8fQNt9XImqNQ3R4uqXZnp0mqLzQRaRK
+ n/nKVN7saTmefUCw==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 075931352A;
+ Tue, 30 Aug 2022 05:45:52 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+ by imap2.suse-dmz.suse.de with ESMTPSA id qMpkABCkDWM+EgAAMHmgww
+ (envelope-from <tiwai@suse.de>); Tue, 30 Aug 2022 05:45:51 +0000
+Date: Tue, 30 Aug 2022 07:45:51 +0200
+Message-ID: <87k06q8esw.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: "Gustavo A. R. Silva" <gustavoars@kernel.org>
+Subject: Re: [PATCH][next] ALSA: hda/hdmi: Replace zero-length array with
+ DECLARE_FLEX_ARRAY() helper
+In-Reply-To: <Yw01A+TvF1FWQ588@work>
+References: <Yw01A+TvF1FWQ588@work>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org,
+ linux-hardening@vger.kernel.org, Takashi Iwai <tiwai@suse.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -80,11 +96,21 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On 23-08-22, 13:38, Bard Liao wrote:
-> Clean-up and reorder/regroup SoundWire SHIM registers.
+On Mon, 29 Aug 2022 23:52:03 +0200,
+Gustavo A. R. Silva wrote:
+> 
+> Zero-length arrays are deprecated and we are moving towards adopting
+> C99 flexible-array members, instead. So, replace zero-length array
+> declaration in union audio_infoframe with the new DECLARE_FLEX_ARRAY()
+> helper macro.
+> 
+> This helper allows for a flexible-array member in a union.
+> 
+> Link: https://github.com/KSPP/linux/issues/193
+> Link: https://gcc.gnu.org/onlinedocs/gcc/Zero-Length.html
+> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
 
-The series does not apply on sdw-next. I have already applied and pushed
-IDA series, so I guess it needs rebase on that
+Thanks, applied to for-next branch.
 
--- 
-~Vinod
+
+Takashi
