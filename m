@@ -4,71 +4,72 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 021BCECAAD1
-	for <alsa-devel@archiver.kernel.org>; Wed, 31 Aug 2022 12:42:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B9298ECAAD1
+	for <alsa-devel@archiver.kernel.org>; Wed, 31 Aug 2022 12:53:51 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 1557616C7;
-	Wed, 31 Aug 2022 14:41:35 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1557616C7
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0AB0516C0;
+	Wed, 31 Aug 2022 14:53:00 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0AB0516C0
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1661949745;
-	bh=7VXQYgpXHFCTbsB76XEzNCO0/kCouomL6yAB9DRolFU=;
+	s=default; t=1661950430;
+	bh=DyeODZ+gC0WuqPypGEZqeNPo3/H5VBEkRk78HqWNBbc=;
 	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=jr65IU03lJxZkFOQq6YAl5790zUldnaMhroCeYF2hUptWUaTa6+NuA6FTksWd/LWP
-	 9hjmlDoeI2oZudijMlc2eiErn6jtLjn9svkpg6h4KX9FZKQjNZZYdZloXDp2KCJH0f
-	 2mPHgOgUPTr3cVTsQv8aWBliSz+pXEtDU76IrEhU=
+	b=lz1jmv+FYadRjzzQbw7CPhBQgUnSX3Aqln/bMSa9ziPQLQNP25P2D3SIKJlngyedJ
+	 lDRvda0+Kg5DaXYnC0QUAnDRFT1hmo4iSjP2WcRMOZt5o7/rSq5YRWb7T/cpIzgILm
+	 0tC0yfUsJjScLln4DS2E1MBwJ5KydtfU2fWEwuHQ=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 49718F80448;
-	Wed, 31 Aug 2022 14:41:12 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 85120F8042F;
+	Wed, 31 Aug 2022 14:52:59 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id AD3F4F80494; Wed, 31 Aug 2022 14:41:05 +0200 (CEST)
+ id 59FC1F80128; Wed, 31 Aug 2022 14:52:58 +0200 (CEST)
 Received: from ams.source.kernel.org (ams.source.kernel.org
  [IPv6:2604:1380:4601:e00::1])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 0D76DF800AA
- for <alsa-devel@alsa-project.org>; Wed, 31 Aug 2022 14:41:02 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0D76DF800AA
+ by alsa1.perex.cz (Postfix) with ESMTPS id F231FF80128
+ for <alsa-devel@alsa-project.org>; Wed, 31 Aug 2022 14:52:55 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F231FF80128
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="gK8ay9jX"
+ header.b="tS37nHwK"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by ams.source.kernel.org (Postfix) with ESMTPS id 293DEB82079;
- Wed, 31 Aug 2022 12:41:02 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 80FCCC433D6;
- Wed, 31 Aug 2022 12:40:58 +0000 (UTC)
+ by ams.source.kernel.org (Postfix) with ESMTPS id 337BAB82077;
+ Wed, 31 Aug 2022 12:52:55 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 333E1C433C1;
+ Wed, 31 Aug 2022 12:52:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1661949660;
- bh=7VXQYgpXHFCTbsB76XEzNCO0/kCouomL6yAB9DRolFU=;
+ s=k20201202; t=1661950373;
+ bh=DyeODZ+gC0WuqPypGEZqeNPo3/H5VBEkRk78HqWNBbc=;
  h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=gK8ay9jX2GrmzFfm/INug7cwJ3Vfwp9XYW5uQMddvnKaa8evOjTkpOvFF5Nbp5gfO
- JodIaicNHhSnIUlvXRsizxFvU1ItfcHy36SiEw8hpg/kROAJt1fhfTofN4xmGJ9GOj
- M9Y6dB00tL+fA8ZQTNdbtbVrB0Mt6D+ew1/SJXKlMLkOrPSwakKRD903UTnYG1K0kj
- 9eBd+BzSkbbN2uUij4pKzlCXn83dhYGtzeLQejcPbNG/Wt/Rh3VqXVODId6BHkzVjS
- Kcl//nHCkhdAn3tMzvHikW7v7uMUAjafHkiXbt0z43cM/GjaS+f8fHtpnYT9ozAJ1V
- 1mr40x6Yte2dg==
+ b=tS37nHwKrpgZlmSwgPfLXMSXc8KLzYFsqw+PhEjNt0e2w3YH4RgR+wIgOngkK87CG
+ 5JmLeXUHkBLmRBLx3JSf6F9RG5qEnRlKObLNnPRW5JH5UJAerzAGtOAfK6vCyta4BB
+ 0PAJTU81Vfnud1G65ol5o/j0GNR0ta/usYz0XB7gsYrNK5r0xN/AHnaT5l3e3xWVuB
+ 5Sl3opk0OtAQFZw2HxiTAd5PUbwJzEdKJf+2K0zBHGOl+jwtcMYEIet5Z1BYmg7TH6
+ KeNce0NR4tiiEL8MR7R0SoXk2Pv7m3gHcyLcjG+xCMnElGdgaO5In27yNIgDokrEyF
+ YsaGiLk5V78yQ==
 From: Mark Brown <broonie@kernel.org>
-To: Hector Martin <marcan@marcan.st>, Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Sven Peter <sven@svenpeter.dev>, Rob Herring <robh+dt@kernel.org>, Philipp Zabel <p.zabel@pengutronix.de>,
- Liam Girdwood <lgirdwood@gmail.com>, Martin Povišer <povik+lin@cutebit.org>
-In-Reply-To: <20220824160715.95779-1-povik+lin@cutebit.org>
-References: <20220824160715.95779-1-povik+lin@cutebit.org>
-Subject: Re: (subset) [PATCH v3 0/4] ASoC platform driver for Apple MCA
-Message-Id: <166194965823.85274.11181035918338902693.b4-ty@kernel.org>
-Date: Wed, 31 Aug 2022 13:40:58 +0100
+To: alsa-devel@alsa-project.org,
+ Laurentiu Mihalcea <laurentiu.mihalcea@nxp.com>
+In-Reply-To: <20220822101502.17644-1-laurentiu.mihalcea@nxp.com>
+References: <20220822101502.17644-1-laurentiu.mihalcea@nxp.com>
+Subject: Re: [PATCH 0/2] ASoC: SOF: compress: Add support for timestamp on
+ capture
+Message-Id: <166195037191.99184.7695234970678699743.b4-ty@kernel.org>
+Date: Wed, 31 Aug 2022 13:52:51 +0100
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 X-Mailer: b4 0.10.0-dev-0c1df
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
- linux-kernel@vger.kernel.org, Alyssa Rosenzweig <alyssa@rosenzweig.io>,
- asahi@lists.linux.dev
+Cc: kai.vehmanen@linux.intel.com, yung-chuan.liao@linux.intel.com,
+ pierre-louis.bossart@linux.intel.com, lgirdwood@gmail.com,
+ ranjani.sridharan@linux.intel.com, peter.ujfalusi@linux.intel.com,
+ linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -84,19 +85,16 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, 24 Aug 2022 18:07:11 +0200, Martin Povišer wrote:
-> sending what should be the final touches on Apple MCA driver. It most
-> likely goes without saying but please do not merge the DT additions
-> into the ASoC tree.
+On Mon, 22 Aug 2022 13:15:00 +0300, Laurentiu Mihalcea wrote:
+> The purpose of this patch series is to add support for
+> timestamping on capture direction using the compress
+> API.
 > 
-> Martin
-> 
-> Changes since v2:
->  - fix Mark's style nit
->  - order compatibles in schema
->  - redo the DT additions for t8103
->  - remove stray unlock in mca_be_prepare (and rename the locking patch)
-> Link: https://lore.kernel.org/asahi/20220819125430.4920-1-povik+lin@cutebit.org/T/#t
+> This is simply done by splitting sof_compr_copy into 2
+> functions: sof_compr_copy_playback and sof_compr_copy_capture.
+> Each of these functions handles one of the possible directions:
+> capture or playback and is called in sof_compr_copy based on
+> the stream's direction.
 > 
 > [...]
 
@@ -106,12 +104,10 @@ Applied to
 
 Thanks!
 
-[1/4] dt-bindings: sound: Add Apple MCA I2S transceiver
-      commit: 6ed462d1c1167506479089e655355b3c123fee89
-[3/4] ASoC: apple: mca: Start new platform driver
-      commit: 3df5d0d972893d3c0df5aead8152fe1ad48ef45c
-[4/4] ASoC: apple: mca: Add locking
-      commit: 4065f0b25b7b30ba4dd4665deb5305ead1c0db25
+[1/2] ASoC: SOF: compress: Move sof_compr_copy functionality
+      commit: 272ff8828f35658aace17e3227624fbbd68a6bcf
+[2/2] ASoC: SOF: compress: Add copy function for capture case
+      commit: 1a01e19278022cd2f7daa7a065ed47c5022dbad9
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
