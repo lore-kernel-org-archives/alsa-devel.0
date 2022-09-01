@@ -4,86 +4,49 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id BB991C54EE9
-	for <alsa-devel@archiver.kernel.org>; Fri,  2 Sep 2022 05:53:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B49E1ECAAA1
+	for <alsa-devel@archiver.kernel.org>; Fri,  2 Sep 2022 06:03:44 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id F33491634;
-	Fri,  2 Sep 2022 07:52:35 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F33491634
+	by alsa0.perex.cz (Postfix) with ESMTPS id 9F3A71630;
+	Fri,  2 Sep 2022 08:02:52 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9F3A71630
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1662098006;
-	bh=IgLXJn0oCVqfNTvDpeC7PuiAK46Y2XRUfqRzITlLB60=;
-	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=UoJLEJT29oUPVOsCJdbeV5uo4Dt/H9uXX/4C60s7msgZdL1vDZ2K8AzRgKmVGfHCm
-	 HWSan7ziERVKMcvJ6FUA34yW72hC9CRY/tHx/1PBOlPGECGxDU66+ksditE1rGs0Ls
-	 guq65V16Ovi1jEHe4iyV/YhuKMygq0ATiYBBXDz4=
+	s=default; t=1662098622;
+	bh=VetbOzof6aLXxmltfifFTKX6aMKDbev/eE8VPkjVHsg=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=Sc2uP6maJObqrMphBTlegN7xLZXSTHn308SCEAjHX8M1ExlB8XL9ZMSOn5VY7Q1SG
+	 fbHPim9yWyJanMdtB71BC/FDKDFVsnZ+QUCbraKyLSLEB9OE33bjQZV4eTcf196/nB
+	 GxxeMEirNHSPDKWRYZ5Zv+jnRY6kn3cVUlMWlAjk=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 8EC2EF80125;
-	Fri,  2 Sep 2022 07:52:35 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 40762F8020D;
+	Fri,  2 Sep 2022 08:02:52 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id CB938F8027B; Fri,  2 Sep 2022 07:52:33 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id B2ADFF8026D; Thu,  1 Sep 2022 12:28:46 +0200 (CEST)
+Received: from mail.ispras.ru (mail.ispras.ru [83.149.199.84])
+ (using TLSv1.2 with cipher DHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 3108FF80125
- for <alsa-devel@alsa-project.org>; Fri,  2 Sep 2022 07:52:30 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3108FF80125
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="eccN88KT"; 
- dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="VINsGU5w"
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id A4BCE33F05;
- Fri,  2 Sep 2022 05:52:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1662097950; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=id4IefFvAsTItWxsqxPpjVsL1MtN2MWcGtsWZFQVAXc=;
- b=eccN88KT0DHq08PJWF2xzlXfRiB5Ph/urDVwc2G1srhtTZLCP3prtdfdRCCmpKlW3BRcKF
- pie93wESkAk3tn+G13i9acyTcWPVXbxzan0waleZDlxqPBPvDB+QQNEnp9aqLwgPmg+vgq
- 5QodFTIoY7ug0L8QG/Y47QuYnzCjbsM=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1662097950;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=id4IefFvAsTItWxsqxPpjVsL1MtN2MWcGtsWZFQVAXc=;
- b=VINsGU5wURQHasySkJLSkX9NiUQ2BMzWud1DCFhFfyBrXhf8CtPxiSHXxXGuSbgSkWOq+D
- YIC2FwRCn45+B+Bg==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 74B84133DD;
- Fri,  2 Sep 2022 05:52:30 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id +VDAGx6aEWOBOAAAMHmgww
- (envelope-from <tiwai@suse.de>); Fri, 02 Sep 2022 05:52:30 +0000
-Date: Fri, 02 Sep 2022 07:52:29 +0200
-Message-ID: <87v8q6wcf6.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Sean Anderson <sean.anderson@seco.com>
-Subject: Re: retire_capture_urb: Corrected urb data len
-In-Reply-To: <53306c0f-e5ef-44ee-b90c-a3ea61ca454c@seco.com>
-References: <68a97d61-21bf-b45e-f6ed-c0906dd4b197@seco.com>
- <87ilmfj72j.wl-tiwai@suse.de>
- <9d41eda1-1172-ea60-dd87-b3e38a529170@seco.com>
- <87r110iz8w.wl-tiwai@suse.de>
- <53306c0f-e5ef-44ee-b90c-a3ea61ca454c@seco.com>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
-Cc: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
- alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id CE9CBF800EB
+ for <alsa-devel@alsa-project.org>; Thu,  1 Sep 2022 12:28:33 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CE9CBF800EB
+Received: from localhost.localdomain (unknown [83.149.199.65])
+ by mail.ispras.ru (Postfix) with ESMTPSA id E5B9B40D403D;
+ Thu,  1 Sep 2022 10:28:31 +0000 (UTC)
+From: Valentina Goncharenko <goncharenko.vp@ispras.ru>
+To: Jaroslav Kysela <perex@perex.cz>
+Subject: [PATCH] ALSA: asihpi - Remove useless code in hpi_meter_get_peak()
+Date: Thu,  1 Sep 2022 13:28:14 +0300
+Message-Id: <20220901102814.131855-1-goncharenko.vp@ispras.ru>
+X-Mailer: git-send-email 2.25.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-Mailman-Approved-At: Fri, 02 Sep 2022 08:02:51 +0200
+Cc: ldv-project@linuxtesting.org, alsa-devel@alsa-project.org,
+ Takashi Iwai <tiwai@suse.com>,
+ Valentina Goncharenko <goncharenko.vp@ispras.ru>, linux-kernel@vger.kernel.org,
+ Eliot Blennerhassett <eblennerhassett@audioscience.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -99,78 +62,29 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Thu, 01 Sep 2022 17:25:41 +0200,
-Sean Anderson wrote:
-> 
-> 
-> 
-> On 8/28/22 3:49 AM, Takashi Iwai wrote:
-> > On Fri, 26 Aug 2022 20:57:53 +0200,
-> > Sean Anderson wrote:
-> >> 
-> >> On 8/26/22 12:36 PM, Takashi Iwai wrote:
-> >> > On Fri, 26 Aug 2022 18:22:24 +0200,
-> >> > Sean Anderson wrote:
-> >> >> 
-> >> >> Hi all,
-> >> >> 
-> >> >> I have a "FiiO DigiHug USB Audio" sound card (1852:7022) [3]. I have had
-> >> >> no problems with the audio, but I did notice a large number of message
-> >> >> like 
-> >> >> 
-> >> >> retire_capture_urb: 4992 callbacks suppressed
-> >> >> 
-> >> >> in my dmesg [1]. This is caused by the "Corrected urb data len."
-> >> >> warning.
-> >> > 
-> >> > What exact values are shown there?
-> >> 
-> >> Unfortunately, as detailed below, I was unable to turn off ratelimiting.
-> >> 
-> >> > The problem is that your hardware
-> >> > (likely a buggy firmware) returns the unaligned size of bytes as the
-> >> > data.  Maybe it's worth to replace dev_warn_ratelimited() there with
-> >> > dev_warn() and take all warnings once.  Then we can see what kind of
-> >> > values are delivered from the hardware.
-> >> 
-> >> I'll have an attempt at that next week
-> >> 
-> >> >> The patch adding this warning [2] makes it seem like
-> >> >> this warning should be an uncommon occurance. However, based on the
-> >> >> number of suppressed callbacks, this seems to be happening at a rate of
-> >> >> around 500 Hz.
-> >> >> 
-> >> >> Is this buggy hardware? Or is this a bug in the driver? Does there need
-> >> >> to be a quirk? Or perhaps the warning above should be a debug instead?
-> >> > 
-> >> > There is no quirk for that.  As long as the device works with that
-> >> > workaround (except for messages), we can simply add a quirk to not
-> >> > warn but always apply the workaround silently for such devices.
-> >> 
-> >> OK. I wasn't sure what the correct resolution would be.
-> > 
-> > Actually I was wrong: the existing quirk QUIRK_FLAG_ALIGN_TRANSFER
-> > should cover that.
-> > 
-> > Could you try to pass quirk_flags=0x04 for the corresponding card slot
-> > (the option takes an array) to snd-usb-audio module?  Alternatively,
-> > try to pass quirk_alias=18557022:0e510408 to snd-usb-audio?
-> 
-> I tried both options, but neither worked.
+The hpi_meter_get_peak() function contains the expression
+"hm.obj_index = hm.obj_index", which does not carry any semantic load.
 
-I have no further idea.  You should try the latest kernel without
-modification before checking further.
+Found by Linux Verification Center (linuxtesting.org) with SVACE.
 
-And, looking at the code again, it's really strange that you get those
-messages.  Actually the transfer size *is* aligned to the audio frames
-as default *unless* QUIRK_FLAG_ALIGN_TRANSFER is passed.  And the
-check is done rather the audio sample size alignment -- which must fit
-within the audio frame alignment.
+Fixes: 719f82d3987a ("ALSA: Add support of AudioScience ASI boards")
+Signed-off-by: Valentina Goncharenko <goncharenko.vp@ispras.ru>
+---
+ sound/pci/asihpi/hpifunc.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-So, QUIRK_FLAG_ALIGN_TRANSFER is already set for your device by some
-reason incorrectly, or the code is doing wrong on your kernel.
-We need to check what values are shown there actually, then check
-whether the problem happens with the latest vanilla kernel.
+diff --git a/sound/pci/asihpi/hpifunc.c b/sound/pci/asihpi/hpifunc.c
+index 1de05383126a..24047fafef51 100644
+--- a/sound/pci/asihpi/hpifunc.c
++++ b/sound/pci/asihpi/hpifunc.c
+@@ -2020,7 +2020,6 @@ u16 hpi_meter_get_peak(u32 h_control, short an_peakdB[HPI_MAX_CHANNELS]
+ 		HPI_CONTROL_GET_STATE);
+ 	if (hpi_handle_indexes(h_control, &hm.adapter_index, &hm.obj_index))
+ 		return HPI_ERROR_INVALID_HANDLE;
+-	hm.obj_index = hm.obj_index;
+ 	hm.u.c.attribute = HPI_METER_PEAK;
+ 
+ 	hpi_send_recv(&hm, &hr);
+-- 
+2.25.1
 
-
-Takashi
