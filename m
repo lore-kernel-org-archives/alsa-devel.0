@@ -4,68 +4,64 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8582FECAAD5
-	for <alsa-devel@archiver.kernel.org>; Fri,  2 Sep 2022 13:31:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 47F5DC38145
+	for <alsa-devel@archiver.kernel.org>; Fri,  2 Sep 2022 14:17:26 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id AAE4C163A;
-	Fri,  2 Sep 2022 15:30:41 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AAE4C163A
+	by alsa0.perex.cz (Postfix) with ESMTPS id A333B1637;
+	Fri,  2 Sep 2022 16:16:34 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A333B1637
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1662125491;
-	bh=EhfAqx7+9bqHRSvR8s0IzuAeBJ94yTCCtgQttzyRyrM=;
-	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
+	s=default; t=1662128244;
+	bh=wmqerl6kcztNzb9sQOWsUbMhIkTFq6S0ZHFCXOotRy8=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=em5nlijyurAXStwuLODardjPzjcZdVsKQTVtUyn/WTAXbwRLBRM7Ct6Jo83mWSVRW
-	 oDYmOW1pGAbqCrAdx2m+zAqhJBufHP8goDlwkbJG4fy0rkJk3JPt+BNtEcAAlOA6kV
-	 7Z0wWhsHubrMg93dxdFsicwg4oOQMdBF5umaLu+4=
+	b=LbcvgnLMWCX27IUgZX/lEaqbVMvTt3NRAS/m2oiSioBnEpa9Id4jaRYIf0SyC8poO
+	 ngsSXzZBs7MFZbrp6ZcMmzaZM990mK7UYkNHTNmSgghsmwE2/LPBJwyCzGmbGfIYKn
+	 c255T5Sa9JtFvZSWbFXeJxUV9C/CzzcCb9oIpOMs=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 34ED4F80154;
-	Fri,  2 Sep 2022 15:30:41 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 3572AF8020D;
+	Fri,  2 Sep 2022 16:16:34 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 53AD5F8027B; Fri,  2 Sep 2022 15:30:39 +0200 (CEST)
-Received: from ams.source.kernel.org (ams.source.kernel.org
- [IPv6:2604:1380:4601:e00::1])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 7185FF80154
- for <alsa-devel@alsa-project.org>; Fri,  2 Sep 2022 15:30:35 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7185FF80154
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="T8egBlM4"
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+ id 3106BF8027B; Fri,  2 Sep 2022 16:16:32 +0200 (CEST)
+Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by ams.source.kernel.org (Postfix) with ESMTPS id E74CCB82B6C;
- Fri,  2 Sep 2022 13:30:34 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 49C8DC433D6;
- Fri,  2 Sep 2022 13:30:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1662125433;
- bh=EhfAqx7+9bqHRSvR8s0IzuAeBJ94yTCCtgQttzyRyrM=;
- h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=T8egBlM44VGvdGuf/AABYh9pMmfSkUlbBA6v8xFzS4UMIm9lwLlsnqdYsKnkar+P8
- u4xqYuAy76I4ZfYqoUyjPDSS86C8eDGGvxGkl2u03chFR5kcgxxKDxDJPYqVxHmSDY
- 4xAEWIUqShXzMtnOirb7oAdiZbcFuKOG/iJjsgdCXYizHIQ+wQDCuOg2u5j/sJRbC3
- G5JXnSbKNgh8p6EAzeuZHeAuCd/Gt8WAVqXIq4cSDDRCJinJlJvTdvsAAx24mJqgtY
- 1LojI21lxF/gG/a+hf0DfcylydAiR1Q2pgZdAN75WRl5nk/XB+Y5j3E9xwZVMb+VPT
- 6frM37yANPD5A==
-From: Mark Brown <broonie@kernel.org>
-To: Jiasheng Jiang <jiasheng@iscas.ac.cn>, kuninori.morimoto.gx@renesas.com
-In-Reply-To: <20220902013030.3691266-1-jiasheng@iscas.ac.cn>
-References: <20220902013030.3691266-1-jiasheng@iscas.ac.cn>
-Subject: Re: [PATCH v2] ASoC: rsnd: Add check for rsnd_mod_power_on
-Message-Id: <166212543201.44289.12872080973862311815.b4-ty@kernel.org>
-Date: Fri, 02 Sep 2022 14:30:32 +0100
+ by alsa1.perex.cz (Postfix) with ESMTPS id 7A72CF80163
+ for <alsa-devel@alsa-project.org>; Fri,  2 Sep 2022 16:16:28 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7A72CF80163
+X-IronPort-AV: E=McAfee;i="6500,9779,10457"; a="382287582"
+X-IronPort-AV: E=Sophos;i="5.93,283,1654585200"; d="scan'208";a="382287582"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+ by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 02 Sep 2022 07:16:24 -0700
+X-IronPort-AV: E=Sophos;i="5.93,283,1654585200"; d="scan'208";a="563975235"
+Received: from smile.fi.intel.com ([10.237.72.54])
+ by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 02 Sep 2022 07:16:20 -0700
+Received: from andy by smile.fi.intel.com with local (Exim 4.96)
+ (envelope-from <andy.shevchenko@gmail.com>) id 1oU7Sz-007Q79-0B;
+ Fri, 02 Sep 2022 17:16:17 +0300
+Date: Fri, 2 Sep 2022 17:16:16 +0300
+From: Andy Shevchenko <andy.shevchenko@gmail.com>
+To: Cezary Rojewski <cezary.rojewski@intel.com>
+Subject: Re: [PATCH v5 0/2] lib/string_helpers: Introduce
+ parse_int_array_user()
+Message-ID: <YxIQMCFX2X3p8teL@smile.fi.intel.com>
+References: <20220902133256.789165-1-cezary.rojewski@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-X-Mailer: b4 0.10.0-dev-7d1a0
-Cc: lgirdwood@gmail.com, alsa-devel@alsa-project.org, tiwai@suse.com,
- linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220902133256.789165-1-cezary.rojewski@intel.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+Cc: andy@kernel.org, alsa-devel@alsa-project.org, kai.vehmanen@linux.intel.com,
+ lgirdwood@gmail.com, yung-chuan.liao@linux.intel.com,
+ intel-poland@eclists.intel.com, pierre-louis.bossart@linux.intel.com,
+ willy@infradead.org, tiwai@suse.com, hdegoede@redhat.com, broonie@kernel.org,
+ ranjani.sridharan@linux.intel.com, amadeuszx.slawinski@linux.intel.com,
+ peter.ujfalusi@linux.intel.com, linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -81,37 +77,25 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Fri, 2 Sep 2022 09:30:30 +0800, Jiasheng Jiang wrote:
-> As rsnd_mod_power_on() can return negative numbers,
-> it should be better to check the return value and
-> deal with the exception.
+On Fri, Sep 02, 2022 at 03:32:54PM +0200, Cezary Rojewski wrote:
+> Continuation of recent upstream discussion [1] regarding user string
+> tokenization.
 > 
+> First, parse_int_array_user() is introduced to allow for splitting
+> specified user string into a sequence of integers. Makes use of
+> get_options() internally so the parsing logic is not duplicated.
 > 
+> With that done, redundant parts of the sound driver are removed.
+> 
+> Originally similar functionality was added for the SOF sound driver. As
+> more users are on the horizon, it is desirable to update existing
+> string_helpers code and provide a unified solution.
 
-Applied to
+Feel free to route it via SOF or related tree since you have my tag
+for the library part.
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+-- 
+With Best Regards,
+Andy Shevchenko
 
-Thanks!
 
-[1/1] ASoC: rsnd: Add check for rsnd_mod_power_on
-      commit: 376be51caf8871419bbcbb755e1e615d30dc3153
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
