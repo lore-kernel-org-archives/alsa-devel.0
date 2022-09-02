@@ -4,76 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6A8B6C38145
-	for <alsa-devel@archiver.kernel.org>; Fri,  2 Sep 2022 13:25:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8582FECAAD5
+	for <alsa-devel@archiver.kernel.org>; Fri,  2 Sep 2022 13:31:33 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 6BD101662;
-	Fri,  2 Sep 2022 15:24:29 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6BD101662
+	by alsa0.perex.cz (Postfix) with ESMTPS id AAE4C163A;
+	Fri,  2 Sep 2022 15:30:41 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AAE4C163A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1662125119;
-	bh=wbf36R8tPwDs/lN78MtL72HqGQOsM+BzFflTRh5/SCE=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1662125491;
+	bh=EhfAqx7+9bqHRSvR8s0IzuAeBJ94yTCCtgQttzyRyrM=;
+	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=J9vVhECxFAjjZa9b0iFEroO5stwzciXmvCXiSr7sNw8NdYTktf6jyITqpTS1ctT1F
-	 4E8yzFqmB9JW0KBRHAtlFGALUEU3iSYPsAYH3THqh2yQFSnhaVb6RAnII3+3wbLgA3
-	 /RuMwb8IBDQjCVEDISkFa2YgMC5HsGH/poQ2wcPI=
+	b=em5nlijyurAXStwuLODardjPzjcZdVsKQTVtUyn/WTAXbwRLBRM7Ct6Jo83mWSVRW
+	 oDYmOW1pGAbqCrAdx2m+zAqhJBufHP8goDlwkbJG4fy0rkJk3JPt+BNtEcAAlOA6kV
+	 7Z0wWhsHubrMg93dxdFsicwg4oOQMdBF5umaLu+4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 16485F80125;
-	Fri,  2 Sep 2022 15:24:29 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 34ED4F80154;
+	Fri,  2 Sep 2022 15:30:41 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 6443EF80154; Fri,  2 Sep 2022 15:24:27 +0200 (CEST)
-Received: from mga06.intel.com (mga06b.intel.com [134.134.136.31])
+ id 53AD5F8027B; Fri,  2 Sep 2022 15:30:39 +0200 (CEST)
+Received: from ams.source.kernel.org (ams.source.kernel.org
+ [IPv6:2604:1380:4601:e00::1])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 7185FF80154
+ for <alsa-devel@alsa-project.org>; Fri,  2 Sep 2022 15:30:35 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7185FF80154
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="T8egBlM4"
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id B9ED8F80125
- for <alsa-devel@alsa-project.org>; Fri,  2 Sep 2022 15:24:20 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B9ED8F80125
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="Q0W6px0s"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
- d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1662125062; x=1693661062;
- h=from:to:cc:subject:date:message-id:in-reply-to:
- references:mime-version:content-transfer-encoding;
- bh=wbf36R8tPwDs/lN78MtL72HqGQOsM+BzFflTRh5/SCE=;
- b=Q0W6px0sBlhLRJ0sX/EGZCdN+d+hKXfla7misrpyJqOYkTJnYc0WbFvs
- AAOIg88yltMastVepZb0xINnrwJCdoS2W79f9pdyx7s+uGj6YQhYfzryc
- /Jffe7OdQhrk9i8CbEWCq9xH3tgRz+YJ71DNge3RMBh8n+Z9xKlxolNb0
- QpuNPAuGkWKs5BdLfUj84XojAJ6wlYJrYkhIQPJ6Cq+ABfXyBbBOYeTXd
- 2ofYSo6J5DZVUtC/6cNx8FjZUZFwTfG9xLCWHq22OPtmjZ6Cfua837fRC
- MmQ9qyZWoaz9VBfS77fnon8xOT3Anj0TMngcvQtg501VolwX69wWBEDN/ Q==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10457"; a="357694904"
-X-IronPort-AV: E=Sophos;i="5.93,283,1654585200"; d="scan'208";a="357694904"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
- by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 02 Sep 2022 06:23:20 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.93,283,1654585200"; d="scan'208";a="674352589"
-Received: from crojewsk-ctrl.igk.intel.com ([10.102.9.28])
- by fmsmga008.fm.intel.com with ESMTP; 02 Sep 2022 06:23:17 -0700
-From: Cezary Rojewski <cezary.rojewski@intel.com>
-To: alsa-devel@alsa-project.org,
-	broonie@kernel.org
-Subject: [PATCH v5 2/2] ASoC: SOF: Remove strsplit_u32() and tokenize_input()
-Date: Fri,  2 Sep 2022 15:32:56 +0200
-Message-Id: <20220902133256.789165-3-cezary.rojewski@intel.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20220902133256.789165-1-cezary.rojewski@intel.com>
-References: <20220902133256.789165-1-cezary.rojewski@intel.com>
+ by ams.source.kernel.org (Postfix) with ESMTPS id E74CCB82B6C;
+ Fri,  2 Sep 2022 13:30:34 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 49C8DC433D6;
+ Fri,  2 Sep 2022 13:30:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1662125433;
+ bh=EhfAqx7+9bqHRSvR8s0IzuAeBJ94yTCCtgQttzyRyrM=;
+ h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+ b=T8egBlM44VGvdGuf/AABYh9pMmfSkUlbBA6v8xFzS4UMIm9lwLlsnqdYsKnkar+P8
+ u4xqYuAy76I4ZfYqoUyjPDSS86C8eDGGvxGkl2u03chFR5kcgxxKDxDJPYqVxHmSDY
+ 4xAEWIUqShXzMtnOirb7oAdiZbcFuKOG/iJjsgdCXYizHIQ+wQDCuOg2u5j/sJRbC3
+ G5JXnSbKNgh8p6EAzeuZHeAuCd/Gt8WAVqXIq4cSDDRCJinJlJvTdvsAAx24mJqgtY
+ 1LojI21lxF/gG/a+hf0DfcylydAiR1Q2pgZdAN75WRl5nk/XB+Y5j3E9xwZVMb+VPT
+ 6frM37yANPD5A==
+From: Mark Brown <broonie@kernel.org>
+To: Jiasheng Jiang <jiasheng@iscas.ac.cn>, kuninori.morimoto.gx@renesas.com
+In-Reply-To: <20220902013030.3691266-1-jiasheng@iscas.ac.cn>
+References: <20220902013030.3691266-1-jiasheng@iscas.ac.cn>
+Subject: Re: [PATCH v2] ASoC: rsnd: Add check for rsnd_mod_power_on
+Message-Id: <166212543201.44289.12872080973862311815.b4-ty@kernel.org>
+Date: Fri, 02 Sep 2022 14:30:32 +0100
 MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Cc: andy@kernel.org, Cezary Rojewski <cezary.rojewski@intel.com>,
- intel-poland@eclists.intel.com, kai.vehmanen@linux.intel.com,
- yung-chuan.liao@linux.intel.com, tiwai@suse.com,
- pierre-louis.bossart@linux.intel.com, willy@infradead.org, lgirdwood@gmail.com,
- hdegoede@redhat.com, andy.shevchenko@gmail.com,
- ranjani.sridharan@linux.intel.com, amadeuszx.slawinski@linux.intel.com,
- peter.ujfalusi@linux.intel.com, linux-kernel@vger.kernel.org
+X-Mailer: b4 0.10.0-dev-7d1a0
+Cc: lgirdwood@gmail.com, alsa-devel@alsa-project.org, tiwai@suse.com,
+ linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -89,195 +81,37 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Make use of global integer-array parsing helper instead of the internal
-one as both serve same purpose. With that, both strsplit_u32() and
-tokenize_input() become unused so remove them.
+On Fri, 2 Sep 2022 09:30:30 +0800, Jiasheng Jiang wrote:
+> As rsnd_mod_power_on() can return negative numbers,
+> it should be better to check the return value and
+> deal with the exception.
+> 
+> 
 
-Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
-Signed-off-by: Cezary Rojewski <cezary.rojewski@intel.com>
----
- sound/soc/sof/sof-client-probes.c | 104 ++++++------------------------
- 1 file changed, 18 insertions(+), 86 deletions(-)
+Applied to
 
-diff --git a/sound/soc/sof/sof-client-probes.c b/sound/soc/sof/sof-client-probes.c
-index eb246b823461..aad7fdc665d7 100644
---- a/sound/soc/sof/sof-client-probes.c
-+++ b/sound/soc/sof/sof-client-probes.c
-@@ -12,6 +12,8 @@
- #include <linux/debugfs.h>
- #include <linux/module.h>
- #include <linux/pm_runtime.h>
-+#include <linux/string_helpers.h>
-+
- #include <sound/soc.h>
- #include <sound/sof/header.h>
- #include "sof-client.h"
-@@ -410,79 +412,6 @@ static const struct snd_compress_ops sof_probes_compressed_ops = {
- 	.copy = sof_probes_compr_copy,
- };
- 
--/**
-- * strsplit_u32 - Split string into sequence of u32 tokens
-- * @buf:	String to split into tokens.
-- * @delim:	String containing delimiter characters.
-- * @tkns:	Returned u32 sequence pointer.
-- * @num_tkns:	Returned number of tokens obtained.
-- */
--static int strsplit_u32(char *buf, const char *delim, u32 **tkns, size_t *num_tkns)
--{
--	char *s;
--	u32 *data, *tmp;
--	size_t count = 0;
--	size_t cap = 32;
--	int ret = 0;
--
--	*tkns = NULL;
--	*num_tkns = 0;
--	data = kcalloc(cap, sizeof(*data), GFP_KERNEL);
--	if (!data)
--		return -ENOMEM;
--
--	while ((s = strsep(&buf, delim)) != NULL) {
--		ret = kstrtouint(s, 0, data + count);
--		if (ret)
--			goto exit;
--		if (++count >= cap) {
--			cap *= 2;
--			tmp = krealloc(data, cap * sizeof(*data), GFP_KERNEL);
--			if (!tmp) {
--				ret = -ENOMEM;
--				goto exit;
--			}
--			data = tmp;
--		}
--	}
--
--	if (!count)
--		goto exit;
--	*tkns = kmemdup(data, count * sizeof(*data), GFP_KERNEL);
--	if (!(*tkns)) {
--		ret = -ENOMEM;
--		goto exit;
--	}
--	*num_tkns = count;
--
--exit:
--	kfree(data);
--	return ret;
--}
--
--static int tokenize_input(const char __user *from, size_t count,
--			  loff_t *ppos, u32 **tkns, size_t *num_tkns)
--{
--	char *buf;
--	int ret;
--
--	buf = kmalloc(count + 1, GFP_KERNEL);
--	if (!buf)
--		return -ENOMEM;
--
--	ret = simple_write_to_buffer(buf, count, ppos, from, count);
--	if (ret != count) {
--		ret = ret >= 0 ? -EIO : ret;
--		goto exit;
--	}
--
--	buf[count] = '\0';
--	ret = strsplit_u32(buf, ",", tkns, num_tkns);
--exit:
--	kfree(buf);
--	return ret;
--}
--
- static ssize_t sof_probes_dfs_points_read(struct file *file, char __user *to,
- 					  size_t count, loff_t *ppos)
- {
-@@ -548,8 +477,8 @@ sof_probes_dfs_points_write(struct file *file, const char __user *from,
- 	struct sof_probes_priv *priv = cdev->data;
- 	struct device *dev = &cdev->auxdev.dev;
- 	struct sof_probe_point_desc *desc;
--	size_t num_tkns, bytes;
--	u32 *tkns;
-+	u32 num_elems, *array;
-+	size_t bytes;
- 	int ret, err;
- 
- 	if (priv->extractor_stream_tag == SOF_PROBES_INVALID_NODE_ID) {
-@@ -557,16 +486,18 @@ sof_probes_dfs_points_write(struct file *file, const char __user *from,
- 		return -ENOENT;
- 	}
- 
--	ret = tokenize_input(from, count, ppos, &tkns, &num_tkns);
-+	ret = parse_int_array_user(from, count, (int **)&array);
- 	if (ret < 0)
- 		return ret;
--	bytes = sizeof(*tkns) * num_tkns;
--	if (!num_tkns || (bytes % sizeof(*desc))) {
-+
-+	num_elems = *array;
-+	bytes = sizeof(*array) * num_elems;
-+	if (!num_elems || (bytes % sizeof(*desc))) {
- 		ret = -EINVAL;
- 		goto exit;
- 	}
- 
--	desc = (struct sof_probe_point_desc *)tkns;
-+	desc = (struct sof_probe_point_desc *)&array[1];
- 
- 	ret = pm_runtime_resume_and_get(dev);
- 	if (ret < 0 && ret != -EACCES) {
-@@ -583,7 +514,7 @@ sof_probes_dfs_points_write(struct file *file, const char __user *from,
- 	if (err < 0)
- 		dev_err_ratelimited(dev, "debugfs write failed to idle %d\n", err);
- exit:
--	kfree(tkns);
-+	kfree(array);
- 	return ret;
- }
- 
-@@ -603,8 +534,7 @@ sof_probes_dfs_points_remove_write(struct file *file, const char __user *from,
- 	struct sof_client_dev *cdev = file->private_data;
- 	struct sof_probes_priv *priv = cdev->data;
- 	struct device *dev = &cdev->auxdev.dev;
--	size_t num_tkns;
--	u32 *tkns;
-+	u32 num_elems, *array;
- 	int ret, err;
- 
- 	if (priv->extractor_stream_tag == SOF_PROBES_INVALID_NODE_ID) {
-@@ -612,10 +542,12 @@ sof_probes_dfs_points_remove_write(struct file *file, const char __user *from,
- 		return -ENOENT;
- 	}
- 
--	ret = tokenize_input(from, count, ppos, &tkns, &num_tkns);
-+	ret = parse_int_array_user(from, count, (int **)&array);
- 	if (ret < 0)
- 		return ret;
--	if (!num_tkns) {
-+
-+	num_elems = *array;
-+	if (!num_elems) {
- 		ret = -EINVAL;
- 		goto exit;
- 	}
-@@ -626,7 +558,7 @@ sof_probes_dfs_points_remove_write(struct file *file, const char __user *from,
- 		goto exit;
- 	}
- 
--	ret = sof_probes_points_remove(cdev, tkns, num_tkns);
-+	ret = sof_probes_points_remove(cdev, &array[1], num_elems);
- 	if (!ret)
- 		ret = count;
- 
-@@ -635,7 +567,7 @@ sof_probes_dfs_points_remove_write(struct file *file, const char __user *from,
- 	if (err < 0)
- 		dev_err_ratelimited(dev, "debugfs write failed to idle %d\n", err);
- exit:
--	kfree(tkns);
-+	kfree(array);
- 	return ret;
- }
- 
--- 
-2.25.1
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
 
+Thanks!
+
+[1/1] ASoC: rsnd: Add check for rsnd_mod_power_on
+      commit: 376be51caf8871419bbcbb755e1e615d30dc3153
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
