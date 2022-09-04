@@ -4,82 +4,75 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 67C9BECAAD4
-	for <alsa-devel@archiver.kernel.org>; Sun,  4 Sep 2022 10:28:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 973CFC6FA82
+	for <alsa-devel@archiver.kernel.org>; Sun,  4 Sep 2022 16:13:52 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C338715DC;
-	Sun,  4 Sep 2022 12:27:49 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C338715DC
+	by alsa0.perex.cz (Postfix) with ESMTPS id DF85A1616;
+	Sun,  4 Sep 2022 18:12:59 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DF85A1616
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1662287319;
-	bh=hNyZCrFa4i4iQjUHray3sg10+TCSV1/qeuARSRk+0Wk=;
-	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=gKPSQ54EpCwUtmYkqw+aq42P6JSXEUnNsnWujZw/BL9hydda7TaywSps796kgc0Px
-	 xpXcQ9vGaiItie3FpB5xXHKZKLqDWTqaysUOyG3WIgoOwXS4o9Wp204w3ahY2NRj5Y
-	 aCYstORAzCGfopnkEqIxgqcoT7O6Iw11xjRRxFsA=
+	s=default; t=1662308030;
+	bh=LaXxNgUf8JYB+2Z8UOcOgQFFscr+x4xbq5wcLP+Epi4=;
+	h=From:To:Subject:Date:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=OhhgGemS/WKSILEfIB3QkJC2r54W7hH6I0rK/zkBRrpjwWnDWwwI8NpVQkpaG0ZDR
+	 MOp1iCxH9p0pJmKKLEZYdfJddfZLRUsDKuSZ6msw8PZjw5oapvAONX/jZkGftIgV4o
+	 les3Ao33dlH7jtryDQUfra3MhV7qp1asYFVayFWg=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 5AC6FF80124;
-	Sun,  4 Sep 2022 12:27:49 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 56859F80124;
+	Sun,  4 Sep 2022 18:12:59 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 2A73BF8013D; Sun,  4 Sep 2022 12:27:48 +0200 (CEST)
+ id 71A77F8013D; Sun,  4 Sep 2022 18:12:57 +0200 (CEST)
 Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 93BEBF800A7
- for <alsa-devel@alsa-project.org>; Sun,  4 Sep 2022 12:27:45 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 93BEBF800A7
+ by alsa1.perex.cz (Postfix) with ESMTPS id C5707F800A7
+ for <alsa-devel@alsa-project.org>; Sun,  4 Sep 2022 18:12:50 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C5707F800A7
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="f/+s4b51"; 
+ header.b="AfWn+Ace"; 
  dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="2XAbT0ba"
+ header.b="oWtryVbL"
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id CBCD91FCF3;
- Sun,  4 Sep 2022 10:27:44 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 120725F8EE;
+ Sun,  4 Sep 2022 16:12:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1662287264; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=ru4cXrU8uZRVJvnYMDLwX+xQ2GsOxjkupeRmR5ICRJ8=;
- b=f/+s4b51ybzY4RD2sc7CJSG6Uw05/CsxEftj1hRVp/HnYwaWvsJYM5sAnQtK4OHcYasKF5
- JblAo9Gb+zIkLUKbWMroaaPceneCdhlDA+ZHHQSGQuFmuWM36+o+tjBgxT7oENISnh9Jdb
- X+bWCCzB/Xny8Jsgct8bmvahO5hzDFI=
+ t=1662307970; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=J5ixi6JfGN5uyh8AI3Ss2kzBeSqSfwLuVETa8RsnFMU=;
+ b=AfWn+Acev966863dlU5dY7Wm0I4B259finuNuK3yZEJF8Q0fn10Ph6QmIGqvpHhpazjOHG
+ 681j42sDBG7lIv6ppj7gZqCvk/sG6XhwKnKvClz0qNPkf2KSq22dxSOGZNudt8B62p2U9q
+ mPTTU29WEPwiCvQuKr7WWeLSSmFFpCY=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1662287264;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=ru4cXrU8uZRVJvnYMDLwX+xQ2GsOxjkupeRmR5ICRJ8=;
- b=2XAbT0bajlkyYwNXv0rippJGG6jFV3x32CckWqSBG91wLPG252WqCuiS6I21DjAScYk9ht
- wvZbfjO77XLBqeCg==
+ s=susede2_ed25519; t=1662307970;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=J5ixi6JfGN5uyh8AI3Ss2kzBeSqSfwLuVETa8RsnFMU=;
+ b=oWtryVbLZy08EocUoQzRpnNXRY8ovFctY23ZqqbwAJ3hN3qTpKz9CT8lk6hmqNqRC2qo3K
+ hZMh7Kx5gK/DdODA==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 9DA5313A6B;
- Sun,  4 Sep 2022 10:27:44 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id EBDB61348C;
+ Sun,  4 Sep 2022 16:12:49 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id WiwCJaB9FGNQEQAAMHmgww
- (envelope-from <tiwai@suse.de>); Sun, 04 Sep 2022 10:27:44 +0000
-Date: Sun, 04 Sep 2022 12:27:43 +0200
-Message-ID: <87edwrl9i8.wl-tiwai@suse.de>
+ by imap2.suse-dmz.suse.de with ESMTPSA id fB/xOIHOFGN+bQAAMHmgww
+ (envelope-from <tiwai@suse.de>); Sun, 04 Sep 2022 16:12:49 +0000
 From: Takashi Iwai <tiwai@suse.de>
-To: butt3rflyh4ck <butterflyhuangxx@gmail.com>
-Subject: Re: A new null-ptr-deref Write bug in snd_pcm_format_set_silence
-In-Reply-To: <CAFcO6XN7JDM4xSXGhtusQfS2mSBcx50VJKwQpCq=WeLt57aaZA@mail.gmail.com>
-References: <CAFcO6XN7JDM4xSXGhtusQfS2mSBcx50VJKwQpCq=WeLt57aaZA@mail.gmail.com>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
-Cc: cuibixuan@linux.alibaba.com, LKML <linux-kernel@vger.kernel.org>,
- alsa-devel@alsa-project.org, tiwai@suse.com
+To: alsa-devel@alsa-project.org
+Subject: [PATCH] ALSA: usb-audio: Register card at the last interface
+Date: Sun,  4 Sep 2022 18:12:47 +0200
+Message-Id: <20220904161247.16461-1-tiwai@suse.de>
+X-Mailer: git-send-email 2.35.3
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -95,144 +88,184 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Sun, 04 Sep 2022 11:48:37 +0200,
-butt3rflyh4ck wrote:
-> 
-> Hi, there is a new null-ptr-deref Write bug in
-> snd_pcm_format_set_slience in sound/core/pcm_misc.c in the latest
-> upstream kernel and can reproduce it.
-> We call SNDCTL_DSP_SYNC and SNDCTL_DSP_SPEED in multiple threads to
-> trigger the vulnerability.
-> 
-> See the Call Trace:
-> ==================================================================
-> Call Trace:
->  <TASK>
->  __dump_stack lib/dump_stack.c:88 [inline]
->  dump_stack_lvl+0xcd/0x134 lib/dump_stack.c:106
->  kasan_report+0xb1/0x1e0 mm/kasan/report.c:495
->  check_region_inline mm/kasan/generic.c:183 [inline]
->  kasan_check_range+0x13d/0x180 mm/kasan/generic.c:189
->  memset+0x20/0x40 mm/kasan/shadow.c:44
->  snd_pcm_format_set_silence sound/core/pcm_misc.c:441 [inline]
->  snd_pcm_format_set_silence+0x215/0x350 sound/core/pcm_misc.c:424
->  snd_pcm_oss_sync+0x60e/0x800 sound/core/oss/pcm_oss.c:1690
->  snd_pcm_oss_ioctl+0x2087/0x3420 sound/core/oss/pcm_oss.c:2634
->  vfs_ioctl fs/ioctl.c:51 [inline]
->  __do_sys_ioctl fs/ioctl.c:870 [inline]
->  __se_sys_ioctl fs/ioctl.c:856 [inline]
->  __x64_sys_ioctl+0x193/0x200 fs/ioctl.c:856
->  do_syscall_x64 arch/x86/entry/common.c:50 [inline]
->  do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
->  entry_SYSCALL_64_after_hwframe+0x63/0xcd
-> ==================================================================
-> We can see the function snd_pcm_format_set_silence code below:
-> ```
-> int snd_pcm_format_set_silence(snd_pcm_format_t format, void *data,
-> unsigned int samples)
-> {
->         int width;
->         unsigned char *dst;
->         const unsigned char *pat;
-> 
->         if (!valid_format(format))
->                 return -EINVAL;
->         if (samples == 0)
->                 return 0;
->         width = pcm_formats[(INT)format].phys; /* physical width */
->         pat = pcm_formats[(INT)format].silence;
->         if (!width || !pat)
->                 return -EINVAL;
->         /* signed or 1 byte data */
->         if (pcm_formats[(INT)format].signd == 1 || width <= 8) {
->                 unsigned int bytes = samples * width / 8;
->                 memset(data, *pat, bytes);    ///// [1] ---------> data is NULL
->                 return 0;
->         }
->        ......
-> }
-> ```
-> [1], the data pointer is NULL, we can know snd_pcm_format_set_silence
-> called in line 1690 in sound/core/oss/pcm_oss.c from call stack trace.
-> let we see code below:
-> ```
-> static int snd_pcm_oss_sync(struct snd_pcm_oss_file *pcm_oss_file)
-> {
->         int err = 0;
->         unsigned int saved_f_flags;
->         struct snd_pcm_substream *substream;
->         struct snd_pcm_runtime *runtime;
->         snd_pcm_format_t format;
->         unsigned long width;
->         size_t size;
-> 
->         substream = pcm_oss_file->streams[SNDRV_PCM_STREAM_PLAYBACK];
->         if (substream != NULL) {
->                 runtime = substream->runtime;
->                 if (atomic_read(&substream->mmap_count))
->                         goto __direct;
->                 err = snd_pcm_oss_make_ready(substream);
->                 if (err < 0)
->                         return err;
->                 atomic_inc(&runtime->oss.rw_ref);
->                 if (mutex_lock_interruptible(&runtime->oss.params_lock)) {
->                         atomic_dec(&runtime->oss.rw_ref);
->                         return -ERESTARTSYS;
->                 }
->                 format = snd_pcm_oss_format_from(runtime->oss.format);
->                 width = snd_pcm_format_physical_width(format);
->                 if (runtime->oss.buffer_used > 0) {
-> #ifdef OSS_DEBUG
->                         pcm_dbg(substream->pcm, "sync: buffer_used\n");
-> #endif
->                         size = (8 * (runtime->oss.period_bytes -
-> runtime->oss.buffer_used) + 7) / width;
->                         snd_pcm_format_set_silence(format,
->                                                    runtime->oss.buffer
-> + runtime->oss.buffer_used,   ///// [2]
->                                                    size);
->                         err = snd_pcm_oss_sync1(substream,
-> runtime->oss.period_bytes);
->                         if (err < 0)
->                                 goto unlock;
->                 } else if (runtime->oss.period_ptr > 0) {
-> 
-> ```
-> [2]  runtime->oss.buffer + runtime->oss.buffer_used is the data
-> pointer, but runtime->oss.buffer is NULL here but it doesn't make
-> sense.
-> runtime->oss.buffter is allocated by kvzalloc, if runtime->oss_buffer
-> is NULL, it would return an ENOMEM error.
-> Maybe I think there is a race condition, the runtime->oss.buffer is
-> freed and set to NULL but we can use runtime->oss.buffter via ioctl.
+The USB-audio driver matches per interface, and as default, it
+registers the card instance at the very first instance.  This can be a
+problem for the devices that have multiple interfaces to be probed, as
+the udev rule isn't applied properly for the later appearing
+interfaces.  Although we introduced the delayed_register option and
+the quirks for covering those shortcomings, it's nothing but a
+workaround for specific devices.
 
-Yeah, likely it's in a small race window between two calls.
+This patch is an another attempt to fix the problem in a more generic
+way.  Now the driver checks the whole USB device descriptor at the
+very first time when an interface is attached to a sound card.  It
+looks at each matching interface in the descriptor and remembers the
+last matching one.  The snd_card_register() is invoked only when this
+last interface is probed.
 
-Could you try the patch below?
+After this change, the quirks for the delayed registration become
+superfluous, hence they are removed along with the patch.  OTOH, the
+delayed_register option is still kept, as it might be useful for some
+corner cases (e.g. a special driver overtakes the interface probe from
+the standard driver, and the last interface probe may miss).
 
-
-thanks,
-
-Takashi
-
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
---- a/sound/core/oss/pcm_oss.c
-+++ b/sound/core/oss/pcm_oss.c
-@@ -1672,14 +1672,14 @@ static int snd_pcm_oss_sync(struct snd_pcm_oss_file *pcm_oss_file)
- 		runtime = substream->runtime;
- 		if (atomic_read(&substream->mmap_count))
- 			goto __direct;
--		err = snd_pcm_oss_make_ready(substream);
--		if (err < 0)
--			return err;
- 		atomic_inc(&runtime->oss.rw_ref);
- 		if (mutex_lock_interruptible(&runtime->oss.params_lock)) {
- 			atomic_dec(&runtime->oss.rw_ref);
- 			return -ERESTARTSYS;
+ sound/usb/card.c     | 32 +++++++++++++++++++++++++-------
+ sound/usb/quirks.c   | 42 ------------------------------------------
+ sound/usb/quirks.h   |  2 --
+ sound/usb/usbaudio.h |  1 +
+ 4 files changed, 26 insertions(+), 51 deletions(-)
+
+diff --git a/sound/usb/card.c b/sound/usb/card.c
+index 706d249a9ad6..3aea241435fb 100644
+--- a/sound/usb/card.c
++++ b/sound/usb/card.c
+@@ -690,7 +690,7 @@ static bool get_alias_id(struct usb_device *dev, unsigned int *id)
+ 	return false;
+ }
+ 
+-static bool check_delayed_register_option(struct snd_usb_audio *chip, int iface)
++static int check_delayed_register_option(struct snd_usb_audio *chip)
+ {
+ 	int i;
+ 	unsigned int id, inum;
+@@ -699,14 +699,31 @@ static bool check_delayed_register_option(struct snd_usb_audio *chip, int iface)
+ 		if (delayed_register[i] &&
+ 		    sscanf(delayed_register[i], "%x:%x", &id, &inum) == 2 &&
+ 		    id == chip->usb_id)
+-			return iface < inum;
++			return inum;
+ 	}
+ 
+-	return false;
++	return -1;
+ }
+ 
+ static const struct usb_device_id usb_audio_ids[]; /* defined below */
+ 
++/* look for the last interface that matches with our ids and remember it */
++static void find_last_interface(struct snd_usb_audio *chip)
++{
++	struct usb_host_config *config = chip->dev->actconfig;
++	struct usb_interface *intf;
++	int i;
++
++	if (!config)
++		return;
++	for (i = 0; i < config->desc.bNumInterfaces; i++) {
++		intf = config->interface[i];
++		if (usb_match_id(intf, usb_audio_ids))
++			chip->last_iface = intf->altsetting[0].desc.bInterfaceNumber;
++	}
++	usb_audio_dbg(chip, "Found last interface = %d\n", chip->last_iface);
++}
++
+ /* look for the corresponding quirk */
+ static const struct snd_usb_audio_quirk *
+ get_alias_quirk(struct usb_device *dev, unsigned int id)
+@@ -813,6 +830,7 @@ static int usb_audio_probe(struct usb_interface *intf,
+ 			err = -ENODEV;
+ 			goto __error;
  		}
-+		err = snd_pcm_oss_make_ready_locked(substream);
-+		if (err < 0)
-+			goto unlock;
- 		format = snd_pcm_oss_format_from(runtime->oss.format);
- 		width = snd_pcm_format_physical_width(format);
- 		if (runtime->oss.buffer_used > 0) {
++		find_last_interface(chip);
+ 	}
+ 
+ 	if (chip->num_interfaces >= MAX_CARD_INTERFACES) {
+@@ -862,11 +880,11 @@ static int usb_audio_probe(struct usb_interface *intf,
+ 		chip->need_delayed_register = false; /* clear again */
+ 	}
+ 
+-	/* we are allowed to call snd_card_register() many times, but first
+-	 * check to see if a device needs to skip it or do anything special
++	/* register card if we reach to the last interface or to the specified
++	 * one given via option
+ 	 */
+-	if (!snd_usb_registration_quirk(chip, ifnum) &&
+-	    !check_delayed_register_option(chip, ifnum)) {
++	if (check_delayed_register_option(chip) == ifnum ||
++	    chip->last_iface == ifnum) {
+ 		err = snd_card_register(chip->card);
+ 		if (err < 0)
+ 			goto __error;
+diff --git a/sound/usb/quirks.c b/sound/usb/quirks.c
+index 5b4d8f5eade2..8c3b0be909eb 100644
+--- a/sound/usb/quirks.c
++++ b/sound/usb/quirks.c
+@@ -1728,48 +1728,6 @@ void snd_usb_audioformat_attributes_quirk(struct snd_usb_audio *chip,
+ 	}
+ }
+ 
+-/*
+- * registration quirk:
+- * the registration is skipped if a device matches with the given ID,
+- * unless the interface reaches to the defined one.  This is for delaying
+- * the registration until the last known interface, so that the card and
+- * devices appear at the same time.
+- */
+-
+-struct registration_quirk {
+-	unsigned int usb_id;	/* composed via USB_ID() */
+-	unsigned int interface;	/* the interface to trigger register */
+-};
+-
+-#define REG_QUIRK_ENTRY(vendor, product, iface) \
+-	{ .usb_id = USB_ID(vendor, product), .interface = (iface) }
+-
+-static const struct registration_quirk registration_quirks[] = {
+-	REG_QUIRK_ENTRY(0x0951, 0x16d8, 2),	/* Kingston HyperX AMP */
+-	REG_QUIRK_ENTRY(0x0951, 0x16ed, 2),	/* Kingston HyperX Cloud Alpha S */
+-	REG_QUIRK_ENTRY(0x0951, 0x16ea, 2),	/* Kingston HyperX Cloud Flight S */
+-	REG_QUIRK_ENTRY(0x0ecb, 0x1f46, 2),	/* JBL Quantum 600 */
+-	REG_QUIRK_ENTRY(0x0ecb, 0x1f47, 2),	/* JBL Quantum 800 */
+-	REG_QUIRK_ENTRY(0x0ecb, 0x1f4c, 2),	/* JBL Quantum 400 */
+-	REG_QUIRK_ENTRY(0x0ecb, 0x2039, 2),	/* JBL Quantum 400 */
+-	REG_QUIRK_ENTRY(0x0ecb, 0x203c, 2),	/* JBL Quantum 600 */
+-	REG_QUIRK_ENTRY(0x0ecb, 0x203e, 2),	/* JBL Quantum 800 */
+-	{ 0 }					/* terminator */
+-};
+-
+-/* return true if skipping registration */
+-bool snd_usb_registration_quirk(struct snd_usb_audio *chip, int iface)
+-{
+-	const struct registration_quirk *q;
+-
+-	for (q = registration_quirks; q->usb_id; q++)
+-		if (chip->usb_id == q->usb_id)
+-			return iface < q->interface;
+-
+-	/* Register as normal */
+-	return false;
+-}
+-
+ /*
+  * driver behavior quirk flags
+  */
+diff --git a/sound/usb/quirks.h b/sound/usb/quirks.h
+index 31abb7cb01a5..f9bfd5ac7bab 100644
+--- a/sound/usb/quirks.h
++++ b/sound/usb/quirks.h
+@@ -48,8 +48,6 @@ void snd_usb_audioformat_attributes_quirk(struct snd_usb_audio *chip,
+ 					  struct audioformat *fp,
+ 					  int stream);
+ 
+-bool snd_usb_registration_quirk(struct snd_usb_audio *chip, int iface);
+-
+ void snd_usb_init_quirk_flags(struct snd_usb_audio *chip);
+ 
+ #endif /* __USBAUDIO_QUIRKS_H */
+diff --git a/sound/usb/usbaudio.h b/sound/usb/usbaudio.h
+index ffbb4b0d09a0..2c6575029b1c 100644
+--- a/sound/usb/usbaudio.h
++++ b/sound/usb/usbaudio.h
+@@ -37,6 +37,7 @@ struct snd_usb_audio {
+ 	unsigned int quirk_flags;
+ 	unsigned int need_delayed_register:1; /* warn for delayed registration */
+ 	int num_interfaces;
++	int last_iface;
+ 	int num_suspended_intf;
+ 	int sample_rate_read_error;
+ 
+-- 
+2.35.3
+
