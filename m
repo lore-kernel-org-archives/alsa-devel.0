@@ -4,80 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4D008ECAAD5
-	for <alsa-devel@archiver.kernel.org>; Mon,  5 Sep 2022 13:16:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5F115ECAAD5
+	for <alsa-devel@archiver.kernel.org>; Mon,  5 Sep 2022 15:39:45 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id EDA1B84B;
-	Mon,  5 Sep 2022 15:15:53 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EDA1B84B
+	by alsa0.perex.cz (Postfix) with ESMTPS id 6632E950;
+	Mon,  5 Sep 2022 17:38:53 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6632E950
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1662383804;
-	bh=08diQpqliOg8PnjD6faTP4D43v7HZENiKV3T8k+jZy4=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
+	s=default; t=1662392383;
+	bh=2eTMf9jyjQuoeYXCnEFux0RJ/4pdijWknLgbDxhEujM=;
+	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=E/yYnKlupcqbe+Fil9ppXR+AsUdYN9NBDBQ0OofSF+unV57bHvXZko98oGfHZSeHU
-	 cKb2F3xniRTVXdNrnTIz5RlPV5WHkjgjf0XG17TEjkhjhllIoXCGYCB0UCkNPwDZhF
-	 ZHhKme4Tf3g9H4KvXiYBoTOd0cmn8L0Gu8nNglU0=
+	b=VezxWdLOvmLfvQDPtoi9az7gp39EqGhuKn69Qn6mVFFeRKkO7uU9gvd6gCn7SzK4J
+	 WuPdEns9f07EtNOa8m7isPXej5mExCyj1fz6terXOz9tM91XbaN4EDB5SclNoC6BSi
+	 qq9Z5xyLhyOP3Mx6Ga83BkivX5PwtNHguu4aZJfQ=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 910E4F80165;
-	Mon,  5 Sep 2022 15:15:53 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id E839AF80238;
+	Mon,  5 Sep 2022 17:38:52 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 53557F80238; Mon,  5 Sep 2022 15:15:52 +0200 (CEST)
-Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com
- [IPv6:2a00:1450:4864:20::432])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id ECC20F80238; Mon,  5 Sep 2022 17:38:51 +0200 (CEST)
+Received: from ams.source.kernel.org (ams.source.kernel.org
+ [IPv6:2604:1380:4601:e00::1])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id F3901F800CC
- for <alsa-devel@alsa-project.org>; Mon,  5 Sep 2022 15:15:40 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F3901F800CC
+ by alsa1.perex.cz (Postfix) with ESMTPS id 7F56DF800E8
+ for <alsa-devel@alsa-project.org>; Mon,  5 Sep 2022 17:38:49 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7F56DF800E8
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="F1x+ph1o"
-Received: by mail-wr1-x432.google.com with SMTP id n17so11345841wrm.4
- for <alsa-devel@alsa-project.org>; Mon, 05 Sep 2022 06:15:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
- h=cc:to:subject:message-id:date:from:in-reply-to:references
- :mime-version:from:to:cc:subject:date;
- bh=x+z5fbgK5rWlFLrQ0q/oa0BmwbXh9sKksymdTFC7GMQ=;
- b=F1x+ph1oLUQWORqFZ+6iU5G/jt2WQgwrWWWyebsIQKcW+9UOxdsIIUQypDzGGRcoMi
- j05s3YxGptvw40x7s2JOAozNSdraSyG7GmWotGKU+PpHVJr8IqIsmxfo8jrHiwA3SH2U
- kPhrec/LkEbAmsOxdyGzXrm5disk9kaS4ChhnspXR6U4QEPRGUaqpx7lAXEnA54apaK8
- obP2VMs9Gisccz6V84XLu+YYfLp3yTHNAx8tO1JDXd/vYBqcGQWYbQVji33jodksCizB
- elU37YU0TvQb4NnWJjOV6PWYh7cyuOlx/bHenFczAjoU7wkT9kiJ67sAnF4TNIdW/281
- DsJw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=cc:to:subject:message-id:date:from:in-reply-to:references
- :mime-version:x-gm-message-state:from:to:cc:subject:date;
- bh=x+z5fbgK5rWlFLrQ0q/oa0BmwbXh9sKksymdTFC7GMQ=;
- b=Ilbfit6l1eqQY3cFAy26OPjq57RrEjwz2EftDomXiYi9XYAALCgXN6+vB5QpApUO4m
- WKPhLUoa2mJJbjHGvlMN2jpmxjm/SWo2c8n4AMCo5FxeOg+Io6H4oBWB/QObpdCC7omI
- yj196AAAY4dPh2hE40NffI7CzsbkJ+i9qe4aCOu+KAQVBhPTp7P6vBu2oLiZuO2jjq/p
- XlIV2dgro9/A8zp2gxes6UaphDVICoExu2jxLNwty9U/Db+RFB72PboF4XjMQmuGYJqj
- WYVumipUwWeQsf56vtad2zzEekW84H2kM6A+U2oqiwd0tyD373MqbIaDPxGEUmaAvSCy
- BAzw==
-X-Gm-Message-State: ACgBeo3uc/XDwgm6A8K++xzPSMidJWkC7AraDqmpZP9+FrD3MOqujFgZ
- FCifduHTW4CWWdw+E98kl+9SsKrlgE7V0k6KRgg=
-X-Google-Smtp-Source: AA6agR4OHk0dWrF3EDRI1FChnBvUyFqcofwqBz5m92F++Rw8GkiS+bAka5b6ma0tgWR/0cMK4A50cXKDzEYmb3n1lV0=
-X-Received: by 2002:a5d:6388:0:b0:228:c792:aabe with SMTP id
- p8-20020a5d6388000000b00228c792aabemr1064303wru.689.1662383738519; Mon, 05
- Sep 2022 06:15:38 -0700 (PDT)
+ dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="mG2ZO4yl"
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by ams.source.kernel.org (Postfix) with ESMTPS id 6F898B811DD;
+ Mon,  5 Sep 2022 15:38:48 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9BB93C433C1;
+ Mon,  5 Sep 2022 15:38:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1662392327;
+ bh=2eTMf9jyjQuoeYXCnEFux0RJ/4pdijWknLgbDxhEujM=;
+ h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+ b=mG2ZO4ylWm/pMZw4/U0rGYjzwcG6pak8jcTjRVG6rfBE+uhvCAK4Rguf3Kli+BlLg
+ 89CUNn5gdyv1jtgePKMQ35cKYMQNmkfK71+UbnDcGxuApM9CPuQPQR+nmKrWOPgemk
+ VbGC1LpHc3fq4mG3qpoNko4xe0zb4QnFoLrLwX+/D6/xmLmaAECf+ALX8bkyJ9FIn2
+ tzBtfTngdRML/feq40WsZ2HLFq4pQkYJkoWY0MEYfFHUmjQ/W9iCsSYSqqQ9q2kDZR
+ 9J/oafHO315ZhXG0mIhChkKUyVhPq/Ca9TjnyTondXpV4hFd4A9BCfCZPlK2h/E+bS
+ tEXQ8wSA6HWSw==
+From: Mark Brown <broonie@kernel.org>
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+In-Reply-To: <87tu5u4e0c.wl-kuninori.morimoto.gx@renesas.com>
+References: <87tu5u4e0c.wl-kuninori.morimoto.gx@renesas.com>
+Subject: Re: [PATCH 0/3] ASoC: soc-pcm.c: random cleanup
+Message-Id: <166239232634.736206.7347915789291842646.b4-ty@kernel.org>
+Date: Mon, 05 Sep 2022 16:38:46 +0100
 MIME-Version: 1.0
-References: <1662373788-19561-1-git-send-email-shengjiu.wang@nxp.com>
-In-Reply-To: <1662373788-19561-1-git-send-email-shengjiu.wang@nxp.com>
-From: Nicolin Chen <nicoleotsuka@gmail.com>
-Date: Mon, 5 Sep 2022 06:15:27 -0700
-Message-ID: <CAGoOwPQomcnO5dhkT9DBynwJo8LfVvuuwj5AYNpv0KhAGSWLEw@mail.gmail.com>
-Subject: Re: [PATCH] ASoC: fsl_asrc: Add initialization finishing check in
- runtime resume
-To: Shengjiu Wang <shengjiu.wang@nxp.com>
-Content-Type: text/plain; charset="UTF-8"
-Cc: alsa-devel@alsa-project.org, linuxppc-dev@lists.ozlabs.org,
- Xiubo.Lee@gmail.com, festevam@gmail.com, tiwai@suse.com, lgirdwood@gmail.com,
- broonie@kernel.org, shengjiu.wang@gmail.com, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+X-Mailer: b4 0.10.0-dev-fc921
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -93,20 +80,44 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Mon, Sep 5, 2022 at 3:47 AM Shengjiu Wang <shengjiu.wang@nxp.com> wrote:
-> @@ -1295,6 +1301,17 @@ static int fsl_asrc_runtime_resume(struct device *dev)
->         regmap_update_bits(asrc->regmap, REG_ASRCTR,
->                            ASRCTR_ASRCEi_ALL_MASK, asrctr);
->
-> +       /* Wait for status of initialization for every enabled pairs */
-> +       do {
-> +               udelay(5);
-> +               regmap_read(asrc->regmap, REG_ASRCFG, &reg);
-> +               reg = (reg >> ASRCFG_INIRQi_SHIFT(0)) & 0x7;
-> +       } while ((reg != ((asrctr >> ASRCTR_ASRCEi_SHIFT(0)) & 0x7)) && --retry);
-> +
-> +       /* FIXME: Doesn't treat initialization timeout as error */
-> +       if (!retry)
-> +               dev_warn(dev, "initialization isn't finished\n");
+On Tue, 30 Aug 2022 03:16:35 +0000, Kuninori Morimoto wrote:
+> These are not related, but random cleanup patches for soc-pcm.c
+> 
+> Kuninori Morimoto (3):
+>   ASoC: soc-pcm.c: remove unnecessary codec2codec_close_delayed_work()
+>   ASoC: soc-pcm.c: add soc_pcm_ret()
+>   ASoC: soc-pcm.c: check fe condition at out of loop
+> 
+> [...]
 
-Any reason why not just dev_err?
+Applied to
+
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+
+Thanks!
+
+[1/3] ASoC: soc-pcm.c: remove unnecessary codec2codec_close_delayed_work()
+      commit: 10d5d8cbf6268e612bacac29c0beef489d3c1398
+[2/3] ASoC: soc-pcm.c: add soc_pcm_ret()
+      commit: 041107289c5cebb0693a55c432ab50862a450476
+[3/3] ASoC: soc-pcm.c: check fe condition at out of loop
+      commit: 6932b20d4f41dc01dc58c0afb335e688575c7d54
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
