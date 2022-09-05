@@ -4,81 +4,83 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E8E79ECAAD3
-	for <alsa-devel@archiver.kernel.org>; Mon,  5 Sep 2022 10:16:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6E248ECAAD5
+	for <alsa-devel@archiver.kernel.org>; Mon,  5 Sep 2022 10:35:30 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 5C062164F;
-	Mon,  5 Sep 2022 12:15:11 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5C062164F
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0C68615C1;
+	Mon,  5 Sep 2022 12:34:38 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0C68615C1
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1662372961;
-	bh=mje1XfzUXneXB8mOvRlrEb7IGbPQZX311/9cO2XB3ms=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
+	s=default; t=1662374128;
+	bh=NAMB9izh+dA/lAPGjjqDZklNfFZWzmeMU0YRRbU51wI=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=lf+erCXfMPnCQJeREXUi2MvcF2RFcPfwJ6I151QZuzBbzeX2khf1xSuZs3SEHzxu7
-	 RvJirbcf3FyGn7RJb1rI+BRhq70s2fRHhX8J7Su5OaBqO/lhacJyobLQNP2mU6fuNv
-	 0o5CF7r8LZ9qawwQjbUE1dcmxNq4bwFcPKeKZSTA=
+	b=S7ln3kjkjKiDsUDzCzxFEo2vN9f+qIlu7eGdMcX4tdQ+ZBk5vOPfzDcd4+dQ2eeN9
+	 EotEWhFZ8RcqkyQ4kv9f3Uy5HJL6wMBUc1Fmc2ooLbribaHYtlFNiAV/d6fjFPWEfD
+	 HCkJ8870ZzWd1EtdKAW2MoW9p9G9gnFfksCPA/Yw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id F3F2FF8032D;
-	Mon,  5 Sep 2022 12:15:10 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 7CCD8F80165;
+	Mon,  5 Sep 2022 12:34:37 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 6B796F800E9; Mon,  5 Sep 2022 12:15:09 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 2B3E7F8032D
- for <alsa-devel@alsa-project.org>; Mon,  5 Sep 2022 12:15:03 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2B3E7F8032D
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=zx2c4.com header.i=@zx2c4.com
- header.b="iF/hwuDG"
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+ id A8268F80238; Mon,  5 Sep 2022 12:34:35 +0200 (CEST)
+Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
+ [67.231.149.25])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id D7166611A0
- for <alsa-devel@alsa-project.org>; Mon,  5 Sep 2022 10:15:01 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0AE50C433C1
- for <alsa-devel@alsa-project.org>; Mon,  5 Sep 2022 10:15:00 +0000 (UTC)
-Authentication-Results: smtp.kernel.org;
- dkim=pass (1024-bit key) header.d=zx2c4.com header.i=@zx2c4.com
- header.b="iF/hwuDG"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zx2c4.com; s=20210105; 
- t=1662372897;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=mje1XfzUXneXB8mOvRlrEb7IGbPQZX311/9cO2XB3ms=;
- b=iF/hwuDGlyJ7eWQltgqfG3TiDJDjCCB/UKOXmD1D3u9UEDPGBWqdOJkXNdoGrXfrGXjzbO
- OG/nPpmqP1eQXUWwAuJ3L2HcRsmAy1Z+5Zd7psDJBWza/LQhGHgOhz+va2FA8HneCn5vWP
- YlBAZwhkbwCx3puRcg9Y1DxICXzMwBY=
-Received: by mail.zx2c4.com (ZX2C4 Mail Server) with ESMTPSA id ce27c5f0
- (TLSv1.3:TLS_AES_256_GCM_SHA384:256:NO)
- for <alsa-devel@alsa-project.org>;
- Mon, 5 Sep 2022 10:14:57 +0000 (UTC)
-Received: by mail-yb1-f179.google.com with SMTP id c9so12127277ybf.5
- for <alsa-devel@alsa-project.org>; Mon, 05 Sep 2022 03:14:56 -0700 (PDT)
-X-Gm-Message-State: ACgBeo0kte6DWsOIIo77RYkbCDCNC/o0yz3sM4Kvc3ifRHUE+Lzrgnlv
- ByF6zZN7BZO9te84fKtywBE60P4P3tQY5imiVdE=
-X-Google-Smtp-Source: AA6agR7q5r7oCDcBrWFAFYKqzwheYzc2NIErQgZWSkOyoAvffB/WFpVuq3cduMy2sDFnCHzIcbGLc7br9EjEDoW3E9g=
-X-Received: by 2002:a25:8d02:0:b0:696:42f8:fa6f with SMTP id
- n2-20020a258d02000000b0069642f8fa6fmr29088730ybl.365.1662372896087; Mon, 05
- Sep 2022 03:14:56 -0700 (PDT)
+ by alsa1.perex.cz (Postfix) with ESMTPS id F0C7EF800E8
+ for <alsa-devel@alsa-project.org>; Mon,  5 Sep 2022 12:34:28 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F0C7EF800E8
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com
+ header.b="SEbfUku9"
+Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
+ by mx0a-001ae601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 2855wec8006069;
+ Mon, 5 Sep 2022 05:34:25 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
+ h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=PODMain02222019;
+ bh=KdQsKPkmzzna+66ZNEVg4limEcdND9IVkdx5GyLXL0Y=;
+ b=SEbfUku9x7l9LuazcQeJc8IcuX6YQaamzRINoJt+eYnrOVYM/Pn3jFh1LBKGoAFcoJMW
+ rmtQMu/YYetaxjp82ymkuTEUAp9sKy7x0NDfh1HYjpAcYeA8dNpAwNTsMbq6s9phMOIy
+ xWVugVK43jtdZXfy4JRHyKcRiO9WRbFKG/AX8DpDFhJdtK6kMy7DAwadYDU9tdRvsOJZ
+ TU/U8zNEbRCAdUYDcOkrMpgE8ENL1tvgWqCMTpUNw4B+jupHrDTtq3si5X6WQBF0jTja
+ jtqZWP4mX+E+brGAanaPjz1GiMjmpzQHyqjEjqXhHcuH7+ZGDRL/UsZJybxKRSC8Q5wy mg== 
+Received: from ediex01.ad.cirrus.com ([84.19.233.68])
+ by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3jc4b29uxs-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+ Mon, 05 Sep 2022 05:34:25 -0500
+Received: from ediex02.ad.cirrus.com (198.61.84.81) by ediex01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.12; Mon, 5 Sep
+ 2022 05:34:22 -0500
+Received: from ediswmail.ad.cirrus.com (198.61.86.93) by
+ anon-ediex02.ad.cirrus.com (198.61.84.81) with Microsoft SMTP Server id
+ 15.2.1118.12 via Frontend Transport; Mon, 5 Sep 2022 05:34:22 -0500
+Received: from ediswmail.ad.cirrus.com (ediswmail.ad.cirrus.com [198.61.86.93])
+ by ediswmail.ad.cirrus.com (Postfix) with ESMTP id BE1BB46B;
+ Mon,  5 Sep 2022 10:34:22 +0000 (UTC)
+Date: Mon, 5 Sep 2022 10:34:22 +0000
+From: Charles Keepax <ckeepax@opensource.cirrus.com>
+To: Cristian Ciocaltea <cristian.ciocaltea@collabora.com>
+Subject: Re: [PATCH v2] ASoC: wm_adsp: Handle optional legacy support
+Message-ID: <20220905103422.GP92394@ediswmail.ad.cirrus.com>
+References: <20220825220530.1205141-1-cristian.ciocaltea@collabora.com>
 MIME-Version: 1.0
-References: <20220516104807.16482-1-tiwai@suse.de> <YxXIWv8dYmg1tnXP@zx2c4.com>
-In-Reply-To: <YxXIWv8dYmg1tnXP@zx2c4.com>
-From: "Jason A. Donenfeld" <Jason@zx2c4.com>
-Date: Mon, 5 Sep 2022 12:14:45 +0200
-X-Gmail-Original-Message-ID: <CAHmME9qJfZ06RjBc7h1LnEfngOp0w_sn6xH-7XQgFqH6jcRG1w@mail.gmail.com>
-Message-ID: <CAHmME9qJfZ06RjBc7h1LnEfngOp0w_sn6xH-7XQgFqH6jcRG1w@mail.gmail.com>
-Subject: Re: [PATCH] ALSA: usb-audio: Refcount multiple accesses on the single
- clock
-To: Takashi Iwai <tiwai@suse.de>
-Content-Type: text/plain; charset="UTF-8"
-Cc: alsa-devel@alsa-project.org, 89q1r14hd@relay.firefox.com,
- LKML <linux-kernel@vger.kernel.org>, Wim Taymans <wtaymans@redhat.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20220825220530.1205141-1-cristian.ciocaltea@collabora.com>
+User-Agent: Mutt/1.5.21 (2010-09-15)
+X-Proofpoint-GUID: SSupwDQyn-zFDGAWTJbr5gdZlcA_Akgv
+X-Proofpoint-ORIG-GUID: SSupwDQyn-zFDGAWTJbr5gdZlcA_Akgv
+X-Proofpoint-Spam-Reason: safe
+Cc: alsa-devel@alsa-project.org, kernel@collabora.com,
+ patches@opensource.cirrus.com, Takashi Iwai <tiwai@suse.com>,
+ Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Vlad
+ Karpovich <Vlad.Karpovich@cirrus.com>, linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -94,8 +96,32 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Mon, Sep 5, 2022 at 11:59 AM Jason A. Donenfeld <Jason@zx2c4.com> wrote:
-> Can we revert this for the time being and backport the revert to stable?
+On Fri, Aug 26, 2022 at 01:05:30AM +0300, Cristian Ciocaltea wrote:
+> The tracing capabilities for the speaker protection fw enabled via
+> commit c55b3e46cb99 ("ASoC: wm_adsp: Add trace caps to speaker
+> protection FW") are not be available on all platforms, such as the
+> Valve's Steam Deck which is based on the Halo Core DSP.
+> 
+> As a consequence, whenever the firmware is loaded, a rather misleading
+> 'Failed to parse legacy: -19' error message is written to the kernel
+> ring buffer:
+> 
+> [  288.977412] steamdeck kernel: cs35l41 spi-VLV1776:01: DSP1: Firmware version: 3
+> [  288.978002] steamdeck kernel: cs35l41 spi-VLV1776:01: DSP1: cs35l41-dsp1-spk-prot.wmfw: Fri 02 Apr 2021 21:03:50 W. Europe Daylight Time
+> [  289.094065] steamdeck kernel: cs35l41 spi-VLV1776:01: DSP1: Firmware: 400a4 vendor: 0x2 v0.33.0, 2 algorithms
+> [  289.095073] steamdeck kernel: cs35l41 spi-VLV1776:01: DSP1: 0: ID cd v29.53.0 XM@94 YM@e
+> [  289.095665] steamdeck kernel: cs35l41 spi-VLV1776:01: DSP1: 1: ID f20b v0.0.1 XM@170 YM@0
+> [  289.096275] steamdeck kernel: cs35l41 spi-VLV1776:01: DSP1: Protection: C:\Users\ocanavan\Desktop\cirrusTune_july2021.bin
+> [  291.172383] steamdeck kernel: cs35l41 spi-VLV1776:01: DSP1: Failed to parse legacy: -19
+> 
+> Update wm_adsp_buffer_init() to print a more descriptive info message
+> when wm_adsp_buffer_parse_legacy() returns -ENODEV.
+> 
+> Fixes: c55b3e46cb99 ("ASoC: wm_adsp: Add trace caps to speaker protection FW")
+> Signed-off-by: Cristian Ciocaltea <cristian.ciocaltea@collabora.com>
+> ---
 
-I sent the revert here:
-https://lore.kernel.org/all/20220905101403.1435037-1-Jason@zx2c4.com/
+Acked-by: Charles Keepax <ckeepax@opensource.cirrus.com>
+
+Thanks,
+Charles
