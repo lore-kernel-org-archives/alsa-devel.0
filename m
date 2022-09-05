@@ -4,55 +4,87 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 22D90ECAAD3
-	for <alsa-devel@archiver.kernel.org>; Mon,  5 Sep 2022 10:48:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9FFE9ECAAD3
+	for <alsa-devel@archiver.kernel.org>; Mon,  5 Sep 2022 11:45:02 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D8642857;
-	Mon,  5 Sep 2022 12:48:03 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D8642857
+	by alsa0.perex.cz (Postfix) with ESMTPS id E21CF852;
+	Mon,  5 Sep 2022 13:44:09 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E21CF852
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1662374933;
-	bh=NIEAzFZcfSy99BLsdQzcjdPwat1mUb58pGFsad1/1D8=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=tBEdBlCZTUyQC4kdLgqqt27wkPfLODh0PTxiKpsKvIoeAhcMhTz7dWSxoLGZYHfv/
-	 rDrYxey65No1Hg7a3Fw8qIQETm1Zc4dXvNiPZyoJHVfiCSmlgEkk24Kx5W4l/NchEy
-	 t/m++ZarTGLLhA91k6xfzcd1B4WOXHZb/cUYCR80=
+	s=default; t=1662378300;
+	bh=h2SGJJzn1v6hpF3JQV5azKKTqa8LgiBZIUF64YDaEao=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=sfcge9qpCWZ/fFFrXiCVjVnH2Lw8uhif6+b5KUsA7wj7ZfSzFaqbevnfn9bew/ceD
+	 8583e7Y8S0fD90XBWoYrbQy1667JeQDY4ZHC+GKFyUtf3cUIyCn4LR3/NrVxtg59Rk
+	 6d3rgYNPBJ8UG5xl1Dug76Fzw1ptHLTPMC6eQj/A=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 66A83F800E9;
-	Mon,  5 Sep 2022 12:48:03 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 7DB67F80165;
+	Mon,  5 Sep 2022 13:44:09 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 758DDF80238; Mon,  5 Sep 2022 12:48:01 +0200 (CEST)
-Received: from inva020.nxp.com (inva020.nxp.com [92.121.34.13])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id E6507F80238; Mon,  5 Sep 2022 13:44:07 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 31EFFF800E9
- for <alsa-devel@alsa-project.org>; Mon,  5 Sep 2022 12:47:54 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 31EFFF800E9
-Received: from inva020.nxp.com (localhost [127.0.0.1])
- by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 6B65E1A2024;
- Mon,  5 Sep 2022 12:47:54 +0200 (CEST)
-Received: from aprdc01srsp001v.ap-rdc01.nxp.com
- (aprdc01srsp001v.ap-rdc01.nxp.com [165.114.16.16])
- by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 34F3E1A2026;
- Mon,  5 Sep 2022 12:47:54 +0200 (CEST)
-Received: from localhost.localdomain (shlinux2.ap.freescale.net
- [10.192.224.44])
- by aprdc01srsp001v.ap-rdc01.nxp.com (Postfix) with ESMTP id B8CB21820F56;
- Mon,  5 Sep 2022 18:47:52 +0800 (+08)
-From: Shengjiu Wang <shengjiu.wang@nxp.com>
-To: nicoleotsuka@gmail.com, Xiubo.Lee@gmail.com, festevam@gmail.com,
- shengjiu.wang@gmail.com, lgirdwood@gmail.com, broonie@kernel.org,
- perex@perex.cz, tiwai@suse.com, alsa-devel@alsa-project.org
-Subject: [PATCH] ASoC: fsl_asrc: Add initialization finishing check in runtime
- resume
-Date: Mon,  5 Sep 2022 18:29:48 +0800
-Message-Id: <1662373788-19561-1-git-send-email-shengjiu.wang@nxp.com>
-X-Mailer: git-send-email 2.7.4
-X-Virus-Scanned: ClamAV using ClamSMTP
-Cc: linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
+ by alsa1.perex.cz (Postfix) with ESMTPS id BA483F800E9
+ for <alsa-devel@alsa-project.org>; Mon,  5 Sep 2022 13:44:01 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BA483F800E9
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
+ header.b="vNFl6wQY"; 
+ dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
+ header.b="OsJPV8DR"
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id DF89220E8E;
+ Mon,  5 Sep 2022 11:44:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1662378240; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=pdjvV5vVZbGw/kdAksGm6cLcJpOHeP3800cvgy6tsTs=;
+ b=vNFl6wQYvAOm14d29IqL3inQp0PzKgBlQBqlxrT1KiF8tZ96lJNK8i+zKVRbmizHBYQu/r
+ bSyfRMicACpUc4EscfMjhlFOEK+RTTR3ulj/Ff3wgtUJobzEVrHFPu4xks6MjzsQ8MxOwa
+ cl4UEFiFvtG4VBo1lcMvKAnUbM2iviA=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1662378240;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=pdjvV5vVZbGw/kdAksGm6cLcJpOHeP3800cvgy6tsTs=;
+ b=OsJPV8DRncMYyeMDdS7YXbXEn8BfgB8fWqgmBEEB8Ftv0DTawKsjg3qEiSikQOJGcZDzrE
+ kzXtQ5Oq3rv8oDAw==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id BDA6F139C7;
+ Mon,  5 Sep 2022 11:44:00 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+ by imap2.suse-dmz.suse.de with ESMTPSA id vYybLQDhFWOxawAAMHmgww
+ (envelope-from <tiwai@suse.de>); Mon, 05 Sep 2022 11:44:00 +0000
+Date: Mon, 05 Sep 2022 13:44:00 +0200
+Message-ID: <87sfl6jbb3.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: "Jason A. Donenfeld" <Jason@zx2c4.com>
+Subject: Re: [PATCH] ALSA: usb-audio: Don't refcount multiple accesses on the
+ single clock
+In-Reply-To: <20220905101403.1435037-1-Jason@zx2c4.com>
+References: <20220905101403.1435037-1-Jason@zx2c4.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=ISO-8859-4
+Content-Transfer-Encoding: 8bit
+Cc: alsa-devel@alsa-project.org, Wim Taymans <wtaymans@redhat.com>,
+ =?ISO-8859-4?Q?Nikl=E0vs_Ko=B6es=F1ikovs?= <89q1r14hd@relay.firefox.com>,
+ linux-kernel@vger.kernel.org, stable@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -68,76 +100,299 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-If the initialization is not finished, then filling input data to
-the FIFO may fail. So it is better to add initialization finishing
-check in the runtime resume for suspend & resume case.
+On Mon, 05 Sep 2022 12:14:03 +0200,
+Jason A. Donenfeld wrote:
+> 
+> This reverts commit 03a8b0df757f1beb21ba1626e23ca7412e48b525.
+> This reverts commit c11117b634f4f832c4420d3cf41c44227f140ce1.
+> 
+> Pipewire and PulseAudio start devices with 44.1khz before changing them
+> to 48khz (or something different). By locking the rate, daemons are
+> unable to enumerate possible rates, and so they never change them to a
+> more optimal rate. This revert patch should allow 48khz audio again.
 
-And consider the case of three instances working in parallel,
-increase the retry times to 50 for more initialization time.
+Well, in that case, the revert is no right solution, IMO.
+If the patch caused a problem, it means that the application tries to
+change the rate while it's being still running by another.  If it
+worked, it worked just casually without noticing the bad behavior.
+That said, changing the rate for a tied stream with a different rate
+while another is actually running is anyway no-go.  Maybe it should
+have better PCM hw constraint for covering this.  We need to check
+more details.
 
-Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
----
- sound/soc/fsl/fsl_asrc.c | 19 ++++++++++++++++++-
- 1 file changed, 18 insertions(+), 1 deletion(-)
+When you load snd-usb-audio with dyndbg=+p option, does it show the
+new error message "Mismatched sample rate xxx"?
 
-diff --git a/sound/soc/fsl/fsl_asrc.c b/sound/soc/fsl/fsl_asrc.c
-index aa5edf32d988..bae263b90ac1 100644
---- a/sound/soc/fsl/fsl_asrc.c
-+++ b/sound/soc/fsl/fsl_asrc.c
-@@ -20,6 +20,7 @@
- 
- #define IDEAL_RATIO_DECIMAL_DEPTH 26
- #define DIVIDER_NUM  64
-+#define INIT_TRY_NUM 50
- 
- #define pair_err(fmt, ...) \
- 	dev_err(&asrc->pdev->dev, "Pair %c: " fmt, 'A' + index, ##__VA_ARGS__)
-@@ -579,7 +580,7 @@ static void fsl_asrc_start_pair(struct fsl_asrc_pair *pair)
- {
- 	struct fsl_asrc *asrc = pair->asrc;
- 	enum asrc_pair_index index = pair->index;
--	int reg, retry = 10, i;
-+	int reg, retry = INIT_TRY_NUM, i;
- 
- 	/* Enable the current pair */
- 	regmap_update_bits(asrc->regmap, REG_ASRCTR,
-@@ -592,6 +593,10 @@ static void fsl_asrc_start_pair(struct fsl_asrc_pair *pair)
- 		reg &= ASRCFG_INIRQi_MASK(index);
- 	} while (!reg && --retry);
- 
-+	/* FIXME: Doesn't treat initialization timeout as error */
-+	if (!retry)
-+		dev_warn(&asrc->pdev->dev, "initialization isn't finished\n");
-+
- 	/* Make the input fifo to ASRC STALL level */
- 	regmap_read(asrc->regmap, REG_ASRCNCR, &reg);
- 	for (i = 0; i < pair->channels * 4; i++)
-@@ -1257,6 +1262,7 @@ static int fsl_asrc_runtime_resume(struct device *dev)
- {
- 	struct fsl_asrc *asrc = dev_get_drvdata(dev);
- 	struct fsl_asrc_priv *asrc_priv = asrc->private;
-+	int reg, retry = INIT_TRY_NUM;
- 	int i, ret;
- 	u32 asrctr;
- 
-@@ -1295,6 +1301,17 @@ static int fsl_asrc_runtime_resume(struct device *dev)
- 	regmap_update_bits(asrc->regmap, REG_ASRCTR,
- 			   ASRCTR_ASRCEi_ALL_MASK, asrctr);
- 
-+	/* Wait for status of initialization for every enabled pairs */
-+	do {
-+		udelay(5);
-+		regmap_read(asrc->regmap, REG_ASRCFG, &reg);
-+		reg = (reg >> ASRCFG_INIRQi_SHIFT(0)) & 0x7;
-+	} while ((reg != ((asrctr >> ASRCTR_ASRCEi_SHIFT(0)) & 0x7)) && --retry);
-+
-+	/* FIXME: Doesn't treat initialization timeout as error */
-+	if (!retry)
-+		dev_warn(dev, "initialization isn't finished\n");
-+
- 	return 0;
- 
- disable_asrck_clk:
--- 
-2.34.1
 
+thanks,
+
+Takashi
+
+> 
+> Fixes: c11117b634f4 ("ALSA: usb-audio: Refcount multiple accesses on the single clock")
+> Cc: stable@vger.kernel.org
+> Cc: Takashi Iwai <tiwai@suse.de>
+> Cc: Niklàvs Ko¶esñikovs <89q1r14hd@relay.firefox.com>
+> Cc: Wim Taymans <wtaymans@redhat.com>
+> Link: https://lore.kernel.org/all/YxXIWv8dYmg1tnXP@zx2c4.com/
+> Link: https://gitlab.freedesktop.org/pipewire/pipewire/-/issues/2620
+> Signed-off-by: Jason A. Donenfeld <Jason@zx2c4.com>
+> ---
+>  sound/usb/card.c     |  1 -
+>  sound/usb/card.h     |  3 +-
+>  sound/usb/endpoint.c | 90 +++++---------------------------------------
+>  sound/usb/usbaudio.h |  1 -
+>  4 files changed, 10 insertions(+), 85 deletions(-)
+> 
+> diff --git a/sound/usb/card.c b/sound/usb/card.c
+> index d356743de2ff..12bca2e85505 100644
+> --- a/sound/usb/card.c
+> +++ b/sound/usb/card.c
+> @@ -643,7 +643,6 @@ static int snd_usb_audio_create(struct usb_interface *intf,
+>  	INIT_LIST_HEAD(&chip->pcm_list);
+>  	INIT_LIST_HEAD(&chip->ep_list);
+>  	INIT_LIST_HEAD(&chip->iface_ref_list);
+> -	INIT_LIST_HEAD(&chip->clock_ref_list);
+>  	INIT_LIST_HEAD(&chip->midi_list);
+>  	INIT_LIST_HEAD(&chip->mixer_list);
+>  
+> diff --git a/sound/usb/card.h b/sound/usb/card.h
+> index ca75f2206170..87f042d06ce0 100644
+> --- a/sound/usb/card.h
+> +++ b/sound/usb/card.h
+> @@ -44,7 +44,6 @@ struct audioformat {
+>  
+>  struct snd_usb_substream;
+>  struct snd_usb_iface_ref;
+> -struct snd_usb_clock_ref;
+>  struct snd_usb_endpoint;
+>  struct snd_usb_power_domain;
+>  
+> @@ -63,7 +62,6 @@ struct snd_urb_ctx {
+>  struct snd_usb_endpoint {
+>  	struct snd_usb_audio *chip;
+>  	struct snd_usb_iface_ref *iface_ref;
+> -	struct snd_usb_clock_ref *clock_ref;
+>  
+>  	int opened;		/* open refcount; protect with chip->mutex */
+>  	atomic_t running;	/* running status */
+> @@ -140,6 +138,7 @@ struct snd_usb_endpoint {
+>  	unsigned int cur_period_frames;
+>  	unsigned int cur_period_bytes;
+>  	unsigned int cur_buffer_periods;
+> +	unsigned char cur_clock;
+>  
+>  	spinlock_t lock;
+>  	struct list_head list;
+> diff --git a/sound/usb/endpoint.c b/sound/usb/endpoint.c
+> index 0d7b73bf7945..0f5e9224a799 100644
+> --- a/sound/usb/endpoint.c
+> +++ b/sound/usb/endpoint.c
+> @@ -35,14 +35,6 @@ struct snd_usb_iface_ref {
+>  	struct list_head list;
+>  };
+>  
+> -/* clock refcounting */
+> -struct snd_usb_clock_ref {
+> -	unsigned char clock;
+> -	atomic_t locked;
+> -	int rate;
+> -	struct list_head list;
+> -};
+> -
+>  /*
+>   * snd_usb_endpoint is a model that abstracts everything related to an
+>   * USB endpoint and its streaming.
+> @@ -599,25 +591,6 @@ iface_ref_find(struct snd_usb_audio *chip, int iface)
+>  	return ip;
+>  }
+>  
+> -/* Similarly, a refcount object for clock */
+> -static struct snd_usb_clock_ref *
+> -clock_ref_find(struct snd_usb_audio *chip, int clock)
+> -{
+> -	struct snd_usb_clock_ref *ref;
+> -
+> -	list_for_each_entry(ref, &chip->clock_ref_list, list)
+> -		if (ref->clock == clock)
+> -			return ref;
+> -
+> -	ref = kzalloc(sizeof(*ref), GFP_KERNEL);
+> -	if (!ref)
+> -		return NULL;
+> -	ref->clock = clock;
+> -	atomic_set(&ref->locked, 0);
+> -	list_add_tail(&ref->list, &chip->clock_ref_list);
+> -	return ref;
+> -}
+> -
+>  /*
+>   * Get the existing endpoint object corresponding EP
+>   * Returns NULL if not present.
+> @@ -795,14 +768,6 @@ snd_usb_endpoint_open(struct snd_usb_audio *chip,
+>  			goto unlock;
+>  		}
+>  
+> -		if (fp->protocol != UAC_VERSION_1) {
+> -			ep->clock_ref = clock_ref_find(chip, fp->clock);
+> -			if (!ep->clock_ref) {
+> -				ep = NULL;
+> -				goto unlock;
+> -			}
+> -		}
+> -
+>  		ep->cur_audiofmt = fp;
+>  		ep->cur_channels = fp->channels;
+>  		ep->cur_rate = params_rate(params);
+> @@ -812,6 +777,7 @@ snd_usb_endpoint_open(struct snd_usb_audio *chip,
+>  		ep->cur_period_frames = params_period_size(params);
+>  		ep->cur_period_bytes = ep->cur_period_frames * ep->cur_frame_bytes;
+>  		ep->cur_buffer_periods = params_periods(params);
+> +		ep->cur_clock = fp->clock;
+>  
+>  		if (ep->type == SND_USB_ENDPOINT_TYPE_SYNC)
+>  			endpoint_set_syncinterval(chip, ep);
+> @@ -928,8 +894,8 @@ void snd_usb_endpoint_close(struct snd_usb_audio *chip,
+>  		ep->altsetting = 0;
+>  		ep->cur_audiofmt = NULL;
+>  		ep->cur_rate = 0;
+> +		ep->cur_clock = 0;
+>  		ep->iface_ref = NULL;
+> -		ep->clock_ref = NULL;
+>  		usb_audio_dbg(chip, "EP 0x%x closed\n", ep->ep_num);
+>  	}
+>  	mutex_unlock(&chip->mutex);
+> @@ -941,8 +907,6 @@ void snd_usb_endpoint_suspend(struct snd_usb_endpoint *ep)
+>  	ep->need_setup = true;
+>  	if (ep->iface_ref)
+>  		ep->iface_ref->need_setup = true;
+> -	if (ep->clock_ref)
+> -		ep->clock_ref->rate = 0;
+>  }
+>  
+>  /*
+> @@ -1350,33 +1314,6 @@ static int snd_usb_endpoint_set_params(struct snd_usb_audio *chip,
+>  	return 0;
+>  }
+>  
+> -static int init_sample_rate(struct snd_usb_audio *chip,
+> -			    struct snd_usb_endpoint *ep)
+> -{
+> -	struct snd_usb_clock_ref *clock = ep->clock_ref;
+> -	int err;
+> -
+> -	if (clock) {
+> -		if (atomic_read(&clock->locked))
+> -			return 0;
+> -		if (clock->rate == ep->cur_rate)
+> -			return 0;
+> -		if (clock->rate && clock->rate != ep->cur_rate) {
+> -			usb_audio_dbg(chip, "Mismatched sample rate %d vs %d for EP 0x%x\n",
+> -				      clock->rate, ep->cur_rate, ep->ep_num);
+> -			return -EINVAL;
+> -		}
+> -	}
+> -
+> -	err = snd_usb_init_sample_rate(chip, ep->cur_audiofmt, ep->cur_rate);
+> -	if (err < 0)
+> -		return err;
+> -
+> -	if (clock)
+> -		clock->rate = ep->cur_rate;
+> -	return 0;
+> -}
+> -
+>  /*
+>   * snd_usb_endpoint_configure: Configure the endpoint
+>   *
+> @@ -1406,7 +1343,8 @@ int snd_usb_endpoint_configure(struct snd_usb_audio *chip,
+>  		 * to update at each EP configuration
+>  		 */
+>  		if (ep->cur_audiofmt->protocol == UAC_VERSION_1) {
+> -			err = init_sample_rate(chip, ep);
+> +			err = snd_usb_init_sample_rate(chip, ep->cur_audiofmt,
+> +						       ep->cur_rate);
+>  			if (err < 0)
+>  				goto unlock;
+>  		}
+> @@ -1436,7 +1374,7 @@ int snd_usb_endpoint_configure(struct snd_usb_audio *chip,
+>  	if (err < 0)
+>  		goto unlock;
+>  
+> -	err = init_sample_rate(chip, ep);
+> +	err = snd_usb_init_sample_rate(chip, ep->cur_audiofmt, ep->cur_rate);
+>  	if (err < 0)
+>  		goto unlock;
+>  
+> @@ -1469,15 +1407,15 @@ int snd_usb_endpoint_configure(struct snd_usb_audio *chip,
+>  /* get the current rate set to the given clock by any endpoint */
+>  int snd_usb_endpoint_get_clock_rate(struct snd_usb_audio *chip, int clock)
+>  {
+> -	struct snd_usb_clock_ref *ref;
+> +	struct snd_usb_endpoint *ep;
+>  	int rate = 0;
+>  
+>  	if (!clock)
+>  		return 0;
+>  	mutex_lock(&chip->mutex);
+> -	list_for_each_entry(ref, &chip->clock_ref_list, list) {
+> -		if (ref->clock == clock) {
+> -			rate = ref->rate;
+> +	list_for_each_entry(ep, &chip->ep_list, list) {
+> +		if (ep->cur_clock == clock && ep->cur_rate) {
+> +			rate = ep->cur_rate;
+>  			break;
+>  		}
+>  	}
+> @@ -1518,9 +1456,6 @@ int snd_usb_endpoint_start(struct snd_usb_endpoint *ep)
+>  	if (atomic_inc_return(&ep->running) != 1)
+>  		return 0;
+>  
+> -	if (ep->clock_ref)
+> -		atomic_inc(&ep->clock_ref->locked);
+> -
+>  	ep->active_mask = 0;
+>  	ep->unlink_mask = 0;
+>  	ep->phase = 0;
+> @@ -1630,9 +1565,6 @@ void snd_usb_endpoint_stop(struct snd_usb_endpoint *ep, bool keep_pending)
+>  		if (ep->sync_source)
+>  			WRITE_ONCE(ep->sync_source->sync_sink, NULL);
+>  		stop_urbs(ep, false, keep_pending);
+> -		if (ep->clock_ref)
+> -			if (!atomic_dec_return(&ep->clock_ref->locked))
+> -				ep->clock_ref->rate = 0;
+>  	}
+>  }
+>  
+> @@ -1659,16 +1591,12 @@ void snd_usb_endpoint_free_all(struct snd_usb_audio *chip)
+>  {
+>  	struct snd_usb_endpoint *ep, *en;
+>  	struct snd_usb_iface_ref *ip, *in;
+> -	struct snd_usb_clock_ref *cp, *cn;
+>  
+>  	list_for_each_entry_safe(ep, en, &chip->ep_list, list)
+>  		kfree(ep);
+>  
+>  	list_for_each_entry_safe(ip, in, &chip->iface_ref_list, list)
+>  		kfree(ip);
+> -
+> -	list_for_each_entry_safe(cp, cn, &chip->clock_ref_list, list)
+> -		kfree(cp);
+>  }
+>  
+>  /*
+> diff --git a/sound/usb/usbaudio.h b/sound/usb/usbaudio.h
+> index ffbb4b0d09a0..044cd7ab27cb 100644
+> --- a/sound/usb/usbaudio.h
+> +++ b/sound/usb/usbaudio.h
+> @@ -45,7 +45,6 @@ struct snd_usb_audio {
+>  	struct list_head pcm_list;	/* list of pcm streams */
+>  	struct list_head ep_list;	/* list of audio-related endpoints */
+>  	struct list_head iface_ref_list; /* list of interface refcounts */
+> -	struct list_head clock_ref_list; /* list of clock refcounts */
+>  	int pcm_devs;
+>  
+>  	struct list_head midi_list;	/* list of midi interfaces */
+> -- 
+> 2.37.3
+> 
