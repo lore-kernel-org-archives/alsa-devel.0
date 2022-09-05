@@ -4,73 +4,76 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 815E9ECAAD3
-	for <alsa-devel@archiver.kernel.org>; Mon,  5 Sep 2022 16:43:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 56836ECAAD5
+	for <alsa-devel@archiver.kernel.org>; Mon,  5 Sep 2022 16:59:23 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id CB33B15F9;
-	Mon,  5 Sep 2022 18:43:03 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CB33B15F9
+	by alsa0.perex.cz (Postfix) with ESMTPS id A8B2684B;
+	Mon,  5 Sep 2022 18:58:31 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A8B2684B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1662396233;
-	bh=ofMIlFd626hGnUnboJkZEEUtEXPdrkIL6ZPCOm2bYOg=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	s=default; t=1662397161;
+	bh=OPhWheACqB5voc1DZNgFZ9E6/Dr9gFqeq2wdG3AQr3g=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=jScUwXpQNTEH3yIea/I1/bR2QUUUOGb2vwv513lBZHWDMS0O5WA5rP7OnsrqL3og4
-	 yR8WI1+HMpDIvhCc+YH6cjuaxoPMjoc+YqrQHanSmPn/MYXrxgI4ibNiQ5d25z+F5G
-	 iV4/PpvmUI/L95CBIdjRXmPoZDM8pXvaFLysAMbY=
+	b=K4x5jZI4Zr3CsbEEG2xcAsgdHNh9+3PYCdWovAJ3ocUtnkkFV1mh3VlwNxHNZhqIt
+	 EzPcaVNFZdxMtL3oKRvfwepD0XNOqkFaqF38oynkBimCT6C76TzZrqTdF5lWLMpc2/
+	 tjuqfwrqFWB0TSAwDZmi7nNy1ryRa9c3Yjyw1Njs=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 681D5F800E9;
-	Mon,  5 Sep 2022 18:43:03 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 3DCB9F80165;
+	Mon,  5 Sep 2022 18:58:31 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id B2363F800E9; Mon,  5 Sep 2022 18:43:01 +0200 (CEST)
-Received: from ams.source.kernel.org (ams.source.kernel.org
- [IPv6:2604:1380:4601:e00::1])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 51133F800E9
- for <alsa-devel@alsa-project.org>; Mon,  5 Sep 2022 18:42:58 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 51133F800E9
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="rpo8q0KB"
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+ id AF834F8032D; Mon,  5 Sep 2022 18:58:29 +0200 (CEST)
+Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by ams.source.kernel.org (Postfix) with ESMTPS id 38B6EB811A6;
- Mon,  5 Sep 2022 16:42:57 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B0F4FC433D6;
- Mon,  5 Sep 2022 16:42:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1662396175;
- bh=ofMIlFd626hGnUnboJkZEEUtEXPdrkIL6ZPCOm2bYOg=;
- h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=rpo8q0KBfj9SC5purKcAV+ErKFencFzGfWmknDo9og64dr2jBJegpm2rdeznXuq3g
- owtZQNlnD311DWhaS967QHhrXLDojjdgCB32jL4NWLEsApWt1z+Mgknpqz6E2DgTT5
- W71WSgccfp+AHKV/QZwccQv73T7IX6m2xhT+Gkp58EPf7VlNL98B0seSJiB4XvVRCI
- FrIGGF3HXw2VA4bqFZ4J5f5k8ufkEEcNEjgsJshC4tE5z37awXo0xxT3LU08jTRzU6
- zbmKEq8pMjb4rLC4mBraTuxus7i5p8WX+cIQTCg9fuw36cwgLBFNvetTtSE4uYJNQE
- lMDllkoy/kqww==
-Date: Mon, 5 Sep 2022 17:42:50 +0100
-From: Mark Brown <broonie@kernel.org>
-To: Martin =?utf-8?Q?Povi=C5=A1er?= <povik+lin@cutebit.org>
-Subject: Re: [PATCH 0/2] Untested TAS2562 power setting fixes
-Message-ID: <YxYnCoWzCzMCGpEQ@sirena.org.uk>
-References: <20220825142226.80929-1-povik+lin@cutebit.org>
- <166239232739.736206.17258746656389143736.b4-ty@kernel.org>
- <C600ACEB-C64F-4501-94E4-17B4FD0A8918@cutebit.org>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 1FC25F800CC
+ for <alsa-devel@alsa-project.org>; Mon,  5 Sep 2022 18:58:22 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1FC25F800CC
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
+ header.b="nwoj27/M"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+ d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+ t=1662397104; x=1693933104;
+ h=from:to:cc:subject:date:message-id:in-reply-to:
+ references:mime-version:content-transfer-encoding;
+ bh=OPhWheACqB5voc1DZNgFZ9E6/Dr9gFqeq2wdG3AQr3g=;
+ b=nwoj27/MbjcurygRSBmp6GtXeHEt7Pc/KQ0ONv29Aimv2UdYy93R2lLJ
+ GeH5yZWZPCRGft8Uik4SoltIg3yqIreryDhjo02t0p94St3vDprL3b6ce
+ ynvzzYx3s782AiFHyZqQvpw1cfqDV6WVX2n8r+Qm7oAJ6AFTYoXTGdgwk
+ cia5CwkvrTlgj50kr92Ew+WqkwpTbPIR5a5wyt8anqLjZLGZOSeKauQsn
+ siFv7AK3eAQSset5lrr36MBsgbUwY9/9MgY60k0xnnshHrRvJnKQUw+EZ
+ aLixWpTCPX77GMNOTZeEUQ1N+WpuvozbBFuCd7vUg9m4kbQsUGeWEiudd Q==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10461"; a="283419363"
+X-IronPort-AV: E=Sophos;i="5.93,291,1654585200"; d="scan'208";a="283419363"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+ by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 05 Sep 2022 09:58:20 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.93,291,1654585200"; d="scan'208";a="789428926"
+Received: from black.fi.intel.com ([10.237.72.28])
+ by orsmga005.jf.intel.com with ESMTP; 05 Sep 2022 09:58:18 -0700
+Received: by black.fi.intel.com (Postfix, from userid 1003)
+ id 85A22F7; Mon,  5 Sep 2022 19:58:33 +0300 (EEST)
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To: Takashi Iwai <tiwai@suse.de>,
+ Lucas Tanure <tanureal@opensource.cirrus.com>, alsa-devel@alsa-project.org,
+ patches@opensource.cirrus.com, linux-kernel@vger.kernel.org
+Subject: [PATCH v1 2/2] ALSA: hda: cs35l41: Utilize acpi_get_subsystem_id()
+Date: Mon,  5 Sep 2022 19:58:26 +0300
+Message-Id: <20220905165826.35979-2-andriy.shevchenko@linux.intel.com>
+X-Mailer: git-send-email 2.35.1
+In-Reply-To: <20220905165826.35979-1-andriy.shevchenko@linux.intel.com>
+References: <20220905165826.35979-1-andriy.shevchenko@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature"; boundary="EoXYJhccnS9/KYaw"
-Content-Disposition: inline
-In-Reply-To: <C600ACEB-C64F-4501-94E4-17B4FD0A8918@cutebit.org>
-X-Cookie: What's so funny?
-Cc: alsa-devel@alsa-project.org, Charles Keepax <ckeepax@opensource.cirrus.com>,
- Liam Girdwood <lgirdwood@gmail.com>, asyrus@ti.com,
- linux-kernel@vger.kernel.org, navada@ti.com, raphael-xu@ti.com,
- shenghao-ding@ti.com, Stephen Kitt <steve@sk2.org>
+Content-Transfer-Encoding: 8bit
+Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+ Takashi Iwai <tiwai@suse.com>, Richard Fitzgerald <rf@opensource.cirrus.com>,
+ James Schulman <james.schulman@cirrus.com>,
+ David Rhodes <david.rhodes@cirrus.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -86,34 +89,105 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+Replace open coded variant of recently introduced acpi_get_subsystem_id().
 
---EoXYJhccnS9/KYaw
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+---
+ sound/pci/hda/cs35l41_hda.c | 46 ++++++++-----------------------------
+ 1 file changed, 9 insertions(+), 37 deletions(-)
 
-On Mon, Sep 05, 2022 at 05:45:09PM +0200, Martin Povi=C5=A1er wrote:
+diff --git a/sound/pci/hda/cs35l41_hda.c b/sound/pci/hda/cs35l41_hda.c
+index 12e955931044..3952f2853703 100644
+--- a/sound/pci/hda/cs35l41_hda.c
++++ b/sound/pci/hda/cs35l41_hda.c
+@@ -842,8 +842,8 @@ static int cs35l41_hda_bind(struct device *dev, struct device *master, void *mas
+ 
+ 	comps->dev = dev;
+ 	if (!cs35l41->acpi_subsystem_id)
+-		cs35l41->acpi_subsystem_id = devm_kasprintf(dev, GFP_KERNEL, "%.8x",
+-							    comps->codec->core.subsystem_id);
++		cs35l41->acpi_subsystem_id = kasprintf(GFP_KERNEL, "%.8x",
++						       comps->codec->core.subsystem_id);
+ 	cs35l41->codec = comps->codec;
+ 	strscpy(comps->name, dev_name(dev), sizeof(comps->name));
+ 
+@@ -1048,36 +1048,6 @@ static int cs35l41_hda_apply_properties(struct cs35l41_hda *cs35l41)
+ 	return cs35l41_hda_channel_map(cs35l41->dev, 0, NULL, 1, &hw_cfg->spk_pos);
+ }
+ 
+-static int cs35l41_get_acpi_sub_string(struct device *dev, struct acpi_device *adev,
+-				       const char **subsysid)
+-{
+-	struct acpi_buffer buffer = { ACPI_ALLOCATE_BUFFER, NULL };
+-	union acpi_object *obj;
+-	acpi_status status;
+-	int ret = 0;
+-
+-	status = acpi_evaluate_object(adev->handle, "_SUB", NULL, &buffer);
+-	if (ACPI_SUCCESS(status)) {
+-		obj = buffer.pointer;
+-		if (obj->type == ACPI_TYPE_STRING) {
+-			*subsysid = devm_kstrdup(dev, obj->string.pointer, GFP_KERNEL);
+-			if (*subsysid == NULL) {
+-				dev_err(dev, "Cannot allocate Subsystem ID");
+-				ret = -ENOMEM;
+-			}
+-		} else {
+-			dev_warn(dev, "Warning ACPI _SUB did not return a string\n");
+-			ret = -ENODEV;
+-		}
+-		acpi_os_free(buffer.pointer);
+-	} else {
+-		dev_dbg(dev, "Warning ACPI _SUB failed: %#x\n", status);
+-		ret = -ENODEV;
+-	}
+-
+-	return ret;
+-}
+-
+ static int cs35l41_get_speaker_id(struct device *dev, int amp_index,
+ 				  int num_amps, int fixed_gpio_id)
+ {
+@@ -1182,6 +1152,7 @@ static int cs35l41_hda_read_acpi(struct cs35l41_hda *cs35l41, const char *hid, i
+ 	u32 values[HDA_MAX_COMPONENTS];
+ 	struct acpi_device *adev;
+ 	struct device *physdev;
++	const char *sub;
+ 	char *property;
+ 	size_t nval;
+ 	int i, ret;
+@@ -1195,11 +1166,10 @@ static int cs35l41_hda_read_acpi(struct cs35l41_hda *cs35l41, const char *hid, i
+ 	physdev = get_device(acpi_get_first_physical_node(adev));
+ 	acpi_dev_put(adev);
+ 
+-	ret = cs35l41_get_acpi_sub_string(cs35l41->dev, adev, &cs35l41->acpi_subsystem_id);
+-	if (ret)
+-		dev_info(cs35l41->dev, "No Subsystem ID found in ACPI: %d", ret);
+-	else
+-		dev_dbg(cs35l41->dev, "Subsystem ID %s found", cs35l41->acpi_subsystem_id);
++	sub = acpi_get_subsystem_id(ACPI_HANDLE(physdev));
++	if (IS_ERR(sub))
++		sub = NULL;
++	cs35l41->acpi_subsystem_id = sub;
+ 
+ 	property = "cirrus,dev-index";
+ 	ret = device_property_count_u32(physdev, property);
+@@ -1434,6 +1404,7 @@ int cs35l41_hda_probe(struct device *dev, const char *device_name, int id, int i
+ 	if (cs35l41_safe_reset(cs35l41->regmap, cs35l41->hw_cfg.bst_type))
+ 		gpiod_set_value_cansleep(cs35l41->reset_gpio, 0);
+ 	gpiod_put(cs35l41->reset_gpio);
++	kfree(cs35l41->acpi_subsystem_id);
+ 
+ 	return ret;
+ }
+@@ -1456,6 +1427,7 @@ void cs35l41_hda_remove(struct device *dev)
+ 	if (cs35l41_safe_reset(cs35l41->regmap, cs35l41->hw_cfg.bst_type))
+ 		gpiod_set_value_cansleep(cs35l41->reset_gpio, 0);
+ 	gpiod_put(cs35l41->reset_gpio);
++	kfree(cs35l41->acpi_subsystem_id);
+ }
+ EXPORT_SYMBOL_NS_GPL(cs35l41_hda_remove, SND_HDA_SCODEC_CS35L41);
+ 
+-- 
+2.35.1
 
-> Texas Instruments is shipping me samples of the affected
-> codecs, so I should be able to test the changes on hardware soon.
-
-> Should I find regressions, I will report back.
-
-Ah, that's great news.
-
---EoXYJhccnS9/KYaw
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmMWJwkACgkQJNaLcl1U
-h9D33Af/QSb6Pe1owP1mrK1vVJUDtrHI6iUyUdFHPK24FwuUl4JkDGiHhWaaA0xn
-kP24h+f3Kad02l5UM02y1IwVJipW7J7/VmPOrdi4evrNQ6qdXAeiEauHhAMsnRnO
-9HGdCnqaGytdYK8Q01ZN0zuYq4QEOTIDCMXgWgwIjEPgPH4kdEe4KXeAjdn9ks+T
-oIrequRljgRTyhoj1+s2J2Hj9Cm+KJXOJBlhxr3HkVWftWztKT+GP6MipBwXJcmk
-2gf21m0YM7MRY1dWNZEEjeHLPUGl4f8QRikx2gRqbgV8uOS7YihpCs4vAclTZ2y8
-Es3gD+1UVr5RTCVZyRFQXT5ZWXFU1w==
-=4sYU
------END PGP SIGNATURE-----
-
---EoXYJhccnS9/KYaw--
