@@ -4,74 +4,116 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5E38FECAAD3
-	for <alsa-devel@archiver.kernel.org>; Mon,  5 Sep 2022 16:59:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D9D1DECAAD5
+	for <alsa-devel@archiver.kernel.org>; Mon,  5 Sep 2022 17:25:44 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0BB54165D;
-	Mon,  5 Sep 2022 18:59:02 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0BB54165D
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3674584C;
+	Mon,  5 Sep 2022 19:24:52 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3674584C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1662397192;
-	bh=e8YXLtq3TD5WABfmx3boLopZxKdFinKI+1f8BL03nW8=;
+	s=default; t=1662398742;
+	bh=MaDq5Awm2tI7V5qYOw/N87vxvV71FieHphPjBpzCkcM=;
 	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
 	 List-Post:List-Help:List-Subscribe:From;
-	b=Sxlm6jX0yf+80Ger4Qx4WjF/zG2FQNjkh6otH/JPH/LG2Z1F1ALNjo1X/bfeLc7WM
-	 5SbS/b+lYM/hsqdegwPb6yczPXTLXvC9pYwYUM+EX/yspi8Ze0MVsC+TDJFL1w1NLq
-	 0nlE1W34zIdeBWcURW83gyRmbQSPk3sc9FLTmxAo=
+	b=PC08jD66bU15Fat7qnNITLAsp5OOgBPrPsr2I78jDk2c/d1ETkCH2STcIL9rkwdrY
+	 i7THkObjlCfdW9gVQGd8wpCdCJKDsRiqq/LNvZ3wVlxjgKA/kobCimA807PsermrwU
+	 hWuakcqEVgIbq0o1RdMgjgibmazeFgGtc5uMvqrY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 4A70CF80527;
-	Mon,  5 Sep 2022 18:58:35 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id C3C12F80165;
+	Mon,  5 Sep 2022 19:24:51 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 76015F80533; Mon,  5 Sep 2022 18:58:33 +0200 (CEST)
-Received: from mga18.intel.com (mga18.intel.com [134.134.136.126])
+ id DC5C5F80238; Mon,  5 Sep 2022 19:24:50 +0200 (CEST)
+Received: from NAM12-BN8-obe.outbound.protection.outlook.com
+ (mail-bn8nam12on2087.outbound.protection.outlook.com [40.107.237.87])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id E364DF800E9
- for <alsa-devel@alsa-project.org>; Mon,  5 Sep 2022 18:58:22 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E364DF800E9
+ by alsa1.perex.cz (Postfix) with ESMTPS id 04685F800CC
+ for <alsa-devel@alsa-project.org>; Mon,  5 Sep 2022 19:24:39 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 04685F800CC
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="mgyi+ojS"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
- d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1662397108; x=1693933108;
- h=from:to:cc:subject:date:message-id:mime-version:
- content-transfer-encoding;
- bh=e8YXLtq3TD5WABfmx3boLopZxKdFinKI+1f8BL03nW8=;
- b=mgyi+ojS7BRzbDsTYRPKzKGewU4W0n7g9JSOj7qNQLLAy4GmHfHck/QJ
- fciBRIhk5WjRnWj+jxu9ww43a+xzbh4X4vJ4Jev/OXSHQnVqLUL2fAqT3
- fZWWRyFh5ygq4rqloUgyNpSwUEDTFXMGV3zyrZ1d1mDb7fTa7QtF4HSyW
- /pzMYvItWuzOVCL2ybnPOBb71CusE47prbCLcoWX6GEd2lB/uwp/r7R+0
- WB6IyE9EINVdfXYB2PPbD8hkoDCbMcnJqfrhHzJujQobT6n2Ge6ghB+Vv
- W4CEMUJ1p9JcgdxyUW9kyQMp/wrJUzYMUfY5PiGMmQ8sUhjC3sG/28SjT Q==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10461"; a="279439130"
-X-IronPort-AV: E=Sophos;i="5.93,291,1654585200"; d="scan'208";a="279439130"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
- by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 05 Sep 2022 09:58:20 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.93,291,1654585200"; d="scan'208";a="609716171"
-Received: from black.fi.intel.com ([10.237.72.28])
- by orsmga007.jf.intel.com with ESMTP; 05 Sep 2022 09:58:18 -0700
-Received: by black.fi.intel.com (Postfix, from userid 1003)
- id 7C131101; Mon,  5 Sep 2022 19:58:33 +0300 (EEST)
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To: Takashi Iwai <tiwai@suse.de>,
- Lucas Tanure <tanureal@opensource.cirrus.com>, alsa-devel@alsa-project.org,
- patches@opensource.cirrus.com, linux-kernel@vger.kernel.org
-Subject: [PATCH v1 1/2] ALSA: hda: cs35l41: Call put_device() in the scope of
- get_device()
-Date: Mon,  5 Sep 2022 19:58:25 +0300
-Message-Id: <20220905165826.35979-1-andriy.shevchenko@linux.intel.com>
-X-Mailer: git-send-email 2.35.1
+ dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com
+ header.b="S+h/beP9"
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=BHCisw2yIBT6GPmMyudVIjAudq4uVfyPJB6kHIQMbbTZ6AgJSdpLDVHVEcsdfqbrysVMF1YxtolNWfKNXVwuPrBsL+EkqWRjI0UvIZn/LBag0NJsuM5qDmrUnxkQ6GjGx5QYd+6xzZb+d1Asm8xw4dYn6PiD6lLpSrj8Zr5Ei3GiV4DFt6UQpLDn51TC1eLc/UDxPDkIRkwAJSInK/wjT65eo1CPBFgNCq6bzwmQ4QzMXog9iDAPUiIIBHIlz0tSi58/VEbkWRIaV6qNGq3EHpUx1I4XOHpzqswHhbTS/LO0ITSi2jEaZS4fZzRVeJlMulgK29njuKXzQHIQnEL6uw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=X4Pt9yeMGXkD8y3QMXvO0d0w2llCU8Vu1dQvgQAouvI=;
+ b=jGvf0jK84XROWEPJjila81G3Ujr13BR/Zf5+KbV2E8cdiF141wb4xAKS6TMsc2mH9GuQ3TvNvSCoMGT/6i8iGclkwavr92IE22VkKIoojgeve8XL4v3iaT8edRzSV9147LxO0m0og2nn3A2lptlx0M1lmD3LiW9yyMUAKPQp/EOLMOyow4F/dhma21Ob4s0KUBfMobUUdnrazmlo7gb7e2fqT+Ja7o9YGqXnAXZTlQEuAsKR5SUOOYWnhVG2j69ae52Fw4nF+8gdxAn84lO5yGrlMdSsPOhgYYXEQ5RIUhVaYKD07y2tH64mj+EOm3qkfnppSc4pKij7FsSfEGxelQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 12.22.5.236) smtp.rcpttodomain=vger.kernel.org smtp.mailfrom=nvidia.com;
+ dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
+ dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=X4Pt9yeMGXkD8y3QMXvO0d0w2llCU8Vu1dQvgQAouvI=;
+ b=S+h/beP98p+aWpaDnkW0NiUodaBhVJs69bz6Kj8HIBMZb/G7euwUFvcYiS0o292PggzCd1cJayd/HxEhXSYHit+d/J3s9jeYSQywI/Tid/pl4RITNHLuJTl1dJ7HV5LFclb17Nzq9yJTKp0iNRYVO/V2xYYkO9MdMUsWC+sIqvW50t3Jb7s24zRTRMm705CodBOWo/nkPq4nA3oony6c7ufM0x5tYTD4dhUNisjsHXjuXDrGSOcP82nG3s0ZqL4bqcST8JE31Cn+WOGMTJ7TQkdOCVZ/eANzVRLZd3YDuYs1N32/dDxnNszaG2iulabvgEmdbuhbV7qSHIMvjF2G7w==
+Received: from MW3PR05CA0014.namprd05.prod.outlook.com (2603:10b6:303:2b::19)
+ by BN9PR12MB5258.namprd12.prod.outlook.com (2603:10b6:408:11f::20)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5588.11; Mon, 5 Sep
+ 2022 17:24:34 +0000
+Received: from CO1NAM11FT016.eop-nam11.prod.protection.outlook.com
+ (2603:10b6:303:2b:cafe::85) by MW3PR05CA0014.outlook.office365.com
+ (2603:10b6:303:2b::19) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5612.5 via Frontend
+ Transport; Mon, 5 Sep 2022 17:24:34 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 12.22.5.236)
+ smtp.mailfrom=nvidia.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 12.22.5.236 as permitted sender) receiver=protection.outlook.com;
+ client-ip=12.22.5.236; helo=mail.nvidia.com; pr=C
+Received: from mail.nvidia.com (12.22.5.236) by
+ CO1NAM11FT016.mail.protection.outlook.com (10.13.175.141) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ 15.20.5588.10 via Frontend Transport; Mon, 5 Sep 2022 17:24:34 +0000
+Received: from drhqmail203.nvidia.com (10.126.190.182) by
+ DRHQMAIL109.nvidia.com (10.27.9.19) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.38; Mon, 5 Sep 2022 17:24:33 +0000
+Received: from drhqmail203.nvidia.com (10.126.190.182) by
+ drhqmail203.nvidia.com (10.126.190.182) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.986.29; Mon, 5 Sep 2022 10:24:33 -0700
+Received: from mkumard.nvidia.com (10.127.8.13) by mail.nvidia.com
+ (10.126.190.182) with Microsoft SMTP Server id 15.2.986.29 via Frontend
+ Transport; Mon, 5 Sep 2022 10:24:31 -0700
+From: Mohan Kumar <mkumard@nvidia.com>
+To: <tiwai@suse.com>, <perex@perex.cz>, <thierry.reding@gmail.com>
+Subject: [PATCH] ALSA: hda/tegra: Align BDL entry to 4KB boundary
+Date: Mon, 5 Sep 2022 22:54:20 +0530
+Message-ID: <20220905172420.3801-1-mkumard@nvidia.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
- Takashi Iwai <tiwai@suse.com>, Richard Fitzgerald <rf@opensource.cirrus.com>,
- James Schulman <james.schulman@cirrus.com>,
- David Rhodes <david.rhodes@cirrus.com>
+Content-Type: text/plain
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 7fb08439-4c97-4814-c629-08da8f638075
+X-MS-TrafficTypeDiagnostic: BN9PR12MB5258:EE_
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: WtNHkicclGz9JFOsJskudLZfrMEXJ6CRlHWNw9scaBSy5nNLn6KOe6djc3sFmU4F5KcnS4ZdY8hKRSCfXEj7nhUzteJiodEhtZr1WrnKpqg8ki3czJi99+Wl7iwxrujPKembX2yrAQOkLJe6eVRoriYbeCN6Z/KC2TylQH167UIU6Nafoezk1VfVhlTOkHwX+KzSTqozqGwZQ4XtsoCAHewmCRsA2FHNmzUIEPibc6KAJAt6qUZFzRfeBxIA/IAHarTQse05OUDhqPNlhePke4VcHTIKgIRGgvly7q43LBVqucfQjXUyubzjDBh4bIJQoBfETtY3N563ShYNWLWXTj3w6EukiGMQNohjEHj6mCgajBoUfFZY7saV5WgVYvqU+StspB1amIjYcXj0MeNVeDx0iQwUrzDYWP+mDNCI4vh+iMQCFWAjCPwoxtNs1EknKEKokYNYaQzfigbTfXhFCUrO/lmsqsep9fIYjY/sIsDwARu2cUuUa74Byhjiaf48j69r48K+g3+m0uhY+WwXIulXTkfie7gCDAxrv/5xtDL+Fk70V24np4k25ztKUdGLHkyEvvB1B/QqL8cO2Z32NSMcVS1uZy0gyiNu6cFNifkr5wni0P7eB5MjUwLaRgNaEm2WNIexhMrwexm+CBgOUnT9nij5qHF0c9nOLz0kNgp+rrTI1lE4DhKAliInkTKDxQY+K4SGvHM6w7VzSZE2PQB5lwx4sMd8YvtPn8EkZkfzzotB9uBZmHGkoD8dsjjaSTBCXEOG4S1Ip06Yhmgg+w5RrI6Jyqb4bOOklWoYn8VXz9Uo9GjQW2XRiyhUP1lL
+X-Forefront-Antispam-Report: CIP:12.22.5.236; CTRY:US; LANG:en; SCL:1; SRV:;
+ IPV:NLI; SFV:NSPM; H:mail.nvidia.com; PTR:InfoNoRecords; CAT:NONE;
+ SFS:(13230016)(4636009)(396003)(39860400002)(376002)(136003)(346002)(46966006)(36840700001)(40470700004)(5660300002)(36860700001)(83380400001)(316002)(110136005)(54906003)(36756003)(70586007)(4744005)(8676002)(8936002)(2906002)(4326008)(70206006)(478600001)(41300700001)(40480700001)(107886003)(6666004)(26005)(82310400005)(426003)(1076003)(336012)(186003)(2616005)(47076005)(86362001)(82740400003)(40460700003)(356005)(81166007)(7696005)(36900700001);
+ DIR:OUT; SFP:1101; 
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 05 Sep 2022 17:24:34.4989 (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 7fb08439-4c97-4814-c629-08da8f638075
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a; Ip=[12.22.5.236];
+ Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource: CO1NAM11FT016.eop-nam11.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN9PR12MB5258
+Cc: linux-tegra@vger.kernel.org, alsa-devel@alsa-project.org,
+ linux-kernel@vger.kernel.org, Mohan Kumar <mkumard@nvidia.com>,
+ jonathanh@nvidia.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -87,53 +129,30 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-When put_device() is called in another function it's hard to realize
-that and easy to "fix" the code in a wrong way. Instead, move
-put_device() to be in the same scope as get_device(), so we prevent
-appearance of any attempts to "fix" the code.
+AZA HW may send a burst read/write request crossing 4K memory boundary.
+The 4KB boundary is not guaranteed by Tegra HDA HW. Make SW change to
+include the flag AZX_DCAPS_4K_BDLE_BOUNDARY to align BDLE to 4K
+boundary.
 
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Signed-off-by: Mohan Kumar <mkumard@nvidia.com>
 ---
- sound/pci/hda/cs35l41_hda.c | 11 ++++++-----
- 1 file changed, 6 insertions(+), 5 deletions(-)
+ sound/pci/hda/hda_tegra.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/sound/pci/hda/cs35l41_hda.c b/sound/pci/hda/cs35l41_hda.c
-index 15e2a0009080..12e955931044 100644
---- a/sound/pci/hda/cs35l41_hda.c
-+++ b/sound/pci/hda/cs35l41_hda.c
-@@ -1154,7 +1154,6 @@ static int cs35l41_no_acpi_dsd(struct cs35l41_hda *cs35l41, struct device *physd
- 	hw_cfg->gpio2.func = CS35L41_INTERRUPT;
- 	hw_cfg->gpio2.valid = true;
- 	hw_cfg->valid = true;
--	put_device(physdev);
- 
- 	if (strncmp(hid, "CLSA0100", 8) == 0) {
- 		hw_cfg->bst_type = CS35L41_EXT_BOOST_NO_VSPK_SWITCH;
-@@ -1204,9 +1203,10 @@ static int cs35l41_hda_read_acpi(struct cs35l41_hda *cs35l41, const char *hid, i
- 
- 	property = "cirrus,dev-index";
- 	ret = device_property_count_u32(physdev, property);
--	if (ret <= 0)
--		return cs35l41_no_acpi_dsd(cs35l41, physdev, id, hid);
--
-+	if (ret <= 0) {
-+		ret = cs35l41_no_acpi_dsd(cs35l41, physdev, id, hid);
-+		goto err_put_physdev;
-+	}
- 	if (ret > ARRAY_SIZE(values)) {
- 		ret = -EINVAL;
- 		goto err;
-@@ -1295,8 +1295,9 @@ static int cs35l41_hda_read_acpi(struct cs35l41_hda *cs35l41, const char *hid, i
- 	return 0;
- 
- err:
--	put_device(physdev);
- 	dev_err(cs35l41->dev, "Failed property %s: %d\n", property, ret);
-+err_put_physdev:
-+	put_device(physdev);
- 
- 	return ret;
- }
+diff --git a/sound/pci/hda/hda_tegra.c b/sound/pci/hda/hda_tegra.c
+index 7debb2c76aa6..976a112c7d00 100644
+--- a/sound/pci/hda/hda_tegra.c
++++ b/sound/pci/hda/hda_tegra.c
+@@ -474,7 +474,8 @@ MODULE_DEVICE_TABLE(of, hda_tegra_match);
+ static int hda_tegra_probe(struct platform_device *pdev)
+ {
+ 	const unsigned int driver_flags = AZX_DCAPS_CORBRP_SELF_CLEAR |
+-					  AZX_DCAPS_PM_RUNTIME;
++					  AZX_DCAPS_PM_RUNTIME |
++					  AZX_DCAPS_4K_BDLE_BOUNDARY;
+ 	struct snd_card *card;
+ 	struct azx *chip;
+ 	struct hda_tegra *hda;
 -- 
-2.35.1
+2.17.1
 
