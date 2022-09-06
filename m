@@ -4,79 +4,80 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id F207BECAAA1
-	for <alsa-devel@archiver.kernel.org>; Tue,  6 Sep 2022 17:06:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 835CFECAAA1
+	for <alsa-devel@archiver.kernel.org>; Tue,  6 Sep 2022 17:06:28 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 285AB1669;
-	Tue,  6 Sep 2022 19:05:19 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 285AB1669
+	by alsa0.perex.cz (Postfix) with ESMTPS id C27B71666;
+	Tue,  6 Sep 2022 19:05:36 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C27B71666
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1662483969;
-	bh=6vAtZDUhBzhzWcbyEDHHtQVO/kmEGrlxrzpY+OSIcxM=;
+	s=default; t=1662483986;
+	bh=dTDIl5ElI/DFRyrNb8lSXqJFr/2FE9TvUUj2fmAOo+o=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=GAsTz3KjN5EF2/l6YtoXEPPGDudTBZX+8ZmGHr/j8QoV3O1ISSJgHMZhVILAwH+/4
-	 Fdd73ytxgA+6C5ypEoLshEFzScU3Pg39fJPnLgMtyr30DMXzknipEmge8jsLghOJ3e
-	 Pc++a6UPDTAlLXFEVzBKuK8V3qCpqWs4K8SzL6uI=
+	b=uks8NA+TgqmVJI3t0TPDIOGzdxTC1cZ3SFQMPNW/ECSt8Vun26yOafKD0FmISzANn
+	 LKdzQJbsOnlWSdZQ4PUzu7xqz0z8msCEAM/PlbXzTBdC4WtEY7KTap7NKXaFabZ2b4
+	 jy0KHpCwGe3VcxtBbscj2MIvuq849uMDn4gG0GuU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id D9518F80587;
-	Tue,  6 Sep 2022 19:02:31 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 4CD87F8059F;
+	Tue,  6 Sep 2022 19:02:32 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 31FD7F80563; Tue,  6 Sep 2022 19:02:29 +0200 (CEST)
-Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com
- [IPv6:2a00:1450:4864:20::434])
+ id A0242F8057A; Tue,  6 Sep 2022 19:02:30 +0200 (CEST)
+Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com
+ [IPv6:2a00:1450:4864:20::432])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id C247EF80537
- for <alsa-devel@alsa-project.org>; Tue,  6 Sep 2022 19:02:11 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C247EF80537
+ by alsa1.perex.cz (Postfix) with ESMTPS id C8A62F8053B
+ for <alsa-devel@alsa-project.org>; Tue,  6 Sep 2022 19:02:19 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C8A62F8053B
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org
- header.b="yPFdT/Zl"
-Received: by mail-wr1-x434.google.com with SMTP id c11so12186367wrp.11
- for <alsa-devel@alsa-project.org>; Tue, 06 Sep 2022 10:02:11 -0700 (PDT)
+ header.b="uh7RFVbh"
+Received: by mail-wr1-x432.google.com with SMTP id t7so11384473wrm.10
+ for <alsa-devel@alsa-project.org>; Tue, 06 Sep 2022 10:02:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
  h=content-transfer-encoding:mime-version:references:in-reply-to
  :message-id:date:subject:cc:to:from:from:to:cc:subject:date;
- bh=re8Z9fw7pUFDwz5t2E+fC5AN4inVQugZHn4dMfClz40=;
- b=yPFdT/Zllm622SFwnkd64Ui2kruuNrAfFuqcDOrHweA+yvDdrO39YO1EiQwIMDl2ih
- +8LV+TVZGQpbIM0+Va+NdxuOjMhbwnbB0/G7NX42DzUyBMKkhqmiHy5OTDomv1eV1kQp
- HfVYjRS3sJZdolJi10Ql4H0YLkjFEda9kpIis7EiRFCb4jicKJFR6tDTgPrH5hZ/82PS
- FShSosLeXqjdER4vZn4DBlyBXJT4TYSbdVLXgbnfgiCd+KKxH6Z0+8mgjIh7RE1KmuET
- Hf4o4y5jR0nwAFT74MXs/dGBv2ZdtEe9fdaP/o4+CNuhCG52X6JZd19oodsuu3NDJgBV
- kyTw==
+ bh=mG8/68Nd5p6XZNfAhdT98YGrwNfmwR141FpLjSTTCsc=;
+ b=uh7RFVbh3hlpTGPDorwsH8R2nLEmp4+jlQNOI9EiFJ31/0Ykxmu4xRyR+fC4uD7Lpm
+ oJDMIOoi18SVX2FocPN9rM2wGfUgWz6jq+IZGHlMQft9R/mXbKpAquExjYC1Rw0ihz6W
+ Es1L9Mw8SO+HBsRuliZndqb7kPxFrlkEk3YmC16UwUSLP/9+nPuO8Ud+r1BFcfBdXjpX
+ K0MXqsprT/C5o+Yzt+JhsT78JMvycWrlWjTCNmitIZb8dzBkuiAl6Qx2UknyX4LrA3F9
+ Ha0LtmNxttQH45H6rjmeqFoJxMDk3WVPsDlc2OFNc+B8PSjagr6DShJHBl78+fjg10QK
+ /B6A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
  h=content-transfer-encoding:mime-version:references:in-reply-to
  :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
  :subject:date;
- bh=re8Z9fw7pUFDwz5t2E+fC5AN4inVQugZHn4dMfClz40=;
- b=JA/FVD6Gy09E3dntLMLAfYHOHc1lMTuFRQyyQSrMrMABvYXgCYS66mixPS22FVc/hK
- 0OmS0uQF/OrVLwW/Ovw4DSMIHQKuvgYJ1eP4nAv5EP9WETUPTvdgW817j2McylfojIbA
- 5sDzh0V2xirNALARk5gRoWuxgI1ath26Nvkt3KI2Oh3JePtAdozvhZtgO6VdCmX99Chy
- KOsA5P5TjpB4uhICJ6SB6btRVE8OCWwQ6QIQiCX80zFy3xwzi1S7WHVnduPJxBvHu56W
- TBk6pN8QHN67Z/ApON0Agw41spm0H1OfgW4WEw5I2zQvh4IoiD0jikCKaqs0JP1J+Oqb
- 5zNA==
-X-Gm-Message-State: ACgBeo0XVmXALuHrECUD4xrUuJL2AgDTlOn7jdhIIiXJhRdn65N3lSax
- Fv19GFBXSoH/n+S7PeIebZIrL9gU0FdtTw==
-X-Google-Smtp-Source: AA6agR7zOZdnFhN2Lm6iYdOfoyXNKZSoQYHgG/WRNO3Em3C+1SiStwXoopbjwQyOCd8Gq4bllb3zYQ==
-X-Received: by 2002:a5d:522f:0:b0:228:dc7f:b9a8 with SMTP id
- i15-20020a5d522f000000b00228dc7fb9a8mr1500645wra.617.1662483729998; 
- Tue, 06 Sep 2022 10:02:09 -0700 (PDT)
+ bh=mG8/68Nd5p6XZNfAhdT98YGrwNfmwR141FpLjSTTCsc=;
+ b=YF9hq8sMl8nXPuiWa7jON6sI/zbVMAKBQOkQD9AAJdyngEElu9tqeaaqnHM2cMBXrB
+ 23i89tT4Ta4ddY5ZbDXE1kB9yccPOfIJnqTiTWlbFcAp7YxCqII5p3BBsYFbNvzjNfSw
+ Eze16xOmaHqIRQ4e1dWatqMf8hpUh6/zdZgSqRTITNgj9KqTNerFzQDaGLxMXePXa4x/
+ AjTh34361A9OkeK7LV2i9+TipkQRTOpoOdptG51qMomKsyGYPHHrB47+6bgJt9fyryL/
+ zjB50WBuo6XUJpfl60meja8DaHmu61uV/8Mu4FPg8MGyaYDuaHwvxfyOLBsSDmTHEBS0
+ DgIw==
+X-Gm-Message-State: ACgBeo17Wg1qsgsutCheUqsbu+xawNmkL6/ACakj+Oa0/qxp9Q7ATOuj
+ 5/iAMCNY+7HnGPK1cD+CRSe6jg==
+X-Google-Smtp-Source: AA6agR5o+WxhiVIt2WMx5uJpNoS9ENqcSmIrIAhT4pbo9v9ROfyHeGLlqZncQLhHUlTKORr4qAhk1A==
+X-Received: by 2002:adf:f48e:0:b0:228:d490:564a with SMTP id
+ l14-20020adff48e000000b00228d490564amr3552651wro.546.1662483739451; 
+ Tue, 06 Sep 2022 10:02:19 -0700 (PDT)
 Received: from srini-hackbox.lan
  (cpc90716-aztw32-2-0-cust825.18-1.cable.virginm.net. [86.26.103.58])
  by smtp.gmail.com with ESMTPSA id
- x13-20020a1c7c0d000000b003a5ca627333sm21085967wmc.8.2022.09.06.10.02.09
+ x13-20020a1c7c0d000000b003a5ca627333sm21085967wmc.8.2022.09.06.10.02.18
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Tue, 06 Sep 2022 10:02:09 -0700 (PDT)
+ Tue, 06 Sep 2022 10:02:18 -0700 (PDT)
 From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 To: broonie@kernel.org
-Subject: [PATCH v2 03/12] ASoC: codecs: tx-macro: handle swr_reset correctly
-Date: Tue,  6 Sep 2022 18:01:03 +0100
-Message-Id: <20220906170112.1984-4-srinivas.kandagatla@linaro.org>
+Subject: [PATCH v2 12/12] ASoC: codecs: va-macro: add support for sm8450 and
+ sc8280xp
+Date: Tue,  6 Sep 2022 18:01:12 +0100
+Message-Id: <20220906170112.1984-13-srinivas.kandagatla@linaro.org>
 X-Mailer: git-send-email 2.21.0
 In-Reply-To: <20220906170112.1984-1-srinivas.kandagatla@linaro.org>
 References: <20220906170112.1984-1-srinivas.kandagatla@linaro.org>
@@ -102,66 +103,169 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Reset soundwire block on frame sync generation clock reset.
-Without this we are hitting read/write timeouts randomly during
-runtime pm. Along with this remove a swr_reset redundant flag.
+LPASS VA Macro now has soundwire master to deal with access to
+analog mic in low power island use cases.
+
+This is added after sc8280xp, add support for this.
+Along with this also add compatibles for sm8450 and sc8280xp.
 
 Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 ---
- sound/soc/codecs/lpass-tx-macro.c | 15 ++++-----------
- 1 file changed, 4 insertions(+), 11 deletions(-)
+ sound/soc/codecs/lpass-va-macro.c | 74 +++++++++++++++++++++++++++++--
+ 1 file changed, 70 insertions(+), 4 deletions(-)
 
-diff --git a/sound/soc/codecs/lpass-tx-macro.c b/sound/soc/codecs/lpass-tx-macro.c
-index 55503ba480bb..c19bb19b717b 100644
---- a/sound/soc/codecs/lpass-tx-macro.c
-+++ b/sound/soc/codecs/lpass-tx-macro.c
-@@ -268,7 +268,6 @@ struct tx_macro {
- 	struct clk *fsgen;
- 	struct clk_hw hw;
- 	bool dec_active[NUM_DECIMATORS];
--	bool reset_swr;
- 	int tx_mclk_users;
+diff --git a/sound/soc/codecs/lpass-va-macro.c b/sound/soc/codecs/lpass-va-macro.c
+index a35f684053d2..b0b6cf29cba3 100644
+--- a/sound/soc/codecs/lpass-va-macro.c
++++ b/sound/soc/codecs/lpass-va-macro.c
+@@ -25,6 +25,10 @@
+ #define CDC_VA_FS_CONTROL_EN			BIT(0)
+ #define CDC_VA_FS_COUNTER_CLR			BIT(1)
+ #define CDC_VA_CLK_RST_CTRL_SWR_CONTROL		(0x0008)
++#define CDC_VA_SWR_RESET_MASK		BIT(1)
++#define CDC_VA_SWR_RESET_ENABLE		BIT(1)
++#define CDC_VA_SWR_CLK_EN_MASK		BIT(0)
++#define CDC_VA_SWR_CLK_ENABLE		BIT(0)
+ #define CDC_VA_TOP_CSR_TOP_CFG0			(0x0080)
+ #define CDC_VA_FS_BROADCAST_EN			BIT(1)
+ #define CDC_VA_TOP_CSR_DMIC0_CTL		(0x0084)
+@@ -66,6 +70,8 @@
+ #define CDC_VA_TOP_CSR_SWR_MIC_CTL0		(0x00D0)
+ #define CDC_VA_TOP_CSR_SWR_MIC_CTL1		(0x00D4)
+ #define CDC_VA_TOP_CSR_SWR_MIC_CTL2		(0x00D8)
++#define CDC_VA_SWR_MIC_CLK_SEL_0_1_MASK		(0xEE)
++#define CDC_VA_SWR_MIC_CLK_SEL_0_1_DIV1		(0xCC)
+ #define CDC_VA_TOP_CSR_SWR_CTRL			(0x00DC)
+ #define CDC_VA_INP_MUX_ADC_MUX0_CFG0		(0x0100)
+ #define CDC_VA_INP_MUX_ADC_MUX0_CFG1		(0x0104)
+@@ -194,6 +200,7 @@ struct va_macro {
+ 	unsigned long active_ch_mask[VA_MACRO_MAX_DAIS];
+ 	unsigned long active_ch_cnt[VA_MACRO_MAX_DAIS];
  	u16 dmic_clk_div;
- 	bool bcs_enable;
-@@ -1702,18 +1701,14 @@ static int swclk_gate_enable(struct clk_hw *hw)
++	bool has_swr_master;
+ 
+ 	int dec_mode[VA_MACRO_NUM_DECIMATORS];
+ 	struct regmap *regmap;
+@@ -216,6 +223,18 @@ struct va_macro {
+ 
+ #define to_va_macro(_hw) container_of(_hw, struct va_macro, hw)
+ 
++struct va_macro_data {
++	bool has_swr_master;
++};
++
++static const struct va_macro_data sm8250_va_data = {
++	.has_swr_master = false,
++};
++
++static const struct va_macro_data sm8450_va_data = {
++	.has_swr_master = true,
++};
++
+ static bool va_is_volatile_register(struct device *dev, unsigned int reg)
+ {
+ 	switch (reg) {
+@@ -325,6 +344,9 @@ static bool va_is_rw_register(struct device *dev, unsigned int reg)
+ 	case CDC_VA_TOP_CSR_DMIC2_CTL:
+ 	case CDC_VA_TOP_CSR_DMIC3_CTL:
+ 	case CDC_VA_TOP_CSR_DMIC_CFG:
++	case CDC_VA_TOP_CSR_SWR_MIC_CTL0:
++	case CDC_VA_TOP_CSR_SWR_MIC_CTL1:
++	case CDC_VA_TOP_CSR_SWR_MIC_CTL2:
+ 	case CDC_VA_TOP_CSR_DEBUG_BUS:
+ 	case CDC_VA_TOP_CSR_DEBUG_EN:
+ 	case CDC_VA_TOP_CSR_TX_I2S_CTL:
+@@ -1306,12 +1328,36 @@ static const struct snd_soc_component_driver va_macro_component_drv = {
+ 
+ static int fsgen_gate_enable(struct clk_hw *hw)
+ {
+-	return va_macro_mclk_enable(to_va_macro(hw), true);
++	struct va_macro *va = to_va_macro(hw);
++	struct regmap *regmap = va->regmap;
++	int ret;
++
++	ret = va_macro_mclk_enable(va, true);
++	if (!va->has_swr_master)
++		return ret;
++
++	regmap_update_bits(regmap, CDC_VA_CLK_RST_CTRL_SWR_CONTROL,
++			   CDC_VA_SWR_RESET_MASK,  CDC_VA_SWR_RESET_ENABLE);
++
++	regmap_update_bits(regmap, CDC_VA_CLK_RST_CTRL_SWR_CONTROL,
++			   CDC_VA_SWR_CLK_EN_MASK,
++			   CDC_VA_SWR_CLK_ENABLE);
++	regmap_update_bits(regmap, CDC_VA_CLK_RST_CTRL_SWR_CONTROL,
++			   CDC_VA_SWR_RESET_MASK, 0x0);
++
++	return ret;
+ }
+ 
+ static void fsgen_gate_disable(struct clk_hw *hw)
+ {
+-	va_macro_mclk_enable(to_va_macro(hw), false);
++	struct va_macro *va = to_va_macro(hw);
++	struct regmap *regmap = va->regmap;
++
++	if (va->has_swr_master)
++		regmap_update_bits(regmap, CDC_VA_CLK_RST_CTRL_SWR_CONTROL,
++			   CDC_VA_SWR_CLK_EN_MASK, 0x0);
++
++	va_macro_mclk_enable(va, false);
+ }
+ 
+ static int fsgen_gate_is_enabled(struct clk_hw *hw)
+@@ -1405,6 +1451,7 @@ static int va_macro_validate_dmic_sample_rate(u32 dmic_sample_rate,
+ static int va_macro_probe(struct platform_device *pdev)
+ {
+ 	struct device *dev = &pdev->dev;
++	const struct va_macro_data *data;
+ 	struct va_macro *va;
+ 	void __iomem *base;
+ 	u32 sample_rate = 0;
+@@ -1459,6 +1506,9 @@ static int va_macro_probe(struct platform_device *pdev)
+ 
+ 	dev_set_drvdata(dev, va);
+ 
++	data = of_device_get_match_data(dev);
++	va->has_swr_master = data->has_swr_master;
++
+ 	/* mclk rate */
+ 	clk_set_rate(va->mclk, 2 * VA_MACRO_MCLK_FREQ);
+ 
+@@ -1484,6 +1534,20 @@ static int va_macro_probe(struct platform_device *pdev)
+ 		goto err_clkout;
  	}
  
- 	tx_macro_mclk_enable(tx, true);
--	if (tx->reset_swr)
--		regmap_update_bits(regmap, CDC_TX_CLK_RST_CTRL_SWR_CONTROL,
--				   CDC_TX_SWR_RESET_MASK,
--				   CDC_TX_SWR_RESET_ENABLE);
-+	regmap_update_bits(regmap, CDC_TX_CLK_RST_CTRL_SWR_CONTROL,
-+			   CDC_TX_SWR_RESET_MASK, CDC_TX_SWR_RESET_ENABLE);
++	if (va->has_swr_master) {
++		/* Set default CLK div to 1 */
++		regmap_update_bits(va->regmap, CDC_VA_TOP_CSR_SWR_MIC_CTL0,
++				  CDC_VA_SWR_MIC_CLK_SEL_0_1_MASK,
++				  CDC_VA_SWR_MIC_CLK_SEL_0_1_DIV1);
++		regmap_update_bits(va->regmap, CDC_VA_TOP_CSR_SWR_MIC_CTL1,
++				  CDC_VA_SWR_MIC_CLK_SEL_0_1_MASK,
++				  CDC_VA_SWR_MIC_CLK_SEL_0_1_DIV1);
++		regmap_update_bits(va->regmap, CDC_VA_TOP_CSR_SWR_MIC_CTL2,
++				  CDC_VA_SWR_MIC_CLK_SEL_0_1_MASK,
++				  CDC_VA_SWR_MIC_CLK_SEL_0_1_DIV1);
++
++	}
++
+ 	ret = devm_snd_soc_register_component(dev, &va_macro_component_drv,
+ 					      va_macro_dais,
+ 					      ARRAY_SIZE(va_macro_dais));
+@@ -1558,8 +1622,10 @@ static const struct dev_pm_ops va_macro_pm_ops = {
+ };
  
- 	regmap_update_bits(regmap, CDC_TX_CLK_RST_CTRL_SWR_CONTROL,
- 			   CDC_TX_SWR_CLK_EN_MASK,
- 			   CDC_TX_SWR_CLK_ENABLE);
--	if (tx->reset_swr)
--		regmap_update_bits(regmap, CDC_TX_CLK_RST_CTRL_SWR_CONTROL,
--				   CDC_TX_SWR_RESET_MASK, 0x0);
--	tx->reset_swr = false;
-+	regmap_update_bits(regmap, CDC_TX_CLK_RST_CTRL_SWR_CONTROL,
-+			   CDC_TX_SWR_RESET_MASK, 0x0);
- 
- 	return 0;
- }
-@@ -1855,7 +1850,6 @@ static int tx_macro_probe(struct platform_device *pdev)
- 
- 	dev_set_drvdata(dev, tx);
- 
--	tx->reset_swr = true;
- 	tx->dev = dev;
- 
- 	/* set MCLK and NPL rates */
-@@ -1970,7 +1964,6 @@ static int __maybe_unused tx_macro_runtime_resume(struct device *dev)
- 
- 	regcache_cache_only(tx->regmap, false);
- 	regcache_sync(tx->regmap);
--	tx->reset_swr = true;
- 
- 	return 0;
- err_fsgen:
+ static const struct of_device_id va_macro_dt_match[] = {
+-	{ .compatible = "qcom,sc7280-lpass-va-macro" },
+-	{ .compatible = "qcom,sm8250-lpass-va-macro" },
++	{ .compatible = "qcom,sc7280-lpass-va-macro", .data = &sm8250_va_data },
++	{ .compatible = "qcom,sm8250-lpass-va-macro", .data = &sm8250_va_data },
++	{ .compatible = "qcom,sm8450-lpass-va-macro", .data = &sm8450_va_data },
++	{ .compatible = "qcom,sc8280xp-lpass-va-macro", .data = &sm8450_va_data },
+ 	{}
+ };
+ MODULE_DEVICE_TABLE(of, va_macro_dt_match);
 -- 
 2.21.0
 
