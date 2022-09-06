@@ -4,79 +4,80 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 891E3ECAAD5
-	for <alsa-devel@archiver.kernel.org>; Tue,  6 Sep 2022 17:05:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id DAD3EECAAA1
+	for <alsa-devel@archiver.kernel.org>; Tue,  6 Sep 2022 17:05:24 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 63B7615F9;
-	Tue,  6 Sep 2022 19:04:23 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 63B7615F9
+	by alsa0.perex.cz (Postfix) with ESMTPS id 214E09F6;
+	Tue,  6 Sep 2022 19:04:33 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 214E09F6
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1662483913;
-	bh=ozbNZbM9qXt7n/ALzyLwweBPL4qPvJLBS6nX9Sbh2ms=;
+	s=default; t=1662483923;
+	bh=/vG0lMPU6uwOeAkgAJX75lRbsCOHoMS1l6Velm/uyo0=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=OA60yrcXqR4u1pqoZATVXsPjF8F7CNYMc3E0rSlgQUJPZb1zIbqjR4lkNhQtKJNWe
-	 b9VbHbDeS8Q73tih6l02yXO0cOaa9lZYVZXZr/GfyB5Ls9j4z1x4IH+KUSR8ky2u+M
-	 oAUVfh9wrSDjS1RzM0fTnIFUlitgH3MY6Kk7IVsw=
+	b=hO42zxkfmL8DSBKhQrEUqggHEXLojZxnPY3RGva7qwAAGmgjFJctW4wjGRviA8TGu
+	 d4FqlLcC84xW28XbTBFeJocqO/dpKxzZ4fIaF+PL1cqPeRWUmXidD+BGOJOOEFjO0O
+	 /OJRK+N+n+gxwt5sYsNnxnDl5LVK1UMS8bKUFPMs=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id C9C8FF80566;
-	Tue,  6 Sep 2022 19:02:29 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 5CA8CF80570;
+	Tue,  6 Sep 2022 19:02:30 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 16EEDF80548; Tue,  6 Sep 2022 19:02:24 +0200 (CEST)
-Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com
- [IPv6:2a00:1450:4864:20::42b])
+ id 30588F804AB; Tue,  6 Sep 2022 19:02:25 +0200 (CEST)
+Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com
+ [IPv6:2a00:1450:4864:20::333])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 7DA40F80527
- for <alsa-devel@alsa-project.org>; Tue,  6 Sep 2022 19:02:14 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7DA40F80527
+ by alsa1.perex.cz (Postfix) with ESMTPS id C5CE7F800E9
+ for <alsa-devel@alsa-project.org>; Tue,  6 Sep 2022 19:02:16 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C5CE7F800E9
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org
- header.b="zVy9F2Np"
-Received: by mail-wr1-x42b.google.com with SMTP id bj14so3138527wrb.12
- for <alsa-devel@alsa-project.org>; Tue, 06 Sep 2022 10:02:14 -0700 (PDT)
+ header.b="Cw/u+Ib0"
+Received: by mail-wm1-x333.google.com with SMTP id s23so7222442wmj.4
+ for <alsa-devel@alsa-project.org>; Tue, 06 Sep 2022 10:02:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
  h=content-transfer-encoding:mime-version:references:in-reply-to
  :message-id:date:subject:cc:to:from:from:to:cc:subject:date;
- bh=Ywio/Hr5dHYfS39R3NapOq15++OC8y1mKEHZXcc063Q=;
- b=zVy9F2Np28xf/J5QZDy4W/5g1BMmP6sLdT8DeFZDLhrJWyGDZ+xPbUbuutGAQj6evg
- IVR+1tZSgfOX/bRiIqCo09o/z7Kv4/ChKRpEDDbzbTEj4eI/XgEjfs+yic0tKWHvnu+z
- JZOilqz88tNo5KfyWr4PKOCIh8de5IXrhVVm7HaJ7nPk+AuUllM6HXr2NtVfUE7iptfT
- hJUImFK4CZtpoaf1EajvydcK94fWjTWaB+s1WrYnq/FQZQ7th8evqolOrJVcIbDLcrSk
- stJ2sKdoAe1Hlt8XG0Q4jF2+WvB52Btrdoa14wk3DEIpA8Uy0IvCmdqxm5JSOTs7xE7U
- bGJA==
+ bh=Vhz3YOEoDfv05lqGaP8UmdLTwYjd+5QppwEmBk1EAcM=;
+ b=Cw/u+Ib0JZ0YzAj3X5FdCBPk2E4ie5smB3Wt7xeWbpnuXR9ErPd/TyXL9BBVMoEIYF
+ kFsUuTbjg7+QCdSUPggmXh5MXquKC2FcGn1ZjgWhfaZ4XOAgXr+GHuexeSGUEr4gGIKf
+ WfhKPUqLplhrakHPhWHFr6E9QhUHUC/CWv+qObc3fqGh/RZsjOvAw7U32+rGQpUk9YqU
+ DibEcGnA+SCUsh7LCgEAKlnpIfNfRIpy5I5VCFBVUqB3phyqDrLYkkUAslGPU37iNE7U
+ EY8u8kFObzhCeZP1s5bWs7Q+EvquPwASp3ZzD9mt7xPZL/8iDuLGjHVf7H6eFu+WuOX1
+ NWcw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
  h=content-transfer-encoding:mime-version:references:in-reply-to
  :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
  :subject:date;
- bh=Ywio/Hr5dHYfS39R3NapOq15++OC8y1mKEHZXcc063Q=;
- b=n/DwC2wghk6c0MAUsKcPJ0ZO4AnoZt6R4mkqQYVORhlGePvBm9ohcHQaEE7jmMrP/M
- Nht3mJRHQpVi9ZJn3zCJ6VP/KCbUnprfUuVydwUV86VNQtSBi3sjGKktpAJFWA/MVA17
- xljhWHsZGKLQMWHqwqYcxrhIWXQQo5Czyw1Fvis54HfylEA9CupgiGtWMW7GnDZy5eG9
- tzDAL9yKD0V3SUPrA0zeuJ94DH/dspQZc9qtI6wZ4pTGbdYfD1k6kPZnBF+leo8w+lSj
- lNgIxnn66CUOpBGgV5pmOApOV6GIrb/7JHGNCnvA65Gls39JrZi7zxtHShJee+6/uukv
- lXXg==
-X-Gm-Message-State: ACgBeo0pD7QaqlASccUu7MJCCeE/NpE2+c5BVaB+YZ28A9tppiDAnEMY
- ge2M7fTJ0ghVA1sOnUMt/0s5Qw==
-X-Google-Smtp-Source: AA6agR4VhkzVAAHCVE5Bvqj4gmZmkmcK/9Im8zQLrjWbbD7qyRvYQ3lDqquMJFvysynL4HFltgDKHg==
-X-Received: by 2002:a5d:5a9a:0:b0:226:e840:c551 with SMTP id
- bp26-20020a5d5a9a000000b00226e840c551mr18650248wrb.679.1662483733326; 
- Tue, 06 Sep 2022 10:02:13 -0700 (PDT)
+ bh=Vhz3YOEoDfv05lqGaP8UmdLTwYjd+5QppwEmBk1EAcM=;
+ b=Zzyrm/JDb60l2cxfpj4xwK49pQvJN1ZH43xHkWHDnrsweECabtRjwqYu7N2a+Dzwgr
+ ZsLXfq5fbSwkFS47/BllshZRQD/r3+W0LHng8aeC71OHB8jnxgxYmeiFDrJCOp/SdbI4
+ TTFOyzs/W9QqZwS0EhRUYGI82C7Rj434YJAlZknp/QHIwx10/VVqw/uJCndnJRWH8jF5
+ u/KebtVhbrmexiGkKRBf+e2dEInP1Cu1niyAl48q+4rj4pSrcPhClneL1cG1Z9sjFGig
+ v++clxQ35fzg392UlJ3BYWNFMLmBgBrOT4N0vV6GPCqJKR8+6yAuB3O+AxcBc6T3tOs1
+ KGTg==
+X-Gm-Message-State: ACgBeo3SSMfsoww8GjBm8xRUttGseUsp1TXclNTbMwsOMdLabch1teCu
+ 3WFyFv0xkvg0g6jHuemggjLd5A==
+X-Google-Smtp-Source: AA6agR6JE/Gba5AcnWcodsB3J2FW4DdI97OYm4rzmSyExCE4iEn0KvrutgOVo4Cv0b4Zfn+qpEw2Bw==
+X-Received: by 2002:a7b:c453:0:b0:3a5:b42e:c4fb with SMTP id
+ l19-20020a7bc453000000b003a5b42ec4fbmr14181612wmi.167.1662483735174; 
+ Tue, 06 Sep 2022 10:02:15 -0700 (PDT)
 Received: from srini-hackbox.lan
  (cpc90716-aztw32-2-0-cust825.18-1.cable.virginm.net. [86.26.103.58])
  by smtp.gmail.com with ESMTPSA id
- x13-20020a1c7c0d000000b003a5ca627333sm21085967wmc.8.2022.09.06.10.02.12
+ x13-20020a1c7c0d000000b003a5ca627333sm21085967wmc.8.2022.09.06.10.02.14
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Tue, 06 Sep 2022 10:02:12 -0700 (PDT)
+ Tue, 06 Sep 2022 10:02:14 -0700 (PDT)
 From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 To: broonie@kernel.org
-Subject: [PATCH v2 06/12] ASoC: codecs: wsa883x: add clock stop support
-Date: Tue,  6 Sep 2022 18:01:06 +0100
-Message-Id: <20220906170112.1984-7-srinivas.kandagatla@linaro.org>
+Subject: [PATCH v2 08/12] ASoC: codecs: wsa-macro: add support for sm8450 and
+ sc8280xp
+Date: Tue,  6 Sep 2022 18:01:08 +0100
+Message-Id: <20220906170112.1984-9-srinivas.kandagatla@linaro.org>
 X-Mailer: git-send-email 2.21.0
 In-Reply-To: <20220906170112.1984-1-srinivas.kandagatla@linaro.org>
 References: <20220906170112.1984-1-srinivas.kandagatla@linaro.org>
@@ -102,79 +103,26 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-WSA883x does support clock stop, so remove code that reset
-the Codec during runtime pm suspend and add flag to mark
-clock stop support.
+Add compatible for sm8450 and sc8280xp.
 
 Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 ---
- sound/soc/codecs/wsa883x.c | 28 +---------------------------
- 1 file changed, 1 insertion(+), 27 deletions(-)
+ sound/soc/codecs/lpass-wsa-macro.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/sound/soc/codecs/wsa883x.c b/sound/soc/codecs/wsa883x.c
-index 63e1d7aa6137..c7b10bbfba7e 100644
---- a/sound/soc/codecs/wsa883x.c
-+++ b/sound/soc/codecs/wsa883x.c
-@@ -415,7 +415,6 @@
- 
- #define WSA883X_NUM_REGISTERS           (WSA883X_EMEM_63 + 1)
- #define WSA883X_MAX_REGISTER            (WSA883X_NUM_REGISTERS - 1)
--#define WSA883X_PROBE_TIMEOUT 1000
- 
- #define WSA883X_VERSION_1_0 0
- #define WSA883X_VERSION_1_1 1
-@@ -1409,6 +1408,7 @@ static int wsa883x_probe(struct sdw_slave *pdev,
- 	wsa883x->sconfig.type = SDW_STREAM_PDM;
- 
- 	pdev->prop.sink_ports = GENMASK(WSA883X_MAX_SWR_PORTS, 0);
-+	pdev->prop.simple_clk_stop_capable = true;
- 	pdev->prop.sink_dpn_prop = wsa_sink_dpn_prop;
- 	pdev->prop.scp_int1_mask = SDW_SCP_INT1_BUS_CLASH | SDW_SCP_INT1_PARITY;
- 	gpiod_direction_output(wsa883x->sd_n, 1);
-@@ -1440,43 +1440,17 @@ static int wsa883x_probe(struct sdw_slave *pdev,
- static int __maybe_unused wsa883x_runtime_suspend(struct device *dev)
- {
- 	struct regmap *regmap = dev_get_regmap(dev, NULL);
--	struct wsa883x_priv *wsa883x = dev_get_drvdata(dev);
--
--	gpiod_direction_output(wsa883x->sd_n, 0);
- 
- 	regcache_cache_only(regmap, true);
- 	regcache_mark_dirty(regmap);
- 
--	regulator_disable(wsa883x->vdd);
- 	return 0;
- }
- 
- static int __maybe_unused wsa883x_runtime_resume(struct device *dev)
- {
--	struct sdw_slave *slave = dev_to_sdw_dev(dev);
- 	struct regmap *regmap = dev_get_regmap(dev, NULL);
--	struct wsa883x_priv *wsa883x = dev_get_drvdata(dev);
--	unsigned long time;
--	int ret;
--
--	ret = regulator_enable(wsa883x->vdd);
--	if (ret) {
--		dev_err(dev, "Failed to enable vdd regulator (%d)\n", ret);
--		return ret;
--	}
--
--	gpiod_direction_output(wsa883x->sd_n, 1);
--
--	time = wait_for_completion_timeout(&slave->initialization_complete,
--					   msecs_to_jiffies(WSA883X_PROBE_TIMEOUT));
--	if (!time) {
--		dev_err(dev, "Initialization not complete, timed out\n");
--		gpiod_direction_output(wsa883x->sd_n, 0);
--		regulator_disable(wsa883x->vdd);
--		return -ETIMEDOUT;
--	}
- 
--	usleep_range(20000, 20010);
- 	regcache_cache_only(regmap, false);
- 	regcache_sync(regmap);
- 
+diff --git a/sound/soc/codecs/lpass-wsa-macro.c b/sound/soc/codecs/lpass-wsa-macro.c
+index 130d25b334ff..5e0abefe7cce 100644
+--- a/sound/soc/codecs/lpass-wsa-macro.c
++++ b/sound/soc/codecs/lpass-wsa-macro.c
+@@ -2552,6 +2552,8 @@ static const struct dev_pm_ops wsa_macro_pm_ops = {
+ static const struct of_device_id wsa_macro_dt_match[] = {
+ 	{.compatible = "qcom,sc7280-lpass-wsa-macro"},
+ 	{.compatible = "qcom,sm8250-lpass-wsa-macro"},
++	{.compatible = "qcom,sm8450-lpass-wsa-macro"},
++	{.compatible = "qcom,sc8280xp-lpass-wsa-macro" },
+ 	{}
+ };
+ MODULE_DEVICE_TABLE(of, wsa_macro_dt_match);
 -- 
 2.21.0
 
