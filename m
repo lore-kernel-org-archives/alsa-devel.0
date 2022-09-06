@@ -4,73 +4,73 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 57AD8ECAAA1
-	for <alsa-devel@archiver.kernel.org>; Tue,  6 Sep 2022 12:19:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 05D82ECAAA1
+	for <alsa-devel@archiver.kernel.org>; Tue,  6 Sep 2022 12:19:40 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A0DDE1637;
-	Tue,  6 Sep 2022 14:18:34 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A0DDE1637
+	by alsa0.perex.cz (Postfix) with ESMTPS id 4418E829;
+	Tue,  6 Sep 2022 14:18:48 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4418E829
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1662466764;
-	bh=aYzwWmDXt9zH1PYb2OulK14MTEOx58y9pgrVJbkIt2o=;
+	s=default; t=1662466778;
+	bh=bbWa+B6HEK3BnZMvKDXAs3soHsVyx+S6ZewmVIpdIJE=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=hbLQ8yWpi+LzewrxihU2YtvEKaIzDnoX0+Jr8WTDtQeg3FV2uF5ijceVje6pen7mx
-	 Y64OXXq4XiqN5J+Um0fVuA4MVDFXkw+pObf87gIWERvwk/MgJkFfVVPJfQOpVXTj0A
-	 ftmLUnrGt9Car76YK1Cphj56Ts4NJU1+81twH/tM=
+	b=bgsPj07RZfBO+NHcHwLu+3MdbAgoCq4kIrlZnis+WG0YKjL8t7b4VusG3a4aFPiZ+
+	 aLDhqzr9NDEeC5DK2fhQySK56b8FI4PD/tqc9azFE4fE+G6rBS4L8G2BioT1Cgr0O2
+	 IWLLQJyek3kOhRYVVtP7hMLa71DUNraltBoSzrqc=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id EDADBF80558;
-	Tue,  6 Sep 2022 14:17:16 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id CFE7AF8055B;
+	Tue,  6 Sep 2022 14:17:17 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 3A93DF8055B; Tue,  6 Sep 2022 14:17:15 +0200 (CEST)
-Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com
- [IPv6:2a00:1450:4864:20::129])
+ id BFA42F80563; Tue,  6 Sep 2022 14:17:15 +0200 (CEST)
+Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com
+ [IPv6:2a00:1450:4864:20::134])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id D24F1F8011C
- for <alsa-devel@alsa-project.org>; Tue,  6 Sep 2022 14:17:06 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D24F1F8011C
+ by alsa1.perex.cz (Postfix) with ESMTPS id 474C8F80537
+ for <alsa-devel@alsa-project.org>; Tue,  6 Sep 2022 14:17:09 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 474C8F80537
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org
- header.b="DH5vqlZ3"
-Received: by mail-lf1-x129.google.com with SMTP id bt10so17112697lfb.1
- for <alsa-devel@alsa-project.org>; Tue, 06 Sep 2022 05:17:06 -0700 (PDT)
+ header.b="jD2je3of"
+Received: by mail-lf1-x134.google.com with SMTP id z25so17112890lfr.2
+ for <alsa-devel@alsa-project.org>; Tue, 06 Sep 2022 05:17:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
  h=content-transfer-encoding:mime-version:references:in-reply-to
  :message-id:date:subject:cc:to:from:from:to:cc:subject:date;
- bh=sOpMJZzTBxmKg0bL2Da/S0t+3gjvGnp5/eRVN6wwRsY=;
- b=DH5vqlZ3DifzAndE1WGjlqndkv4nMInSyP6CFlEl76F7fCWDZcHAKn9mLr4o3J/eWx
- qAV6M9ZtcA2X3pW5/FTrABXz42GEfA0cf9q0qrkzJupxBUd2mUSWH29FeHkdVc9CRX2U
- dUj/IxfiRCdClux06EmYQRnlpIuKfO64L4//SXxpl6rqxo0iX4nQKUpgOyzlgjFBGl0y
- qFqkJDi0uNUVOa8ocGR5ZVgrHdOSnhF9v4kHsAEhX4O3HWKTdEznPiqAxGs84v0FT5/Y
- bstnJVpF9rV77fD84yTkk1K8XldhEbIyfeESqhSqkxEgb14pLOsDslZrbjs1sWl2kml/
- IPAA==
+ bh=Olx2xfEl0PLpI3+3+5Qjw680apGzpUP0gS3Mnyx3230=;
+ b=jD2je3ofjQyfg/jOh+LKalUVOeBAAwrbkYEw21Sy5iOwMAdmX9y5mHP53gRvgVND6B
+ EvGMCz2fygVPNQWXs8kWLOct/tEKZzBrabZxXRYqsYU6lAtic8byQZqKWL/c/mSjwmWb
+ HJIekXpLhTd64mrGYRTulWsVj+73kjg6lVZ/s6U7k8B/ATZq1ydF9iml+OrPWHb83MGf
+ /yT5LyvlmjZKTulVOpEzsXzzjQinCIfvydt+CIz95iR9zwB7Q9GtF5YwVDVrC65fC/Fq
+ e41P1BghT2SnBLR0EyEaU/iYipZ5gdePZbdgyOtM1jMdgpYim/uRiewF9TKYib7rQJ0r
+ mHGQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
  h=content-transfer-encoding:mime-version:references:in-reply-to
  :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
  :subject:date;
- bh=sOpMJZzTBxmKg0bL2Da/S0t+3gjvGnp5/eRVN6wwRsY=;
- b=ACJeKOpNe+hCmW8WW2zmyidH/Kah7Cnl6b9ABUEtXQiTp97mY6yhUULDH4kVBNrdn9
- AfmbEQtVKu8XUCO8sJkSbbSQqgz5wce8f7X2AX8sLLeLlApqARlKdsM9X1HZIhAhxjSq
- gb0ZK/qgVjYa8p4Jpv00lwnZgzzfcuiFgUtBPi5Tfl5Ou7Bh91/J8d1AA99NkmomuwZz
- I1xk7xZs7lkxfv6AZR+SfdrLcnon7aPR2gy0QwDsBrNASJTnTRtsaUbqrtbKBiMsEW6X
- BN0yUbtkZKPK5BdN9OmTbwoOwq20hPbbgG3NiC7HfVKewvdED3vP9kCpeqI/1GNQ+bB2
- R38w==
-X-Gm-Message-State: ACgBeo2CiuxrA8Th/MeBTwOB30JR1XOXmff6xHpmpmGK+hM5gRfUQfX/
- 8g8E2ksyDkUoLATN0MhwTK4iPQ==
-X-Google-Smtp-Source: AA6agR6CJKjLHiqlHiUhS+ULbbF714b92DT6khPT9a5Rz4zXQvjha6yveYrpJ7N528FZdOnuLpL8Uw==
-X-Received: by 2002:a05:6512:3f94:b0:496:5e1b:a1c5 with SMTP id
- x20-20020a0565123f9400b004965e1ba1c5mr2095193lfa.483.1662466625098; 
- Tue, 06 Sep 2022 05:17:05 -0700 (PDT)
+ bh=Olx2xfEl0PLpI3+3+5Qjw680apGzpUP0gS3Mnyx3230=;
+ b=5JcYEejqxB1hLM1hVYOXwEOXIGpHZCnqZa7QcQisjy/gHOPZDgq3Z7sO0d8BOTJOod
+ 8j1WX/quBZC3CEHFZvp86vSpOqyuA0SaPzAtF3K2/wbks81Yt9r8QR7hfwi+XbnDsunt
+ /7SZpTK9ekn9/AuVxIF/cSrbqT0rq1cPOnLqbpC5yBRgobBEMt9rdP4FWyub6qyzE366
+ RV6KTDowKU4028HhHd0cHyFrY2bfoEghsKZRQHOcuqaFG+9Qw+R0RCk0rV+ASGZnlIqq
+ tNsV7szLhTjyMgPU9DOZpuZYa1eiqg/f4EGVQXmqLPTdjdRJIqU/3shxyqHdFU38xGgH
+ cphA==
+X-Gm-Message-State: ACgBeo0LdnOKPM+fBgdTp61V3Hw67EOMSD4QfutDBOJ8svScORwX6Rpr
+ TdIx2vfIlEhHhqfmpvxWvy5juA==
+X-Google-Smtp-Source: AA6agR5TML3s8NoEL5itQJnrQzTJ3E7pKRUH2G3Fd4S7hT94Gg7+NWiCuPmzmzxU5jNAYCnta6P3sg==
+X-Received: by 2002:a05:6512:3503:b0:496:517:5802 with SMTP id
+ h3-20020a056512350300b0049605175802mr4379125lfs.83.1662466628883; 
+ Tue, 06 Sep 2022 05:17:08 -0700 (PDT)
 Received: from krzk-bin.. (78-11-189-27.static.ip.netia.com.pl. [78.11.189.27])
  by smtp.gmail.com with ESMTPSA id
- u17-20020a05651c131100b0025df5f38da8sm1882802lja.119.2022.09.06.05.17.04
+ u17-20020a05651c131100b0025df5f38da8sm1882802lja.119.2022.09.06.05.17.07
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Tue, 06 Sep 2022 05:17:04 -0700 (PDT)
+ Tue, 06 Sep 2022 05:17:08 -0700 (PDT)
 From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 To: Andy Gross <agross@kernel.org>,
  Bjorn Andersson <bjorn.andersson@linaro.org>,
@@ -81,10 +81,10 @@ To: Andy Gross <agross@kernel.org>,
  Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
  linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
  linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
-Subject: [PATCH 05/12] arm64: dts: qcom: sdm845: align dai node names with
- dtschema
-Date: Tue,  6 Sep 2022 14:16:48 +0200
-Message-Id: <20220906121655.303693-6-krzysztof.kozlowski@linaro.org>
+Subject: [PATCH 08/12] arm64: dts: qcom: sm8250: use generic name for LPASS
+ clock controller
+Date: Tue,  6 Sep 2022 14:16:51 +0200
+Message-Id: <20220906121655.303693-9-krzysztof.kozlowski@linaro.org>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20220906121655.303693-1-krzysztof.kozlowski@linaro.org>
 References: <20220906121655.303693-1-krzysztof.kozlowski@linaro.org>
@@ -106,58 +106,28 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-DT schema expects DAI node names to be "dai":
-
-  qcom/sdm845-xiaomi-beryllium.dtb: dais: 'qi2s@22' does not match any of the regexes: '^dai@[0-9]+$', 'pinctrl-[0-9]+'
+The node names should be generic according to Devicetree specification,
+so use "clock-controller" instead of "cc".  The bindings so far did not
+define this name (as child of APR service).
 
 Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 ---
- arch/arm64/boot/dts/qcom/sdm845-db845c.dts           | 2 +-
- arch/arm64/boot/dts/qcom/sdm845-xiaomi-beryllium.dts | 2 +-
- arch/arm64/boot/dts/qcom/sdm845-xiaomi-polaris.dts   | 4 ++--
- 3 files changed, 4 insertions(+), 4 deletions(-)
+ arch/arm64/boot/dts/qcom/sm8250.dtsi | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/arm64/boot/dts/qcom/sdm845-db845c.dts b/arch/arm64/boot/dts/qcom/sdm845-db845c.dts
-index c6e2c571b452..308a154d2ec0 100644
---- a/arch/arm64/boot/dts/qcom/sdm845-db845c.dts
-+++ b/arch/arm64/boot/dts/qcom/sdm845-db845c.dts
-@@ -651,7 +651,7 @@ led@5 {
+diff --git a/arch/arm64/boot/dts/qcom/sm8250.dtsi b/arch/arm64/boot/dts/qcom/sm8250.dtsi
+index da9f7a701bc7..da340159c0f1 100644
+--- a/arch/arm64/boot/dts/qcom/sm8250.dtsi
++++ b/arch/arm64/boot/dts/qcom/sm8250.dtsi
+@@ -4799,7 +4799,7 @@ q6afedai: dais {
+ 							#sound-dai-cells = <1>;
+ 						};
  
- /* QUAT I2S Uses 4 I2S SD Lines for audio on LT9611 HDMI Bridge */
- &q6afedai {
--	qi2s@22 {
-+	dai@22 {
- 		reg = <QUATERNARY_MI2S_RX>;
- 		qcom,sd-lines = <0 1 2 3>;
- 	};
-diff --git a/arch/arm64/boot/dts/qcom/sdm845-xiaomi-beryllium.dts b/arch/arm64/boot/dts/qcom/sdm845-xiaomi-beryllium.dts
-index 82c27f90d300..067559c7f624 100644
---- a/arch/arm64/boot/dts/qcom/sdm845-xiaomi-beryllium.dts
-+++ b/arch/arm64/boot/dts/qcom/sdm845-xiaomi-beryllium.dts
-@@ -338,7 +338,7 @@ resin {
- 
- /* QUAT I2S Uses 1 I2S SD Line for audio on TAS2559/60 amplifiers */
- &q6afedai {
--	qi2s@22 {
-+	dai@22 {
- 		reg = <QUATERNARY_MI2S_RX>;
- 		qcom,sd-lines = <0>;
- 	};
-diff --git a/arch/arm64/boot/dts/qcom/sdm845-xiaomi-polaris.dts b/arch/arm64/boot/dts/qcom/sdm845-xiaomi-polaris.dts
-index 56a510b150ab..f2ddb2847101 100644
---- a/arch/arm64/boot/dts/qcom/sdm845-xiaomi-polaris.dts
-+++ b/arch/arm64/boot/dts/qcom/sdm845-xiaomi-polaris.dts
-@@ -544,8 +544,8 @@ resin {
- };
- 
- &q6afedai {
--	qi2s@22 {
--		reg = <22>;
-+	dai@22 {
-+		reg = <QUATERNARY_MI2S_RX>;
- 		qcom,sd-lines = <0>;
- 	};
- };
+-						q6afecc: cc {
++						q6afecc: clock-controller {
+ 							compatible = "qcom,q6afe-clocks";
+ 							#clock-cells = <2>;
+ 						};
 -- 
 2.34.1
 
