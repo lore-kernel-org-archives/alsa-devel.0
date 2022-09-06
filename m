@@ -4,73 +4,73 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8DD90ECAAA1
-	for <alsa-devel@archiver.kernel.org>; Tue,  6 Sep 2022 12:18:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0BDDEECAAD5
+	for <alsa-devel@archiver.kernel.org>; Tue,  6 Sep 2022 12:18:40 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 64B1F1607;
-	Tue,  6 Sep 2022 14:17:37 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 64B1F1607
+	by alsa0.perex.cz (Postfix) with ESMTPS id 2422A857;
+	Tue,  6 Sep 2022 14:17:48 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2422A857
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1662466707;
-	bh=EM/cQSjs/dCGM71CxxxVgTAX5ucfSZ6UvUnPGqJlFjI=;
+	s=default; t=1662466718;
+	bh=HojHJRU+Zm0cREM5btPJZ9JYluTh1TBsj+tAONgZOGk=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=tV4SWLcrhh44VDueaZlsR3ihte2wbeqKEwxjYFcn6Jx+4sSGyOQFqbdHKNRtdMhgI
-	 64eWU6OP4ypZudlfq46MFmrivQAWZ/4Vw/p3VbfHNzg0cKXga/0P0z9kAoFd5bAxPi
-	 vz67Yg+0y5HuXjx9rpRx3Lago9mw9hWjsKlzbUAA=
+	b=VG5CVsTI33VJ1kFNzmVK8nHyKp0MAdr7J5GuMstagh2HHfMM+Gxj1g0XYaIOFGKPt
+	 /IBL7nRfQW9TSRwbTLCWLzy49BWck7zZuyR5xYSjVdX9D0VlD7V1W4DhM7NZVL0n6O
+	 CYeN/bONT8dQWfAVYg4wIuj2AnALqcu07xpsgWiM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id DC3B2F8053A;
-	Tue,  6 Sep 2022 14:17:09 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id C5EA1F8053D;
+	Tue,  6 Sep 2022 14:17:11 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 78942F80537; Tue,  6 Sep 2022 14:17:08 +0200 (CEST)
-Received: from mail-lj1-x235.google.com (mail-lj1-x235.google.com
- [IPv6:2a00:1450:4864:20::235])
+ id DC1FFF80538; Tue,  6 Sep 2022 14:17:09 +0200 (CEST)
+Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com
+ [IPv6:2a00:1450:4864:20::135])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 0E6BFF8011C
- for <alsa-devel@alsa-project.org>; Tue,  6 Sep 2022 14:17:01 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0E6BFF8011C
+ by alsa1.perex.cz (Postfix) with ESMTPS id 30FA4F8019B
+ for <alsa-devel@alsa-project.org>; Tue,  6 Sep 2022 14:17:02 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 30FA4F8019B
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org
- header.b="AfprGoA9"
-Received: by mail-lj1-x235.google.com with SMTP id r27so11643874ljn.0
- for <alsa-devel@alsa-project.org>; Tue, 06 Sep 2022 05:17:01 -0700 (PDT)
+ header.b="jIHJBCvw"
+Received: by mail-lf1-x135.google.com with SMTP id q7so17080217lfu.5
+ for <alsa-devel@alsa-project.org>; Tue, 06 Sep 2022 05:17:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
  h=content-transfer-encoding:mime-version:references:in-reply-to
  :message-id:date:subject:cc:to:from:from:to:cc:subject:date;
- bh=lVPyeQ2iOH6eoW7svXNN0i3ITGNgus4jUsMchB4/XmY=;
- b=AfprGoA9gCfMR73Wg2GWfLozAtEGnAbp6sHvLZ00EjGtnDIuoGEe0xV1lB6n4FeG2e
- o5jLEAfPqYzYODGVmc2h7dlB2ykI6pLGPHnAzmNecnXfG8nI6QpkWi1xf6ntnKjV6NLp
- 4xanHlI+G447u1cBNFpnZC6EU6zTyjsBVfq5lcqS3UDbyIKSqeu7AtwIvMkQ0Wpya47q
- vhDgoLyiTgouDFdqWphAC2MvDa4goUrd7QXTksd8iwOV8k7qjIdzIjQuHnR8/UBU+bCC
- DyPcdM6ge2STts7jAseikP42KE3Y8q+JHRSPEdlFVajnKkxrWypLqdiWKOo/TDAWp7SQ
- eL/g==
+ bh=4JDAwEZQcoLKI1Gf4ZPXihH24xb2UdAVE7Vfa8ywfLg=;
+ b=jIHJBCvwFRT8UkMJIUSjzxulkLzAHD8JZCtNnbMHOcFyExAj/+3oVWtCEYz7G78wJr
+ L7QIX5ZFGIyWXlxStknm9T+2YtokbVSjH6uPbRzyvUfKtH0blGIEIOwIxKrAp4W8Ao3S
+ T/P6YkT2v+r+ZeRxLNv6G5YzDy8t9P2pfBjYYN3aEFOOjaj2EF8cwzA37RhhmSfGHqPb
+ dSP4oGiurD+bK1MNGcrR/p/alnmlBciVCWHM6td/CHwxIxoefNyaeEsDXFfwj3wx5zGx
+ XwW554fzB+fMtEvToJKCWjYy4gyY1m3TNQMENbssKGHzfXz730IhvctCHOmH2LLDjRRK
+ +3RA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
  h=content-transfer-encoding:mime-version:references:in-reply-to
  :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
  :subject:date;
- bh=lVPyeQ2iOH6eoW7svXNN0i3ITGNgus4jUsMchB4/XmY=;
- b=rRWliTc9LDTMw8KkGoxCtKYeOkDtibjyjW0N2VhrpK6M3b/OJXBT4ImCDaq+CZ7dZV
- Ot1jv85nSp1iZ/YOeT2QJGU0I+1/W5By1ZkaZ6WoODcDJJDLxP/pb2mu8JPTxIk41gvY
- 8BAoT40LtrPRcjefdVsyHzPieSiC/+RjEqn+BssA/EFRb3N0iupBb4xDR9ND4/ut//QW
- FIT4CJgqE6sDnZ+Blyo42EVv4MufYXNapmHSDzlW3/azg6Hg0nvQpXGHUOvX9yoduDH3
- vbvZoNQTkYdupjtGzg7DWp+gVIs6uGq1skePuPgskCVK5YpTVsNPWe2eb9pkPbAlWJrK
- HLgg==
-X-Gm-Message-State: ACgBeo2ETvPQBDf3X+D1uafIBnXnwcV5JZPMMa2QTCrtTaUIrpWqwh9k
- p4RK98qjrOEp2MqTEex5/aG5fFhuY3fZgQ==
-X-Google-Smtp-Source: AA6agR4AWd3RVjZKD2Gi/fOUvxXLLmz4KmbtKrsxZkSynyYoBuHXOsjx+NdgKbG27R8UID5TqZniiQ==
-X-Received: by 2002:a2e:9208:0:b0:26a:6213:3568 with SMTP id
- k8-20020a2e9208000000b0026a62133568mr2728879ljg.503.1662466620083; 
- Tue, 06 Sep 2022 05:17:00 -0700 (PDT)
+ bh=4JDAwEZQcoLKI1Gf4ZPXihH24xb2UdAVE7Vfa8ywfLg=;
+ b=d7F1w8Yv30qr+TXI5mXFuicSojZrHxEWLjlE49NCRgis5NPGhoql7yuSyf1x8RvjFh
+ TpPF/Gs2Qh38xlmoZzBqtuuKY2JvTQ/Z4wYI2aBJoV+uNsFQfBGX79hG6Zb4zpgRLpZ9
+ LrN8mUeKcCQcwOvoDJUeQo5hwMNBQegV1fmJwWSDjNlhQkwtjqd/FTThTUcbH4ZUu9h8
+ Jm7BKBY2Z60vwdCkzIF9TNqtn0PtdHusANkgWwhVWgk6IkmEW7iCAxXfkdHZakmfLu4l
+ DbKmK5UqmRVEL7wMdruMN5K2kipOdLK28llBwGCiTEXPxAZysvLy3XeinYMBimE57KV8
+ iSNQ==
+X-Gm-Message-State: ACgBeo3PmqMGH+sJOL8jxD7yJSRJ1tp16mZoybG94zh4elBv4ELWkeO7
+ rVdGETc5hLvTH/S10k0jRinqmA==
+X-Google-Smtp-Source: AA6agR6i73k9qW5HNQcpSZoKLIbwt/o1xO7wVL8odgzciD21w6PoqcPDvxG3NXi4l6UtirxHECBlvg==
+X-Received: by 2002:a05:6512:1051:b0:494:8e93:bf6f with SMTP id
+ c17-20020a056512105100b004948e93bf6fmr9769680lfb.320.1662466621256; 
+ Tue, 06 Sep 2022 05:17:01 -0700 (PDT)
 Received: from krzk-bin.. (78-11-189-27.static.ip.netia.com.pl. [78.11.189.27])
  by smtp.gmail.com with ESMTPSA id
- u17-20020a05651c131100b0025df5f38da8sm1882802lja.119.2022.09.06.05.16.58
+ u17-20020a05651c131100b0025df5f38da8sm1882802lja.119.2022.09.06.05.17.00
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Tue, 06 Sep 2022 05:16:59 -0700 (PDT)
+ Tue, 06 Sep 2022 05:17:00 -0700 (PDT)
 From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 To: Andy Gross <agross@kernel.org>,
  Bjorn Andersson <bjorn.andersson@linaro.org>,
@@ -81,10 +81,10 @@ To: Andy Gross <agross@kernel.org>,
  Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
  linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
  linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
-Subject: [PATCH 01/12] arm64: dts: qcom: sdm630: align APR services node names
+Subject: [PATCH 02/12] arm64: dts: qcom: sdm845: align APR services node names
  with dtschema
-Date: Tue,  6 Sep 2022 14:16:44 +0200
-Message-Id: <20220906121655.303693-2-krzysztof.kozlowski@linaro.org>
+Date: Tue,  6 Sep 2022 14:16:45 +0200
+Message-Id: <20220906121655.303693-3-krzysztof.kozlowski@linaro.org>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20220906121655.303693-1-krzysztof.kozlowski@linaro.org>
 References: <20220906121655.303693-1-krzysztof.kozlowski@linaro.org>
@@ -108,50 +108,51 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 DT schema expects APR services node names to be "service":
 
-  qcom/sdm850-lenovo-yoga-c630.dtb: remoteproc-adsp: glink-edge:apr: 'apr-service@3', 'apr-service@4', 'apr-service@7', 'apr-service@8', 'qcom,glink-channels', 'qcom,intents' do not match any of the regexes: '^service@[1-9a-d]$', 'pinctrl-[0-9]+'
+  qcom/sdm630-sony-xperia-nile-voyager.dtb: remoteproc@15700000: glink-edge:apr:service@4: 'dais' does not match any of the regexes: '^.*@[0-9a-f]+$', 'pinctrl-[0-9]+'
 
 Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 ---
- arch/arm64/boot/dts/qcom/sdm630.dtsi | 8 ++++----
+ arch/arm64/boot/dts/qcom/sdm845.dtsi | 8 ++++----
  1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/arch/arm64/boot/dts/qcom/sdm630.dtsi b/arch/arm64/boot/dts/qcom/sdm630.dtsi
-index 1bc9091cad2a..2d4e3d39727c 100644
---- a/arch/arm64/boot/dts/qcom/sdm630.dtsi
-+++ b/arch/arm64/boot/dts/qcom/sdm630.dtsi
-@@ -2218,12 +2218,12 @@ apr {
- 					#address-cells = <1>;
- 					#size-cells = <0>;
+diff --git a/arch/arm64/boot/dts/qcom/sdm845.dtsi b/arch/arm64/boot/dts/qcom/sdm845.dtsi
+index 98d34b5e1df2..8e7b577f78c2 100644
+--- a/arch/arm64/boot/dts/qcom/sdm845.dtsi
++++ b/arch/arm64/boot/dts/qcom/sdm845.dtsi
+@@ -767,13 +767,13 @@ apr {
+ 				#size-cells = <0>;
+ 				qcom,intents = <512 20>;
  
--					q6core {
-+					service@3 {
- 						reg = <APR_SVC_ADSP_CORE>;
- 						compatible = "qcom,q6core";
+-				apr-service@3 {
++				service@3 {
+ 					reg = <APR_SVC_ADSP_CORE>;
+ 					compatible = "qcom,q6core";
+ 					qcom,protection-domain = "avs/audio", "msm/adsp/audio_pd";
+ 				};
+ 
+-				q6afe: apr-service@4 {
++				q6afe: service@4 {
+ 					compatible = "qcom,q6afe";
+ 					reg = <APR_SVC_AFE>;
+ 					qcom,protection-domain = "avs/audio", "msm/adsp/audio_pd";
+@@ -785,7 +785,7 @@ q6afedai: dais {
  					};
+ 				};
  
--					q6afe: apr-service@4 {
-+					q6afe: service@4 {
- 						compatible = "qcom,q6afe";
- 						reg = <APR_SVC_AFE>;
- 						q6afedai: dais {
-@@ -2234,7 +2234,7 @@ q6afedai: dais {
- 						};
+-				q6asm: apr-service@7 {
++				q6asm: service@7 {
+ 					compatible = "qcom,q6asm";
+ 					reg = <APR_SVC_ASM>;
+ 					qcom,protection-domain = "avs/audio", "msm/adsp/audio_pd";
+@@ -798,7 +798,7 @@ q6asmdai: dais {
  					};
+ 				};
  
--					q6asm: apr-service@7 {
-+					q6asm: service@7 {
- 						compatible = "qcom,q6asm";
- 						reg = <APR_SVC_ASM>;
- 						q6asmdai: dais {
-@@ -2246,7 +2246,7 @@ q6asmdai: dais {
- 						};
- 					};
- 
--					q6adm: apr-service@8 {
-+					q6adm: service@8 {
- 						compatible = "qcom,q6adm";
- 						reg = <APR_SVC_ADM>;
- 						q6routing: routing {
+-				q6adm: apr-service@8 {
++				q6adm: service@8 {
+ 					compatible = "qcom,q6adm";
+ 					reg = <APR_SVC_ADM>;
+ 					qcom,protection-domain = "avs/audio", "msm/adsp/audio_pd";
 -- 
 2.34.1
 
