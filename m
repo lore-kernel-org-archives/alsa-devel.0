@@ -4,85 +4,82 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 58B75ECAAD3
-	for <alsa-devel@archiver.kernel.org>; Tue,  6 Sep 2022 01:55:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3523FECAAA1
+	for <alsa-devel@archiver.kernel.org>; Tue,  6 Sep 2022 05:14:57 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 9F644163D;
-	Tue,  6 Sep 2022 03:54:38 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9F644163D
+	by alsa0.perex.cz (Postfix) with ESMTPS id 7686A847;
+	Tue,  6 Sep 2022 07:14:05 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7686A847
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1662429328;
-	bh=GU7Qqw7lO9awg8Ih2fW3i5q0ueFhVdf6pdbcXQ8ujZE=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
+	s=default; t=1662441295;
+	bh=NZrYouI6rY0lgA+X9HsKNr5ZY/eS+IRGK5UFlZ3TztE=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=EANhPIoqQTGzpWrTV02DBkHBzGFRGhDlA0/n1ULVJsuys1nJIqVSRjVGtmn1iGFQq
-	 KvpNl9TX+3TRaNkzx70nHFuEhQBVaXSmhZnoI4Vzy7etK/vJ+I2rQ6wW7jbZ4HVRcH
-	 OibWJcG6x5xCNfHgo9bBMMU22HTTQIFCw0EoCvIg=
+	b=gr7wW1jn1xmAZNAPlSxpe5ijOToJTXYRfy9UfbkBodPkI+3MIJYYMygwv5YiOltWD
+	 bWmodujUAzWbOPz1DGTo2FzXFO335+kbL46cOAM+gAfPvcb2kzdx/yWp8LBpHw8yx8
+	 OLQFDredSi6wQZuq5nIFG+SLLqYl+CHtUgBAxkAg=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 3554DF80165;
-	Tue,  6 Sep 2022 03:54:38 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 01EF8F8019B;
+	Tue,  6 Sep 2022 07:14:05 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 0D190F80249; Tue,  6 Sep 2022 03:54:37 +0200 (CEST)
-Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com
- [IPv6:2a00:1450:4864:20::12f])
+ id 2AF74F80249; Tue,  6 Sep 2022 07:14:03 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id AA42FF80165
- for <alsa-devel@alsa-project.org>; Tue,  6 Sep 2022 03:54:30 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AA42FF80165
+ by alsa1.perex.cz (Postfix) with ESMTPS id C0040F800E9
+ for <alsa-devel@alsa-project.org>; Tue,  6 Sep 2022 07:13:56 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C0040F800E9
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="lW+LPTis"
-Received: by mail-lf1-x12f.google.com with SMTP id u18so2941979lfo.8
- for <alsa-devel@alsa-project.org>; Mon, 05 Sep 2022 18:54:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
- h=cc:to:subject:message-id:date:from:in-reply-to:references
- :mime-version:from:to:cc:subject:date;
- bh=zcTwaijpd2111xsDdervpJH9/9EDsphYRA2s0wo+LWI=;
- b=lW+LPTisK5EL83PlNfwHIRgyD85NBZqOEhnGqWrhWcjI4xy7mDs6KH+ClAngeTn3mQ
- o41+m6JMXXfnI3z7rXvvpHApZi2olOFeCTWeErVjcYbzHcnRO274gIKW9id9dk3LXBnh
- bbfcWOdXFd8ZBVd7IeBMigdDleaCs9ntPhGI05yA60yusbVBl/jJ/jUNgUFmratMpVWu
- o5+vAGEvo1bogvKe/e1urzLcG9AROxbJsvBd9Y7NGwPMgz/qKTRuHDO7U0IbosJy5W3b
- PgPP2rZdU0VwXPD/iKieDymxIIU7vbLOHdmY/5OhVO1y9fem2WppQEMcZ7nY5mXXR8kF
- K6/A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=cc:to:subject:message-id:date:from:in-reply-to:references
- :mime-version:x-gm-message-state:from:to:cc:subject:date;
- bh=zcTwaijpd2111xsDdervpJH9/9EDsphYRA2s0wo+LWI=;
- b=tl2nYz86IhGBf8vxHlpJBRgFLzLYvbZmYcuXTjWFBD5anct0x7N7t2V3M0uMAoZbyo
- LqcEMSwfQqNga7m258YAN9WuRWAxhBG2wtnvPPpwiVRBg9/p+3Z9bPpen+YCayNTPAy0
- GhZE6DIBkeOtFjwC3+ldE/CB4GnJxPw8MAwjqd9G3bcWQrvSR92x8c2n96eIRAzXEXgD
- IQhOnMu2sSDqmyjjOxbyH67pdjSaZrMl7PNXkeSmYIgK5edO3cbmvfSZhR0mPiuZgYXx
- uXRATRsRfACEVbJxrZS0DWM+reysoFTRX4tdWCYtoOu9ZPCHJ5z2oV9DckI4s+mjuD3u
- ynWg==
-X-Gm-Message-State: ACgBeo05ShESpUJYisdS+lWG0MnZf0Q3KoPd3Qw4weJGv3VFbjuduIA3
- vcx90vKPOhBlt1ssAwcq3x5Zz8cFH17IG19d/EU=
-X-Google-Smtp-Source: AA6agR6rpzNvrgDBOH7xaVDM/+HbHO0nMeVMUOH9wH2pSgnS+vmy/lSZkWXIl5pFi/oGBhvCu4veg5fAaBqtC69FIqE=
-X-Received: by 2002:a05:6512:2211:b0:496:7767:28b with SMTP id
- h17-20020a056512221100b004967767028bmr1252696lfu.433.1662429268454; Mon, 05
- Sep 2022 18:54:28 -0700 (PDT)
-MIME-Version: 1.0
-References: <1662373788-19561-1-git-send-email-shengjiu.wang@nxp.com>
- <CAGoOwPQomcnO5dhkT9DBynwJo8LfVvuuwj5AYNpv0KhAGSWLEw@mail.gmail.com>
-In-Reply-To: <CAGoOwPQomcnO5dhkT9DBynwJo8LfVvuuwj5AYNpv0KhAGSWLEw@mail.gmail.com>
-From: Shengjiu Wang <shengjiu.wang@gmail.com>
-Date: Tue, 6 Sep 2022 09:54:16 +0800
-Message-ID: <CAA+D8APOL1Qx0fAhyajXXzh0_tqEmDJoDBh3Xgo6uYNhV0usBw@mail.gmail.com>
-Subject: Re: [PATCH] ASoC: fsl_asrc: Add initialization finishing check in
- runtime resume
-To: Nicolin Chen <nicoleotsuka@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Content-Filtered-By: Mailman/MimeDel 2.1.15
-Cc: alsa-devel@alsa-project.org, Xiubo Li <Xiubo.Lee@gmail.com>,
- linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
- Shengjiu Wang <shengjiu.wang@nxp.com>, Takashi Iwai <tiwai@suse.com>,
- Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
- Fabio Estevam <festevam@gmail.com>,
- linux-kernel <linux-kernel@vger.kernel.org>
+ dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
+ header.b="AzxCsts7"; 
+ dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
+ header.b="zLQGwy7Z"
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 2206C1F93C;
+ Tue,  6 Sep 2022 05:13:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1662441236; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=7VZWnvurXqonJpqb+0Yd2nkY/vLptsRNGIBHw8402Xc=;
+ b=AzxCsts778tQxlfZSnt27U0nQz6OLuYAS3y/JxK8gXVN5A9+G24c/uEKZkAtxFodOplMIa
+ rDRT/1q5hUPae2MeXiM4uTEjqdR44DyeLkhPj2EcbDX5zKbObjHMcUdLK2TCRtiTyCKXNo
+ uAMepwaNNolgYggXbfEsnGtRooja6WM=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1662441236;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=7VZWnvurXqonJpqb+0Yd2nkY/vLptsRNGIBHw8402Xc=;
+ b=zLQGwy7ZjSV7OOInj4ezzq/zZhA27uWoYX1+9UyTyNyQGDgk4Ab2sX0s4K9lT9Fw4FKEqB
+ qZcCXVbBAyxUdAAA==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id E385813A6B;
+ Tue,  6 Sep 2022 05:13:55 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+ by imap2.suse-dmz.suse.de with ESMTPSA id 5MgjNhPXFmOLCAAAMHmgww
+ (envelope-from <tiwai@suse.de>); Tue, 06 Sep 2022 05:13:55 +0000
+Date: Tue, 06 Sep 2022 07:13:55 +0200
+Message-ID: <87czc9hyp8.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Mohan Kumar <mkumard@nvidia.com>
+Subject: Re: [PATCH] ALSA: hda/tegra: Align BDL entry to 4KB boundary
+In-Reply-To: <20220905172420.3801-1-mkumard@nvidia.com>
+References: <20220905172420.3801-1-mkumard@nvidia.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, tiwai@suse.com,
+ jonathanh@nvidia.com, thierry.reding@gmail.com, linux-tegra@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -98,32 +95,17 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Mon, Sep 5, 2022 at 9:15 PM Nicolin Chen <nicoleotsuka@gmail.com> wrote:
+On Mon, 05 Sep 2022 19:24:20 +0200,
+Mohan Kumar wrote:
+> 
+> AZA HW may send a burst read/write request crossing 4K memory boundary.
+> The 4KB boundary is not guaranteed by Tegra HDA HW. Make SW change to
+> include the flag AZX_DCAPS_4K_BDLE_BOUNDARY to align BDLE to 4K
+> boundary.
+> 
+> Signed-off-by: Mohan Kumar <mkumard@nvidia.com>
 
-> On Mon, Sep 5, 2022 at 3:47 AM Shengjiu Wang <shengjiu.wang@nxp.com>
-> wrote:
-> > @@ -1295,6 +1301,17 @@ static int fsl_asrc_runtime_resume(struct device
-> *dev)
-> >         regmap_update_bits(asrc->regmap, REG_ASRCTR,
-> >                            ASRCTR_ASRCEi_ALL_MASK, asrctr);
-> >
-> > +       /* Wait for status of initialization for every enabled pairs */
-> > +       do {
-> > +               udelay(5);
-> > +               regmap_read(asrc->regmap, REG_ASRCFG, &reg);
-> > +               reg = (reg >> ASRCFG_INIRQi_SHIFT(0)) & 0x7;
-> > +       } while ((reg != ((asrctr >> ASRCTR_ASRCEi_SHIFT(0)) & 0x7)) &&
-> --retry);
-> > +
-> > +       /* FIXME: Doesn't treat initialization timeout as error */
-> > +       if (!retry)
-> > +               dev_warn(dev, "initialization isn't finished\n");
->
-> Any reason why not just dev_err?
+Thanks, applied.
 
 
-Just hesitate to use dev_err. if use dev_err, then should return an error.
-May one of the pairs is finished, it still can continue.
-
-Best regards
-Wang Shengjiu
+Takashi
