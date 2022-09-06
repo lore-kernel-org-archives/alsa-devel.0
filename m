@@ -4,79 +4,79 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8C51AECAAD5
-	for <alsa-devel@archiver.kernel.org>; Tue,  6 Sep 2022 17:04:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 891E3ECAAD5
+	for <alsa-devel@archiver.kernel.org>; Tue,  6 Sep 2022 17:05:15 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D3F1D1607;
-	Tue,  6 Sep 2022 19:03:55 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D3F1D1607
+	by alsa0.perex.cz (Postfix) with ESMTPS id 63B7615F9;
+	Tue,  6 Sep 2022 19:04:23 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 63B7615F9
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1662483885;
-	bh=FPfDNQBkqVt/TVQXkpnnTjuHggrUY8ZVDL4cXZWIkH4=;
+	s=default; t=1662483913;
+	bh=ozbNZbM9qXt7n/ALzyLwweBPL4qPvJLBS6nX9Sbh2ms=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=uwTG7lxwKLR52hAa54315gBGDUpd3CUmMJDPjZEAgYj3jg50iVMeEudNGDF76XSDc
-	 Vb0M6DpjfmBP2kFbxCprtIpLPgo+znoE0bAnSMChGDjQ6gPnJPo7z987iqRvhHQZYP
-	 XVb8/giHU2HOQf2qDMw0AvG/5AvvZlZqDWyC+Gs0=
+	b=OA60yrcXqR4u1pqoZATVXsPjF8F7CNYMc3E0rSlgQUJPZb1zIbqjR4lkNhQtKJNWe
+	 b9VbHbDeS8Q73tih6l02yXO0cOaa9lZYVZXZr/GfyB5Ls9j4z1x4IH+KUSR8ky2u+M
+	 oAUVfh9wrSDjS1RzM0fTnIFUlitgH3MY6Kk7IVsw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 765CFF80542;
-	Tue,  6 Sep 2022 19:02:27 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id C9C8FF80566;
+	Tue,  6 Sep 2022 19:02:29 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 60B3EF80249; Tue,  6 Sep 2022 19:02:23 +0200 (CEST)
-Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com
- [IPv6:2a00:1450:4864:20::432])
+ id 16EEDF80548; Tue,  6 Sep 2022 19:02:24 +0200 (CEST)
+Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com
+ [IPv6:2a00:1450:4864:20::42b])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id C97BCF8024C
- for <alsa-devel@alsa-project.org>; Tue,  6 Sep 2022 19:02:12 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C97BCF8024C
+ by alsa1.perex.cz (Postfix) with ESMTPS id 7DA40F80527
+ for <alsa-devel@alsa-project.org>; Tue,  6 Sep 2022 19:02:14 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7DA40F80527
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org
- header.b="lJXdlhxW"
-Received: by mail-wr1-x432.google.com with SMTP id t7so11383888wrm.10
- for <alsa-devel@alsa-project.org>; Tue, 06 Sep 2022 10:02:12 -0700 (PDT)
+ header.b="zVy9F2Np"
+Received: by mail-wr1-x42b.google.com with SMTP id bj14so3138527wrb.12
+ for <alsa-devel@alsa-project.org>; Tue, 06 Sep 2022 10:02:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
  h=content-transfer-encoding:mime-version:references:in-reply-to
  :message-id:date:subject:cc:to:from:from:to:cc:subject:date;
- bh=RfjWKWch3TZGRYF8XV8JAlQ9Ww6so5roY5L+ZndATM4=;
- b=lJXdlhxW6U93FVDeXa8RVIjHuMH1turQUkNrRzWT2pYQUDBESyhOhPIxYZhghDyYWc
- zkDdLJyh25loRAME81bpbH/arwYWnVBPD2Bk3/Rpv+pLBzEqrmAak7Gfx2fT+f4gd0+/
- UeBjE5rSvFLN4vftUXVyFLhxUg+ffJgnnsMjRDYFTh4+n059vo7AXHjuMUZmj+GT36fE
- xhrrmTWxS+nNiV3OhOry6SNkB5Q0cKSo5vYmEXlu2Azyrm/Ek0oygBCa2fL/S4seXnGH
- mD9koNPhjkydkWBj1aEvS5ANZL+xK/cnrzoqQ7wm5006j8x9ZQa/d5r5xwZEfUJTk6WK
- OYGA==
+ bh=Ywio/Hr5dHYfS39R3NapOq15++OC8y1mKEHZXcc063Q=;
+ b=zVy9F2Np28xf/J5QZDy4W/5g1BMmP6sLdT8DeFZDLhrJWyGDZ+xPbUbuutGAQj6evg
+ IVR+1tZSgfOX/bRiIqCo09o/z7Kv4/ChKRpEDDbzbTEj4eI/XgEjfs+yic0tKWHvnu+z
+ JZOilqz88tNo5KfyWr4PKOCIh8de5IXrhVVm7HaJ7nPk+AuUllM6HXr2NtVfUE7iptfT
+ hJUImFK4CZtpoaf1EajvydcK94fWjTWaB+s1WrYnq/FQZQ7th8evqolOrJVcIbDLcrSk
+ stJ2sKdoAe1Hlt8XG0Q4jF2+WvB52Btrdoa14wk3DEIpA8Uy0IvCmdqxm5JSOTs7xE7U
+ bGJA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
  h=content-transfer-encoding:mime-version:references:in-reply-to
  :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
  :subject:date;
- bh=RfjWKWch3TZGRYF8XV8JAlQ9Ww6so5roY5L+ZndATM4=;
- b=q12H2xGoXG1gk/ZokM+ele+OTRt5AFCfmxxwb5yRUa0q8P++MZhoiyrmbQl1FMkIVa
- WIfggwdAqM+CxlshOBgHevtcbAv4Ec7rrxJLChZEtc8/vEi8XqO7Db+zJ6y6Trj0ZjL2
- zm/W80+v06kEnexvUxDdNwya8z5knMYj0jVgoYQsS0VTtJolGE8tDkjH1oeZVypyeA9t
- vZKk7EGmWiIsx5eb21s1jBu9rt/EwsSQXwCdXG8bsBypyEEDqg4kgAf5Z2snX1s0i23j
- i1iPjtphh+dl8kSZU5uXsbyHmn32SusQpFxkf5Xc0QI0hR79z0FywsIIyiJUnCkRK3LH
- 1mlA==
-X-Gm-Message-State: ACgBeo3HOt1rSl/6ciFvMq/RLbY+mo3/VDASQ/DbkAZw58vV1ZFWPrdi
- ToSeObjsNfB0GYpNSQGIa40BVWJaGKxaGg==
-X-Google-Smtp-Source: AA6agR7eQSNeL8sIxTrhMkrtcHCIRn1KrjURhDxY7bHZ7/kV0XSo6UDMgCiFpULXqE3e622OcReYag==
-X-Received: by 2002:a05:6000:81e:b0:228:a17f:92f0 with SMTP id
- bt30-20020a056000081e00b00228a17f92f0mr5749091wrb.31.1662483731026; 
- Tue, 06 Sep 2022 10:02:11 -0700 (PDT)
+ bh=Ywio/Hr5dHYfS39R3NapOq15++OC8y1mKEHZXcc063Q=;
+ b=n/DwC2wghk6c0MAUsKcPJ0ZO4AnoZt6R4mkqQYVORhlGePvBm9ohcHQaEE7jmMrP/M
+ Nht3mJRHQpVi9ZJn3zCJ6VP/KCbUnprfUuVydwUV86VNQtSBi3sjGKktpAJFWA/MVA17
+ xljhWHsZGKLQMWHqwqYcxrhIWXQQo5Czyw1Fvis54HfylEA9CupgiGtWMW7GnDZy5eG9
+ tzDAL9yKD0V3SUPrA0zeuJ94DH/dspQZc9qtI6wZ4pTGbdYfD1k6kPZnBF+leo8w+lSj
+ lNgIxnn66CUOpBGgV5pmOApOV6GIrb/7JHGNCnvA65Gls39JrZi7zxtHShJee+6/uukv
+ lXXg==
+X-Gm-Message-State: ACgBeo0pD7QaqlASccUu7MJCCeE/NpE2+c5BVaB+YZ28A9tppiDAnEMY
+ ge2M7fTJ0ghVA1sOnUMt/0s5Qw==
+X-Google-Smtp-Source: AA6agR4VhkzVAAHCVE5Bvqj4gmZmkmcK/9Im8zQLrjWbbD7qyRvYQ3lDqquMJFvysynL4HFltgDKHg==
+X-Received: by 2002:a5d:5a9a:0:b0:226:e840:c551 with SMTP id
+ bp26-20020a5d5a9a000000b00226e840c551mr18650248wrb.679.1662483733326; 
+ Tue, 06 Sep 2022 10:02:13 -0700 (PDT)
 Received: from srini-hackbox.lan
  (cpc90716-aztw32-2-0-cust825.18-1.cable.virginm.net. [86.26.103.58])
  by smtp.gmail.com with ESMTPSA id
- x13-20020a1c7c0d000000b003a5ca627333sm21085967wmc.8.2022.09.06.10.02.10
+ x13-20020a1c7c0d000000b003a5ca627333sm21085967wmc.8.2022.09.06.10.02.12
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Tue, 06 Sep 2022 10:02:10 -0700 (PDT)
+ Tue, 06 Sep 2022 10:02:12 -0700 (PDT)
 From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 To: broonie@kernel.org
-Subject: [PATCH v2 04/12] ASoC: codecs: tx-macro: fix active_decimator array
-Date: Tue,  6 Sep 2022 18:01:04 +0100
-Message-Id: <20220906170112.1984-5-srinivas.kandagatla@linaro.org>
+Subject: [PATCH v2 06/12] ASoC: codecs: wsa883x: add clock stop support
+Date: Tue,  6 Sep 2022 18:01:06 +0100
+Message-Id: <20220906170112.1984-7-srinivas.kandagatla@linaro.org>
 X-Mailer: git-send-email 2.21.0
 In-Reply-To: <20220906170112.1984-1-srinivas.kandagatla@linaro.org>
 References: <20220906170112.1984-1-srinivas.kandagatla@linaro.org>
@@ -102,45 +102,79 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-currently active_decimator[] is unsigned long however we store negative
-values when there is no decimator setup -1.
-
-This is first bug, and the second bug is that we do not check if the decimator
-is valid before writing to register using decimator as offset in
-CDC_TXn_TX_PATH_CTL()
-
-Fix these both by making active_decimator as integer array and adding check
-in tx_macro_digital_mute() before accessing CDC_TXn_TX_PATH_CTL() register.
+WSA883x does support clock stop, so remove code that reset
+the Codec during runtime pm suspend and add flag to mark
+clock stop support.
 
 Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 ---
- sound/soc/codecs/lpass-tx-macro.c | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+ sound/soc/codecs/wsa883x.c | 28 +---------------------------
+ 1 file changed, 1 insertion(+), 27 deletions(-)
 
-diff --git a/sound/soc/codecs/lpass-tx-macro.c b/sound/soc/codecs/lpass-tx-macro.c
-index c19bb19b717b..5c03ef8d88b3 100644
---- a/sound/soc/codecs/lpass-tx-macro.c
-+++ b/sound/soc/codecs/lpass-tx-macro.c
-@@ -259,7 +259,7 @@ struct tx_macro {
- 	struct tx_mute_work tx_mute_dwork[NUM_DECIMATORS];
- 	unsigned long active_ch_mask[TX_MACRO_MAX_DAIS];
- 	unsigned long active_ch_cnt[TX_MACRO_MAX_DAIS];
--	unsigned long active_decimator[TX_MACRO_MAX_DAIS];
-+	int active_decimator[TX_MACRO_MAX_DAIS];
- 	struct regmap *regmap;
- 	struct clk *mclk;
- 	struct clk *npl;
-@@ -1117,6 +1117,10 @@ static int tx_macro_digital_mute(struct snd_soc_dai *dai, int mute, int stream)
- 	struct tx_macro *tx = snd_soc_component_get_drvdata(component);
- 	u16 decimator;
+diff --git a/sound/soc/codecs/wsa883x.c b/sound/soc/codecs/wsa883x.c
+index 63e1d7aa6137..c7b10bbfba7e 100644
+--- a/sound/soc/codecs/wsa883x.c
++++ b/sound/soc/codecs/wsa883x.c
+@@ -415,7 +415,6 @@
  
-+	/* active decimator not set yet */
-+	if (tx->active_decimator[dai->id] == -1)
-+		return 0;
-+
- 	decimator = tx->active_decimator[dai->id];
+ #define WSA883X_NUM_REGISTERS           (WSA883X_EMEM_63 + 1)
+ #define WSA883X_MAX_REGISTER            (WSA883X_NUM_REGISTERS - 1)
+-#define WSA883X_PROBE_TIMEOUT 1000
  
- 	if (mute)
+ #define WSA883X_VERSION_1_0 0
+ #define WSA883X_VERSION_1_1 1
+@@ -1409,6 +1408,7 @@ static int wsa883x_probe(struct sdw_slave *pdev,
+ 	wsa883x->sconfig.type = SDW_STREAM_PDM;
+ 
+ 	pdev->prop.sink_ports = GENMASK(WSA883X_MAX_SWR_PORTS, 0);
++	pdev->prop.simple_clk_stop_capable = true;
+ 	pdev->prop.sink_dpn_prop = wsa_sink_dpn_prop;
+ 	pdev->prop.scp_int1_mask = SDW_SCP_INT1_BUS_CLASH | SDW_SCP_INT1_PARITY;
+ 	gpiod_direction_output(wsa883x->sd_n, 1);
+@@ -1440,43 +1440,17 @@ static int wsa883x_probe(struct sdw_slave *pdev,
+ static int __maybe_unused wsa883x_runtime_suspend(struct device *dev)
+ {
+ 	struct regmap *regmap = dev_get_regmap(dev, NULL);
+-	struct wsa883x_priv *wsa883x = dev_get_drvdata(dev);
+-
+-	gpiod_direction_output(wsa883x->sd_n, 0);
+ 
+ 	regcache_cache_only(regmap, true);
+ 	regcache_mark_dirty(regmap);
+ 
+-	regulator_disable(wsa883x->vdd);
+ 	return 0;
+ }
+ 
+ static int __maybe_unused wsa883x_runtime_resume(struct device *dev)
+ {
+-	struct sdw_slave *slave = dev_to_sdw_dev(dev);
+ 	struct regmap *regmap = dev_get_regmap(dev, NULL);
+-	struct wsa883x_priv *wsa883x = dev_get_drvdata(dev);
+-	unsigned long time;
+-	int ret;
+-
+-	ret = regulator_enable(wsa883x->vdd);
+-	if (ret) {
+-		dev_err(dev, "Failed to enable vdd regulator (%d)\n", ret);
+-		return ret;
+-	}
+-
+-	gpiod_direction_output(wsa883x->sd_n, 1);
+-
+-	time = wait_for_completion_timeout(&slave->initialization_complete,
+-					   msecs_to_jiffies(WSA883X_PROBE_TIMEOUT));
+-	if (!time) {
+-		dev_err(dev, "Initialization not complete, timed out\n");
+-		gpiod_direction_output(wsa883x->sd_n, 0);
+-		regulator_disable(wsa883x->vdd);
+-		return -ETIMEDOUT;
+-	}
+ 
+-	usleep_range(20000, 20010);
+ 	regcache_cache_only(regmap, false);
+ 	regcache_sync(regmap);
+ 
 -- 
 2.21.0
 
