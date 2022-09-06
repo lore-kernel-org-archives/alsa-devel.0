@@ -4,80 +4,79 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 80BDFECAAD5
-	for <alsa-devel@archiver.kernel.org>; Tue,  6 Sep 2022 17:05:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id F207BECAAA1
+	for <alsa-devel@archiver.kernel.org>; Tue,  6 Sep 2022 17:06:10 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C2FFDAE9;
-	Tue,  6 Sep 2022 19:05:06 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C2FFDAE9
+	by alsa0.perex.cz (Postfix) with ESMTPS id 285AB1669;
+	Tue,  6 Sep 2022 19:05:19 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 285AB1669
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1662483956;
-	bh=U4NL/iO9U0kvr9zv5pZWFwcUP/2g+sSFSzn1hvPysR8=;
+	s=default; t=1662483969;
+	bh=6vAtZDUhBzhzWcbyEDHHtQVO/kmEGrlxrzpY+OSIcxM=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=venfU1OHVi8qwEN59CaxhSI26BybRi9W37ZqrdRvZ8quNZ2g1HGAFs8ixKFlTX7j7
-	 beEQ0ysNzGy5Co/rpIwKKm9SCLMOfZOjJlAT0eNTrMKWzZt9KzxxwoBmnDyBabp4CC
-	 N7Z2o+7ehJttiJNGzNMeuMLnT+NePG6qo/J/sL6M=
+	b=GAsTz3KjN5EF2/l6YtoXEPPGDudTBZX+8ZmGHr/j8QoV3O1ISSJgHMZhVILAwH+/4
+	 Fdd73ytxgA+6C5ypEoLshEFzScU3Pg39fJPnLgMtyr30DMXzknipEmge8jsLghOJ3e
+	 Pc++a6UPDTAlLXFEVzBKuK8V3qCpqWs4K8SzL6uI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 58EA2F8057D;
+	by alsa1.perex.cz (Postfix) with ESMTP id D9518F80587;
 	Tue,  6 Sep 2022 19:02:31 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id EFF4DF80538; Tue,  6 Sep 2022 19:02:27 +0200 (CEST)
-Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com
- [IPv6:2a00:1450:4864:20::42b])
+ id 31FD7F80563; Tue,  6 Sep 2022 19:02:29 +0200 (CEST)
+Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com
+ [IPv6:2a00:1450:4864:20::434])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 6A83AF80538
- for <alsa-devel@alsa-project.org>; Tue,  6 Sep 2022 19:02:18 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6A83AF80538
+ by alsa1.perex.cz (Postfix) with ESMTPS id C247EF80537
+ for <alsa-devel@alsa-project.org>; Tue,  6 Sep 2022 19:02:11 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C247EF80537
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org
- header.b="k8U1G9bR"
-Received: by mail-wr1-x42b.google.com with SMTP id e13so16429921wrm.1
- for <alsa-devel@alsa-project.org>; Tue, 06 Sep 2022 10:02:18 -0700 (PDT)
+ header.b="yPFdT/Zl"
+Received: by mail-wr1-x434.google.com with SMTP id c11so12186367wrp.11
+ for <alsa-devel@alsa-project.org>; Tue, 06 Sep 2022 10:02:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
  h=content-transfer-encoding:mime-version:references:in-reply-to
  :message-id:date:subject:cc:to:from:from:to:cc:subject:date;
- bh=wHzaLeNQVCSBpl0uliw1oI1t3Vv7waInVuSDN9rCrD4=;
- b=k8U1G9bRxyqpso63N2PFNnVmHY6LUWgCTgQrkSyvHLGHl1JmRKJA/N+k+rYUtOB8FA
- 4EUUHoJ4qLupudKinKgBMzDjyDPCxT64rOhsoZPhY7HRQYjVX6M5xbYKne7p5bPwzc1a
- eOADvQJ5J4nPk7YuwFbV6BLG61EqZpoxVkkSGlkaQiPcLC6H0s7B6o66qxEjQxGRxVz0
- 3KWryMtXUVDYZEv3zeMOMa+2T6mFHg4uWw35hlS1WgTXc2l1PpR7Oi5M3T7GpoTelycg
- xw7onG3TVNnbKLzZYdbgPay5T8/tNwBEouWDB18+RqDAC1b0fU3jJa0zL0rxvEczAfbv
- unMQ==
+ bh=re8Z9fw7pUFDwz5t2E+fC5AN4inVQugZHn4dMfClz40=;
+ b=yPFdT/Zllm622SFwnkd64Ui2kruuNrAfFuqcDOrHweA+yvDdrO39YO1EiQwIMDl2ih
+ +8LV+TVZGQpbIM0+Va+NdxuOjMhbwnbB0/G7NX42DzUyBMKkhqmiHy5OTDomv1eV1kQp
+ HfVYjRS3sJZdolJi10Ql4H0YLkjFEda9kpIis7EiRFCb4jicKJFR6tDTgPrH5hZ/82PS
+ FShSosLeXqjdER4vZn4DBlyBXJT4TYSbdVLXgbnfgiCd+KKxH6Z0+8mgjIh7RE1KmuET
+ Hf4o4y5jR0nwAFT74MXs/dGBv2ZdtEe9fdaP/o4+CNuhCG52X6JZd19oodsuu3NDJgBV
+ kyTw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
  h=content-transfer-encoding:mime-version:references:in-reply-to
  :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
  :subject:date;
- bh=wHzaLeNQVCSBpl0uliw1oI1t3Vv7waInVuSDN9rCrD4=;
- b=hdaU+uMWrbEXcm9XaVAjik7fEgh/q5MwcY6RF6jCnw301M1KEmnmPO14zTYaIN7pTq
- +SkbB+BmMVxvuLBskqNmRxdBGIeguZ5rrosQKHRAPnp/zP8u/442muMFTD2EXafU/MG5
- 7Ezt24O86U5owJDaHXDgsu2+pYCaXXGeKpcxIkMKICen7nzSWpiflJfXRMC9HXkY9uyu
- ertUaDLi0ZCLTugAPRi9H5Lsc+Olz2eQTU1UjYScXE/iDzfxMZh9eX0Nx8/sB4WpvoJ8
- 56Sm5FlnzI1wiBXi7E0+EnLxh3N1Unq/YPSdZSV6iz79A2EPjGyUZMh++xjG2d6DjDV0
- IN9g==
-X-Gm-Message-State: ACgBeo2dxIQGBbb2bjVC1KbOn02eFyT08ESTz1ichKmzu0BT5/cqU2zr
- 9DwjBV3PhYIB5hQ93EDwQCY93g==
-X-Google-Smtp-Source: AA6agR4A0j1MQqOx9dgt2eesqRX/FLXrcfb71oW2fg138hd0nsF9LAMVvtyPJ40JMHKVpgs4f4W7xw==
-X-Received: by 2002:a5d:6b8a:0:b0:228:d6f5:f83a with SMTP id
- n10-20020a5d6b8a000000b00228d6f5f83amr2850621wrx.381.1662483737282; 
- Tue, 06 Sep 2022 10:02:17 -0700 (PDT)
+ bh=re8Z9fw7pUFDwz5t2E+fC5AN4inVQugZHn4dMfClz40=;
+ b=JA/FVD6Gy09E3dntLMLAfYHOHc1lMTuFRQyyQSrMrMABvYXgCYS66mixPS22FVc/hK
+ 0OmS0uQF/OrVLwW/Ovw4DSMIHQKuvgYJ1eP4nAv5EP9WETUPTvdgW817j2McylfojIbA
+ 5sDzh0V2xirNALARk5gRoWuxgI1ath26Nvkt3KI2Oh3JePtAdozvhZtgO6VdCmX99Chy
+ KOsA5P5TjpB4uhICJ6SB6btRVE8OCWwQ6QIQiCX80zFy3xwzi1S7WHVnduPJxBvHu56W
+ TBk6pN8QHN67Z/ApON0Agw41spm0H1OfgW4WEw5I2zQvh4IoiD0jikCKaqs0JP1J+Oqb
+ 5zNA==
+X-Gm-Message-State: ACgBeo0XVmXALuHrECUD4xrUuJL2AgDTlOn7jdhIIiXJhRdn65N3lSax
+ Fv19GFBXSoH/n+S7PeIebZIrL9gU0FdtTw==
+X-Google-Smtp-Source: AA6agR7zOZdnFhN2Lm6iYdOfoyXNKZSoQYHgG/WRNO3Em3C+1SiStwXoopbjwQyOCd8Gq4bllb3zYQ==
+X-Received: by 2002:a5d:522f:0:b0:228:dc7f:b9a8 with SMTP id
+ i15-20020a5d522f000000b00228dc7fb9a8mr1500645wra.617.1662483729998; 
+ Tue, 06 Sep 2022 10:02:09 -0700 (PDT)
 Received: from srini-hackbox.lan
  (cpc90716-aztw32-2-0-cust825.18-1.cable.virginm.net. [86.26.103.58])
  by smtp.gmail.com with ESMTPSA id
- x13-20020a1c7c0d000000b003a5ca627333sm21085967wmc.8.2022.09.06.10.02.16
+ x13-20020a1c7c0d000000b003a5ca627333sm21085967wmc.8.2022.09.06.10.02.09
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Tue, 06 Sep 2022 10:02:16 -0700 (PDT)
+ Tue, 06 Sep 2022 10:02:09 -0700 (PDT)
 From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 To: broonie@kernel.org
-Subject: [PATCH v2 10/12] ASoC: codecs: rx-macro: add support for sm8450 and
- sc8280xp
-Date: Tue,  6 Sep 2022 18:01:10 +0100
-Message-Id: <20220906170112.1984-11-srinivas.kandagatla@linaro.org>
+Subject: [PATCH v2 03/12] ASoC: codecs: tx-macro: handle swr_reset correctly
+Date: Tue,  6 Sep 2022 18:01:03 +0100
+Message-Id: <20220906170112.1984-4-srinivas.kandagatla@linaro.org>
 X-Mailer: git-send-email 2.21.0
 In-Reply-To: <20220906170112.1984-1-srinivas.kandagatla@linaro.org>
 References: <20220906170112.1984-1-srinivas.kandagatla@linaro.org>
@@ -103,26 +102,66 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Add compatible for sm8450 and sc8280xp.
+Reset soundwire block on frame sync generation clock reset.
+Without this we are hitting read/write timeouts randomly during
+runtime pm. Along with this remove a swr_reset redundant flag.
 
 Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 ---
- sound/soc/codecs/lpass-rx-macro.c | 2 ++
- 1 file changed, 2 insertions(+)
+ sound/soc/codecs/lpass-tx-macro.c | 15 ++++-----------
+ 1 file changed, 4 insertions(+), 11 deletions(-)
 
-diff --git a/sound/soc/codecs/lpass-rx-macro.c b/sound/soc/codecs/lpass-rx-macro.c
-index 338e3f0cad12..a9ef9d5ffcc5 100644
---- a/sound/soc/codecs/lpass-rx-macro.c
-+++ b/sound/soc/codecs/lpass-rx-macro.c
-@@ -3654,6 +3654,8 @@ static int rx_macro_remove(struct platform_device *pdev)
- static const struct of_device_id rx_macro_dt_match[] = {
- 	{ .compatible = "qcom,sc7280-lpass-rx-macro" },
- 	{ .compatible = "qcom,sm8250-lpass-rx-macro" },
-+	{ .compatible = "qcom,sm8450-lpass-rx-macro" },
-+	{ .compatible = "qcom,sc8280xp-lpass-rx-macro" },
- 	{ }
- };
- MODULE_DEVICE_TABLE(of, rx_macro_dt_match);
+diff --git a/sound/soc/codecs/lpass-tx-macro.c b/sound/soc/codecs/lpass-tx-macro.c
+index 55503ba480bb..c19bb19b717b 100644
+--- a/sound/soc/codecs/lpass-tx-macro.c
++++ b/sound/soc/codecs/lpass-tx-macro.c
+@@ -268,7 +268,6 @@ struct tx_macro {
+ 	struct clk *fsgen;
+ 	struct clk_hw hw;
+ 	bool dec_active[NUM_DECIMATORS];
+-	bool reset_swr;
+ 	int tx_mclk_users;
+ 	u16 dmic_clk_div;
+ 	bool bcs_enable;
+@@ -1702,18 +1701,14 @@ static int swclk_gate_enable(struct clk_hw *hw)
+ 	}
+ 
+ 	tx_macro_mclk_enable(tx, true);
+-	if (tx->reset_swr)
+-		regmap_update_bits(regmap, CDC_TX_CLK_RST_CTRL_SWR_CONTROL,
+-				   CDC_TX_SWR_RESET_MASK,
+-				   CDC_TX_SWR_RESET_ENABLE);
++	regmap_update_bits(regmap, CDC_TX_CLK_RST_CTRL_SWR_CONTROL,
++			   CDC_TX_SWR_RESET_MASK, CDC_TX_SWR_RESET_ENABLE);
+ 
+ 	regmap_update_bits(regmap, CDC_TX_CLK_RST_CTRL_SWR_CONTROL,
+ 			   CDC_TX_SWR_CLK_EN_MASK,
+ 			   CDC_TX_SWR_CLK_ENABLE);
+-	if (tx->reset_swr)
+-		regmap_update_bits(regmap, CDC_TX_CLK_RST_CTRL_SWR_CONTROL,
+-				   CDC_TX_SWR_RESET_MASK, 0x0);
+-	tx->reset_swr = false;
++	regmap_update_bits(regmap, CDC_TX_CLK_RST_CTRL_SWR_CONTROL,
++			   CDC_TX_SWR_RESET_MASK, 0x0);
+ 
+ 	return 0;
+ }
+@@ -1855,7 +1850,6 @@ static int tx_macro_probe(struct platform_device *pdev)
+ 
+ 	dev_set_drvdata(dev, tx);
+ 
+-	tx->reset_swr = true;
+ 	tx->dev = dev;
+ 
+ 	/* set MCLK and NPL rates */
+@@ -1970,7 +1964,6 @@ static int __maybe_unused tx_macro_runtime_resume(struct device *dev)
+ 
+ 	regcache_cache_only(tx->regmap, false);
+ 	regcache_sync(tx->regmap);
+-	tx->reset_swr = true;
+ 
+ 	return 0;
+ err_fsgen:
 -- 
 2.21.0
 
