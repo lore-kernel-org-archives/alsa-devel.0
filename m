@@ -4,79 +4,81 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B13C8C38145
-	for <alsa-devel@archiver.kernel.org>; Tue,  6 Sep 2022 09:51:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id DD197ECAAD5
+	for <alsa-devel@archiver.kernel.org>; Tue,  6 Sep 2022 10:51:30 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 218F182A;
-	Tue,  6 Sep 2022 11:50:41 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 218F182A
+	by alsa0.perex.cz (Postfix) with ESMTPS id 21FD53E8;
+	Tue,  6 Sep 2022 12:50:38 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 21FD53E8
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1662457891;
-	bh=ia7zMlfXBU/VPsRf3eBTAgn3ux30jsrvKTCZp2YrOgk=;
+	s=default; t=1662461488;
+	bh=fq2KyoIGKa4e72Vbhhhy1irUpE7aXAsqdinH0gnIzwA=;
 	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=dgLjHpj7WbtqvfC6RoE1xaBrC+GRdXfPu66rVCFDXWx4G6rEPVwGy4uPm0oZAkoDz
-	 f1E6vsAg4931V+GGiZTtwRCikzfdjTM6kyflH5II84beEcFnzDlC0g4tfI4lSooW4i
-	 ow/MZxATBzzo1HvLW8lesxFXRVsE2kBWNlJty5bw=
+	b=lEe3FJNkjpKZTHA0DDO90K6aHAeZVsLgokPjNXW9HC2QN3HbpqIDY5HdaaplWfkri
+	 mmsYMGTqon2E7CvWj9uYL/QGzNRv5PTn7jigh6JBX96jhBX+fDGPHxuWS5Z5daExai
+	 Vl85FXiN0l4+n/2LNzhjTqIkWM0HxxtFYiUIrQXQ=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id B1D33F80165;
-	Tue,  6 Sep 2022 11:50:40 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id A98A9F8019B;
+	Tue,  6 Sep 2022 12:50:37 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 4E9BEF80165; Tue,  6 Sep 2022 11:50:39 +0200 (CEST)
-Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com
- [IPv6:2a00:1450:4864:20::42a])
+ id 4D64DF80249; Tue,  6 Sep 2022 12:50:36 +0200 (CEST)
+Received: from mail-lj1-x236.google.com (mail-lj1-x236.google.com
+ [IPv6:2a00:1450:4864:20::236])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id CC878F80165
- for <alsa-devel@alsa-project.org>; Tue,  6 Sep 2022 11:50:36 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CC878F80165
+ by alsa1.perex.cz (Postfix) with ESMTPS id 83B74F800E9
+ for <alsa-devel@alsa-project.org>; Tue,  6 Sep 2022 12:50:33 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 83B74F800E9
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="XJXm3+AW"
-Received: by mail-wr1-x42a.google.com with SMTP id c11so10353184wrp.11
- for <alsa-devel@alsa-project.org>; Tue, 06 Sep 2022 02:50:36 -0700 (PDT)
+ header.b="KLzYWgzL"
+Received: by mail-lj1-x236.google.com with SMTP id z20so11846838ljq.3
+ for <alsa-devel@alsa-project.org>; Tue, 06 Sep 2022 03:50:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
  h=cc:to:subject:message-id:date:from:in-reply-to:references
  :mime-version:from:to:cc:subject:date;
- bh=r+ousdY1tGkO/yzh1u+RImPQAzXSy0HohJCLKxybiYk=;
- b=XJXm3+AWkaScI7PxCvoQ855MRL/3gU+oVmXA+TmaNSnrGCkp0lfnYMcUhmEa4QvBZ+
- sYaVm+qnefpABDMbdJrRDdni0Eh99VOQtMWuBGbRav13JXoztc+hfhLMaFjP8vvKQu54
- HPlkuCHjYQqAVn4ZUcS3oLedNX/SJVn8BA6ScFhLkoSk7xuCATff5Px1s+0cJDwOypE9
- aeCEGxq8ZEKZMvQG2QmfQd+hJsGRS23M3vkDrxmLEBy2IhYuHDOKnJqwq7KxWQ2futFG
- UoK/v7u/PlffiLMY82Bk6E+/SLzjX+ot28+yAWGgalHmUmRxF+byLXHYLITxie5Y85IL
- 8+tQ==
+ bh=/OsXzUKuq1cC2zAcl0nrr1kHva2xFCkM0jP3L63CyEc=;
+ b=KLzYWgzLxJ0kzxoY9Y+KTb/4Cmky+PM+vyhq17QxHJuDERk4PkA3tUm1nBYMllUwwg
+ 36pjGufYrzS3bK+heDXUxmf71peRbNVtnWuKLzXIUU2zvZWFuQGnvmJYira9OQ4YM5tB
+ lbqWu+UACrbDgtJ+4MFnzl1shIVltZfL6H2JIS8LLWFPVhzbgTCTruFylqmtylse0TB4
+ EDnmIHhDK+j/IpFFZzaLVr8jVA8XGZqqKO21ba8SMmPeox5o2F+QzOawvNJafa/EXwfn
+ F1tA67pN8tJebmRtOUZoAQRdh1bFelAHuVzfjCxUnpa8xN4vAOTaQg6+CNg3zvZp+QOy
+ zNBQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
  h=cc:to:subject:message-id:date:from:in-reply-to:references
  :mime-version:x-gm-message-state:from:to:cc:subject:date;
- bh=r+ousdY1tGkO/yzh1u+RImPQAzXSy0HohJCLKxybiYk=;
- b=Fkd2z5Edr7JuvXpl4aajQsMkNytVwBCaSgqs2kCnLdy8jr9P6mROohNASS0rLYqgYV
- B+kB7Mj20EdwfVDV+a4gmGondGRCTBxdAGQ3r4X2K6VaR3bSIL8JQQ/po8xP6H7kiJEG
- 6wArFNLsc1OKE8cZl+Bg+d56E3zeOdvtpxCtBF8rm/J/cOSRQdWOexHgO2AIut1tmVtf
- DpGRkUZrwkZUEiMVAbLDhOktFiADSqbGiN8ejCjvsViQapXcC6nup21GF3tpjUVrMT6n
- nmh1TkHhARvrbtQUbfk/sD38WPdGgrNgenQyKddPWbfu+KsF5FslkR7pM/yKuVlE1KQf
- h0Sw==
-X-Gm-Message-State: ACgBeo2/jVPAg4a4bMp2UgqwKN9djDarWvW8w0Yts6waiLfc8cM2uu2q
- 5YIq+UBxdXg6wS1f+gHuAVcq0t/Td7U7wnb/YxQ=
-X-Google-Smtp-Source: AA6agR7mPLP6wpNPjaOIzvnihjyEffacKop3Imfj0A1xsiYyYOOCWztLYg9Z3U3CKn5RbQNjZJyY/3sA6fQgEUOUrgU=
-X-Received: by 2002:a05:6000:168e:b0:220:87da:c3e4 with SMTP id
- y14-20020a056000168e00b0022087dac3e4mr25983316wrd.559.1662457834879; Tue, 06
- Sep 2022 02:50:34 -0700 (PDT)
+ bh=/OsXzUKuq1cC2zAcl0nrr1kHva2xFCkM0jP3L63CyEc=;
+ b=tKACtACARxUJojziQzZZM9C3CzohvkbVL3i8X4ZUCS04K/NHxH+dxD+AtxLRo2jAW2
+ y/dd61CRbuBoYhmVMQ+4zYmQm8ozsBASTJhIs4QPwTGigej/98gWhD10BTenl8ehiBjA
+ jzCLi9os3AU/aDJo5vwLb5kRY2TxGZ4/ZDipUgujlIYkKBtO/NWCL2EU3NquXOA4GvB1
+ BuhAiqk4FJwOICFk5+XCZdU04uZ+mu0QE/jmDvE22PazYsRvb/VHvciZ2LXr7f1zlBVU
+ h4Oi7T9u6bPO/0boQyBG2pZgZe2GBxgwghq4Tgowuo2E202Ng/rrA/SLPuVIkI1CDnts
+ RTaA==
+X-Gm-Message-State: ACgBeo0ohFS/fphECARVztCWx5adUb4BVLU3pnxbSgxAFNXGWPrYNiFa
+ +zgG0l42nYwg6SI2t3kEDiCsJyfVkiLuL/Ws1GE=
+X-Google-Smtp-Source: AA6agR73x2co/hxB1kNHeG+9A0jIaZGzPM1ptVAglIj0+20rFor1kXVIRg5AeAe+d88614KXCREEWTzqzFNYm3ULofo=
+X-Received: by 2002:a2e:b747:0:b0:268:f837:27b9 with SMTP id
+ k7-20020a2eb747000000b00268f83727b9mr5166064ljo.129.1662461431379; Tue, 06
+ Sep 2022 03:50:31 -0700 (PDT)
 MIME-Version: 1.0
 References: <1662373788-19561-1-git-send-email-shengjiu.wang@nxp.com>
  <CAGoOwPQomcnO5dhkT9DBynwJo8LfVvuuwj5AYNpv0KhAGSWLEw@mail.gmail.com>
  <CAA+D8APOL1Qx0fAhyajXXzh0_tqEmDJoDBh3Xgo6uYNhV0usBw@mail.gmail.com>
-In-Reply-To: <CAA+D8APOL1Qx0fAhyajXXzh0_tqEmDJoDBh3Xgo6uYNhV0usBw@mail.gmail.com>
-From: Nicolin Chen <nicoleotsuka@gmail.com>
-Date: Tue, 6 Sep 2022 02:50:23 -0700
-Message-ID: <CAGoOwPQfkT2ptdt6mBTAgPfN0NOoR4KfdLE9B2AoL+Qn6bWdFw@mail.gmail.com>
+ <CAGoOwPQfkT2ptdt6mBTAgPfN0NOoR4KfdLE9B2AoL+Qn6bWdFw@mail.gmail.com>
+In-Reply-To: <CAGoOwPQfkT2ptdt6mBTAgPfN0NOoR4KfdLE9B2AoL+Qn6bWdFw@mail.gmail.com>
+From: Shengjiu Wang <shengjiu.wang@gmail.com>
+Date: Tue, 6 Sep 2022 18:50:19 +0800
+Message-ID: <CAA+D8AMYrQsu-nM_WdrBtB4iPU2UYNDhPW-zdY_Z+-9L03gu1Q@mail.gmail.com>
 Subject: Re: [PATCH] ASoC: fsl_asrc: Add initialization finishing check in
  runtime resume
-To: Shengjiu Wang <shengjiu.wang@gmail.com>
+To: Nicolin Chen <nicoleotsuka@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
+X-Content-Filtered-By: Mailman/MimeDel 2.1.15
 Cc: alsa-devel@alsa-project.org, Xiubo Li <Xiubo.Lee@gmail.com>,
  linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
  Shengjiu Wang <shengjiu.wang@nxp.com>, Takashi Iwai <tiwai@suse.com>,
@@ -98,22 +100,34 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Mon, Sep 5, 2022 at 6:54 PM Shengjiu Wang <shengjiu.wang@gmail.com> wrote:
+On Tue, Sep 6, 2022 at 5:50 PM Nicolin Chen <nicoleotsuka@gmail.com> wrote:
 
->> > +       /* Wait for status of initialization for every enabled pairs */
->> > +       do {
->> > +               udelay(5);
->> > +               regmap_read(asrc->regmap, REG_ASRCFG, &reg);
->> > +               reg = (reg >> ASRCFG_INIRQi_SHIFT(0)) & 0x7;
->> > +       } while ((reg != ((asrctr >> ASRCTR_ASRCEi_SHIFT(0)) & 0x7)) && --retry);
->> > +
->> > +       /* FIXME: Doesn't treat initialization timeout as error */
->> > +       if (!retry)
->> > +               dev_warn(dev, "initialization isn't finished\n");
->>
->> Any reason why not just dev_err?
+> On Mon, Sep 5, 2022 at 6:54 PM Shengjiu Wang <shengjiu.wang@gmail.com>
+> wrote:
 >
-> Just hesitate to use dev_err. if use dev_err, then should return an error.
-> May one of the pairs is finished, it still can continue.
+> >> > +       /* Wait for status of initialization for every enabled pairs
+> */
+> >> > +       do {
+> >> > +               udelay(5);
+> >> > +               regmap_read(asrc->regmap, REG_ASRCFG, &reg);
+> >> > +               reg = (reg >> ASRCFG_INIRQi_SHIFT(0)) & 0x7;
+> >> > +       } while ((reg != ((asrctr >> ASRCTR_ASRCEi_SHIFT(0)) & 0x7))
+> && --retry);
+> >> > +
+> >> > +       /* FIXME: Doesn't treat initialization timeout as error */
+> >> > +       if (!retry)
+> >> > +               dev_warn(dev, "initialization isn't finished\n");
+> >>
+> >> Any reason why not just dev_err?
+> >
+> > Just hesitate to use dev_err. if use dev_err, then should return an
+> error.
+> > May one of the pairs is finished, it still can continue.
+>
+> Makes sense. In that case, why "FIXME" :)
+>
 
-Makes sense. In that case, why "FIXME" :)
+Just want to have a record/note here, need to care about this warning.
+
+Best regards
+Wang shengjiu
