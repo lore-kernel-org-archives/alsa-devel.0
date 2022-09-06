@@ -4,81 +4,80 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 79199ECAAA1
-	for <alsa-devel@archiver.kernel.org>; Tue,  6 Sep 2022 17:04:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C78CEECAAD5
+	for <alsa-devel@archiver.kernel.org>; Tue,  6 Sep 2022 17:04:17 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 717F2850;
-	Tue,  6 Sep 2022 19:03:13 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 717F2850
+	by alsa0.perex.cz (Postfix) with ESMTPS id E07361616;
+	Tue,  6 Sep 2022 19:03:25 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E07361616
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1662483843;
-	bh=gKx0aroXQ1x9IP9+vbxsV9gWhVEQjGZTSuFjF70ECM4=;
+	s=default; t=1662483856;
+	bh=4wsof5esc4xjCoSTludTGq7KOh6L3q3nKg97YMn8vYI=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=MP8uD25kvfbUtPNMTM09+Sxz4SpVUx5ZJ+08UnU40FOLxrrW17oqRYDRF0JHe/oMU
-	 AKvCpDD6WE82V0v7MU7+7w1KAfZJEOJh7tDvLzdgbDrgwq2vYzMAyaSMyq8WdBaSIW
-	 xfIIw86VszT6Mw+EG/lOzg84MXfuylA4ZvytbYfQ=
+	b=jGb1tZk0wgFsKbxl04QTeZzBJskDizxMluXqeRUyRzdw9DpDy4kbJBd7Se+PuVKa5
+	 bxW80AWkB/c8xpaq2f0j/U/pWHjiHSLAdI8j0ucGP/gDe5j9y3cj5trUnw1AJhC7uJ
+	 HclOD3cN2U7vcvMFfA4JQGuR4FaaPrqJh2PEswCE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id EAE94F80249;
-	Tue,  6 Sep 2022 19:02:23 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id D6D51F80548;
+	Tue,  6 Sep 2022 19:02:25 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 99B87F80551; Tue,  6 Sep 2022 19:02:22 +0200 (CEST)
-Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com
- [IPv6:2a00:1450:4864:20::335])
+ id A54A6F804AB; Tue,  6 Sep 2022 19:02:22 +0200 (CEST)
+Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com
+ [IPv6:2a00:1450:4864:20::32e])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 8F576F80535
- for <alsa-devel@alsa-project.org>; Tue,  6 Sep 2022 19:02:16 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8F576F80535
+ by alsa1.perex.cz (Postfix) with ESMTPS id 32F04F804AB
+ for <alsa-devel@alsa-project.org>; Tue,  6 Sep 2022 19:02:13 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 32F04F804AB
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org
- header.b="QHiV59qF"
-Received: by mail-wm1-x335.google.com with SMTP id
- n17-20020a05600c501100b003a84bf9b68bso7822888wmr.3
- for <alsa-devel@alsa-project.org>; Tue, 06 Sep 2022 10:02:16 -0700 (PDT)
+ header.b="MIypjnmi"
+Received: by mail-wm1-x32e.google.com with SMTP id
+ c131-20020a1c3589000000b003a84b160addso9302050wma.2
+ for <alsa-devel@alsa-project.org>; Tue, 06 Sep 2022 10:02:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
  h=content-transfer-encoding:mime-version:references:in-reply-to
  :message-id:date:subject:cc:to:from:from:to:cc:subject:date;
- bh=pUJmbtWvtPwGRy1+LOJw2XaXtrhOpybks4Z6SCIljf4=;
- b=QHiV59qFluFmc2X4aluSb3cI8UBx/AvQ+3qoFk4pdJSOca0Pf+UwsjydWWNNy+qaTk
- +XF/XyHjDNitJ72UxSrOXjTo4qMk0hNSt8ERShfBL0fcv0Q0KcpBHZNeLSL6vrooYy8Q
- zdjECuThHt+98Mw8rMCcJqVPKe2ZnbZbhsN6YnlF/tZmDWzc4ovdFeXN8FqMJAiCH1Xm
- wSAyIZsF+0XTlaqfl4CFtoeVvQOCQSh0tRvs9Fhg2E/fIoNQwk0WgKo47AyPqcpCrde1
- coiFBaYo2JpZRtLar7U3mrZXlOPGmQ5yLXBTvVWD5yTPFBCdI0aF44a/HdAJnfAtxunU
- hpdA==
+ bh=5cXkyzv8fGyxrlD42mVszMI8M5/gZNk4Pc54ztLL6XQ=;
+ b=MIypjnmic7JjPeUDi5grO0kTunNZ+1CKPlsw8KWEfg2IsJdqr61ZK/XmyZkSV89YTD
+ q2Li5pwWDDsZ39AUrVQ7wOOLn1tzukC55jQVmD32FhagZCr4eVR6et8HyZBOs0h5yd8c
+ i25cTO43+vk3PPcwhIK5egBjLcVRsEi9ELgSF/00iauT3rfOXKI8sbYnWEA2pIeIMQQ+
+ qtZVqcW5C9YL2w2CLsaenUap+8YHjPnwJVbAIWV5aWamc3OpQVDASzBvCRK9zKjYUiWv
+ 2YOaw6vx9BtpeaHnbHgVjcJzepS+nmFPuf3dxzaEqhY7z4cs8sM7es3eg2LcmSlxIXaC
+ 78Cw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
  h=content-transfer-encoding:mime-version:references:in-reply-to
  :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
  :subject:date;
- bh=pUJmbtWvtPwGRy1+LOJw2XaXtrhOpybks4Z6SCIljf4=;
- b=yC/xbPBLGIIFv++YR61YC/+EexzPY46zXaBYMO0F6kvL39q2PFry84wZt85aj+ym5T
- ythOXZxiGhHj1oA1le954cdkSxeEZPNREj8j1Sy7LSahB/rsRY1blL3rFgWXn7EGLjMP
- Zzv+feorNkQ63ZMk7E9o8TJ9aZZgDLhKjHDlcINRGSOMxOEVNaATk/snIDaSit46VmBJ
- EiwZmzOegTn6cAfjtnKNAuSO7giOLKuDCP0V9QGscz9a4gdpbqYaRPRHT0WEt6pxeruO
- 0t9VmMkjkRzKBRJF1bQ5BoVRLztaFI+G2dFf+o66H91b63Q5Thp769MzhPTi+qfJytRF
- nRHw==
-X-Gm-Message-State: ACgBeo1k5fXFZoblx3pnEzZUdGb40PTAJQpCQLbnr0VfK6otBEBi+ll5
- 6Zoin/Bvtlf1H8gqg8jTJACcQQ==
-X-Google-Smtp-Source: AA6agR60Q2Q355yXzSKnWe9Bc2WKpC+8ck642yuall8GTusB9e4f1IY3T+xuDCrcw6+igOiiVe0niw==
-X-Received: by 2002:a05:600c:a4c:b0:39c:6517:1136 with SMTP id
- c12-20020a05600c0a4c00b0039c65171136mr14382172wmq.12.1662483736228; 
- Tue, 06 Sep 2022 10:02:16 -0700 (PDT)
+ bh=5cXkyzv8fGyxrlD42mVszMI8M5/gZNk4Pc54ztLL6XQ=;
+ b=ubBGJmxYDm0I0J08cKs04h5qyV8dYmTL/RNC7/gVjnGhWYY2NZcDmuE8cMW7vEGhlx
+ lY0Eo6724j8D0pi4MuvL70xJi+cxB8xnK8llktbAUDJJ4daYaM32nZNIHm3ueVa0CXvM
+ Vaxa+uSPkiVkMh8eByL/zjIWN4rWZCZwrTV5tm+vAsoJqvF4k3+zk0BtkyoPEgiDHRVF
+ ZDceI/rDW47eshaJNMAPJI2sJ3LpqQuoSFnzct6or0tTwZrUJQ4VrWOIGW9Ir/6+fCYK
+ jAuyJu6ZkVvySJGJEgnTX5HPjnxQ67OBJzr9j0HnP5InNUZboGAcPFTLnJnkE52TgBvZ
+ KLHA==
+X-Gm-Message-State: ACgBeo3XBCB/hEz9vhksw108tmqYYoR7sFMP7TQUcV6PhirYo9CEP2P7
+ fyao4CgtK+4mK2kowF0vRqE76Q==
+X-Google-Smtp-Source: AA6agR4oCi3/Szpkd6bJCLAvjnsfXNZbwqML0O3tyhV9OOOUyXpqw2CscuFoHZJy6PtC8wG+yAnuNg==
+X-Received: by 2002:a05:600c:3d05:b0:3a5:dd21:e201 with SMTP id
+ bh5-20020a05600c3d0500b003a5dd21e201mr14384871wmb.132.1662483732330; 
+ Tue, 06 Sep 2022 10:02:12 -0700 (PDT)
 Received: from srini-hackbox.lan
  (cpc90716-aztw32-2-0-cust825.18-1.cable.virginm.net. [86.26.103.58])
  by smtp.gmail.com with ESMTPSA id
- x13-20020a1c7c0d000000b003a5ca627333sm21085967wmc.8.2022.09.06.10.02.15
+ x13-20020a1c7c0d000000b003a5ca627333sm21085967wmc.8.2022.09.06.10.02.11
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Tue, 06 Sep 2022 10:02:15 -0700 (PDT)
+ Tue, 06 Sep 2022 10:02:11 -0700 (PDT)
 From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 To: broonie@kernel.org
-Subject: [PATCH v2 09/12] ASoC: codecs: tx-macro: add support for sm8450 and
- sc8280xp
-Date: Tue,  6 Sep 2022 18:01:09 +0100
-Message-Id: <20220906170112.1984-10-srinivas.kandagatla@linaro.org>
+Subject: [PATCH v2 05/12] ASoC: codecs: tx-macro: fix kcontrol put
+Date: Tue,  6 Sep 2022 18:01:05 +0100
+Message-Id: <20220906170112.1984-6-srinivas.kandagatla@linaro.org>
 X-Mailer: git-send-email 2.21.0
 In-Reply-To: <20220906170112.1984-1-srinivas.kandagatla@linaro.org>
 References: <20220906170112.1984-1-srinivas.kandagatla@linaro.org>
@@ -104,26 +103,59 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Add compatible for sm8450 and sc8280xp.
+tx_macro_tx_mixer_put() and tx_macro_dec_mode_put() currently returns zero
+eventhough it changes the value.
+Fix this, so that change notifications are sent correctly.
 
+Fixes: d207bdea0ca9 ("ASoC: codecs: lpass-tx-macro: add dapm widgets and route")
 Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 ---
- sound/soc/codecs/lpass-tx-macro.c | 2 ++
- 1 file changed, 2 insertions(+)
+ sound/soc/codecs/lpass-tx-macro.c | 13 +++++++++++--
+ 1 file changed, 11 insertions(+), 2 deletions(-)
 
 diff --git a/sound/soc/codecs/lpass-tx-macro.c b/sound/soc/codecs/lpass-tx-macro.c
-index 7f9370ed126f..ee15cf6b98bb 100644
+index 5c03ef8d88b3..7f9370ed126f 100644
 --- a/sound/soc/codecs/lpass-tx-macro.c
 +++ b/sound/soc/codecs/lpass-tx-macro.c
-@@ -1994,6 +1994,8 @@ static const struct dev_pm_ops tx_macro_pm_ops = {
- static const struct of_device_id tx_macro_dt_match[] = {
- 	{ .compatible = "qcom,sc7280-lpass-tx-macro" },
- 	{ .compatible = "qcom,sm8250-lpass-tx-macro" },
-+	{ .compatible = "qcom,sm8450-lpass-tx-macro" },
-+	{ .compatible = "qcom,sc8280xp-lpass-tx-macro" },
- 	{ }
- };
- MODULE_DEVICE_TABLE(of, tx_macro_dt_match);
+@@ -822,17 +822,23 @@ static int tx_macro_tx_mixer_put(struct snd_kcontrol *kcontrol,
+ 	struct tx_macro *tx = snd_soc_component_get_drvdata(component);
+ 
+ 	if (enable) {
++		if (tx->active_decimator[dai_id] == dec_id)
++			return 0;
++
+ 		set_bit(dec_id, &tx->active_ch_mask[dai_id]);
+ 		tx->active_ch_cnt[dai_id]++;
+ 		tx->active_decimator[dai_id] = dec_id;
+ 	} else {
++		if (tx->active_decimator[dai_id] == -1)
++			return 0;
++
+ 		tx->active_ch_cnt[dai_id]--;
+ 		clear_bit(dec_id, &tx->active_ch_mask[dai_id]);
+ 		tx->active_decimator[dai_id] = -1;
+ 	}
+ 	snd_soc_dapm_mixer_update_power(widget->dapm, kcontrol, enable, update);
+ 
+-	return 0;
++	return 1;
+ }
+ 
+ static int tx_macro_enable_dec(struct snd_soc_dapm_widget *w,
+@@ -1018,9 +1024,12 @@ static int tx_macro_dec_mode_put(struct snd_kcontrol *kcontrol,
+ 	int path = e->shift_l;
+ 	struct tx_macro *tx = snd_soc_component_get_drvdata(component);
+ 
++	if (tx->dec_mode[path] == value)
++		return 0;
++
+ 	tx->dec_mode[path] = value;
+ 
+-	return 0;
++	return 1;
+ }
+ 
+ static int tx_macro_get_bcs(struct snd_kcontrol *kcontrol,
 -- 
 2.21.0
 
