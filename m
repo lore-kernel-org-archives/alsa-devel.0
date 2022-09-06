@@ -4,91 +4,89 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2F368ECAAD5
-	for <alsa-devel@archiver.kernel.org>; Tue,  6 Sep 2022 17:04:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8C51AECAAD5
+	for <alsa-devel@archiver.kernel.org>; Tue,  6 Sep 2022 17:04:47 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 72FC784C;
-	Tue,  6 Sep 2022 19:03:43 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 72FC784C
+	by alsa0.perex.cz (Postfix) with ESMTPS id D3F1D1607;
+	Tue,  6 Sep 2022 19:03:55 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D3F1D1607
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1662483873;
-	bh=9QWsEdNksZdqul+zSlgQh0NmUJtgLftnIe5edk+DpRs=;
+	s=default; t=1662483885;
+	bh=FPfDNQBkqVt/TVQXkpnnTjuHggrUY8ZVDL4cXZWIkH4=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=qC1sIcd7Jv2L/p1bn0jaRyhG6nSyiUya02J56pS1tQZS7/e6UpbIjuyhDYAbsYtLT
-	 QB0AkqsujyDHuTx2Dbw6Rj23HCxugb6FCBdGIkSJbDCCkxxZWLqmpENFzF+W7Pdp+0
-	 cwFXvQVUamHgYPAxEYQotK514E6lSi98J1qnB5Fk=
+	b=uwTG7lxwKLR52hAa54315gBGDUpd3CUmMJDPjZEAgYj3jg50iVMeEudNGDF76XSDc
+	 Vb0M6DpjfmBP2kFbxCprtIpLPgo+znoE0bAnSMChGDjQ6gPnJPo7z987iqRvhHQZYP
+	 XVb8/giHU2HOQf2qDMw0AvG/5AvvZlZqDWyC+Gs0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 807B6F80552;
-	Tue,  6 Sep 2022 19:02:26 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 765CFF80542;
+	Tue,  6 Sep 2022 19:02:27 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 51299F80548; Tue,  6 Sep 2022 19:02:23 +0200 (CEST)
-Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com
- [IPv6:2a00:1450:4864:20::335])
+ id 60B3EF80249; Tue,  6 Sep 2022 19:02:23 +0200 (CEST)
+Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com
+ [IPv6:2a00:1450:4864:20::432])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 933B2F80249
- for <alsa-devel@alsa-project.org>; Tue,  6 Sep 2022 19:02:14 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 933B2F80249
+ by alsa1.perex.cz (Postfix) with ESMTPS id C97BCF8024C
+ for <alsa-devel@alsa-project.org>; Tue,  6 Sep 2022 19:02:12 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C97BCF8024C
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org
- header.b="VYRTVGMQ"
-Received: by mail-wm1-x335.google.com with SMTP id
- n17-20020a05600c501100b003a84bf9b68bso7822839wmr.3
- for <alsa-devel@alsa-project.org>; Tue, 06 Sep 2022 10:02:14 -0700 (PDT)
+ header.b="lJXdlhxW"
+Received: by mail-wr1-x432.google.com with SMTP id t7so11383888wrm.10
+ for <alsa-devel@alsa-project.org>; Tue, 06 Sep 2022 10:02:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
  h=content-transfer-encoding:mime-version:references:in-reply-to
  :message-id:date:subject:cc:to:from:from:to:cc:subject:date;
- bh=pE/wXMKDu2HTLm4nxMQCANKnWbd/WYM89vdJpLu9FcU=;
- b=VYRTVGMQRqOwTouxak7LtLp7dc4GIzykhdstFKXt6s0ERXTosZBvcR3uTC1sqqhf0E
- NFszOBssMXrW+Wep5qU7dUPPKFvNL1uH2PkxcysQJhirqUqwgdMX41fcPjoVYXsabG7Y
- MVEXLXPJXf09fIuMFe9D8eOPRLhYVX/dl+lTcC+b5NxGfc68V6oxRb7Iuh5w51DGYbWd
- R0nmymCFTe2/E9h/DOyih4NRRc69ra1lHsRmDquGawJTHRidNCMQGcU1meoV84RF7IFj
- GUM4t7C/DI7y99Uo7bd/aFxm6OwjE00yUks5BHEAdRZt0hoVO3utIqs9wnWu1zhzpTmG
- 99Kg==
+ bh=RfjWKWch3TZGRYF8XV8JAlQ9Ww6so5roY5L+ZndATM4=;
+ b=lJXdlhxW6U93FVDeXa8RVIjHuMH1turQUkNrRzWT2pYQUDBESyhOhPIxYZhghDyYWc
+ zkDdLJyh25loRAME81bpbH/arwYWnVBPD2Bk3/Rpv+pLBzEqrmAak7Gfx2fT+f4gd0+/
+ UeBjE5rSvFLN4vftUXVyFLhxUg+ffJgnnsMjRDYFTh4+n059vo7AXHjuMUZmj+GT36fE
+ xhrrmTWxS+nNiV3OhOry6SNkB5Q0cKSo5vYmEXlu2Azyrm/Ek0oygBCa2fL/S4seXnGH
+ mD9koNPhjkydkWBj1aEvS5ANZL+xK/cnrzoqQ7wm5006j8x9ZQa/d5r5xwZEfUJTk6WK
+ OYGA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
  h=content-transfer-encoding:mime-version:references:in-reply-to
  :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
  :subject:date;
- bh=pE/wXMKDu2HTLm4nxMQCANKnWbd/WYM89vdJpLu9FcU=;
- b=2hxG7JLpnllSK4UV7VIvQHZ7dqJ2kJMyF8Qj7GVEZY/NYSwZm/pIM8gR59C6iFcffB
- xg1bZjXNPc9EyD9BCbnfEBGBaDaByLAUK+GUf8y2lu4ufov6ILOc0L98YqZ2EkiDVNOS
- 4hj3KwByVRAe5XVqLZt2oeLGdYoROp8StORRLekOsbYfVktoGPrpi/TlviTfGE81BBgq
- uBTLEW7q9JM/6wn6cUEbJSO1VAamNNuADLJFgYN/qYPleylwkopUj7nPOYQbN8/okuNP
- ojBn0w//3v0RBlDsb4LsBeAiIB0F6+bAjCHZyZVCpmvcGnP0t5WS8Ki4feMgMVYBjEeu
- ZUtw==
-X-Gm-Message-State: ACgBeo2oZ77xyvR+xhpZX9jVYZoIGtZmJtTJx3HXAKbr/BkbszEJEWkc
- RPSLuqvx55ziZ52V3CczAy9t5g==
-X-Google-Smtp-Source: AA6agR4eZQRkCNEjfnHqGohLVi6VKLUeCDmUGuENJPgIzLDol1RAz0fp/6VjlL3ZnyNVNcetluePuw==
-X-Received: by 2002:a05:600c:2483:b0:3a5:e70c:d5f6 with SMTP id
- 3-20020a05600c248300b003a5e70cd5f6mr14557588wms.51.1662483734275; 
- Tue, 06 Sep 2022 10:02:14 -0700 (PDT)
+ bh=RfjWKWch3TZGRYF8XV8JAlQ9Ww6so5roY5L+ZndATM4=;
+ b=q12H2xGoXG1gk/ZokM+ele+OTRt5AFCfmxxwb5yRUa0q8P++MZhoiyrmbQl1FMkIVa
+ WIfggwdAqM+CxlshOBgHevtcbAv4Ec7rrxJLChZEtc8/vEi8XqO7Db+zJ6y6Trj0ZjL2
+ zm/W80+v06kEnexvUxDdNwya8z5knMYj0jVgoYQsS0VTtJolGE8tDkjH1oeZVypyeA9t
+ vZKk7EGmWiIsx5eb21s1jBu9rt/EwsSQXwCdXG8bsBypyEEDqg4kgAf5Z2snX1s0i23j
+ i1iPjtphh+dl8kSZU5uXsbyHmn32SusQpFxkf5Xc0QI0hR79z0FywsIIyiJUnCkRK3LH
+ 1mlA==
+X-Gm-Message-State: ACgBeo3HOt1rSl/6ciFvMq/RLbY+mo3/VDASQ/DbkAZw58vV1ZFWPrdi
+ ToSeObjsNfB0GYpNSQGIa40BVWJaGKxaGg==
+X-Google-Smtp-Source: AA6agR7eQSNeL8sIxTrhMkrtcHCIRn1KrjURhDxY7bHZ7/kV0XSo6UDMgCiFpULXqE3e622OcReYag==
+X-Received: by 2002:a05:6000:81e:b0:228:a17f:92f0 with SMTP id
+ bt30-20020a056000081e00b00228a17f92f0mr5749091wrb.31.1662483731026; 
+ Tue, 06 Sep 2022 10:02:11 -0700 (PDT)
 Received: from srini-hackbox.lan
  (cpc90716-aztw32-2-0-cust825.18-1.cable.virginm.net. [86.26.103.58])
  by smtp.gmail.com with ESMTPSA id
- x13-20020a1c7c0d000000b003a5ca627333sm21085967wmc.8.2022.09.06.10.02.13
+ x13-20020a1c7c0d000000b003a5ca627333sm21085967wmc.8.2022.09.06.10.02.10
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Tue, 06 Sep 2022 10:02:13 -0700 (PDT)
+ Tue, 06 Sep 2022 10:02:10 -0700 (PDT)
 From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 To: broonie@kernel.org
-Subject: [PATCH v2 07/12] ASoC: qcom: dt-bindings: add sm8450 and sc8280xp
- compatibles
-Date: Tue,  6 Sep 2022 18:01:07 +0100
-Message-Id: <20220906170112.1984-8-srinivas.kandagatla@linaro.org>
+Subject: [PATCH v2 04/12] ASoC: codecs: tx-macro: fix active_decimator array
+Date: Tue,  6 Sep 2022 18:01:04 +0100
+Message-Id: <20220906170112.1984-5-srinivas.kandagatla@linaro.org>
 X-Mailer: git-send-email 2.21.0
 In-Reply-To: <20220906170112.1984-1-srinivas.kandagatla@linaro.org>
 References: <20220906170112.1984-1-srinivas.kandagatla@linaro.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
- krzysztof.kozlowski+dt@linaro.org, Rob Herring <robh@kernel.org>,
- linux-arm-msm@vger.kernel.org, tiwai@suse.com, lgirdwood@gmail.com,
- robh+dt@kernel.org, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
- bgoswami@quicinc.com, linux-kernel@vger.kernel.org
+ krzysztof.kozlowski+dt@linaro.org, linux-arm-msm@vger.kernel.org,
+ tiwai@suse.com, lgirdwood@gmail.com, robh+dt@kernel.org,
+ Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, bgoswami@quicinc.com,
+ linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -104,70 +102,45 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-This patch adds SM8450 and SC8280XP compatible entry for LPASS TX, RX, WSA
-and VA codec macros.
+currently active_decimator[] is unsigned long however we store negative
+values when there is no decimator setup -1.
+
+This is first bug, and the second bug is that we do not check if the decimator
+is valid before writing to register using decimator as offset in
+CDC_TXn_TX_PATH_CTL()
+
+Fix these both by making active_decimator as integer array and adding check
+in tx_macro_digital_mute() before accessing CDC_TXn_TX_PATH_CTL() register.
 
 Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Acked-by: Rob Herring <robh@kernel.org>
 ---
- .../devicetree/bindings/sound/qcom,lpass-rx-macro.yaml          | 2 ++
- .../devicetree/bindings/sound/qcom,lpass-tx-macro.yaml          | 2 ++
- .../devicetree/bindings/sound/qcom,lpass-va-macro.yaml          | 2 ++
- .../devicetree/bindings/sound/qcom,lpass-wsa-macro.yaml         | 2 ++
- 4 files changed, 8 insertions(+)
+ sound/soc/codecs/lpass-tx-macro.c | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
-diff --git a/Documentation/devicetree/bindings/sound/qcom,lpass-rx-macro.yaml b/Documentation/devicetree/bindings/sound/qcom,lpass-rx-macro.yaml
-index a6905bcf89d2..1de11e7f33bb 100644
---- a/Documentation/devicetree/bindings/sound/qcom,lpass-rx-macro.yaml
-+++ b/Documentation/devicetree/bindings/sound/qcom,lpass-rx-macro.yaml
-@@ -14,6 +14,8 @@ properties:
-     enum:
-       - qcom,sc7280-lpass-rx-macro
-       - qcom,sm8250-lpass-rx-macro
-+      - qcom,sm8450-lpass-rx-macro
-+      - qcom,sc8280xp-lpass-rx-macro
+diff --git a/sound/soc/codecs/lpass-tx-macro.c b/sound/soc/codecs/lpass-tx-macro.c
+index c19bb19b717b..5c03ef8d88b3 100644
+--- a/sound/soc/codecs/lpass-tx-macro.c
++++ b/sound/soc/codecs/lpass-tx-macro.c
+@@ -259,7 +259,7 @@ struct tx_macro {
+ 	struct tx_mute_work tx_mute_dwork[NUM_DECIMATORS];
+ 	unsigned long active_ch_mask[TX_MACRO_MAX_DAIS];
+ 	unsigned long active_ch_cnt[TX_MACRO_MAX_DAIS];
+-	unsigned long active_decimator[TX_MACRO_MAX_DAIS];
++	int active_decimator[TX_MACRO_MAX_DAIS];
+ 	struct regmap *regmap;
+ 	struct clk *mclk;
+ 	struct clk *npl;
+@@ -1117,6 +1117,10 @@ static int tx_macro_digital_mute(struct snd_soc_dai *dai, int mute, int stream)
+ 	struct tx_macro *tx = snd_soc_component_get_drvdata(component);
+ 	u16 decimator;
  
-   reg:
-     maxItems: 1
-diff --git a/Documentation/devicetree/bindings/sound/qcom,lpass-tx-macro.yaml b/Documentation/devicetree/bindings/sound/qcom,lpass-tx-macro.yaml
-index 324595a62ae8..de8297b358e8 100644
---- a/Documentation/devicetree/bindings/sound/qcom,lpass-tx-macro.yaml
-+++ b/Documentation/devicetree/bindings/sound/qcom,lpass-tx-macro.yaml
-@@ -14,6 +14,8 @@ properties:
-     enum:
-       - qcom,sc7280-lpass-tx-macro
-       - qcom,sm8250-lpass-tx-macro
-+      - qcom,sm8450-lpass-tx-macro
-+      - qcom,sc8280xp-lpass-tx-macro
++	/* active decimator not set yet */
++	if (tx->active_decimator[dai->id] == -1)
++		return 0;
++
+ 	decimator = tx->active_decimator[dai->id];
  
-   reg:
-     maxItems: 1
-diff --git a/Documentation/devicetree/bindings/sound/qcom,lpass-va-macro.yaml b/Documentation/devicetree/bindings/sound/qcom,lpass-va-macro.yaml
-index 7b4cc84eda8c..9f473c08cb2e 100644
---- a/Documentation/devicetree/bindings/sound/qcom,lpass-va-macro.yaml
-+++ b/Documentation/devicetree/bindings/sound/qcom,lpass-va-macro.yaml
-@@ -14,6 +14,8 @@ properties:
-     enum:
-       - qcom,sc7280-lpass-va-macro
-       - qcom,sm8250-lpass-va-macro
-+      - qcom,sm8450-lpass-va-macro
-+      - qcom,sc8280xp-lpass-va-macro
- 
-   reg:
-     maxItems: 1
-diff --git a/Documentation/devicetree/bindings/sound/qcom,lpass-wsa-macro.yaml b/Documentation/devicetree/bindings/sound/qcom,lpass-wsa-macro.yaml
-index 13cdb8a10687..4959ad658eac 100644
---- a/Documentation/devicetree/bindings/sound/qcom,lpass-wsa-macro.yaml
-+++ b/Documentation/devicetree/bindings/sound/qcom,lpass-wsa-macro.yaml
-@@ -14,6 +14,8 @@ properties:
-     enum:
-       - qcom,sc7280-lpass-wsa-macro
-       - qcom,sm8250-lpass-wsa-macro
-+      - qcom,sm8450-lpass-wsa-macro
-+      - qcom,sc8280xp-lpass-wsa-macro
- 
-   reg:
-     maxItems: 1
+ 	if (mute)
 -- 
 2.21.0
 
