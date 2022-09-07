@@ -4,82 +4,82 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8AD0DC38145
-	for <alsa-devel@archiver.kernel.org>; Wed,  7 Sep 2022 10:16:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id DCE30ECAAD3
+	for <alsa-devel@archiver.kernel.org>; Wed,  7 Sep 2022 10:16:47 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 8A4EA1661;
-	Wed,  7 Sep 2022 12:15:31 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8A4EA1661
+	by alsa0.perex.cz (Postfix) with ESMTPS id F289F167C;
+	Wed,  7 Sep 2022 12:15:55 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F289F167C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1662545781;
-	bh=nW6saLcJ60MMn8DeEdAs0wb1aFO3efpuE7f3R0tN3sQ=;
+	s=default; t=1662545806;
+	bh=aSgaVpi+ivV3bTqE4kNeJkYQRYEarr4qgnLCg6wHbVU=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=d+WXPnrzq/JVWhJXY7JEFJIm2tASUeWsw7E86TNvigP1e0cAj4l79H70+UQjHTrYU
-	 fhHFRymL4mJHf+URM5/jq5n/HUZBpDwY/7PDV0GvXd1blMkOK889tcqKefL8mRw0I/
-	 sy3XriDcM8cS9MpCyTRNydo38y4tJ/rI4u0XjXl4=
+	b=idN57UxgWLUvE4imIFuaO2lAk0XjyX+idg3nOeSSNUS7u24lmEW+OoB05s6KaBr/t
+	 VHS85f0geYwkEPWYRBCdOM717YxRCvDmJrdUoSCOn9Vg2IWVIW20u110O8rZMbm4Ul
+	 tZ+f5DIIg6IXcCA4hBfAUpdsFFuBr2vTfQvECLwI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id C72F7F80551;
-	Wed,  7 Sep 2022 12:14:29 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id D0E4DF8055A;
+	Wed,  7 Sep 2022 12:14:35 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 1F079F8053C; Wed,  7 Sep 2022 12:14:27 +0200 (CEST)
-Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
- [67.231.152.168])
+ id C3EC1F80423; Wed,  7 Sep 2022 12:14:28 +0200 (CEST)
+Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
+ [67.231.149.25])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id F2A8DF804FC;
- Wed,  7 Sep 2022 12:14:16 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F2A8DF804FC
+ by alsa1.perex.cz (Postfix) with ESMTPS id F23DEF80423;
+ Wed,  7 Sep 2022 12:14:20 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F23DEF80423
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com
- header.b="V7QWk7sO"
-Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
- by mx0b-001ae601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 2877rCJr005930;
- Wed, 7 Sep 2022 05:14:15 -0500
+ header.b="gjFKs0vp"
+Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
+ by mx0a-001ae601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 2876a3M5006643;
+ Wed, 7 Sep 2022 05:14:18 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
  h=from : to : cc :
  subject : date : message-id : in-reply-to : references : mime-version :
  content-transfer-encoding : content-type; s=PODMain02222019;
- bh=ot1Tl8QTYVtsDuCHedMkmJ33fXe9BMeDLR0TIH+3JGU=;
- b=V7QWk7sO38uS86TS+NlahQceUBlCHvX/8rcq6rqKmo/2fOKoClg5XwVgUwt4F4y4GLxg
- PmKM5kTNRY0Ux/iX5Jfs8B1cq8AWwrVBe4DsHiTu6UY+xvhqbwb2PfXucZc6mvBaSld3
- 5yq8dUBXF3jtcS1ijJ87JloUIxA61D36noN36zHPwZPOPBuuPcD9+0ktYiANPL2AEY5D
- BMqN4JF8rwegpM8/y7TWifZQHUYqkTy1QMpnQMuXFzL5r3srm72WTpWLin54EBaaTD0m
- vMGI8JHhynhQp61vXDksSxrkRIXus8ESzBRnndRUKJvFSObmAkZK7W9ve3qL3EXrUPfS qg== 
-Received: from ediex01.ad.cirrus.com ([84.19.233.68])
- by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3jc3bpw4sr-2
+ bh=feKchwoppPrkELgyg0NGjoUkLqBZXbRFHwDJEun2AkY=;
+ b=gjFKs0vphFcvAi4tr4FhImRRKRpFkev9Qp1oiC/Q0rqgYZeCDktNokwIaP9M2PXkCn3y
+ uIGbk63aFTcS7ch5G08wK1NI9P4eC5bIgCyJiV85s6xHSbdLxFXMT2RdpC3BKl6D04bk
+ pRHq+/Fdib4Mqe4U11CtMZy0E+RT7a7QwZbBQlnGV+6O9vyIdelqR71mfvVsqsuRXHch
+ Vlf2g8UHKtPgRtIhZSOlrwAPnMq3A4e/qpwnAomwgEzD+T2mcZqcuCdD6caW1JFISiaj
+ udWNqMcBlpEs2jlBt2mDJq/dEdkOfxThcywlE8cwqwqfGTscpJv4/mANGcSS6gRQDiMF ag== 
+Received: from ediex02.ad.cirrus.com ([84.19.233.68])
+ by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3jc4b2dfns-2
  (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
- Wed, 07 Sep 2022 05:14:15 -0500
-Received: from ediex02.ad.cirrus.com (198.61.84.81) by ediex01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
+ Wed, 07 Sep 2022 05:14:18 -0500
+Received: from ediex01.ad.cirrus.com (198.61.84.80) by ediex02.ad.cirrus.com
+ (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.12; Wed, 7 Sep
- 2022 05:14:13 -0500
-Received: from ediswmail.ad.cirrus.com (198.61.86.93) by
- anon-ediex02.ad.cirrus.com (198.61.84.81) with Microsoft SMTP Server id
- 15.2.1118.12 via Frontend Transport; Wed, 7 Sep 2022 05:14:13 -0500
+ 2022 05:14:16 -0500
+Received: from ediswmail.ad.cirrus.com (198.61.86.93) by ediex01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server id 15.2.1118.12 via
+ Frontend Transport; Wed, 7 Sep 2022 05:14:16 -0500
 Received: from debianA11184.ad.cirrus.com (unknown [198.61.65.149])
- by ediswmail.ad.cirrus.com (Postfix) with ESMTP id E36A5B10;
- Wed,  7 Sep 2022 10:14:12 +0000 (UTC)
+ by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 0664C7C;
+ Wed,  7 Sep 2022 10:14:15 +0000 (UTC)
 From: Richard Fitzgerald <rf@opensource.cirrus.com>
 To: <vkoul@kernel.org>, <yung-chuan.liao@linux.intel.com>,
  <pierre-louis.bossart@linux.intel.com>, <lgirdwood@gmail.com>,
  <peter.ujfalusi@linux.intel.com>, <ranjani.sridharan@linux.intel.com>,
  <kai.vehmanen@linux.intel.com>, <daniel.baluta@nxp.com>,
  <sanyog.r.kale@intel.com>, <broonie@kernel.org>
-Subject: [PATCH 2/7] soundwire: intel_init: Separate shutdown and cleanup
-Date: Wed, 7 Sep 2022 11:13:57 +0100
-Message-ID: <20220907101402.4685-3-rf@opensource.cirrus.com>
+Subject: [PATCH 7/7] soundwire: bus: Fix premature removal of sdw_slave objects
+Date: Wed, 7 Sep 2022 11:14:02 +0100
+Message-ID: <20220907101402.4685-8-rf@opensource.cirrus.com>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20220907101402.4685-1-rf@opensource.cirrus.com>
 References: <20220907101402.4685-1-rf@opensource.cirrus.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-Proofpoint-GUID: vWiTgViV4BfLhGN_tzoikE6XHgslZvo6
-X-Proofpoint-ORIG-GUID: vWiTgViV4BfLhGN_tzoikE6XHgslZvo6
+X-Proofpoint-GUID: _ls588k8dOn_DCOUtnfdFdo7W2FW14bA
+X-Proofpoint-ORIG-GUID: _ls588k8dOn_DCOUtnfdFdo7W2FW14bA
 X-Proofpoint-Spam-Reason: safe
 Cc: patches@opensource.cirrus.com, alsa-devel@alsa-project.org,
  Richard Fitzgerald <rf@opensource.cirrus.com>, linux-kernel@vger.kernel.org,
@@ -99,110 +99,120 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Move the freeing of context data out of sdw_intel_exit() into a new
-exported function sdw_intel_remove().
+When the bus manager is removed sdw_bus_master_delete() should not
+be deleting the struct sdw_slave objects until the bus manager has
+been stopped. The first step of removing child drivers should only
+be calling device_unregister() on the child. The counterpart to
+sdw_drv_probe() is sdw_drv_remove(), not sdw_delete_slave().
 
-This splits shutdown and cleanup into separate stages, allowing the
-calling code to perform its own shutdown after the bus has shutdown but
-before the context has been deleted.
+The sdw_slave objects are created by the bus manager probe() from
+ACPI/DT information. They are not created when a child driver probes
+so should not be deleted by a child driver remove.
 
-The struct sdw_intel_ctx pointer is passed to the calling code by
-sdw_intel_probe() and the calling code passes it back as an opaque token.
-When the caller is removed it must have the opportunity to teardown its
-use of this token after the bus driver has stopped but before the
-context memory has been freed. It should not be doing its teardown
-before calling sdw_intel_exit() because that will break any bus activity
-currently in progress and the removal of child drivers.
-
+Change-Id: I25cc145df12fdc7c126f8f594a5f76eedce25488
 Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
 ---
- drivers/soundwire/intel_init.c      | 24 ++++++++++++++++++++----
- include/linux/soundwire/sdw_intel.h |  2 ++
- sound/soc/sof/intel/hda.c           |  4 +++-
- 3 files changed, 25 insertions(+), 5 deletions(-)
+ drivers/soundwire/bus.c   | 30 ++++++++++++++++++++++++++----
+ drivers/soundwire/slave.c | 21 +++++++++++++++++----
+ 2 files changed, 43 insertions(+), 8 deletions(-)
 
-diff --git a/drivers/soundwire/intel_init.c b/drivers/soundwire/intel_init.c
-index d091513919df..078e01f67830 100644
---- a/drivers/soundwire/intel_init.c
-+++ b/drivers/soundwire/intel_init.c
-@@ -292,6 +292,13 @@ static struct sdw_intel_ctx
- 	return NULL;
+diff --git a/drivers/soundwire/bus.c b/drivers/soundwire/bus.c
+index 1327a312be86..5533eb589286 100644
+--- a/drivers/soundwire/bus.c
++++ b/drivers/soundwire/bus.c
+@@ -146,9 +146,8 @@ int sdw_bus_master_add(struct sdw_bus *bus, struct device *parent,
  }
+ EXPORT_SYMBOL(sdw_bus_master_add);
  
-+static void sdw_intel_remove_controller(struct sdw_intel_ctx *ctx)
-+{
-+	kfree(ctx->ids);
-+	kfree(ctx->ldev);
-+	kfree(ctx);
+-static int sdw_delete_slave(struct device *dev, void *data)
++static int sdw_delete_slave(struct sdw_slave *slave)
+ {
+-	struct sdw_slave *slave = dev_to_sdw_dev(dev);
+ 	struct sdw_bus *bus = slave->bus;
+ 
+ 	sdw_slave_debugfs_exit(slave);
+@@ -163,7 +162,24 @@ static int sdw_delete_slave(struct device *dev, void *data)
+ 	list_del_init(&slave->node);
+ 	mutex_unlock(&bus->bus_lock);
+ 
++	mutex_destroy(&slave->sdw_dev_lock);
++	kfree(slave);
++
++	return 0;
 +}
 +
- static int
- sdw_intel_startup_controller(struct sdw_intel_ctx *ctx)
- {
-@@ -360,6 +367,18 @@ struct sdw_intel_ctx
- }
- EXPORT_SYMBOL_NS(sdw_intel_probe, SOUNDWIRE_INTEL_INIT);
- 
-+/**
-+ * sdw_intel_remove() - SoundWire Intel remove routine
-+ * @ctx: SoundWire context allocated in the probe
-+ *
-+ * Free all the context created by sdw_intel_probe.
-+ */
-+void sdw_intel_remove(struct sdw_intel_ctx *ctx)
++static int sdw_remove_child(struct device *dev, void *data)
 +{
-+	return sdw_intel_remove_controller(ctx);
-+}
-+EXPORT_SYMBOL_NS(sdw_intel_remove, SOUNDWIRE_INTEL_INIT);
++	/*
++	 * Do not remove the struct sdw_slave yet. This is created by
++	 * the bus manager probe() from ACPI information and used by the
++	 * bus manager to hold status of each peripheral. Its lifetime
++	 * is that of the bus manager.
++	 */
 +
- /**
-  * sdw_intel_startup() - SoundWire Intel startup
-  * @ctx: SoundWire context allocated in the probe
-@@ -376,14 +395,11 @@ EXPORT_SYMBOL_NS(sdw_intel_startup, SOUNDWIRE_INTEL_INIT);
-  * sdw_intel_exit() - SoundWire Intel exit
-  * @ctx: SoundWire context allocated in the probe
-  *
-- * Delete the controller instances created and cleanup
-+ * Stop the controller instances.
-  */
- void sdw_intel_exit(struct sdw_intel_ctx *ctx)
- {
- 	sdw_intel_cleanup(ctx);
--	kfree(ctx->ids);
--	kfree(ctx->ldev);
--	kfree(ctx);
- }
- EXPORT_SYMBOL_NS(sdw_intel_exit, SOUNDWIRE_INTEL_INIT);
- 
-diff --git a/include/linux/soundwire/sdw_intel.h b/include/linux/soundwire/sdw_intel.h
-index 2e9fd91572d4..7f7327cab712 100644
---- a/include/linux/soundwire/sdw_intel.h
-+++ b/include/linux/soundwire/sdw_intel.h
-@@ -282,6 +282,8 @@ void sdw_intel_process_wakeen_event(struct sdw_intel_ctx *ctx);
- struct sdw_intel_ctx *
- sdw_intel_probe(struct sdw_intel_res *res);
- 
-+void sdw_intel_remove(struct sdw_intel_ctx *ctx);
++	/* This will call sdw_drv_remove() */
+ 	device_unregister(dev);
 +
- int sdw_intel_startup(struct sdw_intel_ctx *ctx);
- 
- void sdw_intel_exit(struct sdw_intel_ctx *ctx);
-diff --git a/sound/soc/sof/intel/hda.c b/sound/soc/sof/intel/hda.c
-index 8639ea63a10d..ee67e21e739f 100644
---- a/sound/soc/sof/intel/hda.c
-+++ b/sound/soc/sof/intel/hda.c
-@@ -241,8 +241,10 @@ static int hda_sdw_exit(struct snd_sof_dev *sdev)
- 
- 	hda_sdw_int_enable(sdev, false);
- 
--	if (hdev->sdw)
-+	if (hdev->sdw) {
- 		sdw_intel_exit(hdev->sdw);
-+		sdw_intel_remove(hdev->sdw);
-+	}
- 	hdev->sdw = NULL;
- 
  	return 0;
+ }
+ 
+@@ -171,16 +187,22 @@ static int sdw_delete_slave(struct device *dev, void *data)
+  * sdw_bus_master_delete() - delete the bus master instance
+  * @bus: bus to be deleted
+  *
+- * Remove the instance, delete the child devices.
++ * Remove the child devices, remove the master instance.
+  */
+ void sdw_bus_master_delete(struct sdw_bus *bus)
+ {
+-	device_for_each_child(bus->dev, NULL, sdw_delete_slave);
++	struct sdw_slave *slave, *tmp;
++
++	device_for_each_child(bus->dev, NULL, sdw_remove_child);
+ 
+ 	/* Children have been removed so it is now safe for the bus to stop */
+ 	if (bus->ops->remove)
+ 		bus->ops->remove(bus);
+ 
++	/* Now the bus is stopped it is safe to free things */
++	list_for_each_entry_safe(slave, tmp, &bus->slaves, node)
++		sdw_delete_slave(slave);
++
+ 	sdw_master_device_del(bus);
+ 
+ 	sdw_bus_debugfs_exit(bus);
+diff --git a/drivers/soundwire/slave.c b/drivers/soundwire/slave.c
+index c1c1a2ac293a..b6161d002b97 100644
+--- a/drivers/soundwire/slave.c
++++ b/drivers/soundwire/slave.c
+@@ -10,10 +10,23 @@
+ 
+ static void sdw_slave_release(struct device *dev)
+ {
+-	struct sdw_slave *slave = dev_to_sdw_dev(dev);
+-
+-	mutex_destroy(&slave->sdw_dev_lock);
+-	kfree(slave);
++	/*
++	 * The release() callback should not be empty
++	 * (see Documentation/core-api/kobject.rst) but the ownership
++	 * of struct sdw_slave is muddled. It is used for two separate
++	 * purposes:
++	 * 1) by the bus driver to track its own state information for
++	 *    physical devices on the bus and found in ACPI/DT, whether
++	 *    or not there is a child driver for it;
++	 * 2) to hold the child driver object.
++	 *
++	 * The struct sdw_slave cannot be freed when the child driver
++	 * is released because it is holding info used by the bus
++	 * driver. It is freed when the bus driver is removed.
++	 *
++	 * Until the ownership issue is untangled this cannot free
++	 * the struct sdw_slave object containing the child dev.
++	 */
+ }
+ 
+ struct device_type sdw_slave_type = {
 -- 
 2.30.2
 
