@@ -4,67 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1605CC54EE9
-	for <alsa-devel@archiver.kernel.org>; Wed,  7 Sep 2022 15:43:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id F06DDC38145
+	for <alsa-devel@archiver.kernel.org>; Wed,  7 Sep 2022 17:16:27 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C24351686;
-	Wed,  7 Sep 2022 17:42:07 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C24351686
+	by alsa0.perex.cz (Postfix) with ESMTPS id 442B73E8;
+	Wed,  7 Sep 2022 19:15:35 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 442B73E8
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1662565377;
-	bh=/S/dkwp5ZVEfvkT7cXSM0abXRYV90A8gHsHvynV/bE0=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	s=default; t=1662570985;
+	bh=1NiRoxX2LawnB0nHF/bn/FLKNx4yKqwfUoOzZozJLak=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=uNrGeZ4B/v+w15VkLb/r5wKK1eRVRROCNEhuUFEDGIi5ihAPSaQfX3vmIJ2KtFLsA
-	 X/03HZ2MSozbYXzEtBtHIaVQcfhDRiUq0rZTfd/Q9LwEAsIWpgDQ126D+01OMdP+dw
-	 PZJI5FN+jOIkzE+h2ULyHS1PErd61WtFP+tqfgvo=
+	b=DNqpRzzYwbnEQnbwbf8NgDnL+DzPgVGxoNgGhgCptFrUn9gQ169kXyt87qarr8hY1
+	 4wHlRQAfvFd92EpQgq58TTF28WXnUHea0e6xxtvfMhVoDbl7F9dJDs2oEjGdVSDwCg
+	 Su3TKiCRlOwZwTMz+fyd/BH84Ifp3wFy4Hc0HRPU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 47567F80249;
-	Wed,  7 Sep 2022 17:42:07 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id CA84BF80249;
+	Wed,  7 Sep 2022 19:15:34 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 33855F8028D; Wed,  7 Sep 2022 17:42:05 +0200 (CEST)
-Received: from sin.source.kernel.org (sin.source.kernel.org
- [IPv6:2604:1380:40e1:4800::1])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id 4C4AEF8028D; Wed,  7 Sep 2022 19:15:33 +0200 (CEST)
+Received: from relay7-d.mail.gandi.net (relay7-d.mail.gandi.net
+ [IPv6:2001:4b98:dc4:8::227])
+ (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 8351CF8023B
- for <alsa-devel@alsa-project.org>; Wed,  7 Sep 2022 17:41:58 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8351CF8023B
+ by alsa1.perex.cz (Postfix) with ESMTPS id 27B1CF80118
+ for <alsa-devel@alsa-project.org>; Wed,  7 Sep 2022 19:15:26 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 27B1CF80118
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="aPtjXj7L"
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by sin.source.kernel.org (Postfix) with ESMTPS id 04DF1CE1C42;
- Wed,  7 Sep 2022 15:41:53 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 055C0C4347C;
- Wed,  7 Sep 2022 15:41:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1662565311;
- bh=/S/dkwp5ZVEfvkT7cXSM0abXRYV90A8gHsHvynV/bE0=;
- h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=aPtjXj7LVbgPklwL0BtFQvBJBVKud+/mTLi/X4cto7mqTclBGsTV5WwwKD3WqEfDF
- e/DsY8llF4okC8r2/W0d0lQB6ZbA9lp+7glaGqUGmR+x+AQTRgeYuk08kjCZ1p1sh4
- 07dzUdk/zH2pQQi4tpM+2Gq3YIpN+7KLYlHT5GZEiXivxlxzJx7W5GVihL44Jk4/UB
- F8wBZ3dkj3JzlzP++jXMeDpKXRwIP2D0f07e1K0rhORMmh2Afmf/Ern3ep24TrmItB
- WW4zBCxRmcXz9zok5DZGvfLZy5VZWr95emKxduMAtdBwt+Hckdd1u0jmklJAzQdmtA
- k+6k19kHtCyyw==
-Date: Wed, 7 Sep 2022 16:41:44 +0100
-From: Mark Brown <broonie@kernel.org>
-To: luca.ceresoli@bootlin.com
+ dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com
+ header.b="POTBoVtr"
+Received: from booty (unknown [77.244.183.192])
+ (Authenticated sender: luca.ceresoli@bootlin.com)
+ by mail.gandi.net (Postfix) with ESMTPSA id C0A7020003;
+ Wed,  7 Sep 2022 17:15:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+ t=1662570925;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=tuNHhg0d7wCXZkWQB2aVNJEW/obWsRINPAZ/CInV8Ek=;
+ b=POTBoVtrj3ImsMtFfmWL/bMKfwwXr1NizxFJd5pb/vOiZR9jjG8ArBndIJb0IZ70lj0rf2
+ HTKO7fkRwXqfZCv9fzxTGmKVk7avMQNe/ErxQ5/OGneWSDmRd3YM2srqLx3fNJGFQxaFqc
+ pekgI6081tOP14+iM8qeMK0I4KvfXB2FiaJA9mMUpw31FfDLDJaKEMtsJmsasyYTFS9j3p
+ GPMjfTwmo8Q0sJ3jwWte3RhVBLaDr2c8onzgseLvYV71E8p/OuqiUHkY89JB09SVVFklcS
+ s0u5bVCkrLfRc4iqs470lrIUkbHzWFXpYjDsvg570T1yOuQqLajdG6D9ArzMoQ==
+Date: Wed, 7 Sep 2022 19:15:21 +0200
+From: Luca Ceresoli <luca.ceresoli@bootlin.com>
+To: Mark Brown <broonie@kernel.org>
 Subject: Re: [PATCH 0/8] Add support for the internal RK3308 audio codec
-Message-ID: <Yxi7uD6RKeR3uHcF@sirena.org.uk>
+Message-ID: <20220907191521.1ce081c8@booty>
+In-Reply-To: <Yxi7uD6RKeR3uHcF@sirena.org.uk>
 References: <20220907142124.2532620-1-luca.ceresoli@bootlin.com>
+ <Yxi7uD6RKeR3uHcF@sirena.org.uk>
+Organization: Bootlin
+X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature"; boundary="9EHz1xmrlXau4N0B"
-Content-Disposition: inline
-In-Reply-To: <20220907142124.2532620-1-luca.ceresoli@bootlin.com>
-X-Cookie: You have a truly strong individuality.
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
  Heiko Stuebner <heiko@sntech.de>, Takashi Iwai <tiwai@suse.com>,
  Chris Morgan <macromorgan@hotmail.com>, Liam Girdwood <lgirdwood@gmail.com>,
@@ -89,42 +89,37 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+Hello Mark,
 
---9EHz1xmrlXau4N0B
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+thanks for the quick feedback!
 
-On Wed, Sep 07, 2022 at 04:21:16PM +0200, luca.ceresoli@bootlin.com wrote:
+On Wed, 7 Sep 2022 16:41:44 +0100
+Mark Brown <broonie@kernel.org> wrote:
 
-> Luca Ceresoli (8):
->   ASoC: rockchip: rk3308: add internal audio codec bindings
->   ASoC: rockchip: rk3308: add audio card bindings
->   arm64: dts: rockchip: add i2s_8ch_2 and i2s_8ch_3
->   arm64: dts: rockchip: add the internal audio codec
->   ASoC: rockchip: i2s-tdm: Fix clk_id usage in .set_sysclk()
->   ASoC: audio-graph: let dai_link->init be overridable
->   ASoC: codecs: Add RK3308 internal audio codec driver
->   ASoC: rockchip: add new RK3308 sound card
+> On Wed, Sep 07, 2022 at 04:21:16PM +0200, luca.ceresoli@bootlin.com wrote:
+> 
+> > Luca Ceresoli (8):
+> >   ASoC: rockchip: rk3308: add internal audio codec bindings
+> >   ASoC: rockchip: rk3308: add audio card bindings
+> >   arm64: dts: rockchip: add i2s_8ch_2 and i2s_8ch_3
+> >   arm64: dts: rockchip: add the internal audio codec
+> >   ASoC: rockchip: i2s-tdm: Fix clk_id usage in .set_sysclk()
+> >   ASoC: audio-graph: let dai_link->init be overridable
+> >   ASoC: codecs: Add RK3308 internal audio codec driver
+> >   ASoC: rockchip: add new RK3308 sound card  
+> 
+> Please pay attention to the ordering of your serieses when posting:
+> generally any bug fixes should come first so that they can be easily
+> sent as fixes, and normally DTS updates are at the very end of the
+> series rather than mixed in the middle since they go via the platform
+> maintainer tree normally rather than with everything else.
 
-Please pay attention to the ordering of your serieses when posting:
-generally any bug fixes should come first so that they can be easily
-sent as fixes, and normally DTS updates are at the very end of the
-series rather than mixed in the middle since they go via the platform
-maintainer tree normally rather than with everything else.
+Sorry about that. I've reordered the patches in my branch for the next
+iteration.
 
---9EHz1xmrlXau4N0B
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmMYu7cACgkQJNaLcl1U
-h9CKzAf8DdI+J5miR4E6cIrTXKZoGqR7qZhfHqflFl1gH1Y4ikj9fbdxe4vhlxEz
-nUlD7rd8x8u/c8l0lkObG4gKpZ3VMuT6Pvr5cxCHzlGyCgKb3NEMme5JhSuV8TCW
-qchsRF+ZGTXUcPqBN5ey6fl2KAboGemFxyuDLWaVD9CVsKDpoMtyOsgE8PC7sTRO
-Vdqkl33gsJZP8XRlRomBFUpC/ziINrHXBW+hBoyQBNBLJxdUT7OM7WXVsxJaJsJf
-o+lK+dLy4RD8Pnbt28qgvhMDFxNKCSGX6B0iI8lgMls3j/ZJme3+MnrNA9DwDTjM
-wKQ4TTmanyrMK0yzQd4uThtlEm/FfA==
-=rYHs
------END PGP SIGNATURE-----
-
---9EHz1xmrlXau4N0B--
+Best regards,
+Luca
+-- 
+Luca Ceresoli, Bootlin
+Embedded Linux and Kernel engineering
+https://bootlin.com
