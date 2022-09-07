@@ -4,83 +4,79 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id BD9E0C38145
-	for <alsa-devel@archiver.kernel.org>; Wed,  7 Sep 2022 08:55:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 521B9ECAAD3
+	for <alsa-devel@archiver.kernel.org>; Wed,  7 Sep 2022 09:30:05 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 15FB3161F;
-	Wed,  7 Sep 2022 10:54:42 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 15FB3161F
+	by alsa0.perex.cz (Postfix) with ESMTPS id AF729112;
+	Wed,  7 Sep 2022 11:29:13 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AF729112
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1662540932;
-	bh=UTBaGbiL322WIgSxdFPNTmtt+LWiX5RGqmSBpbJavs8=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1662543003;
+	bh=8m5vdg6DxPXlzmT87wXwI4A2du4uSsmQZUWTo3/dU2s=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=gvO0l+kYL6No/1EcUlRJ59piootGtnIa3JeQo8Zy2RKZFjaKm3RDuG2A9HVi4xY/X
-	 8wYdcvpNLjjeFS16afjizYx1QsGS/QJ7acO2Y6Tc+8fXTAUuEdytiOrar91VF9Vs9C
-	 eKouyrXaK0vm9l6mFx6AJS+0b+uo3Y0k43DhCCW0=
+	b=uytemuXdn2sg05OECrRmNHq6a1CXT+lKlMiQPjrAwgNUVIFqUYlz8dvoeocABkmtp
+	 s2LljzIhYLixJ/TPHPW492jo9996dIHtXoqRs7sdgHuC8UzkgN1Z0VT077iy18P6r6
+	 XNdMEmQiaTIsZntmA1P2tIC1A9DvqQuEskuF854I=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 2C706F80553;
-	Wed,  7 Sep 2022 10:53:25 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 26530F8011C;
+	Wed,  7 Sep 2022 11:29:13 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 2AB2DF80536; Wed,  7 Sep 2022 10:53:21 +0200 (CEST)
-Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
- [67.231.149.25])
+ id A77AFF8028D; Wed,  7 Sep 2022 11:29:09 +0200 (CEST)
+Received: from ams.source.kernel.org (ams.source.kernel.org
+ [IPv6:2604:1380:4601:e00::1])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 78EE3F8011C
+ for <alsa-devel@alsa-project.org>; Wed,  7 Sep 2022 11:29:02 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 78EE3F8011C
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (1024-bit key) header.d=zx2c4.com header.i=@zx2c4.com
+ header.b="ZogZr9A8"
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 9E717F804CA
- for <alsa-devel@alsa-project.org>; Wed,  7 Sep 2022 10:53:08 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9E717F804CA
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com
- header.b="fWIjgIIS"
-Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
- by mx0a-001ae601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 2876sQ69005118;
- Wed, 7 Sep 2022 03:53:07 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
- h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding : content-type; s=PODMain02222019;
- bh=t+rkmWKhbw2VsiGIx98OXne4OR4T75WeNsHgfR4luRs=;
- b=fWIjgIIS2SlZ0v+x8Y9cZQlhmav8waPc+7EQ11zbQHcv2jxTRt0yoASp0oln4bJt9d/y
- HBoEeMxv2VmZNPuN+bo+V9dJ1YaSxt1WMBnHm3gXad8ENN+HWtuGSK1rH/HPOm1Lzz0E
- ZzsGds005Y0dT+5ovsh5X8HcO/2nS+TdOZG5cxkMkgX0i4QmDSo3hdxgiuHoOkWXWr7s
- 4zQME3PTVjooKB6fPGExHVlIFoEKinI2S+WfOo3Kr3AgEtCXAiUwdmSpl5T6I+Q4Dals
- 4l5WC72330CDZKWmZCseAaI7QAetQ/5gY78blj4yvM6KQa1FQ7XGVDoluYljAry9wGhZ NQ== 
-Received: from ediex02.ad.cirrus.com ([84.19.233.68])
- by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3jc4b2dcum-2
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
- Wed, 07 Sep 2022 03:53:07 -0500
-Received: from ediex01.ad.cirrus.com (198.61.84.80) by ediex02.ad.cirrus.com
- (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.12; Wed, 7 Sep
- 2022 03:53:05 -0500
-Received: from ediswmail.ad.cirrus.com (198.61.86.93) by ediex01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server id 15.2.1118.12 via
- Frontend Transport; Wed, 7 Sep 2022 03:53:05 -0500
-Received: from debianA11184.ad.cirrus.com (unknown [198.61.65.149])
- by ediswmail.ad.cirrus.com (Postfix) with ESMTP id AC3937C;
- Wed,  7 Sep 2022 08:53:04 +0000 (UTC)
-From: Richard Fitzgerald <rf@opensource.cirrus.com>
-To: <vkoul@kernel.org>, <yung-chuan.liao@linux.intel.com>,
- <pierre-louis.bossart@linux.intel.com>, <sanyog.r.kale@intel.com>
-Subject: [PATCH v2 4/5] soundwire: cadence: Fix lost ATTACHED interrupts when
- enumerating
-Date: Wed, 7 Sep 2022 09:52:58 +0100
-Message-ID: <20220907085259.3602-5-rf@opensource.cirrus.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20220907085259.3602-1-rf@opensource.cirrus.com>
-References: <20220907085259.3602-1-rf@opensource.cirrus.com>
+ by ams.source.kernel.org (Postfix) with ESMTPS id F175DB81BEB;
+ Wed,  7 Sep 2022 09:29:00 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E2D9DC433C1;
+ Wed,  7 Sep 2022 09:28:58 +0000 (UTC)
+Authentication-Results: smtp.kernel.org;
+ dkim=pass (1024-bit key) header.d=zx2c4.com header.i=@zx2c4.com
+ header.b="ZogZr9A8"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zx2c4.com; s=20210105; 
+ t=1662542937;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=uvCPcOxnUC4wGn1S/Nv7nd9/+PzZUA4XVj1lOT3gFj8=;
+ b=ZogZr9A8RtJMjPkzMWOPgXLUIuyAp4smpWeF8UG8T7y3j5NvXCzINOJFhYJuekur2aQ1IV
+ Yd2LUGDH40IXxwcgs4ooIw1jgOi+UjSbltY+FwG8OJdhqIGB0CTs4MtoPOdxjXJlEFiAMv
+ Zzjbs78gDkMqWX7Ma8bS77RmYVILMN0=
+Received: by mail.zx2c4.com (ZX2C4 Mail Server) with ESMTPSA id 7e084ecb
+ (TLSv1.3:TLS_AES_256_GCM_SHA384:256:NO); 
+ Wed, 7 Sep 2022 09:28:57 +0000 (UTC)
+Date: Wed, 7 Sep 2022 11:28:54 +0200
+From: "Jason A. Donenfeld" <Jason@zx2c4.com>
+To: Takashi Iwai <tiwai@suse.de>
+Subject: Re: [PATCH] ALSA: usb-audio: Don't refcount multiple accesses on the
+ single clock
+Message-ID: <YxhkVmiMlKghq+nY@zx2c4.com>
+References: <20220905101403.1435037-1-Jason@zx2c4.com>
+ <87sfl6jbb3.wl-tiwai@suse.de>
+ <CAHmME9oUtVgwtUY5afG5Yed1j6OVKwvLH=keCp63gDSOQRgDSA@mail.gmail.com>
+ <87czc7ehqp.wl-tiwai@suse.de>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Proofpoint-GUID: 7da_1ldsMNPl-OTEaDdYfpFUHjAgr7Ee
-X-Proofpoint-ORIG-GUID: 7da_1ldsMNPl-OTEaDdYfpFUHjAgr7Ee
-X-Proofpoint-Spam-Reason: safe
-Cc: patches@opensource.cirrus.com, alsa-devel@alsa-project.org,
- Richard Fitzgerald <rf@opensource.cirrus.com>, linux-kernel@vger.kernel.org
+In-Reply-To: <87czc7ehqp.wl-tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, Wim Taymans <wtaymans@redhat.com>,
+ =?utf-8?B?TmlrbMSBdnMgS2/EvGVzxYZpa292cw==?= <89q1r14hd@relay.firefox.com>,
+ LKML <linux-kernel@vger.kernel.org>, stable <stable@vger.kernel.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -96,95 +92,36 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The correct way to handle interrupts is to clear the bits we
-are about to handle _before_ handling them. Thus if the condition
-then re-asserts during the handling we won't lose it.
+On Wed, Sep 07, 2022 at 10:00:46AM +0200, Takashi Iwai wrote:
+> On Mon, 05 Sep 2022 14:16:39 +0200,
+> Jason A. Donenfeld wrote:
+> > 
+> > On Mon, Sep 5, 2022 at 1:44 PM Takashi Iwai <tiwai@suse.de> wrote:
+> > > When you load snd-usb-audio with dyndbg=+p option, does it show the
+> > > new error message "Mismatched sample rate xxx"?
+> > 
+> > No.
+> 
+> What about the patch below?
+> 
+> 
+> Takashi
+> 
+> -- 8< --
+> --- a/sound/usb/endpoint.c
+> +++ b/sound/usb/endpoint.c
+> @@ -925,6 +925,8 @@ void snd_usb_endpoint_close(struct snd_usb_audio *chip,
+>  		endpoint_set_interface(chip, ep, false);
+>  
+>  	if (!--ep->opened) {
+> +		if (ep->clock_ref && !atomic_read(&ep->clock_ref->locked))
+> +			ep->clock_ref->rate = 0;
+>  		ep->iface = 0;
+>  		ep->altsetting = 0;
+>  		ep->cur_audiofmt = NULL;
 
-This patch changes cdns_update_slave_status_work() to do this.
+I think this works.
 
-The previous code cleared the interrupts after handling them.
-The problem with this is that when handling enumeration of devices
-the ATTACH statuses can be accidentally cleared and so some or all
-of the devices never complete their enumeration.
+Niklāvs - can you give it a try to and confirm?
 
-Thus we can have a situation like this:
-- one or more devices are reverting to ID #0
-
-- accumulated status bits indicate some devices attached and some
-  on ID #0. (Remember: status bits are sticky until they are handled)
-
-- Because of device on #0 sdw_handle_slave_status() programs the
-  device ID and exits without handling the other status, expecting
-  to get an ATTACHED from this reprogrammed device.
-
-- The device immediately starts reporting ATTACHED in PINGs, which
-  will assert its CDNS_MCP_SLAVE_INTSTAT_ATTACHED bit.
-
-- cdns_update_slave_status_work() clears INTSTAT0/1. If the initial
-  status had CDNS_MCP_SLAVE_INTSTAT_ATTACHED bit set it will be
-  cleared.
-
-- The ATTACHED change for the device has now been lost.
-
-- cdns_update_slave_status_work() clears CDNS_MCP_INT_SLAVE_MASK so
-  if the new ATTACHED state had set it, it will be cleared without
-  ever having been handled.
-
-Unless there is some other state change from another device to cause
-a new interrupt, the ATTACHED state of the reprogrammed device will
-never cause an interrupt so its enumeration will not be completed.
-
-Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
----
- drivers/soundwire/cadence_master.c | 18 ++++++++++++++----
- 1 file changed, 14 insertions(+), 4 deletions(-)
-
-diff --git a/drivers/soundwire/cadence_master.c b/drivers/soundwire/cadence_master.c
-index 245191d22ccd..3acd7b89c940 100644
---- a/drivers/soundwire/cadence_master.c
-+++ b/drivers/soundwire/cadence_master.c
-@@ -954,9 +954,22 @@ static void cdns_update_slave_status_work(struct work_struct *work)
- 	u32 device0_status;
- 	int retry_count = 0;
- 
-+	/*
-+	 * Clear main interrupt first so we don't lose any assertions
-+	 * the happen during this function.
-+	 */
-+	cdns_writel(cdns, CDNS_MCP_INTSTAT, CDNS_MCP_INT_SLAVE_MASK);
-+
- 	slave0 = cdns_readl(cdns, CDNS_MCP_SLAVE_INTSTAT0);
- 	slave1 = cdns_readl(cdns, CDNS_MCP_SLAVE_INTSTAT1);
- 
-+	/*
-+	 * Clear the bits before handling so we don't lose any
-+	 * bits that re-assert.
-+	 */
-+	cdns_writel(cdns, CDNS_MCP_SLAVE_INTSTAT0, slave0);
-+	cdns_writel(cdns, CDNS_MCP_SLAVE_INTSTAT1, slave1);
-+
- 	/* combine the two status */
- 	slave_intstat = ((u64)slave1 << 32) | slave0;
- 
-@@ -964,8 +977,6 @@ static void cdns_update_slave_status_work(struct work_struct *work)
- 
- update_status:
- 	cdns_update_slave_status(cdns, slave_intstat);
--	cdns_writel(cdns, CDNS_MCP_SLAVE_INTSTAT0, slave0);
--	cdns_writel(cdns, CDNS_MCP_SLAVE_INTSTAT1, slave1);
- 
- 	/*
- 	 * When there is more than one peripheral per link, it's
-@@ -1001,8 +1012,7 @@ static void cdns_update_slave_status_work(struct work_struct *work)
- 		}
- 	}
- 
--	/* clear and unmask Slave interrupt now */
--	cdns_writel(cdns, CDNS_MCP_INTSTAT, CDNS_MCP_INT_SLAVE_MASK);
-+	/* unmask Slave interrupt now */
- 	cdns_updatel(cdns, CDNS_MCP_INTMASK,
- 		     CDNS_MCP_INT_SLAVE_MASK, CDNS_MCP_INT_SLAVE_MASK);
- 
--- 
-2.30.2
-
+Jason
