@@ -4,67 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8DD28C6FA86
-	for <alsa-devel@archiver.kernel.org>; Wed,  7 Sep 2022 13:39:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 431E4C54EE9
+	for <alsa-devel@archiver.kernel.org>; Wed,  7 Sep 2022 13:39:39 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C19C4166F;
-	Wed,  7 Sep 2022 15:38:25 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C19C4166F
+	by alsa0.perex.cz (Postfix) with ESMTPS id 757161672;
+	Wed,  7 Sep 2022 15:38:47 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 757161672
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1662557955;
-	bh=cEB29+eZ63sn6SGDvxQjCJu8E8mFM2+RAsAZHVgBmJ0=;
+	s=default; t=1662557977;
+	bh=Dd0zVj0VklHGwNIh3GmXrVi5H/IIUqMDQzHTEV3cbZA=;
 	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=LTJp8+DOOmvrYUmqRFZIKCUAcOd2EtBA2xW5zaHDu+moQ9sdXi7GZiU5vCSMTpLIy
-	 O+u9AumVwXJyBEnsemGQqyPTTLgZZuIUZh51QwRaDg3OXCHdU8Ijp1V/K7WZ2Ps43B
-	 7ZcovYE8u7O2ctbxO6yECnjIOyd6sIVaKjAIBzNs=
+	b=lNNfFKsEn8gi1HtXpBbhIBsFqOWoy/twO+ACaGyOtuaxbiB/4+W9SkDC9MUZABH0e
+	 OnssJMiVJggkCnn0YxZlFvFKQ7UGHCm1ydk5gJlrGYOPBajfk6DQtah+prvsnBR4JS
+	 I7NVbnMlaQD3nOg0UOMijX832fq0kHtbFwBPBbWg=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 0518AF80249;
+	by alsa1.perex.cz (Postfix) with ESMTP id B043BF80527;
 	Wed,  7 Sep 2022 15:38:00 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 0EC32F804CA; Wed,  7 Sep 2022 15:37:59 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org
- [IPv6:2604:1380:4641:c500::1])
+ id 48701F804B1; Wed,  7 Sep 2022 15:37:59 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 7E850F804B2
+ by alsa1.perex.cz (Postfix) with ESMTPS id 60B3BF80249
  for <alsa-devel@alsa-project.org>; Wed,  7 Sep 2022 15:37:56 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7E850F804B2
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 60B3BF80249
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="TmUNAx01"
+ header.b="QgYAr6Z2"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id 8C73961909;
- Wed,  7 Sep 2022 13:37:47 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D5C27C433D6;
- Wed,  7 Sep 2022 13:37:46 +0000 (UTC)
+ by dfw.source.kernel.org (Postfix) with ESMTPS id 527C8618E8;
+ Wed,  7 Sep 2022 13:37:52 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7CFEEC43140;
+ Wed,  7 Sep 2022 13:37:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1662557867;
- bh=cEB29+eZ63sn6SGDvxQjCJu8E8mFM2+RAsAZHVgBmJ0=;
+ s=k20201202; t=1662557871;
+ bh=Dd0zVj0VklHGwNIh3GmXrVi5H/IIUqMDQzHTEV3cbZA=;
  h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=TmUNAx01gPhlpJ9kK4Iw6TqSBvKDJvhkSs5Gmg9NgdhBLyKg69kUVscZMm7xmvrGS
- GZ6ef7iddL3xaOPhZEvl++NT3oom4S1efWs/Yh9oSme+ao3ZcjR5tZdzG0vTiPW8hD
- tUe3MrFTDMsQp19VWP64vBni6ZnJGdicM+kNytjUpgYoXHqNboG6+iuL0NaGFPRS5n
- WRu4ZMB6am6b6mqfY0CYVC6E/61LtuUcH23zXG8LaYYd2SEkOzS7hLXL9mBldL1nHW
- XIAY0ghL5ohdwsFHX5O6s4opxkRkFrbCj/U3DQpPo35YbaEcaSmr9CxHPXkpr71CsT
- funjx9Uk0muDg==
+ b=QgYAr6Z2uHWXxHvlO+LwPMImS4gbY9od7AtU48hSnVJAng4RW+NUxEz466vv79vKw
+ Aswx5OcFGIBBh8tCaNfVhWpZvt8u3R53kBE81s+z9IRZm27KBDZCVen7ejeLDVeGfF
+ 5AP2qLQcuBYDrg041WGcqGtbkdwxyHV54VoKxlujRTbmAejHIl4hMTbZJwe5x5F6H/
+ yNz2X3mBAzsK+R6wdekjNOuHelAiw0BrSwLDp2JuZNhu6TMtttPfxSqdgelUJdOuW5
+ 4jIndBJgzVOQDnGg1J23gE7Lxnjfv5ZJPzkV+BmKktI8mhyDCTTd+Z/kUAwuIh2Ppw
+ fDsVcQHg4yqwg==
 From: Mark Brown <broonie@kernel.org>
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-In-Reply-To: <8735d59zt9.wl-kuninori.morimoto.gx@renesas.com>
-References: <8735d59zt9.wl-kuninori.morimoto.gx@renesas.com>
-Subject: Re: (subset) [PATCH 0/4] ASoC: soc-dapm.c: random cleanup
-Message-Id: <166255786657.130875.2167724430678359933.b4-ty@kernel.org>
-Date: Wed, 07 Sep 2022 14:37:46 +0100
+To: Liam Girdwood <lgirdwood@gmail.com>,
+ Dmitry Torokhov <dmitry.torokhov@gmail.com>
+In-Reply-To: <YxeaITtlJexygQo9@google.com>
+References: <YxeaITtlJexygQo9@google.com>
+Subject: Re: [PATCH] ASoC: simple-card-utils: switch to using gpiod API
+Message-Id: <166255787023.130875.15429372687220294884.b4-ty@kernel.org>
+Date: Wed, 07 Sep 2022 14:37:50 +0100
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 X-Mailer: b4 0.10.0-dev-fc921
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>
+Cc: alsa-devel@alsa-project.org, Bartosz Golaszewski <brgl@bgdev.pl>,
+ Linus Walleij <linus.walleij@linaro.org>, linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -80,17 +81,12 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Mon, 5 Sep 2022 23:17:11 +0000, Kuninori Morimoto wrote:
-> These are cleanup patches for soc-dapm.c.
-> Each patches are not related, very random cleanup.
+On Tue, 6 Sep 2022 12:06:09 -0700, Dmitry Torokhov wrote:
+> This patch switches the driver away from legacy gpio/of_gpio API to
+> gpiod API, and removes use of of_get_named_gpio_flags() which I want to
+> make private to gpiolib.
 > 
-> Kuninori Morimoto (4):
->   ASoC: soc-dapm.c: don't use kzalloc() for param on snd_soc_dai_link_event_pre_pmu()
->   ASoC: soc-dapm.c: don't use WARN_ON() at snd_soc_dai_link_event_pre_pmu()
->   ASoC: soc-dapm.c: tidyup snd_soc_dai_link_event_pre_pmu()
->   ASoC: soc-dapm.c: fixup snd_soc_dapm_new_control_unlocked() error handling
 > 
-> [...]
 
 Applied to
 
@@ -98,12 +94,8 @@ Applied to
 
 Thanks!
 
-[2/4] ASoC: soc-dapm.c: don't use WARN_ON() at snd_soc_dai_link_event_pre_pmu()
-      commit: 427de091a7112aa8eaf2f689e95c0dbca5ea6543
-[3/4] ASoC: soc-dapm.c: tidyup snd_soc_dai_link_event_pre_pmu()
-      (no commit info)
-[4/4] ASoC: soc-dapm.c: fixup snd_soc_dapm_new_control_unlocked() error handling
-      commit: 3caac759681eeb31ac80e3cc14b972680c8bde54
+[1/1] ASoC: simple-card-utils: switch to using gpiod API
+      commit: 355beeed9319cf3ceea56c7dec874a8a9c443771
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
