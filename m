@@ -4,88 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 02305ECAAD3
-	for <alsa-devel@archiver.kernel.org>; Wed,  7 Sep 2022 10:24:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3D114C38145
+	for <alsa-devel@archiver.kernel.org>; Wed,  7 Sep 2022 11:22:30 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3604D15C3;
-	Wed,  7 Sep 2022 12:23:26 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3604D15C3
+	by alsa0.perex.cz (Postfix) with ESMTPS id 7AA5D164E;
+	Wed,  7 Sep 2022 13:21:38 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7AA5D164E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1662546256;
-	bh=FHSdzLsqDAJ3+7Y2IFsLy4ODMvPvr/SzOE6kS1hg0rM=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=oCpAPnHtXvzQDFI25L/0MOVlJvy1nBiqeA+CqaRh2yORDGjwNgZfMCm9B+pK0nQ7R
-	 5xqS1uvkUBjQHjTGqObm8hTTmJBOI4+jQnYdUSzQLVb65lemuoupnnckMzoatAb8QZ
-	 um21tWFLRS9MmOaLf8rDjVfWKEx6uw9+Vc48SbWI=
+	s=default; t=1662549748;
+	bh=K6TqhkZr3N/QZagfnVUSPa54URRZ69RaS62UtniR5fA=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=fKpCDVhpMt0CjEv8yPIqIn6ExwEP3JS7Hazemdp1QE6fpqJ1oyBLIt0Huse/gVAYf
+	 FurUfcZ7dSm2sS8hn3+UvQgB7haeo2+fre8h8iFtqmYfd/d/il0ctNI9GNmri6PgEp
+	 jrf7YItSutrYqsrsTuXuAAkfRRyRD3MvaPhJrTBY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id DC07AF80249;
-	Wed,  7 Sep 2022 12:23:25 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 0AC00F80249;
+	Wed,  7 Sep 2022 13:21:38 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 74EFAF8028D; Wed,  7 Sep 2022 12:23:24 +0200 (CEST)
-Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com
- [IPv6:2a00:1450:4864:20::12d])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id 4DD4EF8011C; Wed,  7 Sep 2022 13:21:36 +0200 (CEST)
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 662BAF80249
- for <alsa-devel@alsa-project.org>; Wed,  7 Sep 2022 12:23:18 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 662BAF80249
+ by alsa1.perex.cz (Postfix) with ESMTPS id 3D0D5F8011C
+ for <alsa-devel@alsa-project.org>; Wed,  7 Sep 2022 13:21:28 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3D0D5F8011C
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org
- header.b="YKseDWEu"
-Received: by mail-lf1-x12d.google.com with SMTP id x14so6325353lfu.10
- for <alsa-devel@alsa-project.org>; Wed, 07 Sep 2022 03:23:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
- h=content-transfer-encoding:mime-version:message-id:date:subject:cc
- :to:from:from:to:cc:subject:date;
- bh=DUZnAOXvnpwBSyYKpy7XC2+oubbqgditxTlrj9yISaE=;
- b=YKseDWEuQrei+DMXjAdhXWNkjPj/XhJlvCb3QGZ5L61lPym0S4hmAc/ek+LGwrpF6J
- TnQbf3UkUJUROG2eAEV0vphFJ3aIrx/O9wflRYVSJznxfGR4aznKVL6SoTRo7/IhPsUD
- s2+KzzSc5z/ivHykL5YgjKqTiVIQCteNe0H0j3odZoYhn0eft/dqcuGyQFikq1+h9Lq8
- X1iuaHT48VeuDWI2i0OvG2AypADRYKtAw3eWxTD5lBxUU8wp0fWvWEnMql8mAuC6YeHd
- 41/6ZmqShTypXD+MP7XsD8swHbFbLal1AotIaRThcfR3zoCJzJTw5G13iBJK5gHMc9j8
- UCvw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=content-transfer-encoding:mime-version:message-id:date:subject:cc
- :to:from:x-gm-message-state:from:to:cc:subject:date;
- bh=DUZnAOXvnpwBSyYKpy7XC2+oubbqgditxTlrj9yISaE=;
- b=DqxQwJ7x2EGB31Kfy61+NrjD6OxECxVxbbf2Pbllp7BHITwdeQj/g38Vi4e8A/zPNS
- cosIrjzsC248SQTod8KI7k8eCn7eRe6MRD9f2cBLLpw1oKhwFu/NyRZKXCJ63Cd1Htkh
- meemgv39HlCX6jdUkEDekUcLIAzO6ldAbn9pIWDKYwBgYLfAPysVMF39lndATIuimCEI
- wZOs3kFBuJFaSf0grve04YhbVTwVxNc785vUsNEQ6BgsEM3RhFKnEAkyu0Vni8oRtlT9
- kwxTGpoD2Da2tx+t9weqxXDTtULXxokweVk5HzMKmZjHn0he+aCLALNCH28f4LvOJcCB
- ZeQQ==
-X-Gm-Message-State: ACgBeo0gBaulXMesgn2mLgAIhUEzLYKRA4shCeSLll6xEYT/f8FSMy5y
- 8iG+eiE7XgRyEZlsiNgl3UI8MQ==
-X-Google-Smtp-Source: AA6agR6tbubvvq8/DfaCTr0+Pf575TvwyTL1PYEUWtKKonjTxXHultN785WWU5YW7mRViESeUxF52A==
-X-Received: by 2002:a05:6512:3f0a:b0:492:da2e:ce69 with SMTP id
- y10-20020a0565123f0a00b00492da2ece69mr817185lfa.269.1662546196496; 
- Wed, 07 Sep 2022 03:23:16 -0700 (PDT)
-Received: from krzk-bin.. (78-11-189-27.static.ip.netia.com.pl. [78.11.189.27])
- by smtp.gmail.com with ESMTPSA id
- w22-20020a0565120b1600b004946d1f3cc4sm2378309lfu.164.2022.09.07.03.23.14
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Wed, 07 Sep 2022 03:23:15 -0700 (PDT)
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
- Banajit Goswami <bgoswami@quicinc.com>, Andy Gross <agross@kernel.org>,
- Bjorn Andersson <andersson@kernel.org>,
- Konrad Dybcio <konrad.dybcio@somainline.org>,
- Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- alsa-devel@alsa-project.org, linux-arm-msm@vger.kernel.org,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] ASoC: MAINTAINERS: add bindings and APR to Qualcomm Audio
- entry
-Date: Wed,  7 Sep 2022 12:23:11 +0200
-Message-Id: <20220907102311.38428-1-krzysztof.kozlowski@linaro.org>
-X-Mailer: git-send-email 2.34.1
+ dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="XYR1FDAd"
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by ams.source.kernel.org (Postfix) with ESMTPS id 85C12B81C44;
+ Wed,  7 Sep 2022 11:21:27 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8667DC433D6;
+ Wed,  7 Sep 2022 11:21:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1662549686;
+ bh=K6TqhkZr3N/QZagfnVUSPa54URRZ69RaS62UtniR5fA=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=XYR1FDAdACKX99GLbnhwQ0G7Qt2K9/qv1mXBdM+JTMehoYSwUNd2Xnje2yNUlM8Cc
+ /s7PXwfulTx5SHtWiNaVKesLZ1oHVscGvIX4qhSkqX9AF3ymGXnTaHJDpH4cJOk/Ef
+ QTMqj8rTotuUEAdTzkhjeUkae5M8aMTlydvJ39FkQ3VDvzebiFLmiD0wumGsxzBzLT
+ v3FnKyChMSp8ppQDSjIf9BWCD1BjiOjfVz022G6Bcc7hyggMn/kmgnhDdjDFrW44cL
+ cXbB+6yeqOOceCUGDRB+7D7EOt0W4fW5PnVMuK68lY/I6lCS9T8UvuxuA/RGx62X6b
+ A2xcxLmL9L19Q==
+Date: Wed, 7 Sep 2022 12:21:21 +0100
+From: Mark Brown <broonie@kernel.org>
+To: David Lin <CTLIN0@nuvoton.com>
+Subject: Re: [PATCH] ASoC: nau8825: Add ADCOUT IO drive strength control
+Message-ID: <Yxh+seNpKW5lxhjp@sirena.org.uk>
+References: <20220907065126.406208-1-CTLIN0@nuvoton.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature"; boundary="y3YuxPMTeSqTg3g9"
+Content-Disposition: inline
+In-Reply-To: <20220907065126.406208-1-CTLIN0@nuvoton.com>
+X-Cookie: You have a truly strong individuality.
+Cc: alsa-devel@alsa-project.org, ctlin0.linux@gmail.com, WTLI@nuvoton.com,
+ SJLIN0@nuvoton.com, KCHSU0@nuvoton.com, lgirdwood@gmail.com,
+ YHCHuang@nuvoton.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -101,29 +82,47 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Extend the Qualcomm Audio maintainer entry to include sound related
-bindings and the Qualcomm APR/GPR (Asynchronous/Generic Packet Router)
-IPC driver, which is tightly related to the Audio DSP.
 
-Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
----
- MAINTAINERS | 3 +++
- 1 file changed, 3 insertions(+)
+--y3YuxPMTeSqTg3g9
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 0350effebe8f..453dc6fd0b80 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -16710,6 +16710,9 @@ M:	Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
- M:	Banajit Goswami <bgoswami@quicinc.com>
- L:	alsa-devel@alsa-project.org (moderated for non-subscribers)
- S:	Supported
-+F:	Documentation/devicetree/bindings/soc/qcom/qcom,apr.yaml
-+F:	Documentation/devicetree/bindings/sound/qcom,*
-+F:	drivers/soc/qcom/apr.c
- F:	include/dt-bindings/sound/qcom,wcd9335.h
- F:	sound/soc/codecs/lpass-rx-macro.*
- F:	sound/soc/codecs/lpass-tx-macro.*
--- 
-2.34.1
+On Wed, Sep 07, 2022 at 02:51:27PM +0800, David Lin wrote:
+> Add a property to control the driving of ADCOUT.
+>=20
+> Signed-off-by: David Lin <CTLIN0@nuvoton.com>
+> ---
+>  Documentation/devicetree/bindings/sound/nau8825.txt | 2 ++
+>  sound/soc/codecs/nau8825.c                          | 6 ++++++
+>  sound/soc/codecs/nau8825.h                          | 3 +++
+>  3 files changed, 11 insertions(+)
 
+Binding and driver patches should normally be separate patches.
+
+> +  - nuvoton,adcout-drive-str: ADCOUT IO drive strength. 0 - normal, 1 - =
+stronger.
+
+Why not just make this a boolean property rather than requiring values?
+
+> +	nau8825->adcout_ds =3D device_property_read_bool(dev, "nuvoton,adcout-d=
+rive-str");
+
+It looks like it's being parsed as a boolean.
+
+--y3YuxPMTeSqTg3g9
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmMYfrAACgkQJNaLcl1U
+h9CIgQf/RmIjxCqHN0ms9ApCi9oAM7fXHlKACLO3AI6WSQKU+poPOApo4TuGvY7e
+eysMjlZtjpjZeksMdbiu8Zmf/tZYysr33CtBnSnLnCfYCzrWxbw0p3ywxZRwi8qR
+v1+NJ63qeFNy0LpmiUUxu9K/fLKvbONOpnK4f4FFivGr/5vMhIHyi/xEgbFxxqC5
+MLefAZvWMsW+QlpO4dPNMYd+OyiT21xiojK53FcuYXvW81x4YfNyrGLsVdzH8wnP
+4UjuTtzYZkiAiYeQOduTvuwwxbXUm4dRF4NZYNnq2nqk3GZvh5JmrhF9EPm2aJf9
+tdHKp7O7R1Wn6nO7A0mnZ267hbdHWg==
+=+SLw
+-----END PGP SIGNATURE-----
+
+--y3YuxPMTeSqTg3g9--
