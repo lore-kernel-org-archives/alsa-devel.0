@@ -4,83 +4,84 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 856EFECAAD3
-	for <alsa-devel@archiver.kernel.org>; Wed,  7 Sep 2022 08:54:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3BDCBECAAD3
+	for <alsa-devel@archiver.kernel.org>; Wed,  7 Sep 2022 08:54:53 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 72726886;
-	Wed,  7 Sep 2022 10:53:39 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 72726886
+	by alsa0.perex.cz (Postfix) with ESMTPS id 64BF9850;
+	Wed,  7 Sep 2022 10:54:01 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 64BF9850
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1662540869;
-	bh=nETieTL9RvDrX8X16Ddya59H1YijOLLeZ6FSVBYTZZk=;
+	s=default; t=1662540891;
+	bh=I6L7DFQNtoJPK/NeugBA7TpUK4LrxMUszuh+hB3uUvA=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=XIY3MRaiIzbCSZ4QH4sbrT1n5R7oGx31asQuFYG2wegj3VNL+zeSIEl8m0/bfF0va
-	 BpPim0Xmv6SDQJNE42NZD4YUuvdoauJwSc0eSIqeXEOjYVa5otcubzEIhYJE2YZF7C
-	 Esnx82xAIOVwikyTksKks+9GDJ2F6wZhCs2KE+U4=
+	b=q3OZHTpTqg3cNbKp0K0So5b+u8TrN34p2RQ306AhT5LPn+8eLbqltv2gxa1NFgE8r
+	 Bo2aWa0ziaY7Okaw71fpWtG8/JDi7LTmbK+3iL4079v8JJ961TQ7YT3zG+9B7WrxFs
+	 MkR+c8M5LYMdMS7dWP5fWv5oqRWM1u6OyemsfE/4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id E74B9F8028D;
-	Wed,  7 Sep 2022 10:53:16 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id EDFDCF80535;
+	Wed,  7 Sep 2022 10:53:17 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 65B63F80528; Wed,  7 Sep 2022 10:53:15 +0200 (CEST)
-Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
- [67.231.149.25])
+ id 86365F80527; Wed,  7 Sep 2022 10:53:15 +0200 (CEST)
+Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
+ [67.231.152.168])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 2DAB5F80249
- for <alsa-devel@alsa-project.org>; Wed,  7 Sep 2022 10:53:08 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2DAB5F80249
+ by alsa1.perex.cz (Postfix) with ESMTPS id 1F853F8028D
+ for <alsa-devel@alsa-project.org>; Wed,  7 Sep 2022 10:53:05 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1F853F8028D
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com
- header.b="oGqNS83J"
-Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
- by mx0a-001ae601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 2876sQ68005118;
- Wed, 7 Sep 2022 03:53:06 -0500
+ header.b="CJupAH/p"
+Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
+ by mx0b-001ae601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 2877rCGH005930;
+ Wed, 7 Sep 2022 03:53:04 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
  h=from : to : cc :
  subject : date : message-id : in-reply-to : references : mime-version :
  content-transfer-encoding : content-type; s=PODMain02222019;
- bh=PfmUESLoYKijI4XQrGK3nArMP4Gz6y3F+JkaqLCDJWE=;
- b=oGqNS83JXUjOBuJqf5qkW2p/oJARAReQDGBKgwOX+8B7ecwNKV6L06s3vaps46+EGHMW
- APr5BBOagmMFjUKH5i/jHV7ufS1cFFH+6117FmqF780RGoSxFhtlXYfA8h8nfF0XIAv4
- UkxI6z+B8+xDIFnJ/Eoun8GVYhvV3YvBClmx5lu5FkbMAYmSrE2Ae7uU6tIVZeoFEpI9
- z5ibicYZ+NZ4qpKjfUpu2IKIoF9fuhvvV3lxBfRYd+LG1tJduekx+33jzn1Cj1uJJjiP
- rTAsYR4j0Yz3ZcEHS95uL/csknneEaZX4KPEsnrlSX9ts6NSUvSTv1GX99C5kfWjEJZH oQ== 
+ bh=Pgl4azxf90HlSnGT8l1UNSDlf+sSOeBJVYvFNp1rmXo=;
+ b=CJupAH/ps0RJGmKbjqfzN/rUahuP78Azkb28zRDeHZGVSi0n77qXzjfpJMgBaSz2dXJB
+ BGkj58HgwyM/3W0084nPJzchTLiGo953iqKnq471pnSryP/vca80xjpjrvvgw9r0TrYx
+ hLwETdHByiKcTzqh5+CLtpzoUQ3V2raWkIOc+T4SluiQOoGuDAeBLHfBRy0xFmN2q+pH
+ DK+DyEe2aajCEwrQ0DL6/3Peln4WDCZsnJ2jDNrTbPBp/j+5jIaQy/OgURN8FUz2nOeF
+ S+WDmj+10qdoMNgtMSvf7DMlm56OlPuyMQF+rh9WwukOQf9enN3xWhZHFNUa1Xa97YFP AQ== 
 Received: from ediex01.ad.cirrus.com ([84.19.233.68])
- by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3jc4b2dcun-1
+ by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3jc3bpw21n-2
  (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
- Wed, 07 Sep 2022 03:53:06 -0500
-Received: from ediex01.ad.cirrus.com (198.61.84.80) by ediex01.ad.cirrus.com
+ Wed, 07 Sep 2022 03:53:04 -0500
+Received: from ediex02.ad.cirrus.com (198.61.84.81) by ediex01.ad.cirrus.com
  (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.12; Wed, 7 Sep
- 2022 03:53:04 -0500
-Received: from ediswmail.ad.cirrus.com (198.61.86.93) by ediex01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server id 15.2.1118.12 via
- Frontend Transport; Wed, 7 Sep 2022 03:53:04 -0500
+ 2022 03:53:03 -0500
+Received: from ediswmail.ad.cirrus.com (198.61.86.93) by
+ anon-ediex02.ad.cirrus.com (198.61.84.81) with Microsoft SMTP Server id
+ 15.2.1118.12 via Frontend Transport; Wed, 7 Sep 2022 03:53:03 -0500
 Received: from debianA11184.ad.cirrus.com (unknown [198.61.65.149])
- by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 4CE86B06;
- Wed,  7 Sep 2022 08:53:04 +0000 (UTC)
+ by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 75F75B06;
+ Wed,  7 Sep 2022 08:53:03 +0000 (UTC)
 From: Richard Fitzgerald <rf@opensource.cirrus.com>
 To: <vkoul@kernel.org>, <yung-chuan.liao@linux.intel.com>,
  <pierre-louis.bossart@linux.intel.com>, <sanyog.r.kale@intel.com>
-Subject: [PATCH v2 3/5] soundwire: bus: Don't re-enumerate before status is
- UNATTACHED
-Date: Wed, 7 Sep 2022 09:52:57 +0100
-Message-ID: <20220907085259.3602-4-rf@opensource.cirrus.com>
+Subject: [PATCH v2 1/5] soundwire: cadence: fix updating slave status when a
+ bus has multiple peripherals
+Date: Wed, 7 Sep 2022 09:52:55 +0100
+Message-ID: <20220907085259.3602-2-rf@opensource.cirrus.com>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20220907085259.3602-1-rf@opensource.cirrus.com>
 References: <20220907085259.3602-1-rf@opensource.cirrus.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-Proofpoint-GUID: JZPYbelKH_jA9kRsykD8Pw5b5eZK0BSe
-X-Proofpoint-ORIG-GUID: JZPYbelKH_jA9kRsykD8Pw5b5eZK0BSe
+X-Proofpoint-GUID: q76nhonttBlPNPKlQdDNQld2kmrvMoCH
+X-Proofpoint-ORIG-GUID: q76nhonttBlPNPKlQdDNQld2kmrvMoCH
 X-Proofpoint-Spam-Reason: safe
 Cc: patches@opensource.cirrus.com, alsa-devel@alsa-project.org,
- Richard Fitzgerald <rf@opensource.cirrus.com>, linux-kernel@vger.kernel.org
+ Richard Fitzgerald <rf@opensource.cirrus.com>,
+ Simon Trimmer <simont@opensource.cirrus.com>, linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -96,55 +97,118 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Don't re-enumerate a peripheral on #0 until we have seen and
-handled an UNATTACHED notification for that peripheral.
+From: Simon Trimmer <simont@opensource.cirrus.com>
 
-Without this, it is possible for the UNATTACHED status to be missed
-and so the slave->status remains at ATTACHED. If slave->status never
-changes to UNATTACHED the child driver will never be notified of the
-UNATTACH, and the code in sdw_handle_slave_status() will skip the
-second part of enumeration because the slave->status has not changed.
+The cadence IP explicitly reports slave status changes with bits for
+each possible change. The function cdns_update_slave_status() attempts
+to translate this into the current status of each of the slaves.
 
-This scenario can happen because PINGs are handled in a workqueue
-function which is working from a snapshot of an old PING, and there
-is no guarantee when this function will run.
+However when there are multiple peripherals on a bus any slave that did
+not have a status change when the work function ran would not have it's
+status updated - the array is initialised to a value that equates to
+UNATTACHED and this can cause spurious reports that slaves had dropped
+off the bus.
 
-A peripheral could report attached in the PING being handled by
-sdw_handle_slave_status(), but has since reverted to device #0 and is
-then found in the loop in sdw_program_device_num(). Previously the
-code would not have updated slave->status to UNATTACHED because it had
-not yet handled a PING where that peripheral had UNATTACHED.
+In the case where a slave has no status change or has multiple status
+changes the value from the last PING command is used.
 
-This situation happens fairly frequently with multiple peripherals on
-a bus that are intentionally reset (for example after downloading
-firmware).
-
+Signed-off-by: Simon Trimmer <simont@opensource.cirrus.com>
 Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
+Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- drivers/soundwire/bus.c | 10 ++++++++++
- 1 file changed, 10 insertions(+)
+ drivers/soundwire/cadence_master.c | 57 +++++++++++++-----------------
+ 1 file changed, 25 insertions(+), 32 deletions(-)
 
-diff --git a/drivers/soundwire/bus.c b/drivers/soundwire/bus.c
-index 1cc858b4107d..6e569a875a9b 100644
---- a/drivers/soundwire/bus.c
-+++ b/drivers/soundwire/bus.c
-@@ -773,6 +773,16 @@ static int sdw_program_device_num(struct sdw_bus *bus)
- 			if (sdw_compare_devid(slave, id) == 0) {
- 				found = true;
+diff --git a/drivers/soundwire/cadence_master.c b/drivers/soundwire/cadence_master.c
+index 4fbb19557f5e..245191d22ccd 100644
+--- a/drivers/soundwire/cadence_master.c
++++ b/drivers/soundwire/cadence_master.c
+@@ -782,6 +782,7 @@ static int cdns_update_slave_status(struct sdw_cdns *cdns,
+ 	enum sdw_slave_status status[SDW_MAX_DEVICES + 1];
+ 	bool is_slave = false;
+ 	u32 mask;
++	u32 val;
+ 	int i, set_status;
  
-+				/*
-+				 * To prevent skipping state-machine stages don't
-+				 * program a device until we've seen it UNATTACH.
-+				 * Must return here because no other device on #0
-+				 * can be detected until this one has been
-+				 * assigned a device ID.
-+				 */
-+				if (slave->status != SDW_SLAVE_UNATTACHED)
-+					return 0;
-+
- 				/*
- 				 * Assign a new dev_num to this Slave and
- 				 * not mark it present. It will be marked
+ 	memset(status, 0, sizeof(status));
+@@ -789,41 +790,38 @@ static int cdns_update_slave_status(struct sdw_cdns *cdns,
+ 	for (i = 0; i <= SDW_MAX_DEVICES; i++) {
+ 		mask = (slave_intstat >> (i * CDNS_MCP_SLAVE_STATUS_NUM)) &
+ 			CDNS_MCP_SLAVE_STATUS_BITS;
+-		if (!mask)
+-			continue;
+ 
+-		is_slave = true;
+ 		set_status = 0;
+ 
+-		if (mask & CDNS_MCP_SLAVE_INTSTAT_RESERVED) {
+-			status[i] = SDW_SLAVE_RESERVED;
+-			set_status++;
+-		}
+-
+-		if (mask & CDNS_MCP_SLAVE_INTSTAT_ATTACHED) {
+-			status[i] = SDW_SLAVE_ATTACHED;
+-			set_status++;
+-		}
++		if (mask) {
++			is_slave = true;
+ 
+-		if (mask & CDNS_MCP_SLAVE_INTSTAT_ALERT) {
+-			status[i] = SDW_SLAVE_ALERT;
+-			set_status++;
+-		}
++			if (mask & CDNS_MCP_SLAVE_INTSTAT_RESERVED) {
++				status[i] = SDW_SLAVE_RESERVED;
++				set_status++;
++			}
+ 
+-		if (mask & CDNS_MCP_SLAVE_INTSTAT_NPRESENT) {
+-			status[i] = SDW_SLAVE_UNATTACHED;
+-			set_status++;
+-		}
++			if (mask & CDNS_MCP_SLAVE_INTSTAT_ATTACHED) {
++				status[i] = SDW_SLAVE_ATTACHED;
++				set_status++;
++			}
+ 
+-		/* first check if Slave reported multiple status */
+-		if (set_status > 1) {
+-			u32 val;
++			if (mask & CDNS_MCP_SLAVE_INTSTAT_ALERT) {
++				status[i] = SDW_SLAVE_ALERT;
++				set_status++;
++			}
+ 
+-			dev_warn_ratelimited(cdns->dev,
+-					     "Slave %d reported multiple Status: %d\n",
+-					     i, mask);
++			if (mask & CDNS_MCP_SLAVE_INTSTAT_NPRESENT) {
++				status[i] = SDW_SLAVE_UNATTACHED;
++				set_status++;
++			}
++		}
+ 
+-			/* check latest status extracted from PING commands */
++		/*
++		 * check that there was a single reported Slave status and when
++		 * there is not use the latest status extracted from PING commands
++		 */
++		if (set_status != 1) {
+ 			val = cdns_readl(cdns, CDNS_MCP_SLAVE_STAT);
+ 			val >>= (i * 2);
+ 
+@@ -842,11 +840,6 @@ static int cdns_update_slave_status(struct sdw_cdns *cdns,
+ 				status[i] = SDW_SLAVE_RESERVED;
+ 				break;
+ 			}
+-
+-			dev_warn_ratelimited(cdns->dev,
+-					     "Slave %d status updated to %d\n",
+-					     i, status[i]);
+-
+ 		}
+ 	}
+ 
 -- 
 2.30.2
 
