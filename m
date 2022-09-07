@@ -4,98 +4,82 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 98078ECAAD3
-	for <alsa-devel@archiver.kernel.org>; Wed,  7 Sep 2022 03:27:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8A178C38145
+	for <alsa-devel@archiver.kernel.org>; Wed,  7 Sep 2022 05:35:12 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id AA22586F;
-	Wed,  7 Sep 2022 05:27:00 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AA22586F
+	by alsa0.perex.cz (Postfix) with ESMTPS id C89B73E8;
+	Wed,  7 Sep 2022 07:34:19 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C89B73E8
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1662521270;
-	bh=xPpd+5CwvnDzYrNZuibZU7InZ7IPceWflr26RBpfFPU=;
-	h=Date:Subject:To:References:From:In-Reply-To:List-Id:
+	s=default; t=1662528909;
+	bh=4V24w1ruX6Bl+6C2v1QHRWklHrqHNf/TWikGN8jTpkM=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=MbsazhCpy7kkXKnFeE+OC2RghFhIAGCfOJSChtzCQI3ChbfuxthtusVILqMG5sxG0
-	 INSy+qUmBX8olbUMRp2Da0IEpggvJ8nd9mtVFmWtnqTlAzxhWc8Ighk4jlxLsvRF3Y
-	 +BvDvB9hvSKP/bDSjItIdcLPHa/mtkIgD9ElXcdM=
+	b=QxqAd30K/iSJlY31RZryZuNwb+Qndr19KG6aCUH2y3FrgbQGcG65BE/gcsvR+AEwj
+	 QoxwJOEopMH8LrAx5x+C16Am6GoW0gubzsgxAGKuYkspsRRuHb4D2hUHVPDWt8RDJv
+	 N7t9ALK5M4YgvIUa113/g8+LNFAXX8sQv8YBrf2w=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id D6827F80249;
-	Wed,  7 Sep 2022 05:26:59 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 44D6BF80249;
+	Wed,  7 Sep 2022 07:34:19 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id DBE36F8028D; Wed,  7 Sep 2022 05:26:56 +0200 (CEST)
-Received: from mail-ot1-x330.google.com (mail-ot1-x330.google.com
- [IPv6:2607:f8b0:4864:20::330])
+ id C856FF8028D; Wed,  7 Sep 2022 07:34:16 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 557D8F8011C
- for <alsa-devel@alsa-project.org>; Wed,  7 Sep 2022 05:26:39 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 557D8F8011C
+ by alsa1.perex.cz (Postfix) with ESMTPS id E05F1F8011C
+ for <alsa-devel@alsa-project.org>; Wed,  7 Sep 2022 07:34:08 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E05F1F8011C
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=kali.org header.i=@kali.org
- header.b="Zfrz6fe6"
-Received: by mail-ot1-x330.google.com with SMTP id
- z22-20020a056830129600b0063711f456ceso9404476otp.7
- for <alsa-devel@alsa-project.org>; Tue, 06 Sep 2022 20:26:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kali.org; s=google;
- h=content-transfer-encoding:in-reply-to:from:references:to
- :content-language:subject:user-agent:mime-version:date:message-id
- :from:to:cc:subject:date;
- bh=ZXmqcDwCNHYT98hHW5xGO1fd6xJaEvG9lWSh2f3hy/o=;
- b=Zfrz6fe6Lo9OTxr6Ld7B12LdCNi7ipVOK16cY/oT88UV3+svcizdul7KOGXqYEBXko
- UGC5PTG8Tr7zmeEDcbGH3zbvRbZHaAobvoMle8ptzBbHakxwURUlbhHHWKTMrDgPcrpV
- eKYvp/X2iGg3GMzbm3+YemhVtu7cfdSBNINYiXaUQ0J2iJv2zrdeK1a1wCEASpQb41fb
- okdtHYhJkKgLsN+dUVpkmKPXoRc7zFd4fCjt4lva0XQFBOOyEgFg59SBoKtq/URxVLlh
- cuHpGQLb/tt6Dmcag1M55BAYLz49Yqv//5ljnW0J0962LOjJ0NrLs0cu/NPEw8pQUltC
- 11Iw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=content-transfer-encoding:in-reply-to:from:references:to
- :content-language:subject:user-agent:mime-version:date:message-id
- :x-gm-message-state:from:to:cc:subject:date;
- bh=ZXmqcDwCNHYT98hHW5xGO1fd6xJaEvG9lWSh2f3hy/o=;
- b=Q+R8WBlgC3mol33tA8H41Po/wQLPpPwHAezzh/LrGF/IWOnsZeYdaViS3zKX1Wr4tK
- 5wCsTHZqtMgzJJOctK6NQQgsbt77Ml5swftXmJu7tNRJvo1YTjRLRV90kajIB8Zykb88
- fuipUno7ElVDbFQf9Ai+jnNLmUbxoFgLyvw/c9iKB2AHzGt2losGIGBitz5hoj9Z04yW
- KwRYNDmtT8iwxri8+/XupzFI+aoxflAYUL/5pWr+AW6hmhTbTzPeG5lhGXfgr9/QaWOS
- lSXC8MqKJ+jBoYdeFOcJ8pXwGi3D8HGWM8rqJETK22AfnhOdOsEZ5RPwWk2nueyRLHpb
- cILQ==
-X-Gm-Message-State: ACgBeo0BFfV2XFNOS1D3iiS9LRLJPFAzqEzgIL6Rsw61WVBr/PhbfIrZ
- gdqqDCaV6Ol8Lm1oCDO5BJoMwg==
-X-Google-Smtp-Source: AA6agR7YsmduzcN42HFQdUUCbrwuK36JyuKORNqNhUEkKjFlcOBhSt9x9LiHfpoT+hWgIJFU6yQwvg==
-X-Received: by 2002:a9d:4545:0:b0:636:cd1e:494f with SMTP id
- p5-20020a9d4545000000b00636cd1e494fmr670321oti.132.1662521197431; 
- Tue, 06 Sep 2022 20:26:37 -0700 (PDT)
-Received: from [192.168.11.16] (cpe-173-173-107-246.satx.res.rr.com.
- [173.173.107.246]) by smtp.gmail.com with ESMTPSA id
- v14-20020a0568301bce00b0063911de9fd8sm6795403ota.24.2022.09.06.20.26.35
- (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Tue, 06 Sep 2022 20:26:36 -0700 (PDT)
-Message-ID: <a2d5acff-10fd-31da-a04d-f0ecee3c5a44@kali.org>
-Date: Tue, 6 Sep 2022 22:26:34 -0500
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
- Gecko/20100101 Thunderbird/91.13.0
-Subject: Re: [PATCH 02/12] arm64: dts: qcom: sdm845: align APR services node
- names with dtschema
-Content-Language: en-US
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
- Andy Gross <agross@kernel.org>, Bjorn Andersson
- <bjorn.andersson@linaro.org>, Konrad Dybcio <konrad.dybcio@somainline.org>,
- Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
- Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
- linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
-References: <20220906121655.303693-1-krzysztof.kozlowski@linaro.org>
- <20220906121655.303693-3-krzysztof.kozlowski@linaro.org>
-From: Steev Klimaszewski <steev@kali.org>
-In-Reply-To: <20220906121655.303693-3-krzysztof.kozlowski@linaro.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+ dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
+ header.b="iVO6AIvC"; 
+ dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
+ header.b="G4m+2COH"
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id C47A71FFD2;
+ Wed,  7 Sep 2022 05:34:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1662528847; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=eUeD8IppgZ+UP23K1YVziGfin57dV/qWbJirx6R5y18=;
+ b=iVO6AIvCoH/k7Spn1LxyfD/+5xHGfSe9+KfvWfAKrwonXP9cOPkWuSKduKM3aL+cjOQg3/
+ BI8XAsBKJVJcAD+O5SXCtu0tD9FvdPici4CPx0FPsSPEqQg9A1fWW8aBMRBRRxB+ghn4Qi
+ gvgVrmgtxoq++A0oQOIutxy0hRuCwzw=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1662528847;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=eUeD8IppgZ+UP23K1YVziGfin57dV/qWbJirx6R5y18=;
+ b=G4m+2COH8ITAKcyEABjXhal0A38D8VNuUBYBMVUj4D+y7t5AfLfSyWMUe2HZMi/Ohm/8To
+ D9SleXbKmjAIuDCA==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id A614E139C7;
+ Wed,  7 Sep 2022 05:34:07 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+ by imap2.suse-dmz.suse.de with ESMTPSA id ORLJJ08tGGNQTQAAMHmgww
+ (envelope-from <tiwai@suse.de>); Wed, 07 Sep 2022 05:34:07 +0000
+Date: Wed, 07 Sep 2022 07:34:07 +0200
+Message-ID: <87tu5jeoj4.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Miroslav Lakota <lakota.miroslav.ele@gmail.com>
+Subject: Re: Patch for fixing top firing speakers for Dell Inspiron 16 Plus
+ (7620) laptop
+In-Reply-To: <CAAT=u214xC4iHsK9wgkVAhfo85zg18=tbJJTEKg04XSWUTVHvw@mail.gmail.com>
+References: <CAAT=u214xC4iHsK9wgkVAhfo85zg18=tbJJTEKg04XSWUTVHvw@mail.gmail.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -111,58 +95,158 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+On Wed, 07 Sep 2022 00:01:58 +0200,
+Miroslav Lakota wrote:
+> 
+> Dear Sir or Madam,
+> I would like to submit a kernel patch fixing speakers on the laptop
+> Dell Inspiron 16 Plus 7620. The patch has been tested for a month with
+> 5.19 and 6.0RC kernels.
+> 
+> The current issue:
+> - The top firing speakers on the laptop do not work. They are not
+> detected by the audio driver.
+> 
+> The solution:
+> - assign correct pins and DACs to the ALC chip
+> 
+> Status after application of the patch:
+> - Both bottom and top firing speakers work as expected. One small
+> issue remains - the top firing speakers are enabled with a 0,5s delay.
+> This is however not very noticeable in real life and the fact that
+> they work already means a significant improvement.
+> 
+> I am completely new to submiting kernel patches so I apologise
+> beforehand if I made any mistake in the formal process.
 
-On 9/6/22 7:16 AM, Krzysztof Kozlowski wrote:
-> DT schema expects APR services node names to be "service":
->
->    qcom/sdm630-sony-xperia-nile-voyager.dtb: remoteproc@15700000: glink-edge:apr:service@4: 'dais' does not match any of the regexes: '^.*@[0-9a-f]+$', 'pinctrl-[0-9]+'
->
-> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+The formal document for submitting a patch is found in
+Documentation/process/submitting-patches.rst.  Also a web page
+generated from that text is found on the net, too.
+
+About the patch:
+first off, please try to submit via git send-email as much as
+possible.  The spaces and line breaks in this embedded patch looks
+broken, for example, and git-send-email should work better.
+If you can't use it by some reason and your MUA breaks the lines, give
+the patch as an attachment as a last resort.
+
+Put the information (without greeting) into the patch description, so
+that it'll be included in the git commit log.  And most importantly,
+don't forget to add your Signed-off-line line.  This is a legal
+requirement.
+
+At last, try to run scripts/checkpatch.pl for your patch.  Some minor
+warnings like the too long line can be ignored, but major errors
+should be addressed.
+
+The code change itself looks reasonable, and once when I receive the
+proper patch, I can apply as is.
+
+Looking forward to seeing a proper patch.
+
+
+thanks,
+
+Takashi
+
+> 
+> Best regards,
+> Miroslav Lakota
+> 
+> >From 6f91aba8189a0b04fd977d218321e89df7e0673e Mon Sep 17 00:00:00 2001
+> From: Philipp Jungkamp <p.jungkamp@gmx.net>
+> Date: Mon, 15 Aug 2022 11:17:21 +0200
+> Subject: [PATCH] ALSA: patch_realtek: Fix Dell Inspiron Plus 16
+> 
 > ---
->   arch/arm64/boot/dts/qcom/sdm845.dtsi | 8 ++++----
->   1 file changed, 4 insertions(+), 4 deletions(-)
->
-> diff --git a/arch/arm64/boot/dts/qcom/sdm845.dtsi b/arch/arm64/boot/dts/qcom/sdm845.dtsi
-> index 98d34b5e1df2..8e7b577f78c2 100644
-> --- a/arch/arm64/boot/dts/qcom/sdm845.dtsi
-> +++ b/arch/arm64/boot/dts/qcom/sdm845.dtsi
-> @@ -767,13 +767,13 @@ apr {
->   				#size-cells = <0>;
->   				qcom,intents = <512 20>;
->   
-> -				apr-service@3 {
-> +				service@3 {
->   					reg = <APR_SVC_ADSP_CORE>;
->   					compatible = "qcom,q6core";
->   					qcom,protection-domain = "avs/audio", "msm/adsp/audio_pd";
->   				};
->   
-> -				q6afe: apr-service@4 {
-> +				q6afe: service@4 {
->   					compatible = "qcom,q6afe";
->   					reg = <APR_SVC_AFE>;
->   					qcom,protection-domain = "avs/audio", "msm/adsp/audio_pd";
-> @@ -785,7 +785,7 @@ q6afedai: dais {
->   					};
->   				};
->   
-> -				q6asm: apr-service@7 {
-> +				q6asm: service@7 {
->   					compatible = "qcom,q6asm";
->   					reg = <APR_SVC_ASM>;
->   					qcom,protection-domain = "avs/audio", "msm/adsp/audio_pd";
-> @@ -798,7 +798,7 @@ q6asmdai: dais {
->   					};
->   				};
->   
-> -				q6adm: apr-service@8 {
-> +				q6adm: service@8 {
->   					compatible = "qcom,q6adm";
->   					reg = <APR_SVC_ADM>;
->   					qcom,protection-domain = "avs/audio", "msm/adsp/audio_pd";
-
-
-Tested on the Lenovo Yoga C630
-
-Tested-by: Steev Klimaszewski <steev@kali.org>
-
+>  sound/pci/hda/patch_realtek.c | 48 +++++++++++++++++++++++++++++++++++
+>  1 file changed, 48 insertions(+)
+> 
+> diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+> index fd630d62b5a0..9b0b4ddcc36d 100644
+> --- a/sound/pci/hda/patch_realtek.c
+> +++ b/sound/pci/hda/patch_realtek.c
+> @@ -6854,6 +6854,46 @@ static void
+> alc287_fixup_yoga9_14iap7_bass_spk_pin(struct hda_codec *codec,
+>      }
+>  }
+> 
+> +static void alc295_fixup_dell_inspiron_top_speakers(struct hda_codec *codec,
+> +                      const struct hda_fixup *fix, int action)
+> +{
+> +    /*
+> +     * The Pin Complex 0x17 for the top speakers is wrongly reported as
+> +     * unconnected.
+> +     * The top speakers should also have a sequence number lower than
+> +     * the bottom speakers on NID 0x14.
+> +     */
+> +    static const struct hda_pintbl pincfgs[] = {
+> +        { 0x14, 0x90170151 },
+> +        { 0x17, 0x90170150 },
+> +        { }
+> +    };
+> +    /*
+> +     * Avoid DAC 0x06 and 0x08, as they have no volume controls.
+> +     * DAC 0x02 and 0x03 would be fine.
+> +     */
+> +    static const hda_nid_t conn[] = { 0x02, 0x03 };
+> +    /*
+> +     * Prefer both bottom speakers (0x14) and headphones (0x21)
+> connected to DAC 0x02.
+> +     * Top speakers (0x21) are connected to DAC 0x03.
+> +     */
+> +    static const hda_nid_t preferred_pairs[] = {
+> +        0x14, 0x02,
+> +        0x17, 0x03,
+> +        0x21, 0x02,
+> +        0
+> +    };
+> +    struct alc_spec *spec = codec->spec;
+> +
+> +    switch (action) {
+> +    case HDA_FIXUP_ACT_PRE_PROBE:
+> +        snd_hda_apply_pincfgs(codec, pincfgs);
+> +        snd_hda_override_conn_list(codec, 0x17, ARRAY_SIZE(conn), conn);
+> +        spec->gen.preferred_dacs = preferred_pairs;
+> +        break;
+> +    }
+> +}
+> +
+>  enum {
+>      ALC269_FIXUP_GPIO2,
+>      ALC269_FIXUP_SONY_VAIO,
+> @@ -7094,6 +7134,7 @@ enum {
+>      ALC287_FIXUP_LEGION_16ITHG6,
+>      ALC287_FIXUP_YOGA9_14IAP7_BASS_SPK,
+>      ALC287_FIXUP_YOGA9_14IAP7_BASS_SPK_PIN,
+> +    ALC295_FIXUP_DELL_INSPIRON_TOP_SPEAKERS,
+>  };
+> 
+>  /* A special fixup for Lenovo C940 and Yoga Duet 7;
+> @@ -9017,6 +9058,12 @@ static const struct hda_fixup alc269_fixups[] = {
+>          .chained = true,
+>          .chain_id = ALC287_FIXUP_YOGA9_14IAP7_BASS_SPK,
+>      },
+> +    [ALC295_FIXUP_DELL_INSPIRON_TOP_SPEAKERS] = {
+> +        .type = HDA_FIXUP_FUNC,
+> +        .v.func = alc295_fixup_dell_inspiron_top_speakers,
+> +        .chained = true,
+> +        .chain_id = ALC269_FIXUP_DELL4_MIC_NO_PRESENCE,
+> +    },
+>  };
+> 
+>  static const struct snd_pci_quirk alc269_fixup_tbl[] = {
+> @@ -9116,6 +9163,7 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
+>      SND_PCI_QUIRK(0x1028, 0x0a9d, "Dell Latitude 5430",
+> ALC269_FIXUP_DELL4_MIC_NO_PRESENCE),
+>      SND_PCI_QUIRK(0x1028, 0x0a9e, "Dell Latitude 5430",
+> ALC269_FIXUP_DELL4_MIC_NO_PRESENCE),
+>      SND_PCI_QUIRK(0x1028, 0x0b19, "Dell XPS 15 9520", ALC289_FIXUP_DUAL_SPK),
+> +    SND_PCI_QUIRK(0x1028, 0x0b71, "Dell Inspiron 16 Plus 7620",
+> ALC295_FIXUP_DELL_INSPIRON_TOP_SPEAKERS),
+>      SND_PCI_QUIRK(0x1028, 0x164a, "Dell", ALC293_FIXUP_DELL1_MIC_NO_PRESENCE),
+>      SND_PCI_QUIRK(0x1028, 0x164b, "Dell", ALC293_FIXUP_DELL1_MIC_NO_PRESENCE),
+>      SND_PCI_QUIRK(0x103c, 0x1586, "HP", ALC269_FIXUP_HP_MUTE_LED_MIC2),
+> --
+> 2.37.2
+> 
