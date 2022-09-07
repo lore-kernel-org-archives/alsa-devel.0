@@ -4,82 +4,61 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2004DECAAD5
-	for <alsa-devel@archiver.kernel.org>; Thu,  8 Sep 2022 08:17:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0555EECAAD5
+	for <alsa-devel@archiver.kernel.org>; Thu,  8 Sep 2022 08:19:19 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A0F8116B0;
-	Thu,  8 Sep 2022 10:16:13 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A0F8116B0
+	by alsa0.perex.cz (Postfix) with ESMTPS id F37F916B3;
+	Thu,  8 Sep 2022 10:18:27 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F37F916B3
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1662625023;
-	bh=0Xcy7Sb8S/Alyqf+xypoaKPuCwt1msXzuWAl9mSjqJM=;
-	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=AQG3CXT8VUQUH7HlsJeFO1FVmVZeyKsMFTLPKDJAMHv1qCcoI+yR+3xTPCIv0jzYK
-	 eNMvtn1k2A/x0uTBA+ACIJjc2wBgGwa11CwTtQPNA578t1z8hicii/Ooq6rLIWAoPN
-	 Rc1vrxv8W9aEmWgqWE+xQMwiX7qhSLRk6nX+VYTU=
+	s=default; t=1662625158;
+	bh=dgxKMdUcEEqzB3+/56Ev+52SaodgllPzde81zk+gxm0=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=KzoJEqMMTzM+nH3QrzDrun85doXW4Kzit0QApZNabIWCGS3gsIUFaR9DazsTvDf4r
+	 o1JuL2eG1a3vtSTOdGlkV66LYOGuDXdpTo/abE/xHR2NVMFt2CIxYZ2e9AKBh7MD63
+	 ONkcfqIlZJCeADIcAtcJZyPtGP0a2581ko42MFwU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 391B4F801F7;
-	Thu,  8 Sep 2022 10:16:13 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 9E5DAF801F7;
+	Thu,  8 Sep 2022 10:18:27 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id E77E9F800CB; Thu,  8 Sep 2022 10:16:11 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id 15C6FF8023B; Wed,  7 Sep 2022 15:57:28 +0200 (CEST)
+Received: from smtp1.axis.com (smtp1.axis.com [195.60.68.17])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id B8CF9F800CB
- for <alsa-devel@alsa-project.org>; Thu,  8 Sep 2022 10:16:03 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B8CF9F800CB
+ by alsa1.perex.cz (Postfix) with ESMTPS id 6B1E9F8023B
+ for <alsa-devel@alsa-project.org>; Wed,  7 Sep 2022 15:57:20 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6B1E9F8023B
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="RJEIcksQ"; 
- dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="egziTsF6"
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 659713449D;
- Thu,  8 Sep 2022 08:16:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1662624963; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=arESGDH4tHKC/NAVP771DmFPNGw963e2VPRZVSwtGtU=;
- b=RJEIcksQsC+Au1sS6n+iICwJjDbanz7yvijO1jT0tO1jl5IZrbZ1O0VBRalAeChsI7onQW
- 7r6shXJNCWxOk3nB3vp4buA2A05zNKhBcblYvwc9ED21E3TswHC3UnzvFgiSUJZBUSjmr5
- ilK7vXYII5zybyj+lIglrITHREGx/Xk=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1662624963;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=arESGDH4tHKC/NAVP771DmFPNGw963e2VPRZVSwtGtU=;
- b=egziTsF6yY5BzNTY7et7TGgHlE8iz1MjTu23yPugrIApYRxxoK2o2KfIUVbEtCHcfYeDv7
- o0TwcSNzM6DzfTDw==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 441691322C;
- Thu,  8 Sep 2022 08:16:03 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id wUTlD8OkGWMXJgAAMHmgww
- (envelope-from <tiwai@suse.de>); Thu, 08 Sep 2022 08:16:03 +0000
-Date: Thu, 08 Sep 2022 10:16:02 +0200
-Message-ID: <87r10mcmd9.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: YJ Lee <yunjunlee@chromium.org>
-Subject: Re: About ALSA dummy module: support customized mixer volume leveling
-In-Reply-To: <CAPm_npY3SkumWgy8EN65no2iQFj2KWG6pysUchEKHBBPZ9AHsA@mail.gmail.com>
-References: <CAPm_npY3SkumWgy8EN65no2iQFj2KWG6pysUchEKHBBPZ9AHsA@mail.gmail.com>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
-Cc: alsa-devel@alsa-project.org, Ching Yun Chang <whalechang@google.com>,
- tiwai@suse.com, Yu-Hsuan Hsu <yuhsuan@chromium.org>
+ dkim=pass (2048-bit key) header.d=axis.com header.i=@axis.com
+ header.b="D2Rd3aiJ"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=axis.com; q=dns/txt; s=axis-central1; t=1662559042;
+ x=1694095042;
+ h=from:to:cc:subject:date:message-id:mime-version:
+ content-transfer-encoding;
+ bh=QRrtf0z8byXtDSLxOTZdZ1/pRN/4ljMiBiyuNUzrFI8=;
+ b=D2Rd3aiJu0aLROEYyGQ2YvZZCV7aJrc+YgFhkQkqaSOStB1zjPrQQt9G
+ g1K5n25aAVJLmee41Szyswkii7xkFwUMOhV5cehA5TZQQ0/Nu2quK91yn
+ OVjkWU8vUrPoVRMtz1SR+qYPWdmht7xy68yeLtMzMi+SvnHNu4jif6KbD
+ fXiXZ+f0VtXx3s/SXncL2lKGuY9jSWobHXlzXHcYMiPpaxETQjH1bJHqU
+ m3b9XTkLIGeqE6xRVSo20RABvUoogZnHPieMx4xAseqMLyqJNRT+Y2+c5
+ Mtv1GLvICnJ/iI7AhvpXa2Z6krbGPRaKwUcyFy0jo9hb5ITwKYlF2h6OQ Q==;
+From: Astrid Rost <astrid.rost@axis.com>
+To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>,
+ Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
+Subject: [PATCH] ASoC: ts3a227e: add parameters to control debounce times
+Date: Wed, 7 Sep 2022 15:57:07 +0200
+Message-ID: <20220907135707.15836-1-astrid.rost@axis.com>
+X-Mailer: git-send-email 2.20.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Mailman-Approved-At: Thu, 08 Sep 2022 10:18:26 +0200
+Cc: alsa-devel-mejlinglistan <alsa-devel@alsa-project.org>, kernel@axis.com,
+ Astrid Rost <astrid.rost@axis.com>, linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -95,42 +74,97 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Thu, 08 Sep 2022 07:26:02 +0200,
-YJ Lee wrote:
-> 
-> Hello Takashi (and the alsa community),
-> 
-> This is YJ Lee from chromium.org.
-> 
-> I'm thinking about extending the ALSA dummy module to support
-> customized volume leveling. It will be very useful to test devices
-> with different volume granularity. Currently this module is using
-> hard-coded mixer volume leveling, from min=-50 to max=100.
-> 
-> See L716: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git/tree/sound/drivers/dummy.c?h=queue/5.19#n716
-> 
-> My plan (A) is to expose 2 more additional module parameters and
-> replace a few occurrences, from L742-750.
-> 
-> Another plan (B) is to leverage the current existing module
-> parameter:model, and make the dummy-module to be able to accept models
-> with customized volume leveling. New dummy models can be provided as
-> configuration files, and be used in the same way as how currently
-> existing dummy models (L146-213) are used. However, it's a bit
-> over-engineering from the original purpose.
-> 
-> What do you think about these plans? Any insight you (and the alsa
-> community) can provide will be greatly appreciated.
+Add devicetree parameters to control the insertion, release and press
+debounce times.
 
-Only for volume min/max, module options may be an easier way, IMO.
+Signed-off-by: Astrid Rost <astrid.rost@axis.com>
+---
+ sound/soc/codecs/ts3a227e.c | 48 +++++++++++++++++++++++++++++++------
+ 1 file changed, 41 insertions(+), 7 deletions(-)
 
-OTOH, if we want to adjust more stuff, another possibility is to
-extend the proc file.  It currently supports the dynamic changes of
-PCM parameters, but we can extend it or add a new proc file for
-adjusting other stuff, too.  So the question is what else we want to
-allow changing.
+diff --git a/sound/soc/codecs/ts3a227e.c b/sound/soc/codecs/ts3a227e.c
+index d8ab0810fceb..fea274a0a91b 100644
+--- a/sound/soc/codecs/ts3a227e.c
++++ b/sound/soc/codecs/ts3a227e.c
+@@ -78,12 +78,20 @@ static const int ts3a227e_buttons[] = {
+ #define ADC_COMPLETE_INT_DISABLE 0x04
+ #define INTB_DISABLE 0x08
+ 
++/* TS3A227E_REG_SETTING_1 0x4 */
++#define DEBOUNCE_INSERTION_SETTING_SFT (0)
++#define DEBOUNCE_INSERTION_SETTING_MASK (0x7 << DEBOUNCE_PRESS_SETTING_SFT)
++
+ /* TS3A227E_REG_SETTING_2 0x05 */
+ #define KP_ENABLE 0x04
+ 
+ /* TS3A227E_REG_SETTING_3 0x06 */
+-#define MICBIAS_SETTING_SFT (3)
++#define MICBIAS_SETTING_SFT 3
+ #define MICBIAS_SETTING_MASK (0x7 << MICBIAS_SETTING_SFT)
++#define DEBOUNCE_RELEASE_SETTING_SFT 2
++#define DEBOUNCE_RELEASE_SETTING_MASK (0x1 << DEBOUNCE_RELEASE_SETTING_SFT)
++#define DEBOUNCE_PRESS_SETTING_SFT 0
++#define DEBOUNCE_PRESS_SETTING_MASK (0x3 << DEBOUNCE_PRESS_SETTING_SFT)
+ 
+ /* TS3A227E_REG_ACCESSORY_STATUS  0x0b */
+ #define TYPE_3_POLE 0x01
+@@ -136,7 +144,7 @@ static bool ts3a227e_volatile_reg(struct device *dev, unsigned int reg)
+ {
+ 	switch (reg) {
+ 	case TS3A227E_REG_INTERRUPT ... TS3A227E_REG_INTERRUPT_DISABLE:
+-	case TS3A227E_REG_SETTING_2:
++	case TS3A227E_REG_SETTING_1 ... TS3A227E_REG_SETTING_2:
+ 	case TS3A227E_REG_SWITCH_STATUS_1 ... TS3A227E_REG_ADC_OUTPUT:
+ 		return true;
+ 	default:
+@@ -269,16 +277,42 @@ static const struct regmap_config ts3a227e_regmap_config = {
+ static int ts3a227e_parse_device_property(struct ts3a227e *ts3a227e,
+ 				struct device *dev)
+ {
+-	u32 micbias;
++	u32 value;
++	u32 setting3_value = 0;
++	u32 setting3_mask = 0;
+ 	int err;
+ 
+-	err = device_property_read_u32(dev, "ti,micbias", &micbias);
++	err = device_property_read_u32(dev, "ti,micbias", &value);
+ 	if (!err) {
+-		regmap_update_bits(ts3a227e->regmap, TS3A227E_REG_SETTING_3,
+-			MICBIAS_SETTING_MASK,
+-			(micbias & 0x07) << MICBIAS_SETTING_SFT);
++		setting3_mask = MICBIAS_SETTING_MASK;
++		setting3_value =
++			(value << MICBIAS_SETTING_SFT) & MICBIAS_SETTING_MASK;
++	}
++
++	err = device_property_read_u32(dev, "ti,debounce-release", &value);
++	if (!err) {
++		setting3_mask |= DEBOUNCE_RELEASE_SETTING_MASK;
++		setting3_value |= (value << DEBOUNCE_RELEASE_SETTING_SFT) &
++				  DEBOUNCE_RELEASE_SETTING_MASK;
+ 	}
+ 
++	err = device_property_read_u32(dev, "ti,debounce-press", &value);
++	if (!err) {
++		setting3_mask |= DEBOUNCE_PRESS_SETTING_MASK;
++		setting3_value |= (value << DEBOUNCE_PRESS_SETTING_SFT) &
++				  DEBOUNCE_PRESS_SETTING_MASK;
++	}
++
++	if (setting3_mask)
++		regmap_update_bits(ts3a227e->regmap, TS3A227E_REG_SETTING_3,
++				   setting3_mask, setting3_value);
++
++	err = device_property_read_u32(dev, "ti,debounce-insertion", &value);
++	if (!err)
++		regmap_update_bits(ts3a227e->regmap, TS3A227E_REG_SETTING_1,
++			DEBOUNCE_INSERTION_SETTING_MASK, (value << DEBOUNCE_INSERTION_SETTING_SFT)
++			& DEBOUNCE_INSERTION_SETTING_MASK);
++
+ 	return 0;
+ }
+ 
+-- 
+2.20.1
 
-
-thanks,
-
-Takashi
