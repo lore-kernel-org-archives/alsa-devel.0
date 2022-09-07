@@ -4,62 +4,83 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B8BD0ECAAD3
-	for <alsa-devel@archiver.kernel.org>; Wed,  7 Sep 2022 10:10:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A90C4ECAAD3
+	for <alsa-devel@archiver.kernel.org>; Wed,  7 Sep 2022 10:15:13 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 8E69D15C3;
-	Wed,  7 Sep 2022 12:09:17 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8E69D15C3
+	by alsa0.perex.cz (Postfix) with ESMTPS id 6FD96E12;
+	Wed,  7 Sep 2022 12:14:21 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6FD96E12
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1662545407;
-	bh=yDFW8AeMqaFipLKOg9y/+hg+oMClMQZtYyfb7wl4v6o=;
+	s=default; t=1662545711;
+	bh=GWdOYDWTZe6KtuZNLOmGwpYmgKHedyUzrMXPcn91HUY=;
 	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
 	 List-Post:List-Help:List-Subscribe:From;
-	b=eQ1qVxnLY+TvnEGJnRcnnlgiKYLe+G5+oywta8Td+mLug2MYPI5Wq0W/g0xfgjxIB
-	 DE5Nzve22lUJtjXuN0r32ZD/NUGS9+YmplBc2vfGH9sP+rUUzZXJq7o3x5b+FrqkoQ
-	 vbTPkaG4hzOEtQ7bK0L9+5szBOU6q36uKGEPczAs=
+	b=Gw6SxhU9CqWBjytdqatdz4+q5SsKbvFe40iu7ekO0FGr1ycMuCC2GFtQ27FFHsqHt
+	 jO1fqC/8BVI+eLIXKs5kjQOu4bAMWOofNc4iFMYlv0BpLlv6XspdQOtxiTBFvyMmAV
+	 0MNYg8fPJ2PKSAk6CORI0FS7J2ofW+Ku99zrvWU4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 15062F80249;
-	Wed,  7 Sep 2022 12:09:17 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 14627F8028D;
+	Wed,  7 Sep 2022 12:14:21 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 6B8A4F8028D; Wed,  7 Sep 2022 08:59:39 +0200 (CEST)
-Received: from mail-m975.mail.163.com (mail-m975.mail.163.com [123.126.97.5])
- by alsa1.perex.cz (Postfix) with ESMTP id 508B3F8023B
- for <alsa-devel@alsa-project.org>; Wed,  7 Sep 2022 08:59:34 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 508B3F8023B
+ id 3171DF804B1; Wed,  7 Sep 2022 12:14:20 +0200 (CEST)
+Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
+ [67.231.152.168])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 5B4AAF80118;
+ Wed,  7 Sep 2022 12:14:15 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5B4AAF80118
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=163.com header.i=@163.com
- header.b="DAAkSiGC"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
- s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=gpA8V
- 5pVUBWAKuao2rXSBnqg89Sc8Qap5SeGlb1rPH0=; b=DAAkSiGC+7yrIU20vZ8vp
- B9wBbjLsQdyzBOl2g0JLM+jjfphlgE3BmgKhHEtLQDoPf705ABH40eGkAIcb1I6m
- bP4NWmKIWFZjZoHt4qWSuaU4SgZUKq+UQY0yesKko9MyaiDsfESeWs8Yr0FIfien
- xCYalk1PblhX/tXKznZqE4=
-Received: from localhost.localdomain (unknown [36.112.3.164])
- by smtp5 (Coremail) with SMTP id HdxpCgB3yRFKQRhj9Mwsag--.49282S4;
- Wed, 07 Sep 2022 14:59:30 +0800 (CST)
-From: Jianglei Nie <niejianglei2021@163.com>
-To: perex@perex.cz,
-	tiwai@suse.com
-Subject: [PATCH] ALSA: hda/ca0132: fix potential memory leak in dspxfr_image()
-Date: Wed,  7 Sep 2022 14:59:17 +0800
-Message-Id: <20220907065917.55810-1-niejianglei2021@163.com>
-X-Mailer: git-send-email 2.25.1
+ dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com
+ header.b="SQi3tDQH"
+Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
+ by mx0b-001ae601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 2877p1GG032346;
+ Wed, 7 Sep 2022 05:14:14 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
+ h=from : to : cc :
+ subject : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=PODMain02222019;
+ bh=IiVoG2fnJzlYy5zIJA+PVp/Rv31qKQR5pP87OgUZQuU=;
+ b=SQi3tDQH1HHKmBemUnVJl6u++lrEr0kRo0xFv0DLLwLqBblQDn/Yf+qCinnDBKHZdWeF
+ bAxHxKYdngd1ZCvCFJN1OBXrbZ31yKu16OVnXyh3jFI+GKrGKK73GJrJG1B4cBZ1nG7Z
+ QjjwQtYICILOGkAoq5iJjUyu0bjfiXET/KZXaF+t6eEvHhUqxaXgzLuWcII3hNmw9sNe
+ tFoBz0e6bcLDYYIVd91R1+9goh1xXz7mWYPyRGQa6q8soUS6WwMCoOyqNFiOnSe4UrBE
+ q26t4PkAvQ0B2FF+fsS4I2XmClbYXtVQOYKkVcmGd/ogKl5lsdg5aQIF6O4/4F/Slodh KQ== 
+Received: from ediex02.ad.cirrus.com ([84.19.233.68])
+ by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3jc3bpw4sn-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+ Wed, 07 Sep 2022 05:14:13 -0500
+Received: from ediex02.ad.cirrus.com (198.61.84.81) by ediex02.ad.cirrus.com
+ (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.12; Wed, 7 Sep
+ 2022 05:14:12 -0500
+Received: from ediswmail.ad.cirrus.com (198.61.86.93) by
+ anon-ediex02.ad.cirrus.com (198.61.84.81) with Microsoft SMTP Server id
+ 15.2.1118.12 via Frontend Transport; Wed, 7 Sep 2022 05:14:12 -0500
+Received: from debianA11184.ad.cirrus.com (unknown [198.61.65.149])
+ by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 2C1FFB06;
+ Wed,  7 Sep 2022 10:14:05 +0000 (UTC)
+From: Richard Fitzgerald <rf@opensource.cirrus.com>
+To: <vkoul@kernel.org>, <yung-chuan.liao@linux.intel.com>,
+ <pierre-louis.bossart@linux.intel.com>, <lgirdwood@gmail.com>,
+ <peter.ujfalusi@linux.intel.com>, <ranjani.sridharan@linux.intel.com>,
+ <kai.vehmanen@linux.intel.com>, <daniel.baluta@nxp.com>,
+ <sanyog.r.kale@intel.com>, <broonie@kernel.org>
+Subject: [PATCH 0/7] soundwire: Fix driver removal
+Date: Wed, 7 Sep 2022 11:13:55 +0100
+Message-ID: <20220907101402.4685-1-rf@opensource.cirrus.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: HdxpCgB3yRFKQRhj9Mwsag--.49282S4
-X-Coremail-Antispam: 1Uf129KBjvJXoW7tF1rCFWDGFW7uw43Kw17Wrg_yoW8Jw17pa
- y8KrZ8GrZ7Xr1jyw4rJ34jg3WUW3ykZFyftr4Ykw1fZ3sIgFyDXas8G3sYvF4S9FWvkryU
- XFWkCwn8XayDtF7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
- 9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x0zilksPUUUUU=
-X-Originating-IP: [36.112.3.164]
-X-CM-SenderInfo: xqlhyxxdqjzvrlsqjii6rwjhhfrp/1tbiQxJ1jFc7bS461AAAsp
-X-Mailman-Approved-At: Wed, 07 Sep 2022 12:09:16 +0200
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
- Jianglei Nie <niejianglei2021@163.com>
+Content-Type: text/plain
+X-Proofpoint-GUID: zO4yBel3wvibvReJBzwxEzDL20GZCnK_
+X-Proofpoint-ORIG-GUID: zO4yBel3wvibvReJBzwxEzDL20GZCnK_
+X-Proofpoint-Spam-Reason: safe
+Cc: patches@opensource.cirrus.com, alsa-devel@alsa-project.org,
+ Richard Fitzgerald <rf@opensource.cirrus.com>, linux-kernel@vger.kernel.org,
+ sound-open-firmware@alsa-project.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -75,46 +96,43 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-dspxfr_image() allocates DSP ports for the download stream with
-dsp_allocate_ports_format(). When gets some error, the allocated
-DSP ports are not released, which will lead to a memory leak.
+Removal of child drivers and the bus driver was broken and would
+result in a slew of various errors.
 
-We can fix it by releasing DSP ports with dsp_free_ports() when
-getting some error.
+Most of these were caused by the code shutting down in the wrong
+order, shutting down the bus driver first. The bus driver should
+be shut down after the child drivers have been removed (compare
+with the I2C and SPI subsystem for example).
 
-Signed-off-by: Jianglei Nie <niejianglei2021@163.com>
----
- sound/pci/hda/patch_ca0132.c | 3 +++
- 1 file changed, 3 insertions(+)
+These patches fix that.
 
-diff --git a/sound/pci/hda/patch_ca0132.c b/sound/pci/hda/patch_ca0132.c
-index 208933792787..6b8f45e14075 100644
---- a/sound/pci/hda/patch_ca0132.c
-+++ b/sound/pci/hda/patch_ca0132.c
-@@ -3455,6 +3455,7 @@ static int dspxfr_image(struct hda_codec *codec,
- 					&port_map_mask);
- 	if (status < 0) {
- 		codec_dbg(codec, "alloc ports fail\n");
-+		dsp_free_ports(codec);
- 		goto exit;
- 	}
- 
-@@ -3463,6 +3464,7 @@ static int dspxfr_image(struct hda_codec *codec,
- 			WIDGET_CHIP_CTRL, stream_id, 0, &response);
- 	if (status < 0) {
- 		codec_dbg(codec, "set stream chan fail\n");
-+		dsp_free_ports(codec);
- 		goto exit;
- 	}
- 
-@@ -3470,6 +3472,7 @@ static int dspxfr_image(struct hda_codec *codec,
- 		if (!is_valid(fls_data)) {
- 			codec_dbg(codec, "FLS check fail\n");
- 			status = -EINVAL;
-+			dsp_free_ports(codec);
- 			goto exit;
- 		}
- 		status = dspxfr_one_seg(codec, fls_data, reloc,
+A secondary problem was over the cleanup of child drivers. The
+removal functions were not the opposite of the probe function,
+and the ownership of struct sdw_slave is tricky because it mixes
+two separate usages and currently has to be "owned" by the bus
+driver.
+
+Tested with 4 peripherals on 1 bus and 8 peripherals on 2 buses.
+
+Richard Fitzgerald (7):
+  soundwire: bus: Do not forcibly disable child pm_runtime
+  soundwire: intel_init: Separate shutdown and cleanup
+  ASoC: SOF: Intel: Don't disable Soundwire interrupt before the bus has
+    shut down
+  soundwire: bus: Add remove callback to struct sdw_master_ops
+  soundwire: intel: Don't disable interrupt until children are removed
+  soundwire: intel: Don't disable pm_runtime until children are removed
+  soundwire: bus: Fix premature removal of sdw_slave objects
+
+ drivers/soundwire/bus.c             | 37 ++++++++++++++++++++++++-----
+ drivers/soundwire/intel.c           | 13 ++++++++--
+ drivers/soundwire/intel_init.c      | 25 +++++++++++++++----
+ drivers/soundwire/slave.c           | 21 ++++++++++++----
+ include/linux/soundwire/sdw.h       |  3 ++-
+ include/linux/soundwire/sdw_intel.h |  2 ++
+ sound/soc/sof/intel/hda.c           | 16 ++++++++++---
+ 7 files changed, 96 insertions(+), 21 deletions(-)
+
 -- 
-2.25.1
+2.30.2
 
