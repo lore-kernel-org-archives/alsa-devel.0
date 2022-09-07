@@ -4,60 +4,59 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B422AC6FA89
-	for <alsa-devel@archiver.kernel.org>; Wed,  7 Sep 2022 14:24:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2ABDCC54EE9
+	for <alsa-devel@archiver.kernel.org>; Wed,  7 Sep 2022 14:24:38 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E03CD15C2;
-	Wed,  7 Sep 2022 16:23:33 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E03CD15C2
+	by alsa0.perex.cz (Postfix) with ESMTPS id 5FBAC1696;
+	Wed,  7 Sep 2022 16:23:46 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5FBAC1696
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1662560664;
-	bh=y56zi/60F5ITxynDT2hlctMP4NfN49y+o3mIImmH3Dg=;
+	s=default; t=1662560676;
+	bh=XoygatHT4Li32rCgO8k43XIL6g7WCfZNoyPKsWFgees=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=ShBrUksajXjdydpOJq5cn3RazrB05eo/Fbm3C8DTgdAD1PUN9UJ1VWk+wiFcI0ZLL
-	 +REiISBxReiFWQA35CrXH2UTfy9vcMSAYZMsr4DOBU4sQtU0pdCvQmPhWkIDer8mte
-	 nxXI7zR0ZB6knNtNT2RNG89Wloa8T/CMjC8FQ20E=
+	b=gBfEhiCxxWMTbb1AbK/F2wPSQ2Kx28bUZ8ybvznOIBRMM1d3NEwpJWnP4WaOS7fTu
+	 rFGZeS0LteZbSvoMHBuz/DyilGAbUWiVqGAuCOein5GRH7eKRRIPd0f84mS5rsDa4o
+	 OLNu69BPd8VDgh7kOoKui+jSB4qjjkuuFvcSx04o=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 21640F8055B;
-	Wed,  7 Sep 2022 16:22:24 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 4604CF80563;
+	Wed,  7 Sep 2022 16:22:26 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id F1DBBF80558; Wed,  7 Sep 2022 16:22:21 +0200 (CEST)
-Received: from relay12.mail.gandi.net (relay12.mail.gandi.net
- [IPv6:2001:4b98:dc4:8::232])
+ id A417FF80564; Wed,  7 Sep 2022 16:22:24 +0200 (CEST)
+Received: from relay12.mail.gandi.net (relay12.mail.gandi.net [217.70.178.232])
  (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 4C853F80533
- for <alsa-devel@alsa-project.org>; Wed,  7 Sep 2022 16:22:12 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4C853F80533
+ by alsa1.perex.cz (Postfix) with ESMTPS id 0DC82F80542
+ for <alsa-devel@alsa-project.org>; Wed,  7 Sep 2022 16:22:18 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0DC82F80542
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com
- header.b="AhbVgluw"
+ header.b="AOWGd9Mn"
 Received: from booty.fritz.box (unknown [77.244.183.192])
  (Authenticated sender: luca.ceresoli@bootlin.com)
- by mail.gandi.net (Postfix) with ESMTPA id E8775200007;
- Wed,  7 Sep 2022 14:22:09 +0000 (UTC)
+ by mail.gandi.net (Postfix) with ESMTPA id D228B20000F;
+ Wed,  7 Sep 2022 14:22:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
- t=1662560531;
+ t=1662560537;
  h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
  to:to:cc:cc:mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=Hkh90Imkp9wad8yz7UhVbHvGQ7u2lRuqcdvVsAUHVf8=;
- b=AhbVgluwrJrNd+ZcBjQHaMqV4FSxpzqM601IbJNxKfAAmIIxy0f7OssfjbEkcOVea1pjUp
- x9+sKrwzlELO7L2QhPqkQUch8GB+iaLgzb2anM0ZWHYKcZvvlVXl0BswKpbCHHdAdRVZKj
- eeJSIh3wpoQSYe2zUOJ5pFiPxRzziImWfq/Lrmp7q250f4fjQ27YcAQXNEc9NV1YTQHgSc
- znSI++2sdpd3VvbPLBGfzGoLHHPPZaL74RMmlCHFlqzVg0cGQvYu9PoBu+eC03ViSVvMWp
- RgL1VH4yIBqgkvwHlTxzGMgOkA2GqBen4Y6L8q2ls4dMgJM98UA+78b/DHmvxw==
+ bh=SRJhK68KAnFJfkryAuHaNW+7tiZrtjjidVkx4uYL5XU=;
+ b=AOWGd9MnnWKkE7Kmh2RGiJ/tBsTNQAQlKX7ROe9c/tvImUL9+OaD5W96WHNG9mvr6LmjGl
+ PUmSTtKfPtvyt88zsz1P9TKi8vzYE+Kx5tiTBSCYjU1wfbYNX6TDJ7TsuW+n7fkGEWEHa9
+ yauHRc7Ov7tlYpoW6WRPbL0dxV0vf7gQbenMqjFAPJQTazZpap8MXWGBI7oixstVXRTdD9
+ tSbp3QWfblJLKxm0SvRGUDGdSt36nQ0YrUwrQdrV+ayViu491G9x195k9S4gqsjvBJkA7k
+ hdXkSoElmUCLXK6Kw7IwGFwPb1WX2xY8pMUz3K8TVuAVKNqL240woQFIA31GaA==
 From: luca.ceresoli@bootlin.com
 To: alsa-devel@alsa-project.org,
 	linux-rockchip@lists.infradead.org
-Subject: [PATCH 5/8] ASoC: rockchip: i2s-tdm: Fix clk_id usage in .set_sysclk()
-Date: Wed,  7 Sep 2022 16:21:21 +0200
-Message-Id: <20220907142124.2532620-6-luca.ceresoli@bootlin.com>
+Subject: [PATCH 8/8] ASoC: rockchip: add new RK3308 sound card
+Date: Wed,  7 Sep 2022 16:21:24 +0200
+Message-Id: <20220907142124.2532620-9-luca.ceresoli@bootlin.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20220907142124.2532620-1-luca.ceresoli@bootlin.com>
 References: <20220907142124.2532620-1-luca.ceresoli@bootlin.com>
@@ -90,82 +89,185 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 From: Luca Ceresoli <luca.ceresoli@bootlin.com>
 
-There are two problems with the second parameter of
-rockchip_i2s_tdm_set_sysclk():
+The Rockchip RK3308 8-channel I2S adapter has a mainline driver that can
+work fine with an audio-graph-card or simple-audio-card. Those card drivers
+call the .set_sysclk op once, and this is usually enough for applications
+using an external codec.
 
- 1. The second argument to a .set_sysclk() op is a clk_id, not a stream
-    index, so it is incorrect to compare it with SNDRV_PCM_STREAM_PLAYBACK.
+But in reality the I2S adapter has two clock inputs (TX and RX), and the
+preferred way to use the RK3308 internal codec is enabling both clocks,
+potentially with different rates. The existing simple-card code does not
+implement this possibility.
 
-    Technically this code works correctly anyway because
-    SNDRV_PCM_STREAM_PLAYBACK is defined as 0, which is also the clk_id for
-    the mclk_tx as enforced by the device tree bindings. So this is a
-    formal error, not triggering incorrect behaviour.
+To allow setting both clocks, add a new minimal driver that builds on top
+of audio-graph-card and changes the dai_link->init callback with a modified
+version of asoc_simple_init_dai(). This ultimately calls the set_sysclk()
+callback as many times as the number of clocks defined in device tree.
 
- 2. The else branch will consider any nonzero value as "rx", while only
-    value 1 should be allowed for the mclk_rx clock. This does trigger
-    incorrect behaviour if passing clk_id not equal to 0 or 1.
-
-Fix problem 1 by adding a new enum for the clock indexes as enforced in
-device tree and replace accordingly:
-
- * stream -> clk_id
- * SNDRV_PCM_STREAM_PLAYBACK -> CLK_MCLK_TX (value 0)
-
-Fix problem 2 by adding an 'else if' and returning error if clk_id is not 0
-or 1.
+With this implementation, the same rate is set to all the sysclks. Setting
+different rates can be added later.
 
 Signed-off-by: Luca Ceresoli <luca.ceresoli@bootlin.com>
 ---
- sound/soc/rockchip/rockchip_i2s_tdm.c | 18 ++++++++++++------
- 1 file changed, 12 insertions(+), 6 deletions(-)
+ MAINTAINERS                               |  1 +
+ sound/soc/rockchip/Kconfig                | 14 ++++
+ sound/soc/rockchip/Makefile               |  1 +
+ sound/soc/rockchip/rockchip_rk3308_card.c | 97 +++++++++++++++++++++++
+ 4 files changed, 113 insertions(+)
+ create mode 100644 sound/soc/rockchip/rockchip_rk3308_card.c
 
-diff --git a/sound/soc/rockchip/rockchip_i2s_tdm.c b/sound/soc/rockchip/rockchip_i2s_tdm.c
-index 2550bd2a5e78..4aa80fedb996 100644
---- a/sound/soc/rockchip/rockchip_i2s_tdm.c
-+++ b/sound/soc/rockchip/rockchip_i2s_tdm.c
-@@ -34,6 +34,9 @@
- #define TRCM_TX 1
- #define TRCM_RX 2
+diff --git a/MAINTAINERS b/MAINTAINERS
+index fb2a0a6e3c1f..96ccda9625f8 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -17600,6 +17600,7 @@ ROCKCHIP RK3308 SOUND CARD DRIVER
+ M:	Luca Ceresoli <luca.ceresoli@bootlin.com>
+ S:	Maintained
+ F:	Documentation/devicetree/bindings/sound/rockchip,rk3308-audio-graph-card.yaml
++F:	sound/soc/rockchip/rockchip_rk3308_card.c
  
-+/* Clock indexes as enforced by the DT bindings */
-+enum { CLK_IDX_MCLK_TX, CLK_IDX_MCLK_RX };
+ ROCKCHIP VIDEO DECODER DRIVER
+ M:	Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
+diff --git a/sound/soc/rockchip/Kconfig b/sound/soc/rockchip/Kconfig
+index 42f76bc0fb02..b00dc04f8fd0 100644
+--- a/sound/soc/rockchip/Kconfig
++++ b/sound/soc/rockchip/Kconfig
+@@ -45,6 +45,20 @@ config SND_SOC_ROCKCHIP_SPDIF
+ 	  Say Y or M if you want to add support for SPDIF driver for
+ 	  Rockchip SPDIF transceiver device.
+ 
++config SND_SOC_ROCKCHIP_RK3308_INTERNAL_CODEC
++	tristate "ASoC sound card based on the internal RK3308 codec"
++	depends on HAVE_CLK && SND_SOC_ROCKCHIP
++	depends on SND_AUDIO_GRAPH_CARD
++	select SND_SOC_ROCKCHIP_I2S_TDM
++	select SND_SOC_GENERIC_DMAENGINE_PCM
++	help
++	  ASoC sound card driver for the RK3308 internal audio codec.
 +
- struct txrx_config {
- 	u32 addr;
- 	u32 reg;
-@@ -969,7 +972,7 @@ static int rockchip_i2s_tdm_trigger(struct snd_pcm_substream *substream,
- 	return 0;
- }
- 
--static int rockchip_i2s_tdm_set_sysclk(struct snd_soc_dai *cpu_dai, int stream,
-+static int rockchip_i2s_tdm_set_sysclk(struct snd_soc_dai *cpu_dai, int clk_id,
- 				       unsigned int freq, int dir)
- {
- 	struct rk_i2s_tdm_dev *i2s_tdm = to_info(cpu_dai);
-@@ -978,15 +981,18 @@ static int rockchip_i2s_tdm_set_sysclk(struct snd_soc_dai *cpu_dai, int stream,
- 	if (i2s_tdm->clk_trcm) {
- 		i2s_tdm->mclk_tx_freq = freq;
- 		i2s_tdm->mclk_rx_freq = freq;
++	  The Rockchip RK3308 SoC has a built-in audio codec that is
++	  connected internally to one out of a selection of the internal
++	  I2S controllers. This driver implements an audio card using these
++	  components.
 +
-+		dev_dbg(i2s_tdm->dev, "mclk freq: %u", freq);
- 	} else {
--		if (stream == SNDRV_PCM_STREAM_PLAYBACK)
-+		if (clk_id == CLK_IDX_MCLK_TX)
- 			i2s_tdm->mclk_tx_freq = freq;
--		else
-+		else if (clk_id == CLK_IDX_MCLK_RX)
- 			i2s_tdm->mclk_rx_freq = freq;
--	}
-+		else
-+			return -ENOTSUPP;
+ config SND_SOC_ROCKCHIP_MAX98090
+ 	tristate "ASoC support for Rockchip boards using a MAX98090 codec"
+ 	depends on SND_SOC_ROCKCHIP && I2C && GPIOLIB && HAVE_CLK
+diff --git a/sound/soc/rockchip/Makefile b/sound/soc/rockchip/Makefile
+index 30c57c0d7660..680decae0c02 100644
+--- a/sound/soc/rockchip/Makefile
++++ b/sound/soc/rockchip/Makefile
+@@ -15,6 +15,7 @@ snd-soc-rockchip-rt5645-objs := rockchip_rt5645.o
+ snd-soc-rk3288-hdmi-analog-objs := rk3288_hdmi_analog.o
+ snd-soc-rk3399-gru-sound-objs := rk3399_gru_sound.o
  
--	dev_dbg(i2s_tdm->dev, "The target mclk_%s freq is: %d\n",
--		stream ? "rx" : "tx", freq);
-+		dev_dbg(i2s_tdm->dev, "mclk[%d] freq: %u", clk_id, freq);
++obj-$(CONFIG_SND_SOC_ROCKCHIP_RK3308_INTERNAL_CODEC) += rockchip_rk3308_card.o
+ obj-$(CONFIG_SND_SOC_ROCKCHIP_MAX98090) += snd-soc-rockchip-max98090.o
+ obj-$(CONFIG_SND_SOC_ROCKCHIP_RT5645) += snd-soc-rockchip-rt5645.o
+ obj-$(CONFIG_SND_SOC_RK3288_HDMI_ANALOG) += snd-soc-rk3288-hdmi-analog.o
+diff --git a/sound/soc/rockchip/rockchip_rk3308_card.c b/sound/soc/rockchip/rockchip_rk3308_card.c
+new file mode 100644
+index 000000000000..3cfc751993fe
+--- /dev/null
++++ b/sound/soc/rockchip/rockchip_rk3308_card.c
+@@ -0,0 +1,97 @@
++// SPDX-License-Identifier: GPL-2.0-only
++//
++// Audio card using the RK3308 internal I2S
++//
++// Allows driving the I2S peripheral with both the RX and TX clocks. This
++// is useful to use the RK3308 internal audio codec.
++//
++// Copyright (c) 2022, Vivax-Metrotech Ltd
++//
++// Based on sound/soc/generic/audio-graph-card.c
++
++#include <linux/module.h>
++#include <linux/of_clk.h>
++#include <linux/of_device.h>
++#include <linux/platform_device.h>
++#include <sound/graph_card.h>
++
++static int rk3308_audio_asoc_simple_init_dai(struct snd_soc_dai *dai,
++					     struct asoc_simple_dai *simple_dai)
++{
++	const int nclks = 2; /* The sysclks are clk_id 0 and 1 for the RK3308 driver */
++	int err;
++	int i;
++
++	if (!simple_dai || !simple_dai->sysclk)
++		return 0;
++
++	/* Can be extended to get two different sysclk values via device tree */
++	for (i = 0; i < nclks; i++) {
++		err = snd_soc_dai_set_sysclk(dai, i, simple_dai->sysclk,
++					     simple_dai->clk_direction);
++		if (err && err != -ENOTSUPP)
++			return dev_err_probe(dai->dev, err, "simple-card: set_sysclk error\n");
 +	}
- 
- 	return 0;
- }
++
++	return 0;
++}
++
++static int rk3308_audio_asoc_simple_dai_init(struct snd_soc_pcm_runtime *rtd)
++{
++	struct asoc_simple_priv *priv = snd_soc_card_get_drvdata(rtd->card);
++	struct simple_dai_props *props = simple_priv_to_props(priv, rtd->num);
++	struct asoc_simple_dai *dai;
++	int i, ret;
++
++	for_each_prop_dai_codec(props, i, dai) {
++		ret = rk3308_audio_asoc_simple_init_dai(asoc_rtd_to_codec(rtd, i), dai);
++		if (ret < 0)
++			return ret;
++	}
++	for_each_prop_dai_cpu(props, i, dai) {
++		ret = rk3308_audio_asoc_simple_init_dai(asoc_rtd_to_cpu(rtd, i), dai);
++		if (ret < 0)
++			return ret;
++	}
++
++	return 0;
++}
++
++static int rk3308_audio_graph_probe(struct platform_device *pdev)
++{
++	struct asoc_simple_priv *priv;
++	struct device *dev = &pdev->dev;
++	struct snd_soc_card *card;
++
++	priv = devm_kzalloc(dev, sizeof(*priv), GFP_KERNEL);
++	if (!priv)
++		return -ENOMEM;
++
++	card = simple_priv_to_card(priv);
++	card->driver_name = "rk3308-audio-graph-card";
++	card->probe = asoc_graph_card_probe;
++	priv->init = rk3308_audio_asoc_simple_dai_init;
++
++	return audio_graph_parse_of(priv, dev);
++}
++
++static const struct of_device_id graph_of_rk3308_card_match[] = {
++	{ .compatible = "rockchip,rk3308-audio-graph-card" },
++	{},
++};
++MODULE_DEVICE_TABLE(of, graph_of_rk3308_card_match);
++
++static struct platform_driver rk3308_audio_graph_card = {
++	.driver = {
++		.name = "rk3308-audio-graph-card",
++		.pm = &snd_soc_pm_ops,
++		.of_match_table = graph_of_rk3308_card_match,
++	},
++	.probe = rk3308_audio_graph_probe,
++	.remove = asoc_simple_remove,
++};
++module_platform_driver(rk3308_audio_graph_card);
++
++MODULE_LICENSE("GPL");
++MODULE_DESCRIPTION("ASoC Audio Graph Card for Rockchip RK3308");
++MODULE_AUTHOR("Luca Ceresoli <luca.ceresoli@bootlin.com>");
 -- 
 2.34.1
 
