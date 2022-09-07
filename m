@@ -4,73 +4,73 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 03DD0C38145
-	for <alsa-devel@archiver.kernel.org>; Wed,  7 Sep 2022 10:19:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id EC04FECAAD3
+	for <alsa-devel@archiver.kernel.org>; Wed,  7 Sep 2022 10:19:27 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 50D0B1682;
-	Wed,  7 Sep 2022 12:18:23 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 50D0B1682
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3B6521683;
+	Wed,  7 Sep 2022 12:18:36 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3B6521683
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1662545953;
-	bh=wRY7jSkBc0yg+EgohT3Cmj7DdTFNXqAIwSINO6Hq1NI=;
+	s=default; t=1662545966;
+	bh=SV0ncGJJI4e1o2PsSMiA49Z/fjwv27VyJ4FI8PgXPIg=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=ML1GHK29ecNUxH06ojyBIfuoQZbvOPCRFL2p1yUMTxPtxEqTzRHHDv4D0nJxrPrck
-	 rHFxPj9eI0Ui3tZ4M6wXP3Rnfi+iuS9XSr74Q/gFAnk7tb6TPiz2O1MP1TqVwAHRm5
-	 GSl6Zo9G31Uun6mxGoz6S9VDCWJgxrxyWwus8Qzc=
+	b=f5+qQqgavYQfhRPz6aJNY6mxbj9fnpc3uJjcZq6s0IuE72jkdwWPLS+BpckaNlgiO
+	 ekRlK6DgyB5Kbc5wj47vrdE1p5MbtrG3DnxPRg6O28/GlnjmDWDJnlfKZu18g9fOep
+	 VHbv7zzqn67xoyhqEB9Wopz70fWO+uFD5jxQGHTo=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 16FF5F8057E;
-	Wed,  7 Sep 2022 12:16:32 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id E32B8F805B1;
+	Wed,  7 Sep 2022 12:16:33 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 701C6F805B3; Wed,  7 Sep 2022 12:16:30 +0200 (CEST)
-Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com
- [IPv6:2a00:1450:4864:20::135])
+ id 6DEBCF805B3; Wed,  7 Sep 2022 12:16:31 +0200 (CEST)
+Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com
+ [IPv6:2a00:1450:4864:20::12c])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 858B4F80552
+ by alsa1.perex.cz (Postfix) with ESMTPS id B8DB9F80542
  for <alsa-devel@alsa-project.org>; Wed,  7 Sep 2022 12:16:17 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 858B4F80552
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B8DB9F80542
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org
- header.b="s83OHZJo"
-Received: by mail-lf1-x135.google.com with SMTP id w8so21620090lft.12
+ header.b="Sf1qMEHp"
+Received: by mail-lf1-x12c.google.com with SMTP id x14so6299389lfu.10
  for <alsa-devel@alsa-project.org>; Wed, 07 Sep 2022 03:16:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
  h=content-transfer-encoding:mime-version:references:in-reply-to
  :message-id:date:subject:cc:to:from:from:to:cc:subject:date;
- bh=gkNG+qHcrxb6dHeMWe1c0FIspCIqhs0hG0rU1YpvATQ=;
- b=s83OHZJoA4t36RGSXtm/7aHzlM/OXF8ldYpfRpox214Y6tSCM7GwXrfgT49cnokNWk
- EuBkHCAPX3OPaz9wwqtQk9D2waxBNUZyQKUNMn3aNCVmMv3HDrj/HOpeBlJ50MQRqw5i
- pzN8HRE9KJ8mGJddaRIjHf8XyriPROm89ln7JJWlLapAtfNh8CDmTrHZ8ihb3NiQO56y
- 48cNHW5uTjsuIpp7mz8mXAwNkfmwcs96T0mRrfmY99Ld1Er8fofT+9us5C/fqhzAqr9I
- ByMBpGFMIBO/wXSN0iV0ZRv7LJL1PcsqTZVDEv1jk/inMamA4XaSrHlvjj/CiU147zwc
- 7cWQ==
+ bh=rD7nUjrvSdRKK26SnCtib57c+ip99Bt4hzrz7aSHTO4=;
+ b=Sf1qMEHpMyvMOM726UPwmd4tFRVkWl14QmuLSPwXcWWckFo9iNstALB59POadIE3u/
+ F4z6QMTShCXZaeHZaFD4RKl2hlR7sNGnoBa5+8K7+ZFhEBx9neK7x13pTAbYvQeS232w
+ 7R+ZoQUBb2u+2ZUQpdjN2u7ejl8F4+rI0uxB6f6Z4ev9OJLKIzSw8UPB/4KAR99ad/o6
+ EZtlx09RAjYbxIODMUR9TrydowX1NenVtzRJZ2fA7I9z9xOzOToR4+92ckfskb5xIy9E
+ pC5ayOZDuvvQ9LhpNihN4Bknw/MZVX5C3ayd1eMT+JS3+zKXteUg61uhzMrlufgMWLvf
+ xU4Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
  h=content-transfer-encoding:mime-version:references:in-reply-to
  :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
  :subject:date;
- bh=gkNG+qHcrxb6dHeMWe1c0FIspCIqhs0hG0rU1YpvATQ=;
- b=Ml18ZvjMe1PgLFlqtPvnYlDwDpKyDhWRy2qjukKImoYdP7eySMLJO9VuzS55bXOFq2
- MqSZNB6aCJlT8EEDBRawJoH6WcsUDEiyYm6XLG1M9GlYDhtWZMFWqTPGRIKX+A4iD6hl
- x/GWoRv4sWTWE1pRvqE5vNONYs5/ZEt54z9wXLOHece3d7HZzJjCVgtjqLFTeGLOjQj/
- WtIOSSNnJ5ssdoMWslDzwEPyXRmKaiNTwl9ozo7B7Gmye/nNmoQGBd71cRK66cFlO2dS
- 4D1hLGSKTlygYIP8Rotwms9xvG3+0ADTvTgVJMG6o4cZEe963ER4kdV0F4E5nKktTtPN
- QrFg==
-X-Gm-Message-State: ACgBeo2DyutkTt1jAMRQ7Ikch46pCqEsv8/oSiCwsnrwZS8lhZUACPQ4
- X61i+VMKp9lpYEcboEKK5qhSuw==
-X-Google-Smtp-Source: AA6agR4ntjNiwe+YhhQH3At+XwAWpn0ItRcjKRzCu/35uda2S2LdIV7HOkJdZ33CCjcTs4j8GWRc9Q==
-X-Received: by 2002:a05:6512:131f:b0:494:5d2f:c34b with SMTP id
- x31-20020a056512131f00b004945d2fc34bmr891828lfu.324.1662545777101; 
- Wed, 07 Sep 2022 03:16:17 -0700 (PDT)
+ bh=rD7nUjrvSdRKK26SnCtib57c+ip99Bt4hzrz7aSHTO4=;
+ b=jeJqxwrB6N6XIe8YSbyuBi8b9W2XSU3UQfp486/B4oSXB/7s01bQ5gYwVx5DsSE0AU
+ unzIwo2vQ3vGICyxlS+DhJU4PWREVEfSS5NgEisji1C/L0CUG5aLjJYZFEJObTXZ3dxV
+ oJsbc19Ic3c5DlSLoSEWwos3OTrznFLYMbLt5/smhvN/8OVNaqjl2ZObm7HJ9FRdX93M
+ t3zGB0FKhhdquirSTg/B1kA83GscrmcdU6AQarzcl9WT1ZiMWsqH6ePPtZGP5SPbwyH9
+ 0+Xl0z7VM6RUjGDRZ4mVak8gd9wTvrxAcJMY5qqfLyivOMt16p/wv2liFLuWylzcFNKg
+ +cNg==
+X-Gm-Message-State: ACgBeo0LYVtANVm17mBFBVm6LZTfDcQ6FSPpsFqXRc/UlV7qCtjDY0KR
+ iAdkGUDu0Te9LFmVBVmwvHkPmQ==
+X-Google-Smtp-Source: AA6agR6tnZ/eDnpRKASnvAO3rT5c8S19KCAhnPnR8bkNHZdmAwUtPsbo7BPBgbJoF2jBYLWQZCUFYQ==
+X-Received: by 2002:a05:6512:ad0:b0:497:a620:157d with SMTP id
+ n16-20020a0565120ad000b00497a620157dmr941660lfu.643.1662545775597; 
+ Wed, 07 Sep 2022 03:16:15 -0700 (PDT)
 Received: from krzk-bin.. (78-11-189-27.static.ip.netia.com.pl. [78.11.189.27])
  by smtp.gmail.com with ESMTPSA id
- u9-20020a2ea169000000b0026ab0e480bcsm960734ljl.39.2022.09.07.03.16.15
+ u9-20020a2ea169000000b0026ab0e480bcsm960734ljl.39.2022.09.07.03.16.14
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Wed, 07 Sep 2022 03:16:16 -0700 (PDT)
+ Wed, 07 Sep 2022 03:16:15 -0700 (PDT)
 From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 To: Andy Gross <agross@kernel.org>, Bjorn Andersson <andersson@kernel.org>,
  Konrad Dybcio <konrad.dybcio@somainline.org>,
@@ -80,9 +80,10 @@ To: Andy Gross <agross@kernel.org>, Bjorn Andersson <andersson@kernel.org>,
  Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
  linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
  linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
-Subject: [PATCH v2 09/14] ASoC: dt-bindings:: qcom,q6asm: convert to dtschema
-Date: Wed,  7 Sep 2022 12:15:51 +0200
-Message-Id: <20220907101556.37394-10-krzysztof.kozlowski@linaro.org>
+Subject: [PATCH v2 08/14] arm64: dts: qcom: sm8250: use generic name for LPASS
+ clock controller
+Date: Wed,  7 Sep 2022 12:15:50 +0200
+Message-Id: <20220907101556.37394-9-krzysztof.kozlowski@linaro.org>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20220907101556.37394-1-krzysztof.kozlowski@linaro.org>
 References: <20220907101556.37394-1-krzysztof.kozlowski@linaro.org>
@@ -104,220 +105,29 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Convert Qualcomm Audio Stream Manager (Q6ASM) bindings to DT schema.
+The node names should be generic according to Devicetree specification,
+so use "clock-controller" instead of "cc".  The bindings so far did not
+define this name (as child of APR service).
 
 Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-
+Reviewed-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 ---
+ arch/arm64/boot/dts/qcom/sm8250.dtsi | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Expected warning because the qcom,apr.yaml is being fixed in next commit:
-
-  Documentation/devicetree/bindings/sound/qcom,q6asm.example.dtb: apr: service@7: 'dais' does not match any of the regexes: '^.*@[0-9a-f]+$', 'pinctrl-[0-9]+'
-    From schema: /home/krzk/dev/linux/linux/Documentation/devicetree/bindings/soc/qcom/qcom,apr.yaml
-
-Changes since v1:
-1. New patch.
----
- .../devicetree/bindings/sound/qcom,q6asm.txt  |  70 -----------
- .../devicetree/bindings/sound/qcom,q6asm.yaml | 112 ++++++++++++++++++
- 2 files changed, 112 insertions(+), 70 deletions(-)
- delete mode 100644 Documentation/devicetree/bindings/sound/qcom,q6asm.txt
- create mode 100644 Documentation/devicetree/bindings/sound/qcom,q6asm.yaml
-
-diff --git a/Documentation/devicetree/bindings/sound/qcom,q6asm.txt b/Documentation/devicetree/bindings/sound/qcom,q6asm.txt
-deleted file mode 100644
-index 0d0075125243..000000000000
---- a/Documentation/devicetree/bindings/sound/qcom,q6asm.txt
-+++ /dev/null
-@@ -1,70 +0,0 @@
--Qualcomm Audio Stream Manager (Q6ASM) binding
--
--Q6ASM is one of the APR audio service on Q6DSP.
--Please refer to qcom,apr.txt for details of the common apr service bindings
--used by the apr service device.
--
--- but must contain the following property:
--
--- compatible:
--	Usage: required
--	Value type: <stringlist>
--	Definition: must be "qcom,q6asm-v<MAJOR-NUMBER>.<MINOR-NUMBER>".
--		    Or "qcom,q6asm" where the version number can be queried
--		    from DSP.
--		    example "qcom,q6asm-v2.0"
--
--= ASM DAIs (Digital Audio Interface)
--"dais" subnode of the ASM node represents dai specific configuration
--
--- compatible:
--	Usage: required
--	Value type: <stringlist>
--	Definition: must be "qcom,q6asm-dais".
--
--- #sound-dai-cells
--	Usage: required
--	Value type: <u32>
--	Definition: Must be 1
--
--== ASM DAI is subnode of "dais" and represent a dai, it includes board specific
--configuration of each dai. Must contain the following properties.
--
--- reg
--	Usage: required
--	Value type: <u32>
--	Definition: Must be dai id
--
--- direction:
--	Usage: Required for Compress offload dais
--	Value type: <u32>
--	Definition: Specifies the direction of the dai stream
--			Q6ASM_DAI_TX_RX (0) for both tx and rx
--			Q6ASM_DAI_TX (1) for only tx (Capture/Encode)
--			Q6ASM_DAI_RX (2) for only rx (Playback/Decode)
--
--- is-compress-dai:
--	Usage: Required for Compress offload dais
--	Value type: <boolean>
--	Definition: present for Compress offload dais
--
--
--= EXAMPLE
--#include <dt-bindings/sound/qcom,q6asm.h>
--
--apr-service@7 {
--	compatible = "qcom,q6asm";
--	reg = <APR_SVC_ASM>;
--	q6asmdai: dais {
--		compatible = "qcom,q6asm-dais";
--		#address-cells = <1>;
--		#size-cells = <0>;
--		#sound-dai-cells = <1>;
--
--		dai@0 {
--			reg = <0>;
--			direction = <Q6ASM_DAI_RX>;
--			is-compress-dai;
--		};
--	};
--};
-diff --git a/Documentation/devicetree/bindings/sound/qcom,q6asm.yaml b/Documentation/devicetree/bindings/sound/qcom,q6asm.yaml
-new file mode 100644
-index 000000000000..505bd64a0717
---- /dev/null
-+++ b/Documentation/devicetree/bindings/sound/qcom,q6asm.yaml
-@@ -0,0 +1,112 @@
-+# SPDX-License-Identifier: GPL-2.0 OR BSD-2-Clause
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/sound/qcom,q6asm.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: Qualcomm Audio Stream Manager (Q6ASM)
-+
-+maintainers:
-+  - Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-+  - Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-+
-+description:
-+  Q6ASM is one of the APR audio services on Q6DSP. Each of its subnodes
-+  represent a dai with board specific configuration.
-+
-+properties:
-+  compatible:
-+    enum:
-+      - qcom,q6asm-dais
-+
-+  iommus:
-+    maxItems: 1
-+
-+  '#sound-dai-cells':
-+    const: 1
-+
-+  '#address-cells':
-+    const: 1
-+
-+  '#size-cells':
-+    const: 0
-+
-+patternProperties:
-+  '^dai@[0-9]+$':
-+    type: object
-+    description:
-+      Q6ASM Digital Audio Interface
-+
-+    properties:
-+      reg:
-+        maxItems: 1
-+
-+      direction:
-+        $ref: /schemas/types.yaml#/definitions/uint32
-+        enum: [0, 1, 2]
-+        description: |
-+          The direction of the dai stream::
-+           - Q6ASM_DAI_TX_RX (0) for both tx and rx
-+           - Q6ASM_DAI_TX (1) for only tx (Capture/Encode)
-+           - Q6ASM_DAI_RX (2) for only rx (Playback/Decode)
-+
-+      is-compress-dai:
-+        type: boolean
-+        description:
-+          Compress offload dai.
-+
-+    dependencies:
-+      is-compress-dai: ['direction']
-+
-+    required:
-+      - reg
-+
-+    additionalProperties: false
-+
-+required:
-+  - compatible
-+  - "#sound-dai-cells"
-+  - "#address-cells"
-+  - "#size-cells"
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    #include <dt-bindings/soc/qcom,apr.h>
-+    #include <dt-bindings/sound/qcom,q6asm.h>
-+
-+    apr {
-+        compatible = "qcom,apr-v2";
-+        qcom,domain = <APR_DOMAIN_ADSP>;
-+        #address-cells = <1>;
-+        #size-cells = <0>;
-+
-+        service@7 {
-+            compatible = "qcom,q6asm";
-+            reg = <APR_SVC_ASM>;
-+            qcom,protection-domain = "avs/audio", "msm/adsp/audio_pd";
-+
-+            dais {
-+                compatible = "qcom,q6asm-dais";
-+                iommus = <&apps_smmu 0x1821 0x0>;
-+                #address-cells = <1>;
-+                #size-cells = <0>;
-+                #sound-dai-cells = <1>;
-+
-+                dai@0 {
-+                    reg = <0>;
-+                };
-+
-+                dai@1 {
-+                    reg = <1>;
-+                };
-+
-+                dai@2 {
-+                    reg = <2>;
-+                    is-compress-dai;
-+                    direction = <1>;
-+                };
-+            };
-+        };
-+    };
+diff --git a/arch/arm64/boot/dts/qcom/sm8250.dtsi b/arch/arm64/boot/dts/qcom/sm8250.dtsi
+index 84b4b8e40e7f..6ee8b3b4082c 100644
+--- a/arch/arm64/boot/dts/qcom/sm8250.dtsi
++++ b/arch/arm64/boot/dts/qcom/sm8250.dtsi
+@@ -4799,7 +4799,7 @@ q6afedai: dais {
+ 							#sound-dai-cells = <1>;
+ 						};
+ 
+-						q6afecc: cc {
++						q6afecc: clock-controller {
+ 							compatible = "qcom,q6afe-clocks";
+ 							#clock-cells = <2>;
+ 						};
 -- 
 2.34.1
 
