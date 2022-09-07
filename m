@@ -4,83 +4,82 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id F32BFECAAD3
-	for <alsa-devel@archiver.kernel.org>; Wed,  7 Sep 2022 10:16:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8AD0DC38145
+	for <alsa-devel@archiver.kernel.org>; Wed,  7 Sep 2022 10:16:23 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3E9671655;
-	Wed,  7 Sep 2022 12:15:13 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3E9671655
+	by alsa0.perex.cz (Postfix) with ESMTPS id 8A4EA1661;
+	Wed,  7 Sep 2022 12:15:31 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8A4EA1661
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1662545763;
-	bh=pngEVi3N+ZEwgMMqFUbEWRaD1NHXcKnxiXSFLfdMv8k=;
+	s=default; t=1662545781;
+	bh=nW6saLcJ60MMn8DeEdAs0wb1aFO3efpuE7f3R0tN3sQ=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=AzIPjttVxFk42sBYyxD8eYmQm6CpEBff0aLsEo3eSQiQyUHwQzZ92hQCeTVGOh4d/
-	 1y4JXV0JZOSIcnKLP6tbrrFZWlamdwucXQDD4OgnU6BAtFm+nKAj5n4NVVBsN6L/nm
-	 nCyb8+8dwJ9tNo3QOt5HmOnIOTse8XujYX8MFAqI=
+	b=d+WXPnrzq/JVWhJXY7JEFJIm2tASUeWsw7E86TNvigP1e0cAj4l79H70+UQjHTrYU
+	 fhHFRymL4mJHf+URM5/jq5n/HUZBpDwY/7PDV0GvXd1blMkOK889tcqKefL8mRw0I/
+	 sy3XriDcM8cS9MpCyTRNydo38y4tJ/rI4u0XjXl4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id CABE7F8053C;
-	Wed,  7 Sep 2022 12:14:28 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id C72F7F80551;
+	Wed,  7 Sep 2022 12:14:29 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 9EE4CF8053B; Wed,  7 Sep 2022 12:14:26 +0200 (CEST)
-Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
- [67.231.149.25])
+ id 1F079F8053C; Wed,  7 Sep 2022 12:14:27 +0200 (CEST)
+Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
+ [67.231.152.168])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 5071CF80528;
- Wed,  7 Sep 2022 12:14:20 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5071CF80528
+ by alsa1.perex.cz (Postfix) with ESMTPS id F2A8DF804FC;
+ Wed,  7 Sep 2022 12:14:16 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F2A8DF804FC
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com
- header.b="nazYJdeq"
-Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
- by mx0a-001ae601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 2876a3M4006643;
- Wed, 7 Sep 2022 05:14:18 -0500
+ header.b="V7QWk7sO"
+Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
+ by mx0b-001ae601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 2877rCJr005930;
+ Wed, 7 Sep 2022 05:14:15 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
  h=from : to : cc :
  subject : date : message-id : in-reply-to : references : mime-version :
  content-transfer-encoding : content-type; s=PODMain02222019;
- bh=gAWorbqvu9wmVkfPa/PiPrn39wNLz/dXO8GV+EOWmyE=;
- b=nazYJdeqIKSsBCYbF96Z+Tr2V+W+Uj0i2OOQsooIXcvZC1dusucu0y27Dm1rGzUQltk3
- vyCWkef6Vmag6S5Wn2lciim6GTtpVhmfzweC3KisWHYZYyKQACHEGjyDbz/rnYkZJL4z
- RWL+It21l3Hg+9NrTGY33e9HaUXEgrcyFlgPEsSjMJmpeK97IasvJMUZwARim6v1zhyg
- hkSWWJQZQ5cEKz75YK6kcccZfhHcPI0ly2T1Gcr0POPCYdUHHrHsjiZaXxjq3cRvluVJ
- vUpUF48DkJo+bQYuFW0vJKpCHp1Y0oiTkH660Kr5+tBpQgVTfUTzTAzFqXMhxzifF/Q3 3w== 
-Received: from ediex02.ad.cirrus.com ([84.19.233.68])
- by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3jc4b2dfns-1
+ bh=ot1Tl8QTYVtsDuCHedMkmJ33fXe9BMeDLR0TIH+3JGU=;
+ b=V7QWk7sO38uS86TS+NlahQceUBlCHvX/8rcq6rqKmo/2fOKoClg5XwVgUwt4F4y4GLxg
+ PmKM5kTNRY0Ux/iX5Jfs8B1cq8AWwrVBe4DsHiTu6UY+xvhqbwb2PfXucZc6mvBaSld3
+ 5yq8dUBXF3jtcS1ijJ87JloUIxA61D36noN36zHPwZPOPBuuPcD9+0ktYiANPL2AEY5D
+ BMqN4JF8rwegpM8/y7TWifZQHUYqkTy1QMpnQMuXFzL5r3srm72WTpWLin54EBaaTD0m
+ vMGI8JHhynhQp61vXDksSxrkRIXus8ESzBRnndRUKJvFSObmAkZK7W9ve3qL3EXrUPfS qg== 
+Received: from ediex01.ad.cirrus.com ([84.19.233.68])
+ by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3jc3bpw4sr-2
  (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
- Wed, 07 Sep 2022 05:14:17 -0500
-Received: from ediex02.ad.cirrus.com (198.61.84.81) by ediex02.ad.cirrus.com
- (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
+ Wed, 07 Sep 2022 05:14:15 -0500
+Received: from ediex02.ad.cirrus.com (198.61.84.81) by ediex01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.12; Wed, 7 Sep
- 2022 05:14:15 -0500
+ 2022 05:14:13 -0500
 Received: from ediswmail.ad.cirrus.com (198.61.86.93) by
  anon-ediex02.ad.cirrus.com (198.61.84.81) with Microsoft SMTP Server id
- 15.2.1118.12 via Frontend Transport; Wed, 7 Sep 2022 05:14:15 -0500
+ 15.2.1118.12 via Frontend Transport; Wed, 7 Sep 2022 05:14:13 -0500
 Received: from debianA11184.ad.cirrus.com (unknown [198.61.65.149])
- by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 632CBB10;
- Wed,  7 Sep 2022 10:14:15 +0000 (UTC)
+ by ediswmail.ad.cirrus.com (Postfix) with ESMTP id E36A5B10;
+ Wed,  7 Sep 2022 10:14:12 +0000 (UTC)
 From: Richard Fitzgerald <rf@opensource.cirrus.com>
 To: <vkoul@kernel.org>, <yung-chuan.liao@linux.intel.com>,
  <pierre-louis.bossart@linux.intel.com>, <lgirdwood@gmail.com>,
  <peter.ujfalusi@linux.intel.com>, <ranjani.sridharan@linux.intel.com>,
  <kai.vehmanen@linux.intel.com>, <daniel.baluta@nxp.com>,
  <sanyog.r.kale@intel.com>, <broonie@kernel.org>
-Subject: [PATCH 6/7] soundwire: intel: Don't disable pm_runtime until children
- are removed
-Date: Wed, 7 Sep 2022 11:14:01 +0100
-Message-ID: <20220907101402.4685-7-rf@opensource.cirrus.com>
+Subject: [PATCH 2/7] soundwire: intel_init: Separate shutdown and cleanup
+Date: Wed, 7 Sep 2022 11:13:57 +0100
+Message-ID: <20220907101402.4685-3-rf@opensource.cirrus.com>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20220907101402.4685-1-rf@opensource.cirrus.com>
 References: <20220907101402.4685-1-rf@opensource.cirrus.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-Proofpoint-GUID: mmVUuAqqRom5Ky22p7pj3hn5CXe0KQZN
-X-Proofpoint-ORIG-GUID: mmVUuAqqRom5Ky22p7pj3hn5CXe0KQZN
+X-Proofpoint-GUID: vWiTgViV4BfLhGN_tzoikE6XHgslZvo6
+X-Proofpoint-ORIG-GUID: vWiTgViV4BfLhGN_tzoikE6XHgslZvo6
 X-Proofpoint-Spam-Reason: safe
 Cc: patches@opensource.cirrus.com, alsa-devel@alsa-project.org,
  Richard Fitzgerald <rf@opensource.cirrus.com>, linux-kernel@vger.kernel.org,
@@ -100,57 +99,110 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-When the bus driver is removed the child drivers will be removed first.
-These may need to perform bus transactions to shut down, and the device
-driver core will runtime-resume the driver before calling its remove().
+Move the freeing of context data out of sdw_intel_exit() into a new
+exported function sdw_intel_remove().
 
-For this to work the pm_runtime of the bus driver must still be enabled.
-So do not disable pm_runtime until the bus driver has been unregistered.
+This splits shutdown and cleanup into separate stages, allowing the
+calling code to perform its own shutdown after the bus has shutdown but
+before the context has been deleted.
 
-Though this could be done by powering-up the bus driver and then
-disabling its pm_runtime with the bus still powered-up, there's no
-need to bypass the standard device framework behaviour.
+The struct sdw_intel_ctx pointer is passed to the calling code by
+sdw_intel_probe() and the calling code passes it back as an opaque token.
+When the caller is removed it must have the opportunity to teardown its
+use of this token after the bus driver has stopped but before the
+context memory has been freed. It should not be doing its teardown
+before calling sdw_intel_exit() because that will break any bus activity
+currently in progress and the removal of child drivers.
 
 Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
 ---
- drivers/soundwire/intel.c      | 4 +++-
- drivers/soundwire/intel_init.c | 1 -
- 2 files changed, 3 insertions(+), 2 deletions(-)
+ drivers/soundwire/intel_init.c      | 24 ++++++++++++++++++++----
+ include/linux/soundwire/sdw_intel.h |  2 ++
+ sound/soc/sof/intel/hda.c           |  4 +++-
+ 3 files changed, 25 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/soundwire/intel.c b/drivers/soundwire/intel.c
-index d5e723a9c80b..3345310e979c 100644
---- a/drivers/soundwire/intel.c
-+++ b/drivers/soundwire/intel.c
-@@ -1504,7 +1504,7 @@ static void intel_link_remove(struct auxiliary_device *auxdev)
- 	struct sdw_bus *bus = &cdns->bus;
- 
- 	/*
--	 * Since pm_runtime is already disabled, we don't decrease
-+	 * Since pm_runtime will be disabled, we don't decrease
- 	 * the refcount when the clock_stop_quirk is
- 	 * SDW_INTEL_CLK_STOP_NOT_ALLOWED
- 	 */
-@@ -1513,6 +1513,8 @@ static void intel_link_remove(struct auxiliary_device *auxdev)
- 		snd_soc_unregister_component(dev);
- 	}
- 	sdw_bus_master_delete(bus);
-+
-+	pm_runtime_disable(&auxdev->dev);
- }
- 
- int intel_link_process_wakeen_event(struct auxiliary_device *auxdev)
 diff --git a/drivers/soundwire/intel_init.c b/drivers/soundwire/intel_init.c
-index 078e01f67830..ce26d2df088a 100644
+index d091513919df..078e01f67830 100644
 --- a/drivers/soundwire/intel_init.c
 +++ b/drivers/soundwire/intel_init.c
-@@ -115,7 +115,6 @@ static int sdw_intel_cleanup(struct sdw_intel_ctx *ctx)
+@@ -292,6 +292,13 @@ static struct sdw_intel_ctx
+ 	return NULL;
+ }
  
- 		ldev = ctx->ldev[i];
++static void sdw_intel_remove_controller(struct sdw_intel_ctx *ctx)
++{
++	kfree(ctx->ids);
++	kfree(ctx->ldev);
++	kfree(ctx);
++}
++
+ static int
+ sdw_intel_startup_controller(struct sdw_intel_ctx *ctx)
+ {
+@@ -360,6 +367,18 @@ struct sdw_intel_ctx
+ }
+ EXPORT_SYMBOL_NS(sdw_intel_probe, SOUNDWIRE_INTEL_INIT);
  
--		pm_runtime_disable(&ldev->auxdev.dev);
- 		if (!ldev->link_res.clock_stop_quirks)
- 			pm_runtime_put_noidle(ldev->link_res.dev);
++/**
++ * sdw_intel_remove() - SoundWire Intel remove routine
++ * @ctx: SoundWire context allocated in the probe
++ *
++ * Free all the context created by sdw_intel_probe.
++ */
++void sdw_intel_remove(struct sdw_intel_ctx *ctx)
++{
++	return sdw_intel_remove_controller(ctx);
++}
++EXPORT_SYMBOL_NS(sdw_intel_remove, SOUNDWIRE_INTEL_INIT);
++
+ /**
+  * sdw_intel_startup() - SoundWire Intel startup
+  * @ctx: SoundWire context allocated in the probe
+@@ -376,14 +395,11 @@ EXPORT_SYMBOL_NS(sdw_intel_startup, SOUNDWIRE_INTEL_INIT);
+  * sdw_intel_exit() - SoundWire Intel exit
+  * @ctx: SoundWire context allocated in the probe
+  *
+- * Delete the controller instances created and cleanup
++ * Stop the controller instances.
+  */
+ void sdw_intel_exit(struct sdw_intel_ctx *ctx)
+ {
+ 	sdw_intel_cleanup(ctx);
+-	kfree(ctx->ids);
+-	kfree(ctx->ldev);
+-	kfree(ctx);
+ }
+ EXPORT_SYMBOL_NS(sdw_intel_exit, SOUNDWIRE_INTEL_INIT);
  
+diff --git a/include/linux/soundwire/sdw_intel.h b/include/linux/soundwire/sdw_intel.h
+index 2e9fd91572d4..7f7327cab712 100644
+--- a/include/linux/soundwire/sdw_intel.h
++++ b/include/linux/soundwire/sdw_intel.h
+@@ -282,6 +282,8 @@ void sdw_intel_process_wakeen_event(struct sdw_intel_ctx *ctx);
+ struct sdw_intel_ctx *
+ sdw_intel_probe(struct sdw_intel_res *res);
+ 
++void sdw_intel_remove(struct sdw_intel_ctx *ctx);
++
+ int sdw_intel_startup(struct sdw_intel_ctx *ctx);
+ 
+ void sdw_intel_exit(struct sdw_intel_ctx *ctx);
+diff --git a/sound/soc/sof/intel/hda.c b/sound/soc/sof/intel/hda.c
+index 8639ea63a10d..ee67e21e739f 100644
+--- a/sound/soc/sof/intel/hda.c
++++ b/sound/soc/sof/intel/hda.c
+@@ -241,8 +241,10 @@ static int hda_sdw_exit(struct snd_sof_dev *sdev)
+ 
+ 	hda_sdw_int_enable(sdev, false);
+ 
+-	if (hdev->sdw)
++	if (hdev->sdw) {
+ 		sdw_intel_exit(hdev->sdw);
++		sdw_intel_remove(hdev->sdw);
++	}
+ 	hdev->sdw = NULL;
+ 
+ 	return 0;
 -- 
 2.30.2
 
