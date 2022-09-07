@@ -4,65 +4,82 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9B9AEECAAD3
-	for <alsa-devel@archiver.kernel.org>; Wed,  7 Sep 2022 05:54:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 31963ECAAD3
+	for <alsa-devel@archiver.kernel.org>; Wed,  7 Sep 2022 06:00:27 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id CE312852;
-	Wed,  7 Sep 2022 07:53:53 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CE312852
+	by alsa0.perex.cz (Postfix) with ESMTPS id 1122A1E8;
+	Wed,  7 Sep 2022 07:59:36 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1122A1E8
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1662530083;
-	bh=lVZdGItHyUy3HBM+gA9ehpOh4ieVKRxUtDHsoJaeBj8=;
-	h=Date:To:From:Subject:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=ild7laDVqnHYdQScs0Bfeo0ZOPQCRSsdXR5DgibJ40xED8yQvYFOCqT74Bqr33bIG
-	 WyxTBqI/7BesdTAehu15YkSxNKI2Do73AiAxiXNZdaAEgkDeuDbdsPR2iuqqNCtUqs
-	 UaUjKIyvbORuF/6WjwWrhEnGTsEBu0rThuTdaync=
+	s=default; t=1662530426;
+	bh=YcDGj/qBZnxCNSPN9jBNGdS0cyjYkMVS6RXX+0GvU9I=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=lgnSntzzEGa7NXiVsKyX0w0lYCnuUebd9AgNHkZ/sg+x5n7uJMsM3FHq2O70QWDHY
+	 +wwscnsboKL44SnHbD1OqFcROXqKv8FluwZ5OQXcoTM/nX95OtvE/EMU4iu57H4zN0
+	 nTKSP+BSUfFeX2ERiGeQt4XqWpumMaDq6SVt0J2A=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 1D4FAF80528;
-	Wed,  7 Sep 2022 07:53:04 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id AC826F80249;
+	Wed,  7 Sep 2022 07:59:35 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 64400F800E9; Wed,  7 Sep 2022 03:18:11 +0200 (CEST)
-Received: from devnull.tasossah.com (devnull.tasossah.com
- [IPv6:2001:41d0:1:e60e::1])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 0F9D2F8028D; Wed,  7 Sep 2022 07:59:35 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 18D92F800E9
- for <alsa-devel@alsa-project.org>; Wed,  7 Sep 2022 03:18:04 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 18D92F800E9
+ by alsa1.perex.cz (Postfix) with ESMTPS id BD278F80118
+ for <alsa-devel@alsa-project.org>; Wed,  7 Sep 2022 07:59:28 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BD278F80118
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=devnull.tasossah.com
- header.i=@devnull.tasossah.com header.b="qmFw51LA"
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
- d=devnull.tasossah.com; s=vps; h=Content-Transfer-Encoding:Content-Type:
- Subject:From:Cc:To:MIME-Version:Date:Message-ID:Sender:Reply-To:Content-ID:
- Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
- :Resent-Message-ID:In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:
- List-Subscribe:List-Post:List-Owner:List-Archive;
- bh=q71WqvWLWUjrI5AqinecaUm3s2cTcuSNcpFo9Nx2+Yw=; b=qmFw51LAEwU4aImcBHMDhnqmEY
- pXJJrRPLqzij7UntBfcQL0OMYsZ7p2YjzGCFwV1lQs2vPGXyslK0IzHcpe3I0fm3j6jw3Q4oby3Qs
- E4nJ3IZ6zKU/l3RTddv60wjQrLCA0qvTeF2sZOhUwfKYXw54ohXgK3Dq6QeDCZdMelyk=;
-Received: from [2a02:587:6a02:2200::298]
- by devnull.tasossah.com with esmtpsa (TLS1.3) tls
- TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256 (Exim 4.93)
- (envelope-from <tasos@tasossah.com>)
- id 1oVjhZ-000P0y-7A; Wed, 07 Sep 2022 04:18:01 +0300
-Message-ID: <3707dcab-320a-62ff-63c0-73fc201ef756@tasossah.com>
-Date: Wed, 7 Sep 2022 04:18:00 +0300
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.11.0
-Content-Language: en-US
-To: alsa-devel@alsa-project.org
-From: Tasos Sahanidis <tasos@tasossah.com>
-Subject: [PATCH] ALSA: emu10k1: Fix out of bounds access in
+ dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
+ header.b="hXYRX5Wl"; 
+ dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
+ header.b="7v8PjGIU"
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id E2B2820002;
+ Wed,  7 Sep 2022 05:59:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1662530367; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=cwcjiuBkUe/FtJKT7lUDznO/qVB6v18xiw7jWQvWmZU=;
+ b=hXYRX5WlTJ6/RejL4MGt7NSijaMuDjE92Q+NPOl9SczsUA0SaJlbgkhlM8CJgm0FRNPHg8
+ eMQjnJB4s+I0daq4RRueN3cRumL0EMd9yy7QClvCR6pxrCzwcbzpjLEG0MVI/go1lsyOik
+ pBfzNG2IvPRk69+zOrq4eIOcUDhkx5k=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1662530367;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=cwcjiuBkUe/FtJKT7lUDznO/qVB6v18xiw7jWQvWmZU=;
+ b=7v8PjGIU+GRF8l9P4Vu7yKj+PE7QtnFl2dKpgSSu2hHW8uwhlxs/9K2ZJYfedM9WFpfdom
+ bGw+yaie3Zx5UABQ==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id C474913A66;
+ Wed,  7 Sep 2022 05:59:27 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+ by imap2.suse-dmz.suse.de with ESMTPSA id yTgvLz8zGGMzVgAAMHmgww
+ (envelope-from <tiwai@suse.de>); Wed, 07 Sep 2022 05:59:27 +0000
+Date: Wed, 07 Sep 2022 07:59:26 +0200
+Message-ID: <87pmg7encx.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Tasos Sahanidis <tasos@tasossah.com>
+Subject: Re: [PATCH] ALSA: emu10k1: Fix out of bounds access in
  snd_emu10k1_pcm_channel_alloc()
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Mailman-Approved-At: Wed, 07 Sep 2022 07:53:00 +0200
-Cc: tasos@tasossah.com, tiwai@suse.com
+In-Reply-To: <3707dcab-320a-62ff-63c0-73fc201ef756@tasossah.com>
+References: <3707dcab-320a-62ff-63c0-73fc201ef756@tasossah.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+Cc: alsa-devel@alsa-project.org, tiwai@suse.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -78,61 +95,51 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The voice allocator sometimes begins allocating from near the end of the
-array and then wraps around, however snd_emu10k1_pcm_channel_alloc()
-accesses the newly allocated voices as if it never wrapped around.
+On Wed, 07 Sep 2022 03:18:00 +0200,
+Tasos Sahanidis wrote:
+> 
+> The voice allocator sometimes begins allocating from near the end of the
+> array and then wraps around, however snd_emu10k1_pcm_channel_alloc()
+> accesses the newly allocated voices as if it never wrapped around.
+> 
+> This results in out of bounds access if the first voice has a high enough
+> index so that first_voice + requested_voice_count > NUM_G (64).
+> The more voices are requested, the more likely it is for this to occur.
+> 
+> This was initially discovered using PipeWire, however it can be reproduced
+> by calling aplay multiple times with 16 channels:
+> aplay -r 48000 -D plughw:CARD=Live,DEV=3 -c 16 /dev/zero
+> 
+> UBSAN: array-index-out-of-bounds in sound/pci/emu10k1/emupcm.c:127:40
+> index 65 is out of range for type 'snd_emu10k1_voice [64]'
+> CPU: 1 PID: 31977 Comm: aplay Tainted: G        W IOE      6.0.0-rc2-emu10k1+ #7
+> Hardware name: ASUSTEK COMPUTER INC P5W DH Deluxe/P5W DH Deluxe, BIOS 3002    07/22/2010
+> Call Trace:
+> <TASK>
+> dump_stack_lvl+0x49/0x63
+> dump_stack+0x10/0x16
+> ubsan_epilogue+0x9/0x3f
+> __ubsan_handle_out_of_bounds.cold+0x44/0x49
+> snd_emu10k1_playback_hw_params+0x3bc/0x420 [snd_emu10k1]
+> snd_pcm_hw_params+0x29f/0x600 [snd_pcm]
+> snd_pcm_common_ioctl+0x188/0x1410 [snd_pcm]
+> ? exit_to_user_mode_prepare+0x35/0x170
+> ? do_syscall_64+0x69/0x90
+> ? syscall_exit_to_user_mode+0x26/0x50
+> ? do_syscall_64+0x69/0x90
+> ? exit_to_user_mode_prepare+0x35/0x170
+> snd_pcm_ioctl+0x27/0x40 [snd_pcm]
+> __x64_sys_ioctl+0x95/0xd0
+> do_syscall_64+0x5c/0x90
+> ? do_syscall_64+0x69/0x90
+> ? do_syscall_64+0x69/0x90
+> entry_SYSCALL_64_after_hwframe+0x63/0xcd
+> 
+> Signed-off-by: Tasos Sahanidis <tasos@tasossah.com>
 
-This results in out of bounds access if the first voice has a high enough
-index so that first_voice + requested_voice_count > NUM_G (64).
-The more voices are requested, the more likely it is for this to occur.
+Oh it's an old bug...
 
-This was initially discovered using PipeWire, however it can be reproduced
-by calling aplay multiple times with 16 channels:
-aplay -r 48000 -D plughw:CARD=Live,DEV=3 -c 16 /dev/zero
+Now applied.  Thanks!
 
-UBSAN: array-index-out-of-bounds in sound/pci/emu10k1/emupcm.c:127:40
-index 65 is out of range for type 'snd_emu10k1_voice [64]'
-CPU: 1 PID: 31977 Comm: aplay Tainted: G        W IOE      6.0.0-rc2-emu10k1+ #7
-Hardware name: ASUSTEK COMPUTER INC P5W DH Deluxe/P5W DH Deluxe, BIOS 3002    07/22/2010
-Call Trace:
-<TASK>
-dump_stack_lvl+0x49/0x63
-dump_stack+0x10/0x16
-ubsan_epilogue+0x9/0x3f
-__ubsan_handle_out_of_bounds.cold+0x44/0x49
-snd_emu10k1_playback_hw_params+0x3bc/0x420 [snd_emu10k1]
-snd_pcm_hw_params+0x29f/0x600 [snd_pcm]
-snd_pcm_common_ioctl+0x188/0x1410 [snd_pcm]
-? exit_to_user_mode_prepare+0x35/0x170
-? do_syscall_64+0x69/0x90
-? syscall_exit_to_user_mode+0x26/0x50
-? do_syscall_64+0x69/0x90
-? exit_to_user_mode_prepare+0x35/0x170
-snd_pcm_ioctl+0x27/0x40 [snd_pcm]
-__x64_sys_ioctl+0x95/0xd0
-do_syscall_64+0x5c/0x90
-? do_syscall_64+0x69/0x90
-? do_syscall_64+0x69/0x90
-entry_SYSCALL_64_after_hwframe+0x63/0xcd
 
-Signed-off-by: Tasos Sahanidis <tasos@tasossah.com>
----
- sound/pci/emu10k1/emupcm.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/sound/pci/emu10k1/emupcm.c b/sound/pci/emu10k1/emupcm.c
-index b2701a4452d8..48af77ae8020 100644
---- a/sound/pci/emu10k1/emupcm.c
-+++ b/sound/pci/emu10k1/emupcm.c
-@@ -124,7 +124,7 @@ static int snd_emu10k1_pcm_channel_alloc(struct snd_emu10k1_pcm * epcm, int voic
- 	epcm->voices[0]->epcm = epcm;
- 	if (voices > 1) {
- 		for (i = 1; i < voices; i++) {
--			epcm->voices[i] = &epcm->emu->voices[epcm->voices[0]->number + i];
-+			epcm->voices[i] = &epcm->emu->voices[(epcm->voices[0]->number + i) % NUM_G];
- 			epcm->voices[i]->epcm = epcm;
- 		}
- 	}
--- 
-2.25.1
-
+Takashi
