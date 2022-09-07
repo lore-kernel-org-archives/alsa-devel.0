@@ -4,76 +4,80 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 09B01C38145
-	for <alsa-devel@archiver.kernel.org>; Wed,  7 Sep 2022 08:54:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 856EFECAAD3
+	for <alsa-devel@archiver.kernel.org>; Wed,  7 Sep 2022 08:54:31 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A18F074C;
-	Wed,  7 Sep 2022 10:53:10 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A18F074C
+	by alsa0.perex.cz (Postfix) with ESMTPS id 72726886;
+	Wed,  7 Sep 2022 10:53:39 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 72726886
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1662540840;
-	bh=Bk8tUDxbYVEqibttEHdC9TJrVtBa+cztjHBE47nndhw=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=rS9004o9CDWRBex7s6ot6sFKJ5cQFrEYo9Mq0tVSMLl1dVyEJmEXt22PWGw6O4vcT
-	 u35aWKmtCIkQtpQ+RjG1K4E2WRW9fz5BqaMvSvnMLWcGf+tzqllJWLrG+JI8JlqIgq
-	 KPKl7G+7ZAs7/wsls/Bshuz7VXNlLsI77XJFYk7s=
+	s=default; t=1662540869;
+	bh=nETieTL9RvDrX8X16Ddya59H1YijOLLeZ6FSVBYTZZk=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=XIY3MRaiIzbCSZ4QH4sbrT1n5R7oGx31asQuFYG2wegj3VNL+zeSIEl8m0/bfF0va
+	 BpPim0Xmv6SDQJNE42NZD4YUuvdoauJwSc0eSIqeXEOjYVa5otcubzEIhYJE2YZF7C
+	 Esnx82xAIOVwikyTksKks+9GDJ2F6wZhCs2KE+U4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 3B4DAF80423;
-	Wed,  7 Sep 2022 10:53:10 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id E74B9F8028D;
+	Wed,  7 Sep 2022 10:53:16 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id B62E2F804B1; Wed,  7 Sep 2022 10:53:08 +0200 (CEST)
-Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
- [67.231.152.168])
+ id 65B63F80528; Wed,  7 Sep 2022 10:53:15 +0200 (CEST)
+Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
+ [67.231.149.25])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id F34CBF8011C
- for <alsa-devel@alsa-project.org>; Wed,  7 Sep 2022 10:53:05 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F34CBF8011C
+ by alsa1.perex.cz (Postfix) with ESMTPS id 2DAB5F80249
+ for <alsa-devel@alsa-project.org>; Wed,  7 Sep 2022 10:53:08 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2DAB5F80249
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com
- header.b="YYMg2w6H"
-Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
- by mx0b-001ae601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 2877rCGG005930;
- Wed, 7 Sep 2022 03:53:03 -0500
+ header.b="oGqNS83J"
+Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
+ by mx0a-001ae601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 2876sQ68005118;
+ Wed, 7 Sep 2022 03:53:06 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
  h=from : to : cc :
- subject : date : message-id : mime-version : content-transfer-encoding :
- content-type; s=PODMain02222019;
- bh=uf/a9j89KomDA2V4JJLKTY/HwJy3SBHW0c3kiFGZtD4=;
- b=YYMg2w6HW7yv9T6rzuCYhAux5XLisO9lQxB8EsQhznqeOG44AVIzpM66rHAgwEMZeJ8N
- 12FU+mwVEwMaryytjln8g/pKnDUEMMadqy3A0HlrLi9cJZ7CgonVZe2DZrlr5j4HD46g
- orrxU0GZ772jaNXqDNhVrblf5aVIR7O9RuR7k3E/67nSSuMyswzfxsg74I9yYKjmRstU
- 5DJm7NKktouIPImTRn5Quw1jkxvTh5CjN0nqN7SfSbFdJnYLd2b6tA33SO6Dv/YqdWDF
- yDUa5lIa21fL62D6qsT5S5Uqid8VwAHZeDKQDvdNdfsCwQXzJ13GRFlxDL1xwkqZBpwa rA== 
+ subject : date : message-id : in-reply-to : references : mime-version :
+ content-transfer-encoding : content-type; s=PODMain02222019;
+ bh=PfmUESLoYKijI4XQrGK3nArMP4Gz6y3F+JkaqLCDJWE=;
+ b=oGqNS83JXUjOBuJqf5qkW2p/oJARAReQDGBKgwOX+8B7ecwNKV6L06s3vaps46+EGHMW
+ APr5BBOagmMFjUKH5i/jHV7ufS1cFFH+6117FmqF780RGoSxFhtlXYfA8h8nfF0XIAv4
+ UkxI6z+B8+xDIFnJ/Eoun8GVYhvV3YvBClmx5lu5FkbMAYmSrE2Ae7uU6tIVZeoFEpI9
+ z5ibicYZ+NZ4qpKjfUpu2IKIoF9fuhvvV3lxBfRYd+LG1tJduekx+33jzn1Cj1uJJjiP
+ rTAsYR4j0Yz3ZcEHS95uL/csknneEaZX4KPEsnrlSX9ts6NSUvSTv1GX99C5kfWjEJZH oQ== 
 Received: from ediex01.ad.cirrus.com ([84.19.233.68])
- by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3jc3bpw21n-1
+ by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3jc4b2dcun-1
  (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
- Wed, 07 Sep 2022 03:53:03 -0500
-Received: from ediex02.ad.cirrus.com (198.61.84.81) by ediex01.ad.cirrus.com
+ Wed, 07 Sep 2022 03:53:06 -0500
+Received: from ediex01.ad.cirrus.com (198.61.84.80) by ediex01.ad.cirrus.com
  (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.12; Wed, 7 Sep
- 2022 03:53:02 -0500
-Received: from ediswmail.ad.cirrus.com (198.61.86.93) by
- anon-ediex02.ad.cirrus.com (198.61.84.81) with Microsoft SMTP Server id
- 15.2.1118.12 via Frontend Transport; Wed, 7 Sep 2022 03:53:02 -0500
+ 2022 03:53:04 -0500
+Received: from ediswmail.ad.cirrus.com (198.61.86.93) by ediex01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server id 15.2.1118.12 via
+ Frontend Transport; Wed, 7 Sep 2022 03:53:04 -0500
 Received: from debianA11184.ad.cirrus.com (unknown [198.61.65.149])
- by ediswmail.ad.cirrus.com (Postfix) with ESMTP id D0536B06;
- Wed,  7 Sep 2022 08:53:01 +0000 (UTC)
+ by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 4CE86B06;
+ Wed,  7 Sep 2022 08:53:04 +0000 (UTC)
 From: Richard Fitzgerald <rf@opensource.cirrus.com>
 To: <vkoul@kernel.org>, <yung-chuan.liao@linux.intel.com>,
  <pierre-louis.bossart@linux.intel.com>, <sanyog.r.kale@intel.com>
-Subject: [PATCH v2 0/5] soundwire: Fixes for spurious and missing UNATTACH
-Date: Wed, 7 Sep 2022 09:52:54 +0100
-Message-ID: <20220907085259.3602-1-rf@opensource.cirrus.com>
+Subject: [PATCH v2 3/5] soundwire: bus: Don't re-enumerate before status is
+ UNATTACHED
+Date: Wed, 7 Sep 2022 09:52:57 +0100
+Message-ID: <20220907085259.3602-4-rf@opensource.cirrus.com>
 X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20220907085259.3602-1-rf@opensource.cirrus.com>
+References: <20220907085259.3602-1-rf@opensource.cirrus.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-Proofpoint-GUID: CbcV0LrqhBhWd3ZXDCjVKUgSfEHRbdmE
-X-Proofpoint-ORIG-GUID: CbcV0LrqhBhWd3ZXDCjVKUgSfEHRbdmE
+X-Proofpoint-GUID: JZPYbelKH_jA9kRsykD8Pw5b5eZK0BSe
+X-Proofpoint-ORIG-GUID: JZPYbelKH_jA9kRsykD8Pw5b5eZK0BSe
 X-Proofpoint-Spam-Reason: safe
 Cc: patches@opensource.cirrus.com, alsa-devel@alsa-project.org,
  Richard Fitzgerald <rf@opensource.cirrus.com>, linux-kernel@vger.kernel.org
@@ -92,42 +96,55 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The bus and cadence code has several bugs that cause UNATTACH notifications
-to either be sent spuriously or to be missed.
+Don't re-enumerate a peripheral on #0 until we have seen and
+handled an UNATTACHED notification for that peripheral.
 
-These can be seen occasionally with a single peripheral on the bus, but are
-much more frequent with multiple peripherals, where several peripherals
-could change state and report in consecutive PINGs.
+Without this, it is possible for the UNATTACHED status to be missed
+and so the slave->status remains at ATTACHED. If slave->status never
+changes to UNATTACHED the child driver will never be notified of the
+UNATTACH, and the code in sdw_handle_slave_status() will skip the
+second part of enumeration because the slave->status has not changed.
 
-The root of all of these bugs seems to be a code design flaw that assumed
-every PING status change would be handled separately. However, PINGs are
-handled by a workqueue function and there is no guarantee when that function
-will be scheduled to run or how much CPU time it will receive. PINGs will
-continue while the work function is handling a snapshot of a previous PING
-so the code must take account that (a) status could change during the
-work function and (b) there can be a backlog of changes before the IRQ work
-function runs again.
+This scenario can happen because PINGs are handled in a workqueue
+function which is working from a snapshot of an old PING, and there
+is no guarantee when this function will run.
 
-Tested with 4 peripherals on 1 bus, and 8 peripherals on 2 buses.
+A peripheral could report attached in the PING being handled by
+sdw_handle_slave_status(), but has since reverted to device #0 and is
+then found in the loop in sdw_program_device_num(). Previously the
+code would not have updated slave->status to UNATTACHED because it had
+not yet handled a PING where that peripheral had UNATTACHED.
 
-CHANGES SINCE V1:
-Patch #3 replaced with a better solution to the same bug.
-Patches #4 and #5 added to fix some more bugs that were found.
+This situation happens fairly frequently with multiple peripherals on
+a bus that are intentionally reset (for example after downloading
+firmware).
 
-Richard Fitzgerald (4):
-  soundwire: bus: Don't lose unattach notifications
-  soundwire: bus: Don't re-enumerate before status is UNATTACHED
-  soundwire: cadence: Fix lost ATTACHED interrupts when enumerating
-  soundwire: bus: Don't exit early if no device IDs were programmed
+Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
+---
+ drivers/soundwire/bus.c | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
 
-Simon Trimmer (1):
-  soundwire: cadence: fix updating slave status when a bus has multiple
-    peripherals
-
- drivers/soundwire/bus.c            | 40 +++++++++++-----
- drivers/soundwire/cadence_master.c | 75 ++++++++++++++++--------------
- 2 files changed, 68 insertions(+), 47 deletions(-)
-
+diff --git a/drivers/soundwire/bus.c b/drivers/soundwire/bus.c
+index 1cc858b4107d..6e569a875a9b 100644
+--- a/drivers/soundwire/bus.c
++++ b/drivers/soundwire/bus.c
+@@ -773,6 +773,16 @@ static int sdw_program_device_num(struct sdw_bus *bus)
+ 			if (sdw_compare_devid(slave, id) == 0) {
+ 				found = true;
+ 
++				/*
++				 * To prevent skipping state-machine stages don't
++				 * program a device until we've seen it UNATTACH.
++				 * Must return here because no other device on #0
++				 * can be detected until this one has been
++				 * assigned a device ID.
++				 */
++				if (slave->status != SDW_SLAVE_UNATTACHED)
++					return 0;
++
+ 				/*
+ 				 * Assign a new dev_num to this Slave and
+ 				 * not mark it present. It will be marked
 -- 
 2.30.2
 
