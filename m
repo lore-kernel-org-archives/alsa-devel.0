@@ -4,98 +4,79 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C1B92ECAAD3
-	for <alsa-devel@archiver.kernel.org>; Wed,  7 Sep 2022 08:31:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 09B01C38145
+	for <alsa-devel@archiver.kernel.org>; Wed,  7 Sep 2022 08:54:02 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 49B1184D;
-	Wed,  7 Sep 2022 10:31:06 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 49B1184D
+	by alsa0.perex.cz (Postfix) with ESMTPS id A18F074C;
+	Wed,  7 Sep 2022 10:53:10 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A18F074C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1662539516;
-	bh=aEjevlprOCAvSls7rjquuTMSPcAR2KgPpFcMrcrKm2A=;
-	h=Date:Subject:To:References:From:In-Reply-To:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=of6i6+TR+riq16tYYu0KlQqFQG9J3LtrKTrL2jxatVWyAGFwKfGSuVYjPW3EZCGgG
-	 wpjwnJs4yRzzaqNkAMb6YUDoOMF4NXGxHMEPZAEOBSeFldPjmLSBwuc2A2WVBmfat5
-	 wW1cj+6j5Fy4EchqhbNXMkrC8TsEgC+YjJ62PACM=
+	s=default; t=1662540840;
+	bh=Bk8tUDxbYVEqibttEHdC9TJrVtBa+cztjHBE47nndhw=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=rS9004o9CDWRBex7s6ot6sFKJ5cQFrEYo9Mq0tVSMLl1dVyEJmEXt22PWGw6O4vcT
+	 u35aWKmtCIkQtpQ+RjG1K4E2WRW9fz5BqaMvSvnMLWcGf+tzqllJWLrG+JI8JlqIgq
+	 KPKl7G+7ZAs7/wsls/Bshuz7VXNlLsI77XJFYk7s=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id DD9FDF80249;
-	Wed,  7 Sep 2022 10:31:05 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 3B4DAF80423;
+	Wed,  7 Sep 2022 10:53:10 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 714B0F8028D; Wed,  7 Sep 2022 10:31:04 +0200 (CEST)
-Received: from mail-lj1-x22b.google.com (mail-lj1-x22b.google.com
- [IPv6:2a00:1450:4864:20::22b])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id B62E2F804B1; Wed,  7 Sep 2022 10:53:08 +0200 (CEST)
+Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
+ [67.231.152.168])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id A315AF8011C
- for <alsa-devel@alsa-project.org>; Wed,  7 Sep 2022 10:30:57 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A315AF8011C
+ by alsa1.perex.cz (Postfix) with ESMTPS id F34CBF8011C
+ for <alsa-devel@alsa-project.org>; Wed,  7 Sep 2022 10:53:05 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F34CBF8011C
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org
- header.b="wHxxXgOa"
-Received: by mail-lj1-x22b.google.com with SMTP id y29so2483836ljq.7
- for <alsa-devel@alsa-project.org>; Wed, 07 Sep 2022 01:30:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
- h=content-transfer-encoding:in-reply-to:from:references:cc:to
- :content-language:subject:user-agent:mime-version:date:message-id
- :from:to:cc:subject:date;
- bh=HoBu5pVRP0QlH9IyjF/UfBIe/8xVli1mPMeUsv8Z2sM=;
- b=wHxxXgOaPb0hNl/IJP0P+lOmntLkVF5Yp02OoLnxprSjola21wH2Sl47pU32q2dEho
- v3+4xYTvBKFcabjwfshFDu0V4rOeDzT3vKP9BSN8wBi2n9N6o3VUuZfJk/9aOwCYHmYS
- 5eRenIKcxScpXLtxpeCdsc/9q4pQJpl15dd9hAKleqeKpx4MORzmNLoMRNLVAhNC1QwY
- qZicXyBsxF0+0bya/Y9S+aegK5DaKN8X4Qdys0tu7Xhud+l8RuNJUr6xbMxR2ORhwojl
- mHh8GyIqGcK2PxlP+L3WZR89c+Ov+L4rmZVitja4c5prSHhoLVBW/wi40zB+JmsxLgFd
- 155Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=content-transfer-encoding:in-reply-to:from:references:cc:to
- :content-language:subject:user-agent:mime-version:date:message-id
- :x-gm-message-state:from:to:cc:subject:date;
- bh=HoBu5pVRP0QlH9IyjF/UfBIe/8xVli1mPMeUsv8Z2sM=;
- b=XMSDjP8J0lK97jaFBSzte3KnvR3bbqllq7xyeSjN4R1jv6Iy0yw2rMn5j3NXILZCC1
- JdnT44loPAPfxrd/rG34ncF51Ln1Dej25vkhiUvQfyFXT8troXE13m82KKv3ZUFb70os
- daIz2X4OwIuLd61Rlf6voRbUyQlaFYHigIX73AbZayJXr8WHZoveW21sWbKvJNcsQ1A4
- FBPOfixcMt7tRRZxj27PWLw7bJY7nVN3lcXXYp6Sxui+cUb4M1KN5jaHesVD2kHs78YI
- rg5Nm6FPbfaoARntQNIdXzaZWOmfHizfYvYGaqcDUFm71tKXGIfmDp+7Q26jrcGGizw0
- OcGg==
-X-Gm-Message-State: ACgBeo3W81/xZfMES3VamXdxinGe7oVo3gW+nc2IgQUaLDLGrbxKJX4e
- W+VJL9BQLlxwwCokTpSiOww6Aw==
-X-Google-Smtp-Source: AA6agR7IEanWZYdcRnIeSyrGPg0ZoBPFDp/3VMgyRg9nCW7WCbetSuOiEUA1I1IqmDBXvZBOXapokw==
-X-Received: by 2002:a05:651c:12cb:b0:25b:fa3f:c3f with SMTP id
- 11-20020a05651c12cb00b0025bfa3f0c3fmr681462lje.364.1662539455364; 
- Wed, 07 Sep 2022 01:30:55 -0700 (PDT)
-Received: from [192.168.0.21] (78-11-189-27.static.ip.netia.com.pl.
- [78.11.189.27]) by smtp.gmail.com with ESMTPSA id
- p15-20020a2eb98f000000b00268d84f8db1sm2467364ljp.92.2022.09.07.01.30.53
- (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Wed, 07 Sep 2022 01:30:54 -0700 (PDT)
-Message-ID: <7f91afa5-b5bf-4f26-c540-a04e52825248@linaro.org>
-Date: Wed, 7 Sep 2022 10:30:53 +0200
+ dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com
+ header.b="YYMg2w6H"
+Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
+ by mx0b-001ae601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 2877rCGG005930;
+ Wed, 7 Sep 2022 03:53:03 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
+ h=from : to : cc :
+ subject : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=PODMain02222019;
+ bh=uf/a9j89KomDA2V4JJLKTY/HwJy3SBHW0c3kiFGZtD4=;
+ b=YYMg2w6HW7yv9T6rzuCYhAux5XLisO9lQxB8EsQhznqeOG44AVIzpM66rHAgwEMZeJ8N
+ 12FU+mwVEwMaryytjln8g/pKnDUEMMadqy3A0HlrLi9cJZ7CgonVZe2DZrlr5j4HD46g
+ orrxU0GZ772jaNXqDNhVrblf5aVIR7O9RuR7k3E/67nSSuMyswzfxsg74I9yYKjmRstU
+ 5DJm7NKktouIPImTRn5Quw1jkxvTh5CjN0nqN7SfSbFdJnYLd2b6tA33SO6Dv/YqdWDF
+ yDUa5lIa21fL62D6qsT5S5Uqid8VwAHZeDKQDvdNdfsCwQXzJ13GRFlxDL1xwkqZBpwa rA== 
+Received: from ediex01.ad.cirrus.com ([84.19.233.68])
+ by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3jc3bpw21n-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+ Wed, 07 Sep 2022 03:53:03 -0500
+Received: from ediex02.ad.cirrus.com (198.61.84.81) by ediex01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.12; Wed, 7 Sep
+ 2022 03:53:02 -0500
+Received: from ediswmail.ad.cirrus.com (198.61.86.93) by
+ anon-ediex02.ad.cirrus.com (198.61.84.81) with Microsoft SMTP Server id
+ 15.2.1118.12 via Frontend Transport; Wed, 7 Sep 2022 03:53:02 -0500
+Received: from debianA11184.ad.cirrus.com (unknown [198.61.65.149])
+ by ediswmail.ad.cirrus.com (Postfix) with ESMTP id D0536B06;
+ Wed,  7 Sep 2022 08:53:01 +0000 (UTC)
+From: Richard Fitzgerald <rf@opensource.cirrus.com>
+To: <vkoul@kernel.org>, <yung-chuan.liao@linux.intel.com>,
+ <pierre-louis.bossart@linux.intel.com>, <sanyog.r.kale@intel.com>
+Subject: [PATCH v2 0/5] soundwire: Fixes for spurious and missing UNATTACH
+Date: Wed, 7 Sep 2022 09:52:54 +0100
+Message-ID: <20220907085259.3602-1-rf@opensource.cirrus.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.13.0
-Subject: Re: [PATCH 09/12] dt-bindings: soc: qcom: apr: correct service
- children
-Content-Language: en-US
-To: Rob Herring <robh@kernel.org>
-References: <20220906121655.303693-1-krzysztof.kozlowski@linaro.org>
- <20220906121655.303693-10-krzysztof.kozlowski@linaro.org>
- <1662486402.667876.780014.nullmailer@robh.at.kernel.org>
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <1662486402.667876.780014.nullmailer@robh.at.kernel.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
- linux-arm-msm@vger.kernel.org, Konrad Dybcio <konrad.dybcio@somainline.org>,
- linux-kernel@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
- Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
- Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
- Andy Gross <agross@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Bjorn Andersson <bjorn.andersson@linaro.org>
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Proofpoint-GUID: CbcV0LrqhBhWd3ZXDCjVKUgSfEHRbdmE
+X-Proofpoint-ORIG-GUID: CbcV0LrqhBhWd3ZXDCjVKUgSfEHRbdmE
+X-Proofpoint-Spam-Reason: safe
+Cc: patches@opensource.cirrus.com, alsa-devel@alsa-project.org,
+ Richard Fitzgerald <rf@opensource.cirrus.com>, linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -111,30 +92,42 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On 06/09/2022 19:46, Rob Herring wrote:
-> On Tue, 06 Sep 2022 14:16:52 +0200, Krzysztof Kozlowski wrote:
->> The APR bindings were not describing properly children nodes for DAIs.
->> None of the DTSes use unit addresses for the children, so correct the
->> nodes and reference their schema: clock-controller, dais and routing.
->>
->> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
->> ---
->>  .../bindings/soc/qcom/qcom,apr.yaml           | 38 +++++++++++++------
->>  .../sound/qcom,q6dsp-lpass-clocks.yaml        | 16 ++------
->>  .../sound/qcom,q6dsp-lpass-ports.yaml         | 16 ++------
->>  3 files changed, 35 insertions(+), 35 deletions(-)
->>
-> 
-> My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
-> on your patch (DT_CHECKER_FLAGS is new in v5.13):
-> 
-> yamllint warnings/errors:
-> 
-> dtschema/dtc warnings/errors:
-> /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/sound/qcom,q6apm-dai.example.dtb: gpr: service@1: '#address-cells', '#size-cells', 'apm-dai@1' do not match any of the regexes: 'pinctrl-[0-9]+'
-> 	From schema: /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/soc/qcom/qcom,apr.yaml
+The bus and cadence code has several bugs that cause UNATTACH notifications
+to either be sent spuriously or to be missed.
 
-I missed one more place with example to fix.
+These can be seen occasionally with a single peripheral on the bus, but are
+much more frequent with multiple peripherals, where several peripherals
+could change state and report in consecutive PINGs.
 
-Best regards,
-Krzysztof
+The root of all of these bugs seems to be a code design flaw that assumed
+every PING status change would be handled separately. However, PINGs are
+handled by a workqueue function and there is no guarantee when that function
+will be scheduled to run or how much CPU time it will receive. PINGs will
+continue while the work function is handling a snapshot of a previous PING
+so the code must take account that (a) status could change during the
+work function and (b) there can be a backlog of changes before the IRQ work
+function runs again.
+
+Tested with 4 peripherals on 1 bus, and 8 peripherals on 2 buses.
+
+CHANGES SINCE V1:
+Patch #3 replaced with a better solution to the same bug.
+Patches #4 and #5 added to fix some more bugs that were found.
+
+Richard Fitzgerald (4):
+  soundwire: bus: Don't lose unattach notifications
+  soundwire: bus: Don't re-enumerate before status is UNATTACHED
+  soundwire: cadence: Fix lost ATTACHED interrupts when enumerating
+  soundwire: bus: Don't exit early if no device IDs were programmed
+
+Simon Trimmer (1):
+  soundwire: cadence: fix updating slave status when a bus has multiple
+    peripherals
+
+ drivers/soundwire/bus.c            | 40 +++++++++++-----
+ drivers/soundwire/cadence_master.c | 75 ++++++++++++++++--------------
+ 2 files changed, 68 insertions(+), 47 deletions(-)
+
+-- 
+2.30.2
+
