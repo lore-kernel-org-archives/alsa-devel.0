@@ -4,93 +4,95 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id CC96BC38145
-	for <alsa-devel@archiver.kernel.org>; Thu,  8 Sep 2022 09:25:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 117E4C54EE9
+	for <alsa-devel@archiver.kernel.org>; Thu,  8 Sep 2022 09:25:37 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0CB4816ED;
-	Thu,  8 Sep 2022 11:24:31 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0CB4816ED
+	by alsa0.perex.cz (Postfix) with ESMTPS id 58E4416CE;
+	Thu,  8 Sep 2022 11:24:45 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 58E4416CE
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1662629121;
-	bh=DRIoh5hCfNENfG/JcUlLQQDz0pWYklCK4FZSRxn/dxI=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1662629135;
+	bh=K8QysTuNf/wONs7yZ7RlOX7ps0Xr9pSGRaFy9ZIJITM=;
+	h=Date:Subject:To:References:From:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=VkoWOOsfmSQy5j0MjOcyJUEbS5JaIGXOCb/xcqyDk4NavMX8TNjDhVvbPiBcWMuur
-	 5xWA0FWCkXwB2OSDtYG2+WbnOGRQHHV6Wl7Y1oot2U4aRr7nZZli2qSqIk+87yrRET
-	 ZYGoK99I7UyxUy0w4RLqXIsTuEiWqXWH/UZUnki8=
+	b=JXezcJQs74qrq4gyaQ6R3W3bJaJ4FeuXVrl8nGjCqzOB40XMCipQe4D7I9kg6UVJ0
+	 5YCBkAK6/nELEWLsZ2ZPXitg4IOo8HCRbt63tTrA6AnHt0DvO/USZ+50jCXrCI5EJS
+	 a03zoKe1QHwk6dw5XOJKx4/G4e2b27eml11NRn+w=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 5B0F8F805C5;
-	Thu,  8 Sep 2022 11:20:22 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 1DA02F8011C;
+	Thu,  8 Sep 2022 11:23:01 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 22F53F80566; Thu,  8 Sep 2022 11:20:21 +0200 (CEST)
-Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com
- [IPv6:2a00:1450:4864:20::136])
+ id 77145F802A0; Thu,  8 Sep 2022 11:22:59 +0200 (CEST)
+Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com
+ [IPv6:2a00:1450:4864:20::12f])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 10672F80566
- for <alsa-devel@alsa-project.org>; Thu,  8 Sep 2022 11:20:08 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 10672F80566
+ by alsa1.perex.cz (Postfix) with ESMTPS id 013D7F8011C
+ for <alsa-devel@alsa-project.org>; Thu,  8 Sep 2022 11:22:52 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 013D7F8011C
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org
- header.b="zhPVsuG2"
-Received: by mail-lf1-x136.google.com with SMTP id bq23so26702044lfb.7
- for <alsa-devel@alsa-project.org>; Thu, 08 Sep 2022 02:20:08 -0700 (PDT)
+ header.b="FHf5Ic/n"
+Received: by mail-lf1-x12f.google.com with SMTP id q7so26728381lfu.5
+ for <alsa-devel@alsa-project.org>; Thu, 08 Sep 2022 02:22:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
- h=content-transfer-encoding:mime-version:references:in-reply-to
- :message-id:date:subject:cc:to:from:from:to:cc:subject:date;
- bh=IE9iYaf4ljXjTzH90yeiguLHiQ95amY6yCG9ecN7egM=;
- b=zhPVsuG2l3xnWS3yDCpDzylO8CO7FHZKJ3Zd07Uynvqf/7lz8HLM0vuxl7BINDfmXL
- /5FiRSJ/BgW1WlAfEuMZlzpscb+me2WIsTmlCRgFytsqhtKhdj9sOWnDme1XfKJLsZ9G
- 8oW36CmqJdg47VWJGwAszWQIrVkSMHUmLAdn3AFw/kZgRWpoOS7mstMGT+xBOwdtfGON
- +wSZz+qIhMDD8HAO2ImE5FfUbkrX5hpvU6h8bHYWcxe6Lz7vSKo8ZUUf21XZvHYE+s0z
- 0BgwxYt47ZbhpLA/ui8gQd+QyTKtc/3PFbnN7o0pgQnQN6s9EErQjIt3jtzQxeMiyF8X
- A8LQ==
+ h=content-transfer-encoding:in-reply-to:from:references:cc:to
+ :content-language:subject:user-agent:mime-version:date:message-id
+ :from:to:cc:subject:date;
+ bh=dH3CbhVOQrBIzFdsMYEQAzEoE3B2m4SSznn5rAk+rYM=;
+ b=FHf5Ic/nwRoqqtgsFHSSGFDXZc98X2hpVH5Ttn0/VY/T+Rl1xxX8eAP+p5gs+pa44G
+ dqojHG/7TfSA3gOeWxAIl+UZh8PDFCPoea9kdGdQqDETSUMlihGsJQtxcvAzwkVOy9sT
+ 3fDJ01OAxnONes0Gle2gdPEa0FKu6zFZ/j+W9iF0qpfbRbL6px2LC8vg21uN+B1a+F6d
+ U7OQShHt5p86KP5e2r9IZo+K/7ynXnUdLMF1xVA5svaLjFkS8ALinaYJ0yT0hTOm1z5y
+ 5k/Ar9Kn+1s6rjhMYGbHk8a9pG3X93HkuWGNY4axTv/+yed/0Q6jeQnF9lV+pUJTF328
+ eDOA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
- h=content-transfer-encoding:mime-version:references:in-reply-to
- :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
- :subject:date;
- bh=IE9iYaf4ljXjTzH90yeiguLHiQ95amY6yCG9ecN7egM=;
- b=yGuVYL8p8DrtCidrGnfY0BG9kH74+t1uwlAIOTLS9K4R8gOu6TqBrCsVczTv17xtQi
- 12/mLjjp8FOdgWLsYtynKqyNHdwBPDZq/ZtKyxTms5j7AkFCflfs8r7ROerAvUX7+nBn
- /Pp9M48wlMuClv51K//aFIhlvBpnowvYsU8yJoPHcKoqarmeZE0JPzFzWbRJNBhgDb7+
- 3cvEpVnJ5ARkDqFa/KUemKkGuelNlPXqeTJgyMFXmGfcrc5TaNKpvPa+KBIDEn0dd/5Z
- 34spBUyvbUdrE8KKBzR7K3P4m7/U4UdnNULTM+fU7gvdHSI6TgfQKvRmoOWDosuZFzXP
- 1A/w==
-X-Gm-Message-State: ACgBeo1lmEp4P8sUWBezchJLHUDOkEU1ymAJOw4Lpo3AuBoR/TaigcZC
- 9PW0um9XXCLZKcbaBhzxssipMQ==
-X-Google-Smtp-Source: AA6agR5lOjJt6vP+XfpUeEi0d0i62RnR1ZVSDdEFDVUHchyMZxKh3epAz79gCniN/mJbV1a1VKqujw==
-X-Received: by 2002:a05:6512:3a95:b0:498:f272:6587 with SMTP id
- q21-20020a0565123a9500b00498f2726587mr188386lfu.148.1662628807024; 
- Thu, 08 Sep 2022 02:20:07 -0700 (PDT)
-Received: from krzk-bin.. (78-11-189-27.static.ip.netia.com.pl. [78.11.189.27])
- by smtp.gmail.com with ESMTPSA id
- q17-20020a056512211100b004946a758d21sm218219lfr.161.2022.09.08.02.20.05
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Thu, 08 Sep 2022 02:20:06 -0700 (PDT)
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
- Banajit Goswami <bgoswami@quicinc.com>, Andy Gross <agross@kernel.org>,
- Bjorn Andersson <andersson@kernel.org>,
- Konrad Dybcio <konrad.dybcio@somainline.org>,
- Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
- alsa-devel@alsa-project.org, linux-arm-msm@vger.kernel.org,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v3 13/14] ASoC: dt-bindings: qcom,
- q6apm-dai: adjust indentation in example
-Date: Thu,  8 Sep 2022 11:19:45 +0200
-Message-Id: <20220908091946.44800-14-krzysztof.kozlowski@linaro.org>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20220908091946.44800-1-krzysztof.kozlowski@linaro.org>
-References: <20220908091946.44800-1-krzysztof.kozlowski@linaro.org>
+ h=content-transfer-encoding:in-reply-to:from:references:cc:to
+ :content-language:subject:user-agent:mime-version:date:message-id
+ :x-gm-message-state:from:to:cc:subject:date;
+ bh=dH3CbhVOQrBIzFdsMYEQAzEoE3B2m4SSznn5rAk+rYM=;
+ b=Lq8YfXd1LwNqkIXCa46tm2W4Lkqun1qNaMSdcyEdYEAQ42PDyD7wQJrhyekegNE+Qa
+ WkP/cJq8+TKPaP83YcNCVPWKHmBGxeIQ8K8Cfe338JahkjaaGK9DF+cEi3HxLv7QVgKN
+ w9XdHwjFrfuuMqUV79cCJsb0BJzKqBj9MnJvoHKNVsX6lPuqR/s7Ake550BgJzc7nnKf
+ a5mUW37Qkgynqu79MsT27xUBGf3A4U13fuUACIHvCJZc12FIWoibfInC2x9NQphgrbT4
+ LUv0FAofqNxi8klI0MbWrE7m3dkbMU1/22faw+Y5YTomOCeUQfsbAqLOdJXCQLrPxvBJ
+ E+Ew==
+X-Gm-Message-State: ACgBeo0BWX1EQ6kkBTvdsa3kVHMMmoa6F2rbud/QQp+PN2PoNQMJ0CN3
+ ZOhifP2PEKVIwOhHw1GgJstL2w==
+X-Google-Smtp-Source: AA6agR4x1bQbWHYoUICIygFzuOYuWPgfmCbP5o72xJn3+fJ+P+x9kq1cdfCrhlbhILkhk07z1Y2DaA==
+X-Received: by 2002:a05:6512:1193:b0:492:7e33:870 with SMTP id
+ g19-20020a056512119300b004927e330870mr2475777lfr.37.1662628970810; 
+ Thu, 08 Sep 2022 02:22:50 -0700 (PDT)
+Received: from [192.168.0.21] (78-11-189-27.static.ip.netia.com.pl.
+ [78.11.189.27]) by smtp.gmail.com with ESMTPSA id
+ bu13-20020a056512168d00b004947f8b6266sm175119lfb.203.2022.09.08.02.22.49
+ (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+ Thu, 08 Sep 2022 02:22:50 -0700 (PDT)
+Message-ID: <0b8b2e01-5209-6437-c79e-3cff9b29bfcb@linaro.org>
+Date: Thu, 8 Sep 2022 11:22:48 +0200
 MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.13.0
+Subject: Re: [PATCH v9 2/2] ASoC: sun50i-dmic: dt-bindings: add DT bindings
+ for DMIC controller
+Content-Language: en-US
+To: =?UTF-8?B?54+t5rab?= <fengzheng923@gmail.com>
+References: <1661872039-40174-1-git-send-email-fengzheng923@gmail.com>
+ <25072fba-64e2-df11-c8f0-a274037141f0@linaro.org>
+ <CAE=m619qeaDYkWiB5kh50gY1Kndyrvo4oZuZjFKRCKK=j99K2w@mail.gmail.com>
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <CAE=m619qeaDYkWiB5kh50gY1Kndyrvo4oZuZjFKRCKK=j99K2w@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
+ samuel@sholland.org, lgirdwood@gmail.com, jernej.skrabec@gmail.com,
+ linux-kernel@vger.kernel.org, robh+dt@kernel.org, wens@csie.org,
+ broonie@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+ linux-sunxi@lists.linux.dev, linux-arm-kernel@lists.infradead.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -106,44 +108,27 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Cleanup the example DTS by fixing indentation to 4-spaces and adding
-blank lines for readability.
+On 07/09/2022 15:03, 班涛 wrote:
+>>> +++
+>> b/Documentation/devicetree/bindings/sound/allwinner,sun50i-h6-dmic.yaml
+>>> @@ -0,0 +1,79 @@
+>>> +# SPDX-License-Identifier: (GPL-2.0+ OR BSD-2-Clause)
+>>> +%YAML 1.2
+>>> +---
+>>> +$id: http://devicetree.org/schemas/sound/allwinner,sun50i-h6-dmic.yaml#
+>>> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+>>> +
+>>> +title: Allwinner H6 DMIC Device Tree Bindings
+>>
+>> s/Device Tree Bindings//
+>>
+> 
+> So, modify it to 'Allwinner H6 DMIC Devices Tree Bindings', sure?
 
-Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+You pasted the same message, so what is the modification? I wrote you a
+ search&replace pattern.
 
----
 
-Changes since v1:
-1. New patch
----
- .../devicetree/bindings/sound/qcom,q6apm-dai.yaml   | 13 +++++++------
- 1 file changed, 7 insertions(+), 6 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/sound/qcom,q6apm-dai.yaml b/Documentation/devicetree/bindings/sound/qcom,q6apm-dai.yaml
-index 844d72b30969..24f7bf2bfd95 100644
---- a/Documentation/devicetree/bindings/sound/qcom,q6apm-dai.yaml
-+++ b/Documentation/devicetree/bindings/sound/qcom,q6apm-dai.yaml
-@@ -33,13 +33,14 @@ examples:
-         #address-cells = <1>;
-         #size-cells = <0>;
-         qcom,domain = <GPR_DOMAIN_ID_ADSP>;
-+
-         service@1 {
--          compatible = "qcom,q6apm";
--          reg = <1>;
-+            compatible = "qcom,q6apm";
-+            reg = <1>;
- 
--          dais {
--            compatible = "qcom,q6apm-dais";
--            iommus = <&apps_smmu 0x1801 0x0>;
--          };
-+            dais {
-+                compatible = "qcom,q6apm-dais";
-+                iommus = <&apps_smmu 0x1801 0x0>;
-+            };
-         };
-     };
--- 
-2.34.1
-
+Best regards,
+Krzysztof
