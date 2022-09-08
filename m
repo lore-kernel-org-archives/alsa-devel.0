@@ -4,78 +4,93 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2BC74C38145
-	for <alsa-devel@archiver.kernel.org>; Thu,  8 Sep 2022 12:54:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 921ADC38145
+	for <alsa-devel@archiver.kernel.org>; Thu,  8 Sep 2022 13:23:21 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 2BAC416FC;
-	Thu,  8 Sep 2022 14:53:44 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2BAC416FC
+	by alsa0.perex.cz (Postfix) with ESMTPS id 1694B1702;
+	Thu,  8 Sep 2022 15:22:29 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1694B1702
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1662641674;
-	bh=Gu46DazuNBUooqldl5TxfjOsuqUUsrIpoiwcpkso85I=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
+	s=default; t=1662643399;
+	bh=Uys+mJhFxPidmoPoz8v53yPH3ZkTsndtnavBAPvu600=;
+	h=Date:Subject:To:References:From:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=QTas6vXUKc2DMvllSAcNV0sUls7qoIneTe20tfxIUfDM0Nh2H2CiGhTdBLdU+Is4V
-	 KckKieyW+pBVCy9yMvLD8CVqe0/dFbjnjGCxiVu7U3UZYQRg9sKgL5EeGCC0eRICtx
-	 g41a73FXYQk5OjVIZycac6FGlfojZcMguWq9Gvmg=
+	b=GcJB0F2rtJBCY5zGasTktblGUwujqtRvOKrt+rw0cb+QbDIlbMA/WK5yw5PM9tSRr
+	 wjypLe6CLQ2Q/tp9paBaTBn1WtWihGg9fENQsVAqyxTzFrHtpfV2T0Gaw626jup/Nq
+	 RHrE+5mpjS6YeIqN9SWXHF2R0wuIyBhF9WvbVWVs=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id BB5E9F800CB;
-	Thu,  8 Sep 2022 14:53:43 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id A53D7F800CB;
+	Thu,  8 Sep 2022 15:22:28 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id B8AF4F80217; Thu,  8 Sep 2022 14:53:41 +0200 (CEST)
-Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com
- [IPv6:2607:f8b0:4864:20::52b])
+ id 8B777F8023B; Thu,  8 Sep 2022 15:22:27 +0200 (CEST)
+Received: from mail-lj1-x234.google.com (mail-lj1-x234.google.com
+ [IPv6:2a00:1450:4864:20::234])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 8AF47F800CB
- for <alsa-devel@alsa-project.org>; Thu,  8 Sep 2022 14:53:35 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8AF47F800CB
+ by alsa1.perex.cz (Postfix) with ESMTPS id 3242DF800CB
+ for <alsa-devel@alsa-project.org>; Thu,  8 Sep 2022 15:22:20 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3242DF800CB
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org
- header.b="CG8I5pf1"
-Received: by mail-pg1-x52b.google.com with SMTP id s206so16668736pgs.3
- for <alsa-devel@alsa-project.org>; Thu, 08 Sep 2022 05:53:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=chromium.org; s=google;
- h=cc:to:subject:message-id:date:from:in-reply-to:references
- :mime-version:from:to:cc:subject:date;
- bh=UZ9peP4x10da9WU+5kZQ3we5/coNwWfoUbIvllgH1xI=;
- b=CG8I5pf1gu6Fdq+/gn/t5FQ++4yo9HgZUsjBv84K4CgINOpbcPpMbyrlBZWzFi5x67
- MlM1OsPmVMcdgw7/0kX5c3qNJGjziFWsaBaR5+KUslSdfyaZD7dnwS2K8k/rXlMpERtM
- Jrd9m8vhGgNSiHBbjvelDWneVTlb162SkkZ1s=
+ dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org
+ header.b="tzOAhiaG"
+Received: by mail-lj1-x234.google.com with SMTP id bx38so19836723ljb.10
+ for <alsa-devel@alsa-project.org>; Thu, 08 Sep 2022 06:22:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
+ h=content-transfer-encoding:in-reply-to:from:references:cc:to
+ :content-language:subject:user-agent:mime-version:date:message-id
+ :from:to:cc:subject:date;
+ bh=fLE0KN+bsddl0QuJuy8FUkwqm9oAF9pS454vWRLeAG0=;
+ b=tzOAhiaGGQXTOnylw8uUb0DZB4fb14BZI8v46ylgywkRIttiZqAiLm0Chf5/4xBKcT
+ k8Ejdm4WQZT6xoqzhryRf9cWgC5gRwCr2s1BT8oq2ZOlK5cbCPC//35kzDpIyE2AbK7H
+ fCrEfvHqwBnIFRqO/9sN4IdkrspJYKBxQXKtG291zFS1Difee4EqZ57rISjdPKpXOXdY
+ SmAOUwPtrIna7p9uYe2tphNLliMWtdzUwQhJBPGd83axsDpGBHjfmpL8fpqaCGfT89IM
+ 4RwajTDRWOtrOF3w5OSrH1TZ0Sikb0zrBRPTnwZpEIhC/p4FVz3Dqwcp0vcS9oqUFjGE
+ Misg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
- h=cc:to:subject:message-id:date:from:in-reply-to:references
- :mime-version:x-gm-message-state:from:to:cc:subject:date;
- bh=UZ9peP4x10da9WU+5kZQ3we5/coNwWfoUbIvllgH1xI=;
- b=1F3qyoEuDzJg62BbtOfJXH3tArJHqO8uzobUS7r0NabMBubskHhPhfyxV2QOuPAmch
- h9KIlFdLk5OiOYM6wE1qIKNhMt4EgE6h45nglB9iqi/VgYkQS32ulD6tYVpvCQdUs3PH
- SAsp77XgCvrf49FJiSB80jchndPxBnF2A946zvI7jccQDkx9KJPNpIxVq4Vc03irjrUR
- DxVKVpe5Zja/GeKPnEUbGJdEDI6oXb0lL8sq8VOSPEQ2uKaP+ciVFn4SLvV6XBNk9+EZ
- 4m6zpH2Yd69MhrzB0mvzioxPke42vJwBo6kURmo+XiCSlA7efBOn3VKSeoyZTZI5k6Ek
- NFLg==
-X-Gm-Message-State: ACgBeo33Ry8D+vHw8C0cKvFfCWorEcbby4v2I1HZ97E2xpLQMg6HB0k6
- TimuHli4wrZAbjwP2bI4H7uVFTFCMHSPSkTpi8zyJg==
-X-Google-Smtp-Source: AA6agR7dCr8B4wzx92CEAYx/xvFahkIN09Kn/V3ZV7Dp4tuZvBq/a2ogN24WGDh0eoVdR2jiUFZ2HaX5gv5MbJ3IiuA=
-X-Received: by 2002:a63:4a47:0:b0:42b:e4a4:3aec with SMTP id
- j7-20020a634a47000000b0042be4a43aecmr7887785pgl.512.1662641612722; Thu, 08
- Sep 2022 05:53:32 -0700 (PDT)
+ h=content-transfer-encoding:in-reply-to:from:references:cc:to
+ :content-language:subject:user-agent:mime-version:date:message-id
+ :x-gm-message-state:from:to:cc:subject:date;
+ bh=fLE0KN+bsddl0QuJuy8FUkwqm9oAF9pS454vWRLeAG0=;
+ b=rOqA8mD9CE3fdZtoJUhKF/P+XsOJOqUlb294KXFaq3Y+r9mtVk6U4T8B1IiO+k7Qlz
+ aQEE3LbXUhXezpQyDGlqcTOpKKqO7o8NIoz57xVkWoj2pCcj+VhxzZvZCDeXZI5lXn4O
+ xS27hWtTnUeuBFZ+OxzAC+7OLJCuSI2XL7QnRbi6LiCqlVOKKtqMe2Q1I6vMPEVrnwSs
+ TYwx5ioDakciiGfPcS9vRkGMsHsQDhmCsLVHn3CmMg9y8Uj97leqXqbMPQnstLM4JCeo
+ odQY4NnMW7KSQOuvkarjbUgNaRIKZDtWkVnRPsC8hKrYuiQa2doicXG2uWnvMgKqcHCi
+ Sb8A==
+X-Gm-Message-State: ACgBeo3Li4gt11JCD28TLU64+lD8cOvm6Bnfld3+XsOdbUHrHbdsQeXP
+ yxvNLm8w9UmYR5Pm13sSD/aizg==
+X-Google-Smtp-Source: AA6agR55FiMBW0OSNRvbR0bk9SlVIwvnZAztE8nQlhjnGDEx2ADlA8Bl9oRkGXqyaxryn4TX+3eFag==
+X-Received: by 2002:a2e:a483:0:b0:267:982b:6988 with SMTP id
+ h3-20020a2ea483000000b00267982b6988mr2399482lji.269.1662643338534; 
+ Thu, 08 Sep 2022 06:22:18 -0700 (PDT)
+Received: from [192.168.0.21] (78-11-189-27.static.ip.netia.com.pl.
+ [78.11.189.27]) by smtp.gmail.com with ESMTPSA id
+ p3-20020a056512138300b00497a7885f31sm1023649lfa.144.2022.09.08.06.22.17
+ (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+ Thu, 08 Sep 2022 06:22:18 -0700 (PDT)
+Message-ID: <829cdeaa-a80b-96e2-da7a-8bab2b741c91@linaro.org>
+Date: Thu, 8 Sep 2022 15:22:16 +0200
 MIME-Version: 1.0
-References: <CAPm_npY3SkumWgy8EN65no2iQFj2KWG6pysUchEKHBBPZ9AHsA@mail.gmail.com>
- <87r10mcmd9.wl-tiwai@suse.de>
- <CAPm_npaJdGfDBvTuL3nvbyT8Rfx3kC8Gy5dS5PPe78Vu7C2xAg@mail.gmail.com>
- <871qsmca8n.wl-tiwai@suse.de>
-In-Reply-To: <871qsmca8n.wl-tiwai@suse.de>
-From: YJ Lee <yunjunlee@chromium.org>
-Date: Thu, 8 Sep 2022 20:53:22 +0800
-Message-ID: <CAPm_npbE+Mi_raC-37SuR0Sc_oed1d1agAdShfCjCZ-egVVo4Q@mail.gmail.com>
-Subject: Re: About ALSA dummy module: support customized mixer volume leveling
-To: Takashi Iwai <tiwai@suse.de>
-Content-Type: text/plain; charset="UTF-8"
-Cc: alsa-devel@alsa-project.org, Ching Yun Chang <whalechang@google.com>,
- tiwai@suse.com, Yu-Hsuan Hsu <yuhsuan@chromium.org>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.13.0
+Subject: Re: [PATCH v2 1/4] ASoC: qcom: common: use EXPORT_SYMBOL_GPL instead
+ of EXPORT_SYMBOL
+Content-Language: en-US
+To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, broonie@kernel.org
+References: <20220906165508.30801-1-srinivas.kandagatla@linaro.org>
+ <20220906165508.30801-2-srinivas.kandagatla@linaro.org>
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <20220906165508.30801-2-srinivas.kandagatla@linaro.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
+ krzysztof.kozlowski+dt@linaro.org, linux-arm-msm@vger.kernel.org,
+ tiwai@suse.com, lgirdwood@gmail.com, robh+dt@kernel.org, bgoswami@quicinc.com,
+ linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -91,80 +106,15 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Thu, Sep 8, 2022 at 8:38 PM Takashi Iwai <tiwai@suse.de> wrote:
->
-> On Thu, 08 Sep 2022 12:32:14 +0200,
-> YJ Lee wrote:
-> >
-> > On Thu, Sep 8, 2022 at 4:16 PM Takashi Iwai <tiwai@suse.de> wrote:
-> > >
-> > > On Thu, 08 Sep 2022 07:26:02 +0200,
-> > > YJ Lee wrote:
-> > > >
-> > > > Hello Takashi (and the alsa community),
-> > > >
-> > > > This is YJ Lee from chromium.org.
-> > > >
-> > > > I'm thinking about extending the ALSA dummy module to support
-> > > > customized volume leveling. It will be very useful to test devices
-> > > > with different volume granularity. Currently this module is using
-> > > > hard-coded mixer volume leveling, from min=-50 to max=100.
-> > > >
-> > > > See L716: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git/tree/sound/drivers/dummy.c?h=queue/5.19#n716
-> > > >
-> > > > My plan (A) is to expose 2 more additional module parameters and
-> > > > replace a few occurrences, from L742-750.
-> > > >
-> > > > Another plan (B) is to leverage the current existing module
-> > > > parameter:model, and make the dummy-module to be able to accept models
-> > > > with customized volume leveling. New dummy models can be provided as
-> > > > configuration files, and be used in the same way as how currently
-> > > > existing dummy models (L146-213) are used. However, it's a bit
-> > > > over-engineering from the original purpose.
-> > > >
-> > > > What do you think about these plans? Any insight you (and the alsa
-> > > > community) can provide will be greatly appreciated.
-> > >
-> > > Only for volume min/max, module options may be an easier way, IMO.
-> > >
-> > > OTOH, if we want to adjust more stuff, another possibility is to
-> > > extend the proc file.  It currently supports the dynamic changes of
-> > > PCM parameters, but we can extend it or add a new proc file for
-> > > adjusting other stuff, too.  So the question is what else we want to
-> > > allow changing.
-> > >
-> > >
-> > > thanks,
-> > >
-> > > Takashi
-> >
-> > Hi Takashi,
-> >
-> > Thanks for your quick reply! I can't express my gratitude enough. Will
-> > stick with plan (A).
-> >
-> > Additionally, I'll take some time to read it and learn how to use the
-> > proc file. Compared with snd-dummy, I've plugged in a physical USB
-> > headset and saw some read-only files (usb*) under /proc/asound/cardX.
-> > By extending the proc file, are you suggesting we can change those
-> > into writable so ALSA will understand and make corresponding changes,
-> > (e.g. 'change' the dummy card into a USB sound card)? Can you tell me
-> > more about how to extend or add a new proc file (as a separate topic)?
->
-> Some proc files allow writing, and the dummy driver's own proc file is
-> such one (enabled only when CONFIG_SND_DEBUG=y, though).  The proc
-> file is created with snd_card_rw_proc_new() and the passed write
-> callback is dummy_proc_write() in this case.  It parses each text line
-> and overrides the existing struct field accordingly.
->
->
-> HTH,
->
-> Takashi
+On 06/09/2022 18:55, Srinivas Kandagatla wrote:
+> qcom_snd_parse_of depends on ASoC EXPORT_SYMBOL_GPL functions,
+> so make qcom_snd_parse_of and EXPORT_SYMBOL_GPL.
+> 
+> Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 
-Hi Takashi,
 
-This greatly helps! Thanks so much for your kind explanation : )
+Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 
-Best,
-YJ
+
+Best regards,
+Krzysztof
