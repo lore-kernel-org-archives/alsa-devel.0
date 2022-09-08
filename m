@@ -4,88 +4,42 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id EBE20C38145
-	for <alsa-devel@archiver.kernel.org>; Thu,  8 Sep 2022 09:20:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 42FADECAAD5
+	for <alsa-devel@archiver.kernel.org>; Thu,  8 Sep 2022 09:21:18 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 7BF9716BC;
-	Thu,  8 Sep 2022 11:19:57 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7BF9716BC
+	by alsa0.perex.cz (Postfix) with ESMTPS id 8768516DB;
+	Thu,  8 Sep 2022 11:20:26 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8768516DB
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1662628847;
-	bh=pplG9tYiQhydSkZL/VDMSZdjPNnkXtw/bMHYy9slDdg=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=Y9+h9plY53pBA97WMWJyR2SIhKEsp1jxZMrJ01rnMjYzoiPhbwC7F8Rqth7tA4xJH
-	 EVEdnA78zAt2Ot3eFtlvGaw7HN+f8kqku39EPOXlsvcIrB7Y9k7jUsOfI2E30l8oG8
-	 nIZYcX6KfeL0hiHveqlhkBfzQCQlRvirw88AExUc=
+	s=default; t=1662628876;
+	bh=v0p4c2NJuKIL3zG4BIQMyuvAOm1z6esYW61KMqchNKw=;
+	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=s9hy52zwJlP/0mJP9ZGE6m4T+0wpPaYlsdnPpQB4F1LWBGpEzNaG3ZDUoOX+ACCOZ
+	 cIFlaNaza5maGcjFE5sChNWKYe+oaJ58Xa8f3HfwLX6+zcH1/nItW5MELnJTbm81pT
+	 xXkUeVtAX8yaappff2UsWCQjwK7WkfKKhzHqOxwU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 081B3F8023B;
-	Thu,  8 Sep 2022 11:19:57 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id E6746F80528;
+	Thu,  8 Sep 2022 11:19:59 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id B488EF802A0; Thu,  8 Sep 2022 11:19:55 +0200 (CEST)
-Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com
- [IPv6:2a00:1450:4864:20::129])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id B710AF8011C
+ id 13AB8F8011C; Thu,  8 Sep 2022 11:19:59 +0200 (CEST)
+Received: from webhooks-bot.alsa-project.org (gate.perex.cz [77.48.224.242])
+ by alsa1.perex.cz (Postfix) with ESMTP id C37B8F8016D
  for <alsa-devel@alsa-project.org>; Thu,  8 Sep 2022 11:19:52 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B710AF8011C
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org
- header.b="V3gNSM5E"
-Received: by mail-lf1-x129.google.com with SMTP id a8so5107650lff.13
- for <alsa-devel@alsa-project.org>; Thu, 08 Sep 2022 02:19:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
- h=content-transfer-encoding:mime-version:message-id:date:subject:cc
- :to:from:from:to:cc:subject:date;
- bh=cbAFyHUn+BqZYT6TfWgGhL/cdqwC4IvZm/qFbuiAxRE=;
- b=V3gNSM5EKz2GRMxgkAoAXZre4WyqQGqu//5MurbALT3N85R/tX4qgvkT2dfJPnlikC
- AuKRoHiSyAfFB6Xhe3HQtKP5KdO9VLnjN5pS/FPD8bVcaX28besp4ZFSrS+lII5LKNYR
- qwhkM/CZ9bdWJBnGI57JznuOLx1VL3RbuiSpjRp2V7Te/PiV1tpRHLP45bE7pbBzCF7w
- wXXmXeXcNpxSiM/JoK+BJUUSjyoIJvS10X2xDernP58R2Hpd2wsdqBC5p62LJ0qaVYiA
- ab2U5L4MY3JijyLSrsVvKn99j0CslYyui/3JI/3BndJj8lN6ulOENlccO3Yp5Scnimoi
- orUQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=content-transfer-encoding:mime-version:message-id:date:subject:cc
- :to:from:x-gm-message-state:from:to:cc:subject:date;
- bh=cbAFyHUn+BqZYT6TfWgGhL/cdqwC4IvZm/qFbuiAxRE=;
- b=RgBWvROt8XBf8jzsMVr09CLPg7UY2OTjzfKIwlUUkGRiMEAzyQP2SgBBmaRczQALse
- TTRS9M6wxUXt4yrVGyGSY7LrjqwJuNbGPqlBDyvKgVOIsCKOczJVxLVsvavGFwfTbowP
- 3xMmCJnibquTtrUh20lBbWBCsJVKeZqI4uNs5eCNBwZ3YHHPWv8rUd+xP9IsaiCNanqq
- 1b7hBgZflOFSeRCk559XUjZyxheEnmBVS+6x88GPCaOv7xRuHl4C1AMBCBl6A+hU4hdA
- XEkLkp0zJGaJ8jb54DKUfrOpRWYjfyjmMKFgwp4dZofJROyY7TXVwaproCBQdQXGttNp
- Wezw==
-X-Gm-Message-State: ACgBeo3DB8CtgrjFpdvW/nEtF8WYwB//Gpi1k59P6Tojw2HsfZQXU4c3
- 8un25TCroIRAuFFW6Q6tWHM1dQ==
-X-Google-Smtp-Source: AA6agR592euC8UOiN76J/F3PYgmA3eREKtQn0VwCIdBdj6qISwhRuHNTAX82/cI6qlaxAp7i6+AD2g==
-X-Received: by 2002:a05:6512:68f:b0:492:cbb1:c4b2 with SMTP id
- t15-20020a056512068f00b00492cbb1c4b2mr2643486lfe.130.1662628790704; 
- Thu, 08 Sep 2022 02:19:50 -0700 (PDT)
-Received: from krzk-bin.. (78-11-189-27.static.ip.netia.com.pl. [78.11.189.27])
- by smtp.gmail.com with ESMTPSA id
- q17-20020a056512211100b004946a758d21sm218219lfr.161.2022.09.08.02.19.49
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Thu, 08 Sep 2022 02:19:50 -0700 (PDT)
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
- Banajit Goswami <bgoswami@quicinc.com>, Andy Gross <agross@kernel.org>,
- Bjorn Andersson <andersson@kernel.org>,
- Konrad Dybcio <konrad.dybcio@somainline.org>,
- Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
- alsa-devel@alsa-project.org, linux-arm-msm@vger.kernel.org,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v3 00/14] ASoC/qcom/arm64: Qualcomm ADSP DTS and binding fixes
-Date: Thu,  8 Sep 2022 11:19:32 +0200
-Message-Id: <20220908091946.44800-1-krzysztof.kozlowski@linaro.org>
-X-Mailer: git-send-email 2.34.1
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C37B8F8016D
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+From: GitHub pull_request - opened <github@alsa-project.org>
+To: alsa-devel@alsa-project.org
+In-Reply-To: <1662628792133111000-webhooks-bot@alsa-project.org>
+References: <1662628792133111000-webhooks-bot@alsa-project.org>
+Subject: ucm2: Add support for MT8195 Cherry Tomato Chromebook with SOF
+Message-Id: <20220908091959.13AB8F8011C@alsa1.perex.cz>
+Date: Thu,  8 Sep 2022 11:19:59 +0200 (CEST)
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -101,63 +55,15 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Hi,
+alsa-project/alsa-ucm-conf pull request #213 was opened from kholk:
 
-Dependencies/merging
-====================
-1. The DTS patches are independent.
-2. The binding patches should come together, because of context changes. Could
-   be one of: Qualcomm SoC, ASoC or DT tree.
+Add support for the Acer Chromebook Spin 513 CP513-2H, powered by MediaTek Kompanio 1380 (MT8195) with a HiFi 4 Audio DSP running SoundOpenFirmware.
+This machine uses MT6359 PMIC, with RT1019 and RT5682 as headphones and speaker codecs/amps.
 
-Changes since v2
-================
-1. Patch 9: rename and extend commit msg.
-2. Add Rb tags.
+This configuration has been successfully tested on Debian 11 with PipeWire 0.3.56 + wireplumber.
 
-Changes since v1
-================
-1. Patch 9: New patch.
-2. Patch 10: Correct also sound/qcom,q6apm-dai.yaml (Rob).
-2. Patch 13: New patch.
-3. Add Rb/Tb tags.
+Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
 
-Best regards,
-Krzysztof
-
-Krzysztof Kozlowski (14):
-  arm64: dts: qcom: sdm630: align APR services node names with dtschema
-  arm64: dts: qcom: sdm845: align APR services node names with dtschema
-  arm64: dts: qcom: sm8250: align APR services node names with dtschema
-  arm64: dts: qcom: msm8996: fix APR services nodes
-  arm64: dts: qcom: sdm845: align dai node names with dtschema
-  arm64: dts: qcom: msm8996: align dai node names with dtschema
-  arm64: dts: qcom: qrb5165-rb5: align dai node names with dtschema
-  arm64: dts: qcom: sm8250: use generic name for LPASS clock controller
-  ASoC: dt-bindings:: qcom,q6asm: convert to dtschema
-  dt-bindings: soc: qcom: apr: correct service children
-  ASoC: dt-bindings: qcom,q6dsp-lpass-ports: cleanup example
-  ASoC: dt-bindings: qcom,q6dsp-lpass-clocks: cleanup example
-  ASoC: dt-bindings: qcom,q6apm-dai: adjust indentation in example
-  dt-bindings: soc: qcom: apr: add missing properties
-
- .../bindings/soc/qcom/qcom,apr.yaml           | 111 +++++++++++++++--
- .../bindings/sound/qcom,q6apm-dai.yaml        |  21 ++--
- .../bindings/sound/qcom,q6asm-dais.yaml       | 112 ++++++++++++++++++
- .../devicetree/bindings/sound/qcom,q6asm.txt  |  70 -----------
- .../sound/qcom,q6dsp-lpass-clocks.yaml        |  36 +++---
- .../sound/qcom,q6dsp-lpass-ports.yaml         |  64 +++++-----
- arch/arm64/boot/dts/qcom/msm8996.dtsi         |  10 +-
- arch/arm64/boot/dts/qcom/qrb5165-rb5.dts      |   4 +-
- arch/arm64/boot/dts/qcom/sdm630.dtsi          |   8 +-
- arch/arm64/boot/dts/qcom/sdm845-db845c.dts    |   2 +-
- .../boot/dts/qcom/sdm845-xiaomi-beryllium.dts |   2 +-
- .../boot/dts/qcom/sdm845-xiaomi-polaris.dts   |   4 +-
- arch/arm64/boot/dts/qcom/sdm845.dtsi          |   8 +-
- arch/arm64/boot/dts/qcom/sm8250.dtsi          |  10 +-
- 14 files changed, 293 insertions(+), 169 deletions(-)
- create mode 100644 Documentation/devicetree/bindings/sound/qcom,q6asm-dais.yaml
- delete mode 100644 Documentation/devicetree/bindings/sound/qcom,q6asm.txt
-
--- 
-2.34.1
-
+Request URL   : https://github.com/alsa-project/alsa-ucm-conf/pull/213
+Patch URL     : https://github.com/alsa-project/alsa-ucm-conf/pull/213.patch
+Repository URL: https://github.com/alsa-project/alsa-ucm-conf
