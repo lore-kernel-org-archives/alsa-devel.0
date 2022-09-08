@@ -4,76 +4,73 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2A070C54EE9
-	for <alsa-devel@archiver.kernel.org>; Thu,  8 Sep 2022 16:12:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7F24DC54EE9
+	for <alsa-devel@archiver.kernel.org>; Thu,  8 Sep 2022 16:13:28 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 614D51721;
-	Thu,  8 Sep 2022 18:12:06 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 614D51721
+	by alsa0.perex.cz (Postfix) with ESMTPS id 9DA62172F;
+	Thu,  8 Sep 2022 18:12:36 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9DA62172F
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1662653576;
-	bh=s1PBe/pF5jJRbyhX3WY2pGtR1K/IVs/yQHt+cEPY7+0=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=PQgzKwjWxNK7+4ThWQAOJwsl/uMNHXznxO9eIflBIfnHM4DV/qxxzCNwPDhB8hcwa
-	 U9lZUCdHxObfHg/+NblYOkC8MTGS/ApcaMPznn/gsh1ilSkiPVprKL2YPVwPBdDC3a
-	 Lkdwb8tzICQaF9X7HcHWg1TSJApi7RDvlYe5pyK0=
+	s=default; t=1662653606;
+	bh=xEF1CQNN9sntlz4PLeIKwVS7wPU/B5aUiicOkcoBGNg=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=mQWMggaaR0i6rvOUc2Ku+qBYyuligkwmzQpjdZtVZAf4YnfnLLjRIKGrZ+1SluSt7
+	 ZGf0+X9pntjc4+t22/bpIiEfTI9J69/cfeqWvB6LJg4DS1LPJ87onOuAWsfoj1+4uu
+	 z/5HL/er96Mmul2pCGLICmkJ87OGeiMF3Wv1JX3U=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id EE9A2F801F7;
-	Thu,  8 Sep 2022 18:12:05 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 17921F80537;
+	Thu,  8 Sep 2022 18:12:14 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 0C277F80217; Thu,  8 Sep 2022 18:12:05 +0200 (CEST)
+ id EA405F80538; Thu,  8 Sep 2022 18:12:12 +0200 (CEST)
 Received: from madras.collabora.co.uk (madras.collabora.co.uk
  [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 2D169F800CB
- for <alsa-devel@alsa-project.org>; Thu,  8 Sep 2022 18:12:01 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2D169F800CB
+ by alsa1.perex.cz (Postfix) with ESMTPS id 8522FF804B3
+ for <alsa-devel@alsa-project.org>; Thu,  8 Sep 2022 18:12:06 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8522FF804B3
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com
- header.b="V7N5SxKg"
+ header.b="QXzUjpAT"
 Received: from notapiano.myfiosgateway.com (unknown [70.107.189.129])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
  (No client certificate requested) (Authenticated sender: nfraprado)
- by madras.collabora.co.uk (Postfix) with ESMTPSA id 7C7D66601FA8;
- Thu,  8 Sep 2022 17:11:58 +0100 (BST)
+ by madras.collabora.co.uk (Postfix) with ESMTPSA id 3BB776601FAE;
+ Thu,  8 Sep 2022 17:12:04 +0100 (BST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
- s=mail; t=1662653520;
- bh=s1PBe/pF5jJRbyhX3WY2pGtR1K/IVs/yQHt+cEPY7+0=;
- h=From:To:Cc:Subject:Date:From;
- b=V7N5SxKgNXkE3uhhv7ZXVkgT4pvDUknukRkXkl61R4/jVZ4XBueUDpfCU1lxCPOwH
- LvJSO6jNTMRoOWPJGXIvz10MNmkDuCn9oi7WK1IurPMc+Qh74TKrzlDSt0U7SCcOqU
- MZhGzF6qsaA1i9eXPUFJJ0Gv38EZwaXcu2ELIplCvJCX9ivQkykgO2PkN85j6VxssY
- 6vL/OwMn8f4Vm2jWxrj9Umayk+m33VIBt7i3gAXRghoKsZhArCMG0dbI8W+prz+EIt
- h6v7GWRjdI6+DINlzVa8Fy+v8DBRSouseVm9wT43xDi1joxYUxFzkxVpkYyA8txfop
- 9djx3x4z6uSRg==
+ s=mail; t=1662653525;
+ bh=xEF1CQNN9sntlz4PLeIKwVS7wPU/B5aUiicOkcoBGNg=;
+ h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+ b=QXzUjpATw+vcXLt0B57A1UD38hGGFrLsbi95cKwhFYv3CQXtwc9z5UYGoAk7R3PQm
+ +aOQYa5FmFd/ZPJQxPkX8zzaoLUmPWnM2Ug6OpNeg3uGC/tMJsiD+t4+5785ji7krJ
+ PL61L7za3JIHWSPBXc6MHI2FXEPftMtfPUDdJLIUEsl0aSgT9cCFsJkes4LWxIkMcN
+ n927BxS+qUE8l9+MUb8VjVSX/AGhEuEi8nUhs7+EblODXeJmLF8orSUZTSjJBsmHOh
+ X8v/Vz9NKqibPmFBXHT6TAyjaZTT2VoZPA+116upf1o3NWenVJ3Pt7DiZALn0LtU3T
+ JGnXnqOuh+ItQ==
 From: =?UTF-8?q?N=C3=ADcolas=20F=2E=20R=2E=20A=2E=20Prado?=
  <nfraprado@collabora.com>
 To: Mark Brown <broonie@kernel.org>, Matthias Brugger <matthias.bgg@gmail.com>
-Subject: [PATCH 00/10] ASoC: mediatek: Set i2s clock sharing from machine
- drivers
-Date: Thu,  8 Sep 2022 12:11:44 -0400
-Message-Id: <20220908161154.648557-1-nfraprado@collabora.com>
+Subject: [PATCH 03/10] ASoC: mediatek: mt8192: Remove clock share parsing from
+ DT
+Date: Thu,  8 Sep 2022 12:11:47 -0400
+Message-Id: <20220908161154.648557-4-nfraprado@collabora.com>
 X-Mailer: git-send-email 2.37.3
+In-Reply-To: <20220908161154.648557-1-nfraprado@collabora.com>
+References: <20220908161154.648557-1-nfraprado@collabora.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-Cc: alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
- Miaoqian Lin <linmq006@gmail.com>, Chunxu Li <chunxu.li@mediatek.com>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+Cc: alsa-devel@alsa-project.org,
  =?UTF-8?q?N=C3=ADcolas=20F=2E=20R=2E=20A=2E=20Prado?=
- <nfraprado@collabora.com>, linux-arm-kernel@lists.infradead.org,
+ <nfraprado@collabora.com>, Liam Girdwood <lgirdwood@gmail.com>,
  linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>,
- Liam Girdwood <lgirdwood@gmail.com>, Jiaxin Yu <jiaxin.yu@mediatek.com>,
- Tzung-Bi Shih <tzungbi@google.com>, Rob Herring <robh+dt@kernel.org>,
- linux-mediatek@lists.infradead.org,
- Rikard Falkeborn <rikard.falkeborn@gmail.com>,
- Akihiko Odaki <akihiko.odaki@gmail.com>, kernel@collabora.com,
- Dan Carpenter <dan.carpenter@oracle.com>,
+ linux-mediatek@lists.infradead.org, kernel@collabora.com,
+ linux-arm-kernel@lists.infradead.org,
  AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
@@ -90,58 +87,119 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+Now that the clock sharing for i2s ports can be configured from the
+sound machine driver, remove the logic that was used to parse the
+properties from the devicetree.
 
-The i2s ports on MediaTek SoCs only support a single data lane. In order
-to achieve full-duplex operation thus two i2s ports, one for input and
-one for output, need to be used together and sharing a single clock from
-one of the ports.
+Signed-off-by: Nícolas F. R. A. Prado <nfraprado@collabora.com>
+---
 
-This clock sharing setting was previously read by the sound platform
-driver from the devicetree, but given that the input/output pairing is
-closely related to which codecs are connected to which ports, the
-machine sound driver can infer and set it, so that no DT property is
-required.
+ sound/soc/mediatek/mt8192/mt8192-dai-i2s.c | 35 ----------------------
+ 1 file changed, 35 deletions(-)
 
-At this point only mt8183-kukui was using the DT property, but given
-that this property was never documented, and that the API introduced in
-this series makes it obsolete, the undocumented DT property can safely
-be removed.
-
-This series adds a function to allow setting the i2s shared clocks,
-makes use of it in the machine drivers as required, and removes the no
-longer required DT properties and support for them in the drivers, for
-all of mt8192, mt8183 and mt8186.
-
-
-Nícolas F. R. A. Prado (10):
-  ASoC: mediatek: mt8192: Allow setting shared clocks from machine
-    driver
-  ASoC: mediatek: mt8192-mt6359: Make i2s9 share the clock from i2s8
-  ASoC: mediatek: mt8192: Remove clock share parsing from DT
-  ASoC: mediatek: mt8183: Allow setting shared clocks from machine
-    driver
-  ASoC: mediatek: mt8183: Configure shared clocks
-  ASoC: mediatek: mt8183: Remove clock share parsing from DT
-  arm64: dts: mediatek: kukui: Remove i2s-share properties
-  ASoC: mediatek: mt8186: Allow setting shared clocks from machine
-    driver
-  ASoC: mediatek: mt8186: Configure shared clocks
-  ASoC: mediatek: mt8186: Remove clock share parsing from DT
-
- .../arm64/boot/dts/mediatek/mt8183-kukui.dtsi |  5 --
- sound/soc/mediatek/mt8183/mt8183-afe-common.h |  3 ++
- .../mediatek/mt8183/mt8183-da7219-max98357.c  | 33 +++++++++++++
- sound/soc/mediatek/mt8183/mt8183-dai-i2s.c    | 45 ++++++++---------
- .../mt8183/mt8183-mt6358-ts3a227-max98357.c   | 33 +++++++++++++
- sound/soc/mediatek/mt8186/mt8186-afe-common.h |  3 ++
- sound/soc/mediatek/mt8186/mt8186-dai-i2s.c    | 44 ++++++++---------
- .../mt8186/mt8186-mt6366-da7219-max98357.c    | 18 +++++++
- .../mt8186/mt8186-mt6366-rt1019-rt5682s.c     | 18 +++++++
- sound/soc/mediatek/mt8192/mt8192-afe-common.h |  3 ++
- sound/soc/mediatek/mt8192/mt8192-dai-i2s.c    | 49 ++++++++-----------
- .../mt8192/mt8192-mt6359-rt1015-rt5682.c      |  9 ++++
- 12 files changed, 180 insertions(+), 83 deletions(-)
-
+diff --git a/sound/soc/mediatek/mt8192/mt8192-dai-i2s.c b/sound/soc/mediatek/mt8192/mt8192-dai-i2s.c
+index 630ed7261fc3..ea516d63d94d 100644
+--- a/sound/soc/mediatek/mt8192/mt8192-dai-i2s.c
++++ b/sound/soc/mediatek/mt8192/mt8192-dai-i2s.c
+@@ -45,7 +45,6 @@ struct mtk_afe_i2s_priv {
+ 	int rate; /* for determine which apll to use */
+ 	int low_jitter_en;
+ 
+-	const char *share_property_name;
+ 	int share_i2s_id;
+ 
+ 	int mclk_id;
+@@ -1984,79 +1983,50 @@ static const struct mtk_afe_i2s_priv mt8192_i2s_priv[DAI_I2S_NUM] = {
+ 	[DAI_I2S0] = {
+ 		.id = MT8192_DAI_I2S_0,
+ 		.mclk_id = MT8192_I2S0_MCK,
+-		.share_property_name = "i2s0-share",
+ 		.share_i2s_id = -1,
+ 	},
+ 	[DAI_I2S1] = {
+ 		.id = MT8192_DAI_I2S_1,
+ 		.mclk_id = MT8192_I2S1_MCK,
+-		.share_property_name = "i2s1-share",
+ 		.share_i2s_id = -1,
+ 	},
+ 	[DAI_I2S2] = {
+ 		.id = MT8192_DAI_I2S_2,
+ 		.mclk_id = MT8192_I2S2_MCK,
+-		.share_property_name = "i2s2-share",
+ 		.share_i2s_id = -1,
+ 	},
+ 	[DAI_I2S3] = {
+ 		.id = MT8192_DAI_I2S_3,
+ 		.mclk_id = MT8192_I2S3_MCK,
+-		.share_property_name = "i2s3-share",
+ 		.share_i2s_id = -1,
+ 	},
+ 	[DAI_I2S5] = {
+ 		.id = MT8192_DAI_I2S_5,
+ 		.mclk_id = MT8192_I2S5_MCK,
+-		.share_property_name = "i2s5-share",
+ 		.share_i2s_id = -1,
+ 	},
+ 	[DAI_I2S6] = {
+ 		.id = MT8192_DAI_I2S_6,
+ 		.mclk_id = MT8192_I2S6_MCK,
+-		.share_property_name = "i2s6-share",
+ 		.share_i2s_id = -1,
+ 	},
+ 	[DAI_I2S7] = {
+ 		.id = MT8192_DAI_I2S_7,
+ 		.mclk_id = MT8192_I2S7_MCK,
+-		.share_property_name = "i2s7-share",
+ 		.share_i2s_id = -1,
+ 	},
+ 	[DAI_I2S8] = {
+ 		.id = MT8192_DAI_I2S_8,
+ 		.mclk_id = MT8192_I2S8_MCK,
+-		.share_property_name = "i2s8-share",
+ 		.share_i2s_id = -1,
+ 	},
+ 	[DAI_I2S9] = {
+ 		.id = MT8192_DAI_I2S_9,
+ 		.mclk_id = MT8192_I2S9_MCK,
+-		.share_property_name = "i2s9-share",
+ 		.share_i2s_id = -1,
+ 	},
+ };
+ 
+-static int mt8192_dai_i2s_get_share(struct mtk_base_afe *afe)
+-{
+-	struct mt8192_afe_private *afe_priv = afe->platform_priv;
+-	const struct device_node *of_node = afe->dev->of_node;
+-	const char *of_str;
+-	const char *property_name;
+-	struct mtk_afe_i2s_priv *i2s_priv;
+-	int i;
+-
+-	for (i = 0; i < DAI_I2S_NUM; i++) {
+-		i2s_priv = afe_priv->dai_priv[mt8192_i2s_priv[i].id];
+-		property_name = mt8192_i2s_priv[i].share_property_name;
+-		if (of_property_read_string(of_node, property_name, &of_str))
+-			continue;
+-		i2s_priv->share_i2s_id = get_i2s_id_by_name(afe, of_str);
+-	}
+-
+-	return 0;
+-}
+-
+ /**
+  * mt8192_dai_i2s_set_share() - Set up I2S ports to share a single clock.
+  * @afe: Pointer to &struct mtk_base_afe
+@@ -2127,10 +2097,5 @@ int mt8192_dai_i2s_register(struct mtk_base_afe *afe)
+ 	if (ret)
+ 		return ret;
+ 
+-	/* parse share i2s */
+-	ret = mt8192_dai_i2s_get_share(afe);
+-	if (ret)
+-		return ret;
+-
+ 	return 0;
+ }
 -- 
 2.37.3
 
