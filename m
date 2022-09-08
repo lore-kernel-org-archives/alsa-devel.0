@@ -4,80 +4,81 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0AF3FECAAD5
-	for <alsa-devel@archiver.kernel.org>; Thu,  8 Sep 2022 06:36:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 593B5C38145
+	for <alsa-devel@archiver.kernel.org>; Thu,  8 Sep 2022 06:37:06 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id F384A16C0;
-	Thu,  8 Sep 2022 08:36:01 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F384A16C0
+	by alsa0.perex.cz (Postfix) with ESMTPS id 82F9E16C3;
+	Thu,  8 Sep 2022 08:36:14 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 82F9E16C3
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1662619012;
-	bh=FE3tpsm8A74tmciqFMEJFS6Gf7ndP5FrJo5Z3o4Xt1Q=;
+	s=default; t=1662619024;
+	bh=fQYUkAxXY71C935nLCXmBtUClWnIjPfNIksuukkp5SE=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=c5iBTuMc99WC3AiEgfO8JX0zIZPrtOj0JztGZ0VHM1YP/ycwRqSIkdOzi5TH/GPES
-	 tNKfeKX0WjjWBRrUdIRKdaHONzqVdx69Hn49Vso2AT3ZQgMG4nGdXoHRV1hiKIAyVH
-	 jvTQMthbTcSWYX+DqKPk1RenTvLaDUDRwyx7PsZc=
+	b=hJIL5fIc0hqe5IDD6Ms3mBlevAVKGFnTt9oE/TUE+K/ysof/ChXKNDABi5vUMD1XS
+	 JT/3+JKuIaKwx6tSXUgR3ou5HXeaJ+0MhNmrxGl4csFFdGOHIDYkeZjRcC4v2sO/2M
+	 xIi/ZCXufmkIEoLcnv8hACgaO6WMXW/A+rOhYcN0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id DAAC3F8053C;
-	Thu,  8 Sep 2022 08:35:11 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 555E7F80549;
+	Thu,  8 Sep 2022 08:35:15 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id AB367F80537; Thu,  8 Sep 2022 08:35:08 +0200 (CEST)
-Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com
- [IPv6:2a00:1450:4864:20::32d])
+ id E3662F8053A; Thu,  8 Sep 2022 08:35:10 +0200 (CEST)
+Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com
+ [IPv6:2a00:1450:4864:20::333])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id E27A4F8011C
- for <alsa-devel@alsa-project.org>; Thu,  8 Sep 2022 08:34:57 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E27A4F8011C
+ by alsa1.perex.cz (Postfix) with ESMTPS id 85EC4F803DC
+ for <alsa-devel@alsa-project.org>; Thu,  8 Sep 2022 08:34:54 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 85EC4F803DC
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org
- header.b="TTPySrZh"
-Received: by mail-wm1-x32d.google.com with SMTP id
- bg5-20020a05600c3c8500b003a7b6ae4eb2so907431wmb.4
- for <alsa-devel@alsa-project.org>; Wed, 07 Sep 2022 23:34:57 -0700 (PDT)
+ header.b="xLNd7PAO"
+Received: by mail-wm1-x333.google.com with SMTP id
+ m17-20020a7bce11000000b003a5bedec07bso952468wmc.0
+ for <alsa-devel@alsa-project.org>; Wed, 07 Sep 2022 23:34:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
  h=content-transfer-encoding:mime-version:references:in-reply-to
  :message-id:date:subject:cc:to:from:from:to:cc:subject:date;
- bh=Gcq/MNox46vkVaOFbJDKt3RUNde615bJ744Z+6gObTw=;
- b=TTPySrZhHQaWxIJnpAMRoxqM5yadpuBWk8tg2sXAMUe8IC08fXf45jBQY/CgY2cOvc
- arIRcB50pk2gfo8fUQayZy5RdswZ33OtmRBloeA7NpSfKcJ9rO4ZZBVfN0F3JuJxe+Ys
- SiW2R3Rk1ZkD067eP+SFJBY8T01lq6KZoh6fGaIafJA3deRqG96BZmrDUdAJ+Tq/uR22
- 0ERl2mf1z9Uqog8zmRxpIrKgUEHHQR8XMU/DfUrh+18uI8Q8aVS+Aw9ANYjp+9+WTk/0
- CNdHIEOX/CXojqH5Vve0khwpgUdV+wqUFr3DjIhm1+JubAqAPI9BC/3MZC6RjC+QxjpS
- Y5mw==
+ bh=xh82u4mQI0vpD+SPbAbOTF4IJW7gl/lNmljBUcHdhrA=;
+ b=xLNd7PAOu8tw22FWlOq7W1CbMzEwFQTlM/Y6iTUXUA1f0f+6q+p+EXeWc2ovc3pjJm
+ krGpZ47MTG/bc3AfpbPK8Mo72JYFtgm190uLTM3hm0+miLzqQnnf1UAYe35IvfW2x3mM
+ 4+LeyZyjj/aM7ICocdv29ZJ+ngiWmEk0EFAvEFOWR7JXfZJkQIUC2Qt6E7M1Dw6PC0Jm
+ ddGV9d/TYt2gevjRddtHflLilayIC4CWDGYLBIyOMM8z/9NfWdr2tXfYDo6Ujm93Al5l
+ G3nztXGSD1GHDUObY9LJoqFL1B4zxfDMS/HI84U+yL21sVpW7/USDJg0aew5jqhRV/Vh
+ 1uYw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
  h=content-transfer-encoding:mime-version:references:in-reply-to
  :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
  :subject:date;
- bh=Gcq/MNox46vkVaOFbJDKt3RUNde615bJ744Z+6gObTw=;
- b=imxmf5YNMfAMvdBWV8OEOUXzZNNbEDC6q47PjpYmp6yh2absal15LDrOZVj3VCvcDS
- 0O85q5DXU8I0i3jcYBnlDFOvucarnxYq0p7pEYQ9JdHqjhvnI/6BVHhbq8DHzFTOuu7v
- crkezw0jAIN38dYdHTOqn4nR7M/KlB/JRFvoXYb2lIcRWzKw3yGwx1qu4Tx7TC89ZQP/
- G0j76NGcagrIDgbt8nmgLraDJaTSA7uT2wVNo9To0vB+plBGBRP71TYEAgmQGoFxr5o1
- 27xsXGbMTodqVAsfEvqrZX3lCjzPXXVyWkFSvOiZVkgHNHsYZnTxEMmnF8EcLYFxuyN3
- eD1w==
-X-Gm-Message-State: ACgBeo1+txcJf6hEMJ1JHzKM+3JvTgk73X9jE9uMSj25H513X3EToK2T
- DCgGYFc0md0BANVlSpWxzBOodw==
-X-Google-Smtp-Source: AA6agR4SBoaoNC1cBNOfkprBs16dlcsy/HK8h5wYhvlGpi70UIHS5UMx5qdCLL3g1LvRnwtw1lhQuQ==
-X-Received: by 2002:a05:600c:22cd:b0:3a6:7b62:3778 with SMTP id
- 13-20020a05600c22cd00b003a67b623778mr1103454wmg.45.1662618895743; 
- Wed, 07 Sep 2022 23:34:55 -0700 (PDT)
+ bh=xh82u4mQI0vpD+SPbAbOTF4IJW7gl/lNmljBUcHdhrA=;
+ b=MTrhn2CEDP0JKC6ZWq9hE4edNmn4mdTwO76TBqJWc3ZX2/wcFL/bOfFbRqH/8+U8SP
+ PnBqUQqRqzfh6LtATb63cFZxiGyn38zbDRmcxrzKdS3EuPtu24PBc1qXtHex0QHS+BWh
+ /KedHELC9OyIYPFhfcm2Gsc8Vwy+pkUUrKf1VYHTmee3YPeIz78uXi10op/YYxfWCoj7
+ MaznXU46RqSiYz0SuPjE79rwQjEGCVbOZtF6yltuzOhlcWz1d+KGZISODu4EF3DB4rnI
+ 5lf4tQR0Cz30oKiysN2QD6M8el+aGug+M5zclI7LVYbHfjE3V2/A9hu4u6rDctJE59p8
+ 92yg==
+X-Gm-Message-State: ACgBeo17+9TC4S+lNnxUkPC3qwJL791/hDa257g4eT2bDCNk45n0j89q
+ CKuceAho3rYaqMtVZZORgwyp2A==
+X-Google-Smtp-Source: AA6agR6IMmOXsPMzfpADNeN9ao+vWfmfFcp4o0e+Qsx7ABFiigv2viqQnbR6ecjvNDayeYCAzK3SIg==
+X-Received: by 2002:a05:600c:310b:b0:3a6:8970:27fc with SMTP id
+ g11-20020a05600c310b00b003a6897027fcmr1079891wmo.98.1662618892783; 
+ Wed, 07 Sep 2022 23:34:52 -0700 (PDT)
 Received: from srini-hackbox.lan
  (cpc90716-aztw32-2-0-cust825.18-1.cable.virginm.net. [86.26.103.58])
  by smtp.gmail.com with ESMTPSA id
- m3-20020a05600c4f4300b003a2e92edeccsm1549598wmq.46.2022.09.07.23.34.54
+ m3-20020a05600c4f4300b003a2e92edeccsm1549598wmq.46.2022.09.07.23.34.51
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Wed, 07 Sep 2022 23:34:55 -0700 (PDT)
+ Wed, 07 Sep 2022 23:34:52 -0700 (PDT)
 From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 To: broonie@kernel.org
-Subject: [PATCH v3 4/4] ASoC: qcom: add machine driver for sc8280xp
-Date: Thu,  8 Sep 2022 07:34:48 +0100
-Message-Id: <20220908063448.27102-5-srinivas.kandagatla@linaro.org>
+Subject: [PATCH v3 1/4] ASoC: qcom: common: use EXPORT_SYMBOL_GPL instead of
+ EXPORT_SYMBOL
+Date: Thu,  8 Sep 2022 07:34:45 +0100
+Message-Id: <20220908063448.27102-2-srinivas.kandagatla@linaro.org>
 X-Mailer: git-send-email 2.21.0
 In-Reply-To: <20220908063448.27102-1-srinivas.kandagatla@linaro.org>
 References: <20220908063448.27102-1-srinivas.kandagatla@linaro.org>
@@ -103,223 +104,26 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Add machine driver for sc8280xp SoC.
-
-This intial supports only includes WSA883x Speakers and WCD938x based headset.
+qcom_snd_parse_of depends on ASoC EXPORT_SYMBOL_GPL functions,
+so make qcom_snd_parse_of and EXPORT_SYMBOL_GPL.
 
 Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 ---
- sound/soc/qcom/Kconfig    |  11 +++
- sound/soc/qcom/Makefile   |   2 +
- sound/soc/qcom/sc8280xp.c | 157 ++++++++++++++++++++++++++++++++++++++
- 3 files changed, 170 insertions(+)
- create mode 100644 sound/soc/qcom/sc8280xp.c
+ sound/soc/qcom/common.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/qcom/Kconfig b/sound/soc/qcom/Kconfig
-index 750653404ba3..d0e59e07b1fc 100644
---- a/sound/soc/qcom/Kconfig
-+++ b/sound/soc/qcom/Kconfig
-@@ -173,6 +173,17 @@ config SND_SOC_SM8250
- 	  SM8250 SoC-based systems.
- 	  Say Y if you want to use audio device on this SoCs.
+diff --git a/sound/soc/qcom/common.c b/sound/soc/qcom/common.c
+index c407684ce1a2..e53ad84f8ff5 100644
+--- a/sound/soc/qcom/common.c
++++ b/sound/soc/qcom/common.c
+@@ -175,6 +175,6 @@ int qcom_snd_parse_of(struct snd_soc_card *card)
+ 	of_node_put(np);
+ 	return ret;
+ }
+-EXPORT_SYMBOL(qcom_snd_parse_of);
++EXPORT_SYMBOL_GPL(qcom_snd_parse_of);
  
-+config SND_SOC_SC8280XP
-+	tristate "SoC Machine driver for SC8280XP boards"
-+	depends on QCOM_APR && SOUNDWIRE
-+	depends on COMMON_CLK
-+	select SND_SOC_QDSP6
-+	select SND_SOC_QCOM_COMMON
-+	help
-+	  To add support for audio on Qualcomm Technologies Inc.
-+	  SC8280XP SoC-based systems.
-+	  Say Y if you want to use audio device on this SoCs.
-+
- config SND_SOC_SC7180
- 	tristate "SoC Machine driver for SC7180 boards"
- 	depends on I2C && GPIOLIB
-diff --git a/sound/soc/qcom/Makefile b/sound/soc/qcom/Makefile
-index 8b7b876899a8..8b97172cf990 100644
---- a/sound/soc/qcom/Makefile
-+++ b/sound/soc/qcom/Makefile
-@@ -26,6 +26,7 @@ snd-soc-sc7180-objs := sc7180.o
- snd-soc-sc7280-objs := sc7280.o
- snd-soc-sdm845-objs := sdm845.o
- snd-soc-sm8250-objs := sm8250.o
-+snd-soc-sc8280xp-objs := sc8280xp.o
- snd-soc-qcom-common-objs := common.o
- 
- obj-$(CONFIG_SND_SOC_STORM) += snd-soc-storm.o
-@@ -33,6 +34,7 @@ obj-$(CONFIG_SND_SOC_APQ8016_SBC) += snd-soc-apq8016-sbc.o
- obj-$(CONFIG_SND_SOC_MSM8996) += snd-soc-apq8096.o
- obj-$(CONFIG_SND_SOC_SC7180) += snd-soc-sc7180.o
- obj-$(CONFIG_SND_SOC_SC7280) += snd-soc-sc7280.o
-+obj-$(CONFIG_SND_SOC_SC8280XP) += snd-soc-sc8280xp.o
- obj-$(CONFIG_SND_SOC_SDM845) += snd-soc-sdm845.o
- obj-$(CONFIG_SND_SOC_SM8250) += snd-soc-sm8250.o
- obj-$(CONFIG_SND_SOC_QCOM_COMMON) += snd-soc-qcom-common.o
-diff --git a/sound/soc/qcom/sc8280xp.c b/sound/soc/qcom/sc8280xp.c
-new file mode 100644
-index 000000000000..ade44ad7c585
---- /dev/null
-+++ b/sound/soc/qcom/sc8280xp.c
-@@ -0,0 +1,157 @@
-+// SPDX-License-Identifier: GPL-2.0
-+// Copyright (c) 2022, Linaro Limited
-+
-+#include <linux/module.h>
-+#include <linux/platform_device.h>
-+#include <linux/of_device.h>
-+#include <sound/soc.h>
-+#include <sound/soc-dapm.h>
-+#include <sound/pcm.h>
-+#include <linux/soundwire/sdw.h>
-+#include <sound/jack.h>
-+#include <linux/input-event-codes.h>
-+#include "qdsp6/q6afe.h"
-+#include "common.h"
-+
-+#define DRIVER_NAME		"sc8280xp"
-+
-+struct sc8280xp_snd_data {
-+	bool stream_prepared[AFE_PORT_MAX];
-+	struct snd_soc_card *card;
-+	struct sdw_stream_runtime *sruntime[AFE_PORT_MAX];
-+	struct snd_soc_jack jack;
-+	bool jack_setup;
-+};
-+
-+static int sc8280xp_snd_init(struct snd_soc_pcm_runtime *rtd)
-+{
-+	struct sc8280xp_snd_data *data = snd_soc_card_get_drvdata(rtd->card);
-+
-+	return qcom_snd_wcd_jack_setup(rtd, &data->jack, &data->jack_setup);
-+}
-+
-+static int sc8280xp_be_hw_params_fixup(struct snd_soc_pcm_runtime *rtd,
-+				     struct snd_pcm_hw_params *params)
-+{
-+	struct snd_soc_dai *cpu_dai = asoc_rtd_to_cpu(rtd, 0);
-+	struct snd_interval *rate = hw_param_interval(params,
-+					SNDRV_PCM_HW_PARAM_RATE);
-+	struct snd_interval *channels = hw_param_interval(params,
-+					SNDRV_PCM_HW_PARAM_CHANNELS);
-+
-+	rate->min = rate->max = 48000;
-+	channels->min = 2;
-+	channels->max = 2;
-+	switch (cpu_dai->id) {
-+	case TX_CODEC_DMA_TX_0:
-+	case TX_CODEC_DMA_TX_1:
-+	case TX_CODEC_DMA_TX_2:
-+	case TX_CODEC_DMA_TX_3:
-+		channels->min = 1;
-+		break;
-+	default:
-+		break;
-+	}
-+
-+
-+	return 0;
-+}
-+
-+static int sc8280xp_snd_hw_params(struct snd_pcm_substream *substream,
-+				struct snd_pcm_hw_params *params)
-+{
-+	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct snd_soc_dai *cpu_dai = asoc_rtd_to_cpu(rtd, 0);
-+	struct sc8280xp_snd_data *pdata = snd_soc_card_get_drvdata(rtd->card);
-+
-+	return qcom_snd_sdw_hw_params(substream, params, &pdata->sruntime[cpu_dai->id]);
-+}
-+
-+static int sc8280xp_snd_prepare(struct snd_pcm_substream *substream)
-+{
-+	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct snd_soc_dai *cpu_dai = asoc_rtd_to_cpu(rtd, 0);
-+	struct sc8280xp_snd_data *data = snd_soc_card_get_drvdata(rtd->card);
-+	struct sdw_stream_runtime *sruntime = data->sruntime[cpu_dai->id];
-+
-+	return qcom_snd_sdw_prepare(substream, sruntime,
-+				    &data->stream_prepared[cpu_dai->id]);
-+}
-+
-+static int sc8280xp_snd_hw_free(struct snd_pcm_substream *substream)
-+{
-+	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct sc8280xp_snd_data *data = snd_soc_card_get_drvdata(rtd->card);
-+	struct snd_soc_dai *cpu_dai = asoc_rtd_to_cpu(rtd, 0);
-+	struct sdw_stream_runtime *sruntime = data->sruntime[cpu_dai->id];
-+
-+	return qcom_snd_sdw_hw_free(substream, sruntime,
-+				    &data->stream_prepared[cpu_dai->id]);
-+}
-+
-+static const struct snd_soc_ops sc8280xp_be_ops = {
-+	.hw_params = sc8280xp_snd_hw_params,
-+	.hw_free = sc8280xp_snd_hw_free,
-+	.prepare = sc8280xp_snd_prepare,
-+};
-+
-+static void sc8280xp_add_be_ops(struct snd_soc_card *card)
-+{
-+	struct snd_soc_dai_link *link;
-+	int i;
-+
-+	for_each_card_prelinks(card, i, link) {
-+		if (link->no_pcm == 1) {
-+			link->init = sc8280xp_snd_init;
-+			link->be_hw_params_fixup = sc8280xp_be_hw_params_fixup;
-+			link->ops = &sc8280xp_be_ops;
-+		}
-+	}
-+}
-+
-+static int sc8280xp_platform_probe(struct platform_device *pdev)
-+{
-+	struct snd_soc_card *card;
-+	struct sc8280xp_snd_data *data;
-+	struct device *dev = &pdev->dev;
-+	int ret;
-+
-+	card = devm_kzalloc(dev, sizeof(*card), GFP_KERNEL);
-+	if (!card)
-+		return -ENOMEM;
-+	card->owner = THIS_MODULE;
-+	/* Allocate the private data */
-+	data = devm_kzalloc(dev, sizeof(*data), GFP_KERNEL);
-+	if (!data)
-+		return -ENOMEM;
-+
-+	card->dev = dev;
-+	dev_set_drvdata(dev, card);
-+	snd_soc_card_set_drvdata(card, data);
-+	ret = qcom_snd_parse_of(card);
-+	if (ret)
-+		return ret;
-+
-+	card->driver_name = DRIVER_NAME;
-+	sc8280xp_add_be_ops(card);
-+	return devm_snd_soc_register_card(dev, card);
-+}
-+
-+static const struct of_device_id snd_sc8280xp_dt_match[] = {
-+	{.compatible = "qcom,sc8280xp-sndcard",},
-+	{}
-+};
-+
-+MODULE_DEVICE_TABLE(of, snd_sc8280xp_dt_match);
-+
-+static struct platform_driver snd_sc8280xp_driver = {
-+	.probe  = sc8280xp_platform_probe,
-+	.driver = {
-+		.name = "snd-sc8280xp",
-+		.of_match_table = snd_sc8280xp_dt_match,
-+	},
-+};
-+module_platform_driver(snd_sc8280xp_driver);
-+MODULE_AUTHOR("Srinivas Kandagatla <srinivas.kandagatla@linaro.org");
-+MODULE_DESCRIPTION("SC8280XP ASoC Machine Driver");
-+MODULE_LICENSE("GPL v2");
+ MODULE_LICENSE("GPL v2");
 -- 
 2.21.0
 
