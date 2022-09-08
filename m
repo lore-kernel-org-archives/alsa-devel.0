@@ -4,52 +4,82 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id BA3A8C38145
-	for <alsa-devel@archiver.kernel.org>; Thu,  8 Sep 2022 07:51:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2004DECAAD5
+	for <alsa-devel@archiver.kernel.org>; Thu,  8 Sep 2022 08:17:05 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 225EE16AE;
-	Thu,  8 Sep 2022 09:50:10 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 225EE16AE
+	by alsa0.perex.cz (Postfix) with ESMTPS id A0F8116B0;
+	Thu,  8 Sep 2022 10:16:13 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A0F8116B0
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1662623460;
-	bh=n42+F1QIZG4mHZiJpOyyzTzl90fRNpUWkUMCEX5p3YQ=;
-	h=From:To:Subject:Date:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=HKhqTPEanfZJ+NumzUGJXXkYGR2HFxu2vJQ2uI8KikrFvUsDT+wbPCrB7SrxAYXXa
-	 yfR0MIsB6VKzOl8AjjrNOh7ErW8BM7RXqtVnvlcBKFQIZ+R3fXbRDO0IQc2AOKVJn4
-	 dAZ16bI1s6DfSFbD0nAduiBt4YzHg73n+5lChGes=
+	s=default; t=1662625023;
+	bh=0Xcy7Sb8S/Alyqf+xypoaKPuCwt1msXzuWAl9mSjqJM=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=AQG3CXT8VUQUH7HlsJeFO1FVmVZeyKsMFTLPKDJAMHv1qCcoI+yR+3xTPCIv0jzYK
+	 eNMvtn1k2A/x0uTBA+ACIJjc2wBgGwa11CwTtQPNA578t1z8hicii/Ooq6rLIWAoPN
+	 Rc1vrxv8W9aEmWgqWE+xQMwiX7qhSLRk6nX+VYTU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id B9D57F801F7;
-	Thu,  8 Sep 2022 09:50:09 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 391B4F801F7;
+	Thu,  8 Sep 2022 10:16:13 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 44A3DF80217; Thu,  8 Sep 2022 09:50:08 +0200 (CEST)
-Received: from inva020.nxp.com (inva020.nxp.com [92.121.34.13])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id E77E9F800CB; Thu,  8 Sep 2022 10:16:11 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 3B998F800CB
- for <alsa-devel@alsa-project.org>; Thu,  8 Sep 2022 09:50:02 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3B998F800CB
-Received: from inva020.nxp.com (localhost [127.0.0.1])
- by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 94F331A0EDB;
- Thu,  8 Sep 2022 09:50:01 +0200 (CEST)
-Received: from aprdc01srsp001v.ap-rdc01.nxp.com
- (aprdc01srsp001v.ap-rdc01.nxp.com [165.114.16.16])
- by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 686241A0ED8;
- Thu,  8 Sep 2022 09:50:01 +0200 (CEST)
-Received: from localhost.localdomain (shlinux2.ap.freescale.net
- [10.192.224.44])
- by aprdc01srsp001v.ap-rdc01.nxp.com (Postfix) with ESMTP id 465B0180031F;
- Thu,  8 Sep 2022 15:50:00 +0800 (+08)
-From: Shengjiu Wang <shengjiu.wang@nxp.com>
-To: lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com,
- alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] ASoC: ak4458: Remove component probe() and remove()
-Date: Thu,  8 Sep 2022 15:31:56 +0800
-Message-Id: <1662622316-23426-1-git-send-email-shengjiu.wang@nxp.com>
-X-Mailer: git-send-email 2.7.4
-X-Virus-Scanned: ClamAV using ClamSMTP
+ by alsa1.perex.cz (Postfix) with ESMTPS id B8CF9F800CB
+ for <alsa-devel@alsa-project.org>; Thu,  8 Sep 2022 10:16:03 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B8CF9F800CB
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
+ header.b="RJEIcksQ"; 
+ dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
+ header.b="egziTsF6"
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 659713449D;
+ Thu,  8 Sep 2022 08:16:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1662624963; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=arESGDH4tHKC/NAVP771DmFPNGw963e2VPRZVSwtGtU=;
+ b=RJEIcksQsC+Au1sS6n+iICwJjDbanz7yvijO1jT0tO1jl5IZrbZ1O0VBRalAeChsI7onQW
+ 7r6shXJNCWxOk3nB3vp4buA2A05zNKhBcblYvwc9ED21E3TswHC3UnzvFgiSUJZBUSjmr5
+ ilK7vXYII5zybyj+lIglrITHREGx/Xk=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1662624963;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=arESGDH4tHKC/NAVP771DmFPNGw963e2VPRZVSwtGtU=;
+ b=egziTsF6yY5BzNTY7et7TGgHlE8iz1MjTu23yPugrIApYRxxoK2o2KfIUVbEtCHcfYeDv7
+ o0TwcSNzM6DzfTDw==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 441691322C;
+ Thu,  8 Sep 2022 08:16:03 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+ by imap2.suse-dmz.suse.de with ESMTPSA id wUTlD8OkGWMXJgAAMHmgww
+ (envelope-from <tiwai@suse.de>); Thu, 08 Sep 2022 08:16:03 +0000
+Date: Thu, 08 Sep 2022 10:16:02 +0200
+Message-ID: <87r10mcmd9.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: YJ Lee <yunjunlee@chromium.org>
+Subject: Re: About ALSA dummy module: support customized mixer volume leveling
+In-Reply-To: <CAPm_npY3SkumWgy8EN65no2iQFj2KWG6pysUchEKHBBPZ9AHsA@mail.gmail.com>
+References: <CAPm_npY3SkumWgy8EN65no2iQFj2KWG6pysUchEKHBBPZ9AHsA@mail.gmail.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+Cc: alsa-devel@alsa-project.org, Ching Yun Chang <whalechang@google.com>,
+ tiwai@suse.com, Yu-Hsuan Hsu <yuhsuan@chromium.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -65,100 +95,42 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Most function in ak4458_probe() and ak4458_remove() are
-duplicate with dai ops, so remove them and move dsd_path
-setting to dai ops.
+On Thu, 08 Sep 2022 07:26:02 +0200,
+YJ Lee wrote:
+> 
+> Hello Takashi (and the alsa community),
+> 
+> This is YJ Lee from chromium.org.
+> 
+> I'm thinking about extending the ALSA dummy module to support
+> customized volume leveling. It will be very useful to test devices
+> with different volume granularity. Currently this module is using
+> hard-coded mixer volume leveling, from min=-50 to max=100.
+> 
+> See L716: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git/tree/sound/drivers/dummy.c?h=queue/5.19#n716
+> 
+> My plan (A) is to expose 2 more additional module parameters and
+> replace a few occurrences, from L742-750.
+> 
+> Another plan (B) is to leverage the current existing module
+> parameter:model, and make the dummy-module to be able to accept models
+> with customized volume leveling. New dummy models can be provided as
+> configuration files, and be used in the same way as how currently
+> existing dummy models (L146-213) are used. However, it's a bit
+> over-engineering from the original purpose.
+> 
+> What do you think about these plans? Any insight you (and the alsa
+> community) can provide will be greatly appreciated.
 
-Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
----
- sound/soc/codecs/ak4458.c | 53 ++++++---------------------------------
- 1 file changed, 7 insertions(+), 46 deletions(-)
+Only for volume min/max, module options may be an easier way, IMO.
 
-diff --git a/sound/soc/codecs/ak4458.c b/sound/soc/codecs/ak4458.c
-index ea33cc83c86c..b534212096ee 100644
---- a/sound/soc/codecs/ak4458.c
-+++ b/sound/soc/codecs/ak4458.c
-@@ -447,6 +447,13 @@ static int ak4458_hw_params(struct snd_pcm_substream *substream,
- 	snd_soc_component_update_bits(component, AK4458_0B_CONTROL7,
- 				      AK4458_DCHAIN_MASK, dchn);
- 
-+	if (ak4458->drvdata->type == AK4497) {
-+		ret = snd_soc_component_update_bits(component, AK4458_09_DSD2,
-+						    0x4, (ak4458->dsd_path << 2));
-+		if (ret < 0)
-+			return ret;
-+	}
-+
- 	ret = ak4458_rstn_control(component, 0);
- 	if (ret)
- 		return ret;
-@@ -629,48 +636,6 @@ static void ak4458_reset(struct ak4458_priv *ak4458, bool active)
- 	}
- }
- 
--static int ak4458_init(struct snd_soc_component *component)
--{
--	struct ak4458_priv *ak4458 = snd_soc_component_get_drvdata(component);
--	int ret;
--
--	/* External Mute ON */
--	if (ak4458->mute_gpiod)
--		gpiod_set_value_cansleep(ak4458->mute_gpiod, 1);
--
--	ak4458_reset(ak4458, false);
--
--	ret = snd_soc_component_update_bits(component, AK4458_00_CONTROL1,
--			    0x80, 0x80);   /* ACKS bit = 1; 10000000 */
--	if (ret < 0)
--		return ret;
--
--	if (ak4458->drvdata->type == AK4497) {
--		ret = snd_soc_component_update_bits(component, AK4458_09_DSD2,
--						    0x4, (ak4458->dsd_path << 2));
--		if (ret < 0)
--			return ret;
--	}
--
--	return ak4458_rstn_control(component, 1);
--}
--
--static int ak4458_probe(struct snd_soc_component *component)
--{
--	struct ak4458_priv *ak4458 = snd_soc_component_get_drvdata(component);
--
--	ak4458->fs = 48000;
--
--	return ak4458_init(component);
--}
--
--static void ak4458_remove(struct snd_soc_component *component)
--{
--	struct ak4458_priv *ak4458 = snd_soc_component_get_drvdata(component);
--
--	ak4458_reset(ak4458, true);
--}
--
- #ifdef CONFIG_PM
- static int __maybe_unused ak4458_runtime_suspend(struct device *dev)
- {
-@@ -714,8 +679,6 @@ static int __maybe_unused ak4458_runtime_resume(struct device *dev)
- #endif /* CONFIG_PM */
- 
- static const struct snd_soc_component_driver soc_codec_dev_ak4458 = {
--	.probe			= ak4458_probe,
--	.remove			= ak4458_remove,
- 	.controls		= ak4458_snd_controls,
- 	.num_controls		= ARRAY_SIZE(ak4458_snd_controls),
- 	.dapm_widgets		= ak4458_dapm_widgets,
-@@ -728,8 +691,6 @@ static const struct snd_soc_component_driver soc_codec_dev_ak4458 = {
- };
- 
- static const struct snd_soc_component_driver soc_codec_dev_ak4497 = {
--	.probe			= ak4458_probe,
--	.remove			= ak4458_remove,
- 	.controls		= ak4497_snd_controls,
- 	.num_controls		= ARRAY_SIZE(ak4497_snd_controls),
- 	.dapm_widgets		= ak4497_dapm_widgets,
--- 
-2.34.1
+OTOH, if we want to adjust more stuff, another possibility is to
+extend the proc file.  It currently supports the dynamic changes of
+PCM parameters, but we can extend it or add a new proc file for
+adjusting other stuff, too.  So the question is what else we want to
+allow changing.
 
+
+thanks,
+
+Takashi
