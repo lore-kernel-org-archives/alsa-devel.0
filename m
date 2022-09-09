@@ -4,55 +4,105 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 79259ECAAD3
-	for <alsa-devel@archiver.kernel.org>; Fri,  9 Sep 2022 04:04:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id BE9C4ECAAA1
+	for <alsa-devel@archiver.kernel.org>; Fri,  9 Sep 2022 04:55:51 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B5EE71670;
-	Fri,  9 Sep 2022 06:03:28 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B5EE71670
+	by alsa0.perex.cz (Postfix) with ESMTPS id DF25E166A;
+	Fri,  9 Sep 2022 06:54:58 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DF25E166A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1662696258;
-	bh=kGFxh60G/Z/gm8NiWntYKLyPddxmxtTrkicqFob/uAw=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=mJljs1KG+MJQmJmAd2YE+4XOJQrsd4cRjRVnYV8MOeSUjlSlAJJmgqqmHyN9FmHTf
-	 3ejKRrYTVWzabVjewHlJVSRrrv3nU28VaGwOsLpJ0ZP9l3ddbNlToBKs8gX/XR8QTH
-	 OoO7llNEfkHcpx5mvT+aD2rby/icQEax6sQdWZXA=
+	s=default; t=1662699349;
+	bh=cvp+o0A81+OwAMSNrmw69UzADajzITspKDDc01Qefv8=;
+	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=tg4hZeHKR0KB5beoEPQPukAeYf4ww2S2QR0kq00inIpP1Mr3Y091wsf7sP5iGOCGP
+	 R0E29fuIXDEL4VGqJ7y8r9IzXrAH6akMsIN+osrnLx4Z03VLK5NsnCDEM6v0kKYxoS
+	 /WVuPveGMODeqnEEi+TjPe2m+w1u044NImsRNA+s=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 34047F8016D;
-	Fri,  9 Sep 2022 06:03:28 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 64F20F8016D;
+	Fri,  9 Sep 2022 06:54:58 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 02A3DF8023A; Fri,  9 Sep 2022 06:03:26 +0200 (CEST)
-Received: from inva021.nxp.com (inva021.nxp.com [92.121.34.21])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 0E3BEF8023A; Fri,  9 Sep 2022 06:54:56 +0200 (CEST)
+Received: from out4-smtp.messagingengine.com (out4-smtp.messagingengine.com
+ [66.111.4.28])
+ (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id BA465F8016C
- for <alsa-devel@alsa-project.org>; Fri,  9 Sep 2022 06:03:18 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BA465F8016C
-Received: from inva021.nxp.com (localhost [127.0.0.1])
- by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 1B81A203AC1;
- Fri,  9 Sep 2022 06:03:18 +0200 (CEST)
-Received: from aprdc01srsp001v.ap-rdc01.nxp.com
- (aprdc01srsp001v.ap-rdc01.nxp.com [165.114.16.16])
- by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id C51E4203AD3;
- Fri,  9 Sep 2022 06:03:17 +0200 (CEST)
-Received: from localhost.localdomain (shlinux2.ap.freescale.net
- [10.192.224.44])
- by aprdc01srsp001v.ap-rdc01.nxp.com (Postfix) with ESMTP id 17D9D1820F59;
- Fri,  9 Sep 2022 12:03:16 +0800 (+08)
-From: Shengjiu Wang <shengjiu.wang@nxp.com>
-To: nicoleotsuka@gmail.com, Xiubo.Lee@gmail.com, festevam@gmail.com,
- shengjiu.wang@gmail.com, lgirdwood@gmail.com, broonie@kernel.org,
- perex@perex.cz, tiwai@suse.com, alsa-devel@alsa-project.org
-Subject: [PATCH v3] ASoC: fsl_asrc: Add initialization finishing check in
- runtime resume
-Date: Fri,  9 Sep 2022 11:44:58 +0800
-Message-Id: <1662695098-24602-1-git-send-email-shengjiu.wang@nxp.com>
-X-Mailer: git-send-email 2.7.4
-X-Virus-Scanned: ClamAV using ClamSMTP
-Cc: linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
+ by alsa1.perex.cz (Postfix) with ESMTPS id E0788F80105
+ for <alsa-devel@alsa-project.org>; Fri,  9 Sep 2022 06:54:46 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E0788F80105
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=sholland.org header.i=@sholland.org
+ header.b="UBepp5En"; 
+ dkim=pass (2048-bit key) header.d=messagingengine.com
+ header.i=@messagingengine.com header.b="mqZQEF/A"
+Received: from compute2.internal (compute2.nyi.internal [10.202.2.46])
+ by mailout.nyi.internal (Postfix) with ESMTP id BDA8E5C00E5;
+ Fri,  9 Sep 2022 00:54:44 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+ by compute2.internal (MEProxy); Fri, 09 Sep 2022 00:54:44 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sholland.org; h=
+ cc:cc:content-transfer-encoding:content-type:date:date:from:from
+ :in-reply-to:in-reply-to:message-id:mime-version:references
+ :reply-to:sender:subject:subject:to:to; s=fm3; t=1662699284; x=
+ 1662785684; bh=amv9ICltjZk+eIYa+llWaKBwwrexAvmDG285zE+xSs4=; b=U
+ Bepp5EnGejqtxUrflkxrG2bfdX6wWVkuEr6E5JnQgq+bVXY+r90c6/JLTVkQNSSI
+ 6y3NRGAIt+ViAnXdMBAHJqcCduYN6Gb4QKsxEZpYdYRzzzYv4o0h3q4bzNgoAbOM
+ m3hV7uKDO5h9Rnbl4gLMC5xnHNJ/9ynneNFEWGaWR7FZ0oCaqLLQV+cnwTWWezBi
+ OKoOLtdEiIczsuycfbq7rx5hi967OXSl25gFYzwMA8tcNYwkPwBU3INOAcfsM3jo
+ M0CIHUcpxTT/7ZHqArKmvX4Xf7cgJZVu7N1+p1s2DZx8i44tbaVdCh8RsoEQ9v2C
+ WFfH3t4Oy2I5AwWhLBNAQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+ messagingengine.com; h=cc:cc:content-transfer-encoding
+ :content-type:date:date:feedback-id:feedback-id:from:from
+ :in-reply-to:in-reply-to:message-id:mime-version:references
+ :reply-to:sender:subject:subject:to:to:x-me-proxy:x-me-proxy
+ :x-me-sender:x-me-sender:x-sasl-enc; s=fm2; t=1662699284; x=
+ 1662785684; bh=amv9ICltjZk+eIYa+llWaKBwwrexAvmDG285zE+xSs4=; b=m
+ qZQEF/A34CRE9SqJEHjn/J3BnC+MEwhtVSjNObo/Re7gfIQYRUbPt4HZ1Kk2hlpe
+ dRDVgR0T7NEzSgzBxvZXtSaOWb82/1fgWzDXv/7dZAT4BiZ6S6r54Q8H1GM/cKli
+ 3pCzqoUUp6FXfs6J4pVvoNMl8U4s8g5fbEAKZzEgINvrUUP2+6IU8qrUDQ4zH0xu
+ zbmTjhAGd9mX8MJ7Jcs3+rmDng43TOkppOEQwMdgrpYFx0XkV+xXTzWzxS8x38uV
+ O56B7Q6bBcUzSLqvRKdvrdB8uDFT03oe6Ddn5t2V5l2j6DzLqW9G10AxZIe0Nl70
+ HAbiXY3IEehfAF5aOsHKg==
+X-ME-Sender: <xms:FMcaY3rDW-O_HgBHCJCb6hgT_Y8e573Oy_1BHFc0NWY3L8Pqw87ppQ>
+ <xme:FMcaYxrzH4imNxLTJt_WXmoWOzpo_hugEmnua_G-4NfDUsSH2vJO-aMd7dDQkv4I5
+ eFSW27riT_disZWSA>
+X-ME-Received: <xmr:FMcaY0M2XEn1s8BDKWSKJ7W8WPKD27XAgJ-qaQJFGCReOSH8EhCmxhpYo_JjSBUTjD-a95XiNe0D818pv2wauOGkJY7PZcfzmUZ7KgmQM93lSbP2NYHRgRQ2gQ>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvfedrfedtgedgledtucetufdoteggodetrfdotf
+ fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+ uceurghilhhouhhtmecufedttdenucenucfjughrpefuvfevfhfhkffffgggjggtgfesth
+ ejredttdefjeenucfhrhhomhepufgrmhhuvghlucfjohhllhgrnhguuceoshgrmhhuvghl
+ sehshhholhhlrghnugdrohhrgheqnecuggftrfgrthhtvghrnhepffdtveekvdegkeeuue
+ etgfetffeileevudekuefhheelvdfhiedtheduhfduhefhnecuvehluhhsthgvrhfuihii
+ vgeptdenucfrrghrrghmpehmrghilhhfrhhomhepshgrmhhuvghlsehshhholhhlrghnug
+ drohhrgh
+X-ME-Proxy: <xmx:FMcaY664qnk1pDT8q_nKVVrHilvpdVsGEIhCM7ukH2eBeuu0XpEmCQ>
+ <xmx:FMcaY266SJD-Rg_ff8h-41H76Ms_czO8xdOR-GGfdKDqTvOt2c6t4A>
+ <xmx:FMcaYyjRxIhM7PDeRc3bTCT-b_BycRvVG_UmRlzyaE5tVCOAG7GCvw>
+ <xmx:FMcaY_Fgt0WpstGGPYE-nzc_VuDsaTOxlLxjJGwP0WQj2g1ZKHDfaw>
+Feedback-ID: i0ad843c9:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
+ 9 Sep 2022 00:54:43 -0400 (EDT)
+Subject: Re: [PATCH v9 1/2] ASoC: sunxi: Add Allwinner H6 Digital MIC driver
+To: Ban Tao <fengzheng923@gmail.com>, lgirdwood@gmail.com,
+ broonie@kernel.org, perex@perex.cz, tiwai@suse.com, wens@csie.org,
+ jernej.skrabec@gmail.com
+References: <1661870696-31042-1-git-send-email-fengzheng923@gmail.com>
+From: Samuel Holland <samuel@sholland.org>
+Message-ID: <2e7a0006-00c9-c85a-8d05-144bed24dfba@sholland.org>
+Date: Thu, 8 Sep 2022 23:54:42 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.6.0
+MIME-Version: 1.0
+In-Reply-To: <1661870696-31042-1-git-send-email-fengzheng923@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -68,100 +118,13 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-If the initialization is not finished, then filling input data to
-the FIFO may fail. So it is better to add initialization finishing
-check in the runtime resume for suspend & resume case.
+On 8/30/22 9:44 AM, Ban Tao wrote:
+> The Allwinner H6 and later SoCs have an DMIC block
+> which is capable of capture.
+> 
+> Signed-off-by: Ban Tao <fengzheng923@gmail.com>
+> Tested-by: Samuel Holland <samuel@sholland.org>
 
-And consider the case of three instances working in parallel,
-increase the retry times to 50 for more initialization time.
+Looks good, thanks!
 
-Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
-Reviewed-by: Nicolin Chen <nicolinc@gmail.com>
----
-changes in v3:
-- update warning message.
-
-changes in v2:
-- update comments.
-
- sound/soc/fsl/fsl_asrc.c | 29 ++++++++++++++++++++++++++++-
- 1 file changed, 28 insertions(+), 1 deletion(-)
-
-diff --git a/sound/soc/fsl/fsl_asrc.c b/sound/soc/fsl/fsl_asrc.c
-index aa5edf32d988..936aef5d2767 100644
---- a/sound/soc/fsl/fsl_asrc.c
-+++ b/sound/soc/fsl/fsl_asrc.c
-@@ -20,6 +20,7 @@
- 
- #define IDEAL_RATIO_DECIMAL_DEPTH 26
- #define DIVIDER_NUM  64
-+#define INIT_RETRY_NUM 50
- 
- #define pair_err(fmt, ...) \
- 	dev_err(&asrc->pdev->dev, "Pair %c: " fmt, 'A' + index, ##__VA_ARGS__)
-@@ -27,6 +28,9 @@
- #define pair_dbg(fmt, ...) \
- 	dev_dbg(&asrc->pdev->dev, "Pair %c: " fmt, 'A' + index, ##__VA_ARGS__)
- 
-+#define pair_warn(fmt, ...) \
-+	dev_warn(&asrc->pdev->dev, "Pair %c: " fmt, 'A' + index, ##__VA_ARGS__)
-+
- /* Corresponding to process_option */
- static unsigned int supported_asrc_rate[] = {
- 	5512, 8000, 11025, 12000, 16000, 22050, 24000, 32000, 44100, 48000,
-@@ -579,7 +583,7 @@ static void fsl_asrc_start_pair(struct fsl_asrc_pair *pair)
- {
- 	struct fsl_asrc *asrc = pair->asrc;
- 	enum asrc_pair_index index = pair->index;
--	int reg, retry = 10, i;
-+	int reg, retry = INIT_RETRY_NUM, i;
- 
- 	/* Enable the current pair */
- 	regmap_update_bits(asrc->regmap, REG_ASRCTR,
-@@ -592,6 +596,10 @@ static void fsl_asrc_start_pair(struct fsl_asrc_pair *pair)
- 		reg &= ASRCFG_INIRQi_MASK(index);
- 	} while (!reg && --retry);
- 
-+	/* NOTE: Doesn't treat initialization timeout as an error */
-+	if (!retry)
-+		pair_warn("initialization isn't finished\n");
-+
- 	/* Make the input fifo to ASRC STALL level */
- 	regmap_read(asrc->regmap, REG_ASRCNCR, &reg);
- 	for (i = 0; i < pair->channels * 4; i++)
-@@ -1257,6 +1265,7 @@ static int fsl_asrc_runtime_resume(struct device *dev)
- {
- 	struct fsl_asrc *asrc = dev_get_drvdata(dev);
- 	struct fsl_asrc_priv *asrc_priv = asrc->private;
-+	int reg, retry = INIT_RETRY_NUM;
- 	int i, ret;
- 	u32 asrctr;
- 
-@@ -1295,6 +1304,24 @@ static int fsl_asrc_runtime_resume(struct device *dev)
- 	regmap_update_bits(asrc->regmap, REG_ASRCTR,
- 			   ASRCTR_ASRCEi_ALL_MASK, asrctr);
- 
-+	/* Wait for status of initialization for all enabled pairs */
-+	do {
-+		udelay(5);
-+		regmap_read(asrc->regmap, REG_ASRCFG, &reg);
-+		reg = (reg >> ASRCFG_INIRQi_SHIFT(0)) & 0x7;
-+	} while ((reg != ((asrctr >> ASRCTR_ASRCEi_SHIFT(0)) & 0x7)) && --retry);
-+
-+	/*
-+	 * NOTE: Doesn't treat initialization timeout as an error
-+	 * Some of the pairs may success, then still can continue.
-+	 */
-+	if (!retry) {
-+		for (i = ASRC_PAIR_A; i < ASRC_PAIR_MAX_NUM; i++) {
-+			if ((asrctr & ASRCTR_ASRCEi_MASK(i)) && !(reg & (1 << i)))
-+				dev_warn(dev, "Pair %c initialization isn't finished\n", 'A' + i);
-+		}
-+	}
-+
- 	return 0;
- 
- disable_asrck_clk:
--- 
-2.34.1
-
+Reviewed-by: Samuel Holland <samuel@sholland.org>
