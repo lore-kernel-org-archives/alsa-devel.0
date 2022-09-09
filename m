@@ -4,81 +4,65 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id EB8A0ECAAA1
-	for <alsa-devel@archiver.kernel.org>; Fri,  9 Sep 2022 08:27:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B08BBECAAA1
+	for <alsa-devel@archiver.kernel.org>; Fri,  9 Sep 2022 08:28:47 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 2CD461674;
-	Fri,  9 Sep 2022 10:26:34 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2CD461674
+	by alsa0.perex.cz (Postfix) with ESMTPS id B99401679;
+	Fri,  9 Sep 2022 10:27:55 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B99401679
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1662712044;
-	bh=JrcGYz+axk4mtw3hCvQkjGT/F2NTmj9KdKAVx55zTdQ=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
+	s=default; t=1662712125;
+	bh=zgqLl2m4X/5jKL4rNZyMc0PVC2fCbDDnmcwsC6CQVbw=;
+	h=Date:Subject:To:References:From:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=kiYpYOrrr7ux1Mhm7QVF82bimWq5kX3k8iY7QiWWbCTDiLCKTtd+FUMRaAhWGGbRs
-	 UHJ7ACykf9iZ6HzhyIbR3r7fno2KD9cnqgdbZR7iZUgJ4OnBhs8x7usvm+Sx7qpPzX
-	 mB7/EYjOmsvgcNC9rLMdlHyjf165UeGcZd4ND/iM=
+	b=GDx5tP56Lnj/0fNaR4yASzJ7+NE2VwqMGUAveu6LSj8QIteM54ykh75434DmP+WU9
+	 T+58XszN3R/1wyg1f9s8FCmt4vPl0YNBqu9E+4bvjoJ5hhzOm8kWDJYFm6h7iFPX2p
+	 yAabBxC0hqsdLCjuV26CAgiSWhtKWBhSl9gv85cw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id B660DF8016D;
-	Fri,  9 Sep 2022 10:26:33 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 6202DF8016D;
+	Fri,  9 Sep 2022 10:27:55 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 5D6E9F8011C; Fri,  9 Sep 2022 10:26:32 +0200 (CEST)
-Received: from mail-lj1-x234.google.com (mail-lj1-x234.google.com
- [IPv6:2a00:1450:4864:20::234])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id 845B6F8023A; Fri,  9 Sep 2022 10:27:53 +0200 (CEST)
+Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id E7977F8011C
- for <alsa-devel@alsa-project.org>; Fri,  9 Sep 2022 10:26:25 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E7977F8011C
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="bvfo+ZGX"
-Received: by mail-lj1-x234.google.com with SMTP id y29so943316ljq.7
- for <alsa-devel@alsa-project.org>; Fri, 09 Sep 2022 01:26:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
- h=cc:to:subject:message-id:date:from:in-reply-to:references
- :mime-version:from:to:cc:subject:date;
- bh=TPQei23rVbLf3lVUxKJtGINOs8Ry8xm60ljb9OaQAoA=;
- b=bvfo+ZGXadGigvwlf7iGYkSzxUGafJGyHqw+vYoNBOKdNos7sKlQDwiC+oSA9iwySz
- Z11ZC6R4/sdq5NLYgZIhDP7E9KQ5IWnG72qQVG82G/7nH0Ie5kO6qdKLIRBZqxVhY/vA
- 68tdTmYh1aZ6TJj+jte4u9nU9K6Fwzacr7U7Ftgr4HtwMSClX5brB6uBk2JDN3bdVzgX
- BHCToUSSM6Pr9nUlS+5qRcFzRjJsPHhGp1vbuipaAE0zOifDydSdB7eZ2JPt65EpEzoy
- swtR7wTJeBqiUvumxpgj4H8UIeR1PZfiVioqrdRPjU0F7pn6u3WzWKX3dZhRlJYMODTO
- TbZg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=cc:to:subject:message-id:date:from:in-reply-to:references
- :mime-version:x-gm-message-state:from:to:cc:subject:date;
- bh=TPQei23rVbLf3lVUxKJtGINOs8Ry8xm60ljb9OaQAoA=;
- b=P8PZEBmkYZZ+mAs/QwWmcIczPTkVp28ZuRstQNO2QJNfCMCUbvcVlwi6b6F4XDOJI4
- NloRzg/XtF5zx9MGdtTFqtzdU5dhBFNaKirhwtiueTYmlfwRQb5csljSr9aUSakYtGJM
- KIqgHMcH1vYcdSA7ddBv9F7+rhx8632VeNR3Dg5XZ3LEA5txjzcMFhaceYVJshB3D/4n
- MlzFitSYlLwMY8OvfUY0EKrdYnj3FFP8kkYlEyiPot0uZ2pHWzNFVxXAmIhU/GV4uMtY
- zNLnLIIGd7wGvI+yALGx629c5Tx/ULNKWcEc2yMRcoTG6eNvMaZQb7GU8HXpMcIciMR8
- EsDg==
-X-Gm-Message-State: ACgBeo1YfT1BrjoXlKRwbxAITEjZ39POPfwb8j2QlkaZd1tX2FiRw6+p
- AJouVXMyVb0lJNkhKFWhNYKA34dD3NjL4+KUtDE=
-X-Google-Smtp-Source: AA6agR6sceNaRuwVk3Q3/uIi9DbiISa9CB+jljqrPnnNSXps6sxylloUEBrjhu/MBsKAgHp4PGXgYWgKIRe7aawX5EA=
-X-Received: by 2002:a2e:3002:0:b0:26a:b199:46df with SMTP id
- w2-20020a2e3002000000b0026ab19946dfmr3350605ljw.304.1662711983984; Fri, 09
- Sep 2022 01:26:23 -0700 (PDT)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 58177F8011C
+ for <alsa-devel@alsa-project.org>; Fri,  9 Sep 2022 10:27:47 +0200 (CEST)
+Received: from mail1.perex.cz (localhost [127.0.0.1])
+ by smtp1.perex.cz (Perex's E-mail Delivery System) with ESMTP id 8D209A0040;
+ Fri,  9 Sep 2022 10:27:46 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 smtp1.perex.cz 8D209A0040
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=perex.cz; s=default;
+ t=1662712066; bh=0UQJrQpH2Mlkq6DQrMCLxzGnZrU58TEuB2F7n/22HTs=;
+ h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+ b=ObOMKoDWKY2px50yZF92t7kqde1W5DmtM6dyssurzfOIjnP8xzk1HqxLsKAQpg0my
+ Kdt68olwtnqxqTvmKEglffZnmkcoa7LTW2FwFnZ9Q/LtyHSAG5wxSpyTCi5HkIMVOp
+ PccpQozeGJmt6bZVkbMX3s22gV/hLfLrgXju/J+0=
+Received: from [192.168.100.98] (unknown [192.168.100.98])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ (No client certificate requested) (Authenticated sender: perex)
+ by mail1.perex.cz (Perex's E-mail Delivery System) with ESMTPSA;
+ Fri,  9 Sep 2022 10:27:36 +0200 (CEST)
+Message-ID: <11545c65-cd49-9556-13c6-67d0ce5816c3@perex.cz>
+Date: Fri, 9 Sep 2022 10:27:36 +0200
 MIME-Version: 1.0
-References: <20220908133319.2149486-1-robert.rosengren@axis.com>
-In-Reply-To: <20220908133319.2149486-1-robert.rosengren@axis.com>
-From: Shengjiu Wang <shengjiu.wang@gmail.com>
-Date: Fri, 9 Sep 2022 16:26:12 +0800
-Message-ID: <CAA+D8AOeSM4W1nS=oaWfFzYRqzgERh7_-sdh3wj+7iZthYm9Eg@mail.gmail.com>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.11.0
 Subject: Re: [PATCH] ASoC: fsl_spdif: add ALSA event on dpll locked
-To: robert.rosengren@axis.com
-Content-Type: text/plain; charset="UTF-8"
-X-Content-Filtered-By: Mailman/MimeDel 2.1.15
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>,
- Xiubo Li <Xiubo.Lee@gmail.com>, Takashi Iwai <tiwai@suse.com>,
- Nicolin Chen <nicoleotsuka@gmail.com>, Mark Brown <broonie@kernel.org>,
- kernel@axis.com, Fabio Estevam <festevam@gmail.com>
+Content-Language: en-US
+To: robert.rosengren@axis.com, Shengjiu Wang <shengjiu.wang@gmail.com>,
+ Xiubo Li <Xiubo.Lee@gmail.com>, Liam Girdwood <lgirdwood@gmail.com>,
+ Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>
+References: <20220908133319.2149486-1-robert.rosengren@axis.com>
+From: Jaroslav Kysela <perex@perex.cz>
+In-Reply-To: <20220908133319.2149486-1-robert.rosengren@axis.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Cc: Nicolin Chen <nicoleotsuka@gmail.com>, kernel@axis.com,
+ alsa-devel@alsa-project.org, Fabio Estevam <festevam@gmail.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -94,96 +78,58 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Hi
-
-On Thu, Sep 8, 2022 at 9:33 PM <robert.rosengren@axis.com> wrote:
-
+On 08. 09. 22 15:33, robert.rosengren@axis.com wrote:
 > From: Robert Rosengren <robert.rosengren@axis.com>
->
+> 
 > Add an ALSA event on the RX Sample Rate controller upon the dpll locked
 > interrupt, making it possible for audio applications to monitor changes
 > in the hardware.
->
+> 
 > Signed-off-by: Robert Rosengren <robert.rosengren@axis.com>
 > ---
->  sound/soc/fsl/fsl_spdif.c | 18 ++++++++++++++++--
->  1 file changed, 16 insertions(+), 2 deletions(-)
->
+>   sound/soc/fsl/fsl_spdif.c | 18 ++++++++++++++++--
+>   1 file changed, 16 insertions(+), 2 deletions(-)
+> 
 > diff --git a/sound/soc/fsl/fsl_spdif.c b/sound/soc/fsl/fsl_spdif.c
 > index 7fc1c96929bb..1679a21ffdca 100644
 > --- a/sound/soc/fsl/fsl_spdif.c
 > +++ b/sound/soc/fsl/fsl_spdif.c
-> @@ -44,6 +44,8 @@ static u8 srpc_dpll_locked[] = { 0x0, 0x1, 0x2, 0x3,
-> 0x4, 0xa, 0xb };
->
->  #define DEFAULT_RXCLK_SRC      1
->
+> @@ -44,6 +44,8 @@ static u8 srpc_dpll_locked[] = { 0x0, 0x1, 0x2, 0x3, 0x4, 0xa, 0xb };
+>   
+>   #define DEFAULT_RXCLK_SRC	1
+>   
 > +#define RX_SAMPLE_RATE_KCONTROL "RX Sample Rate"
 > +
->  /**
->   * struct fsl_spdif_soc_data: soc specific data
->   *
+>   /**
+>    * struct fsl_spdif_soc_data: soc specific data
+>    *
 > @@ -122,6 +124,7 @@ struct fsl_spdif_priv {
->         const struct fsl_spdif_soc_data *soc;
->         struct spdif_mixer_control fsl_spdif_control;
->         struct snd_soc_dai_driver cpu_dai_drv;
-> +       struct snd_soc_dai *dai;
->
-
-warning: Function parameter or member 'dai' not described in
-'fsl_spdif_priv'
-please add.
-
-Best regards
-Wang shengjiu
-
->         struct platform_device *pdev;
->         struct regmap *regmap;
->         bool dpll_locked;
-> @@ -223,9 +226,19 @@ static void spdif_irq_dpll_lock(struct fsl_spdif_priv
-> *spdif_priv)
->         locked &= SRPC_DPLL_LOCKED;
->
->         dev_dbg(&pdev->dev, "isr: Rx dpll %s \n",
-> -                       locked ? "locked" : "loss lock");
-> +               locked ? "locked" : "loss lock");
->
->         spdif_priv->dpll_locked = locked ? true : false;
+>   	const struct fsl_spdif_soc_data *soc;
+>   	struct spdif_mixer_control fsl_spdif_control;
+>   	struct snd_soc_dai_driver cpu_dai_drv;
+> +	struct snd_soc_dai *dai;
+>   	struct platform_device *pdev;
+>   	struct regmap *regmap;
+>   	bool dpll_locked;
+> @@ -223,9 +226,19 @@ static void spdif_irq_dpll_lock(struct fsl_spdif_priv *spdif_priv)
+>   	locked &= SRPC_DPLL_LOCKED;
+>   
+>   	dev_dbg(&pdev->dev, "isr: Rx dpll %s \n",
+> -			locked ? "locked" : "loss lock");
+> +		locked ? "locked" : "loss lock");
+>   
+>   	spdif_priv->dpll_locked = locked ? true : false;
 > +
-> +       if (spdif_priv->dai) {
-> +               struct snd_soc_component *component =
-> spdif_priv->dai->component;
-> +               struct snd_kcontrol *kctl =
-> snd_soc_card_get_kcontrol(component->card,
-> +                                               RX_SAMPLE_RATE_KCONTROL);
-> +
-> +               if (kctl)
-> +                       snd_ctl_notify(component->card->snd_card,
-> +                               SNDRV_CTL_EVENT_MASK_VALUE, &kctl->id);
-> +       }
->  }
->
->  /* Receiver found illegal symbol interrupt handler */
-> @@ -1197,7 +1210,7 @@ static struct snd_kcontrol_new fsl_spdif_ctrls[] = {
->         /* DPLL lock info get controller */
->         {
->                 .iface = SNDRV_CTL_ELEM_IFACE_PCM,
-> -               .name = "RX Sample Rate",
-> +               .name = RX_SAMPLE_RATE_KCONTROL,
->                 .access = SNDRV_CTL_ELEM_ACCESS_READ |
->                         SNDRV_CTL_ELEM_ACCESS_VOLATILE,
->                 .info = fsl_spdif_rxrate_info,
-> @@ -1241,6 +1254,7 @@ static struct snd_kcontrol_new fsl_spdif_ctrls_rcm[]
-> = {
->  static int fsl_spdif_dai_probe(struct snd_soc_dai *dai)
->  {
->         struct fsl_spdif_priv *spdif_private =
-> snd_soc_dai_get_drvdata(dai);
-> +       spdif_private->dai = dai;
->
->         snd_soc_dai_init_dma_data(dai, &spdif_private->dma_params_tx,
->                                   &spdif_private->dma_params_rx);
-> --
-> 2.30.2
->
->
+> +	if (spdif_priv->dai) {
+> +		struct snd_soc_component *component = spdif_priv->dai->component;
+> +		struct snd_kcontrol *kctl = snd_soc_card_get_kcontrol(component->card,
+> +						RX_SAMPLE_RATE_KCONTROL);
+
+I would cache the pointer to snd_kcontrol structure in spdif_priv. This lookup 
+is expensive for the interrupt routine in my eyes.
+
+					Jaroslav
+
+-- 
+Jaroslav Kysela <perex@perex.cz>
+Linux Sound Maintainer; ALSA Project; Red Hat, Inc.
