@@ -4,59 +4,94 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9AA7DECAAD3
-	for <alsa-devel@archiver.kernel.org>; Fri,  9 Sep 2022 13:58:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A93E6ECAAD3
+	for <alsa-devel@archiver.kernel.org>; Fri,  9 Sep 2022 14:48:52 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id ADC5A1686;
-	Fri,  9 Sep 2022 15:57:32 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz ADC5A1686
+	by alsa0.perex.cz (Postfix) with ESMTPS id E8CD71ED;
+	Fri,  9 Sep 2022 16:47:59 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E8CD71ED
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1662731902;
-	bh=psxCXcpVZgMn/uvqwJaCbB5c+tk92M1p9FwZo0pCy3E=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1662734930;
+	bh=OcuhMvTcC+q6ZZnJhgVha44kvK5eL+wcctOzi5kyyDw=;
+	h=Date:Subject:To:References:From:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=nRzPJ5yEQNTMDgBtAj0yDrYPrKNPlinAvxr+wHFV6giuhUyqwwygdIjMCjUFtTxWS
-	 xvPTfSPaeT9HTUCXuSR0Vubb0+Q54hTShn9sj2rtpTHKMwVtRUFnHiXEeOltgxTzvx
-	 3j9YtemwH6+f6Ef7562EDWrvI38DBN2MVlYgUf1Q=
+	b=nQFdp74YbIVMg84V0Bi30R9N+De+De/5SpoRkdSZxYnGGaiqfP0U2Lxgo5+e+0zL8
+	 61lz03XYD8CM85IIPgCU3kqqzfeghyeEJ2X+L2KbRzgRm/90aXtKQq/xHithjNJ9X1
+	 NzgaV7jDVue8r8CeXpqVVNJhmFEs8GPVH/c3Y2mE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id CEC9CF80588;
-	Fri,  9 Sep 2022 15:55:00 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 6ED93F8016D;
+	Fri,  9 Sep 2022 16:47:59 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id A5D9BF80579; Fri,  9 Sep 2022 15:54:57 +0200 (CEST)
-Received: from hutie.ust.cz (unknown [IPv6:2a03:3b40:fe:f0::1])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id A78CEF8023A; Fri,  9 Sep 2022 16:47:57 +0200 (CEST)
+Received: from mail-lj1-x22c.google.com (mail-lj1-x22c.google.com
+ [IPv6:2a00:1450:4864:20::22c])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 4CA0EF80536
- for <alsa-devel@alsa-project.org>; Fri,  9 Sep 2022 15:54:45 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4CA0EF80536
+ by alsa1.perex.cz (Postfix) with ESMTPS id 7371BF8016C
+ for <alsa-devel@alsa-project.org>; Fri,  9 Sep 2022 16:47:54 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7371BF8016C
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=cutebit.org header.i=@cutebit.org
- header.b="JKqmA8UG"
-From: =?UTF-8?q?Martin=20Povi=C5=A1er?= <povik+lin@cutebit.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cutebit.org; s=mail;
- t=1662731679; bh=NCPpxyFjG5FDRL0rwynjPqiU4WUuUILsCbqISKQ667o=;
- h=From:To:Cc:Subject:Date:In-Reply-To:References;
- b=JKqmA8UGZ0fsk4Hle78vm2vedlZrjhQBjpkHzOlLAYXH2sqTJXRkazf7im1JyBKVz
- vkJICabGUFIGOOoq+zhjLqYGqW8QCwCmc1Y/03WyxPNzayUjl0UupLWLR40eJEPd1o
- z0diyJ3eV5Uy/50BgOYNR2Si7sfpyzLrIkMqWjtQ=
-To: James Schulman <james.schulman@cirrus.com>,
+ dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org
+ header.b="un9G4vfK"
+Received: by mail-lj1-x22c.google.com with SMTP id by6so2096667ljb.11
+ for <alsa-devel@alsa-project.org>; Fri, 09 Sep 2022 07:47:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
+ h=content-transfer-encoding:in-reply-to:from:references:cc:to
+ :content-language:subject:user-agent:mime-version:date:message-id
+ :from:to:cc:subject:date;
+ bh=JB9qgUrwYsWle3Jv9JHDQg8bS7SdjgM/S8qMg12D/Vw=;
+ b=un9G4vfKcf5oiK+XurhljjSXBl0WVTJjEoefol8zx7MG/0ZU4YWSpEByGeExqOspWG
+ wxSh1krcqHEalllyfqyyOa8eBmZzCkBdjHdA45L15gpqcHXR5IlAYJ3h497h8fxP0AkU
+ bWqR2hs7R0gqg5Z0uVuShPTq7i28wjN4SMjQY6Y4v1lybTC/+/pbh1VJocmX2ZX7aQvt
+ /Ul200xCDGSOEuOqE7aIUlgU06FKvc1cBCxBSivjBj4In8Mw1Y8sde3mY3IS535jHSvm
+ Hvg9N/RYsubhLLlg2hqsXAksE3Wb/gS7TCer8q8Os+OPnFxJJrNYz2kkPxtaLm78/48V
+ 9EdQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=content-transfer-encoding:in-reply-to:from:references:cc:to
+ :content-language:subject:user-agent:mime-version:date:message-id
+ :x-gm-message-state:from:to:cc:subject:date;
+ bh=JB9qgUrwYsWle3Jv9JHDQg8bS7SdjgM/S8qMg12D/Vw=;
+ b=rQyaY5bOKd8ko11uAAMXQR3Kg7nEtBQFbH/xPSPk2RoFKOdDkodtKGb6o3b2oWXj/q
+ xKhCl+BXdC/FfKukCu52q7CLf/Tanhr0scOABtlSFmA8LWfWvk5Y0HaDyNyolnkPfgCB
+ 0qwhwfeSbdZ/4PHyUyw+AmW7q4vNvCHh0G7yJ/wR93QCnEa/C9rcriCg6iPXDLZzbtLx
+ v071E4ilocg02XX5OtsztRR6ExD2CisSrltbd8KwBBNAYwFLtSiUZVu8SQ7FffDhLbEs
+ RMwF3yV44KHQlDSPHt6FeqdXODsSkeCqjrsfT60Fjp0HDhrLNb69pfKEeM6M12MF1zYp
+ Yo/w==
+X-Gm-Message-State: ACgBeo23s3jFSfqkpLupm06G9WHytVrwysp7o0LBfDConwVgzu0Tdcsf
+ ufHfFCGFLzy95YfzvSm1twa7fA==
+X-Google-Smtp-Source: AA6agR4xVAukvcaWllAijmuqOnA2x/hHl+myh1R2qfTpY7GoO7sLz9cKdE73/dUbiPyLwAA7J5SLsQ==
+X-Received: by 2002:a2e:bd0e:0:b0:261:e718:e902 with SMTP id
+ n14-20020a2ebd0e000000b00261e718e902mr4250918ljq.435.1662734872291; 
+ Fri, 09 Sep 2022 07:47:52 -0700 (PDT)
+Received: from [192.168.0.21] (78-11-189-27.static.ip.netia.com.pl.
+ [78.11.189.27]) by smtp.gmail.com with ESMTPSA id
+ m18-20020ac24252000000b0048a85bd4429sm108378lfl.126.2022.09.09.07.47.50
+ (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+ Fri, 09 Sep 2022 07:47:51 -0700 (PDT)
+Message-ID: <541b11a1-6b5a-cae0-73d9-f1fe8c961a15@linaro.org>
+Date: Fri, 9 Sep 2022 16:47:50 +0200
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.13.0
+Subject: Re: [PATCH 09/10] ASoC: cs42l83: Extend CS42L42 support to new part
+Content-Language: en-US
+To: =?UTF-8?Q?Martin_Povi=c5=a1er?= <povik+lin@cutebit.org>,
+ James Schulman <james.schulman@cirrus.com>,
  David Rhodes <david.rhodes@cirrus.com>,
  Lucas Tanure <tanureal@opensource.cirrus.com>,
  Richard Fitzgerald <rf@opensource.cirrus.com>,
  Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
  Rob Herring <robh+dt@kernel.org>,
  Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
- =?UTF-8?q?Martin=20Povi=C5=A1er?= <povik+lin@cutebit.org>
-Subject: [PATCH 05/10] ASoC: cs42l42: Split cs42l42_resume into two functions
-Date: Fri,  9 Sep 2022 15:53:29 +0200
-Message-Id: <20220909135334.98220-6-povik+lin@cutebit.org>
-In-Reply-To: <20220909135334.98220-1-povik+lin@cutebit.org>
+ Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
 References: <20220909135334.98220-1-povik+lin@cutebit.org>
-MIME-Version: 1.0
+ <20220909135334.98220-10-povik+lin@cutebit.org>
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <20220909135334.98220-10-povik+lin@cutebit.org>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
@@ -81,68 +116,82 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Richard Fitzgerald <rf@opensource.cirrus.com>
+On 09/09/2022 15:53, Martin Povišer wrote:
+> The CS42L83 part is a headphone jack codec found in recent Apple
+> machines. It is a publicly undocumented part but as far as can be told
+> it is identical to CS42L42 except for two points:
+> 
 
-On SoundWire the system resume cannot restore registers until the
-host controller has re-enumerated the peripheral.
+(...)
 
-This patch splits cs42l42_resume() into two functions, one to
-power up and the other to restore registers, ready for adding
-SoundWire support.
 
-Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
-Signed-off-by: Martin Povišer <povik+lin@cutebit.org>
----
- sound/soc/codecs/cs42l42.c | 22 +++++++++++++++++++++-
- 1 file changed, 21 insertions(+), 1 deletion(-)
+> +	regmap = devm_regmap_init_i2c(i2c_client, &cs42l83_regmap);
+> +	if (IS_ERR(regmap)) {
+> +		ret = PTR_ERR(regmap);
+> +		dev_err(&i2c_client->dev, "regmap_init() failed: %d\n", ret);
+> +		return ret;
 
-diff --git a/sound/soc/codecs/cs42l42.c b/sound/soc/codecs/cs42l42.c
-index 451357a1c315..2efec8cce089 100644
---- a/sound/soc/codecs/cs42l42.c
-+++ b/sound/soc/codecs/cs42l42.c
-@@ -2183,6 +2183,15 @@ static int __maybe_unused cs42l42_resume(struct device *dev)
- 	gpiod_set_value_cansleep(cs42l42->reset_gpio, 1);
- 	usleep_range(CS42L42_BOOT_TIME_US, CS42L42_BOOT_TIME_US * 2);
- 
-+	dev_dbg(dev, "System resume powered up\n");
-+
-+	return 0;
-+}
-+
-+static void __maybe_unused cs42l42_resume_restore(struct device *dev)
-+{
-+	struct cs42l42_private *cs42l42 = dev_get_drvdata(dev);
-+
- 	regcache_cache_only(cs42l42->regmap, false);
- 	regcache_mark_dirty(cs42l42->regmap);
- 
-@@ -2195,6 +2204,17 @@ static int __maybe_unused cs42l42_resume(struct device *dev)
- 	mutex_unlock(&cs42l42->irq_lock);
- 
- 	dev_dbg(dev, "System resumed\n");
-+}
-+
-+static int __maybe_unused cs42l42_i2c_resume(struct device *dev)
-+{
-+	int ret;
-+
-+	ret = cs42l42_resume(dev);
-+	if (ret)
-+		return ret;
-+
-+	cs42l42_resume_restore(dev);
- 
- 	return 0;
- }
-@@ -2416,7 +2436,7 @@ static int cs42l42_i2c_remove(struct i2c_client *i2c_client)
- }
- 
- static const struct dev_pm_ops cs42l42_pm_ops = {
--	SET_SYSTEM_SLEEP_PM_OPS(cs42l42_suspend, cs42l42_resume)
-+	SET_SYSTEM_SLEEP_PM_OPS(cs42l42_suspend, cs42l42_i2c_resume)
- };
- 
- #ifdef CONFIG_OF
--- 
-2.33.0
+Use dev_err_probe()
 
+> +	}
+> +
+> +	cs42l83->devid = CS42L83_CHIP_ID;
+> +	cs42l83->dev = dev;
+> +	cs42l83->regmap = regmap;
+> +	cs42l83->irq = i2c_client->irq;
+> +
+> +	ret = cs42l42_common_probe(cs42l83, &cs42l42_soc_component, &cs42l42_dai);
+> +	if (ret)
+> +		return ret;
+> +
+> +	ret = cs42l42_init(cs42l83);
+> +	if (ret)
+> +		cs42l42_common_remove(cs42l83);
+> +
+> +	return ret;
+> +}
+> +
+> +static int cs42l83_i2c_remove(struct i2c_client *i2c_client)
+> +{
+> +	struct cs42l42_private *cs42l83 = dev_get_drvdata(&i2c_client->dev);
+> +
+> +	cs42l42_common_remove(cs42l83);
+> +
+> +	return 0;
+> +}
+> +
+> +static int __maybe_unused cs42l83_i2c_resume(struct device *dev)
+> +{
+> +	int ret;
+> +
+> +	ret = cs42l42_resume(dev);
+> +	if (ret)
+> +		return ret;
+> +
+> +	cs42l42_resume_restore(dev);
+> +
+> +	return 0;
+> +}
+> +
+> +static const struct dev_pm_ops cs42l83_i2c_pm_ops = {
+> +	SET_SYSTEM_SLEEP_PM_OPS(cs42l42_suspend, cs42l83_i2c_resume)
+> +};
+> +
+> +static const struct of_device_id __maybe_unused cs42l83_of_match[] = {
+> +	{ .compatible = "cirrus,cs42l83", },
+> +	{}
+> +};
+> +MODULE_DEVICE_TABLE(of, cs42l83_of_match);
+> +
+> +static struct i2c_driver cs42l83_i2c_driver = {
+> +	.driver = {
+> +		.name = "cs42l83",
+> +		.pm = &cs42l83_i2c_pm_ops,
+> +		.of_match_table = of_match_ptr(cs42l83_of_match),
+
+This should complain with compile testing. Usually it comes with
+__maybe_unused/
+
+
+Best regards,
+Krzysztof
