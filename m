@@ -4,44 +4,44 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4F02EECAAD3
-	for <alsa-devel@archiver.kernel.org>; Fri,  9 Sep 2022 13:56:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id BB059ECAAA1
+	for <alsa-devel@archiver.kernel.org>; Fri,  9 Sep 2022 13:57:05 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 8379C1686;
-	Fri,  9 Sep 2022 15:55:58 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8379C1686
+	by alsa0.perex.cz (Postfix) with ESMTPS id 02F0F16AF;
+	Fri,  9 Sep 2022 15:56:14 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 02F0F16AF
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1662731808;
-	bh=uA+DO3LOuFwzNp1m3m1gjThwJgFNEMbFKJ5IdXPozcI=;
+	s=default; t=1662731824;
+	bh=2HkdhbVJcS4GAr+mYrtcMPSzZSvvBgP80tuUriChjkY=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=K410nK0OEtM6hs9DE29pEOVx0shAcYAOfMfbEnC97W82LQeDQYW/e31hemZDKRHzH
-	 QKCzcEdz8XIdKQT964J0HUsSkI/RP889kFagVLqjOk38kZJyzVufphShIbknuLGFs7
-	 Qi4NAaQV6OVd3h5W2rkTk+s8HVvDmoZcZi2AlUsQ=
+	b=kQ8N5a72Q+1x+JAeyDwcJ3vY2OLDsf+l3BP5MydXiuuQOeNMMFLDjJCsQlbO2cKvV
+	 aLPxzhyyv5Dj9wG8MtpMEos3AnPq45Xk3xrwLhJb5clf07/VB7nuCh2KHm2nL9STAB
+	 14+aNxDdxvcOiLO96s3mvwj++TwP2SxYZ83QZ1lU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 71208F80542;
+	by alsa1.perex.cz (Postfix) with ESMTP id EB0F6F80558;
 	Fri,  9 Sep 2022 15:54:54 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 73F92F8053C; Fri,  9 Sep 2022 15:54:50 +0200 (CEST)
+ id 99FD3F80542; Fri,  9 Sep 2022 15:54:50 +0200 (CEST)
 Received: from hutie.ust.cz (hutie.ust.cz [185.8.165.127])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 70584F8023A
- for <alsa-devel@alsa-project.org>; Fri,  9 Sep 2022 15:54:40 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 70584F8023A
+ by alsa1.perex.cz (Postfix) with ESMTPS id A22D1F8011C
+ for <alsa-devel@alsa-project.org>; Fri,  9 Sep 2022 15:54:38 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A22D1F8011C
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=cutebit.org header.i=@cutebit.org
- header.b="clWEAI06"
+ header.b="YIrvjtlC"
 From: =?UTF-8?q?Martin=20Povi=C5=A1er?= <povik+lin@cutebit.org>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cutebit.org; s=mail;
- t=1662731679; bh=wQ6gFpgaheXkQG5O+w8BcmO70ntpKXeJcMOFxz0cQhQ=;
+ t=1662731677; bh=Z7pYWBxGHGi2ZqyTkPEZO2suk0cCsfJNF1GKYGMYE+w=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References;
- b=clWEAI06jkFStRcuwd8cUXB9hBJ7JLu6dKwoGCyN9xn4ljLQwCBQIPJszq4VSdXvf
- Pv1jdYCc5AlRQVfoCOqBetcZH++1mNhDehxXf+0bN8MqcAvA/rqSD1w+VGoh5yU6w7
- DpVpVCigQyN/9S512LZszclhRgyY/4BfnALrCISc=
+ b=YIrvjtlCimCjWTg2ae3mEonUuQy1i8q8nTG/UASHn9xFMpLmofoXtJV8M9onSKS48
+ UptY1jVASNQwNQ6t5KwTomsiqGd+LU/5OUfQyjfCqiI7v+ASWdZTTBiuTk03IZ/9xH
+ 2wOEezk/qHdL/U+idErfiohqp9IecoqzfSklgT4Q=
 To: James Schulman <james.schulman@cirrus.com>,
  David Rhodes <david.rhodes@cirrus.com>,
  Lucas Tanure <tanureal@opensource.cirrus.com>,
@@ -51,10 +51,10 @@ To: James Schulman <james.schulman@cirrus.com>,
  Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
  Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
  =?UTF-8?q?Martin=20Povi=C5=A1er?= <povik+lin@cutebit.org>
-Subject: [PATCH 06/10] ASoC: cs42l42: Pass component and dai defs into common
- probe
-Date: Fri,  9 Sep 2022 15:53:30 +0200
-Message-Id: <20220909135334.98220-7-povik+lin@cutebit.org>
+Subject: [PATCH 02/10] ASoC: cs42l42: Add bitclock frequency argument to
+ cs42l42_pll_config()
+Date: Fri,  9 Sep 2022 15:53:26 +0200
+Message-Id: <20220909135334.98220-3-povik+lin@cutebit.org>
 In-Reply-To: <20220909135334.98220-1-povik+lin@cutebit.org>
 References: <20220909135334.98220-1-povik+lin@cutebit.org>
 MIME-Version: 1.0
@@ -84,61 +84,101 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 From: Richard Fitzgerald <rf@opensource.cirrus.com>
 
-Pass pointers to snd_soc_component_driver and snd_soc_dai_driver
-objects into cs42l42_common_probe().
+Clean up the handling of bitclock frequency by keeping all the logic
+in cs42l42_pcm_hw_params(), which then simply passes the frequency as
+an argument to cs42l42_pll_config().
 
-This is in preparation for adding SoundWire support.
+The previous code had become clunky as a legacy of earlier versions of
+the clock handling. The logic was split across cs42l42_pcm_hw_params()
+and cs42l42_pll_config(), with the params-derived bclk stashed in
+struct cs42l42_private only to pass it to cs42l42_pll_config().
 
 Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
 Signed-off-by: Martin Povišer <povik+lin@cutebit.org>
 ---
- sound/soc/codecs/cs42l42.c | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
+ sound/soc/codecs/cs42l42.c | 32 ++++++++++++++++----------------
+ sound/soc/codecs/cs42l42.h |  1 -
+ 2 files changed, 16 insertions(+), 17 deletions(-)
 
 diff --git a/sound/soc/codecs/cs42l42.c b/sound/soc/codecs/cs42l42.c
-index 2efec8cce089..bffe0347bec0 100644
+index de1e276bdf7d..0048ce977645 100644
 --- a/sound/soc/codecs/cs42l42.c
 +++ b/sound/soc/codecs/cs42l42.c
-@@ -579,7 +579,7 @@ static int cs42l42_set_jack(struct snd_soc_component *component, struct snd_soc_
- 	return 0;
- }
+@@ -647,18 +647,12 @@ static const struct cs42l42_pll_params pll_ratio_table[] = {
+ 	{ 24576000, 1, 0x03, 0x40, 0x000000, 0x03, 0x10, 12288000, 128, 1}
+ };
  
--static const struct snd_soc_component_driver soc_component_dev_cs42l42 = {
-+static const struct snd_soc_component_driver cs42l42_soc_component = {
- 	.set_jack		= cs42l42_set_jack,
- 	.dapm_widgets		= cs42l42_dapm_widgets,
- 	.num_dapm_widgets	= ARRAY_SIZE(cs42l42_dapm_widgets),
-@@ -2219,7 +2219,9 @@ static int __maybe_unused cs42l42_i2c_resume(struct device *dev)
- 	return 0;
- }
- 
--static int cs42l42_common_probe(struct cs42l42_private *cs42l42)
-+static int cs42l42_common_probe(struct cs42l42_private *cs42l42,
-+				const struct snd_soc_component_driver *component_drv,
-+				struct snd_soc_dai_driver *dai)
+-static int cs42l42_pll_config(struct snd_soc_component *component)
++static int cs42l42_pll_config(struct snd_soc_component *component, unsigned int clk)
  {
- 	int ret, i;
+ 	struct cs42l42_private *cs42l42 = snd_soc_component_get_drvdata(component);
+ 	int i;
+-	u32 clk;
+ 	u32 fsync;
  
-@@ -2277,9 +2279,7 @@ static int cs42l42_common_probe(struct cs42l42_private *cs42l42)
+-	if (!cs42l42->sclk)
+-		clk = cs42l42->bclk;
+-	else
+-		clk = cs42l42->sclk;
+-
+ 	/* Don't reconfigure if there is an audio stream running */
+ 	if (cs42l42->stream_use) {
+ 		if (pll_ratio_table[cs42l42->pll_config].sclk == clk)
+@@ -895,19 +889,25 @@ static int cs42l42_pcm_hw_params(struct snd_pcm_substream *substream,
+ 	unsigned int width = (params_width(params) / 8) - 1;
+ 	unsigned int slot_width = 0;
+ 	unsigned int val = 0;
++	unsigned int bclk;
+ 	int ret;
+ 
+ 	cs42l42->srate = params_rate(params);
+ 
+-	/*
+-	 * Assume 24-bit samples are in 32-bit slots, to prevent SCLK being
+-	 * more than assumed (which would result in overclocking).
+-	 */
+-	if (params_width(params) == 24)
+-		slot_width = 32;
++	if (cs42l42->sclk) {
++		/* machine driver has set the SCLK */
++		bclk = cs42l42->sclk;
++	} else {
++		/*
++		 * Assume 24-bit samples are in 32-bit slots, to prevent SCLK being
++		 * more than assumed (which would result in overclocking).
++		 */
++		if (params_width(params) == 24)
++			slot_width = 32;
+ 
+-	/* I2S frame always has multiple of 2 channels */
+-	cs42l42->bclk = snd_soc_tdm_params_to_bclk(params, slot_width, 0, 2);
++		/* I2S frame always has multiple of 2 channels */
++		bclk = snd_soc_tdm_params_to_bclk(params, slot_width, 0, 2);
++	}
+ 
+ 	switch (substream->stream) {
+ 	case SNDRV_PCM_STREAM_CAPTURE:
+@@ -947,7 +947,7 @@ static int cs42l42_pcm_hw_params(struct snd_pcm_substream *substream,
+ 		break;
  	}
  
- 	/* Register codec now so it can EPROBE_DEFER */
--	ret = devm_snd_soc_register_component(cs42l42->dev,
--					      &soc_component_dev_cs42l42,
--					      &cs42l42_dai, 1);
-+	ret = devm_snd_soc_register_component(cs42l42->dev, component_drv, dai, 1);
- 	if (ret < 0)
- 		goto err;
- 
-@@ -2415,7 +2415,7 @@ static int cs42l42_i2c_probe(struct i2c_client *i2c_client)
- 	cs42l42->regmap = regmap;
- 	cs42l42->irq = i2c_client->irq;
- 
--	ret = cs42l42_common_probe(cs42l42);
-+	ret = cs42l42_common_probe(cs42l42, &cs42l42_soc_component, &cs42l42_dai);
+-	ret = cs42l42_pll_config(component);
++	ret = cs42l42_pll_config(component, bclk);
  	if (ret)
  		return ret;
  
+diff --git a/sound/soc/codecs/cs42l42.h b/sound/soc/codecs/cs42l42.h
+index 50299c9f283a..b4ba1467c558 100644
+--- a/sound/soc/codecs/cs42l42.h
++++ b/sound/soc/codecs/cs42l42.h
+@@ -30,7 +30,6 @@ struct  cs42l42_private {
+ 	struct snd_soc_jack *jack;
+ 	struct mutex irq_lock;
+ 	int pll_config;
+-	int bclk;
+ 	u32 sclk;
+ 	u32 srate;
+ 	u8 plug_state;
 -- 
 2.33.0
 
