@@ -4,88 +4,60 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 62A11ECAAA1
-	for <alsa-devel@archiver.kernel.org>; Fri,  9 Sep 2022 08:35:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E58AAECAAA1
+	for <alsa-devel@archiver.kernel.org>; Fri,  9 Sep 2022 09:31:09 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id CD0521663;
-	Fri,  9 Sep 2022 10:34:52 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CD0521663
+	by alsa0.perex.cz (Postfix) with ESMTPS id F398E1671;
+	Fri,  9 Sep 2022 11:30:16 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F398E1671
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1662712542;
-	bh=97eH85sxqFK+y54LqBAJk9bTO6v2biB3o8rX9kSQmV8=;
-	h=References:From:To:Subject:Date:In-reply-to:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=Wo57LxXF5J78PcQ52hS9mE27erzlPc5078lbbDlo0qLgw7E11ouLyXvi8gLtZQugB
-	 YTKjUTW8jBkojBsIYaVJZXkUHBUlOS78Avttu3SKINMaHHT8C9Ix1ErwbyQC3SXzvT
-	 DrP6dFTohoWOmZdTXmQXSsVqVSYQI2HbFfFaNEsw=
+	s=default; t=1662715867;
+	bh=yvQfDK1dvu5EyBNNyDp8FtdnjeT1cbdOmaiEDZG9JA8=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=h/a52SZcNiZzYiSwfNfceSdQIlq4o87zzKOtx24s6lq4i++LIK5M7c9rJzUdV15zU
+	 nRpvFXnPSaXalVuVKAygRJDkltFQ97TJE2weBAYPf2ITDAtZK96cZo/GV34ZP0wd16
+	 CKNcurFNPy7nDOp6nWfFb34QTJvwDz5L2RnpH2pc=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 75D74F8016C;
-	Fri,  9 Sep 2022 10:34:52 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 70A2CF8016D;
+	Fri,  9 Sep 2022 11:30:16 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 7AA2BF8011C; Fri,  9 Sep 2022 10:34:51 +0200 (CEST)
-Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com
- [IPv6:2a00:1450:4864:20::333])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id 6BF6EF8023A; Fri,  9 Sep 2022 11:30:15 +0200 (CEST)
+Received: from smtp1.axis.com (smtp1.axis.com [195.60.68.17])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 1E388F8011C
- for <alsa-devel@alsa-project.org>; Fri,  9 Sep 2022 10:34:44 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1E388F8011C
+ by alsa1.perex.cz (Postfix) with ESMTPS id 2FA18F8011C
+ for <alsa-devel@alsa-project.org>; Fri,  9 Sep 2022 11:30:07 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2FA18F8011C
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=baylibre-com.20210112.gappssmtp.com
- header.i=@baylibre-com.20210112.gappssmtp.com header.b="3JHJpp1m"
-Received: by mail-wm1-x333.google.com with SMTP id k17so847505wmr.2
- for <alsa-devel@alsa-project.org>; Fri, 09 Sep 2022 01:34:44 -0700 (PDT)
+ dkim=pass (2048-bit key) header.d=axis.com header.i=@axis.com
+ header.b="d7DhGrn5"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=baylibre-com.20210112.gappssmtp.com; s=20210112;
- h=mime-version:message-id:in-reply-to:date:subject:cc:to:from
- :user-agent:references:from:to:cc:subject:date;
- bh=cJmKXbrEOH7YaSjVFnJaRcO9sHnhjmplPO8XOTbGbo0=;
- b=3JHJpp1mpo+lyuQb26Me3R09iGgAsiMXetyoop2R8XJ8I/ueXwZdKqRE0QvlVkzYb6
- gwJRjOSa9s30C5IT6TilFAn8RxjOO3PsWplW6ezXe5DQX0SKjkWsEbrZ5dn0H1kLmVBu
- UC/0GShVCB0orbu8OQu03YuOKXrb8dIlpBphdDGG8Lv00/MbnxkRUnGPCyeYXfNbeoqO
- Az5qtK1dofCA0sSSLG3WvIcLi7sk/vIe89uNqZpduemxd7wF2WAeupvNrv+aixVI31iw
- tVpgAREA/PMZ/FTC2KY3TatA8EgfuXzmbo8yyQuk74xZ9UoGH/J4qx5TSNEd7XW2Q+BB
- S74w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=mime-version:message-id:in-reply-to:date:subject:cc:to:from
- :user-agent:references:x-gm-message-state:from:to:cc:subject:date;
- bh=cJmKXbrEOH7YaSjVFnJaRcO9sHnhjmplPO8XOTbGbo0=;
- b=tT6eu2DWaybzMmIr9cho9pTKHB9QnEEYz/wxhFH9PdmTcisnznl9hIINy1gPGdVj2d
- 97BHS+zOI+VPVVgSJ2LwuxBMw4qCAk6Y9QGpVBxWv9+5ARAHptXqioKYzQktQ0WhdTo8
- To8gVSi+5+cKv9YIWBWZc3JH0zHPSv/y9WGH5MDWv01doj8+c/hNH5G2mVKeNoXFNqdz
- IrKqHE06CJENgnCG/Z9zMMskLOw8gLm9+uBfuZEi8qqKGmlMMeqlquN9CHj04eeDmGes
- 9kInjFMLrAw/u7+1rbxoFAlQtbndq5iuw9V8ehMuTOzA1riTCliusZ1Z2KMDJIh3CpU0
- XRpw==
-X-Gm-Message-State: ACgBeo2Eh7j0Ugt+NmzuaNrU1c7GF8Eflu7/S23RSIPaFU0V+10Dl2Qa
- vz4oQO6DuMpFibVyh5KIFHvgaw==
-X-Google-Smtp-Source: AA6agR7Py4WKeGqhTQpvX9qE2taTc78C4DOL0egvGJEoYxY8FZ/UpjRKMvUtDCSF1lkq3DadlUbdGw==
-X-Received: by 2002:a05:600c:3c96:b0:3a6:58b2:a98 with SMTP id
- bg22-20020a05600c3c9600b003a658b20a98mr4801361wmb.43.1662712483138; 
- Fri, 09 Sep 2022 01:34:43 -0700 (PDT)
-Received: from localhost (laubervilliers-658-1-213-31.w90-63.abo.wanadoo.fr.
- [90.63.244.31]) by smtp.gmail.com with ESMTPSA id
- f1-20020a0560001b0100b00228d94931dcsm1238158wrz.116.2022.09.09.01.34.41
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Fri, 09 Sep 2022 01:34:42 -0700 (PDT)
-References: <8735d1mjf3.wl-kuninori.morimoto.gx@renesas.com>
-User-agent: mu4e 1.8.7; emacs 28.1
-From: Jerome Brunet <jbrunet@baylibre.com>
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Mark Brown
- <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: meson: aiu-fifo.c: use devm_kzalloc(), and remove
- .remove function
-Date: Fri, 09 Sep 2022 10:27:22 +0200
-In-reply-to: <8735d1mjf3.wl-kuninori.morimoto.gx@renesas.com>
-Message-ID: <1jillxc5en.fsf@starbuckisacylon.baylibre.com>
+ d=axis.com; q=dns/txt; s=axis-central1; t=1662715809;
+ x=1694251809;
+ h=from:to:cc:subject:date:message-id:mime-version:
+ content-transfer-encoding;
+ bh=5kDWDLM4dvskJrZT61dQQhMEV6z9clf/KDjy1daE//E=;
+ b=d7DhGrn5huY3quK0k546vmxQfjxfCVwdLCXWwJTs+2kX7hVVTGNUgWJL
+ +tLXYL60kZevy/Q/op79khhObi3yw10/t0pXvXcPsTNttcEZIVxXpHlx9
+ Rpo4h1y0Kx1FzwiyW+ZM3PDpAcyhDR4Ucmuy4jgk77beX1s3NmIIABnGF
+ vCSAAKv7iMT9fx0JcMQkkwt9lacKELJ4uh+PacavcP6Tn4t0QTdHaSjgR
+ hzMKC/z5X1U7xoxDNeMm4l7Dm2r7BFSAkwc0IDFPCPDF/xCV668yDlpzo
+ tCS4YvXD+CyvBK1xR0ECqvBJlQGoa3Mh+GaCRo1RrcBvqlEQE+aN8tflG A==;
+From: Astrid Rost <astrid.rost@axis.com>
+To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>,
+ Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
+Subject: [PATCH] ASoC: ts3a227e: allow enabling the jack detect in driver
+Date: Fri, 9 Sep 2022 11:30:01 +0200
+Message-ID: <20220909093001.13110-1-astrid.rost@axis.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-Cc: Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
- Kevin Hilman <khilman@baylibre.com>, Linux-ALSA <alsa-devel@alsa-project.org>,
- Neil Armstrong <narmstrong@baylibre.com>
+Cc: alsa-devel-mejlinglistan <alsa-devel@alsa-project.org>, kernel@axis.com,
+ Astrid Rost <astrid.rost@axis.com>, linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -101,89 +73,114 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+ti,jack-detect enables the jack detection input device
 
-On Fri 09 Sep 2022 at 01:21, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com> wrote:
+Signed-off-by: Astrid Rost <astrid.rost@axis.com>
+---
+ sound/soc/codecs/Kconfig    |  2 ++
+ sound/soc/codecs/ts3a227e.c | 62 ++++++++++++++++++++++++++++++++++++-
+ 2 files changed, 63 insertions(+), 1 deletion(-)
 
-> From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
->
-> Current aiu-fifo.c is using kzalloc()/kfree(), but we can replace
-> it by devm_kzalloc(), and remove kfree().
-> This patch do it.
-
-I'm not sure about this change Kuninori.
-
-This is the dai probe, not the device driver probe.
-If I'm not mistaken it gets called when binding the card.
-
-The components and card drivers are different here.
-
-If the card probes several times for any reason, EPROBE_DEFER for
-example, wouldn't this allocate the memory several times without
-releasing it ?
-
->
-> Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-> ---
->  sound/soc/meson/aiu-fifo.c | 10 +---------
->  sound/soc/meson/aiu-fifo.h |  1 -
->  sound/soc/meson/aiu.c      |  2 --
->  3 files changed, 1 insertion(+), 12 deletions(-)
->
-> diff --git a/sound/soc/meson/aiu-fifo.c b/sound/soc/meson/aiu-fifo.c
-> index d67ff4cdabd5..843e5067e07d 100644
-> --- a/sound/soc/meson/aiu-fifo.c
-> +++ b/sound/soc/meson/aiu-fifo.c
-> @@ -196,7 +196,7 @@ int aiu_fifo_dai_probe(struct snd_soc_dai *dai)
->  {
->  	struct aiu_fifo *fifo;
->  
-> -	fifo = kzalloc(sizeof(*fifo), GFP_KERNEL);
-> +	fifo = devm_kzalloc(dai->dev, sizeof(*fifo), GFP_KERNEL);
->  	if (!fifo)
->  		return -ENOMEM;
->  
-> @@ -204,11 +204,3 @@ int aiu_fifo_dai_probe(struct snd_soc_dai *dai)
->  
->  	return 0;
->  }
-> -
-> -int aiu_fifo_dai_remove(struct snd_soc_dai *dai)
-> -{
-> -	kfree(dai->playback_dma_data);
-> -
-> -	return 0;
-> -}
-> -
-> diff --git a/sound/soc/meson/aiu-fifo.h b/sound/soc/meson/aiu-fifo.h
-> index 42ce266677cc..fb323a4385f7 100644
-> --- a/sound/soc/meson/aiu-fifo.h
-> +++ b/sound/soc/meson/aiu-fifo.h
-> @@ -26,7 +26,6 @@ struct aiu_fifo {
->  };
->  
->  int aiu_fifo_dai_probe(struct snd_soc_dai *dai);
-> -int aiu_fifo_dai_remove(struct snd_soc_dai *dai);
->  
->  snd_pcm_uframes_t aiu_fifo_pointer(struct snd_soc_component *component,
->  				   struct snd_pcm_substream *substream);
-> diff --git a/sound/soc/meson/aiu.c b/sound/soc/meson/aiu.c
-> index 88e611e64d14..7e632aa31368 100644
-> --- a/sound/soc/meson/aiu.c
-> +++ b/sound/soc/meson/aiu.c
-> @@ -123,7 +123,6 @@ static struct snd_soc_dai_driver aiu_cpu_dai_drv[] = {
->  		.ops		= &aiu_fifo_i2s_dai_ops,
->  		.pcm_new	= aiu_fifo_pcm_new,
->  		.probe		= aiu_fifo_i2s_dai_probe,
-> -		.remove		= aiu_fifo_dai_remove,
->  	},
->  	[CPU_SPDIF_FIFO] = {
->  		.name = "SPDIF FIFO",
-> @@ -139,7 +138,6 @@ static struct snd_soc_dai_driver aiu_cpu_dai_drv[] = {
->  		.ops		= &aiu_fifo_spdif_dai_ops,
->  		.pcm_new	= aiu_fifo_pcm_new,
->  		.probe		= aiu_fifo_spdif_dai_probe,
-> -		.remove		= aiu_fifo_dai_remove,
->  	},
->  	[CPU_I2S_ENCODER] = {
->  		.name = "I2S Encoder",
+diff --git a/sound/soc/codecs/Kconfig b/sound/soc/codecs/Kconfig
+index d16b4efb88a7..cb86e52cd02f 100644
+--- a/sound/soc/codecs/Kconfig
++++ b/sound/soc/codecs/Kconfig
+@@ -1671,6 +1671,8 @@ config SND_SOC_TLV320ADCX140
+ config SND_SOC_TS3A227E
+ 	tristate "TI Headset/Mic detect and keypress chip"
+ 	depends on I2C
++	select SND_JACK
++	select SND_JACK_INPUT_DEV
+ 
+ config SND_SOC_TSCS42XX
+ 	tristate "Tempo Semiconductor TSCS42xx CODEC"
+diff --git a/sound/soc/codecs/ts3a227e.c b/sound/soc/codecs/ts3a227e.c
+index d8ab0810fceb..b5d0d32cafdb 100644
+--- a/sound/soc/codecs/ts3a227e.c
++++ b/sound/soc/codecs/ts3a227e.c
+@@ -38,6 +38,32 @@ static const int ts3a227e_buttons[] = {
+ 	SND_JACK_BTN_3,
+ };
+ 
++/* Headphones jack detection DAPM pin */
++static struct snd_soc_jack_pin ts3a227e_jack_pins[] = {
++
++	{
++		.pin = "Headphone Jack",
++		.mask = SND_JACK_HEADPHONE,
++	},
++	{
++		.pin = "Internal Speaker",
++		/* disable speaker when hp jack is inserted */
++		.mask = SND_JACK_HEADPHONE,
++		.invert	= 1,
++	},
++	{
++		.pin = "Headset Mic",
++		.mask = SND_JACK_MICROPHONE,
++	},
++	{
++		.pin = "Internal Mic",
++		/* disable microphone when microphone jack is inserted */
++		.mask = SND_JACK_MICROPHONE,
++		.invert	= 1,
++	},
++
++};
++
+ #define TS3A227E_NUM_BUTTONS 4
+ #define TS3A227E_JACK_MASK (SND_JACK_HEADPHONE | \
+ 			    SND_JACK_MICROPHONE | \
+@@ -250,7 +276,12 @@ int ts3a227e_enable_jack_detect(struct snd_soc_component *component,
+ }
+ EXPORT_SYMBOL_GPL(ts3a227e_enable_jack_detect);
+ 
+-static struct snd_soc_component_driver ts3a227e_soc_driver;
++static int ts3a227e_probe(struct snd_soc_component *component);
++
++static const struct snd_soc_component_driver ts3a227e_soc_driver = {
++	.name = "Audio Accessory Detection ts3a227e",
++	.probe = ts3a227e_probe,
++};
+ 
+ static const struct regmap_config ts3a227e_regmap_config = {
+ 	.val_bits = 8,
+@@ -355,6 +386,35 @@ static int ts3a227e_resume(struct device *dev)
+ }
+ #endif
+ 
++static int ts3a227e_probe(struct snd_soc_component *component)
++{
++	int ret = 0;
++	bool enable = 0;
++	struct snd_soc_card *card = component->card;
++	struct ts3a227e *ts3a227e = snd_soc_component_get_drvdata(component);
++
++	enable = device_property_read_bool(component->dev, "ti,jack-detect");
++	if (enable) {
++		/* Enable Headset and 4 Buttons Jack detection */
++		ts3a227e->jack = devm_kzalloc(component->dev,
++				sizeof(struct snd_soc_jack), GFP_KERNEL);
++
++		ret = snd_soc_card_jack_new_pins(card, "Headset Jack",
++					    SND_JACK_HEADSET |
++					    SND_JACK_BTN_0 | SND_JACK_BTN_1 |
++					    SND_JACK_BTN_2 | SND_JACK_BTN_3,
++					    ts3a227e->jack,
++					    ts3a227e_jack_pins,
++					    ARRAY_SIZE(ts3a227e_jack_pins));
++		if (ret)
++			return ret;
++
++		ret = ts3a227e_enable_jack_detect(component, ts3a227e->jack);
++	}
++
++	return ret;
++}
++
+ static const struct dev_pm_ops ts3a227e_pm = {
+ 	SET_SYSTEM_SLEEP_PM_OPS(ts3a227e_suspend, ts3a227e_resume)
+ };
+-- 
+2.20.1
 
