@@ -4,61 +4,95 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C4308ECAAA1
-	for <alsa-devel@archiver.kernel.org>; Fri,  9 Sep 2022 07:12:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7EE65ECAAD3
+	for <alsa-devel@archiver.kernel.org>; Fri,  9 Sep 2022 07:24:51 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E090E1692;
-	Fri,  9 Sep 2022 09:12:06 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E090E1692
+	by alsa0.perex.cz (Postfix) with ESMTPS id 775781676;
+	Fri,  9 Sep 2022 09:23:58 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 775781676
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1662707577;
-	bh=fN5LYgf8ykM66XFTITzzmVqEhmAPH3iXrdqrj8qdGJk=;
-	h=Date:To:From:Subject:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:Reply-To:From;
-	b=tVpI3I4ssXYIEe5117nggS7OzWRO7HNcWu5YrvLtqwufSuGAsrmthCVY+dTrt/Gfu
-	 1xnc/BmTZ0wC5V2FbfFfY+Zvc+IeSizyLXEB2sHFtEegUqIu98LWG5ztXLqbGfj2YE
-	 XkplVsgSZw/zzQQUQcrZSS0xyPL7AA9R1jpo31no=
+	s=default; t=1662708288;
+	bh=Coek/p8GZx0/+SZF8kocQpsQ+I4TQGyEVZagoLcjD94=;
+	h=Date:Subject:To:References:From:In-Reply-To:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=PiI38hnJuOHiyKlTC/domZ508Z0xHWPdvLGEHYowvgei1G8pZeB8CtFqJW3YnVlde
+	 o9MyLAcKZyY7lxy0+LrhVKz5M0qTLJeAOEUQKCPUerALQpGdRm1ah49Dc2gUKSxsMn
+	 xnYunE3D1Y2UNYIvZ4Ha7yAlOM1KGdJu0U0aYdmw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 8CBC7F804AE;
-	Fri,  9 Sep 2022 09:12:06 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 184E4F8016D;
+	Fri,  9 Sep 2022 09:23:58 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 7073CF80217; Thu,  8 Sep 2022 18:03:19 +0200 (CEST)
-Received: from mail-40134.protonmail.ch (mail-40134.protonmail.ch
- [185.70.40.134])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 2F26EF8016C; Fri,  9 Sep 2022 09:23:57 +0200 (CEST)
+Received: from mail-lj1-x231.google.com (mail-lj1-x231.google.com
+ [IPv6:2a00:1450:4864:20::231])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 40B19F800CB
- for <alsa-devel@alsa-project.org>; Thu,  8 Sep 2022 18:03:12 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 40B19F800CB
+ by alsa1.perex.cz (Postfix) with ESMTPS id B9128F8016C
+ for <alsa-devel@alsa-project.org>; Fri,  9 Sep 2022 09:23:45 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B9128F8016C
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=protonmail.com header.i=@protonmail.com
- header.b="x6GE+uyo"
-Date: Thu, 08 Sep 2022 16:03:03 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=protonmail.com;
- s=protonmail3; t=1662652990; x=1662912190;
- bh=fN5LYgf8ykM66XFTITzzmVqEhmAPH3iXrdqrj8qdGJk=;
- h=Date:To:From:Cc:Reply-To:Subject:Message-ID:Feedback-ID:From:To:
- Cc:Date:Subject:Reply-To:Feedback-ID:Message-ID;
- b=x6GE+uyoD3POaXSPg0gguTpBqEEI5gJLCH1YRle7DioyW1D+icZfUMKNT8rMe7Vcp
- 9Hx0qnxZIhRliRWcUQo/c3Q5DwdLxqtnYS9GOGHA4z1WvUYKniC/V31QFaeA3zPaMk
- DwzMxHQah37SbwvcgiT523+e/LrrHNMu2t4gwt9JBY3C6yvIW7LalfIno27HKMuQzr
- LA7I8quOeOLGrvQwEuehLU3200bBh/pKjlWd+QlTG+dmk5y15XK/cQFqpkKv/t/0Di
- eriqkyLXXiJ6szVaVg7UoyxZpiPEI/HijmRaMWMx/0XWy/NazjF0MntxpB8nRaMLoE
- I+KARfqUU4OQQ==
-To: Richard Fitzgerald <rf@opensource.cirrus.com>
-From: =?utf-8?Q?Martin_Povi=C5=A1er?= <povik@protonmail.com>
-Subject: Re: [PATCH 09/12] ASoC: cs42l42: Split I2C identity into separate
- module
-Message-ID: <90D59877-4FED-483D-8581-85E017614A57@protonmail.com>
-Feedback-ID: 6533334:user:proton
+ dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org
+ header.b="FDb9QYtH"
+Received: by mail-lj1-x231.google.com with SMTP id c10so808183ljj.2
+ for <alsa-devel@alsa-project.org>; Fri, 09 Sep 2022 00:23:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
+ h=content-transfer-encoding:in-reply-to:from:references:cc:to
+ :content-language:subject:user-agent:mime-version:date:message-id
+ :from:to:cc:subject:date;
+ bh=xw2tGj4i/BGzgrmFBPep6DT8sXHDJUaiisGkdVfexQY=;
+ b=FDb9QYtHpeMnKLbXsu6sSQ2VNTLSHs98Gp3ucj9BbfZGPm3CejGQZ2b3XBBUXZNwuS
+ cfhv6+sLtmK4BroTfM6zwXbrHWa88kONsBXff3kTnt4ye396MQETU1hEGZ7k9eF7PSy7
+ rKYmavVegYi+dX2Bq/NrCpV7sCjttCuQKwVTFI0bAZ6Qv1zugjRb59I03a2hwpzJXQNO
+ py1kzoKyDOkuwmzWkYVoamxJ5Gnl39JHQv17U/iDbNZ0o2XJOqA172ZI/UYe9WuWifGH
+ KRegy8IzuMmnlgJPwh9dNvUc2WyH3UCGAun6xA8+vtydKb5owZyEUNf/JQuVsyiQ9SsS
+ wUkg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=content-transfer-encoding:in-reply-to:from:references:cc:to
+ :content-language:subject:user-agent:mime-version:date:message-id
+ :x-gm-message-state:from:to:cc:subject:date;
+ bh=xw2tGj4i/BGzgrmFBPep6DT8sXHDJUaiisGkdVfexQY=;
+ b=dHTl8QJY5zrQrAkbGx9FR4qsrjokfLMKd8xLoqyIYVhuWEUk92J9C3hfLzvAsO+T8+
+ Ae9F4H72iw4wuY+/aORWsBUntJEiPE6UhSfMYHqp0xNjWCp8RochPCgbdKv5n54N66ZW
+ yH3L3M9GRH1HudY1VaTCGtksPVPBqUdWtNaVf9+OOZHgq6nEq+SuHhdy/kLxMUph7xr3
+ is3PBS+ojYOjwvqnR70peB6JKoJ+A/Mv7u+CxL2qClqkrj/WVe6/tG58EXwnx28h6Z0Y
+ FaeMLhoXEnmfrG6M7ZNlNIeOcNrUs51tB9UD1oIxxDRFOt/iolU38WSQr/W4ktXEZjRn
+ gnxg==
+X-Gm-Message-State: ACgBeo1aBVD/U8SzOVtAO39UC/dSnw1HmV6P/QcNFkAk7VeqB0P9LrAT
+ 3oXeEWXaU1QS044hMf3nVdKd5A==
+X-Google-Smtp-Source: AA6agR5pKzdG0AkkDvuWtiRQUCUOrpOGaZ995aHdvP6egqMViKL6g6CWuElhBa3jVgm6OsOXiZemMQ==
+X-Received: by 2002:a2e:b0f1:0:b0:26b:dac2:d53a with SMTP id
+ h17-20020a2eb0f1000000b0026bdac2d53amr1820196ljl.253.1662708223297; 
+ Fri, 09 Sep 2022 00:23:43 -0700 (PDT)
+Received: from [192.168.0.21] (78-11-189-27.static.ip.netia.com.pl.
+ [78.11.189.27]) by smtp.gmail.com with ESMTPSA id
+ p26-20020a19f01a000000b004979ec19380sm149450lfc.285.2022.09.09.00.23.42
+ (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+ Fri, 09 Sep 2022 00:23:42 -0700 (PDT)
+Message-ID: <ac2bcca1-6997-2d17-b1d6-a5e81ced2613@linaro.org>
+Date: Fri, 9 Sep 2022 09:23:41 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Mailman-Approved-At: Fri, 09 Sep 2022 09:12:05 +0200
-Cc: patches@opensource.cirrus.com, alsa-devel@alsa-project.org,
- Mark Brown <broonie@kernel.org>, linux-kernel@vger.kernel.org
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.13.0
+Subject: Re: [PATCH] dt-bindings: sound: ts3a227e: add control of debounce
+ times
+Content-Language: en-US
+To: Mark Brown <broonie@kernel.org>
+References: <20220907135827.16209-1-astrid.rost@axis.com>
+ <2b81d814-f47a-e548-83dc-b1e38857e8ce@linaro.org>
+ <Yxn9o1MVMPnFO3PM@sirena.org.uk>
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <Yxn9o1MVMPnFO3PM@sirena.org.uk>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+Cc: devicetree@vger.kernel.org,
+ alsa-devel-mejlinglistan <alsa-devel@alsa-project.org>,
+ Astrid Rost <astrid.rost@axis.com>, Liam Girdwood <lgirdwood@gmail.com>,
+ linux-kernel@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
+ kernel@axis.com, Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -71,65 +105,28 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Reply-To: =?utf-8?Q?Martin_Povi=C5=A1er?= <povik@protonmail.com>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+On 08/09/2022 16:35, Mark Brown wrote:
+> On Thu, Sep 08, 2022 at 02:20:42PM +0200, Krzysztof Kozlowski wrote:
+> 
+>> Anyway new properties cannot be accepted. This has to be converted to DT
+>> schema (YAML).
+> 
+> Doing a whole binding conversion feels like a bit of a steep requirement
+> when people are just adding a simple property, it's a lot of stop energy
+> to figure out the tooling, do the conversion and deal with all the
+> bikeshedding that the tools don't catch.  It's definitely nice if people
+> want to look at that, for more complex binding changes it gets more
+> reasonable but for trivial properties it's disproportionate.
 
-> On 19. 8. 2022, at 14:52, Richard Fitzgerald <rf@opensource.cirrus.com> w=
-rote:
->
-> Split the I2C bus driver definition and probe()/remove() into a
-> separate module so that a Soundwire build of CS42L42 support does
-> not have a spurious dependency on I2C.
->
-> Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
-> ---
+It's more than one property here and many patch submitters are using
+this reason as well. In an effect few bindings TXT grew from 5 to 10
+properties in one year and still no conversion to YAML.
 
+I understand your concerns however I have stronger motivation to do the
+conversion is stronger for me, than for accepting new features.
 
-> +static int cs42l42_i2c_probe(struct i2c_client *i2c_client)
-> +{
-> +=09struct device *dev =3D &i2c_client->dev;
-> +=09struct cs42l42_private *cs42l42;
-> +=09struct regmap *regmap;
-> +=09int ret;
-> +
-> +=09cs42l42 =3D devm_kzalloc(dev, sizeof(*cs42l42), GFP_KERNEL);
-> +=09if (!cs42l42)
-> +=09=09return -ENOMEM;
-> +
-> +=09regmap =3D devm_regmap_init_i2c(i2c_client, &cs42l42_regmap);
-> +=09if (IS_ERR(regmap)) {
-> +=09=09ret =3D PTR_ERR(regmap);
-> +=09=09dev_err(&i2c_client->dev, "regmap_init() failed: %d\n", ret);
-> +=09=09return ret;
-> +=09}
-> +
-> +=09cs42l42->dev =3D dev;
-> +=09cs42l42->regmap =3D regmap;
-> +=09cs42l42->irq =3D i2c_client->irq;
-> +
-> +=09ret =3D cs42l42_common_probe(cs42l42, &cs42l42_soc_component, &cs42l4=
-2_dai);
-> +=09if (ret)
-> +=09=09return ret;
-> +
-> +=09return cs42l42_init(cs42l42);
-
-The common_remove should probably be called here if the init fails.
-
-Best,
-Martin
-
-> +}
-> +
-> +static int cs42l42_i2c_remove(struct i2c_client *i2c_client)
-> +{
-> +=09struct cs42l42_private *cs42l42 =3D dev_get_drvdata(&i2c_client->dev)=
-;
-> +
-> +=09cs42l42_common_remove(cs42l42);
-> +
-> +=09return 0;
-> +}
-
+Best regards,
+Krzysztof
