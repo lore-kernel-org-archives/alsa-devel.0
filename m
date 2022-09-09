@@ -4,88 +4,89 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7EE65ECAAD3
-	for <alsa-devel@archiver.kernel.org>; Fri,  9 Sep 2022 07:24:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3D43CECAAD3
+	for <alsa-devel@archiver.kernel.org>; Fri,  9 Sep 2022 07:26:15 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 775781676;
-	Fri,  9 Sep 2022 09:23:58 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 775781676
+	by alsa0.perex.cz (Postfix) with ESMTPS id 21D281688;
+	Fri,  9 Sep 2022 09:25:23 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 21D281688
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1662708288;
-	bh=Coek/p8GZx0/+SZF8kocQpsQ+I4TQGyEVZagoLcjD94=;
+	s=default; t=1662708373;
+	bh=klcG8Ui9DWg9GG8/Yv0WPonKu0t6bVpvYV+WGzs9kvM=;
 	h=Date:Subject:To:References:From:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=PiI38hnJuOHiyKlTC/domZ508Z0xHWPdvLGEHYowvgei1G8pZeB8CtFqJW3YnVlde
-	 o9MyLAcKZyY7lxy0+LrhVKz5M0qTLJeAOEUQKCPUerALQpGdRm1ah49Dc2gUKSxsMn
-	 xnYunE3D1Y2UNYIvZ4Ha7yAlOM1KGdJu0U0aYdmw=
+	b=NJ/OJlc4hBqdPIH9PFfQ5LXgAt3HWD0W8tRF8724qA/X0dQXN0OT83hAdrzlF90B1
+	 GiRq16OV9Il7YtzRt7x5UCY/xhODXEO55HesMgBsH4rCRRRlr+uSSe1GeXFtk/0xj1
+	 JmFB5uoNayH0MKVeV4i9UTdrSFKDS7U7gSykIXU0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 184E4F8016D;
-	Fri,  9 Sep 2022 09:23:58 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id B97E5F8016D;
+	Fri,  9 Sep 2022 09:25:22 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 2F26EF8016C; Fri,  9 Sep 2022 09:23:57 +0200 (CEST)
-Received: from mail-lj1-x231.google.com (mail-lj1-x231.google.com
- [IPv6:2a00:1450:4864:20::231])
+ id 4E8B3F8016C; Fri,  9 Sep 2022 09:25:22 +0200 (CEST)
+Received: from mail-lj1-x236.google.com (mail-lj1-x236.google.com
+ [IPv6:2a00:1450:4864:20::236])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id B9128F8016C
- for <alsa-devel@alsa-project.org>; Fri,  9 Sep 2022 09:23:45 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B9128F8016C
+ by alsa1.perex.cz (Postfix) with ESMTPS id B361CF8016C
+ for <alsa-devel@alsa-project.org>; Fri,  9 Sep 2022 09:25:19 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B361CF8016C
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org
- header.b="FDb9QYtH"
-Received: by mail-lj1-x231.google.com with SMTP id c10so808183ljj.2
- for <alsa-devel@alsa-project.org>; Fri, 09 Sep 2022 00:23:45 -0700 (PDT)
+ header.b="Jxi/U+Jb"
+Received: by mail-lj1-x236.google.com with SMTP id l12so784454ljg.9
+ for <alsa-devel@alsa-project.org>; Fri, 09 Sep 2022 00:25:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
  h=content-transfer-encoding:in-reply-to:from:references:cc:to
  :content-language:subject:user-agent:mime-version:date:message-id
  :from:to:cc:subject:date;
- bh=xw2tGj4i/BGzgrmFBPep6DT8sXHDJUaiisGkdVfexQY=;
- b=FDb9QYtHpeMnKLbXsu6sSQ2VNTLSHs98Gp3ucj9BbfZGPm3CejGQZ2b3XBBUXZNwuS
- cfhv6+sLtmK4BroTfM6zwXbrHWa88kONsBXff3kTnt4ye396MQETU1hEGZ7k9eF7PSy7
- rKYmavVegYi+dX2Bq/NrCpV7sCjttCuQKwVTFI0bAZ6Qv1zugjRb59I03a2hwpzJXQNO
- py1kzoKyDOkuwmzWkYVoamxJ5Gnl39JHQv17U/iDbNZ0o2XJOqA172ZI/UYe9WuWifGH
- KRegy8IzuMmnlgJPwh9dNvUc2WyH3UCGAun6xA8+vtydKb5owZyEUNf/JQuVsyiQ9SsS
- wUkg==
+ bh=rttukWzjV+xvcl0ZdZLEMjvbrPV71XhE0mBEoNsIC0c=;
+ b=Jxi/U+JbUv3v+EznlTNHFlFyGSGuivl713KuaNpo0EYtSonAZkVxGMDug+GbhlR8uc
+ snrfxroNbjYlhnESeju+kc6rjCo+Yog10pZs6pyzXdiWnYo0AVK0unUR1B1UKheb5aRo
+ qNfMmLglHF+PYeMYwodLsLirOEOYRnHWnnYj9kj959eoG3RFklnldruNtJ1T4bfOauPg
+ dvrCrP2WUd6D2aHWgXHFA4ZLWnbe8rC2+mNfL6PzJ4zo0gPdp1JMWDXiXiin3IBcLWKy
+ I5emIXWiaiMjFsF5IOrQkBYxzD4cPMjbwY/DlWwbfTtYg8dzA8zT6N5ISOBYHiJ0YxDl
+ OmYQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
  h=content-transfer-encoding:in-reply-to:from:references:cc:to
  :content-language:subject:user-agent:mime-version:date:message-id
  :x-gm-message-state:from:to:cc:subject:date;
- bh=xw2tGj4i/BGzgrmFBPep6DT8sXHDJUaiisGkdVfexQY=;
- b=dHTl8QJY5zrQrAkbGx9FR4qsrjokfLMKd8xLoqyIYVhuWEUk92J9C3hfLzvAsO+T8+
- Ae9F4H72iw4wuY+/aORWsBUntJEiPE6UhSfMYHqp0xNjWCp8RochPCgbdKv5n54N66ZW
- yH3L3M9GRH1HudY1VaTCGtksPVPBqUdWtNaVf9+OOZHgq6nEq+SuHhdy/kLxMUph7xr3
- is3PBS+ojYOjwvqnR70peB6JKoJ+A/Mv7u+CxL2qClqkrj/WVe6/tG58EXwnx28h6Z0Y
- FaeMLhoXEnmfrG6M7ZNlNIeOcNrUs51tB9UD1oIxxDRFOt/iolU38WSQr/W4ktXEZjRn
- gnxg==
-X-Gm-Message-State: ACgBeo1aBVD/U8SzOVtAO39UC/dSnw1HmV6P/QcNFkAk7VeqB0P9LrAT
- 3oXeEWXaU1QS044hMf3nVdKd5A==
-X-Google-Smtp-Source: AA6agR5pKzdG0AkkDvuWtiRQUCUOrpOGaZ995aHdvP6egqMViKL6g6CWuElhBa3jVgm6OsOXiZemMQ==
-X-Received: by 2002:a2e:b0f1:0:b0:26b:dac2:d53a with SMTP id
- h17-20020a2eb0f1000000b0026bdac2d53amr1820196ljl.253.1662708223297; 
- Fri, 09 Sep 2022 00:23:43 -0700 (PDT)
+ bh=rttukWzjV+xvcl0ZdZLEMjvbrPV71XhE0mBEoNsIC0c=;
+ b=zqnKZiuZCoLOVaoQAr8U2JHibIb3OARy7/kyIM7y1SfyB8KG9OnF5p9aP20mT9/jNQ
+ sbRR8VtQ5XeVzDye3i5/x06TNTs1cQdAmn+FBUQrIAmjoOcwlR5OaLn1GzacO6BzeDvg
+ dF/IFfgM10zYujbNhUn+4mtOngJvWmguHxxZ6eUK0Q1rybEruxEmd6rvJK2l0TaDhi2/
+ PB66g9rzxxgOU3q0gRRs9Rf7xU8xA1qjpV2571eSR6BlLE9edcarcNdQ8fz+3/z7yEPm
+ 4+JJ2r5Osw9gbMwzlycycdl1K6u3NZBxsemOwIYkJBlXfVQxw3GJ0diipZJMiG2WrcZG
+ nxCA==
+X-Gm-Message-State: ACgBeo1DNknWlzeLWu75iRVqbnnRBIGqsgXRGB5YW57wngiVAdtgbtTq
+ ZTuZxS/Kr6H8PPO8gxZr/lkmsQ==
+X-Google-Smtp-Source: AA6agR487qrszdElZPRRzQQW9lkjNAr16pE+IjQUMK7QInOwDo6bp/ebol2FUs+Rq7JZuSI89hhdBw==
+X-Received: by 2002:a2e:bd03:0:b0:261:8b4d:7c5c with SMTP id
+ n3-20020a2ebd03000000b002618b4d7c5cmr3798042ljq.194.1662708317694; 
+ Fri, 09 Sep 2022 00:25:17 -0700 (PDT)
 Received: from [192.168.0.21] (78-11-189-27.static.ip.netia.com.pl.
  [78.11.189.27]) by smtp.gmail.com with ESMTPSA id
- p26-20020a19f01a000000b004979ec19380sm149450lfc.285.2022.09.09.00.23.42
+ h14-20020ac25d6e000000b00496d254bbd9sm150794lft.271.2022.09.09.00.25.16
  (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Fri, 09 Sep 2022 00:23:42 -0700 (PDT)
-Message-ID: <ac2bcca1-6997-2d17-b1d6-a5e81ced2613@linaro.org>
-Date: Fri, 9 Sep 2022 09:23:41 +0200
+ Fri, 09 Sep 2022 00:25:17 -0700 (PDT)
+Message-ID: <66cf260e-b8b2-b3d1-7e8e-d1cfd99989b8@linaro.org>
+Date: Fri, 9 Sep 2022 09:25:16 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
  Thunderbird/91.13.0
 Subject: Re: [PATCH] dt-bindings: sound: ts3a227e: add control of debounce
  times
 Content-Language: en-US
-To: Mark Brown <broonie@kernel.org>
+To: Astrid Rost <astridr@axis.com>, Mark Brown <broonie@kernel.org>
 References: <20220907135827.16209-1-astrid.rost@axis.com>
  <2b81d814-f47a-e548-83dc-b1e38857e8ce@linaro.org>
  <Yxn9o1MVMPnFO3PM@sirena.org.uk>
+ <b42e7fe4-9e1b-fdda-44f2-aa87b06425c8@axis.com>
 From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <Yxn9o1MVMPnFO3PM@sirena.org.uk>
+In-Reply-To: <b42e7fe4-9e1b-fdda-44f2-aa87b06425c8@axis.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 Cc: devicetree@vger.kernel.org,
@@ -108,25 +109,37 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On 08/09/2022 16:35, Mark Brown wrote:
-> On Thu, Sep 08, 2022 at 02:20:42PM +0200, Krzysztof Kozlowski wrote:
+On 09/09/2022 09:16, Astrid Rost wrote:
+> Hello,
 > 
->> Anyway new properties cannot be accepted. This has to be converted to DT
->> schema (YAML).
+>  > Use standard property units "-ms".
 > 
-> Doing a whole binding conversion feels like a bit of a steep requirement
-> when people are just adding a simple property, it's a lot of stop energy
-> to figure out the tooling, do the conversion and deal with all the
-> bikeshedding that the tools don't catch.  It's definitely nice if people
-> want to look at that, for more complex binding changes it gets more
-> reasonable but for trivial properties it's disproportionate.
+> I made it in exactly the same way as it is done for the "ti,micbias:".
+> 
+> - ti,micbias:   Intended MICBIAS voltage (datasheet section 9.6.7).
+>        Select 0/1/2/3/4/5/6/7 to specify MICBIAS voltage
+>        2.1V/2.2V/2.3V/2.4V/2.5V/2.6V/2.7V/2.8V
+>        Default value is "1" (2.2V).
 
-It's more than one property here and many patch submitters are using
-this reason as well. In an effect few bindings TXT grew from 5 to 10
-properties in one year and still no conversion to YAML.
+That's not correct way. Logical units should be encoded in logical
+units, e.g. microvolt. This makes the binding re-usable, extendable
+(imagine new device from the family where these values map to something
+else!) and also the easiest to read.
 
-I understand your concerns however I have stronger motivation to do the
-conversion is stronger for me, than for accepting new features.
+> ?> Anyway new properties cannot be accepted. This has to be converted to DT
+> ?> schema (YAML).
+> 
+>  > Doing a whole binding conversion feels like a bit of a steep requirement
+>  > when people are just adding a simple property, it's a lot of stop energy
+>  > to figure out the tooling, do the conversion and deal with all the
+>  > bikeshedding that the tools don't catch.  It's definitely nice if people
+>  > want to look at that, for more complex binding changes it gets more
+>  > reasonable but for trivial properties it's disproportionate.
+> 
+> Thanks, I am not really sure how yaml works. But I can have a look.
+
+Documentation/devicetree/bindings/writing-schema.rst
+(and example-schema in the same place)
 
 Best regards,
 Krzysztof
