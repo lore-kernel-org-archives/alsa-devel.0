@@ -4,72 +4,65 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C6697ECAAD3
-	for <alsa-devel@archiver.kernel.org>; Fri,  9 Sep 2022 11:46:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A04B9C6FA82
+	for <alsa-devel@archiver.kernel.org>; Fri,  9 Sep 2022 13:55:38 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 1BC9B16A5;
-	Fri,  9 Sep 2022 13:45:58 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1BC9B16A5
+	by alsa0.perex.cz (Postfix) with ESMTPS id 239F61685;
+	Fri,  9 Sep 2022 15:54:46 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 239F61685
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1662724008;
-	bh=/WqeoEyrUico1PVGAwTs4Q0csUk/dJYN6UBiVH4MaLc=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=DJisu4+S2KfgJV9uEHmkEqdObmher9vqIU5xP8CM1dHMx0lI81h2ikfnHFT7XeylR
-	 rbK+WFRndC7i9BH2ViDajHI1XKk1UgxuI1tEw7j80reVvtsefpcbSnCHUhbve2cNBO
-	 zxBYvg2I7fWFxm6yrq51ljVODkpGnAXmBT3wa6kk=
+	s=default; t=1662731736;
+	bh=mbDXsHU3CppGv24/hXW6qrSCP36epzccwYo5HDBOt2w=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=RDaa9eqhvczgFA5dwgxHmQcMGfMTt8V2+ZMpfIAcCL15JfjImKGABaVWtQYfJhZYf
+	 JqE40/iWVQP5EZTGwEIZCRuuasshufkuN3Jclvwb8Xpz5EFHhCtuSSvm0RK8qzPwYu
+	 GwbD9C+vkNiWWj9VVfuY/GySesDZPnZZ88VlRe6s=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 02CD9F80567;
-	Fri,  9 Sep 2022 13:43:59 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 776CAF80528;
+	Fri,  9 Sep 2022 15:54:45 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 1BADEF80533; Fri,  9 Sep 2022 13:43:57 +0200 (CEST)
-Received: from mga06.intel.com (mga06b.intel.com [134.134.136.31])
+ id 93032F8016C; Fri,  9 Sep 2022 15:54:43 +0200 (CEST)
+Received: from hutie.ust.cz (unknown [IPv6:2a03:3b40:fe:f0::1])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id A43A6F80533
- for <alsa-devel@alsa-project.org>; Fri,  9 Sep 2022 13:43:46 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A43A6F80533
+ by alsa1.perex.cz (Postfix) with ESMTPS id 3CD8EF8016C
+ for <alsa-devel@alsa-project.org>; Fri,  9 Sep 2022 15:54:36 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3CD8EF8016C
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="IAyZVK8X"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
- d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1662723827; x=1694259827;
- h=from:to:cc:subject:date:message-id:in-reply-to:
- references:mime-version:content-transfer-encoding;
- bh=/WqeoEyrUico1PVGAwTs4Q0csUk/dJYN6UBiVH4MaLc=;
- b=IAyZVK8XaauuNR+E++tXKalLDsoyRRvEkjAaQiJcq25Ga9QNpXiSgQCr
- Jd9vGm0f9g9UKSaR+oxina/G/iSs43nSy20Sbk5UIB/IJh61cKEvGVi93
- FIQ9/xdfExqGrPIwpgvaisWFKEORuYPiJ//nSUxcVcGY9Gso+bDumc3rJ
- gvYw5n5NNHfHA1kpsbrH17y5haosXB9CHa1TP9MhIcxLpELNUVkm9xKuF
- sYVxo3rBRIS/H2Oxkhask6UdMbPIDDJCOodSFG0VA2Sk6ibuWC1M10pO1
- j5DLfWzkDKg3X8Bwt052LCBz2JFIHWyrQevuiDVAvDerGWQXO8NulOoEY Q==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10464"; a="359180118"
-X-IronPort-AV: E=Sophos;i="5.93,303,1654585200"; d="scan'208";a="359180118"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
- by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 09 Sep 2022 04:43:45 -0700
-X-IronPort-AV: E=Sophos;i="5.93,303,1654585200"; d="scan'208";a="683613888"
-Received: from desharpe-mobl1.amr.corp.intel.com (HELO
- pujfalus-desk.ger.corp.intel.com) ([10.252.0.89])
- by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 09 Sep 2022 04:43:43 -0700
-From: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
-To: lgirdwood@gmail.com, broonie@kernel.org,
- pierre-louis.bossart@linux.intel.com
-Subject: [PATCH 6/7] ASoC: SOF: Intel: icl: Set IPC4-specific DSP ops
-Date: Fri,  9 Sep 2022 14:43:31 +0300
-Message-Id: <20220909114332.31393-7-peter.ujfalusi@linux.intel.com>
-X-Mailer: git-send-email 2.37.3
-In-Reply-To: <20220909114332.31393-1-peter.ujfalusi@linux.intel.com>
-References: <20220909114332.31393-1-peter.ujfalusi@linux.intel.com>
+ dkim=pass (1024-bit key) header.d=cutebit.org header.i=@cutebit.org
+ header.b="ik+mdjOb"
+From: =?UTF-8?q?Martin=20Povi=C5=A1er?= <povik+lin@cutebit.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cutebit.org; s=mail;
+ t=1662731675; bh=vvgm+GqZsmNcWfwWCumfisqYaU3KbPkkcPy5f1+JRsw=;
+ h=From:To:Cc:Subject:Date;
+ b=ik+mdjObq086ky4rULYWxtQ2Myx3k5g3QjA05uzvdcWTyisZsJXvfIy8VSneJwOVu
+ jKHxKkeGroY6LtViBsL1/1mkDu8Qls/mDEx6P/fGMSOOrSqopSxeoNHbjDXw0rMCLs
+ WBrTKlv2dagBj+RpfKz6s88bzz5LWebeWdkFrumI=
+To: James Schulman <james.schulman@cirrus.com>,
+ David Rhodes <david.rhodes@cirrus.com>,
+ Lucas Tanure <tanureal@opensource.cirrus.com>,
+ Richard Fitzgerald <rf@opensource.cirrus.com>,
+ Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
+ Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
+ =?UTF-8?q?Martin=20Povi=C5=A1er?= <povik+lin@cutebit.org>
+Subject: [PATCH 00/10] Support for CS42L83 on Apple machines
+Date: Fri,  9 Sep 2022 15:53:24 +0200
+Message-Id: <20220909135334.98220-1-povik+lin@cutebit.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-Cc: alsa-devel@alsa-project.org, ranjani.sridharan@linux.intel.com,
- kai.vehmanen@linux.intel.com, rander.wang@intel.com
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
+ Charles Keepax <ckeepax@opensource.cirrus.com>,
+ - <patches@opensource.cirrus.com>,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ linux-kernel@vger.kernel.org, ChiYuan Huang <cy_huang@richtek.com>,
+ asahi@lists.linux.dev, Lukas Bulwahn <lukas.bulwahn@gmail.com>,
+ Matt Flax <flatmax@flatmax.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -85,65 +78,69 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Add implementation of low level, platform dependent IPC4 message handling
-and set the DSP ops for IPC4 for ICL platform.
+Hi all,
 
-Suggested-by: Rander Wang <rander.wang@intel.com>
-Signed-off-by: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
-Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Reviewed-by: Rander Wang <rander.wang@intel.com>
-Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
----
- sound/soc/sof/intel/icl.c | 28 ++++++++++++++++++++++++----
- 1 file changed, 24 insertions(+), 4 deletions(-)
+there's a CS42L83 headphone jack codec found in Apple computers (in the
+recent 'Apple Silicon' ones as well as in earlier models, one example
+[1]). The part isn't publicly documented, but it appears almost
+identical to CS42L42, for which we have a driver in kernel. This series
+adapts the CS42L42 driver to the new part, and makes one change in
+anticipation of a machine driver for the Apple computers.
 
-diff --git a/sound/soc/sof/intel/icl.c b/sound/soc/sof/intel/icl.c
-index 4e37b7fe0627..6a8af2d3b580 100644
---- a/sound/soc/sof/intel/icl.c
-+++ b/sound/soc/sof/intel/icl.c
-@@ -13,6 +13,7 @@
- #include <linux/kconfig.h>
- #include <linux/export.h>
- #include <linux/bits.h>
-+#include "../ipc4-priv.h"
- #include "../ops.h"
- #include "hda.h"
- #include "hda-ipc.h"
-@@ -106,11 +107,30 @@ int sof_icl_ops_init(struct snd_sof_dev *sdev)
- 	/* probe/remove/shutdown */
- 	sof_icl_ops.shutdown	= hda_dsp_shutdown;
- 
--	/* doorbell */
--	sof_icl_ops.irq_thread	= cnl_ipc_irq_thread;
-+	if (sdev->pdata->ipc_type == SOF_IPC) {
-+		/* doorbell */
-+		sof_icl_ops.irq_thread	= cnl_ipc_irq_thread;
- 
--	/* ipc */
--	sof_icl_ops.send_msg	= cnl_ipc_send_msg;
-+		/* ipc */
-+		sof_icl_ops.send_msg	= cnl_ipc_send_msg;
-+	}
-+
-+	if (sdev->pdata->ipc_type == SOF_INTEL_IPC4) {
-+		struct sof_ipc4_fw_data *ipc4_data;
-+
-+		sdev->private = devm_kzalloc(sdev->dev, sizeof(*ipc4_data), GFP_KERNEL);
-+		if (!sdev->private)
-+			return -ENOMEM;
-+
-+		ipc4_data = sdev->private;
-+		ipc4_data->manifest_fw_hdr_offset = SOF_MAN4_FW_HDR_OFFSET;
-+
-+		/* doorbell */
-+		sof_icl_ops.irq_thread	= cnl_ipc4_irq_thread;
-+
-+		/* ipc */
-+		sof_icl_ops.send_msg	= cnl_ipc4_send_msg;
-+	}
- 
- 	/* debug */
- 	sof_icl_ops.debug_map	= icl_dsp_debugfs;
+Patch 1 adds new compatible to the cs42l42 schema.
+
+Patches 2 to 7 are taken from Richard's recent series [2] adding
+soundwire support to cs42l42. They are useful refactorings to build on
+in later patches, and also this way our work doesn't diverge. I made
+one fix: I added a call of common_remove at the end of i2c_probe should
+the cs42l42_init call fail (both before and after the split to
+cs42l42-i2c.c). Also s/Soundwire/SoundWire/ in the changelogs.
+
+Patch 8 exports some regmap-related symbols from cs42l42.c so they can
+be used to create cs42l83 regmap in cs42l83-i2c.c later.
+
+Patch 9 is the cs42l83 support proper.
+
+Patch 10 implements 'set_bclk_ratio' on the cs42l42 core. This will be
+called by the upcoming ASoC machine driver for 'Apple Silicon' Macs.
+(We have touched on this change to be made in earlier discussion, see
+ [3] and replies.)
+
+Best,
+Martin
+
+[1] https://www.ifixit.com/Teardown/MacBook+Pro+13-Inch+Touch+Bar+2018+Teardown/111384
+[2] https://lore.kernel.org/alsa-devel/20220819125230.42731-1-rf@opensource.cirrus.com/T/#mc05cc6898be2c23fe2e7c8bb4ea4e4a00c1912a7
+[3] https://lore.kernel.org/asahi/8961DDD2-93FF-4A18-BCA2-90FCE298F517@cutebit.org/
+
+
+Martin Povišer (5):
+  ASoC: dt-bindings: cs42l42: Add 'cs42l83' compatible
+  ASoC: cs42l42: Split probe() and remove() into stages
+  ASoC: cs42l42: Export regmap elements to the core namespace
+  ASoC: cs42l83: Extend CS42L42 support to new part
+  ASoC: cs42l42: Implement 'set_bclk_ratio'
+
+Richard Fitzgerald (5):
+  ASoC: cs42l42: Add bitclock frequency argument to cs42l42_pll_config()
+  ASoC: cs42l42: Use cs42l42->dev instead of &i2c_client->dev
+  ASoC: cs42l42: Split cs42l42_resume into two functions
+  ASoC: cs42l42: Pass component and dai defs into common probe
+  ASoC: cs42l42: Split I2C identity into separate module
+
+ .../bindings/sound/cirrus,cs42l42.yaml        |   1 +
+ MAINTAINERS                                   |   1 +
+ include/sound/cs42l42.h                       |   1 +
+ sound/soc/codecs/Kconfig                      |  15 +-
+ sound/soc/codecs/Makefile                     |   6 +-
+ sound/soc/codecs/cs42l42-i2c.c                | 112 ++++++++
+ sound/soc/codecs/cs42l42.c                    | 256 +++++++++---------
+ sound/soc/codecs/cs42l42.h                    |  24 +-
+ sound/soc/codecs/cs42l83-i2c.c                | 248 +++++++++++++++++
+ 9 files changed, 538 insertions(+), 126 deletions(-)
+ create mode 100644 sound/soc/codecs/cs42l42-i2c.c
+ create mode 100644 sound/soc/codecs/cs42l83-i2c.c
+
 -- 
-2.37.3
+2.33.0
 
