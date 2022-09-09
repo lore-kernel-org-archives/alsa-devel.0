@@ -4,43 +4,44 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A04B9C6FA82
-	for <alsa-devel@archiver.kernel.org>; Fri,  9 Sep 2022 13:55:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A47C7ECAAA1
+	for <alsa-devel@archiver.kernel.org>; Fri,  9 Sep 2022 13:56:07 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 239F61685;
-	Fri,  9 Sep 2022 15:54:46 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 239F61685
+	by alsa0.perex.cz (Postfix) with ESMTPS id 60D771691;
+	Fri,  9 Sep 2022 15:55:15 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 60D771691
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1662731736;
-	bh=mbDXsHU3CppGv24/hXW6qrSCP36epzccwYo5HDBOt2w=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=RDaa9eqhvczgFA5dwgxHmQcMGfMTt8V2+ZMpfIAcCL15JfjImKGABaVWtQYfJhZYf
-	 JqE40/iWVQP5EZTGwEIZCRuuasshufkuN3Jclvwb8Xpz5EFHhCtuSSvm0RK8qzPwYu
-	 GwbD9C+vkNiWWj9VVfuY/GySesDZPnZZ88VlRe6s=
+	s=default; t=1662731765;
+	bh=wzFMSeJdiuBmOUGAqD37LXz830JnX+ZY4FcAoCjss24=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=Zukgmsne2akcAiksUwdJK+tKs19aVRFtHzuO1YjQ2oMgTTsVKMMz6ZImDxAX5nDKG
+	 RFU46A7RB/Amh/cSwUznb2y95LHHXnkFOzvvWkbMTGdl8Mt7MMjIWhMKASgUCqDlzS
+	 REcwKocwoV6KOiVJS/OI1SuIt1K9YLNWf7o1UFC8=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 776CAF80528;
-	Fri,  9 Sep 2022 15:54:45 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 8B55FF80535;
+	Fri,  9 Sep 2022 15:54:46 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 93032F8016C; Fri,  9 Sep 2022 15:54:43 +0200 (CEST)
+ id 7FAB7F80533; Fri,  9 Sep 2022 15:54:44 +0200 (CEST)
 Received: from hutie.ust.cz (unknown [IPv6:2a03:3b40:fe:f0::1])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 3CD8EF8016C
- for <alsa-devel@alsa-project.org>; Fri,  9 Sep 2022 15:54:36 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3CD8EF8016C
+ by alsa1.perex.cz (Postfix) with ESMTPS id 32C95F8016D
+ for <alsa-devel@alsa-project.org>; Fri,  9 Sep 2022 15:54:37 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 32C95F8016D
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=cutebit.org header.i=@cutebit.org
- header.b="ik+mdjOb"
+ header.b="AspLowrt"
 From: =?UTF-8?q?Martin=20Povi=C5=A1er?= <povik+lin@cutebit.org>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cutebit.org; s=mail;
- t=1662731675; bh=vvgm+GqZsmNcWfwWCumfisqYaU3KbPkkcPy5f1+JRsw=;
- h=From:To:Cc:Subject:Date;
- b=ik+mdjObq086ky4rULYWxtQ2Myx3k5g3QjA05uzvdcWTyisZsJXvfIy8VSneJwOVu
- jKHxKkeGroY6LtViBsL1/1mkDu8Qls/mDEx6P/fGMSOOrSqopSxeoNHbjDXw0rMCLs
- WBrTKlv2dagBj+RpfKz6s88bzz5LWebeWdkFrumI=
+ t=1662731676; bh=RhujQszCFjH/lcZWXH4eE9kY3fQOLqlqGu90avC90og=;
+ h=From:To:Cc:Subject:Date:In-Reply-To:References;
+ b=AspLowrtWazyTIyixPXUyQdLkaGQsRtW2xtpYRKur86i9Ozkf/acHmZEuS1LteOdR
+ oRx8KNq5KgtXq8lTR77+MrCCm9clkRStATArr8yYuiYj7KLP67bazBJxaJrFCjjnQm
+ 5I0riq2n3tg+25E7XDYfbo4eVLu0lODgxKtyd/58=
 To: James Schulman <james.schulman@cirrus.com>,
  David Rhodes <david.rhodes@cirrus.com>,
  Lucas Tanure <tanureal@opensource.cirrus.com>,
@@ -50,9 +51,11 @@ To: James Schulman <james.schulman@cirrus.com>,
  Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
  Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
  =?UTF-8?q?Martin=20Povi=C5=A1er?= <povik+lin@cutebit.org>
-Subject: [PATCH 00/10] Support for CS42L83 on Apple machines
-Date: Fri,  9 Sep 2022 15:53:24 +0200
-Message-Id: <20220909135334.98220-1-povik+lin@cutebit.org>
+Subject: [PATCH 01/10] ASoC: dt-bindings: cs42l42: Add 'cs42l83' compatible
+Date: Fri,  9 Sep 2022 15:53:25 +0200
+Message-Id: <20220909135334.98220-2-povik+lin@cutebit.org>
+In-Reply-To: <20220909135334.98220-1-povik+lin@cutebit.org>
+References: <20220909135334.98220-1-povik+lin@cutebit.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -78,69 +81,26 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Hi all,
+CS42L83 is a publicly undocumented part found in Apple machines, similar
+(almost identical) to CS42L42. Share the binding schema of CS42L42 for it.
 
-there's a CS42L83 headphone jack codec found in Apple computers (in the
-recent 'Apple Silicon' ones as well as in earlier models, one example
-[1]). The part isn't publicly documented, but it appears almost
-identical to CS42L42, for which we have a driver in kernel. This series
-adapts the CS42L42 driver to the new part, and makes one change in
-anticipation of a machine driver for the Apple computers.
+Signed-off-by: Martin Povišer <povik+lin@cutebit.org>
+---
+ Documentation/devicetree/bindings/sound/cirrus,cs42l42.yaml | 1 +
+ 1 file changed, 1 insertion(+)
 
-Patch 1 adds new compatible to the cs42l42 schema.
-
-Patches 2 to 7 are taken from Richard's recent series [2] adding
-soundwire support to cs42l42. They are useful refactorings to build on
-in later patches, and also this way our work doesn't diverge. I made
-one fix: I added a call of common_remove at the end of i2c_probe should
-the cs42l42_init call fail (both before and after the split to
-cs42l42-i2c.c). Also s/Soundwire/SoundWire/ in the changelogs.
-
-Patch 8 exports some regmap-related symbols from cs42l42.c so they can
-be used to create cs42l83 regmap in cs42l83-i2c.c later.
-
-Patch 9 is the cs42l83 support proper.
-
-Patch 10 implements 'set_bclk_ratio' on the cs42l42 core. This will be
-called by the upcoming ASoC machine driver for 'Apple Silicon' Macs.
-(We have touched on this change to be made in earlier discussion, see
- [3] and replies.)
-
-Best,
-Martin
-
-[1] https://www.ifixit.com/Teardown/MacBook+Pro+13-Inch+Touch+Bar+2018+Teardown/111384
-[2] https://lore.kernel.org/alsa-devel/20220819125230.42731-1-rf@opensource.cirrus.com/T/#mc05cc6898be2c23fe2e7c8bb4ea4e4a00c1912a7
-[3] https://lore.kernel.org/asahi/8961DDD2-93FF-4A18-BCA2-90FCE298F517@cutebit.org/
-
-
-Martin Povišer (5):
-  ASoC: dt-bindings: cs42l42: Add 'cs42l83' compatible
-  ASoC: cs42l42: Split probe() and remove() into stages
-  ASoC: cs42l42: Export regmap elements to the core namespace
-  ASoC: cs42l83: Extend CS42L42 support to new part
-  ASoC: cs42l42: Implement 'set_bclk_ratio'
-
-Richard Fitzgerald (5):
-  ASoC: cs42l42: Add bitclock frequency argument to cs42l42_pll_config()
-  ASoC: cs42l42: Use cs42l42->dev instead of &i2c_client->dev
-  ASoC: cs42l42: Split cs42l42_resume into two functions
-  ASoC: cs42l42: Pass component and dai defs into common probe
-  ASoC: cs42l42: Split I2C identity into separate module
-
- .../bindings/sound/cirrus,cs42l42.yaml        |   1 +
- MAINTAINERS                                   |   1 +
- include/sound/cs42l42.h                       |   1 +
- sound/soc/codecs/Kconfig                      |  15 +-
- sound/soc/codecs/Makefile                     |   6 +-
- sound/soc/codecs/cs42l42-i2c.c                | 112 ++++++++
- sound/soc/codecs/cs42l42.c                    | 256 +++++++++---------
- sound/soc/codecs/cs42l42.h                    |  24 +-
- sound/soc/codecs/cs42l83-i2c.c                | 248 +++++++++++++++++
- 9 files changed, 538 insertions(+), 126 deletions(-)
- create mode 100644 sound/soc/codecs/cs42l42-i2c.c
- create mode 100644 sound/soc/codecs/cs42l83-i2c.c
-
+diff --git a/Documentation/devicetree/bindings/sound/cirrus,cs42l42.yaml b/Documentation/devicetree/bindings/sound/cirrus,cs42l42.yaml
+index 31800f70e9d9..7356084a2ca2 100644
+--- a/Documentation/devicetree/bindings/sound/cirrus,cs42l42.yaml
++++ b/Documentation/devicetree/bindings/sound/cirrus,cs42l42.yaml
+@@ -19,6 +19,7 @@ properties:
+   compatible:
+     enum:
+       - cirrus,cs42l42
++      - cirrus,cs42l83
+ 
+   reg:
+     description:
 -- 
 2.33.0
 
