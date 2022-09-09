@@ -4,96 +4,81 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D3CD4ECAAD3
-	for <alsa-devel@archiver.kernel.org>; Fri,  9 Sep 2022 08:22:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id EB8A0ECAAA1
+	for <alsa-devel@archiver.kernel.org>; Fri,  9 Sep 2022 08:27:25 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id BA3231674;
-	Fri,  9 Sep 2022 10:21:38 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BA3231674
+	by alsa0.perex.cz (Postfix) with ESMTPS id 2CD461674;
+	Fri,  9 Sep 2022 10:26:34 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2CD461674
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1662711748;
-	bh=3/5lh040XL2XYyO3gW/gEVC7DKdH4gdtknM6KMMrM0A=;
-	h=Date:Subject:From:To:References:In-Reply-To:Cc:List-Id:
+	s=default; t=1662712044;
+	bh=JrcGYz+axk4mtw3hCvQkjGT/F2NTmj9KdKAVx55zTdQ=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=ULELl5G0fcmlz6MP3Bc0LyjiqOyHlWHH75V5MmGGPDiDui7Ej6VMcScrm5HQjYmQr
-	 J7vX1gWb2iQm/fedigZ0IMEm2X9X3mxL487nBIMCsHPOeWALPeK2mLF6A+q7mf4qtF
-	 DajVg79ktKBmYesBqZROFJHPbm1C9umWQtFH3WG0=
+	b=kiYpYOrrr7ux1Mhm7QVF82bimWq5kX3k8iY7QiWWbCTDiLCKTtd+FUMRaAhWGGbRs
+	 UHJ7ACykf9iZ6HzhyIbR3r7fno2KD9cnqgdbZR7iZUgJ4OnBhs8x7usvm+Sx7qpPzX
+	 mB7/EYjOmsvgcNC9rLMdlHyjf165UeGcZd4ND/iM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 55890F8016D;
-	Fri,  9 Sep 2022 10:21:38 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id B660DF8016D;
+	Fri,  9 Sep 2022 10:26:33 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 12C23F8016C; Fri,  9 Sep 2022 10:21:37 +0200 (CEST)
+ id 5D6E9F8011C; Fri,  9 Sep 2022 10:26:32 +0200 (CEST)
 Received: from mail-lj1-x234.google.com (mail-lj1-x234.google.com
  [IPv6:2a00:1450:4864:20::234])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 5F600F8016C
- for <alsa-devel@alsa-project.org>; Fri,  9 Sep 2022 10:21:34 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5F600F8016C
+ by alsa1.perex.cz (Postfix) with ESMTPS id E7977F8011C
+ for <alsa-devel@alsa-project.org>; Fri,  9 Sep 2022 10:26:25 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E7977F8011C
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org
- header.b="h1FG2nMj"
-Received: by mail-lj1-x234.google.com with SMTP id z23so961350ljk.1
- for <alsa-devel@alsa-project.org>; Fri, 09 Sep 2022 01:21:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
- h=content-transfer-encoding:in-reply-to:references:cc:to:from
- :content-language:subject:user-agent:mime-version:date:message-id
- :from:to:cc:subject:date;
- bh=VIOofoEHYZmULXPTWVPGHc4pkhqvtC/tMOM+JD3igag=;
- b=h1FG2nMj6e9S5512GyMcPIKesaliGmRKaXgVBLNQER9TuQ+CU9BcsTY9CmMNBvMeHV
- gaVtUE2506qGQMtNji9+xRUrEnEGauYBHnEyCOZQf2G8qTiep/DuDPa/aygCCENsGdIZ
- 7sPOOSAcUCavibVyqsqUVmfK/FnymyJOl6UyjUyMbpvyQxsXi1vL3OlPdAV1KOZere7D
- QG5khTFtrf0++WHA8O7/M/PZDs9pyh7rnT7CVFAGRnD2uIo5AgR2JOgRzbgTibYEjKVM
- mJdYUJ9ArSVt4ALUHuqoVNKu6jnELbzbu/FvzcOIrA0EdejdhvNKYd8OXp+aLpcW8y50
- QISg==
+ dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
+ header.b="bvfo+ZGX"
+Received: by mail-lj1-x234.google.com with SMTP id y29so943316ljq.7
+ for <alsa-devel@alsa-project.org>; Fri, 09 Sep 2022 01:26:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
+ h=cc:to:subject:message-id:date:from:in-reply-to:references
+ :mime-version:from:to:cc:subject:date;
+ bh=TPQei23rVbLf3lVUxKJtGINOs8Ry8xm60ljb9OaQAoA=;
+ b=bvfo+ZGXadGigvwlf7iGYkSzxUGafJGyHqw+vYoNBOKdNos7sKlQDwiC+oSA9iwySz
+ Z11ZC6R4/sdq5NLYgZIhDP7E9KQ5IWnG72qQVG82G/7nH0Ie5kO6qdKLIRBZqxVhY/vA
+ 68tdTmYh1aZ6TJj+jte4u9nU9K6Fwzacr7U7Ftgr4HtwMSClX5brB6uBk2JDN3bdVzgX
+ BHCToUSSM6Pr9nUlS+5qRcFzRjJsPHhGp1vbuipaAE0zOifDydSdB7eZ2JPt65EpEzoy
+ swtR7wTJeBqiUvumxpgj4H8UIeR1PZfiVioqrdRPjU0F7pn6u3WzWKX3dZhRlJYMODTO
+ TbZg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
- h=content-transfer-encoding:in-reply-to:references:cc:to:from
- :content-language:subject:user-agent:mime-version:date:message-id
- :x-gm-message-state:from:to:cc:subject:date;
- bh=VIOofoEHYZmULXPTWVPGHc4pkhqvtC/tMOM+JD3igag=;
- b=5B8ok57TfdEmPaKm//02YlDT5+BgEhpXOG3XCFVHzcEMhHZzBwoMYbY0TDUnoxkN5g
- e3zl3N3Tck3J212e/N2K27bAS4H/JxZK50/89BhFWqddE/DYbQW/BdBLXYZOmOEJcptu
- JDIGQPUC/wPZ1kmnLKvaBYTib1KnFdO2ZHrmw2fXqLipSYWVqVKBbjcTCbV8hkpPwOB3
- Z1V0Ic9GWcJjatA+zo9BXTj6frKLudByz5Mc/+oLfXorhl5AWwrPOHc877a/C51tOHLi
- 7fNSPA5VCVXWh+tFzMC844ff8WaeoSVwsQk3PTnYqrfmo8anQF2bvbXi7eAln7yAv4jr
- DYiA==
-X-Gm-Message-State: ACgBeo3MAmEPRpZKX4g/vSwXi8aCQwcCvezHX3qXv2sKSeaMsZkYP1vw
- FGE0rOxuFughSmhzO/FOc0IoqQ==
-X-Google-Smtp-Source: AA6agR7Jar9ldUV3gwhxvjF2xUIm+NzQJ3cd0ihIdQCNH34VPmDvaDFUKs5QG+gPdVUMh8Y8lJLxCg==
-X-Received: by 2002:a2e:944a:0:b0:24f:10bd:b7e8 with SMTP id
- o10-20020a2e944a000000b0024f10bdb7e8mr3866304ljh.238.1662711692268; 
- Fri, 09 Sep 2022 01:21:32 -0700 (PDT)
-Received: from [192.168.0.21] (78-11-189-27.static.ip.netia.com.pl.
- [78.11.189.27]) by smtp.gmail.com with ESMTPSA id
- p13-20020a2eb98d000000b0026ac2fffda4sm180761ljp.105.2022.09.09.01.21.31
- (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Fri, 09 Sep 2022 01:21:31 -0700 (PDT)
-Message-ID: <9a72bd22-9298-65ce-a894-540f98745a7e@linaro.org>
-Date: Fri, 9 Sep 2022 10:21:30 +0200
+ h=cc:to:subject:message-id:date:from:in-reply-to:references
+ :mime-version:x-gm-message-state:from:to:cc:subject:date;
+ bh=TPQei23rVbLf3lVUxKJtGINOs8Ry8xm60ljb9OaQAoA=;
+ b=P8PZEBmkYZZ+mAs/QwWmcIczPTkVp28ZuRstQNO2QJNfCMCUbvcVlwi6b6F4XDOJI4
+ NloRzg/XtF5zx9MGdtTFqtzdU5dhBFNaKirhwtiueTYmlfwRQb5csljSr9aUSakYtGJM
+ KIqgHMcH1vYcdSA7ddBv9F7+rhx8632VeNR3Dg5XZ3LEA5txjzcMFhaceYVJshB3D/4n
+ MlzFitSYlLwMY8OvfUY0EKrdYnj3FFP8kkYlEyiPot0uZ2pHWzNFVxXAmIhU/GV4uMtY
+ zNLnLIIGd7wGvI+yALGx629c5Tx/ULNKWcEc2yMRcoTG6eNvMaZQb7GU8HXpMcIciMR8
+ EsDg==
+X-Gm-Message-State: ACgBeo1YfT1BrjoXlKRwbxAITEjZ39POPfwb8j2QlkaZd1tX2FiRw6+p
+ AJouVXMyVb0lJNkhKFWhNYKA34dD3NjL4+KUtDE=
+X-Google-Smtp-Source: AA6agR6sceNaRuwVk3Q3/uIi9DbiISa9CB+jljqrPnnNSXps6sxylloUEBrjhu/MBsKAgHp4PGXgYWgKIRe7aawX5EA=
+X-Received: by 2002:a2e:3002:0:b0:26a:b199:46df with SMTP id
+ w2-20020a2e3002000000b0026ab19946dfmr3350605ljw.304.1662711983984; Fri, 09
+ Sep 2022 01:26:23 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.13.0
-Subject: Re: [PATCH] dt-bindings: sound: ts3a227e: add control of debounce
- times
-Content-Language: en-US
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-To: Mark Brown <broonie@kernel.org>
-References: <20220907135827.16209-1-astrid.rost@axis.com>
- <2b81d814-f47a-e548-83dc-b1e38857e8ce@linaro.org>
- <Yxn9o1MVMPnFO3PM@sirena.org.uk>
- <ac2bcca1-6997-2d17-b1d6-a5e81ced2613@linaro.org>
-In-Reply-To: <ac2bcca1-6997-2d17-b1d6-a5e81ced2613@linaro.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-Cc: devicetree@vger.kernel.org,
- alsa-devel-mejlinglistan <alsa-devel@alsa-project.org>,
- Astrid Rost <astrid.rost@axis.com>, Liam Girdwood <lgirdwood@gmail.com>,
- linux-kernel@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
- kernel@axis.com, Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>
+References: <20220908133319.2149486-1-robert.rosengren@axis.com>
+In-Reply-To: <20220908133319.2149486-1-robert.rosengren@axis.com>
+From: Shengjiu Wang <shengjiu.wang@gmail.com>
+Date: Fri, 9 Sep 2022 16:26:12 +0800
+Message-ID: <CAA+D8AOeSM4W1nS=oaWfFzYRqzgERh7_-sdh3wj+7iZthYm9Eg@mail.gmail.com>
+Subject: Re: [PATCH] ASoC: fsl_spdif: add ALSA event on dpll locked
+To: robert.rosengren@axis.com
+Content-Type: text/plain; charset="UTF-8"
+X-Content-Filtered-By: Mailman/MimeDel 2.1.15
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>,
+ Xiubo Li <Xiubo.Lee@gmail.com>, Takashi Iwai <tiwai@suse.com>,
+ Nicolin Chen <nicoleotsuka@gmail.com>, Mark Brown <broonie@kernel.org>,
+ kernel@axis.com, Fabio Estevam <festevam@gmail.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -109,36 +94,96 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On 09/09/2022 09:23, Krzysztof Kozlowski wrote:
-> On 08/09/2022 16:35, Mark Brown wrote:
->> On Thu, Sep 08, 2022 at 02:20:42PM +0200, Krzysztof Kozlowski wrote:
->>
->>> Anyway new properties cannot be accepted. This has to be converted to DT
->>> schema (YAML).
->>
->> Doing a whole binding conversion feels like a bit of a steep requirement
->> when people are just adding a simple property, it's a lot of stop energy
->> to figure out the tooling, do the conversion and deal with all the
->> bikeshedding that the tools don't catch.  It's definitely nice if people
->> want to look at that, for more complex binding changes it gets more
->> reasonable but for trivial properties it's disproportionate.
-> 
-> It's more than one property here and many patch submitters are using
-> this reason as well. In an effect few bindings TXT grew from 5 to 10
-> properties in one year and still no conversion to YAML.
-> 
-> I understand your concerns however I have stronger motivation to do the
-> conversion is stronger for me, than for accepting new features.
+Hi
 
-Eh, that was still during drinking coffee, so it barely reminds English
-sentences. Let me try one more time:
+On Thu, Sep 8, 2022 at 9:33 PM <robert.rosengren@axis.com> wrote:
 
-It's more than one property and many other patch submitters were using
-this reason as well. As a result, few TXT bindings grew from 5 to 10
-properties within one year and there was still no conversion to YAML.
+> From: Robert Rosengren <robert.rosengren@axis.com>
+>
+> Add an ALSA event on the RX Sample Rate controller upon the dpll locked
+> interrupt, making it possible for audio applications to monitor changes
+> in the hardware.
+>
+> Signed-off-by: Robert Rosengren <robert.rosengren@axis.com>
+> ---
+>  sound/soc/fsl/fsl_spdif.c | 18 ++++++++++++++++--
+>  1 file changed, 16 insertions(+), 2 deletions(-)
+>
+> diff --git a/sound/soc/fsl/fsl_spdif.c b/sound/soc/fsl/fsl_spdif.c
+> index 7fc1c96929bb..1679a21ffdca 100644
+> --- a/sound/soc/fsl/fsl_spdif.c
+> +++ b/sound/soc/fsl/fsl_spdif.c
+> @@ -44,6 +44,8 @@ static u8 srpc_dpll_locked[] = { 0x0, 0x1, 0x2, 0x3,
+> 0x4, 0xa, 0xb };
+>
+>  #define DEFAULT_RXCLK_SRC      1
+>
+> +#define RX_SAMPLE_RATE_KCONTROL "RX Sample Rate"
+> +
+>  /**
+>   * struct fsl_spdif_soc_data: soc specific data
+>   *
+> @@ -122,6 +124,7 @@ struct fsl_spdif_priv {
+>         const struct fsl_spdif_soc_data *soc;
+>         struct spdif_mixer_control fsl_spdif_control;
+>         struct snd_soc_dai_driver cpu_dai_drv;
+> +       struct snd_soc_dai *dai;
+>
 
-I understand your concerns however I have stronger motivation to do the
-conversion, than for accepting new features.
+warning: Function parameter or member 'dai' not described in
+'fsl_spdif_priv'
+please add.
 
-Best regards,
-Krzysztof
+Best regards
+Wang shengjiu
+
+>         struct platform_device *pdev;
+>         struct regmap *regmap;
+>         bool dpll_locked;
+> @@ -223,9 +226,19 @@ static void spdif_irq_dpll_lock(struct fsl_spdif_priv
+> *spdif_priv)
+>         locked &= SRPC_DPLL_LOCKED;
+>
+>         dev_dbg(&pdev->dev, "isr: Rx dpll %s \n",
+> -                       locked ? "locked" : "loss lock");
+> +               locked ? "locked" : "loss lock");
+>
+>         spdif_priv->dpll_locked = locked ? true : false;
+> +
+> +       if (spdif_priv->dai) {
+> +               struct snd_soc_component *component =
+> spdif_priv->dai->component;
+> +               struct snd_kcontrol *kctl =
+> snd_soc_card_get_kcontrol(component->card,
+> +                                               RX_SAMPLE_RATE_KCONTROL);
+> +
+> +               if (kctl)
+> +                       snd_ctl_notify(component->card->snd_card,
+> +                               SNDRV_CTL_EVENT_MASK_VALUE, &kctl->id);
+> +       }
+>  }
+>
+>  /* Receiver found illegal symbol interrupt handler */
+> @@ -1197,7 +1210,7 @@ static struct snd_kcontrol_new fsl_spdif_ctrls[] = {
+>         /* DPLL lock info get controller */
+>         {
+>                 .iface = SNDRV_CTL_ELEM_IFACE_PCM,
+> -               .name = "RX Sample Rate",
+> +               .name = RX_SAMPLE_RATE_KCONTROL,
+>                 .access = SNDRV_CTL_ELEM_ACCESS_READ |
+>                         SNDRV_CTL_ELEM_ACCESS_VOLATILE,
+>                 .info = fsl_spdif_rxrate_info,
+> @@ -1241,6 +1254,7 @@ static struct snd_kcontrol_new fsl_spdif_ctrls_rcm[]
+> = {
+>  static int fsl_spdif_dai_probe(struct snd_soc_dai *dai)
+>  {
+>         struct fsl_spdif_priv *spdif_private =
+> snd_soc_dai_get_drvdata(dai);
+> +       spdif_private->dai = dai;
+>
+>         snd_soc_dai_init_dma_data(dai, &spdif_private->dma_params_tx,
+>                                   &spdif_private->dma_params_rx);
+> --
+> 2.30.2
+>
+>
