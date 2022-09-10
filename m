@@ -4,76 +4,42 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 61799ECAAA1
-	for <alsa-devel@archiver.kernel.org>; Sat, 10 Sep 2022 02:19:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6063FC6FA82
+	for <alsa-devel@archiver.kernel.org>; Sat, 10 Sep 2022 07:24:02 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 70709168F;
-	Sat, 10 Sep 2022 04:18:49 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 70709168F
+	by alsa0.perex.cz (Postfix) with ESMTPS id ABE5D168D;
+	Sat, 10 Sep 2022 09:23:10 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz ABE5D168D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1662776379;
-	bh=IkAZ4T+4alxZetkjjlyVMEX4y6tUlHl03lQa9CmZle8=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	s=default; t=1662794640;
+	bh=jA8Jtg6lNlJ9L+6/L3RVHAYhns9QS4t3Du6lcBsOMfo=;
+	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=J2I05rMIDnQBrHlChmFGeFvVAtQsc29cfXP07KP8w2tCj9K3ehg7sLAVLrcsThimK
-	 VqjIGar6IVK536gDCkK90ELjFnucrwWMtv7ygaYypMUnhien0F3SBtwNcYzFKpnuQ0
-	 0mgLKitfjZYbCQ2J4To9bJJj3UY152XHG9VYi8EQ=
+	b=RoE7cVAFFwWtq41KL1wzWLPErmsbcloVobJIWf4jDKrKcmYIisTlb58AaGtnwBo9d
+	 eyN3NlGSb5Qb1+SCviyHrOKJnly3qYG7Zf19i25zubEjD9qWA50mIuFnMNyai10kup
+	 AoYYznK9nE0NLTiMwWlgqQEnQGpotBzWwwxwsn8w=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 09A68F800B8;
-	Sat, 10 Sep 2022 04:18:49 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 4B622F8016C;
+	Sat, 10 Sep 2022 09:23:10 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id C614DF8042F; Sat, 10 Sep 2022 04:18:46 +0200 (CEST)
-Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 286B6F800B8
- for <alsa-devel@alsa-project.org>; Sat, 10 Sep 2022 04:18:39 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 286B6F800B8
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="i/qinkvS"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
- d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1662776321; x=1694312321;
- h=date:from:to:cc:subject:message-id:references:
- mime-version:in-reply-to;
- bh=IkAZ4T+4alxZetkjjlyVMEX4y6tUlHl03lQa9CmZle8=;
- b=i/qinkvSAbVQZv6O+BVcY55YHOJhRhMIuJpxhrYp9OkRVetLJO9gxydg
- vQ6bO8XYHExROnipLAdIrNADhRvKK6jmHuSed9/gTA2pvNQFM0RARpVmo
- DBuKFbEACBj/5g3cy5O4YyOhwGDIZuRoogObF97YE0HLmHBjiEa1r8ZIz
- nMWehy0L+pFK9mOxuLIY6QIf9bkzJWIAzkPd/WWPZ5VkvusH5wut8f95h
- TZIPjjz3/7NrGSQeFmaVXGeKGPXua9VP4fJ3p8b3zHo0cbCsU4C2/ZQiu
- twwckLuGOEzILWzjX4PkQALBgA+D3QeOsOtprjCFm/lE3/eses6vqddsg A==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10465"; a="284623671"
-X-IronPort-AV: E=Sophos;i="5.93,304,1654585200"; d="scan'208";a="284623671"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
- by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 09 Sep 2022 19:18:28 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.93,304,1654585200"; d="scan'208";a="645763928"
-Received: from lkp-server02.sh.intel.com (HELO b2938d2e5c5a) ([10.239.97.151])
- by orsmga008.jf.intel.com with ESMTP; 09 Sep 2022 19:18:23 -0700
-Received: from kbuild by b2938d2e5c5a with local (Exim 4.96)
- (envelope-from <lkp@intel.com>) id 1oWq4d-00020O-0B;
- Sat, 10 Sep 2022 02:18:23 +0000
-Date: Sat, 10 Sep 2022 10:17:54 +0800
-From: kernel test robot <lkp@intel.com>
-To: Astrid Rost <astrid.rost@axis.com>, Mark Brown <broonie@kernel.org>,
- Liam Girdwood <lgirdwood@gmail.com>,
- Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
-Subject: Re: [PATCH] ASoC: ts3a227e: allow enabling the jack detect in driver
-Message-ID: <202209101015.ZocWeV2G-lkp@intel.com>
-References: <20220909093001.13110-1-astrid.rost@axis.com>
+ id A5170F8042F; Sat, 10 Sep 2022 09:23:08 +0200 (CEST)
+Received: from webhooks-bot.alsa-project.org (gate.perex.cz [77.48.224.242])
+ by alsa1.perex.cz (Postfix) with ESMTP id EF988F800B8
+ for <alsa-devel@alsa-project.org>; Sat, 10 Sep 2022 09:23:05 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EF988F800B8
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220909093001.13110-1-astrid.rost@axis.com>
-Cc: kernel@axis.com, alsa-devel-mejlinglistan <alsa-devel@alsa-project.org>,
- kbuild-all@lists.01.org, Astrid Rost <astrid.rost@axis.com>,
- linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+From: GitHub issues - opened <github@alsa-project.org>
+To: alsa-devel@alsa-project.org
+In-Reply-To: <1662794584874958038-webhooks-bot@alsa-project.org>
+References: <1662794584874958038-webhooks-bot@alsa-project.org>
+Subject: aseqdump crashing after running for a bit
+Message-Id: <20220910072308.A5170F8042F@alsa1.perex.cz>
+Date: Sat, 10 Sep 2022 09:23:08 +0200 (CEST)
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -89,43 +55,13 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Hi Astrid,
+alsa-project/alsa-utils issue #170 was opened from BlastBolt5:
 
-Thank you for the patch! Yet something to improve:
+I have been working on a script to control pipewire sources and sinks using faders on my midi keyboard but it keeps erroring out with
 
-[auto build test ERROR on broonie-sound/for-next]
-[also build test ERROR on linus/master v6.0-rc4 next-20220909]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+> Port unsubscribed 128:0 
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Astrid-Rost/ASoC-ts3a227e-allow-enabling-the-jack-detect-in-driver/20220909-173508
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
-config: arm64-randconfig-r035-20220909 (https://download.01.org/0day-ci/archive/20220910/202209101015.ZocWeV2G-lkp@intel.com/config)
-compiler: aarch64-linux-gcc (GCC) 12.1.0
-reproduce (this is a W=1 build):
-        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
-        chmod +x ~/bin/make.cross
-        # https://github.com/intel-lab-lkp/linux/commit/f147a518459c71521cfe5bc786b804ba317091a0
-        git remote add linux-review https://github.com/intel-lab-lkp/linux
-        git fetch --no-tags linux-review Astrid-Rost/ASoC-ts3a227e-allow-enabling-the-jack-detect-in-driver/20220909-173508
-        git checkout f147a518459c71521cfe5bc786b804ba317091a0
-        # save the config file
-        mkdir build_dir && cp config build_dir/.config
-        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-12.1.0 make.cross W=1 O=build_dir ARCH=arm64 SHELL=/bin/bash
+I don't have any other midi device to test it out and see if it's specific to this conrtoller but I'm using the Korg nanoKontrol2. If i need to provide anything else just let me know.
 
-If you fix the issue, kindly add following tag where applicable
-Reported-by: kernel test robot <lkp@intel.com>
-
-All errors (new ones prefixed by >>, old ones prefixed by <<):
-
->> ERROR: modpost: "input_allocate_device" [sound/core/snd.ko] undefined!
->> ERROR: modpost: "input_unregister_device" [sound/core/snd.ko] undefined!
->> ERROR: modpost: "input_free_device" [sound/core/snd.ko] undefined!
->> ERROR: modpost: "input_register_device" [sound/core/snd.ko] undefined!
->> ERROR: modpost: "input_set_capability" [sound/core/snd.ko] undefined!
->> ERROR: modpost: "input_event" [sound/core/snd.ko] undefined!
-
--- 
-0-DAY CI Kernel Test Service
-https://01.org/lkp
+Issue URL     : https://github.com/alsa-project/alsa-utils/issues/170
+Repository URL: https://github.com/alsa-project/alsa-utils
