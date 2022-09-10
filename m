@@ -4,73 +4,73 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A19EFECAAD5
-	for <alsa-devel@archiver.kernel.org>; Sat, 10 Sep 2022 09:19:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C0B80ECAAD5
+	for <alsa-devel@archiver.kernel.org>; Sat, 10 Sep 2022 09:19:29 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D71A616B3;
-	Sat, 10 Sep 2022 11:18:25 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D71A616B3
+	by alsa0.perex.cz (Postfix) with ESMTPS id 040EA16D6;
+	Sat, 10 Sep 2022 11:18:38 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 040EA16D6
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1662801555;
-	bh=1GA6v1ac+nH7f5I4fQVSG9pRkajN1rrbqZIdBvpoXdg=;
+	s=default; t=1662801568;
+	bh=DRIoh5hCfNENfG/JcUlLQQDz0pWYklCK4FZSRxn/dxI=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=qBbRZ2jnxwMgH9hNISjHj+F/5KIsOCOKU5jiCIsRk6Yf3Jb7ldnqe93b9RAFvicBx
-	 x1Ocgs251nQWWOwg+p869Y0SkQipnMu61WqTdG3kelthZa4F0p4s1wsoWLr9Xb7ACf
-	 4fwCc8NIYyCcMIqllcMQ5DjOJw2JtwEp64OsIqQw=
+	b=bj5Hcq7LbV9lXJojw4qhkU0vKlyPZeArRzC2twenNmURX5gMmUoLaSPmriwmqWCs6
+	 aODiuhJJ6aMlz3i8nqDrYnuY0uvJeds6wWC62UZuE4K2qFAqyAOSDfPOlO4JZNEl+A
+	 4vgM2RywDb8Cq3gs5/kbGbJ/F/gAjLPLyYEPWNV4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 6B27EF805B5;
+	by alsa1.perex.cz (Postfix) with ESMTP id DCF23F805BA;
 	Sat, 10 Sep 2022 11:15:12 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 62F69F8058C; Sat, 10 Sep 2022 11:15:09 +0200 (CEST)
-Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com
- [IPv6:2a00:1450:4864:20::134])
+ id 07FE8F805A1; Sat, 10 Sep 2022 11:15:09 +0200 (CEST)
+Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com
+ [IPv6:2a00:1450:4864:20::135])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 58C2DF80552
- for <alsa-devel@alsa-project.org>; Sat, 10 Sep 2022 11:14:54 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 58C2DF80552
+ by alsa1.perex.cz (Postfix) with ESMTPS id 27B1FF80551
+ for <alsa-devel@alsa-project.org>; Sat, 10 Sep 2022 11:14:55 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 27B1FF80551
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org
- header.b="RTrok220"
-Received: by mail-lf1-x134.google.com with SMTP id i26so6680036lfp.11
- for <alsa-devel@alsa-project.org>; Sat, 10 Sep 2022 02:14:54 -0700 (PDT)
+ header.b="mGm4MLh3"
+Received: by mail-lf1-x135.google.com with SMTP id bt10so6748340lfb.1
+ for <alsa-devel@alsa-project.org>; Sat, 10 Sep 2022 02:14:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
  h=content-transfer-encoding:mime-version:references:in-reply-to
  :message-id:date:subject:cc:to:from:from:to:cc:subject:date;
- bh=aK4G1Qq6cdDpbzIBmLo9qbHlkXgmVXTFgbxmWme4nqM=;
- b=RTrok220LM/b9Uk07c9RLsnqCOU6qZiUKKpYirj3esRthzT/dRh6M1tnOkAmYszt/5
- tBAj5b/x0emE8K6hqwk8VCcmxDdeG5nJfGGW6HgHUc3qq4FkvwAbGY5CzH0uw6r6U3Pg
- s17rwctZD+1HSp+zle7Yu6oQ1wOnWZqVNOAKOgwsAdr4adCq/kYPS07nPuJbvGSZsn1s
- SyrVzxDFbLXwlZDLZXeAu5gP7qI0t0AbDB4n/StHpfczrZb91kFGgz/W5fNte11s8c47
- dzChcLArJPeKcloinTdTyd4T3e2Y4aJmZ1LxKc9c8IihrxVJ++CmBcitQKaxDCTDg0M8
- elUQ==
+ bh=IE9iYaf4ljXjTzH90yeiguLHiQ95amY6yCG9ecN7egM=;
+ b=mGm4MLh3f/e5mggqAL1D1Kyqh5doHaIDBFrQtK8sqNRJPkcfwS2iFvOA5guvHH+dgV
+ EBzMZdNvPu7ErIJLMwzcNb955UGATfLJrVGLqOowWM/I8QI+6Fg6rxyUWVKW4MTcOSLc
+ QZCHAusEkyjCj6XzOmr0R2AbY5Q4N6CZJd+Z6uZSxjLivkBc5XZzYAIimtvQatqnoRR4
+ Lp6gVu1Vuqudc8kwQUWaZDNkMNtMbDOtv3om/Z0mP3ly0pXjJum/zNUD808pavcy2Erg
+ AFyF4+xt52W2F/07B5I4UvnlVmDiy5O1fIUNNHiVo85K01H0dJ7j+Q7CpjyjW32Zz5+/
+ kLSQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
  h=content-transfer-encoding:mime-version:references:in-reply-to
  :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
  :subject:date;
- bh=aK4G1Qq6cdDpbzIBmLo9qbHlkXgmVXTFgbxmWme4nqM=;
- b=A/giJyjv1nF/NObzowG2iugoo3nfhUlLdm70VEMqa/BNlf5tTqEihsj9686cJiikHK
- /0q+bbUOeesSPRr/7vzIGKsHEFwr5KN7OPsaMEDL1rRUgbDRJpB08uBv5oTHRU2clSCx
- tM52EAEWRJ8qO1WGwD06xe75mKairsMUUQES4KzifkGL67NawivpN+zm3AYuzr+xPvaZ
- M1RJWePyhHl5yxCH+Nz3GLRrckDb9mHOb+v3iwbl6ynMftxhkpNtzXCtYmJQdw+vpRVJ
- yaH9bnc4+PCh3wb2zMxVY7kFhQ2LDVqDbXL6WlGKYTtrvuFJ+bCAi5pFGbP2+rJiKzWT
- v9ZQ==
-X-Gm-Message-State: ACgBeo0OYx91Vhc2VJabWhI9VTbEtr9fcHNid4C9gIdxo4kZuw/Zlr2R
- aPWIHPyon6TbTl11Bj/SwC6fJQ==
-X-Google-Smtp-Source: AA6agR42Ti+UFet+yPHWp/NC9BjFyAg2Iqnk5J3QWrDLMxCGYye3JpY/bZ52d4m3k49P4vYgqeNkyA==
-X-Received: by 2002:a05:6512:3d02:b0:498:f4d4:e246 with SMTP id
- d2-20020a0565123d0200b00498f4d4e246mr3335630lfv.115.1662801292990; 
- Sat, 10 Sep 2022 02:14:52 -0700 (PDT)
+ bh=IE9iYaf4ljXjTzH90yeiguLHiQ95amY6yCG9ecN7egM=;
+ b=vPNVWFT8gN0JAUfM78pdmhtygSxOvo4+/V/2x72F0eWM3NJMYVUV1Gh3wa4wEFSR6C
+ q8Il+o2dTHLtjEo4+kxY6C4K2RQF968TeCFLULxxNRFMBQDVN15uCuQgqNCR4/rX2dh1
+ fYNYy+XhM1FFPc99kHX08kOmSY1lfc/q8P7/MdOz9SEEUUIKSXWgzw9RWL1vH+fOiZAA
+ HJ62t914y6Wg7H1fUva/egfA498r9/nx8yN2tGxOXtE1MD4U+04SKjsAWaUzi9bzXH/2
+ qlLAaDQb4KXarvpnZyt5pFNb1e3YcfFzGI4ycVozT5mqcqWWx27NVi7liTupF/iH84FG
+ ULyA==
+X-Gm-Message-State: ACgBeo3/Z/+8eRm32X3rIwknMI5GvEZeOa/vPg6N8F2jCmV5D6W5Arwo
+ KJSKCUfB+gls5OGAi04VWH8CaQ==
+X-Google-Smtp-Source: AA6agR44h4+WA2C462fMoiaHwZtPDvoMp6F4veeqc9MlUjgS9Rk8dYhpQ54H9gDph02QLVvtTYkaAg==
+X-Received: by 2002:a05:6512:3281:b0:496:f9b5:eb55 with SMTP id
+ p1-20020a056512328100b00496f9b5eb55mr5786203lfe.279.1662801294072; 
+ Sat, 10 Sep 2022 02:14:54 -0700 (PDT)
 Received: from krzk-bin.. (78-11-189-27.static.ip.netia.com.pl. [78.11.189.27])
  by smtp.gmail.com with ESMTPSA id
- x22-20020a19e016000000b0048b26d4bb64sm201552lfg.40.2022.09.10.02.14.51
+ x22-20020a19e016000000b0048b26d4bb64sm201552lfg.40.2022.09.10.02.14.53
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Sat, 10 Sep 2022 02:14:52 -0700 (PDT)
+ Sat, 10 Sep 2022 02:14:53 -0700 (PDT)
 From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
  Banajit Goswami <bgoswami@quicinc.com>, Andy Gross <agross@kernel.org>,
@@ -81,10 +81,10 @@ To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
  Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
  alsa-devel@alsa-project.org, linux-arm-msm@vger.kernel.org,
  devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v4 13/15] ASoC: dt-bindings: qcom,
- q6dsp-lpass-clocks: cleanup example
-Date: Sat, 10 Sep 2022 11:14:26 +0200
-Message-Id: <20220910091428.50418-14-krzysztof.kozlowski@linaro.org>
+Subject: [PATCH v4 14/15] ASoC: dt-bindings: qcom,
+ q6apm-dai: adjust indentation in example
+Date: Sat, 10 Sep 2022 11:14:27 +0200
+Message-Id: <20220910091428.50418-15-krzysztof.kozlowski@linaro.org>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20220910091428.50418-1-krzysztof.kozlowski@linaro.org>
 References: <20220910091428.50418-1-krzysztof.kozlowski@linaro.org>
@@ -106,71 +106,44 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Cleanup the example DTS by adding APR and service compatibles, adding
-typical properties, using proper device node names for services and
-fixing indentation to 4-spaces.
+Cleanup the example DTS by fixing indentation to 4-spaces and adding
+blank lines for readability.
 
 Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Reviewed-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 
 ---
 
 Changes since v1:
-1. Add few more properties.
-2. Adjust indentation (better).
+1. New patch
 ---
- .../sound/qcom,q6dsp-lpass-clocks.yaml        | 20 ++++++++++++-------
- 1 file changed, 13 insertions(+), 7 deletions(-)
+ .../devicetree/bindings/sound/qcom,q6apm-dai.yaml   | 13 +++++++------
+ 1 file changed, 7 insertions(+), 6 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/sound/qcom,q6dsp-lpass-clocks.yaml b/Documentation/devicetree/bindings/sound/qcom,q6dsp-lpass-clocks.yaml
-index 604861d84ffa..fd567d20417d 100644
---- a/Documentation/devicetree/bindings/sound/qcom,q6dsp-lpass-clocks.yaml
-+++ b/Documentation/devicetree/bindings/sound/qcom,q6dsp-lpass-clocks.yaml
-@@ -38,17 +38,22 @@ examples:
-     #include <dt-bindings/soc/qcom,apr.h>
-     #include <dt-bindings/sound/qcom,q6afe.h>
-     apr {
-+        compatible = "qcom,apr-v2";
-+        qcom,domain = <APR_DOMAIN_ADSP>;
+diff --git a/Documentation/devicetree/bindings/sound/qcom,q6apm-dai.yaml b/Documentation/devicetree/bindings/sound/qcom,q6apm-dai.yaml
+index 844d72b30969..24f7bf2bfd95 100644
+--- a/Documentation/devicetree/bindings/sound/qcom,q6apm-dai.yaml
++++ b/Documentation/devicetree/bindings/sound/qcom,q6apm-dai.yaml
+@@ -33,13 +33,14 @@ examples:
          #address-cells = <1>;
          #size-cells = <0>;
--        apr-service@4 {
-+
-+        service@4 {
-+            compatible = "qcom,q6afe";
-             reg = <APR_SVC_AFE>;
-+            qcom,protection-domain = "avs/audio", "msm/adsp/audio_pd";
- 
-             clock-controller {
--              compatible = "qcom,q6afe-clocks";
--              #clock-cells = <2>;
-+                compatible = "qcom,q6afe-clocks";
-+                #clock-cells = <2>;
-             };
-         };
--      };
-+    };
- 
-   - |
-     #include <dt-bindings/soc/qcom,gpr.h>
-@@ -57,13 +62,14 @@ examples:
          qcom,domain = <GPR_DOMAIN_ID_ADSP>;
-         #address-cells = <1>;
-         #size-cells = <0>;
 +
-         service@2 {
-             reg = <GPR_PRM_MODULE_IID>;
-             compatible = "qcom,q6prm";
+         service@1 {
+-          compatible = "qcom,q6apm";
+-          reg = <1>;
++            compatible = "qcom,q6apm";
++            reg = <1>;
  
-             clock-controller {
--              compatible = "qcom,q6prm-lpass-clocks";
--              #clock-cells = <2>;
-+                compatible = "qcom,q6prm-lpass-clocks";
-+                #clock-cells = <2>;
-             };
+-          dais {
+-            compatible = "qcom,q6apm-dais";
+-            iommus = <&apps_smmu 0x1801 0x0>;
+-          };
++            dais {
++                compatible = "qcom,q6apm-dais";
++                iommus = <&apps_smmu 0x1801 0x0>;
++            };
          };
--      };
-+    };
+     };
 -- 
 2.34.1
 
