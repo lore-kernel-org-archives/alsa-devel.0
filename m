@@ -4,83 +4,57 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C706FECAAA1
-	for <alsa-devel@archiver.kernel.org>; Sun, 11 Sep 2022 07:06:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D1F58ECAAA1
+	for <alsa-devel@archiver.kernel.org>; Sun, 11 Sep 2022 09:35:45 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 35AEB16A4;
-	Sun, 11 Sep 2022 09:05:32 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 35AEB16A4
+	by alsa0.perex.cz (Postfix) with ESMTPS id E1A2716B5;
+	Sun, 11 Sep 2022 11:34:52 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E1A2716B5
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1662879982;
-	bh=Q24aO67LJNOAZ1M/gC5d1E35Hjjo+GJKSFXOcKljhzA=;
-	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=ZkeRCrcSCpqlJomV0bcQbqkAjdEjeHFA9T/Cdk02IywTuZM3Ihs8lFjQyjPfDyIcQ
-	 Gz6cRBGc86A8AGVHp9i/3TnDeLCzXvCuWSBliHaIrX9aX7qmh5vCqsp9VO6sASPJJB
-	 xxpQTWryZ94tVmAuh8K+uAyj9jt0ytao6uf6y8iM=
+	s=default; t=1662888942;
+	bh=4GKExmaL4LZPH4K34NcUQUitslKhTXB3EET1JX7DC5M=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=BZ2VgUIK39mQB6d9i06qwX1DftF/WghgqmEcucdnV1Qen2lCWZ8r8H2FvhFgX4Txw
+	 BnsM8y2F3YXCh1rmQLD8A3xn+FHHHiRD9JryvFosdoW9TwoIldI3NHPfjytladukge
+	 +M8ceglULyPHozkCokzFUXBqc9xKH+y1sCUGz/GE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id C26EDF80169;
-	Sun, 11 Sep 2022 09:05:31 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 783D4F80169;
+	Sun, 11 Sep 2022 11:34:52 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id A61FCF80256; Sun, 11 Sep 2022 09:05:30 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id 91C73F80256; Sun, 11 Sep 2022 11:34:51 +0200 (CEST)
+Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 62E27F8011C
- for <alsa-devel@alsa-project.org>; Sun, 11 Sep 2022 09:05:28 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 62E27F8011C
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="G1X9wlna"; 
- dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="PqmZutqK"
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id CD51C228E5;
- Sun, 11 Sep 2022 07:05:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1662879927; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=FJEtZxIA/Evyh2MXH85XBzsQ3OU7JEtHNQGYm8Ao6iA=;
- b=G1X9wlnatH+dkv2o9vxjMRtzrHCPfTyNcZmzhttcPsD6yDy3MKcjh385Nn8HvCTtZhJUa8
- GnfOTHgNTPkjrSgM5ZIeJo6bmSJl5hN3yj/+1TTxREt5c3Lxa4nhcnm6I7bvk37cVuxozo
- J0JVgWsBVzW2+LncjBD/vamsdLlhi2I=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1662879927;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=FJEtZxIA/Evyh2MXH85XBzsQ3OU7JEtHNQGYm8Ao6iA=;
- b=PqmZutqKjg04a1Bbt2NrXOLaa3sJdtSKN4ossbvPHYE6n+TMPEONxQWx/m0+fuXYBrRqRq
- VuV8ldhrzuG5ptBA==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id B6A6B13A11;
- Sun, 11 Sep 2022 07:05:27 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id 1nkJLLeIHWOWNgAAMHmgww
- (envelope-from <tiwai@suse.de>); Sun, 11 Sep 2022 07:05:27 +0000
-Date: Sun, 11 Sep 2022 09:05:27 +0200
-Message-ID: <87tu5ebdc8.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Hans de Goede <hdegoede@redhat.com>
-Subject: Re: Sound broken (first couple of seconds play looping) on Sony Vaio
- VPX11S1E (HDA, ALC262)
-In-Reply-To: <87y1uqbfmo.wl-tiwai@suse.de>
-References: <3e8697e1-87c6-7a7b-d2e8-b21f1d2f181b@redhat.com>
- <87y1uqbfmo.wl-tiwai@suse.de>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+ by alsa1.perex.cz (Postfix) with ESMTPS id A865DF8011C
+ for <alsa-devel@alsa-project.org>; Sun, 11 Sep 2022 11:34:48 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A865DF8011C
+Received: from kwepemi500012.china.huawei.com (unknown [172.30.72.56])
+ by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4MQPc64PgRzmVJ2;
+ Sun, 11 Sep 2022 17:31:02 +0800 (CST)
+Received: from cgs.huawei.com (10.244.148.83) by
+ kwepemi500012.china.huawei.com (7.221.188.12) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.24; Sun, 11 Sep 2022 17:34:43 +0800
+From: Gaosheng Cui <cuigaosheng1@huawei.com>
+To: <vkoul@kernel.org>, <yung-chuan.liao@linux.intel.com>,
+ <pierre-louis.bossart@linux.intel.com>, <sanyog.r.kale@intel.com>,
+ <cuigaosheng1@huawei.com>, <shreyas.nc@intel.com>
+Subject: [PATCH] soundwire: cadence: remove unused sdw_cdns_master_ops
+ declaration
+Date: Sun, 11 Sep 2022 17:34:42 +0800
+Message-ID: <20220911093442.3221637-1-cuigaosheng1@huawei.com>
+X-Mailer: git-send-email 2.25.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.244.148.83]
+X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
+ kwepemi500012.china.huawei.com (7.221.188.12)
+X-CFilter-Loop: Reflected
+Cc: alsa-devel@alsa-project.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -96,44 +70,27 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Sun, 11 Sep 2022 08:15:59 +0200,
-Takashi Iwai wrote:
-> 
-> On Sat, 10 Sep 2022 19:52:36 +0200,
-> Hans de Goede wrote:
-> > 
-> > Hi All,
-> > 
-> > To test some kernel work (backlight refactor) which I have been doing
-> > I have booted Debian Testing with a 6.0 kernel on a Sony Vaio VPX11S1E
-> > (which is ancient).
-> > 
-> > I noticed that when tab-completing something in a terminal the
-> > terminal bell sound would keep repeating and playing another longer
-> > sound sample gets stuck with the first couple of seconds of that
-> > sample looping.
-> > 
-> > This is under GNOME3 with pulseaudio as sound server.
-> > 
-> > I accidentally found an interesting workaround if I run:
-> > 
-> > aplay -Dplughw:CARD=MID,DEV=0 /usr/share/sounds/alsa/Front_Left.wav
-> > 
-> > once, then that works properly and after that the problem is gone...
-> > 
-> > Note that this laptop does have only 1 speaker AFAICT.
-> > 
-> > alsa-info output below.
-> > 
-> > I would be happy to test any patches / module-options which might
-> > fix this.
-> 
-> Could you check the very latest Linus tree (6.0-rc5)?
-> There has been a regression fix for HD-audio, and possibly this might
-> be your case.
+sdw_cdns_master_ops has been removed since
+commit c91605f48938 ("soundwire: Remove cdns_master_ops"),
+so remove it.
 
-And if this doesn't change the behavior, try snoop=0 option for
-snd-hda-intel module.
+Signed-off-by: Gaosheng Cui <cuigaosheng1@huawei.com>
+---
+ drivers/soundwire/cadence_master.h | 1 -
+ 1 file changed, 1 deletion(-)
 
+diff --git a/drivers/soundwire/cadence_master.h b/drivers/soundwire/cadence_master.h
+index ca9e805bab88..273eca3cb0b7 100644
+--- a/drivers/soundwire/cadence_master.h
++++ b/drivers/soundwire/cadence_master.h
+@@ -142,7 +142,6 @@ struct sdw_cdns {
+ /* Exported symbols */
+ 
+ int sdw_cdns_probe(struct sdw_cdns *cdns);
+-extern struct sdw_master_ops sdw_cdns_master_ops;
+ 
+ irqreturn_t sdw_cdns_irq(int irq, void *dev_id);
+ irqreturn_t sdw_cdns_thread(int irq, void *dev_id);
+-- 
+2.25.1
 
-Takashi
