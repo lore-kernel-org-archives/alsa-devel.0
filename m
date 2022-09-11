@@ -4,81 +4,88 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5D82AECAAD5
-	for <alsa-devel@archiver.kernel.org>; Mon, 12 Sep 2022 07:31:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2B224ECAAD5
+	for <alsa-devel@archiver.kernel.org>; Mon, 12 Sep 2022 07:34:25 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E1A8016CA;
-	Mon, 12 Sep 2022 09:30:32 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E1A8016CA
+	by alsa0.perex.cz (Postfix) with ESMTPS id 5AE6916B0;
+	Mon, 12 Sep 2022 09:33:33 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5AE6916B0
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1662967883;
-	bh=MJLYooimvlYyFXUd7oBnJ06IF6G4qiNiOJBKWew7nZQ=;
+	s=default; t=1662968063;
+	bh=US8zGry1EpSMTFvnAwMROBYZNwIK0bqrrhQjSvWmd2o=;
 	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
 	 List-Post:List-Help:List-Subscribe:From;
-	b=lmVEMjIGdoN7dT/YJtQdxsg0QsSLBVtSS4/7od6s8TISp8mOmMwFZAJptl/VCnsMR
-	 50END6oqv1n7tipYIKcCRqUPV6wdmeagC52dEHA1RifZN/rlK+wuo7+kHCrqyMNSwC
-	 ABrekIQishlmuIjZ6c1fIJpG/mnJsT2uMD3T29y0=
+	b=tL4WGatTyDQJoy0ypN/QurlhKAeEq3ZAEVrc/NPNmmsRTZbqVSuyAwls6lAoGZKMH
+	 lZU79BSMBpcr3WLP830dYKiWmXFk3tleramvuktWbVE3bTmF3pVQsmTsEg+dIb2GfR
+	 bpaf9zr3eJQkqANlRUjQoqSg2KntNZWz8XhqMmig=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 94159F8020D;
-	Mon, 12 Sep 2022 09:30:32 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 03C17F80095;
+	Mon, 12 Sep 2022 09:33:33 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 65CD7F8027B; Mon, 12 Sep 2022 09:30:31 +0200 (CEST)
-Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com
- [IPv6:2607:f8b0:4864:20::102a])
+ id 00894F80256; Sun, 11 Sep 2022 16:57:33 +0200 (CEST)
+Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com
+ [IPv6:2a00:1450:4864:20::12c])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id E1752F80095
- for <alsa-devel@alsa-project.org>; Mon, 12 Sep 2022 09:30:24 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E1752F80095
+ by alsa1.perex.cz (Postfix) with ESMTPS id 4DBBAF8011C
+ for <alsa-devel@alsa-project.org>; Sun, 11 Sep 2022 16:57:30 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4DBBAF8011C
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org
- header.b="Hcmq27NH"
-Received: by mail-pj1-x102a.google.com with SMTP id
- n23-20020a17090a091700b00202a51cc78bso5225965pjn.2
- for <alsa-devel@alsa-project.org>; Mon, 12 Sep 2022 00:30:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=chromium.org; s=google;
+ dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
+ header.b="i/f4nXEJ"
+Received: by mail-lf1-x12c.google.com with SMTP id bq23so10877394lfb.7
+ for <alsa-devel@alsa-project.org>; Sun, 11 Sep 2022 07:57:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
  h=content-transfer-encoding:mime-version:message-id:date:subject:cc
  :to:from:from:to:cc:subject:date;
- bh=CK6XIpefy3/wH7x7ijKJf8zjoreJxucwMJjlvPQYCqM=;
- b=Hcmq27NHAy3z+4cG0SVQQd+fZ1/jc2GeejYyOfYCsFBqXYIbMXAR5thORHA1NDWlZO
- qnFRghwY11MQyO7syFahFHur08dpjCHZMDWn/ll+xTA2UPk2eQOh/NTRBUPZ4Z/+SlmA
- NLwf04AXksZltPBJtDg2BTZVfaMrnzcVuSq0s=
+ bh=eAQ7pZ3gOqppStIbzWQfQ4sG+iuDRIjLuat0vE00Rkw=;
+ b=i/f4nXEJosWajMhzlcgxo2AeRYy8/SU8YuJsy/YUexGUSfmdHSfyaXFHg67uwCzsZb
+ CR/VJbhPFE3qG02Dz87HQ9kq3KyWDatY6+wb99maWe+95+TNU45rKgTiCOv+VSP/9V1V
+ vguqDDgMyaJ1D8i7P6UXyIX41SjYzJx6HmUoG126H/Q+EzuVmAZ7DYCLqVHx3IapunVh
+ v1m5TVQdblRjU6beiAIxjsWfs76gCfl3dAqV45FHzMxtddBYYRobhEMYXGHeotwh+sXv
+ 1Rq2SavvkmaOgsDp+osvWjbzAHvUIG/Vop9j/gtmGReUBz7NqGju/T7zQxZKpe2oyA2a
+ xvcw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
  h=content-transfer-encoding:mime-version:message-id:date:subject:cc
  :to:from:x-gm-message-state:from:to:cc:subject:date;
- bh=CK6XIpefy3/wH7x7ijKJf8zjoreJxucwMJjlvPQYCqM=;
- b=rMYp7OA9HeIFfJwSsexfi55+q3hFwTydMcVvkn+IlB+QXFnsLu83NjywYYD8GNZVlB
- I0nfpckCVMExdADE0KKSkFIf++b675V/9mO+mbG5BkLy+hVW1LqV86qEDs5DhFMG8o4s
- 1rmri6LLuWKFh53Gi+KW2aOW9vqbc0zIBht+JgCV2YTtig6FH6a+8/8+PloxB+dYNZdZ
- WR/zVJyZQYeN789LnAXRJ8S2wgRm1+HWbh99WqgpxbBtKJ1BPVHnxy9RAYCGgiWatkvc
- Q1kDUAkgcDfnLYjhgL3fiWUnSR/clxrVxaxd0RfeMskY75UMCjFfEnklAaKLlQcUGohg
- CvnA==
-X-Gm-Message-State: ACgBeo2D4mPrrpvjG1NTPEF4Tj+8jhsEmrTt1/83pmbkjGmkqa4Gfx9b
- Io8yLqOst0fbacTros8+Zx9iew==
-X-Google-Smtp-Source: AA6agR6vFVlg3Lae6dq+F8i18SG9dsYYmiCNbnuMk+cD9kBQUAPWJAESM62XMzfoJND/WN79EeYTtA==
-X-Received: by 2002:a17:90a:1786:b0:202:856e:29bf with SMTP id
- q6-20020a17090a178600b00202856e29bfmr16907426pja.134.1662967822211; 
- Mon, 12 Sep 2022 00:30:22 -0700 (PDT)
-Received: from yjscloudtop.c.googlers.com.com
- (21.160.199.104.bc.googleusercontent.com. [104.199.160.21])
+ bh=eAQ7pZ3gOqppStIbzWQfQ4sG+iuDRIjLuat0vE00Rkw=;
+ b=BUa+OnuNOPzrF1xF1Bg7RULvOuAoyqCtjctr2zAFnMzVedeP+gStaDC2o44d1rb4eY
+ Qv2l94sxU3t0Eha1XnSIXbX9we/RHh3EAQWPLRPkfgc0Y4vFRHvYoufO59OANrzGqAm9
+ bDLEtAzEcxv5CXYG5e4WMrmIyI2tyHOdFt5WAkLj7aw0aKWlQu4gaGEWrwCJgOMVQqWe
+ SCttUXky+Lk44CnIQ13/0nP8Gmt+TzcQWEU9aYnoJUIyTFw6zGT004bf25nTJ1TMAPpE
+ P7Qv/WNFwSPS7jCarN6iRR7bFiG0neYkqEUyn7bxBhpt2gAHAPaKdnSI1Pj0ZtdafIP5
+ aHZw==
+X-Gm-Message-State: ACgBeo0A+CvJsVaQbRBt0I5JxH1H++4PhwMPt3SMVAO0VaIyUSSNjtfQ
+ oJe6+fqZQ9wcQoj+pVNu3/8=
+X-Google-Smtp-Source: AA6agR4dOV0r3KZlPBj/fj8prupK0Ya8fCrBCJbZOIV671RYwn5zSNIK6JfGj+HSnJYrgcAzn07meQ==
+X-Received: by 2002:a05:6512:3090:b0:48b:6e1:1b55 with SMTP id
+ z16-20020a056512309000b0048b06e11b55mr8106591lfd.535.1662908248930; 
+ Sun, 11 Sep 2022 07:57:28 -0700 (PDT)
+Received: from localhost (95-31-185-216.broadband.corbina.ru. [95.31.185.216])
  by smtp.gmail.com with ESMTPSA id
- v4-20020a63f204000000b00438eaf65766sm1962955pgh.73.2022.09.12.00.30.19
+ k5-20020a2e9205000000b0026181f65600sm675817ljg.136.2022.09.11.07.57.27
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Mon, 12 Sep 2022 00:30:20 -0700 (PDT)
-From: YJ Lee <yunjunlee@chromium.org>
-To: 
-Subject: [PATCH v1] ALSA: dummy: Add customizable volume min/max.
-Date: Mon, 12 Sep 2022 15:29:45 +0800
-Message-Id: <20220912072945.760949-1-yunjunlee@chromium.org>
-X-Mailer: git-send-email 2.37.2.789.g6183377224-goog
+ Sun, 11 Sep 2022 07:57:28 -0700 (PDT)
+From: Mikhail Rudenko <mike.rudenko@gmail.com>
+To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
+ Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
+ Chen-Yu Tsai <wens@csie.org>, Jernej Skrabec <jernej.skrabec@gmail.com>,
+ Samuel Holland <samuel@sholland.org>,
+ Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Subject: [PATCH 1/2] ASoC: sunxi: sun4i-codec: silence misleading error in
+ probe
+Date: Sun, 11 Sep 2022 17:57:11 +0300
+Message-Id: <20220911145713.55199-1-mike.rudenko@gmail.com>
+X-Mailer: git-send-email 2.37.3
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.com>,
- linux-kernel@vger.kernel.org, YJ Lee <yunjunlee@chromium.org>,
- whalechang@chromium.org, yuhsuan@chromium.org
+X-Mailman-Approved-At: Mon, 12 Sep 2022 09:33:31 +0200
+Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org,
+ linux-sunxi@lists.linux.dev, linux-arm-kernel@lists.infradead.org,
+ Mikhail Rudenko <mike.rudenko@gmail.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -94,95 +101,33 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Add module parameters to support customized min/max volume leveling,
-which will be useful to test devices with different volume granularity.
+In the case when a codec device is probed before codec analog
+controls, snd_soc_register_card() returns -EPROBE_DEFER, resulting in
+a misleading error message
 
-Signed-off-by: YJ Lee <yunjunlee@chromium.org>
+    sun4i-codec 1c22c00.codec: Failed to register our card
+
+even if the device is probed successfully later. Use dev_err_probe()
+to demote the above error to a debug message.
+
+Signed-off-by: Mikhail Rudenko <mike.rudenko@gmail.com>
 ---
- sound/drivers/dummy.c | 34 ++++++++++++++++++++++++----------
- 1 file changed, 24 insertions(+), 10 deletions(-)
+ sound/soc/sunxi/sun4i-codec.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/drivers/dummy.c b/sound/drivers/dummy.c
-index 2a7fc49c1a7c5..64fb2778f1e9a 100644
---- a/sound/drivers/dummy.c
-+++ b/sound/drivers/dummy.c
-@@ -42,6 +42,8 @@ MODULE_LICENSE("GPL");
- #define USE_CHANNELS_MAX 	2
- #define USE_PERIODS_MIN 	1
- #define USE_PERIODS_MAX 	1024
-+#define USE_MIXER_VOLUME_LEVEL_MIN	-50
-+#define USE_MIXER_VOLUME_LEVEL_MAX	100
+diff --git a/sound/soc/sunxi/sun4i-codec.c b/sound/soc/sunxi/sun4i-codec.c
+index 60712f24ade5..01b461c64d68 100644
+--- a/sound/soc/sunxi/sun4i-codec.c
++++ b/sound/soc/sunxi/sun4i-codec.c
+@@ -1825,7 +1825,7 @@ static int sun4i_codec_probe(struct platform_device *pdev)
  
- static int index[SNDRV_CARDS] = SNDRV_DEFAULT_IDX;	/* Index 0-MAX */
- static char *id[SNDRV_CARDS] = SNDRV_DEFAULT_STR;	/* ID for this card */
-@@ -50,6 +52,8 @@ static char *model[SNDRV_CARDS] = {[0 ... (SNDRV_CARDS - 1)] = NULL};
- static int pcm_devs[SNDRV_CARDS] = {[0 ... (SNDRV_CARDS - 1)] = 1};
- static int pcm_substreams[SNDRV_CARDS] = {[0 ... (SNDRV_CARDS - 1)] = 8};
- //static int midi_devs[SNDRV_CARDS] = {[0 ... (SNDRV_CARDS - 1)] = 2};
-+static int mixer_volume_level_min = USE_MIXER_VOLUME_LEVEL_MIN;
-+static int mixer_volume_level_max = USE_MIXER_VOLUME_LEVEL_MAX;
- #ifdef CONFIG_HIGH_RES_TIMERS
- static bool hrtimer = 1;
- #endif
-@@ -69,6 +73,10 @@ module_param_array(pcm_substreams, int, NULL, 0444);
- MODULE_PARM_DESC(pcm_substreams, "PCM substreams # (1-128) for dummy driver.");
- //module_param_array(midi_devs, int, NULL, 0444);
- //MODULE_PARM_DESC(midi_devs, "MIDI devices # (0-2) for dummy driver.");
-+module_param(mixer_volume_level_min, int, 0444);
-+MODULE_PARM_DESC(mixer_volume_level_min, "Minimum mixer volume level for dummy driver. Default: -50");
-+module_param(mixer_volume_level_max, int, 0444);
-+MODULE_PARM_DESC(mixer_volume_level_max, "Maximum mixer volume level for dummy driver. Default: 100");
- module_param(fake_buffer, bool, 0444);
- MODULE_PARM_DESC(fake_buffer, "Fake buffer allocations.");
- #ifdef CONFIG_HIGH_RES_TIMERS
-@@ -713,8 +721,8 @@ static int snd_dummy_volume_info(struct snd_kcontrol *kcontrol,
- {
- 	uinfo->type = SNDRV_CTL_ELEM_TYPE_INTEGER;
- 	uinfo->count = 2;
--	uinfo->value.integer.min = -50;
--	uinfo->value.integer.max = 100;
-+	uinfo->value.integer.min = mixer_volume_level_min;
-+	uinfo->value.integer.max = mixer_volume_level_max;
- 	return 0;
- }
-  
-@@ -739,15 +747,15 @@ static int snd_dummy_volume_put(struct snd_kcontrol *kcontrol,
- 	int left, right;
- 
- 	left = ucontrol->value.integer.value[0];
--	if (left < -50)
--		left = -50;
--	if (left > 100)
--		left = 100;
-+	if (left < mixer_volume_level_min)
-+		left = mixer_volume_level_min;
-+	if (left > mixer_volume_level_max)
-+		left = mixer_volume_level_max;
- 	right = ucontrol->value.integer.value[1];
--	if (right < -50)
--		right = -50;
--	if (right > 100)
--		right = 100;
-+	if (right < mixer_volume_level_min)
-+		right = mixer_volume_level_min;
-+	if (right > mixer_volume_level_max)
-+		right = mixer_volume_level_max;
- 	spin_lock_irq(&dummy->mixer_lock);
- 	change = dummy->mixer_volume[addr][0] != left ||
- 	         dummy->mixer_volume[addr][1] != right;
-@@ -1076,6 +1084,12 @@ static int snd_dummy_probe(struct platform_device *devptr)
- 			dummy->pcm_hw.channels_max = m->channels_max;
+ 	ret = snd_soc_register_card(card);
+ 	if (ret) {
+-		dev_err(&pdev->dev, "Failed to register our card\n");
++		dev_err_probe(&pdev->dev, ret, "Failed to register our card\n");
+ 		goto err_assert_reset;
  	}
  
-+	if (mixer_volume_level_min > mixer_volume_level_max) {
-+		pr_warn("snd-dummy: Invalid mixer volume level: min=%d, max=%d. Fall back to default value.\n",
-+		mixer_volume_level_min, mixer_volume_level_max);
-+		mixer_volume_level_min = USE_MIXER_VOLUME_LEVEL_MIN;
-+		mixer_volume_level_max = USE_MIXER_VOLUME_LEVEL_MAX;
-+	}
- 	err = snd_card_dummy_new_mixer(dummy);
- 	if (err < 0)
- 		return err;
 -- 
-2.31.0
+2.37.3
 
