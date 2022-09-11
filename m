@@ -4,61 +4,82 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id AB69FECAAD5
-	for <alsa-devel@archiver.kernel.org>; Sun, 11 Sep 2022 01:50:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C3799C6FA83
+	for <alsa-devel@archiver.kernel.org>; Sun, 11 Sep 2022 06:16:59 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D0A661663;
-	Sun, 11 Sep 2022 03:49:36 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D0A661663
+	by alsa0.perex.cz (Postfix) with ESMTPS id 011FD1693;
+	Sun, 11 Sep 2022 08:16:06 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 011FD1693
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1662861026;
-	bh=tB/hD7b4iOVsDHYNw6OwrqOAlBdG4VrJDC3wzUYRlWw=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=rhAaefiHtWIq1rnqJWZWFPsiaz9k/j+rJRy0+Y4KykKt6NO9ESyggSsUbj0dsDLJt
-	 0d8x72GIDzKArvu56JrelH0wa1Lh5uAWtu+ttXnEX1tGCZXWNW49TPo+355x0T7bQ6
-	 xahloQsWXMpvWLIGj9OZ/GQtzVguHtgq0cjovuL8=
+	s=default; t=1662877017;
+	bh=WomHucJ/mQLs/DIM5CvL5Ceew5Fp6KKonPCp5FS1Jzc=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=fIQXj4vBjorb8pPn5Hv9rsrO1fjnt6s3m4o/yL3PjIwyHPRFeZP2rKqlOj+rTyMzu
+	 unQ9td5Lvu5wPWtNfTG6nm9DcF4JY8yo8gfeAJ1/p30t0P8xfOmAPzCOZnRZvvrieQ
+	 HeHvD3EhSOT8XQTqYxA5zhfphw01L+zwDniLkC6w=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 64FF1F80169;
-	Sun, 11 Sep 2022 03:49:36 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 7F7D9F80169;
+	Sun, 11 Sep 2022 08:16:06 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id C4B14F80256; Sun, 11 Sep 2022 03:49:34 +0200 (CEST)
-Received: from casper.infradead.org (casper.infradead.org
- [IPv6:2001:8b0:10b:1236::1])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 287BCF80256; Sun, 11 Sep 2022 08:16:04 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 93A8AF8011C
- for <alsa-devel@alsa-project.org>; Sun, 11 Sep 2022 03:49:28 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 93A8AF8011C
+ by alsa1.perex.cz (Postfix) with ESMTPS id 3AF9DF800B8
+ for <alsa-devel@alsa-project.org>; Sun, 11 Sep 2022 08:16:00 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3AF9DF800B8
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org
- header.b="hphRvg2W"
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
- d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
- Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
- Content-Description:In-Reply-To:References;
- bh=v6mxseQc0nruVgsZVFGEuCPSLNpAqC95AVNaz99FMPo=; b=hphRvg2WKZgW9Z3OY+c7gQ1Kfu
- fHd99ai/6FtkPtPPw7uQgj/ChUzuKzaTCftYDzLiVmpsVNVNUjT51m4ZBTsGQTKlp16iIWMgaezlI
- Qlv1zZCF6sXzgdxf8pUnHP5Oxpna8GRC63YS7/uKL/nrf9wk6vlMl47SynEa1lQp4RSMRsxJblFgk
- b0yjS2BdtrYpLD8xENhE4WEjiRmXRfpCsOg1VUvAW5BaMRXryAPC9r6Uf84C93F0EdodsXCBalSic
- apCJH6BxZXcoCJ2gjpOgGtdaqtfNWMPlPxXxQ2QPf7xHIpSdGqLcqmYv2409sZOwla/Q5OUZiEoV2
- L4cfO8WQ==;
-Received: from [2601:1c0:6280:3f0::a6b3] (helo=casper.infradead.org)
- by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
- id 1oXC62-00EZS5-4W; Sun, 11 Sep 2022 01:49:18 +0000
-From: Randy Dunlap <rdunlap@infradead.org>
-To: linux-kernel@vger.kernel.org
-Subject: [PATCH] ASoC: wm8731: fix build when I2C is not enabled
-Date: Sat, 10 Sep 2022 18:49:11 -0700
-Message-Id: <20220911014911.6398-1-rdunlap@infradead.org>
-X-Mailer: git-send-email 2.37.3
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: alsa-devel@alsa-project.org, kernel test robot <lkp@intel.com>,
- Randy Dunlap <rdunlap@infradead.org>, Liam Girdwood <lgirdwood@gmail.com>,
- Mark Brown <broonie@kernel.org>
+ dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
+ header.b="H5HN/txg"; 
+ dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
+ header.b="SrfZe0Ud"
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 86BD91F9E8;
+ Sun, 11 Sep 2022 06:16:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1662876960; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=O0J/BLfpwlHwU/N6cJqXmVc977gffdhGSO5L+N+WACU=;
+ b=H5HN/txg7kN8ubHlEGr/yK3u/mmIL4stQyO8cqGOrEuavdGPqBHWeF6TbM7tTIkzKcQAXn
+ 4DP2hU6Qkt7lEzCYa/H3u892ZDCkEe9grhrxkX5c+4G/7HObLCwiRyIST+IntZnDM3diQ5
+ bbpD+2KLQwrvHs4+I9Q/uQfKOmgQMAo=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1662876960;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=O0J/BLfpwlHwU/N6cJqXmVc977gffdhGSO5L+N+WACU=;
+ b=SrfZe0UdKUBwoTLF7IbdlonjwToFinkN9DqxYQEIAaQhn07O22gcPs4PBkLnlXvdNyYD/n
+ mtSux1lzoc2nM5CA==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 688C0134F5;
+ Sun, 11 Sep 2022 06:16:00 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+ by imap2.suse-dmz.suse.de with ESMTPSA id epMuGCB9HWOcKwAAMHmgww
+ (envelope-from <tiwai@suse.de>); Sun, 11 Sep 2022 06:16:00 +0000
+Date: Sun, 11 Sep 2022 08:15:59 +0200
+Message-ID: <87y1uqbfmo.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Hans de Goede <hdegoede@redhat.com>
+Subject: Re: Sound broken (first couple of seconds play looping) on Sony Vaio
+ VPX11S1E (HDA, ALC262)
+In-Reply-To: <3e8697e1-87c6-7a7b-d2e8-b21f1d2f181b@redhat.com>
+References: <3e8697e1-87c6-7a7b-d2e8-b21f1d2f181b@redhat.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -74,42 +95,40 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Building wm8731-i2c.c has a kconfig warning and build errors when
-I2C is not enabled, so prevent that kconfig-uration.
+On Sat, 10 Sep 2022 19:52:36 +0200,
+Hans de Goede wrote:
+> 
+> Hi All,
+> 
+> To test some kernel work (backlight refactor) which I have been doing
+> I have booted Debian Testing with a 6.0 kernel on a Sony Vaio VPX11S1E
+> (which is ancient).
+> 
+> I noticed that when tab-completing something in a terminal the
+> terminal bell sound would keep repeating and playing another longer
+> sound sample gets stuck with the first couple of seconds of that
+> sample looping.
+> 
+> This is under GNOME3 with pulseaudio as sound server.
+> 
+> I accidentally found an interesting workaround if I run:
+> 
+> aplay -Dplughw:CARD=MID,DEV=0 /usr/share/sounds/alsa/Front_Left.wav
+> 
+> once, then that works properly and after that the problem is gone...
+> 
+> Note that this laptop does have only 1 speaker AFAICT.
+> 
+> alsa-info output below.
+> 
+> I would be happy to test any patches / module-options which might
+> fix this.
 
-WARNING: unmet direct dependencies detected for SND_SOC_WM8731_I2C
-  Depends on [n]: SOUND [=y] && !UML && SND [=m] && SND_SOC [=m] && I2C [=n]
-  Selected by [m]:
-  - SND_SOC_DB1200 [=m] && SOUND [=y] && !UML && SND [=m] && SND_SOC [=m] && SND_SOC_AU1XPSC [=m]
+Could you check the very latest Linus tree (6.0-rc5)?
+There has been a regression fix for HD-audio, and possibly this might
+be your case.
 
-and subsequent build errors:
 
-../sound/soc/codecs/wm8731-i2c.c:64:1: warning: data definition has no type or storage class
-   64 | module_i2c_driver(wm8731_i2c_driver);
-../sound/soc/codecs/wm8731-i2c.c:64:1: error: type defaults to 'int' in declaration of 'module_i2c_driver' [-Werror=implicit-int]
-../sound/soc/codecs/wm8731-i2c.c:64:1: warning: parameter names (without types) in function declaration
-../sound/soc/codecs/wm8731-i2c.c:55:26: warning: 'wm8731_i2c_driver' defined but not used [-Wunused-variable]
-   55 | static struct i2c_driver wm8731_i2c_driver = {
+thanks,
 
-Fixes: 9dc15f81baf2 ("ASoC: wm8731: Factor out the I2C and SPI bus code into separate modules")
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Cc: Mark Brown <broonie@kernel.org>
-Cc: Liam Girdwood <lgirdwood@gmail.com>
-Cc: alsa-devel@alsa-project.org
-Cc: Jaroslav Kysela <perex@perex.cz>
-Cc: Takashi Iwai
----
- sound/soc/au1x/Kconfig |    1 +
- 1 file changed, 1 insertion(+)
-
---- a/sound/soc/au1x/Kconfig
-+++ b/sound/soc/au1x/Kconfig
-@@ -54,6 +54,7 @@ config SND_SOC_DB1000
- config SND_SOC_DB1200
- 	tristate "DB1200/DB1300/DB1550 Audio support"
- 	depends on SND_SOC_AU1XPSC
-+	depends on I2C
- 	select SND_SOC_AU1XPSC_AC97
- 	select SND_SOC_AC97_CODEC
- 	select SND_SOC_WM9712
+Takashi
