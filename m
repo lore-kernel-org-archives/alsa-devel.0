@@ -4,75 +4,97 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id DB4E9ECAAA1
-	for <alsa-devel@archiver.kernel.org>; Sun, 11 Sep 2022 09:57:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 84D86ECAAD3
+	for <alsa-devel@archiver.kernel.org>; Sun, 11 Sep 2022 13:29:47 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 2753FAE9;
-	Sun, 11 Sep 2022 11:56:30 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2753FAE9
+	by alsa0.perex.cz (Postfix) with ESMTPS id 90BED16B5;
+	Sun, 11 Sep 2022 15:28:54 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 90BED16B5
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1662890240;
-	bh=Huvf4jUlfqAE0S3jajz5bFrVu/CfyNFpABu20WmrTOQ=;
+	s=default; t=1662902984;
+	bh=+TTE0PjXQmESjldWvUGUy0L9sNgYQU4qB1x8d2ZsoG4=;
 	h=Date:Subject:To:References:From:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=akfQF9/Z3sH7m6aEZRoKlcvfuys/f6OjFWzDzynBX2y2vhgZ6sl49ucCE7n6SBviR
-	 /VQ/IO+eWfC3biXvCthw6nF7XQufd18g2romyq8ACRgi465HSgPn+2jBl7Ua+0Kwvb
-	 DXgjF2qPUAAoVUnz7keqew8eeFINSbvKbQ7V6McI=
+	b=VAPesayEFXdfsVy++j2kU7pRaf6fWX+zyv65JVAIlqLJg4X22XwSky+175wmnP5cS
+	 6ws2Xql5wX1BPSY/vuQJKzuyH6EuMMbLhxmTvPOh3az9u4Gmdvr2OxYYhHVZuE4QyQ
+	 ucwSxT7ZxcZ6Iaycf9hBPbK9X4RS7YsCK0hoCZzY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id A42A3F8011C;
-	Sun, 11 Sep 2022 11:56:29 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 0A34AF800B8;
+	Sun, 11 Sep 2022 15:28:54 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 00088F8023A; Fri,  9 Sep 2022 09:16:53 +0200 (CEST)
-Received: from smtp2.axis.com (smtp2.axis.com [195.60.68.18])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id D9822F80256; Sun, 11 Sep 2022 15:28:51 +0200 (CEST)
+Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com
+ [IPv6:2a00:1450:4864:20::130])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 712C1F8016C
- for <alsa-devel@alsa-project.org>; Fri,  9 Sep 2022 09:16:50 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 712C1F8016C
+ by alsa1.perex.cz (Postfix) with ESMTPS id 64AE9F800B8
+ for <alsa-devel@alsa-project.org>; Sun, 11 Sep 2022 15:28:44 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 64AE9F800B8
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=axis.com header.i=@axis.com
- header.b="FLKN6r+4"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=axis.com; q=dns/txt; s=axis-central1; t=1662707812;
- x=1694243812;
- h=message-id:date:mime-version:subject:to:cc:references:
- from:in-reply-to:content-transfer-encoding;
- bh=DsDCmJm5QnmY/iwJKHdd96PQQQIC67/EgZ6usBBX7d8=;
- b=FLKN6r+4gHYUDjaDFoK97ZUZuYUpOiZtuucN7p+o+MtwzigtMNIAor0H
- 444Exip80DQZZObafdi3we8vv6A05/5kfnMUQVHzgQqsDP+wueV0iO1AP
- Y40UPbBtA36VCcfzs0k0Q1xssyA2yYauiWhbNCFM0OE+zopQdJNYV7uLh
- S8Wn9adU7bd9pSA3xMdIUVdW1QnFboH0EMP79jikYI4dA+T5PnMXiymgq
- 4HSyng/O7Bk/Bq+mQ7zE7AWgx6L/sONuvhVT765wcP/Aoq7cXZDsKN+H9
- x1skOH4MhQu+4VulDn1E7OQsqULgBuhoXNORBqM+7ZNHe57fQ5mTHqWej g==;
-Message-ID: <b42e7fe4-9e1b-fdda-44f2-aa87b06425c8@axis.com>
-Date: Fri, 9 Sep 2022 09:16:49 +0200
+ dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org
+ header.b="me0+3UlN"
+Received: by mail-lf1-x130.google.com with SMTP id bt10so10699974lfb.1
+ for <alsa-devel@alsa-project.org>; Sun, 11 Sep 2022 06:28:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
+ h=content-transfer-encoding:in-reply-to:from:references:cc:to
+ :content-language:subject:user-agent:mime-version:date:message-id
+ :from:to:cc:subject:date;
+ bh=+9UPKb7Ii6FzBDArfIx0mfVT3Zwlk63jeV9czZ35D+0=;
+ b=me0+3UlNEKv/v6DZqOPfcO4uSIDs3xkvdhHto4CLAR3VdMynR1c1Kbm3ZYrqIGKYfJ
+ VLVB5MrinHp2+2Q3tl+14ZONtMbB+Xr6x0VJpnggNCZYXJwf7RTHoyqiOp+Vl6vjYZGg
+ a5j3ubD8QHTK+OTZsBZ8ny6TrkyuCzAIkTLpMQW6OJFkU0x2x3TWHcH9lX4H1SsMoEsd
+ v0pgK4CNWQjqw2ZBDAGNeIfkOzqmTcl6bfO+pJv55s0Df1cqB7wmquEsIOuZHuD5DTKF
+ d9P1NH3QDR3ctRs0Im7NPYhBI78zEj/plZZlyMypPV4D9IRJeWwZsvcQiEZ9fkXpvZAS
+ q+3Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=content-transfer-encoding:in-reply-to:from:references:cc:to
+ :content-language:subject:user-agent:mime-version:date:message-id
+ :x-gm-message-state:from:to:cc:subject:date;
+ bh=+9UPKb7Ii6FzBDArfIx0mfVT3Zwlk63jeV9czZ35D+0=;
+ b=IdQTCpOjnBeMA0hgtI2J1dpQkJ9ePullXYC1CEmXrMWPJxYWP+EdwWKzpLxkA4bnc+
+ I2u5I0a/aF7BTYEy9tvrPF+596vvvqHXsnOeqpyVxs6RZIJv7xHu8LlMFJw8fcAhRwj0
+ YAFDc8xnifmA9HXkqv4FqM8Lb+byYRojzVWj9IVN8IxIQ1wqx2L4TtIjRaFXCPiZViLv
+ 6tVznIIEVmDZM7SapknNV3hZFqr4VyZ87WZ33Ce3xPOHR367MXaPrDy1yQ2MiC5KUm+8
+ k8wHwcdnvF1MgEbJJCefl7xeLhP621K70f7WJX90WUJ1prpqwnnDnqCecGIom2GkaDaq
+ Nt5g==
+X-Gm-Message-State: ACgBeo1GZ1WnfkjnAbOJK/p93Mp4Leuh/l0rL5k4Bs+kCwYaiaMnj1+q
+ 6vdOxjarKmA5OrkubjLYrSGUmQ==
+X-Google-Smtp-Source: AA6agR5Qa+jJgnLCmlDWo1wDT3VmVkwiXfyp+ekNEOEo4vuUYmkt4gZpNxtizVLDAYMar2xpMDVxVw==
+X-Received: by 2002:a05:6512:280d:b0:498:fd40:51d4 with SMTP id
+ cf13-20020a056512280d00b00498fd4051d4mr4083477lfb.167.1662902922803; 
+ Sun, 11 Sep 2022 06:28:42 -0700 (PDT)
+Received: from [192.168.0.21] (78-11-189-27.static.ip.netia.com.pl.
+ [78.11.189.27]) by smtp.gmail.com with ESMTPSA id
+ bj24-20020a2eaa98000000b0026acfe1b3b4sm674886ljb.17.2022.09.11.06.28.41
+ (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+ Sun, 11 Sep 2022 06:28:42 -0700 (PDT)
+Message-ID: <1bfa4397-47a1-ea46-5ced-8b69fb2452c0@linaro.org>
+Date: Sun, 11 Sep 2022 15:28:41 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
  Thunderbird/91.13.0
-Subject: Re: [PATCH] dt-bindings: sound: ts3a227e: add control of debounce
- times
+Subject: Re: [PATCH v9 2/2] ASoC: sun50i-dmic: dt-bindings: add DT bindings
+ for DMIC controller
 Content-Language: en-US
-To: Mark Brown <broonie@kernel.org>, Krzysztof Kozlowski
- <krzysztof.kozlowski@linaro.org>
-References: <20220907135827.16209-1-astrid.rost@axis.com>
- <2b81d814-f47a-e548-83dc-b1e38857e8ce@linaro.org>
- <Yxn9o1MVMPnFO3PM@sirena.org.uk>
-From: Astrid Rost <astridr@axis.com>
-In-Reply-To: <Yxn9o1MVMPnFO3PM@sirena.org.uk>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.0.5.60]
-X-ClientProxiedBy: se-mail01w.axis.com (10.20.40.7) To se-mail05w.axis.com
- (10.20.40.11)
-X-Mailman-Approved-At: Sun, 11 Sep 2022 11:56:28 +0200
-Cc: devicetree@vger.kernel.org,
- alsa-devel-mejlinglistan <alsa-devel@alsa-project.org>,
- Astrid Rost <astrid.rost@axis.com>, Liam Girdwood <lgirdwood@gmail.com>,
- linux-kernel@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
- kernel@axis.com, Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>
+To: =?UTF-8?B?54+t5rab?= <fengzheng923@gmail.com>
+References: <1661872039-40174-1-git-send-email-fengzheng923@gmail.com>
+ <25072fba-64e2-df11-c8f0-a274037141f0@linaro.org>
+ <CAE=m619qeaDYkWiB5kh50gY1Kndyrvo4oZuZjFKRCKK=j99K2w@mail.gmail.com>
+ <0b8b2e01-5209-6437-c79e-3cff9b29bfcb@linaro.org>
+ <CAE=m618WS-RKgWn6r1=Zfsd5N-gp3A4S725RtbDKDQ4PLsBk5w@mail.gmail.com>
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <CAE=m618WS-RKgWn6r1=Zfsd5N-gp3A4S725RtbDKDQ4PLsBk5w@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
+ samuel@sholland.org, lgirdwood@gmail.com, jernej.skrabec@gmail.com,
+ linux-kernel@vger.kernel.org, robh+dt@kernel.org, wens@csie.org,
+ broonie@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+ linux-sunxi@lists.linux.dev, linux-arm-kernel@lists.infradead.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -88,29 +110,42 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Hello,
+On 11/09/2022 08:18, 班涛 wrote:
+> Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org> 于2022年9月8日周四 17:22写道：
+> 
+>> On 07/09/2022 15:03, 班涛 wrote:
+>>>>> +++
+>>>> b/Documentation/devicetree/bindings/sound/allwinner,sun50i-h6-dmic.yaml
+>>>>> @@ -0,0 +1,79 @@
+>>>>> +# SPDX-License-Identifier: (GPL-2.0+ OR BSD-2-Clause)
+>>>>> +%YAML 1.2
+>>>>> +---
+>>>>> +$id:
+>> http://devicetree.org/schemas/sound/allwinner,sun50i-h6-dmic.yaml#
+>>>>> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+>>>>> +
+>>>>> +title: Allwinner H6 DMIC Device Tree Bindings
+>>>>
+>>>> s/Device Tree Bindings//
+>>>>
+>>>
+>>> So, modify it to 'Allwinner H6 DMIC Devices Tree Bindings', sure?
+>>
+>> You pasted the same message, so what is the modification? I wrote you a
+>>  search&replace pattern.
+>>
+> 
+> "s/Device Tree Bindings//"
+> I don't understand what you mean.
 
- > Use standard property units "-ms".
+It's a search&replace command from Unix tools...
 
-I made it in exactly the same way as it is done for the "ti,micbias:".
+https://www.cyberciti.biz/faq/how-to-use-sed-to-find-and-replace-text-in-files-in-linux-unix-shell/
 
-- ti,micbias:   Intended MICBIAS voltage (datasheet section 9.6.7).
-       Select 0/1/2/3/4/5/6/7 to specify MICBIAS voltage
-       2.1V/2.2V/2.3V/2.4V/2.5V/2.6V/2.7V/2.8V
-       Default value is "1" (2.2V).
+https://vim.fandom.com/wiki/Search_and_replace#Basic_search_and_replace
 
-
-?> Anyway new properties cannot be accepted. This has to be converted to DT
-?> schema (YAML).
-
- > Doing a whole binding conversion feels like a bit of a steep requirement
- > when people are just adding a simple property, it's a lot of stop energy
- > to figure out the tooling, do the conversion and deal with all the
- > bikeshedding that the tools don't catch.  It's definitely nice if people
- > want to look at that, for more complex binding changes it gets more
- > reasonable but for trivial properties it's disproportionate.
-
-Thanks, I am not really sure how yaml works. But I can have a look.
+Just remove that string.
 
 
-Astrid
+Best regards,
+Krzysztof
