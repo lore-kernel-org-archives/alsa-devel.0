@@ -4,66 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B268AECAAA1
-	for <alsa-devel@archiver.kernel.org>; Mon, 12 Sep 2022 12:00:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 277B0ECAAD5
+	for <alsa-devel@archiver.kernel.org>; Mon, 12 Sep 2022 12:01:25 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D17C9167B;
-	Mon, 12 Sep 2022 14:00:02 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D17C9167B
+	by alsa0.perex.cz (Postfix) with ESMTPS id 2DB5716E8;
+	Mon, 12 Sep 2022 14:00:33 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2DB5716E8
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1662984052;
-	bh=GWWaF9Ele3nDBBodDuXQSkJfAumMGqKhY0d2QLPHBeE=;
+	s=default; t=1662984083;
+	bh=wv1rqTq8BRjgtfh8asl4Ex9ddD+7awkmX+crc484eSo=;
 	h=Date:Subject:To:References:From:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=pt9caKAW/DNNZjF9cIemft8x6khhGEwOEymr4+0hMz8LlAegLyCN8/VEV7QUzV8VG
-	 P9i6BFPdPMyz4DmE9yifOT5+AUZpdih73HL8xmhezMJ/uOcb39s44l2cz2EFZ6an96
-	 DFhdtBSvgK7kyOUXoQGMdLXbVdMLUgi7ZYEb18X4=
+	b=bokZ2Rzkk2O+NHg7seQdM87oHSIdqKDNcGKsgAMCRS+878MXaB2JROVF1lUE4iT5Q
+	 DLBwgcaGiaDZiKqri5EqQJKgUGJpfzt01L7SZcbe6CsF+JqyJg4f/kLTBDo6ZDNr9o
+	 Fw5vDFtE9FfPKS4+5p184CAbWvgBwBxVc1XvI9z4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 5AA7EF8027B;
-	Mon, 12 Sep 2022 14:00:02 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 74DE9F800EC;
+	Mon, 12 Sep 2022 14:00:07 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id EA387F8030F; Mon, 12 Sep 2022 14:00:00 +0200 (CEST)
-Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+ id B9B41F80528; Mon, 12 Sep 2022 14:00:05 +0200 (CEST)
+Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 0B84EF80095;
- Mon, 12 Sep 2022 13:59:48 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0B84EF80095
+ by alsa1.perex.cz (Postfix) with ESMTPS id B96EBF800EC;
+ Mon, 12 Sep 2022 13:59:57 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B96EBF800EC
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="dE0spSnB"
+ header.b="AUeab3+4"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1662983995; x=1694519995;
+ t=1662984000; x=1694520000;
  h=message-id:date:mime-version:subject:to:cc:references:
  from:in-reply-to:content-transfer-encoding;
- bh=GWWaF9Ele3nDBBodDuXQSkJfAumMGqKhY0d2QLPHBeE=;
- b=dE0spSnBIPX/CvS3nrabzJy/0ZgyjohTrjfRrzh+AMZQ4ls7u6+fVgUR
- bDio2Oj3m/OulO8ltoDLBbvDjT1NxTZhreZg3VdKjAOfL08RMrYJVK9Tn
- kIk57rvN06OAUxBW5ac0oZOJiAZQ13N09hONf+0B7myOmV8OpqJx8Tsdh
- jDIWoCzLk5G/kXz+YZnLQD4gmtZ9hgL70fGn9swLYnR+q7KxIe9SLhwlo
- B0xZLSaCk5+FRe9KtxQfZXljLd+5KxxmkuYpZb0167pLht6m+K5r50FkG
- IcfZewlVyQHkgKG/msTk/N5O+c8u+AMlxvZ5TH/fZwla4rx6B4PRSgcEG Q==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10467"; a="298646403"
-X-IronPort-AV: E=Sophos;i="5.93,310,1654585200"; d="scan'208";a="298646403"
+ bh=wv1rqTq8BRjgtfh8asl4Ex9ddD+7awkmX+crc484eSo=;
+ b=AUeab3+4bLyLOFAo2RnBw4A/965Jsq/BbbkcOlXkKmOm8JTKGGY6hKwd
+ 41doHYDKxTk+RRcVIpAcXWBTBu6iVyUwe42U8RuXVAe57SI6qGRzQZN4/
+ WdRpZD4kSEd0FGjL4SqogR6SimmkiqDp4m9hn+AQKPutCoCj4ChngWf7p
+ VofqRdabrCHF3xwDQqFR+PxWS/IZdCz1kLewyTHANr3wyA1KHN9p+8Nvw
+ AEoH7nnghZ24B9r5PE6ebKuXsgRkPdCgATkNYr/ZigsmmNjAI6tWqUjAm
+ Bz3PF75bfKvNFEsuYZgWN8Wcqzr6Ar4RGjLhasGScluKZ9JLNNfzKN/8y A==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10467"; a="284866925"
+X-IronPort-AV: E=Sophos;i="5.93,310,1654585200"; d="scan'208";a="284866925"
 Received: from fmsmga003.fm.intel.com ([10.253.24.29])
- by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 12 Sep 2022 04:59:46 -0700
-X-IronPort-AV: E=Sophos;i="5.93,310,1654585200"; d="scan'208";a="705126286"
+ by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 12 Sep 2022 04:59:55 -0700
+X-IronPort-AV: E=Sophos;i="5.93,310,1654585200"; d="scan'208";a="705126318"
 Received: from vtsymbal-mobl.ger.corp.intel.com (HELO [10.252.32.67])
  ([10.252.32.67])
  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 12 Sep 2022 04:59:41 -0700
-Message-ID: <f67f29bc-64af-52dc-a63f-3b74523c06b0@linux.intel.com>
-Date: Mon, 12 Sep 2022 12:43:55 +0200
+ 12 Sep 2022 04:59:49 -0700
+Message-ID: <c83fb25e-ef59-63e1-4223-648dab9885ea@linux.intel.com>
+Date: Mon, 12 Sep 2022 12:53:42 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
  Firefox/91.0 Thunderbird/91.11.0
-Subject: Re: [PATCH 1/7] soundwire: bus: Do not forcibly disable child
- pm_runtime
+Subject: Re: [PATCH 5/7] soundwire: intel: Don't disable interrupt until
+ children are removed
 Content-Language: en-US
 To: Richard Fitzgerald <rf@opensource.cirrus.com>, vkoul@kernel.org,
  yung-chuan.liao@linux.intel.com, lgirdwood@gmail.com,
@@ -71,9 +71,9 @@ To: Richard Fitzgerald <rf@opensource.cirrus.com>, vkoul@kernel.org,
  kai.vehmanen@linux.intel.com, daniel.baluta@nxp.com,
  sanyog.r.kale@intel.com, broonie@kernel.org
 References: <20220907101402.4685-1-rf@opensource.cirrus.com>
- <20220907101402.4685-2-rf@opensource.cirrus.com>
+ <20220907101402.4685-6-rf@opensource.cirrus.com>
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-In-Reply-To: <20220907101402.4685-2-rf@opensource.cirrus.com>
+In-Reply-To: <20220907101402.4685-6-rf@opensource.cirrus.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 Cc: patches@opensource.cirrus.com, alsa-devel@alsa-project.org,
@@ -95,57 +95,58 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
 
-On 9/7/22 12:13, Richard Fitzgerald wrote:
-> Do not call pm_runtime_disable() of a child driver in
-> sdw_delete_slave(). We really should never be trying to disable
-> another driver's pm_runtime - it is up to the child driver to
-> disable it or the core driver framework cleanup. The driver core
-> will runtime-resume a driver before calling its remove() so we
-> shouldn't break that.
+On 9/7/22 12:14, Richard Fitzgerald wrote:
+> The cadence_master code needs the interrupt to complete message transfers.
+> When the bus driver is being removed child drivers are removed, and their
+> remove actions might need bus transactions.
 > 
-> The patch that introduced this is
-> commit dff70572e9a3 ("soundwire: bus: disable pm_runtime in sdw_slave_delete")
-> which says:
-> 
-> "prevent any race condition with the resume being executed after the
-> bus and slave devices are removed"
-> 
-> The actual problem is that the bus driver is shutting itself down before
-> the child drivers have been removed, which is the wrong way around (see
-> for example I2C and SPI drivers). If this is fixed, the bus driver will
-> still be operational when the driver framework runtime_resumes the child
-> drivers to remove them. Then the bus driver will remove() and can shut
-> down safely.
-
-The description of the fix looks good, but "if this is fixed" is very
-confusing to me.
-
-Don't you have a dependency issue here?
-
-There should be first a patch to fix the bus issue and then remove this
-pm_runtime_disable second.
-
-
-> 
-> Also note that the child drivers are not necessarily idle when the bus
-> driver is removed, so disabling their pm_runtime and stopping the bus
-> might break more than only their remove().
+> Use the sdw_master_ops.remove callback to disable the interrupt handling
+> only after the child drivers have been removed.
 > 
 > Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
 > ---
->  drivers/soundwire/bus.c | 2 --
->  1 file changed, 2 deletions(-)
+>  drivers/soundwire/intel.c | 9 ++++++++-
+>  1 file changed, 8 insertions(+), 1 deletion(-)
 > 
-> diff --git a/drivers/soundwire/bus.c b/drivers/soundwire/bus.c
-> index 0bcc2d161eb9..99429892221b 100644
-> --- a/drivers/soundwire/bus.c
-> +++ b/drivers/soundwire/bus.c
-> @@ -151,8 +151,6 @@ static int sdw_delete_slave(struct device *dev, void *data)
->  	struct sdw_slave *slave = dev_to_sdw_dev(dev);
->  	struct sdw_bus *bus = slave->bus;
+> diff --git a/drivers/soundwire/intel.c b/drivers/soundwire/intel.c
+> index 01be62fa6c83..d5e723a9c80b 100644
+> --- a/drivers/soundwire/intel.c
+> +++ b/drivers/soundwire/intel.c
+> @@ -1255,6 +1255,13 @@ static int intel_prop_read(struct sdw_bus *bus)
+>  	return 0;
+>  }
 >  
-> -	pm_runtime_disable(dev);
-> -
->  	sdw_slave_debugfs_exit(slave);
+> +static void intel_bus_remove(struct sdw_bus *bus)
+> +{
+> +	struct sdw_cdns *cdns = bus_to_cdns(bus);
+> +
+> +	sdw_cdns_enable_interrupt(cdns, false);
+
+don't you need to check for any on-going transactions on the bus?
+
+I wonder if there could be a corner case where there are no child
+devices but still a device physically attached to the bus. I am not sure
+if the 'no devices left' is a good-enough indication of no activity on
+the bus.
+
+> +}
+> +
+>  static struct sdw_master_ops sdw_intel_ops = {
+>  	.read_prop = sdw_master_read_prop,
+>  	.override_adr = sdw_dmi_override_adr,
+> @@ -1264,6 +1271,7 @@ static struct sdw_master_ops sdw_intel_ops = {
+>  	.set_bus_conf = cdns_bus_conf,
+>  	.pre_bank_switch = intel_pre_bank_switch,
+>  	.post_bank_switch = intel_post_bank_switch,
+> +	.remove = intel_bus_remove,
+>  };
 >  
->  	mutex_lock(&bus->bus_lock);
+>  static int intel_init(struct sdw_intel *sdw)
+> @@ -1502,7 +1510,6 @@ static void intel_link_remove(struct auxiliary_device *auxdev)
+>  	 */
+>  	if (!bus->prop.hw_disabled) {
+>  		intel_debugfs_exit(sdw);
+> -		sdw_cdns_enable_interrupt(cdns, false);
+>  		snd_soc_unregister_component(dev);
+>  	}
+>  	sdw_bus_master_delete(bus);
