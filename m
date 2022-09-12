@@ -4,74 +4,75 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2A361ECAAA1
-	for <alsa-devel@archiver.kernel.org>; Mon, 12 Sep 2022 07:30:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5D82AECAAD5
+	for <alsa-devel@archiver.kernel.org>; Mon, 12 Sep 2022 07:31:25 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 24E4216BD;
-	Mon, 12 Sep 2022 09:29:23 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 24E4216BD
+	by alsa0.perex.cz (Postfix) with ESMTPS id E1A8016CA;
+	Mon, 12 Sep 2022 09:30:32 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E1A8016CA
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1662967813;
-	bh=SCHerPr7WbUtcHgyOj4gjMraHsfW/q880vNVu83uw0Y=;
+	s=default; t=1662967883;
+	bh=MJLYooimvlYyFXUd7oBnJ06IF6G4qiNiOJBKWew7nZQ=;
 	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
 	 List-Post:List-Help:List-Subscribe:From;
-	b=eK/SHwH2fTFMfeR8OscWFtZzMFUDlpZnDMSjgdjHWF7ZuWDk9jvE0j+bLBMDbN/JF
-	 ruRQpFIRrlAYXTfMVkeNi3bS3qYyoxJ8yBXm75o5FGE3rGTGkMo/otKRGS8eAA51gm
-	 FNU/yBNTaw2EW1Km7Iir4xZpgtEuRAbfGLhBw5pE=
+	b=lmVEMjIGdoN7dT/YJtQdxsg0QsSLBVtSS4/7od6s8TISp8mOmMwFZAJptl/VCnsMR
+	 50END6oqv1n7tipYIKcCRqUPV6wdmeagC52dEHA1RifZN/rlK+wuo7+kHCrqyMNSwC
+	 ABrekIQishlmuIjZ6c1fIJpG/mnJsT2uMD3T29y0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id B6F92F800FE;
-	Mon, 12 Sep 2022 09:29:22 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 94159F8020D;
+	Mon, 12 Sep 2022 09:30:32 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id D73DAF8027B; Mon, 12 Sep 2022 09:29:20 +0200 (CEST)
-Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com
- [IPv6:2607:f8b0:4864:20::1035])
+ id 65CD7F8027B; Mon, 12 Sep 2022 09:30:31 +0200 (CEST)
+Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com
+ [IPv6:2607:f8b0:4864:20::102a])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 583D9F80095
- for <alsa-devel@alsa-project.org>; Mon, 12 Sep 2022 09:29:13 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 583D9F80095
+ by alsa1.perex.cz (Postfix) with ESMTPS id E1752F80095
+ for <alsa-devel@alsa-project.org>; Mon, 12 Sep 2022 09:30:24 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E1752F80095
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org
- header.b="F8NP15gZ"
-Received: by mail-pj1-x1035.google.com with SMTP id fs14so7136162pjb.5
- for <alsa-devel@alsa-project.org>; Mon, 12 Sep 2022 00:29:13 -0700 (PDT)
+ header.b="Hcmq27NH"
+Received: by mail-pj1-x102a.google.com with SMTP id
+ n23-20020a17090a091700b00202a51cc78bso5225965pjn.2
+ for <alsa-devel@alsa-project.org>; Mon, 12 Sep 2022 00:30:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=chromium.org; s=google;
  h=content-transfer-encoding:mime-version:message-id:date:subject:cc
  :to:from:from:to:cc:subject:date;
- bh=76Fc8CveDr2A+XmsMO5aUYZ5rkOnd7dGevIsjexozj4=;
- b=F8NP15gZkfBbXBlUfEXn49/A0QpQqs7gTdFVxwsMcYAnddJIIfYigbCy9aOXR/ntIR
- OianP6O0MfCRuxmweOqPokqOViD0/VkCL1x8gaRrlt+3u8VK9vInt1MNLzUSY/xphNC1
- nG3MWclY3ko3xJjNzsOLmwYsvvDzNK7BXm/dY=
+ bh=CK6XIpefy3/wH7x7ijKJf8zjoreJxucwMJjlvPQYCqM=;
+ b=Hcmq27NHAy3z+4cG0SVQQd+fZ1/jc2GeejYyOfYCsFBqXYIbMXAR5thORHA1NDWlZO
+ qnFRghwY11MQyO7syFahFHur08dpjCHZMDWn/ll+xTA2UPk2eQOh/NTRBUPZ4Z/+SlmA
+ NLwf04AXksZltPBJtDg2BTZVfaMrnzcVuSq0s=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
  h=content-transfer-encoding:mime-version:message-id:date:subject:cc
  :to:from:x-gm-message-state:from:to:cc:subject:date;
- bh=76Fc8CveDr2A+XmsMO5aUYZ5rkOnd7dGevIsjexozj4=;
- b=k4ESKF956mMWhrl+Y3djlqW38bD2naYCBn3U2gcZUGjXR4YnlFUkIuK8HNZs2JvJ81
- MqCwSITo6M9bpbw3WG7C0BspYHUa90C2swdduAYO0aBk1DQAREeNoSHAXl3vNOzyQmZo
- 3IdNYjgszi2GkIAINK+rQfmcNqY0nzG/8BxFJHLPGREvQ4fmSNkHAiY/tNcN8M8/STsK
- vd73hzztRvdRCQkmjjt7muDOnVyYJb0nM9NFeTa/i0Ym37McLD+tcUN/YcEMvjfFx3VL
- GtDzSadlK2VNNbRAYi3g9tsaXmGxCisjT5ZuEGml5AirygdPptAKlsG+rQ10VRDPb/6c
- uh7w==
-X-Gm-Message-State: ACgBeo0GNYv+b+vvRGZJcHn/yV43jjyHj9qzro7eA59tPio1siWnPBXu
- LiTYSK4P11vH5XD2R6kZ0s3L5Q==
-X-Google-Smtp-Source: AA6agR7lk1dIw7GQ9Uh3Fk6DXfrdPnmE2WjPA0REhe9qtzk8cXnzGMAKEZkDpBH/CYAawp6iFWxvUA==
-X-Received: by 2002:a17:90b:1d8c:b0:202:abf5:4b21 with SMTP id
- pf12-20020a17090b1d8c00b00202abf54b21mr10438059pjb.162.1662967751568; 
- Mon, 12 Sep 2022 00:29:11 -0700 (PDT)
+ bh=CK6XIpefy3/wH7x7ijKJf8zjoreJxucwMJjlvPQYCqM=;
+ b=rMYp7OA9HeIFfJwSsexfi55+q3hFwTydMcVvkn+IlB+QXFnsLu83NjywYYD8GNZVlB
+ I0nfpckCVMExdADE0KKSkFIf++b675V/9mO+mbG5BkLy+hVW1LqV86qEDs5DhFMG8o4s
+ 1rmri6LLuWKFh53Gi+KW2aOW9vqbc0zIBht+JgCV2YTtig6FH6a+8/8+PloxB+dYNZdZ
+ WR/zVJyZQYeN789LnAXRJ8S2wgRm1+HWbh99WqgpxbBtKJ1BPVHnxy9RAYCGgiWatkvc
+ Q1kDUAkgcDfnLYjhgL3fiWUnSR/clxrVxaxd0RfeMskY75UMCjFfEnklAaKLlQcUGohg
+ CvnA==
+X-Gm-Message-State: ACgBeo2D4mPrrpvjG1NTPEF4Tj+8jhsEmrTt1/83pmbkjGmkqa4Gfx9b
+ Io8yLqOst0fbacTros8+Zx9iew==
+X-Google-Smtp-Source: AA6agR6vFVlg3Lae6dq+F8i18SG9dsYYmiCNbnuMk+cD9kBQUAPWJAESM62XMzfoJND/WN79EeYTtA==
+X-Received: by 2002:a17:90a:1786:b0:202:856e:29bf with SMTP id
+ q6-20020a17090a178600b00202856e29bfmr16907426pja.134.1662967822211; 
+ Mon, 12 Sep 2022 00:30:22 -0700 (PDT)
 Received: from yjscloudtop.c.googlers.com.com
- (148.175.199.104.bc.googleusercontent.com. [104.199.175.148])
+ (21.160.199.104.bc.googleusercontent.com. [104.199.160.21])
  by smtp.gmail.com with ESMTPSA id
- n68-20020a622747000000b0053e599d7032sm4612214pfn.54.2022.09.12.00.29.09
+ v4-20020a63f204000000b00438eaf65766sm1962955pgh.73.2022.09.12.00.30.19
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Mon, 12 Sep 2022 00:29:10 -0700 (PDT)
+ Mon, 12 Sep 2022 00:30:20 -0700 (PDT)
 From: YJ Lee <yunjunlee@chromium.org>
 To: 
-Subject: [PATCH v1] ALSA: dummy: Fix trailing whitespaces.
-Date: Mon, 12 Sep 2022 15:28:54 +0800
-Message-Id: <20220912072854.760824-1-yunjunlee@chromium.org>
+Subject: [PATCH v1] ALSA: dummy: Add customizable volume min/max.
+Date: Mon, 12 Sep 2022 15:29:45 +0800
+Message-Id: <20220912072945.760949-1-yunjunlee@chromium.org>
 X-Mailer: git-send-email 2.37.2.789.g6183377224-goog
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -93,52 +94,95 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Fix checkpatch.pl ERROR: trailing whitespaces.
+Add module parameters to support customized min/max volume leveling,
+which will be useful to test devices with different volume granularity.
 
 Signed-off-by: YJ Lee <yunjunlee@chromium.org>
 ---
- sound/drivers/dummy.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ sound/drivers/dummy.c | 34 ++++++++++++++++++++++++----------
+ 1 file changed, 24 insertions(+), 10 deletions(-)
 
 diff --git a/sound/drivers/dummy.c b/sound/drivers/dummy.c
-index 2a7fc49c1a7c5..fcf1ee00bd214 100644
+index 2a7fc49c1a7c5..64fb2778f1e9a 100644
 --- a/sound/drivers/dummy.c
 +++ b/sound/drivers/dummy.c
-@@ -296,7 +296,7 @@ static void dummy_systimer_callback(struct timer_list *t)
- 	struct dummy_systimer_pcm *dpcm = from_timer(dpcm, t, timer);
- 	unsigned long flags;
- 	int elapsed = 0;
--	
-+
- 	spin_lock_irqsave(&dpcm->lock, flags);
- 	dummy_systimer_update(dpcm);
- 	dummy_systimer_rearm(dpcm);
-@@ -717,7 +717,7 @@ static int snd_dummy_volume_info(struct snd_kcontrol *kcontrol,
- 	uinfo->value.integer.max = 100;
- 	return 0;
- }
-- 
-+
- static int snd_dummy_volume_get(struct snd_kcontrol *kcontrol,
- 				struct snd_ctl_elem_value *ucontrol)
- {
-@@ -766,7 +766,7 @@ static const DECLARE_TLV_DB_SCALE(db_scale_dummy, -4500, 30, 0);
-   .private_value = addr }
+@@ -42,6 +42,8 @@ MODULE_LICENSE("GPL");
+ #define USE_CHANNELS_MAX 	2
+ #define USE_PERIODS_MIN 	1
+ #define USE_PERIODS_MAX 	1024
++#define USE_MIXER_VOLUME_LEVEL_MIN	-50
++#define USE_MIXER_VOLUME_LEVEL_MAX	100
  
- #define snd_dummy_capsrc_info	snd_ctl_boolean_stereo_info
-- 
-+
- static int snd_dummy_capsrc_get(struct snd_kcontrol *kcontrol,
- 				struct snd_ctl_elem_value *ucontrol)
+ static int index[SNDRV_CARDS] = SNDRV_DEFAULT_IDX;	/* Index 0-MAX */
+ static char *id[SNDRV_CARDS] = SNDRV_DEFAULT_STR;	/* ID for this card */
+@@ -50,6 +52,8 @@ static char *model[SNDRV_CARDS] = {[0 ... (SNDRV_CARDS - 1)] = NULL};
+ static int pcm_devs[SNDRV_CARDS] = {[0 ... (SNDRV_CARDS - 1)] = 1};
+ static int pcm_substreams[SNDRV_CARDS] = {[0 ... (SNDRV_CARDS - 1)] = 8};
+ //static int midi_devs[SNDRV_CARDS] = {[0 ... (SNDRV_CARDS - 1)] = 2};
++static int mixer_volume_level_min = USE_MIXER_VOLUME_LEVEL_MIN;
++static int mixer_volume_level_max = USE_MIXER_VOLUME_LEVEL_MAX;
+ #ifdef CONFIG_HIGH_RES_TIMERS
+ static bool hrtimer = 1;
+ #endif
+@@ -69,6 +73,10 @@ module_param_array(pcm_substreams, int, NULL, 0444);
+ MODULE_PARM_DESC(pcm_substreams, "PCM substreams # (1-128) for dummy driver.");
+ //module_param_array(midi_devs, int, NULL, 0444);
+ //MODULE_PARM_DESC(midi_devs, "MIDI devices # (0-2) for dummy driver.");
++module_param(mixer_volume_level_min, int, 0444);
++MODULE_PARM_DESC(mixer_volume_level_min, "Minimum mixer volume level for dummy driver. Default: -50");
++module_param(mixer_volume_level_max, int, 0444);
++MODULE_PARM_DESC(mixer_volume_level_max, "Maximum mixer volume level for dummy driver. Default: 100");
+ module_param(fake_buffer, bool, 0444);
+ MODULE_PARM_DESC(fake_buffer, "Fake buffer allocations.");
+ #ifdef CONFIG_HIGH_RES_TIMERS
+@@ -713,8 +721,8 @@ static int snd_dummy_volume_info(struct snd_kcontrol *kcontrol,
  {
-@@ -1100,7 +1100,7 @@ static int snd_dummy_suspend(struct device *pdev)
- 	snd_power_change_state(card, SNDRV_CTL_POWER_D3hot);
+ 	uinfo->type = SNDRV_CTL_ELEM_TYPE_INTEGER;
+ 	uinfo->count = 2;
+-	uinfo->value.integer.min = -50;
+-	uinfo->value.integer.max = 100;
++	uinfo->value.integer.min = mixer_volume_level_min;
++	uinfo->value.integer.max = mixer_volume_level_max;
  	return 0;
  }
--	
-+
- static int snd_dummy_resume(struct device *pdev)
- {
- 	struct snd_card *card = dev_get_drvdata(pdev);
+  
+@@ -739,15 +747,15 @@ static int snd_dummy_volume_put(struct snd_kcontrol *kcontrol,
+ 	int left, right;
+ 
+ 	left = ucontrol->value.integer.value[0];
+-	if (left < -50)
+-		left = -50;
+-	if (left > 100)
+-		left = 100;
++	if (left < mixer_volume_level_min)
++		left = mixer_volume_level_min;
++	if (left > mixer_volume_level_max)
++		left = mixer_volume_level_max;
+ 	right = ucontrol->value.integer.value[1];
+-	if (right < -50)
+-		right = -50;
+-	if (right > 100)
+-		right = 100;
++	if (right < mixer_volume_level_min)
++		right = mixer_volume_level_min;
++	if (right > mixer_volume_level_max)
++		right = mixer_volume_level_max;
+ 	spin_lock_irq(&dummy->mixer_lock);
+ 	change = dummy->mixer_volume[addr][0] != left ||
+ 	         dummy->mixer_volume[addr][1] != right;
+@@ -1076,6 +1084,12 @@ static int snd_dummy_probe(struct platform_device *devptr)
+ 			dummy->pcm_hw.channels_max = m->channels_max;
+ 	}
+ 
++	if (mixer_volume_level_min > mixer_volume_level_max) {
++		pr_warn("snd-dummy: Invalid mixer volume level: min=%d, max=%d. Fall back to default value.\n",
++		mixer_volume_level_min, mixer_volume_level_max);
++		mixer_volume_level_min = USE_MIXER_VOLUME_LEVEL_MIN;
++		mixer_volume_level_max = USE_MIXER_VOLUME_LEVEL_MAX;
++	}
+ 	err = snd_card_dummy_new_mixer(dummy);
+ 	if (err < 0)
+ 		return err;
 -- 
-2.37.2.789.g6183377224-goog
+2.31.0
+
