@@ -4,77 +4,82 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E6C9CECAAA1
-	for <alsa-devel@archiver.kernel.org>; Mon, 12 Sep 2022 07:35:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B2085ECAAA1
+	for <alsa-devel@archiver.kernel.org>; Mon, 12 Sep 2022 07:47:53 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id DA6A116D4;
-	Mon, 12 Sep 2022 09:34:39 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DA6A116D4
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3080016E0;
+	Mon, 12 Sep 2022 09:47:01 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3080016E0
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1662968129;
-	bh=BP+dJiuzrh7y+nuJhDQyqAfOsMVgQZRxfX8wPcgYDME=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=JwF0ohexUJeL4R3r5bbqAStXxcgEqJZQteFrWSNIHPM1dkokFDAxzjnyOcaHnEAYw
-	 HBbCHeC4f2JcBw6NMwZbb92TmJMDtbLAcTgIizVTvzeA4gxeIAhsgeC/NQZJZbxUqr
-	 tYuOEYJpuNwnRJqAr9rlm66/duNoZHlU7j76fHRQ=
+	s=default; t=1662968871;
+	bh=P14rjKB4Wl89C3sVaNiI+B0M0QIMe/D0EHaMlVY3cww=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=IbG9qlAO9CSJswdfYHL7WYloBOIufG0xmkFe/YXUAag0hs5fOARjlureTpCFU6Pla
+	 wBabP0CDqXs6JPTOIsWcltsHL8LGkpT7QiCBWVfcolWDjioeSh2BVGlQ2Ipe/gauJl
+	 yfD/pd+3juq76BoIn7pYfgisFuk3XcNqvU0ediAw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 8A98EF80095;
-	Mon, 12 Sep 2022 09:34:39 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id C1A25F8020D;
+	Mon, 12 Sep 2022 09:47:00 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 92E68F80095; Mon, 12 Sep 2022 09:34:36 +0200 (CEST)
-Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
- by alsa1.perex.cz (Postfix) with ESMTP id 5B1F8F80095
- for <alsa-devel@alsa-project.org>; Mon, 12 Sep 2022 09:34:29 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5B1F8F80095
-Authenticated-By: 
-X-SpamFilter-By: ArmorX SpamTrap 5.77 with qID 28C7Y1OQ0015265,
- This message is accepted by code: ctloc85258
-Received: from mail.realtek.com (rtexh36504.realtek.com.tw[172.21.6.27])
- by rtits2.realtek.com.tw (8.15.2/2.81/5.90) with ESMTPS id 28C7Y1OQ0015265
- (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=FAIL);
- Mon, 12 Sep 2022 15:34:01 +0800
-Received: from RTEXMBS01.realtek.com.tw (172.21.6.94) by
- RTEXH36504.realtek.com.tw (172.21.6.27) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.7; Mon, 12 Sep 2022 15:34:21 +0800
-Received: from oder-virtual-machine.realtek.com.tw (172.22.102.107) by
- RTEXMBS01.realtek.com.tw (172.21.6.94) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.7; Mon, 12 Sep 2022 15:34:21 +0800
-From: Oder Chiou <oder_chiou@realtek.com>
-To: <broonie@kernel.org>, <lgirdwood@gmail.com>
-Subject: [PATCH] ASoC: rt5640: Fix the issue of the abnormal JD2 status
-Date: Mon, 12 Sep 2022 15:29:31 +0800
-Message-ID: <20220912072931.1856-1-oder_chiou@realtek.com>
-X-Mailer: git-send-email 2.34.1
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [172.22.102.107]
-X-ClientProxiedBy: RTEXH36504.realtek.com.tw (172.21.6.27) To
- RTEXMBS01.realtek.com.tw (172.21.6.94)
-X-KSE-ServerInfo: RTEXMBS01.realtek.com.tw, 9
-X-KSE-AntiSpam-Interceptor-Info: trusted connection
-X-KSE-Antiphishing-Info: Clean
-X-KSE-Antiphishing-ScanningType: Deterministic
-X-KSE-Antiphishing-Method: None
-X-KSE-Antiphishing-Bases: 09/12/2022 07:11:00
-X-KSE-AttachmentFiltering-Interceptor-Info: no applicable attachment filtering
- rules found
-X-KSE-Antivirus-Interceptor-Info: scan successful
-X-KSE-Antivirus-Info: =?big5?B?Q2xlYW4sIGJhc2VzOiAyMDIyLzkvMTIgpFekyCAwMjozNzowMA==?=
-X-KSE-BulkMessagesFiltering-Scan-Result: protection disabled
-X-KSE-ServerInfo: RTEXH36504.realtek.com.tw, 9
-X-KSE-AntiSpam-Interceptor-Info: fallback
-X-KSE-Antivirus-Interceptor-Info: fallback
-X-KSE-AntiSpam-Interceptor-Info: fallback
-Cc: Oder Chiou <oder_chiou@realtek.com>, jack.yu@realtek.com,
- alsa-devel@alsa-project.org, jacal_tseng@realtek.com,
- Sameer Pujar <spujar@nvidia.com>, albertchen@realtek.com,
- derek.fang@realtek.com, shumingf@realtek.com, flove@realtek.com
+ id 3E6E8F8027B; Mon, 12 Sep 2022 09:46:59 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 44477F80095
+ for <alsa-devel@alsa-project.org>; Mon, 12 Sep 2022 09:46:52 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 44477F80095
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
+ header.b="MVSCngh8"; 
+ dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
+ header.b="FnNGCmdo"
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 6B2F2221D0;
+ Mon, 12 Sep 2022 07:46:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1662968812; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=5mmh3m3FrzXxGn1jxuRAar+Aiwf9zOJMHllSkSSBGdo=;
+ b=MVSCngh8A0XLR57DdOUjdWvGGklOeFQgdIphKfXM/EHNZ1iHMsn1sCFWX1YoUiepXv3Vv+
+ lxN3QgmD8FRXKmlm4ia/TIVbGDeDRhgya2Syck2SLCnPn+vxwnTfcuv5bkT9+gSEuW0omE
+ GQE82IFNpz6axi4U2JeV7M5cgq7ikNY=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1662968812;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=5mmh3m3FrzXxGn1jxuRAar+Aiwf9zOJMHllSkSSBGdo=;
+ b=FnNGCmdoGgWDwDWzUNvDdg4JQdYwffak/6qjvLGNQ98NB1R/4yL3kCkVuY+hKNTNcNYSCJ
+ 1Rvl6csX6j35buAw==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 48D6D139C8;
+ Mon, 12 Sep 2022 07:46:52 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+ by imap2.suse-dmz.suse.de with ESMTPSA id KnUnEezjHmM2FgAAMHmgww
+ (envelope-from <tiwai@suse.de>); Mon, 12 Sep 2022 07:46:52 +0000
+Date: Mon, 12 Sep 2022 09:46:51 +0200
+Message-ID: <87r10hhw5w.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: YJ Lee <yunjunlee@chromium.org>
+Subject: Re: [PATCH v1] ALSA: dummy: Fix trailing whitespaces.
+In-Reply-To: <20220912072854.760824-1-yunjunlee@chromium.org>
+References: <20220912072854.760824-1-yunjunlee@chromium.org>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.com>,
+ linux-kernel@vger.kernel.org, yuhsuan@chromium.org, whalechang@chromium.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -90,147 +95,14 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The patch fixes the issue of the abnormal JD2 status.
+On Mon, 12 Sep 2022 09:28:54 +0200,
+YJ Lee wrote:
+> 
+> Fix checkpatch.pl ERROR: trailing whitespaces.
+> 
+> Signed-off-by: YJ Lee <yunjunlee@chromium.org>
 
-Signed-off-by: Oder Chiou <oder_chiou@realtek.com>
-Reported-by: Sameer Pujar <spujar@nvidia.com>
----
- sound/soc/codecs/rt5640.c | 64 +++++++++++++++++++++++++++------------
- sound/soc/codecs/rt5640.h | 14 +++++++++
- 2 files changed, 59 insertions(+), 19 deletions(-)
+Thanks, applied now.
 
-diff --git a/sound/soc/codecs/rt5640.c b/sound/soc/codecs/rt5640.c
-index 5a844329800..0f8e6dd214b 100644
---- a/sound/soc/codecs/rt5640.c
-+++ b/sound/soc/codecs/rt5640.c
-@@ -2494,7 +2494,7 @@ static void rt5640_enable_jack_detect(struct snd_soc_component *component,
- 
- 	/* Select JD-source */
- 	snd_soc_component_update_bits(component, RT5640_JD_CTRL,
--		RT5640_JD_MASK, rt5640->jd_src);
-+		RT5640_JD_MASK, rt5640->jd_src << RT5640_JD_SFT);
- 
- 	/* Selecting GPIO01 as an interrupt */
- 	snd_soc_component_update_bits(component, RT5640_GPIO_CTRL1,
-@@ -2504,12 +2504,8 @@ static void rt5640_enable_jack_detect(struct snd_soc_component *component,
- 	snd_soc_component_update_bits(component, RT5640_GPIO_CTRL3,
- 		RT5640_GP1_PF_MASK, RT5640_GP1_PF_OUT);
- 
--	/* Enabling jd2 in general control 1 */
- 	snd_soc_component_write(component, RT5640_DUMMY1, 0x3f41);
- 
--	/* Enabling jd2 in general control 2 */
--	snd_soc_component_write(component, RT5640_DUMMY2, 0x4001);
--
- 	rt5640_set_ovcd_params(component);
- 
- 	/*
-@@ -2518,12 +2514,25 @@ static void rt5640_enable_jack_detect(struct snd_soc_component *component,
- 	 * pin 0/1 instead of it being stuck to 1. So we invert the JD polarity
- 	 * on systems where the hardware does not already do this.
- 	 */
--	if (rt5640->jd_inverted)
--		snd_soc_component_write(component, RT5640_IRQ_CTRL1,
--					RT5640_IRQ_JD_NOR);
--	else
--		snd_soc_component_write(component, RT5640_IRQ_CTRL1,
--					RT5640_IRQ_JD_NOR | RT5640_JD_P_INV);
-+	if (rt5640->jd_inverted) {
-+		if (rt5640->jd_src == RT5640_JD_SRC_JD1_IN4P)
-+			snd_soc_component_write(component, RT5640_IRQ_CTRL1,
-+				RT5640_IRQ_JD_NOR);
-+		else if (rt5640->jd_src == RT5640_JD_SRC_JD2_IN4N)
-+			snd_soc_component_update_bits(component, RT5640_DUMMY2,
-+				RT5640_IRQ_JD2_MASK | RT5640_JD2_MASK,
-+				RT5640_IRQ_JD2_NOR | RT5640_JD2_EN);
-+	} else {
-+		if (rt5640->jd_src == RT5640_JD_SRC_JD1_IN4P)
-+			snd_soc_component_write(component, RT5640_IRQ_CTRL1,
-+				RT5640_IRQ_JD_NOR | RT5640_JD_P_INV);
-+		else if (rt5640->jd_src == RT5640_JD_SRC_JD2_IN4N)
-+			snd_soc_component_update_bits(component, RT5640_DUMMY2,
-+				RT5640_IRQ_JD2_MASK | RT5640_JD2_P_MASK |
-+				RT5640_JD2_MASK,
-+				RT5640_IRQ_JD2_NOR | RT5640_JD2_P_INV |
-+				RT5640_JD2_EN);
-+	}
- 
- 	rt5640->jack = jack;
- 	if (rt5640->jack->status & SND_JACK_MICROPHONE) {
-@@ -2725,10 +2734,8 @@ static int rt5640_probe(struct snd_soc_component *component)
- 
- 	if (device_property_read_u32(component->dev,
- 				     "realtek,jack-detect-source", &val) == 0) {
--		if (val <= RT5640_JD_SRC_GPIO4)
--			rt5640->jd_src = val << RT5640_JD_SFT;
--		else if (val == RT5640_JD_SRC_HDA_HEADER)
--			rt5640->jd_src = RT5640_JD_SRC_HDA_HEADER;
-+		if (val <= RT5640_JD_SRC_HDA_HEADER)
-+			rt5640->jd_src = val;
- 		else
- 			dev_warn(component->dev, "Warning: Invalid jack-detect-source value: %d, leaving jack-detect disabled\n",
- 				 val);
-@@ -2809,12 +2816,31 @@ static int rt5640_resume(struct snd_soc_component *component)
- 	regcache_sync(rt5640->regmap);
- 
- 	if (rt5640->jack) {
--		if (rt5640->jd_src == RT5640_JD_SRC_HDA_HEADER)
-+		if (rt5640->jd_src == RT5640_JD_SRC_HDA_HEADER) {
- 			snd_soc_component_update_bits(component,
- 				RT5640_DUMMY2, 0x1100, 0x1100);
--		else
--			snd_soc_component_write(component, RT5640_DUMMY2,
--				0x4001);
-+		} else {
-+			if (rt5640->jd_inverted) {
-+				if (rt5640->jd_src == RT5640_JD_SRC_JD2_IN4N)
-+					snd_soc_component_update_bits(
-+						component, RT5640_DUMMY2,
-+						RT5640_IRQ_JD2_MASK |
-+						RT5640_JD2_MASK,
-+						RT5640_IRQ_JD2_NOR |
-+						RT5640_JD2_EN);
-+
-+			} else {
-+				if (rt5640->jd_src == RT5640_JD_SRC_JD2_IN4N)
-+					snd_soc_component_update_bits(
-+						component, RT5640_DUMMY2,
-+						RT5640_IRQ_JD2_MASK |
-+						RT5640_JD2_P_MASK |
-+						RT5640_JD2_MASK,
-+						RT5640_IRQ_JD2_NOR |
-+						RT5640_JD2_P_INV |
-+						RT5640_JD2_EN);
-+			}
-+		}
- 
- 		queue_delayed_work(system_long_wq, &rt5640->jack_work, 0);
- 	}
-diff --git a/sound/soc/codecs/rt5640.h b/sound/soc/codecs/rt5640.h
-index 505c9351405..f58b88e3325 100644
---- a/sound/soc/codecs/rt5640.h
-+++ b/sound/soc/codecs/rt5640.h
-@@ -1984,6 +1984,20 @@
- #define RT5640_M_MONO_ADC_R_SFT			12
- #define RT5640_MCLK_DET				(0x1 << 11)
- 
-+/* General Control 1 (0xfb) */
-+#define RT5640_IRQ_JD2_MASK			(0x1 << 12)
-+#define RT5640_IRQ_JD2_SFT			12
-+#define RT5640_IRQ_JD2_BP			(0x0 << 12)
-+#define RT5640_IRQ_JD2_NOR			(0x1 << 12)
-+#define RT5640_JD2_P_MASK			(0x1 << 10)
-+#define RT5640_JD2_P_SFT			10
-+#define RT5640_JD2_P_NOR			(0x0 << 10)
-+#define RT5640_JD2_P_INV			(0x1 << 10)
-+#define RT5640_JD2_MASK				(0x1 << 8)
-+#define RT5640_JD2_SFT				8
-+#define RT5640_JD2_DIS				(0x0 << 8)
-+#define RT5640_JD2_EN				(0x1 << 8)
-+
- /* Codec Private Register definition */
- 
- /* MIC Over current threshold scale factor (0x15) */
--- 
-2.34.1
 
+Takashi
