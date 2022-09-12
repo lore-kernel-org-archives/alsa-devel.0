@@ -4,80 +4,77 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9E723ECAAA1
-	for <alsa-devel@archiver.kernel.org>; Mon, 12 Sep 2022 12:01:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4748FECAAD5
+	for <alsa-devel@archiver.kernel.org>; Mon, 12 Sep 2022 12:02:03 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C40B516DF;
-	Mon, 12 Sep 2022 14:00:54 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C40B516DF
+	by alsa0.perex.cz (Postfix) with ESMTPS id 6AE5A15F9;
+	Mon, 12 Sep 2022 14:01:11 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6AE5A15F9
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1662984104;
-	bh=X2vL0QfGvfcJedB7T4NQXZPHTO62VdP8mJAlZZ57BQQ=;
+	s=default; t=1662984121;
+	bh=RPWT9rKsWP9FM2ux9RvEk+SvbNcKtBbwIAIZlTXQpKE=;
 	h=Date:Subject:To:References:From:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=oQNc0MjrMBLq6HHCraSfRL2+ONW3mTpTcVRJKFRXMkE7xuCsJ4rN8Zjo1zul1fiP6
-	 KZWRoKTvxdj+L63faO0trl8irr0DCdQC2mn+Y390F/yTOwebgLCUNnsSTx/UHykGJa
-	 sxeakydl3tQcbuLTnA7YSaiW5gNU/5JAy7CD6oJc=
+	b=X2u0ykGdSYGDsXQVsN9hNjFpjs72jT5PHp/Ahd3Z6ufoZBisi8XrWHXght++KgiRP
+	 MM8wGJlndbCkJAHKbQKFZW521G/c07zxMFCIsOeZH+mqIemYiue9pOitzwKpr7WusJ
+	 eNobxpCODzqTVxHj6Wj0qayJgH6e72vxHVvr5gXM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 04D85F80548;
-	Mon, 12 Sep 2022 14:00:15 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id D81A1F80558;
+	Mon, 12 Sep 2022 14:00:18 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 46C42F80549; Mon, 12 Sep 2022 14:00:13 +0200 (CEST)
-Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
+ id D329DF8053C; Mon, 12 Sep 2022 14:00:17 +0200 (CEST)
+Received: from mga18.intel.com (mga18.intel.com [134.134.136.126])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 25B88F8020D;
- Mon, 12 Sep 2022 14:00:04 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 25B88F8020D
+ by alsa1.perex.cz (Postfix) with ESMTPS id 3EB22F8053C
+ for <alsa-devel@alsa-project.org>; Mon, 12 Sep 2022 14:00:10 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3EB22F8053C
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="NHwnYR6D"
+ header.b="ELR4svMe"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1662984007; x=1694520007;
+ t=1662984012; x=1694520012;
  h=message-id:date:mime-version:subject:to:cc:references:
  from:in-reply-to:content-transfer-encoding;
- bh=X2vL0QfGvfcJedB7T4NQXZPHTO62VdP8mJAlZZ57BQQ=;
- b=NHwnYR6DRniZ7uIf10h7CprgsgH8POocWlUUb335DGvC6hfqo+yZk8v5
- gz9e++db72Ku6Gk3neHtVdJBMn3AwHwau2vbgkPnMD3cLzuq0ZYUAzwlZ
- NAiHgd1mHBV0CRPJpLQUAwF/Si7m/76rHXeptQLW+fhrGZEXvNQmswFm1
- 8AqLpNJW/iS51NpwqLcT2D6YOwgBVuGXb3g1iEjEtRWf992iDk3ncZpUf
- Dix6cEMIYfMqVMJv6OIVs2EGNRbpA9blTarMP7Wu1gu+ORoXhpLpY5usY
- Z4yeA0lH5YYZ4PqOhLjY6BTI/ZpFe9LMiwHAYEgFUPyn0KEV6VltWmmF4 w==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10467"; a="295430366"
-X-IronPort-AV: E=Sophos;i="5.93,310,1654585200"; d="scan'208";a="295430366"
+ bh=RPWT9rKsWP9FM2ux9RvEk+SvbNcKtBbwIAIZlTXQpKE=;
+ b=ELR4svMe5o/VtpOm7LPbmZ0p1nkICOgwYhZBS8d503CuL/LyfMkt7f9E
+ WkuNN8aWaCVxI0zyZjXaXgvQXiKLT19lhq+tkZuIg9LHgkCCmERH26py4
+ a0fpNj+VFeBQArUI9x+IyOZ39sY6NqwccLjh0pG0k+vTDm1TyxztMWXOU
+ /cUGMA9U2fZ/E49tUDBRH+H+D4vsdzfk0ikOHPvueza92KGy7NOsBeVe8
+ +hCEXi/ouQdk3u+fXHQ8PsS/6pIZeyh3r1UFoC2oykUZ1IRpdvJUzYS5o
+ Nn+IdAywbHnb7pOsmxgsHX1vVf4+H4wL5hwDopwjV42cUabNtzYXowpCv w==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10467"; a="280864762"
+X-IronPort-AV: E=Sophos;i="5.93,310,1654585200"; d="scan'208";a="280864762"
 Received: from fmsmga003.fm.intel.com ([10.253.24.29])
- by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 12 Sep 2022 05:00:02 -0700
-X-IronPort-AV: E=Sophos;i="5.93,310,1654585200"; d="scan'208";a="705126409"
+ by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 12 Sep 2022 05:00:08 -0700
+X-IronPort-AV: E=Sophos;i="5.93,310,1654585200"; d="scan'208";a="705126482"
 Received: from vtsymbal-mobl.ger.corp.intel.com (HELO [10.252.32.67])
  ([10.252.32.67])
  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 12 Sep 2022 04:59:57 -0700
-Message-ID: <fde38f21-bd19-0326-ffc9-6abf6a9aff3b@linux.intel.com>
-Date: Mon, 12 Sep 2022 12:57:05 +0200
+ 12 Sep 2022 05:00:05 -0700
+Message-ID: <72cd1004-e952-b167-e08d-2b5623b638fd@linux.intel.com>
+Date: Mon, 12 Sep 2022 13:00:18 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
  Firefox/91.0 Thunderbird/91.11.0
-Subject: Re: [PATCH 7/7] soundwire: bus: Fix premature removal of sdw_slave
- objects
+Subject: Re: [PATCH v2 3/5] soundwire: bus: Don't re-enumerate before status
+ is UNATTACHED
 Content-Language: en-US
 To: Richard Fitzgerald <rf@opensource.cirrus.com>, vkoul@kernel.org,
- yung-chuan.liao@linux.intel.com, lgirdwood@gmail.com,
- peter.ujfalusi@linux.intel.com, ranjani.sridharan@linux.intel.com,
- kai.vehmanen@linux.intel.com, daniel.baluta@nxp.com,
- sanyog.r.kale@intel.com, broonie@kernel.org
-References: <20220907101402.4685-1-rf@opensource.cirrus.com>
- <20220907101402.4685-8-rf@opensource.cirrus.com>
+ yung-chuan.liao@linux.intel.com, sanyog.r.kale@intel.com
+References: <20220907085259.3602-1-rf@opensource.cirrus.com>
+ <20220907085259.3602-4-rf@opensource.cirrus.com>
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-In-Reply-To: <20220907101402.4685-8-rf@opensource.cirrus.com>
+In-Reply-To: <20220907085259.3602-4-rf@opensource.cirrus.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 Cc: patches@opensource.cirrus.com, alsa-devel@alsa-project.org,
- linux-kernel@vger.kernel.org, sound-open-firmware@alsa-project.org
+ linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -95,121 +92,56 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
 
-On 9/7/22 12:14, Richard Fitzgerald wrote:
-> When the bus manager is removed sdw_bus_master_delete() should not
-> be deleting the struct sdw_slave objects until the bus manager has
-> been stopped. The first step of removing child drivers should only
-> be calling device_unregister() on the child. The counterpart to
-> sdw_drv_probe() is sdw_drv_remove(), not sdw_delete_slave().
+On 9/7/22 10:52, Richard Fitzgerald wrote:
+> Don't re-enumerate a peripheral on #0 until we have seen and
+> handled an UNATTACHED notification for that peripheral.
 > 
-> The sdw_slave objects are created by the bus manager probe() from
-> ACPI/DT information. They are not created when a child driver probes
-> so should not be deleted by a child driver remove.
+> Without this, it is possible for the UNATTACHED status to be missed
+> and so the slave->status remains at ATTACHED. If slave->status never
+> changes to UNATTACHED the child driver will never be notified of the
+> UNATTACH, and the code in sdw_handle_slave_status() will skip the
+> second part of enumeration because the slave->status has not changed.
 > 
-> Change-Id: I25cc145df12fdc7c126f8f594a5f76eedce25488
-
-spurious Change-Id
-
+> This scenario can happen because PINGs are handled in a workqueue
+> function which is working from a snapshot of an old PING, and there
+> is no guarantee when this function will run.
+> 
+> A peripheral could report attached in the PING being handled by
+> sdw_handle_slave_status(), but has since reverted to device #0 and is
+> then found in the loop in sdw_program_device_num(). Previously the
+> code would not have updated slave->status to UNATTACHED because it had
+> not yet handled a PING where that peripheral had UNATTACHED.
+> 
+> This situation happens fairly frequently with multiple peripherals on
+> a bus that are intentionally reset (for example after downloading
+> firmware).
+> 
 > Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
+
+Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+
 > ---
->  drivers/soundwire/bus.c   | 30 ++++++++++++++++++++++++++----
->  drivers/soundwire/slave.c | 21 +++++++++++++++++----
->  2 files changed, 43 insertions(+), 8 deletions(-)
+>  drivers/soundwire/bus.c | 10 ++++++++++
+>  1 file changed, 10 insertions(+)
 > 
 > diff --git a/drivers/soundwire/bus.c b/drivers/soundwire/bus.c
-> index 1327a312be86..5533eb589286 100644
+> index 1cc858b4107d..6e569a875a9b 100644
 > --- a/drivers/soundwire/bus.c
 > +++ b/drivers/soundwire/bus.c
-> @@ -146,9 +146,8 @@ int sdw_bus_master_add(struct sdw_bus *bus, struct device *parent,
->  }
->  EXPORT_SYMBOL(sdw_bus_master_add);
+> @@ -773,6 +773,16 @@ static int sdw_program_device_num(struct sdw_bus *bus)
+>  			if (sdw_compare_devid(slave, id) == 0) {
+>  				found = true;
 >  
-> -static int sdw_delete_slave(struct device *dev, void *data)
-> +static int sdw_delete_slave(struct sdw_slave *slave)
->  {
-> -	struct sdw_slave *slave = dev_to_sdw_dev(dev);
->  	struct sdw_bus *bus = slave->bus;
->  
->  	sdw_slave_debugfs_exit(slave);
-> @@ -163,7 +162,24 @@ static int sdw_delete_slave(struct device *dev, void *data)
->  	list_del_init(&slave->node);
->  	mutex_unlock(&bus->bus_lock);
->  
-> +	mutex_destroy(&slave->sdw_dev_lock);
-> +	kfree(slave);
+> +				/*
+> +				 * To prevent skipping state-machine stages don't
+> +				 * program a device until we've seen it UNATTACH.
+> +				 * Must return here because no other device on #0
+> +				 * can be detected until this one has been
+> +				 * assigned a device ID.
+> +				 */
+> +				if (slave->status != SDW_SLAVE_UNATTACHED)
+> +					return 0;
 > +
-> +	return 0;
-> +}
-> +
-> +static int sdw_remove_child(struct device *dev, void *data)
-> +{
-> +	/*
-> +	 * Do not remove the struct sdw_slave yet. This is created by
-> +	 * the bus manager probe() from ACPI information and used by the
-> +	 * bus manager to hold status of each peripheral. Its lifetime
-> +	 * is that of the bus manager.
-> +	 */
-> +
-> +	/* This will call sdw_drv_remove() */
->  	device_unregister(dev);
-> +
->  	return 0;
->  }
->  
-> @@ -171,16 +187,22 @@ static int sdw_delete_slave(struct device *dev, void *data)
->   * sdw_bus_master_delete() - delete the bus master instance
->   * @bus: bus to be deleted
->   *
-> - * Remove the instance, delete the child devices.
-> + * Remove the child devices, remove the master instance.
->   */
->  void sdw_bus_master_delete(struct sdw_bus *bus)
->  {
-> -	device_for_each_child(bus->dev, NULL, sdw_delete_slave);
-> +	struct sdw_slave *slave, *tmp;
-> +
-> +	device_for_each_child(bus->dev, NULL, sdw_remove_child);
->  
->  	/* Children have been removed so it is now safe for the bus to stop */
->  	if (bus->ops->remove)
->  		bus->ops->remove(bus);
->  
-> +	/* Now the bus is stopped it is safe to free things */
-> +	list_for_each_entry_safe(slave, tmp, &bus->slaves, node)
-> +		sdw_delete_slave(slave);
-> +
->  	sdw_master_device_del(bus);
->  
->  	sdw_bus_debugfs_exit(bus);
-> diff --git a/drivers/soundwire/slave.c b/drivers/soundwire/slave.c
-> index c1c1a2ac293a..b6161d002b97 100644
-> --- a/drivers/soundwire/slave.c
-> +++ b/drivers/soundwire/slave.c
-> @@ -10,10 +10,23 @@
->  
->  static void sdw_slave_release(struct device *dev)
->  {
-> -	struct sdw_slave *slave = dev_to_sdw_dev(dev);
-> -
-> -	mutex_destroy(&slave->sdw_dev_lock);
-> -	kfree(slave);
-> +	/*
-> +	 * The release() callback should not be empty
-> +	 * (see Documentation/core-api/kobject.rst) but the ownership
-> +	 * of struct sdw_slave is muddled. It is used for two separate
-> +	 * purposes:
-> +	 * 1) by the bus driver to track its own state information for
-> +	 *    physical devices on the bus and found in ACPI/DT, whether
-> +	 *    or not there is a child driver for it;
-> +	 * 2) to hold the child driver object.
-> +	 *
-> +	 * The struct sdw_slave cannot be freed when the child driver
-> +	 * is released because it is holding info used by the bus
-> +	 * driver. It is freed when the bus driver is removed.
-> +	 *
-> +	 * Until the ownership issue is untangled this cannot free
-> +	 * the struct sdw_slave object containing the child dev.
-> +	 */
->  }
->  
->  struct device_type sdw_slave_type = {
+>  				/*
+>  				 * Assign a new dev_num to this Slave and
+>  				 * not mark it present. It will be marked
