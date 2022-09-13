@@ -4,82 +4,84 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0F7D7C54EE9
-	for <alsa-devel@archiver.kernel.org>; Tue, 13 Sep 2022 05:56:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C8000C6FA82
+	for <alsa-devel@archiver.kernel.org>; Tue, 13 Sep 2022 05:57:42 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id EF0DB1722;
-	Tue, 13 Sep 2022 07:55:22 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EF0DB1722
+	by alsa0.perex.cz (Postfix) with ESMTPS id 8D9581728;
+	Tue, 13 Sep 2022 07:56:50 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8D9581728
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1663048573;
-	bh=2zFX9egrbk//HAF4eHUtJNUwQbZODFRbVXhZqFN4hJw=;
+	s=default; t=1663048660;
+	bh=pCiBwDWtzLs1eql3GAp/rcN0qGU76NmMET6TaYN8ZDE=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=W+0KZaRiedldTl4/VXRYq3oLCi7pqFeW+ZRnrsUxqChHtpk18NCMO5qWiVDCYVUCz
-	 Gcsg8yAF17AVLPXsBSctqzSRuHZ2JGVfJJL8PEhaEBo6X44ENBvZkOXSnb8uFqiDR6
-	 wsmQ/L8HphrCb2NAvFP0FSRKyOmlPEagl/hRaph0=
+	b=mIBI2cb5j0rl5AqWYK33xMU9IyMcrFTskLzLfv2zgzVeep31GH3NiiVh1GvI8cDVm
+	 Z52ieO1nUDHtki6asn1p93KGh9yL+7UvlZ69WPWBOMvje0tjSZzkAxcNzC0mJP8Gv7
+	 HCvPgLyW9xHBQJImxcRDJuz+98mnr3ibHnGhktRQ=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 89979F801EC;
-	Tue, 13 Sep 2022 07:55:22 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 3904AF801EC;
+	Tue, 13 Sep 2022 07:56:50 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id E14DCF80224; Tue, 13 Sep 2022 07:55:20 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+ id 2580AF80224; Tue, 13 Sep 2022 07:56:49 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id A6545F800FE
- for <alsa-devel@alsa-project.org>; Tue, 13 Sep 2022 07:55:14 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A6545F800FE
+ by alsa1.perex.cz (Postfix) with ESMTPS id 0BD72F800FE
+ for <alsa-devel@alsa-project.org>; Tue, 13 Sep 2022 07:56:42 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0BD72F800FE
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="zBNotOhy"; 
+ header.b="oIr1CxGz"; 
  dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="0woo0GTr"
+ header.b="/fhA3T9I"
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id C3B835BD68;
- Tue, 13 Sep 2022 05:55:13 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 7267F3476C;
+ Tue, 13 Sep 2022 05:56:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1663048513; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1663048602; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=PEWNwbzjWeLj0qnwYTZiQaz7IsDhE8koHkL/e891+oM=;
- b=zBNotOhyiplSJ/cwzJCNF0DVVdJXoBs0z4b9kH0kfgXoKRz34forrEU4zAYr/TO3WRULhC
- v24chUFJon16poZhJIA7WqwDzlNjRZP8TTNgi0xY5piNYBWLGC5LqQGkL0a/64eqzVOnjI
- xpJ5pY2u6zAXYLCiXHjMieEGkgTXXf8=
+ bh=SLo8BjkjRwsCH6ZjTtBLy++2jK4z6ufyzvByLLk7MRE=;
+ b=oIr1CxGzMoekLjdUSypsNdn+mmJcBNyAMkGB6eMcr0hENrrDcKzyIIc7a+ffthPtqDpLWX
+ uQ+mIR9FmSBBP0KTadeD/ONWux/2SriwcFy4THcphWFyT3KBBKD6pug/l/xJ6jerGiu2bo
+ M666cN0VKj38NGeHJVcdF+skbg69wRo=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1663048513;
+ s=susede2_ed25519; t=1663048602;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=PEWNwbzjWeLj0qnwYTZiQaz7IsDhE8koHkL/e891+oM=;
- b=0woo0GTrt5R4seMYDdsFq9kSa7fqTXCcoMfqzjJXiHTZCCVLPl1yQUd1I+wUYRpJRp68Mi
- NHM7GqbxSjBIZ9Aw==
+ bh=SLo8BjkjRwsCH6ZjTtBLy++2jK4z6ufyzvByLLk7MRE=;
+ b=/fhA3T9IHns1qjxbyV3XpU2/6HH28CBKD7U5zPvgVWnyhgvaY0t5Dv3GgS8tvpAN4e6RBC
+ 2aYTZ1+0ofbXOvCA==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 608E013AB5;
- Tue, 13 Sep 2022 05:55:13 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 38000139B3;
+ Tue, 13 Sep 2022 05:56:42 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id ZnzgFkEbIGMXXwAAMHmgww
- (envelope-from <tiwai@suse.de>); Tue, 13 Sep 2022 05:55:13 +0000
-Date: Tue, 13 Sep 2022 07:55:12 +0200
-Message-ID: <87edwfhl8f.wl-tiwai@suse.de>
+ by imap2.suse-dmz.suse.de with ESMTPSA id AtHdDJobIGNqXwAAMHmgww
+ (envelope-from <tiwai@suse.de>); Tue, 13 Sep 2022 05:56:42 +0000
+Date: Tue, 13 Sep 2022 07:56:41 +0200
+Message-ID: <87czbzhl5y.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
-To: Mohan Kumar <mkumard@nvidia.com>
-Subject: Re: [PATCH] ALSA: hda/tegra: set depop delay for tegra
-In-Reply-To: <20220913053641.23299-1-mkumard@nvidia.com>
-References: <20220913053641.23299-1-mkumard@nvidia.com>
+To: huangwenhui <huangwenhuia@uniontech.com>
+Subject: Re: [PATCH] ALSA: hda/realtek: Add quirk for Huawei WRT-WX9
+In-Reply-To: <20220913054622.15979-1-huangwenhuia@uniontech.com>
+References: <20220913054622.15979-1-huangwenhuia@uniontech.com>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
 MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
 Content-Type: text/plain; charset=US-ASCII
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, tiwai@suse.com,
- jonathanh@nvidia.com, thierry.reding@gmail.com, linux-tegra@vger.kernel.org
+Cc: alsa-devel@alsa-project.org, kailang@realtek.com,
+ tanureal@opensource.cirrus.com, jeremy.szu@canonical.com,
+ linux-kernel@vger.kernel.org, tiwai@suse.com, wse@tuxedocomputers.com,
+ hui.wang@canonical.com, sami@loone.fi, cam@neo-zeon.de
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -95,15 +97,14 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Tue, 13 Sep 2022 07:36:41 +0200,
-Mohan Kumar wrote:
+On Tue, 13 Sep 2022 07:46:22 +0200,
+huangwenhui wrote:
 > 
-> Reduce the suspend time by setting depop delay to 10ms for
-> tegra.
+> Fixes headphone and headset microphone detection on Huawei WRT-WX9.
 > 
-> Signed-off-by: Mohan Kumar <mkumard@nvidia.com>
+> Signed-off-by: huangwenhui <huangwenhuia@uniontech.com>
 
-Applied now, thanks.
+Thanks, applied now.
 
 
 Takashi
