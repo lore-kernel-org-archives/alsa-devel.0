@@ -4,80 +4,83 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2780BC54EE9
-	for <alsa-devel@archiver.kernel.org>; Tue, 13 Sep 2022 14:46:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1A82FC6FA82
+	for <alsa-devel@archiver.kernel.org>; Tue, 13 Sep 2022 14:53:17 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 508CA176B;
-	Tue, 13 Sep 2022 16:45:17 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 508CA176B
+	by alsa0.perex.cz (Postfix) with ESMTPS id 4C679177E;
+	Tue, 13 Sep 2022 16:52:25 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4C679177E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1663080367;
-	bh=Sb3gnGWHPJRhdrwN7UahAnKLy7CUaYalfistuWpJMSE=;
+	s=default; t=1663080795;
+	bh=o1JHq8XAOgAiAgrignzpo9Jlw5lZ7cjxx7NIiY0dmWc=;
 	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=ld5VfTIW1IdMS+izh6gyTx2goQareqVB/dj63BzE1hi5lmAg5YKEzHeWHQHBOmzI/
-	 T1YSsfpbJZSM5mIez2BEjT1BmcMYTJp0db5dqQ7AZcNGNb5A121b8Mv8hYM/M8ffBv
-	 fula56zS9gij1h8R466hLA6H9tyPibQARs1lccnQ=
+	b=bpZZxZ9hpMxuaPLjrGnvjHdKDI0BTo965QZ8j/lobT1kRYCgfdr+JPPe/RxLOwLZs
+	 QLZFxeIeYFI5NG9LK9XsZm0pfNV22EEOdITOF9VSYYFlBrzKvUsl2YiV4Wm/ikJ/Gm
+	 FIIJo1DjR8MFRSFSeq+JyDPThfo7bWAAwRACT0jY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id DC9A3F801EC;
-	Tue, 13 Sep 2022 16:45:16 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id EA188F801EC;
+	Tue, 13 Sep 2022 16:52:24 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 50E30F80224; Tue, 13 Sep 2022 16:45:15 +0200 (CEST)
-Received: from mail-ot1-f45.google.com (mail-ot1-f45.google.com
- [209.85.210.45])
+ id 5C5A6F80224; Tue, 13 Sep 2022 16:52:23 +0200 (CEST)
+Received: from mail-oa1-f49.google.com (mail-oa1-f49.google.com
+ [209.85.160.49])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 17100F8008E
- for <alsa-devel@alsa-project.org>; Tue, 13 Sep 2022 16:45:08 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 17100F8008E
-Received: by mail-ot1-f45.google.com with SMTP id
- br15-20020a056830390f00b0061c9d73b8bdso8232423otb.6
- for <alsa-devel@alsa-project.org>; Tue, 13 Sep 2022 07:45:08 -0700 (PDT)
+ by alsa1.perex.cz (Postfix) with ESMTPS id E9C94F800FE
+ for <alsa-devel@alsa-project.org>; Tue, 13 Sep 2022 16:52:16 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E9C94F800FE
+Received: by mail-oa1-f49.google.com with SMTP id
+ 586e51a60fabf-1274ec87ad5so32847597fac.0
+ for <alsa-devel@alsa-project.org>; Tue, 13 Sep 2022 07:52:16 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
  h=in-reply-to:content-disposition:mime-version:references:message-id
  :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date;
- bh=xD+cIArTBa7fVBRdEjR/+V87yxIC1vBaLkxPyYv0Th0=;
- b=yMifKxHYJ5vDLT526lFKsw7IR8+tKVS4b1fAmndkhA07uqUaL0pAi1La3UyDVv9uty
- wCrU4VkLq+ExRSMhobMngdGeUl/LXQZ31ThPNglcgxkOnBZl2VZqM9APcL4ip2LaHmi1
- 3kkeF3Y1LUv8w782VVcofBI4eHX79Yt3jz8gszloV5Z/e7mVTV7dSWRjYErEh3wkyiGW
- da1lnEwSC5d82JnftF/G8NtXctiiTkedeSnjNGswFy23UXhzWIZn64hzvJoIGBLVtY6c
- 6JZnVk+LLPiuySane/rHAA+PfTck1eZIkeejSBdt4NKV7BDLpUWgWMlDw8N1cAHvpHec
- +J4w==
-X-Gm-Message-State: ACgBeo2ExfnvjQDhCFCalB35AiWjc2DiCl8iR1YOkhdW+aPSKkasfh3y
- KC+TgvEydQBMj5U/aZhBJA==
-X-Google-Smtp-Source: AA6agR4nLyXa50aImdwEZSQdv3+eOb+hOyj5GXYnsnCdxRmF2RaS6mIFx4dObfBoRtnCV01fWl/P6Q==
-X-Received: by 2002:a05:6830:2684:b0:638:8768:238a with SMTP id
- l4-20020a056830268400b006388768238amr12851007otu.230.1663080306873; 
- Tue, 13 Sep 2022 07:45:06 -0700 (PDT)
+ bh=65PJEbjFYTeXGfTL+rGK4NnFiV7DNUWrNwWPhf9K4xs=;
+ b=gX+di4U2fHal/jB1AAlfDxUBoPBBl4NvpapGUV1eHAqzVbAdZxmJYxcrYBTjpUwVfe
+ F4ZHtM+jqH+2W6A3YV7l0e/OapOL+GlCp8YwEEG9z9D+Z10KttZ0AtPCSMNXtCjFSxJK
+ CG8uqEzkIOItvlPqXU+yG9/gTnJfIB1YWdC47ZTiV8E643uEeqg78q1W3nGMnzKeyYkP
+ Uw1kJ2OyVEHW4wrejcKgK+b1E/VLAFEvRb3sbOAW5p0MOc7kO4gu4ny/8EhamPggwBMa
+ P+kTyhGrRC7ITbk5d4pk8udaLGrCLJtbIa974fQ3fs1jbq/6K5zYsQv/heYqV9wW1zli
+ 1RNg==
+X-Gm-Message-State: ACgBeo2j57iW8uuCaeJbp38q8EZRyjs5FRkZ1CYwEOyJA3UZ8yq93hW4
+ 3+eqOc/Khr9jbg3dHzS9RA==
+X-Google-Smtp-Source: AA6agR6td+yioCg7UVwjN1+fuYXabS/DfqUdfH+qW5g8tBKhJrI64w17jpYDB7zKkfooui9z24VdmQ==
+X-Received: by 2002:a05:6870:f706:b0:11d:4f5c:e7b0 with SMTP id
+ ej6-20020a056870f70600b0011d4f5ce7b0mr1996734oab.49.1663080734854; 
+ Tue, 13 Sep 2022 07:52:14 -0700 (PDT)
 Received: from robh.at.kernel.org (66-90-144-107.dyn.grandenetworks.net.
  [66.90.144.107]) by smtp.gmail.com with ESMTPSA id
- x126-20020acae084000000b0034480f7eec4sm5175163oig.12.2022.09.13.07.45.06
+ o3-20020a056871078300b00127a6357bd5sm3257078oap.49.2022.09.13.07.52.13
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Tue, 13 Sep 2022 07:45:06 -0700 (PDT)
-Received: (nullmailer pid 3646146 invoked by uid 1000);
- Tue, 13 Sep 2022 14:45:05 -0000
-Date: Tue, 13 Sep 2022 09:45:05 -0500
+ Tue, 13 Sep 2022 07:52:14 -0700 (PDT)
+Received: (nullmailer pid 3655647 invoked by uid 1000);
+ Tue, 13 Sep 2022 14:52:13 -0000
+Date: Tue, 13 Sep 2022 09:52:13 -0500
 From: Rob Herring <robh@kernel.org>
 To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Subject: Re: [PATCH] ASoC: dt-bindings: qcom,q6afe: remove binding
-Message-ID: <20220913144505.GA3646113-robh@kernel.org>
-References: <20220910090856.49271-1-krzysztof.kozlowski@linaro.org>
+Subject: Re: [PATCH v4 11/15] ASoC: dt-bindings: qcom,q6adm: convert to
+ dtschema
+Message-ID: <20220913145213.GA3655614-robh@kernel.org>
+References: <20220910091428.50418-1-krzysztof.kozlowski@linaro.org>
+ <20220910091428.50418-12-krzysztof.kozlowski@linaro.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20220910090856.49271-1-krzysztof.kozlowski@linaro.org>
+In-Reply-To: <20220910091428.50418-12-krzysztof.kozlowski@linaro.org>
 Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
  Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- linux-arm-msm@vger.kernel.org, Bjorn Andersson <andersson@kernel.org>,
- Konrad Dybcio <konrad.dybcio@somainline.org>,
- Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <robh+dt@kernel.org>,
- linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>,
+ Liam Girdwood <lgirdwood@gmail.com>, linux-arm-msm@vger.kernel.org,
+ Bjorn Andersson <andersson@kernel.org>,
+ Konrad Dybcio <konrad.dybcio@somainline.org>, Andy Gross <agross@kernel.org>,
+ Rob Herring <robh+dt@kernel.org>, linux-kernel@vger.kernel.org,
+ Mark Brown <broonie@kernel.org>,
  Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
- Andy Gross <agross@kernel.org>, Banajit Goswami <bgoswami@quicinc.com>
+ Banajit Goswami <bgoswami@quicinc.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -93,16 +96,33 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Sat, 10 Sep 2022 11:08:56 +0200, Krzysztof Kozlowski wrote:
-> qcom,q6afe is already documented in soc/qcom/qcom,apr.yaml.  The
-> version-based compatibles ("qcom,q6afe-v<MAJOR-NUMBER>.<MINOR-NUMBER>")
-> are not used (neither in upstream nor in downstream DTS).
+On Sat, 10 Sep 2022 11:14:24 +0200, Krzysztof Kozlowski wrote:
+> Convert Qualcomm Audio Device Manager (Q6ADM) bindings to DT schema.
+> 
+> The original bindings documented:
+> 1. APR service node with compatibles: "qcom,q6adm" and
+> "qcom,q6adm-v<MAJOR-NUMBER>.<MINOR-NUMBER>",
+> 2. Routing child node with compatible "qcom,q6adm-routing".
+> 
+> The conversion entirely drops (1) because the compatible is already
+> documented in bindings/soc/qcom/qcom,apr.yaml.  The
+> "qcom,q6adm-v<MAJOR-NUMBER>.<MINOR-NUMBER>" on the other hand is not
+> used at all - neither in existing DTS, nor in downstream sources - so
+> versions seems to be fully auto-detectable.
 > 
 > Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+> 
 > ---
->  .../devicetree/bindings/sound/qcom,q6afe.txt  | 20 -------------------
->  1 file changed, 20 deletions(-)
->  delete mode 100644 Documentation/devicetree/bindings/sound/qcom,q6afe.txt
+> 
+> Changes since v3:
+> 1. New patch.
+> ---
+>  .../bindings/soc/qcom/qcom,apr.yaml           |  3 +-
+>  .../bindings/sound/qcom,q6adm-routing.yaml    | 52 +++++++++++++++++++
+>  .../devicetree/bindings/sound/qcom,q6adm.txt  | 39 --------------
+>  3 files changed, 54 insertions(+), 40 deletions(-)
+>  create mode 100644 Documentation/devicetree/bindings/sound/qcom,q6adm-routing.yaml
+>  delete mode 100644 Documentation/devicetree/bindings/sound/qcom,q6adm.txt
 > 
 
-Acked-by: Rob Herring <robh@kernel.org>
+Reviewed-by: Rob Herring <robh@kernel.org>
