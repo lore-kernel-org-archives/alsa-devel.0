@@ -4,78 +4,127 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 56ED2C6FA82
-	for <alsa-devel@archiver.kernel.org>; Tue, 13 Sep 2022 02:59:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 60009C6FA86
+	for <alsa-devel@archiver.kernel.org>; Tue, 13 Sep 2022 02:59:22 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 328A116FC;
-	Tue, 13 Sep 2022 04:58:19 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 328A116FC
+	by alsa0.perex.cz (Postfix) with ESMTPS id 4F8FB170A;
+	Tue, 13 Sep 2022 04:58:30 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4F8FB170A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1663037949;
-	bh=XJzL7GVUW891XaW4I6X8U6A97/7MKSISmjm6aNfAIwI=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=RZMGkJiy+r1rWF/vmAhhOUNtAOb1l8ZXPj2RvttkXcEiPOgxyyzsb3r3nSbOIBPrR
-	 IqFmEtNVcN524TZC/l3ZkQuEzu4/q42OTbHsBxIzJ+TRgqrD0ct8MX4UKXC/PARnyK
-	 MVVQe4/5TIHtNh7CtS9OyDbWwcrJVZETCdb3Had0=
+	s=default; t=1663037960;
+	bh=JfDox8JCKzrjk8KRstxdbfphNbt1H5gihtTuo3oKrMo=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=KM6GejfOHSnOEwmwQqVinM6zwWsmFvkWfviC/Ea7+GR5dfOHDGMddXVbv2C1Zojv0
+	 tg8MoPGJ2wQZIS5945gUSwrY3hwFwk4GuYomjM4ZG8MZJB50ybru9zCz8o8Z+M8cNC
+	 DH2J1sOIkMRh3o0EiwZqOos9cNDazltf9Gj2nxcc=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 8F599F80431;
-	Tue, 13 Sep 2022 04:57:31 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id CF67FF8025D;
+	Tue, 13 Sep 2022 04:58:29 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id F381CF80533; Tue, 13 Sep 2022 04:57:30 +0200 (CEST)
-Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
- by alsa1.perex.cz (Postfix) with ESMTP id 823EAF80224
- for <alsa-devel@alsa-project.org>; Tue, 13 Sep 2022 04:57:18 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 823EAF80224
-Authenticated-By: 
-X-SpamFilter-By: ArmorX SpamTrap 5.77 with qID 28D2uiC63017630,
- This message is accepted by code: ctloc85258
-Received: from mail.realtek.com (rtexh36504.realtek.com.tw[172.21.6.27])
- by rtits2.realtek.com.tw (8.15.2/2.81/5.90) with ESMTPS id 28D2uiC63017630
- (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=FAIL);
- Tue, 13 Sep 2022 10:56:44 +0800
-Received: from RTEXMBS01.realtek.com.tw (172.21.6.94) by
- RTEXH36504.realtek.com.tw (172.21.6.27) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.7; Tue, 13 Sep 2022 10:57:04 +0800
-Received: from localhost.localdomain (172.22.102.99) by
- RTEXMBS01.realtek.com.tw (172.21.6.94) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.7; Tue, 13 Sep 2022 10:57:04 +0800
-From: <derek.fang@realtek.com>
-To: <broonie@kernel.org>, <lgirdwood@gmail.com>
-Subject: [PATCH 2/3] ASoC: rt5682s: Reduce coupling of I2S1 setting
-Date: Tue, 13 Sep 2022 10:56:57 +0800
-Message-ID: <20220913025658.5005-2-derek.fang@realtek.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20220913025658.5005-1-derek.fang@realtek.com>
-References: <20220913025658.5005-1-derek.fang@realtek.com>
+ id BBE00F8028B; Tue, 13 Sep 2022 04:58:28 +0200 (CEST)
+Received: from EUR04-VI1-obe.outbound.protection.outlook.com
+ (mail-eopbgr80073.outbound.protection.outlook.com [40.107.8.73])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id E0757F801EC
+ for <alsa-devel@alsa-project.org>; Tue, 13 Sep 2022 04:58:25 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E0757F801EC
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com
+ header.b="KQfuNy4W"
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=cWIldctAxO0Uudg5aOVbnUbE9DX9xDwQPsj0d3hfX2Fv3czgjuybkMfjescB0BDOQQ+mJm1EbCi8qR2apvlHQs+tfYf8FqxiGewq5BR3oJCNbx07UcLSch6SyW0j/9xERpzeFSoKbAwT8bG4OKEy3/Mk8WKWfLJzXyIlGZjBb0g/1UrCRKJgPp3HswPu5m64RA0vlDbZopFzQ8GZgHMKhONXZkbPZTMKon26qXp/lJ+dWQGuj1dPmRcQV0w1ZjCTznvhjP2Uq7bA70Ne0KZmv6ayxMl83ZZ57KEPERTy1T9xRhLxpESsZUUwpgwkTcj1GgD51WVNywaynloEiWQfsw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=s93a9neDtpRKBMXetbkkZHgl7f8zAD28muTIpSzDU+A=;
+ b=UoKExpv29FVuqtLBdlQpX3z52a7PGCm3dN7woBkcXDnk8Vp2AdjgkxkFPX4Zv+JsXrAF4N+vIgoaiKj0/rkiEEEPvQXE9j0dSl1pOvIj2B16nMOyjFGpUu/5vB3hkJz5IwuhmZvIzP2oCT1SJDxjcmSndLLH50/NmWsRvMR7I7dVUW4bv6nSi7RoDq4051u9HM+YO6o2wRGW4OoVQHEzKICN+bTSG6VCrnqFB/lRDBJi9JedMf85HTYDi0myX7AKH4D5DO/xeDZv8YiuvhPHXy2zGVo2jsoQ8RVPPvncAa73Q7W+0a6UcAmABoJ1Kk0qWpuTIrwzWiQ7arPHrdYgIw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2; 
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=s93a9neDtpRKBMXetbkkZHgl7f8zAD28muTIpSzDU+A=;
+ b=KQfuNy4WK3puwvX/CqRGpRWShlj0th5OPRx0P2/TFWyL7/NKyeKHDGN02eWF0Zn0arbkyLCyT49e4lTuKmISTLOdmC4dC7/YBdDdjgxC+YgX41zZIgJZ0pgywyhgs1Ws7+cX481G15B1Rtgg6ax5Z4yuPi3Vn8YzLR+Pqyxg2kw=
+Received: from DB9PR04MB9355.eurprd04.prod.outlook.com (2603:10a6:10:36b::18)
+ by PA4PR04MB7502.eurprd04.prod.outlook.com (2603:10a6:102:ef::21)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5612.22; Tue, 13 Sep
+ 2022 02:58:23 +0000
+Received: from DB9PR04MB9355.eurprd04.prod.outlook.com
+ ([fe80::cd3e:5547:9f2:38d0]) by DB9PR04MB9355.eurprd04.prod.outlook.com
+ ([fe80::cd3e:5547:9f2:38d0%4]) with mapi id 15.20.5612.022; Tue, 13 Sep 2022
+ 02:58:23 +0000
+From: "S.J. Wang" <shengjiu.wang@nxp.com>
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Mark Brown
+ <broonie@kernel.org>
+Subject: Re: [PATCH] ASoC: ak4458.c: move ak4458_reset() under CONFIG_PM
+Thread-Topic: [PATCH] ASoC: ak4458.c: move ak4458_reset() under CONFIG_PM
+Thread-Index: AdjHGnJh009opkawQL+3PcERhJ/Lng==
+Date: Tue, 13 Sep 2022 02:58:23 +0000
+Message-ID: <DB9PR04MB9355019BE33DB9A2A0D2557FE3479@DB9PR04MB9355.eurprd04.prod.outlook.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nxp.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: DB9PR04MB9355:EE_|PA4PR04MB7502:EE_
+x-ms-office365-filtering-correlation-id: c7e59c7b-d87e-49d4-a416-08da9533d29d
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: kZWfbeV/qUmyo3Ta90+wtgJ4Ocix3JX4ie9JXeaRre8AGmHCKzdncxJAvrU71PbaNAlk5t/sEls9ZZQ4xZdij8Ovb8Dn2Tt9F7H0XDvliqSWYvaj/v9FhRG9cXZX2thOr5Guq89NY1Ik3M1oVmbJK+cG89iml3y/HzFokDckmHMzYt/i66KSZfKlbgrT4hqROduxUD8WmMujB8CT4SFiocBiOlPjmgkjcvV7Ak/ugPhbzKfI4hE4Z1XJufpMeAcDZdMTMe3CFxwtFYycDMKjQMVD5YZKbL3tpEv+BakTNG7t99+hCOtXjKh2sKjPlw6S8ZtjNURRpgUTbjX6VAj2X2KQngfKcy8ilyX0kTAOS7Pf5XRTKcRSyOWxnM4oOd48msVimSv5t3oYCDhWlH0L28zvV8TCW8nLT3FGR2FjAq6xHUWYjqTczoifu5dxzLa1OmA6gcPxhxCUZixluW0C3Bc/ud/6agQfCqbflANlsn1DvRWD5D64qR1WnEF8ho+M9P57PnaC67Nj4E/QOUfMMHrAhi4KiSVOwmPu/863QaC29iYc3PSQpUjtUdRAyfmdEIxfi2zrkTCLZ3raXADL4e3HYxcixHKBO2BChESArVMG+JkO/WS0KXI1GoxJGSKYTApwrbxdHxEn/UXrL/Nf4g7oedqijHPITZNxVZJs0dRKetrPwB7R/FoMek/AQw3uvT3b9l7CP+tLMdK3gL8Kl9+f392Vdko5DMmLIDRzEfkkqAqa4uswkBEG/ZLJGYGaFF7DRlhNurPerbVmvlMnSg==
+x-forefront-antispam-report: CIP:255.255.255.255; CTRY:; LANG:en; SCL:1; SRV:;
+ IPV:NLI; SFV:NSPM; H:DB9PR04MB9355.eurprd04.prod.outlook.com; PTR:; CAT:NONE;
+ SFS:(13230022)(4636009)(346002)(376002)(39860400002)(136003)(396003)(366004)(451199015)(66556008)(66946007)(76116006)(66476007)(8676002)(4326008)(38100700002)(66446008)(2906002)(110136005)(316002)(41300700001)(478600001)(38070700005)(55016003)(71200400001)(4744005)(8936002)(5660300002)(52536014)(122000001)(6506007)(7696005)(33656002)(9686003)(26005)(83380400001)(186003)(86362001)(64756008);
+ DIR:OUT; SFP:1101; 
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?3r04vyDnnBKCTakgKRRttXDABIM8yMsiKwiaVj+F9iQWwHizTzYchMuAvX7T?=
+ =?us-ascii?Q?KMyRisxijEZlO79YxiTWh8nahvYACnnf2Apx0xCGsrPkPFiOXZhFD3E0kPsI?=
+ =?us-ascii?Q?h9c+mDqNC2/DdQsffriqtCUjsOZkxwVhSrrJ9wuf9KGeXkxdqVt2ek/LUusa?=
+ =?us-ascii?Q?rcyrR/wkqydBnH76Bi00z2YatB4w9Z61yYLkYLZ6zALGrs8dJg8Y2Ng/2FTf?=
+ =?us-ascii?Q?caq74M5upHAvlf+V2WBkMRQl3pgBaIQ7WGnJuvbhrFFfKCgay3nO78pUZ8GR?=
+ =?us-ascii?Q?Ik4V895qyzI+qflshp6/55qQM4eNTL3GoBggllWZaPB/XOKP5b+7RkZ6iun1?=
+ =?us-ascii?Q?Z2c10yCFkCwAAUR5JWFwTmbeKYfHjvmNJZEugGqC3vlg7S4ZubYS8WL2DGUD?=
+ =?us-ascii?Q?SBbRMYQ4q/cWp9Mtbz0Y9yQdkaLdy53Ii26GMirzANuDB9UjtXqwxMwafjvy?=
+ =?us-ascii?Q?Urt4GBFCuBpDlBulaaG/h1zGuR+622Aatp+VCoNg+mpIa+rnpQSZd2FFrC3j?=
+ =?us-ascii?Q?cUIjBIDXOcVYBAegr7RyudmTySNaajqZYDzKvIVbH55IdpI6wbvegOaYdfat?=
+ =?us-ascii?Q?kNqRoGaf7gtEE5jotah2C6N/Vu38MFB8Z8PaWQz76mBkRYAWoQe/C0ugdwSd?=
+ =?us-ascii?Q?7q06u7BlbajTzAkIChJwuEBUNMjyynQJoV22n3QePXGVcHKbOMP5I4rXjkS2?=
+ =?us-ascii?Q?34d+4oBXRz8bCYBTzmnZkZzG84cYQTTOpbC5NlHepJERSIHZkB1GoF6Xwfod?=
+ =?us-ascii?Q?EWptuBgcWaFtUO+tPv3NnSTKPA1qiPhVi8OfcmZLnCJA86fmVo5kFeIzsVnl?=
+ =?us-ascii?Q?7IcX1VeGQTpH4D2eyvHtIdEbSruHczKDzaTThxi+alXY5PS75BG5qca2kdy6?=
+ =?us-ascii?Q?fyP30ejVw1OIQw5dwF0o6A/l2cO5LoTRnahq5DERBnRiS3+WDkTTkKJ//wFh?=
+ =?us-ascii?Q?GC9fyOzd2PqNHGYU6uuGqqIaz2JuIg0bz9qMVqIbt9/Ho+RT7TYykz9d0TQA?=
+ =?us-ascii?Q?Hb4KmNmpuuIvGzP29u4ylmxdfOb9VQVkZDr8B7iGIpKE7Eyz87s5spChNBWS?=
+ =?us-ascii?Q?gf4XDA3TswxMd22MHzGz1DPTr8ULflamIO+9ij/pZjVJS9oqH0gGJO8sOLJo?=
+ =?us-ascii?Q?PMy0kujdf3BZmQWKlQk47FFEcTaPfWpsfRAlxMkb8h/91mPQvrUGy+5qGFxl?=
+ =?us-ascii?Q?DJglJuE5RF9oJoFGMmBxchLc4EZH2fCxiYK33Rph1bUvUjA0PmQ+skSbQRCl?=
+ =?us-ascii?Q?A8OrHfaN4IXkH3uisAhNowqgVe5iEoRks2FdvFzb078b74g8Dm1dNCecVfuC?=
+ =?us-ascii?Q?xpXINU7xVDBnABkMkoN4SisIi4HKgq4OurE893OzO+aiX3u+64/9Rvv2AbAM?=
+ =?us-ascii?Q?HAnLDJII9Tftu+42O9RSqVUCcUJ3Ee3hE7J/f3FfMxXP63T6w+5yoNNcs8mW?=
+ =?us-ascii?Q?LcKAcc8Us8q1N2mPzFT+jOn6y42UPFxNqaHma8u953vTaDfv8DLyWVrfm78N?=
+ =?us-ascii?Q?4QYcfTnge0GG+rDwGH5fOwM6g4Ti0h7fEx4jwWbzFkFnNGM5KU8XJ4Qnqg42?=
+ =?us-ascii?Q?A/R3PxxYff/8xuI06k2W5EOusBZTB78n9KzN+no/?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [172.22.102.99]
-X-ClientProxiedBy: RTEXH36504.realtek.com.tw (172.21.6.27) To
- RTEXMBS01.realtek.com.tw (172.21.6.94)
-X-KSE-ServerInfo: RTEXMBS01.realtek.com.tw, 9
-X-KSE-AntiSpam-Interceptor-Info: trusted connection
-X-KSE-Antiphishing-Info: Clean
-X-KSE-Antiphishing-ScanningType: Deterministic
-X-KSE-Antiphishing-Method: None
-X-KSE-Antiphishing-Bases: 09/13/2022 02:34:00
-X-KSE-AttachmentFiltering-Interceptor-Info: no applicable attachment filtering
- rules found
-X-KSE-Antivirus-Interceptor-Info: scan successful
-X-KSE-Antivirus-Info: =?big5?B?Q2xlYW4sIGJhc2VzOiAyMDIyLzkvMTIgpFWkyCAxMTozMzowMA==?=
-X-KSE-BulkMessagesFiltering-Scan-Result: protection disabled
-X-KSE-ServerInfo: RTEXH36504.realtek.com.tw, 9
-X-KSE-AntiSpam-Interceptor-Info: fallback
-X-KSE-Antivirus-Interceptor-Info: fallback
-X-KSE-AntiSpam-Interceptor-Info: fallback
-Cc: oder_chiou@realtek.com, jack.yu@realtek.com, alsa-devel@alsa-project.org,
- lars@metafoo.de, albertchen@realtek.com, Derek Fang <derek.fang@realtek.com>,
- shumingf@realtek.com, flove@realtek.com
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: DB9PR04MB9355.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: c7e59c7b-d87e-49d4-a416-08da9533d29d
+X-MS-Exchange-CrossTenant-originalarrivaltime: 13 Sep 2022 02:58:23.5138 (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: qcjy3tQKwDCS6SN6d0ApZgfwmBogRLUllB9ZZzyLkAmiXRmOkBqIQt/aP8CIp1sDfOlURRUwN57n+bn3HfvtWQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PA4PR04MB7502
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -91,181 +140,36 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Derek Fang <derek.fang@realtek.com>
+> Hi Mark
+>=20
+> > > This patch fixup this warning
+> > >
+> > > linux/sound/soc/codecs/ak4458.c:631:13: error: 'ak4458_reset' defined
+> but\
+> > >     not used [-Werror=3Dunused-function]
+> > >   631 | static void ak4458_reset(struct ak4458_priv *ak4458, bool act=
+ive)
+> > >       |             ^~~~~~~~~~~~
+> > > cc1: all warnings being treated as errors
+> > >
+> > > Fixes: e9e7df88996d64 ("ASoC: ak4458: Remove component probe() and
+> > > remove()")
+> >
+> > Is this the best fix, or should we be adding _reset() calls into the
+> > device level probe() and remove() functions?
+>=20
+> Hmm... I'm not familiar with ak4458.c.
+> Is your opinion for original patch ? or this patch ?
+> This patch is just trying to fix the compile issue.
+>=20
+> Thank you for your help !!
+>=20
 
-Some parts of rt5682s CCF function are implemented
-by 'I2S1' dapm widget.
-The coupling risk exists, so this patch fixes it.
+Thanks for catching this issue.
+Without or with _reset() in probe() and remove(), the driver can work in bo=
+th
+case.
 
-Signed-off-by: Derek Fang <derek.fang@realtek.com>
----
- sound/soc/codecs/rt5682s.c | 104 +++++++++++++++++++++++--------------
- 1 file changed, 66 insertions(+), 38 deletions(-)
-
-diff --git a/sound/soc/codecs/rt5682s.c b/sound/soc/codecs/rt5682s.c
-index c5c55d146ddf..325d227a2b37 100644
---- a/sound/soc/codecs/rt5682s.c
-+++ b/sound/soc/codecs/rt5682s.c
-@@ -1229,41 +1229,58 @@ static int set_dmic_power(struct snd_soc_dapm_widget *w,
- 	return 0;
- }
- 
--static int set_i2s_clk(struct snd_soc_dapm_widget *w,
--		struct snd_kcontrol *kcontrol, int event)
-+static void rt5682s_set_i2s(struct rt5682s_priv *rt5682s, int id, int on)
- {
--	struct snd_soc_component *component = snd_soc_dapm_to_component(w->dapm);
--	struct rt5682s_priv *rt5682s = snd_soc_component_get_drvdata(component);
--	int pre_div, id;
--	unsigned int reg, mask, sft;
--
--	if (event != SND_SOC_DAPM_PRE_PMU)
--		return 0;
--
--	if (w->shift == RT5682S_PWR_I2S2_BIT) {
--		id = RT5682S_AIF2;
--		reg = RT5682S_I2S2_M_CLK_CTRL_1;
--		mask = RT5682S_I2S2_M_D_MASK;
--		sft = RT5682S_I2S2_M_D_SFT;
-+	struct snd_soc_component *component = rt5682s->component;
-+	int pre_div;
-+	unsigned int p_reg, p_mask, p_sft;
-+	unsigned int c_reg, c_mask, c_sft;
-+
-+	if (id == RT5682S_AIF1) {
-+		c_reg = RT5682S_ADDA_CLK_1;
-+		c_mask = RT5682S_I2S_M_D_MASK;
-+		c_sft = RT5682S_I2S_M_D_SFT;
-+		p_reg = RT5682S_PWR_DIG_1;
-+		p_mask = RT5682S_PWR_I2S1;
-+		p_sft = RT5682S_PWR_I2S1_BIT;
- 	} else {
--		id = RT5682S_AIF1;
--		reg = RT5682S_ADDA_CLK_1;
--		mask = RT5682S_I2S_M_D_MASK;
--		sft = RT5682S_I2S_M_D_SFT;
-+		c_reg = RT5682S_I2S2_M_CLK_CTRL_1;
-+		c_mask = RT5682S_I2S2_M_D_MASK;
-+		c_sft = RT5682S_I2S2_M_D_SFT;
-+		p_reg = RT5682S_PWR_DIG_1;
-+		p_mask = RT5682S_PWR_I2S2;
-+		p_sft = RT5682S_PWR_I2S2_BIT;
- 	}
- 
--	if (!rt5682s->master[id])
--		return 0;
-+	if (on && rt5682s->master[id]) {
-+		pre_div = get_clk_info(rt5682s->sysclk, rt5682s->lrck[id]);
-+		if (pre_div < 0) {
-+			dev_err(component->dev, "get pre_div failed\n");
-+			return;
-+		}
- 
--	pre_div = get_clk_info(rt5682s->sysclk, rt5682s->lrck[id]);
--	if (pre_div < 0) {
--		dev_err(component->dev, "get pre_div failed\n");
--		return -EINVAL;
-+		dev_dbg(component->dev, "lrck is %dHz and pre_div is %d for iis %d master\n",
-+			rt5682s->lrck[id], pre_div, id);
-+		snd_soc_component_update_bits(component, c_reg, c_mask, pre_div << c_sft);
- 	}
- 
--	dev_dbg(component->dev, "lrck is %dHz and pre_div is %d for iis %d master\n",
--		rt5682s->lrck[id], pre_div, id);
--	snd_soc_component_update_bits(component, reg, mask, pre_div << sft);
-+	snd_soc_component_update_bits(component, p_reg, p_mask, on << p_sft);
-+}
-+
-+static int set_i2s_event(struct snd_soc_dapm_widget *w,
-+		struct snd_kcontrol *kcontrol, int event)
-+{
-+	struct snd_soc_component *component = snd_soc_dapm_to_component(w->dapm);
-+	struct rt5682s_priv *rt5682s = snd_soc_component_get_drvdata(component);
-+	int on = 0;
-+
-+	if (SND_SOC_DAPM_EVENT_ON(event))
-+		on = 1;
-+
-+	if (!strcmp(w->name, "I2S1") && !rt5682s->wclk_enabled)
-+		rt5682s_set_i2s(rt5682s, RT5682S_AIF1, on);
-+	else if (!strcmp(w->name, "I2S2"))
-+		rt5682s_set_i2s(rt5682s, RT5682S_AIF2, on);
- 
- 	return 0;
- }
-@@ -1715,10 +1732,10 @@ static const struct snd_soc_dapm_widget rt5682s_dapm_widgets[] = {
- 	SND_SOC_DAPM_PGA("Stereo1 ADC MIX", SND_SOC_NOPM, 0, 0, NULL, 0),
- 
- 	/* Digital Interface */
--	SND_SOC_DAPM_SUPPLY("I2S1", RT5682S_PWR_DIG_1, RT5682S_PWR_I2S1_BIT,
--		0, set_i2s_clk, SND_SOC_DAPM_PRE_PMU),
--	SND_SOC_DAPM_SUPPLY("I2S2", RT5682S_PWR_DIG_1, RT5682S_PWR_I2S2_BIT,
--		0, set_i2s_clk, SND_SOC_DAPM_PRE_PMU),
-+	SND_SOC_DAPM_SUPPLY("I2S1", SND_SOC_NOPM, 0, 0,
-+		set_i2s_event, SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_POST_PMD),
-+	SND_SOC_DAPM_SUPPLY("I2S2", SND_SOC_NOPM, 0, 0,
-+		set_i2s_event, SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_POST_PMD),
- 	SND_SOC_DAPM_PGA("IF1 DAC1 L", SND_SOC_NOPM, 0, 0, NULL, 0),
- 	SND_SOC_DAPM_PGA("IF1 DAC1 R", SND_SOC_NOPM, 0, 0, NULL, 0),
- 
-@@ -2426,12 +2443,15 @@ static int rt5682s_set_bias_level(struct snd_soc_component *component,
- 			RT5682S_PWR_LDO, RT5682S_PWR_LDO);
- 		break;
- 	case SND_SOC_BIAS_STANDBY:
--		regmap_update_bits(rt5682s->regmap, RT5682S_PWR_DIG_1,
--			RT5682S_DIG_GATE_CTRL, RT5682S_DIG_GATE_CTRL);
-+		if (snd_soc_component_get_bias_level(component) == SND_SOC_BIAS_OFF)
-+			regmap_update_bits(rt5682s->regmap, RT5682S_PWR_DIG_1,
-+				RT5682S_DIG_GATE_CTRL, RT5682S_DIG_GATE_CTRL);
- 		break;
- 	case SND_SOC_BIAS_OFF:
--		regmap_update_bits(rt5682s->regmap, RT5682S_PWR_DIG_1,
--			RT5682S_DIG_GATE_CTRL | RT5682S_PWR_LDO, 0);
-+		regmap_update_bits(rt5682s->regmap, RT5682S_PWR_DIG_1, RT5682S_PWR_LDO, 0);
-+		if (!rt5682s->wclk_enabled)
-+			regmap_update_bits(rt5682s->regmap, RT5682S_PWR_DIG_1,
-+				RT5682S_DIG_GATE_CTRL, 0);
- 		break;
- 	case SND_SOC_BIAS_ON:
- 		break;
-@@ -2473,13 +2493,17 @@ static int rt5682s_wclk_prepare(struct clk_hw *hw)
- 	snd_soc_component_update_bits(component, RT5682S_PWR_ANLG_1,
- 		RT5682S_PWR_FV2, RT5682S_PWR_FV2);
- 
-+	/* Set and power on I2S1 */
-+	snd_soc_component_update_bits(component, RT5682S_PWR_DIG_1,
-+		RT5682S_DIG_GATE_CTRL, RT5682S_DIG_GATE_CTRL);
-+	rt5682s_set_i2s(rt5682s, RT5682S_AIF1, 1);
-+
- 	rt5682s->wclk_enabled = 1;
- 
- 	mutex_unlock(&rt5682s->wclk_mutex);
- 
- 	snd_soc_dapm_mutex_lock(dapm);
- 
--	snd_soc_dapm_force_enable_pin_unlocked(dapm, "I2S1");
- 	/* Only need to power PLLB due to the rate set restriction */
- 	snd_soc_dapm_force_enable_pin_unlocked(dapm, "PLLB");
- 	snd_soc_dapm_sync_unlocked(dapm);
-@@ -2505,13 +2529,17 @@ static void rt5682s_wclk_unprepare(struct clk_hw *hw)
- 		snd_soc_component_update_bits(component, RT5682S_PWR_ANLG_1,
- 			RT5682S_PWR_VREF2 | RT5682S_PWR_FV2 | RT5682S_PWR_MB, 0);
- 
-+	/* Power down I2S1 */
-+	rt5682s_set_i2s(rt5682s, RT5682S_AIF1, 0);
-+	snd_soc_component_update_bits(component, RT5682S_PWR_DIG_1,
-+		RT5682S_DIG_GATE_CTRL, 0);
-+
- 	rt5682s->wclk_enabled = 0;
- 
- 	mutex_unlock(&rt5682s->wclk_mutex);
- 
- 	snd_soc_dapm_mutex_lock(dapm);
- 
--	snd_soc_dapm_disable_pin_unlocked(dapm, "I2S1");
- 	snd_soc_dapm_disable_pin_unlocked(dapm, "PLLB");
- 	snd_soc_dapm_sync_unlocked(dapm);
- 
--- 
-2.17.1
+Best regards
+Wang shengjiu
 
