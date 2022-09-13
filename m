@@ -4,53 +4,97 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 302D7C6FA82
-	for <alsa-devel@archiver.kernel.org>; Tue, 13 Sep 2022 08:46:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 191D4C54EE9
+	for <alsa-devel@archiver.kernel.org>; Tue, 13 Sep 2022 09:09:24 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 224F2173B;
-	Tue, 13 Sep 2022 10:45:11 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 224F2173B
+	by alsa0.perex.cz (Postfix) with ESMTPS id 73DCC176C;
+	Tue, 13 Sep 2022 11:08:32 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 73DCC176C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1663058761;
-	bh=tcax+OJ/SD3UTLDjsdBUQo/VCMUnXdL9ESEB2a/g4sk=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=LrGCy0IRW25AFIC3ND9aopDLooNk4H5j2mra7nz6w4wi0C13qKgscZH6iDLbchcyd
-	 vGWjD+etPfASpjWPlBiI9Bm5b/lEJ2OFDmGWSBHGM0xRhKwU8EJnBJXiMbntB/9MXB
-	 petcfYO8k1cgDzzxLAYEf6EoNvuHRip1YCvB7d0o=
+	s=default; t=1663060162;
+	bh=ROl6abHXVu17Bp++rBfuJxlrqPVM4semcUE2qy1j78M=;
+	h=Date:Subject:To:References:From:In-Reply-To:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=swEO9WxbPbXl9RkWA2+i+H2v4eBXp6VIIeavAZQ18Hicx44ZhPFSicimRIFFL5sud
+	 y+8dbjdz7bouJtS9cnImzTbeC5j+nDrD7Ag9UULKcDwvGmU/c9E8+T/uuwN4hjaKe9
+	 gioTTJAIsdQUblNvF9FdtDrMm5gh3zI5P9RR7bZc=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id AD6D6F801EC;
-	Tue, 13 Sep 2022 10:45:10 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 1FF18F801EC;
+	Tue, 13 Sep 2022 11:08:32 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 5D99CF80224; Tue, 13 Sep 2022 10:45:09 +0200 (CEST)
-Received: from inva020.nxp.com (inva020.nxp.com [92.121.34.13])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 17CBBF80224; Tue, 13 Sep 2022 11:08:31 +0200 (CEST)
+Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com
+ [IPv6:2a00:1450:4864:20::32d])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 54E64F800FE
- for <alsa-devel@alsa-project.org>; Tue, 13 Sep 2022 10:45:02 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 54E64F800FE
-Received: from inva020.nxp.com (localhost [127.0.0.1])
- by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 793671A3289;
- Tue, 13 Sep 2022 10:45:02 +0200 (CEST)
-Received: from aprdc01srsp001v.ap-rdc01.nxp.com
- (aprdc01srsp001v.ap-rdc01.nxp.com [165.114.16.16])
- by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 426311A3279;
- Tue, 13 Sep 2022 10:45:02 +0200 (CEST)
-Received: from localhost.localdomain (shlinux2.ap.freescale.net
- [10.192.224.44])
- by aprdc01srsp001v.ap-rdc01.nxp.com (Postfix) with ESMTP id 06C72180219B;
- Tue, 13 Sep 2022 16:45:00 +0800 (+08)
-From: Shengjiu Wang <shengjiu.wang@nxp.com>
-To: lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com,
- alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] ASoC: ak4458: Add ak4458_reset in device probe and remove
-Date: Tue, 13 Sep 2022 16:26:34 +0800
-Message-Id: <1663057594-29141-1-git-send-email-shengjiu.wang@nxp.com>
-X-Mailer: git-send-email 2.7.4
-X-Virus-Scanned: ClamAV using ClamSMTP
-Cc: kuninori.morimoto.gx@renesas.com
+ by alsa1.perex.cz (Postfix) with ESMTPS id 775D2F800FE
+ for <alsa-devel@alsa-project.org>; Tue, 13 Sep 2022 11:08:28 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 775D2F800FE
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org
+ header.b="EVbXz/CO"
+Received: by mail-wm1-x32d.google.com with SMTP id o5so4954793wms.1
+ for <alsa-devel@alsa-project.org>; Tue, 13 Sep 2022 02:08:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
+ h=content-transfer-encoding:in-reply-to:from:references:cc:to
+ :content-language:subject:user-agent:mime-version:date:message-id
+ :from:to:cc:subject:date;
+ bh=TTwyWPBlC2nq54/plFBOskLhs9iNQkcq2izDuthcGZo=;
+ b=EVbXz/COmLDDnayLaWDmCDTed4QDwYcFW9tXmbl51O1CGK8hI3C0mGI0ar+OIAXxel
+ nKTPGkZ17SDl5w3odiF8JKOAkBYFglYVAju2PPYHW9ue0YauePy7g4KXnkR92kvDAwsl
+ +ykzDuu6LZSSsk85hVic7elSrucs3RxWxEr/DRDdp4L7/1v11FGaIB/994852kFCtQv1
+ 99vHYursVGu/o+IAJ2UvyWwYFaijUetqzYcLYUNprGPo9R0vHwq47G9aVuRusfR6Dl8D
+ CnGI5MsRctvqPUZ57oWccXt6PNjLJBhP1ea8KXJ5IhmjHSCWeb1P/mSu8tgnAIpKSoTj
+ +H3A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=content-transfer-encoding:in-reply-to:from:references:cc:to
+ :content-language:subject:user-agent:mime-version:date:message-id
+ :x-gm-message-state:from:to:cc:subject:date;
+ bh=TTwyWPBlC2nq54/plFBOskLhs9iNQkcq2izDuthcGZo=;
+ b=4Nz7FUB2rmFXFWipIAHWNxMIcoVNKSti1fR2sYmUrQX55LUQYaVwlzaAKN5H8VENmx
+ RwMJu24yxaRNiTxOi9BZvdrt45WGrvyThMKDVcXbn/vr0E5UmMpZu+ce5E8HGR3sLQHm
+ PBiScvi+EUAnCtB2fOQJHcxpp+m2d9aQJaTNqxoMrMLWjtqQde+vW7noCNsoRx+7te9T
+ JnmRusKMamdcP+eGy0fGuab2dNXO8/Xxj7TS4PftV8nfd8GHJW7LztqbmZbzMfkdCaGB
+ jBNEhHm2oWKPwsLFDfvaAjU05XqYy8zWgQrKBdVGnU6JT5coPMRwuE/IC9KxMU0GEMOP
+ N09Q==
+X-Gm-Message-State: ACgBeo3C8PJGuE1qEjk3c20p/wcnw58N45vMxGMug4qOnIsCS5dxk6Ir
+ V0SqAcSHzi+mU/+VCLbuNs58fQ==
+X-Google-Smtp-Source: AA6agR6MS0ohvt3dRo5ZeiC0fhkxAEld5LpHSpFEL7u4/Ny/JfV4trZR/bAn5Ie8U9zgpAjIaPp5VQ==
+X-Received: by 2002:a05:600c:4fd4:b0:3a6:2694:e3bc with SMTP id
+ o20-20020a05600c4fd400b003a62694e3bcmr1563171wmq.60.1663060106741; 
+ Tue, 13 Sep 2022 02:08:26 -0700 (PDT)
+Received: from [10.119.22.201] ([89.101.193.70])
+ by smtp.gmail.com with ESMTPSA id
+ y4-20020adfd084000000b002206203ed3dsm9756730wrh.29.2022.09.13.02.08.24
+ (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+ Tue, 13 Sep 2022 02:08:26 -0700 (PDT)
+Message-ID: <bf9c7756-22ec-9900-b280-dcdf1e102178@linaro.org>
+Date: Tue, 13 Sep 2022 11:08:24 +0200
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.13.0
+Subject: Re: [PATCH v3 00/14] ASoC/qcom/arm64: Qualcomm ADSP DTS and binding
+ fixes
+Content-Language: en-US
+To: Mark Brown <broonie@kernel.org>
+References: <20220908091946.44800-1-krzysztof.kozlowski@linaro.org>
+ <Yx9IKU4+SjQJGuP1@sirena.org.uk>
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <Yx9IKU4+SjQJGuP1@sirena.org.uk>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ linux-arm-msm@vger.kernel.org, Bjorn Andersson <andersson@kernel.org>,
+ Konrad Dybcio <konrad.dybcio@somainline.org>,
+ Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <robh+dt@kernel.org>,
+ linux-kernel@vger.kernel.org, Andy Gross <agross@kernel.org>,
+ Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+ Banajit Goswami <bgoswami@quicinc.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -66,42 +110,23 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-This patch fixup this warning when CONFIG_PM not defined
+On 12/09/2022 16:54, Mark Brown wrote:
+> On Thu, Sep 08, 2022 at 11:19:32AM +0200, Krzysztof Kozlowski wrote:
+> 
+>> Dependencies/merging
+>> ====================
+>> 1. The DTS patches are independent.
+>> 2. The binding patches should come together, because of context changes. Could
+>>    be one of: Qualcomm SoC, ASoC or DT tree.
+> 
+> I'm happy to pick them up if people are happy with that, they
+> look to be mostly ASoC changes?
 
-linux/sound/soc/codecs/ak4458.c:631:13: error: 'ak4458_reset' defined but\
-        not used [-Werror=unused-function]
-  631 | static void ak4458_reset(struct ak4458_priv *ak4458, bool active)
-      |             ^~~~~~~~~~~~
-cc1: all warnings being treated as errors
+Hi Mark,
 
-Fixes: e9e7df88996d64 ("ASoC: ak4458: Remove component probe() and remove()")
-Reported-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
----
- sound/soc/codecs/ak4458.c | 4 ++++
- 1 file changed, 4 insertions(+)
+This sounds reasonable, please go ahead. Just take note that I sent a v4
+with minor changes (re-order for better bisectability and one new patch
+ in the set).
 
-diff --git a/sound/soc/codecs/ak4458.c b/sound/soc/codecs/ak4458.c
-index b534212096ee..626310859814 100644
---- a/sound/soc/codecs/ak4458.c
-+++ b/sound/soc/codecs/ak4458.c
-@@ -781,12 +781,16 @@ static int ak4458_i2c_probe(struct i2c_client *i2c)
- 
- 	pm_runtime_enable(&i2c->dev);
- 	regcache_cache_only(ak4458->regmap, true);
-+	ak4458_reset(ak4458, false);
- 
- 	return 0;
- }
- 
- static int ak4458_i2c_remove(struct i2c_client *i2c)
- {
-+	struct ak4458_priv *ak4458 = i2c_get_clientdata(i2c);
-+
-+	ak4458_reset(ak4458, true);
- 	pm_runtime_disable(&i2c->dev);
- 
- 	return 0;
--- 
-2.34.1
-
+Best regards,
+Krzysztof
