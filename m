@@ -4,61 +4,62 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E5D5DECAAD8
-	for <alsa-devel@archiver.kernel.org>; Wed, 14 Sep 2022 09:04:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5591CECAAD8
+	for <alsa-devel@archiver.kernel.org>; Wed, 14 Sep 2022 09:04:56 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 212F21831;
-	Wed, 14 Sep 2022 11:03:50 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 212F21831
+	by alsa0.perex.cz (Postfix) with ESMTPS id 62E91186C;
+	Wed, 14 Sep 2022 11:04:04 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 62E91186C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1663146280;
-	bh=ApP5aHfwt00flHGkbd48EuZBwfzU0RjCtFfNvrtur/U=;
+	s=default; t=1663146294;
+	bh=DJM3CoZYpCVzX8l096vek1rNTFNHFKWn2oEvcTzk1Vs=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=YSfcpQt6vbTcGGM+SB+QyrSVT2b8nWa5S14DBy++tCMSRUnDQ/9L5FNLka1idDAPa
-	 /frH6mbr3yh7Wj3jSfnIxYacnPI3Dn0HNAijFQ5u1zOOpN4Tqj4oxDl1943UOpqpPQ
-	 J5lk5VM+lGsIRGs4TflL2Ys7fbQvo3WVUdwCnEyE=
+	b=KWcMIniPwSqyjk+lLZOWk+Tr6z+x2l/IM8I7RJsKy9qKdjVLQmA9SdyjEsUX9e44m
+	 0IrM6bcaDmUWlhPSObHktz8FV9QI2OmBhudLjA0zuQDRpUH9cqQev7L9taMHjC1363
+	 tydhdV1d5nPopugduRNqM6hzkPc95Bck2TZO/ICc=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id BE723F80535;
-	Wed, 14 Sep 2022 11:03:33 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 23D1AF801D8;
+	Wed, 14 Sep 2022 11:03:35 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 8F11BF8014E; Wed, 14 Sep 2022 11:03:21 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+ id 365EDF80533; Wed, 14 Sep 2022 11:03:24 +0200 (CEST)
+Received: from ams.source.kernel.org (ams.source.kernel.org
+ [IPv6:2604:1380:4601:e00::1])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 2BA8FF8014B
- for <alsa-devel@alsa-project.org>; Wed, 14 Sep 2022 11:02:51 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2BA8FF8014B
+ by alsa1.perex.cz (Postfix) with ESMTPS id 5EBD7F801D8
+ for <alsa-devel@alsa-project.org>; Wed, 14 Sep 2022 11:02:59 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5EBD7F801D8
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="L8dvdWpS"
+ header.b="bqGYRGQk"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id 825EB619B0;
- Wed, 14 Sep 2022 09:02:50 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 608C9C433D6;
- Wed, 14 Sep 2022 09:02:48 +0000 (UTC)
+ by ams.source.kernel.org (Postfix) with ESMTPS id 4C442B81714;
+ Wed, 14 Sep 2022 09:02:59 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 54654C433D7;
+ Wed, 14 Sep 2022 09:02:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1663146169;
- bh=ApP5aHfwt00flHGkbd48EuZBwfzU0RjCtFfNvrtur/U=;
+ s=k20201202; t=1663146178;
+ bh=DJM3CoZYpCVzX8l096vek1rNTFNHFKWn2oEvcTzk1Vs=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=L8dvdWpST4s/1cBSmf4zRcZq1znaUTHTu0wUdcRkEWTuukydb3PlFJIyb9v8U3htd
- AixTWrAC7zD7lNYiclMHFlYTOdNdNitBw42iqntxDlL+S3st/i/U8a1iBIyYpGyzTT
- x8nCNOv01aeO3i+9ZRMPcCN2rvWzziLYwblCh+olI71MPB4SZrvslK5P8u+XMHE3mV
- NIyfbfo6CHG+UGwsYPJ27KPJrbcRZJ333XN4QPwXCy3JfY0JakjiiVcmq6GsQ0PcqY
- O/81qZuiXgvH3gZUpBRqFeIm4Xbftn8wvk2ZI2lL3cBtavToYMdXWP6uVDrJ6Ofgxw
- XO42VnsKXbJDQ==
+ b=bqGYRGQklt+VtROx5CbevZalq4pcVTlrri0p+cBrihyDMfHtMucL5erZGF0Ag72RV
+ 4rnrrXQVJHzCiT2itQwmK5+lPcLBAvMiFUfbs6M2k4VtkGE7UAtihNhcfuKNyQTSQj
+ n7Ht/XYE3HeV08lTmCjeuyMjwpbE6aLrf+D1g4vqn6mz+jokjQZHtC3+onCjuZ3Ct5
+ vbxCcIrn0v5Xe24AYvWQPFr1hO4CN+96OQ4t4pynvNPJO0gfWzHPHTUJQmJp+hHQMg
+ 6XLHWPjngIBLJMSgoj9I2MoZ3EZVccvCFKlZL6oGASsPupr4+CdN+OAYA2oay8hROl
+ 4hzMBOu8dElJQ==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.15 08/16] ALSA: hda/sigmatel: Keep power up while
- beep is enabled
-Date: Wed, 14 Sep 2022 05:02:16 -0400
-Message-Id: <20220914090224.470913-8-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.15 10/16] ALSA: usb-audio: Fix an out-of-bounds bug
+ in __snd_usb_parse_audio_interface()
+Date: Wed, 14 Sep 2022 05:02:18 -0400
+Message-Id: <20220914090224.470913-10-sashal@kernel.org>
 X-Mailer: git-send-email 2.35.1
 In-Reply-To: <20220914090224.470913-1-sashal@kernel.org>
 References: <20220914090224.470913-1-sashal@kernel.org>
@@ -66,8 +67,9 @@ MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
-Cc: Takashi Iwai <tiwai@suse.de>, Sasha Levin <sashal@kernel.org>,
- alsa-devel@alsa-project.org, tiwai@suse.com
+Cc: Sasha Levin <sashal@kernel.org>, alsa-devel@alsa-project.org,
+ Dongxiang Ke <kdx.glider@gmail.com>, Takashi Iwai <tiwai@suse.de>,
+ tiwai@suse.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -83,69 +85,37 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Takashi Iwai <tiwai@suse.de>
+From: Dongxiang Ke <kdx.glider@gmail.com>
 
-[ Upstream commit 414d38ba871092aeac4ed097ac4ced89486646f7 ]
+[ Upstream commit e53f47f6c1a56d2af728909f1cb894da6b43d9bf ]
 
-It seems that the beep playback doesn't work well on IDT codec devices
-when the codec auto-pm is enabled.  Keep the power on while the beep
-switch is enabled.
+There may be a bad USB audio device with a USB ID of (0x04fa, 0x4201) and
+the number of it's interfaces less than 4, an out-of-bounds read bug occurs
+when parsing the interface descriptor for this device.
 
-Link: https://bugzilla.suse.com/show_bug.cgi?id=1200544
-Link: https://lore.kernel.org/r/20220904072750.26164-1-tiwai@suse.de
+Fix this by checking the number of interfaces.
+
+Signed-off-by: Dongxiang Ke <kdx.glider@gmail.com>
+Link: https://lore.kernel.org/r/20220906024928.10951-1-kdx.glider@gmail.com
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/pci/hda/patch_sigmatel.c | 22 ++++++++++++++++++++++
- 1 file changed, 22 insertions(+)
+ sound/usb/stream.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/pci/hda/patch_sigmatel.c b/sound/pci/hda/patch_sigmatel.c
-index 61df4d33c48ff..066bfccd25877 100644
---- a/sound/pci/hda/patch_sigmatel.c
-+++ b/sound/pci/hda/patch_sigmatel.c
-@@ -209,6 +209,7 @@ struct sigmatel_spec {
+diff --git a/sound/usb/stream.c b/sound/usb/stream.c
+index ceb93d798182c..40ce8a1cb318a 100644
+--- a/sound/usb/stream.c
++++ b/sound/usb/stream.c
+@@ -1105,7 +1105,7 @@ static int __snd_usb_parse_audio_interface(struct snd_usb_audio *chip,
+ 	 * Dallas DS4201 workaround: It presents 5 altsettings, but the last
+ 	 * one misses syncpipe, and does not produce any sound.
+ 	 */
+-	if (chip->usb_id == USB_ID(0x04fa, 0x4201))
++	if (chip->usb_id == USB_ID(0x04fa, 0x4201) && num >= 4)
+ 		num = 4;
  
- 	/* beep widgets */
- 	hda_nid_t anabeep_nid;
-+	bool beep_power_on;
- 
- 	/* SPDIF-out mux */
- 	const char * const *spdif_labels;
-@@ -4443,6 +4444,26 @@ static int stac_suspend(struct hda_codec *codec)
- 
- 	return 0;
- }
-+
-+static int stac_check_power_status(struct hda_codec *codec, hda_nid_t nid)
-+{
-+	struct sigmatel_spec *spec = codec->spec;
-+	int ret = snd_hda_gen_check_power_status(codec, nid);
-+
-+#ifdef CONFIG_SND_HDA_INPUT_BEEP
-+	if (nid == spec->gen.beep_nid && codec->beep) {
-+		if (codec->beep->enabled != spec->beep_power_on) {
-+			spec->beep_power_on = codec->beep->enabled;
-+			if (spec->beep_power_on)
-+				snd_hda_power_up_pm(codec);
-+			else
-+				snd_hda_power_down_pm(codec);
-+		}
-+		ret |= spec->beep_power_on;
-+	}
-+#endif
-+	return ret;
-+}
- #else
- #define stac_suspend		NULL
- #endif /* CONFIG_PM */
-@@ -4455,6 +4476,7 @@ static const struct hda_codec_ops stac_patch_ops = {
- 	.unsol_event = snd_hda_jack_unsol_event,
- #ifdef CONFIG_PM
- 	.suspend = stac_suspend,
-+	.check_power_status = stac_check_power_status,
- #endif
- };
- 
+ 	for (i = 0; i < num; i++) {
 -- 
 2.35.1
 
