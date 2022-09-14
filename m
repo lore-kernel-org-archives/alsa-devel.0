@@ -4,61 +4,61 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D5C2DECAAD3
-	for <alsa-devel@archiver.kernel.org>; Wed, 14 Sep 2022 13:28:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2731EC6FA82
+	for <alsa-devel@archiver.kernel.org>; Wed, 14 Sep 2022 13:47:09 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E31AC18C7;
-	Wed, 14 Sep 2022 15:27:47 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E31AC18C7
+	by alsa0.perex.cz (Postfix) with ESMTPS id 896E4164E;
+	Wed, 14 Sep 2022 15:46:17 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 896E4164E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1663162117;
-	bh=hTRBbVu4aVBS/Ity9e2NnlZHsr9ltVSjll9nEiNGL70=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=fzSjdJmdT+/m/+dyiOwKz4yCb8pGMn+4R5/YRFQUUa8zp5m5rsUuEug7D0D4mRla4
-	 cztj3iG55ihJzoDYjoq9vKenWaDan9oG9HRr4dPugN61Sv9or9Gi4AxwC7ZSjJN4dL
-	 Z6+sVBeq1p2TXcZQ88qtpKR+cW8p+c1+6DiF6BW8=
+	s=default; t=1663163227;
+	bh=7YH/b/GNdPm6/3C/nq6yhlK34hP2qfMGz0BxLSDr9WM=;
+	h=From:To:Subject:Date:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=o8RTWhK9Ri8EkrRiPjILWGfz1WtO1+MEFlGcGPwgAqrh8T7j6XQqORAqlQSBw70D5
+	 vlJqpIPO4uMj4XXTPr2dVvMdpTEIBXzEwIZcNbjY+DmM8QYR1lrhpLtA0aS2DtjmQn
+	 b+2HiT96d7jxV10hEctTztRy6DAyp1qef5paOKQE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 0B26AF80528;
-	Wed, 14 Sep 2022 15:26:59 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 189CBF8014B;
+	Wed, 14 Sep 2022 15:46:17 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 36A2EF804E6; Wed, 14 Sep 2022 15:26:58 +0200 (CEST)
-Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id BDE84F800C0
- for <alsa-devel@alsa-project.org>; Wed, 14 Sep 2022 15:26:51 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BDE84F800C0
-Received: from dggpemm500024.china.huawei.com (unknown [172.30.72.56])
- by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4MSLc95ryKz14QMk;
- Wed, 14 Sep 2022 21:22:49 +0800 (CST)
-Received: from dggpemm500007.china.huawei.com (7.185.36.183) by
- dggpemm500024.china.huawei.com (7.185.36.203) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.24; Wed, 14 Sep 2022 21:26:47 +0800
-Received: from huawei.com (10.175.103.91) by dggpemm500007.china.huawei.com
- (7.185.36.183) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.24; Wed, 14 Sep
- 2022 21:26:47 +0800
-From: Yang Yingliang <yangyingliang@huawei.com>
-To: <alsa-devel@alsa-project.org>
-Subject: [PATCH -next 3/3] ASoC: soc-dapm: Switch to use dev_err_probe() helper
-Date: Wed, 14 Sep 2022 21:33:55 +0800
-Message-ID: <20220914133355.3779364-3-yangyingliang@huawei.com>
+ id A9BB1F800C0; Wed, 14 Sep 2022 15:46:15 +0200 (CEST)
+Received: from proxy25214.mail.163.com (proxy25214.mail.163.com
+ [103.129.252.14])
+ by alsa1.perex.cz (Postfix) with ESMTP id B83C4F800C0
+ for <alsa-devel@alsa-project.org>; Wed, 14 Sep 2022 15:46:08 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B83C4F800C0
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (1024-bit key) header.d=126.com header.i=@126.com
+ header.b="iLY8Cc5O"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=126.com;
+ s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=blbt9
+ kPpdsO+OFxSlN2UvOUGPYhPzfe468VXHcEBEIw=; b=iLY8Cc5O4sprwzUiIsu1C
+ vltchQ6BjhfYpAIpUhuKCEBClf28E8JjrdtF48u3cbW57nGbnhXpxwczdvnb6YHO
+ CyfodPPSsorbUoldynSYLOhE/KaWF2F3X7a6pIQ8gZJZABkd8is09a6ff5dwuaOQ
+ IFEh61AFd3Gl3szkFT1ZCU=
+Received: from localhost.localdomain (unknown [124.16.139.61])
+ by smtp3 (Coremail) with SMTP id DcmowAB3frKa2iFjLRktBg--.23567S2;
+ Wed, 14 Sep 2022 21:43:55 +0800 (CST)
+From: Liang He <windhl@126.com>
+To: lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com,
+ alsa-devel@alsa-project.org, wangkelin2023@163.com, windhl@126.com
+Subject: [PATCH] ASoC: eureka-tlv320: Hold reference returned from of_find_xxx
+ API
+Date: Wed, 14 Sep 2022 21:43:54 +0800
+Message-Id: <20220914134354.3995587-1-windhl@126.com>
 X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20220914133355.3779364-1-yangyingliang@huawei.com>
-References: <20220914133355.3779364-1-yangyingliang@huawei.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [10.175.103.91]
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
- dggpemm500007.china.huawei.com (7.185.36.183)
-X-CFilter-Loop: Reflected
-Cc: broonie@kernel.org, lgirdwood@gmail.com, yangyingliang@huawei.com
+X-CM-TRANSID: DcmowAB3frKa2iFjLRktBg--.23567S2
+X-Coremail-Antispam: 1Uf129KBjvJXoW7Kr13uFyxGw15Cw1kuw4rXwb_yoW8tr47pF
+ WUCrW5KrWkGFn8WrWIva4kJFW7K3yfKay5JryxKayUt3ZIqryrJ3Z2qr1ayFW3XFZ3Cry5
+ JasrK3yrJa18ZrJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+ 9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x0ziOzVUUUUUU=
+X-Originating-IP: [124.16.139.61]
+X-CM-SenderInfo: hzlqvxbo6rjloofrz/1tbi3Bx8F1pEEQVu4QAAsu
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -74,30 +74,60 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-dev_err() can be replace with dev_err_probe() which will check if error
-code is -EPROBE_DEFER.
+In eukrea_tlv320_probe(), we need to hold the reference returned
+from of_find_compatible_node() which has increased the refcount
+and then call of_node_put() with it when done.
 
-Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
+Fixes: 66f232908de2 ("ASoC: eukrea-tlv320: Add DT support.")
+Co-authored-by: Kelin Wang <wangkelin2023@163.com>
+Signed-off-by: Liang He <windhl@126.com>
 ---
- sound/soc/soc-dapm.c | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
+ sound/soc/fsl/eukrea-tlv320.c | 8 +++++---
+ 1 file changed, 5 insertions(+), 3 deletions(-)
 
-diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
-index 47a7bf99472e..2d105bfee387 100644
---- a/sound/soc/soc-dapm.c
-+++ b/sound/soc/soc-dapm.c
-@@ -3764,9 +3764,8 @@ snd_soc_dapm_new_control_unlocked(struct snd_soc_dapm_context *dapm,
- 	return w;
+diff --git a/sound/soc/fsl/eukrea-tlv320.c b/sound/soc/fsl/eukrea-tlv320.c
+index 8b61582753c8..9af4c4a35eb1 100644
+--- a/sound/soc/fsl/eukrea-tlv320.c
++++ b/sound/soc/fsl/eukrea-tlv320.c
+@@ -86,7 +86,7 @@ static int eukrea_tlv320_probe(struct platform_device *pdev)
+ 	int ret;
+ 	int int_port = 0, ext_port;
+ 	struct device_node *np = pdev->dev.of_node;
+-	struct device_node *ssi_np = NULL, *codec_np = NULL;
++	struct device_node *ssi_np = NULL, *codec_np = NULL, *tmp_np = NULL;
  
- request_failed:
--	if (ret != -EPROBE_DEFER)
--		dev_err(dapm->dev, "ASoC: Failed to request %s: %d\n",
--			w->name, ret);
-+	dev_err_probe(dapm->dev, ret, "ASoC: Failed to request %s\n",
-+		      w->name);
- 	kfree_const(w->name);
- name_failed:
- 	kfree_const(w->sname);
+ 	eukrea_tlv320.dev = &pdev->dev;
+ 	if (np) {
+@@ -143,7 +143,7 @@ static int eukrea_tlv320_probe(struct platform_device *pdev)
+ 	}
+ 
+ 	if (machine_is_eukrea_cpuimx27() ||
+-	    of_find_compatible_node(NULL, NULL, "fsl,imx21-audmux")) {
++	    (tmp_np = of_find_compatible_node(NULL, NULL, "fsl,imx21-audmux"))) {
+ 		imx_audmux_v1_configure_port(MX27_AUDMUX_HPCR1_SSI0,
+ 			IMX_AUDMUX_V1_PCR_SYN |
+ 			IMX_AUDMUX_V1_PCR_TFSDIR |
+@@ -158,10 +158,11 @@ static int eukrea_tlv320_probe(struct platform_device *pdev)
+ 			IMX_AUDMUX_V1_PCR_SYN |
+ 			IMX_AUDMUX_V1_PCR_RXDSEL(MX27_AUDMUX_HPCR1_SSI0)
+ 		);
++		of_node_put(tmp_np);
+ 	} else if (machine_is_eukrea_cpuimx25sd() ||
+ 		   machine_is_eukrea_cpuimx35sd() ||
+ 		   machine_is_eukrea_cpuimx51sd() ||
+-		   of_find_compatible_node(NULL, NULL, "fsl,imx31-audmux")) {
++		   (tmp_np = of_find_compatible_node(NULL, NULL, "fsl,imx31-audmux"))) {
+ 		if (!np)
+ 			ext_port = machine_is_eukrea_cpuimx25sd() ?
+ 				4 : 3;
+@@ -178,6 +179,7 @@ static int eukrea_tlv320_probe(struct platform_device *pdev)
+ 			IMX_AUDMUX_V2_PTCR_SYN,
+ 			IMX_AUDMUX_V2_PDCR_RXDSEL(int_port)
+ 		);
++		of_node_put(tmp_np);
+ 	} else {
+ 		if (np) {
+ 			/* The eukrea,asoc-tlv320 driver was explicitly
 -- 
 2.25.1
 
