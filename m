@@ -4,62 +4,83 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 214C2ECAAD3
-	for <alsa-devel@archiver.kernel.org>; Wed, 14 Sep 2022 07:24:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C843FECAAD8
+	for <alsa-devel@archiver.kernel.org>; Wed, 14 Sep 2022 07:25:10 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 84FBC17F7;
-	Wed, 14 Sep 2022 09:23:50 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 84FBC17F7
+	by alsa0.perex.cz (Postfix) with ESMTPS id 5CC6D17F8;
+	Wed, 14 Sep 2022 09:24:18 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5CC6D17F8
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1663140280;
-	bh=Wlngx2yzJG1DJ87jEfS3VcpDR2sftdKQUXaCQ4umGdw=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	s=default; t=1663140308;
+	bh=olZORHiqFmlKWL2+c+34lisE/oTF+pi72WhsTWhPxwo=;
+	h=From:Date:To:Subject:List-Id:List-Unsubscribe:List-Archive:
 	 List-Post:List-Help:List-Subscribe:From;
-	b=vUfbjfKqq4Tca/sPlF2FTmAEVcFCUyTCvMJmEOkkibXNtXRUdrCxAwfhoJY3mMJzv
-	 DsRy/nUzVfpO9ocV5wpdv4455upsOJ3hhGjANZHvEi0UUmlPoNoRwhYxmIkWRFEcfj
-	 cR+Diajm38iVNx6OyVUXzwZhMQ1w2a9dT1CU9/Es=
+	b=WxQSTAOajEX+kFAzR30VkZb6pfHUlWUidYBqzaSoAdvjbJgfv22C59DZx6o1RKX0c
+	 4vE56lJt2ROSkcQafIU05aTfB88J+75+6eg02YeOakjrtLcW77ahkuvSmyiPfoI5Qi
+	 J82VvLgmP1bqgoxuuES5uhRmk3mRdDCENT1pnqew=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 1A926F800C0;
+	by alsa1.perex.cz (Postfix) with ESMTP id A0249F80430;
 	Wed, 14 Sep 2022 09:23:50 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 2BA3FF8014E; Wed, 14 Sep 2022 05:23:43 +0200 (CEST)
-Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id 2AE02F8014E; Wed, 14 Sep 2022 08:41:11 +0200 (CEST)
+Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com
+ [IPv6:2607:f8b0:4864:20::631])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 9EDF5F8008E
- for <alsa-devel@alsa-project.org>; Wed, 14 Sep 2022 05:23:35 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9EDF5F8008E
-Received: from dggpeml500024.china.huawei.com (unknown [172.30.72.55])
- by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4MS5DJ70R9zcmyZ;
- Wed, 14 Sep 2022 11:19:44 +0800 (CST)
-Received: from dggpeml500010.china.huawei.com (7.185.36.155) by
- dggpeml500024.china.huawei.com (7.185.36.10) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.31; Wed, 14 Sep 2022 11:23:29 +0800
-Received: from huawei.com (10.67.175.33) by dggpeml500010.china.huawei.com
- (7.185.36.155) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.31; Wed, 14 Sep
- 2022 11:23:29 +0800
-From: Lin Yujun <linyujun809@huawei.com>
-To: <agross@kernel.org>, <bjorn.andersson@linaro.org>,
- <konrad.dybcio@somainline.org>, <srinivas.kandagatla@linaro.org>,
- <gregkh@linuxfoundation.org>, <vkoul@kernel.org>
-Subject: [PATCH -next] slimbus: qcom-ngd: Add error handling in
- of_qcom_slim_ngd_register
-Date: Wed, 14 Sep 2022 11:19:53 +0800
-Message-ID: <20220914031953.94061-1-linyujun809@huawei.com>
-X-Mailer: git-send-email 2.17.1
+ by alsa1.perex.cz (Postfix) with ESMTPS id 81829F800FE
+ for <alsa-devel@alsa-project.org>; Wed, 14 Sep 2022 08:41:07 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 81829F800FE
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
+ header.b="pjQX5AGJ"
+Received: by mail-pl1-x631.google.com with SMTP id b21so14162278plz.7
+ for <alsa-devel@alsa-project.org>; Tue, 13 Sep 2022 23:41:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
+ h=content-disposition:mime-version:message-id:subject:to:date:from
+ :from:to:cc:subject:date;
+ bh=pDMKKBmqy8I/eq03HKdLFKIxcA2eLwe/NtslwAB4KeA=;
+ b=pjQX5AGJFygN9y2ncRnfn0Yv2cRYPi7e04xy5oYObDoGOUEBGlfOnXlVPIAqcyBFd7
+ qcseiB6NEdvbzie+o2rBNdzoA4ni9QQWjqqQDBBhs0J6N5FlxXVw2croCNhAe4YC+1l7
+ FpmXUZIh4NxDk5hZxddkTSKV2/6FHUi51uNArDei9OqgWPSEZ70666CD35jg2Up8tuFF
+ s2pAiIGdqq9o/YHEE4hmj8wwGqnR/Gn6RGPLS/7jdwbmnTih9is2j6440QOVsBAIS7tq
+ p59KjTL6IKBY/Jf0LEX+QqkzMotP4af3rriXfXfehTgcf+py0clLAkAdfqvm+ayCkenk
+ nmyQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=content-disposition:mime-version:message-id:subject:to:date:from
+ :x-gm-message-state:from:to:cc:subject:date;
+ bh=pDMKKBmqy8I/eq03HKdLFKIxcA2eLwe/NtslwAB4KeA=;
+ b=KMDUZDkRyhM4VgJlL/xDkg+nZW4Q5RtOGKuYjc3jeybgxuq6boWUdn9ywmOB+HgpVo
+ ByotApzWtAAulTYgGO9AO1KzQP04lN1rfjyQIqK252kItVji57fU64V479/JDUd0zGVP
+ s0kvtyECByDaM+B+eZK3tjdQBq21Tz0CsAsMxO3FRjmpNSbQpH5DRS18qTidmM+VfA23
+ E6mW/aLg5U/3AAw1WD1IowGpu/70k5sxAOi00tTH4wawLF+yuQDrgdrlzEFryfo2y0tZ
+ JhUFMn58WAXa1ObS7vOZ0H+EJlng2v061j/fERgh2wgtCAWlWjglKmIf2HzSopli5mbJ
+ o1Cg==
+X-Gm-Message-State: ACrzQf1mPl5FBCkhTtomHeqeHWOmjaFZ8UW0y/tovMkPAkKfVlYbU+7t
+ /h7iSuLFqx3fd70OfUkd+iKcq77pQEXjDQ==
+X-Google-Smtp-Source: AMsMyM7idOtVN5R4gyJ8Uakhg7OmD88F6/QPwkxqZwGbAxGvBDzL0FNCxGsRdLmOKVsG5YFQqsGTbw==
+X-Received: by 2002:a17:90b:3510:b0:202:f18c:fdb6 with SMTP id
+ ls16-20020a17090b351000b00202f18cfdb6mr3170349pjb.122.1663137664998; 
+ Tue, 13 Sep 2022 23:41:04 -0700 (PDT)
+Received: from wolf (202-65-89-82.ip4.superloop.com. [202.65.89.82])
+ by smtp.gmail.com with ESMTPSA id
+ y75-20020a62644e000000b005365aee486bsm9104265pfb.192.2022.09.13.23.41.03
+ for <alsa-devel@alsa-project.org>
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Tue, 13 Sep 2022 23:41:04 -0700 (PDT)
+From: acheronfail <callum.osmotherly@gmail.com>
+X-Google-Original-From: acheronfail <acheronfail@gmail.com>
+Date: Wed, 14 Sep 2022 16:11:01 +0930
+To: alsa-devel@alsa-project.org
+Subject: [PATCH] ALSA: hda/realtek: Enable 4-speaker output Dell Precision
+ 5560 laptop
+Message-ID: <YyF3feC4rwY+IvB8@wolf>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.67.175.33]
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- dggpeml500010.china.huawei.com (7.185.36.155)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 X-Mailman-Approved-At: Wed, 14 Sep 2022 09:23:48 +0200
-Cc: linux-arm-msm@vger.kernel.org, alsa-devel@alsa-project.org,
- linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -75,35 +96,30 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-No error handling is performed when platform_device_add()
-return fails. Refer to the error handling of driver_set_override(),
-add error handling for platform_device_add().
+This is my first patch, so let me know if I need to do anything
+differently. :)
 
-Fixes: 917809e2280b ("slimbus: ngd: Add qcom SLIMBus NGD driver")
-Signed-off-by: Lin Yujun <linyujun809@huawei.com>
+The Dell Precision 5570 uses the same 4-speakers-on-ALC289 just like the
+previous Precision 5560. I replicated that patch onto this one, and can
+confirm that the audio is much better (the woofers are now working);
+I've tested it on my Dell Precision 5570.
+
 ---
- drivers/slimbus/qcom-ngd-ctrl.c | 8 +++++++-
- 1 file changed, 7 insertions(+), 1 deletion(-)
+ sound/pci/hda/patch_realtek.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/slimbus/qcom-ngd-ctrl.c b/drivers/slimbus/qcom-ngd-ctrl.c
-index 0aa8408464ad..fb591990ddad 100644
---- a/drivers/slimbus/qcom-ngd-ctrl.c
-+++ b/drivers/slimbus/qcom-ngd-ctrl.c
-@@ -1470,7 +1470,13 @@ static int of_qcom_slim_ngd_register(struct device *parent,
- 		ngd->pdev->dev.of_node = node;
- 		ctrl->ngd = ngd;
- 
--		platform_device_add(ngd->pdev);
-+		ret = platform_device_add(ngd->pdev);
-+		if (ret) {
-+			platform_device_put(ngd->pdev);
-+			kfree(ngd);
-+			of_node_put(node);
-+			return ret;
-+		}
- 		ngd->base = ctrl->base + ngd->id * data->offset +
- 					(ngd->id - 1) * data->size;
- 
+diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+index 799f6bf266dd..b0ad4856b877 100644
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -9130,6 +9130,7 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
+ 	SND_PCI_QUIRK(0x1028, 0x0a9d, "Dell Latitude 5430", ALC269_FIXUP_DELL4_MIC_NO_PRESENCE),
+ 	SND_PCI_QUIRK(0x1028, 0x0a9e, "Dell Latitude 5430", ALC269_FIXUP_DELL4_MIC_NO_PRESENCE),
+ 	SND_PCI_QUIRK(0x1028, 0x0b19, "Dell XPS 15 9520", ALC289_FIXUP_DUAL_SPK),
++	SND_PCI_QUIRK(0x1028, 0x0b1a, "Dell Precision 5570", ALC289_FIXUP_DUAL_SPK),
+ 	SND_PCI_QUIRK(0x1028, 0x164a, "Dell", ALC293_FIXUP_DELL1_MIC_NO_PRESENCE),
+ 	SND_PCI_QUIRK(0x1028, 0x164b, "Dell", ALC293_FIXUP_DELL1_MIC_NO_PRESENCE),
+ 	SND_PCI_QUIRK(0x103c, 0x1586, "HP", ALC269_FIXUP_HP_MUTE_LED_MIC2),
 -- 
-2.17.1
+2.37.3
 
