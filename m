@@ -4,55 +4,55 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D7E9BECAAD3
-	for <alsa-devel@archiver.kernel.org>; Wed, 14 Sep 2022 16:04:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id F15A5ECAAD3
+	for <alsa-devel@archiver.kernel.org>; Wed, 14 Sep 2022 16:04:45 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 1E73318AE;
-	Wed, 14 Sep 2022 18:03:27 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1E73318AE
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0615F18F0;
+	Wed, 14 Sep 2022 18:03:54 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0615F18F0
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1663171457;
-	bh=sdTncHjHA0gaGHwrGAlljZxHPR6Y9wlY9e9zl+b4aGo=;
+	s=default; t=1663171484;
+	bh=NyugfmkeYdiHtL1NSo1W1AZPDlQ2WngpD2bt6uZcXHk=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=QjhZJPrI2rMjJeTZEwmVqManKqpuP87yh6xlRaZgQL1dx3+NGL7Z5PDpEHbHYm/kC
-	 6CpkbD9rWGNUEM8kXwR+EkmIt96aIBtHS4haiI9Jm+E/ectEoJqb1mypzRbKipPCnm
-	 FhNrY1+bI+1nDZpQmaah8CdO0QTPwJ7KCkrN2aiM=
+	b=JTDAKIjAGuIpbRdc9wr8m2GN6t91CHlsI1PHYWHxLskqrLeWJzZLRvEa8ueuqN7Xy
+	 nvoWBFNJNbd7p3f7ZUBjTwVYQ4D0LCuvFsGDaGztv6uCKjJlTWO7FPhLGJRLBrqglZ
+	 3tVK0AoNs2ld0McYAGTBFuX03c9djmKXEm2AH3V8=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 9C084F801D8;
-	Wed, 14 Sep 2022 18:03:26 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 10D08F80430;
+	Wed, 14 Sep 2022 18:03:30 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 60DE8F80507; Wed, 14 Sep 2022 18:03:24 +0200 (CEST)
+ id 41E3AF804E6; Wed, 14 Sep 2022 18:03:25 +0200 (CEST)
 Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
  [67.231.149.25])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id F03FCF8008E
- for <alsa-devel@alsa-project.org>; Wed, 14 Sep 2022 18:03:00 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F03FCF8008E
+ by alsa1.perex.cz (Postfix) with ESMTPS id BA3F5F800FE
+ for <alsa-devel@alsa-project.org>; Wed, 14 Sep 2022 18:03:01 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BA3F5F800FE
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com
- header.b="LbWAVZ3J"
+ header.b="TCxiazcC"
 Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
- by mx0a-001ae601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 28EDgEGI005943;
- Wed, 14 Sep 2022 11:02:58 -0500
+ by mx0a-001ae601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 28EDgEGJ005943;
+ Wed, 14 Sep 2022 11:02:59 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
  h=from : to : cc :
  subject : date : message-id : in-reply-to : references : mime-version :
  content-transfer-encoding : content-type; s=PODMain02222019;
- bh=jSHVQM4f5c6nFOJUjjIDepmDXBFYw20rCfoBuGjpZxs=;
- b=LbWAVZ3JGBBzCZCY+jQwN45OrJLq24z2wZ6a3YlT1TioVjw7fVLXfOB45UVlEMrP/Ray
- 0Ncn/l0TXBHucxSgK+3iRtNz6NJNLVGwrOn6heS0lhRWsRuZnCm9AMWsXi5iE4fkS1ax
- B2uyPS2dMzRQIcFV4WLpXn0BzOTpaMDO44Hz4dirqwNok7A06vfH0gCsDzsIhp5qhgVk
- QaVxDnkFReJ5F1zPvXq0yTnU6erawsgwkcoYqlA1pjWTg2X9vys5Qvad3Ipbx+e0peWw
- oAO7LXYJqZzdNEi9JySMZtWU6iumHjnjIbs6FiDCPH/tVNx6AmvLAKPxOKKok2tojy03 +g== 
+ bh=FIRDieEsowSycNKPp8qdtTr+yeOJU0N2yv9agRWOIiY=;
+ b=TCxiazcCCT/OmH5ugFrsWwrerVCSx0PFqQiXVBTK0u+ud+7CvZEKy0Z479LPJDrKzOL8
+ mlwCn2RCWPqthXKvMzZoIiExtBURJeMejk4EP1e6pohBBgiBiohfOwgJtO2EIW23RCAE
+ sBewmMCDwqV8pZNgrcuiu28dhY9ASiIEci1rT4M0wd3JadKv4fdl9iY9eUcq+BFk6lid
+ 1SPwR4YwBXBymbtl+jCPeSXqVbX9Sny71k8NGjVVq0b053Tw632HAdaCqno9HTpLIVDP
+ 5ss9ZS9zCFMh9TBYMMAokNmb2H8GGUFbzMeqcEqUz1/1yr5LKOPn5RW1rVHs1uaT/KE1 9Q== 
 Received: from ediex02.ad.cirrus.com ([84.19.233.68])
- by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3jjy05h8em-2
+ by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3jjy05h8em-3
  (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
- Wed, 14 Sep 2022 11:02:58 -0500
+ Wed, 14 Sep 2022 11:02:59 -0500
 Received: from ediex01.ad.cirrus.com (198.61.84.80) by ediex02.ad.cirrus.com
  (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.12; Wed, 14 Sep
@@ -62,23 +62,23 @@ Received: from ediswmail.ad.cirrus.com (198.61.86.93) by ediex01.ad.cirrus.com
  Frontend Transport; Wed, 14 Sep 2022 11:02:55 -0500
 Received: from edi-sw-dsktp-006.ad.cirrus.com (edi-sw-dsktp-006.ad.cirrus.com
  [198.90.251.95])
- by ediswmail.ad.cirrus.com (Postfix) with ESMTP id BD12511C7;
+ by ediswmail.ad.cirrus.com (Postfix) with ESMTP id DD67D11DA;
  Wed, 14 Sep 2022 16:02:55 +0000 (UTC)
 From: Richard Fitzgerald <rf@opensource.cirrus.com>
 To: <vkoul@kernel.org>, <yung-chuan.liao@linux.intel.com>,
  <pierre-louis.bossart@linux.intel.com>, <sanyog.r.kale@intel.com>
-Subject: [PATCH v4 3/5] soundwire: bus: Don't re-enumerate before status is
- UNATTACHED
-Date: Wed, 14 Sep 2022 17:02:46 +0100
-Message-ID: <20220914160248.1047627-4-rf@opensource.cirrus.com>
+Subject: [PATCH v4 5/5] soundwire: bus: Don't exit early if no device IDs were
+ programmed
+Date: Wed, 14 Sep 2022 17:02:48 +0100
+Message-ID: <20220914160248.1047627-6-rf@opensource.cirrus.com>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20220914160248.1047627-1-rf@opensource.cirrus.com>
 References: <20220914160248.1047627-1-rf@opensource.cirrus.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-Proofpoint-GUID: -gdhMwViXDGTP4Urpmc0oSg-yySIbC0K
-X-Proofpoint-ORIG-GUID: -gdhMwViXDGTP4Urpmc0oSg-yySIbC0K
+X-Proofpoint-GUID: tgoVBfEYbfIhJBtDBTq9zVfqX4vxbrnO
+X-Proofpoint-ORIG-GUID: tgoVBfEYbfIhJBtDBTq9zVfqX4vxbrnO
 X-Proofpoint-Spam-Reason: safe
 Cc: patches@opensource.cirrus.com, alsa-devel@alsa-project.org,
  Richard Fitzgerald <rf@opensource.cirrus.com>, linux-kernel@vger.kernel.org
@@ -97,56 +97,105 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Don't re-enumerate a peripheral on #0 until we have seen and
-handled an UNATTACHED notification for that peripheral.
+Only exit sdw_handle_slave_status() right after calling
+sdw_program_device_num() if it actually programmed an ID into at
+least one device.
 
-Without this, it is possible for the UNATTACHED status to be missed
-and so the slave->status remains at ATTACHED. If slave->status never
-changes to UNATTACHED the child driver will never be notified of the
-UNATTACH, and the code in sdw_handle_slave_status() will skip the
-second part of enumeration because the slave->status has not changed.
+sdw_handle_slave_status() should protect itself against phantom
+device #0 ATTACHED indications. In that case there is no actual
+device still on #0. The early exit relies on there being a status
+change to ATTACHED on the reprogrammed device to trigger another
+call to sdw_handle_slave_status() which will then handle the status
+of all peripherals. If no device was actually programmed with an
+ID there won't be a new ATTACHED indication. This can lead to the
+status of other peripherals not being handled.
 
-This scenario can happen because PINGs are handled in a workqueue
-function which is working from a snapshot of an old PING, and there
-is no guarantee when this function will run.
-
-A peripheral could report attached in the PING being handled by
-sdw_handle_slave_status(), but has since reverted to device #0 and is
-then found in the loop in sdw_program_device_num(). Previously the
-code would not have updated slave->status to UNATTACHED because it had
-not yet handled a PING where that peripheral had UNATTACHED.
-
-This situation happens fairly frequently with multiple peripherals on
-a bus that are intentionally reset (for example after downloading
-firmware).
+The status passed to sdw_handle_slave_status() is obviously always
+from a point of time in the past, and may indicate accumulated
+unhandled events (depending how the bus manager operates). It's
+possible that a device ID is reprogrammed but the last PING status
+captured state just before that, when it was still reporting on
+ID #0. Then sdw_handle_slave_status() is called with this PING info,
+just before a new PING status is available showing it now on its new
+ID. So sdw_handle_slave_status() will receive a phantom report of a
+device on #0, but it will not find one.
 
 Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
 Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- drivers/soundwire/bus.c | 10 ++++++++++
- 1 file changed, 10 insertions(+)
+ drivers/soundwire/bus.c | 29 +++++++++++++++++++++--------
+ 1 file changed, 21 insertions(+), 8 deletions(-)
 
 diff --git a/drivers/soundwire/bus.c b/drivers/soundwire/bus.c
-index 1cc858b4107d..6e569a875a9b 100644
+index 6e569a875a9b..8eded1a55227 100644
 --- a/drivers/soundwire/bus.c
 +++ b/drivers/soundwire/bus.c
-@@ -773,6 +773,16 @@ static int sdw_program_device_num(struct sdw_bus *bus)
- 			if (sdw_compare_devid(slave, id) == 0) {
- 				found = true;
+@@ -729,7 +729,7 @@ void sdw_extract_slave_id(struct sdw_bus *bus,
+ }
+ EXPORT_SYMBOL(sdw_extract_slave_id);
  
-+				/*
-+				 * To prevent skipping state-machine stages don't
-+				 * program a device until we've seen it UNATTACH.
-+				 * Must return here because no other device on #0
-+				 * can be detected until this one has been
-+				 * assigned a device ID.
-+				 */
-+				if (slave->status != SDW_SLAVE_UNATTACHED)
-+					return 0;
+-static int sdw_program_device_num(struct sdw_bus *bus)
++static int sdw_program_device_num(struct sdw_bus *bus, bool *programmed)
+ {
+ 	u8 buf[SDW_NUM_DEV_ID_REGISTERS] = {0};
+ 	struct sdw_slave *slave, *_s;
+@@ -739,6 +739,8 @@ static int sdw_program_device_num(struct sdw_bus *bus)
+ 	int count = 0, ret;
+ 	u64 addr;
+ 
++	*programmed = false;
 +
- 				/*
- 				 * Assign a new dev_num to this Slave and
- 				 * not mark it present. It will be marked
+ 	/* No Slave, so use raw xfer api */
+ 	ret = sdw_fill_msg(&msg, NULL, SDW_SCP_DEVID_0,
+ 			   SDW_NUM_DEV_ID_REGISTERS, 0, SDW_MSG_FLAG_READ, buf);
+@@ -797,6 +799,8 @@ static int sdw_program_device_num(struct sdw_bus *bus)
+ 					return ret;
+ 				}
+ 
++				*programmed = true;
++
+ 				break;
+ 			}
+ 		}
+@@ -1756,7 +1760,7 @@ int sdw_handle_slave_status(struct sdw_bus *bus,
+ {
+ 	enum sdw_slave_status prev_status;
+ 	struct sdw_slave *slave;
+-	bool attached_initializing;
++	bool attached_initializing, id_programmed;
+ 	int i, ret = 0;
+ 
+ 	/* first check if any Slaves fell off the bus */
+@@ -1787,14 +1791,23 @@ int sdw_handle_slave_status(struct sdw_bus *bus,
+ 
+ 	if (status[0] == SDW_SLAVE_ATTACHED) {
+ 		dev_dbg(bus->dev, "Slave attached, programming device number\n");
+-		ret = sdw_program_device_num(bus);
+-		if (ret < 0)
+-			dev_err(bus->dev, "Slave attach failed: %d\n", ret);
++
+ 		/*
+-		 * programming a device number will have side effects,
+-		 * so we deal with other devices at a later time
++		 * Programming a device number will have side effects,
++		 * so we deal with other devices at a later time.
++		 * This relies on those devices reporting ATTACHED, which will
++		 * trigger another call to this function. This will only
++		 * happen if at least one device ID was programmed.
++		 * Error returns from sdw_program_device_num() are currently
++		 * ignored because there's no useful recovery that can be done.
++		 * Returning the error here could result in the current status
++		 * of other devices not being handled, because if no device IDs
++		 * were programmed there's nothing to guarantee a status change
++		 * to trigger another call to this function.
+ 		 */
+-		return ret;
++		sdw_program_device_num(bus, &id_programmed);
++		if (id_programmed)
++			return 0;
+ 	}
+ 
+ 	/* Continue to check other slave statuses */
 -- 
 2.30.2
 
