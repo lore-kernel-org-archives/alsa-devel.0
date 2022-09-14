@@ -4,53 +4,51 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 08B80C6FA82
-	for <alsa-devel@archiver.kernel.org>; Wed, 14 Sep 2022 13:27:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 75291C6FA82
+	for <alsa-devel@archiver.kernel.org>; Wed, 14 Sep 2022 13:28:16 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 2C93818C8;
-	Wed, 14 Sep 2022 15:26:57 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2C93818C8
+	by alsa0.perex.cz (Postfix) with ESMTPS id 2DCC318C6;
+	Wed, 14 Sep 2022 15:27:24 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2DCC318C6
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1663162067;
-	bh=4y98sRCR0Bufmu6GpsckO1uadj+s49KL+WShqRpyv+w=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=oNf+OpqU3s2D1hLkrySgPIXjy9nqv1Yf8K+UrYI5zasuKhJfcs0mPs6G2zwIRwtnV
-	 qgrkFYoRooSQBjpkLmc6DBV1j+aNSrewzFl8hM9mx4DABLS+2KQqY9suXuu44l9FBv
-	 19zcUAAaOd+1o1d3sPN+kPW/GUIbmnCRp0HLl5AU=
+	s=default; t=1663162094;
+	bh=P9JaJEtcLqYbo2B3mWvx7fZC7lvOaKYHLa7ffzQRlFU=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=eT0cP2izj4RWy0yNpH4k/vc6bxT9IxJw9AH7hsC8nNRZQRfninHkpix/idwIcp4kO
+	 GAf8Ae6yVFFKoWsmBR+dIN36IQUJD9WkFsKccoyJ0TmBrc8+XAK18n5rn+Kl8iKjgd
+	 amE4zfMv6U4Z+X1FmiJcaG0USDlaOHxSVcDsliaM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id B1056F8014E;
-	Wed, 14 Sep 2022 15:26:56 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 709C6F80430;
+	Wed, 14 Sep 2022 15:26:58 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 01DE2F8014E; Wed, 14 Sep 2022 15:26:54 +0200 (CEST)
-Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
+ id 71678F8016E; Wed, 14 Sep 2022 15:26:56 +0200 (CEST)
+Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 21773F8008E
- for <alsa-devel@alsa-project.org>; Wed, 14 Sep 2022 15:26:51 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 21773F8008E
-Received: from dggpemm500023.china.huawei.com (unknown [172.30.72.54])
- by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4MSLfN6WRkzHnbm;
- Wed, 14 Sep 2022 21:24:44 +0800 (CST)
+ by alsa1.perex.cz (Postfix) with ESMTPS id D92E1F8014B
+ for <alsa-devel@alsa-project.org>; Wed, 14 Sep 2022 15:26:52 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D92E1F8014B
+Received: from dggpemm500022.china.huawei.com (unknown [172.30.72.54])
+ by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4MSLbQ6vqQzNm64;
+ Wed, 14 Sep 2022 21:22:10 +0800 (CST)
 Received: from dggpemm500007.china.huawei.com (7.185.36.183) by
- dggpemm500023.china.huawei.com (7.185.36.83) with Microsoft SMTP Server
+ dggpemm500022.china.huawei.com (7.185.36.162) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.24; Wed, 14 Sep 2022 21:26:47 +0800
+ 15.1.2375.24; Wed, 14 Sep 2022 21:26:46 +0800
 Received: from huawei.com (10.175.103.91) by dggpemm500007.china.huawei.com
  (7.185.36.183) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.24; Wed, 14 Sep
  2022 21:26:46 +0800
 From: Yang Yingliang <yangyingliang@huawei.com>
 To: <alsa-devel@alsa-project.org>
-Subject: [PATCH -next 2/3] ASoC: cs42l42: Switch to use dev_err_probe() helper
-Date: Wed, 14 Sep 2022 21:33:54 +0800
-Message-ID: <20220914133355.3779364-2-yangyingliang@huawei.com>
+Subject: [PATCH -next 1/3] ASoC: bcm2835-i2s: Switch to use dev_err_probe()
+ helper
+Date: Wed, 14 Sep 2022 21:33:53 +0800
+Message-ID: <20220914133355.3779364-1-yangyingliang@huawei.com>
 X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20220914133355.3779364-1-yangyingliang@huawei.com>
-References: <20220914133355.3779364-1-yangyingliang@huawei.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
@@ -74,33 +72,36 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-dev_err() can be replace with dev_err_probe() which will check if error
+dev_err/dev_dbg() can be replace with dev_err_probe() which will check if error
 code is -EPROBE_DEFER.
 
 Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
 ---
- sound/soc/codecs/cs42l42.c | 8 +++-----
- 1 file changed, 3 insertions(+), 5 deletions(-)
+ sound/soc/bcm/bcm2835-i2s.c | 11 +++--------
+ 1 file changed, 3 insertions(+), 8 deletions(-)
 
-diff --git a/sound/soc/codecs/cs42l42.c b/sound/soc/codecs/cs42l42.c
-index 7d8f1b161a65..205babc4268b 100644
---- a/sound/soc/codecs/cs42l42.c
-+++ b/sound/soc/codecs/cs42l42.c
-@@ -2263,11 +2263,9 @@ static int cs42l42_i2c_probe(struct i2c_client *i2c_client)
- 					   NULL, cs42l42_irq_thread,
- 					   IRQF_ONESHOT | IRQF_TRIGGER_LOW,
- 					   "cs42l42", cs42l42);
--		if (ret == -EPROBE_DEFER) {
--			goto err_disable_noirq;
--		} else if (ret != 0) {
--			dev_err(&i2c_client->dev,
--				"Failed to request IRQ: %d\n", ret);
-+		if (ret) {
-+			dev_err_probe(&i2c_client->dev, ret,
-+				      "Failed to request IRQ\n");
- 			goto err_disable_noirq;
- 		}
- 	}
+diff --git a/sound/soc/bcm/bcm2835-i2s.c b/sound/soc/bcm/bcm2835-i2s.c
+index f4d84774dac7..85f705afcdbb 100644
+--- a/sound/soc/bcm/bcm2835-i2s.c
++++ b/sound/soc/bcm/bcm2835-i2s.c
+@@ -841,14 +841,9 @@ static int bcm2835_i2s_probe(struct platform_device *pdev)
+ 	/* get the clock */
+ 	dev->clk_prepared = false;
+ 	dev->clk = devm_clk_get(&pdev->dev, NULL);
+-	if (IS_ERR(dev->clk)) {
+-		ret = PTR_ERR(dev->clk);
+-		if (ret == -EPROBE_DEFER)
+-			dev_dbg(&pdev->dev, "could not get clk: %d\n", ret);
+-		else
+-			dev_err(&pdev->dev, "could not get clk: %d\n", ret);
+-		return ret;
+-	}
++	if (IS_ERR(dev->clk))
++		return dev_err_probe(&pdev->dev, PTR_ERR(dev->clk),
++				     "could not get clk\n");
+ 
+ 	/* Request ioarea */
+ 	base = devm_platform_ioremap_resource(pdev, 0);
 -- 
 2.25.1
 
