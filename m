@@ -4,96 +4,124 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B3B46ECAAD8
-	for <alsa-devel@archiver.kernel.org>; Fri, 16 Sep 2022 09:50:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9BD91ECAAD8
+	for <alsa-devel@archiver.kernel.org>; Fri, 16 Sep 2022 09:54:31 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 642641949;
-	Fri, 16 Sep 2022 11:49:24 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 642641949
+	by alsa0.perex.cz (Postfix) with ESMTPS id 54B8B1A2B;
+	Fri, 16 Sep 2022 11:53:39 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 54B8B1A2B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1663321814;
-	bh=Qh3UkP+cbQ0pkxJcwCgsgZ6WmeFjhY/KMRv/ZxZ+EJc=;
-	h=Date:Subject:To:References:From:In-Reply-To:Cc:List-Id:
+	s=default; t=1663322069;
+	bh=eYxUG7KHNij4FDw20kfIzj9gN6Ed4YED6QF0HTblcRM=;
+	h=Subject:To:References:From:Date:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Sms+yUP1PbaMdwHsYrR9EnEmkmY1lqZVzJsrG7fqOBoax1sySNfs8yVNmOeBogEdp
-	 Xs/hQSDyxNFWosFKk+l1E91Wbrx4/wmjL9AhiU+StO44ldsHwRv02IMIpoMSTWiTg9
-	 zIGEcztV01tfljo1uMSx3AXZTPgmH6/LgoY9OJwQ=
+	b=cO3NiQ9jCAp6nChc4bxgie+Qh3/sRRFp6dl26Sl4n/v4hELykaZG3HltQ/X4genR8
+	 BguT7fukalDZepdCxGgYisiBss0nWqXI6uJ4GWozsC+F2zPqErOGZnxJtjVG3TtPnQ
+	 ls0ZTyv7ejpW9CbU48P67W71/pL3OMlO3mgGKstM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 06F7EF800B5;
-	Fri, 16 Sep 2022 11:49:24 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id E8EF1F8024C;
+	Fri, 16 Sep 2022 11:53:38 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 4F016F802BE; Fri, 16 Sep 2022 11:49:23 +0200 (CEST)
-Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com
- [IPv6:2a00:1450:4864:20::335])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id D67F1F8014E; Wed, 14 Sep 2022 12:19:01 +0200 (CEST)
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com
+ [205.220.168.131])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 13F2DF800B5
- for <alsa-devel@alsa-project.org>; Fri, 16 Sep 2022 11:49:16 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 13F2DF800B5
+ by alsa1.perex.cz (Postfix) with ESMTPS id 71E63F800FE
+ for <alsa-devel@alsa-project.org>; Wed, 14 Sep 2022 12:18:54 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 71E63F800FE
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org
- header.b="cE8QbI0l"
-Received: by mail-wm1-x335.google.com with SMTP id
- r5-20020a1c4405000000b003b494ffc00bso819605wma.0
- for <alsa-devel@alsa-project.org>; Fri, 16 Sep 2022 02:49:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
- h=content-transfer-encoding:in-reply-to:from:references:cc:to
- :content-language:subject:user-agent:mime-version:date:message-id
- :from:to:cc:subject:date;
- bh=/j9nkENP/q6n9kbcfrpHdp/54X7IRFuMR2LVA0qv9ts=;
- b=cE8QbI0lA5Jgj7boFeCXuuCkXUVczJZyE7yzzXhFRqFMQbqCh0oCeWV3dbWOdfUXFF
- 9EtSzsxmzR91LIX4CGrkCFWcjK5OOQVKU1hn0mwnlCr1WgVI9maib83vAVUChytx7uaR
- CmIyV1aWxSyNs4Bw2xEXY3beGpudPmL38SkSp9sFo26jrQnUmgwElYzFWOqSObt2awUK
- tF+XmX3s4UQIJshdwm24Tm2dDh7/K11gr9KwJkycSZr6nrov/j8LopHwEHCkKo/0wwao
- TkL1fhij65qUdlX70XFNV2NPdCXWUbw0EdBOjXTH41WZgxFWOLcufqLtb5MuWeWm544C
- F9FA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=content-transfer-encoding:in-reply-to:from:references:cc:to
- :content-language:subject:user-agent:mime-version:date:message-id
- :x-gm-message-state:from:to:cc:subject:date;
- bh=/j9nkENP/q6n9kbcfrpHdp/54X7IRFuMR2LVA0qv9ts=;
- b=QbEwvXtlk5uYAAaFJBzv79LNBiLGTinbf/GVFs6/GkM7NCKlSHBd0xWDPsY6ue8iKd
- vgW1IFCP/PAgMZ3brSAAVTMCH5sLdUNK3vGT7l5htJu8Dk+RNtowTWBFi3j2O6UAkbCm
- sLpAS8yMirxinpW/jtmc7JQuWTHOyPruzaeDM9K1I6XhfGGvXhc2AP29m6IklXQEPnWZ
- +fsPsXc+QfFFI8ut4S8b4A+ZCngZeUHsDNY6AlijqrQJSZLo33fzTqYITfzKyA6XWGwD
- 8OL+RSFl0WAph8zCauZEBTW0zLGGciYOPPrYfmIw8oE0gtDc/JuoTePMcPBK02HZwq54
- 1b5Q==
-X-Gm-Message-State: ACrzQf1O+3iu1qFXK8yBWFNISH/T1G3Zrjh7/mWqOMnNxmTZZJ2rUHHK
- GW0YurW6YnvWaVI0KXDoc3H+Dw==
-X-Google-Smtp-Source: AMsMyM7VUZ8JkQEcQ8vUusOPHMBJ6VJW/luZecMrLFw/qRlKHZxicVVQkAl6X4QYntzgUEvmvpAW+w==
-X-Received: by 2002:a05:600c:3ba6:b0:3b4:9894:d482 with SMTP id
- n38-20020a05600c3ba600b003b49894d482mr2719232wms.120.1663321755218; 
- Fri, 16 Sep 2022 02:49:15 -0700 (PDT)
-Received: from [192.168.86.238]
- (cpc90716-aztw32-2-0-cust825.18-1.cable.virginm.net. [86.26.103.58])
- by smtp.googlemail.com with ESMTPSA id
- f17-20020a05600c4e9100b003a5bd5ea215sm1747288wmq.37.2022.09.16.02.49.13
- (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Fri, 16 Sep 2022 02:49:14 -0700 (PDT)
-Message-ID: <4e42389e-c1c4-fe41-3bc8-03cc9a40ac0b@linaro.org>
-Date: Fri, 16 Sep 2022 10:49:13 +0100
+ dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com
+ header.b="owEMl6AO"
+Received: from pps.filterd (m0279867.ppops.net [127.0.0.1])
+ by mx0a-0031df01.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 28EAEmUd001145;
+ Wed, 14 Sep 2022 10:18:52 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com;
+ h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=TauJo4S33vubiSKMJ8vkdsBpJE36madk8or1JdPhPtE=;
+ b=owEMl6AOMvp0gM+XCVPA+DAuIvwts+9qcvs5p0+ATTATOxq5gsI042eFqY3LtH6lW817
+ pazqUs6PZly1aKhS4XTQj4/EABeCeCyOVKdSWEjDXgPazjGeEg4yj56VdilzP5ljGKdE
+ ThPo8/22y9trmcxzqg9tGSqoKXG5pnFV8zKgPD30+NLaYTedY+PvDwTZGWfG2DZXD7xT
+ zIDZnjpNumcuFIDG8S7r1EHd8ypefjrlt5B5cW1bgu+yeZqjX7pQd8ZLuxY8pDp9mxxA
+ 4kVSo6jOk2c9mcBvUUIAPSmx9RRr25DzMe1mFj4idKfc78UTMEwagkaBpGGb1HpJSMNw aw== 
+Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com
+ [129.46.96.20])
+ by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3jjxyva6be-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+ Wed, 14 Sep 2022 10:18:52 +0000
+Received: from pps.filterd (NALASPPMTA05.qualcomm.com [127.0.0.1])
+ by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTP id 28EAIp5D031835; 
+ Wed, 14 Sep 2022 10:18:51 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+ by NALASPPMTA05.qualcomm.com (PPS) with ESMTPS id 3jjqbt4rfh-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+ Wed, 14 Sep 2022 10:18:51 +0000
+Received: from NALASPPMTA05.qualcomm.com (NALASPPMTA05.qualcomm.com
+ [127.0.0.1])
+ by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 28EAIpIO031830;
+ Wed, 14 Sep 2022 10:18:51 GMT
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com
+ [10.47.209.196])
+ by NALASPPMTA05.qualcomm.com (PPS) with ESMTPS id 28EAIooi031829
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+ Wed, 14 Sep 2022 10:18:50 +0000
+Received: from [10.79.43.230] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.29; Wed, 14 Sep
+ 2022 03:18:46 -0700
+Subject: Re: [PATCH 4/4] soc: qcom: pdr: Make QMI message rules const
+To: Jeff Johnson <quic_jjohnson@quicinc.com>, Alex Elder <elder@kernel.org>,
+ "David S. Miller" <davem@davemloft.net>,
+ Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
+ Paolo Abeni <pabeni@redhat.com>, "Mathieu
+ Poirier" <mathieu.poirier@linaro.org>, Srinivas Kandagatla
+ <srinivas.kandagatla@linaro.org>, Kalle Valo <kvalo@kernel.org>, Andy Gross
+ <agross@kernel.org>, Bjorn Andersson <bjorn.andersson@linaro.org>, "Konrad
+ Dybcio" <konrad.dybcio@somainline.org>
+References: <20220912232526.27427-1-quic_jjohnson@quicinc.com>
+ <20220912232526.27427-2-quic_jjohnson@quicinc.com>
+ <20220912232526.27427-3-quic_jjohnson@quicinc.com>
+ <20220912232526.27427-4-quic_jjohnson@quicinc.com>
+ <20220912232526.27427-5-quic_jjohnson@quicinc.com>
+From: Sibi Sankar <quic_sibis@quicinc.com>
+Message-ID: <f8f43b22-bb13-71ff-15fc-a323d0b56ead@quicinc.com>
+Date: Wed, 14 Sep 2022 15:48:43 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.11.0
-Subject: Re: [PATCH] soundwire: qcom: update status from device id 1
+In-Reply-To: <20220912232526.27427-5-quic_jjohnson@quicinc.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
 Content-Language: en-US
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- vkoul@kernel.org
-References: <20220915124215.13703-1-srinivas.kandagatla@linaro.org>
- <3962348a-33b4-5941-4a0b-cb447a513a41@linux.intel.com>
- <bffab27c-6e25-5787-6958-648f9f2e2686@linaro.org>
- <2e1b81d2-e20f-db9f-b84e-b3c5ebb312cb@linux.intel.com>
-From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-In-Reply-To: <2e1b81d2-e20f-db9f-b84e-b3c5ebb312cb@linux.intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Cc: alsa-devel@alsa-project.org, linux-arm-msm@vger.kernel.org,
- linux-kernel@vger.kernel.org, sanyog.r.kale@intel.com,
- yung-chuan.liao@linux.intel.com, quic_srivasam@quicinc.com
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800
+ signatures=585085
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800
+ signatures=585085
+X-Proofpoint-GUID: bMVDI2dAzz-eh0sNk3DHpUhUOHYrziiX
+X-Proofpoint-ORIG-GUID: bMVDI2dAzz-eh0sNk3DHpUhUOHYrziiX
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.895,Hydra:6.0.528,FMLib:17.11.122.1
+ definitions=2022-09-14_03,2022-09-14_02,2022-06-22_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
+ impostorscore=0 adultscore=0
+ mlxlogscore=999 suspectscore=0 mlxscore=0 bulkscore=0 spamscore=0
+ phishscore=0 priorityscore=1501 clxscore=1011 malwarescore=0
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2208220000 definitions=main-2209140050
+X-Mailman-Approved-At: Fri, 16 Sep 2022 11:53:37 +0200
+Cc: linux-arm-msm@vger.kernel.org, alsa-devel@alsa-project.org,
+ linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org,
+ netdev@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -111,97 +139,111 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
 
-On 16/09/2022 10:39, Pierre-Louis Bossart wrote:
+On 9/13/22 4:55 AM, Jeff Johnson wrote:
+> Commit ff6d365898d ("soc: qcom: qmi: use const for struct
+> qmi_elem_info") allows QMI message encoding/decoding rules to be
+> const, so do that for QCOM PDR.
 > 
+> Signed-off-by: Jeff Johnson <quic_jjohnson@quicinc.com>
+
+Reviewed-by: Sibi Sankar <quic_sibis@quicinc.com>
+
+> ---
+>   drivers/soc/qcom/pdr_internal.h | 20 ++++++++++----------
+>   1 file changed, 10 insertions(+), 10 deletions(-)
 > 
-> On 9/16/22 11:12, Srinivas Kandagatla wrote:
->>
->>
->> On 15/09/2022 14:10, Pierre-Louis Bossart wrote:
->>>
->>>
->>> On 9/15/22 14:42, Srinivas Kandagatla wrote:
->>>> By default autoenumeration is enabled on QCom SoundWire controller
->>>> which means the core should not be dealing with device 0 w.r.t
->>>> enumeration.
->>>> Currently device 0 status is also shared with SoundWire core which
->>>> confuses
->>>> the core sometimes and we endup adding 0:0:0:0 slave device.
->>>
->>> The change looks fine, but the description of the issue is surprising.
->>
->> Thanks Pierre,
->>
->>>
->>> Whether autoenumeration is enabled or not is irrelevant, by spec the
->>> device0 cannot be in ALERT status and throw in-band interrupts to the
->>> host with this mechanism.
->>
->> This issue is more of around enumeration stage in specific during device
->> status change interrupt from controller. Sharing the device 0 status
->> with core makes it think that there is a device with 0:0:0:0 address and
->> it tries to park device to group 13.
-> Still not clear, sorry, see my comment below.
-
-
+> diff --git a/drivers/soc/qcom/pdr_internal.h b/drivers/soc/qcom/pdr_internal.h
+> index a30422214943..03c282b7f17e 100644
+> --- a/drivers/soc/qcom/pdr_internal.h
+> +++ b/drivers/soc/qcom/pdr_internal.h
+> @@ -28,7 +28,7 @@ struct servreg_location_entry {
+>   	u32 instance;
+>   };
+>   
+> -static struct qmi_elem_info servreg_location_entry_ei[] = {
+> +static const struct qmi_elem_info servreg_location_entry_ei[] = {
+>   	{
+>   		.data_type      = QMI_STRING,
+>   		.elem_len       = SERVREG_NAME_LENGTH + 1,
+> @@ -74,7 +74,7 @@ struct servreg_get_domain_list_req {
+>   	u32 domain_offset;
+>   };
+>   
+> -static struct qmi_elem_info servreg_get_domain_list_req_ei[] = {
+> +static const struct qmi_elem_info servreg_get_domain_list_req_ei[] = {
+>   	{
+>   		.data_type      = QMI_STRING,
+>   		.elem_len       = SERVREG_NAME_LENGTH + 1,
+> @@ -116,7 +116,7 @@ struct servreg_get_domain_list_resp {
+>   	struct servreg_location_entry domain_list[SERVREG_DOMAIN_LIST_LENGTH];
+>   };
+>   
+> -static struct qmi_elem_info servreg_get_domain_list_resp_ei[] = {
+> +static const struct qmi_elem_info servreg_get_domain_list_resp_ei[] = {
+>   	{
+>   		.data_type      = QMI_STRUCT,
+>   		.elem_len       = 1,
+> @@ -199,7 +199,7 @@ struct servreg_register_listener_req {
+>   	char service_path[SERVREG_NAME_LENGTH + 1];
+>   };
+>   
+> -static struct qmi_elem_info servreg_register_listener_req_ei[] = {
+> +static const struct qmi_elem_info servreg_register_listener_req_ei[] = {
+>   	{
+>   		.data_type      = QMI_UNSIGNED_1_BYTE,
+>   		.elem_len       = 1,
+> @@ -227,7 +227,7 @@ struct servreg_register_listener_resp {
+>   	enum servreg_service_state curr_state;
+>   };
+>   
+> -static struct qmi_elem_info servreg_register_listener_resp_ei[] = {
+> +static const struct qmi_elem_info servreg_register_listener_resp_ei[] = {
+>   	{
+>   		.data_type      = QMI_STRUCT,
+>   		.elem_len       = 1,
+> @@ -263,7 +263,7 @@ struct servreg_restart_pd_req {
+>   	char service_path[SERVREG_NAME_LENGTH + 1];
+>   };
+>   
+> -static struct qmi_elem_info servreg_restart_pd_req_ei[] = {
+> +static const struct qmi_elem_info servreg_restart_pd_req_ei[] = {
+>   	{
+>   		.data_type      = QMI_STRING,
+>   		.elem_len       = SERVREG_NAME_LENGTH + 1,
+> @@ -280,7 +280,7 @@ struct servreg_restart_pd_resp {
+>   	struct qmi_response_type_v01 resp;
+>   };
+>   
+> -static struct qmi_elem_info servreg_restart_pd_resp_ei[] = {
+> +static const struct qmi_elem_info servreg_restart_pd_resp_ei[] = {
+>   	{
+>   		.data_type      = QMI_STRUCT,
+>   		.elem_len       = 1,
+> @@ -300,7 +300,7 @@ struct servreg_state_updated_ind {
+>   	u16 transaction_id;
+>   };
+>   
+> -static struct qmi_elem_info servreg_state_updated_ind_ei[] = {
+> +static const struct qmi_elem_info servreg_state_updated_ind_ei[] = {
+>   	{
+>   		.data_type      = QMI_SIGNED_4_BYTE_ENUM,
+>   		.elem_len       = 1,
+> @@ -336,7 +336,7 @@ struct servreg_set_ack_req {
+>   	u16 transaction_id;
+>   };
+>   
+> -static struct qmi_elem_info servreg_set_ack_req_ei[] = {
+> +static const struct qmi_elem_info servreg_set_ack_req_ei[] = {
+>   	{
+>   		.data_type      = QMI_STRING,
+>   		.elem_len       = SERVREG_NAME_LENGTH + 1,
+> @@ -362,7 +362,7 @@ struct servreg_set_ack_resp {
+>   	struct qmi_response_type_v01 resp;
+>   };
+>   
+> -static struct qmi_elem_info servreg_set_ack_resp_ei[] = {
+> +static const struct qmi_elem_info servreg_set_ack_resp_ei[] = {
+>   	{
+>   		.data_type      = QMI_STRUCT,
+>   		.elem_len       = 1,
 > 
->>
->>
->> --srini
->>
->>>
->>>> Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
->>>> ---
->>>>    drivers/soundwire/qcom.c | 4 ++--
->>>>    1 file changed, 2 insertions(+), 2 deletions(-)
->>>>
->>>> diff --git a/drivers/soundwire/qcom.c b/drivers/soundwire/qcom.c
->>>> index e21a3306bf01..871e4d8b32c7 100644
->>>> --- a/drivers/soundwire/qcom.c
->>>> +++ b/drivers/soundwire/qcom.c
->>>> @@ -428,7 +428,7 @@ static int
->>>> qcom_swrm_get_alert_slave_dev_num(struct qcom_swrm_ctrl *ctrl)
->>>>          ctrl->reg_read(ctrl, SWRM_MCP_SLV_STATUS, &val);
->>>>    -    for (dev_num = 0; dev_num <= SDW_MAX_DEVICES; dev_num++) {
->>>> +    for (dev_num = 1; dev_num <= SDW_MAX_DEVICES; dev_num++) {
->>>>            status = (val >> (dev_num * SWRM_MCP_SLV_STATUS_SZ));
->>>>              if ((status & SWRM_MCP_SLV_STATUS_MASK) ==
->>>> SDW_SLAVE_ALERT) {
-> 
-> can this really happen?
-> 
-I have not see this happening, I had to change this line for consistency 
-reasons due to other changes in the patch.
-
-Only case the issue was seen is during enumeration.
-
-> Device0 cannot be in alert status, can it? The only this it can do is
-> assert PREQ and set the Device0 status to 1 (ATTACHED). I don't get how
-> a device status could be 2.
-> 
-> So even if the status is shared somehow,I don't see how this could be
-> related to parking the device as suggested above. If the condition is
-> always false then changing the loop counter from 0 to 1 would not have
-> an effect?
-
-The reason why core tries to park this device is because it sees 
-status[0] as SDW_SLAVE_ATTACHED and start programming the device id, 
-however reading DEVID registers return zeros which does not match to any 
-of the slaves in the list and the core attempts to park this device to 
-Group 13.
-
-
-
-
---srini
-
-> 
-> 
->>>> @@ -448,7 +448,7 @@ static void qcom_swrm_get_device_status(struct
->>>> qcom_swrm_ctrl *ctrl)
->>>>        ctrl->reg_read(ctrl, SWRM_MCP_SLV_STATUS, &val);
->>>>        ctrl->slave_status = val;
->>>>    -    for (i = 0; i <= SDW_MAX_DEVICES; i++) {
->>>> +    for (i = 1; i <= SDW_MAX_DEVICES; i++) {
->>>>            u32 s;
->>>>              s = (val >> (i * 2));
