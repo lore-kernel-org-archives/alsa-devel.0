@@ -4,56 +4,62 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 687EBC6FA89
-	for <alsa-devel@archiver.kernel.org>; Wed, 14 Sep 2022 06:44:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 214C2ECAAD3
+	for <alsa-devel@archiver.kernel.org>; Wed, 14 Sep 2022 07:24:42 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 8BF131669;
-	Wed, 14 Sep 2022 08:43:25 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8BF131669
+	by alsa0.perex.cz (Postfix) with ESMTPS id 84FBC17F7;
+	Wed, 14 Sep 2022 09:23:50 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 84FBC17F7
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1663137855;
-	bh=1b/PA4WI0mcwVHv/tjSCbTy//qqEX0UZ2pdy1K47ODE=;
-	h=Subject:From:In-Reply-To:Date:References:To:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=qqqulsYUCYXcxOGUTewmY0YlL0y+teyGvNv5ZkBTOBGml2O932lc5rOM9eY6XF8iN
-	 hlMP2blgUlTAlAqY0TOOJzl0yn/R7YC+HM4dYkQzQxcpDeJnNM2Kol1ORbLOm7AuPI
-	 +A4gf+1NfA1+A/cDn6OjXPmeIk+uH2moW90kbqjo=
+	s=default; t=1663140280;
+	bh=Wlngx2yzJG1DJ87jEfS3VcpDR2sftdKQUXaCQ4umGdw=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=vUfbjfKqq4Tca/sPlF2FTmAEVcFCUyTCvMJmEOkkibXNtXRUdrCxAwfhoJY3mMJzv
+	 DsRy/nUzVfpO9ocV5wpdv4455upsOJ3hhGjANZHvEi0UUmlPoNoRwhYxmIkWRFEcfj
+	 cR+Diajm38iVNx6OyVUXzwZhMQ1w2a9dT1CU9/Es=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 208EEF800C0;
-	Wed, 14 Sep 2022 08:43:25 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 1A926F800C0;
+	Wed, 14 Sep 2022 09:23:50 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 19D0FF800FE; Wed, 14 Sep 2022 08:43:23 +0200 (CEST)
-Received: from hutie.ust.cz (unknown [IPv6:2a03:3b40:fe:f0::1])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 2BA3FF8014E; Wed, 14 Sep 2022 05:23:43 +0200 (CEST)
+Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id E69C1F800C0
- for <alsa-devel@alsa-project.org>; Wed, 14 Sep 2022 08:43:16 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E69C1F800C0
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=cutebit.org header.i=@cutebit.org
- header.b="Kk/rGJv2"
-Content-Type: text/plain;
-	charset=utf-8
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cutebit.org; s=mail;
- t=1663137794; bh=fAYvnnsuKh0viKPZ5Vl/NA0UgUQt+5jgfiRQuA+Yvs8=;
- h=Subject:From:In-Reply-To:Date:Cc:References:To;
- b=Kk/rGJv2vIOU3j7a0RG40c4nna/CgZgncTvJpIpgucUSkNQGZdaQod03Br+h6TL+M
- 9jbxnz6sa3IHAEGqr0JIBkkbsoeSN+EQ4DusCQoqiFLws2aBqEM3+0n9mlOH6S/QXj
- ABzJVCr3oOGOwWnaYfCLhbClQrmwP3jgFAvPylv0=
-Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3696.80.82.1.1\))
-Subject: Re: [PATCH] ASoC: tas2562: Propagate the error in tas2562_dac_event()
-From: =?utf-8?Q?Martin_Povi=C5=A1er?= <povik+lin@cutebit.org>
-In-Reply-To: <20220913231706.516849-1-festevam@gmail.com>
-Date: Wed, 14 Sep 2022 08:43:12 +0200
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <31E14BDD-FD8C-4DBE-8056-5F2351DC392C@cutebit.org>
-References: <20220913231706.516849-1-festevam@gmail.com>
-To: Fabio Estevam <festevam@gmail.com>
-Cc: Fabio Estevam <festevam@denx.de>, alsa-devel@alsa-project.org,
- broonie@kernel.org
+ by alsa1.perex.cz (Postfix) with ESMTPS id 9EDF5F8008E
+ for <alsa-devel@alsa-project.org>; Wed, 14 Sep 2022 05:23:35 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9EDF5F8008E
+Received: from dggpeml500024.china.huawei.com (unknown [172.30.72.55])
+ by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4MS5DJ70R9zcmyZ;
+ Wed, 14 Sep 2022 11:19:44 +0800 (CST)
+Received: from dggpeml500010.china.huawei.com (7.185.36.155) by
+ dggpeml500024.china.huawei.com (7.185.36.10) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.31; Wed, 14 Sep 2022 11:23:29 +0800
+Received: from huawei.com (10.67.175.33) by dggpeml500010.china.huawei.com
+ (7.185.36.155) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.31; Wed, 14 Sep
+ 2022 11:23:29 +0800
+From: Lin Yujun <linyujun809@huawei.com>
+To: <agross@kernel.org>, <bjorn.andersson@linaro.org>,
+ <konrad.dybcio@somainline.org>, <srinivas.kandagatla@linaro.org>,
+ <gregkh@linuxfoundation.org>, <vkoul@kernel.org>
+Subject: [PATCH -next] slimbus: qcom-ngd: Add error handling in
+ of_qcom_slim_ngd_register
+Date: Wed, 14 Sep 2022 11:19:53 +0800
+Message-ID: <20220914031953.94061-1-linyujun809@huawei.com>
+X-Mailer: git-send-email 2.17.1
+MIME-Version: 1.0
+Content-Type: text/plain
+X-Originating-IP: [10.67.175.33]
+X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
+ dggpeml500010.china.huawei.com (7.185.36.155)
+X-CFilter-Loop: Reflected
+X-Mailman-Approved-At: Wed, 14 Sep 2022 09:23:48 +0200
+Cc: linux-arm-msm@vger.kernel.org, alsa-devel@alsa-project.org,
+ linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -69,57 +75,35 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+No error handling is performed when platform_device_add()
+return fails. Refer to the error handling of driver_set_override(),
+add error handling for platform_device_add().
 
-> On 14. 9. 2022, at 1:17, Fabio Estevam <festevam@gmail.com> wrote:
->=20
-> From: Fabio Estevam <festevam@denx.de>
->=20
-> Since commit 2848d34c3ba1 ("ASoC: tas2562: Fix mute/unmute") the
-> following build warning is seen:
->=20
-> sound/soc/codecs/tas2562.c:442:13: warning: variable 'ret' set but not =
-used [-Wunused-but-set-variable]
->=20
-> Fix the warning by returning the 'ret' variable.
->=20
-> Fixes: 2848d34c3ba1 ("ASoC: tas2562: Fix mute/unmute")
-> Signed-off-by: Fabio Estevam <festevam@denx.de>
+Fixes: 917809e2280b ("slimbus: ngd: Add qcom SLIMBus NGD driver")
+Signed-off-by: Lin Yujun <linyujun809@huawei.com>
+---
+ drivers/slimbus/qcom-ngd-ctrl.c | 8 +++++++-
+ 1 file changed, 7 insertions(+), 1 deletion(-)
 
-That=E2=80=99s right, ret should be propagated. Thanks!
-
-Reviewed-by: Martin Povi=C5=A1er <povik+lin@cutebit.org>
-
-> ---
-> sound/soc/codecs/tas2562.c | 4 ++--
-> 1 file changed, 2 insertions(+), 2 deletions(-)
->=20
-> diff --git a/sound/soc/codecs/tas2562.c b/sound/soc/codecs/tas2562.c
-> index 66149055aba9..b486d0bd86c9 100644
-> --- a/sound/soc/codecs/tas2562.c
-> +++ b/sound/soc/codecs/tas2562.c
-> @@ -439,7 +439,7 @@ static int tas2562_dac_event(struct =
-snd_soc_dapm_widget *w,
-> 	struct snd_soc_component *component =3D
-> 					=
-snd_soc_dapm_to_component(w->dapm);
-> 	struct tas2562_data *tas2562 =3D =
-snd_soc_component_get_drvdata(component);
-> -	int ret;
-> +	int ret =3D 0;
->=20
-> 	switch (event) {
-> 	case SND_SOC_DAPM_POST_PMU:
-> @@ -455,7 +455,7 @@ static int tas2562_dac_event(struct =
-snd_soc_dapm_widget *w,
-> 		return -EINVAL;
-> 	}
->=20
-> -	return 0;
-> +	return ret;
-> }
->=20
-> static int tas2562_volume_control_get(struct snd_kcontrol *kcontrol,
-> --=20
-> 2.25.1
->=20
+diff --git a/drivers/slimbus/qcom-ngd-ctrl.c b/drivers/slimbus/qcom-ngd-ctrl.c
+index 0aa8408464ad..fb591990ddad 100644
+--- a/drivers/slimbus/qcom-ngd-ctrl.c
++++ b/drivers/slimbus/qcom-ngd-ctrl.c
+@@ -1470,7 +1470,13 @@ static int of_qcom_slim_ngd_register(struct device *parent,
+ 		ngd->pdev->dev.of_node = node;
+ 		ctrl->ngd = ngd;
+ 
+-		platform_device_add(ngd->pdev);
++		ret = platform_device_add(ngd->pdev);
++		if (ret) {
++			platform_device_put(ngd->pdev);
++			kfree(ngd);
++			of_node_put(node);
++			return ret;
++		}
+ 		ngd->base = ctrl->base + ngd->id * data->offset +
+ 					(ngd->id - 1) * data->size;
+ 
+-- 
+2.17.1
 
