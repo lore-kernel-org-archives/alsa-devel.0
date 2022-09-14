@@ -4,51 +4,53 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 75291C6FA82
-	for <alsa-devel@archiver.kernel.org>; Wed, 14 Sep 2022 13:28:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D5C2DECAAD3
+	for <alsa-devel@archiver.kernel.org>; Wed, 14 Sep 2022 13:28:39 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 2DCC318C6;
-	Wed, 14 Sep 2022 15:27:24 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2DCC318C6
+	by alsa0.perex.cz (Postfix) with ESMTPS id E31AC18C7;
+	Wed, 14 Sep 2022 15:27:47 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E31AC18C7
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1663162094;
-	bh=P9JaJEtcLqYbo2B3mWvx7fZC7lvOaKYHLa7ffzQRlFU=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=eT0cP2izj4RWy0yNpH4k/vc6bxT9IxJw9AH7hsC8nNRZQRfninHkpix/idwIcp4kO
-	 GAf8Ae6yVFFKoWsmBR+dIN36IQUJD9WkFsKccoyJ0TmBrc8+XAK18n5rn+Kl8iKjgd
-	 amE4zfMv6U4Z+X1FmiJcaG0USDlaOHxSVcDsliaM=
+	s=default; t=1663162117;
+	bh=hTRBbVu4aVBS/Ity9e2NnlZHsr9ltVSjll9nEiNGL70=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=fzSjdJmdT+/m/+dyiOwKz4yCb8pGMn+4R5/YRFQUUa8zp5m5rsUuEug7D0D4mRla4
+	 cztj3iG55ihJzoDYjoq9vKenWaDan9oG9HRr4dPugN61Sv9or9Gi4AxwC7ZSjJN4dL
+	 Z6+sVBeq1p2TXcZQ88qtpKR+cW8p+c1+6DiF6BW8=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 709C6F80430;
-	Wed, 14 Sep 2022 15:26:58 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 0B26AF80528;
+	Wed, 14 Sep 2022 15:26:59 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 71678F8016E; Wed, 14 Sep 2022 15:26:56 +0200 (CEST)
-Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
+ id 36A2EF804E6; Wed, 14 Sep 2022 15:26:58 +0200 (CEST)
+Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id D92E1F8014B
- for <alsa-devel@alsa-project.org>; Wed, 14 Sep 2022 15:26:52 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D92E1F8014B
-Received: from dggpemm500022.china.huawei.com (unknown [172.30.72.54])
- by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4MSLbQ6vqQzNm64;
- Wed, 14 Sep 2022 21:22:10 +0800 (CST)
+ by alsa1.perex.cz (Postfix) with ESMTPS id BDE84F800C0
+ for <alsa-devel@alsa-project.org>; Wed, 14 Sep 2022 15:26:51 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BDE84F800C0
+Received: from dggpemm500024.china.huawei.com (unknown [172.30.72.56])
+ by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4MSLc95ryKz14QMk;
+ Wed, 14 Sep 2022 21:22:49 +0800 (CST)
 Received: from dggpemm500007.china.huawei.com (7.185.36.183) by
- dggpemm500022.china.huawei.com (7.185.36.162) with Microsoft SMTP Server
+ dggpemm500024.china.huawei.com (7.185.36.203) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.24; Wed, 14 Sep 2022 21:26:46 +0800
+ 15.1.2375.24; Wed, 14 Sep 2022 21:26:47 +0800
 Received: from huawei.com (10.175.103.91) by dggpemm500007.china.huawei.com
  (7.185.36.183) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.24; Wed, 14 Sep
- 2022 21:26:46 +0800
+ 2022 21:26:47 +0800
 From: Yang Yingliang <yangyingliang@huawei.com>
 To: <alsa-devel@alsa-project.org>
-Subject: [PATCH -next 1/3] ASoC: bcm2835-i2s: Switch to use dev_err_probe()
- helper
-Date: Wed, 14 Sep 2022 21:33:53 +0800
-Message-ID: <20220914133355.3779364-1-yangyingliang@huawei.com>
+Subject: [PATCH -next 3/3] ASoC: soc-dapm: Switch to use dev_err_probe() helper
+Date: Wed, 14 Sep 2022 21:33:55 +0800
+Message-ID: <20220914133355.3779364-3-yangyingliang@huawei.com>
 X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20220914133355.3779364-1-yangyingliang@huawei.com>
+References: <20220914133355.3779364-1-yangyingliang@huawei.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
@@ -72,36 +74,30 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-dev_err/dev_dbg() can be replace with dev_err_probe() which will check if error
+dev_err() can be replace with dev_err_probe() which will check if error
 code is -EPROBE_DEFER.
 
 Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
 ---
- sound/soc/bcm/bcm2835-i2s.c | 11 +++--------
- 1 file changed, 3 insertions(+), 8 deletions(-)
+ sound/soc/soc-dapm.c | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
 
-diff --git a/sound/soc/bcm/bcm2835-i2s.c b/sound/soc/bcm/bcm2835-i2s.c
-index f4d84774dac7..85f705afcdbb 100644
---- a/sound/soc/bcm/bcm2835-i2s.c
-+++ b/sound/soc/bcm/bcm2835-i2s.c
-@@ -841,14 +841,9 @@ static int bcm2835_i2s_probe(struct platform_device *pdev)
- 	/* get the clock */
- 	dev->clk_prepared = false;
- 	dev->clk = devm_clk_get(&pdev->dev, NULL);
--	if (IS_ERR(dev->clk)) {
--		ret = PTR_ERR(dev->clk);
--		if (ret == -EPROBE_DEFER)
--			dev_dbg(&pdev->dev, "could not get clk: %d\n", ret);
--		else
--			dev_err(&pdev->dev, "could not get clk: %d\n", ret);
--		return ret;
--	}
-+	if (IS_ERR(dev->clk))
-+		return dev_err_probe(&pdev->dev, PTR_ERR(dev->clk),
-+				     "could not get clk\n");
+diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
+index 47a7bf99472e..2d105bfee387 100644
+--- a/sound/soc/soc-dapm.c
++++ b/sound/soc/soc-dapm.c
+@@ -3764,9 +3764,8 @@ snd_soc_dapm_new_control_unlocked(struct snd_soc_dapm_context *dapm,
+ 	return w;
  
- 	/* Request ioarea */
- 	base = devm_platform_ioremap_resource(pdev, 0);
+ request_failed:
+-	if (ret != -EPROBE_DEFER)
+-		dev_err(dapm->dev, "ASoC: Failed to request %s: %d\n",
+-			w->name, ret);
++	dev_err_probe(dapm->dev, ret, "ASoC: Failed to request %s\n",
++		      w->name);
+ 	kfree_const(w->name);
+ name_failed:
+ 	kfree_const(w->sname);
 -- 
 2.25.1
 
