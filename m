@@ -4,67 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8DEF3C6FA82
-	for <alsa-devel@archiver.kernel.org>; Wed, 14 Sep 2022 16:09:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8F1F9ECAAD3
+	for <alsa-devel@archiver.kernel.org>; Wed, 14 Sep 2022 17:34:56 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 47CC81914;
-	Wed, 14 Sep 2022 18:08:15 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 47CC81914
+	by alsa0.perex.cz (Postfix) with ESMTPS id BEB5E18E4;
+	Wed, 14 Sep 2022 19:34:03 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BEB5E18E4
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1663171745;
-	bh=oP9/GLCs2nBCUxJkmgY0Lqz3DR7H/lsYCpM7Yftlw5o=;
-	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
+	s=default; t=1663176893;
+	bh=hD4qLko9ybG5VEbZI2KNcV4H+6npoAocwl0Ue90vNjg=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=YdtCO9DWGaQ1BoAp5db5pZOJCkjahL+TZq0a7izA+RGD2cNCqptilEMmiSmfJf7CX
-	 iQl0v/EE9BOGucFKpCWxmQYC6pf/5k/OD3kF5TGvVybG/XKag5Ultjlwvk/jVqvZSH
-	 varoAqvi9XQa3KFbXDgOicg/Wgl2NotvLm3bgrNk=
+	b=bByZxrdeocwOCdgqX2LNaOvdFpWRfDZFLKZ71rh+7DveZPttWlTwi3oc0F1uRzXzX
+	 5AFyus5vZXx3CF9RM7tSL/gKnIQL6Tqz87pMYlEzCxFlKuR9x50kdKbjUEVFuNkiqB
+	 5DbyhvkPHF0Gp1oR/+WSrNgMrBKAcyoSl8k7Iuds=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 76029F801D8;
-	Wed, 14 Sep 2022 18:07:50 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 33FD2F8014B;
+	Wed, 14 Sep 2022 19:34:03 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id ADBF8F8014E; Wed, 14 Sep 2022 18:07:47 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+ id 881F7F8014E; Wed, 14 Sep 2022 19:34:01 +0200 (CEST)
+Received: from ams.source.kernel.org (ams.source.kernel.org
+ [IPv6:2604:1380:4601:e00::1])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id E17A9F800FE
- for <alsa-devel@alsa-project.org>; Wed, 14 Sep 2022 18:07:33 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E17A9F800FE
+ by alsa1.perex.cz (Postfix) with ESMTPS id 3B044F800C0
+ for <alsa-devel@alsa-project.org>; Wed, 14 Sep 2022 19:33:58 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3B044F800C0
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="qxJCmyKc"
+ header.b="KCUtLSfu"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id 509E4616B6;
- Wed, 14 Sep 2022 16:07:30 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EC38FC433B5;
- Wed, 14 Sep 2022 16:07:28 +0000 (UTC)
+ by ams.source.kernel.org (Postfix) with ESMTPS id 27F15B819D5;
+ Wed, 14 Sep 2022 17:33:58 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 77040C433C1;
+ Wed, 14 Sep 2022 17:33:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1663171649;
- bh=oP9/GLCs2nBCUxJkmgY0Lqz3DR7H/lsYCpM7Yftlw5o=;
- h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=qxJCmyKcOEujO+XVlRtDOK8BMxKJ29aMNAQLfeBiHdAzsouh2tdNnJt/dYNCUr6Q8
- jAxAQPktWMHA3dhBLdXnMzIV/xpyZzgi/vYT709KPaXe2i+CzdrTdNHZ+NrhPeb7BG
- xEF6ymITI+hGqjMuEu+FXVl9bvh9KRvmlG8wQ9GBuS/KCOdgGw48pFQu7QOz2S9kji
- gEpcBFgMyOXOXH+ct/Ot26QbULIEqxrNW+R02Kt2JGxIkSz/pybfL3yNDSn5dKrn2Q
- Ya85GHV/PWC0KvQRkZ3RS5eZ1mfbGjGt6l4FvLkZSc7j3cM78YpHPd8pi/N52DfsbW
- iVJB6c0GtW55Q==
+ s=k20201202; t=1663176836;
+ bh=hD4qLko9ybG5VEbZI2KNcV4H+6npoAocwl0Ue90vNjg=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=KCUtLSfu9mB/jXtQ/YdVRPH2gLdUlQr87nJLtqQbGLjrcvicF28a15woa0I9mcXjK
+ ZktAzQnNNugkK33MCnYwjWQqTrrrG8kprEWpI5ReBZuzWXNK3XNQpZilQ9rCtInKha
+ M16xJUAOXprweOv3DvcRsJKRpj+KF8p1U+QGTUaZoEh+SwF7fe55YKI78f7rkfgtXO
+ Gnnf3L2o5UmiKAeY3pWSWpm3tPHVLLd2ZWF5jCrdocmFsieOkgoGzSRhR+t/DogXM1
+ IHuGaawxhyDGLJiLNfS3x8vFP/U7dRes73ZdIR/EWfpuJKYpCgcEBnTSsRvrHyxSR4
+ RN7OWpsWRlImw==
+Date: Wed, 14 Sep 2022 18:33:51 +0100
 From: Mark Brown <broonie@kernel.org>
-To: alsa-devel@alsa-project.org, Yang Yingliang <yangyingliang@huawei.com>
-In-Reply-To: <20220914133355.3779364-1-yangyingliang@huawei.com>
-References: <20220914133355.3779364-1-yangyingliang@huawei.com>
-Subject: Re: [PATCH -next 1/3] ASoC: bcm2835-i2s: Switch to use
- dev_err_probe() helper
-Message-Id: <166317164713.1330978.2912707755846248637.b4-ty@kernel.org>
-Date: Wed, 14 Sep 2022 17:07:27 +0100
+To: Martin Pietryka <martin.pietryka@streamunlimited.com>
+Subject: Re: [PATCH] ASoC: codecs: ak4458: only perform reset if any bits
+ actually changed
+Message-ID: <YyIQf+HQeMd1z20P@sirena.org.uk>
+References: <20220914141146.117340-1-martin.pietryka@streamunlimited.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-X-Mailer: b4 0.10.0-dev-7dade
-Cc: lgirdwood@gmail.com
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature"; boundary="BhE5NkTc+Wqvn3KJ"
+Content-Disposition: inline
+In-Reply-To: <20220914141146.117340-1-martin.pietryka@streamunlimited.com>
+X-Cookie: One FISHWICH coming up!!
+Cc: alsa-devel@alsa-project.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -80,40 +82,30 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, 14 Sep 2022 21:33:53 +0800, Yang Yingliang wrote:
-> dev_err/dev_dbg() can be replace with dev_err_probe() which will check if error
-> code is -EPROBE_DEFER.
-> 
-> 
 
-Applied to
+--BhE5NkTc+Wqvn3KJ
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-   broonie/sound.git for-next
+On Wed, Sep 14, 2022 at 04:11:46PM +0200, Martin Pietryka wrote:
+> This reduces the amount of small audio artifacts that happen when a reset
+> is performed as documented in the data-sheet.
 
-Thanks!
+This doesn't apply against current code, please check and resend.
 
-[1/3] ASoC: bcm2835-i2s: Switch to use dev_err_probe() helper
-      commit: b407589583da08405a19f4b0139d128e1ae41658
-[2/3] ASoC: cs42l42: Switch to use dev_err_probe() helper
-      commit: 28a3fb26e83e013c929a2e1185743ece7e8173ff
-[3/3] ASoC: soc-dapm: Switch to use dev_err_probe() helper
-      commit: a6b0be65123e1dfbcce6653a82394f989d3372ff
+--BhE5NkTc+Wqvn3KJ
+Content-Type: application/pgp-signature; name="signature.asc"
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
+-----BEGIN PGP SIGNATURE-----
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmMiEH8ACgkQJNaLcl1U
+h9BpXAf+P4LAdTDoDo2rUEsycF1nV+SP7Zi8Tk71kYa1y6JR8MiznJ9XCDcNHQIj
+1oSSG5b3ia2Rvc+mmYYcMDJzGV6S4sYNCEG5tLo9dbHz85vFNmoWn+4KYHedRnLr
+5mIQWsDHaHbPBdZzpyqEQhGnv72WuqTEHgPQ/wynVNOnXDLcoRyRJq0o2/tgkfQW
+pzqPZ8U1lNwH8+h6IMAW3UBXJySx74spjXbRimXQ4ZcLRDTKFOLsm4/jdvIDBpas
+JCnT8m1px0+U1pvvg3aaMchNoInw8VoT4JRqeCXSMKCjKaMn4IoytuD+/TXefvQl
+EamL7y72egqwmISoMmgiKCRq6Nex0w==
+=yu7s
+-----END PGP SIGNATURE-----
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
+--BhE5NkTc+Wqvn3KJ--
