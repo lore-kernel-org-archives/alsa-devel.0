@@ -4,62 +4,61 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D56B8C6FA89
-	for <alsa-devel@archiver.kernel.org>; Wed, 14 Sep 2022 09:04:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E5D5DECAAD8
+	for <alsa-devel@archiver.kernel.org>; Wed, 14 Sep 2022 09:04:41 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 1D2981825;
-	Wed, 14 Sep 2022 11:03:33 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1D2981825
+	by alsa0.perex.cz (Postfix) with ESMTPS id 212F21831;
+	Wed, 14 Sep 2022 11:03:50 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 212F21831
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1663146263;
-	bh=w8J7WeZoAmtAVa2bitCJ9ueRJcsRqLvy4sotjojZBno=;
+	s=default; t=1663146280;
+	bh=ApP5aHfwt00flHGkbd48EuZBwfzU0RjCtFfNvrtur/U=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=lSx+QGlkHLDVDumBqJ6gynRfQdSy1TZc8A/X6NidnlBSTkbCtgsiWQVQDALQt1nsK
-	 ecIMvC8QcRugPWZPkfBxjJ57J2VaPAzUILEKe3DYjm6so4ziugWL0edKhRVOF6dldQ
-	 q1CX+E/pyPWc/FU0C6nGmqhkFZeEOw7xSjocMFck=
+	b=YSfcpQt6vbTcGGM+SB+QyrSVT2b8nWa5S14DBy++tCMSRUnDQ/9L5FNLka1idDAPa
+	 /frH6mbr3yh7Wj3jSfnIxYacnPI3Dn0HNAijFQ5u1zOOpN4Tqj4oxDl1943UOpqpPQ
+	 J5lk5VM+lGsIRGs4TflL2Ys7fbQvo3WVUdwCnEyE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 90846F80528;
-	Wed, 14 Sep 2022 11:03:23 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id BE723F80535;
+	Wed, 14 Sep 2022 11:03:33 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id CBA86F80535; Wed, 14 Sep 2022 11:03:19 +0200 (CEST)
-Received: from sin.source.kernel.org (sin.source.kernel.org
- [IPv6:2604:1380:40e1:4800::1])
+ id 8F11BF8014E; Wed, 14 Sep 2022 11:03:21 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 7DB5CF800FE
- for <alsa-devel@alsa-project.org>; Wed, 14 Sep 2022 11:02:58 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7DB5CF800FE
+ by alsa1.perex.cz (Postfix) with ESMTPS id 2BA8FF8014B
+ for <alsa-devel@alsa-project.org>; Wed, 14 Sep 2022 11:02:51 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2BA8FF8014B
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="NJyojNLI"
+ header.b="L8dvdWpS"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by sin.source.kernel.org (Postfix) with ESMTPS id DCD0DCE16A6;
- Wed, 14 Sep 2022 09:02:55 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id ECD70C43470;
- Wed, 14 Sep 2022 09:02:51 +0000 (UTC)
+ by dfw.source.kernel.org (Postfix) with ESMTPS id 825EB619B0;
+ Wed, 14 Sep 2022 09:02:50 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 608C9C433D6;
+ Wed, 14 Sep 2022 09:02:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1663146174;
- bh=w8J7WeZoAmtAVa2bitCJ9ueRJcsRqLvy4sotjojZBno=;
+ s=k20201202; t=1663146169;
+ bh=ApP5aHfwt00flHGkbd48EuZBwfzU0RjCtFfNvrtur/U=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=NJyojNLIXrXCdLruTMLXRzmQUNW+8zTnnDFK6QV2B4AwqAab9VC9ZzMyLI/q461bv
- Bdb56xr+YmJAaKIP1wNRCyE8ySu4RpudwGEVEMMwJ86NFsiwkO5IYMQuqjL7/1W4Cp
- o1CdtBho7cH1v4Z1pVHHhGRmr9Kho1Zt+Zlqlc8+iivReS0uhWEuNa7U2KJI48fIVt
- ieog4F0Z5duiuFGcg5CleXHLN7hDwgKBZ3u4k3O08/diYynnN7Upkr/wBpeIaQwSAv
- VU53Zd//A7NRYL8I+5YZbjdW4qJSOi4DAxM6q6qL1ECvTI2zbyJNAwA0BZYNhk2rLB
- JO4ZWXIJ+8GfQ==
+ b=L8dvdWpST4s/1cBSmf4zRcZq1znaUTHTu0wUdcRkEWTuukydb3PlFJIyb9v8U3htd
+ AixTWrAC7zD7lNYiclMHFlYTOdNdNitBw42iqntxDlL+S3st/i/U8a1iBIyYpGyzTT
+ x8nCNOv01aeO3i+9ZRMPcCN2rvWzziLYwblCh+olI71MPB4SZrvslK5P8u+XMHE3mV
+ NIyfbfo6CHG+UGwsYPJ27KPJrbcRZJ333XN4QPwXCy3JfY0JakjiiVcmq6GsQ0PcqY
+ O/81qZuiXgvH3gZUpBRqFeIm4Xbftn8wvk2ZI2lL3cBtavToYMdXWP6uVDrJ6Ofgxw
+ XO42VnsKXbJDQ==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.15 09/16] ALSA: hda/tegra: Align BDL entry to 4KB
- boundary
-Date: Wed, 14 Sep 2022 05:02:17 -0400
-Message-Id: <20220914090224.470913-9-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.15 08/16] ALSA: hda/sigmatel: Keep power up while
+ beep is enabled
+Date: Wed, 14 Sep 2022 05:02:16 -0400
+Message-Id: <20220914090224.470913-8-sashal@kernel.org>
 X-Mailer: git-send-email 2.35.1
 In-Reply-To: <20220914090224.470913-1-sashal@kernel.org>
 References: <20220914090224.470913-1-sashal@kernel.org>
@@ -67,10 +66,8 @@ MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
-Cc: Sasha Levin <sashal@kernel.org>, alsa-devel@alsa-project.org,
- Takashi Iwai <tiwai@suse.de>, spujar@nvidia.com, tiwai@suse.com,
- thierry.reding@gmail.com, linux-tegra@vger.kernel.org, digetx@gmail.com,
- jonathanh@nvidia.com, Mohan Kumar <mkumard@nvidia.com>
+Cc: Takashi Iwai <tiwai@suse.de>, Sasha Levin <sashal@kernel.org>,
+ alsa-devel@alsa-project.org, tiwai@suse.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -86,37 +83,69 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Mohan Kumar <mkumard@nvidia.com>
+From: Takashi Iwai <tiwai@suse.de>
 
-[ Upstream commit 8d44e6044a0e885acdd01813768a0b27906d64fd ]
+[ Upstream commit 414d38ba871092aeac4ed097ac4ced89486646f7 ]
 
-AZA HW may send a burst read/write request crossing 4K memory boundary.
-The 4KB boundary is not guaranteed by Tegra HDA HW. Make SW change to
-include the flag AZX_DCAPS_4K_BDLE_BOUNDARY to align BDLE to 4K
-boundary.
+It seems that the beep playback doesn't work well on IDT codec devices
+when the codec auto-pm is enabled.  Keep the power on while the beep
+switch is enabled.
 
-Signed-off-by: Mohan Kumar <mkumard@nvidia.com>
-Link: https://lore.kernel.org/r/20220905172420.3801-1-mkumard@nvidia.com
+Link: https://bugzilla.suse.com/show_bug.cgi?id=1200544
+Link: https://lore.kernel.org/r/20220904072750.26164-1-tiwai@suse.de
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/pci/hda/hda_tegra.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ sound/pci/hda/patch_sigmatel.c | 22 ++++++++++++++++++++++
+ 1 file changed, 22 insertions(+)
 
-diff --git a/sound/pci/hda/hda_tegra.c b/sound/pci/hda/hda_tegra.c
-index 773f4903550a0..f0e556f2ccf69 100644
---- a/sound/pci/hda/hda_tegra.c
-+++ b/sound/pci/hda/hda_tegra.c
-@@ -451,7 +451,8 @@ MODULE_DEVICE_TABLE(of, hda_tegra_match);
- static int hda_tegra_probe(struct platform_device *pdev)
- {
- 	const unsigned int driver_flags = AZX_DCAPS_CORBRP_SELF_CLEAR |
--					  AZX_DCAPS_PM_RUNTIME;
-+					  AZX_DCAPS_PM_RUNTIME |
-+					  AZX_DCAPS_4K_BDLE_BOUNDARY;
- 	struct snd_card *card;
- 	struct azx *chip;
- 	struct hda_tegra *hda;
+diff --git a/sound/pci/hda/patch_sigmatel.c b/sound/pci/hda/patch_sigmatel.c
+index 61df4d33c48ff..066bfccd25877 100644
+--- a/sound/pci/hda/patch_sigmatel.c
++++ b/sound/pci/hda/patch_sigmatel.c
+@@ -209,6 +209,7 @@ struct sigmatel_spec {
+ 
+ 	/* beep widgets */
+ 	hda_nid_t anabeep_nid;
++	bool beep_power_on;
+ 
+ 	/* SPDIF-out mux */
+ 	const char * const *spdif_labels;
+@@ -4443,6 +4444,26 @@ static int stac_suspend(struct hda_codec *codec)
+ 
+ 	return 0;
+ }
++
++static int stac_check_power_status(struct hda_codec *codec, hda_nid_t nid)
++{
++	struct sigmatel_spec *spec = codec->spec;
++	int ret = snd_hda_gen_check_power_status(codec, nid);
++
++#ifdef CONFIG_SND_HDA_INPUT_BEEP
++	if (nid == spec->gen.beep_nid && codec->beep) {
++		if (codec->beep->enabled != spec->beep_power_on) {
++			spec->beep_power_on = codec->beep->enabled;
++			if (spec->beep_power_on)
++				snd_hda_power_up_pm(codec);
++			else
++				snd_hda_power_down_pm(codec);
++		}
++		ret |= spec->beep_power_on;
++	}
++#endif
++	return ret;
++}
+ #else
+ #define stac_suspend		NULL
+ #endif /* CONFIG_PM */
+@@ -4455,6 +4476,7 @@ static const struct hda_codec_ops stac_patch_ops = {
+ 	.unsol_event = snd_hda_jack_unsol_event,
+ #ifdef CONFIG_PM
+ 	.suspend = stac_suspend,
++	.check_power_status = stac_check_power_status,
+ #endif
+ };
+ 
 -- 
 2.35.1
 
