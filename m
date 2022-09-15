@@ -4,44 +4,44 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9F47EECAAA1
-	for <alsa-devel@archiver.kernel.org>; Thu, 15 Sep 2022 09:47:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id AA690ECAAD3
+	for <alsa-devel@archiver.kernel.org>; Thu, 15 Sep 2022 09:47:25 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 80E4A1925;
-	Thu, 15 Sep 2022 11:46:08 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 80E4A1925
+	by alsa0.perex.cz (Postfix) with ESMTPS id 83A8116F1;
+	Thu, 15 Sep 2022 11:46:33 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 83A8116F1
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1663235218;
-	bh=zsDJXMexWtCDk6RYwNLQ8xBPRVUuW+Ul1bfykT2jlms=;
+	s=default; t=1663235243;
+	bh=0JgWsIEvS+yhApA5aNZCZox/O7nVshcfLlkhqA6BZ0g=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=WSp1uqLCyzdnlIRXvWFczWnzqjxhs9kjQwdveQY9PnEWfcyHpX+qxGqlcCb9LaPJj
-	 HX+IaTuaf5HQqblSgIS3b5bSFPKZ+4RsKX3JOIe2AHTZuGLeeTmmlLEudGrKHiTrEy
-	 DrKtzwhfgJv46btF3THyl0w27XUu45DPg8ifIhFU=
+	b=n8dTNxLe3aYVv0SgokUrvDy/Ki04BCuFqII4aenDe611thVGcusmSHp1LdSgTu9gw
+	 EUOWXTSfDkYhFPp8gme/sOnU0+x1l9rKwgyGizipBe9sblY9DPowj8mcujQX2z9Uju
+	 yFXsHFlQkR7+5nk8BYeDscbUx+xN6GHLVSvHTl98=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id C4345F8053B;
-	Thu, 15 Sep 2022 11:45:41 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id B6827F80238;
+	Thu, 15 Sep 2022 11:45:46 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 75BCBF80533; Thu, 15 Sep 2022 11:45:39 +0200 (CEST)
-Received: from hutie.ust.cz (hutie.ust.cz [185.8.165.127])
+ id 1F6C5F8054A; Thu, 15 Sep 2022 11:45:45 +0200 (CEST)
+Received: from hutie.ust.cz (unknown [IPv6:2a03:3b40:fe:f0::1])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 28145F800B5
- for <alsa-devel@alsa-project.org>; Thu, 15 Sep 2022 11:45:32 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 28145F800B5
+ by alsa1.perex.cz (Postfix) with ESMTPS id 99CF6F8013D
+ for <alsa-devel@alsa-project.org>; Thu, 15 Sep 2022 11:45:35 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 99CF6F8013D
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=cutebit.org header.i=@cutebit.org
- header.b="qsscwXvV"
+ header.b="eEyhNUA6"
 From: =?UTF-8?q?Martin=20Povi=C5=A1er?= <povik+lin@cutebit.org>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cutebit.org; s=mail;
- t=1663235132; bh=NMjc57pS18hVjKrzNHd1R4eoALtoodfm+KhlRmKIL9k=;
+ t=1663235134; bh=Glim46IiadboInQ3/adgJu1cxhrQQu+f688hNINWdOc=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References;
- b=qsscwXvV86ErGTv5GSBYz5lpSu8ecT2n4u9S0Jg28rWKUbzZkPgaWKl308sEspNg3
- WfuR1dFBN+qmn4CnLNarNxVBd5xfDgVOfeH5MpAFbXDxqZlyxzBT0KN4l36+iB2LKd
- OXrixVOyTd8xIsmluv+4m7L0wbDdLVq3FT+Z6syE=
+ b=eEyhNUA6kHWOG4O8yUYoTh9wd9AFPPqdq8Xyob8c8uuH13GlD1xbsGiyiDDMmXab4
+ kp5BHQasB0gpHE1a1G9oQ8/8RRqY8e8fA/ZTSU/FZA26T4K9XxOnYIj/HfF7UoDsnw
+ a/tBESvKANk3EOJwmzEouusQt07oDwIAYm1Nwy4Q=
 To: James Schulman <james.schulman@cirrus.com>,
  David Rhodes <david.rhodes@cirrus.com>,
  Lucas Tanure <tanureal@opensource.cirrus.com>,
@@ -50,9 +50,10 @@ To: James Schulman <james.schulman@cirrus.com>,
  Rob Herring <robh+dt@kernel.org>,
  Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
  =?UTF-8?q?Martin=20Povi=C5=A1er?= <povik+lin@cutebit.org>
-Subject: [PATCH v2 01/11] ASoC: dt-bindings: cs42l42: Add 'cs42l83' compatible
-Date: Thu, 15 Sep 2022 11:44:34 +0200
-Message-Id: <20220915094444.11434-2-povik+lin@cutebit.org>
+Subject: [PATCH v2 03/11] ASoC: cs42l42: Use cs42l42->dev instead of
+ &i2c_client->dev
+Date: Thu, 15 Sep 2022 11:44:36 +0200
+Message-Id: <20220915094444.11434-4-povik+lin@cutebit.org>
 In-Reply-To: <20220915094444.11434-1-povik+lin@cutebit.org>
 References: <20220915094444.11434-1-povik+lin@cutebit.org>
 MIME-Version: 1.0
@@ -63,8 +64,8 @@ Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
  - <patches@opensource.cirrus.com>,
  Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
  linux-kernel@vger.kernel.org, ChiYuan Huang <cy_huang@richtek.com>,
- Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>, asahi@lists.linux.dev,
- Lukas Bulwahn <lukas.bulwahn@gmail.com>, Matt Flax <flatmax@flatmax.com>
+ asahi@lists.linux.dev, Lukas Bulwahn <lukas.bulwahn@gmail.com>,
+ Matt Flax <flatmax@flatmax.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -80,27 +81,133 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-CS42L83 is a publicly undocumented part found in Apple machines, similar
-(almost identical) to CS42L42. Share the binding schema of CS42L42 for it.
+From: Richard Fitzgerald <rf@opensource.cirrus.com>
 
-Acked-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In preparation for splitting cs42l42_i2c_probe() into multiple functions
+replace use of &i2c_client->dev with cs42l42->dev. This reduces diff
+clutter in the patch that splits the function.
+
+Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
 Signed-off-by: Martin Povišer <povik+lin@cutebit.org>
 ---
- Documentation/devicetree/bindings/sound/cirrus,cs42l42.yaml | 1 +
- 1 file changed, 1 insertion(+)
+ sound/soc/codecs/cs42l42.c | 32 +++++++++++++++++---------------
+ 1 file changed, 17 insertions(+), 15 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/sound/cirrus,cs42l42.yaml b/Documentation/devicetree/bindings/sound/cirrus,cs42l42.yaml
-index 31800f70e9d9..7356084a2ca2 100644
---- a/Documentation/devicetree/bindings/sound/cirrus,cs42l42.yaml
-+++ b/Documentation/devicetree/bindings/sound/cirrus,cs42l42.yaml
-@@ -19,6 +19,7 @@ properties:
-   compatible:
-     enum:
-       - cirrus,cs42l42
-+      - cirrus,cs42l83
+diff --git a/sound/soc/codecs/cs42l42.c b/sound/soc/codecs/cs42l42.c
+index 4b92ee0e67c4..11cb659f03e0 100644
+--- a/sound/soc/codecs/cs42l42.c
++++ b/sound/soc/codecs/cs42l42.c
+@@ -2217,7 +2217,7 @@ static int cs42l42_i2c_probe(struct i2c_client *i2c_client)
+ 	cs42l42->regmap = devm_regmap_init_i2c(i2c_client, &cs42l42_regmap);
+ 	if (IS_ERR(cs42l42->regmap)) {
+ 		ret = PTR_ERR(cs42l42->regmap);
+-		dev_err(&i2c_client->dev, "regmap_init() failed: %d\n", ret);
++		dev_err(cs42l42->dev, "regmap_init() failed: %d\n", ret);
+ 		return ret;
+ 	}
  
-   reg:
-     description:
+@@ -2225,11 +2225,11 @@ static int cs42l42_i2c_probe(struct i2c_client *i2c_client)
+ 	for (i = 0; i < ARRAY_SIZE(cs42l42->supplies); i++)
+ 		cs42l42->supplies[i].supply = cs42l42_supply_names[i];
+ 
+-	ret = devm_regulator_bulk_get(&i2c_client->dev,
++	ret = devm_regulator_bulk_get(cs42l42->dev,
+ 				      ARRAY_SIZE(cs42l42->supplies),
+ 				      cs42l42->supplies);
+ 	if (ret != 0) {
+-		dev_err(&i2c_client->dev,
++		dev_err(cs42l42->dev,
+ 			"Failed to request supplies: %d\n", ret);
+ 		return ret;
+ 	}
+@@ -2237,13 +2237,13 @@ static int cs42l42_i2c_probe(struct i2c_client *i2c_client)
+ 	ret = regulator_bulk_enable(ARRAY_SIZE(cs42l42->supplies),
+ 				    cs42l42->supplies);
+ 	if (ret != 0) {
+-		dev_err(&i2c_client->dev,
++		dev_err(cs42l42->dev,
+ 			"Failed to enable supplies: %d\n", ret);
+ 		return ret;
+ 	}
+ 
+ 	/* Reset the Device */
+-	cs42l42->reset_gpio = devm_gpiod_get_optional(&i2c_client->dev,
++	cs42l42->reset_gpio = devm_gpiod_get_optional(cs42l42->dev,
+ 		"reset", GPIOD_OUT_LOW);
+ 	if (IS_ERR(cs42l42->reset_gpio)) {
+ 		ret = PTR_ERR(cs42l42->reset_gpio);
+@@ -2251,7 +2251,7 @@ static int cs42l42_i2c_probe(struct i2c_client *i2c_client)
+ 	}
+ 
+ 	if (cs42l42->reset_gpio) {
+-		dev_dbg(&i2c_client->dev, "Found reset GPIO\n");
++		dev_dbg(cs42l42->dev, "Found reset GPIO\n");
+ 		gpiod_set_value_cansleep(cs42l42->reset_gpio, 1);
+ 	}
+ 	usleep_range(CS42L42_BOOT_TIME_US, CS42L42_BOOT_TIME_US * 2);
+@@ -2262,9 +2262,11 @@ static int cs42l42_i2c_probe(struct i2c_client *i2c_client)
+ 					   NULL, cs42l42_irq_thread,
+ 					   IRQF_ONESHOT | IRQF_TRIGGER_LOW,
+ 					   "cs42l42", cs42l42);
+-		if (ret) {
+-			dev_err_probe(&i2c_client->dev, ret,
+-				      "Failed to request IRQ\n");
++		if (ret == -EPROBE_DEFER) {
++			goto err_disable_noirq;
++		} else if (ret != 0) {
++			dev_err_probe(cs42l42->dev, ret,
++				"Failed to request IRQ\n");
+ 			goto err_disable_noirq;
+ 		}
+ 	}
+@@ -2273,13 +2275,13 @@ static int cs42l42_i2c_probe(struct i2c_client *i2c_client)
+ 	devid = cirrus_read_device_id(cs42l42->regmap, CS42L42_DEVID_AB);
+ 	if (devid < 0) {
+ 		ret = devid;
+-		dev_err(&i2c_client->dev, "Failed to read device ID: %d\n", ret);
++		dev_err(cs42l42->dev, "Failed to read device ID: %d\n", ret);
+ 		goto err_disable;
+ 	}
+ 
+ 	if (devid != CS42L42_CHIP_ID) {
+ 		ret = -ENODEV;
+-		dev_err(&i2c_client->dev,
++		dev_err(cs42l42->dev,
+ 			"CS42L42 Device ID (%X). Expected %X\n",
+ 			devid, CS42L42_CHIP_ID);
+ 		goto err_disable;
+@@ -2287,11 +2289,11 @@ static int cs42l42_i2c_probe(struct i2c_client *i2c_client)
+ 
+ 	ret = regmap_read(cs42l42->regmap, CS42L42_REVID, &reg);
+ 	if (ret < 0) {
+-		dev_err(&i2c_client->dev, "Get Revision ID failed\n");
++		dev_err(cs42l42->dev, "Get Revision ID failed\n");
+ 		goto err_shutdown;
+ 	}
+ 
+-	dev_info(&i2c_client->dev,
++	dev_info(cs42l42->dev,
+ 		 "Cirrus Logic CS42L42, Revision: %02X\n", reg & 0xFF);
+ 
+ 	/* Power up the codec */
+@@ -2311,7 +2313,7 @@ static int cs42l42_i2c_probe(struct i2c_client *i2c_client)
+ 			(1 << CS42L42_ADC_PDN_SHIFT) |
+ 			(0 << CS42L42_PDN_ALL_SHIFT));
+ 
+-	ret = cs42l42_handle_device_data(&i2c_client->dev, cs42l42);
++	ret = cs42l42_handle_device_data(cs42l42->dev, cs42l42);
+ 	if (ret != 0)
+ 		goto err_shutdown;
+ 
+@@ -2322,7 +2324,7 @@ static int cs42l42_i2c_probe(struct i2c_client *i2c_client)
+ 	cs42l42_set_interrupt_masks(cs42l42);
+ 
+ 	/* Register codec for machine driver */
+-	ret = devm_snd_soc_register_component(&i2c_client->dev,
++	ret = devm_snd_soc_register_component(cs42l42->dev,
+ 			&soc_component_dev_cs42l42, &cs42l42_dai, 1);
+ 	if (ret < 0)
+ 		goto err_shutdown;
 -- 
 2.33.0
 
