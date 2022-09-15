@@ -4,66 +4,65 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8E9E6ECAAA1
-	for <alsa-devel@archiver.kernel.org>; Thu, 15 Sep 2022 11:41:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E6C67ECAAD3
+	for <alsa-devel@archiver.kernel.org>; Thu, 15 Sep 2022 11:42:00 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 2707E194A;
-	Thu, 15 Sep 2022 13:41:00 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2707E194A
+	by alsa0.perex.cz (Postfix) with ESMTPS id C97EF1A16;
+	Thu, 15 Sep 2022 13:41:07 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C97EF1A16
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1663242110;
-	bh=Lfx6i53+RiO5+QzyUxtTXrjQmGmvvKs2PPjMKY51PfE=;
+	s=default; t=1663242117;
+	bh=5d4rtyVY1b+OQfdduXscPUQN8jtr+jjh9L3gDOUzvGo=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=nM4bMW8GMgDccSuEgWj0X5EnMZFwSWAKxD6YPAhuAh3I/NxkfrnlNQu/oz4M+iW/V
-	 I5NrkmAnE+NW8oYw+ix8ZEknW0O/wCG2R0+sd0q29Ij1YTb/xhh8irOKE4nbpwUZtl
-	 RA3BwKyyVI6AkgklOxh3HkfVwDtOOGPF3uL0ThPo=
+	b=q/6daHcgZhMnuHviay63+g3CYSXxzHfwZXeSIb357E+GhTsDs/9KYCah2Unx7H60c
+	 PdMh7LeWgeejKb0yrP/dgtb5wHkFyHSc77zLI4mzTMeu5w5C0AQNbtO8CriKEbHyQM
+	 eedsdUGzB2lbVqY0lVUv1iSzO6AUQhYyTnHoEmYk=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 59058F800B5;
-	Thu, 15 Sep 2022 13:40:13 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 01334F80537;
+	Thu, 15 Sep 2022 13:40:14 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id C60D5F80535; Thu, 15 Sep 2022 13:40:11 +0200 (CEST)
+ id C2853F80536; Thu, 15 Sep 2022 13:40:11 +0200 (CEST)
 Received: from smtp1.axis.com (smtp1.axis.com [195.60.68.17])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 37B35F8027D
- for <alsa-devel@alsa-project.org>; Thu, 15 Sep 2022 13:40:03 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 37B35F8027D
+ by alsa1.perex.cz (Postfix) with ESMTPS id 82D19F80238
+ for <alsa-devel@alsa-project.org>; Thu, 15 Sep 2022 13:40:02 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 82D19F80238
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=axis.com header.i=@axis.com
- header.b="Kx4Ef/2u"
+ header.b="OUjhnCQP"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=axis.com; q=dns/txt; s=axis-central1; t=1663242004;
- x=1694778004; h=from:to:cc:subject:date:message-id:in-reply-to:
+ d=axis.com; q=dns/txt; s=axis-central1; t=1663242003;
+ x=1694778003; h=from:to:cc:subject:date:message-id:in-reply-to:
  references:mime-version:content-transfer-encoding;
- bh=fWT8qRbiWNa5/mbcYWo86wQNVuPvppjS+ANHTTdMVNE=;
- b=Kx4Ef/2usLPJy8U9d3wAmR7bwFDPA5vW2riuzfNTpJPA8Djv23roDQ3m
- AKO1QkwqGWmnDB5WoeH1OQnvfTR4LLYGIqj0DtyLseDPyQFv7OhrWx38+
- A0RJyHidY++4yVuQJemqXfGXLipG5nHdYFS4asFK6fwTIZ9nKmquo7Om9
- j6Di/13Zb4rGeAFwURLjmmcIZqyw9YjRFl9ABTtOcNNoKzG1jDFie4wH7
- O6g4AZpsLAcRKlO1wJQhRrPSP3lmz580fidu5kjH04NQx8bnmKzdfkgrM
- RjiwFxZynoU+ssid5uIoWQ8Ed8hbULZoU3QcNnsZODKsylJKi3JtnTMDh w==;
+ bh=wnFQ1tb35qKbaGfqR/2XMvWyIaJYai8tjzpmbu59XnM=;
+ b=OUjhnCQPb9nOjAtciJPwYITINgID3hs2P/zTFV7oqGaSzRLKkOYPDWjN
+ oNwsbTOv7crwpkDfSe6MC9cAhjmxSm8SkKD8gCPFPo7zsGQ7bbq8SPTLk
+ Vk14zUBSwt62PCDDVcjpQ71XKU7SMg7QAnI1f2lrgxLlxNljv/A3hvdYv
+ zWaLsNFqvWXT8/kTWJ2krTHc9ry9h2aWSdIlF2WEbvgmH2iTDY7CAeY9Z
+ pXK0f02qRptYlezwXGvfz/TrBqldLFKu4I51vRlo+isKbl41Bz1/srVct
+ EWUNSWEJLamPV4QS61gbG4HiKoPIBkrEM/AaBZ4hzqHGdxehte4RZ8bpm w==;
 From: Astrid Rost <astrid.rost@axis.com>
 To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>,
  Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Dylan Reid
- <dgreid@chromium.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai
- <tiwai@suse.com>
-Subject: [PATCH v2 3/3] ASoC: ts3a227e: add parameters to control debounce
+ <dgreid@chromium.org>, Rob Herring <robh+dt@kernel.org>
+Subject: [PATCH v2 2/3] dt-bindings: sound: ts3a227e: add control of debounce
  times
-Date: Thu, 15 Sep 2022 13:39:55 +0200
-Message-ID: <20220915113955.22521-4-astrid.rost@axis.com>
+Date: Thu, 15 Sep 2022 13:39:54 +0200
+Message-ID: <20220915113955.22521-3-astrid.rost@axis.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20220915113955.22521-1-astrid.rost@axis.com>
 References: <20220915113955.22521-1-astrid.rost@axis.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-Cc: Astrid Rost <astridr@axis.com>, kernel@axis.c,
- Astrid Rost <astrid.rost@axis.com>, alsa-devel@alsa-project.org,
- linux-kernel@vger.kernel.org
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
+ Astrid Rost <astrid.rost@axis.com>, linux-kernel@vger.kernel.org,
+ kernel@axis.c, Astrid Rost <astridr@axis.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -79,106 +78,54 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Add devicetree parameters to control the insert, release and press
+Add devicetree parameters to control the insertion, release and press
 debounce times.
 
 Signed-off-by: Astrid Rost <astrid.rost@axis.com>
 ---
- sound/soc/codecs/ts3a227e.c | 58 +++++++++++++++++++++++++++++++++----
- 1 file changed, 52 insertions(+), 6 deletions(-)
+ .../devicetree/bindings/sound/ts3a227e.yaml   | 29 +++++++++++++++++++
+ 1 file changed, 29 insertions(+)
 
-diff --git a/sound/soc/codecs/ts3a227e.c b/sound/soc/codecs/ts3a227e.c
-index d8ab0810fceb..f2d1367c46ca 100644
---- a/sound/soc/codecs/ts3a227e.c
-+++ b/sound/soc/codecs/ts3a227e.c
-@@ -78,12 +78,20 @@ static const int ts3a227e_buttons[] = {
- #define ADC_COMPLETE_INT_DISABLE 0x04
- #define INTB_DISABLE 0x08
+diff --git a/Documentation/devicetree/bindings/sound/ts3a227e.yaml b/Documentation/devicetree/bindings/sound/ts3a227e.yaml
+index 3512b1f1e32b..8c27f298733a 100644
+--- a/Documentation/devicetree/bindings/sound/ts3a227e.yaml
++++ b/Documentation/devicetree/bindings/sound/ts3a227e.yaml
+@@ -44,6 +44,35 @@ properties:
+       - 7 # 2.8 V
+     default: 2
  
-+/* TS3A227E_REG_SETTING_1 0x4 */
-+#define DEBOUNCE_INSERTION_SETTING_SFT (0)
-+#define DEBOUNCE_INSERTION_SETTING_MASK (0x7 << DEBOUNCE_PRESS_SETTING_SFT)
++  ti,debounce-release-ms:
++    description: key release debounce time in ms (datasheet section 9.6.7).
++    enum:
++      - 0  #  0 ms (0)
++      - 20 # 20 ms (1)
++    default: 20
 +
- /* TS3A227E_REG_SETTING_2 0x05 */
- #define KP_ENABLE 0x04
- 
- /* TS3A227E_REG_SETTING_3 0x06 */
--#define MICBIAS_SETTING_SFT (3)
-+#define MICBIAS_SETTING_SFT 3
- #define MICBIAS_SETTING_MASK (0x7 << MICBIAS_SETTING_SFT)
-+#define DEBOUNCE_RELEASE_SETTING_SFT 2
-+#define DEBOUNCE_RELEASE_SETTING_MASK (0x1 << DEBOUNCE_RELEASE_SETTING_SFT)
-+#define DEBOUNCE_PRESS_SETTING_SFT 0
-+#define DEBOUNCE_PRESS_SETTING_MASK (0x3 << DEBOUNCE_PRESS_SETTING_SFT)
- 
- /* TS3A227E_REG_ACCESSORY_STATUS  0x0b */
- #define TYPE_3_POLE 0x01
-@@ -136,7 +144,7 @@ static bool ts3a227e_volatile_reg(struct device *dev, unsigned int reg)
- {
- 	switch (reg) {
- 	case TS3A227E_REG_INTERRUPT ... TS3A227E_REG_INTERRUPT_DISABLE:
--	case TS3A227E_REG_SETTING_2:
-+	case TS3A227E_REG_SETTING_1 ... TS3A227E_REG_SETTING_2:
- 	case TS3A227E_REG_SWITCH_STATUS_1 ... TS3A227E_REG_ADC_OUTPUT:
- 		return true;
- 	default:
-@@ -269,14 +277,52 @@ static const struct regmap_config ts3a227e_regmap_config = {
- static int ts3a227e_parse_device_property(struct ts3a227e *ts3a227e,
- 				struct device *dev)
- {
--	u32 micbias;
-+	u32 value;
-+	u32 value_ms;
-+	u32 setting3_value = 0;
-+	u32 setting3_mask = 0;
- 	int err;
- 
--	err = device_property_read_u32(dev, "ti,micbias", &micbias);
-+	err = device_property_read_u32(dev, "ti,micbias", &value);
-+	if (!err) {
-+		setting3_mask = MICBIAS_SETTING_MASK;
-+		setting3_value =
-+			(value << MICBIAS_SETTING_SFT) & MICBIAS_SETTING_MASK;
-+	}
++  ti,debounce-press-ms:
++    description: key press debounce time in ms (datasheet section 9.6.7).
++    enum:
++      - 2   #   2 ms (0)
++      - 40  #  40 ms (1)
++      - 80  #  80 ms (2)
++      - 120 # 120 ms (3)
++    default: 80
 +
-+	err = device_property_read_u32(dev, "ti,debounce-release-ms", &value_ms);
- 	if (!err) {
-+		value = (value_ms > 10);
-+		setting3_mask |= DEBOUNCE_RELEASE_SETTING_MASK;
-+		setting3_value |= (value << DEBOUNCE_RELEASE_SETTING_SFT) &
-+				  DEBOUNCE_RELEASE_SETTING_MASK;
-+	}
++  ti,debounce-insertion-ms:
++    description: headset insertion debounce time in ms (datasheet section 9.6.5).
++    enum:
++      - 2    #   2 ms (0)
++      - 30   #  30 ms (1)
++      - 60   #  60 ms (2)
++      - 90   #  90 ms (3)
++      - 120  # 120 ms (4)
++      - 150  # 150 ms (5)
++      - 1000 # 1 s    (6)
++      - 2000 # 2 s    (7)
++    default: 90
 +
-+	err = device_property_read_u32(dev, "ti,debounce-press-ms", &value_ms);
-+	if (!err) {
-+		value = (value_ms + 20) / 40;
-+		if (value > 3)
-+			value = 3;
-+		setting3_mask |= DEBOUNCE_PRESS_SETTING_MASK;
-+		setting3_value |= (value << DEBOUNCE_PRESS_SETTING_SFT) &
-+				  DEBOUNCE_PRESS_SETTING_MASK;
-+	}
-+
-+	if (setting3_mask)
- 		regmap_update_bits(ts3a227e->regmap, TS3A227E_REG_SETTING_3,
--			MICBIAS_SETTING_MASK,
--			(micbias & 0x07) << MICBIAS_SETTING_SFT);
-+				   setting3_mask, setting3_value);
-+
-+	err = device_property_read_u32(dev, "ti,debounce-insertion-ms", &value_ms);
-+	if (!err) {
-+		if (value_ms < 165)
-+			value = (value_ms + 15) / 30;
-+		else if (value_ms < 1500)
-+			value = 6;
-+		else
-+			value = 7;
-+		regmap_update_bits(ts3a227e->regmap, TS3A227E_REG_SETTING_1,
-+			DEBOUNCE_INSERTION_SETTING_MASK, (value << DEBOUNCE_INSERTION_SETTING_SFT)
-+			& DEBOUNCE_INSERTION_SETTING_MASK);
- 	}
- 
- 	return 0;
+ required:
+   - compatible
+   - reg
 -- 
 2.20.1
 
