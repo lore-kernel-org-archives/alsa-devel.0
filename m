@@ -4,44 +4,44 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 79757C6FA86
-	for <alsa-devel@archiver.kernel.org>; Thu, 15 Sep 2022 09:48:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 932C5C6FA86
+	for <alsa-devel@archiver.kernel.org>; Thu, 15 Sep 2022 09:48:30 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A86C01939;
-	Thu, 15 Sep 2022 11:47:26 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A86C01939
+	by alsa0.perex.cz (Postfix) with ESMTPS id C39121940;
+	Thu, 15 Sep 2022 11:47:38 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C39121940
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1663235296;
-	bh=LwLtFIRDF4K7/riF6QEYLIACUrMv8bcYqtxDBo07MTo=;
+	s=default; t=1663235308;
+	bh=qxjB53bCQfEdI9j3a5hmM4BrPFZY5PDfJxVZuFF9XcE=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=gJz6RCrnQHGI/B+EpzdATzpBfQTmGA+x9rLSw+tNMDYAwr0MgfQpA2+yyM2iFTU9/
-	 n5Jh2iqz52+XekDtnclGjBL4FlEOgytludIQjt9TFm/KVHTJ/AWX+Xu3IwgZAuu2In
-	 bcWoEevhd9owDR8/7h+h1MwDeRAjfXh3LuoZuKy0=
+	b=gGS/etFYa1KEKyyVyL7eTkULj1scmtpEtH2aOF5Hb1VALw1zmt7bP+PwyqVAgj1tB
+	 S5x0U4Jk8B7cq2NI4MPwca8SxIcBzwBbfzsdOhXhnYt1VVnYBeb9eba3xtMwVzlyag
+	 PdaDI/++St+3e11tKkHcwnoPR4BtrK+szM5K+A6Y=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 836E0F80564;
+	by alsa1.perex.cz (Postfix) with ESMTP id EDF6DF80578;
 	Thu, 15 Sep 2022 11:45:52 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 4FF48F80552; Thu, 15 Sep 2022 11:45:47 +0200 (CEST)
-Received: from hutie.ust.cz (hutie.ust.cz [185.8.165.127])
+ id 09D37F8055B; Thu, 15 Sep 2022 11:45:51 +0200 (CEST)
+Received: from hutie.ust.cz (unknown [IPv6:2a03:3b40:fe:f0::1])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id AF27BF80424
- for <alsa-devel@alsa-project.org>; Thu, 15 Sep 2022 11:45:37 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AF27BF80424
+ by alsa1.perex.cz (Postfix) with ESMTPS id 19C1EF800FE
+ for <alsa-devel@alsa-project.org>; Thu, 15 Sep 2022 11:45:38 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 19C1EF800FE
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=cutebit.org header.i=@cutebit.org
- header.b="G6xgM0rr"
+ header.b="ILCBgd+d"
 From: =?UTF-8?q?Martin=20Povi=C5=A1er?= <povik+lin@cutebit.org>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cutebit.org; s=mail;
- t=1663235135; bh=QkNDCDx0U/aAsQx4/+vROBFRgvKACQCU9RfjxhOvKBU=;
+ t=1663235136; bh=5iADcUyCkoKBLtPlXxKURQhY4TmQ9CXYiJ51cQuH6qI=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References;
- b=G6xgM0rrHVLyrNxwx9hnKCw0GjK7FUwtZ8nu229+b6GUs0uYBKnGLZ3gj9rI3PZLt
- V54934ZLw4MW4JxK4T/IA0vTQ5qE8ntu6LKxNWH00k7fbsVcoboLhpmniNY+htUAqn
- r44N+3xdMHvacdE3zaukF1x7P7YPEY+otdGf3PFE=
+ b=ILCBgd+d2F1xL5yu8ExrZbyMrdANyfkHWDDq1OYbz9YKhvikJan6iTzh+1Qji5Z7x
+ jEnAyyGRvAKxwoE+PdMbGByP02azv2pzva2VVwhm2zJmP8JGQ4cO4e9GPnxhxWNgKh
+ 84TYPjlcgAAsejYG1goLel0jkxdD0OrBBH36NYBk=
 To: James Schulman <james.schulman@cirrus.com>,
  David Rhodes <david.rhodes@cirrus.com>,
  Lucas Tanure <tanureal@opensource.cirrus.com>,
@@ -50,10 +50,10 @@ To: James Schulman <james.schulman@cirrus.com>,
  Rob Herring <robh+dt@kernel.org>,
  Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
  =?UTF-8?q?Martin=20Povi=C5=A1er?= <povik+lin@cutebit.org>
-Subject: [PATCH v2 06/11] ASoC: cs42l42: Pass component and dai defs into
- common probe
-Date: Thu, 15 Sep 2022 11:44:39 +0200
-Message-Id: <20220915094444.11434-7-povik+lin@cutebit.org>
+Subject: [PATCH v2 08/11] ASoC: cs42l42: Export regmap elements to core
+ namespace
+Date: Thu, 15 Sep 2022 11:44:41 +0200
+Message-Id: <20220915094444.11434-9-povik+lin@cutebit.org>
 In-Reply-To: <20220915094444.11434-1-povik+lin@cutebit.org>
 References: <20220915094444.11434-1-povik+lin@cutebit.org>
 MIME-Version: 1.0
@@ -81,63 +81,78 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Richard Fitzgerald <rf@opensource.cirrus.com>
+Export the regmap callbacks for indicating readable/volatile registers,
+also the range structure, to the CS42L42 core namespace. This is in
+advance of reusing these bits in a CS42L83 driver frontend.
 
-Pass pointers to snd_soc_component_driver and snd_soc_dai_driver
-objects into cs42l42_common_probe().
-
-This is in preparation for adding SoundWire support.
-
-Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
 Signed-off-by: Martin Povišer <povik+lin@cutebit.org>
 ---
- sound/soc/codecs/cs42l42.c | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
+ sound/soc/codecs/cs42l42.c | 9 ++++++---
+ sound/soc/codecs/cs42l42.h | 4 ++++
+ 2 files changed, 10 insertions(+), 3 deletions(-)
 
 diff --git a/sound/soc/codecs/cs42l42.c b/sound/soc/codecs/cs42l42.c
-index 156d1b181cef..a4bb6f5d2267 100644
+index 3ace16259d1a..7b9237f0ce78 100644
 --- a/sound/soc/codecs/cs42l42.c
 +++ b/sound/soc/codecs/cs42l42.c
-@@ -579,7 +579,7 @@ static int cs42l42_set_jack(struct snd_soc_component *component, struct snd_soc_
- 	return 0;
- }
+@@ -171,7 +171,7 @@ static const struct reg_default cs42l42_reg_defaults[] = {
+ 	{ CS42L42_ASP_RX_DAI1_CH2_BIT_LSB,	0x00 },
+ };
  
--static const struct snd_soc_component_driver soc_component_dev_cs42l42 = {
-+static const struct snd_soc_component_driver cs42l42_soc_component = {
- 	.set_jack		= cs42l42_set_jack,
- 	.dapm_widgets		= cs42l42_dapm_widgets,
- 	.num_dapm_widgets	= ARRAY_SIZE(cs42l42_dapm_widgets),
-@@ -2219,7 +2219,9 @@ static int __maybe_unused cs42l42_i2c_resume(struct device *dev)
- 	return 0;
- }
- 
--static int cs42l42_common_probe(struct cs42l42_private *cs42l42)
-+static int cs42l42_common_probe(struct cs42l42_private *cs42l42,
-+				const struct snd_soc_component_driver *component_drv,
-+				struct snd_soc_dai_driver *dai)
+-static bool cs42l42_readable_register(struct device *dev, unsigned int reg)
++bool cs42l42_readable_register(struct device *dev, unsigned int reg)
  {
- 	int ret, i;
- 
-@@ -2275,9 +2277,7 @@ static int cs42l42_common_probe(struct cs42l42_private *cs42l42)
+ 	switch (reg) {
+ 	case CS42L42_PAGE_REGISTER:
+@@ -330,8 +330,9 @@ static bool cs42l42_readable_register(struct device *dev, unsigned int reg)
+ 		return false;
  	}
+ }
++EXPORT_SYMBOL_NS_GPL(cs42l42_readable_register, SND_SOC_CS42L42_CORE);
  
- 	/* Register codec now so it can EPROBE_DEFER */
--	ret = devm_snd_soc_register_component(cs42l42->dev,
--					      &soc_component_dev_cs42l42,
--					      &cs42l42_dai, 1);
-+	ret = devm_snd_soc_register_component(cs42l42->dev, component_drv, dai, 1);
- 	if (ret < 0)
- 		goto err;
+-static bool cs42l42_volatile_register(struct device *dev, unsigned int reg)
++bool cs42l42_volatile_register(struct device *dev, unsigned int reg)
+ {
+ 	switch (reg) {
+ 	case CS42L42_DEVID_AB:
+@@ -362,8 +363,9 @@ static bool cs42l42_volatile_register(struct device *dev, unsigned int reg)
+ 		return false;
+ 	}
+ }
++EXPORT_SYMBOL_NS_GPL(cs42l42_volatile_register, SND_SOC_CS42L42_CORE);
  
-@@ -2416,7 +2416,7 @@ static int cs42l42_i2c_probe(struct i2c_client *i2c_client)
- 	cs42l42->regmap = regmap;
- 	cs42l42->irq = i2c_client->irq;
+-static const struct regmap_range_cfg cs42l42_page_range = {
++const struct regmap_range_cfg cs42l42_page_range = {
+ 	.name = "Pages",
+ 	.range_min = 0,
+ 	.range_max = CS42L42_MAX_REGISTER,
+@@ -373,6 +375,7 @@ static const struct regmap_range_cfg cs42l42_page_range = {
+ 	.window_start = 0,
+ 	.window_len = 256,
+ };
++EXPORT_SYMBOL_NS_GPL(cs42l42_page_range, SND_SOC_CS42L42_CORE);
  
--	ret = cs42l42_common_probe(cs42l42);
-+	ret = cs42l42_common_probe(cs42l42, &cs42l42_soc_component, &cs42l42_dai);
- 	if (ret)
- 		return ret;
+ const struct regmap_config cs42l42_regmap = {
+ 	.reg_bits = 8,
+diff --git a/sound/soc/codecs/cs42l42.h b/sound/soc/codecs/cs42l42.h
+index 2a9f178f6190..be6f979c82ec 100644
+--- a/sound/soc/codecs/cs42l42.h
++++ b/sound/soc/codecs/cs42l42.h
+@@ -52,10 +52,14 @@ struct  cs42l42_private {
+ 	bool init_done;
+ };
  
++extern const struct regmap_range_cfg cs42l42_page_range;
+ extern const struct regmap_config cs42l42_regmap;
+ extern const struct snd_soc_component_driver cs42l42_soc_component;
+ extern struct snd_soc_dai_driver cs42l42_dai;
+ 
++bool cs42l42_readable_register(struct device *dev, unsigned int reg);
++bool cs42l42_volatile_register(struct device *dev, unsigned int reg);
++
+ int cs42l42_suspend(struct device *dev);
+ int cs42l42_resume(struct device *dev);
+ void cs42l42_resume_restore(struct device *dev);
 -- 
 2.33.0
 
