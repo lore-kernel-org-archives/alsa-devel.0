@@ -4,75 +4,82 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id BC9E4C6FA89
-	for <alsa-devel@archiver.kernel.org>; Thu, 15 Sep 2022 15:48:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B4CA5C6FA89
+	for <alsa-devel@archiver.kernel.org>; Thu, 15 Sep 2022 15:57:39 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0C06E1A47;
-	Thu, 15 Sep 2022 17:47:40 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0C06E1A47
+	by alsa0.perex.cz (Postfix) with ESMTPS id 479541A48;
+	Thu, 15 Sep 2022 17:56:47 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 479541A48
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1663256910;
-	bh=wF35h/q+FNZXCLnhXTUpez0TM7NQ8TvHhFsls84bIJs=;
-	h=From:To:Subject:Date:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=E9+JUxds4ZxrAtXsRnF0KOD0mul5eDmuPg5i9Kf1Jz98iXnx07XP4B1ZQRAhOrnwC
-	 0sMcgy/9jpZfPhkDsZDDjZ7JZgJwe/v5cIGMioeKKcs/stGBbenjC8vYf1pPtFfeIW
-	 kiCac5B4HFnEVdsLjrSMkEJKWNJ+MudEF+xm0DTU=
+	s=default; t=1663257457;
+	bh=VM7vbcynfrSHCG/TdQkm5mfCbXVMfriHO8oHRRswB7w=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=JL4cFAVRRLxYbvw7TH512AtUHmfXcHQvEcyFEE8aP+k9eNQlgzv1wHShRelSNdVLM
+	 UBMBEE9B5TdT1DZbhSDihpmsQ9ugv+b96lnwPuk9rYzfdREDM72hN/sadvUxXNqo/i
+	 cN+xIcV6uGFN5P8h7Y+EnZRIvUoa4QJUS12ZnPZI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 9AA6CF8013D;
-	Thu, 15 Sep 2022 17:47:39 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id CA701F8013D;
+	Thu, 15 Sep 2022 17:56:46 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 226B3F80238; Thu, 15 Sep 2022 17:47:33 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+ id 663A3F80238; Thu, 15 Sep 2022 17:56:45 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id F1FC1F800B5
- for <alsa-devel@alsa-project.org>; Thu, 15 Sep 2022 17:47:26 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F1FC1F800B5
+ by alsa1.perex.cz (Postfix) with ESMTPS id 1D92AF8008E
+ for <alsa-devel@alsa-project.org>; Thu, 15 Sep 2022 17:56:42 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1D92AF8008E
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="u8UXQYp+"; 
+ header.b="RdYQcuW2"; 
  dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="AMHajw0Z"
+ header.b="YGL39jwT"
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 691951F8FC;
- Thu, 15 Sep 2022 15:47:26 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 760A6336BC;
+ Thu, 15 Sep 2022 15:56:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1663256846; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=K+TuIU0KCIOwqh6lw+WWl9dCEysWRiMhRAzDw6/6LSk=;
- b=u8UXQYp+HJNwkf80N9+tpCq68Tb9hP6gz3Ubyg2bm9hDv2+z896LXjnJ7OdpInu9Rjv/9U
- GsBFyZhF1l3+qiLD8NQGKDaodVfkkjAon5ukhkFPPlAKMRKSR4Tu2wCjOpuzlDoV2LiTuS
- LmUtX2Gdy6AFp4iVMwoZhtpnJEkkOxk=
+ t=1663257402; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=5HFEmhSkPeTqZEeiSJ5o9VwThR5RFWvtfEaZlPbh4qs=;
+ b=RdYQcuW2EbfSTyEdgart6ajB6BLbTIy3TYFCtZ2bivkhiGZNwNeGhcfz+6tjmNX63hwnO8
+ 9/0uACyEMJR+yb8Mu37YnpYy0ZnUxYbJPLQNkGVoEpIgHeWLFAV4PBn+M/kgk3p+QCu/1H
+ q9t5JTMKCksxaGpF7bHf/GpE3a4nN2c=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1663256846;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=K+TuIU0KCIOwqh6lw+WWl9dCEysWRiMhRAzDw6/6LSk=;
- b=AMHajw0ZmhOF4jkhPUUjjR6IygX84+EMdO0o/a8fEnX5FJsZ5w+55n1Zmq7aN6T9JedtiR
- 948Q+zI5XxRwrAAA==
+ s=susede2_ed25519; t=1663257402;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=5HFEmhSkPeTqZEeiSJ5o9VwThR5RFWvtfEaZlPbh4qs=;
+ b=YGL39jwTJIfH1In9cl+D3JSD3DFJD9GAx8Pe6+jp2ZyiVOBG2AyqWH/5JvgOYK+8LUFXZZ
+ Ct6G9Rh0Mq2Mq7BQ==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 4DD3113A49;
- Thu, 15 Sep 2022 15:47:26 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 445B513A49;
+ Thu, 15 Sep 2022 15:56:42 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id desoEg5JI2MDHQAAMHmgww
- (envelope-from <tiwai@suse.de>); Thu, 15 Sep 2022 15:47:26 +0000
+ by imap2.suse-dmz.suse.de with ESMTPSA id EFTODzpLI2ObIAAAMHmgww
+ (envelope-from <tiwai@suse.de>); Thu, 15 Sep 2022 15:56:42 +0000
+Date: Thu, 15 Sep 2022 17:56:41 +0200
+Message-ID: <87fsgsvdfq.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
-To: alsa-devel@alsa-project.org
-Subject: [PATCH] ALSA: hda/realtek: Re-arrange quirk table entries
-Date: Thu, 15 Sep 2022 17:47:24 +0200
-Message-Id: <20220915154724.31634-1-tiwai@suse.de>
-X-Mailer: git-send-email 2.35.3
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+To: "Luke D. Jones" <luke@ljones.dev>
+Subject: Re: [PATCH v2 0/3] sound: realtek: add quirks for ASUS G513, G533Z,
+ GA503R
+In-Reply-To: <20220915080921.35563-1-luke@ljones.dev>
+References: <20220915080921.35563-1-luke@ljones.dev>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+Cc: alsa-devel@alsa-project.org, tiwai@suse.com, linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -88,50 +95,28 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-A few entries have been mistakenly inserted in wrong positions without
-considering the SSID ordering.  Place them at right positions.
+On Thu, 15 Sep 2022 10:09:18 +0200,
+Luke D. Jones wrote:
+> 
+> This series adds quirks to fix pincfg for the ASUS ROG G513 and G533Z laptops, and adds a mapping
+> for the ASUS ROG GA503R to use the previous G15/G14 quirks which fix the DAC mapping.
+> 
+> Changelog:
+> V2:
+> - Use smallcaps in hex string
+> - Chain the G533Z quirk with the G513 quirk as they use the same base pincfg
+> - Add the quirk for GA503R series to use GA401 quirk
+> 
+> Luke D. Jones (3):
+>   sound: realtek: Add pincfg for ASUS G513 HP jack
+>   sound: realtek: Add pincfg for ASUS G533Z HP jack
+>   sound: realtek: Add quirk for ASUS GA503R laptop
 
-Fixes: b7557267c233 ("ALSA: hda/realtek: Add quirk for ASUS GA402")
-Fixes: 94db9cc8f8fa ("ALSA: hda/realtek: Add quirk for ASUS GU603")
-Fixes: 739d0959fbed ("ALSA: hda: Add quirk for ASUS Flow x13")
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
----
- sound/pci/hda/patch_realtek.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+Now applied all patches, but I corrected the positions of the new
+entries to be in the SSID order locally.  Also, the subject lines are
+adjusted to "ALSA:" prefix.
 
-diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-index d309304cdc46..90fde53e6956 100644
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -9341,10 +9341,11 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
- 	SND_PCI_QUIRK(0x1043, 0x13b0, "ASUS Z550SA", ALC256_FIXUP_ASUS_MIC),
- 	SND_PCI_QUIRK(0x1043, 0x1427, "Asus Zenbook UX31E", ALC269VB_FIXUP_ASUS_ZENBOOK),
- 	SND_PCI_QUIRK(0x1043, 0x1517, "Asus Zenbook UX31A", ALC269VB_FIXUP_ASUS_ZENBOOK_UX31A),
-+	SND_PCI_QUIRK(0x1043, 0x1662, "ASUS GV301QH", ALC294_FIXUP_ASUS_DUAL_SPK),
-+	SND_PCI_QUIRK(0x1043, 0x16b2, "ASUS GU603", ALC289_FIXUP_ASUS_GA401),
- 	SND_PCI_QUIRK(0x1043, 0x16e3, "ASUS UX50", ALC269_FIXUP_STEREO_DMIC),
- 	SND_PCI_QUIRK(0x1043, 0x1740, "ASUS UX430UA", ALC295_FIXUP_ASUS_DACS),
- 	SND_PCI_QUIRK(0x1043, 0x17d1, "ASUS UX431FL", ALC294_FIXUP_ASUS_DUAL_SPK),
--	SND_PCI_QUIRK(0x1043, 0x1662, "ASUS GV301QH", ALC294_FIXUP_ASUS_DUAL_SPK),
- 	SND_PCI_QUIRK(0x1043, 0x1881, "ASUS Zephyrus S/M", ALC294_FIXUP_ASUS_GX502_PINS),
- 	SND_PCI_QUIRK(0x1043, 0x18b1, "Asus MJ401TA", ALC256_FIXUP_ASUS_HEADSET_MIC),
- 	SND_PCI_QUIRK(0x1043, 0x18f1, "Asus FX505DT", ALC256_FIXUP_ASUS_HEADSET_MIC),
-@@ -9361,13 +9362,12 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
- 	SND_PCI_QUIRK(0x1043, 0x1bbd, "ASUS Z550MA", ALC255_FIXUP_ASUS_MIC_NO_PRESENCE),
- 	SND_PCI_QUIRK(0x1043, 0x1c23, "Asus X55U", ALC269_FIXUP_LIMIT_INT_MIC_BOOST),
- 	SND_PCI_QUIRK(0x1043, 0x1ccd, "ASUS X555UB", ALC256_FIXUP_ASUS_MIC),
-+	SND_PCI_QUIRK(0x1043, 0x1d42, "ASUS Zephyrus G14 2022", ALC289_FIXUP_ASUS_GA401),
- 	SND_PCI_QUIRK(0x1043, 0x1d4e, "ASUS TM420", ALC256_FIXUP_ASUS_HPE),
- 	SND_PCI_QUIRK(0x1043, 0x1e11, "ASUS Zephyrus G15", ALC289_FIXUP_ASUS_GA502),
- 	SND_PCI_QUIRK(0x1043, 0x1e51, "ASUS Zephyrus M15", ALC294_FIXUP_ASUS_GU502_PINS),
- 	SND_PCI_QUIRK(0x1043, 0x1e8e, "ASUS Zephyrus G15", ALC289_FIXUP_ASUS_GA401),
- 	SND_PCI_QUIRK(0x1043, 0x1f11, "ASUS Zephyrus G14", ALC289_FIXUP_ASUS_GA401),
--	SND_PCI_QUIRK(0x1043, 0x1d42, "ASUS Zephyrus G14 2022", ALC289_FIXUP_ASUS_GA401),
--	SND_PCI_QUIRK(0x1043, 0x16b2, "ASUS GU603", ALC289_FIXUP_ASUS_GA401),
- 	SND_PCI_QUIRK(0x1043, 0x3030, "ASUS ZN270IE", ALC256_FIXUP_ASUS_AIO_GPIO2),
- 	SND_PCI_QUIRK(0x1043, 0x831a, "ASUS P901", ALC269_FIXUP_STEREO_DMIC),
- 	SND_PCI_QUIRK(0x1043, 0x834a, "ASUS S101", ALC269_FIXUP_STEREO_DMIC),
--- 
-2.35.3
 
+thanks,
+
+Takashi
