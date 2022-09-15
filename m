@@ -4,65 +4,95 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E6C67ECAAD3
-	for <alsa-devel@archiver.kernel.org>; Thu, 15 Sep 2022 11:42:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 33EF2ECAAA1
+	for <alsa-devel@archiver.kernel.org>; Thu, 15 Sep 2022 12:21:35 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C97EF1A16;
-	Thu, 15 Sep 2022 13:41:07 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C97EF1A16
+	by alsa0.perex.cz (Postfix) with ESMTPS id D75EE18A1;
+	Thu, 15 Sep 2022 14:20:42 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D75EE18A1
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1663242117;
-	bh=5d4rtyVY1b+OQfdduXscPUQN8jtr+jjh9L3gDOUzvGo=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1663244493;
+	bh=IDvW+qok6EOC1gqVl71A0qYv+r0a2m1Tp7WBNvzOYPc=;
+	h=Date:Subject:To:References:From:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=q/6daHcgZhMnuHviay63+g3CYSXxzHfwZXeSIb357E+GhTsDs/9KYCah2Unx7H60c
-	 PdMh7LeWgeejKb0yrP/dgtb5wHkFyHSc77zLI4mzTMeu5w5C0AQNbtO8CriKEbHyQM
-	 eedsdUGzB2lbVqY0lVUv1iSzO6AUQhYyTnHoEmYk=
+	b=nSKOBe/IXWZ4Ri/pnLUCLSIAY/ABGOHg3oz4dI4spzVOhkhJvnSdbSUa9xo244GGi
+	 L06M+olongXmPbqEQwtzasxBvCVfXo3OoAnZq0jtI+4wMs9bGYX3KEO16dmIXHIwcr
+	 zYW1YPjT1y7j1TDeABCmCgEoxEAJnxmVNiMQSrYs=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 01334F80537;
-	Thu, 15 Sep 2022 13:40:14 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 3947CF800B5;
+	Thu, 15 Sep 2022 14:20:41 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id C2853F80536; Thu, 15 Sep 2022 13:40:11 +0200 (CEST)
-Received: from smtp1.axis.com (smtp1.axis.com [195.60.68.17])
+ id 6CBB8F800B5; Thu, 15 Sep 2022 14:20:39 +0200 (CEST)
+Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
+ [67.231.152.168])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 82D19F80238
- for <alsa-devel@alsa-project.org>; Thu, 15 Sep 2022 13:40:02 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 82D19F80238
+ by alsa1.perex.cz (Postfix) with ESMTPS id 77F84F800B5
+ for <alsa-devel@alsa-project.org>; Thu, 15 Sep 2022 14:20:32 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 77F84F800B5
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=axis.com header.i=@axis.com
- header.b="OUjhnCQP"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=axis.com; q=dns/txt; s=axis-central1; t=1663242003;
- x=1694778003; h=from:to:cc:subject:date:message-id:in-reply-to:
- references:mime-version:content-transfer-encoding;
- bh=wnFQ1tb35qKbaGfqR/2XMvWyIaJYai8tjzpmbu59XnM=;
- b=OUjhnCQPb9nOjAtciJPwYITINgID3hs2P/zTFV7oqGaSzRLKkOYPDWjN
- oNwsbTOv7crwpkDfSe6MC9cAhjmxSm8SkKD8gCPFPo7zsGQ7bbq8SPTLk
- Vk14zUBSwt62PCDDVcjpQ71XKU7SMg7QAnI1f2lrgxLlxNljv/A3hvdYv
- zWaLsNFqvWXT8/kTWJ2krTHc9ry9h2aWSdIlF2WEbvgmH2iTDY7CAeY9Z
- pXK0f02qRptYlezwXGvfz/TrBqldLFKu4I51vRlo+isKbl41Bz1/srVct
- EWUNSWEJLamPV4QS61gbG4HiKoPIBkrEM/AaBZ4hzqHGdxehte4RZ8bpm w==;
-From: Astrid Rost <astrid.rost@axis.com>
-To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Dylan Reid
- <dgreid@chromium.org>, Rob Herring <robh+dt@kernel.org>
-Subject: [PATCH v2 2/3] dt-bindings: sound: ts3a227e: add control of debounce
- times
-Date: Thu, 15 Sep 2022 13:39:54 +0200
-Message-ID: <20220915113955.22521-3-astrid.rost@axis.com>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20220915113955.22521-1-astrid.rost@axis.com>
-References: <20220915113955.22521-1-astrid.rost@axis.com>
+ dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com
+ header.b="V/9llfCj"
+Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
+ by mx0b-001ae601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 28F5erk7015415;
+ Thu, 15 Sep 2022 07:20:31 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
+ h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=PODMain02222019;
+ bh=CUUZCN8CbQjdSUIzRh++MknIDM7YeGQKIOTWG5m6Yk0=;
+ b=V/9llfCjSPnhOow+ROHdKUa1UlshXzdMA3N+MpTbafilTn9IBHJymHgTFfKI6XruT3Bk
+ Dx5Agbd0n/SH1Eu6Y52pa/pJC7FH647QXWtkUIOV+WZtfuHgK0ppxI8ug+tDFn34CJDj
+ dqzUqa465i3h6CHoKjHVdgSRtJuFOm9txFrGdXo7AW7ngrMnfgiyFbs2orFB8Xq2hLXj
+ s4NRnrlS2EmfFJ6+iTzpObSsm2LJp8DJs3Sw7gYJSUbPxVWqGNWEn3CpHZqU8Q7KTcxp
+ L+evTk9rqOTw8hIWoKxTlHEUK1TG25zqm7ZKgSkedXCAVkVayYWgOI8BYNOZ7Q2lpADM 5Q== 
+Received: from ediex02.ad.cirrus.com ([84.19.233.68])
+ by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3jjxyr2ac4-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+ Thu, 15 Sep 2022 07:20:31 -0500
+Received: from ediex01.ad.cirrus.com (198.61.84.80) by ediex02.ad.cirrus.com
+ (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.12; Thu, 15 Sep
+ 2022 07:20:29 -0500
+Received: from ediswmail.ad.cirrus.com (198.61.86.93) by ediex01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server id 15.2.1118.12 via
+ Frontend Transport; Thu, 15 Sep 2022 07:20:29 -0500
+Received: from [198.90.251.95] (edi-sw-dsktp-006.ad.cirrus.com [198.90.251.95])
+ by ediswmail.ad.cirrus.com (Postfix) with ESMTP id E0C66468;
+ Thu, 15 Sep 2022 12:20:22 +0000 (UTC)
+Message-ID: <2839a437-a57a-ffc4-da8e-dde9a9a9a5cc@opensource.cirrus.com>
+Date: Thu, 15 Sep 2022 13:20:22 +0100
 MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.12.0
+Subject: Re: [PATCH v2 04/11] ASoC: cs42l42: Split probe() and remove() into
+ stages
+Content-Language: en-US
+To: =?UTF-8?Q?Martin_Povi=c5=a1er?= <povik+lin@cutebit.org>, James Schulman
+ <james.schulman@cirrus.com>, David Rhodes <david.rhodes@cirrus.com>, "Lucas
+ Tanure" <tanureal@opensource.cirrus.com>, Liam Girdwood
+ <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Rob Herring
+ <robh+dt@kernel.org>, "Krzysztof Kozlowski"
+ <krzysztof.kozlowski+dt@linaro.org>
+References: <20220915094444.11434-1-povik+lin@cutebit.org>
+ <20220915094444.11434-5-povik+lin@cutebit.org>
+From: Richard Fitzgerald <rf@opensource.cirrus.com>
+In-Reply-To: <20220915094444.11434-5-povik+lin@cutebit.org>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
+X-Proofpoint-ORIG-GUID: y3RD2Dp-yKLUCoYgbRs2U3VWByN4ed9F
+X-Proofpoint-GUID: y3RD2Dp-yKLUCoYgbRs2U3VWByN4ed9F
+X-Proofpoint-Spam-Reason: safe
 Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
- Astrid Rost <astrid.rost@axis.com>, linux-kernel@vger.kernel.org,
- kernel@axis.c, Astrid Rost <astridr@axis.com>
+ Charles Keepax <ckeepax@opensource.cirrus.com>,
+ - <patches@opensource.cirrus.com>,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ linux-kernel@vger.kernel.org, ChiYuan Huang <cy_huang@richtek.com>,
+ asahi@lists.linux.dev, Lukas Bulwahn <lukas.bulwahn@gmail.com>,
+ Matt Flax <flatmax@flatmax.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -78,54 +108,55 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Add devicetree parameters to control the insertion, release and press
-debounce times.
+On 15/09/2022 10:44, Martin Povišer wrote:
+> From: Richard Fitzgerald <rf@opensource.cirrus.com>
+> 
+> To prepare for adding SoundWire the probe must be split into three
+> parts:
+> 
+> 1) The bus-specific probe
+> 2) Common bus-agnostic probe steps
+> 3) Initialization of the peripheral registers
+> 
+> Step (3) must be separate because on SoundWire devices the probe must
+> enable power supplies and release reset so that the peripheral can be
+> enumerated by the bus, but it isn't possible to access registers until
+> enumeration has completed.
+> 
+> The call to devm_snd_soc_register_component() must be done at stage (2)
+> so that it can EPROBE_DEFER if necessary. In SoundWire systems stage (3)
+> is not a probe event so a deferral at this stage would not result in
+> re-probing dependencies.
+> 
+> A new init_done flag indicates that the chip has been identified and
+> initialized. This is used to prevent cs42l42_remove(), cs42l42_suspend(),
+> cs42l42_restore() and cs42l42_irq_thread() from attempting register
+> accesses if the chip was not successfully initialized. Although this
+> cannot happen on I2C, because the entire probe would fail, it is
+> possible on SoundWire if probe succeeds but the cs42l42 is never
+> enumerated.
+> 
+> Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
+> Signed-off-by: Martin Povišer <povik+lin@cutebit.org>
+> ---
+>   sound/soc/codecs/cs42l42.c | 127 +++++++++++++++++++++++++------------
+>   sound/soc/codecs/cs42l42.h |   2 +
+>   2 files changed, 87 insertions(+), 42 deletions(-)
+> 
+> diff --git a/sound/soc/codecs/cs42l42.c b/sound/soc/codecs/cs42l42.c
+> index 11cb659f03e0..427b29db2252 100644
+> --- a/sound/soc/codecs/cs42l42.c
+> +++ b/sound/soc/codecs/cs42l42.c
+> @@ -1627,7 +1627,7 @@ static irqreturn_t cs42l42_irq_thread(int irq, void *data)
+>   	int report = 0;
+>   
+>   	mutex_lock(&cs42l42->irq_lock);
+> -	if (cs42l42->suspended) {
+> +	if (cs42l42->suspended || !cs42l42->init_done) {
+>   		mutex_unlock(&cs42l42->irq_lock);
+>   		return IRQ_NONE;
+>   	}
 
-Signed-off-by: Astrid Rost <astrid.rost@axis.com>
----
- .../devicetree/bindings/sound/ts3a227e.yaml   | 29 +++++++++++++++++++
- 1 file changed, 29 insertions(+)
-
-diff --git a/Documentation/devicetree/bindings/sound/ts3a227e.yaml b/Documentation/devicetree/bindings/sound/ts3a227e.yaml
-index 3512b1f1e32b..8c27f298733a 100644
---- a/Documentation/devicetree/bindings/sound/ts3a227e.yaml
-+++ b/Documentation/devicetree/bindings/sound/ts3a227e.yaml
-@@ -44,6 +44,35 @@ properties:
-       - 7 # 2.8 V
-     default: 2
- 
-+  ti,debounce-release-ms:
-+    description: key release debounce time in ms (datasheet section 9.6.7).
-+    enum:
-+      - 0  #  0 ms (0)
-+      - 20 # 20 ms (1)
-+    default: 20
-+
-+  ti,debounce-press-ms:
-+    description: key press debounce time in ms (datasheet section 9.6.7).
-+    enum:
-+      - 2   #   2 ms (0)
-+      - 40  #  40 ms (1)
-+      - 80  #  80 ms (2)
-+      - 120 # 120 ms (3)
-+    default: 80
-+
-+  ti,debounce-insertion-ms:
-+    description: headset insertion debounce time in ms (datasheet section 9.6.5).
-+    enum:
-+      - 2    #   2 ms (0)
-+      - 30   #  30 ms (1)
-+      - 60   #  60 ms (2)
-+      - 90   #  90 ms (3)
-+      - 120  # 120 ms (4)
-+      - 150  # 150 ms (5)
-+      - 1000 # 1 s    (6)
-+      - 2000 # 2 s    (7)
-+    default: 90
-+
- required:
-   - compatible
-   - reg
--- 
-2.20.1
-
+This doesn't apply to broonie/for-next. Needs rebasing onto commit:
+ea75deef1a73 ("ASoC: cs42l42: Only report button state if there was a
+button interrupt")
