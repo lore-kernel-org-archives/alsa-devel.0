@@ -4,81 +4,75 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id ECA40ECAAD3
-	for <alsa-devel@archiver.kernel.org>; Thu, 15 Sep 2022 13:06:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7236BECAAD3
+	for <alsa-devel@archiver.kernel.org>; Thu, 15 Sep 2022 13:11:26 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B85C01957;
-	Thu, 15 Sep 2022 15:06:04 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B85C01957
+	by alsa0.perex.cz (Postfix) with ESMTPS id 90CE319FD;
+	Thu, 15 Sep 2022 15:10:34 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 90CE319FD
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1663247214;
-	bh=85bjF6Em9RL/ZiY8n1XpTvHM9ZMvSiBAzOMX7x4zQQ0=;
-	h=Date:From:To:Subject:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=GDFA4JgpP62JH7Sm4+E4LTjvO8dVrflaTDyu788NnS97ycUmodLu2FXOmpa5cshhq
-	 Zgi87HJDnMoorPxdPo2Hku0UuydpDwO3IJU4LMXsxB7bZFxSFSAJmzBgxCJQm5k0xe
-	 HhXuLBj9WFOUC0L55vvLut1Kva1L/4jEdiTvGgl8=
+	s=default; t=1663247484;
+	bh=HoCpplRGmLa8NMZ/Auv5ElmwuTYU4eLsbnw+GC1f8LU=;
+	h=Date:Subject:To:References:From:In-Reply-To:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=f9bdtLAUa0FsaIDQQdXr2qd+pIytn9qqRnaxZAGhK7ehuL5JsR8t8w3Nll/5ClcV1
+	 56cnELRZDI9mkLW+JR0spu8pnRqIonL4upiNYXLlZVkazf5j9889f/4DyMFIuObHrU
+	 8s9OaCB7PoiE8Rl2QYqz/96/cxYdj9Sm+bzQg5EQ=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 5F4D2F8013D;
-	Thu, 15 Sep 2022 15:06:04 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 3896DF8013D;
+	Thu, 15 Sep 2022 15:10:34 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 3DF40F800B5; Thu, 15 Sep 2022 15:06:02 +0200 (CEST)
-Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com
- [IPv6:2607:f8b0:4864:20::635])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id E4D07F80238; Thu, 15 Sep 2022 15:10:32 +0200 (CEST)
+Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 2B22FF800B5
- for <alsa-devel@alsa-project.org>; Thu, 15 Sep 2022 15:05:56 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2B22FF800B5
+ by alsa1.perex.cz (Postfix) with ESMTPS id 48B48F800B5
+ for <alsa-devel@alsa-project.org>; Thu, 15 Sep 2022 15:10:24 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 48B48F800B5
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="Hy2vmzJH"
-Received: by mail-pl1-x635.google.com with SMTP id s18so12337631plr.4
- for <alsa-devel@alsa-project.org>; Thu, 15 Sep 2022 06:05:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
- h=content-disposition:mime-version:message-id:subject:cc:to:from:date
- :from:to:cc:subject:date;
- bh=7nxGi2v1dL2dLbnbbwum0ELguBe5muv3bPqC6wfZV7s=;
- b=Hy2vmzJHW9AYXhLqDSpW70HeehYKhHayeVqAlXUAi0Yiehy07rr8oqDvxPQYD1mmKm
- kXgfEA2un4F0dsGMk15K9UegLaR6uLURGfF+hSTIN4bpA1NO+ZT+/sK9CsqU44gjfaR/
- 3263hj8CYRMUXh3NQX7+hKknkN6EQiyNJi6jtDsepallwxl6yksPknpYlNnYIVP9D4DO
- LvsK8QeCHGO8VWE/3DdK27S/i+9oou21QhhTBLHUmD9XR1ZODOes9HCgq6unXn+IrmlR
- Ro+yvoA+Kk3pUotIHasCetXmQfAfjJq/GCU4J8Ly4wciE7C3IOIogXAmluGuOzDncPT0
- pHPg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=content-disposition:mime-version:message-id:subject:cc:to:from:date
- :x-gm-message-state:from:to:cc:subject:date;
- bh=7nxGi2v1dL2dLbnbbwum0ELguBe5muv3bPqC6wfZV7s=;
- b=sR1/ZECwt0nEELZ/4uakIX+N1vt2kWskJcWqaBIF7eOxRS/BnVTuvPhlyDzgVQofqo
- ByJ0UmOcENBYFAnX3h++PwuKvi8lJvblzTr2ifHvLPt7XqbpfVL+B2l36hd/zR6f/8+r
- sy6a7EMOHtnZQzXpHxmT4yIvlRmA2BbnS0XvLUKpybkdkST+UtUl+mhzYXwxzI37OrsV
- iWu4hpLCAqxneJ0bEJJ4RXYw/I27aJBqTxZB/jLPR0B7eycXG/++NJSQW/em9ngJILFU
- qNXlEpJiZ+RU557BGQnMbGyyul0J5yEH2WRaxr0Uwmdw/AqFK7iRIc/vXxKyOFMqny4S
- 5Amg==
-X-Gm-Message-State: ACrzQf2Rb8feBBbSqPQ7G/XTQieIudTEvr1enmJh7acjpX1C9tFzLIB+
- MyGubjSFcgs7VjPlKUY3eVVn0YbzG/+0wg==
-X-Google-Smtp-Source: AMsMyM6he9+BY5rAiXm88lOwp4oVgT0UYEyRuJCnCKjQVHYn7Wl/MUbBKK/Vy9Gs/jhwztkm8HIKfg==
-X-Received: by 2002:a17:902:cec4:b0:176:be0f:5c79 with SMTP id
- d4-20020a170902cec400b00176be0f5c79mr4342592plg.40.1663247154946; 
- Thu, 15 Sep 2022 06:05:54 -0700 (PDT)
-Received: from piranha (202-65-89-82.ip4.superloop.com. [202.65.89.82])
- by smtp.gmail.com with ESMTPSA id
- x15-20020a170902a38f00b001785dddc703sm3875166pla.120.2022.09.15.06.05.52
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Thu, 15 Sep 2022 06:05:54 -0700 (PDT)
-Date: Thu, 15 Sep 2022 22:36:08 +0930
-From: Callum Osmotherly <callum.osmotherly@gmail.com>
-To: alsa-devel@alsa-project.org
-Subject: [PATCH 1/1] ALSA: hda/realtek: Enable 4-speaker output Dell
- Precision 5530 laptop
-Message-ID: <YyMjQO3mhyXlMbCf@piranha>
+ dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
+ header.b="YnkEJwtC"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+ d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+ t=1663247427; x=1694783427;
+ h=message-id:date:mime-version:subject:to:cc:references:
+ from:in-reply-to:content-transfer-encoding;
+ bh=HoCpplRGmLa8NMZ/Auv5ElmwuTYU4eLsbnw+GC1f8LU=;
+ b=YnkEJwtCS86KAIdLBtBJkHPyR/6ze0G/g3eeSp6y6sZ2FGH2IqPGFUuC
+ fADpF4ExttjFM+dUBXxiZm6n3G1LDmnMsz2e+ykSK3+cG+WFnJCGYDw2/
+ krriiNi/wjLdtVTTIu1qVvoOKp5u5/8jUX8Z2Oe4bii9Vk6SI3vWLNew9
+ rtMGUOGUGrOUHCVhssCBxwmdDxiH7Cnfj7pMhTUQ7YqON/hQrQVkFGCyo
+ cw9HmWFAJmClniyBemsOLpblNq3WTL5IsUEBOWUuGNyx8vE5xVPI8sVen
+ 2JKlxIinLoMoJtRsfcILFeL4quZ4KyaNnAMNhc1vlOUtJsnEWEGKNO8mf Q==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10470"; a="362667803"
+X-IronPort-AV: E=Sophos;i="5.93,318,1654585200"; d="scan'208";a="362667803"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+ by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 15 Sep 2022 06:10:23 -0700
+X-IronPort-AV: E=Sophos;i="5.93,318,1654585200"; d="scan'208";a="617269024"
+Received: from bhomann-mobl.ger.corp.intel.com (HELO [10.252.61.7])
+ ([10.252.61.7])
+ by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 15 Sep 2022 06:10:21 -0700
+Message-ID: <3962348a-33b4-5941-4a0b-cb447a513a41@linux.intel.com>
+Date: Thu, 15 Sep 2022 15:10:18 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Cc: tiwai@suse.de, callum.osmotherly@gmail.com
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Firefox/91.0 Thunderbird/91.11.0
+Subject: Re: [PATCH] soundwire: qcom: update status from device id 1
+Content-Language: en-US
+To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, vkoul@kernel.org
+References: <20220915124215.13703-1-srinivas.kandagatla@linaro.org>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+In-Reply-To: <20220915124215.13703-1-srinivas.kandagatla@linaro.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+Cc: alsa-devel@alsa-project.org, linux-arm-msm@vger.kernel.org,
+ linux-kernel@vger.kernel.org, sanyog.r.kale@intel.com,
+ yung-chuan.liao@linux.intel.com, quic_srivasam@quicinc.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -94,31 +88,44 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Callum Osmotherly <callum.osmotherly@gmail.com>
 
-Just as with the 5570 (and the other Dell laptops), this enables the two
-subwoofer speakers on the Dell Precision 5530 together with the main
-ones, significantly increasing the audio quality. I've tested this
-myself on a 5530 and can confirm it's working as expected.
 
-Signed-off-by: Callum Osmotherly <callum.osmotherly@gmail.com>
+On 9/15/22 14:42, Srinivas Kandagatla wrote:
+> By default autoenumeration is enabled on QCom SoundWire controller
+> which means the core should not be dealing with device 0 w.r.t enumeration.
+> Currently device 0 status is also shared with SoundWire core which confuses
+> the core sometimes and we endup adding 0:0:0:0 slave device.
 
----
- sound/pci/hda/patch_realtek.c | 1 +
- 1 file changed, 1 insertion(+)
+The change looks fine, but the description of the issue is surprising.
 
-diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-index 799f6bf266dd..bdef329adb10 100644
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -9114,6 +9114,7 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
- 	SND_PCI_QUIRK(0x1028, 0x0871, "Dell Precision 3630", ALC255_FIXUP_DELL_HEADSET_MIC),
- 	SND_PCI_QUIRK(0x1028, 0x0872, "Dell Precision 3630", ALC255_FIXUP_DELL_HEADSET_MIC),
- 	SND_PCI_QUIRK(0x1028, 0x0873, "Dell Precision 3930", ALC255_FIXUP_DUMMY_LINEOUT_VERB),
-+	SND_PCI_QUIRK(0x1028, 0x087d, "Dell Precision 5530", ALC289_FIXUP_DUAL_SPK),
- 	SND_PCI_QUIRK(0x1028, 0x08ad, "Dell WYSE AIO", ALC225_FIXUP_DELL_WYSE_AIO_MIC_NO_PRESENCE),
- 	SND_PCI_QUIRK(0x1028, 0x08ae, "Dell WYSE NB", ALC225_FIXUP_DELL1_MIC_NO_PRESENCE),
- 	SND_PCI_QUIRK(0x1028, 0x0935, "Dell", ALC274_FIXUP_DELL_AIO_LINEOUT_VERB),
--- 
-2.37.3
+Whether autoenumeration is enabled or not is irrelevant, by spec the
+device0 cannot be in ALERT status and throw in-band interrupts to the
+host with this mechanism.
 
+> Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+> ---
+>  drivers/soundwire/qcom.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/soundwire/qcom.c b/drivers/soundwire/qcom.c
+> index e21a3306bf01..871e4d8b32c7 100644
+> --- a/drivers/soundwire/qcom.c
+> +++ b/drivers/soundwire/qcom.c
+> @@ -428,7 +428,7 @@ static int qcom_swrm_get_alert_slave_dev_num(struct qcom_swrm_ctrl *ctrl)
+>  
+>  	ctrl->reg_read(ctrl, SWRM_MCP_SLV_STATUS, &val);
+>  
+> -	for (dev_num = 0; dev_num <= SDW_MAX_DEVICES; dev_num++) {
+> +	for (dev_num = 1; dev_num <= SDW_MAX_DEVICES; dev_num++) {
+>  		status = (val >> (dev_num * SWRM_MCP_SLV_STATUS_SZ));
+>  
+>  		if ((status & SWRM_MCP_SLV_STATUS_MASK) == SDW_SLAVE_ALERT) {
+> @@ -448,7 +448,7 @@ static void qcom_swrm_get_device_status(struct qcom_swrm_ctrl *ctrl)
+>  	ctrl->reg_read(ctrl, SWRM_MCP_SLV_STATUS, &val);
+>  	ctrl->slave_status = val;
+>  
+> -	for (i = 0; i <= SDW_MAX_DEVICES; i++) {
+> +	for (i = 1; i <= SDW_MAX_DEVICES; i++) {
+>  		u32 s;
+>  
+>  		s = (val >> (i * 2));
