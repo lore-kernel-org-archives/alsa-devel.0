@@ -4,44 +4,44 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 634D7ECAAA1
-	for <alsa-devel@archiver.kernel.org>; Thu, 15 Sep 2022 09:47:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B3AE6C6FA8A
+	for <alsa-devel@archiver.kernel.org>; Thu, 15 Sep 2022 09:48:02 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 66406163B;
-	Thu, 15 Sep 2022 11:46:58 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 66406163B
+	by alsa0.perex.cz (Postfix) with ESMTPS id E05ED1831;
+	Thu, 15 Sep 2022 11:47:10 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E05ED1831
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1663235268;
-	bh=++VPHuzwqwaVIhbnPwasunWRF3SX75IQOjWbjpEVEHI=;
+	s=default; t=1663235281;
+	bh=Vwy5b9Pmkr5WUWLxWQLHE6L6yoHGH8pH274DIwcAevY=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=FnCynmMAv2M+1Rvr959R5fWw0qJ5txmTl81N9eqLCvs8CZphnTlqaVXVJbHjO9T6u
-	 r8zK+//Fvz7wrIjZc3JyrRPhO0cPZe/3NL+i8k+QTSD4Y5f7x0aQPEExcd8d7QNpHC
-	 UschX2AkGbBQGFWXxV6UuJdOwBCESmHOS5/fQHYU=
+	b=hzYr5aCHJQF26M96ntcOhQDqGLamHEf5hL0CYiIXAZwom21jAp4oJj9XfiKaTA/bS
+	 JDLs2W1YpnKIXwouvhyhpPYGkDQgdlfs76fi4NVT7SdKHV/XuFmwpgp4WbV37Xzpw+
+	 aIopPMeR++a8zweP7A6PJU1n4nD1QwVEUfIgoeMg=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 8735FF8055A;
-	Thu, 15 Sep 2022 11:45:51 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 13C50F80563;
+	Thu, 15 Sep 2022 11:45:52 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 19C1BF80551; Thu, 15 Sep 2022 11:45:46 +0200 (CEST)
-Received: from hutie.ust.cz (hutie.ust.cz [185.8.165.127])
+ id 428E9F8054A; Thu, 15 Sep 2022 11:45:46 +0200 (CEST)
+Received: from hutie.ust.cz (unknown [IPv6:2a03:3b40:fe:f0::1])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 4ACA0F8027D
- for <alsa-devel@alsa-project.org>; Thu, 15 Sep 2022 11:45:35 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4ACA0F8027D
+ by alsa1.perex.cz (Postfix) with ESMTPS id 0BAC2F80238
+ for <alsa-devel@alsa-project.org>; Thu, 15 Sep 2022 11:45:34 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0BAC2F80238
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=cutebit.org header.i=@cutebit.org
- header.b="Tn6rpmeS"
+ header.b="rZAk85JG"
 From: =?UTF-8?q?Martin=20Povi=C5=A1er?= <povik+lin@cutebit.org>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cutebit.org; s=mail;
- t=1663235134; bh=jeVhB+g+ZfwSKgqzqq2K42knlfYbiLjCGGvelbPU2ko=;
+ t=1663235133; bh=RnoRkuWr8/cOTZp+UVU+8HJliq7IWrJl0jk4wjs4inI=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References;
- b=Tn6rpmeS5yrwDUpxBMBDBSigM+4HhWHdqYcUUn1wO6dfIMymL0ny6WsVL54wiPjQy
- bIjG7SbcWkZ7s6d7vd1psTrThA1pLC041B5z/io8Bf0xpKVM/bE72942YeXIo0n/d2
- T7PDrGmEcf4FSbx/TkQ3PJo8u67VhfzF54DBJh9Q=
+ b=rZAk85JGtc7RNq70RU9onoXNJ366+U5FbkK8JLMpr/xsiR1vTr1dgcNidX9cZMkyP
+ GnWoEbFNOvDnCLvf/uYdpfCNCMvEl5r0CLcGxWMpKoqP5FkA9AVPJTIiKRYt/Q8rxN
+ QoJSA1TcyNpBBa0HkSmwbdoINGWZflsnEMjvflIY=
 To: James Schulman <james.schulman@cirrus.com>,
  David Rhodes <david.rhodes@cirrus.com>,
  Lucas Tanure <tanureal@opensource.cirrus.com>,
@@ -50,9 +50,10 @@ To: James Schulman <james.schulman@cirrus.com>,
  Rob Herring <robh+dt@kernel.org>,
  Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
  =?UTF-8?q?Martin=20Povi=C5=A1er?= <povik+lin@cutebit.org>
-Subject: [PATCH v2 04/11] ASoC: cs42l42: Split probe() and remove() into stages
-Date: Thu, 15 Sep 2022 11:44:37 +0200
-Message-Id: <20220915094444.11434-5-povik+lin@cutebit.org>
+Subject: [PATCH v2 02/11] ASoC: cs42l42: Add bitclock frequency argument to
+ cs42l42_pll_config()
+Date: Thu, 15 Sep 2022 11:44:35 +0200
+Message-Id: <20220915094444.11434-3-povik+lin@cutebit.org>
 In-Reply-To: <20220915094444.11434-1-povik+lin@cutebit.org>
 References: <20220915094444.11434-1-povik+lin@cutebit.org>
 MIME-Version: 1.0
@@ -82,256 +83,101 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 From: Richard Fitzgerald <rf@opensource.cirrus.com>
 
-To prepare for adding SoundWire the probe must be split into three
-parts:
+Clean up the handling of bitclock frequency by keeping all the logic
+in cs42l42_pcm_hw_params(), which then simply passes the frequency as
+an argument to cs42l42_pll_config().
 
-1) The bus-specific probe
-2) Common bus-agnostic probe steps
-3) Initialization of the peripheral registers
-
-Step (3) must be separate because on SoundWire devices the probe must
-enable power supplies and release reset so that the peripheral can be
-enumerated by the bus, but it isn't possible to access registers until
-enumeration has completed.
-
-The call to devm_snd_soc_register_component() must be done at stage (2)
-so that it can EPROBE_DEFER if necessary. In SoundWire systems stage (3)
-is not a probe event so a deferral at this stage would not result in
-re-probing dependencies.
-
-A new init_done flag indicates that the chip has been identified and
-initialized. This is used to prevent cs42l42_remove(), cs42l42_suspend(),
-cs42l42_restore() and cs42l42_irq_thread() from attempting register
-accesses if the chip was not successfully initialized. Although this
-cannot happen on I2C, because the entire probe would fail, it is
-possible on SoundWire if probe succeeds but the cs42l42 is never
-enumerated.
+The previous code had become clunky as a legacy of earlier versions of
+the clock handling. The logic was split across cs42l42_pcm_hw_params()
+and cs42l42_pll_config(), with the params-derived bclk stashed in
+struct cs42l42_private only to pass it to cs42l42_pll_config().
 
 Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
 Signed-off-by: Martin Povišer <povik+lin@cutebit.org>
 ---
- sound/soc/codecs/cs42l42.c | 127 +++++++++++++++++++++++++------------
- sound/soc/codecs/cs42l42.h |   2 +
- 2 files changed, 87 insertions(+), 42 deletions(-)
+ sound/soc/codecs/cs42l42.c | 32 ++++++++++++++++----------------
+ sound/soc/codecs/cs42l42.h |  1 -
+ 2 files changed, 16 insertions(+), 17 deletions(-)
 
 diff --git a/sound/soc/codecs/cs42l42.c b/sound/soc/codecs/cs42l42.c
-index 11cb659f03e0..427b29db2252 100644
+index 162540c153f9..4b92ee0e67c4 100644
 --- a/sound/soc/codecs/cs42l42.c
 +++ b/sound/soc/codecs/cs42l42.c
-@@ -1627,7 +1627,7 @@ static irqreturn_t cs42l42_irq_thread(int irq, void *data)
- 	int report = 0;
- 
- 	mutex_lock(&cs42l42->irq_lock);
--	if (cs42l42->suspended) {
-+	if (cs42l42->suspended || !cs42l42->init_done) {
- 		mutex_unlock(&cs42l42->irq_lock);
- 		return IRQ_NONE;
- 	}
-@@ -2199,28 +2199,13 @@ static int __maybe_unused cs42l42_resume(struct device *dev)
- 	return 0;
- }
- 
--static int cs42l42_i2c_probe(struct i2c_client *i2c_client)
-+static int cs42l42_common_probe(struct cs42l42_private *cs42l42)
- {
--	struct cs42l42_private *cs42l42;
--	int ret, i, devid;
--	unsigned int reg;
--
--	cs42l42 = devm_kzalloc(&i2c_client->dev, sizeof(struct cs42l42_private),
--			       GFP_KERNEL);
--	if (!cs42l42)
--		return -ENOMEM;
-+	int ret, i;
- 
--	cs42l42->dev = &i2c_client->dev;
--	i2c_set_clientdata(i2c_client, cs42l42);
-+	dev_set_drvdata(cs42l42->dev, cs42l42);
- 	mutex_init(&cs42l42->irq_lock);
- 
--	cs42l42->regmap = devm_regmap_init_i2c(i2c_client, &cs42l42_regmap);
--	if (IS_ERR(cs42l42->regmap)) {
--		ret = PTR_ERR(cs42l42->regmap);
--		dev_err(cs42l42->dev, "regmap_init() failed: %d\n", ret);
--		return ret;
--	}
--
- 	BUILD_BUG_ON(ARRAY_SIZE(cs42l42_supply_names) != ARRAY_SIZE(cs42l42->supplies));
- 	for (i = 0; i < ARRAY_SIZE(cs42l42->supplies); i++)
- 		cs42l42->supplies[i].supply = cs42l42_supply_names[i];
-@@ -2257,20 +2242,44 @@ static int cs42l42_i2c_probe(struct i2c_client *i2c_client)
- 	usleep_range(CS42L42_BOOT_TIME_US, CS42L42_BOOT_TIME_US * 2);
- 
- 	/* Request IRQ if one was specified */
--	if (i2c_client->irq) {
--		ret = request_threaded_irq(i2c_client->irq,
-+	if (cs42l42->irq) {
-+		ret = request_threaded_irq(cs42l42->irq,
- 					   NULL, cs42l42_irq_thread,
- 					   IRQF_ONESHOT | IRQF_TRIGGER_LOW,
- 					   "cs42l42", cs42l42);
--		if (ret == -EPROBE_DEFER) {
--			goto err_disable_noirq;
--		} else if (ret != 0) {
-+		if (ret) {
- 			dev_err_probe(cs42l42->dev, ret,
- 				"Failed to request IRQ\n");
- 			goto err_disable_noirq;
- 		}
- 	}
- 
-+	/* Register codec now so it can EPROBE_DEFER */
-+	ret = devm_snd_soc_register_component(cs42l42->dev,
-+					      &soc_component_dev_cs42l42,
-+					      &cs42l42_dai, 1);
-+	if (ret < 0)
-+		goto err;
-+
-+	return 0;
-+
-+err:
-+	if (cs42l42->irq)
-+		free_irq(cs42l42->irq, cs42l42);
-+
-+err_disable_noirq:
-+	gpiod_set_value_cansleep(cs42l42->reset_gpio, 0);
-+err_disable_noreset:
-+	regulator_bulk_disable(ARRAY_SIZE(cs42l42->supplies), cs42l42->supplies);
-+
-+	return ret;
-+}
-+
-+static int cs42l42_init(struct cs42l42_private *cs42l42)
-+{
-+	unsigned int reg;
-+	int devid, ret;
-+
- 	/* initialize codec */
- 	devid = cirrus_read_device_id(cs42l42->regmap, CS42L42_DEVID_AB);
- 	if (devid < 0) {
-@@ -2320,15 +2329,15 @@ static int cs42l42_i2c_probe(struct i2c_client *i2c_client)
- 	/* Setup headset detection */
- 	cs42l42_setup_hs_type_detect(cs42l42);
- 
-+	/*
-+	 * Set init_done before unmasking interrupts so any triggered
-+	 * immediately will be handled.
-+	 */
-+	cs42l42->init_done = true;
-+
- 	/* Mask/Unmask Interrupts */
- 	cs42l42_set_interrupt_masks(cs42l42);
- 
--	/* Register codec for machine driver */
--	ret = devm_snd_soc_register_component(cs42l42->dev,
--			&soc_component_dev_cs42l42, &cs42l42_dai, 1);
--	if (ret < 0)
--		goto err_shutdown;
--
- 	return 0;
- 
- err_shutdown:
-@@ -2337,34 +2346,68 @@ static int cs42l42_i2c_probe(struct i2c_client *i2c_client)
- 	regmap_write(cs42l42->regmap, CS42L42_PWR_CTL1, 0xff);
- 
- err_disable:
--	if (i2c_client->irq)
--		free_irq(i2c_client->irq, cs42l42);
-+	if (cs42l42->irq)
-+		free_irq(cs42l42->irq, cs42l42);
- 
--err_disable_noirq:
- 	gpiod_set_value_cansleep(cs42l42->reset_gpio, 0);
--err_disable_noreset:
- 	regulator_bulk_disable(ARRAY_SIZE(cs42l42->supplies),
- 				cs42l42->supplies);
- 	return ret;
- }
- 
--static int cs42l42_i2c_remove(struct i2c_client *i2c_client)
-+static void cs42l42_common_remove(struct cs42l42_private *cs42l42)
- {
--	struct cs42l42_private *cs42l42 = i2c_get_clientdata(i2c_client);
--
--	if (i2c_client->irq)
--		free_irq(i2c_client->irq, cs42l42);
-+	if (cs42l42->irq)
-+		free_irq(cs42l42->irq, cs42l42);
- 
- 	/*
- 	 * The driver might not have control of reset and power supplies,
- 	 * so ensure that the chip internals are powered down.
- 	 */
--	regmap_write(cs42l42->regmap, CS42L42_CODEC_INT_MASK, 0xff);
--	regmap_write(cs42l42->regmap, CS42L42_TSRS_PLUG_INT_MASK, 0xff);
--	regmap_write(cs42l42->regmap, CS42L42_PWR_CTL1, 0xff);
-+	if (cs42l42->init_done) {
-+		regmap_write(cs42l42->regmap, CS42L42_CODEC_INT_MASK, 0xff);
-+		regmap_write(cs42l42->regmap, CS42L42_TSRS_PLUG_INT_MASK, 0xff);
-+		regmap_write(cs42l42->regmap, CS42L42_PWR_CTL1, 0xff);
-+	}
- 
- 	gpiod_set_value_cansleep(cs42l42->reset_gpio, 0);
- 	regulator_bulk_disable(ARRAY_SIZE(cs42l42->supplies), cs42l42->supplies);
-+}
-+
-+static int cs42l42_i2c_probe(struct i2c_client *i2c_client)
-+{
-+	struct device *dev = &i2c_client->dev;
-+	struct cs42l42_private *cs42l42;
-+	struct regmap *regmap;
-+	int ret;
-+
-+	cs42l42 = devm_kzalloc(dev, sizeof(struct cs42l42_private), GFP_KERNEL);
-+	if (!cs42l42)
-+		return -ENOMEM;
-+
-+	regmap = devm_regmap_init_i2c(i2c_client, &cs42l42_regmap);
-+	if (IS_ERR(regmap)) {
-+		ret = PTR_ERR(regmap);
-+		dev_err(&i2c_client->dev, "regmap_init() failed: %d\n", ret);
-+		return ret;
-+	}
-+
-+	cs42l42->dev = dev;
-+	cs42l42->regmap = regmap;
-+	cs42l42->irq = i2c_client->irq;
-+
-+	ret = cs42l42_common_probe(cs42l42);
-+	if (ret)
-+		return ret;
-+
-+	return cs42l42_init(cs42l42);
-+}
-+
-+static int cs42l42_i2c_remove(struct i2c_client *i2c_client)
-+{
-+	struct cs42l42_private *cs42l42 = dev_get_drvdata(&i2c_client->dev);
-+
-+	cs42l42_common_remove(cs42l42);
- 
- 	return 0;
- }
-diff --git a/sound/soc/codecs/cs42l42.h b/sound/soc/codecs/cs42l42.h
-index b4ba1467c558..a8e0d5b414a5 100644
---- a/sound/soc/codecs/cs42l42.h
-+++ b/sound/soc/codecs/cs42l42.h
-@@ -29,6 +29,7 @@ struct  cs42l42_private {
- 	struct completion pdn_done;
- 	struct snd_soc_jack *jack;
- 	struct mutex irq_lock;
-+	int irq;
- 	int pll_config;
- 	u32 sclk;
- 	u32 srate;
-@@ -46,6 +47,7 @@ struct  cs42l42_private {
- 	u8 stream_use;
- 	bool hp_adc_up_pending;
- 	bool suspended;
-+	bool init_done;
+@@ -647,18 +647,12 @@ static const struct cs42l42_pll_params pll_ratio_table[] = {
+ 	{ 24576000, 1, 0x03, 0x40, 0x000000, 0x03, 0x10, 12288000, 128, 1}
  };
  
- #endif /* __CS42L42_H__ */
+-static int cs42l42_pll_config(struct snd_soc_component *component)
++static int cs42l42_pll_config(struct snd_soc_component *component, unsigned int clk)
+ {
+ 	struct cs42l42_private *cs42l42 = snd_soc_component_get_drvdata(component);
+ 	int i;
+-	u32 clk;
+ 	u32 fsync;
+ 
+-	if (!cs42l42->sclk)
+-		clk = cs42l42->bclk;
+-	else
+-		clk = cs42l42->sclk;
+-
+ 	/* Don't reconfigure if there is an audio stream running */
+ 	if (cs42l42->stream_use) {
+ 		if (pll_ratio_table[cs42l42->pll_config].sclk == clk)
+@@ -895,19 +889,25 @@ static int cs42l42_pcm_hw_params(struct snd_pcm_substream *substream,
+ 	unsigned int width = (params_width(params) / 8) - 1;
+ 	unsigned int slot_width = 0;
+ 	unsigned int val = 0;
++	unsigned int bclk;
+ 	int ret;
+ 
+ 	cs42l42->srate = params_rate(params);
+ 
+-	/*
+-	 * Assume 24-bit samples are in 32-bit slots, to prevent SCLK being
+-	 * more than assumed (which would result in overclocking).
+-	 */
+-	if (params_width(params) == 24)
+-		slot_width = 32;
++	if (cs42l42->sclk) {
++		/* machine driver has set the SCLK */
++		bclk = cs42l42->sclk;
++	} else {
++		/*
++		 * Assume 24-bit samples are in 32-bit slots, to prevent SCLK being
++		 * more than assumed (which would result in overclocking).
++		 */
++		if (params_width(params) == 24)
++			slot_width = 32;
+ 
+-	/* I2S frame always has multiple of 2 channels */
+-	cs42l42->bclk = snd_soc_tdm_params_to_bclk(params, slot_width, 0, 2);
++		/* I2S frame always has multiple of 2 channels */
++		bclk = snd_soc_tdm_params_to_bclk(params, slot_width, 0, 2);
++	}
+ 
+ 	switch (substream->stream) {
+ 	case SNDRV_PCM_STREAM_CAPTURE:
+@@ -947,7 +947,7 @@ static int cs42l42_pcm_hw_params(struct snd_pcm_substream *substream,
+ 		break;
+ 	}
+ 
+-	ret = cs42l42_pll_config(component);
++	ret = cs42l42_pll_config(component, bclk);
+ 	if (ret)
+ 		return ret;
+ 
+diff --git a/sound/soc/codecs/cs42l42.h b/sound/soc/codecs/cs42l42.h
+index 50299c9f283a..b4ba1467c558 100644
+--- a/sound/soc/codecs/cs42l42.h
++++ b/sound/soc/codecs/cs42l42.h
+@@ -30,7 +30,6 @@ struct  cs42l42_private {
+ 	struct snd_soc_jack *jack;
+ 	struct mutex irq_lock;
+ 	int pll_config;
+-	int bclk;
+ 	u32 sclk;
+ 	u32 srate;
+ 	u8 plug_state;
 -- 
 2.33.0
 
