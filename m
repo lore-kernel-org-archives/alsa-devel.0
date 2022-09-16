@@ -4,58 +4,83 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id AC50FECAAD8
-	for <alsa-devel@archiver.kernel.org>; Fri, 16 Sep 2022 14:05:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 67943ECAAD8
+	for <alsa-devel@archiver.kernel.org>; Fri, 16 Sep 2022 14:16:46 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id DF3501A97;
-	Fri, 16 Sep 2022 16:04:27 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz DF3501A97
+	by alsa0.perex.cz (Postfix) with ESMTPS id B104C1AA5;
+	Fri, 16 Sep 2022 16:15:53 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B104C1AA5
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1663337118;
-	bh=+wNCTLO6qI3FRod277mO67c+g4SZS3O8D3yKY0dytxg=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=bP/YXBhhRaHTXOXU8YDTPtRFd/Z7yHz+jNDm+1yld17+YvUOnMpbVnv7g7TXbtjL8
-	 XR1mzybBj4ywUbvQoBZGKp+QEF39W8xlg74+OYbMaRw8hqL6nMGOoEySMRuArFCV/F
-	 KMGMTqoblCyhX0paXrgcOFT6Rzbxp2XP7p/OvDk0=
+	s=default; t=1663337803;
+	bh=w0BQLvNXrJTW38jBSp0PodZA+enrrApwwpDK3sFl7KE=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=PP27/YnyOBtblqcHn2JJmIRBv1nQW+So0kjdpo24X3L5wSup/QOhkPfql2Ey0POUc
+	 48nwg4iwYY7fpx8rWOZwkMviWnOTT1FytdRKOy0/QVKEFUQ0MKNAlJv0up/BmcNvKz
+	 DApsT1G99QFR6xwYJBhWOTXM1NOMVg6K1Uya6q6c=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 7CC13F80254;
-	Fri, 16 Sep 2022 16:04:27 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 44AA2F8024C;
+	Fri, 16 Sep 2022 16:15:53 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 237C1F8024C; Fri, 16 Sep 2022 16:04:26 +0200 (CEST)
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id F33EDF800E5; Fri, 16 Sep 2022 16:15:51 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id D64EEF8024C
- for <alsa-devel@alsa-project.org>; Fri, 16 Sep 2022 16:04:13 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D64EEF8024C
-Received: from dggpemm500024.china.huawei.com (unknown [172.30.72.57])
- by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4MTbLD2hmgzlVvJ;
- Fri, 16 Sep 2022 22:00:04 +0800 (CST)
-Received: from dggpemm500007.china.huawei.com (7.185.36.183) by
- dggpemm500024.china.huawei.com (7.185.36.203) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.24; Fri, 16 Sep 2022 22:04:05 +0800
-Received: from huawei.com (10.175.103.91) by dggpemm500007.china.huawei.com
- (7.185.36.183) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.24; Fri, 16 Sep
- 2022 22:04:04 +0800
-From: Yang Yingliang <yangyingliang@huawei.com>
-To: <linux-kernel@vger.kernel.org>, <alsa-devel@alsa-project.org>
-Subject: [PATCH -next] ALSA: ppc: Switch to use for_each_child_of_node() macro
-Date: Fri, 16 Sep 2022 22:11:08 +0800
-Message-ID: <20220916141108.683080-1-yangyingliang@huawei.com>
-X-Mailer: git-send-email 2.25.1
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [10.175.103.91]
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
- dggpemm500007.china.huawei.com (7.185.36.183)
-X-CFilter-Loop: Reflected
-Cc: tiwai@suse.com
+ by alsa1.perex.cz (Postfix) with ESMTPS id EADD9F800E5
+ for <alsa-devel@alsa-project.org>; Fri, 16 Sep 2022 16:15:44 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EADD9F800E5
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
+ header.b="bNrceMRa"; 
+ dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
+ header.b="z0sklhcE"
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 845911FB08;
+ Fri, 16 Sep 2022 14:15:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1663337744; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=9mrFSlPBbZAMGhUEk/mR6tGK3rSg5BvNTh7oTVEa7Xw=;
+ b=bNrceMRalkhD79EfxQ+I8+3fMJtm0uOM7fAkqNgI3hBZrLy8Ius7o0AB5BUce7MN0ShciH
+ 8ATW8CT0bGSF/t+iwgu/7ZZJzL/PFGYBAqsOK7RB/UnZHYfy/BR6s1xyvhJPHO4/0BqtdD
+ KNW2L8U9i1c4pIqkDy/sTbGQtJUxUfA=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1663337744;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=9mrFSlPBbZAMGhUEk/mR6tGK3rSg5BvNTh7oTVEa7Xw=;
+ b=z0sklhcEL+9hZ5XIFEbmPPfiMYJ/Rs78+ELuHMCebyvxUk6gRnxYXbZDFNsuRjpO6taJyj
+ hJ2dRNAUf+bNflDA==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 653251332E;
+ Fri, 16 Sep 2022 14:15:44 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+ by imap2.suse-dmz.suse.de with ESMTPSA id A9W2FxCFJGN+VAAAMHmgww
+ (envelope-from <tiwai@suse.de>); Fri, 16 Sep 2022 14:15:44 +0000
+Date: Fri, 16 Sep 2022 16:15:43 +0200
+Message-ID: <87sfkrqub4.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Jaroslav Kysela <perex@perex.cz>
+Subject: Re: [PATCH] ALSA: hda/hdmi: Fix the converter reuse for the silent
+ stream
+In-Reply-To: <20220913070216.3233974-1-perex@perex.cz>
+References: <20220913070216.3233974-1-perex@perex.cz>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+Cc: ALSA development <alsa-devel@alsa-project.org>,
+ Kai Vehmanen <kai.vehmanen@linux.intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -71,38 +96,24 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Use for_each_child_of_node() macro instead of open coding it.
-No functional change.
+On Tue, 13 Sep 2022 09:02:16 +0200,
+Jaroslav Kysela wrote:
+> 
+> When the user space pcm stream uses the silent stream converter,
+> it is no longer allocated for the silent stream. Clear the appropriate
+> flag in the hdmi_pcm_open() function. The silent stream setup may
+> be applied in hdmi_pcm_close() (and the error path - open fcn) again.
+> 
+> If the flag is not cleared, the reuse conditions for the silent
+> stream converter in hdmi_choose_cvt() may improperly share
+> this converter.
+> 
+> Cc: Kai Vehmanen <kai.vehmanen@linux.intel.com>
+> Signed-off-by: Jaroslav Kysela <perex@perex.cz>
 
-Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
----
- sound/ppc/tumbler.c | 6 ++----
- 1 file changed, 2 insertions(+), 4 deletions(-)
+Applied now.
 
-diff --git a/sound/ppc/tumbler.c b/sound/ppc/tumbler.c
-index c65e74d7cd0a..f3f8ad7c3df8 100644
---- a/sound/ppc/tumbler.c
-+++ b/sound/ppc/tumbler.c
-@@ -1060,8 +1060,7 @@ static struct device_node *find_audio_device(const char *name)
- 	if (! gpiop)
- 		return NULL;
-   
--	for (np = of_get_next_child(gpiop, NULL); np;
--			np = of_get_next_child(gpiop, np)) {
-+	for_each_child_of_node(gpiop, np) {
- 		const char *property = of_get_property(np, "audio-gpio", NULL);
- 		if (property && strcmp(property, name) == 0)
- 			break;
-@@ -1080,8 +1079,7 @@ static struct device_node *find_compatible_audio_device(const char *name)
- 	if (!gpiop)
- 		return NULL;
-   
--	for (np = of_get_next_child(gpiop, NULL); np;
--			np = of_get_next_child(gpiop, np)) {
-+	for_each_child_of_node(gpiop, np) {
- 		if (of_device_is_compatible(np, name))
- 			break;
- 	}  
--- 
-2.25.1
 
+thanks,
+
+Takashi
