@@ -4,72 +4,70 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 42E39ECAAD8
-	for <alsa-devel@archiver.kernel.org>; Fri, 16 Sep 2022 14:26:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C34CBECAAD8
+	for <alsa-devel@archiver.kernel.org>; Fri, 16 Sep 2022 14:27:01 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 4DA671AD0;
-	Fri, 16 Sep 2022 16:25:50 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4DA671AD0
+	by alsa0.perex.cz (Postfix) with ESMTPS id E072E1AC0;
+	Fri, 16 Sep 2022 16:26:09 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E072E1AC0
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1663338400;
-	bh=xjBzwUqb8jHwtsdnaFdl5y3s0GzS9ZhCO/JEXoWOV0w=;
+	s=default; t=1663338420;
+	bh=gv+2/C8ClWBbHILgrFONJ9rBiBl5ZJdLRc3Bch3QP2M=;
 	h=Date:Subject:To:References:From:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=vMWOcoOqbN86/uAO67b6tfdPOT5Dqx6rj0ej0MV9On0RyQaVudihPRv/ApVMjS0TH
-	 NHVgI7rMLXwWszP9Fs+SpJ4J+UVUxg+8SqS19MjN7lior1o8JNnR8HJprROmbBFKzs
-	 F9RRhhKuCjENXczW47QcXIZqjfkqLRUg3k02l4EA=
+	b=IrQlbCFcZDlqvFZ1+h+9dEVYHou5TQWXyr+QIKHVZNI37bAnvYJ5vnpuc/6AtWhX/
+	 +qkfCeVqG2ju9NPHcFU0HRQyfJywz/8y9epPlDlyq5qfnMsBfRFastB8ONpEaN2c4T
+	 3ObkPE91om7VeReOFlwTrCGmfP2cnBkheo4rxxcY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 0A9C2F8055B;
-	Fri, 16 Sep 2022 16:24:57 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 9C380F80564;
+	Fri, 16 Sep 2022 16:25:03 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 88163F802BE; Fri, 16 Sep 2022 16:24:56 +0200 (CEST)
-Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
+ id 536FBF80567; Fri, 16 Sep 2022 16:25:02 +0200 (CEST)
+Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id E05EAF80564
- for <alsa-devel@alsa-project.org>; Fri, 16 Sep 2022 16:24:48 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E05EAF80564
+ by alsa1.perex.cz (Postfix) with ESMTPS id 9353EF8024C
+ for <alsa-devel@alsa-project.org>; Fri, 16 Sep 2022 16:24:49 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9353EF8024C
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="jH+J3O3a"
+ header.b="O+w0OZkv"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1663338291; x=1694874291;
+ t=1663338296; x=1694874296;
  h=message-id:date:mime-version:subject:to:cc:references:
  from:in-reply-to:content-transfer-encoding;
- bh=xjBzwUqb8jHwtsdnaFdl5y3s0GzS9ZhCO/JEXoWOV0w=;
- b=jH+J3O3aK/hFOSIUnYwruPvHvhY42aOmIhYr2qb6XtRX3MODjY85ykcW
- aINxSjfwNE9lvUT8k2bbkopUjG60J0nJR6q4GflSzxyzpKgJmH8pPK7/w
- AKXFhBL/KN1eQY6l+qZ16mVlAQ95B8dQMN6qS04CFGdM3i0NJ5ef8yxfR
- L3sDv5SQsvHfbibUcsIv87eaeXI5f7UmcL/FKGFTuwc58fonyrqFH4WP2
- ZIogNPWJX3TX/qElphVsjfwNw8IzzOr2b1q8BcIr34d6O9EP7n2+7y4km
- vftP0U4KpnM8sjsI1XziDGh2RZQxLRLH2b08my14XDV//II6/fSKRZS+R A==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10472"; a="362963863"
-X-IronPort-AV: E=Sophos;i="5.93,320,1654585200"; d="scan'208";a="362963863"
+ bh=gv+2/C8ClWBbHILgrFONJ9rBiBl5ZJdLRc3Bch3QP2M=;
+ b=O+w0OZkvkFItzWIfopDAtjEMXLUZI+dwfpl0Pkq7JtqNfO171Ydo8CfO
+ G+xE15Tn0UEgyW1h8IxzwfB5sW2KCGOeLNyvKYBthx5BuUxjuapekxDzG
+ +AE/lYJ5Axp5eu25maOaUQPiw8ljaf5YEScdZz/BnaTn4a/VlB2kH/cjl
+ 0pCtWvZ2ZzfDL+JJ3IGuKYwifsq/umydAxAsBv2nC9M0Ic/WTohPBdXJU
+ 0p1T0g2elpwsKZu/W0k4aGMIUjv27L0sCajuo37swn61xa2nCONBMC1I2
+ g/CBTuJTE9+/1WVdF29ypOzNB3TgSATsBjZLmQiGjmUd2wGI8KEKwaUp5 A==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10472"; a="300363094"
+X-IronPort-AV: E=Sophos;i="5.93,320,1654585200"; d="scan'208";a="300363094"
 Received: from orsmga001.jf.intel.com ([10.7.209.18])
- by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 16 Sep 2022 07:24:36 -0700
-X-IronPort-AV: E=Sophos;i="5.93,320,1654585200"; d="scan'208";a="650889151"
+ by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 16 Sep 2022 07:24:42 -0700
+X-IronPort-AV: E=Sophos;i="5.93,320,1654585200"; d="scan'208";a="650889189"
 Received: from kchan21-mobl1.ger.corp.intel.com (HELO [10.252.61.56])
  ([10.252.61.56])
  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 16 Sep 2022 07:24:33 -0700
-Message-ID: <78c9421e-d66a-3477-9dff-f819e1ac9414@linux.intel.com>
-Date: Fri, 16 Sep 2022 16:22:03 +0200
+ 16 Sep 2022 07:24:39 -0700
+Message-ID: <ffb79f8b-7557-92eb-2c20-e8f5fd2afaee@linux.intel.com>
+Date: Fri, 16 Sep 2022 16:22:37 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
  Firefox/91.0 Thunderbird/91.11.0
-Subject: Re: [PATCH v2 2/2] soundwire: qcom: do not send status of device 0
- during alert
+Subject: Re: [PATCH v2 1/2] soundwire: qcom: update status from device id 1
 Content-Language: en-US
 To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, vkoul@kernel.org
 References: <20220916135352.19114-1-srinivas.kandagatla@linaro.org>
- <20220916135352.19114-2-srinivas.kandagatla@linaro.org>
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-In-Reply-To: <20220916135352.19114-2-srinivas.kandagatla@linaro.org>
+In-Reply-To: <20220916135352.19114-1-srinivas.kandagatla@linaro.org>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 Cc: alsa-devel@alsa-project.org, linux-arm-msm@vger.kernel.org,
@@ -93,30 +91,38 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
 On 9/16/22 15:53, Srinivas Kandagatla wrote:
-> Device0 can not be in alter status. And for consistency reasons do not
-
-typo: alert
-
-> send status of device0 to core.
+> By default autoenumeration is enabled on QCom SoundWire controller
+> which means the core should not be dealing with device 0 w.r.t enumeration.
+> 
+> During Enumeration if SoundWire core sees status[0] as SDW_SLAVE_ATTACHED and
+> start programming the device id, however reading DEVID registers return zeros
+> which does not match to any of the slaves in the list and the core attempts
+> to park this device to Group 13.  This results in adding SoundWire device
+> with enumeration address 0:0:0:0
+> 
+> Fix this by not passing device 0 status to SoundWire core.
 > 
 > Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 
 Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 
 > ---
+> Changes since v1:
+> 	- updated change log and split patch in to two as suggested by Pierre
+> 
 >  drivers/soundwire/qcom.c | 2 +-
 >  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
 > diff --git a/drivers/soundwire/qcom.c b/drivers/soundwire/qcom.c
-> index d3ce580cdeaf..a04a8863b228 100644
+> index e7f95c41eb70..d3ce580cdeaf 100644
 > --- a/drivers/soundwire/qcom.c
 > +++ b/drivers/soundwire/qcom.c
-> @@ -428,7 +428,7 @@ static int qcom_swrm_get_alert_slave_dev_num(struct qcom_swrm_ctrl *ctrl)
->  
+> @@ -448,7 +448,7 @@ static void qcom_swrm_get_device_status(struct qcom_swrm_ctrl *ctrl)
 >  	ctrl->reg_read(ctrl, SWRM_MCP_SLV_STATUS, &val);
+>  	ctrl->slave_status = val;
 >  
-> -	for (dev_num = 0; dev_num <= SDW_MAX_DEVICES; dev_num++) {
-> +	for (dev_num = 1; dev_num <= SDW_MAX_DEVICES; dev_num++) {
->  		status = (val >> (dev_num * SWRM_MCP_SLV_STATUS_SZ));
+> -	for (i = 0; i <= SDW_MAX_DEVICES; i++) {
+> +	for (i = 1; i <= SDW_MAX_DEVICES; i++) {
+>  		u32 s;
 >  
->  		if ((status & SWRM_MCP_SLV_STATUS_MASK) == SDW_SLAVE_ALERT) {
+>  		s = (val >> (i * 2));
