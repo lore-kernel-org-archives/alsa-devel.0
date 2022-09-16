@@ -4,70 +4,100 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 97C3BECAAD8
-	for <alsa-devel@archiver.kernel.org>; Fri, 16 Sep 2022 11:14:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id EA77AC54EE9
+	for <alsa-devel@archiver.kernel.org>; Fri, 16 Sep 2022 13:07:59 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B4B191A8E;
-	Fri, 16 Sep 2022 13:13:56 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B4B191A8E
+	by alsa0.perex.cz (Postfix) with ESMTPS id EC4D11A95;
+	Fri, 16 Sep 2022 15:07:06 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EC4D11A95
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1663326886;
-	bh=rMxZoopL3pX9CVeNH0tkiG39os//4xbCUhR8NN4VmmE=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=UarJd5vnZr4O9Sq02dq6kEBZ0cBJ48ElEytXSjrrx7wZo/+gF+qyBXFgadllDyDQa
-	 M1tr1tibUyhuEkbNqOBi240s8Q2R9QJmXdv3zn9+/93Cpjq9cgC0NRx7fPD+v6HuBa
-	 hf4ee0qGUVTqVr0RiHyEqm/O2rRe7+DkjnH+x0dA=
+	s=default; t=1663333677;
+	bh=Sggz3bZvmVqoKCGkqAdjT6VuoNSrxS8ha2vkD0v6WuI=;
+	h=Date:Subject:To:References:From:In-Reply-To:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=hS1jAIO+PHceXUrN3g5b21+G35XVWdq+Lee8qBiup88pe2aN216SrNifoEmw4GC8h
+	 m1VdKTUBObYm2PX08xGuj8c48n3yk63KdWpM5UgLQekNRLKWkYVhlK/VVKCHT0Uer4
+	 hTb0n9Sef8cg9T0nCZHobB7sPEoZjYnCx2jYp0L8=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 54901F80254;
-	Fri, 16 Sep 2022 13:13:56 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 8E929F80254;
+	Fri, 16 Sep 2022 15:07:06 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 179F1F802BE; Fri, 16 Sep 2022 13:13:55 +0200 (CEST)
-Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 3D4E9F802BE; Fri, 16 Sep 2022 15:07:05 +0200 (CEST)
+Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com
+ [IPv6:2a00:1450:4864:20::336])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 7043DF8024C
- for <alsa-devel@alsa-project.org>; Fri, 16 Sep 2022 13:13:47 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7043DF8024C
+ by alsa1.perex.cz (Postfix) with ESMTPS id DC391F8024C
+ for <alsa-devel@alsa-project.org>; Fri, 16 Sep 2022 15:06:58 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DC391F8024C
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="lO2lVeQQ"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
- d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1663326829; x=1694862829;
- h=from:to:cc:subject:date:message-id:mime-version:
- content-transfer-encoding;
- bh=rMxZoopL3pX9CVeNH0tkiG39os//4xbCUhR8NN4VmmE=;
- b=lO2lVeQQCCUCqQtwRg73KSnFSnelgwo/Xpr99nqlg2Ekcm3sE+fSjMPT
- 8Aa6Z7MmF4cKAXxHuxSfYb66OJILidVBmooa3ogRWEI/MzqLCS6eM1xhn
- EjVS2e4mSUT7SZymrholJrSLgrsmmlCA6gs2C8i7lnMdrHRh8KtmyRwPV
- 8yT2cQLCO3TnDJXab99b7QOnqgH9SPfBr8XpJR3vmr6Y6ksxRXsvPmmnV
- 2SVZInx52AxBMwHjbgn7FLe0Vw2iSyd+vQo1xegH5Ma8pUcWWaYPaF+3w
- t1a07MvvUgO6y/tEcWoRD900MfrpMKNY/oId9uiCHwtgpfICd/wj8Kf5s g==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10471"; a="325243151"
-X-IronPort-AV: E=Sophos;i="5.93,320,1654585200"; d="scan'208";a="325243151"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
- by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 16 Sep 2022 04:13:43 -0700
-X-IronPort-AV: E=Sophos;i="5.93,320,1654585200"; d="scan'208";a="679927862"
-Received: from ncleary-mobl.ger.corp.intel.com (HELO
- pujfalus-desk.ger.corp.intel.com) ([10.252.16.186])
- by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 16 Sep 2022 04:13:41 -0700
-From: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
-To: lgirdwood@gmail.com,
-	broonie@kernel.org,
-	steve.lee.analog@gmail.com
-Subject: [PATCH v2] ASoC: max98390: Fix dsm calibration reading
-Date: Fri, 16 Sep 2022 14:13:49 +0300
-Message-Id: <20220916111349.4433-1-peter.ujfalusi@linux.intel.com>
-X-Mailer: git-send-email 2.37.3
+ dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org
+ header.b="WmiEwXzw"
+Received: by mail-wm1-x336.google.com with SMTP id
+ n23-20020a7bc5d7000000b003a62f19b453so19848049wmk.3
+ for <alsa-devel@alsa-project.org>; Fri, 16 Sep 2022 06:06:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
+ h=content-transfer-encoding:in-reply-to:from:references:cc:to
+ :content-language:subject:user-agent:mime-version:date:message-id
+ :from:to:cc:subject:date;
+ bh=2e3L0ED1BDpFLdmTFeqIIUKU3RqfHrrBxYTQB/sNCko=;
+ b=WmiEwXzwWnQ7UhY4icQ+KagCVvewZf1BCWbBhzAwP1xnI7f2tTG51N/2zJzL1WOCaR
+ 9aiKuOvqAtqtWM2TmvB6sphGRbKpypjiXP2xf0Oguf5qD1YpKuPiehKdu/cx8lnE3gSu
+ 4Wm8hfai1x6u8g2wF2fwP63cTurPQ4AA1zOnW9KRXPLYl3lFwmci6Ry3V6aM+6HXqs0H
+ NeNmCgewC1WV22suOCH3lAqR6oPUeqk4VFGIP9LHetVlUc3Dmj5McMfTD94JwuJiEtRW
+ GZMbedYUVdldxNrRt7/dYsxbSVbFiV8iDzn7iKSJ5A6sJilWkEcgUZ+JybSqHWI2oiCe
+ oRHw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=content-transfer-encoding:in-reply-to:from:references:cc:to
+ :content-language:subject:user-agent:mime-version:date:message-id
+ :x-gm-message-state:from:to:cc:subject:date;
+ bh=2e3L0ED1BDpFLdmTFeqIIUKU3RqfHrrBxYTQB/sNCko=;
+ b=ZjbTbjBO2rYSD7SsckDKYLs816Tkwth2N4dGIVWfcAPdb2QUyrqiDf0BXJogplN5kO
+ /xZz8ArmK0Gq6V/rCougb4ZIe/vcxHvewT0fgkvWN8reA8ijAcjAu6IWgyAG9IlKL2Gg
+ d0ALn7eg34+dAK41Veq61ovUObsp4e86aSZaSAMzaP/TfXlgc30H1GwNSYGrBixmeZPz
+ pkCPDao+/11GxcALSS0dqEqm4nGbrt4+eH7+4kxzWLNPYV/ZJ7+MZpCneUyt/Ujw8rlh
+ GcBNI9Bhj4NSHWbBWmELkJb85gzCyMBkbU5gMqVgRITzuELOb3urE2azAX2xgcsmuKfC
+ K4/g==
+X-Gm-Message-State: ACgBeo3g8khyDSjA0RNYe+u0GYjWKGhL08UU6aCe18VSIwk6nAuoTI6C
+ KEjwh/F5i2wkpCqi+HSLCy2RBQ==
+X-Google-Smtp-Source: AA6agR5UFLsDdB3qilLfFu+EUOFH0MP3U4bh23DIqC90LAY0sDX0eH8fz77Jqg/mU9Yy/mi+bZrsGQ==
+X-Received: by 2002:a05:600c:2142:b0:3b4:92b6:73ba with SMTP id
+ v2-20020a05600c214200b003b492b673bamr10433278wml.139.1663333616920; 
+ Fri, 16 Sep 2022 06:06:56 -0700 (PDT)
+Received: from [192.168.86.238]
+ (cpc90716-aztw32-2-0-cust825.18-1.cable.virginm.net. [86.26.103.58])
+ by smtp.googlemail.com with ESMTPSA id
+ y9-20020a05600c20c900b003a541d893desm2063106wmm.38.2022.09.16.06.06.55
+ (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+ Fri, 16 Sep 2022 06:06:56 -0700 (PDT)
+Message-ID: <65f11ed1-f09f-e0a2-91f5-891394160c96@linaro.org>
+Date: Fri, 16 Sep 2022 14:06:55 +0100
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: fred.oh@linux.intel.com, alsa-devel@alsa-project.org,
- pierre-louis.bossart@linux.intel.com
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.11.0
+Subject: Re: [PATCH 3/4] slimbus: qcom-ngd-ctrl: Make QMI message rules const
+Content-Language: en-US
+To: Jeff Johnson <quic_jjohnson@quicinc.com>, Alex Elder <elder@kernel.org>,
+ "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
+ Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+ Mathieu Poirier <mathieu.poirier@linaro.org>, Kalle Valo <kvalo@kernel.org>,
+ Andy Gross <agross@kernel.org>, Bjorn Andersson
+ <bjorn.andersson@linaro.org>, Konrad Dybcio <konrad.dybcio@somainline.org>
+References: <20220912232526.27427-1-quic_jjohnson@quicinc.com>
+ <20220912232526.27427-2-quic_jjohnson@quicinc.com>
+ <20220912232526.27427-3-quic_jjohnson@quicinc.com>
+ <20220912232526.27427-4-quic_jjohnson@quicinc.com>
+From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+In-Reply-To: <20220912232526.27427-4-quic_jjohnson@quicinc.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Cc: linux-arm-msm@vger.kernel.org, alsa-devel@alsa-project.org,
+ linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org,
+ netdev@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -83,144 +113,71 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-With the change introduced by 6ac246105b4f, the calibration can only be
-done after the codec probe (but questionable if it is working since
-203A_AMP_EN is 0) or when the codec is powered up for audio use, in other
-cases "AMP is not ready to run calibration" is printed.
 
-This changes how this worked before the patch: the codec was force powered
-on for the duration of the calibration readout, then shut down.
-So, if a calibration was asked when the codec was active, it would have
-powered it down?
 
-To correct the calibration logic: check if the codec is powered on and if
-it is not then enable it, do the readout and put it back to disabled.
-Do this while keeping the dapm locked to avoid interfering with normal
-operation via DAPM.
+On 13/09/2022 00:25, Jeff Johnson wrote:
+> Commit ff6d365898d ("soc: qcom: qmi: use con
 
-Fixes: 6ac246105b4f ("ASoC: max98390: Remove unnecessary amp on/off conrtol")
-Reported-by: Fred Oh <fred.oh@linux.intel.com>
-Signed-off-by: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
----
-Hi,
+SHA ID should be at least 12 chars long.
 
-Changes since v1:
-- typos corrected in the commit message
+Same comment for all the patches in the series.
 
-Regards,
-Peter
 
- sound/soc/codecs/max98390.c | 79 ++++++++++++++++++-------------------
- 1 file changed, 39 insertions(+), 40 deletions(-)
+st for struct
+> qmi_elem_info") allows QMI message encoding/decoding rules to be
+> const, so do that for qcom-ngd-ctrl.
+> 
+> Signed-off-by: Jeff Johnson <quic_jjohnson@quicinc.com>
 
-diff --git a/sound/soc/codecs/max98390.c b/sound/soc/codecs/max98390.c
-index 4ef8cd1053af..7a5260ff8d6b 100644
---- a/sound/soc/codecs/max98390.c
-+++ b/sound/soc/codecs/max98390.c
-@@ -161,8 +161,6 @@ static struct reg_default max98390_reg_defaults[] = {
- 	{MAX98390_R23FF_GLOBAL_EN, 0x00},
- };
- 
--static int max98390_dsm_calibrate(struct snd_soc_component *component);
--
- static int max98390_dai_set_fmt(struct snd_soc_dai *codec_dai, unsigned int fmt)
- {
- 	struct snd_soc_component *component = codec_dai->component;
-@@ -635,20 +633,49 @@ static int max98390_dsm_calib_get(struct snd_kcontrol *kcontrol,
- static int max98390_dsm_calib_put(struct snd_kcontrol *kcontrol,
- 		struct snd_ctl_elem_value *ucontrol)
- {
--	unsigned int val;
--	struct snd_soc_component *component =
--		snd_soc_kcontrol_component(kcontrol);
--	struct max98390_priv *max98390 =
--		snd_soc_component_get_drvdata(component);
-+	struct snd_soc_component *component = snd_soc_kcontrol_component(kcontrol);
-+	struct max98390_priv *max98390 = snd_soc_component_get_drvdata(component);
-+	struct snd_soc_dapm_context *dapm = snd_soc_component_get_dapm(component);
-+	unsigned int rdc, rdc_cal_result, rdc_integer, rdc_factor, temp, val;
-+
-+	snd_soc_dapm_mutex_lock(dapm);
- 
- 	regmap_read(max98390->regmap, MAX98390_R23FF_GLOBAL_EN, &val);
--	if (val == 0x1)
--		max98390_dsm_calibrate(component);
--	else {
--		dev_err(component->dev, "AMP is not ready to run calibration\n");
--		return -ECANCELED;
-+	if (!val) {
-+		/* Enable the codec for the duration of calibration readout */
-+		regmap_update_bits(max98390->regmap, MAX98390_R203A_AMP_EN,
-+				   MAX98390_AMP_EN_MASK, 1);
-+		regmap_update_bits(max98390->regmap, MAX98390_R23FF_GLOBAL_EN,
-+				   MAX98390_GLOBAL_EN_MASK, 1);
-+	}
-+
-+	regmap_read(max98390->regmap, THERMAL_RDC_RD_BACK_BYTE1, &rdc);
-+	regmap_read(max98390->regmap, THERMAL_RDC_RD_BACK_BYTE0, &rdc_cal_result);
-+	regmap_read(max98390->regmap, MAX98390_MEAS_ADC_CH2_READ, &temp);
-+
-+	if (!val) {
-+		/* Disable the codec if it was disabled */
-+		regmap_update_bits(max98390->regmap, MAX98390_R23FF_GLOBAL_EN,
-+				   MAX98390_GLOBAL_EN_MASK, 0);
-+		regmap_update_bits(max98390->regmap, MAX98390_R203A_AMP_EN,
-+				   MAX98390_AMP_EN_MASK, 0);
- 	}
- 
-+	snd_soc_dapm_mutex_unlock(dapm);
-+
-+	rdc_cal_result |= (rdc << 8) & 0x0000FFFF;
-+	if (rdc_cal_result)
-+		max98390->ref_rdc_value = 268435456U / rdc_cal_result;
-+
-+	max98390->ambient_temp_value = temp * 52 - 1188;
-+
-+	rdc_integer =  rdc_cal_result * 937  / 65536;
-+	rdc_factor = ((rdc_cal_result * 937 * 100) / 65536) - (rdc_integer * 100);
-+
-+	dev_info(component->dev,
-+		 "rdc resistance about %d.%02d ohm, reg=0x%X temp reg=0x%X\n",
-+		 rdc_integer, rdc_factor, rdc_cal_result, temp);
-+
- 	return 0;
- }
- 
-@@ -828,34 +855,6 @@ static int max98390_dsm_init(struct snd_soc_component *component)
- 	return ret;
- }
- 
--static int max98390_dsm_calibrate(struct snd_soc_component *component)
--{
--	unsigned int rdc, rdc_cal_result, temp;
--	unsigned int rdc_integer, rdc_factor;
--	struct max98390_priv *max98390 =
--		snd_soc_component_get_drvdata(component);
--
--	regmap_read(max98390->regmap,
--		THERMAL_RDC_RD_BACK_BYTE1, &rdc);
--	regmap_read(max98390->regmap,
--		THERMAL_RDC_RD_BACK_BYTE0, &rdc_cal_result);
--	rdc_cal_result |= (rdc << 8) & 0x0000FFFF;
--	if (rdc_cal_result)
--		max98390->ref_rdc_value = 268435456U / rdc_cal_result;
--
--	regmap_read(max98390->regmap, MAX98390_MEAS_ADC_CH2_READ, &temp);
--	max98390->ambient_temp_value = temp * 52 - 1188;
--
--	rdc_integer =  rdc_cal_result * 937  / 65536;
--	rdc_factor = ((rdc_cal_result * 937 * 100) / 65536)
--					- (rdc_integer * 100);
--
--	dev_info(component->dev, "rdc resistance about %d.%02d ohm, reg=0x%X temp reg=0x%X\n",
--		 rdc_integer, rdc_factor, rdc_cal_result, temp);
--
--	return 0;
--}
--
- static void max98390_init_regs(struct snd_soc_component *component)
- {
- 	struct max98390_priv *max98390 =
--- 
-2.37.3
+Other than that it LGTM,
+Once fixed:
 
+Acked-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+
+
+--srini
+
+> ---
+>   drivers/slimbus/qcom-ngd-ctrl.c | 8 ++++----
+>   1 file changed, 4 insertions(+), 4 deletions(-)
+> 
+> diff --git a/drivers/slimbus/qcom-ngd-ctrl.c b/drivers/slimbus/qcom-ngd-ctrl.c
+> index 0aa8408464ad..931ab6317467 100644
+> --- a/drivers/slimbus/qcom-ngd-ctrl.c
+> +++ b/drivers/slimbus/qcom-ngd-ctrl.c
+> @@ -220,7 +220,7 @@ struct slimbus_power_resp_msg_v01 {
+>   	struct qmi_response_type_v01 resp;
+>   };
+>   
+> -static struct qmi_elem_info slimbus_select_inst_req_msg_v01_ei[] = {
+> +static const struct qmi_elem_info slimbus_select_inst_req_msg_v01_ei[] = {
+>   	{
+>   		.data_type  = QMI_UNSIGNED_4_BYTE,
+>   		.elem_len   = 1,
+> @@ -262,7 +262,7 @@ static struct qmi_elem_info slimbus_select_inst_req_msg_v01_ei[] = {
+>   	},
+>   };
+>   
+> -static struct qmi_elem_info slimbus_select_inst_resp_msg_v01_ei[] = {
+> +static const struct qmi_elem_info slimbus_select_inst_resp_msg_v01_ei[] = {
+>   	{
+>   		.data_type  = QMI_STRUCT,
+>   		.elem_len   = 1,
+> @@ -284,7 +284,7 @@ static struct qmi_elem_info slimbus_select_inst_resp_msg_v01_ei[] = {
+>   	},
+>   };
+>   
+> -static struct qmi_elem_info slimbus_power_req_msg_v01_ei[] = {
+> +static const struct qmi_elem_info slimbus_power_req_msg_v01_ei[] = {
+>   	{
+>   		.data_type  = QMI_UNSIGNED_4_BYTE,
+>   		.elem_len   = 1,
+> @@ -324,7 +324,7 @@ static struct qmi_elem_info slimbus_power_req_msg_v01_ei[] = {
+>   	},
+>   };
+>   
+> -static struct qmi_elem_info slimbus_power_resp_msg_v01_ei[] = {
+> +static const struct qmi_elem_info slimbus_power_resp_msg_v01_ei[] = {
+>   	{
+>   		.data_type  = QMI_STRUCT,
+>   		.elem_len   = 1,
