@@ -4,79 +4,81 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7CDF0C54EE9
-	for <alsa-devel@archiver.kernel.org>; Fri, 16 Sep 2022 10:06:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 45140ECAAD8
+	for <alsa-devel@archiver.kernel.org>; Fri, 16 Sep 2022 10:36:15 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 6D2651A41;
-	Fri, 16 Sep 2022 12:05:22 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6D2651A41
+	by alsa0.perex.cz (Postfix) with ESMTPS id 87565164D;
+	Fri, 16 Sep 2022 12:35:23 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 87565164D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1663322772;
-	bh=QJhaJZlzeBsCcRJwzatIAFEHttA8Lak9pZBYRJkQDxI=;
-	h=Date:Subject:To:References:From:In-Reply-To:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=QaIp+qUU0Rbra8h+tfq22QLAkFmDG+Ba9knGf5iv5Trca1osBwWymkXFfNb5jLgdG
-	 BhXSn9xH/UZDjzMaQNKXostNENeA2CP2Fcik+2+wL9ysBSFx5JuLQRKUo/zOv8Rw7G
-	 RxX5RVTsKHjpPIrFN8BTNaAlQs27MtDpwQrxYQPM=
+	s=default; t=1663324573;
+	bh=8e4teflWLD/CWIiwz6ZoiTHl/6OFrq0rkB+9h4MpxvQ=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=QBRWc4HLm+UaQIsoygGDrT6Urs2Uk0GFF6Mt8cGjuNWOt6ly+79rXnhs1N/h52/n5
+	 tCF03tWzimiCTqzP4UGIlKc/Gl+2+DT9lmAPwpZodKquKXqaUsdN80zR39pdkTDzi5
+	 UtUSFQu+uBCk3Xpc7xgHTFv0nqc0l7B1OWZyfsTk=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 0BBBEF800B5;
-	Fri, 16 Sep 2022 12:05:22 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 297D4F800E5;
+	Fri, 16 Sep 2022 12:35:23 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id E96BEF802BE; Fri, 16 Sep 2022 12:05:20 +0200 (CEST)
-Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
+ id 28F07F802BE; Fri, 16 Sep 2022 12:35:22 +0200 (CEST)
+Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
+ [67.231.152.168])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 57B19F800B5
- for <alsa-devel@alsa-project.org>; Fri, 16 Sep 2022 12:05:13 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 57B19F800B5
+ by alsa1.perex.cz (Postfix) with ESMTPS id 130AFF800E5
+ for <alsa-devel@alsa-project.org>; Fri, 16 Sep 2022 12:35:15 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 130AFF800E5
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="dPLf2y4Z"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
- d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1663322715; x=1694858715;
- h=message-id:date:mime-version:subject:to:cc:references:
- from:in-reply-to:content-transfer-encoding;
- bh=QJhaJZlzeBsCcRJwzatIAFEHttA8Lak9pZBYRJkQDxI=;
- b=dPLf2y4ZqS7qjGjPG0Me+htKyc0ic8XCYfeEd9Q5AG9F2JILiaifTk/N
- lNYmuL4I9DDK6ThusFW0kocSpV6HQ4QrQ4n1YKFZkuJzdv9o3cTdWjTaQ
- ddu27QZ/+ZYyb8IKkT6ALBTHnNa7I+Hijo9oI218ANI0QZXL5snaX47N2
- N7EhM37G+rtH1M0vK8+k7QWjMZRGZ0Np9Wn4jbi/uYBS6VxPXesj3iEoa
- 01GAXWS4fThdawplcgH9jRy/YUfwvSBYcDK7WM+Y04ryXnk7QwKH+Hwb6
- wWfVifyts9hXhWq4mxTkDDKSm99MMO94e5jHTeA4bOXj27lUSUMcyVZfd g==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10471"; a="385249200"
-X-IronPort-AV: E=Sophos;i="5.93,320,1654585200"; d="scan'208";a="385249200"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
- by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 16 Sep 2022 03:05:12 -0700
-X-IronPort-AV: E=Sophos;i="5.93,320,1654585200"; d="scan'208";a="617617827"
-Received: from kchan21-mobl1.ger.corp.intel.com (HELO [10.252.61.56])
- ([10.252.61.56])
- by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 16 Sep 2022 03:05:08 -0700
-Message-ID: <fe9b9897-ed37-386a-846f-c1f11087ed5c@linux.intel.com>
-Date: Fri, 16 Sep 2022 12:05:05 +0200
+ dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com
+ header.b="QlEdKJm1"
+Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
+ by mx0b-001ae601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 28G4mEDq002644;
+ Fri, 16 Sep 2022 05:35:13 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
+ h=from : to : cc :
+ subject : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=PODMain02222019;
+ bh=06y84B2zg0NNkNS46/H8foYFWp+a7npO/FgDpA0VjSI=;
+ b=QlEdKJm1iEg7YrzEZfvOTR8YIEt7t9j/H9G1AGEHZg2TzLHknv9/WV9lawmTN22zkL+x
+ 3q4+JTVixXuD3UYCJQ7jjKBVEPzPiGug/S53hN7Xu3YGpSHq78IH11uw/lYSCYUE9p/e
+ V3Z1KgfWUnXjPdca2RzcP40Kdm3142fFxBRAER3G7yx+sG06pJDcEPhk585lc1No1rSL
+ 2wpHGEdG4gOZkY0jn62JSS+qtTahcfM7t6E7dEzh4+uQpWrpXd1llPShgudtfGiISYy9
+ AroHzWHs9f/we6tYB0q6ciNeOUrHwz4I8VMY8/3SzNFmP/iAF3vdg/wPZrCd37NSpS1w NQ== 
+Received: from ediex01.ad.cirrus.com ([84.19.233.68])
+ by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3jm92qgycb-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+ Fri, 16 Sep 2022 05:35:13 -0500
+Received: from ediex01.ad.cirrus.com (198.61.84.80) by ediex01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.12; Fri, 16 Sep
+ 2022 05:35:11 -0500
+Received: from ediswmail.ad.cirrus.com (198.61.86.93) by ediex01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server id 15.2.1118.12 via
+ Frontend Transport; Fri, 16 Sep 2022 05:35:11 -0500
+Received: from edi-sw-dsktp-006.ad.cirrus.com (edi-sw-dsktp-006.ad.cirrus.com
+ [198.90.251.95])
+ by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 03BF7468;
+ Fri, 16 Sep 2022 10:35:05 +0000 (UTC)
+From: Richard Fitzgerald <rf@opensource.cirrus.com>
+To: <vkoul@kernel.org>, <yung-chuan.liao@linux.intel.com>,
+ <pierre-louis.bossart@linux.intel.com>, <sanyog.r.kale@intel.com>
+Subject: [PATCH] soundwire: cadence: Don't overwrite msg->buf during write
+ commands
+Date: Fri, 16 Sep 2022 11:35:05 +0100
+Message-ID: <20220916103505.1562210-1-rf@opensource.cirrus.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Firefox/91.0 Thunderbird/91.11.0
-Subject: Re: [PATCH] soundwire: qcom: update status from device id 1
-Content-Language: en-US
-To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, vkoul@kernel.org
-References: <20220915124215.13703-1-srinivas.kandagatla@linaro.org>
- <3962348a-33b4-5941-4a0b-cb447a513a41@linux.intel.com>
- <bffab27c-6e25-5787-6958-648f9f2e2686@linaro.org>
- <2e1b81d2-e20f-db9f-b84e-b3c5ebb312cb@linux.intel.com>
- <4e42389e-c1c4-fe41-3bc8-03cc9a40ac0b@linaro.org>
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-In-Reply-To: <4e42389e-c1c4-fe41-3bc8-03cc9a40ac0b@linaro.org>
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-Cc: alsa-devel@alsa-project.org, linux-arm-msm@vger.kernel.org,
- linux-kernel@vger.kernel.org, sanyog.r.kale@intel.com,
- yung-chuan.liao@linux.intel.com, quic_srivasam@quicinc.com
+Content-Type: text/plain
+X-Proofpoint-GUID: SSj2ik-bRFGeaMqKbQA7NedWI_lObQKm
+X-Proofpoint-ORIG-GUID: SSj2ik-bRFGeaMqKbQA7NedWI_lObQKm
+X-Proofpoint-Spam-Reason: safe
+Cc: patches@opensource.cirrus.com, alsa-devel@alsa-project.org,
+ Richard Fitzgerald <rf@opensource.cirrus.com>, linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -92,113 +94,39 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+The buf passed in struct sdw_msg must only be written for a READ,
+in that case the RDATA part of the response is the data value of the
+register.
 
+For a write command there is no RDATA, and buf should be assumed to
+be const and unmodifable. The original caller should not expect its data
+buffer to be corrupted by an sdw_nwrite().
 
-On 9/16/22 11:49, Srinivas Kandagatla wrote:
-> 
-> 
-> On 16/09/2022 10:39, Pierre-Louis Bossart wrote:
->>
->>
->> On 9/16/22 11:12, Srinivas Kandagatla wrote:
->>>
->>>
->>> On 15/09/2022 14:10, Pierre-Louis Bossart wrote:
->>>>
->>>>
->>>> On 9/15/22 14:42, Srinivas Kandagatla wrote:
->>>>> By default autoenumeration is enabled on QCom SoundWire controller
->>>>> which means the core should not be dealing with device 0 w.r.t
->>>>> enumeration.
->>>>> Currently device 0 status is also shared with SoundWire core which
->>>>> confuses
->>>>> the core sometimes and we endup adding 0:0:0:0 slave device.
->>>>
->>>> The change looks fine, but the description of the issue is surprising.
->>>
->>> Thanks Pierre,
->>>
->>>>
->>>> Whether autoenumeration is enabled or not is irrelevant, by spec the
->>>> device0 cannot be in ALERT status and throw in-band interrupts to the
->>>> host with this mechanism.
->>>
->>> This issue is more of around enumeration stage in specific during device
->>> status change interrupt from controller. Sharing the device 0 status
->>> with core makes it think that there is a device with 0:0:0:0 address and
->>> it tries to park device to group 13.
->> Still not clear, sorry, see my comment below.
-> 
-> 
->>
->>>
->>>
->>> --srini
->>>
->>>>
->>>>> Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
->>>>> ---
->>>>>    drivers/soundwire/qcom.c | 4 ++--
->>>>>    1 file changed, 2 insertions(+), 2 deletions(-)
->>>>>
->>>>> diff --git a/drivers/soundwire/qcom.c b/drivers/soundwire/qcom.c
->>>>> index e21a3306bf01..871e4d8b32c7 100644
->>>>> --- a/drivers/soundwire/qcom.c
->>>>> +++ b/drivers/soundwire/qcom.c
->>>>> @@ -428,7 +428,7 @@ static int
->>>>> qcom_swrm_get_alert_slave_dev_num(struct qcom_swrm_ctrl *ctrl)
->>>>>          ctrl->reg_read(ctrl, SWRM_MCP_SLV_STATUS, &val);
->>>>>    -    for (dev_num = 0; dev_num <= SDW_MAX_DEVICES; dev_num++) {
->>>>> +    for (dev_num = 1; dev_num <= SDW_MAX_DEVICES; dev_num++) {
->>>>>            status = (val >> (dev_num * SWRM_MCP_SLV_STATUS_SZ));
->>>>>              if ((status & SWRM_MCP_SLV_STATUS_MASK) ==
->>>>> SDW_SLAVE_ALERT) {
->>
->> can this really happen?
->>
-> I have not see this happening, I had to change this line for consistency
-> reasons due to other changes in the patch.
-> 
-> Only case the issue was seen is during enumeration.
-> 
->> Device0 cannot be in alert status, can it? The only this it can do is
->> assert PREQ and set the Device0 status to 1 (ATTACHED). I don't get how
->> a device status could be 2.
->>
->> So even if the status is shared somehow,I don't see how this could be
->> related to parking the device as suggested above. If the condition is
->> always false then changing the loop counter from 0 to 1 would not have
->> an effect?
-> 
-> The reason why core tries to park this device is because it sees
-> status[0] as SDW_SLAVE_ATTACHED and start programming the device id,
-> however reading DEVID registers return zeros which does not match to any
-> of the slaves in the list and the core attempts to park this device to
-> Group 13.
+Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
+---
+ drivers/soundwire/cadence_master.c | 9 ++++++---
+ 1 file changed, 6 insertions(+), 3 deletions(-)
 
-ok, that makes sense, thanks for the explanations.
+diff --git a/drivers/soundwire/cadence_master.c b/drivers/soundwire/cadence_master.c
+index be9cd47f31ec..3ef472049980 100644
+--- a/drivers/soundwire/cadence_master.c
++++ b/drivers/soundwire/cadence_master.c
+@@ -544,9 +544,12 @@ cdns_fill_msg_resp(struct sdw_cdns *cdns,
+ 		return SDW_CMD_IGNORED;
+ 	}
+ 
+-	/* fill response */
+-	for (i = 0; i < count; i++)
+-		msg->buf[i + offset] = FIELD_GET(CDNS_MCP_RESP_RDATA, cdns->response_buf[i]);
++	if (msg->flags == SDW_MSG_FLAG_READ) {
++		/* fill response */
++		for (i = 0; i < count; i++)
++			msg->buf[i + offset] = FIELD_GET(CDNS_MCP_RESP_RDATA,
++							 cdns->response_buf[i]);
++	}
+ 
+ 	return SDW_CMD_OK;
+ }
+-- 
+2.30.2
 
-I would recommend splitting this patch in two then:
-
-1) the change for the handling of the alert status, which is unrelated
-to the auto-enumeration. That removes a test for an always-false condition
-
-2) the change for the device status, that indeed is related to enumeration.
-
-
-> 
-> 
-> 
-> 
-> --srini
-> 
->>
->>
->>>>> @@ -448,7 +448,7 @@ static void qcom_swrm_get_device_status(struct
->>>>> qcom_swrm_ctrl *ctrl)
->>>>>        ctrl->reg_read(ctrl, SWRM_MCP_SLV_STATUS, &val);
->>>>>        ctrl->slave_status = val;
->>>>>    -    for (i = 0; i <= SDW_MAX_DEVICES; i++) {
->>>>> +    for (i = 1; i <= SDW_MAX_DEVICES; i++) {
->>>>>            u32 s;
->>>>>              s = (val >> (i * 2));
