@@ -4,81 +4,102 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 95952C54EE9
-	for <alsa-devel@archiver.kernel.org>; Fri, 16 Sep 2022 07:35:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9B627ECAAD8
+	for <alsa-devel@archiver.kernel.org>; Fri, 16 Sep 2022 08:48:12 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0514B18E3;
-	Fri, 16 Sep 2022 09:34:38 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0514B18E3
+	by alsa0.perex.cz (Postfix) with ESMTPS id 4F8B71A23;
+	Fri, 16 Sep 2022 10:47:19 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4F8B71A23
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1663313728;
-	bh=r1xFM1d/VeuoVrYAkhaYwWHAPHd3oQFEMpELTmAkdWQ=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
+	s=default; t=1663318089;
+	bh=nZfKuZkRLwDeAdEaBc46rOYnY8b1DKqIyPPrctrI3rY=;
+	h=Subject:From:To:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=YG8+KKQfssN8uwMPrJwv9DgSjO+LFVk9FW2okTedljV9sREPahE2uuvuTtGwoB4dk
-	 4wT7CKbr75bNf+XsKS9M7nyJWAheWxPHTrkKkNpGXScjLz5k31z/fv//3wFY7pBud0
-	 eX2BW9j/xZwJ6e8xbdXa7ahtLcNGSILrdB2ZDWQc=
+	b=SfWZWPjtt+U+eOJlFKLocDyJGzGz8OXsXrE8LrCdQ1ps09W0R02+gpLnQAovsOpda
+	 +ZZA9ROTeodgMXGMGR8VL9H8HeqN6Kfdx2RjzpVn1rtkyyJ6hE12LWLvZ7TDYIqdJq
+	 eNBskdTafyxQtEDpRrEe6VqAW84j8pMAN2nHHjbE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 92157F80165;
-	Fri, 16 Sep 2022 09:34:37 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id D7D7DF800E5;
+	Fri, 16 Sep 2022 10:47:18 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 02370F8019B; Fri, 16 Sep 2022 09:34:36 +0200 (CEST)
-Received: from mail-lj1-x235.google.com (mail-lj1-x235.google.com
- [IPv6:2a00:1450:4864:20::235])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id DE915F802BE; Fri, 16 Sep 2022 10:47:16 +0200 (CEST)
+Received: from wout2-smtp.messagingengine.com (wout2-smtp.messagingengine.com
+ [64.147.123.25])
+ (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 71D28F800FE
- for <alsa-devel@alsa-project.org>; Fri, 16 Sep 2022 09:34:29 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 71D28F800FE
+ by alsa1.perex.cz (Postfix) with ESMTPS id 64EC8F8024C
+ for <alsa-devel@alsa-project.org>; Fri, 16 Sep 2022 10:47:08 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 64EC8F8024C
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="CMkJB63C"
-Received: by mail-lj1-x235.google.com with SMTP id s10so24365974ljp.5
- for <alsa-devel@alsa-project.org>; Fri, 16 Sep 2022 00:34:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
- h=cc:to:subject:message-id:date:from:in-reply-to:references
- :mime-version:from:to:cc:subject:date;
- bh=+KrZs1wDWxExKhVZuq9VbQB8vAEX+/GO+05kcKZyQkQ=;
- b=CMkJB63CW8UfY9qgxsBCcLpm8kJ1TYuhg5CCoqrPM2zsjhyMqhHGi0A+V+ztyCBu9V
- eIBaavcXsgyES6UdCHSRnhaXl2Iwr7aARBQv0HbmVQCXDVhEQSUnB/3DeSLDAqLBzKCt
- rKX9fvsx+CXyDiKiDcTX+ph0VMUVrGgPWemMIK+sxA/a9XZrZRVnbCtaqtU7YFhMLS89
- ZwycqWZQkTriCPz78PA49vUGoaTZrjQ+BMlnJE6tOybdTJubNqtW4yQs7Sy2jczIRyhv
- 5gopPleF0gDXeQ7jgpc+/LWN6TKJLPIijQmsUKQf8t9i0X5RDgXWhhAmwbQv6RgfTKvC
- 3MLw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=cc:to:subject:message-id:date:from:in-reply-to:references
- :mime-version:x-gm-message-state:from:to:cc:subject:date;
- bh=+KrZs1wDWxExKhVZuq9VbQB8vAEX+/GO+05kcKZyQkQ=;
- b=wZOB1lOp5zjyERPI+uxKBrhOn/pyHpSHcQDSkbn/hFaZ4mJ8/GGqmiyF4tJj0ckaeE
- NR+gAPk/z2SuZ57BtzMNjzn68nJuqTc6ZefL2n8g5a3tJpx7Jzalh1ZC0f34ZS2X5i58
- r3BID0AT+jSNa8SBMrznVe6MYW1utlskYmFfp6J7mRdG/kvhw/N/TcspT9zoIrIHWU+U
- TugkUefKKAova9lB1MDmzXRx12+FibV9SeGYdGaH5GhexGA6lSH5HoMxJenBd2a+1Npe
- WP9Fcnfnbw3wGo5sgna8oCgS0DUjAMm4oxtlh84lD/sdelmalrthXHc32rBkGwZJ49mx
- CSFQ==
-X-Gm-Message-State: ACrzQf2MPXlYOzjLh/YHwEzFqOo2w6qlPf16+XUuMusZHH0QXC8yaUAT
- 28ExDI0D/429sNMAexC8SBvKHy0fDiCd92SM6/c=
-X-Google-Smtp-Source: AMsMyM5xmNtG+JOChSzzfIaBx7tOwvOjB7OS4BES0ZusTkDZKwvkz3EEXpM1JsmQf/ndqcljaGgjTKxj7QyVjTp6efc=
-X-Received: by 2002:a2e:960e:0:b0:26b:e5ae:cd78 with SMTP id
- v14-20020a2e960e000000b0026be5aecd78mr1026093ljh.129.1663313667324; Fri, 16
- Sep 2022 00:34:27 -0700 (PDT)
-MIME-Version: 1.0
-References: <20220912105407.3157868-1-robert.rosengren@axis.com>
-In-Reply-To: <20220912105407.3157868-1-robert.rosengren@axis.com>
-From: Shengjiu Wang <shengjiu.wang@gmail.com>
-Date: Fri, 16 Sep 2022 15:34:15 +0800
-Message-ID: <CAA+D8AN1-ReuEaQFiJbsUnPo-3eXa2p-rUW7B=tQHesmUEdtSQ@mail.gmail.com>
-Subject: Re: [PATCH v2] ASoC: fsl_spdif: add ALSA event on dpll locked
-To: Robert Rosengren <robert.rosengren@axis.com>
+ dkim=pass (2048-bit key) header.d=ljones.dev header.i=@ljones.dev
+ header.b="OCQ7m7Jj"; 
+ dkim=pass (2048-bit key) header.d=messagingengine.com
+ header.i=@messagingengine.com header.b="kaw0jP++"
+Received: from compute2.internal (compute2.nyi.internal [10.202.2.46])
+ by mailout.west.internal (Postfix) with ESMTP id EE9613200AC5;
+ Fri, 16 Sep 2022 04:47:04 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+ by compute2.internal (MEProxy); Fri, 16 Sep 2022 04:47:05 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ljones.dev; h=cc
+ :cc:content-transfer-encoding:content-type:date:date:from:from
+ :in-reply-to:in-reply-to:message-id:mime-version:references
+ :reply-to:sender:subject:subject:to:to; s=fm3; t=1663318024; x=
+ 1663404424; bh=nZfKuZkRLwDeAdEaBc46rOYnY8b1DKqIyPPrctrI3rY=; b=O
+ CQ7m7Jj05lCtmcpLpzOzNmesDd4rflUM1GKnd09RF7QY94I9T2kxaxEs+5ayY/yQ
+ 3EYgjbB+cfXUup8oQj8o5HfrML1t/KbkrdPHOcvMAurSF06b419u8wUtlAziZ/TJ
+ 4ReyqKugAhDwGB1iOPPb5v1ADKG9kpkqMyrziKkchr0PLy++zBfkTBLFJyWBmrs/
+ FM2SA9uO7TCaLgW0sLb6mpwixdAO+y05ycTwRwXJiBng0YlFLPAvuOaQSVhx0S/+
+ nhzYiKGI+1JrjvGcJd0C1NggQ7zmLjjkK7F5X3UvxxBUUn8Kn7Qzd0aW43l5GEv1
+ 1/hEZ8kXoVHU3wy6rPTsw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+ messagingengine.com; h=cc:cc:content-transfer-encoding
+ :content-type:date:date:feedback-id:feedback-id:from:from
+ :in-reply-to:in-reply-to:message-id:mime-version:references
+ :reply-to:sender:subject:subject:to:to:x-me-proxy:x-me-proxy
+ :x-me-sender:x-me-sender:x-sasl-enc; s=fm2; t=1663318024; x=
+ 1663404424; bh=nZfKuZkRLwDeAdEaBc46rOYnY8b1DKqIyPPrctrI3rY=; b=k
+ aw0jP++/Wu/SgxX2+mE3/OPnH4DJVrlzCWXCE9we1ObegnAp9eetYvbHR++fXYvj
+ 0Nl/zKbpE1w9gDo5gENpBLDQvUBvy2TvaC/6L7eyh8hJFh8/4l7R2ecKX8gBm7rJ
+ ylwUQSRVCF2Zf1ZYWO4MPEmYLeX1Hw+/S4ZGHu9Zgw3k/OJCvCrrNPxtxoTmoacA
+ 4w9DpdQnPxzFGMX+ksjO6MizM9QFRMMgjiuJCRAf/pWXv0C0wVLkdLHhqmqz0zAV
+ G492zMyFl2mOrZk41WPyVr00Vq7CNgVilvItnSQrPiZufChcN+o6T63BZbsS4uAH
+ YmHqmQMyurEyrGruUZCyQ==
+X-ME-Sender: <xms:BzgkY5BkYzm4W1PjiBTZUe_wlRNlCttqdHjFTzMhfN43rRbSnCDnQA>
+ <xme:BzgkY3hNYZjb9oKZ3E7zsUULRtMaIxdFeobZvTqHkrcCFP2ebJzCdFWOi4ejV1Oaq
+ e-vobwfC0dYZQygIQE>
+X-ME-Received: <xmr:BzgkY0kkCL8QxLpGPJSrSZKpJ7hC3YNZnJrV6CCDvkqJDwq3Bl82AKJZQsZLFIpFdc-06A>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvfedrfedvtddgtdelucetufdoteggodetrfdotf
+ fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+ uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+ cujfgurhepkffuhffvveffjghftgfgfgggsehtqhertddtreejnecuhfhrohhmpefnuhhk
+ vgculfhonhgvshcuoehluhhkvgeslhhjohhnvghsrdguvghvqeenucggtffrrghtthgvrh
+ hnpeekfeffueejveeujeeugeelleehtdegvdeludektddtfffhieefledvudehfeejieen
+ ucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehluhhkvg
+ eslhhjohhnvghsrdguvghv
+X-ME-Proxy: <xmx:BzgkYzx1QK3IDHEmBqsRM55WpmBl8iZi3DVjmuGQs-dd9mghocZrRA>
+ <xmx:BzgkY-SWWQWM7fBXVptYwc0AExEuABXy5b1gsGJVy53X11qxtsMgDQ>
+ <xmx:BzgkY2azzBeoERa5QFnAA9lzHDO36_AvUL-p8upPMcrjK9IUgv_sHg>
+ <xmx:CDgkY5ccA30LUgfSUudoMM3TUbpP5MSCMQ2ILoLLIb_FA6Pk_Z_Xlg>
+Feedback-ID: i5ec1447f:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
+ 16 Sep 2022 04:47:00 -0400 (EDT)
+Message-ID: <850ba9d69e23be788f1963f46c348f7fdf8806cd.camel@ljones.dev>
+Subject: Re: [PATCH v2 0/3] sound: realtek: add quirks for ASUS G513, G533Z,
+ GA503R
+From: Luke Jones <luke@ljones.dev>
+To: Takashi Iwai <tiwai@suse.de>
+Date: Fri, 16 Sep 2022 20:46:52 +1200
+In-Reply-To: <87fsgsvdfq.wl-tiwai@suse.de>
+References: <20220915080921.35563-1-luke@ljones.dev>
+ <87fsgsvdfq.wl-tiwai@suse.de>
 Content-Type: text/plain; charset="UTF-8"
-X-Content-Filtered-By: Mailman/MimeDel 2.1.15
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>,
- Xiubo Li <Xiubo.Lee@gmail.com>, Takashi Iwai <tiwai@suse.com>,
- Nicolin Chen <nicoleotsuka@gmail.com>, Mark Brown <broonie@kernel.org>,
- kernel@axis.com, Fabio Estevam <festevam@gmail.com>
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.45.3 (by Flathub.org)) 
+MIME-Version: 1.0
+Cc: alsa-devel@alsa-project.org, tiwai@suse.com, linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -94,105 +115,40 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Mon, Sep 12, 2022 at 6:54 PM Robert Rosengren <robert.rosengren@axis.com>
-wrote:
+Thanks Takashi,
 
-> Add an ALSA event on the RX Sample Rate controller upon the dpll locked
-> interrupt, making it possible for audio applications to monitor changes
-> in the hardware.
->
-> Signed-off-by: Robert Rosengren <robert.rosengren@axis.com>
->
+On Thu, 2022-09-15 at 17:56 +0200, Takashi Iwai wrote:
+> On Thu, 15 Sep 2022 10:09:18 +0200,
+> Luke D. Jones wrote:
+> >=20
+> > This series adds quirks to fix pincfg for the ASUS ROG G513 and
+> > G533Z laptops, and adds a mapping
+> > for the ASUS ROG GA503R to use the previous G15/G14 quirks which
+> > fix the DAC mapping.
+> >=20
+> > Changelog:
+> > V2:
+> > - Use smallcaps in hex string
+> > - Chain the G533Z quirk with the G513 quirk as they use the same
+> > base pincfg
+> > - Add the quirk for GA503R series to use GA401 quirk
+> >=20
+> > Luke D. Jones (3):
+> > =C2=A0 sound: realtek: Add pincfg for ASUS G513 HP jack
+> > =C2=A0 sound: realtek: Add pincfg for ASUS G533Z HP jack
+> > =C2=A0 sound: realtek: Add quirk for ASUS GA503R laptop
+>=20
+> Now applied all patches, but I corrected the positions of the new
+> entries to be in the SSID order locally.=C2=A0 Also, the subject lines ar=
+e
+> adjusted to "ALSA:" prefix.
+>=20
 
-Acked-by: Shengjiu Wang <shengjiu.wang@gmail.com>
+I'll try to remember this next time. There's bound to be a few more
+with next generation of these laptops.
 
-Best regards
-Wang Shengjiu
+>=20
+> thanks,
+>=20
+> Takashi
 
-> ---
->
-> Notes:
->     v2: Cache RX Sample Rate kcontrol to avoid lookup in interrupt.
->     Properly add description to fsl_spdif_priv.
->     Fix indentation.
->
->  sound/soc/fsl/fsl_spdif.c | 21 ++++++++++++++++++++-
->  1 file changed, 20 insertions(+), 1 deletion(-)
->
-> diff --git a/sound/soc/fsl/fsl_spdif.c b/sound/soc/fsl/fsl_spdif.c
-> index 7fc1c96929bb..275aba8e0c46 100644
-> --- a/sound/soc/fsl/fsl_spdif.c
-> +++ b/sound/soc/fsl/fsl_spdif.c
-> @@ -44,6 +44,8 @@ static u8 srpc_dpll_locked[] = { 0x0, 0x1, 0x2, 0x3,
-> 0x4, 0xa, 0xb };
->
->  #define DEFAULT_RXCLK_SRC      1
->
-> +#define RX_SAMPLE_RATE_KCONTROL "RX Sample Rate"
-> +
->  /**
->   * struct fsl_spdif_soc_data: soc specific data
->   *
-> @@ -98,6 +100,8 @@ struct spdif_mixer_control {
->   * @soc: SPDIF soc data
->   * @fsl_spdif_control: SPDIF control data
->   * @cpu_dai_drv: cpu dai driver
-> + * @snd_card: sound card pointer
-> + * @rxrate_kcontrol: kcontrol for RX Sample Rate
->   * @pdev: platform device pointer
->   * @regmap: regmap handler
->   * @dpll_locked: dpll lock flag
-> @@ -122,6 +126,8 @@ struct fsl_spdif_priv {
->         const struct fsl_spdif_soc_data *soc;
->         struct spdif_mixer_control fsl_spdif_control;
->         struct snd_soc_dai_driver cpu_dai_drv;
-> +       struct snd_card *snd_card;
-> +       struct snd_kcontrol *rxrate_kcontrol;
->         struct platform_device *pdev;
->         struct regmap *regmap;
->         bool dpll_locked;
-> @@ -226,6 +232,12 @@ static void spdif_irq_dpll_lock(struct fsl_spdif_priv
-> *spdif_priv)
->                         locked ? "locked" : "loss lock");
->
->         spdif_priv->dpll_locked = locked ? true : false;
-> +
-> +       if (spdif_priv->snd_card && spdif_priv->rxrate_kcontrol) {
-> +               snd_ctl_notify(spdif_priv->snd_card,
-> +                              SNDRV_CTL_EVENT_MASK_VALUE,
-> +                              &spdif_priv->rxrate_kcontrol->id);
-> +       }
->  }
->
->  /* Receiver found illegal symbol interrupt handler */
-> @@ -1197,7 +1209,7 @@ static struct snd_kcontrol_new fsl_spdif_ctrls[] = {
->         /* DPLL lock info get controller */
->         {
->                 .iface = SNDRV_CTL_ELEM_IFACE_PCM,
-> -               .name = "RX Sample Rate",
-> +               .name = RX_SAMPLE_RATE_KCONTROL,
->                 .access = SNDRV_CTL_ELEM_ACCESS_READ |
->                         SNDRV_CTL_ELEM_ACCESS_VOLATILE,
->                 .info = fsl_spdif_rxrate_info,
-> @@ -1251,6 +1263,13 @@ static int fsl_spdif_dai_probe(struct snd_soc_dai
-> *dai)
->                 snd_soc_add_dai_controls(dai, fsl_spdif_ctrls_rcm,
->                                          ARRAY_SIZE(fsl_spdif_ctrls_rcm));
->
-> +       spdif_private->snd_card = dai->component->card->snd_card;
-> +       spdif_private->rxrate_kcontrol =
-> snd_soc_card_get_kcontrol(dai->component->card,
-> +
-> RX_SAMPLE_RATE_KCONTROL);
-> +       if (!spdif_private->rxrate_kcontrol)
-> +               dev_err(&spdif_private->pdev->dev, "failed to get %s
-> kcontrol\n",
-> +                       RX_SAMPLE_RATE_KCONTROL);
-> +
->         /*Clear the val bit for Tx*/
->         regmap_update_bits(spdif_private->regmap, REG_SPDIF_SCR,
->                            SCR_VAL_MASK, SCR_VAL_CLEAR);
-> --
-> 2.30.2
->
->
