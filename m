@@ -4,81 +4,82 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5F1E6ECAAD3
-	for <alsa-devel@archiver.kernel.org>; Sat, 17 Sep 2022 07:10:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0021FECAAD3
+	for <alsa-devel@archiver.kernel.org>; Sat, 17 Sep 2022 08:02:52 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 9A3EF1ABA;
-	Sat, 17 Sep 2022 09:09:09 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9A3EF1ABA
+	by alsa0.perex.cz (Postfix) with ESMTPS id 446DD1ABF;
+	Sat, 17 Sep 2022 10:02:00 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 446DD1ABF
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1663398599;
-	bh=0qLuudgAOfsr+3eg7v2AqEjfbemVfK/AqOz/HCIenyQ=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=PGoEmotcFkqV1eKAj7ztTPT3zx/J9O71LxRbPULWyzLh6Jw5D/Hi/WkqQH30IlsE6
-	 hdMp8g/9cY6GpPKrrCSpvLnuVAL7zACGVjAN/HyWVznSSwZBSEYUwLBR4BXFruuGjL
-	 aOELQUUIcTl+5HzObJvgFY5s3mjDFXVmuMGTOmXo=
+	s=default; t=1663401770;
+	bh=n6f0mTUOQF0lSFfukDQITlqauVA+b/eSoDC9h+F58rY=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=FAoNpzP6XibZ6rSE635d6vSM0b+V9BAAZAOMeBsU8rFAjwQ8AAZpqYZwPHv9Q9Cnq
+	 O8gUcAL5U2wsijxyJWCfL/9sxTOD9HtQSYTQF+t1BUVTuBVbNtM8p32ROMPDufXCz7
+	 L8wlrYAlJuVtuQI0pHVWJy0g0w0INrnttwmhn9Y0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 1677FF80249;
-	Sat, 17 Sep 2022 09:09:09 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id D098BF80249;
+	Sat, 17 Sep 2022 10:01:59 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 417A9F800E9; Sat, 17 Sep 2022 09:09:06 +0200 (CEST)
-Received: from mail-pg1-x529.google.com (mail-pg1-x529.google.com
- [IPv6:2607:f8b0:4864:20::529])
+ id 013B6F8028D; Sat, 17 Sep 2022 10:01:57 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 88C3CF800E9
- for <alsa-devel@alsa-project.org>; Sat, 17 Sep 2022 09:09:00 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 88C3CF800E9
+ by alsa1.perex.cz (Postfix) with ESMTPS id 1B778F800E5
+ for <alsa-devel@alsa-project.org>; Sat, 17 Sep 2022 10:01:54 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1B778F800E5
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="jl57GmpM"
-Received: by mail-pg1-x529.google.com with SMTP id t65so22333803pgt.2
- for <alsa-devel@alsa-project.org>; Sat, 17 Sep 2022 00:09:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
- h=content-transfer-encoding:mime-version:message-id:date:subject:cc
- :to:from:from:to:cc:subject:date;
- bh=KhFRhgM5kcJii5PkpIG1m9lYD4ttCdbZZRfGcZawQi0=;
- b=jl57GmpM3wt+pgRYXfGkE5h2IW4F3V7ns109ewy+zAviiVkhQQg8CEnaqJwCBSw3Nx
- 2xMOsfyCXjioQP2AEjVRaC//bTuW2nD/Dsp4OBAnKLGUKARLLaTUktA0c3tmbYpkvU2x
- fyg88sJ+cHt1qMwX7IgNkiiVdfK6ggFquKmitEno+NXrw6Qu1jKWQNCDIg0TUBaO45Kw
- 0sQa5K62yRSLRk8n6X4zhZwGZklRYX9KSLrSg12zABUKJhqPsCY0O9bnUQT5xu2+M7Ea
- E9Z8v+PCTubV8XNnOv/XAYaSr4YYB07T+EyAzDR/OhD0czGPH13xJ0p3cl9TYU44l7Up
- JfEQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=content-transfer-encoding:mime-version:message-id:date:subject:cc
- :to:from:x-gm-message-state:from:to:cc:subject:date;
- bh=KhFRhgM5kcJii5PkpIG1m9lYD4ttCdbZZRfGcZawQi0=;
- b=6CcbP19/611AcoTuI1jF4RJQPus9qO2eyWaNQjNBvcPfOr3X/zIs7XlAKdIxPtuGSs
- UIFgmazR5CXDHoUUb7M2rPBGgWz2lYXKG/0vZF13d5UCovKQMMVTk2iHV5MHALLhSh8Z
- PRdA/iKz43Mmr80+mQs8NJlkMXfYtR+xUtMvQxWUOXfPSNsKubDfRgYuRRn+5I0DlPsI
- 4bXlXK0XiC/ujB+ECbvkVanKCykf/cigTDo0cq5vKzACFBsOxigCJ8Styowd5AVTvkFS
- qMpU025yCBb0X3G7trQM0bnG8Ahd2bRFr1hHXAid2WdNcu8WAaYqcXe8yRS9c1q7/OJd
- 3M0A==
-X-Gm-Message-State: ACrzQf3WMbk6W/IOhxeNNaPKTHZDUba9uQI20T2TuVLV+26XYO7LAYvR
- KxWM6klh1/YfpckgHH3AsC0=
-X-Google-Smtp-Source: AMsMyM6hR9HFU4VbuQiG+7fkKsfvxgEqXLckbx5FAJD3i1VUnC21/8JGzm8RoX5JbEa5lziPu1tAXw==
-X-Received: by 2002:a05:6a00:1945:b0:541:bdab:17c4 with SMTP id
- s5-20020a056a00194500b00541bdab17c4mr9148873pfk.77.1663398538286; 
- Sat, 17 Sep 2022 00:08:58 -0700 (PDT)
-Received: from localhost.localdomain ([104.251.239.243])
- by smtp.gmail.com with ESMTPSA id
- y12-20020aa78f2c000000b0053e78769470sm15736959pfr.88.2022.09.17.00.08.56
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Sat, 17 Sep 2022 00:08:58 -0700 (PDT)
-From: Xiaoyan Li <lxy.lixiaoyan@gmail.com>
-To: mario.limonciello@amd.com,
-	alsa-devel@alsa-project.org
-Subject: [PATCH] ASoC: amd: yc: Add ASUS UM5302TA into DMI table
-Date: Sat, 17 Sep 2022 15:08:47 +0800
-Message-Id: <20220917070847.14346-1-lxy.lixiaoyan@gmail.com>
-X-Mailer: git-send-email 2.37.3
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: Xiaoyan Li <lxy.lixiaoyan@gmail.com>
+ dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
+ header.b="tsowGlfu"; 
+ dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
+ header.b="SxI05FbQ"
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 022B35C66D;
+ Sat, 17 Sep 2022 08:01:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1663401714; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=zO8qYuGBRuXLd/T+iszHhshbG5KAOVDtWlnAH+4zR0M=;
+ b=tsowGlfuU8MOJsdihErLKqjV7/L340KLc4eklnWbZKKjQCzNhD9IPAqj6j5QT6v7XGh9sI
+ rzuX/33dt7KCXMhUJticiIDQdXVIg+qijuaLuocD/Ff1LnhUhKo7jqkO3lKkp4MKuXmbHF
+ s4vTglp5wcYyxTLblxjJDYYH2TTda4k=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1663401714;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=zO8qYuGBRuXLd/T+iszHhshbG5KAOVDtWlnAH+4zR0M=;
+ b=SxI05FbQ8obsuu3y0gSTdSJYLoqsHhmBswEz5dSfS1St65dCcQdN9QUYOcXeHOwNNaNrSx
+ DkaIZs5ZVdHdLFDg==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id D68F913A49;
+ Sat, 17 Sep 2022 08:01:53 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+ by imap2.suse-dmz.suse.de with ESMTPSA id 3eigM/F+JWNZHgAAMHmgww
+ (envelope-from <tiwai@suse.de>); Sat, 17 Sep 2022 08:01:53 +0000
+Date: Sat, 17 Sep 2022 10:01:53 +0200
+Message-ID: <87edwaqvim.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Yang Yingliang <yangyingliang@huawei.com>
+Subject: Re: [PATCH -next] ALSA: ppc: Switch to use for_each_child_of_node()
+ macro
+In-Reply-To: <20220916141108.683080-1-yangyingliang@huawei.com>
+References: <20220916141108.683080-1-yangyingliang@huawei.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, tiwai@suse.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -94,33 +95,15 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-ASUS Zenbook S 13 OLED (UM5302TA) needs this quirk to get the built-in
-microphone working properly.
+On Fri, 16 Sep 2022 16:11:08 +0200,
+Yang Yingliang wrote:
+> 
+> Use for_each_child_of_node() macro instead of open coding it.
+> No functional change.
+> 
+> Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
 
-Link: https://bugzilla.kernel.org/show_bug.cgi?id=216270
-Signed-off-by: Xiaoyan Li <lxy.lixiaoyan@gmail.com>
----
- sound/soc/amd/yc/acp6x-mach.c | 7 +++++++
- 1 file changed, 7 insertions(+)
+Thanks, applied.
 
-diff --git a/sound/soc/amd/yc/acp6x-mach.c b/sound/soc/amd/yc/acp6x-mach.c
-index e0b24e1daef3..5eab3baf3573 100644
---- a/sound/soc/amd/yc/acp6x-mach.c
-+++ b/sound/soc/amd/yc/acp6x-mach.c
-@@ -171,6 +171,13 @@ static const struct dmi_system_id yc_acp_quirk_table[] = {
- 			DMI_MATCH(DMI_PRODUCT_NAME, "21J6"),
- 		}
- 	},
-+	{
-+		.driver_data = &acp6x_card,
-+		.matches = {
-+			DMI_MATCH(DMI_BOARD_VENDOR, "ASUSTeK COMPUTER INC."),
-+			DMI_MATCH(DMI_PRODUCT_NAME, "UM5302TA"),
-+		}
-+	},
- 	{}
- };
- 
--- 
-2.37.3
 
+Takashi
