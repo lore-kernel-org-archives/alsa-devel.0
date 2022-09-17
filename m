@@ -4,81 +4,74 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id CE517C54EE9
-	for <alsa-devel@archiver.kernel.org>; Mon, 19 Sep 2022 08:31:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2FCC2ECAAD3
+	for <alsa-devel@archiver.kernel.org>; Mon, 19 Sep 2022 08:40:32 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 905F115C1;
-	Mon, 19 Sep 2022 10:31:04 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 905F115C1
+	by alsa0.perex.cz (Postfix) with ESMTPS id C378915C1;
+	Mon, 19 Sep 2022 10:39:39 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C378915C1
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1663576314;
-	bh=vPNCAvWdK4S4tBAf5nTcXkrEcSPuo8U+YI9YgKe8nx0=;
-	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=mkf+eHWYVMPYTY7ewkL/b8tSzfHDUfepOaVSBz15k9Zrm6OSwAFLI0V/14/lrBaMG
-	 1LRS4PUctocYGMUu10Nkwd1JbnIg1zOQwbwPmFTpogFQi0/oq0bRPl1fK73toWcHvq
-	 vrfANs/h3uQiam+nv55OgOUqpI7LG7ZegZ6hhLt8=
+	s=default; t=1663576829;
+	bh=bCQMRMTqN+DwV10IadpYg6jDO11h0EiMHaWHIejo3FM=;
+	h=From:Date:Subject:To:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:Reply-To:From;
+	b=BNaKjhGHpRJn/0AOoOHWYVkycCS2Gtcm7aZuLbosj26isvlalIUvTy1SisCjV+a8t
+	 G+amD7znroYF6z2wtfTkptI5+GyZEQzswtaIiS0fAIc6yIGOgFewEPpz36kqEX4UJa
+	 fz9s51AWb2UGZzuElHKkk6Xd66zW0iSeR/ogHGvw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 22637F8016D;
-	Mon, 19 Sep 2022 10:31:04 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 61AA3F800C9;
+	Mon, 19 Sep 2022 10:39:39 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id A7255F8023A; Mon, 19 Sep 2022 10:31:02 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+ id A2BC4F8028D; Sat, 17 Sep 2022 20:53:21 +0200 (CEST)
+Received: from mail-yw1-x1135.google.com (mail-yw1-x1135.google.com
+ [IPv6:2607:f8b0:4864:20::1135])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 151C4F80134
- for <alsa-devel@alsa-project.org>; Mon, 19 Sep 2022 10:30:55 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 151C4F80134
+ by alsa1.perex.cz (Postfix) with ESMTPS id 40301F800E5
+ for <alsa-devel@alsa-project.org>; Sat, 17 Sep 2022 20:53:17 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 40301F800E5
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="0b+AiYfP"; 
- dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="xkbttTJg"
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id B9B5022476;
- Mon, 19 Sep 2022 08:30:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1663576254; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=Vnw8yV24NrJVgXHUmASg1y16Kkw1PabPzTLxeE4hH7c=;
- b=0b+AiYfPPzvDf3SzJQAi6E4IIrVvsGQfoQYZuEqS4iqZh8KL+JIOVSDsu3kI4sxA/WlfJz
- 86NBOW9Gz5FhAz46ZNRWFyHb2BA/tPjelSRzepF8miISNzmmDHm0OpcpEQ9/CPGG3Q2HjT
- nG4kdZkwVIHTteTec27nBEE8koMqKas=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1663576254;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=Vnw8yV24NrJVgXHUmASg1y16Kkw1PabPzTLxeE4hH7c=;
- b=xkbttTJg2wH1k788pI1dTzlxpyuKr5jlIeNxc9XVpa6qx0m1sdzW9GUR6NmtDT9LVG62mB
- ZAz4KQ54erC/KPBA==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 960DA13A96;
- Mon, 19 Sep 2022 08:30:54 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id U9DEI74oKGPtOwAAMHmgww
- (envelope-from <tiwai@suse.de>); Mon, 19 Sep 2022 08:30:54 +0000
-Date: Mon, 19 Sep 2022 10:30:54 +0200
-Message-ID: <871qs7dav5.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Rondreis <linhaoguo86@gmail.com>
-Subject: Re: KASAN: invalid-free in snd_card_new
-In-Reply-To: <CAB7eexL1zBnB636hwS27d-LdPYZ_R1-5fJS_h=ZbCWYU=UPWJg@mail.gmail.com>
-References: <CAB7eexL1zBnB636hwS27d-LdPYZ_R1-5fJS_h=ZbCWYU=UPWJg@mail.gmail.com>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
-Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, tiwai@suse.com
+ dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
+ header.b="hw3ZCiyR"
+Received: by mail-yw1-x1135.google.com with SMTP id
+ 00721157ae682-3450990b0aeso296151927b3.12
+ for <alsa-devel@alsa-project.org>; Sat, 17 Sep 2022 11:53:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
+ h=to:subject:message-id:date:from:reply-to:mime-version:from:to:cc
+ :subject:date; bh=J+CNqvxEaNrIYkD2JfuHI/IfFFIerafQrZHZrnpw/C8=;
+ b=hw3ZCiyR0DOS+BzRzNMQ3s2Qy6SjGRqX68mTH6dfOjLXjPalKLmwW11HNYBZ2+0mm4
+ wf9IEnYBuXSMbHuLXCuD8DIf3430DRYwiZhF/sQnyjygpreU7SD3YAstySiPPACad1gQ
+ 8hU7b/iDiFMTUVpt6Y5LSleCW3WwyLVEL6C92XQO/eY9WilgR2Wytazmq6KE7v+zri+s
+ na5JSmPGOVcdn7rqlIhbNHJ2YzcnaGCpVDhwWQchnzRSE6CwNzChdSFnTdkos0ScpEZq
+ sEl29AyLwoCafEAaiSmPpQ9auhz70+0gIbBrawKYvdcJpYdr+3diWSsBpJ1afJ8FCpz2
+ C2xA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=to:subject:message-id:date:from:reply-to:mime-version
+ :x-gm-message-state:from:to:cc:subject:date;
+ bh=J+CNqvxEaNrIYkD2JfuHI/IfFFIerafQrZHZrnpw/C8=;
+ b=oIl5y3YDRY42AktNqj7Aj3Nv22rBlUH3hJ9sC++A4Zgt2kFgRvIxK2PyNvxa8tBAF7
+ GWiG2CZMUZgWLI2Oo9D6K44cTjJB3hsn1B5obqwfw6vwrfPzxNzBNE0uNm+W+r1fVjXm
+ ceiNIXcjOQLbZs10/nEmRl+fIBDsvzR9rXvxBukCqXdINkrDskULHHesWxRKDquhFpNK
+ hYoY9TRSgE0Lkz9M/HGSz+L518bY77JfC9IudFDgjcngpA2xCzLllew9+QEEsYPMVGN7
+ kbISAkQkE7grO7z4coLFiKhNWCsefOySUCofM7gzLvoP+NZJkhwknABoIqFQUJiWH8+V
+ XFIQ==
+X-Gm-Message-State: ACrzQf20vsemnZQtb5BHKNQ36ZsJ1dDpVJanZWbcht4JKPBgWT8PsLUq
+ n1uAkifPdIyeHDg/xhjqy6b90+Pz1LVIRwMoOpAxjiTIbk4=
+X-Google-Smtp-Source: AMsMyM7rfRSQbNpaui6mPWazky6S+QhaNKz6M2NAiyMgtnlg8COSGYwz5hvYPxWgmLucx7Ph5jAw+SAJP0gfDjYYHWs=
+X-Received: by 2002:a81:7c45:0:b0:349:bc24:9591 with SMTP id
+ x66-20020a817c45000000b00349bc249591mr9150474ywc.211.1663440795119; Sat, 17
+ Sep 2022 11:53:15 -0700 (PDT)
+MIME-Version: 1.0
+From: Linas Vepstas <linasvepstas@gmail.com>
+Date: Sat, 17 Sep 2022 13:53:03 -0500
+Message-ID: <CAHrUA35O4Av+-+dbr69LrgHfXAWF1+d4xwJSF7k2Tx4YWrQ8kw@mail.gmail.com>
+Subject: "no soundcard" for GeminiLake High Definition Audio (rev 06)
+To: alsa-devel@alsa-project.org
+Content-Type: text/plain; charset="UTF-8"
+X-Mailman-Approved-At: Mon, 19 Sep 2022 10:39:37 +0200
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -91,65 +84,125 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Reply-To: linasvepstas@gmail.com
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Sun, 18 Sep 2022 15:01:11 +0200,
-Rondreis wrote:
-> 
-> Hello,
-> 
-> When fuzzing the Linux kernel driver v6.0-rc4, the following crash was
-> triggered.
-> 
-> HEAD commit: 7e18e42e4b280c85b76967a9106a13ca61c16179
-> git tree: upstream
-> 
-> kernel config: https://pastebin.com/raw/xtrgsXP3
-> C reproducer: https://pastebin.com/raw/w2sdQWYj
-> console output: https://pastebin.com/raw/Yyf7zw2d
-> 
-> Basically, in the c reproducer, we use the gadget module to emulate
-> attaching a USB device(vendor id: 0x1bc7, product id: 0x1206, with the
-> midi function) and executing some simple sequence of system calls.
-> To reproduce this crash, we utilize a third-party library to emulate
-> the attaching process: https://github.com/linux-usb-gadgets/libusbgx.
-> Just clone this repository, install it, and compile the c
-> reproducer with ``` gcc crash.c -lusbgx -lconfig -o crash ``` will do
-> the trick.
-> 
-> I would appreciate it if you have any idea how to solve this bug.
+Kernel reports "no soundcard". Presumably, this is why I don't have
+sound. Let me dive right in with details:
 
-Could you try the patch below?  It looks like a simple double-free in
-the code.
+cat /proc/asound/cards
+--- no soundcards ---
 
+lspci:
+00:0e.0 Multimedia audio controller: Intel Corporation Celeron/Pentium
+Silver Processor High Definition Audio (rev 06)
+00:0e.0 0401: 8086:3198 (rev 06)
 
-thanks,
+        DeviceName: Onboard - Sound
+        Subsystem: Device 02f3:f000
+        Kernel driver in use: sof-audio-pci-intel-apl
+        Kernel modules: snd_hda_intel, snd_soc_skl, snd_sof_pci_intel_apl
 
-Takashi
+dmesg |grep -iE 'snd|sof|audio'
 
----
---- a/sound/core/init.c
-+++ b/sound/core/init.c
-@@ -178,10 +178,8 @@ int snd_card_new(struct device *parent, int idx, const char *xid,
- 		return -ENOMEM;
- 
- 	err = snd_card_init(card, parent, idx, xid, module, extra_size);
--	if (err < 0) {
--		kfree(card);
--		return err;
--	}
-+	if (err < 0)
-+		return err; /* card is freed by error handler */
- 
- 	*card_ret = card;
- 	return 0;
-@@ -233,7 +231,7 @@ int snd_devm_card_new(struct device *parent, int idx, const char *xid,
- 	card->managed = true;
- 	err = snd_card_init(card, parent, idx, xid, module, extra_size);
- 	if (err < 0) {
--		devres_free(card);
-+		devres_free(card); /* in managed mode, we need to free manually */
- 		return err;
- 	}
- 
+[    0.201569] ACPI: Added _OSI(Linux-Lenovo-NV-HDMI-Audio)
+[    4.715400] snd_hda_intel 0000:00:0e.0: DSP detected with PCI
+class/subclass/prog-if info 0x040100
+[    4.938181] snd_soc_skl 0000:00:0e.0: DSP detected with PCI
+class/subclass/prog-if info 0x040100
+[    5.324959] sof-audio-pci-intel-apl 0000:00:0e.0: DSP detected with
+PCI class/subclass/prog-if info 0x040100
+[    5.325268] sof-audio-pci-intel-apl 0000:00:0e.0: DSP detected with
+PCI class/subclass/prog-if 0x040100
+[    5.325465] sof-audio-pci-intel-apl 0000:00:0e.0: bound
+0000:00:02.0 (ops i915_audio_component_bind_ops [i915])
+[    5.357483] sof-audio-pci-intel-apl 0000:00:0e.0: use msi interrupt mode
+[    5.393933] sof-audio-pci-intel-apl 0000:00:0e.0: NHLT_DEVICE_I2S
+detected, ssp_mask 0x5
+[    5.393945] sof-audio-pci-intel-apl 0000:00:0e.0: hda codecs found, mask 4
+[    5.399557] sof-audio-pci-intel-apl 0000:00:0e.0: Firmware info:
+version 2:1:1-3964a
+[    5.399567] sof-audio-pci-intel-apl 0000:00:0e.0: Firmware: ABI
+3:21:0 Kernel ABI 3:23:0
+[    5.399579] sof-audio-pci-intel-apl 0000:00:0e.0: unknown
+sof_ext_man header type 3 size 0x30
+[    5.439596] sof-audio-pci-intel-apl 0000:00:0e.0: Firmware info:
+version 2:1:1-3964a
+[    5.439604] sof-audio-pci-intel-apl 0000:00:0e.0: Firmware: ABI
+3:21:0 Kernel ABI 3:23:0
+
+cat /proc/version
+Linux version 6.0.0-rc5 (root@yippie) (gcc (Debian 12.2.0-1) 12.2.0,
+GNU ld (GNU Binutils for Debian) 2.38.90.20220713) #3 SMP
+PREEMPT_DYNAMIC Thu Sep 15 04:35:50 CDT 2022
+
+I built this a few days ago from `make oldconfig` on the current
+Debian testing 5.19.15 kernel.
+
+I attempted debugging, and I found this:
+
+sound/soc/sof/intel/pci-apl.c:
+   { PCI_DEVICE(0x8086, 0x3198), /* GeminiLake */
+      .driver_data = (unsigned long)&glk_desc},
+
+Yay! That's my pci id!
+Adding printk's to both
+int snd_card_register(struct snd_card *card)
+int snd_soc_register_card(struct snd_soc_card *card)
+
+shows that neither of these are ever called.  I was unable to figure
+out where they should have been called from. It's as if some driver is
+missing ??? There's nothing in sound/soc/intel/boards/* that seems to
+apply to my situation???
+
+FWIW, more about this hardware:
+-- It's a cheap laptop, from newegg, Ipason MaxBook P1X, 4-core Intel
+Celeron, 12GB RAM, great price.
+--  lspci
+00:00.0 Host bridge: Intel Corporation Gemini Lake Host Bridge (rev 06)
+00:00.1 Signal processing controller: Intel Corporation
+Celeron/Pentium Silver Processor Dynamic Platform and Thermal
+Framework Processor Participant (rev 06)
+00:02.0 VGA compatible controller: Intel Corporation GeminiLake [UHD
+Graphics 600] (rev 06)
+00:0e.0 Multimedia audio controller: Intel Corporation Celeron/Pentium
+Silver Processor High Definition Audio (rev 06)
+00:0f.0 Communication controller: Intel Corporation Celeron/Pentium
+Silver Processor Trusted Execution Engine Interface (rev 06)
+00:12.0 SATA controller: Intel Corporation Celeron/Pentium Silver
+Processor SATA Controller (rev 06)
+00:13.0 PCI bridge: Intel Corporation Gemini Lake PCI Express Root Port (rev f6)
+...
+00:15.0 USB controller: Intel Corporation Celeron/Pentium Silver
+Processor USB 3.0 xHCI Controller (rev 06)
+00:16.0 Signal processing controller: Intel Corporation
+Celeron/Pentium Silver Processor I2C 0 (rev 06)
+...
+00:18.0 Signal processing controller: Intel Corporation
+Celeron/Pentium Silver Processor Serial IO UART Host Controller (rev
+06)
+...
+00:1c.0 SD Host controller: Intel Corporation Celeron/Pentium Silver
+Processor SDA Standard Compliant SD Host Controller (rev 06)
+00:1e.0 SD Host controller: Intel Corporation Device 31d0 (rev 06)
+00:1f.0 ISA bridge: Intel Corporation Celeron/Pentium Silver Processor
+LPC Controller (rev 06)
+00:1f.1 SMBus: Intel Corporation Celeron/Pentium Silver Processor
+Gaussian Mixture Model (rev 06)
+01:00.0 Network controller: Realtek Semiconductor Co., Ltd. RTL8821CE
+802.11ac PCIe Wireless Network Adapter
+
+So I guess there's "no soundcard" because the thing is wired directly
+into the PCI bus ?? I used to know PCI intimately, but that was a
+decade ago. I've forgotten all of that.
+
+Advice on how to proceed would be appreciated. I could maybe even
+write a device driver if someone holds my hand (I've written or worked
+on drivers for ethernet, scsi before)
+
+-- Linas
+
+-- 
+Patrick: Are they laughing at us?
+Sponge Bob: No, Patrick, they are laughing next to us.
