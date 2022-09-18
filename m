@@ -4,94 +4,42 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id F33BBC32771
-	for <alsa-devel@archiver.kernel.org>; Sun, 18 Sep 2022 09:53:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 77469ECAAD8
+	for <alsa-devel@archiver.kernel.org>; Sun, 18 Sep 2022 21:24:46 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 4A80A163A;
-	Sun, 18 Sep 2022 11:52:08 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4A80A163A
+	by alsa0.perex.cz (Postfix) with ESMTPS id 8A224AE9;
+	Sun, 18 Sep 2022 23:23:53 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8A224AE9
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1663494778;
-	bh=PpeYy0xeGgtBRYHZK23k/QZ9ykJ4SDh0GTJZJ7BYWLA=;
-	h=Date:Subject:To:References:From:In-Reply-To:Cc:List-Id:
+	s=default; t=1663536283;
+	bh=sboZKMwHMLLdmuMgyBkgmY146S7JhKHMeSt8HA6VB6g=;
+	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Wi64fCRxSra+FbfgAQAuT+pCQk4QRlLpClHd/LG8XGPyMM7JeHtCZZ5vvqELj1gxr
-	 z2nOixTIR2ydrPBLVnQ0IXe+ODMw6efhs4ql1yesUUZoyToBD+fPUWBP/QTOF51Nq2
-	 28fiDnp6IloiO7ExsecoGrrv6rpf6hg9gaA+4828=
+	b=p67c08lBTTFgzp+exl3fBaIAWvdEh2AjE24fBitgg1u6sDVO5rY5hBPGd64MBBdJ9
+	 4sFIKDVxtTYHjRZPMYt8AUfz2YQJbVx9+GwekaMRsROVxDJ81hhxrDKsQ9v2JDvyB6
+	 KIPfC+Xrg20oEfgKh3OrRsyqaR1Ajmz45hTJPPq0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id E9C60F80310;
-	Sun, 18 Sep 2022 11:52:07 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 13C6BF80310;
+	Sun, 18 Sep 2022 23:23:53 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 6C52AF804B3; Sun, 18 Sep 2022 11:52:06 +0200 (CEST)
-Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com
- [IPv6:2a00:1450:4864:20::129])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 14611F80134
- for <alsa-devel@alsa-project.org>; Sun, 18 Sep 2022 11:51:59 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 14611F80134
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org
- header.b="KbFOyRvQ"
-Received: by mail-lf1-x129.google.com with SMTP id a3so30285256lfk.9
- for <alsa-devel@alsa-project.org>; Sun, 18 Sep 2022 02:51:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
- h=content-transfer-encoding:in-reply-to:from:references:cc:to
- :content-language:subject:user-agent:mime-version:date:message-id
- :from:to:cc:subject:date;
- bh=QDWJzJ5lOaQpmmHjTfXtnrSgkhZoBRswnPcVPm00MkA=;
- b=KbFOyRvQj0ncFWAI//huMSQy3AYbmIwXMzjUXhQ+9/suNPuG65Ztv+nihSdZtzKMGk
- IQ54DNEe4uVVL6aADC0zr3+Pt/mDK0s6OFpmTjcHYuCUil8Gb1GdDQpZ8Ddam2KoopX7
- 9IejLqPh4M1FsmETpKvkrO3C2fBOuy9GZ6oFJ236F3gcManACpaKt4xlBJOMv59c2lLi
- /zORYq7VSe0KrUkmxYsVwdDOcVlpLZNuDLJosyg+ajuLWMSLAnfjvorkC+btwzBCQa+Z
- kWXXPxQngcDpAUd/GaEt3+FSO7PL7m0cRdxE8oY8uK+6ul+4sIRQ2rGjZjh+Xp7pDz5I
- sPDA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=content-transfer-encoding:in-reply-to:from:references:cc:to
- :content-language:subject:user-agent:mime-version:date:message-id
- :x-gm-message-state:from:to:cc:subject:date;
- bh=QDWJzJ5lOaQpmmHjTfXtnrSgkhZoBRswnPcVPm00MkA=;
- b=rIPGMUAl+y397dWT7Oo2OxAlGY58AIdeK16KNofnCgG29Xz6nWG5QqRqhNusFHDfpL
- /LmbE6tL9sSdxvLsHbgVkqyLXpMgv6E55JSMYjm1fhwHaa2pDUzStpqRjm6hZukoXLU2
- BeSHbF4nAkstm4Sql1ihyfdJa/BwYQY66NoNAesIFVKVq4DMZqOmk+SBx2uBGkq88DXO
- ET3DIhuEWLWn+fvTllb2EPNpCM6BnQ37tSWsgoPWp5XMcu6Z1PlPEscTAOodqCySPSJ+
- vc0hUz3GTXBSsZ5RVRIvaBHuTHz7lHSsEVSjzYOQU6nlxkFIom7qw1WzHXPmjY4rD0pB
- 5aXg==
-X-Gm-Message-State: ACrzQf3tMcN4FOJZyfWFMbWUrl6LIvGJflEnHUpcicfK3xXOTf9YhnxV
- lV93P4SOL462ymBJ+4kWQYam5Q==
-X-Google-Smtp-Source: AMsMyM7c07FRjcZpKxTq1oEq3imUr70ESSilmyj+j19JPwmumypPu6CuZ1jOc7lYzYyjNHtpCQoPtg==
-X-Received: by 2002:a05:6512:2308:b0:497:a290:cef6 with SMTP id
- o8-20020a056512230800b00497a290cef6mr4563377lfu.488.1663494717767; 
- Sun, 18 Sep 2022 02:51:57 -0700 (PDT)
-Received: from [192.168.0.21] (78-11-189-27.static.ip.netia.com.pl.
- [78.11.189.27]) by smtp.gmail.com with ESMTPSA id
- be32-20020a05651c172000b00261b175f9c4sm4461189ljb.37.2022.09.18.02.51.53
- (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Sun, 18 Sep 2022 02:51:57 -0700 (PDT)
-Message-ID: <cb86f0e0-700f-872a-1e58-9111a96ec5b8@linaro.org>
-Date: Sun, 18 Sep 2022 10:51:52 +0100
+ id 7266FF804B3; Sun, 18 Sep 2022 23:23:50 +0200 (CEST)
+Received: from webhooks-bot.alsa-project.org (gate.perex.cz [77.48.224.242])
+ by alsa1.perex.cz (Postfix) with ESMTP id 8D5CAF800E5
+ for <alsa-devel@alsa-project.org>; Sun, 18 Sep 2022 23:23:47 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8D5CAF800E5
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.13.0
-Subject: Re: [PATCH v2 2/3] dt-bindings: sound: ts3a227e: add control of
- debounce times
-Content-Language: en-US
-To: Astrid Rost <astrid.rost@axis.com>, Mark Brown <broonie@kernel.org>,
- Liam Girdwood <lgirdwood@gmail.com>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Dylan Reid <dgreid@chromium.org>, Rob Herring <robh+dt@kernel.org>
-References: <20220915113955.22521-1-astrid.rost@axis.com>
- <20220915113955.22521-3-astrid.rost@axis.com>
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <20220915113955.22521-3-astrid.rost@axis.com>
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Cc: Astrid Rost <astridr@axis.com>, kernel@axis.c, alsa-devel@alsa-project.org,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+From: GitHub issues - opened <github@alsa-project.org>
+To: alsa-devel@alsa-project.org
+In-Reply-To: <1663536226952555895-webhooks-bot@alsa-project.org>
+References: <1663536226952555895-webhooks-bot@alsa-project.org>
+Subject: USB-Audio: Motu M4: no duplex profile
+Message-Id: <20220918212350.7266FF804B3@alsa1.perex.cz>
+Date: Sun, 18 Sep 2022 23:23:50 +0200 (CEST)
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -107,40 +55,11 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On 15/09/2022 12:39, Astrid Rost wrote:
-> Add devicetree parameters to control the insertion, release and press
-> debounce times.
-> 
+alsa-project/alsa-ucm-conf issue #214 was opened from pisquaredover6:
 
-Thank you for your patch. There is something to discuss/improve.
+I have compiled alsa-ucm-conf v1.2.7.2 with the patches [3a6acaa5090a0c5a0d29c8a4906b6a60378774e2](https://github.com/alsa-project/alsa-ucm-conf/commit/3a6acaa5090a0c5a0d29c8a4906b6a60378774e2) and [ad1618cdd33f5c78ee1a0a9d3db362ffcb9f2596](https://github.com/alsa-project/alsa-ucm-conf/commit/ad1618cdd33f5c78ee1a0a9d3db362ffcb9f2596). With this, I have simplex audio, but no duplex profiles any more.
 
-> Signed-off-by: Astrid Rost <astrid.rost@axis.com>
-> ---
->  .../devicetree/bindings/sound/ts3a227e.yaml   | 29 +++++++++++++++++++
->  1 file changed, 29 insertions(+)
-> 
-> diff --git a/Documentation/devicetree/bindings/sound/ts3a227e.yaml b/Documentation/devicetree/bindings/sound/ts3a227e.yaml
-> index 3512b1f1e32b..8c27f298733a 100644
-> --- a/Documentation/devicetree/bindings/sound/ts3a227e.yaml
-> +++ b/Documentation/devicetree/bindings/sound/ts3a227e.yaml
-> @@ -44,6 +44,35 @@ properties:
->        - 7 # 2.8 V
->      default: 2
->  
-> +  ti,debounce-release-ms:
-> +    description: key release debounce time in ms (datasheet section 9.6.7).
-> +    enum:
-> +      - 0  #  0 ms (0)
-> +      - 20 # 20 ms (1)
+Is there any chance we can add a duplex profile, as it used to be the case before alsa-ucm-conf introduced the M4?
 
-Skip comments. The values are in ms, so they are not helping.
-
-Same in all other places.
-
-> +    default: 20
-
-Except that looks ok, thanks for the changes. Appreciated!
-
-
-Best regards,
-Krzysztof
+Issue URL     : https://github.com/alsa-project/alsa-ucm-conf/issues/214
+Repository URL: https://github.com/alsa-project/alsa-ucm-conf
