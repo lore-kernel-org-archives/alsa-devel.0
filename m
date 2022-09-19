@@ -4,76 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 02A30C6FA82
-	for <alsa-devel@archiver.kernel.org>; Mon, 19 Sep 2022 23:16:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6ABDCC6FA82
+	for <alsa-devel@archiver.kernel.org>; Mon, 19 Sep 2022 23:16:36 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 1A29CE11;
-	Tue, 20 Sep 2022 01:15:32 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1A29CE11
+	by alsa0.perex.cz (Postfix) with ESMTPS id 9CF3CE0F;
+	Tue, 20 Sep 2022 01:15:44 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9CF3CE0F
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1663629382;
-	bh=cBqstNirVp3/LMuUXyvejfY8+hDyu9PM9y6tIN40Ns8=;
+	s=default; t=1663629394;
+	bh=G20gDX0+LQ46VEZJC2+OUz61ighMe+ilSUbmCNC2mcw=;
 	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=CBHigQcT05PLVMJmJgUs0Th0zVlPUjHjKfdUmPmD+ms0SBelkWUIs6E9+uYauFnqX
-	 lJVVy5oX7OF8qIQamWlHsaF3KXFR1vN7Najg2wMOW4MmlI+7fMkOLvxKkYwc0AQALx
-	 dtj6UfWcT2f5YJ6RpqhZkgbPwJ18gniDXUMFrLUM=
+	b=Qm5wWOGjy6yzv7P1Nbq93i9EyOFlOsM40wnQTo4ivsmEH5XDybo6/rbZlaAsk4WaH
+	 yy85vHABrYizwiLKKviAqcMyzXqkmuIEYwb+loCKOofEi5wZb/OwPjfulCtynkwqty
+	 560HnZk6G76eIhUufdO9Mwd/jcXgY1YD16Dj6aR0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 1B0C1F805C2;
+	by alsa1.perex.cz (Postfix) with ESMTP id 96540F805E6;
 	Tue, 20 Sep 2022 01:10:57 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 5911DF805C2; Tue, 20 Sep 2022 01:10:52 +0200 (CEST)
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+ id B0D18F805E4; Tue, 20 Sep 2022 01:10:52 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id E38CBF805C2
- for <alsa-devel@alsa-project.org>; Tue, 20 Sep 2022 01:10:49 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E38CBF805C2
+ by alsa1.perex.cz (Postfix) with ESMTPS id 3836EF805D8
+ for <alsa-devel@alsa-project.org>; Tue, 20 Sep 2022 01:10:46 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3836EF805D8
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="W8/NtMe9"
+ header.b="cE6FJBcL"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by ams.source.kernel.org (Postfix) with ESMTPS id 8BB48B821D1;
- Mon, 19 Sep 2022 23:10:49 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EEEA3C433D6;
- Mon, 19 Sep 2022 23:10:44 +0000 (UTC)
+ by dfw.source.kernel.org (Postfix) with ESMTPS id 09E53620DD;
+ Mon, 19 Sep 2022 23:10:45 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 62706C433D7;
+ Mon, 19 Sep 2022 23:10:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1663629048;
- bh=cBqstNirVp3/LMuUXyvejfY8+hDyu9PM9y6tIN40Ns8=;
+ s=k20201202; t=1663629044;
+ bh=G20gDX0+LQ46VEZJC2+OUz61ighMe+ilSUbmCNC2mcw=;
  h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=W8/NtMe9xnaROAp8gN8JdYtjSBMspTUF946nQawzwiMcwyDXI9gLP0NiKs8ZqL34b
- MBKiNnKZ/AT/CaDMjMqtb1MC7Dxz/mdodgJDB18yUBcHL93cf5mShwNoaR/0jx2inG
- s2vF+zxmCCesL8tgK8B9VPdlnTW+8bfNPI2N7oarlnw7v/QMaXsm0isK9LemyrI19H
- COWv4fqk3i7sAT7BSTMGX1OcKcmvXr57FWA+Bgzz+f2mhN5CnuKO0E6pixAyE9Ert7
- Pzt9ffOlj5YySWpMBlez7e+oSCFeHjiZEmHYSEnCFTUVN5k+UbFSlMnWPBUGjjS7ef
- 6ietrQW7ZgPIg==
+ b=cE6FJBcLfM7T4FHEwyOXz9YSZPNfK5R6s+DEBvlAIrXAqGKvU9zj/bWIYT8eACFCV
+ lflX+z6o+nL0RTgJYn4oDezTB3UU4Jzh/vS0kbz/PJcRyOkcgJTL4goHTN7KtSzLDP
+ V3CRwQ1gVMrZPFNOZuzkX1Ir8sjtheRxpMIHF0wdjKuxg32Vc3PavYV55sQ1MfdvXR
+ XaUkYi3HzsN3KVuNIBOITWiSjIWGOYM5A0HIwLixGxjYM2Nzdoc/5oXG+MpmNh3Z1c
+ KD8GjwbuTQ5vnaAw4qEFrWcX8Kb0x2tLWQNrJvkV6xIvoyksFjJ+SVb9YzwPtM4o8v
+ IDfUIuk2u/57A==
 From: Mark Brown <broonie@kernel.org>
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
- Jaroslav Kysela <perex@perex.cz>, 
- Jernej Skrabec <jernej.skrabec@gmail.com>,
- Charles Keepax <ckeepax@opensource.cirrus.com>, 
- Liam Girdwood <lgirdwood@gmail.com>, Samuel Holland <samuel@sholland.org>,
- Li Chen <lchen@ambarella.com>, 
- Takashi Iwai <tiwai@suse.com>, Chen-Yu Tsai <wens@csie.org>,
- Mikhail Rudenko <mike.rudenko@gmail.com>
-In-Reply-To: <20220913212256.151799-1-mike.rudenko@gmail.com>
-References: <YyCqC2EypxnoJFk7@sirena.org.uk>
- <20220913212256.151799-1-mike.rudenko@gmail.com>
-Subject: Re: [PATCH v2 1/2] ASoC: sunxi: sun4i-codec: silence misleading error
- in probe
-Message-Id: <166362904468.3419825.3057946964587586588.b4-ty@kernel.org>
-Date: Tue, 20 Sep 2022 00:10:44 +0100
+To: derek.fang@realtek.com, lgirdwood@gmail.com
+In-Reply-To: <20220913025658.5005-1-derek.fang@realtek.com>
+References: <20220913025658.5005-1-derek.fang@realtek.com>
+Subject: Re: [PATCH 1/3] ASoC: rt5682s: Reduce coupling of Micbias and Vref2
+ settings
+Message-Id: <166362904214.3419825.3796970478481971117.b4-ty@kernel.org>
+Date: Tue, 20 Sep 2022 00:10:42 +0100
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 X-Mailer: b4 0.11.0-dev-8af31
-Cc: alsa-devel@alsa-project.org, linux-sunxi@lists.linux.dev,
- linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc: oder_chiou@realtek.com, jack.yu@realtek.com, alsa-devel@alsa-project.org,
+ lars@metafoo.de, albertchen@realtek.com, shumingf@realtek.com,
+ flove@realtek.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -89,15 +82,15 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, 14 Sep 2022 00:22:54 +0300, Mikhail Rudenko wrote:
-> In the case when a codec device is probed before codec analog
-> controls, snd_soc_register_card() returns -EPROBE_DEFER, resulting in
-> a misleading error message
+On Tue, 13 Sep 2022 10:56:56 +0800, derek.fang@realtek.com wrote:
+> From: Derek Fang <derek.fang@realtek.com>
 > 
->     sun4i-codec 1c22c00.codec: Failed to register our card
+> Some parts of rt5682s CCF function are implemented by
+> 'MICBIAS' and 'Vref2' dapm widgets.
 > 
-> even if the device is probed successfully later. Use dev_err_probe()
-> to demote the above error to a debug message.
+> There is a risk of causing not expected behavior if we
+> mix using dapm and CCF operations in machine specific code.
+> This patch reduces the coupling.
 > 
 > [...]
 
@@ -107,10 +100,12 @@ Applied to
 
 Thanks!
 
-[1/2] ASoC: sunxi: sun4i-codec: silence misleading error in probe
-      commit: 30248f618d30cf1ad9d5a72126799f2f0239860c
-[2/2] ASoC: sunxi: sun4i-codec: set debugfs_prefix for CPU DAI component
-      commit: 717a8ff20f32792d6a94f2883e771482c37d844b
+[1/3] ASoC: rt5682s: Reduce coupling of Micbias and Vref2 settings
+      commit: bfc5e8b860ad2a87269975a6043aa6bb245d44bb
+[2/3] ASoC: rt5682s: Reduce coupling of I2S1 setting
+      commit: 6ea304a402322ed4449156805b0a79fa1e326ca7
+[3/3] ASoC: rt5682s: Reduce coupling of PLLB setting
+      commit: 3d47637719c312cfb49d3ba063dc3976535c0e9f
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
