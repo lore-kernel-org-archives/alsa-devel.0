@@ -4,65 +4,65 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C6613ECAAD3
-	for <alsa-devel@archiver.kernel.org>; Mon, 19 Sep 2022 17:52:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4656DECAAD3
+	for <alsa-devel@archiver.kernel.org>; Mon, 19 Sep 2022 17:52:44 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C63D01E8;
-	Mon, 19 Sep 2022 19:51:44 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C63D01E8
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3B06586F;
+	Mon, 19 Sep 2022 19:51:52 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3B06586F
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1663609954;
-	bh=kR8qyX1wDq4ckI2iLTSjTnUv5thwS03UGveFT81cs5I=;
+	s=default; t=1663609962;
+	bh=5FyW8xBbXeJkum8aRiIIbDtkh2gfMubt0it9/PXMLG8=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=oSK3eaRfSV81CyrOsVlK3W72Yt9n0vJqfLu/OeXIN5rc14bwf1vdvY4HwcdFSsjrS
-	 vJf/VYy6Ek8s393PKJHitn/jZVCNLXw6mXrxnfqUnWX5ZZv7yzpaLL7/eT6+LB/8Kn
-	 rBtlBn3gT5bSjMXJE6zbETrhzniydNtS88Xkrca0=
+	b=e5t7dSt+68e+C94bw30pKAOcF53tXBkzWPgY7+B6TmHTP7XZNOX4ocxfuIlWJ46Bh
+	 snVm5pc3CsB5IxTfYO7KsvTf0flqiLAzfSCHdVgIUD5oNv5Pdnt3Y9e9rsFtdIuVyq
+	 V1I8+bgGJRbIQTC1WjdLmJb167mGZ4o931zpvZlQ=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 0A2ADF80542;
-	Mon, 19 Sep 2022 19:51:02 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id EB0EEF804AE;
+	Mon, 19 Sep 2022 19:51:04 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 8F728F8053C; Mon, 19 Sep 2022 19:50:57 +0200 (CEST)
+ id D62DCF80552; Mon, 19 Sep 2022 19:51:02 +0200 (CEST)
 Received: from mga18.intel.com (mga18.intel.com [134.134.136.126])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id BA82AF8023A
- for <alsa-devel@alsa-project.org>; Mon, 19 Sep 2022 19:50:49 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BA82AF8023A
+ by alsa1.perex.cz (Postfix) with ESMTPS id 6980AF8032B
+ for <alsa-devel@alsa-project.org>; Mon, 19 Sep 2022 19:50:54 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6980AF8032B
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="hJrktLo8"
+ header.b="DXmTLNAz"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1663609852; x=1695145852;
+ t=1663609855; x=1695145855;
  h=from:to:cc:subject:date:message-id:in-reply-to:
  references:mime-version:content-transfer-encoding;
- bh=kR8qyX1wDq4ckI2iLTSjTnUv5thwS03UGveFT81cs5I=;
- b=hJrktLo8zpKuAttPuNpBoKs7EOEpcbNpxofeI/nl0n2sRolAMh+7DGys
- qvLI5YlYeYeA1oN2fV/eZrC+SEflZvO8EhaaUUTm4ufuLN4DvEPOhORo+
- 11Lgi5z/V7kaBltud/LRXEYMZhSkFzAI7OP33jKATska3yVJQoZi/TMnr
- zctzztkTQVwHXexiJkBYWD4KToqMsEHhYMvP7Abn4bgvG4rtHk5o6eyyj
- 2bXvf40KvxWLidNUOUZwpmW9v0vTouxTdlW+RkPpi2nC++a7gMAqtQQhE
- MnjvhlfzfbHGsCzIgK/QwcSdnUjPt3O55QrvACJsb9E+TuqmGLNf94s+z w==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10475"; a="282498646"
-X-IronPort-AV: E=Sophos;i="5.93,328,1654585200"; d="scan'208";a="282498646"
+ bh=5FyW8xBbXeJkum8aRiIIbDtkh2gfMubt0it9/PXMLG8=;
+ b=DXmTLNAzadkvzW0o8iVeMKaVNgGRQpgXL9fLKhAS3qUxEkDqarNEdz12
+ SW+zJaPm9ckSSR9TUY1KSwJLajmnMyKJzFJjwwFzquUXF1BvDzqkIpN6d
+ sfBERyPze3DJgbu4BMKCBhdMhu7DM3fWOW3ahwvJiP0P3K0mHKrWY5qG/
+ XE1cnd0I36BQqB9XUc1L5Cx5dl1S6aQYxsbqDpIhNxxeVNqJn+4hErT84
+ CN3y+s5fzEos4yVtL9DBjhoxgNa/WWw+XqqrfWqeaisdp/iKgtqwtkIqE
+ 6qVV5m8SPz/ku/2XYucO141kyHEqhmrjFY4BXYk92cnntpnYrY0gyxHZi Q==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10475"; a="282498745"
+X-IronPort-AV: E=Sophos;i="5.93,328,1654585200"; d="scan'208";a="282498745"
 Received: from fmsmga006.fm.intel.com ([10.253.24.20])
  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 19 Sep 2022 10:50:42 -0700
-X-IronPort-AV: E=Sophos;i="5.93,328,1654585200"; d="scan'208";a="863658371"
+ 19 Sep 2022 10:50:52 -0700
+X-IronPort-AV: E=Sophos;i="5.93,328,1654585200"; d="scan'208";a="863658448"
 Received: from bard-ubuntu.sh.intel.com ([10.239.185.57])
  by fmsmga006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 19 Sep 2022 10:50:41 -0700
+ 19 Sep 2022 10:50:50 -0700
 From: Bard Liao <yung-chuan.liao@linux.intel.com>
 To: alsa-devel@alsa-project.org,
 	vkoul@kernel.org
-Subject: [PATCH 01/11] soundwire: intel: fix error handling on dai
- registration issues
-Date: Tue, 20 Sep 2022 01:57:11 +0800
-Message-Id: <20220919175721.354679-2-yung-chuan.liao@linux.intel.com>
+Subject: [PATCH 06/11] soundwire: intel: move shim initialization before power
+ up/down
+Date: Tue, 20 Sep 2022 01:57:16 +0800
+Message-Id: <20220919175721.354679-7-yung-chuan.liao@linux.intel.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20220919175721.354679-1-yung-chuan.liao@linux.intel.com>
 References: <20220919175721.354679-1-yung-chuan.liao@linux.intel.com>
@@ -87,30 +87,265 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 
-The call to intel_register_dai() may fail because of memory allocation
-issues or problems reported by the ASoC core. In all cases, when a
-error is thrown the component is not registered, it's invalid to
-unregister it.
+Move code around before additional simplification. No functionality
+change.
 
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Reviewed-by: Rander Wang <rander.wang@intel.com>
 Signed-off-by: Bard Liao <yung-chuan.liao@linux.intel.com>
 ---
- drivers/soundwire/intel.c | 1 -
- 1 file changed, 1 deletion(-)
+ drivers/soundwire/intel.c | 231 +++++++++++++++++++-------------------
+ 1 file changed, 115 insertions(+), 116 deletions(-)
 
 diff --git a/drivers/soundwire/intel.c b/drivers/soundwire/intel.c
-index 01be62fa6c83..3bb29bc00d5a 100644
+index 2d828d98e153..140cf36eb407 100644
 --- a/drivers/soundwire/intel.c
 +++ b/drivers/soundwire/intel.c
-@@ -1432,7 +1432,6 @@ int intel_link_startup(struct auxiliary_device *auxdev)
- 	ret = intel_register_dai(sdw);
- 	if (ret) {
- 		dev_err(dev, "DAI registration failed: %d\n", ret);
--		snd_soc_unregister_component(dev);
- 		goto err_interrupt;
- 	}
+@@ -260,6 +260,121 @@ static void intel_debugfs_exit(struct sdw_intel *sdw) {}
+ /*
+  * shim ops
+  */
++/* this needs to be called with shim_lock */
++static void intel_shim_glue_to_master_ip(struct sdw_intel *sdw)
++{
++	void __iomem *shim = sdw->link_res->shim;
++	unsigned int link_id = sdw->instance;
++	u16 ioctl;
++
++	/* Switch to MIP from Glue logic */
++	ioctl = intel_readw(shim,  SDW_SHIM_IOCTL(link_id));
++
++	ioctl &= ~(SDW_SHIM_IOCTL_DOE);
++	intel_writew(shim, SDW_SHIM_IOCTL(link_id), ioctl);
++	usleep_range(10, 15);
++
++	ioctl &= ~(SDW_SHIM_IOCTL_DO);
++	intel_writew(shim, SDW_SHIM_IOCTL(link_id), ioctl);
++	usleep_range(10, 15);
++
++	ioctl |= (SDW_SHIM_IOCTL_MIF);
++	intel_writew(shim, SDW_SHIM_IOCTL(link_id), ioctl);
++	usleep_range(10, 15);
++
++	ioctl &= ~(SDW_SHIM_IOCTL_BKE);
++	ioctl &= ~(SDW_SHIM_IOCTL_COE);
++	intel_writew(shim, SDW_SHIM_IOCTL(link_id), ioctl);
++	usleep_range(10, 15);
++
++	/* at this point Master IP has full control of the I/Os */
++}
++
++/* this needs to be called with shim_lock */
++static void intel_shim_master_ip_to_glue(struct sdw_intel *sdw)
++{
++	unsigned int link_id = sdw->instance;
++	void __iomem *shim = sdw->link_res->shim;
++	u16 ioctl;
++
++	/* Glue logic */
++	ioctl = intel_readw(shim, SDW_SHIM_IOCTL(link_id));
++	ioctl |= SDW_SHIM_IOCTL_BKE;
++	ioctl |= SDW_SHIM_IOCTL_COE;
++	intel_writew(shim, SDW_SHIM_IOCTL(link_id), ioctl);
++	usleep_range(10, 15);
++
++	ioctl &= ~(SDW_SHIM_IOCTL_MIF);
++	intel_writew(shim, SDW_SHIM_IOCTL(link_id), ioctl);
++	usleep_range(10, 15);
++
++	/* at this point Integration Glue has full control of the I/Os */
++}
++
++static int intel_shim_init(struct sdw_intel *sdw)
++{
++	void __iomem *shim = sdw->link_res->shim;
++	unsigned int link_id = sdw->instance;
++	int ret = 0;
++	u16 ioctl = 0, act = 0;
++
++	mutex_lock(sdw->link_res->shim_lock);
++
++	/* Initialize Shim */
++	ioctl |= SDW_SHIM_IOCTL_BKE;
++	intel_writew(shim, SDW_SHIM_IOCTL(link_id), ioctl);
++	usleep_range(10, 15);
++
++	ioctl |= SDW_SHIM_IOCTL_WPDD;
++	intel_writew(shim, SDW_SHIM_IOCTL(link_id), ioctl);
++	usleep_range(10, 15);
++
++	ioctl |= SDW_SHIM_IOCTL_DO;
++	intel_writew(shim, SDW_SHIM_IOCTL(link_id), ioctl);
++	usleep_range(10, 15);
++
++	ioctl |= SDW_SHIM_IOCTL_DOE;
++	intel_writew(shim, SDW_SHIM_IOCTL(link_id), ioctl);
++	usleep_range(10, 15);
++
++	intel_shim_glue_to_master_ip(sdw);
++
++	u16p_replace_bits(&act, 0x1, SDW_SHIM_CTMCTL_DOAIS);
++	act |= SDW_SHIM_CTMCTL_DACTQE;
++	act |= SDW_SHIM_CTMCTL_DODS;
++	intel_writew(shim, SDW_SHIM_CTMCTL(link_id), act);
++	usleep_range(10, 15);
++
++	mutex_unlock(sdw->link_res->shim_lock);
++
++	return ret;
++}
++
++static void intel_shim_wake(struct sdw_intel *sdw, bool wake_enable)
++{
++	void __iomem *shim = sdw->link_res->shim;
++	unsigned int link_id = sdw->instance;
++	u16 wake_en, wake_sts;
++
++	mutex_lock(sdw->link_res->shim_lock);
++	wake_en = intel_readw(shim, SDW_SHIM_WAKEEN);
++
++	if (wake_enable) {
++		/* Enable the wakeup */
++		wake_en |= (SDW_SHIM_WAKEEN_ENABLE << link_id);
++		intel_writew(shim, SDW_SHIM_WAKEEN, wake_en);
++	} else {
++		/* Disable the wake up interrupt */
++		wake_en &= ~(SDW_SHIM_WAKEEN_ENABLE << link_id);
++		intel_writew(shim, SDW_SHIM_WAKEEN, wake_en);
++
++		/* Clear wake status */
++		wake_sts = intel_readw(shim, SDW_SHIM_WAKESTS);
++		wake_sts |= (SDW_SHIM_WAKESTS_STATUS << link_id);
++		intel_writew(shim, SDW_SHIM_WAKESTS, wake_sts);
++	}
++	mutex_unlock(sdw->link_res->shim_lock);
++}
  
+ static int intel_link_power_up(struct sdw_intel *sdw)
+ {
+@@ -340,122 +455,6 @@ static int intel_link_power_up(struct sdw_intel *sdw)
+ 	return ret;
+ }
+ 
+-/* this needs to be called with shim_lock */
+-static void intel_shim_glue_to_master_ip(struct sdw_intel *sdw)
+-{
+-	void __iomem *shim = sdw->link_res->shim;
+-	unsigned int link_id = sdw->instance;
+-	u16 ioctl;
+-
+-	/* Switch to MIP from Glue logic */
+-	ioctl = intel_readw(shim,  SDW_SHIM_IOCTL(link_id));
+-
+-	ioctl &= ~(SDW_SHIM_IOCTL_DOE);
+-	intel_writew(shim, SDW_SHIM_IOCTL(link_id), ioctl);
+-	usleep_range(10, 15);
+-
+-	ioctl &= ~(SDW_SHIM_IOCTL_DO);
+-	intel_writew(shim, SDW_SHIM_IOCTL(link_id), ioctl);
+-	usleep_range(10, 15);
+-
+-	ioctl |= (SDW_SHIM_IOCTL_MIF);
+-	intel_writew(shim, SDW_SHIM_IOCTL(link_id), ioctl);
+-	usleep_range(10, 15);
+-
+-	ioctl &= ~(SDW_SHIM_IOCTL_BKE);
+-	ioctl &= ~(SDW_SHIM_IOCTL_COE);
+-	intel_writew(shim, SDW_SHIM_IOCTL(link_id), ioctl);
+-	usleep_range(10, 15);
+-
+-	/* at this point Master IP has full control of the I/Os */
+-}
+-
+-/* this needs to be called with shim_lock */
+-static void intel_shim_master_ip_to_glue(struct sdw_intel *sdw)
+-{
+-	unsigned int link_id = sdw->instance;
+-	void __iomem *shim = sdw->link_res->shim;
+-	u16 ioctl;
+-
+-	/* Glue logic */
+-	ioctl = intel_readw(shim, SDW_SHIM_IOCTL(link_id));
+-	ioctl |= SDW_SHIM_IOCTL_BKE;
+-	ioctl |= SDW_SHIM_IOCTL_COE;
+-	intel_writew(shim, SDW_SHIM_IOCTL(link_id), ioctl);
+-	usleep_range(10, 15);
+-
+-	ioctl &= ~(SDW_SHIM_IOCTL_MIF);
+-	intel_writew(shim, SDW_SHIM_IOCTL(link_id), ioctl);
+-	usleep_range(10, 15);
+-
+-	/* at this point Integration Glue has full control of the I/Os */
+-}
+-
+-static int intel_shim_init(struct sdw_intel *sdw)
+-{
+-	void __iomem *shim = sdw->link_res->shim;
+-	unsigned int link_id = sdw->instance;
+-	int ret = 0;
+-	u16 ioctl = 0, act = 0;
+-
+-	mutex_lock(sdw->link_res->shim_lock);
+-
+-	/* Initialize Shim */
+-	ioctl |= SDW_SHIM_IOCTL_BKE;
+-	intel_writew(shim, SDW_SHIM_IOCTL(link_id), ioctl);
+-	usleep_range(10, 15);
+-
+-	ioctl |= SDW_SHIM_IOCTL_WPDD;
+-	intel_writew(shim, SDW_SHIM_IOCTL(link_id), ioctl);
+-	usleep_range(10, 15);
+-
+-	ioctl |= SDW_SHIM_IOCTL_DO;
+-	intel_writew(shim, SDW_SHIM_IOCTL(link_id), ioctl);
+-	usleep_range(10, 15);
+-
+-	ioctl |= SDW_SHIM_IOCTL_DOE;
+-	intel_writew(shim, SDW_SHIM_IOCTL(link_id), ioctl);
+-	usleep_range(10, 15);
+-
+-	intel_shim_glue_to_master_ip(sdw);
+-
+-	u16p_replace_bits(&act, 0x1, SDW_SHIM_CTMCTL_DOAIS);
+-	act |= SDW_SHIM_CTMCTL_DACTQE;
+-	act |= SDW_SHIM_CTMCTL_DODS;
+-	intel_writew(shim, SDW_SHIM_CTMCTL(link_id), act);
+-	usleep_range(10, 15);
+-
+-	mutex_unlock(sdw->link_res->shim_lock);
+-
+-	return ret;
+-}
+-
+-static void intel_shim_wake(struct sdw_intel *sdw, bool wake_enable)
+-{
+-	void __iomem *shim = sdw->link_res->shim;
+-	unsigned int link_id = sdw->instance;
+-	u16 wake_en, wake_sts;
+-
+-	mutex_lock(sdw->link_res->shim_lock);
+-	wake_en = intel_readw(shim, SDW_SHIM_WAKEEN);
+-
+-	if (wake_enable) {
+-		/* Enable the wakeup */
+-		wake_en |= (SDW_SHIM_WAKEEN_ENABLE << link_id);
+-		intel_writew(shim, SDW_SHIM_WAKEEN, wake_en);
+-	} else {
+-		/* Disable the wake up interrupt */
+-		wake_en &= ~(SDW_SHIM_WAKEEN_ENABLE << link_id);
+-		intel_writew(shim, SDW_SHIM_WAKEEN, wake_en);
+-
+-		/* Clear wake status */
+-		wake_sts = intel_readw(shim, SDW_SHIM_WAKESTS);
+-		wake_sts |= (SDW_SHIM_WAKESTS_STATUS << link_id);
+-		intel_writew(shim, SDW_SHIM_WAKESTS, wake_sts);
+-	}
+-	mutex_unlock(sdw->link_res->shim_lock);
+-}
+-
+ static int intel_link_power_down(struct sdw_intel *sdw)
+ {
+ 	u32 link_control, spa_mask, cpa_mask;
 -- 
 2.25.1
 
