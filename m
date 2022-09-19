@@ -4,42 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A8EC5ECAAA1
-	for <alsa-devel@archiver.kernel.org>; Mon, 19 Sep 2022 21:27:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6E718C6FA8B
+	for <alsa-devel@archiver.kernel.org>; Mon, 19 Sep 2022 23:10:33 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 09CA8827;
-	Mon, 19 Sep 2022 23:27:05 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 09CA8827
+	by alsa0.perex.cz (Postfix) with ESMTPS id D20C41EF;
+	Tue, 20 Sep 2022 01:09:40 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D20C41EF
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1663622875;
-	bh=CUjutaUfYMICXNtEUo/heYUtEXYNi5cOyexQn2zZOWI=;
-	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
+	s=default; t=1663629030;
+	bh=FRt7yOXbPx55xy2i6c/5Bo2W0CUcTVzoZFN5G7CqhSU=;
+	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=q2jVRdASAEr14nPAkjWrMawLJ4fs8ttAeh0in92oWzlykxc6/srGlSDoNLPMQOrmW
-	 pueHWkfqiGhzgRT+nrImloK2Q7+zWbxN4Dl2sKJRJCnPELe/oHDUMNQdb0DT6qcWgS
-	 cebonjKu18sZe/gxyHaoVlOtQ6taihW/YlhbP78Y=
+	b=p/dThXFZxbEF7CeNacIEDSAjDO6kfITPYOWxXFGw329p1wknOesQcAOPlwFBkl5nU
+	 nHrZiLBvPeK/ZxQjYqQ2Ksn+NSxi3Pn4C/BNFXzgkO0Bcjnnl2zqkEZSz+WdvkDXkg
+	 qoPdFv22u7b327H5FxUbLqL1oPRGVZteQ/Cr0200=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 84CDEF800C9;
-	Mon, 19 Sep 2022 23:27:04 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 5B214F8016D;
+	Tue, 20 Sep 2022 01:09:40 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id E40AAF8023A; Mon, 19 Sep 2022 23:27:02 +0200 (CEST)
-Received: from webhooks-bot.alsa-project.org (gate.perex.cz [77.48.224.242])
- by alsa1.perex.cz (Postfix) with ESMTP id 4C7C1F800C9
- for <alsa-devel@alsa-project.org>; Mon, 19 Sep 2022 23:26:59 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4C7C1F800C9
+ id BAA8AF8023A; Tue, 20 Sep 2022 01:09:38 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 2871DF80134
+ for <alsa-devel@alsa-project.org>; Tue, 20 Sep 2022 01:09:35 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2871DF80134
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="P9RROkas"
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by dfw.source.kernel.org (Postfix) with ESMTPS id 1E2AE61806;
+ Mon, 19 Sep 2022 23:09:33 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3ED60C433D6;
+ Mon, 19 Sep 2022 23:09:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1663628972;
+ bh=FRt7yOXbPx55xy2i6c/5Bo2W0CUcTVzoZFN5G7CqhSU=;
+ h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+ b=P9RROkas0A+tET/WhREU5Vt/+/p/+zZ45wtEb4pbDJjbCyzqOqQ8LEsjda34UDSKg
+ PKnxR49OEIytGbmSglE3ufgLnD1QNgIF1H90YfUG5WPDGUGzxQCl16cAJ4bkuZ2cZ7
+ P4+1wV6ufcPF6TUYR4QXKuAs+Zp+VgwV69o1R17DRDdFsSL9kv5uYMbOrPso3M9BM7
+ xErku821890ejS9wLPCJjG22cOiC2/colqPwVT6Kjwk9AvfvtZXGX/SiWzd7683HgB
+ OzQWWT4ui3pvPM6g8z6Ll3Dq+Y97PBCKK7c/sO/KhhafjTIZSTxZi000qgdOqWuU3W
+ Ocu7SiKuvanig==
+From: Mark Brown <broonie@kernel.org>
+To: alsa-devel@alsa-project.org,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+In-Reply-To: <20220919114640.42803-1-pierre-louis.bossart@linux.intel.com>
+References: <20220919114640.42803-1-pierre-louis.bossart@linux.intel.com>
+Subject: Re: [PATCH] ASoC: Intel: sof_sdw: add support for Dell SKU 0AFF
+Message-Id: <166362897091.3419380.6583363911970883523.b4-ty@kernel.org>
+Date: Tue, 20 Sep 2022 00:09:30 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-From: GitHub issues - edited <github@alsa-project.org>
-To: alsa-devel@alsa-project.org
-In-Reply-To: <1663622819808568954-webhooks-bot@alsa-project.org>
-References: <1663622819808568954-webhooks-bot@alsa-project.org>
-Subject: Alsa - has invalid interface number
-Message-Id: <20220919212702.E40AAF8023A@alsa1.perex.cz>
-Date: Mon, 19 Sep 2022 23:27:02 +0200 (CEST)
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+X-Mailer: b4 0.11.0-dev-8af31
+Cc: tiwai@suse.de, Bard Liao <yung-chuan.liao@linux.intel.com>, Péter Ujfalusi <peter.ujfalusi@linux.intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -55,32 +80,36 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-alsa-project/alsa-lib issue #271 was edited from smangels:
+On Mon, 19 Sep 2022 13:46:40 +0200, Pierre-Louis Bossart wrote:
+> Yet another SKU that needs a quirk for jack detection and four-speaker
+> support.
+> 
+> 
 
-hi,
-I'm running the latest ArchLinux installation using a Behringer Flow8 as my main audio interface. Today I'm running into an issue where the USB audio hardware can not be loaded successfully.
+Applied to
 
-```
-[ 1690.797522] usb 1-3.1.1.4: new high-speed USB device number 14 using xhci_hcd
-[ 1690.891936] usb 1-3.1.1.4: config 1 has an invalid interface number: 7 but max is 5
-[ 1690.891940] usb 1-3.1.1.4: config 1 has no interface number 5
-[ 1690.892620] usb 1-3.1.1.4: New USB device found, idVendor=1397, idProduct=050d, bcdDevice= 2.10
-[ 1690.892624] usb 1-3.1.1.4: New USB device strings: Mfr=1, Product=2, SerialNumber=6
-[ 1690.892627] usb 1-3.1.1.4: Product: FLOW 8
-[ 1690.892628] usb 1-3.1.1.4: Manufacturer: Behringer
-[ 1690.892630] usb 1-3.1.1.4: SerialNumber: 18-04-ED-FB-BE-A0
-```
-The following Alsa related packages have been upgraded.
+   broonie/sound.git for-linus
 
-```
-[2022-09-19T18:22:14+0200] [ALPM] upgraded alsa-card-profiles (1:0.3.57-1 -> 1:0.3.58-1)
-[2022-09-19T18:22:15+0200] [ALPM] upgraded pipewire-alsa (1:0.3.57-1 -> 1:0.3.58-1)
-[2022-09-19T23:07:36+0200] [PACMAN] Running 'pacman -Sy alsa-tools'
-[2022-09-19T23:07:38+0200] [ALPM] installed alsa-tools (1.2.5-1)
-```
-Kernel and UDEV version
-`Linux archlinux 5.19.9-arch1-1 #1 SMP PREEMPT_DYNAMIC Thu, 15 Sep 2022 16:08:26 +0000 x86_64 GNU/Linux`
-`udev version 251`
+Thanks!
 
-Issue URL     : https://github.com/alsa-project/alsa-lib/issues/271
-Repository URL: https://github.com/alsa-project/alsa-lib
+[1/1] ASoC: Intel: sof_sdw: add support for Dell SKU 0AFF
+      commit: 4a13c949501902d4e6b59cc693005f4ca352dc15
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
