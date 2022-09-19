@@ -4,64 +4,64 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id AC53CECAAD3
-	for <alsa-devel@archiver.kernel.org>; Mon, 19 Sep 2022 11:14:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5301FECAAD3
+	for <alsa-devel@archiver.kernel.org>; Mon, 19 Sep 2022 11:14:54 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id AB3241614;
-	Mon, 19 Sep 2022 13:13:38 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz AB3241614
+	by alsa0.perex.cz (Postfix) with ESMTPS id 37EE215C1;
+	Mon, 19 Sep 2022 13:14:02 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 37EE215C1
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1663586068;
-	bh=Lfx6i53+RiO5+QzyUxtTXrjQmGmvvKs2PPjMKY51PfE=;
+	s=default; t=1663586092;
+	bh=g8BvxP5XY+ERiIwo6cS/Tvlfw/qayFPLZvltSy+tULU=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=si613fvUdf0YU7Sw4BR+ByV1y9vRpGEn04oaub0rU2jcdaILKcRb96OC3HwKI0i+b
-	 c+lcSxy0QhZKH1rnK2GrXq7VEShS0T4opOLiCZYD5wGaM4cY1KlYNgZUiRGqdFOZCh
-	 X5hWGJNoMao14meuNQJW+J+reHpi+aZPFMd/Om8c=
+	b=MnIRamjBlAYxQAmeF0juXj7KY2yy6qXfjER4uqZ/qjn7BVakPiYA6yfwBOtrdxevP
+	 kewNgO1Ew2uE8BqlWwIQ5btxaZNdQZZ7hmjssnlTCbqtO0h7d7HllMFLxHcJCC2VWp
+	 v8iz5F0vPxNNsscm9wGNoYHSLbt1AqLim5ukkybI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id E627AF804FF;
-	Mon, 19 Sep 2022 13:13:11 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 9BE78F8032B;
+	Mon, 19 Sep 2022 13:13:15 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 87B77F8016D; Mon, 19 Sep 2022 13:13:09 +0200 (CEST)
-Received: from smtp2.axis.com (smtp2.axis.com [195.60.68.18])
+ id 752E0F8023A; Mon, 19 Sep 2022 13:13:14 +0200 (CEST)
+Received: from smtp1.axis.com (smtp1.axis.com [195.60.68.17])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 277EFF80134
- for <alsa-devel@alsa-project.org>; Mon, 19 Sep 2022 13:13:02 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 277EFF80134
+ by alsa1.perex.cz (Postfix) with ESMTPS id A7053F8023A
+ for <alsa-devel@alsa-project.org>; Mon, 19 Sep 2022 13:13:04 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A7053F8023A
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=axis.com header.i=@axis.com
- header.b="AVQpQsvA"
+ header.b="XItKhKmo"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=axis.com; q=dns/txt; s=axis-central1; t=1663585985;
  x=1695121985; h=from:to:cc:subject:date:message-id:in-reply-to:
  references:mime-version:content-transfer-encoding;
- bh=fWT8qRbiWNa5/mbcYWo86wQNVuPvppjS+ANHTTdMVNE=;
- b=AVQpQsvAeJoZYodBLlOYh1IHNxNIRwA5+dEs5MgYZhju8Yo5mEEAZJKZ
- qNowZUQIp838HwRbuaFEKXMA1M5R731z2A/doLz2Y2+QGQOBU6hX9FUlM
- Furg5Sx2QpcfOSOkMFJ4FlFVnPSsqdmd7GOY1+4KQa6FJTql8+ix6QrnE
- oC9ZJC1yu9OrQrJORxzA26yr2UyQcZAcmLF4W59PrJCOak21OLM9f+j1x
- D7kcBGYsSve/qoxNbvGkxpYFTb+ot1Os6p0gYsAcq3JnymMO/fbmAdyJh
- z6DB6Q3TJM5jlDiuJmk12cPgvhtkCyWQ5eDIR61j9giC1KNHhaUUTMZUl A==;
+ bh=w8KzUewuszzBRNR3DKM4RdYTDxQmFGm6YO23DI5b+0I=;
+ b=XItKhKmokJcXdGzrwINVVHDjsbMjh3CMYtj7bpwxbVkTgowWWmyw7oI6
+ ukaodpf5x28Mop27r9dEs71sq0/wPizVKCXnD9wZsGTqtYeE18MLzLCM3
+ xSGkOrtk9sQTxBgl+FsSZPSyE+wP0YR+O87jwSndCqen0KB0+2LKH7Cx4
+ eoT1ZDzNpI3oLvtuXtjL1xsvWxBW3LLNppSz4vduZXELyQB5l+Ao2jFRD
+ tLqLH7GYqlfZmD+FDhjyPbjIlc9cXYEKhzSwxxHhMH0aFN85lcM9sUmna
+ 8hW/Bp7OUZn4sUZEo9B2RILnf8Jm3EeICmyC1Z/gaoBKei2C9bqFKR5Nx g==;
 From: Astrid Rost <astrid.rost@axis.com>
 To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Jaroslav Kysela
- <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
-Subject: [PATCH v3 3/3] ASoC: ts3a227e: add parameters to control debounce
- times
-Date: Mon, 19 Sep 2022 13:12:58 +0200
-Message-ID: <20220919111258.3774-4-astrid.rost@axis.com>
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Rob Herring
+ <robh+dt@kernel.org>, Dylan Reid <dgreid@chromium.org>
+Subject: [PATCH v3 1/3] dt-bindings: sound: ti,ts3a227e: convert to yaml
+Date: Mon, 19 Sep 2022 13:12:56 +0200
+Message-ID: <20220919111258.3774-2-astrid.rost@axis.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20220919111258.3774-1-astrid.rost@axis.com>
 References: <20220919111258.3774-1-astrid.rost@axis.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-Cc: alsa-devel@alsa-project.org, Astrid Rost <astrid.rost@axis.com>,
- kernel@axis.com, linux-kernel@vger.kernel.org, Astrid Rost <astridr@axis.com>
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
+ Astrid Rost <astrid.rost@axis.com>, linux-kernel@vger.kernel.org,
+ kernel@axis.com, Astrid Rost <astridr@axis.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -77,106 +77,123 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Add devicetree parameters to control the insert, release and press
-debounce times.
+Convert from ts3a227e.txt to yaml.
 
 Signed-off-by: Astrid Rost <astrid.rost@axis.com>
 ---
- sound/soc/codecs/ts3a227e.c | 58 +++++++++++++++++++++++++++++++++----
- 1 file changed, 52 insertions(+), 6 deletions(-)
+ .../bindings/sound/ti,ts3a227e.yaml           | 65 +++++++++++++++++++
+ .../devicetree/bindings/sound/ts3a227e.txt    | 30 ---------
+ 2 files changed, 65 insertions(+), 30 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/sound/ti,ts3a227e.yaml
+ delete mode 100644 Documentation/devicetree/bindings/sound/ts3a227e.txt
 
-diff --git a/sound/soc/codecs/ts3a227e.c b/sound/soc/codecs/ts3a227e.c
-index d8ab0810fceb..f2d1367c46ca 100644
---- a/sound/soc/codecs/ts3a227e.c
-+++ b/sound/soc/codecs/ts3a227e.c
-@@ -78,12 +78,20 @@ static const int ts3a227e_buttons[] = {
- #define ADC_COMPLETE_INT_DISABLE 0x04
- #define INTB_DISABLE 0x08
- 
-+/* TS3A227E_REG_SETTING_1 0x4 */
-+#define DEBOUNCE_INSERTION_SETTING_SFT (0)
-+#define DEBOUNCE_INSERTION_SETTING_MASK (0x7 << DEBOUNCE_PRESS_SETTING_SFT)
+diff --git a/Documentation/devicetree/bindings/sound/ti,ts3a227e.yaml b/Documentation/devicetree/bindings/sound/ti,ts3a227e.yaml
+new file mode 100644
+index 000000000000..327d204cf957
+--- /dev/null
++++ b/Documentation/devicetree/bindings/sound/ti,ts3a227e.yaml
+@@ -0,0 +1,65 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/sound/ti,ts3a227e.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
 +
- /* TS3A227E_REG_SETTING_2 0x05 */
- #define KP_ENABLE 0x04
- 
- /* TS3A227E_REG_SETTING_3 0x06 */
--#define MICBIAS_SETTING_SFT (3)
-+#define MICBIAS_SETTING_SFT 3
- #define MICBIAS_SETTING_MASK (0x7 << MICBIAS_SETTING_SFT)
-+#define DEBOUNCE_RELEASE_SETTING_SFT 2
-+#define DEBOUNCE_RELEASE_SETTING_MASK (0x1 << DEBOUNCE_RELEASE_SETTING_SFT)
-+#define DEBOUNCE_PRESS_SETTING_SFT 0
-+#define DEBOUNCE_PRESS_SETTING_MASK (0x3 << DEBOUNCE_PRESS_SETTING_SFT)
- 
- /* TS3A227E_REG_ACCESSORY_STATUS  0x0b */
- #define TYPE_3_POLE 0x01
-@@ -136,7 +144,7 @@ static bool ts3a227e_volatile_reg(struct device *dev, unsigned int reg)
- {
- 	switch (reg) {
- 	case TS3A227E_REG_INTERRUPT ... TS3A227E_REG_INTERRUPT_DISABLE:
--	case TS3A227E_REG_SETTING_2:
-+	case TS3A227E_REG_SETTING_1 ... TS3A227E_REG_SETTING_2:
- 	case TS3A227E_REG_SWITCH_STATUS_1 ... TS3A227E_REG_ADC_OUTPUT:
- 		return true;
- 	default:
-@@ -269,14 +277,52 @@ static const struct regmap_config ts3a227e_regmap_config = {
- static int ts3a227e_parse_device_property(struct ts3a227e *ts3a227e,
- 				struct device *dev)
- {
--	u32 micbias;
-+	u32 value;
-+	u32 value_ms;
-+	u32 setting3_value = 0;
-+	u32 setting3_mask = 0;
- 	int err;
- 
--	err = device_property_read_u32(dev, "ti,micbias", &micbias);
-+	err = device_property_read_u32(dev, "ti,micbias", &value);
-+	if (!err) {
-+		setting3_mask = MICBIAS_SETTING_MASK;
-+		setting3_value =
-+			(value << MICBIAS_SETTING_SFT) & MICBIAS_SETTING_MASK;
-+	}
++title: Texas Instruments TS3A227E
++  Autonomous Audio Accessory Detection and Configuration Switch
 +
-+	err = device_property_read_u32(dev, "ti,debounce-release-ms", &value_ms);
- 	if (!err) {
-+		value = (value_ms > 10);
-+		setting3_mask |= DEBOUNCE_RELEASE_SETTING_MASK;
-+		setting3_value |= (value << DEBOUNCE_RELEASE_SETTING_SFT) &
-+				  DEBOUNCE_RELEASE_SETTING_MASK;
-+	}
++maintainers:
++  - Dylan Reid <dgreid@chromium.org>
 +
-+	err = device_property_read_u32(dev, "ti,debounce-press-ms", &value_ms);
-+	if (!err) {
-+		value = (value_ms + 20) / 40;
-+		if (value > 3)
-+			value = 3;
-+		setting3_mask |= DEBOUNCE_PRESS_SETTING_MASK;
-+		setting3_value |= (value << DEBOUNCE_PRESS_SETTING_SFT) &
-+				  DEBOUNCE_PRESS_SETTING_MASK;
-+	}
++description: |
++  The TS3A227E detect headsets of 3-ring and 4-ring standards and
++  switches automatically to route the microphone correctly. It also
++  handles key press detection in accordance with the Android audio
++  headset specification v1.0.
 +
-+	if (setting3_mask)
- 		regmap_update_bits(ts3a227e->regmap, TS3A227E_REG_SETTING_3,
--			MICBIAS_SETTING_MASK,
--			(micbias & 0x07) << MICBIAS_SETTING_SFT);
-+				   setting3_mask, setting3_value);
++properties:
++  compatible:
++    enum:
++      - ti,ts3a227e
 +
-+	err = device_property_read_u32(dev, "ti,debounce-insertion-ms", &value_ms);
-+	if (!err) {
-+		if (value_ms < 165)
-+			value = (value_ms + 15) / 30;
-+		else if (value_ms < 1500)
-+			value = 6;
-+		else
-+			value = 7;
-+		regmap_update_bits(ts3a227e->regmap, TS3A227E_REG_SETTING_1,
-+			DEBOUNCE_INSERTION_SETTING_MASK, (value << DEBOUNCE_INSERTION_SETTING_SFT)
-+			& DEBOUNCE_INSERTION_SETTING_MASK);
- 	}
- 
- 	return 0;
++  reg:
++    const: 0x3b
++
++  interrupts:
++    maxItems: 1
++
++  ti,micbias:
++    $ref: /schemas/types.yaml#/definitions/uint32
++    description: Intended MICBIAS voltage (datasheet section 9.6.7).
++    enum:
++      - 0 # 2.1 V
++      - 1 # 2.2 V
++      - 2 # 2.3 V
++      - 3 # 2.4 V
++      - 4 # 2.5 V
++      - 5 # 2.6 V
++      - 6 # 2.7 V
++      - 7 # 2.8 V
++    default: 1
++
++required:
++  - compatible
++  - reg
++  - interrupts
++
++additionalProperties: false
++
++examples:
++  - |
++    #include <dt-bindings/interrupt-controller/irq.h>
++    i2c {
++        #address-cells = <1>;
++        #size-cells = <0>;
++        codec: audio-controller@3b {
++            compatible = "ti,ts3a227e";
++            reg = <0x3b>;
++            interrupt-parent = <&gpio1>;
++            interrupts = <3 IRQ_TYPE_LEVEL_LOW>;
++        };
++    };
++
++...
+diff --git a/Documentation/devicetree/bindings/sound/ts3a227e.txt b/Documentation/devicetree/bindings/sound/ts3a227e.txt
+deleted file mode 100644
+index 21ab45bc7e8f..000000000000
+--- a/Documentation/devicetree/bindings/sound/ts3a227e.txt
++++ /dev/null
+@@ -1,30 +0,0 @@
+-Texas Instruments TS3A227E
+-Autonomous Audio Accessory Detection and Configuration Switch
+-
+-The TS3A227E detect headsets of 3-ring and 4-ring standards and
+-switches automatically to route the microphone correctly.  It also
+-handles key press detection in accordance with the Android audio
+-headset specification v1.0.
+-
+-Required properties:
+-
+- - compatible:		Should contain "ti,ts3a227e".
+- - reg:			The i2c address. Should contain <0x3b>.
+- - interrupts:		Interrupt number for /INT pin from the 227e
+-
+-Optional properies:
+- - ti,micbias:   Intended MICBIAS voltage (datasheet section 9.6.7).
+-      Select 0/1/2/3/4/5/6/7 to specify MICBIAS voltage
+-      2.1V/2.2V/2.3V/2.4V/2.5V/2.6V/2.7V/2.8V
+-      Default value is "1" (2.2V).
+-
+-Examples:
+-
+-	i2c {
+-		ts3a227e@3b {
+-			compatible = "ti,ts3a227e";
+-			reg = <0x3b>;
+-			interrupt-parent = <&gpio>;
+-			interrupts = <3 IRQ_TYPE_LEVEL_LOW>;
+-		};
+-	};
 -- 
 2.20.1
 
