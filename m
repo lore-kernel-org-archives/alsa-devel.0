@@ -4,83 +4,72 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 670BAECAAD3
-	for <alsa-devel@archiver.kernel.org>; Mon, 19 Sep 2022 08:41:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 19B39ECAAD3
+	for <alsa-devel@archiver.kernel.org>; Mon, 19 Sep 2022 08:51:39 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 7F3D620C;
-	Mon, 19 Sep 2022 10:40:30 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7F3D620C
+	by alsa0.perex.cz (Postfix) with ESMTPS id 5970815C1;
+	Mon, 19 Sep 2022 10:50:47 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5970815C1
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1663576880;
-	bh=q7pJqhJaHdxu1JMiZQjqbP64Iu+NchKYpNeUZ0o62PM=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=epnFU6xHahZjnW93ToLToWKTmlQqyE956XJUwP0C5kh4b5Hy82mbp91OiHcmkFthr
-	 pgztl1gXfZIJpyE++ggvYBKBQnqrzhtDLAzCRLs6mzQ07mEp99UltKHCTRysBs4HiP
-	 HlFhqivdHPSsr6LvZChp2a5oDmr1Nv3gcByWDeeI=
+	s=default; t=1663577497;
+	bh=JRoj95ho0T4wLdf19SkxLigD87bfbLJi96G1FQfG/Xk=;
+	h=Date:Subject:To:References:From:In-Reply-To:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=C0vo+d4M17H0fllor3dG573jTRFwgOAkcRIPT2FAol5NYxIfpgHamJUT5KE1KGNEs
+	 mIz/qLHyt7QLBt+x2ZL/JGamRGFJ58/qdTV5BW2yN4vA+olPspVn9NtxCutUEMLWi6
+	 fNLSyJOfmmmIYhLL0OMGf58sbXcm2De64vNqzrRQ=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 9938CF80539;
-	Mon, 19 Sep 2022 10:39:40 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id E78F1F8016D;
+	Mon, 19 Sep 2022 10:50:46 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id CCCF5F804B3; Sun, 18 Sep 2022 19:13:20 +0200 (CEST)
-Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com
- [IPv6:2a00:1450:4864:20::42d])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id 234E1F8023A; Mon, 19 Sep 2022 10:50:46 +0200 (CEST)
+Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id EFA9EF80134
- for <alsa-devel@alsa-project.org>; Sun, 18 Sep 2022 19:13:17 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EFA9EF80134
+ by alsa1.perex.cz (Postfix) with ESMTPS id CC937F80134
+ for <alsa-devel@alsa-project.org>; Mon, 19 Sep 2022 10:50:42 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CC937F80134
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
- header.b="PXZoODrW"
-Received: by mail-wr1-x42d.google.com with SMTP id n12so3332765wrx.9
- for <alsa-devel@alsa-project.org>; Sun, 18 Sep 2022 10:13:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
- h=content-transfer-encoding:mime-version:message-id:date:subject:cc
- :to:from:from:to:cc:subject:date;
- bh=bdLlsx0qQ1Tq/c9TtyrU7bglWcYLVdx93s3ZyR2mNek=;
- b=PXZoODrWWaLFGLzul2SpL4FoFQqldoksZAr/vJFof7HuQIzgKUUdKLt99iNtorWfEK
- Hot+zzxZPWavt2jfR9wWwB3A+mVPaySmXMqY/Q9xn9Sn3O0CJLdE92g9i7IMn7i9Jauf
- C9PZZrEIqgXVDJ4+GbfmuH9874zUOaFZQ8+H0NHej23K3vgnbZ2llbLRrMosg677whCI
- Mre3kwK/1/vc32psbeXusEIvHtWNyPq/oFZgKsLB+2qO/tHeb1yhMc1BP0etCi8GO7MG
- ZjbiXlvKilhCjfL4CAcwgt7zXA4LgpjK1YK/MIIEGbxmiqV8p9YsQjXa3YB3SSpSCaj0
- D2Hw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=content-transfer-encoding:mime-version:message-id:date:subject:cc
- :to:from:x-gm-message-state:from:to:cc:subject:date;
- bh=bdLlsx0qQ1Tq/c9TtyrU7bglWcYLVdx93s3ZyR2mNek=;
- b=WHSczv8wTlXcQEHxeK8AKrlGnci8Vq4EcsqpTIPL00TYQvaY4ZPNKJHqLinR/uf3i4
- +O+HZn7A1Y2aaEmqbCiMoiRjTlxwIoKXqIz3AZwFgSMDwwSThGUbO00tx+oh2/RkZG69
- zOqhufH37kJ6d2RqokBfx0HUUpYiMdGfJ/Or9WqXakkA38TSuHQ+LpOl1V4smSsyQ4/j
- 2pwGw7d/fqcRqFKGsYwEmv9De+M2dcFEyAq0Bx02/kOXlP8/MQIDcpiXtu95KDzLtDop
- CRfRTwbCqs5j8KIo2MjiQOwqqLGGdZ0Al/H3jMj1j1QRx9jVNQPbDdZY0odvjKzEvqQY
- UD6A==
-X-Gm-Message-State: ACrzQf3AYWu8KvK9mdotvsJ1arzcAWE0WC50zfyDcK4Cf+cF+/WISn5q
- AKmJMJ0HvNKkmsqa5ORx32I=
-X-Google-Smtp-Source: AMsMyM5eysqyw2DfBkBD8jpTovlJciF+4EwS3auvmkvId45xusVDC7Ymd+wMpux8I+UcVs9GNo4T6w==
-X-Received: by 2002:a05:6000:552:b0:228:6296:3b33 with SMTP id
- b18-20020a056000055200b0022862963b33mr8945415wrf.615.1663521195986; 
- Sun, 18 Sep 2022 10:13:15 -0700 (PDT)
-Received: from daptop.. (host86-156-148-202.range86-156.btcentralplus.com.
- [86.156.148.202]) by smtp.gmail.com with ESMTPSA id
- f7-20020a05600c4e8700b003b340f00f10sm10375728wmq.31.2022.09.18.10.13.14
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Sun, 18 Sep 2022 10:13:14 -0700 (PDT)
-From: Daniel Houldsworth <dhould3@gmail.com>
-To: perex@perex.cz,
-	tiwai@suse.com
-Subject: [PATCH] ALSA: hda/realtek: Add a quirk for HP OMEN 16 (8902) mute LED
-Date: Sun, 18 Sep 2022 18:13:00 +0100
-Message-Id: <20220918171300.24693-1-dhould3@gmail.com>
-X-Mailer: git-send-email 2.37.3
+ dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
+ header.b="j5z/07ky"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+ d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+ t=1663577444; x=1695113444;
+ h=message-id:date:mime-version:subject:to:references:from:
+ in-reply-to:content-transfer-encoding;
+ bh=JRoj95ho0T4wLdf19SkxLigD87bfbLJi96G1FQfG/Xk=;
+ b=j5z/07kyKo3jsgPWT6IJXsed3xl8skBokfIVUGazgrJCbDJh2Oy5USqA
+ I0tSLOUMXgAPQcZMpDjvFAfbzZws/4xWdb+TKEMKlVM1MySSRLqXQTrq1
+ msvfKj/7NcNnj4b7zkj5MG0gMPj3PzpENR5ACGnc6SxH/bBDpQfSH2S5u
+ N+zHz/7P5uuCq0XygklGEzG/LZBWGhfesIU59m51Ht7+9xXoDPJgxbTMZ
+ xQE/tQoXg7VBPYKBEZf/8C69czjYrb+N/kNIvOex52ETN80umpl81wM3h
+ 6sJnz/iH+ESOjYjQ6IgWbSOpGwATPm68KtU2ugfLcpCyWCps0+cfN9r1Y Q==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10474"; a="385634552"
+X-IronPort-AV: E=Sophos;i="5.93,327,1654585200"; d="scan'208";a="385634552"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+ by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 19 Sep 2022 01:50:39 -0700
+X-IronPort-AV: E=Sophos;i="5.93,327,1654585200"; d="scan'208";a="680760900"
+Received: from ilick-mobl1.ger.corp.intel.com (HELO [10.252.59.91])
+ ([10.252.59.91])
+ by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 19 Sep 2022 01:50:38 -0700
+Message-ID: <6a869047-4bb6-86a2-012b-1c5aed5a9d56@linux.intel.com>
+Date: Mon, 19 Sep 2022 10:50:34 +0200
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Mailman-Approved-At: Mon, 19 Sep 2022 10:39:37 +0200
-Cc: dhould3@gmail.com, alsa-devel@alsa-project.org,
- linux-kernel@vger.kernel.org
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Firefox/91.0 Thunderbird/91.11.0
+Subject: Re: "no soundcard" for GeminiLake High Definition Audio (rev 06)
+Content-Language: en-US
+To: linasvepstas@gmail.com, alsa-devel@alsa-project.org
+References: <CAHrUA35O4Av+-+dbr69LrgHfXAWF1+d4xwJSF7k2Tx4YWrQ8kw@mail.gmail.com>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+In-Reply-To: <CAHrUA35O4Av+-+dbr69LrgHfXAWF1+d4xwJSF7k2Tx4YWrQ8kw@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -96,26 +85,16 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Similair to the HP OMEN 15, the HP OMEN 16 also needs
-ALC285_FIXUP_HP_MUTE_LED for the mute LED to work.
 
-Signed-off-by: Daniel Houldsworth <dhould3@gmail.com>
----
- sound/pci/hda/patch_realtek.c | 1 +
- 1 file changed, 1 insertion(+)
 
-diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-index 38930cf5a..c7d07d6df 100644
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -9265,6 +9265,7 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
- 	SND_PCI_QUIRK(0x103c, 0x8786, "HP OMEN 15", ALC285_FIXUP_HP_MUTE_LED),
- 	SND_PCI_QUIRK(0x103c, 0x8787, "HP OMEN 15", ALC285_FIXUP_HP_MUTE_LED),
- 	SND_PCI_QUIRK(0x103c, 0x8788, "HP OMEN 15", ALC285_FIXUP_HP_MUTE_LED),
-+	SND_PCI_QUIRK(0x103c, 0x8902, "HP OMEN 16", ALC285_FIXUP_HP_MUTE_LED),
- 	SND_PCI_QUIRK(0x103c, 0x87c8, "HP", ALC287_FIXUP_HP_GPIO_LED),
- 	SND_PCI_QUIRK(0x103c, 0x87e5, "HP ProBook 440 G8 Notebook PC", ALC236_FIXUP_HP_GPIO_LED),
- 	SND_PCI_QUIRK(0x103c, 0x87e7, "HP ProBook 450 G8 Notebook PC", ALC236_FIXUP_HP_GPIO_LED),
--- 
-2.37.3
+On 9/17/22 20:53, Linas Vepstas wrote:
+> Kernel reports "no soundcard". Presumably, this is why I don't have
+> sound. Let me dive right in with details:
 
+> FWIW, more about this hardware:
+> -- It's a cheap laptop, from newegg, Ipason MaxBook P1X, 4-core Intel
+> Celeron, 12GB RAM, great price.
+
+and no linux support. Yay.
+
+see https://github.com/thesofproject/linux/wiki/ES8336-support
