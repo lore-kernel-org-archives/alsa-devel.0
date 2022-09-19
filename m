@@ -4,68 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id AA1FFC6FA8B
-	for <alsa-devel@archiver.kernel.org>; Mon, 19 Sep 2022 23:10:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A0490C6FA8B
+	for <alsa-devel@archiver.kernel.org>; Mon, 19 Sep 2022 23:11:23 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C834B852;
-	Tue, 20 Sep 2022 01:10:07 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C834B852
+	by alsa0.perex.cz (Postfix) with ESMTPS id 7F63D84D;
+	Tue, 20 Sep 2022 01:10:31 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7F63D84D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1663629057;
-	bh=r8l1H1dUP1+Xajl2EvdwygN3Ilujb7RC3UjtlQLP+dc=;
+	s=default; t=1663629081;
+	bh=pQAafg01ffLkLSnjXIOUXsCOiRe48tHjwt1h0N8nmLk=;
 	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=LZMHQ+vjA6YIPnr/JqXbmV3GPaKe3epc3aHieG7DKdLj6HRkzfSkO1jrXwoOLPsm6
-	 5B4aeyPoF8y85TsVD0gpA4eNVbmaW5utl0BJJjfnwAiposDmTgOqcuuwpMagErxfdC
-	 Ce520cKwO14Ii4yLEoTwyRvjRkQNXTq/xsBOVPvw=
+	b=j/CUu2o+4qXllDCwtULUmXDCqKxZxCYIedw7Eo9TtRNngAw85ayeU7Y6Zw9qbIKBI
+	 vgE181u/gJ7YDXxchU+e4w7ZfK51uW/PIuyoVU3YXeWAMXnB50F7XoBuVjjvF9UwuK
+	 oqop5TBUiM3/c1x2qAKH6qkeMSdswvAs6HCppzXk=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 0E4DDF803DD;
-	Tue, 20 Sep 2022 01:09:44 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 8C0D3F804AE;
+	Tue, 20 Sep 2022 01:09:48 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 23F87F803DD; Tue, 20 Sep 2022 01:09:42 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+ id 612AAF80539; Tue, 20 Sep 2022 01:09:47 +0200 (CEST)
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 9DB7BF8032B
- for <alsa-devel@alsa-project.org>; Tue, 20 Sep 2022 01:09:39 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9DB7BF8032B
+ by alsa1.perex.cz (Postfix) with ESMTPS id DD2C4F804AE
+ for <alsa-devel@alsa-project.org>; Tue, 20 Sep 2022 01:09:37 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DD2C4F804AE
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="LOi5qsTq"
+ header.b="UJN/7k+o"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id 62035618C4;
- Mon, 19 Sep 2022 23:09:38 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0BC10C433D6;
- Mon, 19 Sep 2022 23:09:35 +0000 (UTC)
+ by ams.source.kernel.org (Postfix) with ESMTPS id B2BE3B81A6A;
+ Mon, 19 Sep 2022 23:09:36 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0A80BC433D7;
+ Mon, 19 Sep 2022 23:09:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1663628977;
- bh=r8l1H1dUP1+Xajl2EvdwygN3Ilujb7RC3UjtlQLP+dc=;
+ s=k20201202; t=1663628975;
+ bh=pQAafg01ffLkLSnjXIOUXsCOiRe48tHjwt1h0N8nmLk=;
  h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=LOi5qsTqDfLHBI8TxbV/CnJKxdNqUur3/SBKCasNjDZlAg1Q53zrUbKqV0K29zFdy
- wUdbZS2oytzcCRkmR6ZyjB7e1uo+dryeWBp49GvagnTwRYEuzJ8vrTdiA/W9gxTEcL
- MTWMlBBubbHb7cxQ7uoI0mFbJpXbR5e6+UGqZbTBNaZqd6gs5AkruWoPk0MUUBE3Nk
- 3pH+NDIiEZ+7kVOz5TClP2UkaXw8F1b8GO74SEUXE2owW5AyvJ+NlAz/WXuoz7nz0A
- 1brHmanZs61cDzMen/enpA9rkHtJyHmsBozLe+BFigSwhkY0rXXOfb0tz+nF8Pombs
- cGJn/WI6vKlvQ==
+ b=UJN/7k+oxHQX1lnx0WHwyZuv9q/IHW4RNld5TD/wK8JjKutyQOq4pMmrU/nZ75sg8
+ YlRa3QneYkn2oeRWhBlgwzEaT4DC1jGhvYgZONMZPwIdc3O+Z9MT/dHXII4ZhrI2HQ
+ my+zhPwLpwxw2IkjvmpgQuxx/N6uFlVsCk4DvVIgoCLiOg3bVfRJS/9n9bjlLzEF+T
+ GQZYwpkvawpAP3/NafmDfbixrHqa2WtIj4FD3R95lICIsbha7c6Ntk7FW6fBE0XbJh
+ /3W2kbujPj9BZ+MO5XwAZww1Yr1FfnO4lm9eUApFzRSvhps7dlq+Vm+0S8tmlr4tTR
+ Ms9ZjFRnI4CIA==
 From: Mark Brown <broonie@kernel.org>
-To: Martin Povišer <povik+lin@cutebit.org>, Liam Girdwood <lgirdwood@gmail.com>
-In-Reply-To: <20220919173453.84292-1-povik+lin@cutebit.org>
-References: <20220919173453.84292-1-povik+lin@cutebit.org>
-Subject: Re: [PATCH] ASoC: tas2770: Reinit regcache on reset
-Message-Id: <166362897579.3419380.16445673057492770418.b4-ty@kernel.org>
-Date: Tue, 20 Sep 2022 00:09:35 +0100
+To: Wallace Lin <SJLIN0@nuvoton.com>
+In-Reply-To: <20220915012800.825196-1-SJLIN0@nuvoton.com>
+References: <20220915012800.825196-1-SJLIN0@nuvoton.com>
+Subject: Re: [PATCH] ASOC: nau8824: Fix semaphore is released unexpectedly
+Message-Id: <166362897277.3419380.16351123570334874819.b4-ty@kernel.org>
+Date: Tue, 20 Sep 2022 00:09:32 +0100
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 X-Mailer: b4 0.11.0-dev-8af31
-Cc: alsa-devel@alsa-project.org, Charles Keepax <ckeepax@opensource.cirrus.com>,
- linux-kernel@vger.kernel.org, navada@ti.com, Dan Murphy <dmurphy@ti.com>,
- Stephen Kitt <steve@sk2.org>
+Cc: alsa-devel@alsa-project.org, scott6986@gmail.com, WTLI@nuvoton.com,
+ KCHSU0@nuvoton.com, lgirdwood@gmail.com, YHCHuang@nuvoton.com,
+ CTLIN0@nuvoton.com, dardar923@gmail.com, savagecin@gmail.com,
+ supercraig0719@gmail.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -81,13 +82,19 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Mon, 19 Sep 2022 19:34:53 +0200, Martin Povišer wrote:
-> On probe of the ASoC component, the device is reset but the regcache is
-> retained. This means the regcache gets out of sync if the codec is
-> rebound to a sound card for a second time. Fix it by reinitializing the
-> regcache to defaults after the device is reset.
+On Thu, 15 Sep 2022 09:28:00 +0800, Wallace Lin wrote:
+> From: SJLIN0 <SJLIN0@nuvoton.com>
 > 
+> On resuming, we anticipate that the jack is detected before playback
+> or capture. Therefore, we use semaphore to control the jack detection
+> done without any bothering. During booting, the driver launches jack
+> detection and releases the semaphore. However, it doesn't perceive the
+> maniputation of semaphore is not like resuming procedure. This makes
+> the semaphore's count value become to 2. There is more than one thread
+> can enter into the critical section. This may get unexpected situation
+> and make some chaos.
 > 
+> [...]
 
 Applied to
 
@@ -95,8 +102,8 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: tas2770: Reinit regcache on reset
-      commit: 0a0342ede303fc420f3a388e1ae82da3ae8ff6bd
+[1/1] ASOC: nau8824: Fix semaphore is released unexpectedly
+      commit: 7042bde216ada135b2f88423ae714ab9a22e3a22
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
