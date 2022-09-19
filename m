@@ -4,72 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 98F18C6FA8B
-	for <alsa-devel@archiver.kernel.org>; Mon, 19 Sep 2022 23:14:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D55D1C6FA82
+	for <alsa-devel@archiver.kernel.org>; Mon, 19 Sep 2022 23:14:46 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id BDC63886;
-	Tue, 20 Sep 2022 01:13:37 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BDC63886
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0D872851;
+	Tue, 20 Sep 2022 01:13:55 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0D872851
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1663629267;
-	bh=QqCeONs3KOkZtBFUS0zKL1oQTF3Sy4lu9v7FOyHocbM=;
+	s=default; t=1663629285;
+	bh=LDsKxnhbQrE/ZqXth8SExE7uHfC+ker6gidpn7m6tdk=;
 	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=ZQUVFg9gxVkZymnXmKPTyjqdjGqUZdKMo/nPE10xy71NFQwAJqqLeBLjxI2adX/Yj
-	 3b9qZBx0FpuqiEtmDs0L+oJI10Rcb7wgY9WZV9KlxKn6gIWHboAtoqOaS3KH0VCOAc
-	 Aqk3S1I0BCz5BQi5EbvYMwJAi2MGsvaL+krSaIUU=
+	b=cZXHL5k5Pdr8bprthAGtI+LFF7kCJIBA9KvA06ClndHRfdyXW15QNRNFX+oqCnAwn
+	 Gx9FAWqmUNN/xGZkylq0lWNpm+0Ay2j4xB2VPZH5StjTi41kQyYF3mIpqPeKMdhzhK
+	 FD14sJfqorPXg1T1cJn0FiZBiHPgS7aYvdLj+1uk=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 5FDB4F805BB;
-	Tue, 20 Sep 2022 01:10:33 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 131ECF805C1;
+	Tue, 20 Sep 2022 01:10:36 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 99402F805B1; Tue, 20 Sep 2022 01:10:32 +0200 (CEST)
+ id 3CC7BF805BF; Tue, 20 Sep 2022 01:10:34 +0200 (CEST)
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id B34B7F805B1
- for <alsa-devel@alsa-project.org>; Tue, 20 Sep 2022 01:10:25 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B34B7F805B1
+ by alsa1.perex.cz (Postfix) with ESMTPS id B2E76F8023A
+ for <alsa-devel@alsa-project.org>; Tue, 20 Sep 2022 01:10:31 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B2E76F8023A
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="pjI1AIGh"
+ header.b="uSYOA+wP"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id 7306B620E6;
- Mon, 19 Sep 2022 23:10:25 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B815EC433D7;
- Mon, 19 Sep 2022 23:10:22 +0000 (UTC)
+ by dfw.source.kernel.org (Postfix) with ESMTPS id A1C5F62101;
+ Mon, 19 Sep 2022 23:10:30 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 13111C433D6;
+ Mon, 19 Sep 2022 23:10:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1663629024;
- bh=QqCeONs3KOkZtBFUS0zKL1oQTF3Sy4lu9v7FOyHocbM=;
+ s=k20201202; t=1663629029;
+ bh=LDsKxnhbQrE/ZqXth8SExE7uHfC+ker6gidpn7m6tdk=;
  h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=pjI1AIGhfAL0E2t0uGutcQ3DaPuzGrD0swHQdAGOETonyFGSeQK7R2srr2eFiE9l7
- EomSKUFuEYUbJSDwSk2RWJe+xA07mYIOywSaEkd9Jq/3pRNntgJt5Nes4dl+WCXRSt
- T6uaHOyEGXUr50fnLo8f9T2LT1B/5I3FzH2jGz4Xr+54blBfoFgTGi7fjJOVQNx353
- LG5Y+V797js3rfYhTzhjbK7ekYKGYbFcp1k3sN3zmc00itIq9dqb8Nz/bzfpqsLLCg
- YvSFp8bvutSy+ScGZuJEXFFGPbqy+6Z1IpHEOLulUcxoURbUDPesppx8LkaXWroBfr
- bbq/nkiKNMgyQ==
+ b=uSYOA+wPCMHEmFG1c8Twijc7L11gTw+AjncUz9pieSr1usTpz9AzWvHUXRoXKdfQI
+ EihOvbmiHN+gPoYVn+Q9uD4jsBbR+fJT47Hw9PFe+Pm3BZ6eneiirvrwOmv3hVjilK
+ Oz5vn/jUHAang5JQfNunoc9kTepfKDY2Ux7Ri2YgHg347z8ddWvR7/fyzW68wpnpvp
+ nYwnFocZStbzryxP+K82FpKzyAKgF0OL3ngL7H7Y/oH9JDIidSNbTsYJj43qE1Ylis
+ WWfGNHe1ha8mxAWgz1BChMzPeAht6vXLJV4tuICE4meS1o4wRmpuxeaL4AyUMW8LB6
+ oiR1Seigm0jlQ==
 From: Mark Brown <broonie@kernel.org>
-To: alsa-devel@alsa-project.org,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-In-Reply-To: <20220919114429.42700-1-pierre-louis.bossart@linux.intel.com>
-References: <20220919114429.42700-1-pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH] ASOC: SOF: pci: Change DMI match info to support all
- Chrome platforms
-Message-Id: <166362902247.3419825.17438221743152081978.b4-ty@kernel.org>
-Date: Tue, 20 Sep 2022 00:10:22 +0100
+To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+In-Reply-To: <20220916132427.1845-1-srinivas.kandagatla@linaro.org>
+References: <20220916132427.1845-1-srinivas.kandagatla@linaro.org>
+Subject: Re: [PATCH v5 0/5] ASoC: qcom: add support for sc8280xp machine
+Message-Id: <166362902680.3419825.7703076569523626210.b4-ty@kernel.org>
+Date: Tue, 20 Sep 2022 00:10:26 +0100
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 X-Mailer: b4 0.11.0-dev-8af31
-Cc: Jairaj Arava <jairaj.arava@intel.com>,
- Curtis Malainey <curtis@malainey.com>,
- Ranjani Sridharan <ranjani.sridharan@linux.intel.com>, tiwai@suse.de,
- Sathyanarayana Nujella <sathyanarayana.nujella@intel.com>,
- Chao Song <chao.song@intel.com>, Curtis Malainey <cujomalainey@chromium.org>
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
+ krzysztof.kozlowski+dt@linaro.org, lgirdwood@gmail.com,
+ linux-arm-msm@vger.kernel.org, tiwai@suse.com, linux-kernel@vger.kernel.org,
+ robh+dt@kernel.org, bgoswami@quicinc.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -85,14 +82,14 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Mon, 19 Sep 2022 13:44:29 +0200, Pierre-Louis Bossart wrote:
-> From: Jairaj Arava <jairaj.arava@intel.com>
+On Fri, 16 Sep 2022 14:24:22 +0100, Srinivas Kandagatla wrote:
+> This patchset adds support for SC8280XP SoC machine driver.
 > 
-> In some Chrome platforms if OEM's use their own string as SYS_VENDOR than
-> "Google", it leads to firmware load failure from intel/sof/community path.
+> First patch moves some of the commonly used code to common from sm8250 machine driver
+> and the follow on code adds minimal support for sc8280xp.
 > 
-> Hence, changing SYS_VENDOR to PRODUCT_FAMILY in which "Google" is used
-> as common prefix and is supported in all Chrome platforms.
+> Currently this driver is only tested with SmartSpeakers and Headset
+> on Lenovo Thinkpad X13s.
 > 
 > [...]
 
@@ -102,8 +99,16 @@ Applied to
 
 Thanks!
 
-[1/1] ASOC: SOF: pci: Change DMI match info to support all Chrome platforms
-      commit: c1c1fc8103f794a10c5c15e3c17879caf4f42c8f
+[1/5] ASoC: qcom: common: use EXPORT_SYMBOL_GPL instead of EXPORT_SYMBOL
+      commit: a25f4e2cdd5d64408b0fa56115ebebd8cc5cb6c0
+[2/5] ASoC: dt-bindings: qcom: sort compatible strings
+      commit: e4f10cc23cefe16ed69987cb2648f5111e6eacb4
+[3/5] ASoC: dt-bindings: qcom,sm8250: add compatibles for sm8450 and sm8250
+      commit: f19097cc5adfd29bf2aecd8e0137331fab36946b
+[4/5] ASoC: qcom: sm8250: move some code to common
+      commit: 3bd975f3ae0a245e4b851c2b0c97b0a71e5359d6
+[5/5] ASoC: qcom: add machine driver for sc8280xp
+      commit: 295aeea6646ad6cf26c24f5c493ddb60b8f5a0f4
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
