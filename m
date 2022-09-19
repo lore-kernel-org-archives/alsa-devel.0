@@ -4,71 +4,73 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 43007C6FA82
-	for <alsa-devel@archiver.kernel.org>; Mon, 19 Sep 2022 23:12:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D5AEBC6FA82
+	for <alsa-devel@archiver.kernel.org>; Mon, 19 Sep 2022 23:12:19 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 6DF6D85D;
-	Tue, 20 Sep 2022 01:11:09 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6DF6D85D
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0B744950;
+	Tue, 20 Sep 2022 01:11:28 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0B744950
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1663629119;
-	bh=igYKGEMkVWZdVGm2ELsEz7si+LPkcjdSY2Z7eWGUFJo=;
+	s=default; t=1663629138;
+	bh=czrs/JCQeLvkCIsmJwNiu8IJWSro2CgKkL6JbaWcVtk=;
 	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=E7ct1u8szrfpSXx/Ll3BYuyTHZFINWVKnZepJ/PHbNYCs+8qnSi5GZIcCNpGg4wL6
-	 5hz0RhDdprq+pc8U1nblA4kylA0cUi1TmT4REzCKsfg8tAmXUtQpV7PHQWxexsTPYW
-	 9ieyi/wBqz0927N0uXmyibeMZXw1QTNfift1w668=
+	b=YBkoz4QTwPJwOt00YIeo6o24DBgNQ7YMxFtFKMPGAV/3/4GtezLTU7f1VT0mvbfSq
+	 QNz/HHUuZB7HJ5RQS/skkmP4W03rl6JO86D5g6nBfLekz+kPWnL1EjPoSDxrMyTfOa
+	 vT0qlq/hRHCVwuFoIVF8CnZz3djz1gm+JswYz6d8=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id A8FA0F8055B;
-	Tue, 20 Sep 2022 01:10:02 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 90F3BF8055A;
+	Tue, 20 Sep 2022 01:10:06 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id DA0D0F8055C; Tue, 20 Sep 2022 01:10:01 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org
- [IPv6:2604:1380:4641:c500::1])
+ id BBFEBF80566; Tue, 20 Sep 2022 01:10:04 +0200 (CEST)
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id AFAA0F80553
- for <alsa-devel@alsa-project.org>; Tue, 20 Sep 2022 01:09:54 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AFAA0F80553
+ by alsa1.perex.cz (Postfix) with ESMTPS id 815EDF8055A
+ for <alsa-devel@alsa-project.org>; Tue, 20 Sep 2022 01:09:58 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 815EDF8055A
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="Alk8/hF8"
+ header.b="Mg/cQGoM"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id 1D07661AA0;
- Mon, 19 Sep 2022 23:09:53 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C4589C433C1;
- Mon, 19 Sep 2022 23:09:49 +0000 (UTC)
+ by ams.source.kernel.org (Postfix) with ESMTPS id 17217B821D1;
+ Mon, 19 Sep 2022 23:09:58 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 18EF9C433D7;
+ Mon, 19 Sep 2022 23:09:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1663628992;
- bh=igYKGEMkVWZdVGm2ELsEz7si+LPkcjdSY2Z7eWGUFJo=;
+ s=k20201202; t=1663628996;
+ bh=czrs/JCQeLvkCIsmJwNiu8IJWSro2CgKkL6JbaWcVtk=;
  h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=Alk8/hF8nfIlempZVl9m7mGDOD6fET76tus9iC7WtCzClw30IsM6huQt9WG6OiNw1
- cF2l+5VfLNJ/j8fMc8kg1nYdXLuzC+O+O0JsRZOz4PlejLV0JwP1qNqlknypzvGV4l
- 6bwAZnPZeArHaXjfSWeEjmReX7gsfUlrx9Q4nmBeLZVYWMMLkR0TGIGq8/8qSo+By8
- njwsTDKNvT0QhFv6XioyODHk9p4pJj4JdQZNlPYy4/Vzq9MW/itgoG8UBkxr8ph4Am
- r2mwth4rvmd6MqnbeFpJOt5FeXXElWpjQNa+5uiadIt7eg08PMqOTC+rM6TUSMOB6a
- N7HNmM6OiVGgg==
+ b=Mg/cQGoMb8m9PzRTTpYjd49+LbRU/6ZjCo8Bg2Ab0xbW4qXjaxNSgEB8OXh2GyNVt
+ 4QQnbqckOAOykeXnJBqmBRAvWhjKRBGpLdsyvSl6xbVd5/V6Ix2EqKzEJsYKTmNokX
+ lzGtKmY/5G9Pou0ntN1hkiCGCMBLNzlftPINBK7J1kd44c7++4u0riEcOfhXWL5jLo
+ FnGL2gi00vYJxuHMbN/PRZ8NBm/pbrUnVidmbq7jVYsqk7M03k1nI3abL0xL3dnBXh
+ XTC/YRTehVtbLt89qS/2UrcYX0Zi/aA+rkaXtnzfEoTkajZKu2KfKezKghKFCB1Tf2
+ 9cYz94xHxhEGA==
 From: Mark Brown <broonie@kernel.org>
 To: cgel.zte@gmail.com
-In-Reply-To: <20220916062027.152815-1-ye.xingchen@zte.com.cn>
-References: <20220916062027.152815-1-ye.xingchen@zte.com.cn>
-Subject: Re: [PATCH linux-next] ASoC: amd: acp: use function devm_kcalloc()
- instead of devm_kzalloc()
-Message-Id: <166362898954.3419825.40424963961525082.b4-ty@kernel.org>
-Date: Tue, 20 Sep 2022 00:09:49 +0100
+In-Reply-To: <20220916062234.153275-1-ye.xingchen@zte.com.cn>
+References: <20220916062234.153275-1-ye.xingchen@zte.com.cn>
+Subject: Re: [PATCH linux-next] ASoC: Intel: sof_cs42l42: use function
+ devm_kcalloc() instead of devm_kzalloc()
+Message-Id: <166362899277.3419825.11560937482868750935.b4-ty@kernel.org>
+Date: Tue, 20 Sep 2022 00:09:52 +0100
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 X-Mailer: b4 0.11.0-dev-8af31
-Cc: alsa-devel@alsa-project.org, AjitKumar.Pandey@amd.com, lgirdwood@gmail.com,
+Cc: alsa-devel@alsa-project.org, pierre-louis.bossart@linux.intel.com,
+ cezary.rojewski@intel.com, kai.vehmanen@linux.intel.com,
  ye xingchen <ye.xingchen@zte.com.cn>, Zeal Robot <zealci@zte.com.cn>,
- linux-kernel@vger.kernel.org, tiwai@suse.com, baijiaju1990@gmail.com,
- akihiko.odaki@gmail.com, Vsujithkumar.Reddy@amd.com
+ peter.ujfalusi@linux.intel.com, tiwai@suse.com,
+ ranjani.sridharan@linux.intel.com, liam.r.girdwood@linux.intel.com,
+ akihiko.odaki@gmail.com, yung-chuan.liao@linux.intel.com, brent.lu@intel.com,
+ linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -84,7 +86,7 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Fri, 16 Sep 2022 06:20:27 +0000, cgel.zte@gmail.com wrote:
+On Fri, 16 Sep 2022 06:22:34 +0000, cgel.zte@gmail.com wrote:
 > From: ye xingchen <ye.xingchen@zte.com.cn>
 > 
 > Use 2-factor multiplication argument form devm_kcalloc() instead
@@ -98,8 +100,8 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: amd: acp: use function devm_kcalloc() instead of devm_kzalloc()
-      commit: f047199e6f3115896fee25ac8809e1a9a8c948fc
+[1/1] ASoC: Intel: sof_cs42l42: use function devm_kcalloc() instead of devm_kzalloc()
+      commit: ce6be534a615a361bf4877bd321639993dd74dfe
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
