@@ -4,67 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6E718C6FA8B
-	for <alsa-devel@archiver.kernel.org>; Mon, 19 Sep 2022 23:10:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id AA1FFC6FA8B
+	for <alsa-devel@archiver.kernel.org>; Mon, 19 Sep 2022 23:10:59 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D20C41EF;
-	Tue, 20 Sep 2022 01:09:40 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D20C41EF
+	by alsa0.perex.cz (Postfix) with ESMTPS id C834B852;
+	Tue, 20 Sep 2022 01:10:07 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C834B852
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1663629030;
-	bh=FRt7yOXbPx55xy2i6c/5Bo2W0CUcTVzoZFN5G7CqhSU=;
+	s=default; t=1663629057;
+	bh=r8l1H1dUP1+Xajl2EvdwygN3Ilujb7RC3UjtlQLP+dc=;
 	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=p/dThXFZxbEF7CeNacIEDSAjDO6kfITPYOWxXFGw329p1wknOesQcAOPlwFBkl5nU
-	 nHrZiLBvPeK/ZxQjYqQ2Ksn+NSxi3Pn4C/BNFXzgkO0Bcjnnl2zqkEZSz+WdvkDXkg
-	 qoPdFv22u7b327H5FxUbLqL1oPRGVZteQ/Cr0200=
+	b=LZMHQ+vjA6YIPnr/JqXbmV3GPaKe3epc3aHieG7DKdLj6HRkzfSkO1jrXwoOLPsm6
+	 5B4aeyPoF8y85TsVD0gpA4eNVbmaW5utl0BJJjfnwAiposDmTgOqcuuwpMagErxfdC
+	 Ce520cKwO14Ii4yLEoTwyRvjRkQNXTq/xsBOVPvw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 5B214F8016D;
-	Tue, 20 Sep 2022 01:09:40 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 0E4DDF803DD;
+	Tue, 20 Sep 2022 01:09:44 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id BAA8AF8023A; Tue, 20 Sep 2022 01:09:38 +0200 (CEST)
+ id 23F87F803DD; Tue, 20 Sep 2022 01:09:42 +0200 (CEST)
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 2871DF80134
- for <alsa-devel@alsa-project.org>; Tue, 20 Sep 2022 01:09:35 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2871DF80134
+ by alsa1.perex.cz (Postfix) with ESMTPS id 9DB7BF8032B
+ for <alsa-devel@alsa-project.org>; Tue, 20 Sep 2022 01:09:39 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9DB7BF8032B
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="P9RROkas"
+ header.b="LOi5qsTq"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id 1E2AE61806;
- Mon, 19 Sep 2022 23:09:33 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3ED60C433D6;
- Mon, 19 Sep 2022 23:09:30 +0000 (UTC)
+ by dfw.source.kernel.org (Postfix) with ESMTPS id 62035618C4;
+ Mon, 19 Sep 2022 23:09:38 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0BC10C433D6;
+ Mon, 19 Sep 2022 23:09:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1663628972;
- bh=FRt7yOXbPx55xy2i6c/5Bo2W0CUcTVzoZFN5G7CqhSU=;
+ s=k20201202; t=1663628977;
+ bh=r8l1H1dUP1+Xajl2EvdwygN3Ilujb7RC3UjtlQLP+dc=;
  h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=P9RROkas0A+tET/WhREU5Vt/+/p/+zZ45wtEb4pbDJjbCyzqOqQ8LEsjda34UDSKg
- PKnxR49OEIytGbmSglE3ufgLnD1QNgIF1H90YfUG5WPDGUGzxQCl16cAJ4bkuZ2cZ7
- P4+1wV6ufcPF6TUYR4QXKuAs+Zp+VgwV69o1R17DRDdFsSL9kv5uYMbOrPso3M9BM7
- xErku821890ejS9wLPCJjG22cOiC2/colqPwVT6Kjwk9AvfvtZXGX/SiWzd7683HgB
- OzQWWT4ui3pvPM6g8z6Ll3Dq+Y97PBCKK7c/sO/KhhafjTIZSTxZi000qgdOqWuU3W
- Ocu7SiKuvanig==
+ b=LOi5qsTqDfLHBI8TxbV/CnJKxdNqUur3/SBKCasNjDZlAg1Q53zrUbKqV0K29zFdy
+ wUdbZS2oytzcCRkmR6ZyjB7e1uo+dryeWBp49GvagnTwRYEuzJ8vrTdiA/W9gxTEcL
+ MTWMlBBubbHb7cxQ7uoI0mFbJpXbR5e6+UGqZbTBNaZqd6gs5AkruWoPk0MUUBE3Nk
+ 3pH+NDIiEZ+7kVOz5TClP2UkaXw8F1b8GO74SEUXE2owW5AyvJ+NlAz/WXuoz7nz0A
+ 1brHmanZs61cDzMen/enpA9rkHtJyHmsBozLe+BFigSwhkY0rXXOfb0tz+nF8Pombs
+ cGJn/WI6vKlvQ==
 From: Mark Brown <broonie@kernel.org>
-To: alsa-devel@alsa-project.org,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-In-Reply-To: <20220919114640.42803-1-pierre-louis.bossart@linux.intel.com>
-References: <20220919114640.42803-1-pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH] ASoC: Intel: sof_sdw: add support for Dell SKU 0AFF
-Message-Id: <166362897091.3419380.6583363911970883523.b4-ty@kernel.org>
-Date: Tue, 20 Sep 2022 00:09:30 +0100
+To: Martin Povišer <povik+lin@cutebit.org>, Liam Girdwood <lgirdwood@gmail.com>
+In-Reply-To: <20220919173453.84292-1-povik+lin@cutebit.org>
+References: <20220919173453.84292-1-povik+lin@cutebit.org>
+Subject: Re: [PATCH] ASoC: tas2770: Reinit regcache on reset
+Message-Id: <166362897579.3419380.16445673057492770418.b4-ty@kernel.org>
+Date: Tue, 20 Sep 2022 00:09:35 +0100
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 X-Mailer: b4 0.11.0-dev-8af31
-Cc: tiwai@suse.de, Bard Liao <yung-chuan.liao@linux.intel.com>, Péter Ujfalusi <peter.ujfalusi@linux.intel.com>
+Cc: alsa-devel@alsa-project.org, Charles Keepax <ckeepax@opensource.cirrus.com>,
+ linux-kernel@vger.kernel.org, navada@ti.com, Dan Murphy <dmurphy@ti.com>,
+ Stephen Kitt <steve@sk2.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -80,9 +81,11 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Mon, 19 Sep 2022 13:46:40 +0200, Pierre-Louis Bossart wrote:
-> Yet another SKU that needs a quirk for jack detection and four-speaker
-> support.
+On Mon, 19 Sep 2022 19:34:53 +0200, Martin Povišer wrote:
+> On probe of the ASoC component, the device is reset but the regcache is
+> retained. This means the regcache gets out of sync if the codec is
+> rebound to a sound card for a second time. Fix it by reinitializing the
+> regcache to defaults after the device is reset.
 > 
 > 
 
@@ -92,8 +95,8 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: Intel: sof_sdw: add support for Dell SKU 0AFF
-      commit: 4a13c949501902d4e6b59cc693005f4ca352dc15
+[1/1] ASoC: tas2770: Reinit regcache on reset
+      commit: 0a0342ede303fc420f3a388e1ae82da3ae8ff6bd
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
