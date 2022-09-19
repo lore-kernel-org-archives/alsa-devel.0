@@ -4,65 +4,74 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B160EC54EE9
-	for <alsa-devel@archiver.kernel.org>; Mon, 19 Sep 2022 11:15:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id AAD1AC6FA90
+	for <alsa-devel@archiver.kernel.org>; Mon, 19 Sep 2022 11:33:19 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B94701658;
-	Mon, 19 Sep 2022 13:14:09 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B94701658
+	by alsa0.perex.cz (Postfix) with ESMTPS id 119291EA;
+	Mon, 19 Sep 2022 13:32:27 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 119291EA
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1663586099;
-	bh=GXfZ9F4Y3kiUeg3qg5qDl6G4ZJfgeSPaCT6Z1d4mGl4=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1663587197;
+	bh=j7t2QfpQGuakX4dKZ4nypX7zf5T2IAXWzndNGFmY974=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Ab8y364fTBEVdlbH90+WcocPvfz3w/DjBWykJ2PAToOZ2Iv/YoTXZu5/hdRBxzS0t
-	 sslmdIb7DngU1K2yu07c6v3bdWuUph4GIpYu26M0OvR/05k9DuNBvFYF2T4/hZagVi
-	 iHnfK0wzniwtM9/jC2GM4Kx6USqiJQ0CW8m3cn20=
+	b=jaMDTKzhZC9tKMOdYrxX0RrsaoyV3zYp2hFecBc2KpgidbX0afWTckgfMpPyffMSY
+	 hrx0ym9i8wmL1rsfw6dhGA7lzYWto8ewssc5J3HUWbmoElVufR+CbJUXxnd10rALt0
+	 cbmVUsT3DTcqBtaSgkKjVKC0mTfU42dfST3KUTgM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 4BCB7F8053C;
-	Mon, 19 Sep 2022 13:13:16 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 9524CF8016D;
+	Mon, 19 Sep 2022 13:32:26 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id F1D76F8023A; Mon, 19 Sep 2022 13:13:14 +0200 (CEST)
-Received: from smtp1.axis.com (smtp1.axis.com [195.60.68.17])
+ id 298ACF8023A; Mon, 19 Sep 2022 13:32:25 +0200 (CEST)
+Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 78A10F8032B
- for <alsa-devel@alsa-project.org>; Mon, 19 Sep 2022 13:13:05 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 78A10F8032B
+ by alsa1.perex.cz (Postfix) with ESMTPS id 035F9F80134
+ for <alsa-devel@alsa-project.org>; Mon, 19 Sep 2022 13:32:19 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 035F9F80134
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=axis.com header.i=@axis.com
- header.b="V9piG1Sd"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=axis.com; q=dns/txt; s=axis-central1; t=1663585986;
- x=1695121986; h=from:to:cc:subject:date:message-id:in-reply-to:
- references:mime-version:content-transfer-encoding;
- bh=Ztqf2NwNv1t+35CYf00l5OZcaluiYfDwfmYhtP8ylqc=;
- b=V9piG1SdT+OC2Xw7QqhvuJx1HnzFUnl2AT2zdOtFh1VjJw506aCpRjF8
- T5UhvKZWVTNvHabaJiux9lEBs/npp5Zv626htz4B0uoDc5IiQMGus7JCS
- kEu1K5pE56baXwcsQ98wRZvf4qA4puH3LmxJpqY7Ay/DXg7/kQ5F03+up
- 8JgR6EGviSXyBothOckGFHYHrkUfpcJ6GbI71Ke5JlaPD9ClcP8Nti25v
- 8bXWfZJD0ZRyUKH9Wa+g2zjMD+Qn8cQWJJKMz+8hi0VVjBeAxNjYM+mVT
- EPDsRL5K/+4W8gYRjaJ/dfau6h18lPr8CyUHn9JJrxJX0+lNcU3z+Pp23 Q==;
-From: Astrid Rost <astrid.rost@axis.com>
-To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Rob Herring
- <robh+dt@kernel.org>, Dylan Reid <dgreid@chromium.org>
-Subject: [PATCH v3 2/3] dt-bindings: sound: ti,
- s3a227e: add control of debounce
-Date: Mon, 19 Sep 2022 13:12:57 +0200
-Message-ID: <20220919111258.3774-3-astrid.rost@axis.com>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20220919111258.3774-1-astrid.rost@axis.com>
-References: <20220919111258.3774-1-astrid.rost@axis.com>
+ dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
+ header.b="KQaLkti4"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+ d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+ t=1663587142; x=1695123142;
+ h=date:from:to:cc:subject:in-reply-to:message-id:
+ references:mime-version;
+ bh=j7t2QfpQGuakX4dKZ4nypX7zf5T2IAXWzndNGFmY974=;
+ b=KQaLkti4mdI1RA1SRFXq9Np2CW+fNJPF4oaIxqVRJwgkoS7sBLcyUTmH
+ me6A4tQJinJR2LpVNienBBmy2ybTloX+0TbpjjEg7cppXhQzcaisIgsoc
+ aYZH21U/QiDwuI5mnY24BKGvjsfsl9Gt5KUszVfd0GmXtVuLfigSN67cS
+ fqN6NKeuk59wyWNhrFQuDAmuLfwXMbw65qdmQuVnhOcXuqDLM3cmTkXDf
+ 3n88pE5szGKd3quWPyQR8p2v30/k4smMYlMIv5PRx0SYU0NpQ1tKA8xZU
+ G7J2PJRvOSrmOdExcf8zGylugQIufKiRnKGdc48Esbgi8vczH8bgBwiKv g==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10474"; a="325666824"
+X-IronPort-AV: E=Sophos;i="5.93,327,1654585200"; d="scan'208";a="325666824"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+ by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 19 Sep 2022 04:32:18 -0700
+X-IronPort-AV: E=Sophos;i="5.93,327,1654585200"; d="scan'208";a="596053686"
+Received: from eliteleevi.tm.intel.com ([10.237.54.20])
+ by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 19 Sep 2022 04:32:16 -0700
+Date: Mon, 19 Sep 2022 14:33:02 +0300 (EEST)
+From: Kai Vehmanen <kai.vehmanen@linux.intel.com>
+X-X-Sender: kvehmane@eliteleevi.tm.intel.com
+To: Jaroslav Kysela <perex@perex.cz>
+Subject: Re: [PATCH] ALSA: hda/hdmi: Fix the converter reuse for the silent
+ stream
+In-Reply-To: <20220913070216.3233974-1-perex@perex.cz>
+Message-ID: <alpine.DEB.2.22.394.2209191430310.2722275@eliteleevi.tm.intel.com>
+References: <20220913070216.3233974-1-perex@perex.cz>
+User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7 02160 Espoo
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
- Astrid Rost <astrid.rost@axis.com>, linux-kernel@vger.kernel.org,
- kernel@axis.com, Astrid Rost <astridr@axis.com>
+Content-Type: text/plain; charset=US-ASCII
+Cc: Takashi Iwai <tiwai@suse.de>,
+ ALSA development <alsa-devel@alsa-project.org>,
+ Kai Vehmanen <kai.vehmanen@linux.intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -78,54 +87,30 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Add devicetree parameters to control the insertion, release and press
-debounce times.
+Hi,
 
-Signed-off-by: Astrid Rost <astrid.rost@axis.com>
----
- .../bindings/sound/ti,ts3a227e.yaml           | 29 +++++++++++++++++++
- 1 file changed, 29 insertions(+)
+sorry for the late review (as Takashi already applied).
 
-diff --git a/Documentation/devicetree/bindings/sound/ti,ts3a227e.yaml b/Documentation/devicetree/bindings/sound/ti,ts3a227e.yaml
-index 327d204cf957..76ce323ce965 100644
---- a/Documentation/devicetree/bindings/sound/ti,ts3a227e.yaml
-+++ b/Documentation/devicetree/bindings/sound/ti,ts3a227e.yaml
-@@ -41,6 +41,35 @@ properties:
-       - 7 # 2.8 V
-     default: 1
- 
-+  ti,debounce-release-ms:
-+    description: key release debounce time in ms (datasheet section 9.6.7).
-+    enum:
-+      - 0  #  0 ms
-+      - 20 # 20 ms
-+    default: 20
-+
-+  ti,debounce-press-ms:
-+    description: key press debounce time in ms (datasheet section 9.6.7).
-+    enum:
-+      - 2   #   2 ms
-+      - 40  #  40 ms
-+      - 80  #  80 ms
-+      - 120 # 120 ms
-+    default: 80
-+
-+  ti,debounce-insertion-ms:
-+    description: headset insertion debounce time in ms (datasheet section 9.6.5).
-+    enum:
-+      - 2    #   2 ms
-+      - 30   #  30 ms
-+      - 60   #  60 ms
-+      - 90   #  90 ms
-+      - 120  # 120 ms
-+      - 150  # 150 ms
-+      - 1000 # 1 s
-+      - 2000 # 2 s
-+    default: 90
-+
- required:
-   - compatible
-   - reg
--- 
-2.20.1
+On Tue, 13 Sep 2022 09:02:16 +0200, Jaroslav Kysela wrote:
+> When the user space pcm stream uses the silent stream converter,
+> it is no longer allocated for the silent stream. Clear the appropriate
+> flag in the hdmi_pcm_open() function. The silent stream setup may
+> be applied in hdmi_pcm_close() (and the error path - open fcn) again.
 
+Jaroslav, did you hit a real-life problem with a particular sequence? The 
+converter allocation was done in a sticky fashion on purpose. The silent 
+stream setup (clearing KAE and/or letting codec to power down) was only 
+released if the receiver is disconnected from the system. I.e. no actions 
+were done in PCM close (on purpose).
+
+Now if there were issues, I wonder whether we should modify the pcm_close 
+instead, and avoid some of the cleanup in this case, as a better fix.
+
+I think your patch will create a new problem:
+ - receiver A connected to CVT X
+ - silent stream enabled for X
+ - app opens a PCM, connected to A+X, silent stream disabled  
+ - receiver A disconnected
+ -> actions in silent_stream_disable() not run correctly for CVT X
+
+Br, Kai
