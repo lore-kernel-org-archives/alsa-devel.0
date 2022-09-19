@@ -4,64 +4,65 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B43A5ECAAD3
-	for <alsa-devel@archiver.kernel.org>; Mon, 19 Sep 2022 17:53:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7F2D2ECAAA1
+	for <alsa-devel@archiver.kernel.org>; Mon, 19 Sep 2022 17:53:56 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D8D8485D;
-	Mon, 19 Sep 2022 19:52:47 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D8D8485D
+	by alsa0.perex.cz (Postfix) with ESMTPS id B91E015C1;
+	Mon, 19 Sep 2022 19:53:04 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B91E015C1
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1663610017;
-	bh=JLrBqsp8Ryp2ISD8I4vo0ddVnpHvol6JNhobDsbmiJ0=;
+	s=default; t=1663610034;
+	bh=081EPmTS3y815iiCscPub7rqoLD2JH0w0KdPzW1+ikI=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=WR5NtjjEXd359yUQtZhKZH1Pj77TEOWjEowU/g8JeyxXRPTWKKeCahBRb8PTvzVTa
-	 xb8nHYsXiAdm+N7ap4iui6rVCAxXsXcGr5OyLZrKYRXgCe8yv/P1eLdP/QJC0PTUoz
-	 8eTYPxjAtGznO50zQnnH4lD0Uc47GFK+prDqHaYo=
+	b=dF4Zi+bE4tfwT/DSwF08fVDCEDR9nRFMoceWlRcVoIN1Gy6YNBTofVXS539+hcGPD
+	 FgvUjkfr2BQHwSVRs25FuwsyrOIt5NuvbXlqPL2CYpfFHaBH0dCmDDYokdOra5VmKl
+	 t9cZ+k7G82Pj4vtC68ITjmzREyxw5+hxsQ5LvP/M=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 3CAFFF80564;
+	by alsa1.perex.cz (Postfix) with ESMTP id CEDD5F8056F;
 	Mon, 19 Sep 2022 19:51:10 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 3377EF80552; Mon, 19 Sep 2022 19:51:05 +0200 (CEST)
+ id 3BA3DF80559; Mon, 19 Sep 2022 19:51:06 +0200 (CEST)
 Received: from mga18.intel.com (mga18.intel.com [134.134.136.126])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 9BA43F80539
- for <alsa-devel@alsa-project.org>; Mon, 19 Sep 2022 19:50:54 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9BA43F80539
+ by alsa1.perex.cz (Postfix) with ESMTPS id A8A8AF8053C
+ for <alsa-devel@alsa-project.org>; Mon, 19 Sep 2022 19:50:58 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A8A8AF8053C
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="kU700J5V"
+ header.b="LQrwNUtI"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1663609855; x=1695145855;
+ t=1663609859; x=1695145859;
  h=from:to:cc:subject:date:message-id:in-reply-to:
  references:mime-version:content-transfer-encoding;
- bh=JLrBqsp8Ryp2ISD8I4vo0ddVnpHvol6JNhobDsbmiJ0=;
- b=kU700J5VmX7lhJrQrBtuOXTB3D1DRCt/ZvWFXUkLrdFaeBzRXcT8eZFq
- K5mxtAwRNP5eDB1JYZE7fwGMW/M4CWcaW7fhNbouEKLfoT0SVAzjxraAy
- jgXe9hZC2fzR9HuL5inmRA4GNtOcKPF0M28nY8SF2t4kKjAbPWx29Md/W
- MpY6fiRgVwf2RTlIwxCyeBBzFW80SncniDDcekxSVKMt2aMSNl8LZcvHg
- 47LAoxXymcMoP7jYnm34wSg1JkiQPO3bDoRFCxrZpip4f0c13jHdpWJ6x
- 71yms+hl2f4afEk5tITTmYKF9W2MpTH0Pa/c8O6qJaWOlTPXYDysSQcOJ g==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10475"; a="282498756"
-X-IronPort-AV: E=Sophos;i="5.93,328,1654585200"; d="scan'208";a="282498756"
+ bh=081EPmTS3y815iiCscPub7rqoLD2JH0w0KdPzW1+ikI=;
+ b=LQrwNUtIBcTWH1NddjHYCcZhnvYGL3n+BMu0SU2P8ycxI3bgKigfOwYz
+ 3HF34sf33tdZig4v2NiaW0VENqRxfb+QxMqF+PJ+5p3J7tE0BQRhzVNjA
+ kllBB07kXnVaOZtHYjd3Au3N+B3T44EiBRTZ1cQJ1ezZDmB9CRTOpJ91B
+ QEvCtlyioOZ6bgiWCSalJ17H0pD9EODmYUEw3oN/NcEMj9QrwN1y5f/vU
+ hKM2aUarVHKfyN6s5f92ZhXH7l//dnaVgki05idQ27Ugp7KVQ+y01ADkz
+ RvSGVVcrCoMdIbND2NeFSr2RuvRT5yiTczuDLBJEMl4Ch4+1QocuiuKyU w==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10475"; a="282498820"
+X-IronPort-AV: E=Sophos;i="5.93,328,1654585200"; d="scan'208";a="282498820"
 Received: from fmsmga006.fm.intel.com ([10.253.24.20])
  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 19 Sep 2022 10:50:53 -0700
-X-IronPort-AV: E=Sophos;i="5.93,328,1654585200"; d="scan'208";a="863658468"
+ 19 Sep 2022 10:50:57 -0700
+X-IronPort-AV: E=Sophos;i="5.93,328,1654585200"; d="scan'208";a="863658548"
 Received: from bard-ubuntu.sh.intel.com ([10.239.185.57])
  by fmsmga006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 19 Sep 2022 10:50:52 -0700
+ 19 Sep 2022 10:50:56 -0700
 From: Bard Liao <yung-chuan.liao@linux.intel.com>
 To: alsa-devel@alsa-project.org,
 	vkoul@kernel.org
-Subject: [PATCH 07/11] soundwire: intel: remove intel_init() wrapper
-Date: Tue, 20 Sep 2022 01:57:17 +0800
-Message-Id: <20220919175721.354679-8-yung-chuan.liao@linux.intel.com>
+Subject: [PATCH 09/11] soundwire: intel: introduce intel_shim_check_wake()
+ helper
+Date: Tue, 20 Sep 2022 01:57:19 +0800
+Message-Id: <20220919175721.354679-10-yung-chuan.liao@linux.intel.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20220919175721.354679-1-yung-chuan.liao@linux.intel.com>
 References: <20220919175721.354679-1-yung-chuan.liao@linux.intel.com>
@@ -86,122 +87,59 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 
-We can directly call intel_link_power_up and do power_up+shim_init in
-the same function. This simplifies the code with a better symmetry
-between power_up and power_down operations.
+Add new helper before code partitioning in order to avoid direct read
+from specific register. No functionality change.
 
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Reviewed-by: Rander Wang <rander.wang@intel.com>
 Signed-off-by: Bard Liao <yung-chuan.liao@linux.intel.com>
 ---
- drivers/soundwire/intel.c | 33 ++++++++++-----------------------
- 1 file changed, 10 insertions(+), 23 deletions(-)
+ drivers/soundwire/intel.c | 18 ++++++++++++------
+ 1 file changed, 12 insertions(+), 6 deletions(-)
 
 diff --git a/drivers/soundwire/intel.c b/drivers/soundwire/intel.c
-index 140cf36eb407..4eeb2b5c1594 100644
+index 66aab02b9323..2ca924622153 100644
 --- a/drivers/soundwire/intel.c
 +++ b/drivers/soundwire/intel.c
-@@ -311,15 +311,13 @@ static void intel_shim_master_ip_to_glue(struct sdw_intel *sdw)
- 	/* at this point Integration Glue has full control of the I/Os */
+@@ -344,6 +344,17 @@ static void intel_shim_init(struct sdw_intel *sdw)
+ 	usleep_range(10, 15);
  }
  
--static int intel_shim_init(struct sdw_intel *sdw)
-+/* this needs to be called with shim_lock */
-+static void intel_shim_init(struct sdw_intel *sdw)
++static int intel_shim_check_wake(struct sdw_intel *sdw)
++{
++	void __iomem *shim;
++	u16 wake_sts;
++
++	shim = sdw->link_res->shim;
++	wake_sts = intel_readw(shim, SDW_SHIM_WAKESTS);
++
++	return wake_sts & BIT(sdw->instance);
++}
++
+ static void intel_shim_wake(struct sdw_intel *sdw, bool wake_enable)
  {
  	void __iomem *shim = sdw->link_res->shim;
- 	unsigned int link_id = sdw->instance;
--	int ret = 0;
- 	u16 ioctl = 0, act = 0;
+@@ -1491,8 +1502,6 @@ int intel_link_process_wakeen_event(struct auxiliary_device *auxdev)
+ 	struct device *dev = &auxdev->dev;
+ 	struct sdw_intel *sdw;
+ 	struct sdw_bus *bus;
+-	void __iomem *shim;
+-	u16 wake_sts;
  
--	mutex_lock(sdw->link_res->shim_lock);
--
- 	/* Initialize Shim */
- 	ioctl |= SDW_SHIM_IOCTL_BKE;
- 	intel_writew(shim, SDW_SHIM_IOCTL(link_id), ioctl);
-@@ -344,10 +342,6 @@ static int intel_shim_init(struct sdw_intel *sdw)
- 	act |= SDW_SHIM_CTMCTL_DODS;
- 	intel_writew(shim, SDW_SHIM_CTMCTL(link_id), act);
- 	usleep_range(10, 15);
--
--	mutex_unlock(sdw->link_res->shim_lock);
--
--	return ret;
- }
- 
- static void intel_shim_wake(struct sdw_intel *sdw, bool wake_enable)
-@@ -449,6 +443,9 @@ static int intel_link_power_up(struct sdw_intel *sdw)
- 	*shim_mask |= BIT(link_id);
- 
- 	sdw->cdns.link_up = true;
-+
-+	intel_shim_init(sdw);
-+
- out:
- 	mutex_unlock(sdw->link_res->shim_lock);
- 
-@@ -1274,16 +1271,6 @@ static struct sdw_master_ops sdw_intel_ops = {
- 	.post_bank_switch = intel_post_bank_switch,
- };
- 
--static int intel_init(struct sdw_intel *sdw)
--{
--	/* Initialize shim and controller */
--	intel_link_power_up(sdw);
--
--	intel_shim_init(sdw);
--
--	return 0;
--}
--
- /*
-  * probe and init (aux_dev_id argument is required by function prototype but not used)
-  */
-@@ -1384,7 +1371,7 @@ int intel_link_startup(struct auxiliary_device *auxdev)
+ 	sdw = auxiliary_get_drvdata(auxdev);
+ 	bus = &sdw->cdns.bus;
+@@ -1503,10 +1512,7 @@ int intel_link_process_wakeen_event(struct auxiliary_device *auxdev)
+ 		return 0;
  	}
  
- 	/* Initialize shim, controller */
--	ret = intel_init(sdw);
-+	ret = intel_link_power_up(sdw);
- 	if (ret)
- 		goto err_init;
+-	shim = sdw->link_res->shim;
+-	wake_sts = intel_readw(shim, SDW_SHIM_WAKESTS);
+-
+-	if (!(wake_sts & BIT(sdw->instance)))
++	if (!intel_shim_check_wake(sdw))
+ 		return 0;
  
-@@ -1773,7 +1760,7 @@ static int __maybe_unused intel_resume(struct device *dev)
- 			pm_runtime_idle(dev);
- 	}
- 
--	ret = intel_init(sdw);
-+	ret = intel_link_power_up(sdw);
- 	if (ret) {
- 		dev_err(dev, "%s failed: %d\n", __func__, ret);
- 		return ret;
-@@ -1862,7 +1849,7 @@ static int __maybe_unused intel_resume_runtime(struct device *dev)
- 	clock_stop_quirks = sdw->link_res->clock_stop_quirks;
- 
- 	if (clock_stop_quirks & SDW_INTEL_CLK_STOP_TEARDOWN) {
--		ret = intel_init(sdw);
-+		ret = intel_link_power_up(sdw);
- 		if (ret) {
- 			dev_err(dev, "%s failed: %d\n", __func__, ret);
- 			return ret;
-@@ -1910,7 +1897,7 @@ static int __maybe_unused intel_resume_runtime(struct device *dev)
- 						  true, INTEL_MASTER_RESET_ITERATIONS);
- 
- 	} else if (clock_stop_quirks & SDW_INTEL_CLK_STOP_BUS_RESET) {
--		ret = intel_init(sdw);
-+		ret = intel_link_power_up(sdw);
- 		if (ret) {
- 			dev_err(dev, "%s failed: %d\n", __func__, ret);
- 			return ret;
-@@ -1991,7 +1978,7 @@ static int __maybe_unused intel_resume_runtime(struct device *dev)
- 		if (!clock_stop0)
- 			dev_err(dev, "%s invalid configuration, clock was not stopped", __func__);
- 
--		ret = intel_init(sdw);
-+		ret = intel_link_power_up(sdw);
- 		if (ret) {
- 			dev_err(dev, "%s failed: %d\n", __func__, ret);
- 			return ret;
+ 	/* disable WAKEEN interrupt ASAP to prevent interrupt flood */
 -- 
 2.25.1
 
