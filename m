@@ -4,70 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 30B4DECAAD3
-	for <alsa-devel@archiver.kernel.org>; Mon, 19 Sep 2022 11:47:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0FF1EECAAD3
+	for <alsa-devel@archiver.kernel.org>; Mon, 19 Sep 2022 11:55:07 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0BFEA163A;
-	Mon, 19 Sep 2022 13:47:06 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0BFEA163A
+	by alsa0.perex.cz (Postfix) with ESMTPS id 7C013886;
+	Mon, 19 Sep 2022 13:54:15 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7C013886
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1663588076;
-	bh=0jyAuv+SExqY+upytNWQUSFFNqVklzAyiZiuwDk6r6k=;
+	s=default; t=1663588505;
+	bh=q/uvWWvW+4M6DKxLEVsLs6ozoctHctaFyRZU9qYPyYQ=;
 	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
 	 List-Post:List-Help:List-Subscribe:From;
-	b=IT7gkDl7QYw1MCQZf4kUO14kJED1O3/NosoxpEWqQydD1jt6AV0QoL98di5T/hFMR
-	 AXCur5jAVWHHHgd5+JwNx0MtsiYI97M56efZjKNUY/qe4psz3Zm9JTl+1LUxMK5KEZ
-	 YElLKxvaZL69YRjcPiYrO/z0ZwqkxcRd5jh4oTd4=
+	b=VKWVXkv52D481RDGVxvbUS1qXZ4B5Y9g9lKIQES2wt2kSfZ1bLr+V2lLcXpwgRkkg
+	 SRPEyrQ1KtR9hgzVbR70IYDJKlAvPkDSwL70eLX8OoB8AI4QEiNz2dPLg2emstnb7n
+	 p2poZSuXPLTRYL18IkfJubZsgKI5LpgTzRFb/rpQ=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id D4455F804B4;
-	Mon, 19 Sep 2022 13:47:04 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id EB582F8016D;
+	Mon, 19 Sep 2022 13:54:14 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 5420EF804AE; Mon, 19 Sep 2022 13:47:03 +0200 (CEST)
-Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
+ id 92E32F800C9; Mon, 19 Sep 2022 13:54:13 +0200 (CEST)
+Received: from mga18.intel.com (mga18.intel.com [134.134.136.126])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id B137EF800E5
- for <alsa-devel@alsa-project.org>; Mon, 19 Sep 2022 13:46:56 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B137EF800E5
+ by alsa1.perex.cz (Postfix) with ESMTPS id EFF3EF800E5
+ for <alsa-devel@alsa-project.org>; Mon, 19 Sep 2022 13:54:09 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz EFF3EF800E5
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="cOnQvGMs"
+ header.b="ELvldq8a"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1663588017; x=1695124017;
+ t=1663588451; x=1695124451;
  h=from:to:cc:subject:date:message-id:mime-version:
  content-transfer-encoding;
- bh=0jyAuv+SExqY+upytNWQUSFFNqVklzAyiZiuwDk6r6k=;
- b=cOnQvGMs7izZ0podtPW6MLW21fy8/ceQo7axox7NLNF4J1DTnd+Nosv7
- jIzkejT37T2vd4BeduE7ifa365iW23KFLMyRS08MrNsUrfrDpD5b6kArH
- V8V9XPtZO63ChiswJ1UY+AFoeQS8FpHLjH/qU8+dsQgklhDf39/qb7vkT
- KfMYqrEbWpOqHBf6WcZ5wMzK+1BRMZ+WCPY53I1f0q0TCWx+dUlgUWQ+V
- RFMudydn1nzTGjzIdwbuB9X9nOMV8VRlnPvvCZ9G0kqb8oVut9xxR0gEH
- oJf1tzgbWIMDQtiJd8XBUtnDns0chtsKkuLWZAy/fw8udbaPwU4HXHEvd Q==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10474"; a="325669247"
-X-IronPort-AV: E=Sophos;i="5.93,327,1654585200"; d="scan'208";a="325669247"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
- by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 19 Sep 2022 04:46:54 -0700
-X-IronPort-AV: E=Sophos;i="5.93,327,1654585200"; d="scan'208";a="569626202"
+ bh=q/uvWWvW+4M6DKxLEVsLs6ozoctHctaFyRZU9qYPyYQ=;
+ b=ELvldq8azPVdUulvOe1BnX9S6AVtZylk7s0cYnGRNTBnfREr0IQtAZIz
+ onlT35Lgk84sfCL+D1s4W74R6/9+JseYHTr5QVKVXlXExVFDy+AVrqfYq
+ 1vYYfUMr3y538ZN19nKyY9mz56RjXkT3mK8XdQVwXU8qXzoyCRP0wir4B
+ 55U1aDfGQnR7bJ/be0RI5tlxZC3zCQPYDSFW8mJ6KmLjRZIn2uVxy5zEk
+ lhQZbQsbn4hx4O29B/uC6Cfnl5QdtehHdD8ntAhH4yRxahGCewmJR6ZWi
+ 5uchwVnYtTB/e7MbYtxqErGQRMZv7mJaJBo9fzdpykdYEQbSOVjkqxod1 g==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10474"; a="282405540"
+X-IronPort-AV: E=Sophos;i="5.93,327,1654585200"; d="scan'208";a="282405540"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+ by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 19 Sep 2022 04:54:07 -0700
+X-IronPort-AV: E=Sophos;i="5.93,327,1654585200"; d="scan'208";a="744086823"
 Received: from amagnus-mobl2.ger.corp.intel.com (HELO pbossart-mobl3.home)
  ([10.249.46.168])
- by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 19 Sep 2022 04:46:51 -0700
+ by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 19 Sep 2022 04:54:04 -0700
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH] ASoC: Intel: sof_sdw: add support for Dell SKU 0AFF
-Date: Mon, 19 Sep 2022 13:46:40 +0200
-Message-Id: <20220919114640.42803-1-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH v2 0/4] ASoC: SOF: Intel: override mclk_id for ES8336 support
+Date: Mon, 19 Sep 2022 13:53:46 +0200
+Message-Id: <20220919115350.43104-1-pierre-louis.bossart@linux.intel.com>
 X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-Cc: tiwai@suse.de, Bard Liao <yung-chuan.liao@linux.intel.com>,
+Cc: tiwai@suse.de, Cezary Rojewski <cezary.rojewski@intel.com>,
  broonie@kernel.org,
- =?UTF-8?q?P=C3=A9ter=20Ujfalusi?= <peter.ujfalusi@linux.intel.com>,
  Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
@@ -84,38 +83,42 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Yet another SKU that needs a quirk for jack detection and four-speaker
-support.
+This patchset solves a known issue with ES8336 platforms wrt MCLK
+selection. Most of the devices use the MCLK0 signal, but some devices
+do use the MCLK1 signal.
 
-BugLink: https://github.com/thesofproject/linux/issues/3777
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Reviewed-by: Péter Ujfalusi <peter.ujfalusi@linux.intel.com>
-Reviewed-by: Bard Liao <yung-chuan.liao@linux.intel.com>
----
- sound/soc/intel/boards/sof_sdw.c | 10 ++++++++++
- 1 file changed, 10 insertions(+)
+The MCLK is defined in the topology, it would be a nightmare to
+generate more topology files just for one MCLK difference. With a
+minor extension to the intel-nhlt library, the MCLK information can be
+found by parsing the NHLT table, and we can override the mclk_id at
+boot time.
 
-diff --git a/sound/soc/intel/boards/sof_sdw.c b/sound/soc/intel/boards/sof_sdw.c
-index a49bfaab6b21f..2ff30b40a1e4c 100644
---- a/sound/soc/intel/boards/sof_sdw.c
-+++ b/sound/soc/intel/boards/sof_sdw.c
-@@ -266,6 +266,16 @@ static const struct dmi_system_id sof_sdw_quirk_table[] = {
- 		.driver_data = (void *)(SOF_SDW_TGL_HDMI |
- 					SOF_SDW_FOUR_SPK),
- 	},
-+	{
-+		.callback = sof_sdw_quirk_cb,
-+		.matches = {
-+			DMI_MATCH(DMI_SYS_VENDOR, "Dell Inc"),
-+			DMI_EXACT_MATCH(DMI_PRODUCT_SKU, "0AFF")
-+		},
-+		.driver_data = (void *)(SOF_SDW_TGL_HDMI |
-+					RT711_JD2 |
-+					SOF_SDW_FOUR_SPK),
-+	},
- 	{
- 		.callback = sof_sdw_quirk_cb,
- 		.matches = {
+The only known issues for this platform remain the detection of GPIO
+and microphone connections, currently only possible with manual
+quirks.
+
+Thanks to Eugene J. Markow for testing this patchset.
+
+v2: addressed comments from Takashi and Amadeusz
+Better error handling for the 1.5 case
+Report error at the library level when 2 mclks are used
+
+Pierre-Louis Bossart (4):
+  ASoC: SOF: Intel: hda: refine SSP count support
+  ASoC: SOF: add quirk to override topology mclk_id
+  ALSA: hda: intel-nhlt: add intel_nhlt_ssp_mclk_mask()
+  ASoC: SOF: Intel: hda: override mclk_id after parsing NHLT SSP blob
+
+ include/sound/intel-nhlt.h    |  7 ++++
+ sound/hda/intel-nhlt.c        | 79 +++++++++++++++++++++++++++++++++++
+ sound/soc/sof/intel/hda.c     | 39 +++++++++++++++++
+ sound/soc/sof/intel/hda.h     |  2 +
+ sound/soc/sof/intel/mtl.c     |  2 +-
+ sound/soc/sof/intel/tgl.c     |  8 ++--
+ sound/soc/sof/ipc3-topology.c |  7 ++++
+ sound/soc/sof/sof-priv.h      |  4 ++
+ 8 files changed, 143 insertions(+), 5 deletions(-)
+
 -- 
 2.34.1
 
