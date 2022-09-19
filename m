@@ -4,77 +4,82 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id EC166C54EE9
-	for <alsa-devel@archiver.kernel.org>; Mon, 19 Sep 2022 08:54:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5E15DECAAD3
+	for <alsa-devel@archiver.kernel.org>; Mon, 19 Sep 2022 09:25:26 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 24C1D1658;
-	Mon, 19 Sep 2022 10:53:19 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 24C1D1658
+	by alsa0.perex.cz (Postfix) with ESMTPS id 752C815C1;
+	Mon, 19 Sep 2022 11:24:34 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 752C815C1
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1663577649;
-	bh=ZelDhvYGETW6vTz48/kGx9/Naj6tZGI84ZYZBKLByqw=;
-	h=Date:Subject:To:References:From:In-Reply-To:Cc:List-Id:
+	s=default; t=1663579524;
+	bh=+MKNl9pZW1y2yoYNPbUL0h9/84T1p5kSoZNTn7vsW1I=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=UGUHNUYKnVZwk6MojE6PcFhOZKARrDDK34jcLvhZgI6rt3V4lxx7O4DzpMxwbNN8I
-	 PQzJEVD9lg3FekY0LalqgySvQFL+sTaWgeccp+oatDO++zLxid8tg41P1LAqVmB9Lg
-	 e2R4QIydnjPawW2mvllQniyAIjDTatfLTafyO+BA=
+	b=d5bFrHGz7HSbvaETzt2OE4DqC9ftDkkswIdznquO9o4SlybVFKma791SC+nZFJvo3
+	 dkHG/ZZ4UB8cTb442AIm84M20Rpt/keiJLCiDCOsVTAjepK2ptbSD+EiRjs6sIsuZa
+	 Pxv5+DOH9A0+q4b3Nfgynfiro5kyEZ33cQvN6k1w=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id B5EECF8053C;
-	Mon, 19 Sep 2022 10:52:30 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 11B7AF8016D;
+	Mon, 19 Sep 2022 11:24:34 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id B64ACF8053D; Mon, 19 Sep 2022 10:52:29 +0200 (CEST)
-Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id EDEC1F8023A; Mon, 19 Sep 2022 11:24:32 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 207FDF8023A
- for <alsa-devel@alsa-project.org>; Mon, 19 Sep 2022 10:52:22 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 207FDF8023A
+ by alsa1.perex.cz (Postfix) with ESMTPS id 04B90F80134
+ for <alsa-devel@alsa-project.org>; Mon, 19 Sep 2022 11:24:26 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 04B90F80134
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="hCyYtrZ1"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
- d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1663577544; x=1695113544;
- h=message-id:date:mime-version:subject:to:cc:references:
- from:in-reply-to:content-transfer-encoding;
- bh=ZelDhvYGETW6vTz48/kGx9/Naj6tZGI84ZYZBKLByqw=;
- b=hCyYtrZ1MEZpZAaMHacR7EJfv8+IpxNRho0UNy2dUiyN33WiSwrkGdr/
- u0G9wVrRZdRxqoe5XzA9T+lY4Uy4O3jdPCdibeHqwCaa7dzO0NWLNpT98
- EZa4mP3RzrKJK/hO140FyIQB78kBCBtnGHR1F5WQPB2smv90F7h+lPYIQ
- Jnrf1PYN/Vahhgw6xYp0e7P3lQeBiEnqGh+BZjj+dSHkFQ6OfSA8tSXSU
- 6vg1nd1+wA5gS8dhqdK8l1uCrDGttX3PNUPPC4PmavxbWqZu3Ketcw6fz
- crTsg3sBf0JUGabCfl3H/m5vXx+kniza1zI97CbchDs6KUErYBKGLhv9j g==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10474"; a="296937561"
-X-IronPort-AV: E=Sophos;i="5.93,327,1654585200"; d="scan'208";a="296937561"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
- by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 19 Sep 2022 01:52:19 -0700
-X-IronPort-AV: E=Sophos;i="5.93,327,1654585200"; d="scan'208";a="707485785"
-Received: from ilick-mobl1.ger.corp.intel.com (HELO [10.252.59.91])
- ([10.252.59.91])
- by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 19 Sep 2022 01:52:17 -0700
-Message-ID: <8d511299-5f92-603f-35e5-64e87b776286@linux.intel.com>
-Date: Mon, 19 Sep 2022 10:48:35 +0200
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Firefox/91.0 Thunderbird/91.11.0
-Subject: Re: [PATCH 2/2] soundwire: cadence: Simplify error paths in
- cdns_xfer_msg()
-Content-Language: en-US
-To: Richard Fitzgerald <rf@opensource.cirrus.com>, vkoul@kernel.org,
- yung-chuan.liao@linux.intel.com, sanyog.r.kale@intel.com
-References: <20220917154822.690472-1-rf@opensource.cirrus.com>
- <20220917154822.690472-2-rf@opensource.cirrus.com>
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-In-Reply-To: <20220917154822.690472-2-rf@opensource.cirrus.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-Cc: patches@opensource.cirrus.com, alsa-devel@alsa-project.org,
- linux-kernel@vger.kernel.org
+ dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
+ header.b="s7BIrRKz"; 
+ dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
+ header.b="0MM+F95W"
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 516B1221E2;
+ Mon, 19 Sep 2022 09:24:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+ t=1663579466; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=ZbT40zAkjhP9+n399AbT5L2GEVohnR2lNfZdDMkmB2I=;
+ b=s7BIrRKzRZ+RqyZh2vSJZm4djBMvyblnab40+wDxnhBKlf3MB4hBjij98pChd1+S+TzuRa
+ MsteH+FOFgTLCu0kdyL0feWZ913GWoADpX0LuFj/yUQ150nRA+wZaxeF07l6ALfUhN2clr
+ 6GA0quk9IMOYnSlX0qe6nUayb/9Jhfc=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+ s=susede2_ed25519; t=1663579466;
+ h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version:content-type:content-type:
+ in-reply-to:in-reply-to:references:references;
+ bh=ZbT40zAkjhP9+n399AbT5L2GEVohnR2lNfZdDMkmB2I=;
+ b=0MM+F95WPpXuJsELVkK2StvHIAoYnMOAq3u+fUYU4cuiMs/GOJvupOr/SOIu/K66OB/2fD
+ IpnycQVdVkOjC6Cg==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ (No client certificate requested)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 2CEBE13A96;
+ Mon, 19 Sep 2022 09:24:26 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+ by imap2.suse-dmz.suse.de with ESMTPSA id xO4ZCko1KGMTVAAAMHmgww
+ (envelope-from <tiwai@suse.de>); Mon, 19 Sep 2022 09:24:26 +0000
+Date: Mon, 19 Sep 2022 11:24:25 +0200
+Message-ID: <87r107btti.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Rondreis <linhaoguo86@gmail.com>
+Subject: Re: KASAN: invalid-free in snd_card_new
+In-Reply-To: <871qs7dav5.wl-tiwai@suse.de>
+References: <CAB7eexL1zBnB636hwS27d-LdPYZ_R1-5fJS_h=ZbCWYU=UPWJg@mail.gmail.com>
+ <871qs7dav5.wl-tiwai@suse.de>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, tiwai@suse.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -90,45 +95,105 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-
-
-On 9/17/22 17:48, Richard Fitzgerald wrote:
-> There's no need to goto an exit label to return from cdns_xfer_msg().
-> It doesn't do any cleanup, only a return statement.
+On Mon, 19 Sep 2022 10:30:54 +0200,
+Takashi Iwai wrote:
 > 
-> Replace the gotos with returns.
+> On Sun, 18 Sep 2022 15:01:11 +0200,
+> Rondreis wrote:
+> > 
+> > Hello,
+> > 
+> > When fuzzing the Linux kernel driver v6.0-rc4, the following crash was
+> > triggered.
+> > 
+> > HEAD commit: 7e18e42e4b280c85b76967a9106a13ca61c16179
+> > git tree: upstream
+> > 
+> > kernel config: https://pastebin.com/raw/xtrgsXP3
+> > C reproducer: https://pastebin.com/raw/w2sdQWYj
+> > console output: https://pastebin.com/raw/Yyf7zw2d
+> > 
+> > Basically, in the c reproducer, we use the gadget module to emulate
+> > attaching a USB device(vendor id: 0x1bc7, product id: 0x1206, with the
+> > midi function) and executing some simple sequence of system calls.
+> > To reproduce this crash, we utilize a third-party library to emulate
+> > the attaching process: https://github.com/linux-usb-gadgets/libusbgx.
+> > Just clone this repository, install it, and compile the c
+> > reproducer with ``` gcc crash.c -lusbgx -lconfig -o crash ``` will do
+> > the trick.
+> > 
+> > I would appreciate it if you have any idea how to solve this bug.
 > 
-> Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
+> Could you try the patch below?  It looks like a simple double-free in
+> the code.
 
-Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+A more proper patch is below.  Please give it a try.
 
-> ---
->  drivers/soundwire/cadence_master.c | 11 ++++-------
->  1 file changed, 4 insertions(+), 7 deletions(-)
-> 
-> diff --git a/drivers/soundwire/cadence_master.c b/drivers/soundwire/cadence_master.c
-> index 3543a923ee6b..30b8c628fdbd 100644
-> --- a/drivers/soundwire/cadence_master.c
-> +++ b/drivers/soundwire/cadence_master.c
-> @@ -709,17 +709,14 @@ cdns_xfer_msg(struct sdw_bus *bus, struct sdw_msg *msg)
->  		ret = _cdns_xfer_msg(cdns, msg, cmd, i * CDNS_MCP_CMD_LEN,
->  				     CDNS_MCP_CMD_LEN, false);
->  		if (ret != SDW_CMD_OK)
-> -			goto exit;
-> +			return ret;
->  	}
->  
->  	if (!(msg->len % CDNS_MCP_CMD_LEN))
-> -		goto exit;
-> +		return SDW_CMD_OK;
->  
-> -	ret = _cdns_xfer_msg(cdns, msg, cmd, i * CDNS_MCP_CMD_LEN,
-> -			     msg->len % CDNS_MCP_CMD_LEN, false);
-> -
-> -exit:
-> -	return ret;
-> +	return _cdns_xfer_msg(cdns, msg, cmd, i * CDNS_MCP_CMD_LEN,
-> +			      msg->len % CDNS_MCP_CMD_LEN, false);
->  }
->  EXPORT_SYMBOL(cdns_xfer_msg);
->  
+
+thanks,
+
+Takashi
+
+-- 8< --
+From: Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH] ALSA: core: Fix double-free at snd_card_new()
+
+During the code change to add the support for devres-managed card
+instance, we put an explicit kfree(card) call at the error path in
+snd_card_new().  This is needed for the early error path before the
+card is initialized with the device, but is rather superfluous and
+causes a double-free at the error path after the card instance is
+initialized, as the destructor of the card object already contains a
+kfree() call.
+
+This patch fixes the double-free situation by removing the superfluous
+kfree().  Meanwhile we need to call kfree() explicitly for the early
+error path, so it's added there instead.
+
+Fixes: e8ad415b7a55 ("ALSA: core: Add managed card creation")
+Reported-by: Rondreis <linhaoguo86@gmail.com>
+Cc: <stable@vger.kernel.org>
+Link: https://lore.kernel.org/r/CAB7eexL1zBnB636hwS27d-LdPYZ_R1-5fJS_h=ZbCWYU=UPWJg@mail.gmail.com
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+---
+ sound/core/init.c | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
+
+diff --git a/sound/core/init.c b/sound/core/init.c
+index 193dae361fac..5377f94eb211 100644
+--- a/sound/core/init.c
++++ b/sound/core/init.c
+@@ -178,10 +178,8 @@ int snd_card_new(struct device *parent, int idx, const char *xid,
+ 		return -ENOMEM;
+ 
+ 	err = snd_card_init(card, parent, idx, xid, module, extra_size);
+-	if (err < 0) {
+-		kfree(card);
+-		return err;
+-	}
++	if (err < 0)
++		return err; /* card is freed by error handler */
+ 
+ 	*card_ret = card;
+ 	return 0;
+@@ -233,7 +231,7 @@ int snd_devm_card_new(struct device *parent, int idx, const char *xid,
+ 	card->managed = true;
+ 	err = snd_card_init(card, parent, idx, xid, module, extra_size);
+ 	if (err < 0) {
+-		devres_free(card);
++		devres_free(card); /* in managed mode, we need to free manually */
+ 		return err;
+ 	}
+ 
+@@ -297,6 +295,8 @@ static int snd_card_init(struct snd_card *card, struct device *parent,
+ 		mutex_unlock(&snd_card_mutex);
+ 		dev_err(parent, "cannot find the slot for index %d (range 0-%i), error: %d\n",
+ 			 idx, snd_ecards_limit - 1, err);
++		if (!card->managed)
++			kfree(card); /* manually free here, as no destructor called */
+ 		return err;
+ 	}
+ 	set_bit(idx, snd_cards_lock);		/* lock it */
+-- 
+2.35.3
+
