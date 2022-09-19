@@ -4,55 +4,73 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7EE9BC6FA86
-	for <alsa-devel@archiver.kernel.org>; Mon, 19 Sep 2022 17:36:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D9990ECAAD3
+	for <alsa-devel@archiver.kernel.org>; Mon, 19 Sep 2022 17:44:03 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D60F0829;
-	Mon, 19 Sep 2022 19:35:10 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D60F0829
+	by alsa0.perex.cz (Postfix) with ESMTPS id 72B5282A;
+	Mon, 19 Sep 2022 19:43:11 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 72B5282A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1663608960;
-	bh=D+sDrURLZT4KXaHElTL7pM+CIFisZ3dz8YxnmOnSOxA=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=cHdE0uBlJXNxtwSuzJfIpD4GoOiJrx4kXwy0lTdMlbRrut6P3b0fBnVTH1j423cus
-	 /iF564m+zxOe6kfACoW3cEusiFmJ1nRn4OeZ5q1Mv/hu8k4KvOW5ecByB15fC8H/qx
-	 4AhxMTOayQx5DKdRXU8cYUK4sGuID7Iv0dy+J6c8=
+	s=default; t=1663609441;
+	bh=+PI6pO3iUcjYFdvTFkYuPFzkS+YO04+LsIa7vF+/V3w=;
+	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=Qtvkq6bxJDcF3bm62BaUlrt6Rqlix0GWp5tyyryJxRXY5gpIg6DuB5kdETaEUIkSK
+	 EJKtklgcxBee/+y1FSzXyueh/qs1QvZ+7hnxL4JrJCcJD7eUWF89MLnsrnkxt7ZBD/
+	 mZL1UyltyfI1nktujHHiRGoR+HYcETsxc6Z86oHw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 58643F80134;
-	Mon, 19 Sep 2022 19:35:10 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id F37DBF8016D;
+	Mon, 19 Sep 2022 19:43:10 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 6E1FDF8023A; Mon, 19 Sep 2022 19:35:08 +0200 (CEST)
-Received: from hutie.ust.cz (unknown [IPv6:2a03:3b40:fe:f0::1])
+ id D9929F80134; Mon, 19 Sep 2022 19:43:08 +0200 (CEST)
+Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id DB938F80134
- for <alsa-devel@alsa-project.org>; Mon, 19 Sep 2022 19:35:00 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DB938F80134
+ by alsa1.perex.cz (Postfix) with ESMTPS id 16075F80134
+ for <alsa-devel@alsa-project.org>; Mon, 19 Sep 2022 19:42:59 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 16075F80134
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=cutebit.org header.i=@cutebit.org
- header.b="Xg+liSKc"
-From: =?UTF-8?q?Martin=20Povi=C5=A1er?= <povik+lin@cutebit.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cutebit.org; s=mail;
- t=1663608899; bh=d7mgKUnVCfrgkyGqmQzUJTvvGo3IZOIgUBZZ0DNTb8Q=;
- h=From:To:Cc:Subject:Date;
- b=Xg+liSKcnXx0197eHUxd/Uj9XdbE8M9EHtbSry38u4R02iAoyBeA5XNucQRba4liV
- /aV6rfGgdN7z8d5XnKEeYFYpihTrHzybfRvEWGDt/7QjtLFfp5QY2ZLZpw8y7T5BJB
- iS/9Urv3RPVoBaPfM4Z4IMotfYuLqGvFKt0mqDNo=
-To: Liam Girdwood <lgirdwood@gmail.com>,
-	Mark Brown <broonie@kernel.org>
-Subject: [PATCH] ASoC: tas2770: Reinit regcache on reset
-Date: Mon, 19 Sep 2022 19:34:53 +0200
-Message-Id: <20220919173453.84292-1-povik+lin@cutebit.org>
+ dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
+ header.b="NbC9lNbg"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+ d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+ t=1663609386; x=1695145386;
+ h=date:from:to:cc:subject:in-reply-to:message-id:
+ references:mime-version;
+ bh=+PI6pO3iUcjYFdvTFkYuPFzkS+YO04+LsIa7vF+/V3w=;
+ b=NbC9lNbgYy+WXH9Ahl0lRUFjTTOyVXHjCkpkkgvnc7mtwuiwxOY3BKjd
+ qluejaUch4HL46zOme5xpG0szn81SDnFAjkG1qYTlnXFfQKvdOJArj7/w
+ QxwWrYAsXXrfctD82c1rs9huvd9/aVkoVSIzAFNaPbWWfwYgtRwyEf6qI
+ ByfIOIrzAtErz99sDEJMI4UAuAjuqq2muoMJEH0MQZfnIErSsaMZgeU1r
+ IhK4btSXXhGlxcHts3fUpNduAqNr7xMRkpIGosS+E5HZDmytYG8JcxJtE
+ 3Audb8Hv8ID7DMwUQIiBeLvkrYRno/o7RuvVo4nV0ZtArRXMoSlgtj68D A==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10475"; a="286513574"
+X-IronPort-AV: E=Sophos;i="5.93,328,1654585200"; d="scan'208";a="286513574"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+ by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 19 Sep 2022 10:42:39 -0700
+X-IronPort-AV: E=Sophos;i="5.93,328,1654585200"; d="scan'208";a="569740478"
+Received: from eliteleevi.tm.intel.com ([10.237.54.20])
+ by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 19 Sep 2022 10:42:37 -0700
+Date: Mon, 19 Sep 2022 20:43:28 +0300 (EEST)
+From: Kai Vehmanen <kai.vehmanen@linux.intel.com>
+X-X-Sender: kvehmane@eliteleevi.tm.intel.com
+To: Jaroslav Kysela <perex@perex.cz>
+Subject: Re: HDA HDMI PCM device allocation
+In-Reply-To: <2f37e0b2-1e82-8c0b-2bbd-1e5038d6ecc6@perex.cz>
+Message-ID: <alpine.DEB.2.22.394.2209192042470.2722275@eliteleevi.tm.intel.com>
+References: <2f37e0b2-1e82-8c0b-2bbd-1e5038d6ecc6@perex.cz>
+User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7 02160 Espoo
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-Cc: alsa-devel@alsa-project.org, Stephen Kitt <steve@sk2.org>,
- linux-kernel@vger.kernel.org, navada@ti.com, Dan Murphy <dmurphy@ti.com>,
- =?UTF-8?q?Martin=20Povi=C5=A1er?= <povik+lin@cutebit.org>,
- Charles Keepax <ckeepax@opensource.cirrus.com>
+Content-Type: text/plain; charset=US-ASCII
+Cc: Takashi Iwai <tiwai@suse.de>,
+ ALSA development <alsa-devel@alsa-project.org>,
+ Kai Vehmanen <kai.vehmanen@linux.intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -68,38 +86,95 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On probe of the ASoC component, the device is reset but the regcache is
-retained. This means the regcache gets out of sync if the codec is
-rebound to a sound card for a second time. Fix it by reinitializing the
-regcache to defaults after the device is reset.
+Hi,
 
-Fixes: b0bcbe615756 ("ASoC: tas2770: Fix calling reset in probe")
-Signed-off-by: Martin Povišer <povik+lin@cutebit.org>
----
- sound/soc/codecs/tas2770.c | 3 +++
- 1 file changed, 3 insertions(+)
+On Mon, 19 Sep 2022, Jaroslav Kysela wrote:
 
-diff --git a/sound/soc/codecs/tas2770.c b/sound/soc/codecs/tas2770.c
-index bb653b664146..b6765235a4b3 100644
---- a/sound/soc/codecs/tas2770.c
-+++ b/sound/soc/codecs/tas2770.c
-@@ -495,6 +495,8 @@ static struct snd_soc_dai_driver tas2770_dai_driver[] = {
- 	},
- };
- 
-+static const struct regmap_config tas2770_i2c_regmap;
-+
- static int tas2770_codec_probe(struct snd_soc_component *component)
- {
- 	struct tas2770_priv *tas2770 =
-@@ -508,6 +510,7 @@ static int tas2770_codec_probe(struct snd_soc_component *component)
- 	}
- 
- 	tas2770_reset(tas2770);
-+	regmap_reinit_cache(tas2770->regmap, &tas2770_i2c_regmap);
- 
- 	return 0;
- }
--- 
-2.33.0
+> We have two methods to map the PINs in the HDA HDMI driver to the PCM devices
+> (legacy/static - 1:1 mapping, dynamic - used for new devices with the MST
+> capability). There is also set of converters in each HDMI codec and the number
+> of simultaneously used PCM devices cannot go beyond this count of converters
+> in hardware (otherwise -EBUSY error is returned). The count of converters is 3
+> or 4 depending on the hardware.
 
+roughly yes. There is some further details and variation in implementation 
+the dynamic method if you look at patch_hdmi.c:generic_hdmi_build_pcms(). 
+E.g. recently we added 'dyn_pcm_no_legacy' to start limiting the amount of 
+PCM nodes created. But yeah, this is exactly to move to the direction you 
+are proposing.
+
+> Things to discuss:
+> 
+> It seems quite straight to limit the count of created PCMs to the count of
+> converters. We cannot use more anyway and it does not help, if more PCM
+> devices are allocated (and Jacks reported) to applications when they cannot be
+> used simultaneously.
+
+5~Agreed. When the amount of HDA pins (~= possible physical ports) was 
+small, and before DP-MST (or when DP-MST was available only on a small 
+subset of physical ports), there was clear value in having sticky 
+PIN-to-PCMx mapping. If you plugged a monitor to certain HDMI or DP port, 
+it would show up in the same PCM node. If you had a DP-MST hub, the 
+monitor/receivers behind the hub, would also end up mapped to the 
+familiar ALSA PCM nodes.
+
+But especially with USB-C, the # of possible topologies has shot up 
+(basicly any port can host a DP-MST hub), making this approach less and 
+less practical.
+
+With SOF, we had further constraints in integrating with ASoC, so we've 
+basicly limited PCM (FE) nodes to number of converters (PCM BEs) from the 
+start. Now with dyn_pcm_no_legacy, this starts to be used also with 
+non-DSP usage via snd-hda-intel (with Intel Tiger Lake and newer). At 
+least so far we've not got any negative feedback on this, so road seems 
+clear to move ahead with this approach. There is certainly a lot of cruft 
+in the code to maintain all the legacy options.
+
+> There is a corner case, when more HDMI devices are connected than the count of
+> converters. In this case, an extra method (a module parameter and/or a control
+> element and/or procfs) may be used to filter unwanted HDMI devices. It may be
+
+At least on Intel platforms this is not a problem. The number of 
+converters is aligned with number of display pipes. So you'll never have 
+more HDMI devices connected than the max number of converters.
+
+> Impact to applications:
+> 
+> Those days, pulseaudio or pipewire servers are mostly used on the current
+> hardware. Both servers share the legacy probe code for HDMI devices - they are
+> trying to open PCM devices sequentially and check for the error code. There
+5~> should not be a problem when the connected HDMI devices do not go 
+beyond the
+> count of converters. A minor issue is that the name of the used sink/port may
+> be different (users may be forced to reselect the output path).
+> 
+> For other applications, the PCM device assigned to the connected HDMI device
+> may be different (available in a different ALSA device name). I do not think
+> that it's a big issue. It should be easy solvable with an updated software
+> configuration.
+
+Ack, and this model is already required for smooth integration. With 
+snd-hda-intel, while PCM routing tries to maintain legacy PCM mapping, it 
+cannot be guaranteed in all possible cases. On systems using SOF, there's 
+no legacy mapping at all.
+
+So the right (and robust) approach for apps to select the PCM for 
+HDMI/DP audio is to use:
+ - UCM tells which kcontrol to monitor for jack event
+	- JackControl "HDMI/DP,pcm=3 Jack"
+ - Jack control tells whether receiver is connected or not
+	- "numid=22,iface=CARD,name='HDMI/DP,pcm=3 Jack'"
+ - the ELD data describes receiver properties 
+	- "numid=27,iface=PCM,name='ELD',device=3"
+
+The above is done by Pulseaudio when UCM is used (and followed by 
+Pipewire) and CRAS on ChromeOS. The above can give user sensible GUI 
+information on where to route the audio, and provide enough tools for 
+applications to provide persistancy (audio is routed to Foobar XYZ monitor 
+always, indepedently of the order in which the display/receivers are 
+discovered).
+
+In simple setups (one HDMI/DP receiver with audio capability connected), 
+the receiver is always connected to the first HDMI/DP PCM of the card.
+
+Br, Kai
