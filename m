@@ -4,71 +4,70 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1F530C54EE9
-	for <alsa-devel@archiver.kernel.org>; Tue, 20 Sep 2022 13:29:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 16362C54EE9
+	for <alsa-devel@archiver.kernel.org>; Tue, 20 Sep 2022 13:30:06 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 3BCDEE0E;
-	Tue, 20 Sep 2022 15:28:49 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3BCDEE0E
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0FA5D85D;
+	Tue, 20 Sep 2022 15:29:15 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0FA5D85D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1663680579;
-	bh=/dxfWhqmMkQmV7S5CRMZVDD51+9HbcPvMYerh1tpzBg=;
+	s=default; t=1663680605;
+	bh=j3AJ+gvrSPJXkwy4uwzUn+Y5wSHluaeR3mpbyFCwTGQ=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=FaTrQfFM1Sx0GriTjnl+hGTsZu7GuvJz3qtZPK8v69tnSHly2uG8s6hxWv9Hr3Org
-	 GaKFd4GihOAwAAA4Bf0RjHnpPu/hZzetm2EGoDKCCGzYxBYn9n8m0YnjHBRvkh8p2q
-	 Ua7WPSZcGMCbbkjY1xvKo1orCZ2ASuEcdbZImgUs=
+	b=KCT1+xaubMSfwE81qbNNxM5LQewEoYGOgmt37eVm6HE7h3HCNQxqpaj53C5jfu8di
+	 tRxuxHCB7LBX0X1MmMHl1mLqGTCQWsVUBIQrIGdsSwQchc28ro96WCduWq5GthI+ok
+	 hxlkcX2WAC+jdqajCa347MA4ovNjQdnmjVdjlQCA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 26BD4F80549;
-	Tue, 20 Sep 2022 15:27:43 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 494EDF8055A;
+	Tue, 20 Sep 2022 15:27:46 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 1F8E7F801D5; Tue, 20 Sep 2022 15:27:40 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+ id D9A82F80553; Tue, 20 Sep 2022 15:27:44 +0200 (CEST)
+Received: from sin.source.kernel.org (sin.source.kernel.org
+ [IPv6:2604:1380:40e1:4800::1])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 1B65AF80153
- for <alsa-devel@alsa-project.org>; Tue, 20 Sep 2022 15:27:33 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1B65AF80153
+ by alsa1.perex.cz (Postfix) with ESMTPS id 47EFBF80171
+ for <alsa-devel@alsa-project.org>; Tue, 20 Sep 2022 15:27:38 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 47EFBF80171
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="STSFalZE"
+ header.b="UzwC/fMp"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id C1B11620D1;
+ by sin.source.kernel.org (Postfix) with ESMTPS id 16023CE185D;
+ Tue, 20 Sep 2022 13:27:34 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 896EBC43142;
  Tue, 20 Sep 2022 13:27:31 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CE75DC433D7;
- Tue, 20 Sep 2022 13:27:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
  s=k20201202; t=1663680451;
- bh=/dxfWhqmMkQmV7S5CRMZVDD51+9HbcPvMYerh1tpzBg=;
+ bh=j3AJ+gvrSPJXkwy4uwzUn+Y5wSHluaeR3mpbyFCwTGQ=;
  h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=STSFalZEwXGSEbc6nzmDWOmroSB9N7vampXEwj0HJR6GHPGblhrcNNSGuZL1lggO7
- v+FPFbxoj6zVWhkCs2gQeKfD2+Q/xNK7SOrsQzi1q5igaHHZ6rSXtkg7C44XEK6wq3
- jFfPgH8EufOtbDAaU/gU0osBDkYeqFMSvXv869DRAQOsGIzIYvxFIYFdGpx7OtB6ij
- bk50QXw6rV2MC0/HqyLr9aIyrQRJCaCoiTii94KZdE+fSEfUJMVPjIRVFEGIg+bJ2G
- sFveGHx3WWc5hbVZxENS+TuEV7wp+f6fBC7qkdhPLXE0DfSENDwMNMSfdtaNbo6anC
- pFwb9VxQYe0Mw==
+ b=UzwC/fMpcZHK84uKl1WNEWXfZiWlnD4YDAVv6EFoTILb4768oyWqSVjTBD6QHuVK5
+ xB/Q/fsYK5DxTNoJkfKSwBDNNiuwrFLB8YmCMXAVQtwWk9N20TNplX60AUapFg+ONQ
+ ul6/vQRAB99CN2s6op8JgR0AxQNGhwNmbLqonH3JJluEZSZK97kDfRtuKdFPibwaKj
+ 06Boyk+oJ1B55V+WA/4GHIl9GKFWIXMgWD7FLE7RYAWlXQNRBDTLoEzO40zrYGAacS
+ WVsGGLhnCPVzpwd0WDw+lxu+ZjAm5CrkMxsWaaFZAu5xS/rYcmpOg6tGrnvYb8ahii
+ qDc2/z+ljCZkw==
 Received: by pali.im (Postfix)
- id 378762B6E; Tue, 20 Sep 2022 15:27:28 +0200 (CEST)
+ id 08B1B2D7D; Tue, 20 Sep 2022 15:27:29 +0200 (CEST)
 From: =?UTF-8?q?Pali=20Roh=C3=A1r?= <pali@kernel.org>
 To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
  Andrew Lunn <andrew@lunn.ch>,
  Gregory Clement <gregory.clement@bootlin.com>,
  Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
  Marcin Wojtas <mw@semihalf.com>
-Subject: [PATCH 1/5] ASoC: kirkwood: enable Kirkwood driver for Armada 38x
- platforms
-Date: Tue, 20 Sep 2022 15:26:44 +0200
-Message-Id: <20220920132648.2008-2-pali@kernel.org>
+Subject: [PATCH 3/5] ARM: mvebu: add audio support to Armada 385 DB
+Date: Tue, 20 Sep 2022 15:26:46 +0200
+Message-Id: <20220920132648.2008-4-pali@kernel.org>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20220920132648.2008-1-pali@kernel.org>
 References: <20220920132648.2008-1-pali@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
  linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
@@ -89,256 +88,119 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 From: Marcin Wojtas <mw@semihalf.com>
 
-The audio unit of Marvell Armada38x SoC is similar to the ones comprised by
-other Marvell SoCs (Kirkwood, Dove and Armada 370). Therefore KW audio
-driver can be used to support it and this commit adds new compatible string
-to identify Armada 38x variant.
+This commit adds the necessary Device Tree information to enable
+audio support on the Armada 385 DB platform. In details it:
 
-Two new memory regions are added: first one for PLL configuration and
-the second one for choosing one of audio I/O modes (I2S or S/PDIF).
-For the latter purpose a new optional DT property is added ('spdif-mode').
+ * Instantiates the CS42L51 audio codec on the I2C0 bus
 
-kirkwood-i2s driver is extended by adding a new init function for Armada
-38x flavor and also a routine that enables PLL output (i.e. MCLK)
-configuration.
+ * Adds simple-card DT binding for audio on Armada 385 DB
+
+ * Adds description for both analog I2S and S/PDIF I/O
+
+ * Disabled by default
 
 Signed-off-by: Marcin Wojtas <mw@semihalf.com>
+Signed-off-by: Nadav Haklai <nadavh@marvell.com>
 Tested-by: Star_Automation <star@marvell.com>
-Reviewed-by: Nadav Haklai <nadavh@marvell.com>
-Reviewed-by: Lior Amsalem <alior@marvell.com>
 Tested-by: Lior Amsalem <alior@marvell.com>
-Signed-off-by: Hezi Shahmoon <hezi@marvell.com>
-Reviewed-by: Neta Zur Hershkovits <neta@marvell.com>
-[pali: Fix support for pre-38x SoCs]
-Signed-off-by: Pali Rohár <pali@kernel.org>
 ---
- .../devicetree/bindings/sound/mvebu-audio.txt |  14 +-
- sound/soc/kirkwood/kirkwood-i2s.c             | 136 +++++++++++++++++-
- sound/soc/kirkwood/kirkwood.h                 |   2 +
- 3 files changed, 149 insertions(+), 3 deletions(-)
+ arch/arm/boot/dts/armada-388-db.dts | 69 +++++++++++++++++++++++++++++
+ 1 file changed, 69 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/sound/mvebu-audio.txt b/Documentation/devicetree/bindings/sound/mvebu-audio.txt
-index cb8c07c81ce4..4f5dec5cb3c2 100644
---- a/Documentation/devicetree/bindings/sound/mvebu-audio.txt
-+++ b/Documentation/devicetree/bindings/sound/mvebu-audio.txt
-@@ -6,9 +6,14 @@ Required properties:
-   "marvell,kirkwood-audio" for Kirkwood platforms
-   "marvell,dove-audio" for Dove platforms
-   "marvell,armada370-audio" for Armada 370 platforms
-+  "marvell,armada-380-audio" for Armada 38x platforms
+diff --git a/arch/arm/boot/dts/armada-388-db.dts b/arch/arm/boot/dts/armada-388-db.dts
+index 5130eccc32af..2bcec5419b66 100644
+--- a/arch/arm/boot/dts/armada-388-db.dts
++++ b/arch/arm/boot/dts/armada-388-db.dts
+@@ -36,6 +36,11 @@
+ 			i2c@11000 {
+ 				status = "okay";
+ 				clock-frequency = <100000>;
++				audio_codec: audio-codec@4a {
++					#sound-dai-cells = <0>;
++					compatible = "cirrus,cs42l51";
++					reg = <0x4a>;
++				};
+ 			};
  
- - reg: physical base address of the controller and length of memory mapped
--  region.
-+  region (named "i2s_regs").
-+  With "marvell,armada-380-audio" two other regions are required:
-+  first of those is dedicated for Audio PLL Configuration registers
-+  (named "pll_regs") and the second one ("soc_ctrl") - for register
-+  where one of exceptive I/O types (I2S or S/PDIF) is set.
+ 			i2c@11100 {
+@@ -99,6 +104,12 @@
+ 				no-1-8-v;
+ 			};
  
- - interrupts:
-   with "marvell,kirkwood-audio", the audio interrupt
-@@ -23,6 +28,13 @@ Required properties:
- 	"internal" for the internal clock
- 	"extclk" for the external clock
- 
-+Optional properties:
++			audio-controller@e8000 {
++				pinctrl-0 = <&i2s_pins>;
++				pinctrl-names = "default";
++				status = "disabled";
++			};
 +
-+- spdif-mode:
-+  Enable S/PDIF mode on Armada 38x SoC. Using this property
-+  disables standard I2S I/O. Valid only with "marvell,armada-380-audio"
-+  compatible string.
+ 			usb3@f0000 {
+ 				status = "okay";
+ 			};
+@@ -128,6 +139,64 @@
+ 			};
+ 		};
+ 	};
 +
- Example:
- 
- i2s1: audio-controller@b4000 {
-diff --git a/sound/soc/kirkwood/kirkwood-i2s.c b/sound/soc/kirkwood/kirkwood-i2s.c
-index 2a4ffe945177..ac387b5ca094 100644
---- a/sound/soc/kirkwood/kirkwood-i2s.c
-+++ b/sound/soc/kirkwood/kirkwood-i2s.c
-@@ -31,6 +31,122 @@
- 	(SNDRV_PCM_FMTBIT_S16_LE | \
- 	 SNDRV_PCM_FMTBIT_S24_LE)
- 
-+/* These registers are relative to the second register region -
-+ * audio pll configuration.
-+ */
-+#define A38X_PLL_CONF_REG0			0x0
-+#define     A38X_PLL_FB_CLK_DIV_OFFSET		10
-+#define     A38X_PLL_FB_CLK_DIV_MASK		0x7fc00
-+#define A38X_PLL_CONF_REG1			0x4
-+#define     A38X_PLL_FREQ_OFFSET_MASK		0xffff
-+#define     A38X_PLL_FREQ_OFFSET_VALID		BIT(16)
-+#define     A38X_PLL_SW_RESET			BIT(31)
-+#define A38X_PLL_CONF_REG2			0x8
-+#define     A38X_PLL_AUDIO_POSTDIV_MASK		0x7f
++	sound {
++		compatible = "simple-audio-card";
++		simple-audio-card,name = "Armada 385 DB Audio";
++		simple-audio-card,mclk-fs = <256>;
++		simple-audio-card,widgets =
++			"Headphone", "Out Jack",
++			"Line", "In Jack";
++		simple-audio-card,routing =
++			"Out Jack", "HPL",
++			"Out Jack", "HPR",
++			"AIN1L", "In Jack",
++			"AIN1R", "In Jack";
++		status = "disabled";
 +
-+/* Bit below belongs to SoC control register corresponding to the third
-+ * register region.
-+ */
-+#define A38X_SPDIF_MODE_ENABLE			BIT(27)
++		simple-audio-card,dai-link@0 {
++			format = "i2s";
++			cpu {
++				sound-dai = <&audio_controller 0>;
++			};
 +
-+static int armada_38x_i2s_init_quirk(struct platform_device *pdev,
-+				     struct kirkwood_dma_data *priv,
-+				     struct snd_soc_dai_driver *dai_drv)
-+{
-+	struct device_node *np = pdev->dev.of_node;
-+	u32 reg_val;
-+	int i;
++			codec {
++				sound-dai = <&audio_codec>;
++			};
++		};
 +
-+	priv->pll_config = devm_platform_ioremap_resource_byname(pdev, "pll_regs");
-+	if (IS_ERR(priv->pll_config))
-+		return -ENOMEM;
++		simple-audio-card,dai-link@1 {
++			format = "i2s";
++			cpu {
++				sound-dai = <&audio_controller 1>;
++			};
 +
-+	priv->soc_control = devm_platform_ioremap_resource_byname(pdev, "soc_ctrl");
-+	if (IS_ERR(priv->soc_control))
-+		return -ENOMEM;
++			codec {
++				sound-dai = <&spdif_out>;
++			};
++		};
 +
-+	/* Select one of exceptive modes: I2S or S/PDIF */
-+	reg_val = readl(priv->soc_control);
-+	if (of_property_read_bool(np, "spdif-mode")) {
-+		reg_val |= A38X_SPDIF_MODE_ENABLE;
-+		dev_info(&pdev->dev, "using S/PDIF mode\n");
-+	} else {
-+		reg_val &= ~A38X_SPDIF_MODE_ENABLE;
-+		dev_info(&pdev->dev, "using I2S mode\n");
-+	}
-+	writel(reg_val, priv->soc_control);
++		simple-audio-card,dai-link@2 {
++			format = "i2s";
++			cpu {
++				sound-dai = <&audio_controller 1>;
++			};
 +
-+	/* Update available rates of mclk's fs */
-+	for (i = 0; i < 2; i++) {
-+		dai_drv[i].playback.rates |= SNDRV_PCM_RATE_192000;
-+		dai_drv[i].capture.rates |= SNDRV_PCM_RATE_192000;
-+	}
++			codec {
++				sound-dai = <&spdif_in>;
++			};
++		};
++	};
 +
-+	return 0;
-+}
++	spdif_out: spdif-out {
++		#sound-dai-cells = <0>;
++		compatible = "linux,spdif-dit";
++	};
 +
-+static inline void armada_38x_set_pll(void __iomem *base, unsigned long rate)
-+{
-+	u32 reg_val;
-+	u16 freq_offset = 0x22b0;
-+	u8 audio_postdiv, fb_clk_div = 0x1d;
-+
-+	/* Set frequency offset value to not valid and enable PLL reset */
-+	reg_val = readl(base + A38X_PLL_CONF_REG1);
-+	reg_val &= ~A38X_PLL_FREQ_OFFSET_VALID;
-+	reg_val &= ~A38X_PLL_SW_RESET;
-+	writel(reg_val, base + A38X_PLL_CONF_REG1);
-+
-+	udelay(1);
-+
-+	/* Update PLL parameters */
-+	switch (rate) {
-+	default:
-+	case 44100:
-+		freq_offset = 0x735;
-+		fb_clk_div = 0x1b;
-+		audio_postdiv = 0xc;
-+		break;
-+	case 48000:
-+		audio_postdiv = 0xc;
-+		break;
-+	case 96000:
-+		audio_postdiv = 0x6;
-+		break;
-+	case 192000:
-+		audio_postdiv = 0x3;
-+		break;
-+	}
-+
-+	reg_val = readl(base + A38X_PLL_CONF_REG0);
-+	reg_val &= ~A38X_PLL_FB_CLK_DIV_MASK;
-+	reg_val |= (fb_clk_div << A38X_PLL_FB_CLK_DIV_OFFSET);
-+	writel(reg_val, base + A38X_PLL_CONF_REG0);
-+
-+	reg_val = readl(base + A38X_PLL_CONF_REG2);
-+	reg_val &= ~A38X_PLL_AUDIO_POSTDIV_MASK;
-+	reg_val |= audio_postdiv;
-+	writel(reg_val, base + A38X_PLL_CONF_REG2);
-+
-+	reg_val = readl(base + A38X_PLL_CONF_REG1);
-+	reg_val &= ~A38X_PLL_FREQ_OFFSET_MASK;
-+	reg_val |= freq_offset;
-+	writel(reg_val, base + A38X_PLL_CONF_REG1);
-+
-+	udelay(1);
-+
-+	/* Disable reset */
-+	reg_val |= A38X_PLL_SW_RESET;
-+	writel(reg_val, base + A38X_PLL_CONF_REG1);
-+
-+	/* Wait 50us for PLL to lock */
-+	udelay(50);
-+
-+	/* Restore frequency offset value validity */
-+	reg_val |= A38X_PLL_FREQ_OFFSET_VALID;
-+	writel(reg_val, base + A38X_PLL_CONF_REG1);
-+}
-+
- static int kirkwood_i2s_set_fmt(struct snd_soc_dai *cpu_dai,
- 		unsigned int fmt)
- {
-@@ -106,7 +222,10 @@ static void kirkwood_set_rate(struct snd_soc_dai *dai,
- 		 * defined in kirkwood_i2s_dai */
- 		dev_dbg(dai->dev, "%s: dco set rate = %lu\n",
- 			__func__, rate);
--		kirkwood_set_dco(priv->io, rate);
-+		if (priv->pll_config)
-+			armada_38x_set_pll(priv->pll_config, rate);
-+		else
-+			kirkwood_set_dco(priv->io, rate);
- 
- 		clks_ctrl = KIRKWOOD_MCLK_SOURCE_DCO;
- 	} else {
-@@ -532,7 +651,10 @@ static int kirkwood_i2s_dev_probe(struct platform_device *pdev)
- 
- 	dev_set_drvdata(&pdev->dev, priv);
- 
--	priv->io = devm_platform_ioremap_resource(pdev, 0);
-+	if (of_device_is_compatible(np, "marvell,armada-380-audio"))
-+		priv->io = devm_platform_ioremap_resource_byname(pdev, "i2s_regs");
-+	else
-+		priv->io = devm_platform_ioremap_resource(pdev, 0);
- 	if (IS_ERR(priv->io))
- 		return PTR_ERR(priv->io);
- 
-@@ -540,6 +662,15 @@ static int kirkwood_i2s_dev_probe(struct platform_device *pdev)
- 	if (priv->irq < 0)
- 		return priv->irq;
- 
-+	if (of_device_is_compatible(np, "marvell,armada-380-audio")) {
-+		err = armada_38x_i2s_init_quirk(pdev, priv, soc_dai);
-+		/* Set initial pll frequency */
-+		if (priv->pll_config)
-+			armada_38x_set_pll(priv->pll_config, 44100);
-+		if (err < 0)
-+			return err;
-+	}
-+
- 	if (np) {
- 		priv->burst = 128;		/* might be 32 or 128 */
- 	} else if (data) {
-@@ -623,6 +754,7 @@ static const struct of_device_id mvebu_audio_of_match[] = {
- 	{ .compatible = "marvell,kirkwood-audio" },
- 	{ .compatible = "marvell,dove-audio" },
- 	{ .compatible = "marvell,armada370-audio" },
-+	{ .compatible = "marvell,armada-380-audio" },
- 	{ }
++	spdif_in: spdif-in {
++		#sound-dai-cells = <0>;
++		compatible = "linux,spdif-dir";
++	};
  };
- MODULE_DEVICE_TABLE(of, mvebu_audio_of_match);
-diff --git a/sound/soc/kirkwood/kirkwood.h b/sound/soc/kirkwood/kirkwood.h
-index a1733a6aace5..79bb9aa7f086 100644
---- a/sound/soc/kirkwood/kirkwood.h
-+++ b/sound/soc/kirkwood/kirkwood.h
-@@ -131,6 +131,8 @@
  
- struct kirkwood_dma_data {
- 	void __iomem *io;
-+	void __iomem *pll_config;
-+	void __iomem *soc_control;
- 	struct clk *clk;
- 	struct clk *extclk;
- 	uint32_t ctl_play;
+ &spi0 {
 -- 
 2.20.1
 
