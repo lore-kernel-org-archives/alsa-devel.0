@@ -4,73 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 16362C54EE9
-	for <alsa-devel@archiver.kernel.org>; Tue, 20 Sep 2022 13:30:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 42E78C54EE9
+	for <alsa-devel@archiver.kernel.org>; Tue, 20 Sep 2022 13:40:33 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0FA5D85D;
-	Tue, 20 Sep 2022 15:29:15 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0FA5D85D
+	by alsa0.perex.cz (Postfix) with ESMTPS id C5162857;
+	Tue, 20 Sep 2022 15:39:41 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C5162857
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1663680605;
-	bh=j3AJ+gvrSPJXkwy4uwzUn+Y5wSHluaeR3mpbyFCwTGQ=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1663681231;
+	bh=S9U9WtQXmz4u+HuV8nEv4h9zWNv3NIC7PqUlm/P6jX4=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=KCT1+xaubMSfwE81qbNNxM5LQewEoYGOgmt37eVm6HE7h3HCNQxqpaj53C5jfu8di
-	 tRxuxHCB7LBX0X1MmMHl1mLqGTCQWsVUBIQrIGdsSwQchc28ro96WCduWq5GthI+ok
-	 hxlkcX2WAC+jdqajCa347MA4ovNjQdnmjVdjlQCA=
+	b=KzLkU5/qvmXXhvhp0DBorXaESlbiJWjJ1irSm5uZV3u3bZNl0TuHS5cFCBT6QBR5h
+	 gfq6cF6CnXfq2nP2xO9Fib0sIC1fhHAERUZDY5lbFFVkutWIE+ui0Lraxqt3TzhVqJ
+	 2dmER67ghz+16mp/MZv63VExl4uREGlBFufspZYY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 494EDF8055A;
-	Tue, 20 Sep 2022 15:27:46 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 5FB7AF80155;
+	Tue, 20 Sep 2022 15:39:41 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id D9A82F80553; Tue, 20 Sep 2022 15:27:44 +0200 (CEST)
-Received: from sin.source.kernel.org (sin.source.kernel.org
- [IPv6:2604:1380:40e1:4800::1])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 47EFBF80171
- for <alsa-devel@alsa-project.org>; Tue, 20 Sep 2022 15:27:38 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 47EFBF80171
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="UzwC/fMp"
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+ id D440AF8012B; Tue, 20 Sep 2022 15:39:39 +0200 (CEST)
+Received: from vps0.lunn.ch (vps0.lunn.ch [185.16.172.187])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by sin.source.kernel.org (Postfix) with ESMTPS id 16023CE185D;
- Tue, 20 Sep 2022 13:27:34 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 896EBC43142;
- Tue, 20 Sep 2022 13:27:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1663680451;
- bh=j3AJ+gvrSPJXkwy4uwzUn+Y5wSHluaeR3mpbyFCwTGQ=;
- h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
- b=UzwC/fMpcZHK84uKl1WNEWXfZiWlnD4YDAVv6EFoTILb4768oyWqSVjTBD6QHuVK5
- xB/Q/fsYK5DxTNoJkfKSwBDNNiuwrFLB8YmCMXAVQtwWk9N20TNplX60AUapFg+ONQ
- ul6/vQRAB99CN2s6op8JgR0AxQNGhwNmbLqonH3JJluEZSZK97kDfRtuKdFPibwaKj
- 06Boyk+oJ1B55V+WA/4GHIl9GKFWIXMgWD7FLE7RYAWlXQNRBDTLoEzO40zrYGAacS
- WVsGGLhnCPVzpwd0WDw+lxu+ZjAm5CrkMxsWaaFZAu5xS/rYcmpOg6tGrnvYb8ahii
- qDc2/z+ljCZkw==
-Received: by pali.im (Postfix)
- id 08B1B2D7D; Tue, 20 Sep 2022 15:27:29 +0200 (CEST)
-From: =?UTF-8?q?Pali=20Roh=C3=A1r?= <pali@kernel.org>
-To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
- Andrew Lunn <andrew@lunn.ch>,
- Gregory Clement <gregory.clement@bootlin.com>,
- Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
- Marcin Wojtas <mw@semihalf.com>
-Subject: [PATCH 3/5] ARM: mvebu: add audio support to Armada 385 DB
-Date: Tue, 20 Sep 2022 15:26:46 +0200
-Message-Id: <20220920132648.2008-4-pali@kernel.org>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20220920132648.2008-1-pali@kernel.org>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 48CFCF8012B
+ for <alsa-devel@alsa-project.org>; Tue, 20 Sep 2022 15:39:25 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 48CFCF8012B
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch
+ header.b="RZSS9O3G"
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+ s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+ References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+ Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+ Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+ bh=3pIjUlJA919B9lQ4aUcTZDjl/ToQpR3Iu1q2qExlc+0=; b=RZSS9O3GRyd5jXE3KqsVzp/6ja
+ w4m8lGQbeA2elwVVGEM4FwtLGj41wsYTWJU01DB3/dGo7oz+mIiJ307vyc0rZZf6FUXW6nV/IK3ih
+ pWNCaYVxkQanbkWV34A7U42jndu60DeFADkyspOOmRFIy0w+IJ1b7pPZ9aKgoBWH4Ouk=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+ (envelope-from <andrew@lunn.ch>)
+ id 1oadT4-00HH5w-0s; Tue, 20 Sep 2022 15:39:18 +0200
+Date: Tue, 20 Sep 2022 15:39:18 +0200
+From: Andrew Lunn <andrew@lunn.ch>
+To: Pali =?iso-8859-1?Q?Roh=E1r?= <pali@kernel.org>
+Subject: Re: [PATCH 1/5] ASoC: kirkwood: enable Kirkwood driver for Armada
+ 38x platforms
+Message-ID: <YynChnIJe3SZUUW5@lunn.ch>
 References: <20220920132648.2008-1-pali@kernel.org>
+ <20220920132648.2008-2-pali@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220920132648.2008-2-pali@kernel.org>
 Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
- linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+ Gregory Clement <gregory.clement@bootlin.com>,
+ Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org,
+ Mark Brown <broonie@kernel.org>, Marcin Wojtas <mw@semihalf.com>,
+ linux-arm-kernel@lists.infradead.org,
+ Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -86,121 +79,15 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-From: Marcin Wojtas <mw@semihalf.com>
+> +	if (of_device_is_compatible(np, "marvell,armada-380-audio")) {
+> +		err = armada_38x_i2s_init_quirk(pdev, priv, soc_dai);
+> +		/* Set initial pll frequency */
+> +		if (priv->pll_config)
+> +			armada_38x_set_pll(priv->pll_config, 44100);
+> +		if (err < 0)
+> +			return err;
 
-This commit adds the necessary Device Tree information to enable
-audio support on the Armada 385 DB platform. In details it:
+A nitpick: It would be better to do the test for err before calling
+armada_38x_set_pll(), and then there is no need for the NULL check.
 
- * Instantiates the CS42L51 audio codec on the I2C0 bus
-
- * Adds simple-card DT binding for audio on Armada 385 DB
-
- * Adds description for both analog I2S and S/PDIF I/O
-
- * Disabled by default
-
-Signed-off-by: Marcin Wojtas <mw@semihalf.com>
-Signed-off-by: Nadav Haklai <nadavh@marvell.com>
-Tested-by: Star_Automation <star@marvell.com>
-Tested-by: Lior Amsalem <alior@marvell.com>
----
- arch/arm/boot/dts/armada-388-db.dts | 69 +++++++++++++++++++++++++++++
- 1 file changed, 69 insertions(+)
-
-diff --git a/arch/arm/boot/dts/armada-388-db.dts b/arch/arm/boot/dts/armada-388-db.dts
-index 5130eccc32af..2bcec5419b66 100644
---- a/arch/arm/boot/dts/armada-388-db.dts
-+++ b/arch/arm/boot/dts/armada-388-db.dts
-@@ -36,6 +36,11 @@
- 			i2c@11000 {
- 				status = "okay";
- 				clock-frequency = <100000>;
-+				audio_codec: audio-codec@4a {
-+					#sound-dai-cells = <0>;
-+					compatible = "cirrus,cs42l51";
-+					reg = <0x4a>;
-+				};
- 			};
- 
- 			i2c@11100 {
-@@ -99,6 +104,12 @@
- 				no-1-8-v;
- 			};
- 
-+			audio-controller@e8000 {
-+				pinctrl-0 = <&i2s_pins>;
-+				pinctrl-names = "default";
-+				status = "disabled";
-+			};
-+
- 			usb3@f0000 {
- 				status = "okay";
- 			};
-@@ -128,6 +139,64 @@
- 			};
- 		};
- 	};
-+
-+	sound {
-+		compatible = "simple-audio-card";
-+		simple-audio-card,name = "Armada 385 DB Audio";
-+		simple-audio-card,mclk-fs = <256>;
-+		simple-audio-card,widgets =
-+			"Headphone", "Out Jack",
-+			"Line", "In Jack";
-+		simple-audio-card,routing =
-+			"Out Jack", "HPL",
-+			"Out Jack", "HPR",
-+			"AIN1L", "In Jack",
-+			"AIN1R", "In Jack";
-+		status = "disabled";
-+
-+		simple-audio-card,dai-link@0 {
-+			format = "i2s";
-+			cpu {
-+				sound-dai = <&audio_controller 0>;
-+			};
-+
-+			codec {
-+				sound-dai = <&audio_codec>;
-+			};
-+		};
-+
-+		simple-audio-card,dai-link@1 {
-+			format = "i2s";
-+			cpu {
-+				sound-dai = <&audio_controller 1>;
-+			};
-+
-+			codec {
-+				sound-dai = <&spdif_out>;
-+			};
-+		};
-+
-+		simple-audio-card,dai-link@2 {
-+			format = "i2s";
-+			cpu {
-+				sound-dai = <&audio_controller 1>;
-+			};
-+
-+			codec {
-+				sound-dai = <&spdif_in>;
-+			};
-+		};
-+	};
-+
-+	spdif_out: spdif-out {
-+		#sound-dai-cells = <0>;
-+		compatible = "linux,spdif-dit";
-+	};
-+
-+	spdif_in: spdif-in {
-+		#sound-dai-cells = <0>;
-+		compatible = "linux,spdif-dir";
-+	};
- };
- 
- &spi0 {
--- 
-2.20.1
-
+      Andrew
