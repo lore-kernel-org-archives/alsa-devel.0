@@ -4,63 +4,63 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C7581C6FA82
-	for <alsa-devel@archiver.kernel.org>; Tue, 20 Sep 2022 21:35:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0F051C6FA82
+	for <alsa-devel@archiver.kernel.org>; Tue, 20 Sep 2022 21:35:24 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B505515C1;
-	Tue, 20 Sep 2022 23:34:18 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B505515C1
+	by alsa0.perex.cz (Postfix) with ESMTPS id 2E70A86E;
+	Tue, 20 Sep 2022 23:34:32 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2E70A86E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1663709708;
-	bh=kF+juegNrgoYd36+kSxeHkJrR6xbLoArmPeABk6/t7w=;
+	s=default; t=1663709722;
+	bh=4395CS/iWJ9A+nK+7JU5SsbXNb7TCWqK3DuvT50cdTA=;
 	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=XITuMXyJXJGwNHBD391WbEFGtkyj9fRmnAVfLE0FWZJ31fliyAadozYb4ErZQ6YGy
-	 g8d+ehZWGu7CLPCTcnEgmZLTedR/VEYUw3riyppYLyAYW0gMFMSFZiaBKZM1CWzFZO
-	 UkfzdjnsjFW55ga1FE4hngxqH6tn3/guYUiyu8PM=
+	b=nkOx2beblTzreNS8b0z88ALSJpANyZSsAIF8LNNcaea4rO61Zen5J+vfvrTH1q5ZX
+	 EOAI+sVhoUlc7b1XrHQPY+3bQ8/guJxRLTc5SSJDKfKzVoz56llfSVr5l2RFhL1mzX
+	 05Y3W3yB3w0mbDtTl55BELYp/H94xkhUPG/zAmkk=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 3110CF8053C;
-	Tue, 20 Sep 2022 23:33:29 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id BA1AEF80548;
+	Tue, 20 Sep 2022 23:33:34 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 443F4F8053B; Tue, 20 Sep 2022 23:33:27 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org
- [IPv6:2604:1380:4641:c500::1])
+ id 23AB6F80549; Tue, 20 Sep 2022 23:33:33 +0200 (CEST)
+Received: from ams.source.kernel.org (ams.source.kernel.org
+ [IPv6:2604:1380:4601:e00::1])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id D056CF8053B
- for <alsa-devel@alsa-project.org>; Tue, 20 Sep 2022 23:33:24 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D056CF8053B
+ by alsa1.perex.cz (Postfix) with ESMTPS id B7811F80543
+ for <alsa-devel@alsa-project.org>; Tue, 20 Sep 2022 23:33:30 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B7811F80543
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="jhZ0YhEU"
+ header.b="AxBlf2kc"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id 68A1A62691;
- Tue, 20 Sep 2022 21:33:23 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D166DC433D7;
- Tue, 20 Sep 2022 21:33:18 +0000 (UTC)
+ by ams.source.kernel.org (Postfix) with ESMTPS id 302E4B82D14;
+ Tue, 20 Sep 2022 21:33:30 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3C8C8C433D6;
+ Tue, 20 Sep 2022 21:33:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1663709602;
- bh=kF+juegNrgoYd36+kSxeHkJrR6xbLoArmPeABk6/t7w=;
+ s=k20201202; t=1663709608;
+ bh=4395CS/iWJ9A+nK+7JU5SsbXNb7TCWqK3DuvT50cdTA=;
  h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=jhZ0YhEU+yLr8iMOA5QEwbaW/KHHccT1JgGLa4La+HAU4EMOyDZhV1OgHCcykAWtt
- kyc4W5UnK7IN/s1SeNJng+Pngxw562WNtM54qU2C2tZ4IJQXHx6m88veZcLai/QOca
- EHdRiPJO1lqhhnfXb0M16IffcmMW3px0m78RGxAhEtbJ5bbjNDZFiq6ZtuIOkF2GxK
- oR34aaAH3tDjbmMCj+HH0HPkfsJjGDsQ89e3m32lrBa4jKN/zY63Yosu1mygusCNj9
- 6/z4l/pzwa3dkODaaZ5X+QgU8JpwYmiUt9NLbQY2U0ZOQnaDKttm9b3vnXEC+HZIoZ
- D6vAbhCi8hUzQ==
+ b=AxBlf2kc7Ozo8M3xX92w+wHooioueiJ3WxMuz0kBIJJ1ajyrg5WD47tJIlyB63mbA
+ rGcGnCoMk7OifAL7Cs1nKlU1MSfzekrCg7bRxxeBLYFlyCNLJGL/HQC9N4/k+HTRrW
+ cRoIVgL4CyTVpRX/oUJOvYA1QlUl74SV+Qe0hYz2xBHI72CZG4YO3/N9nuR0Vk2+pH
+ G2XNQjsNmDKF2Hq6RXUA/jGzPXWYzuHLQc7fTeBceoQ3O33d9VeBudgT8fCxMDdCtd
+ ra0uoIezyrX3/mV5v+EHTPZc0sSl+qiSwA3Q1mxQ2REU8QLy1GfFWKLgbgrZiLt6MD
+ chOa2RTicXl/g==
 From: Mark Brown <broonie@kernel.org>
 To: alsa-devel@alsa-project.org,
  Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-In-Reply-To: <20220920145405.2089147-1-pierre-louis.bossart@linux.intel.com>
-References: <20220920145405.2089147-1-pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH 0/2] ASoC: SOF: ipc4-topology: minor cleanup
-Message-Id: <166370959829.476248.514896301430918126.b4-ty@kernel.org>
-Date: Tue, 20 Sep 2022 22:33:18 +0100
+In-Reply-To: <20220920150107.2090695-1-pierre-louis.bossart@linux.intel.com>
+References: <20220920150107.2090695-1-pierre-louis.bossart@linux.intel.com>
+Subject: Re: [PATCH 0/2] ASoC: SOF: sof-audio: fix prepare/unprepare
+Message-Id: <166370960433.476248.3901483440313426675.b4-ty@kernel.org>
+Date: Tue, 20 Sep 2022 22:33:24 +0100
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -81,15 +81,13 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Tue, 20 Sep 2022 16:54:03 +0200, Pierre-Louis Bossart wrote:
-> Two updates on warnings reported by cppcheck.
+On Tue, 20 Sep 2022 17:01:05 +0200, Pierre-Louis Bossart wrote:
+> 2 patches from Rander required to enable mixing usages with multiple
+> pipelines.
 > 
-> Pierre-Louis Bossart (2):
->   ASoC: SOF: ipc4-topology: clarify calculation precedence
->   ASoC: SOF: ipc4-topology: remove useless assignment
-> 
-> sound/soc/sof/ipc4-topology.c | 5 ++---
->  1 file changed, 2 insertions(+), 3 deletions(-)
+> Rander Wang (2):
+>   ASoC: SOF: clear prepare state when widget is unprepared
+>   ASoC: SOF: don't unprepare widget used other pipelines
 > 
 > [...]
 
@@ -99,10 +97,10 @@ Applied to
 
 Thanks!
 
-[1/2] ASoC: SOF: ipc4-topology: clarify calculation precedence
-      commit: 80d53171f85a8e97b2aa1d50045dbc1b5dd1bc97
-[2/2] ASoC: SOF: ipc4-topology: remove useless assignment
-      commit: 7738211bce7ae43624121fcf121aec87b2149af1
+[1/2] ASoC: SOF: clear prepare state when widget is unprepared
+      commit: ce59804d26432d7e2c1a8c906245a230a2b4505c
+[2/2] ASoC: SOF: don't unprepare widget used other pipelines
+      commit: 9862dcf70245c2d03764012b81966d8c2ea95a48
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
