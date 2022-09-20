@@ -4,72 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 75AD1ECAAD8
-	for <alsa-devel@archiver.kernel.org>; Tue, 20 Sep 2022 14:56:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3EA82C54EE9
+	for <alsa-devel@archiver.kernel.org>; Tue, 20 Sep 2022 15:02:30 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 5A77B886;
-	Tue, 20 Sep 2022 16:55:18 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5A77B886
+	by alsa0.perex.cz (Postfix) with ESMTPS id 29C0984B;
+	Tue, 20 Sep 2022 17:01:38 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 29C0984B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1663685768;
-	bh=9AUoeTqsJviu/QSHqj+2Oqy2yXJl7d1Bf3gDhwbkIco=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=kqKaWGQt4BTMyQJAqby+ZytUWza+BWhsdRmhbfG0uwek4RnKJAWyKGeqwpgWsoqSc
-	 KsVD/chUFvVUAyDXPhwmsQLj/EPTUpOm1KAwn6FJa2FTeU9UOYou/okGqzdt7S4JEK
-	 jIcDC9KA57tnY4C8osXOneWXLin9JuY5iL9ndCf8=
+	s=default; t=1663686148;
+	bh=gWaxfyJ+dks25OJtU69CxQSENKPTsMvk1eAGI2JUxkg=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=Ej34jqYClO9X3+97IWFMFvn63BdUR641oNOE4Y98RdAN+3VtTwCxpNxl5DJTYBTzM
+	 ts0WnfS8ed9oXaGZWkXuscMhZZtxtSKno8zYuOw9Nk6y1QsdEAPcDVG35KREjnPPFO
+	 3O4CGL5vO6ZBdTpmOBDcMRZwn0+IvC0VlB3JPpFM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 777A6F80538;
-	Tue, 20 Sep 2022 16:54:33 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id A9A16F80153;
+	Tue, 20 Sep 2022 17:01:37 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 634EFF80155; Tue, 20 Sep 2022 16:54:32 +0200 (CEST)
-Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
+ id 91957F801D5; Tue, 20 Sep 2022 17:01:35 +0200 (CEST)
+Received: from mga17.intel.com (mga17.intel.com [192.55.52.151])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id A9730F80153
- for <alsa-devel@alsa-project.org>; Tue, 20 Sep 2022 16:54:25 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A9730F80153
+ by alsa1.perex.cz (Postfix) with ESMTPS id 00645F80155
+ for <alsa-devel@alsa-project.org>; Tue, 20 Sep 2022 17:01:30 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 00645F80155
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="TDNP74KE"
+ header.b="WYAz7KK3"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1663685666; x=1695221666;
- h=from:to:cc:subject:date:message-id:in-reply-to:
- references:mime-version:content-transfer-encoding;
- bh=9AUoeTqsJviu/QSHqj+2Oqy2yXJl7d1Bf3gDhwbkIco=;
- b=TDNP74KE+SiLjJRqAOFK6s0xnPEC5KeaPsNgN9821k1/kTczCEDTszf/
- TUyLjhHgdp+ZiCqojfVmAQ//SfYLrRfnmmHNIU57m02LewWIIqDdLI/lc
- BRZnrMACg7nk7enV/yc7E+tARsP2CtEGJTn4SridghesEkSTV+nTlv5q6
- i3gvEWzxef0UtT4p56GmecrVrP7zxxQWhqV2LYxqDhuC+GzCiH6Jby8U3
- nWtc6BnRpZfK1nUD2A+3dj2zaEP//7bQDdb7eIhIBdlGvL+8qKghDvof8
- zhoUEisK5zDml8Oyy3KgcHKOR2RRJnH7onPfVInke8uYeqx9jgDPb+mHr g==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10476"; a="301095356"
-X-IronPort-AV: E=Sophos;i="5.93,330,1654585200"; d="scan'208";a="301095356"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
- by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 20 Sep 2022 07:54:23 -0700
-X-IronPort-AV: E=Sophos;i="5.93,330,1654585200"; d="scan'208";a="681341675"
+ t=1663686092; x=1695222092;
+ h=from:to:cc:subject:date:message-id:mime-version:
+ content-transfer-encoding;
+ bh=gWaxfyJ+dks25OJtU69CxQSENKPTsMvk1eAGI2JUxkg=;
+ b=WYAz7KK3CpVTkcJcA/793wnK6GLgojGIRaAaU+mKZ9jLv5FB1hv+V5KT
+ 1cToeOfYTdtrikbM1dyVpJZAMidQyzOKPjRvJpjZaBSwivP4Yrpc/p7Os
+ XUyleXarP9XegOGPbRDBktSSnC/Nv7g3Oj24bcpCzUUhg0+3nxp3I2U6g
+ aXHlVQIrP4DycrVSBoCXvTAMq7ueJb2Ig6mJdzDFhyrHRtwXtyLrXXi9R
+ 1QdktzNvwFSGrsiuUxE1yuM5f8Y92U82jdpMLZfwBC8DGflQfP2aOXopm
+ nnaKnnOcAGZIN6t9OfGCk4Nq8gLusclwZMB/Z2WKLWdHfcTsLkTWo0YxV g==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10476"; a="280097330"
+X-IronPort-AV: E=Sophos;i="5.93,330,1654585200"; d="scan'208";a="280097330"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+ by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 20 Sep 2022 08:01:27 -0700
+X-IronPort-AV: E=Sophos;i="5.93,330,1654585200"; d="scan'208";a="687443676"
 Received: from atcamara-mobl1.amr.corp.intel.com (HELO
  pbossart-mobl3.intel.com) ([10.251.209.87])
- by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 20 Sep 2022 07:54:20 -0700
+ by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 20 Sep 2022 08:01:26 -0700
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH 2/2] ASoC: SOF: ipc4-topology: remove useless assignment
-Date: Tue, 20 Sep 2022 16:54:05 +0200
-Message-Id: <20220920145405.2089147-3-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH 0/2] ASoC: SOF: sof-audio: fix prepare/unprepare
+Date: Tue, 20 Sep 2022 17:01:05 +0200
+Message-Id: <20220920150107.2090695-1-pierre-louis.bossart@linux.intel.com>
 X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20220920145405.2089147-1-pierre-louis.bossart@linux.intel.com>
-References: <20220920145405.2089147-1-pierre-louis.bossart@linux.intel.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: tiwai@suse.de, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- Ranjani Sridharan <ranjani.sridharan@linux.intel.com>, broonie@kernel.org,
- Chao Song <chao.song@intel.com>, Bard Liao <yung-chuan.liao@linux.intel.com>
+Cc: tiwai@suse.de, broonie@kernel.org,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -85,42 +81,16 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-cppcheck warning:
+2 patches from Rander required to enable mixing usages with multiple
+pipelines.
 
-sound/soc/sof/ipc4-topology.c:1533:12: style: Variable 'pipeline' is
-assigned a value that is never used. [unreadVariable]
-  pipeline = pipe_widget->private;
-           ^
+Rander Wang (2):
+  ASoC: SOF: clear prepare state when widget is unprepared
+  ASoC: SOF: don't unprepare widget used other pipelines
 
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-Reviewed-by: Chao Song <chao.song@intel.com>
-Reviewed-by: Bard Liao <yung-chuan.liao@linux.intel.com>
----
- sound/soc/sof/ipc4-topology.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ sound/soc/sof/sof-audio.c | 12 +++++++-----
+ 1 file changed, 7 insertions(+), 5 deletions(-)
 
-diff --git a/sound/soc/sof/ipc4-topology.c b/sound/soc/sof/ipc4-topology.c
-index 1503e3c49e703..66bbe101680cf 100644
---- a/sound/soc/sof/ipc4-topology.c
-+++ b/sound/soc/sof/ipc4-topology.c
-@@ -1447,7 +1447,6 @@ static int sof_ipc4_control_setup(struct snd_sof_dev *sdev, struct snd_sof_contr
- 
- static int sof_ipc4_widget_setup(struct snd_sof_dev *sdev, struct snd_sof_widget *swidget)
- {
--	struct snd_sof_widget *pipe_widget = swidget->pipe_widget;
- 	struct sof_ipc4_pipeline *pipeline;
- 	struct sof_ipc4_msg *msg;
- 	void *ipc_data = NULL;
-@@ -1530,7 +1529,7 @@ static int sof_ipc4_widget_setup(struct snd_sof_dev *sdev, struct snd_sof_widget
- 				swidget->widget->name);
- 			return ret;
- 		}
--		pipeline = pipe_widget->private;
-+
- 		msg->primary &= ~SOF_IPC4_MOD_INSTANCE_MASK;
- 		msg->primary |= SOF_IPC4_MOD_INSTANCE(swidget->instance_id);
- 
 -- 
 2.34.1
 
