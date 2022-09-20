@@ -4,64 +4,64 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id DE127ECAAD8
-	for <alsa-devel@archiver.kernel.org>; Tue, 20 Sep 2022 15:02:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A798BC54EE9
+	for <alsa-devel@archiver.kernel.org>; Tue, 20 Sep 2022 15:03:20 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0FC77950;
-	Tue, 20 Sep 2022 17:02:05 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0FC77950
+	by alsa0.perex.cz (Postfix) with ESMTPS id C5CC7851;
+	Tue, 20 Sep 2022 17:02:28 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C5CC7851
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1663686175;
-	bh=h6DxiSUpYn6g9b0nLhcw+nKn/TLZ8X+ldA2ZlGLO1CY=;
+	s=default; t=1663686198;
+	bh=2+GDO6vJeCL5xBorvgv+dMk374mDsFWNdWpN8wASQFU=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=j8u1UxbUPCf9Lh8J78OuJ3xyO6uubIAKuS0UwTuze/8r0kNBXQ+GidUBELtJKl6zB
-	 15RWxyP2g4Bb3oCWL7q/ulcxVeiS303h1TJUPI28kDsHm4Uy/S+BDpMqoF05Qu4b3z
-	 3ny1pzmh1AFcnmimXXuQ9xP3MN6qXJ1917zN7blI=
+	b=sL3yAwszrS2eofpsFtJS8yTXN0KarkirWD682ReSdDxbqC5cbbfdmb57kNCVYgctN
+	 VRiMsz+Ap7N9Kly7VN9BClw1qQhLtwOo1y5LVzQo7fSl5UvzIgVyfurLignAa93nNc
+	 KDxx2KFpEsRKBcyY7axMdhyaFpSqOeh0JjY8A7+M=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 51818F80171;
-	Tue, 20 Sep 2022 17:01:41 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 0563CF80538;
+	Tue, 20 Sep 2022 17:01:42 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 9FFA9F804E4; Tue, 20 Sep 2022 17:01:39 +0200 (CEST)
+ id A6E33F800F2; Tue, 20 Sep 2022 17:01:39 +0200 (CEST)
 Received: from mga17.intel.com (mga17.intel.com [192.55.52.151])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id B4A4EF800F2
- for <alsa-devel@alsa-project.org>; Tue, 20 Sep 2022 17:01:34 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B4A4EF800F2
+ by alsa1.perex.cz (Postfix) with ESMTPS id 02783F80171
+ for <alsa-devel@alsa-project.org>; Tue, 20 Sep 2022 17:01:32 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 02783F80171
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="KpivjQCo"
+ header.b="lRIU1dED"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1663686095; x=1695222095;
+ t=1663686094; x=1695222094;
  h=from:to:cc:subject:date:message-id:in-reply-to:
  references:mime-version:content-transfer-encoding;
- bh=h6DxiSUpYn6g9b0nLhcw+nKn/TLZ8X+ldA2ZlGLO1CY=;
- b=KpivjQCocRtD2ldR9rgONnmnq2xQhgkiS9v7X3cJBlcsR8kW4X1cRPh2
- jnWq3K8/hHEtFunu4AgbpwMGXpUShht7tvnaljEF9PPcpVQRyGG3ZmudS
- uogEge0D+O287ExcYvOQ1S9cJ3p5xKEoHzgV5gEj4MBGk/CBqruvCj0XF
- sx+lqXI9bQYpaTfkpJn8fEfWivx+7gKyyOPnhBG/b94pz4bcQGE7xB1J7
- 1ofwadz5upMXRsdk2xqFISEzAfrJUN1UWYJ3kKzvwCgznMA20N0t1uOLO
- OB1blE9AyB7T8tH6O+4AphMcytSq3gLyWsTu1ksf2sYYE842UhhP9mk2i w==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10476"; a="280097363"
-X-IronPort-AV: E=Sophos;i="5.93,330,1654585200"; d="scan'208";a="280097363"
+ bh=2+GDO6vJeCL5xBorvgv+dMk374mDsFWNdWpN8wASQFU=;
+ b=lRIU1dEDUrk1gBLvD9S5gPf2CW82DxQoWi0rUoprGVG091OAAZB4Hl+F
+ cOJKrsluttNXGRBoMJIKjdEN1dfQNtGWsCDla4rDGhdYU0yjF6R8zjGne
+ CYUXRNxj24++omoc6SJcVZZUECr8JiTxwGeVknOvvejy5OsTfMTq+cqhV
+ mveayx2nRchclG9S87JFPKsCHHKl37LlKQIVyzw2hzXnK4dmDXGkxuHjK
+ uQlZ892joYuMtI/MnLIfkP0z2ReJ4/gXYebPd1D4TELhr3fYVReuNTTNR
+ PNbDh3aLRGA6mgMUHVhpliDfGJ+yh1Ub36/ApA2w9GKQcce1inyOo39mm Q==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10476"; a="280097343"
+X-IronPort-AV: E=Sophos;i="5.93,330,1654585200"; d="scan'208";a="280097343"
 Received: from fmsmga004.fm.intel.com ([10.253.24.48])
  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 20 Sep 2022 08:01:32 -0700
-X-IronPort-AV: E=Sophos;i="5.93,330,1654585200"; d="scan'208";a="687443724"
+ 20 Sep 2022 08:01:30 -0700
+X-IronPort-AV: E=Sophos;i="5.93,330,1654585200"; d="scan'208";a="687443697"
 Received: from atcamara-mobl1.amr.corp.intel.com (HELO
  pbossart-mobl3.intel.com) ([10.251.209.87])
  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 20 Sep 2022 08:01:30 -0700
+ 20 Sep 2022 08:01:27 -0700
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH 2/2] ASoC: SOF: don't unprepare widget used other pipelines
-Date: Tue, 20 Sep 2022 17:01:07 +0200
-Message-Id: <20220920150107.2090695-3-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH 1/2] ASoC: SOF: clear prepare state when widget is unprepared
+Date: Tue, 20 Sep 2022 17:01:06 +0200
+Message-Id: <20220920150107.2090695-2-pierre-louis.bossart@linux.intel.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20220920150107.2090695-1-pierre-louis.bossart@linux.intel.com>
 References: <20220920150107.2090695-1-pierre-louis.bossart@linux.intel.com>
@@ -88,33 +88,50 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 From: Rander Wang <rander.wang@intel.com>
 
-If multiple pipeline are mixed into one, we can't unprepare
-the widget used by other pipelines. This patch checks use_count
-to address this case.
+Playback can't work after the first try sometimes. The reason is that
+some widgets don't have ipc_unprepare ops and driver will jump
+to sink_prepare so miss to set prepare state to false. Next
+time these widgets will not be prepared and it will result to
+error with different format of audio file since the last setting
+is not applicable.
+
+This patch makes sure that widget prepare state will be cleared
+to false when it is unprepared.
 
 Reviewed-by: Bard Liao <yung-chuan.liao@linux.intel.com>
 Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 Signed-off-by: Rander Wang <rander.wang@intel.com>
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- sound/soc/sof/sof-audio.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ sound/soc/sof/sof-audio.c | 12 +++++++-----
+ 1 file changed, 7 insertions(+), 5 deletions(-)
 
 diff --git a/sound/soc/sof/sof-audio.c b/sound/soc/sof/sof-audio.c
-index 71cea83889fb0..62092e2d609c7 100644
+index a3d3dd7a00375..71cea83889fb0 100644
 --- a/sound/soc/sof/sof-audio.c
 +++ b/sound/soc/sof/sof-audio.c
-@@ -271,8 +271,8 @@ sof_unprepare_widgets_in_path(struct snd_sof_dev *sdev, struct snd_soc_dapm_widg
+@@ -271,14 +271,16 @@ sof_unprepare_widgets_in_path(struct snd_sof_dev *sdev, struct snd_soc_dapm_widg
  	struct snd_sof_widget *swidget = widget->dobj.private;
  	struct snd_soc_dapm_path *p;
  
--	/* it is already unprepared */
--	if (!swidget->prepared)
-+	/* return if the widget is in use or if it is already unprepared */
-+	if (!swidget->prepared || swidget->use_count > 1)
- 		return;
+-	if (!widget_ops[widget->id].ipc_unprepare || !swidget->prepared)
+-		goto sink_unprepare;
++	/* it is already unprepared */
++	if (!swidget->prepared)
++		return;
++
++	if (widget_ops[widget->id].ipc_unprepare)
++		/* unprepare the source widget */
++		widget_ops[widget->id].ipc_unprepare(swidget);
  
- 	if (widget_ops[widget->id].ipc_unprepare)
+-	/* unprepare the source widget */
+-	widget_ops[widget->id].ipc_unprepare(swidget);
+ 	swidget->prepared = false;
+ 
+-sink_unprepare:
+ 	/* unprepare all widgets in the sink paths */
+ 	snd_soc_dapm_widget_for_each_sink_path(widget, p) {
+ 		if (!p->walking && p->sink->dobj.private) {
 -- 
 2.34.1
 
