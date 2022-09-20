@@ -4,56 +4,55 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3FD83C6FA86
-	for <alsa-devel@archiver.kernel.org>; Fri, 23 Sep 2022 08:23:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 120E6ECAAD8
+	for <alsa-devel@archiver.kernel.org>; Fri, 23 Sep 2022 08:43:18 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 7770E1FC;
-	Fri, 23 Sep 2022 10:22:52 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7770E1FC
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3914C204;
+	Fri, 23 Sep 2022 10:42:26 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3914C204
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1663921422;
-	bh=aXAxOUEiuU47bpyJk/zXgB8Q9YqFZrurigyFxHN1QXE=;
+	s=default; t=1663922596;
+	bh=B9T5ifR8l5F54DQp+KrPOLUQw8g9WRv6jY9a1u+hqgI=;
 	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
 	 List-Post:List-Help:List-Subscribe:From;
-	b=S1fcCiCKZnGjp7VQ9S81mOdLzyeCapNTIM1wR9ffUBb8P3luIDDGeapFKN91TAS91
-	 Pd3wOsxx2uVxIGVELPIHhiqYWPzznQd0KjmS5vC7GpjTXWlR2z547CQXKXmuNCttGF
-	 aYj9NnUoWeO7N/fNnXjWmHDIpFg59H711LxgNp4o=
+	b=BiVFiwTNLx3TyNBjTZ6REHRcf+kcb2xlR0kJp3tWp7vBIISefP0C01Ss7FdjG44+X
+	 TkL0WcJamEizKVG1/f7+s7VEyr5HgPnypeHDVP1DxYuoZQQiN9iPz0OHb/oI3I7X9t
+	 WA8jRqn9cfrBnQRg/z3nPslclrEu7CZehH5rv3cA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 19F2FF80224;
-	Fri, 23 Sep 2022 10:22:52 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id CB3E8F80224;
+	Fri, 23 Sep 2022 10:42:25 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 0AC5AF80269; Fri, 23 Sep 2022 10:22:51 +0200 (CEST)
-Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
+ id A92D8F800F2; Tue, 20 Sep 2022 05:46:02 +0200 (CEST)
+Received: from mail-m11883.qiye.163.com (mail-m11883.qiye.163.com
+ [115.236.118.83])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 0DCDEF801EC
- for <alsa-devel@alsa-project.org>; Fri, 23 Sep 2022 10:22:44 +0200 (CEST)
-Received: from mail1.perex.cz (localhost [127.0.0.1])
- by smtp1.perex.cz (Perex's E-mail Delivery System) with ESMTP id 3455EA003F;
- Fri, 23 Sep 2022 10:22:44 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 smtp1.perex.cz 3455EA003F
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=perex.cz; s=default;
- t=1663921364; bh=qJpFTfGAb/k0+6Eg9rWRa9UDCpoTpTN0iGcvoG1fNxQ=;
- h=From:To:Cc:Subject:Date:From;
- b=bLfAqnXP5kRe3lOP1VOcy9Mkdc3DdqjOIR0mEgLqkU/Qy1Z193zUvABDEIjVKuFNP
- Rv9jTa22Ah55mGhlVQqFH3obx6pCEof9RDg4W6srln4jroViymyATh7ybjnXYKQxNq
- uD1t1QZIo7eQiHBt4NS0jaInw89PounhfcWbcKRY=
-Received: from p1gen2.perex-int.cz (unknown [192.168.100.98])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested) (Authenticated sender: perex)
- by mail1.perex.cz (Perex's E-mail Delivery System) with ESMTPSA;
- Fri, 23 Sep 2022 10:22:41 +0200 (CEST)
-From: Jaroslav Kysela <perex@perex.cz>
-To: ALSA development <alsa-devel@alsa-project.org>
-Subject: [PATCH] ALSA: hda/hdmi: Limit the maximal count of PCM devices to 8
-Date: Fri, 23 Sep 2022 10:22:36 +0200
-Message-Id: <20220923082236.61024-1-perex@perex.cz>
-X-Mailer: git-send-email 2.35.3
+ by alsa1.perex.cz (Postfix) with ESMTPS id BA4F4F800F2
+ for <alsa-devel@alsa-project.org>; Tue, 20 Sep 2022 05:45:56 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BA4F4F800F2
+Received: from rockchip.. (unknown [58.22.7.114])
+ by mail-m11883.qiye.163.com (Hmail) with ESMTPA id 075F184078F;
+ Tue, 20 Sep 2022 11:45:47 +0800 (CST)
+From: Jason Zhu <jason.zhu@rock-chips.com>
+To: lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com
+Subject: [PATCH 0/1]
+Date: Tue, 20 Sep 2022 11:45:44 +0800
+Message-Id: <20220920034545.2820888-1-jason.zhu@rock-chips.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: Takashi Iwai <tiwai@suse.de>
+X-HM-Spam-Status: e1kfGhgUHx5ZQUpXWQgPGg8OCBgUHx5ZQUlOS1dZFg8aDwILHllBWSg2Ly
+ tZV1koWUFJSktLSjdXWS1ZQUlXWQ8JGhUIEh9ZQVkZSx8eVkxISkoZQh9NQh1DGlUTARMWGhIXJB
+ QOD1lXWRgSC1lBWU5DVUlJVUxVSkpPWVdZFhoPEhUdFFlBWU9LSFVKSktITkhVSktLVUtZBg++
+X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6OSI6Nzo6Tz0YGB1NURgfN1E6
+ C00aCj5VSlVKTU1ITU9OTk9MTUhJVTMWGhIXVREaCBQVVQETDjsJFBgQVhgTEgsIVRgUFkVZV1kS
+ C1lBWU5DVUlJVUxVSkpPWVdZCAFZQUJJTTcG
+X-HM-Tid: 0a8359007ac32eb8kusn075f184078f
+X-Mailman-Approved-At: Fri, 23 Sep 2022 10:42:24 +0200
+Cc: sugar.zhang@rock-chips.com, Jason Zhu <jason.zhu@rock-chips.com>,
+ alsa-devel@alsa-project.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -69,37 +68,14 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The current hardware has up to 4 converters. Save little space.
-The limit 8 is enough even for a more improved hardware.
+ASoC soc dai
 
-Signed-off-by: Jaroslav Kysela <perex@perex.cz>
----
- sound/pci/hda/patch_hdmi.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+Jason Zhu (1):
+  ASoC: soc-dai: export some symbols
 
-diff --git a/sound/pci/hda/patch_hdmi.c b/sound/pci/hda/patch_hdmi.c
-index ac520c62ee70..d90c9286ac6d 100644
---- a/sound/pci/hda/patch_hdmi.c
-+++ b/sound/pci/hda/patch_hdmi.c
-@@ -151,7 +151,7 @@ struct hdmi_spec {
- 	 */
- 	int dev_num;
- 	struct snd_array pins; /* struct hdmi_spec_per_pin */
--	struct hdmi_pcm pcm_rec[16];
-+	struct hdmi_pcm pcm_rec[8];
- 	struct mutex pcm_lock;
- 	struct mutex bind_lock; /* for audio component binding */
- 	/* pcm_bitmap means which pcms have been assigned to pins*/
-@@ -2288,8 +2288,8 @@ static int generic_hdmi_build_pcms(struct hda_codec *codec)
- 		pstr = &info->stream[SNDRV_PCM_STREAM_PLAYBACK];
- 		pstr->substreams = 1;
- 		pstr->ops = generic_ops;
--		/* pcm number is less than 16 */
--		if (spec->pcm_used >= 16)
-+		/* pcm number is less than pcm_rec array size */
-+		if (spec->pcm_used >= ARRAY_SIZE(spec->pcm_rec))
- 			break;
- 		/* other pstr fields are set in open */
- 	}
+ sound/soc/soc-dai.c | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
+
 -- 
-2.35.3
+2.34.1
+
