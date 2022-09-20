@@ -4,69 +4,87 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6ABDCC6FA82
-	for <alsa-devel@archiver.kernel.org>; Mon, 19 Sep 2022 23:16:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E7F6BC54EE9
+	for <alsa-devel@archiver.kernel.org>; Tue, 20 Sep 2022 02:59:13 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 9CF3CE0F;
-	Tue, 20 Sep 2022 01:15:44 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9CF3CE0F
+	by alsa0.perex.cz (Postfix) with ESMTPS id 22C3A828;
+	Tue, 20 Sep 2022 04:58:21 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 22C3A828
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1663629394;
-	bh=G20gDX0+LQ46VEZJC2+OUz61ighMe+ilSUbmCNC2mcw=;
-	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
+	s=default; t=1663642751;
+	bh=ZRqgNhu2JyBmkhTCev38DAeNXUqUkV1+ExFUE3RUt24=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Qm5wWOGjy6yzv7P1Nbq93i9EyOFlOsM40wnQTo4ivsmEH5XDybo6/rbZlaAsk4WaH
-	 yy85vHABrYizwiLKKviAqcMyzXqkmuIEYwb+loCKOofEi5wZb/OwPjfulCtynkwqty
-	 560HnZk6G76eIhUufdO9Mwd/jcXgY1YD16Dj6aR0=
+	b=FHiskJ1KwEnY8OgRK5Nsel7MepemgG9q1AlIWufF+H6QHuydl6zgmmumpvGsJV3BF
+	 gosOp74q6pNP2/Q//enrJwOEBsuHpa/U9tIJxorq57r1h4I0jTNkLUG3zwAihzQQyW
+	 A6Uur4r2i50wC0prGl1WzGWliodX4zgdJmCCSOw0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 96540F805E6;
-	Tue, 20 Sep 2022 01:10:57 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id A7007F80153;
+	Tue, 20 Sep 2022 04:58:20 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id B0D18F805E4; Tue, 20 Sep 2022 01:10:52 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id 39403F80171; Tue, 20 Sep 2022 04:58:19 +0200 (CEST)
+Received: from mail-pg1-x533.google.com (mail-pg1-x533.google.com
+ [IPv6:2607:f8b0:4864:20::533])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 3836EF805D8
- for <alsa-devel@alsa-project.org>; Tue, 20 Sep 2022 01:10:46 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3836EF805D8
+ by alsa1.perex.cz (Postfix) with ESMTPS id 8354FF8012B
+ for <alsa-devel@alsa-project.org>; Tue, 20 Sep 2022 04:58:12 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8354FF8012B
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="cE6FJBcL"
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id 09E53620DD;
- Mon, 19 Sep 2022 23:10:45 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 62706C433D7;
- Mon, 19 Sep 2022 23:10:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1663629044;
- bh=G20gDX0+LQ46VEZJC2+OUz61ighMe+ilSUbmCNC2mcw=;
- h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=cE6FJBcLfM7T4FHEwyOXz9YSZPNfK5R6s+DEBvlAIrXAqGKvU9zj/bWIYT8eACFCV
- lflX+z6o+nL0RTgJYn4oDezTB3UU4Jzh/vS0kbz/PJcRyOkcgJTL4goHTN7KtSzLDP
- V3CRwQ1gVMrZPFNOZuzkX1Ir8sjtheRxpMIHF0wdjKuxg32Vc3PavYV55sQ1MfdvXR
- XaUkYi3HzsN3KVuNIBOITWiSjIWGOYM5A0HIwLixGxjYM2Nzdoc/5oXG+MpmNh3Z1c
- KD8GjwbuTQ5vnaAw4qEFrWcX8Kb0x2tLWQNrJvkV6xIvoyksFjJ+SVb9YzwPtM4o8v
- IDfUIuk2u/57A==
-From: Mark Brown <broonie@kernel.org>
-To: derek.fang@realtek.com, lgirdwood@gmail.com
-In-Reply-To: <20220913025658.5005-1-derek.fang@realtek.com>
-References: <20220913025658.5005-1-derek.fang@realtek.com>
-Subject: Re: [PATCH 1/3] ASoC: rt5682s: Reduce coupling of Micbias and Vref2
- settings
-Message-Id: <166362904214.3419825.3796970478481971117.b4-ty@kernel.org>
-Date: Tue, 20 Sep 2022 00:10:42 +0100
+ dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
+ header.b="FcJF96wn"
+Received: by mail-pg1-x533.google.com with SMTP id t190so1180701pgd.9
+ for <alsa-devel@alsa-project.org>; Mon, 19 Sep 2022 19:58:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
+ h=content-transfer-encoding:mime-version:references:in-reply-to
+ :message-id:date:subject:cc:to:from:from:to:cc:subject:date;
+ bh=1D5qXLe1WAPRApCvIfGpFNULKJL8uLPqslDt4MGWmKc=;
+ b=FcJF96wnARQw/7Ye9X492BhO7+gmuFBafL0CjcuOsHdoPko1wwJo13OkjuzHZrE/mR
+ 0dqISXYA0qd6NLuu+4FKvr2z13C0sZZVnjWSIqTROr2suTnKnmbmues+kiOZ4E6hIHiO
+ dGIHeC6fhW+DRgDwQLhB/CA1L2Wo9B5bG+tPNj9/UebzRk8GVCSYvL3DlKas9MeDpSiV
+ jbySi2kmsxU97swYKsbdMXjweWew11EtMO94UAJ4eVr/6ahQtwhS13FD5PmjSrrKWoxm
+ 5iYjc5iitvkfKQFf8FmrbOEs7URP0qPX2NOc2haEOOE7vgB7MIPoyNwVhQpIg5cZxEgl
+ 0+Pw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=content-transfer-encoding:mime-version:references:in-reply-to
+ :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+ :subject:date;
+ bh=1D5qXLe1WAPRApCvIfGpFNULKJL8uLPqslDt4MGWmKc=;
+ b=BBoL+FPHU4XsPW5BXPAP2cLgWfdoEdHecbbWwtr+2XKlwWez1Wlv1W4+pjRNozUabv
+ w/ECZQu807RvMmsNXeFjlwkkI+CZTzm4nCgzXANnbBLOODGO2WAVLWKkOaQ7EfXTovLc
+ DTtFY4FwACs4UURaCd6XHT/Zb+Z4gDLtxUZU6KzOqV4rCB66r17VY1r0myaH9tqiWJc+
+ 3CBrqA1rwi4jYzHl2WTVxw3nO/0t8Pcd6Y3DfY85FFHuc2r5Rwi+8WVLdgAGBT3xXBlD
+ JS+uMb9CMo8gTS1AzXGWQBuXZCD208M++BTpBGirDy6V5qnqNFDFh/PNni7nC7yv4hJi
+ 8gUw==
+X-Gm-Message-State: ACrzQf223a/c4+kBy+PZYL4ZoRtk1qts7fqf8O/rz0ECI1PYHIb/FMUa
+ BgwoTpDxT6jz6PY2voV/O/8=
+X-Google-Smtp-Source: AMsMyM5EZVdp2ZNER6mMbd7+fkvIe2UprHoJr3m3o7ZL+ib7ei/HkzjmwDyNVjMlgPGXBRs7+MXzsQ==
+X-Received: by 2002:a05:6a00:99c:b0:54c:27c4:3acb with SMTP id
+ u28-20020a056a00099c00b0054c27c43acbmr15230522pfg.22.1663642689973; 
+ Mon, 19 Sep 2022 19:58:09 -0700 (PDT)
+Received: from dtor-ws.mtv.corp.google.com
+ ([2620:15c:202:201:b095:5d5d:4c28:8088])
+ by smtp.gmail.com with ESMTPSA id
+ z128-20020a626586000000b00542e190f6bcsm147499pfb.102.2022.09.19.19.58.08
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Mon, 19 Sep 2022 19:58:09 -0700 (PDT)
+From: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+To: Mark Brown <broonie@kernel.org>
+Subject: [PATCH 2/2] ASoC: ssm2518: switch to using gpiod API
+Date: Mon, 19 Sep 2022 19:58:04 -0700
+Message-Id: <20220920025804.1788667-2-dmitry.torokhov@gmail.com>
+X-Mailer: git-send-email 2.37.3.968.ga6b4b080e4-goog
+In-Reply-To: <20220920025804.1788667-1-dmitry.torokhov@gmail.com>
+References: <20220920025804.1788667-1-dmitry.torokhov@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-X-Mailer: b4 0.11.0-dev-8af31
-Cc: oder_chiou@realtek.com, jack.yu@realtek.com, alsa-devel@alsa-project.org,
- lars@metafoo.de, albertchen@realtek.com, shumingf@realtek.com,
- flove@realtek.com
+Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>,
+ Takashi Iwai <tiwai@suse.com>, linux-kernel@vger.kernel.org,
+ =?UTF-8?q?Nuno=20S=C3=A1?= <nuno.sa@analog.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -82,46 +100,82 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Tue, 13 Sep 2022 10:56:56 +0800, derek.fang@realtek.com wrote:
-> From: Derek Fang <derek.fang@realtek.com>
-> 
-> Some parts of rt5682s CCF function are implemented by
-> 'MICBIAS' and 'Vref2' dapm widgets.
-> 
-> There is a risk of causing not expected behavior if we
-> mix using dapm and CCF operations in machine specific code.
-> This patch reduces the coupling.
-> 
-> [...]
+This patch converts the driver to newer gpiod API, so that we can stop
+exporting OF-specific legacy gpio API.
 
-Applied to
+Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+---
+ sound/soc/codecs/ssm2518.c | 30 ++++++++++++------------------
+ 1 file changed, 12 insertions(+), 18 deletions(-)
 
-   broonie/sound.git for-next
+diff --git a/sound/soc/codecs/ssm2518.c b/sound/soc/codecs/ssm2518.c
+index feee28207e5d..22cb3b7c8283 100644
+--- a/sound/soc/codecs/ssm2518.c
++++ b/sound/soc/codecs/ssm2518.c
+@@ -6,13 +6,13 @@
+  *  Author: Lars-Peter Clausen <lars@metafoo.de>
+  */
+ 
++#include <linux/err.h>
+ #include <linux/module.h>
+ #include <linux/init.h>
+ #include <linux/i2c.h>
+ #include <linux/regmap.h>
+ #include <linux/slab.h>
+-#include <linux/gpio.h>
+-#include <linux/of_gpio.h>
++#include <linux/gpio/consumer.h>
+ #include <sound/core.h>
+ #include <sound/pcm.h>
+ #include <sound/pcm_params.h>
+@@ -113,7 +113,7 @@ struct ssm2518 {
+ 	unsigned int sysclk;
+ 	const struct snd_pcm_hw_constraint_list *constraints;
+ 
+-	int enable_gpio;
++	struct gpio_desc *enable_gpio;
+ };
+ 
+ static const struct reg_default ssm2518_reg_defaults[] = {
+@@ -482,8 +482,8 @@ static int ssm2518_set_power(struct ssm2518 *ssm2518, bool enable)
+ 		regcache_mark_dirty(ssm2518->regmap);
+ 	}
+ 
+-	if (gpio_is_valid(ssm2518->enable_gpio))
+-		gpio_set_value(ssm2518->enable_gpio, enable);
++	if (ssm2518->enable_gpio)
++		gpiod_set_value_cansleep(ssm2518->enable_gpio, enable);
+ 
+ 	regcache_cache_only(ssm2518->regmap, !enable);
+ 
+@@ -742,20 +742,14 @@ static int ssm2518_i2c_probe(struct i2c_client *i2c)
+ 	if (ssm2518 == NULL)
+ 		return -ENOMEM;
+ 
+-	if (i2c->dev.of_node) {
+-		ssm2518->enable_gpio = of_get_gpio(i2c->dev.of_node, 0);
+-		if (ssm2518->enable_gpio < 0 && ssm2518->enable_gpio != -ENOENT)
+-			return ssm2518->enable_gpio;
+-	} else {
+-		ssm2518->enable_gpio = -1;
+-	}
++	/* Start with enabling the chip */
++	ssm2518->enable_gpio = devm_gpiod_get_optional(&i2c->dev, NULL,
++						       GPIOD_OUT_HIGH);
++	ret = PTR_ERR_OR_ZERO(ssm2518->enable_gpio);
++	if (ret)
++		return ret;
+ 
+-	if (gpio_is_valid(ssm2518->enable_gpio)) {
+-		ret = devm_gpio_request_one(&i2c->dev, ssm2518->enable_gpio,
+-				GPIOF_OUT_INIT_HIGH, "SSM2518 nSD");
+-		if (ret)
+-			return ret;
+-	}
++	gpiod_set_consumer_name(ssm2518->enable_gpio, "SSM2518 nSD");
+ 
+ 	i2c_set_clientdata(i2c, ssm2518);
+ 
+-- 
+2.37.3.968.ga6b4b080e4-goog
 
-Thanks!
-
-[1/3] ASoC: rt5682s: Reduce coupling of Micbias and Vref2 settings
-      commit: bfc5e8b860ad2a87269975a6043aa6bb245d44bb
-[2/3] ASoC: rt5682s: Reduce coupling of I2S1 setting
-      commit: 6ea304a402322ed4449156805b0a79fa1e326ca7
-[3/3] ASoC: rt5682s: Reduce coupling of PLLB setting
-      commit: 3d47637719c312cfb49d3ba063dc3976535c0e9f
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
