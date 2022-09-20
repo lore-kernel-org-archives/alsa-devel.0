@@ -4,71 +4,118 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 16235C6FA82
-	for <alsa-devel@archiver.kernel.org>; Tue, 20 Sep 2022 20:11:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 828BAC54EE9
+	for <alsa-devel@archiver.kernel.org>; Tue, 20 Sep 2022 20:15:51 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 5C4D3826;
-	Tue, 20 Sep 2022 22:10:46 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5C4D3826
+	by alsa0.perex.cz (Postfix) with ESMTPS id 9BA2220C;
+	Tue, 20 Sep 2022 22:14:59 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9BA2220C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1663704696;
-	bh=ju5UjKZq4kslVshB6alWMSvgvdnqmkZJiyboxP/Sff4=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	s=default; t=1663704949;
+	bh=MGIKVyD19J6QZA85UzO66OFN08nSMpI2HQwEj1QM6xY=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=XtlGmoY8cZ62g1R/V65i4OvmCqxZAoKvqjbOGohC1OBN04tl2N/F/73dqyHujEACV
-	 X3I45U6nb68tuJHJttpvVqNIK5u/ogb0wKzgWI0B6tvQecSZ5nKqYL7jLablR/+DRT
-	 ckdHiseqlY9qRIcfCAOMgohbdiTwcHj8iFgZpgtA=
+	b=r/esTScMZbW0DezIIN6G8bAdkBqX/6Q/+LcMr6vgPYM1rtXQiG3jfYbXGXWohnbx1
+	 FGU2oqK+pWyrJ0ucXTwarQYf77kc3tl+hwp9+qa+gJ+KVLwzbNqTjTMGUMpNAIuqof
+	 miaav3I1KT0h+AfPtEo//FrD9ZOQMu3g++WGRIuo=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id D8364F80153;
-	Tue, 20 Sep 2022 22:10:45 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 39F63F80155;
+	Tue, 20 Sep 2022 22:14:59 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 556C7F80155; Tue, 20 Sep 2022 22:10:44 +0200 (CEST)
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 7FEF3F8012B
- for <alsa-devel@alsa-project.org>; Tue, 20 Sep 2022 22:10:38 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7FEF3F8012B
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="AkmXgPtv"
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+ id 2956DF801D5; Tue, 20 Sep 2022 22:14:57 +0200 (CEST)
+Received: from NAM04-DM6-obe.outbound.protection.outlook.com
+ (mail-dm6nam04on2055.outbound.protection.outlook.com [40.107.102.55])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by ams.source.kernel.org (Postfix) with ESMTPS id 8CB8BB82142;
- Tue, 20 Sep 2022 20:10:37 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4404EC433D6;
- Tue, 20 Sep 2022 20:10:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1663704636;
- bh=ju5UjKZq4kslVshB6alWMSvgvdnqmkZJiyboxP/Sff4=;
- h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=AkmXgPtvvY78KhUlfTn0PIrfzaeVyu1AFAHcFPR6PwkkUHJVYDvjk9Q4UqrXLjDFO
- F3ztkEnaFrersuDVY5Q6k216S3OusOXZZA/2fzUtwqcW6WW7govXwdPm0vj9TuWv9z
- kIwWao3nVwY+i+SwJH6B8+slOHB5WfNNp1eoLMeAN2R6QZ5+oyPzjhi7ojQWisIY7r
- +qAPl2OzyLaOGsHlmfz92zHo6UtJll7l3MXPPlMTv5v55jhODtrdHEJhAuxH5u2bRv
- SnGaRaFjftRcJFDIiFVFqHEDKb1DtJItSzyJyDIU1oVp8yvGxITdpZTkA4y2vgTnNF
- z0lMldD/JAv2w==
-Date: Tue, 20 Sep 2022 21:10:10 +0100
-From: Mark Brown <broonie@kernel.org>
-To: Mario Limonciello <mario.limonciello@amd.com>
-Subject: Re: [PATCH v2 1/2] ASoC: amd: yc: Add ASUS UM5302TA into DMI table
-Message-ID: <YyoeIuQkI3SNkjD8@sirena.org.uk>
-References: <20220920194621.19457-1-mario.limonciello@amd.com>
- <20220920194621.19457-2-mario.limonciello@amd.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id ECBA5F800C9
+ for <alsa-devel@alsa-project.org>; Tue, 20 Sep 2022 22:14:50 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz ECBA5F800C9
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com
+ header.b="bamBG9pf"
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=e36uZD32vZSxKZOrqHYcPIpNLBIYZTq3vZikU8tpVht2ZNDxLMQEj02h8E80MmzUikpK4YyC9VdU6C28ZBjwnZa37kAbnhk7ySCYPc0BLcq4BR26HiODbS+gYTKIPp4z0PrbRUKth3FA/oQJS5Rj+Kej8kWvYtXD8xZ1FdslBV3G6b6xXFCkkfLP69Z8TsY9Zy3h5VfAZfJTfh/K3VWe2Dx3QA1K7aCngRIrlQZkaRoXqijJ85o+0GzwyUEvXi2gvwfNwChccqbWt+Oten8N380sRzCg07SeUSDdmeWL4/ju6/KVyZ0ggou763sXqzviIr5a3Jp9w+a4QEr/z4nZEg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=VC/6FRyawRSJWRMRvlJXiwUD6N8p7I4/lfMmvkDdtM0=;
+ b=FYgdD8pi6dXPwIOOb10KpQe7pFJbiSvjA8fhXPIxfFEuqEvf8bnZdMNtkUbRDw8E1oDo7z/NRaSCh42TfRrsEBHINt7xE8jSaAbt3qIJ37Mi3SzpIZ8CW6jkTvhaNBA0dvl4hO61cxXv2TjFkL+P8kPcRZQXWn0Vj/P3E+5U4FeMACYAx3JlF2SPOzWtsU/hVcRTbZuaIN+q1peShOrLwQwB18qBSHHVCwlXzI2AiVl1p6yo0myQYR3S53/fX7EycmLLRfpiEVOpTE/IfcvZoUmJRo1ydYt8S85zmkcbXgsSLSQFdcjwYM95nXKjzFcduSh+6N7GppfPS+jtqMLjAQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 165.204.84.17) smtp.rcpttodomain=kernel.org smtp.mailfrom=amd.com; dmarc=pass
+ (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
+ dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1; 
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=VC/6FRyawRSJWRMRvlJXiwUD6N8p7I4/lfMmvkDdtM0=;
+ b=bamBG9pfCcNhF/dKdYEm7R3HKBTmSbBR4L+pB3w1p+gWOYkvixok/xHOg1Ivjvooayr34K8anc0SZ3ohSN79n+yaG75/6L9DSRsjRxwJnJqDvj+91MLS0mcZzZvFfCdLOSey+1A1ijMK6/snJc/AeKfCXYIdBdJW58zFd3x++Wk=
+Received: from BN8PR03CA0022.namprd03.prod.outlook.com (2603:10b6:408:94::35)
+ by DM4PR12MB5327.namprd12.prod.outlook.com (2603:10b6:5:39e::21) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5654.14; Tue, 20 Sep
+ 2022 20:14:47 +0000
+Received: from BN8NAM11FT081.eop-nam11.prod.protection.outlook.com
+ (2603:10b6:408:94:cafe::a5) by BN8PR03CA0022.outlook.office365.com
+ (2603:10b6:408:94::35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5632.21 via Frontend
+ Transport; Tue, 20 Sep 2022 20:14:47 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
+ smtp.mailfrom=amd.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=amd.com;
+Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
+ 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
+ client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
+Received: from SATLEXMB04.amd.com (165.204.84.17) by
+ BN8NAM11FT081.mail.protection.outlook.com (10.13.177.233) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.5654.14 via Frontend Transport; Tue, 20 Sep 2022 20:14:47 +0000
+Received: from AUS-LX-MLIMONCI.amd.com (10.180.168.240) by SATLEXMB04.amd.com
+ (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.28; Tue, 20 Sep
+ 2022 15:14:46 -0500
+From: Mario Limonciello <mario.limonciello@amd.com>
+To: Mark Brown <broonie@kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: [PATCH v3 1/2] ASoC: amd: yc: Add ASUS UM5302TA into DMI table
+Date: Tue, 20 Sep 2022 15:14:34 -0500
+Message-ID: <20220920201436.19734-2-mario.limonciello@amd.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20220920201436.19734-1-mario.limonciello@amd.com>
+References: <20220920201436.19734-1-mario.limonciello@amd.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature"; boundary="t2Iu1/keNZTUJyRf"
-Content-Disposition: inline
-In-Reply-To: <20220920194621.19457-2-mario.limonciello@amd.com>
-X-Cookie: One FISHWICH coming up!!
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.180.168.240]
+X-ClientProxiedBy: SATLEXMB04.amd.com (10.181.40.145) To SATLEXMB04.amd.com
+ (10.181.40.145)
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: BN8NAM11FT081:EE_|DM4PR12MB5327:EE_
+X-MS-Office365-Filtering-Correlation-Id: 09c78327-86b1-4b4b-6693-08da9b44c3d0
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 4mMUIvwopZHrGpnA6NhMr8hEWMFo2nOzK16zq2/fVOE6ls2BmMYfgsp/5chmnglBIyXGoSTHQqBFvVkihwyslZGNawd2bjDKXYdr+iFFgloIMAk+xB318DSYj9qHSa6vIkkV2UmOQ0/I0Jmxl1H+iI5VaxHWODIofUNeK7zuwtZGvRBtBCNk1o8vBKjwWV8HrwHL58x6aVaVwiZBu9t7AIz6wVC61hPsKCPu7QKZoelqfvV9yJoDaBqJ/g/54rbiXoPjaAJnHlveGhpIf0FSKj5i+28ZrpNEeHdyL2Nco5aaLXjxU+hwTcZHi0xTiPJcdJ3gGQoSW+M9t1o3UM/pBZUd/WOkMjmi7WF1oQBmwAUaNa5UGSsWKDGJMuCDvyWHRSOOLwSA7wjCG/XLC99tsAaH+rqaBcTtKFJO+MNHfTu5QH7FnaJGR3Ni5KQdJq1VLSCn0FWpYmCOjhOKLkuGBiOs5mchE64J/P4RZOmxh1o3+p5KxfdYB3wlpY1GWDbZp9hDaYQ4I+DIBrNbLLR9ry1CPmAEL6QtVVLIMrzsAU3nJmCs58mmRVm42UbThS21H8yeKUpbwtlaQkPBaA/dpUfJ81rO2Q3uIaFwMD3Xttvi2pH/+bME7KfHSaP9vVvIXmcV4lEGgtU2jAEQAiVDBrgFw0qJt4ZmSRnyaBD93hYo2IZF4d0TGXV4w5MiszXLKmTceBEMEMl1pdBrf3hivSSR619ZFlLl/xbptRBQMfwAYlNHRZ8lzLIu70hVcPe7tG462yihp7ks8ECsx0sOQgE3/5yE9+fCZVgNftfoZ1X12zzCkb6lAi8pKIMUiVgTudpSxW9WYM08zZpVquqsLw==
+X-Forefront-Antispam-Report: CIP:165.204.84.17; CTRY:US; LANG:en; SCL:1; SRV:;
+ IPV:CAL; SFV:NSPM; H:SATLEXMB04.amd.com; PTR:InfoDomainNonexistent; CAT:NONE;
+ SFS:(13230022)(4636009)(346002)(376002)(396003)(39860400002)(136003)(451199015)(36840700001)(40470700004)(46966006)(81166007)(86362001)(356005)(316002)(2906002)(54906003)(110136005)(336012)(82310400005)(26005)(426003)(1076003)(2616005)(47076005)(186003)(16526019)(82740400003)(40460700003)(36860700001)(6666004)(7696005)(40480700001)(41300700001)(478600001)(966005)(36756003)(8676002)(5660300002)(4326008)(70206006)(44832011)(8936002)(4744005)(70586007)(36900700001);
+ DIR:OUT; SFP:1101; 
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Sep 2022 20:14:47.1017 (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 09c78327-86b1-4b4b-6693-08da9b44c3d0
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d; Ip=[165.204.84.17];
+ Helo=[SATLEXMB04.amd.com]
+X-MS-Exchange-CrossTenant-AuthSource: BN8NAM11FT081.eop-nam11.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR12MB5327
 Cc: Travis Glenn Hansen <travisghansen@yahoo.com>, alsa-devel@alsa-project.org,
- linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>,
- Liam Girdwood <lgirdwood@gmail.com>, Xiaoyan Li <lxy.lixiaoyan@gmail.com>,
- Saba Kareem Syed <Syed.SabaKareem@amd.com>, Sebastian S <iam@decentr.al>
+ Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>,
+ Xiaoyan Li <lxy.lixiaoyan@gmail.com>,
+ Mario Limonciello <mario.limonciello@amd.com>, Sebastian S <iam@decentr.al>,
+ Saba Kareem Syed <Syed.SabaKareem@amd.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -84,38 +131,38 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+From: Xiaoyan Li <lxy.lixiaoyan@gmail.com>
 
---t2Iu1/keNZTUJyRf
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+ASUS Zenbook S 13 OLED (UM5302TA) needs this quirk to get the built-in
+microphone working properly.
 
-On Tue, Sep 20, 2022 at 02:46:20PM -0500, Mario Limonciello wrote:
+Link: https://bugzilla.kernel.org/show_bug.cgi?id=216270
+Signed-off-by: Xiaoyan Li <lxy.lixiaoyan@gmail.com>
+Suggested-by: Mario Limonciello <mario.limonciello@amd.com>
+Reviewed-by: Mario Limonciello <mario.limonciello@amd.com>
+Signed-off-by: Mario Limonciello <mario.limonciello@amd.com>
+---
+ sound/soc/amd/yc/acp6x-mach.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
->=20
-> Link: https://bugzilla.kernel.org/show_bug.cgi?id=3D216270
-> Signed-off-by: Xiaoyan Li <lxy.lixiaoyan@gmail.com>
-> Suggested-by: Mario Limonciello <mario.limonciello@amd.com>
-> Reviewed-by: Mario Limonciello <mario.limonciello@amd.com>
-> ---
+diff --git a/sound/soc/amd/yc/acp6x-mach.c b/sound/soc/amd/yc/acp6x-mach.c
+index e0b24e1daef3..5eab3baf3573 100644
+--- a/sound/soc/amd/yc/acp6x-mach.c
++++ b/sound/soc/amd/yc/acp6x-mach.c
+@@ -171,6 +171,13 @@ static const struct dmi_system_id yc_acp_quirk_table[] = {
+ 			DMI_MATCH(DMI_PRODUCT_NAME, "21J6"),
+ 		}
+ 	},
++	{
++		.driver_data = &acp6x_card,
++		.matches = {
++			DMI_MATCH(DMI_BOARD_VENDOR, "ASUSTeK COMPUTER INC."),
++			DMI_MATCH(DMI_PRODUCT_NAME, "UM5302TA"),
++		}
++	},
+ 	{}
+ };
+ 
+-- 
+2.34.1
 
-You've not provided a Signed-off-by for this so I can't do anything with
-it, please see Documentation/process/submitting-patches.rst for details
-on what this is and why it's important.
-
---t2Iu1/keNZTUJyRf
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmMqHh4ACgkQJNaLcl1U
-h9CCjgf9Hx5OKV1Vuzb2J73P8H4hnThiRcynSMMsdSpg1Q52BrwFhqanX2gQT/F9
-X85gdtbaO2rq1fnnmh286DILsbHJBTlnV08nqJIFwmuk+pc+e8mdCeDcwR3utvVp
-N27JV7MqczefPADMQUdx9vXTDnkh6H7phv6/HAzgSCIxS+kNNOaorklmfaiw+94E
-2qnKP1duYWlNRYqYYX5XkR9d7MM7f6Vo0/Flh5KpDGffrYl2GbblZwLSNKvpmXHn
-5+fecbHM8tU6CSIo1VQfzPg4TqO7sh8RJ9WWaCAEaay+6gvb68G0Y900IM9BTkcJ
-CS0LVbZF9tS+CV2GuPG7zUjfHy8jlQ==
-=KOkl
------END PGP SIGNATURE-----
-
---t2Iu1/keNZTUJyRf--
