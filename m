@@ -4,83 +4,82 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0EF8EECAAD8
-	for <alsa-devel@archiver.kernel.org>; Tue, 20 Sep 2022 05:58:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 92504C6FA82
+	for <alsa-devel@archiver.kernel.org>; Tue, 20 Sep 2022 06:14:12 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 6DF9A822;
-	Tue, 20 Sep 2022 07:57:41 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6DF9A822
+	by alsa0.perex.cz (Postfix) with ESMTPS id D999E827;
+	Tue, 20 Sep 2022 08:13:19 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D999E827
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1663653511;
-	bh=sTErN0YwRZc+ktZJgViaOZ0p0kFQvmxAC0UWppCYUTU=;
+	s=default; t=1663654449;
+	bh=wzXsn6B6qXLWHgMKp01Bbm6I4F7Ccj9KpiSGaShb/Vk=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=Gtgnn8pGeic2fhY8B8Nmt5FYXQcL8GJ/AdxmMC49YHuCMnfiod+iZzuuFtJE2urON
-	 oMdzqbG2csrrjZztACn/OAeJqv0VxLxVzsrxg4x+uElPBj013G76IcY74fuXWk1BgJ
-	 m82TCfanNuXjoKsR/sdPRP+SlKwrkvpBdzAD72rY=
+	b=UkYgij4PZ0b2JyVrLSEC/oKSchHzNA1i/i6B6NqcMLT9J1yYRVdM/6wVxpOgf0wIS
+	 yTEoWDMpYkfkzUaRI7WgVd279co89iI7ZL24F0BYkJ2+yGROlv+ieOFBl6cWejIZob
+	 ANpx9TK26WfVbQ3ST59IHTUcSH5nsfZGI6O1Otig=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id BE6DDF80153;
-	Tue, 20 Sep 2022 07:57:40 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 42D3FF80153;
+	Tue, 20 Sep 2022 08:13:19 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 9E59DF80153; Tue, 20 Sep 2022 07:57:38 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+ id 5151FF80155; Tue, 20 Sep 2022 08:13:17 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id D8C5EF800F2
- for <alsa-devel@alsa-project.org>; Tue, 20 Sep 2022 07:57:31 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D8C5EF800F2
+ by alsa1.perex.cz (Postfix) with ESMTPS id A1305F800F2
+ for <alsa-devel@alsa-project.org>; Tue, 20 Sep 2022 08:13:14 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A1305F800F2
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="hsD+zRQ2"; 
+ header.b="p10AotWO"; 
  dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="EJJJDo/e"
+ header.b="IlnwOgvZ"
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id CFB531F8A4;
- Tue, 20 Sep 2022 05:57:30 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id BC1EB21B46;
+ Tue, 20 Sep 2022 06:13:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1663653450; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1663654393; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=UbBtJf4GkVAlCl7Id3P/1lpLp3YxBGpjm3J+s5P06qA=;
- b=hsD+zRQ2UCp6ZoWA4XdZ8Oz7aN5AM/7qIpDX6YNCPSF9AbKi2OX9GnAaLXYSyYu4eWIqzS
- uub4f+DYnXJT8iVjOG9aNX3lS9eaG4DvgyCDFr+puwW6h7ENQpiy7XbLllLSpb9cPPwG2h
- y7+IEqGtP3kvSAEVhtg66CzJbeWC2rM=
+ bh=JpTrDL4p9iJSk+Y+ROrrAfoLF6zw+7/M1Es7lkhUh7k=;
+ b=p10AotWOwIGHOFWv/7JCWyCfJDebe7bA5snIqFtayeK2ck0CBC3BGZx6WcaHGwsGd2lMsN
+ UOt3AFy4MqwL31yoJ/CR04IjXFKYu0rJdVIXaMDjuydBdl1saXbqqoe8hhnNrWhvquw/b7
+ 70dIlyFsYKImTs5+a5vDIdIdpTtLM0I=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1663653450;
+ s=susede2_ed25519; t=1663654393;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=UbBtJf4GkVAlCl7Id3P/1lpLp3YxBGpjm3J+s5P06qA=;
- b=EJJJDo/eZBdHJ3Tg/eCtH7jmuDqt6vIEOOBofQTUIvAOYd4bPlfZJ3D29CB7nPPT98qmZP
- E9AY/j/BsdptANDQ==
+ bh=JpTrDL4p9iJSk+Y+ROrrAfoLF6zw+7/M1Es7lkhUh7k=;
+ b=IlnwOgvZyKUOa8NeJ+06SGXu9MV+TuPhAF051In1p/Z87T8CCk2mJ4u7eGJXXtqqn2aw0/
+ Mpksae9PNP0/CfAA==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id B19F313ABB;
- Tue, 20 Sep 2022 05:57:30 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 97EEF13ABB;
+ Tue, 20 Sep 2022 06:13:13 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id wF51KkpWKWMLJgAAMHmgww
- (envelope-from <tiwai@suse.de>); Tue, 20 Sep 2022 05:57:30 +0000
-Date: Tue, 20 Sep 2022 07:57:30 +0200
-Message-ID: <87pmfqh9kl.wl-tiwai@suse.de>
+ by imap2.suse-dmz.suse.de with ESMTPSA id G7BjJPlZKWNMKwAAMHmgww
+ (envelope-from <tiwai@suse.de>); Tue, 20 Sep 2022 06:13:13 +0000
+Date: Tue, 20 Sep 2022 08:13:12 +0200
+Message-ID: <87o7vah8uf.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
-To: Jaroslav Kysela <perex@perex.cz>
-Subject: Re: [PATCH] ALSA: hda/hdmi: Fix the converter allocation for the
- silent stream
-In-Reply-To: <20220919135444.3554982-1-perex@perex.cz>
-References: <20220919135444.3554982-1-perex@perex.cz>
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: Re: [PATCH 0/8] ALSA: hda: document/simplify hdac_ext handling
+In-Reply-To: <20220919121041.43463-1-pierre-louis.bossart@linux.intel.com>
+References: <20220919121041.43463-1-pierre-louis.bossart@linux.intel.com>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
 MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
 Content-Type: text/plain; charset=US-ASCII
-Cc: ALSA development <alsa-devel@alsa-project.org>,
- Kai Vehmanen <kai.vehmanen@linux.intel.com>
+Cc: alsa-devel@alsa-project.org, broonie@kernel.org,
+ Cezary Rojewski <cezary.rojewski@intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -96,19 +95,25 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Mon, 19 Sep 2022 15:54:44 +0200,
-Jaroslav Kysela wrote:
+On Mon, 19 Sep 2022 14:10:33 +0200,
+Pierre-Louis Bossart wrote:
 > 
-> Track the converters handling the silent stream using a new
-> variable to avoid mixing of the open/close and silent stream
-> use. This change ensures the proper allocation of the converters.
+> This sound/hda/ext library is a confusing magic black box that very
+> few understand. It needn't be that way, we can document/simplify and
+> make the code clearer.
 > 
-> Fixes: 5f80d6bd2b01 ("ALSA: hda/hdmi: Fix the converter reuse for the silent stream")
-> 
-> Cc: Kai Vehmanen <kai.vehmanen@linux.intel.com>
-> Signed-off-by: Jaroslav Kysela <perex@perex.cz>
+> Pierre-Louis Bossart (8):
+>   ALSA: hda: make snd_hdac_stream_clear() static
+>   ALSA: hda: document state machine for hdac_streams
+>   ALSA: hda: ext: make snd_hdac_ext_stream_init() static
+>   ALSA: hda: Use hdac_ext prefix in snd_hdac_stream_free_all() for
+>     clarity
+>   ALSA: hda: add snd_hdac_stop_streams() helper
+>   ALSA: hda: ext: simplify logic for stream assignment
+>   ALSA: hda: ext: fix locking in stream_release
+>   ALSA: hda: ext: remove always-true conditions on host and link release
 
-Thanks, applied.
+Applied all patches now.  Thanks.
 
 
 Takashi
