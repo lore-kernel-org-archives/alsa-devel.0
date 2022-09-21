@@ -4,97 +4,58 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4579DECAAD8
-	for <alsa-devel@archiver.kernel.org>; Wed, 21 Sep 2022 15:20:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id BCE0DC6FA82
+	for <alsa-devel@archiver.kernel.org>; Wed, 21 Sep 2022 15:25:40 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 12AFF852;
-	Wed, 21 Sep 2022 17:19:35 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 12AFF852
+	by alsa0.perex.cz (Postfix) with ESMTPS id 576111673;
+	Wed, 21 Sep 2022 17:24:48 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 576111673
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1663773625;
-	bh=MAzukN2wzqcqKaTdS1lmkMJW3iRd3T1CLmBGzaJIo7s=;
-	h=Date:Subject:To:References:From:In-Reply-To:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=IqAPeLJMPoiYzcqCJNMcNJZnJgQguSNS8Z7p5tvTlNmFbB84lBW7TQdeyXL322nPU
-	 tMVCaCBFq8vSNB1GP6/KV6tN0owG0mHJcc80Ho+dnGob9zwyD52lt+7WTaMPCHfTqd
-	 3YegIvMXnkz3teEanZ6qXbBqnmuNdg+fDq2pWAcQ=
+	s=default; t=1663773938;
+	bh=jkPhLzCkUb77IudfipBigvBG74IiNn1M5XJWdxb1K24=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=QRs/gbEuOEhCVbhRdzCsDsopjNkqheIdlLGo55MUQkbrqP8Dt1TfUXnW6+mPTqcjX
+	 YqyWxmoRvnRCVGVsXuqAuYoPDXgbr7ayOtmL9nAAMc75beMpzCpdwZQyk6PcRJhZHz
+	 /96ILs+LXIK8VCASPsiaqyK5yxjw7Auie1kyhy0w=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id A8FFBF800C9;
-	Wed, 21 Sep 2022 17:19:34 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id E8617F80169;
+	Wed, 21 Sep 2022 17:24:47 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 71F4EF80256; Wed, 21 Sep 2022 17:19:33 +0200 (CEST)
-Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com
- [IPv6:2a00:1450:4864:20::135])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id ECF1BF80256; Wed, 21 Sep 2022 17:24:45 +0200 (CEST)
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 01C76F800C9
- for <alsa-devel@alsa-project.org>; Wed, 21 Sep 2022 17:19:30 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 01C76F800C9
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org
- header.b="URPgkLc1"
-Received: by mail-lf1-x135.google.com with SMTP id a2so9782975lfb.6
- for <alsa-devel@alsa-project.org>; Wed, 21 Sep 2022 08:19:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
- h=content-transfer-encoding:in-reply-to:from:content-language
- :references:cc:to:subject:user-agent:mime-version:date:message-id
- :from:to:cc:subject:date;
- bh=0OQNwidXfglALVVRMIJX0eA8njvh8tvja1lgxaI+Bb8=;
- b=URPgkLc1/gEOLl+n4W6SG44A8sW0ivmUThd6wN1YUN4N6g3JnC2/j/1QYSftU7xaaz
- 2a+TEBvw2H3iWYXTihvWlTi4WbCu0Vx0ykuJev8WVHbHOupHTP1OpyE7hsGIraPkOlzE
- VL/eSNVkW8icU54So/jIoYxDwNz3+ICSus9RWWpHKwAbNdbDH4f+4A5KZx24rWjM2cfe
- DC43cw4b0n7Jc7ymx+0uemUcdX+w2/LCn/uF/sKKhaOD0DhlUjHfOEvxQcnjglcQSp+l
- wtLLoC6MS7jOht05JoAdVj4CwHafjJHlKGcXfrpHPgggnfD4HBk9MZSlVf6TRuYVkLme
- efaQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=content-transfer-encoding:in-reply-to:from:content-language
- :references:cc:to:subject:user-agent:mime-version:date:message-id
- :x-gm-message-state:from:to:cc:subject:date;
- bh=0OQNwidXfglALVVRMIJX0eA8njvh8tvja1lgxaI+Bb8=;
- b=yocrLR+BmvJ4hWMMeb+/qu3LjTkAMrQL/dn+zjfq4r5mPnXz6TSbxfw+QPVC/TumMM
- 9CSvb0CMq2l4SgmhVlHlb3fplDYc2OSMx+EWB9+p8xVeFK0X8q4ah58rLyk+HBPRVs5d
- 8U2Wt+8JwcRJxEeu1jcT9dICMMq8OzDznqHMuu07GmAPS7WKHcZncwvbr//8JZ2UMlnz
- L9zj3Wxu9UVKBceOu4qyrW62H8B0nB6g3r84Yp6evfVsaDWmdiasqpkoRxTQTVbQFtEK
- O/RrJJcVc7/MBVnRg8AK3TutlwHHnpwEKCnofYn5Y/GZ8LnL6T/gqw2pnsNSIPbENFvc
- y3cA==
-X-Gm-Message-State: ACrzQf29NAyYPh1IyQtTrZtDVSCoCEwb685SDH9m765YPETKPWZkq4ja
- XGClKMbk7ZfjL5eiftMeeFMhLw==
-X-Google-Smtp-Source: AMsMyM5W8d7QEhX0GyaMcafFqQFoeDrLIcJcGcKbJeXZ90zLpEd3zhpdII+hyLJ5GGWSp/H+vapy2Q==
-X-Received: by 2002:a05:6512:3b8e:b0:49a:d2f4:6b7d with SMTP id
- g14-20020a0565123b8e00b0049ad2f46b7dmr9680650lfv.627.1663773567480; 
- Wed, 21 Sep 2022 08:19:27 -0700 (PDT)
-Received: from [192.168.0.21] (78-11-189-27.static.ip.netia.com.pl.
- [78.11.189.27]) by smtp.gmail.com with ESMTPSA id
- m6-20020a056512114600b004896ed8dce3sm485158lfg.2.2022.09.21.08.19.26
- (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Wed, 21 Sep 2022 08:19:27 -0700 (PDT)
-Message-ID: <5e34eadc-ef6a-abeb-6bce-347593c275b7@linaro.org>
-Date: Wed, 21 Sep 2022 17:19:26 +0200
+ by alsa1.perex.cz (Postfix) with ESMTPS id 96C99F800C9
+ for <alsa-devel@alsa-project.org>; Wed, 21 Sep 2022 17:24:41 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 96C99F800C9
+Received: from dggpemm500024.china.huawei.com (unknown [172.30.72.57])
+ by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4MXhwB0YfLzpV10;
+ Wed, 21 Sep 2022 23:21:46 +0800 (CST)
+Received: from dggpemm500007.china.huawei.com (7.185.36.183) by
+ dggpemm500024.china.huawei.com (7.185.36.203) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.31; Wed, 21 Sep 2022 23:24:35 +0800
+Received: from huawei.com (10.175.103.91) by dggpemm500007.china.huawei.com
+ (7.185.36.183) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.31; Wed, 21 Sep
+ 2022 23:24:34 +0800
+From: Yang Yingliang <yangyingliang@huawei.com>
+To: <asahi@lists.linux.dev>, <alsa-devel@alsa-project.org>
+Subject: [PATCH -next] ASoC: cs42l83: change cs42l83_regmap to static
+Date: Wed, 21 Sep 2022 23:31:23 +0800
+Message-ID: <20220921153123.1508144-1-yangyingliang@huawei.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.2.2
-Subject: Re: [PATCH 1/2] ASoC: wcd9335: fix order of Slimbus unprepare/disable
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
- Banajit Goswami <bgoswami@quicinc.com>, Liam Girdwood <lgirdwood@gmail.com>,
- Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>,
- Takashi Iwai <tiwai@suse.com>, Vinod Koul <vkoul@kernel.org>,
- alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
-References: <20220921145354.1683791-1-krzysztof.kozlowski@linaro.org>
- <20916c9d-3598-7c40-ee77-1148c3d2e4b1@linux.intel.com>
- <af3bd3f4-dcd9-8f6c-6323-de1b53301225@linaro.org>
- <9a210b04-2ff2-df98-ad1a-89e9d8b0f686@linaro.org>
- <fd74e77c-f3d3-1f09-2e5a-0a94e2a3eeea@linux.intel.com>
-Content-Language: en-US
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <fd74e77c-f3d3-1f09-2e5a-0a94e2a3eeea@linux.intel.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-Cc: stable@vger.kernel.org
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.175.103.91]
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ dggpemm500007.china.huawei.com (7.185.36.183)
+X-CFilter-Loop: Reflected
+Cc: povik+lin@cutebit.org, broonie@kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -110,28 +71,27 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On 21/09/2022 17:11, Pierre-Louis Bossart wrote:
->>>> /**
->>>>  * slim_stream_unprepare() - Un-prepare a SLIMbus Stream
->>>>  *
->>>>  * @stream: instance of slim stream runtime to unprepare
->>>>  *
->>>>  * This API will un allocate all the ports and channels associated with
->>>>  * SLIMbus stream
->>>
->>> You mean this piece of doc? Indeed looks inaccurate. I'll update it.
->>
->> Wait, no, this is correct. Please point to what is wrong in kernel doc.
->> I don't see it. :(
-> 
-> the TRIGGER_STOP and TRIGGER_PAUSE_PUSH do the same thing. There is no
-> specific mapping of disable() to TRIGGER_STOP and unprepare() to
-> TRIGGER_PAUSE_PUSH as the documentation hints at.
+cs42l83_regmap is only used in cs42l83-i2c.c now, change it to static.
 
-Which TRIGGER_STOP and TRIGGER_PAUSE_PUSH? In one specific codec driver?
-If yes, I don't think Slimbus documentation should care how actual users
-implement it (e.g. coalesce states).
+Fixes: 94d5f62a91aa ("ASoC: cs42l83: Extend CS42L42 support to new part")
+Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
+---
+ sound/soc/codecs/cs42l83-i2c.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Best regards,
-Krzysztof
+diff --git a/sound/soc/codecs/cs42l83-i2c.c b/sound/soc/codecs/cs42l83-i2c.c
+index f90d43996a51..37629ebd90e0 100644
+--- a/sound/soc/codecs/cs42l83-i2c.c
++++ b/sound/soc/codecs/cs42l83-i2c.c
+@@ -145,7 +145,7 @@ static const struct reg_default cs42l83_reg_defaults[] = {
+  * This is all the same as for CS42L42 but we
+  * replace the on-reset register defaults.
+  */
+-const struct regmap_config cs42l83_regmap = {
++static const struct regmap_config cs42l83_regmap = {
+ 	.reg_bits = 8,
+ 	.val_bits = 8,
+ 
+-- 
+2.25.1
 
