@@ -4,99 +4,78 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 65103ECAAD8
-	for <alsa-devel@archiver.kernel.org>; Wed, 21 Sep 2022 15:29:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E9E3EC6FA82
+	for <alsa-devel@archiver.kernel.org>; Wed, 21 Sep 2022 15:43:49 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id ED729163D;
-	Wed, 21 Sep 2022 17:28:28 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz ED729163D
+	by alsa0.perex.cz (Postfix) with ESMTPS id 9C0C1AE9;
+	Wed, 21 Sep 2022 17:42:57 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9C0C1AE9
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1663774159;
-	bh=+KYl7Pb58TtjbzgP4nDz7xcYEHqhnXxGN919MItsQP4=;
-	h=Date:Subject:To:References:From:In-Reply-To:Cc:List-Id:
+	s=default; t=1663775027;
+	bh=d44X2ywoXsq9lpOp5JBRGMCfdVwwsMQaLllyFceQFjI=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=RVRogUbTWsMXgbpg8R5IsMujkQ3jb4aQCKqPKEMfY5v+rg2+5enuXuwoyTyOrCTug
-	 mq/gzMuqI96Oy3L5VARWgob42w0q0Lfgc7svwz75eXs/ls8HvLiuswQAoEwZD4o+ng
-	 fX183o9rF6HA5lfQenRE4SsgnYLYz6jdOgM1Hp8Y=
+	b=GQg2J0Tq/mwYSF6mYvbVEvLl8UNOs9y7U5FJjdou126SlZWa8QoHjR141jJ9YnyPU
+	 c/kABonRtH/Z05bJTyuVV24B5qPJBqSweALGDUCdRQbeCMgNQWbKPmh/dDekNPd85U
+	 UEQQf6bzMUOYfFP4LXsJzVRi+Qb5N3wPgIqmzgZw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 7CEA0F80169;
-	Wed, 21 Sep 2022 17:28:28 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 31D0FF800C9;
+	Wed, 21 Sep 2022 17:42:57 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 2C20DF80256; Wed, 21 Sep 2022 17:28:26 +0200 (CEST)
-Received: from mail-lj1-x233.google.com (mail-lj1-x233.google.com
- [IPv6:2a00:1450:4864:20::233])
+ id 317E7F80256; Wed, 21 Sep 2022 17:42:55 +0200 (CEST)
+Received: from mail-vk1-xa2d.google.com (mail-vk1-xa2d.google.com
+ [IPv6:2607:f8b0:4864:20::a2d])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 03DA2F800F3
- for <alsa-devel@alsa-project.org>; Wed, 21 Sep 2022 17:28:22 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 03DA2F800F3
+ by alsa1.perex.cz (Postfix) with ESMTPS id 1FD76F800C9
+ for <alsa-devel@alsa-project.org>; Wed, 21 Sep 2022 17:42:46 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1FD76F800C9
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org
- header.b="svch8Vd6"
-Received: by mail-lj1-x233.google.com with SMTP id p5so7407281ljc.13
- for <alsa-devel@alsa-project.org>; Wed, 21 Sep 2022 08:28:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
- h=content-transfer-encoding:in-reply-to:from:references:cc:to
- :content-language:subject:user-agent:mime-version:date:message-id
- :from:to:cc:subject:date;
- bh=4fyDdd6hcvCfFZT9i19QE30bk4gB/G2w/iEESMxgbKA=;
- b=svch8Vd6r5prc+EGUm5IRQ9iK6HudwOgs+E0/t3t6ZepH24yrJ3rb2q47vhpC/hSa5
- eePSlz7Zb9Lw/5kBu1F+jrYiKW7u52M1oCGfMoxtxNcI7w52YP4ggol4vHs61087fQPn
- zkxiUfstNdQLdKfuWntvkdn1pHs/VU98DT/nkc+fv9e+Ftq30wa8TJirz10+nLEQ2ViN
- klJweBcRNlRpLGskSeJfL+qoawD1pAP/J3TUiQ+9G8AWEAWBch5rrkVYmw3a4n8m7z8D
- Lw/hWf8MxPimo84973uQKVzW4JGaWScCmK/FaP7kjWGNqXvuYj0rKOpgn5Uy4E/17WQD
- 3YnQ==
+ dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com
+ header.b="j6PEQKDX"
+Received: by mail-vk1-xa2d.google.com with SMTP id b81so3409154vkf.1
+ for <alsa-devel@alsa-project.org>; Wed, 21 Sep 2022 08:42:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
+ h=cc:to:subject:message-id:date:from:in-reply-to:references
+ :mime-version:from:to:cc:subject:date;
+ bh=KFeAEomN6wc2bkWtpf7+3E3G4vNJtHK0TABPjM591K4=;
+ b=j6PEQKDXbzUpUGsJj0J+L4yZap4hN7mS78EpJrWYFNixgNWVKNiEtyDcTICM/z3M5n
+ +tDBwuVpgHHKDRFmb9RlDE9xeSbsI7mWOO/Sz5aqrtbnhjY6hlM9Y2fXwWwo9voH1TO8
+ Xw5zZfYWWY/wbEFAbrOv/3c+hwsND/kX6/yxGbu1aUIkmLoTT6KyS+g9QGRwz7JcKqg5
+ rb6TdYJ3+OkZGAyDjq3wPqTfbFCKYJVkM1BjYOn58bhAPG0dXkhCZhm0g96pkBdbOm61
+ v7+RDpgU6n9f3+F39IHq/X9vB/tSQTzVAvV4aW6hL8Nvke04kTTqfFHUjvMZvwTNlIjT
+ juZQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
- h=content-transfer-encoding:in-reply-to:from:references:cc:to
- :content-language:subject:user-agent:mime-version:date:message-id
- :x-gm-message-state:from:to:cc:subject:date;
- bh=4fyDdd6hcvCfFZT9i19QE30bk4gB/G2w/iEESMxgbKA=;
- b=iUofILpylt21dbi+ywboSnD4T+28DPsEPJP3Hmsea5+em32vtNTKyHl6zbw4E313wS
- mQLak/DjTV5CcmoTMlUlid2zUHGTrueW8z0BcKWEM9CMRodRDJDtbC//Pbn5ySvE/jVd
- TEYDwk3oQIjypbr6uEBoxf5x0xc9JZk9lD5XCpq9fw+3oZo61q4vGIujfT6u+YqXh1ZZ
- r9rpNkiWTPBCOjAZJ6TL/QIJwqCGubP2c0flbSYpefzGHHuyHyort+S4jai6J4gPcnuh
- rFvSp2IFYBRXcf2dKo9bNvYRhmF6a9xkKyd5pdPTVv3Pap3OspGnbLLYGB5nPebcnwZU
- 4tlw==
-X-Gm-Message-State: ACrzQf2nfZYN7F14ANz90B0YpLKE1xLbufjifosH6WgHGEkDaB7LzQrO
- 3Rl/IoJhTGnDxt8bz0rmmfRDWg==
-X-Google-Smtp-Source: AMsMyM4kgLEzuRCbwB9NE7eQli7CQSYE21f8z+xxXzyue6Db7mHLo03HzBf6cA9GZU7GrFsDfz3CmA==
-X-Received: by 2002:a2e:9d94:0:b0:26b:de12:7c9 with SMTP id
- c20-20020a2e9d94000000b0026bde1207c9mr9055575ljj.244.1663774098321; 
- Wed, 21 Sep 2022 08:28:18 -0700 (PDT)
-Received: from [192.168.0.21] (78-11-189-27.static.ip.netia.com.pl.
- [78.11.189.27]) by smtp.gmail.com with ESMTPSA id
- n21-20020a05651203f500b00494a8fecacesm474505lfq.192.2022.09.21.08.28.17
- (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Wed, 21 Sep 2022 08:28:17 -0700 (PDT)
-Message-ID: <df350235-3c50-c7ac-eb62-5fbc501fed0a@linaro.org>
-Date: Wed, 21 Sep 2022 17:28:16 +0200
+ h=cc:to:subject:message-id:date:from:in-reply-to:references
+ :mime-version:x-gm-message-state:from:to:cc:subject:date;
+ bh=KFeAEomN6wc2bkWtpf7+3E3G4vNJtHK0TABPjM591K4=;
+ b=C8shXNi0/LfdcVMn8qTJQY/ucs9AZITaPR8UdeRCg9A0yjAC2koE1S1yHaGxyYb0FK
+ AWjlk/gThCM27PXpaeZb4+DgGHJi6oJ64jZ9t/HUzRZDQg2mFp0WcxT8vsNWJj6phuwZ
+ npWUgbNTkkFmMMRaSrBaQgwzFMUZFwuwVtEMR25Y5l59BWu6oZX61sRIxzwM2FrLvJrf
+ Riocnh10ebQQYETCCtxrndCxC0+zJcEKVHpVZs2UAFbT87QLWk8/xMJJubcpPOG9+FIo
+ Q5YKN0wwyXP6JYh2iprTPPvOAHZ0i2iz0U+rrstZW32J0ZqqRNiLC/MA3Z8aqLb/bX4G
+ PHrw==
+X-Gm-Message-State: ACrzQf39NHZxHzinvvftAt76zKTDzvBtm/x8Svgc4RML/yavr1fe13os
+ qiC4ZrJ+Fsxv7RGt+1phMkGchfwuR6JcIVoGtN8=
+X-Google-Smtp-Source: AMsMyM5mjgzhOyC1PfAPpGTaYduU7yMyFn4EYyHHMTNna6jnabAfwzyN0ukBimpQT8PKeQpgILa2hQZG5+l4ShB5bcQ=
+X-Received: by 2002:a05:6122:a02:b0:3a3:1672:171f with SMTP id
+ 2-20020a0561220a0200b003a31672171fmr8723463vkn.17.1663774964578; Wed, 21 Sep
+ 2022 08:42:44 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.2.2
-Subject: Re: [PATCH 1/2] ASoC: wcd9335: fix order of Slimbus unprepare/disable
-Content-Language: en-US
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
- Banajit Goswami <bgoswami@quicinc.com>, Liam Girdwood <lgirdwood@gmail.com>,
- Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>,
- Takashi Iwai <tiwai@suse.com>, Vinod Koul <vkoul@kernel.org>,
- alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
-References: <20220921145354.1683791-1-krzysztof.kozlowski@linaro.org>
- <20916c9d-3598-7c40-ee77-1148c3d2e4b1@linux.intel.com>
- <af3bd3f4-dcd9-8f6c-6323-de1b53301225@linaro.org>
- <9a210b04-2ff2-df98-ad1a-89e9d8b0f686@linaro.org>
- <fd74e77c-f3d3-1f09-2e5a-0a94e2a3eeea@linux.intel.com>
- <5e34eadc-ef6a-abeb-6bce-347593c275b7@linaro.org>
- <dd61f44e-8d4a-ac2e-0af4-56ced642c4bd@linux.intel.com>
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <dd61f44e-8d4a-ac2e-0af4-56ced642c4bd@linux.intel.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-Cc: stable@vger.kernel.org
+References: <CAB7eexJP7w1B0mVgDF0dQ+gWor7UdkiwPczmL7pn91xx8xpzOA@mail.gmail.com>
+ <87y1ufh3u9.wl-tiwai@suse.de> <875yhigtxe.wl-tiwai@suse.de>
+In-Reply-To: <875yhigtxe.wl-tiwai@suse.de>
+From: Rondreis <linhaoguo86@gmail.com>
+Date: Wed, 21 Sep 2022 23:42:33 +0800
+Message-ID: <CAB7eexJu+4Nc+YA3Bi+1Y1-zU6rfO5YtC6R7c70Qhoj0J36JoA@mail.gmail.com>
+Subject: Re: possible deadlock in snd_rawmidi_free
+To: Takashi Iwai <tiwai@suse.de>
+Content-Type: text/plain; charset="UTF-8"
+Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, tiwai@suse.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -112,63 +91,109 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On 21/09/2022 17:25, Pierre-Louis Bossart wrote:
->>>>
->>>> Wait, no, this is correct. Please point to what is wrong in kernel doc.
->>>> I don't see it. :(
->>>
->>> the TRIGGER_STOP and TRIGGER_PAUSE_PUSH do the same thing. There is no
->>> specific mapping of disable() to TRIGGER_STOP and unprepare() to
->>> TRIGGER_PAUSE_PUSH as the documentation hints at.
->>
->> Which TRIGGER_STOP and TRIGGER_PAUSE_PUSH? In one specific codec driver?
->> If yes, I don't think Slimbus documentation should care how actual users
->> implement it (e.g. coalesce states).
-> 
-> In both of the patches you just modified :-)
+Thank you for your solution! I am sorry that I was not able to extract
+the reproducer. But I am improving the solution to reproduce the crash.
+If I succeed in reproducing it, I will check it for you as soon as possible!
 
-Yeah, but this is just some implementation. How this implementation
-calls, e.g. whether they split STOP from PAUSE is not the concern of
-Slimbus.
+Best Regards,
+Rondreis
 
-> 
-> diff --git a/sound/soc/codecs/wcd9335.c b/sound/soc/codecs/wcd9335.c
-> index 06c6adbe5920..d2548fdf9ae5 100644
-> --- a/sound/soc/codecs/wcd9335.c
-> +++ b/sound/soc/codecs/wcd9335.c
-> @@ -1972,8 +1972,8 @@ static int wcd9335_trigger(struct
-> snd_pcm_substream *substream, int cmd,
->  	case SNDRV_PCM_TRIGGER_STOP:
->  	case SNDRV_PCM_TRIGGER_SUSPEND:
->  	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
-> -		slim_stream_unprepare(dai_data->sruntime);
->  		slim_stream_disable(dai_data->sruntime);
-> +		slim_stream_unprepare(dai_data->sruntime);
->  		break;
->  	default:
-> 
-> diff --git a/sound/soc/codecs/wcd934x.c b/sound/soc/codecs/wcd934x.c
-> index f56907d0942d..28175c746b9a 100644
-> --- a/sound/soc/codecs/wcd934x.c
-> +++ b/sound/soc/codecs/wcd934x.c
-> @@ -1913,8 +1913,8 @@ static int wcd934x_trigger(struct
-> snd_pcm_substream *substream, int cmd,
->  	case SNDRV_PCM_TRIGGER_STOP:
->  	case SNDRV_PCM_TRIGGER_SUSPEND:
->  	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
-> -		slim_stream_unprepare(dai_data->sruntime);
->  		slim_stream_disable(dai_data->sruntime);
-> +		slim_stream_unprepare(dai_data->sruntime);
->  		break;
->  	default:
->  		break;
-> 
-> the bus provides helpers to be used in well-defined transitions. A codec
-> driver doing whatever it wants whenever it wants would create chaos for
-> the bus.
-
-True, but it's the problem of the codec, not the Slimbus.
-
-Best regards,
-Krzysztof
-
+On Tue, Sep 20, 2022 at 7:35 PM Takashi Iwai <tiwai@suse.de> wrote:
+>
+> On Mon, 19 Sep 2022 15:49:02 +0200,
+> Takashi Iwai wrote:
+> >
+> > On Mon, 19 Sep 2022 14:46:13 +0200,
+> > Rondreis wrote:
+> > >
+> > > Hello,
+> > >
+> > > When fuzzing the Linux kernel driver v6.0-rc4, the following crash was
+> > > triggered.
+> > >
+> > > HEAD commit: 7e18e42e4b280c85b76967a9106a13ca61c16179
+> > > git tree: upstream
+> > >
+> > > kernel config: https://pastebin.com/raw/xtrgsXP3
+> > > console output: https://pastebin.com/raw/9tabWDtu
+> > >
+> > > Sorry for failing to extract the reproducer, and the crash occurred at
+> > > the moment of disconnecting the midi device. On other versions of
+> > > Linux, I also triggered this crash.
+> > >
+> > > I would appreciate it if you have any idea how to solve this bug.
+> >
+> > I think there are two ways to work around it.
+> >
+> > The first one is to move the unregister_sound*() calls out of the
+> > sound_oss_mutex, something like:
+> > -- 8< --
+> >
+> > --- a/sound/core/sound_oss.c
+> > +++ b/sound/core/sound_oss.c
+> > @@ -162,7 +162,6 @@ int snd_unregister_oss_device(int type, struct snd_card *card, int dev)
+> >               mutex_unlock(&sound_oss_mutex);
+> >               return -ENOENT;
+> >       }
+> > -     unregister_sound_special(minor);
+> >       switch (SNDRV_MINOR_OSS_DEVICE(minor)) {
+> >       case SNDRV_MINOR_OSS_PCM:
+> >               track2 = SNDRV_MINOR_OSS(cidx, SNDRV_MINOR_OSS_AUDIO);
+> > @@ -174,12 +173,18 @@ int snd_unregister_oss_device(int type, struct snd_card *card, int dev)
+> >               track2 = SNDRV_MINOR_OSS(cidx, SNDRV_MINOR_OSS_DMMIDI1);
+> >               break;
+> >       }
+> > -     if (track2 >= 0) {
+> > -             unregister_sound_special(track2);
+> > +     if (track2 >= 0)
+> >               snd_oss_minors[track2] = NULL;
+> > -     }
+> >       snd_oss_minors[minor] = NULL;
+> >       mutex_unlock(&sound_oss_mutex);
+> > +
+> > +     /* call unregister_sound_special() outside sound_oss_mutex;
+> > +      * otherwise may deadlock, as it can trigger the release of a card
+> > +      */
+> > +     unregister_sound_special(minor);
+> > +     if (track2 >= 0)
+> > +             unregister_sound_special(track2);
+> > +
+> >       kfree(mptr);
+> >       return 0;
+> >  }
+> > -- 8< --
+> >
+> > This should be OK, as the unregister_sound_*() itself can be called
+> > concurrently.
+> >
+> > Another workaround would be just to remove the register_mutex call at
+> > snd_rawmidi_free(), e.g. something like:
+> >
+> > -- 8< --
+> > --- a/sound/core/rawmidi.c
+> > +++ b/sound/core/rawmidi.c
+> > @@ -1899,10 +1899,8 @@ static int snd_rawmidi_free(struct snd_rawmidi *rmidi)
+> >
+> >       snd_info_free_entry(rmidi->proc_entry);
+> >       rmidi->proc_entry = NULL;
+> > -     mutex_lock(&register_mutex);
+> >       if (rmidi->ops && rmidi->ops->dev_unregister)
+> >               rmidi->ops->dev_unregister(rmidi);
+> > -     mutex_unlock(&register_mutex);
+> >
+> >       snd_rawmidi_free_substreams(&rmidi->streams[SNDRV_RAWMIDI_STREAM_INPUT]);
+> >       snd_rawmidi_free_substreams(&rmidi->streams[SNDRV_RAWMIDI_STREAM_OUTPUT]);
+> > -- 8< --
+> >
+> > This register_mutex there should be superfluous since the device has
+> > been already processed and detached by snd_rawmidi_dev_disconnect()
+> > beforehand.  But if the first one is confirmed to work, the second one
+> > can be left untouched.
+>
+> Could you check whether one of two changes above fixes the bug?
+> Once after confirmed, I'll cook a proper patch for the submission.
+>
+>
+> thanks,
+>
+> Takashi
