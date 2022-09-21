@@ -4,75 +4,123 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id BDBC4C32771
-	for <alsa-devel@archiver.kernel.org>; Wed, 21 Sep 2022 08:28:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2BE17C32771
+	for <alsa-devel@archiver.kernel.org>; Wed, 21 Sep 2022 09:05:38 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 727AF9F6;
-	Wed, 21 Sep 2022 10:27:50 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 727AF9F6
+	by alsa0.perex.cz (Postfix) with ESMTPS id 9252A1ED;
+	Wed, 21 Sep 2022 11:04:46 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9252A1ED
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1663748920;
-	bh=2QXiEiIk4bERqqKKD/2sK+HvRQRkofw4BKmhJwnpeUo=;
-	h=Date:Subject:To:References:From:In-Reply-To:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=TJJVnkUUJIcjgqT9zOkD+TD/6DfIJpt64QRLPxEkPEhedPHPLnAMLkrT0CbspYRqP
-	 ZvTMNN+Rvxkj2fPelTFu9czuO1i+elhhV5rOZ/TWuYN/6weoNi7Yakqlv3Po8XVxaT
-	 dcrdHftuPweGcVl8QCg1nH2gmA13eyKEofG9vZ9M=
+	s=default; t=1663751136;
+	bh=5It2FIrleYwl+s7yKIi1GAR1kB+Rp0pqKCF1wBgXiGY=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=P0vunWEajW0fIZmDJcHMcjWINcOGF4ZJVktK5Wh0EVuBG4aIXsTjln9Q81LYGluRG
+	 2+vSChP434ZGEkG3EtE5kWkVYzeCCIbenSRyFOt3Rg7WnjSadTfa8Ty9x+sJSnSAY2
+	 RMKwbKjpW1Fuuz55Me/Q9KxrE4zIc/tB3g3gGPFc=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 67954F80535;
-	Wed, 21 Sep 2022 10:27:41 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 25431F800C9;
+	Wed, 21 Sep 2022 11:04:46 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 3FB9DF80538; Wed, 21 Sep 2022 10:27:40 +0200 (CEST)
-Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
+ id 8BCAFF80256; Wed, 21 Sep 2022 11:04:44 +0200 (CEST)
+Received: from NAM11-DM6-obe.outbound.protection.outlook.com
+ (mail-dm6nam11on2085.outbound.protection.outlook.com [40.107.223.85])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 881BBF8047C
- for <alsa-devel@alsa-project.org>; Wed, 21 Sep 2022 10:27:32 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 881BBF8047C
+ by alsa1.perex.cz (Postfix) with ESMTPS id A1C7DF80107
+ for <alsa-devel@alsa-project.org>; Wed, 21 Sep 2022 11:04:38 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A1C7DF80107
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="N7CT31LA"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
- d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1663748854; x=1695284854;
- h=message-id:date:mime-version:subject:to:cc:references:
- from:in-reply-to:content-transfer-encoding;
- bh=2QXiEiIk4bERqqKKD/2sK+HvRQRkofw4BKmhJwnpeUo=;
- b=N7CT31LANT87TesbhwhYsCvh1pVBIGtBL84RHZBCGHnHfY+9r5IcVcIi
- u2cjim1NqJjZqDJYzKh8zt7djGBh6WT+jTx52RZi0BE2//4vr0eoc7vlG
- 9FRyZgieUAmPJc8ALFZasCD/rhYt4VqjQ2UL8fVt6LiSOT6fxyb57rXuw
- rvJBYwrGlF3ETCrHFo/C+chc70oBobrTKTNd1vSDlWO68FAwbWKOPnQpl
- KF3N/Tf3IYOylt/ZHKmzbVckx3gnj1O3V7HzgSUpUTmA31upANcny+xU4
- W8gWxSUzNll8B7sDhKgBaj6wNoIsEjl+7nGoEhp8tMHUtZYqMvFeD0ziw A==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10476"; a="301337154"
-X-IronPort-AV: E=Sophos;i="5.93,332,1654585200"; d="scan'208";a="301337154"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
- by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 21 Sep 2022 01:27:30 -0700
-X-IronPort-AV: E=Sophos;i="5.93,332,1654585200"; d="scan'208";a="723109650"
-Received: from johannes-mobl1.ger.corp.intel.com (HELO [10.249.46.195])
- ([10.249.46.195])
- by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 21 Sep 2022 01:27:28 -0700
-Message-ID: <5be08dad-271a-a804-0093-8734d81ac6c6@linux.intel.com>
-Date: Wed, 21 Sep 2022 10:26:34 +0200
+ dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com
+ header.b="ppvlEWAo"
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=LUAatbUXc2IEv/ICiIPZ7FyRxXB8/OG3xvh0Kc+It8eg+8y4Jw9q3adMYQIi8i+FB2a5H7Hc/6DiTEhjx0UHjiXOr+TBWQPlyLJkawREaD+Pou/a7Ax40jECWuxMmnR/Wp3onQ++wEv+6TbcwaKJ8cAZVSAOfGtJG5maNzH7OOG3jXi128U15m+6Y6GiLtxj4D8GxE84FZntW4krFt97GLTv+9gdIR4CJm5GBitULsN0BsGIIyZz6WbvF1t3IV6qze9LZEuw6/icYv9U8gIrLXARJ+EwooUzuz484jsfuc4ljRCFkTfVypwO5EPAnSERauC11d3u6eZfGjsvbSqveA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=AOlvoD3TS2h5CgXe/v5JKQ/yb/nzawbVASZBO3Ok/Xg=;
+ b=HtZtgePOfZHX0JjbjOX19p/CkgbpBCfcB1K40VL+imP22xDx1NsyiFtM7u8RzyRQyTyqy4JRRtbW95t12LsnaA680L289KSIriNn3Sgtxsz/lE6DpgT2yng5MkEgaDXgJqQD5ktxWB5yvLe/RTShIdAjUH43MKRW0KlVHag8D2Pf1eUjnhIJSjywJlqovG0gWBWWoVGcdDWEuIXHRZg9Tb18qtu0I0Ja4xAY0rVDmtncUhm4EeQHQsuyubpARc1JGvYm9gUYwyUI3myrsVI9m2f6GmYcdXphyqQ1SdkdhP6wnH3jOJQeBwsRAuSRhMSlfj84M61AFi2K53MZVjJPNQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 165.204.84.17) smtp.rcpttodomain=kernel.org smtp.mailfrom=amd.com; dmarc=pass
+ (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
+ dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1; 
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=AOlvoD3TS2h5CgXe/v5JKQ/yb/nzawbVASZBO3Ok/Xg=;
+ b=ppvlEWAoWLdARJ4rBIJSC5dlWqIU8TJv00QTY0sKdAs8gwqegqqW6EEjZbx1XjjBxd4jUE5eEGqGWW8Qy669Ri8u6ZGy6i2wNXBzref8lNm1o9i4J7QIzfp6XSrY3y5K9Y+t5f/1qlJfC+B2zD1EaQD4/VtVejXZXrTU3ApjIr4=
+Received: from MW4PR03CA0262.namprd03.prod.outlook.com (2603:10b6:303:b4::27)
+ by MN0PR12MB5835.namprd12.prod.outlook.com (2603:10b6:208:37a::6)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5632.17; Wed, 21 Sep
+ 2022 09:04:33 +0000
+Received: from CO1NAM11FT092.eop-nam11.prod.protection.outlook.com
+ (2603:10b6:303:b4:cafe::66) by MW4PR03CA0262.outlook.office365.com
+ (2603:10b6:303:b4::27) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5654.17 via Frontend
+ Transport; Wed, 21 Sep 2022 09:04:33 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
+ smtp.mailfrom=amd.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=amd.com;
+Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
+ 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
+ client-ip=165.204.84.17; helo=SATLEXMB03.amd.com; pr=C
+Received: from SATLEXMB03.amd.com (165.204.84.17) by
+ CO1NAM11FT092.mail.protection.outlook.com (10.13.175.225) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.5654.14 via Frontend Transport; Wed, 21 Sep 2022 09:04:32 +0000
+Received: from SATLEXMB08.amd.com (10.181.40.132) by SATLEXMB03.amd.com
+ (10.181.40.144) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.28; Wed, 21 Sep
+ 2022 04:04:29 -0500
+Received: from SATLEXMB04.amd.com (10.181.40.145) by SATLEXMB08.amd.com
+ (10.181.40.132) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.28; Wed, 21 Sep
+ 2022 02:04:07 -0700
+Received: from amd-System-Product-Name.amd.com (10.180.168.240) by
+ SATLEXMB04.amd.com (10.181.40.145) with Microsoft SMTP Server id 15.1.2375.28
+ via Frontend Transport; Wed, 21 Sep 2022 04:03:58 -0500
+From: Venkata Prasad Potturu <venkataprasad.potturu@amd.com>
+To: <broonie@kernel.org>, <alsa-devel@alsa-project.org>
+Subject: [PATCH] ASoC: amd: acp: Add setbias level for rt5682s codec in
+ machine driver
+Date: Wed, 21 Sep 2022 14:37:44 +0530
+Message-ID: <20220921090750.3833256-1-venkataprasad.potturu@amd.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Firefox/91.0 Thunderbird/91.11.0
-Subject: Re: [PATCH 1/2] ASoC: sma1303: Add driver for Iron Device SMA1303 Amp
-Content-Language: en-US
-To: Kiseok Jo <kiseok.jo@irondevice.com>,
- Gyuhwa Park <gyuhwa.park@irondevice.com>, Mark Brown <broonie@kernel.org>
-References: <20220921044405.4441-1-kiseok.jo@irondevice.com>
- <20220921044405.4441-2-kiseok.jo@irondevice.com>
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-In-Reply-To: <20220921044405.4441-2-kiseok.jo@irondevice.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-Cc: alsa-devel@alsa-project.org, application@irondevice.com
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: CO1NAM11FT092:EE_|MN0PR12MB5835:EE_
+X-MS-Office365-Filtering-Correlation-Id: d8d988b1-4d29-4bbb-6980-08da9bb04ccf
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: +2nJDdbctICFyPLP1Ib82orDyH12T3OmHCxoF6OL8ACm0wUypjH9IFQ6BZBqcQ0fvK5kbAlmsZpmWlV8pjqvxjoiIaV1YLVr0by0htjoJT3kWEbmG+7JwUzrKSBzr19LYyha8qC0Ggx7yQiphG4FWpBUiHetXRO4KaW0XunuvtHg5nwFE9EykUJ+KsbMYc6lXidSmn1vUXoj/ifeeOc2A32jUf1EAfMLGlck6ZtIL8eUS+3QE6lE3wDeCEm2Vy6lXUcWWRNZ4Gzr61+Hx69OiNCBaicpATG9WDw9h5XGftVAKhANYUK5L3UqoUA38cB2dBp0HCnGejAgZlrYWqC6JrbA1AwVWnFW90n6P4MDfklWziOwnKKAOJNhOh13X2eH1NSD5eAHuYRU6w1rnvBXdYcKBBKaA7fVFYsbWSapUxeWIedViAOdVKsvXKT/vJLfEJfBeanCXk8Nj1LBPHzGgrFKQC5frRpEIwcJcZwAlOAxZwm/gmTrVbf7uHwvhrMkmwrjHPhCALHSfHJf7DUwXnOMiVbE0VK2FL77TDSKgfxYR5IHOTfx6/RH9HCoMAv7YxRfdQDsOzl/MCZB798JRLfxfruCIuFoRhB0NdyoRumbSdLSlBqifFlOwDo92b+y17rcqaag4iwWuBV4WQDxgQ4K8ojMOfJCLDSfES1ievZtQIziHP5xsXErl6aiz6ss6yBlfzi/kM6A/mKgDYemn+D4iVVbjH255qb0KPlA2jCvi00RNPg60Re2/2Fq/8AOBQ8bFZnThGn9qOj0YS3iaPpUzORP6dYoegaSc0bcM7ASzQpALQMLUCEbgtOQdyrb
+X-Forefront-Antispam-Report: CIP:165.204.84.17; CTRY:US; LANG:en; SCL:1; SRV:;
+ IPV:CAL; SFV:NSPM; H:SATLEXMB03.amd.com; PTR:InfoDomainNonexistent; CAT:NONE;
+ SFS:(13230022)(4636009)(39860400002)(396003)(346002)(136003)(376002)(451199015)(36840700001)(46966006)(40470700004)(82740400003)(336012)(6666004)(478600001)(186003)(47076005)(40480700001)(70206006)(41300700001)(70586007)(1076003)(2616005)(426003)(7696005)(40460700003)(26005)(2906002)(82310400005)(54906003)(316002)(110136005)(8936002)(4326008)(8676002)(5660300002)(81166007)(36756003)(36860700001)(356005)(86362001)(83380400001)(36900700001);
+ DIR:OUT; SFP:1101; 
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Sep 2022 09:04:32.9682 (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: d8d988b1-4d29-4bbb-6980-08da9bb04ccf
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d; Ip=[165.204.84.17];
+ Helo=[SATLEXMB03.amd.com]
+X-MS-Exchange-CrossTenant-AuthSource: CO1NAM11FT092.eop-nam11.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN0PR12MB5835
+Cc: Sunil-kumar.Dommati@amd.com, ssabakar@amd.com,
+ Ajit Kumar Pandey <AjitKumar.Pandey@amd.com>,
+ Venkata Prasad Potturu <venkataprasad.potturu@amd.com>,
+ ye xingchen <ye.xingchen@zte.com.cn>, Basavaraj.Hiregoudar@amd.com,
+ Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>,
+ Akihiko Odaki <akihiko.odaki@gmail.com>, Vijendar.Mukunda@amd.com,
+ V sujith kumar Reddy <Vsujithkumar.Reddy@amd.com>,
+ open list <linux-kernel@vger.kernel.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -88,674 +136,116 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+Add set_bais_level function for rt5682s codec to enable bclk and lrclk
+before codec widgets power on and disable bclk and lrclk after widgets
+power down, to avoid pop noise
 
+Signed-off-by: Venkata Prasad Potturu <venkataprasad.potturu@amd.com>
+---
+ sound/soc/amd/acp/acp-mach-common.c | 62 ++++++++++++++++++++++++++---
+ 1 file changed, 56 insertions(+), 6 deletions(-)
 
+diff --git a/sound/soc/amd/acp/acp-mach-common.c b/sound/soc/amd/acp/acp-mach-common.c
+index 4c69cb6e3400..a78cf29387a7 100644
+--- a/sound/soc/amd/acp/acp-mach-common.c
++++ b/sound/soc/amd/acp/acp-mach-common.c
+@@ -167,11 +167,14 @@ static int acp_card_hs_startup(struct snd_pcm_substream *substream)
+ 				      &constraints_channels);
+ 	snd_pcm_hw_constraint_list(runtime, 0, SNDRV_PCM_HW_PARAM_RATE,
+ 				      &constraints_rates);
+-	if (!drvdata->soc_mclk) {
+-		ret = acp_clk_enable(drvdata);
+-		if (ret < 0) {
+-			dev_err(rtd->card->dev, "Failed to enable HS clk: %d\n", ret);
+-			return ret;
++
++	if (strcmp(codec_dai->name, "rt5682s-aif1") && strcmp(codec_dai->name, "rt5682s-aif2")) {
++		if (!drvdata->soc_mclk) {
++			ret = acp_clk_enable(drvdata);
++			if (ret < 0) {
++				dev_err(rtd->card->dev, "Failed to enable HS clk: %d\n", ret);
++				return ret;
++			}
+ 		}
+ 	}
+ 
+@@ -280,7 +283,6 @@ static int acp_card_rt5682s_init(struct snd_soc_pcm_runtime *rtd)
+ 
+ static const struct snd_soc_ops acp_card_rt5682s_ops = {
+ 	.startup = acp_card_hs_startup,
+-	.shutdown = acp_card_shutdown,
+ };
+ 
+ static const unsigned int dmic_channels[] = {
+@@ -570,6 +572,52 @@ SND_SOC_DAILINK_DEF(sof_dmic,
+ SND_SOC_DAILINK_DEF(pdm_dmic,
+ 	DAILINK_COMP_ARRAY(COMP_CPU("acp-pdm-dmic")));
+ 
++static int acp_rtk_set_bias_level(struct snd_soc_card *card,
++				  struct snd_soc_dapm_context *dapm,
++				  enum snd_soc_bias_level level)
++{
++	struct snd_soc_component *component = dapm->component;
++	struct acp_card_drvdata *drvdata = card->drvdata;
++	int ret = 0;
++
++	if (!component)
++		return 0;
++
++	if (strncmp(component->name, "i2c-RTL5682", 11) &&
++	    strncmp(component->name, "i2c-10EC1019", 12))
++		return 0;
++
++	/*
++	 * For Realtek's codec and amplifier components,
++	 * the lrck and bclk must be enabled brfore their all dapms be powered on,
++	 * and must be disabled after their all dapms be powered down
++	 * to avoid any pop.
++	 */
++	switch (level) {
++	case SND_SOC_BIAS_STANDBY:
++		if (snd_soc_dapm_get_bias_level(dapm) == SND_SOC_BIAS_OFF) {
++			clk_set_rate(drvdata->wclk, 48000);
++			clk_set_rate(drvdata->bclk, 48000 * 64);
++
++			/* Increase bclk's enable_count */
++			ret = clk_prepare_enable(drvdata->bclk);
++			if (ret < 0)
++				dev_err(component->dev, "Failed to enable bclk %d\n", ret);
++		} else {
++			/*
++			 * Decrease bclk's enable_count.
++			 * While the enable_count is 0, the bclk would be closed.
++			 */
++			clk_disable_unprepare(drvdata->bclk);
++		}
++		break;
++	default:
++		break;
++	}
++
++	return ret;
++}
++
+ int acp_sofdsp_dai_links_create(struct snd_soc_card *card)
+ {
+ 	struct snd_soc_dai_link *links;
+@@ -730,6 +778,7 @@ int acp_sofdsp_dai_links_create(struct snd_soc_card *card)
+ 
+ 	card->dai_link = links;
+ 	card->num_links = num_links;
++	card->set_bias_level = acp_rtk_set_bias_level;
+ 
+ 	return 0;
+ }
+@@ -907,6 +956,7 @@ int acp_legacy_dai_links_create(struct snd_soc_card *card)
+ 
+ 	card->dai_link = links;
+ 	card->num_links = num_links;
++	card->set_bias_level = acp_rtk_set_bias_level;
+ 
+ 	return 0;
+ }
+-- 
+2.25.1
 
-> diff --git a/sound/soc/codecs/sma1303.c b/sound/soc/codecs/sma1303.c
-> new file mode 100644
-> index 000000000000..03c969a4891e
-> --- /dev/null
-> +++ b/sound/soc/codecs/sma1303.c
-> @@ -0,0 +1,2119 @@
-> +// SPDX-License-Identifier: GPL-2.0-or-later
-> +/* sma1303.c -- sma1303 ALSA SoC Audio driver
-> + *
-> + * Copyright 2022 Iron Device Corporation
-
-Missing Copyright (c) ?
-
-> + *
-> + * This program is free software; you can redistribute it and/or modify
-> + * it under the terms of the GNU General Public License version 2 as
-> + * published by the Free Software Foundation.
-
-this is redundant with the SPDX line above.
-
-> + */
-> +
-> +#include <linux/module.h>
-> +#include <linux/moduleparam.h>
-> +#include <linux/kernel.h>
-> +#include <linux/init.h>
-> +#include <linux/delay.h>
-
-it's recommanded to list headers by alphabetical order.
-
-> +#include <linux/pm.h>
-> +#include <linux/i2c.h>
-> +#include <linux/regmap.h>
-> +#include <linux/version.h>
-> +#include <sound/core.h>
-> +#include <sound/pcm.h>
-> +#include <sound/pcm_params.h>
-> +#include <sound/soc.h>
-> +#include <sound/initval.h>
-> +#include <sound/tlv.h>
-> +#include <linux/of_device.h>
-> +#include <linux/slab.h>
-> +#include <asm/div64.h>
-> +
-> +#include "sma1303.h"
-
-> +enum sma1303_type {
-> +	SMA1303,
-> +};
-
-is this necessary?
-
-> +
-> +struct sma1303_pll_match {
-> +	char *input_clk_name;
-> +	char *output_clk_name;
-> +	unsigned int input_clk;
-> +	unsigned int post_n;
-> +	unsigned int n;
-> +	unsigned int vco;
-> +	unsigned int p_cp;
-> +};
-> +
-> +struct sma1303_priv {
-> +	enum sma1303_type devtype;
-> +	struct device *dev;
-> +	struct attribute_group *attr_grp;
-> +	struct kobject *kobj;
-
-Usually it's not recommended to muck with kobj in drivers. If this is
-for sysfs support there are better and safer ways.
-
-> +	struct regmap *regmap;
-> +	struct sma1303_pll_match *pll_matches;
-> +	struct mutex lock;
-> +	struct delayed_work check_fault_work;
-> +	bool amp_power_status;
-> +	bool usage_status;
-> +	int num_of_pll_matches;
-> +	unsigned int sys_clk_id;
-> +	unsigned int init_vol;
-> +	unsigned int cur_vol;
-> +	unsigned int tdm_slot_rx;
-> +	unsigned int tdm_slot_tx;
-> +	unsigned int tsdw_cnt;
-> +	unsigned int format;
-> +	unsigned int rev_num;
-> +	unsigned int last_over_temp;
-> +	unsigned int last_ocp_val;
-> +	unsigned int last_bclk;
-> +	unsigned int frame_size;
-> +	unsigned int amp_mode;
-> +	long check_fault_period;
-> +	long check_fault_status;
-> +};
-> +
-> +static struct sma1303_pll_match sma1303_pll_matches[] = {
-> +PLL_MATCH("1.411MHz",  "24.595MHz", 1411200,  0x07, 0xF4, 0x8B, 0x03),
-> +PLL_MATCH("1.536MHz",  "24.576MHz", 1536000,  0x07, 0xE0, 0x8B, 0x03),
-> +PLL_MATCH("3.072MHz",  "24.576MHz", 3072000,  0x07, 0x70, 0x8B, 0x03),
-> +PLL_MATCH("6.144MHz",  "24.576MHz", 6144000,  0x07, 0x70, 0x8B, 0x07),
-> +PLL_MATCH("12.288MHz", "24.576MHz", 12288000, 0x07, 0x70, 0x8B, 0x0B),
-> +PLL_MATCH("19.2MHz",   "24.343MHz", 19200000, 0x07, 0x47, 0x8B, 0x0A),
-> +PLL_MATCH("24.576MHz", "24.576MHz", 24576000, 0x07, 0x70, 0x8B, 0x0F),
-> +};
-
-Any reason to use strings instead of actual integer values for frequencies?
-
-
-> +static int sma1303_regmap_write(struct regmap *map, struct device *dev,
-> +				unsigned int reg, unsigned int val)
-> +{
-> +	int ret = 0;
-
-unnecessary init, same comment for all the code.
-> +
-> +	ret = regmap_write(map, reg, val);
-> +	if (ret < 0) {
-> +		dev_err(dev, "Failed to write, register: 0x%02X, ret: %d\n",
-> +			       reg, ret);
-> +	}
-> +	return ret;
-> +}
-> +
-> +static int sma1303_regmap_update_bits(struct regmap *map, struct device *dev,
-> +		unsigned int reg, unsigned int mask, unsigned int val)
-> +{
-> +	int ret = 0;
-> +
-> +	ret = regmap_update_bits(map, reg, mask, val);
-> +	if (ret < 0) {
-> +		dev_err(dev, "Failed to write, register: 0x%02X, ret: %d\n",
-
-Failed to update?
-
-> +			       reg, ret);
-> +	}
-> +	return ret;
-> +}
-> +
-> +static int bytes_ext_get(struct snd_kcontrol *kcontrol,
-> +			struct snd_ctl_elem_value *ucontrol, int reg)
-> +{
-> +	struct snd_soc_component *component =
-> +		snd_soc_kcontrol_component(kcontrol);
-> +	struct sma1303_priv *sma1303 = snd_soc_component_get_drvdata(component);
-> +	struct soc_bytes_ext *params = (void *)kcontrol->private_value;
-> +	unsigned int i, reg_val;
-> +	u8 *val;
-> +	int ret = -1;
-> +
-> +	if (component == NULL) {
-
-if (!component)
-
-> +		pr_err("%s:component is NULL\n", __func__);
-
-can pr_err be avoided?
-
-> +		return ret;
-> +	}
-> +	if (sma1303 == NULL) {
-
-if (!sma1303)
-
-> +		pr_err("%s:sma1303 is NULL\n", __func__);
-
-can pr_err be avoided?
-
-Same comments for all functions using this pattern.
-
-> +		return ret;
-> +	}
-> +	val = (u8 *)ucontrol->value.bytes.data;
-> +	for (i = 0; i < params->max; i++) {
-> +		ret = regmap_read(sma1303->regmap, reg + i, &reg_val);
-> +		if (ret < 0) {
-> +			dev_err(component->dev,
-> +				"Failed to read, register: %x ret: %d\n",
-> +				reg + i, ret);
-> +			return ret;
-> +		}
-> +		if (sizeof(reg_val) > 2)
-> +			reg_val = cpu_to_le32(reg_val);
-> +		else
-> +			reg_val = cpu_to_le16(reg_val);
-> +		memcpy(val + i, &reg_val, sizeof(u8));
-
-I wasn't able to figure out what this code does. sizeof(reg_val) is a
-constant so the second branch is never taken, and you end-up using
-memcpy to copy one byte, so what is the issue with endianness?
-
-> +	}
-> +
-> +	return 0;
-> +}
-> +
-> +static int bytes_ext_put(struct snd_kcontrol *kcontrol,
-> +			struct snd_ctl_elem_value *ucontrol, int reg)
-> +{
-> +	struct snd_soc_component *component =
-> +		snd_soc_kcontrol_component(kcontrol);
-> +	struct sma1303_priv *sma1303 = snd_soc_component_get_drvdata(component);
-> +	struct soc_bytes_ext *params = (void *)kcontrol->private_value;
-> +	void *data;
-> +	u8 *val;
-> +	int i, ret = -1;
-> +
-> +	if (component == NULL) {
-> +		pr_err("%s:component is NULL\n", __func__);
-> +		return ret;
-> +	}
-> +	if (sma1303 == NULL) {
-> +		pr_err("%s:sma1303 is NULL\n", __func__);
-> +		return ret;
-> +	}
-> +	data = kmemdup(ucontrol->value.bytes.data,
-> +			params->max, GFP_KERNEL | GFP_DMA);
-> +	if (!data)
-> +		return -ENOMEM;
-> +
-> +	val = (u8 *)data;
-> +	for (i = 0; i < params->max; i++) {
-> +		ret = sma1303_regmap_write(
-> +				sma1303->regmap, component->dev,
-> +				reg + i, *(val + i));
-> +		if (ret < 0) {
-> +			kfree(data);
-> +			return ret;
-> +		}
-> +	}
-> +	kfree(data);
-> +
-> +	return 0;
-
-ret = 0;
-for (i = 0; i < params->max; i++) {
-	ret = sma1303_regmap_write(
-			sma1303->regmap, component->dev,
-			reg + i, *(val + i));
-	if (ret < 0)
-		break;
-}
-
-kfree(data);
-return ret;
-
-> +static int amp_usage_status_get(struct snd_kcontrol *kcontrol,
-> +		struct snd_ctl_elem_value *ucontrol)
-> +{
-> +	struct snd_soc_component *component =
-> +		snd_soc_kcontrol_component(kcontrol);
-> +	struct sma1303_priv *sma1303 = snd_soc_component_get_drvdata(component);
-> +	int ret = -1;
-> +
-> +	if (component == NULL) {
-> +		pr_err("%s:component is NULL\n", __func__);
-> +		return ret;
-> +	}
-> +	if (sma1303 == NULL) {
-> +		pr_err("%s:sma1303 is NULL\n", __func__);
-> +		return ret;
-> +	}
-> +	ucontrol->value.integer.value[0] = sma1303->usage_status;
-> +
-> +	if (sma1303->usage_status)
-> +		dev_info(component->dev, "Amplifier Power Control Enabled\n");
-> +	else
-> +		dev_info(component->dev, "Amplifier Power Control Disabled\n");
-> +
-> +	return 0;
-> +}
-> +
-> +static int amp_usage_status_put(struct snd_kcontrol *kcontrol,
-> +		struct snd_ctl_elem_value *ucontrol)
-> +{
-> +	struct snd_soc_component *component =
-> +		snd_soc_kcontrol_component(kcontrol);
-> +	struct sma1303_priv *sma1303 = snd_soc_component_get_drvdata(component);
-> +	int ret = -1;
-> +
-> +	if (component == NULL) {
-> +		pr_err("%s:component is NULL\n", __func__);
-> +		return ret;
-> +	}
-> +	if (sma1303 == NULL) {
-> +		pr_err("%s:sma1303 is NULL\n", __func__);
-> +		return ret;
-> +	}
-> +
-> +	if ((sma1303->usage_status
-> +			!= ucontrol->value.integer.value[0])
-> +			&& (!ucontrol->value.integer.value[0])) {
-> +		dev_info(component->dev, "%s\n", "Force AMP Power Down");
-> +		ret = sma1303_shutdown(component);
-> +		if (ret < 0) {
-> +			ucontrol->value.integer.value[0]
-> +			       = sma1303->usage_status;
-> +			return ret;
-> +		}
-> +
-> +	}
-> +	sma1303->usage_status = ucontrol->value.integer.value[0];
-> +
-> +	return 0;
-> +}
-> +
-> +static const char * const sma1303_amp_mode_text[] = {
-> +	"1 Chip", "Mono on 2 chips", "Left in 2 chips", "Right in 2chips"};
-> +
-> +static const struct soc_enum sma1303_amp_mode_enum =
-> +	SOC_ENUM_SINGLE_EXT(ARRAY_SIZE(sma1303_amp_mode_text),
-> +			sma1303_amp_mode_text);
-> +static int sma1303_amp_mode_get(struct snd_kcontrol *kcontrol,
-> +				struct snd_ctl_elem_value *ucontrol)
-> +{
-> +	struct snd_soc_component *component =
-> +		snd_soc_kcontrol_component(kcontrol);
-> +	struct sma1303_priv *sma1303 = snd_soc_component_get_drvdata(component);
-> +	int ret = -1;
-> +
-> +	if (component == NULL) {
-> +		pr_err("%s:component is NULL\n", __func__);
-> +		return ret;
-> +	}
-> +	if (sma1303 == NULL) {
-> +		pr_err("%s:sma1303 is NULL\n", __func__);
-> +		return ret;
-> +	}
-> +	ucontrol->value.integer.value[0] = sma1303->amp_mode;
-> +
-> +	switch (sma1303->amp_mode) {
-> +	case ONE_CHIP_SOLUTION:
-> +		dev_info(component->dev, "Amplifier 1 Chip Solution\n");
-> +		break;
-> +	case MONO_TWO_CHIP_SOLUTION:
-> +		dev_info(component->dev, "Amplifier Mono 2 Chips Solution\n");
-> +		break;
-> +	case LEFT_TWO_CHIP_SOLUTION:
-> +		dev_info(component->dev, "Amplifier Stereo(Left) 2 Chips Solution\n");
-> +		break;
-> +	case RIGHT_TWO_CHIP_SOLUTION:
-> +		dev_info(component->dev, "Amplifier Stereo(Right) 2 Chips Solution\n");
-> +		break;
-> +	default:
-> +		dev_err(component->dev, "Invalid Value");
-> +		return ret;
-> +	}
-> +	return 0;
-> +
-> +}
-> +
-> +static int sma1303_amp_mode_put(struct snd_kcontrol *kcontrol,
-> +		struct snd_ctl_elem_value *ucontrol)
-> +{
-> +	struct snd_soc_component *component =
-> +		snd_soc_kcontrol_component(kcontrol);
-> +	struct sma1303_priv *sma1303 = snd_soc_component_get_drvdata(component);
-> +	int ret = 0;
-> +
-> +	if (component == NULL) {
-> +		pr_err("%s:component is NULL\n", __func__);
-> +		return -1;
-> +	}
-> +	if (sma1303 == NULL) {
-> +		pr_err("%s:sma1303 is NULL\n", __func__);
-> +		return -1;
-> +	}
-> +
-> +	sma1303->amp_mode = ucontrol->value.integer.value[0];
-> +
-> +	switch (sma1303->amp_mode) {
-> +	case ONE_CHIP_SOLUTION:
-> +	case MONO_TWO_CHIP_SOLUTION:
-> +		ret += sma1303_regmap_update_bits(
-> +				sma1303->regmap, component->dev,
-> +				SMA1303_11_SYSTEM_CTRL2,
-> +				MONOMIX_MASK, MONOMIX_ON);
-> +		ret += sma1303_regmap_update_bits(
-> +				sma1303->regmap, component->dev,
-> +				SMA1303_11_SYSTEM_CTRL2,
-> +				LR_DATA_SW_MASK, LR_DATA_SW_NORMAL);
-> +		break;
-> +	case LEFT_TWO_CHIP_SOLUTION:
-> +		ret += sma1303_regmap_update_bits(
-> +				sma1303->regmap, component->dev,
-> +				SMA1303_11_SYSTEM_CTRL2,
-> +				MONOMIX_MASK, MONOMIX_OFF);
-> +		ret += sma1303_regmap_update_bits(
-> +				sma1303->regmap, component->dev,
-> +				SMA1303_11_SYSTEM_CTRL2,
-> +				LR_DATA_SW_MASK, LR_DATA_SW_NORMAL);
-> +		break;
-> +	case RIGHT_TWO_CHIP_SOLUTION:
-> +		ret += sma1303_regmap_update_bits(
-> +				sma1303->regmap, component->dev,
-> +				SMA1303_11_SYSTEM_CTRL2,
-> +				MONOMIX_MASK, MONOMIX_OFF);
-> +		ret += sma1303_regmap_update_bits(
-> +				sma1303->regmap, component->dev,
-> +				SMA1303_11_SYSTEM_CTRL2,
-> +				LR_DATA_SW_MASK, LR_DATA_SW_SWAP);
-> +		break;
-> +	default:
-> +		dev_err(component->dev, "Invalid Value");
-> +		ret += -1;
-> +	}
-> +
-> +	return ret;
-
-Not sure I understand your arithmetic on combining error codes.
-
-If one transaction fails, is there any point in trying another
-regmap_update_bits()?
-
-
-{skipping all the way to the probe which has a lot of issues}
-
-> +static int sma1303_i2c_probe(struct i2c_client *client,
-> +				const struct i2c_device_id *id)
-> +{
-> +	struct sma1303_priv *sma1303;
-> +	struct device_node *np = client->dev.of_node;
-> +	int ret;
-> +	u32 value;
-> +	unsigned int device_info;
-> +
-> +	dev_info(&client->dev, "%s is here. Driver version REV018\n", __func__);
-> +
-> +	sma1303 = devm_kzalloc(&client->dev, sizeof(struct sma1303_priv),
-> +							GFP_KERNEL);
-> +
-> +	if (!sma1303)
-> +		return -ENOMEM;
-> +
-> +	sma1303->regmap = devm_regmap_init_i2c(client, &sma_i2c_regmap);
-> +
-> +	if (IS_ERR(sma1303->regmap)) {
-> +		ret = PTR_ERR(sma1303->regmap);
-> +		dev_err(&client->dev,
-> +			"Failed to allocate register map: %d\n", ret);
-> +
-> +		devm_kfree(&client->dev, sma1303);
-
-why use devm_ then?
-
-> +
-> +		return ret;
-> +	}
-> +
-> +	if (np) {
-> +		if (!of_property_read_u32(np, "tdm-slot-rx", &value)) {
-> +			dev_info(&client->dev,
-> +				"tdm slot rx is '%d' from DT\n", value);
-> +			sma1303->tdm_slot_rx = value;
-> +		} else {
-> +			dev_info(&client->dev,
-> +				"Default setting of tdm slot rx is '0'\n");
-> +			sma1303->tdm_slot_rx = 0;
-> +		}
-> +		if (!of_property_read_u32(np, "tdm-slot-tx", &value)) {
-> +			dev_info(&client->dev,
-> +				"tdm slot tx is '%d' from DT\n", value);
-> +			sma1303->tdm_slot_tx = value;
-> +		} else {
-> +			dev_info(&client->dev,
-> +				"Default setting of tdm slot tx is '0'\n");
-> +			sma1303->tdm_slot_tx = 0;
-> +		}
-> +		if (!of_property_read_u32(np, "sys-clk-id", &value)) {
-> +			switch (value) {
-> +			case SMA1303_EXTERNAL_CLOCK_19_2:
-> +			case SMA1303_EXTERNAL_CLOCK_24_576:
-> +			case SMA1303_PLL_CLKIN_MCLK:
-> +				dev_info(&client->dev, "MCLK is not supported\n");
-> +				break;
-> +			case SMA1303_PLL_CLKIN_BCLK:
-> +				dev_info(&client->dev,
-> +				"Take an BCLK(SCK) and covert it to an internal PLL for use\n");
-> +				break;
-> +			default:
-> +				dev_err(&client->dev,
-> +					"Invalid sys-clk-id: %d\n", value);
-> +				return -EINVAL;
-> +			}
-> +			sma1303->sys_clk_id = value;
-> +		} else {
-> +			dev_info(&client->dev, "Use the internal PLL clock by default\n");
-> +			sma1303->sys_clk_id = SMA1303_PLL_CLKIN_BCLK;
-> +		}
-> +	} else {
-> +		dev_err(&client->dev,
-> +			"device node initialization error\n");
-> +		devm_kfree(&client->dev, sma1303);
-> +		return -ENODEV;
-> +	}
-> +
-> +	ret = regmap_read(sma1303->regmap,
-> +		SMA1303_FF_DEVICE_INDEX, &device_info);
-> +
-> +	if ((ret != 0) || ((device_info & 0xF8) != DEVICE_ID)) {
-> +		dev_err(&client->dev, "device initialization error (%d 0x%02X)",
-> +				ret, device_info);
-> +	}
-> +	dev_info(&client->dev, "chip version 0x%02X\n", device_info);
-> +
-> +	sma1303->last_over_temp = 0xC0;
-> +	sma1303->last_ocp_val = 0x0A;
-> +	sma1303->tsdw_cnt = 0;
-> +	sma1303->init_vol = 0x31;
-> +	sma1303->cur_vol = sma1303->init_vol;
-> +	sma1303->last_bclk = 0;
-> +
-> +	INIT_DELAYED_WORK(&sma1303->check_fault_work,
-> +		sma1303_check_fault_worker);
-> +
-> +	mutex_init(&sma1303->lock);
-> +	sma1303->check_fault_period = CHECK_PERIOD_TIME;
-> +
-> +	sma1303->devtype = id->driver_data;
-> +	sma1303->dev = &client->dev;
-> +	sma1303->kobj = &client->dev.kobj;
-> +
-> +	i2c_set_clientdata(client, sma1303);
-> +
-> +	sma1303->amp_mode = ONE_CHIP_SOLUTION;
-> +	sma1303->usage_status = true;
-> +	sma1303->amp_power_status = false;
-> +	sma1303->check_fault_status = true;
-> +	sma1303->pll_matches = sma1303_pll_matches;
-> +	sma1303->num_of_pll_matches =
-> +		ARRAY_SIZE(sma1303_pll_matches);
-> +
-> +	ret = devm_snd_soc_register_component(&client->dev,
-> +			&sma1303_component, sma1303_dai, 1);
-> +
-> +	if (ret) {
-> +		dev_err(&client->dev, "Failed to register component");
-> +		snd_soc_unregister_component(&client->dev);
-
-no, this is not needed if you use devm_
-
-> +
-> +		if (sma1303)
-> +			devm_kfree(&client->dev, sma1303);
-> +
-> +		return ret;
-> +	}
-> +
-> +	sma1303->attr_grp = &sma1303_attr_group;
-> +	ret = sysfs_create_group(sma1303->kobj, sma1303->attr_grp);
-> +
-> +	if (ret) {
-> +		dev_err(&client->dev,
-> +			"failed to create attribute group [%d]\n", ret);
-> +		sma1303->attr_grp = NULL;
-> +	}
-
-not clear what you are trying to do with sysfs?
-> +
-> +	return ret;
-> +}
-> +
-> +static int sma1303_i2c_remove(struct i2c_client *client)
-> +{
-> +	struct sma1303_priv *sma1303 =
-> +		(struct sma1303_priv *) i2c_get_clientdata(client);
-> +
-> +	cancel_delayed_work_sync(&sma1303->check_fault_work);
-> +
-> +	snd_soc_unregister_component(&client->dev);
-
-not needed when you use devm_snd_soc_register_component ?
-> +
-> +	if (sma1303)
-> +		devm_kfree(&client->dev, sma1303);
-
-is this needed? if you use devm_ the memory will be released when the
-remove() completes.
-> +
-> +	return 0;
-> +}
-> +
-> +static const struct i2c_device_id sma1303_i2c_id[] = {
-> +	{"sma1303", 0},
-> +	{}
-> +};
-> +MODULE_DEVICE_TABLE(i2c, sma1303_i2c_id);
-> +
-> +static const struct of_device_id sma1303_of_match[] = {
-> +	{ .compatible = "irondevice,sma1303", },
-> +	{ }
-> +};
-> +MODULE_DEVICE_TABLE(of, sma1303_of_match);
-> +
-> +static struct i2c_driver sma1303_i2c_driver = {
-> +	.driver = {
-> +		.name = "sma1303",
-> +		.of_match_table = sma1303_of_match,
-> +	},
-> +	.probe = sma1303_i2c_probe,
-> +	.remove = sma1303_i2c_remove,
-> +	.id_table = sma1303_i2c_id,
-> +};
-> +
-> +static int __init sma1303_init(void)
-> +{
-> +	int ret;
-> +
-> +	ret = i2c_add_driver(&sma1303_i2c_driver);
-> +
-> +	if (ret)
-> +		pr_err("Failed to register sma1303 I2C driver: %d\n", ret);
-> +
-> +	return ret;
-> +}
-> +
-> +static void __exit sma1303_exit(void)
-> +{
-> +	i2c_del_driver(&sma1303_i2c_driver);
-> +}
-> +
-> +module_init(sma1303_init);
-> +module_exit(sma1303_exit);
-
-use module_i2c_driver() ?
-
-> +
-> +MODULE_DESCRIPTION("ALSA SoC SMA1303 driver");
-> +MODULE_AUTHOR("Gyuhwa Park, <gyuhwa.park@irondevice.com>");
-> +MODULE_AUTHOR("Kiseok Jo, <kiseok.jo@irondevice.com>");
-> +MODULE_LICENSE("GPL v2");
-
-"GPL" is equivalent.
-
-> diff --git a/sound/soc/codecs/sma1303.h b/sound/soc/codecs/sma1303.h
-> new file mode 100644
-> index 000000000000..d1fa2acaba85
-> --- /dev/null
-> +++ b/sound/soc/codecs/sma1303.h
-> @@ -0,0 +1,609 @@
-> +/* SPDX-License-Identifier: GPL-2.0-or-later
-> + * sma1303.h -- sma1303 ALSA SoC Audio driver
-> + *
-> + * Copyright 2022 Iron Device Corporation
-> + *
-> + * This program is free software; you can redistribute it and/or modify
-> + * it under the terms of the GNU General Public License version 2 as
-> + * published by the Free Software Foundation.
-
-same, this paragraph is not needed
-
-
-> +
-> +/* SMA1303 Registers Bit Fields */
-
-use prefixes for all definitions below?
-
-> +/* SYSTEM_CTRL : 0x00 */
-> +#define RESETBYI2C_MASK (1<<1)
-> +#define RESETBYI2C_NORMAL (0<<1)
-> +#define RESETBYI2C_RESET (1<<1)
-> +
-> +#define POWER_MASK (1<<0)
-> +#define POWER_OFF (0<<0)
-> +#define POWER_ON (1<<0)
-> +
->
