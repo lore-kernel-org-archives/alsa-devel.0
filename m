@@ -4,64 +4,93 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2B83CC32771
-	for <alsa-devel@archiver.kernel.org>; Wed, 21 Sep 2022 08:20:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9CC70C6FA8B
+	for <alsa-devel@archiver.kernel.org>; Wed, 21 Sep 2022 08:27:51 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 2D92C15C3;
-	Wed, 21 Sep 2022 10:19:45 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2D92C15C3
+	by alsa0.perex.cz (Postfix) with ESMTPS id C74BA828;
+	Wed, 21 Sep 2022 10:26:59 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C74BA828
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1663748435;
-	bh=wiUnHKQqtiJ6Xews4Yl5k7LExJd+w9oiMFoDNSCcz0M=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1663748869;
+	bh=GxLwzi7/wElSMXCDCnBBmEkbTssVazFVgTMgBa3hJOw=;
+	h=Date:Subject:To:References:From:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=a/D9GsWgzMXtecXCWXfBL2Ktj03wzBqsdNv0JLtp+stwNX3xhwyhh2RCfttr+u7xd
-	 mCAmbmBwozSMZH3rbjgXjseuFA9hVoXeNjWZ16HfM2B4CX7eeXPUX/gYlvc5L7pULa
-	 /lmhxjQqwvWKMsFWM9DSw2L0ghb6CZP+nV0POCC0=
+	b=FPO4gHcuGC2ytthsV73/Hc4n24PNCPARU9BtcCI0f+ytQRSt2bHFqsiEBAN1HOn6i
+	 Pj+O2ckotFb6TOkq7FVFUCjyQi90IEoftVYCKL1VOEJ7SrOq3UR/FbKrU/fDd7sLoL
+	 LuoCTd/lOfAbDj+5+/Li+ILpuU5oWMQR+dZTbujc=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 52CAFF8053C;
-	Wed, 21 Sep 2022 10:18:51 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 533E0F80169;
+	Wed, 21 Sep 2022 10:26:59 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 8D517F80535; Wed, 21 Sep 2022 10:18:49 +0200 (CEST)
-Received: from smtp2.axis.com (smtp2.axis.com [195.60.68.18])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id 36063F80256; Wed, 21 Sep 2022 10:26:58 +0200 (CEST)
+Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com
+ [IPv6:2a00:1450:4864:20::12c])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id B12E6F80169
- for <alsa-devel@alsa-project.org>; Wed, 21 Sep 2022 10:18:39 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B12E6F80169
+ by alsa1.perex.cz (Postfix) with ESMTPS id F31ABF800F3
+ for <alsa-devel@alsa-project.org>; Wed, 21 Sep 2022 10:26:51 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F31ABF800F3
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=axis.com header.i=@axis.com
- header.b="Z+70AptG"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=axis.com; q=dns/txt; s=axis-central1; t=1663748321;
- x=1695284321; h=from:to:cc:subject:date:message-id:in-reply-to:
- references:mime-version:content-transfer-encoding;
- bh=wabbL0RF4cqJkhaKeIa2nvuu2KpYvr0mfs1CAwHKPh0=;
- b=Z+70AptGUIo3t7evTKhYVxfWqfGJT2Q8PdlF2tJYBWwnqy6WJmg5R1bB
- Pfcj63mbYbpOn1Q+PnmIgtoK/GN7RltLHsFul9xPVuddCdeTg+UAQlBE1
- 20U9oXJxPoZzCBroo1L11JMPAJCB1XOMvX+AC/hS/kKdh8irWnVJx4Kmp
- QcsZbvYywx0FznTcdI7UXlmaOfmReD47jR8LLm1CmrNy+O4X+E919oahk
- A0DflC+5Bhr/HobaowYTBQVc5d+yjIPDltjhz0X4EEklkS8f2TXCPFTH4
- OPP0SJsAbc5al8bFt3WSD7zm5S0t+03YspYVLY6faYLQMGOpAwDQwm3Qv Q==;
-From: Astrid Rost <astrid.rost@axis.com>
-To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Jaroslav Kysela
- <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
-Subject: [PATCH v4 3/3] ASoC: ts3a227e: add parameters to control debounce
- times
-Date: Wed, 21 Sep 2022 10:18:34 +0200
-Message-ID: <20220921081834.22009-4-astrid.rost@axis.com>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20220921081834.22009-1-astrid.rost@axis.com>
-References: <20220921081834.22009-1-astrid.rost@axis.com>
+ dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org
+ header.b="bak9Wbda"
+Received: by mail-lf1-x12c.google.com with SMTP id u18so7941782lfo.8
+ for <alsa-devel@alsa-project.org>; Wed, 21 Sep 2022 01:26:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
+ h=content-transfer-encoding:in-reply-to:from:references:cc:to
+ :content-language:subject:user-agent:mime-version:date:message-id
+ :from:to:cc:subject:date;
+ bh=9KJJwj1s7Dp0oQBIoEw2O9tVMdNPTzRC2Bn8QNz1lZA=;
+ b=bak9WbdaxzzxlosLYD5AgDCdwbWrSGFRBj9JCiZwg6CyAPVMBppsimakW+92rSRUjW
+ xLnUTkDAnXwAS7d8G9NMEXZmgmvmODtiMw17u7dWdYZA/AqkiKVdSgjW9Lu9acj+mYDy
+ kP+yGU89j0kZbhUlJIxfe7OeO4MQl5V6+DuBTTW34FhPKfBjZ21yz3hqZs19pxV7iQ1C
+ EDhl5MZ2puMZtw/1MWfc3i1CRilaArwvUF7Q3ksLNAYYjtNP1BdqYy8lOTcxxL8HrwG9
+ 3vgDXl2tcJ4YVsFI/H8tSx6SzOpmtxswb6Ba8orsxC33J9tylEJ8uf4/Nx0KP3xMaxEd
+ DXgQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=content-transfer-encoding:in-reply-to:from:references:cc:to
+ :content-language:subject:user-agent:mime-version:date:message-id
+ :x-gm-message-state:from:to:cc:subject:date;
+ bh=9KJJwj1s7Dp0oQBIoEw2O9tVMdNPTzRC2Bn8QNz1lZA=;
+ b=iDepFu05qO5HpI6ZTQmPpb2yUdQgmSj120tJ/6HnK0+tgLqcJdHPitg+SQrmgQxRiG
+ u8uLVIulNXC2Z7h0ibwqnvNKWvwPNwxNCbev2guEXEIzC1FsA6Pr9kWk7QGy2LWI6HIc
+ bZPzIlOOnATiZciR2wrK975bREtFHQB17gKs4jAJMg8jiH4xvzroZPIuZVizDXHPPUrD
+ T8eyDxruw4us1LvB6KKdUIlvev29B8wQebTQoR0DXSbN/R3rV2cQDGONX2VeR8n1Rc5g
+ lSUYHai3HRvbbXKHJmwSzzBVGlmVBq+N9t7yHtayO0v2u+QCyN7V/s9eH8b+myJZh3DJ
+ JzFw==
+X-Gm-Message-State: ACrzQf1MXUHCoHG9MPJq6gtAK/DFIsaAJd2qZzC4E3RwxhwOK+nM09bN
+ KGS7ddn5/8gQ6ecHmC4bBUp5zA==
+X-Google-Smtp-Source: AMsMyM4QdzvfZZITqgLFRTgUk8vut+XtsP2NVx3OC2Rid6gZDVPdRIhc9BS39F0DfpmfaX8g4VaW4w==
+X-Received: by 2002:a19:dc14:0:b0:494:82c3:e485 with SMTP id
+ t20-20020a19dc14000000b0049482c3e485mr9523033lfg.542.1663748809789; 
+ Wed, 21 Sep 2022 01:26:49 -0700 (PDT)
+Received: from [192.168.0.21] (78-11-189-27.static.ip.netia.com.pl.
+ [78.11.189.27]) by smtp.gmail.com with ESMTPSA id
+ c14-20020ac25f6e000000b0047f7722b73csm334323lfc.142.2022.09.21.01.26.48
+ (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+ Wed, 21 Sep 2022 01:26:49 -0700 (PDT)
+Message-ID: <f7d57145-0850-a2f4-ba18-9ce74dd53005@linaro.org>
+Date: Wed, 21 Sep 2022 10:26:48 +0200
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-Cc: alsa-devel@alsa-project.org, Astrid Rost <astrid.rost@axis.com>,
- kernel@axis.com, linux-kernel@vger.kernel.org, Astrid Rost <astridr@axis.com>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.13.0
+Subject: Re: [PATCH v4 1/3] dt-bindings: sound: ti,ts3a227e: convert to yaml
+Content-Language: en-US
+To: Astrid Rost <astrid.rost@axis.com>, Mark Brown <broonie@kernel.org>,
+ Liam Girdwood <lgirdwood@gmail.com>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Rob Herring <robh+dt@kernel.org>, Dylan Reid <dgreid@chromium.org>
+References: <20220921081834.22009-1-astrid.rost@axis.com>
+ <20220921081834.22009-2-astrid.rost@axis.com>
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <20220921081834.22009-2-astrid.rost@axis.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, kernel@axis.com,
+ linux-kernel@vger.kernel.org, Astrid Rost <astridr@axis.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -77,109 +106,19 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Add devicetree parameters to control the insert, release and press
-debounce times.
+On 21/09/2022 10:18, Astrid Rost wrote:
+> Convert from ts3a227e.txt to yaml.
+> 
+> Signed-off-by: Astrid Rost <astrid.rost@axis.com>
 
-Signed-off-by: Astrid Rost <astrid.rost@axis.com>
----
- sound/soc/codecs/ts3a227e.c | 61 +++++++++++++++++++++++++++++++++----
- 1 file changed, 55 insertions(+), 6 deletions(-)
+Please add Acked-by/Reviewed-by tags when posting new versions. However,
+there's no need to repost patches *only* to add the tags. The upstream
+maintainer will do that for acks received on the version they apply.
 
-diff --git a/sound/soc/codecs/ts3a227e.c b/sound/soc/codecs/ts3a227e.c
-index d8ab0810fceb..2305a472d132 100644
---- a/sound/soc/codecs/ts3a227e.c
-+++ b/sound/soc/codecs/ts3a227e.c
-@@ -78,12 +78,20 @@ static const int ts3a227e_buttons[] = {
- #define ADC_COMPLETE_INT_DISABLE 0x04
- #define INTB_DISABLE 0x08
- 
-+/* TS3A227E_REG_SETTING_1 0x4 */
-+#define DEBOUNCE_INSERTION_SETTING_SFT (0)
-+#define DEBOUNCE_INSERTION_SETTING_MASK (0x7 << DEBOUNCE_PRESS_SETTING_SFT)
-+
- /* TS3A227E_REG_SETTING_2 0x05 */
- #define KP_ENABLE 0x04
- 
- /* TS3A227E_REG_SETTING_3 0x06 */
--#define MICBIAS_SETTING_SFT (3)
-+#define MICBIAS_SETTING_SFT 3
- #define MICBIAS_SETTING_MASK (0x7 << MICBIAS_SETTING_SFT)
-+#define DEBOUNCE_RELEASE_SETTING_SFT 2
-+#define DEBOUNCE_RELEASE_SETTING_MASK (0x1 << DEBOUNCE_RELEASE_SETTING_SFT)
-+#define DEBOUNCE_PRESS_SETTING_SFT 0
-+#define DEBOUNCE_PRESS_SETTING_MASK (0x3 << DEBOUNCE_PRESS_SETTING_SFT)
- 
- /* TS3A227E_REG_ACCESSORY_STATUS  0x0b */
- #define TYPE_3_POLE 0x01
-@@ -136,7 +144,7 @@ static bool ts3a227e_volatile_reg(struct device *dev, unsigned int reg)
- {
- 	switch (reg) {
- 	case TS3A227E_REG_INTERRUPT ... TS3A227E_REG_INTERRUPT_DISABLE:
--	case TS3A227E_REG_SETTING_2:
-+	case TS3A227E_REG_SETTING_1 ... TS3A227E_REG_SETTING_2:
- 	case TS3A227E_REG_SWITCH_STATUS_1 ... TS3A227E_REG_ADC_OUTPUT:
- 		return true;
- 	default:
-@@ -269,14 +277,55 @@ static const struct regmap_config ts3a227e_regmap_config = {
- static int ts3a227e_parse_device_property(struct ts3a227e *ts3a227e,
- 				struct device *dev)
- {
--	u32 micbias;
-+	u32 value;
-+	u32 value_ms;
-+	u32 setting3_value = 0;
-+	u32 setting3_mask = 0;
- 	int err;
- 
--	err = device_property_read_u32(dev, "ti,micbias", &micbias);
-+	err = device_property_read_u32(dev, "ti,micbias", &value);
-+	if (!err) {
-+		setting3_mask = MICBIAS_SETTING_MASK;
-+		setting3_value = (value << MICBIAS_SETTING_SFT) &
-+				 MICBIAS_SETTING_MASK;
-+	}
-+
-+	err = device_property_read_u32(dev, "ti,debounce-release-ms",
-+				       &value_ms);
- 	if (!err) {
-+		value = (value_ms > 10);
-+		setting3_mask |= DEBOUNCE_RELEASE_SETTING_MASK;
-+		setting3_value |= (value << DEBOUNCE_RELEASE_SETTING_SFT) &
-+				  DEBOUNCE_RELEASE_SETTING_MASK;
-+	}
-+
-+	err = device_property_read_u32(dev, "ti,debounce-press-ms", &value_ms);
-+	if (!err) {
-+		value = (value_ms + 20) / 40;
-+		if (value > 3)
-+			value = 3;
-+		setting3_mask |= DEBOUNCE_PRESS_SETTING_MASK;
-+		setting3_value |= (value << DEBOUNCE_PRESS_SETTING_SFT) &
-+				  DEBOUNCE_PRESS_SETTING_MASK;
-+	}
-+
-+	if (setting3_mask)
- 		regmap_update_bits(ts3a227e->regmap, TS3A227E_REG_SETTING_3,
--			MICBIAS_SETTING_MASK,
--			(micbias & 0x07) << MICBIAS_SETTING_SFT);
-+				   setting3_mask, setting3_value);
-+
-+	err = device_property_read_u32(dev, "ti,debounce-insertion-ms",
-+				       &value_ms);
-+	if (!err) {
-+		if (value_ms < 165)
-+			value = (value_ms + 15) / 30;
-+		else if (value_ms < 1500)
-+			value = 6;
-+		else
-+			value = 7;
-+		regmap_update_bits(ts3a227e->regmap, TS3A227E_REG_SETTING_1,
-+				   DEBOUNCE_INSERTION_SETTING_MASK,
-+				   (value << DEBOUNCE_INSERTION_SETTING_SFT) &
-+					   DEBOUNCE_INSERTION_SETTING_MASK);
- 	}
- 
- 	return 0;
--- 
-2.20.1
+https://elixir.bootlin.com/linux/v5.17/source/Documentation/process/submitting-patches.rst#L540
 
+If a tag was not added on purpose, please state why and what changed.
+
+
+Best regards,
+Krzysztof
