@@ -4,78 +4,77 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 36FF8C32771
-	for <alsa-devel@archiver.kernel.org>; Wed, 21 Sep 2022 10:12:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B9E91C32771
+	for <alsa-devel@archiver.kernel.org>; Wed, 21 Sep 2022 10:17:04 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 62946F3;
-	Wed, 21 Sep 2022 12:12:04 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 62946F3
+	by alsa0.perex.cz (Postfix) with ESMTPS id 9E919828;
+	Wed, 21 Sep 2022 12:16:12 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9E919828
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1663755174;
-	bh=G0A8rwCpHEclHea2n1vN6jtKIV5iHjNDuk+B27u4meo=;
+	s=default; t=1663755422;
+	bh=1BSdy2KCB1DbRKrNYtzbj79b5fqbFkcwaOResBFVPbA=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=BQMmP51rTj3YVGP9dF+uxF+EiLnqDP6sKUnZU4JuXFUMLNBtqB7r2j/80nllv1/m/
-	 l/psn+pS7vnDYEG5X6Oc5cYt4/N8Mf8S2X+vsR8EPjHWYI6CyBRuPfbTPqJ5VT9BV+
-	 YMcUheMy8BrfnOrGOWjDO+DX2a7abwqZ2DcZkoq4=
+	b=EaNhIR9h4/1iCgNyOMJjV5z4C4u1zzcXAhy+9Gk2/qesd8LtzDvlAD5DtEeZwalxv
+	 rVQDKL8ajcQTbZhVH2EqdvIi79a10GvHJrUElJhf0v8BaKHhOgwCHabXvVW3lIfGtl
+	 +7oT5O2EQg/H1r7EJOMRvUsNdb/rH1j8WtHBgoEo=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id E85DAF80169;
-	Wed, 21 Sep 2022 12:12:03 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 3429CF80169;
+	Wed, 21 Sep 2022 12:16:12 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id DED35F80256; Wed, 21 Sep 2022 12:12:02 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+ id D7D37F80107; Wed, 21 Sep 2022 12:16:10 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id C264FF80107
- for <alsa-devel@alsa-project.org>; Wed, 21 Sep 2022 12:11:56 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C264FF80107
+ by alsa1.perex.cz (Postfix) with ESMTPS id C5BF5F80107
+ for <alsa-devel@alsa-project.org>; Wed, 21 Sep 2022 12:15:59 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C5BF5F80107
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="ZfVaHaEz"; 
+ header.b="DPdDZSF0"; 
  dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="jM3dLkhr"
+ header.b="wLfOgAab"
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id AC0F321B3E;
- Wed, 21 Sep 2022 10:11:55 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id 7C43D1F7AB;
+ Wed, 21 Sep 2022 10:15:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1663755115; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1663755359; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=3+plSGsKeLxOwt5DqOTTUXEzyCAdeAPvG0TDK9kUoi8=;
- b=ZfVaHaEz2JKl0/Aq2kRh2MEzfgHuCNtPS7ihItqnAgmfn4vigpMjYA7x2QPLYqVl8AJ+vG
- q9llx1qqqXNgW9C0D+j5Kj6sbX+MTYz3jTLM+WtQ3gAjl5tZpaxVkkO+C7lreiiOJbqZHm
- ID98eVleykfjCra26MRpjMUzs9fbQ/w=
+ bh=YTEB+Wi4RYjw7Gu96h8fZRgAJj8+w9DEBrqZ2+ToctQ=;
+ b=DPdDZSF0LwxgoQJk3fSvt3BUPiKQj5/dSNzBabHgqFYNT9SZLmYHvW0wj9wnOvoxPyPw8G
+ Hqs4HFRC7Pfbj2MKGJehpWPaahsi0BsKrejea8XlJxhJ1gxzS1Ct0PpR6TojGXjm4riMkz
+ NrRn2LvEBhN3hCANYfy68xQGKqUNtSU=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1663755115;
+ s=susede2_ed25519; t=1663755359;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=3+plSGsKeLxOwt5DqOTTUXEzyCAdeAPvG0TDK9kUoi8=;
- b=jM3dLkhrkRtBtCObzyOsJfidYlQ3fTkEFBrdCee8nc105/EOR8SF8ofhSgeHm+MGuKMds5
- FVe0WZrqc730fhCw==
+ bh=YTEB+Wi4RYjw7Gu96h8fZRgAJj8+w9DEBrqZ2+ToctQ=;
+ b=wLfOgAabQ0Q7pA3NC4Eq48B0+W8G13C00d9N3YglxQyipftEVwExio7TUAYOj/YOA5t2fp
+ I7LuKTtfQJ6uGwBA==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 94B4C13A00;
- Wed, 21 Sep 2022 10:11:55 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 676DD13A00;
+ Wed, 21 Sep 2022 10:15:59 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id YgnqI2vjKmOMXAAAMHmgww
- (envelope-from <tiwai@suse.de>); Wed, 21 Sep 2022 10:11:55 +0000
-Date: Wed, 21 Sep 2022 12:11:54 +0200
-Message-ID: <8735clkped.wl-tiwai@suse.de>
+ by imap2.suse-dmz.suse.de with ESMTPSA id wojYGF/kKmORXgAAMHmgww
+ (envelope-from <tiwai@suse.de>); Wed, 21 Sep 2022 10:15:59 +0000
+Date: Wed, 21 Sep 2022 12:15:58 +0200
+Message-ID: <871qs5kp7l.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
 To: Jaroslav Kysela <perex@perex.cz>
-Subject: Re: [PATCH] ALSA: hda/hdmi: Simplify the pcm_idx condition in
- hdmi_pcm_setup_pin()
-In-Reply-To: <20220921093322.82609-1-perex@perex.cz>
-References: <20220921093322.82609-1-perex@perex.cz>
+Subject: Re: [PATCH] ALSA: hda/hdmi: ELD procfs - print the codec NIDs
+In-Reply-To: <20220921093349.82680-1-perex@perex.cz>
+References: <20220921093349.82680-1-perex@perex.cz>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
 MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
 Content-Type: text/plain; charset=US-ASCII
@@ -95,14 +94,16 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, 21 Sep 2022 11:33:22 +0200,
+On Wed, 21 Sep 2022 11:33:49 +0200,
 Jaroslav Kysela wrote:
 > 
-> Make the code more readable.
+> It is useful for the debugging to print also the used HDA codec NIDs
+> used for the given HDMI device. With the dynamic converter assignment
+> the converter NID is changed dynamically.
 > 
 > Signed-off-by: Jaroslav Kysela <perex@perex.cz>
 
-Thanks, applied.
+Thanks, applied now.
 
 
 Takashi
