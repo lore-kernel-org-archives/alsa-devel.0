@@ -4,70 +4,70 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 38088ECAAD8
-	for <alsa-devel@archiver.kernel.org>; Wed, 21 Sep 2022 16:30:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6E6A1ECAAD8
+	for <alsa-devel@archiver.kernel.org>; Wed, 21 Sep 2022 16:30:39 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 2D7311655;
-	Wed, 21 Sep 2022 18:29:19 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2D7311655
+	by alsa0.perex.cz (Postfix) with ESMTPS id 26814167E;
+	Wed, 21 Sep 2022 18:29:47 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 26814167E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1663777809;
-	bh=qku41keVPTBGHRjATzfWRN7b4BXYlFcFv5gZIbFfuA0=;
+	s=default; t=1663777837;
+	bh=7kgl3djZh5Ukp8fvVJOXIPsXSTMOiScsoj5xfm/EVqo=;
 	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=NhtHfjHG/JM5MpiM3gesZTuXlNaoN9SjozC/j/hUOJl59ldJ6rZLU9Po6kBk0NadB
-	 zEp8Sq9/V4tK/8WIcqqVmsncq94LD5ZNF8VwOSqwWe9+nAlddqhVcjnH2Lrw7SyoJt
-	 rSLFxddOI0cFcdIY+4FiKC2NmiRsDGN+1DWdRYS4=
+	b=Hw5lgDLcGU5/o+sfpg18UFE/7Dx7zYiUMjB7CJoRvqm2Wh41gruZjEVR9T9AyfhFo
+	 gGVN1Ch2y2R5OhKrewwYJTFFxThA1wNJtMV1p7F4r7o0lJq/YgzL8f/DzWLnfOma+d
+	 /3v99w4UHwxw5OAmjiLfqrjhIeH38K2MqkLGYbZI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 9652FF80107;
-	Wed, 21 Sep 2022 18:29:18 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 4E923F80425;
+	Wed, 21 Sep 2022 18:29:19 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 14766F80256; Wed, 21 Sep 2022 18:29:16 +0200 (CEST)
-Received: from ams.source.kernel.org (ams.source.kernel.org
- [IPv6:2604:1380:4601:e00::1])
+ id 81EBAF80425; Wed, 21 Sep 2022 18:29:15 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org
+ [IPv6:2604:1380:4641:c500::1])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id B9497F80169
- for <alsa-devel@alsa-project.org>; Wed, 21 Sep 2022 18:29:13 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B9497F80169
+ by alsa1.perex.cz (Postfix) with ESMTPS id 03086F800C9
+ for <alsa-devel@alsa-project.org>; Wed, 21 Sep 2022 18:29:08 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 03086F800C9
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="nCjSAtRU"
+ header.b="oN7ekmxI"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by ams.source.kernel.org (Postfix) with ESMTPS id BEFBAB83131;
- Wed, 21 Sep 2022 16:29:12 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4A8C0C433C1;
+ by dfw.source.kernel.org (Postfix) with ESMTPS id B108262420;
  Wed, 21 Sep 2022 16:29:05 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D9983C433D6;
+ Wed, 21 Sep 2022 16:28:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1663777751;
- bh=qku41keVPTBGHRjATzfWRN7b4BXYlFcFv5gZIbFfuA0=;
+ s=k20201202; t=1663777745;
+ bh=7kgl3djZh5Ukp8fvVJOXIPsXSTMOiScsoj5xfm/EVqo=;
  h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=nCjSAtRUVV68yifEWtS+73eg04l9Y16e83XS2HbFewVzm92cqhg6FRUp7imHrbveC
- 1B2SfhGv8EnSAQqvC0eQodaJsSs4l42q8rXBmiHjBLd9VV8yHRI0Tau7zvAtoiPsJD
- isfy9Q4hcvCnZaC/HZEN6CQ18z5brCZ/zkvle92HEIBo0t7TmibtGpp7DwwHID77AO
- jXAZI6/h6hab7MB6wiPVtvchAQ57bFEhPo+qLbi6Au1qZp4xlYiStW2MOBy2UOz62L
- Ij6kpv+f/NTwkSl60EUvTuHgGGQJZ4E1iQlILOKnkRqITTSR/kUsPuVF7gTDJhwsMG
- yQ842zGFV4Atw==
+ b=oN7ekmxIAQJRnB0TY9KCgLZRzCIsUggmu34F7hSZRLTSTSgM3gAj33zK6qKqxQjz8
+ ojwsbTu6YypGWXzHBYRBJ6mdnMiKSvC+/kUscqiGqP+MRSJf2alzGXhZPCW1cKvSOj
+ 6YOWzuJd7NbbBmlpuxj6NFOaS1iRtX0msyzfP3TgStGbCJBBsSrYdcsLeY4pDepI6b
+ pHjqrFLgE4k4Pq8MRDfDkiFztPXr6DCS6TZaNrSvxVu/CmfKujxbTdnVnESXsir8KE
+ r30h3YcbuUgtzAhm8/WWtoBwAsNdPGdz82g+u8vn1kdorD0fvnfYFq97UM/tQypHj3
+ vlA0fmOefu9aA==
 From: Mark Brown <broonie@kernel.org>
-To: pierre-louis.bossart@linux.intel.com, lgirdwood@gmail.com,
- Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
-In-Reply-To: <20220921112751.9253-1-peter.ujfalusi@linux.intel.com>
-References: <20220921112751.9253-1-peter.ujfalusi@linux.intel.com>
-Subject: Re: [PATCH] ASoC: SOF: ipc4-topology: Free the ida when IPC fails in
- sof_ipc4_widget_setup()
-Message-Id: <166377774484.591459.17927449774000563065.b4-ty@kernel.org>
-Date: Wed, 21 Sep 2022 17:29:04 +0100
+To: Liam Girdwood <lgirdwood@gmail.com>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
+ Astrid Rost <astrid.rost@axis.com>
+In-Reply-To: <20220921081834.22009-1-astrid.rost@axis.com>
+References: <20220921081834.22009-1-astrid.rost@axis.com>
+Subject: Re: [PATCH v4 0/3] ASoC: ts3a227e control debounce times
+Message-Id: <166377773859.591459.5595500353811129379.b4-ty@kernel.org>
+Date: Wed, 21 Sep 2022 17:28:58 +0100
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 X-Mailer: b4 0.11.0-dev-8af31
-Cc: alsa-devel@alsa-project.org, yung-chuan.liao@linux.intel.com,
- ranjani.sridharan@linux.intel.com, kai.vehmanen@linux.intel.com
+Cc: alsa-devel@alsa-project.org, kernel@axis.com, linux-kernel@vger.kernel.org,
+ Astrid Rost <astridr@axis.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -83,13 +83,15 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Wed, 21 Sep 2022 14:27:51 +0300, Peter Ujfalusi wrote:
-> The allocated ida needs to be freed up if the IPC message fails since
-> next time when we try again to set up the widget we are going to try to
-> allocate another ID and given enough tries, we are going to run out of
-> unique IDs.
+On Wed, 21 Sep 2022 10:18:31 +0200, Astrid Rost wrote:
+> From: Astrid Rost <astridr@axis.com>
 > 
-> Fixes: 711d0427c713 ("ASoC: SOF: ipc4-topology: move ida allocate/free to widget_setup/free")
+> PATCH 1 - convert ts3a227e bindings to yaml.
+> PATCH 2 - add ts3a227e bindings to support debounce times.
+> PATCH 3 - add ts3a227e driver to support debounce times.
+> 
+> v3 -> v4
+> Removed the comments on enums in Patch2.
 > 
 > [...]
 
@@ -99,8 +101,12 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: SOF: ipc4-topology: Free the ida when IPC fails in sof_ipc4_widget_setup()
-      commit: 61eb0add28023119773d6aab8f402e149473920c
+[1/3] dt-bindings: sound: ti,ts3a227e: convert to yaml
+      commit: be541bd473618f64fa14138dc7f63b0643363f7b
+[2/3] dt-bindings: sound: ti,ts3a227e: add control of debounce
+      commit: 6a47412d0798735b0715d224574d216dba9e630c
+[3/3] ASoC: ts3a227e: add parameters to control debounce times
+      commit: d20fa87e80c363a1c9534afb31df2fa90087e51d
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
