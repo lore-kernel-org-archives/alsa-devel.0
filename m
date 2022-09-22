@@ -4,84 +4,83 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 277BFC6FA82
-	for <alsa-devel@archiver.kernel.org>; Thu, 22 Sep 2022 11:51:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 08C18C54EE9
+	for <alsa-devel@archiver.kernel.org>; Thu, 22 Sep 2022 11:54:47 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 45DB1204;
-	Thu, 22 Sep 2022 13:51:00 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 45DB1204
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0CE9C210;
+	Thu, 22 Sep 2022 13:53:55 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0CE9C210
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1663847510;
-	bh=iMdTH2c2UTtQ7U9Y05p1kiKbuuz08xmNE2PPEwwA2uA=;
+	s=default; t=1663847685;
+	bh=pcc6JwW5hqwp7wntPPsaD30q8sxcMPWa5bZQLVnHiFM=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=WWJBrdMBA0VO2lUvCQGS4AnV07QKdtqfjVYgeHxAbOVUIDZZCj1cMAoljklYyufUz
-	 /989khZRCQvH/gYTphvsraAcyPhW98Sgo9HkQjrQ+6KodaWYhDPgPoFV34lhkIUuLg
-	 jyr7fUlubi3opWG9wnDuX7Hl33OGbwfoaEytUT5g=
+	b=aGG5bJD0VEYsDNEQBWdBtljKlfHVHqgKbnTc5fnMN75VtkGMC+yn5az8xNJ639t4m
+	 6ccqMucjawJYvLKRcwg1htI3SaYe9mg9adplTh5VqAEDermr+MtzHenwV+PqUpSyWk
+	 2TyQpC8jplJXYlhL/EdgUXf91W3/B8jx3sZSc+tQ=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id E2349F80256;
-	Thu, 22 Sep 2022 13:50:59 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 97932F80256;
+	Thu, 22 Sep 2022 13:53:54 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 9980DF8027B; Thu, 22 Sep 2022 13:50:58 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+ id 2786BF8027B; Thu, 22 Sep 2022 13:53:53 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 70F62F8020D
- for <alsa-devel@alsa-project.org>; Thu, 22 Sep 2022 13:50:52 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 70F62F8020D
+ by alsa1.perex.cz (Postfix) with ESMTPS id 1ADA6F8020D
+ for <alsa-devel@alsa-project.org>; Thu, 22 Sep 2022 13:53:46 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1ADA6F8020D
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="SfayJRzs"; 
+ header.b="yW8vuj6J"; 
  dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="RgD5bQdH"
+ header.b="mGgKpOgk"
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id A0DC61F910;
- Thu, 22 Sep 2022 11:50:51 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 9990E21A2F;
+ Thu, 22 Sep 2022 11:53:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1663847451; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1663847626; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=eOA1HxyBN+3WVhaJxEWaCjXJU8fiJA1bQxr3K31McjY=;
- b=SfayJRzsez/qNnOSO27Ucn7BkT6fLRPemyvDzcN9ssQTSGV9FxaSnCPHvalut/1RrAtrrp
- YaTeyIUcdUSfiOVUb/HKPDFrM94dFZHneDjHRCO5yCfzBufSRBVKa8BYJWQuxdlhZrFkgA
- Nwh6DgK0kcacRgXzUVDhPtsPrhkf3RE=
+ bh=6UAbR9bzsqLI9dSixiZUssIMF8cXGYtHOHjyglb7IGI=;
+ b=yW8vuj6JR89+DvtZEIeZl5M4lqcrp/YEONvBr0wkB24ZouS4OuofSjkx1evIWwmon9Ama1
+ fuuOf61nxLBMcaLrzOQao7q/lw7IwcRuZmL7X3YZvL+VeqnXmW5LqTCeCDE1yfkG7/EPqI
+ TTw7xh7dm+Dedj95bFaCt1JkPDJBDNA=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1663847451;
+ s=susede2_ed25519; t=1663847626;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=eOA1HxyBN+3WVhaJxEWaCjXJU8fiJA1bQxr3K31McjY=;
- b=RgD5bQdHh0zlzPkrWLnFX3gI8GQjrOlf2ccrT29DZAciXTzR1saJFsc5lXcf3PpWLGKkQK
- cFTtOWN3GVeRNyAg==
+ bh=6UAbR9bzsqLI9dSixiZUssIMF8cXGYtHOHjyglb7IGI=;
+ b=mGgKpOgkFgKOSrRjylbWP1odDtzfLD1Bko/YxFJ0uePZfBFbNBw/enPr9oW/PaeOWvHlQH
+ Yng3eK0o8xfUHKDg==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 7E8A413AA5;
- Thu, 22 Sep 2022 11:50:51 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 79FEC13AA5;
+ Thu, 22 Sep 2022 11:53:46 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id XloxHhtMLGMWRgAAMHmgww
- (envelope-from <tiwai@suse.de>); Thu, 22 Sep 2022 11:50:51 +0000
-Date: Thu, 22 Sep 2022 13:50:50 +0200
-Message-ID: <87czbn7hlx.wl-tiwai@suse.de>
+ by imap2.suse-dmz.suse.de with ESMTPSA id y1gxHcpMLGNaRwAAMHmgww
+ (envelope-from <tiwai@suse.de>); Thu, 22 Sep 2022 11:53:46 +0000
+Date: Thu, 22 Sep 2022 13:53:46 +0200
+Message-ID: <87bkr77hh1.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH] ALSA: hda: intel-dsp-config: add missing RaptorLake PCI
- IDs
-In-Reply-To: <20220922100014.27080-1-pierre-louis.bossart@linux.intel.com>
-References: <20220922100014.27080-1-pierre-louis.bossart@linux.intel.com>
+To: cgel.zte@gmail.com
+Subject: Re: [PATCH linux-next] ALSA: hda/ca0132 - remove the unneeded result
+ variable
+In-Reply-To: <20220922112846.236987-1-ye.xingchen@zte.com.cn>
+References: <20220922112846.236987-1-ye.xingchen@zte.com.cn>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
 MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
 Content-Type: text/plain; charset=US-ASCII
-Cc: alsa-devel@alsa-project.org, broonie@kernel.org,
- Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
- Kai Vehmanen <kai.vehmanen@linux.intel.com>
+Cc: alsa-devel@alsa-project.org, ye xingchen <ye.xingchen@zte.com.cn>,
+ Zeal Robot <zealci@zte.com.cn>, linux-kernel@vger.kernel.org, tiwai@suse.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -97,14 +96,16 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Thu, 22 Sep 2022 12:00:14 +0200,
-Pierre-Louis Bossart wrote:
+On Thu, 22 Sep 2022 13:28:46 +0200,
+cgel.zte@gmail.com wrote:
 > 
-> These two missed IDs need to be added for dynamic selection of drivers.
+> From: ye xingchen <ye.xingchen@zte.com.cn>
 > 
-> Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-> Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-> Reviewed-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
+> Return the value dsp_allocate_ports() directly instead of storing it in
+> another redundant variable.
+> 
+> Reported-by: Zeal Robot <zealci@zte.com.cn>
+> Signed-off-by: ye xingchen <ye.xingchen@zte.com.cn>
 
 Thanks, applied.
 
