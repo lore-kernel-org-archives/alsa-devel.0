@@ -4,64 +4,64 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3F17EECAAD8
-	for <alsa-devel@archiver.kernel.org>; Thu, 22 Sep 2022 21:39:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id EB85BC54EE9
+	for <alsa-devel@archiver.kernel.org>; Thu, 22 Sep 2022 21:39:56 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 75CF2210;
-	Thu, 22 Sep 2022 23:38:48 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 75CF2210
+	by alsa0.perex.cz (Postfix) with ESMTPS id 2431C1F0;
+	Thu, 22 Sep 2022 23:39:05 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2431C1F0
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1663882778;
-	bh=9+XyEwqVhuVETaOy9fDOurk+KexmZOQvdRy7z19MHD8=;
+	s=default; t=1663882795;
+	bh=KwnRL2MpKaH7HgRcoBy2rVGaIvt9f3DiD1PNXsDJQFI=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=WEEcz0waASxpJJcaRKwuKPewmr8AE/jSwp5k36/GTHua3fcVGr6cg5f7Byk8/dNFv
-	 o/mgLumy8r8pEpp9htVzFH1c8D0KVeLVJqQNSl3RTmq7rIWYZ+NHTKc4cXEsq0XZ6L
-	 TCr9IgfdRfRpDjgDfUz5YhSyFIaG/e56UHSDLUGE=
+	b=VeACJOkTiSAPTfPc0riT7cas126m+nt2IpVCxrm2H/QFnX61XFo/CLLNN3OoetSHL
+	 kcTBlVLVKZIfxhjXH9MYrHcIuGHR+23Gp0phcYIDm/3ndnIQSzbTyIMJiaB3PY3kUF
+	 jqyryWiKiY9Et8p3o2j0f0bkmPtNoRPqt8RCqhYY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 195AEF80564;
+	by alsa1.perex.cz (Postfix) with ESMTP id CF0AFF80570;
 	Thu, 22 Sep 2022 23:37:16 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 93FE4F8054A; Thu, 22 Sep 2022 23:37:09 +0200 (CEST)
+ id 574D0F80548; Thu, 22 Sep 2022 23:37:11 +0200 (CEST)
 Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 62B43F804AA
- for <alsa-devel@alsa-project.org>; Thu, 22 Sep 2022 23:36:58 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 62B43F804AA
+ by alsa1.perex.cz (Postfix) with ESMTPS id 86F38F8053A
+ for <alsa-devel@alsa-project.org>; Thu, 22 Sep 2022 23:37:00 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 86F38F8053A
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="cVrImBQT"
+ header.b="WuwWqKHz"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1663882619; x=1695418619;
+ t=1663882621; x=1695418621;
  h=from:to:cc:subject:date:message-id:in-reply-to:
  references:mime-version:content-transfer-encoding;
- bh=9+XyEwqVhuVETaOy9fDOurk+KexmZOQvdRy7z19MHD8=;
- b=cVrImBQT3VbE/D+HweAPQXAg31mZJWkppgzeC8MTgcir49ll3MUsTj2a
- 2/r9e+7YPH1ZiBRU6jSzBA6VAwaQCIjyTacpPYs0+uS4yZ34VB8Bl+OUB
- Q/EEcMJk4hZxswl3cIKVUutPhclxfVfaOKgIU4sfRbSy7Q7G+4BPM9nxq
- g7Win9+FkKVpihCLvoU7K0w8+XNCqN6JDzh7ljUC4l5G+sAOtzO0cKEIY
- 1sU8XK4xb3Qbwy6UxkpKwL3WQbtPL4+xU4ZhXlB3Lf7igvRIdMDlR/eBL
- jp2gkyCFhcU+nCzbKlN++FAcJDNo1w+Kz54lq6ED9RBFEZlQFLqBXxI+5 A==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10478"; a="386725783"
-X-IronPort-AV: E=Sophos;i="5.93,337,1654585200"; d="scan'208";a="386725783"
+ bh=KwnRL2MpKaH7HgRcoBy2rVGaIvt9f3DiD1PNXsDJQFI=;
+ b=WuwWqKHzeocRK7FcSGYuxQOK4LpajGR3NLdgfViLiswCPxt1yERu+ZcH
+ jLUVoybI3u0Nyg6zfHspLBI/5+xXFhA2Q62e8/A9VSScsabbohbMVfmyQ
+ Hrji1wyNRNV6IiBrPFRxu+x+e8QsRV7oMywh35MVCYaWR3cCojtUt4/3x
+ GsjNYa8zYZVxYt3YVB03mpR86NSEgqVCb0WW+CbcDy2fuqR1YcXCGES5J
+ VoTpPaNFzR9ogaQoSYEaT9MLfAfuwtbY8MR6zSkZuRBxAlqVc2NYXECcn
+ kEXgWfZmp/lmtCLqsG7KzEkouFeN11p2qa57Eqj6GdkFzqRjCdW49Mo5d g==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10478"; a="386725796"
+X-IronPort-AV: E=Sophos;i="5.93,337,1654585200"; d="scan'208";a="386725796"
 Received: from orsmga004.jf.intel.com ([10.7.209.38])
  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 22 Sep 2022 14:36:51 -0700
-X-IronPort-AV: E=Sophos;i="5.93,337,1654585200"; d="scan'208";a="745550852"
+ 22 Sep 2022 14:36:52 -0700
+X-IronPort-AV: E=Sophos;i="5.93,337,1654585200"; d="scan'208";a="745550863"
 Received: from jpwarner-mobl2.amr.corp.intel.com (HELO
  rsridh2-mobl1.localdomain) ([10.254.13.62])
  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 22 Sep 2022 14:36:51 -0700
+ 22 Sep 2022 14:36:52 -0700
 From: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH 05/10] ASoC: SOF: Intel: Add a new op for disabling interrupts
-Date: Thu, 22 Sep 2022 14:36:39 -0700
-Message-Id: <20220922213644.666315-6-ranjani.sridharan@linux.intel.com>
+Subject: [PATCH 08/10] ASoC: SOF: Intel: HDA: use IPC version-specific ops
+Date: Thu, 22 Sep 2022 14:36:42 -0700
+Message-Id: <20220922213644.666315-9-ranjani.sridharan@linux.intel.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20220922213644.666315-1-ranjani.sridharan@linux.intel.com>
 References: <20220922213644.666315-1-ranjani.sridharan@linux.intel.com>
@@ -86,28 +86,48 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The sequence for disabling DSP interrupts varies between different IP
-versions.
+Use the IP-specific ops for disabling interrupts and powering down the
+DSP in hda_suspend.
 
 Signed-off-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 Reviewed-by: Bard Liao <yung-chuan.liao@linux.intel.com>
 Reviewed-by: Rander Wang <rander.wang@intel.com>
 Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- sound/soc/sof/intel/shim.h | 1 +
- 1 file changed, 1 insertion(+)
+ sound/soc/sof/intel/hda-dsp.c | 13 +++++--------
+ 1 file changed, 5 insertions(+), 8 deletions(-)
 
-diff --git a/sound/soc/sof/intel/shim.h b/sound/soc/sof/intel/shim.h
-index c7b4b1e0a824..3ceba5c39317 100644
---- a/sound/soc/sof/intel/shim.h
-+++ b/sound/soc/sof/intel/shim.h
-@@ -187,6 +187,7 @@ struct sof_intel_dsp_desc {
- 	bool (*check_sdw_irq)(struct snd_sof_dev *sdev);
- 	bool (*check_ipc_irq)(struct snd_sof_dev *sdev);
- 	int (*power_down_dsp)(struct snd_sof_dev *sdev);
-+	int (*disable_interrupts)(struct snd_sof_dev *sdev);
- 	int (*cl_init)(struct snd_sof_dev *sdev, int stream_tag, bool imr_boot);
- };
+diff --git a/sound/soc/sof/intel/hda-dsp.c b/sound/soc/sof/intel/hda-dsp.c
+index 2ab2200fc44a..3c76f843454b 100644
+--- a/sound/soc/sof/intel/hda-dsp.c
++++ b/sound/soc/sof/intel/hda-dsp.c
+@@ -629,10 +629,9 @@ static int hda_suspend(struct snd_sof_dev *sdev, bool runtime_suspend)
+ 	    sdev->fw_state == SOF_FW_BOOT_FAILED)
+ 		hda->skip_imr_boot = true;
+ 
+-	hda_sdw_int_enable(sdev, false);
+-
+-	/* disable IPC interrupts */
+-	hda_dsp_ipc_int_disable(sdev);
++	ret = chip->disable_interrupts(sdev);
++	if (ret < 0)
++		return ret;
+ 
+ #if IS_ENABLED(CONFIG_SND_SOC_SOF_HDA)
+ 	hda_codec_jack_wake_enable(sdev, runtime_suspend);
+@@ -641,11 +640,9 @@ static int hda_suspend(struct snd_sof_dev *sdev, bool runtime_suspend)
+ 	snd_hdac_ext_bus_link_power_down_all(bus);
+ #endif
+ 
+-	/* power down DSP */
+-	ret = hda_dsp_core_reset_power_down(sdev, chip->host_managed_cores_mask);
++	ret = chip->power_down_dsp(sdev);
+ 	if (ret < 0) {
+-		dev_err(sdev->dev,
+-			"error: failed to power down core during suspend\n");
++		dev_err(sdev->dev, "failed to power down DSP during suspend\n");
+ 		return ret;
+ 	}
  
 -- 
 2.25.1
