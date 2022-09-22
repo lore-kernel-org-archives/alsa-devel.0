@@ -4,69 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7CF2DC54EE9
-	for <alsa-devel@archiver.kernel.org>; Thu, 22 Sep 2022 17:54:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3CA27ECAAD8
+	for <alsa-devel@archiver.kernel.org>; Thu, 22 Sep 2022 17:55:22 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 700B01DB;
-	Thu, 22 Sep 2022 19:54:03 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 700B01DB
+	by alsa0.perex.cz (Postfix) with ESMTPS id 6833D1F2;
+	Thu, 22 Sep 2022 19:54:30 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 6833D1F2
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1663869293;
-	bh=6109OhJkTiqvxUueTBXlQDLMPyXWUfUQEj+dE1Zi4MI=;
+	s=default; t=1663869320;
+	bh=ZiN26jIhpDcjUuX8OzBCi6FQJAgejvV8LF/d8rTxbmE=;
 	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=mPp6OynEbhRBjVdYZxgs0Bt+ZsxR7ke5z1doWL0weL//TERn4sGmxf/LXXeW/qAGT
-	 loRbSJjXRI12ryE3IDTHoTsAW632SbYpqd0U0N2T91txF4Z2sG5IUXDZ9Sz3/RHM9i
-	 Mdtzep1YyyJHSMWMTSh0nrGzyFKd2cRemP6jSsV0=
+	b=UwsFScDHn2pNInDgd5Yq7cV1wU62hKBSz7oA6TnWpEjZBzUQRDlfV7BwrDy6x/lDD
+	 UwXicfSMOifx3P0axu2+40Iu6LKQe7l6DIoPAGPuoUOl9IQzk/e1ccjKh07cjkoxT4
+	 ag7f1zI9J/p3kA+uoY4Vs3Og0xkyjaU52nIdlCPU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id E0744F8012A;
-	Thu, 22 Sep 2022 19:54:02 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id BEBB4F8030F;
+	Thu, 22 Sep 2022 19:54:06 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 65D8AF8027B; Thu, 22 Sep 2022 19:54:01 +0200 (CEST)
-Received: from ams.source.kernel.org (ams.source.kernel.org
- [IPv6:2604:1380:4601:e00::1])
+ id 28DF9F804E7; Thu, 22 Sep 2022 19:54:04 +0200 (CEST)
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 1229DF80107
- for <alsa-devel@alsa-project.org>; Thu, 22 Sep 2022 19:53:58 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1229DF80107
+ by alsa1.perex.cz (Postfix) with ESMTPS id CE247F80107
+ for <alsa-devel@alsa-project.org>; Thu, 22 Sep 2022 19:54:01 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CE247F80107
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="d66ISQKX"
+ header.b="nRTG7xrv"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by ams.source.kernel.org (Postfix) with ESMTPS id 67118B8398E;
- Thu, 22 Sep 2022 17:53:54 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id F3BF7C433C1;
- Thu, 22 Sep 2022 17:53:50 +0000 (UTC)
+ by ams.source.kernel.org (Postfix) with ESMTPS id DDD37B819F6;
+ Thu, 22 Sep 2022 17:54:00 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 74708C433D7;
+ Thu, 22 Sep 2022 17:53:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1663869233;
- bh=6109OhJkTiqvxUueTBXlQDLMPyXWUfUQEj+dE1Zi4MI=;
+ s=k20201202; t=1663869239;
+ bh=ZiN26jIhpDcjUuX8OzBCi6FQJAgejvV8LF/d8rTxbmE=;
  h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=d66ISQKXQWpZlphqAOBEx58NhbJOtRhrVyeeKfz6iyVBpSjBIBGggjTwKAcIUXMNf
- MT0lsVtXw68cvT5xDE6cPKZ8lw4kvauNQtjAGYmifMuGSGPZXLIi7sBKbFJdVkAuBt
- vKV+syZ/FITxbG/dFxkvh5mlKHV2BEOvzkwJs2BXXmp281U2rdwIigifeTPMD1CyCi
- F96gkQOJ5sdxBfus28fyNAhtcnabuoYFkX+FsWXIUgiEuPVP0ac+W/5eTDD/nPfE1P
- nP6I7Q++g5CK4j971XxDJvN9SAc8JBg7QWdZqN3mVusCfARmJ4cGgUuqrOdmfbshrT
- oF1MUGk6Avx0Q==
+ b=nRTG7xrvW/TV6MHjXfX6AdY3kP4D45MhEpf2vLD1809I98HGcow0HnH3z14Avh5Vh
+ Svc1X+9DpqdJAa5mUYgzr/8J9jvHGFzk4+WnpNNddoFo5zXRA/Fr6BO1MmXVe/8X6c
+ 9cq0Jd8639dd3unZ5VpgRka0jV++bc7htlXIWEJCgJ9bq1AyaoWOk+7sYXU6vl3fVk
+ 5ECegpdN9cPy582s4RaIoxUqPy92muHEuRT5dSgZ/AoHI6MdNPvyLc0/o06XotJywA
+ bVpnNb/9XejjpjeT+HZdnR2s0b1+fsi+4+aQbUhzTHaBPLI71bGVGdSQ9DQ9wD4wpm
+ 6kp3K+m7N9tXw==
 From: Mark Brown <broonie@kernel.org>
 To: alsa-devel@alsa-project.org,
  Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-In-Reply-To: <20220922095912.27010-1-pierre-louis.bossart@linux.intel.com>
-References: <20220922095912.27010-1-pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH] ASoC: es8316: fix register sync error in suspend/resume
- tests
-Message-Id: <166386922985.727705.7408315500762781615.b4-ty@kernel.org>
-Date: Thu, 22 Sep 2022 18:53:49 +0100
+In-Reply-To: <20220922100254.27159-1-pierre-louis.bossart@linux.intel.com>
+References: <20220922100254.27159-1-pierre-louis.bossart@linux.intel.com>
+Subject: Re: [PATCH 0/2] ASoC: SOF: Intel: add missing PCI IDs
+Message-Id: <166386923746.727733.12788369378822193217.b4-ty@kernel.org>
+Date: Thu, 22 Sep 2022 18:53:57 +0100
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 X-Mailer: b4 0.11.0-dev-8af31
-Cc: FRED OH <fred.oh@linux.intel.com>, tiwai@suse.de, Bard Liao <yung-chuan.liao@linux.intel.com>, Péter Ujfalusi <peter.ujfalusi@linux.intel.com>
+Cc: tiwai@suse.de
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -82,25 +80,28 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Thu, 22 Sep 2022 11:59:12 +0200, Pierre-Louis Bossart wrote:
-> The SOF CI tests report failures with the following error thrown
+On Thu, 22 Sep 2022 12:02:52 +0200, Pierre-Louis Bossart wrote:
+> Two missing PCI IDs already added to hda_intel.c and missed in SOF.
 > 
-> kernel: es8316 i2c-ESSX8336:00: Unable to sync registers 0x0-0x1. -121
+> Pierre-Louis Bossart (2):
+>   ASoC: SOF: Intel: pci-tgl: reorder PCI IDs
+>   ASoC: SOF: pci-tgl: add missing PCI IDs for RPL
 > 
-> ES8336 only supports I2C read/write one byte a time, so we do need to
-> set the .use_single_read and .use_single_write flags to avoid this
-> sync issue.
+> sound/soc/sof/intel/pci-tgl.c | 8 ++++++--
+>  1 file changed, 6 insertions(+), 2 deletions(-)
 > 
 > [...]
 
 Applied to
 
-   broonie/sound.git for-linus
+   broonie/sound.git for-next
 
 Thanks!
 
-[1/1] ASoC: es8316: fix register sync error in suspend/resume tests
-      commit: 6de0b0292b548010b09917e8cdfc337a6dcf67ce
+[1/2] ASoC: SOF: Intel: pci-tgl: reorder PCI IDs
+      commit: 1c9a057eb7f45f8d233ae847d1e9fd64d163bd1c
+[2/2] ASoC: SOF: pci-tgl: add missing PCI IDs for RPL
+      commit: e2f0b9277810685f6a67201847082ec9852853bd
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
