@@ -4,65 +4,65 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C7DC5ECAAD8
-	for <alsa-devel@archiver.kernel.org>; Thu, 22 Sep 2022 21:38:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 72E83ECAAD8
+	for <alsa-devel@archiver.kernel.org>; Thu, 22 Sep 2022 21:39:12 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C8902846;
-	Thu, 22 Sep 2022 23:37:58 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C8902846
+	by alsa0.perex.cz (Postfix) with ESMTPS id 7474F1E8;
+	Thu, 22 Sep 2022 23:38:20 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7474F1E8
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1663882728;
-	bh=dEKgCeyogkN6MdELgvodH/3/BrAov6K1dyzwkVaHrU4=;
+	s=default; t=1663882750;
+	bh=q0FrN7OLwl8n/1/soggUvLiaxyxQQ32AwfsDgCUrUcQ=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=lPD6pvkVI3EhDtqhQu+SDI+slI9U3KTWpl/LFihzYHeYJ9RD/xRpYPEaYtYAZdn+M
-	 TiAoH5YQqAxGBHI5+LhzNaVqSkA0Z1Rrla9jNZW+GyA8fNueiIYzBRlBTlhTUhKHqN
-	 LbdHg7yOi18amXuQTQzicGt/V7KnpL1yOobd2kUw=
+	b=hZomP8Yhe6ahcwfZWhkOdMPB/gj6R6+eKEIbhQGOeUcXQZ8GKQCzXl2l1Xf19UNib
+	 p6Xw+VcgQiKYCn+2+A1Is8lFcDuz9+X/lCgaT55JLlmcRwDUV5Uxpp6XfCkRSjX+qh
+	 jvtPP0teR73PWVG4dglB2HdDMSsZXMPkqK9jV33c=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 31776F80553;
-	Thu, 22 Sep 2022 23:37:09 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id C0CC7F80557;
+	Thu, 22 Sep 2022 23:37:14 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 5D4BBF804E7; Thu, 22 Sep 2022 23:37:05 +0200 (CEST)
+ id 30E0FF80552; Thu, 22 Sep 2022 23:37:09 +0200 (CEST)
 Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 31B89F80256
+ by alsa1.perex.cz (Postfix) with ESMTPS id 8AE3FF8030F
  for <alsa-devel@alsa-project.org>; Thu, 22 Sep 2022 23:36:58 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 31B89F80256
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8AE3FF8030F
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="EG0fGv/J"
+ header.b="iLhS00H+"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
  t=1663882619; x=1695418619;
  h=from:to:cc:subject:date:message-id:in-reply-to:
  references:mime-version:content-transfer-encoding;
- bh=dEKgCeyogkN6MdELgvodH/3/BrAov6K1dyzwkVaHrU4=;
- b=EG0fGv/JC0YocOSU1Mh0yKi5QFen0/RDbglMEATYu3Gv+Hr6A6AJhQS+
- LYMhUCS6WV5+h47NlmErSzdnBWHilPi3X/J2BPf6Qnc5iwJabIfP/F/hD
- yBttqUA7UHIWNNqY7STnkaZ/MF1tF9Ii/MUk4ZwTItG72phSYV7g9tAlm
- 80LJdoDBw+xjE7toUtygHOJ31iPeULjsNOpqpGWEo2txBPOLBkdz6TyJa
- 1VYD2OF8GxpBghROt2iSuC7Rm56VwO4ndMJchUDJcmHa4Y2VB7VbcZKQw
- xvjt4ufWJyM3ECsHFKnwxYaJq5uiuu0eLze489/A42HLjEdddQqlomJCd w==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10478"; a="386725765"
-X-IronPort-AV: E=Sophos;i="5.93,337,1654585200"; d="scan'208";a="386725765"
+ bh=q0FrN7OLwl8n/1/soggUvLiaxyxQQ32AwfsDgCUrUcQ=;
+ b=iLhS00H+qV8uBRdV55WnsiCej11QxENhAUMuQ0kgvtUEeb3zaJdA5MKC
+ qKei0hvm9IlR0qyJug+p9kdy1j+iHxqxYbpER5GmrjF3uXr+NQsI/eVPK
+ e5Qs7oCQ6IwKu6IbojtmJeOnQ4H6by72eos2t3O+FH34wUaV67ytII5fo
+ hl6N/rggnl+9tFdhLi624Y54ZK+VnrJAAVhcmMzcGmU14RdG+QAOIqp21
+ bdtOFAyldYqS2OzKHY1eQHQxVVJG8uYvvX7xboYxAXKC/mjpk+Qjw0J8D
+ Nrz6GE+2s74TNnMIpN19Zke0Ti81lCxzRhuqT8VvdzlybwJFMYjQNdLaJ g==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10478"; a="386725780"
+X-IronPort-AV: E=Sophos;i="5.93,337,1654585200"; d="scan'208";a="386725780"
 Received: from orsmga004.jf.intel.com ([10.7.209.38])
  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 22 Sep 2022 14:36:50 -0700
-X-IronPort-AV: E=Sophos;i="5.93,337,1654585200"; d="scan'208";a="745550843"
+ 22 Sep 2022 14:36:51 -0700
+X-IronPort-AV: E=Sophos;i="5.93,337,1654585200"; d="scan'208";a="745550849"
 Received: from jpwarner-mobl2.amr.corp.intel.com (HELO
  rsridh2-mobl1.localdomain) ([10.254.13.62])
  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
  22 Sep 2022 14:36:50 -0700
 From: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH 02/10] ASoC: SOF: Intel: define and set power_down_dsp op for
- HDA platforms
-Date: Thu, 22 Sep 2022 14:36:36 -0700
-Message-Id: <20220922213644.666315-3-ranjani.sridharan@linux.intel.com>
+Subject: [PATCH 04/10] ASoC: SOF: Intel: use power_down_dsp op in
+ hda_dsp_remove
+Date: Thu, 22 Sep 2022 14:36:38 -0700
+Message-Id: <20220922213644.666315-5-ranjani.sridharan@linux.intel.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20220922213644.666315-1-ranjani.sridharan@linux.intel.com>
 References: <20220922213644.666315-1-ranjani.sridharan@linux.intel.com>
@@ -88,145 +88,33 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 From: Fred Oh <fred.oh@linux.intel.com>
 
-hda_power_down_dsp is set for power_down_dsp op for all HDA platforms.
+Use power_down_dsp op to differentiate power down sequences in platforms.
 
 Signed-off-by: Fred Oh <fred.oh@linux.intel.com>
 Reviewed-by: Rander Wang <rander.wang@intel.com>
 Reviewed-by: Bard Liao <yung-chuan.liao@linux.intel.com>
 Signed-off-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 ---
- sound/soc/sof/intel/apl.c | 1 +
- sound/soc/sof/intel/cnl.c | 2 ++
- sound/soc/sof/intel/hda.c | 8 ++++++++
- sound/soc/sof/intel/hda.h | 1 +
- sound/soc/sof/intel/icl.c | 1 +
- sound/soc/sof/intel/skl.c | 1 +
- sound/soc/sof/intel/tgl.c | 4 ++++
- 7 files changed, 18 insertions(+)
+ sound/soc/sof/intel/hda.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/sound/soc/sof/intel/apl.c b/sound/soc/sof/intel/apl.c
-index 295df44be271..886eb79ebdf1 100644
---- a/sound/soc/sof/intel/apl.c
-+++ b/sound/soc/sof/intel/apl.c
-@@ -104,6 +104,7 @@ const struct sof_intel_dsp_desc apl_chip_info = {
- 	.quirks = SOF_INTEL_PROCEN_FMT_QUIRK,
- 	.check_ipc_irq	= hda_dsp_check_ipc_irq,
- 	.cl_init = cl_dsp_init,
-+	.power_down_dsp = hda_power_down_dsp,
- 	.hw_ip_version = SOF_INTEL_CAVS_1_5_PLUS,
- };
- EXPORT_SYMBOL_NS(apl_chip_info, SND_SOC_SOF_INTEL_HDA_COMMON);
-diff --git a/sound/soc/sof/intel/cnl.c b/sound/soc/sof/intel/cnl.c
-index 180001d0a38a..dbdd96901377 100644
---- a/sound/soc/sof/intel/cnl.c
-+++ b/sound/soc/sof/intel/cnl.c
-@@ -412,6 +412,7 @@ const struct sof_intel_dsp_desc cnl_chip_info = {
- 	.check_sdw_irq	= hda_common_check_sdw_irq,
- 	.check_ipc_irq	= hda_dsp_check_ipc_irq,
- 	.cl_init = cl_dsp_init,
-+	.power_down_dsp = hda_power_down_dsp,
- 	.hw_ip_version = SOF_INTEL_CAVS_1_8,
- };
- EXPORT_SYMBOL_NS(cnl_chip_info, SND_SOC_SOF_INTEL_HDA_COMMON);
-@@ -442,6 +443,7 @@ const struct sof_intel_dsp_desc jsl_chip_info = {
- 	.check_sdw_irq	= hda_common_check_sdw_irq,
- 	.check_ipc_irq	= hda_dsp_check_ipc_irq,
- 	.cl_init = cl_dsp_init,
-+	.power_down_dsp = hda_power_down_dsp,
- 	.hw_ip_version = SOF_INTEL_CAVS_2_0,
- };
- EXPORT_SYMBOL_NS(jsl_chip_info, SND_SOC_SOF_INTEL_HDA_COMMON);
 diff --git a/sound/soc/sof/intel/hda.c b/sound/soc/sof/intel/hda.c
-index f7068a7e2e81..c7fe13dee06c 100644
+index c7fe13dee06c..35f074aa69da 100644
 --- a/sound/soc/sof/intel/hda.c
 +++ b/sound/soc/sof/intel/hda.c
-@@ -1219,6 +1219,14 @@ int hda_dsp_remove(struct snd_sof_dev *sdev)
- 	return 0;
- }
+@@ -1191,9 +1191,9 @@ int hda_dsp_remove(struct snd_sof_dev *sdev)
+ 	snd_sof_dsp_update_bits(sdev, HDA_DSP_HDA_BAR, SOF_HDA_INTCTL,
+ 				SOF_HDA_INT_CTRL_EN | SOF_HDA_INT_GLOBAL_EN, 0);
  
-+int hda_power_down_dsp(struct snd_sof_dev *sdev)
-+{
-+	struct sof_intel_hda_dev *hda = sdev->pdata->hw_pdata;
-+	const struct sof_intel_dsp_desc *chip = hda->desc;
-+
-+	return hda_dsp_core_reset_power_down(sdev, chip->host_managed_cores_mask);
-+}
-+
- #if IS_ENABLED(CONFIG_SND_SOC_SOF_HDA)
- static void hda_generic_machine_select(struct snd_sof_dev *sdev,
- 				       struct snd_soc_acpi_mach **mach)
-diff --git a/sound/soc/sof/intel/hda.h b/sound/soc/sof/intel/hda.h
-index 2013a94020c6..65b6faff2153 100644
---- a/sound/soc/sof/intel/hda.h
-+++ b/sound/soc/sof/intel/hda.h
-@@ -567,6 +567,7 @@ int hda_dsp_core_run(struct snd_sof_dev *sdev, unsigned int core_mask);
- int hda_dsp_enable_core(struct snd_sof_dev *sdev, unsigned int core_mask);
- int hda_dsp_core_reset_power_down(struct snd_sof_dev *sdev,
- 				  unsigned int core_mask);
-+int hda_power_down_dsp(struct snd_sof_dev *sdev);
- int hda_dsp_core_get(struct snd_sof_dev *sdev, int core);
- void hda_dsp_ipc_int_enable(struct snd_sof_dev *sdev);
- void hda_dsp_ipc_int_disable(struct snd_sof_dev *sdev);
-diff --git a/sound/soc/sof/intel/icl.c b/sound/soc/sof/intel/icl.c
-index 59ce3132fada..ea10ae7a7e1a 100644
---- a/sound/soc/sof/intel/icl.c
-+++ b/sound/soc/sof/intel/icl.c
-@@ -175,6 +175,7 @@ const struct sof_intel_dsp_desc icl_chip_info = {
- 	.check_sdw_irq	= hda_common_check_sdw_irq,
- 	.check_ipc_irq	= hda_dsp_check_ipc_irq,
- 	.cl_init = cl_dsp_init,
-+	.power_down_dsp = hda_power_down_dsp,
- 	.hw_ip_version = SOF_INTEL_CAVS_2_0,
- };
- EXPORT_SYMBOL_NS(icl_chip_info, SND_SOC_SOF_INTEL_HDA_COMMON);
-diff --git a/sound/soc/sof/intel/skl.c b/sound/soc/sof/intel/skl.c
-index f05905e00368..fdf1814747c4 100644
---- a/sound/soc/sof/intel/skl.c
-+++ b/sound/soc/sof/intel/skl.c
-@@ -111,6 +111,7 @@ const struct sof_intel_dsp_desc skl_chip_info = {
- 	.rom_status_reg = HDA_DSP_SRAM_REG_ROM_STATUS_SKL,
- 	.rom_init_timeout	= 300,
- 	.check_ipc_irq	= hda_dsp_check_ipc_irq,
-+	.power_down_dsp = hda_power_down_dsp,
- 	.hw_ip_version = SOF_INTEL_CAVS_1_5,
- };
- EXPORT_SYMBOL_NS(skl_chip_info, SND_SOC_SOF_INTEL_HDA_COMMON);
-diff --git a/sound/soc/sof/intel/tgl.c b/sound/soc/sof/intel/tgl.c
-index 5135e1c7e6cf..3d675e78c5fe 100644
---- a/sound/soc/sof/intel/tgl.c
-+++ b/sound/soc/sof/intel/tgl.c
-@@ -130,6 +130,7 @@ const struct sof_intel_dsp_desc tgl_chip_info = {
- 	.check_sdw_irq	= hda_common_check_sdw_irq,
- 	.check_ipc_irq	= hda_dsp_check_ipc_irq,
- 	.cl_init = cl_dsp_init,
-+	.power_down_dsp = hda_power_down_dsp,
- 	.hw_ip_version = SOF_INTEL_CAVS_2_5,
- };
- EXPORT_SYMBOL_NS(tgl_chip_info, SND_SOC_SOF_INTEL_HDA_COMMON);
-@@ -153,6 +154,7 @@ const struct sof_intel_dsp_desc tglh_chip_info = {
- 	.check_sdw_irq	= hda_common_check_sdw_irq,
- 	.check_ipc_irq	= hda_dsp_check_ipc_irq,
- 	.cl_init = cl_dsp_init,
-+	.power_down_dsp = hda_power_down_dsp,
- 	.hw_ip_version = SOF_INTEL_CAVS_2_5,
- };
- EXPORT_SYMBOL_NS(tglh_chip_info, SND_SOC_SOF_INTEL_HDA_COMMON);
-@@ -176,6 +178,7 @@ const struct sof_intel_dsp_desc ehl_chip_info = {
- 	.check_sdw_irq	= hda_common_check_sdw_irq,
- 	.check_ipc_irq	= hda_dsp_check_ipc_irq,
- 	.cl_init = cl_dsp_init,
-+	.power_down_dsp = hda_power_down_dsp,
- 	.hw_ip_version = SOF_INTEL_CAVS_2_5,
- };
- EXPORT_SYMBOL_NS(ehl_chip_info, SND_SOC_SOF_INTEL_HDA_COMMON);
-@@ -199,6 +202,7 @@ const struct sof_intel_dsp_desc adls_chip_info = {
- 	.check_sdw_irq	= hda_common_check_sdw_irq,
- 	.check_ipc_irq	= hda_dsp_check_ipc_irq,
- 	.cl_init = cl_dsp_init,
-+	.power_down_dsp = hda_power_down_dsp,
- 	.hw_ip_version = SOF_INTEL_CAVS_2_5,
- };
- EXPORT_SYMBOL_NS(adls_chip_info, SND_SOC_SOF_INTEL_HDA_COMMON);
+-	/* disable cores */
+-	if (chip)
+-		hda_dsp_core_reset_power_down(sdev, chip->host_managed_cores_mask);
++	/* no need to check for error as the DSP will be disabled anyway */
++	if (chip && chip->power_down_dsp)
++		chip->power_down_dsp(sdev);
+ 
+ 	/* disable DSP */
+ 	snd_sof_dsp_update_bits(sdev, HDA_DSP_PP_BAR, SOF_HDA_REG_PP_PPCTL,
 -- 
 2.25.1
 
