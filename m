@@ -4,69 +4,65 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B9762C6FA8B
-	for <alsa-devel@archiver.kernel.org>; Fri, 23 Sep 2022 13:37:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id DC9BCECAAD8
+	for <alsa-devel@archiver.kernel.org>; Fri, 23 Sep 2022 13:37:23 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D0579829;
-	Fri, 23 Sep 2022 15:36:22 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D0579829
+	by alsa0.perex.cz (Postfix) with ESMTPS id 127DC852;
+	Fri, 23 Sep 2022 15:36:32 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 127DC852
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1663940232;
-	bh=c1uRWvjMaU36ufmDOGK9V1tkqGszO2YYsllnQkagJck=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=c1rk3aiVXGhjaqlAKyIHSaqsL/FmSFwwu0YbuEz23fTEe4tlFp8DckC0hDbcmE2wK
-	 xleAXUim+f/ZeG5xqkmg9e8nkKmIzr7yZ16KGltV2YQZvY63TueqwSIoQnmLoCsz/1
-	 Mv9YLCUlLmO4CNsLoLiBIqQ1tK4aJ55X1AbqwoeQ=
+	s=default; t=1663940242;
+	bh=YcQvfZQh9cHt5912qq1EUNPLvAzuxceiLzpYn2MTXkc=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=cnvvBxNYmqpi3W6DWgd3YIfdOZd84Ovv7KM99HqdDSFfIMqy6LzqYB2rWpwaPYOCd
+	 nVOPBSvf+OftYFzziBrC60l0qjqCogQ8OGVXIxr54EqYQKgpNbeUuIXNme7v7ilirp
+	 PRxcZmcoeg+a3WG0qO3e/2zfXm3OI5ESNsyUZBZ4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 6D337F80269;
+	by alsa1.perex.cz (Postfix) with ESMTP id F05C9F8053D;
 	Fri, 23 Sep 2022 15:36:22 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id D3500F8053A; Fri, 23 Sep 2022 15:36:20 +0200 (CEST)
+ id DDCE4F80107; Fri, 23 Sep 2022 15:36:20 +0200 (CEST)
 Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 1F7F6F80269
- for <alsa-devel@alsa-project.org>; Fri, 23 Sep 2022 15:36:13 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1F7F6F80269
+ by alsa1.perex.cz (Postfix) with ESMTPS id 2BE10F804AC
+ for <alsa-devel@alsa-project.org>; Fri, 23 Sep 2022 15:36:11 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2BE10F804AC
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="Ni5bV6Z1"
+ header.b="asGbfgq+"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1663940175; x=1695476175;
- h=from:to:cc:subject:date:message-id:in-reply-to:
- references:mime-version:content-transfer-encoding;
- bh=c1uRWvjMaU36ufmDOGK9V1tkqGszO2YYsllnQkagJck=;
- b=Ni5bV6Z1lKwhL78/WUTVbfsR3P9ewqMBYTy/gYWZXJzJm6yEQynmIcv2
- e64lYgwaFVX3+99fL/sjwo5FD8wDOqzOu4pqOCTj0XeOW5s5g57ZItpss
- S0xejPnWZhI8Qfss7MUZfGKCo8w44xGdSucW7QZLuZ5ki9RSrzvvg18/3
- MYtv9KhG2JDt/tr8/Fij13dfotKz7RPDzX/VkNx62u1vk448Ru7WAKx0q
- hic/PdW9WCijORx3JHlHflUq+kEWK6Dbd/VJkXzsJrZmjs3v9tnNM16CS
- BOTcfNYFW8jxoGJc05yx6yp4fvia8/XDKvEZs9WKcWQa7TiffCoYduKXC Q==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10479"; a="300575619"
-X-IronPort-AV: E=Sophos;i="5.93,339,1654585200"; d="scan'208";a="300575619"
+ t=1663940178; x=1695476178;
+ h=from:to:cc:subject:date:message-id:mime-version:
+ content-transfer-encoding;
+ bh=YcQvfZQh9cHt5912qq1EUNPLvAzuxceiLzpYn2MTXkc=;
+ b=asGbfgq+MQcjZq/qCRbJyz14rPwBTeFZe1NZiQT2WaQssTX8hiuOaXc/
+ tI74+D7avd4i/RkIERvp+d16A0aeGKU9yMIPYGpwdPdiuye9nm+M1uO6H
+ Xp7ViUTSkyb/I5Obmgdvu0kGs4X4Gz9OwO92Hx7tYSvCjIToZqpa6Up5W
+ y6UdthzWr7/mk2LaqpGg958xeqtm1liVBXgNRdRKivFun9Kr3cmiZXC25
+ ADFHZM1z2BCbdt0YoMDCLigfzBZfLdgi1cfgHsUus19rie2EabqdsxwVY
+ cTPBpTbRD+UZeWuD6daloPAy6r2dbKDwkLqMyBEr5atrxnLc8fkqMYnqD g==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10479"; a="300575607"
+X-IronPort-AV: E=Sophos;i="5.93,339,1654585200"; d="scan'208";a="300575607"
 Received: from orsmga003.jf.intel.com ([10.7.209.27])
  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 23 Sep 2022 06:36:12 -0700
-X-IronPort-AV: E=Sophos;i="5.93,339,1654585200"; d="scan'208";a="571375299"
+ 23 Sep 2022 06:36:07 -0700
+X-IronPort-AV: E=Sophos;i="5.93,339,1654585200"; d="scan'208";a="571375279"
 Received: from acarr-mobl1.ger.corp.intel.com (HELO
  pujfalus-desk.ger.corp.intel.com) ([10.252.3.209])
  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 23 Sep 2022 06:36:10 -0700
+ 23 Sep 2022 06:36:05 -0700
 From: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
 To: lgirdwood@gmail.com, broonie@kernel.org,
  pierre-louis.bossart@linux.intel.com
-Subject: [PATCH 2/6] ASoC: SOF: Intel: hda: Add separate ops for ipc_dump for
- IPC4
-Date: Fri, 23 Sep 2022 16:36:12 +0300
-Message-Id: <20220923133616.26267-3-peter.ujfalusi@linux.intel.com>
+Subject: [PATCH 0/6] ASoC: SOF: ipc4/Intel: Improve and enable IPC error dump
+Date: Fri, 23 Sep 2022 16:36:10 +0300
+Message-Id: <20220923133616.26267-1-peter.ujfalusi@linux.intel.com>
 X-Mailer: git-send-email 2.37.3
-In-Reply-To: <20220923133616.26267-1-peter.ujfalusi@linux.intel.com>
-References: <20220923133616.26267-1-peter.ujfalusi@linux.intel.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Cc: alsa-devel@alsa-project.org, ranjani.sridharan@linux.intel.com,
@@ -86,93 +82,38 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The use of the IPC registers are different between IPC3 and IPC4.
-The ipc_dump needs to use different prints depending on the used IPC
-protocol.
+Hi,
 
-Signed-off-by: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
-Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-Reviewed-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
-Reviewed-by: Rander Wang <rander.wang@intel.com>
+On Intel platforms the registers for DSP communications are used differently,
+the IPC dump information is not correct since important registers are not
+printed and existing ones are used a bit differently for IPC4.
+
+As a last step, enable the IPC timeout 'handling' and allow the printout of
+the now usefull IPC dump.
+
+Regards,
+Peter
 ---
- sound/soc/sof/intel/apl.c |  7 ++++++-
- sound/soc/sof/intel/hda.c | 18 ++++++++++++++++++
- sound/soc/sof/intel/hda.h |  1 +
- 3 files changed, 25 insertions(+), 1 deletion(-)
+Peter Ujfalusi (6):
+  ASoC: SOF: Intel: cnl: Add separate ops for ipc_dump for IPC4
+  ASoC: SOF: Intel: hda: Add separate ops for ipc_dump for IPC4
+  ASoC: SOF: Intel: skl: Use the ipc4 version of the ipc_dump
+  ASoC: SOF: Intel: mtl: Print relevant register in ipc_dump
+  ASoC: SOF: Intel: hda: Only dump firmware registers for IPC3
+  ASoC: SOF: ipc4: Call snd_sof_handle_fw_exception() in case of timeout
 
-diff --git a/sound/soc/sof/intel/apl.c b/sound/soc/sof/intel/apl.c
-index 295df44be271..37d12e821c10 100644
---- a/sound/soc/sof/intel/apl.c
-+++ b/sound/soc/sof/intel/apl.c
-@@ -45,6 +45,9 @@ int sof_apl_ops_init(struct snd_sof_dev *sdev)
- 
- 		/* ipc */
- 		sof_apl_ops.send_msg	= hda_dsp_ipc_send_msg;
-+
-+		/* debug */
-+		sof_apl_ops.ipc_dump	= hda_ipc_dump;
- 	}
- 
- 	if (sdev->pdata->ipc_type == SOF_INTEL_IPC4) {
-@@ -64,6 +67,9 @@ int sof_apl_ops_init(struct snd_sof_dev *sdev)
- 
- 		/* ipc */
- 		sof_apl_ops.send_msg	= hda_dsp_ipc4_send_msg;
-+
-+		/* debug */
-+		sof_apl_ops.ipc_dump	= hda_ipc4_dump;
- 	}
- 
- 	/* set DAI driver ops */
-@@ -72,7 +78,6 @@ int sof_apl_ops_init(struct snd_sof_dev *sdev)
- 	/* debug */
- 	sof_apl_ops.debug_map	= apl_dsp_debugfs;
- 	sof_apl_ops.debug_map_count	= ARRAY_SIZE(apl_dsp_debugfs);
--	sof_apl_ops.ipc_dump	= hda_ipc_dump;
- 
- 	/* firmware run */
- 	sof_apl_ops.run = hda_dsp_cl_boot_firmware;
-diff --git a/sound/soc/sof/intel/hda.c b/sound/soc/sof/intel/hda.c
-index f7068a7e2e81..ca648d2a9da7 100644
---- a/sound/soc/sof/intel/hda.c
-+++ b/sound/soc/sof/intel/hda.c
-@@ -662,6 +662,24 @@ void hda_ipc_dump(struct snd_sof_dev *sdev)
- 		hipcie, hipct, hipcctl);
- }
- 
-+void hda_ipc4_dump(struct snd_sof_dev *sdev)
-+{
-+	u32 hipci, hipcie, hipct, hipcte, hipcctl;
-+
-+	hda_ipc_irq_dump(sdev);
-+
-+	hipci = snd_sof_dsp_read(sdev, HDA_DSP_BAR, HDA_DSP_REG_HIPCI);
-+	hipcie = snd_sof_dsp_read(sdev, HDA_DSP_BAR, HDA_DSP_REG_HIPCIE);
-+	hipct = snd_sof_dsp_read(sdev, HDA_DSP_BAR, HDA_DSP_REG_HIPCT);
-+	hipcte = snd_sof_dsp_read(sdev, HDA_DSP_BAR, HDA_DSP_REG_HIPCTE);
-+	hipcctl = snd_sof_dsp_read(sdev, HDA_DSP_BAR, HDA_DSP_REG_HIPCCTL);
-+
-+	/* dump the IPC regs */
-+	/* TODO: parse the raw msg */
-+	dev_err(sdev->dev, "Host IPC initiator: %#x|%#x, target: %#x|%#x, ctl: %#x\n",
-+		hipci, hipcie, hipct, hipcte, hipcctl);
-+}
-+
- static int hda_init(struct snd_sof_dev *sdev)
- {
- 	struct hda_bus *hbus;
-diff --git a/sound/soc/sof/intel/hda.h b/sound/soc/sof/intel/hda.h
-index 2013a94020c6..c3a9f89b726d 100644
---- a/sound/soc/sof/intel/hda.h
-+++ b/sound/soc/sof/intel/hda.h
-@@ -851,6 +851,7 @@ irqreturn_t cnl_ipc4_irq_thread(int irq, void *context);
- int cnl_ipc4_send_msg(struct snd_sof_dev *sdev, struct snd_sof_ipc_msg *msg);
- irqreturn_t hda_dsp_ipc4_irq_thread(int irq, void *context);
- int hda_dsp_ipc4_send_msg(struct snd_sof_dev *sdev, struct snd_sof_ipc_msg *msg);
-+void hda_ipc4_dump(struct snd_sof_dev *sdev);
- extern struct sdw_intel_ops sdw_callback;
- 
- #endif
+ sound/soc/sof/intel/apl.c     |  7 ++++++-
+ sound/soc/sof/intel/cnl.c     | 28 +++++++++++++++++++++++++++-
+ sound/soc/sof/intel/hda-ipc.h |  1 +
+ sound/soc/sof/intel/hda.c     | 21 ++++++++++++++++++++-
+ sound/soc/sof/intel/hda.h     |  1 +
+ sound/soc/sof/intel/icl.c     |  7 ++++++-
+ sound/soc/sof/intel/mtl.c     | 17 ++++++++---------
+ sound/soc/sof/intel/skl.c     |  2 +-
+ sound/soc/sof/intel/tgl.c     |  7 ++++++-
+ sound/soc/sof/ipc4.c          |  1 +
+ 10 files changed, 77 insertions(+), 15 deletions(-)
+
 -- 
 2.37.3
 
