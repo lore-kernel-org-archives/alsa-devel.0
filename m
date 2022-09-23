@@ -4,71 +4,72 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5ACE5C07E9D
-	for <alsa-devel@archiver.kernel.org>; Fri, 23 Sep 2022 17:07:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id CA613C07E9D
+	for <alsa-devel@archiver.kernel.org>; Fri, 23 Sep 2022 17:08:21 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id F0232201;
-	Fri, 23 Sep 2022 19:07:03 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F0232201
+	by alsa0.perex.cz (Postfix) with ESMTPS id 04144828;
+	Fri, 23 Sep 2022 19:07:30 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 04144828
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1663952874;
-	bh=MXUJSh7a67zClSJcrIQ8uTLgyyJ6AiyBVSt6Oo0niKQ=;
+	s=default; t=1663952900;
+	bh=yv65ncJXP7zLVMNN7B/VDPHTlWRGuMb/y6L+TYsAh/Y=;
 	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=ot/d5Y8rE5YZcANZtO+rUEoh/WqRMxb0x6UxQOo6CzFjvTWJ3uP5Ub+l0UtZPMbMu
-	 1v3YnstQ+81/BDznbaOnA1K6KiIifqu8WGpIKfKzG2rqmg0xAY3ipLyCoDa4yLJ8B9
-	 VzGgNIL1HHD9WiGPv8D92U66CYl8PjeOA5pVj9QY=
+	b=tnLFSugLPUiDs4MgKVI/9LhgoRqTJbW8XICOsHEEUfoYniPfiYpryckaGXfrWY1Dv
+	 5cqe6wnIbY0QfCI45qC8EMREWwEz284RndAGyC0a1zZdADNy/8w6fO676wCkiysqDu
+	 /wg4FA3Vb/9YYUXNP0AsxXSv63TB2imzmrrmgD8E=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 7BB6AF80269;
-	Fri, 23 Sep 2022 19:07:03 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 3317EF804D1;
+	Fri, 23 Sep 2022 19:07:07 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 1E470F80269; Fri, 23 Sep 2022 19:07:02 +0200 (CEST)
-Received: from ams.source.kernel.org (ams.source.kernel.org
- [IPv6:2604:1380:4601:e00::1])
+ id 8286CF804E4; Fri, 23 Sep 2022 19:07:04 +0200 (CEST)
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id C9A35F80107
- for <alsa-devel@alsa-project.org>; Fri, 23 Sep 2022 19:06:58 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C9A35F80107
+ by alsa1.perex.cz (Postfix) with ESMTPS id 13555F80107
+ for <alsa-devel@alsa-project.org>; Fri, 23 Sep 2022 19:07:01 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 13555F80107
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="L5ozGfX7"
+ header.b="EYo3+adf"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by ams.source.kernel.org (Postfix) with ESMTPS id D6555B8202F;
+ by ams.source.kernel.org (Postfix) with ESMTPS id 444B3B8211A;
+ Fri, 23 Sep 2022 17:07:01 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2E6DDC433D6;
  Fri, 23 Sep 2022 17:06:57 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 88F15C433D7;
- Fri, 23 Sep 2022 17:06:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1663952816;
- bh=MXUJSh7a67zClSJcrIQ8uTLgyyJ6AiyBVSt6Oo0niKQ=;
+ s=k20201202; t=1663952820;
+ bh=yv65ncJXP7zLVMNN7B/VDPHTlWRGuMb/y6L+TYsAh/Y=;
  h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=L5ozGfX7+BnlhPf8kYmEvlTmsswimIsTUvxP0A7EOs5QLeAU7DTgyL556orPLCbSQ
- jWDSDsvBhmTH3Obu+8JS2+MwezNx17WrUScLZMuKMD+XWhecmwFmPDggjej9KMZvnX
- UWuHqm8QLARl6T/wfwagA01xQoUikW/w0GHMeRwpkbliaQn1Ch7Y/7FHDyWH/0Re1u
- BAAWQSdgKTny+VsvfMFMgNG+euMZ7dTZICI/UTRKqCw9E3up1m/hdqNDZX3Zz6SE72
- +2nPq0IsjkKHj1oSnBS4Bs7GbhOi45JXeystji3jfeCscFIE4hsbCNFzKSCiy/++ve
- RcTxQ5kODrJCw==
+ b=EYo3+adffwYq+V60pgZhrnEsjdK72Opshe6krDmqOjpA643KcE3o8fELUUZ83oaEF
+ CakBPYWSwvHxKiUb02XOIHkv8TkZ7TkRYc+JDWvJyBbJ19cocw0y6w3j1rCNVVljMB
+ M1Pf+Cue4ZXGgZJ8bj2kNjshLULKhVznlQNYGYapbFAcqLdOWFTXo8+w/KnEDgF2hu
+ RW0mANNFgode+5S6TMw+HyJ1dhHgbTcHxJ4NDM8hn7OiqWWUBowiAWW5JxgdJECTVu
+ lcIR1V9q9O7ElSItDp6Nitb5BpSClXbhbfEuPjzzJFyQ8T3YcfV+bn1fxlg0nrtW3r
+ J95mbaH4t3xlg==
 From: Mark Brown <broonie@kernel.org>
-To: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-In-Reply-To: <20220922103502.49981-1-angelogioacchino.delregno@collabora.com>
-References: <20220922103502.49981-1-angelogioacchino.delregno@collabora.com>
-Subject: Re: [PATCH] ASoC: mediatek: mt8195-mt6359: Use snd_soc_pm_ops instead
- of custom ops
-Message-Id: <166395281428.610218.2692413378326164473.b4-ty@kernel.org>
-Date: Fri, 23 Sep 2022 18:06:54 +0100
+To: linux-imx@nxp.com, shawnguo@kernel.org, perex@perex.cz,
+ nicoleotsuka@gmail.com, shengjiu.wang@gmail.com, 
+ tiwai@suse.com, s.hauer@pengutronix.de, lgirdwood@gmail.com,
+ kernel@pengutronix.de, Xiubo.Lee@gmail.com, 
+ Gaosheng Cui <cuigaosheng1@huawei.com>, festevam@gmail.com
+In-Reply-To: <20220923090355.507648-1-cuigaosheng1@huawei.com>
+References: <20220923090355.507648-1-cuigaosheng1@huawei.com>
+Subject: Re: [PATCH] ASoC: fsl: Remove unused inline function
+ imx_pcm_dma_params_init_data()
+Message-Id: <166395281690.610218.17739272553546985512.b4-ty@kernel.org>
+Date: Fri, 23 Sep 2022 18:06:56 +0100
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 X-Mailer: b4 0.10.0-dev-fc921
-Cc: alsa-devel@alsa-project.org, lgirdwood@gmail.com, tiwai@suse.com,
- linux-kernel@vger.kernel.org, tzungbi@google.com,
- linux-mediatek@lists.infradead.org, trevor.wu@mediatek.com,
- matthias.bgg@gmail.com, linux-arm-kernel@lists.infradead.org
+Cc: alsa-devel@alsa-project.org, linuxppc-dev@lists.ozlabs.org,
+ linux-arm-kernel@lists.infradead.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -84,11 +85,15 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Thu, 22 Sep 2022 12:35:02 +0200, AngeloGioacchino Del Regno wrote:
-> It is possible to use the standard snd_soc_pm_ops for this card:
-> remove the custom mt8195_mt6359_pm_ops.
+On Fri, 23 Sep 2022 17:03:55 +0800, Gaosheng Cui wrote:
+> The imx_pcm_dma_params_init_data() are no longer used since
+> commit c31da0b196f9 ("ASoC: imx-ssi: Remove unused driver"),
+> and the function is used to initialize some members of
+> "struct imx_dma_data", it's more readable to assign the value
+> directly, imx_pcm_dma_params_init_data is useless, so remove it.
 > 
 > 
+> [...]
 
 Applied to
 
@@ -96,8 +101,8 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: mediatek: mt8195-mt6359: Use snd_soc_pm_ops instead of custom ops
-      commit: 14ed837b9740cc6ec25910980d67c22894b4ff56
+[1/1] ASoC: fsl: Remove unused inline function imx_pcm_dma_params_init_data()
+      commit: 4f865485e8ef1d04de23fc1def1fa4e39fb00b91
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
