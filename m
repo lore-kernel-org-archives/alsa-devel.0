@@ -4,68 +4,74 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 985F7C04A95
-	for <alsa-devel@archiver.kernel.org>; Fri, 23 Sep 2022 17:08:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D2C85C07E9D
+	for <alsa-devel@archiver.kernel.org>; Fri, 23 Sep 2022 17:08:52 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id BB67F825;
-	Fri, 23 Sep 2022 19:07:54 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BB67F825
+	by alsa0.perex.cz (Postfix) with ESMTPS id EDADB850;
+	Fri, 23 Sep 2022 19:08:00 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EDADB850
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1663952924;
-	bh=hLbB6Mc/9YPvSzqJ/DD7cP09+IT2DN/AsYc0wB8FrUI=;
+	s=default; t=1663952931;
+	bh=n9U15dwNcqXRZYJJDDbUQQ/3fEHzPd/5huqs2XJRWFs=;
 	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=aTmXpSJhR4Zw67EawYaGQUvTwlxWyXxcHBmy3aFo+PwNJiA5S5425h9s247WR65Cc
-	 6SJQxDpYH2dMcSmSCZLG36XUhnox1xMv1Gda4HO9E0XyprivUdlH9Hy4NMQJZ1mNuN
-	 foage69cbcfh+6cdqRo3IEX1gq2W7rs6tBHc9WUA=
+	b=tguEjtemCYaulIZfef+go7z/cr9J7hfN+zVkE69b+9uNbKnBUXJjVxn6lxyZZ193v
+	 T0vQvhyWzWjShLZlf77ZwzTnblUZUTJn5wo0QrpDIz31+WRVtp7TdCwxvb+/bs0GzN
+	 xybu45qAwneJJjS13NUJ3rjAKm2DeUM0fKiT5qxM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 08324F80533;
-	Fri, 23 Sep 2022 19:07:09 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id AC696F80539;
+	Fri, 23 Sep 2022 19:07:11 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id D2F0CF8053A; Fri, 23 Sep 2022 19:07:07 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org
- [IPv6:2604:1380:4641:c500::1])
+ id 9A8D4F80542; Fri, 23 Sep 2022 19:07:10 +0200 (CEST)
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id D264DF80124
- for <alsa-devel@alsa-project.org>; Fri, 23 Sep 2022 19:07:04 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D264DF80124
+ by alsa1.perex.cz (Postfix) with ESMTPS id A4338F80538
+ for <alsa-devel@alsa-project.org>; Fri, 23 Sep 2022 19:07:06 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A4338F80538
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="kGeMQI2g"
+ header.b="hwLvkPsT"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id BDB02625B3;
+ by ams.source.kernel.org (Postfix) with ESMTPS id 316D3B826F2;
+ Fri, 23 Sep 2022 17:07:06 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A65C3C433C1;
  Fri, 23 Sep 2022 17:07:01 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 793DCC433D7;
- Fri, 23 Sep 2022 17:07:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1663952821;
- bh=hLbB6Mc/9YPvSzqJ/DD7cP09+IT2DN/AsYc0wB8FrUI=;
+ s=k20201202; t=1663952824;
+ bh=n9U15dwNcqXRZYJJDDbUQQ/3fEHzPd/5huqs2XJRWFs=;
  h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=kGeMQI2gON2zZSAo47tEjveFUDbVcnw/LtEWBcMpfp2NGQbIvkeelzodHjaDIoMUs
- QyqCyvVru8jwoEvHim2f/5sDJTt8VM4VPjiAUVlfj+7dIhPMQvYjtmnJtZzo2pWWTF
- lbY3Ue3xwbIQ1oPi3GJCNiZ//kuDCsRx3Ga6ZI7ivJBnwrwiuEBdcyFAHH8M1RKazS
- 7OFQ8SI9PhTBBmc0IpwCCcHM5OyFBclS8AztvNu5GXRNpPM2jZ0iQr+Lf/igthe7NL
- 8RTbcULduqrm/1ohChVxBEk9mlQUOA0FFjBuqszhvplf4/dPLIGSpZu10U7Gm/blyD
- RJw1OV95WD17w==
+ b=hwLvkPsTn9T8ARxKa65H+/JwEbAIqLC3+UuPJf7jeFTgMlpCLrStMaNRbZJiRl0ZL
+ 8rcgvrYtTgeEXFv57sAs21Rql0Wj/tbrcU3gWCWAgAApU67BqDzOw4PIjzii6J7uCC
+ 4etFrLo2Nyd2SONb57AUxdXIIIlJ1zS0eJOEf8oybNhnahH4GwJaezAYQLl56rerLu
+ GLGK/V8ywiqbaf7Zk2HIOj487YkqVw2gEia/qI2LlZZSxZrToAvl5HOcimsbVpxfxS
+ jCqsREFX1mqdYLDO2DP7BjL0SJCoNc9sGAXGE+bu/xdsszXxlQ2fJyNbvMFuT9PRYm
+ 3wCvCAZxmCI7A==
 From: Mark Brown <broonie@kernel.org>
-To: alsa-devel@alsa-project.org,
- Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-In-Reply-To: <20220922213644.666315-1-ranjani.sridharan@linux.intel.com>
-References: <20220922213644.666315-1-ranjani.sridharan@linux.intel.com>
-Subject: Re: [PATCH 00/10] ASoC: SOF: Intel: MTL: Fixes for suspend/resume
-Message-Id: <166395282022.610218.12704120726441235308.b4-ty@kernel.org>
-Date: Fri, 23 Sep 2022 18:07:00 +0100
+To: Nícolas F. R. A. Prado <nfraprado@collabora.com>
+In-Reply-To: <20220922235951.252532-1-nfraprado@collabora.com>
+References: <20220922235951.252532-1-nfraprado@collabora.com>
+Subject: Re: [PATCH 0/6] ASoC: mediatek: Allow separate handling of headphone
+ and headset mic jack
+Message-Id: <166395282139.610218.7941761781105073129.b4-ty@kernel.org>
+Date: Fri, 23 Sep 2022 18:07:01 +0100
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 X-Mailer: b4 0.10.0-dev-fc921
-Cc: tiwai@suse.de
+Cc: alsa-devel@alsa-project.org, "chunxu.li" <chunxu.li@mediatek.com>,
+ Akihiko Odaki <akihiko.odaki@gmail.com>, Liam Girdwood <lgirdwood@gmail.com>,
+ linux-kernel@vger.kernel.org, Jiaxin Yu <jiaxin.yu@mediatek.com>,
+ Takashi Iwai <tiwai@suse.com>, Tzung-Bi Shih <tzungbi@google.com>,
+ linux-mediatek@lists.infradead.org, Trevor Wu <trevor.wu@mediatek.com>,
+ Miaoqian Lin <linmq006@gmail.com>, Matthias Brugger <matthias.bgg@gmail.com>,
+ kernel@collabora.com, linux-arm-kernel@lists.infradead.org,
+ AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -81,15 +87,13 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Thu, 22 Sep 2022 14:36:34 -0700, Ranjani Sridharan wrote:
-> This series includes fixes for suspend/resume and module
-> loading/unloading for the MTL platform.
+On Thu, 22 Sep 2022 19:59:45 -0400, Nícolas F. R. A. Prado wrote:
+> This series allows the headphone and headset mic jack status to be
+> handled separately by userspace on MT8192, MT8195 and MT8186.
 > 
-> Fred Oh (4):
->   ASoC: SOF: Intel: introduce new op to handle dsp power down
->   ASoC: SOF: Intel: define and set power_down_dsp op for HDA platforms
->   ASoC: SOF: Intel: mtl: define and set power_down_dsp op
->   ASoC: SOF: Intel: use power_down_dsp op in hda_dsp_remove
+> Changes based on commit d0508b4f1604 ("ASoC: rk3399_gru_sound: Add DAPM
+> pins, kcontrols for jack detection"). Found while searching for an
+> alternative for JackSwitch [1].
 > 
 > [...]
 
@@ -99,26 +103,18 @@ Applied to
 
 Thanks!
 
-[01/10] ASoC: SOF: Intel: introduce new op to handle dsp power down
-        commit: af62eaf2872bf2c381f322c61f7ff751162797f6
-[02/10] ASoC: SOF: Intel: define and set power_down_dsp op for HDA platforms
-        commit: c714031f936e11ef9e5695efdb73cd1f45eedb69
-[03/10] ASoC: SOF: Intel: mtl: define and set power_down_dsp op
-        commit: 2090cb9bf57471900d5cdf11b47dd1a121f021bf
-[04/10] ASoC: SOF: Intel: use power_down_dsp op in hda_dsp_remove
-        commit: e32de6402e5b51cd6a24861987b1846606beec13
-[05/10] ASoC: SOF: Intel: Add a new op for disabling interrupts
-        commit: 423693a6c351f4abb869d1dbf5df7374766aaa1a
-[06/10] ASoC: SOF: Intel: define and set the disable_interrupts op for cavs platforms
-        commit: b2520dbcb0d3646e70fedcaab2bdfb33df1c8508
-[07/10] ASoC: SOF: Intel: MTL: define and set the disable_interrupts op
-        commit: 39df087f6fa9436926b540d7d4022c09d0b8fde7
-[08/10] ASoC: SOF: Intel: HDA: use IPC version-specific ops
-        commit: 0fbd539f666a7783b55507675b6c68673db27766
-[09/10] ASoC: SOF: Intel: MTL: reuse the common ops for PM
-        commit: 6ae87bab269b347c725893ee162a0ad03ecca97c
-[10/10] ASoC: SOF: Intel: MTL: remove the unnecessary snd_sof_dsp_read()
-        commit: 68fb254e9ccca9e3f832f86b707eb2551aa5b86d
+[1/6] ASoC: mediatek: mt8192-mt6359: Expose individual headset jack pins
+      commit: 194ff8db03782d1dae41b7b42ea65da5748884c2
+[2/6] ASoC: mediatek: mt8195: Expose individual headset jack pins
+      commit: aa51e3c127a43cf4862db5f0081da281f1aa6429
+[3/6] ASoC: mediatek: mt8186-da7219: Add headset widgets with switches
+      commit: 13bee4a16ac5c5f0e3a5db868df991be57e74aa5
+[4/6] ASoC: mediatek: mt8186-da7219: Expose individual headset jack pins
+      commit: 8e986748680629a82398c65da0c5bda4c6a01b3d
+[5/6] ASoC: mediatek: mt8186-rt5682: Add headset widgets with switches
+      commit: d888e7afa03f06d8091ecdd43f87d5396dfbf907
+[6/6] ASoC: mediatek: mt8186-rt5682: Expose individual headset jack pins
+      commit: 42de42c22453064ffc9b72c259b2ab901dd766dc
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
