@@ -4,71 +4,44 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5CE43C6FA82
-	for <alsa-devel@archiver.kernel.org>; Fri, 23 Sep 2022 12:56:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B8B77C6FA82
+	for <alsa-devel@archiver.kernel.org>; Fri, 23 Sep 2022 13:12:28 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 63EAE1FE;
-	Fri, 23 Sep 2022 14:56:04 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 63EAE1FE
+	by alsa0.perex.cz (Postfix) with ESMTPS id 410A31FC;
+	Fri, 23 Sep 2022 15:11:36 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 410A31FC
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1663937814;
-	bh=1AHtxy60QleDVD9NG40eYAlgwUJqxDcaAonYKdtbXn0=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	s=default; t=1663938746;
+	bh=gRo/SZQGH/d3keT/BjBthckDAptxQYZ+AlsxQWLu5nM=;
+	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=kj33NRLqeNPVxYsuParn7gVT3TZS9peojjNPzDAFy0BaGvMNWapzAVbjWps1iUWEH
-	 ua3liWtgksa+RqyT5WyXNC3PlN/2Me2tm7I3Q15LT8rYu+fNbE/e2iE+DOXeu/fCl3
-	 lFO9atVgihnazzGR9uFKdt3bKcmgr2vgVbQen6EM=
+	b=dBYN8I2L3OCO2Cit8wA3Vk6jJwPcVRhtUhLHudSu3y2YkaSskppxUb0kObRUKVmxi
+	 Vogwlb5g1U0pXAWScQM87wp+xbKb1SinQkBJsIzRJvDRkgDmq4bNsDzPsfL2K9yJiu
+	 JP0e/nOBYAm5FOO0gyzT1hg4Ut2yQ1nHTwPD/Ycs=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id E4F5BF80224;
-	Fri, 23 Sep 2022 14:56:03 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id B5291F80224;
+	Fri, 23 Sep 2022 15:11:35 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id DAD6AF80269; Fri, 23 Sep 2022 14:56:01 +0200 (CEST)
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 6226FF80107
- for <alsa-devel@alsa-project.org>; Fri, 23 Sep 2022 14:55:58 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6226FF80107
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="V1zRraBx"
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by ams.source.kernel.org (Postfix) with ESMTPS id 83AD3B81F15;
- Fri, 23 Sep 2022 12:55:58 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D3163C433C1;
- Fri, 23 Sep 2022 12:55:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1663937757;
- bh=1AHtxy60QleDVD9NG40eYAlgwUJqxDcaAonYKdtbXn0=;
- h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=V1zRraBxwAAshLMED09wGIIrrLHErx7oZUMIDkJS08HkaS6MGA+E06BDRlIQAtEKw
- KI8KURd3STN4s8YtbAQUChDn3tVj3K6dO8PrXvz/tWyNtaT0oEuaW9Ws08d4OKQw/N
- zGgTshRiV8eKUBv7ctxRGV3FxJZy7HxLydUgEcGJaPc4XaSt3K+pwsUrdviwUSUsPX
- Wcg4vTI5/yc+AI26d7R8X2rZkmWVB9dC19Lrm4BTfA8dMS5TkzFASmREPc89BsU4mb
- VJDmOClZn1kCidYvfSY6R5Qv8YR4leiYNVlr870ficdNHiH85jxrze6NsR54d7OM/R
- NaFgNTxT6vI7Q==
-Date: Fri, 23 Sep 2022 13:55:52 +0100
-From: Mark Brown <broonie@kernel.org>
-To: Jason Zhu <jason.zhu@rock-chips.com>
-Subject: Re: [PATCH 1/1] ASoC: soc-dai: export some symbols
-Message-ID: <Yy2s2PA/C1ngeb//@sirena.org.uk>
-References: <20220920034545.2820888-1-jason.zhu@rock-chips.com>
- <20220920034545.2820888-2-jason.zhu@rock-chips.com>
- <Yym2aURe2+pA3ocn@sirena.org.uk>
- <dfeac54a-a264-835a-f155-90eb8f093314@rock-chips.com>
+ id A01D1F80269; Fri, 23 Sep 2022 15:11:34 +0200 (CEST)
+Received: from webhooks-bot.alsa-project.org (gate.perex.cz [77.48.224.242])
+ by alsa1.perex.cz (Postfix) with ESMTP id 85036F80107
+ for <alsa-devel@alsa-project.org>; Fri, 23 Sep 2022 15:11:28 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 85036F80107
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature"; boundary="K0csnROHqbjCpuAg"
-Content-Disposition: inline
-In-Reply-To: <dfeac54a-a264-835a-f155-90eb8f093314@rock-chips.com>
-X-Cookie: Heisenberg may have been here.
-Cc: sugar.zhang@rock-chips.com, alsa-devel@alsa-project.org, tiwai@suse.com,
- lgirdwood@gmail.com
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+From: GitHub issues - opened <github@alsa-project.org>
+To: alsa-devel@alsa-project.org
+In-Reply-To: <1663938688009516001-webhooks-bot@alsa-project.org>
+References: <1663938688009516001-webhooks-bot@alsa-project.org>
+Subject: [Allen & Heath Qu-Pac] regression since 0.3.53+ / no audio inputs
+ unless
+ manual selection of config profile ("Pro") in pulse audio control
+Message-Id: <20220923131134.A01D1F80269@alsa1.perex.cz>
+Date: Fri, 23 Sep 2022 15:11:34 +0200 (CEST)
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -84,62 +57,73 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+alsa-project/alsa-lib issue #272 was opened from ianhundere:
 
---K0csnROHqbjCpuAg
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+<!-- If you are filing this issue with a regular release please try master as it might already be fixed. -->
 
-On Wed, Sep 21, 2022 at 10:37:06AM +0800, Jason Zhu wrote:
-> =E5=9C=A8 2022/9/20 20:47, Mark Brown =E5=86=99=E9=81=93:
-> > On Tue, Sep 20, 2022 at 11:45:45AM +0800, Jason Zhu wrote:
+- PipeWire version (`pipewire --version`):
+    - `0.3.58` but also experienced with `0.3.53`, `0.3.55` and `0.3.56`. did not experience this prior to `0.3.53`.
+- Distribution and distribution version (`PRETTY_NAME` from `/etc/os-release`):
+    - `Pop!_OS 22.04 LTS`
+- Desktop Environment: 
+    - `GNOME 42.3.1`
+- Kernel version (`uname -r`):  
+    - `5.19.0-76051900-generic`
 
-> > > Sometimes we need to make some dais alive when close the card, like
-> > > VAD, so these functions must be exported so that they can be called.
+## Description of Problem:
+have to manually set audio profile in pulse audio control.
 
-> > I'm not sure I fully understand the use case here - why wouldn't
-> > the core know about the audio stream being kept active?  For
-> > something like VAD I'd expect this to be just working like a
-> > normal audio path, if there's a DSP consuming the audio stream
-> > then it'll keep everything open.  If there is a good use case I
-> > suspect it'll be clearer if you send the users along with this
-> > patch.
+## How Reproducible:
+reset interface / no inputs in daw (bitwig 4.3.2)
 
-> Thanks. For example, we use the VAD(Voice Activity Detect) & PDM(
-> Pulse Density Modulation) to record sound>. The PDM is used to
-> record and copy data to DDR memory by DMA when the system is alive.
-> The VAD is used to detect voice from PDM and copy data to sram
-> (The sram is small) when the system is sleep. If the VAD detect
-> specific sound, wake up the system and continue to record sound.
-> The data can not be lost in this process. So we attach VAD & PDM
-> in the same card, then close the card and wake up VAD & PDM again
-> when the system is goto sleep. Like these code:
+### Steps to Reproduce:
 
-This sounds like a very normal thing with a standard audio stream -
-other devices have similar VAD stuff without needing to open code access
-to the PCM operations?
+1.  reset interface (allen heath qupac)
+1.  go to pulse audio control 
+1.  unselect pro / reselect pro
 
-> When the system is waked up, open the sound card. The data in sram
-> is copied firstly and close the vad. Then use the DMA to move data
-> to DDR memory from PDM.
+errors:
 
-Generally things just continue to stream the voice data through the same
-VAD stream IIRC - switching just adds complexity here, you don't have to
-deal with joining the VAD and regular streams up for one thing.
+`journalctl --no-hostname --user -u pipewire `
+```
+Jul 30 14:39:43 systemd[1618]: Started PipeWire Multimedia Service.
+Jul 30 14:39:43 pipewire[1635]: spa.alsa: hw:acp: Rate doesn't match (requested 44100, got 48000)
+Jul 30 14:39:43 pipewire[1635]: spa.alsa: hw:acp: Rate doesn't match (requested 44100, got 48000)
+Jul 30 14:39:43 pipewire[1635]: spa.alsa: hw:acp: Rate doesn't match (requested 44100, got 48000)
+Jul 30 14:40:42 pipewire[1635]: spa.alsa: hw:3,0: snd_pcm_start: Broken pipe
+Jul 30 14:40:42 pipewire[1635]: spa.audioadapter: 0x56374b3cf218: can't send command 2: Broken pipe
+Jul 30 14:40:42 pipewire[1635]: pw.node: (alsa_input.usb-Allen_Heath_Ltd_QU-PAC-01.pro-input-0-110) suspended -> error (Start error: Broken>
+```
 
---K0csnROHqbjCpuAg
-Content-Type: application/pgp-signature; name="signature.asc"
+then i unselect / reselect "Pro" via pulseaudio volume control:
+```
+Jul 30 22:54:35 pipewire[1632]: pw.link: 0x55618e69d5d0: one of the nodes is in error out:error in:suspended
+Jul 30 22:54:35 pipewire[1632]: pw.link: 0x55618e69e200: one of the nodes is in error out:error in:suspended
+Jul 30 22:54:35 pipewire[1632]: spa.alsa: hw:3,0: snd_pcm_start: Broken pipe
+Jul 30 22:54:35 pipewire[1632]: spa.audioadapter: 0x55618e007e58: can't send command 2: Broken pipe
+Jul 30 22:54:35 pipewire[1632]: spa.alsa: hw:3,0: snd_pcm_start: Broken pipe
+Jul 30 22:54:35 pipewire[1632]: spa.audioadapter: 0x55618e007e58: can't send command 2: Broken pipe
+Jul 30 22:54:35 pipewire[1632]: spa.alsa: hw:3,0: snd_pcm_start: Broken pipe
+Jul 30 22:54:35 pipewire[1632]: spa.audioadapter: 0x55618e007e58: can't send command 2: Broken pipe
+Jul 30 22:54:36 pipewire[1632]: spa.alsa: hw:3,0: snd_pcm_start: Broken pipe
+Jul 30 22:54:36 pipewire[1632]: spa.audioadapter: 0x55618e007e58: can't send command 2: Broken pipe
+Jul 30 22:54:36 pipewire[1632]: spa.alsa: hw:acp: Rate doesn't match (requested 44100, got 48000)
+Jul 30 22:54:36 pipewire[1632]: spa.alsa: hw:3,0: snd_pcm_start: Broken pipe
+Jul 30 22:54:36 pipewire[1632]: spa.audioadapter: 0x55618e007e58: can't send command 2: Broken pipe
+Jul 30 22:54:36 pipewire[1632]: spa.alsa: hw:3,0: snd_pcm_start: Broken pipe
+Jul 30 22:54:36 pipewire[1632]: spa.audioadapter: 0x55618e007e58: can't send command 2: Broken pipe
+Jul 30 22:54:46 pipewire[1632]: spa.alsa: hw:3,0: follower delay:520 target:256 thr:256, resync
+```
 
------BEGIN PGP SIGNATURE-----
+### Actual Results:
+no audio from external inputs 
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmMtrNcACgkQJNaLcl1U
-h9CQnQf/dustlZ08QbdnRyuEszl3B5WPTjnYSw6Upf0jSTHASh7NVyEXt6OMa3wT
-I9aDsXvxKjjmFWk+YzxzvfY5iaqAhDcYYvow5NfFnqmGm8SMMqROia+ye/MubTEF
-2myOtZ/lw4PJmDRSRc/Bu5W4RyvrTHUxN1v9XouZ0MD/hC8p6LgjkSZTZMa6HhJD
-6tyF7MgskgHDChyu4AgPJcLfi4FiPcP1mcrX2bydOEc2R9TjQWX8twaswpncnCJF
-lvAa1NRFKjdPjqQMbdoo5hfjf5AzoSce3eFHngiHIZo2sTgJpTj1ggVZBxoYRTw3
-u440mFQkvVz1K757SIK7f8pi7hWb6A==
-=w0wX
------END PGP SIGNATURE-----
+### Expected Results:
+you shouldn't need to reselect a profile
 
---K0csnROHqbjCpuAg--
+# Additional Info (as attachments):
+
+ - more info: https://github.com/pop-os/pipewire/issues/16, https://gitlab.freedesktop.org/pipewire/pipewire/-/issues/2567
+
+Issue URL     : https://github.com/alsa-project/alsa-lib/issues/272
+Repository URL: https://github.com/alsa-project/alsa-lib
