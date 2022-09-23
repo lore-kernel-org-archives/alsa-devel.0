@@ -4,66 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E8DE1C6FA82
-	for <alsa-devel@archiver.kernel.org>; Fri, 23 Sep 2022 13:38:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id CFFF1C6FA82
+	for <alsa-devel@archiver.kernel.org>; Fri, 23 Sep 2022 13:38:33 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 20B43820;
-	Fri, 23 Sep 2022 15:37:24 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 20B43820
+	by alsa0.perex.cz (Postfix) with ESMTPS id 09552E0F;
+	Fri, 23 Sep 2022 15:37:42 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 09552E0F
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1663940294;
-	bh=xdbdpsk5UyKue9kmH3hrd4xI1x3OlgEGELc/EKBGydY=;
+	s=default; t=1663940312;
+	bh=66D35Ue/4cPcp224E03ZAKNGYbtBq6D921MmLBu9344=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=vpZUaTK+cDB3se6vKicr7+ImKym1bULw/W5wcs6EnQdksQV3ZF8i6z3ioizSV33Km
-	 0xTyQcpZi6kkZecL/KtDsDhIDaHB7gQ9tgbSp8hnxbdi8hQQkzzjhPfT0rYQGDCLyu
-	 h7XCB47KhelyQIfHpaelgauZK66zpfaGd1J4q19Q=
+	b=pv6V3oyleYWoemAUOhzzKZ1UjuVkB/NFosNvc76mXBY+8sIHUojQV4JdlLym2N9wb
+	 sa+rjfHW9apY/ZqpRldWW9awwuZrHE6MigXeuxygOPrDMtbBcoEtIYKFPJ8MRNrhLT
+	 LztOAPxHsUdBY7Zp50B7R6p2pzFKO2M9ip10Oby8=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 55A41F8055B;
-	Fri, 23 Sep 2022 15:36:29 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id D0990F8055C;
+	Fri, 23 Sep 2022 15:36:30 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 47D35F80431; Fri, 23 Sep 2022 15:36:26 +0200 (CEST)
+ id B0864F80566; Fri, 23 Sep 2022 15:36:29 +0200 (CEST)
 Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id AD0C4F80538
- for <alsa-devel@alsa-project.org>; Fri, 23 Sep 2022 15:36:19 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AD0C4F80538
+ by alsa1.perex.cz (Postfix) with ESMTPS id 1A557F80542
+ for <alsa-devel@alsa-project.org>; Fri, 23 Sep 2022 15:36:21 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1A557F80542
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="IuPCpMcg"
+ header.b="USbxS3R4"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1663940180; x=1695476180;
+ t=1663940183; x=1695476183;
  h=from:to:cc:subject:date:message-id:in-reply-to:
  references:mime-version:content-transfer-encoding;
- bh=xdbdpsk5UyKue9kmH3hrd4xI1x3OlgEGELc/EKBGydY=;
- b=IuPCpMcgp+jFQk8oVlSuKtdJe5AzzKca2Dtc+Ydj2BLOwWEsbXoYrJrz
- cr/wXpnWibbEhi9vXnMjgiAjtEHTtc8ktF8i1T5lm69GyKIJIOLK4fmEL
- mKYF4+HjUbGbcTPXf4xbSdXLPbXotuYOscnUqf+cLERgRU8BgD58l0Puo
- cI3TGotcAI8+3Q3AaMY8rtx83+2B4IlMQ90gXhJ9M2oyuOHYfltKY27GI
- jj7yniRFel7HM04Q8JPjom/zpu9d83dALAmcL5soDD8r26U82GhV0AXCH
- RIkiZhrJIAOsiyFZdeD6VvPg3BdW9mxjzgBeJC9xMFkWxx22nQlFAo/a0 w==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10479"; a="300575632"
-X-IronPort-AV: E=Sophos;i="5.93,339,1654585200"; d="scan'208";a="300575632"
+ bh=66D35Ue/4cPcp224E03ZAKNGYbtBq6D921MmLBu9344=;
+ b=USbxS3R42MHr5wS0zn2D5nzBM8xkt4Ldp6FH2sOIN2iAqgVxEabB0Sk2
+ sYfARcjK/V9hQNIySKCxNpuw6QnUYmV6t3Yx3Z0+HZGvb0SrUkGFfwlgT
+ X4uDU3+kiyvGEe0hfCDCsCkj7yyZDWmsxm+YAsQDcEwTDypyFmCq8Tv4r
+ JRpvoO5SMkt/BuhPJI3++UG8nRaJjlRxTwwiQvFfQoQ1/S42Qghsa4pel
+ mgo5ETpbwwWMaQQy4LWhz8unwZN/XYu3x93o0mlpBtjg0Tnk1tEIi1FG1
+ b1DMyKClmvI25nQe+bF/z2T7QIoEiQIkvKIlMd8dfVxcNhLUKiNU6fK7T A==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10479"; a="300575655"
+X-IronPort-AV: E=Sophos;i="5.93,339,1654585200"; d="scan'208";a="300575655"
 Received: from orsmga003.jf.intel.com ([10.7.209.27])
  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 23 Sep 2022 06:36:19 -0700
-X-IronPort-AV: E=Sophos;i="5.93,339,1654585200"; d="scan'208";a="571375328"
+ 23 Sep 2022 06:36:21 -0700
+X-IronPort-AV: E=Sophos;i="5.93,339,1654585200"; d="scan'208";a="571375333"
 Received: from acarr-mobl1.ger.corp.intel.com (HELO
  pujfalus-desk.ger.corp.intel.com) ([10.252.3.209])
  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 23 Sep 2022 06:36:17 -0700
+ 23 Sep 2022 06:36:19 -0700
 From: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
 To: lgirdwood@gmail.com, broonie@kernel.org,
  pierre-louis.bossart@linux.intel.com
-Subject: [PATCH 5/6] ASoC: SOF: Intel: hda: Only dump firmware registers for
- IPC3
-Date: Fri, 23 Sep 2022 16:36:15 +0300
-Message-Id: <20220923133616.26267-6-peter.ujfalusi@linux.intel.com>
+Subject: [PATCH 6/6] ASoC: SOF: ipc4: Call snd_sof_handle_fw_exception() in
+ case of timeout
+Date: Fri, 23 Sep 2022 16:36:16 +0300
+Message-Id: <20220923133616.26267-7-peter.ujfalusi@linux.intel.com>
 X-Mailer: git-send-email 2.37.3
 In-Reply-To: <20220923133616.26267-1-peter.ujfalusi@linux.intel.com>
 References: <20220923133616.26267-1-peter.ujfalusi@linux.intel.com>
@@ -86,30 +86,28 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The firmware register dump is IPC3 specific, it is not available for other
-IPC versions.
+It can help debugging IPC timeout issues (like we do with IPC3) if we
+dump the IPC and DSP information.
 
 Signed-off-by: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
 Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 Reviewed-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
 Reviewed-by: Rander Wang <rander.wang@intel.com>
 ---
- sound/soc/sof/intel/hda.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ sound/soc/sof/ipc4.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/sound/soc/sof/intel/hda.c b/sound/soc/sof/intel/hda.c
-index ca648d2a9da7..e00062f3b21c 100644
---- a/sound/soc/sof/intel/hda.c
-+++ b/sound/soc/sof/intel/hda.c
-@@ -598,7 +598,8 @@ void hda_dsp_dump(struct snd_sof_dev *sdev, u32 flags)
- 	/* print ROM/FW status */
- 	hda_dsp_get_state(sdev, level);
- 
--	if (flags & SOF_DBG_DUMP_REGS) {
-+	/* The firmware register dump only available with IPC3 */
-+	if (flags & SOF_DBG_DUMP_REGS && sdev->pdata->ipc_type == SOF_IPC) {
- 		u32 status = snd_sof_dsp_read(sdev, HDA_DSP_BAR, HDA_DSP_SRAM_REG_FW_STATUS);
- 		u32 panic = snd_sof_dsp_read(sdev, HDA_DSP_BAR, HDA_DSP_SRAM_REG_FW_TRACEP);
+diff --git a/sound/soc/sof/ipc4.c b/sound/soc/sof/ipc4.c
+index 0d830020556d..6eaa18e27e5a 100644
+--- a/sound/soc/sof/ipc4.c
++++ b/sound/soc/sof/ipc4.c
+@@ -295,6 +295,7 @@ static int ipc4_wait_tx_done(struct snd_sof_ipc *ipc, void *reply_data)
+ 	if (ret == 0) {
+ 		dev_err(sdev->dev, "ipc timed out for %#x|%#x\n",
+ 			ipc4_msg->primary, ipc4_msg->extension);
++		snd_sof_handle_fw_exception(ipc->sdev, "IPC timeout");
+ 		return -ETIMEDOUT;
+ 	}
  
 -- 
 2.37.3
