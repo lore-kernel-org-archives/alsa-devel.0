@@ -4,77 +4,70 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id DA2A4C07E9D
-	for <alsa-devel@archiver.kernel.org>; Fri, 23 Sep 2022 17:09:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 822BFC04A95
+	for <alsa-devel@archiver.kernel.org>; Fri, 23 Sep 2022 18:22:54 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D44C61FC;
-	Fri, 23 Sep 2022 19:08:39 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D44C61FC
+	by alsa0.perex.cz (Postfix) with ESMTPS id A414B1E0;
+	Fri, 23 Sep 2022 20:22:01 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A414B1E0
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1663952969;
-	bh=Zi+X8uctJFup7TbjedrP/+Pjx2XQ+XyqRpfIjKiqz5c=;
+	s=default; t=1663957371;
+	bh=nHs2AfrvtEk1XxvpH+aLNwlJHpGH5OeAB5BjgaRdNn8=;
 	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=BsC3jav+rRGojWh6ox6e5vXGKIFkZQpzEWIwxfEXRJTdb+h9nUry+71CnIjyYBa1Y
-	 3bidqFZNSDKQTCbUVi2osuwFHb2cIPZ1Go2sSD5BGrT1M7GlqoUWtWjeD+LDaLmmPl
-	 gSFKW62R1o1ZvVO8IGMG3LHs/rb5Dknd7/H8mVlc=
+	b=GARJA5YISGAXibE1fbqHT6HFW/qGUf+BNTMW8j8/aRtTdcVw9An55FifueghCpIIK
+	 nssr8y+hLWo1uOGM5P6Y97qSvgwNowoIeff0tutSHlFQZYoGPb3XCizfhG799nIP/p
+	 L0VlneDhYc6tVRKUbUL6o1cl6jrs5j8WwaYnZj8s=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 73D91F80557;
-	Fri, 23 Sep 2022 19:07:16 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 22281F80224;
+	Fri, 23 Sep 2022 20:22:01 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id BE5C0F8055B; Fri, 23 Sep 2022 19:07:14 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org
- [IPv6:2604:1380:4641:c500::1])
+ id 34F78F80269; Fri, 23 Sep 2022 20:21:59 +0200 (CEST)
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 4E734F8054A
- for <alsa-devel@alsa-project.org>; Fri, 23 Sep 2022 19:07:12 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4E734F8054A
+ by alsa1.perex.cz (Postfix) with ESMTPS id CE991F80124
+ for <alsa-devel@alsa-project.org>; Fri, 23 Sep 2022 20:21:56 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CE991F80124
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="BSztG1Gi"
+ header.b="Y7dXJdug"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id D5DC5612CF;
- Fri, 23 Sep 2022 17:07:10 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id F39DEC433C1;
- Fri, 23 Sep 2022 17:07:07 +0000 (UTC)
+ by ams.source.kernel.org (Postfix) with ESMTPS id 441F9B82150;
+ Fri, 23 Sep 2022 18:21:55 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CE6EDC433D6;
+ Fri, 23 Sep 2022 18:21:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1663952830;
- bh=Zi+X8uctJFup7TbjedrP/+Pjx2XQ+XyqRpfIjKiqz5c=;
+ s=k20201202; t=1663957314;
+ bh=nHs2AfrvtEk1XxvpH+aLNwlJHpGH5OeAB5BjgaRdNn8=;
  h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=BSztG1GiNRCbiEZ9nEehKrwGLVvxFPufNR7ae5EdtcCrBEyGfjiDER6M94hGNwPNv
- lcHYxiQqfrT8g//ifN58fpdYsf2CPW9fNyQQO5sjASPDwdnUFSJbNVGgzFftJ2vg0P
- IRen6gE0IZDx1OJyeDHtK6KgMRjiiixkSABZPXlRP5lHekakdq7QirLfmRI5gD6429
- yNqqo53SzDDFrv9aqeTtQJ54TrEtW5XOdc1wV5L29+TUyA1CJ6cb3xv4kXFpVsPHab
- a2qaaOXHeBlD1mCx2b5Wze/Rh5fl8s67jApIgjzEpefkSHu3QODtK/t7KxIiZ1Yc7X
- NUgtnGYHOla9A==
+ b=Y7dXJdughMertrvwxRUGuz8LzjWUTBvV5X48hlDNnHdB1j7npK5z+KTRictpFfUrL
+ 84VLE38m3G0bW06zvrH4NKm8KuscGbXgmkvR834NV/RuvG9XWmmGj26gWdnmdXYrFr
+ a775kFaLzRN+IiXdgDSL3iU2Q03MRLvU93oadp6SNz+iUiL/HaDa23sNB/daKo+ka7
+ R01XG81lq9Bhp4sllixfmqsKK/M2/GZrcduG2bzmo4O2tHSI1rxoqOgHxaVOtBmH+T
+ cJY3/yEG/SRyqzJ/w/vksueuKOy4TNZbcAi7m12zQ7aL5tPc0eUJIfnSNo7LvhtP9/
+ UzP1anJQ9lcBw==
 From: Mark Brown <broonie@kernel.org>
-To: Cezary Rojewski <cezary.rojewski@intel.com>,
- Nathan Chancellor <nathan@kernel.org>, 
- Kai Vehmanen <kai.vehmanen@linux.intel.com>,
- Ranjani Sridharan <ranjani.sridharan@linux.intel.com>, 
- Liam Girdwood <liam.r.girdwood@linux.intel.com>,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, 
- Peter Ujfalusi <peter.ujfalusi@linux.intel.com>,
- Bard Liao <yung-chuan.liao@linux.intel.com>
-In-Reply-To: <20220922153752.336193-1-nathan@kernel.org>
-References: <20220922153752.336193-1-nathan@kernel.org>
-Subject: Re: [PATCH -next] ASoC: Intel: sof_da7219_mx98360a: Access num_codecs
- through dai_link
-Message-Id: <166395282771.610218.7443739355228325098.b4-ty@kernel.org>
-Date: Fri, 23 Sep 2022 18:07:07 +0100
+To: shengjiu.wang@gmail.com, alsa-devel@alsa-project.org,
+ Shengjiu Wang <shengjiu.wang@nxp.com>, tiwai@suse.com, 
+ nicoleotsuka@gmail.com, festevam@gmail.com, Xiubo.Lee@gmail.com, perex@perex.cz,
+ lgirdwood@gmail.com
+In-Reply-To: <1662446961-20799-1-git-send-email-shengjiu.wang@nxp.com>
+References: <1662446961-20799-1-git-send-email-shengjiu.wang@nxp.com>
+Subject: Re: [PATCH] Revert "ASoC: fsl_audmix: make clock and output src write
+ only"
+Message-Id: <166395731156.751793.9528112393184864154.b4-ty@kernel.org>
+Date: Fri, 23 Sep 2022 19:21:51 +0100
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 X-Mailer: b4 0.10.0-dev-fc921
-Cc: alsa-devel@alsa-project.org, patches@lists.linux.dev,
- Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
- linux-kernel@vger.kernel.org
+Cc: linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -90,14 +83,13 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Thu, 22 Sep 2022 08:37:52 -0700, Nathan Chancellor wrote:
-> After commit 3989ade2d1e7 ("ASoC: soc.h: remove num_cpus/codecs"), the
-> following build error occurs:
+On Tue, 6 Sep 2022 14:49:21 +0800, Shengjiu Wang wrote:
+> This reverts commit 944c517b8c838832a166f1c89afbf8724f4a6b49.
 > 
->   sound/soc/intel/boards/sof_da7219_max98373.c:198:27: error: no member named 'num_codecs' in 'struct snd_soc_pcm_runtime'
->           for (j = 0; j < runtime->num_codecs; j++) {
->                           ~~~~~~~  ^
->   1 error generated.
+> There is error after making clock and output src write only
+> 
+> $amixer -c imxaudmix cset numid=1 1
+> amixer: Cannot read the given element from control sysdefault:3
 > 
 > [...]
 
@@ -107,8 +99,8 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: Intel: sof_da7219_mx98360a: Access num_codecs through dai_link
-      commit: 0402cca4828dd9556d36ddef67710993b7063f7c
+[1/1] Revert "ASoC: fsl_audmix: make clock and output src write only"
+      commit: 086ceada2107b482df437d76f581062b547eb7f2
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
