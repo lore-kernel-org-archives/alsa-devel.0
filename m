@@ -4,73 +4,73 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 76FB4C6FA82
-	for <alsa-devel@archiver.kernel.org>; Fri, 23 Sep 2022 16:18:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id CD76EECAAD8
+	for <alsa-devel@archiver.kernel.org>; Fri, 23 Sep 2022 16:18:21 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 964DF86E;
-	Fri, 23 Sep 2022 18:17:10 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 964DF86E
+	by alsa0.perex.cz (Postfix) with ESMTPS id F23483E;
+	Fri, 23 Sep 2022 18:17:29 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F23483E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1663949880;
-	bh=UAP3sv+2BCKOMyPUKp6yBPjUJLF3S3wNX+/tVIIZJlg=;
+	s=default; t=1663949900;
+	bh=v/BlpdBRXODT5Mp+pnSPWjus4IPHaPr7IeThvwO0PPk=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=dTm+9OlElXFX4JYo4j1bUQvKuhE3cPEDRnx2jpwD+BjRWcthT7/dFGhho+5YsvRMO
-	 qJmxo1fIPLIdrZJIcpne4eQHpGqQMjNytpzp7jqe+/uKKc9minRFBYpW7+Sz2M7AQW
-	 s9LhA3uOrvwrJlJLxe/cGjifY1jey+MRPNa+jgVw=
+	b=Aw6SYRVZ6shTN412ak07ajJ4ketWFGgeUT1QeLLTZS3TniVKl7cjpYcjs3CC9RMXL
+	 QWRk+gRfUge3FiMf5DcodMYA0OuvwQh38CFQnr9gvFzL1qwjVleQMr2hnqmSVK8Yw9
+	 2/OF1Ccn26ookipLoWSxINHqA7HRYhlDjnO7G328=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 8DBC4F80558;
-	Fri, 23 Sep 2022 18:16:24 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 5D484F80559;
+	Fri, 23 Sep 2022 18:16:26 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 3B7D8F80543; Fri, 23 Sep 2022 18:16:20 +0200 (CEST)
-Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com
- [IPv6:2a00:1450:4864:20::12e])
+ id AECA1F80549; Fri, 23 Sep 2022 18:16:22 +0200 (CEST)
+Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com
+ [IPv6:2a00:1450:4864:20::134])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id D7344F804D1
- for <alsa-devel@alsa-project.org>; Fri, 23 Sep 2022 18:16:12 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D7344F804D1
+ by alsa1.perex.cz (Postfix) with ESMTPS id 8B07AF80539
+ for <alsa-devel@alsa-project.org>; Fri, 23 Sep 2022 18:16:16 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8B07AF80539
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org
- header.b="Xfg1awDm"
-Received: by mail-lf1-x12e.google.com with SMTP id a3so1031702lfk.9
- for <alsa-devel@alsa-project.org>; Fri, 23 Sep 2022 09:16:12 -0700 (PDT)
+ header.b="bP+EYhTb"
+Received: by mail-lf1-x134.google.com with SMTP id z25so1089088lfr.2
+ for <alsa-devel@alsa-project.org>; Fri, 23 Sep 2022 09:16:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
  h=content-transfer-encoding:mime-version:references:in-reply-to
  :message-id:date:subject:cc:to:from:from:to:cc:subject:date;
- bh=nJKdZtRvq8vBlaQZJuT8tYogYRM3UsmdrKTxy6xD2iw=;
- b=Xfg1awDmiUcpuVPcBMW/FiqbFFeQmvs0LWuSTrmgGp2qby6q1KdawTWyRdaIMvkGHN
- CttSYjA7q2t7TxM/DHGI1E6jjctpOdpZK4lrSCnGGmP6MHdUoZiAUl1qdTBiAiyFu2HX
- Kp6eTFdFGYBdsvvvVYYGBN2zFbx/NsnoePe1DmBxt4EiWnSIZdKd51mM5vezG52ZR3re
- LV/PeV3zrKUh9QIHB4NOsdhd1K/pFPce8ocQQuAnekN/vNkONipqEAYgrVitj/s30RPb
- lOD4ewemEaITwY+ApcwPqLhE0rF1RnZpg5VW5djLNMGVUT8EnRlwg7hd788Z+Y+0tR+H
- ixjQ==
+ bh=rQi7cXeOGY/HNtdfUBGhQ3z+Yj+bhensaF8Epr2+VKg=;
+ b=bP+EYhTbDFAc/wpZjl1F+uUYw0akkDcMgOciFC6ZrTsiuDtJHRDli2oc+mgz1bjBEB
+ bnhvHFeOAwNM2l6f7BThVz+vU96aoGVEJkK5fdG3sgYxl1lmP4B92j3L6yyXFAWWq0+4
+ V36Sb4LRJYOLhjOtaFEsrYiwanKnuwGvDtJjQwJWrLS7npcOu8MvFXs5od+poKHQ8ziT
+ Ar0hGKSeaxWWuwpO6YDVm10TkyFq1MzJ/ky6K7kq0tmONOPlgnnbJ0vjM3Yjbef7Y+7c
+ rtikQwEl5zIMmSRfMvu27qOm9jryi4+IiGImadCpa0rZA9BGdNGOL2F1CXwqMCJfyu5d
+ LT/g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
  h=content-transfer-encoding:mime-version:references:in-reply-to
  :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
  :subject:date;
- bh=nJKdZtRvq8vBlaQZJuT8tYogYRM3UsmdrKTxy6xD2iw=;
- b=paX+q8c+b5uKK2uDahLnqrCwNF3rxBd7OlvHdXQczRO6ILPD1cBBDbbSWHQAhKUtyv
- 9QM5Daa7VgAiulyTf6cNnlQKnMnkdfiu5xAjtGQbgrg19xqwpIqHBjIlEBguRDj+o6Jg
- gq00NN7swZf2g0b7ovfgakGiIX7haR9bqeK/jWEZBz9N9KpNzxAxL36csa49qVY+4mPq
- 4EWAq1xz8NTelKWXO/xJnQbord75i+y7z3c1ca9rzmzXSr+lB1AmCuThh2yYErJnkVQO
- zPHsfcjdUr7BWnjYSFYf7R8tZa+16xSKBo+dClQiOEqF632iHF5zqOyPGnWDUV7u+VQj
- g8cA==
-X-Gm-Message-State: ACrzQf04WR73lu7gYuNehmOFjc0Cdi/E6fDSNi6tGLSOzJVpFh4kJWCx
- x3KXmntrlbMPvyDcNUwG+clCKQ==
-X-Google-Smtp-Source: AMsMyM7pGltPmmGkuAEHAcrGUgl/lKfRBdxAiWjL6WRo3JAsU/8+hmNR9y1u0n50ycApnB7uOANipg==
-X-Received: by 2002:a05:6512:b8b:b0:498:f32a:3c1e with SMTP id
- b11-20020a0565120b8b00b00498f32a3c1emr3355951lfv.123.1663949770909; 
- Fri, 23 Sep 2022 09:16:10 -0700 (PDT)
+ bh=rQi7cXeOGY/HNtdfUBGhQ3z+Yj+bhensaF8Epr2+VKg=;
+ b=qHe2Y68sBN9u8JvPjxbq6TKqi8ARTD5dn8SurYnT0PCV2+B0WCVreDK3q/Z7FR6SWv
+ p0y3zUAt/JiUP60b87MAQVo3TjJ4rzAPnOYUFj2ufrdQZLP+3RHB+liL8JKXDd6PXrbH
+ EsEzeNnR2wQ9poWrUeLT/hR+XHfxubvWFlcLwlh7OPVnhKQSHeI804lTzrRVR6Aq+b/r
+ xEOrXAWU87cujjl+J43gxLkxAQI9jXzQKdAck800q8jtdng+3tkrIYzYRh09dwUQVGyl
+ U7IAcVPAv3ABFxEKBo5lw6U9AELzlFvHP/lnVriwtB1m+/QfczdybJDc68IDKMkM3sNq
+ lqVA==
+X-Gm-Message-State: ACrzQf2g6U9lr8xTaZZxcRCA2IMKSh53k4T98JGhc9SChij5IPRL45AV
+ sOEX0uinK/BarvuYOQ/aP0+5kg==
+X-Google-Smtp-Source: AMsMyM45foDdKrFAiARyJ50xgSYYLky1sNK6COgku8DrtsekyXVpzDgebpoNqHI+fdvo0Gp4kR4Fjg==
+X-Received: by 2002:a05:6512:2586:b0:4a0:54f2:772e with SMTP id
+ bf6-20020a056512258600b004a054f2772emr1218043lfb.663.1663949774809; 
+ Fri, 23 Sep 2022 09:16:14 -0700 (PDT)
 Received: from krzk-bin.. (78-11-189-27.static.ip.netia.com.pl. [78.11.189.27])
  by smtp.gmail.com with ESMTPSA id
- f9-20020ac25cc9000000b00492f45cbbfcsm1493491lfq.302.2022.09.23.09.16.10
+ f9-20020ac25cc9000000b00492f45cbbfcsm1493491lfq.302.2022.09.23.09.16.14
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Fri, 23 Sep 2022 09:16:10 -0700 (PDT)
+ Fri, 23 Sep 2022 09:16:14 -0700 (PDT)
 From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
  Rob Herring <robh+dt@kernel.org>,
@@ -79,10 +79,10 @@ To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
  Konrad Dybcio <konrad.dybcio@somainline.org>, alsa-devel@alsa-project.org,
  devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
  linux-arm-msm@vger.kernel.org
-Subject: [PATCH 04/11] arm64: dts: qcom: mms8996: correct slimbus children
- unit addresses
-Date: Fri, 23 Sep 2022 18:14:46 +0200
-Message-Id: <20220923161453.469179-5-krzysztof.kozlowski@linaro.org>
+Subject: [PATCH 08/11] arm64: dts: qcom: msm8996: align node names with DT
+ schema
+Date: Fri, 23 Sep 2022 18:14:50 +0200
+Message-Id: <20220923161453.469179-9-krzysztof.kozlowski@linaro.org>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20220923161453.469179-1-krzysztof.kozlowski@linaro.org>
 References: <20220923161453.469179-1-krzysztof.kozlowski@linaro.org>
@@ -104,37 +104,37 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Correct slimbus address/size cells to match bindings.
+New slimbus DT schema expect only SLIMbus bus nodes to be named
+"slimbus".  In case of Qualcomm SLIMbus NGD, the bus node is what was
+called "ngd".
 
 Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 ---
- arch/arm64/boot/dts/qcom/msm8996.dtsi | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ arch/arm64/boot/dts/qcom/msm8996.dtsi | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/arch/arm64/boot/dts/qcom/msm8996.dtsi b/arch/arm64/boot/dts/qcom/msm8996.dtsi
-index 903c443a867f..2c5908d104f7 100644
+index 8b31f4655cb8..341295be7609 100644
 --- a/arch/arm64/boot/dts/qcom/msm8996.dtsi
 +++ b/arch/arm64/boot/dts/qcom/msm8996.dtsi
-@@ -3320,15 +3320,15 @@ slim_msm: slim@91c0000 {
+@@ -3309,7 +3309,7 @@ slimbam: dma-controller@9184000 {
+ 			qcom,num-ees = <2>;
+ 		};
+ 
+-		slim_msm: slim@91c0000 {
++		slim_msm: slim-ngd@91c0000 {
+ 			compatible = "qcom,slim-ngd-v1.5.0";
+ 			reg = <0x091c0000 0x2C000>;
+ 			interrupts = <0 163 IRQ_TYPE_LEVEL_HIGH>;
+@@ -3317,7 +3317,7 @@ slim_msm: slim@91c0000 {
+ 			dma-names = "rx", "tx";
+ 			#address-cells = <1>;
  			#size-cells = <0>;
- 			ngd@1 {
+-			ngd@1 {
++			slim@1 {
  				reg = <1>;
--				#address-cells = <1>;
--				#size-cells = <1>;
-+				#address-cells = <2>;
-+				#size-cells = <0>;
- 
--				tasha_ifd: tas-ifd {
-+				tasha_ifd: tas-ifd@0,0 {
- 					compatible = "slim217,1a0";
- 					reg = <0 0>;
- 				};
- 
--				wcd9335: codec@1{
-+				wcd9335: codec@1,0 {
- 					pinctrl-0 = <&cdc_reset_active &wcd_intr_default>;
- 					pinctrl-names = "default";
- 
+ 				#address-cells = <2>;
+ 				#size-cells = <0>;
 -- 
 2.34.1
 
