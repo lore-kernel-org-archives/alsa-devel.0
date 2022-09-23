@@ -4,44 +4,73 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B6DD4C6FA82
-	for <alsa-devel@archiver.kernel.org>; Fri, 23 Sep 2022 13:36:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id AD5FAECAAD8
+	for <alsa-devel@archiver.kernel.org>; Fri, 23 Sep 2022 13:37:12 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 067E71FC;
-	Fri, 23 Sep 2022 15:35:28 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 067E71FC
+	by alsa0.perex.cz (Postfix) with ESMTPS id BC0B3210;
+	Fri, 23 Sep 2022 15:36:20 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BC0B3210
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1663940178;
-	bh=D0ogDTkCfoiW9VjbHGSGciV0eZaW1CVr8ooY8Vqqbec=;
-	h=From:To:In-Reply-To:References:Subject:Date:List-Id:
+	s=default; t=1663940230;
+	bh=HvYNsvlok+RU+Wk3bol1LDURCPosUvc8hrylzY0u54c=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=e3glvJB0yMpRzbmaefQ/QwN9KnqdMzPwX4K4z1nrotb3zJ9voZChNuolYYEAs0hTi
-	 BCn1+RAiJ6xL8iTLBQCiHa1T6pT63ggaBAWIM69qsZHo3Pb/p344gbBlqMUdBp8okG
-	 zwj5QAl1Wt7jZ8Rlcoy8klHKTRDcDWdd/AEHEPww=
+	b=KAp+SpazITfW9QV/CZLgBPlWg5O7EvuzcL+fXbkxj1cPEyYtr81Kp9xqHxEKN241q
+	 bOHGL7BqaII/u29iszowOYls/ikJXYBZu8uAbddtRlQLP/tWtfSD0PEpVyS4lk9p4s
+	 gbpLlyQqR+eIbtTHuRcOisdoUlxkUMdCmVf/RHJk=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 8B16AF80224;
-	Fri, 23 Sep 2022 15:35:27 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 4C5A5F804D1;
+	Fri, 23 Sep 2022 15:36:20 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 027B5F80269; Fri, 23 Sep 2022 15:35:25 +0200 (CEST)
-Received: from webhooks-bot.alsa-project.org (gate.perex.cz [77.48.224.242])
- by alsa1.perex.cz (Postfix) with ESMTP id AC156F80107
- for <alsa-devel@alsa-project.org>; Fri, 23 Sep 2022 15:35:19 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AC156F80107
+ id C7DA6F80538; Fri, 23 Sep 2022 15:36:18 +0200 (CEST)
+Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 1EE3CF80124
+ for <alsa-devel@alsa-project.org>; Fri, 23 Sep 2022 15:36:11 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1EE3CF80124
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
+ header.b="e2e5Ccbq"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+ d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+ t=1663940173; x=1695476173;
+ h=from:to:cc:subject:date:message-id:in-reply-to:
+ references:mime-version:content-transfer-encoding;
+ bh=HvYNsvlok+RU+Wk3bol1LDURCPosUvc8hrylzY0u54c=;
+ b=e2e5CcbqnbZRfaL33YOn4dN4N04H4tpCqPZSCYjqohB66i9YzKQRBz2K
+ dy9Z7ZO9uqogp/ulEc0G9Zh/dudcnfj/hmlPkbs5/rnhfQw7OAiRRyTnr
+ ORXQm8cIId3Knmf2niXzvRRnQx2bLCRvl2C6moVpQ5GRD+k5CAT5uRK+p
+ FtM+PZVOKEhCXLqEarIFzcLyAId/HGfcZ87Hih+6d+1kgVtdLIlgfM88k
+ kfqtrzsmIbyM9TFOJ0f/ZCC1lZL+gz6ZAU7B1abHLIlkbMORQbjItF+G2
+ vyWLSQPPYQJ8W7zs9BOzs7+R8xKf57I4rOsJ0y+mAbXc7vkER03y2kHDf Q==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10479"; a="300575612"
+X-IronPort-AV: E=Sophos;i="5.93,339,1654585200"; d="scan'208";a="300575612"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+ by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 23 Sep 2022 06:36:10 -0700
+X-IronPort-AV: E=Sophos;i="5.93,339,1654585200"; d="scan'208";a="571375291"
+Received: from acarr-mobl1.ger.corp.intel.com (HELO
+ pujfalus-desk.ger.corp.intel.com) ([10.252.3.209])
+ by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 23 Sep 2022 06:36:07 -0700
+From: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
+To: lgirdwood@gmail.com, broonie@kernel.org,
+ pierre-louis.bossart@linux.intel.com
+Subject: [PATCH 1/6] ASoC: SOF: Intel: cnl: Add separate ops for ipc_dump for
+ IPC4
+Date: Fri, 23 Sep 2022 16:36:11 +0300
+Message-Id: <20220923133616.26267-2-peter.ujfalusi@linux.intel.com>
+X-Mailer: git-send-email 2.37.3
+In-Reply-To: <20220923133616.26267-1-peter.ujfalusi@linux.intel.com>
+References: <20220923133616.26267-1-peter.ujfalusi@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-From: GitHub issues - edited <github@alsa-project.org>
-To: alsa-devel@alsa-project.org
-In-Reply-To: <1663940119090003967-webhooks-bot@alsa-project.org>
-References: <1663940119090003967-webhooks-bot@alsa-project.org>
-Subject: [Allen & Heath Qu-Pac] regression since 0.3.53+ / no audio inputs
- unless
- manual selection of config profile ("Pro") in pulse audio control
-Message-Id: <20220923133526.027B5F80269@alsa1.perex.cz>
-Date: Fri, 23 Sep 2022 15:35:25 +0200 (CEST)
+Content-Transfer-Encoding: 8bit
+Cc: alsa-devel@alsa-project.org, ranjani.sridharan@linux.intel.com,
+ kai.vehmanen@linux.intel.com, rander.wang@intel.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -57,73 +86,154 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-alsa-project/alsa-lib issue #272 was edited from ianhundere:
+The use of the IPC registers are different between IPC3 and IPC4.
+The ipc_dump needs to use different prints depending on the used IPC
+protocol.
 
-<!-- If you are filing this issue with a regular release please try master as it might already be fixed. -->
+Signed-off-by: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
+Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+Reviewed-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
+Reviewed-by: Rander Wang <rander.wang@intel.com>
+---
+ sound/soc/sof/intel/cnl.c     | 28 +++++++++++++++++++++++++++-
+ sound/soc/sof/intel/hda-ipc.h |  1 +
+ sound/soc/sof/intel/icl.c     |  7 ++++++-
+ sound/soc/sof/intel/tgl.c     |  7 ++++++-
+ 4 files changed, 40 insertions(+), 3 deletions(-)
 
-- PipeWire version (`pipewire --version`):
-    - `0.3.58` but also experienced with `0.3.53`, `0.3.55` and `0.3.56`. did not experience this prior to `0.3.53`.
-- Distribution and distribution version (`PRETTY_NAME` from `/etc/os-release`):
-    - `Pop!_OS 22.04 LTS`
-- Desktop Environment: 
-    - `GNOME 42.3.1`
-- Kernel version (`uname -r`):  
-    - `5.19.0-76051900-generic`
+diff --git a/sound/soc/sof/intel/cnl.c b/sound/soc/sof/intel/cnl.c
+index 180001d0a38a..1e71f6dc604e 100644
+--- a/sound/soc/sof/intel/cnl.c
++++ b/sound/soc/sof/intel/cnl.c
+@@ -332,6 +332,27 @@ void cnl_ipc_dump(struct snd_sof_dev *sdev)
+ 		hipcida, hipctdr, hipcctl);
+ }
+ 
++void cnl_ipc4_dump(struct snd_sof_dev *sdev)
++{
++	u32 hipcidr, hipcidd, hipcida, hipctdr, hipctdd, hipctda, hipcctl;
++
++	hda_ipc_irq_dump(sdev);
++
++	hipcidr = snd_sof_dsp_read(sdev, HDA_DSP_BAR, CNL_DSP_REG_HIPCIDR);
++	hipcidd = snd_sof_dsp_read(sdev, HDA_DSP_BAR, CNL_DSP_REG_HIPCIDD);
++	hipcida = snd_sof_dsp_read(sdev, HDA_DSP_BAR, CNL_DSP_REG_HIPCIDA);
++	hipctdr = snd_sof_dsp_read(sdev, HDA_DSP_BAR, CNL_DSP_REG_HIPCTDR);
++	hipctdd = snd_sof_dsp_read(sdev, HDA_DSP_BAR, CNL_DSP_REG_HIPCTDD);
++	hipctda = snd_sof_dsp_read(sdev, HDA_DSP_BAR, CNL_DSP_REG_HIPCTDA);
++	hipcctl = snd_sof_dsp_read(sdev, HDA_DSP_BAR, CNL_DSP_REG_HIPCCTL);
++
++	/* dump the IPC regs */
++	/* TODO: parse the raw msg */
++	dev_err(sdev->dev,
++		"Host IPC initiator: %#x|%#x|%#x, target: %#x|%#x|%#x, ctl: %#x\n",
++		hipcidr, hipcidd, hipcida, hipctdr, hipctdd, hipctda, hipcctl);
++}
++
+ /* cannonlake ops */
+ struct snd_sof_dsp_ops sof_cnl_ops;
+ EXPORT_SYMBOL_NS(sof_cnl_ops, SND_SOC_SOF_INTEL_HDA_COMMON);
+@@ -351,6 +372,9 @@ int sof_cnl_ops_init(struct snd_sof_dev *sdev)
+ 
+ 		/* ipc */
+ 		sof_cnl_ops.send_msg	= cnl_ipc_send_msg;
++
++		/* debug */
++		sof_cnl_ops.ipc_dump	= cnl_ipc_dump;
+ 	}
+ 
+ 	if (sdev->pdata->ipc_type == SOF_INTEL_IPC4) {
+@@ -370,6 +394,9 @@ int sof_cnl_ops_init(struct snd_sof_dev *sdev)
+ 
+ 		/* ipc */
+ 		sof_cnl_ops.send_msg	= cnl_ipc4_send_msg;
++
++		/* debug */
++		sof_cnl_ops.ipc_dump	= cnl_ipc4_dump;
+ 	}
+ 
+ 	/* set DAI driver ops */
+@@ -378,7 +405,6 @@ int sof_cnl_ops_init(struct snd_sof_dev *sdev)
+ 	/* debug */
+ 	sof_cnl_ops.debug_map	= cnl_dsp_debugfs;
+ 	sof_cnl_ops.debug_map_count	= ARRAY_SIZE(cnl_dsp_debugfs);
+-	sof_cnl_ops.ipc_dump	= cnl_ipc_dump;
+ 
+ 	/* pre/post fw run */
+ 	sof_cnl_ops.post_fw_run = hda_dsp_post_fw_run;
+diff --git a/sound/soc/sof/intel/hda-ipc.h b/sound/soc/sof/intel/hda-ipc.h
+index 10fbca5939db..8ec5e9f6f8d7 100644
+--- a/sound/soc/sof/intel/hda-ipc.h
++++ b/sound/soc/sof/intel/hda-ipc.h
+@@ -51,5 +51,6 @@
+ irqreturn_t cnl_ipc_irq_thread(int irq, void *context);
+ int cnl_ipc_send_msg(struct snd_sof_dev *sdev, struct snd_sof_ipc_msg *msg);
+ void cnl_ipc_dump(struct snd_sof_dev *sdev);
++void cnl_ipc4_dump(struct snd_sof_dev *sdev);
+ 
+ #endif
+diff --git a/sound/soc/sof/intel/icl.c b/sound/soc/sof/intel/icl.c
+index 59ce3132fada..f1018c6db5c2 100644
+--- a/sound/soc/sof/intel/icl.c
++++ b/sound/soc/sof/intel/icl.c
+@@ -113,6 +113,9 @@ int sof_icl_ops_init(struct snd_sof_dev *sdev)
+ 
+ 		/* ipc */
+ 		sof_icl_ops.send_msg	= cnl_ipc_send_msg;
++
++		/* debug */
++		sof_icl_ops.ipc_dump	= cnl_ipc_dump;
+ 	}
+ 
+ 	if (sdev->pdata->ipc_type == SOF_INTEL_IPC4) {
+@@ -132,12 +135,14 @@ int sof_icl_ops_init(struct snd_sof_dev *sdev)
+ 
+ 		/* ipc */
+ 		sof_icl_ops.send_msg	= cnl_ipc4_send_msg;
++
++		/* debug */
++		sof_icl_ops.ipc_dump	= cnl_ipc4_dump;
+ 	}
+ 
+ 	/* debug */
+ 	sof_icl_ops.debug_map	= icl_dsp_debugfs;
+ 	sof_icl_ops.debug_map_count	= ARRAY_SIZE(icl_dsp_debugfs);
+-	sof_icl_ops.ipc_dump	= cnl_ipc_dump;
+ 
+ 	/* pre/post fw run */
+ 	sof_icl_ops.post_fw_run = icl_dsp_post_fw_run;
+diff --git a/sound/soc/sof/intel/tgl.c b/sound/soc/sof/intel/tgl.c
+index 5135e1c7e6cf..c606c3691de7 100644
+--- a/sound/soc/sof/intel/tgl.c
++++ b/sound/soc/sof/intel/tgl.c
+@@ -68,6 +68,9 @@ int sof_tgl_ops_init(struct snd_sof_dev *sdev)
+ 
+ 		/* ipc */
+ 		sof_tgl_ops.send_msg	= cnl_ipc_send_msg;
++
++		/* debug */
++		sof_tgl_ops.ipc_dump	= cnl_ipc_dump;
+ 	}
+ 
+ 	if (sdev->pdata->ipc_type == SOF_INTEL_IPC4) {
+@@ -87,6 +90,9 @@ int sof_tgl_ops_init(struct snd_sof_dev *sdev)
+ 
+ 		/* ipc */
+ 		sof_tgl_ops.send_msg	= cnl_ipc4_send_msg;
++
++		/* debug */
++		sof_tgl_ops.ipc_dump	= cnl_ipc4_dump;
+ 	}
+ 
+ 	/* set DAI driver ops */
+@@ -95,7 +101,6 @@ int sof_tgl_ops_init(struct snd_sof_dev *sdev)
+ 	/* debug */
+ 	sof_tgl_ops.debug_map	= tgl_dsp_debugfs;
+ 	sof_tgl_ops.debug_map_count	= ARRAY_SIZE(tgl_dsp_debugfs);
+-	sof_tgl_ops.ipc_dump	= cnl_ipc_dump;
+ 
+ 	/* pre/post fw run */
+ 	sof_tgl_ops.post_fw_run = hda_dsp_post_fw_run;
+-- 
+2.37.3
 
-## Description of Problem:
-have to manually set audio profile in pulse audio control.
-
-## How Reproducible:
-reset interface / no inputs in daw (bitwig 4.3.8)
-
-### Steps to Reproduce:
-
-1.  reset interface (allen heath qupac)
-1.  go to pulse audio control 
-1.  unselect pro / reselect pro
-
-errors:
-
-`journalctl --no-hostname --user -u pipewire `
-```
-Jul 30 14:39:43 systemd[1618]: Started PipeWire Multimedia Service.
-Jul 30 14:39:43 pipewire[1635]: spa.alsa: hw:acp: Rate doesn't match (requested 44100, got 48000)
-Jul 30 14:39:43 pipewire[1635]: spa.alsa: hw:acp: Rate doesn't match (requested 44100, got 48000)
-Jul 30 14:39:43 pipewire[1635]: spa.alsa: hw:acp: Rate doesn't match (requested 44100, got 48000)
-Jul 30 14:40:42 pipewire[1635]: spa.alsa: hw:3,0: snd_pcm_start: Broken pipe
-Jul 30 14:40:42 pipewire[1635]: spa.audioadapter: 0x56374b3cf218: can't send command 2: Broken pipe
-Jul 30 14:40:42 pipewire[1635]: pw.node: (alsa_input.usb-Allen_Heath_Ltd_QU-PAC-01.pro-input-0-110) suspended -> error (Start error: Broken>
-```
-
-then i unselect / reselect "Pro" via pulseaudio volume control:
-```
-Jul 30 22:54:35 pipewire[1632]: pw.link: 0x55618e69d5d0: one of the nodes is in error out:error in:suspended
-Jul 30 22:54:35 pipewire[1632]: pw.link: 0x55618e69e200: one of the nodes is in error out:error in:suspended
-Jul 30 22:54:35 pipewire[1632]: spa.alsa: hw:3,0: snd_pcm_start: Broken pipe
-Jul 30 22:54:35 pipewire[1632]: spa.audioadapter: 0x55618e007e58: can't send command 2: Broken pipe
-Jul 30 22:54:35 pipewire[1632]: spa.alsa: hw:3,0: snd_pcm_start: Broken pipe
-Jul 30 22:54:35 pipewire[1632]: spa.audioadapter: 0x55618e007e58: can't send command 2: Broken pipe
-Jul 30 22:54:35 pipewire[1632]: spa.alsa: hw:3,0: snd_pcm_start: Broken pipe
-Jul 30 22:54:35 pipewire[1632]: spa.audioadapter: 0x55618e007e58: can't send command 2: Broken pipe
-Jul 30 22:54:36 pipewire[1632]: spa.alsa: hw:3,0: snd_pcm_start: Broken pipe
-Jul 30 22:54:36 pipewire[1632]: spa.audioadapter: 0x55618e007e58: can't send command 2: Broken pipe
-Jul 30 22:54:36 pipewire[1632]: spa.alsa: hw:acp: Rate doesn't match (requested 44100, got 48000)
-Jul 30 22:54:36 pipewire[1632]: spa.alsa: hw:3,0: snd_pcm_start: Broken pipe
-Jul 30 22:54:36 pipewire[1632]: spa.audioadapter: 0x55618e007e58: can't send command 2: Broken pipe
-Jul 30 22:54:36 pipewire[1632]: spa.alsa: hw:3,0: snd_pcm_start: Broken pipe
-Jul 30 22:54:36 pipewire[1632]: spa.audioadapter: 0x55618e007e58: can't send command 2: Broken pipe
-Jul 30 22:54:46 pipewire[1632]: spa.alsa: hw:3,0: follower delay:520 target:256 thr:256, resync
-```
-
-### Actual Results:
-no audio from external inputs 
-
-### Expected Results:
-you shouldn't need to reselect a profile
-
-# Additional Info (as attachments):
-
- - more info: https://github.com/pop-os/pipewire/issues/16, https://gitlab.freedesktop.org/pipewire/pipewire/-/issues/2567
-
-Issue URL     : https://github.com/alsa-project/alsa-lib/issues/272
-Repository URL: https://github.com/alsa-project/alsa-lib
