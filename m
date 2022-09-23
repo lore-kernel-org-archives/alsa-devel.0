@@ -4,69 +4,75 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8CF22ECAAD8
-	for <alsa-devel@archiver.kernel.org>; Fri, 23 Sep 2022 08:45:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 81CF2C6FA82
+	for <alsa-devel@archiver.kernel.org>; Fri, 23 Sep 2022 08:59:06 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 9060DE0E;
-	Fri, 23 Sep 2022 10:44:08 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9060DE0E
+	by alsa0.perex.cz (Postfix) with ESMTPS id EF69D1FC;
+	Fri, 23 Sep 2022 10:58:13 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EF69D1FC
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1663922698;
-	bh=YE8X/zDI7bMlTYRbd+A8gtt2Njzs4d6klYAxWewKdMA=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=JY/2pgYSCsQUJKbtZqfdSmjQbIKWdxDpIGLX5KJJ2n7Ld7Gkp6TyNExgpIROzP7CD
-	 e3fxMg2OL+4k0O31xMfq/hPzzfnOkN9SrLp5iszARvI9e4OBa7SNL5VZAQMg7nVI2R
-	 M0RqDIwm6xQU9YNeyCdZN0eo+p8dS3WDnGBiZUiI=
+	s=default; t=1663923544;
+	bh=HojcwP0javbKhpGvdwYvvMIBYQZE3Xeo/wFOgWUndY8=;
+	h=Date:Subject:To:References:From:In-Reply-To:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=uHi68BIr/C6gFl3o7K9bGPMl9KAbaIHtkeaCfsy0aN/6Dq7swc8bbNyZ4/6Fbceyc
+	 LBvDsixIU0GQB+A06x/SDDqi4mFuWxbWB/VPW+BjeMh85IE3I5Lrw6RfVZ4Z0fj6zc
+	 oPTcxSn6ZdokeXcLXO69RKPxD90Hd+sn+u/cCGwE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id DBF27F80559;
-	Fri, 23 Sep 2022 10:42:28 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 60BEFF80269;
+	Fri, 23 Sep 2022 10:58:13 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id B49C0F8027B; Thu, 22 Sep 2022 15:45:21 +0200 (CEST)
-Received: from mail-wr1-f44.google.com (mail-wr1-f44.google.com
- [209.85.221.44])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id 02D20F804AC; Fri, 23 Sep 2022 10:58:12 +0200 (CEST)
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 921A4F80107
- for <alsa-devel@alsa-project.org>; Thu, 22 Sep 2022 15:45:15 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 921A4F80107
-Received: by mail-wr1-f44.google.com with SMTP id n15so8719976wrq.5
- for <alsa-devel@alsa-project.org>; Thu, 22 Sep 2022 06:45:15 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20210112;
- h=content-transfer-encoding:mime-version:message-id:date:subject:cc
- :to:from:x-gm-message-state:from:to:cc:subject:date;
- bh=nVYl4VGBufZGCj8epAifvyAAADocOF/FFC9jfi/VTnQ=;
- b=PUOpH2GdfPO5Sxqb2KJi/+EDMvgtvx3xWy7RO+3UBXaNITFFJUyoUdJ4DJYXWzNuD7
- JZZvJAWBa3yVNddbqs2ZVVrP0gzifMJy56+47CwQ8DTUAO6Rouyn9g/5Z/OwMm0UX1LU
- /6IznAkILYT4CXu9RyGIBDIFGRM4kHMZoggjwwaq4PUtjwRQOH0KgdOsVkOPXEUPXWAi
- JhYnC1d24oeN1z1L86xiaFfbQT1RCZGHHgdcIRSUg2tq+ZZxtbgmD308sn7k3Hu2SUIQ
- YRQQUKLByRMlmOlLnzZCwY4a49LCkVTcqVKDVRarN4/X1HRPTlRE7HJp7vOk/sWFfB/e
- +lUA==
-X-Gm-Message-State: ACrzQf29olth9AKcTd19ekR8ShWK6ULUXIHGmo0CLXiSHXn8FA02+PeZ
- oy3EDE2EkX4ow3tgCloXkRsvYcvoo3ngqw==
-X-Google-Smtp-Source: AMsMyM70dXxaaiVcobZhETv8uF1X+sVra4qFxSV8nXfhygs8CmLcn36cX+qwLRtEqFYJSFv6jY3ttg==
-X-Received: by 2002:a05:6000:a17:b0:22a:2da9:e233 with SMTP id
- co23-20020a0560000a1700b0022a2da9e233mr2078423wrb.248.1663854314843; 
- Thu, 22 Sep 2022 06:45:14 -0700 (PDT)
-Received: from localhost.localdomain ([2a02:168:d80b:1:290f:c2e7:fcc5:19a3])
- by smtp.gmail.com with ESMTPSA id
- x8-20020adff0c8000000b00228c483128dsm5906517wro.90.2022.09.22.06.45.13
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Thu, 22 Sep 2022 06:45:13 -0700 (PDT)
-From: Benjamin Marty <info@benjaminmarty.ch>
-To: alsa-devel@alsa-project.org, ctlin0@nuvoton.com, kchsu0@nuvoton.com,
- wtli@nuvoton.com
-Subject: [PATCH] ASoC: nau8822: add spk boost and spk btl options
-Date: Thu, 22 Sep 2022 15:44:58 +0200
-Message-Id: <20220922134458.3421695-1-info@benjaminmarty.ch>
-X-Mailer: git-send-email 2.37.3
+ by alsa1.perex.cz (Postfix) with ESMTPS id D03ECF80124
+ for <alsa-devel@alsa-project.org>; Fri, 23 Sep 2022 10:58:05 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D03ECF80124
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com
+ header.b="iD16nnr+"
+Received: from [192.168.1.100] (2-237-20-237.ip236.fastwebnet.it
+ [2.237.20.237])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ key-exchange X25519 server-signature RSA-PSS (4096 bits))
+ (No client certificate requested) (Authenticated sender: kholk11)
+ by madras.collabora.co.uk (Postfix) with ESMTPSA id B8481660223B;
+ Fri, 23 Sep 2022 09:58:03 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+ s=mail; t=1663923484;
+ bh=HojcwP0javbKhpGvdwYvvMIBYQZE3Xeo/wFOgWUndY8=;
+ h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+ b=iD16nnr+RBRce4iSEjLfgXsSPpjxVUhKVYNDIXj/tboj1LMFvkL2WS4pBlSJH/Wj3
+ JIzxEDdPjGy0cQxcs/wWIQwfxLLn3KpQ3DWI0EHTSJ+DM0sgJuYpQQTTooQjBC5ync
+ V+jtcIxZWGSJwPBpRmWLzSCC4EIFR7EigEopN26wCAZxAsUsMzqMCZnaL3Of4+yfIL
+ 45wDe9NSPnTFsVNdDOHEOlgT1imX6pPELEQPQKDUpdbv4sMj5gyYgGAbbGYGgpq7TR
+ 5dL9kwI+BZSq/5PU8wd7MWc66JnIOTlQzF7TIe/EEZF+jA4FfCNKU5arfF2gZL95jb
+ RMyhMhX7rjMiA==
+Message-ID: <c8205995-5398-6b23-7e35-c441c42232d1@collabora.com>
+Date: Fri, 23 Sep 2022 10:58:01 +0200
 MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.2.0
+Subject: Re: [PATCH 6/6] ASoC: mediatek: mt8186-rt5682: Expose individual
+ headset jack pins
+Content-Language: en-US
+To: =?UTF-8?B?TsOtY29sYXMgRi4gUi4gQS4gUHJhZG8=?= <nfraprado@collabora.com>,
+ Mark Brown <broonie@kernel.org>
+References: <20220922235951.252532-1-nfraprado@collabora.com>
+ <20220922235951.252532-7-nfraprado@collabora.com>
+From: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+In-Reply-To: <20220922235951.252532-7-nfraprado@collabora.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Mailman-Approved-At: Fri, 23 Sep 2022 10:42:24 +0200
-Cc: Benjamin Marty <info@benjaminmarty.ch>
+Cc: alsa-devel@alsa-project.org, "chunxu.li" <chunxu.li@mediatek.com>,
+ linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>,
+ Jiaxin Yu <jiaxin.yu@mediatek.com>, Liam Girdwood <lgirdwood@gmail.com>,
+ linux-mediatek@lists.infradead.org, Matthias Brugger <matthias.bgg@gmail.com>,
+ kernel@collabora.com, linux-arm-kernel@lists.infradead.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -82,34 +88,19 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-These two options are required to use the Speaker output on this codec
-to its full potential, when wiring up the Speaker in an BTL configuration.
+Il 23/09/22 01:59, Nícolas F. R. A. Prado ha scritto:
+> The rt5682 codec is able to distinguish between two event types:
+> headphone insertion/removal and headset microphone insertion/removal.
+> However, currently, the mt8186-rt5682 driver exposes a single kcontrol
+> for the headset jack, so userspace isn't able to differentiate between
+> the two events.
+> 
+> Add a definition for the headset jack pins, so that a separate jack
+> kcontrol is created for each one, allowing userspace to track and handle
+> them individually.
+> 
+> Signed-off-by: Nícolas F. R. A. Prado <nfraprado@collabora.com>
 
-The Speaker Boost flag is explained in the Datasheet on page 80.
-The Speaker BTL flag is explained in the Datasheet on page 78.
+Reviewed-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
 
-Signed-off-by: Benjamin Marty <info@benjaminmarty.ch>
----
- sound/soc/codecs/nau8822.c | 6 ++++++
- 1 file changed, 6 insertions(+)
-
-diff --git a/sound/soc/codecs/nau8822.c b/sound/soc/codecs/nau8822.c
-index 1aef281a9972..812b8254f9a0 100644
---- a/sound/soc/codecs/nau8822.c
-+++ b/sound/soc/codecs/nau8822.c
-@@ -379,6 +379,12 @@ static const struct snd_kcontrol_new nau8822_snd_controls[] = {
- 		NAU8822_REG_DAC_CONTROL, 5, 1, 0),
- 	SOC_SINGLE("ADC 128x Oversampling Switch",
- 		NAU8822_REG_ADC_CONTROL, 5, 1, 0),
-+
-+	SOC_SINGLE("Speaker Gain Boost Control",
-+		NAU8822_REG_OUTPUT_CONTROL, 2, 1, 0),
-+
-+	SOC_SINGLE("Speaker BTL Configuration",
-+		NAU8822_REG_RIGHT_SPEAKER_CONTROL, 4, 1, 0),
- };
- 
- /* LMAIN and RMAIN Mixer */
--- 
-2.37.3
 
