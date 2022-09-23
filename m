@@ -4,65 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id DC9BCECAAD8
-	for <alsa-devel@archiver.kernel.org>; Fri, 23 Sep 2022 13:37:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id F220DC6FA82
+	for <alsa-devel@archiver.kernel.org>; Fri, 23 Sep 2022 13:37:41 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 127DC852;
-	Fri, 23 Sep 2022 15:36:32 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 127DC852
+	by alsa0.perex.cz (Postfix) with ESMTPS id 24B3F886;
+	Fri, 23 Sep 2022 15:36:50 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 24B3F886
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1663940242;
-	bh=YcQvfZQh9cHt5912qq1EUNPLvAzuxceiLzpYn2MTXkc=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=cnvvBxNYmqpi3W6DWgd3YIfdOZd84Ovv7KM99HqdDSFfIMqy6LzqYB2rWpwaPYOCd
-	 nVOPBSvf+OftYFzziBrC60l0qjqCogQ8OGVXIxr54EqYQKgpNbeUuIXNme7v7ilirp
-	 PRxcZmcoeg+a3WG0qO3e/2zfXm3OI5ESNsyUZBZ4=
+	s=default; t=1663940260;
+	bh=gPpwHxbPRFqh5h7ecA3eLrRwC/kVhAzYYbNSOQ7tHv0=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=rWNOa9LAn1QwCes0b1Tq6rqj6G6F0g/532oV8tF2AcqGW3uECboBBytA12TAN8jtE
+	 5Fmff0Af8HqS5Pkit8O6fIvD+1oKS2h0haQdvOpKGwLJ6Dp8L4dbn2ewoydNi2lQ8e
+	 I08WSacrR2XS4CodzmqFjWavTrTD0FzBWCENhyKU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id F05C9F8053D;
-	Fri, 23 Sep 2022 15:36:22 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 21568F80124;
+	Fri, 23 Sep 2022 15:36:26 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id DDCE4F80107; Fri, 23 Sep 2022 15:36:20 +0200 (CEST)
+ id 96EF8F80549; Fri, 23 Sep 2022 15:36:24 +0200 (CEST)
 Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 2BE10F804AC
- for <alsa-devel@alsa-project.org>; Fri, 23 Sep 2022 15:36:11 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2BE10F804AC
+ by alsa1.perex.cz (Postfix) with ESMTPS id 62B39F80224
+ for <alsa-devel@alsa-project.org>; Fri, 23 Sep 2022 15:36:14 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 62B39F80224
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="asGbfgq+"
+ header.b="Q13bDgRM"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
  t=1663940178; x=1695476178;
- h=from:to:cc:subject:date:message-id:mime-version:
- content-transfer-encoding;
- bh=YcQvfZQh9cHt5912qq1EUNPLvAzuxceiLzpYn2MTXkc=;
- b=asGbfgq+MQcjZq/qCRbJyz14rPwBTeFZe1NZiQT2WaQssTX8hiuOaXc/
- tI74+D7avd4i/RkIERvp+d16A0aeGKU9yMIPYGpwdPdiuye9nm+M1uO6H
- Xp7ViUTSkyb/I5Obmgdvu0kGs4X4Gz9OwO92Hx7tYSvCjIToZqpa6Up5W
- y6UdthzWr7/mk2LaqpGg958xeqtm1liVBXgNRdRKivFun9Kr3cmiZXC25
- ADFHZM1z2BCbdt0YoMDCLigfzBZfLdgi1cfgHsUus19rie2EabqdsxwVY
- cTPBpTbRD+UZeWuD6daloPAy6r2dbKDwkLqMyBEr5atrxnLc8fkqMYnqD g==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10479"; a="300575607"
-X-IronPort-AV: E=Sophos;i="5.93,339,1654585200"; d="scan'208";a="300575607"
+ h=from:to:cc:subject:date:message-id:in-reply-to:
+ references:mime-version:content-transfer-encoding;
+ bh=gPpwHxbPRFqh5h7ecA3eLrRwC/kVhAzYYbNSOQ7tHv0=;
+ b=Q13bDgRMeJL/YtDngApvMRDBSiQKxxYFQU07CXR5uPd7FevHEeBqtgOe
+ xgbl4VkMB6GXdHRy5rZqardtD+jIkb5+hVYFhkS2rVbuoDqNPxQMlhm6J
+ OeulshOHgQ46AdDBAc5eIapW0uRqvuDXX/V6sK0BdgHv5B3SRSVjkn8ho
+ h+D++uiMAXsxalY1SD9+qPXtxxxvKI4l1A4g2fTGIfBglDOGHprGakqQU
+ 4eb7gcIWfFVhvSGX0fMMW6ZDzmsWG6k+20khadxOrlnx06nfh6MZibqPA
+ SbmOeXcUQZEMVu4C4+kUvdXOVa9/Hn7KWn/x9Fy8xAGYcW5Y5Hcp36fqf g==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10479"; a="300575624"
+X-IronPort-AV: E=Sophos;i="5.93,339,1654585200"; d="scan'208";a="300575624"
 Received: from orsmga003.jf.intel.com ([10.7.209.27])
  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 23 Sep 2022 06:36:07 -0700
-X-IronPort-AV: E=Sophos;i="5.93,339,1654585200"; d="scan'208";a="571375279"
+ 23 Sep 2022 06:36:14 -0700
+X-IronPort-AV: E=Sophos;i="5.93,339,1654585200"; d="scan'208";a="571375304"
 Received: from acarr-mobl1.ger.corp.intel.com (HELO
  pujfalus-desk.ger.corp.intel.com) ([10.252.3.209])
  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 23 Sep 2022 06:36:05 -0700
+ 23 Sep 2022 06:36:12 -0700
 From: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
 To: lgirdwood@gmail.com, broonie@kernel.org,
  pierre-louis.bossart@linux.intel.com
-Subject: [PATCH 0/6] ASoC: SOF: ipc4/Intel: Improve and enable IPC error dump
-Date: Fri, 23 Sep 2022 16:36:10 +0300
-Message-Id: <20220923133616.26267-1-peter.ujfalusi@linux.intel.com>
+Subject: [PATCH 3/6] ASoC: SOF: Intel: skl: Use the ipc4 version of the
+ ipc_dump
+Date: Fri, 23 Sep 2022 16:36:13 +0300
+Message-Id: <20220923133616.26267-4-peter.ujfalusi@linux.intel.com>
 X-Mailer: git-send-email 2.37.3
+In-Reply-To: <20220923133616.26267-1-peter.ujfalusi@linux.intel.com>
+References: <20220923133616.26267-1-peter.ujfalusi@linux.intel.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Cc: alsa-devel@alsa-project.org, ranjani.sridharan@linux.intel.com,
@@ -82,38 +86,31 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Hi,
+The use of the IPC registers are different between IPC3 and IPC4.
+The ipc_dump needs to use different prints depending on the used IPC
+protocol.
 
-On Intel platforms the registers for DSP communications are used differently,
-the IPC dump information is not correct since important registers are not
-printed and existing ones are used a bit differently for IPC4.
-
-As a last step, enable the IPC timeout 'handling' and allow the printout of
-the now usefull IPC dump.
-
-Regards,
-Peter
+Signed-off-by: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
+Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+Reviewed-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
+Reviewed-by: Rander Wang <rander.wang@intel.com>
 ---
-Peter Ujfalusi (6):
-  ASoC: SOF: Intel: cnl: Add separate ops for ipc_dump for IPC4
-  ASoC: SOF: Intel: hda: Add separate ops for ipc_dump for IPC4
-  ASoC: SOF: Intel: skl: Use the ipc4 version of the ipc_dump
-  ASoC: SOF: Intel: mtl: Print relevant register in ipc_dump
-  ASoC: SOF: Intel: hda: Only dump firmware registers for IPC3
-  ASoC: SOF: ipc4: Call snd_sof_handle_fw_exception() in case of timeout
+ sound/soc/sof/intel/skl.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
- sound/soc/sof/intel/apl.c     |  7 ++++++-
- sound/soc/sof/intel/cnl.c     | 28 +++++++++++++++++++++++++++-
- sound/soc/sof/intel/hda-ipc.h |  1 +
- sound/soc/sof/intel/hda.c     | 21 ++++++++++++++++++++-
- sound/soc/sof/intel/hda.h     |  1 +
- sound/soc/sof/intel/icl.c     |  7 ++++++-
- sound/soc/sof/intel/mtl.c     | 17 ++++++++---------
- sound/soc/sof/intel/skl.c     |  2 +-
- sound/soc/sof/intel/tgl.c     |  7 ++++++-
- sound/soc/sof/ipc4.c          |  1 +
- 10 files changed, 77 insertions(+), 15 deletions(-)
-
+diff --git a/sound/soc/sof/intel/skl.c b/sound/soc/sof/intel/skl.c
+index f05905e00368..eba166fe4d33 100644
+--- a/sound/soc/sof/intel/skl.c
++++ b/sound/soc/sof/intel/skl.c
+@@ -87,7 +87,7 @@ int sof_skl_ops_init(struct snd_sof_dev *sdev)
+ 	/* debug */
+ 	sof_skl_ops.debug_map	= skl_dsp_debugfs;
+ 	sof_skl_ops.debug_map_count	= ARRAY_SIZE(skl_dsp_debugfs);
+-	sof_skl_ops.ipc_dump	= hda_ipc_dump;
++	sof_skl_ops.ipc_dump	= hda_ipc4_dump;
+ 
+ 	/* firmware run */
+ 	sof_skl_ops.run = hda_dsp_cl_boot_firmware_skl;
 -- 
 2.37.3
 
