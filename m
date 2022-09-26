@@ -4,59 +4,72 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4A33FC32771
-	for <alsa-devel@archiver.kernel.org>; Mon, 26 Sep 2022 13:39:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 03891C32771
+	for <alsa-devel@archiver.kernel.org>; Mon, 26 Sep 2022 13:57:03 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 36BCB204;
-	Mon, 26 Sep 2022 15:38:38 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 36BCB204
+	by alsa0.perex.cz (Postfix) with ESMTPS id 4CA69204;
+	Mon, 26 Sep 2022 15:56:11 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4CA69204
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1664199568;
-	bh=c3yPUh8yC6i7ELJNa9LYDHvobQEErGuXhDZvrwGcF+0=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=Jr0eAzOcaZ0//9wcar0MED9bEI3untCmzWDHZCknksVDJY/uqF4/hTBI2ZNlEBpDN
-	 AiaZsNSw49jyAxtfIiUUoYoJtjDH9f0ujt4R+Gp+HyePWqCo6p3xgagb1x0LVwkep9
-	 /SoN5jQzaiTIOfWTPNjA7QmPfZDH+fFDe/+GkUFk=
+	s=default; t=1664200621;
+	bh=p34+2qpnfD6AreGBPpZ0cE46lXrx78KqMzqC+jEEjdk=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=IQggPfzpCrOjgrqI5Q1KnsINPJjCg6WIrTQWXAWch7Akh4o9+x5UeKvLVpak1d6Hj
+	 Cv8N/0n/5ZzMjSZTCKFHAlBHwGhw8h77kevfHcp1tdPgUlr4rDE/ySqQD9SaF98hBU
+	 /bUT+uylqtm/taNwCRGW1D+qBLZo4V200B3D6kds=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id CD14AF80115;
-	Mon, 26 Sep 2022 15:38:37 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id D12A2F80254;
+	Mon, 26 Sep 2022 15:56:10 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 7A4AFF8027D; Mon, 26 Sep 2022 15:38:36 +0200 (CEST)
-Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
+ id 7734BF8027D; Mon, 26 Sep 2022 15:56:09 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org
+ [IPv6:2604:1380:4641:c500::1])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 4A850F80115
- for <alsa-devel@alsa-project.org>; Mon, 26 Sep 2022 15:38:29 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4A850F80115
-Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.57])
- by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4MbkHx5tkZzWgsL;
- Mon, 26 Sep 2022 21:34:21 +0800 (CST)
-Received: from kwepemm600014.china.huawei.com (7.193.23.54) by
- dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.31; Mon, 26 Sep 2022 21:38:25 +0800
-Received: from huawei.com (10.90.53.225) by kwepemm600014.china.huawei.com
- (7.193.23.54) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.31; Mon, 26 Sep
- 2022 21:38:24 +0800
-From: Zhang Qilong <zhangqilong3@huawei.com>
-To: <arnaud.pouliquen@foss.st.com>
-Subject: [PATCH v2 -next] ASoC: stm: Fix PM disable depth imbalance in
- stm32_i2s_probe
-Date: Mon, 26 Sep 2022 21:41:55 +0800
-Message-ID: <20220926134155.121427-1-zhangqilong3@huawei.com>
-X-Mailer: git-send-email 2.26.0.106.g9fadedd
+ by alsa1.perex.cz (Postfix) with ESMTPS id 6C71CF80115
+ for <alsa-devel@alsa-project.org>; Mon, 26 Sep 2022 15:56:03 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6C71CF80115
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="jR7ZS6db"
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by dfw.source.kernel.org (Postfix) with ESMTPS id 10CEF601D2;
+ Mon, 26 Sep 2022 13:56:00 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BE1CCC433C1;
+ Mon, 26 Sep 2022 13:55:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1664200559;
+ bh=p34+2qpnfD6AreGBPpZ0cE46lXrx78KqMzqC+jEEjdk=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=jR7ZS6dbh2uraofF+LAgQi+c/dUTDQ3RlIdrcVrOZqg+QLsWSWWW7wSAAOgnb+UdQ
+ 80n4FzWi92qPRqELJpV2OP484mx6NjO3NDihipxDikYWZsWaBn5kTyMIMP81AzKfBi
+ AHpaK+Fe6B45JBQsJ9HFTPSRIc1xn7qJO55dESCvKhiiYHioMfNqwTbKtjvDPsY7uG
+ V/g29zrizYAvjS9Vf1pHP1ELl+YrZ0zYMzPmxWzcDyD1/baEJjuLbeiRQXeSx6lXYn
+ YUYBAf7I+LExU7HC5ZqsxVyBZrEeTT/relTjvI5O7VJz7t6SapSP1CINwpL3LCQnuM
+ 9M/9ko/9ptDTw==
+Date: Mon, 26 Sep 2022 14:55:54 +0100
+From: Mark Brown <broonie@kernel.org>
+To: Pali =?iso-8859-1?Q?Roh=E1r?= <pali@kernel.org>
+Subject: Re: [PATCH v2] ASoC: kirkwood: enable Kirkwood driver for Armada 38x
+ platforms
+Message-ID: <YzGvalDnGujC2sl/@sirena.org.uk>
+References: <20220920132648.2008-2-pali@kernel.org>
+ <20220926110533.13475-1-pali@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [10.90.53.225]
-X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
- kwepemm600014.china.huawei.com (7.193.23.54)
-X-CFilter-Loop: Reflected
-Cc: alsa-devel@alsa-project.org, linux-stm32@st-md-mailman.stormreply.com
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature"; boundary="xsFjxfmwLuMLzuRF"
+Content-Disposition: inline
+In-Reply-To: <20220926110533.13475-1-pali@kernel.org>
+X-Cookie: You may be recognized soon.  Hide.
+Cc: Andrew Lunn <andrew@lunn.ch>, alsa-devel@alsa-project.org,
+ linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>,
+ Liam Girdwood <lgirdwood@gmail.com>, Marcin Wojtas <mw@semihalf.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -72,43 +85,40 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The pm_runtime_enable will increase power disable depth. Thus
-a pairing decrement is needed on the error handling path to
-keep it balanced according to context. We fix it by moving
-pm_runtime_enable to the endding of stm32_i2s_probe.
 
-Fixes:32a956a1fadf ("ASoC: stm32: i2s: add pm_runtime support")
-Signed-off-by: Zhang Qilong <zhangqilong3@huawei.com>
----
-v2:
-- Move pm_runtime_enable to the endding of stm32_i2s_probe
-  and correct fixes commit.
----
- sound/soc/stm/stm32_i2s.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+--xsFjxfmwLuMLzuRF
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-diff --git a/sound/soc/stm/stm32_i2s.c b/sound/soc/stm/stm32_i2s.c
-index 6aafe793eec4..ce7f6942308f 100644
---- a/sound/soc/stm/stm32_i2s.c
-+++ b/sound/soc/stm/stm32_i2s.c
-@@ -1136,8 +1136,6 @@ static int stm32_i2s_probe(struct platform_device *pdev)
- 		return dev_err_probe(&pdev->dev, PTR_ERR(i2s->regmap),
- 				     "Regmap init error\n");
- 
--	pm_runtime_enable(&pdev->dev);
--
- 	ret = snd_dmaengine_pcm_register(&pdev->dev, &stm32_i2s_pcm_config, 0);
- 	if (ret)
- 		return dev_err_probe(&pdev->dev, ret, "PCM DMA register error\n");
-@@ -1180,6 +1178,8 @@ static int stm32_i2s_probe(struct platform_device *pdev)
- 			FIELD_GET(I2S_VERR_MIN_MASK, val));
- 	}
- 
-+	pm_runtime_enable(&pdev->dev);
-+
- 	return ret;
- 
- error:
--- 
-2.25.1
+On Mon, Sep 26, 2022 at 01:05:33PM +0200, Pali Roh=E1r wrote:
+> From: Marcin Wojtas <mw@semihalf.com>
+>=20
+> The audio unit of Marvell Armada38x SoC is similar to the ones comprised =
+by
+> other Marvell SoCs (Kirkwood, Dove and Armada 370). Therefore KW audio
+> driver can be used to support it and this commit adds new compatible stri=
+ng
+> to identify Armada 38x variant.
 
+Please don't send new patches in reply to old patches or serieses, this
+makes it harder for both people and tools to understand what is going
+on - it can bury things in mailboxes and make it difficult to keep track
+of what current patches are, both for the new patches and the old ones.
+
+--xsFjxfmwLuMLzuRF
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmMxr2kACgkQJNaLcl1U
+h9CRcAf+JuTBZSz2V4JDBCSszUuJCyQMdD3hD7e5kqxtIa5AXxBUh7Igj8pir59o
+l2qbKnF9wPzk1X75wKhUipR9Jgj+id7QmtUfnQEazqBG9ZXtz65FRmPzNh3bLowF
+nZPe/HCZdrShy2+/5F+QF8ZfdBHRXp7XaVD5xOnH3c5AHydMHcz4jYmxiGJLuVC9
+TEbQPZTZomM2qCK0ajEvTIqUJzi+83z7qMsqOea/g/di54uh9NXIM0lxMAsan7ZM
+mRsWFHAyE5jUip9e/CRmZ8UZ2A73vGKL6RfqposWOyJwpyGv4aOO37ltWItrOxOb
+Y+7fXQtzDwTOUhTFpQcteixI7Cyo6g==
+=d5D/
+-----END PGP SIGNATURE-----
+
+--xsFjxfmwLuMLzuRF--
