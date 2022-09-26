@@ -4,85 +4,64 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E49A6C32771
-	for <alsa-devel@archiver.kernel.org>; Mon, 26 Sep 2022 14:00:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A034DC32771
+	for <alsa-devel@archiver.kernel.org>; Mon, 26 Sep 2022 14:05:49 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 07060E11;
-	Mon, 26 Sep 2022 15:59:32 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 07060E11
+	by alsa0.perex.cz (Postfix) with ESMTPS id D4CEA828;
+	Mon, 26 Sep 2022 16:04:57 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D4CEA828
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1664200822;
-	bh=WcZGD6u3y0uY37QhMq+pmfSFaw9Z0NrBsoqIDFrzFWk=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1664201147;
+	bh=QWIUj5390jT/xGz2yVzEkO1spRWX7snq8eHKuhuvv8k=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=sx/dMACht75r2W65X4bPK2kqXypT/f5waec6Iwd0meBe1xTxzbxkHF5xLx6Avt9Vu
-	 Yke+cI4cbEJrV5eyUMMCZq/ESqyBRi2fXtWBtjuymrYDBRAp6T9/fAljjMRpr8+pLm
-	 rRdZoBrcNqj0CL27Cz45gy9lrQHys+gR7vaEB2kA=
-Received: from vmi242170.contaboserver.net (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 146DAF805AE;
-	Mon, 26 Sep 2022 15:56:48 +0200 (CEST)
+	b=se2gbJBpW9rroUAZwVnwDzVj/Irh7ENb6hGbMwxLQpAYS1aUANUKlruAa9R3bimAT
+	 lDplQ5SxFNawVmlMdu6VSAeqF0mFPkA79L9OpgDPndUY08q7HfcLZaKHclS66cT741
+	 9nbB9PJbZNpT8pJImPItg5MhhN3zc+92VK7lmflA=
+Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
+	by alsa1.perex.cz (Postfix) with ESMTP id 71F6EF80254;
+	Mon, 26 Sep 2022 16:04:57 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 272CDF8057F; Mon, 26 Sep 2022 15:56:31 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id 8386EF8027D; Mon, 26 Sep 2022 16:04:56 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 73986F80551
- for <alsa-devel@alsa-project.org>; Mon, 26 Sep 2022 15:56:17 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 73986F80551
+ by alsa1.perex.cz (Postfix) with ESMTPS id 9DC55F80115
+ for <alsa-devel@alsa-project.org>; Mon, 26 Sep 2022 16:04:48 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9DC55F80115
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="aFzj/2HD"; 
- dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="08rdBjs3"
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+ dkim=pass (1024-bit key) header.d=linuxfoundation.org
+ header.i=@linuxfoundation.org header.b="KUyRLlk4"
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 1E08D1F8A4;
- Mon, 26 Sep 2022 13:56:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1664200577; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=GRZxSv7smy3QDjQkWD9RsTq7RsLGu89BFpMCDZ1fSqs=;
- b=aFzj/2HDzgIVxQswoWix7yM84Zj7JpCBd4jtTvV1DWXZQonx6aVn61qXUVOzHbZuMuOiJu
- 9Kpz87+dlLfKWSBOmQ3rJoqMNT708IDAUEdBaNeCbfQ8ElNgEN3TuJwVW11SFv025fWHI0
- ldrSxB+Ga021gzUaj1i8kgZgtQ1MBfg=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1664200577;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=GRZxSv7smy3QDjQkWD9RsTq7RsLGu89BFpMCDZ1fSqs=;
- b=08rdBjs3Womb//T4+muGP5CIJ2Xmnrhd8XT+LeK1OuM6ouyKtMcPnZBSutZGA9J+253ULL
- vYLntFzX0AxCoxDQ==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id F2338139BD;
- Mon, 26 Sep 2022 13:56:16 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id 8C11OoCvMWPxegAAMHmgww
- (envelope-from <tiwai@suse.de>); Mon, 26 Sep 2022 13:56:16 +0000
-From: Takashi Iwai <tiwai@suse.de>
-To: alsa-devel@alsa-project.org
-Subject: [PATCH 11/11] usb: gadget: Replace runtime->status->state reference
- to runtime->state
-Date: Mon, 26 Sep 2022 15:55:58 +0200
-Message-Id: <20220926135558.26580-12-tiwai@suse.de>
-X-Mailer: git-send-email 2.35.3
-In-Reply-To: <20220926135558.26580-1-tiwai@suse.de>
+ by dfw.source.kernel.org (Postfix) with ESMTPS id EB0A160DD6;
+ Mon, 26 Sep 2022 14:04:46 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A95D6C433C1;
+ Mon, 26 Sep 2022 14:04:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+ s=korg; t=1664201086;
+ bh=QWIUj5390jT/xGz2yVzEkO1spRWX7snq8eHKuhuvv8k=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=KUyRLlk4VjBT+WwHeKGEZCAJDAj1g7kfKkZa9jAo1+pjbufX9tQ5DEYBBrlvmKKV2
+ rylJZbznxQmtcGZAx1LZX5kwS2H1kEbhk0vAFtU8uJZMwn9zhvZ92MwfzVvoZAhoUS
+ Mon1veE80QQSuNqxHeR9qcR2364bAhua8at1Qjv4=
+Date: Mon, 26 Sep 2022 16:05:19 +0200
+From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To: Takashi Iwai <tiwai@suse.de>
+Subject: Re: [PATCH 11/11] usb: gadget: Replace runtime->status->state
+ reference to runtime->state
+Message-ID: <YzGxn2PK7811Vhb0@kroah.com>
 References: <20220926135558.26580-1-tiwai@suse.de>
+ <20220926135558.26580-12-tiwai@suse.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: Takashi Iwai <tiwai@suse.de>, Felipe Balbi <balbi@kernel.org>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220926135558.26580-12-tiwai@suse.de>
+Cc: Felipe Balbi <balbi@kernel.org>, alsa-devel@alsa-project.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -98,35 +77,18 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The recent change in ALSA core allows drivers to get the current PCM
-state directly from runtime object.  Replace the calls accordingly.
+On Mon, Sep 26, 2022 at 03:55:58PM +0200, Takashi Iwai wrote:
+> The recent change in ALSA core allows drivers to get the current PCM
+> state directly from runtime object.  Replace the calls accordingly.
+> 
+> Cc: Felipe Balbi <balbi@kernel.org>
+> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> Signed-off-by: Takashi Iwai <tiwai@suse.de>
+> ---
+> 
+> I'm going to merge this through sound git tree as it requires ALSA core
+> changes.
 
-Cc: Felipe Balbi <balbi@kernel.org>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
----
+Looks good to me:
 
-I'm going to merge this through sound git tree as it requires ALSA core
-changes.
-
- drivers/usb/gadget/function/u_uac1_legacy.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/usb/gadget/function/u_uac1_legacy.c b/drivers/usb/gadget/function/u_uac1_legacy.c
-index 60ae8b2d3f6a..dd21c251542c 100644
---- a/drivers/usb/gadget/function/u_uac1_legacy.c
-+++ b/drivers/usb/gadget/function/u_uac1_legacy.c
-@@ -158,8 +158,8 @@ size_t u_audio_playback(struct gaudio *card, void *buf, size_t count)
- 	snd_pcm_sframes_t frames;
- 
- try_again:
--	if (runtime->status->state == SNDRV_PCM_STATE_XRUN ||
--		runtime->status->state == SNDRV_PCM_STATE_SUSPENDED) {
-+	if (runtime->state == SNDRV_PCM_STATE_XRUN ||
-+		runtime->state == SNDRV_PCM_STATE_SUSPENDED) {
- 		result = snd_pcm_kernel_ioctl(substream,
- 				SNDRV_PCM_IOCTL_PREPARE, NULL);
- 		if (result < 0) {
--- 
-2.35.3
-
+Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
