@@ -4,84 +4,84 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 68221C32771
-	for <alsa-devel@archiver.kernel.org>; Mon, 26 Sep 2022 13:59:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D55F3C32771
+	for <alsa-devel@archiver.kernel.org>; Mon, 26 Sep 2022 13:59:38 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id A1B97E0E;
-	Mon, 26 Sep 2022 15:58:32 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A1B97E0E
+	by alsa0.perex.cz (Postfix) with ESMTPS id 019EAE0F;
+	Mon, 26 Sep 2022 15:58:47 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 019EAE0F
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1664200762;
-	bh=mc2awtbPaPfr7eN+n6iVyDlW4kApfMurPs8wlQoTTc8=;
-	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=WqFgchQ01AOCZ7MA65LGOax7b7uvh0fWYp4VhVyNs4u7MDc5R+H+zkGvX6jBNjp55
-	 TrrnWj+X2qqMMGCtwoLSVqxdMUp2H/EkZ1QAy/pkzKdpDvlykBZjl2B5sp/q9tVjA3
-	 hX/kONy+3xm+UR5TUz0NVAtbgMoHArJvxN2QVH/U=
+	s=default; t=1664200777;
+	bh=WpH0jkHZ0P646OfFVaZSwBlHkImzBeq+wpIJpbOk+/I=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=tvxv/gIc5iCukHuQBPcL8XhY/nOyHC2EnoGI4d17E35xCdA8SCjWQnK8KKu94xm0/
+	 3CHKTsFgeJCloyUQEl2NIjePNSB1h1oGfZFUaPb4WtXUNs+GOTfprX6/KvgHp9RrVo
+	 vHfE8brBcyUt2Cglre54bya4ewc6a+aV4huW4Y4c=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 4BA5FF80551;
+	by alsa1.perex.cz (Postfix) with ESMTP id ACFD3F80588;
 	Mon, 26 Sep 2022 15:56:33 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id EF243F80568; Mon, 26 Sep 2022 15:56:28 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+ id 00476F80571; Mon, 26 Sep 2022 15:56:29 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id A28D3F80539
- for <alsa-devel@alsa-project.org>; Mon, 26 Sep 2022 15:56:14 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A28D3F80539
+ by alsa1.perex.cz (Postfix) with ESMTPS id 69DE2F80424
+ for <alsa-devel@alsa-project.org>; Mon, 26 Sep 2022 15:56:08 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 69DE2F80424
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="WJYvPksx"; 
+ header.b="sP5rEyfA"; 
  dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="USUiq9Tl"
+ header.b="v/JFLLwa"
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 3283021DD9;
- Mon, 26 Sep 2022 13:56:14 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id A91901F889;
+ Mon, 26 Sep 2022 13:56:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1664200574; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=uv2wjzNhqWjZsptPdc3bC1flrDuqWDDoQzwnc8zX9uo=;
- b=WJYvPksx5gEVD9/c+hxzpB1C+hjx0qUdGTEVmClwcTqcjN/8Q9HuZyr/xpHopk6+P91Qqn
- +AMuPHlchsae6ndmMu+o3poQkKdRMg/pnD3R/pc3ZCr8FUXYL50KOWNLxDFAnfbJiX82KK
- 1TU0Pb4ugsoe6zqCkjBILEl+B838zNE=
+ t=1664200567; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=t3VnEK8pe7loTqNAmSyWDYkAo2MTa/UPUIT9FgnYtHY=;
+ b=sP5rEyfAcnPGvbUPToCceRBYScXSaWLQ0bj4Qi2n+53+wCoXK2bwKXeSKksQtfBkXli5nu
+ 76KwzBcFSIEDa24UVVZzxVDVk2LOEA1u7+Q5oexW2+y2e0PHQSIh17+BhvjqS+rIS8XtuD
+ eTeoc9mbrnoDNIpmxOAdJC9KeTn/OlE=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1664200574;
+ s=susede2_ed25519; t=1664200567;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=uv2wjzNhqWjZsptPdc3bC1flrDuqWDDoQzwnc8zX9uo=;
- b=USUiq9TljBf/9Rv5d0Oe3YG+iUx9EBjXHUTH5QSMpU04O+u839268CZA612CUpk6S/UlJY
- erjEmeR7+UnpIlDg==
+ mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
+ bh=t3VnEK8pe7loTqNAmSyWDYkAo2MTa/UPUIT9FgnYtHY=;
+ b=v/JFLLwadE4RhC3UONKa6UXsTllc/fs6/F+HQywmZI+PxgkEJ/dd+aQ5p2x/hEergNGr3E
+ ppCqK26GrFvGQRCg==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 181FF139BD;
- Mon, 26 Sep 2022 13:56:14 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 59734139BD;
+ Mon, 26 Sep 2022 13:56:07 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id OFoJBX6vMWPxegAAMHmgww
- (envelope-from <tiwai@suse.de>); Mon, 26 Sep 2022 13:56:14 +0000
+ by imap2.suse-dmz.suse.de with ESMTPSA id 8df8FHevMWPxegAAMHmgww
+ (envelope-from <tiwai@suse.de>); Mon, 26 Sep 2022 13:56:07 +0000
 From: Takashi Iwai <tiwai@suse.de>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH 08/11] ALSA: usx2y: Replace runtime->status->state reference
- to runtime->state
-Date: Mon, 26 Sep 2022 15:55:55 +0200
-Message-Id: <20220926135558.26580-9-tiwai@suse.de>
+Subject: [PATCH 00/11] ALSA: PCM state reference optimization
+Date: Mon, 26 Sep 2022 15:55:47 +0200
+Message-Id: <20220926135558.26580-1-tiwai@suse.de>
 X-Mailer: git-send-email 2.35.3
-In-Reply-To: <20220926135558.26580-1-tiwai@suse.de>
-References: <20220926135558.26580-1-tiwai@suse.de>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: Takashi Iwai <tiwai@suse.de>
+Cc: Felipe Balbi <balbi@kernel.org>,
+ Cezary Rojewski <cezary.rojewski@intel.com>,
+ Kai Vehmanen <kai.vehmanen@linux.intel.com>, Takashi Iwai <tiwai@suse.de>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ Peter Ujfalusi <peter.ujfalusi@linux.intel.com>,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+ Liam Girdwood <liam.r.girdwood@linux.intel.com>,
+ Mark Brown <broonie@kernel.org>, Bard Liao <yung-chuan.liao@linux.intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -97,43 +97,85 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The recent change in ALSA core allows drivers to get the current PCM
-state directly from runtime object.  Replace the calls accordingly.
+Hi,
 
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
----
- sound/usb/usx2y/usbusx2yaudio.c | 3 +--
- sound/usb/usx2y/usx2yhwdeppcm.c | 3 +--
- 2 files changed, 2 insertions(+), 4 deletions(-)
+this is a patch set for simplifying the reference to the current PCM
+state by having the local copy in runtime instead of relying on
+runtime->status indirection.  This also hardens against the attack by
+modifying the mmapped status record.
 
-diff --git a/sound/usb/usx2y/usbusx2yaudio.c b/sound/usb/usx2y/usbusx2yaudio.c
-index 9cd5e3aae4f7..5197599e7aa6 100644
---- a/sound/usb/usx2y/usbusx2yaudio.c
-+++ b/sound/usb/usx2y/usbusx2yaudio.c
-@@ -822,8 +822,7 @@ static int snd_usx2y_pcm_hw_free(struct snd_pcm_substream *substream)
- 		usx2y_urbs_release(subs);
- 		if (!cap_subs->pcm_substream ||
- 		    !cap_subs->pcm_substream->runtime ||
--		    !cap_subs->pcm_substream->runtime->status ||
--		    cap_subs->pcm_substream->runtime->status->state < SNDRV_PCM_STATE_PREPARED) {
-+		    cap_subs->pcm_substream->runtime->state < SNDRV_PCM_STATE_PREPARED) {
- 			atomic_set(&cap_subs->state, STATE_STOPPED);
- 			usx2y_urbs_release(cap_subs);
- 		}
-diff --git a/sound/usb/usx2y/usx2yhwdeppcm.c b/sound/usb/usx2y/usx2yhwdeppcm.c
-index 240349b644f3..767a227d54da 100644
---- a/sound/usb/usx2y/usx2yhwdeppcm.c
-+++ b/sound/usb/usx2y/usx2yhwdeppcm.c
-@@ -374,8 +374,7 @@ static int snd_usx2y_usbpcm_hw_free(struct snd_pcm_substream *substream)
- 		usx2y_usbpcm_urbs_release(subs);
- 		if (!cap_subs->pcm_substream ||
- 		    !cap_subs->pcm_substream->runtime ||
--		    !cap_subs->pcm_substream->runtime->status ||
--		    cap_subs->pcm_substream->runtime->status->state < SNDRV_PCM_STATE_PREPARED) {
-+		    cap_subs->pcm_substream->runtime->state < SNDRV_PCM_STATE_PREPARED) {
- 			atomic_set(&cap_subs->state, STATE_STOPPED);
- 			if (cap_subs2)
- 				atomic_set(&cap_subs2->state, STATE_STOPPED);
+The first patch does the basic job in the core PCM side, and the
+second patch flips the PCM status mmap to read-only for hardening,
+while the remaining patches are for drivers to follow the core
+change.
+
+The conversions are straightforward.  In most places, it's just
+replacing runtime->status->state with runtime->state.
+
+
+Takashi
+
+===
+
+Takashi Iwai (11):
+  ALSA: pcm: Avoid reference to status->state
+  ALSA: pcm: Make mmap status read-only
+  ALSA: aloop: Replace runtime->status->state reference to
+    runtime->state
+  ALSA: firewire: Replace runtime->status->state reference to
+    runtime->state
+  ALSA: hda: Replace runtime->status->state reference to runtime->state
+  ALSA: asihpi: Replace runtime->status->state reference to
+    runtime->state
+  ALSA: usb-audio: Replace runtime->status->state reference to
+    runtime->state
+  ALSA: usx2y: Replace runtime->status->state reference to
+    runtime->state
+  ASoC: intel: Replace runtime->status->state reference to
+    runtime->state
+  ASoC: sh: Replace runtime->status->state reference to runtime->state
+  usb: gadget: Replace runtime->status->state reference to
+    runtime->state
+
+ drivers/usb/gadget/function/u_uac1_legacy.c |   4 +-
+ include/sound/pcm.h                         |  20 ++-
+ sound/core/oss/pcm_oss.c                    |  42 +++----
+ sound/core/pcm.c                            |   9 +-
+ sound/core/pcm_compat.c                     |   4 +-
+ sound/core/pcm_lib.c                        |  16 +--
+ sound/core/pcm_native.c                     | 128 ++++++++++----------
+ sound/drivers/aloop.c                       |   4 +-
+ sound/firewire/bebob/bebob_pcm.c            |   4 +-
+ sound/firewire/dice/dice-pcm.c              |   4 +-
+ sound/firewire/digi00x/digi00x-pcm.c        |   4 +-
+ sound/firewire/fireface/ff-pcm.c            |   4 +-
+ sound/firewire/fireworks/fireworks_pcm.c    |   4 +-
+ sound/firewire/motu/motu-pcm.c              |   4 +-
+ sound/firewire/oxfw/oxfw-pcm.c              |   8 +-
+ sound/firewire/tascam/tascam-pcm.c          |   4 +-
+ sound/hda/hdmi_chmap.c                      |   2 +-
+ sound/pci/asihpi/asihpi.c                   |   2 +-
+ sound/soc/intel/skylake/skl-pcm.c           |   4 +-
+ sound/soc/sh/rz-ssi.c                       |   2 +-
+ sound/usb/pcm.c                             |   4 +-
+ sound/usb/usx2y/usbusx2yaudio.c             |   3 +-
+ sound/usb/usx2y/usx2yhwdeppcm.c             |   3 +-
+ 23 files changed, 150 insertions(+), 133 deletions(-)
+
+===
+
+Cc: Bard Liao <yung-chuan.liao@linux.intel.com>
+Cc: Cezary Rojewski <cezary.rojewski@intel.com>
+Cc: Felipe Balbi <balbi@kernel.org>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: Kai Vehmanen <kai.vehmanen@linux.intel.com>
+Cc: Liam Girdwood <liam.r.girdwood@linux.intel.com>
+Cc: Mark Brown <broonie@kernel.org>
+Cc: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
+Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+Cc: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+
 -- 
 2.35.3
 
