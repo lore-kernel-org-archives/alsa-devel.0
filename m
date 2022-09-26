@@ -4,78 +4,78 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 16E62C07E9D
-	for <alsa-devel@archiver.kernel.org>; Mon, 26 Sep 2022 13:58:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id AD9B0C07E9D
+	for <alsa-devel@archiver.kernel.org>; Mon, 26 Sep 2022 13:58:19 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 39FD286E;
-	Mon, 26 Sep 2022 15:57:08 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 39FD286E
+	by alsa0.perex.cz (Postfix) with ESMTPS id 4D716826;
+	Mon, 26 Sep 2022 15:57:27 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4D716826
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1664200678;
-	bh=szZtDH+LJJDyat6+0c2qRFB0CG9d8FElFNeCRa4gCI8=;
+	s=default; t=1664200697;
+	bh=BqsVI5JTfLNDH+QOuX4kR1DOU+xDMLg4EyLfij+2Jdo=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=cp1RBtDzx8SlYkI4ZSIaBjA8idMU6epYYcIlGbUlh8hWj9iuiWtGWpTkHxU9wbSx6
-	 It+IhkMCqLCOiCMFTfKfHN+IC39RI3EjiqSnplgDe13HDUf7SBIHyOIyQLTjL5Oill
-	 8KdjC9EkiVOrn3YZSpYEgNAgPxVBqdVFpym3dSVs=
+	b=fVkfCG0848mvo7sqQIj9tIRZGbHvLyqDBaLnRsMbXf7hsSHkGxI76dZ7XVej3LMvf
+	 JakPqWFntlEBhctbRf8++qLobuOPGsayFpiEjHRDFMYZSXCODIjZonc3KAGM4S095S
+	 kKUeqtw6skJ7vKXIBXiOrme1NdFzrXxmlNm/Zt8I=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id ADB52F80533;
-	Mon, 26 Sep 2022 15:56:24 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 7C881F8055B;
+	Mon, 26 Sep 2022 15:56:28 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 11C74F8055C; Mon, 26 Sep 2022 15:56:23 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+ id A32BAF8055B; Mon, 26 Sep 2022 15:56:23 +0200 (CEST)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id E2F5AF80535
- for <alsa-devel@alsa-project.org>; Mon, 26 Sep 2022 15:56:13 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E2F5AF80535
+ by alsa1.perex.cz (Postfix) with ESMTPS id 5D897F804D2
+ for <alsa-devel@alsa-project.org>; Mon, 26 Sep 2022 15:56:11 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5D897F804D2
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="qiiOfKqZ"; 
+ header.b="vaJGlQ35"; 
  dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="aagJl7SC"
+ header.b="gZjasnPz"
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 1AD8121EB6;
- Mon, 26 Sep 2022 13:56:13 +0000 (UTC)
+ by smtp-out2.suse.de (Postfix) with ESMTPS id DCAFB1F8A3;
+ Mon, 26 Sep 2022 13:56:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1664200573; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1664200570; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=q7Hw1n4wxGBCs256tM2bb2MtuQ2cZzjjeZL/vKyw+Co=;
- b=qiiOfKqZsnGDFbhioE3LnDg+z/zvs/dYeI787fd2FIYR9WE4/c+2Yr0Tb38lSL00dgSkd2
- /BtMZ/e3ZcL6XidSWZ1XDPOSpzunTd2aMxUmeuq92qtrTzLZtqdtg5FAzZtuRv58VgkHO3
- 0UnFLSmh/L+YGFUmwq3ex+vA/XsQPsM=
+ bh=yMBaXWRVJYIK6LMR2Cwx7+b0uDPGKhczLe6l/iu2tME=;
+ b=vaJGlQ35tVt+PkRWVdrzEqBxKzhYEA5hx212Fj6VxeVBm8wJ7fkZtJXg9dGLX4duoQAYPs
+ qSDsVKY/45Sqp8JbeN9Vy3Tv9WrmyQqb5jCZrIO1Lxj6RDYDjo9jKtTUU6CpjlOO3Ow8Gi
+ 6ahw8tsD+4e7wbZeoUzK6Tg5AyXpe3Q=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1664200573;
+ s=susede2_ed25519; t=1664200570;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=q7Hw1n4wxGBCs256tM2bb2MtuQ2cZzjjeZL/vKyw+Co=;
- b=aagJl7SCPTvtBV2HUI9Lv1eM/xyTAJ526z8Z7JHIm1RNP2e3YL/C/lhk9rDfZn2EPvdSgw
- yQfnJwELMAXS+nDw==
+ bh=yMBaXWRVJYIK6LMR2Cwx7+b0uDPGKhczLe6l/iu2tME=;
+ b=gZjasnPzXFisWzGgSNXrYrcrX31wBNyEDsnX2UkIb516yJPRIPRPUTCXuV3v5Ea8O7Q90+
+ DTLUS2FlN85USWAw==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id DCAAF139BD;
- Mon, 26 Sep 2022 13:56:12 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id C3E83139BD;
+ Mon, 26 Sep 2022 13:56:10 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id 8Oq4NHyvMWPxegAAMHmgww
- (envelope-from <tiwai@suse.de>); Mon, 26 Sep 2022 13:56:12 +0000
+ by imap2.suse-dmz.suse.de with ESMTPSA id aLj2LnqvMWPxegAAMHmgww
+ (envelope-from <tiwai@suse.de>); Mon, 26 Sep 2022 13:56:10 +0000
 From: Takashi Iwai <tiwai@suse.de>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH 06/11] ALSA: asihpi: Replace runtime->status->state reference
+Subject: [PATCH 03/11] ALSA: aloop: Replace runtime->status->state reference
  to runtime->state
-Date: Mon, 26 Sep 2022 15:55:53 +0200
-Message-Id: <20220926135558.26580-7-tiwai@suse.de>
+Date: Mon, 26 Sep 2022 15:55:50 +0200
+Message-Id: <20220926135558.26580-4-tiwai@suse.de>
 X-Mailer: git-send-email 2.35.3
 In-Reply-To: <20220926135558.26580-1-tiwai@suse.de>
 References: <20220926135558.26580-1-tiwai@suse.de>
@@ -102,22 +102,31 @@ state directly from runtime object.  Replace the calls accordingly.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/pci/asihpi/asihpi.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/drivers/aloop.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/sound/pci/asihpi/asihpi.c b/sound/pci/asihpi/asihpi.c
-index 5e1f9f10051b..8de43aaa10aa 100644
---- a/sound/pci/asihpi/asihpi.c
-+++ b/sound/pci/asihpi/asihpi.c
-@@ -632,7 +632,7 @@ static int snd_card_asihpi_trigger(struct snd_pcm_substream *substream,
+diff --git a/sound/drivers/aloop.c b/sound/drivers/aloop.c
+index 12f12a294df5..a38e602b4fc6 100644
+--- a/sound/drivers/aloop.c
++++ b/sound/drivers/aloop.c
+@@ -535,7 +535,7 @@ static void copy_play_buf(struct loopback_pcm *play,
  
- 			/*? workaround linked streams don't
- 			transition to SETUP 20070706*/
--			s->runtime->status->state = SNDRV_PCM_STATE_SETUP;
-+			__snd_pcm_set_state(s->runtime, SNDRV_PCM_STATE_SETUP);
+ 	/* check if playback is draining, trim the capture copy size
+ 	 * when our pointer is at the end of playback ring buffer */
+-	if (runtime->status->state == SNDRV_PCM_STATE_DRAINING &&
++	if (runtime->state == SNDRV_PCM_STATE_DRAINING &&
+ 	    snd_pcm_playback_hw_avail(runtime) < runtime->buffer_size) { 
+ 	    	snd_pcm_uframes_t appl_ptr, appl_ptr1, diff;
+ 		appl_ptr = appl_ptr1 = runtime->control->appl_ptr;
+@@ -730,7 +730,7 @@ static void loopback_snd_timer_period_elapsed(struct loopback_cable *cable,
  
- 			if (card->support_grouping) {
- 				snd_printdd("%d group\n", s->number);
+ 	if (event == SNDRV_TIMER_EVENT_MSTOP) {
+ 		if (!dpcm_play ||
+-		    dpcm_play->substream->runtime->status->state !=
++		    dpcm_play->substream->runtime->state !=
+ 				SNDRV_PCM_STATE_DRAINING) {
+ 			spin_unlock_irqrestore(&cable->lock, flags);
+ 			return;
 -- 
 2.35.3
 
