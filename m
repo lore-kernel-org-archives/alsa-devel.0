@@ -4,88 +4,71 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1BED1C07E9D
-	for <alsa-devel@archiver.kernel.org>; Mon, 26 Sep 2022 12:53:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 79AE0C6FA83
+	for <alsa-devel@archiver.kernel.org>; Mon, 26 Sep 2022 13:28:10 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 529771E4;
-	Mon, 26 Sep 2022 14:52:47 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 529771E4
+	by alsa0.perex.cz (Postfix) with ESMTPS id 549BA1F7;
+	Mon, 26 Sep 2022 15:27:17 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 549BA1F7
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1664196817;
-	bh=DCOa5K1JmokS2FlunWEZ+qqd2HmApRowTmvbfY9V6lY=;
-	h=Date:Subject:To:References:From:In-Reply-To:Cc:List-Id:
+	s=default; t=1664198887;
+	bh=X4krFBdD4YBSMJWhMxVRmiJA8BmDJcxguLhvT2x7FMI=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=iOQUnOXfPyv0VpNU4wGVNDtMjyEYMm+gjsPy7WpS969SAEt/F9fsiXzqOv6igAsvC
-	 m0VjD/XEmXBV6BuGLYlnrSIC1THblz57D9MLbVyhk56Hbkc3dDP3j/R7oAK/P+emOc
-	 juNBe/yhnr2f5miK4pbJGkc8Lfae9gc5u/qN2bpg=
+	b=mxX6sKP+8m0qcnz6RtiM665ka9jroDoFN0tv804D8A0Jw7v8+Hk8m2Yn+IijjI1cl
+	 ex7wD+64s6wJ0EKh6HdEw+tOFIEr728jDIF20zTUrhcAsVU2wC9kTM/ShlX73OXo3Y
+	 jeG8UBqExe4C9AwPkxkby3LT1JH3Mx1yy8q8+I+c=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id C9648F80254;
-	Mon, 26 Sep 2022 14:52:46 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id E656BF80254;
+	Mon, 26 Sep 2022 15:27:16 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id EA23EF8027D; Mon, 26 Sep 2022 14:52:44 +0200 (CEST)
-Received: from mx07-00178001.pphosted.com (mx08-00178001.pphosted.com
- [91.207.212.93])
+ id 08420F80115; Mon, 26 Sep 2022 15:27:16 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id D8874F80115
+ for <alsa-devel@alsa-project.org>; Mon, 26 Sep 2022 15:27:13 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D8874F80115
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="cyJIrULj"
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 6C913F8011C
- for <alsa-devel@alsa-project.org>; Mon, 26 Sep 2022 14:52:42 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6C913F8011C
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=foss.st.com header.i=@foss.st.com
- header.b="4KNVEim7"
-Received: from pps.filterd (m0046661.ppops.net [127.0.0.1])
- by mx07-00178001.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 28QAYwJe004276;
- Mon, 26 Sep 2022 14:52:41 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com;
- h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=selector1;
- bh=O+IAOFImKzcJefc0+0q4nQ3kA464dZfhgjF2aT9XMP8=;
- b=4KNVEim7prR3colcv2mZHDRNkbyWAdeYvIUUPrDIxe+nvo+swDbV8f6KX8Fcps6U+LaW
- T1ElM3PId+1i8Z0vauBk9U7eJ0Od9tHj0h8QtpWnF5PqW0pscPOoJwlC1L5D0VY1cDAF
- LUh4gN+QpsNHtVwFlXXVgxVqfBMIZpkmR2LUG008jooGQT19LU09M0yOMdTDFkQY/m2J
- UmK6p06gghIDO93Tti74lcNxmJO9dec3SljeJVi2/atcaFxmYagtmIdZObQhPsuRjsN0
- Ga94JRXqFjR3OPWclqgP+liVBfxIek4qKHQN42MhQJFhEkH+87Fp/jAYN2PJcPDkVCPc vQ== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
- by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3jsrsjbjkq-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
- Mon, 26 Sep 2022 14:52:41 +0200
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
- by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 4E36B10002A;
- Mon, 26 Sep 2022 14:52:40 +0200 (CEST)
-Received: from Webmail-eu.st.com (shfdag1node2.st.com [10.75.129.70])
- by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 099E422A6D5;
- Mon, 26 Sep 2022 14:52:40 +0200 (CEST)
-Received: from [10.211.6.21] (10.75.127.49) by SHFDAG1NODE2.st.com
- (10.75.129.70) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.2375.31; Mon, 26 Sep
- 2022 14:52:36 +0200
-Message-ID: <b1cd2763-8914-7bce-8f91-666bae219bf4@foss.st.com>
-Date: Mon, 26 Sep 2022 14:52:36 +0200
+ by dfw.source.kernel.org (Postfix) with ESMTPS id 7003460A6D;
+ Mon, 26 Sep 2022 13:27:11 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DEE55C433D6;
+ Mon, 26 Sep 2022 13:27:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1664198830;
+ bh=X4krFBdD4YBSMJWhMxVRmiJA8BmDJcxguLhvT2x7FMI=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=cyJIrULjx1jYP9GG6AwNB+942qX/pKwHpmXoEe1L7mu2qEhFvD82Izy2XNdbHH45G
+ iiHPxGX4aKTRI4dmBvtj2bDcsPCcVPnSLHUl+pyXj9Dn1kQejiP+1RShvdxDzPbWfz
+ CHnq1VjVrc8oOi4IRu6O9GSGRXL+l5x4HPwo+MD2b5V+OUiEB2D6jQ9aTlAIGQr0jw
+ OB9S3DohbEhMfyDRrJ8jxUYhuoaYHa88yCrpQpwDBGa8M2zjLJnSfPBBNxebVDiJzh
+ NsLqcgX3XXlQ5mMreiyvD/dLcbVyX2feVFNWYwmAMHsnDLge3nov1X2FDkpaVvzRdN
+ kLUMefAQCMbBQ==
+Date: Mon, 26 Sep 2022 14:27:04 +0100
+From: Mark Brown <broonie@kernel.org>
+To: Akihiko Odaki <akihiko.odaki@gmail.com>
+Subject: Re: [PATCH 1/2] ASoC: amd: acp3x-5682: Remove SND_JACK_LINEOUT
+Message-ID: <YzGoqEFunlmj+kAn@sirena.org.uk>
+References: <20220924095025.7778-1-akihiko.odaki@gmail.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.11.0
-Subject: Re: [PATCH -next] ASoC: stm: Fix PM disable depth imbalance in
- stm32_i2s_probe
-Content-Language: en-US
-To: Zhang Qilong <zhangqilong3@huawei.com>, <olivier.moysan@foss.st.com>,
- <perex@perex.cz>, <tiwai@suse.com>, <mcoquelin.stm32@gmail.com>,
- <alexandre.torgue@foss.st.com>
-References: <20220926091439.103839-1-zhangqilong3@huawei.com>
-From: Arnaud POULIQUEN <arnaud.pouliquen@foss.st.com>
-In-Reply-To: <20220926091439.103839-1-zhangqilong3@huawei.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.75.127.49]
-X-ClientProxiedBy: SFHDAG2NODE3.st.com (10.75.127.6) To SHFDAG1NODE2.st.com
- (10.75.129.70)
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.895,Hydra:6.0.528,FMLib:17.11.122.1
- definitions=2022-09-26_08,2022-09-22_02,2022-06-22_01
-Cc: alsa-devel@alsa-project.org, linux-stm32@st-md-mailman.stormreply.com
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature"; boundary="ZQPBE47Sg1dDVZFM"
+Content-Disposition: inline
+In-Reply-To: <20220924095025.7778-1-akihiko.odaki@gmail.com>
+X-Cookie: You may be recognized soon.  Hide.
+Cc: alsa-devel@alsa-project.org,
+ =?iso-8859-1?Q?N=EDcolas_F_=2E_R_=2E_A_=2E?= Prado
+ <nfraprado@collabora.com>, Liam Girdwood <lgirdwood@gmail.com>,
+ linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>,
+ Matthias Brugger <matthias.bgg@gmail.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -101,48 +84,36 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Hello Zhang,
 
-On 9/26/22 11:14, Zhang Qilong wrote:
-> The pm_runtime_enable will increase power disable depth. Thus
-> a pairing decrement is needed on the error handling path to
-> keep it balanced according to context.
-> 
-> Fixes:efc162cbd480f ("ASoC: stm: Use dev_err_probe() helper")
-> Signed-off-by: Zhang Qilong <zhangqilong3@huawei.com>
-> ---
->  sound/soc/stm/stm32_i2s.c | 5 ++++-
->  1 file changed, 4 insertions(+), 1 deletion(-)
-> 
-> diff --git a/sound/soc/stm/stm32_i2s.c b/sound/soc/stm/stm32_i2s.c
-> index 6aafe793eec4..5a717443b105 100644
-> --- a/sound/soc/stm/stm32_i2s.c
-> +++ b/sound/soc/stm/stm32_i2s.c
-> @@ -1139,12 +1139,15 @@ static int stm32_i2s_probe(struct platform_device *pdev)
->  	pm_runtime_enable(&pdev->dev);
->  
->  	ret = snd_dmaengine_pcm_register(&pdev->dev, &stm32_i2s_pcm_config, 0);
-> -	if (ret)
-> +	if (ret) {
-> +		pm_runtime_disable(&pdev->dev);
->  		return dev_err_probe(&pdev->dev, ret, "PCM DMA register error\n");
-> +	}
->  
->  	ret = snd_soc_register_component(&pdev->dev, &stm32_i2s_component,
->  					 i2s->dai_drv, 1);
->  	if (ret) {
-> +		pm_runtime_disable(&pdev->dev);
->  		snd_dmaengine_pcm_unregister(&pdev->dev);
->  		return ret;
->  	}
+--ZQPBE47Sg1dDVZFM
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Seems that there the error has been introduced in this commit:
-32a956a1fadf ("ASoC: stm32: i2s: add pm_runtime support")
-The pm_runtime_enable should be at the end of the stm32_i2s_probe as done here:
-https://github.com/STMicroelectronics/linux/blob/v5.15-stm32mp/sound/soc/stm/stm32_i2s.c#L1200
+On Sat, Sep 24, 2022 at 06:50:24PM +0900, Akihiko Odaki wrote:
 
-Please, could you update your patch in this way?
-With also an update of the "Fixes:" reference in the commit message
+> RT5682 only has a headset jack.
 
-Thanks,
-Arnaud
+>  	ret = snd_soc_card_jack_new(card, "Headset Jack",
+> -				SND_JACK_HEADSET | SND_JACK_LINEOUT |
+> +				SND_JACK_HEADSET |
+
+Will the device by any chance happily drive this as a line output
+(possibly even detect if it's a headphone or a line output device
+attached)?  The CODEC hardware is often interchangable.
+
+--ZQPBE47Sg1dDVZFM
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmMxqKgACgkQJNaLcl1U
+h9CgyQf/XdHOCs25OMxT+vFXwhG57sTC9SvLFRmQdU3/UrthbFtwSnjQ67s1gXeI
+r9xy8U2nVaRVjC3aL/q6Gxhhhh4ofUV/rWs0FvCTk29dYQxDGWaD4kvo6A3F3TjS
+fw0kF3fBGt4XT5/OP6Bn14BThrupUeVwKW1bIw4y/9KbR7lg5hL/ua4RszUFUsmv
+0E3QuSLuz3PCfuUhC/H+5uyxTNwglwFnDq8fVVd0sbIFt79aZ9GkoY6I/PamIz2I
+Cp6C1UCjDrx3KPeOi+OfE8+xK7Xm8CBD0TUvM2C2OytXSCgA+doqcW7RC+ZaSuvH
+LJG72iyPpAtqquWuz/1zcpibi72eag==
+=KGMW
+-----END PGP SIGNATURE-----
+
+--ZQPBE47Sg1dDVZFM--
