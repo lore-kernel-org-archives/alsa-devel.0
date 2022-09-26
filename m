@@ -4,64 +4,62 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A034DC32771
-	for <alsa-devel@archiver.kernel.org>; Mon, 26 Sep 2022 14:05:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 45739C32771
+	for <alsa-devel@archiver.kernel.org>; Mon, 26 Sep 2022 14:09:08 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D4CEA828;
-	Mon, 26 Sep 2022 16:04:57 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D4CEA828
+	by alsa0.perex.cz (Postfix) with ESMTPS id 10C0383E;
+	Mon, 26 Sep 2022 16:08:16 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 10C0383E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1664201147;
-	bh=QWIUj5390jT/xGz2yVzEkO1spRWX7snq8eHKuhuvv8k=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	s=default; t=1664201346;
+	bh=rvzX0TiS0YGJzVRt2z2G9jENIgNJqxLuIUstFZyMFIM=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=se2gbJBpW9rroUAZwVnwDzVj/Irh7ENb6hGbMwxLQpAYS1aUANUKlruAa9R3bimAT
-	 lDplQ5SxFNawVmlMdu6VSAeqF0mFPkA79L9OpgDPndUY08q7HfcLZaKHclS66cT741
-	 9nbB9PJbZNpT8pJImPItg5MhhN3zc+92VK7lmflA=
+	b=sPDnxTIlelyvkhLXNb0aCoQeob/pOA5bxgToJUA017j0/w5hp5FjGHr8Eg7lHWkKM
+	 dOCELT454UtuK0opXDNmXAagM7DPCAUI5Y/kEBR0CQ7B7Ljl+HkNztvCMKcTjkcq0L
+	 c7VDDe0Exx0LiidEFQ7LFKhvIYKqplxOZz4W00ms=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 71F6EF80254;
-	Mon, 26 Sep 2022 16:04:57 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id A01AAF802BE;
+	Mon, 26 Sep 2022 16:08:15 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 8386EF8027D; Mon, 26 Sep 2022 16:04:56 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+ id AFAA8F80134; Mon, 26 Sep 2022 16:08:14 +0200 (CEST)
+Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 9DC55F80115
- for <alsa-devel@alsa-project.org>; Mon, 26 Sep 2022 16:04:48 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9DC55F80115
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=linuxfoundation.org
- header.i=@linuxfoundation.org header.b="KUyRLlk4"
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id EB0A160DD6;
- Mon, 26 Sep 2022 14:04:46 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A95D6C433C1;
- Mon, 26 Sep 2022 14:04:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
- s=korg; t=1664201086;
- bh=QWIUj5390jT/xGz2yVzEkO1spRWX7snq8eHKuhuvv8k=;
- h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=KUyRLlk4VjBT+WwHeKGEZCAJDAj1g7kfKkZa9jAo1+pjbufX9tQ5DEYBBrlvmKKV2
- rylJZbznxQmtcGZAx1LZX5kwS2H1kEbhk0vAFtU8uJZMwn9zhvZ92MwfzVvoZAhoUS
- Mon1veE80QQSuNqxHeR9qcR2364bAhua8at1Qjv4=
-Date: Mon, 26 Sep 2022 16:05:19 +0200
-From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To: Takashi Iwai <tiwai@suse.de>
-Subject: Re: [PATCH 11/11] usb: gadget: Replace runtime->status->state
- reference to runtime->state
-Message-ID: <YzGxn2PK7811Vhb0@kroah.com>
-References: <20220926135558.26580-1-tiwai@suse.de>
- <20220926135558.26580-12-tiwai@suse.de>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 7D727F80134
+ for <alsa-devel@alsa-project.org>; Mon, 26 Sep 2022 16:08:08 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 7D727F80134
+Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.55])
+ by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4Mbl0D0n8YzHqTZ;
+ Mon, 26 Sep 2022 22:05:48 +0800 (CST)
+Received: from kwepemm600014.china.huawei.com (7.193.23.54) by
+ dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.31; Mon, 26 Sep 2022 22:08:03 +0800
+Received: from huawei.com (10.90.53.225) by kwepemm600014.china.huawei.com
+ (7.193.23.54) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.31; Mon, 26 Sep
+ 2022 22:08:02 +0800
+From: Zhang Qilong <zhangqilong3@huawei.com>
+To: <arnaud.pouliquen@foss.st.com>
+Subject: [PATCH -next 2/2] ASoC: stm32: spdifrx: Fix PM disable depth
+ imbalance in stm32_spdifrx_probe
+Date: Mon, 26 Sep 2022 22:11:32 +0800
+Message-ID: <20220926141132.124245-3-zhangqilong3@huawei.com>
+X-Mailer: git-send-email 2.26.0.106.g9fadedd
+In-Reply-To: <20220926141132.124245-1-zhangqilong3@huawei.com>
+References: <20220926141132.124245-1-zhangqilong3@huawei.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220926135558.26580-12-tiwai@suse.de>
-Cc: Felipe Balbi <balbi@kernel.org>, alsa-devel@alsa-project.org
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.90.53.225]
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ kwepemm600014.china.huawei.com (7.193.23.54)
+X-CFilter-Loop: Reflected
+Cc: alsa-devel@alsa-project.org, linux-stm32@st-md-mailman.stormreply.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -77,18 +75,39 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Mon, Sep 26, 2022 at 03:55:58PM +0200, Takashi Iwai wrote:
-> The recent change in ALSA core allows drivers to get the current PCM
-> state directly from runtime object.  Replace the calls accordingly.
-> 
-> Cc: Felipe Balbi <balbi@kernel.org>
-> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> Signed-off-by: Takashi Iwai <tiwai@suse.de>
-> ---
-> 
-> I'm going to merge this through sound git tree as it requires ALSA core
-> changes.
+The pm_runtime_enable will increase power disable depth. Thus
+a pairing decrement is needed on the error handling path to
+keep it balanced according to context. We fix it by moving
+pm_runtime_enable to the endding of stm32_spdifrx_probe.
 
-Looks good to me:
+Fixes:ac5e3efd55868 ("ASoC: stm32: spdifrx: add pm_runtime support")
+Signed-off-by: Zhang Qilong <zhangqilong3@huawei.com>
+---
+ sound/soc/stm/stm32_spdifrx.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+diff --git a/sound/soc/stm/stm32_spdifrx.c b/sound/soc/stm/stm32_spdifrx.c
+index 0f7146756717..d399c906bb92 100644
+--- a/sound/soc/stm/stm32_spdifrx.c
++++ b/sound/soc/stm/stm32_spdifrx.c
+@@ -1002,8 +1002,6 @@ static int stm32_spdifrx_probe(struct platform_device *pdev)
+ 	udelay(2);
+ 	reset_control_deassert(rst);
+ 
+-	pm_runtime_enable(&pdev->dev);
+-
+ 	pcm_config = &stm32_spdifrx_pcm_config;
+ 	ret = snd_dmaengine_pcm_register(&pdev->dev, pcm_config, 0);
+ 	if (ret)
+@@ -1036,6 +1034,8 @@ static int stm32_spdifrx_probe(struct platform_device *pdev)
+ 			FIELD_GET(SPDIFRX_VERR_MIN_MASK, ver));
+ 	}
+ 
++	pm_runtime_enable(&pdev->dev);
++
+ 	return ret;
+ 
+ error:
+-- 
+2.25.1
+
