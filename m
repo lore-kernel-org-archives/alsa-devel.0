@@ -4,77 +4,78 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 46AA6C32771
-	for <alsa-devel@archiver.kernel.org>; Mon, 26 Sep 2022 13:57:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 16E62C07E9D
+	for <alsa-devel@archiver.kernel.org>; Mon, 26 Sep 2022 13:58:00 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 52A17843;
-	Mon, 26 Sep 2022 15:57:03 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 52A17843
+	by alsa0.perex.cz (Postfix) with ESMTPS id 39FD286E;
+	Mon, 26 Sep 2022 15:57:08 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 39FD286E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1664200673;
-	bh=YYBWPLvo/VwIs/lw0RAzmn+t3Ya1eiu3Jkc8CLnAaV4=;
+	s=default; t=1664200678;
+	bh=szZtDH+LJJDyat6+0c2qRFB0CG9d8FElFNeCRa4gCI8=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=YA8xOSC0I7uViunAMqMAFPuyKmodGvzeq04hMkeXfi6pRhCmzQKqVUgxllS8lq/rn
-	 KmgJRgs0BBseQ1BoHCHrglQ65+jlAZ/TsZ+5cL1TRbZ/TorBsTyqvgZ3PqI4Aog7q7
-	 TCC12DB3UCeKl/dJPkbddMQERwYu9knkAyplbIU4=
+	b=cp1RBtDzx8SlYkI4ZSIaBjA8idMU6epYYcIlGbUlh8hWj9iuiWtGWpTkHxU9wbSx6
+	 It+IhkMCqLCOiCMFTfKfHN+IC39RI3EjiqSnplgDe13HDUf7SBIHyOIyQLTjL5Oill
+	 8KdjC9EkiVOrn3YZSpYEgNAgPxVBqdVFpym3dSVs=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 1EA5BF80558;
-	Mon, 26 Sep 2022 15:56:22 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id ADB52F80533;
+	Mon, 26 Sep 2022 15:56:24 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id D7A1CF8053B; Mon, 26 Sep 2022 15:56:16 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+ id 11C74F8055C; Mon, 26 Sep 2022 15:56:23 +0200 (CEST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id ACB2CF80424
- for <alsa-devel@alsa-project.org>; Mon, 26 Sep 2022 15:56:10 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz ACB2CF80424
+ by alsa1.perex.cz (Postfix) with ESMTPS id E2F5AF80535
+ for <alsa-devel@alsa-project.org>; Mon, 26 Sep 2022 15:56:13 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E2F5AF80535
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="Lqjmq5Uc"; 
+ header.b="qiiOfKqZ"; 
  dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="4E2AXupy"
+ header.b="aagJl7SC"
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 2B62B1F899;
- Mon, 26 Sep 2022 13:56:10 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 1AD8121EB6;
+ Mon, 26 Sep 2022 13:56:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1664200570; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1664200573; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=llDzVwvZPxmefr0CGC8YZJjqNlgLrJ2Iya8C7OcAWFI=;
- b=Lqjmq5UcgWoSjv/lflZbccDpEjmI3v9HlJ5M72IHaLL5JUIJDM+C8SBJnzmisb4cgRfUb8
- nMxCO3UgMath/ql9MttUH+oZ0ylMooOUmgWO1gW2dzUGZkIDl0+OCzlJEBg2TuBvTzOIcx
- 2y7pRKepR1JvPGpwZCQvj4lWmTnSSzc=
+ bh=q7Hw1n4wxGBCs256tM2bb2MtuQ2cZzjjeZL/vKyw+Co=;
+ b=qiiOfKqZsnGDFbhioE3LnDg+z/zvs/dYeI787fd2FIYR9WE4/c+2Yr0Tb38lSL00dgSkd2
+ /BtMZ/e3ZcL6XidSWZ1XDPOSpzunTd2aMxUmeuq92qtrTzLZtqdtg5FAzZtuRv58VgkHO3
+ 0UnFLSmh/L+YGFUmwq3ex+vA/XsQPsM=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1664200570;
+ s=susede2_ed25519; t=1664200573;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:
  content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=llDzVwvZPxmefr0CGC8YZJjqNlgLrJ2Iya8C7OcAWFI=;
- b=4E2AXupyyKS7iTF4Vj0FY0COMFhqtVixUYbX4sJrLrrUz/0Pm45QLElKK6xRnacp9gEZOK
- xLMiIBsS/Dr2xAAQ==
+ bh=q7Hw1n4wxGBCs256tM2bb2MtuQ2cZzjjeZL/vKyw+Co=;
+ b=aagJl7SCPTvtBV2HUI9Lv1eM/xyTAJ526z8Z7JHIm1RNP2e3YL/C/lhk9rDfZn2EPvdSgw
+ yQfnJwELMAXS+nDw==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 06027139BD;
- Mon, 26 Sep 2022 13:56:10 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id DCAAF139BD;
+ Mon, 26 Sep 2022 13:56:12 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id aBXDAHqvMWPxegAAMHmgww
- (envelope-from <tiwai@suse.de>); Mon, 26 Sep 2022 13:56:10 +0000
+ by imap2.suse-dmz.suse.de with ESMTPSA id 8Oq4NHyvMWPxegAAMHmgww
+ (envelope-from <tiwai@suse.de>); Mon, 26 Sep 2022 13:56:12 +0000
 From: Takashi Iwai <tiwai@suse.de>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH 02/11] ALSA: pcm: Make mmap status read-only
-Date: Mon, 26 Sep 2022 15:55:49 +0200
-Message-Id: <20220926135558.26580-3-tiwai@suse.de>
+Subject: [PATCH 06/11] ALSA: asihpi: Replace runtime->status->state reference
+ to runtime->state
+Date: Mon, 26 Sep 2022 15:55:53 +0200
+Message-Id: <20220926135558.26580-7-tiwai@suse.de>
 X-Mailer: git-send-email 2.35.3
 In-Reply-To: <20220926135558.26580-1-tiwai@suse.de>
 References: <20220926135558.26580-1-tiwai@suse.de>
@@ -96,27 +97,27 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-The mmap status record should be read-only.  Modifying it from
-user-space may screw up things unexpectedly, so let's clear the write
-bits at exposing it.
+The recent change in ALSA core allows drivers to get the current PCM
+state directly from runtime object.  Replace the calls accordingly.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/core/pcm_native.c | 1 +
- 1 file changed, 1 insertion(+)
+ sound/pci/asihpi/asihpi.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/core/pcm_native.c b/sound/core/pcm_native.c
-index d9485b1ab719..33769ca78cc8 100644
---- a/sound/core/pcm_native.c
-+++ b/sound/core/pcm_native.c
-@@ -3668,6 +3668,7 @@ static int snd_pcm_mmap_status(struct snd_pcm_substream *substream, struct file
- 	area->vm_ops = &snd_pcm_vm_ops_status;
- 	area->vm_private_data = substream;
- 	area->vm_flags |= VM_DONTEXPAND | VM_DONTDUMP;
-+	area->vm_flags &= ~(VM_WRITE | VM_MAYWRITE);
- 	return 0;
- }
+diff --git a/sound/pci/asihpi/asihpi.c b/sound/pci/asihpi/asihpi.c
+index 5e1f9f10051b..8de43aaa10aa 100644
+--- a/sound/pci/asihpi/asihpi.c
++++ b/sound/pci/asihpi/asihpi.c
+@@ -632,7 +632,7 @@ static int snd_card_asihpi_trigger(struct snd_pcm_substream *substream,
  
+ 			/*? workaround linked streams don't
+ 			transition to SETUP 20070706*/
+-			s->runtime->status->state = SNDRV_PCM_STATE_SETUP;
++			__snd_pcm_set_state(s->runtime, SNDRV_PCM_STATE_SETUP);
+ 
+ 			if (card->support_grouping) {
+ 				snd_printdd("%d group\n", s->number);
 -- 
 2.35.3
 
