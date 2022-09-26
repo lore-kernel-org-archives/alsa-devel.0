@@ -4,71 +4,59 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 79AE0C6FA83
-	for <alsa-devel@archiver.kernel.org>; Mon, 26 Sep 2022 13:28:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4A33FC32771
+	for <alsa-devel@archiver.kernel.org>; Mon, 26 Sep 2022 13:39:30 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 549BA1F7;
-	Mon, 26 Sep 2022 15:27:17 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 549BA1F7
+	by alsa0.perex.cz (Postfix) with ESMTPS id 36BCB204;
+	Mon, 26 Sep 2022 15:38:38 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 36BCB204
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1664198887;
-	bh=X4krFBdD4YBSMJWhMxVRmiJA8BmDJcxguLhvT2x7FMI=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=mxX6sKP+8m0qcnz6RtiM665ka9jroDoFN0tv804D8A0Jw7v8+Hk8m2Yn+IijjI1cl
-	 ex7wD+64s6wJ0EKh6HdEw+tOFIEr728jDIF20zTUrhcAsVU2wC9kTM/ShlX73OXo3Y
-	 jeG8UBqExe4C9AwPkxkby3LT1JH3Mx1yy8q8+I+c=
+	s=default; t=1664199568;
+	bh=c3yPUh8yC6i7ELJNa9LYDHvobQEErGuXhDZvrwGcF+0=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=Jr0eAzOcaZ0//9wcar0MED9bEI3untCmzWDHZCknksVDJY/uqF4/hTBI2ZNlEBpDN
+	 AiaZsNSw49jyAxtfIiUUoYoJtjDH9f0ujt4R+Gp+HyePWqCo6p3xgagb1x0LVwkep9
+	 /SoN5jQzaiTIOfWTPNjA7QmPfZDH+fFDe/+GkUFk=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id E656BF80254;
-	Mon, 26 Sep 2022 15:27:16 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id CD14AF80115;
+	Mon, 26 Sep 2022 15:38:37 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 08420F80115; Mon, 26 Sep 2022 15:27:16 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+ id 7A4AFF8027D; Mon, 26 Sep 2022 15:38:36 +0200 (CEST)
+Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id D8874F80115
- for <alsa-devel@alsa-project.org>; Mon, 26 Sep 2022 15:27:13 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D8874F80115
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="cyJIrULj"
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id 7003460A6D;
- Mon, 26 Sep 2022 13:27:11 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DEE55C433D6;
- Mon, 26 Sep 2022 13:27:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1664198830;
- bh=X4krFBdD4YBSMJWhMxVRmiJA8BmDJcxguLhvT2x7FMI=;
- h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=cyJIrULjx1jYP9GG6AwNB+942qX/pKwHpmXoEe1L7mu2qEhFvD82Izy2XNdbHH45G
- iiHPxGX4aKTRI4dmBvtj2bDcsPCcVPnSLHUl+pyXj9Dn1kQejiP+1RShvdxDzPbWfz
- CHnq1VjVrc8oOi4IRu6O9GSGRXL+l5x4HPwo+MD2b5V+OUiEB2D6jQ9aTlAIGQr0jw
- OB9S3DohbEhMfyDRrJ8jxUYhuoaYHa88yCrpQpwDBGa8M2zjLJnSfPBBNxebVDiJzh
- NsLqcgX3XXlQ5mMreiyvD/dLcbVyX2feVFNWYwmAMHsnDLge3nov1X2FDkpaVvzRdN
- kLUMefAQCMbBQ==
-Date: Mon, 26 Sep 2022 14:27:04 +0100
-From: Mark Brown <broonie@kernel.org>
-To: Akihiko Odaki <akihiko.odaki@gmail.com>
-Subject: Re: [PATCH 1/2] ASoC: amd: acp3x-5682: Remove SND_JACK_LINEOUT
-Message-ID: <YzGoqEFunlmj+kAn@sirena.org.uk>
-References: <20220924095025.7778-1-akihiko.odaki@gmail.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 4A850F80115
+ for <alsa-devel@alsa-project.org>; Mon, 26 Sep 2022 15:38:29 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4A850F80115
+Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.57])
+ by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4MbkHx5tkZzWgsL;
+ Mon, 26 Sep 2022 21:34:21 +0800 (CST)
+Received: from kwepemm600014.china.huawei.com (7.193.23.54) by
+ dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.31; Mon, 26 Sep 2022 21:38:25 +0800
+Received: from huawei.com (10.90.53.225) by kwepemm600014.china.huawei.com
+ (7.193.23.54) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.31; Mon, 26 Sep
+ 2022 21:38:24 +0800
+From: Zhang Qilong <zhangqilong3@huawei.com>
+To: <arnaud.pouliquen@foss.st.com>
+Subject: [PATCH v2 -next] ASoC: stm: Fix PM disable depth imbalance in
+ stm32_i2s_probe
+Date: Mon, 26 Sep 2022 21:41:55 +0800
+Message-ID: <20220926134155.121427-1-zhangqilong3@huawei.com>
+X-Mailer: git-send-email 2.26.0.106.g9fadedd
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature"; boundary="ZQPBE47Sg1dDVZFM"
-Content-Disposition: inline
-In-Reply-To: <20220924095025.7778-1-akihiko.odaki@gmail.com>
-X-Cookie: You may be recognized soon.  Hide.
-Cc: alsa-devel@alsa-project.org,
- =?iso-8859-1?Q?N=EDcolas_F_=2E_R_=2E_A_=2E?= Prado
- <nfraprado@collabora.com>, Liam Girdwood <lgirdwood@gmail.com>,
- linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>,
- Matthias Brugger <matthias.bgg@gmail.com>
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.90.53.225]
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ kwepemm600014.china.huawei.com (7.193.23.54)
+X-CFilter-Loop: Reflected
+Cc: alsa-devel@alsa-project.org, linux-stm32@st-md-mailman.stormreply.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -84,36 +72,43 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+The pm_runtime_enable will increase power disable depth. Thus
+a pairing decrement is needed on the error handling path to
+keep it balanced according to context. We fix it by moving
+pm_runtime_enable to the endding of stm32_i2s_probe.
 
---ZQPBE47Sg1dDVZFM
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Fixes:32a956a1fadf ("ASoC: stm32: i2s: add pm_runtime support")
+Signed-off-by: Zhang Qilong <zhangqilong3@huawei.com>
+---
+v2:
+- Move pm_runtime_enable to the endding of stm32_i2s_probe
+  and correct fixes commit.
+---
+ sound/soc/stm/stm32_i2s.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-On Sat, Sep 24, 2022 at 06:50:24PM +0900, Akihiko Odaki wrote:
+diff --git a/sound/soc/stm/stm32_i2s.c b/sound/soc/stm/stm32_i2s.c
+index 6aafe793eec4..ce7f6942308f 100644
+--- a/sound/soc/stm/stm32_i2s.c
++++ b/sound/soc/stm/stm32_i2s.c
+@@ -1136,8 +1136,6 @@ static int stm32_i2s_probe(struct platform_device *pdev)
+ 		return dev_err_probe(&pdev->dev, PTR_ERR(i2s->regmap),
+ 				     "Regmap init error\n");
+ 
+-	pm_runtime_enable(&pdev->dev);
+-
+ 	ret = snd_dmaengine_pcm_register(&pdev->dev, &stm32_i2s_pcm_config, 0);
+ 	if (ret)
+ 		return dev_err_probe(&pdev->dev, ret, "PCM DMA register error\n");
+@@ -1180,6 +1178,8 @@ static int stm32_i2s_probe(struct platform_device *pdev)
+ 			FIELD_GET(I2S_VERR_MIN_MASK, val));
+ 	}
+ 
++	pm_runtime_enable(&pdev->dev);
++
+ 	return ret;
+ 
+ error:
+-- 
+2.25.1
 
-> RT5682 only has a headset jack.
-
->  	ret = snd_soc_card_jack_new(card, "Headset Jack",
-> -				SND_JACK_HEADSET | SND_JACK_LINEOUT |
-> +				SND_JACK_HEADSET |
-
-Will the device by any chance happily drive this as a line output
-(possibly even detect if it's a headphone or a line output device
-attached)?  The CODEC hardware is often interchangable.
-
---ZQPBE47Sg1dDVZFM
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmMxqKgACgkQJNaLcl1U
-h9CgyQf/XdHOCs25OMxT+vFXwhG57sTC9SvLFRmQdU3/UrthbFtwSnjQ67s1gXeI
-r9xy8U2nVaRVjC3aL/q6Gxhhhh4ofUV/rWs0FvCTk29dYQxDGWaD4kvo6A3F3TjS
-fw0kF3fBGt4XT5/OP6Bn14BThrupUeVwKW1bIw4y/9KbR7lg5hL/ua4RszUFUsmv
-0E3QuSLuz3PCfuUhC/H+5uyxTNwglwFnDq8fVVd0sbIFt79aZ9GkoY6I/PamIz2I
-Cp6C1UCjDrx3KPeOi+OfE8+xK7Xm8CBD0TUvM2C2OytXSCgA+doqcW7RC+ZaSuvH
-LJG72iyPpAtqquWuz/1zcpibi72eag==
-=KGMW
------END PGP SIGNATURE-----
-
---ZQPBE47Sg1dDVZFM--
