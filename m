@@ -4,75 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 87C69C32771
-	for <alsa-devel@archiver.kernel.org>; Mon, 26 Sep 2022 18:01:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 62921C32771
+	for <alsa-devel@archiver.kernel.org>; Mon, 26 Sep 2022 18:02:11 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id BF8E73E7;
-	Mon, 26 Sep 2022 20:00:48 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BF8E73E7
+	by alsa0.perex.cz (Postfix) with ESMTPS id 5AE14829;
+	Mon, 26 Sep 2022 20:01:19 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5AE14829
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1664215298;
-	bh=2P8o7fzQArNIzh8sTaJO8XJRpUqu7FFecWPaie4lruI=;
+	s=default; t=1664215329;
+	bh=lwNmNeyM60GxVqrqSHyOzlOccMqPqWIvoP2NFo3qrJk=;
 	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=lymKa5y42CWs7ameEeLkmEwY73OGXgGQDiyGEh8brqN4ubEYl2aBppKFeLpkZ3Vzs
-	 5rP8fYb0LqEIFuBqE5J/1vUQmVBuVcHkQfS0yHo2vs9FC8Rm0ljtaWzzZu0IvPd9eJ
-	 dgIs1cYvh2WqARnXW5FVm1IHMAP88vMTi+AxhmdY=
+	b=unR/ccTqNZCQJIdM8t8I5o8ghiPe7EyuXDxyER3+odSqc6/jsqo/0VsY+iJeU7/F8
+	 mSMEfYCJg3fYi2sBfzbNqRhqm+Q8qwXAD9uUYbWBKokDXl11pIvdzk+hHXXKGHo09+
+	 go7T7r6yDoQCfisXkhmYUvCPqqHoYNfYkQeCykP8=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 475DCF8011C;
-	Mon, 26 Sep 2022 20:00:48 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 02270F80424;
+	Mon, 26 Sep 2022 20:01:19 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id A901EF8011C; Mon, 26 Sep 2022 20:00:46 +0200 (CEST)
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+ id EBCAEF804D2; Mon, 26 Sep 2022 20:01:17 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 67858F8011C
- for <alsa-devel@alsa-project.org>; Mon, 26 Sep 2022 20:00:43 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 67858F8011C
+ by alsa1.perex.cz (Postfix) with ESMTPS id 314F6F802BE
+ for <alsa-devel@alsa-project.org>; Mon, 26 Sep 2022 20:01:14 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 314F6F802BE
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="S3EToam7"
+ header.b="K1azSrdA"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by ams.source.kernel.org (Postfix) with ESMTPS id C562FB80BED;
- Mon, 26 Sep 2022 18:00:41 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8910CC433D6;
- Mon, 26 Sep 2022 18:00:38 +0000 (UTC)
+ by dfw.source.kernel.org (Postfix) with ESMTPS id 2E25E61132;
+ Mon, 26 Sep 2022 18:01:12 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E083CC433C1;
+ Mon, 26 Sep 2022 18:01:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1664215240;
- bh=2P8o7fzQArNIzh8sTaJO8XJRpUqu7FFecWPaie4lruI=;
+ s=k20201202; t=1664215271;
+ bh=lwNmNeyM60GxVqrqSHyOzlOccMqPqWIvoP2NFo3qrJk=;
  h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=S3EToam7vquTYIXWEcI4h8mD8xcgyvReIfut1N7A9X18wgU9bOE+ZDx7FhSTV350N
- Fwc/gS5A0zcu8i3Mm8ECsA6WZNafnO04ltTZoQC5VSBJXk+5Un7V4L7KaZG826P6r/
- BBL2FvRW6EFfs/2Tp/TMPvltQlL+L2YmS5AS5jXnT8sqixkDzSnrMVxcKUdryr3eOI
- jTiyZIRw1wlbBy3BL8FZQDDHy3e22khm+reJZaPMC0ivQZZknYdIE67DRcp46xxxGx
- QtSuXzjoyLcuWCOkhHqklAcVRA0fgkTTULE2Y09VatbSuocnLAAkwWp8/7Ua8uKax+
- csgF5GzbNaHqQ==
-Date: Mon, 26 Sep 2022 19:00:34 +0100
+ b=K1azSrdAnV0qh30TC3R5EgTcoOmieL4rSYhfW4dBmjqG9A+gKjdUPP/710x7J/Afp
+ zPAqSX5PbWSzKCBU4tLj98MyX0w6bCTezjuHnjis37BQ1fyBOILqrqrms+tLfKhxLm
+ OSbyRY4819dln/8gnWmbL0+j78g5XW8GeDC/Awdi5LljFO8rISqf/y+GfVxiuykqc0
+ jAaNeTBJW2TjAcePaLiMnsKMjupDz1v1A0wXf4sgAP7YhQd7c0rIZs/r+TGcsfhyCK
+ 0/nB0vc0zMBLMXF7k7hAuLp06kRELiKUf+6hAOHyONFkE2qLA0j7oxLZU6WWnxzZxX
+ UeDg/vDTShh2A==
+Date: Mon, 26 Sep 2022 19:01:07 +0100
 From: Mark Brown <broonie@kernel.org>
 To: Takashi Iwai <tiwai@suse.de>
-Subject: Re: [PATCH 09/11] ASoC: intel: Replace runtime->status->state
- reference to runtime->state
-Message-ID: <YzHows+lDZV5F0eu@sirena.org.uk>
+Subject: Re: [PATCH 10/11] ASoC: sh: Replace runtime->status->state reference
+ to runtime->state
+Message-ID: <YzHo45XFxUe5AmsB@sirena.org.uk>
 References: <20220926135558.26580-1-tiwai@suse.de>
- <20220926135558.26580-10-tiwai@suse.de>
+ <20220926135558.26580-11-tiwai@suse.de>
 MIME-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature"; boundary="r/CdnkdVQhqamxWH"
+ protocol="application/pgp-signature"; boundary="n8Zv8fx1nKsck57k"
 Content-Disposition: inline
-In-Reply-To: <20220926135558.26580-10-tiwai@suse.de>
+In-Reply-To: <20220926135558.26580-11-tiwai@suse.de>
 X-Cookie: You may be recognized soon.  Hide.
-Cc: alsa-devel@alsa-project.org, Kai Vehmanen <kai.vehmanen@linux.intel.com>,
- Peter Ujfalusi <peter.ujfalusi@linux.intel.com>,
- Cezary Rojewski <cezary.rojewski@intel.com>,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- Liam Girdwood <liam.r.girdwood@linux.intel.com>,
- Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
- Bard Liao <yung-chuan.liao@linux.intel.com>
+Cc: alsa-devel@alsa-project.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -89,29 +83,29 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
---r/CdnkdVQhqamxWH
+--n8Zv8fx1nKsck57k
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Mon, Sep 26, 2022 at 03:55:56PM +0200, Takashi Iwai wrote:
+On Mon, Sep 26, 2022 at 03:55:57PM +0200, Takashi Iwai wrote:
 > The recent change in ALSA core allows drivers to get the current PCM
 > state directly from runtime object.  Replace the calls accordingly.
 
 Acked-by: Mark Brown <broonie@kernel.org>
 
---r/CdnkdVQhqamxWH
+--n8Zv8fx1nKsck57k
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEyBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmMx6MIACgkQJNaLcl1U
-h9Atnwf2Pl4CC+M/jO4bZv7lvKMvv94JI/GJuZUkq0hPdpuT40Keqf9heFmx/aJg
-xFdJhHm6snjROKaz1uwq03mDkAKFF7b0o/bGJez1t/cATp0xQBWRNfe6jqo1OEIV
-JeiFNVFJCwqQ2p9zVpXMCUvGgLXB5CnsykwfeWpzxTFODMrW48kl58LELA6wVrbg
-wnXjXVhgwEEz14BHUCzkvEVOwM7JwQhJDnLI15Qb59CVlwjB+jDsmNRN6mlWssXv
-wDxaawiMwp79IH1fKPPmvEJNeOr3YL4RNDWKT4QwYlaY+SCNxf+YUjNCm0OewZOS
-3RvLxAiBRxZ+UTcMe03uZzhfPt10
-=1jq5
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmMx6OMACgkQJNaLcl1U
+h9A6vAf/XzJi/4eqSwRyL8n0UigfcC57gM8TszeisfTVcQlM+SIIrNnCIiAu6Lz3
+NH8QWcQCXhxn8OJIPGPs3iotYCDevbgxgbC0mCr5hz9ywwyeDmIQLgYPam+NWxUT
+P7XErU5UjeNfKtpUFWpC/CLNXbbOtXKxKUtQQXZ9Z6prKzU3yWQpaIzTTgemtK6f
+mQ2Y48HrLyeMvof7SCFOpSOEz3PyV/DHnIul+qgnZ6R98LAlvh8gPHGLuUsFVsPM
+XbQ7CYWw1UbM8P1YcgifJman7DfleNR3AnQgecRrRpeNMj8m/qKVOWm5Y5zmNyGz
+tzAl+hb/VznbDt0AlHCfyGw0US+wfw==
+=wW9S
 -----END PGP SIGNATURE-----
 
---r/CdnkdVQhqamxWH--
+--n8Zv8fx1nKsck57k--
