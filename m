@@ -4,82 +4,97 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A858FC07E9D
-	for <alsa-devel@archiver.kernel.org>; Mon, 26 Sep 2022 06:24:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 71C72C32771
+	for <alsa-devel@archiver.kernel.org>; Mon, 26 Sep 2022 06:41:58 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B985F1E0;
-	Mon, 26 Sep 2022 08:23:37 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B985F1E0
+	by alsa0.perex.cz (Postfix) with ESMTPS id BBC0DF3;
+	Mon, 26 Sep 2022 08:41:05 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BBC0DF3
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1664173467;
-	bh=SLnutiPWiHxaVmhmMd0sQIDNCZbw9gnDuQ45zua1Q/I=;
-	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1664174515;
+	bh=xp0LaHp/oiXYkGgnQkFPfGbOivOwbU8cnR2d4GjylTU=;
+	h=Date:Subject:To:References:From:In-Reply-To:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=aUr+MHvsQwRVeAlc6HXywMpCrr//k/XW7Q4uTNVxtiGbPntz+svplzmtu80jHuddN
-	 vdOCnoeTnkvt1pgRVG6MUoosBSxnErn9DFhMQQXyADl6pnqIjooQHj60gzhTMYYWP2
-	 8EUKD9/z1KiGWg1dWrEURVLpl3KgtbtrMyF7nbQ4=
+	b=lwGo2UwIkXxKgYojXfZZoyQbwU9bgHIO4Fnk/eWrpXyzDa23WR+24oE7K31pFAfTK
+	 mAVNU+vVwESTkJWtZCA1kZenTJfBA8zsbc8PGsMKg9NZ7ucBrK2z1YuXdsutqEutE+
+	 7tWwUOE0m1WijeX97YKocMZLsWmFHnAaaWdZd7PA=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 5435FF80254;
-	Mon, 26 Sep 2022 08:23:37 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 3D242F80254;
+	Mon, 26 Sep 2022 08:41:05 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 749D6F8027D; Mon, 26 Sep 2022 08:23:36 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+ id C7FEEF8027D; Mon, 26 Sep 2022 08:41:03 +0200 (CEST)
+Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com
+ [IPv6:2a00:1450:4864:20::135])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 41276F80115
- for <alsa-devel@alsa-project.org>; Mon, 26 Sep 2022 08:23:21 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 41276F80115
+ by alsa1.perex.cz (Postfix) with ESMTPS id DE6CCF80115
+ for <alsa-devel@alsa-project.org>; Mon, 26 Sep 2022 08:40:56 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz DE6CCF80115
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="da+SRmvy"; 
- dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="F1n2Do46"
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 7B0031FD13;
- Mon, 26 Sep 2022 06:23:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1664173401; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=veh7t/XDtN7ETq2C4vUlduRWmxbXHXn3ESvF8TWODCU=;
- b=da+SRmvyRDPWModUTup2sjkqd5Plm31l07JV3xq9651gySVTMMNl4ezfIG0G2z0SApyI3c
- mNps7vKBFHZTGEnbsYydACXZYL7cuWrND4bYc6XRg6vAASeND6rpoiXHWNlqRLYHRqa2zc
- HfgWnDXp4u7ZGWLsV9Cp2M9kK1bzDgQ=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1664173401;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=veh7t/XDtN7ETq2C4vUlduRWmxbXHXn3ESvF8TWODCU=;
- b=F1n2Do46YaaSqygTtXCVomSgMpVRWAOw3p56dmoQcfxK8YSx0mPYR7vE5tJuL0YgiUZOXh
- NkSBwItpl2cAKrAQ==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 5709F13486;
- Mon, 26 Sep 2022 06:23:21 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id 5oqAFFlFMWNBHwAAMHmgww
- (envelope-from <tiwai@suse.de>); Mon, 26 Sep 2022 06:23:21 +0000
-Date: Mon, 26 Sep 2022 08:23:20 +0200
-Message-ID: <87a66m4pt3.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Jaroslav Kysela <perex@perex.cz>
-Subject: Re: [PATCH] ALSA: hda/hdmi: Limit the maximal count of PCM devices to
- 8
-In-Reply-To: <20220923082236.61024-1-perex@perex.cz>
-References: <20220923082236.61024-1-perex@perex.cz>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
-Cc: ALSA development <alsa-devel@alsa-project.org>
+ dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org
+ header.b="w60uglZU"
+Received: by mail-lf1-x135.google.com with SMTP id w8so9239998lft.12
+ for <alsa-devel@alsa-project.org>; Sun, 25 Sep 2022 23:40:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
+ h=content-transfer-encoding:in-reply-to:from:references:to
+ :content-language:subject:user-agent:mime-version:date:message-id
+ :from:to:cc:subject:date;
+ bh=eEvomUPAbiilR0mKyM+WIzCcrPikO0w/LFnRQciIxbU=;
+ b=w60uglZUbrcD3QCNC0WDlhn4fApibMa2aQsWpBwYCibhs1DBWo5EBY/PjL8wxVv26g
+ 477bVsR22foGesJpe6cgXjXh3fmpoaFaCgZ1soGWKo3GW7FIWSdYRRLPNEVssFg8HB0O
+ Lx4oaqIjEOJtNMl4DW/U/RVPRI+ZlWAFgkgLa88o3DJROB0BAgtHDHQgxfO7jyUqh20o
+ ciCfTypVKX4vkHxCT+GXFL34RM1AtsrJKCDNvZLPckBvqe7EigRrfkMElWkFCwUoJWzC
+ R4yKjVlIBL64SBieqoLefbjdN3LN3bI//9/y+1cGUojltg70VhenDoplBx1L6UJjur42
+ 4IgA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=content-transfer-encoding:in-reply-to:from:references:to
+ :content-language:subject:user-agent:mime-version:date:message-id
+ :x-gm-message-state:from:to:cc:subject:date;
+ bh=eEvomUPAbiilR0mKyM+WIzCcrPikO0w/LFnRQciIxbU=;
+ b=3l0cmM/hax4i6eykmUbFDx2dlHtDXBgHF5sB6fkg2KZ0oGNXSB2wOiq2lX4czVcD6H
+ qcrESUKf5GB+g22wS3rORkJ3KIkq7FVB5NSi/NlcmdBfT6AZQoRu7eUzOwTHq13JbEkp
+ 07kBVZ5TLJVni2zYkbglmVdUMZOZEW5UTn0MSXZQmI325hCdCKXR37qPxR8hqGZSJl7h
+ NA99ppC8LbyRt0DUt+wxoTmxG2Oqox/elHjsztC4XkxvhnY5a68dskMBELQ0M+Dw5Ogz
+ IgRM1TZYQf3Ex2uA4ngbKvZae88neDoeuST1nbkv+UKjqH3ruHvRi+3foYrz+esyNL7Y
+ nwvQ==
+X-Gm-Message-State: ACrzQf1b9qa4XVZkWJx9XTIbR78UUhPZ1iMjk4ERt6xtrAALqvIlK570
+ 0Dwk/gFK/GLK5H+K+PPRTBlsLw==
+X-Google-Smtp-Source: AMsMyM4ziGPYUJOsSHyxIGY8wGTAbXEUpXp6IRhzzGaBwqcucwGeDucnhnk4DeXgU7z0ZsmqNB8jAQ==
+X-Received: by 2002:a19:6b05:0:b0:49f:53b9:abb0 with SMTP id
+ d5-20020a196b05000000b0049f53b9abb0mr8630989lfa.166.1664174454735; 
+ Sun, 25 Sep 2022 23:40:54 -0700 (PDT)
+Received: from [192.168.0.21] (78-11-189-27.static.ip.netia.com.pl.
+ [78.11.189.27]) by smtp.gmail.com with ESMTPSA id
+ a14-20020a195f4e000000b0048ae316caf0sm2440905lfj.18.2022.09.25.23.40.53
+ (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+ Sun, 25 Sep 2022 23:40:54 -0700 (PDT)
+Message-ID: <7b5b9f3a-129a-b6b5-4348-cca7381c2d1f@linaro.org>
+Date: Mon, 26 Sep 2022 08:40:53 +0200
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.3.0
+Subject: Re: [PATCH 07/11] arm64: dts: qcom: sdm8458: align node names with DT
+ schema
+Content-Language: en-US
+To: Steev Klimaszewski <steev@kali.org>,
+ Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+ Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Andy Gross <agross@kernel.org>, Bjorn Andersson <andersson@kernel.org>,
+ Konrad Dybcio <konrad.dybcio@somainline.org>, alsa-devel@alsa-project.org,
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-arm-msm@vger.kernel.org
+References: <20220923161453.469179-1-krzysztof.kozlowski@linaro.org>
+ <20220923161453.469179-8-krzysztof.kozlowski@linaro.org>
+ <d3218018-45c4-4777-77a7-91947ad48666@kali.org>
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <d3218018-45c4-4777-77a7-91947ad48666@kali.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -95,15 +110,21 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Fri, 23 Sep 2022 10:22:36 +0200,
-Jaroslav Kysela wrote:
+On 25/09/2022 20:58, Steev Klimaszewski wrote:
+>>   				#address-cells = <2>;
+>>   				#size-cells = <0>;
 > 
-> The current hardware has up to 4 converters. Save little space.
-> The limit 8 is enough even for a more improved hardware.
+> Subject has a typo - sdm8458 -> sdm845
+
+Indeed.
+
 > 
-> Signed-off-by: Jaroslav Kysela <perex@perex.cz>
+> Tested on Lenovo Yoga C630
+> 
+> Tested-by: Steev Klimaszewski <steev@kali.org>
 
-Thanks, applied.
+Thanks!
 
+Best regards,
+Krzysztof
 
-Takashi
