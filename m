@@ -4,73 +4,79 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A5715C32771
-	for <alsa-devel@archiver.kernel.org>; Mon, 26 Sep 2022 22:59:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C6548C07E9D
+	for <alsa-devel@archiver.kernel.org>; Mon, 26 Sep 2022 23:00:30 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id CDDE683D;
-	Tue, 27 Sep 2022 00:58:40 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CDDE683D
+	by alsa0.perex.cz (Postfix) with ESMTPS id B243B1E0;
+	Tue, 27 Sep 2022 00:59:38 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B243B1E0
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1664233170;
-	bh=xDYjoFR+NtGG53i9TMTNgZOELVNnrshin7Kn4ONKlzY=;
-	h=Date:From:To:Subject:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=Qs9NfENtjFNsgIpYNUNzOEZtzMxPpWqSYo9iELcQE4zuagLrrajnaPg9quy9ngtLJ
-	 fumbhIdrU1NfxCPW4GiikuzNYjHn9NNdRh3gG2uek/wqlR+gF3AiEWlID3Ft5puyKT
-	 mdqhidh6/IpERtRvSo5Hkp+Vek8XacxQ56TfqYBg=
+	s=default; t=1664233228;
+	bh=zf3WKF4i2zo6WVus81hKg9SKqNlmwdIKOi2heWGUOWM=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=BYy7ljJqUi4pq1tsu5ZsqBje246OmbUwPKh8RDt746131Grdp6q6Xa6J2njlBhDKi
+	 u2G45izBz4JvRK55q/41e7Z0gUiFz5baOA3SmS1qJwcMe4eXYIx+jNDct71GrBs2HD
+	 SNH+uQoCuhtJA28/8kkBfHvLCtlW2oiJjTjb78i0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id C40BDF8027D;
-	Tue, 27 Sep 2022 00:58:31 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 60463F8027D;
+	Tue, 27 Sep 2022 00:59:38 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 58A03F8027D; Tue, 27 Sep 2022 00:58:31 +0200 (CEST)
-Received: from ams.source.kernel.org (ams.source.kernel.org
- [IPv6:2604:1380:4601:e00::1])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id 79F30F802BE; Tue, 27 Sep 2022 00:59:37 +0200 (CEST)
+Received: from mail-oi1-f170.google.com (mail-oi1-f170.google.com
+ [209.85.167.170])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 4A620F8027D
- for <alsa-devel@alsa-project.org>; Tue, 27 Sep 2022 00:58:24 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 4A620F8027D
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="nbj97LKU"
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by ams.source.kernel.org (Postfix) with ESMTPS id 7B1D4B81598;
- Mon, 26 Sep 2022 22:58:24 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A8EBCC433D6;
- Mon, 26 Sep 2022 22:58:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1664233103;
- bh=xDYjoFR+NtGG53i9TMTNgZOELVNnrshin7Kn4ONKlzY=;
- h=Date:From:To:Cc:Subject:From;
- b=nbj97LKUb6NIti9AtwZWlD4v8BVQ1Wh6mke62KVOELQdDAUJGJpOYxdkf129L43lR
- X+VkTgscuP4NlWdojyibYcOcW+ArKTQVhdI7RYhRXjVn8LJuMofZi4Ap/s5n67RUnj
- k8s+1IPYKS2BhVaM8EYtqhNyxVzuB4HtGWZmpkawV7FFLUA3gD3vsuHD0KT2aw0LFL
- byc2HwpWgw0agVPklgdpbbW0OXlaF4OsQgQxiPjkM84RSfyHSf55qtkXw9U84pSorN
- c2eJQIepC0mdx54aftNQowHrMLssVDKYI24NvkLOQfhmBhSc87iBkMOcAIp2/IsOA0
- yae3/wKpkKRSw==
-Date: Mon, 26 Sep 2022 17:58:17 -0500
-From: "Gustavo A. R. Silva" <gustavoars@kernel.org>
-To: Cezary Rojewski <cezary.rojewski@intel.com>,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- Liam Girdwood <liam.r.girdwood@linux.intel.com>,
- Peter Ujfalusi <peter.ujfalusi@linux.intel.com>,
- Bard Liao <yung-chuan.liao@linux.intel.com>,
- Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
- Kai Vehmanen <kai.vehmanen@linux.intel.com>,
- Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>,
- Takashi Iwai <tiwai@suse.com>
-Subject: [PATCH][next] ASoC: Intel: Skylake: Replace zero-length arrays with
- DECLARE_FLEX_ARRAY() helper
-Message-ID: <YzIuiUul2CwPlkKh@work>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 51404F80254
+ for <alsa-devel@alsa-project.org>; Tue, 27 Sep 2022 00:59:31 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 51404F80254
+Received: by mail-oi1-f170.google.com with SMTP id s125so10079048oie.4
+ for <alsa-devel@alsa-project.org>; Mon, 26 Sep 2022 15:59:30 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=in-reply-to:content-disposition:mime-version:references:message-id
+ :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date;
+ bh=G1nYtk8mEOVoyeeft0wUFqBP6nfvgAT1OE7LASp1Y7Q=;
+ b=Nc4NsPGFyam774SgL4crld24C2iAWcu2FoUNBv2Im3eFVaJVw8CFFSbq4fnRlri9sq
+ 2M4s+BJyhD25tNsbvNSQ0gVPG0FNcS3hhIcX2QnWAZmIGq3ubvml5Zn/xl0/9EwEwEeX
+ Gya76p6zMs2RB5aAXVIaCoXM/JyRzaPYEy4WrP/otg0JH1oS0xudv+iw3FzDs6oyYOOz
+ dmvGat18K8SvG7epigawEqYHH+p0DC+Ki0fjV/6Tm/C0VKGvYzUaVgtVc6+nHV31zoJJ
+ qATZW+ABPhu6GTuFQs6cvlF7b8gPI9X1HDWW1hOiWj0CXfeKy2DxHYgj9xE0TnlieYSw
+ 5ddg==
+X-Gm-Message-State: ACrzQf2D5fnQ5yq/8W25279O7j2MH0uXdCo2DrmIzm3eamBd94xIGKws
+ OgvieFJaw4lSbLnF9QPpew==
+X-Google-Smtp-Source: AMsMyM68dzdCvNHTwgkYRyIWg2iK9c9WNyjxUq8oaywqVSlqKg/Wq2ekbLSidqq2dSUL+cXlDXZnLw==
+X-Received: by 2002:aca:1912:0:b0:350:504b:ee13 with SMTP id
+ l18-20020aca1912000000b00350504bee13mr513201oii.256.1664233169638; 
+ Mon, 26 Sep 2022 15:59:29 -0700 (PDT)
+Received: from robh.at.kernel.org (66-90-144-107.dyn.grandenetworks.net.
+ [66.90.144.107]) by smtp.gmail.com with ESMTPSA id
+ f47-20020a4a8932000000b0044b491ccf97sm7062458ooi.25.2022.09.26.15.59.28
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Mon, 26 Sep 2022 15:59:29 -0700 (PDT)
+Received: (nullmailer pid 3123199 invoked by uid 1000);
+ Mon, 26 Sep 2022 22:59:28 -0000
+Date: Mon, 26 Sep 2022 17:59:28 -0500
+From: Rob Herring <robh@kernel.org>
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Subject: Re: [PATCH 11/11] dt-bindings: slimbus: qcom, slim-ngd: convert to DT
+ schema
+Message-ID: <20220926225928.GA3123152-robh@kernel.org>
+References: <20220923161453.469179-1-krzysztof.kozlowski@linaro.org>
+ <20220923161453.469179-12-krzysztof.kozlowski@linaro.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Cc: alsa-devel@alsa-project.org, linux-hardening@vger.kernel.org,
- linux-kernel@vger.kernel.org, "Gustavo A. R. Silva" <gustavoars@kernel.org>
+In-Reply-To: <20220923161453.469179-12-krzysztof.kozlowski@linaro.org>
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
+ linux-arm-msm@vger.kernel.org, Bjorn Andersson <andersson@kernel.org>,
+ Konrad Dybcio <konrad.dybcio@somainline.org>, linux-kernel@vger.kernel.org,
+ Rob Herring <robh+dt@kernel.org>, Andy Gross <agross@kernel.org>,
+ Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -86,36 +92,20 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Zero-length arrays are deprecated and we are moving towards adopting
-C99 flexible-array members, instead. So, replace zero-length arrays
-declarations in anonymous union with the new DECLARE_FLEX_ARRAY()
-helper macro.
+On Fri, 23 Sep 2022 18:14:53 +0200, Krzysztof Kozlowski wrote:
+> Convert the Qualcomm SoC SLIMBus Non Generic Device (NGD) controller
+> bindings to DT Schema.
+> 
+> During conversion add iommus already present in DTS and extend the
+> example based on SDM845.
+> 
+> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+> ---
+>  .../bindings/slimbus/qcom,slim-ngd.yaml       | 120 ++++++++++++++++++
+>  .../bindings/slimbus/slim-ngd-qcom-ctrl.txt   |  82 ------------
+>  2 files changed, 120 insertions(+), 82 deletions(-)
+>  create mode 100644 Documentation/devicetree/bindings/slimbus/qcom,slim-ngd.yaml
+>  delete mode 100644 Documentation/devicetree/bindings/slimbus/slim-ngd-qcom-ctrl.txt
+> 
 
-This helper allows for flexible-array members in unions.
-
-Link: https://github.com/KSPP/linux/issues/193
-Link: https://github.com/KSPP/linux/issues/226
-Link: https://gcc.gnu.org/onlinedocs/gcc/Zero-Length.html
-Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
----
- sound/soc/intel/skylake/skl-topology.h | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/sound/soc/intel/skylake/skl-topology.h b/sound/soc/intel/skylake/skl-topology.h
-index a5bccf2fcd88..017ac0ef324d 100644
---- a/sound/soc/intel/skylake/skl-topology.h
-+++ b/sound/soc/intel/skylake/skl-topology.h
-@@ -233,8 +233,8 @@ struct skl_uuid_inst_map {
- struct skl_kpb_params {
- 	u32 num_modules;
- 	union {
--		struct skl_mod_inst_map map[0];
--		struct skl_uuid_inst_map map_uuid[0];
-+		DECLARE_FLEX_ARRAY(struct skl_mod_inst_map, map);
-+		DECLARE_FLEX_ARRAY(struct skl_uuid_inst_map, map_uuid);
- 	} u;
- };
- 
--- 
-2.34.1
-
+Reviewed-by: Rob Herring <robh@kernel.org>
