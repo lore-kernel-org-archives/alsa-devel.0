@@ -4,92 +4,73 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C8495C07E9D
-	for <alsa-devel@archiver.kernel.org>; Tue, 27 Sep 2022 08:03:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8B8C8C6FA90
+	for <alsa-devel@archiver.kernel.org>; Tue, 27 Sep 2022 10:28:14 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id ACACC84B;
-	Tue, 27 Sep 2022 10:02:51 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz ACACC84B
+	by alsa0.perex.cz (Postfix) with ESMTPS id C95DE825;
+	Tue, 27 Sep 2022 12:27:21 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C95DE825
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1664265821;
-	bh=1Zxecg6HtIBfrd8/6T95b8ZbtsoyMVS8PqR/SU+TmhU=;
-	h=Date:Subject:To:References:From:In-Reply-To:Cc:List-Id:
+	s=default; t=1664274491;
+	bh=sHy1niP5mWeKiI5hNQSfEcl+Pb8zcROHMZX9U2cp76M=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=mvVS9+ZmTGEfQlKe4jSp9H/4kLAOWp996jHkmMZ2eEkdQSpd27ZJE89IdwYIAduIv
-	 bZustSsWyMrTjYHQuYv7rBHx32VR7lVwi6RHOfuPd5gR5J02nhumpEMbJNk/tuoOR2
-	 nO1oSF53tF1GzAIdObSjt0NAIZN1osV3P8bbI2rU=
+	b=D6ucSWjOK/orbxqYpNcLd/LxJzP5Tv9iNDqQpKyjlJsm12jKjJExKqzPWpYxj4X1l
+	 rHD5Hr6hOgeUWkmYKz0nmkrypcUweZq/w4TLfr9HwKET7u2cFIjmxsH9fqnvkfg9+5
+	 R3IZ9chQmCicSJw+hNj5bHgy1mqma15eQbAXVlD0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 30578F8024C;
-	Tue, 27 Sep 2022 10:02:51 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 6231CF8024C;
+	Tue, 27 Sep 2022 12:27:21 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id BC298F8025E; Tue, 27 Sep 2022 10:02:49 +0200 (CEST)
-Received: from mx07-00178001.pphosted.com (mx08-00178001.pphosted.com
- [91.207.212.93])
+ id 9EDDAF8025E; Tue, 27 Sep 2022 12:27:19 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org
+ [IPv6:2604:1380:4641:c500::1])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 5F6D4F80166
+ for <alsa-devel@alsa-project.org>; Tue, 27 Sep 2022 12:27:17 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5F6D4F80166
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="R3zWl5Vf"
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 5E88EF800AA
- for <alsa-devel@alsa-project.org>; Tue, 27 Sep 2022 10:02:39 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5E88EF800AA
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=foss.st.com header.i=@foss.st.com
- header.b="MvvXRxGB"
-Received: from pps.filterd (m0046661.ppops.net [127.0.0.1])
- by mx07-00178001.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 28R7k3vX015658;
- Tue, 27 Sep 2022 10:02:39 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com;
- h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=selector1;
- bh=K8GwUiis6Jdql8ycWraGoz6gs4NTf04zXDxZqotFXaY=;
- b=MvvXRxGBqyb7c6M32ixvr8x3Sbpp9JciY/4ZSd/Mxr43HfzVWrlGe5UeGNju3KiiD+Qr
- WZO6g/DPaHXXVXvd58XR2pFydrIFils1AXG3sLF0HNJ+9UfPkBhkpVID0D4z8FJ54gm2
- MVZ13m1ie5KwCjDftB1+KWSDJeGmmRGf3/NNJ4j+X9no41Llh/ZHJP74E893e1gn+nsO
- d4wLUIgz3YKARW08yNF+uf+hE/AyrxQvIJcEqRCH7PiJjb9iO2f9V3Hjmaq3dHmQbdGx
- pd3qrhhPWK600LxItb3mVCDotV0NOy5oXrqAogdjNgKJKfAJDd2VIdgZeSdQuQYcYu5z Tw== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
- by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3jsrsjggjb-1
- (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
- Tue, 27 Sep 2022 10:02:39 +0200
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
- by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 24D0D10002A;
- Tue, 27 Sep 2022 10:02:36 +0200 (CEST)
-Received: from Webmail-eu.st.com (shfdag1node1.st.com [10.75.129.69])
- by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 8E0B5216826;
- Tue, 27 Sep 2022 10:02:36 +0200 (CEST)
-Received: from [10.201.20.178] (10.75.127.45) by SHFDAG1NODE1.st.com
- (10.75.129.69) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.2375.31; Tue, 27 Sep
- 2022 10:02:36 +0200
-Message-ID: <c60a624a-6c95-8ccf-9afe-86ce568cea05@foss.st.com>
-Date: Tue, 27 Sep 2022 10:02:35 +0200
+ by dfw.source.kernel.org (Postfix) with ESMTPS id DB7C961651;
+ Tue, 27 Sep 2022 10:27:14 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3ADC0C433C1;
+ Tue, 27 Sep 2022 10:27:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1664274434;
+ bh=sHy1niP5mWeKiI5hNQSfEcl+Pb8zcROHMZX9U2cp76M=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=R3zWl5Vfxe0vj+iHX9oOS9CyMVJ7LMndKtydoCsHhDU8xfxypu6brL/DRMyHxlSMT
+ Wt86tC/HeRhQ1mfSr9sgh7fsNgbmOS1l25QJqAZevCgkzhVfbLmINXV/vobpzAKZX1
+ tGaHvQE+V4/+uj/gHN5NtPO9XxwqE9QUvx0bfdr0ThL27rA486CjcAfGEAOdwo7ZuG
+ Mh6imPq0S6ODt8nORXZe2Nk+2nxEY2DKTqsJ4yjU76b1auGq4HSbiBfa0nux5EJkub
+ hbiarybQFAjh+ljV3MFojhdRXun0f/G9MFqkg4h+KKJuB5ni/TjocDzmnfdX2lXU0b
+ QClUcrNnphbmQ==
+Date: Tue, 27 Sep 2022 11:27:07 +0100
+From: Mark Brown <broonie@kernel.org>
+To: Kees Cook <keescook@chromium.org>
+Subject: Re: [PATCH][next] ASoC: SOF: control.h: Replace zero-length array
+ with DECLARE_FLEX_ARRAY() helper
+Message-ID: <YzLP+wH5UjKmkgEJ@sirena.org.uk>
+References: <YzIcZ11k8RiQtS2T@work> <YzIj6tdtDe9YrX+I@sirena.org.uk>
+ <81af0106-a732-ce45-bb1c-c45db9e1aeb9@embeddedor.com>
+ <YzIqNqhTIuaWZrOl@sirena.org.uk> <202209262009.D1377D0C3@keescook>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.11.0
-Subject: Re: [PATCH] dt-bindings: sound: st, stm32-sai: Document audio OF graph
- port
-Content-Language: en-US
-To: Marek Vasut <marex@denx.de>, <linux-arm-kernel@lists.infradead.org>
-References: <20220927002004.685108-1-marex@denx.de>
-From: Olivier MOYSAN <olivier.moysan@foss.st.com>
-In-Reply-To: <20220927002004.685108-1-marex@denx.de>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.75.127.45]
-X-ClientProxiedBy: SFHDAG2NODE3.st.com (10.75.127.6) To SHFDAG1NODE1.st.com
- (10.75.129.69)
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.895,Hydra:6.0.528,FMLib:17.11.122.1
- definitions=2022-09-27_02,2022-09-22_02,2022-06-22_01
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
- Alexandre Torgue <alexandre.torgue@foss.st.com>,
- Rob Herring <robh+dt@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>,
- Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
- Mark Brown <broonie@kernel.org>,
- Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>,
- linux-stm32@st-md-mailman.stormreply.com
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature"; boundary="W1mEP/YeLmI8MbXS"
+Content-Disposition: inline
+In-Reply-To: <202209262009.D1377D0C3@keescook>
+X-Cookie: Vote anarchist.
+Cc: alsa-devel@alsa-project.org, "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+ "Gustavo A. R. Silva" <gustavo@embeddedor.com>, linux-kernel@vger.kernel.org,
+ Takashi Iwai <tiwai@suse.com>, linux-hardening@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -105,48 +86,31 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Hi Marek,
 
-Thanks for your patch.
-You can add my:
-Reviewed-by: Olivier Moysan <olivier.moysan@foss.st.com>
+--W1mEP/YeLmI8MbXS
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-BRs
+On Mon, Sep 26, 2022 at 08:16:16PM -0700, Kees Cook wrote:
 
-On 9/27/22 02:20, Marek Vasut wrote:
-> It is expected that the SAI subnodes would contain audio OF graph port
-> with endpoint to link it with the other side of audio link. Document
-> the port: property.
-> 
-> Signed-off-by: Marek Vasut <marex@denx.de>
-> ---
-> Cc: Alexandre Torgue <alexandre.torgue@foss.st.com>
-> Cc: Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
-> Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-> Cc: Liam Girdwood <lgirdwood@gmail.com>
-> Cc: Mark Brown <broonie@kernel.org>
-> Cc: Olivier Moysan <olivier.moysan@foss.st.com>
-> Cc: Rob Herring <robh+dt@kernel.org>
-> Cc: devicetree@vger.kernel.org
-> Cc: alsa-devel@alsa-project.org
-> Cc: linux-stm32@st-md-mailman.stormreply.com
-> To: linux-arm-kernel@lists.infradead.org
-> ---
->   Documentation/devicetree/bindings/sound/st,stm32-sai.yaml | 4 ++++
->   1 file changed, 4 insertions(+)
-> 
-> diff --git a/Documentation/devicetree/bindings/sound/st,stm32-sai.yaml b/Documentation/devicetree/bindings/sound/st,stm32-sai.yaml
-> index 1a3abc9495055..56d206f97a96c 100644
-> --- a/Documentation/devicetree/bindings/sound/st,stm32-sai.yaml
-> +++ b/Documentation/devicetree/bindings/sound/st,stm32-sai.yaml
-> @@ -122,6 +122,10 @@ patternProperties:
->           description: Configure the SAI device as master clock provider.
->           const: 0
->   
-> +      port:
-> +        $ref: audio-graph-port.yaml#
-> +        unevaluatedProperties: false
-> +
->       required:
->         - compatible
->         - "#sound-dai-cells"
+> Seems like it's worth getting the MAINTAINERS regex updated? Is this
+> right?
+
+Yes, looks about right.
+
+--W1mEP/YeLmI8MbXS
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmMyz/oACgkQJNaLcl1U
+h9Cofgf/c1psLUiMDxR0MRIUMEeS+1ev/8ITyrbroJ1mCXJul5ZSsVuZaluhhXNb
+rpHnfwWgZwYvzXeCuOI/MQ2gzZHBYkcKUhrn+dbeomhRtSmHSA7G0Xb3zdEc7xhL
+fevVzsb5rXXiNVO4xVZ+IBSy3I8sN4sip6BXTrAOE9Ltk4uuPdqPncRh0uucnDI7
+3R46mIU9xk6mRkWMH8ugJ4qZPpaLk32mkfr/qb0ztj1HlBC+F1PQPCdLuHtjW4VX
+j99wXosQMvqOfAbxo8UpmX/IfIUWBk9i0HEV5/+xV24uSNI/bgR8hBRAlb/SjiMH
+mvB6kGk6wuKa+FCm9d0tAhLV60tShA==
+=ie0Q
+-----END PGP SIGNATURE-----
+
+--W1mEP/YeLmI8MbXS--
