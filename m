@@ -4,45 +4,45 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 47C31C07E9D
-	for <alsa-devel@archiver.kernel.org>; Thu, 29 Sep 2022 06:08:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 82369C07E9D
+	for <alsa-devel@archiver.kernel.org>; Thu, 29 Sep 2022 06:08:42 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 4F84AE11;
-	Thu, 29 Sep 2022 08:07:37 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4F84AE11
+	by alsa0.perex.cz (Postfix) with ESMTPS id A5AFF846;
+	Thu, 29 Sep 2022 08:07:50 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A5AFF846
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1664431707;
-	bh=GoDznqcTbZqflYOorF2AJmh7OjACaWByDTfPnm1F7dE=;
+	s=default; t=1664431720;
+	bh=UHhCuEPqRjCZ9IvZeBIISQ540oUNUMwH/kfKwxaaZ7A=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=EOtW2pwM/LUYhLfcVLbMAIoJxfWOL5qAyoGvyZglDvOnu1IQnY3iYyGFgkZTj+B0/
-	 N5dxtfBHs2DeDhOV3imdT7uwHlZN4KgYE2CexOaqX/2JwQncL70pOnQ6sEGDFCeGQZ
-	 k1Wfre/ML24L/7hgie9tpSFGW/nM9K8VfDfdpZ4c=
+	b=GaRaYVxGow3TS3BmYpEV8P0ei7iNBh8UHms+R7bC1brcZ7Qkzw1aDG/iNeMePku0U
+	 qaPneuYYFGPQ8ZK+Amiad9JcsZXlsjDCa3bCTLRsNV/RmU4NkfYBMKtdvG7xUqXbk7
+	 97zG2A6VND/tODDuohd0ggk310Y9LKSL/e2voYbc=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 14F77F8053B;
+	by alsa1.perex.cz (Postfix) with ESMTP id BC30BF80548;
 	Thu, 29 Sep 2022 08:06:42 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id AEC9FF80496; Tue, 27 Sep 2022 15:35:56 +0200 (CEST)
-Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
+ id D65D1F80508; Tue, 27 Sep 2022 15:35:56 +0200 (CEST)
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 92C13F80496
+ by alsa1.perex.cz (Postfix) with ESMTPS id 30F1CF8025E
  for <alsa-devel@alsa-project.org>; Tue, 27 Sep 2022 15:35:49 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 92C13F80496
-Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.57])
- by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4McLBB5Pxvz1P6lt;
- Tue, 27 Sep 2022 21:31:30 +0800 (CST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 30F1CF8025E
+Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.56])
+ by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4McLCj29LyzpVCB;
+ Tue, 27 Sep 2022 21:32:49 +0800 (CST)
 Received: from kwepemm600008.china.huawei.com (7.193.23.88) by
- dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
+ dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.31; Tue, 27 Sep 2022 21:35:45 +0800
+ 15.1.2375.31; Tue, 27 Sep 2022 21:35:44 +0800
 Received: from huawei.com (10.175.100.227) by kwepemm600008.china.huawei.com
  (7.193.23.88) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.31; Tue, 27 Sep
- 2022 21:35:44 +0800
+ 2022 21:35:43 +0800
 From: Shang XiaoJing <shangxiaojing@huawei.com>
 To: <james.schulman@cirrus.com>, <david.rhodes@cirrus.com>,
  <tanureal@opensource.cirrus.com>, <rf@opensource.cirrus.com>,
@@ -50,10 +50,10 @@ To: <james.schulman@cirrus.com>, <david.rhodes@cirrus.com>,
  <tiwai@suse.com>, <christophe.jaillet@wanadoo.fr>,
  <peter.ujfalusi@gmail.com>, <alsa-devel@alsa-project.org>,
  <patches@opensource.cirrus.com>
-Subject: [PATCH -next 4/4] ASoC: ti: davinci-mcasp: Use DIV_ROUND_UP() instead
- of open-coding it
-Date: Tue, 27 Sep 2022 22:09:48 +0800
-Message-ID: <20220927140948.17696-5-shangxiaojing@huawei.com>
+Subject: [PATCH -next 3/4] ASoC: rsnd: Use DIV_ROUND_UP() instead of
+ open-coding it
+Date: Tue, 27 Sep 2022 22:09:47 +0800
+Message-ID: <20220927140948.17696-4-shangxiaojing@huawei.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20220927140948.17696-1-shangxiaojing@huawei.com>
 References: <20220927140948.17696-1-shangxiaojing@huawei.com>
@@ -88,41 +88,25 @@ DIV_ROUND_UP() instead of open-coding it").
 
 Signed-off-by: Shang XiaoJing <shangxiaojing@huawei.com>
 ---
- sound/soc/ti/davinci-mcasp.c | 7 +++----
- 1 file changed, 3 insertions(+), 4 deletions(-)
+ sound/soc/sh/rcar/core.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/ti/davinci-mcasp.c b/sound/soc/ti/davinci-mcasp.c
-index ca5d1bb6ac59..f5ac2ab77f5b 100644
---- a/sound/soc/ti/davinci-mcasp.c
-+++ b/sound/soc/ti/davinci-mcasp.c
-@@ -869,7 +869,7 @@ static int mcasp_common_hw_param(struct davinci_mcasp *mcasp, int stream,
- 	if (mcasp->op_mode == DAVINCI_MCASP_DIT_MODE)
- 		max_active_serializers = 1;
- 	else
--		max_active_serializers = (channels + slots - 1) / slots;
-+		max_active_serializers = DIV_ROUND_UP(channels, slots);
- 
- 	/* Default configuration */
- 	if (mcasp->version < MCASP_VERSION_3)
-@@ -1002,8 +1002,7 @@ static int mcasp_i2s_hw_param(struct davinci_mcasp *mcasp, int stream,
- 	 */
- 	if (mcasp->tdm_mask[stream]) {
- 		active_slots = hweight32(mcasp->tdm_mask[stream]);
--		active_serializers = (channels + active_slots - 1) /
--			active_slots;
-+		active_serializers = DIV_ROUND_UP(channels, active_slots);
- 		if (active_serializers == 1)
- 			active_slots = channels;
- 		for (i = 0; i < total_slots; i++) {
-@@ -1014,7 +1013,7 @@ static int mcasp_i2s_hw_param(struct davinci_mcasp *mcasp, int stream,
+diff --git a/sound/soc/sh/rcar/core.c b/sound/soc/sh/rcar/core.c
+index 7e380d71b0f8..4e21ebce03c6 100644
+--- a/sound/soc/sh/rcar/core.c
++++ b/sound/soc/sh/rcar/core.c
+@@ -1581,9 +1581,9 @@ static int rsnd_hw_params(struct snd_soc_component *component,
+ 				hw_params->cmask |= SNDRV_PCM_HW_PARAM_RATE;
+ 			} else if (params_rate(hw_params) * k_up < io->converted_rate) {
+ 				hw_param_interval(hw_params, SNDRV_PCM_HW_PARAM_RATE)->min =
+-					(io->converted_rate + k_up - 1) / k_up;
++					DIV_ROUND_UP(io->converted_rate, k_up);
+ 				hw_param_interval(hw_params, SNDRV_PCM_HW_PARAM_RATE)->max =
+-					(io->converted_rate + k_up - 1) / k_up;
++					DIV_ROUND_UP(io->converted_rate, k_up);
+ 				hw_params->cmask |= SNDRV_PCM_HW_PARAM_RATE;
  			}
- 		}
- 	} else {
--		active_serializers = (channels + total_slots - 1) / total_slots;
-+		active_serializers = DIV_ROUND_UP(channels, total_slots);
- 		if (active_serializers == 1)
- 			active_slots = channels;
- 		else
+ 
 -- 
 2.17.1
 
