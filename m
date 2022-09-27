@@ -4,69 +4,72 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E9407C6FA92
-	for <alsa-devel@archiver.kernel.org>; Tue, 27 Sep 2022 10:36:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id EE7AFC6FA90
+	for <alsa-devel@archiver.kernel.org>; Tue, 27 Sep 2022 10:36:11 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D79C0F3;
-	Tue, 27 Sep 2022 12:35:13 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D79C0F3
+	by alsa0.perex.cz (Postfix) with ESMTPS id 1C05FAE8;
+	Tue, 27 Sep 2022 12:35:20 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1C05FAE8
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1664274963;
-	bh=0r0L2iUcElk7msgyXX001Y0IZKkcWjtg+9SlV70egg4=;
+	s=default; t=1664274970;
+	bh=lJjHanQhAo4gyBUD5O9aZXDqaj4cVWoKZzJdtxw5DuA=;
 	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=G2JOzLaM+Yag+MUZ3SZP4Op+8z4gCVAP2mk2arPFOirpJ6i0EHJZqpWEAaEGFdb86
-	 0ErLkNIUfhOT48D17NepZJbWC3eUgqKA3adERiFn+fPpzUPsACq3Hp1wJV38dTyWsQ
-	 heVvtsfyb5mTayOEKnhseIcQ8kDgi58Ab/hhPkVo=
+	b=qCZV9LSxP9WxkFpW8kue9NfpxBGnLXP4LtAp0azjbT7vupFqD+uw3YOS8h711Yevc
+	 8z70LnO0Tk2d8Ke1hoiXGIYshp7QLRLTSX7sAmWOMEXQvwaTux4oinXoT2VqjLgcGa
+	 J4HM+Fv4/8GELHSuU3zkoO3ryCnNixTZOMGp+s7Y=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 196A0F80539;
-	Tue, 27 Sep 2022 12:34:27 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id C8A64F80542;
+	Tue, 27 Sep 2022 12:34:29 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id A9F90F80508; Tue, 27 Sep 2022 12:34:24 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+ id 51ECEF804D0; Tue, 27 Sep 2022 12:34:25 +0200 (CEST)
+Received: from sin.source.kernel.org (sin.source.kernel.org [145.40.73.55])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 29F0DF80166
- for <alsa-devel@alsa-project.org>; Tue, 27 Sep 2022 12:34:21 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 29F0DF80166
+ by alsa1.perex.cz (Postfix) with ESMTPS id B970FF8024C
+ for <alsa-devel@alsa-project.org>; Tue, 27 Sep 2022 12:34:20 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B970FF8024C
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="kr3AUvhD"
+ header.b="CDtX/a6m"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id 4ADD5617B0;
- Tue, 27 Sep 2022 10:34:20 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 76B36C433D6;
- Tue, 27 Sep 2022 10:34:18 +0000 (UTC)
+ by sin.source.kernel.org (Postfix) with ESMTPS id 19E85CE11DC;
+ Tue, 27 Sep 2022 10:34:16 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 87A89C433D6;
+ Tue, 27 Sep 2022 10:34:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1664274859;
- bh=0r0L2iUcElk7msgyXX001Y0IZKkcWjtg+9SlV70egg4=;
+ s=k20201202; t=1664274854;
+ bh=lJjHanQhAo4gyBUD5O9aZXDqaj4cVWoKZzJdtxw5DuA=;
  h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=kr3AUvhDPsOXlpDZoHG/I2hJFICJspmZ6X6g8VC0UsjRTEpF9wGD3U/nddsFdDO3b
- pCjSDIdRs0DHKsLwW8frw16jgHMAoqUdcp8EK8YtiYxKzIV0HAhmIlAy2/n44nyMHC
- Z/RW+vY2sHMGS2tHqQEWvtL+2q3fGx2b3SERHVzerc8zr7ycxXs4UkKMirDH9HlaEV
- waqeD+M6R5w4hIYM9D3oyy8eSfqgfnnsP+2yPwvEIdCzn5p/rBNIcnWTwsQzNb6qAy
- K/lmblp6Px0LXR0sQgRmDa7EsHZiedUoQFNZ5OjCyJXxG+gpi0+l65hNim2CCLQDmw
- vv+Kx0Ovv+TaA==
+ b=CDtX/a6mIQ2vC0NJAzaCEB64k7Ktn/nkcVfB5d+zql6b1tDS+bYsfbMxxZXV9NyiI
+ d0uaVEVow6ihw3hFu9M04xwn/rFN5+qs6+fNzlRx56SpSKmOIch0NdtgS87kRlvJeI
+ qJKIzpBRzY7Zw9c/3QkBNUtnc1dt+m+1hpzG5/tgEA3rledkpx06XAm4/PiN2+ZaeW
+ 2MKQgMlbBczKEfUD9/IGt4P/wWD7kzyO8ZUoSbyBFTE8Zy2y1OiHp8hSEVky+ek4Ja
+ K7ZNP6/Ux5369gTEX41zR7cqyN/YTRD2QUQst17JwYgFOGZn3+nOt5NYWQHlcEkW9x
+ QfaWssp5X1fsw==
 From: Mark Brown <broonie@kernel.org>
-To: linux-kernel@vger.kernel.org, Yang Yingliang <yangyingliang@huawei.com>,
- alsa-devel@alsa-project.org
-In-Reply-To: <20220916140757.681414-1-yangyingliang@huawei.com>
-References: <20220916140757.681414-1-yangyingliang@huawei.com>
-Subject: Re: [PATCH -next] ASoC: Intel: skylake: remove unnecessary
- dev_set_drvdata()
-Message-Id: <166427485820.60697.7549055145038298678.b4-ty@kernel.org>
-Date: Tue, 27 Sep 2022 11:34:18 +0100
+To: Support Opensource <support.opensource@diasemi.com>,
+ Christophe JAILLET <christophe.jaillet@wanadoo.fr>, 
+ Adam Thomson <Adam.Thomson.Opensource@diasemi.com>,
+ Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, 
+ Jaroslav Kysela <perex@perex.cz>
+In-Reply-To: <e4acceab57a0d9e477a8d5890a45c5309e553e7c.1663875789.git.christophe.jaillet@wanadoo.fr>
+References: <e4acceab57a0d9e477a8d5890a45c5309e553e7c.1663875789.git.christophe.jaillet@wanadoo.fr>
+Subject: Re: [PATCH] ASoC: da7219: Fix an error handling path in
+ da7219_register_dai_clks()
+Message-Id: <166427485225.60697.13131714629966036302.b4-ty@kernel.org>
+Date: Tue, 27 Sep 2022 11:34:12 +0100
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 X-Mailer: b4 0.10.0-dev-fc921
-Cc: tiwai@suse.de, cezary.rojewski@intel.com,
- pierre-louis.bossart@linux.intel.com
+Cc: alsa-devel@alsa-project.org, kernel-janitors@vger.kernel.org,
+ linux-kernel@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -82,11 +85,15 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Fri, 16 Sep 2022 22:07:57 +0800, Yang Yingliang wrote:
-> Remove unnecessary dev_set_drvdata() in skl_remove(), the driver_data
-> will be set to NULL in device_unbind_cleanup() after calling ->remove().
+On Thu, 22 Sep 2022 21:44:57 +0200, Christophe JAILLET wrote:
+> If clk_hw_register() fails, the corresponding clk should not be
+> unregistered.
 > 
+> To handle errors from loops, clean up partial iterations before doing the
+> goto.  So add a clk_hw_unregister().
+> Then use a while (--i >= 0) loop in the unwind section.
 > 
+> [...]
 
 Applied to
 
@@ -94,8 +101,8 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: Intel: skylake: remove unnecessary dev_set_drvdata()
-      commit: d508260e89a7d1889bbb5788fdfc52cc3eb8ddb6
+[1/1] ASoC: da7219: Fix an error handling path in da7219_register_dai_clks()
+      commit: abb4e4349afe7eecdb0499582f1c777031e3a7c8
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
