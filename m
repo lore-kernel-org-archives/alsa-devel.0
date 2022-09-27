@@ -4,119 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C34EFC54EE9
-	for <alsa-devel@archiver.kernel.org>; Tue, 27 Sep 2022 14:26:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 701C5C07E9D
+	for <alsa-devel@archiver.kernel.org>; Tue, 27 Sep 2022 14:49:41 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id CDD96827;
-	Tue, 27 Sep 2022 16:25:57 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CDD96827
+	by alsa0.perex.cz (Postfix) with ESMTPS id D9FBF829;
+	Tue, 27 Sep 2022 16:48:48 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D9FBF829
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1664288807;
-	bh=u5karUteb9j+5evLw4yib2eL16MHQrzR0rAAy3gz32g=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	s=default; t=1664290178;
+	bh=ZeMk/3E0OzkkDISoQSihxyFtSKw+qjaaKWkV6nZIzEo=;
+	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=fO+m9PhvsQ2bbSwB9O0r6MUoAua/OCJ2itZugZbBUgpQcRJahihLHgWFfiRKTd2XR
-	 XNpWFKaYWbLQIDLpOe83o8RMRSB/JLZ6OWojRyWvZJbyUxWRGUyob2VZDMkarwMqem
-	 oyPeaT3aKfTdgxjCRYjTVjE6RaE4qJSn7xH1pRaI=
+	b=R5U0cgeF/b1VSrHT/XDDCMWJOA7Ry1/Tsny7UNXMJoHvmbT9TEGE5gGuu7ZBrdDqG
+	 PI6v+no52vAfNlCyNFHqj8GHm2X978NpoUxghM+zmcmbnD1ApfVjXiTHITeeGkq7/q
+	 7/opDubyNC7l96CbeXy+FnKX58ZJ7yvyJRe7ILes=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 72B97F8024C;
-	Tue, 27 Sep 2022 16:25:57 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 71DFAF8024C;
+	Tue, 27 Sep 2022 16:48:48 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 33C37F8025E; Tue, 27 Sep 2022 16:25:55 +0200 (CEST)
-Received: from wout1-smtp.messagingengine.com (wout1-smtp.messagingengine.com
- [64.147.123.24])
- (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
+ id 06F77F80496; Tue, 27 Sep 2022 16:48:47 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 82E40F8011C
- for <alsa-devel@alsa-project.org>; Tue, 27 Sep 2022 16:25:45 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 82E40F8011C
+ by alsa1.perex.cz (Postfix) with ESMTPS id A4393F800AA
+ for <alsa-devel@alsa-project.org>; Tue, 27 Sep 2022 16:48:44 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A4393F800AA
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=sakamocchi.jp header.i=@sakamocchi.jp
- header.b="ct41H5Pz"; 
- dkim=pass (2048-bit key) header.d=messagingengine.com
- header.i=@messagingengine.com header.b="ld+YG2gg"
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
- by mailout.west.internal (Postfix) with ESMTP id AB80E3200902;
- Tue, 27 Sep 2022 10:25:42 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
- by compute4.internal (MEProxy); Tue, 27 Sep 2022 10:25:43 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sakamocchi.jp;
- h=cc:cc:content-type:date:date:from:from:in-reply-to
- :in-reply-to:message-id:mime-version:references:reply-to:sender
- :subject:subject:to:to; s=fm2; t=1664288742; x=1664375142; bh=u8
- LKpjilFMjqvRfP4/Oz9p+QHSDNfwKBfShQj9oyoDU=; b=ct41H5PzwzGw542OQf
- Urnogk092MnbdHh+HD/m6V2SaHcKlfO/02wh5PTeV2AmFSLDwj2Hf/1rtHfMZ6v9
- QoCC6r6Ra2haWqJJfCai6BCr6jKUUfXR6Uj9BGO3e1akK6jBo6Q6KDTdDX0Y+KFO
- uCLGMoSRE7/Chl1mS92He1yGfjujTmy6mU2mudYAPaiJgW3354Tl+reo5fqvgpEJ
- 7Zsa4wioSh4awyxmeygjaV0AC4SIVw4n3tuf/vy20JgHsv78v4V1EekZuNZq6F+n
- 4+ni3/V0mglf3DIBpzSX1H0GxOLG2jJg2pS35VpcLRCeri/AWkYhUR88I+ikJAac
- 5tEw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
- messagingengine.com; h=cc:cc:content-type:date:date:feedback-id
- :feedback-id:from:from:in-reply-to:in-reply-to:message-id
- :mime-version:references:reply-to:sender:subject:subject:to:to
- :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
- fm2; t=1664288742; x=1664375142; bh=u8LKpjilFMjqvRfP4/Oz9p+QHSDN
- fwKBfShQj9oyoDU=; b=ld+YG2ggbRlIlm/X3tS6FS3qM7KneZthx/nFYmeNaqCx
- cmGX0CJQ17T0KMU50RNKQFyY1XwPGc5FKxO8nT/XfzjH71ucpWLV6hSRhdyyjP0f
- go7iYsGL3ZsJPS23HIMLZvmYF/bjXj06ME2MdDkNVPVAzZAPva+qtfNZY8LJRn8I
- gFbWd3AIH6lVgfyxgMGWlkxl94g3ZMOj3rlKoftsEV++gMwkPaMYeNmdPQu54q/A
- kNUsKpnuNkHkYP56MUkJ4ldgzF+YzNleVR5hiifDgQA6uOEDcWKTxXJN/Q8ekaqf
- ie3jxnf2DNiRumI0WJZQmES1kSxgx070ey60ModT+w==
-X-ME-Sender: <xms:5QczY1THQ0K59BnHl7Xge8VhsZL3bu4oPGD3cNzy9YBfpMQDjg2Ngw>
- <xme:5QczY-xyV_3e1L_BPqcP0QlIoUPbe6ja46O3YLd0aozuIp6SgftD2iG_Uo7FDwYzc
- lHWtHP-VLT00utzgB0>
-X-ME-Received: <xmr:5QczY61ObAC7s3zFaEMUI7JWiPbRv2k5ovYN3Mn24elmi8z3o2KIlbPbEsnLyYuMB3lcGEBTrpEwBYj-IIxj-4AaK8dlObS9>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvfedrfeegiedgheduucetufdoteggodetrfdotf
- fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
- uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
- cujfgurhepfffhvfevuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepvfgrkhgr
- shhhihcuufgrkhgrmhhothhouceoohdqthgrkhgrshhhihesshgrkhgrmhhotggthhhird
- hjpheqnecuggftrfgrthhtvghrnhephefhhfettefgkedvieeuffevveeufedtlefhjeei
- ieetvdelfedtgfefuedukeeunecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpe
- hmrghilhhfrhhomhepohdqthgrkhgrshhhihesshgrkhgrmhhotggthhhirdhjph
-X-ME-Proxy: <xmx:5QczY9BZLE_klaof3GlwiDWIgSmWkSjWz913GREQextJvT0SFqjslw>
- <xmx:5QczY-jhlvZH7p1gWjOVQkqW-nALQjsdX7x0Uoy4aQH12bYXFwdUNg>
- <xmx:5QczYxo8-38l6Fh77aFkb2pXQZaDSZNypCJWPGEAw1IM7uXa6YVYaQ>
- <xmx:5gczYza-mbdAKcU1dTcH3VVsI-MZN2wh3HSwOAztANawZks9463L5w>
-Feedback-ID: ie8e14432:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
- 27 Sep 2022 10:25:39 -0400 (EDT)
-Date: Tue, 27 Sep 2022 23:25:36 +0900
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-To: Takashi Iwai <tiwai@suse.de>
-Subject: Re: [PATCH 00/11] ALSA: PCM state reference optimization
-Message-ID: <YzMH4AlsIF0Zn0q+@workstation>
-Mail-Followup-To: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org,
- Bard Liao <yung-chuan.liao@linux.intel.com>,
- Cezary Rojewski <cezary.rojewski@intel.com>,
- Felipe Balbi <balbi@kernel.org>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- Kai Vehmanen <kai.vehmanen@linux.intel.com>,
- Liam Girdwood <liam.r.girdwood@linux.intel.com>,
- Mark Brown <broonie@kernel.org>,
- Peter Ujfalusi <peter.ujfalusi@linux.intel.com>,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-References: <20220926135558.26580-1-tiwai@suse.de>
- <YzJQP26l3k7yrTrs@workstation> <87h70tgwos.wl-tiwai@suse.de>
+ dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="TG8UvWh2"
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by dfw.source.kernel.org (Postfix) with ESMTPS id 9B2E3619E4;
+ Tue, 27 Sep 2022 14:48:41 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C0C4AC433C1;
+ Tue, 27 Sep 2022 14:48:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1664290121;
+ bh=ZeMk/3E0OzkkDISoQSihxyFtSKw+qjaaKWkV6nZIzEo=;
+ h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+ b=TG8UvWh22vkK/rZywCv916Cwq36ZrOfVIkggJbi8zN0YWz5hgBfEScU8bmQMwtth6
+ Y6OoRpY5zzib6stCysGC5QMoSvOcYpeKExGtZtgPH4FlB/o6yMVF/BctIFdCRlKqYT
+ eNrR2gODD8kuIhm/FUg/iuyj2rRTzmXCN70pNtlSt/Ft4e7CRfNwzFh0TM6288xdps
+ aNoRwxXK/i5ZppbRFm3MZsEH7afxwVuRdY6r2RDCIp5FzZtRJ1WDRtrvd8RIaNBCV5
+ Qx4o27hLdzxPqTAMbZBNag8BqtKYXCgJn0ic4NknRFCaL2CMXyKnwe/fht5oHXGF39
+ 8knVGMYfhLwXA==
+From: Mark Brown <broonie@kernel.org>
+To: Martin Povišer <povik+lin@cutebit.org>, Liam Girdwood <lgirdwood@gmail.com>
+In-Reply-To: <20220927113426.49724-1-povik+lin@cutebit.org>
+References: <20220927113426.49724-1-povik+lin@cutebit.org>
+Subject: Re: [PATCH 1/3] ASoC: apple: mca: Trigger, not deassert,
+ the peripheral reset
+Message-Id: <166429011948.444806.10905154613892329863.b4-ty@kernel.org>
+Date: Tue, 27 Sep 2022 15:48:39 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87h70tgwos.wl-tiwai@suse.de>
-Cc: Felipe Balbi <balbi@kernel.org>, alsa-devel@alsa-project.org,
- Kai Vehmanen <kai.vehmanen@linux.intel.com>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- Peter Ujfalusi <peter.ujfalusi@linux.intel.com>,
- Cezary Rojewski <cezary.rojewski@intel.com>,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- Liam Girdwood <liam.r.girdwood@linux.intel.com>,
- Mark Brown <broonie@kernel.org>,
- Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
- Bard Liao <yung-chuan.liao@linux.intel.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+X-Mailer: b4 0.10.0-dev-fc921
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+ Philipp Zabel <p.zabel@pengutronix.de>, asahi@lists.linux.dev
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -132,75 +81,42 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Tue, Sep 27, 2022 at 08:26:11AM +0200, Takashi Iwai wrote:
-> On Tue, 27 Sep 2022 03:22:07 +0200,
-> Takashi Sakamoto wrote:
-> > 
-> > Hi,
-> > 
-> > On Mon, Sep 26, 2022 at 03:55:47PM +0200, Takashi Iwai wrote:
-> > > Hi,
-> > > 
-> > > this is a patch set for simplifying the reference to the current PCM
-> > > state by having the local copy in runtime instead of relying on
-> > > runtime->status indirection.  This also hardens against the attack by
-> > > modifying the mmapped status record.
-> >  
-> > The overall patches looks good to me and I have no objections, while I
-> > have some slight opinions to them in a place of sound driver developer.
-> > 
-> > > The first patch does the basic job in the core PCM side,
-> > 
-> > The main concern is indirect accessing to state field via some pointer
-> > hops. I think addition of helper macro at first step eases centre of your
-> > work, like:
-> > 
-> > ```
-> > diff --git a/include/sound/pcm.h b/include/sound/pcm.h
-> > index 8c48a5bce88c..f6a160cb8135 100644
-> > --- a/include/sound/pcm.h
-> > +++ b/include/sound/pcm.h
-> > @@ -669,6 +669,20 @@ void snd_pcm_stream_unlock_irqrestore(struct snd_pcm_substream *substream,
-> >              stream <= SNDRV_PCM_STREAM_LAST;           \
-> >              stream++)
-> >  
-> > +/**
-> > + * snd_pcm_stream_state - Return state in runtime of the PCM substream.
-> > + * @substream: substream to check. runtime should be attached.
-> > + *
-> > + * Return state in runtime of the PCM substream. The substream should exists and
-> > + * runtime should be attached to it.
-> > + */
-> > +static inline snd_pcm_state_t snd_pcm_stream_state(const snd_pcm_substream *substream)
-> > +{
-> > +       snd_BUG_ON(!(sub) || !(sub)->runtime);
-> > +
-> > +       return substream->runtime->status->state;
-> > +}
-> > ```
-> > 
-> > As we can see, sound driver programmer sometimes checks state of runtime
-> > in their code, thus the macro could helps them as well as centre of your
-> > change.
+On Tue, 27 Sep 2022 13:34:24 +0200, Martin Povišer wrote:
+> Replace the deassertion of the peripheral's shared reset with the
+> triggering of a pulse on it. This is what we should have been using all
+> along as the platform's custom is not leaving the reset asserted on
+> unused peripherals.
 > 
-> This might help if we may need any change in future again.
 > 
-> But the NULL check is superfluous in most places, and the state check
-> is done often in a hot path, it's better to rip off.  So it's only
-> about the read of runtime->state, and then it's doubtful whether it
-> brings much value at this moment; that's the reason I didn't introduce
-> such a macro for now.
 
-Yes, so I have no strong suggestion to introduce the macro and no
-objections to apply the patches as is.
+Applied to
 
-I'm too conservative developer and consider about usage of memory
-barrier always when seeing such state check since we should pay enough
-attension to instruction reordering and concurrent accesses across
-processors for such case. Fortunately we have no reports for such issue
-yet. When posting the last message, it was on my mind and it's still.
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
 
+Thanks!
 
-Regards
+[1/3] ASoC: apple: mca: Trigger, not deassert, the peripheral reset
+      commit: d584e73e7310971cc226ef0e2a1bc0526da0d582
+[2/3] ASoC: apple: mca: Remove stale release of DMA channels
+      commit: e92e50e4263f5cf9c731ef5593c31f94dc3b7b8c
+[3/3] ASoC: apple: mca: Adjust timing of component unregister
+      commit: db6ae79a7e4f729457ec42db5d6d0fbe0e35784c
 
-Takashi Sakamoto
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
