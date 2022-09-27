@@ -4,73 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8B8C8C6FA90
-	for <alsa-devel@archiver.kernel.org>; Tue, 27 Sep 2022 10:28:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A10B9C6FA90
+	for <alsa-devel@archiver.kernel.org>; Tue, 27 Sep 2022 10:35:15 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C95DE825;
-	Tue, 27 Sep 2022 12:27:21 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C95DE825
+	by alsa0.perex.cz (Postfix) with ESMTPS id 184A03E8;
+	Tue, 27 Sep 2022 12:34:23 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 184A03E8
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1664274491;
-	bh=sHy1niP5mWeKiI5hNQSfEcl+Pb8zcROHMZX9U2cp76M=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	s=default; t=1664274913;
+	bh=dxrNytRFV6EqbpGuOkh5hlMremNyjN6dwpaC+XQ0mQQ=;
+	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=D6ucSWjOK/orbxqYpNcLd/LxJzP5Tv9iNDqQpKyjlJsm12jKjJExKqzPWpYxj4X1l
-	 rHD5Hr6hOgeUWkmYKz0nmkrypcUweZq/w4TLfr9HwKET7u2cFIjmxsH9fqnvkfg9+5
-	 R3IZ9chQmCicSJw+hNj5bHgy1mqma15eQbAXVlD0=
+	b=VU8YFGDkz6sARnOaylMZ0s+TvsoqPKSudT+6I8fOqBAsLKWaSF8dg721XlC0fd21w
+	 ga+OvDyrmuFxr8iyKiBndB/cptIr0HcTEB5l3eR7lnWjG5pdSrQuN2wnq2+iQxQ9dG
+	 eoX8hZcQ+U6IfbI8zkGCkOwrzl8iQGSXlwPhH0co=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 6231CF8024C;
-	Tue, 27 Sep 2022 12:27:21 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 8C2A0F8011C;
+	Tue, 27 Sep 2022 12:34:22 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 9EDDAF8025E; Tue, 27 Sep 2022 12:27:19 +0200 (CEST)
-Received: from dfw.source.kernel.org (dfw.source.kernel.org
- [IPv6:2604:1380:4641:c500::1])
+ id 24020F80496; Tue, 27 Sep 2022 12:34:21 +0200 (CEST)
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 5F6D4F80166
- for <alsa-devel@alsa-project.org>; Tue, 27 Sep 2022 12:27:17 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5F6D4F80166
+ by alsa1.perex.cz (Postfix) with ESMTPS id CBC77F80166
+ for <alsa-devel@alsa-project.org>; Tue, 27 Sep 2022 12:34:18 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CBC77F80166
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="R3zWl5Vf"
+ header.b="SsxHWDtr"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by dfw.source.kernel.org (Postfix) with ESMTPS id DB7C961651;
- Tue, 27 Sep 2022 10:27:14 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3ADC0C433C1;
- Tue, 27 Sep 2022 10:27:12 +0000 (UTC)
+ by ams.source.kernel.org (Postfix) with ESMTPS id 4EAA9B80AFF;
+ Tue, 27 Sep 2022 10:34:17 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0110DC433C1;
+ Tue, 27 Sep 2022 10:34:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1664274434;
- bh=sHy1niP5mWeKiI5hNQSfEcl+Pb8zcROHMZX9U2cp76M=;
- h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=R3zWl5Vfxe0vj+iHX9oOS9CyMVJ7LMndKtydoCsHhDU8xfxypu6brL/DRMyHxlSMT
- Wt86tC/HeRhQ1mfSr9sgh7fsNgbmOS1l25QJqAZevCgkzhVfbLmINXV/vobpzAKZX1
- tGaHvQE+V4/+uj/gHN5NtPO9XxwqE9QUvx0bfdr0ThL27rA486CjcAfGEAOdwo7ZuG
- Mh6imPq0S6ODt8nORXZe2Nk+2nxEY2DKTqsJ4yjU76b1auGq4HSbiBfa0nux5EJkub
- hbiarybQFAjh+ljV3MFojhdRXun0f/G9MFqkg4h+KKJuB5ni/TjocDzmnfdX2lXU0b
- QClUcrNnphbmQ==
-Date: Tue, 27 Sep 2022 11:27:07 +0100
+ s=k20201202; t=1664274856;
+ bh=dxrNytRFV6EqbpGuOkh5hlMremNyjN6dwpaC+XQ0mQQ=;
+ h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+ b=SsxHWDtrfZKFBNax/LzCTWTpAWdB4fBFygE4AU4XASGMePNmj2WdNTn1RmvPzsxxA
+ fWYO6Li1Ym+pgZeNsXpaYmt5sThyR2i+CfPq/2yfGyAgtkUNJAU8Xw2JJd5O3jBr/K
+ dwXQg1F5yUyk1A9cAg/OTAgtovV3fflwe0e/EJvKeEOCHV/qRddfmvqQXm+M5nRC7e
+ FT289dCH3rjJbyxyrLFvDsLgSKPVmEiCtES5p8w51z3eKElmYwzdI84hxy2XmuwWOx
+ Nbr+eT1a0LqEzywGZ9+mY5LsLEllqtia4PVsMAcaxRdNZKcHrA1jRLmxFl27wB+qx2
+ tUXJvR02e+Dfw==
 From: Mark Brown <broonie@kernel.org>
-To: Kees Cook <keescook@chromium.org>
-Subject: Re: [PATCH][next] ASoC: SOF: control.h: Replace zero-length array
- with DECLARE_FLEX_ARRAY() helper
-Message-ID: <YzLP+wH5UjKmkgEJ@sirena.org.uk>
-References: <YzIcZ11k8RiQtS2T@work> <YzIj6tdtDe9YrX+I@sirena.org.uk>
- <81af0106-a732-ce45-bb1c-c45db9e1aeb9@embeddedor.com>
- <YzIqNqhTIuaWZrOl@sirena.org.uk> <202209262009.D1377D0C3@keescook>
+To: Zhang Qilong <zhangqilong3@huawei.com>, lgirdwood@gmail.com, tiwai@suse.com,
+ perex@perex.cz
+In-Reply-To: <20220922145846.114312-1-zhangqilong3@huawei.com>
+References: <20220922145846.114312-1-zhangqilong3@huawei.com>
+Subject: Re: [PATCH -next] ASoC: soc-component: using
+ pm_runtime_resume_and_get instead of pm_runtime_get_sync
+Message-Id: <166427485472.60697.6028231863825833908.b4-ty@kernel.org>
+Date: Tue, 27 Sep 2022 11:34:14 +0100
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature"; boundary="W1mEP/YeLmI8MbXS"
-Content-Disposition: inline
-In-Reply-To: <202209262009.D1377D0C3@keescook>
-X-Cookie: Vote anarchist.
-Cc: alsa-devel@alsa-project.org, "Gustavo A. R. Silva" <gustavoars@kernel.org>,
- "Gustavo A. R. Silva" <gustavo@embeddedor.com>, linux-kernel@vger.kernel.org,
- Takashi Iwai <tiwai@suse.com>, linux-hardening@vger.kernel.org
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+X-Mailer: b4 0.10.0-dev-fc921
+Cc: alsa-devel@alsa-project.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -86,31 +81,36 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+On Thu, 22 Sep 2022 22:58:46 +0800, Zhang Qilong wrote:
+> Using the newest pm_runtime_resume_and_get is more appropriate
+> for simplifing code here.
+> 
+> 
 
---W1mEP/YeLmI8MbXS
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Applied to
 
-On Mon, Sep 26, 2022 at 08:16:16PM -0700, Kees Cook wrote:
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
 
-> Seems like it's worth getting the MAINTAINERS regex updated? Is this
-> right?
+Thanks!
 
-Yes, looks about right.
+[1/1] ASoC: soc-component: using pm_runtime_resume_and_get instead of pm_runtime_get_sync
+      commit: 08fc2a7448afc1660ec2f1b5c437fcd14155a7ee
 
---W1mEP/YeLmI8MbXS
-Content-Type: application/pgp-signature; name="signature.asc"
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
 
------BEGIN PGP SIGNATURE-----
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmMyz/oACgkQJNaLcl1U
-h9Cofgf/c1psLUiMDxR0MRIUMEeS+1ev/8ITyrbroJ1mCXJul5ZSsVuZaluhhXNb
-rpHnfwWgZwYvzXeCuOI/MQ2gzZHBYkcKUhrn+dbeomhRtSmHSA7G0Xb3zdEc7xhL
-fevVzsb5rXXiNVO4xVZ+IBSy3I8sN4sip6BXTrAOE9Ltk4uuPdqPncRh0uucnDI7
-3R46mIU9xk6mRkWMH8ugJ4qZPpaLk32mkfr/qb0ztj1HlBC+F1PQPCdLuHtjW4VX
-j99wXosQMvqOfAbxo8UpmX/IfIUWBk9i0HEV5/+xV24uSNI/bgR8hBRAlb/SjiMH
-mvB6kGk6wuKa+FCm9d0tAhLV60tShA==
-=ie0Q
------END PGP SIGNATURE-----
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
---W1mEP/YeLmI8MbXS--
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
