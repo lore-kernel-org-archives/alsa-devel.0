@@ -4,69 +4,73 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D011FC54EE9
-	for <alsa-devel@archiver.kernel.org>; Tue, 27 Sep 2022 13:00:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A3275C54EE9
+	for <alsa-devel@archiver.kernel.org>; Tue, 27 Sep 2022 13:01:15 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 440A074C;
-	Tue, 27 Sep 2022 14:59:58 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 440A074C
+	by alsa0.perex.cz (Postfix) with ESMTPS id 4176A850;
+	Tue, 27 Sep 2022 15:00:23 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4176A850
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1664283648;
-	bh=BSMIKJNSh2UY7QcBDbGnHiB8Z9/zuSk77eFA25iPrYA=;
+	s=default; t=1664283673;
+	bh=WhKfpdHarWpwK0DfgClRr+Pyx0XKbe4sxd8WDUF78wc=;
 	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=oNpo5QHSLvafi25VaCqOJ7T2jnJNmzDioiS3omV/ZyXvr0jW4ypnm6jEPW5Ut3Xr6
-	 QJiAQBorDOps6xLKxWvUmHfFA+g9pxbUk2TqQXU9Dbq9qv2+TqKrkiblAT3KtmMmj+
-	 HoWFQ07s4qZKc5K9JxqfxdNwtUsUdDGka7rDhb28=
+	b=E6q5O720Ctl+uyi6UrNOCtdRyHH0WDNtHNlptMzKoWsrZa+45irFg9IMpvy0/MPbK
+	 wYjqtataMKVrh6XtFfoqduLcq/Yy5DdK6HF/P84rVW/oaAc3PXU4cqqqugUaTZxWpD
+	 LyCaQ6E7tkO3XD53IC4Q0ZmxFp5b7FnAlYgfSYxY=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id C2D13F8011C;
-	Tue, 27 Sep 2022 14:59:57 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 40D31F804D0;
+	Tue, 27 Sep 2022 15:00:00 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id E3C53F8025E; Tue, 27 Sep 2022 14:59:55 +0200 (CEST)
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+ id 76EFBF804D9; Tue, 27 Sep 2022 14:59:59 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id C5916F8011C
- for <alsa-devel@alsa-project.org>; Tue, 27 Sep 2022 14:59:53 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C5916F8011C
+ by alsa1.perex.cz (Postfix) with ESMTPS id 31F52F80166
+ for <alsa-devel@alsa-project.org>; Tue, 27 Sep 2022 14:59:56 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 31F52F80166
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="TP3jMC8T"
+ header.b="YkC10HCY"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by ams.source.kernel.org (Postfix) with ESMTPS id AA367B81BBD;
- Tue, 27 Sep 2022 12:59:52 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 329B8C433D7;
- Tue, 27 Sep 2022 12:59:50 +0000 (UTC)
+ by dfw.source.kernel.org (Postfix) with ESMTPS id B21BB61964;
+ Tue, 27 Sep 2022 12:59:54 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id F26C6C433D6;
+ Tue, 27 Sep 2022 12:59:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1664283591;
- bh=BSMIKJNSh2UY7QcBDbGnHiB8Z9/zuSk77eFA25iPrYA=;
+ s=k20201202; t=1664283594;
+ bh=WhKfpdHarWpwK0DfgClRr+Pyx0XKbe4sxd8WDUF78wc=;
  h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=TP3jMC8TxSwQTANEvrCHalkWW8MMNfHVWAlA4oD7xkq4YoPkoLV+71w/28Rtx8Dpx
- Fss7T8HWH0rUxOgCPdhme2NqzMsW88PaXYQJnTsp5oXu+iivTLrgI9AO7bJeL6G9Te
- 18zkBdNzghB9nFdj/g+UD7+YJN1Cc//ZtB1i/qSb+8U5tvAl3m6Q3JHBEozEuVCKeM
- NSbikZJVgMPyFLmKFuIJRFQwDbebT3QTTdZBtr28Rj/WSFIgqFp0CHhQ9L68UZ+3zD
- zdUHEJmYmwJ7WZcwsjfJYXbYlnXj6kHspv7/3lbJ783c2sy/uB+qft+Ilku/ynhdV4
- +kSUhioD9fzNw==
+ b=YkC10HCYIO6+PWu6UnzjKTF9WY+SrZKXkndab8qU8tMrrS2e7WfgJy8XA0j9SDETC
+ vx/qsDwpvuKHlNZSJBjk1VigqE24qHvApNwpEFlzyFfntVgVFFRmnVVSSXZx9GyXZd
+ YtfF645di+Wr6eif71wbFLJWFhhBKxTZ/GcibWzH1B62JKr39uY72sVJh7qQBzA/4y
+ WWnm4l/QNOJwwsCmCSDQh64LbCwEbdoCwBGob5LCcJGaxOWyHDPUgitlq5yaONzso+
+ 31AkDq5oqSee9GGOygXTY0grT4SPdzhgdszmWlDDoaeirqOCnq+HJoDIcAhMZ3wN2i
+ 2ae2YZZ11zn/Q==
 From: Mark Brown <broonie@kernel.org>
-To: "Gustavo A. R. Silva" <gustavoars@kernel.org>,
- Takashi Iwai <tiwai@suse.com>, Jaroslav Kysela <perex@perex.cz>
-In-Reply-To: <YzIcZ11k8RiQtS2T@work>
-References: <YzIcZ11k8RiQtS2T@work>
-Subject: Re: [PATCH][next] ASoC: SOF: control.h: Replace zero-length array
- with DECLARE_FLEX_ARRAY() helper
-Message-Id: <166428358991.365276.17332366204767237765.b4-ty@kernel.org>
-Date: Tue, 27 Sep 2022 13:59:49 +0100
+To: Marek Vasut <marex@denx.de>, linux-arm-kernel@lists.infradead.org
+In-Reply-To: <20220927002004.685108-1-marex@denx.de>
+References: <20220927002004.685108-1-marex@denx.de>
+Subject: Re: [PATCH] dt-bindings: sound: st,
+ stm32-sai: Document audio OF graph port
+Message-Id: <166428359170.365276.17161501749228510942.b4-ty@kernel.org>
+Date: Tue, 27 Sep 2022 13:59:51 +0100
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 X-Mailer: b4 0.10.0-dev-fc921
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
- linux-hardening@vger.kernel.org
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
+ Liam Girdwood <lgirdwood@gmail.com>,
+ Alexandre Torgue <alexandre.torgue@foss.st.com>,
+ Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+ Rob Herring <robh+dt@kernel.org>, Olivier Moysan <olivier.moysan@foss.st.com>,
+ Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>,
+ linux-stm32@st-md-mailman.stormreply.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -82,15 +86,12 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Mon, 26 Sep 2022 16:40:55 -0500, Gustavo A. R. Silva wrote:
-> Zero-length arrays are deprecated and we are moving towards adopting
-> C99 flexible-array members, instead. So, replace zero-length arrays
-> declarations in anonymous union with the new DECLARE_FLEX_ARRAY()
-> helper macro.
+On Tue, 27 Sep 2022 02:20:04 +0200, Marek Vasut wrote:
+> It is expected that the SAI subnodes would contain audio OF graph port
+> with endpoint to link it with the other side of audio link. Document
+> the port: property.
 > 
-> This helper allows for flexible-array members in unions.
 > 
-> [...]
 
 Applied to
 
@@ -98,8 +99,8 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: SOF: control.h: Replace zero-length array with DECLARE_FLEX_ARRAY() helper
-      commit: b264ef796959cb65cdbc811da5ab950e33df4162
+[1/1] dt-bindings: sound: st,stm32-sai: Document audio OF graph port
+      commit: b3eec3e6670d4da653e742bae16e5a6ff3f03825
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
