@@ -4,86 +4,60 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 29C4AC54EE9
-	for <alsa-devel@archiver.kernel.org>; Tue, 27 Sep 2022 14:12:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5D7F9C54EE9
+	for <alsa-devel@archiver.kernel.org>; Tue, 27 Sep 2022 14:23:34 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id D3C28825;
-	Tue, 27 Sep 2022 16:11:35 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz D3C28825
+	by alsa0.perex.cz (Postfix) with ESMTPS id A4801825;
+	Tue, 27 Sep 2022 16:22:42 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A4801825
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1664287945;
-	bh=QA2fGJ+oY4xpQjlh1fKLfiwAvuRz8yeyghZy6iuegAI=;
-	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=YEwUEQSRnnzvjUQ0lmnDtStKZKYOD5D7JNq0I46mRG9Sc+PsetQSYXRVVpvTuECIu
-	 g/r33fxhxy/0a/5KRjgmqptGsgXiw/CdoXwODl349SvOhhF5KBn7yq3hRJdDfVRQk3
-	 +/sgiRNAymp/Sp3S8TTmDwkVARg7+i0i5b0Os/2U=
+	s=default; t=1664288612;
+	bh=Nq7nXZGauIeWT/K4KpIpeLP9wsoW2oAKiz3xhMaBDg8=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=e9ZtJ94pizkYaV+7Rxr4kgGklq3AV4ho34X0spg3fPEsqg2oymV+qaTNLtZG2jrVP
+	 ScIasXtIK94fFYJGZ4TjEp9RBeRIEkzflYjX2NgPNhHFeO+MNL6mVLfMRCfni/aMAh
+	 pGYKW63KZfXi3EXspE7oQ6p80TFjBNKmxYKD7swo=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 6205DF8024C;
-	Tue, 27 Sep 2022 16:11:35 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2B868F80496;
+	Tue, 27 Sep 2022 16:22:42 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id D0479F8025E; Tue, 27 Sep 2022 16:11:34 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id 4F65CF804D0; Tue, 27 Sep 2022 16:22:40 +0200 (CEST)
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id BE635F80166
- for <alsa-devel@alsa-project.org>; Tue, 27 Sep 2022 16:11:28 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz BE635F80166
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="OEXGCLQV"; 
- dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="xFJenLK0"
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 3658B21EA3;
- Tue, 27 Sep 2022 14:11:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1664287888; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=4Gs2kEEXPWw8vO1C2gEMXnJnBJTxf0UA1/lUrHbqkNA=;
- b=OEXGCLQVDDhZ90tqpTdhiNeEUI4kIbcjSBjKa4C3iw5ydwWyZIglT3szRei6kYK7Ij1THB
- iZ33ZLzckAI1TDAm1lyPnkmCVMIjvVJJ2B5oNhBFTsu/rKg6drPlU/WM9v9+W9LebpnnsU
- 9P9i+Fb4y4C766XjrY9tTT0ao380bzk=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1664287888;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=4Gs2kEEXPWw8vO1C2gEMXnJnBJTxf0UA1/lUrHbqkNA=;
- b=xFJenLK09yl5B9GuvcYmJ2U0WILvMRMEomoZ8vKm02QGZl3ggYvDrwJ4lQ5wCHukhakIm7
- 8UD/VTnf4hvYL9CA==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id DF666139B3;
- Tue, 27 Sep 2022 14:11:27 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id ZsLQNY8EM2OSOQAAMHmgww
- (envelope-from <tiwai@suse.de>); Tue, 27 Sep 2022 14:11:27 +0000
-Date: Tue, 27 Sep 2022 16:11:27 +0200
-Message-ID: <87ill8gb5c.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Brent Lu <brent.lu@intel.com>
-Subject: Re: [PATCH] ALSA: hda/hdmi: run eld notify in delay work
-In-Reply-To: <20220927135807.4097052-1-brent.lu@intel.com>
-References: <20220927135807.4097052-1-brent.lu@intel.com>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
-Cc: alsa-devel@alsa-project.org, Kai Vehmanen <kai.vehmanen@linux.intel.com>,
- linux-kernel@vger.kernel.org,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
- Takashi Iwai <tiwai@suse.com>, Mohan Kumar <mkumard@nvidia.com>,
- Ville =?ISO-8859-1?Q?Syrj=E4l=E4?= <ville.syrjala@linux.intel.com>,
- Yong Zhi <yong.zhi@intel.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 65A46F800AA
+ for <alsa-devel@alsa-project.org>; Tue, 27 Sep 2022 16:22:36 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 65A46F800AA
+Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.57])
+ by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4McMFh539rzpSxX;
+ Tue, 27 Sep 2022 22:19:36 +0800 (CST)
+Received: from kwepemm600014.china.huawei.com (7.193.23.54) by
+ dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.31; Tue, 27 Sep 2022 22:22:31 +0800
+Received: from huawei.com (10.90.53.225) by kwepemm600014.china.huawei.com
+ (7.193.23.54) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.31; Tue, 27 Sep
+ 2022 22:22:31 +0800
+From: Zhang Qilong <zhangqilong3@huawei.com>
+To: <olivier.moysan@foss.st.com>, <arnaud.pouliquen@foss.st.com>,
+ <perex@perex.cz>, <tiwai@suse.com>, <mcoquelin.stm32@gmail.com>,
+ <lgirdwood@gmail.com>, <broonie@kernel.org>
+Subject: [PATCH v2 -next 0/2] Fix PM disable depth imbalance in stm32 probe
+Date: Tue, 27 Sep 2022 22:25:59 +0800
+Message-ID: <20220927142601.64266-1-zhangqilong3@huawei.com>
+X-Mailer: git-send-email 2.26.0.106.g9fadedd
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.90.53.225]
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+ kwepemm600014.china.huawei.com (7.193.23.54)
+X-CFilter-Loop: Reflected
+Cc: alsa-devel@alsa-project.org, linux-stm32@st-md-mailman.stormreply.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -99,24 +73,23 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Tue, 27 Sep 2022 15:58:07 +0200,
-Brent Lu wrote:
-> 
-> During resolution change, display driver would disable HDMI audio then
-> enable it in a short time. There is possibility that eld notify for
-> HDMI audio enable is called when previous runtime suspend is still
-> running. In this case, the elf nofity just returns and not updating the
-> status of corresponding HDMI pin/port. Here we move the eld nofity to
-> a delay work so we don't lose it.
-> 
-> Signed-off-by: Brent Lu <brent.lu@intel.com>
+The pm_runtime_enable will increase power disable depth. Thus
+a pairing decrement is needed on the error handling path to
+keep it balanced. We fix it by moving pm_runtime_enable to the
+endding of probe.
+v2:
+- Add reviewed-by
 
-We have already a dedicated per-pin work for the delayed ELD check.
-Can we reuse it instead of inventing yet another work?
-More work needs more cares, and better to avoid unless really needed
-(e.g. you forgot cleanup at suspend/removal in this patch).
+Zhang Qilong (2):
+  ASoC: stm32: dfsdm: Fix PM disable depth imbalance in
+    stm32_adfsdm_probe
+  ASoC: stm32: spdifrx: Fix PM disable depth imbalance in
+    stm32_spdifrx_probe
 
+ sound/soc/stm/stm32_adfsdm.c  | 8 +++++---
+ sound/soc/stm/stm32_spdifrx.c | 4 ++--
+ 2 files changed, 7 insertions(+), 5 deletions(-)
 
-thanks,
+-- 
+2.25.1
 
-Takashi
