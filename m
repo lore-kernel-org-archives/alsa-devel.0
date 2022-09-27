@@ -4,72 +4,70 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id EE7AFC6FA90
-	for <alsa-devel@archiver.kernel.org>; Tue, 27 Sep 2022 10:36:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 69057C6FA86
+	for <alsa-devel@archiver.kernel.org>; Tue, 27 Sep 2022 10:36:25 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 1C05FAE8;
-	Tue, 27 Sep 2022 12:35:20 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 1C05FAE8
+	by alsa0.perex.cz (Postfix) with ESMTPS id 89B7783D;
+	Tue, 27 Sep 2022 12:35:33 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 89B7783D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1664274970;
-	bh=lJjHanQhAo4gyBUD5O9aZXDqaj4cVWoKZzJdtxw5DuA=;
+	s=default; t=1664274983;
+	bh=Owy1eL2zE7HjhpIKBG9ABMOlVvTMODzZLcYVa8P0yAg=;
 	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=qCZV9LSxP9WxkFpW8kue9NfpxBGnLXP4LtAp0azjbT7vupFqD+uw3YOS8h711Yevc
-	 8z70LnO0Tk2d8Ke1hoiXGIYshp7QLRLTSX7sAmWOMEXQvwaTux4oinXoT2VqjLgcGa
-	 J4HM+Fv4/8GELHSuU3zkoO3ryCnNixTZOMGp+s7Y=
+	b=HhzMB4ZWPkS/yxoRZ2ZZ1TanDXzYzDD08wzShgLNXu6z3fUBdU1MZCOBAcGMespDB
+	 VU4K/X4QgZoTGfYJJ0xbGBrYERvElChzChx+gWG9BjL66GQt5qVTwHJAji6AA0CrZk
+	 jQHBtNGdQ5hwjua6xEdBsDiF9isWeOXnG5KqSsdU=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id C8A64F80542;
-	Tue, 27 Sep 2022 12:34:29 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 4819FF80543;
+	Tue, 27 Sep 2022 12:34:32 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 51ECEF804D0; Tue, 27 Sep 2022 12:34:25 +0200 (CEST)
-Received: from sin.source.kernel.org (sin.source.kernel.org [145.40.73.55])
+ id C2CB4F80551; Tue, 27 Sep 2022 12:34:30 +0200 (CEST)
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id B970FF8024C
- for <alsa-devel@alsa-project.org>; Tue, 27 Sep 2022 12:34:20 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B970FF8024C
+ by alsa1.perex.cz (Postfix) with ESMTPS id D09CBF80166
+ for <alsa-devel@alsa-project.org>; Tue, 27 Sep 2022 12:34:24 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D09CBF80166
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="CDtX/a6m"
+ header.b="LI+DMpEb"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by sin.source.kernel.org (Postfix) with ESMTPS id 19E85CE11DC;
- Tue, 27 Sep 2022 10:34:16 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 87A89C433D6;
- Tue, 27 Sep 2022 10:34:12 +0000 (UTC)
+ by ams.source.kernel.org (Postfix) with ESMTPS id C8DA3B81ADD;
+ Tue, 27 Sep 2022 10:34:23 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3863CC433C1;
+ Tue, 27 Sep 2022 10:34:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1664274854;
- bh=lJjHanQhAo4gyBUD5O9aZXDqaj4cVWoKZzJdtxw5DuA=;
+ s=k20201202; t=1664274862;
+ bh=Owy1eL2zE7HjhpIKBG9ABMOlVvTMODzZLcYVa8P0yAg=;
  h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=CDtX/a6mIQ2vC0NJAzaCEB64k7Ktn/nkcVfB5d+zql6b1tDS+bYsfbMxxZXV9NyiI
- d0uaVEVow6ihw3hFu9M04xwn/rFN5+qs6+fNzlRx56SpSKmOIch0NdtgS87kRlvJeI
- qJKIzpBRzY7Zw9c/3QkBNUtnc1dt+m+1hpzG5/tgEA3rledkpx06XAm4/PiN2+ZaeW
- 2MKQgMlbBczKEfUD9/IGt4P/wWD7kzyO8ZUoSbyBFTE8Zy2y1OiHp8hSEVky+ek4Ja
- K7ZNP6/Ux5369gTEX41zR7cqyN/YTRD2QUQst17JwYgFOGZn3+nOt5NYWQHlcEkW9x
- QfaWssp5X1fsw==
+ b=LI+DMpEborBOpALwawGLrA7Gp6QTKN9vCaonpEbHUS3pywUfHGgbjEcLZVvOGuB24
+ oCikCvvncq1xAOHSRShgaZ6wxdyjW5P+R6TGVLFNuyVPbzlJZTf2aXuJr6/bx8rnOI
+ Rfz09p+BdnMsKCUr7OXgWFntqOCcEP/V9RAtcOdh/TfA+fMml7FIHaNFIYNfGNi2T6
+ pVTHWOy8bnlEN+NiFxJQ/aNvqVKTFbkKlRyg7hzf1oVtGUQ65ZEspimTMYmEGh1/Mf
+ 1mZ/3uhLCUfEWzMTbWKrA0AZwxgYvCroGbmaPt38qNEfwOZ7iAggm57nihzPjI8e7H
+ b19wcoTmMwgPA==
 From: Mark Brown <broonie@kernel.org>
-To: Support Opensource <support.opensource@diasemi.com>,
- Christophe JAILLET <christophe.jaillet@wanadoo.fr>, 
- Adam Thomson <Adam.Thomson.Opensource@diasemi.com>,
- Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, 
- Jaroslav Kysela <perex@perex.cz>
-In-Reply-To: <e4acceab57a0d9e477a8d5890a45c5309e553e7c.1663875789.git.christophe.jaillet@wanadoo.fr>
-References: <e4acceab57a0d9e477a8d5890a45c5309e553e7c.1663875789.git.christophe.jaillet@wanadoo.fr>
-Subject: Re: [PATCH] ASoC: da7219: Fix an error handling path in
- da7219_register_dai_clks()
-Message-Id: <166427485225.60697.13131714629966036302.b4-ty@kernel.org>
-Date: Tue, 27 Sep 2022 11:34:12 +0100
+To: festevam@gmail.com, nicoleotsuka@gmail.com, lgirdwood@gmail.com,
+ tiwai@suse.com, perex@perex.cz, 
+ shengjiu.wang@gmail.com, alsa-devel@alsa-project.org,
+ Shengjiu Wang <shengjiu.wang@nxp.com>, Xiubo.Lee@gmail.com
+In-Reply-To: <1663928147-10106-1-git-send-email-shengjiu.wang@nxp.com>
+References: <1663928147-10106-1-git-send-email-shengjiu.wang@nxp.com>
+Subject: Re: [RESEND PATCH] ASoC: fsl_asrc_dma: fully initialize structs
+Message-Id: <166427485994.60697.4779578506404492678.b4-ty@kernel.org>
+Date: Tue, 27 Sep 2022 11:34:19 +0100
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 X-Mailer: b4 0.10.0-dev-fc921
-Cc: alsa-devel@alsa-project.org, kernel-janitors@vger.kernel.org,
- linux-kernel@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>
+Cc: s.hauer@pengutronix.de, linuxppc-dev@lists.ozlabs.org,
+ linux-kernel@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -85,13 +83,14 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Thu, 22 Sep 2022 21:44:57 +0200, Christophe JAILLET wrote:
-> If clk_hw_register() fails, the corresponding clk should not be
-> unregistered.
+On Fri, 23 Sep 2022 18:15:47 +0800, Shengjiu Wang wrote:
+> From: Sascha Hauer <s.hauer@pengutronix.de>
 > 
-> To handle errors from loops, clean up partial iterations before doing the
-> goto.  So add a clk_hw_unregister().
-> Then use a while (--i >= 0) loop in the unwind section.
+> The driver uses two statically ininitialized struct dma_slave_config,
+> but only one of them is initialized to zero. Initialize config_be to
+> zero as well to make sure that no fields are filled with random values.
+> Let the compiler do this instead of explicitly calling memset() which
+> makes it easier to read.
 > 
 > [...]
 
@@ -101,8 +100,8 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: da7219: Fix an error handling path in da7219_register_dai_clks()
-      commit: abb4e4349afe7eecdb0499582f1c777031e3a7c8
+[1/1] ASoC: fsl_asrc_dma: fully initialize structs
+      commit: 1849a1505533501ea39ed0538c2d35eba4704baa
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
