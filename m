@@ -4,84 +4,84 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C7693C07E9D
-	for <alsa-devel@archiver.kernel.org>; Tue, 27 Sep 2022 06:43:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8380BC6FA83
+	for <alsa-devel@archiver.kernel.org>; Tue, 27 Sep 2022 06:44:24 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id E3017827;
-	Tue, 27 Sep 2022 08:42:46 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz E3017827
+	by alsa0.perex.cz (Postfix) with ESMTPS id 7C8F6846;
+	Tue, 27 Sep 2022 08:43:32 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 7C8F6846
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1664261017;
-	bh=3PgrWl8X+W9s5er+yo5Nox6G+2GS3H9qjogvNz9DHwI=;
+	s=default; t=1664261062;
+	bh=9SQAififnj6C4dGKA9hacVzA/rzzG2vVuOw/kzIdpQA=;
 	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=f+kS6Orrm87NhwLMQRzbgxX592QSzPob27/PUC5FMK7Yd6Z+WvV/hKcghcffFu/LK
-	 2kBYGOxNKeRxZ+F0dg1xV8OmskvruK+HACfiH1FZ81RBpnJ2mNa7xmwNrr1CrNV4eo
-	 ODwCT9uwqJgsQCU/nGQjc+q3tfnHtdTU6RPiGV5o=
+	b=HUXd4Znllz6NUZ548uwPHIYYBIyJrbq8Y5tUg2de7yaV3WNz3QLK9qM7o8uIfjOEy
+	 AJ6wnodv6DREodwo3tTN9DJ1ovWXH/lo3JQWtUKUyg5jcD40zl1tgdmW4XUWJPQNMB
+	 1a8TvPSi718r8Uj8vE6LyEnm6YXGh3Mn4zZwHhJk=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 66324F8024C;
-	Tue, 27 Sep 2022 08:42:46 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 1E41AF804D0;
+	Tue, 27 Sep 2022 08:43:32 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id D2A6BF8025E; Tue, 27 Sep 2022 08:42:44 +0200 (CEST)
+ id F2AA1F804D9; Tue, 27 Sep 2022 08:43:30 +0200 (CEST)
 Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 233D3F800AA
- for <alsa-devel@alsa-project.org>; Tue, 27 Sep 2022 08:42:39 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 233D3F800AA
+ by alsa1.perex.cz (Postfix) with ESMTPS id C6BF2F80496
+ for <alsa-devel@alsa-project.org>; Tue, 27 Sep 2022 08:43:28 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C6BF2F80496
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="IU7BfWaR"; 
+ header.b="zIpWWayT"; 
  dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="OBwv5Lst"
+ header.b="4Dw8zTir"
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 4173121CE8;
- Tue, 27 Sep 2022 06:42:39 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id 8696321E7D;
+ Tue, 27 Sep 2022 06:43:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1664260959; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+ t=1664261008; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=taICh2K620crBvOq2OQxmJu+AbXgax7CZvW2EW4pf+s=;
- b=IU7BfWaRijmTGYASznuCYJLpc1NtCgG2tFT9IOCpNutRPu1HT4Zzthbhl3gHNgV+yTaei0
- mj1Unnm4ssGb484xY1hfoRukTumWTRbmSNs40tkyxn4Bl3uqXH3iKHaKvEPYhkgKepgGhG
- +Dp8Rf1hbuK8FAGJri8fBg6alIpTrFw=
+ bh=5ZxpDsEb1+mKewCmEANaAdXtVhFN/dYIiQ5noUVg3Qw=;
+ b=zIpWWayTfGeFuEXjh5v0hmcstGcxFH4k8OaKlCZBICZZYJd/eD8AGXOS6pw4SK2HSF9FRK
+ Nf80KahTmA2d4Zz0fLBmaXUFF5vPIzt7nqiwzk2/l1EaEhl609ZPpbMgfujG/g0EIq3RfC
+ hgSjyYyyYTZXvAcOWDrV1S8y4nxRROM=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1664260959;
+ s=susede2_ed25519; t=1664261008;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
  mime-version:mime-version:content-type:content-type:
  in-reply-to:in-reply-to:references:references;
- bh=taICh2K620crBvOq2OQxmJu+AbXgax7CZvW2EW4pf+s=;
- b=OBwv5Lstk9sf5/mbB4uxsLqcRxUt5hnuFREsiivm0XS84rnxlFPpaZKamzMYqKUGiJHOqA
- NlG7vghYUM5UQ0AQ==
+ bh=5ZxpDsEb1+mKewCmEANaAdXtVhFN/dYIiQ5noUVg3Qw=;
+ b=4Dw8zTirRND7Dp24bd4PJfLEvriglIzrB8FK8WTdcXB3ho7QUE4nRR090otMfja6INH6M7
+ qkHdGni1iD+oZeDA==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 14873139BE;
- Tue, 27 Sep 2022 06:42:39 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 52949139BE;
+ Tue, 27 Sep 2022 06:43:28 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id STBCBF+bMmOYZQAAMHmgww
- (envelope-from <tiwai@suse.de>); Tue, 27 Sep 2022 06:42:39 +0000
-Date: Tue, 27 Sep 2022 08:42:38 +0200
-Message-ID: <87fsgdgvxd.wl-tiwai@suse.de>
+ by imap2.suse-dmz.suse.de with ESMTPSA id D0hmE5CbMmPgZQAAMHmgww
+ (envelope-from <tiwai@suse.de>); Tue, 27 Sep 2022 06:43:28 +0000
+Date: Tue, 27 Sep 2022 08:43:27 +0200
+Message-ID: <87edvxgvw0.wl-tiwai@suse.de>
 From: Takashi Iwai <tiwai@suse.de>
 To: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 Subject: Re: [PATCH] headers: Remove some left-over license text in
- sound/firewire
-In-Reply-To: <2bfe76c7eeb0f5205a1427e280bf8d9da0354a62.1664110649.git.christophe.jaillet@wanadoo.fr>
-References: <2bfe76c7eeb0f5205a1427e280bf8d9da0354a62.1664110649.git.christophe.jaillet@wanadoo.fr>
+ include/uapi/sound/
+In-Reply-To: <203c1db92c470925f31e361f6e7d180812501f2e.1664112023.git.christophe.jaillet@wanadoo.fr>
+References: <203c1db92c470925f31e361f6e7d180812501f2e.1664112023.git.christophe.jaillet@wanadoo.fr>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
 MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
 Content-Type: text/plain; charset=US-ASCII
-Cc: alsa-devel@alsa-project.org, Clemens Ladisch <clemens@ladisch.de>,
- Takashi Iwai <tiwai@suse.com>, kernel-janitors@vger.kernel.org,
- linux-kernel@vger.kernel.org
+Cc: alsa-devel@alsa-project.org, kernel-janitors@vger.kernel.org,
+ linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>,
+ Vinod Koul <vkoul@kernel.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -97,21 +97,18 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Sun, 25 Sep 2022 14:57:51 +0200,
+On Sun, 25 Sep 2022 15:20:46 +0200,
 Christophe JAILLET wrote:
 > 
-> There is alredy a SPDX-License-Identifier tag, so the corresponding license
-> text can be removed.
-> 
-> While at it, be more consistent and:
->   - add a missing .c (ff-protocol-latter)
->   - remove an empty line (motu-protocol-v1)
+> There is already a SPDX-License-Identifier tag, so the corresponding
+> license text can be removed.
 > 
 > Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+> ---
+> Note: include/uapi/sound/compress_params.h has a slight modification in the
+> wording.
 
-Applied with a correction of typo and subject prefix.
+Thanks, applied now (with the subject prefix change).
 
-
-thanks,
 
 Takashi
