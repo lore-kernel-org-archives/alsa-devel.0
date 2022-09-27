@@ -4,67 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 18930C07E9D
-	for <alsa-devel@archiver.kernel.org>; Thu, 29 Sep 2022 06:00:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id DD596C04A95
+	for <alsa-devel@archiver.kernel.org>; Thu, 29 Sep 2022 06:07:32 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id BCFFF82B;
-	Thu, 29 Sep 2022 07:59:42 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BCFFF82B
+	by alsa0.perex.cz (Postfix) with ESMTPS id 4436582B;
+	Thu, 29 Sep 2022 08:06:40 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 4436582B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1664431232;
-	bh=UVp3DIcIhXLorPqq9KB13nx8mC+qNarvyB1UOm88vTA=;
-	h=Date:Subject:To:References:From:In-Reply-To:Cc:List-Id:
+	s=default; t=1664431650;
+	bh=im3EeMAe+47Ir6AIJG/MGkNzpH2VJePcZKB94OjLLho=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=RR6jsRNK+G8qaclhj7rLajo61JTcezGtCYWOKVzwSktDZvbxDy4LqBcpreYYY2OfD
-	 3f3ANphL0e6UpHL/4XT+CwGgk1+9uWZkT9tnMYMzBRqvX6lrBU9pNPiCfJfuQ1/I1P
-	 aZ2bOuAkVJbYkP1oZ1faLfF9nJ/fo34vJevYIoso=
+	b=MS5kfR7ZtvTIIA+L1ft9Iwkct+tzIQvozq27JDbHxr1cGy14e8EFOtBluPEveSYa1
+	 OAYkFNJBx0wlIHxLM8asDDiTTaN6t+oF+4pp3+yWZkgXVeqIwLtXHBynPSMUyFtU8V
+	 6jWyEIxZ6MPvVaIwLe4HrcbETGK9M9Ba1IUbPw+c=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 51311F8016D;
-	Thu, 29 Sep 2022 07:59:42 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id BBF0EF80109;
+	Thu, 29 Sep 2022 08:06:39 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 823BEF8023A; Thu, 29 Sep 2022 07:59:41 +0200 (CEST)
-Received: from bombadil.infradead.org (bombadil.infradead.org
- [IPv6:2607:7c80:54:3::133])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ id A0199F804D0; Tue, 27 Sep 2022 15:35:51 +0200 (CEST)
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 0215BF80109
- for <alsa-devel@alsa-project.org>; Thu, 29 Sep 2022 07:59:38 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0215BF80109
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org
- header.b="OcpQjrOL"
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
- d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
- Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
- Message-ID:Sender:Reply-To:Content-ID:Content-Description;
- bh=NXUihHm0xOJUlsVS7RXSAPp6feiEX61IX5jpUCvHJSU=; b=OcpQjrOLrFI18JmVeNjMrL9A1R
- 7tJ1vb91/D4zIehcuQeDcXBgWEWc9Xl+xmL5BKXwJO/AqA/okBi8EZrRVVvUxb/1Zr5iyXjBml9tc
- YbeJ8XmbynCK9wb8v/5M63FoBnnjKW4XC9q5a2OBI5uWqeJ/fUx+0oN2qsJpTN7EhxMVSsGrC6xMC
- 3X6pSYDb7hAkiTSJSu8KW30+9B0q31u03Mhj8cdkCTX649Naya6CuUGoYpjQxOhm3is6F2spQh+GQ
- 445tRdvylO9aKMliyOLsUycg1wqMdsxlOo4IrzkvrL56/Dk500SXnQRNW3xk4vcSTbo320eV3zJvB
- k3QT6HxA==;
-Received: from [2601:1c2:d80:3110::a2e7]
- by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
- id 1odma5-001K2m-0M; Thu, 29 Sep 2022 05:59:33 +0000
-Message-ID: <d0c824e3-11fb-6002-982d-c15916f060d8@infradead.org>
-Date: Wed, 28 Sep 2022 22:59:32 -0700
+ by alsa1.perex.cz (Postfix) with ESMTPS id CCB49F80166
+ for <alsa-devel@alsa-project.org>; Tue, 27 Sep 2022 15:35:47 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz CCB49F80166
+Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.53])
+ by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4McLB828b7zlVmD;
+ Tue, 27 Sep 2022 21:31:28 +0800 (CST)
+Received: from kwepemm600008.china.huawei.com (7.193.23.88) by
+ dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.31; Tue, 27 Sep 2022 21:35:43 +0800
+Received: from huawei.com (10.175.100.227) by kwepemm600008.china.huawei.com
+ (7.193.23.88) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.31; Tue, 27 Sep
+ 2022 21:35:42 +0800
+From: Shang XiaoJing <shangxiaojing@huawei.com>
+To: <james.schulman@cirrus.com>, <david.rhodes@cirrus.com>,
+ <tanureal@opensource.cirrus.com>, <rf@opensource.cirrus.com>,
+ <lgirdwood@gmail.com>, <broonie@kernel.org>, <perex@perex.cz>,
+ <tiwai@suse.com>, <christophe.jaillet@wanadoo.fr>,
+ <peter.ujfalusi@gmail.com>, <alsa-devel@alsa-project.org>,
+ <patches@opensource.cirrus.com>
+Subject: [PATCH -next 2/4] ASoC: wm8978: Use DIV_ROUND_UP() instead of
+ open-coding it
+Date: Tue, 27 Sep 2022 22:09:46 +0800
+Message-ID: <20220927140948.17696-3-shangxiaojing@huawei.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20220927140948.17696-1-shangxiaojing@huawei.com>
+References: <20220927140948.17696-1-shangxiaojing@huawei.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.2.2
-Subject: Re: linux-next: Tree for Sep 28 (Kconfig: SND_SOC_QDSP6)
-Content-Language: en-US
-To: broonie@kernel.org, Linux Next Mailing List <linux-next@vger.kernel.org>
-References: <20220928192605.247546-1-broonie@kernel.org>
-From: Randy Dunlap <rdunlap@infradead.org>
-In-Reply-To: <20220928192605.247546-1-broonie@kernel.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>,
- Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain
+X-Originating-IP: [10.175.100.227]
+X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
+ kwepemm600008.china.huawei.com (7.193.23.88)
+X-CFilter-Loop: Reflected
+X-Mailman-Approved-At: Thu, 29 Sep 2022 08:06:37 +0200
+Cc: shangxiaojing@huawei.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -80,22 +80,30 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+Use DIV_ROUND_UP() instead of open-coding it, which intents and makes it
+more clear what is going on for the casual reviewer.
 
+The Coccinelle references Commit e4d8aef21403 ("ALSA: usb: Use
+DIV_ROUND_UP() instead of open-coding it").
 
-On 9/28/22 12:26, broonie@kernel.org wrote:
-> Hi all,
-> 
-> Changes since 20220927:
-> 
+Signed-off-by: Shang XiaoJing <shangxiaojing@huawei.com>
+---
+ sound/soc/codecs/wm8978.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-on x86_64, when QCOM_APR is not set and COMPILE_TEST=y:
-
-WARNING: unmet direct dependencies detected for SND_SOC_QDSP6
-  Depends on [n]: SOUND [=y] && !UML && SND [=y] && SND_SOC [=y] && SND_SOC_QCOM [=y] && QCOM_APR [=n] && COMMON_CLK [=y]
-  Selected by [y]:
-  - SND_SOC_SC8280XP [=y] && SOUND [=y] && !UML && SND [=y] && SND_SOC [=y] && SND_SOC_QCOM [=y] && (QCOM_APR [=n] || COMPILE_TEST [=y]) && SOUNDWIRE [=y] && COMMON_CLK [=y]
-
-
-
+diff --git a/sound/soc/codecs/wm8978.c b/sound/soc/codecs/wm8978.c
+index a682f8020eb6..aa2f55401a88 100644
+--- a/sound/soc/codecs/wm8978.c
++++ b/sound/soc/codecs/wm8978.c
+@@ -498,7 +498,7 @@ static int wm8978_configure_pll(struct snd_soc_component *component)
+ 
+ 		if (4 * f_opclk < 3 * f_mclk)
+ 			/* Have to use OPCLKDIV */
+-			opclk_div = (3 * f_mclk / 4 + f_opclk - 1) / f_opclk;
++			opclk_div = DIV_ROUND_UP(3 * f_mclk / 4, f_opclk);
+ 		else
+ 			opclk_div = 1;
+ 
 -- 
-~Randy
+2.17.1
+
