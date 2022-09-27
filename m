@@ -4,67 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id DAE72C6FA82
-	for <alsa-devel@archiver.kernel.org>; Tue, 27 Sep 2022 12:31:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D011FC54EE9
+	for <alsa-devel@archiver.kernel.org>; Tue, 27 Sep 2022 13:00:50 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 45F65829;
-	Tue, 27 Sep 2022 14:30:57 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 45F65829
+	by alsa0.perex.cz (Postfix) with ESMTPS id 440A074C;
+	Tue, 27 Sep 2022 14:59:58 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 440A074C
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1664281907;
-	bh=YIK1M82N7qhRycvZx3jJtPNEEvpqbJTEiKpr77SzcCQ=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	s=default; t=1664283648;
+	bh=BSMIKJNSh2UY7QcBDbGnHiB8Z9/zuSk77eFA25iPrYA=;
+	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=r2Wd3+92anwFSPBGxwWi8m/2FJHM/dBliBth6VO3KvKaUaA7y4a+5Mjt/9iFcvykf
-	 JYlgCFxIGK3Ktt+/6dA/TxL7KcdDDQadpkzClfdV0PAPA7oWoqN9EIB6OYdUByUgau
-	 /o4cTql5V8xppP64YtdWijsLJh0HJ8xN6Y07c9HI=
+	b=oNpo5QHSLvafi25VaCqOJ7T2jnJNmzDioiS3omV/ZyXvr0jW4ypnm6jEPW5Ut3Xr6
+	 QJiAQBorDOps6xLKxWvUmHfFA+g9pxbUk2TqQXU9Dbq9qv2+TqKrkiblAT3KtmMmj+
+	 HoWFQ07s4qZKc5K9JxqfxdNwtUsUdDGka7rDhb28=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id CD544F80166;
-	Tue, 27 Sep 2022 14:30:56 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id C2D13F8011C;
+	Tue, 27 Sep 2022 14:59:57 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 3FC8BF8025E; Tue, 27 Sep 2022 14:30:55 +0200 (CEST)
-Received: from hi1smtp01.de.adit-jv.com (smtp1.de.adit-jv.com [93.241.18.167])
- (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
+ id E3C53F8025E; Tue, 27 Sep 2022 14:59:55 +0200 (CEST)
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 19516F800AA
- for <alsa-devel@alsa-project.org>; Tue, 27 Sep 2022 14:30:46 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 19516F800AA
-Received: from hi2exch02.adit-jv.com (hi2exch02.adit-jv.com [10.72.92.28])
+ by alsa1.perex.cz (Postfix) with ESMTPS id C5916F8011C
+ for <alsa-devel@alsa-project.org>; Tue, 27 Sep 2022 14:59:53 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz C5916F8011C
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="TP3jMC8T"
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by hi1smtp01.de.adit-jv.com (Postfix) with ESMTPS id 17EAA520214;
- Tue, 27 Sep 2022 14:30:44 +0200 (CEST)
-Received: from lxhi-065 (10.72.94.21) by hi2exch02.adit-jv.com (10.72.92.28)
- with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.12; Tue, 27 Sep
- 2022 14:30:43 +0200
-Date: Tue, 27 Sep 2022 14:30:43 +0200
-From: Eugeniu Rosca <erosca@de.adit-jv.com>
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH] ASoC: soc-pcm: fix fe and be race when accessing
- substream->runtime
-Message-ID: <20220927123043.GB4547@lxhi-065>
-References: <1664210154-11552-1-git-send-email-erosca@de.adit-jv.com>
- <bdf56f23-1019-b4c8-a11a-3934db432cf1@linux.intel.com>
+ by ams.source.kernel.org (Postfix) with ESMTPS id AA367B81BBD;
+ Tue, 27 Sep 2022 12:59:52 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 329B8C433D7;
+ Tue, 27 Sep 2022 12:59:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1664283591;
+ bh=BSMIKJNSh2UY7QcBDbGnHiB8Z9/zuSk77eFA25iPrYA=;
+ h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+ b=TP3jMC8TxSwQTANEvrCHalkWW8MMNfHVWAlA4oD7xkq4YoPkoLV+71w/28Rtx8Dpx
+ Fss7T8HWH0rUxOgCPdhme2NqzMsW88PaXYQJnTsp5oXu+iivTLrgI9AO7bJeL6G9Te
+ 18zkBdNzghB9nFdj/g+UD7+YJN1Cc//ZtB1i/qSb+8U5tvAl3m6Q3JHBEozEuVCKeM
+ NSbikZJVgMPyFLmKFuIJRFQwDbebT3QTTdZBtr28Rj/WSFIgqFp0CHhQ9L68UZ+3zD
+ zdUHEJmYmwJ7WZcwsjfJYXbYlnXj6kHspv7/3lbJ783c2sy/uB+qft+Ilku/ynhdV4
+ +kSUhioD9fzNw==
+From: Mark Brown <broonie@kernel.org>
+To: "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+ Takashi Iwai <tiwai@suse.com>, Jaroslav Kysela <perex@perex.cz>
+In-Reply-To: <YzIcZ11k8RiQtS2T@work>
+References: <YzIcZ11k8RiQtS2T@work>
+Subject: Re: [PATCH][next] ASoC: SOF: control.h: Replace zero-length array
+ with DECLARE_FLEX_ARRAY() helper
+Message-Id: <166428358991.365276.17332366204767237765.b4-ty@kernel.org>
+Date: Tue, 27 Sep 2022 13:59:49 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <bdf56f23-1019-b4c8-a11a-3934db432cf1@linux.intel.com>
-User-Agent: Mutt/1.5.24 (2015-08-30)
-X-Originating-IP: [10.72.94.21]
-X-ClientProxiedBy: hi2exch02.adit-jv.com (10.72.92.28) To
- hi2exch02.adit-jv.com (10.72.92.28)
-Cc: Yanmin Zhang <yanmin_zhang@linux.intel.com>, alsa-devel@alsa-project.org,
- Eugeniu Rosca <roscaeugeniu@gmail.com>, Jiada Wang <jiada_wang@mentor.com>,
- linux-kernel@vger.kernel.org, Cezary Rojewski <cezary.rojewski@intel.com>,
- Zhang Yanmin <yanmin.zhang@intel.com>, Takashi Iwai <tiwai@suse.com>,
- Ramesh Babu <ramesh.babu@intel.com>, Liam Girdwood <lgirdwood@gmail.com>,
- Dean Jenkins <Dean_Jenkins@mentor.com>, Mark Brown <broonie@kernel.org>,
- Ramesh Babu B <ramesh.babu.b@intel.com>, Eugeniu Rosca <erosca@de.adit-jv.com>,
- xiao jin <jin.xiao@intel.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+X-Mailer: b4 0.10.0-dev-fc921
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+ linux-hardening@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -80,61 +82,40 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Hi Pierre,
-
-On Di, Sep 27, 2022 at 09:51:46 +0200, Pierre-Louis Bossart wrote:
-> On 9/26/22 18:35, Eugeniu Rosca wrote:
-> > From: xiao jin <jin.xiao@intel.com>
-> > 
-> > After start of fe and be, fe might go to close without triggering
-> > STOP, and substream->runtime is freed. However, be is still at
-> > START state and its substream->runtime still points to the
-> > freed runtime.
-> > 
-> > Later on, FE is opened/started again, and triggers STOP.
-> > snd_pcm_do_stop => dpcm_fe_dai_trigger
-> >                 => dpcm_fe_dai_do_trigger
-> >                 => dpcm_be_dai_trigger
-> >                 => dpcm_do_trigger
-> >                 => soc_pcm_trigger
-> >                 => skl_platform_pcm_trigger
-> > skl_platform_pcm_trigger accesses the freed old runtime data and
-> > kernel panic.
-> > 
-> > The patch fixes it by assigning be_substream->runtime in
-> > dpcm_be_dai_startup when be's state is START.
+On Mon, 26 Sep 2022 16:40:55 -0500, Gustavo A. R. Silva wrote:
+> Zero-length arrays are deprecated and we are moving towards adopting
+> C99 flexible-array members, instead. So, replace zero-length arrays
+> declarations in anonymous union with the new DECLARE_FLEX_ARRAY()
+> helper macro.
 > 
-> Can I ask on which kernel this patch was validated and on what platform?
-
-As shared with Czarek in https://lore.kernel.org/alsa-devel/20220927110022.GA3802@lxhi-065/ ,
-this patch was originally extracted from the out-of-tree Intel Apollo
-Lake v4.1 KNL releases, hence it was validated on Intel ref.boards.
-
-No re-testing/re-validation has been performed on the latest vanilla.
-
-One of the goals behind submitting the patch is getting in touch
-with the original authors, as well as the members of alsa-devel,
-to assess if the patch is still relevant.
-
+> This helper allows for flexible-array members in unions.
 > 
-> We've done a lot of work since last year on DPCM states, 
+> [...]
 
-Could you please feedback if the work on the DPCM states is
-pre- or post-v5.10?
+Applied to
 
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
 
-> and I wonder
-> the problem mentioned above actually exists on recent kernels.
-> 
-> Specifically, if the FE is closed, I don't get how the BE is not closed
-> as well. And if this problem is found on a recent kernel, then it should
-> be seen in the AVS driver as well, no?
+Thanks!
 
-It is totally conceivable (if not very likely) that the mainline
-advancements in the sound subsystem make this patch obsolete.
+[1/1] ASoC: SOF: control.h: Replace zero-length array with DECLARE_FLEX_ARRAY() helper
+      commit: b264ef796959cb65cdbc811da5ab950e33df4162
 
-I would be happy if that's the final outcome of our discussion
-(since this will allow dropping the patch in our downstream kernel).
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
 
-Best Regards,
-Eugeniu
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
