@@ -4,68 +4,78 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id F12A3C54EE9
-	for <alsa-devel@archiver.kernel.org>; Tue, 27 Sep 2022 11:57:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B05F9C07E9D
+	for <alsa-devel@archiver.kernel.org>; Tue, 27 Sep 2022 12:15:55 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id ABA10822;
-	Tue, 27 Sep 2022 13:56:34 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz ABA10822
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3605E826;
+	Tue, 27 Sep 2022 14:15:03 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3605E826
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1664279844;
-	bh=UnzHm/HzWWA9T74mzhY3rJIgrioRLkOXE2OO8HPDwFU=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
-	 From;
-	b=fV9NCeyG0oynAN2U24/MkNA+fYlIkZQUdxkl92TsiwzBDdEwIfhCvqoPLv9443qrN
-	 KayTXjALzHDgvGnI9nAuHcIz4rx48SfNA9o4nTCRdSCEAOGUf+w3P9o2uH1Be6Cs/1
-	 8wSG19N8wF5EhSkV6RbYN6PHDKm4t8gCvabFyEdk=
+	s=default; t=1664280953;
+	bh=zfQdbqND1E0P6FnF7UKds5cuN677Uk478kSqki/UF6w=;
+	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=U4X6tPVmkplkGupqul3kmlS/OtS8LGy0BOABe8/2fOSg3Kkires+uU+hlavylq9Gb
+	 QUh2U32EwOlmvJ0B1rWFXEqNCAhhIykqvWzXiyv4KGMEoaZHTYZrixr4UNUMBCdjGg
+	 k4yemXqpX7p+FUXwh80jj7NqFtWEjmh+hrBcFzj0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 362B5F8024C;
-	Tue, 27 Sep 2022 13:56:34 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 9D0FAF800AA;
+	Tue, 27 Sep 2022 14:15:02 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 16B70F8025E; Tue, 27 Sep 2022 13:56:33 +0200 (CEST)
-Received: from hi1smtp01.de.adit-jv.com (smtp1.de.adit-jv.com [93.241.18.167])
- (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 20D5BF80166
- for <alsa-devel@alsa-project.org>; Tue, 27 Sep 2022 13:56:25 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 20D5BF80166
-Received: from hi2exch02.adit-jv.com (hi2exch02.adit-jv.com [10.72.92.28])
+ id 57012F8025E; Tue, 27 Sep 2022 14:15:01 +0200 (CEST)
+Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
+ [67.231.149.25])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by hi1smtp01.de.adit-jv.com (Postfix) with ESMTPS id 59A42520214;
- Tue, 27 Sep 2022 13:56:24 +0200 (CEST)
-Received: from lxhi-065 (10.72.94.21) by hi2exch02.adit-jv.com (10.72.92.28)
- with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.12; Tue, 27 Sep
- 2022 13:56:23 +0200
-Date: Tue, 27 Sep 2022 13:56:19 +0200
-From: Eugeniu Rosca <erosca@de.adit-jv.com>
-To: Amadeusz =?utf-8?B?U8WCYXdpxYRza2k=?= <amadeuszx.slawinski@linux.intel.com>
-Subject: Re: [PATCH] ASoC: soc-pcm: fix fe and be race when accessing
- substream->runtime
-Message-ID: <20220927115619.GA4547@lxhi-065>
-References: <1664210154-11552-1-git-send-email-erosca@de.adit-jv.com>
- <b54daa61-ba1d-81d4-5238-ca7cc2a41b48@linux.intel.com>
+ by alsa1.perex.cz (Postfix) with ESMTPS id 486C6F800AA
+ for <alsa-devel@alsa-project.org>; Tue, 27 Sep 2022 14:14:54 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 486C6F800AA
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com
+ header.b="OIdSAPLn"
+Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
+ by mx0a-001ae601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 28R6OnaL022026;
+ Tue, 27 Sep 2022 07:14:51 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com;
+ h=from : to : cc :
+ subject : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=PODMain02222019;
+ bh=vInO/r8CP2irGLFP0WnlEE++JH/IImoDg4aYw3XeL10=;
+ b=OIdSAPLnjjRog17GK3egdqPZNTTbZhKup92L5/COtwgah0zqGujp9CROHP05XTRtIimQ
+ S9fuxfQ8s2YOWsyCFl42EEif1UyQntOYoVCK36140Kt3BVUtcvUWD94vesVi2FBpv9Mc
+ Jgc6PJcFENagW57PGul3c+TBinDinzB/a0Al0KX7R42qkgJUfB3OpP6OpgqGNc2PWpV9
+ MOYFj8Cq2kVWOUmPFQv7JA06+4oSmyT1SmMrv5uo/emt+lenb23fm7/1fTDrUuHrFbSp
+ o6WapEwSTRsFrIqP0nNkhlZ0RZrGOBzUiuGufUjhkjUO7nmdGG5hUdgbylfILAav2DSL GA== 
+Received: from ediex02.ad.cirrus.com ([84.19.233.68])
+ by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3jsya2bb7p-1
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+ Tue, 27 Sep 2022 07:14:51 -0500
+Received: from ediex02.ad.cirrus.com (198.61.84.81) by ediex02.ad.cirrus.com
+ (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.12; Tue, 27 Sep
+ 2022 07:14:49 -0500
+Received: from ediswmail.ad.cirrus.com (198.61.86.93) by
+ anon-ediex02.ad.cirrus.com (198.61.84.81) with Microsoft SMTP Server id
+ 15.2.1118.12 via Frontend Transport; Tue, 27 Sep 2022 07:14:49 -0500
+Received: from sbinding-cirrus-dsktp2.ad.cirrus.com (unknown [198.90.202.160])
+ by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 7867D15A3;
+ Tue, 27 Sep 2022 12:14:49 +0000 (UTC)
+From: Stefan Binding <sbinding@opensource.cirrus.com>
+To: Mark Brown <broonie@kernel.org>
+Subject: [PATCH v1] ASoC: cs42l42: Fallback to headphones for type detect
+Date: Tue, 27 Sep 2022 13:14:40 +0100
+Message-ID: <20220927121440.2506632-1-sbinding@opensource.cirrus.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <b54daa61-ba1d-81d4-5238-ca7cc2a41b48@linux.intel.com>
-User-Agent: Mutt/1.5.24 (2015-08-30)
-X-Originating-IP: [10.72.94.21]
-X-ClientProxiedBy: hi2exch02.adit-jv.com (10.72.92.28) To
- hi2exch02.adit-jv.com (10.72.92.28)
-Cc: Yanmin Zhang <yanmin_zhang@linux.intel.com>, alsa-devel@alsa-project.org,
- Eugeniu Rosca <roscaeugeniu@gmail.com>, Jiada Wang <jiada_wang@mentor.com>,
- linux-kernel@vger.kernel.org, Cezary Rojewski <cezary.rojewski@intel.com>,
- Zhang Yanmin <yanmin.zhang@intel.com>, Takashi Iwai <tiwai@suse.com>,
- Ramesh Babu <ramesh.babu@intel.com>, Liam Girdwood <lgirdwood@gmail.com>,
- Dean Jenkins <Dean_Jenkins@mentor.com>, Mark Brown <broonie@kernel.org>,
- Ramesh Babu B <ramesh.babu.b@intel.com>, Eugeniu Rosca <erosca@de.adit-jv.com>,
- xiao jin <jin.xiao@intel.com>
+Content-Type: text/plain
+X-Proofpoint-ORIG-GUID: t5qUL_Y7G8WnIHC7TnrHLA_52lnw49Yy
+X-Proofpoint-GUID: t5qUL_Y7G8WnIHC7TnrHLA_52lnw49Yy
+X-Proofpoint-Spam-Reason: safe
+Cc: patches@opensource.cirrus.com, alsa-devel@alsa-project.org,
+ linux-kernel@vger.kernel.org, Stefan Binding <sbinding@opensource.cirrus.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -81,25 +91,37 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Hello Amadeusz,
+After tip sense detects a jack insertion, if automatic
+type detection, and manual type detection fails, then
+fall back to assume the jack connected belongs to
+headphones.
 
-On Di, Sep 27, 2022 at 09:34:49 +0200, Amadeusz Sławiński wrote:
-> On 9/26/2022 6:35 PM, Eugeniu Rosca wrote:
-> >From: xiao jin <jin.xiao@intel.com>
-> >
-> >After start of fe and be, fe might go to close without triggering
-> >STOP, and substream->runtime is freed. However, be is still at
-> >START state and its substream->runtime still points to the
-> >freed runtime.
-> >
-> 
-> Well if it is being freed, maybe pointer should be set to NULL instead in
-> place that happens?
-> 
+Signed-off-by: Stefan Binding <sbinding@opensource.cirrus.com>
+---
+ sound/soc/codecs/cs42l42.c | 7 ++-----
+ 1 file changed, 2 insertions(+), 5 deletions(-)
 
-As soon as the agreement is reached that the patch is still
-relevant/useful on the latest vanilla, I think this review
-finding will receive proper attention.
+diff --git a/sound/soc/codecs/cs42l42.c b/sound/soc/codecs/cs42l42.c
+index bdc7e6bed6ac..2fefbcf7bd13 100644
+--- a/sound/soc/codecs/cs42l42.c
++++ b/sound/soc/codecs/cs42l42.c
+@@ -1199,14 +1199,11 @@ static void cs42l42_manual_hs_type_detect(struct cs42l42_private *cs42l42)
+ 			cs42l42->hs_type = CS42L42_PLUG_OMTP;
+ 			hs_det_sw = CS42L42_HSDET_SW_TYPE2;
+ 			break;
+-		case CS42L42_HSDET_COMP_TYPE3:
++		/* Detect Type 3 and Type 4 Headsets as Headphones */
++		default:
+ 			cs42l42->hs_type = CS42L42_PLUG_HEADPHONE;
+ 			hs_det_sw = CS42L42_HSDET_SW_TYPE3;
+ 			break;
+-		default:
+-			cs42l42->hs_type = CS42L42_PLUG_INVALID;
+-			hs_det_sw = CS42L42_HSDET_SW_TYPE4;
+-			break;
+ 		}
+ 	}
+ 
+-- 
+2.34.1
 
-Thanks,
-Eugeniu
