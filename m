@@ -4,83 +4,85 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C91D8C07E9D
-	for <alsa-devel@archiver.kernel.org>; Tue, 27 Sep 2022 02:34:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 06C78C32771
+	for <alsa-devel@archiver.kernel.org>; Tue, 27 Sep 2022 03:17:21 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C69A43E8;
-	Tue, 27 Sep 2022 04:33:21 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C69A43E8
+	by alsa0.perex.cz (Postfix) with ESMTPS id 5129F204;
+	Tue, 27 Sep 2022 05:16:29 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5129F204
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1664246051;
-	bh=bh/r0SZwdGbwaiAw/XjSxGOZLqQ5vJFv/Fjiypnl6Ts=;
+	s=default; t=1664248639;
+	bh=9Ee6uuUkVHd7TcoLu0Fw/ihLN0YlMN/TdTxx9kkN9oI=;
 	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=sCYrQ0IXR8vzt24DnQxg34/vIHKlwAotWIjrxT5dsGlqI6LE+lsv+Jy5VemjnJ1yN
-	 aaYjVB+G4LSJIRoOEhBvBFnGj1M2pKV5SORsJhPzqIZm5BuFi3zxVbeXDWBZ+qkAHK
-	 usAUtiuRmZNh9yDfxFTwBYidMOdOf2Rpo9Upkk/4=
+	b=ium1OPYLYvHiS5UQqwJjZnxxVVGbjfnvFzdVh/IKf+bc9RqMGu3MRhPm0hlIZfC4Q
+	 PVynLIVoyZX6xAoSU9paheSWXVvHnfr65I8chiv3siQ0oCMJn5mzn3JXQbgOQ4RCeK
+	 MsnFacgZejeaLRVRQfGkRG9mkKAHvMqcxQANoDuE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 72433F8024C;
-	Tue, 27 Sep 2022 04:33:21 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id DCB3EF8011C;
+	Tue, 27 Sep 2022 05:16:28 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 11070F8025E; Tue, 27 Sep 2022 04:33:20 +0200 (CEST)
-Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com
- [IPv6:2607:f8b0:4864:20::102b])
+ id 405B0F8025E; Tue, 27 Sep 2022 05:16:27 +0200 (CEST)
+Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com
+ [IPv6:2607:f8b0:4864:20::52b])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 0C19BF80166
- for <alsa-devel@alsa-project.org>; Tue, 27 Sep 2022 04:33:13 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0C19BF80166
+ by alsa1.perex.cz (Postfix) with ESMTPS id D2814F8011C
+ for <alsa-devel@alsa-project.org>; Tue, 27 Sep 2022 05:16:20 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D2814F8011C
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org
- header.b="GgaqksQN"
-Received: by mail-pj1-x102b.google.com with SMTP id
- i15-20020a17090a4b8f00b0020073b4ac27so8746586pjh.3
- for <alsa-devel@alsa-project.org>; Mon, 26 Sep 2022 19:33:13 -0700 (PDT)
+ header.b="Ys70lYwi"
+Received: by mail-pg1-x52b.google.com with SMTP id r62so4417490pgr.12
+ for <alsa-devel@alsa-project.org>; Mon, 26 Sep 2022 20:16:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=chromium.org; s=google;
  h=in-reply-to:content-disposition:mime-version:references:message-id
  :subject:cc:to:from:date:from:to:cc:subject:date;
- bh=beHOJoLMzhtQvwqCVFQE08wvFbsVkqCmgSaQLkojE3Q=;
- b=GgaqksQNT7cicjmr8VgOSy18SzVIWhA+3pfG4AqV2d7ivrbRQA9jxsvP1pfBShGzj/
- OvNqU5NPFlK+0R9qj3ayrs9rJ3IpaxXlAFgu1tPwntOP5mXcOTCS+Eh7FGqrCC7D5LcR
- 2mrrZL+fahvKy6IbegfbZ4MQ1qtychGvEdPHo=
+ bh=cQ6zVkpqugLa9891w98RVMCjnbNxIhz4C6HrHMJZK8I=;
+ b=Ys70lYwi0UuItAyKdztaa/QvN/zNeHvK+DYTxNBDjsJxCxH44M11cP9jPnxzHQPNjb
+ igvguKL8YyFJNtFEBrZ5W6daU3oui1F9DXIVaw4aE/szAfv+15cUzVL5WS2GxWMW7Yt8
+ IPCeEYWTOOuxdVg8giuH8nTC6Yhi4Ev8pRtpc=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
  h=in-reply-to:content-disposition:mime-version:references:message-id
  :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date;
- bh=beHOJoLMzhtQvwqCVFQE08wvFbsVkqCmgSaQLkojE3Q=;
- b=CuGFFtotds4yXbS/XkLIBVGp+RT/YN/KcshhIY+GIHR4uwe2DWdeKk2PCaKWcdxGo1
- ujdc26IWYhyz7Ctj4CkSFE0c2Dp9uMXkeTQ9UJ3wlBEQMAi9Z/0ogxZwYw8lCM4cgI8K
- Tz37MNGJPN4EW0y9flHSxcA54y+++buC/JHa6uRO+K18bWfaUauIn239CMw5vZhPe6Kf
- npvkqAFMtj12P03B0BXsku6cXTBrGFEJbhWY0i8qxC5nA/L+rlAK+7fd9u9XonlUII4s
- xqVzf2DqHGh/jjQxGKgoLbjjcXcjL2/5yhPNguYQLHW3QKFTxZkzm3CDhb4vuHUpAKHB
- coyA==
-X-Gm-Message-State: ACrzQf26KC4/N+Jtd5G2tOd5pUTedx21DYwVhe+WUX8PkaASFvYkN922
- fxF2gcX4Pz6PJpPngL9rm2bfzHZIwmCArg==
-X-Google-Smtp-Source: AMsMyM5NGw1Q0GfafCgkdr3TRCr4jnFSRQlgeAjDLSIqENbtY3Pu0+GX+M5Sea67UDU9T9u8oKayRQ==
-X-Received: by 2002:a17:902:9006:b0:178:b494:c15a with SMTP id
- a6-20020a170902900600b00178b494c15amr25467224plp.37.1664245991191; 
- Mon, 26 Sep 2022 19:33:11 -0700 (PDT)
+ bh=cQ6zVkpqugLa9891w98RVMCjnbNxIhz4C6HrHMJZK8I=;
+ b=Z01MwBFcfkMWMQaQU4zt4PxFbkFlZ8/CKWa3ri2+N/SGMgaexrEVLpTGBx/ClhSKmT
+ Ivlp00N0ZMt6N7KLJAkSoBvRU0RRHZEP2948q3rqBESKzL9/Xtev10YEGjp1gpbLr9Q3
+ hJ8zsqWQmK3dpxfAXgfLlAudx+plTBVfYtt6S/Imb1v133xkaafdexyqCpbnexrsb5WV
+ M/lorNWPucZskAe/RYUyD2wAMUi6XcV1MO3SmR0Jjwk0IFNy61Mgr7FwXlthD0aWQ8I7
+ vAPBLxnUSabUtcKhS2JLIlHsbgbg3xr6FiE9FcmNiYtRAOrBNOiXv0KzIo2gSdXEW1Vy
+ Ww7g==
+X-Gm-Message-State: ACrzQf1QogOQtnqxWybLoMuvcQFSY+CN1AEHxrcqF/DvJA3HqF0Oqvgc
+ ZbfVt7VDDDV+2h12iaZPjQ5znpfbmVyt7w==
+X-Google-Smtp-Source: AMsMyM4aPQZJmufIlgB90yFaVfoE50JmAVMSvaBvUb81fg56HsalOTyKUNoRqQO6/X3VOyQ7j9y52w==
+X-Received: by 2002:a05:6a00:c89:b0:543:edb9:9dbc with SMTP id
+ a9-20020a056a000c8900b00543edb99dbcmr27379913pfv.50.1664248577744; 
+ Mon, 26 Sep 2022 20:16:17 -0700 (PDT)
 Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
  by smtp.gmail.com with ESMTPSA id
- f9-20020a170902f38900b001783f964fe3sm155268ple.113.2022.09.26.19.33.10
+ 82-20020a621955000000b0053812f35a41sm269573pfz.194.2022.09.26.20.16.16
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Mon, 26 Sep 2022 19:33:10 -0700 (PDT)
-Date: Mon, 26 Sep 2022 19:33:09 -0700
+ Mon, 26 Sep 2022 20:16:17 -0700 (PDT)
+Date: Mon, 26 Sep 2022 20:16:16 -0700
 From: Kees Cook <keescook@chromium.org>
-To: "Gustavo A. R. Silva" <gustavoars@kernel.org>
-Subject: Re: [PATCH][next] ASoC: uapi: Replace zero-length arrays with
- __DECLARE_FLEX_ARRAY() helper
-Message-ID: <202209261932.F68BBD85@keescook>
-References: <YzIzUjUuJKf0mkKg@work>
+To: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH][next] ASoC: SOF: control.h: Replace zero-length array
+ with DECLARE_FLEX_ARRAY() helper
+Message-ID: <202209262009.D1377D0C3@keescook>
+References: <YzIcZ11k8RiQtS2T@work> <YzIj6tdtDe9YrX+I@sirena.org.uk>
+ <81af0106-a732-ce45-bb1c-c45db9e1aeb9@embeddedor.com>
+ <YzIqNqhTIuaWZrOl@sirena.org.uk>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YzIzUjUuJKf0mkKg@work>
-Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org,
- linux-hardening@vger.kernel.org, Takashi Iwai <tiwai@suse.com>
+In-Reply-To: <YzIqNqhTIuaWZrOl@sirena.org.uk>
+Cc: alsa-devel@alsa-project.org, "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+ "Gustavo A. R. Silva" <gustavo@embeddedor.com>, linux-kernel@vger.kernel.org,
+ Takashi Iwai <tiwai@suse.com>, linux-hardening@vger.kernel.org
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -96,24 +98,63 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Mon, Sep 26, 2022 at 06:18:42PM -0500, Gustavo A. R. Silva wrote:
-> Zero-length arrays are deprecated and we are moving towards adopting
-> C99 flexible-array members, instead. So, replace zero-length arrays
-> declarations in anonymous union with the new __DECLARE_FLEX_ARRAY()
-> helper macro.
+On Mon, Sep 26, 2022 at 11:39:50PM +0100, Mark Brown wrote:
+> On Mon, Sep 26, 2022 at 05:27:41PM -0500, Gustavo A. R. Silva wrote:
+> > On 9/26/22 17:12, Mark Brown wrote:
+> > > On Mon, Sep 26, 2022 at 04:40:55PM -0500, Gustavo A. R. Silva wrote:
 > 
-> This helper allows for flexible-array members in unions.
+> > > As documented in submitting-patches.rst please send patches to the
+> > > maintainers for the code you would like to change.  The normal kernel
+> > > workflow is that people apply patches from their inboxes, if they aren't
+> > > copied they are likely to not see the patch at all and it is much more
+> > > difficult to apply patches.
 > 
-> Link: https://github.com/KSPP/linux/issues/193
-> Link: https://github.com/KSPP/linux/issues/227
-> Link: https://gcc.gnu.org/onlinedocs/gcc/Zero-Length.html
-> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+> > That's exactly what I intended to do:
+> > 
+> > $ scripts/get_maintainer.pl --nokeywords --nogit --nogit-fallback include/sound/sof/control.h
+> > Jaroslav Kysela <perex@perex.cz> (maintainer:SOUND)
+> > Takashi Iwai <tiwai@suse.com> (maintainer:SOUND)
+> > alsa-devel@alsa-project.org (moderated list:SOUND)
+> > linux-kernel@vger.kernel.org (open list)
+> > 
+> > Did you see anything wrong with this or something...?
+> 
+> Yes, you should've also included me and the SOF maintainers.  It looks
+> like the MAINTAINERS patterns aren't entirely up to date there
+> unfortunately.  Though that said given that you'd picked up on the
+> subject line I'd have expected the signoffs on the commits to also be
+> pointing at the right tree as well.
 
-Some day after the __element_count__ attribute exists, we might want to
-consider a __type_select__ attribute to tie union members to a variable
-outside the union (like the "type" member here).
+Subject line heuristics look at X-many commits, but it looks like
+get_maintainers stops looking at git history by default after 1 year,
+which seems kind of odd. I had to work at it to get it to emit your
+name. :)
 
-Reviewed-by: Kees Cook <keescook@chromium.org>
+scripts/get_maintainer.pl --git --git-since=3-years-ago
+
+Seems like it's worth getting the MAINTAINERS regex updated? Is this
+right?
+
+diff --git a/MAINTAINERS b/MAINTAINERS
+index a34ec41fbf7a..2560dded0e3e 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -19261,6 +19261,7 @@ F:	Documentation/devicetree/bindings/sound/
+ F:	Documentation/sound/soc/
+ F:	include/dt-bindings/sound/
+ F:	include/sound/soc*
++F:	include/sound/sof/
+ F:	sound/soc/
+ 
+ SOUND - SOUND OPEN FIRMWARE (SOF) DRIVERS
+@@ -19275,6 +19276,7 @@ L:	sound-open-firmware@alsa-project.org (moderated for non-subscribers)
+ S:	Supported
+ W:	https://github.com/thesofproject/linux/
+ F:	sound/soc/sof/
++F:	include/sound/sof/
+ 
+ SOUNDWIRE SUBSYSTEM
+ M:	Vinod Koul <vkoul@kernel.org>
 
 -- 
 Kees Cook
