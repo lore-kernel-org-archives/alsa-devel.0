@@ -4,70 +4,70 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 69057C6FA86
-	for <alsa-devel@archiver.kernel.org>; Tue, 27 Sep 2022 10:36:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6A5AAC6FA90
+	for <alsa-devel@archiver.kernel.org>; Tue, 27 Sep 2022 10:36:38 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 89B7783D;
-	Tue, 27 Sep 2022 12:35:33 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 89B7783D
+	by alsa0.perex.cz (Postfix) with ESMTPS id A341015DC;
+	Tue, 27 Sep 2022 12:35:46 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz A341015DC
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1664274983;
-	bh=Owy1eL2zE7HjhpIKBG9ABMOlVvTMODzZLcYVa8P0yAg=;
+	s=default; t=1664274996;
+	bh=Gq/Ydxuwa5AYGf9ernxE9FxfAvME30nJMsneSS443DI=;
 	h=From:To:In-Reply-To:References:Subject:Date:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=HhzMB4ZWPkS/yxoRZ2ZZ1TanDXzYzDD08wzShgLNXu6z3fUBdU1MZCOBAcGMespDB
-	 VU4K/X4QgZoTGfYJJ0xbGBrYERvElChzChx+gWG9BjL66GQt5qVTwHJAji6AA0CrZk
-	 jQHBtNGdQ5hwjua6xEdBsDiF9isWeOXnG5KqSsdU=
+	b=HDbA2nY5t4EcDpeZJacwIEr74eGtXlL1HrnLs3K66K9+uSmupNdRQJ1AxwLKq5KpK
+	 AyIqTGcosUtYj+bEUulDrE4WulpleP23IGIZx5HmDfdfVBZ5gcyHD7nZOje19O4Aaj
+	 D5AJHMHpXdo1avM77FMFgBwge1N5zj0KD9RpnFNQ=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 4819FF80543;
-	Tue, 27 Sep 2022 12:34:32 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id D4751F80552;
+	Tue, 27 Sep 2022 12:34:34 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id C2CB4F80551; Tue, 27 Sep 2022 12:34:30 +0200 (CEST)
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+ id E7432F8054A; Tue, 27 Sep 2022 12:34:31 +0200 (CEST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org
+ [IPv6:2604:1380:4641:c500::1])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id D09CBF80166
- for <alsa-devel@alsa-project.org>; Tue, 27 Sep 2022 12:34:24 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D09CBF80166
+ by alsa1.perex.cz (Postfix) with ESMTPS id 275B4F80549
+ for <alsa-devel@alsa-project.org>; Tue, 27 Sep 2022 12:34:29 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 275B4F80549
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="LI+DMpEb"
+ header.b="Wp6kiQ1D"
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by ams.source.kernel.org (Postfix) with ESMTPS id C8DA3B81ADD;
- Tue, 27 Sep 2022 10:34:23 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3863CC433C1;
- Tue, 27 Sep 2022 10:34:20 +0000 (UTC)
+ by dfw.source.kernel.org (Postfix) with ESMTPS id 6157A617B6;
+ Tue, 27 Sep 2022 10:34:27 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BCBA4C433B5;
+ Tue, 27 Sep 2022 10:34:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1664274862;
- bh=Owy1eL2zE7HjhpIKBG9ABMOlVvTMODzZLcYVa8P0yAg=;
+ s=k20201202; t=1664274867;
+ bh=Gq/Ydxuwa5AYGf9ernxE9FxfAvME30nJMsneSS443DI=;
  h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
- b=LI+DMpEborBOpALwawGLrA7Gp6QTKN9vCaonpEbHUS3pywUfHGgbjEcLZVvOGuB24
- oCikCvvncq1xAOHSRShgaZ6wxdyjW5P+R6TGVLFNuyVPbzlJZTf2aXuJr6/bx8rnOI
- Rfz09p+BdnMsKCUr7OXgWFntqOCcEP/V9RAtcOdh/TfA+fMml7FIHaNFIYNfGNi2T6
- pVTHWOy8bnlEN+NiFxJQ/aNvqVKTFbkKlRyg7hzf1oVtGUQ65ZEspimTMYmEGh1/Mf
- 1mZ/3uhLCUfEWzMTbWKrA0AZwxgYvCroGbmaPt38qNEfwOZ7iAggm57nihzPjI8e7H
- b19wcoTmMwgPA==
+ b=Wp6kiQ1DzdDH75hcP6pTyGbVmAPEvDORRvGfUx2SEbe2t6fvFmKpH44NNGzTMr4/R
+ 7Ro9FZwx7+reXQG7hBdCBX2tokQAAvkqLOz5m2hXRyPQGCjfoVtrVlbv+yoTa8mZpP
+ 9+AGEEYZm/GddYx3B+8/zmcYi47rehmqKSaQe7clZc6dg20cxisbbbRhkTxllS0zDJ
+ oWHQwdoirMHWc1jQEaINbuIi5aSikDkWHAuATi2c7wVOMY/Tbw+I4A9sTP67j/D187
+ vVbv4qX/nGr0uaCxH638EpIJtLKivEf0sO3NF41okFjCYuPJT5YUzdVwqLs13f9RzI
+ /p9kFWX6gZE3w==
 From: Mark Brown <broonie@kernel.org>
-To: festevam@gmail.com, nicoleotsuka@gmail.com, lgirdwood@gmail.com,
- tiwai@suse.com, perex@perex.cz, 
- shengjiu.wang@gmail.com, alsa-devel@alsa-project.org,
- Shengjiu Wang <shengjiu.wang@nxp.com>, Xiubo.Lee@gmail.com
-In-Reply-To: <1663928147-10106-1-git-send-email-shengjiu.wang@nxp.com>
-References: <1663928147-10106-1-git-send-email-shengjiu.wang@nxp.com>
-Subject: Re: [RESEND PATCH] ASoC: fsl_asrc_dma: fully initialize structs
-Message-Id: <166427485994.60697.4779578506404492678.b4-ty@kernel.org>
-Date: Tue, 27 Sep 2022 11:34:19 +0100
+To: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>, lgirdwood@gmail.com,
+ pierre-louis.bossart@linux.intel.com
+In-Reply-To: <20220923133616.26267-1-peter.ujfalusi@linux.intel.com>
+References: <20220923133616.26267-1-peter.ujfalusi@linux.intel.com>
+Subject: Re: [PATCH 0/6] ASoC: SOF: ipc4/Intel: Improve and enable IPC error
+ dump
+Message-Id: <166427486547.60697.5904813708821442671.b4-ty@kernel.org>
+Date: Tue, 27 Sep 2022 11:34:25 +0100
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 X-Mailer: b4 0.10.0-dev-fc921
-Cc: s.hauer@pengutronix.de, linuxppc-dev@lists.ozlabs.org,
- linux-kernel@vger.kernel.org
+Cc: alsa-devel@alsa-project.org, ranjani.sridharan@linux.intel.com,
+ kai.vehmanen@linux.intel.com, rander.wang@intel.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -83,14 +83,13 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Fri, 23 Sep 2022 18:15:47 +0800, Shengjiu Wang wrote:
-> From: Sascha Hauer <s.hauer@pengutronix.de>
+On Fri, 23 Sep 2022 16:36:10 +0300, Peter Ujfalusi wrote:
+> On Intel platforms the registers for DSP communications are used differently,
+> the IPC dump information is not correct since important registers are not
+> printed and existing ones are used a bit differently for IPC4.
 > 
-> The driver uses two statically ininitialized struct dma_slave_config,
-> but only one of them is initialized to zero. Initialize config_be to
-> zero as well to make sure that no fields are filled with random values.
-> Let the compiler do this instead of explicitly calling memset() which
-> makes it easier to read.
+> As a last step, enable the IPC timeout 'handling' and allow the printout of
+> the now usefull IPC dump.
 > 
 > [...]
 
@@ -100,8 +99,18 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: fsl_asrc_dma: fully initialize structs
-      commit: 1849a1505533501ea39ed0538c2d35eba4704baa
+[1/6] ASoC: SOF: Intel: cnl: Add separate ops for ipc_dump for IPC4
+      commit: a996a333ad74d1f26c3831f1edd94a5d16798a0c
+[2/6] ASoC: SOF: Intel: hda: Add separate ops for ipc_dump for IPC4
+      commit: 32b97c07c2a3b7cccc0c7e9a5b23970bd9a52c5d
+[3/6] ASoC: SOF: Intel: skl: Use the ipc4 version of the ipc_dump
+      commit: 6759f35b234aa94e26e122afcd402ba2a39bd9d3
+[4/6] ASoC: SOF: Intel: mtl: Print relevant register in ipc_dump
+      commit: d01784ee680c558938baf6c4f184bee2bc612798
+[5/6] ASoC: SOF: Intel: hda: Only dump firmware registers for IPC3
+      commit: 01fb69d09afb896579e00c3dbc3c1aa74613dd86
+[6/6] ASoC: SOF: ipc4: Call snd_sof_handle_fw_exception() in case of timeout
+      commit: 4245fdba89b82befee0d963a85f7494c70432ee9
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
