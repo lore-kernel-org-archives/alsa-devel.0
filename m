@@ -4,82 +4,84 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7F9C1C6FA86
-	for <alsa-devel@archiver.kernel.org>; Tue, 27 Sep 2022 07:32:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id DCEDFC07E9D
+	for <alsa-devel@archiver.kernel.org>; Tue, 27 Sep 2022 07:35:59 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id C4D2984D;
-	Tue, 27 Sep 2022 09:31:30 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C4D2984D
+	by alsa0.perex.cz (Postfix) with ESMTPS id F0F42846;
+	Tue, 27 Sep 2022 09:35:07 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F0F42846
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1664263940;
-	bh=Fx2Xd/KdloDYAiEf264aMZg7fpUsBCeOrOVXnLI1cP8=;
+	s=default; t=1664264158;
+	bh=aGdiIa2AskwQtLlBRejm6EBBRYZSm6Aal1pnfF0CKs4=;
 	h=Date:Subject:To:References:From:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=iph4lpM3zlCWXE+u51BRDX7HsJh3W8ZEThL79PeF+QgM6yMl7iuOfgx1Fxo/RJL9y
-	 JYuSZ9x+/kgIxUqi9YRG/d9WOPW6uGn3dbblFsgwLjNyA4AmoiFpDXfkaHOxxbLyGy
-	 pmR2N2rOALT67DA0Pk41MN8PTokJi12rYJh0YKO4=
+	b=jdLG+iO9E5aNMa5HZfaq2sm40ZQHNPXzInQMhjc5I/3/Eqa5QSoflDACD3wnF3JNP
+	 oRkoEjvjHI31zBMoBaCL/Zup20BUiH2Qrg8NAefqnGpZ2vDwMwiwKQVJ4iHyrZur88
+	 4sC7mQcslWJAZp1jcLfzo/RptGZkoVVzK+J0urxs=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 52D13F8024C;
-	Tue, 27 Sep 2022 09:31:30 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 7DBC1F8024C;
+	Tue, 27 Sep 2022 09:35:07 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id ADF30F8025E; Tue, 27 Sep 2022 09:31:28 +0200 (CEST)
-Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
+ id BDCFDF800AA; Tue, 27 Sep 2022 09:35:05 +0200 (CEST)
+Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 9BC32F8011C
- for <alsa-devel@alsa-project.org>; Tue, 27 Sep 2022 09:31:21 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 9BC32F8011C
+ by alsa1.perex.cz (Postfix) with ESMTPS id 1712CF800AA
+ for <alsa-devel@alsa-project.org>; Tue, 27 Sep 2022 09:34:58 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 1712CF800AA
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="FNUVnqG6"
+ header.b="SKKRSin+"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1664263882; x=1695799882;
+ t=1664264100; x=1695800100;
  h=message-id:date:mime-version:subject:to:cc:references:
  from:in-reply-to:content-transfer-encoding;
- bh=Fx2Xd/KdloDYAiEf264aMZg7fpUsBCeOrOVXnLI1cP8=;
- b=FNUVnqG6dL6VPIAMf8fmS72r4Y3/m+zy8PH5b7mQUnt7vNdPux+aYtm8
- 4f1Gl5JfpprHFNEQxDuTSzRSEldx+9HoYpFLJ1a+jhCg2C5/7LyQageRU
- qzPIxDX2PaTownRmXPYNxmsYrwwXLfwcEWXAur845HynATrx1+L2AjHBz
- iZLINs4LclljlJBDamGjoy+2vuEWUrjxCbZ9Yg15thPssSuSzQkUVdQyU
- kXkpN6KCI3ez9f0kA0uxz37BXuSdYZ/XcRmcLowisHj2ZgccOXhiik2Ez
- 0IFAsNUhS0/6i9Vjrn6WQ275nS2hWzCwozQCn3bGeRsA9s/zQmWMedsC2 A==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10482"; a="301225295"
-X-IronPort-AV: E=Sophos;i="5.93,348,1654585200"; d="scan'208";a="301225295"
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
- by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 27 Sep 2022 00:31:17 -0700
-X-IronPort-AV: E=McAfee;i="6500,9779,10482"; a="866469428"
-X-IronPort-AV: E=Sophos;i="5.93,348,1654585200"; d="scan'208";a="866469428"
-Received: from patils-mobl1.ger.corp.intel.com (HELO [10.252.36.213])
- ([10.252.36.213])
- by fmsmga006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 27 Sep 2022 00:31:15 -0700
-Message-ID: <8100f26f-df84-346d-3e5c-cf9a378f8027@linux.intel.com>
-Date: Mon, 26 Sep 2022 18:07:43 +0200
+ bh=aGdiIa2AskwQtLlBRejm6EBBRYZSm6Aal1pnfF0CKs4=;
+ b=SKKRSin+KYAvazdQZtdeaf44hceVLt2OGChARlZPR7mvbpALYGJ6xWCz
+ yv/i96wGb7Uyro4DiQB6gRKo9jWy7GgnLMJlee1FZZBVLsSQT5Bncn/CZ
+ iYp7kDMm+SyTG56nGwSOmdMrcZDI4+T41aFS0bko6B3AJ2nK31nIoEozk
+ yq8EmRZz33I9cDI81aW6rOuNNUzaFgUA2tFlK0DS5sOsN10ULLMQqG8D/
+ GyUp3mGmI9khNTQDKrq3+dPGZMLlHjP8EEjHgViVTh9ZxkqgeLAE94P54
+ ekoyXQT/2F7IydD25c0yoza4nuU6ublJngCJ2krEL+x9PivU0W81BuijN Q==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10482"; a="327602359"
+X-IronPort-AV: E=Sophos;i="5.93,348,1654585200"; d="scan'208";a="327602359"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+ by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 27 Sep 2022 00:34:56 -0700
+X-IronPort-AV: E=McAfee;i="6500,9779,10482"; a="572558408"
+X-IronPort-AV: E=Sophos;i="5.93,348,1654585200"; d="scan'208";a="572558408"
+Received: from aslawinx-mobl.ger.corp.intel.com (HELO [10.99.249.206])
+ ([10.99.249.206])
+ by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 27 Sep 2022 00:34:52 -0700
+Message-ID: <b54daa61-ba1d-81d4-5238-ca7cc2a41b48@linux.intel.com>
+Date: Tue, 27 Sep 2022 09:34:49 +0200
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Firefox/91.0 Thunderbird/91.11.0
-Subject: Re: [PATCH 1/1] ASoC: soc-dai: export some symbols
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.13.1
+Subject: Re: [PATCH] ASoC: soc-pcm: fix fe and be race when accessing
+ substream->runtime
 Content-Language: en-US
-To: Mark Brown <broonie@kernel.org>
-References: <20220920034545.2820888-1-jason.zhu@rock-chips.com>
- <20220920034545.2820888-2-jason.zhu@rock-chips.com>
- <Yym2aURe2+pA3ocn@sirena.org.uk>
- <dfeac54a-a264-835a-f155-90eb8f093314@rock-chips.com>
- <Yy2s2PA/C1ngeb//@sirena.org.uk>
- <155e10c4-7b08-f1ec-9f28-42a3d982740f@rock-chips.com>
- <1dc563bf-feda-e11a-c159-91ae0529a36b@linux.intel.com>
- <YzHGPuajS54y1SV6@sirena.org.uk>
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-In-Reply-To: <YzHGPuajS54y1SV6@sirena.org.uk>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-Cc: Jason Zhu <jason.zhu@rock-chips.com>, sugar.zhang@rock-chips.com,
- alsa-devel@alsa-project.org, tiwai@suse.com, lgirdwood@gmail.com
+To: Eugeniu Rosca <erosca@de.adit-jv.com>, Liam Girdwood
+ <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
+ Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
+ alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+References: <1664210154-11552-1-git-send-email-erosca@de.adit-jv.com>
+From: =?UTF-8?Q?Amadeusz_S=c5=82awi=c5=84ski?=
+ <amadeuszx.slawinski@linux.intel.com>
+In-Reply-To: <1664210154-11552-1-git-send-email-erosca@de.adit-jv.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Cc: Yanmin Zhang <yanmin_zhang@linux.intel.com>,
+ Eugeniu Rosca <roscaeugeniu@gmail.com>, Jiada Wang <jiada_wang@mentor.com>,
+ Zhang Yanmin <yanmin.zhang@intel.com>,
+ Cezary Rojewski <cezary.rojewski@intel.com>,
+ Ramesh Babu <ramesh.babu@intel.com>, Dean Jenkins <Dean_Jenkins@mentor.com>,
+ Ramesh Babu B <ramesh.babu.b@intel.com>, xiao jin <jin.xiao@intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -95,59 +97,57 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+On 9/26/2022 6:35 PM, Eugeniu Rosca wrote:
+> From: xiao jin <jin.xiao@intel.com>
+> 
+> After start of fe and be, fe might go to close without triggering
+> STOP, and substream->runtime is freed. However, be is still at
+> START state and its substream->runtime still points to the
+> freed runtime.
+> 
 
+Well if it is being freed, maybe pointer should be set to NULL instead 
+in place that happens?
 
-On 9/26/22 17:33, Mark Brown wrote:
-> On Mon, Sep 26, 2022 at 09:52:34AM +0200, Pierre-Louis Bossart wrote:
->> On 9/26/22 03:34, Jason Zhu wrote:
->>> 在 2022/9/23 20:55, Mark Brown 写道:
+> Later on, FE is opened/started again, and triggers STOP.
+> snd_pcm_do_stop => dpcm_fe_dai_trigger
+>                  => dpcm_fe_dai_do_trigger
+>                  => dpcm_be_dai_trigger
+>                  => dpcm_do_trigger
+>                  => soc_pcm_trigger
+>                  => skl_platform_pcm_trigger
+> skl_platform_pcm_trigger accesses the freed old runtime data and
+> kernel panic.
 > 
->>>>> The data can not be lost in this process. So we attach VAD & PDM
->>>>> in the same card, then close the card and wake up VAD & PDM again
->>>>> when the system is goto sleep. Like these code:
+> The patch fixes it by assigning be_substream->runtime in
+> dpcm_be_dai_startup when be's state is START.
 > 
->>>> This sounds like a very normal thing with a standard audio stream -
->>>> other devices have similar VAD stuff without needing to open code access
->>>> to the PCM operations?
+> Signed-off-by: xiao jin <jin.xiao@intel.com>
+> Signed-off-by: Zhang Yanmin <yanmin.zhang@intel.com>
+> Signed-off-by: Eugeniu Rosca <erosca@de.adit-jv.com>
+> ---
+>   sound/soc/soc-pcm.c | 3 ++-
+>   1 file changed, 2 insertions(+), 1 deletion(-)
 > 
->>> At present, only VAD is handled in this way by Rockchip.
-> 
-> The point here is that other non-Rockchip devices do similar sounding
-> things?
-> 
->>>> Generally things just continue to stream the voice data through the same
->>>> VAD stream IIRC - switching just adds complexity here, you don't have to
->>>> deal with joining the VAD and regular streams up for one thing.
-> 
->>> Yes, this looks complicated. But our chip's sram which is assigned to VAD
->>>
->>> maybe used by other devices when the system is alive.  So we have to copy
->>>
->>> sound data in sram firstly, then use the DDR(SDRAM) to record sound data.
-> 
->> There are other devices that requires a copy of the history buffer from
->> one PCM device and a software stitching with the real-time data coming
->> from another PCM device. It's not ideal but not uncommon either, even
->> for upcoming SDCA devices, combining data from 2 PCM devices will be an
->> allowed option (with additional control information to help with the
->> stitching).
-> 
-> If this is something that's not uncommon that sounds like an even
-> stronger reason for not just randomly exporting the symbols and open
-> coding things in individual drivers outside of framework control.  What
-> are these other use cases, or is it other instances of the same thing?
-> 
-> TBH this sounds like at least partly a userspace problem rather than a
-> kernel one, as with other things that tie multiple audio streams
-> together.
+> diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
+> index 4f60c0a83311..6ca1d02065ce 100644
+> --- a/sound/soc/soc-pcm.c
+> +++ b/sound/soc/soc-pcm.c
+> @@ -1608,6 +1608,8 @@ int dpcm_be_dai_startup(struct snd_soc_pcm_runtime *fe, int stream)
+>   		if (be->dpcm[stream].users++ != 0)
+>   			continue;
+>   
+> +		be_substream->runtime = be->dpcm[stream].runtime;
+> +
+>   		if ((be->dpcm[stream].state != SND_SOC_DPCM_STATE_NEW) &&
+>   		    (be->dpcm[stream].state != SND_SOC_DPCM_STATE_CLOSE))
+>   			continue;
+> @@ -1615,7 +1617,6 @@ int dpcm_be_dai_startup(struct snd_soc_pcm_runtime *fe, int stream)
+>   		dev_dbg(be->dev, "ASoC: open %s BE %s\n",
+>   			stream ? "capture" : "playback", be->dai_link->name);
+>   
+> -		be_substream->runtime = be->dpcm[stream].runtime;
+>   		err = __soc_pcm_open(be, be_substream);
+>   		if (err < 0) {
+>   			be->dpcm[stream].users--;
 
-I would tend to agree, the stitching can be either handled in DSP
-firmware or in user-space. In the first case the kernel would expose a
-single PCM to userspace, and in the second there would be two separate
-PCM devices. The kernel drivers would typically do nothing other than
-deal with moving captured data if/when available.
-
-I also don't get the notion of 'keeping some DAIs alive when closing the
-card', maybe the idea is to redefine what 'D3' means or have an 'active
-standby' power state that doesn't exist today. That would in contrast be
-something the frameworks know about.
