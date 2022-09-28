@@ -4,73 +4,73 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 32CC0C32771
-	for <alsa-devel@archiver.kernel.org>; Wed, 28 Sep 2022 15:23:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9F550C32771
+	for <alsa-devel@archiver.kernel.org>; Wed, 28 Sep 2022 15:24:03 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 36F8784D;
-	Wed, 28 Sep 2022 17:22:55 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 36F8784D
+	by alsa0.perex.cz (Postfix) with ESMTPS id C4BD1851;
+	Wed, 28 Sep 2022 17:23:11 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz C4BD1851
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1664378625;
-	bh=h7bJe1aaqRVDiS5yDhSup8h7F+h7Cp7Pp1fSw8JdqOM=;
+	s=default; t=1664378641;
+	bh=VgJORuMQrOS+H0kKOMAfJr9/SBKJetZbG5BTIYUM5Sw=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=I9MZYOoNnazOva3Sf51qAD3ou/zCEclYf5Q9xKfhnOw9mgIsBmOcaSdHl4Eg4Q/bb
-	 127/C0xsbBKcEWkTmvOeVcM4J/QNahZIU7CNTtYLVqM9bz3/qgXWaCGk3WXZvmzxMm
-	 a0w8ePC7aFkM1ISlXSQgLmzAY1D8l8MlxdWTJuhA=
+	b=I/SSseXuKIxE6DygN6cXZB+d6Bnu+Jj9IvxdWXLIsi/NSxAfvwinE4RwXeryjHoyd
+	 aMwkR43zJkmAJMziwCe2SqT+EZqESp0DiFQv8+m7KbmIZuv9ZfwT9fCnCHVwkUpyvU
+	 9Kiabvzuzk05+GgdpkUyn9DMa+zjd50dwbKMy/Ts=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id E1F15F80570;
-	Wed, 28 Sep 2022 17:21:00 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 718FDF8057D;
+	Wed, 28 Sep 2022 17:21:01 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 48E30F80578; Wed, 28 Sep 2022 17:20:57 +0200 (CEST)
-Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com
- [IPv6:2a00:1450:4864:20::12c])
+ id 8C819F80571; Wed, 28 Sep 2022 17:20:57 +0200 (CEST)
+Received: from mail-lj1-x22d.google.com (mail-lj1-x22d.google.com
+ [IPv6:2a00:1450:4864:20::22d])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id E8D3BF80109
- for <alsa-devel@alsa-project.org>; Wed, 28 Sep 2022 17:20:43 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz E8D3BF80109
+ by alsa1.perex.cz (Postfix) with ESMTPS id 01F0DF80551
+ for <alsa-devel@alsa-project.org>; Wed, 28 Sep 2022 17:20:47 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 01F0DF80551
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org
- header.b="R+WzAjrw"
-Received: by mail-lf1-x12c.google.com with SMTP id u18so20854955lfo.8
- for <alsa-devel@alsa-project.org>; Wed, 28 Sep 2022 08:20:43 -0700 (PDT)
+ header.b="r0nknO9O"
+Received: by mail-lj1-x22d.google.com with SMTP id l12so14709443ljg.9
+ for <alsa-devel@alsa-project.org>; Wed, 28 Sep 2022 08:20:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
  h=content-transfer-encoding:mime-version:references:in-reply-to
  :message-id:date:subject:cc:to:from:from:to:cc:subject:date;
- bh=ofHed6JKbGC+4Jz+O/EarTAHvckHPCUIcHhSeApLDCY=;
- b=R+WzAjrwXTKPt8JG0qQdtm0I3rM7cfNLmDoEhnuIP8T/UbqBz3qRX79XWlmipO8fZs
- m44HIDV+rzWoJ4wYItiHwHGVVBsUHlaUE/wMrz51vIbYB0T26jX8SUP7Hq9THE8NARkB
- +/80SWdHfsV51S93BS6f22IDvkVUYzKlMIUI0yFmpOAnr7SdOYgPiWhbUAZKH8rfQEJI
- dI1hDMULcC/euipaSFDx8t4EbSqpJ+r1uctDSGn2EsG5kRb2I8jSdjU0WAKmh185gm37
- VWMwr7IIFd1Brag/Q53nJxcxMl465g6b542tdhABXgA5sieAbtjS8RTPUOdsGKYoRPoj
- Bo1w==
+ bh=Ap86oaX2me6LTIfHjN4MG9KcHVBwjDqudIZuJpAwdCI=;
+ b=r0nknO9O4RLaj4hC2Y+XYYFZgnRhgnHvRdHYbBHhBMYvEHW3c7GIcYsIDH7b3XoE+O
+ 9eWnl61JVTAwK0VMgQPw9TXIgU8+w0Vt0qzMEIfPLLkZd7BkW8LOPmr+C5KpwuXknb7t
+ tdws40dJtduiv7OCW8mACe0Mv/6HkuEvV4pcpw4kQcDofryBg8ND4gAIx3tXkgCgnz7C
+ y4o4uIFCQgomvp6Ex2vx2kJ0fVL4BxY+ofuP+BGJBPJ0KmR7wVDJ1XU3PeYdUonwKrlK
+ fKn4pIq1YdssWhJ0g4+jwFUr1wEGMEGotptptvY5hFMIA2N8HSPt8tJ7/sy6xsO7eXLc
+ Kbcw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
  h=content-transfer-encoding:mime-version:references:in-reply-to
  :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
  :subject:date;
- bh=ofHed6JKbGC+4Jz+O/EarTAHvckHPCUIcHhSeApLDCY=;
- b=lGq07P+xITdjc7fx9xkDfHz+IkTmXUgQ/UN9s4WW5OECBX9F7O5QpUYxVpNJmRwc16
- AjJd9XxvpdZUdqQxWLBxCmWxocqQvfy0mo+t2PEvQA9iAwSd7iQ6sTp4WWlTrQ94odzZ
- jd/uiSyL+wz28wITUnAroSTRgp4RIcaypnuCZDE2Q0TgQfW9Kr852WJxtCh7jofzOuYk
- muB/lUu7ggX/7J1eTbRscUP5cTWmz3Ix9yJDgloooqq1N4Rg+ezCEKjM0tpDA+pIz0Fh
- pmqbRdwrIrKLoDGvmNBGsdCEnY72boVn6vDug77Ju7jEspvWKhe+0nFCL7GSSMXAfICB
- ZvAQ==
-X-Gm-Message-State: ACrzQf00J+XgN8gvX/1vkmSmA9s1ang6F+G/8MEsVViGtqFEpaalKgpp
- itNJ7bxQjmGj1x2C7dVq65UUIw==
-X-Google-Smtp-Source: AMsMyM5hx9BsNx3ycsMIfsneHfvlKV199tp4F1osXnDzUTkIn2J7KpBFTyiictm0nkFeygHz5tz+tA==
-X-Received: by 2002:a05:6512:1327:b0:4a0:4539:cad8 with SMTP id
- x39-20020a056512132700b004a04539cad8mr11692293lfu.460.1664378443391; 
- Wed, 28 Sep 2022 08:20:43 -0700 (PDT)
+ bh=Ap86oaX2me6LTIfHjN4MG9KcHVBwjDqudIZuJpAwdCI=;
+ b=JKlemKIDkJh21IvLFSjjO3eRpD5fiJM701FiC/QKhGiizAru8x/XG7/Q93aV9F79s+
+ 6RwdxqjoAeUlwT/Vi/HjdhbeNsRs5rXgHYy6XX/qjGmIyf8BsHFqdGDr4kLwkg/NW1r0
+ sBNL7+uD6B/4w1O93g81p/se+G1PTTWmMtldfWGAYguQxPvVOGfAYGGJy9oldsMn7vmF
+ 44FT0zcz3l0xEQPdkb0JocANGZaUEszkppRz7dcAgwohfn8IwDBS8jTMrkBuY7OwdIsd
+ UovxFAlx38YKR+H7IO5ZnCZQuVDUUD/0cSKFXvb4GphypJ3eK6p2Zr85scWGD+tHVVDa
+ SWhw==
+X-Gm-Message-State: ACrzQf01LrH8C7zWxJKfUPaKwcZ7ckSiQ/j5LTgqEZ1KkG7gn4n/0V/9
+ AwKaJC//vZz5wtK1H57SSJvBzg==
+X-Google-Smtp-Source: AMsMyM7kw7pi094V6o9qurMVZ0dvLd2F1wG+kqjI0ZCAc2o0mrbyTly60r9u6BoNnfLe2Ce7XGhA/Q==
+X-Received: by 2002:a2e:ba08:0:b0:26c:14d6:9b97 with SMTP id
+ p8-20020a2eba08000000b0026c14d69b97mr11872009lja.222.1664378446051; 
+ Wed, 28 Sep 2022 08:20:46 -0700 (PDT)
 Received: from krzk-bin.. (78-11-189-27.static.ip.netia.com.pl. [78.11.189.27])
  by smtp.gmail.com with ESMTPSA id
- v2-20020a056512048200b00497a41b3a42sm503023lfq.88.2022.09.28.08.20.42
+ v2-20020a056512048200b00497a41b3a42sm503023lfq.88.2022.09.28.08.20.44
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Wed, 28 Sep 2022 08:20:42 -0700 (PDT)
+ Wed, 28 Sep 2022 08:20:45 -0700 (PDT)
 From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
  Rob Herring <robh+dt@kernel.org>,
@@ -79,10 +79,10 @@ To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
  Konrad Dybcio <konrad.dybcio@somainline.org>, alsa-devel@alsa-project.org,
  devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
  linux-arm-msm@vger.kernel.org
-Subject: [PATCH v2 09/11] dt-bindings: slimbus: convert bus description to DT
- schema
-Date: Wed, 28 Sep 2022 17:20:25 +0200
-Message-Id: <20220928152027.489543-10-krzysztof.kozlowski@linaro.org>
+Subject: [PATCH v2 11/11] dt-bindings: slimbus: qcom,
+ slim-ngd: convert to DT schema
+Date: Wed, 28 Sep 2022 17:20:27 +0200
+Message-Id: <20220928152027.489543-12-krzysztof.kozlowski@linaro.org>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20220928152027.489543-1-krzysztof.kozlowski@linaro.org>
 References: <20220928152027.489543-1-krzysztof.kozlowski@linaro.org>
@@ -105,213 +105,235 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Convert the SLIMbus bus description bindings to DT Schema.
+Convert the Qualcomm SoC SLIMBus Non Generic Device (NGD) controller
+bindings to DT Schema.
+
+During conversion add iommus already present in DTS and extend the
+example based on SDM845.
 
 Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 Reviewed-by: Rob Herring <robh@kernel.org>
 ---
- .../devicetree/bindings/slimbus/bus.txt       | 60 ------------
- .../bindings/slimbus/slim-ngd-qcom-ctrl.txt   |  2 -
- .../bindings/slimbus/slim-qcom-ctrl.txt       |  3 -
- .../devicetree/bindings/slimbus/slimbus.yaml  | 95 +++++++++++++++++++
- 4 files changed, 95 insertions(+), 65 deletions(-)
- delete mode 100644 Documentation/devicetree/bindings/slimbus/bus.txt
- create mode 100644 Documentation/devicetree/bindings/slimbus/slimbus.yaml
+ .../bindings/slimbus/qcom,slim-ngd.yaml       | 120 ++++++++++++++++++
+ .../bindings/slimbus/slim-ngd-qcom-ctrl.txt   |  82 ------------
+ 2 files changed, 120 insertions(+), 82 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/slimbus/qcom,slim-ngd.yaml
+ delete mode 100644 Documentation/devicetree/bindings/slimbus/slim-ngd-qcom-ctrl.txt
 
-diff --git a/Documentation/devicetree/bindings/slimbus/bus.txt b/Documentation/devicetree/bindings/slimbus/bus.txt
-deleted file mode 100644
-index bbe871f82a8b..000000000000
---- a/Documentation/devicetree/bindings/slimbus/bus.txt
-+++ /dev/null
-@@ -1,60 +0,0 @@
--SLIM(Serial Low Power Interchip Media Bus) bus
--
--SLIMbus is a 2-wire bus, and is used to communicate with peripheral
--components like audio-codec.
--
--Required property for SLIMbus controller node:
--- compatible	- name of SLIMbus controller
--
--Child nodes:
--Every SLIMbus controller node can contain zero or more child nodes
--representing slave devices on the bus. Every SLIMbus slave device is
--uniquely determined by the enumeration address containing 4 fields:
--Manufacturer ID, Product code, Device index, and Instance value for
--the device.
--If child node is not present and it is instantiated after device
--discovery (slave device reporting itself present).
--
--In some cases it may be necessary to describe non-probeable device
--details such as non-standard ways of powering up a device. In
--such cases, child nodes for those devices will be present as
--slaves of the SLIMbus controller, as detailed below.
--
--Required property for SLIMbus child node if it is present:
--- reg		- Should be ('Device index', 'Instance ID') from SLIMbus
--		  Enumeration  Address.
--		  Device Index Uniquely identifies multiple Devices within
--		  a single Component.
--		  Instance ID Is for the cases where multiple Devices of the
--		  same type or Class are attached to the bus.
--
--- compatible	-"slimMID,PID". The textual representation of Manufacturer ID,
--	 	  Product Code, shall be in lower case hexadecimal with leading
--		  zeroes suppressed
--
--Optional property for SLIMbus child node if it is present:
--- slim-ifc-dev	- Should be phandle to SLIMBus Interface device.
--		  Required for devices which deal with streams.
--
--SLIMbus example for Qualcomm's slimbus manager component:
--
--	slim@28080000 {
--		compatible = "qcom,apq8064-slim", "qcom,slim";
--		reg = <0x28080000 0x2000>,
--		interrupts = <0 33 0>;
--		clocks = <&lcc SLIMBUS_SRC>, <&lcc AUDIO_SLIMBUS_CLK>;
--		clock-names = "iface", "core";
--		#address-cells = <2>;
--		#size-cell = <0>;
--
--		codec_ifd: ifd@0,0{
--			compatible = "slim217,60";
--			reg = <0 0>;
--		};
--
--		codec: wcd9310@1,0{
--			compatible = "slim217,60";
--			reg = <1 0>;
--			slim-ifc-dev  = <&codec_ifd>;
--		};
--	};
-diff --git a/Documentation/devicetree/bindings/slimbus/slim-ngd-qcom-ctrl.txt b/Documentation/devicetree/bindings/slimbus/slim-ngd-qcom-ctrl.txt
-index e94a2ad3a710..7c3d9eb6af5d 100644
---- a/Documentation/devicetree/bindings/slimbus/slim-ngd-qcom-ctrl.txt
-+++ b/Documentation/devicetree/bindings/slimbus/slim-ngd-qcom-ctrl.txt
-@@ -5,8 +5,6 @@ with SLIMBus slaves directly over the bus using messaging interface and
- communicating with master component residing on ADSP for bandwidth and
- data-channel management
- 
--Please refer to slimbus/bus.txt for details of the common SLIMBus bindings.
--
- - compatible:
- 	Usage: required
- 	Value type: <stringlist>
-diff --git a/Documentation/devicetree/bindings/slimbus/slim-qcom-ctrl.txt b/Documentation/devicetree/bindings/slimbus/slim-qcom-ctrl.txt
-index 922dcb8ff24a..6d955e129f90 100644
---- a/Documentation/devicetree/bindings/slimbus/slim-qcom-ctrl.txt
-+++ b/Documentation/devicetree/bindings/slimbus/slim-qcom-ctrl.txt
-@@ -4,9 +4,6 @@ master component.
- 
- Required properties:
- 
-- - #address-cells - refer to Documentation/devicetree/bindings/slimbus/bus.txt
-- - #size-cells	- refer to Documentation/devicetree/bindings/slimbus/bus.txt
--
-  - reg : Offset and length of the register region(s) for the device
-  - reg-names : Register region name(s) referenced in reg above
- 	 Required register resource entries are:
-diff --git a/Documentation/devicetree/bindings/slimbus/slimbus.yaml b/Documentation/devicetree/bindings/slimbus/slimbus.yaml
+diff --git a/Documentation/devicetree/bindings/slimbus/qcom,slim-ngd.yaml b/Documentation/devicetree/bindings/slimbus/qcom,slim-ngd.yaml
 new file mode 100644
-index 000000000000..22513fb7c59a
+index 000000000000..abf61c15246e
 --- /dev/null
-+++ b/Documentation/devicetree/bindings/slimbus/slimbus.yaml
-@@ -0,0 +1,95 @@
++++ b/Documentation/devicetree/bindings/slimbus/qcom,slim-ngd.yaml
+@@ -0,0 +1,120 @@
 +# SPDX-License-Identifier: GPL-2.0 OR BSD-2-Clause
 +%YAML 1.2
 +---
-+$id: http://devicetree.org/schemas/slimbus/slimbus.yaml#
++$id: http://devicetree.org/schemas/slimbus/qcom,slim-ngd.yaml#
 +$schema: http://devicetree.org/meta-schemas/core.yaml#
 +
-+title: SLIM (Serial Low Power Interchip Media) bus
++title: Qualcomm SoC SLIMBus Non Generic Device (NGD) Controller
 +
 +maintainers:
++  - Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 +  - Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 +
 +description:
-+  SLIMbus is a 2-wire bus, and is used to communicate with peripheral
-+  components like audio-codec.
++  SLIMBus NGD controller is a light-weight driver responsible for communicating
++  with SLIMBus slaves directly over the bus using messaging interface and
++  communicating with master component residing on ADSP for bandwidth and
++  data-channel management
 +
 +properties:
-+  $nodename:
-+    pattern: "^slim(@.*|-[0-9a-f])*$"
++  compatible:
++    enum:
++      - qcom,slim-ngd-v1.5.0        # for MSM8996
++      - qcom,slim-ngd-v2.1.0        # for SDM845
++
++  reg:
++    maxItems: 1
 +
 +  "#address-cells":
-+    const: 2
++    const: 1
 +
 +  "#size-cells":
 +    const: 0
 +
++  dmas:
++    maxItems: 2
++
++  dma-names:
++    items:
++      - const: rx
++      - const: tx
++
++  interrupts:
++    maxItems: 1
++
++  iommus:
++    maxItems: 1
++
 +patternProperties:
-+  "^.*@[0-9a-f]+,[0-9a-f]+$":
++  "^slim@[0-9a-f]+$":
 +    type: object
-+    description: |
-+      Every SLIMbus controller node can contain zero or more child nodes
-+      representing slave devices on the bus. Every SLIMbus slave device is
-+      uniquely determined by the enumeration address containing 4 fields::
-+      Manufacturer ID, Product code, Device index, and Instance value for the
-+      device.
-+
-+      If child node is not present and it is instantiated after device
-+      discovery (slave device reporting itself present).
-+
-+      In some cases it may be necessary to describe non-probeable device
-+      details such as non-standard ways of powering up a device. In such cases,
-+      child nodes for those devices will be present as slaves of the SLIMbus
-+      controller.
++    $ref: slimbus.yaml#
++    description:
++      Each subnode represents an instance of NGD
 +
 +    properties:
-+      compatible:
-+        pattern: "^slim[0-9a-f]+,[0-9a-f]+$"
-+
 +      reg:
 +        maxItems: 1
-+        description: |
-+          Pair of (device index, instande ID), where::
-+           - Device index, which uniquely identifies multiple devices within a
-+             single component.
-+           - Instance ID, can be used for the cases where multiple devices of
-+             the same type or class are attached to the bus.
 +
-+    required:
-+      - compatible
-+      - reg
-+
-+    additionalProperties: true
++    unevaluatedProperties: false
 +
 +required:
++  - compatible
++  - reg
 +  - "#address-cells"
 +  - "#size-cells"
++  - dmas
++  - dma-names
++  - interrupts
 +
-+additionalProperties: true
++additionalProperties: false
 +
 +examples:
 +  - |
-+    #include <dt-bindings/clock/qcom,gcc-msm8960.h>
-+    #include <dt-bindings/clock/qcom,lcc-msm8960.h>
++    #include <dt-bindings/gpio/gpio.h>
 +    #include <dt-bindings/interrupt-controller/arm-gic.h>
 +
-+    soc {
-+        #address-cells = <1>;
-+        #size-cells = <1>;
-+        ranges;
++    slim-ngd@171c0000 {
++        compatible = "qcom,slim-ngd-v2.1.0";
++        reg = <0x171c0000 0x2c000>;
++        interrupts = <GIC_SPI 163 IRQ_TYPE_LEVEL_HIGH>;
 +
-+        slim@28080000 {
-+            compatible = "qcom,apq8064-slim", "qcom,slim";
-+            reg = <0x28080000 0x2000>, <0x80207c 4>;
-+            reg-names = "ctrl", "slew";
-+            interrupts = <GIC_SPI 33 IRQ_TYPE_LEVEL_HIGH>;
-+            clocks = <&lcc SLIMBUS_SRC>, <&lcc AUDIO_SLIMBUS_CLK>;
-+            clock-names = "iface", "core";
++        dmas = <&slimbam 3>, <&slimbam 4>;
++        dma-names = "rx", "tx";
++        iommus = <&apps_smmu 0x1806 0x0>;
++        #address-cells = <1>;
++        #size-cells = <0>;
++
++        slim@1 {
++            reg = <1>;
 +            #address-cells = <2>;
 +            #size-cells = <0>;
 +
-+            audio-codec@1,0 {
-+                compatible = "slim217,60";
++            codec@1,0 {
++                compatible = "slim217,250";
 +                reg = <1 0>;
++                slim-ifc-dev = <&wcd9340_ifd>;
++
++                #sound-dai-cells = <1>;
++
++                interrupts-extended = <&tlmm 54 IRQ_TYPE_LEVEL_HIGH>;
++                interrupt-controller;
++                #interrupt-cells = <1>;
++
++                #clock-cells = <0>;
++                clock-frequency = <9600000>;
++                clock-output-names = "mclk";
++                qcom,micbias1-microvolt = <1800000>;
++                qcom,micbias2-microvolt = <1800000>;
++                qcom,micbias3-microvolt = <1800000>;
++                qcom,micbias4-microvolt = <1800000>;
++
++                #address-cells = <1>;
++                #size-cells = <1>;
++
++                reset-gpios = <&tlmm 64 GPIO_ACTIVE_HIGH>;
++
++                /* Rest of the WCD9340 codec */
 +            };
 +        };
 +    };
+diff --git a/Documentation/devicetree/bindings/slimbus/slim-ngd-qcom-ctrl.txt b/Documentation/devicetree/bindings/slimbus/slim-ngd-qcom-ctrl.txt
+deleted file mode 100644
+index 7c3d9eb6af5d..000000000000
+--- a/Documentation/devicetree/bindings/slimbus/slim-ngd-qcom-ctrl.txt
++++ /dev/null
+@@ -1,82 +0,0 @@
+-Qualcomm SLIMBus Non Generic Device (NGD) Controller binding
+-
+-SLIMBus NGD controller is a light-weight driver responsible for communicating
+-with SLIMBus slaves directly over the bus using messaging interface and
+-communicating with master component residing on ADSP for bandwidth and
+-data-channel management
+-
+-- compatible:
+-	Usage: required
+-	Value type: <stringlist>
+-	Definition: must be "qcom,slim-ngd-v<MAJOR>.<MINOR>.<STEP>"
+-	must be one of the following.
+-	"qcom,slim-ngd-v1.5.0" for MSM8996
+-	"qcom,slim-ngd-v2.1.0" for SDM845
+-
+-- reg:
+-	Usage: required
+-	Value type: <prop-encoded-array>
+-	Definition: must specify the base address and size of the controller
+-		    register space.
+-- dmas
+-	Usage: required
+-	Value type: <array of phandles>
+-	Definition: List of rx and tx dma channels
+-
+-- dma-names
+-	Usage: required
+-	Value type: <stringlist>
+-	Definition: must be "rx" and "tx".
+-
+-- interrupts:
+-	Usage: required
+-	Value type: <prop-encoded-array>
+-	Definition: must list controller IRQ.
+-
+-#address-cells
+-	Usage: required
+-	Value type: <u32>
+-	Definition: Should be 1, reflecting the instance id of ngd.
+-
+-#size-cells
+-	Usage: required
+-	Value type: <u32>
+-	Definition: Should be 0
+-
+-= NGD Devices
+-Each subnode represents an instance of NGD, must contain the following
+-properties:
+-
+-- reg:
+-	Usage: required
+-	Value type: <u32>
+-	Definition: Should be instance id of ngd.
+-
+-#address-cells
+-	Usage: required
+-	Refer to slimbus/bus.txt for details of the common SLIMBus bindings.
+-
+-#size-cells
+-	Usage: required
+-	Refer to slimbus/bus.txt for details of the common SLIMBus bindings.
+-
+-= EXAMPLE
+-
+-slim@91c0000 {
+-	compatible = "qcom,slim-ngd-v1.5.0";
+-	reg = <0x91c0000 0x2c000>;
+-	interrupts = <0 163 0>;
+-	dmas =	<&slimbam 3>, <&slimbam 4>;
+-	dma-names = "rx", "tx";
+-	#address-cells = <1>;
+-	#size-cells = <0>;
+-	ngd@1 {
+-		reg = <1>;
+-		#address-cells = <1>;
+-		#size-cells = <1>;
+-		codec@1 {
+-			compatible = "slim217,1a0";
+-			reg  = <1 0>;
+-		};
+-	};
+-};
 -- 
 2.34.1
 
