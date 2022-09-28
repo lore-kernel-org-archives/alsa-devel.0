@@ -4,84 +4,78 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5DE5DC32771
-	for <alsa-devel@archiver.kernel.org>; Wed, 28 Sep 2022 08:41:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 77DDAC6FA86
+	for <alsa-devel@archiver.kernel.org>; Wed, 28 Sep 2022 11:53:47 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 508BEE12;
-	Wed, 28 Sep 2022 10:40:10 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 508BEE12
+	by alsa0.perex.cz (Postfix) with ESMTPS id B2071846;
+	Wed, 28 Sep 2022 13:52:54 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B2071846
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1664354460;
-	bh=Nh8zVkI764C79JD/zOGUpjoTiHdV4xPlRb3vpHlIbd4=;
-	h=Date:Subject:To:References:From:In-Reply-To:Cc:List-Id:
+	s=default; t=1664366024;
+	bh=Gnq+tgQ9ZASFB+MDRHd64MSe86NAiX2VN5Nyk4dymlo=;
+	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=ptx34fsaH9GpRF0PxSKE9Cef21s3rS+cpXhw5IRUfMDgLn5QiKoFsELLRpaVPm6oB
-	 ZO2CvIES6HM3O7UXg6m4Y1l2WKQldmpF4juNu1cRLiJEDbrI/wfgkKOAc+93jXtHiP
-	 3MU38twiFnsz0HFPm1s3Mng691FNvHzNCp3+NWdQ=
+	b=jpgeevqjNht3AZBWMqeqSJ7UD1/Gl6fTkyHmFlc4vFD+dgDCX9Amc5ifCiPsGz/dt
+	 jWAUX2ORYNN8K4n3IX8cwH8yKPZkWXLmW5ROueDDgQMapazZfIoMC+ZnD8fNf7CE5/
+	 AM/CeozHXRnKSZ4lF5+F8O2y8BIIhuRxiOnkImTI=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 73D82F804D6;
-	Wed, 28 Sep 2022 10:39:51 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 3590EF800AA;
+	Wed, 28 Sep 2022 13:52:54 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 97055F80272; Wed, 28 Sep 2022 10:39:50 +0200 (CEST)
-Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
+ id 353F4F80310; Wed, 28 Sep 2022 13:52:52 +0200 (CEST)
+Received: from ams.source.kernel.org (ams.source.kernel.org
+ [IPv6:2604:1380:4601:e00::1])
+ (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 59CA6F80109
+ for <alsa-devel@alsa-project.org>; Wed, 28 Sep 2022 13:52:49 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 59CA6F80109
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
+ header.b="VXPUiroR"
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id F3243F80272
- for <alsa-devel@alsa-project.org>; Wed, 28 Sep 2022 10:39:42 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F3243F80272
-Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="bhjRh8Pr"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
- d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1664354385; x=1695890385;
- h=message-id:date:mime-version:subject:to:cc:references:
- from:in-reply-to:content-transfer-encoding;
- bh=Nh8zVkI764C79JD/zOGUpjoTiHdV4xPlRb3vpHlIbd4=;
- b=bhjRh8Prcgoi3k7dBnC56udYIJaxLY/n0YPS5bly8mF3L71pASlc9/8L
- s+RDaLxpY7I/cPfLkTVyzQuitiUlubARSaYzo591/ICAOFvm1ZoYiqFU6
- EONBkcKrkT2zJjUAdgnKlirgt+Pzv+bASGOLrpbhOwDz795ibenvUZ0m+
- uL92FZ3aJ+W8yayOwqAXQTXWCKHpI2j4Tfys9KdhYaDFC56FsnVJAMOFI
- 9FoE7iPqfeJZ3HzNGh2QugBA+e6stunKlqav9RxJEh6BXAX5uZwsh+E6M
- +wdF+jhDW3J4Ph8JVYPTqV2LK/yhyGTJUN+aQOveLfoyDIFofpnCMHbvK A==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10483"; a="365591350"
-X-IronPort-AV: E=Sophos;i="5.93,351,1654585200"; d="scan'208";a="365591350"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
- by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 28 Sep 2022 01:39:23 -0700
-X-IronPort-AV: E=McAfee;i="6500,9779,10483"; a="617131356"
-X-IronPort-AV: E=Sophos;i="5.93,351,1654585200"; d="scan'208";a="617131356"
-Received: from morank-mobl3.ger.corp.intel.com (HELO [10.251.211.7])
- ([10.251.211.7])
- by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 28 Sep 2022 01:39:17 -0700
-Message-ID: <9cb844a7-6eac-0085-3c8c-32004a22c849@linux.intel.com>
-Date: Wed, 28 Sep 2022 10:36:32 +0200
+ by ams.source.kernel.org (Postfix) with ESMTPS id 8CB2BB82038;
+ Wed, 28 Sep 2022 11:52:47 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B0037C433D6;
+ Wed, 28 Sep 2022 11:52:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+ s=k20201202; t=1664365966;
+ bh=Gnq+tgQ9ZASFB+MDRHd64MSe86NAiX2VN5Nyk4dymlo=;
+ h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+ b=VXPUiroRZIq0xZW03TDAK/4k/EeBDRMyra8cXaK1sbQMllXWR0AFOPEKk0BvPytxo
+ NifQinW/b1f7Wo3kDFb2qjAxfy7N1AqolVbEBzafjl43L0pnkoJv3klq8IrPPLhlg/
+ oC/kKitofLOPK14NQN4lGF5Gby3bEvrQswWX95n2myjMc8KjhOvQNXpj8NHwpQGy5G
+ 7hFmeWWIaoG0cuLsoilSjz8S3og4/HnqZQJPoDnE1TNf5+inQr8xkTXD6mAQ8kZgZO
+ ViKHzu8KIvm4E0dQ/0XkCv6AToQ+RPuYKuBpxQ3PO6FxN/NZXY8hRXilmsaB6Fp0rk
+ 9HvgaPvUe61Gw==
+Date: Wed, 28 Sep 2022 12:52:38 +0100
+From: Mark Brown <broonie@kernel.org>
+To: Jason Zhu <jason.zhu@rock-chips.com>
+Subject: Re: [PATCH 1/1] ASoC: soc-dai: export some symbols
+Message-ID: <YzQ1hpJ753Zy5k+a@sirena.org.uk>
+References: <20220920034545.2820888-1-jason.zhu@rock-chips.com>
+ <20220920034545.2820888-2-jason.zhu@rock-chips.com>
+ <Yym2aURe2+pA3ocn@sirena.org.uk>
+ <dfeac54a-a264-835a-f155-90eb8f093314@rock-chips.com>
+ <Yy2s2PA/C1ngeb//@sirena.org.uk>
+ <155e10c4-7b08-f1ec-9f28-42a3d982740f@rock-chips.com>
+ <1dc563bf-feda-e11a-c159-91ae0529a36b@linux.intel.com>
+ <YzHGPuajS54y1SV6@sirena.org.uk>
+ <678dcfcf-83f0-5969-9b55-79065c042116@rock-chips.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Firefox/91.0 Thunderbird/91.11.0
-Subject: Re: [PATCH] ASoC: soc-pcm: fix fe and be race when accessing
- substream->runtime
-Content-Language: en-US
-To: Eugeniu Rosca <erosca@de.adit-jv.com>
-References: <1664210154-11552-1-git-send-email-erosca@de.adit-jv.com>
- <bdf56f23-1019-b4c8-a11a-3934db432cf1@linux.intel.com>
- <20220927123043.GB4547@lxhi-065>
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-In-Reply-To: <20220927123043.GB4547@lxhi-065>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-Cc: Yanmin Zhang <yanmin_zhang@linux.intel.com>, alsa-devel@alsa-project.org,
- Eugeniu Rosca <roscaeugeniu@gmail.com>, Jiada Wang <jiada_wang@mentor.com>,
- Liam Girdwood <lgirdwood@gmail.com>,
- Cezary Rojewski <cezary.rojewski@intel.com>,
- Zhang Yanmin <yanmin.zhang@intel.com>, linux-kernel@vger.kernel.org,
- Ramesh Babu <ramesh.babu@intel.com>, Takashi Iwai <tiwai@suse.com>,
- Dean Jenkins <Dean_Jenkins@mentor.com>, Mark Brown <broonie@kernel.org>,
- Ramesh Babu B <ramesh.babu.b@intel.com>, xiao jin <jin.xiao@intel.com>
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature"; boundary="vRL02sB+hLGtfhct"
+Content-Disposition: inline
+In-Reply-To: <678dcfcf-83f0-5969-9b55-79065c042116@rock-chips.com>
+X-Cookie: You look tired.
+Cc: sugar.zhang@rock-chips.com, lgirdwood@gmail.com,
+ alsa-devel@alsa-project.org,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, tiwai@suse.com
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -98,73 +92,83 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
+--vRL02sB+hLGtfhct
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On 9/27/22 14:30, Eugeniu Rosca wrote:
-> Hi Pierre,
-> 
-> On Di, Sep 27, 2022 at 09:51:46 +0200, Pierre-Louis Bossart wrote:
->> On 9/26/22 18:35, Eugeniu Rosca wrote:
->>> From: xiao jin <jin.xiao@intel.com>
->>>
->>> After start of fe and be, fe might go to close without triggering
->>> STOP, and substream->runtime is freed. However, be is still at
->>> START state and its substream->runtime still points to the
->>> freed runtime.
->>>
->>> Later on, FE is opened/started again, and triggers STOP.
->>> snd_pcm_do_stop => dpcm_fe_dai_trigger
->>>                 => dpcm_fe_dai_do_trigger
->>>                 => dpcm_be_dai_trigger
->>>                 => dpcm_do_trigger
->>>                 => soc_pcm_trigger
->>>                 => skl_platform_pcm_trigger
->>> skl_platform_pcm_trigger accesses the freed old runtime data and
->>> kernel panic.
->>>
->>> The patch fixes it by assigning be_substream->runtime in
->>> dpcm_be_dai_startup when be's state is START.
->>
->> Can I ask on which kernel this patch was validated and on what platform?
-> 
-> As shared with Czarek in https://lore.kernel.org/alsa-devel/20220927110022.GA3802@lxhi-065/ ,
-> this patch was originally extracted from the out-of-tree Intel Apollo
-> Lake v4.1 KNL releases, hence it was validated on Intel ref.boards.
-> 
-> No re-testing/re-validation has been performed on the latest vanilla.
+On Tue, Sep 27, 2022 at 11:57:53AM +0800, Jason Zhu wrote:
+>=20
+> =E5=9C=A8 2022/9/26 23:33, Mark Brown =E5=86=99=E9=81=93:
+> > On Mon, Sep 26, 2022 at 09:52:34AM +0200, Pierre-Louis Bossart wrote:
+> > > On 9/26/22 03:34, Jason Zhu wrote:
+> > > > =E5=9C=A8 2022/9/23 20:55, Mark Brown =E5=86=99=E9=81=93:
 
-There's no way to predict how a patch for a kernel 4.1 - released 7
-years ago - would behave with a new kernel. If it's not tested it cannot
-be merged.
+> > > > > > The data can not be lost in this process. So we attach VAD & PDM
+> > > > > > in the same card, then close the card and wake up VAD & PDM aga=
+in
+> > > > > > when the system is goto sleep. Like these code:
 
-> One of the goals behind submitting the patch is getting in touch
-> with the original authors, as well as the members of alsa-devel,
-> to assess if the patch is still relevant.
+> > > > > This sounds like a very normal thing with a standard audio stream=
+ -
+> > > > > other devices have similar VAD stuff without needing to open code=
+ access
+> > > > > to the PCM operations?
 
-The only thing we could do is have more clarity on the test case and try
-to reproduce it.
+> > > > At present, only VAD is handled in this way by Rockchip.
 
->>
->> We've done a lot of work since last year on DPCM states, 
-> 
-> Could you please feedback if the work on the DPCM states is
-> pre- or post-v5.10?
+> > The point here is that other non-Rockchip devices do similar sounding
+> > things?
 
-It doesn't matter for this discussion on the upstream kernel. But yes
-it's post v5.10.
+> No.=C2=A0 Usually, the vad is integrated in codec, like rt5677, and is li=
+nked
+> with DSP to
+> handle its data. If DSP detects useful sound, send an irq to system to
+> wakeup and
+> record sound.=C2=A0 Others detect and analysis sound by VAD itself, like
+> K32W041A.
 
-> 
->> and I wonder
->> the problem mentioned above actually exists on recent kernels.
->>
->> Specifically, if the FE is closed, I don't get how the BE is not closed
->> as well. And if this problem is found on a recent kernel, then it should
->> be seen in the AVS driver as well, no?
-> 
-> It is totally conceivable (if not very likely) that the mainline
-> advancements in the sound subsystem make this patch obsolete.
-> 
-> I would be happy if that's the final outcome of our discussion
-> (since this will allow dropping the patch in our downstream kernel).
-> 
-> Best Regards,
-> Eugeniu
+What I mean here is that you're missing my point.  The deferring of full
+wake word recognition to a secondary algorithm running somewhere else is
+a pretty common design.
+
+> > If this is something that's not uncommon that sounds like an even
+> > stronger reason for not just randomly exporting the symbols and open
+> > coding things in individual drivers outside of framework control.  What
+> > are these other use cases, or is it other instances of the same thing?
+
+> Maybe in this case: One PDM is used to record sound, and there is two way
+> to move data. Use the VAD to move data to sram when system is sleep and
+> use DMA to move data when sytem is alive. If we seperate this in two audio
+> streams, we close the "PDM + VAD" audio stream firstly when system is ali=
+ve
+> and open "PDM + DMA" audio stream. This process maybe take long time
+> that PDM FIFO will be full and lost some data. But we hope that data will
+> not be lost in the whole proces. So these must be done in one audio
+> stream.
+
+I'd have exepected that any handover be done such that the low power
+wake word stream is running concurrently with the main audio stream for
+some period of time, possibly until the sync between the two has been
+worked out, and that data would be being read out of the wake word
+stream while the full stream is starting up.  As you say I'd expect that
+otherwise you'll run into trouble with dropouts.  I don't see how doing
+that handover would require that we export any symbols though, if there
+is any kernel support needed it should be handled in the framework.
+
+--vRL02sB+hLGtfhct
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmM0NYUACgkQJNaLcl1U
+h9AfLgf9G4DBMEawGFzeZ6AkXL+cdXCMFhR5m0cCtYWh6mcZJzHQBMYHTX4wZ7T8
+xH32spGl4YYzO2HdPPPTllklvbKODqSL2deLr2pyD+CMXed89Mgmx0LON3Kn1tDE
+GSXMEgq5F2EM3Dk/i+7VnsSEGxw5rDid4IzI4dEmP0OfYmFNpbUVmhGJKsAGt+Qc
+VFR203+qRcq4lOLAsVfiLZnL0vjTniBzpLOuIQZLrLAmy1rqGVJiu0KtFeQ33piX
+q+K/AHtuJ69X3bjs8Uap0LncQqQY4kXS4CFRIhNSG29rADqt2HisEqos4X9CraKx
+fN3vVEzhiXV+UYJNaXKU3jOzE7zN6A==
+=P+fe
+-----END PGP SIGNATURE-----
+
+--vRL02sB+hLGtfhct--
