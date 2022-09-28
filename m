@@ -4,51 +4,55 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4DD2AC54EE9
-	for <alsa-devel@archiver.kernel.org>; Wed, 28 Sep 2022 15:58:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B4861C04A95
+	for <alsa-devel@archiver.kernel.org>; Wed, 28 Sep 2022 15:59:13 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 8D7C5822;
-	Wed, 28 Sep 2022 17:57:56 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 8D7C5822
+	by alsa0.perex.cz (Postfix) with ESMTPS id B7C42852;
+	Wed, 28 Sep 2022 17:58:21 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B7C42852
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1664380726;
-	bh=eralpFLAMijx3pIV186qucHXAenMjF/IV3bVs6eKTp4=;
-	h=From:To:Subject:Date:Cc:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=G0ZM5OxbjItXmZDBFXQUuSOeIv0ZkE6AAwB0//madY34eggslmTHKKWJDeTlDXfOj
-	 0BYPnRFhn7QvMRNYVy24GRsyt9Sn3A3lUAaTgkSB8ly9vqvc3OTIvd84hhw4KvAE6a
-	 uk/b6XBpEl50pSKe2G+1P+KPgnMNZFhvrsKo5gFw=
+	s=default; t=1664380751;
+	bh=GqIQ9/yt1YBCAhleFnuprNQedYPy7+iLaP1Kp67BBwE=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=Au1pxjaV2fKnV8TDjzmmUBUnP45MEe3TaqsT3DoKblck/uWR71CyHnZsyM9iY3OSf
+	 zUR1APUpWF+VtnUfgUY8JSTxLax2iq4JXvk5mr4GqlPQWzP+OF3qLS8bD9JoMlVU0y
+	 aeZYdaNkhKZvmj7vLYw86Sqgc2bhQjrosEaGicFE=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 2E018F804E2;
-	Wed, 28 Sep 2022 17:57:56 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id C9871F80272;
+	Wed, 28 Sep 2022 17:58:00 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 6A939F804EC; Wed, 28 Sep 2022 17:57:54 +0200 (CEST)
+ id 3ACEAF80539; Wed, 28 Sep 2022 17:57:57 +0200 (CEST)
 Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 30F07F80109
- for <alsa-devel@alsa-project.org>; Wed, 28 Sep 2022 17:57:49 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 30F07F80109
-Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.56])
- by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4Md1Hm15HzzWgnq;
- Wed, 28 Sep 2022 23:53:40 +0800 (CST)
+ by alsa1.perex.cz (Postfix) with ESMTPS id 049C3F8011C
+ for <alsa-devel@alsa-project.org>; Wed, 28 Sep 2022 17:57:50 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 049C3F8011C
+Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.53])
+ by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4Md1Gz2vZ6zHtft;
+ Wed, 28 Sep 2022 23:52:59 +0800 (CST)
 Received: from kwepemm600014.china.huawei.com (7.193.23.54) by
- dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
+ dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.31; Wed, 28 Sep 2022 23:57:46 +0800
+ 15.1.2375.31; Wed, 28 Sep 2022 23:57:47 +0800
 Received: from huawei.com (10.90.53.225) by kwepemm600014.china.huawei.com
  (7.193.23.54) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.31; Wed, 28 Sep
- 2022 23:57:45 +0800
+ 2022 23:57:46 +0800
 From: Zhang Qilong <zhangqilong3@huawei.com>
 To: <lgirdwood@gmail.com>, <broonie@kernel.org>, <perex@perex.cz>,
  <tiwai@suse.com>, <matthias.bgg@gmail.com>
-Subject: [PATCH -next 0/4] Fix PM disable depth imbalance in probe
-Date: Thu, 29 Sep 2022 00:01:12 +0800
-Message-ID: <20220928160116.125020-1-zhangqilong3@huawei.com>
+Subject: [PATCH -next 2/4] ASoC: wm5110: Fix PM disable depth imbalance in
+ wm5110_probe
+Date: Thu, 29 Sep 2022 00:01:14 +0800
+Message-ID: <20220928160116.125020-3-zhangqilong3@huawei.com>
 X-Mailer: git-send-email 2.26.0.106.g9fadedd
+In-Reply-To: <20220928160116.125020-1-zhangqilong3@huawei.com>
+References: <20220928160116.125020-1-zhangqilong3@huawei.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
@@ -75,20 +79,38 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 The pm_runtime_enable will increase power disable depth. Thus
 a pairing decrement is needed on the error handling path to
 keep it balanced according to context. We fix it by moving
-pm_runtime_enable to the endding of probe.
+pm_runtime_enable to the endding of wm5110_probe.
 
-Zhang Qilong (4):
-  ASoC: wm8997: Fix PM disable depth imbalance in wm8997_probe
-  ASoC: wm5110: Fix PM disable depth imbalance in wm5110_probe
-  ASoC: wm5102: Fix PM disable depth imbalance in wm5102_probe
-  ASoC: mt6660: Fix PM disable depth imbalance in mt6660_i2c_probe
-
- sound/soc/codecs/mt6660.c | 8 ++++++--
- sound/soc/codecs/wm5102.c | 6 +++---
+Fixes:5c6af635fd772 ("ASoC: wm5110: Add audio CODEC driver")
+Signed-off-by: Zhang Qilong <zhangqilong3@huawei.com>
+---
  sound/soc/codecs/wm5110.c | 6 +++---
- sound/soc/codecs/wm8997.c | 6 +++---
- 4 files changed, 15 insertions(+), 11 deletions(-)
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
+diff --git a/sound/soc/codecs/wm5110.c b/sound/soc/codecs/wm5110.c
+index f3f4a10bf0f7..fc634c995834 100644
+--- a/sound/soc/codecs/wm5110.c
++++ b/sound/soc/codecs/wm5110.c
+@@ -2457,9 +2457,6 @@ static int wm5110_probe(struct platform_device *pdev)
+ 		regmap_update_bits(arizona->regmap, wm5110_digital_vu[i],
+ 				   WM5110_DIG_VU, WM5110_DIG_VU);
+ 
+-	pm_runtime_enable(&pdev->dev);
+-	pm_runtime_idle(&pdev->dev);
+-
+ 	ret = arizona_request_irq(arizona, ARIZONA_IRQ_DSP_IRQ1,
+ 				  "ADSP2 Compressed IRQ", wm5110_adsp2_irq,
+ 				  wm5110);
+@@ -2492,6 +2489,9 @@ static int wm5110_probe(struct platform_device *pdev)
+ 		goto err_spk_irqs;
+ 	}
+ 
++	pm_runtime_enable(&pdev->dev);
++	pm_runtime_idle(&pdev->dev);
++
+ 	return ret;
+ 
+ err_spk_irqs:
 -- 
 2.25.1
 
