@@ -4,73 +4,73 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 57781C04A95
-	for <alsa-devel@archiver.kernel.org>; Wed, 28 Sep 2022 15:24:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6AF7FC04A95
+	for <alsa-devel@archiver.kernel.org>; Wed, 28 Sep 2022 15:24:30 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 88F85161D;
-	Wed, 28 Sep 2022 17:23:22 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 88F85161D
+	by alsa0.perex.cz (Postfix) with ESMTPS id 9363DE0E;
+	Wed, 28 Sep 2022 17:23:38 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 9363DE0E
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1664378652;
-	bh=v/BlpdBRXODT5Mp+pnSPWjus4IPHaPr7IeThvwO0PPk=;
+	s=default; t=1664378668;
+	bh=Nh0NO2g9u65+BN8klaBhFNnmBX/CEPSabFEE33aPCBM=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=ZZpdMoi96KjJOCTiAbbNS45XVnQOYo89reoDdFyt+X0E4aoQRgLGh1M2RNMEss0/J
-	 hJm+xuIQOhApyErw39Qa/2Vi9KlmcX7OCcC72Osca/5q1523InVFTZWrhJYzrUI/nS
-	 ftmONS0hJyCV6itMf+m8kR07wks6+R0R7ok93dR8=
+	b=SYhXqd9nq4fnLUo9rVnQwwbEL4cFZwVqW9GDYkdZaSQjNFK6Tz/cdyCpe4HQTNpYG
+	 z2HlZmZeED8C4HQUpbnl5fcFiEVJd45IcbhIKv/7QhUMedTe9PDJipM30dt6QAuvQq
+	 2LaoE9cM/jdAVs8j9VRVYMeInoPx/hUOAEGtX6h0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 035E9F8057F;
+	by alsa1.perex.cz (Postfix) with ESMTP id 8AE99F8059F;
 	Wed, 28 Sep 2022 17:21:02 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id B552EF80570; Wed, 28 Sep 2022 17:20:57 +0200 (CEST)
-Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com
- [IPv6:2a00:1450:4864:20::12b])
+ id DAB96F80551; Wed, 28 Sep 2022 17:20:57 +0200 (CEST)
+Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com
+ [IPv6:2a00:1450:4864:20::12e])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id A6E6AF800AA
- for <alsa-devel@alsa-project.org>; Wed, 28 Sep 2022 17:20:43 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A6E6AF800AA
+ by alsa1.perex.cz (Postfix) with ESMTPS id 3BFBFF80549
+ for <alsa-devel@alsa-project.org>; Wed, 28 Sep 2022 17:20:46 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 3BFBFF80549
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org
- header.b="WVkGr8uX"
-Received: by mail-lf1-x12b.google.com with SMTP id j16so20913568lfg.1
- for <alsa-devel@alsa-project.org>; Wed, 28 Sep 2022 08:20:43 -0700 (PDT)
+ header.b="HUVIrwJl"
+Received: by mail-lf1-x12e.google.com with SMTP id g1so3267641lfu.12
+ for <alsa-devel@alsa-project.org>; Wed, 28 Sep 2022 08:20:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
  h=content-transfer-encoding:mime-version:references:in-reply-to
  :message-id:date:subject:cc:to:from:from:to:cc:subject:date;
- bh=rQi7cXeOGY/HNtdfUBGhQ3z+Yj+bhensaF8Epr2+VKg=;
- b=WVkGr8uX6x7t3roYufHT3DLMR6W8mLiM4JJh38Gi0RhH5xJA1sU2eTj83+VR9jl5yo
- gqmqry/hsBbU+yvrfT3z9RM4jlCszIQtw3WE1L/ISCMAp+dbQM/I6els1XyYeWGjR4la
- lTU9VJfZIO8YbhVoDnNrCooTD07h2tg/Yn+dnREZHvlXo1Pmqh8j2jLo3ki0NoRmsbG5
- moRtIrjOoC5t6UeeeYSmmwXGOQYpG6TgBEzULYlQ7a+wGIgqywvwRwo4Gdi5EClrrKIv
- 3+fPmmfMC7z9LT9sreAYJONhiOm/KTYdw8ielIezMmxEG2qLOTwchn+Fbv6UBT4MJkbj
- 9pQw==
+ bh=BIA0TAnjcVDeqXmtPoACZFO0zgCM9Z55/uYMEChmV1k=;
+ b=HUVIrwJlbnWC7POZbUuq+jawZ0pCLLKkdhQ3Sh6xcMy6lbIlMorHLq1LMkUHCaXBSF
+ ZrReqg/oB8K+ev35Is83p3IEFbT5fxx7j6jpS+sCsC+B8DVdEu954I3L/TmX185bRvKz
+ gH6fOuxZhoTvGP8xLj9kWhMTVV65wGdbk0ALcpbiiIZsr3oyVL5oZ9nP29s0yMzlGjh5
+ dcasR4sZ0YjbLofO5zxnW0ExCizB5BUyjqAncvt1iZ8v6U57+P+1p6q7A0UrEzeymo3/
+ owzq4L72aGyoxHP7OubyUeEUA7r5IDUBFzSd6Yo97mpxk2IRG6XduzHRMz2euEavQnVf
+ wBPg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=1e100.net; s=20210112;
  h=content-transfer-encoding:mime-version:references:in-reply-to
  :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
  :subject:date;
- bh=rQi7cXeOGY/HNtdfUBGhQ3z+Yj+bhensaF8Epr2+VKg=;
- b=ab1o4OTXnBpufd6JkaQrhzTxxOxEPCj9UZnv3NFG3DWG7BhIhWIv7fwQHe9KVE7Tub
- WXVTBgngI0dSPScUEj2VTFqBSspEFnLna2dD6QzOeVfHLF4LY0XSd75x1E/Pv2r6stpC
- ShEpFKg5i2cYUZG4ASK/WUEA3gibJvZyqYAZHulOpDC35+OV7kbDHrsHGx287zeA0QML
- G1k0PTsm0wblOk9Y0rKrXcBCJM2n9UnpzRd1oR93aoCLxVEu0wzjULLR9lZpab27tp1d
- sWqBG0vh8vfTAyNqxZo4KJe54LV0t8k+2Hryr/QMltFG0aNbaHBhokeKSx4PLapQovE1
- IR2Q==
-X-Gm-Message-State: ACrzQf0uhMuYleP77iz2w3JTRbscKW37hwcKd93ilrFvd7GuXRD6LhjV
- okD+ipPdt6bTz81zjufBiSAJIQ==
-X-Google-Smtp-Source: AMsMyM6VehWI9qon+rnG5VScgt7/uupHOCjOgtYrEVVC/9keKEAcBEBBsH/c1adrF8JwLdwReiHzjA==
-X-Received: by 2002:a05:6512:3d8c:b0:49a:4872:858 with SMTP id
- k12-20020a0565123d8c00b0049a48720858mr12955333lfv.145.1664378441955; 
- Wed, 28 Sep 2022 08:20:41 -0700 (PDT)
+ bh=BIA0TAnjcVDeqXmtPoACZFO0zgCM9Z55/uYMEChmV1k=;
+ b=mCsO14f854jSxjBk0mb8ozDCczb9L+otMs4SLIfCc8WfV5qTIi2fdD5pAzrBWfMhmr
+ +Ou0/ML+dQ+9PGLA2XGZZmRRosE17GRPucqTM9EPAREncMBiAcW4zb6gtNreniXew6P5
+ uRKAVOUUbek1PEZF4AWU1WeLL7jvTczOfmR35L37GrIqcDenxGpSELzF1tnx+VGPi+v5
+ UYyPSIuMoKkO10mVD0g8TrAbCRR4hrqtFqvdX1ZBXw7pPNaDmXKSZTprz0sCNmnvQUgV
+ mQbXrulGazizQyFhR3AR0EMMnAYOZ4IG6xoopKDhrmdL3gv+/YkUF//xsjZlo9qqW0ch
+ 2yTg==
+X-Gm-Message-State: ACrzQf1VXpvj64FTPKPXxcdczNab0j4NYEvbEM5584b+zD4cONf8b19A
+ EEoC+PBNGYIAi050udQCAvcmmQ==
+X-Google-Smtp-Source: AMsMyM6rOb4+Z/xY3QPevQEAUk/nnJsmWhq1eHI2OR3T6Ao9NDzM8pnBJePg8hOoi4WsWLfHsGHQnA==
+X-Received: by 2002:ac2:5a49:0:b0:49f:f620:b81b with SMTP id
+ r9-20020ac25a49000000b0049ff620b81bmr12966051lfn.307.1664378444747; 
+ Wed, 28 Sep 2022 08:20:44 -0700 (PDT)
 Received: from krzk-bin.. (78-11-189-27.static.ip.netia.com.pl. [78.11.189.27])
  by smtp.gmail.com with ESMTPSA id
- v2-20020a056512048200b00497a41b3a42sm503023lfq.88.2022.09.28.08.20.41
+ v2-20020a056512048200b00497a41b3a42sm503023lfq.88.2022.09.28.08.20.43
  (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Wed, 28 Sep 2022 08:20:41 -0700 (PDT)
+ Wed, 28 Sep 2022 08:20:44 -0700 (PDT)
 From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
  Rob Herring <robh+dt@kernel.org>,
@@ -79,16 +79,17 @@ To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
  Konrad Dybcio <konrad.dybcio@somainline.org>, alsa-devel@alsa-project.org,
  devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
  linux-arm-msm@vger.kernel.org
-Subject: [PATCH v2 08/11] arm64: dts: qcom: msm8996: align node names with DT
- schema
-Date: Wed, 28 Sep 2022 17:20:24 +0200
-Message-Id: <20220928152027.489543-9-krzysztof.kozlowski@linaro.org>
+Subject: [PATCH v2 10/11] dt-bindings: slimbus: qcom,
+ slim: convert to DT schema
+Date: Wed, 28 Sep 2022 17:20:26 +0200
+Message-Id: <20220928152027.489543-11-krzysztof.kozlowski@linaro.org>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20220928152027.489543-1-krzysztof.kozlowski@linaro.org>
 References: <20220928152027.489543-1-krzysztof.kozlowski@linaro.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc: Rob Herring <robh@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -104,37 +105,151 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-New slimbus DT schema expect only SLIMbus bus nodes to be named
-"slimbus".  In case of Qualcomm SLIMbus NGD, the bus node is what was
-called "ngd".
+Convert the Qualcomm SoC SLIMbus controller bindings to DT Schema.
 
 Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Reviewed-by: Rob Herring <robh@kernel.org>
 ---
- arch/arm64/boot/dts/qcom/msm8996.dtsi | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ .../bindings/slimbus/qcom,slim.yaml           | 86 +++++++++++++++++++
+ .../bindings/slimbus/slim-qcom-ctrl.txt       | 36 --------
+ 2 files changed, 86 insertions(+), 36 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/slimbus/qcom,slim.yaml
+ delete mode 100644 Documentation/devicetree/bindings/slimbus/slim-qcom-ctrl.txt
 
-diff --git a/arch/arm64/boot/dts/qcom/msm8996.dtsi b/arch/arm64/boot/dts/qcom/msm8996.dtsi
-index 8b31f4655cb8..341295be7609 100644
---- a/arch/arm64/boot/dts/qcom/msm8996.dtsi
-+++ b/arch/arm64/boot/dts/qcom/msm8996.dtsi
-@@ -3309,7 +3309,7 @@ slimbam: dma-controller@9184000 {
- 			qcom,num-ees = <2>;
- 		};
- 
--		slim_msm: slim@91c0000 {
-+		slim_msm: slim-ngd@91c0000 {
- 			compatible = "qcom,slim-ngd-v1.5.0";
- 			reg = <0x091c0000 0x2C000>;
- 			interrupts = <0 163 IRQ_TYPE_LEVEL_HIGH>;
-@@ -3317,7 +3317,7 @@ slim_msm: slim@91c0000 {
- 			dma-names = "rx", "tx";
- 			#address-cells = <1>;
- 			#size-cells = <0>;
--			ngd@1 {
-+			slim@1 {
- 				reg = <1>;
- 				#address-cells = <2>;
- 				#size-cells = <0>;
+diff --git a/Documentation/devicetree/bindings/slimbus/qcom,slim.yaml b/Documentation/devicetree/bindings/slimbus/qcom,slim.yaml
+new file mode 100644
+index 000000000000..883bda58ca97
+--- /dev/null
++++ b/Documentation/devicetree/bindings/slimbus/qcom,slim.yaml
+@@ -0,0 +1,86 @@
++# SPDX-License-Identifier: GPL-2.0 OR BSD-2-Clause
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/slimbus/qcom,slim.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Qualcomm SoC SLIMbus controller
++
++maintainers:
++  - Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
++  - Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
++
++description:
++  SLIMbus controller used when applications processor controls SLIMbus master
++  component.
++
++allOf:
++  - $ref: slimbus.yaml#
++
++properties:
++  compatible:
++    items:
++      - enum:
++          - qcom,apq8064-slim
++      - const: qcom,slim
++
++  reg:
++    items:
++      - description: Physical address of controller register blocks
++      - description: SLEW RATE register
++
++  reg-names:
++    items:
++      - const: ctrl
++      - const: slew
++
++  clocks:
++    items:
++      - description: Interface clock for this controller
++      - description: Interrupt for controller core's BAM
++
++  clock-names:
++    items:
++      - const: iface
++      - const: core
++
++  interrupts:
++    maxItems: 1
++
++required:
++  - compatible
++  - reg
++  - reg-names
++  - clocks
++  - clock-names
++  - interrupts
++
++unevaluatedProperties: false
++
++examples:
++  - |
++    #include <dt-bindings/clock/qcom,gcc-msm8960.h>
++    #include <dt-bindings/clock/qcom,lcc-msm8960.h>
++    #include <dt-bindings/interrupt-controller/arm-gic.h>
++
++    soc {
++        #address-cells = <1>;
++        #size-cells = <1>;
++        ranges;
++
++        slim@28080000 {
++            compatible = "qcom,apq8064-slim", "qcom,slim";
++            reg = <0x28080000 0x2000>, <0x80207c 4>;
++            reg-names = "ctrl", "slew";
++            interrupts = <GIC_SPI 33 IRQ_TYPE_LEVEL_HIGH>;
++            clocks = <&lcc SLIMBUS_SRC>, <&lcc AUDIO_SLIMBUS_CLK>;
++            clock-names = "iface", "core";
++            #address-cells = <2>;
++            #size-cells = <0>;
++
++            audio-codec@1,0 {
++                compatible = "slim217,60";
++                reg = <1 0>;
++            };
++        };
++    };
+diff --git a/Documentation/devicetree/bindings/slimbus/slim-qcom-ctrl.txt b/Documentation/devicetree/bindings/slimbus/slim-qcom-ctrl.txt
+deleted file mode 100644
+index 6d955e129f90..000000000000
+--- a/Documentation/devicetree/bindings/slimbus/slim-qcom-ctrl.txt
++++ /dev/null
+@@ -1,36 +0,0 @@
+-Qualcomm SLIMbus controller
+-This controller is used if applications processor driver controls SLIMbus
+-master component.
+-
+-Required properties:
+-
+- - reg : Offset and length of the register region(s) for the device
+- - reg-names : Register region name(s) referenced in reg above
+-	 Required register resource entries are:
+-	 "ctrl": Physical address of controller register blocks
+- 	 "slew": required for "qcom,apq8064-slim" SOC.
+- - compatible : should be "qcom,<SOC-NAME>-slim" for SOC specific compatible
+- 		followed by "qcom,slim" for fallback.
+- - interrupts : Interrupt number used by this controller
+- - clocks : Interface and core clocks used by this SLIMbus controller
+- - clock-names : Required clock-name entries are:
+-	"iface" : Interface clock for this controller
+-	"core" : Interrupt for controller core's BAM
+-
+-Example:
+-
+-	slim@28080000 {
+-		compatible = "qcom,apq8064-slim", "qcom,slim";
+-		reg = <0x28080000 0x2000>, <0x80207C 4>;
+-		reg-names = "ctrl", "slew";
+-		interrupts = <0 33 0>;
+-		clocks = <&lcc SLIMBUS_SRC>, <&lcc AUDIO_SLIMBUS_CLK>;
+-		clock-names = "iface", "core";
+-		#address-cells = <2>;
+-		#size-cell = <0>;
+-
+-		wcd9310: audio-codec@1,0{
+-			compatible = "slim217,60";
+-			reg = <1 0>;
+-		};
+-	};
 -- 
 2.34.1
 
