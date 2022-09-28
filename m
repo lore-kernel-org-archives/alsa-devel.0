@@ -4,78 +4,89 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 77DDAC6FA86
-	for <alsa-devel@archiver.kernel.org>; Wed, 28 Sep 2022 11:53:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8CAB4C04A95
+	for <alsa-devel@archiver.kernel.org>; Wed, 28 Sep 2022 13:21:24 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id B2071846;
-	Wed, 28 Sep 2022 13:52:54 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz B2071846
+	by alsa0.perex.cz (Postfix) with ESMTPS id CE19B846;
+	Wed, 28 Sep 2022 15:20:31 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz CE19B846
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1664366024;
-	bh=Gnq+tgQ9ZASFB+MDRHd64MSe86NAiX2VN5Nyk4dymlo=;
-	h=Date:From:To:Subject:References:In-Reply-To:Cc:List-Id:
+	s=default; t=1664371281;
+	bh=tjtIlxCixKFKS9qmF3U56b6na2PrSXJfgLZOHLv1yKw=;
+	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=jpgeevqjNht3AZBWMqeqSJ7UD1/Gl6fTkyHmFlc4vFD+dgDCX9Amc5ifCiPsGz/dt
-	 jWAUX2ORYNN8K4n3IX8cwH8yKPZkWXLmW5ROueDDgQMapazZfIoMC+ZnD8fNf7CE5/
-	 AM/CeozHXRnKSZ4lF5+F8O2y8BIIhuRxiOnkImTI=
+	b=gX8LnQfFu4Ra+T6OurtoHwZCeda42VsR96NhGFAI6udof9ewHnrKgIgh4IN5kzBrD
+	 kOk1oJVmN2UdrlswAlF4elLu1xEJfueL/MSZ1gb/ZmPpFxQDkGU8O0Y8NcgSpUTfkC
+	 AB09GGDNifZTynvJBSc68OIOQbYrc+HiSqfO+Jw4=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 3590EF800AA;
-	Wed, 28 Sep 2022 13:52:54 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 53CDCF80310;
+	Wed, 28 Sep 2022 15:20:31 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 353F4F80310; Wed, 28 Sep 2022 13:52:52 +0200 (CEST)
-Received: from ams.source.kernel.org (ams.source.kernel.org
- [IPv6:2604:1380:4601:e00::1])
- (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+ id 84431F804B3; Wed, 28 Sep 2022 15:20:29 +0200 (CEST)
+Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com
+ [IPv6:2a00:1450:4864:20::12b])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 59CA6F80109
- for <alsa-devel@alsa-project.org>; Wed, 28 Sep 2022 13:52:49 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 59CA6F80109
+ by alsa1.perex.cz (Postfix) with ESMTPS id 47A39F8011C
+ for <alsa-devel@alsa-project.org>; Wed, 28 Sep 2022 15:20:22 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 47A39F8011C
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org
- header.b="VXPUiroR"
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by ams.source.kernel.org (Postfix) with ESMTPS id 8CB2BB82038;
- Wed, 28 Sep 2022 11:52:47 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B0037C433D6;
- Wed, 28 Sep 2022 11:52:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
- s=k20201202; t=1664365966;
- bh=Gnq+tgQ9ZASFB+MDRHd64MSe86NAiX2VN5Nyk4dymlo=;
- h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
- b=VXPUiroRZIq0xZW03TDAK/4k/EeBDRMyra8cXaK1sbQMllXWR0AFOPEKk0BvPytxo
- NifQinW/b1f7Wo3kDFb2qjAxfy7N1AqolVbEBzafjl43L0pnkoJv3klq8IrPPLhlg/
- oC/kKitofLOPK14NQN4lGF5Gby3bEvrQswWX95n2myjMc8KjhOvQNXpj8NHwpQGy5G
- 7hFmeWWIaoG0cuLsoilSjz8S3og4/HnqZQJPoDnE1TNf5+inQr8xkTXD6mAQ8kZgZO
- ViKHzu8KIvm4E0dQ/0XkCv6AToQ+RPuYKuBpxQ3PO6FxN/NZXY8hRXilmsaB6Fp0rk
- 9HvgaPvUe61Gw==
-Date: Wed, 28 Sep 2022 12:52:38 +0100
-From: Mark Brown <broonie@kernel.org>
-To: Jason Zhu <jason.zhu@rock-chips.com>
-Subject: Re: [PATCH 1/1] ASoC: soc-dai: export some symbols
-Message-ID: <YzQ1hpJ753Zy5k+a@sirena.org.uk>
-References: <20220920034545.2820888-1-jason.zhu@rock-chips.com>
- <20220920034545.2820888-2-jason.zhu@rock-chips.com>
- <Yym2aURe2+pA3ocn@sirena.org.uk>
- <dfeac54a-a264-835a-f155-90eb8f093314@rock-chips.com>
- <Yy2s2PA/C1ngeb//@sirena.org.uk>
- <155e10c4-7b08-f1ec-9f28-42a3d982740f@rock-chips.com>
- <1dc563bf-feda-e11a-c159-91ae0529a36b@linux.intel.com>
- <YzHGPuajS54y1SV6@sirena.org.uk>
- <678dcfcf-83f0-5969-9b55-79065c042116@rock-chips.com>
+ dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org
+ header.b="fOYSihQM"
+Received: by mail-lf1-x12b.google.com with SMTP id bu25so18446911lfb.3
+ for <alsa-devel@alsa-project.org>; Wed, 28 Sep 2022 06:20:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linaro.org; s=google;
+ h=content-transfer-encoding:mime-version:references:in-reply-to
+ :message-id:date:subject:cc:to:from:from:to:cc:subject:date;
+ bh=U36NjhsAwog7/X0GNMxs2kFxhhnbeKSocGnUpytYWXI=;
+ b=fOYSihQMzyuZDyv4JUnGdl/v+/+kIk2FAZPwNqiSy2uDxtAaQzoYXK8MbFTp9pJyvt
+ p/sBRodRkv7xYW58vhqAkdZUkP02VVZjJ8QzNhhxfWBXrG3kBMtGQkaE+vI+lYjd3gSV
+ B/a5PqZPVllsDJwdAcv89FE88sFQc8VXV0DGMAwdiMm3L80vyHUDn/aadd4xAJoxAdJr
+ EPjNLMDaaRm1wDdy+PC/zVY0FtzOHZKuX/UksYVHjKBH0r52ZBifs4DCviYmRG6Fq0NO
+ 97CCzK56A3Si7MgXcyGHP613wwSCQfYVtkVUk23zD40sc77RAbRlIYcYTssZOUIbQYEA
+ woCA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=content-transfer-encoding:mime-version:references:in-reply-to
+ :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+ :subject:date;
+ bh=U36NjhsAwog7/X0GNMxs2kFxhhnbeKSocGnUpytYWXI=;
+ b=lYNxPs7LW8Slzl1jDHQfWbl4qP0Y4ozMyN/4UW3Hk2ILok92JcLNkGvAdVKURQEFXM
+ EMMxG9eTn2z9F+N4HU+rleI9rQo4oOToN8OjNu/M00P+9+EPN0TtNjw6yuQmsbGz/QMT
+ V8ekk1vvGB+IyvOgblFYYeYg8qFUXM+3UfUMkuFrXL1t7tFGDdJI2F71eQyUNr41vuK9
+ HRtDqVWngZOUAL/fYHgqd3s15UVy5U4yhB1rrP4h8Suc847vwVwSCMoed0qI4f7C6Bh0
+ Ih0fU8OX9fa+fckY3KwwUTNBWhBibvs3VykLVuFnwo5YlnKj6gLCqh6EmKahFmkOHAK4
+ CbeQ==
+X-Gm-Message-State: ACrzQf3TMo8DC/Oc7xCO3RuGIQaN0pR6Jto1ZOt+5jE4/zlLPruIRqdC
+ ekDjQHYcpbvrhFXaJ8GNkxgEWQ==
+X-Google-Smtp-Source: AMsMyM7MhlrItXEwdt3Vv00VMHy5nJueDqpMgvsGytSWYaxV1mPq5Uux6Ggg9crZH7sLVRMRe8mroQ==
+X-Received: by 2002:a05:6512:3052:b0:49e:fcb2:c1e9 with SMTP id
+ b18-20020a056512305200b0049efcb2c1e9mr12355824lfb.260.1664371220823; 
+ Wed, 28 Sep 2022 06:20:20 -0700 (PDT)
+Received: from krzk-bin.. (78-11-189-27.static.ip.netia.com.pl. [78.11.189.27])
+ by smtp.gmail.com with ESMTPSA id
+ p11-20020ac246cb000000b00497ad9ae486sm478484lfo.62.2022.09.28.06.20.19
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Wed, 28 Sep 2022 06:20:20 -0700 (PDT)
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+To: Andy Gross <agross@kernel.org>, Bjorn Andersson <andersson@kernel.org>,
+ Konrad Dybcio <konrad.dybcio@somainline.org>,
+ Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+ linux-arm-msm@vger.kernel.org, alsa-devel@alsa-project.org,
+ linux-kernel@vger.kernel.org
+Subject: [PATCH 2/2] slimbus: qcom-ngd-ctrl: drop PM runtime counter on
+ transfer error paths
+Date: Wed, 28 Sep 2022 15:20:11 +0200
+Message-Id: <20220928132011.455347-2-krzysztof.kozlowski@linaro.org>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20220928132011.455347-1-krzysztof.kozlowski@linaro.org>
+References: <20220928132011.455347-1-krzysztof.kozlowski@linaro.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature"; boundary="vRL02sB+hLGtfhct"
-Content-Disposition: inline
-In-Reply-To: <678dcfcf-83f0-5969-9b55-79065c042116@rock-chips.com>
-X-Cookie: You look tired.
-Cc: sugar.zhang@rock-chips.com, lgirdwood@gmail.com,
- alsa-devel@alsa-project.org,
- Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, tiwai@suse.com
+Content-Transfer-Encoding: 8bit
+Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -91,84 +102,51 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
+If transfer in qcom_slim_ngd_xfer_msg_sync() fails, we need to drop the
+PM runtime usage counter to have it balanced.
 
---vRL02sB+hLGtfhct
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+---
+ drivers/slimbus/qcom-ngd-ctrl.c | 14 +++++++++++---
+ 1 file changed, 11 insertions(+), 3 deletions(-)
 
-On Tue, Sep 27, 2022 at 11:57:53AM +0800, Jason Zhu wrote:
->=20
-> =E5=9C=A8 2022/9/26 23:33, Mark Brown =E5=86=99=E9=81=93:
-> > On Mon, Sep 26, 2022 at 09:52:34AM +0200, Pierre-Louis Bossart wrote:
-> > > On 9/26/22 03:34, Jason Zhu wrote:
-> > > > =E5=9C=A8 2022/9/23 20:55, Mark Brown =E5=86=99=E9=81=93:
+diff --git a/drivers/slimbus/qcom-ngd-ctrl.c b/drivers/slimbus/qcom-ngd-ctrl.c
+index ba36eb5c0de3..ac84fdc2822f 100644
+--- a/drivers/slimbus/qcom-ngd-ctrl.c
++++ b/drivers/slimbus/qcom-ngd-ctrl.c
+@@ -919,21 +919,29 @@ static int qcom_slim_ngd_xfer_msg_sync(struct slim_controller *ctrl,
+ 	DECLARE_COMPLETION_ONSTACK(done);
+ 	int ret, timeout;
+ 
+-	pm_runtime_get_sync(ctrl->dev);
++	ret = pm_runtime_get_sync(ctrl->dev);
++	if (ret < 0)
++		goto pm_put;
+ 
+ 	txn->comp = &done;
+ 
+ 	ret = qcom_slim_ngd_xfer_msg(ctrl, txn);
+ 	if (ret)
+-		return ret;
++		goto pm_put;
+ 
+ 	timeout = wait_for_completion_timeout(&done, HZ);
+ 	if (!timeout) {
+ 		dev_err(ctrl->dev, "TX timed out:MC:0x%x,mt:0x%x", txn->mc,
+ 				txn->mt);
+-		return -ETIMEDOUT;
++		ret = -ETIMEDOUT;
++		goto pm_put;
+ 	}
+ 	return 0;
++
++pm_put:
++	pm_runtime_put(ctrl->dev);
++
++	return ret;
+ }
+ 
+ static int qcom_slim_ngd_enable_stream(struct slim_stream_runtime *rt)
+-- 
+2.34.1
 
-> > > > > > The data can not be lost in this process. So we attach VAD & PDM
-> > > > > > in the same card, then close the card and wake up VAD & PDM aga=
-in
-> > > > > > when the system is goto sleep. Like these code:
-
-> > > > > This sounds like a very normal thing with a standard audio stream=
- -
-> > > > > other devices have similar VAD stuff without needing to open code=
- access
-> > > > > to the PCM operations?
-
-> > > > At present, only VAD is handled in this way by Rockchip.
-
-> > The point here is that other non-Rockchip devices do similar sounding
-> > things?
-
-> No.=C2=A0 Usually, the vad is integrated in codec, like rt5677, and is li=
-nked
-> with DSP to
-> handle its data. If DSP detects useful sound, send an irq to system to
-> wakeup and
-> record sound.=C2=A0 Others detect and analysis sound by VAD itself, like
-> K32W041A.
-
-What I mean here is that you're missing my point.  The deferring of full
-wake word recognition to a secondary algorithm running somewhere else is
-a pretty common design.
-
-> > If this is something that's not uncommon that sounds like an even
-> > stronger reason for not just randomly exporting the symbols and open
-> > coding things in individual drivers outside of framework control.  What
-> > are these other use cases, or is it other instances of the same thing?
-
-> Maybe in this case: One PDM is used to record sound, and there is two way
-> to move data. Use the VAD to move data to sram when system is sleep and
-> use DMA to move data when sytem is alive. If we seperate this in two audio
-> streams, we close the "PDM + VAD" audio stream firstly when system is ali=
-ve
-> and open "PDM + DMA" audio stream. This process maybe take long time
-> that PDM FIFO will be full and lost some data. But we hope that data will
-> not be lost in the whole proces. So these must be done in one audio
-> stream.
-
-I'd have exepected that any handover be done such that the low power
-wake word stream is running concurrently with the main audio stream for
-some period of time, possibly until the sync between the two has been
-worked out, and that data would be being read out of the wake word
-stream while the full stream is starting up.  As you say I'd expect that
-otherwise you'll run into trouble with dropouts.  I don't see how doing
-that handover would require that we export any symbols though, if there
-is any kernel support needed it should be handled in the framework.
-
---vRL02sB+hLGtfhct
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmM0NYUACgkQJNaLcl1U
-h9AfLgf9G4DBMEawGFzeZ6AkXL+cdXCMFhR5m0cCtYWh6mcZJzHQBMYHTX4wZ7T8
-xH32spGl4YYzO2HdPPPTllklvbKODqSL2deLr2pyD+CMXed89Mgmx0LON3Kn1tDE
-GSXMEgq5F2EM3Dk/i+7VnsSEGxw5rDid4IzI4dEmP0OfYmFNpbUVmhGJKsAGt+Qc
-VFR203+qRcq4lOLAsVfiLZnL0vjTniBzpLOuIQZLrLAmy1rqGVJiu0KtFeQ33piX
-q+K/AHtuJ69X3bjs8Uap0LncQqQY4kXS4CFRIhNSG29rADqt2HisEqos4X9CraKx
-fN3vVEzhiXV+UYJNaXKU3jOzE7zN6A==
-=P+fe
------END PGP SIGNATURE-----
-
---vRL02sB+hLGtfhct--
