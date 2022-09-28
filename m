@@ -4,88 +4,84 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7AD59C04A95
-	for <alsa-devel@archiver.kernel.org>; Wed, 28 Sep 2022 08:40:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5DE5DC32771
+	for <alsa-devel@archiver.kernel.org>; Wed, 28 Sep 2022 08:41:02 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 5D6E2857;
-	Wed, 28 Sep 2022 10:39:45 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 5D6E2857
+	by alsa0.perex.cz (Postfix) with ESMTPS id 508BEE12;
+	Wed, 28 Sep 2022 10:40:10 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 508BEE12
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1664354435;
-	bh=V5ZHsDB6wcD9KRT2A0rLXsENvTTm9TvpXoN0E3+EoAs=;
+	s=default; t=1664354460;
+	bh=Nh8zVkI764C79JD/zOGUpjoTiHdV4xPlRb3vpHlIbd4=;
 	h=Date:Subject:To:References:From:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=oPrMoFngM7sl866uUU8Q6R9ZqT8SP69VKV7e7m4AXLCYdTDhlxehZsc0Dx775Qbfo
-	 rhaUbi/ZhYyNxS3Th1U63CujMYB1z9iVSxi6ALCF2dXi9UlHPS2Cht0LMOFHIws0QL
-	 UR8LOYFYsXpuFq3nyb4JGkuUAMvLRj/TTcguNpD8=
+	b=ptx34fsaH9GpRF0PxSKE9Cef21s3rS+cpXhw5IRUfMDgLn5QiKoFsELLRpaVPm6oB
+	 ZO2CvIES6HM3O7UXg6m4Y1l2WKQldmpF4juNu1cRLiJEDbrI/wfgkKOAc+93jXtHiP
+	 3MU38twiFnsz0HFPm1s3Mng691FNvHzNCp3+NWdQ=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 03F68F800AA;
-	Wed, 28 Sep 2022 10:39:44 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 73D82F804D6;
+	Wed, 28 Sep 2022 10:39:51 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 28593F80310; Wed, 28 Sep 2022 10:39:43 +0200 (CEST)
-Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
+ id 97055F80272; Wed, 28 Sep 2022 10:39:50 +0200 (CEST)
+Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id B03CFF800AA
- for <alsa-devel@alsa-project.org>; Wed, 28 Sep 2022 10:39:34 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz B03CFF800AA
+ by alsa1.perex.cz (Postfix) with ESMTPS id F3243F80272
+ for <alsa-devel@alsa-project.org>; Wed, 28 Sep 2022 10:39:42 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz F3243F80272
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
- header.b="b1DScQke"
+ header.b="bhjRh8Pr"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
- t=1664354377; x=1695890377;
+ t=1664354385; x=1695890385;
  h=message-id:date:mime-version:subject:to:cc:references:
  from:in-reply-to:content-transfer-encoding;
- bh=V5ZHsDB6wcD9KRT2A0rLXsENvTTm9TvpXoN0E3+EoAs=;
- b=b1DScQke46UkK65CIyjdRq5KiFveHEb2gfm2JyCIwRfOgNj0JT5tQODq
- 8YrT4Jf95Cuh7hYDyqNib9xbuFghLN1IA/+2Lo+KLUIc58S4RePoAx9pX
- mYhCYqvHpJd8PNdVxyPtcKkqnTNF/9D0aRjW33Jv098BecFt4loLRJ/pj
- Cr20oz1s58N1Ti8NcMTrWP3SYaLhsLaB1z0invu5tz3A0wNaWpbCToLby
- Gn1xybg+mFR3FWZAlQeHMGY10v1AWcJYdzeJK24k/+y8laZ0z0+PyQtCT
- CvjdI1O/WT7t9bg3hue0gXN3yhUmn2t2ccN890ZtWv0XOv4GiIPAhnSY+ g==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10483"; a="288701807"
-X-IronPort-AV: E=Sophos;i="5.93,351,1654585200"; d="scan'208";a="288701807"
+ bh=Nh8zVkI764C79JD/zOGUpjoTiHdV4xPlRb3vpHlIbd4=;
+ b=bhjRh8Prcgoi3k7dBnC56udYIJaxLY/n0YPS5bly8mF3L71pASlc9/8L
+ s+RDaLxpY7I/cPfLkTVyzQuitiUlubARSaYzo591/ICAOFvm1ZoYiqFU6
+ EONBkcKrkT2zJjUAdgnKlirgt+Pzv+bASGOLrpbhOwDz795ibenvUZ0m+
+ uL92FZ3aJ+W8yayOwqAXQTXWCKHpI2j4Tfys9KdhYaDFC56FsnVJAMOFI
+ 9FoE7iPqfeJZ3HzNGh2QugBA+e6stunKlqav9RxJEh6BXAX5uZwsh+E6M
+ +wdF+jhDW3J4Ph8JVYPTqV2LK/yhyGTJUN+aQOveLfoyDIFofpnCMHbvK A==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10483"; a="365591350"
+X-IronPort-AV: E=Sophos;i="5.93,351,1654585200"; d="scan'208";a="365591350"
 Received: from orsmga007.jf.intel.com ([10.7.209.58])
- by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 28 Sep 2022 01:39:30 -0700
-X-IronPort-AV: E=McAfee;i="6500,9779,10483"; a="617131390"
-X-IronPort-AV: E=Sophos;i="5.93,351,1654585200"; d="scan'208";a="617131390"
+ by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 28 Sep 2022 01:39:23 -0700
+X-IronPort-AV: E=McAfee;i="6500,9779,10483"; a="617131356"
+X-IronPort-AV: E=Sophos;i="5.93,351,1654585200"; d="scan'208";a="617131356"
 Received: from morank-mobl3.ger.corp.intel.com (HELO [10.251.211.7])
  ([10.251.211.7])
  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
- 28 Sep 2022 01:39:25 -0700
-Message-ID: <d94a9abd-95ca-09ba-ab24-e4c38b832678@linux.intel.com>
-Date: Wed, 28 Sep 2022 10:38:29 +0200
+ 28 Sep 2022 01:39:17 -0700
+Message-ID: <9cb844a7-6eac-0085-3c8c-32004a22c849@linux.intel.com>
+Date: Wed, 28 Sep 2022 10:36:32 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
  Firefox/91.0 Thunderbird/91.11.0
-Subject: Re: [PATCH] ASoC: Intel: sof_rt5682: remove
- SOF_RT1015_SPEAKER_AMP_100FS flag
+Subject: Re: [PATCH] ASoC: soc-pcm: fix fe and be race when accessing
+ substream->runtime
 Content-Language: en-US
-To: "Lu, Brent" <brent.lu@intel.com>,
- "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
-References: <20220913074906.926774-1-brent.lu@intel.com>
- <2577e4db-8593-cf37-135b-aa51b6268cd7@linux.intel.com>
- <CY5PR11MB6257A5CC3976FAEA2C713A4997559@CY5PR11MB6257.namprd11.prod.outlook.com>
+To: Eugeniu Rosca <erosca@de.adit-jv.com>
+References: <1664210154-11552-1-git-send-email-erosca@de.adit-jv.com>
+ <bdf56f23-1019-b4c8-a11a-3934db432cf1@linux.intel.com>
+ <20220927123043.GB4547@lxhi-065>
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-In-Reply-To: <CY5PR11MB6257A5CC3976FAEA2C713A4997559@CY5PR11MB6257.namprd11.prod.outlook.com>
+In-Reply-To: <20220927123043.GB4547@lxhi-065>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-Cc: "Rojewski, Cezary" <cezary.rojewski@intel.com>,
- Kai Vehmanen <kai.vehmanen@linux.intel.com>, Ajye Huang <ajye.huang@gmail.com>,
- Takashi Iwai <tiwai@suse.com>,
- Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- Liam Girdwood <liam.r.girdwood@linux.intel.com>, "Chiang,
- Mac" <mac.chiang@intel.com>, Mark Brown <broonie@kernel.org>,
- Bard Liao <yung-chuan.liao@linux.intel.com>,
- Peter Ujfalusi <peter.ujfalusi@linux.intel.com>, "Gopal,
- Vamshi Krishna" <vamshi.krishna.gopal@intel.com>, "Zhi,
- Yong" <yong.zhi@intel.com>
+Cc: Yanmin Zhang <yanmin_zhang@linux.intel.com>, alsa-devel@alsa-project.org,
+ Eugeniu Rosca <roscaeugeniu@gmail.com>, Jiada Wang <jiada_wang@mentor.com>,
+ Liam Girdwood <lgirdwood@gmail.com>,
+ Cezary Rojewski <cezary.rojewski@intel.com>,
+ Zhang Yanmin <yanmin.zhang@intel.com>, linux-kernel@vger.kernel.org,
+ Ramesh Babu <ramesh.babu@intel.com>, Takashi Iwai <tiwai@suse.com>,
+ Dean Jenkins <Dean_Jenkins@mentor.com>, Mark Brown <broonie@kernel.org>,
+ Ramesh Babu B <ramesh.babu.b@intel.com>, xiao jin <jin.xiao@intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -103,36 +99,72 @@ Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
 
 
-On 9/27/22 15:16, Lu, Brent wrote:
->>> +		case SND_SOC_DAIFMT_DSP_A:
->>> +		case SND_SOC_DAIFMT_DSP_B:
->>> +			/* 4-slot TDM */
->>> +			ret = snd_soc_dai_set_tdm_slot(codec_dai,
->>> +						       rt1015_tdm_mask[i].tx,
->>> +						       rt1015_tdm_mask[i].rx,
->>> +						       4,
->>> +						       params_width(params));
->>
->> The changes look ok, just wondering if we can avoid hard-coding those 4 values.
->> Can we not get the number of TDM slots from topology and/or dailink
->> configuration?
->>
->>
+On 9/27/22 14:30, Eugeniu Rosca wrote:
+> Hi Pierre,
 > 
-> I think TDM slot number is possible but not TX/RX mask. What we have in topology
-> is union of tx/rx mask of all channels. We don't know the mask of specific channel in
-> DAI_CONFIG.
+> On Di, Sep 27, 2022 at 09:51:46 +0200, Pierre-Louis Bossart wrote:
+>> On 9/26/22 18:35, Eugeniu Rosca wrote:
+>>> From: xiao jin <jin.xiao@intel.com>
+>>>
+>>> After start of fe and be, fe might go to close without triggering
+>>> STOP, and substream->runtime is freed. However, be is still at
+>>> START state and its substream->runtime still points to the
+>>> freed runtime.
+>>>
+>>> Later on, FE is opened/started again, and triggers STOP.
+>>> snd_pcm_do_stop => dpcm_fe_dai_trigger
+>>>                 => dpcm_fe_dai_do_trigger
+>>>                 => dpcm_be_dai_trigger
+>>>                 => dpcm_do_trigger
+>>>                 => soc_pcm_trigger
+>>>                 => skl_platform_pcm_trigger
+>>> skl_platform_pcm_trigger accesses the freed old runtime data and
+>>> kernel panic.
+>>>
+>>> The patch fixes it by assigning be_substream->runtime in
+>>> dpcm_be_dai_startup when be's state is START.
+>>
+>> Can I ask on which kernel this patch was validated and on what platform?
 > 
-> DAI_CONFIG(SSP, 0, BOARD_HP_BE_ID, SSP0-Codec,
->         SSP_CONFIG(I2S, SSP_CLOCK(mclk, 19200000, codec_mclk_in),
->                 SSP_CLOCK(bclk, 2400000, codec_slave),
->                 SSP_CLOCK(fsync, 48000, codec_slave),
->                 SSP_TDM(2, 25, 3, 3),
+> As shared with Czarek in https://lore.kernel.org/alsa-devel/20220927110022.GA3802@lxhi-065/ ,
+> this patch was originally extracted from the out-of-tree Intel Apollo
+> Lake v4.1 KNL releases, hence it was validated on Intel ref.boards.
+> 
+> No re-testing/re-validation has been performed on the latest vanilla.
 
-the 3 3 is precisely the channel mask!
+There's no way to predict how a patch for a kernel 4.1 - released 7
+years ago - would behave with a new kernel. If it's not tested it cannot
+be merged.
 
->                 SSP_CONFIG_DATA(SSP, 0, 24, 0, 0, 0, SSP_CC_BCLK_ES)))')
+> One of the goals behind submitting the patch is getting in touch
+> with the original authors, as well as the members of alsa-devel,
+> to assess if the patch is still relevant.
+
+The only thing we could do is have more clarity on the test case and try
+to reproduce it.
+
+>>
+>> We've done a lot of work since last year on DPCM states, 
 > 
-> Regards,
-> Brent
+> Could you please feedback if the work on the DPCM states is
+> pre- or post-v5.10?
+
+It doesn't matter for this discussion on the upstream kernel. But yes
+it's post v5.10.
+
 > 
+>> and I wonder
+>> the problem mentioned above actually exists on recent kernels.
+>>
+>> Specifically, if the FE is closed, I don't get how the BE is not closed
+>> as well. And if this problem is found on a recent kernel, then it should
+>> be seen in the AVS driver as well, no?
+> 
+> It is totally conceivable (if not very likely) that the mainline
+> advancements in the sound subsystem make this patch obsolete.
+> 
+> I would be happy if that's the final outcome of our discussion
+> (since this will allow dropping the patch in our downstream kernel).
+> 
+> Best Regards,
+> Eugeniu
