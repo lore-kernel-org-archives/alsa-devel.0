@@ -4,73 +4,80 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 98DC1C07E9D
-	for <alsa-devel@archiver.kernel.org>; Thu, 29 Sep 2022 07:36:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 16A1DC07E9D
+	for <alsa-devel@archiver.kernel.org>; Thu, 29 Sep 2022 07:37:12 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id F1848E11;
-	Thu, 29 Sep 2022 09:35:55 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz F1848E11
+	by alsa0.perex.cz (Postfix) with ESMTPS id 0D8DD161F;
+	Thu, 29 Sep 2022 09:36:21 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0D8DD161F
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1664437006;
-	bh=hR40GrK1IkVRvSsWtdZwW7WRaEGmzyACxc6bmo5Oo4I=;
-	h=From:To:Subject:Date:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe:From;
-	b=lnIQnfah5OmVNbyp8Ra/R8bW2dAzv6VrK9UJ8BEtqCLqvz0ExpPi5CZob8cDnf776
-	 1DQs5Il1HNnV0yBMsl7sQKxryY8/hcNOB+fhPYBatuVCkfs772oauGQudOcOR7e5km
-	 HemEbg5UxcZAkiR5M3amFFy5+iT5ImidKwBiprds=
+	s=default; t=1664437031;
+	bh=wFwH3HagtYKMjlj352JFNByNP5gYt/beqObaDPq5gdg=;
+	h=From:To:Subject:Date:In-Reply-To:References:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=K5xvNVjdWzCexpuPyufT90FfC/LGjEJANXfFmbPd/raBPZu2OOaa8mPBYxM6KP6XZ
+	 7y22rUosSL7p8WmeZCE4TH6hwkeHcqAvVdU79OxgnbaEsWgAbsXWDGPeDsAPSkeQTR
+	 UXAjPI9lMBz4t+IoMDqu1mjtHsHmi8yrZHg0GpHM=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 8F395F8023A;
-	Thu, 29 Sep 2022 09:35:55 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 2A61BF8053A;
+	Thu, 29 Sep 2022 09:36:00 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 49BE2F8016D; Thu, 29 Sep 2022 09:35:54 +0200 (CEST)
+ id 7D0ACF8053C; Thu, 29 Sep 2022 09:35:58 +0200 (CEST)
 Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
  (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 8AED9F80095
- for <alsa-devel@alsa-project.org>; Thu, 29 Sep 2022 09:35:51 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8AED9F80095
+ by alsa1.perex.cz (Postfix) with ESMTPS id 6A42BF800AA
+ for <alsa-devel@alsa-project.org>; Thu, 29 Sep 2022 09:35:52 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6A42BF800AA
 Authentication-Results: alsa1.perex.cz;
  dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="kVTNoVKw"; 
+ header.b="WnRIR3oW"; 
  dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="sn2SvKXs"
+ header.b="5OPOT4iK"
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id EB47221C58;
- Thu, 29 Sep 2022 07:35:50 +0000 (UTC)
+ by smtp-out1.suse.de (Postfix) with ESMTPS id D930721B9B;
+ Thu, 29 Sep 2022 07:35:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1664436950; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=zkPuxZ1wfhQnLcrupMqYsa/pOIl2UZ1E2r4lwI/MEFk=;
- b=kVTNoVKw5ZcGzVW4hQiTyo8rWVJ+Se3nvTzP5Efe3uqV2UKlA/fJ8cDzn5vlZ5UNQXBOGA
- YmK+U00DX1lTZrCdHbpETqKSslvdm6J33DBPG6WR/gCGoWGkAkuWtN73xeGtWxIpB24grJ
- kjBVJ6T7S1bJaz9/wqHvtUVyOsMuS10=
+ t=1664436951; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+ mime-version:mime-version:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=Ihg9bap9gIGjE0kK7NEFdJh1PD6QWEL0SClbwV/dBcA=;
+ b=WnRIR3oWGpTVAkIgKiODOPqzb9zdmpBR6X2/Gp49Q7cBZIi4nmG9QnNorl+HAJZb/x0RGI
+ NKGfDUynd2yC147vJMkedq0PDbqaoWr1KFVk9Lp99AMbP7VSFRvfoA33tFjKY2CgEZWci2
+ qT39t5kEUbd+rXvVqSivf7l7HY+KJB4=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1664436950;
+ s=susede2_ed25519; t=1664436951;
  h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
- mime-version:mime-version: content-transfer-encoding:content-transfer-encoding;
- bh=zkPuxZ1wfhQnLcrupMqYsa/pOIl2UZ1E2r4lwI/MEFk=;
- b=sn2SvKXsqaed3/hInNVCvGSCIuADHUAfMdeU8XZhew45qrvLfqoWFd/Ong3ZK7dP90Lmfd
- doFDy+57W1kPq6BQ==
+ mime-version:mime-version:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=Ihg9bap9gIGjE0kK7NEFdJh1PD6QWEL0SClbwV/dBcA=;
+ b=5OPOT4iK+kY4hTRpie3MGAzhQ6F827rpb/Pw1KdmGOETyEHdPEYjCc69m1sC4gwIDcnPSL
+ e5HtM8R4wITprKCg==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
  (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
  key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
  (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id CDA3C1348E;
- Thu, 29 Sep 2022 07:35:50 +0000 (UTC)
+ by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id B8C281348E;
+ Thu, 29 Sep 2022 07:35:51 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id wcYWMdZKNWMFfQAAMHmgww
- (envelope-from <tiwai@suse.de>); Thu, 29 Sep 2022 07:35:50 +0000
+ by imap2.suse-dmz.suse.de with ESMTPSA id gPJRLNdKNWMFfQAAMHmgww
+ (envelope-from <tiwai@suse.de>); Thu, 29 Sep 2022 07:35:51 +0000
 From: Takashi Iwai <tiwai@suse.de>
 To: alsa-devel@alsa-project.org
-Subject: [PATCH 0/8] ALSA: hda: Add model option to codec drivers, too
-Date: Thu, 29 Sep 2022 09:35:37 +0200
-Message-Id: <20220929073545.1085-1-tiwai@suse.de>
+Subject: [PATCH 1/8] ALSA: hda/realtek: Add model option to codec driver, too
+Date: Thu, 29 Sep 2022 09:35:38 +0200
+Message-Id: <20220929073545.1085-2-tiwai@suse.de>
 X-Mailer: git-send-email 2.35.3
+In-Reply-To: <20220929073545.1085-1-tiwai@suse.de>
+References: <20220929073545.1085-1-tiwai@suse.de>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-BeenThere: alsa-devel@alsa-project.org
@@ -88,38 +95,65 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-Hi,
+The model option of snd-hda-intel or SOF driver is useful for testing
+/ debugging quirks.  Since many devices have multiple codecs and the
+quirk is rather codec-specific, it's often difficult to pass the model
+to the proper target.
 
-this is a trivial patch set to add the "model" option to each HD-audio
-codec driver that works equivalently with snd-hda-intel or SOF
-driver's model option.  It makes it easer for users to specify the
-quirk to the right target.
+This patch adds the equivalent model option to Realek codec driver, so
+that user can optionally specify the option for the codec instead of
+snd-hda-intel or SOF drivers.
 
+That is, you can pass the boot option like
+  snd_hda_codec_realtek.model=foobar
+or
+  snd_hda_codec_realtek.model=103c:89c6
+for applying a quirk.
 
-Takashi
+The model option of snd-hda-intel or SOF is still effective.  When the
+option is given for both, the option for the controller driver wins.
 
-===
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+---
+ sound/pci/hda/patch_realtek.c | 11 +++++++++++
+ 1 file changed, 11 insertions(+)
 
-Takashi Iwai (8):
-  ALSA: hda/realtek: Add model option to codec driver, too
-  ALSA: hda/cirrus: Add model option to codec driver, too
-  ALSA: hda/conexant: Add model option to codec driver, too
-  ALSA: hda/cs8409: Add model option to codec driver, too
-  ALSA: hda/analog: Add model option to codec driver, too
-  ALSA: hda/sigmatel: Add model option to codec driver, too
-  ALSA: hda/via: Add model option to codec driver, too
-  ALSA: doc: Explain more about model option
-
- Documentation/sound/hd-audio/notes.rst | 16 ++++++++++++++++
- sound/pci/hda/patch_analog.c           | 10 ++++++++++
- sound/pci/hda/patch_cirrus.c           | 10 ++++++++++
- sound/pci/hda/patch_conexant.c         | 10 ++++++++++
- sound/pci/hda/patch_cs8409.c           | 10 ++++++++++
- sound/pci/hda/patch_realtek.c          | 11 +++++++++++
- sound/pci/hda/patch_sigmatel.c         | 11 +++++++++++
- sound/pci/hda/patch_via.c              | 11 +++++++++++
- 8 files changed, 89 insertions(+)
-
+diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+index 3dc19174670e..351eb582ad8c 100644
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -16,6 +16,7 @@
+ #include <linux/pci.h>
+ #include <linux/dmi.h>
+ #include <linux/module.h>
++#include <linux/moduleparam.h>
+ #include <linux/input.h>
+ #include <linux/leds.h>
+ #include <sound/core.h>
+@@ -27,6 +28,11 @@
+ #include "hda_generic.h"
+ #include "hda_component.h"
+ 
++/* codec-specific model option -- equivalent with snd-hda-intel.model option */
++static char *codec_model;
++module_param_named(model, codec_model, charp, 0444);
++MODULE_PARM_DESC(model, "Use the given board model.");
++
+ /* keep halting ALC5505 DSP, for power saving */
+ #define HALT_REALTEK_ALC5505
+ 
+@@ -1207,6 +1213,11 @@ static int alc_alloc_spec(struct hda_codec *codec, hda_nid_t mixer_nid)
+ 		kfree(spec);
+ 		return err;
+ 	}
++
++	/* assign optional modelname; freed at snd_hda_codec_dev_release() */
++	if (!codec->modelname && codec_model)
++		codec->modelname = kstrdup(codec_model, GFP_KERNEL);
++
+ 	return 0;
+ }
+ 
 -- 
 2.35.3
 
