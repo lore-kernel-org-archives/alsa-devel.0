@@ -4,80 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id EB19DC07E9D
-	for <alsa-devel@archiver.kernel.org>; Thu, 29 Sep 2022 05:48:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 18930C07E9D
+	for <alsa-devel@archiver.kernel.org>; Thu, 29 Sep 2022 06:00:34 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 36E6C82B;
-	Thu, 29 Sep 2022 07:48:02 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 36E6C82B
+	by alsa0.perex.cz (Postfix) with ESMTPS id BCFFF82B;
+	Thu, 29 Sep 2022 07:59:42 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz BCFFF82B
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1664430532;
-	bh=U40xE9ls0E3zKDtEvhgKBC9oc0RDPZ/7T8S1nAlnYCE=;
-	h=From:To:Subject:Date:References:In-Reply-To:Cc:List-Id:
+	s=default; t=1664431232;
+	bh=UVp3DIcIhXLorPqq9KB13nx8mC+qNarvyB1UOm88vTA=;
+	h=Date:Subject:To:References:From:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=GJ9FHvy6pUlr+25iSVJjsxNgTMn17Gye0AGtEpFzpdJwYbGz2sTmvz+rNY3yD0Gaw
-	 Hu8FrycWSHNPW9B2UPkC7mO3+oEPza5V7tfIy8t6JgTBpBsDXzQTVFXrMtyCXK6X19
-	 HugZwuFcY3JCR5zVqljzyPNtA3aCBrwG9I289hDU=
+	b=RR6jsRNK+G8qaclhj7rLajo61JTcezGtCYWOKVzwSktDZvbxDy4LqBcpreYYY2OfD
+	 3f3ANphL0e6UpHL/4XT+CwGgk1+9uWZkT9tnMYMzBRqvX6lrBU9pNPiCfJfuQ1/I1P
+	 aZ2bOuAkVJbYkP1oZ1faLfF9nJ/fo34vJevYIoso=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id AF4E4F8016D;
-	Thu, 29 Sep 2022 07:48:01 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 51311F8016D;
+	Thu, 29 Sep 2022 07:59:42 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 96125F80109; Thu, 29 Sep 2022 07:47:55 +0200 (CEST)
-Received: from KOR01-PS2-obe.outbound.protection.outlook.com
- (mail-ps2kor01lp2052.outbound.protection.outlook.com [104.47.109.52])
+ id 823BEF8023A; Thu, 29 Sep 2022 07:59:41 +0200 (CEST)
+Received: from bombadil.infradead.org (bombadil.infradead.org
+ [IPv6:2607:7c80:54:3::133])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 6D1A8F80109
- for <alsa-devel@alsa-project.org>; Thu, 29 Sep 2022 07:47:46 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 6D1A8F80109
-Received: from SLXP216MB0077.KORP216.PROD.OUTLOOK.COM (2603:1096:100:7::23) by
- SL2P216MB0684.KORP216.PROD.OUTLOOK.COM (2603:1096:100:25::9) with
- Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.5676.19; Thu, 29 Sep 2022 05:47:41 +0000
-Received: from SLXP216MB0077.KORP216.PROD.OUTLOOK.COM
- ([fe80::e8ae:67d:6df8:94a9]) by SLXP216MB0077.KORP216.PROD.OUTLOOK.COM
- ([fe80::e8ae:67d:6df8:94a9%8]) with mapi id 15.20.5676.017; Thu, 29 Sep 2022
- 05:47:41 +0000
-From: Ki-Seok Jo <kiseok.jo@irondevice.com>
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Gyu-Hwa Park
- <gyuhwa.park@irondevice.com>, Mark Brown <broonie@kernel.org>
-Subject: RE: [PATCH 1/2] ASoC: sma1303: Add driver for Iron Device SMA1303 Amp
-Thread-Topic: [PATCH 1/2] ASoC: sma1303: Add driver for Iron Device SMA1303 Amp
-Thread-Index: AQHYzXTdxhnFpwBAAUyL8w2ZOa5UQ63pjM0AgAxl/4A=
-Date: Thu, 29 Sep 2022 05:47:41 +0000
-Message-ID: <SLXP216MB0077606A485A1E0B6F5416308C579@SLXP216MB0077.KORP216.PROD.OUTLOOK.COM>
-References: <20220921044405.4441-1-kiseok.jo@irondevice.com>
- <20220921044405.4441-2-kiseok.jo@irondevice.com>
- <5be08dad-271a-a804-0093-8734d81ac6c6@linux.intel.com>
-In-Reply-To: <5be08dad-271a-a804-0093-8734d81ac6c6@linux.intel.com>
-Accept-Language: ko-KR, en-US
-Content-Language: ko-KR
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=irondevice.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: SLXP216MB0077:EE_|SL2P216MB0684:EE_
-x-ms-office365-filtering-correlation-id: f2348c53-51df-43bf-68df-08daa1de1fb7
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+ by alsa1.perex.cz (Postfix) with ESMTPS id 0215BF80109
+ for <alsa-devel@alsa-project.org>; Thu, 29 Sep 2022 07:59:38 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 0215BF80109
+Authentication-Results: alsa1.perex.cz;
+ dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org
+ header.b="OcpQjrOL"
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+ d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+ Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
+ Message-ID:Sender:Reply-To:Content-ID:Content-Description;
+ bh=NXUihHm0xOJUlsVS7RXSAPp6feiEX61IX5jpUCvHJSU=; b=OcpQjrOLrFI18JmVeNjMrL9A1R
+ 7tJ1vb91/D4zIehcuQeDcXBgWEWc9Xl+xmL5BKXwJO/AqA/okBi8EZrRVVvUxb/1Zr5iyXjBml9tc
+ YbeJ8XmbynCK9wb8v/5M63FoBnnjKW4XC9q5a2OBI5uWqeJ/fUx+0oN2qsJpTN7EhxMVSsGrC6xMC
+ 3X6pSYDb7hAkiTSJSu8KW30+9B0q31u03Mhj8cdkCTX649Naya6CuUGoYpjQxOhm3is6F2spQh+GQ
+ 445tRdvylO9aKMliyOLsUycg1wqMdsxlOo4IrzkvrL56/Dk500SXnQRNW3xk4vcSTbo320eV3zJvB
+ k3QT6HxA==;
+Received: from [2601:1c2:d80:3110::a2e7]
+ by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+ id 1odma5-001K2m-0M; Thu, 29 Sep 2022 05:59:33 +0000
+Message-ID: <d0c824e3-11fb-6002-982d-c15916f060d8@infradead.org>
+Date: Wed, 28 Sep 2022 22:59:32 -0700
 MIME-Version: 1.0
-X-OriginatorOrg: irondevice.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: SLXP216MB0077.KORP216.PROD.OUTLOOK.COM
-X-MS-Exchange-CrossTenant-Network-Message-Id: f2348c53-51df-43bf-68df-08daa1de1fb7
-X-MS-Exchange-CrossTenant-originalarrivaltime: 29 Sep 2022 05:47:41.2646 (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: b4849faa-3337-494e-a76a-cb25a3b3d7d1
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: 7XbwFy2Vt4O9ieyryirBXDLIKaicv4naRmBsAY7yEYhMxeHfZQrGMiZ1BK1aWejRdGWxjRYY/Sy9SsWCyVWyb63vqs9AhFk+y4QDj+Q1UxM=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SL2P216MB0684
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
- Application <application@irondevice.com>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.2.2
+Subject: Re: linux-next: Tree for Sep 28 (Kconfig: SND_SOC_QDSP6)
+Content-Language: en-US
+To: broonie@kernel.org, Linux Next Mailing List <linux-next@vger.kernel.org>
+References: <20220928192605.247546-1-broonie@kernel.org>
+From: Randy Dunlap <rdunlap@infradead.org>
+In-Reply-To: <20220928192605.247546-1-broonie@kernel.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>,
+ Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -93,109 +80,22 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-VGhhbmtzIHlvdXIga2luZGx5IGZlZWRiYWNrLg0KDQpJJ20gY29ycmVjdGluZyB0aGUgcGFydCBJ
-IG1pc3NlZC4NCkknZCBsaWtlIHRvIHRha2UgYSBmZXcgaGludHMuDQooSSByZXZpc2VkIHRoZSBv
-dGhlciBwYXJ0cyB0aGF0IEkgZGlkbid0IG1lbnRpb24gYXMgeW91IHRvbGQgbWUuKQ0KDQoNCj4+
-ICsgKiBDb3B5cmlnaHQgMjAyMiBJcm9uIERldmljZSBDb3Jwb3JhdGlvbg0KDQo+IE1pc3Npbmcg
-Q29weXJpZ2h0IChjKSA/DQoNCkkgZG9uJ3Qga25vdyB0aGlzIHBhcnQgZXhhY3RseSwgc28gd2hl
-biBJIGxvb2tlZCBpdCB1cC4NCk1vc3Qgb2YgdGhlbSB1c2UgYSBtaXggb2YgdHdvIGNhc2VzLiBX
-aGljaCB3b3VsZCBiZSBiZXR0ZXI/IFVzaW5nIFN5bWJvbCBvciBub3Q/DQoNCj4+ICsNCj4+ICtz
-dHJ1Y3Qgc21hMTMwM19wcml2IHsNCj4+ICsJZW51bSBzbWExMzAzX3R5cGUgZGV2dHlwZTsNCj4+
-ICsJc3RydWN0IGRldmljZSAqZGV2Ow0KPj4gKwlzdHJ1Y3QgYXR0cmlidXRlX2dyb3VwICphdHRy
-X2dycDsNCj4+ICsJc3RydWN0IGtvYmplY3QgKmtvYmo7DQoNCj4gVXN1YWxseSBpdCdzIG5vdCBy
-ZWNvbW1lbmRlZCB0byBtdWNrIHdpdGgga29iaiBpbiBkcml2ZXJzLiBJZiB0aGlzIGlzIGZvciBz
-eXNmcyAgc3VwcG9ydCB0aGVyZSBhcmUgYmV0dGVyIGFuZCBzYWZlciB3YXlzLg0KDQpDb3VsZCB5
-b3UgdGVsbCBtZSB3aGljaCBtZXRob2QgeW91IHVzdWFsbHkgdXNlPw0KSSB1c2VkICdzeXNmc19j
-cmVhdGVfZ3JvdXAnIHdpdGggLg0KDQoNCj4+ICtzdGF0aWMgc3RydWN0IHNtYTEzMDNfcGxsX21h
-dGNoIHNtYTEzMDNfcGxsX21hdGNoZXNbXSA9IHsgDQo+PiArUExMX01BVENIKCIxLjQxMU1IeiIs
-ICAiMjQuNTk1TUh6IiwgMTQxMTIwMCwgIDB4MDcsIDB4RjQsIDB4OEIsIA0KPj4gKzB4MDMpLCBQ
-TExfTUFUQ0goIjEuNTM2TUh6IiwgICIyNC41NzZNSHoiLCAxNTM2MDAwLCAgMHgwNywgMHhFMCwg
-DQo+PiArMHg4QiwgMHgwMyksIFBMTF9NQVRDSCgiMy4wNzJNSHoiLCAgIjI0LjU3Nk1IeiIsIDMw
-NzIwMDAsICAweDA3LCANCj4+ICsweDcwLCAweDhCLCAweDAzKSwgUExMX01BVENIKCI2LjE0NE1I
-eiIsICAiMjQuNTc2TUh6IiwgNjE0NDAwMCwgIA0KPj4gKzB4MDcsIDB4NzAsIDB4OEIsIDB4MDcp
-LCBQTExfTUFUQ0goIjEyLjI4OE1IeiIsICIyNC41NzZNSHoiLCAxMjI4ODAwMCwgMHgwNywgMHg3
-MCwgMHg4QiwgMHgwQiksDQo+PiArUExMX01BVENIKCIxOS4yTUh6IiwgICAiMjQuMzQzTUh6Iiwg
-MTkyMDAwMDAsIDB4MDcsIDB4NDcsIDB4OEIsIDB4MEEpLA0KPj4gK1BMTF9NQVRDSCgiMjQuNTc2
-TUh6IiwgIjI0LjU3Nk1IeiIsIDI0NTc2MDAwLCAweDA3LCAweDcwLCAweDhCLCANCj4+ICsweDBG
-KSwgfTsNCg0KPiBBbnkgcmVhc29uIHRvIHVzZSBzdHJpbmdzIGluc3RlYWQgb2YgYWN0dWFsIGlu
-dGVnZXIgdmFsdWVzIGZvciBmcmVxdWVuY2llcz8NCg0KSSBhZGRlZCB0aGUgc3RyaW5nIHRvIHB1
-dCBpdCBzaW1wbHkgZm9yIHRoZSBsb2cuDQoNCg0KPj4gKwkJcmV0dXJuIHJldDsNCj4+ICsJfQ0K
-Pj4gKwl2YWwgPSAodTggKil1Y29udHJvbC0+dmFsdWUuYnl0ZXMuZGF0YTsNCj4+ICsJZm9yIChp
-ID0gMDsgaSA8IHBhcmFtcy0+bWF4OyBpKyspIHsNCj4+ICsJCXJldCA9IHJlZ21hcF9yZWFkKHNt
-YTEzMDMtPnJlZ21hcCwgcmVnICsgaSwgJnJlZ192YWwpOw0KPj4gKwkJaWYgKHJldCA8IDApIHsN
-Cj4+ICsJCQlkZXZfZXJyKGNvbXBvbmVudC0+ZGV2LA0KPj4gKwkJCQkiRmFpbGVkIHRvIHJlYWQs
-IHJlZ2lzdGVyOiAleCByZXQ6ICVkXG4iLA0KPj4gKwkJCQlyZWcgKyBpLCByZXQpOw0KPj4gKwkJ
-CXJldHVybiByZXQ7DQo+PiArCQl9DQo+PiArCQlpZiAoc2l6ZW9mKHJlZ192YWwpID4gMikNCj4+
-ICsJCQlyZWdfdmFsID0gY3B1X3RvX2xlMzIocmVnX3ZhbCk7DQo+PiArCQllbHNlDQo+PiArCQkJ
-cmVnX3ZhbCA9IGNwdV90b19sZTE2KHJlZ192YWwpOw0KPj4gKwkJbWVtY3B5KHZhbCArIGksICZy
-ZWdfdmFsLCBzaXplb2YodTgpKTsNCg0KPiBJIHdhc24ndCBhYmxlIHRvIGZpZ3VyZSBvdXQgd2hh
-dCB0aGlzIGNvZGUgZG9lcy4gc2l6ZW9mKHJlZ192YWwpIGlzIGEgY29uc3RhbnQgc28gdGhlIHNl
-Y29uZCBicmFuY2ggaXMgbmV2ZXIgdGFrZW4sIGFuZCB5b3UgZW5kLXVwIHVzaW5nIG1lbWNweSB0
-byBjb3B5IG9uZSBieXRlLCBzbyB3aGF0IGlzIHRoZSBpc3N1ZSB3aXRoIGVuZGlhbm5lc3M/DQoN
-CkknbSBzb3JyeSBJIGRvbid0IHVuZGVyc3RhbmQgdGhpcyBtZWFuaW5nLg0KSW4gJ3JlZ21hcF9y
-ZWFkJywgdGhlIGxhc3Qgb2YgdGhlIHBhcmFtZXRlcnMgaXMgJ3Vuc2lnbmVkIGludCcgZm9ybWF0
-Lg0KU28sIEkndmUgY29uc2lkZXJlZCB0aGUgdHdvIGZvcm1hdCAyYnl0ZXMgb3IgNGJ5dGVzIGFj
-Y29yZGluZyB0byB0aGUgY29tcGxpZXIuDQpBbmQgb3VyIGNoaXAgaGFzIG9ubHkgMSBieXRlIGRh
-dGEgb2YgZWFjaCByZWdpc3Rlciwgc28gSSBjb3B5IHRoZSBkYXRhIGFuZCBjYXN0IHRoZSBzaXpl
-IG9ubHkgb25lIGJ5dGUuDQpJcyB0aGVyZSBhbnl0aGluZyBJIHRob3VnaHQgd3Jvbmc/DQoNCg0K
-Pj4gKwlzd2l0Y2ggKHNtYTEzMDMtPmFtcF9tb2RlKSB7DQo+PiArCWNhc2UgT05FX0NISVBfU09M
-VVRJT046DQo+PiArCWNhc2UgTU9OT19UV09fQ0hJUF9TT0xVVElPTjoNCj4+ICsJCXJldCArPSBz
-bWExMzAzX3JlZ21hcF91cGRhdGVfYml0cygNCj4+ICsJCQkJc21hMTMwMy0+cmVnbWFwLCBjb21w
-b25lbnQtPmRldiwNCj4+ICsJCQkJU01BMTMwM18xMV9TWVNURU1fQ1RSTDIsDQo+PiArCQkJCU1P
-Tk9NSVhfTUFTSywgTU9OT01JWF9PTik7DQo+PiArCQlyZXQgKz0gc21hMTMwM19yZWdtYXBfdXBk
-YXRlX2JpdHMoDQo+PiArCQkJCXNtYTEzMDMtPnJlZ21hcCwgY29tcG9uZW50LT5kZXYsDQo+PiAr
-CQkJCVNNQTEzMDNfMTFfU1lTVEVNX0NUUkwyLA0KPj4gKwkJCQlMUl9EQVRBX1NXX01BU0ssIExS
-X0RBVEFfU1dfTk9STUFMKTsNCj4+ICsJCWJyZWFrOw0KPj4gKwljYXNlIExFRlRfVFdPX0NISVBf
-U09MVVRJT046DQo+PiArCQlyZXQgKz0gc21hMTMwM19yZWdtYXBfdXBkYXRlX2JpdHMoDQo+PiAr
-CQkJCXNtYTEzMDMtPnJlZ21hcCwgY29tcG9uZW50LT5kZXYsDQo+PiArCQkJCVNNQTEzMDNfMTFf
-U1lTVEVNX0NUUkwyLA0KPj4gKwkJCQlNT05PTUlYX01BU0ssIE1PTk9NSVhfT0ZGKTsNCj4+ICsJ
-CXJldCArPSBzbWExMzAzX3JlZ21hcF91cGRhdGVfYml0cygNCj4+ICsJCQkJc21hMTMwMy0+cmVn
-bWFwLCBjb21wb25lbnQtPmRldiwNCj4+ICsJCQkJU01BMTMwM18xMV9TWVNURU1fQ1RSTDIsDQo+
-PiArCQkJCUxSX0RBVEFfU1dfTUFTSywgTFJfREFUQV9TV19OT1JNQUwpOw0KPj4gKwkJYnJlYWs7
-DQo+PiArCWNhc2UgUklHSFRfVFdPX0NISVBfU09MVVRJT046DQo+PiArCQlyZXQgKz0gc21hMTMw
-M19yZWdtYXBfdXBkYXRlX2JpdHMoDQo+PiArCQkJCXNtYTEzMDMtPnJlZ21hcCwgY29tcG9uZW50
-LT5kZXYsDQo+PiArCQkJCVNNQTEzMDNfMTFfU1lTVEVNX0NUUkwyLA0KPj4gKwkJCQlNT05PTUlY
-X01BU0ssIE1PTk9NSVhfT0ZGKTsNCj4+ICsJCXJldCArPSBzbWExMzAzX3JlZ21hcF91cGRhdGVf
-Yml0cygNCj4+ICsJCQkJc21hMTMwMy0+cmVnbWFwLCBjb21wb25lbnQtPmRldiwNCj4+ICsJCQkJ
-U01BMTMwM18xMV9TWVNURU1fQ1RSTDIsDQo+PiArCQkJCUxSX0RBVEFfU1dfTUFTSywgTFJfREFU
-QV9TV19TV0FQKTsNCj4+ICsJCWJyZWFrOw0KPj4gKwlkZWZhdWx0Og0KPj4gKwkJZGV2X2Vycihj
-b21wb25lbnQtPmRldiwgIkludmFsaWQgVmFsdWUiKTsNCj4+ICsJCXJldCArPSAtMTsNCj4+ICsJ
-fQ0KPj4gKw0KPj4gKwlyZXR1cm4gcmV0Ow0KDQo+IE5vdCBzdXJlIEkgdW5kZXJzdGFuZCB5b3Vy
-IGFyaXRobWV0aWMgb24gY29tYmluaW5nIGVycm9yIGNvZGVzLg0KPiBJZiBvbmUgdHJhbnNhY3Rp
-b24gZmFpbHMsIGlzIHRoZXJlIGFueSBwb2ludCBpbiB0cnlpbmcgYW5vdGhlciByZWdtYXBfdXBk
-YXRlX2JpdHMoKT8NCj4ge3NraXBwaW5nIGFsbCB0aGUgd2F5IHRvIHRoZSBwcm9iZSB3aGljaCBo
-YXMgYSBsb3Qgb2YgaXNzdWVzfQ0KDQpJIHdhbnRlZCB0byBjb250aW51ZSBldmVuIGlmIGl0IGZh
-aWxlZCBpbiBvbmUgcGFydC4gVGhlIHJlYXNvbiBpcyB0byBjaGVjayB3aGV0aGVyIGl0IGlzIGFs
-bCBhIHByb2JsZW0gb3Igb25seSB0aGF0IHBhcnQuIElmIHRoZXJlIGlzIGEgcHJvYmxlbSB3aXRo
-IGVhY2ggcGFydCwgaXQgaXMgc2V0IHRvIGxlYXZlIGEgbG9nIGZvciBlYWNoIHBhcnQuDQpTbyB0
-aGUgZXJyb3IgY29kZSB3YXMgY29tYmluZWQgd2l0aG91dCBpbml0aWFsaXppbmcuIElmIEkgZG8g
-dGhpcywgaXQgd2lsbCBiZSBkaWZmZXJlbnQgZnJvbSB0aGUga2VybmVsIHN0YW5kYXJkIGVycm9y
-IGNvZGUsIHNvIEkgd291bGQgbGlrZSB0byBhc2sgaWYgSSBjYW4gZG8gdGhpcy4gT3IgaXMgdGhl
-cmUgYSBiZXR0ZXIgd2F5Pw0KDQo+PiArDQo+PiArCXNtYTEzMDMtPmF0dHJfZ3JwID0gJnNtYTEz
-MDNfYXR0cl9ncm91cDsNCj4+ICsJcmV0ID0gc3lzZnNfY3JlYXRlX2dyb3VwKHNtYTEzMDMtPmtv
-YmosIHNtYTEzMDMtPmF0dHJfZ3JwKTsNCj4+ICsNCj4+ICsJaWYgKHJldCkgew0KPj4gKwkJZGV2
-X2VycigmY2xpZW50LT5kZXYsDQo+PiArCQkJImZhaWxlZCB0byBjcmVhdGUgYXR0cmlidXRlIGdy
-b3VwIFslZF1cbiIsIHJldCk7DQo+PiArCQlzbWExMzAzLT5hdHRyX2dycCA9IE5VTEw7DQo+PiAr
-CX0NCg0KPiBub3QgY2xlYXIgd2hhdCB5b3UgYXJlIHRyeWluZyB0byBkbyB3aXRoIHN5c2ZzPw0K
-DQpVc2luZyB3b3JrIHF1ZXVlLCBjaGVjayB0aGUgZmF1bHQgc3RhdHVzIG9uIHBvbGxpbmcuDQoN
-Cj4+ICsNCj4+ICtzdGF0aWMgY29uc3Qgc3RydWN0IGkyY19kZXZpY2VfaWQgc21hMTMwM19pMmNf
-aWRbXSA9IHsNCj4+ICsJeyJzbWExMzAzIiwgMH0sDQo+PiArCXt9DQo+PiArfTsNCj4+ICtNT0RV
-TEVfREVWSUNFX1RBQkxFKGkyYywgc21hMTMwM19pMmNfaWQpOw0KPj4gKw0KPj4gK3N0YXRpYyBj
-b25zdCBzdHJ1Y3Qgb2ZfZGV2aWNlX2lkIHNtYTEzMDNfb2ZfbWF0Y2hbXSA9IHsNCj4+ICsJeyAu
-Y29tcGF0aWJsZSA9ICJpcm9uZGV2aWNlLHNtYTEzMDMiLCB9LA0KPj4gKwl7IH0NCj4+ICt9Ow0K
-Pj4gK01PRFVMRV9ERVZJQ0VfVEFCTEUob2YsIHNtYTEzMDNfb2ZfbWF0Y2gpOw0KPj4gKw0KPj4g
-K3N0YXRpYyBzdHJ1Y3QgaTJjX2RyaXZlciBzbWExMzAzX2kyY19kcml2ZXIgPSB7DQo+PiArCS5k
-cml2ZXIgPSB7DQo+PiArCQkubmFtZSA9ICJzbWExMzAzIiwNCj4+ICsJCS5vZl9tYXRjaF90YWJs
-ZSA9IHNtYTEzMDNfb2ZfbWF0Y2gsDQo+PiArCX0sDQo+PiArCS5wcm9iZSA9IHNtYTEzMDNfaTJj
-X3Byb2JlLA0KPj4gKwkucmVtb3ZlID0gc21hMTMwM19pMmNfcmVtb3ZlLA0KPj4gKwkuaWRfdGFi
-bGUgPSBzbWExMzAzX2kyY19pZCwNCj4+ICt9Ow0KPj4gKw0KPj4gK3N0YXRpYyBpbnQgX19pbml0
-IHNtYTEzMDNfaW5pdCh2b2lkKQ0KPj4gK3sNCj4+ICsJaW50IHJldDsNCj4+ICsNCj4+ICsJcmV0
-ID0gaTJjX2FkZF9kcml2ZXIoJnNtYTEzMDNfaTJjX2RyaXZlcik7DQo+PiArDQo+PiArCWlmIChy
-ZXQpDQo+PiArCQlwcl9lcnIoIkZhaWxlZCB0byByZWdpc3RlciBzbWExMzAzIEkyQyBkcml2ZXI6
-ICVkXG4iLCByZXQpOw0KPj4gKw0KPj4gKwlyZXR1cm4gcmV0Ow0KPj4gK30NCj4+ICsNCj4+ICtz
-dGF0aWMgdm9pZCBfX2V4aXQgc21hMTMwM19leGl0KHZvaWQpIHsNCj4+ICsJaTJjX2RlbF9kcml2
-ZXIoJnNtYTEzMDNfaTJjX2RyaXZlcik7DQo+PiArfQ0KPj4gKw0KPj4gK21vZHVsZV9pbml0KHNt
-YTEzMDNfaW5pdCk7DQo+PiArbW9kdWxlX2V4aXQoc21hMTMwM19leGl0KTsNCg0KPiB1c2UgbW9k
-dWxlX2kyY19kcml2ZXIoKSA/DQoNCkl0J3MgdGhlIGJldHRlci4gSSdsbCBtb2RpZnkuDQpJcyB0
-aGVyZSBhIHByb2JsZW0gaWYgSSBtYWtlIGEgbW9kdWxlIGFuZCByZWdpc3RlciBpdCB3aXRoIHRo
-ZSBpMmMgZHJpdmVyIGxpa2UgYWJvdmU/DQoNCg==
+
+
+On 9/28/22 12:26, broonie@kernel.org wrote:
+> Hi all,
+> 
+> Changes since 20220927:
+> 
+
+on x86_64, when QCOM_APR is not set and COMPILE_TEST=y:
+
+WARNING: unmet direct dependencies detected for SND_SOC_QDSP6
+  Depends on [n]: SOUND [=y] && !UML && SND [=y] && SND_SOC [=y] && SND_SOC_QCOM [=y] && QCOM_APR [=n] && COMMON_CLK [=y]
+  Selected by [y]:
+  - SND_SOC_SC8280XP [=y] && SOUND [=y] && !UML && SND [=y] && SND_SOC [=y] && SND_SOC_QCOM [=y] && (QCOM_APR [=n] || COMPILE_TEST [=y]) && SOUNDWIRE [=y] && COMMON_CLK [=y]
+
+
+
+-- 
+~Randy
