@@ -4,82 +4,105 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C0389C04A95
-	for <alsa-devel@archiver.kernel.org>; Thu, 29 Sep 2022 08:26:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C610BC07E9D
+	for <alsa-devel@archiver.kernel.org>; Thu, 29 Sep 2022 09:06:50 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 0B50DE12;
-	Thu, 29 Sep 2022 10:25:13 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 0B50DE12
+	by alsa0.perex.cz (Postfix) with ESMTPS id 09E9B82A;
+	Thu, 29 Sep 2022 11:05:58 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 09E9B82A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1664439963;
-	bh=LxCkKCsWLb1uINJicIi+36bDlVxqRIaKAneFQArleyo=;
-	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1664442408;
+	bh=dcRCk0NkDEfg1WQrN1eSJ+cUeuyiDmU3orUuDF2SNLc=;
+	h=Date:Subject:To:References:From:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=XzBtAku7C51+hrta5jP0VJ2zL1Gx9QcLECyxwloRbpeidJZE4DLAIXm0yFsTgevia
-	 lr7DK8j75xtbecM3pgnqF3IZUvNJSUUQxfBuZIggp+rLEQex8UVXWEX8/btTphcW2q
-	 ZAIP6iVNPQGwd/G7XzIVXVfhaY7rb7dZfJuLgysY=
+	b=V7qT57q5TI4HKHEzmY/m6//0aqwRMkZ0mG4Y5sgVYaQMEg9U3wHryGIivF6NZsZFu
+	 eGjTbqUEDi6uisoOxxheHwBDd77JRixQmG/Uk/c0TNsBgyhOvtjLNIhwR5uzBEDXMd
+	 ZGuQqOLWyao8UGpQFRpewlzxWNpXNDgndZ/3FUFw=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 7359BF8016D;
-	Thu, 29 Sep 2022 10:25:12 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 8E977F8016D;
+	Thu, 29 Sep 2022 11:05:57 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id B3916F8023A; Thu, 29 Sep 2022 10:25:10 +0200 (CEST)
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id EA59AF800AA; Thu, 29 Sep 2022 11:05:55 +0200 (CEST)
+Received: from us-smtp-delivery-124.mimecast.com
+ (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id A086BF80109
- for <alsa-devel@alsa-project.org>; Thu, 29 Sep 2022 10:25:05 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz A086BF80109
+ by alsa1.perex.cz (Postfix) with ESMTPS id 8440BF800AA
+ for <alsa-devel@alsa-project.org>; Thu, 29 Sep 2022 11:05:52 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 8440BF800AA
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="Ltn6uDeJ"; 
- dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="M8plpHv6"
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by smtp-out2.suse.de (Postfix) with ESMTPS id 4F3271F45B;
- Thu, 29 Sep 2022 08:25:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1664439905; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
+ dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com
+ header.b="W7QnuqNh"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+ s=mimecast20190719; t=1664442351;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
  in-reply-to:in-reply-to:references:references;
- bh=FAu9v47NtyT179rSTE5f/TJ/7ClkV4K+OauHDJetc+c=;
- b=Ltn6uDeJm7Pm30jyyELhUQ+Fh+wkyEKxUXvPWt9lUzcseME4wIXv5DwsprUWMqIY49rbok
- JkEJSxcVU+FV3Wc9y867OPR2xeG9W/vqWt0EFZPRmy8bUYECUdwkNCGm6FEtcvRdADm6IT
- h6igatHrGqzUfjmlEjsHq/Sb6SldQ6M=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1664439905;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=FAu9v47NtyT179rSTE5f/TJ/7ClkV4K+OauHDJetc+c=;
- b=M8plpHv64ItNvFfCk5S61ZSuez3VvUcj+38r7YBHxZw9xjTM9M2LlzU3EE1lbpxE3unbhy
- WbIt3LSKSwRjo3Cg==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 2578A13A71;
- Thu, 29 Sep 2022 08:25:05 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id Pdp9B2FWNWOdGAAAMHmgww
- (envelope-from <tiwai@suse.de>); Thu, 29 Sep 2022 08:25:05 +0000
-Date: Thu, 29 Sep 2022 10:25:04 +0200
-Message-ID: <87pmfe8u5b.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Jaroslav Kysela <perex@perex.cz>
-Subject: Re: [PATCH 0/8] ALSA: hda: Add model option to codec drivers, too
-In-Reply-To: <e9375848-039c-6648-7038-fa8f081370ee@perex.cz>
-References: <20220929073545.1085-1-tiwai@suse.de>
- <e9375848-039c-6648-7038-fa8f081370ee@perex.cz>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
-Cc: alsa-devel@alsa-project.org
+ bh=A0IKwFWx7/IDhJLOpmGOHexrm90zAeP+uxwFXVEpNxs=;
+ b=W7QnuqNhuUPeIIc2azyBNUh2u5TS7FmynVGf60VUWu9PWJvigKxjkSooJBPhZQ3dg3UiOx
+ 84rbzU3Qxx1lL0fLbS8GAjU+kwlFDzv/T7RKhK8DzCyJ/sZDA7+QlSRXEN/GB+0OSD5XHE
+ kj07DKWXN8cnkfeiApWUVNYTafDaXqg=
+Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
+ [209.85.208.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_128_GCM_SHA256) id
+ us-mta-275-0ujEs5N_NHO9WL4KUjVIWQ-1; Thu, 29 Sep 2022 05:05:50 -0400
+X-MC-Unique: 0ujEs5N_NHO9WL4KUjVIWQ-1
+Received: by mail-ed1-f70.google.com with SMTP id
+ m13-20020a056402510d00b004519332f0b1so798855edd.7
+ for <alsa-devel@alsa-project.org>; Thu, 29 Sep 2022 02:05:50 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=content-transfer-encoding:in-reply-to:from:content-language
+ :references:cc:to:subject:user-agent:mime-version:date:message-id
+ :x-gm-message-state:from:to:cc:subject:date;
+ bh=A0IKwFWx7/IDhJLOpmGOHexrm90zAeP+uxwFXVEpNxs=;
+ b=u5qSQljzLnrXSEq57s8RtaVvDXl1920/aLUxcxL7QPxkjnuc8MKqf+LFb1SZvxwx16
+ nmYugxhcsSZUise1x3+ZsVnVLDqKdbjVrsTd2prEye8ler97JThIYA+3tdrqI5YzfDOs
+ gK4dGPDzAg49SRmq2kUj7QiYBz8zGysNuYKK9M2bAQ7TVyK4Ubk4g9lPq1NYdv7XEvgc
+ 66otQ6Erp94/5tldnV0oUc2wR0nB9YhZNwP+N0pEI++89dYjvHavKmmNm1Kad3t1g66u
+ nt1iq5akDmQBGkMMLGD7vCkd+jHPCkschpEHWVYDczAvhq99bCn1fSr2Ppxh5wn59Xnx
+ rDnQ==
+X-Gm-Message-State: ACrzQf2tcHo+I7g1jxUcqY7rNLZTzXJyoTYoUYh6jXRFz1TRBTqO16b1
+ gJCbCuSHfHHX3t9K1Nwyz63ow02z6HcoSv3e3LIvVJ3sBv+g8IbfzkRygM3rY/6eHFr/dZwSuXG
+ rY0lzkbUGlC8l0RM4xj5nrbI=
+X-Received: by 2002:a17:906:fe44:b0:77c:e313:a8e8 with SMTP id
+ wz4-20020a170906fe4400b0077ce313a8e8mr1870644ejb.700.1664442348763; 
+ Thu, 29 Sep 2022 02:05:48 -0700 (PDT)
+X-Google-Smtp-Source: AMsMyM4JFt8xALBRjmvOrK61+Zn/kPh9gW9xrySfeBle8hlvqsPdPwdgLEbheTU1213u1mbsfKK6wg==
+X-Received: by 2002:a17:906:fe44:b0:77c:e313:a8e8 with SMTP id
+ wz4-20020a170906fe4400b0077ce313a8e8mr1870633ejb.700.1664442348565; 
+ Thu, 29 Sep 2022 02:05:48 -0700 (PDT)
+Received: from ?IPV6:2001:1c00:c1e:bf00:d69d:5353:dba5:ee81?
+ (2001-1c00-0c1e-bf00-d69d-5353-dba5-ee81.cable.dynamic.v6.ziggo.nl.
+ [2001:1c00:c1e:bf00:d69d:5353:dba5:ee81])
+ by smtp.gmail.com with ESMTPSA id
+ m16-20020a170906161000b007821241aaecsm3612192ejd.216.2022.09.29.02.05.47
+ (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+ Thu, 29 Sep 2022 02:05:47 -0700 (PDT)
+Message-ID: <c24d34a9-e609-d44d-8e0f-c2e5928b95f4@redhat.com>
+Date: Thu, 29 Sep 2022 11:05:47 +0200
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.2.1
+Subject: Re: Sound broken (first couple of seconds play looping) on Sony Vaio
+ VPX11S1E (HDA, ALC262)
+To: Takashi Iwai <tiwai@suse.de>
+References: <3e8697e1-87c6-7a7b-d2e8-b21f1d2f181b@redhat.com>
+ <87y1uqbfmo.wl-tiwai@suse.de> <87tu5ebdc8.wl-tiwai@suse.de>
+ <61bd7097-afac-5a2d-46a2-aada444a890c@redhat.com>
+ <87y1u290cv.wl-tiwai@suse.de>
+From: Hans de Goede <hdegoede@redhat.com>
+In-Reply-To: <87y1u290cv.wl-tiwai@suse.de>
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: redhat.com
+Content-Language: en-US, nl
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -95,30 +118,75 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Thu, 29 Sep 2022 09:46:47 +0200,
-Jaroslav Kysela wrote:
+Hi,
+
+On 9/29/22 08:10, Takashi Iwai wrote:
+> On Wed, 28 Sep 2022 18:33:55 +0200,
+> Hans de Goede wrote:
+>>
+>> Hi,
+>>
+>> On 9/11/22 09:05, Takashi Iwai wrote:
+>>> On Sun, 11 Sep 2022 08:15:59 +0200,
+>>> Takashi Iwai wrote:
+>>>>
+>>>> On Sat, 10 Sep 2022 19:52:36 +0200,
+>>>> Hans de Goede wrote:
+>>>>>
+>>>>> Hi All,
+>>>>>
+>>>>> To test some kernel work (backlight refactor) which I have been doing
+>>>>> I have booted Debian Testing with a 6.0 kernel on a Sony Vaio VPX11S1E
+>>>>> (which is ancient).
+>>>>>
+>>>>> I noticed that when tab-completing something in a terminal the
+>>>>> terminal bell sound would keep repeating and playing another longer
+>>>>> sound sample gets stuck with the first couple of seconds of that
+>>>>> sample looping.
+>>>>>
+>>>>> This is under GNOME3 with pulseaudio as sound server.
+>>>>>
+>>>>> I accidentally found an interesting workaround if I run:
+>>>>>
+>>>>> aplay -Dplughw:CARD=MID,DEV=0 /usr/share/sounds/alsa/Front_Left.wav
+>>>>>
+>>>>> once, then that works properly and after that the problem is gone...
+>>>>>
+>>>>> Note that this laptop does have only 1 speaker AFAICT.
+>>>>>
+>>>>> alsa-info output below.
+>>>>>
+>>>>> I would be happy to test any patches / module-options which might
+>>>>> fix this.
+>>>>
+>>>> Could you check the very latest Linus tree (6.0-rc5)?
+>>>> There has been a regression fix for HD-audio, and possibly this might
+>>>> be your case.
+>>>
+>>> And if this doesn't change the behavior, try snoop=0 option for
+>>> snd-hda-intel module.
+>>
+>> Thanks, I've just tried with 6.0-rc6 both with and without snoop=0
+>> and neither helps I'm afraid.
 > 
-> On 29. 09. 22 9:35, Takashi Iwai wrote:
-> > Hi,
-> > 
-> > this is a trivial patch set to add the "model" option to each HD-audio
-> > codec driver that works equivalently with snd-hda-intel or SOF
-> > driver's model option.  It makes it easer for users to specify the
-> > quirk to the right target.
-> 
-> I am not convinced, if it's "easier" for users. Perhaps, it will make
-> more sense to add this option to the snd_intel_dspcfg module (so the
-> model can be controlled in the one place). I admit that users are a
-> bit confused with the snd-hda-intel and SOF differences.
+> Then one another thing could be position_fix option of snd-hda-intel.
+> Otherwise we need bisection -- supposing it worked well in the past.
 
-Yes, and that's another reason for moving this rather to codec.
-By applying directly the option to the codec driver, it works no
-matter which control driver is used.
+Thanks, position_fix=1 does the trick (I did not try any of
+the other possible values).
 
-And, snd_intel_dspcfg is no better choice, IMO.  If you have multiple
-controllers, you'll hit the same problem as snd-hda-intel.
-(And SOF ignores that use case completely, but it's fine, as SOF is
-more or less bound only with the onboard controller.)
+I see there is a snd_pci_quirk position_fix_list, so I guess
+I should prepare a patch adding a quirk for this?
+
+Or are some other position_fix values preferred and should
+I try those first?
+
+> But as it's a so old laptop, maybe not worth...
+
+Agreed, but it looks like a bisect won't be necessary :)
+
+Regards,
+
+Hans
 
 
-Takashi
