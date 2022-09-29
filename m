@@ -4,86 +4,89 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 34919C433F5
-	for <alsa-devel@archiver.kernel.org>; Thu, 29 Sep 2022 09:39:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6C7F1C433F5
+	for <alsa-devel@archiver.kernel.org>; Thu, 29 Sep 2022 09:49:26 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id EAE95846;
-	Thu, 29 Sep 2022 11:39:00 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz EAE95846
+	by alsa0.perex.cz (Postfix) with ESMTPS id 3505E85D;
+	Thu, 29 Sep 2022 11:48:34 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 3505E85D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1664444391;
-	bh=RtRv/rkQ/6umPfMGjbcpbybAEf60DvjIjLr1IuvLmq8=;
-	h=Date:From:To:Subject:In-Reply-To:References:Cc:List-Id:
+	s=default; t=1664444964;
+	bh=URHxb8lU81RnkvovOLqWHu3JtwNm+uTnov0gAOxG9/M=;
+	h=Date:Subject:To:References:From:In-Reply-To:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=RDAgvGlwmU1Kf/Yvq93JCB9HWSecyVpGDCyR7BYzuz/ApbDRuzeC/cMdbINDuKUhc
-	 zzgcehFD4ZZUQ0tuqPS4BvhR+GkVCFtZPRUUbFWywrCxb7pac9mvmywq9gWTKZPCVL
-	 gJ6XEkad6x0946IBvlay1V30Y2ygvDfElg3V2RBg=
+	b=TpezBVhJPtNp9FR1WyB1vaIOfsaudd9vMeXlOOl02n2UZiucu2ULORSsCXUBeuInt
+	 HB4loJVwOzgIfh2RK3qG38ud+DfSBy0EFS8MMkgdsX3QSpOBRvA+L8aGADB7e4RkfG
+	 LVf0ybcFU5Auc1KlgXp2gekOJODED/IHewrTpb4k=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 78736F8016D;
-	Thu, 29 Sep 2022 11:39:00 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id CCE1FF800AA;
+	Thu, 29 Sep 2022 11:48:33 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 5A63EF8023A; Thu, 29 Sep 2022 11:38:59 +0200 (CEST)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ id C5506F8023A; Thu, 29 Sep 2022 11:48:31 +0200 (CEST)
+Received: from mga06.intel.com (mga06b.intel.com [134.134.136.31])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id D7602F80109
- for <alsa-devel@alsa-project.org>; Thu, 29 Sep 2022 11:38:56 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz D7602F80109
+ by alsa1.perex.cz (Postfix) with ESMTPS id 2B74DF800AA
+ for <alsa-devel@alsa-project.org>; Thu, 29 Sep 2022 11:48:24 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 2B74DF800AA
 Authentication-Results: alsa1.perex.cz;
- dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de
- header.b="zV4Jc4N5"; 
- dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de
- header.b="U7cH9/ZQ"
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by smtp-out1.suse.de (Postfix) with ESMTPS id 547A221E53;
- Thu, 29 Sep 2022 09:38:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
- t=1664444336; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=jHNjHwNhLr6putWTALtOmPGpZYE6MAPvEerSU3xYtkc=;
- b=zV4Jc4N5rruhv+BGtL1YfYkz5zV53w/OcO9vrHmYyoAl+ssmfJRMwidQvNzdRNk+BP3v59
- nUEyKP+0iIB0m168oZ3QleKrXlprLwdF3Ftane2iUPLHofzWxiSRbadCGdsBsw+uLcOQcd
- rDX4PGbgH1ALKOpR47wkf3Wj0RJMlA0=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
- s=susede2_ed25519; t=1664444336;
- h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
- mime-version:mime-version:content-type:content-type:
- in-reply-to:in-reply-to:references:references;
- bh=jHNjHwNhLr6putWTALtOmPGpZYE6MAPvEerSU3xYtkc=;
- b=U7cH9/ZQLuaiCDBRD3ln3OTRVP8h5jW839Z/xFH5KZTFmjAztoToiRd/gMcSWzRpF5/4e6
- g1RmG5gCzg1XSqDw==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
- (No client certificate requested)
- by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 3F66C1348E;
- Thu, 29 Sep 2022 09:38:56 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
- by imap2.suse-dmz.suse.de with ESMTPSA id +om8DrBnNWOOOwAAMHmgww
- (envelope-from <tiwai@suse.de>); Thu, 29 Sep 2022 09:38:56 +0000
-Date: Thu, 29 Sep 2022 11:38:55 +0200
-Message-ID: <87h70q8qq8.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Hans de Goede <hdegoede@redhat.com>
-Subject: Re: Sound broken (first couple of seconds play looping) on Sony Vaio
- VPX11S1E (HDA, ALC262)
-In-Reply-To: <c24d34a9-e609-d44d-8e0f-c2e5928b95f4@redhat.com>
-References: <3e8697e1-87c6-7a7b-d2e8-b21f1d2f181b@redhat.com>
- <87y1uqbfmo.wl-tiwai@suse.de> <87tu5ebdc8.wl-tiwai@suse.de>
- <61bd7097-afac-5a2d-46a2-aada444a890c@redhat.com>
- <87y1u290cv.wl-tiwai@suse.de>
- <c24d34a9-e609-d44d-8e0f-c2e5928b95f4@redhat.com>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+ dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com
+ header.b="dfSpCvmU"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+ d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+ t=1664444906; x=1695980906;
+ h=message-id:date:mime-version:subject:to:cc:references:
+ from:in-reply-to:content-transfer-encoding;
+ bh=URHxb8lU81RnkvovOLqWHu3JtwNm+uTnov0gAOxG9/M=;
+ b=dfSpCvmUrKAsA9MudGXusjEADbev34+k+Vs/VEI099QpeYdCO+vc71Oy
+ uVr36nu/ULfr+TfpcKeV6bCqPEPF2xyrEsj9qjtjY2ub1Jid9S1aC7Ux3
+ TKI4JFkwOxS+8eF/sDRTdtdIdn5LjcZlLqS/ZKua/1C3YpwCg9RrXhxIJ
+ SWK4sU8YG8mqV3PmmBd+a0BeereCSVVo958GuhVsQYKQ6gSyAPSW3l8nv
+ CLzfAp+z8l7RKftzJuOnqowdDrv7Lqvzsw9PX1r4aYBAuVyYmy/3Sy6s/
+ 0cO3mZyzojTZs4JpnVYg7ri3Tstb4l5dJM1WTqEWd9XuLiSfb4WFFt7QR A==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10484"; a="363691952"
+X-IronPort-AV: E=Sophos;i="5.93,354,1654585200"; d="scan'208";a="363691952"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+ by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 29 Sep 2022 02:48:22 -0700
+X-IronPort-AV: E=McAfee;i="6500,9779,10484"; a="690754011"
+X-IronPort-AV: E=Sophos;i="5.93,354,1654585200"; d="scan'208";a="690754011"
+Received: from crijnder-mobl.ger.corp.intel.com (HELO [10.251.211.131])
+ ([10.251.211.131])
+ by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384;
+ 29 Sep 2022 02:48:18 -0700
+Message-ID: <3bddff5a-78ed-a3fa-841c-2f2f6a8f8bbb@linux.intel.com>
+Date: Thu, 29 Sep 2022 10:39:26 +0200
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Firefox/91.0 Thunderbird/91.11.0
+Subject: Re: [PATCH] ASoC: Intel: sof_rt5682: remove
+ SOF_RT1015_SPEAKER_AMP_100FS flag
+Content-Language: en-US
+To: "Lu, Brent" <brent.lu@intel.com>,
+ "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+References: <20220913074906.926774-1-brent.lu@intel.com>
+ <2577e4db-8593-cf37-135b-aa51b6268cd7@linux.intel.com>
+ <CY5PR11MB6257A5CC3976FAEA2C713A4997559@CY5PR11MB6257.namprd11.prod.outlook.com>
+ <d94a9abd-95ca-09ba-ab24-e4c38b832678@linux.intel.com>
+ <CY5PR11MB6257AF53395DDF069A43D28E97579@CY5PR11MB6257.namprd11.prod.outlook.com>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+In-Reply-To: <CY5PR11MB6257AF53395DDF069A43D28E97579@CY5PR11MB6257.namprd11.prod.outlook.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+Cc: "Rojewski, Cezary" <cezary.rojewski@intel.com>,
+ Kai Vehmanen <kai.vehmanen@linux.intel.com>, Ajye Huang <ajye.huang@gmail.com>,
+ Peter Ujfalusi <peter.ujfalusi@linux.intel.com>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ Takashi Iwai <tiwai@suse.com>, Liam Girdwood <liam.r.girdwood@linux.intel.com>,
+ "Chiang, Mac" <mac.chiang@intel.com>, Mark Brown <broonie@kernel.org>,
+ Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+ Bard Liao <yung-chuan.liao@linux.intel.com>, "Gopal,
+ Vamshi Krishna" <vamshi.krishna.gopal@intel.com>, "Zhi,
+ Yong" <yong.zhi@intel.com>
 X-BeenThere: alsa-devel@alsa-project.org
 X-Mailman-Version: 2.1.15
 Precedence: list
@@ -99,92 +102,31 @@ List-Subscribe: <https://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: "Alsa-devel" <alsa-devel-bounces@alsa-project.org>
 
-On Thu, 29 Sep 2022 11:05:47 +0200,
-Hans de Goede wrote:
+
+
+On 9/29/22 08:25, Lu, Brent wrote:
+>>>
+>>> I think TDM slot number is possible but not TX/RX mask. What we have
+>>> in topology is union of tx/rx mask of all channels. We don't know the
+>>> mask of specific channel in DAI_CONFIG.
+>>>
+>>> DAI_CONFIG(SSP, 0, BOARD_HP_BE_ID, SSP0-Codec,
+>>>         SSP_CONFIG(I2S, SSP_CLOCK(mclk, 19200000, codec_mclk_in),
+>>>                 SSP_CLOCK(bclk, 2400000, codec_slave),
+>>>                 SSP_CLOCK(fsync, 48000, codec_slave),
+>>>                 SSP_TDM(2, 25, 3, 3),
+>>
+>> the 3 3 is precisely the channel mask!
+>>
 > 
-> Hi,
-> 
-> On 9/29/22 08:10, Takashi Iwai wrote:
-> > On Wed, 28 Sep 2022 18:33:55 +0200,
-> > Hans de Goede wrote:
-> >>
-> >> Hi,
-> >>
-> >> On 9/11/22 09:05, Takashi Iwai wrote:
-> >>> On Sun, 11 Sep 2022 08:15:59 +0200,
-> >>> Takashi Iwai wrote:
-> >>>>
-> >>>> On Sat, 10 Sep 2022 19:52:36 +0200,
-> >>>> Hans de Goede wrote:
-> >>>>>
-> >>>>> Hi All,
-> >>>>>
-> >>>>> To test some kernel work (backlight refactor) which I have been doing
-> >>>>> I have booted Debian Testing with a 6.0 kernel on a Sony Vaio VPX11S1E
-> >>>>> (which is ancient).
-> >>>>>
-> >>>>> I noticed that when tab-completing something in a terminal the
-> >>>>> terminal bell sound would keep repeating and playing another longer
-> >>>>> sound sample gets stuck with the first couple of seconds of that
-> >>>>> sample looping.
-> >>>>>
-> >>>>> This is under GNOME3 with pulseaudio as sound server.
-> >>>>>
-> >>>>> I accidentally found an interesting workaround if I run:
-> >>>>>
-> >>>>> aplay -Dplughw:CARD=MID,DEV=0 /usr/share/sounds/alsa/Front_Left.wav
-> >>>>>
-> >>>>> once, then that works properly and after that the problem is gone...
-> >>>>>
-> >>>>> Note that this laptop does have only 1 speaker AFAICT.
-> >>>>>
-> >>>>> alsa-info output below.
-> >>>>>
-> >>>>> I would be happy to test any patches / module-options which might
-> >>>>> fix this.
-> >>>>
-> >>>> Could you check the very latest Linus tree (6.0-rc5)?
-> >>>> There has been a regression fix for HD-audio, and possibly this might
-> >>>> be your case.
-> >>>
-> >>> And if this doesn't change the behavior, try snoop=0 option for
-> >>> snd-hda-intel module.
-> >>
-> >> Thanks, I've just tried with 6.0-rc6 both with and without snoop=0
-> >> and neither helps I'm afraid.
-> > 
-> > Then one another thing could be position_fix option of snd-hda-intel.
-> > Otherwise we need bisection -- supposing it worked well in the past.
-> 
-> Thanks, position_fix=1 does the trick (I did not try any of
-> the other possible values).
-> 
-> I see there is a snd_pci_quirk position_fix_list, so I guess
-> I should prepare a patch adding a quirk for this?
+> Yes, but what we need in the hw_params() is the mask for individual channel,
+> like 0x1 for left and 0x2 for right.
 
-I guess this is rather controller issue, so I'd patch for Poulsbo like
-below.  Let me know if it works, then I'll cook a proper patch.
+Ah yes, you're talking about the mask configuration on the codec side,
+sorry I was confused with your reference to DAI_CONFIG. That would be
+platform-level information, not DSP topology information indeed.
 
-> Or are some other position_fix values preferred and should
-> I try those first?
+Sounds good then, thanks for the explanations.
 
-LPIB should suffice, so no further test about the option needed.
+Acked-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 
-
-thanks,
-
-Takashi
-
--- 8< --
---- a/sound/pci/hda/hda_intel.c
-+++ b/sound/pci/hda/hda_intel.c
-@@ -2547,7 +2547,8 @@ static const struct pci_device_id azx_ids[] = {
- 	  .driver_data = AZX_DRIVER_SCH | AZX_DCAPS_INTEL_PCH_NOPM },
- 	/* Poulsbo */
- 	{ PCI_DEVICE(0x8086, 0x811b),
--	  .driver_data = AZX_DRIVER_SCH | AZX_DCAPS_INTEL_PCH_BASE },
-+	  .driver_data = AZX_DRIVER_SCH | AZX_DCAPS_INTEL_PCH_BASE |
-+	  AZX_DCAPS_POSFIX_LPIB },
- 	/* Oaktrail */
- 	{ PCI_DEVICE(0x8086, 0x080a),
- 	  .driver_data = AZX_DRIVER_SCH | AZX_DCAPS_INTEL_PCH_BASE },
