@@ -4,53 +4,53 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from alsa0.perex.cz (alsa0.perex.cz [77.48.224.243])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4331DC433FE
-	for <alsa-devel@archiver.kernel.org>; Thu, 29 Sep 2022 15:04:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 03243C433F5
+	for <alsa-devel@archiver.kernel.org>; Thu, 29 Sep 2022 15:05:16 +0000 (UTC)
 Received: from alsa1.perex.cz (alsa1.perex.cz [207.180.221.201])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by alsa0.perex.cz (Postfix) with ESMTPS id 40EBB15F9;
-	Thu, 29 Sep 2022 17:03:59 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 40EBB15F9
+	by alsa0.perex.cz (Postfix) with ESMTPS id 2015C15E5;
+	Thu, 29 Sep 2022 17:04:25 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa0.perex.cz 2015C15E5
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alsa-project.org;
-	s=default; t=1664463889;
-	bh=LKFCnpTeYgvYlQAZhOnyHmtLiSwfa6jERzwRiPmLk7A=;
+	s=default; t=1664463915;
+	bh=kfzFgPkSZ95mRWl3yGE4/PxTNebTmmVsGQj7kYx5Yp8=;
 	h=From:To:Subject:Date:In-Reply-To:References:Cc:List-Id:
 	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
 	 From;
-	b=KLPriy/W0MqhVZXW6jtBk9oAgvTRuOPsN4qcrRcHS1YZtegm+LiWNlT0xP9Awqtwv
-	 Zkgr2lRz4neewqY8mtByZgOfaLFiZAfenRckDF3zJu6NB69Z+bniqnluvgXl+8raJU
-	 uT528YtL2thi4HDhsyw1N2J0O9c4gcAyJHOLyvuM=
+	b=a95ZyozA9OPsSW/3dfhrV0NEYaCr3flQkWZkxOpC8w9jIuAhiF/sSS1KBIucR2Agp
+	 yiV529uKquK8XtvvfaQDVu9sBd/MEZFH35WX7GbLNLv3JNOULZDmZtbi2ZcB8N1tT/
+	 SxuoYBLoAxGJYHhRg0eyr0f0GmZtZkEZACQ9e5k0=
 Received: from alsa1.perex.cz (localhost.localdomain [127.0.0.1])
-	by alsa1.perex.cz (Postfix) with ESMTP id 70AB5F80095;
-	Thu, 29 Sep 2022 17:03:37 +0200 (CEST)
+	by alsa1.perex.cz (Postfix) with ESMTP id 0A33EF804F1;
+	Thu, 29 Sep 2022 17:03:39 +0200 (CEST)
 Received: by alsa1.perex.cz (Postfix, from userid 50401)
- id 7ADC9F804F1; Thu, 29 Sep 2022 17:03:35 +0200 (CEST)
-Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
+ id 3B79CF80519; Thu, 29 Sep 2022 17:03:37 +0200 (CEST)
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
  (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by alsa1.perex.cz (Postfix) with ESMTPS id 5D903F800AA
- for <alsa-devel@alsa-project.org>; Thu, 29 Sep 2022 17:03:28 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz 5D903F800AA
-Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.55])
- by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4Mdc4f0T3MzHqRp;
- Thu, 29 Sep 2022 23:01:06 +0800 (CST)
+ by alsa1.perex.cz (Postfix) with ESMTPS id AB03BF800AA
+ for <alsa-devel@alsa-project.org>; Thu, 29 Sep 2022 17:03:32 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 alsa1.perex.cz AB03BF800AA
+Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.54])
+ by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4Mdc404HpMzpVST;
+ Thu, 29 Sep 2022 23:00:32 +0800 (CST)
 Received: from kwepemm600014.china.huawei.com (7.193.23.54) by
- dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
+ dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.31; Thu, 29 Sep 2022 23:03:24 +0800
+ 15.1.2375.31; Thu, 29 Sep 2022 23:03:25 +0800
 Received: from huawei.com (10.90.53.225) by kwepemm600014.china.huawei.com
  (7.193.23.54) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.31; Thu, 29 Sep
- 2022 23:03:23 +0800
+ 2022 23:03:24 +0800
 From: Zhang Qilong <zhangqilong3@huawei.com>
 To: <lgirdwood@gmail.com>, <broonie@kernel.org>, <perex@perex.cz>,
  <tiwai@suse.com>, <matthias.bgg@gmail.com>,
  <ckeepax@opensource.wolfsonmicro.com>, <jeff_chang@richtek.com>
-Subject: [PATCH v2 -next 1/4] ASoC: wm8997: Fix PM disable depth imbalance in
- wm8997_probe
-Date: Thu, 29 Sep 2022 23:06:50 +0800
-Message-ID: <20220929150653.63845-2-zhangqilong3@huawei.com>
+Subject: [PATCH v2 -next 4/4] ASoC: mt6660: Fix PM disable depth imbalance in
+ mt6660_i2c_probe
+Date: Thu, 29 Sep 2022 23:06:53 +0800
+Message-ID: <20220929150653.63845-5-zhangqilong3@huawei.com>
 X-Mailer: git-send-email 2.26.0.106.g9fadedd
 In-Reply-To: <20220929150653.63845-1-zhangqilong3@huawei.com>
 References: <20220929150653.63845-1-zhangqilong3@huawei.com>
@@ -83,27 +83,29 @@ a pairing decrement is needed on the error handling path to
 keep it balanced according to context. We fix it by calling
 pm_runtime_disable when error returns.
 
-Fixes:40843aea5a9bd ("ASoC: wm8997: Initial CODEC driver")
+Fixes:f289e55c6eeb4 ("ASoC: Add MediaTek MT6660 Speaker Amp Driver")
 Signed-off-by: Zhang Qilong <zhangqilong3@huawei.com>
 ---
 v2:
 - call pm_runtime_disable when error returns
 ---
- sound/soc/codecs/wm8997.c | 1 +
- 1 file changed, 1 insertion(+)
+ sound/soc/codecs/mt6660.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/sound/soc/codecs/wm8997.c b/sound/soc/codecs/wm8997.c
-index 210ad662fc26..c0207e9a7d53 100644
---- a/sound/soc/codecs/wm8997.c
-+++ b/sound/soc/codecs/wm8997.c
-@@ -1187,6 +1187,7 @@ static int wm8997_probe(struct platform_device *pdev)
- err_spk_irqs:
- 	arizona_free_spk_irqs(arizona);
- err_jack_codec_dev:
-+	pm_runtime_disable(&pdev->dev);
- 	arizona_jack_codec_dev_remove(&wm8997->core);
- 
+diff --git a/sound/soc/codecs/mt6660.c b/sound/soc/codecs/mt6660.c
+index 4971cd0b90f8..36220a1f80a6 100644
+--- a/sound/soc/codecs/mt6660.c
++++ b/sound/soc/codecs/mt6660.c
+@@ -509,6 +509,9 @@ static int mt6660_i2c_probe(struct i2c_client *client)
+ 	ret = devm_snd_soc_register_component(chip->dev,
+ 					       &mt6660_component_driver,
+ 					       &mt6660_codec_dai, 1);
++	if (ret)
++		pm_runtime_disable(chip->dev);
++
  	return ret;
+ probe_fail:
+ 	_mt6660_chip_power_on(chip, 0);
 -- 
 2.25.1
 
